@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegate.java,v 1.12 2003/12/15 14:30:50 mch Exp $
+ * $Id: WebDelegate.java,v 1.13 2003/12/16 16:19:27 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -264,6 +264,9 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier
          return new DatacenterResults(rDoc.getDocumentElement());
          
       }
+      catch (DatacenterException e) {
+          throw e;
+      }
       catch (Exception e) {
           throw new DatacenterException(e.getMessage(), e);
       }
@@ -302,8 +305,8 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier
                      "    <WhereClause>\n"+
                      "         <Circle>\n"+
                      "            <Ra><Value>"+ra+"</Value></Ra>\n"+
-							"            <Dec><Value>"+dec+"</Value></Dec>\n"+
-            			"            <Radius><Value>"+sr+"</Value></Radius>\n"+
+                     "            <Dec><Value>"+dec+"</Value></Dec>\n"+
+                     "            <Radius><Value>"+sr+"</Value></Radius>\n"+
                      "          </Circle>\n"+
                      "    </WhereClause>\n"+
                      "   </TableClause>\n"+
@@ -364,6 +367,9 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier
 
 /*
 $Log: WebDelegate.java,v $
+Revision 1.13  2003/12/16 16:19:27  mch
+minor exception check
+
 Revision 1.12  2003/12/15 14:30:50  mch
 Fixes to load doc from string not file, and use correct version of adql
 
