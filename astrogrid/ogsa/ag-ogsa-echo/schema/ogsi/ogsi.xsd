@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://www.gridforum.org/namespaces/2003/03/OGSI" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:ogsi="http://www.gridforum.org/namespaces/2003/03/OGSI" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <!-- Common Types --> 
+    <simpleType name="ExtendedDateTimeType">
+      <union memberTypes="ogsi:InfinityType dateTime"/>
+    </simpleType>
+
+    <simpleType name="InfinityType">
+      <restriction base="string">
+        <enumeration value="infinity"/>
+      </restriction>
+    </simpleType>
+
+    <attribute name="goodFrom" type="ogsi:ExtendedDateTimeType"/>
+    <attribute name="goodUntil" type="ogsi:ExtendedDateTimeType"/>
+    <attribute name="availableUntil" type="ogsi:ExtendedDateTimeType"/>
+
+    <attributeGroup name="LifeTimePropertiesGroup">
+      <attribute ref="ogsi:goodFrom" use="optional"/>
+      <attribute ref="ogsi:goodUntil" use="optional"/>
+      <attribute ref="ogsi:availableUntil" use="optional"/>
+    </attributeGroup>
+
+    <element name="reference" type="ogsi:ReferenceType"/>
+    <complexType abstract="true" name="ReferenceType">
+      <attribute ref="ogsi:goodFrom" use="optional"/>
+      <attribute ref="ogsi:goodUntil" use="optional"/>
+    </complexType> 
+
+    <!-- The content of this type MUST be a wsdl:definitions element 
+    with a single wsdl:service child element -->
+    <complexType name="WSDLReferenceType">
+      <complexContent>
+        <extension base="ogsi:ReferenceType">
+          <sequence>
+            <any maxOccurs="1" minOccurs="1" namespace="http://schemas.xmlsoap.org/wsdl/" processContents="lax"/>
+          </sequence>
+        </extension>
+      </complexContent>
+    </complexType> 
+
+    <element name="handle" type="ogsi:HandleType"/>
+    <simpleType name="HandleType">
+      <restriction base="anyURI"/>
+    </simpleType>
+   
+    <element name="locator" type="ogsi:LocatorType"/>
+    <complexType name="LocatorType">
+      <sequence>
+          <element maxOccurs="unbounded" minOccurs="0" ref="ogsi:handle"/>
+          <element maxOccurs="unbounded" minOccurs="0" ref="ogsi:reference"/>
+          <element maxOccurs="unbounded" minOccurs="0" name="interface" type="QName"/>
+      </sequence>
+    </complexType> 
+
+
+    <!-- Grid Service Types -->
+    <complexType name="ExtensibilityType">
+      <sequence>
+        <any namespace="##any"/>
+      </sequence>
+    </complexType>
+    
+    <!-- Grid Service Service Data Types -->
+    <complexType name="OperationExtensibilityType">
+      <attribute name="inputElement" type="QName" use="optional"/>
+    </complexType>
+
+    <complexType name="TerminationTimeType">
+      <attribute name="after" type="ogsi:ExtendedDateTimeType" use="optional"/>
+      <attribute name="before" type="ogsi:ExtendedDateTimeType" use="optional"/>
+      <attribute name="timestamp" type="dateTime" use="optional"/>
+    </complexType> 
+
+    <element name="queryByServiceDataNames" type="ogsi:QNamesType"/>
+
+    <element name="deleteByServiceDataNames" type="ogsi:QNamesType"/>
+
+    <element name="setByServiceDataNames" type="ogsi:ExtensibilityType"/>
+
+    <complexType name="QNamesType">
+      <sequence>
+          <element maxOccurs="unbounded" minOccurs="0" name="name" type="QName"/>
+      </sequence>
+    </complexType>
+
+    <!-- Grid Service Message Types -->
+    <element name="findServiceData">
+      <complexType>
+        <sequence>
+          <element name="queryExpression" type="ogsi:ExtensibilityType"/> 
+        </sequence>
+      </complexType>
+    </element>
+    <element name="findServiceDataResponse">
+      <complexType>
+        <sequence>
+          <element name="result" type="ogsi:ExtensibilityType"/>
+        </sequence>
+      </complexType>
+    </element>
+    <element name="setServiceData">
+      <complexType>
+        <sequence>
+          <element name="updateExpression" type="ogsi:ExtensibilityType"/>
+        </sequence>
+      </complexType>
+    </element>
+    <element name="setServiceDataResponse">
+      <complexType>
+        <sequence>
+          <element name="result" type="ogsi:ExtensibilityType"/>
+        </sequence>
+      </complexType>
+    </element>
+    <element name="requestTerminationBefore">
+      <complexType>
+        <sequence> 
+          <element name="terminationTime" type="ogsi:ExtendedDateTimeType"/>
+        </sequence> 
+      </complexType>
+    </element>
+    <element name="requestTerminationBeforeResponse">
+      <complexType>
+        <sequence> 
+          <element name="currentTerminationTime" type="ogsi:TerminationTimeType"/>
+        </sequence> 
+      </complexType>
+    </element>
+    <element name="requestTerminationAfter">
+      <complexType>
+        <sequence> 
+          <element name="terminationTime" type="ogsi:ExtendedDateTimeType"/>
+        </sequence> 
+      </complexType>
+    </element>
+    <element name="requestTerminationAfterResponse">
+      <complexType>
+        <sequence> 
+          <element name="currentTerminationTime" type="ogsi:TerminationTimeType"/>
+        </sequence> 
+      </complexType>
+    </element>
+    <element name="destroy">
+      <complexType/>
+    </element>
+    <element name="destroyResponse">
+      <complexType/>
+    </element>
+
+    <!-- Grid Service Fault Types -->
+    <element name="fault" type="ogsi:FaultType"/>
+    <complexType name="FaultType">
+      <sequence>
+        <element maxOccurs="unbounded" minOccurs="0" name="description" type="string"/>
+        <element maxOccurs="1" minOccurs="1" name="originator" type="ogsi:LocatorType"/>
+        <element maxOccurs="1" minOccurs="1" name="timestamp" type="dateTime"/>
+        <element maxOccurs="unbounded" minOccurs="0" name="faultcause" type="ogsi:FaultType"/> 
+        <element maxOccurs="1" minOccurs="0" name="faultcode" type="ogsi:FaultCodeType"/>
+        <element maxOccurs="1" minOccurs="0" name="extension" type="ogsi:ExtensibilityType"/>
+      </sequence>
+    </complexType>
+    <complexType name="FaultCodeType">
+      <simpleContent>
+        <extension base="string">
+          <attribute name="faultscheme" type="anyURI" use="required"/>
+        </extension>
+      </simpleContent>
+    </complexType>      
+    <element name="serviceNotDestroyedFault" type="ogsi:ServiceNotDestroyedFaultType"/>
+    <complexType name="ServiceNotDestroyedFaultType">
+      <complexContent>
+        <extension base="ogsi:FaultType"/>
+      </complexContent>
+    </complexType>
+    <element name="extensibilityTypeFault" type="ogsi:ExtensibilityTypeFaultType"/>
+    <complexType name="ExtensibilityTypeFaultType">
+      <complexContent>
+        <extension base="ogsi:FaultType"/>
+      </complexContent>
+    </complexType>
+    <element name="extensibilityNotSupportedFault" type="ogsi:ExtensibilityNotSupportedFaultType"/>
+    <complexType name="ExtensibilityNotSupportedFaultType">
+      <complexContent>
+        <extension base="ogsi:FaultType"/>
+      </complexContent>
+    </complexType>
+    <element name="targetInvalidFault" type="ogsi:TargetInvalidFaultType"/> 
+    <complexType name="TargetInvalidFaultType">
+      <complexContent>
+        <extension base="ogsi:FaultType"/>
+      </complexContent>
+    </complexType> 
+    <element name="cardinalityViolationFault" type="ogsi:CardinalityViolationFaultType"/>
+    <complexType name="CardinalityViolationFaultType">
+      <complexContent>
+        <extension base="ogsi:FaultType"/>
+      </complexContent>
+    </complexType> 
+    <element name="mutabilityViolationFault" type="ogsi:MutabilityViolationFaultType"/>      
+    <complexType name="MutabilityViolationFaultType">
+      <complexContent>
+        <extension base="ogsi:FaultType"/>
+      </complexContent>
+    </complexType>
+    <element name="modifiabilityViolationFault" type="ogsi:ModifiabilityViolationFaultType"/>
+    <complexType name="ModifiabilityViolationFaultType">
+      <complexContent>
+        <extension base="ogsi:FaultType"/>
+      </complexContent>
+    </complexType>
+    <element name="typeViolationFault" type="ogsi:TypeViolationFaultType"/>
+    <complexType name="TypeViolationFaultType">
+      <complexContent>
+        <extension base="ogsi:FaultType"/>
+      </complexContent>
+    </complexType> 
+    <element name="incorrectValueFault" type="ogsi:IncorrectValueFaultType"/> 
+    <complexType name="IncorrectValueFaultType">
+      <complexContent>
+        <extension base="ogsi:FaultType"/>
+      </complexContent>
+    </complexType> 
+    <element name="partialFailureFault" type="ogsi:PartialFailureFaultType"/> 
+    <complexType name="PartialFailureFaultType">
+      <complexContent>
+        <extension base="ogsi:FaultType">
+          <sequence>
+            <element name="failedServiceData" type="ogsi:QNamesType"/>
+          </sequence>
+        </extension>
+      </complexContent>
+    </complexType> 
+    <element name="terminationTimeUnchangedFault" type="ogsi:TerminationTimeUnchangedFaultType"/> 
+    <complexType name="TerminationTimeUnchangedFaultType">
+      <complexContent>
+        <extension base="ogsi:FaultType"/>
+      </complexContent>
+    </complexType>    
+
+    <!-- Handle Resolver Message Types -->
+    <element name="findByHandle">
+      <complexType>
+        <sequence>
+          <element name="handleSet" type="ogsi:LocatorType"/>
+          <element maxOccurs="1" minOccurs="0" name="gsrExclusionSet" type="ogsi:LocatorType"/>
+        </sequence>
+      </complexType>
+    </element>
+    <element name="findByHandleResponse">
+      <complexType>
+        <sequence>
+          <element ref="ogsi:locator"/>
+        </sequence>
+      </complexType>
+    </element>
+
+    <!-- Handle Resolver Fault Types -->
+    <element name="invalidHandleFault" type="ogsi:InvalidHandleFaultType"/>
+    <complexType name="InvalidHandleFaultType">
+      <complexContent>
+        <extension base="ogsi:FaultType"/>
+      </complexContent>
+    </complexType> 
+    <element name="noAdditionalReferencesAvailableFault" type="ogsi:NoAdditionalReferencesAvailableFaultType"/>
+    <complexType name="NoAdditionalReferencesAvailableFaultType">
+      <complexContent>
+        <extension base="ogsi:FaultType"/>
+      </complexContent>
+    </complexType> 
+    <element name="noReferencesAvailableFault" type="ogsi:NoReferencesAvailableFaultType"/>
+    <complexType name="NoReferencesAvailableFaultType">
+      <complexContent>
+        <extension base="ogsi:FaultType"/>
+      </complexContent>
+    </complexType> 
+    <element name="redirectionFault" type="ogsi:RedirectionFaultType"/>
+    <complexType name="RedirectionFaultType">
+      <complexContent>
+        <extension base="ogsi:FaultType">
+          <sequence>
+            <element ref="ogsi:locator"/>
+          </sequence>
+        </extension>
+      </complexContent>
+    </complexType> 
+    <element name="noSuchServiceFault" type="ogsi:NoSuchServiceFaultType"/>
+    <complexType name="NoSuchServiceFaultType">
+      <complexContent>
+        <extension base="ogsi:NoReferencesAvailableFaultType"/>
+      </complexContent>
+    </complexType> 
+    <element name="noSuchServiceStartedFault" type="ogsi:NoSuchServiceStartedFaultType"/>
+    <complexType name="NoSuchServiceStartedFaultType">
+      <complexContent>
+        <extension base="ogsi:NoReferencesAvailableFaultType"/>
+      </complexContent>
+    </complexType> 
+    <element name="serviceHasTerminatedFault" type="ogsi:ServiceHasTerminatedFaultType"/>
+    <complexType name="ServiceHasTerminatedFaultType">
+      <complexContent>
+        <extension base="ogsi:NoReferencesAvailableFaultType"/>
+      </complexContent>
+    </complexType> 
+    <element name="temporarilyUnavailableFault" type="ogsi:TemporarilyUnavailableFaultType"/>
+    <complexType name="TemporarilyUnavailableFaultType">
+      <complexContent>
+        <extension base="ogsi:NoReferencesAvailableFaultType">
+          <sequence>
+            <element name="available" type="dateTime"/>
+          </sequence>
+        </extension>
+      </complexContent>
+    </complexType> 
+
+    <!-- Notification Source Service Data Types -->
+    <element name="subscribeByServiceDataNames" type="ogsi:SubscribeByNameType"/>
+    <complexType name="SubscribeByNameType">
+      <complexContent>
+        <extension base="ogsi:QNamesType">
+          <attribute name="minInterval" type="duration" use="optional"/>
+          <attribute name="maxInterval" type="ogsi:MaxIntervalType"/>
+        </extension>
+      </complexContent>
+    </complexType>
+
+    <simpleType name="MaxIntervalType">
+      <union memberTypes="ogsi:InfinityType duration"/>
+    </simpleType>
+
+    <!-- Notification Source Message Types -->
+    <element name="subscribe">
+      <complexType> 
+        <sequence>
+          <element name="subscriptionExpression" type="ogsi:ExtensibilityType"/>
+          <element name="sink" type="ogsi:LocatorType"/>
+          <element name="expirationTime" type="ogsi:ExtendedDateTimeType"/>
+        </sequence>
+      </complexType>
+    </element>
+    <element name="subscribeResponse">  
+      <complexType>
+        <sequence>
+          <element name="subscriptionInstanceLocator" type="ogsi:LocatorType"/>
+          <element name="currentTerminationTime" type="ogsi:TerminationTimeType"/>
+        </sequence>
+      </complexType>
+    </element>
+
+    <!-- Notification Sink Message Types -->
+    <element name="deliverNotification">
+      <complexType>
+        <sequence>
+          <element name="message" type="ogsi:ExtensibilityType"/>
+        </sequence>
+      </complexType>
+    </element>
+
+    <!-- Factory Service Data Types -->
+    <complexType name="CreateServiceExtensibilityType">
+      <complexContent>
+        <extension base="ogsi:OperationExtensibilityType">
+          <sequence>
+            <element maxOccurs="unbounded" minOccurs="1" name="createsInterface" type="QName"/>
+          </sequence>
+        </extension>
+      </complexContent>
+    </complexType>
+
+    <!-- Factory Message Types -->
+    <element name="createService">
+      <complexType>
+        <sequence>
+          <element maxOccurs="1" minOccurs="0" name="terminationTime" type="ogsi:TerminationTimeType"/>
+          <element maxOccurs="1" minOccurs="0" name="creationParameters" type="ogsi:ExtensibilityType"/>
+        </sequence>
+      </complexType>
+    </element>
+    <element name="createServiceResponse">
+      <complexType>
+        <sequence>
+          <element name="locator" type="ogsi:LocatorType"/>
+          <element name="currentTerminationTime" type="ogsi:TerminationTimeType"/>
+          <element maxOccurs="1" minOccurs="0" name="extensibilityOutput" type="ogsi:ExtensibilityType"/>
+        </sequence>
+      </complexType>
+    </element>
+
+    <!-- Factory Fault Types -->
+    <element name="serviceAlreadyExistsFault" type="ogsi:ServiceAlreadyExistsFaultType"/>
+    <complexType name="ServiceAlreadyExistsFaultType">
+      <complexContent>
+        <extension base="ogsi:FaultType">
+          <sequence>
+            <element name="existingService" type="ogsi:LocatorType"/>
+          </sequence>
+        </extension>
+      </complexContent>
+    </complexType>
+
+    <!-- Service Group Service Data Types -->
+    <complexType name="MembershipContentRuleType">
+      <sequence>
+        <element maxOccurs="1" minOccurs="1" name="memberInterface" type="QName"/>
+        <element maxOccurs="unbounded" minOccurs="0" name="content" type="QName"/>
+      </sequence>
+    </complexType>
+    <complexType name="EntryContentType">
+      <sequence>
+        <any maxOccurs="unbounded" minOccurs="0" namespace="##any"/>
+      </sequence>     
+    </complexType>
+        
+    <complexType name="EntryType">
+      <sequence>
+        <element maxOccurs="1" minOccurs="1" name="serviceGroupEntryLocator" nillable="true" type="ogsi:LocatorType"/>      
+        <element maxOccurs="1" minOccurs="1" name="memberServiceLocator" type="ogsi:LocatorType"/> 
+        <element maxOccurs="1" minOccurs="1" name="content" type="ogsi:EntryContentType"/> 
+      </sequence>     
+    </complexType>
+
+
+    <!-- Service Group Registration Service Data Types -->
+    <element name="matchByLocatorEquivalence" type="ogsi:MatchByLocatorEquivalenceType"/>
+    <complexType name="MatchByLocatorEquivalenceType">
+      <sequence>
+        <element maxOccurs="unbounded" minOccurs="0" name="locator" type="ogsi:LocatorType"/>
+      </sequence>
+    </complexType>
+
+    <!-- Service Group Registration Message Types -->
+    <element name="add">
+      <complexType>
+        <sequence>
+          <element name="serviceLocator" type="ogsi:LocatorType"/>
+          <element name="content" type="ogsi:ExtensibilityType"/>
+          <element maxOccurs="1" minOccurs="0" name="terminationTime" type="ogsi:TerminationTimeType"/>
+        </sequence> 
+      </complexType>
+    </element>
+    <element name="addResponse">
+      <complexType>
+        <sequence>
+          <element name="serviceLocator" type="ogsi:LocatorType"/>
+          <element name="currentTerminationTime" type="ogsi:TerminationTimeType"/>
+        </sequence>
+      </complexType>
+    </element>
+    <element name="remove">
+      <complexType>
+        <sequence>
+          <element name="matchExpression" type="ogsi:ExtensibilityType"/>
+        </sequence>
+      </complexType>
+    </element>
+    <element name="removeResponse">
+      <complexType/>
+    </element>
+
+    <!-- Service Group Registration Fault Types -->
+    <element name="contentCreationFailedFault" type="ogsi:ContentCreationFailedFaultType"/>  
+    <complexType name="ContentCreationFailedFaultType">
+      <complexContent>
+        <extension base="ogsi:FaultType"/>
+      </complexContent>
+    </complexType>
+    <element name="unsupportedMemberInterfaceFault" type="ogsi:UnsupportedMemberInterfaceFaultType"/>  
+    <complexType name="UnsupportedMemberInterfaceFaultType">
+      <complexContent>
+        <extension base="ogsi:FaultType"/>
+      </complexContent>
+    </complexType>
+    <element name="addRefusedFault" type="ogsi:AddRefusedFaultType"/>  
+    <complexType name="AddRefusedFaultType">
+      <complexContent>
+        <extension base="ogsi:FaultType"/>
+      </complexContent>
+    </complexType>
+    <element name="matchFailedFault" type="ogsi:MatchFailedFaultType"/>  
+    <complexType name="MatchFailedFaultType">
+      <complexContent>
+        <extension base="ogsi:FaultType"/>
+      </complexContent>
+    </complexType>
+    <element name="removeFailedFault" type="ogsi:RemoveFailedFaultType"/>  
+    <complexType name="RemoveFailedFaultType">
+      <complexContent>
+        <extension base="ogsi:FaultType"/>
+      </complexContent>
+    </complexType>
+  <element name="interface" nillable="false" type="xsd:QName"/><element name="serviceDataName" nillable="false" type="xsd:QName"/><element name="factoryLocator" nillable="true" type="ogsi:LocatorType"/><element name="gridServiceHandle" nillable="false" type="ogsi:HandleType"/><element name="gridServiceReference" nillable="false" type="ogsi:ReferenceType"/><element name="findServiceDataExtensibility" nillable="false" type="ogsi:OperationExtensibilityType"/><element name="setServiceDataExtensibility" nillable="false" type="ogsi:OperationExtensibilityType"/><element name="terminationTime" nillable="false" type="ogsi:TerminationTimeType"/><element name="handleResolverScheme" nillable="true" type="xsd:anyURI"/><element name="createServiceExtensibility" nillable="false" type="ogsi:CreateServiceExtensibilityType"/><element name="notifiableServiceDataName" nillable="false" type="xsd:QName"/><element name="subscribeExtensibility" nillable="false" type="ogsi:OperationExtensibilityType"/><element name="subscriptionExpression" nillable="false" type="xsd:anyType"/><element name="sinkLocator" nillable="false" type="ogsi:LocatorType"/><element name="memberServiceLocator" nillable="false" type="ogsi:LocatorType"/><element name="content" nillable="false" type="ogsi:EntryContentType"/><element name="membershipContentRule" nillable="false" type="ogsi:MembershipContentRuleType"/><element name="entry" nillable="false" type="ogsi:EntryType"/><element name="addExtensibility" nillable="false" type="ogsi:OperationExtensibilityType"/><element name="removeExtensibility" nillable="false" type="ogsi:OperationExtensibilityType"/></schema>

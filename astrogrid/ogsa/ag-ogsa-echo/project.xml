@@ -80,6 +80,21 @@
       <version>OGSA3.0</version>
     </dependency>
 
+    <dependency>
+      <id>commons-logging</id>
+      <version>OGSA3.0</version>
+    </dependency>
+
+    <dependency>
+      <id>commons-discovery</id>
+      <version>OGSA3.0</version>
+    </dependency>
+
+    <dependency>
+      <id>wsdl4j</id>
+      <version>OGSA3.0</version>
+    </dependency>
+
   </dependencies>
 
   <build>

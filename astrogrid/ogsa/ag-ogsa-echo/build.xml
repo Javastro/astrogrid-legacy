@@ -7,8 +7,8 @@
    <property file="config/build.properties"/>
    
    <!-- This file is for semi-stable settings fixed by the 
-        OGSA implementation. -->
-   <property file="${ogsi.home}/ogsa.properties"/>
+        OGSA implementation and lifted from OGSA. -->
+   <property file="config/ogsa.properties"/>
    
    <!-- This file specializes this template to a particular product. -->
    <property file="config/template.properties"/>
@@ -31,19 +31,21 @@
    <!-- Use this classpath (by reference) in all Java targets. -->
    <path id="classpath">
      <pathelement location="build/classes"/>
-     <fileset dir="${ogsi.home}/lib">
-       <include name="*.jar"/>
-     </fileset>
      <pathelement location="build/schema"/>
+	<!--Take this out if building with ant only (need OGSA installation) -->
+     <path refid="maven.dependency.classpath"/>
    </path>
  
   <!-- Check that OGSI is available. Abort the build if not. -->
   <target name="checkForOGSI">
+<!--  You can leave this in if building with ant rather than maven -->
+<!--
     <fail message="ogsi.home is not defined." unless="ogsi.home"/>
     <available property="haveOGSI" file="${ogsi.home}" type="dir"/>
     <fail message="OGSI is not available at ${ogsi.home}."
           unless="haveOGSI"/>
     <echo message="OGSI is taken from ${ogsi.home}."/>
+-->
   </target>
   
   <!-- Take local copies of the schema and WSDL from the current
@@ -52,16 +54,17 @@
        at compile time, the files have to be copied into this package. -->
    <target name="copyWSDL">
      <copy todir="build/schema/ogsi" preservelastmodified="true">
-       <fileset dir="${ogsi.home}/schema/ogsi"/>
+       <fileset dir="schema/ogsi"/>
      </copy>
      <copy todir="build/schema" 
-         file="${ogsi.home}/schema/NStoPkg.properties"
+         file="schema/NStoPkg.properties"
          preservelastmodified="true"/>
    </target>
 
    <!-- Generate WSDL for the service starting from a Java class defining the
         interface to a web-service port. -->
    <target name="generateWSDL" depends="copyWSDL">
+
       <echo message="Generating ${wsdl.file} from ${service.java.package}.${port.interface.java.class}..."/>
       <mkdir dir="build/classes"/>
       <javac srcdir="src" 
@@ -81,16 +84,19 @@
          <arg value="build/${wsdl.path}"/>
          <arg value="${service.java.package}.${port.interface.java.class}"/>
       </java>
-      <antcall target="decorateWSDL"/>
+      <antcall target="decorateWSDL" inheritRefs="true"/>
    </target>
 
    <!-- Add the standard ports of the grid-service 
         specification to the WSDL. -->
    <target name="decorateWSDL">
+	   <path id="classpath2">
+	     <path refid="maven.dependency.classpath"/>
+	   </path>
       <echo message="Adding standard ports to ${wsdl.file}..."/>
       <java classname="${wsdldecorator.tool}" 
             dir="build/${wsdl.directory}" fork="yes"
-            classpathref="classpath">
+            classpathref="classpath2">
          <arg value="../../ogsi/ogsi_bindings.wsdl"/>
          <arg value="${wsdl.file}"/>
       </java>

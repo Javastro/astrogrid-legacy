@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="NotificationFactoryService" targetNamespace="http://ogsi.gridforum.org" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:gwsdl="http://www.gridforum.org/namespaces/2003/03/gridWSDLExtensions" xmlns:ogsi="http://www.gridforum.org/namespaces/2003/03/OGSI">
+             
+<import location="ogsi.gwsdl" namespace="http://www.gridforum.org/namespaces/2003/03/OGSI"/>
+
+    <portType name="NotificationFactory"><operation name="createService">
+    <input message="ns35:CreateServiceInputMessage" xmlns:ns35="http://www.gridforum.org/namespaces/2003/03/OGSI"/>
+    <output message="ns36:CreateServiceOutputMessage" xmlns:ns36="http://www.gridforum.org/namespaces/2003/03/OGSI"/>
+    <fault message="ns37:ExtensibilityNotSupportedFaultMessage" name="ExtensibilityNotSupportedFault" xmlns:ns37="http://www.gridforum.org/namespaces/2003/03/OGSI"/>
+    <fault message="ns38:ExtensibilityTypeFaultMessage" name="ExtensibilityTypeFault" xmlns:ns38="http://www.gridforum.org/namespaces/2003/03/OGSI"/>
+    <fault message="ns39:ServiceAlreadyExistsFaultMessage" name="ServiceAlreadyExistsFault" xmlns:ns39="http://www.gridforum.org/namespaces/2003/03/OGSI"/>
+    <fault message="ns40:FaultMessage" name="Fault" xmlns:ns40="http://www.gridforum.org/namespaces/2003/03/OGSI"/>
+  </operation><operation name="subscribe">
+    <input message="ns0:SubscribeInputMessage" xmlns:ns0="http://www.gridforum.org/namespaces/2003/03/OGSI"/>
+    <output message="ns1:SubscribeOutputMessage" xmlns:ns1="http://www.gridforum.org/namespaces/2003/03/OGSI"/>
+    <fault message="ns2:ExtensibilityNotSupportedFaultMessage" name="ExtensibilityNotSupportedFault" xmlns:ns2="http://www.gridforum.org/namespaces/2003/03/OGSI"/>
+    <fault message="ns3:ExtensibilityTypeFaultMessage" name="ExtensibilityTypeFault" xmlns:ns3="http://www.gridforum.org/namespaces/2003/03/OGSI"/>
+    <fault message="ns4:TargetInvalidFaultMessage" name="TargetInvalidFault" xmlns:ns4="http://www.gridforum.org/namespaces/2003/03/OGSI"/>
+    <fault message="ns5:FaultMessage" name="Fault" xmlns:ns5="http://www.gridforum.org/namespaces/2003/03/OGSI"/>
+  </operation><operation name="setServiceData">
+    <input message="ns76:SetServiceDataInputMessage" xmlns:ns76="http://www.gridforum.org/namespaces/2003/03/OGSI"/>
+    <output message="ns77:SetServiceDataOutputMessage" xmlns:ns77="http://www.gridforum.org/namespaces/2003/03/OGSI"/>
+    <fault message="ns78:ExtensibilityNotSupportedFaultMessage" name="ExtensibilityNotSupportedFault" xmlns:ns78="http://www.gridforum.org/namespaces/2003/03/OGSI"/> 
+    <fault message="ns79:ExtensibilityTypeFaultMessage" name="ExtensibilityTypeFault" xmlns:ns79="http://www.gridforum.org/namespaces/2003/03/OGSI"/> 
+    <fault message="ns80:CardinalityViolationFaultMessage" name="CadinalityViolationFault" xmlns:ns80="http://www.gridforum.org/namespaces/2003/03/OGSI"/>  
+    <fault message="ns81:MutabilityViolationFaultMessage" name="MutabilityViolationFault" xmlns:ns81="http://www.gridforum.org/namespaces/2003/03/OGSI"/>
+    <fault message="ns82:ModifiabilityViolationFaultMessage" name="ModifabilityViolationFault" xmlns:ns82="http://www.gridforum.org/namespaces/2003/03/OGSI"/>
+    <fault message="ns83:TypeViolationFaultMessage" name="TypeViolationFault" xmlns:ns83="http://www.gridforum.org/namespaces/2003/03/OGSI"/>
+    <fault message="ns84:IncorrectValueFaultMessage" name="IncorrectValueFault" xmlns:ns84="http://www.gridforum.org/namespaces/2003/03/OGSI"/>
+    <fault message="ns85:PartialFailureFaultMessage" name="PartialFailureFault" xmlns:ns85="http://www.gridforum.org/namespaces/2003/03/OGSI"/>
+    <fault message="ns86:FaultMessage" name="Fault" xmlns:ns86="http://www.gridforum.org/namespaces/2003/03/OGSI"/>
+  </operation><operation name="destroy">
+    <input message="ns95:DestroyInputMessage" xmlns:ns95="http://www.gridforum.org/namespaces/2003/03/OGSI"/>
+    <output message="ns96:DestroyOutputMessage" xmlns:ns96="http://www.gridforum.org/namespaces/2003/03/OGSI"/>
+    <fault message="ns97:ServiceNotDestroyedFaultMessage" name="ServiceNotDestroyedFault" xmlns:ns97="http://www.gridforum.org/namespaces/2003/03/OGSI"/>      
+    <fault message="ns98:FaultMessage" name="Fault" xmlns:ns98="http://www.gridforum.org/namespaces/2003/03/OGSI"/>
+  </operation><operation name="requestTerminationAfter">
+    <input message="ns87:RequestTerminationAfterInputMessage" xmlns:ns87="http://www.gridforum.org/namespaces/2003/03/OGSI"/>
+    <output message="ns88:RequestTerminationAfterOutputMessage" xmlns:ns88="http://www.gridforum.org/namespaces/2003/03/OGSI"/>
+    <fault message="ns89:TerminationTimeUnchangedFaultMessage" name="TerminationTimeUnchangedFault" xmlns:ns89="http://www.gridforum.org/namespaces/2003/03/OGSI"/>    
+    <fault message="ns90:FaultMessage" name="Fault" xmlns:ns90="http://www.gridforum.org/namespaces/2003/03/OGSI"/>
+  </operation><operation name="requestTerminationBefore">
+    <input message="ns91:RequestTerminationBeforeInputMessage" xmlns:ns91="http://www.gridforum.org/namespaces/2003/03/OGSI"/>
+    <output message="ns92:RequestTerminationBeforeOutputMessage" xmlns:ns92="http://www.gridforum.org/namespaces/2003/03/OGSI"/>
+    <fault message="ns93:TerminationTimeUnchangedFaultMessage" name="TerminationTimeUnchangedFault" xmlns:ns93="http://www.gridforum.org/namespaces/2003/03/OGSI"/> 
+    <fault message="ns94:FaultMessage" name="Fault" xmlns:ns94="http://www.gridforum.org/namespaces/2003/03/OGSI"/>
+  </operation><operation name="findServiceData">
+    <input message="ns70:FindServiceDataInputMessage" xmlns:ns70="http://www.gridforum.org/namespaces/2003/03/OGSI"/>
+    <output message="ns71:FindServiceDataOutputMessage" xmlns:ns71="http://www.gridforum.org/namespaces/2003/03/OGSI"/>
+    <fault message="ns72:ExtensibilityNotSupportedFaultMessage" name="ExtensibilityNotSupportedFault" xmlns:ns72="http://www.gridforum.org/namespaces/2003/03/OGSI"/>
+    <fault message="ns73:ExtensibilityTypeFaultMessage" name="ExtensibilityTypeFault" xmlns:ns73="http://www.gridforum.org/namespaces/2003/03/OGSI"/>
+    <fault message="ns74:TargetInvalidFaultMessage" name="TargetInvalidFault" xmlns:ns74="http://www.gridforum.org/namespaces/2003/03/OGSI"/>
+    <fault message="ns75:FaultMessage" name="Fault" xmlns:ns75="http://www.gridforum.org/namespaces/2003/03/OGSI"/>
+  </operation></portType><gwsdl:portType extends="ogsi:NotificationSource ogsi:Factory ogsi:ServiceGroup" name="NotificationFactory"/>
+
+</definitions>

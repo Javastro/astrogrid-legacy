@@ -3,10 +3,16 @@
 <project xmlns:j="jelly:core"  xmlns:maven="jelly:maven"
 xmlns:ant="jelly:ant" default="jar:jar">
 
-  <goal name="antBuild" description="Call our ant build file to do all the work">
-  		<ant antfile="build.xml" target="build"/>
-  </goal>
+	<preGoal name="java:compile">
+		<ant antfile="build.xml" inheritRefs="true" target="generateStubs"/>
+	</preGoal>
+
+	<preGoal name="jar">
+		<ant antfile="build.xml" inheritRefs="true" target="jar"/>
+  </preGoal>
+
 </project>
+
 
 
 
