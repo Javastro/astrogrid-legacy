@@ -21,8 +21,6 @@
 </ul>
 
 <i>To enter the Administration pages you will need a username and password for the servlet containers <strong>manager</strong> role</i>
-<br />
-<strong>Read the <a href='configure.jsp'>Configure</a> if this  is the first time setting up a community.</strong>
 
 
 </body>

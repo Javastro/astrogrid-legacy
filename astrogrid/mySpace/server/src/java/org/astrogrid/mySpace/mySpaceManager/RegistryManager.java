@@ -1,9 +1,6 @@
 
 package org.astrogrid.mySpace.mySpaceManager;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.sql.*;
 import java.util.*;
 
@@ -65,11 +62,6 @@ import org.astrogrid.mySpace.mySpaceStatus.MySpaceStatusCode;
 
 public class RegistryManager
 	{
-    /**
-     * Logger for this class
-     */
-    private static final Log logger = LogFactory.getLog(RegistryManager.class);
-
 	private boolean DEBUG = true ;
 
    private String jdbcDriverClass = "org.hsqldb.jdbcDriver";
@@ -92,12 +84,12 @@ public class RegistryManager
 
 	public RegistryManager(String registryName)
 		{
+		System.out.println("----") ;
+		System.out.println("RegistryManager()") ;
 		this.registryName = registryName;
 		registryDBName = "jdbc:hsqldb:" + registryName + ".db";
-        if (logger.isDebugEnabled()) {
-            logger.debug("RegistryManager(String) - MySpace Registry  Name"
-                    + registryName + "  DB  " + registryDBName);
-        }
+		System.out.println("  Name : " + registryName) ;
+		System.out.println("  DB   : " + registryDBName) ;
 		}
 
 // -------------------------------------------------------------------
@@ -185,7 +177,7 @@ public class RegistryManager
          }
       }
       catch (Exception all)
-      {  if (DEBUG)    logger.error("RegistryManager(String, Vector)", all);
+      {  if (DEBUG) all.printStackTrace();
 
          MySpaceStatus exStatus = new MySpaceStatus(
            MySpaceStatusCode.AGMMCE00106, MySpaceStatusCode.ERROR,
@@ -363,7 +355,7 @@ public class RegistryManager
       catch (Exception all)
       {  returnDataItem = null;
 
-         if (DEBUG)        logger.error("addDataItemRecord(DataItemRecord)", all);
+         if (DEBUG) all.printStackTrace();
 
          MySpaceStatus exStatus = new MySpaceStatus(
            MySpaceStatusCode.AGMMCE00106, MySpaceStatusCode.ERROR,
@@ -388,12 +380,10 @@ public class RegistryManager
 
    public boolean updateDataItemRecord(DataItemRecord dataItemRecord)
    {  boolean status = true;
-if (logger.isDebugEnabled()) {
-    logger.debug("updateDataItemRecord(DataItemRecord) - Myspace  Ident"
-            + dataItemRecord.getDataItemID() + "  Name "
-            + dataItemRecord.getDataItemName() + "  Size "
-            + dataItemRecord.getSize());
-}
+System.out.println("FROG : updateDataItemRecord()");
+System.out.println("  Ident : " + dataItemRecord.getDataItemID());
+System.out.println("  Name  : " + dataItemRecord.getDataItemName());
+System.out.println("  Size  : " + dataItemRecord.getSize());
       try
       {
 //
@@ -435,7 +425,7 @@ if (logger.isDebugEnabled()) {
       catch (Exception all)
       {  status = false;
 
-         if (DEBUG)        logger.error("updateDataItemRecord(DataItemRecord)", all);
+         if (DEBUG) all.printStackTrace();
 
          MySpaceStatus exStatus = new MySpaceStatus(
            MySpaceStatusCode.AGMMCE00106, MySpaceStatusCode.ERROR,
@@ -480,7 +470,7 @@ if (logger.isDebugEnabled()) {
       catch (Exception all)
       {  status = false;
 
-         if (DEBUG)        logger.error("deleteDataItemRecord(int)", all);
+         if (DEBUG) all.printStackTrace();
 
          MySpaceStatus exStatus = new MySpaceStatus(
            MySpaceStatusCode.AGMMCE00106, MySpaceStatusCode.ERROR,
@@ -504,10 +494,8 @@ if (logger.isDebugEnabled()) {
 
    public DataItemRecord lookupDataItemRecord(int dataItemID)
    {  DataItemRecord returnItemRecord = null;
-if (logger.isDebugEnabled()) {
-    logger.debug("lookupDataItemRecord(int) - lookupDataItemRecord()  Ident"
-            + dataItemID);
-}
+System.out.println("FROG : lookupDataItemRecord()");
+System.out.println("  Ident : " + dataItemID);
       try
       {
 //
@@ -524,11 +512,8 @@ if (logger.isDebugEnabled()) {
          {  if (dbvec.size() == 1)
             {  returnItemRecord = (DataItemRecord)dbvec.elementAt(0);
 
-if (logger.isDebugEnabled()) {
-    logger.debug("lookupDataItemRecord(int) -   Name "
-            + returnItemRecord.getSize() + "  Size "
-            + returnItemRecord.getSize());
-}
+System.out.println("  Name  : " + returnItemRecord.getSize());
+System.out.println("  Size  : " + returnItemRecord.getSize());
 
 /*
  *
@@ -549,7 +534,7 @@ if (logger.isDebugEnabled()) {
       catch (Exception all)
       {  returnItemRecord = null;
 
-         if (DEBUG)        logger.error("lookupDataItemRecord(int)", all);
+         if (DEBUG) all.printStackTrace();
 
          MySpaceStatus status = new MySpaceStatus(
            MySpaceStatusCode.AGMMCE00106, MySpaceStatusCode.ERROR,
@@ -577,11 +562,8 @@ if (logger.isDebugEnabled()) {
    public Vector lookupDataItemRecords(String dataHolderNameExpr)
    {  Vector returnItemRecords = new Vector();
 
-if (logger.isDebugEnabled()) {
-    logger
-            .debug("lookupDataItemRecords(String) -  lookupDataItemRecords()  Path "
-                    + dataHolderNameExpr);
-}
+System.out.println("FROG : lookupDataItemRecords()");
+System.out.println("  Path  : " + dataHolderNameExpr);
       try
       {
 //
@@ -607,11 +589,10 @@ if (logger.isDebugEnabled()) {
                {  DataItemRecord currRec =
                     (DataItemRecord)dbvec.elementAt(loop);
 
-if (logger.isDebugEnabled()) {
-    logger.debug("lookupDataItemRecords(String) -   Ident"
-            + currRec.getDataItemID() + "  Name " + currRec.getDataItemName()
-            + "  Size " + currRec.getSize());
-}
+System.out.println("");
+System.out.println("  Ident : " + currRec.getDataItemID());
+System.out.println("  Name  : " + currRec.getDataItemName());
+System.out.println("  Size  : " + currRec.getSize());
 
 /*
  *
@@ -632,7 +613,7 @@ if (logger.isDebugEnabled()) {
       catch (Exception all)
       {  returnItemRecords = null;
 
-         if (DEBUG)        logger.error("lookupDataItemRecords(String)", all);
+         if (DEBUG) all.printStackTrace();
 
          MySpaceStatus status = new MySpaceStatus(
            MySpaceStatusCode.AGMMCE00106, MySpaceStatusCode.ERROR,
@@ -694,7 +675,7 @@ if (logger.isDebugEnabled()) {
       catch (Exception all)
       {  serverNames = null;
 
-         if (DEBUG)        logger.error("getServerNames()", all);
+         if (DEBUG) all.printStackTrace();
 
          MySpaceStatus status = new MySpaceStatus(
            MySpaceStatusCode.AGMMCE00107, MySpaceStatusCode.ERROR,
@@ -781,7 +762,7 @@ if (logger.isDebugEnabled()) {
       catch (Exception all)
       {  serverExpiryPeriod = -1;
 
-         if (DEBUG)        logger.error("getServerExpiryPeriod(String)", all);
+         if (DEBUG) all.printStackTrace();
 
          MySpaceStatus status = new MySpaceStatus(
            MySpaceStatusCode.AGMMCE00107, MySpaceStatusCode.ERROR,
@@ -836,7 +817,7 @@ if (logger.isDebugEnabled()) {
       catch (Exception all)
       {  serverURI = null;
 
-         if (DEBUG)        logger.error("getServerURI(String)", all);
+         if (DEBUG) all.printStackTrace();
 
          MySpaceStatus status = new MySpaceStatus(
            MySpaceStatusCode.AGMMCE00107, MySpaceStatusCode.ERROR,
@@ -891,7 +872,7 @@ if (logger.isDebugEnabled()) {
       catch (Exception all)
       {  serverDirectory = null;
 
-         if (DEBUG)        logger.error("getServerDirectory(String)", all);
+         if (DEBUG) all.printStackTrace();
 
          MySpaceStatus status = new MySpaceStatus(
            MySpaceStatusCode.AGMMCE00107, MySpaceStatusCode.ERROR,
@@ -922,16 +903,10 @@ if (logger.isDebugEnabled()) {
 
       if (DEBUG)
       {  if (update)
-         {        if (logger.isDebugEnabled()) {
-            logger.debug("transact(String, boolean) - SQL update: "
-                    + sqlStatement);
-        }
+         {  System.out.println("\n" + "SQL update: " + sqlStatement);
          }
          else
-         {        if (logger.isDebugEnabled()) {
-            logger.debug("transact(String, boolean) - SQL query: "
-                    + sqlStatement);
-        }
+         {  System.out.println("\n" + "SQL query: " + sqlStatement);
          }
       }
 
@@ -1049,7 +1024,7 @@ if (logger.isDebugEnabled()) {
       catch (Exception all)
       {  vec = null;
 
-         if (DEBUG)        logger.error("transact(String, boolean)", all);
+         if (DEBUG) all.printStackTrace();
 
          MySpaceStatus exStatus = new MySpaceStatus(
            MySpaceStatusCode.AGMMCE00106, MySpaceStatusCode.ERROR,

@@ -169,7 +169,8 @@ public class Logger
 
       Date currentDate = new Date();
 
-      String messageHead = "MyS ";
+      String messageHead = "--- MySpace " + currentDate.toString()
+        + " (";
 
       if (accountId != null)
       {  messageHead = messageHead +  accountId + ", ";
@@ -179,19 +180,19 @@ public class Logger
       { messageHead = messageHead  +  actionName;
       }
 
-      messageHead = messageHead + "---";
+      messageHead = messageHead + ") --- \n";
 
 //
 //   Assemble the complete, final message.
 
-      String completeMessage = messageHead + "  " + message;
+      String completeMessage = messageHead + "  " + message + "\n";
 
 //
 //   If required append the message to the AstroGrid log.
 
       if (astroGridLog)
       {  try
-         {  commonsLog.debug(completeMessage);
+         {  commonsLog.info(completeMessage);
          }
          catch (Exception all)
          {  all.printStackTrace();

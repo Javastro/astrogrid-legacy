@@ -1,16 +1,13 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/CommunityEndpointResolver.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2005/02/15 10:36:34 $</cvs:date>
- * <cvs:version>$Revision: 1.14 $</cvs:version>
+ * <cvs:date>$Date: 2005/02/17 16:01:10 $</cvs:date>
+ * <cvs:version>$Revision: 1.15 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityEndpointResolver.java,v $
- *   Revision 1.14  2005/02/15 10:36:34  jdt
- *   merge from  Reg_KMB_913
- *
- *   Revision 1.13.8.1  2005/02/11 16:46:17  KevinBenson
- *   no more context.xml used here.  And made it where communityendpointresolver used a full ivorn.
+ *   Revision 1.15  2005/02/17 16:01:10  jdt
+ *   Rolled back to 15 Feb 00:00, before community_pah_910, mySpace_pah_910 and Reg_KMB_913
  *
  *   Revision 1.13  2005/01/07 14:14:25  jdt
  *   merged from Reg_KMB_787
@@ -255,7 +252,7 @@ public class CommunityEndpointResolver
         String endpoint = null ;
         try {
             endpoint = registry.getEndPointByIdentifier(
-                ivorn
+                ivorn.getPath()
                 ) ;
             }
         catch (Throwable ouch)

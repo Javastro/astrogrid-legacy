@@ -63,44 +63,6 @@
     <url-pattern>/servlet/AdminServlet</url-pattern>
   </servlet-mapping>
  -->
- 
-   <env-entry>
-      <description>Community identifier</description>
-      <env-entry-name>org.astrogrid.community.ident</env-entry-name>
-      <env-entry-value>@COMMUNITYID@</env-entry-value>
-      <env-entry-type>java.lang.String</env-entry-type>
-   </env-entry>
-
-   <env-entry>
-      <description>Community Default VOSpace (Registry Ivorn)</description>
-      <env-entry-name>org.astrogrid.community.default.vospace</env-entry-name>
-      <env-entry-value>ivo://@REGAUTHORITY@/myspace</env-entry-value>
-      <env-entry-type>java.lang.String</env-entry-type>
-   </env-entry>
-
-
-   <env-entry>
-      <description>Registry Query Endpoint</description>
-      <env-entry-name>org.astrogrid.registry.query.endpoint</env-entry-name>
-      <env-entry-value>http://localhost:8080/astrogrid-registry/services/RegistryQuery</env-entry-value>
-      <env-entry-type>java.lang.String</env-entry-type>
-   </env-entry>
-
-   <env-entry>
-      <description>Publishing Metadata to Registry endpoint</description>
-      <env-entry-name>org.astrogrid.registry.admin.endpoint</env-entry-name>
-      <env-entry-value>http://localhost:8080/astrogrid-registry/services/RegistryUpdate</env-entry-value>
-      <env-entry-type>java.lang.String</env-entry-type>
-   </env-entry>
-
-
-  <resource-ref>
-      <description>DB Connection Reference</description>
-      <res-ref-name>jdbc/org.astrogrid.community.database</res-ref-name>
-      <res-type>javax.sql.DataSource</res-type>
-      <res-auth>Container</res-auth>
-  </resource-ref>
-
 
     <!-- currently the W3C havent settled on a media type for WSDL;
     http://www.w3.org/TR/2003/WD-wsdl12-20030303/#ietf-draft

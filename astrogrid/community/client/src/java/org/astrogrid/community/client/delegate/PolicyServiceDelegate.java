@@ -39,6 +39,12 @@ public class PolicyServiceDelegate
      */
     PolicyPermission perm = null;
 
+    //
+    // Load our community config.
+    static
+        {
+        CommunityConfig.loadConfig() ;
+        }
 
     /**
      * Public constructor deals with getting our service (link) to the webservice.

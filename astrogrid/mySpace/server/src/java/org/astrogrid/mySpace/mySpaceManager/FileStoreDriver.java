@@ -1,15 +1,12 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/mySpace/server/src/java/org/astrogrid/mySpace/mySpaceManager/FileStoreDriver.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2005/02/15 10:49:33 $</cvs:date>
- * <cvs:version>$Revision: 1.7 $</cvs:version>
+ * <cvs:date>$Date: 2005/02/17 16:01:10 $</cvs:date>
+ * <cvs:version>$Revision: 1.8 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreDriver.java,v $
- *   Revision 1.7  2005/02/15 10:49:33  jdt
- *   merge from Reg_KMB_913
- *
- *   Revision 1.6.12.1  2005/02/11 13:09:34  pah
- *   some more log tidying
+ *   Revision 1.8  2005/02/17 16:01:10  jdt
+ *   Rolled back to 15 Feb 00:00, before community_pah_910, mySpace_pah_910 and Reg_KMB_913
  *
  *   Revision 1.6  2004/11/25 10:52:49  jdt
  *   Merge from dave-dev-200410061224-200411221626
@@ -95,9 +92,6 @@
  */
 package org.astrogrid.mySpace.mySpaceManager ;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import org.astrogrid.mySpace.mySpaceStatus.Logger ;
 
 import java.net.URL ;
@@ -132,11 +126,6 @@ import org.astrogrid.filestore.common.exception.FileStoreTransferException ;
  */
 public class FileStoreDriver
 	{
-    /**
-     * Logger for this class
-     */
-    private static final Log logger = LogFactory.getLog(FileStoreDriver.class);
-
 	/**
 	 * Switch for our debug statements.
 	 *
@@ -188,16 +177,15 @@ public class FileStoreDriver
 	public static FileStoreDriver create()
 		throws FileStoreResolverException, FileStoreIdentifierException
 		{
-
-
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreDriver.create()") ;
 		try {
 			String property = MMC.getProperty(
 				"MYSPACESERVERURL",
 				"MYSPACEMANAGER"
 				) ;
-            if (logger.isDebugEnabled()) {
-                logger.debug("create() -   property" + property);
-            }
+			if (DEBUG_FLAG) System.out.println("  property : " + property) ;
 			return create(
 				new Ivorn(
 				 	property
@@ -232,8 +220,10 @@ public class FileStoreDriver
 	public static FileStoreDriver create(String ivorn)
 		throws FileStoreResolverException, FileStoreIdentifierException
 		{
-
-		
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreDriver.create()") ;
+		if (DEBUG_FLAG) System.out.println("  Ivorn : " + ivorn) ;
 		try {
 			return create(
 				new Ivorn(
@@ -260,11 +250,10 @@ public class FileStoreDriver
 	public static FileStoreDriver create(Ivorn ivorn)
 		throws FileStoreResolverException, FileStoreIdentifierException
 		{
-
-		
-        if (logger.isDebugEnabled()) {
-            logger.debug("create FilestoreDriver - Filestore=" + ivorn);
-        }
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreDriver.create()") ;
+		if (DEBUG_FLAG) System.out.println("  Ivorn : " + ivorn) ;
 		//
 		// Create our resolver using the default registry.
 		FileStoreDelegateResolver resolver =
@@ -289,13 +278,11 @@ public class FileStoreDriver
 	public static FileStoreDriver create(Ivorn ivorn, URL registry)
 		throws FileStoreResolverException, FileStoreIdentifierException
 		{
-
-		
-        if (logger.isDebugEnabled()) {
-            logger
-                    .debug("create(Ivorn, URL) - FileStoreDriver.create()  Registry"
-                            + registry + "  Ivorn   " + ivorn);
-        }
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreDriver.create()") ;
+		if (DEBUG_FLAG) System.out.println("  Registry : " + registry) ;
+		if (DEBUG_FLAG) System.out.println("  Ivorn    : " + ivorn) ;
 		//
 		// Create our resolver using the registry endpoint.
 		FileStoreDelegateResolver resolver =
@@ -322,12 +309,9 @@ public class FileStoreDriver
 	public void importString(DataItemRecord item, String data)
 		throws FileStoreServiceException, FileStoreException
 		{
-
-		
-
-            logger
-                    .info("importString(DataItemRecord, String) size="+data.length()+" "+item.toString());
-        
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreDriver.importString()") ;
 		//
 		// Transfer the data, and update the item with the results.
 		updateDataItem(
@@ -350,12 +334,9 @@ public class FileStoreDriver
 	public void importBytes(DataItemRecord item, byte[] data)
 		throws FileStoreServiceException, FileStoreException
 		{
-
-		
-       
-            logger
-                    .info("importBytes(DataItemRecord, byte[]) size="+data.length + item.toString());
-        
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreDriver.importBytes()") ;
 		//
 		// Transfer the data, and update the item with the results.
 		updateDataItem(
@@ -380,12 +361,9 @@ public class FileStoreDriver
 	public void appendString(DataItemRecord item, String data)
 		throws FileStoreServiceException, FileStoreIdentifierException, FileStoreNotFoundException, FileStoreException
 		{
-
-		
-        
-            logger
-                    .info("appendString(DataItemRecord, String) size="+data.length() + item.toString());
-        
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreDriver.appendString()") ;
 		//
 		// Transfer the data, and update the item with the results.
 		updateDataItem(
@@ -410,12 +388,9 @@ public class FileStoreDriver
 	public void appendBytes(DataItemRecord item, byte[] data)
 		throws FileStoreServiceException, FileStoreIdentifierException, FileStoreNotFoundException, FileStoreException
 		{
-
-		
-       
-            logger
-                    .info("appendBytes(DataItemRecord, byte[]) size=" + data.length + item.toString());
-        
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreDriver.appendBytes()") ;
 		//
 		// Transfer the data, and update the item with the results.
 		updateDataItem(
@@ -438,12 +413,9 @@ public class FileStoreDriver
 	public void importUrl(DataItemRecord item, URL source)
 		throws FileStoreServiceException, FileStoreTransferException, FileStoreIdentifierException
 		{
-
-		
-        
-            logger
-                    .info("importUrl(DataItemRecord, URL) - FileStoreDriver.importUrl() url="+source+ item.toString());
-        
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreDriver.importUrl()") ;
 		//
 		// Transfer the data, and update the item with the results.
 		updateDataItem(
@@ -469,12 +441,9 @@ public class FileStoreDriver
 	public String exportString(DataItemRecord item)
 		throws FileStoreServiceException, FileStoreIdentifierException, FileStoreNotFoundException
 		{
-
-		
-        
-            logger
-                    .info("exportString(DataItemRecord) " + item.toString());
-        
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreDriver.exportString()") ;
 		return filestore.exportString(
 			item.getDataItemFile()
 			) ;
@@ -491,12 +460,9 @@ public class FileStoreDriver
 	public byte[] exportBytes(DataItemRecord item)
 		throws FileStoreServiceException, FileStoreIdentifierException, FileStoreNotFoundException
 		{
-
-		
-        
-            logger
-                    .info("exportBytes(DataItemRecord) " + item.toString());
-        
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreDriver.exportBytes()") ;
 		return filestore.exportBytes(
 			item.getDataItemFile()
 			) ;
@@ -514,11 +480,9 @@ public class FileStoreDriver
 	public void delete(DataItemRecord item)
 		throws FileStoreServiceException, FileStoreIdentifierException, FileStoreNotFoundException
 		{
-
-		
-       
-            logger.info("delete(DataItemRecord) " + item.toString());
-        
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreDriver.delete()") ;
 		updateDataItem(
 			item,
 			filestore.delete(
@@ -540,12 +504,9 @@ public class FileStoreDriver
 	public void duplicate(DataItemRecord source, DataItemRecord destination)
 		throws FileStoreServiceException, FileStoreIdentifierException, FileStoreNotFoundException, FileStoreTransferException
 		{
-
-		
-        
-            logger
-                    .info("duplicate(DataItemRecord, DataItemRecord) source="+ source.toString()+ "dest="+ destination.toString());
-        
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreDriver.duplicate()") ;
 		updateDataItem(
 			destination,
 			filestore.duplicate(
@@ -609,20 +570,11 @@ public class FileStoreDriver
 	 */
 	private FileProperty[] initProperties(DataItemRecord item)
 		{
-
-		
-        if (logger.isDebugEnabled()) {
-            logger
-                    .debug("initProperties(DataItemRecord) - FileStoreDriver.initProperties()");
-        }
-        if (logger.isDebugEnabled()) {
-            logger.debug("initProperties(DataItemRecord) -   Name"
-                    + item.getDataItemName());
-        }
-        if (logger.isDebugEnabled()) {
-            logger.debug("initProperties(DataItemRecord) -   Mime"
-                    + item.getDataItemMime());
-        }
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreDriver.initProperties()") ;
+		if (DEBUG_FLAG) System.out.println("  Name : " + item.getDataItemName()) ;
+		if (DEBUG_FLAG) System.out.println("  Mime : " + item.getDataItemMime()) ;
 		//
 		// Create our file properties.
 		FileProperties properties = new FileProperties() ;
@@ -643,24 +595,15 @@ public class FileStoreDriver
 		// Check for a fake null.
 		if ("null".equals(mime))
 			{
-            if (logger.isDebugEnabled()) {
-                logger
-                        .debug("initProperties(DataItemRecord) -   Fake null in data item mime type.");
-            }
+			if (DEBUG_FLAG) System.out.println("  Fake null in data item mime type.") ;
 			mime = null ;
 			}
 		//
 		// If the mime type has not already been set.
 		if (null == mime)
 			{
-            if (logger.isDebugEnabled()) {
-                logger
-                        .debug("initProperties(DataItemRecord) -   Null mime type in data item.");
-            }
-            if (logger.isDebugEnabled()) {
-                logger
-                        .debug("initProperties(DataItemRecord) -   Generating mime type from name.");
-            }
+			if (DEBUG_FLAG) System.out.println("  Null mime type in data item.") ;
+			if (DEBUG_FLAG) System.out.println("  Generating mime type from name.") ;
 			//
 			// Get the item file name.
 			String name = item.getDataItemName() ;

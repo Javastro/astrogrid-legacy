@@ -378,36 +378,33 @@ public class DataItemRecord implements Serializable
  */
 
    public String toString()
-   {  StringBuffer returnString;
+   {  String returnString;
 
       DateFormat dateRepn = DateFormat.getDateTimeInstance(
         DateFormat.SHORT, DateFormat.SHORT, Locale.UK);
-      returnString = new StringBuffer(" ( "+dataItemName+" created="+dateRepn.format(creationDate) +" owner="+ownerID+" type=");
+
       if (type == CON)
-      {  
-          returnString.append("container)"); 
-         
+      {  returnString = dataItemName + " (container, created " +
+           dateRepn.format(creationDate) + ")";
       }
       else if (type == VOT)
-      {  
-          returnString.append("VoTable, size=" + size +")");
+      {  returnString = dataItemName + " (VoTable, " + size + " bytes, " +
+           dateRepn.format(creationDate) + ")";
       }
       else if (type == QUERY)
-      {           returnString.append("query, size=" + size +")");
-
+      {  returnString = dataItemName + " (query, " + size + " bytes, " +
+           dateRepn.format(creationDate) + ")";
       }
       else if (type == WORKFLOW)
-      {            
-          returnString.append("workflow, size=" + size +")");
-
+      {  returnString = dataItemName + " (workflow, " + size + " bytes, " +
+           dateRepn.format(creationDate) + ")";
       }
       else
-      {           
-          returnString.append("unknown, size=" + size +")");
-
+      {  returnString = dataItemName + " (unknown, created " +
+           dateRepn.format(creationDate) + ")";
       }
 
-      return returnString.toString();
+      return returnString;
    }
 
 //

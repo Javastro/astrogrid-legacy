@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.9 2005/02/15 10:49:33 jdt Exp $ -->
+<!-- $Id: project.xml,v 1.10 2005/02/17 16:01:10 jdt Exp $ -->
 <project
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="maven-project.xsd"
 	>
-    <extend>../base/project.xml</extend>
+    <extend>${basedir}/../base/project.xml</extend>
     <id>astrogrid-mySpace</id>
     <name>Astrogrid MySpace Server</name>
     <description> The server/manager war - see xdocs/index.xml </description>

@@ -4,8 +4,7 @@
    <div id='menuServer'>
       <h5>Server</h5>
       <ul>
-         <li><a href="./" >Home</a>
-         <li><a href='configure.jsp'>Configure/Install</a>         
+         <li><a href="../" >Home</a>
          <li><a href='admin/index.jsp'>Admin</a>
          <li><a href='/manager/reload?path=<%= request.getContextPath() %>'>Restart</a>
       </ul>
