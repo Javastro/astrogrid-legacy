@@ -32,59 +32,11 @@
     
 
     <!-- needed for compilation only -->
-    <!-- don't know if the first ones of these are needed -->
     <dependency>
-       <groupId>org.astrogrid</groupId>
-       <artifactId>astrogrid-scripting</artifactId>
-       <version>${astrogrid.scripting.version}</version>
+    	<groupId>org.astrogrid</groupId>
+    	<artifactId>astrogrid-cdk-scripting</artifactId>
+    	<version>${astrogrid.aggregate.version}</version>
     </dependency>
-    <!-- scripting uses externalValue classes - currently in cea server. will factor out later into a smaller package -->
-        <dependency>
-                <groupId>org.astrogrid</groupId>
-                <artifactId>astrogrid-cea-server</artifactId>
-                <version>${astrogrid.applications.version}</version>
-        </dependency>
-        <!-- helper libraries -->
-        <dependency>
-                <groupId>starlink</groupId>
-                <artifactId>stil</artifactId>
-                <version>2.0-1</version>
-                <url>http://www.star.bristol.ac.uk/~mbt/stil/</url>
-        </dependency>
-    <dependency>
-      <artifactId>junit</artifactId>
-      <groupId>junit</groupId>
-      <version>3.8</version>
-    </dependency>                       
-    <dependency>
-       <groupId>org.astrogrid</groupId>
-       <artifactId>astrogrid-workflow-objects</artifactId>
-       <version>${astrogrid.workflowobjects.version}</version>
-    </dependency>
-    <dependency>
-        <groupId>org.astrogrid</groupId>
-        <artifactId>astrogrid-common</artifactId>
-        <version>${astrogrid.common.version}</version>
-    </dependency>
-
-	<!-- it's in one of these - dunno which one -->
-        <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-community-common</artifactId>
-            <version>${astrogrid.community.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-community-client</artifactId>
-            <version>${astrogrid.community.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-community-resolver</artifactId>
-                <version>${astrogrid.community.version}</version>
-        </dependency>
 
 
         <!-- stuff required in maven build -->
