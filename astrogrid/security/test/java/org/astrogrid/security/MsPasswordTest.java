@@ -103,6 +103,7 @@ public class MsPasswordTest extends TestCase {
     ClientSecurityGuard sg = new ClientSecurityGuard();
     sg.setUsername(this.username);
     sg.setPassword(this.password);
+    sg.setPasswordHashing(true);
 
     // Create a service proxy and associate with it the credentials.
     ServiceFactory factory = ServiceFactory.newInstance();
@@ -131,6 +132,7 @@ public class MsPasswordTest extends TestCase {
     ClientSecurityGuard sg = new ClientSecurityGuard();
     sg.setUsername(this.username);
     sg.setPassword(this.password);
+    sg.setPasswordHashing(true);
 
     // Invoke the service using an Axis locator and JAX-RPC Stub.
     // The locator implements the JAX-RPC Service interface.
