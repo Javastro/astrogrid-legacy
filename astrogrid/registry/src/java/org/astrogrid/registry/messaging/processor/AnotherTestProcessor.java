@@ -14,12 +14,25 @@ public class AnotherTestProcessor implements ElementProcessor {
   private Category logger = Category.getInstance(getClass());
 
   /**
-   * @see org.astrogrid.registry.messaging.ElementProcessor#process(org.w3c.dom.Element, javax.xml.rpc.server.ServletEndpointContext)
+   * @see org.astrogrid.registry.messaging.processor.ElementProcessor#init(javax.xml.rpc.server.ServletEndpointContext)
    */
-  public Element process(Element element, ServletEndpointContext servletEndpointContext) throws Exception {
-    // TODO Auto-generated method stub
-    logger.debug("[process] received: " + XMLUtils.ElementToString(element));
-    return XMLUtils.StringToElement("myNS", "another-test-processed", "true");
+  public void init(ServletEndpointContext servletEndpointContext) throws ProcessorException {
+    // no-op
   }
 
+  /**
+   * @see org.astrogrid.registry.messaging.processor.ElementProcessor#destroy()
+   */
+  public void destroy() throws ProcessorException {
+    // no-op
+  }
+
+  /**
+   * @see org.astrogrid.registry.messaging.ElementProcessor#process(org.w3c.dom.Element, javax.xml.rpc.server.ServletEndpointContext)
+   */
+  public Element process(Element element, ServletEndpointContext servletEndpointContext) throws ProcessorException {
+    // TODO Auto-generated method stub
+    logger.debug("[process] received: " + XMLUtils.ElementToString(element));
+    return XMLUtils.StringToElement("agr", "another-test-processed", "true");
+  }
 }
