@@ -102,7 +102,7 @@
                         <version>${astrogrid.workflow.version}</version>
                         <url>http://www.astrogrid.org/</url>
                         <properties>
-                                <jnlp.jar>true</jnlp.jar>
+                                <jnlp.jar>${shall.bundle.workflow}</jnlp.jar>
                         </properties>
                 </dependency>
         <!-- jes -->
@@ -112,7 +112,7 @@
                            <version>${astrogrid.jes.version}</version>
                         <url>http://www.astrogrid.org/</url>
                         <properties>
-                                <jnlp.jar>true</jnlp.jar>
+                                <jnlp.jar>${shall.bundle.workflow}</jnlp.jar>
                         </properties>
                     </dependency>
                 <dependency>
@@ -121,7 +121,7 @@
                            <version>${astrogrid.workflowobjects.version}</version>
                         <url>http://www.astrogrid.org/</url>
                         <properties>
-                                <jnlp.jar>true</jnlp.jar>
+                                <jnlp.jar>${shall.bundle.workflow}</jnlp.jar>
                         </properties>
                 </dependency>
         <!-- cea client -->
@@ -131,7 +131,7 @@
                            <version>${astrogrid.applications.version}</version>
                         <url>http://www.astrogrid.org/</url>
                         <properties>
-                                <jnlp.jar>true</jnlp.jar>
+                                <jnlp.jar>${shall.bundle.workflow}</jnlp.jar>
                         </properties>
                 </dependency>
         <!-- external libs -->
@@ -142,7 +142,7 @@
                         <url>http://jakarta.apache.org/commons/</url>
                         <version>1.1-patched</version>
                         <properties>
-                                <jnlp.jar>true</jnlp.jar>
+                                <jnlp.jar>${shall.bundle.workflow}</jnlp.jar>
                         </properties>
                 </dependency>
                 <!-- required by castor -->
@@ -152,7 +152,7 @@
                         <version>0.9.5-xml</version>
                         <url>http://castor.exolab.org/</url>
                         <properties>
-                                <jnlp.jar>true</jnlp.jar>
+                                <jnlp.jar>${shall.bundle.workflow}</jnlp.jar>
                         </properties>
                 </dependency>
                <dependency>
@@ -160,7 +160,7 @@
                 <version>1.3</version>
                 <url>http://jakarta.apache.org/commons/</url>
                         <properties>
-                                <jnlp.jar>true</jnlp.jar>
+                                <jnlp.jar>${shall.bundle.workflow}</jnlp.jar>
                         </properties>
                 </dependency>
     </dependencies>
