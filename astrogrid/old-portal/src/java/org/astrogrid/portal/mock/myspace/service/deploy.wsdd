@@ -2,12 +2,15 @@
 <!--
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/src/java/org/astrogrid/portal/mock/myspace/service/Attic/deploy.wsdd,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/10 11:31:24 $</cvs:author>
-    | <cvs:version>$Revision: 1.4 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/11 10:23:42 $</cvs:author>
+    | <cvs:version>$Revision: 1.5 $</cvs:version>
     | <cvs:log>
     | $Log: deploy.wsdd,v $
+    | Revision 1.5  2003/06/11 10:23:42  dave
+    | Fixed accented character in cvs log
+    |
     | Revision 1.4  2003/06/10 11:31:24  dave
-    | ÂSplit the MySpace service INSTALL into client and server
+    | Split the MySpace service INSTALL into client and server
     |
     | Revision 1.3  2003/06/10 11:21:09  dave
     | Fixed BeanMapping namespace in mock MySpace WSDD
@@ -25,7 +28,6 @@
     |
     |
     +-->
-
 <deployment name="test"
 	xmlns="http://xml.apache.org/axis/wsdd/" 
 	xmlns:java="http://xml.apache.org/axis/wsdd/providers/java"

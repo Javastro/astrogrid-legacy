@@ -2,11 +2,14 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/src/java/org/astrogrid/portal/explorer/Attic/AstPortalView.java,v $</cvs:source>
  * <cvs:date>$Author: dave $</cvs:date>
- * <cvs:author>$Date: 2003/06/09 13:33:33 $</cvs:author>
- * <cvs:version>$Revision: 1.1 $</cvs:version>
+ * <cvs:author>$Date: 2003/06/11 10:23:42 $</cvs:author>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
  * $Log: AstPortalView.java,v $
+ * Revision 1.2  2003/06/11 10:23:42  dave
+ * Fixed accented character in cvs log
+ *
  * Revision 1.1  2003/06/09 13:33:33  dave
  * Fixed bad directory structure
  *
@@ -48,6 +51,13 @@ import org.astrogrid.portal.session.AstPortalSession ;
 import java.util.Map ;
 import java.util.Iterator ;
 import java.util.Hashtable ;
+
+//
+// Import the generated client stubs.
+//import org.astrogrid.portal.mock.myspace.client.MySpaceItem ;
+//import org.astrogrid.portal.mock.myspace.client.MySpaceService ;
+//import org.astrogrid.portal.mock.myspace.client.MySpaceServiceService ;
+//import org.astrogrid.portal.mock.myspace.client.MySpaceServiceServiceLocator ;
 
 /**
  * A class to encapsulate an explorer view in the protal.
@@ -103,5 +113,26 @@ public class AstPortalView
 		{
 		this.path = path ;
 		}
+
+	/**
+	 * Connection to our MySpace service.
+	 * Interface and stub classes comes from the Axis WSDL2Java toolkit ?
+	 * Means that this will have to built AFTER the mock MySpace service to have access to the stubs.
+	 * Also means tht we will have to compile using a java tree within the build tree rather direct from the source tree.
+	 * Means patching the build file AGAIN.
+	 *
+	 */
+	//protected MySpaceService myspace ;
+
+	/**
+	 * Call our MySpace service.
+	 * 
+	 */
+/*
+	public void pingMySpace()
+		{
+		myspace.doNothing() ;
+		}
+*/
 
 	}

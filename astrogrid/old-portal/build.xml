@@ -2,10 +2,13 @@
 <!--
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/Attic/build.xml,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/10 11:33:59 $</cvs:author>
-    | <cvs:version>$Revision: 1.13 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/11 10:23:42 $</cvs:author>
+    | <cvs:version>$Revision: 1.14 $</cvs:version>
     | <cvs:log>
     | $Log: build.xml,v $
+    | Revision 1.14  2003/06/11 10:23:42  dave
+    | Fixed accented character in cvs log
+    |
     | Revision 1.13  2003/06/10 11:33:59  dave
     | Fixed 'Malformed UTF-8 char' in build.xml
     |
@@ -150,7 +153,7 @@
 	<property name="axis.servlet" value="axis"/>
 	<property name="axis.webapp"  value="${basedir}/build/axis/axis-1_1RC2/webapps/axis"/>
 
-	<property name="axis.host"   value="methionine.codon.demon.co.uk"/>
+	<property name="axis.host"   value="localhost"/>
 	<property name="axis.port"   value="8080"/>
 	<property name="axis.server" value="${axis.host}:${axis.port}"/>
 	<property name="axis.url"    value="http://${axis.server}/${axis.servlet}"/>
