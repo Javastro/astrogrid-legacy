@@ -7,7 +7,7 @@ public class WSDLBasicInformation {
    
    private Hashtable  endPoint = null;
    private String targetNameSpace = null;
-   
+   private String schemaTargetNameSpace = null;
    public WSDLBasicInformation(Hashtable endPoint, String targetNameSpace) {
       this.endPoint = endPoint;
       this.targetNameSpace = targetNameSpace;
@@ -26,12 +26,21 @@ public class WSDLBasicInformation {
       this.targetNameSpace = targetNameSpace;
    }
    
+   public void setSchemaTargetNameSpace(String schemaTargetNameSpace) {
+      this.schemaTargetNameSpace = schemaTargetNameSpace;
+   }
+   
+   
    public Hashtable getEndPoint() {
       return this.endPoint;
    }
    
    public String getTargetNameSpace() {
       return this.targetNameSpace;
+   }
+
+   public String getSchemaTargetNameSpace() {
+      return this.schemaTargetNameSpace;
    }
    
    public void addEndPoint(String key, String endPoint) {
