@@ -23,7 +23,7 @@ import org.astrogrid.datacenter.adql.generated.Circle;
 import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.io.Piper;
 import org.astrogrid.datacenter.query.QueryStatus;
-import org.astrogrid.datacenter.service.Workspace;
+import org.astrogrid.util.Workspace;
 import org.astrogrid.datacenter.webnotify.JobMonitorNotifier;
 import org.astrogrid.datacenter.webnotify.WebNotifier;
 import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceDummyDelegate;
@@ -388,6 +388,9 @@ public class AdqlNvoConeDelegate extends NvoConeSearchDelegate implements AdqlQu
 
 /*
 $Log: AdqlNvoConeDelegate.java,v $
+Revision 1.2  2003/11/18 10:31:42  mch
+Moved WorkSpace to common
+
 Revision 1.1  2003/11/18 00:34:37  mch
 New Adql-compliant cone search
 
