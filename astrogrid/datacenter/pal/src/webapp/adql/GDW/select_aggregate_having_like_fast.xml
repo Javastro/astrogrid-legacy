@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- XML equivalent
 SELECT DISTINCT x.ra, x.M1_FLUX, x.M1_FILTER FROM xmm1 AS x GROUP BY x.ra, x.M1_FLUX, x.M1_FILTER 
-HAVING NOT (-(MAX(x.M1_FLUX ) ) < 4.56 ) AND x.M1_FILTER LIKE 'Thic%' OR x.M1_FLUX BETWEEN 0.01 AND 500.0;
+HAVING NOT (-(MAX(x.M1_FLUX ) ) > 4.56 ) AND x.M1_FILTER LIKE 'Thic%' OR x.M1_FLUX BETWEEN 0.01 AND 500.0;
 -->
 <Select xmlns="http://tempuri.org/adql" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tempuri.org/adql ADQLSchemav06.xsd">
     <OptionalAllOrDistinct>
@@ -75,7 +75,7 @@ HAVING NOT (-(MAX(x.M1_FLUX ) ) < 4.56 ) AND x.M1_FILTER LIKE 'Thic%' OR x.M1_FL
                                 </ExpressionFunction>
                             </Expr>
                         </FirstExpr>
-                        <Compare>&lt;</Compare>
+                        <Compare>&gt;</Compare>
                         <SecondExpr xsi:type="AtomExpr">
                             <Value>
                                 <NumberLiteral>

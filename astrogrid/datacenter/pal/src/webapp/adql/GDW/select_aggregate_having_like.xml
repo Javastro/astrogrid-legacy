@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- XML equivalent
 SELECT DISTINCT x.ra, x.M1_FLUX, x.M1_FILTER FROM xmm1 AS x GROUP BY x.ra, x.M1_FLUX, x.M1_FILTER 
-HAVING NOT (-(MAX(x.M1_FLUX ) ) < 4.56 ) AND x.M1_FILTER LIKE 'Thic%' OR x.M1_FLUX BETWEEN 0.01 AND 500.0 
+HAVING NOT (-(MAX(x.M1_FLUX ) ) > 4.56 ) AND x.M1_FILTER LIKE 'Thic%' OR x.M1_FLUX BETWEEN 0.01 AND 500.0 
 ORDER BY x.M1_FLUX DESC;
 
 WARNING: THE "ORDER BY" STATEMENT MAKES THIS QUERY *VERY SLOW*.
@@ -79,7 +79,7 @@ USE SELECT_AGGREGATE_HAVING_LIKE_FAST INSTEAD!
                                     </ExpressionFunction>
                                 </Expr>
                             </FirstExpr>
-                            <Compare>&lt;</Compare>
+                            <Compare>&gt;</Compare>
                             <SecondExpr xsi:type="AtomExpr">
                                 <Value>
                                     <NumberLiteral>

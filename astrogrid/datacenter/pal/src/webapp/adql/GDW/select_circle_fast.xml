@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--  SQL equivalent
-SELECT f.*, x.* FROM first AS f, xmm1 AS x WHERE f.errbox && x.errbox AND (DEGREES(2 * ASIN( SQRT(POW(SIN(RADIANS((23.0-f.decl)/2)), 2) + COS(RADIANS(23.0)) * COS(RADIANS(x.decl)) * POW(SIN(RADIANS(12.5-f.RA)/2),2)))) <5.0 
+SELECT f.*, x.* FROM first AS f, xmm1 AS x WHERE f.errbox && x.errbox AND (DEGREES(2 * ASIN( SQRT(POW(SIN(RADIANS((23.0-f.decl)/2)), 2) + COS(RADIANS(23.0)) * COS(RADIANS(x.decl)) * POW(SIN(RADIANS(12.5-f.RA)/2),2)))) <15.0 
 -->
 <Select xmlns="http://tempuri.org/adql" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tempuri.org/adql ADQLSchemav06.xsd">
     <Selection>
@@ -63,7 +63,7 @@ SELECT f.*, x.* FROM first AS f, xmm1 AS x WHERE f.errbox && x.errbox AND (DEGRE
                                 </CoordValue>
                             </Pos3Vector>
                         </q1:Center>
-                        <q1:Radius>5</q1:Radius>
+                        <q1:Radius>15.0</q1:Radius>
                     </Circle>
                 </SecondCondition>
             </IntersectionSearch>
