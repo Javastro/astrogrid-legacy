@@ -12,7 +12,7 @@ package org.astrogrid.portal.cocoon.workflow.jes;
 
 import org.apache.log4j.Logger;
 
-import org.astrogrid.i18n.*;
+//import org.astrogrid.i18n.*;
 
 // import org.astrogrid.workflow.*;
 // import org.astrogrid.workflow.design.activity.*;
@@ -22,9 +22,9 @@ import org.astrogrid.AstroGridException;
 import org.astrogrid.portal.workflow.*;
 import org.astrogrid.portal.workflow.jes.*;
 
-import org.astrogrid.community.delegate.policy.PolicyServiceDelegate;
-import org.astrogrid.community.policy.data.PolicyPermission;
-import org.astrogrid.community.service.authentication.data.SecurityToken;
+//import org.astrogrid.community.delegate.policy.PolicyServiceDelegate;
+//import org.astrogrid.community.policy.data.PolicyPermission;
+//import org.astrogrid.community.service.authentication.data.SecurityToken;
 import org.astrogrid.community.common.util.CommunityMessage;
 
 import java.util.Map;
