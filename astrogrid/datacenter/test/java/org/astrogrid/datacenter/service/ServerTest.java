@@ -39,7 +39,7 @@ public class ServerTest extends TestCase
    {
       //make sure database querier to be used is the dummy one - only available
       //in the test suite
-      Configuration.setProperty(DatabaseQuerier.DATABASE_QUERIER, "org.astrogrid.datacenter.queriers.DummyQuerier");
+      Configuration.setProperty(DatabaseQuerier.DATABASE_QUERIER_KEY, "org.astrogrid.datacenter.queriers.DummyQuerier");
 
       //create the server
       AxisDataServer server = new AxisDataServer();
@@ -84,6 +84,9 @@ public class ServerTest extends TestCase
 
 /*
 $Log: ServerTest.java,v $
+Revision 1.3  2003/09/07 18:58:58  mch
+Updated tests for weekends changes to main code (mostly threaded queries, typesafe ServiceStatus)
+
 Revision 1.2  2003/09/05 01:02:33  nw
 minor changes
 

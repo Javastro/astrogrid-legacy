@@ -1,11 +1,11 @@
-/*$Id: HsqlTestCase.java,v 1.1 2003/09/05 01:05:32 nw Exp $
+/*$Id: HsqlTestCase.java,v 1.2 2003/09/07 18:58:58 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
 **/
 package org.astrogrid.datacenter.queriers.sql;
@@ -57,15 +57,15 @@ public abstract class HsqlTestCase extends TestCase {
             // Auto-generated method stub
             return 0;
         }
-    
+
         /* (non-Javadoc)
          * @see javax.sql.DataSource#setLoginTimeout(int)
          */
         public void setLoginTimeout(int seconds) throws SQLException {
             // Auto-generated method stub
-            
+
         }
-    
+
         /* (non-Javadoc)
          * @see javax.sql.DataSource#getLogWriter()
          */
@@ -73,15 +73,15 @@ public abstract class HsqlTestCase extends TestCase {
             // Auto-generated method stub
             return null;
         }
-    
+
         /* (non-Javadoc)
          * @see javax.sql.DataSource#setLogWriter(java.io.PrintWriter)
          */
         public void setLogWriter(PrintWriter out) throws SQLException {
             // Auto-generated method stub
-            
+
         }
-    
+
         /* (non-Javadoc)
          * @see javax.sql.DataSource#getConnection()
          */
@@ -89,7 +89,7 @@ public abstract class HsqlTestCase extends TestCase {
             // Auto-generated method stub
             return DriverManager.getConnection ("jdbc:hsqldb:.", "sa", "");
         }
-    
+
         /* (non-Javadoc)
          * @see javax.sql.DataSource#getConnection(java.lang.String, java.lang.String)
          */
@@ -100,11 +100,11 @@ public abstract class HsqlTestCase extends TestCase {
     }
 /**
  *  run a sql script against a db connection
- * @param script 
+ * @param script
  * @param conn
  * @throws SQLException
  */
-    protected void runSQLScript(String script, Connection conn) throws SQLException {
+    public static void runSQLScript(String script, Connection conn) throws SQLException {
         StringTokenizer tok = new StringTokenizer(script,";");
         while (tok.hasMoreElements()) {
             String command = tok.nextToken();
@@ -119,13 +119,13 @@ public abstract class HsqlTestCase extends TestCase {
  * @return
  * @throws IOException
  */
-    protected String getResourceAsString(String resource) throws IOException {
-          InputStream is = this.getClass().getResourceAsStream(resource);
+    public static String getResourceAsString(String resource) throws IOException {
+          InputStream is = HsqlTestCase.class.getResourceAsStream(resource);
             assertNotNull(is);
               String script = streamToString(is);
         return script;
     }
-    protected String streamToString(InputStream is) throws IOException {
+    public static String streamToString(InputStream is) throws IOException {
           BufferedReader r = new BufferedReader(new InputStreamReader(is));
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
@@ -133,7 +133,7 @@ public abstract class HsqlTestCase extends TestCase {
             while ( (line = r.readLine()) != null) {
                 pw.println(line);
             }
-            pw.close();       
+            pw.close();
             r.close();
             String str = sw.toString();
             assertNotNull(str);
@@ -143,11 +143,14 @@ public abstract class HsqlTestCase extends TestCase {
 }
 
 
-/* 
+/*
 $Log: HsqlTestCase.java,v $
+Revision 1.2  2003/09/07 18:58:58  mch
+Updated tests for weekends changes to main code (mostly threaded queries, typesafe ServiceStatus)
+
 Revision 1.1  2003/09/05 01:05:32  nw
 added testing of SQLQuerier over an in-memory Hsql database,
 
 relies on hsqldb.jar (added to project.xml)
- 
+
 */

@@ -1,5 +1,5 @@
 /*
- * $Id: DelegateTest.java,v 1.1 2003/08/29 15:22:53 mch Exp $
+ * $Id: DelegateTest.java,v 1.2 2003/09/07 18:58:58 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -24,6 +24,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.query.QueryException;
+import org.astrogrid.datacenter.servicestatus.ServiceStatus;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
@@ -60,7 +61,7 @@ public class DelegateTest extends TestCase implements DatacenterStatusListener
    /** 'Callback' method called by Delegate when its status changes.  Stores
     * the status returned so that the tests above can examine them
     */
-   public void datacenterStatusChanged(String newStatus)
+   public void datacenterStatusChanged(ServiceStatus newStatus)
    {
       statusChangedList.add(newStatus);
 
