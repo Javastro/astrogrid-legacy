@@ -7,9 +7,31 @@
   </properties>
 
   <body>
-    <section name="AstroGrid">
+    <section name="Overview of AstroGrid">
       <p>
-        This project documents the development of AstroGrid including all sub-projects.
+        The AstroGrid project (http://www.astrogrid.org/) aims to produce a working datagrid for key selected databases, with associated datamining facilities, by late 2004. It is part of the world-wide drive towards the concept of a Virtual Observatory (VO), and can be seen as the UK contribution to this vision. However in various ways it is both wider and more focussed than other initiatives. It is wider in that it covers astronomy, solar physics, and space plasma (solar terrestrial) physics, and covers all wavelengths from radio to X-ray. The project is also part of a coherent UK e-science programme, with links to projects in particle physics, bio-informatics, and basic grid technology development.
+      </p>
+
+      <p>
+        AstroGrid is however focused in that it aims to develop something recognisably like a working VO on a short timescale, so that science can start getting done and technological lessons can be learned. This requires concentrating on selected datasets. Our priority is to develop a virtual observatory capability to support efficient and effective exploitation of key astronomical data sets of importance to the UK community: for example data from WFCAM, VISTA, XMM-SSC, e-MERLIN, SOHO and Cluster. It seems clear that good data curation, archive management, and datamining services all need to be closely linked together. AstroGrid is therefore a partnership formed by UK archive centres and astronomical computer scientists.
+      </p>
+    </section>
+    <section name="Project Goals">
+      <p>
+        The AstroGrid project goals, as stated in the original funding proposal (downloadable from here) are:
+
+        <ul>
+          <li>A working datagrid for key UK databases</li>
+          <li>High throughput datamining facilities for interrogating those databases</li>
+          <li>A uniform archive query and data-mining software interface</li>
+          <li>The ability to browse simultaneously multiple datasets</li>
+          <li>A set of tools for integrated on-line analysis of extracted data</li>
+          <li>A set of tools for on-line database analysis and exploration</li>
+          <li>A facility for users to upload code to run their own algorithms on the datamining machines</li>
+          <li>An exploration of techniques for open-ended resource discovery</li>
+        </ul>
+
+        Many of these goals are common to other nations and other disciplines. We will work in collaboration with related projects worldwide to deliver these goals.
       </p>
     </section>
   </body>
