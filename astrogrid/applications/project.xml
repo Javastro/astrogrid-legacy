@@ -294,6 +294,14 @@ This functionality is provided with the ApplicationController service, of which 
       <version>20030211.213356</version>
       <!--<version>SNAPSHOT</version>-->
     </dependency>
+                   <dependency>
+                        <id>xerces</id>
+                        <version>2.4.0</version>
+                    <properties>
+                              <war.bundle>false</war.bundle>
+                    </properties>
+            </dependency>
+
 
     <dependency>
       <id>jaxrpc-api</id>
