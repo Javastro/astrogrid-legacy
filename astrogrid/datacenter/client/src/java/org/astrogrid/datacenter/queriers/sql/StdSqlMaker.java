@@ -1,4 +1,4 @@
-/*$Id: StdSqlMaker.java,v 1.4 2004/10/08 15:19:36 mch Exp $
+/*$Id: StdSqlMaker.java,v 1.5 2004/10/12 22:45:45 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,6 +30,7 @@ import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.query.Query2Adql074;
 import org.astrogrid.datacenter.query.QueryException;
+import org.astrogrid.datacenter.query.condition.Function;
 import org.astrogrid.datacenter.sky.Angle;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
@@ -129,9 +130,9 @@ public class StdSqlMaker  extends SqlMaker {
             "("+
             "(2 * ASIN( SQRT( "+
             //surround dec with extra brackets in order to cope with negative decs
-            "POWER( SIN( ("+decColRad+"-("+dec.asRadians()+") )/2 ) ,2) +"+
+            "POWER( SIN( ("+decColRad+" - ("+dec.asRadians()+") ) / 2 ) ,2) + "+
             "COS("+dec.asRadians()+") * COS("+decColRad+") * "+
-            "POWER( SIN( ("+raColRad+"-"+ra.asRadians()+")/2 ), 2) "+
+            "POWER( SIN( ("+raColRad+" - "+ra.asRadians()+") / 2 ), 2) "+
             "))) < "+radius.asRadians()+
             ")";
       }
@@ -224,6 +225,17 @@ public class StdSqlMaker  extends SqlMaker {
     * and XSLT style sheets - there may be a better way of doing this!
     */
    public String getSql(Query query) throws QueryException {
+      
+      //botch fix for cone searches which don't specify table
+      if ((query.getScope() == null) && (query.getCriteria() instanceof Function)) {
+         if ( ((Function) query.getCriteria()).getName().toUpperCase().equals("CIRCLE")) {
+            query.setScope(new String[] { SimpleConfig.getProperty(StdSqlMaker.CONE_SEARCH_TABLE_KEY) });
+         }
+      }
+
+      if (query.getScope() == null) {
+         throw new QueryException("No scope (FROM) given in query");
+      }
       
       try {
          //Create an ADQL string documnet from the query
@@ -409,6 +421,9 @@ public class StdSqlMaker  extends SqlMaker {
 
 /*
  $Log: StdSqlMaker.java,v $
+ Revision 1.5  2004/10/12 22:45:45  mch
+ Added spaces around operators so SqlParser can work with it
+
  Revision 1.4  2004/10/08 15:19:36  mch
  Removed unnecessary imports
 
