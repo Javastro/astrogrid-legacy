@@ -1,5 +1,5 @@
 /*
- * $Id: DummyDelegate.java,v 1.16 2004/10/08 15:19:01 mch Exp $
+ * $Id: DummyDelegate.java,v 1.17 2004/11/10 22:01:50 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -36,7 +36,6 @@ public class DummyDelegate implements QuerySearcher, ConeSearcher {
    
    
    /** used for generating random results... */
-   
    private static java.util.Random random = new java.util.Random();
 
    /** Status string - initialising/starting */
@@ -166,6 +165,9 @@ public class DummyDelegate implements QuerySearcher, ConeSearcher {
 
 /*
 $Log: DummyDelegate.java,v $
+Revision 1.17  2004/11/10 22:01:50  mch
+skynode starts and some fixes
+
 Revision 1.16  2004/10/08 15:19:01  mch
 Removed unnecessary imports
 

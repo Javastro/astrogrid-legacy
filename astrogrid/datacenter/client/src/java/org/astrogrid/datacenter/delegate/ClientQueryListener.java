@@ -6,7 +6,6 @@
 package org.astrogrid.datacenter.delegate;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 
 /**
@@ -23,6 +22,9 @@ public interface ClientQueryListener
 
 /*
 $Log: ClientQueryListener.java,v $
+Revision 1.2  2004/11/10 22:01:50  mch
+skynode starts and some fixes
+
 Revision 1.1  2004/03/13 01:04:17  mch
 It05 Refactor (Client)
 

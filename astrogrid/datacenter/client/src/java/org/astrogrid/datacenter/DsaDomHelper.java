@@ -1,29 +1,15 @@
 /*
- * $Id: DsaDomHelper.java,v 1.4 2004/10/25 13:14:19 jdt Exp $
+ * $Id: DsaDomHelper.java,v 1.5 2004/11/10 22:01:50 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.Date;
 import java.util.Vector;
-import javax.xml.parsers.ParserConfigurationException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.astrogrid.config.ConfigException;
-import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.query.AdqlXml074Parser;
-import org.astrogrid.util.DomHelper;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 /**
  * Dom Helper methods that have yet to get moved to common

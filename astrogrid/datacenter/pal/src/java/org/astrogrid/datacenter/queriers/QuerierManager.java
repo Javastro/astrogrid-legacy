@@ -1,4 +1,4 @@
-/*$Id: QuerierManager.java,v 1.12 2004/11/09 18:27:21 mch Exp $
+/*$Id: QuerierManager.java,v 1.13 2004/11/10 22:01:50 mch Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -283,10 +283,11 @@ public class QuerierManager implements QuerierListener {
    public void queryStatusChanged(Querier querier) {
 
       //if it's changed to closed, then move to closed list
-      if (querier.getStatus() instanceof QuerierClosed) {
-         runningQueriers.remove(querier.getId());
-         closedQueriers.put(querier.getId(), querier);
-         checkQueue();
+      if (querier.getStatus().isFinished()) {
+         runningQueriers.remove(querier.getId()); //remove if it's in running
+         queuedQueriers.remove(querier.getId()); //remove if it's queued
+         closedQueriers.put(querier.getId(), querier); //make sure it's in closed
+         checkQueue(); //see if, if having removed it from running, we ought to start another
       }
    }
    
@@ -342,6 +343,9 @@ public class QuerierManager implements QuerierListener {
 
 /*
  $Log: QuerierManager.java,v $
+ Revision 1.13  2004/11/10 22:01:50  mch
+ skynode starts and some fixes
+
  Revision 1.12  2004/11/09 18:27:21  mch
  added askCount
 
@@ -502,5 +506,6 @@ public class QuerierManager implements QuerierListener {
  Database Querier - added calls to timer, untagled status transitions
  
  */
+
 
 

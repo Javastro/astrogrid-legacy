@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcPlugin.java,v 1.11 2004/11/03 01:35:18 mch Exp $
+ * $Id: JdbcPlugin.java,v 1.12 2004/11/10 22:01:50 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -78,13 +78,14 @@ public class JdbcPlugin extends DefaultPlugin {
          log.debug("Connecting to the database");
          jdbcConnection = getJdbcConnection();
          Statement statement = jdbcConnection.createStatement();
-         
-//already done above         querier.setStatus(new QuerierQuerying(querier.getStatus()));
+
+         if (query.getLocalLimit() >-1) { statement.setMaxRows((int) query.getLocalLimit()); }
+//some problem with this on SSA         statement.setQueryTimeout(SimpleConfig.getSingleton().getInt(TIMEOUT, 30*60)); //default to half an hour
+
          querier.getStatus().addDetail("Submitted to JDBC at "+new Date());
          
          //execute query
          log.info("Performing Query: " + sql);
-//some problem with this on SSA         statement.setQueryTimeout(SimpleConfig.getSingleton().getInt(TIMEOUT, 30*60)); //default to half an hour
          statement.execute(sql);
          querier.getStatus().addDetail("JDBC execution complete at "+new java.util.Date());
 
@@ -152,7 +153,10 @@ public class JdbcPlugin extends DefaultPlugin {
          ResultSet results = statement.getResultSet();
 
          //count is the first row first column
-         return results.getLong(1);
+         results.next();
+         long count = results.getLong(1);
+         results.close();
+         return count;
       }
       catch (SQLException e) {
          querier.setStatus(new QuerierError(querier.getStatus(), "JDBC Query Failed",e));

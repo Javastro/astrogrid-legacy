@@ -1,16 +1,16 @@
 /*
- * $Id: SubmitQuery.java,v 1.3 2004/11/09 17:42:22 mch Exp $
+ * $Id: SubmitQuery.java,v 1.4 2004/11/10 22:01:50 mch Exp $
  */
 
 package org.astrogrid.datacenter.servlet;
-import org.astrogrid.webapp.*;
-
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.net.URL;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.query.AdqlQueryMaker;
@@ -24,9 +24,8 @@ import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.store.Msrl;
 import org.astrogrid.store.delegate.VoSpaceResolver;
-import javax.xml.parsers.ParserConfigurationException;
+import org.astrogrid.webapp.DefaultServlet;
 import org.xml.sax.SAXException;
-import java.net.URISyntaxException;
 
 /**
  * A servlet for submitting a query asynchronously.

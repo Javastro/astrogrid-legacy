@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegate_v05.java,v 1.11 2004/11/09 17:42:22 mch Exp $
+ * $Id: WebDelegate_v05.java,v 1.12 2004/11/10 22:01:50 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringBufferInputStream;
 import java.net.URL;
-import java.rmi.RemoteException;
 import java.util.Hashtable;
 import org.apache.axis.AxisFault;
 import org.apache.commons.logging.Log;
@@ -194,6 +193,9 @@ public class WebDelegate_v05 implements QuerySearcher, ConeSearcher {
 
 /*
  $Log: WebDelegate_v05.java,v $
+ Revision 1.12  2004/11/10 22:01:50  mch
+ skynode starts and some fixes
+
  Revision 1.11  2004/11/09 17:42:22  mch
  Fixes to tests after fixes for demos, incl adding closable to targetIndicators
 
@@ -272,6 +274,9 @@ public class WebDelegate_v05 implements QuerySearcher, ConeSearcher {
  Revision 1.16  2004/01/08 15:48:17  mch
  Allow myspace references to be given
 $Log: WebDelegate_v05.java,v $
+Revision 1.12  2004/11/10 22:01:50  mch
+skynode starts and some fixes
+
 Revision 1.11  2004/11/09 17:42:22  mch
 Fixes to tests after fixes for demos, incl adding closable to targetIndicators
 

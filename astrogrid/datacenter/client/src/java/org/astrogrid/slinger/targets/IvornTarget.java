@@ -1,5 +1,5 @@
 /*
- * $Id: IvornTarget.java,v 1.1 2004/11/09 17:42:22 mch Exp $
+ * $Id: IvornTarget.java,v 1.2 2004/11/10 22:01:50 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,17 +7,13 @@
 package org.astrogrid.slinger.targets;
 
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.net.MalformedURLException;
-import java.net.URI;
+import java.io.OutputStream;
 import java.net.URISyntaxException;
 import org.astrogrid.community.Account;
 import org.astrogrid.slinger.targets.UriTarget;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.store.delegate.VoSpaceResolver;
-import java.io.OutputStream;
 
 /**
  * Used to indicate the target where the results are to be sent.
@@ -62,6 +58,9 @@ public class IvornTarget extends UriTarget  {
 }
 /*
  $Log: IvornTarget.java,v $
+ Revision 1.2  2004/11/10 22:01:50  mch
+ skynode starts and some fixes
+
  Revision 1.1  2004/11/09 17:42:22  mch
  Fixes to tests after fixes for demos, incl adding closable to targetIndicators
 

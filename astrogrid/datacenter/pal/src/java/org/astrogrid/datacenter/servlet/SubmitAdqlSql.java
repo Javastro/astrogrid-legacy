@@ -1,23 +1,21 @@
 /*
- * $Id: SubmitAdqlSql.java,v 1.6 2004/11/09 17:42:22 mch Exp $
+ * $Id: SubmitAdqlSql.java,v 1.7 2004/11/10 22:01:50 mch Exp $
  */
 
 package org.astrogrid.datacenter.servlet;
-import org.astrogrid.webapp.*;
-
 import java.io.IOException;
 import java.net.URL;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.query.SqlQueryMaker;
 import org.astrogrid.datacenter.returns.ReturnSpec;
 import org.astrogrid.datacenter.service.DataServer;
 import org.astrogrid.datacenter.service.ServletHelper;
 import org.astrogrid.slinger.targets.TargetMaker;
+import org.astrogrid.webapp.DefaultServlet;
 
 /**
  * A servlet for processing Cone Queries.
@@ -33,6 +31,7 @@ public class SubmitAdqlSql extends DefaultServlet {
    public void doGet(HttpServletRequest request,
                      HttpServletResponse response) throws ServletException, IOException {
 
+   
       ReturnSpec tableDef = ServletHelper.makeReturnSpec(request);
 
       String adqlSql = request.getParameter("AdqlSql");
@@ -50,7 +49,7 @@ public class SubmitAdqlSql extends DefaultServlet {
             Query query = SqlQueryMaker.makeQuery(adqlSql);
             query.getResultsDef().setTarget(TargetMaker.makeIndicator(response.getWriter(), false));
             query.getResultsDef().setFormat(tableDef.getFormat());
-            server.askQuery(Account.ANONYMOUS, query);
+            server.askQuery(ServletHelper.getUser(request), query);
          }
          else {
             response.setContentType("text/html");
@@ -62,7 +61,7 @@ public class SubmitAdqlSql extends DefaultServlet {
             Query query = SqlQueryMaker.makeQuery(adqlSql);
             query.getResultsDef().setTarget(tableDef.getTarget());
             query.getResultsDef().setFormat(tableDef.getFormat());
-            String id = server.submitQuery(Account.ANONYMOUS, query);
+            String id = server.submitQuery(ServletHelper.getUser(request), query);
       
             URL statusUrl = new URL ("http",request.getServerName(),request.getServerPort(), request.getContextPath()+"/queryStatus.jsp");
             //indicate status

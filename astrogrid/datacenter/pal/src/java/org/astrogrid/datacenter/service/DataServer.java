@@ -1,5 +1,5 @@
 /*
- * $Id: DataServer.java,v 1.10 2004/11/09 18:27:21 mch Exp $
+ * $Id: DataServer.java,v 1.11 2004/11/10 22:01:50 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -93,7 +93,8 @@ public class DataServer
    
    
    /**
-    * Runs a (blocking) ADQL/XML/OM query, outputting the results as votable to the given stream
+    * Runs a (blocking) ADQL/XML/OM query, outputting the results as votable to the stream given
+    * in query.resultsSpec
     */
    public void askQuery(Account user, Query query) throws Throwable {
 
@@ -171,9 +172,25 @@ public class DataServer
    /**
     * Returns the number of matches of the given condition
     */
-   public long askCount(Account user, Condition searchCondition) throws IOException {
-      Querier querier = Querier.makeQuerier(user, new Query(searchCondition, null));
-      return querierManager.askCount(querier);
+   public long askCount(Account user, Condition searchCondition) throws Throwable {
+      Querier querier = null;
+      try {
+         querier = Querier.makeQuerier(user, new Query(searchCondition, null));
+         return querierManager.askCount(querier);
+      }
+      catch (Throwable th) {
+         //if there's an error, log it, make sure the querier state is correct, and rethrow to
+         //be dealt with correctly up the tree
+         if (querier != null) {
+            try {
+               if (!(querier.getStatus() instanceof QuerierError)) {
+                  querier.setStatus(new QuerierError(querier.getStatus(), "",th));
+               }
+            } catch (Throwable th2) {} ; //ignore
+         }
+         log.error("submitQuerier("+querier+")", th);
+         throw th;
+      }
    }
    
    

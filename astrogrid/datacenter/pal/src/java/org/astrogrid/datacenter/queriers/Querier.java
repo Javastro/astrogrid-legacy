@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.11 2004/11/09 18:27:21 mch Exp $
+ * $Id: Querier.java,v 1.12 2004/11/10 22:01:50 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -89,8 +89,7 @@ public class Querier implements Runnable, PluginListener {
       //do this as part of the constructor so that we get errors back even on
       //submitted (asynchronous) queries.
       
-      //botch botch botch for CEATargetIndicators which appear to hang in this case
-      //if (!(query.getTarget() instanceof CEATargetIndicator))
+      if (query.getResultsDef() != null) //some things like askCount have no results definition
       {
          Slinger.testConnection(query.getTarget(), user);
       }
@@ -147,9 +146,11 @@ public class Querier implements Runnable, PluginListener {
       
  //     plugin = QuerierPluginFactory.createPlugin(this);
       
-      plugin.askQuery(user, query, this);
+      if (!(getStatus() instanceof QuerierAborted)) { // it may be that the query has been aborted immediately after being created, or while queued, etc
+         plugin.askQuery(user, query, this);
       
-      close();
+         close();
+      }
    }
   
    /** Asks the plugin for the count (ie number of matches) for
@@ -332,6 +333,9 @@ public class Querier implements Runnable, PluginListener {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.12  2004/11/10 22:01:50  mch
+ skynode starts and some fixes
+
  Revision 1.11  2004/11/09 18:27:21  mch
  added askCount
 

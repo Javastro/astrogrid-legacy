@@ -1,5 +1,5 @@
 /*
- * $Id: AgslTarget.java,v 1.1 2004/11/09 17:42:22 mch Exp $
+ * $Id: AgslTarget.java,v 1.2 2004/11/10 22:01:50 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,10 +9,7 @@ package org.astrogrid.slinger.targets;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import org.astrogrid.community.Account;
 import org.astrogrid.store.Agsl;
 
@@ -50,6 +47,9 @@ public class AgslTarget extends UriTarget {
 }
 /*
  $Log: AgslTarget.java,v $
+ Revision 1.2  2004/11/10 22:01:50  mch
+ skynode starts and some fixes
+
  Revision 1.1  2004/11/09 17:42:22  mch
  Fixes to tests after fixes for demos, incl adding closable to targetIndicators
 

@@ -1,24 +1,20 @@
 /*
- * $Id: SubmitCone.java,v 1.8 2004/11/09 17:42:22 mch Exp $
+ * $Id: SubmitCone.java,v 1.9 2004/11/10 22:01:50 mch Exp $
  */
 
 package org.astrogrid.datacenter.servlet;
-import org.astrogrid.webapp.*;
-
 import java.io.IOException;
 import java.net.URL;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.query.SimpleQueryMaker;
-import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.returns.ReturnSpec;
-import org.astrogrid.slinger.targets.TargetMaker;
 import org.astrogrid.datacenter.service.DataServer;
 import org.astrogrid.datacenter.service.ServletHelper;
+import org.astrogrid.slinger.targets.TargetMaker;
+import org.astrogrid.webapp.DefaultServlet;
 
 /**
  * A servlet for processing Cone Queries.
@@ -59,7 +55,7 @@ public class SubmitCone extends DefaultServlet {
          //stream.
          if (tableDef.getTarget() == null) {
             tableDef.setTarget(TargetMaker.makeIndicator(response.getWriter(), false));
-            server.askQuery(Account.ANONYMOUS, SimpleQueryMaker.makeConeQuery(ra, dec, sr, tableDef));
+            server.askQuery(ServletHelper.getUser(request), SimpleQueryMaker.makeConeQuery(ra, dec, sr, tableDef));
          }
          else {
             response.setContentType("text/html");
@@ -69,7 +65,7 @@ public class SubmitCone extends DefaultServlet {
                "<body>");
             response.getWriter().flush();
 
-            String id = server.submitQuery(Account.ANONYMOUS, SimpleQueryMaker.makeConeQuery(ra, dec, sr, tableDef));
+            String id = server.submitQuery(ServletHelper.getUser(request), SimpleQueryMaker.makeConeQuery(ra, dec, sr, tableDef));
       
             URL statusUrl = new URL ("http",request.getServerName(),request.getServerPort(), request.getContextPath()+"/queryStatus.jsp");
             //indicate status

@@ -1,4 +1,4 @@
-/*$Id: DataServiceTest.java,v 1.8 2004/11/09 17:42:22 mch Exp $
+/*$Id: DataServiceTest.java,v 1.9 2004/11/10 22:01:50 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,6 +25,7 @@ import org.astrogrid.status.SelfMonitorBody;
 import org.astrogrid.status.TaskStatus;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
 
 /** Tests that the DataService can run queries - ie it tests right from just
  * behind the web (or whatever) interface through to the dummy sql database
@@ -38,6 +39,8 @@ public class DataServiceTest extends ServerTestCase {
    protected Query query1;
    protected Query query2;
    protected Query query3;
+   
+   public Account TESTACCOUNT = new Account("DataServiceTest", "test.org", null);
    
    public DataServiceTest(String arg0) {
         super(arg0);
@@ -60,7 +63,7 @@ public class DataServiceTest extends ServerTestCase {
     public void testConeSearch() throws Throwable {
        
       StringWriter sw = new StringWriter();
-       server.askQuery(Account.ANONYMOUS, SimpleQueryMaker.makeConeQuery(30, 30, 6, new ReturnTable(TargetMaker.makeIndicator(sw), "VOTABLE")));
+       server.askQuery(TESTACCOUNT, SimpleQueryMaker.makeConeQuery(30, 30, 6, new ReturnTable(TargetMaker.makeIndicator(sw), "VOTABLE")));
        String results = sw.toString();
 
        Document doc = DomHelper.newDocument(results);
@@ -75,7 +78,7 @@ public class DataServiceTest extends ServerTestCase {
       //submit query
       StringWriter sw = new StringWriter();
        query1.setResultsDef(new ReturnTable(TargetMaker.makeIndicator(sw), "VOTABLE"));
-      server.askQuery(Account.ANONYMOUS, query1);
+      server.askQuery(TESTACCOUNT, query1);
       String result = sw.toString();
        
       assertNotNull(result);
@@ -88,9 +91,9 @@ public class DataServiceTest extends ServerTestCase {
    public void testStatus() throws Throwable {
       //submit queries
       StringWriter sw = new StringWriter();
-      server.submitQuery(Account.ANONYMOUS, SimpleQueryMaker.makeConeQuery(30, 30, 6, new ReturnTable(TargetMaker.makeIndicator(sw), "VOTABLE")));
+      server.submitQuery(TESTACCOUNT, SimpleQueryMaker.makeConeQuery(30, 30, 6, new ReturnTable(TargetMaker.makeIndicator(sw), "VOTABLE")));
        query1.setResultsDef(new ReturnTable(TargetMaker.makeIndicator(sw), "VOTABLE"));
-      server.submitQuery(Account.ANONYMOUS, query1);
+      server.submitQuery(TESTACCOUNT, query1);
 
       DataServiceStatus status = DataServer.getStatus();
       TaskStatus[] tasks = status.getTasks();
@@ -100,8 +103,20 @@ public class DataServiceTest extends ServerTestCase {
    }
 
    /** Tests the count return */
-   public void testCount() throws Exception {
-      long count = server.askCount(Account.ANONYMOUS, SimpleQueryMaker.makeConeCondition(30,30,6));
+   public void testCount() throws Throwable {
+      Query query = SimpleQueryMaker.makeConeQuery(30,30,6);
+      
+      long count = server.askCount(TESTACCOUNT, query.getCriteria());
+      
+      //now do same query but get full results (to check count is equal)
+      StringWriter sw = new StringWriter();
+      query.setResultsDef(new ReturnTable(TargetMaker.makeIndicator(sw)));
+      server.askQuery(TESTACCOUNT, query);
+      
+      Document votDoc = DomHelper.newDocument(sw.toString());
+      NodeList rows = votDoc.getElementsByTagNameNS("*", "TR");
+      
+      assertEquals("askQuery returns different result to askCount", count, rows.getLength());
       
    }
    
@@ -142,6 +157,9 @@ public class DataServiceTest extends ServerTestCase {
 
 /*
 $Log: DataServiceTest.java,v $
+Revision 1.9  2004/11/10 22:01:50  mch
+skynode starts and some fixes
+
 Revision 1.8  2004/11/09 17:42:22  mch
 Fixes to tests after fixes for demos, incl adding closable to targetIndicators
 

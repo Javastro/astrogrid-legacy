@@ -49,6 +49,7 @@
            <p>
              <%@ include file='resultsForm.xml' %>
              <input type="submit" name='Submit' value="Search Cone"  />
+             <input type='hidden' name='UserName' value='JSP'>
            </p>
       </form>
 <%

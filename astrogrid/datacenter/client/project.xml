@@ -57,24 +57,24 @@
     </developerConnection>
   </repository>
 
-	<packageGroups>
-		<packageGroup>
-			<title>Public API</title>
-			<packages>org.astrogrid.datacenter.delegate:org.astrogrid.datacenter.query:org.astrogrid.datacenter.webnotify:org.astrogrid.datacenter.tools</packages>
-		</packageGroup>
-		<packageGroup>
-			<title>Query Languages</title>
-			<packages>org.astrogrid.datacenter.adql*:org.astrogrid.datacenter.sql</packages>
-		</packageGroup>
-		<packageGroup>
-			<title>Delegates</title>
-			<packages>org.astrogrid.datacenter.delegate.*</packages>
-		</packageGroup>
-		<packageGroup>
-			<title>Transport</title>
-			<packages>org.astrogrid.datacenter.axisdataserver*</packages>
-		</packageGroup>
-	</packageGroups>
+   <packageGroups>
+      <packageGroup>
+         <title>Public API</title>
+         <packages>org.astrogrid.datacenter.delegate:org.astrogrid.datacenter.query:org.astrogrid.datacenter.webnotify:org.astrogrid.datacenter.tools</packages>
+      </packageGroup>
+      <packageGroup>
+         <title>Query Languages</title>
+         <packages>org.astrogrid.datacenter.adql*:org.astrogrid.datacenter.sql</packages>
+      </packageGroup>
+      <packageGroup>
+         <title>Delegates</title>
+         <packages>org.astrogrid.datacenter.delegate.*</packages>
+      </packageGroup>
+      <packageGroup>
+         <title>Transport</title>
+         <packages>org.astrogrid.datacenter.axisdataserver*</packages>
+      </packageGroup>
+   </packageGroups>
 
 
   <!-- jar files the project is dependent on -->
@@ -90,6 +90,23 @@
       </properties>
     </dependency>
 
+    <!-- used to talk to SkyNodes (instead of Axis) see SkyNodeClient_* -->
+    <dependency>
+      <id>activation</id>
+      <version>1.0.2</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+    <dependency>
+      <id>soap</id>
+      <version>2.3.1</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+
+    <!-- common UI stuff -->
     <dependency>
          <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-ui</artifactId>

@@ -1,5 +1,5 @@
 /*
- * $Id: NullTarget.java,v 1.1 2004/11/09 17:42:22 mch Exp $
+ * $Id: NullTarget.java,v 1.2 2004/11/10 22:01:50 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -10,9 +10,8 @@ package org.astrogrid.slinger.targets;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.URI;
-import org.astrogrid.community.Account;
 import java.net.URISyntaxException;
+import org.astrogrid.community.Account;
 
 /**
  * Convenience null target for testing - output is written out to NullWriter and
@@ -51,6 +50,9 @@ public class NullTarget extends UriTarget {
 }
 /*
  $Log: NullTarget.java,v $
+ Revision 1.2  2004/11/10 22:01:50  mch
+ skynode starts and some fixes
+
  Revision 1.1  2004/11/09 17:42:22  mch
  Fixes to tests after fixes for demos, incl adding closable to targetIndicators
 

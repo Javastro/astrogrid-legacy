@@ -1,24 +1,16 @@
 /*
- * $Id: AttemptAbort.java,v 1.4 2004/11/09 17:42:22 mch Exp $
+ * $Id: AttemptAbort.java,v 1.5 2004/11/10 22:01:50 mch Exp $
  */
 
 package org.astrogrid.datacenter.servlet;
-import org.astrogrid.webapp.*;
 
 import java.io.IOException;
-import java.net.URL;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.community.Account;
-import org.astrogrid.datacenter.query.SimpleQueryMaker;
-import org.astrogrid.datacenter.query.Query;
-import org.astrogrid.datacenter.returns.ReturnSpec;
-import org.astrogrid.slinger.targets.TargetMaker;
 import org.astrogrid.datacenter.service.DataServer;
 import org.astrogrid.datacenter.service.ServletHelper;
+import org.astrogrid.webapp.DefaultServlet;
 
 /**
  * A servlet that attempts to abort the given query with the given ID
@@ -40,7 +32,7 @@ public class AttemptAbort extends DefaultServlet {
       }
       
       try {
-         server.abortQuery(Account.ANONYMOUS, queryId);
+         server.abortQuery(ServletHelper.getUser(request), queryId);
       }
       catch (Throwable th) {
          LogFactory.getLog(request.getContextPath()).error(th);

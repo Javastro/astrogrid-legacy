@@ -1,5 +1,5 @@
 /*
- * $Id: TargetIndicator.java,v 1.1 2004/11/09 17:42:22 mch Exp $
+ * $Id: TargetIndicator.java,v 1.2 2004/11/10 22:01:50 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,18 +7,10 @@
 package org.astrogrid.slinger.targets;
 
 
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import org.astrogrid.community.Account;
-import org.astrogrid.store.Agsl;
-import org.astrogrid.store.Ivorn;
-import org.astrogrid.store.Msrl;
 
 /**
  * Indicates the target where the results are to be sent.  TargetIndicators
@@ -57,6 +49,9 @@ public interface TargetIndicator  {
 }
 /*
  $Log: TargetIndicator.java,v $
+ Revision 1.2  2004/11/10 22:01:50  mch
+ skynode starts and some fixes
+
  Revision 1.1  2004/11/09 17:42:22  mch
  Fixes to tests after fixes for demos, incl adding closable to targetIndicators
 

@@ -1,5 +1,5 @@
 /*
- * $Id: ServletHelper.java,v 1.11 2004/11/09 17:42:22 mch Exp $
+ * $Id: ServletHelper.java,v 1.12 2004/11/10 22:01:50 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -73,7 +73,12 @@ public class ServletHelper
    /**
     * Gets the user details from the request */
    public static Account getUser(HttpServletRequest request)  {
-      return Account.ANONYMOUS;
+      Account user = Account.ANONYMOUS;
+      //for information only
+      if (request.getParameter("UserName") != null) {
+         user = new Account(request.getParameter("UserName"), "Unknown", null);
+      }
+      return user;
    }
 
    /**

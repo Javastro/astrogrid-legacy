@@ -6,7 +6,6 @@
 package org.astrogrid.datacenter.delegate;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 
 /**
@@ -27,6 +26,9 @@ public interface DatacenterClient
 
 /*
 $Log: DatacenterClient.java,v $
+Revision 1.3  2004/11/10 22:01:50  mch
+skynode starts and some fixes
+
 Revision 1.2  2004/11/03 00:17:56  mch
 PAL_MCH Candidate 2 merge
 

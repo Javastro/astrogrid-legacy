@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplication.java,v 1.10 2004/11/09 17:42:22 mch Exp $
+/*$Id: DatacenterApplication.java,v 1.11 2004/11/10 22:01:50 mch Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,7 @@ package org.astrogrid.datacenter.service.v06;
 
 import EDU.oswego.cs.dl.util.concurrent.Executor;
 import java.io.IOException;
+import java.io.StringWriter;
 import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -30,9 +31,9 @@ import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.query.QueryState;
 import org.astrogrid.datacenter.query.SimpleQueryMaker;
 import org.astrogrid.datacenter.service.DataServer;
-import org.astrogrid.slinger.targets.StreamTarget;
 import org.astrogrid.slinger.targets.TargetIndicator;
 import org.astrogrid.slinger.targets.TargetMaker;
+import org.astrogrid.slinger.targets.WriterTarget;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.xml.sax.SAXException;
 
@@ -40,6 +41,9 @@ import org.xml.sax.SAXException;
  * <p />
  * Datacenter already has a framework for starting asynchronous queries and then monitoring their progress.
  * This class wraps the datacenter framework, mapping querier events into events in the CEA framework.
+ *
+ * There is one instance of this class for each query
+ *
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Jul-2004
  *
  */
@@ -121,11 +125,18 @@ public class DatacenterApplication extends AbstractApplication implements Querie
       createAdapters();
       try {
          ParameterValue resultTarget = findOutputParameter(DatacenterApplicationDescription.RESULT);
-         //TargetIndicator ti = CEATargetMaker.makeIndicator((DatacenterParameterAdapter) findOutputParameterAdapter(DatacenterApplicationDescription.RESULT));
-         if ((resultTarget.getValue() == null) || (resultTarget.getValue().trim().length() == 0)) {
-            throw new CeaException("ResultTarget value is empty");
+         TargetIndicator ti = null;
+         if (resultTarget.getIndirect()==true) {
+            //results will go to the URI given in the parameter
+            if ((resultTarget.getValue() == null) || (resultTarget.getValue().trim().length() == 0)) {
+               throw new CeaException("ResultTarget is indirect but value is empty");
+            }
+            ti = TargetMaker.makeIndicator(resultTarget.getValue());
+         } else {
+            //direct-to-cea target, so results must get written to a string to be inserted into the
+            //parametervalue when complete (see queryStatusChanged)
+            ti = TargetMaker.makeIndicator(new StringWriter(), true); //close stream when finished writing to it
          }
-         TargetIndicator ti = TargetMaker.makeIndicator(resultTarget.getValue());
 
          String resultsFormat = (String)findInputParameterAdapter(DatacenterApplicationDescription.FORMAT).process();
          Query query = buildQuery(getApplicationInterface());
@@ -220,28 +231,14 @@ public class DatacenterApplication extends AbstractApplication implements Querie
          
       } else if (state.equals(QueryState.FINISHED)) {
          ParameterValue result = findOutputParameter(DatacenterApplicationDescription.RESULT);
-         /*
-         if (result.getExternalValue() == null) {
-            //if the output parameter indicates that the results are to be written to a string, then
-            //now that the query is finished we can set the internal value of that parameter to the
-            //string that contains the results, from a StringWriter created as part of
-            //CEATargetMaker.makeIndicator
+         if (result.getIndirect() != true) {
+            //if the results were to be directed to CEA, they will be stored in a StringWriter in
+            //the WriterTarget
             WriterTarget target = (WriterTarget) querier.getQuery().getTarget();
             StringWriter sw = (StringWriter) target.resolveWriter(acc);
-            result.setInternalValue(sw.toString() );
+            result.setValue(sw.toString() );
          }
-          else */{
-            //if it's an external value - eg a URL - then we need to close that stream
-            try {
-               TargetIndicator target = querier.getQuery().getTarget();
-               if (target instanceof StreamTarget) {
-                  target.resolveStream(acc).close();
-               }
-            }
-            catch (IOException ioe) {
-               logger.error(ioe+" closing StreamTarget");
-            }
-         }
+
          this.setStatus(Status.COMPLETED);
          this.reportMessage(qs.toString());
          
@@ -272,6 +269,9 @@ public class DatacenterApplication extends AbstractApplication implements Querie
 
 /*
  $Log: DatacenterApplication.java,v $
+ Revision 1.11  2004/11/10 22:01:50  mch
+ skynode starts and some fixes
+
  Revision 1.10  2004/11/09 17:42:22  mch
  Fixes to tests after fixes for demos, incl adding closable to targetIndicators
 
