@@ -1,4 +1,4 @@
-/*$Id: AdqlQueryTranslatorTest.java,v 1.6 2004/04/01 19:03:55 eca Exp $
+/*$Id: AdqlQueryTranslatorTest.java,v 1.7 2004/04/19 10:27:23 eca Exp $
  * Created on 29-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,8 +15,8 @@ import java.io.Reader;
 import java.util.Properties;
 import junit.framework.TestCase;
 import org.astrogrid.datacenter.adql.generated.ogsadai.Select;
-import org.astrogrid.datacenter.queriers.sql.deprecated.QueryTranslator;
-
+//import org.astrogrid.datacenter.queriers.sql.deprecated.QueryTranslator;
+import org.astrogrid.datacenter.queriers.sql.deprecated.ogsadai.QueryTranslator;
 /** test the query translator - maybe n the wrong package, but convenient to have it here for now.
  * @author Noel Winstanley nw@jb.man.ac.uk 29-Aug-2003
  * * @todo add wider range of tests.
@@ -136,6 +136,13 @@ public class AdqlQueryTranslatorTest extends TestCase {
 
 /* 
 $Log: AdqlQueryTranslatorTest.java,v $
+Revision 1.7  2004/04/19 10:27:23  eca
+Updated imports to call 
+import org.astrogrid.datacenter.queriers.sql.deprecated.ogsadai.QueryTranslator
+instead of
+
+import org.astrogrid.datacenter.queriers.sql.deprecated.QueryTranslator;
+
 Revision 1.6  2004/04/01 19:03:55  eca
 Updates sample ADQL queries and added some "fast" queries with
 no ORDER BY statements.
