@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/data/Attic/GroupData.java,v $</cvs:source>
- * <cvs:author>$Author: KevinBenson $</cvs:author>
- * <cvs:date>$Date: 2003/09/08 11:01:35 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:author>$Author: dave $</cvs:author>
+ * <cvs:date>$Date: 2003/09/09 10:02:17 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: GroupData.java,v $
+ *   Revision 1.3  2003/09/09 10:02:17  dave
+ *   Fixed problems introduced by conflicts.
+ *
  *   Revision 1.2  2003/09/08 11:01:35  KevinBenson
  *   A check in of the Authentication authenticateToken roughdraft and some changes to the groudata and community data
  *   along with an AdministrationDelegate
@@ -20,11 +23,9 @@ package org.astrogrid.community.policy.data ;
 
 public class GroupData
 	{
-      
-   public static final String MULTI_TYPE = "MULTI";
-   
-   public static final String SINGLE_TYPE = "SINGLE";
-   
+	public static final String MULTI_TYPE = "MULTI";
+	public static final String SINGLE_TYPE = "SINGLE";
+
 	/**
 	 * Public constructor.
 	 *
@@ -100,31 +101,30 @@ public class GroupData
 		{
 		this.description = value ;
 		}
-      
-      /**
-       * Our Group description.
-       *
-       */
-      private String type;
 
-      /**
-       * Access to our Group description.
-       *
-       */
-      public String getType()
-         {
-         return this.type ;
-         }
+	/**
+	 * Our Group type, MULTI_TYPE or SINGLE_TYPE.
+	 * Defaults to MULTI_TYPE if not set.
+	 * Maybe should change this to an integer to make it easier to check in Java.
+	 *
+	 */
+	private String type = MULTI_TYPE ;
 
-      /**
-       * Access to our Group description.
-       *
-       */
-      public void setType(String value)
-         {
-         this.type = value ;
-         }
-      
-      
+	/**
+	 * Access to our Group type.
+	 *
+	 */
+	public String getType()
+	 {
+	 return this.type ;
+	 }
 
+	/**
+	 * Access to our Group description.
+	 *
+	 */
+	public void setType(String value)
+		{
+		this.type = value ;
+		}
 	}

@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/castor/hsqldb/Attic/mapping.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/09/08 21:01:28 $</cvs:date>
-    | <cvs:version>$Revision: 1.7 $</cvs:version>
+    | <cvs:date>$Date: 2003/09/09 10:02:17 $</cvs:date>
+    | <cvs:version>$Revision: 1.8 $</cvs:version>
     | <cvs:log>
     |   $Log: mapping.xml,v $
+    |   Revision 1.8  2003/09/09 10:02:17  dave
+    |   Fixed problems introduced by conflicts.
+    |
     |   Revision 1.7  2003/09/08 21:01:28  dave
     |   Added PATCH to build.xml to include classes in Castor mapping - still broke though
     |
@@ -71,39 +74,6 @@
 		</field>
 	</class>
 	
-	<!-- JDO and XML Mapping for Accounts -->
-	<class name="org.astrogrid.community.authentication.data.SecurityToken" identity="ident">
-		<map-to table="securitytokens" xml="token"/>
-		<field name="ident" type="integer">
-			<sql name="ident" type="integer"/>
-			<bind-xml node="attribute"/>
-		</field>
-		<field name="token" type="string">
-			<sql name="token" type="char"/>
-			<bind-xml node="element"/>
-		</field>
-		<field name="target" type="string">
-			<sql name="token" type="char"/>
-			<bind-xml node="element"/>
-		</field>
-		<field name="account" type="string">
-			<sql name="account" type="char"/>
-			<bind-xml node="element"/>
-		</field>
-		<field name="used" type="boolean">
-			<sql name="used" type="bit"/>
-			<bind-xml node="element"/>
-		</field>
-		<field name="expirationDate" type="date">
-			<sql name="expirationdate" type="timestamp"/>
-			<bind-xml node="element"/>
-		</field>
-		<field name="todaysDate" type="date">
-			<sql name="todaysdate" type="timestamp"/>
-			<bind-xml node="element"/>
-		</field>
-	</class>
-
 	<!-- JDO and XML Mapping for Groups -->
 	<class name="org.astrogrid.community.policy.data.GroupData" identity="ident">
 		<map-to table="groups" xml="group"/>
@@ -146,4 +116,40 @@
 		</field>
 	</class>
 
+<!--+
+	| JDO and XML Mapping for SecurityToken.
+	| Commented out for now to get build to work .... Dave.
+	<class name="org.astrogrid.community.authentication.data.SecurityToken" identity="ident">
+		<map-to table="securitytokens" xml="token"/>
+		<field name="ident" type="integer">
+			<sql name="ident" type="integer"/>
+			<bind-xml node="attribute"/>
+		</field>
+		<field name="token" type="string">
+			<sql name="token" type="char"/>
+			<bind-xml node="element"/>
+		</field>
+		<field name="target" type="string">
+			<sql name="token" type="char"/>
+			<bind-xml node="element"/>
+		</field>
+		<field name="account" type="string">
+			<sql name="account" type="char"/>
+			<bind-xml node="element"/>
+		</field>
+		<field name="used" type="boolean">
+			<sql name="used" type="bit"/>
+			<bind-xml node="element"/>
+		</field>
+		<field name="expirationDate" type="date">
+			<sql name="expirationdate" type="timestamp"/>
+			<bind-xml node="element"/>
+		</field>
+		<field name="todaysDate" type="date">
+			<sql name="todaysdate" type="timestamp"/>
+			<bind-xml node="element"/>
+		</field>
+	</class>
+	|
+	+-->
 </mapping>
