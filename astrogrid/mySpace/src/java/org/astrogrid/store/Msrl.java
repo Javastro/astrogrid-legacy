@@ -1,5 +1,5 @@
 /*
- * $Id: Msrl.java,v 1.8 2004/03/25 12:27:19 mch Exp $
+ * $Id: Msrl.java,v 1.9 2004/05/12 09:00:16 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -73,6 +73,11 @@ public class Msrl
    public Msrl(String msrl) throws MalformedURLException {
       
       assert msrl.toLowerCase().startsWith(SCHEME+":") : msrl+" is not a MySpace RL - should be of the form "+FORM;
+
+      //?? the above doesn't seem to work on twmberlwm; do ordinary check
+      if (!msrl.toLowerCase().startsWith(SCHEME+":")) {
+         throw new IllegalArgumentException(msrl+" is not a MySpace RL - should be of the form "+FORM);
+      }
       
       //look for path + server fragment
       int hashPos = msrl.indexOf('#');
@@ -201,6 +206,9 @@ public class Msrl
 
 /*
 $Log: Msrl.java,v $
+Revision 1.9  2004/05/12 09:00:16  mch
+Added extra check for illegal string on creation
+
 Revision 1.8  2004/03/25 12:27:19  mch
 Tidied doc
 
