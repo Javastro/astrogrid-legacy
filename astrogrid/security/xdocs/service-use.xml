@@ -1,0 +1,138 @@
+<?xml version="1.0"?>
+
+<document>
+
+  <title>Use of security facade from a web service</title>
+  
+  <body>
+  
+    <section name="Interoperability">
+    
+      <p>
+      Unfortunately, it has not been possible to build the server side of
+      the security facade to be portable between web-service environments.
+      The service facade only works when built into a web-service made with
+      Apache Axis. Some details of the implementation use Axis-specific
+      classes and the facade depends on Axis' method for
+      setting up a handler chain.
+      </p>
+      <p>
+      In contrast, the client-side facade and the protocol used to transmit
+      the credentials are independent of Axis. Clients built with another
+      web-service toolkit should interoperate with this server-side facade
+      without problems.
+      </p>
+    
+    </section>
+    
+    <section name="Service APIs">
+    
+      <p>
+      A service implementation should use two classes to operate the security
+      facade. The handler class ServiceCredentialHandler must be declared in
+      the deployment descriptor, as described below; the service implementation
+      should not call this class directly. The facade proper is the class
+      ServiceSecurityGuard and this should be called by methods implementing
+      web-service operations to check the results of authentication.
+      </p>
+      <p>
+      A service implementation may also use the classes representing
+      credentials: NonceToken, AccountName and Password.
+      </p>
+      <p>
+      Other classes in org.astrogrid.security and sub-packages are for
+      internal use only.
+      </p>
+    
+    </section>
+
+    <section name="Handler chain">
+    
+      <p>
+      Messages are sent to the service with credentials encoded in the
+      SOAP headers.
+      A JAX-RPC message-handler is used to extract the credentials from
+      the header. The handler authenticates the request by using the
+      credentials in a JAAS framework. In the current implementation,
+      the handler sends NonceTokens out to the Community service for
+      validation.
+      </p>
+      <p>
+      The service must use a WSDD deployment-descriptor that configures
+      the security handler. The handler class must be declared using this
+      WSDD fragment:
+      </p>
+      <pre>
+      <![CDATA[
+      <deployment xmlns="http://xml.apache.org/axis/wsdd/"
+         xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+        <!-- define the logging handler configuration -->
+        <handler name="security" type="java:org.astrogrid.security.ServiceSecurityHandler"/>
+        <!-- define the service, using the security handler we just defined -->
+        <service name="..." provider="java:RPC">
+          <requestFlow>
+            <handler type="security"/>
+          </requestFlow>
+          <parameter name="className" value="..."/>
+          <parameter name="allowedMethods" value="..."/>
+        </service>
+      </deployment>
+      ]]>
+      </pre>
+      <p>
+      In this WSDD, the name, implementing class and allowed methods of the
+      service must be filled in to suit the service in question. Note that the
+      handler is set into the flow of "request" messages inbound to the service.
+      </p>
+    
+    </section>
+    
+    <section name="Checking authentication">
+    
+      <p>
+      When a request messages is received there are three 
+      possible results for authentication.
+      </p>
+      <ol>
+        <li>Authentication fails</li>
+        <li>There are no credentials, so authentication is not attempted.</li>
+        <li>Authentication succeeds.</li>
+      </ol>
+      <p>
+      Case 1 is dealt with in the handler chain. The security handler aborts the
+      handler chain when authentication fails. Therefore, the request is rejected
+      and the method implementing the operation is never called. The service must
+      distinguish the other cases by calling the security facade explicitly.
+      </p>
+      <p>
+      A service implementation that wishes to test authentication must acquire a
+      ServiceSecurityGuard configured for the message context. The guard contains
+      the credentials. The service does this by calling the static method 
+      ServiceSecurityGuard.getInstanceFromContext(). Calling the constructor for
+      ServiceSecurityGuard doesn't work here. The constructor would build an
+      empty object that has no connection with the request message.  Since the
+      ServiceSecurityGuard is specific to one request message it makes no sense to
+      store and reuse it.
+      </p>
+      <p>
+      Having acquired a ServiceSecurityGuard, the service may call the convenience
+      method isAnonymous() to find out whether authentication was attempted or not.
+      If this method returns false, then the service knows that authentication 
+      succeeded.
+      </p>
+      <p>
+      The service may get the caller's identity from the ServiceSecurityGuard. The
+      convenience function getUsername() returns the text form of the name. In the
+      current implementation, this will be an IVORN.
+      </p>
+      <p>
+      The service may also use JAAS methods to examine the caller's credentials and
+      identity. The accessor getSubject() on the SecurityGuard returns a reference
+      to the JAAS Subject. Please see the JAAS documentation for details of the Subject.
+      </p>
+      
+    </section>
+    
+  </body>
+  
+ </document>

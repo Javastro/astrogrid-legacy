@@ -1,0 +1,208 @@
+<?xml version="1.0"?>
+
+<document>
+
+  <title>Architecture of AstroGrid authentication system</title>
+  
+  <body>
+      
+    <section name="Main components">
+      <p>
+      The security system contains these principal parts.
+      </p>
+      <ul>
+        <li>Facades by which clients and services use the system.</li>
+        <li>Classes representing identities and credentials.</li>
+        <li>SAAJ-based "codecs" to encode credentials into a SOAP 
+        message-header and to parse them from a SOAP message-header.</li>
+        <li>JAX-RPC handlers to activate the codecs when messages
+        are transmitted or received.</li>
+        <li>A framework for authenticating a request based on received
+        credentials.</li>
+        <li>An authentication service that issues and validates credentials.</li>
+      </ul>
+      <p>
+      The authentication service for the current implementation is the AstroGrid
+      Community service. This is a separately-published AstroGrid component. The
+      Community service is deployed as a web service in which users are registered.
+      The security system cannot authenticate users unless they are registered in
+      a community and the service for their community is on-line.
+      </p>
+      <p>
+      The other parts of the security system are libraries of classes to be used
+      in clients needing to send secured messages and in services
+      needing to authenticate the senders of messages.
+      </p>
+    </section>
+    
+    <section name="Facade">
+      <p>
+      The facade abstracts an application's view of the security system. This
+      allows the system itself to evolve without undue disruption to the
+      application. The current implementation of the security system is 
+      considered temporary; major changes are expected.
+      </p>
+      <p>
+      The facade is based on the class SecurityGuard which is a container for
+      identities and credentials. The subclasses ClientSecurityGuard and
+      ServiceSecurityGuard add the logic for handling messages and working
+      with the authentication service, on the client and server sides
+      respectively.
+      </p>
+      <p>
+      Applications should only need to work directly with the SecurityGuard 
+      classes plus the classes representing credentials.
+      </p>
+      <p>
+      Where client-side code for talking to services is formed into delegate
+      classes, as is standard in AstroGrid, a ClientSecurityGuard loaded
+      with appropriate credentials should be passed to each delegate. The
+      application is responsible for creating the ClientSecurityGuard and
+      populating it with credentials. The delegates are responsible for
+      applying the ClientSecurityGuard to messages.
+      </p>
+      <p>
+      Web services implementations use ServiceSecurityGuard to test the
+      results of authentication and to determine the caller's identity.
+      </p>
+    </section>
+    
+    <section name="Message protocol and codecs">
+      <p>
+      Credentials and identities are transmitted in SOAP headers formed
+      according to the 
+      <a href="http://schemas.xmlsoap.org/ws/2002/07/secext">WS-Security draft standard of July 2002</a>
+      (for which the namespace URI is http://schemas.xmlsoap.org/ws/2002/07/secext).
+      </p>
+      <p>
+      WS-Security is an <a href="http://www.oasis-open.org">OASIS</a>draft standard.
+      The standard is evolving, and the July 2002 draft is not the most recent.
+      The AstroGrid system may move to later versions of WS-Security in subsequent
+      releases. Therefore, the message protocol should be considered unstable at this
+      time. However, the parts of WS-Security that AstroGrid uses seem to be stable, so
+      the disruption of this change should be small. It is likely that only the
+      namespace URI will need to change.
+      </p>
+      <p>
+      The security system makes a Security element at the top level of the SOAP
+      header. Inside that, it creates one UsernameToken element. The credentials
+      uses in the grid are represented as an {urn:astrogrid:security:wsse}NonceToken
+      element, which is an AstroGrid extension to WS-Security. The NonceToken is
+      treated as an opaque object whose value is defined by the authentication
+      service.  See below for more discussions of NonceTokens.
+      </p>
+      <p>
+      The AstroGrid class WsseHeaderElement is the codec class implementing the
+      Security header from WS-Security. It has two static methods:
+      </p>
+      <ul>
+        <li>write: add a Security header to a SOAP message based on credentials
+        given in a JAAS Subject;</li>
+        <li>parse: read a Security header, extract the credentials and store them
+        in a JAAS subject.</li>
+      </ul>
+      <p>
+      Currently, this is the only codec class in the system.  Others may be added if
+      the security system starts to use extra header elements.
+      </p>
+    </section>
+    
+    <section name="Message handlers">
+      <p>
+      The security system includes two JAX-RPC message-handlers.
+      </p>
+      <p>
+      ClientCredentialHandler takes credentials from a JAAS Subject and
+      passes them to the codec classes such that they are serialized into
+      the SOAP header. The Subject is present in the handlers configuration
+      and the configuration is set up by the ClientSecurityGuard when the
+      handler chain is deployed.
+      </p>
+      <p>
+      ServiceCredentialHandler calls the codecs to extract credentials into
+      a JAAS subject, then uses JAAS to attempt authentication of that
+      Subject. If authentication fails, the handler aborts the handler chain
+      and a fault is returned to the client; in this case, the class implementing
+      the service is never called. Upon successful authentication, the Subject
+      is copied into the Axis message context, under the property name "Subject".
+      From there, it can be retrieved by the ServiceSecurityGuard when the latter
+      is called from a method implementing a web-service operation.
+      </p>
+    </section>
+    
+    <section name="Authentication framework">
+      <p>
+      The security system uses JAAS for authentication. JAAS provides a framework
+      into which various authentication mechanisms can be plugged.  The exact 
+      method of authentication tried depends on the credentials present in the
+      JAAS subject and the JAAS configuration set by the application.
+      </p>
+      <p>
+      Currently, the security system supports only authentication by nonce tokens.
+      The class org.astrogrid.security.jaas.NonceTokenCheck is the plug-in for this.
+      It implements the LoginModule interface of JAAS and operates when the login()
+      method is called on a JAAS LoginContext. The class 
+      org.astrogrid.security.jaas.SimpleLoginConfiguration is a JAAS configuration that
+      requires the use of NonceTokenCheck for all JAAS authentications. The server-side
+      handler sets this configuration as each messages is handled.
+      </p>
+      <p>
+      In future, the security system may be more flexible.  JAAS will still be the
+      framework, but different authentication mechanisms may be supported; e.g. digital
+      signature, and WS-SecureConversation. In place
+      of the current, hard-coded configuration for JAAS, a configuration may be read
+      from file, such that different services can use different mechanisms.
+      </p>
+    </section>
+    
+    <section name="Authentication with nonce tokens">
+      <p>
+      "Nonce tokens" are specific to AstroGrid. The ideas may be in play elsewhere,
+      but the implementation is internal to AstroGrid. A nonce token combines a 
+      username, in the IVORN form understood by the AstroGrid community service,
+      with a unique identifier or nonce.
+      </p>
+      <p>
+      The nonce acts as a surrogate password.
+      The receiving service validates the nonce by sending it to the community
+      service that issued the token. The community keeps track of which nonces have
+      been issued and which have been tested. It will only acknowledge a given
+      nonce as valid for one test; subsequent tests show it as invalid. If a nonce is
+      validated successfully, the comunity sends back a new token with the same account
+      name and a new nonce. Thus,
+      the nonce is used as a password which can be "safely" transmitted in clear text
+      because it can only be used once.
+      </p>
+      <p>
+      A client that sends a nonce token in a request message to a service cannot
+      use the same token again and does not receive a replacement token from
+      the community.  Therefore, the client typically asks the community to "split"
+      the token: i.e. to check the token (which invalidates
+      it) and to replace it with two new tokens. The client then keeps one of the
+      split tokens as the seed for the next operation and sends the other in the
+      message to the service.
+      </p>
+      <p>
+      The client obtains the initial nonce token by signing on to the grid with
+      an account name and password. In fact, the client signs on to the community
+      service that manages the account in question and receives a nonce token 
+      in reply.
+      </p>
+      <p>
+      There is an assumption that a nonce token is safe because it is used immediately
+      after it is first transmitted on the net (by the community to the client or service)
+      and therefore cannot be used by an attacker who copies messages. This assumption
+      is weak and the system is not truly secure against attack. In particular,
+      a token retained after a splitting operation is unsafe because its nonce has
+      been exposed on the net and may be stored for a long time before it
+      is used.  The nonce-token mechanism is made much safer if the communications
+      with the community service, to issue tokens, are protected by transport-level
+      security: i.e. calls are made over HTTPS. The choice of actual transport protocol is
+      made in the deployment of the community service, not in the coding of the
+      security libraries.
+      </p>
+    </section>
+  
+  </body>
+
+</document>
