@@ -70,7 +70,8 @@
       <war.bundle>true</war.bundle>
     </properties>
    </dependency>
-       <dependency>
+   <!-- are the registry and community libs needed here for the store client? -->
+   <dependency>
         <artifactId>astrogrid-store-client</artifactId>
         <groupId>org.astrogrid</groupId>
         <version>${pom.currentVersion}</version>
@@ -78,6 +79,10 @@
       <war.bundle>true</war.bundle>
     </properties>
     </dependency>
+    <!-- NWW: 12/7/04 - this dependency is only required by one legacy, non functional class
+          - JobNotifyServiceListener. Removing this class (part of AxisDataServer_v0_4_1) would
+          tidy things up a lot. Current jes servers won't ever use this interface.
+    -->
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-jes-delegate</artifactId>
@@ -87,16 +92,33 @@
       </properties>
     </dependency>
 
-    <!-- required for the CEA interface -->
+    <!-- required for the CEA server -->
     <dependency>
-      <id>astrogrid-workflow-objects</id>
+        <artifactId>astrogrid-cea-server</artifactId>
+        <groupId>org.astrogrid</groupId>
+        <version>${pom.currentVersion}</version>
+        <properties>
+                <war.bundle>true</war.bundle>
+        </properties>
+    </dependency>
+    <dependency>
+      <artifactId>astrogrid-workflow-objects</artifactId>
       <groupId>org.astrogrid</groupId>
       <version>${pom.currentVersion}</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
     </dependency>
-    <!-- OGSA-DAI CODE --> 
+    <dependency>
+      <id>picocontainer</id>
+      <version>1.0</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+
+
+    <!-- OGSA-DAI CODE -->
     <!--
     <dependency>
 
@@ -154,7 +176,7 @@
         <war.bundle>true</war.bundle>
       </properties>
     </dependency>
-    
+
   </dependencies>
 
   <!-- build information for the project -->
