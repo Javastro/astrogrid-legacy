@@ -439,35 +439,38 @@ if (shell.evaluateWhileCondition(whileObj,states,rules)) {
 
 <xsl:template match="wf:for" name="for">
 <xsl:comment>for</xsl:comment>
-<!-- rules for a for - similar to while. 
-unsure whether the environment should be copied back out of a for loop. should we have child environments here instead.
-hmmm - subtle. further work
-@todo translate this body
--->
+<!-- set up loop variables etc -->
 <rule>
 	 <name>for-init</name>
 	 <trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == START</trigger> 
 	<body>
-_<xsl:value-of select="generate-id()"/>_iter = iter(<xsl:value-of select="@range" />)
-_setStatus('<xsl:value-of select="generate-id()"/>',STARTED)
-try:
-		<xsl:value-of select="@var" /> = _<xsl:value-of select="generate-id()"/>_iter.next()
-		_setStatus('<xsl:value-of select="generate-id(./*)" />',START)
-		_setEnv('<xsl:value-of select="generate-id(./*)"/>',_getEnv('<xsl:value-of select="generate-id()"/>'))		
-except:
-		_setStatus('<xsl:value-of select="generate-id()"/>',FINISHED)		
+	forObj = jes.getId('<xsl:value-of select="generate-id()"/>');
+	l = shell.evaluateForItems(forObj,states,rules);
+	if (! (l instanceof java.util.List)) { <!-- try and coerce it -->
+	l = l.toList();
+	}
+	states.getEnv('<xsl:value-of select="generate-id()"/>' + "-loopvar").set("list",l);	
+	states.getEnv('<xsl:value-of select="generate-id()"/>' + "-loopvar").set("index",0);
+    states.setEnv('<xsl:value-of select="generate-id(./*)"/>', states.getEnv('<xsl:value-of select="generate-id()"/>'));
+   states.setStatus('<xsl:value-of select="generate-id()"/>',STARTED);
 	</body>
 </rule>
 
 <rule>
 	 <name>for-loop</name>
-	 <trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == STARTED &amp;&amp; states.getStatus('<xsl:value-of select="generate-id(./*)"/>') == FINISHED</trigger> 
+	 <trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == STARTED 
+		&amp;&amp; (states.getStatus('<xsl:value-of select="generate-id(./*)"/>') == FINISHED || states.getStatus('<xsl:value-of select="generate-id(./*)"/>') == UNSTARTED)</trigger> 
 	<body>
-try:
-		<xsl:value-of select="@var" /> = _<xsl:value-of select="generate-id()"/>_iter.next()
-		_setStatus('<xsl:value-of select="generate-id(./*)" />',START)
-except:
-		_setStatus('<xsl:value-of select="generate-id()"/>',FINISHED)	
+		index = states.getEnv('<xsl:value-of select="generate-id()"/>' + "-loopvar").get("index");
+		list= states.getEnv('<xsl:value-of select="generate-id()"/>' + "-loopvar").get("list");
+		if (index == list.size()) {<!-- no more elements -->
+			states.setStatus('<xsl:value-of select="generate-id()"/>',FINISHED);
+		} else {
+			i = list.get(index);
+			states.getEnv('<xsl:value-of select="generate-id()"/>' + "-loopvar").set("index",++index);
+			states.getEnv('<xsl:value-of select="generate-id(./*)"/>').set('<xsl:value-of select="@var" />',i);
+			states.setStatus('<xsl:value-of select="generate-id(./*)" />',START);
+		}
 	</body>
 </rule>
 </xsl:template>

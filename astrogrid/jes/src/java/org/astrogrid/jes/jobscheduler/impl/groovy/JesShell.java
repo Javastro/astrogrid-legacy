@@ -1,4 +1,4 @@
-/*$Id: JesShell.java,v 1.7 2004/08/05 10:56:23 nw Exp $
+/*$Id: JesShell.java,v 1.8 2004/08/05 14:38:15 nw Exp $
  * Created on 29-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.jes.jobscheduler.impl.groovy;
 
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
+import org.astrogrid.workflow.beans.v1.For;
 import org.astrogrid.workflow.beans.v1.If;
 import org.astrogrid.workflow.beans.v1.Input;
 import org.astrogrid.workflow.beans.v1.Output;
@@ -28,8 +29,11 @@ import groovy.lang.Script;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /** class that encapuslates the execution and evaluation of grouvy code.
  * @author Noel Winstanley nw@jb.man.ac.uk 29-Jul-2004
@@ -146,6 +150,11 @@ public Object evaluateUserExpr(String expr,String id,ActivityStatusStore map, Ru
         return evaluateUserExpr(whileObj.getTest(), whileObj.getId(),map,rules);
     }
     
+    public Object evaluateForItems(For forObj,ActivityStatusStore map,RuleStore rules) throws CompilationFailedException, IOException {
+        return  evaluateUserExpr(forObj.getItems(),forObj.getId(),map,rules);
+   
+    }
+    
     public Tool evaluateTool(Tool original,String id,ActivityStatusStore map, RuleStore rules) throws CompilationFailedException, IOException {
         Tool copy = new Tool();
         copy.setInterface(original.getInterface());
@@ -255,6 +264,9 @@ public Object evaluateUserExpr(String expr,String id,ActivityStatusStore map, Ru
 
 /* 
 $Log: JesShell.java,v $
+Revision 1.8  2004/08/05 14:38:15  nw
+implemented sequential for construct.
+
 Revision 1.7  2004/08/05 10:56:23  nw
 implemented while loop construct
 
