@@ -1,5 +1,5 @@
 /*
- * $Id: FailbackConfig.java,v 1.17 2004/03/09 16:34:51 mch Exp $
+ * $Id: FailbackConfig.java,v 1.18 2004/03/12 13:22:34 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -440,7 +440,13 @@ public class FailbackConfig extends Config {
    public void setProperty(String key, Object value) {
       //note that we cannot store in the 'Properties' instance as that can
       //only handle strings
-      cache.put(key, value);
+      if (value == null) {
+         if (cache.containsKey(key)) {
+            cache.remove(key);
+         }
+      } else {
+         cache.put(key, value);
+      }
    }
 
    /**
@@ -553,6 +559,9 @@ public class FailbackConfig extends Config {
 }
 /*
 $Log: FailbackConfig.java,v $
+Revision 1.18  2004/03/12 13:22:34  mch
+Fix for null setProperty value
+
 Revision 1.17  2004/03/09 16:34:51  mch
 Added sysenv resolver & better error reporting
 
