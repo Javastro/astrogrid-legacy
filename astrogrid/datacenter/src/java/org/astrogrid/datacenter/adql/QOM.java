@@ -1,4 +1,4 @@
-/*$Id: QOM.java,v 1.2 2003/09/02 14:44:55 nw Exp $
+/*$Id: QOM.java,v 1.3 2003/09/08 09:34:56 nw Exp $
  * Created on 28-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -57,7 +57,7 @@ public interface QOM {
      * @todo could split the exceptions into those that may be thrown in traversal, and user exceptions.
      * @see DynamicVisitor
      */
-    public void acceptTopDown(DynamicVisitor v) throws Exception;
+    public void acceptTopDown(DynamicVisitor v) throws TraversalException, ProcessingException;
     
     /**Entry point for a dynamic visitor to process the object tree in a bottom-up manner (i.e. visit the child
      * nodes before their parents).
@@ -66,14 +66,14 @@ public interface QOM {
      * @throws Exception if an error occurs during traversal.
      * @see DynamicVisitor
      */
-    public void acceptBottomUp(DynamicVisitor v) throws Exception;
+    public void acceptBottomUp(DynamicVisitor v) throws TraversalException, ProcessingException;
 
 /**
  * 
  * @param v
  * @throws Exception
  */
-    public void callVisitor(DynamicVisitor v) throws Exception;
+    public void callVisitor(DynamicVisitor v) throws TraversalException, ProcessingException;
 
    
     /** compute the children elements of this element 
@@ -81,12 +81,15 @@ public interface QOM {
      * @todo - is it possible add an intermediate caching of results, so reflection only needs to be done one.
      *  
      */
-    public QOM[] getChildren() throws MappingException; 
+    public QOM[] getChildren() throws TraversalException; 
 }
 
 
 /* 
 $Log: QOM.java,v $
+Revision 1.3  2003/09/08 09:34:56  nw
+Improved exception handling
+
 Revision 1.2  2003/09/02 14:44:55  nw
 addedd interface to visitor pattern
 

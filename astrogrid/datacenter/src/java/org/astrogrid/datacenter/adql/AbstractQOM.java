@@ -1,4 +1,4 @@
-/*$Id: AbstractQOM.java,v 1.4 2003/09/04 09:22:10 nw Exp $
+/*$Id: AbstractQOM.java,v 1.5 2003/09/08 09:34:56 nw Exp $
  * Created on 28-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,15 +26,15 @@ import java.util.Enumeration;
 public abstract class AbstractQOM implements QOM {
     
     /** @see QOM#acceptBottomUp */
-     public void acceptBottomUp(DynamicVisitor v) throws Exception{
+     public void acceptBottomUp(DynamicVisitor v) throws  TraversalException, ProcessingException {
         QOM[] children = this.getChildren();
-        for (int i =0;i < children.length; i++) {
+        for (int i =0;i < children.length; i++) { 
             children[i].acceptBottomUp(v);
         }
         callVisitor(v);
     }
     /** @see QOM#acceptTopDown */
-    public void acceptTopDown(DynamicVisitor v) throws Exception {
+    public void acceptTopDown(DynamicVisitor v) throws TraversalException, ProcessingException {
         callVisitor(v);
         QOM[] children = this.getChildren();
         for (int i = 0; i < children.length; i++) {
@@ -49,7 +49,8 @@ public abstract class AbstractQOM implements QOM {
      * @todo - is it possible add an intermediate caching of results, so reflection only needs to be done one.
      *  
      */
-    public QOM[] getChildren() throws MappingException {
+    public QOM[] getChildren() throws TraversalException {
+        try {
         ClassDescriptorResolver resolver = new ClassDescriptorResolverImpl();        
         XMLClassDescriptor cd = resolver.resolve(this.getClass());
         XMLFieldDescriptor[] fields = cd.getElementDescriptors();
@@ -73,6 +74,9 @@ public abstract class AbstractQOM implements QOM {
             }
         }
         return (QOM[]) qomFields.toArray(new QOM[]{});
+        } catch (MappingException e) {
+            throw new TraversalException("Error calculating child nodes",e);
+        }
     }
  
     /** convenience collection class */
@@ -93,9 +97,8 @@ public abstract class AbstractQOM implements QOM {
    * most specific type, and then traversing up the QOM class hierarchy.
    * If no other more type-specific mathc is found, will call {@link DynamicVisitor#visit}
    * @param v the visiting object.
-   * @todo - finesse the exception types returned here - so can differentiate between user fault and fault in dynamic machinery
    */
-  public void callVisitor(DynamicVisitor v)  throws Exception{
+  public void callVisitor(DynamicVisitor v)  throws TraversalException, ProcessingException{
       Method m = null;
       Class c = this.getClass();
     while (m == null && c != null && c != AbstractQOM.class ) {
@@ -105,12 +108,20 @@ public abstract class AbstractQOM implements QOM {
           c = c.getSuperclass();
       }
     }
+    try {
     if (m != null) {
         // found the method, now call it.
          m.invoke(v,new Object[]{this});
     } else {
         // else use the default.
         v.visit(this);
+    }
+    } catch(InvocationTargetException e) {
+        throw new ProcessingException(e.getCause());
+    } catch (IllegalAccessException e) {
+        throw new TraversalException(e);
+    } catch (Exception e) {
+        throw new ProcessingException(e);
     }
   }
 
@@ -120,6 +131,9 @@ public abstract class AbstractQOM implements QOM {
 
 /* 
 $Log: AbstractQOM.java,v $
+Revision 1.5  2003/09/08 09:34:56  nw
+Improved exception handling
+
 Revision 1.4  2003/09/04 09:22:10  nw
 documentation fix
 
