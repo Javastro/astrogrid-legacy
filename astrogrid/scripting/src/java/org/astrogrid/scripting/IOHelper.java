@@ -1,4 +1,4 @@
-/*$Id: IOHelper.java,v 1.4 2004/12/06 20:03:03 clq2 Exp $
+/*$Id: IOHelper.java,v 1.5 2004/12/07 16:50:33 jdt Exp $
  * Created on 22-Nov-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -131,17 +131,17 @@ public class IOHelper {
 
     private final ProtocolLibrary protocolLib = (new DefaultProtocolLibraryFactory()).createLibrary();
     
-    /** create an external value that points to a uri */
+    /** create an external value that points to a vospace uri */
     public ExternalValue getExternalValue(String uri) throws InaccessibleExternalValueException, UnrecognizedProtocolException, URISyntaxException {
         return protocolLib.getExternalValue(uri);
     }
 
-    /** create an external value that points to a uri */    
+    /** create an external value that points to a vospace uri */    
     public ExternalValue getExternalValue(URI uri) throws InaccessibleExternalValueException, UnrecognizedProtocolException {
         return protocolLib.getExternalValue(uri);
     }
 
-    /** create an external value that points to a uri */    
+    /** create an external value that points to a vosapce uri */    
     public ExternalValue getExternalValue(URL uri) throws InaccessibleExternalValueException, UnrecognizedProtocolException, URISyntaxException {
         return protocolLib.getExternalValue(uri.toString());
     }
@@ -151,6 +151,12 @@ public class IOHelper {
 
 /* 
 $Log: IOHelper.java,v $
+Revision 1.5  2004/12/07 16:50:33  jdt
+merges from scripting-nww-805
+
+Revision 1.4.2.1  2004/12/07 14:47:58  nw
+got table manipulation working.
+
 Revision 1.4  2004/12/06 20:03:03  clq2
 nww_807a
 

@@ -1,4 +1,4 @@
-/*$Id: TableHelperTest.java,v 1.2 2004/12/06 20:03:03 clq2 Exp $
+/*$Id: TableHelperTest.java,v 1.3 2004/12/07 16:50:33 jdt Exp $
  * Created on 06-Dec-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -54,7 +54,7 @@ public class TableHelperTest extends TestCase {
         f.deleteOnExit();        
         ExternalValue val = io.getExternalValue(f.toURL().toString());
         assertNotNull(val);
-        helper.writeStarTable(val,table,"votable");
+        helper.writeTable(val,table,"votable");
         assertTrue(f.exists() && f.canRead());
         //test we can read it in again..
         StarTable table1 = helper.getBuilder().makeStarTable(val);
@@ -95,6 +95,12 @@ public class TableHelperTest extends TestCase {
 
 /* 
 $Log: TableHelperTest.java,v $
+Revision 1.3  2004/12/07 16:50:33  jdt
+merges from scripting-nww-805
+
+Revision 1.2.2.1  2004/12/07 14:47:58  nw
+got table manipulation working.
+
 Revision 1.2  2004/12/06 20:03:03  clq2
 nww_807a
 

@@ -21,7 +21,7 @@
                 <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
                 <unitTest>
                         <includes>
-                                <include>**/*.java</include>
+                                <include>**/*Test.java</include>
                         </includes>
                         <resources>
                                 <resource>
@@ -30,6 +30,7 @@
                                                 <include>**/*.properties</include>
                                                 <include>**/*.xml</include>
                                                 <include>**/*.votable</include>
+                                                <include>**/*.groovy</include>
                                         </includes>
                                 </resource>
                         </resources>
@@ -202,5 +203,17 @@
                 <version>2.0-1</version>
                 <url>http://www.star.bristol.ac.uk/~mbt/stil/</url>
         </dependency>
+    <!-- the groovy scripting interpreter - not required for packaging, but extra classes will be loaded if present -->
+    <dependency>
+      <groupId>groovy</groupId>
+      <artifactId>groovy</artifactId>
+      <version>1.0-beta-7</version>
+    </dependency>
+   <dependency>
+      <groupId>asm</groupId>
+      <artifactId>asm</artifactId>
+      <version>1.4.1</version>
+    </dependency>
+
     </dependencies>
 </project>

@@ -1,4 +1,4 @@
-/*$Id: ScriptStarTable.java,v 1.3 2004/12/07 16:50:33 jdt Exp $
+/*$Id: ExtraTableMethods.java,v 1.2 2004/12/07 16:50:33 jdt Exp $
  * Created on 07-Dec-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -7,23 +7,19 @@
  * Software License version 1.2, a copy of which has been included 
  * with this distribution in the LICENSE.txt file.  
  *
- **/
+**/
 package org.astrogrid.scripting.table;
+
+import uk.ac.starlink.table.ColumnInfo;
 
 import java.io.IOException;
 import java.util.Iterator;
 
-import uk.ac.starlink.table.ColumnInfo;
-import uk.ac.starlink.table.StarTable;
-
-
-
-/** A Scriptable Star Table - extends basic StarLink StarTable.
- * See StarTable Javadoc - <a href="http://www.star.bristol.ac.uk/~mbt/stil/javadocs/uk/ac/starlink/table/StarTable.html">http://www.star.bristol.ac.uk/~mbt/stil/javadocs/uk/ac/starlink/table/StarTable.html</a>
+/** This interface defines an additional set of methods that all {@link ScriptStarTable} instances support.
  * @author Noel Winstanley nw@jb.man.ac.uk 07-Dec-2004
  *
  */
-public interface ScriptStarTable  extends StarTable, ExtraTableMethods{
+interface ExtraTableMethods {
     /** iterate over each row in the table. 
      * @return an iterator that will return a {@link java.util.List} of the cells in each row
      * @throws IOException*/
@@ -63,12 +59,13 @@ public interface ScriptStarTable  extends StarTable, ExtraTableMethods{
     public ScriptStarTable addColumn(ColumnInfo meta,Object colValue);
 }
 
-/* 
- $Log: ScriptStarTable.java,v $
- Revision 1.3  2004/12/07 16:50:33  jdt
- merges from scripting-nww-805
 
- Revision 1.2.2.1  2004/12/07 14:47:58  nw
- got table manipulation working.
+/* 
+$Log: ExtraTableMethods.java,v $
+Revision 1.2  2004/12/07 16:50:33  jdt
+merges from scripting-nww-805
+
+Revision 1.1.2.1  2004/12/07 14:47:58  nw
+got table manipulation working.
  
- */
+*/

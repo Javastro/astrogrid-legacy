@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.3 2004/12/06 20:03:03 clq2 Exp $
+/*$Id: AllTests.java,v 1.4 2004/12/07 16:50:33 jdt Exp $
  * Created on 22-Nov-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,8 @@
  *
 **/
 package org.astrogrid.scripting;
+
+import org.astrogrid.scripting.groovy.GroovyTest;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -31,6 +33,7 @@ public class AllTests {
         suite.addTestSuite(ToolboxTest.class);
         //$JUnit-END$
         suite.addTest(org.astrogrid.scripting.table.AllTests.suite());
+        suite.addTest(GroovyTest.suite());
         return suite;
     }
 }
@@ -38,6 +41,12 @@ public class AllTests {
 
 /* 
 $Log: AllTests.java,v $
+Revision 1.4  2004/12/07 16:50:33  jdt
+merges from scripting-nww-805
+
+Revision 1.3.2.1  2004/12/07 14:47:58  nw
+got table manipulation working.
+
 Revision 1.3  2004/12/06 20:03:03  clq2
 nww_807a
 

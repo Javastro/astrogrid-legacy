@@ -1,4 +1,4 @@
-/*$Id: ScriptVoSpaceClient.java,v 1.2 2004/12/06 20:03:03 clq2 Exp $
+/*$Id: ScriptVoSpaceClient.java,v 1.3 2004/12/07 16:50:33 jdt Exp $
  * Created on 30-Nov-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,7 +21,7 @@ import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-/** Extension wrapper of standard vospace client that has string-friendly scripting methods.
+/** Wrapper of standard vospace client that has string-friendly scripting methods.
  * @author Noel Winstanley nw@jb.man.ac.uk 30-Nov-2004
  *
  */
@@ -80,6 +80,12 @@ public class ScriptVoSpaceClient extends VoSpaceClient {
 
 /* 
 $Log: ScriptVoSpaceClient.java,v $
+Revision 1.3  2004/12/07 16:50:33  jdt
+merges from scripting-nww-805
+
+Revision 1.2.2.1  2004/12/07 14:47:58  nw
+got table manipulation working.
+
 Revision 1.2  2004/12/06 20:03:03  clq2
 nww_807a
 

@@ -1,4 +1,4 @@
-/*$Id: Toolbox.java,v 1.4 2004/12/06 20:03:03 clq2 Exp $
+/*$Id: Toolbox.java,v 1.5 2004/12/07 16:50:33 jdt Exp $
  * Created on 19-Nov-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -38,7 +38,6 @@ import org.astrogrid.store.tree.TreeClientServiceException;
 
 /** Top-level container object for delegates, helper objects and libraries useful for working with astrogrid.
  * 
- * @todo add hook into something for writing out star tables back into myspace - wait for mark to extend the interfaces to allow this.
  * @author Noel Winstanley nw@jb.man.ac.uk 19-Nov-2004
  * @script-summary root scripting object
  * @script-doc this is the <em>main</em> scripting object
@@ -75,7 +74,7 @@ public class Toolbox {
         return getTableHelper().getBuilder();
     }
     //@todo somehting to output star tables again.
-    /** @script-doc access helper object for building, manipulating and writing tables */
+    /** @script-doc helper object for building, manipulating and writing tables */
     public TableHelper getTableHelper() {
         return tHelper;
     }
@@ -92,7 +91,7 @@ public class Toolbox {
     /** access library object that 'knows' about a variety of IO protocols, and can construct {@link ExternalValue} objects to 
      * read / write resources via these protocols.
      * @deprecated
-     * @script-doc-omit
+     * @script-doc-exclude
      */
     public ProtocolLibrary getProtocolLibrary() {
         return iHelper.getProtocolLibrary();
@@ -101,18 +100,20 @@ public class Toolbox {
 
     // objject builders
     /** access helper object for building objects 
-     * @return object that assists in building {@link User} objects, etc.*/
+     * @return object that assists in building {@link User} objects, etc.
+     * @script-doc helper object for building account-type objects*/
     public ObjectBuilder getObjectBuilder() {
         return oHelper;
     }
 
     /** access helper object for working with xml 
-     * @return object that assists with constructing and manipulatingn xml.*/
+     * @return object that assists with constructing and manipulatingn xml.
+     * @script-doc helper object for working with io*/
     public XMLHelper getXmlHelper() {
         return xHelper;
     }
     
-    /** access helper object for working with IO */
+    /** helper object for working with IO */
     public IOHelper getIoHelper() {
         return iHelper;
     }
@@ -121,6 +122,7 @@ public class Toolbox {
     
     /** access all the system info and versions we can. 
      * @todo lift code from 'fingerprint' for this
+     * @script-doc returns system information for the toolbox
      */
     public String getSystemInfo() {
         return "systeminfo";
@@ -129,12 +131,13 @@ public class Toolbox {
     /** access the version info for this installations's scripting engine
      * <p>
      * at present returns a list of bugzilla numbers this engine implements.
-     * @todo implement to return richer info*/
+     * @todo implement to return richer info
+     * @script-doc returns version information for the toolbox */
     public String getVersion() {
-        return "Iteration 07, scripting-nww-715 scripting-nww-777 scripting-nww-807";
+        return "Iteration 07, scripting-nww-715 scripting-nww-777 scripting-nww-807 scripting-nww-805";
     }
 
-    /** accces the system configuration object 
+    /** @script-doc accces the system configuration object 
      * @return the system configuration object*/
     public Config getSystemConfig() {
         return SimpleConfig.getSingleton();
@@ -144,7 +147,7 @@ public class Toolbox {
 // workflow inteface    
     
     /** access the workflow manager 
-     * @return interface to system for building, saving, submitting and inspecting worflows.
+     * @script-doc helper obect for building, saving, submitting and inspecting worflows.
      * @throws WorkflowInterfaceException*/
     public WorkflowManager getWorkflowManager() throws WorkflowInterfaceException {
         return workflowManagerFactory.getManager();
@@ -163,12 +166,13 @@ public class Toolbox {
     
     /** create client to query default registry 
      * @returna registry client connected to the default registry location
+     * @script-doc client to query the registry 
      * */
     public RegistryService createRegistryClient() {
         return RegistryDelegateFactory.createQuery();
     }
     
-    /** create client to admin default registry */ 
+    /** client to administer the registry */ 
     public RegistryAdminService createRegistryAdminClient() {
         return RegistryDelegateFactory.createAdmin();
     }
@@ -210,6 +214,12 @@ public class Toolbox {
 
 /* 
 $Log: Toolbox.java,v $
+Revision 1.5  2004/12/07 16:50:33  jdt
+merges from scripting-nww-805
+
+Revision 1.4.2.1  2004/12/07 14:47:58  nw
+got table manipulation working.
+
 Revision 1.4  2004/12/06 20:03:03  clq2
 nww_807a
 

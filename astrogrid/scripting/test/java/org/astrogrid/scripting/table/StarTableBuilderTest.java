@@ -1,4 +1,4 @@
-/*$Id: StarTableBuilderTest.java,v 1.2 2004/12/06 20:03:03 clq2 Exp $
+/*$Id: StarTableBuilderTest.java,v 1.3 2004/12/07 16:50:33 jdt Exp $
  * Created on 06-Dec-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,6 +26,7 @@ import java.io.StringWriter;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Iterator;
+import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -123,7 +124,7 @@ public class StarTableBuilderTest extends TestCase {
     
     /** extercise a star table 
      * @throws IOException*/
-    protected void exerciseStarTable(ScriptStarTable t) throws IOException {
+    protected void exerciseStarTable(ScriptStarTable  t) throws IOException {
         assertEquals(VOTABLE_NUM_ROWS,t.getRowCount());
         Iterator i = t.iterator();
         assertNotNull(i);
@@ -132,10 +133,9 @@ public class StarTableBuilderTest extends TestCase {
             count++;
             Object e = i.next();
             assertNotNull(e);
-            assertTrue(e instanceof Object[]);
-            Object[] arr = (Object[])e;
-            assertNotNull(arr[0]);
-            assertEquals(13,arr.length);
+            assertTrue(e instanceof List);
+            List l = (List)e;
+            assertEquals(13,l.size());
         }
         assertEquals(2,count);
         
@@ -156,6 +156,12 @@ public class StarTableBuilderTest extends TestCase {
 
 /* 
 $Log: StarTableBuilderTest.java,v $
+Revision 1.3  2004/12/07 16:50:33  jdt
+merges from scripting-nww-805
+
+Revision 1.2.2.1  2004/12/07 14:47:58  nw
+got table manipulation working.
+
 Revision 1.2  2004/12/06 20:03:03  clq2
 nww_807a
 
