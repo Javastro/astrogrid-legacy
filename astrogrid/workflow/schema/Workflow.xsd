@@ -1,189 +1,142 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-
-
-<xsd:element name = "workflow">
-<xsd:complexType>
-<xsd:sequence>
-<xsd:element ref = "community" minOccurs = "1" maxOccurs = "1"/>
-<xsd:element ref = "sequence" minOccurs = "1" maxOccurs = "1"/>
-<xsd:element ref = "description" minOccurs = "0" maxOccurs = "1"/>
-</xsd:sequence>
-<xsd:attribute name = "name" use = "required">
-<xsd:simpleType>
-<xsd:restriction base = "xsd:string">
-</xsd:restriction>
-</xsd:simpleType>
-</xsd:attribute>
-</xsd:complexType>
-</xsd:element>
-
-<xsd:element name = "community">
-<xsd:complexType>
-<xsd:choice>
-<xsd:element ref = "token" minOccurs = "1" maxOccurs = "1"/>
-<xsd:element ref = "credentials" minOccurs = "1" maxOccurs = "1"/>
-</xsd:choice>
-</xsd:complexType>
-</xsd:element>
-
-<xsd:element name = "sequence">
-<xsd:complexType>
-<xsd:sequence>
-<xsd:group ref = "activitySequence" minOccurs = "1" maxOccurs = "1"/>
-</xsd:sequence>
-</xsd:complexType>
-</xsd:element>
-
-<xsd:element name = "flow">
-<xsd:complexType>
-<xsd:sequence>
-<xsd:group ref = "activitySequence" minOccurs = "1" maxOccurs = "1"/>
-</xsd:sequence>
-</xsd:complexType>
-</xsd:element>
-
-<xsd:element name = "step">
-<xsd:complexType>
-<xsd:sequence>
-<xsd:element ref = "tool" minOccurs = "1" maxOccurs = "1"/>
-<xsd:element ref = "description" minOccurs = "0" maxOccurs = "1"/>
-</xsd:sequence>
-<xsd:attribute name = "name" use = "required">
-<xsd:simpleType>
-<xsd:restriction base = "xsd:string">
-</xsd:restriction>
-</xsd:simpleType>
-</xsd:attribute>
-<xsd:attribute name = "joinCondition" use = "optional">
-<xsd:simpleType>
-<xsd:restriction base = "xsd:string">
-<xsd:enumeration value = "true"/>
-<xsd:enumeration value = "false"/>
-<xsd:enumeration value = "any"/>
-</xsd:restriction>
-</xsd:simpleType>
-</xsd:attribute>
-<xsd:attribute name = "stepNumber" use = "required">
-<xsd:simpleType>
-<xsd:restriction base = "xsd:unsignedShort">
-</xsd:restriction>
-</xsd:simpleType>
-</xsd:attribute>
-<xsd:attribute name = "sequenceNumber" use = "required">
-<xsd:simpleType>
-<xsd:restriction base = "xsd:unsignedShort">
-</xsd:restriction>
-</xsd:simpleType>
-</xsd:attribute>
-</xsd:complexType>
-</xsd:element>
-
-<xsd:element name = "tool">
-<xsd:complexType>
-<xsd:sequence>
-<xsd:element ref = "input" minOccurs = "0" maxOccurs = "1"/>
-<xsd:element ref = "output" minOccurs = "0" maxOccurs = "1"/>
-</xsd:sequence>
-<xsd:attribute name = "name" use = "required">
-<xsd:simpleType>
-<xsd:restriction base = "xsd:string">
-</xsd:restriction>
-</xsd:simpleType>
-</xsd:attribute>
-</xsd:complexType>
-</xsd:element>
-
-<xsd:element name = "account">
-<xsd:complexType>
-<xsd:sequence>
-</xsd:sequence>
-</xsd:complexType>
-</xsd:element>
-
-<xsd:element name = "token">
-<xsd:complexType>
-<xsd:sequence>
-</xsd:sequence>
-</xsd:complexType>
-</xsd:element>
-
-<xsd:element name = "credentials">
-<xsd:complexType>
-<xsd:sequence>
-<xsd:element ref = "account" minOccurs = "1" maxOccurs = "1"/>
-<xsd:element ref = "group" minOccurs = "1" maxOccurs = "1"/>
-</xsd:sequence>
-</xsd:complexType>
-</xsd:element>
-
-<xsd:element name = "group">
-<xsd:complexType>
-<xsd:sequence>
-</xsd:sequence>
-</xsd:complexType>
-</xsd:element>
-
-<xsd:element name = "description">
-<xsd:complexType>
-<xsd:sequence>
-</xsd:sequence>
-</xsd:complexType>
-</xsd:element>
-
-<xsd:element name = "input">
-<xsd:complexType>
-<xsd:sequence>
-<xsd:element ref = "parameter" minOccurs = "0" maxOccurs = "unbounded"/>
-</xsd:sequence>
-</xsd:complexType>
-</xsd:element>
-
-<xsd:element name = "output">
-<xsd:complexType>
-<xsd:sequence>
-<xsd:element ref = "parameter" minOccurs = "0" maxOccurs = "unbounded"/>
-</xsd:sequence>
-</xsd:complexType>
-</xsd:element>
-
-<xsd:element name = "parameter">
-<xsd:complexType>
-<xsd:sequence>
-</xsd:sequence>
-<xsd:attribute name = "name" use = "required">
-<xsd:simpleType>
-<xsd:restriction base = "xsd:string">
-</xsd:restriction>
-</xsd:simpleType>
-</xsd:attribute>
-<xsd:attribute name = "type" use = "optional">
-<xsd:simpleType>
-<xsd:restriction base = "xsd:CDATA">
-</xsd:restriction>
-</xsd:simpleType>
-</xsd:attribute>
-<xsd:attribute name = "location" use = "optional">
-<xsd:simpleType>
-<xsd:restriction base = "xsd:anyURI">
-</xsd:restriction>
-</xsd:simpleType>
-</xsd:attribute>
-</xsd:complexType>
-</xsd:element>
-
-<xsd:group name = "activityChoice">
-<xsd:choice>
-<xsd:element ref = "sequence" minOccurs = "0" maxOccurs = "1"/>
-<xsd:element ref = "flow" minOccurs = "0" maxOccurs = "1"/>
-<xsd:element ref = "step" minOccurs = "0" maxOccurs = "1"/>
-</xsd:choice>
-</xsd:group>
-
-<xsd:group name = "activitySequence">
-<xsd:sequence>
-<xsd:group ref = "activityChoice" minOccurs = "1" maxOccurs = "unbounded"/>
-</xsd:sequence>
-</xsd:group>
-
+<!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
+<xsd:schema targetNamespace="http://www.astrogrid.org/schema/AGWorkflow/" xmlns:agwf="http://www.astrogrid.org/schema/AGWorkflow/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/" elementFormDefault="unqualified" attributeFormDefault="unqualified">
+	<xsd:import namespace="http://www.astrogrid.org/schema/AGParameterDefinition/" schemaLocation="http://www.astrogrid.org/schema/AGParameterDefinition/AGParameterDefinition.xsd"/>
+	<xsd:element name="workflow">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="agwf:community"/>
+				<xsd:element ref="agwf:sequence"/>
+				<xsd:element ref="agwf:description" minOccurs="0"/>
+			</xsd:sequence>
+			<xsd:attribute name="name" use="required">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string"/>
+				</xsd:simpleType>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="community">
+		<xsd:complexType>
+			<xsd:choice>
+				<xsd:element ref="agwf:token"/>
+				<xsd:element ref="agwf:credentials"/>
+			</xsd:choice>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="sequence">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:group ref="agwf:activitySequence"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="flow">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:group ref="agwf:activitySequence"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="step">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="agwf:tool"/>
+				<xsd:element ref="agwf:description" minOccurs="0"/>
+			</xsd:sequence>
+			<xsd:attribute name="name" use="required">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string"/>
+				</xsd:simpleType>
+			</xsd:attribute>
+			<xsd:attribute name="joinCondition" use="optional">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="true"/>
+						<xsd:enumeration value="false"/>
+						<xsd:enumeration value="any"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+			<xsd:attribute name="stepNumber" use="required">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:unsignedShort"/>
+				</xsd:simpleType>
+			</xsd:attribute>
+			<xsd:attribute name="sequenceNumber" use="required">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:unsignedShort"/>
+				</xsd:simpleType>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="tool">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="agwf:input" minOccurs="0"/>
+				<xsd:element ref="agwf:output" minOccurs="0"/>
+			</xsd:sequence>
+			<xsd:attribute name="name" use="required">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string"/>
+				</xsd:simpleType>
+			</xsd:attribute>
+			<xsd:attribute name="interface" type="xsd:string" use="required"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="account">
+		<xsd:complexType>
+			<xsd:sequence/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="token">
+		<xsd:complexType>
+			<xsd:sequence/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="credentials">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="agwf:account"/>
+				<xsd:element ref="agwf:group"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="group">
+		<xsd:complexType>
+			<xsd:sequence/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="description">
+		<xsd:complexType>
+			<xsd:sequence/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="input">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="agwf:parameter" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="output">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="agwf:parameter" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="parameter" type="agpd:parameterValue"/>
+	<xsd:group name="activityChoice">
+		<xsd:choice>
+			<xsd:element ref="agwf:sequence" minOccurs="0"/>
+			<xsd:element ref="agwf:flow" minOccurs="0"/>
+			<xsd:element ref="agwf:step" minOccurs="0"/>
+		</xsd:choice>
+	</xsd:group>
+	<xsd:group name="activitySequence">
+		<xsd:sequence>
+			<xsd:group ref="agwf:activityChoice" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:group>
 </xsd:schema>
