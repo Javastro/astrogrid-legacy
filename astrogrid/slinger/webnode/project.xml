@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- $Id: project.xml,v 1.7 2005/03/22 16:41:25 mch Exp $ -->
+<!-- $Id: project.xml,v 1.8 2005/03/22 16:43:06 mch Exp $ -->
 
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 
@@ -26,18 +26,27 @@
             <artifactId>astrogrid-config</artifactId>
             <groupId>org.astrogrid</groupId>
             <version>${astrogrid.config.stable}</version>
+            <properties>
+               <war.bundle>true</war.bundle>
+            </properties>
         </dependency>
 
         <dependency>
             <artifactId>astrogrid-slinger-api</artifactId>
             <groupId>org.astrogrid</groupId>
             <version>${astrogrid.slinger.version}</version>
+            <properties>
+               <war.bundle>true</war.bundle>
+            </properties>
         </dependency>
 
         <dependency>
             <artifactId>astrogrid-xml</artifactId>
             <groupId>org.astrogrid</groupId>
             <version>${astrogrid.xml.stable}</version>
+            <properties>
+               <war.bundle>true</war.bundle>
+            </properties>
         </dependency>
 
 
@@ -46,12 +55,18 @@
             <artifactId>log4j</artifactId>
             <groupId>log4j</groupId>
             <version>1.2.4</version>
+            <properties>
+               <war.bundle>true</war.bundle>
+            </properties>
         </dependency>
 
         <dependency>
             <artifactId>commons-logging</artifactId>
             <groupId>commons-logging</groupId>
             <version>1.0.3</version>
+            <properties>
+               <war.bundle>true</war.bundle>
+            </properties>
         </dependency>
 
       <!-- for connecting to filemanager myspace -->
@@ -107,15 +122,24 @@
        <dependency>
          <id>axis</id>
          <version>1.1</version>
+            <properties>
+               <war.bundle>true</war.bundle>
+            </properties>
        </dependency>
        <dependency>
          <id>jaxrpc-api</id>
          <version>1.0.3</version>
+            <properties>
+               <war.bundle>true</war.bundle>
+            </properties>
        </dependency>
        <dependency>
          <id>jax-qname</id>
          <version>UNKNOWN</version>
          <jar>jax-qname.jar</jar>
+            <properties>
+               <war.bundle>true</war.bundle>
+            </properties>
        </dependency>
 
 
@@ -185,6 +209,7 @@
     </dependencies>
 
 </project>
+
 
 
 
