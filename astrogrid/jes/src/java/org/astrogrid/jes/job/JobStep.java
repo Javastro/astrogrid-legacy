@@ -49,6 +49,7 @@ public class JobStep {
 	
 	public JobStep( Job parent  ) {
 		this.parent = parent ;
+		this.parent.addJobStep( this ) ;
 	}
 		
 		
