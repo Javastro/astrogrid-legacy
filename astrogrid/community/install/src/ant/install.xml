@@ -1,11 +1,15 @@
 <?xml version="1.0"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/ant/install.xml,v $</cvs:source>
-    | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/04/01 13:27:36 $</cvs:date>
-    | <cvs:version>$Revision: 1.7 $</cvs:version>
+    | <cvs:author>$Author: jdt $</cvs:author>
+    | <cvs:date>$Date: 2004/04/14 14:37:20 $</cvs:date>
+    | <cvs:version>$Revision: 1.8 $</cvs:version>
     | <cvs:log>
     |   $Log: install.xml,v $
+    |   Revision 1.8  2004/04/14 14:37:20  jdt
+    |   Windows requires file URLs to be of the form
+    |   file:///C:/foo
+    |
     |   Revision 1.7  2004/04/01 13:27:36  dave
     |   Merged development branch, dave-dev-200404010813, into HEAD
     |
@@ -852,7 +856,7 @@
             | Call our WebService.
             +-->
         <database.load.task
-            data="file://${basedir}/config/community/${org.astrogrid.community.ident}.xml"
+            data="file:///${basedir}/config/community/${org.astrogrid.community.ident}.xml"
             policyManager="${webapp.url}/services/PolicyManager"
             securityManager="${webapp.url}/services/SecurityManager"
             />

@@ -3,11 +3,15 @@
     | Maven build tasks for the AstroGrid community server.
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/Attic/maven.xml,v $</cvs:source>
-    | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/03/19 14:43:15 $</cvs:date>
-    | <cvs:version>$Revision: 1.9 $</cvs:version>
+    | <cvs:author>$Author: jdt $</cvs:author>
+    | <cvs:date>$Date: 2004/04/14 14:37:20 $</cvs:date>
+    | <cvs:version>$Revision: 1.10 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.10  2004/04/14 14:37:20  jdt
+    |   Windows requires file URLs to be of the form
+    |   file:///C:/foo
+    |
     |   Revision 1.9  2004/03/19 14:43:15  dave
     |   Merged development branch, dave-dev-200403151155, into HEAD
     |
@@ -430,7 +434,7 @@
             serverside="true"
             skeletondeploy="false"
             output="${tempDir}"
-            url="file://${wsdlDir}/DatabaseManager.wsdl"
+            url="file:///${wsdlDir}/DatabaseManager.wsdl"
             >
         </ant:axis.wsdl2java>
         <!--+
@@ -484,7 +488,7 @@
             serverside="true"
             skeletondeploy="false"
             output="${tempDir}"
-            url="file://${wsdlDir}/PolicyManager.wsdl"
+            url="file:///${wsdlDir}/PolicyManager.wsdl"
             >
         </ant:axis.wsdl2java>
         <!--+
@@ -538,7 +542,7 @@
             serverside="true"
             skeletondeploy="false"
             output="${tempDir}"
-            url="file://${wsdlDir}/PolicyService.wsdl"
+            url="file:///${wsdlDir}/PolicyService.wsdl"
             >
         </ant:axis.wsdl2java>
         <!--+
@@ -592,7 +596,7 @@
             serverside="true"
             skeletondeploy="false"
             output="${tempDir}"
-            url="file://${wsdlDir}/SecurityManager.wsdl"
+            url="file:///${wsdlDir}/SecurityManager.wsdl"
             >
         </ant:axis.wsdl2java>
         <!--+
@@ -646,7 +650,7 @@
             serverside="true"
             skeletondeploy="false"
             output="${tempDir}"
-            url="file://${wsdlDir}/SecurityService.wsdl"
+            url="file:///${wsdlDir}/SecurityService.wsdl"
             >
         </ant:axis.wsdl2java>
         <!--+
