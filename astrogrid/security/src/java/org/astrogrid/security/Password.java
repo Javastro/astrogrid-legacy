@@ -10,6 +10,8 @@ import javax.xml.soap.SOAPException;
  * WS-Security. This class supports the password hashing and encoding
  * algorithms of WS-Security.
  *
+ * @deprecated This interface needs a re-think.  Treat it as unstable.
+ *
  * @author Guy Rixon
  */
 public class Password {
