@@ -1,19 +1,17 @@
 package mock.org.astrogrid.store.delegate;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URL;
-
 import mockmaker.ReturnValues;
 import mockmaker.VoidReturnValues;
 import mockmaker.ExceptionalReturnValue;
 import com.mockobjects.*;
-
+import org.astrogrid.store.delegate.StoreClient;
 import org.astrogrid.community.User;
 import org.astrogrid.store.Agsl;
-import org.astrogrid.store.delegate.StoreClient;
 import org.astrogrid.store.delegate.StoreFile;
+import java.io.IOException;
+import java.net.URL;
+import java.io.OutputStream;
+import java.io.InputStream;
 public class MockStoreClient implements StoreClient{
    private ExpectationCounter myGetOperatorCalls = new ExpectationCounter("org.astrogrid.store.delegate.StoreClient GetOperatorCalls");
    private ReturnValues myActualGetOperatorReturnValues = new ReturnValues(false);
@@ -55,6 +53,9 @@ public class MockStoreClient implements StoreClient{
    private ExpectationCounter myGetUrlCalls = new ExpectationCounter("org.astrogrid.store.delegate.StoreClient GetUrlCalls");
    private ReturnValues myActualGetUrlReturnValues = new ReturnValues(false);
    private ExpectationList myGetUrlParameter0Values = new ExpectationList("org.astrogrid.store.delegate.StoreClient java.lang.String");
+   private ExpectationCounter myGetAgslCalls = new ExpectationCounter("org.astrogrid.store.delegate.StoreClient GetAgslCalls");
+   private ReturnValues myActualGetAgslReturnValues = new ReturnValues(false);
+   private ExpectationList myGetAgslParameter0Values = new ExpectationList("org.astrogrid.store.delegate.StoreClient java.lang.String");
    private ExpectationCounter myDeleteCalls = new ExpectationCounter("org.astrogrid.store.delegate.StoreClient DeleteCalls");
    private ReturnValues myActualDeleteReturnValues = new VoidReturnValues(false);
    private ExpectationList myDeleteParameter0Values = new ExpectationList("org.astrogrid.store.delegate.StoreClient java.lang.String");
@@ -313,6 +314,28 @@ public class MockStoreClient implements StoreClient{
    public void setupGetUrl(URL arg){
       myActualGetUrlReturnValues.add(arg);
    }
+   public void setExpectedGetAgslCalls(int calls){
+      myGetAgslCalls.setExpected(calls);
+   }
+   public void addExpectedGetAgslValues(String arg0){
+      myGetAgslParameter0Values.addExpected(arg0);
+   }
+   public Agsl getAgsl(String arg0) throws IOException{
+      myGetAgslCalls.inc();
+      myGetAgslParameter0Values.addActual(arg0);
+      Object nextReturnValue = myActualGetAgslReturnValues.getNext();
+      if (nextReturnValue instanceof ExceptionalReturnValue && ((ExceptionalReturnValue)nextReturnValue).getException() instanceof IOException)
+          throw (IOException)((ExceptionalReturnValue)nextReturnValue).getException();
+      if (nextReturnValue instanceof ExceptionalReturnValue && ((ExceptionalReturnValue)nextReturnValue).getException() instanceof RuntimeException)
+          throw (RuntimeException)((ExceptionalReturnValue)nextReturnValue).getException();
+      return (Agsl) nextReturnValue;
+   }
+   public void setupExceptionGetAgsl(Throwable arg){
+      myActualGetAgslReturnValues.add(new ExceptionalReturnValue(arg));
+   }
+   public void setupGetAgsl(Agsl arg){
+      myActualGetAgslReturnValues.add(arg);
+   }
    public void setExpectedDeleteCalls(int calls){
       myDeleteCalls.setExpected(calls);
    }
@@ -459,6 +482,8 @@ public class MockStoreClient implements StoreClient{
       myGetStreamParameter0Values.verify();
       myGetUrlCalls.verify();
       myGetUrlParameter0Values.verify();
+      myGetAgslCalls.verify();
+      myGetAgslParameter0Values.verify();
       myDeleteCalls.verify();
       myDeleteParameter0Values.verify();
       myCopyStringAgslCalls.verify();

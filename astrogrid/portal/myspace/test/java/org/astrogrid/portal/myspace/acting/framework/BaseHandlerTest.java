@@ -1,7 +1,7 @@
 package org.astrogrid.portal.myspace.acting.framework;
 
-import mock.org.astrogrid.portal.myspace.acting.framework.MockContextWrapper;
 import mock.org.astrogrid.store.delegate.MockStoreClient;
+import mock.org.astrogrid.portal.myspace.acting.framework.MockContextWrapper;
 
 import junit.framework.TestCase;
 
