@@ -27,7 +27,7 @@
         | The full name of the project.
         | This is used when generating JavaDoc titles.
         +-->
-    <name>AstroGrid registry portal client webapp</name>
+    <name>AstroGrid registry portal registry client webapp</name>
 
     <!--+
         | A short description of the project.
