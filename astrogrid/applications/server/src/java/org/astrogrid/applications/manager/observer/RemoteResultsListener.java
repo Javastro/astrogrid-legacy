@@ -1,4 +1,4 @@
-/*$Id: RemoteResultsListener.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: RemoteResultsListener.java,v 1.3 2004/07/02 09:11:13 nw Exp $
  * Created on 17-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -57,16 +57,21 @@ public class RemoteResultsListener implements Observer {
     public void update(Observable o, Object arg) {
         // we only care about results..
         if (! (arg instanceof Status)) {
+            logger.debug("saw a " + arg.getClass().getName() + " - ignoring");
             return;
         }
         Status stat = (Status) arg;
+        logger.debug("Saw status " + stat.toString());
         if (stat.equals(Status.COMPLETED)) {
-            Application app = (Application)o;
+            logger.debug("Will notify that results are ready");
             try {
+                Application app = (Application)o;
                 delegate.putResults(new JobIdentifierType(app.getJobStepID()),Castor2Axis.convert( app.getResult()));
             }
             catch (RemoteException e) {
                 logger.warn("Could not communicate with results listener at " + endpoint,e); 
+            } catch (Throwable t) {// need to catch everything - otherwise I'm not sure what happens - think things get lost.
+                logger.error("System problem with remote-results-listener for " + endpoint, t);
             }
         }
     }
@@ -75,6 +80,9 @@ public class RemoteResultsListener implements Observer {
 
 /* 
 $Log: RemoteResultsListener.java,v $
+Revision 1.3  2004/07/02 09:11:13  nw
+improved logging
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization

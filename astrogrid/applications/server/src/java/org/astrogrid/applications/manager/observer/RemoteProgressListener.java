@@ -1,4 +1,4 @@
-/*$Id: RemoteProgressListener.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: RemoteProgressListener.java,v 1.3 2004/07/02 09:11:13 nw Exp $
  * Created on 17-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -58,7 +58,7 @@ public class RemoteProgressListener implements Observer {
             reportMessage(app,(MessageType)arg);
             
         } else {
-            logger.error("Unknown object in update notification " + arg.getClass().getName() + " " + arg.toString());
+            logger.warn("Unknown object in update notification " + arg.getClass().getName() + " " + arg.toString());
         }
     }
     /**
@@ -71,7 +71,9 @@ public class RemoteProgressListener implements Observer {
         }
         catch (JesDelegateException e) {
             logger.warn("Could not communicate with remote client" + endpoint,e);
-        }
+        } catch (Throwable t) {// need to catch everything - otherwise I'm not sure what happens - think things get lost.
+        logger.error("System problem in reportMessage() " + endpoint, t);
+    }
     }
     /**
      * @param app
@@ -87,13 +89,18 @@ public class RemoteProgressListener implements Observer {
         }
         catch (JesDelegateException e) {
             logger.warn("Could not communicate with remote client" + endpoint,e);
-        }        
+        } catch (Throwable t) {// need to catch everything - otherwise I'm not sure what happens - think things get lost.
+        logger.error("System problem in reportStatusChange" + endpoint, t);
+    }       
     }
 }
 
 
 /* 
 $Log: RemoteProgressListener.java,v $
+Revision 1.3  2004/07/02 09:11:13  nw
+improved logging
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization

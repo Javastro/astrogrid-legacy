@@ -1,5 +1,5 @@
 /*
- * $Id: Status.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+ * $Id: Status.java,v 1.3 2004/07/02 09:11:13 nw Exp $
  * 
  * Created on 02-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -70,8 +70,8 @@ public class Status {
    public static final Status UNKNOWN = new Status("Unknown");
    
    static {
-       phaseMap.put(NEW,ExecutionPhase.PENDING);
-       phaseMap.put(INITIALIZED,ExecutionPhase.INITIALIZING);
+       phaseMap.put(NEW,ExecutionPhase.INITIALIZING);
+       phaseMap.put(INITIALIZED,ExecutionPhase.PENDING);
        phaseMap.put(RUNNING,ExecutionPhase.RUNNING);
        phaseMap.put(COMPLETED,ExecutionPhase.COMPLETED);
        phaseMap.put(WRITINGBACK,ExecutionPhase.RUNNING);

@@ -190,10 +190,11 @@ public class SchedulerImpl implements org.astrogrid.jes.jobscheduler.JobSchedule
             org.astrogrid.applications.beans.v1.cea.castor.ResultListType castorResults =  Axis2Castor.convert(results);
             ParameterValue[] resultValues =  results.getResult();
             for (int i = 0; i < resultValues.length; i++) {
-                if (!resultValues[i].isIndirect()) { // only if its a direct parameter
+                if (!resultValues[i].isIndirect()) { // only if its a direct parameter                    
                     org.astrogrid.applications.beans.v1.parameters.ParameterValue stepParameter 
                         = (org.astrogrid.applications.beans.v1.parameters.ParameterValue) jobStep.findXPathValue("tool/output/parameter[name='" + resultValues[i].getName() + "']");
                     if (stepParameter != null && ! stepParameter.getIndirect()) {// only if we found one.., and we agree its indirect.
+                        logger.debug("setting value of " + stepParameter.getName() + " to " + resultValues[i].getValue());
                         stepParameter.setValue(resultValues[i].getValue());
                      }
                 } 

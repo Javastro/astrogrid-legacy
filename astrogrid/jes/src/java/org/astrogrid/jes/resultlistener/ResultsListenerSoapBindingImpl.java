@@ -1,4 +1,4 @@
-/*$Id: ResultsListenerSoapBindingImpl.java,v 1.1 2004/07/01 21:15:00 nw Exp $
+/*$Id: ResultsListenerSoapBindingImpl.java,v 1.2 2004/07/02 09:08:52 nw Exp $
  * Created on 01-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,9 @@
  *
 **/
 package org.astrogrid.jes.resultlistener;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import org.astrogrid.jes.component.ComponentManagerFactory;
 import org.astrogrid.jes.service.v1.cearesults.ResultsListener;
@@ -22,11 +25,22 @@ import java.rmi.RemoteException;
  *
  */
 public class ResultsListenerSoapBindingImpl implements ResultsListener {
+    /**
+     * Commons Logger for this class
+     */
+    private static final Log logger = LogFactory.getLog(ResultsListenerSoapBindingImpl.class);
+
     /** Construct a new ResultsListenerSoapBindingImple
      * 
      */
     public ResultsListenerSoapBindingImpl() {
-        listener = ComponentManagerFactory.getInstance().getResultsListener();
+        ResultsListener tmpListener = null;
+        try {
+            tmpListener = ComponentManagerFactory.getInstance().getResultsListener();
+        } catch (Throwable t) {
+            logger.fatal("Could not acquire results listener",t);
+        }
+        listener = tmpListener;
     }
     protected final ResultsListener listener;
     /**
@@ -40,6 +54,9 @@ public class ResultsListenerSoapBindingImpl implements ResultsListener {
 
 /* 
 $Log: ResultsListenerSoapBindingImpl.java,v $
+Revision 1.2  2004/07/02 09:08:52  nw
+improved logging
+
 Revision 1.1  2004/07/01 21:15:00  nw
 added results-listener interface to jes
  

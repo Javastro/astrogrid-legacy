@@ -1,4 +1,4 @@
-/*$Id: JesResultsListener.java,v 1.1 2004/07/01 21:15:00 nw Exp $
+/*$Id: JesResultsListener.java,v 1.2 2004/07/02 09:08:52 nw Exp $
  * Created on 01-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -57,11 +57,13 @@ public class JesResultsListener implements ResultsListener, ComponentDescriptor 
             logger.info("null result list object encountered");
             return;
         }
+
+        logger.debug("Received results for " + id.toString());
         try {
             scheduler.reportResults(id,resultList);
         } catch (Exception e) {
             // no point reporting this back to cea - it'll be ignored.
-            logger.error("COuld not pass on results message",e);
+            logger.error("Could not pass on results message",e);
         }
           
     }
@@ -91,6 +93,9 @@ public class JesResultsListener implements ResultsListener, ComponentDescriptor 
 
 /* 
 $Log: JesResultsListener.java,v $
+Revision 1.2  2004/07/02 09:08:52  nw
+improved logging
+
 Revision 1.1  2004/07/01 21:15:00  nw
 added results-listener interface to jes
  

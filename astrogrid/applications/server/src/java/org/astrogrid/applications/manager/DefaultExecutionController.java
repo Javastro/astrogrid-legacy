@@ -1,5 +1,5 @@
 /*
- * $Id: DefaultExecutionController.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+ * $Id: DefaultExecutionController.java,v 1.3 2004/07/02 09:11:13 nw Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -55,6 +55,7 @@ public class DefaultExecutionController
       this.executionHistory = executionHistory;
    }
 public  boolean execute(String executionId) throws CeaException {
+    logger.info("executing "+ executionId);
       boolean success = false;
 
       if (executionHistory.isApplicationInCurrentSet(executionId)) {
@@ -70,14 +71,10 @@ public  boolean execute(String executionId) throws CeaException {
     * @see org.astrogrid.applications.manager.CommonExecutionController#execute(org.astrogrid.workflow.beans.v1.Tool, java.lang.String, java.lang.String)
     */
 public String init(Tool tool, String jobstepID) throws CeaException {
-
+    logger.debug("Initializing application " + jobstepID);
       int idx;
       String toolname = tool.getName();
-      /* now accept full authorityId-qualified tool names.
-      if((idx = toolname.indexOf("/")) != -1){      
-          toolname = toolname.substring(idx+1); 
-      } 
-      */     
+          
       try {
           ApplicationDescription descr = applicationDescriptions.getDescription(toolname);
           User user = new User(); //TODO this needs to be obtained from the context
@@ -94,6 +91,7 @@ public String init(Tool tool, String jobstepID) throws CeaException {
    }
 
    public boolean abort(String executionId) {
+       logger.debug("aborting " + executionId);
        if(!   executionHistory.isApplicationInCurrentSet(executionId)) {
            return false; // its already dead.
        }
@@ -112,6 +110,7 @@ public String init(Tool tool, String jobstepID) throws CeaException {
   */
  public void update(Observable o, Object arg) {
      if (! (o instanceof Application && arg instanceof Status)) {
+         logger.warn("Seem to be observing the wrong things.." + o.getClass().getName());
          return;
      }
      Status stat = (Status)arg;
