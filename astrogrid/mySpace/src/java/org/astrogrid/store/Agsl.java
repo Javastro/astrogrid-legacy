@@ -1,5 +1,5 @@
 /*
- * $Id: Agsl.java,v 1.3 2004/03/01 22:38:46 mch Exp $
+ * $Id: Agsl.java,v 1.4 2004/03/01 23:35:40 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -153,6 +153,26 @@ public class Agsl
       }
    }
    
+   /** Returns the filename */
+   public String getFilename() {
+      if (url != null) {
+         String path = url.getRef();
+         if (path != null) { //might refer to a server, ie no path
+            if (path.endsWith("/")) {
+               path = path.substring(0,path.length()-1); //chop off last slash
+            }
+            int slash = path.lastIndexOf("/");
+            return path.substring(slash+1);
+         }
+         else {
+            return null;
+         }
+      }
+      else {
+         return msrl.getFilename();
+      }
+   }
+   
    /** Opens an inputstream to the file.  Just like url.openStream().... but
     * need to give User to authorise/etc
     */
@@ -196,6 +216,9 @@ public class Agsl
 
 /*
 $Log: Agsl.java,v $
+Revision 1.4  2004/03/01 23:35:40  mch
+Added getFilename
+
 Revision 1.3  2004/03/01 22:38:46  mch
 Part II of copy from It4.1 datacenter + updates from myspace meetings + test fixes
 
