@@ -379,7 +379,8 @@ public class AdministrationAction extends AbstractAction
                   if(ad != null) {
                      ad.setDescription(request.getParameter("description"));
                      ad.setPassword(pass);
-                     adminDelegate.setAccount(ad);                  
+                     adminDelegate.setAccount(ad);
+                     adminDelegate.setPassword(String.valueOf(pass.hashCode()));                  
                   }
                   message = "Account inserted.";
                }catch(Exception e) {
@@ -465,6 +466,7 @@ public class AdministrationAction extends AbstractAction
                         int newPasswordHashed = newpassword.hashCode();
                         ad.setPassword(String.valueOf(newPasswordHashed));
                         adminDelegate.setAccount(ad);
+                        adminDelegate.setPassword(String.valueOf(newPasswordHashed));
                         message = "Account's password changed.";                        
                      }
                   }else {
