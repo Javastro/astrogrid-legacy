@@ -2,7 +2,6 @@
 
 /*
 
-
 	java.util.ArrayList dataSets = request.getDataSetsInformation();
 	QueryBuilder qb = session.getValue("QueryBuilder");
 	
