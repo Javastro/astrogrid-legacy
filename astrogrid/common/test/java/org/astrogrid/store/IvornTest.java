@@ -1,5 +1,5 @@
 /*
- * $Id: IvornTest.java,v 1.5 2004/07/06 19:24:36 mch Exp $
+ * $Id: IvornTest.java,v 1.6 2004/07/07 10:55:09 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -20,12 +20,12 @@ import junit.framework.TestSuite;
 public class IvornTest extends TestCase
 {
 
+   String validirn = "ivo://test.astrogrid.org/avodemo#serv1/query/mch-6dF-query.xml";
+      
    /**
     * Basic tests to/from string representations
     */
    public void testIvornStrings()  {
-      
-      String validirn = "ivo://test.astrogrid.org/avodemo#serv1/query/mch-6dF-query.xml";
       
       try {
          Ivorn irn = new Ivorn(validirn);
@@ -38,11 +38,29 @@ public class IvornTest extends TestCase
       catch (URISyntaxException use) {
          fail("Couldn't cope with valid irn "+validirn);
       }
-
+   }
+   
+   public void testIvornFullConstructor() {
       //check that the three part constructor produces the same result.
       Ivorn irn = new Ivorn("test.astrogrid.org", "avodemo", "serv1/query/mch-6dF-query.xml");
       assertEquals(validirn, irn.toString());
+   }
+   
+   public void testIvornOldConstructor() {
+      //check that the two part constructor produces the same result.
+      Ivorn irn = new Ivorn("test.astrogrid.org/avodemo", "serv1/query/mch-6dF-query.xml");
+      assertEquals(validirn, irn.toString());
+   }
 
+   public void testIllegalConstructor() {
+      //should fail
+      try {
+         Ivorn irn = new Ivorn("test.astrogrid.org", "serv1/query/mch-6dF-query.xml");
+         fail("Should have failed with no key");
+      }
+      catch (IllegalArgumentException iae) {
+         //ignore - supposed to happen
+      }
    }
 
    /**
@@ -66,6 +84,9 @@ public class IvornTest extends TestCase
 
 /*
 $Log: IvornTest.java,v $
+Revision 1.6  2004/07/07 10:55:09  mch
+Added tests
+
 Revision 1.5  2004/07/06 19:24:36  mch
 Minor fix :-)
 
