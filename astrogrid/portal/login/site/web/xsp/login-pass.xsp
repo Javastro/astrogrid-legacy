@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/site/web/xsp/login-pass.xsp,v $</cvs:source>
-    | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2005/03/29 12:52:34 $</cvs:date>
-    | <cvs:version>$Revision: 1.13 $</cvs:version>
+    | <cvs:author>$Author: pjn3 $</cvs:author>
+    | <cvs:date>$Date: 2005/03/31 10:01:01 $</cvs:date>
+    | <cvs:version>$Revision: 1.14 $</cvs:version>
     |
     +-->
 <xsp:page language="java"
@@ -185,7 +185,7 @@ function toggle(yo, was){
       <tr>
         <td valign="top"
             title="Launch application">
-          <a href="http://software.astrogrid.org/jnlp/aladin-avo/aladin-avo.jnlp"
+          <a href="http://software.astrogrid.org/jnlp/beta/aladin-avo/aladin-avo.jnlp"
              class="strongLink">Aladin</a> 
         </td>
         <td>
@@ -197,7 +197,7 @@ function toggle(yo, was){
     <tr>
       <td valign="top"
           title="Launch application">
-        <a href="http://software.astrogrid.org/jnlp/topcat/topcat.jnlp" 
+        <a href="http://software.astrogrid.org/jnlp/beta/topcat/topcat.jnlp" 
            class="strongLink">Topcat</a>
       </td>
       <td>
@@ -465,6 +465,9 @@ Locate Spectral data
 <!--+
     | <cvs:log>
     |   $Log: login-pass.xsp,v $
+    |   Revision 1.14  2005/03/31 10:01:01  pjn3
+    |   links to webstart apps corrected
+    |
     |   Revision 1.13  2005/03/29 12:52:34  jdt
     |   Merges from portalLogin_pjn_1040 and sneakily slipped in a dependency update on the installer.
     |
