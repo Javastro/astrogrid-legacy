@@ -1,4 +1,4 @@
-/* $Id: PortalLoginPageTest.java,v 1.3 2004/06/07 14:39:36 jdt Exp $
+/* $Id: PortalLoginPageTest.java,v 1.4 2004/07/22 15:35:09 jdt Exp $
  * Created on Apr 7, 2004 by jdt
  * 
  * Copyright (C) AstroGrid. All rights reserved. 
@@ -38,7 +38,7 @@ public final class PortalLoginPageTest extends AstrogridPortalWebTestCase {
     /**
      * How we determine a successful login///
      */
-    public static final String LOGIN_SUCCESS_TEXT = "You have successfully logged in.";
+    public static final String LOGIN_SUCCESS_TEXT = "Welcome to Astrogrid!";
     
     /**
      * Kick off the textui
@@ -258,6 +258,9 @@ public final class PortalLoginPageTest extends AstrogridPortalWebTestCase {
 
 /*
  *  $Log: PortalLoginPageTest.java,v $
+ *  Revision 1.4  2004/07/22 15:35:09  jdt
+ *  Updated following Pat's changes to the login page
+ *
  *  Revision 1.3  2004/06/07 14:39:36  jdt
  *  Refactored out some common stuff
  *
