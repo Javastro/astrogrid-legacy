@@ -6,13 +6,17 @@ import java.util.*;
 import org.astrogrid.mySpace.mySpaceStatus.MySpaceStatus;
 import org.astrogrid.mySpace.mySpaceStatus.MySpaceStatusCode;
 
+import org.apache.log4j.Logger;
+
 /**
  * @author A C Davenhall (Edinburgh)
  * @version Iteration 3.
  */
 
 public class MySpaceActions
-{  private static String registryName;
+{   private static Logger logger = Logger.getLogger(MySpaceActions.class);
+	private static boolean DEBUG = true;
+	private static String registryName;
 
 //
 // Constructor.
