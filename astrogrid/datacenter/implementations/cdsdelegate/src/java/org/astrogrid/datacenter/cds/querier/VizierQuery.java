@@ -1,25 +1,24 @@
-/*$Id: VizierCone.java,v 1.3 2003/12/09 16:25:08 nw Exp $
+/*$Id: VizierQuery.java,v 1.1 2004/03/13 23:40:59 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
 **/
 package org.astrogrid.datacenter.cds.querier;
 
 import java.io.IOException;
-import java.rmi.RemoteException;
-
-import javax.xml.parsers.ParserConfigurationException;
-
+import java.io.Writer;
 import org.astrogrid.datacenter.cdsdelegate.vizier.Target;
 import org.astrogrid.datacenter.cdsdelegate.vizier.Unit;
 import org.astrogrid.datacenter.cdsdelegate.vizier.VizierDelegate;
 import org.astrogrid.datacenter.cdsdelegate.vizier.Wavelength;
+import org.astrogrid.datacenter.query.Query;
 import org.w3c.dom.Document;
+import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.SAXException;
 
 /** Dataclass that represents a vizier cone search.
@@ -28,14 +27,8 @@ import org.xml.sax.SAXException;
  * @author Noel Winstanley nw@jb.man.ac.uk 28-Nov-2003
  *
  */
-public class VizierCone {
+public class VizierQuery implements Query {
 
-    /**
-     * 
-     */
-    public VizierCone() {
-
-    }
     protected Target target;
     protected double radius;
     protected Unit unit;
@@ -43,18 +36,26 @@ public class VizierCone {
     protected String additionalTerms;
     protected boolean metaData = false;
     
+    /**
+     *
+     */
+    public VizierQuery() {
+
+    }
+    
     /** double-dispatch thingie - chooses which query method of the vizier delegate to call, based on which search terms are currently set.
      * @param delegate - delegate to call method on
      * @return votable document returned by the delegate
-     */ 
-    public Document doDelegateQuery(VizierDelegate delegate) throws RemoteException, ParserConfigurationException, SAXException, IOException {
+     */
+    public Document doDelegateQuery(VizierDelegate delegate, Writer out) throws IOException {
+       try {
         //special case for metadata=true and nothing else
         if (metaData && target == null) {
-            return delegate.metaAll();
-        }
-        // always require a Target and radius
-        if (target == null || radius == 0.0 || unit == null) {
-            throw new IllegalArgumentException("Must specify target, radius an unit");
+             return delegate.metaAll();
+       }
+       // always require a Target and radius
+       if (target == null || radius == 0.0 || unit == null) {
+          throw new IllegalArgumentException("Must specify target, radius an unit");
         }
         if (metaData) {
             if (wavelength == null) {
@@ -62,13 +63,13 @@ public class VizierCone {
                     return delegate.cataloguesMetaData(target,radius,unit);
                 } else {
                     return delegate.cataloguesMetaData(target,radius,unit,additionalTerms);
-                }                
+                }
             } else {
                 if (additionalTerms == null) {
                     return delegate.cataloguesMetaData(target,radius,unit,wavelength);
                 } else {
                     return delegate.cataloguesMetaData(target,radius,unit,wavelength,additionalTerms);
-                }   
+                }
             }
         } else { // non meta-data query
             if (wavelength == null) {
@@ -76,17 +77,27 @@ public class VizierCone {
                     return delegate.cataloguesData(target,radius,unit);
                 } else {
                     return delegate.cataloguesData(target,radius,unit,additionalTerms);
-                }                
+                }
             } else {
                 if (additionalTerms == null) {
                     return delegate.cataloguesData(target,radius,unit,wavelength);
                 } else {
                     return delegate.cataloguesData(target,radius,unit,wavelength,additionalTerms);
-                }   
-            }            
+                }
+            }
         }
+       }
+       catch (ParserConfigurationException e) {
+          throw new RuntimeException("Vizier not configured properly: "+e, e);
+       }
+       catch (SAXException e) {
+          throw new RuntimeException("Vizier error: "+e, e);
+       }
     }
 
+   
+    
+    
     /** Set additional search terms for the cone search
      * @param string pattern to match. Set to null for no pattern
      */
@@ -115,7 +126,7 @@ public class VizierCone {
         this.unit = unit;
     }
 
-    /** Set the wavelength to restrict the search to 
+    /** Set the wavelength to restrict the search to
      * @param wavelength to search on. Set to null for all.
      */
     public void setWavelength(Wavelength wavelength) {
@@ -139,8 +150,11 @@ public class VizierCone {
 }
 
 
-/* 
-$Log: VizierCone.java,v $
+/*
+$Log: VizierQuery.java,v $
+Revision 1.1  2004/03/13 23:40:59  mch
+Changes to adapt to It05 refactor
+
 Revision 1.3  2003/12/09 16:25:08  nw
 wrote plugin documentation
 
