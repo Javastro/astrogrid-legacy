@@ -615,12 +615,12 @@ public class QueryRegistry implements RegistryService {
             "<query><selectionSequence>"
                + "<selection item='searchElements' itemOp='EQ' value='all'/>"
                + "<selectionOp op='$and$'/>"
-               + "<selection item='vr:Identifier/vr:AuthorityID' itemOp='EQ' value='"
+               + "<selection item='*:Identifier/*:AuthorityID' itemOp='EQ' value='"
                + ident.substring(0, iTemp)
                + "'/>";
          if (iTemp < ident.length()) {
             selectQuery += "<selectionOp op='AND'/>"
-               + "<selection item='vr:Identifier/vr:ResourceKey' itemOp='EQ' value='"
+               + "<selection item='*:Identifier/*:ResourceKey' itemOp='EQ' value='"
                + ident.substring((iTemp + 1))
                + "'/>";
          }
