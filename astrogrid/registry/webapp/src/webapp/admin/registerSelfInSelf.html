@@ -1,0 +1,50 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+
+
+
+  <meta content="text/html; charset=UTF-8" http-equiv="content-type">
+  <title>Self-registration of a registry</title>
+
+  </head>
+<body style="direction: ltr;">
+<h1>Self-registration of a registry</h1>
+
+
+
+
+<p>
+When a new registry is created, the first registration made in it must describe the registry itself. This form
+makes that self-registration.
+</p>
+
+
+
+<p>
+You must construct a VOResource of type registryType to describe your new registry. Use a text editor, or,
+for preference, a specialist XML editor such Oxygen or XMLSpy. If possible, validate your XML document.
+You can download a <a href="RegistryTypeWebServicev0_9.xml">template for a registryType document</a>.
+</p>
+
+
+<p>Enter the VODescription in the text area below. Include declarations of the
+namespaces you use (the template linked above has the namespaces
+already filled in). Press the submit button to add it to the registry.
+</p>
+
+
+
+<form action="registerSelfInSelf.jsp" method="post">
+<p>
+<textarea name="Resource" rows="30" cols="90"></textarea>
+</p>
+<p>
+<input name="button" value="Submit" type="submit">
+</p>
+</form>
+
+
+
+
+
+</body></html>

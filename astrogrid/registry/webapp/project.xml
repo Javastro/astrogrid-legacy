@@ -144,40 +144,30 @@
     	            the cocoon features of browsing, but this is not required.</li>
     	        <li>4.) Deploy these 2 war files into your servlet container normally by dropping them into the webapps directory or through
     	            some type of manager interface.</li>
-    	        <li>5.) Finally go to the registry deployed area and go to "regdeployedarea"/WEB-INF/classes and edit the astrogrid.properties and
-                    optionally if you are using the astrogrid oai facilities then the oaicat.properties.  The properties
-                    files should be well commented to guide you, the main registry properties are below.  As for the oaicat.properties only a few identification properties such as
-                    repository name and admin e-mail is advisable to change.</li>
+    	        <li>5.) Finally go to the registry deployed area and go to its /WEB-INF/classes and edit the astrogrid.properties  The properties
+                    files should be well commented to guide you, the main registry properties are below.</li>
     	        <li>6.) In general the installation of the registry is complete, but read below for the setup.  
     				It is advisable to restart your servlet container, to be certain the properties files are picked up..</li>
     	   	</ul>
-    	    Now the easy part of the installation is complete.  The current iteration is a slightly more difficult on the setup, but will try
-    	    to guide you in the steps of setting up your Registry. <br />
     	    Steps involved for Setup of Registry:
     	    <ul>
-    			<li>1.) Every Registry needs to define itself before it can be harvested or known to the outside world
-                    currently you have an empty Registry so the first step in the setup is to define yourself. 
-    				Go to your entryForm.html under your installed webapp.
-    			</li>
-    	        <li>2.) There you will find steps at the bottom along with templates for you to change and add into the registry.
-                        Be sure to do your RegistryType first maching the authorityid that you set in your properties.
-    					Use the entryForm page for adding your resources.
+    			<li>1.) Go to the registry jsp page of "/admin/index.html" and do the first registration process to register
+    	        this registry.
     			</li>
 		        <li>If you are setting up a local Registry and do not need a Full Registry and DO NOT WANT TO BE HARVESTED BY OTHER REGISTRIES then stop here, all your
 			        entries are complete and other client apps may submit Resources to this registry as long as it is a AuthorityID
-			        managed by this Registry.
+			        managed by this Registry.  You will find in the same "admin/index.html" an add resource link for adding more
+    	            resources.
     			</li>
 		        <li>Now it is time to register your new Registry to the rest of the world.</li>
-      			<li>3.) On the entryForm.html page again there is another form that will do this automatically registering this registry to a full
-    	                registry, hence when the full registry does it's next harvest it will obtain your entries.
+      			<li>2.) Do the Second link on "/admin/index.html" for registering your registry to a full registry.
     			</li>
         		<li>Now if your not planning on being a Full Registry then stop here.
     			</li>
-        		<li>4.)Go to the full Registry you know of and get all there Registries and place them into your registry.
-    				On the same entryForm.html page you should see another form that will automatically do this for you, and grab all the registry
-    	            entries and add them to your registry.
+        		<li>3.)Finally do the Third link on "/admin/index.html" to become a full registry by grabbing all the
+    	               registry types of a full registry.
     			</li>
-        		<li>6.) Now the next time your harvest cycle happens it will begin harvesting these Registries, the first time
+        		<li>4.) Now the next time your harvest cycle happens it will begin harvesting these Registries, the first time
         			it will harvest with no Date, and then after that it will harvest by date.  Optionally you may go to your
         			RegistryHarvest servlet and kick off a harvest manually or even a Replicate if needed.
     			</li>

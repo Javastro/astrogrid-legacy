@@ -23,9 +23,8 @@
          declare namespace vt = "http://www.ivoa.net/xml/VOTable/v0.1";
          declare namespace cs = "http://www.ivoa.net/xml/ConeSearch/v0.2";
          declare namespace sia = "http://www.ivoa.net/xml/SIA/v0.6";
-		 declare namespace cea="http://www.ivoa.net/xml/CEAService/v0.1"; 
-         declare namespace ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1";
-		 for $x in //vr:Resource
+         declare namespace ag = "http://www.astrogrid.org/schema/AstrogridDataService/v0.1";
+       for $x in //vr:Resource
       </xsl:text>
    
       <!--
@@ -198,13 +197,14 @@
       <xsl:text> not </xsl:text>
       <xsl:apply-templates select="*"/>
    </xsl:template>
+
    <!--
      -  Like comparison:  a LIKE b
      -->
    <xsl:template match="ad:Like">
-      <xsl:apply-templates select="*"/>
+      <xsl:apply-templates select="*[1]"/>
       <xsl:text> |= </xsl:text>
-      <xsl:apply-templates select="*"/>
+      <xsl:apply-templates select="*[2]"/>
    </xsl:template>
    <!--
      -  NotLike comparison:  a NOT LIKE b
@@ -244,36 +244,11 @@
    
    <!-- Where Template -->
    <xsl:template match="ad:Where">
-      <!--
-      <xsl:text> WHERE </xsl:text>
-            <xsl:text>//vr:Resource[</xsl:text>
-                  <xsl:text>//vr:Resource[</xsl:text>
-where $x/Identifier/AuthorityID = 'org.astrogrid.localhost'
-
-      -->
       <xsl:text> where </xsl:text>
       <xsl:apply-templates select="*"/>
       <xsl:text> return $x</xsl:text>
    </xsl:template>
    
-   <!-- GroupBy Template
-   <xsl:template match="ad:GroupBy">
-      <xsl:text> GROUP BY </xsl:text>
-      <xsl:variable name="string">
-         <xsl:for-each select="*">
-            <xsl:apply-templates select="."/>
-            <xsl:text>, </xsl:text>
-         </xsl:for-each>
-      </xsl:variable>
-      <xsl:value-of select="substring($string, 1, string-length($string) - 2)"/>
-   </xsl:template>
-    -->
-   <!-- Having Template
-   <xsl:template match="ad:Having">
-      <xsl:text> HAVING </xsl:text>
-      <xsl:apply-templates select="*"/>
-   </xsl:template>
-    -->
    
    <!-- Expressions -->
    <!--
@@ -283,37 +258,12 @@ where $x/Identifier/AuthorityID = 'org.astrogrid.localhost'
       <xsl:text>* </xsl:text>
    </xsl:template>
    -->
-   <!--
-     -  Table Columns
-     -->
-   <xsl:template match="ad:Column">
-      <!--
-      <xsl:value-of select="@Table"/>
-      
-      <xsl:text>.</xsl:text>
-      -->
-      <xsl:variable name="colName" select="@Name" />
-      <xsl:text>$x/</xsl:text>
-      <xsl:choose>
-         <xsl:when test="starts-with($colName,'Resource')">
-            <xsl:value-of select="substring(@Name, 10, string-length(@Name))"/>
-         </xsl:when>
-         <xsl:when test="starts-with($colName,'vr:Resource')">
-            <xsl:value-of select="substring(@Name, 12, string-length(@Name))"/>
-         </xsl:when>
-         <xsl:otherwise>
-            <xsl:value-of select="$colName" />
-         </xsl:otherwise>
-      </xsl:choose>
-   </xsl:template>
+     
    <!--
      -  Archive Table Columns
      -->
    <xsl:template match="ad:Column">
-      <!--
-      <xsl:value-of select="@Table"/>
-      <xsl:text>.</xsl:text>
-      -->
+
       <xsl:variable name="colName" select="@Name" />
       <xsl:text>$x/</xsl:text>
       <xsl:choose>
@@ -374,7 +324,7 @@ where $x/Identifier/AuthorityID = 'org.astrogrid.localhost'
    <xsl:template match="ad:String">
       <xsl:variable name="val" select="." />
       <xsl:text>'</xsl:text>
-	  <xsl:value-of select="$val" />
+     <xsl:value-of select="$val" />
       <xsl:text>'</xsl:text>
    </xsl:template>
 

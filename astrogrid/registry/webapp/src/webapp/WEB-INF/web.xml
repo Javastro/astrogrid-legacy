@@ -182,4 +182,25 @@
     <welcome-file>index.jws</welcome-file>
   </welcome-file-list>
 
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name></web-resource-name>
+      <url-pattern>/admin/*</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>manager</role-name>
+    </auth-constraint>
+  </security-constraint>
+   
+  <login-config>
+    <auth-method>BASIC</auth-method>
+    <realm-name>AstroGrid</realm-name>
+  </login-config>
+
+  <security-role>
+    <role-name>manager</role-name>
+  </security-role>
+
+
+
 </web-app>

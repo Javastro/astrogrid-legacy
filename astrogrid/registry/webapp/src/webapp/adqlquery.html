@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+   "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html>
+
+<head>
+<title>AstroGrid Registry: register a resource</title>
+
+</head>
+
+<body>
+<h1>Add/Update Entry</h1>
+<p>
+Enter the VOResource in the text area below and press the [Submit] button to add it to the registry.  If the Resource
+already exists, it will be updated.
+</p>
+
+
+<form action="adqlquery.jsp" method="post">
+<p>
+<textarea name="Resource" rows="30" cols="90"></textarea>
+</p>
+<p>
+<input type="submit" name="button" value="Submit"/>
+</p>
+</form>
+
+<hr/>
+
+<p>
+Here are a few sample adql queries:
+</p>
+<dl>
+<dt>A basic string query for 0.7.3 adql:</dt>
+<dd><a href="xqlsample1--adql-v0.7.3.xml">Query for a String</a></dd>
+<dt>A basic string query for a LIKE in 0.7.3 adql:</dt>
+<dd><a href="xqlsample2--adql-v0.7.3.xml">Query for a String</a></dd>
+</dl>
+
+</body>
+</html>
