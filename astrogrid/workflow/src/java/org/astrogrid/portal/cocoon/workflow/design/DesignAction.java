@@ -688,6 +688,9 @@ public class DesignAction extends AbstractAction {
            
 		private void insertQueryIntoStep() throws ConsistencyException {
 			if( TRACE_ENABLED ) trace( "DesignActionImpl.insertQueryIntoStep() entry" ) ;
+			
+			boolean 
+				response = false;
               
 			try {
 				String
@@ -695,13 +698,16 @@ public class DesignAction extends AbstractAction {
 					
 				String
 					stepKey = request.getParameter( STEP_KEY_PARAMETER ) ;
-                    
-				if( queryName == null || stepKey == null ) {
-					; // some logging here
-					throw new ConsistencyException() ;
-				}   
-				
-				boolean response = Workflow.insertQueryIntoStep( stepKey, queryName, workflow ) ;
+                
+                if ( queryName == null ) {
+                	debug( "queryName is null" ) ;
+                }
+                else if ( stepKey == null) {
+                	debug( "stepKey is null" ) ;
+                }
+                else {
+				    response = Workflow.insertQueryIntoStep( stepKey, queryName, workflow ) ;
+                }   
 				
 				if ( response == false ) {
 					; // some logging here
