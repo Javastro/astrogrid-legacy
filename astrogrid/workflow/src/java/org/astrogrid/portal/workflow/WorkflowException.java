@@ -30,12 +30,12 @@ import org.astrogrid.i18n.*;
  */
 public class WorkflowException extends AstroGridException {
 
-  public WorkflowException(AstroGridMessage message) {
-    super(message);
-  }
+    public WorkflowException( AstroGridMessage message ) { 
+        super( message ) ;
+    }
 
-  public WorkflowException(AstroGridMessage message, Exception exception) {
-    super(message, exception);
-  }
+    public WorkflowException( AstroGridMessage message, Exception exception ) {
+        super( message, exception ) ;
+    }
 
 }

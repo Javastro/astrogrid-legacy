@@ -11,7 +11,7 @@
 
 package org.astrogrid.portal.workflow.design.activity;
 
-import org.apache.log4j.Logger;
+import org.apache.log4j.Logger ;
 /**
  * The <code>ActivityKey</code> class is a thin wrapper
  * for the String key of an Activiy.
@@ -23,72 +23,79 @@ import org.apache.log4j.Logger;
  * @since   AstroGrid 1.3
  */
 public class ActivityKey {
-
-  /** Compile-time switch used to turn tracing on/off. 
-    * Set this to false to eliminate all trace statements within the byte code.*/
-  private static final boolean TRACE_ENABLED = true;
-
-  private static Logger logger = Logger.getLogger(ActivityKey.class);
-
-  private static int highWaterMark = 0;
-
-  private int key;
-
-  public static synchronized ActivityKey createKey() {
-    if (TRACE_ENABLED)
-      trace("ActivityKey.createKey() entry");
-    ActivityKey key = null;
-    try {
-      key = new ActivityKey(highWaterMark++);
-      debug("key: " + key.toString());
-    } finally {
-      if (TRACE_ENABLED)
-        trace("ActivityKey.createKey() exit");
+    
+    /** Compile-time switch used to turn tracing on/off. 
+      * Set this to false to eliminate all trace statements within the byte code.*/         
+    private static final boolean 
+        TRACE_ENABLED = true ;
+        
+    private static Logger 
+        logger = Logger.getLogger( ActivityKey.class ) ; 
+        
+    private static int
+        highWaterMark = 0 ;
+    
+    private int 
+        key ;
+        
+        
+    public static synchronized ActivityKey createKey() {
+        if( TRACE_ENABLED ) trace( "ActivityKey.createKey() entry") ; 
+        ActivityKey
+            key = null ;
+        try {
+            key = new ActivityKey( highWaterMark++ ) ;
+            debug( "key: " + key.toString() ) ;
+        }
+        finally {
+            if( TRACE_ENABLED ) trace( "ActivityKey.createKey() exit") ; 
+        }
+        
+        return key ;
     }
-
-    return key;
-  }
-
-  public ActivityKey(int key) {
-    if (TRACE_ENABLED)
-      trace("ActivityKey(int) entry/exit");
-    this.key = key;
-  }
-
-  public ActivityKey(String key) {
-    if (TRACE_ENABLED)
-      trace("ActivityKey(String) entry/exit");
-    this.key = new Integer(key).intValue();
-  }
-
-  public String toString() {
-    return new Integer(key).toString();
-  }
-
-  public int hashCode() {
-    return key;
-  }
-
-  public boolean equals(Object o) {
-
-    boolean retValue = false;
-
-    if ((o != null) && (o instanceof ActivityKey)) {
-      retValue = (o.hashCode() == this.hashCode());
+    
+    
+    public ActivityKey( int key ) {
+        if( TRACE_ENABLED ) trace( "ActivityKey(int) entry/exit") ; 
+        this.key = key ;
     }
-
-    return retValue;
-
-  }
-
-  private static void trace(String traceString) {
-    System.out.println(traceString);
-    // logger.debug( traceString ) ;
-  }
-
-  private static void debug(String logString) {
-    System.out.println(logString);
-    // logger.debug( logString ) ;
-  }
-
+    
+    
+    public ActivityKey( String key ) {
+        if( TRACE_ENABLED ) trace( "ActivityKey(String) entry/exit") ; 
+        this.key = new Integer( key ).intValue() ;          
+    }
+    
+    
+    public String toString() {
+        return new Integer( key ).toString() ; 
+    }
+    
+    public int hashCode() {
+        return key ;
+    }
+    
+    public boolean equals( Object o ) {
+        
+        boolean
+            retValue = false ;
+            
+        if( (o != null) && (o instanceof ActivityKey) ){
+             retValue = ( o.hashCode() == this.hashCode() ) ;         
+         }
+        
+        return retValue ;
+        
+    }
+    
+    private static void trace( String traceString ) {
+        System.out.println( traceString ) ;
+        // logger.debug( traceString ) ;
+    }
+    
+    private static void debug( String logString ){
+        System.out.println( logString ) ;
+        // logger.debug( logString ) ;
+    }
+    
 } // end of class ActivityKey
