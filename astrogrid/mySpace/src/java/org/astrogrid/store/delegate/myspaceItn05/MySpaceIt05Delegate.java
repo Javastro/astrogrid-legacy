@@ -76,6 +76,10 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
 //      System.out.println("entered MyspaceIt05Delegate: operator = "
 //        + operator.toString() + " endpoint = " + endPoint);
 
+      if (!givenEndPoint.startsWith(Msrl.SCHEME)) {
+         givenEndPoint = Msrl.SCHEME+":"+givenEndPoint;
+      }
+      
       managerMsrl = new Msrl(givenEndPoint);
       
       log.debug("the endpoint in myspaceitn05delegate = " + managerMsrl.getDelegateEndpoint());
@@ -1329,6 +1333,9 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
 
 /*
 $Log: MySpaceIt05Delegate.java,v $
+Revision 1.25  2004/05/12 09:01:02  mch
+Prepended myspace: to endpoints on constructor
+
 Revision 1.24  2004/05/04 14:36:29  jdt
 Javadoc comments were interfering with each other.
 
