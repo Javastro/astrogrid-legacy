@@ -1,5 +1,5 @@
 /*
- * $Id: Config.java,v 1.20 2004/03/09 16:32:49 mch Exp $
+ * $Id: Config.java,v 1.21 2004/03/09 20:59:14 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -290,12 +290,27 @@ public abstract class Config {
          
          String sysEnvKey = source.substring(s+2,e);
          String sysEnvValue = System.getProperty(sysEnvKey);
+         
+         if ((sysEnvValue == null) && (sysEnvKey.equals("host.path"))) {
+            //special case - get the PAL-6dF part of:
+            // http://grendel12.roe.ac.uk/PAL-6dF/etc
+            sysEnvValue = getDeploymentId();
+         }
+         
          if (sysEnvValue == null) throw new ConfigException("Sys Env '"+sysEnvKey+"' not found for filename "+givenSource);
          
          source = source.substring(0, s)+ sysEnvValue + source.substring(e+1);
       }
       
       return source;
+   }
+   
+   /**
+    * Attempt to resolve deployment-specific name.  In this case it looks
+    * at the url of this file
+    */
+   public static String getDeploymentId() {
+      return null;
    }
    
 }
