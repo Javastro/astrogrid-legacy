@@ -1,2 +1,319 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites><baseline-summary><baseline-name>GeneratedSummary</baseline-name><baseline-description>to fill in</baseline-description><when>Thu Nov 04 15:16:21 GMT 2004</when><where>twmbarlwm.star.le.ac.uk/127.0.0.1</where><who>integration</who><project-name>auto-integration</project-name><project-version>SNAPSHOT</project-version><total-tests>267</total-tests><total-errors>10</total-errors></baseline-summary><testsuite name="FitsTest" package="org.astrogrid.datacenter.integration.clientside" tests="1" failures="0"><testcase name="testAdql" failure="0"></testcase></testsuite><testsuite name="MetadataTest" package="org.astrogrid.datacenter.integration.clientside" tests="9" failures="9"><testcase name="testStdJspPush" failure="1"></testcase><testcase name="testFitsJspPush" failure="1"></testcase><testcase name="testSecJspPush" failure="1"></testcase><testcase name="testVizierJspPush" failure="1"></testcase><testcase name="testStdSoapGet" failure="1"></testcase><testcase name="testFitsSoapGet" failure="1"></testcase><testcase name="testSecSoapGet" failure="1"></testcase><testcase name="testVizierSoapGet" failure="1"></testcase><testcase name="testStdDelegate" failure="1"></testcase></testsuite><testsuite name="Query2MySpaceTest" package="org.astrogrid.datacenter.integration.clientside" tests="2" failures="0"><testcase name="testSubmit" failure="0"></testcase><testcase name="testSubmitWithIvorn" failure="0"></testcase></testsuite><testsuite name="RdbmsTest" package="org.astrogrid.datacenter.integration.clientside" tests="2" failures="0"><testcase name="testAdqlAsk" failure="0"></testcase><testcase name="testAdqlSubmit" failure="0"></testcase></testsuite><testsuite name="ExampleVOTableParsingWorkflowTest" package="org.astrogrid.workflow.integration.itn6.solarevent" tests="18" failures="0"><testcase name="testWorkflow" failure="0"></testcase><testcase name="testWorkflow1" failure="0"></testcase><testcase name="testWorkflow2" failure="0"></testcase><testcase name="testWorkflow3" failure="0"></testcase><testcase name="testWorkflow4" failure="0"></testcase><testcase name="testWorkflow5" failure="0"></testcase><testcase name="testWorkflow6" failure="0"></testcase><testcase name="testWorkflow7" failure="0"></testcase><testcase name="testWorkflow8" failure="0"></testcase><testcase name="testWorkflow9" failure="0"></testcase><testcase name="testWorkflow10" failure="0"></testcase><testcase name="testWorkflow11" failure="0"></testcase><testcase name="testWorkflow12" failure="0"></testcase><testcase name="testWorkflow13" failure="0"></testcase><testcase name="testWorkflow14" failure="0"></testcase><testcase name="testWorkflow15" failure="0"></testcase><testcase name="testWorkflow16" failure="0"></testcase><testcase name="testWorkflow17" failure="0"></testcase></testsuite><testsuite name="SimpleConcatToolWorkflowTest" package="org.astrogrid.workflow.integration.itn6.solarevent" tests="12" failures="0"><testcase name="testWorkflow" failure="0"></testcase><testcase name="testWorkflow1" failure="0"></testcase><testcase name="testWorkflow2" failure="0"></testcase><testcase name="testWorkflow3" failure="0"></testcase><testcase name="testWorkflow4" failure="0"></testcase><testcase name="testWorkflow5" failure="0"></testcase><testcase name="testWorkflow6" failure="0"></testcase><testcase name="testWorkflow7" failure="0"></testcase><testcase name="testWorkflow8" failure="0"></testcase><testcase name="testWorkflow9" failure="0"></testcase><testcase name="testWorkflow10" failure="0"></testcase><testcase name="testWorkflow11" failure="0"></testcase></testsuite><testsuite name="SimpleFitsWorkflowTest" package="org.astrogrid.workflow.integration.itn6.solarevent" tests="11" failures="0"><testcase name="testWorkflow" failure="0"></testcase><testcase name="testWorkflow1" failure="0"></testcase><testcase name="testWorkflow2" failure="0"></testcase><testcase name="testWorkflow3" failure="0"></testcase><testcase name="testWorkflow4" failure="0"></testcase><testcase name="testWorkflow5" failure="0"></testcase><testcase name="testWorkflow6" failure="0"></testcase><testcase name="testWorkflow7" failure="0"></testcase><testcase name="testWorkflow8" failure="0"></testcase><testcase name="testWorkflow9" failure="0"></testcase><testcase name="testWorkflow10" failure="0"></testcase></testsuite><testsuite name="CompositeWorkflowEndToEndTest" package="org.astrogrid.workflow.integration" tests="9" failures="0"><testcase name="testWorkflow" failure="0"></testcase><testcase name="testWorkflow1" failure="0"></testcase><testcase name="testWorkflow2" failure="0"></testcase><testcase name="testWorkflow3" failure="0"></testcase><testcase name="testWorkflow4" failure="0"></testcase><testcase name="testWorkflow5" failure="0"></testcase><testcase name="testWorkflow6" failure="0"></testcase><testcase name="testWorkflow7" failure="0"></testcase><testcase name="testWorkflow8" failure="0"></testcase></testsuite><testsuite name="DynamicWorkflowTest" package="org.astrogrid.workflow.integration" tests="14" failures="0"><testcase name="testWorkflow" failure="0"></testcase><testcase name="testWorkflow1" failure="0"></testcase><testcase name="testWorkflow2" failure="0"></testcase><testcase name="testWorkflow3" failure="0"></testcase><testcase name="testWorkflow4" failure="0"></testcase><testcase name="testWorkflow5" failure="0"></testcase><testcase name="testWorkflow6" failure="0"></testcase><testcase name="testWorkflow7" failure="0"></testcase><testcase name="testWorkflow8" failure="0"></testcase><testcase name="testWorkflow9" failure="0"></testcase><testcase name="testWorkflow10" failure="0"></testcase><testcase name="testWorkflow11" failure="0"></testcase><testcase name="testWorkflow12" failure="0"></testcase><testcase name="testWorkflow13" failure="0"></testcase></testsuite><testsuite name="FairlyGroovyWorkflowTest" package="org.astrogrid.workflow.integration" tests="17" failures="0"><testcase name="testWorkflow" failure="0"></testcase><testcase name="testWorkflow1" failure="0"></testcase><testcase name="testWorkflow2" failure="0"></testcase><testcase name="testWorkflow3" failure="0"></testcase><testcase name="testWorkflow4" failure="0"></testcase><testcase name="testWorkflow5" failure="0"></testcase><testcase name="testWorkflow6" failure="0"></testcase><testcase name="testWorkflow7" failure="0"></testcase><testcase name="testWorkflow8" failure="0"></testcase><testcase name="testWorkflow9" failure="0"></testcase><testcase name="testWorkflow10" failure="0"></testcase><testcase name="testWorkflow11" failure="0"></testcase><testcase name="testWorkflow12" failure="0"></testcase><testcase name="testWorkflow13" failure="0"></testcase><testcase name="testWorkflow14" failure="0"></testcase><testcase name="testWorkflow15" failure="0"></testcase><testcase name="testWorkflow16" failure="0"></testcase></testsuite><testsuite name="FlowWorkflowTest" package="org.astrogrid.workflow.integration" tests="13" failures="0"><testcase name="testWorkflow" failure="0"></testcase><testcase name="testWorkflow1" failure="0"></testcase><testcase name="testWorkflow2" failure="0"></testcase><testcase name="testWorkflow3" failure="0"></testcase><testcase name="testWorkflow4" failure="0"></testcase><testcase name="testWorkflow5" failure="0"></testcase><testcase name="testWorkflow6" failure="0"></testcase><testcase name="testWorkflow7" failure="0"></testcase><testcase name="testWorkflow8" failure="0"></testcase><testcase name="testWorkflow9" failure="0"></testcase><testcase name="testWorkflow10" failure="0"></testcase><testcase name="testWorkflow11" failure="0"></testcase><testcase name="testWorkflow12" failure="0"></testcase></testsuite><testsuite name="JesInstallationTest" package="org.astrogrid.workflow.integration" tests="7" failures="0"><testcase name="testSubmitListReadDeleteJob" failure="0"></testcase><testcase name="testSubmitListReadDeleteJob1" failure="0"></testcase><testcase name="testSubmitListReadDeleteJob2" failure="0"></testcase><testcase name="testSubmitListReadDeleteJob3" failure="0"></testcase><testcase name="testSubmitListReadDeleteJob4" failure="0"></testcase><testcase name="testSubmitListReadDeleteJob5" failure="0"></testcase><testcase name="testSubmitListReadDeleteJob6" failure="0"></testcase></testsuite><testsuite name="JesSelfTest" package="org.astrogrid.workflow.integration" tests="2" failures="0"><testcase name="testJesWar" failure="0"></testcase><testcase name="testJesSelfTests" failure="0"></testcase></testsuite><testsuite name="MySpaceCommandlineWorkflowEndToEndTest" package="org.astrogrid.workflow.integration" tests="9" failures="0"><testcase name="testWorkflow" failure="0"></testcase><testcase name="testWorkflow1" failure="0"></testcase><testcase name="testWorkflow2" failure="0"></testcase><testcase name="testWorkflow3" failure="0"></testcase><testcase name="testWorkflow4" failure="0"></testcase><testcase name="testWorkflow5" failure="0"></testcase><testcase name="testWorkflow6" failure="0"></testcase><testcase name="testWorkflow7" failure="0"></testcase><testcase name="testWorkflow8" failure="0"></testcase></testsuite><testsuite name="MySpaceIntegrationTest" package="org.astrogrid.workflow.integration" tests="1" failures="0"><testcase name="testStore" failure="0"></testcase></testsuite><testsuite name="RegistryIntegrationTest" package="org.astrogrid.workflow.integration" tests="103" failures="1"><testcase name="testListApplications" failure="0"></testcase><testcase name="testListApplications1" failure="0"></testcase><testcase name="testListApplications2" failure="0"></testcase><testcase name="testListApplications3" failure="0"></testcase><testcase name="testListApplications4" failure="0"></testcase><testcase name="testListApplications5" failure="0"></testcase><testcase name="testListApplications6" failure="0"></testcase><testcase name="testListApplications7" failure="0"></testcase><testcase name="testListApplications8" failure="0"></testcase><testcase name="testListApplications9" failure="0"></testcase><testcase name="testListApplications10" failure="0"></testcase><testcase name="testListApplications11" failure="0"></testcase><testcase name="testListApplications12" failure="0"></testcase><testcase name="testListApplications13" failure="0"></testcase><testcase name="testListApplications14" failure="0"></testcase><testcase name="testListApplications15" failure="0"></testcase><testcase name="testListApplications16" failure="0"></testcase><testcase name="testListApplications17" failure="0"></testcase><testcase name="testListApplications18" failure="0"></testcase><testcase name="testListApplications19" failure="0"></testcase><testcase name="testListApplications20" failure="0"></testcase><testcase name="testListApplications21" failure="0"></testcase><testcase name="testListApplications22" failure="0"></testcase><testcase name="testListApplications23" failure="0"></testcase><testcase name="testListApplications24" failure="0"></testcase><testcase name="testListApplications25" failure="0"></testcase><testcase name="testListApplications26" failure="0"></testcase><testcase name="testListApplications27" failure="0"></testcase><testcase name="testListApplications28" failure="0"></testcase><testcase name="testListApplications29" failure="0"></testcase><testcase name="testListApplications30" failure="0"></testcase><testcase name="testListApplications31" failure="0"></testcase><testcase name="testListApplications32" failure="0"></testcase><testcase name="testListApplications33" failure="0"></testcase><testcase name="testListApplications34" failure="0"></testcase><testcase name="testListApplications35" failure="0"></testcase><testcase name="testListApplications36" failure="0"></testcase><testcase name="testListApplications37" failure="0"></testcase><testcase name="testListApplications38" failure="0"></testcase><testcase name="testListApplications39" failure="0"></testcase><testcase name="testListApplications40" failure="0"></testcase><testcase name="testListApplications41" failure="0"></testcase><testcase name="testListApplications42" failure="0"></testcase><testcase name="testListApplications43" failure="0"></testcase><testcase name="testListApplications44" failure="0"></testcase><testcase name="testListApplications45" failure="0"></testcase><testcase name="testListApplications46" failure="0"></testcase><testcase name="testListApplications47" failure="0"></testcase><testcase name="testListApplications48" failure="0"></testcase><testcase name="testListApplications49" failure="0"></testcase><testcase name="testListApplications50" failure="0"></testcase><testcase name="testListApplications51" failure="0"></testcase><testcase name="testListApplications52" failure="0"></testcase><testcase name="testListApplications53" failure="0"></testcase><testcase name="testListApplications54" failure="0"></testcase><testcase name="testListApplications55" failure="0"></testcase><testcase name="testListApplications56" failure="0"></testcase><testcase name="testListApplications57" failure="0"></testcase><testcase name="testListApplications58" failure="0"></testcase><testcase name="testListApplications59" failure="0"></testcase><testcase name="testListApplications60" failure="0"></testcase><testcase name="testListApplications61" failure="0"></testcase><testcase name="testListApplications62" failure="0"></testcase><testcase name="testListApplications63" failure="0"></testcase><testcase name="testListApplications64" failure="0"></testcase><testcase name="testListApplications65" failure="0"></testcase><testcase name="testListApplications66" failure="0"></testcase><testcase name="testListApplications67" failure="0"></testcase><testcase name="testListApplications68" failure="0"></testcase><testcase name="testListApplications69" failure="0"></testcase><testcase name="testListApplications70" failure="0"></testcase><testcase name="testListApplications71" failure="0"></testcase><testcase name="testListApplications72" failure="0"></testcase><testcase name="testListApplications73" failure="0"></testcase><testcase name="testListApplications74" failure="0"></testcase><testcase name="testListApplications75" failure="0"></testcase><testcase name="testListApplications76" failure="0"></testcase><testcase name="testListApplications77" failure="0"></testcase><testcase name="testListApplications78" failure="0"></testcase><testcase name="testListApplications79" failure="0"></testcase><testcase name="testListApplications80" failure="0"></testcase><testcase name="testListApplications81" failure="0"></testcase><testcase name="testListApplications82" failure="0"></testcase><testcase name="testListApplications83" failure="0"></testcase><testcase name="testListApplications84" failure="0"></testcase><testcase name="testListApplications85" failure="0"></testcase><testcase name="testListApplications86" failure="0"></testcase><testcase name="testListApplications87" failure="0"></testcase><testcase name="testListApplications88" failure="0"></testcase><testcase name="testListApplications89" failure="0"></testcase><testcase name="testListApplications90" failure="0"></testcase><testcase name="testListApplications91" failure="0"></testcase><testcase name="testListApplications92" failure="0"></testcase><testcase name="testListApplications93" failure="0"></testcase><testcase name="testListApplications94" failure="0"></testcase><testcase name="testListApplications95" failure="0"></testcase><testcase name="testListApplications96" failure="0"></testcase><testcase name="testListApplications97" failure="0"></testcase><testcase name="testListApplications98" failure="0"></testcase><testcase name="testListApplications99" failure="0"></testcase><testcase name="testListApplications100" failure="0"></testcase><testcase name="testResolveApplications" failure="0"></testcase><testcase name="testResolveApplications1" failure="1"></testcase></testsuite><testsuite name="SimpleCommandlineWorkflowEndToEndTest" package="org.astrogrid.workflow.integration" tests="12" failures="0"><testcase name="testWorkflow" failure="0"></testcase><testcase name="testWorkflow1" failure="0"></testcase><testcase name="testWorkflow2" failure="0"></testcase><testcase name="testWorkflow3" failure="0"></testcase><testcase name="testWorkflow4" failure="0"></testcase><testcase name="testWorkflow5" failure="0"></testcase><testcase name="testWorkflow6" failure="0"></testcase><testcase name="testWorkflow7" failure="0"></testcase><testcase name="testWorkflow8" failure="0"></testcase><testcase name="testWorkflow9" failure="0"></testcase><testcase name="testWorkflow10" failure="0"></testcase><testcase name="testWorkflow11" failure="0"></testcase></testsuite><testsuite name="SimpleDSAWorkflowEndToEndTest" package="org.astrogrid.workflow.integration" tests="11" failures="0"><testcase name="testWorkflow" failure="0"></testcase><testcase name="testWorkflow1" failure="0"></testcase><testcase name="testWorkflow2" failure="0"></testcase><testcase name="testWorkflow3" failure="0"></testcase><testcase name="testWorkflow4" failure="0"></testcase><testcase name="testWorkflow5" failure="0"></testcase><testcase name="testWorkflow6" failure="0"></testcase><testcase name="testWorkflow7" failure="0"></testcase><testcase name="testWorkflow8" failure="0"></testcase><testcase name="testWorkflow9" failure="0"></testcase><testcase name="testWorkflow10" failure="0"></testcase></testsuite><testsuite name="SimpleJavaWorkflowEndToEndTest" package="org.astrogrid.workflow.integration" tests="14" failures="0"><testcase name="testWorkflow" failure="0"></testcase><testcase name="testWorkflow1" failure="0"></testcase><testcase name="testWorkflow2" failure="0"></testcase><testcase name="testWorkflow3" failure="0"></testcase><testcase name="testWorkflow4" failure="0"></testcase><testcase name="testWorkflow5" failure="0"></testcase><testcase name="testWorkflow6" failure="0"></testcase><testcase name="testWorkflow7" failure="0"></testcase><testcase name="testWorkflow8" failure="0"></testcase><testcase name="testWorkflow9" failure="0"></testcase><testcase name="testWorkflow10" failure="0"></testcase><testcase name="testWorkflow11" failure="0"></testcase><testcase name="testWorkflow12" failure="0"></testcase><testcase name="testWorkflow13" failure="0"></testcase></testsuite></testsuites>
+<testsuites>
+    <baseline-summary>
+        <baseline-name>PostMCH</baseline-name>
+        <baseline-description>Restricted set of tests following tests of mch's merges</baseline-description>
+        <when>Thu Nov 04 15:16:21 GMT 2004</when>
+        <where>twmbarlwm.star.le.ac.uk/127.0.0.1</where>
+        <who>jdt</who>
+        <project-name>auto-integration</project-name>
+        <project-version>SNAPSHOT</project-version>
+        <total-tests>267</total-tests>
+        <total-errors>10</total-errors>
+    </baseline-summary>
+    <testsuite name="FitsTest" package="org.astrogrid.datacenter.integration.clientside" tests="1" failures="0">
+        <testcase name="testAdql" failure="0"></testcase>
+    </testsuite>
+    <testsuite name="MetadataTest" package="org.astrogrid.datacenter.integration.clientside" tests="9" failures="9">
+        <testcase name="testStdJspPush" failure="1"></testcase>
+        <testcase name="testFitsJspPush" failure="1"></testcase>
+        <testcase name="testSecJspPush" failure="1"></testcase>
+        <testcase name="testVizierJspPush" failure="1"></testcase>
+        <testcase name="testStdSoapGet" failure="1"></testcase>
+        <testcase name="testFitsSoapGet" failure="1"></testcase>
+        <testcase name="testSecSoapGet" failure="1"></testcase>
+        <testcase name="testVizierSoapGet" failure="1"></testcase>
+        <testcase name="testStdDelegate" failure="1"></testcase>
+    </testsuite>
+    <testsuite name="Query2MySpaceTest" package="org.astrogrid.datacenter.integration.clientside" tests="2" failures="0">
+        <testcase name="testSubmit" failure="0"></testcase>
+        <testcase name="testSubmitWithIvorn" failure="0"></testcase>
+    </testsuite>
+    <testsuite name="RdbmsTest" package="org.astrogrid.datacenter.integration.clientside" tests="2" failures="0">
+        <testcase name="testAdqlAsk" failure="0"></testcase>
+        <testcase name="testAdqlSubmit" failure="0"></testcase>
+    </testsuite>
+    <testsuite name="ExampleVOTableParsingWorkflowTest" package="org.astrogrid.workflow.integration.itn6.solarevent" tests="18" failures="0">
+        <testcase name="testWorkflow" failure="0"></testcase>
+        <testcase name="testWorkflow1" failure="0"></testcase>
+        <testcase name="testWorkflow2" failure="0"></testcase>
+        <testcase name="testWorkflow3" failure="0"></testcase>
+        <testcase name="testWorkflow4" failure="0"></testcase>
+        <testcase name="testWorkflow5" failure="0"></testcase>
+        <testcase name="testWorkflow6" failure="0"></testcase>
+        <testcase name="testWorkflow7" failure="0"></testcase>
+        <testcase name="testWorkflow8" failure="0"></testcase>
+        <testcase name="testWorkflow9" failure="0"></testcase>
+        <testcase name="testWorkflow10" failure="0"></testcase>
+        <testcase name="testWorkflow11" failure="0"></testcase>
+        <testcase name="testWorkflow12" failure="0"></testcase>
+        <testcase name="testWorkflow13" failure="0"></testcase>
+        <testcase name="testWorkflow14" failure="0"></testcase>
+        <testcase name="testWorkflow15" failure="0"></testcase>
+        <testcase name="testWorkflow16" failure="0"></testcase>
+        <testcase name="testWorkflow17" failure="0"></testcase>
+    </testsuite>
+    <testsuite name="SimpleConcatToolWorkflowTest" package="org.astrogrid.workflow.integration.itn6.solarevent" tests="12" failures="0">
+        <testcase name="testWorkflow" failure="0"></testcase>
+        <testcase name="testWorkflow1" failure="0"></testcase>
+        <testcase name="testWorkflow2" failure="0"></testcase>
+        <testcase name="testWorkflow3" failure="0"></testcase>
+        <testcase name="testWorkflow4" failure="0"></testcase>
+        <testcase name="testWorkflow5" failure="0"></testcase>
+        <testcase name="testWorkflow6" failure="0"></testcase>
+        <testcase name="testWorkflow7" failure="0"></testcase>
+        <testcase name="testWorkflow8" failure="0"></testcase>
+        <testcase name="testWorkflow9" failure="0"></testcase>
+        <testcase name="testWorkflow10" failure="0"></testcase>
+        <testcase name="testWorkflow11" failure="0"></testcase>
+    </testsuite>
+    <testsuite name="SimpleFitsWorkflowTest" package="org.astrogrid.workflow.integration.itn6.solarevent" tests="11" failures="0">
+        <testcase name="testWorkflow" failure="0"></testcase>
+        <testcase name="testWorkflow1" failure="0"></testcase>
+        <testcase name="testWorkflow2" failure="0"></testcase>
+        <testcase name="testWorkflow3" failure="0"></testcase>
+        <testcase name="testWorkflow4" failure="0"></testcase>
+        <testcase name="testWorkflow5" failure="0"></testcase>
+        <testcase name="testWorkflow6" failure="0"></testcase>
+        <testcase name="testWorkflow7" failure="0"></testcase>
+        <testcase name="testWorkflow8" failure="0"></testcase>
+        <testcase name="testWorkflow9" failure="0"></testcase>
+        <testcase name="testWorkflow10" failure="0"></testcase>
+    </testsuite>
+    <testsuite name="CompositeWorkflowEndToEndTest" package="org.astrogrid.workflow.integration" tests="9" failures="0">
+        <testcase name="testWorkflow" failure="0"></testcase>
+        <testcase name="testWorkflow1" failure="0"></testcase>
+        <testcase name="testWorkflow2" failure="0"></testcase>
+        <testcase name="testWorkflow3" failure="0"></testcase>
+        <testcase name="testWorkflow4" failure="0"></testcase>
+        <testcase name="testWorkflow5" failure="0"></testcase>
+        <testcase name="testWorkflow6" failure="0"></testcase>
+        <testcase name="testWorkflow7" failure="0"></testcase>
+        <testcase name="testWorkflow8" failure="0"></testcase>
+    </testsuite>
+    <testsuite name="DynamicWorkflowTest" package="org.astrogrid.workflow.integration" tests="14" failures="0">
+        <testcase name="testWorkflow" failure="0"></testcase>
+        <testcase name="testWorkflow1" failure="0"></testcase>
+        <testcase name="testWorkflow2" failure="0"></testcase>
+        <testcase name="testWorkflow3" failure="0"></testcase>
+        <testcase name="testWorkflow4" failure="0"></testcase>
+        <testcase name="testWorkflow5" failure="0"></testcase>
+        <testcase name="testWorkflow6" failure="0"></testcase>
+        <testcase name="testWorkflow7" failure="0"></testcase>
+        <testcase name="testWorkflow8" failure="0"></testcase>
+        <testcase name="testWorkflow9" failure="0"></testcase>
+        <testcase name="testWorkflow10" failure="0"></testcase>
+        <testcase name="testWorkflow11" failure="0"></testcase>
+        <testcase name="testWorkflow12" failure="0"></testcase>
+        <testcase name="testWorkflow13" failure="0"></testcase>
+    </testsuite>
+    <testsuite name="FairlyGroovyWorkflowTest" package="org.astrogrid.workflow.integration" tests="17" failures="0">
+        <testcase name="testWorkflow" failure="0"></testcase>
+        <testcase name="testWorkflow1" failure="0"></testcase>
+        <testcase name="testWorkflow2" failure="0"></testcase>
+        <testcase name="testWorkflow3" failure="0"></testcase>
+        <testcase name="testWorkflow4" failure="0"></testcase>
+        <testcase name="testWorkflow5" failure="0"></testcase>
+        <testcase name="testWorkflow6" failure="0"></testcase>
+        <testcase name="testWorkflow7" failure="0"></testcase>
+        <testcase name="testWorkflow8" failure="0"></testcase>
+        <testcase name="testWorkflow9" failure="0"></testcase>
+        <testcase name="testWorkflow10" failure="0"></testcase>
+        <testcase name="testWorkflow11" failure="0"></testcase>
+        <testcase name="testWorkflow12" failure="0"></testcase>
+        <testcase name="testWorkflow13" failure="0"></testcase>
+        <testcase name="testWorkflow14" failure="0"></testcase>
+        <testcase name="testWorkflow15" failure="0"></testcase>
+        <testcase name="testWorkflow16" failure="0"></testcase>
+    </testsuite>
+    <testsuite name="FlowWorkflowTest" package="org.astrogrid.workflow.integration" tests="13" failures="0">
+        <testcase name="testWorkflow" failure="0"></testcase>
+        <testcase name="testWorkflow1" failure="0"></testcase>
+        <testcase name="testWorkflow2" failure="0"></testcase>
+        <testcase name="testWorkflow3" failure="0"></testcase>
+        <testcase name="testWorkflow4" failure="0"></testcase>
+        <testcase name="testWorkflow5" failure="0"></testcase>
+        <testcase name="testWorkflow6" failure="0"></testcase>
+        <testcase name="testWorkflow7" failure="0"></testcase>
+        <testcase name="testWorkflow8" failure="0"></testcase>
+        <testcase name="testWorkflow9" failure="0"></testcase>
+        <testcase name="testWorkflow10" failure="0"></testcase>
+        <testcase name="testWorkflow11" failure="0"></testcase>
+        <testcase name="testWorkflow12" failure="0"></testcase>
+    </testsuite>
+    <testsuite name="JesInstallationTest" package="org.astrogrid.workflow.integration" tests="7" failures="0">
+        <testcase name="testSubmitListReadDeleteJob" failure="0"></testcase>
+        <testcase name="testSubmitListReadDeleteJob1" failure="0"></testcase>
+        <testcase name="testSubmitListReadDeleteJob2" failure="0"></testcase>
+        <testcase name="testSubmitListReadDeleteJob3" failure="0"></testcase>
+        <testcase name="testSubmitListReadDeleteJob4" failure="0"></testcase>
+        <testcase name="testSubmitListReadDeleteJob5" failure="0"></testcase>
+        <testcase name="testSubmitListReadDeleteJob6" failure="0"></testcase>
+    </testsuite>
+    <testsuite name="JesSelfTest" package="org.astrogrid.workflow.integration" tests="2" failures="0">
+        <testcase name="testJesWar" failure="0"></testcase>
+        <testcase name="testJesSelfTests" failure="0"></testcase>
+    </testsuite>
+    <testsuite name="MySpaceCommandlineWorkflowEndToEndTest" package="org.astrogrid.workflow.integration" tests="9" failures="0">
+        <testcase name="testWorkflow" failure="0"></testcase>
+        <testcase name="testWorkflow1" failure="0"></testcase>
+        <testcase name="testWorkflow2" failure="0"></testcase>
+        <testcase name="testWorkflow3" failure="0"></testcase>
+        <testcase name="testWorkflow4" failure="0"></testcase>
+        <testcase name="testWorkflow5" failure="0"></testcase>
+        <testcase name="testWorkflow6" failure="0"></testcase>
+        <testcase name="testWorkflow7" failure="0"></testcase>
+        <testcase name="testWorkflow8" failure="0"></testcase>
+    </testsuite>
+    <testsuite name="MySpaceIntegrationTest" package="org.astrogrid.workflow.integration" tests="1" failures="0">
+        <testcase name="testStore" failure="0"></testcase>
+    </testsuite>
+    <testsuite name="RegistryIntegrationTest" package="org.astrogrid.workflow.integration" tests="103" failures="1">
+        <testcase name="testListApplications" failure="0"></testcase>
+        <testcase name="testListApplications1" failure="0"></testcase>
+        <testcase name="testListApplications2" failure="0"></testcase>
+        <testcase name="testListApplications3" failure="0"></testcase>
+        <testcase name="testListApplications4" failure="0"></testcase>
+        <testcase name="testListApplications5" failure="0"></testcase>
+        <testcase name="testListApplications6" failure="0"></testcase>
+        <testcase name="testListApplications7" failure="0"></testcase>
+        <testcase name="testListApplications8" failure="0"></testcase>
+        <testcase name="testListApplications9" failure="0"></testcase>
+        <testcase name="testListApplications10" failure="0"></testcase>
+        <testcase name="testListApplications11" failure="0"></testcase>
+        <testcase name="testListApplications12" failure="0"></testcase>
+        <testcase name="testListApplications13" failure="0"></testcase>
+        <testcase name="testListApplications14" failure="0"></testcase>
+        <testcase name="testListApplications15" failure="0"></testcase>
+        <testcase name="testListApplications16" failure="0"></testcase>
+        <testcase name="testListApplications17" failure="0"></testcase>
+        <testcase name="testListApplications18" failure="0"></testcase>
+        <testcase name="testListApplications19" failure="0"></testcase>
+        <testcase name="testListApplications20" failure="0"></testcase>
+        <testcase name="testListApplications21" failure="0"></testcase>
+        <testcase name="testListApplications22" failure="0"></testcase>
+        <testcase name="testListApplications23" failure="0"></testcase>
+        <testcase name="testListApplications24" failure="0"></testcase>
+        <testcase name="testListApplications25" failure="0"></testcase>
+        <testcase name="testListApplications26" failure="0"></testcase>
+        <testcase name="testListApplications27" failure="0"></testcase>
+        <testcase name="testListApplications28" failure="0"></testcase>
+        <testcase name="testListApplications29" failure="0"></testcase>
+        <testcase name="testListApplications30" failure="0"></testcase>
+        <testcase name="testListApplications31" failure="0"></testcase>
+        <testcase name="testListApplications32" failure="0"></testcase>
+        <testcase name="testListApplications33" failure="0"></testcase>
+        <testcase name="testListApplications34" failure="0"></testcase>
+        <testcase name="testListApplications35" failure="0"></testcase>
+        <testcase name="testListApplications36" failure="0"></testcase>
+        <testcase name="testListApplications37" failure="0"></testcase>
+        <testcase name="testListApplications38" failure="0"></testcase>
+        <testcase name="testListApplications39" failure="0"></testcase>
+        <testcase name="testListApplications40" failure="0"></testcase>
+        <testcase name="testListApplications41" failure="0"></testcase>
+        <testcase name="testListApplications42" failure="0"></testcase>
+        <testcase name="testListApplications43" failure="0"></testcase>
+        <testcase name="testListApplications44" failure="0"></testcase>
+        <testcase name="testListApplications45" failure="0"></testcase>
+        <testcase name="testListApplications46" failure="0"></testcase>
+        <testcase name="testListApplications47" failure="0"></testcase>
+        <testcase name="testListApplications48" failure="0"></testcase>
+        <testcase name="testListApplications49" failure="0"></testcase>
+        <testcase name="testListApplications50" failure="0"></testcase>
+        <testcase name="testListApplications51" failure="0"></testcase>
+        <testcase name="testListApplications52" failure="0"></testcase>
+        <testcase name="testListApplications53" failure="0"></testcase>
+        <testcase name="testListApplications54" failure="0"></testcase>
+        <testcase name="testListApplications55" failure="0"></testcase>
+        <testcase name="testListApplications56" failure="0"></testcase>
+        <testcase name="testListApplications57" failure="0"></testcase>
+        <testcase name="testListApplications58" failure="0"></testcase>
+        <testcase name="testListApplications59" failure="0"></testcase>
+        <testcase name="testListApplications60" failure="0"></testcase>
+        <testcase name="testListApplications61" failure="0"></testcase>
+        <testcase name="testListApplications62" failure="0"></testcase>
+        <testcase name="testListApplications63" failure="0"></testcase>
+        <testcase name="testListApplications64" failure="0"></testcase>
+        <testcase name="testListApplications65" failure="0"></testcase>
+        <testcase name="testListApplications66" failure="0"></testcase>
+        <testcase name="testListApplications67" failure="0"></testcase>
+        <testcase name="testListApplications68" failure="0"></testcase>
+        <testcase name="testListApplications69" failure="0"></testcase>
+        <testcase name="testListApplications70" failure="0"></testcase>
+        <testcase name="testListApplications71" failure="0"></testcase>
+        <testcase name="testListApplications72" failure="0"></testcase>
+        <testcase name="testListApplications73" failure="0"></testcase>
+        <testcase name="testListApplications74" failure="0"></testcase>
+        <testcase name="testListApplications75" failure="0"></testcase>
+        <testcase name="testListApplications76" failure="0"></testcase>
+        <testcase name="testListApplications77" failure="0"></testcase>
+        <testcase name="testListApplications78" failure="0"></testcase>
+        <testcase name="testListApplications79" failure="0"></testcase>
+        <testcase name="testListApplications80" failure="0"></testcase>
+        <testcase name="testListApplications81" failure="0"></testcase>
+        <testcase name="testListApplications82" failure="0"></testcase>
+        <testcase name="testListApplications83" failure="0"></testcase>
+        <testcase name="testListApplications84" failure="0"></testcase>
+        <testcase name="testListApplications85" failure="0"></testcase>
+        <testcase name="testListApplications86" failure="0"></testcase>
+        <testcase name="testListApplications87" failure="0"></testcase>
+        <testcase name="testListApplications88" failure="0"></testcase>
+        <testcase name="testListApplications89" failure="0"></testcase>
+        <testcase name="testListApplications90" failure="0"></testcase>
+        <testcase name="testListApplications91" failure="0"></testcase>
+        <testcase name="testListApplications92" failure="0"></testcase>
+        <testcase name="testListApplications93" failure="0"></testcase>
+        <testcase name="testListApplications94" failure="0"></testcase>
+        <testcase name="testListApplications95" failure="0"></testcase>
+        <testcase name="testListApplications96" failure="0"></testcase>
+        <testcase name="testListApplications97" failure="0"></testcase>
+        <testcase name="testListApplications98" failure="0"></testcase>
+        <testcase name="testListApplications99" failure="0"></testcase>
+        <testcase name="testListApplications100" failure="0"></testcase>
+        <testcase name="testResolveApplications" failure="0"></testcase>
+        <testcase name="testResolveApplications1" failure="1"></testcase>
+    </testsuite>
+    <testsuite name="SimpleCommandlineWorkflowEndToEndTest" package="org.astrogrid.workflow.integration" tests="12" failures="0">
+        <testcase name="testWorkflow" failure="0"></testcase>
+        <testcase name="testWorkflow1" failure="0"></testcase>
+        <testcase name="testWorkflow2" failure="0"></testcase>
+        <testcase name="testWorkflow3" failure="0"></testcase>
+        <testcase name="testWorkflow4" failure="0"></testcase>
+        <testcase name="testWorkflow5" failure="0"></testcase>
+        <testcase name="testWorkflow6" failure="0"></testcase>
+        <testcase name="testWorkflow7" failure="0"></testcase>
+        <testcase name="testWorkflow8" failure="0"></testcase>
+        <testcase name="testWorkflow9" failure="0"></testcase>
+        <testcase name="testWorkflow10" failure="0"></testcase>
+        <testcase name="testWorkflow11" failure="0"></testcase>
+    </testsuite>
+    <testsuite name="SimpleDSAWorkflowEndToEndTest" package="org.astrogrid.workflow.integration" tests="11" failures="0">
+        <testcase name="testWorkflow" failure="0"></testcase>
+        <testcase name="testWorkflow1" failure="0"></testcase>
+        <testcase name="testWorkflow2" failure="0"></testcase>
+        <testcase name="testWorkflow3" failure="0"></testcase>
+        <testcase name="testWorkflow4" failure="0"></testcase>
+        <testcase name="testWorkflow5" failure="0"></testcase>
+        <testcase name="testWorkflow6" failure="0"></testcase>
+        <testcase name="testWorkflow7" failure="0"></testcase>
+        <testcase name="testWorkflow8" failure="0"></testcase>
+        <testcase name="testWorkflow9" failure="0"></testcase>
+        <testcase name="testWorkflow10" failure="0"></testcase>
+    </testsuite>
+    <testsuite name="SimpleJavaWorkflowEndToEndTest" package="org.astrogrid.workflow.integration" tests="14" failures="0">
+        <testcase name="testWorkflow" failure="0"></testcase>
+        <testcase name="testWorkflow1" failure="0"></testcase>
+        <testcase name="testWorkflow2" failure="0"></testcase>
+        <testcase name="testWorkflow3" failure="0"></testcase>
+        <testcase name="testWorkflow4" failure="0"></testcase>
+        <testcase name="testWorkflow5" failure="0"></testcase>
+        <testcase name="testWorkflow6" failure="0"></testcase>
+        <testcase name="testWorkflow7" failure="0"></testcase>
+        <testcase name="testWorkflow8" failure="0"></testcase>
+        <testcase name="testWorkflow9" failure="0"></testcase>
+        <testcase name="testWorkflow10" failure="0"></testcase>
+        <testcase name="testWorkflow11" failure="0"></testcase>
+        <testcase name="testWorkflow12" failure="0"></testcase>
+        <testcase name="testWorkflow13" failure="0"></testcase>
+    </testsuite>
+</testsuites>
