@@ -12,11 +12,13 @@
   <organization>
     <name>AstroGrid</name>
     <url>http://www.astrogrid.org</url>
+    <logo>http://www.astrogrid.org/images/AGlogo</logo>
   </organization>
-  
+
   <inceptionYear>2002</inceptionYear>
   <package>org.astrogrid</package>
-  
+  <logo>http://www.astrogrid.org/images/AGlogo</logo>
+
   <shortDescription>AstroGrid Job Management Components</shortDescription>
 
   <siteDirectory>/var/www/www/maven/build/jes</siteDirectory>
