@@ -1,0 +1,44 @@
+#A master script to build a set of jars
+#based on their cvs tags
+#Be sure that the dependencies in the POMs are correct
+TAG_TO_BUILD=Itn04_1
+
+BUILD_DIR=/home/maven/build
+SCRIPTHOME=/home/maven/mavenrun
+
+DATE=`date`
+TIMESTAMP=`date +%Y%m%d-%T`
+
+LOG_FILE=maven-build-all.log
+
+mv $BUILD_DIR/$LOG_FILE $BUILD_DIR/$TIMESTAMP-$LOG_FILE
+
+echo >> $BUILD_DIR/$LOG_FILE 2>&1
+echo "AstroGrid Build ($DATE)" >> $BUILD_DIR/$LOG_FILE 2>&1
+echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" >> $BUILD_DIR/$LOG_FILE 2>&1
+echo >> $BUILD_DIR/$LOG_FILE 2>&1
+
+#Check out the maven project first, since this may act as a base
+#from which other projects may inherit
+#Need to think about this wrt to the current branches discussion
+$SCRIPTHOME/cvs-checkout.sh maven-base >> $BUILD_DIR/$LOG_FILE 2>&1
+#Now the "real" projects.
+$SCRIPTHOME/maven-build-tagged.sh common TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
+$SCRIPTHOME/maven-build-tagged.sh applications TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
+$SCRIPTHOME/maven-build-tagged.sh community TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
+$SCRIPTHOME/maven-build-tagged.sh datacenter TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
+$SCRIPTHOME/maven-build-tagged.sh jes TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
+$SCRIPTHOME/maven-build-tagged.sh mySpace TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
+$SCRIPTHOME/maven-build-tagged.sh portal TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
+$SCRIPTHOME/maven-build-tagged.sh registry TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
+$SCRIPTHOME/maven-build-tagged.sh scripting TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
+$SCRIPTHOME/maven-build-tagged.sh warehouse TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
+$SCRIPTHOME/maven-build-tagged.sh workflow TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
+#this last one also needs attention
+$SCRIPTHOME/maven-build-maven-site.sh >> $BUILD_DIR/$LOG_FILE 2>&1
+
+
+echo >> $BUILD_DIR/$LOG_FILE 2>&1
+echo "AstroGrid Build ($DATE)" >> $BUILD_DIR/$LOG_FILE 2>&1
+echo "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" >> $BUILD_DIR/$LOG_FILE 2>&1
+echo >> $BUILD_DIR/$LOG_FILE 2>&1
