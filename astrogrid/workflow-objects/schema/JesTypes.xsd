@@ -27,11 +27,9 @@
                         </xsd:sequence>
                 </xsd:complexType>                        	
 
-<!-- define a new type for jobURNs - keeps distinct from String, and allows us to introduce more structure later -->
+	<!-- duplication of jobURN in ExecutionRecord.xsd . simpler like this for now -->
 	<xsd:simpleType name="jobURN">
-		<xsd:restriction base="xsd:anyURI" >
-			<xsd:pattern value="jes:.*" />
-		</xsd:restriction>
+		<xsd:restriction base="xsd:anyURI" />
 	</xsd:simpleType>              
 	
 </xsd:schema>
