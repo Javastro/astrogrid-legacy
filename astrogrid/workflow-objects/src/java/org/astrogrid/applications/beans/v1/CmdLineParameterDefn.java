@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: CmdLineParameterDefn.java,v 1.16 2004/03/15 16:53:03 pah Exp $
+ * $Id: CmdLineParameterDefn.java,v 1.17 2004/03/26 00:45:57 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1;
@@ -24,7 +24,7 @@ import org.xml.sax.ContentHandler;
 /**
  * The specialization for a command line parameter
  * 
- * @version $Revision: 1.16 $ $Date: 2004/03/15 16:53:03 $
+ * @version $Revision: 1.17 $ $Date: 2004/03/26 00:45:57 $
  */
 public class CmdLineParameterDefn extends org.astrogrid.applications.beans.v1.CommandLineParameterDefinition 
 implements java.io.Serializable

@@ -29,6 +29,7 @@ public class ParameterTypes implements java.io.Serializable {
     public static final javax.xml.namespace.QName _value10 = new javax.xml.namespace.QName("RA");
     public static final javax.xml.namespace.QName _value11 = new javax.xml.namespace.QName("Dec");
     public static final javax.xml.namespace.QName _value12 = new javax.xml.namespace.QName("ADQL");
+    public static final javax.xml.namespace.QName _value13 = new javax.xml.namespace.QName("IVORN");
     public static final ParameterTypes value1 = new ParameterTypes(_value1);
     public static final ParameterTypes value2 = new ParameterTypes(_value2);
     public static final ParameterTypes value3 = new ParameterTypes(_value3);
@@ -41,6 +42,7 @@ public class ParameterTypes implements java.io.Serializable {
     public static final ParameterTypes value10 = new ParameterTypes(_value10);
     public static final ParameterTypes value11 = new ParameterTypes(_value11);
     public static final ParameterTypes value12 = new ParameterTypes(_value12);
+    public static final ParameterTypes value13 = new ParameterTypes(_value13);
     public javax.xml.namespace.QName getValue() { return _value_;}
     public static ParameterTypes fromValue(javax.xml.namespace.QName value)
           throws java.lang.IllegalStateException {

@@ -286,7 +286,7 @@
       <typeMapping
         xmlns:ns="http://www.astrogrid.org/schema/ExecutionRecord/v1"
         qname="ns:>step-execution-record"
-        type="java:org.astrogrid.jes.beans.vi.axis.executionrecord._stepExecutionRecord"
+        type="java:org.astrogrid.jes.beans.v1.axis.executionrecord._stepExecutionRecord"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
         encodingStyle=""
@@ -310,7 +310,7 @@
       <typeMapping
         xmlns:ns="http://www.astrogrid.org/schema/ExecutionRecord/v1"
         qname="ns:jobURN"
-        type="java:org.astrogrid.jes.beans.vi.axis.executionrecord.JobURN"
+        type="java:org.astrogrid.jes.beans.v1.axis.executionrecord.JobURN"
         serializer="org.apache.axis.encoding.ser.SimpleSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.SimpleDeserializerFactory"
         encodingStyle=""
@@ -342,7 +342,7 @@
       <typeMapping
         xmlns:ns="http://www.astrogrid.org/schema/ExecutionRecord/v1"
         qname="ns:execution-record-type"
-        type="java:org.astrogrid.jes.beans.vi.axis.executionrecord.ExecutionRecordType"
+        type="java:org.astrogrid.jes.beans.v1.axis.executionrecord.ExecutionRecordType"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
         encodingStyle=""
@@ -534,7 +534,7 @@
       <typeMapping
         xmlns:ns="http://www.astrogrid.org/schema/ExecutionRecord/v1"
         qname="ns:>job-execution-record"
-        type="java:org.astrogrid.jes.beans.vi.axis.executionrecord._jobExecutionRecord"
+        type="java:org.astrogrid.jes.beans.v1.axis.executionrecord._jobExecutionRecord"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
         encodingStyle=""

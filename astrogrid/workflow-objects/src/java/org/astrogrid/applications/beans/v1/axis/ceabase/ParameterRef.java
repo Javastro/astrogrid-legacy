@@ -9,8 +9,8 @@ package org.astrogrid.applications.beans.v1.axis.ceabase;
 
 public class ParameterRef  implements java.io.Serializable {
     private java.lang.String ref;  // attribute
-    private java.math.BigInteger minoccurs;  // attribute
-    private java.math.BigInteger maxoccurs;  // attribute
+    private int minoccurs;  // attribute
+    private int maxoccurs;  // attribute
 
     public ParameterRef() {
     }
@@ -23,19 +23,19 @@ public class ParameterRef  implements java.io.Serializable {
         this.ref = ref;
     }
 
-    public java.math.BigInteger getMinoccurs() {
+    public int getMinoccurs() {
         return minoccurs;
     }
 
-    public void setMinoccurs(java.math.BigInteger minoccurs) {
+    public void setMinoccurs(int minoccurs) {
         this.minoccurs = minoccurs;
     }
 
-    public java.math.BigInteger getMaxoccurs() {
+    public int getMaxoccurs() {
         return maxoccurs;
     }
 
-    public void setMaxoccurs(java.math.BigInteger maxoccurs) {
+    public void setMaxoccurs(int maxoccurs) {
         this.maxoccurs = maxoccurs;
     }
 
@@ -54,12 +54,8 @@ public class ParameterRef  implements java.io.Serializable {
             ((this.ref==null && other.getRef()==null) || 
              (this.ref!=null &&
               this.ref.equals(other.getRef()))) &&
-            ((this.minoccurs==null && other.getMinoccurs()==null) || 
-             (this.minoccurs!=null &&
-              this.minoccurs.equals(other.getMinoccurs()))) &&
-            ((this.maxoccurs==null && other.getMaxoccurs()==null) || 
-             (this.maxoccurs!=null &&
-              this.maxoccurs.equals(other.getMaxoccurs())));
+            this.minoccurs == other.getMinoccurs() &&
+            this.maxoccurs == other.getMaxoccurs();
         __equalsCalc = null;
         return _equals;
     }
@@ -74,12 +70,8 @@ public class ParameterRef  implements java.io.Serializable {
         if (getRef() != null) {
             _hashCode += getRef().hashCode();
         }
-        if (getMinoccurs() != null) {
-            _hashCode += getMinoccurs().hashCode();
-        }
-        if (getMaxoccurs() != null) {
-            _hashCode += getMaxoccurs().hashCode();
-        }
+        _hashCode += getMinoccurs();
+        _hashCode += getMaxoccurs();
         __hashCodeCalc = false;
         return _hashCode;
     }
@@ -98,12 +90,12 @@ public class ParameterRef  implements java.io.Serializable {
         attrField = new org.apache.axis.description.AttributeDesc();
         attrField.setFieldName("minoccurs");
         attrField.setXmlName(new javax.xml.namespace.QName("", "minoccurs"));
-        attrField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "integer"));
+        attrField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
         typeDesc.addFieldDesc(attrField);
         attrField = new org.apache.axis.description.AttributeDesc();
         attrField.setFieldName("maxoccurs");
         attrField.setXmlName(new javax.xml.namespace.QName("", "maxoccurs"));
-        attrField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "integer"));
+        attrField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
         typeDesc.addFieldDesc(attrField);
     }
 

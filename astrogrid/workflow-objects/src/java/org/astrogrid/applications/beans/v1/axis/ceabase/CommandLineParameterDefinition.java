@@ -9,7 +9,7 @@ package org.astrogrid.applications.beans.v1.axis.ceabase;
 
 public class CommandLineParameterDefinition  extends org.astrogrid.applications.beans.v1.axis.ceaparameters.BaseParameterDefinition  implements java.io.Serializable {
     private java.lang.String commandSwitch;  // attribute
-    private java.math.BigInteger commandPosition;  // attribute
+    private int commandPosition;  // attribute
     private boolean stdio;  // attribute
     private org.astrogrid.applications.beans.v1.axis.ceabase.SwitchTypes switchType;  // attribute
 
@@ -24,11 +24,11 @@ public class CommandLineParameterDefinition  extends org.astrogrid.applications.
         this.commandSwitch = commandSwitch;
     }
 
-    public java.math.BigInteger getCommandPosition() {
+    public int getCommandPosition() {
         return commandPosition;
     }
 
-    public void setCommandPosition(java.math.BigInteger commandPosition) {
+    public void setCommandPosition(int commandPosition) {
         this.commandPosition = commandPosition;
     }
 
@@ -63,9 +63,7 @@ public class CommandLineParameterDefinition  extends org.astrogrid.applications.
             ((this.commandSwitch==null && other.getCommandSwitch()==null) || 
              (this.commandSwitch!=null &&
               this.commandSwitch.equals(other.getCommandSwitch()))) &&
-            ((this.commandPosition==null && other.getCommandPosition()==null) || 
-             (this.commandPosition!=null &&
-              this.commandPosition.equals(other.getCommandPosition()))) &&
+            this.commandPosition == other.getCommandPosition() &&
             this.stdio == other.isStdio() &&
             ((this.switchType==null && other.getSwitchType()==null) || 
              (this.switchType!=null &&
@@ -84,9 +82,7 @@ public class CommandLineParameterDefinition  extends org.astrogrid.applications.
         if (getCommandSwitch() != null) {
             _hashCode += getCommandSwitch().hashCode();
         }
-        if (getCommandPosition() != null) {
-            _hashCode += getCommandPosition().hashCode();
-        }
+        _hashCode += getCommandPosition();
         _hashCode += new Boolean(isStdio()).hashCode();
         if (getSwitchType() != null) {
             _hashCode += getSwitchType().hashCode();
@@ -109,7 +105,7 @@ public class CommandLineParameterDefinition  extends org.astrogrid.applications.
         attrField = new org.apache.axis.description.AttributeDesc();
         attrField.setFieldName("commandPosition");
         attrField.setXmlName(new javax.xml.namespace.QName("", "commandPosition"));
-        attrField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "integer"));
+        attrField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
         typeDesc.addFieldDesc(attrField);
         attrField = new org.apache.axis.description.AttributeDesc();
         attrField.setFieldName("stdio");

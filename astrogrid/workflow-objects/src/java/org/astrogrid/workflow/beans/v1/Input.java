@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Input.java,v 1.16 2004/03/15 16:53:03 pah Exp $
+ * $Id: Input.java,v 1.17 2004/03/26 00:45:57 pah Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -27,7 +27,7 @@ import org.xml.sax.ContentHandler;
 /**
  * the list of input parameters
  * 
- * @version $Revision: 1.16 $ $Date: 2004/03/15 16:53:03 $
+ * @version $Revision: 1.17 $ $Date: 2004/03/26 00:45:57 $
  */
 public class Input extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable

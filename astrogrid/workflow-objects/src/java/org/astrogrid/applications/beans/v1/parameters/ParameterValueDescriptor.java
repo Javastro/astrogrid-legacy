@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ParameterValueDescriptor.java,v 1.16 2004/03/15 16:53:03 pah Exp $
+ * $Id: ParameterValueDescriptor.java,v 1.17 2004/03/26 00:45:57 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1.parameters;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class ParameterValueDescriptor.
  * 
- * @version $Revision: 1.16 $ $Date: 2004/03/15 16:53:03 $
+ * @version $Revision: 1.17 $ $Date: 2004/03/26 00:45:57 $
  */
 public class ParameterValueDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 
@@ -129,10 +129,12 @@ public class ParameterValueDescriptor extends org.exolab.castor.xml.util.XMLClas
         } );
         desc.setHandler( new org.exolab.castor.xml.handlers.EnumFieldHandler(org.astrogrid.applications.beans.v1.parameters.types.ParameterTypes.class, handler));
         desc.setImmutable(true);
+        desc.setRequired(true);
         addFieldDescriptor(desc);
         
         //-- validation code for: _type
         fieldValidator = new org.exolab.castor.xml.FieldValidator();
+        fieldValidator.setMinOccurs(1);
         { //-- local scope
         }
         desc.setValidator(fieldValidator);

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Flow.java,v 1.16 2004/03/15 16:53:03 pah Exp $
+ * $Id: Flow.java,v 1.17 2004/03/26 00:45:57 pah Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -25,7 +25,7 @@ import org.xml.sax.ContentHandler;
  * a collection of activities to be performed potentially in
  * parallel
  * 
- * @version $Revision: 1.16 $ $Date: 2004/03/15 16:53:03 $
+ * @version $Revision: 1.17 $ $Date: 2004/03/26 00:45:57 $
  */
 public class Flow extends org.astrogrid.workflow.beans.v1.ActivityContainer 
 implements java.io.Serializable

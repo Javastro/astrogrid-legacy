@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ParameterRefDescriptor.java,v 1.16 2004/03/15 16:53:03 pah Exp $
+ * $Id: ParameterRefDescriptor.java,v 1.17 2004/03/26 00:45:57 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class ParameterRefDescriptor.
  * 
- * @version $Revision: 1.16 $ $Date: 2004/03/15 16:53:03 $
+ * @version $Revision: 1.17 $ $Date: 2004/03/26 00:45:57 $
  */
 public class ParameterRefDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 
@@ -135,7 +135,7 @@ public class ParameterRefDescriptor extends org.exolab.castor.xml.util.XMLClassD
         //-- validation code for: _minoccurs
         fieldValidator = new org.exolab.castor.xml.FieldValidator();
         { //-- local scope
-            IntegerValidator typeValidator = new IntegerValidator();
+            IntegerValidator typeValidator= new IntegerValidator();
             fieldValidator.setValidator(typeValidator);
         }
         desc.setValidator(fieldValidator);
@@ -176,7 +176,7 @@ public class ParameterRefDescriptor extends org.exolab.castor.xml.util.XMLClassD
         //-- validation code for: _maxoccurs
         fieldValidator = new org.exolab.castor.xml.FieldValidator();
         { //-- local scope
-            IntegerValidator typeValidator = new IntegerValidator();
+            IntegerValidator typeValidator= new IntegerValidator();
             fieldValidator.setValidator(typeValidator);
         }
         desc.setValidator(fieldValidator);

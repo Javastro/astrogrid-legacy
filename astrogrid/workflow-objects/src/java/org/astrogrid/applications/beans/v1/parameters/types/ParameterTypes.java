@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ParameterTypes.java,v 1.16 2004/03/15 16:53:03 pah Exp $
+ * $Id: ParameterTypes.java,v 1.17 2004/03/26 00:45:57 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1.parameters.types;
@@ -22,7 +22,7 @@ import org.exolab.castor.xml.Unmarshaller;
  * should have the namespace appended? I have removed them to make
  * castor generate nicer objects
  * 
- * @version $Revision: 1.16 $ $Date: 2004/03/15 16:53:03 $
+ * @version $Revision: 1.17 $ $Date: 2004/03/26 00:45:57 $
  */
 public class ParameterTypes implements java.io.Serializable {
 
@@ -152,6 +152,16 @@ public class ParameterTypes implements java.io.Serializable {
     public static final ParameterTypes ADQL = new ParameterTypes(ADQL_TYPE, "ADQL");
 
     /**
+     * The IVORN type
+     */
+    public static final int IVORN_TYPE = 12;
+
+    /**
+     * The instance of the IVORN type
+     */
+    public static final ParameterTypes IVORN = new ParameterTypes(IVORN_TYPE, "IVORN");
+
+    /**
      * Field _memberTable
      */
     private static java.util.Hashtable _memberTable = init();
@@ -217,6 +227,7 @@ public class ParameterTypes implements java.io.Serializable {
         members.put("RA", RA);
         members.put("Dec", DEC);
         members.put("ADQL", ADQL);
+        members.put("IVORN", IVORN);
         return members;
     } //-- java.util.Hashtable init() 
 
