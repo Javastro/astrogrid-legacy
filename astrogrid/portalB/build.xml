@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/Attic/build.xml,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/30 17:36:30 $</cvs:author>
-    | <cvs:version>$Revision: 1.30 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/30 17:43:16 $</cvs:author>
+    | <cvs:version>$Revision: 1.31 $</cvs:version>
     | <cvs:log>
     | $Log: build.xml,v $
+    | Revision 1.31  2003/06/30 17:43:16  dave
+    | Added missing classes from data query release
+    |
     | Revision 1.30  2003/06/30 17:36:30  dave
     | Added missing classes from data query release
     |
@@ -2049,8 +2052,9 @@
 		<antcall target="cocoon.wait"/>
 
 		<!-- Release our WebApp -->
+<!--
 		<antcall target="project.RELEASE"/>
-
+-->
 		<echo message="Ok ... Astrogrid portal is running."/>
 	</target>
 
