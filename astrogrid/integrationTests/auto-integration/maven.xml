@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.131 2004/11/25 00:18:28 jdt Exp $ -->
+<!-- $Id: maven.xml,v 1.132 2004/11/25 14:23:06 jdt Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -158,8 +158,8 @@
         <sleep seconds="2" />
         <attainGoal name="community-deploy"/>
         <sleep seconds="2" />
-        <attainGoal name="community-deploy-two"/>
-        <sleep seconds="2" />        
+        <!--attainGoal name="community-deploy-two"/>
+        <sleep seconds="2" /-->        
         <attainGoal name="portal-deploy" />
         <sleep seconds="4" />
         <attainGoal name="setup" />
@@ -196,7 +196,7 @@
         <sleep seconds="2" />
         <attainGoal name="community-deploy"/>
         <sleep seconds="2" />
-	    <attainGoal name="community-deploy-two"/>
+	    <!--attainGoal name="community-deploy-two"/-->
     	<sleep seconds="2" />
         <attainGoal name="setup" />
 </goal>
@@ -217,7 +217,7 @@
         <attainGoal name="pal-sec-undeploy" />
         <attainGoal name="pal-cds-undeploy" />
         <attainGoal name="community-undeploy" />
-	    <attainGoal name="community-two-undeploy" />	
+	    <!--attainGoal name="community-two-undeploy" /-->	
         <attainGoal name="portal-undeploy" />
 </goal>
 
@@ -237,7 +237,7 @@
         <attainGoal name="pal-sec-undeploy" />
         <attainGoal name="pal-cds-undeploy" />
         <attainGoal name="community-undeploy" />
-	    <attainGoal name="community-two-undeploy" />	
+	    <!--attainGoal name="community-two-undeploy" /-->	
 </goal>
 
 <goal name="list" prereqs="init" description="list deployed webapps">
@@ -534,7 +534,7 @@
     	<property name="service.url" value="${tomcat.url}/astrogrid-community-SNAPSHOT/services"/>    	
         <property name="community.xmlfile" value="file:///${work.dir}/community/demoaccounts.xml"/>
     </ant>
-	
+	<!--
     <ant
         target="database.reset"
         dir="${temporary.dir}/community/toolkit"
@@ -550,11 +550,11 @@
         dir="${temporary.dir}/community/toolkit"
         antfile="${temporary.dir}/community/toolkit/install.xml"
         >
-        <!-- load the community from a file local to the autointegration rather than out of the community install kit -->
+         load the community from a file local to the autointegration rather than out of the community install kit 
     	<property name="org.astrogrid.community.ident" value="${communityid}.two"/>
     	<property name="service.url" value="${tomcat.url}/astrogrid-community-two-SNAPSHOT/services"/>
     	<property name="community.xmlfile" value="file:///${work.dir}/community/demoaccounts_two.xml"/>
-    </ant>
+    </ant>-->
 	
 </goal>
 
@@ -581,12 +581,13 @@
     	<property name="org.astrogrid.community.ident" value="${communityid}"/>
     	<property name="service.url" value="${tomcat.url}/astrogrid-community-SNAPSHOT/services"/>
 	</ant>
+	<!--
     <ant target="service.register"
          dir="${temporary.dir}/community/toolkit"
          antfile="${temporary.dir}/community/toolkit/install.xml">
     	<property name="org.astrogrid.community.ident" value="${communityid}.two"/>
     	<property name="service.url" value="${tomcat.url}/astrogrid-community-two-SNAPSHOT/services"/>
-	</ant>	
+	</ant>	-->
 </goal>
 <!--+
     | Wait for the Community service to respond.
