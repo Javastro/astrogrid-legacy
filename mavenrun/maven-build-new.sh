@@ -4,8 +4,8 @@ OLDDIR=$PWD
 PROJECT_NAME=$1
 
 DATE=`date`
-BUILD_HOME=/home/maven/build/HEAD
-SCRIPTHOME=/home/maven/mavenrun
+BUILD_HOME=~/build/HEAD
+SCRIPTHOME=~/mavenrun
 PROJECT_HOME=$BUILD_HOME/astrogrid/$PROJECT_NAME
 DOC_HOME=/var/www/www/maven/docs
 ASTROGRID_VERSION=HEAD

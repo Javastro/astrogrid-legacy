@@ -1,6 +1,6 @@
 #!/bin/bash
-BUILD_DIR=/home/maven/build/HEAD
-SCRIPTHOME=/home/maven/mavenrun
+BUILD_DIR=~/build/HEAD
+SCRIPTHOME=~/mavenrun
 
 DATE=`date`
 TIMESTAMP=`date +%Y%m%d-%T`
