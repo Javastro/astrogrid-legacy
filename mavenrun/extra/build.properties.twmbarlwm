@@ -1,0 +1,10 @@
+tomcat.manager.username=tomcat
+tomcat.manager.password=integration
+work.dir=/home/integration/working
+tomcat.location=/usr/local/tomcat
+tomcat.common.lib.dir=${tomcat.location}/common/lib
+
+#Required to copy site docs across to Uluru
+maven.scp.executable=scp
+maven.ssh.exectuable=ssh
+maven.username=maven

@@ -1,0 +1,13 @@
+maven.username=maven
+#moved from maven-base/project.properties
+maven.repo.list=astrogrid
+maven.repo.astrogrid=scp://cvs.astrogrid.org
+maven.repo.astrogrid.directory=/var/www/www/maven
+maven.repo.astrogrid.group=maven
+#Authentication into our repository
+maven.repo.astrogrid.username=maven
+maven.repo.astrogrid.privatekey=/home/maven/.ssh/id_dsa
+maven.repo.astrogrid.passphrase=
+
+
+
