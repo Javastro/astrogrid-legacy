@@ -216,7 +216,7 @@
      -->
    <xsl:template match="*[@xsi:type='likePredType']">
       <xsl:apply-templates select="ad:Arg"/>
-      <xsl:text> LIKE </xsl:text>
+      <xsl:text> |= </xsl:text>
       <xsl:apply-templates select="ad:Pattern/ad:Literal"/>
    </xsl:template>
    <!--
