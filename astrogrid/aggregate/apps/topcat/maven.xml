@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!-- extension maven script -->
+<project default="astrogrid-build-site" xmlns:deploy="deploy" xmlns:j="jelly:core">
+
+        <goal name="astrogrid-deploy-site">
+            <echo message="Please deploy the site docs from the base myspace project"/>
+        </goal>
+        <goal name="astrogrid-deploy-snapshot" prereqs="war:deploy-snapshot"/>
+        <goal name="astrogrid-build-snapshot" prereqs="war:war">
+                <echo>NB - no goal exists to build war snapshot - called war:war instead </echo>
+        </goal>
+        <goal name="astrogrid-install-snapshot" prereqs="war:install-snapshot"/>
+        <goal name="astrogrid-deploy-artifact" prereqs="war:deploy"/>
+        <goal name="astrogrid-build-artifact" prereqs="war:war"/>
+        <goal name="astrogrid-install-artifact" prereqs="war:install"/>
+
+        <postGoal name="war:webapp">
+                        <deploy:copy-deps todir="${maven.build.dir}/${pom.artifactId}" />
+                <delete includeEmptyDirs="true">
+                        <fileset dir="${maven.build.dir}/${pom.artifactId}">
+                                <include name="WEB-INF/**" />
+                        </fileset>
+                </delete>
+                <!-- sign jars by hand - as maven jnlp task is flakey  - no need, topcat is already signed...
+                <signjar alias="astrogrid" storepass="qwertyuiop">
+                        <fileset dir="${maven.build.dir}/${pom.artifactId}">
+                                <include name="*.jar" />
+                        </fileset>
+                </signjar>
+                <attainGoal name="patch-jnlp" />
+                -->
+        </postGoal>
+
+</project>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: project.xml,v 1.1 2004/12/03 00:16:36 nw Exp $ -->
+<project>
+    <extend>${basedir}/../../../maven-base/project.xml</extend>
+    <currentVersion>${astrogrid.aggregate.version}</currentVersion>
+    <id>topcat</id>
+    <name>Starlink Topcat</name>
+    <description>Package of Topcat with Myspace Plugin</description>
+    <shortDescription>Package of Topcat with Myspace Plugin</shortDescription>
+    <dependencies>
+
+        <dependency>
+                <groupId>starlink</groupId>
+                <artifactId>topcat-full</artifactId>
+                <version>1.0</version>
+                <jar>topcat-full.jar</jar>
+        </dependency>
+
+  </dependencies>
+    <build>
+
+        <sourceDirectory/>
+
+        <unitTestSourceDirectory/>
+
+        <unitTest/>
+    </build>
+
+</project>
