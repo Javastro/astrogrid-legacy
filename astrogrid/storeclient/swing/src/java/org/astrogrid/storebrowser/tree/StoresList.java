@@ -1,5 +1,5 @@
 /*
- * $Id: StoresList.java,v 1.3 2005/03/29 20:13:51 mch Exp $
+ * $Id: StoresList.java,v 1.4 2005/03/31 19:25:39 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -19,7 +19,7 @@ import javax.swing.tree.DefaultTreeModel;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.slinger.Slinger;
-import org.astrogrid.storeclient.api.srb.JargonFileAdaptor;
+import org.astrogrid.storeclient.srb.JargonFileAdaptor;
 
 /**
  * Special one-off root storenode for tree models, that represents the highest level node, containing
@@ -101,15 +101,15 @@ public class StoresList extends DefaultMutableTreeNode {
     * GUIs to have an initial set of stores.
     */
    public void addTestStores() throws IOException {
-      addStore("Twmbarlwm:8080", "msrl:http://twmbarlwm.star.le.ac.uk:8080/astrogrid-mySpace-SNAPSHOT/services/Manager");
-      addStore("Twmbarlwm:8888", "msrl:http://twmbarlwm.star.le.ac.uk:8888/astrogrid-mySpace-SNAPSHOT/services/Manager");
-      addStore("Zoomalooma", "msrl:http://zhumulangma.star.le.ac.uk:8080/astrogrid-mySpace-SNAPSHOT/services/Manager");
-      addStore("Katatjuta", "msrl:http://katatjuta.star.le.ac.uk:8080/astrogrid-mySpace-SNAPSHOT/services/Manager");
-      addStore("ROE FTP", "ftp://ftp.roe.ac.uk/pub/");
-      addStore("Ed FTP", "ftp://ftp.ed.ac.uk/pub/");
-      addStore("Mirror Service", "ftp://ftp.mirrorservice.org/");
-      addStore("iBiblio", "ftp://ftp.ibiblio.org/");
-      addStore("Demo SRB", JargonFileAdaptor.DEMO_SRB_URI);
+//      addStore("Twmbarlwm:8080", "msrl:http://twmbarlwm.star.le.ac.uk:8080/astrogrid-mySpace-SNAPSHOT/services/Manager");
+//      addStore("Twmbarlwm:8888", "msrl:http://twmbarlwm.star.le.ac.uk:8888/astrogrid-mySpace-SNAPSHOT/services/Manager");
+//      addStore("Zoomalooma", "msrl:http://zhumulangma.star.le.ac.uk:8080/astrogrid-mySpace-SNAPSHOT/services/Manager");
+//      addStore("Katatjuta", "msrl:http://katatjuta.star.le.ac.uk:8080/astrogrid-mySpace-SNAPSHOT/services/Manager");
+//      addStore("ROE FTP", "ftp://ftp.roe.ac.uk/pub/");
+//      addStore("Ed FTP", "ftp://ftp.ed.ac.uk/pub/");
+//      addStore("Mirror Service", "ftp://ftp.mirrorservice.org/");
+//      addStore("iBiblio", "ftp://ftp.ibiblio.org/");
+//      addStore("Demo SRB", JargonFileAdaptor.DEMO_SRB_URI);
    }
    
    /** Adds homespace to the list of stores.  If not signed in, includes 'Frogs' demo homespace */

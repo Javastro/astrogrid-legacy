@@ -1,5 +1,5 @@
 /*
- * $Id: DirectoryModel.java,v 1.1 2005/03/28 02:06:35 mch Exp $
+ * $Id: DirectoryModel.java,v 1.2 2005/03/31 19:25:39 mch Exp $
  */
 
 package org.astrogrid.storebrowser.folderlist;
@@ -12,11 +12,11 @@ import java.io.IOException;
 import java.security.Principal;
 import javax.swing.table.AbstractTableModel;
 import org.astrogrid.slinger.mime.MimeTypes;
-import org.astrogrid.storeclient.api.StoreFile;
+import org.astrogrid.file.FileNode;
 
 public class DirectoryModel extends AbstractTableModel {
-   protected StoreFile directory;
-   protected StoreFile[] children;
+   protected FileNode directory;
+   protected FileNode[] children;
    protected int rowCount;
    protected Principal user;
    
@@ -25,14 +25,14 @@ public class DirectoryModel extends AbstractTableModel {
    }
    
    /** empty model constructor */
-   public DirectoryModel( StoreFile f) throws IOException {
+   public DirectoryModel( FileNode f) throws IOException {
       setDirectory(f);
    }
 
-   public void setDirectory( StoreFile dir ) throws IOException {
+   public void setDirectory( FileNode dir ) throws IOException {
       if ( dir != null ) {
          directory = dir;
-         children = dir.listFiles(user);
+         children = dir.listFiles();
          if (children == null) {
             rowCount = 0;
          }
@@ -48,9 +48,9 @@ public class DirectoryModel extends AbstractTableModel {
       fireTableDataChanged();
    }
 
-   public StoreFile getDirectory() { return directory; }
+   public FileNode getDirectory() { return directory; }
    
-   public StoreFile getFile(int row) { return children[row]; }
+   public FileNode getFile(int row) { return children[row]; }
    
    public int getRowCount() {
       return children != null ? rowCount : 0;
@@ -65,7 +65,7 @@ public class DirectoryModel extends AbstractTableModel {
          return null;
       }
       
-      StoreFile file = children[row];
+      FileNode file = children[row];
       
       switch ( column ) {
          case 0: //column 0 = icon
@@ -122,7 +122,7 @@ public class DirectoryModel extends AbstractTableModel {
    }
 
    /** Returns a suitable object for the icon for the file */
-   public Object getIcon(StoreFile file) {
+   public Object getIcon(FileNode file) {
       if (file.isFolder()) {
          return "+";
       }

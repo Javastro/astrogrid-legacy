@@ -1,5 +1,5 @@
 /*
- * $Id: StoreFile.java,v 1.2 2005/03/28 02:06:35 mch Exp $
+ * $Id: FileNode.java,v 1.1 2005/03/31 19:25:39 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -7,12 +7,11 @@
  * a copy of which has been included with this distribution in the LICENSE.txt file.
  */
 
-package org.astrogrid.storeclient.api;
+package org.astrogrid.file;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.security.Principal;
 import java.util.Date;
 
 
@@ -26,13 +25,13 @@ import java.util.Date;
  */
 
 
-public interface StoreFile  {
+public interface FileNode  {
 
    /** Returns the file/folder/table name without path */
    public String getName();
    
    /** Returns parent folder of this file/folder, if permission granted */
-   public StoreFile getParent(Principal user) throws IOException;
+   public FileNode getParent() throws IOException;
 
    /** Refreshes from the server; clears children and reloads properties for
     * this file */
@@ -54,7 +53,7 @@ public interface StoreFile  {
    public String getMimeType();
    
    /** Set the mime type on the disk */
-   public void setMimeType(String newMimeType, Principal user) throws IOException;
+   public void setMimeType(String newMimeType) throws IOException;
    
    /** Returns an appropriate RL (eg url, msrl) for this file */
    public String getUri();
@@ -68,10 +67,10 @@ public interface StoreFile  {
    
    /** Returns true if it exists - eg it may be a reference to a file about to be
     * created */
-   public boolean exists();
+   public boolean exists() throws IOException;
    
    /** Lists children files if this is a container - returns null otherwise */
-   public StoreFile[] listFiles(Principal user) throws IOException;
+   public FileNode[] listFiles() throws IOException;
    
    /** Returns the path to this file on the server, including the filename */
    public String getPath();
@@ -79,27 +78,27 @@ public interface StoreFile  {
    /** Returns true if this represents the same file as the given one, within
     * this server.  This
     * won't check for references from different stores to the same file */
-   public boolean equals(StoreFile anotherFile);
+   public boolean equals(FileNode anotherFile);
    
    /** Renames the file to the given filename. Affects only the name, not the
     * path */
-   public void renameTo(String newFilename, Principal user) throws IOException;
+   public void renameTo(String newFilename) throws IOException;
    
    /** Deletes this file */
-   public void delete(Principal user) throws IOException;
+   public void delete() throws IOException;
 
    /** IF this is a folder, creats a subfolder */
-   public StoreFile makeFolder(String newFolderName, Principal user) throws IOException;
+   public FileNode makeFolder(String newFolderName) throws IOException;
    
    /** If this is a folder, creates 'an entry' for a child file with the given name.  It may not create this
     * as an entry on the server; it may just be a handle for a new file to output to */
-   public StoreFile makeFile(String filename, Principal user) throws IOException;
+   public FileNode makeFile(String filename) throws IOException;
 
    /** If this is not a folder, creates a stream that outputs to it */
-   public OutputStream openOutputStream(Principal user, String mimeType, boolean append) throws IOException;
+   public OutputStream openOutputStream(String mimeType, boolean append) throws IOException;
 
    /** If this is not a folder, creates a stream that reads from it */
-   public InputStream openInputStream(Principal user) throws IOException;
+   public InputStream openInputStream() throws IOException;
 }
 
 /*

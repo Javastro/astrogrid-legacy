@@ -1,5 +1,5 @@
 /*
- * $Id: StoreFileInputField.java,v 1.2 2005/03/28 02:06:35 mch Exp $
+ * $Id: StoreFileInputField.java,v 1.3 2005/03/31 19:25:39 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -20,7 +20,7 @@ import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.security.Principal;
 import org.astrogrid.account.LoginAccount;
-import org.astrogrid.storeclient.api.StoreFile;
+import org.astrogrid.file.FileNode;
 import org.astrogrid.ui.IconButtonHelper;
 import org.astrogrid.ui.JHistoryComboBox;
 import org.astrogrid.ui.JPasteButton;
@@ -140,7 +140,7 @@ public class StoreFileInputField extends JPanel implements KeyListener {
       try
       {
          
-         StoreFile chosen = StorePicker.choose(operator, browserAction);
+         FileNode chosen = StorePicker.choose(operator, browserAction);
          if (chosen != null)
          {
             fileEntryField.setItem(chosen.getUri());
@@ -218,6 +218,9 @@ public class StoreFileInputField extends JPanel implements KeyListener {
 
 /*
 $Log: StoreFileInputField.java,v $
+Revision 1.3  2005/03/31 19:25:39  mch
+semi fixed a few threading things, introduced sort order to tree
+
 Revision 1.2  2005/03/28 02:06:35  mch
 Major lump: split picker and browser and added threading to seperate UI interations from server interactions
 

@@ -1,5 +1,5 @@
 /*
- * $Id: StoreFileNode.java,v 1.3 2005/03/29 20:13:51 mch Exp $
+ * $Id: StoreFileNode.java,v 1.4 2005/03/31 19:25:39 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -20,7 +20,7 @@ import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.storeclient.api.StoreFile;
+import org.astrogrid.file.FileNode;
 
 /**
  * StoreFile adaptor for JTree views (or similar).
@@ -37,16 +37,22 @@ public class StoreFileNode extends DefaultMutableTreeNode implements TreeNode {
 
    Log log = LogFactory.getLog(StoreFileNode.class);
    
-   StoreFile file = null;
+   FileNode file = null;
    Principal user = null;
    
    Throwable lastError = null;
    
-   ChildrenLoader loading = null;
+//   ChildrenLoader loading = null;
    
    DefaultTreeModel model = null; //used to update when children are loaded
+
+   /* -1 = no children loaded, 0-1 = loading, 9 = loaded.  By
+   using just the one flag and having it changed in one place only we can stop
+   threading problems.  Note that the loading thread changes it, but the loading
+    thread cna only be created in one place */
+   private int completeness = -1;
    
-   public StoreFileNode(DefaultTreeModel givenModel, MutableTreeNode givenParent, StoreFile aFile, Principal aUser) throws IOException {
+   public StoreFileNode(DefaultTreeModel givenModel, MutableTreeNode givenParent, FileNode aFile, Principal aUser) throws IOException {
       this.parent = givenParent;
       this.file = aFile;
       this.user = aUser;
@@ -54,7 +60,7 @@ public class StoreFileNode extends DefaultMutableTreeNode implements TreeNode {
       this.model = givenModel;
    }
    
-   public StoreFile getFile()  {
+   public FileNode getFile()  {
       return file;
    }
 
@@ -81,15 +87,15 @@ public class StoreFileNode extends DefaultMutableTreeNode implements TreeNode {
    /**
     * Returns true if the file is still being loaded */
    public boolean isLoading() {
-      return loading != null;
+      return (completeness == 0);
    }
    
    /**
     * Returns the number of children <code>TreeNode</code>s the receiver
     * contains.
     */
-   public int getChildCount() {
-      if (children == null) {
+   public synchronized int getChildCount() {
+      if (completeness == -1) {
          loadChildren();
       }
       return children.size();
@@ -99,38 +105,56 @@ public class StoreFileNode extends DefaultMutableTreeNode implements TreeNode {
    public void refresh() {
       loadChildren();
    }
-   
-   /** Refresh - clears the children and file's children. Synchronised as this
-    * should be the only public method that modifies the 'loading' flag*/
-   public synchronized void loadChildren() {
 
-      clearError();
-      children = new Vector();
-      
-      if (loading != null) {
-         loading.abort(); //so we can stop it and start it again
+   /** Override so we can order it properly */
+   public void add(MutableTreeNode newChild) {
+
+      if (children == null) {
+         insert(newChild,0);
       }
       else {
+         //find insert position - don't like this, doubt it's threadsafe
+         Enumeration e = children.elements();
+         int i = 0;
+         while (e.hasMoreElements() &&  ((StoreFileNode) e.nextElement()).compareTo( (StoreFileNode) newChild) < 0 ) {
+            i++;
+         }
+         insert(newChild, i);
+      }
+   }
+
+   /** Returns < 0 if this file should be placed before the given file in
+    * directory lists, 0 if they are equal and > 0 if it should be placed after */
+   public int compareTo(StoreFileNode node) {
+      if (file.isFolder() && (!node.file.isFolder())) {
+         return -1;
+      }
+      if (!file.isFolder() && (node.file.isFolder())) {
+         return 1;
+      }
+      //otherwise by name comparison
+//    return (file.getName().compareTo(node.file.getName()));
+      //otherwise by caseless name comparison
+      return (file.getName().toLowerCase().compareTo(node.file.getName().toLowerCase()));
+   }
+   
+   /** Refresh - clears the children and file's children. Synchronised as this
+    * should be the only public method that modifies the completeness flag  */
+   public synchronized void loadChildren() {
+
+      if ( completeness != 0)  { //only if not already loading
+         completeness = 0;
+         clearError();
+         children = new Vector();
+      
          if ((file != null) && (file.isFolder())) {
-            loading = new ChildrenLoader(this);
+            ChildrenLoader loading = new ChildrenLoader(this);
             Thread loadingThread = new Thread(loading);
             loadingThread.start();
          }
       }
    }
 
-   /** Loads single child from given StoreFile.  This is called when updating
-    * this TreeNode wrapper with new data from the remote server, so it must also
-    * update any suitable model listeners.
-    * At the moment just adds to the children
-    *
-   protected void loadChild(StoreFile newFile) throws IOException {
-      log.debug("Adding "+newFile+" to "+this);
-      children.add(new StoreFileNode(model, this, newFile, user));
-      if (model != null) model.reload(this);
-      
-   }
-   
    /** Runnable that loads the children from the remote service into this instance */
    public class ChildrenLoader implements Runnable {
       
@@ -147,7 +171,7 @@ public class StoreFileNode extends DefaultMutableTreeNode implements TreeNode {
                log.debug("Reading file list for "+node.file.getPath()+"...");
                //this is the bit that might take some time
                node.getFile().refresh();
-               StoreFile[] childFiles = node.getFile().listFiles(node.getUser());
+               FileNode[] childFiles = node.getFile().listFiles();
                if (childFiles != null) {
                   log.debug("...found "+childFiles.length+" files for "+node.file.getPath());
                   //so we have the results, now add them in to the model/node
@@ -163,7 +187,7 @@ public class StoreFileNode extends DefaultMutableTreeNode implements TreeNode {
          catch (Throwable e) {
             node.setError(e+" loading children of "+this, e);
          }
-         node.loading = null; //disengage from node
+         completeness = 1; //loading completed
          if (node.model != null) {
             SwingUtilities.invokeLater(new NodeChanger(node, node.model));
          }
@@ -204,7 +228,7 @@ public class StoreFileNode extends DefaultMutableTreeNode implements TreeNode {
    
    /** When we close down this object, we also want to close down any
     * updating that might be going on.  We could make this more explicit...
-    */
+    *
    public void finalize() {
       try {
          loading.abort();

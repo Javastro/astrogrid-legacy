@@ -1,10 +1,10 @@
 /*
- $Id: SlingerFtpClient.java,v 1.3 2005/03/29 20:13:51 mch Exp $
+ $Id: SlingerFtpClient.java,v 1.1 2005/03/31 19:25:39 mch Exp $
 
  (c) Copyright...
  */
 
-package org.astrogrid.storeclient.api.ftp;
+package org.astrogrid.storeclient.ftp;
 import java.io.*;
 
 import java.net.URL;

@@ -1,5 +1,5 @@
 /**
- * $Id: PickerRenderer.java,v 1.2 2005/03/28 02:06:35 mch Exp $
+ * $Id: PickerRenderer.java,v 1.3 2005/03/31 19:25:39 mch Exp $
  */
 package org.astrogrid.storebrowser.html;
 
@@ -27,7 +27,7 @@ import org.astrogrid.storebrowser.servlet.PickerServlet;
 import org.astrogrid.storebrowser.tree.StoreFileNode;
 import org.astrogrid.storebrowser.tree.StoreRootNode;
 import org.astrogrid.storebrowser.tree.StoresList;
-import org.astrogrid.storeclient.api.srb.JargonFileAdaptor;
+import org.astrogrid.storeclient.srb.JargonFileAdaptor;
 
 /**
  * An object representing a view onto a store, such as myspace, suitable for

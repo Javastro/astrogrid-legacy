@@ -1,5 +1,5 @@
 /*
- * $Id: FilePopupMenu.java,v 1.1 2005/03/30 11:00:29 mch Exp $
+ * $Id: FilePopupMenu.java,v 1.2 2005/03/31 19:25:39 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -15,15 +15,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import javax.swing.Icon;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
-import javax.swing.JTree;
-import javax.swing.tree.DefaultTreeCellRenderer;
 import org.astrogrid.storebrowser.tree.StoreFileNode;
-import org.astrogrid.storeclient.api.StoreFile;
 
 
 

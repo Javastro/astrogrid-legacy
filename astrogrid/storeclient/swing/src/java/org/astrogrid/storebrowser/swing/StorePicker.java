@@ -1,5 +1,5 @@
 /*
- * $Id: StorePicker.java,v 1.3 2005/03/29 20:13:51 mch Exp $
+ * $Id: StorePicker.java,v 1.4 2005/03/31 19:25:39 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -33,7 +33,7 @@ import org.astrogrid.slinger.Slinger;
 import org.astrogrid.storebrowser.tree.StoreFileNode;
 import org.astrogrid.storebrowser.tree.StoreTreeView;
 import org.astrogrid.storebrowser.tree.StoresList;
-import org.astrogrid.storeclient.api.StoreFile;
+import org.astrogrid.file.FileNode;
 import org.astrogrid.ui.EscEnterListener;
 import org.astrogrid.ui.GridBagHelper;
 import org.astrogrid.ui.IconButtonHelper;
@@ -86,7 +86,7 @@ public class StorePicker extends JDialog
    /** Public access to this picker - returns the storefile chosen (or null if cancelled).
     * @param action - text for action button, eg 'Open', 'Save', 'Get', etc.
     */
-   public static StoreFile choose(Principal user, String action) throws IOException
+   public static FileNode choose(Principal user, String action) throws IOException
    {
       if (picker == null) {
          //initial constructor
@@ -232,7 +232,7 @@ public class StorePicker extends JDialog
       treeView.addTreeSelectionListener(
          new TreeSelectionListener() {
             public void valueChanged(TreeSelectionEvent e) {
-               StoreFile f = treeView.getSelectedFile();
+               FileNode f = treeView.getSelectedFile();
    //might type in            boolean actable = false; //is what is chosen 'actable' - ie is  a file selected
                if (f!= null) {
                   addressPicker.addItem(f.getUri());
@@ -293,7 +293,7 @@ public class StorePicker extends JDialog
    public void deleteSelected()
    {
       //see if a filename has been selected
-      StoreFile target = getSelectedFile();
+      FileNode target = getSelectedFile();
       if (target == null)   {
          JOptionPane.showMessageDialog(this, "Select directory or filename to delete");
          return;
@@ -308,8 +308,8 @@ public class StorePicker extends JDialog
       
       if (response == JOptionPane.OK_OPTION) {
          try {
-            target.getParent(operator).refresh();
-            target.delete(operator);
+            target.getParent().refresh();
+            target.delete();
             refresh();
          }
          catch (IOException ioe) {
@@ -325,7 +325,7 @@ public class StorePicker extends JDialog
    public void newFolder()
    {
       //see if a filename has been selected
-      StoreFile target = getSelectedFile();
+      FileNode target = getSelectedFile();
       if ((target == null) || (!target.isFolder()))   {
          JOptionPane.showMessageDialog(this, "Select directory to create new folder in");
          return;
@@ -336,7 +336,7 @@ public class StorePicker extends JDialog
       if (newFoldername != null) {
          //create folder
          try {
-            target.makeFolder(newFoldername, operator);
+            target.makeFolder(newFoldername);
             refresh();
          } catch (IOException ioe) {
             log.error(ioe+", creating new folder '"+newFoldername+"'", ioe);
@@ -358,13 +358,13 @@ public class StorePicker extends JDialog
    
    /** Returns the currently selected file, which may be selected on the tree view,
     * or may be selected via a folder on teh tree view and a name in the name field */
-   public StoreFile getSelectedFile() {
-      StoreFile file = treeView.getSelectedFile();
+   public FileNode getSelectedFile() {
+      FileNode file = treeView.getSelectedFile();
       
       if ((file != null) && (file.isFolder())) {
          if ((filenameField.getText() != null) && (filenameField.getText().trim().length()>0)) {
             try {
-               file = file.makeFile(filenameField.getText().trim(), operator);
+               file = file.makeFile(filenameField.getText().trim());
             }
             catch (IOException e) {
                log.error(e+" selecting file "+file+" name "+filenameField.getText().trim(),e);
@@ -380,17 +380,22 @@ public class StorePicker extends JDialog
      */
    public static void main(String[] args)  {
 
-      SimpleConfig.getSingleton().setProperty("org.astrogrid.registry.query.endpoint", "http://hydra.star.le.ac.uk:8080/astrogrid-registry/services/RegistryQuery");
+//      SimpleConfig.getSingleton().setProperty("org.astrogrid.registry.query.endpoint", "http://hydra.star.le.ac.uk:8080/astrogrid-registry/services/RegistryQuery");
+      SimpleConfig.getSingleton().setProperty("org.astrogrid.registry.query.endpoint", "http://capc49.ast.cam.ac.uk/galahad-registry/services/RegistryQuery");
       ConfigFactory.getCommonConfig().setProperty(Slinger.PERMIT_LOCAL_ACCESS_KEY, "true");
 
       try
       {
-         Principal user = new IvoAccount("DSATEST1", "uk.ac.le.star", null);
-         StoreFile picked = StorePicker.choose(user, "OK");
+//         Principal user = new IvoAccount("DSATEST1", "uk.ac.le.star", null);
+         Principal user = new IvoAccount("guest01", "uk.ac.le.star", null);
+      if ((args.length>1)) {
+         user = new IvoAccount(args[0]);
+      }
+         FileNode picked = StorePicker.choose(user, "OK");
          System.out.println("Picked file "+picked+":");
          
          if ((picked != null) && (picked.isFile())) {
-            Piper.bufferedPipe(picked.openInputStream(user), System.out);
+            Piper.bufferedPipe(picked.openInputStream(), System.out);
          }
          
       } catch (IOException ioe)
@@ -402,6 +407,9 @@ public class StorePicker extends JDialog
 
 /*
 $Log: StorePicker.java,v $
+Revision 1.4  2005/03/31 19:25:39  mch
+semi fixed a few threading things, introduced sort order to tree
+
 Revision 1.3  2005/03/29 20:13:51  mch
 Got threading working safely at last
 

@@ -1,10 +1,11 @@
 /*
- * $Id: StoreFileResolver.java,v 1.4 2005/03/28 02:06:35 mch Exp $
+ * $Id: StoreFileResolver.java,v 1.1 2005/03/31 19:25:39 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
-package org.astrogrid.storeclient.api;
+package org.astrogrid.storeclient;
+import org.astrogrid.file.*;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -17,11 +18,11 @@ import org.astrogrid.slinger.agfm.FileManagerId;
 import org.astrogrid.slinger.myspace.MSRL;
 import org.astrogrid.slinger.vospace.HomespaceName;
 import org.astrogrid.slinger.vospace.IVOSRN;
-import org.astrogrid.storeclient.api.agfm.FileManagerFile;
-import org.astrogrid.storeclient.api.file.LocalFile;
-import org.astrogrid.storeclient.api.ftp.FtpStoreFile;
-import org.astrogrid.storeclient.api.myspace.MySpaceFile;
-import org.astrogrid.storeclient.api.srb.JargonFileAdaptor;
+import org.astrogrid.storeclient.myspace.FileManagerFile;
+import org.astrogrid.file.LocalFile;
+import org.astrogrid.storeclient.ftp.FtpStoreFile;
+import org.astrogrid.storeclient.myspace.MySpaceFile;
+import org.astrogrid.storeclient.srb.JargonFileAdaptor;
 
 /**
  * Resolves the appropriate StoreFile implementation from a *locator*, eg
@@ -31,7 +32,7 @@ import org.astrogrid.storeclient.api.srb.JargonFileAdaptor;
 public class StoreFileResolver {
    
 
-   public static StoreFile resolveStoreFile(URL url, Principal user) throws IOException {
+   public static FileNode resolveStoreFile(URL url, Principal user) throws IOException {
       if (url.getProtocol().equals("file")) {
          return new LocalFile(url);
       }
@@ -43,9 +44,9 @@ public class StoreFileResolver {
       }
    }
 
-   public static StoreFile resolveStoreFile(MSRL myspace, Principal user) throws IOException {
+   public static FileNode resolveStoreFile(MSRL myspace, Principal user) throws IOException {
       try {
-         return new MySpaceFile(myspace, user);
+         return new MySpaceFile(myspace);
       }
       catch (ServiceException se) {
          IOException ioe = new IOException(se+" connecting to "+myspace);
@@ -55,21 +56,21 @@ public class StoreFileResolver {
    }
 
    /** assumes homespaces are filemanagers... bad... */
-   public static StoreFile resolveStoreFile(HomespaceName homespace, Principal user) throws IOException, URISyntaxException {
+   public static FileNode resolveStoreFile(HomespaceName homespace, Principal user) throws IOException, URISyntaxException {
       return resolveStoreFile(new FileManagerId(homespace.toIvoForm()), user);
    }
 
-   public static StoreFile resolveStoreFile(FileManagerId fileManagerId, Principal user) throws IOException, URISyntaxException {
+   public static FileNode resolveStoreFile(FileManagerId fileManagerId, Principal user) throws IOException, URISyntaxException {
       return new FileManagerFile(fileManagerId.getId(), user);
    }
 
    /** Assumes ivosrn resolves to a myspace - bad... */
-   public static StoreFile resolveStoreFile(IVOSRN ivosrn, Principal user) throws IOException {
+   public static FileNode resolveStoreFile(IVOSRN ivosrn, Principal user) throws IOException {
       MSRL myspace = new MSRL(new URL(ivosrn.resolve()), ivosrn.getFragment());
       return resolveStoreFile(myspace, user);
    }
    
-   public static StoreFile resolveStoreFile(String uri, Principal user) throws IOException, URISyntaxException {
+   public static FileNode resolveStoreFile(String uri, Principal user) throws IOException, URISyntaxException {
       try {
          //see if it's a URL
          return resolveStoreFile(new URL(uri), user);
@@ -101,6 +102,9 @@ public class StoreFileResolver {
 
 /*
 $Log: StoreFileResolver.java,v $
+Revision 1.1  2005/03/31 19:25:39  mch
+semi fixed a few threading things, introduced sort order to tree
+
 Revision 1.4  2005/03/28 02:06:35  mch
 Major lump: split picker and browser and added threading to seperate UI interations from server interactions
 

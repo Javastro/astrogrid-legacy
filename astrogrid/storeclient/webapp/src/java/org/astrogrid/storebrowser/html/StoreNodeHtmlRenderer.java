@@ -1,5 +1,5 @@
 /**
- * $Id: StoreNodeHtmlRenderer.java,v 1.2 2005/03/28 02:06:35 mch Exp $
+ * $Id: StoreNodeHtmlRenderer.java,v 1.3 2005/03/31 19:25:39 mch Exp $
  */
 package org.astrogrid.storebrowser.html;
 import java.io.IOException;
@@ -14,7 +14,7 @@ import org.astrogrid.slinger.vospace.HomespaceName;
 import org.astrogrid.storebrowser.servlet.PickerServlet;
 import org.astrogrid.storebrowser.tree.StoreFileNode;
 import org.astrogrid.storebrowser.tree.StoreRootNode;
-import org.astrogrid.storeclient.api.StoreFile;
+import org.astrogrid.file.FileNode;
 
 /**
  * Renders a StoreRootNode in HTML
@@ -42,7 +42,7 @@ public class StoreNodeHtmlRenderer implements NodeHtmlRenderer {
    public void writeNode(TreeNode node, String[] openPaths, String selectedPath, Writer out) throws IOException {
       
       StoreFileNode storeFileNode = (StoreFileNode) node;
-      StoreFile file = null;
+      FileNode file = null;
       try {
          file = storeFileNode.getFile();
       }
@@ -182,7 +182,7 @@ public class StoreNodeHtmlRenderer implements NodeHtmlRenderer {
    
    
    /** Returns an image name suitable for the mime type, or suitable html to fill the gap */
-   public static String getFileIconHtml(String imageRef, StoreFile file) {
+   public static String getFileIconHtml(String imageRef, FileNode file) {
       if (file.isFolder()) {
          return "<img src='"+imageRef+"Folder.png' alt='(+)' border='0'/>";
       }

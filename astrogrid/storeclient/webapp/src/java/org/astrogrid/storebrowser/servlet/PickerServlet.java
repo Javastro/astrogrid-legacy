@@ -1,5 +1,5 @@
 /**
- * $Id: PickerServlet.java,v 1.2 2005/03/28 02:06:35 mch Exp $
+ * $Id: PickerServlet.java,v 1.3 2005/03/31 19:25:39 mch Exp $
  */
 package org.astrogrid.storebrowser.servlet;
 
@@ -21,8 +21,8 @@ import org.astrogrid.storebrowser.html.RendererSupport;
 import org.astrogrid.storebrowser.tree.StoreFileNode;
 import org.astrogrid.storebrowser.tree.StoreRootNode;
 import org.astrogrid.storebrowser.tree.StoresList;
-import org.astrogrid.storeclient.api.StoreFile;
-import org.astrogrid.storeclient.api.StoreFileResolver;
+import org.astrogrid.file.FileNode;
+import org.astrogrid.storeclient.StoreFileResolver;
 
 /**
  * A servlet that displays a file browser suitable for choosing ('picking') a
@@ -195,7 +195,7 @@ public class PickerServlet extends HttpServlet {
 
          //get convenient reference to selected File (if there is one) and store
          //its uri in the session so other pages can find it when we're done here
-         StoreFile selectedFile = null;
+         FileNode selectedFile = null;
          StoreFileNode selectedNode = renderer.getStoreRootNode(renderer.getSelectedPath());
          if (selectedNode != null) {
             selectedFile = selectedNode.getFile();
@@ -215,14 +215,14 @@ public class PickerServlet extends HttpServlet {
 
          else if (request.getParameter("delete") != null) {
             if (!request.getParameter("delete").equals("force")) {
-               if ((selectedFile.listFiles(user) != null) && (selectedFile.listFiles(user).length>0)) {
+               if ((selectedFile.listFiles() != null) && (selectedFile.listFiles().length>0)) {
                   //directory with children - refuse to delete until contents are deleted.  Temporary safety measure
                   throw new IOException("Delete Refused: "+
-                                  "Folder "+selectedFile.getPath()+" contains "+selectedFile.listFiles(user).length+" files.  "+
+                                  "Folder "+selectedFile.getPath()+" contains "+selectedFile.listFiles().length+" files.  "+
                                   "They must be deleted before the folder can be deleted");
                }
             }
-            selectedFile.delete(user);
+            selectedFile.delete();
             ((StoreFileNode) renderer.getStoreRootNode(renderer.getSelectedPath()).getParent()).refresh();
             renderer.writeBrowser(request, response);
          }
@@ -263,8 +263,8 @@ public class PickerServlet extends HttpServlet {
             //work out parent directory path
             String newFolderName = request.getParameter("newFolder");
             StoreFileNode parentNode = renderer.getStoreRootNode(renderer.getSelectedPath());
-            StoreFile parentFolder = parentNode.getFile();
-            parentFolder.makeFolder(newFolderName, user);
+            FileNode parentFolder = parentNode.getFile();
+            parentFolder.makeFolder(newFolderName);
             parentNode.refresh();
             renderer.writeBrowser(request, response);
          }
@@ -272,9 +272,9 @@ public class PickerServlet extends HttpServlet {
             //work out parent directory path
             String newFileName = request.getParameter("newFile");
             StoreFileNode parentNode = renderer.getStoreRootNode(renderer.getSelectedPath());
-            StoreFile parentFolder = parentNode.getFile();
-            StoreFile newChild = parentFolder.makeFile(newFileName, user);
-            OutputStream out = newChild.openOutputStream(user, "text/plain", false);
+            FileNode parentFolder = parentNode.getFile();
+            FileNode newChild = parentFolder.makeFile(newFileName);
+            OutputStream out = newChild.openOutputStream("text/plain", false);
             String contents = request.getParameter("newFileContents");
             Piper.bufferedPipe(new StringReader(contents), new OutputStreamWriter(out));
             out.close();
@@ -283,13 +283,13 @@ public class PickerServlet extends HttpServlet {
          }
 
          else if (request.getParameter("viewFile") != null) {
-            StoreFile file = StoreFileResolver.resolveStoreFile(request.getParameter("viewFile"), user);
+            FileNode file = StoreFileResolver.resolveStoreFile(request.getParameter("viewFile"), user);
             if (file == null)  {
                throw new FileNotFoundException(request.getParameter("viewFile"));
             }
             response.setContentType(file.getMimeType());
             OutputStream out = response.getOutputStream();
-            InputStream in = file.openInputStream(user);
+            InputStream in = file.openInputStream();
             Piper.bufferedPipe(in, out);
             in.close();
             out.flush();

@@ -1,5 +1,5 @@
 /*
- * $Id: StoreTreeView.java,v 1.4 2005/03/30 11:01:43 mch Exp $
+ * $Id: StoreTreeView.java,v 1.5 2005/03/31 19:25:39 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -16,7 +16,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.storeclient.api.StoreFile;
+import org.astrogrid.file.FileNode;
 
 /**
  * A Tree view compnonent for displaying and exploring store file trees
@@ -43,7 +43,7 @@ public class StoreTreeView extends JTree {
    }
    
    /** Convenience routine for returning the selected StoreFile rather than tree node */
-   public StoreFile getSelectedFile()
+   public FileNode getSelectedFile()
    {
       if (getSelectionPath() == null)  {
          return null;
@@ -78,6 +78,9 @@ public class StoreTreeView extends JTree {
 
 /*
  $Log: StoreTreeView.java,v $
+ Revision 1.5  2005/03/31 19:25:39  mch
+ semi fixed a few threading things, introduced sort order to tree
+
  Revision 1.4  2005/03/30 11:01:43  mch
  Minor UI changes
 

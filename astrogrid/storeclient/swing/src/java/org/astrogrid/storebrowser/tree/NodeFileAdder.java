@@ -1,5 +1,5 @@
 /*
- * $Id: NodeFileAdder.java,v 1.1 2005/03/29 20:13:51 mch Exp $
+ * $Id: NodeFileAdder.java,v 1.2 2005/03/31 19:25:39 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -14,7 +14,7 @@ import java.security.Principal;
 import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultTreeModel;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.storeclient.api.StoreFile;
+import org.astrogrid.file.FileNode;
 
 /** Swing components are not threadsafe, so adding children/making other changes
  have to be done through the EventQueue.  This class adds the given StoreFile children
@@ -24,11 +24,11 @@ import org.astrogrid.storeclient.api.StoreFile;
 public class NodeFileAdder implements Runnable {
    
    StoreFileNode parent;
-   StoreFile[] children;
+   FileNode[] children;
    DefaultTreeModel model;
    Principal user;
    
-   public NodeFileAdder(StoreFileNode givenParent, StoreFile[] givenChildren, DefaultTreeModel givenModel, Principal givenUser) {
+   public NodeFileAdder(StoreFileNode givenParent, FileNode[] givenChildren, DefaultTreeModel givenModel, Principal givenUser) {
       this.parent = givenParent;
       this.children = givenChildren;
       this.model = givenModel;

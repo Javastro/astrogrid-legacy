@@ -1,5 +1,5 @@
 /**
- * $Id: StoreCellHtmlRenderer.java,v 1.2 2005/03/28 02:06:35 mch Exp $
+ * $Id: StoreCellHtmlRenderer.java,v 1.3 2005/03/31 19:25:39 mch Exp $
  */
 package org.astrogrid.storebrowser.html;
 import java.io.IOException;
@@ -7,7 +7,7 @@ import java.net.URLEncoder;
 import javax.swing.table.TableModel;
 import org.astrogrid.storebrowser.folderlist.DirectoryModel;
 import org.astrogrid.storebrowser.servlet.PickerServlet;
-import org.astrogrid.storeclient.api.StoreFile;
+import org.astrogrid.file.FileNode;
 
 /**
  * Renders a StoreNode in HTML for a table cell
@@ -33,7 +33,7 @@ public class StoreCellHtmlRenderer extends DefaultCellHtmlRenderer {
    /** renders the given TreeNode in html */
    public String htmlCell(TableModel table, int row, int column) throws IOException {
 
-      StoreFile file = ((DirectoryModel) table).getFile(row);
+      FileNode file = ((DirectoryModel) table).getFile(row);
       
       if (column==0) {
          return StoreNodeHtmlRenderer.getFileIconHtml(imageRef, file);

@@ -1,30 +1,30 @@
 /*
- * $Id: LocalFile.java,v 1.2 2005/03/28 02:06:35 mch Exp $
+ * $Id: LocalFile.java,v 1.1 2005/03/31 19:25:39 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
-package org.astrogrid.storeclient.api.file;
+package org.astrogrid.file;
 
 import java.io.*;
 
 import java.net.URL;
-import java.security.Principal;
 import java.util.Date;
-import org.astrogrid.storeclient.api.StoreFile;
+import org.astrogrid.file.FileNode;
 import org.astrogrid.slinger.mime.MimeFileExts;
 
 /**
- * Represents a local file (ie a File class) as a StoreFile
+ * Represents a local file (ie a File class) as a FileNode
  * <p>
  * Note that because this uses the File class to navigate around,
- * it is not necessarily true that child[0].getParent() == child[1].getParent()
+ * it is not necessarily true that parent == parent.getChild[0].getParent(),
+ * or even that child[0].getParent() == child[1].getParent()
  *
  * @author M Hill
  */
 
 
-public class LocalFile implements StoreFile {
+public class LocalFile implements FileNode {
    
    File file = null;
    
@@ -40,7 +40,7 @@ public class LocalFile implements StoreFile {
    }
       
       /** Lists children files if this is a container - returns null otherwise */
-   public StoreFile[] listFiles(Principal user) {
+   public FileNode[] listFiles() {
       if (!file.isDirectory()) {
          return null;
       }
@@ -48,9 +48,9 @@ public class LocalFile implements StoreFile {
       File[] localFiles = file.listFiles();
       if (localFiles == null) {
          //empty directory
-         return new StoreFile[] {};
+         return new FileNode[] {};
       }
-      StoreFile[] storeFiles = new StoreFile[localFiles.length];
+      FileNode[] storeFiles = new FileNode[localFiles.length];
       for (int i=0;i<localFiles.length;i++) {
          storeFiles[i] = new LocalFile(localFiles[i]);
       }
@@ -58,7 +58,7 @@ public class LocalFile implements StoreFile {
    }
    
    /** Returns parent folder of this file/folder */
-   public StoreFile getParent(Principal user) {
+   public FileNode getParent() {
       //check to see if we're at the root
       String serverPath = getPath();
       if (serverPath == null) return null;
@@ -94,7 +94,7 @@ public class LocalFile implements StoreFile {
    }
    
    /** Sets the mime type - this should rename the file with the suitable extension */
-   public void setMimeType(String mimeType, Principal user) throws IOException {
+   public void setMimeType(String mimeType) throws IOException {
       renameTo(file.getName()+"."+MimeFileExts.guessExt(mimeType));
    }
    
@@ -136,7 +136,7 @@ public class LocalFile implements StoreFile {
    
 
    /** Returns true if this represents the same file as the given one */
-   public boolean equals(StoreFile anotherFile) {
+   public boolean equals(FileNode anotherFile) {
       if (anotherFile instanceof LocalFile) {
          return file.equals( ((LocalFile) anotherFile).file);
       }
@@ -155,46 +155,37 @@ public class LocalFile implements StoreFile {
    
    /** All targets must be able to resolve to a stream.  The user is required
     * for permissioning. */
-   public OutputStream openOutputStream(Principal user, String mimeType, boolean append) throws IOException {
+   public OutputStream openOutputStream(String mimeType, boolean append) throws IOException {
       return new FileOutputStream(file, append);
    }
    
    /** All targets must be able to resolve to a stream.  The user is required
     * for permissioning. */
-   public InputStream openInputStream(Principal user) throws IOException {
+   public InputStream openInputStream() throws IOException {
       return new FileInputStream(file);
    }
    
    /** Returns true if the resolved stream/reader should be closed when the
     * indicator's user has finished with it.
-    */
+    *
    public boolean closeIt() {
       return true;
    }
    
    /** All targets must be able to resolve to a reader. The user is required
-    * for permissions */
-   public Reader resolveReader(Principal user) throws IOException {
+    * for permissions *
+   public Reader resolveReader() throws IOException {
       return new FileReader(file);
    }
    
    /** All targets must be able to resolve to a writer. The user is required
-    * for permissions */
+    * for permissions *
    public Writer resolveWriter(Principal user) throws IOException {
       return new FileWriter(file);
    }
    
-   /** Renames the file to the given filename. Affects only the name, not the
-    * path */
-   public void renameTo(String newFilename, Principal user) throws IOException {
-      boolean success = file.renameTo(new File(newFilename));
-      if (!success) {
-         throw new IOException("O/S failed to rename file "+file+" to "+newFilename+" (don't know why)");
-      }
-   }
-   
    /** Deletes this file */
-   public void delete(Principal user) throws IOException {
+   public void delete() throws IOException {
       boolean success = file.delete();
       if (!success) {
          throw new IOException("O/S failed to delete file "+file+" (don't know why)");
@@ -208,12 +199,12 @@ public class LocalFile implements StoreFile {
    }
    
    /** If this is a folder, creates an output stream to a child file */
-   public StoreFile makeFile(String childFilename, Principal user) throws IOException {
+   public FileNode makeFile(String childFilename) throws IOException {
       return new LocalFile(new File(file, childFilename));
    }
    
    /** IF this is a folder, creats a subfolder */
-   public StoreFile makeFolder(String newFolderName, Principal user) throws IOException {
+   public FileNode makeFolder(String newFolderName) throws IOException {
       if (isFolder()) {
          File newFolder = new File(file, newFolderName);
          newFolder.mkdir();
@@ -226,6 +217,9 @@ public class LocalFile implements StoreFile {
 
 /*
 $Log: LocalFile.java,v $
+Revision 1.1  2005/03/31 19:25:39  mch
+semi fixed a few threading things, introduced sort order to tree
+
 Revision 1.2  2005/03/28 02:06:35  mch
 Major lump: split picker and browser and added threading to seperate UI interations from server interactions
 

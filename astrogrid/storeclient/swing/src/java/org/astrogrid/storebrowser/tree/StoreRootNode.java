@@ -1,5 +1,5 @@
 /*
- * $Id: StoreRootNode.java,v 1.3 2005/03/29 20:13:51 mch Exp $
+ * $Id: StoreRootNode.java,v 1.4 2005/03/31 19:25:39 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -15,7 +15,7 @@ import java.security.Principal;
 import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
-import org.astrogrid.storeclient.api.StoreFileResolver;
+import org.astrogrid.storeclient.StoreFileResolver;
 
 /**
  * Represents the root of a store service (eg homespace, myspace, ftp, disk, etc) which
@@ -29,6 +29,8 @@ public class StoreRootNode extends StoreFileNode {
    String name = null;
    String uri = null;
    
+   boolean connected = false;
+   
    public StoreRootNode(DefaultTreeModel model, StoresList root, String storeName, String storeUri, Principal aUser) throws IOException {
       super(model, root, null, aUser);
       this.name = storeName;
@@ -38,11 +40,15 @@ public class StoreRootNode extends StoreFileNode {
    /** Spawns a thread so that the display can work while we connect.  This is not
     * properly threadsafe - it's OK as the treview is written 'just now', ie make
     * sure you can't call refresh while calling this... */
-   public void connect() {
+   public synchronized void connect() {
 
-      loading = new InitialConnector(this);
-      Thread loadingThread = new Thread(loading);
-      loadingThread.start();
+      if (!connected) {
+         connected = true;
+         InitialConnector loading = new InitialConnector(this);
+         Thread loadingThread = new Thread(loading);
+         loadingThread.start();
+      }
+      
    }
    
    /** Thread that connects and loads first children */

@@ -1,10 +1,10 @@
 /*
- $Id: FtpStoreFile.java,v 1.1 2005/03/28 02:06:35 mch Exp $
+ $Id: FtpStoreFile.java,v 1.1 2005/03/31 19:25:39 mch Exp $
 
  (c) Copyright...
  */
 
-package org.astrogrid.storeclient.api.ftp;
+package org.astrogrid.storeclient.ftp;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,7 +15,7 @@ import java.util.Date;
 import java.util.Hashtable;
 import org.apache.commons.net.ftp.FTPFile;
 import org.astrogrid.account.LoginAccount;
-import org.astrogrid.storeclient.api.StoreFile;
+import org.astrogrid.file.FileNode;
 
 /**
  * Represents a file on a ftp server.  Extends UrlTarget to get some freebies from it to
@@ -25,7 +25,7 @@ import org.astrogrid.storeclient.api.StoreFile;
  * <p>
  */
 
-public class FtpStoreFile implements StoreFile {
+public class FtpStoreFile implements FileNode {
    
    private SlingerFtpClient ftpClient = null;
 
@@ -85,12 +85,13 @@ public class FtpStoreFile implements StoreFile {
     * Construct a FtpFile with an existing ftp client and file.  Normally used by
     * parent/child creaters
     */
-   private FtpStoreFile(FtpStoreFile aParent, FTPFile aFile, String aPath, Principal user) throws IOException
+   private FtpStoreFile(FtpStoreFile aParent, FTPFile aFile, String aPath, Principal givenUser) throws IOException
    {
       parent = aParent;
       ftpClient = parent.ftpClient;
       path = aPath;
       file = aFile;
+      user = givenUser;
    }
 
 
@@ -115,13 +116,13 @@ public class FtpStoreFile implements StoreFile {
    public void refresh()  throws IOException {
       file = getFtp().getFile(path);
       children = null;
-      listFiles(user); //bit of a botch
+      listFiles();
    }
    
    /**
     * Returns the parent of the given file
     */
-   public StoreFile getParent(Principal user) throws IOException {
+   public FileNode getParent() throws IOException {
    
       //already at root
       if (path.equals("/"))  {
@@ -146,7 +147,7 @@ public class FtpStoreFile implements StoreFile {
    /**
     * Delete this file
     */
-   public void delete(Principal user) throws IOException {
+   public void delete() throws IOException {
       getFtp().deleteFile(path);
    }
    
@@ -168,7 +169,7 @@ public class FtpStoreFile implements StoreFile {
    
    /** All targets must be able to resolve to a stream.  The user is required
     * for permissioning. */
-   public InputStream openInputStream(Principal user) throws IOException {
+   public InputStream openInputStream() throws IOException {
       getFtp().setFileTransferMode(SlingerFtpClient.BINARY_FILE_TYPE);
       return getFtp().retrieveFileStream(path);
    }
@@ -180,7 +181,7 @@ public class FtpStoreFile implements StoreFile {
    }
    
    /** Used to set the mime type of the file. Does nothing */
-   public void setMimeType(String mimeType, Principal user) throws IOException {
+   public void setMimeType(String mimeType) throws IOException {
    }
    
    /** Returns the size of the file in bytes (-1 if unknown) */
@@ -195,7 +196,7 @@ public class FtpStoreFile implements StoreFile {
    
    /** All targets must be able to resolve to a stream.  The user is required
     * for permissioning. */
-   public OutputStream openOutputStream(Principal user, String mimeType, boolean append) throws IOException {
+   public OutputStream openOutputStream(String mimeType, boolean append) throws IOException {
       getFtp().setFileTransferMode(SlingerFtpClient.BINARY_FILE_TYPE);
       if (append) {
          return getFtp().appendFileStream(path);
@@ -229,12 +230,12 @@ public class FtpStoreFile implements StoreFile {
    /** Returns true if this represents the same file as the given one, within
     * this server.  This
     * won't check for references from different stores to the same file */
-   public boolean equals(StoreFile anotherFile) {
+   public boolean equals(FileNode anotherFile) {
       return (anotherFile.getPath().equals(path));
    }
    
    /** Lists children files if this is a container - returns null otherwise */
-   public StoreFile[] listFiles(Principal user) throws IOException {
+   public FileNode[] listFiles() throws IOException {
       if ( (children == null) && isFolder()) {
 
          if (!path.endsWith("/")) {
@@ -260,12 +261,12 @@ public class FtpStoreFile implements StoreFile {
    
    /** Renames the file to the given filename. Affects only the name, not the
     * path */
-   public void renameTo(String newFilename, Principal user) throws IOException {
+   public void renameTo(String newFilename) throws IOException {
       getFtp().rename(path, newFilename);
    }
    
    /** IF this is a folder, creats a subfolder */
-   public StoreFile makeFolder(String newFolderName, Principal user) throws IOException {
+   public FileNode makeFolder(String newFolderName) throws IOException {
       if (isFolder()) {
          String newPath = path+newFolderName;
          boolean success = getFtp().createFolder(newPath);
@@ -278,7 +279,7 @@ public class FtpStoreFile implements StoreFile {
    }
 
    /** If this is a folder, creates an node to a child file */
-   public StoreFile makeFile(String filename, Principal user) throws IOException {
+   public FileNode makeFile(String filename) throws IOException {
       if (!isFolder()) {
          throw new IllegalArgumentException(path+" is not a folder; cannot create child "+filename);
       }
@@ -291,11 +292,11 @@ public class FtpStoreFile implements StoreFile {
     */
    public static void main(String[] args) throws IOException {
       
-      StoreFile file = new FtpStoreFile(new URL("ftp://ftp.roe.ac.uk/pub/"), LoginAccount.ANONYMOUS);
+      FileNode file = new FtpStoreFile(new URL("ftp://ftp.roe.ac.uk/pub/"), LoginAccount.ANONYMOUS);
       System.out.println(file);
-      StoreFile parent = file.getParent(LoginAccount.ANONYMOUS);
+      FileNode parent = file.getParent();
       System.out.println("Parent: "+parent);
-      StoreFile[] children = file.listFiles(LoginAccount.ANONYMOUS);
+      FileNode[] children = file.listFiles();
       for (int i = 0; i < children.length; i++) {
          System.out.println("Child: "+children[i]);
       }

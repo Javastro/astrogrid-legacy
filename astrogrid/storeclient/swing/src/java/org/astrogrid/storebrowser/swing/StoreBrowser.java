@@ -1,5 +1,5 @@
 /*
- * $Id: StoreBrowser.java,v 1.6 2005/03/30 11:00:29 mch Exp $
+ * $Id: StoreBrowser.java,v 1.7 2005/03/31 19:25:39 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -39,7 +39,7 @@ import org.astrogrid.storebrowser.folderlist.DirectoryView;
 import org.astrogrid.storebrowser.tree.StoreFileNode;
 import org.astrogrid.storebrowser.tree.StoreTreeView;
 import org.astrogrid.storebrowser.tree.StoresList;
-import org.astrogrid.storeclient.api.StoreFile;
+import org.astrogrid.file.FileNode;
 import org.astrogrid.ui.EscEnterListener;
 import org.astrogrid.ui.IconButtonHelper;
 import org.astrogrid.ui.JHistoryComboBox;
@@ -218,7 +218,7 @@ public class StoreBrowser extends JDialog
       treeView.addTreeSelectionListener(
          new TreeSelectionListener() {
             public void valueChanged(TreeSelectionEvent e) {
-               StoreFile f = treeView.getSelectedFile();
+               FileNode f = treeView.getSelectedFile();
                if (f!= null) {
                   addressPicker.addItem(f.getUri());
                   addressPicker.setSelectedItem(f.getUri());
@@ -243,55 +243,58 @@ public class StoreBrowser extends JDialog
   
    /** Sets the content pane depending on the selected file/folder */
    protected void setContentPane() {
-               StoreFile f = treeView.getSelectedFile();
-
+      FileNode f = treeView.getSelectedFile();
+      
       if (f == null) {
          contentPanel.getViewport().setView(null);
       }
       else {
-                  if (f.isFolder()) {
-                     //show directory view
-                     try {
-                        directoryView = new DirectoryView();
-                        directoryView.setModel(new DirectoryModel(f));
-                        contentPanel.getViewport().setView(directoryView);
-                     }
-                     catch (IOException ioe) {
-                        log.error(ioe+" Making model of "+f,ioe);
-                        JOptionPane.showMessageDialog(null, ioe, "Error making model of "+f, JOptionPane.ERROR);
-                     }
+         if (f.isFolder()) {
+            //show directory view
+            try {
+               directoryView = new DirectoryView();
+               directoryView.setModel(new DirectoryModel(f));
+               contentPanel.getViewport().setView(directoryView);
+            }
+            catch (IOException ioe) {
+               log.error(ioe+" Making model of "+f,ioe);
+               JOptionPane.showMessageDialog(null, ioe, "Error making model of "+f, JOptionPane.ERROR);
+            }
+         }
+         else {
+            directoryView = null; //there is no directory view
+            
+            //show file contents if possible
+            if (f.getMimeType() == null) {
+               contentPanel.getViewport().setView(null);
+            }
+            else {
+               if (f.getMimeType().equals(MimeTypes.PLAINTEXT)) {
+                  JTextArea textDisplay = new JTextArea();
+                  contentPanel.getViewport().setView(textDisplay);
+                  try {
+                     //could really do with spawning this as a separate thread in case it's really long
+                     ByteArrayOutputStream out = new ByteArrayOutputStream();
+                     Piper.bufferedPipe(f.openInputStream(), out);
+                     textDisplay.setText(out.toString());
                   }
-                  else {
-                     directoryView = null; //there is no directory view
-                     
-                     //show file contents if possible
-                     if (f.getMimeType() == null) {
-                        contentPanel.getViewport().setView(null);
-                     }
-                     else {
-                        if (f.getMimeType().equals(MimeTypes.PLAINTEXT)) {
-                           JTextArea textDisplay = new JTextArea();
-                           contentPanel.getViewport().setView(textDisplay);
-                           try {
-                              //could really do with spawning this as a separate thread in case it's really long
-                              ByteArrayOutputStream out = new ByteArrayOutputStream();
-                              Piper.bufferedPipe(f.openInputStream(operator), out);
-                              textDisplay.setText(out.toString());
-                           }
-                           catch (IOException ioe) {
-                              log.error(ioe+" Reading contents of "+f,ioe);
-                              textDisplay.setText("ERROR: "+ioe+" reading contents of "+f);
-                           }
-                           
-                        }
-                        else {
-                           contentPanel.getViewport().setView(null);
-                        }
-
-                        
-                     }
+                  catch (IOException ioe) {
+                     log.error(ioe+" Reading contents of "+f,ioe);
+                     StringWriter sw = new StringWriter(0);
+                     sw.write("ERROR: "+ioe+" reading contents of "+f+"\n");
+                     ioe.printStackTrace(new PrintWriter(sw));
+                     textDisplay.setText(sw.toString());
                   }
+                  
                }
+               else {
+                  contentPanel.getViewport().setView(null);
+               }
+               
+               
+            }
+         }
+      }
    }
    
    public void refresh() {
@@ -317,7 +320,7 @@ public class StoreBrowser extends JDialog
    public void downloadSelectedToDisk()
    {
       //get selected store path
-      StoreFile file = getSelectedFile();
+      FileNode file = getSelectedFile();
       
       //check a path (not just a folder) selected
       if ((file == null) || (file.isFolder())) {
@@ -332,7 +335,7 @@ public class StoreBrowser extends JDialog
          
          File target   = chooser.getSelectedFile();
          try {
-            Piper.bufferedPipe(file.openInputStream(operator), new FileOutputStream(target));
+            Piper.bufferedPipe(file.openInputStream(), new FileOutputStream(target));
          }
          catch (IOException e) {
             log.error("Failed to copy/download file from '"+file+"' to '"+target+"'",e);
@@ -345,7 +348,7 @@ public class StoreBrowser extends JDialog
    /** Upload button pressed - copy file from disk to Myspace */
    public void uploadFromDisk()
    {
-      StoreFile target = getSelectedFile();
+      FileNode target = getSelectedFile();
       if (target == null)   {
          JOptionPane.showMessageDialog(this, "Set directory or filename to upload to");
          return;
@@ -360,11 +363,11 @@ public class StoreBrowser extends JDialog
          try {
             OutputStream out = null;
             if (target.isFolder()) {
-               StoreFile targetChild = target.makeFile(source.getName(), operator);
-               out = targetChild.openOutputStream(operator, MimeFileExts.guessMimeType(source.getName()), false);
+               FileNode targetChild = target.makeFile(source.getName());
+               out = targetChild.openOutputStream(MimeFileExts.guessMimeType(source.getName()), false);
             }
             else {
-               out = target.openOutputStream(operator, MimeFileExts.guessMimeType(source.getName()), false);
+               out = target.openOutputStream(MimeFileExts.guessMimeType(source.getName()), false);
                response = JOptionPane.showConfirmDialog(this, "Are you sure you want to overwrite '"+target.getPath()+"?" );
                if (response == JOptionPane.NO_OPTION) {
                   return;
@@ -385,7 +388,7 @@ public class StoreBrowser extends JDialog
    public void uploadFromUrl()
    {
       //see if a filename has been entered
-      StoreFile file = getSelectedFile();
+      FileNode file = getSelectedFile();
       if (file == null)   {
          JOptionPane.showMessageDialog(this, "Set directory or filename target");
          return;
@@ -430,7 +433,7 @@ public class StoreBrowser extends JDialog
    public void deleteSelected()
    {
       //see if a filename has been selected
-      StoreFile target = getSelectedFile();
+      FileNode target = getSelectedFile();
       if (target == null)   {
          JOptionPane.showMessageDialog(this, "Select directory or filename to delete");
          return;
@@ -445,8 +448,8 @@ public class StoreBrowser extends JDialog
       
       if (response == JOptionPane.OK_OPTION) {
          try {
-            target.getParent(operator).refresh();
-            target.delete(operator);
+            target.getParent().refresh();
+            target.delete();
             refresh();
          }
          catch (IOException ioe) {
@@ -462,7 +465,7 @@ public class StoreBrowser extends JDialog
    public void newFolder()
    {
       //see if a filename has been selected
-      StoreFile target = getSelectedFile();
+      FileNode target = getSelectedFile();
       if ((target == null) || (!target.isFolder()))   {
          JOptionPane.showMessageDialog(this, "Select directory to create new folder in");
          return;
@@ -473,7 +476,7 @@ public class StoreBrowser extends JDialog
       if (newFoldername != null) {
          //create folder
          try {
-            target.makeFolder(newFoldername, operator);
+            target.makeFolder(newFoldername);
             refresh();
          } catch (IOException ioe) {
             log.error(ioe+", creating new folder '"+newFoldername+"'", ioe);
@@ -523,11 +526,11 @@ public class StoreBrowser extends JDialog
    /** Returns the currently selected file, which may be selected on the tree view,
     * or may be selected via a folder on teh tree view and a row selection on the folder
     * contents view */
-   public StoreFile getSelectedFile() {
-      StoreFile file = treeView.getSelectedFile();
+   public FileNode getSelectedFile() {
+      FileNode file = treeView.getSelectedFile();
       if ((file != null) && (file.isFolder()) && (directoryView != null) && (directoryView.getSelectedRow()>-1)) {
          try {
-            file = file.listFiles(operator)[directoryView.getSelectedRow()];
+            file = file.listFiles()[directoryView.getSelectedRow()];
          }
          catch (IOException ioe) {
             log.error(ioe+" reading children of "+file,ioe);
@@ -542,10 +545,15 @@ public class StoreBrowser extends JDialog
      */
    public static void main(String[] args) throws IOException, URISyntaxException, IOException {
 
-      SimpleConfig.getSingleton().setProperty("org.astrogrid.registry.query.endpoint", "http://hydra.star.le.ac.uk:8080/astrogrid-registry/services/RegistryQuery");
+      SimpleConfig.getSingleton().setProperty("org.astrogrid.registry.query.endpoint", "http://capc49.ast.cam.ac.uk/galahad-registry/services/RegistryQuery");
       ConfigFactory.getCommonConfig().setProperty(Slinger.PERMIT_LOCAL_ACCESS_KEY, "true");
 
-      StoreBrowser browser = new StoreBrowser(new IvoAccount("DSATEST1", "uk.ac.le.star", null));
+//      Principal user = new IvoAccount("DSATEST1", "uk.ac.le.star", null);
+      Principal user = new IvoAccount("guest01", "uk.ac.le.star", null);
+      if ((args.length>1)) {
+         user = new IvoAccount(args[0]);
+      }
+      StoreBrowser browser = new StoreBrowser(user);
       browser.setLocation(100,100);
       ((StoresList) browser.treeView.getModel().getRoot()).addTestStores();
       browser.show();

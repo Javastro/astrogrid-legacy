@@ -1,8 +1,8 @@
 /*
- * $Id: JargonFileAdaptor.java,v 1.2 2005/03/28 02:06:35 mch Exp $
+ * $Id: JargonFileAdaptor.java,v 1.1 2005/03/31 19:25:39 mch Exp $
  */
 
-package org.astrogrid.storeclient.api.srb;
+package org.astrogrid.storeclient.srb;
 
 import edu.sdsc.grid.io.FileFactory;
 import edu.sdsc.grid.io.GeneralFile;
@@ -10,18 +10,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
-import java.security.Principal;
-import java.util.Date;
-import org.astrogrid.storeclient.api.StoreFile;
-import org.astrogrid.slinger.mime.MimeFileExts;
 import java.net.URISyntaxException;
+import java.util.Date;
+import org.astrogrid.file.FileNode;
+import org.astrogrid.slinger.mime.MimeFileExts;
 
 /**
  * Adaptor to the Jargon library so we get access to Storage Resource Broker
  */
 
 
-public class JargonFileAdaptor implements StoreFile
+public class JargonFileAdaptor implements FileNode
 {
    GeneralFile jargonFile;
    
@@ -80,14 +79,14 @@ public class JargonFileAdaptor implements StoreFile
    }
    
    /** If this is not a folder, creates a stream that reads from it */
-   public InputStream openInputStream(Principal user) throws IOException
+   public InputStream openInputStream() throws IOException
    {
       return FileFactory.newFileInputStream(jargonFile);
    }
    
    /** Renames the file to the given filename. Affects only the name, not the
     * path */
-   public void renameTo(String newFilename, Principal user) throws IOException
+   public void renameTo(String newFilename) throws IOException
    {
 //    FileFactory.newFile();
 //    jargonFile.renameTo();
@@ -95,21 +94,21 @@ public class JargonFileAdaptor implements StoreFile
    }
    
    /** If this is a folder, creates an output stream to a child file */
-   public OutputStream outputChild(String filename, Principal user, String mimeType) throws IOException
+   public OutputStream outputChild(String filename, String mimeType) throws IOException
    {
       GeneralFile child = FileFactory.newFile(jargonFile, filename);
       return FileFactory.newFileOutputStream(child);
    }
    
    /** Does nothing */
-   public void setMimeType(String newMimeType, Principal user) throws IOException
+   public void setMimeType(String newMimeType) throws IOException
    {
    }
    
    /** Returns true if this represents the same file as the given one, within
     * this server.  This
     * won't check for references from different stores to the same file */
-   public boolean equals(StoreFile anotherFile)
+   public boolean equals(FileNode anotherFile)
    {
       if (anotherFile instanceof JargonFileAdaptor) {
          return jargonFile.equals( ((JargonFileAdaptor) anotherFile).jargonFile);
@@ -118,13 +117,13 @@ public class JargonFileAdaptor implements StoreFile
    }
    
    /** If this is not a folder, creates a stream that outputs to it */
-   public OutputStream openOutputStream(Principal user, String mimeType, boolean append) throws IOException
+   public OutputStream openOutputStream(String mimeType, boolean append) throws IOException
    {
       return FileFactory.newFileOutputStream(jargonFile);
    }
    
    /** Returns parent folder of this file/folder, if permission granted */
-   public StoreFile getParent(Principal user) throws IOException
+   public FileNode getParent() throws IOException
    {
       return new JargonFileAdaptor(jargonFile.getParentFile());
    }
@@ -136,13 +135,13 @@ public class JargonFileAdaptor implements StoreFile
    }
    
    /** Deletes this file */
-   public void delete(Principal user) throws IOException
+   public void delete() throws IOException
    {
       jargonFile.delete();
    }
    
    /** Lists children files if this is a container - returns null otherwise */
-   public StoreFile[] listFiles(Principal user) throws IOException
+   public FileNode[] listFiles() throws IOException
    {
       GeneralFile[] jargonChilds = jargonFile.listFiles();
       JargonFileAdaptor[] adaptors = new JargonFileAdaptor[jargonChilds.length];
@@ -160,7 +159,7 @@ public class JargonFileAdaptor implements StoreFile
    }
    
    /** IF this is a folder, creats a subfolder */
-   public StoreFile makeFolder(String newFolderName, Principal user) throws IOException
+   public FileNode makeFolder(String newFolderName) throws IOException
    {
       GeneralFile childFolder = FileFactory.newFile(jargonFile, newFolderName);
       childFolder.mkdir();
@@ -168,7 +167,7 @@ public class JargonFileAdaptor implements StoreFile
    }
    
    /** IF this is a folder, creats a file */
-   public StoreFile makeFile(String newFileName, Principal user) throws IOException
+   public FileNode makeFile(String newFileName) throws IOException
    {
       GeneralFile childFolder = FileFactory.newFile(jargonFile, newFileName);
       return new JargonFileAdaptor(childFolder);
@@ -208,7 +207,7 @@ public class JargonFileAdaptor implements StoreFile
    {
       String uri = DEMO_SRB_URI;
       System.out.println("Creating file for "+uri+"...");
-      StoreFile file = new JargonFileAdaptor(new URI(uri));
+      FileNode file = new JargonFileAdaptor(new URI(uri));
       System.out.println("...done");
    }
    

@@ -1,22 +1,21 @@
 /*
- * $Id: MySpaceFile.java,v 1.3 2005/03/29 20:13:51 mch Exp $
+ * $Id: MySpaceFile.java,v 1.1 2005/03/31 19:25:39 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
-package org.astrogrid.storeclient.api.myspace;
+package org.astrogrid.storeclient.myspace;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
-import java.security.Principal;
 import java.util.Date;
 import javax.xml.rpc.ServiceException;
 import org.astrogrid.account.LoginAccount;
 import org.astrogrid.community.User;
-import org.astrogrid.storeclient.api.StoreFile;
-import org.astrogrid.storeclient.api.StoreFileResolver;
+import org.astrogrid.file.FileNode;
+import org.astrogrid.storeclient.StoreFileResolver;
 import org.astrogrid.slinger.myspace.MSRL;
 import org.astrogrid.slinger.myspace.it05.AstrogridMyspaceSoapBindingStub;
 import org.astrogrid.slinger.myspace.it05.KernelResults;
@@ -31,12 +30,10 @@ import org.astrogrid.slinger.myspace.it05.MySpaceIt05Delegate;
  */
 
 
-public class MySpaceFile implements StoreFile {
+public class MySpaceFile implements FileNode {
    
    AstrogridMyspaceSoapBindingStub soapClient = null;
 
-   Principal user = null;
-   
    String path = null;
    String owner = null;
    Date modified = null;
@@ -52,30 +49,28 @@ public class MySpaceFile implements StoreFile {
 
    MSRL myspaceServer = null;
    
-   public MySpaceFile(AstrogridMyspaceSoapBindingStub myspaceClient, MSRL myspace, String aPath, Principal aUser) throws IOException {
+   public MySpaceFile(AstrogridMyspaceSoapBindingStub myspaceClient, MSRL myspace, String aPath) throws IOException {
       this.soapClient = myspaceClient;
       this.myspaceServer = myspace.getManagerMsrl(); //get just the manager, without any path
-      this.user = aUser;
       this.path = aPath;
       
       loadFileDetails(aPath);
    }
 
-   public MySpaceFile(MySpaceFile aParent, String aPath, Principal aUser) throws IOException {
+   public MySpaceFile(MySpaceFile aParent, String aPath) throws IOException {
       this.parent = aParent;
       this.soapClient = parent.soapClient;
       this.myspaceServer = parent.myspaceServer;
-      this.user = aUser;
       this.path = aPath;
       
       loadFileDetails(aPath);
    }
    
-   public MySpaceFile(MSRL myspace, Principal aUser) throws IOException, ServiceException {
+   public MySpaceFile(MSRL myspace) throws IOException, ServiceException {
       this((AstrogridMyspaceSoapBindingStub) new ManagerServiceLocator().getAstrogridMyspace(myspace.getDelegateEndpoint()),
            myspace,
-           myspace.getPath(),
-           aUser);
+           myspace.getPath()
+          );
    }
    
    /** used by loadDetails */
@@ -225,31 +220,31 @@ public class MySpaceFile implements StoreFile {
 
    /** Renames the file to the given filename. Affects only the name, not the
     * path */
-   public void renameTo(String newFilename, Principal user) throws IOException {
+   public void renameTo(String newFilename) throws IOException {
 //    soapClient.move(new Agsl(m
       throw new UnsupportedOperationException("Todo");
    }
    
    /** If this is a folder, creates an output stream to a child file */
-   public OutputStream outputChild(String filename, Principal user, String mimeType) throws IOException {
+   public OutputStream outputChild(String filename, String mimeType) throws IOException {
       MySpaceIt05Delegate temp = new MySpaceIt05Delegate(User.ANONYMOUS, soapClient._getProperty(soapClient.ENDPOINT_ADDRESS_PROPERTY).toString());
       return temp.putStream(getPath()+filename, false);
    }
    
    /** Used to set the mime type of the data about to be sent to the target. . */
-   public void setMimeType(String mimeType, Principal user) throws IOException {
+   public void setMimeType(String mimeType) throws IOException {
    }
    
    /** All targets must be able to resolve to a stream.  The user is required
     * for permissioning. */
-   public OutputStream openOutputStream(Principal user, String mimeType, boolean append) throws IOException {
+   public OutputStream openOutputStream(String mimeType, boolean append) throws IOException {
       //bit of a botch
       MySpaceIt05Delegate temp = new MySpaceIt05Delegate(User.ANONYMOUS, soapClient._getProperty(soapClient.ENDPOINT_ADDRESS_PROPERTY).toString());
       return temp.putStream(getPath(), false);
    }
    
    /** Returns parent folder of this file/folder, if permission granted */
-   public StoreFile getParent(Principal user) throws IOException {
+   public FileNode getParent() throws IOException {
       if (parent == null) {
          String parentPath = "/"+getPath();
          if (parentPath.endsWith("/")) {
@@ -259,14 +254,14 @@ public class MySpaceFile implements StoreFile {
             return null;
          }
          parentPath = parentPath.substring(0, parentPath.lastIndexOf("/"));
-         parent = new MySpaceFile(soapClient, myspaceServer, parentPath, user);
+         parent = new MySpaceFile(soapClient, myspaceServer, parentPath);
       }
       return parent;
    }
    
    /** All targets must be able to resolve to a stream.  The user is required
     * for permissioning. */
-   public InputStream openInputStream(Principal user) throws IOException {
+   public InputStream openInputStream() throws IOException {
       if (isFolder()) {
          throw new UnsupportedOperationException("Cannot open streams to folders. (Path "+getPath()+")");
       }
@@ -275,7 +270,7 @@ public class MySpaceFile implements StoreFile {
    }
    
    /** Deletes this file */
-   public void delete(Principal user) throws IOException {
+   public void delete() throws IOException {
       String delPath = getPath();
       if (!delPath.startsWith("/")) { delPath = "/"+delPath; }
       if (delPath.endsWith("/")) {
@@ -286,7 +281,7 @@ public class MySpaceFile implements StoreFile {
    }
    
    /** Lists children files if this is a container - returns null otherwise */
-   public StoreFile[] listFiles(Principal user) throws IOException {
+   public FileNode[] listFiles() throws IOException {
       if (!isFolder()) {
          return null;
       }
@@ -298,7 +293,7 @@ public class MySpaceFile implements StoreFile {
    }
    
    /** IF this is a folder, creats a subfolder, returning link to it */
-   public StoreFile makeFolder(String newFolderName, Principal user) throws IOException {
+   public FileNode makeFolder(String newFolderName) throws IOException {
       if (!isFolder()) {
          throw new UnsupportedOperationException("Cannot make a folder in a file "+getPath());
       }
@@ -306,20 +301,20 @@ public class MySpaceFile implements StoreFile {
       if (!targetPath.startsWith("/")) targetPath = "/"+targetPath;
       KernelResults results = soapClient.createContainer(targetPath+newFolderName, false);
       MySpaceIt05Delegate.checkStatusMessages(results, "making folder "+targetPath+newFolderName);
-      return new MySpaceFile(this, getPath()+newFolderName, user);
+      return new MySpaceFile(this, getPath()+newFolderName);
    }
 
    /** IF this is a folder, creats a file, returning link to it */
-   public StoreFile makeFile(String newFileName, Principal user) throws IOException {
+   public FileNode makeFile(String newFileName) throws IOException {
       if (!isFolder()) {
          throw new UnsupportedOperationException("Cannot make a folder in a file "+getPath());
       }
-      return new MySpaceFile(this, getPath()+newFileName, user);
+      return new MySpaceFile(this, getPath()+newFileName);
    }
       /** Returns true if this represents the same file as the given one, within
     * this server.  This
     * won't check for references from different stores to the same file */
-   public boolean equals(StoreFile anotherFile) {
+   public boolean equals(FileNode anotherFile) {
       return getPath().equals(anotherFile.getPath());
    }
    
@@ -327,23 +322,24 @@ public class MySpaceFile implements StoreFile {
    /**
     *
     */
-   public static void main(String[] args) throws IOException, IOException, URISyntaxException
+   public static void main(String[] args) throws IOException, IOException, URISyntaxException, ServiceException, IOException
    {
-      Principal user = LoginAccount.ANONYMOUS;
-      
       String uri = "myspace:http://zhumulangma.star.le.ac.uk:8080/astrogrid-mySpace-SNAPSHOT/services/Manager#newt/votable/";
       
-      StoreFile file = StoreFileResolver.resolveStoreFile(uri, LoginAccount.ANONYMOUS);
+      FileNode file = new MySpaceFile(new MSRL(uri));
 
 //      file.makeFolder("wibble2", user);
       file.refresh();
-      StoreFile[] files = file.listFiles(user);
+      FileNode[] files = file.listFiles();
    }
    
 }
 
 /*
 $Log: MySpaceFile.java,v $
+Revision 1.1  2005/03/31 19:25:39  mch
+semi fixed a few threading things, introduced sort order to tree
+
 Revision 1.3  2005/03/29 20:13:51  mch
 Got threading working safely at last
 
