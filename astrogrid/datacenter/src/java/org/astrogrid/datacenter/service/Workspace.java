@@ -1,5 +1,5 @@
 /**
- * $Id: TempDirManager.java,v 1.3 2003/08/27 17:36:19 mch Exp $
+ * $Id: Workspace.java,v 1.1 2003/08/27 17:39:22 mch Exp $
  */
 
 package org.astrogrid.datacenter.service;
@@ -18,7 +18,7 @@ import org.astrogrid.datacenter.config.DTC;
  * while the close operation is running, behaviour is undefined....)
  */
 
-public class TempDirManager
+public class Workspace
 {
    protected final DTC config = DTC.getInstance();
    private static final String WORKSPACE_DIRECTORY_KEY = "Workspace Directory";
@@ -40,7 +40,7 @@ public class TempDirManager
     * Creates a temporary directory with the name given by workspaceId
     * in the workspace directory given in the configuration file
     */
-   public TempDirManager(String workspaceId)
+   public Workspace(String workspaceId)
    {
       String workRoot = config.getProperty( WORKSPACE_DIRECTORY_KEY, WORKSPACE_DIRECTORY_CAT);
 
