@@ -1,83 +1,32 @@
-<?xml version="1.0" ?>
-<Select xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://tempuri.org/adql">
-	<SelectionAll />
-	<TableClause>
-		<FromClause>
-			<TableReference>
-				<Table>
-					<Name>data</Name>
-					<AliasName>dat</AliasName>
-				</Table>
-			</TableReference>
-		</FromClause>
-				<WhereClause>
-<IntersectionSearch>
-	<FirstCondition xsi:type="PredicateSearch">
-		        <ComparisonPred>
-          <FirstExpr xsi:type="ColumnExpr">
-                <SingleColumnReference>
-                  <TableName>dat</TableName>
-                  <Name>Target</Name>
-                </SingleColumnReference>
-          </FirstExpr>
-          <Compare>=</Compare>
-          <SecondExpr xsi:type="AtomExpr">
-            <Value>
-            	<StringLiteral>
-            		<Value>
-            			<string>SN 1987A</string>
-            			</Value>
-            	</StringLiteral>
-            </Value>
-          </SecondExpr>
-        </ComparisonPred>
-	</FirstCondition>
-	<SecondCondition xsi:type="IntersectionSearch">
-		<FirstCondition xsi:type="PredicateSearch">
-
-		        <ComparisonPred>
-          <FirstExpr xsi:type="ColumnExpr">
-                <SingleColumnReference>
-                  <TableName>dat</TableName>
-                  <Name>units</Name>
-                </SingleColumnReference>
-          </FirstExpr>
-          <Compare>=</Compare>
-          <SecondExpr xsi:type="AtomExpr">
-            <Value>
-            	<StringLiteral>
-            		<Value>
-            			<string>arcsec</string>
-            			</Value>
-            	</StringLiteral>
-            </Value>
-          </SecondExpr>
-        </ComparisonPred>			
-		</FirstCondition>
-		<SecondCondition xsi:type="PredicateSearch">
-
-		        <ComparisonPred>
-          <FirstExpr xsi:type="ColumnExpr">
-                <SingleColumnReference>
-                  <TableName>dat</TableName>
-                  <Name>radius</Name>
-                </SingleColumnReference>
-          </FirstExpr>
-          <Compare>=</Compare>
-          <SecondExpr xsi:type="AtomExpr">
-            <Value>
-            	<StringLiteral>
-            		<Value>
-            			<string>1.5</string>
-            			</Value>
-            	</StringLiteral>
-            </Value>
-          </SecondExpr>
-        </ComparisonPred>			
-		</SecondCondition>
-	</SecondCondition>	
-</IntersectionSearch>					
-
-		</WhereClause>
-	</TableClause>
+<?xml version="1.0"?>
+<!-- ADQL generated from: {Query: In scope data,look for where (([ColRef data.target]) = ([ColRef data.'SN 1987A'])) AND ((([ColRef data.units]) = ([ColRef data.arcsec])) AND (([ColRef data.radius]) = ([Real] 1.5))),  returning [Results: target=null, cols=*]} -->
+<!-- ADQL generated from SQL: select * from data where data.target='SN 1987A' and data.units=arcsec and data.radius=1.5 -->
+<Select xmlns='http://www.ivoa.net/xml/ADQL/v0.7.4'  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'  xmlns:xsd='http://www.w3.org/2001/XMLSchema' >
+   <SelectionList>
+      <Item xsi:type='allSelectionItemType' ></Item>
+   </SelectionList>
+   <From>
+      <Table xsi:type='tableType' Name='data' Alias='data' ></Table>
+   </From>
+   <Where>
+      <Condition xsi:type='intersectionSearchType' >
+         <Condition xsi:type='comparisonPredType' Comparison='=' >
+            <Arg xsi:type='columnReferenceType'  Table='data'  Name='target' ></Arg>
+            <Arg xsi:type='columnReferenceType'  Table='data'  Name=''SN 1987A'' ></Arg>
+         </Condition>
+         <Condition xsi:type='intersectionSearchType' >
+            <Condition xsi:type='comparisonPredType' Comparison='=' >
+               <Arg xsi:type='columnReferenceType'  Table='data'  Name='units' ></Arg>
+               <Arg xsi:type='columnReferenceType'  Table='data'  Name='arcsec' ></Arg>
+            </Condition>
+            <Condition xsi:type='comparisonPredType' Comparison='=' >
+               <Arg xsi:type='columnReferenceType'  Table='data'  Name='radius' ></Arg>
+               <Arg xsi:type='atomType' >
+                  <Literal xsi:type='realType' Value='1.5' ></Literal>
+               </Arg>
+            </Condition>
+         </Condition>
+      </Condition>
+   </Where>
 </Select>
+
