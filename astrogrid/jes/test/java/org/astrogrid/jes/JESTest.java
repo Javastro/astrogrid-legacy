@@ -1,4 +1,4 @@
-/* $Id: JESTest.java,v 1.5 2004/01/20 17:58:28 jdt Exp $
+/* $Id: JESTest.java,v 1.6 2004/01/20 17:59:08 jdt Exp $
  * Created on 27-Oct-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -133,9 +133,10 @@ public class JESTest extends TestCase {
    * exception or null response.
    */
   public final void testNoTemplateFile() {
-    provokeTemplatePropertyProblem("TEMPLATE.TEST1"); //this property exists, but the file doesn't
+    provokeTemplatePropertyProblem("TEMPLATE.TEST1");
+    //this property exists, but the file doesn't
   }
-  
+
   /**
    * The configurator has this bizarre API, where if the property you request
    * begins with  "TEMPLATE.", then instead of returning the property value,
@@ -146,7 +147,8 @@ public class JESTest extends TestCase {
    * @TODO enter this in bugzilla
    */
   public final void testNoTemplateFileProperty() {
-    provokeTemplatePropertyProblem("TEMPLATE.TEST2"); //this property does not exist
+    provokeTemplatePropertyProblem("TEMPLATE.TEST2");
+    //this property does not exist
   }
   /**
    * See testNoTemplateFile and testNoTemplateFileProperty
@@ -154,18 +156,18 @@ public class JESTest extends TestCase {
    */
   private void provokeTemplatePropertyProblem(final String property) {
     try {
-      String response =
-        JES.getProperty(property, JES.CONTROLLER_CATEGORY);
-      
+      String response = JES.getProperty(property, JES.CONTROLLER_CATEGORY);
+
       log.debug("Response is " + response);
       assertNull(
         "The file does not exist, therefore a null response would be good",
-        response); //but an exception would be better
+        response);
+      //but an exception would be better
     } catch (Exception e) {
       return; //An exception would be enough to pass this test
     }
   }
-  
+
   /**
    *  Can we set a property in the configuration?
    */
@@ -174,31 +176,21 @@ public class JESTest extends TestCase {
     final String key = Configurator.GENERAL_VERSION_NUMBER;
     final String category = Configurator.GENERAL_CATEGORY;
 
-    final String oldValue =
-      JES.getProperty(
-        key,
-        category);
+    final String oldValue = JES.getProperty(key, category);
 
-    JES.setProperty(
-      key,
-      category,
-      expect);
+    JES.setProperty(key, category, expect);
 
     assertNotEqual(
       "Property hasn't been changed",
       oldValue,
-      JES.getProperty(
-        key,
-        category));
+      JES.getProperty(key, category));
 
     assertEquals(
       "Property didn't match",
       expect,
-      JES.getProperty(
-        key,
-        category));
+      JES.getProperty(key, category));
   }
-  
+
   /**
    * A method I'd like to have in TestCase
    * @param msg error msg 
@@ -215,6 +207,9 @@ public class JESTest extends TestCase {
 
 /*
 *$Log: JESTest.java,v $
+*Revision 1.6  2004/01/20 17:59:08  jdt
+*reformat
+*
 *Revision 1.5  2004/01/20 17:58:28  jdt
 *new test for new method
 *
