@@ -3,6 +3,12 @@ package org.astrogrid.datacenter.queriers.ogsadai;
 import java.io.*;
 import java.util.*;
 
+/**
+ * A utility class to enable running external shell commands 
+ * from within a JVM, and to capture their stdout and stderr streams.
+ *
+ * @author K Andrews
+ */
 public class SystemTalker {
 
   private TalkResult outputResult;
@@ -10,6 +16,9 @@ public class SystemTalker {
   private boolean errorFinished;
   private boolean gotError;
 
+  /* (non-javadoc) 
+   * Internal class allowing harvesting of output streams 
+   */
   class StreamGobbler extends Thread {
     InputStream is;
     String type;
@@ -46,30 +55,55 @@ public class SystemTalker {
     }
   }
 
+  /**
+   * Default constructor.
+   */
   public SystemTalker() {
     outputResult = new TalkResult();
   }
 
-  public synchronized void setOutputFinished() {
+  /* (non-javadoc)
+   * Tell talker that stdout output has finished.
+   */
+  private synchronized void setOutputFinished() {
     outputFinished = true;
     notifyAll();
   }
 
-  public synchronized void setErrorFinished(boolean gotError) {
+  /* (non-javadoc)
+   * Tell talker that stderr output has finished.
+   */
+  private synchronized void setErrorFinished(boolean gotError) {
     errorFinished = true;
     this.gotError = gotError;
     notifyAll();
   }
 
-  public void setOutputResult(int errorCode, String stdout) {
+  /* (non-javadoc)
+   * Capture stdout content and return code.
+   */
+  private void setOutputResult(int errorCode, String stdout) {
     outputResult.setStdout(stdout);
     outputResult.setErrorCode(errorCode);
   }
-  public void setErrorResult(int errorCode, String stderr) {
+
+  /* (non-javadoc)
+   * Capture stderr content and return code.
+   */
+  private void setErrorResult(int errorCode, String stderr) {
     outputResult.setStderr(stderr);
     outputResult.setErrorCode(errorCode);
   }
 
+  /** 
+   * Runs a command at the shell, and returns the results, including
+   * stdout and stderr content and return code.
+   *
+   * @param cmdArgs The array of string arguments to be run
+   * @param input The input stream data to be supplied to the program (if any)
+   * @return TalkResult A structure containing the stdout and stderr output 
+   *   and return code produced by the external command 
+   */
   public synchronized TalkResult talk(String[] cmdArgs, String input) {
     int returnValue = 0;
     outputFinished = false;

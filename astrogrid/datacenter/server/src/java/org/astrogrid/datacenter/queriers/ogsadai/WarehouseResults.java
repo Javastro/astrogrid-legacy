@@ -1,5 +1,5 @@
 /*
- * $Id: WarehouseResults.java,v 1.9 2004/03/17 18:24:15 kea Exp $
+ * $Id: WarehouseResults.java,v 1.10 2004/03/25 17:20:47 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -58,11 +58,11 @@ public class WarehouseResults extends QueryResults
       throw new DatabaseAccessException(
           "WarehouseResults has null results file");
     }
-    //TOFIX - quick hack, make this more efficient!
     FileReader in = new FileReader(results);
+    char[] cbuf = new char[1024];
     int c;
-    while ((c = in.read()) != -1) {
-      out.write(c);
+    while ((c = in.read(cbuf)) != -1) {
+      out.write(cbuf,0,c);
     }
     in.close();
     out.close();
@@ -70,6 +70,7 @@ public class WarehouseResults extends QueryResults
   
   /**
    * Return results as CSV to given outputstream.
+   * Not supported yet.
    */
   public void toCSV(Writer out, QuerierProcessingResults statusToUpdate) throws IOException
   {
@@ -80,6 +81,9 @@ public class WarehouseResults extends QueryResults
 
 /*
  $Log: WarehouseResults.java,v $
+ Revision 1.10  2004/03/25 17:20:47  kea
+ Adding javadocs.
+
  Revision 1.9  2004/03/17 18:24:15  kea
  Integrating new javaapp using del-to-file, del-to-gridftp.
 

@@ -1,5 +1,11 @@
 package org.astrogrid.datacenter.queriers.ogsadai;
 
+/** 
+ * Utility class to capture stdout and stderr data streams
+ * and return code for a command run at the shell.
+ *
+ * @author K. Andrews
+ */
 public class TalkResult {
 	private String stdout;
 	private String stderr;
