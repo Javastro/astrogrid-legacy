@@ -123,7 +123,7 @@ void displayHelp() {
         (new HelpFormatter()).printHelp(
 <<<DOC
 jes <options>
-manage jobs in a job server.
+list / submit / query / cancel / delete jobs in the job server.
 DOC
 ,o)
 }

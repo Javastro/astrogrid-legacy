@@ -148,7 +148,7 @@ void displayHelp() {
         (new HelpFormatter()).printHelp(
 <<<DOC
 apps <options>
-query list of registered applications
+query registry of applications, build template tools documents from applications, validate tool documents against registry.
 DOC,
 o)
 }
