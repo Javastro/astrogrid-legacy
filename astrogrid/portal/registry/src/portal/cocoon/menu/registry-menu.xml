@@ -58,8 +58,8 @@
           target="_self"
           status-text="Registry... the final frontier"/>
       <agp:item
-          contents="Status"
-          contents-hover="Status"
+          contents="Harvest"
+          contents-hover="Harvest"
           uri="/astrogrid-portal/main/mount/registry/registryharvest.html"
           target="_self"
           status-text="Registry... the final frontier"/>	    
