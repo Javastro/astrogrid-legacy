@@ -157,6 +157,18 @@
     </goal>
 
     <!--+
+        | Generate a clover report for our project.
+        | (required as a target goal for the reactor)
+        +-->
+    <goal name="clover-report">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <ant:echo message="Generating clover report ...."/>
+        <attainGoal name="maven-clover-plugin:report"/>
+    </goal>
+
+    <!--+
         | Project goals.
         | These are the main project goals.
         +-->
@@ -194,21 +206,4 @@
             file="${maven.src.dir}/portal/cocoon/menu/registry-menu.xml"
             todir="${webapp.dir}/WEB-INF/menu"/>
     </postGoal>
-     
-      <!--+
-        | Prepare for the war war task
-        | Modify the war file name to use just our group name.
-        | This don't work ....
-        +-->
-    <preGoal name="war:war">
-        <ant:echo message=""/>
-        <ant:echo message="Artifact : ${pom.artifactId}"/>
-        <ant:echo message="Modifying war file name"/>
-        <ant:echo message="  Before : ${pom.getPluginContext('maven-war-plugin').getVariable('maven.war.final.name')}"/>
-        <core:set var="warName" value="${pom.groupId}.war"/>
-        <core:expr value="${pom.getPluginContext('maven-war-plugin').setVariable('maven.war.final.name', warName)}"/>
-        <ant:echo message="  After  : ${pom.getPluginContext('maven-war-plugin').getVariable('maven.war.final.name')}"/>
-        <core:set var="maven.war.final.name" value="${pom.groupId}.war"/>
-    </preGoal>
-
 </project>
