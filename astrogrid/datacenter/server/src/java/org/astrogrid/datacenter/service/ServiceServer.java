@@ -1,5 +1,5 @@
 /*
- * $Id: ServiceServer.java,v 1.2 2003/11/17 12:16:33 nw Exp $
+ * $Id: ServiceServer.java,v 1.3 2003/11/17 15:41:48 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -13,7 +13,7 @@ import java.net.URL;
 import javax.xml.parsers.ParserConfigurationException;
 import org.apache.axis.utils.XMLUtils;
 import org.apache.xpath.XPathAPI;
-import org.astrogrid.datacenter.common.ResponseHelper;
+import org.astrogrid.datacenter.snippet.ResponseHelper;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.astrogrid.datacenter.queriers.DatabaseQuerierManager;

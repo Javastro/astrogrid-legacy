@@ -14,8 +14,8 @@ import java.util.Date;
 import java.util.Vector;
 import org.astrogrid.datacenter.adql.ADQLException;
 import org.astrogrid.datacenter.adql.QOM;
-import org.astrogrid.datacenter.common.DocMessageHelper;
-import org.astrogrid.datacenter.common.QueryStatus;
+import org.astrogrid.datacenter.snippet.DocMessageHelper;
+import org.astrogrid.datacenter.query.QueryStatus;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.service.JobNotifyServiceListener;
 import org.astrogrid.datacenter.service.WebNotifyServiceListener;
@@ -483,6 +483,9 @@ public abstract class DatabaseQuerier implements Runnable
 }
 /*
 $Log: DatabaseQuerier.java,v $
+Revision 1.3  2003/11/17 15:41:48  mch
+Package movements
+
 Revision 1.2  2003/11/17 12:16:33  nw
 first stab at mavenizing the subprojects.
 

@@ -1,5 +1,5 @@
 /*
- * $Id: SocketHandler.java,v 1.2 2003/11/17 12:16:33 nw Exp $
+ * $Id: SocketHandler.java,v 1.3 2003/11/17 15:41:48 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -11,10 +11,10 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.URL;
 import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.datacenter.common.QueryIdHelper;
-import org.astrogrid.datacenter.common.QueryStatus;
-import org.astrogrid.datacenter.common.ResponseHelper;
-import org.astrogrid.datacenter.common.StatusHelper;
+import org.astrogrid.datacenter.snippet.QueryIdHelper;
+import org.astrogrid.datacenter.query.QueryStatus;
+import org.astrogrid.datacenter.snippet.ResponseHelper;
+import org.astrogrid.datacenter.snippet.StatusHelper;
 import org.astrogrid.datacenter.delegate.agss.SocketDelegate;
 import org.astrogrid.datacenter.io.SocketXmlInputStream;
 import org.astrogrid.datacenter.io.SocketXmlOutputStream;
@@ -249,6 +249,9 @@ public class SocketHandler extends ServiceServer implements Runnable, QuerierLis
 
 /*
 $Log: SocketHandler.java,v $
+Revision 1.3  2003/11/17 15:41:48  mch
+Package movements
+
 Revision 1.2  2003/11/17 12:16:33  nw
 first stab at mavenizing the subprojects.
 

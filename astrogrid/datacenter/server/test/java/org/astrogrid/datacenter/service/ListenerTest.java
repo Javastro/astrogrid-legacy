@@ -23,7 +23,7 @@ import org.astrogrid.datacenter.delegate.dummy.DummyDelegate;
 import org.astrogrid.datacenter.queriers.DummyQuerier;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
-import org.astrogrid.datacenter.common.QueryStatus;
+import org.astrogrid.datacenter.query.QueryStatus;
 
 /**
  * Unit tests for the remote listening classes
@@ -97,6 +97,9 @@ public class ListenerTest extends TestCase implements DelegateQueryListener
 
 /*
 $Log: ListenerTest.java,v $
+Revision 1.2  2003/11/17 15:42:03  mch
+Package movements
+
 Revision 1.1  2003/11/14 00:38:29  mch
 Code restructure
 

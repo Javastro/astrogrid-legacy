@@ -1,4 +1,4 @@
-/*$Id: ServiceResponseHelper.java,v 1.2 2003/11/17 12:33:24 mch Exp $
+/*$Id: ServiceResponseHelper.java,v 1.3 2003/11/17 15:41:48 mch Exp $
  * Created on 14-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,11 +12,11 @@ package org.astrogrid.datacenter.service;
 
 import java.net.URL;
 
-import org.astrogrid.datacenter.common.DocHelper;
-import org.astrogrid.datacenter.common.QueryIdHelper;
+import org.astrogrid.datacenter.snippet.DocHelper;
+import org.astrogrid.datacenter.snippet.QueryIdHelper;
 import org.astrogrid.datacenter.query.QueryStatus;
-import org.astrogrid.datacenter.common.ResponseHelper;
-import org.astrogrid.datacenter.common.StatusHelper;
+import org.astrogrid.datacenter.snippet.ResponseHelper;
+import org.astrogrid.datacenter.snippet.StatusHelper;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -147,6 +147,9 @@ public class ServiceResponseHelper extends ResponseHelper {
 
 /*
 $Log: ServiceResponseHelper.java,v $
+Revision 1.3  2003/11/17 15:41:48  mch
+Package movements
+
 Revision 1.2  2003/11/17 12:33:24  mch
 Moved QueryStatus to query pacakge
 

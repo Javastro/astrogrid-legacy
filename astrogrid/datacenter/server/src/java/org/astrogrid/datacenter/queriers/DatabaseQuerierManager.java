@@ -1,4 +1,4 @@
-/*$Id: DatabaseQuerierManager.java,v 1.1 2003/11/14 00:38:29 mch Exp $
+/*$Id: DatabaseQuerierManager.java,v 1.2 2003/11/17 15:41:48 mch Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,9 +18,9 @@ import java.util.Date;
 import java.util.Hashtable;
 import org.astrogrid.datacenter.adql.ADQLException;
 import org.astrogrid.datacenter.adql.QOM;
-import org.astrogrid.datacenter.common.CommunityHelper;
-import org.astrogrid.datacenter.common.DocHelper;
-import org.astrogrid.datacenter.common.DocMessageHelper;
+import org.astrogrid.datacenter.snippet.CommunityHelper;
+import org.astrogrid.datacenter.snippet.DocHelper;
+import org.astrogrid.datacenter.snippet.DocMessageHelper;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.service.Workspace;
@@ -223,6 +223,9 @@ public class DatabaseQuerierManager {
 
 /*
 $Log: DatabaseQuerierManager.java,v $
+Revision 1.2  2003/11/17 15:41:48  mch
+Package movements
+
 Revision 1.1  2003/11/14 00:38:29  mch
 Code restructure
 

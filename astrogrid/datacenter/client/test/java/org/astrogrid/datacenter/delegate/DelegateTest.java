@@ -1,5 +1,5 @@
 /*
- * $Id: DelegateTest.java,v 1.2 2003/11/13 22:58:08 mch Exp $
+ * $Id: DelegateTest.java,v 1.3 2003/11/17 15:40:51 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -27,7 +27,7 @@ import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.adql.ADQLException;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
-import org.astrogrid.datacenter.common.QueryStatus;
+import org.astrogrid.datacenter.query.QueryStatus;
 import org.astrogrid.datacenter.delegate.agss.SocketDelegate;
 import org.astrogrid.datacenter.delegate.agws.WebDelegate;
 import org.astrogrid.datacenter.delegate.dummy.DummyDelegate;
@@ -178,6 +178,9 @@ public class DelegateTest extends TestCase implements DelegateQueryListener
 
 /*
  * $Log: DelegateTest.java,v $
+ * Revision 1.3  2003/11/17 15:40:51  mch
+ * Package movements
+ *
  * Revision 1.2  2003/11/13 22:58:08  mch
  * Added Log to end
  *

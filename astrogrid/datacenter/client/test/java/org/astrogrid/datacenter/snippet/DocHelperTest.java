@@ -1,4 +1,4 @@
-package org.astrogrid.datacenter.common;
+package org.astrogrid.datacenter.snippet;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

@@ -8,8 +8,7 @@ package org.astrogrid.datacenter.queriers;
 import org.astrogrid.datacenter.adql.ADQLException;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.QOM;
-import org.astrogrid.datacenter.common.DocMessageHelper;
-//import org.astrogrid.datacenter.query.AstroGridQuery;
+import org.astrogrid.datacenter.snippet.DocMessageHelper;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.log.Log;
 import org.w3c.dom.Element;
@@ -32,7 +31,7 @@ import org.w3c.dom.NodeList;
  * that need to be translated to the local SQL.
  *
  * @todo This should now disappear in it04 as there are only adql queries
- * 
+ *
  * @author M Hill
  */
 
@@ -79,7 +78,7 @@ public class Query
       }
       else
       {
-      	throw new IllegalArgumentException("Query Type ["+queryType+"] Not an ADQL Query");
+         throw new IllegalArgumentException("Query Type ["+queryType+"] Not an ADQL Query");
          //astrogrid it02 query
          // agQuery = new AstroGridQuery(queryXml);
       }
@@ -119,6 +118,9 @@ public class Query
 
 /*
 $Log: Query.java,v $
+Revision 1.2  2003/11/17 15:41:48  mch
+Package movements
+
 Revision 1.1  2003/11/14 00:38:29  mch
 Code restructure
 

@@ -1,4 +1,4 @@
-/*$Id: ClientTests.java,v 1.1 2003/11/14 00:36:40 mch Exp $
+/*$Id: ClientTests.java,v 1.2 2003/11/17 15:40:51 mch Exp $
  * Created on 21-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -36,7 +36,7 @@ public class ClientTests {
         // and add other suites too.
         suite.addTest(org.astrogrid.datacenter.delegate.DelegateTest.suite());
         suite.addTest(org.astrogrid.datacenter.adql.AllTests.suite());
-        suite.addTest(org.astrogrid.datacenter.common.AllTests.suite());
+        suite.addTest(org.astrogrid.datacenter.snippet.AllTests.suite());
         return suite;
     }
 }
@@ -44,6 +44,9 @@ public class ClientTests {
 
 /*
 $Log: ClientTests.java,v $
+Revision 1.2  2003/11/17 15:40:51  mch
+Package movements
+
 Revision 1.1  2003/11/14 00:36:40  mch
 Code restructure
 

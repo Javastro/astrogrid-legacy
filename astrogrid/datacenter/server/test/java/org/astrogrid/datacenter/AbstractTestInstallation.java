@@ -1,4 +1,4 @@
-/*$Id: AbstractTestInstallation.java,v 1.1 2003/11/14 00:38:29 mch Exp $
+/*$Id: AbstractTestInstallation.java,v 1.2 2003/11/17 15:42:03 mch Exp $
  * Created on 19-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,7 +22,7 @@ import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.adql.ADQLException;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
-import org.astrogrid.datacenter.common.QueryStatus;
+import org.astrogrid.datacenter.query.QueryStatus;
 import org.astrogrid.datacenter.delegate.AdqlQuerier;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.datacenter.delegate.DatacenterQuery;
@@ -280,6 +280,9 @@ public abstract class AbstractTestInstallation extends TestCase {
 
 /*
 $Log: AbstractTestInstallation.java,v $
+Revision 1.2  2003/11/17 15:42:03  mch
+Package movements
+
 Revision 1.1  2003/11/14 00:38:29  mch
 Code restructure
 

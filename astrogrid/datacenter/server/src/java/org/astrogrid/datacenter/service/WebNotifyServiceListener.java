@@ -1,5 +1,5 @@
 /*
- * $Id: WebNotifyServiceListener.java,v 1.1 2003/11/14 00:38:29 mch Exp $
+ * $Id: WebNotifyServiceListener.java,v 1.2 2003/11/17 15:41:48 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -13,8 +13,8 @@ import org.apache.axis.client.Call;
 import org.apache.axis.client.Service;
 import org.apache.axis.encoding.XMLType;
 import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.datacenter.common.DocHelper;
-import org.astrogrid.datacenter.common.StatusHelper;
+import org.astrogrid.datacenter.snippet.DocHelper;
+import org.astrogrid.datacenter.snippet.StatusHelper;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.astrogrid.datacenter.queriers.QuerierListener;
 import org.astrogrid.log.Log;
@@ -109,6 +109,9 @@ public void setClientListener(String url) {
 
 /*
 $Log: WebNotifyServiceListener.java,v $
+Revision 1.2  2003/11/17 15:41:48  mch
+Package movements
+
 Revision 1.1  2003/11/14 00:38:29  mch
 Code restructure
 
