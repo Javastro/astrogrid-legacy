@@ -17,9 +17,11 @@
   
 <AstroGrid>
 <xsp:logic>
-	String user, uzy, profile;
+	String user, uzy, profile, URL, profiURL, blanker;
 	int	lastSlash, length;
         user=(String) <xsp-session:get-attribute default="nadie" name="user"/>;
+	URL = (String) java.net.InetAddress.getLocalHost().getHostName();
+
 	lastSlash = user.lastIndexOf('/');
 	length = user.length();
 	if(length &lt; 0) {
@@ -28,11 +30,12 @@
 		lastSlash++;
 	}
 	uzy = (String) user.substring(lastSlash, length);
-/*	profile = "http://barbara.star.le.ac.uk/datoz-bin/profiler?act=whole&amp;z=" + uzy;*/
-	profile = "http://localhost/cgi-bin/profiler?act=whole&amp;z=" + uzy;
+	profiURL = "http://" + URL + "/cgi-bin/profiler";
+	blanker = "http://" + URL + "/cgi-bin/blankPage";
+	profile = profiURL + "?act=whole&amp;z=" + uzy;
 <xsp-session:set-attribute name="dynamic-profiles">yes</xsp-session:set-attribute>
-<xsp-session:set-attribute name="profiler">http://localhost/cgi-bin/profiler</xsp-session:set-attribute>
-<xsp-session:set-attribute name="blankPage">http://localhost/cgi-bin/blankPage</xsp-session:set-attribute>
+<xsp-session:set-attribute name="profiler"><xsp:expr>profiURL</xsp:expr></xsp-session:set-attribute>
+<xsp-session:set-attribute name="blankPage"><xsp:expr>blanker</xsp:expr></xsp-session:set-attribute>
 
 <userID><xsp:expr>uzy</xsp:expr></userID>
 <util:include-uri>
