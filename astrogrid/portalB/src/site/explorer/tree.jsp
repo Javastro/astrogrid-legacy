@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/site/explorer/Attic/tree.jsp,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/24 10:43:25 $</cvs:author>
-    | <cvs:version>$Revision: 1.6 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/24 11:49:15 $</cvs:author>
+    | <cvs:version>$Revision: 1.7 $</cvs:version>
     | <cvs:log>
     | $Log: tree.jsp,v $
+    | Revision 1.7  2003/06/24 11:49:15  dave
+    | Enabled delete on containers
+    |
     | Revision 1.6  2003/06/24 10:43:25  dave
     | Fixed bugs in DataTreeWalker and tree page
     |
@@ -434,8 +437,8 @@ if ("close".equals(action))
 
 												writer.write("<td>") ;
 													//
-													// If this node is an item below the top two levels.
-													if ("2".equals(node.getType()))
+													// If this node is below the top two levels.
+													if (level > 1)
 														{
 														writer.write("<a") ;
 														writer.write(" ") ;
