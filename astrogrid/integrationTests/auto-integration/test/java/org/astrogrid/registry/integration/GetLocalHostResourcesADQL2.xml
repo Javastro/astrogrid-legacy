@@ -1,0 +1,20 @@
+<Select  xmlns="http://adql.ivoa.net/v0.73">
+   <SelectionList>
+      <All />
+   </SelectionList>
+   <From>
+      <Table Name="TEST" Alias="t"/>
+   </From>
+   <Where>
+   	<AND>
+      <Compare Comparison="=">
+         <Column Name="vr:Resource/Identifier/AuthorityID"/>
+         <Atom><String>org.astrogrid.localhost</String></Atom>
+      </Compare>
+      <Compare Comparison="=">
+         <Column Name="vr:Resource/Identifier/ResourceKey"/>
+         <Atom><String>sia</String></Atom>
+      </Compare>      
+      </AND>
+   </Where>
+</Select>

@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryFunctionTest.java,v 1.2 2004/06/22 13:08:23 pah Exp $
+ * $Id: RegistryFunctionTest.java,v 1.3 2004/07/26 14:07:59 KevinBenson Exp $
  * 
  * Created on 07-May-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -22,7 +22,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import org.astrogrid.registry.RegistryException;
-import org.astrogrid.registry.beans.resource.VODescription;
+//import org.astrogrid.registry.beans.resource.VODescription;
 import org.astrogrid.store.Ivorn;
 
 import junit.framework.TestCase;
@@ -61,21 +61,22 @@ public class RegistryFunctionTest extends RegistryBaseTestCase {
       adminDelegate.updateFromURL(entryurl);
       Ivorn ivorn = new Ivorn("ivo://"+AUTHORITY_ID+"/"+RESOURCE_KEY);
       System.out.println(ivorn.toString()+" "+ivorn.toRegistryString());
-      Document dom = delegate.getResourceByIdentifierDOM(ivorn);
+      Document dom = delegate.getResourceByIdentifier(ivorn);
       assertNotNull("did not return the resource as DOM", dom);
       Element doc = dom.getDocumentElement();
       XMLUtils.PrettyElementToStream(doc, System.out);
       assertTrue("did not find the resource  - returned a null document - should have an error message before now",doc.hasChildNodes());
-      VODescription val = delegate.getResourceByIdentifier(ivorn);
-      assertNotNull("did not return the resource as Castor Object",val);
+      //VODescription val = delegate.getResourceByIdentifier(ivorn);
+      //assertNotNull("did not return the resource as Castor Object",val);
       
       
 
    }
    public void testRetrieve() throws RegistryException, URISyntaxException
    {
-      Document doc = delegate.getResourceByIdentifierDOM(new Ivorn("ivo://"+AUTHORITY_ID+"/"+"SExtractor"));
+      Document doc = delegate.getResourceByIdentifier(new Ivorn("ivo://"+AUTHORITY_ID+"/"+"SExtractor"));
       assertNotNull("failed to retrieve a known registry entry",doc);
+      XMLUtils.DocumentToStream(doc,System.out);
       NodeList nodelst = doc.getDocumentElement().getChildNodes();
       assertEquals("There should only be one entry returned for getResourceByIdentifierDOM",1, nodelst.getLength());
    }
