@@ -458,7 +458,7 @@ public class AdministrationAction extends AbstractAction
          String communityName = request.getParameter("community_belong");
          if(ident != null && ident.length() > 0 && communityName != null && communityName.length() > 0) {
             
-            String homeSpace = request.getParameter("community_homespace");
+            //String homeSpace = request.getParameter("community_homespace");
             String displayName = request.getParameter("community_displayname");
             
             
@@ -476,7 +476,7 @@ public class AdministrationAction extends AbstractAction
                   //AccountData ad = adminDelegate.addAccount(ident);
                   AccountData ad = new AccountData();
                   ad.setDescription(request.getParameter("description"));
-                  ad.setHomeSpace(homeSpace);
+                  //ad.setHomeSpace(homeSpace);
                   ad.setDisplayName(displayName);
                   //ad.setIdent(ident);
                   ad.setIdent(userIvo.toString());

@@ -294,9 +294,11 @@
 				<strong>Community Name: </strong> <input type="text" name="community_belong" />
 				<br />				
 				<strong>Password: </strong> <input type="password" name="password" />
+				<!--
 				<br />
 				VOSpace Identifier: <input type="text" name="community_homespace" />
 				<i>(This is optional, and you may override the default; ex: org.astrogrid.mssl/myspace)</i>
+				-->
 				<br />
 				Display Name: <input type="text" name="community_belong" />				
 				<br />
