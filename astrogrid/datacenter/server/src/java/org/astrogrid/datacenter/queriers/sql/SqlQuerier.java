@@ -1,5 +1,5 @@
 /*
- * $Id: SqlQuerier.java,v 1.4 2003/11/25 12:02:40 mch Exp $
+ * $Id: SqlQuerier.java,v 1.5 2003/11/25 14:17:24 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -26,7 +26,7 @@ import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.adql.ADQLException;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
-import org.astrogrid.datacenter.queriers.DatabaseQuerier;
+import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.queriers.QueryTranslator;
 import org.xml.sax.SAXException;
@@ -43,7 +43,7 @@ import org.xml.sax.SAXException;
  * @author M Hill
  */
 
-public class SqlQuerier extends DatabaseQuerier
+public class SqlQuerier extends Querier
 {
     protected static final Log log = LogFactory.getLog(SqlQuerier.class);
    /** connection to the database */

@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierListener.java,v 1.1 2003/11/14 00:38:29 mch Exp $
+ * $Id: QuerierListener.java,v 1.2 2003/11/25 14:17:24 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -20,11 +20,14 @@ public interface QuerierListener
    /** Called by the service when it has a
     * status change
     */
-   public void queryStatusChanged(DatabaseQuerier querier);
+   public void queryStatusChanged(Querier querier);
 }
 
 /*
 $Log: QuerierListener.java,v $
+Revision 1.2  2003/11/25 14:17:24  mch
+Extracting Querier from DatabaseQuerier to handle non-database backends
+
 Revision 1.1  2003/11/14 00:38:29  mch
 Code restructure
 

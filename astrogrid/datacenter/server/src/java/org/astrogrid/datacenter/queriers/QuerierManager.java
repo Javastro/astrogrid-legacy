@@ -1,4 +1,4 @@
-/*$Id: DatabaseQuerierManager.java,v 1.5 2003/11/25 11:57:56 mch Exp $
+/*$Id: QuerierManager.java,v 1.1 2003/11/25 14:17:24 mch Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -38,9 +38,9 @@ import org.w3c.dom.Element;
  *  @later - move from a static container to an object - can then have multiple containers if needed.
  *
  */
-public class DatabaseQuerierManager {
+public class QuerierManager {
    
-   private static final Log log = LogFactory.getLog(DatabaseQuerierManager.class);
+   private static final Log log = LogFactory.getLog(QuerierManager.class);
    /** Key to configuration files' entry that tells us what database querier
     * to use with this service   */
    public static final String DATABASE_QUERIER_KEY = "DatabaseQuerierClass";
@@ -57,12 +57,12 @@ public class DatabaseQuerierManager {
    /** Class method that returns the querier instance with the given handle
     * @deprecated - use getQuerier(QueryId);
     */
-   public static DatabaseQuerier getQuerier(String aHandle) {
-      return (DatabaseQuerier) queriers.get(aHandle);
+   public static Querier getQuerier(String aHandle) {
+      return (Querier) queriers.get(aHandle);
    }
    
-   public static DatabaseQuerier getQuerier(QueryId qid) {
-      return (DatabaseQuerier) queriers.get(qid.getId());
+   public static Querier getQuerier(QueryId qid) {
+      return (Querier) queriers.get(qid.getId());
    }
    
    /** Class method that returns a list of all the currently running queriers
@@ -81,14 +81,14 @@ public class DatabaseQuerierManager {
     */
    
    
-   public static DatabaseQuerier createQuerier(Element rootElement)
+   public static Querier createQuerier(Element rootElement)
       throws DatabaseAccessException {
       
-      DatabaseQuerier querier = instantiateQuerier();
+      Querier querier = instantiateQuerier();
       //assigns handle
       try {
          String handle = generateHandle();
-         String resultsDestination = SimpleConfig.getProperty(DatabaseQuerierManager.RESULTS_TARGET_KEY);
+         String resultsDestination = SimpleConfig.getProperty(QuerierManager.RESULTS_TARGET_KEY);
          // extract values from document, if present.
          if (rootElement != null) {
             String aHandle = DocHelper.getTagValue(rootElement, DocMessageHelper.ASSIGN_QUERY_ID_TAG);
@@ -136,14 +136,14 @@ public class DatabaseQuerierManager {
    /**
     * Creates an adql querier with a generated (unique-to-this-service) handle
     */
-   public static DatabaseQuerier createQuerier(Query q) throws DatabaseAccessException {
-      return DatabaseQuerierManager.createQuerier(q, generateHandle());
+   public static Querier createQuerier(Query q) throws DatabaseAccessException {
+      return QuerierManager.createQuerier(q, generateHandle());
    }
    
    /**
     * Creates an sql querier with a generated (unique-to-this-service) handle
     */
-   public static DatabaseQuerier createSqlQuerier(String sql) throws DatabaseAccessException {
+   public static Querier createSqlQuerier(String sql) throws DatabaseAccessException {
       
       SqlQuerier querier = null;
       
@@ -180,9 +180,9 @@ public class DatabaseQuerierManager {
     * @throws DatabaseAccessException on error (contains cause exception)
     * @todo - add parsing of results target?
     */
-   public static DatabaseQuerier createQuerier(Query query, String handle) throws DatabaseAccessException {
+   public static Querier createQuerier(Query query, String handle) throws DatabaseAccessException {
       
-      DatabaseQuerier querier = instantiateQuerier();
+      Querier querier = instantiateQuerier();
       //assigns handle
       try {
          if (queriers.get(handle) != null) {
@@ -203,7 +203,7 @@ public class DatabaseQuerierManager {
    
    
    /** method that handles the business of instantiating the querier object */
-   private static DatabaseQuerier instantiateQuerier()
+   private static Querier instantiateQuerier()
       throws DatabaseAccessException {
       String querierClass = SimpleConfig.getProperty(DATABASE_QUERIER_KEY);
       //       "org.astrogrid.datacenter.queriers.sql.SqlQuerier"    //default to general SQL querier
@@ -227,7 +227,7 @@ public class DatabaseQuerierManager {
          //DatabaseQuerier querier = (DatabaseQuerier)qClass.newInstance();
          // safe equivalent
          Constructor constr = qClass.getConstructor(new Class[] { });
-         return (DatabaseQuerier) constr.newInstance(new Object[] {});
+         return (Querier) constr.newInstance(new Object[] {});
          
       } catch (InvocationTargetException e) {
          // interested in the root cause here - invocation target is just a wrapper, and not meaningful in itself.
@@ -278,7 +278,10 @@ public class DatabaseQuerierManager {
 }
 
 /*
- $Log: DatabaseQuerierManager.java,v $
+ $Log: QuerierManager.java,v $
+ Revision 1.1  2003/11/25 14:17:24  mch
+ Extracting Querier from DatabaseQuerier to handle non-database backends
+
  Revision 1.5  2003/11/25 11:57:56  mch
  Added framework for SQL-passthrough queries
 

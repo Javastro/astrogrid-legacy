@@ -1,5 +1,5 @@
 /*
- * $Id: SocketHandler.java,v 1.6 2003/11/21 17:37:56 nw Exp $
+ * $Id: SocketHandler.java,v 1.7 2003/11/25 14:17:24 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -14,8 +14,8 @@ import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.delegate.agss.SocketDelegate;
 import org.astrogrid.datacenter.io.SocketXmlInputStream;
 import org.astrogrid.datacenter.io.SocketXmlOutputStream;
-import org.astrogrid.datacenter.queriers.DatabaseQuerier;
-import org.astrogrid.datacenter.queriers.DatabaseQuerierManager;
+import org.astrogrid.datacenter.queriers.Querier;
+import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.QuerierListener;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.query.QueryException;
@@ -65,7 +65,7 @@ public class SocketHandler extends ServiceServer implements Runnable, QuerierLis
    /** called when the status changes - writes out the new status to the
     * socket
     */
-   public void queryStatusChanged(DatabaseQuerier querier)
+   public void queryStatusChanged(Querier querier)
    {
       try
       {
@@ -128,13 +128,13 @@ public class SocketHandler extends ServiceServer implements Runnable, QuerierLis
             else if (docRequest.getElementsByTagName(SocketDelegate.CREATE_QUERY_TAG).getLength() > 0)
             {
                Log.trace("SocketHandler["+socket.getPort()+"]: Creating a query");
-               DatabaseQuerier querier = DatabaseQuerierManager.createQuerier(docRequest.getDocumentElement());
+               Querier querier = QuerierManager.createQuerier(docRequest.getDocumentElement());
                out.writeDoc(ResponseHelper.makeQueryCreatedResponse(querier));
             }
             else if (docRequest.getElementsByTagName(SocketDelegate.START_QUERY_TAG).getLength() > 0)
             {
                Log.trace("SocketHandler["+socket.getPort()+"]: Starting a query");
-               DatabaseQuerier querier = getQuerierFromDoc(docRequest);
+               Querier querier = getQuerierFromDoc(docRequest);
 
                Thread queryThread = new Thread(querier);
                queryThread.start();
@@ -144,7 +144,7 @@ public class SocketHandler extends ServiceServer implements Runnable, QuerierLis
             else if (docRequest.getElementsByTagName(SocketDelegate.REGISTER_LISTENER_TAG).getLength() > 0)
             {
                Log.trace("SocketHandler["+socket.getPort()+"]: Registering listeners");
-               DatabaseQuerier querier = getQuerierFromDoc(docRequest);
+               Querier querier = getQuerierFromDoc(docRequest);
                querier.registerWebListeners(docRequest.getDocumentElement());
                out.writeDoc(ResponseHelper.makeStatusResponse(querier));
             }
@@ -155,21 +155,21 @@ public class SocketHandler extends ServiceServer implements Runnable, QuerierLis
             else if (docRequest.getElementsByTagName(SocketDelegate.REQ_RESULTS_TAG).getLength() > 0)
             {
                Log.trace("SocketHandler["+socket.getPort()+"]: Results Requested");
-               DatabaseQuerier querier = getQuerierFromDoc(docRequest);
+               Querier querier = getQuerierFromDoc(docRequest);
                Document response = ResponseHelper.makeResultsResponse(querier, new URL(querier.getResultsLoc()));
                out.writeDoc(response);
             }
             else if (docRequest.getElementsByTagName(SocketDelegate.REQ_STATUS_TAG).getLength() > 0)
             {
                Log.trace("SocketHandler["+socket.getPort()+"]: Status Requested");
-               DatabaseQuerier querier = getQuerierFromDoc(docRequest);
+               Querier querier = getQuerierFromDoc(docRequest);
                Document response = ResponseHelper.makeStatusResponse(querier);
                out.writeDoc(response);
             }
             else if (docRequest.getElementsByTagName(SocketDelegate.DO_QUERY_TAG).getLength() > 0)
             {
                //a blocking/synchronous query
-               DatabaseQuerier querier = DatabaseQuerierManager.createQuerier(docRequest.getDocumentElement());
+               Querier querier = QuerierManager.createQuerier(docRequest.getDocumentElement());
                querier.registerListener(this);
                QueryResults results = querier.doQuery();
 
@@ -221,10 +221,10 @@ public class SocketHandler extends ServiceServer implements Runnable, QuerierLis
    /**
     * Returns the querier referred to in the document
     */
-   private DatabaseQuerier getQuerierFromDoc(Document doc)
+   private Querier getQuerierFromDoc(Document doc)
    {
       String queryId = QueryIdHelper.getQueryId(doc.getDocumentElement());
-      DatabaseQuerier querier = DatabaseQuerierManager.getQuerier(queryId);
+      Querier querier = QuerierManager.getQuerier(queryId);
       if (querier == null)
       {
          throw new IllegalArgumentException("No querier found for id='"+queryId+"'"
@@ -250,6 +250,9 @@ public class SocketHandler extends ServiceServer implements Runnable, QuerierLis
 
 /*
 $Log: SocketHandler.java,v $
+Revision 1.7  2003/11/25 14:17:24  mch
+Extracting Querier from DatabaseQuerier to handle non-database backends
+
 Revision 1.6  2003/11/21 17:37:56  nw
 made a start tidying up the server.
 reduced the number of failing tests

@@ -1,5 +1,5 @@
 /*
- * $Id: WebNotifyServiceListener.java,v 1.4 2003/11/21 17:37:56 nw Exp $
+ * $Id: WebNotifyServiceListener.java,v 1.5 2003/11/25 14:17:24 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -10,7 +10,7 @@ import java.net.URL;
 import javax.xml.rpc.ServiceException;
 
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.datacenter.queriers.DatabaseQuerier;
+import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierListener;
 import org.astrogrid.datacenter.webnotify.WebNotifier;
 
@@ -39,7 +39,7 @@ public class WebNotifyServiceListener implements QuerierListener
    /** Called by the service when it has a
     * status change. Uses the JobMonitorNotifier to send the change.
     */
-   public void queryStatusChanged(DatabaseQuerier querier)
+   public void queryStatusChanged(Querier querier)
    {
       try {
          notifier.tellServer(querier.getHandle(), querier.getStatus());
@@ -72,6 +72,9 @@ public void setClientListener(String url) {
 
 /*
 $Log: WebNotifyServiceListener.java,v $
+Revision 1.5  2003/11/25 14:17:24  mch
+Extracting Querier from DatabaseQuerier to handle non-database backends
+
 Revision 1.4  2003/11/21 17:37:56  nw
 made a start tidying up the server.
 reduced the number of failing tests

@@ -1,5 +1,5 @@
 /*
- * $Id: ServiceServer.java,v 1.6 2003/11/21 17:37:56 nw Exp $
+ * $Id: ServiceServer.java,v 1.7 2003/11/25 14:17:24 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -19,8 +19,8 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.xpath.XPathAPI;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.axisdataserver.types.QueryId;
-import org.astrogrid.datacenter.queriers.DatabaseQuerier;
-import org.astrogrid.datacenter.queriers.DatabaseQuerierManager;
+import org.astrogrid.datacenter.queriers.Querier;
+import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.snippet.ResponseHelper;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -141,12 +141,12 @@ public abstract class ServiceServer
    {
        if (xpathExpression == null || xpathExpression.length() ==0) {
            throw new IllegalArgumentException("Empty xpathExpression");
-       } 
+       }
       Element metadata = getMetadata();
 
       //do some xpathing
       try
-      {          
+      {
          NodeList nodes = XPathAPI.selectNodeList(metadata, xpathExpression);
 
          return nodes;
@@ -172,9 +172,9 @@ public abstract class ServiceServer
    /**
     * Returns the service corresponding to the given ID
     */
-   protected DatabaseQuerier getQuerier(QueryId queryId)
+   protected Querier getQuerier(QueryId queryId)
    {
-      return DatabaseQuerierManager.getQuerier(queryId.getId());
+      return QuerierManager.getQuerier(queryId.getId());
    }
 
 

@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.9 2003/11/25 12:02:15 mch Exp $
+ * $Id: AxisDataServer.java,v 1.10 2003/11/25 14:17:24 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -26,8 +26,8 @@ import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.axisdataserver.types.QueryId;
 import org.astrogrid.datacenter.delegate.AdqlQuerier;
 import org.astrogrid.datacenter.delegate.DatacenterException;
-import org.astrogrid.datacenter.queriers.DatabaseQuerier;
-import org.astrogrid.datacenter.queriers.DatabaseQuerierManager;
+import org.astrogrid.datacenter.queriers.Querier;
+import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.queriers.sql.SqlQuerier;
 import org.astrogrid.datacenter.query.QueryException;
@@ -133,9 +133,9 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
          throw new IllegalArgumentException("Can only produce votable results");
       }
       
-      DatabaseQuerier querier = null;
+      Querier querier = null;
       try {
-         querier = DatabaseQuerierManager.createQuerier(q);
+         querier = QuerierManager.createQuerier(q);
          QueryResults results = querier.doQuery();
          querier.setStatus(QueryStatus.RUNNING_RESULTS);
          Element result = ResponseHelper.makeResultsResponse(
@@ -175,7 +175,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
       
       SqlQuerier querier = null;
       try {
-         querier = (SqlQuerier) DatabaseQuerierManager.createSqlQuerier(sql);
+         querier = (SqlQuerier) QuerierManager.createSqlQuerier(sql);
          QueryResults results = querier.queryDatabase(sql);
          querier.setStatus(QueryStatus.RUNNING_RESULTS);
          Element result = ResponseHelper.makeResultsResponse(
@@ -202,7 +202,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
     */
    public QueryId  makeQuery(Query q) throws IOException {
       
-      DatabaseQuerier querier = DatabaseQuerierManager.createQuerier(q);
+      Querier querier = QuerierManager.createQuerier(q);
       
       //construct reply with id in it...
       QueryId result = new QueryId();
@@ -223,7 +223,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
       if (assignedId == null || assignedId.length() == 0)  {
          throw new IllegalArgumentException("Empty assigned id");
       }
-      DatabaseQuerier querier = DatabaseQuerierManager.createQuerier(q, assignedId);
+      Querier querier = QuerierManager.createQuerier(q, assignedId);
       
       //construct reply with id in it...
       QueryId result = new QueryId();
@@ -239,7 +239,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
       if (resultsDestination == null )  {
          throw new IllegalArgumentException("Empty results destination");
       }
-      DatabaseQuerier querier = getQuerier(queryId);
+      Querier querier = getQuerier(queryId);
       
       querier.setResultsDestination(resultsDestination.toString());
    }
@@ -250,7 +250,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
     * @todo - use a thread pool system here - threads are resource-hungry.
     */
    public void startQuery(QueryId id) {
-      DatabaseQuerier querier = getQuerier(id);
+      Querier querier = getQuerier(id);
       
       Thread queryThread = new Thread(querier);
       queryThread.start();
@@ -263,7 +263,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
     * @soap
     */
    public String getResultsAndClose(QueryId queryId) {
-      DatabaseQuerier querier =getQuerier(queryId);
+      Querier querier =getQuerier(queryId);
       
       //has querier finished?
       if (!querier.getStatus().isBefore(QueryStatus.FINISHED)) {
@@ -282,7 +282,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
     * @soap
     */
    public void abortQuery(QueryId queryId) {
-      DatabaseQuerier querier = getQuerier(queryId);
+      Querier querier = getQuerier(queryId);
       if (querier != null)  {
          querier.abort();
       }
@@ -306,7 +306,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
       
       try  {
          URL u = new URL(uri.toString());
-         DatabaseQuerier querier = getQuerier(queryId);
+         Querier querier = getQuerier(queryId);
          
          querier.registerListener(new WebNotifyServiceListener(u));
       }
@@ -324,7 +324,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
       // check we can create an URL first..
       try  {
          URL u = new URL(uri.toString());
-         DatabaseQuerier querier = getQuerier(queryId);
+         Querier querier = getQuerier(queryId);
          
          querier.registerListener(new WebNotifyServiceListener(u));
       }

@@ -1,5 +1,5 @@
 /*
- * $Id: ResponseHelper.java,v 1.2 2003/11/21 17:37:56 nw Exp $
+ * $Id: ResponseHelper.java,v 1.3 2003/11/25 14:17:24 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -11,7 +11,7 @@ import java.net.URL;
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.datacenter.queriers.DatabaseQuerier;
+import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.query.QueryStatus;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -44,7 +44,7 @@ public class ResponseHelper
     * If the query has already got an exception, throws this so that
     * client gets it (don't like this, very general)
     */
-   public static Document makeQueryStartedResponse(DatabaseQuerier querier) throws Throwable
+   public static Document makeQueryStartedResponse(Querier querier) throws Throwable
    {
        log.debug("makeQueryStartedResponse");
       if (querier.getStatus() == QueryStatus.ERROR)
@@ -68,7 +68,7 @@ public class ResponseHelper
     * If the query has already got an exception, throws this so that
     * client gets it (don't like this, very general)
     */
-   public static Document makeQueryCreatedResponse(DatabaseQuerier querier) throws Throwable
+   public static Document makeQueryCreatedResponse(Querier querier) throws Throwable
    {
        log.debug("makeQueryCreatedResponse");
       if (querier.getStatus() == QueryStatus.ERROR)
@@ -93,7 +93,7 @@ public class ResponseHelper
     * If the query has already got an exception, throws this so that
     * client gets it (don't like this, very general)
     */
-   public static Document makeStatusResponse(DatabaseQuerier querier) throws Throwable
+   public static Document makeStatusResponse(Querier querier) throws Throwable
    {
        log.debug("makeStatusResponse");
       if (querier.getStatus() == QueryStatus.ERROR)
@@ -131,7 +131,7 @@ public class ResponseHelper
     * If the query has already got an exception, throws this so that
     * client gets it (don't like this, very general)
     */
-   public static Document makeResultsResponse(DatabaseQuerier querier, Element results)
+   public static Document makeResultsResponse(Querier querier, Element results)
    {
        log.debug("makeResultsResponse");
        if (results == null) {
@@ -156,7 +156,7 @@ public class ResponseHelper
     * If the query has already got an exception, throws this so that
     * client gets it (don't like this, very general)
     */
-   public static Document makeResultsResponse(DatabaseQuerier querier, URL results)
+   public static Document makeResultsResponse(Querier querier, URL results)
    {
        log.debug("makeResultsResponse");
       if (results == null) {
