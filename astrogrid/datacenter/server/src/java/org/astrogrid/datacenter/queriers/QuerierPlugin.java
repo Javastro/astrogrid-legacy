@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierPlugin.java,v 1.5 2004/03/15 11:25:35 mch Exp $
+ * $Id: QuerierPlugin.java,v 1.6 2004/03/15 17:13:21 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -39,6 +39,7 @@ public abstract class QuerierPlugin  {
    public final static String EMAIL_SERVER = "datacenter.emailserver.address";
    public final static String EMAIL_USER   = "datacenter.emailserver.user";
    public final static String EMAIL_PWD    = "datacenter.emailserver.password";
+   public final static String EMAIL_FROM   = "datacenter.emailserver.from";
    
    /** All Plugins implementations will have to have the same constructor as this */
    public QuerierPlugin(Querier givenParent) {
@@ -76,10 +77,13 @@ public abstract class QuerierPlugin  {
       if (target.getEmail() != null) {
 
          log.info(querier+", emailing results to "+target.getEmail());
-
+         resultsStatus.addDetail("emailing results to "+target.getEmail());
+         
          emailResults(results, target.getEmail(), resultsStatus);
       }
       else {
+
+         resultsStatus.addDetail("Sending results to "+target);
 
          Writer writer = target.resolveWriter(querier.getUser());
       
@@ -103,16 +107,17 @@ public abstract class QuerierPlugin  {
       String emailServer = SimpleConfig.getSingleton().getString(EMAIL_SERVER);
       String emailUser = SimpleConfig.getSingleton().getString(EMAIL_USER, null);
       String emailPassword = SimpleConfig.getSingleton().getString(EMAIL_PWD, null);
+      String emailFrom = SimpleConfig.getSingleton().getString(EMAIL_FROM);
          
       try {
-         // create some properties and get the default Session
+         // create properties required by Session constructor, and get the default Session
          Properties props = new Properties();
          props.put("mail.smtp.host", emailServer);
          Session session = Session.getDefaultInstance(props, null);
    
          //create message
          Message message = new MimeMessage(session);
-         message.setFrom(new InternetAddress("pal@roe.ac.uk"));
+         message.setFrom(new InternetAddress(emailFrom));
          message.setRecipient(Message.RecipientType.TO, new InternetAddress(targetAddress));
          message.setSubject("Results of Query "+querier.getId());
          //message.setSentDate(new Date());
@@ -139,6 +144,9 @@ public abstract class QuerierPlugin  {
 }
 /*
  $Log: QuerierPlugin.java,v $
+ Revision 1.6  2004/03/15 17:13:21  mch
+ changed to configurable from address
+
  Revision 1.5  2004/03/15 11:25:35  mch
  Fixes to emailer and JSP targetting
 
