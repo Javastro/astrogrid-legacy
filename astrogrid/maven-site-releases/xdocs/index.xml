@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- $Id: index.xml,v 1.6 2004/07/23 13:28:15 jdt Exp $ -->
+<!-- $Id: index.xml,v 1.7 2004/07/26 18:30:57 jdt Exp $ -->
 <document>
 	<properties>
 		<title>Astrogrid Releases</title>
@@ -16,7 +16,7 @@
 					at least once a day to this portal on <a href="http://twmbarlwm.star.le.ac.uk:8080/astrogrid-portal">Twmbarlwm</a>.</P>
 			</subsection>
 			<subsection name="Itn06 Case 3">
-				<P> Case 3 will soon be branched.  The downloads for this case will then be available by following the links on the left.
+				<P> Case 3 has now been branched.  The Maven docs for this branch can be found by following the link on the left.
 					</P>
 			</subsection>
 			<subsection name="Itn05 Release">
