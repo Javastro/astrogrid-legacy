@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+    |
+    |
+    |
+    +======================================================================= -->
+
+
+<map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
+<!-- =========================== Components ================================ -->
+
+ <map:components>
+
+  <map:matchers default="wildcard"/>
+  <map:selectors default="browser"/>
+  <map:generators default="file"/>
+  <map:transformers default="xslt"/>
+  <map:readers default="resource"/>
+  <map:serializers default="html"/>
+  
+  <map:actions>
+  	<map:action name="astrogrid-workflow" src="org.astrogrid.portal.cocoon.workflow.design.DesignAction" />
+  </map:actions>
+
+ </map:components>
+
+<!-- =========================== Views =================================== -->
+
+
+<!-- =========================== Pipelines ================================= -->
+
+ <map:pipelines>
+  <map:pipeline>
+   
+   
+   <map:match pattern="agworkflow-list.html" >
+   	<map:act type="astrogrid-workflow" >
+   		<map:parameter name="user-param" value="user" />
+   		<map:generate src="workflow/xml/workflow-list.xml" />
+   		<map:transform src="workflow/xsl/workflow-list.xsl" >
+   			<map:parameter name="action" value="{action}" />
+   			<map:parameter name="confirm" value="{confirm}" />
+   		</map:transform>
+   		<map:serialize type="html" />
+   	</map:act>
+   </map:match>
+   
+   
+   <map:match pattern="agworkflow-detail.html" >
+   	<map:act type="astrogrid-workflow" >
+   		<map:parameter name="user-param" value="user" />
+   		<map:generate src="workflow/xsp/workflow-detail.xsp" type="serverpages" />
+   		<map:transform src="workflow/xsl/workflow-detail.xsl" >
+   			<map:parameter name="action" value="{action}" />
+   			<map:parameter name="confirm" value="{confirm}" />
+   		</map:transform>
+   		<map:serialize type="html" />
+   	</map:act>
+   </map:match>
+   
+   <!-- ========================= Site images ============================== -->
+   <map:match pattern="*.gif">
+   		<map:read src="workflow/images/{1}.gif" mime-type="images/gif"/>
+   </map:match>
+      <map:match pattern="*.png">
+   		<map:read src="images/{1}.png" mime-type="images/png"/>
+   </map:match>
+   
+   <!-- ================== Common ======================= -->
+
+   <!-- ================== Common fallthrough ===================== -->
+   
+   <!-- ======================== Samples =============================== -->
+   
+
+  </map:pipeline>
+ </map:pipelines>
+
+</map:sitemap>
+
+<!-- end of file -->

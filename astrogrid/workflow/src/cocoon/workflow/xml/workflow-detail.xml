@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<workflow type="onestep-sequence">
+	<workflow-name>
+		USNOBQuery
+	</workflow-name>
+	<workflow-description>
+		Query against USNOB
+	</workflow-description>
+	<sequence key="12345">
+		<step key="12346">
+			<step-name>
+				Query
+			</step-name>
+			<step-description>
+			</step-description>
+			<tool>
+				QueryTool
+			</tool>
+			<joinCondition value="true" />
+		</step>
+	</sequence>
+</workflow>

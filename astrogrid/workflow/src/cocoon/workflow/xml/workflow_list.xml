@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+
+<workflow-list>
+	<workflow>
+		<name>
+			some name here
+		</name>
+		<description>
+			some description here
+		</description>
+	</workflow>
+</workflow-list>

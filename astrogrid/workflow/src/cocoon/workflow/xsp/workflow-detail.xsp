@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+
+<xsp:page language="java" 
+		  create-session="true"
+		  xmlns:xsp="http://apache.org/xsp"
+		  xmlns:xsp-session="http://apache.org/xsp/session/2.0"
+  		  xmlns:xsp-request="http://apache.org/xsp/request/2.0"
+		>
+
+<xsp:structure>
+	<xsp:include>org.astrogrid.portal.workflow.design.Workflow</xsp:include>
+</xsp:structure>
+
+
+
+<workflow>
+
+	<xsp:logic>
+		<xsp:attribute name="type">onestep-sequence</xsp:attribute>
+		<xsp:element name="workflow-name">USNOBQuery 
+		</xsp:element> 
+		<xsp:element name="workflow-description">Query against USNOB - via XSP
+		</xsp:element> 
+		<xsp:element name="sequence">
+			<xsp:attribute name="key">12345</xsp:attribute>
+			<xsp:element name="step">
+				<xsp:attribute name="key">12346</xsp:attribute>
+				<xsp:element name="step-name">Query</xsp:element> 
+				<xsp:element name="step-description">some description here</xsp:element>
+				<xsp:element name="tool">QueryTool</xsp:element>  
+				<xsp:element name="joinCondition">
+					<xsp:attribute name="value">true</xsp:attribute>
+				</xsp:element>  				
+			</xsp:element> 
+		</xsp:element> 		
+	</xsp:logic>
+
+</workflow>
+
+</xsp:page>
