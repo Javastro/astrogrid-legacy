@@ -1,4 +1,4 @@
-/*$Id: AdqlVizierTranslator.java,v 1.1 2003/11/28 19:12:16 nw Exp $
+/*$Id: AdqlVizierTranslator.java,v 1.2 2003/12/01 16:50:11 nw Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,21 +10,27 @@
 **/
 package org.astrogrid.datacenter.cds.querier;
 
+import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.DynamicVisitor;
 import org.astrogrid.datacenter.adql.QOM;
 import org.astrogrid.datacenter.adql.generated.ArrayOfString;
+import org.astrogrid.datacenter.adql.generated.Atom;
+import org.astrogrid.datacenter.adql.generated.AtomExpr;
 import org.astrogrid.datacenter.adql.generated.Circle;
 import org.astrogrid.datacenter.adql.generated.ColumnExpr;
 import org.astrogrid.datacenter.adql.generated.ComparisonPred;
 import org.astrogrid.datacenter.adql.generated.LikePred;
+import org.astrogrid.datacenter.adql.generated.NumberLiteral;
 import org.astrogrid.datacenter.adql.generated.ScalarExpression;
 import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.adql.generated.Table;
-import org.astrogrid.datacenter.adql.generated.Where;
 import org.astrogrid.datacenter.cdsdelegate.vizier.DecimalDegreesTarget;
+import org.astrogrid.datacenter.cdsdelegate.vizier.NamedTarget;
+import org.astrogrid.datacenter.cdsdelegate.vizier.Unit;
+import org.astrogrid.datacenter.cdsdelegate.vizier.Wavelength;
 import org.astrogrid.datacenter.queriers.spi.Translator;
 import org.w3c.dom.Element;
 
@@ -66,7 +72,7 @@ public class AdqlVizierTranslator  implements Translator {
             DecimalDegreesTarget target = new DecimalDegreesTarget(c.getRa().getValue(),c.getDec().getValue());
             cone.setTarget(target);
             cone.setRadius(c.getRadius().getValue());
-            
+             
         }
         /** assume any 'like' operation is specifying an extra parameter */
         public void visit(LikePred like) {
@@ -89,12 +95,18 @@ public class AdqlVizierTranslator  implements Translator {
             ScalarExpression exp1 = comp.getFirstExpr();
             ScalarExpression exp2 = comp.getSecondExpr();
             if (exp1 instanceof ColumnExpr) {
-                String value = getValue(exp2);
+                if (! (exp2 instanceof AtomExpr)) {
+                    log.warn("was expecting atom here - skipping");
+                }
+                String value = getValue((AtomExpr)exp2);
                  setColumn((ColumnExpr)exp1,value);
             } else {
  
                 if (exp2 instanceof ColumnExpr) {
-                    String value = getValue(exp1);
+                    if (! (exp1 instanceof AtomExpr)) {
+                        log.warn("was expecting atom here - skipping");
+                    }                    
+                    String value = getValue((AtomExpr)exp1);
                     setColumn((ColumnExpr)exp2,value);
                 } else {
                     log.warn("ignoring predicate with no reference to column");
@@ -103,21 +115,54 @@ public class AdqlVizierTranslator  implements Translator {
             } 
         
         }
-        /**
+        /** Extract value of a scalar expression
          * @param exp2
          * @return
          */
-        private String getValue(ScalarExpression exp2) {
-            // TODO Auto-generated method stub
-            return null;
+        private String getValue(AtomExpr exp2) {
+            Atom a = exp2.getValue();
+            if (a.getStringLiteral() != null) {
+                String result = "";
+                ArrayOfString as = a.getStringLiteral().getValue();
+                for (int i = 0; i < as.getStringCount(); i++) {
+                    result += " " + as.getString(i);
+                }
+                return result;
+            } else {
+                NumberLiteral nl = a.getNumberLiteral();
+                if (nl.getApproxNum() != null) {
+                    return Double.toString(nl.getApproxNum().getValue());
+                } else {
+                    return Double.toString(new Integer(nl.getIntNum().getValue()).doubleValue());
+                }
+            }
         }
 
-        /**
-         * @param expr
-         * @param value
+        /** Based on name of column, set corresponding field in cone to value
+         * @param expr column value to set
+         * @param value value for column
          */
         private void setColumn(ColumnExpr expr, String value) {
-            // TODO Auto-generated method stub
+            // get value of column
+            String colName = expr.getSingleColumnReference().getName();
+            if (colName.equalsIgnoreCase("units")) {
+                Unit u = Unit.parse(value);                
+                cone.setUnit(u);
+            }
+            else if (colName.equalsIgnoreCase("wavelength")) {
+                Wavelength w = Wavelength.parse(value);
+                cone.setWavelength(w);
+            } 
+            else if (colName.equalsIgnoreCase("radius")) {
+                cone.setRadius(Double.parseDouble(value));
+            } 
+            else if(colName.equalsIgnoreCase("target")) {
+                NamedTarget t = new NamedTarget(value);
+                cone.setTarget(t);
+            } 
+            else {
+                log.warn("didn't recognize column name: " + colName + " - ignoring");
+            }
             
         }
 
@@ -139,6 +184,9 @@ public class AdqlVizierTranslator  implements Translator {
 
 /* 
 $Log: AdqlVizierTranslator.java,v $
+Revision 1.2  2003/12/01 16:50:11  nw
+first working tested version
+
 Revision 1.1  2003/11/28 19:12:16  nw
 getting there..
  

@@ -1,4 +1,4 @@
-/*$Id: Unit.java,v 1.1 2003/11/18 11:23:49 nw Exp $
+/*$Id: Unit.java,v 1.2 2003/12/01 16:50:30 nw Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -47,11 +47,32 @@ public class Unit {
         return unitName.toString();
     }
 
+    /** parse a string into a unit value
+     * @param value
+     * @return
+     */
+    public static Unit parse(String v) {
+        String value= v.trim();
+        if (ARCMIN.unitName.equalsIgnoreCase(value)) {
+            return ARCMIN;
+        }
+        if (ARCSEC.unitName.equalsIgnoreCase(value)) {
+            return ARCSEC;
+        }
+        if (DEG.unitName.equalsIgnoreCase(value)) {
+            return DEG;
+        }                
+        throw new IllegalArgumentException("Unrecognized unit value " + value);
+    }
+
 }
 
 
 /* 
 $Log: Unit.java,v $
+Revision 1.2  2003/12/01 16:50:30  nw
+first working tested version
+
 Revision 1.1  2003/11/18 11:23:49  nw
 mavenized cds delegate
 

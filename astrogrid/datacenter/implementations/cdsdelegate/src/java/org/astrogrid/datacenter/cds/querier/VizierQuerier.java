@@ -1,4 +1,4 @@
-/*$Id: VizierQuerier.java,v 1.4 2003/11/28 19:12:16 nw Exp $
+/*$Id: VizierQuerier.java,v 1.5 2003/12/01 16:50:11 nw Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,12 +12,10 @@ package org.astrogrid.datacenter.cds.querier;
 
 import javax.xml.rpc.ServiceException;
 
-import org.astrogrid.datacenter.queriers.DatabaseAccessException;
+import org.astrogrid.datacenter.cdsdelegate.vizier.VizierDelegate;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.queriers.spi.BaseQuerierSPI;
 import org.astrogrid.datacenter.queriers.spi.QuerierSPI;
-
-import org.astrogrid.datacenter.cdsdelegate.vizier.*;
 import org.w3c.dom.Document;
 
 /**
@@ -56,6 +54,9 @@ public class VizierQuerier extends BaseQuerierSPI implements QuerierSPI{
 
 /* 
 $Log: VizierQuerier.java,v $
+Revision 1.5  2003/12/01 16:50:11  nw
+first working tested version
+
 Revision 1.4  2003/11/28 19:12:16  nw
 getting there..
 

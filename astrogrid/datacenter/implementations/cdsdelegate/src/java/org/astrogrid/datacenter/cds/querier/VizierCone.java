@@ -1,4 +1,4 @@
-/*$Id: VizierCone.java,v 1.1 2003/11/28 19:12:16 nw Exp $
+/*$Id: VizierCone.java,v 1.2 2003/12/01 16:50:11 nw Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,7 +15,6 @@ import java.rmi.RemoteException;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.astrogrid.datacenter.cdsdelegate.sesame.Catalogues;
 import org.astrogrid.datacenter.cdsdelegate.vizier.Target;
 import org.astrogrid.datacenter.cdsdelegate.vizier.Unit;
 import org.astrogrid.datacenter.cdsdelegate.vizier.VizierDelegate;
@@ -24,6 +23,8 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 /** Dataclass that represents a vizier cone search.
+ * <p>
+ * Contains fields for each of the required or optional search terms that can be passed to vizier.
  * @author Noel Winstanley nw@jb.man.ac.uk 28-Nov-2003
  *
  */
@@ -42,9 +43,9 @@ public class VizierCone {
     protected String additionalTerms;
     protected boolean metaData = false;
     
-    /** double-dispatch thingie - chooses which query method of the vizier delegate to call, based on available parameters
-     * 
-     * @return resulting votable docuemtn
+    /** double-dispatch thingie - chooses which query method of the vizier delegate to call, based on which search terms are currently set.
+     * @param delegate - delegate to call method on
+     * @return votable document returned by the delegate
      */ 
     public Document doDelegateQuery(VizierDelegate delegate) throws RemoteException, ParserConfigurationException, SAXException, IOException {
         //special case for metadata=true and nothing else
@@ -87,41 +88,6 @@ public class VizierCone {
     }
 
     /**
-     * @return
-     */
-    public String getAdditionalTerms() {
-        return additionalTerms;
-    }
-
-    /**
-     * @return
-     */
-    public double getRadius() {
-        return radius;
-    }
-
-    /**
-     * @return
-     */
-    public Target getTarget() {
-        return target;
-    }
-
-    /**
-     * @return
-     */
-    public Unit getUnit() {
-        return unit;
-    }
-
-    /**
-     * @return
-     */
-    public Wavelength getWavelength() {
-        return wavelength;
-    }
-
-    /**
      * @param string
      */
     public void setAdditionalTerms(String string) {
@@ -157,17 +123,17 @@ public class VizierCone {
     }
 
     /**
-     * @return
-     */
-    public boolean isMetaData() {
-        return metaData;
-    }
-
-    /**
      * @param b
      */
     public void setMetaData(boolean b) {
         metaData = b;
+    }
+
+    /**
+     * @return
+     */
+    public String getAdditionalTerms() {
+        return additionalTerms;
     }
 
 }
@@ -175,6 +141,9 @@ public class VizierCone {
 
 /* 
 $Log: VizierCone.java,v $
+Revision 1.2  2003/12/01 16:50:11  nw
+first working tested version
+
 Revision 1.1  2003/11/28 19:12:16  nw
 getting there..
  
