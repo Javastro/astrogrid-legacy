@@ -43,16 +43,16 @@ public class StatusHelperTest extends TestCase {
         assertNotNull(doc);
    }
 
-    /** @todo - as far as I can see this test is correct - the implementation of GetServiceStatus needs fixing */
+    /** Tests that service status un/marshalling works */
    public void testGetServiceStatus() throws Exception {
 
       String src = StatusHelper.makeStatusTag("foo",ServiceStatus.RUNNING_QUERY);
         System.out.println(src);
         Document doc = DocHelper.wrap("<bar>"+src+"</bar>");
         assertNotNull(doc);
-      String result = StatusHelper.getServiceStatus("foo", doc.getDocumentElement());
+      ServiceStatus result = StatusHelper.getServiceStatus("foo", doc.getDocumentElement());
         assertNotNull(result);
-        assertEquals("working",result);
+        assertEquals(result, ServiceStatus.RUNNING_QUERY);
 
    }
 }

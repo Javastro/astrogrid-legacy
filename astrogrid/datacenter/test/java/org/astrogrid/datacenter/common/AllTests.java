@@ -1,11 +1,11 @@
-/*$Id: AllTests.java,v 1.1 2003/09/11 13:27:17 nw Exp $
+/*$Id: AllTests.java,v 1.2 2003/09/15 14:35:17 mch Exp $
  * Created on 11-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
 **/
 package org.astrogrid.datacenter.common;
@@ -20,7 +20,7 @@ import junit.framework.TestSuite;
 public class AllTests {
 
     public static void main(String[] args) {
-        junit.textui.TestRunner.run(AllTests.class);
+        junit.textui.TestRunner.run(suite());
     }
 
     public static Test suite() {
@@ -36,9 +36,12 @@ public class AllTests {
 }
 
 
-/* 
+/*
 $Log: AllTests.java,v $
+Revision 1.2  2003/09/15 14:35:17  mch
+Fixes to reading status id and service id & AllTests now tests package
+
 Revision 1.1  2003/09/11 13:27:17  nw
 added tests for xml formatting code
- 
+
 */

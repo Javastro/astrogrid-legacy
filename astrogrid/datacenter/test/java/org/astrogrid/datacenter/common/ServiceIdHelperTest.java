@@ -10,37 +10,37 @@ import org.w3c.dom.Element;
  */
 
 public class ServiceIdHelperTest extends TestCase {
-	//declare reusable objects to be used across multiple tests
-	public ServiceIdHelperTest(String name) {
-		super(name);
-	}
-	public static void main(String[] args) {
-		junit.textui.TestRunner.run(ServiceIdHelperTest.class);
-	}
-	public static Test suite() {
-		return new TestSuite(ServiceIdHelperTest.class);
-	}
-	protected void setUp() {
-	//define reusable objects to be used across multiple tests
-	}
-	protected void tearDown() {
-	//clean up after testing (if necessary)
-	}
-	public void testMakeServiceIdTag() throws Exception {
+   //declare reusable objects to be used across multiple tests
+   public ServiceIdHelperTest(String name) {
+      super(name);
+   }
+   public static void main(String[] args) {
+      junit.textui.TestRunner.run(ServiceIdHelperTest.class);
+   }
+   public static Test suite() {
+      return new TestSuite(ServiceIdHelperTest.class);
+   }
+   protected void setUp() {
+   //define reusable objects to be used across multiple tests
+   }
+   protected void tearDown() {
+   //clean up after testing (if necessary)
+   }
+   public void testMakeServiceIdTag() throws Exception {
 
-		String result = ServiceIdHelper.makeServiceIdTag("noel");
+      String result = ServiceIdHelper.makeServiceIdTag("noel");
         Document doc = DocHelper.wrap(result);
         assertNotNull(doc);
-	}
+   }
 
-	public void testMakeTagWithServiceIdAttr() throws Exception {
+   public void testMakeTagWithServiceIdAttr() throws Exception {
 
-		String result = ServiceIdHelper.makeTagWithServiceIdAttr("foo","bar") + "</foo>";
+      String result = ServiceIdHelper.makeTagWithServiceIdAttr("foo","bar") + "</foo>";
         Document doc = DocHelper.wrap(result);
         assertNotNull(doc);
 
-	}
-    /** @todo think this should work. test looks correct. problem with implementation? */
+   }
+    /** Tests that service id un/marshalling works */
     public void testGetServiceId() throws Exception {
 
         String src = ServiceIdHelper.makeServiceIdTag("noel");
