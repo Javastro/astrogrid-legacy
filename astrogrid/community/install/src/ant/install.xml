@@ -1,11 +1,15 @@
 <?xml version="1.0"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/ant/install.xml,v $</cvs:source>
-    | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
-    | <cvs:version>$Revision: 1.11 $</cvs:version>
+    | <cvs:author>$Author: jdt $</cvs:author>
+    | <cvs:date>$Date: 2004/07/02 14:13:15 $</cvs:date>
+    | <cvs:version>$Revision: 1.12 $</cvs:version>
     | <cvs:log>
     |   $Log: install.xml,v $
+    |   Revision 1.12  2004/07/02 14:13:15  jdt
+    |   I *think* this is the change required to be consistent with Paul's
+    |   renaming of astrogrid-community -> astrogrid-community-SNAPSHOT in AGINAB.
+    |
     |   Revision 1.11  2004/06/18 13:45:20  dave
     |   Merged development branch, dave-dev-200406081614, into HEAD
     |
@@ -46,8 +50,8 @@
     <!--+
         | Default Registry endpoints.
         +-->
-    <property name="org.astrogrid.registry.url"   value="http://localhost:8080/astrogrid-registry-webapp/services/Registry"/>
-    <property name="org.astrogrid.registry.admin" value="http://localhost:8080/astrogrid-registry-webapp/services/RegistryAdmin"/>
+    <property name="org.astrogrid.registry.url"   value="http://localhost:8080/astrogrid-registry-SNAPSHOT/services/Registry"/>
+    <property name="org.astrogrid.registry.admin" value="http://localhost:8080/astrogrid-registry-SNAPSHOT/services/RegistryAdmin"/>
 
     <!--+
         | Default Tomcat properties.
@@ -60,7 +64,7 @@
     <!--+
         | Default context properties.
         +-->
-    <property name="context.name" value="astrogrid-community"/>
+    <property name="context.name" value="astrogrid-community-SNAPSHOT"/>
     <property name="context.path" value="/${context.name}"/>
     <property name="context.file" value="${basedir}/build/context.xml"/>
     <property name="context.war"  value="${context.name}.war"/>
