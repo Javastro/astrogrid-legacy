@@ -4,12 +4,17 @@ import java.util.Map;
 import java.util.Set;
 import javax.security.auth.Subject;
 import javax.security.auth.callback.CallbackHandler;
+import javax.security.auth.login.FailedLoginException;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 import org.astrogrid.community.client.security.service.SecurityServiceDelegate;
-import org.astrogrid.community.client.security.service.SecurityServiceMockDelegate;
+import org.astrogrid.community.common.exception.CommunityIdentifierException;
+import org.astrogrid.community.common.exception.CommunitySecurityException;
+import org.astrogrid.community.common.security.data.SecurityToken;
+import org.astrogrid.community.resolver.security.service.SecurityServiceResolver;
 import org.astrogrid.security.AccountName;
 import org.astrogrid.security.NonceToken;
+import org.astrogrid.store.Ivorn;
 
 
 /**
@@ -68,37 +73,49 @@ public class NonceTokenCheck implements LoginModule {
     // No tokens means no authentication.
     // Treat multiple tokens as an error, for simplicity.
     NonceToken oldToken = null;
+    NonceToken newToken = null;
     Set tokens = this.subject.getPrivateCredentials(NonceToken.class);
     if (tokens.size() == 0) {
-      throw new LoginException("No AstroGrid tokens were presented.");
+      throw new LoginException("No nonce tokens were presented.");
     }
     else if (tokens.size() > 1) {
-      throw new LoginException("Too many AstroGrid tokens were presented.");
+      throw new LoginException("Too many nonce tokens were presented.");
     }
     else {
       oldToken = (NonceToken) tokens.iterator().next();
-      tokens.clear();   // Remove the old token from the Subject.
+      this.account = new AccountName(oldToken.getAccount());
     }
-
-    // Locate the comunity service that issued the token.
-    // @TODO use a proper delegate factory and set
-    // the location of the service.
-    SecurityServiceDelegate ssd = new SecurityServiceMockDelegate();
 
     // Check the original token in the community service.
-    // If a new token comes back, then the original was valid
-    // and the authentication succeeds; otherwise, authentication
-    // fails.
-    NonceToken newToken = new NonceToken(ssd.checkToken(oldToken));
+    // This can cause several types of exception to be thrown.
+    try {
+      Ivorn accountId = new Ivorn(oldToken.getAccount());
+      SecurityServiceResolver ssr = new SecurityServiceResolver();
+      SecurityServiceDelegate ssd = ssr.resolve(accountId);
+      System.out.println("Existing token: " + oldToken.toString());
+      newToken = new NonceToken(ssd.checkToken(oldToken));
+      System.out.println("Returned token: " + newToken.toString());
+    }
+    catch (CommunitySecurityException e1) {
+      throw new FailedLoginException("Authentication with nonce token failed; "
+                                   + "nonce is invalid");
+    }
+    catch (CommunityIdentifierException e2) {
+          throw new FailedLoginException("Authentication with nonce token failed; "
+                                       + "account identifier is invalid");
+    }
+    catch (Exception e3) {
+      throw new LoginException("Could not validate the nonce token; " +
+                               "problems with the community service: " +
+                               e3);
+    }
 
-    if (newToken != null) {
-      tokens.add(newToken); // Put the new token back into the Subject.
-      this.account = new AccountName(newToken.getAccount());
-      return true;
-    }
-    else {
-      throw new LoginException("The AstroGrid token is invalid");
-    }
+    // Store the new token in the Subject; it replaces the old token.
+    assert(newToken != null);
+    Set credentials = this.subject.getPrivateCredentials();
+    credentials.remove(oldToken);
+    credentials.add(newToken);
+    return true;
   }
 
 

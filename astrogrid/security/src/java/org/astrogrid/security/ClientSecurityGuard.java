@@ -103,6 +103,7 @@ public class ClientSecurityGuard extends SecurityGuard {
     // service.
     SecurityServiceDelegate ssd = new SecurityServiceMockDelegate();
     String   u = this.getUsername();
+    System.out.println("Username: " + u);
     Password p = this.getPassword();
     NonceToken t
         = new NonceToken(ssd.checkPassword(u, p.getPlainPassword()));
