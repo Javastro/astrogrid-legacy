@@ -1,4 +1,4 @@
-/*$Id: MetadataTest.java,v 1.2 2005/02/28 18:47:05 mch Exp $
+/*$Id: MetadataTest.java,v 1.3 2005/03/01 17:51:59 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -67,7 +67,7 @@ public class MetadataTest extends TestCase {
       
       //check for table data
       long numTables = candidate.getElementsByTagName("Table").getLength();
-      assertEquals("Should be two tables in metadata", numTables, 2);
+      assertEquals("Should be two tables in metadata", 3, numTables);
    }
    
    public void testServer() throws Exception {
@@ -169,6 +169,9 @@ public class MetadataTest extends TestCase {
 
 /*
  $Log: MetadataTest.java,v $
+ Revision 1.3  2005/03/01 17:51:59  mch
+ fixes to tests
+
  Revision 1.2  2005/02/28 18:47:05  mch
  More compile fixes
 

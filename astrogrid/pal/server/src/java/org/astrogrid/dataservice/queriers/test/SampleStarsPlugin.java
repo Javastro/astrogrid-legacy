@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsPlugin.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+ * $Id: SampleStarsPlugin.java,v 1.2 2005/03/01 17:51:59 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -179,7 +179,7 @@ public class SampleStarsPlugin extends JdbcPlugin
          for (int i=0;i<5;i++) {
             connection.createStatement().execute(
 //               "INSERT INTO Plates VALUES ("+i+", "+(100+i*20)+", "+(100-i*20)+", "+sqlDateFormat.format(new java.sql.Date(todayTime-i*1000))+")"
-               "INSERT INTO Plates VALUES ("+i+", "+(100+i*20)+", "+(100-i*20)+", "+new java.sql.Timestamp(todayTime-i*1000)+")"
+               "INSERT INTO Plates VALUES ("+i+", "+(100+i*20)+", "+(100-i*20)+", '"+new java.sql.Timestamp(todayTime-i*1000)+"')"
             );
          }
          
@@ -228,8 +228,11 @@ public class SampleStarsPlugin extends JdbcPlugin
 }
    /*
    $Log: SampleStarsPlugin.java,v $
-   Revision 1.1  2005/02/17 18:37:35  mch
-   *** empty log message ***
+   Revision 1.2  2005/03/01 17:51:59  mch
+   fixes to tests
+
+   Revision 1.1.1.1  2005/02/17 18:37:35  mch
+   Initial checkin
 
    Revision 1.1.1.1  2005/02/16 17:11:24  mch
    Initial checkin
