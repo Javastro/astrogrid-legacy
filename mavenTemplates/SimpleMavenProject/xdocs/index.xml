@@ -46,8 +46,8 @@
 					override any settings in the base POM that are not 
 					appropriate with your own values, that is, your POM takes 
 					precedence. NB - if you are already inheriting from a base POM because
-					your component requires a multiproject build then this may not work - that is,
-					more than one level of inheritance does not seem to be supported yet by Maven.</P>
+					your component requires a multiproject build then this will not work - that is,
+					more than one level of inheritance is not supported yet by Maven.</P>
 			</subsection>
 			<subsection name="project.properties">
 				<P> This file contains various Maven properties that seem to 
