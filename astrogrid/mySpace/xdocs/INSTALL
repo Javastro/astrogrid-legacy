@@ -1,0 +1,35 @@
+INSTALLATION REQUIREMENTS
+=========================
+Tomcat v.1.2.24 or better, with a login with role Manager (see $CATALINA_HOME/conf/tomcat_users.xml)
+
+
+INSTALL
+=======
+First obtain your war file (see download section).
+Log in to your Tomcat's Manager Application (often found at http://localhost:8080/Manager)
+Using the "Upload war to install" section, navigate to your downloaded war and click install.
+If all goes well, a new entry should appear in the list of applications, and it should be listed as running.
+
+Setting up the HSQLDB database 
+==============================
+Log in to the host machine and cd to $CATALINA_HOME/webapps/<your webapp>
+Edit the file astrogrid1.servers - see the createregistry_v02.lis page for details
+Execute the script astrogrid1.sh
+You should see the message "MySpace registry astrogrid1 created successfully."
+Move the generated *.db.* files to $CATALINA_HOME
+
+Configuration
+=============
+Open $CATALINA_HOME/webapps/<your webapp>/WEB-INF/classes/ASTROGRID_myspacemanagerconfig.xml
+Edit the properties MYSPACEMANAGERURL and MYSPACEMANAGERURLs and set their values to
+http://<your host>:8080/<your webapp>/services/MySpaceManager
+(you can check this address by browsing to it - you should get a page saying "this is a web service")
+Go back to the Tomcat Manager page and reload the webservice (NB don't remove the webservice since this will wipe out your config)
+
+Test
+====
+Browse to 
+http://<your host>:8080/<your webapp>
+You should find a welcome page linking to documentation and tests.
+
+

@@ -5,8 +5,10 @@
 
   <body>
     <menu name="Install">
-	<item name="README" href="README" />
-	<item name="CreateRegistry" href="createregistry_v02.lis" />
+    <item name="Install" href="INSTALL"/>
+    <item name="Download" href="http://www.astrogrid.org/maven/astrogrid-mySpace/wars/astrogrid-mySpace-SNAPSHOT.war"/>
+	<item name="ReadMe" href="README" />
+	<item name="createregistry_v02.lis" />
 	
 	
     </menu>
