@@ -1,5 +1,5 @@
 /*
- * $Id: DirectoryListModel.java,v 1.2 2005/04/04 01:10:15 mch Exp $
+ * $Id: DirectoryListModel.java,v 1.3 2005/04/04 09:48:06 mch Exp $
  */
 
 package org.astrogrid.storebrowser.folderlist;
@@ -11,13 +11,13 @@ package org.astrogrid.storebrowser.folderlist;
 import java.io.IOException;
 import javax.swing.Icon;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.file.FileNode;
 import org.astrogrid.storebrowser.swing.ChildrenLoader;
 import org.astrogrid.storebrowser.swing.FileSorter;
 import org.astrogrid.storebrowser.swing.MimeIcons;
-import org.astrogrid.ui.IconFactory;
 
 public class DirectoryListModel extends AbstractTableModel {
    
@@ -26,9 +26,10 @@ public class DirectoryListModel extends AbstractTableModel {
    protected FileNode directory = null;
    protected FileNode[] children = null;
 
-   public static boolean foldersOnly = true; //true if this is to show folders only - not files/leaves
-   
    FileSorter sorter = new FileSorter(false, true);
+   
+   Icon folderIcon = new DefaultTreeCellRenderer().getClosedIcon();
+
    
    /** Construct view listing children of given node */
    public DirectoryListModel( FileNode dir) throws IOException {
@@ -131,9 +132,10 @@ public class DirectoryListModel extends AbstractTableModel {
 
    /** Returns a suitable object for the icon for the file */
    public Icon getIcon(FileNode file) {
-      
+
       if (file.isFolder()) {
-         return IconFactory.getIcon("Folder");
+         return folderIcon;
+//         return IconFactory.getIcon("Folder");
       }
       
       Icon icon = MimeIcons.getIcon(file.getMimeType());
