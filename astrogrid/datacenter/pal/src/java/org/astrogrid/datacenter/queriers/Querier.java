@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.2 2004/10/01 18:04:58 mch Exp $
+ * $Id: Querier.java,v 1.3 2004/10/05 15:04:28 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -72,11 +72,11 @@ public class Querier implements Runnable {
    private ReturnSpec returns = null;
 
    /** For measuring how long the query took - calculated from status change times*/
-   private Date timeQueryStarted = null;
+//use status info   private Date timeQueryStarted = null;
    /** For measuring how long query took - calculated from status change times*/
-   private Date timeQueryCompleted = null;
+//use status info   private Date timeQueryCompleted = null;
    /** For measuring how long query took - calculated from status change times*/
-   private Date timeQuerierClosed = null;
+   //use status infoprivate Date timeQuerierClosed = null;
 
    /** temporary used for generating unique handles - see generateHandle() */
    private static java.util.Random random = new java.util.Random();
@@ -164,8 +164,6 @@ public class Querier implements Runnable {
    public void ask() throws IOException {
       Slinger.testConnection(returns.getTarget(), getUser());
 
-      timeQueryStarted = new Date();
-      
  //     plugin = QuerierPluginFactory.createPlugin(this);
       
       plugin.askQuery();
@@ -204,17 +202,25 @@ public class Querier implements Runnable {
     * yet started
     */
    public long getQueryTimeTaken() {
-      //Log.affirm(timeQueryStarted != null, "Trying to get time taken by the query when it hasn't run"));
-      if (timeQueryStarted == null) {
-         return -1; //may not have started for some reason
+
+      //look for QuerierQuerying status
+      QuerierStatus status = getStatus();
+      QuerierStatus next = null;
+      while ((status != null) && !(status instanceof QuerierQuerying))  {
+         next = status;
+         status = status.getPrevious();
       }
-      
-      if (timeQueryCompleted == null) {
-         Date timeNow = new Date();
-         return timeNow.getTime() - timeQueryStarted.getTime();
+      if (status == null) {
+         //hasn't started yet
+         return -1;
+      }
+      Date queryStarted = status.getTimestamp();
+      if (next != null) {
+         //the next status timestamp gives us the query completion time
+         return next.getTimestamp().getTime() - queryStarted.getTime();
       }
       else {
-         return timeQueryCompleted.getTime() - timeQueryStarted.getTime();
+         return new Date().getTime() - queryStarted.getTime();
       }
    }
    
@@ -255,14 +261,6 @@ public class Querier implements Runnable {
    public synchronized void setStatus(QuerierStatus newStatus) {
 
       if (status != null) {
-         //set times for info
-         if (status instanceof QuerierClosed) {
-            timeQuerierClosed = new Date();
-         }
-         if ((status instanceof QuerierQueried) && (timeQueryCompleted == null)) {
-            timeQueryCompleted = new Date();
-         }
-         
          if ((status instanceof QuerierError) || (newStatus.isBefore(status))) {
             String msg = "Trying to start a step '"+newStatus+"' when status is already "+status;
             log.error(msg);
@@ -350,6 +348,9 @@ public class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.3  2004/10/05 15:04:28  mch
+ Get time taken from status now
+
  Revision 1.2  2004/10/01 18:04:58  mch
  Some factoring out of status stuff, added monitor page
 
