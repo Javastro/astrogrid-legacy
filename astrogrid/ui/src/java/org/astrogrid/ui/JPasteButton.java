@@ -1,17 +1,15 @@
 /*
-   $Id: JPasteButton.java,v 1.4 2002/12/18 12:58:19 mch Exp $
+   $Id: JPasteButton.java,v 1.5 2004/04/15 16:34:53 mch Exp $
 
-   Date       Author      Changes
-   19 Oct 2002 M Hill      Created
-
-   (c) Copyright...
 */
 
 package org.astrogrid.ui;
 
-import java.awt.event.ActionListener;
 import java.awt.Dimension;
+import java.awt.datatransfer.Clipboard;
+import java.awt.event.ActionListener;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JTextField;
 
 /**
@@ -25,12 +23,12 @@ import javax.swing.JTextField;
 public class JPasteButton extends JButton implements ActionListener
 {
    JTextField textField = null;
+   JHistoryComboBox comboBox = null;
 
-   public JPasteButton(JTextField aField)
+   private JPasteButton(int defHeight)
    {
       super(IconFactory.getIcon("Paste"));
       
-      this.textField = aField;
       this.setToolTipText("Replaces text with clipboard contents");
       this.addActionListener(this);
       
@@ -41,21 +39,60 @@ public class JPasteButton extends JButton implements ActionListener
       else
       {
          setBorder(null);
-         setPreferredSize(new Dimension(
-                 textField.getPreferredSize().height,
-                 textField.getPreferredSize().height
-         ));
+         setPreferredSize(new Dimension(defHeight, defHeight));
       }
-
+   }
+   
+   public JPasteButton(JTextField aField)
+   {
+      this(aField.getPreferredSize().height);
+      
+      this.textField = aField;
    }
 
+   public JPasteButton(JHistoryComboBox aField)
+   {
+      this(aField.getPreferredSize().height);
+      
+      this.comboBox = aField;
+   }
 
    public void actionPerformed(java.awt.event.ActionEvent e)
    {
-      textField.selectAll();
-      textField.paste();
+      if (textField != null)
+      {
+         textField.selectAll();
+         textField.paste();
+      }
+      
+      if (comboBox != null)
+      {
+         //botch bit
+         JTextField temp = new JTextField();
+         temp.selectAll();
+         temp.paste();
+         
+         comboBox.setItem(temp.getText());
+      }
    }
 
 
 }
+
+/*
+$Log: JPasteButton.java,v $
+Revision 1.5  2004/04/15 16:34:53  mch
+Tidied up, introduced stuff from datacenter ui
+
+Revision 1.1  2004/03/03 17:40:58  mch
+Moved ui package
+
+Revision 1.1  2004/02/17 16:04:06  mch
+New Desktop GUI
+
+Revision 1.2  2004/02/15 23:25:30  mch
+Datacenter and MySpace desktop client GUIs
+
+ */
+
 

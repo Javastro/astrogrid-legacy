@@ -1,3 +1,7 @@
+/*
+ $Id: EscEnterListener.java,v 1.3 2004/04/15 16:34:53 mch Exp $
+ */
+
 package org.astrogrid.ui;
 
 import java.awt.Window;
@@ -156,4 +160,23 @@ public class EscEnterListener extends KeyAdapter
    }
 
 }
+
+/**
+ $Log: EscEnterListener.java,v $
+ Revision 1.3  2004/04/15 16:34:53  mch
+ Tidied up, introduced stuff from datacenter ui
+
+ Revision 1.1  2004/03/03 17:40:58  mch
+ Moved ui package
+
+ Revision 1.1  2004/02/17 16:04:06  mch
+ New Desktop GUI
+
+ Revision 1.1.1.1  2003/08/25 18:36:32  mch
+ Reimported to fit It02 source structure
+
+ Revision 1.3  2003/07/02 19:15:14  mch
+ Removed windows/linux double spacing
+
+ */
 

@@ -1,8 +1,5 @@
 /*
-   $Id: JSetFileButton.java,v 1.5 2002/12/18 12:58:19 mch Exp $
-
-   Date       Author      Changes
-   $date$     M Hill      Created
+   $Id: JSetFileButton.java,v 1.6 2004/04/15 16:34:53 mch Exp $
 
    (c) Copyright...
 */
@@ -37,12 +34,10 @@ public class JSetFileButton extends JButton implements ActionListener
    private JTextField textField = null;
    private JFileChooser fileChooser = new JFileChooser();
 
-//   private static final Dimension SIZE = new Dimension(22,20);
-
    public JSetFileButton()
    {
       super(IconFactory.getIcon("Open"));
-      
+
       addActionListener(this);
 
       if (getIcon() == null)
@@ -67,7 +62,7 @@ public class JSetFileButton extends JButton implements ActionListener
       this();
       setTextField(textField);
    }
-   
+
 
    /**
     * Used if special file choosers are required
@@ -108,7 +103,7 @@ public class JSetFileButton extends JButton implements ActionListener
    public void setTextField(JTextField givenField)
    {
       textField = givenField;
-      
+
       if (getIcon() != null)
       {
          setPreferredSize(new Dimension(
@@ -125,7 +120,7 @@ public class JSetFileButton extends JButton implements ActionListener
    public void setComboBox(JComboBox givenCombo)
    {
       comboBox = givenCombo;
-      
+
       if (getIcon() != null)
       {
          setPreferredSize(new Dimension(
@@ -134,7 +129,7 @@ public class JSetFileButton extends JButton implements ActionListener
                              comboBox.getPreferredSize().height
          ));
       }
-      
+
    };
 
    /**
@@ -147,28 +142,33 @@ public class JSetFileButton extends JButton implements ActionListener
 
       if (returnVal == JFileChooser.APPROVE_OPTION)
       {
-         setChosenFile(fileChooser.getSelectedFile());
+         fileChosen(getChosenFile());
       }
-
    }
 
 
    /** Sets the associated UI compronentso to the
     * given File
     */
-   protected void setChosenFile(File givenFile)
+   protected void fileChosen(File givenFile)
    {
-//    chosenFile = givenFile;
-
       if (textField != null)
       {
          textField.setText(givenFile.getAbsolutePath());
       }
-      
+
       if (comboBox != null)
       {
          comboBox.setSelectedItem(givenFile.getAbsolutePath());
       }
+   }
+
+   /**
+    * Returns the file chosen
+    */
+   public File getChosenFile()
+   {
+      return fileChooser.getSelectedFile();
    }
 
 
@@ -192,4 +192,23 @@ public class JSetFileButton extends JButton implements ActionListener
    }
 */
 }
+
+/**
+$Log: JSetFileButton.java,v $
+Revision 1.6  2004/04/15 16:34:53  mch
+Tidied up, introduced stuff from datacenter ui
+
+Revision 1.1  2004/03/03 17:40:58  mch
+Moved ui package
+
+Revision 1.1  2004/02/17 16:04:06  mch
+New Desktop GUI
+
+Revision 1.1.1.1  2003/08/25 18:36:35  mch
+Reimported to fit It02 source structure
+
+Revision 1.6  2003/07/03 18:17:08  mch
+Fixed double-line-spacing
+
+ */
 

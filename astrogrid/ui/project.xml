@@ -43,7 +43,24 @@
       <version>3.8</version>
     </dependency>
   </dependencies>
-  
+
+    <!-- votable parsers/etc for JVotBox -->
+    <dependency>
+      <id>breezetk</id>
+      <version>UNKNOWN</version>
+      <jar>breezetk.jar</jar>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+
+
+   <dependency>
+      <groupId>axis</groupId>
+      <artifactId>axis-ant</artifactId>
+      <version>1.1</version>
+   </dependency>
+
   <build>
     <sourceDirectory>src/java</sourceDirectory>
     <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
