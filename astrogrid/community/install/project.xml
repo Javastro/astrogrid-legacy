@@ -3,11 +3,14 @@
     | Maven project description for the AstroGrid community webapp.
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/project.xml,v $</cvs:source>
-    | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/04/01 07:09:39 $</cvs:date>
-    | <cvs:version>$Revision: 1.10 $</cvs:version>
+    | <cvs:author>$Author: KevinBenson $</cvs:author>
+    | <cvs:date>$Date: 2004/05/11 00:45:10 $</cvs:date>
+    | <cvs:version>$Revision: 1.11 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.11  2004/05/11 00:45:10  KevinBenson
+    |   The castor objects have been moved to here
+    |
     |   Revision 1.10  2004/04/01 07:09:39  dave
     |   Merged development branch, dave-dev-200403300547, into HEAD
     |
@@ -165,6 +168,19 @@
                 <jar.fileset>true</jar.fileset>
             </properties>
         </dependency>
+        
+        <dependency>
+            <artifactId>astrogrid-workflow-objects</artifactId>
+            <groupId>${pom.groupId}</groupId>
+            <version>${pom.currentVersion}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+                <jar.fileset>true</jar.fileset>
+            </properties>            
+        </dependency>
+        
+        
         <!--+
             | The JXpath library - required for Registry delegate.
             +-->
