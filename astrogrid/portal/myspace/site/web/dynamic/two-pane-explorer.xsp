@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!--+
+    | Author: Jeff Lusted "jl99@star.le.ac.uk"
+    | Date: Thursday February  24 09:35 2005
+    +-->
+
+  <xsp:page language="java"
+	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:xsp="http://apache.org/xsp"
+	xmlns:util="http://apache.org/xsp/util/2.0" 
+    xmlns:jpath="http://apache.org/xsp/jpath/1.0"
+	xmlns:xsp-session="http://apache.org/xsp/session/2.0"
+	xmlns:xsp-request="http://apache.org/xsp/request/2.0">
+  
+
+    <frameset rows="60,*" frameborder="1" border="1" framespacing="1" id="MainFrameSet" name="mainFrameSet">
+      <noframes>
+        In order to use MySpace Explorer you need a browser capable of handling frames, such as <b>Netscape 6.0</b>, <b>ie5</b> or higher
+      </noframes>
+
+      <frame id="HeaderFrame" name="header" marginwidth="0" marginheight="0" scrolling="no">
+        <xsp:attribute name="src">/astrogrid-portal/main/mount/myspace/myspace-header.xml</xsp:attribute>
+      </frame>
+      
+      <frameset cols="200, *" frameborder="1" border="5" framespacing="5" id="MySpaceFrameSet" >
+
+        <frame name="tree" id="TreeViewFrame" scrolling="auto">
+          <xsp:attribute name="src">/astrogrid-portal/bare/mount/myspace/tree-view.xml</xsp:attribute>
+        </frame>
+
+        <frameset rows="100, *" frameborder="1" border="1" framespacing="1" id="DirectoryViewFrameSet" name="directoryViewFrameSet">
+           <frame name="controls" id="DirectoryControlsFrame" scrolling="no">
+             <xsp:attribute name="src">/astrogrid-portal/bare/mount/myspace/directory-controls.xml</xsp:attribute>
+           </frame>      
+           <frame marginwidth="1" frameborder="1"  marginheight="1" name="directory" id="DirectoryViewFrame" scrolling="yes">
+             <xsp:attribute name="src">/astrogrid-portal/bare/mount/myspace/directory-view.xml</xsp:attribute>
+           </frame>
+        </frameset>
+
+      </frameset>
+    </frameset>
+  </xsp:page>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ag-div>
-<agComponentTitle>Retrieve data from the Virtual Observatory</agComponentTitle>
+<agComponentTitle>Query Editor</agComponentTitle>
   <ag-link href="/astrogrid-portal/mount/datacenter/test-results.css" rel="stylesheet" type="text/css"/>
 
     <form action="/astrogrid-portal/main/mount/datacenter/forms/adql" name="main" method="POST">

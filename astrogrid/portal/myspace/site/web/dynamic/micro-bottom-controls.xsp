@@ -1,0 +1,708 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!--+
+    | Author: Jeff Lusted "jl99@star.le.ac.uk"
+    | Date: Thursday February  24 09:35 2005
+    +-->
+
+  <xsp:page language="java"
+	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:xsp="http://apache.org/xsp"
+	xmlns:util="http://apache.org/xsp/util/2.0"
+    xmlns:jpath="http://apache.org/xsp/jpath/1.0"
+	xmlns:xsp-session="http://apache.org/xsp/session/2.0"
+	xmlns:xsp-request="http://apache.org/xsp/request/2.0">
+ 
+ 
+ <xsp:structure>
+   <xsp:include>org.apache.cocoon.environment.Request</xsp:include>
+   <xsp:include>org.apache.cocoon.environment.Session</xsp:include>		
+</xsp:structure>
+
+<xsp:logic>
+		
+		private static final boolean TRACE_ENABLED = true ;
+		private static final boolean DEBUG_ENABLED = true ;
+		
+		// REQUESTED_MODE reflects the context from which the micro-browser has been invoked.
+		// It should contain values like ...
+		// "save-query-file" "load-query-file" for save/read functions in Query Editor
+		// "save-workflow-file" "load-workflow-file" for save/read functions in Workflow Editor
+		// "choose-file-for-workflow" for selecting files as parameters in Workflow Editor
+		// The latter causes the micro-browser to display a "new" as well as an "open" button.
+		private static final String REQUESTED_MODE = "requested-mode" ;	
+		
+        private static final String REQUEST_IVORN = "ivorn" ;			
+        private static final String REQUEST_AGSL = "agsl" ;	
+        private static final String REQUEST_FIELD_NAME = "field-name" ;	
+        private static final String REQUEST_FIELD_VALUE = "field-value" ;	
+        private static final String REQUEST_FORM_NAME = "form-name" ;	
+        private static final String REQUEST_FORM_ACTION = "form-action" ;	
+        private static final String REQUEST_PARENT_FUNC = "parent-func" ;	
+		
+		private static final String MYSPACE_AGSL = "myspace-agsl" ;
+		private static final String MYSPACE_IVORN = "myspace-ivorn" ;		
+		private static final String MYSPACE_FIELD_NAME = "myspace-field-name" ;	
+		private static final String MYSPACE_FIELD_VALUE = "myspace-field-value" ;	
+		private static final String MYSPACE_FORM_NAME = "myspace-form-name" ;	
+		private static final String MYSPACE_FORM_ACTION = "myspace-form-action" ;	
+		private static final String MYSPACE_PARENT_FUNC = "myspace-parent-func" ;										
+	
+	
+	
+	
+	
+		
+
+		public String formatAction() throws SAXException {
+        	if( TRACE_ENABLED ) trace( "micro-bottom-controls-xsp.formatAction() entry") ; 
+        	
+        	AttributesImpl xspAttr = new AttributesImpl() ;
+        	String requestedMode = null ;
+        	String actionString = null ;
+
+        	try {            
+
+                requestedMode = request.getParameter( REQUESTED_MODE ) ;
+                if( requestedMode == null || requestedMode.indexOf( "load" ) != -1 ) {
+                    actionString = "processOpen();" ;
+                }
+                else {
+                    actionString = "processSave();" ;
+                }
+        	}
+			catch(Exception e){
+		       if( DEBUG_ENABLED) debug ( "Exception thrown: " + e.getMessage() ) ;
+		    }
+        	
+        	finally {
+        		if( TRACE_ENABLED ) trace( "micro-bottom-controls-xsp.formatAction() exit") ; 
+        	}
+        	
+        	return actionString ;
+          
+		} // end of formatAction() 
+		
+		
+		public String formatActionDescription() throws SAXException {
+        	if( TRACE_ENABLED ) trace( "micro-bottom-controls-xsp.formatActionDescription() entry") ; 
+        	
+        	AttributesImpl xspAttr = new AttributesImpl() ;
+        	String requestedMode = null ;
+        	String descriptionString = null ;
+
+        	try {            
+
+                requestedMode = request.getParameter( REQUESTED_MODE ) ;
+                if( requestedMode == null || requestedMode.indexOf( "load" ) != -1 ) {
+                    descriptionString = "Open" ;
+                }
+                else {
+                    descriptionString = "Save" ;
+                }
+        	}
+			catch(Exception e){
+		       if( DEBUG_ENABLED) debug ( "Exception thrown: " + e.getMessage() ) ;
+		    }
+        	
+        	finally {
+        		if( TRACE_ENABLED ) trace( "micro-bottom-controls-xsp.formatActionDescription() exit") ; 
+        	}
+        	
+        	return descriptionString ;
+          
+		} // end of formatActionDescription() 		
+
+
+
+		public String formatModeButtons() throws SAXException {
+        	if( TRACE_ENABLED ) trace( "micro-bottom-controls-xsp.formatModeButtons() entry") ; 
+        	
+        	AttributesImpl xspAttr = new AttributesImpl() ;
+        	String requestedMode = null ;
+        	
+        	try {
+        	
+        	    requestedMode = request.getParameter( REQUESTED_MODE ) ;
+                if( requestedMode == null || requestedMode.indexOf( "load" ) != -1 ) {
+                    <xsp:content>                
+        	            <table class="compact" width="10%">
+                           <tr>                              
+                              <td id="actionButtonTD" align="center" class="naviButton"
+                                  onmouseover="highlight(this, 'actionButton')"
+                                  onmouseout="dehighlight(this, 'actonButton')" 
+                                  onClick="processOpen();"
+                                  nowrap="true">Open
+                              </td>
+                              <td id="cancelTD" align="center" class="naviButton"
+                                  onmouseover="highlight(this, 'cancel')"
+                                  onmouseout="dehighlight(this, 'cancel')" 
+                                  onClick="cancelAction();"
+                                  nowrap="true">Cancel
+                              </td>
+                           </tr>
+                        </table>
+                    </xsp:content>                                
+                }
+                else if( requestedMode.indexOf( "save" ) != -1 ) {
+                    <xsp:content>                
+        	            <table class="compact" width="10%">
+                           <tr>                              
+                              <td id="actionButtonTD" align="center" class="naviButton"
+                                  onmouseover="highlight(this, 'actionButton')"
+                                  onmouseout="dehighlight(this, 'actonButton')" 
+                                  onClick="processSave();"
+                                  nowrap="true">Save
+                              </td>
+                              <td id="cancelTD" align="center" class="naviButton"
+                                  onmouseover="highlight(this, 'cancel')"
+                                  onmouseout="dehighlight(this, 'cancel')" 
+                                  onClick="cancelAction();"
+                                  nowrap="true">Cancel
+                              </td>
+                           </tr>
+                        </table>
+                    </xsp:content>         
+                }
+                else if( requestedMode.indexOf( "choose-file" ) != -1 ) {
+                    <xsp:content>                
+        	            <table class="compact" width="15%">
+                           <tr>
+                              <td id="newButtonTD" align="center" class="naviButton"
+                                  onmouseover="highlight(this, 'newButton')"
+                                  onmouseout="dehighlight(this, 'newButton')" 
+                                  onClick="processNew();"
+                                  nowrap="true">New
+                              </td>                                   
+                              <td id="actionButtonTD" align="center" class="naviButton"
+                                  onmouseover="highlight(this, 'actionButton')"
+                                  onmouseout="dehighlight(this, 'actonButton')" 
+                                  onClick="processOpen();"
+                                  nowrap="true">Select
+                              </td>
+                              <td id="cancelTD" align="center" class="naviButton"
+                                  onmouseover="highlight(this, 'cancel')"
+                                  onmouseout="dehighlight(this, 'cancel')" 
+                                  onClick="cancelAction();"
+                                  nowrap="true">Cancel
+                              </td>
+                           </tr>
+                        </table>
+                    </xsp:content>                                
+                } 
+                else {
+                   if( DEBUG_ENABLED ) debug( "Incorrent request option for micro-browser: " + requestedMode ) ; 
+                }               
+        	
+        	}
+        	catch( Exception ex ) {
+        	    ex.printStackTrace() ;
+        	}
+        	finally {
+        	   if( TRACE_ENABLED ) trace( "micro-bottom-controls-xsp.formatModeButtons() exit") ; 
+        	}
+        	
+        	return "";
+   
+		} // end if formatModeButtons()
+		
+		
+		
+		private static void trace( String traceString ) {
+			System.out.println( traceString ) ;
+		}
+		
+		private static void debug( String traceString ) {
+			System.out.println( traceString ) ;
+        }
+
+</xsp:logic>  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+    <ag-div>
+      
+      <ag-onload function="nofooter();"/>
+
+      <ag-link rel="stylesheet" type="text/css" href="/astrogrid-portal/mount/myspace/xmlTree.css"/>
+      <ag-link rel="stylesheet" type="text/css" href="/astrogrid-portal/mount/myspace/myspace.css"/>
+      <ag-link rel="stylesheet" type="text/css" href="/astrogrid-portal/mount/myspace/extras.css"/>   
+         
+      <ag-script type="text/javascript" src="/astrogrid-portal/mount/myspace/myspace.js"/>
+
+      <ag-script type="text/javascript" src="/astrogrid-portal/mount/myspace/xmlTree.js"/>
+      
+<!-- Script insertion from Pat begins here  -->      
+      
+
+<script language="javascript">
+
+//function getFileName(){
+//	var fullpath = document.dire.localFile.value;
+	//alert(fullpath);
+//}
+
+
+
+
+function highlightTD(td){
+	td.style.border= "solid 1px #ffff00";
+}
+
+function dehighlightTD(td){
+	var teedee = document.getElementById(td);
+	teedee.style.border= "solid 1px #008800";
+}
+
+
+function highlight(diese, tag){
+	diese.style.background = "#ffffff";
+}
+
+function dehighlight(diese, tag){
+	diese.style.background = "#dddddd";
+}
+
+function dehighlightDir(diese, tag){
+	diese.style.background = "#ddddff";
+	if(helpopen == 1){
+		var h = parent.editor.document.getElementById(tag + "TD");
+		if(h != null){
+			h.style.display = "none";
+		}
+		/*
+		var k = parent.editor.document.getElementById("defaultTD");
+		if(k != null){
+			k.style.display = "";
+		}
+		*/
+	}
+}
+
+
+function triggerAction( action ) {
+
+  // top.directory.document.getElementById( 'myspace-action' ).value = action ;
+  var doc = top.directory.document;
+  var form = doc.getElementById( 'myspace-action-form' ); 
+
+  if(form) {
+    if( action ) {
+       if( action.length != 0) {
+          top.directory.document.getElementById( PARAM_ACTION ).value = action ;
+          top.directory.document.getElementById( PARAM_DIRECTORY_VIEW_PATH ).value = getCurrent() ;     
+//          alert( "top.directory.document.getElementById( PARAM_DIRECTORY_VIEW_PATH ).value:\n" + 
+//                  top.directory.document.getElementById( PARAM_DIRECTORY_VIEW_PATH ).value  ) ;     
+       }
+    }
+    form.submit();
+  }  
+  window.close();
+}
+
+
+function setCurrent( directory ){
+    document.getElementById('currentLocation').value = directory ;
+}
+
+function getCurrent() {
+    return getFrameDocument( "top-controls" ).getElementById('currentLocation').value ;
+}
+
+function isCurrent() {
+    if( getCurrent().length == 0 ) {
+       return false ;
+    } 
+    return true ;
+}
+
+function getSelected(){
+    return document.getElementById('selected').value ;
+}
+
+function setSelected( item ){
+    // alert( "setSelected:" + item ) ;
+    document.getElementById('selected').value = item ;
+}
+
+function resetSelected(){
+    // alert( "setSelected:" + item ) ;
+    document.getElementById('selected').value = "*** none ***" ;
+}
+
+
+function isSelected() {
+    var name = getSelected() ;
+    // We do our best to detect "*** none ***" or some variant...
+    if( name.length == 0 || name.indexOf("*") != -1 ) {
+       return false ;
+    } 
+    if( parent.directory.matchItem( name ) ) {
+       return true ;
+    }
+    return false ;
+}
+
+function isFile( name ) {
+   if( parent.directory.matchedItemType( name ) == "File" ) 
+      return true ;
+   return false ;
+}
+
+
+function processOpen() {
+   // first of all extract the name...
+   var name = getFileName( "open file", "Open File" ) ; 
+   if( name == null || name.length == 0 )
+      return ;
+       
+   var directory = getFrame( "directory" ) ;
+   
+   // Check to see whether another file or folder has the same name... 	    	  
+   if( directory.matchItem( name ) ) {
+    
+       // If it is a folder, it is not possible in this context...
+       if( directory.matchedItemType( name ) == "Folder" ) {
+      
+         alert(
+            "\n_____________________________________________________________________\n\n" +
+            "*** Open File ***\n" +
+            "_____________________________________________________________________\n\n" +
+            "Open abandoned. You cannot open a folder in this context."  ) ;
+       	      
+         return ;   
+       } 
+       
+    }
+    else {
+    
+       // You cannot open a non-existent file...	  	   
+          alert(
+             "\n________________________________________________________________\n\n" +
+             "*** Open File ***\n" +
+             "________________________________________________________________\n\n" +
+             "File " + name + " does not exist."  ) ;
+       	      
+          return ;
+    }   
+   
+    // If we got this far, we can proceed to open...
+    //alert( "We can proceed to open " + name ) ;
+    finalizeProcessInParent( name ) ;
+    top.close() ;
+        
+} // end of processOpen()
+
+
+function processSave() {
+   var reply ;
+   var name = getFileName( "save file", "Save File" ) ;
+   if( name == null || name.length == 0 )
+      return ;
+       
+   var directory = getFrame( "directory" ) ;   
+   // Check to see whether another file or folder has the same name... 	    	  
+   if( directory.matchItem( name ) ) {
+    
+       // If it is a folder, it is not possible in this context...
+       if( directory.matchedItemType( name ) == "Folder" ) {
+      
+         alert(
+            "\n_____________________________________________________________________\n\n" +
+            "*** Save File ***\n" +
+            "_____________________________________________________________________\n\n" +
+            "A folder in the same location has an identical name.\n" +
+            "Please provide another name."  ) ;
+       	      
+         return ;   
+       } 
+       else {
+       
+          // Require confirmation of overwrite of another file...
+          reply = confirm(
+                    "\n______________________________________________________________\n\n" +
+                    "*** Save File ***\n" +
+                    "______________________________________________________________\n\n" +
+                    "A file with the same name already exists in this folder.\n" +
+                    "Press OK to confirm overwrite or Cancel to return." ) ;
+     	   
+          if( !reply )
+            return ;     
+       }
+       
+    } 
+    
+    // If we got this far, we can proceed to save...
+    //alert( "We can proceed to save " + name ) ;
+    finalizeProcessInParent( name ) ;
+    top.close();
+    return ;
+    
+} // end of processSave()
+
+
+function processNew() {
+   var reply ;
+   var name = getFileName( "new file", "New File" ) ;
+   if( name == null || name.length == 0 )
+      return ;
+
+   var directory = getFrame( "directory" ) ;   
+   // Check to see whether another file or folder has the same name... 	    	  
+   if( directory.matchItem( name ) ) {   
+      alert(
+         "\n_____________________________________________________________________\n\n" +
+         "*** New File ***\n" +
+         "_____________________________________________________________________\n\n" +
+         "A file or folder in the same location has an identical name.\n" +
+         "Please provide another name."  ) ;
+      return ;   
+    }     
+    
+    // If we got this far, we can proceed with new...
+    //alert( "We can proceed for new on " + name ) ;
+    finalizeProcessInParent( name ) ;
+    top.close();
+    return ;    
+      
+}
+
+
+function cancelAction() {
+   //alert( "cancelAction" ) ;
+   top.close();
+}
+
+
+function finalizeProcessInParent( fileName ) { 
+   // alert( "finalizeProcessInParent with fileName: " + fileName ) ;
+   // ivorn, agsl, fieldName, fieldValue, formName, formAction, parentFunction
+   
+   // Get all our control information ...
+   // We have file name above. These are the required path and account space information...
+   var currentLocationPath = getCurrent() ;
+   // We must strip out the /home part which is for display purposes only in the portal...
+   currentLocationPath = currentLocationPath.substring( currentLocationPath.indexOf( "/" ) + 1);
+   
+   var accountSpaceIvornPath = getFrameDocument("top-controls").getElementById("myspace-accountspace-ivornpath").value;
+   //alert( "currentLocationPath: " +  currentLocationPath +  "\naccountSpaceIvornPath: " + accountSpaceIvornPath ) ;
+   
+   // Now get the relevant elements in the calling parent's document.
+   // First retrieve the metadata passed to us in the opening request...
+   // NB some may be null or contain the null value.
+   var ivornId = document.getElementById( "myspace-ivorn" ).value ;
+   var agslId = document.getElementById( "myspace-agsl" ).value ;
+   var fieldNameId = document.getElementById( "myspace-field-name" ).value ;
+   var formId = document.getElementById( "myspace-form-name" ).value ;
+
+   // This is other data passed to us...
+   var fieldValue = document.getElementById( "myspace-field-value" ).value ;
+   var formAction = document.getElementById( "myspace-form-action" ).value ;   
+   var parentFunc = document.getElementById( "myspace-parent-func" ).value ; 
+   
+   // Second, get the actual parent document elements using the above...
+   // Again, some may turn out to be null or contain the null value.             
+   var parentDoc = getParentDocument() ;
+   var el_Ivorn = parentDoc.getElementById( ivornId ) ;
+   var el_Agsl = parentDoc.getElementById( agslId ) ;
+   var el_FieldName = parentDoc.getElementById( fieldNameId ) ;
+   var el_Form = parentDoc.getElementById( formId ) ;
+   
+   //alert(   "el_Ivorn [" + el_Ivorn + "]\n" +
+   //         "el_Agsl [" + el_Agsl + "]\n" +
+   //         "el_FieldName [" + el_FieldName + "]\n" +
+   //         "el_Form [" + el_Form + "]\n" +
+   //         "fieldValue [" + fieldValue + "]\n" +
+   //         "formAction [" + formAction + "]\n" +
+   //         "parentFunc [" + parentFunc + "]"
+   //      ) ;
+                  
+   // Set the Ivorn and Agsl fields in the parent document...
+   if( el_Ivorn != null ) {
+      el_Ivorn.value = accountSpaceIvornPath + '#' + currentLocationPath + fileName ;
+   }
+
+   if( el_Agsl != null ) {
+      el_Agsl.value = currentLocationPath + fileName ;
+   }   
+   // alert( "el_Ivorn.value: " + el_Ivorn.value + "\nel_Agsl.value: " + el_Agsl.value ) ;
+   
+   // Now set the parent's hidden field ...
+  if( el_FieldName != null ) {
+     if( valueNotNull( fieldValue ) ) {
+        el_FieldName.value = fieldValue ;
+    }
+  }
+  //alert( "el_FieldName.value: " + el_FieldName.value ) ; 
+  
+  // Now submit the parent form...
+  if( el_Form != null ) {
+     if( valueNotNull( formAction ) ) {
+        el_Form.action = formAction ;
+     }
+     //alert( "submitting" ) ;
+     el_Form.submit();
+  }
+   
+  // Finally, call a parent function...
+  var parent = top.opener ;
+  if( parent != null ) {
+     if( valueNotNull( parentFunc ) ) {
+         var parent_func_expr = "parent." + parent_func ;
+         eval(parent_func_expr);
+     }
+  } 
+  
+} // end of finalizeProcessInParent()
+
+
+// Apply this only to strings...
+function valueNotNull( field ) {
+   if( field == null ) return false;
+   if( field.length == 0 ) return false;
+   if( field == "null" ) return false ;
+   return true ;
+} 
+
+
+function getParentDocument() {
+   // alert( "top.opener.document: " + top.opener.document ) ;
+   return top.opener.document ;
+}
+
+
+function getFileName( option, title  ) {
+
+    var fileName = document.getElementById( "fileName" ).value ;
+    var reply ;
+    
+    // suppress leading and trailing white space...
+    if( fileName != null  ) {
+       if(  fileName.length != 0 ) {
+          fileName = (fileName.replace(/^\s+/,'')).replace(/\s+$/,'') ;
+       }
+    }
+    
+    if( fileName == null || fileName.length == 0 ) {
+       if( option == "new file" ) {
+          alert(
+            "\n_____________________________________________________________________\n\n" +
+            "*** " + title + " ***\n" +
+            "_____________________________________________________________________\n\n" +
+            "Please supply a file name."  ) ;       
+       }
+       else {
+          alert(
+            "\n_____________________________________________________________________\n\n" +
+            "*** " + title + " ***\n" +
+            "_____________________________________________________________________\n\n" +
+            "Please supply a file name or select a file using the mouse."  ) ;
+       }
+       return fileName;      
+    } 
+      
+    // check on special characters...
+    if( fileName.match(/[\s\\\/@]/) ) {
+       fileName = fileName.replace(/[\s\\\/@]/g,'_') ; 
+       reply = confirm(
+       "\n______________________________________________________________\n\n" +
+       "*** " + title + " ***\n" +
+       "______________________________________________________________\n\n" +
+       "File name contains special characters.\n" +
+       "The name provided has been converted to " + fileName + "\n" +
+       "Press OK to confirm change or Cancel to return." ) ;
+     	   
+       if( !reply ) {
+          fileName = null ;
+       }
+    }      
+    
+    return fileName ;	
+    
+} // end of getFileName()
+
+
+function getFrameDocument( frameName ) {
+    return getFrame( frameName ).document ;
+}
+
+function getFrame( frameName ) {
+    for( var i=0; i!= top.frames.length; i++ ) {
+        if( top.frames[i].name == frameName ) {
+           return top.frames[i] ;
+        }
+    }
+}
+
+
+</script>
+      
+      
+      
+<!-- Script insertion from Pat ends here -->      
+
+	   <form id="myspace-explorer-form" action="." >
+          <input id="myspace-agsl" name="myspace-agsl" type="hidden">
+              <xsp:attribute name="value"><xsp-request:get-parameter name="agsl" /></xsp:attribute>
+          </input>
+          <input id="myspace-ivorn" name="myspace-ivorn" type="hidden">
+              <xsp:attribute name="value"><xsp-request:get-parameter name="ivorn" /></xsp:attribute>          
+          </input>          
+          <input id="myspace-field-name" name="myspace-field-name" type="hidden">
+              <xsp:attribute name="value"><xsp-request:get-parameter name="field_name" /></xsp:attribute>          
+          </input>
+          <input id="myspace-field-value" name="myspace-field-value" type="hidden">
+              <xsp:attribute name="value"><xsp-request:get-parameter name="field_value" /></xsp:attribute>          
+          </input>
+          <input id="myspace-form-name" name="myspace-form-name" type="hidden">
+              <xsp:attribute name="value"><xsp-request:get-parameter name="form_name" /></xsp:attribute>          
+          </input>
+          <input id="myspace-form-action" name="myspace-form-action" type="hidden">
+              <xsp:attribute name="value"><xsp-request:get-parameter name="form_action" /></xsp:attribute>          
+          </input>
+          <input id="myspace-parent-func" name="myspace-parent-func" type="hidden">
+              <xsp:attribute name="value"><xsp-request:get-parameter name="parent_func" /></xsp:attribute>          
+          </input>  
+          
+     
+          <div >
+          
+             <table cellpadding="0" cellspacing="0" class="compact" border="0" width="100%" bgcolor="#dddddd">
+                          <tr>
+                             <td>
+                                
+                                <table class="compact" width="100%">                                 
+                                   <tr>
+                                      <td align="left" width="8%">
+                                         File&#160;Name:
+                                      </td>
+                                      <td align="left">
+                                         <input name="fileName" id="fileName" size="48" style="background-color: #dddddd" />
+                                      </td>
+                                   </tr>  
+                                 </table>                                        
+                                                             
+                             </td>
+                             <td width="10%" align="right">
+                                <xsp:expr>formatModeButtons()</xsp:expr>
+                             </td>
+                          </tr>            
+                                
+            </table>
+  
+          </div>
+
+        </form>
+    </ag-div>   
+    
+  </xsp:page>

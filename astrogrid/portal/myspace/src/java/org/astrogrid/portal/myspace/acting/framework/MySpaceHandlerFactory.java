@@ -6,15 +6,28 @@ package org.astrogrid.portal.myspace.acting.framework;
  * @author peter.shillan
  */
 public class MySpaceHandlerFactory {
-  // MySpace actions.
-  private static final String ACTION_CHANGE = "myspace-change";
-  private static final String ACTION_COPY = "myspace-copy";
-  private static final String ACTION_DELETE = "myspace-delete";
-  private static final String ACTION_FIND_URL = "myspace-find-url";
-  private static final String ACTION_MOVE = "myspace-move";
-  private static final String ACTION_NEW_CONTAINER = "myspace-new-container";
-  private static final String ACTION_UPLOAD = "myspace-upload";
-  private static final String ACTION_UPLOAD_URL = "myspace-upload-url";
+  // MySpace actions implemented
+  private static final String 
+  	ACTION_COPY_FILE = "myspace-copy-file",
+  	ACTION_DELETE_FILE = "myspace-delete-file", 
+	ACTION_MOVE_FILE = "myspace-move-file",
+	ACTION_NEW_DIRECTORY = "myspace-new-directory",
+  	ACTION_UPLOAD_FILE = "myspace-upload-file",
+  	ACTION_UPLOAD_URL = "myspace-upload-url",
+  	ACTION_LOAD_BRANCH = "myspace-load-branch";
+ 
+  // MySpace actions yet to be implemented
+  private static final String 
+  	ACTION_RENAME_FILE = "myspace-rename-file",
+  	ACTION_RENAME_DIRECTORY = "myspace-rename-directory",
+  	ACTION_DELETE_DIRECTORY = "myspace-delete-directory" ,
+	ACTION_REFRESH_DIRECTORY = "myspace-refresh-directory" ;
+  
+  // MySpace actions obsolete
+  private static final String 
+	ACTION_CHANGE = "myspace-change",
+	ACTION_FIND_URL = "myspace-find-url" ;  
+  
   
   /**
    * Create a MySpace handler based on the action value.
@@ -30,26 +43,32 @@ public class MySpaceHandlerFactory {
       if(action.equalsIgnoreCase(MySpaceHandlerFactory.ACTION_CHANGE)) {
         result = new ChangeHandler(context); 
       }
-      else if(action.equalsIgnoreCase(MySpaceHandlerFactory.ACTION_COPY)) {
+      else if(action.equalsIgnoreCase(MySpaceHandlerFactory.ACTION_COPY_FILE)) {
         result = new CopyHandler(context); 
       }
-      else if(action.equalsIgnoreCase(MySpaceHandlerFactory.ACTION_DELETE)) {
+      else if(action.equalsIgnoreCase(MySpaceHandlerFactory.ACTION_DELETE_FILE)) {
         result = new DeleteHandler(context); 
       }
       else if(action.equalsIgnoreCase(MySpaceHandlerFactory.ACTION_FIND_URL)) {
         result = new FindURLHandler(context); 
       }
-      else if(action.equalsIgnoreCase(MySpaceHandlerFactory.ACTION_MOVE)) {
+      else if(action.equalsIgnoreCase(MySpaceHandlerFactory.ACTION_MOVE_FILE)) {
         result = new MoveHandler(context); 
       }
-      else if(action.equalsIgnoreCase(MySpaceHandlerFactory.ACTION_NEW_CONTAINER)) {
+      else if(action.equalsIgnoreCase(MySpaceHandlerFactory.ACTION_NEW_DIRECTORY)) {
         result = new NewContainerHandler(context); 
       }
-      else if(action.equalsIgnoreCase(MySpaceHandlerFactory.ACTION_UPLOAD)) {
+      else if(action.equalsIgnoreCase(MySpaceHandlerFactory.ACTION_UPLOAD_FILE)) {
         result = new UploadHandler(context); 
       }
       else if(action.equalsIgnoreCase(MySpaceHandlerFactory.ACTION_UPLOAD_URL)) {
         result = new UploadURLHandler(context); 
+      }
+      else if(action.equalsIgnoreCase(MySpaceHandlerFactory.ACTION_LOAD_BRANCH)) {
+          result = new LoadBranchHandler(context); 
+      }
+      else if( action.equalsIgnoreCase(MySpaceHandlerFactory.ACTION_REFRESH_DIRECTORY ) ) {
+          result = new RefreshDirectoryHandler(context); 
       }
     }
     

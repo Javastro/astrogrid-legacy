@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!--+
+    | Author: Jeff Lusted "jl99@star.le.ac.uk"
+    | Date: Thursday February  24 09:35 2005
+    +-->
+
+  <xsp:page language="java"
+	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:xsp="http://apache.org/xsp"
+	xmlns:util="http://apache.org/xsp/util/2.0" 
+    xmlns:jpath="http://apache.org/xsp/jpath/1.0"
+	xmlns:xsp-session="http://apache.org/xsp/session/2.0"
+	xmlns:xsp-request="http://apache.org/xsp/request/2.0">
+  
+  
+<xsp:structure>
+   <xsp:include>org.apache.cocoon.environment.Request</xsp:include>
+   <xsp:include>org.apache.cocoon.environment.Session</xsp:include>		
+</xsp:structure>
+<xsp:logic>
+		
+		private static final boolean TRACE_ENABLED = true ;
+		private static final boolean DEBUG_ENABLED = true ;
+		
+		private static final String BOTTOM_CONTROLS_URL = "/astrogrid-portal/bare/mount/myspace/micro-bottom-controls.xml" ;
+		private static final String FORM_NAME = "form_name" ;
+		private static final String FIELD_NAME = "field_name" ;
+		private static final String FIELD_VALUE = "field_value" ;
+        private static final String IVORN = "ivorn" ;			
+        private static final String AGSL = "agsl" ;	
+        private static final String FORM_ACTION = "form_action" ;	
+        private static final String PARENT_FUNC = "parent_func" ;	
+	
+		// REQUESTED_MODE reflects the context from which the micro-browser has been invoked.
+		// It should contain values like ...
+		// "save-query-file" "load-query-file"
+		// "save-workflow-file" "load-workflow-file" 
+		private static final String REQUESTED_MODE = "requested-mode" ;
+		
+		private static final String AMPERSAND = "&amp;" ;		
+
+		public String formatBottomControlsRequest() throws SAXException {
+        	if( TRACE_ENABLED ) trace( "micro-explorer-xsp.formatBottomControlsRequest() entry") ; 
+        	
+        	AttributesImpl xspAttr = new AttributesImpl() ;
+        	StringBuffer buffer = null ;
+        	String resultString = null ;
+
+        	try { 
+        	
+        	    String 
+        	       ivorn = request.getParameter( IVORN ),
+        	       agsl = request.getParameter( AGSL ),
+        	       formName = request.getParameter( FORM_NAME ),
+        	       formAction = request.getParameter( FORM_ACTION ),
+        	       fieldName = request.getParameter( FIELD_NAME ),
+        	       fieldValue = request.getParameter( FIELD_VALUE ),
+        	       parentFunc = request.getParameter( PARENT_FUNC ),
+        	       requestedMode =  request.getParameter( REQUESTED_MODE ) ;
+        	           
+
+                buffer = new StringBuffer( 128 ) ;
+                buffer.append( BOTTOM_CONTROLS_URL ).append( '?' ) ;
+                
+                if( ivorn != null ) buffer.append( IVORN ).append( '=' ).append( ivorn ).append( AMPERSAND ) ;
+                if( agsl != null ) buffer.append( AGSL ).append( '=' ).append( agsl ).append( AMPERSAND ) ;                                     
+                if( formName != null ) buffer.append( FORM_NAME ).append( '=' ).append( formName ).append( AMPERSAND ) ;
+                if( formAction != null ) buffer.append( FORM_ACTION ).append( '=' ).append( formAction ).append( AMPERSAND ) ;                   
+                if( fieldName != null ) buffer.append( FIELD_NAME ).append( '=' ).append( fieldName ).append( AMPERSAND ) ;
+                if( fieldValue != null ) buffer.append( FIELD_VALUE).append( '=' ).append( fieldValue ).append( AMPERSAND ) ;
+                if( parentFunc != null ) buffer.append( PARENT_FUNC ).append( '=' ).append( parentFunc ).append( AMPERSAND ) ;                  
+                if( requestedMode != null ) buffer.append( REQUESTED_MODE ).append( '=' ).append( requestedMode ).append( AMPERSAND ) ;
+
+                resultString = buffer.substring(0, buffer.length()-1) ;
+                if( DEBUG_ENABLED) debug ( "resultString: \n" + resultString ) ;
+                buffer = null ;
+
+        	}
+			catch(Exception e){
+		       if( DEBUG_ENABLED) debug ( "Exception thrown: " + e.getMessage() ) ;
+		    }
+        	
+        	finally {
+        		if( TRACE_ENABLED ) trace( "micro-explorer-xsp.formatBottomControlsRequest() exit") ; 
+        	}
+        	
+        	return resultString ;
+          
+		} // end of formatBottomControlsRequest() 
+		
+		private static void trace( String traceString ) {
+			System.out.println( traceString ) ;
+		}
+		
+		private static void debug( String traceString ) {
+			System.out.println( traceString ) ;
+        }
+
+</xsp:logic>  
+
+    <frameset rows="40,*,40" frameborder="1" border="1" framespacing="1" id="MicroExplorerFrameSet" name="MicroExplorerFrameSet">      
+       <noframes>
+         In order to use the MySpace Micro Explorer you need a browser capable of handling frames, such as <b>Netscape 6.0</b>, <b>ie5</b> or higher
+       </noframes>
+
+       <frame name="top-controls" id="MicroControlsTopFrame" scrolling="no" bgcolor="#dddddd">
+          <xsp:attribute name="src">/astrogrid-portal/bare/mount/myspace/micro-top-controls.xml</xsp:attribute>
+       </frame>      
+       <frame marginwidth="1" frameborder="1"  marginheight="1" name="directory" id="MicroDirectoryViewFrame" scrolling="yes">
+          <xsp:attribute name="src">/astrogrid-portal/bare/mount/myspace/micro-directory-view.xml</xsp:attribute>
+       </frame>
+       <frame name="bottom-controls" id="MicroControlsBottomFrame" scrolling="no" bgcolor="#dddddd">
+          <xsp:attribute name="src"><xsp:expr>formatBottomControlsRequest()</xsp:expr></xsp:attribute>
+       </frame>
+    </frameset>
+    
+  </xsp:page>

@@ -6,10 +6,13 @@ import mockmaker.ExceptionalReturnValue;
 import com.mockobjects.*;
 import org.astrogrid.portal.myspace.acting.framework.ContextWrapper;
 import org.astrogrid.community.User;
+import org.astrogrid.filemanager.client.FileManagerClient;
 import org.astrogrid.store.Agsl;
+import org.astrogrid.store.Ivorn;
 import org.astrogrid.store.delegate.StoreClient;
 import org.astrogrid.store.delegate.StoreFile;
 
+import java.io.IOException;
 import java.io.InputStream;
 public class MockContextWrapper implements ContextWrapper{
    private ExpectationCounter myGetParameterStringCalls = new ExpectationCounter("org.astrogrid.portal.myspace.acting.framework.ContextWrapper GetParameterStringCalls");
@@ -222,13 +225,18 @@ public class MockContextWrapper implements ContextWrapper{
       myGetFileInputStreamParameter0Values.verify();
    }
    
-   public StoreFile getMySpaceCache() {
-       return (StoreFile)null ;
+   public org.astrogrid.portal.myspace.filesystem.Tree getMySpaceTree() {
+       return null ;
    }
    
    
-   public void setMySpaceCache( StoreFile cache ) {
-       ;
+   public Ivorn getIvorn() throws IOException {
+       return null ;
+   }
+   
+   
+   public FileManagerClient getFileManagerClient() {
+       return null ;
    }
    
 }

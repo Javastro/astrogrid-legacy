@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+
+<xsp:page language="java" 
+		  create-session="true"
+		  xmlns:xsp="http://apache.org/xsp"
+		  xmlns:xsp-session="http://apache.org/xsp/session/2.0"
+  		  xmlns:xsp-request="http://apache.org/xsp/request/2.0"
+		>	
+		
+<xsp:structure>
+   <xsp:include>org.apache.cocoon.environment.Request</xsp:include>
+   <xsp:include>org.apache.cocoon.environment.Session</xsp:include>		
+</xsp:structure>
+<xsp:logic>
+		
+		private static final boolean TRACE_ENABLED = true ;
+		private static final boolean DEBUG_ENABLED = true ;
+		
+		public String getOpenBranches() throws SAXException {
+        	if( TRACE_ENABLED ) trace( "tree-view-preset-form-values-xsp.getOpenBranches() entry") ; 
+        	
+        	AttributesImpl xspAttr = new AttributesImpl() ;
+            Session session = request.getSession(true) ;
+            String[] branchArray = (String[])<xsp-session:get-attribute name="AGO_MYSPACETREE_OPENBRANCHES"  as="object"/>;	                	
+        	StringBuffer buffer = null ;
+        	String resultString = null ;
+        
+        	try {
+                
+                if( DEBUG_ENABLED) debug( "SessionNames: " + <xsp-session:get-attribute-names as="array"/> ) ;
+                if( branchArray != null &amp;&amp; branchArray.length &gt; 0 ) {
+            
+                   buffer = new StringBuffer( branchArray.length * 32 ) ;
+                   for( int i=0; i &lt; branchArray.length; i++ ) {
+                       buffer.append( branchArray[i] ).append("*") ; 
+                   }
+                   resultString = buffer.substring(0,buffer.length()-1) ;
+                   if( DEBUG_ENABLED) debug ( "resultString: " + resultString ) ;
+                   buffer = null ;
+                }
+                else {
+                   resultString = "";
+                }
+
+        	}
+			catch(Exception e){
+		       if( DEBUG_ENABLED) debug ( "Exception thrown: " + e.getMessage() ) ;
+		    }
+        	
+        	finally {
+        		if( TRACE_ENABLED ) trace( "tree-view-preset-form-values-xsp.getOpenBranches() exit") ; 
+        	}
+        	
+        	return resultString ;
+          
+		} // end of getOpenBranches() 
+		
+		private static void trace( String traceString ) {
+			System.out.println( traceString ) ;
+		}
+		
+		private static void debug( String traceString ) {
+			System.out.println( traceString ) ;
+        }
+
+</xsp:logic>
+
+   <open-branches>
+      <xsp:expr>getOpenBranches()</xsp:expr>
+   </open-branches>
+
+
+</xsp:page>

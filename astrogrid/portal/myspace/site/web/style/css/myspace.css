@@ -79,24 +79,24 @@ hr.agbar
 span.document
 {
   background-color:               white;
-  color:                          blue;
+  color:                          black;
 }
 
 span.document-highlight
 {
-  background-color:               yellow;
-  color:                          blue;
+  background-color:               darkblue;
+  color:                          white;
 }
 
 span.folder
 {
   background-color:               white;
-  color:                          blue;
+  color:                          black;
 }
 
 span.folder-highlight
 {
-  background-color:               lightblue;
-  color:                          blue;
+  background-color:               darkblue;
+  color:                          white;
 }
 

@@ -23,12 +23,12 @@ public class FindURLHandler extends AbstractMySpaceHandler {
    * @see org.astrogrid.portal.myspace.acting.framework.AbstractMySpaceHandler#executeTemplateMethod(java.util.Map)
    */
   protected void executeTemplateMethod(Map results) throws Throwable {
-    String src = context.getParameter(MySpaceHandler.PARAM_SRC);
+    String src = context.getParameter(MySpaceHandler.PARAM_SOURCE_PATH);
     
     if(src != null && src.length() > 0) {
-      URL url = context.getStoreClient().getUrl(src);
+      URL url = context.getMySpaceTree().getFile( src ).getNode().contentURL() ;
       
-      addLocalResult(MySpaceHandler.PARAM_URL, url.toString(), results);
+      addLocalResult(MySpaceHandler.PARAM_TARGET_PATH, url.toString(), results);
     }
     else {
       throw new MySpaceHandlerException("invalid source");

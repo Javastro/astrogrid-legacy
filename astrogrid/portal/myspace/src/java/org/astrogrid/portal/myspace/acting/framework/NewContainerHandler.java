@@ -23,13 +23,27 @@ public class NewContainerHandler extends AbstractMySpaceHandler {
    * @see org.astrogrid.portal.myspace.acting.framework.AbstractMySpaceHandler#executeTemplateMethod(java.util.Map)
    */
   protected void executeTemplateMethod(Map results) throws Throwable {
-    String dest = context.getParameter(MySpaceHandler.PARAM_DEST);
 
-    if(dest != null && dest.length() > 0) {
-      context.getStoreClient().newFolder(dest);
-    }
-    else {
-      throw new MySpaceHandlerException("invalid destination");
-    }
+      String 
+      	path = context.getParameter(MySpaceHandler.PARAM_TARGET_PATH),
+    	name = context.getParameter(MySpaceHandler.PARAM_TARGET_NAME) ;
+      
+      System.out.println( "path: " + path ) ;
+      System.out.println( "name: " + name ) ;
+
+      if( (path != null && path.length() > 0)
+          &&
+          (name != null && name.length() > 0) ) {
+          context.getMySpaceTree().newDirectory( name, path );
+          
+          // Take the opportunity to add to the open branches?...
+      }
+      else {
+          String message = "Failed to create new directory.\n" +
+                           "Name: " + name + "\n" +
+                           "Path: " + path ;
+          throw new MySpaceHandlerException( message );
+      }
   }
+  
 }

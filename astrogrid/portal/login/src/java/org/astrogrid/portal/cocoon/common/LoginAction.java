@@ -1,13 +1,14 @@
 /**
- * <cvs:id>$Id: LoginAction.java,v 1.35 2005/02/23 17:56:59 clq2 Exp $</cvs:id>
+ * <cvs:id>$Id: LoginAction.java,v 1.36 2005/03/29 22:07:56 clq2 Exp $</cvs:id>
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/src/java/org/astrogrid/portal/cocoon/common/LoginAction.java,v $</cvs:source>
  * <cvs:author>$Author: clq2 $</cvs:author>
- * <cvs:date>$Date: 2005/02/23 17:56:59 $</cvs:date>
- * <cvs:version>$Revision: 1.35 $</cvs:version>
+ * <cvs:date>$Date: 2005/03/29 22:07:56 $</cvs:date>
+ * <cvs:version>$Revision: 1.36 $</cvs:version>
  */
 package org.astrogrid.portal.cocoon.common;
-import java.net.MalformedURLException;
-import java.net.URL;
+
+//import java.net.MalformedURLException;
+//import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,24 +19,35 @@ import org.apache.cocoon.acting.AbstractAction;
 import org.apache.cocoon.environment.ObjectModelHelper;
 import org.apache.cocoon.environment.Redirector;
 import org.apache.cocoon.environment.Request;
-import org.apache.cocoon.environment.Session;
+//import org.apache.cocoon.environment.Session;
 import org.apache.cocoon.environment.SourceResolver;
-import org.astrogrid.community.common.config.CommunityConfig;
+//import org.astrogrid.community.common.config.CommunityConfig;
 import org.astrogrid.community.common.exception.CommunityIdentifierException;
-import org.astrogrid.community.common.exception.CommunityPolicyException;
+//import org.astrogrid.community.common.exception.CommunityPolicyException;
 import org.astrogrid.community.common.exception.CommunitySecurityException;
 import org.astrogrid.community.common.exception.CommunityServiceException;
 import org.astrogrid.community.common.ivorn.CommunityAccountIvornFactory;
 import org.astrogrid.community.common.security.data.SecurityToken;
-import org.astrogrid.community.common.security.service.SecurityServiceMock;
+//import org.astrogrid.community.common.security.service.SecurityServiceMock;
 import org.astrogrid.community.resolver.CommunityAccountSpaceResolver;
 import org.astrogrid.community.resolver.CommunityPasswordResolver;
 import org.astrogrid.community.resolver.exception.CommunityResolverException;
-import org.astrogrid.config.Config;
-import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.portal.login.common.SessionKeys;
+//import org.astrogrid.config.Config;
+//import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.portal.common.session.AstrogridSessionFactory;
+import org.astrogrid.portal.common.session.AstrogridSession ;
+import org.astrogrid.portal.common.session.AttributeKey ;
+import org.astrogrid.portal.myspace.filesystem.Tree;
+// import org.astrogrid.portal.login.common.SessionKeys;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.store.Ivorn;
+import org.astrogrid.filemanager.client.FileManagerClientFactory ;
+import org.astrogrid.filemanager.client.FileManagerClient ;
+// import org.astrogrid.filemanager.client.exception.FileManagerLoginException ;
+
+//import org.astrogrid.portal.myspace.filesystem.*;
+
+
 /**
  * Login Action.  Extracts login parameters from the 
  * request action and checks them with the security 
@@ -108,7 +120,7 @@ public final class LoginAction extends AbstractAction {
         //
         // Get our current request and session.
         final Request request = ObjectModelHelper.getRequest(objectModel);
-        final Session session = request.getSession();
+        final AstrogridSession session = AstrogridSessionFactory.getSession( request.getSession() ) ;
 
         //
         // Get the user name and password from our request.
@@ -189,21 +201,39 @@ public final class LoginAction extends AbstractAction {
         }
 
         // We pass the tests so set the current account info in our session.
-        session.setAttribute(SessionKeys.USER, name);
-        session.setAttribute(
-            SessionKeys.CREDENTIAL,
-            "guest@is.this.needed?");
-        session.setAttribute(SessionKeys.COMMUNITY_ACCOUNT, token.getAccount());
-        //session.setAttribute(
-        //    SessionKeys.COMMUNITY_NAME,
-        //    CommunityConfig.getCommunityName());
-        session.setAttribute(SessionKeys.IVORN, accountSpace);
-            
-        session.setAttribute("community_authority",community);
+        session.setAttribute( AttributeKey.USER, name ) ;
+        session.setAttribute( AttributeKey.CREDENTIAL, "guest@is.this.needed?" ) ;
+        session.setAttribute( AttributeKey.COMMUNITY_ACCOUNT, token.getAccount() ) ;
+        // session.setAttribute( AttributeKey.COMMUNITY_NAME, CommunityConfig.getCommunityName() ) ;
+        session.setAttribute( AttributeKey.ACOUNTSPACE_IVORN, accountSpace ) ;         
+        session.setAttribute( AttributeKey.COMMUNITY_AUTHORITY, community) ;
+           
         //
         // Set the current account info in our request.
         request.setAttribute(USER_PARAM, user);
-        //
+       
+        // Retrieve FileManagerClient for MySpace access and store in session object...
+        FileManagerClient fmc = null ;
+        try {
+            // fmc = new FileManagerClientFactory().login( token ) ;  
+            fmc = new FileManagerClientFactory().login( ivorn, pass ) ;              
+            session.setAttribute( AttributeKey.FILE_MANAGER_CLIENT, fmc ) ;            
+        }
+        catch( Exception ex ) {
+            log.error( "FileManagerClientFactory().login( token ) failed", ex ) ;
+            throw new LoginException( "FileManagerClientFactory().login( token ) failed", ex);        
+        }
+        
+        try {
+            Tree fileTree = Tree.constructTree( ivorn, fmc ) ;
+            session.setAttribute( AttributeKey.MYSPACE_TREE, fileTree ) ;
+        }
+        catch( Exception ex ) {
+            log.error( "Tree.constructTree( ivorn, fmc ) failed", ex ) ;
+            throw new LoginException("Tree.constructTree( ivorn, fmc ) failed",ex);
+        }        
+
+		//
         // Add our results.
         // Currently just use a non-null map to indicate success
         final Map results = new HashMap();
@@ -250,6 +280,21 @@ public final class LoginAction extends AbstractAction {
 /**
  * <cvs:log>
  * $Log: LoginAction.java,v $
+ * Revision 1.36  2005/03/29 22:07:56  clq2
+ * jl908 merge
+ *
+ * Revision 1.31.30.10  2005/03/23 13:56:41  jl99
+ * Changed login method to use ivorn and password
+ *
+ * Revision 1.31.30.9  2005/03/23 12:17:58  jl99
+ * Experiment to see whether we can get the home page if we remove the FileManager stuff.
+ *
+ * Revision 1.31.30.8  2005/03/23 11:06:40  jl99
+ * Extra  debugging
+ *
+ * Revision 1.31.30.7  2005/03/22 13:02:55  jl99
+ * Refresh of Login
+ *
  * Revision 1.35  2005/02/23 17:56:59  clq2
  * trying to fix the login problem
  *

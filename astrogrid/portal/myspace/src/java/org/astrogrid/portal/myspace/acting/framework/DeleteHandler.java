@@ -1,6 +1,7 @@
 package org.astrogrid.portal.myspace.acting.framework;
 
 import java.util.Map;
+import org.astrogrid.portal.myspace.filesystem.DeleteException ;
 
 /**
  * Delete a MySpace entry.
@@ -22,11 +23,17 @@ public class DeleteHandler extends AbstractMySpaceHandler {
    * @see org.astrogrid.portal.myspace.acting.framework.AbstractMySpaceHandler#executeTemplateMethod(java.util.Map)
    */
   protected void executeTemplateMethod(Map results) throws Throwable {
-    String src = context.getParameter(MySpaceHandler.PARAM_SRC);
+    String path = context.getParameter(MySpaceHandler.PARAM_TARGET_PATH);
     
-    if(src != null && src.length() > 0) {
-      context.getStoreClient().delete(src);
-      context.setMySpaceCache( null ) ;
+    System.out.println( "path: " + path ) ;
+    
+    if( path != null && path.length() > 0 ) {
+        try {
+            context.getMySpaceTree().deleteFile( path );
+        }
+        catch( DeleteException dx ) {
+            throw new MySpaceHandlerException ( dx.getMessage() ) ;
+        }
     }
     else {
       throw new MySpaceHandlerException("invalid source");

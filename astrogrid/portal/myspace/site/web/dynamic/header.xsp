@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!--+
+    | Author: Jeff Lusted "jl99@star.le.ac.uk"
+    | Date: Thursday February  24 09:35 2005
+    +-->
+
+  <xsp:page language="java"
+	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:xsp="http://apache.org/xsp"
+	xmlns:util="http://apache.org/xsp/util/2.0"
+    xmlns:jpath="http://apache.org/xsp/jpath/1.0"
+	xmlns:xsp-session="http://apache.org/xsp/session/2.0"
+	xmlns:xsp-request="http://apache.org/xsp/request/2.0">
+ 
+    <ag-div>
+      <agComponentTitle>MySpace Explorer</agComponentTitle>
+      
+      <ag-onload function="nofooter();"/>
+
+      <ag-link rel="stylesheet" type="text/css" href="/astrogrid-portal/mount/myspace/xmlTree.css"/>
+      <ag-link rel="stylesheet" type="text/css" href="/astrogrid-portal/mount/myspace/myspace.css"/>
+      
+      <ag-script type="text/javascript" src="/astrogrid-portal/mount/myspace/myspace.js"/>
+
+      <ag-script type="text/javascript" src="/astrogrid-portal/mount/myspace/xmlTree.js"/>
+<!--      
+      	<ag-menu name="myspace-menu"/>
+-->
+	        <form
+            id="myspace-explorer-form"
+            action="/astrogrid-portal/main/mount/myspace/myspace-explorer"
+            method="POST"
+            enctype="multipart/form-data">
+          <input id="myspace-action" name="myspace-action" type="hidden"/>
+          <input id="myspace-clipboard" name="myspace-clipboard" type="hidden"/>
+          <input id="myspace-clipboard-url" name="myspace-clipboard-url" type="hidden"/>
+          <input id="myspace-clipboard-copy" name="myspace-clipboard-copy" type="hidden"/>
+          <input name="myspace-src" id="myspace-src" type="hidden"/>
+          <input name="myspace-dest" id="myspace-dest" type="hidden"/>
+          
+<!--      
+          <div>
+            <table id="myspace-tree-header">
+              <tr>
+                <td colspan="3"><hr class="agbar"/></td>
+              </tr>
+              <tr>
+                <td colspan="3"><hr class="agbar"/></td>
+              </tr>
+            </table>
+  
+          </div>
+-->
+        </form>
+    </ag-div>   
+    
+  </xsp:page>

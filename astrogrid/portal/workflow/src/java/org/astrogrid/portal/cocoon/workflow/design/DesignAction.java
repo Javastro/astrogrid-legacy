@@ -12,6 +12,11 @@ package org.astrogrid.portal.cocoon.workflow.design;
 
 import org.apache.log4j.Logger;  
    
+import org.astrogrid.portal.myspace.filesystem.Tree;
+import org.astrogrid.portal.common.session.AstrogridSessionFactory ;
+import org.astrogrid.portal.common.session.AstrogridSession ;
+import org.astrogrid.portal.common.session.AttributeKey ;
+
 import org.astrogrid.portal.workflow.intf.*;
 import org.astrogrid.portal.cocoon.workflow.WorkflowHelper;
 
@@ -66,6 +71,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Enumeration;
+import java.io.IOException;
 import java.net.MalformedURLException;
 
 import org.apache.avalon.framework.parameters.Parameters;
@@ -76,7 +82,7 @@ import org.apache.cocoon.environment.Redirector;
 import org.apache.cocoon.environment.SourceResolver;
 import org.apache.cocoon.environment.ObjectModelHelper;
 
-import com.sun.rsasign.s;
+// import com.sun.rsasign.s;
 
 
 /**
@@ -155,7 +161,6 @@ public class DesignAction extends AbstractAction {
 	    TOOL_LIST_PARAMETER = "tool-list",
 	    USER_TOOL_LIST_PARAMETER = "user-tool-list",
 	    TOOL_NAME_PARAMETER = "tool_name",
-	    ORIG_TOOL_NAME_PARAMETER = "orig_tool_name",
 		STEP_KEY_PARAMETER = "step-key",
         ERROR_MESSAGE_PARAMETER = "ErrorMessage",
         LOCATION_PARAMETER = "location",
@@ -618,9 +623,10 @@ public class DesignAction extends AbstractAction {
         private void saveWorkflow() throws ConsistencyException {
             if( TRACE_ENABLED ) trace( "DesignActionImpl.saveWorkflow() entry" ) ;
             
-            String ivornName = request.getParameter( SAVE_WORKFLOW_IVORN_PARAMETER ) ;
+            String ivornName = "ivo://" + request.getParameter( SAVE_WORKFLOW_IVORN_PARAMETER ) ;
 			debug( "ivornName: " + ivornName );
             Ivorn ivorn = null;
+            AstrogridSession agSession = AstrogridSessionFactory.getSession(request.getSession(true));
                                        
             try {
 
@@ -636,7 +642,16 @@ public class DesignAction extends AbstractAction {
                     WorkflowStore wfStore = this.workflowManager.getWorkflowStore();
                     debug( "wfStore: " + wfStore );
                     wfStore.saveWorkflow( user, ivorn, workflow ) ;
-                }            
+                    
+                    // We need to force the tree to reload this directory...
+                    // Find the full directory path in Tree terms...
+                    String directoryPath = "home/" + request.getParameter( SAVE_WORKFLOW_IVORN_PARAMETER ) ;
+                    int separatorIndex = directoryPath.lastIndexOf( '/' ) ;
+                    directoryPath = directoryPath.substring( 0, separatorIndex + 1) ;
+                    Tree tree = (Tree)agSession.getAttribute( AttributeKey.MYSPACE_TREE ) ;
+                    tree.refresh( tree.getDirectory(directoryPath) ) ;
+                } 
+                               
             }
             catch( CommunityIdentifierException cix ) {
                 cix.printStackTrace();
@@ -669,11 +684,10 @@ public class DesignAction extends AbstractAction {
         private void readWorkflow() throws ConsistencyException {
             if( TRACE_ENABLED ) trace( "DesignActionImpl.readWorkflow() entry" ) ;
               
-            String
-                 name = request.getParameter( WORKFLOW_NAME_PARAMETER ),
-                 ivornName = request.getParameter( OPEN_WORKFLOW_IVORN_PARAMETER ) ;
-                 debug("workflow name: " + name) ;
-                 debug("ivorn name: " + ivornName) ;
+            String name = request.getParameter( WORKFLOW_NAME_PARAMETER );
+            String ivornName = "ivo://" + request.getParameter( OPEN_WORKFLOW_IVORN_PARAMETER ) ;
+            debug("workflow name: " + name) ;
+            debug("ivorn name: " + ivornName) ;
             Ivorn ivorn = null;
               
             try {
@@ -1948,7 +1962,6 @@ public class DesignAction extends AbstractAction {
 			try {
 		        String xpathKey = request.getParameter( ACTIVITY_KEY_PARAMETER ) ;
 				String toolName = request.getParameter( TOOL_NAME_PARAMETER ) ;
-				String origToolName = request.getParameter( ORIG_TOOL_NAME_PARAMETER ) ;
 				String stepName = request.getParameter( STEP_NAME_PARAMETER ) ;
 				String stepVar = request.getParameter( STEP_VAR_PARAMETER ) ;				
 				String stepDescription = request.getParameter( STEP_DESCRIPTION_PARAMETER ) ;
@@ -1958,46 +1971,14 @@ public class DesignAction extends AbstractAction {
 				}
 
 				step = locateStep( workflow, xpathKey ); 
-											
-                //	Only insert new tool if user has changed chosen tool, or if origToolName = null
-				if ( origToolName.equals(null) || origToolName.equalsIgnoreCase("null"))
-				{				 
-				  tool = this.createTool( toolName ) ;			
-				  step.setTool( tool ) ;
-				  step.setName( stepName );
-				  if (!(stepVar.length() <= 0 || stepVar == null)) // the resultVar must contain a valid string, it cannot be empty so do not set if no value present.
-				    step.setResultVar( stepVar ) ;
-				  step.setDescription( stepDescription );
-				  String tempName = toolName ;
-				  if (tempName.indexOf("#") != -1)
-					tempName = tempName.substring(0,tempName.indexOf("#")).trim() ;
-				  session.setAttribute( ORIG_TOOL_NAME_PARAMETER, tempName ) ;				  
-				}
-				else if( origToolName.equalsIgnoreCase( toolName ) ) 
-				{
-				  step.setName( stepName ) ;
-				  if (!(stepVar.length() <= 0 || stepVar == null)) // the resultVar must contain a valid string, it cannot be empty so do not set if no value present.
-				    step.setResultVar( stepVar ) ;
-				  step.setDescription( stepDescription );
-				  String tempName = toolName ;
-				  if (tempName.indexOf("#") != -1)
-					tempName = tempName.substring(0,tempName.indexOf("#")).trim() ;
-				  session.setAttribute( ORIG_TOOL_NAME_PARAMETER, tempName ) ;
-				} 
-				else
-				{				
-				  tool = this.createTool( toolName ) ;			
-				  step.setTool( tool ) ;
-				  step.setName("") ;
-				  step.setResultVar("") ;
-				  step.setDescription("...");
-				  String tempName = toolName ;
-				  if (tempName.indexOf("#") != -1)
-					tempName = tempName.substring(0,tempName.indexOf("#")).trim() ;
-				  session.setAttribute( ORIG_TOOL_NAME_PARAMETER, tempName ) ;
-				} 
+				step.setName( stepName );				
+				if (!(stepVar.length() <= 0 || stepVar == null)) // the resultVar must contain a valid string, it cannot be empty so do not set if no value present.
+				  step.setResultVar( stepVar ) ;
+				step.setDescription( stepDescription );
 				
-				updateUserToolList( toolName );	
+				tool = this.createTool( toolName ) ;
+				step.setTool( tool );
+				updateUserToolList( toolName );				
 				
 			}
 			finally {

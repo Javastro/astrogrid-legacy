@@ -6,6 +6,44 @@
     <artifactId>astrogrid-portal-common</artifactId>
     <name>AstroGrid Portal Common Project</name>
     <dependencies>
+    
+    
+            <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-filestore-client</artifactId>
+            <version>${astrogrid.filestore.version}</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-filestore-common</artifactId>
+            <version>${astrogrid.filestore.version}</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-filestore-server</artifactId>
+            <version>${astrogrid.filestore.version}</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+    
+    
+    
+    
+    
+    
+    
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-common</artifactId>
@@ -13,7 +51,70 @@
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>
-    </dependencies>
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-filemanager-client</artifactId>
+            <version>${astrogrid.filemanager.version}</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>		            
+        </dependency>    
+		<dependency>
+			<artifactId>astrogrid-filemanager-contract</artifactId>
+			<groupId>org.astrogrid</groupId>
+			<version>${astrogrid.filemanager.version}</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>			
+	    </dependency>
+	    
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>astrogrid-community-common</artifactId>
+            <version>${astrogrid.community.version}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>	    		
+	    
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>astrogrid-registry-common</artifactId>
+            <version>${astrogrid.registry.version}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>	   
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>astrogrid-registry-client-lite</artifactId>
+            <version>${astrogrid.registry.version}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>        
+        
+         
+
+      <dependency>
+           <artifactId>commons-collections</artifactId>
+           <groupId>commons-collections</groupId>
+           <version>3.1</version>
+           <type>jar</type>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>                
+        </dependency>     
+
+    </dependencies>      
     <build>
         <sourceDirectory>src/java</sourceDirectory>
         <unitTestSourceDirectory>test/java</unitTestSourceDirectory>

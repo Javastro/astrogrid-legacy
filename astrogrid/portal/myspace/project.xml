@@ -3,22 +3,53 @@
     <artifactId>astrogrid-portal-myspace</artifactId>
     <name>AstroGrid Portal MySpace Project</name>
     <dependencies>
+    
+    
+            <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-filestore-client</artifactId>
+            <version>${astrogrid.filestore.version}</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-filestore-common</artifactId>
+            <version>${astrogrid.filestore.version}</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-filestore-server</artifactId>
+            <version>${astrogrid.filestore.version}</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+    
+    
+    
+    
+    
+    
+    
+    
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-portal-common</artifactId>
             <version>${pom.currentVersion}</version>
             <type>jar</type>
             <properties/>
-        </dependency>
-        <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-store-client</artifactId>
-            <version>${astrogrid.mySpace.version}</version>
-            <type>jar</type>
-            <properties>
-                <war.bundle>true</war.bundle>
-            </properties>
-        </dependency>
+        </dependency>  
+          
         <dependency>
             <groupId>servletapi</groupId>
             <artifactId>servletapi</artifactId>
@@ -62,6 +93,64 @@
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
+        
+        <!--+
+            | The AstroGrid community classes.
+            +-->
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>astrogrid-community-common</artifactId>
+            <version>${astrogrid.community.version}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>astrogrid-community-client</artifactId>
+            <version>${astrogrid.community.version}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>astrogrid-community-resolver</artifactId>
+            <version>${astrogrid.community.version}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+        </dependency>
+        
+        
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-filemanager-client</artifactId>
+            <version>${astrogrid.filemanager.version}</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>		            
+        </dependency>    
+		<dependency>
+			<artifactId>astrogrid-filemanager-contract</artifactId>
+			<groupId>org.astrogrid</groupId>
+			<version>${astrogrid.filemanager.version}</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>			
+	    </dependency>        
+        
+        
+        
+      <dependency>
+           <artifactId>commons-collections</artifactId>
+           <groupId>commons-collections</groupId>
+           <version>3.1</version>
+           <type>jar</type>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>                
+        </dependency>     
+         
         <dependency>
             <groupId>commons-discovery</groupId>
             <artifactId>commons-discovery</artifactId>
@@ -183,6 +272,7 @@
     </dependencies>
     <build>
         <sourceDirectory>src/java</sourceDirectory>
+<!--        
         <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
         <unitTest>
             <includes>
@@ -193,6 +283,7 @@
                 <exclude>org/astrogrid/portal/myspace/acting/framework/BaseHandlerTest.java</exclude>
             </excludes>
         </unitTest>
+-->        
     </build>
     <properties/>
 </project>

@@ -3,21 +3,30 @@
 <xsl:stylesheet
     version="1.0"
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-  <xsl:template match="/properties">
-    <html>
-      <head>
-        <title>
-          Properties: <xsl:value-of select="@path"/>
-        </title>
-      </head>
-      
-      <body>
-      <!--
-        <h1>
-          Properties: <xsl:value-of select="@path"/>
-        </h1>
-      -->  
-        <table>
+    
+    <xsl:output
+      method="xml"
+      omit-xml-declaration="yes"/>   
+    
+    
+    <xsl:template match="/">      
+	  <ag-div>
+	     <!-- Add our page content -->
+		 <content>
+		   <agPUBMessage>
+             File Properties
+           </agPUBMessage> 
+                      
+        <xsl:apply-templates select="properties" />
+    
+    	 </content>
+	  </ag-div>
+  </xsl:template>
+  
+  
+  <xsl:template match="properties">
+  
+          <table>
           <tr>
             <td>Name:&#160;</td>
             <td><xsl:value-of select="@name"/></td>
@@ -52,9 +61,10 @@
             <td><xsl:value-of select="@mime-type"/></td>
           </tr>       
         </table>
-      </body>
-    </html>
   </xsl:template>
+  
+  
+
   
   <!-- Default, copy all and apply templates -->
   <xsl:template match="@*|node()">

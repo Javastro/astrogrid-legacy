@@ -2,7 +2,8 @@ package org.astrogrid.portal.myspace.acting.framework;
 
 import java.util.Map;
 
-import org.astrogrid.store.Agsl;
+//import org.astrogrid.store.Agsl;
+import org.astrogrid.portal.myspace.filesystem.CopyException;
 
 /**
  * Copy a MySpace entry.
@@ -24,17 +25,25 @@ public class CopyHandler extends AbstractMySpaceHandler {
    * @see org.astrogrid.portal.myspace.acting.framework.AbstractMySpaceHandler#executeTemplateMethod(java.util.Map)
    */
   protected void executeTemplateMethod(Map results) throws Throwable {
-    String src = context.getParameter(MySpaceHandler.PARAM_SRC);
-    String dest = context.getParameter(MySpaceHandler.PARAM_DEST);
+    String targetName = context.getParameter(MySpaceHandler.PARAM_TARGET_NAME);
+    String targetPath = context.getParameter(MySpaceHandler.PARAM_TARGET_PATH);
+    String sourcePath = context.getParameter(MySpaceHandler.PARAM_SOURCE_PATH);
     
     // Validate the parameters.
-    if(src != null && src.length() > 0 &&
-        dest != null && dest.length() > 0) {
+    if( targetName != null && targetName.length() > 0 &&
+        targetPath != null && targetPath.length() > 0 &&
+        sourcePath != null && sourcePath.length() > 0
+        ) {
       // Create a new storage location within the same MySpace store.
-      Agsl destination = new Agsl(context.getAgsl(), dest);
+      // Agsl destination = new Agsl(context.getAgsl(), dest);
       
       // Copy the MySpace entries.
-      context.getStoreClient().copy(src, destination);
+      try {
+          context.getMySpaceTree().copyFile( targetName, targetPath, sourcePath ) ;
+      }
+      catch( CopyException cx ) {
+          throw new MySpaceHandlerException( cx.getMessage() ) ;
+      }
     }
     else {
       throw new MySpaceHandlerException("invalid source or destination");

@@ -6,14 +6,27 @@ closedImg.src = "/astrogrid-portal/icons/Open.png";
 var oldField = "";
 var oldFieldClassName = "";
 
-function showBranch(branch){
-  var objBranch = document.getElementById(branch).style;
-  if(objBranch.display=="block")
+function showBranch( branch, branchPath ){
+  var element = document.getElementById(branch) ;
+  var objBranch = element.style ;
+  status = element.getAttribute("status") ;
+  // alert( status) ;
+  if(objBranch.display=="block") {
      objBranch.display="none";
-  else
+     swapFolder('I' + branch); 
+     branchCollection.remove( branchPath ) ;    
+  } 
+  else {
      objBranch.display="block";
-  swapFolder('I' + branch);
+     swapFolder('I' + branch);
+     branchCollection.add( branchPath ) ;
+     if( status == "NOT_LOADED" ) {
+        refreshTreeView( branchPath ) ;
+     }
+  }
+
 }
+
 
 function swapFolder(img){
   var objImg = document.getElementById(img);
@@ -24,10 +37,11 @@ function swapFolder(img){
 }
 
 function setOldMySpaceName(oldMySpaceName){
-  var myspace_old_name = document.getElementById('myspace-src');
-  myspace_old_name.value = oldMySpaceName;
-  var myspace_clipboard = document.getElementById('myspace-clipboard');
-  myspace_clipboard.value = oldMySpaceName;
+  //alert( "setOldMySpaceName" ) ;
+  //var myspace_old_name = document.getElementById('myspace-src');
+  //myspace_old_name.value = oldMySpaceName;
+  //var myspace_clipboard = document.getElementById('myspace-clipboard');
+  //myspace_clipboard.value = oldMySpaceName;
   
   setHighlight('', '');
 }
@@ -39,8 +53,9 @@ function setOldMySpaceNameUrl(oldMySpaceName, oldMySpaceUrl){
 }
 
 function setNewMySpaceName(newMySpaceName){
-  var myspace_new_name = document.getElementById('myspace-dest');
-  myspace_new_name.value = newMySpaceName;
+  //alert( "setNewMySpaceName" ) ;
+  //var myspace_new_name = document.getElementById('myspace-dest');
+  //myspace_new_name.value = newMySpaceName;
 }
 
 function setIVORNAgsl(newIvorn, newAgsl){
@@ -269,7 +284,7 @@ function setAgslParts(path, file) {
 }
 
 function setHighlight(fieldId, newClass) {
-//  alert("setHighlight");
+  //  alert( "setHighlight: " + "\nfieldId: "+ fieldId + "\nnewClass: "+ newClass );
   var oldFieldEl = document.getElementById(oldField);
   if(oldFieldEl) {
     oldFieldEl.className = oldFieldClassName;
@@ -312,10 +327,94 @@ function processMicroBrowserOK( ivorn, agsl, fieldName, fieldValue, formName, fo
 function processMicroBrowserRefresh( agslDestid, funcName ) {
   
   if(funcName) {
-     window.opener.popupBrowser("/astrogrid-portal/lean/mount/myspace/myspace-micro?myspace-refresh-cache=yes&parent_func=" + funcName + "()&agsl=" + agslDestid );
+     window.opener.Browser("/astrogrid-portal/lean/mount/myspace/myspace-micro?myspace-refresh-cache=yes&parent_func=" + funcName + "()&agsl=" + agslDestid );
   }
   else {
      window.opener.popupBrowser("/astrogrid-portal/lean/mount/myspace/myspace-micro?myspace-refresh-cache=yes&agsl=" + agslDestid);
   }
   
 }
+
+
+
+
+// A crude collection object used to store open branches
+// so that we can restore the tree view to what the user expects...
+function Branches() {
+   this.collection = new Array(16) ;
+   this.initialized = false ;
+}
+new Branches() ;
+
+//***
+function Branches_init() {
+   if( this.initialized == true )
+      return ;
+   var stringInit = document.getElementById( 'myspace-tree-open-branches' ).value ;
+   if( stringInit != null && stringInit.length > 0 )
+      this.collection = stringInit.split( "*" ) ;   
+   //alert( "Branches.init(): " + this.getContents() ) ;
+   this.initialized = true ;
+}
+Branches.prototype.init = Branches_init ;
+
+//***
+function Branches_groupAdd( stringGroup ) {
+   if( stringGroup == null )
+      return ; 
+   this.collection = this.collection.concat( stringGroup.split("*") ) ;
+}
+Branches.prototype.groupAdd = Branches_groupAdd ;
+
+//***
+function Branches_add( branch ) {
+   // alert ( "Branches_add" ) ;
+   this.init();
+   var set = false ;
+   for( var i=0; i < this.collection.length ; i++ ) {
+      if( this.collection[i] == branch ) {
+         set = true ;
+         break ;
+      }
+      else if( this.collection[i] == null ) {
+         set = true ;
+         this.collection[i] = branch ;
+         break ;
+      }
+   }// endfor
+   
+   if( set == false )
+      this.collection[ this.collection.length ] = branch ;
+   
+} // end Branches_add
+Branches.prototype.add = Branches_add ;
+
+//***
+function Branches_remove( branch ) {
+   // alert ( "Branches_remove" ) ;
+   this.init() ;
+   for( var i=0; i < this.collection.length ; i++ ) {
+      if( this.collection[i] == branch ) {
+         this.collection[i] = null ;
+         break ;
+      }
+   }// endfor
+   
+} // end Branches_remove
+Branches.prototype.remove = Branches_remove ;
+
+//***
+function Branches_getContents() {
+    // alert( "Branches_getContents" ) ;
+    var stringContents = "" ;
+	for( var i=0; i < this.collection.length ; i++ ) {
+	    if( this.collection[i] != null && this.collection[i].length > 0 ) {
+	       stringContents +=  this.collection[i] + '*' ;
+	    }
+	}
+    return stringContents.substring( 0, stringContents.length-1 ) ;
+}
+Branches.prototype.getContents = Branches_getContents ;
+
+// Create a branches collection for this document scope...
+// var branchCollection = new Branches() ;

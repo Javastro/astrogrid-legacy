@@ -11,7 +11,7 @@
           +-->
       <xsl:template match="/">
          <ag-div>
-            <agComponentTitle>Job list</agComponentTitle>
+            <agComponentTitle>Job Monitor</agComponentTitle>
             <ag-script type="text/javascript" src="/astrogrid-portal/mount/workflow/workflow-functions.js"/>                                         
             <xsl:apply-templates/>               
          </ag-div>

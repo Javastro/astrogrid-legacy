@@ -195,9 +195,14 @@
           </td>                            
           <td align="center">
             <input class="agActionButton" name="myspace-name" type="button" value="Browse...">
-              <xsl:attribute name="onClick">                
+              <!--xsl:attribute name="onClick">                
                              javascript:document.getElementById('<xsl:value-of select="$indirect-id"/>').checked = 'true'; 
                              popupBrowser('/astrogrid-portal/lean/mount/myspace/myspace-micro?ivorn=<xsl:value-of select="$ivorn-id"/>&amp;agsl=<xsl:value-of select="$agsl-id"/>');
+              </xsl:attribute-->
+<!--jeff's changes-->
+              <xsl:attribute name="onClick">                
+                             javascript:document.getElementById('<xsl:value-of select="$indirect-id"/>').checked = 'true'; 
+                             void(window.open('/astrogrid-portal/bare/mount/myspace/myspace-micro?ivorn=<xsl:value-of select="$ivorn-id"/>&amp;agsl=<xsl:value-of select="$agsl-id"/>&amp;requested-mode=choose-file-for-workflow', 'mySpaceMicro', 'toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=yes, scrollbars=yes, width=650, height=300'));
               </xsl:attribute>
             </input>
           </td>

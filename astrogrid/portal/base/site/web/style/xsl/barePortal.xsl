@@ -61,6 +61,7 @@
 	-->
 
         <!-- Process <script/> elements
+        -->
         <xsl:for-each select="//node()[local-name() = 'ag-script']">
           <xsl:call-template name="ag-script"/>
         </xsl:for-each>
@@ -73,13 +74,14 @@
             </xsl:for-each>
           }
         </script>
-	-->
+
 
         <!-- Process <link/> elements
+        -->
         <xsl:for-each select="//node()[local-name() = 'ag-link']">
           <xsl:call-template name="ag-link"/>
         </xsl:for-each>
-	-->
+
       </head>
       
       <!-- Process onload functions -->
@@ -120,13 +122,11 @@
   
   <!-- Add <link/> element -->
   <xsl:template name="ag-link">
-  <!--
     <xsl:element name="link">
       <xsl:attribute name="href"><xsl:value-of select="@href"/></xsl:attribute>
       <xsl:attribute name="rel"><xsl:value-of select="@rel"/></xsl:attribute>
       <xsl:attribute name="type"><xsl:value-of select="@type"/></xsl:attribute>
     </xsl:element>
-    -->
   </xsl:template>
 
   <!-- Add <script/> element -->

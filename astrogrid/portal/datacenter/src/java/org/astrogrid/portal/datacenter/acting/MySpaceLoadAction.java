@@ -12,15 +12,15 @@ import org.apache.cocoon.acting.AbstractAction;
 import org.apache.cocoon.environment.ObjectModelHelper;
 import org.apache.cocoon.environment.Redirector;
 import org.apache.cocoon.environment.Request;
-import org.apache.cocoon.environment.Session;
+//import org.apache.cocoon.environment.Session;
 import org.apache.cocoon.environment.SourceResolver;
-import org.astrogrid.portal.common.user.UserHelper;
+//import org.astrogrid.portal.common.user.UserHelper;
 import org.astrogrid.portal.utils.acting.ActionUtils;
 import org.astrogrid.portal.utils.acting.ActionUtilsFactory;
-import org.astrogrid.store.Agsl;
-import org.astrogrid.store.delegate.StoreClient;
-import org.astrogrid.store.delegate.StoreDelegateFactory;
-import org.astrogrid.community.User;
+//import org.astrogrid.store.Agsl;
+//import org.astrogrid.store.delegate.StoreClient;
+//import org.astrogrid.store.delegate.StoreDelegateFactory;
+//import org.astrogrid.community.User;
 import org.w3c.dom.Document;
 import org.apache.avalon.framework.logger.ConsoleLogger;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
@@ -28,9 +28,16 @@ import org.astrogrid.registry.client.query.RegistryService;
 import org.astrogrid.registry.NoResourcesFoundException;
 import org.astrogrid.registry.RegistryException;
 
-import org.astrogrid.portal.login.common.SessionKeys;
-import org.astrogrid.store.delegate.VoSpaceResolver;
-import org.astrogrid.store.Ivorn;
+import org.astrogrid.portal.myspace.filesystem.Tree;
+import org.astrogrid.portal.myspace.filesystem.File;
+//import org.astrogrid.portal.myspace.filesystem.Directory ;
+import org.astrogrid.portal.common.session.AstrogridSessionFactory ;
+import org.astrogrid.portal.common.session.AstrogridSession ;
+import org.astrogrid.portal.common.session.AttributeKey ;
+
+//import org.astrogrid.portal.login.common.SessionKeys;
+//import org.astrogrid.store.delegate.VoSpaceResolver;
+//import org.astrogrid.store.Ivorn;
 
 /**
  * This class provides the DataCenter UI with the facility to
@@ -44,17 +51,9 @@ public class MySpaceLoadAction extends AbstractAction {
      * Switch for our debug statements. 
      *  
      */
-    private static final boolean DEBUG_TO_SYSTEM_OUT = true;
-    
-    public static final String SESSIONKEY_ADQL_AS_STRING = "adqlQuery" ;
-    
-    public static final String SESSIONKEY_RESOURCE_ID = "uniqueID" ;
-    
-    public static final String SESSIONKEY_ADQL_ERROR = "query-builder-adql-error" ;
-    
-    public static final String SESSIONKEY_TABLENAME = "tableID" ; 
-    
-    public static final String SESSIONKEY_RESULT_SINGLE_CATALOG = "resultSingleCatalog" ;
+    private static final boolean DEBUG_TO_SYSTEM_OUT = true ;
+    private static final boolean DEBUG_ENABLED = true ;
+    private static final boolean TRACE_ENABLED = true ;
     
     /*
      * Modified by PFO
@@ -84,41 +83,46 @@ public class MySpaceLoadAction extends AbstractAction {
    */
   public Map act(Redirector redirector, SourceResolver resolver, Map objectModel, String source, Parameters params) {
     Logger logger = this.retrieveLogger();
+    if( TRACE_ENABLED ) logger.debug( "MySpaceLoadAction.act() entry" ) ;
     
-    Map sitemapParams = new HashMap();
-    ActionUtils utils = ActionUtilsFactory.getActionUtils();
-
-    Request request = ObjectModelHelper.getRequest(objectModel);
-    Session session = request.getSession(true);
+    Map sitemapParams = null ;
+    ActionUtils utils = null ;
+    Request request = null ;
+    AstrogridSession session = null ;
     InputStream inStream = null;
-    StringBuffer outputBuffer = new StringBuffer();
+    StringBuffer outputBuffer = null ;
+    Tree tree = null ;
+    File file = null ;
     
     try {
         
-      session.removeAttribute( SESSIONKEY_ADQL_ERROR ) ;
-      
+      sitemapParams = new HashMap();
+      utils = ActionUtilsFactory.getActionUtils();
+      request = ObjectModelHelper.getRequest(objectModel);
+      session = AstrogridSessionFactory.getSession(request.getSession(true));
+      outputBuffer = new StringBuffer(1024);        
+      session.removeAttribute( AttributeKey.ADQL_ERROR ) ; 
       // Set the current user.
-      User user = UserHelper.getCurrentUser(params, request, session);
-
-//bug 609 - JBL      
-      // Set MySpace end point.
-//      String endPoint = utils.getAnyParameter( "myspace-end-point", params, request, session);
-//      
-//      // Set base AstroGrid storage location.
-//      Agsl agsl = new Agsl(endPoint);
-//      
-//      // Get the storage client.
-//      StoreClient storeClient = StoreDelegateFactory.createDelegate(user, agsl);
-      
-      // Get the store client from the VOSpaceResolver.
-      Ivorn ivorn = (Ivorn) utils.getAnyParameterObject( SessionKeys.IVORN,params, request, session );
-      StoreClient storeClient = VoSpaceResolver.resolveStore(user, ivorn);
-      
-      String mySpaceName = utils.getAnyParameter("myspace-name", params, request, session);
+      //User user = (User)session.getAttribute( AttributeKey.USER );
+      tree = (Tree)session.getAttribute( AttributeKey.MYSPACE_TREE ) ;
+      String mySpaceName = "home/" + request.getParameter( "myspace-name" ) ;
 	  logger.debug("[act] mySpaceName: " + mySpaceName);
-
+	  file = tree.getFile( mySpaceName ) ;
+	  
+      if( file == null  ) {
+         session.removeAttribute( AttributeKey.RESOURCE_ID ) ;
+         session.setAttribute( AttributeKey.ADQL_AS_STRING, "." ) ;
+         throw new IOException( "File [" + mySpaceName + "] does not exist."  ) ;
+      }
 	  // Copy the input stream to the output buffer.
-	  inStream = storeClient.getStream(mySpaceName);
+      try {
+	     inStream = file.getNode().readContent() ; 
+      }
+      catch ( Exception ex ) {
+         session.removeAttribute( AttributeKey.RESOURCE_ID ) ;
+         session.setAttribute( AttributeKey.ADQL_AS_STRING, "." ) ;
+         throw new IOException( "Could not acquire InputStream for File [" + mySpaceName + "]") ;      
+      }
       		
 	  int bytesAvailable = inStream.available();
       char character ;
@@ -138,12 +142,12 @@ public class MySpaceLoadAction extends AbstractAction {
       String resourceId = adqlDocument.substring( targetIndex 
                                                 , adqlDocument.indexOf( "?>", targetIndex) - 1  ) ;
       
-      session.setAttribute( SESSIONKEY_ADQL_AS_STRING, adqlSource ) ;
+      session.setAttribute( AttributeKey.ADQL_AS_STRING, adqlSource ) ;
       if( resourceId.equals( "none" ) ) {
-         session.removeAttribute( SESSIONKEY_RESOURCE_ID ) ;
+         session.removeAttribute( AttributeKey.RESOURCE_ID ) ;
       } 
       else {          
-         session.setAttribute( SESSIONKEY_RESOURCE_ID, resourceId ) ;
+         session.setAttribute( AttributeKey.RESOURCE_ID, resourceId ) ;
          this.retrieveMetadata( resourceId, logger, request, session) ;
       }
 
@@ -159,11 +163,12 @@ public class MySpaceLoadAction extends AbstractAction {
 //      sitemapParams.put("adql-document", adqlSource);
 //      sitemapParams.put("adql-document-loaded", "true");
 
-      logger.debug( "[act]" + SESSIONKEY_ADQL_AS_STRING + ": " + session.getAttribute( SESSIONKEY_ADQL_AS_STRING ) );
+      logger.debug( "[act]" + AttributeKey.ADQL_AS_STRING + ": " + session.getAttribute( AttributeKey.ADQL_AS_STRING ) );
       
     }
     catch( IOException myioex) {
-        session.setAttribute( SESSIONKEY_ADQL_ERROR, myioex.getLocalizedMessage() ) ;
+        myioex.printStackTrace() ;
+        session.setAttribute( AttributeKey.ADQL_ERROR, myioex.getLocalizedMessage() ) ;
     }
 //    catch(Throwable t) {
 //      request.setAttribute("adql-document-loaded", "false");
@@ -174,14 +179,8 @@ public class MySpaceLoadAction extends AbstractAction {
 //      logger.debug( "[act] outputBuffer: " + outputBuffer.toString() ) ;
 //    }
     finally {
-      try {
-        if(inStream != null) {
-          inStream.close();
-	      }
-      }
-      catch(Throwable t){
-        // assume closure.
-      }
+      try { if(inStream != null ) inStream.close(); } catch(Throwable t){ ; }
+      if( TRACE_ENABLED ) logger.debug( "MySpaceLoadAction.act() exit" ) ;
     }    
 
     logger.debug("[act] sitemapParams: " + sitemapParams);
@@ -205,7 +204,7 @@ public class MySpaceLoadAction extends AbstractAction {
   } 
   
   
-  private void retrieveMetadata ( String resourceId, Logger logger, Request request, Session session ) {
+  private void retrieveMetadata ( String resourceId, Logger logger, Request request, AstrogridSession session ) {
       
       try { 
         String table = "";         
@@ -241,8 +240,8 @@ public class MySpaceLoadAction extends AbstractAction {
 //        request.setAttribute("tableName", table);
 //        request.setAttribute("tableName", "testTable");
 //        request.setAttribute("resultSingleCatalog", doc);
-        session.setAttribute( SESSIONKEY_TABLENAME, table );
-        session.setAttribute( SESSIONKEY_RESULT_SINGLE_CATALOG, doc );
+        session.setAttribute( AttributeKey.TABLENAME, table );
+        session.setAttribute( AttributeKey.RESULT_SINGLE_CATALOG, doc );
         
       } 
       catch( NoResourcesFoundException nrfe ) 

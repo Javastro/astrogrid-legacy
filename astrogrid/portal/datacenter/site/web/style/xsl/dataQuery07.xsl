@@ -29,7 +29,7 @@
 
   <xsl:template match="mainarea">
 <ag-link href="/astrogrid-portal/mount/datacenter/test-results.css" rel="stylesheet" type="text/css"/>
-<agComponentTitle>Retrieve data from the Virtual Observatory</agComponentTitle>
+<agComponentTitle>Query Editor</agComponentTitle>
 
 
 <xsl:variable name="RL">
@@ -371,7 +371,7 @@ class="agResetButton">Clear</span></td></tr>
 <tr><td align="left">
 	  <img src="/astrogrid-portal/x.gif" width="1" id="HMarker" />
 <span class="agActionButton"
-onclick="popupBrowser('/astrogrid-portal/lean/mount/myspace/myspace-micro?ivorn=myspace-ivorn&amp;agsl=myspace-agsl&amp;form_name=qb_form&amp;field_name=action&amp;field_value=Load&amp;myspace-refresh-cache=yes');" >
+onclick="popupBrowser('/astrogrid-portal/bare/mount/myspace/myspace-micro?ivorn=myspace-ivorn&amp;agsl=myspace-agsl&amp;form_name=qb_form&amp;field_name=action&amp;field_value=Load&amp;requested-mode=load-query-file',650,300);" >
 Load from MySpace</span>
 <input id="action"  type="hidden" name="action" />
 <input id="myspace-agsl"  type="hidden" name="myspace-name" />
@@ -396,7 +396,7 @@ onClick="popupBrowser('/astrogrid-portal/lean/mount/resources/agresourcesMB.html
 <input class="agActionButton" name="action" type="submit" value="Save to MySpace"/>
 -->
 <span class="agActionButton"
-onclick="popupBrowser('/astrogrid-portal/lean/mount/myspace/myspace-micro?ivorn=myspace-ivorn&amp;agsl=myspace-agsl&amp;form_name=qb_form&amp;field_name=action&amp;field_value=Save&amp;myspace-refresh-cache=yes');" >
+onclick="popupBrowser('/astrogrid-portal/bare/mount/myspace/myspace-micro?ivorn=myspace-ivorn&amp;agsl=myspace-agsl&amp;form_name=qb_form&amp;field_name=action&amp;field_value=Save&amp;requested-mode=save-query-file',650,300);" >
 Save to MySpace</span>
 </td>
 <td align="right">

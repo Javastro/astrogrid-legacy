@@ -4,9 +4,10 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.astrogrid.community.User;
-import org.astrogrid.store.Agsl;
-import org.astrogrid.store.delegate.StoreClient;
-import org.astrogrid.store.delegate.StoreFile;
+// import org.astrogrid.store.Agsl;
+import org.astrogrid.store.Ivorn ;
+import org.astrogrid.filemanager.client.FileManagerClient;
+import org.astrogrid.portal.myspace.filesystem.Tree; 
 
 /**
  * Wraps the environment context for use by <code>MySpaceHandler</code>
@@ -51,14 +52,46 @@ public interface ContextWrapper {
    * @return AstroGrid storage location
    * @throws IOException
    */
-  public Agsl getAgsl() throws IOException;
-
+//  public Agsl getAgsl() throws IOException;
+  
+  
   /**
-   * Return the AstroGrid storage client.
+   * Return the AstroGrid account space ivorn.
    * 
-   * @return AstroGrid storage client
+   * @return AstroGrid account space ivorn.
+   * @throws IOException
    */
-  public StoreClient getStoreClient();
+  public Ivorn getIvorn() throws IOException;
+  
+  /**
+   * Return the AstroGrid file manager delegate.
+   * 
+   * @return AstroGrid file manager delelgate
+   */
+  public FileManagerClient getFileManagerClient();
+  
+  
+  /**
+   * Return the MySpace tree
+   * 
+   * @return the MySpace tree
+   */
+  public Tree getMySpaceTree();
+  
+  
+  /**
+   * Return the MySpace tree array of open branches
+   * 
+   * @return the MySpace tree of open branches
+   */
+  public String[] getMySpaceTreeOpenBranches();
+  
+  /**
+   * Set the MySpace tree array of open branches
+   * 
+   * @return void
+   */
+  public void setMySpaceTreeOpenBranches( String[] openBranches );
 
   /**
    * Set an attribute for global use.
@@ -84,28 +117,4 @@ public interface ContextWrapper {
    * @throws Exception
    */
   public InputStream getFileInputStream(String fileName) throws Exception;
-  
-  /**
-   * Return the cache of MySpace files for a user.
-   * 
-   * 
-   * @return <code>StoreFile</code> for a user
-   *
-   */
-  public StoreFile getMySpaceCache() ;
-  
-  
-  /**
-   * Set the cache of MySpace files for a user.
-   * 
-   * 
-   */
-  public void setMySpaceCache( StoreFile cache ) ;
-  
-  
-  
-  
-  
-  
-  
 }

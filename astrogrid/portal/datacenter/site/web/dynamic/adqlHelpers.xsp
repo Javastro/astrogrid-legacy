@@ -17,7 +17,7 @@
 <!--
 this line is just a test, we could easily leave for the XSL, but I
 include it here to test the output and handling of this XSP script
-<agComponentTitle>Retrieve data from the Virtual Observatory</agComponentTitle>
+<agComponentTitle>Query Editor</agComponentTitle>
 -->
 
 <!--

@@ -1,0 +1,1018 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!--+
+    | Author: Jeff Lusted "jl99@star.le.ac.uk"
+    | Date: Thursday February  24 09:35 2005
+    +-->
+
+  <xsp:page language="java"
+	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:xsp="http://apache.org/xsp"
+	xmlns:util="http://apache.org/xsp/util/2.0"
+    xmlns:jpath="http://apache.org/xsp/jpath/1.0"
+	xmlns:xsp-session="http://apache.org/xsp/session/2.0"
+	xmlns:xsp-request="http://apache.org/xsp/request/2.0">
+	
+ <xsp:structure>
+   <xsp:include>org.apache.cocoon.environment.Request</xsp:include>
+   <xsp:include>org.apache.cocoon.environment.Session</xsp:include>		
+</xsp:structure>
+
+<xsp:logic>
+		
+		private static final boolean TRACE_ENABLED = true ;
+		private static final boolean DEBUG_ENABLED = true ;
+        
+		public String getSelected() throws SAXException {
+        	if( TRACE_ENABLED ) trace( "directory-controls-xsp.getSelected() entry") ; 
+        	
+        	AttributesImpl xspAttr = new AttributesImpl() ;
+        	String initialValue = request.getParameter( "selected" ) ;
+        	if( DEBUG_ENABLED ) debug( "selected: " + initialValue ) ;
+        	if( initialValue == null ) {
+        	   initialValue = "*** none ***" ;
+        	}
+            return initialValue ;        
+        }
+        
+		public String getURL() throws SAXException {
+        	if( TRACE_ENABLED ) trace( "directory-controls-xsp.getURL() entry") ; 
+        	
+        	AttributesImpl xspAttr = new AttributesImpl() ;
+        	String initialValue = request.getParameter( "URL" ) ;
+        	if( DEBUG_ENABLED ) debug( "URL: " + initialValue ) ;
+        	if( initialValue == null ) {
+        	   initialValue = "" ;
+        	}
+            return initialValue ;        
+        }   
+        
+		public String getCurrentLocation() throws SAXException {
+        	if( TRACE_ENABLED ) trace( "directory-controls-xsp.getCurrentLocation() entry") ; 
+        	
+        	AttributesImpl xspAttr = new AttributesImpl() ;
+        	String initialValue = request.getParameter( "currentLocation" ) ;
+        	if( DEBUG_ENABLED ) debug( "currentLocation: " + initialValue ) ;
+        	if( initialValue == null ) {
+        	   initialValue = "home/" ;
+        	}
+            return initialValue ;        
+        }               
+        
+        public String getClipboard() throws SAXException {
+            if( TRACE_ENABLED ) trace( "directory-controls-xsp.getClipboard() entry") ;
+
+            AttributesImpl xspAttr = new AttributesImpl() ;
+            String initialValue = request.getParameter( "clipboard" ) ;
+            if( DEBUG_ENABLED ) debug( "clipboard: " + initialValue ) ;
+            if( initialValue == null ) {
+               initialValue = "*** empty ***" ;
+            }
+            return initialValue ;
+        }
+         
+             
+        
+		private static void trace( String traceString ) {
+			System.out.println( traceString ) ;
+		}
+		
+		private static void debug( String traceString ) {
+			System.out.println( traceString ) ;
+        }        
+        
+        	
+</xsp:logic>	
+	
+	
+	
+	
+	
+	
+ 
+    <ag-div>
+      
+      <ag-onload function="nofooter();"/>
+
+      <ag-link rel="stylesheet" type="text/css" href="/astrogrid-portal/mount/myspace/xmlTree.css"/>
+      <ag-link rel="stylesheet" type="text/css" href="/astrogrid-portal/mount/myspace/myspace.css"/>
+      <ag-link rel="stylesheet" type="text/css" href="/astrogrid-portal/mount/myspace/extras.css"/>   
+         
+      <ag-script type="text/javascript" src="/astrogrid-portal/mount/myspace/myspace.js"/>
+
+      <ag-script type="text/javascript" src="/astrogrid-portal/mount/myspace/xmlTree.js"/>
+      
+<!-- Script insertion from Pat begins here  -->      
+      
+
+<script language="javascript">
+
+var PARAM_ACTION = "myspace-action" ;
+var PARAM_TARGET_NAME = "myspace-target-name" ;
+var PARAM_TARGET_PATH = "myspace-target-path" ;
+var PARAM_SOURCE_PATH = "myspace-source-path" ;
+var PARAM_SOURCE_NAME = "myspace-source-name" ;
+var PARAM_DIRECTORY_VIEW_PATH = "myspace-directory-view-path" ;
+
+var ACTION_RENAME_FILE = "myspace-rename-file";
+var ACTION_COPY_FILE = "myspace-copy-file";
+var ACTION_MOVE_FILE = "myspace-move-file";
+var ACTION_DELETE_FILE = "myspace-delete-file";
+var ACTION_UPLOAD_FILE = "myspace-upload-file";
+var ACTION_UPLOAD_URL = "myspace-upload-url";
+
+var ACTION_RENAME_DIRECTORY = "myspace-rename-directory";
+var ACTION_DELETE_DIRECTORY = "myspace-delete-directory";
+var ACTION_NEW_DIRECTORY = "myspace-new-directory";
+var ACTION_REFRESH_DIRECTORY = "myspace-refresh-directory";
+
+var F = new Array();
+F[0] = "copyDestiny";
+F[1] = "moveDestiny";
+F[2] = "uploadLocal";
+F[3] = "uploadURL";
+F[4] = "verification";
+F[5] = "sortBy";
+F[6] = "shareWith";
+F[7] = "findIt";
+F[8] = "editDestiny";
+F[9] = "spaceKeeper";
+
+var helpopen = 0;
+function pasteFile(){
+	parent.opener.document.main.whKRFile.value = document.dire.d.value + "/"
+	+ document.dire.e.value;
+	parent.close();
+}
+
+
+function maxHelp(){
+	var framy = parent.document.getElementById("browser");
+	helpopen = 1;
+	if(framy != null){
+		framy.cols = "0, 0, *";
+	}
+}
+
+
+function vanilla(){
+	confirm("vanilla action");
+}
+
+function vanillaIce(){
+}
+
+
+function uploadLocal(este){
+	// closeThingsButShow("uploadLocal");
+	// whiteOutInputs();
+	// document.dire.e.style.background = "orange";
+	// document.dire.localFile.style.background = "yellow";
+    document.getElementById("uploadURL").style.display="none";
+	document.getElementById("uploadLocal").style.display="";
+
+	highlightTD(este);
+	dehighlightTD("uploadWebTD");
+}
+
+function uploadURL(este){
+	// whiteOutInputs();
+	// closeThingsButShow("uploadURL");
+	// document.dire.e.style.background = "orange";
+	// document.dire.URL.style.background = "yellow";
+	document.getElementById("uploadLocal").style.display="none";
+	document.getElementById("uploadURL").style.display="";
+
+	highlightTD(este);
+	dehighlightTD("uploadDesktopTD");
+}
+
+
+function _goUploadLocal(){
+	document.dire.e.style.background = "white";
+	document.dire.localFile.style.background = "white";
+
+	var dire = document.dire.d.value;
+	var dfile = document.dire.e.value;
+	var dpath = dire + "/" + dfile;
+	var spath = document.dire.localFile.value;
+	var ans = confirm("Uploading " + spath + " into " + dpath + " ?");
+	whiteOutInputs();
+	if(ans){
+		document.dire.action = "myWareHouse";
+		document.dire.target = "resultsFrame";
+		document.dire.p.value = dire;
+		document.dire.a.value = "string2msFile";
+		closeThingsButShow("verification");
+		document.dire.lock.value = "free";
+		document.dire.submit();
+	} else {
+		alert("Having second thoughts?");
+	}
+	dehighlightTD("uploadLocalTD");
+}
+
+
+
+
+function getFileName(){
+	var fullpath = document.dire.localFile.value;
+	alert(fullpath);
+}
+
+
+function blank(){
+	closeThings();
+}
+
+function sortBy(){
+	whiteOutInputs();
+	closeThingsButShow("sortBy");
+}
+
+
+
+function sharey(este){
+	whiteOutInputs();
+	closeThingsButShow("shareWith");
+	highlightTD(este);
+}
+
+
+function disclose(){
+	var framy = document.getElementById("destiny");
+	var ifram = document.getElementById("verification");
+	framy.style.display = "";
+	ifram.style.display = "none";
+}
+
+function whiteOutInputs(){
+	document.dire.d.style.background = "white";
+	document.dire.e.style.background = "white";
+	document.dire.e.style.background = "white";
+	document.dire.e.value = "";
+	document.dire.md.style.background = "white";
+	document.dire.cd.style.background = "white";
+}
+
+function renameFile(este){
+	closeThingsButShow("moveDestiny");
+/*	whiteOutInputs();*/
+	document.dire.lock.value = "locked";
+	var file = document.dire.e.value;
+	var dire = document.dire.d.value;
+	document.dire.e.value = dire + "/" + file;
+	document.dire.e.style.background = "yellow";
+	document.dire.md.style.background = "orange";
+	highlightTD(este);
+}
+
+function copyFile(este){
+	closeThingsButShow("copyDestiny");
+	document.dire.lock.value = "locked";
+	var file = document.dire.e.value;
+	var dire = document.dire.d.value;
+	document.dire.e.value = dire + "/" + file;
+	document.dire.e.style.background = "yellow";
+	document.dire.cd.style.background = "orange";
+	highlightTD(este);
+/*	whiteOutInputs();*/
+}
+
+function highlightTD(td){
+	td.style.border= "solid 1px #ffff00";
+}
+
+function dehighlightTD(td){
+	var teedee = document.getElementById(td);
+	teedee.style.border= "solid 1px #008800";
+}
+
+
+function closeMe(){
+	parent.close();
+}
+
+function highlight(diese, tag){
+	diese.style.background = "#ffffff";
+//	if(helpopen == 1){
+//		var t = tag + "TD";
+//		var h = parent.editor.document.getElementById(t);
+//		if(h != null){
+//			h.style.display = "";
+//		} else {
+/*			alert(t + " is null");*/
+//		}
+//		var k = parent.editor.document.getElementById("defaultTD");
+//		if(k != null){
+//			k.style.display = "none";
+//		}
+//	}
+}
+
+function dehighlight(diese, tag){
+	diese.style.background = "#dddddd";
+//	if(helpopen == 1){
+// /*		var editor = parent.document.getElementById('editor');*/
+//		var h = parent.editor.document.getElementById(tag + "TD");
+//		if(h != null){
+//			h.style.display = "none";
+//		}
+//		/*
+//		var k = parent.editor.document.getElementById("defaultTD");
+//		if(k != null){
+//			k.style.display = "";
+//		}
+//		*/
+//	}
+}
+
+function dehighlightDir(diese, tag){
+	diese.style.background = "#ddddff";
+	if(helpopen == 1){
+		var h = parent.editor.document.getElementById(tag + "TD");
+		if(h != null){
+			h.style.display = "none";
+		}
+		/*
+		var k = parent.editor.document.getElementById("defaultTD");
+		if(k != null){
+			k.style.display = "";
+		}
+		*/
+	}
+}
+
+function setClipboard( mode ) {
+    if( isSelected() == false || isCurrent() == false )
+       return ;
+    if( isFile( getSelected()) == false )
+       return ;
+
+    var clipboard = document.getElementById('clipboard') ;
+    var current = document.getElementById('currentLocation').value ;
+    clipboard.value = current + getSelected() ;
+    clipboard.title = "Source for '" + mode +"'" ;
+}
+
+function getClipboard() {
+   return document.getElementById('clipboard').value ;
+}
+
+function resetClipboard() {
+   document.getElementById('clipboard').value = "*** empty ***" ;
+}
+
+
+function triggerAction( action ) {
+
+  // top.directory.document.getElementById( 'myspace-action' ).value = action ;
+  var doc = top.directory.document;
+  var form = doc.getElementById( 'myspace-action-form' ); 
+
+  if(form) {
+    if( action ) {
+       if( action.length != 0) {
+          top.directory.document.getElementById( PARAM_ACTION ).value = action ;
+          top.directory.document.getElementById( PARAM_DIRECTORY_VIEW_PATH ).value = getCurrent() ;     
+//          alert( "top.directory.document.getElementById( PARAM_DIRECTORY_VIEW_PATH ).value:\n" + 
+//                  top.directory.document.getElementById( PARAM_DIRECTORY_VIEW_PATH ).value  ) ;     
+       }
+    }
+    form.submit();
+  }  
+  window.close();
+}
+
+
+
+
+function navigateUp() {
+    var path = new String( document.getElementById('currentLocation').value ) ;
+    path = path.substring( 0, path.lastIndexOf('/') ) ;
+    path = path.substring( 0, path.lastIndexOf('/')+1 ) ;
+    if( path.length == 0 )
+       return ;
+    setCurrent( path ) ;
+    document.getElementById('selected').value = "*** none ***" ;
+    window.open( "/astrogrid-portal/bare/mount/myspace/directory-view.xml?" + PARAM_DIRECTORY_VIEW_PATH + "=" + path, "directory" ) ;   
+}
+
+function setCurrent( directory ){
+    document.getElementById('currentLocation').value = directory ;
+}
+
+function getCurrent() {
+    return document.getElementById('currentLocation').value ;
+}
+
+function isCurrent() {
+    if( getCurrent().length == 0 ) {
+       return false ;
+    } 
+    return true ;
+}
+
+function getSelected(){
+    return document.getElementById('selected').value ;
+}
+
+function setSelected( item ){
+    // alert( "setSelected:" + item ) ;
+    document.getElementById('selected').value = item ;
+}
+
+function resetSelected(){
+    // alert( "setSelected:" + item ) ;
+    document.getElementById('selected').value = "*** none ***" ;
+}
+
+
+function isSelected() {
+    var name = getSelected() ;
+    // We do our best to detect "*** none ***" or some variant...
+    if( name.length == 0 || name.indexOf("*") != -1 ) {
+       return false ;
+    } 
+    if( parent.directory.matchItem( name ) ) {
+       return true ;
+    }
+    return false ;
+}
+
+function isFile( name ) {
+   if( parent.directory.matchedItemType( name ) == "File" ) 
+      return true ;
+   return false ;
+}
+
+
+function refreshFolder() {         
+       triggerAction( ACTION_REFRESH_DIRECTORY ) ;       
+}
+
+
+
+function newFolder() {
+    var folderName ;
+    var reply ;
+
+	folderName = newName( "New Folder"                       // option
+	                    , "Supply a name for the new folder" // title
+	                    , "NewFolder"                        // defaultName
+	                    , "Folder" ) ;                       // type of source item 
+	
+	if( folderName ) {	              
+       top.directory.document.getElementById( PARAM_TARGET_NAME ).value = folderName ;
+       top.directory.document.getElementById( PARAM_TARGET_PATH ).value = getCurrent() ;
+       triggerAction( ACTION_NEW_DIRECTORY ) ;       
+    }	
+    
+} // end newFolder()
+
+
+// This action must be on this form!
+function goUploadFile() {
+
+   var inputSource = document.getElementById("localFile").value ;
+   var separator = '\\' ;   // Default to Window's separator
+   var originalFileName ;
+   var newFileName ;
+   var form ;
+   
+   // Lack of input we take to mean Cancel...
+   if( inputSource.length == 0 ) 
+       return ;
+    
+   // Establish the system separator by a simple heuristic...   
+   if( inputSource.lastIndexOf( separator ) == -1 )
+      separator = '/' ;
+       
+   // Find the file name...
+   originalFileName = inputSource.substring( inputSource.lastIndexOf( separator ) + 1 ) ;
+   // alert( originalFileName ) ;
+   
+   // Any problems and we assume Cancel...
+   if( originalFileName.length == 0 ) 
+       return ;
+       
+   newFileName = newName( "Upload"                                    // option
+	                    , "Supply a new name for the uploaded file"   // title
+	                    , originalFileName                            // defaultName
+	                    , "File" ) ;                                  // type of source item 
+	
+   if( newFileName ) { 
+       document.getElementById( PARAM_TARGET_NAME ).value = newFileName ;
+       document.getElementById( PARAM_SOURCE_NAME ).value = originalFileName ;
+       document.getElementById( PARAM_TARGET_PATH ).value = getCurrent() ;       
+       document.getElementById( PARAM_ACTION ).value = ACTION_UPLOAD_FILE ;
+       form = document.getElementById( 'myspace-action-form' );
+//          alert( "getElementById( PARAM_TARGET_NAME ).value: " + document.getElementById( PARAM_TARGET_NAME ).value +
+//                 "\ngetElementById( PARAM_SOURCE_NAME ).value: " + document.getElementById( PARAM_SOURCE_NAME ).value ) ;     
+       form.submit();
+       window.close();
+   }  
+     
+}
+
+
+function goUploadURL() {
+   //alert( "uploadURL" ) ;
+   
+   var inputSource = document.getElementById("URL").value ;
+   var separator = '/' ;   
+   var fileName ;
+   
+   // Lack of input we take to mean Cancel...
+   if( inputSource.length == 0 ) 
+       return ;
+       
+   // If the url ends in a forward slash, we first strip it off before continuing...
+   // if( inputSource.charAt( inputSource.length - 1)
+       
+   // Find the file name...
+   fileName = inputSource.substring( inputSource.lastIndexOf( separator ) + 1 ) ;
+   //alert( fileName ) ;
+   
+   // Any problems and we assume Cancel...
+   if( fileName.length == 0 ) 
+       return ;
+       
+   fileName = newName( "Upload"                                    // option
+	                 , "Supply a new name for the uploaded file"   // title
+	                 , fileName                                    // defaultName
+	                 , "File" ) ;                                  // type of source item 
+	
+	if( fileName ) { 
+       top.directory.document.getElementById( PARAM_TARGET_NAME ).value = fileName ;
+       top.directory.document.getElementById( PARAM_TARGET_PATH ).value = getCurrent() ;
+       top.directory.document.getElementById( PARAM_SOURCE_PATH ).value = inputSource ;
+       triggerAction( ACTION_UPLOAD_URL ) ;    	
+	}         
+   
+}
+
+
+
+
+
+function paste() {
+
+    //alert( "paste" ) ;
+
+    var clipboardElement = document.getElementById('clipboard') ;
+    var clipboard = clipboardElement.value ;
+    var option = "Copy" ;
+    var separator = '/' ;  
+    var sourceName ;
+    var sourcePath ;
+    var destinationName ;
+    var destinationPath = document.getElementById( 'currentLocation' ).value ;
+    
+    // We do our best to detect "*** empty ***" or some variant...
+    if( clipboard.length == 0 || clipboard.indexOf("*") != -1 ) {
+       return ;
+    }    
+       
+   if( clipboardElement.title.indexOf( "Move" ) != -1 ) {
+      if( clipboardElement.title.indexOf( "Copy" ) == -1 )
+   		option = "Move" ;
+   }
+   
+   if( destinationPath.length == 0 )
+      return ;
+       
+   // Find the source file name and path...
+   sourceName = clipboard.substring( clipboard.lastIndexOf( separator ) + 1 ) ;
+   sourcePath = clipboard.substring( 0, clipboard.lastIndexOf( separator ) + 1 ) ;
+   
+   // Any problems and we assume Cancel...
+   if( sourceName.length == 0 || sourcePath.length == 0 ) 
+      return ;
+       
+   destinationName = newName( option                                              // option
+	                        , option +". Please supply a new name for the file."  // title
+	                        , sourceName                                          // defaultName
+	                        , "File" ) ;                                          // type of source item 
+	
+	if( destinationName ) { 
+       top.directory.document.getElementById( PARAM_TARGET_NAME ).value = destinationName ;
+       top.directory.document.getElementById( PARAM_TARGET_PATH ).value = getCurrent() ;
+       top.directory.document.getElementById( PARAM_SOURCE_PATH ).value = clipboard ;
+       if( option == "Copy" ) {
+          triggerAction( ACTION_COPY_FILE ) ;
+       } 
+       else {
+          if( getClipboard() == (getCurrent() + getSelected()) ) {
+             resetSelected() ;
+          }
+          resetClipboard() ;          
+          triggerAction( ACTION_MOVE_FILE ) ;      
+       }   	
+	}      
+   
+} // end of paste()
+
+
+
+function deleteIt() {
+    //alert( "delete" ) ;
+    
+    var reply ;
+    var name = document.getElementById('selected').value ;
+    var current = getCurrent() ;
+    
+    // We do our best to detect "*** none ***" or some variant...
+    if( name.length == 0 || name.indexOf("*") != -1 ) {
+       return ;
+    } 
+    
+    // Check that the current location is still set...
+    if( current.length == 0 ) {
+       return ;
+    }      
+    
+    if( !parent.directory.matchItem( name ) ) {
+       return ;
+    }
+    
+    // If it a folder, ...
+    if( parent.directory.matchedItemType( name ) == "Folder" ) { 
+    
+       // Confirm deletion of folder...	  	   
+       reply = confirm(
+          "\n________________________________________________________________\n\n" +
+          "*** Confirm Deletion ***\n" +
+          "________________________________________________________________\n\n" +
+          "Do you wish to delete folder " + name + " and all of its contents from the current location?\n" +
+          "Press OK to continue with deletion." ) ;
+       	      
+       if( !reply ) 
+          return ; 
+      top.directory.document.getElementById( PARAM_TARGET_PATH ).value = current + name ;
+      triggerAction( ACTION_DELETE_DIRECTORY ) ;    	                
+    }
+    else {
+       // Confirm deletion of file...	  	   
+       reply = confirm(
+          "\n________________________________________________________________\n\n" +
+          "*** Confirm Deletion ***\n" +
+          "________________________________________________________________\n\n" +
+          "Do you wish to delete file " + name + " from the current location?\n" +
+          "Press OK to continue with deletion."  ) ;
+       	      
+       if( !reply ) 
+          return ;  
+       top.directory.document.getElementById( PARAM_TARGET_PATH ).value = current + name ;
+       triggerAction( ACTION_DELETE_FILE ) ;    	            
+    }
+    resetSelected() ;
+    if( getClipboard() == (current + name) ) {
+       resetClipboard() ;
+    }            
+}
+
+
+function showProperties() {
+    if( isSelected() == false || isCurrent() == false )
+       return ;
+    if( isFile( getSelected() ) == false )
+       return ;
+    //alert( "showProperties" )  ;
+    var path = getCurrent() + getSelected() ;
+    //window.open( "/astrogrid-portal/bare/mount/myspace/storefile-properties?" + PARAM_SOURCE_PATH + "=" + path ) ;
+    window.open( "/astrogrid-portal/bare/mount/myspace/storefile-properties?" + PARAM_SOURCE_PATH + "=" + path, 'AG-Properties', 'toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=yes, scrollbars=no, width=650, height=400' ) ; 
+       
+   
+}
+
+
+function newName( option, title, defaultName, itemType ) {
+
+    // Preserve the default name from being overwritten...
+    var name = new String( defaultName ) ; 
+    var reply ;
+    
+	name = prompt( 
+       	       "\n______________________________________________________________\n\n" +	
+       	       "*** " + title + " ***\n" +
+        	   "______________________________________________________________\n\n" +       	                  
+               "Certain characters (blanks @ \\ / chevrons) will be replaced by the underscore."
+	           , name ) ;
+	           
+    // name must exist...
+    if( name.length == 0 ) 
+       return ;
+       
+    // suppress leading and trailing white space...
+    name = (name.replace(/^\s+/,'')).replace(/\s+$/,'') ;
+    
+    // name must exist...
+    if( name.length == 0 ) 
+       return ;
+           
+    // check on special characters...
+    if( name.match(/[\s\\\/@]/) ) {
+       name = name.replace(/[\s\\\/@]/g,'_') ; 
+       reply = confirm(
+       "\n______________________________________________________________\n\n" +
+       "*** Name contains special characters ***\n" +
+       "______________________________________________________________\n\n" +
+       "The name has been converted to " + name + "\n" +
+       "Press OK to confirm change or Cancel to abandon " + option + " option." ) ;
+        	   
+       if( !reply ) 
+          return ;
+    
+    }
+    
+    // Check to see whether another file or folder has the same name... 	    	  
+    if( parent.directory.matchItem( name ) ) {
+    
+       // If source or destination is a folder, overwrite is not allowed anyway...
+       if( (itemType == "Folder")
+           ||
+           ( parent.directory.matchedItemType( name ) == "Folder" ) ) {
+      
+         alert(
+            "\n_____________________________________________________________________\n\n" +
+            "*** Name is matched by an existing item in the current location ***\n" +
+            "_____________________________________________________________________\n\n" +
+            option + " option abandoned. You must choose a different name."  ) ;
+       	      
+         return ;   
+       } 
+       else {
+    
+          // Confirm overwrite of file...	  	   
+          reply = confirm(
+             "\n________________________________________________________________\n\n" +
+             "*** Name is matched by another file in the current location ***\n" +
+             "________________________________________________________________\n\n" +
+             "Do you wish to overwrite?"  ) ;
+       	      
+          if( !reply ) 
+             return ;
+    
+       }       
+         
+    }
+ 
+    return name ;	
+    
+} // end of newName()
+
+
+
+</script>
+      
+      
+      
+<!-- Script insertion from Pat ends here -->      
+
+	    <form
+            id="myspace-action-form"
+            action="/astrogrid-portal/bare/mount/myspace/directory-controls-action"
+            method="POST"
+            enctype="multipart/form-data">
+          <input id="myspace-action" name="myspace-action" type="hidden"/>
+          <input id="myspace-target-name" name="myspace-target-name" type="hidden"/>
+          <input id="myspace-target-path" name="myspace-target-path" type="hidden"/>
+          <input id="myspace-source-name" name="myspace-source-name" type="hidden"/>
+        
+          <div >
+          
+             <table cellpadding="0" cellspacing="0" class="compact" border="0" width="100%" bgcolor="#dddddd">
+               <tr valign="top">
+                  <td align="left" nowrap="true" >
+                       <table cellpadding="0" class="compact" cellspacing="0" border="1" rules="rows" frame="rhs" style="border-color: black" width="100%">
+                          <tr>
+                             <td>
+                                
+                                <table class="compact" width="100%">                                 
+                                   <tr>
+                                      <td align="left" width="8%">
+                                         Selected:
+                                      </td>
+                                      <td align="left">
+                                         <input name="selected" id="selected" size="48" style="background-color: #dddddd">
+                                             <xsp:attribute name="value"><xsp:expr>getSelected()</xsp:expr></xsp:attribute>
+                                         </input>                                                      
+                                      </td>
+                                   </tr>  
+                                 </table>                                        
+                                                             
+                             </td>
+                          </tr>
+                          <tr>
+                             <td>
+                                <table class="compact" width="100%">
+                                   <tr>
+                                      <td id="copyItTD" align="center" class="naviButton"
+                                          onmouseover="highlight(this, 'copyIt')"
+                                          onmouseout="dehighlight(this, 'copyIt')" 
+                                          onClick="setClipboard( 'Copy' )"
+                                          title="Copy selected file to clipboard"
+                                          nowrap="true">Copy
+                                      </td>
+                                      <td id="moveItTD" align="center" class="naviButton"
+                                          onmouseover="highlight(this, 'moveIt')"
+                                          onmouseout="dehighlight(this, 'moveIt')" 
+                                          onClick="setClipboard( 'Move' )"
+                                          title="Move selected file to clipboard"
+                                          nowrap="true">Move
+                                      </td>
+                                      <td id="pasteItTD" align="center" class="naviButton"
+                                          onmouseover="highlight(this, 'pasteIt')"
+                                          onmouseout="dehighlight(this, 'pasteIt')" 
+                                          onClick="paste()"
+                                          title="Paste from clipboard to current location"
+                                          nowrap="true">Paste
+                                      </td>
+                                      <td id="deleteItTD" align="center" class="naviButton"
+                                          onmouseover="highlight(this, 'deleteIt')"
+                                          onmouseout="dehighlight(this, 'deleteIt')" 
+                                          onClick="deleteIt()"
+                                          title="Delete selected file"
+                                          nowrap="true">Delete
+                                      </td>   
+                                      <td id="propertiesTD" align="center" class="naviButton"
+                                          onmouseover="highlight(this, 'properties')"
+                                          onmouseout="dehighlight(this, 'properties')" 
+                                          onClick="showProperties()"
+                                          title="Display properties of selected file"
+                                          nowrap="true">Properties
+                                      </td>
+                                   </tr>
+                                </table>
+                             </td>
+                          </tr>
+                          <tr>
+                             <td>
+               
+                                <table class="compact" width="100%">                                 
+                                   <tr>
+                                      <td align="left" width="10%">
+                                         Clipboard:
+                                      </td>
+                                      <td align="left">
+                                         <input name="clipboard" 
+                                                id="clipboard" 
+                                                size="48" 
+                                                style="background-color: #dddddd" 
+                                                title="Source for 'Copy' or 'Move'">
+                                            <xsp:attribute name="value"><xsp:expr>getClipboard()</xsp:expr></xsp:attribute>
+                                         </input>                                                         
+                                      </td>
+                                   </tr>  
+                                 </table>                                           
+                             </td>                             
+                             
+                          </tr>                          
+                       </table>
+                  </td>
+                  <td align="left" nowrap="true" >
+                       <table cellpadding="0" cellspacing="0" border="1" frame="lhs" rules="none" style="border-color: black" width="100%">
+                          <tr>
+                             <td>
+                             
+                             
+                                <table class="compact" width="100%">
+                                   <tr>
+                                      <td align="left">
+                                          Upload:
+                                      </td>
+                                      <td id="uploadDesktopTD" align="center" class="naviButton"
+                                          onmouseover="highlight(this, 'uploadDesktop')"
+                                          onmouseout="dehighlight(this, 'uploadDesktop')" 
+                                          onClick="uploadLocal(this)"
+                                          title="Choose a file from the local file system"
+                                          nowrap="true">From the desktop...
+                                      </td>
+                                      <td id="uploadWebTD" align="center" class="naviButton"
+                                          onmouseover="highlight(this, 'uploadWeb')"
+                                          onmouseout="dehighlight(this, 'uploadWeb')" 
+                                          onClick="uploadURL(this);"
+                                          title="Type in a URL"
+                                          nowrap="true">From the web...
+                                      </td>
+                                   </tr>
+                                </table>                                         
+                             
+                             </td>
+                          </tr>
+                          <tr>
+                             <td align="left">
+                            
+                                      <div id="uploadLocal"  style="display: none; width: 100%">
+                                         <table class="compact" width="100%">
+                                            <tr>
+                                               <td align="left">                                      
+                                                  Path:
+                                               </td>
+                                               <td align="left">
+                                                  <input type="file" id="localFile" name="localFile" size="32"></input>
+                                               </td>
+                                               <td align="right">
+                                                  <span id="goUploadLocalTD" class="naviButton" 
+                                                        onmouseover="highlight(this, 'goUploadLocal')" 
+                                                        title="Go upload the file"
+                                                        onmouseout="dehighlight(this, 'goUploadLocal')"
+                                                        onClick="goUploadFile()" >Go</span>
+                                               </td>                                                            
+                                             </tr>
+                                               
+                                          </table>
+                                      </div>
+                                      <div id="uploadURL" style="display: none; width: 100%;">
+                                         <table class="compact" width="100%">
+                                            <tr>
+                                               <td align="left">                                            
+                                                  URL:
+                                               </td>
+                                               <td align="left">
+                                                  <input name="URL" id="URL" size="32">
+                                                      <xsp:attribute name="value"><xsp:expr>getURL()</xsp:expr></xsp:attribute>                                                  
+                                                  </input>
+                                               </td>
+                                              <td align="left">
+                                                  <span id="goUploadLocalTD" class="naviButton" 
+                                                        onmouseover="highlight(this, 'goUploadLocal')" 
+                                                        title="Go upload the file"
+                                                        onmouseout="dehighlight(this, 'goUploadLocal')" 
+                                                        onClick="goUploadURL()">Go</span>
+                                               </td>                                                      
+                                            </tr>
+                     
+                                         </table>
+                                        
+                                      </div>
+<!--                                       
+                                      <div id="spaceKeeper" style="width: 100%" size="64">   </div>   
+-->
+                             </td>
+                          </tr>
+                        </table>                                 
+                  </td>                  
+               </tr>
+               <tr valign="bottom">               
+                  <td colspan="2" align="left" nowrap="true">
+
+                      <table width="100%" frame="above" border="1" rules="none" style="border-color: black">
+                          <tr>
+                             <td>
+                             
+                                <table class="compact" width="100%">                                 
+                                   <tr>
+                                      <td align="left" width="8%">
+                                         Current&#160;Location:
+                                      </td>
+                                      <td align="left">
+                                         <input name="currentLocation" id="currentLocation" size="80" style="background-color: #dddddd">
+                                             <xsp:attribute name="value"><xsp:expr>getCurrentLocation()</xsp:expr></xsp:attribute>
+                                         </input>                                                  
+                                      </td>
+                                   </tr>  
+                                 </table>                             
+                             
+                             </td>
+                             <td width="10%" align="center">
+                                <table class="compact" width="100%">                                 
+                                   <tr>
+                                      <td id="upTD" align="center" class="naviButton"
+                                          onmouseover="highlight(this, 'up')"
+                                          onmouseout="dehighlight(this, 'up')" 
+                                          onClick="navigateUp()"
+                                          title="Navigate up one folder"
+                                          nowrap="true">Up
+                                      </td>
+                                      <td id="newFolderTD" align="center" class="naviButton"
+                                          onmouseover="highlight(this, 'newFolder')"
+                                          onmouseout="dehighlight(this, 'newFolder')" 
+                                          onClick="newFolder()"
+                                          title="Create new folder in current location"
+                                          nowrap="true">New folder
+                                      </td>
+                                      <td id="refreshFolderTD" align="center" class="naviButton"
+                                          onmouseover="highlight(this, 'refreshFolder')"
+                                          onmouseout="dehighlight(this, 'refreshFolder')" 
+                                          onClick="refreshFolder()"
+                                          title="Refresh folder contents"
+                                          nowrap="true">Refresh
+                                      </td>                                      
+                                   </tr>  
+                                 </table>
+                             </td>
+                          </tr>               
+                       </table>                       
+                        
+                  </td>
+               </tr>         
+            </table>
+  
+          </div>
+
+        </form>
+    </ag-div>   
+    
+  </xsp:page>
