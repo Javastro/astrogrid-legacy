@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.6 2005/03/30 16:07:00 mch Exp $
+ * $Id: SqlResults.java,v 1.7 2005/03/30 18:25:45 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -68,7 +68,7 @@ public class SqlResults extends TableResults {
        */
    }
 
-   /*
+   /**/
    public Class getJavaType(int sqlType) {
       switch (sqlType)
       {
@@ -90,9 +90,9 @@ public class SqlResults extends TableResults {
          }
       }
    }
-    */
+   /* */
    /**
-    * Writes out results to given table writer
+    * Writes out results from SQL Result set to given table writer
     */
    public void writeTable(TableWriter tableWriter, QuerierStatus statusToUpdate) throws IOException
    {
@@ -136,12 +136,14 @@ public class SqlResults extends TableResults {
                //should probably throw an exception...
                throw new IllegalArgumentException("Column Definition "+colDefs[i-1]+" is not a ColumnReference; not suitable for SQL data");
             }
-            cols[i-1].setBackType(""+metadata.getColumnType(i)); //read direct from sql metadata
-            try {
-               cols[i-1].setJavaType(Class.forName(metadata.getColumnClassName(i))); //read from sql metadata and convert
-            }
-            catch (ClassNotFoundException cnfe) {
-               log.error(cnfe+" for column "+i);
+            if (cols[i-1] != null) {
+               cols[i-1].setBackType(""+metadata.getColumnType(i)); //read direct from sql metadata
+               try {
+                  cols[i-1].setJavaType(Class.forName(metadata.getColumnClassName(i))); //read from sql metadata and convert
+               }
+               catch (ClassNotFoundException cnfe) {
+                  log.error(cnfe+" for column "+i);
+               }
             }
             
          }
@@ -149,7 +151,7 @@ public class SqlResults extends TableResults {
 
          int row = 0;
          statusToUpdate.newProgress("Processing Row", getCount());
-         Object[] colValues = new Object[numCols];
+         String[] colValues = new String[numCols];
          while (sqlResults.next() && ((queryLimit <=0) || (row<=queryLimit)))
          {
             row++;
@@ -158,7 +160,7 @@ public class SqlResults extends TableResults {
             for (int i=1;i<=numCols;i++)
             {
                try {
-                  colValues[i-1] = sqlResults.getObject(i);
+                  colValues[i-1] = sqlResults.getString(i);
                }
                catch (SQLException se) {
                   log.error(se+" reading value of column "+i+" row "+row,se);
@@ -197,7 +199,7 @@ public class SqlResults extends TableResults {
       }
       catch (SQLException sqle)
       {
-         log.error("Could not convert results",sqle);
+         log.error(sqle+" reading results",sqle);
          throw new DatacenterException(sqle+", converting to Html", sqle);
       }
       
@@ -222,6 +224,9 @@ public class SqlResults extends TableResults {
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.7  2005/03/30 18:25:45  mch
+ fix for sql-server jdbc problem
+
  Revision 1.6  2005/03/30 16:07:00  mch
  debug etc for bad sql types
 

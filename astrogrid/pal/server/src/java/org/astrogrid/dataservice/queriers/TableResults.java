@@ -1,10 +1,12 @@
 /*
- * $Id: TableResults.java,v 1.4 2005/03/30 13:01:04 mch Exp $
+ * $Id: TableResults.java,v 1.5 2005/03/30 18:25:45 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.dataservice.queriers;
+
+import org.astrogrid.tableserver.out.*;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -24,11 +26,7 @@ import org.astrogrid.slinger.SRI;
 import org.astrogrid.slinger.targets.TargetIdentifier;
 import org.astrogrid.slinger.vospace.HomespaceName;
 import org.astrogrid.slinger.vospace.IVOSRN;
-import org.astrogrid.tableserver.out.FilteredTableWriter;
-import org.astrogrid.tableserver.out.HtmlTableWriter;
-import org.astrogrid.tableserver.out.TableWriter;
-import org.astrogrid.tableserver.out.VoTableWriter;
-import org.astrogrid.tableserver.out.XsvTableWriter;
+import uk.ac.starlink.fits.FitsTableWriter;
 
 /** A container interface that holds the results of a query that is in some
  * way a table.  Implementations might be SqlResults.
@@ -112,6 +110,9 @@ public abstract class TableResults implements QueryResults
       else if (format.equals(ReturnTable.HTML)) {
          tableWriter = new HtmlTableWriter(out, "Query Results", querier.getQuery().toString());
       }
+//      else if (format.equals(ReturnTable.FITS)) {
+//         tableWriter = new StilStarTableWriter(new FitsTableWriter(), out);
+//      }
       else if (format.equals(ReturnTable.DEFAULT)) {
          format = ReturnTable.VOTABLE;
          tableWriter = new VoTableWriter(out, "Query Results");

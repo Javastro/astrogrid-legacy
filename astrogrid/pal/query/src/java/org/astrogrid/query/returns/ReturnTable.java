@@ -1,5 +1,5 @@
 /*
- * $Id: ReturnTable.java,v 1.1 2005/02/17 18:37:34 mch Exp $
+ * $Id: ReturnTable.java,v 1.2 2005/03/30 18:25:45 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -32,6 +32,7 @@ public class ReturnTable  extends ReturnSpec {
    public static final String VOTABLE  = MimeTypes.VOTABLE;
    public static final String HTML     = MimeTypes.HTML;
    public static final String TSV      = MimeTypes.TSV;
+   public static final String FITS     = MimeTypes.FITS;
    
    /** Creates a definitiont hat will return all columns */
    public ReturnTable(TargetIdentifier aTarget) {
@@ -56,7 +57,8 @@ public class ReturnTable  extends ReturnSpec {
       for (int i = 0; i < formats.length; i++) {
          if (formats[i].trim().toLowerCase().equals(CSV) ||
              formats[i].trim().toLowerCase().equals(VOTABLE) ||
-             formats[i].trim().toLowerCase().equals(HTML)) {
+             formats[i].trim().toLowerCase().equals(HTML) ||
+             formats[i].trim().toLowerCase().equals(FITS)) {
             return true;
             }
       }
@@ -104,8 +106,11 @@ public class ReturnTable  extends ReturnSpec {
 }
 /*
  $Log: ReturnTable.java,v $
- Revision 1.1  2005/02/17 18:37:34  mch
- *** empty log message ***
+ Revision 1.2  2005/03/30 18:25:45  mch
+ fix for sql-server jdbc problem
+
+ Revision 1.1.1.1  2005/02/17 18:37:34  mch
+ Initial checkin
 
  Revision 1.1.1.1  2005/02/16 17:11:23  mch
  Initial checkin
