@@ -265,10 +265,10 @@ public class RegistryService  {
          String selectQuery = "<query><selectionSequence>" +
          "<selection item='searchElements' itemOp='EQ' value='all'/>" +
          "<selectionOp op='$and$'/>" +
-         "<selection item='AuthorityID' itemOp='EQ' value='" + ident.substring(0,iTemp) + "'/>";
+         "<selection item='Identifier/AuthorityID' itemOp='EQ' value='" + ident.substring(0,iTemp) + "'/>";
          if(iTemp < ident.length()) {
             selectQuery += "<selectionOp op='AND'/>" + 
-            "<selection item='ResourceKey' itemOp='EQ' value='" + ident.substring((iTemp+1)) + "'/>";
+            "<selection item='Identifier/ResourceKey' itemOp='EQ' value='" + ident.substring((iTemp+1)) + "'/>";
          }
          selectQuery += "</selectionSequence></query>";
          doc = submitQueryStringDOM(selectQuery);
