@@ -50,7 +50,7 @@
        <dependency>
           <artifactId>astrogrid-xml</artifactId>
           <groupId>org.astrogrid</groupId>
-          <version>${astrogrid.xml.version}</version>
+          <version>${astrogrid.xml.stable}</version>
         <properties>
             <war.bundle>true</war.bundle>
         </properties>       	
