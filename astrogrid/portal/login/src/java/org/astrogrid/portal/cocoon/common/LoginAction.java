@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/src/java/org/astrogrid/portal/cocoon/common/LoginAction.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/01/09 10:17:54 $</cvs:date>
- * <cvs:version>$Revision: 1.12 $</cvs:version>
+ * <cvs:date>$Date: 2004/01/09 11:07:32 $</cvs:date>
+ * <cvs:version>$Revision: 1.13 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: LoginAction.java,v $
+ *   Revision 1.13  2004/01/09 11:07:32  dave
+ *   Added an early fail test to the login action
+ *
  *   Revision 1.12  2004/01/09 10:17:54  dave
  *   Fixed account param in LoginAction
  *
@@ -64,8 +67,8 @@ public class LoginAction extends AbstractAction
 	public static final String POLICY_ACTION   = "read" ;
 	public static final String POLICY_RESOURCE = "portal.site" ;
 
-	public static final String BAD_NAME_MESSAGE = "Please enter a valid account name" ;
-	public static final String BAD_PASS_MESSAGE = "Please enter a valid password" ;
+	public static final String EMPTY_NAME_MESSAGE = "Please enter a valid account name" ;
+	public static final String EMPTY_PASS_MESSAGE = "Please enter a valid password" ;
 	public static final String SYSTEM_ERROR_MESSAGE = "System error - login failed" ;
 
 	public static final String LOGIN_FAIL_MESSAGE = "Login rejected" ;
@@ -109,6 +112,9 @@ public class LoginAction extends AbstractAction
 		//
 		// Setup our results map.
 		Map results = null ;
+		//
+		// Setup our error flag.
+		boolean pass = true ;
 
 		//
 		// If the request action is login.
@@ -126,109 +132,132 @@ public class LoginAction extends AbstractAction
 			if (DEBUG_FLAG) System.out.println("  Name : " + name) ;
 			if (DEBUG_FLAG) System.out.println("  Pass : " + pass) ;
 
-			//
-			// Check for a null or blank name.
-			if(null == name)
+			if (pass)
 				{
-				message = BAD_NAME_MESSAGE ;
-				}
-			else {
-				name = name.trim() ;
-				if(name.length() <= 0)
+				//
+				// Check for a null or blank name.
+				if(null == name)
 					{
-					message = BAD_NAME_MESSAGE ;
+					pass = false ;
+					message = EMPTY_NAME_MESSAGE ;
+					}
+				else {
+					name = name.trim() ;
+					if(name.length() <= 0)
+						{
+						pass = false ;
+						message = EMPTY_NAME_MESSAGE ;
+						}
 					}
 				}
 
-			//
-			// Check for a null or blank password.
-			if(null == pass)
+			if (pass)
 				{
-				message = BAD_PASS_MESSAGE ;
-				}
-			else {
-				pass = pass.trim() ;
-				if(pass.length() <= 0)
+				//
+				// Check for a null or blank password.
+				if(null == pass)
 					{
-					message = BAD_PASS_MESSAGE ;
+					pass = false ;
+					message = EMPTY_PASS_MESSAGE ;
+					}
+				else {
+					pass = pass.trim() ;
+					if(pass.length() <= 0)
+						{
+						pass = false ;
+						message = EMPTY_PASS_MESSAGE ;
+						}
 					}
 				}
 
-			//
-			// Try creating a Community delegate.
-			AuthenticationDelegate authenticator = new AuthenticationDelegate();
-			if (null == authenticator)
+			if (pass)
 				{
-				if (DEBUG_FLAG) System.out.println("FAIL : Null AuthenticationDelegate") ;
-				message = SYSTEM_ERROR_MESSAGE ;
-				}
-			//
-			// 
-			else {
-				if (DEBUG_FLAG) System.out.println("PASS : Got AuthenticationDelegate") ;
 				//
-				// Try logging in to the Community.
-				try {
-					token = authenticator.authenticateLogin(name, pass);
-					if (null == token)
-						{
-						if (DEBUG_FLAG) System.out.println("FAIL : Null token") ;
-						message = LOGIN_FAIL_MESSAGE ;
-						}
-					else {
-						if (DEBUG_FLAG) System.out.println("PASS : Got token") ;
-						if (DEBUG_FLAG) System.out.println("  Token   : " + token) ;
-						if (DEBUG_FLAG) System.out.println("  Token   : " + token.getToken()) ;
-						if (DEBUG_FLAG) System.out.println("  Used    : " + token.getUsed()) ;
-						if (DEBUG_FLAG) System.out.println("  Target  : " + token.getTarget()) ;
-						if (DEBUG_FLAG) System.out.println("  Account : " + token.getAccount()) ;
-						if (DEBUG_FLAG) System.out.println("  Start   : " + token.getStartDate()) ;
-						if (DEBUG_FLAG) System.out.println("  End     : " + token.getExpirationDate()) ;
-						message = LOGIN_PASS_MESSAGE ;
-						}
-					}
-				catch(Exception ouch)
+				// Try creating a Community delegate.
+				AuthenticationDelegate authenticator = new AuthenticationDelegate();
+				if (null == authenticator)
 					{
+					if (DEBUG_FLAG) System.out.println("FAIL : Null AuthenticationDelegate") ;
+					pass = false ;
 					message = SYSTEM_ERROR_MESSAGE ;
-					ouch.printStackTrace();
+					}
+				//
+				// 
+				else {
+					if (DEBUG_FLAG) System.out.println("PASS : Got AuthenticationDelegate") ;
+					//
+					// Try logging in to the Community.
+					try {
+						token = authenticator.authenticateLogin(name, pass);
+						if (null == token)
+							{
+							if (DEBUG_FLAG) System.out.println("FAIL : Null token") ;
+							pass = false ;
+							message = LOGIN_FAIL_MESSAGE ;
+							}
+						else {
+							if (DEBUG_FLAG) System.out.println("PASS : Got token") ;
+							if (DEBUG_FLAG) System.out.println("  Token   : " + token) ;
+							if (DEBUG_FLAG) System.out.println("  Token   : " + token.getToken()) ;
+							if (DEBUG_FLAG) System.out.println("  Used    : " + token.getUsed()) ;
+							if (DEBUG_FLAG) System.out.println("  Target  : " + token.getTarget()) ;
+							if (DEBUG_FLAG) System.out.println("  Account : " + token.getAccount()) ;
+							if (DEBUG_FLAG) System.out.println("  Start   : " + token.getStartDate()) ;
+							if (DEBUG_FLAG) System.out.println("  End     : " + token.getExpirationDate()) ;
+							message = LOGIN_PASS_MESSAGE ;
+							}
+						}
+					catch(Exception ouch)
+						{
+						pass = false ;
+						message = SYSTEM_ERROR_MESSAGE ;
+						ouch.printStackTrace();
+						}
 					}
 				}
-			//
-			// Try creating a policy delegate.
-			PolicyServiceDelegate delegate = new PolicyServiceDelegate();
-			if (null == delegate)
+
+			if (pass)
 				{
-				if (DEBUG_FLAG) System.out.println("FAIL : Null PolicyServiceDelegate") ;
-				message = SYSTEM_ERROR_MESSAGE ;
-				}
-			//
-			// 
-			else {
-				if (DEBUG_FLAG) System.out.println("PASS : Got PolicyServiceDelegate") ;
 				//
-				// Check if the account has permission to see the site.
-				try {
-					authorized = delegate.checkPermissions(name, POLICY_GROUP, POLICY_RESOURCE, POLICY_ACTION);
-					if (authorized)
-						{
-						if (DEBUG_FLAG) System.out.println("PASS : Permission check ok") ;
-						message = POLICY_PASS_MESSAGE ;
-						}
-					else {
-						if (DEBUG_FLAG) System.out.println("FAIL : Permission check failed") ;
-						message = POLICY_FAIL_MESSAGE ;
-						}
-					}
-				catch(Exception ouch)
+				// Try creating a policy delegate.
+				PolicyServiceDelegate delegate = new PolicyServiceDelegate();
+				if (null == delegate)
 					{
+					if (DEBUG_FLAG) System.out.println("FAIL : Null PolicyServiceDelegate") ;
+					pass = false ;
 					message = SYSTEM_ERROR_MESSAGE ;
-					ouch.printStackTrace();
+					}
+				//
+				// 
+				else {
+					if (DEBUG_FLAG) System.out.println("PASS : Got PolicyServiceDelegate") ;
+					//
+					// Check if the account has permission to see the site.
+					try {
+						authorized = delegate.checkPermissions(name, POLICY_GROUP, POLICY_RESOURCE, POLICY_ACTION);
+						if (authorized)
+							{
+							if (DEBUG_FLAG) System.out.println("PASS : Permission check ok") ;
+							message = POLICY_PASS_MESSAGE ;
+							}
+						else {
+							if (DEBUG_FLAG) System.out.println("FAIL : Permission check failed") ;
+							pass = false ;
+							message = POLICY_FAIL_MESSAGE ;
+							}
+						}
+					catch(Exception ouch)
+						{
+						pass = false ;
+						message = SYSTEM_ERROR_MESSAGE ;
+						ouch.printStackTrace();
+						}
 					}
 				}
 
 			//
 			// If we pass the tests.
-			if ((null != token) && (authorized))
+			if ((pass) && (null != token) && (authorized))
 				{
 				//
 				// Set the current account info in our session.
