@@ -1,5 +1,5 @@
 /*
- * $Id: CommonExecutionConnectorDelegateImpl.java,v 1.6 2004/04/22 15:18:00 pah Exp $
+ * $Id: CommonExecutionConnectorDelegateImpl.java,v 1.7 2004/04/30 18:03:21 pah Exp $
  * 
  * Created on 11-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -117,16 +117,15 @@ public class CommonExecutionConnectorDelegateImpl
    public ApplicationList listApplications() throws CEADelegateException {
       ApplicationList result = null;
       CommonExecutionConnector cec = getBinding();
-      throw new UnsupportedOperationException("this is not supported yet");
      
-//         try {
-//            _ApplicationList _result = cec.listApplications();
-//            result = Axis2Castor.convert(_result);
-//         }
-//         catch (RemoteException e) {
-//           throw new CEADelegateException("list app", e);
-//         }
-//         return result;
+         try {
+            _ApplicationList _result = cec.listApplications();
+            result = Axis2Castor.convert(_result);
+         }
+         catch (RemoteException e) {
+           throw new CEADelegateException("list app", e);
+         }
+         return result;
       
       
    }
