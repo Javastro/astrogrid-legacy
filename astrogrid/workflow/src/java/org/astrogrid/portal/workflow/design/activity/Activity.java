@@ -8,12 +8,10 @@
  * with this distribution in the LICENSE.txt file.  
  *
  */
-package org.astrogrid.portal.workflow.design;
+package org.astrogrid.portal.workflow.design.activity;
 
-import org.astrogrid.portal.workflow.intf.*;
-
-import org.apache.log4j.Logger;
-
+import org.apache.log4j.Logger ;
+import org.astrogrid.portal.workflow.design.Workflow;
 
 
 /**
@@ -30,9 +28,10 @@ import org.apache.log4j.Logger;
  * @see     
  * @since   AstroGrid 1.3
  * @testcase org.astrogrid.portal.workflow.test.org.astrogrid.portal.workflow.design.activity.TestActivity
- * @modified NWW moved into workflow.design
+ * 
+ * @deprecated use workflow-objects object model instead
  */
-public abstract class Activity implements IActivity {
+public abstract class Activity {
     
     /** Compile-time switch used to turn tracing on/off. 
       * Set this to false to eliminate all trace statements within the byte code.*/         
@@ -65,9 +64,8 @@ public abstract class Activity implements IActivity {
      * 
      * (2) A key unique within a Workflow.
      * 
-     * @modified NWW made protected.
      */    
-     protected Activity( Activity parent ) {
+    public Activity( Activity parent ) {
         if( TRACE_ENABLED ) trace( "Activity() entry") ; 
         
         try {  
@@ -82,12 +80,12 @@ public abstract class Activity implements IActivity {
     } // end of Activity( Activity parent )
     
 
-	protected ActivityKey getKey() { return key; }
+	public ActivityKey getKey() { return key; }
         
-	protected void setParent( Activity parent ) { this.parent = parent ; }
-	protected Activity getParent() { return parent ; }
+	public void setParent( Activity parent ) { this.parent = parent ; }
+	public Activity getParent() { return parent ; }
     
-    protected boolean delete() {
+    public boolean delete() {
         return ((ActivityContainer)this.getParent()).removeChild( this ) ;    
     }
     
@@ -127,15 +125,14 @@ public abstract class Activity implements IActivity {
     /*
      * To be overridden by ActivityContainer
      */
-    protected ActivityIterator getChildren() { return null ; }
+    public ActivityIterator getChildren() { return null ; }
     
     
     /*
      * Attempts to walk up the Activity tree to find the Workflow,
      * which is the top of the tree.
-     * @modified NWW - not used outside package, made package private.
      */
-    Workflow getWorkflow() {
+    public Workflow getWorkflow() {
         if( TRACE_ENABLED ) trace( "Activity.getWorkflow() entry") ;       
               
         Workflow
@@ -145,8 +142,8 @@ public abstract class Activity implements IActivity {
             
             // If this gets invoked on a Workflow, 
             // we are already at the top of the tree...
-            if( this instanceof IWorkflow ) {
-                workflow =(Workflow)this ;
+            if( this instanceof Workflow ) {
+                workflow = (Workflow)this ;
             }
             else {
                 
@@ -163,7 +160,7 @@ public abstract class Activity implements IActivity {
                      parent = parent.getParent() ;
                  }
              
-                 if( workflowCandidate instanceof IWorkflow ) {
+                 if( workflowCandidate instanceof Workflow ) {
                      workflow = (Workflow)workflowCandidate ;
                  }
                  else {
@@ -188,7 +185,7 @@ public abstract class Activity implements IActivity {
     /*
      * Returns relative postion of a child within its parent container
      */
-    protected int getIndex() {
+    public int getIndex() {
         return ( (ActivityContainer)this.getParent() ).getIndex( this ) ;
     }
     
@@ -198,7 +195,7 @@ public abstract class Activity implements IActivity {
      * NB: This will alter the position of other children of the same
      *     container.
      */
-    protected void setIndex( int index ) {
+    public void setIndex( int index ) {
         ( (ActivityContainer)this.getParent() ).setIndex( index, this ) ;
     }
     
@@ -213,7 +210,7 @@ public abstract class Activity implements IActivity {
          boolean
              retValue = false ;
             
-         if( (o != null) && (o instanceof IActivity) ){
+         if( (o != null) && (o instanceof Activity) ){
              retValue = ( o.hashCode() == this.hashCode() ) ;         
          }
         

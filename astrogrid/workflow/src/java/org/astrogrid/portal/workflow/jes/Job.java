@@ -21,7 +21,7 @@ import org.apache.log4j.Logger ;
 import org.apache.axis.utils.XMLUtils ;
 import org.w3c.dom.* ;
 
-import org.astrogrid.jes.delegate.jobController.*;
+//import org.astrogrid.jes.delegate.jobController.*;
 
 import org.astrogrid.portal.workflow.*;
 import org.w3c.dom.Document ;
@@ -35,11 +35,10 @@ import org.w3c.dom.Document ;
  * @see     
  * @see     
  * @since   AstroGrid 1.3
- * @deprecated. hid behind facade in preparation for removal.
- * @see JobManager
- * @see WorkflowJob
+ * 
+ * @deprecated use workflow-objects object model instead. this class does not make web-service calls anymore - don't use.
  */
-class Job implements WorkflowJob {// NWW: made package private.
+public class Job {
 	
     /** Compile-time switch used to turn tracing on/off. 
       * Set this to false to eliminate all trace statements within the byte code.*/         
@@ -53,10 +52,10 @@ class Job implements WorkflowJob {// NWW: made package private.
         ASTROGRIDERROR_SOMEMESSAGE = "AGWKFE00050" ; // none so far 
         
         
-    public static WorkflowJob readJob( String userid, String community, String name ) {
+    public static Job readJob( String userid, String community, String name ) {
         if( TRACE_ENABLED ) trace( "Job.readJob() entry") ; 
         
-        WorkflowJob
+        Job
             job = null;
         StringBuffer
             pathBuffer = new StringBuffer( 64 ) ;
@@ -99,7 +98,7 @@ class Job implements WorkflowJob {// NWW: made package private.
     } // end of deleteJob()
     
     
-    public static boolean cancelJob( WorkflowJob job ) {
+    public static boolean cancelJob( Job job ) {
         if( TRACE_ENABLED ) trace( "Job.cancelJob() entry") ; 
 
         boolean
@@ -107,13 +106,13 @@ class Job implements WorkflowJob {// NWW: made package private.
         String
             request = null,
             jesLocation = null ;
-        JobControllerDelegate
-            jobController = null ;
+       // JobControllerDelegate
+        //    jobController = null ;
                     
         try {
             jesLocation = WKF.getProperty( WKF.JES_URL, WKF.JES_CATEGORY ) ;
 
-            jobController = JobControllerDelegate.buildDelegate( jesLocation ) ;
+          //  jobController = JobControllerDelegate.buildDelegate( jesLocation ) ;
 //            jobController.cancelJob( request ) ;            
         }
         catch( Exception ex ) {
@@ -143,8 +142,8 @@ class Job implements WorkflowJob {// NWW: made package private.
             jesLocation = null,
             request = null ,
             response = null ;
-        JobControllerDelegate
-            jobController = null ;
+       // JobControllerDelegate
+        //    jobController = null ;
             
         if( TRACE_ENABLED ) trace( "userid: " + userid) ; 
         if( TRACE_ENABLED ) trace( "community: " + community) ; 
@@ -154,13 +153,15 @@ class Job implements WorkflowJob {// NWW: made package private.
                    
         try {
             jesLocation = WKF.getProperty( WKF.JES_URL, WKF.JES_CATEGORY ) ;
-            if( TRACE_ENABLED ) trace( "jesLocation: " + jesLocation) ; 
+            if( TRACE_ENABLED ) trace( "jesLocation: " + jesLocation) ;
+            /* 
             jobController = JobControllerDelegate.buildDelegate( jesLocation ) ;
             response = jobController.readJobList( userid
                                                 , community
                                                 , communitySnippet
                                                 , filter ) ; 
-            iterator = Job.decodeListResponse( response ) ;               
+            iterator = Job.decodeListResponse( response ) ;
+            */               
         }
         catch ( Exception ex ) {
             ex.printStackTrace() ;

@@ -11,9 +11,7 @@
 
 package org.astrogrid.portal.workflow.design;
 
-import org.astrogrid.portal.workflow.intf.ICardinality;
-
-import org.apache.log4j.Logger;
+import org.apache.log4j.Logger ;
 
 /**
  * The <code>Cardinality</code> class represents the maximum and mimimum
@@ -26,9 +24,9 @@ import org.apache.log4j.Logger;
  * @author  Jeff Lusted
  * @version 1.0 20-Nov-2003  
  * @since   AstroGrid 1.4
- * @modified - closed up type, made constructors protected, etc.
+ * @deprecated use workflow-object object model
  */
-public class Cardinality implements ICardinality {
+public class Cardinality {
     
     /** Compile-time switch used to turn tracing on/off. 
       * Set this to false to eliminate all trace statements within the byte code.*/         
@@ -42,26 +40,26 @@ public class Cardinality implements ICardinality {
      * A cardinality with no upper limit must be represented somehow.
      * As usual the protocol is to use -1.
      */   
-    protected static final int
+    public static final int
         UNLIMITED = -1 ;
         
     /**
      * The default minimum cardinality is 1.
      */   
-    protected static final int
+    public static final int
         MIN_DEFAULT = 1 ;
         
     /**
      * The default maximum cardinality is 1.
      */   
-    protected  static final int
+    public static final int
         MAX_DEFAULT = 1 ;
         
     private int
         minimum,
         maximum ;
       
-    protected Cardinality() {
+    public Cardinality() {
         this.minimum = MIN_DEFAULT ;
         this.maximum = MAX_DEFAULT ;
     }
@@ -73,7 +71,7 @@ public class Cardinality implements ICardinality {
       * @param minimum  minimum cardinality desired
       * @param maximum  maximum cardinality desired
       **/        
-    protected Cardinality ( int minimum, int maximum ) {
+    public Cardinality ( int minimum, int maximum ) {
         this.minimum = minimum ;
         this.maximum = maximum ;
         this.checkAndSetForSensibleValues() ;
@@ -88,7 +86,7 @@ public class Cardinality implements ICardinality {
       * @param minString  minimum cardinality desired
       * @param maxString  maximum cardinality desired
       **/   
-    protected Cardinality ( String minString, String maxString ) {
+    public Cardinality ( String minString, String maxString ) {
         if( TRACE_ENABLED ) trace( "entry: Cardinality(String,String)") ;  
         
         Integer

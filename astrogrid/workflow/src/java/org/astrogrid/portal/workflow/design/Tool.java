@@ -11,19 +11,14 @@
 
 package org.astrogrid.portal.workflow.design;
 
-import org.astrogrid.portal.workflow.intf.*;
-
-import org.apache.axis.utils.XMLUtils;
-import org.apache.log4j.Logger;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.List ;
+import java.util.ListIterator ;
+import java.util.ArrayList ;
+//import java.util.Collections ;
+import org.apache.log4j.Logger ;
+import org.w3c.dom.* ;
+import java.text.MessageFormat ;
+import org.apache.axis.utils.XMLUtils ;
 
 /**
  * The <code>Tool</code> class represents... 
@@ -38,8 +33,10 @@ import java.util.ListIterator;
  * @see     
  * @see     
  * @since   AstroGrid 1.4
+ * 
+ * @deprecated use workflow-objects object model instead
  */
-public class Tool implements ITool {
+public class Tool {
   
     /** Compile-time switch used to turn tracing on/off. 
       * Set this to false to eliminate all trace statements within the byte code.*/         
@@ -96,7 +93,7 @@ public class Tool implements ITool {
     private Tool() {
     }
     // pah - relaxed the accessibility to public for testing purposes...
-    protected Tool( String name ) {
+    public Tool( String name ) {
         this.name = name ;
     }
         
@@ -150,37 +147,37 @@ public class Tool implements ITool {
     }
     
     
-    public Iterator getInputParameters() {; 
+    public ListIterator getInputParameters() {; 
         return this.inputParameters.listIterator() ;
     }
     
     
-    public Iterator getOutputParameters() { 
+    public ListIterator getOutputParameters() { 
         return this.outputParameters.listIterator() ;
     }
     
     
-    protected IParameter newInputParameter( String name ) {
+    public Parameter newInputParameter( String name ) {
         return Tool.newParameter( name, this.inputParameters ) ;  
     } 
  
  
-    protected IParameter newInputParameter( IParameter param ) {
+    public Parameter newInputParameter( Parameter param ) {
         return Tool.newParameter( param.getName(), this.inputParameters ) ; 
     }
  
     
-    protected IParameter newOutputParameter( String name ) {
+    public Parameter newOutputParameter( String name ) {
         return Tool.newParameter( name, this.outputParameters ) ;
     } 
     
     
-    protected IParameter newOutputParameter( IParameter param ) {
+    public Parameter newOutputParameter( Parameter param ) {
         return Tool.newParameter( param.getName(), this.outputParameters ) ;
      }
     
        
-    public String toXMLString() {
+    protected String toXMLString() {
         if( TRACE_ENABLED ) trace( "Tool.toXMLString() entry") ;
           
         String 
@@ -225,7 +222,7 @@ public class Tool implements ITool {
     }
     
     
-    public String toJESXMLString() {
+    protected String toJESXMLString() {
         if( TRACE_ENABLED ) trace( "Tool.toJESXMLString() entry") ;
         
         String 
@@ -306,7 +303,7 @@ public class Tool implements ITool {
 	}
     
     
-    private static IParameter newParameter( String name
+    private static Parameter newParameter( String name
                                          , List parameterList ) {
         if( TRACE_ENABLED ) trace( "Tool.newParameter(name,parameterList) entry") ;
         
@@ -348,8 +345,8 @@ public class Tool implements ITool {
     } // end of Tool.newParameter(name,parameterList)
 
     
-    private static IParameter setBaseValues( IParameter target
-                                          , IParameter source ) {
+    private static Parameter setBaseValues( Parameter target
+                                          , Parameter source ) {
         if( source != null ) {
 //          target.setContents( source.getContents() ) ; 
           target.setDocumentation( source.getDocumentation() ) ;

@@ -19,9 +19,10 @@ package org.astrogrid.portal.workflow.design ;
  * @see     java.lang.Object#toString()
  * @see     java.lang.StringBuffer
  * @since   AstroGrid 1.2
- * @modified NWW - made package private.
+ * 
+ * @deprecated use workflow-objects object model instead
  */
-class WorkflowDD {
+public class WorkflowDD {
     
     public static final String
         WORKFLOW_ELEMENT = "workflow",

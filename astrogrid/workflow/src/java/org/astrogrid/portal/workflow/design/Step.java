@@ -11,15 +11,11 @@
 
 package org.astrogrid.portal.workflow.design;
 
-import org.astrogrid.portal.workflow.intf.*;
-
-import org.apache.axis.utils.XMLUtils;
-import org.apache.log4j.Logger;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import java.text.MessageFormat;
+import org.astrogrid.portal.workflow.design.activity.*;
+import org.apache.log4j.Logger ;
+import java.text.MessageFormat ;
+import org.w3c.dom.* ;
+import org.apache.axis.utils.XMLUtils ;
 
 /**
  * The <code>Step</code> class represents an individual job step with
@@ -50,8 +46,10 @@ import java.text.MessageFormat;
  * @version 1.0 25-Aug-2003
  * @see     org.astrogrid.portal.workflow.design.JoinCondition
  * @since   AstroGrid 1.3
+ * 
+ * @deprecated use workflow-objects object model instead
  */
-public class Step extends Activity implements IStep {
+public class Step extends Activity {
     
     /** Compile-time switch used to turn tracing on/off. 
       * Set this to false to eliminate all trace statements within the byte code.*/         
@@ -83,10 +81,10 @@ public class Step extends Activity implements IStep {
       * The default join condition is JoinCondition.ANY
       * 
       **/       
-    protected Step( Activity parent ) {
+    public Step( Activity parent ) {
         super( parent ) ;
         if( TRACE_ENABLED ) trace( " entry: Step(parent)") ;
-        joinCondition = JoinCondition.ANY() ; 
+        joinCondition = JoinCondition.ANY ; 
         if( TRACE_ENABLED ) trace( " exit: Step(parent)") ;
     }
     
@@ -97,7 +95,7 @@ public class Step extends Activity implements IStep {
       * <p> 
       * 
       **/       
-    protected Step( String communitySnippet
+    public Step( String communitySnippet
                , Element element
                , Activity parent  ) {
         super( parent ) ;
@@ -111,19 +109,19 @@ public class Step extends Activity implements IStep {
                 condition = element.getAttribute( WorkflowDD.STEP_JOINCONDITION_ATTR ) ;
              
             if( condition == null ) { 
-                this.joinCondition = JoinCondition.ANY() ;    
+                this.joinCondition = JoinCondition.ANY ;    
             }
             else {
                 condition.trim() ;
                 
                 if( condition.equalsIgnoreCase("true") ) {
-                    this.joinCondition = JoinCondition.TRUE() ;
+                    this.joinCondition = JoinCondition.TRUE ;
                 }
                 else if( condition.equalsIgnoreCase("false") ) {
-                    this.joinCondition = JoinCondition.FALSE() ;
+                    this.joinCondition = JoinCondition.FALSE ;
                 }
                 else {
-                    this.joinCondition = JoinCondition.ANY() ; 
+                    this.joinCondition = JoinCondition.ANY ; 
                 }
                 
             }
@@ -196,7 +194,7 @@ public class Step extends Activity implements IStep {
      * Tester for the condition JoinCondition.TRUE
      */ 
 	public boolean isJoinConditionTrue() {
-		return joinCondition == JoinCondition.TRUE() ;
+		return joinCondition == JoinCondition.TRUE ;
 	}
     
       
@@ -204,7 +202,7 @@ public class Step extends Activity implements IStep {
      * Tester for the condition JoinCondition.FALSE
      */ 
     public boolean isJoinConditionFalse() {
-        return joinCondition == JoinCondition.FALSE() ;
+        return joinCondition == JoinCondition.FALSE ;
     }
     
     
@@ -212,22 +210,22 @@ public class Step extends Activity implements IStep {
      * Tester for the condition JoinCondition.ANY
      */ 
     public boolean isJoinConditionAny() {
-        return joinCondition == JoinCondition.ANY() ;
+        return joinCondition == JoinCondition.ANY ;
     }
 
 
     /**
      * Sets this step's Tool
      */  
-	public void setTool( ITool tool ) {
-		this.tool = (Tool)tool;
+	public void setTool( Tool tool ) {
+		this.tool = tool;
 	}
 
 
     /**
      * Gets this step's Tool
      */  
-	public ITool getTool() {  
+	public Tool getTool() {  
 		return tool;
 	}
 

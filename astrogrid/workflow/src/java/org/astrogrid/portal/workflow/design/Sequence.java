@@ -11,12 +11,10 @@
 
 package org.astrogrid.portal.workflow.design;
 
-import org.astrogrid.portal.workflow.intf.*;
-
-import org.apache.log4j.Logger;
-import org.w3c.dom.Element;
-
-import java.text.MessageFormat;
+import java.text.MessageFormat ;
+import org.apache.log4j.Logger ;
+import org.astrogrid.portal.workflow.design.activity.*;
+import org.w3c.dom.* ;
 
 /**
  * The <code>Sequence</code> class represents... 
@@ -31,8 +29,10 @@ import java.text.MessageFormat;
  * @see     
  * @see     
  * @since   AstroGrid 1.3
+ * 
+ * @deprecated use workflow-objects object model instead
  */
-public class Sequence extends ActivityContainer implements ISequence {
+public class Sequence extends ActivityContainer {
     
     /** Compile-time switch used to turn tracing on/off. 
       * Set this to false to eliminate all trace statements within the byte code.*/         
@@ -43,13 +43,13 @@ public class Sequence extends ActivityContainer implements ISequence {
         logger = Logger.getLogger( Sequence.class ) ;  
     
     
-    protected Sequence( Activity parent ) {
+    public Sequence( Activity parent ) {
         super( parent ) ;
         if( TRACE_ENABLED ) trace( "Sequence() entry/exit") ; 
     }
     
     
-    protected Sequence( String communitySnippet
+    public Sequence( String communitySnippet
                    , Element element
                    , Activity parent ) {
         super( communitySnippet, element, parent ) ;
