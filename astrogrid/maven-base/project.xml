@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.10 2004/03/03 21:39:15 jdt Exp $ -->
+<?xml version="1.0"?>
+<!-- $Id: project.xml,v 1.11 2004/03/12 13:35:02 jdt Exp $ -->
 <project>
     <pomVersion>3</pomVersion>
     <id>astrogrid-master</id>
@@ -14,16 +14,16 @@
     <inceptionYear>2002</inceptionYear>
     <issueTrackingUrl>http://www.astrogrid.org/bugzilla/</issueTrackingUrl>
     <package>org.astrogrid</package>
-    <siteDirectory>/var/www/www/maven/build/${pom.name}</siteDirectory>
+    <siteDirectory>/var/www/www/maven/build/${astrogrid.name}</siteDirectory>
     <logo>http://www.astrogrid.org/images/AGlogo</logo>
     <repository>
         <connection> 
-            scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/${pom.name} 
+            scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/${astrogrid.name} 
             </connection>
         <developerConnection> 
-            scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/${pom.name} 
+            scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/${astrogrid.name} 
             </developerConnection>
-        <url> http://www.astrogrid.org/viewcvs/astrogrid/${pom.name}/ 
+        <url> http://www.astrogrid.org/viewcvs/astrogrid/${astrogrid.name}/ 
             </url>
     </repository>
     <build>
@@ -43,7 +43,7 @@
             </includes>
         </unitTest>
     </build>
-    <url>http://www.astrogrid.org/maven/build/${pom.name}/index.html</url>
+    <url>http://www.astrogrid.org/maven/build/${astrogrid.name}/index.html</url>
     <developers>
         <developer>
             <name> Brian McIlwrath </name>
