@@ -11,13 +11,13 @@
     <agp:item
         contents="Open"
         contents-hover="Open"
-        uri='javascript:void(window.open("/astrogrid-portal/mount/myspace/myspace-micro?ivorn=workflow-ivorn&amp;agsl=open-workflow-agsl", "mySpaceMicro", "toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=no, scrollbars=yes, width=300, height=200"));'
+        uri='javascript:void(window.open("/astrogrid-portal/mount/myspace/myspace-micro?ivorn=open-workflow-ivorn&amp;agsl=open-workflow-agsl", "mySpaceMicro", "toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=no, scrollbars=yes, width=300, height=200"));'
         target="_self"
         status-text="Open a workflow"/>
     <agp:item
         contents="Save"
         contents-hover="Save"
-        uri='javascript:void(window.open("/astrogrid-portal/mount/myspace/myspace-micro?ivorn=workflow-ivorn&amp;agsl=save-workflow-agsl", "mySpaceMicro", "toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=no, scrollbars=yes, width=300, height=200"));'
+        uri='javascript:void(window.open("/astrogrid-portal/mount/myspace/myspace-micro?ivorn=save-workflow-ivorn&amp;agsl=save-workflow-agsl", "mySpaceMicro", "toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=no, scrollbars=yes, width=300, height=200"));'
         target="_self"
         status-text="Save a workflow"/>
     <agp:item
