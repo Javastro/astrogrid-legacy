@@ -1,9 +1,9 @@
 /**
- * <cvs:id>$Id: LoginAction.java,v 1.32 2005/01/31 19:39:00 jdt Exp $</cvs:id>
+ * <cvs:id>$Id: LoginAction.java,v 1.33 2005/02/23 17:33:45 clq2 Exp $</cvs:id>
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/src/java/org/astrogrid/portal/cocoon/common/LoginAction.java,v $</cvs:source>
- * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2005/01/31 19:39:00 $</cvs:date>
- * <cvs:version>$Revision: 1.32 $</cvs:version>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2005/02/23 17:33:45 $</cvs:date>
+ * <cvs:version>$Revision: 1.33 $</cvs:version>
  */
 package org.astrogrid.portal.cocoon.common;
 import java.net.MalformedURLException;
@@ -241,15 +241,20 @@ public final class LoginAction extends AbstractAction {
      */
     private void checkLogger() {
         log = super.getLogger();
+      /*
         if (log == null) {
             enableLogging(new ConsoleLogger());
             log = super.getLogger();
         }
+        */
     }
 }
 /**
  * <cvs:log>
  * $Log: LoginAction.java,v $
+ * Revision 1.33  2005/02/23 17:33:45  clq2
+ * trying to fix the login problem
+ *
  * Revision 1.32  2005/01/31 19:39:00  jdt
  * Merges from POR_JDT_882
  *
