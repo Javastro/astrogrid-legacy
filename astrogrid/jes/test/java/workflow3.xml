@@ -1,17 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workflow
-  xmlns="http://www.astrogrid.org/schema/AGWorkflow/"
+  xmlns="http://www.astrogrid.org/schema/AGWorkflow/v1"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="
-      http://www.astrogrid.org/schema/AGWorkflow/  file://localhost/home/noel/.eclipse/jes/schema/Workflow.xsd
-      http://www.astrogrid.org/schema/AGParameterDefinition/  AGParameterDefinition.xsd
-  " name="flows">
-  <community>
-    <credentials>
-      <account>nww</account>
-      <group>jodrell</group>
-    </credentials>
-  </community>
+ name="flows">
+ 
   <sequence>
     <flow>
       <step name="a" sequenceNumber="1" stepNumber="1">
@@ -30,4 +22,15 @@
   </sequence>
   <description
     xmlns="">workflow containing a single flow. - should indicate three steps to be executed in parallel.</description>
+ <Credentials   xmlns:cred="http://www.astrogrid.org/schema/Credentials/v1"> 	
+      <cred:Account>
+      		<cred:Name>nww</cred:Name>
+      		<cred:Community>jodrell</cred:Community>
+      	</cred:Account>
+      <cred:Group>
+      	 <cred:Name>developers</cred:Name>
+      	 <cred:Community>jodrell</cred:Community>
+      </cred:Group>
+      <cred:SecurityToken></cred:SecurityToken>      
+    </Credentials>    
 </workflow>

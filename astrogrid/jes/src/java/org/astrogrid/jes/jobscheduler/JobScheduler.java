@@ -10,6 +10,7 @@
  */
 package org.astrogrid.jes.jobscheduler;
 
+import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.community.common.util.CommunityMessage;
 import org.astrogrid.jes.JesException;
 import org.astrogrid.jes.job.BeanFacade;
@@ -17,9 +18,9 @@ import org.astrogrid.jes.job.Job;
 import org.astrogrid.jes.job.JobFactory;
 import org.astrogrid.jes.job.JobStep;
 import org.astrogrid.jes.job.NotFoundException;
-import org.astrogrid.jes.types.v1.JobInfo;
 import org.astrogrid.jes.types.v1.JobURN;
-import org.astrogrid.jes.types.v1.Status;
+import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
+import org.astrogrid.jes.types.v1.cea.axis.MessageType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -55,7 +56,7 @@ public class JobScheduler implements org.astrogrid.jes.delegate.v1.jobscheduler.
         try {
 	        JobFactory factory = facade.getJobFactory() ;
 	        factory.begin() ;
-	        Job job = factory.findJob( jobURN) ; 
+	        Job job = factory.findJob( facade.axis2castor(jobURN)) ; 
             
             // Schedule one or more job steps....
             scheduleSteps( job ) ;
@@ -84,25 +85,28 @@ public class JobScheduler implements org.astrogrid.jes.delegate.v1.jobscheduler.
                 while( i.hasNext() ) {
                         step = (JobStep)i.next() ;
                         dispatcher.dispatchStep( communitySnippet, step ) ;
-                        step.setStatus(Status.RUNNING);
+                        step.setStatus(ExecutionPhase.RUNNING);
                 }            
-                job.setStatus( Status.RUNNING ) ;   
+                job.setStatus( ExecutionPhase.RUNNING ) ;   
             } catch (Throwable t) { //catch everything
                 logger.info("Step execution failed:",t);
                 if (step != null) {
                     String message = "Failed: " + t.getClass().getName()
                         + "\n " + t.getMessage();
                     step.setComment(message);
-                    step.setStatus(Status.ERROR);
-                    job.setStatus(Status.ERROR);
+                    step.setStatus(ExecutionPhase.ERROR);
+                    job.setStatus(ExecutionPhase.ERROR);
                     notifyJobFinished(step.getParent());
                 }
             }             
         
     } // end of scheduleSteps()
 
+
+
 //  stuff copied from job monitor
-	public void resumeJob(JobInfo info) {
+    /** @todo implement this properly */
+	public void resumeJob(JobIdentifierType id,MessageType info) {
         Job job = null;      
         try { 
              // Create the necessary Job structures.
@@ -111,17 +115,19 @@ public class JobScheduler implements org.astrogrid.jes.delegate.v1.jobscheduler.
     
              JobFactory factory = facade.getJobFactory() ;
              factory.begin() ;
+             /*
              job = factory.findJob(info.getJobURN() ) ; // todo - match types.
              JobStep jobStep = findJobStep( job,info ) ;
-                
-             jobStep.setStatus( info.getStatus() ) ;
+                */
+                /*
+             jobStep.setStatus( info.ge() ) ;
              jobStep.setComment(info.getComment());
-                
-             Status status = policy.calculateJobStatus(job);
+                */
+             ExecutionPhase status = policy.calculateJobStatus(job);
              job.setStatus(status);
                 
              factory.updateJob( job ) ;             // Update any changed details to the database
-             if( status.equals(Status.RUNNING) ) {
+             if( status.equals(ExecutionPhase.RUNNING) ) {
                 scheduleSteps(job);
             } else {
                 notifyJobFinished(job);
@@ -147,7 +153,8 @@ public class JobScheduler implements org.astrogrid.jes.delegate.v1.jobscheduler.
 
     /** @todo refactor away into object model 
      * @todo make more efficient*/
-     protected JobStep findJobStep( Job job, JobInfo info )  throws NotFoundException{
+    /*
+     protected JobStep findJobStep( Job job,  info )  throws NotFoundException{
              for(Iterator iterator = job.getJobSteps(); iterator.hasNext(); ) {
                   JobStep jobStep = (JobStep)iterator.next() ;
                  if( jobStep.getStepNumber() == info.getStepNumber() ) {
@@ -156,6 +163,6 @@ public class JobScheduler implements org.astrogrid.jes.delegate.v1.jobscheduler.
              }
              throw new NotFoundException("Could not find job step " + info.getStepNumber() + " in job " + job.getId());   
      } // end of updateJobStepStatus()
-
+*/
 
 } // end of class JobScheduler

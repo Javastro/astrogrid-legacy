@@ -1,4 +1,4 @@
-/*$Id: AbstractJobFactoryImpl.java,v 1.2 2004/02/27 00:46:03 nw Exp $
+/*$Id: AbstractJobFactoryImpl.java,v 1.3 2004/03/03 01:13:41 nw Exp $
  * Created on 11-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,6 +14,8 @@ import org.astrogrid.jes.job.Job;
 import org.astrogrid.jes.job.JobException;
 import org.astrogrid.jes.job.JobFactory;
 import org.astrogrid.jes.job.SubmitJobRequest;
+import org.astrogrid.workflow.beans.v1.execution.JobExecutionRecord;
+import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -50,8 +52,10 @@ public abstract class AbstractJobFactoryImpl implements JobFactory {
      */
     protected JobImpl buildJob(SubmitJobRequest req) throws JobException {
         JobImpl job = new  JobImpl((SubmitJobRequestImpl)req);
-        String jobURN = generateUniqueJobURN(job);
-        job.getWorkflow().setJobURN(jobURN);
+        JobURN jobURN = generateUniqueJobURN(job);
+        JobExecutionRecord exec = new JobExecutionRecord();
+        exec.setJobId(jobURN);
+        job.getWorkflow().setJobExecutionRecord(exec);
         return job;
         
     }
@@ -73,23 +77,25 @@ public abstract class AbstractJobFactoryImpl implements JobFactory {
      * @return string in format <code>jes:<i>userid</i>:<i>community</i>:<i>jes-server-hostname</i>:<i>currentTime</i>:<i>randomNumber</i></code>
      * @throws JobException
      */
-    protected String generateUniqueJobURN( Job job ) throws JobException {
+    protected JobURN generateUniqueJobURN( Job job ) throws JobException {
 
         StringBuffer
             buffer = new StringBuffer(128);
             
         buffer
             .append("jes:")
+            .append(hostname)
+            .append('/')         
            .append( job.getUserId() )
-           .append( ':' )
+           .append( '@' )
            .append( job.getCommunity() )
-           .append( ':' )
-           .append(hostname)
-           .append( ':' )
+           .append( '/' )          
            .append( System.currentTimeMillis()) 
            .append( ':' )
            .append(rand.nextInt());
-        return buffer.toString().trim() ;
+        JobURN urn = new JobURN();
+        urn.setContent(buffer.toString().trim());
+        return urn;
         
     }
     protected static final Log log = LogFactory.getLog("job factory"); 
@@ -99,6 +105,9 @@ public abstract class AbstractJobFactoryImpl implements JobFactory {
 
 /* 
 $Log: AbstractJobFactoryImpl.java,v $
+Revision 1.3  2004/03/03 01:13:41  nw
+updated jes to work with regenerated workflow object model
+
 Revision 1.2  2004/02/27 00:46:03  nw
 merged branch nww-itn05-bz#91
 

@@ -1,4 +1,4 @@
-/*$Id: SOAPSchedulerNotifier.java,v 1.2 2004/02/27 00:46:03 nw Exp $
+/*$Id: SOAPSchedulerNotifier.java,v 1.3 2004/03/03 01:13:42 nw Exp $
  * Created on 18-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,8 +12,9 @@ package org.astrogrid.jes.comm;
 
 import org.astrogrid.jes.delegate.JesDelegateFactory;
 import org.astrogrid.jes.delegate.JobScheduler;
-import org.astrogrid.jes.types.v1.JobInfo;
-import org.astrogrid.jes.types.v1.JobURN;
+import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
+import org.astrogrid.jes.types.v1.cea.axis.MessageType;
+import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
 /** Implementation of scheduler notifier that uses the scheduler delegate to communicate to a scheduler instance via soap.
  * this is how the rough implemnetation does it, but its a bit long winded. Especially as the scheduler and other components have to be co-located to be able to 
@@ -34,19 +35,22 @@ public class SOAPSchedulerNotifier implements SchedulerNotifier {
      * @see org.astrogrid.jes.comm.SchedulerNotifier#notify(org.astrogrid.jes.job.Job)
      */
     public void scheduleNewJob(JobURN urn) throws Exception {
-        delegate.scheduleNewJob(urn);        
+        delegate.scheduleNewJob(new org.astrogrid.jes.types.v1.JobURN(urn.getContent()));        
     }
     /**
      * @see org.astrogrid.jes.comm.SchedulerNotifier#notify(org.astrogrid.jes.types.v1.JobInfo)
      */
-    public void resumeJob(JobInfo i) throws Exception {
-        delegate.resumeJob(i);
+    public void resumeJob(JobIdentifierType ji,MessageType i) throws Exception {
+        delegate.resumeJob(ji,i);
     }
 }
 
 
 /* 
 $Log: SOAPSchedulerNotifier.java,v $
+Revision 1.3  2004/03/03 01:13:42  nw
+updated jes to work with regenerated workflow object model
+
 Revision 1.2  2004/02/27 00:46:03  nw
 merged branch nww-itn05-bz#91
 

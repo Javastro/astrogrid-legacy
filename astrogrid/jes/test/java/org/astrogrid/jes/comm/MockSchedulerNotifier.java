@@ -1,4 +1,4 @@
-/*$Id: MockSchedulerNotifier.java,v 1.2 2004/02/27 00:46:03 nw Exp $
+/*$Id: MockSchedulerNotifier.java,v 1.3 2004/03/03 01:13:42 nw Exp $
  * Created on 12-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,8 +10,9 @@
 **/
 package org.astrogrid.jes.comm;
 
-import org.astrogrid.jes.types.v1.JobInfo;
-import org.astrogrid.jes.types.v1.JobURN;
+import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
+import org.astrogrid.jes.types.v1.cea.axis.MessageType;
+import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
 /** Mock implementation of a scheduler notifier. doesn't communicate. 
  * <p />
@@ -35,32 +36,38 @@ public class MockSchedulerNotifier implements SchedulerNotifier {
         this.willSucceed = willSucceed;
     }
     protected final boolean willSucceed;
+
+
     /**
-     * @see org.astrogrid.jes.comm.SchedulerNotifier#notify(org.astrogrid.jes.job.Job)
+     * @see org.astrogrid.jes.comm.SchedulerNotifier#resumeJob(org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType, org.astrogrid.jes.types.v1.cea.axis.MessageType)
      */
-    public void scheduleNewJob(JobURN j) throws Exception {
-        count++;
-        if (!this.willSucceed) {
-            throw new Exception("you wanted me to fail");
-        }
-    }
-    public int getCallCount() {
-        return count;
-    }
-    /**
-     * @see org.astrogrid.jes.comm.SchedulerNotifier#resumeJob(org.astrogrid.jes.types.v1.JobInfo)
-     */    
-    public void resumeJob(JobInfo i) throws Exception {
+    public void resumeJob(JobIdentifierType id, MessageType mt) throws Exception {
         count++;
         if (! this.willSucceed) {
             throw new Exception("you wanted me to fail");
         }
+    }
+    
+    public int getCallCount() {
+        return count;
+    }
+    /**
+     * @see org.astrogrid.jes.comm.SchedulerNotifier#scheduleNewJob(org.astrogrid.workflow.beans.v1.execution.JobURN)
+     */
+    public void scheduleNewJob(JobURN urn) throws Exception {
+        count++;
+        if (!this.willSucceed) {
+            throw new Exception("you wanted me to fail");
+        }        
     }
 }
 
 
 /* 
 $Log: MockSchedulerNotifier.java,v $
+Revision 1.3  2004/03/03 01:13:42  nw
+updated jes to work with regenerated workflow object model
+
 Revision 1.2  2004/02/27 00:46:03  nw
 merged branch nww-itn05-bz#91
 

@@ -1,4 +1,4 @@
-/* $Id: SubmitSuccessTest.java,v 1.2 2004/02/27 00:46:03 nw Exp $
+/* $Id: SubmitSuccessTest.java,v 1.3 2004/03/03 01:13:42 nw Exp $
  * Created on 29-Oct-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -37,13 +37,16 @@ public class SubmitSuccessTest extends AbstractTestForJobController {
     // now check what job store and nudger have seen.
     assertTrue(((MockSchedulerNotifier)nudger).getCallCount() > 0);
     //
-    Job storedJob = fac.findJob(result.getJobURN());
+    Job storedJob = fac.findJob(facade.axis2castor(result.getJobURN()));
     assertNotNull(storedJob);
 }
 }
 
 /*
 *$Log: SubmitSuccessTest.java,v $
+*Revision 1.3  2004/03/03 01:13:42  nw
+*updated jes to work with regenerated workflow object model
+*
 *Revision 1.2  2004/02/27 00:46:03  nw
 *merged branch nww-itn05-bz#91
 *

@@ -1,4 +1,4 @@
-/*$Id: SubmitNewJobSuccessTest.java,v 1.2 2004/02/27 00:46:03 nw Exp $
+/*$Id: SubmitNewJobSuccessTest.java,v 1.3 2004/03/03 01:13:42 nw Exp $
  * Created on 19-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,10 @@
 **/
 package org.astrogrid.jes.jobscheduler;
 
+import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.jes.job.Job;
 import org.astrogrid.jes.jobscheduler.dispatcher.*;
 import org.astrogrid.jes.types.v1.JobURN;
-import org.astrogrid.jes.types.v1.Status;
 import org.astrogrid.jes.types.v1.SubmissionResponse;
 
 /** Test default vanilla behaviour
@@ -42,15 +42,18 @@ public class SubmitNewJobSuccessTest extends AbstractTestForJobScheduler {
         // should have dispatched something - should be all steps.
         assertTrue(((MockDispatcher)dispatcher).getCallCount() > 0);
         //
-        Job job = fac.findJob(urn);
+        Job job = fac.findJob(facade.axis2castor(urn));
         assertNotNull(job);
-        assertEquals(Status.RUNNING,job.getStatus());
+        assertEquals(ExecutionPhase.RUNNING,job.getStatus());
     }
 }
 
 
 /* 
 $Log: SubmitNewJobSuccessTest.java,v $
+Revision 1.3  2004/03/03 01:13:42  nw
+updated jes to work with regenerated workflow object model
+
 Revision 1.2  2004/02/27 00:46:03  nw
 merged branch nww-itn05-bz#91
 

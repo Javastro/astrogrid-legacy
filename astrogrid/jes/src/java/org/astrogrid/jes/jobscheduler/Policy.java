@@ -1,4 +1,4 @@
-/*$Id: Policy.java,v 1.2 2004/02/27 00:46:03 nw Exp $
+/*$Id: Policy.java,v 1.3 2004/03/03 01:13:42 nw Exp $
  * Created on 18-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,8 +10,9 @@
 **/
 package org.astrogrid.jes.jobscheduler;
 
+import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.jes.job.Job;
-import org.astrogrid.jes.types.v1.Status;
+
 
 import java.util.Iterator;
 
@@ -20,13 +21,16 @@ import java.util.Iterator;
  *
  */
 public interface Policy {
-    public Status calculateJobStatus( Job job );
+    public ExecutionPhase calculateJobStatus( Job job );
     public Iterator calculateDispatchableCandidates( Job job ) ;
 }
 
 
 /* 
 $Log: Policy.java,v $
+Revision 1.3  2004/03/03 01:13:42  nw
+updated jes to work with regenerated workflow object model
+
 Revision 1.2  2004/02/27 00:46:03  nw
 merged branch nww-itn05-bz#91
 

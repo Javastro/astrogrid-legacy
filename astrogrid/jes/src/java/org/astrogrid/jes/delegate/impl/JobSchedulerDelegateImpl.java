@@ -1,4 +1,4 @@
-/*$Id: JobSchedulerDelegateImpl.java,v 1.3 2004/02/27 00:46:03 nw Exp $
+/*$Id: JobSchedulerDelegateImpl.java,v 1.4 2004/03/03 01:13:41 nw Exp $
  * Created on 06-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,8 +14,10 @@ import org.astrogrid.jes.delegate.JesDelegateException;
 import org.astrogrid.jes.delegate.v1.jobscheduler.JobScheduler;
 import org.astrogrid.jes.delegate.v1.jobscheduler.JobSchedulerServiceLocator;
 import org.astrogrid.jes.delegate.v1.jobscheduler.JobSchedulerServiceSoapBindingStub;
-import org.astrogrid.jes.types.v1.JobInfo;
 import org.astrogrid.jes.types.v1.JobURN;
+
+import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
+import org.astrogrid.jes.types.v1.cea.axis.MessageType;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -72,10 +74,10 @@ public class JobSchedulerDelegateImpl extends JobSchedulerDelegate {
     /**
      * @see org.astrogrid.jes.delegate.JobScheduler#resumeJob(org.astrogrid.jes.types.v1.JobInfo)
      */
-    public void resumeJob(JobInfo info) throws JesDelegateException {
+    public void resumeJob(JobIdentifierType id,MessageType info) throws JesDelegateException {
         try {
             JobScheduler binding = createDelegate();
-            binding.resumeJob(info);
+            binding.resumeJob(id,info);
         } catch (IOException e) {
             throw new JesDelegateException(e);
         } catch (ServiceException e) {
@@ -87,6 +89,9 @@ public class JobSchedulerDelegateImpl extends JobSchedulerDelegate {
 
 /* 
 $Log: JobSchedulerDelegateImpl.java,v $
+Revision 1.4  2004/03/03 01:13:41  nw
+updated jes to work with regenerated workflow object model
+
 Revision 1.3  2004/02/27 00:46:03  nw
 merged branch nww-itn05-bz#91
 

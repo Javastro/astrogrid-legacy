@@ -11,7 +11,8 @@
 package org.astrogrid.jes.jobmonitor; 
 
 import org.astrogrid.jes.comm.SchedulerNotifier;
-import org.astrogrid.jes.types.v1.JobInfo;
+import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
+import org.astrogrid.jes.types.v1.cea.axis.MessageType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,28 +39,22 @@ public class JobMonitor implements org.astrogrid.jes.delegate.v1.jobmonitor.JobM
 
     protected final SchedulerNotifier nudger;
     
-    /** do a load of validity checks, then pass on to schedulerr */
-    public void monitorJob( JobInfo info ) {
+    /** do a load of validity checks, then pass on to schedulerr 
+     * @todo add validity checks*/
+    public void monitorJob(JobIdentifierType id,MessageType info ) {
 
         if (info == null) {
             logger.info("Null info object encountered");
             return;
         }
-        // check got all required fields.
-        if (info.getJobURN() == null || info.getJobURN().toString() == null || info.getJobURN().toString().length() == 0) {
-            logger.info("Invalid jobURN encountered");
+        if (id == null) {
+            logger.info("Null id object encountered");
             return;
         }
-        if (info.getStatus() == null) {
-            logger.info("No status code supplied");
-            return;
-        }
-        if (info.getStepNumber() < 1) {
-            logger.info("invalid step number");
-            return;
-        }
+
+
 		try {	
-            nudger.resumeJob(info);
+            nudger.resumeJob(id,info);
         } catch (Exception e) {
             logger.error("Could not pass on notification",e);
         }

@@ -1,4 +1,4 @@
-/*$Id: MemoryQueueSchedulerNotifier.java,v 1.2 2004/02/27 00:46:03 nw Exp $
+/*$Id: MemoryQueueSchedulerNotifier.java,v 1.3 2004/03/03 01:13:42 nw Exp $
  * Created on 18-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,9 +10,10 @@
 **/
 package org.astrogrid.jes.comm;
 
+import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
+import org.astrogrid.jes.types.v1.cea.axis.MessageType;
 import org.astrogrid.jes.delegate.v1.jobscheduler.JobScheduler;
-import org.astrogrid.jes.types.v1.JobInfo;
-import org.astrogrid.jes.types.v1.JobURN;
+import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -54,8 +55,8 @@ public class MemoryQueueSchedulerNotifier implements SchedulerNotifier {
     /**
      * @see org.astrogrid.jes.comm.SchedulerNotifier#notify(org.astrogrid.jes.types.v1.JobInfo)
      */
-    public void resumeJob(JobInfo i) throws Exception {
-        executor.execute(factory.createTask(i));
+    public void resumeJob(JobIdentifierType ji,MessageType i) throws Exception {
+        executor.execute(factory.createTask(ji,i));
     }    
     
     /** hidden method - add another runnable to the queue. useful for testing - i.e. can insert a 'end of test' runnable 
@@ -82,7 +83,8 @@ public class MemoryQueueSchedulerNotifier implements SchedulerNotifier {
             return new Runnable() {
                 public void run() {
                     try {
-                    js.scheduleNewJob(urn);
+                        org.astrogrid.jes.types.v1.JobURN convertedURN = new org.astrogrid.jes.types.v1.JobURN(urn.toString());
+                    js.scheduleNewJob(convertedURN);
                     } catch (RemoteException e) {
                         logger.warn("schedule new job",e);
                     }
@@ -90,11 +92,11 @@ public class MemoryQueueSchedulerNotifier implements SchedulerNotifier {
             };
         } 
         /** create a task to resume a new job */
-        public Runnable createTask(final JobInfo info) {
+        public Runnable createTask(final JobIdentifierType ji, final MessageType msg) {
             return new Runnable() {
                 public void run() {
                     try {
-                    js.resumeJob(info);
+                    js.resumeJob(ji,msg);
                     } catch (RemoteException e) {
                         logger.warn("resume job",e);
                     }
@@ -109,6 +111,9 @@ public class MemoryQueueSchedulerNotifier implements SchedulerNotifier {
 
 /* 
 $Log: MemoryQueueSchedulerNotifier.java,v $
+Revision 1.3  2004/03/03 01:13:42  nw
+updated jes to work with regenerated workflow object model
+
 Revision 1.2  2004/02/27 00:46:03  nw
 merged branch nww-itn05-bz#91
 

@@ -1,4 +1,4 @@
-/*$Id: Job.java,v 1.10 2004/02/27 00:46:03 nw Exp $
+/*$Id: Job.java,v 1.11 2004/03/03 01:13:42 nw Exp $
  * Created on 09-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,8 +10,8 @@
 **/
 package org.astrogrid.jes.job;
 
-import org.astrogrid.jes.types.v1.JobURN;
-import org.astrogrid.jes.types.v1.Status;
+import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
+import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
 import java.util.Date;
 import java.util.Iterator;
@@ -42,11 +42,14 @@ public interface Job {
     //public abstract boolean removeJobStep(JobStep jobStep);
     //public abstract void setDocumentXML(String docXML);
     public abstract String getDocumentXML();
-    public abstract void setStatus(Status status);
-    public abstract Status getStatus();
+    public abstract void setStatus(ExecutionPhase status);
+    public abstract ExecutionPhase getStatus();
 }
 /* 
 $Log: Job.java,v $
+Revision 1.11  2004/03/03 01:13:42  nw
+updated jes to work with regenerated workflow object model
+
 Revision 1.10  2004/02/27 00:46:03  nw
 merged branch nww-itn05-bz#91
 

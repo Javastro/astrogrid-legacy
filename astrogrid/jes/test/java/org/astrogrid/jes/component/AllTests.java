@@ -1,5 +1,5 @@
-/*$Id: AllTests.java,v 1.3 2004/03/03 01:13:42 nw Exp $
- * Created on 25-Feb-2004
+/*$Id: AllTests.java,v 1.1 2004/03/03 01:13:42 nw Exp $
+ * Created on 27-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -8,11 +8,13 @@
  * with this distribution in the LICENSE.txt file.  
  *
 **/
-package org.astrogrid.jes.jobscheduler.dispatcher;
+package org.astrogrid.jes.component;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
+
 /**
- * @author Noel Winstanley nw@jb.man.ac.uk 25-Feb-2004
+ * @author Noel Winstanley nw@jb.man.ac.uk 27-Feb-2004
  *
  */
 public class AllTests {
@@ -20,22 +22,18 @@ public class AllTests {
         junit.textui.TestRunner.run(AllTests.class);
     }
     public static Test suite() {
-        TestSuite suite = new TestSuite("Test for org.astrogrid.jes.jobscheduler.dispatcher");
+        TestSuite suite = new TestSuite("Test for org.astrogrid.jes.component");
         //$JUnit-BEGIN$
-        suite.addTest(new TestSuite(ApplicationControllerDispatcherTest.class));
+        suite.addTest(new TestSuite(ComponentManagerTest.class));
         //$JUnit-END$
         return suite;
     }
 }
+
+
 /* 
 $Log: AllTests.java,v $
-Revision 1.3  2004/03/03 01:13:42  nw
+Revision 1.1  2004/03/03 01:13:42  nw
 updated jes to work with regenerated workflow object model
-
-Revision 1.2  2004/02/27 00:46:03  nw
-merged branch nww-itn05-bz#91
-
-Revision 1.1.2.1  2004/02/27 00:29:00  nw
-rearranging code
  
 */

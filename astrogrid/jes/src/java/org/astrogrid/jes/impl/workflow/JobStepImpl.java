@@ -1,4 +1,4 @@
-/*$Id: JobStepImpl.java,v 1.2 2004/02/27 00:46:03 nw Exp $
+/*$Id: JobStepImpl.java,v 1.3 2004/03/03 01:13:41 nw Exp $
  * Created on 11-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,10 @@
 **/
 package org.astrogrid.jes.impl.workflow;
 
+import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.jes.job.Job;
 import org.astrogrid.jes.job.JobStep;
 import org.astrogrid.jes.job.Tool;
-import org.astrogrid.jes.types.v1.Status;
 import org.astrogrid.workflow.beans.v1.Step;
 
 /** Implementation of JobStep as a thin wrapper around a {@link org.astrogrid.workflow.beans.v1.Step}
@@ -48,21 +48,26 @@ public class JobStepImpl implements JobStep {
     }
     /**
      * @see org.astrogrid.jes.job.JobStep#setStatus(java.lang.String)
+     * @todo check we have 0 origin
      */
-    public void setStatus(Status status) {
-        this.step.setStatus(org.astrogrid.workflow.beans.v1.types.Status.valueOf(status.toString()));
+    public void setStatus(ExecutionPhase status) {
+        int last = this.step.getStepExecutionRecordCount() - 1;
+        this.step.getStepExecutionRecord(last).setStatus(status);
     }
     /**
      * @see org.astrogrid.jes.job.JobStep#getStatus()
      */
-    public Status getStatus() {
-        return Status.fromString(step.getStatus().toString());
+    public ExecutionPhase getStatus() {
+        int last = this.step.getStepExecutionRecordCount() - 1;
+        return this.step.getStepExecutionRecord(last).getStatus();
     }
     /**
      * @see org.astrogrid.jes.job.JobStep#setComment(java.lang.String)
+     * @todo implement
      */
     public void setComment(String comment) {
-        step.setComment(comment);
+        int last = this.step.getStepExecutionRecordCount() - 1;
+        //step.getStepExecutionRecord(last).addM
     }
     /**
      * @see org.astrogrid.jes.job.JobStep#getSequenceNumber()
@@ -85,9 +90,11 @@ public class JobStepImpl implements JobStep {
     }
     /**
      * @see org.astrogrid.jes.job.JobStep#getComment()
+     * @todo implement
      */
     public String getComment() {
-        return step.getComment();
+       // return step.getComment();
+       return null;
     }
  
 }
@@ -95,6 +102,9 @@ public class JobStepImpl implements JobStep {
 
 /* 
 $Log: JobStepImpl.java,v $
+Revision 1.3  2004/03/03 01:13:41  nw
+updated jes to work with regenerated workflow object model
+
 Revision 1.2  2004/02/27 00:46:03  nw
 merged branch nww-itn05-bz#91
 

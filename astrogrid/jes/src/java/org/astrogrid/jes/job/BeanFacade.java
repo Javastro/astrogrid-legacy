@@ -1,4 +1,4 @@
-/*$Id: BeanFacade.java,v 1.2 2004/02/27 00:46:03 nw Exp $
+/*$Id: BeanFacade.java,v 1.3 2004/03/03 01:13:42 nw Exp $
  * Created on 11-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.jes.job;
 import org.astrogrid.jes.JesException;
+import org.astrogrid.jes.types.v1.JobURN;
 import org.astrogrid.jes.types.v1.SubmissionResponse;
 import org.astrogrid.jes.types.v1.WorkflowList;
 
@@ -32,9 +33,20 @@ public interface  BeanFacade {
     public abstract WorkflowList createListJobsSuccessResponse(String userid, String community, Iterator iterator);
     public abstract SubmissionResponse createSubmitJobSuccessResponse(Job j);
     public abstract SubmissionResponse createSubmitJobErrorResponse(Job j, String msg);
+    /** convert between object models.
+     * @param jobURN
+     * @return
+     */
+    public abstract org.astrogrid.workflow.beans.v1.execution.JobURN axis2castor(JobURN jobURN);
+    
+    /** and the inverse */
+    public abstract JobURN castor2axis(org.astrogrid.workflow.beans.v1.execution.JobURN jobURN);
 }
 /* 
 $Log: BeanFacade.java,v $
+Revision 1.3  2004/03/03 01:13:42  nw
+updated jes to work with regenerated workflow object model
+
 Revision 1.2  2004/02/27 00:46:03  nw
 merged branch nww-itn05-bz#91
 

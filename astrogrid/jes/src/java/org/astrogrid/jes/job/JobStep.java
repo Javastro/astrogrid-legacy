@@ -1,4 +1,4 @@
-/*$Id: JobStep.java,v 1.19 2004/02/27 00:46:03 nw Exp $
+/*$Id: JobStep.java,v 1.20 2004/03/03 01:13:42 nw Exp $
  * Created on 09-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,8 @@
 **/
 package org.astrogrid.jes.job;
 
-import org.astrogrid.jes.types.v1.Status;
+import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
+
 
 /** Single execution step of a job.
  * @author Noel Winstanley nw@jb.man.ac.uk 09-Feb-2004
@@ -27,8 +28,8 @@ public interface JobStep {
   //  public abstract void setStepNumber(int stepNumber);
    // public abstract void setStepNumber(Integer stepNumber);
     public abstract int getStepNumber();
-    public abstract void setStatus(Status status);
-    public abstract Status getStatus();
+    public abstract void setStatus(ExecutionPhase status);
+    public abstract ExecutionPhase getStatus();
     public abstract void setComment(String comment);
     //public abstract String getComment();
     //JBL added iteration 3
@@ -47,6 +48,9 @@ public interface JobStep {
 }
 /* 
 $Log: JobStep.java,v $
+Revision 1.20  2004/03/03 01:13:42  nw
+updated jes to work with regenerated workflow object model
+
 Revision 1.19  2004/02/27 00:46:03  nw
 merged branch nww-itn05-bz#91
 

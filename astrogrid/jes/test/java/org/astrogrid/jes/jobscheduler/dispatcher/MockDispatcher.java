@@ -1,4 +1,4 @@
-/*$Id: MockDispatcher.java,v 1.2 2004/02/27 00:46:03 nw Exp $
+/*$Id: MockDispatcher.java,v 1.3 2004/03/03 01:13:42 nw Exp $
  * Created on 13-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,9 +14,11 @@ import org.astrogrid.jes.JesException;
 import org.astrogrid.jes.delegate.v1.jobmonitor.JobMonitor;
 import org.astrogrid.jes.job.JobStep;
 import org.astrogrid.jes.jobscheduler.Dispatcher;
-import org.astrogrid.jes.types.v1.JobInfo;
-import org.astrogrid.jes.types.v1.Status;
+import org.astrogrid.jes.types.v1.cea.axis.ExecutionPhase;
+import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
+import org.astrogrid.jes.types.v1.cea.axis.MessageType;
 
+import java.lang.ref.PhantomReference;
 import java.rmi.RemoteException;
 
 
@@ -65,18 +67,18 @@ public class MockDispatcher implements Dispatcher {
             }
         } else {
             // we've got a monitor, lets talk / barf through that.
-            JobInfo info = new JobInfo();
-            info.setJobURN(js.getParent().getId());
-            info.setStepNumber(js.getStepNumber());
+            MessageType info = new MessageType();
+            JobIdentifierType id = new JobIdentifierType();
+            id.setValue(js.getParent().getId() + ":" + js.getStepNumber());
             if (willSucceed) {
-                info.setComment("OK");
-                info.setStatus(Status.COMPLETED);
+                info.setValue("OK");
+                info.setPhase(ExecutionPhase.COMPLETED);
             } else {
-                info.setComment("You wanted me to fail");
-                info.setStatus(Status.ERROR);
+                info.setValue("You wanted me to fail");
+                info.setPhase(ExecutionPhase.ERROR);
             }
             try {
-                monitor.monitorJob(info);
+                monitor.monitorJob(id,info);
             } catch (RemoteException e) {
                 throw new JesException("Mock Dispatcher had problems talking to job monitor",e);
             }
@@ -87,6 +89,9 @@ public class MockDispatcher implements Dispatcher {
 
 /* 
 $Log: MockDispatcher.java,v $
+Revision 1.3  2004/03/03 01:13:42  nw
+updated jes to work with regenerated workflow object model
+
 Revision 1.2  2004/02/27 00:46:03  nw
 merged branch nww-itn05-bz#91
 

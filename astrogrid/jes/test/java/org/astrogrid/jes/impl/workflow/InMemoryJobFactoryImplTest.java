@@ -1,4 +1,4 @@
-/*$Id: InMemoryJobFactoryImplTest.java,v 1.2 2004/02/27 00:46:03 nw Exp $
+/*$Id: InMemoryJobFactoryImplTest.java,v 1.3 2004/03/03 01:13:41 nw Exp $
  * Created on 11-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,13 +10,13 @@
 **/
 package org.astrogrid.jes.impl.workflow;
 
+import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.jes.AbstractTestWorkflowInputs;
 import org.astrogrid.jes.job.Job;
 import org.astrogrid.jes.job.JobFactory;
 import org.astrogrid.jes.job.NotFoundException;
 import org.astrogrid.jes.job.SubmitJobRequest;
-import org.astrogrid.jes.types.v1.JobURN;
-import org.astrogrid.jes.types.v1.Status;
+import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
 import java.io.InputStream;
 import java.util.Iterator;
@@ -91,10 +91,10 @@ public class InMemoryJobFactoryImplTest extends AbstractTestWorkflowInputs {
         assertNotNull(j1);
         assertEquals(j,j1);
         //update job - change the status code
-        Status newStatus = Status.RUNNING;
+        ExecutionPhase newStatus = ExecutionPhase.RUNNING;
         // quick check its not already that..
         if (newStatus.equals(j.getStatus())) {
-            newStatus = Status.COMPLETED;
+            newStatus = ExecutionPhase.COMPLETED;
         }
         j.setStatus(newStatus);
         jf.updateJob(j);
@@ -129,7 +129,8 @@ public class InMemoryJobFactoryImplTest extends AbstractTestWorkflowInputs {
     }    
     
     public void finallyTestUnknownJobs() throws Exception {
-        JobURN unknownURN = new JobURN("unknown:urn:job");
+        JobURN unknownURN = new JobURN();
+        unknownURN.setContent("unknown:urn:job");
         try {
         Job j = jf.findJob(unknownURN);
         fail("should have thrown");
@@ -160,6 +161,9 @@ public class InMemoryJobFactoryImplTest extends AbstractTestWorkflowInputs {
 
 /* 
 $Log: InMemoryJobFactoryImplTest.java,v $
+Revision 1.3  2004/03/03 01:13:41  nw
+updated jes to work with regenerated workflow object model
+
 Revision 1.2  2004/02/27 00:46:03  nw
 merged branch nww-itn05-bz#91
 

@@ -2,7 +2,10 @@ package org.astrogrid.jes.delegate.impl;
 
 import org.astrogrid.jes.delegate.Delegate;
 import org.astrogrid.jes.delegate.JesDelegateException;
-import org.astrogrid.jes.types.v1.JobInfo;
+import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
+import org.astrogrid.jes.types.v1.cea.axis.MessageType;
+
+
 
 /**
 
@@ -14,11 +17,12 @@ public class TestJobMonitorDelegateImpl extends JobMonitorDelegate {
         this.targetEndPoint = Delegate.TEST_URI;
     }
     
-    
-    public void monitorJob( JobInfo j )throws JesDelegateException {
-
-            log.info( "Test Delegate: " +j.toString()) ;
-
+ 
+    /**
+     * @see org.astrogrid.jes.delegate.JobMonitor#monitorJob(org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType, org.astrogrid.jes.types.v1.cea.axis.MessageType)
+     */
+    public void monitorJob(JobIdentifierType id, MessageType info) throws JesDelegateException {
+        log.info( "Test Delegate: " +id.toString()) ;
     } // end of monitorJob()    
      
 

@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.4 2004/02/27 00:46:03 nw Exp $
+/*$Id: AllTests.java,v 1.5 2004/03/03 01:13:42 nw Exp $
  * Created on 06-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,8 +22,9 @@ public class AllTests {
     public static Test suite() {
         TestSuite suite = new TestSuite("JES Tests");
         //$JUnit-BEGIN$
-        suite.addTest(new TestSuite(JESTest.class));
         suite.addTest(new TestSuite(InMemorySystemTest.class));
+        suite.addTest(new TestSuite(JESTest.class));
+        suite.addTest(new TestSuite(LocalSOAPSystemTest.class));
         //$JUnit-END$
         suite.addTest(org.astrogrid.jes.delegate.AllTests.suite());
         suite.addTest(org.astrogrid.jes.jobcontroller.AllTests.suite());
@@ -32,11 +33,15 @@ public class AllTests {
         suite.addTest(org.astrogrid.jes.jobmonitor.AllTests.suite());
         suite.addTest(org.astrogrid.jes.jobscheduler.AllTests.suite());
         suite.addTest(org.astrogrid.jes.comm.AllTests.suite());
+        suite.addTest(org.astrogrid.jes.component.AllTests.suite());
         return suite;
     }
 }
 /* 
 $Log: AllTests.java,v $
+Revision 1.5  2004/03/03 01:13:42  nw
+updated jes to work with regenerated workflow object model
+
 Revision 1.4  2004/02/27 00:46:03  nw
 merged branch nww-itn05-bz#91
 

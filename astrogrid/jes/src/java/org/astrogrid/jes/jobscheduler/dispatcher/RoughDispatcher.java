@@ -1,4 +1,4 @@
-/*$Id: RoughDispatcher.java,v 1.2 2004/02/27 00:46:03 nw Exp $
+/*$Id: RoughDispatcher.java,v 1.3 2004/03/03 01:13:42 nw Exp $
  * Created on 12-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.jes.jobscheduler.dispatcher;
 
+import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.applications.delegate.ApplicationController;
 import org.astrogrid.applications.delegate.DelegateFactory;
 import org.astrogrid.applications.delegate.beans.ParameterValues;
@@ -20,7 +21,6 @@ import org.astrogrid.jes.job.Job;
 import org.astrogrid.jes.job.JobStep;
 import org.astrogrid.jes.jobscheduler.Dispatcher;
 import org.astrogrid.jes.jobscheduler.Locator;
-import org.astrogrid.jes.types.v1.Status;
 
 /** Rough implementation of a Dispatcher, based on code cut out of job scheduler.
  * @deprecated replace with something cleaner
@@ -84,16 +84,16 @@ public class RoughDispatcher implements Dispatcher {
              }
  
              if( bSubmit == true ) { 
-                 step.setStatus( Status.RUNNING ) ;                                                          
+                 step.setStatus( ExecutionPhase.RUNNING ) ;                                                          
              }
              else {
-                 step.setStatus(Status.ERROR ) ;
+                 step.setStatus(ExecutionPhase.ERROR ) ;
                  throw new JesException("failed when contacting application controller") ;
              }
   
          }
          catch( Exception rex ) {
-             step.setStatus(Status.ERROR ) ;
+             step.setStatus(ExecutionPhase.ERROR ) ;
              throw new JesException("failed when contacting application controller",rex) ;
          }
 
@@ -106,6 +106,9 @@ public class RoughDispatcher implements Dispatcher {
 
 /* 
 $Log: RoughDispatcher.java,v $
+Revision 1.3  2004/03/03 01:13:42  nw
+updated jes to work with regenerated workflow object model
+
 Revision 1.2  2004/02/27 00:46:03  nw
 merged branch nww-itn05-bz#91
 

@@ -1,4 +1,4 @@
-/*$Id: ComponentManager.java,v 1.2 2004/02/27 00:46:03 nw Exp $
+/*$Id: ComponentManager.java,v 1.3 2004/03/03 01:13:42 nw Exp $
  * Created on 16-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,8 @@
 **/
 package org.astrogrid.jes.component;
 
+import org.astrogrid.config.Config;
+import org.astrogrid.config.PropertyNotFoundException;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.jes.comm.MemoryQueueSchedulerNotifier;
 import org.astrogrid.jes.comm.SchedulerNotifier;
@@ -27,6 +29,7 @@ import org.astrogrid.jes.jobscheduler.Locator;
 import org.astrogrid.jes.jobscheduler.MockJobScheduler;
 import org.astrogrid.jes.jobscheduler.Policy;
 import org.astrogrid.jes.jobscheduler.dispatcher.ApplicationControllerDispatcher;
+import org.astrogrid.jes.jobscheduler.locator.ConstantToolLocator;
 import org.astrogrid.jes.jobscheduler.locator.MapLocator;
 import org.astrogrid.jes.jobscheduler.locator.XMLFileLocator;
 import org.astrogrid.jes.jobscheduler.policy.RoughPolicy;
@@ -51,12 +54,25 @@ import javax.sql.DataSource;
  * @author Noel Winstanley nw@jb.man.ac.uk 16-Feb-2004
  *
  */
-public final class ComponentManager {
-    private static final Log log = LogFactory.getLog(ComponentManager.class);
-    /** Construct a new ComponentManager
+public class ComponentManager {
+    protected static final Log log = LogFactory.getLog(ComponentManager.class);
+    /** Construct a new ComponentManager, loading data via simpleConfig
      */
-    private ComponentManager() {
-        super();        
+    protected ComponentManager() {
+        this(SimpleConfig.getSingleton());
+    }
+    
+    /** construct a new component manager, loading data from supplied config 
+     * used only for testing.*/
+    protected ComponentManager(Config conf) {
+        this.conf = conf;
+    }
+    
+    /** configuration object to query for data */
+    protected final Config conf;
+    
+    /** assemble services - top level call that initialized everything.*/
+    protected void buildServices(){     
         this.facade = buildFacade();
         this.scheduler = buildScheduler();
         this.notifier = buildNotifier(this.scheduler);
@@ -69,7 +85,7 @@ public final class ComponentManager {
     /** directory to use to store workflow documents if using the file-based job factory */
     public static final String FILE_JOB_FACTORY_BASEDIR = "file.job.factory.basedir";
     /** JNDI url to look for a dataSource, if using the db-based job factory */
-    public static final String DB_JOB_FACTORY_DATASOURCE_JNDI_URL = "java:comp/env/jdbc/jes-datasource";
+    public static final String DB_JOB_FACTORY_DATASOURCE_JNDI_URL ="jdbc/jes-datasource"; // removed java:/comp/env prefix
     
 
    /** build a scheduler notifier, possibly using  the previously-constructed scheduler */     
@@ -78,11 +94,15 @@ public final class ComponentManager {
 }
 
 /** type of tool locator to create
- * possible values in config: <tt>xml</tt> | <tt>registry</tt>
+ * possible values in config: <tt>xml</tt> | <tt>registry</tt> | <tt>constant</tt>
  */
 public static final String TOOL_LOCATOR_TYPE = "tool.locator.type";
 /** location of xml config file to parse - used for xml-based tool locator */
 public static final String XML_TOOL_LOCATOR_URL = "xml.tool.locator.url";
+/** endpoint to use for constant tool locator */
+public static final String CONSTANT_TOOL_LOCATOR_ENDPOINT = "constant.tool.locator.endpoint";
+/** interface to return for constant tool locator */
+public static final String CONSTANT_TOOL_LOCATOR_INTERFACE = "constant.tool.locator.interface";
 
 /** build a job scheduler */
     protected org.astrogrid.jes.delegate.v1.jobscheduler.JobScheduler buildScheduler() {
@@ -114,17 +134,14 @@ public static final String ABSOLUTE_MONITOR_URL="dispatcher.absolute.monitor.url
  * @todo find a way to resolve relative URL into absolute */
 protected Dispatcher buildDispatcher(Locator locator) throws MalformedURLException {
     URL monitorURL = null;
-    String relativeURLString = SimpleConfig.getProperty(RELATIVE_MONITOR_URL);
-    if (relativeURLString != null) {
+    try {
+        String relativeURLString = conf.getString(RELATIVE_MONITOR_URL);
         log.info(RELATIVE_MONITOR_URL + " := '" + relativeURLString + "'");
         monitorURL = new URL(relativeURLString);
-    } else {
-        String absoluteURLString = SimpleConfig.getProperty(ABSOLUTE_MONITOR_URL);
+    } catch (PropertyNotFoundException e) { // oh well,    
+        String absoluteURLString = conf.getString(ABSOLUTE_MONITOR_URL);
         log.info(ABSOLUTE_MONITOR_URL + " := '" + absoluteURLString + "'");
-        if (absoluteURLString == null) {
-            throw new MalformedURLException("Monitor Endpoint cannot be null");
-        }
-        monitorURL = new URL(absoluteURLString);
+        monitorURL = new URL(absoluteURLString);        
     }
     log.info("Monitor URL for dispatcher callback :" + monitorURL.toString());
     return new ApplicationControllerDispatcher(locator,monitorURL);
@@ -134,27 +151,38 @@ protected Dispatcher buildDispatcher(Locator locator) throws MalformedURLExcepti
 
 
 protected Locator buildLocator() {
-        Locator locator = null;
-        String toolLocatorType = SimpleConfig.getProperty(TOOL_LOCATOR_TYPE).trim();
+        String toolLocatorType = conf.getString(TOOL_LOCATOR_TYPE,"xml").trim();
         log.info(TOOL_LOCATOR_TYPE + " := '" + toolLocatorType + "'");
-        
+        try {
         if ("xml".equalsIgnoreCase(toolLocatorType)) {
             log.info("Creating XML based Tool Locator");
-            String urlString = SimpleConfig.getProperty(XML_TOOL_LOCATOR_URL);
-            if (urlString == null) {
-                log.info("loading tool configuration from default location");
-               // locator = new XMLFileLocator();
+            try {
+                String urlString = conf.getString(XML_TOOL_LOCATOR_URL);
+                log.info(XML_TOOL_LOCATOR_URL + " := '" + urlString);
+                return new XMLFileLocator(new URL(urlString));
+            } catch (PropertyNotFoundException e) {
+                log.info("loading tool configuration from default location" + XMLFileLocator.DEFAULT_CONFIG_LOCATION);
+                return new XMLFileLocator();                
             }
+            
         } else if ("registry".equalsIgnoreCase(toolLocatorType)) {
             log.info("Creating Registry based Tool Locator");
             log.error("Not implemented yet");
-            locator = buildFallbackLocator();
-            
+            return buildFallbackLocator();
+    
+        } else if ("constant".equalsIgnoreCase(toolLocatorType)) {
+            log.info("Creating constant tool locator");
+            String endpoint = conf.getString(CONSTANT_TOOL_LOCATOR_ENDPOINT);
+            String interfaceName = conf.getString(CONSTANT_TOOL_LOCATOR_INTERFACE);
+            return new ConstantToolLocator(new URL(endpoint),interfaceName);         
         } else {
             log.error("Unrecognized tool locator type");
-            locator = buildFallbackLocator();
+            return buildFallbackLocator();
+        }      
+        } catch (Exception e) {
+            log.fatal("Failed to create chosen locator",e);
+            return buildFallbackLocator(); 
         }
-        return locator;
     }
     
     protected Locator buildFallbackLocator() {
@@ -169,26 +197,22 @@ protected Locator buildLocator() {
      */
     protected BeanFacade buildFacade() {
         AbstractJobFactoryImpl fac = null;
-        String factoryType = SimpleConfig.getProperty(JOB_FACTORY_IMPL_TYPE).trim();
+        String factoryType = conf.getString(JOB_FACTORY_IMPL_TYPE,"memory").trim();
         log.info(JOB_FACTORY_IMPL_TYPE + " := '" + factoryType + "'");
         try {
             if ("database".equalsIgnoreCase(factoryType)) {
                 log.info("Creating Database-backed Job Factory");
-                Object o = new InitialContext().lookup(DB_JOB_FACTORY_DATASOURCE_JNDI_URL);
+                Object o = conf.getProperty(DB_JOB_FACTORY_DATASOURCE_JNDI_URL); // expected in jndi.
                 if (o == null ||! (o instanceof DataSource)) {
                     throw new NamingException("result of looking up " + DB_JOB_FACTORY_DATASOURCE_JNDI_URL + " is not a datasource");
                 }
-                SqlCommands commands = new ConfigSqlCommands();
+                SqlCommands commands = new ConfigSqlCommands(conf);
                 fac = new DBJobFactoryImpl((DataSource)o,commands);
                       
             } else if ("file".equalsIgnoreCase(factoryType)) {
                 log.info("Creating Filestore-backed Job Factory");
-                String baseDirLocation = SimpleConfig.getProperty(FILE_JOB_FACTORY_BASEDIR);
+                String baseDirLocation = conf.getString(FILE_JOB_FACTORY_BASEDIR, System.getProperty("java.io.tmpdir"));
                 log.info(FILE_JOB_FACTORY_BASEDIR + " := '" + baseDirLocation + "'");
-                if (baseDirLocation == null || baseDirLocation.length() == 0) {
-                    baseDirLocation = System.getProperty("java.io.tmpdir");
-                    log.warn("No directory for filestore provided - falling back to " + baseDirLocation );
-                }
                 File baseDir = new File(baseDirLocation);
                 fac = new FileJobFactoryImpl(baseDir);
                 
@@ -214,9 +238,9 @@ protected AbstractJobFactoryImpl buildFallbackFactory() {
     return new InMemoryJobFactoryImpl();
 }    
     
-    protected final BeanFacade facade;
-    protected final SchedulerNotifier notifier;    
-    protected final org.astrogrid.jes.delegate.v1.jobscheduler.JobScheduler scheduler;
+    protected  BeanFacade facade;
+    protected SchedulerNotifier notifier;    
+    protected org.astrogrid.jes.delegate.v1.jobscheduler.JobScheduler scheduler;
     
     /** get the instnace.
      * lazily initialized - parses configuration and creates components on first call
@@ -225,8 +249,15 @@ protected AbstractJobFactoryImpl buildFallbackFactory() {
     public static synchronized ComponentManager getInstance() {
                 if (theInstance == null) {
                     theInstance = new ComponentManager();
+                    theInstance.buildServices();
                 }           
         return theInstance;
+    }
+    
+    /** unsafe, useful for testing */
+    public static void _setInstance(ComponentManager mgr) {
+        theInstance = mgr;
+        theInstance.buildServices();
     }
     
     protected static ComponentManager theInstance;

@@ -1,4 +1,4 @@
-/*$Id: JobMonitorTest.java,v 1.3 2004/02/27 00:46:03 nw Exp $
+/*$Id: JobMonitorTest.java,v 1.4 2004/03/03 01:13:42 nw Exp $
  * Created on 13-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,9 +11,10 @@
 package org.astrogrid.jes.jobmonitor;
 
 import org.astrogrid.jes.comm.MockSchedulerNotifier;
-import org.astrogrid.jes.types.v1.JobInfo;
 import org.astrogrid.jes.types.v1.JobURN;
-import org.astrogrid.jes.types.v1.Status;
+import org.astrogrid.jes.types.v1.cea.axis.ExecutionPhase;
+import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
+import org.astrogrid.jes.types.v1.cea.axis.MessageType;
 
 import junit.framework.TestCase;
 
@@ -34,39 +35,36 @@ public class JobMonitorTest extends TestCase {
     protected void setUp() {
         this.nudger = new MockSchedulerNotifier();
         this.monitor = new JobMonitor(nudger);
-        this.info = new JobInfo();
-        info.setJobURN(new JobURN("jes:some:urn"));
-        info.setStepNumber(1);
-        info.setStatus(Status.RUNNING);
+        this.info = new MessageType();
+        this.id = new JobIdentifierType();
+        id.setValue("jes:some:urn");
+        info.setPhase(ExecutionPhase.RUNNING);
     }
-    protected JobInfo info;
+    protected MessageType info;
+    protected JobIdentifierType id;
     protected JobMonitor monitor;
     protected MockSchedulerNotifier nudger;
     
     public void testNormal() {        
-        monitor.monitorJob(info);
+        monitor.monitorJob(id,info);
         assertEquals(1,nudger.getCallCount());  
     }
     
     public void testNull() {
-        monitor.monitorJob(null);
+        monitor.monitorJob(null,null);
         assertEquals(0,nudger.getCallCount());
     }
     
-    public void testIncomplete() {
-        info.setJobURN(null);
-        monitor.monitorJob(info);
-        assertEquals(0,nudger.getCallCount());
-    }
+
     
     public void testNudgerFailure() {
         // create different configuration..
         nudger = new MockSchedulerNotifier(false); // set to fail
         monitor = new JobMonitor(nudger); 
-        monitor.monitorJob(info);
+        monitor.monitorJob(id,info);
         assertEquals(1,nudger.getCallCount());
         // should have barfed internally. check it can accept another call after.
-        monitor.monitorJob(info);
+        monitor.monitorJob(id,info);
         assertEquals(2,nudger.getCallCount());
     }
 }
@@ -74,6 +72,9 @@ public class JobMonitorTest extends TestCase {
 
 /* 
 $Log: JobMonitorTest.java,v $
+Revision 1.4  2004/03/03 01:13:42  nw
+updated jes to work with regenerated workflow object model
+
 Revision 1.3  2004/02/27 00:46:03  nw
 merged branch nww-itn05-bz#91
 

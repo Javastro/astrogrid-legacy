@@ -1,4 +1,4 @@
-/*$Id: MemoryQueueSchedulerNotifierTest.java,v 1.2 2004/02/27 00:46:03 nw Exp $
+/*$Id: MemoryQueueSchedulerNotifierTest.java,v 1.3 2004/03/03 01:13:42 nw Exp $
  * Created on 18-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,8 +11,9 @@
 package org.astrogrid.jes.comm;
 
 import org.astrogrid.jes.jobscheduler.MockJobScheduler;
-import org.astrogrid.jes.types.v1.JobInfo;
-import org.astrogrid.jes.types.v1.JobURN;
+import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
+import org.astrogrid.jes.types.v1.cea.axis.MessageType;
+import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
 import junit.framework.TestCase;
 
@@ -38,7 +39,9 @@ public class MemoryQueueSchedulerNotifierTest extends TestCase {
     protected MockJobScheduler js;
     
     public void testSimpleNewJob() throws Exception {
-        q.scheduleNewJob(new JobURN("jes:some:urn"));
+        JobURN urn = new JobURN();
+        urn.setContent("jes:some:urn");
+        q.scheduleNewJob(urn);
         q.addTask(new Runnable() {
 
             public void run() {
@@ -50,7 +53,7 @@ public class MemoryQueueSchedulerNotifierTest extends TestCase {
     }
     
     public void testSimpleResumeJob() throws Exception {
-        q.resumeJob(new JobInfo());
+        q.resumeJob(new JobIdentifierType(),new MessageType());
         q.addTask(new Runnable() {
 
             public void run() {
@@ -65,6 +68,9 @@ public class MemoryQueueSchedulerNotifierTest extends TestCase {
 
 /* 
 $Log: MemoryQueueSchedulerNotifierTest.java,v $
+Revision 1.3  2004/03/03 01:13:42  nw
+updated jes to work with regenerated workflow object model
+
 Revision 1.2  2004/02/27 00:46:03  nw
 merged branch nww-itn05-bz#91
 

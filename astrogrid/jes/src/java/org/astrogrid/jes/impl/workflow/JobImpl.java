@@ -1,4 +1,4 @@
-/*$Id: JobImpl.java,v 1.2 2004/02/27 00:46:03 nw Exp $
+/*$Id: JobImpl.java,v 1.3 2004/03/03 01:13:41 nw Exp $
  * Created on 11-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,12 +10,12 @@
 **/
 package org.astrogrid.jes.impl.workflow;
 
+import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.jes.job.Job;
-import org.astrogrid.jes.types.v1.JobURN;
-import org.astrogrid.jes.types.v1.Status;
 import org.astrogrid.workflow.beans.v1.ActivityChoice;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Workflow;
+import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -49,7 +49,7 @@ public class JobImpl implements Job {
      * @see org.astrogrid.jes.job.Job#getId()
      */
     public JobURN getId() {
-        return new JobURN(workflow.getJobURN());
+        return workflow.getJobExecutionRecord().getJobId();
     }
     /**
      * @see org.astrogrid.jes.job.Job#getName()
@@ -69,13 +69,13 @@ public class JobImpl implements Job {
      * @see org.astrogrid.jes.job.Job#getDate()
      */
     public Date getDate() {
-        return workflow.getStartDate();
+        return workflow.getJobExecutionRecord().getStartTime();
     }
     /**
      * @see org.astrogrid.jes.job.Job#setDate(java.util.Date)
      */
     public void setDate(Date date) {
-        workflow.setStartDate(date);
+        workflow.getJobExecutionRecord().setStartTime(date);
     }
     /**
      * @see org.astrogrid.jes.job.Job#getUserId()
@@ -100,15 +100,16 @@ public class JobImpl implements Job {
     }
     /**
      * @see org.astrogrid.jes.job.Job#setGroup(java.lang.String)
+     * @todo implement
      */
     public void setGroup(String group) {
-        workflow.getCommunity().getCredentials().setGroup(group);
+        //workflow.getCredentials().setGroup(group);
     }
     /**
      * @see org.astrogrid.jes.job.Job#getToken()
      */
     public String getToken() {
-        return workflow.getCommunity().getToken();
+        return workflow.getCredentials().getSecurityToken();
     }
 
     /**
@@ -171,15 +172,14 @@ public class JobImpl implements Job {
     /**
      * @see org.astrogrid.jes.job.Job#setStatus(java.lang.String)
      */
-    public void setStatus(Status status) {
-        workflow.setStatus(org.astrogrid.workflow.beans.v1.types.Status.valueOf(status.toString()));
+    public void setStatus(ExecutionPhase status) {
+        workflow.getJobExecutionRecord().setStatus(status);
     }
     /**
      * @see org.astrogrid.jes.job.Job#getStatus()
      */
-    public Status getStatus() {
-        // need to convert between equivalent enumeration classes in two different object models here. bit ugly.
-        return workflow.getStatus() == null ? null : Status.fromString(workflow.getStatus().toString());
+    public ExecutionPhase getStatus() {
+        return workflow.getJobExecutionRecord().getStatus();
         
     }
     /** equlity based only on getId() - the  jobURN*/
@@ -199,6 +199,9 @@ public class JobImpl implements Job {
 
 /* 
 $Log: JobImpl.java,v $
+Revision 1.3  2004/03/03 01:13:41  nw
+updated jes to work with regenerated workflow object model
+
 Revision 1.2  2004/02/27 00:46:03  nw
 merged branch nww-itn05-bz#91
 

@@ -10,7 +10,9 @@
 package org.astrogrid.jes.delegate.v1.jobscheduler;
 
 import org.astrogrid.jes.component.ComponentManager;
-import org.astrogrid.jes.types.v1.JobInfo;
+
+import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
+import org.astrogrid.jes.types.v1.cea.axis.MessageType;
 import org.astrogrid.jes.types.v1.JobURN;
 
 import java.rmi.RemoteException;
@@ -30,8 +32,8 @@ public class JobSchedulerServiceSoapBindingImpl implements JobScheduler{
     /**
      * @see org.astrogrid.jes.delegate.v1.jobscheduler.JobScheduler#resumeJob(org.astrogrid.jes.types.v1.JobInfo)
      */
-    public void resumeJob(JobInfo jobInfo) throws RemoteException {
-        scheduler.resumeJob(jobInfo);
+    public void resumeJob(JobIdentifierType id,MessageType jobInfo) throws RemoteException {
+        scheduler.resumeJob(id,jobInfo);
     }
 
 }

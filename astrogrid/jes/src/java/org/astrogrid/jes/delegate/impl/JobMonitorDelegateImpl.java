@@ -14,7 +14,9 @@ package org.astrogrid.jes.delegate.impl;
 import org.astrogrid.jes.delegate.JesDelegateException;
 import org.astrogrid.jes.delegate.v1.jobmonitor.JobMonitorServiceLocator;
 import org.astrogrid.jes.delegate.v1.jobmonitor.JobMonitorServiceSoapBindingStub;
-import org.astrogrid.jes.types.v1.JobInfo;
+
+import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
+import org.astrogrid.jes.types.v1.cea.axis.MessageType;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -36,14 +38,14 @@ public class JobMonitorDelegateImpl extends JobMonitorDelegate {
     
 
     
-    public void monitorJob(JobInfo jobInfo ) throws JesDelegateException {
+    public void monitorJob(JobIdentifierType id,MessageType info ) throws JesDelegateException {
           
             
         try {
             JobMonitorServiceSoapBindingStub binding = (JobMonitorServiceSoapBindingStub)
                           new JobMonitorServiceLocator().getJobMonitorService( new URL( this.getTargetEndPoint() ) );                        
             binding.setTimeout( this.getTimeout() ) ;    
-            binding.monitorJob(jobInfo);
+            binding.monitorJob(id,info);
         }
         catch( MalformedURLException mex ) {
             throw new JesDelegateException( mex ) ;

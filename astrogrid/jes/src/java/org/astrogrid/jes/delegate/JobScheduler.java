@@ -1,4 +1,4 @@
-/*$Id: JobScheduler.java,v 1.3 2004/02/27 00:46:03 nw Exp $
+/*$Id: JobScheduler.java,v 1.4 2004/03/03 01:13:42 nw Exp $
  * Created on 06-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,9 @@
 **/
 package org.astrogrid.jes.delegate;
 
-import org.astrogrid.jes.types.v1.JobInfo;
+
+import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
+import org.astrogrid.jes.types.v1.cea.axis.MessageType;
 import org.astrogrid.jes.types.v1.JobURN;
 
 /** Delegate interface to a job scheudler
@@ -20,10 +22,13 @@ import org.astrogrid.jes.types.v1.JobURN;
 public interface JobScheduler extends Delegate{
     /** scheduler this job for execution */
     public abstract void scheduleNewJob(JobURN j) throws JesDelegateException;
-    public abstract void resumeJob(JobInfo info) throws JesDelegateException;
+    public abstract void resumeJob(JobIdentifierType i, MessageType info) throws JesDelegateException;
 }
 /* 
 $Log: JobScheduler.java,v $
+Revision 1.4  2004/03/03 01:13:42  nw
+updated jes to work with regenerated workflow object model
+
 Revision 1.3  2004/02/27 00:46:03  nw
 merged branch nww-itn05-bz#91
 

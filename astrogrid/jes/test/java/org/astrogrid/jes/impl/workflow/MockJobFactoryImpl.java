@@ -1,4 +1,4 @@
-/*$Id: MockJobFactoryImpl.java,v 1.2 2004/02/27 00:46:03 nw Exp $
+/*$Id: MockJobFactoryImpl.java,v 1.3 2004/03/03 01:13:41 nw Exp $
  * Created on 12-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,7 +14,7 @@ import org.astrogrid.jes.job.Job;
 import org.astrogrid.jes.job.JobException;
 import org.astrogrid.jes.job.NotFoundException;
 import org.astrogrid.jes.job.SubmitJobRequest;
-import org.astrogrid.jes.types.v1.JobURN;
+import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
 import java.util.Iterator;
 
@@ -100,6 +100,9 @@ public class MockJobFactoryImpl extends AbstractJobFactoryImpl {
 
 /* 
 $Log: MockJobFactoryImpl.java,v $
+Revision 1.3  2004/03/03 01:13:41  nw
+updated jes to work with regenerated workflow object model
+
 Revision 1.2  2004/02/27 00:46:03  nw
 merged branch nww-itn05-bz#91
 

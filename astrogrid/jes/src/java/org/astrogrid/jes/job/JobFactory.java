@@ -1,4 +1,4 @@
-/*$Id: JobFactory.java,v 1.8 2004/02/27 00:46:03 nw Exp $
+/*$Id: JobFactory.java,v 1.9 2004/03/03 01:13:42 nw Exp $
  * Created on 09-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,8 @@
 **/
 package org.astrogrid.jes.job;
 
-import org.astrogrid.jes.types.v1.JobURN;
+
+import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
 import java.util.Iterator;
 /** Interface to a creation / persistence component for jobs.
@@ -38,6 +39,9 @@ public interface JobFactory {
 }
 /* 
 $Log: JobFactory.java,v $
+Revision 1.9  2004/03/03 01:13:42  nw
+updated jes to work with regenerated workflow object model
+
 Revision 1.8  2004/02/27 00:46:03  nw
 merged branch nww-itn05-bz#91
 

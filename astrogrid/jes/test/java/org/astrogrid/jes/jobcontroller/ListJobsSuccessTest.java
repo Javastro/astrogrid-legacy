@@ -1,4 +1,4 @@
-/*$Id: ListJobsSuccessTest.java,v 1.2 2004/02/27 00:46:03 nw Exp $
+/*$Id: ListJobsSuccessTest.java,v 1.3 2004/03/03 01:13:42 nw Exp $
  * Created on 17-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -62,14 +62,17 @@ public class ListJobsSuccessTest extends AbstractTestForJobController {
             assertNotNull(rawArr[i]);
             Workflow wf = Workflow.unmarshalWorkflow(new StringReader(rawArr[i]));
             assertNotNull(wf);
-            assertEquals(USERID, wf.getCommunity().getCredentials().getAccount());
-            assertEquals(COMMUNITY, wf.getCommunity().getCredentials().getGroup());
+            assertEquals(USERID, wf.getCredentials().getAccount().getName());
+            assertEquals(COMMUNITY, wf.getCredentials().getAccount().getCommunity());
         }
     }
 
 }
 /* 
 $Log: ListJobsSuccessTest.java,v $
+Revision 1.3  2004/03/03 01:13:42  nw
+updated jes to work with regenerated workflow object model
+
 Revision 1.2  2004/02/27 00:46:03  nw
 merged branch nww-itn05-bz#91
 
