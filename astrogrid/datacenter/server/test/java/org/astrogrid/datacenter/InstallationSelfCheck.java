@@ -1,4 +1,4 @@
-/*$Id: InstallationSelfCheck.java,v 1.7 2004/02/16 23:07:04 mch Exp $
+/*$Id: InstallationSelfCheck.java,v 1.8 2004/02/17 03:38:40 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,7 @@ package org.astrogrid.datacenter;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
+import java.net.URL;
 import junit.framework.TestCase;
 import org.astrogrid.community.Account;
 import org.astrogrid.config.AttomConfig;
@@ -20,9 +21,9 @@ import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.spi.PluginQuerier;
 import org.astrogrid.datacenter.service.AxisDataServer;
+import org.astrogrid.util.Workspace;
 import org.astrogrid.vospace.delegate.VoSpaceClient;
 import org.astrogrid.vospace.delegate.VoSpaceDelegateFactory;
-import org.astrogrid.util.Workspace;
 
 /** Unit test for checking an installation - checks location of config files, etc.
  * <p>
@@ -105,13 +106,13 @@ public class InstallationSelfCheck extends TestCase {
     */
    public void testCanSeeMySpace() throws IOException, Exception {
 
-      String defaultTarget = AttomConfig.getString(QuerierManager.RESULTS_TARGET_KEY);
+      URL defaultMyspace = AttomConfig.getUrl(QuerierManager.DEFAULT_MYSPACE, null);
 
-      if (defaultTarget == null) {
+      if (defaultMyspace == null) {
          return;
       }
 
-      VoSpaceClient myspace = VoSpaceDelegateFactory.createDelegate(Account.ANONYMOUS, defaultTarget);
+      VoSpaceClient myspace = VoSpaceDelegateFactory.createDelegate(Account.ANONYMOUS, defaultMyspace.toString());
       
       myspace.getEntries(Account.ANONYMOUS, "*");
    }
@@ -122,6 +123,9 @@ public class InstallationSelfCheck extends TestCase {
 
 /*
  $Log: InstallationSelfCheck.java,v $
+ Revision 1.8  2004/02/17 03:38:40  mch
+ Various fixes for demo
+
  Revision 1.7  2004/02/16 23:07:04  mch
  Moved DummyQueriers to std server and switched to AttomConfig
 

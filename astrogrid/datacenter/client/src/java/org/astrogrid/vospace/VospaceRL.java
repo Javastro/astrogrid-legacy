@@ -1,5 +1,5 @@
 /*
- * $Id: VoRL.java,v 1.1 2004/02/16 23:31:21 mch Exp $
+ * $Id: VospaceRL.java,v 1.1 2004/02/17 03:37:27 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -25,13 +25,12 @@ import org.astrogrid.vospace.delegate.VoSpaceDelegateFactory;
  * the VoSpaceClient delegates
  *
  * It is of the form:
- *   vospace://delegate.end.point#individual@community/path/path/file
+ *   vospace://protocol.delegate.end.point#individual@community/path/path/file
  *
- * NB this means it is missing the protocol for the delegate endpoint.  This
- * is *assumed* to be http at the moment (for myspace servers) but this is BAD
+ * The path can be null, giving you a reference to a vospace service
  */
 
-public class VoRL
+public class VospaceRL
 {
    private URL delegateEndpoint;
    private IvoRN ivorn;
@@ -39,7 +38,7 @@ public class VoRL
    /** Make a single myspace:// reference string out of a delegate endpoint
     * (eg a myspace manager service) and an ivo file reference
     */
-   public VoRL(URL aDelegateEndpoint, IvoRN anIvorn) throws MalformedURLException
+   public VospaceRL(URL aDelegateEndpoint, IvoRN anIvorn) throws MalformedURLException
    {
       this.delegateEndpoint = aDelegateEndpoint;
       this.ivorn = anIvorn;
@@ -47,7 +46,7 @@ public class VoRL
    
    /** Make a reference from the given string representation
     */
-   public VoRL(String vorl) throws MalformedURLException
+   public VospaceRL(String vorl) throws MalformedURLException
    {
       try
       {
@@ -79,7 +78,11 @@ public class VoRL
     */
    public String toString() {
 //      return "vospace://"+delegateEndpoint.getAuthority()+delegateEndpoint.getPath()+"#"+ivorn.getIndividual()+"@"+ivorn.getCommunity()+ivorn.getPath();
-      return "vospace://"+delegateEndpoint.getProtocol()+"."+delegateEndpoint.getAuthority()+delegateEndpoint.getPath()+"#"+ivorn.getCommunity()+"/"+ivorn.getIndividual()+ivorn.getPath();
+      String vorl = "vospace://"+delegateEndpoint.getProtocol()+"."+delegateEndpoint.getAuthority()+delegateEndpoint.getPath();
+      if (ivorn != null) {
+         vorl = vorl +"#"+ivorn.getCommunity()+"/"+ivorn.getIndividual()+ivorn.getPath();
+      }
+      return vorl;
    }
    /*
       //tidy up ivoRef
@@ -174,13 +177,13 @@ public class VoRL
       
       System.out.println(" In: "+validVorl);
       
-      VoRL vorl = new VoRL(validVorl);
+      VospaceRL vorl = new VospaceRL(validVorl);
 
       System.out.println("Out: "+vorl.toString());
       
       assert vorl.toString().equals(validVorl);
 
-      vorl = new VoRL(new URL("http://grendel12.roe.ac.uk:8080/astrogrid-mySpace"), new IvoRN("test.astrogrid.org", "avodemo", "/serv1/query/mch-6dF-query.xml"));
+      vorl = new VospaceRL(new URL("http://grendel12.roe.ac.uk:8080/astrogrid-mySpace"), new IvoRN("test.astrogrid.org", "avodemo", "/serv1/query/mch-6dF-query.xml"));
       
       System.out.println("Out: "+vorl.toString());
       
@@ -191,7 +194,10 @@ public class VoRL
 }
 
 /*
-$Log: VoRL.java,v $
+$Log: VospaceRL.java,v $
+Revision 1.1  2004/02/17 03:37:27  mch
+Various fixes for demo
+
 Revision 1.1  2004/02/16 23:31:21  mch
 Temporary Vospace Resource Location representation
 

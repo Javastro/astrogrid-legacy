@@ -1,4 +1,4 @@
-/*$Id: DataQueryServiceTest.java,v 1.14 2004/02/16 23:07:05 mch Exp $
+/*$Id: DataQueryServiceTest.java,v 1.15 2004/02/17 03:38:40 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -60,7 +60,7 @@ public class DataQueryServiceTest extends ServerTestCase {
         super.setUp();
         //wsTest.setUp(); //sets up workspace
         HsqlTestCase.initializeConfiguration();
-        AttomConfig.setProperty(QuerierManager.RESULTS_TARGET_KEY,MySpaceDummyDelegate.DUMMY);
+        AttomConfig.setProperty(QuerierManager.DEFAULT_MYSPACE, MySpaceDummyDelegate.DUMMY);
         AttomConfig.setProperty(ServiceServer.METADATA_FILE_LOC_KEY,"/org/astrogrid/datacenter/test-metadata.xml");
         DataSource ds = new HsqlTestCase.HsqlDataSource();
         //File tmpDir = WorkspaceTest.setUpWorkspace(); // dunno if we need to hang onto this for any reason..
@@ -193,6 +193,9 @@ public class DataQueryServiceTest extends ServerTestCase {
 
 /*
 $Log: DataQueryServiceTest.java,v $
+Revision 1.15  2004/02/17 03:38:40  mch
+Various fixes for demo
+
 Revision 1.14  2004/02/16 23:07:05  mch
 Moved DummyQueriers to std server and switched to AttomConfig
 

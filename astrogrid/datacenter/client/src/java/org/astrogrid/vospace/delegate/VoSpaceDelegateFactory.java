@@ -1,5 +1,5 @@
 /*
- * $Id: VoSpaceDelegateFactory.java,v 1.2 2004/02/16 23:33:42 mch Exp $
+ * $Id: VoSpaceDelegateFactory.java,v 1.3 2004/02/17 03:37:27 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -11,7 +11,7 @@ package org.astrogrid.vospace.delegate;
 import java.io.IOException;
 import java.net.URL;
 import org.astrogrid.community.Account;
-import org.astrogrid.vospace.VoRL;
+import org.astrogrid.vospace.VospaceRL;
 
 /**
  * Creates the appropriate delegates to access the various vospace servers
@@ -34,7 +34,7 @@ public class VoSpaceDelegateFactory
          return new MySpaceIt04ServerDelegate(operator, endPoint);
       }
       else if (endPoint.toLowerCase().startsWith("vospace:")) {
-         return new MySpaceIt04ServerDelegate(operator, new VoRL(new URL(endPoint), null).getDelegateEndpoint().toString());
+         return new MySpaceIt04ServerDelegate(operator, new VospaceRL(new URL(endPoint), null).getDelegateEndpoint().toString());
       }
       throw new IllegalArgumentException("Unknown endpoint '"+endPoint+"', don't know which delegate to create for this");
    }
@@ -43,6 +43,9 @@ public class VoSpaceDelegateFactory
 
 /*
 $Log: VoSpaceDelegateFactory.java,v $
+Revision 1.3  2004/02/17 03:37:27  mch
+Various fixes for demo
+
 Revision 1.2  2004/02/16 23:33:42  mch
 Changed to use Account and AttomConfig
 

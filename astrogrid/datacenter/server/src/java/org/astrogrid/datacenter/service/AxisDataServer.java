@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.23 2004/02/16 23:34:36 mch Exp $
+ * $Id: AxisDataServer.java,v 1.24 2004/02/17 03:38:05 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -184,7 +184,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
     * Sets where the results are to be sent
     * @soap
     */
-   public void setResultsDestination(String queryId, URI resultsDestination) {
+   public void setResultsDestination(String queryId, URI resultsDestination)  {
       if (resultsDestination == null )  {
          throw new IllegalArgumentException("Empty results destination");
       }
@@ -192,7 +192,11 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
       if (querier == null) {
          throw new IllegalArgumentException("Unknown qid: " + queryId);
       }
-      querier.setResultsDestination(resultsDestination.toString());
+      try {
+         querier.setResultsDestination(resultsDestination.toString());
+      } catch (MalformedURLException mue) {
+         throw new IllegalArgumentException("Results destination invalid: "+resultsDestination);
+      }
    }
    
    

@@ -1,4 +1,4 @@
-/*$Id: QuerierManager.java,v 1.13 2004/02/16 23:34:35 mch Exp $
+/*$Id: QuerierManager.java,v 1.14 2004/02/17 03:38:05 mch Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -44,7 +44,7 @@ public class QuerierManager {
    public static final String DATABASE_QUERIER_KEY = "DatabaseQuerierClass";
    
    /** Key to configuration entry for the default target myspace for this server */
-   public static final String RESULTS_TARGET_KEY = "DefaultMySpace";
+   public static final String DEFAULT_MYSPACE = "DefaultMySpace";
    
 
    public static Querier getQuerier(String qid) {
@@ -203,7 +203,7 @@ public class QuerierManager {
     */
    public static Querier instantiateQuerier(Query query, String id) throws DatabaseAccessException {
       
-      String querierClass = AttomConfig.getString(DATABASE_QUERIER_KEY);
+      String querierClass = AttomConfig.getString(DATABASE_QUERIER_KEY, org.astrogrid.datacenter.sitedebug.DummyQuerier.class.getName());
 
       /*
       happens automatically now
@@ -275,6 +275,9 @@ public class QuerierManager {
 
 /*
  $Log: QuerierManager.java,v $
+ Revision 1.14  2004/02/17 03:38:05  mch
+ Various fixes for demo
+
  Revision 1.13  2004/02/16 23:34:35  mch
  Changed to use Account and AttomConfig
 

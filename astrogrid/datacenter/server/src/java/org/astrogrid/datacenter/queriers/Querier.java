@@ -16,14 +16,17 @@ import org.apache.commons.logging.Log;
 import org.astrogrid.community.Account;
 import org.astrogrid.config.AttomConfig;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
+import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.query.QueryStatus;
 import org.astrogrid.datacenter.service.JobNotifyServiceListener;
 import org.astrogrid.datacenter.service.WebNotifyServiceListener;
 import org.astrogrid.datacenter.snippet.DocMessageHelper;
+import org.astrogrid.util.Workspace;
+import org.astrogrid.vospace.IvoRN;
+import org.astrogrid.vospace.VospaceRL;
 import org.astrogrid.vospace.delegate.VoSpaceClient;
 import org.astrogrid.vospace.delegate.VoSpaceDelegateFactory;
-import org.astrogrid.util.Workspace;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -81,11 +84,11 @@ public abstract class Querier implements Runnable {
     * server URL
     * initialized to value stored in configuration under {@link QuerierManager#RESULTS_TARGET_KEY}
     */
-   private String resultsDestination = AttomConfig.getString(QuerierManager.RESULTS_TARGET_KEY);
+   private VospaceRL resultsDestination = null;
    
    /** Handle to the results from the query - the location (prob myspace) where
     * the results can be found */
-   private String resultsLoc = null;
+   //use resultsDestination private String resultsLoc = null;
    
    /** For measuring how long the query took */
    private Date timeQueryStarted = null;
@@ -101,6 +104,11 @@ public abstract class Querier implements Runnable {
        } else {
            this.user = query.getUser();
        }
+       
+       //default results destination
+       URL defaultMySpace = AttomConfig.getUrl(QuerierManager.DEFAULT_MYSPACE);
+       IvoRN ivorn = new IvoRN(user.getCommunity(), user.getIndividual(), "/votable/"+queryId+".vot");
+       resultsDestination = new VospaceRL(defaultMySpace, ivorn);
    }
 
    /**
@@ -134,8 +142,8 @@ public abstract class Querier implements Runnable {
    /**
     * Sets up the target of where the results will be sent to
     */
-   public void setResultsDestination(String resultsDestination) {
-      this.resultsDestination = resultsDestination;
+   public void setResultsDestination(String resultsDestination) throws MalformedURLException {
+      this.resultsDestination = new VospaceRL(resultsDestination);
    }
    
    /**
@@ -229,12 +237,12 @@ public abstract class Querier implements Runnable {
    protected void testResultsDestination() throws Exception {
       if (resultsDestination == null) {
          log.error(
-            "No Result target (eg myspace) given in config file (key "+QuerierManager.RESULTS_TARGET_KEY+"), "+
-               "and no key "+DocMessageHelper.RESULTS_TARGET_TAG+" in given DOM ");
+               "No default myspace given in config file (key "+QuerierManager.DEFAULT_MYSPACE+"), "+
+               "and results destination specified");
          throw new IllegalStateException("no results destination");
       }
       
-      VoSpaceClient myspace = VoSpaceDelegateFactory.createDelegate(user, resultsDestination);
+      VoSpaceClient myspace = VoSpaceDelegateFactory.createDelegate(user, resultsDestination.getDelegateEndpoint().toString());
       
       myspace.putString("This is a test file to make sure we can create a file in the given myspace, so our query results are not lost",
                         "testFile", false);
@@ -251,10 +259,8 @@ public abstract class Querier implements Runnable {
          throw new IllegalStateException("No results to send");
       }
       
-      VoSpaceClient myspace = VoSpaceDelegateFactory.createDelegate(user, resultsDestination);
+      VoSpaceClient myspace = VoSpaceDelegateFactory.createDelegate(user, resultsDestination.getDelegateEndpoint().toString());
   
-      String myspaceFilename = "/"+user.getAstrogridId()+"/"+getQueryId()+"_results";
-      
       try {
          //stream results to string for outputting to myspace.   At
          //some point we should get a socket to stream to from myspace and stream
@@ -262,9 +268,9 @@ public abstract class Querier implements Runnable {
          ByteArrayOutputStream ba = new ByteArrayOutputStream();
          results.toVotable(ba);
          ba.close();
-         myspace.putString(ba.toString(), myspaceFilename, false);
+         myspace.putString(ba.toString(), resultsDestination.getDelegateFileRef(), false);
          
-         resultsLoc = myspace.getUrl("/"+user.getAstrogridId()+"/"+myspaceFilename).toString();
+         //resultsLoc = myspace.getUrl("/"+user.getAstrogridId()+"/"+myspaceFilename).toString();
       }
       catch (SAXException se) {
          log.error("Could not create VOTable",se);
@@ -277,7 +283,7 @@ public abstract class Querier implements Runnable {
    /** Returns the location of the results (probably a url) - returns null if
     * the results have not yet been returned from the data source
     */
-   public String getResultsLoc() {     return resultsLoc;  }
+   public String getResultsLoc() {     return resultsDestination.toString();  }
    
    protected void setStartTime(Date startTime)  { this.timeQueryStarted = startTime;  }
    
@@ -422,6 +428,9 @@ public abstract class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.20  2004/02/17 03:38:05  mch
+ Various fixes for demo
+
  Revision 1.19  2004/02/16 23:34:35  mch
  Changed to use Account and AttomConfig
 

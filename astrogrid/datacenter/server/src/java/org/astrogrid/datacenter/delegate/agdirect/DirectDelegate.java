@@ -1,5 +1,5 @@
 /*
- * $Id: DirectDelegate.java,v 1.4 2004/02/16 23:34:35 mch Exp $
+ * $Id: DirectDelegate.java,v 1.5 2004/02/17 03:38:05 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -84,7 +84,7 @@ public class DirectDelegate implements FullSearcher, ConeSearcher
       * or the service may throw an exception when attempting to start the
       * query
       */
-      public void setResultsDestination(String resultsDestination) throws RemoteException
+      public void setResultsDestination(String resultsDestination) throws IOException
       {
          querier.setResultsDestination(resultsDestination.toString());
       }
@@ -331,6 +331,9 @@ public class DirectDelegate implements FullSearcher, ConeSearcher
 
 /*
 $Log: DirectDelegate.java,v $
+Revision 1.5  2004/02/17 03:38:05  mch
+Various fixes for demo
+
 Revision 1.4  2004/02/16 23:34:35  mch
 Changed to use Account and AttomConfig
 

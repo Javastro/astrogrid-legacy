@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegate.java,v 1.20 2004/02/16 23:33:42 mch Exp $
+ * $Id: WebDelegate.java,v 1.21 2004/02/17 03:37:27 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -33,7 +33,7 @@ import org.astrogrid.datacenter.axisdataserver.AxisDataServerServiceLocator;
 import org.astrogrid.datacenter.axisdataserver.AxisDataServerSoapBindingStub;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.query.QueryException;
-import org.astrogrid.vospace.VoRL;
+import org.astrogrid.vospace.VospaceRL;
 import org.astrogrid.vospace.delegate.VoSpaceClient;
 import org.astrogrid.vospace.delegate.VoSpaceDelegateFactory;
 import org.w3c.dom.Document;
@@ -277,7 +277,7 @@ public class WebDelegate implements FullSearcher, ConeSearcher, ApplicationContr
          catch (ParserConfigurationException e) { throw new RuntimeException(e); }
          
          
-         NodeList elements = doc.getElementsByTagName("Parameter");
+         NodeList elements = doc.getElementsByTagName("parameter");
          
          String queryUri = null;
          String resultsDestinationUri = null;
@@ -291,13 +291,13 @@ public class WebDelegate implements FullSearcher, ConeSearcher, ApplicationContr
             if (name.toLowerCase().equals("querymyspacereference")) { //deprecate this
                queryUri = n.getFirstChild().getNodeValue();
             }
-            else if (name.toLowerCase().equals("queryref")) {
+            else if (name.toLowerCase().equals("queryvospacerl")) {
                queryUri = n.getFirstChild().getNodeValue();
             }
             else if (name.toLowerCase().equals("resultsmyspacereference")) {//deprecate this
                resultsDestinationUri = n.getFirstChild().getNodeValue();
             }
-            else if (name.toLowerCase().equals("resultsref")) {
+            else if (name.toLowerCase().equals("resultsvospacerl")) {
                resultsDestinationUri = n.getFirstChild().getNodeValue();
             }
             else {
@@ -305,14 +305,14 @@ public class WebDelegate implements FullSearcher, ConeSearcher, ApplicationContr
             }
          }
 
-         //convert myspace references to urls
-         if (VoRL.isVoRL(queryUri))
-         {
-            queryUri = new VoRL(queryUri).resolveURL().toString();
-         }
-         
          assert queryUri != null : "Query URI not givem in parameters";
          assert resultsDestinationUri != null : "Results Destination URI not given in parameters";
+
+         //convert query myspace reference to url
+         if (VospaceRL.isVoRL(queryUri))
+         {
+            queryUri = new VospaceRL(queryUri).resolveURL().toString();
+         }
          
          //Transform to the right types
          Select adql = null;
@@ -330,7 +330,9 @@ public class WebDelegate implements FullSearcher, ConeSearcher, ApplicationContr
          
          queries.put(query.getId(), query);
          
-         query.registerJobMonitor(new URL(jobMonitorURL));
+         if (jobMonitorURL != null) {
+            query.registerJobMonitor(new URL(jobMonitorURL));
+         }
          query.setResultsDestination(resultsDestinationUri);
          
          return query.getId();
@@ -413,6 +415,9 @@ public class WebDelegate implements FullSearcher, ConeSearcher, ApplicationContr
 
 /*
  $Log: WebDelegate.java,v $
+ Revision 1.21  2004/02/17 03:37:27  mch
+ Various fixes for demo
+
  Revision 1.20  2004/02/16 23:33:42  mch
  Changed to use Account and AttomConfig
 
@@ -431,6 +436,9 @@ public class WebDelegate implements FullSearcher, ConeSearcher, ApplicationContr
  Revision 1.16  2004/01/08 15:48:17  mch
  Allow myspace references to be given
 $Log: WebDelegate.java,v $
+Revision 1.21  2004/02/17 03:37:27  mch
+Various fixes for demo
+
 Revision 1.20  2004/02/16 23:33:42  mch
 Changed to use Account and AttomConfig
 

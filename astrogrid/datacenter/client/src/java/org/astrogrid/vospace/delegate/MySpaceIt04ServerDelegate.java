@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceIt04ServerDelegate.java,v 1.2 2004/02/16 23:33:42 mch Exp $
+ * $Id: MySpaceIt04ServerDelegate.java,v 1.3 2004/02/17 03:37:27 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -275,10 +275,27 @@ public class MySpaceIt04ServerDelegate implements VoSpaceClient
       }
    }
    
+   /**
+    * Creates a new folder
+    */
+   public void newFolder(String newFolderPath) throws IOException {
+      try {
+         depIt04Delegate.createContainer(operator.getIndividual(), operator.getCommunity(), operator.getToken(),
+                                                           newFolderPath);
+      }
+      catch (Exception e) {
+         throw new VoSpaceException("Failed to create new folder '"+newFolderPath+"'", e);
+      }
+   }
+      
+   
 }
 
 /*
 $Log: MySpaceIt04ServerDelegate.java,v $
+Revision 1.3  2004/02/17 03:37:27  mch
+Various fixes for demo
+
 Revision 1.2  2004/02/16 23:33:42  mch
 Changed to use Account and AttomConfig
 

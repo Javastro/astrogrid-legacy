@@ -1,5 +1,5 @@
 /*
- * $Id: VoSpaceClient.java,v 1.2 2004/02/16 23:33:42 mch Exp $
+ * $Id: VoSpaceClient.java,v 1.3 2004/02/17 03:37:27 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -89,8 +89,8 @@ public interface VoSpaceClient {
    
    /**
     * Create a container
-    *
-   public void createContainer(User forAccount, String targetPath);
+    */
+   public void newFolder(String targetPath) throws IOException ;
 
    /**
     * Copy a file
