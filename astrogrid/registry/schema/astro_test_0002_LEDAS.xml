@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSPY v5 rel. 2 U (http://www.xmlspy.com) by c.h.perry@rl.ac.uk (CCLRC) -->
+<service xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="M:\AstroReg\service.xsd">
+	<id>LEDAS</id>
+	<serviceType>
+		<dataSvc>
+			<type>archive</type>
+			<format>image/FITS</format>
+			<coverage>
+				<wavelength>
+					<wavelengthrange>xray</wavelengthrange>
+					<wavelengthshort>10</wavelengthshort>
+					<wavelengthlong>1200</wavelengthlong>
+				</wavelength>
+				<startdate>1992.92-</startdate>
+				<enddate>2002</enddate>
+				<decmin>-90</decmin>
+				<decmax>90</decmax>
+				<sensitvity>0</sensitvity>
+			</coverage>
+			<spatialresolution>160</spatialresolution>
+			<facility>ROSAT, Ginga, Chandra</facility>
+			<location>
+				<servicelocation>http://ledas-www.star.le.ac.uk/</servicelocation>
+				<master>http://ledas-www.star.le.ac.uk/</master>
+			</location>
+			<community>public</community>
+			<briefsummary>LEicester Database and Archive Service, LEDAS</briefsummary>
+		</dataSvc>
+	</serviceType>
+	<title>LEicester Database and Archive Service, LEDAS</title>
+	<publisher>X-ray Astronomy Group,  Department of Physics &amp; Astronomy,  University of Leicester</publisher>
+	<creator>X-ray Astronomy Group,  Department of Physics &amp; Astronomy,  University of Leicester</creator>
+	<subjectList>
+		<subject>galaxies</subject>
+		<subject>quasars</subject>
+		<subject>stars</subject>
+		<subject>CCD photometry</subject>
+		<subject>sky surveys</subject>
+	</subjectList>
+	<description>LEDAS provides an online astronomical database service and access to archive data from high-energy astrophysics missions. In particular, LEDAS provides the primary means of access for the UK astronomical community to the ROSAT Public Data Archive, the Ginga Products Archive, and the Chandra Science Archive.</description>
+	<contributor>X-ray Astronomy Group,  Department of Physics &amp; Astronomy,  University of Leicester</contributor>
+	<date>2003-02-01</date>
+	<version>Not specified</version>
+	<serviceURL>http://ledas-www.star.le.ac.uk/</serviceURL>
+	<contact>
+		<name>LEDAS Support </name>
+		<email>ledas-help@star.le.ac.uk</email>
+	</contact>
+</service>

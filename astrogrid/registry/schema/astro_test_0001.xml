@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSPY v5 rel. 2 U (http://www.xmlspy.com) by c.h.perry@rl.ac.uk (CCLRC) -->
+<service xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="M:\AstroReg\service.xsd">
+	<id/>
+	<serviceType>
+		<dataSvc>
+			<type>survey</type>
+			<format>FITS, GIF, JPEG (image/FITS, image/gif, image/jpg)</format>
+			<coverage>
+			<wavelength>
+				<wavelengthrange>optical</wavelengthrange>
+				<wavelengthshort>3540</wavelengthshort>
+				<wavelengthlong>9130</wavelengthlong>
+			</wavelength>
+				<startdate>1992.92-</startdate>
+				<enddate>2002</enddate>
+				<decmin>-90</decmin>
+				<decmax>90</decmax>
+				<sensitvity>1</sensitvity>
+			</coverage>
+			<spatialresolution>1</spatialresolution>
+			<facility>Apache Point Observatory, Sloan 2.5-m Telescope</facility>
+			<location>
+				<servicelocation/>
+				<master/>
+			</location>
+			<community>public?</community>
+			<briefsummary>Sloan Digital Sky Survey Service</briefsummary>
+		</dataSvc>
+	</serviceType>
+	<title>Sloan Digital Sky Survey</title>
+	<publisher>Space Telescope Science Institute/MAST</publisher>
+	<creator>Sloan Digital Sky Survey Consortium</creator>
+	<subjectList>
+		<subject>galaxies</subject>
+		<subject>quasars</subject>
+		<subject>stars</subject>
+		<subject>CCD photometry</subject>
+		<subject>spectroscopy</subject>
+		<subject>redshift</subject>
+		<subject>sky surveys</subject>
+	</subjectList>
+	<description>The Sloan Digital Sky Survey is using a dedicated 2.5 m telescope and a large format CCD camera to obtain images of over 10,000 square degrees of high Galactic latitue sky in five broad bands (u', g', r', i' and z', centred at 3540, 4770, 6230, 7630, and 9130, respectively). Medium resolution spectra will be obtained for approximately 10^6 galaxies and 100,000 quasars. The early data release (EDR), on June 2001, includes searchable catalogs of both 2-D FITS and JPEG formats, and spectra in both 1-D FITS and GIF formats. The EDR covers about 460 square degreees of sky. The next data releases will occur every 18 months or so.</description>
+	<contributor>Sloan Digital Sky Survey Consortium</contributor>
+	<date>2003-02-01</date>
+	<version>SDSS EDR</version>
+	<serviceURL>http://skyserver.pha.jhu.edu/en/tools/getimg/fields.asp</serviceURL>
+	<contact>
+		<name>Archive Branch, Space Telescope Science Institute</name>
+		<email>archive@stsci.edu</email>
+	</contact>
+</service>
