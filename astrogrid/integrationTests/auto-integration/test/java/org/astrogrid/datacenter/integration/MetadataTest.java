@@ -1,4 +1,4 @@
-/*$Id: MetadataTest.java,v 1.2 2004/09/09 11:04:05 mch Exp $
+/*$Id: MetadataTest.java,v 1.3 2004/10/07 10:48:03 mch Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,6 +13,7 @@ package org.astrogrid.datacenter.integration;
 import java.io.IOException;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import org.astrogrid.datacenter.metadata.VoDescriptionServer;
 import org.astrogrid.registry.RegistryException;
 
 /**
@@ -24,15 +25,8 @@ public class MetadataTest extends TestCase {
 
    /** Tests push to registry */
    public void testPush() throws RegistryException, IOException  {
-      fail("Not yet implemented");
-      /*
-      SimpleConfig.getSingleton().setProperty(
-            RegistryDelegateFactory.ADMIN_URL_PROPERTY,
-            "http://localhost:8080/astrogrid-registry-SNAPSHOT/services/AdminService"
-      );
       String[] wentTo = VoDescriptionServer.pushToRegistry();
       assertTrue("Didn't get sent anywhere", wentTo.length>0);
-      /**/
    }
    
     /**/
@@ -45,6 +39,9 @@ public class MetadataTest extends TestCase {
 
 /*
 $Log: MetadataTest.java,v $
+Revision 1.3  2004/10/07 10:48:03  mch
+Reintroduced push test
+
 Revision 1.2  2004/09/09 11:04:05  mch
 Removed test for the moment
 
