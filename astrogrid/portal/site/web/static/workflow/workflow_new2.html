@@ -106,7 +106,6 @@
                     Monitor Jobs
                   </td>                  
                 </tr>
-                <p>
                 <tr>
                   <td style="border-right-style: double;" align="center">
                     <a href="workflow_new.html">&nbsp;New&nbsp;</a>
@@ -131,13 +130,77 @@
                     <a href="workflow_monitor.html">&nbsp;Monitor&nbsp;</a>               
                   </td>
                 </tr>
-                </p>
               </table>
               <table cellpadding="0" cellspacing="0">               
                 <tr>
                   <td>
+                    <img src="../../images/SequenceWithTwoStepFlow.gif" alt="SequenceWithTwoStepFlow"/>
                   </td>
-                </tr>                
+                  <td>
+                    <table cellpadding="0" cellspacing="0">
+                      <form name="tool_select_form" action="workflow_new3.html">
+                        <tr>
+                          <td>
+                            Step 1:
+                          </td>
+                          <td>
+                            <select name="toolType">
+                              <option value="queryTool">Query Tool
+                              <option value="mergeTool">Merge Tool
+                              <option value="commandLineTool">Command Line Tool
+                              <option value="otherTool">Other Tool                                                                                    
+                            </select>
+                          </td>
+                          <td>
+                            <input type="submit" value="Select" />
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            &nbsp;
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            Step 2:
+                          </td>
+                          <td>
+                            <select name="toolType">
+                              <option value="queryTool">Query Tool
+                              <option value="mergeTool">Merge Tool
+                              <option value="commandLineTool">Command Line Tool
+                              <option value="otherTool">Other Tool                                                                                    
+                            </select>
+                          </td>
+                          <td>
+                            <input type="submit" value="Select" />
+                          </td>                        
+                        </tr>
+                        <tr>
+                          <td>
+                            &nbsp;
+                          </td>
+                        </t>                      
+                        <tr>
+                          <td>
+                            Step 3:
+                          </td>
+                          <td>
+                            <select name="toolType">
+                              <option value="queryTool">Query Tool
+                              <option value="mergeTool">Merge Tool
+                              <option value="commandLineTool">Command Line Tool
+                              <option value="otherTool">Other Tool                                                                                    
+                            </select>
+                          </td>
+                          <td>
+                            <input type="submit" value="Submit" />
+                          </td>                        
+                        </tr>
+                      </form>                                            
+                    </table>
+                  </td>
+                </tr>               
               </table>                
             </td>
           </tr>         
@@ -168,7 +231,8 @@
                 <td style="border-bottom-style: solid; border-left-style: double;">Help&nbsp;</td>
 
               </tr>
-            </table></td>
+            </table>
+            </td>
           </tr>
         </table></td>
 
