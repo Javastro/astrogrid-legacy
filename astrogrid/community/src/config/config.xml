@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/config/Attic/config.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/09/22 13:48:24 $</cvs:date>
-    | <cvs:version>$Revision: 1.6 $</cvs:version>
+    | <cvs:date>$Date: 2003/10/09 01:38:30 $</cvs:date>
+    | <cvs:version>$Revision: 1.7 $</cvs:version>
     | <cvs:log>
     |   $Log: config.xml,v $
+    |   Revision 1.7  2003/10/09 01:38:30  dave
+    |   Added JUnite tests for policy delegates
+    |
     |   Revision 1.6  2003/09/22 13:48:24  dave
     |   Updates to the community/portal build
     |
@@ -56,6 +59,7 @@
 			+-->
 		<property name="policy.manager.url" value=""/>
 		<property name="policy.service.url" value=""/>
+		<property name="authentication.service.url" value=""/>
 
 		<!--+
 			| Configuration for the server database.

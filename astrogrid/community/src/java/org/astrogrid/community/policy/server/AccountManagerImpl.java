@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/AccountManagerImpl.java,v $</cvs:source>
- * <cvs:author>$Author: KevinBenson $</cvs:author>
- * <cvs:date>$Date: 2003/10/07 20:40:25 $</cvs:date>
- * <cvs:version>$Revision: 1.14 $</cvs:version>
+ * <cvs:author>$Author: dave $</cvs:author>
+ * <cvs:date>$Date: 2003/10/09 01:38:30 $</cvs:date>
+ * <cvs:version>$Revision: 1.15 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManagerImpl.java,v $
+ *   Revision 1.15  2003/10/09 01:38:30  dave
+ *   Added JUnite tests for policy delegates
+ *
  *   Revision 1.14  2003/10/07 20:40:25  KevinBenson
  *   conforms to new myspace delegate
  *
@@ -77,6 +80,8 @@ import org.astrogrid.community.policy.data.ServiceData ;
 import org.astrogrid.community.policy.data.GroupData ;
 import org.astrogrid.community.policy.data.AccountData ;
 import org.astrogrid.community.policy.data.CommunityIdent ;
+import org.astrogrid.community.policy.data.GroupMemberData ;
+
 import org.astrogrid.community.common.CommunityConfig;
 
 public class AccountManagerImpl
@@ -159,12 +164,13 @@ public class AccountManagerImpl
 				group.setType(GroupData.SINGLE_TYPE) ;
 
 				//
-				// Create the default membership objects.
+				// Create the default group membership objects.
 // TODO
 // Need to add the account to the account group.
 // Need to add the account to the guest group.
-//				GroupMemberData groupmember = new GroupMemberData(ident.toString(), ident.toString()) ;
-//				GroupMemberData guestmember = new GroupMemberData(ident.toString(), "guest") ;
+// Only do this if the guest group exists.
+				GroupMemberData groupmember = new GroupMemberData(ident.toString(), ident.toString()) ;
+				GroupMemberData guestmember = new GroupMemberData(ident.toString(), "guest") ;
 
 				//
 				// Try performing our transaction.
@@ -183,8 +189,8 @@ public class AccountManagerImpl
 // TODO
 // Need to add the account to the account group.
 // Need to add the account to the guest group.
-//					database.create(groupmember);
-//					database.create(guestmember);
+					database.create(groupmember);
+					database.create(guestmember);
 					}
 				//
 				// If we already have an object with that ident.
@@ -281,8 +287,8 @@ public class AccountManagerImpl
 				{
 				try {
 					MySpaceManagerDelegate msmd = new MySpaceManagerDelegate(myspaceUrl);
-               Vector tempVector = new Vector();
-               tempVector.add("serv1");
+					Vector tempVector = new Vector();
+					tempVector.add("serv1");
 					msmd.createUser(ident.getName(),ident.getCommunity(),"credential",tempVector);
 					}
 				catch(Exception ouch)
@@ -797,129 +803,188 @@ public class AccountManagerImpl
 		if (DEBUG_FLAG) System.out.println("AccountManagerImpl.delAccount()") ;
 		if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
 
-		GroupData   group   = null ;
 		AccountData account = null ;
+
 		//
 		// If the ident is valid.
 		if (ident.isValid())
 			{
+			if (DEBUG_FLAG) System.out.println("  PASS : ident is valid") ;
 			//
 			// If the ident is local.
 			if (ident.isLocal())
 				{
+				if (DEBUG_FLAG) System.out.println("  PASS : ident is local") ;
 				//
 				// Try update the database.
 				try {
 					//
 					// Begin a new database transaction.
 					database.begin();
+
 					//
-					// Load the Account and Group from the database.
+					// Load the Account from the database.
 					account = (AccountData) database.load(AccountData.class, ident.toString()) ;
-					group   = (GroupData)   database.load(GroupData.class,   ident.toString()) ;
 					//
-					// Delete the Account and Group together.
-					database.remove(account) ;
-					database.remove(group)   ;
-//
-// TODO
-// Should remove the Account even if the Group does not exist.
-// Should remove the Account from all groups.
-// Should remove the Account from all permissions.
-//
+					// If we found the Account.
+					if (null != account)
+						{
+						if (DEBUG_FLAG)System.out.println("  PASS : found account") ;
+						//
+						// Find the group for this account (if it exists).
+						OQLQuery groupQuery = database.getOQLQuery(
+							"SELECT groups FROM org.astrogrid.community.policy.data.GroupData groups WHERE groups.ident = $1"
+							);
+						//
+						// Bind the query param.
+						groupQuery.bind(ident.toString()) ;
+						//
+						// Execute our query.
+						QueryResults groups = groupQuery.execute();
+						if (null != groups)
+							{
+							if (DEBUG_FLAG)System.out.println("  PASS : found groups") ;
+							}
+						else {
+							if (DEBUG_FLAG)System.out.println("  FAIL : null groups") ;
+							}
+
+						//
+						// Find all of the group memberships for this account.
+						OQLQuery memberQuery = database.getOQLQuery(
+							"SELECT members FROM org.astrogrid.community.policy.data.GroupMemberData members WHERE members.account = $1"
+							);
+						//
+						// Bind the query param.
+						memberQuery.bind(ident.toString()) ;
+						//
+						// Execute our query.
+						QueryResults members = memberQuery.execute();
+						if (null != members)
+							{
+							if (DEBUG_FLAG)System.out.println("  PASS : found members") ;
+							}
+						else {
+							if (DEBUG_FLAG)System.out.println("  FAIL : null members") ;
+							}
+
+						//
+						// Load all the permissions for this group.
+						OQLQuery permissionQuery = database.getOQLQuery(
+							"SELECT permissions FROM org.astrogrid.community.policy.data.PolicyPermission permissions WHERE permissions.group = $1"
+							);
+						//
+						// Bind the query param.
+						permissionQuery.bind(ident.toString()) ;
+						//
+						// Execute our query.
+						QueryResults permissions = permissionQuery.execute();
+						if (null != permissions)
+							{
+							if (DEBUG_FLAG)System.out.println("  PASS : found permissions") ;
+							}
+						else {
+							if (DEBUG_FLAG)System.out.println("  FAIL : null permissions") ;
+							}
+						//
+						// Delete the permissions.
+						while (permissions.hasMore())
+							{
+							if (DEBUG_FLAG) System.out.println("  STEP : deleting permission") ;
+							database.remove(permissions.next()) ;
+							}
+						//
+						// Delete the group memberships.
+						while (members.hasMore())
+							{
+							if (DEBUG_FLAG) System.out.println("  STEP : deleting membership") ;
+							database.remove(members.next()) ;
+							}
+						//
+						// Delete the Group.
+						while (groups.hasMore())
+							{
+							if (DEBUG_FLAG) System.out.println("  STEP : deleting group") ;
+							database.remove(groups.next()) ;
+							}
+						//
+						// Delete the Account.
+						database.remove(account) ;
+						}
+					if (DEBUG_FLAG) System.out.println("  PASS : finished deleting") ;
+					//
+					// Commit the transaction.
+					database.commit() ;
+					if (DEBUG_FLAG) System.out.println("  PASS : done commit") ;
 					}
 				//
-				// If we couldn't find the object.
-				catch (ObjectNotFoundException ouch)
-					{
-					if (DEBUG_FLAG) System.out.println("") ;
-					if (DEBUG_FLAG) System.out.println("  ----") ;
-					if (DEBUG_FLAG) System.out.println("ObjectNotFoundException in delAccount()") ;
-
-					//
-					// Set the response to null.
-					group   = null ;
-					account = null ;
-
-					if (DEBUG_FLAG) System.out.println("  ----") ;
-					if (DEBUG_FLAG) System.out.println("") ;
-					}
-				//
-				// If anything else went bang.
+				// If anything went bang.
 				catch (Exception ouch)
 					{
 					if (DEBUG_FLAG) System.out.println("") ;
 					if (DEBUG_FLAG) System.out.println("  ----") ;
 					if (DEBUG_FLAG) System.out.println("Exception in delAccount()") ;
+					if (DEBUG_FLAG) System.out.println("  Exception : " + ouch) ;
+					if (DEBUG_FLAG) System.out.println("  Message   : " + ouch.getMessage()) ;
 
 					//
-					// Set the response to null.
-					group   = null ;
-					account = null ;
-
-					if (DEBUG_FLAG) System.out.println("  ----") ;
-					if (DEBUG_FLAG) System.out.println("") ;
-					}
-				//
-				// Commit the transaction.
-				finally
-					{
+					// Rollback the transaction.
 					try {
-						if (null != account)
-							{
-							database.commit() ;
-							}
-						else {
-							database.rollback() ;
-							}
+						database.rollback() ;
 						}
-					catch (Exception ouch)
+					catch (Exception any)
 						{
 						if (DEBUG_FLAG) System.out.println("") ;
-						if (DEBUG_FLAG) System.out.println("  ----") ;
-						if (DEBUG_FLAG) System.out.println("Exception in delAccount() finally clause") ;
-
-						//
-						// Set the response to null.
-						group   = null ;
-						account = null ;
-
-						if (DEBUG_FLAG) System.out.println("  ----") ;
-						if (DEBUG_FLAG) System.out.println("") ;
+						if (DEBUG_FLAG) System.out.println("Exception in delAccount() rollback") ;
 						}
+					if (DEBUG_FLAG) System.out.println("  ----") ;
+					if (DEBUG_FLAG) System.out.println("") ;
 					}
 				}
 			//
 			// If the ident is not local.
 			else {
-				//
-				// Set the response to null.
-				group   = null ;
 				account = null ;
+//
+// TODO
+// Actually, this could be a call from a remote community to tell us that it is deleting an Account.
+// In which case, we need to tidy up our groups and permissions tables ....
+//
 				}
 			}
 			//
 			// If the ident is not valid.
 		else {
-			//
-			// Set the response to null.
-			group   = null ;
 			account = null ;
+			}
+
+//
+// TODO .. should we notify other community services that the Account has gone ?
+//
+
+//
+// TODO
+// Should this be inside our database transaction ?
+		String myspaceUrl = CommunityConfig.getProperty("myspace.url.webservice");
+		//
+		// If we have a local MySpace service.
+		if ((null != myspaceUrl) && (myspaceUrl.length() > 0))
+			{
+			MySpaceManagerDelegate msmd = new MySpaceManagerDelegate(myspaceUrl);
+			try {
+				msmd.deleteUser(ident.getName(),ident.getCommunity(),"credential");
+				}
+			catch(Exception ouch)
+				{
+				ouch.printStackTrace();
+				}
 			}
 
 		// TODO
 		// Need to return something to the client.
 		// Possibly a new DataObject ... ?
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
-      if(account != null) {
-         String myspaceCall = CommunityConfig.getProperty("myspace.url.webservice");
-         MySpaceManagerDelegate msmd = new MySpaceManagerDelegate(myspaceCall);
-         try {
-            msmd.deleteUser(ident.getName(),ident.getCommunity(),"credential");
-         }catch(Exception ouch) {
-            ouch.printStackTrace();
-         }
-      }
+
 		return account ;
 		}
 

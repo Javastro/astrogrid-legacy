@@ -1,38 +1,26 @@
 /*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/client/junit/service/Attic/JUnitServiceTest.java,v $</cvs:source>
+ * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/delegate/policy/junit/Attic/JUnitDelegateTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
  * <cvs:date>$Date: 2003/10/09 01:38:30 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:version>$Revision: 1.1 $</cvs:version>
  *
  * <cvs:log>
- *   $Log: JUnitServiceTest.java,v $
- *   Revision 1.3  2003/10/09 01:38:30  dave
+ *   $Log: JUnitDelegateTest.java,v $
+ *   Revision 1.1  2003/10/09 01:38:30  dave
  *   Added JUnite tests for policy delegates
- *
- *   Revision 1.2  2003/09/17 19:47:21  dave
- *   1) Fixed classnotfound problems in the build.
- *   2) Added the JUnit task to add the initial accounts and groups.
- *   3) Got the build to work together with the portal.
- *   4) Fixed some bugs in the Account handling.
- *
- *   Revision 1.1  2003/09/06 20:10:07  dave
- *   Split PolicyManager into separate components.
- *
- *   Revision 1.2  2003/09/04 23:33:05  dave
- *   Implemented the core account manager methods - needs data object to return results
- *
- *   Revision 1.1  2003/09/03 15:23:33  dave
- *   Split API into two services, PolicyService and PolicyManager
  *
  * </cvs:log>
  *
  */
-package org.astrogrid.community.policy.client.junit.service ;
+package org.astrogrid.community.delegate.policy.junit ;
 
 import junit.framework.TestCase ;
 
 import java.util.Iterator ;
 import java.util.Collection ;
+
+import org.astrogrid.community.delegate.policy.PolicyServiceDelegate  ;
+import org.astrogrid.community.delegate.policy.AdministrationDelegate ;
 
 import org.astrogrid.community.policy.data.ServiceData ;
 import org.astrogrid.community.policy.data.AccountData ;
@@ -53,7 +41,7 @@ import org.astrogrid.community.policy.server.PolicyServiceServiceLocator ;
  * JUnit test for the policy client components.
  *
  */
-public class JUnitServiceTest
+public class JUnitDelegateTest
 	extends TestCase
 	{
 	/**
@@ -99,16 +87,16 @@ public class JUnitServiceTest
 	private static final boolean ASSERT_FLAG = false ;
 
 	/**
-	 * Our policy manager.
+	 * Our policy manager delegate.
 	 *
 	 */
-	private PolicyManager manager ;
+	private AdministrationDelegate manager ;
 
 	/**
-	 * Our policy service.
+	 * Our policy service delegate.
 	 *
 	 */
-	private PolicyService service ;
+	private PolicyServiceDelegate service ;
 
 	/**
 	 * Setup our tests.
@@ -122,61 +110,14 @@ public class JUnitServiceTest
 		if (DEBUG_FLAG) System.out.println("setUp()") ;
 
 		//
-		// Create a manager locator.
-		PolicyManagerServiceLocator managerLocator = new PolicyManagerServiceLocator() ;
-		assertNotNull("Null manager locator", managerLocator) ;
-		//
-		// Create our manager.
-		manager = managerLocator.getPolicyManager() ;
-		assertNotNull("Null manager", manager) ;
+		// Create our manager delegate.
+		manager = new AdministrationDelegate() ;
+		assertNotNull("Null manager delegate", manager) ;
 
 		//
-		// Create a service locator.
-		PolicyServiceServiceLocator serviceLocator = new PolicyServiceServiceLocator() ;
-		assertNotNull("Null service locator", serviceLocator) ;
-		//
-		// Create our service.
-		service = serviceLocator.getPolicyService() ;
-		assertNotNull("Null service", service) ;
-
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("") ;
-		}
-
-	/**
-	 * Check that we can call the getServiceStatus() methods.
-	 *
-	 */
-	public void testGetServiceStatus()
-		throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("testGetServiceStatus()") ;
-
-		//
-		// Call the manager ServiceStatus method.
-		ServiceData status = manager.getServiceStatus() ;
-		assertNotNull("Null status", status) ;
-
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("  Status") ;
-		if (DEBUG_FLAG) System.out.println("    Config    : " + status.getConfigPath()) ;
-		if (DEBUG_FLAG) System.out.println("    Community : " + status.getCommunityName()) ;
-		if (DEBUG_FLAG) System.out.println("    Service   : " + status.getServiceUrl()) ;
-		if (DEBUG_FLAG) System.out.println("    Manager   : " + status.getManagerUrl()) ;
-
-		//
-		// Call the ServiceStatus method.
-		status = service.getServiceStatus() ;
-		assertNotNull("Null status", status) ;
-
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("  Status") ;
-		if (DEBUG_FLAG) System.out.println("    Config    : " + status.getConfigPath()) ;
-		if (DEBUG_FLAG) System.out.println("    Community : " + status.getCommunityName()) ;
-		if (DEBUG_FLAG) System.out.println("    Service   : " + status.getServiceUrl()) ;
-		if (DEBUG_FLAG) System.out.println("    Manager   : " + status.getManagerUrl()) ;
+		// Create our service delegate.
+		service = new PolicyServiceDelegate() ;
+		assertNotNull("Null service delegate", service) ;
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("") ;
@@ -230,47 +171,27 @@ public class JUnitServiceTest
 		if (DEBUG_FLAG) System.out.println("    valid    : " + permission.isValid()) ;
 
 		//
-		// Modify the permission.
-		permission.setStatus(PolicyPermission.STATUS_PERMISSION_GRANTED) ;
-		permission.setReason(TEST_REASON);
-		//
-		// Try updating the Resource.
-		permission = manager.setPermission(permission);
-		assertNotNull("Failed to update the permission", permission) ;
-
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("  Permission") ;
-		if (DEBUG_FLAG) System.out.println("    resource : " + permission.getResource()) ;
-		if (DEBUG_FLAG) System.out.println("    group    : " + permission.getGroup()) ;
-		if (DEBUG_FLAG) System.out.println("    action   : " + permission.getAction()) ;
-		if (DEBUG_FLAG) System.out.println("    status   : " + permission.getStatus()) ;
-		if (DEBUG_FLAG) System.out.println("    valid    : " + permission.isValid()) ;
-
-		//
 		// Create our credentials.
 		PolicyCredentials credentials = new PolicyCredentials() ;
 		credentials.setGroup(TEST_GROUP) ;
 		credentials.setAccount(TEST_ACCOUNT) ;
 		//
 		// Call the checkPermissions method.
-		PolicyPermission result = service.checkPermissions(credentials, TEST_RESOURCE, TEST_ACTION) ;
-		assertNotNull("Null result", result) ;
+		boolean result = service.checkPermissions(credentials, TEST_RESOURCE, TEST_ACTION) ;
+		assertTrue("False result", result) ;
+		permission = service.getPolicyPermission() ;
+		assertNotNull("Null permission", permission) ;
+
 		//
 		// Check the resulting permissions.
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("Result") ;
-		if (DEBUG_FLAG) System.out.println("  Group    : " + result.getGroup()) ;
-		if (DEBUG_FLAG) System.out.println("  Resource : " + result.getResource()) ;
-		if (DEBUG_FLAG) System.out.println("  Action   : " + result.getAction()) ;
-		if (DEBUG_FLAG) System.out.println("  Status   : " + result.getStatus()) ;
-		if (DEBUG_FLAG) System.out.println("  Reason   : " + result.getReason()) ;
+		if (DEBUG_FLAG) System.out.println("  Group    : " + permission.getGroup()) ;
+		if (DEBUG_FLAG) System.out.println("  Resource : " + permission.getResource()) ;
+		if (DEBUG_FLAG) System.out.println("  Action   : " + permission.getAction()) ;
+		if (DEBUG_FLAG) System.out.println("  Status   : " + permission.getStatus()) ;
+		if (DEBUG_FLAG) System.out.println("  Reason   : " + permission.getReason()) ;
 		if (DEBUG_FLAG) System.out.println("") ;
-
-		//
-		// Delete the permission (no return data).
-		manager.delPermission(TEST_RESOURCE, TEST_GROUP, TEST_ACTION);
-		permission = manager.getPermission(TEST_RESOURCE, TEST_GROUP, TEST_ACTION);
-		assertNull("Failed to tidy up the test permission", permission) ;
 
 		//
 		// Delete the resource (no return data).

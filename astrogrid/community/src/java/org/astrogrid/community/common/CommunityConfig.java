@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/common/Attic/CommunityConfig.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/18 15:50:03 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:date>$Date: 2003/10/09 01:38:30 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityConfig.java,v $
+ *   Revision 1.7  2003/10/09 01:38:30  dave
+ *   Added JUnite tests for policy delegates
+ *
  *   Revision 1.6  2003/09/18 15:50:03  dave
  *   Fixing bugs in configuration
  *
@@ -111,6 +114,12 @@ public class CommunityConfig
 	 *
 	 */
 	public static final String POLICY_SERVICE_PROPERTY_NAME = "policy.service.url";
+
+	/**
+	 * The name of the property for our authentication URL.
+	 *
+	 */
+	public static final String AUTHENTICATOR_PROPERTY_NAME = "authentication.service.url";
 
 	/**
 	 * Our JConfig Configuration instance.
@@ -471,10 +480,47 @@ public class CommunityConfig
 			if (DEBUG_FLAG) System.out.println("getServiceUrl()") ;
 			if (DEBUG_FLAG) System.out.println("  Trying localhost ....") ;
 			service = "http://" + getHostName() + ":8080/axis/services/PolicyService" ;
-			if (DEBUG_FLAG) System.out.println("  Localhost result : " + manager) ;
+			if (DEBUG_FLAG) System.out.println("  Localhost result : " + service) ;
 			}
-		if (DEBUG_FLAG) System.out.println("  Service URL : " + manager) ;
+		if (DEBUG_FLAG) System.out.println("  Service URL : " + service) ;
 		return service ;
+		}
+
+
+	/**
+	 * Our local authentication service URL.
+	 *
+	 */
+	private static String authenticator = null ;
+
+	/**
+	 * Static method to get our local authentication service URL.
+	 *
+	 */
+	public static String getAuthenticationServiceUrl()
+		{
+		if (DEBUG_FLAG) System.out.println("getAuthenticationServiceUrl()") ;
+		//
+		// Try reading our config property.
+		if ((null == authenticator) || (authenticator.length() <= 0))
+			{
+			if (DEBUG_FLAG) System.out.println("getAuthenticationServiceUrl()") ;
+			if (DEBUG_FLAG) System.out.println("  Trying config property '" + AUTHENTICATOR_PROPERTY_NAME + "'") ;
+			authenticator = getProperty(AUTHENTICATOR_PROPERTY_NAME) ;
+			if (null != authenticator) authenticator = authenticator.trim() ;
+			if (DEBUG_FLAG) System.out.println("  Config property result : " + authenticator) ;
+			}
+		//
+		// Try using our local host name.
+		if ((null == authenticator) || (authenticator.length() <= 0))
+			{
+			if (DEBUG_FLAG) System.out.println("getAuthenticationServiceUrl()") ;
+			if (DEBUG_FLAG) System.out.println("  Trying localhost ....") ;
+			authenticator = "http://" + getHostName() + ":8080/axis/services/AuthenticationService" ;
+			if (DEBUG_FLAG) System.out.println("  Localhost result : " + authenticator) ;
+			}
+		if (DEBUG_FLAG) System.out.println("  Authenticator URL : " + authenticator) ;
+		return authenticator ;
 		}
 
       /**

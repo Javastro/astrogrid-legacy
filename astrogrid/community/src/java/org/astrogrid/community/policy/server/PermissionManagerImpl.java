@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/PermissionManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/12 12:59:17 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2003/10/09 01:38:30 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PermissionManagerImpl.java,v $
+ *   Revision 1.3  2003/10/09 01:38:30  dave
+ *   Added JUnite tests for policy delegates
+ *
  *   Revision 1.2  2003/09/12 12:59:17  dave
  *   1) Fixed RemoteException handling in the manager and service implementations.
  *
@@ -118,6 +121,7 @@ public class PermissionManagerImpl
 					//
 					// Create our new PolicyPermission.
 					permission = new PolicyPermission(resourceIdent.toString(), groupIdent.toString(), action) ;
+					permission.setStatus(PolicyPermission.STATUS_PERMISSION_GRANTED) ;
 					//
 					// Try adding it to the database.
 					try {
