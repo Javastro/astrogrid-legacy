@@ -48,7 +48,8 @@ public class RegistryHarvestJunit extends TestCase {
        System.out.println("Property for config = " + System.getProperty("org.astrogrid.registry.junitcache.url"));
        String junitDir = System.getProperty("org.astrogrid.registry.junitcache.url");
        
-       RegistryDelegateFactory.conf.setProperty("registry.junit.test/HarvestVizier",junitDir+"/HarvestVizierTest.xml");       
+       RegistryDelegateFactory.conf.setProperty("registry.junit.test/HarvestVizier",junitDir+"/HarvestVizierTest.xml");
+       RegistryDelegateFactory.conf.setProperty("org.astrogrid.registry.junit.regupdate1",junitDir+"/RegistryUpdate.xml");       
        URL junitEndPoint = RegistryDelegateFactory.conf.getUrl("org.astrogrid.registry.harvest.junit.endpoint",null);
        if(junitEndPoint != null)
          rhs = RegistryDelegateFactory.createHarvest(junitEndPoint);
@@ -58,6 +59,16 @@ public class RegistryHarvestJunit extends TestCase {
        //assertNotNull(rhs);
        //if (DEBUG_FLAG) System.out.println("----\"----") ;
    }
+   
+   public void testUpdateOnRegistry() throws Exception {
+      if (DEBUG_FLAG) System.out.println("Begin testUpdateOnRegistry");
+      if(rhs == null) return;
+      if (DEBUG_FLAG) System.out.println("Endpoint = " + RegistryDelegateFactory.conf.getString("org.astrogrid.registry.admin.junit.endpoint"));             
+      Document doc = RegistryDelegateFactory.conf.getDom("org.astrogrid.registry.junit.regupdate1");  
+      rhs.harvestResource(doc);
+      //if (responseDoc != null) System.out.println("received " + XMLUtils.DocumentToString(responseDoc));         
+   }
+
    
    public void testHarvestResource() throws Exception {
       if (DEBUG_FLAG) System.out.println("Begin testHarvestResource"); 

@@ -60,13 +60,13 @@ public class RegistryAdminService {
    private URL endPoint = null; 
    private boolean dummyMode = false;
    
-   public static Config conf = null;
+//   public static Config conf = null;
    
-   static {
-      if(conf == null) {
-         conf = org.astrogrid.config.SimpleConfig.getSingleton();
-      }      
-   }
+//   static {
+//      if(conf == null) {
+//         conf = org.astrogrid.config.SimpleConfig.getSingleton();
+//      }      
+//   }
    
     
     /**

@@ -66,6 +66,8 @@ public class RegistryAdminJunit extends TestCase {
        RegistryDelegateFactory.conf.setProperty("vm05.astrogrid.org/MyspaceManager",cacheDir+"/Myspace.xml");
        RegistryDelegateFactory.conf.setProperty("org.astrogrid.registry.junit.authUpdate1",junitDir+"/AuthorityTest.xml");
        RegistryDelegateFactory.conf.setProperty("org.astrogrid.registry.junit.orgUpdate1",junitDir+"/OrganisationTest.xml");
+       RegistryDelegateFactory.conf.setProperty("org.astrogrid.registry.junit.regupdate1",junitDir+"/RegistryUpdate.xml");
+       RegistryDelegateFactory.conf.setProperty("org.astrogrid.registry.junit.myspaceupdate1",junitDir+"/MyspaceUpdate.xml");
       
        //assertNotNull(rs);
        if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -79,12 +81,31 @@ public class RegistryAdminJunit extends TestCase {
       }
                   
    }
+   
+   public void testUpdateOnRegistry() throws Exception {
+      if (DEBUG_FLAG) System.out.println("Begin testUpdateOnRegistry");
+      if(rs == null) return;
+      if (DEBUG_FLAG) System.out.println("Endpoint = " + RegistryDelegateFactory.conf.getString("org.astrogrid.registry.admin.junit.endpoint"));             
+      Document doc = RegistryDelegateFactory.conf.getDom("org.astrogrid.registry.junit.regupdate1");  
+      Document responseDoc = rs.update(doc);
+      if (responseDoc != null) System.out.println("received " + XMLUtils.DocumentToString(responseDoc));         
+   }
+
+   public void testUpdateOnMyspace() throws Exception {
+      if (DEBUG_FLAG) System.out.println("Begin testUpdateOnMyspace");
+      if(rs == null) return;
+      if (DEBUG_FLAG) System.out.println("Endpoint = " + RegistryDelegateFactory.conf.getString("org.astrogrid.registry.admin.junit.endpoint"));             
+      Document doc = RegistryDelegateFactory.conf.getDom("org.astrogrid.registry.junit.myspaceupdate1");  
+      Document responseDoc = rs.update(doc);
+      if (responseDoc != null) System.out.println("received " + XMLUtils.DocumentToString(responseDoc));         
+   }
+   
   
    public void testUpdateOnAuthority() throws Exception {
       if (DEBUG_FLAG) System.out.println("Begin testUpdateOnAuthority");
       if(rs == null) return;
-      if (DEBUG_FLAG) System.out.println("Endpoint = " + rs.conf.getString("org.astrogrid.registry.admin.junit.endpoint"));             
-      Document doc = rs.conf.getDom("org.astrogrid.registry.junit.authUpdate1");  
+      if (DEBUG_FLAG) System.out.println("Endpoint = " + RegistryDelegateFactory.conf.getString("org.astrogrid.registry.admin.junit.endpoint"));             
+      Document doc = RegistryDelegateFactory.conf.getDom("org.astrogrid.registry.junit.authUpdate1");  
       Document responseDoc = rs.update(doc);
       //assertNull(responseDoc);
       if (responseDoc != null) System.out.println("received " + XMLUtils.DocumentToString(responseDoc));         
@@ -93,10 +114,10 @@ public class RegistryAdminJunit extends TestCase {
    public void testUpdateOnOrg() throws Exception {
       if (DEBUG_FLAG) System.out.println("Begin testUpdateOnOrg");
       if(rs == null) return;
-      if (DEBUG_FLAG) System.out.println("Endpoint = " + rs.conf.getString("org.astrogrid.registry.admin.junit.endpoint"));
+      if (DEBUG_FLAG) System.out.println("Endpoint = " + RegistryDelegateFactory.conf.getString("org.astrogrid.registry.admin.junit.endpoint"));
       //File fi = new File(rs.conf.getString("org.astrogrid.registry.junit.orgUpdate1"));
       //Document responseDoc = rs.updateFromFile(fi);
-      URL url = new URL(rs.conf.getString("org.astrogrid.registry.junit.orgUpdate1"));
+      URL url = new URL(RegistryDelegateFactory.conf.getString("org.astrogrid.registry.junit.orgUpdate1"));
       Document responseDoc = rs.updateFromURL(url);
       //assertNotNull(responseDoc);
       //if (DEBUG_FLAG) System.out.println("received " + XMLUtils.DocumentToString(responseDoc));         
