@@ -2,82 +2,64 @@
 <!--+
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/server/project.xml,v $</cvs:source>
-    | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2005/02/10 14:17:21 $</cvs:date>
-    | <cvs:version>$Revision: 1.3 $</cvs:version>
-    | <cvs:log>
-    |   $Log: project.xml,v $
-    |   Revision 1.3  2005/02/10 14:17:21  jdt
-    |   merge from  filemanager-nww-903
-    |
-    |   Revision 1.2.10.1  2005/02/10 13:07:54  nw
-    |   added in stuff for xstream persistence.
-    |
-    |   Revision 1.2  2004/11/25 00:20:27  jdt
-    |   Merge from dave-dev-200410061224-200411221626
-    |
-    |   Revision 1.1.2.2  2004/11/17 19:05:17  dave
-    |   Added manager config ...
-    |
-    |   Revision 1.1.2.1  2004/11/17 07:56:33  dave
-    |   Added server mock and webapp build scripts ...
-    |
-    | </cvs:log>
+    | <cvs:author>$Author: clq2 $</cvs:author>
+    | <cvs:date>$Date: 2005/03/11 13:37:06 $</cvs:date>
+    | <cvs:version>$Revision: 1.4 $</cvs:version>
     |
     +-->
-<project
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:noNamespaceSchemaLocation="maven-project.xsd">
-
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="maven-project.xsd">
     <!--+
         | Extend the common project descriptor.
         +-->
     <extend>../maven/project.xml</extend>
-
     <!--+
         | The short name of the project.
         +-->
-    <id>astrogrid-filemanager-server</id>
-
+    <id>astrogrid-filemanager</id>
     <!--+
         | The full name of the project.
         +-->
-    <name>FileManager server</name>
-
+    <name>FileManager Server</name>
     <!--+
         | A short description of the project.
         | The short description should be limited to a single line.
         +-->
-    <shortDescription>
-        Short description of the project ....
-    </shortDescription>
-
+    <shortDescription> The FileManager Server application </shortDescription>
     <!--+
         | A detailed description of the project.
         | This is used to generate the front page of the projects web site.
         +-->
-    <description>
-        <![CDATA[
-            Long description of the project, including <i>HTML</i> tags ....
-        ]]>
-    </description>
-
-    <!--+
-        | Our cvs repository location.
-        +-->
-    <repository>
-        <connection>
-            scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/filemanager/server
-        </connection>
-        <developerConnection>
-            scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/filemanager/server
-        </developerConnection>
-    </repository>
-
+    <description> <![CDATA[
+            The FileManager server application, packaged as a webapp.
+        ]]> </description>
     <!--+
         | The external libraries required to build our component.
         +-->
     <dependencies>
+
+        <!--Temporary dependency until Guy's constracts maven project is up and running-->
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>${astrogrid.contracts.jar}</artifactId>
+            <version>${astrogrid.contracts.version}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>astrogrid-filemanager-client</artifactId>
+            <version>${astrogrid.filemanager.version}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
+
         <!--+
             | The AstroGrid common components.
             +-->
@@ -87,17 +69,11 @@
             <version>${astrogrid.common.version}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
         </dependency>
-        <!--+
-            | The FileManager components.
-            +-->
-        <dependency>
-            <groupId>${pom.groupId}</groupId>
-            <artifactId>astrogrid-filemanager-common</artifactId>
-            <version>${astrogrid.filemanager.version}</version>
-            <type>jar</type>
-            <url>http://www.astrogrid.org/</url>
-        </dependency>
+
         <!--+
             | The FileStore components.
             +-->
@@ -107,6 +83,9 @@
             <version>${astrogrid.filestore.version}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
         </dependency>
         <dependency>
             <groupId>${pom.groupId}</groupId>
@@ -114,6 +93,32 @@
             <version>${astrogrid.filestore.version}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <!--+
+            | The Registry components.
+            +-->
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>astrogrid-registry-common</artifactId>
+            <version>${astrogrid.registry.version}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>astrogrid-registry-client-lite</artifactId>
+            <version>${astrogrid.registry.version}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
         </dependency>
         <!--+
             | The AstroGrid community components.
@@ -124,25 +129,90 @@
             <version>${astrogrid.community.version}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>astrogrid-community-client</artifactId>
+            <version>${astrogrid.community.version}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>astrogrid-community-resolver</artifactId>
+            <version>${astrogrid.community.version}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
         </dependency>
         <!-- simple xml serialization library -->
         <dependency>
-                <groupId>xstream</groupId>
-                <artifactId>xstream</artifactId>
-                <version>1.1</version>
-                <type>jar</type>
-                <url>http://xstream.codehaus.org/</url>
+            <groupId>xstream</groupId>
+            <artifactId>xstream</artifactId>
+            <version>1.1</version>
+            <type>jar</type>
+            <url>http://xstream.codehaus.org/</url>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
         </dependency>
         <!-- quick xml pull parser - for faster performance of xstream -->
         <dependency>
-                <groupId>xpp3</groupId>
-                <artifactId>xpp3_min</artifactId>
-                <version>1.1.3.4.I</version>
-                <type>jar</type>
-                <url>http://www.extreme.indiana.edu/xgws/xsoap/xpp/mxp1/index.html</url>
+            <groupId>xpp3</groupId>
+            <artifactId>xpp3_min</artifactId>
+            <version>1.1.3.4.I</version>
+            <type>jar</type>
+            <url>http://www.extreme.indiana.edu/xgws/xsoap/xpp/mxp1/index.html</url>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
         </dependency>
-    </dependencies>
 
+<!-- transactional filestore-->
+    <dependency>
+        <groupId>commons-transaction</groupId>
+        <artifactId>commons-transaction</artifactId>
+        <version>1.0.1</version>
+        <type>jar</type>
+        <properties>
+                <war.bundle>true</war.bundle>
+        </properties>
+    </dependency>
+    <dependency>
+        <groupId>geronimo-spec</groupId>
+        <artifactId>geronimo-spec-jta</artifactId>
+        <version>1.0-M1</version>
+        <type>jar</type>
+        <properties>
+                <war.bundle>true</war.bundle>
+        </properties>
+    </dependency>
+    <dependency>
+        <groupId>commons-codec</groupId>
+        <artifactId>commons-codec</artifactId>
+        <version>1.2</version>
+        <type>jar</type>
+        <properties>
+                <war.bundle>true</war.bundle>
+        </properties>
+    </dependency>
+        <!-- axis, log4j, junit, etc defined in maven parent project -->
+
+       <!-- used to implement a weak-reference cache on the client - used for testing,
+       but not needed in war, -->
+    <dependency>
+      <id>commons-collections</id>
+      <version>3.0</version>
+    </dependency>
+    </dependencies>
     <!--+
         | The build properties for our project.
         +-->
@@ -177,10 +247,11 @@
                 +-->
             <resources>
                 <resource>
-                    <directory>target/database/config</directory>
+                    <directory>src/junit</directory>
                     <includes>
                         <include>*.xml</include>
-                        <include>*.sql</include>
+                        <include>*.properties</include>
+                        <include>*.txt</include>
                     </includes>
                 </resource>
             </resources>

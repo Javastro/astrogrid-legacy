@@ -1,10 +1,30 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/src/java/org/astrogrid/filemanager/client/FileManagerNode.java,v $</cvs:source>
  * <cvs:author>$Author: clq2 $</cvs:author>
- * <cvs:date>$Date: 2005/01/28 10:43:57 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2005/03/11 13:37:06 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  * <cvs:log>
  *   $Log: FileManagerNode.java,v $
+ *   Revision 1.6  2005/03/11 13:37:06  clq2
+ *   new filemanager merged with filemanager-nww-jdt-903-943
+ *
+ *   Revision 1.5.4.4  2005/03/01 15:07:30  nw
+ *   close to finished now.
+ *
+ *   Revision 1.5.4.3  2005/02/27 23:03:12  nw
+ *   first cut of talking to filestore
+ *
+ *   Revision 1.1.2.2  2005/02/18 15:50:15  nw
+ *   lots of changes.
+ *   introduced new schema-driven soap binding, got soap-based unit tests
+ *   working again (still some failures)
+ *
+ *   Revision 1.1.2.1  2005/02/11 14:27:52  nw
+ *   refactored, split out candidate classes.
+ *
+ *   Revision 1.5.4.1  2005/02/10 16:23:14  nw
+ *   formatted code
+ *
  *   Revision 1.5  2005/01/28 10:43:57  clq2
  *   dave_dev_200501141257 (filemanager)
  *
@@ -73,323 +93,373 @@
  * </cvs:log>
  *
  */
-package org.astrogrid.filemanager.client ;
+package org.astrogrid.filemanager.client;
 
-import java.net.URL ;
+import org.astrogrid.filemanager.common.DuplicateNodeFault;
+import org.astrogrid.filemanager.common.FileManagerFault;
+import org.astrogrid.filemanager.common.NodeNotFoundFault;
+import org.astrogrid.store.Ivorn;
 
-import java.util.Date ;
+import org.apache.axis.types.URI.MalformedURIException;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.rmi.RemoteException;
+import java.util.Observer;
 
-import org.astrogrid.store.Ivorn;
-
-import org.astrogrid.filemanager.common.FileManagerProperties;
-import org.astrogrid.filemanager.common.exception.NodeNotFoundException;
-import org.astrogrid.filemanager.common.exception.DuplicateNodeException;
-import org.astrogrid.filemanager.common.exception.FileManagerIdentifierException;
-import org.astrogrid.filemanager.common.exception.FileManagerServiceException;
-import org.astrogrid.filemanager.common.exception.FileManagerPropertiesException;
+import javax.swing.tree.TreeNode;
 
 /**
- * The public API for a FileManager node.
- * @todo Mime type, create date etc ....
- *
- *
- *
+ * Represents a file or folder in the file manager.
+ * <p>
+ * Extends the standard javax.swing.TreeNode - so structures of FileManagerNodes can be trivially viewed in gui components.
+ * 
+ * @modified nww renamed accessors to conform with bean conventions. (i.e. parent -> getParent, etc)
+ * @modified nww renamed to Node - shorter - let the package name take the strain.
+ * @moified nww split out NodeIterator into separate class
+ * @modified moved metadata getters and setters into separate interface - precendent here with JDBC metadata interfaces.
+ * 
+ * 
+ *  
  */
-public interface FileManagerNode
-    {
+public interface FileManagerNode extends TreeNode{
+
 
     /**
-     * The node type for a file.
-     *
-    public static final String FILE_NODE = FileManagerProperties.DATA_NODE_TYPE ;
+     * Get the human-readable ivorn represenation of this resource
+     * <p>
+     * Will return a fullpath ivorn, rooted from the user's homespace.
+     * for a shorter, machine-readable form, use <tt>getMetadata().getNodeIvorn()</tt>
+     * @return The ivorn identifier for this node
+     * @throws RemoteException
+     * @throws NodeNotFoundFault
+     * @throws FileManagerFault
+     *  
      */
-
-    /**
-     * The node type for a container.
-     *
-    public static final String CONTAINER_NODE = FileManagerProperties.CONTAINER_NODE_TYPE ;
-     */
-
-    /**
-     * Get the node ivorn.
-     * @return The ivorn identifier for this node.
-     * @throws FileManagerIdentifierException If the ivorn is invalid.
-     *
-     */
-    public Ivorn ivorn()
-        throws FileManagerIdentifierException;
+    public Ivorn getIvorn() throws FileManagerFault, NodeNotFoundFault, RemoteException ;
+        
 
     /**
      * Get the node name.
+     * 
      * @return The current name of the node.
-     *
+     *  
      */
-    public String name();
+    public String getName();
 
     /**
      * Get the parent node.
+     * 
      * @return The parent node, or null for a root node.
-     * @throws NodeNotFoundException If the node is not in the database.
-     * @throws FileManagerServiceException If a problem occurs when handling the request.
-     *
+     * @throws RemoteException
+     * @throws NodeNotFoundException
+     *             If the node is not in the database.
+     * @throws FileManagerServiceException
+     *             If a problem occurs when handling the request.
+     *  
      */
-    public FileManagerNode parent()
-        throws NodeNotFoundException, FileManagerServiceException;
+    public FileManagerNode getParentNode() throws NodeNotFoundFault,
+            FileManagerFault, RemoteException;
 
     /**
      * Delete this node.
-     * @throws NodeNotFoundException If the node is not in the database.
-     * @throws FileManagerServiceException If a problem occurs when handling the request.
-     *
+     * @throws RemoteException
+     * 
+     * @throws NodeNotFoundException
+     *             If the node is not in the database.
+     * @throws FileManagerServiceException
+     *             If a problem occurs when handling the request.
+     *  
      */
-    public void delete()
-        throws NodeNotFoundException, FileManagerServiceException;
+    public void delete() throws NodeNotFoundFault,
+            FileManagerFault, RemoteException;
 
     /**
      * Check if this node represents a file.
+     * 
      * @return true if this node represents a file.
-     *
+     *  
      */
-    public boolean isFile() ;
+    public boolean isFile();
 
     /**
-     * Check if this node represents a container.
-     * @return true if this node represents a container.
-     *
+     * Check if this node represents a folder
+     * 
+     * @return true if this node represents a folder
+     *  
      */
-    public boolean isContainer() ;
+    public boolean isFolder();
 
     /**
-     * Create a copy of this node.
-     * If the node already has stored data, then this will create a copy of the data.
+     * Create a copy of this node. If the node already has stored data, then
+     * this will create a copy of the data.
+     * 
      * @return A reference to the new node.
-     * @param name  The name of the new Node.
-     * @param node  The new parent Node in the metadata tree (null to create the new node in the same location in the tree).
-     * @param store The Ivorn of the FileStore for new Node (null to store the copy at the same location).
-     * @throws DuplicateNodeException If a node with the same name already exists in the metadata tree.
-     * @throws NodeNotFoundException If the current node is no longer in the database.
-     * @throws NodeNotFoundException If the new parent node is no longer in the database.
-     * @throws FileManagerServiceException If a problem occurs when handling the request.
-     *
+     * @param name
+     *            The name of the new Node.
+     * @param node
+     *            The new parent Node in the metadata tree (null to create the
+     *            new node in the same location in the tree).
+     * @param store
+     *            The Ivorn of the FileStore for new Node (null to store the
+     *            copy at the same location).
+     * @throws RemoteException
+     * @throws DuplicateNodeException
+     *             If a node with the same name already exists in the metadata
+     *             tree.
+     * @throws NodeNotFoundException
+     *             If the current node is no longer in the database.
+     * @throws NodeNotFoundException
+     *             If the new parent node is no longer in the database.
+     * @throws FileManagerServiceException
+     *             If a problem occurs when handling the request.
+     *  
      */
     public FileManagerNode copy(String name, FileManagerNode parent, Ivorn location)
-        throws DuplicateNodeException, NodeNotFoundException, FileManagerServiceException;
+            throws DuplicateNodeFault, NodeNotFoundFault,
+            FileManagerFault, RemoteException;
 
     /**
-     * Move this node to a new location.
-     * If the node already has stored data, then this may involve transfering the data to a new location.
-     * @param name  The name of the new Node.
-     * @param node  The new parent Node in the metadata tree (null to leave the node in the same location in the tree).
-     * @param store The Ivorn of the FileStore location (null to leave the data at the same location).
-     * @throws DuplicateNodeException If a node with the same name already exists in the metadata tree.
-     * @throws NodeNotFoundException If the current node is no longer in the database.
-     * @throws NodeNotFoundException If the new parent node is no longer in the database.
-     * @throws FileManagerServiceException If a problem occurs when handling the request.
-     *
+     * Move this node to a new location. If the node already has stored data,
+     * then this may involve transfering the data to a new location.
+     * 
+     * @param name
+     *            The name of the new Node.
+     * @param node
+     *            The new parent Node in the metadata tree (null to leave the
+     *            node in the same location in the tree).
+     * @param store
+     *            The Ivorn of the FileStore location (null to leave the data at
+     *            the same location).
+     * @throws RemoteException
+     * @throws DuplicateNodeException
+     *             If a node with the same name already exists in the metadata
+     *             tree.
+     * @throws NodeNotFoundException
+     *             If the current node is no longer in the database.
+     * @throws NodeNotFoundException
+     *             If the new parent node is no longer in the database.
+     * @throws FileManagerServiceException
+     *             If a problem occurs when handling the request.
+     *  
      */
     public void move(String name, FileManagerNode parent, Ivorn location)
-        throws DuplicateNodeException, NodeNotFoundException, FileManagerServiceException;
+            throws DuplicateNodeFault, NodeNotFoundFault,
+            FileManagerFault, RemoteException;
 
     /**
-     * Add a new child node.
-     * @param name The node name.
-     * @return A new node for the container.
-     * @throws UnsupportedOperationException If this node represents a file.
-     * @throws DuplicateNodeException If a node with the same name already exists.
-     * @throws NodeNotFoundException If the current node is no longer in the database.
-     * @throws FileManagerServiceException If a problem occurs when handling the request.
-     *
+     * Add a new child filder node.
+     * 
+     * @param name
+     *            The node name.
+     * @return A new node for the folder.
+     * @throws UnsupportedOperationException
+     *             If this node represents a file.
+     * @throws RemoteException
+     * @throws DuplicateNodeException
+     *             If a node with the same name already exists.
+     * @throws NodeNotFoundException
+     *             If the current node is no longer in the database.
+     * @throws FileManagerServiceException
+     *             If a problem occurs when handling the request.
      */
-    public FileManagerNode addNode(String name)
-        throws UnsupportedOperationException, NodeNotFoundException, DuplicateNodeException , FileManagerServiceException;
+    public FileManagerNode addFolder(String name)
+            throws UnsupportedOperationException, DuplicateNodeFault, NodeNotFoundFault,
+            FileManagerFault, RemoteException;
 
     /**
      * Add a new file node.
-     * @param name The node name.
+     * 
+     * @param name
+     *            The node name.
      * @return A new node for the file.
-     * @throws UnsupportedOperationException If this node represents a file.
-     * @throws DuplicateNodeException If a node with the same name already exists.
-     * @throws NodeNotFoundException If the current node is no longer in the database.
-     * @throws FileManagerServiceException If a problem occurs when handling the request.
-     *
+     * @throws UnsupportedOperationException
+     *             If this node represents a file.
+     * @throws RemoteException
+     * @throws DuplicateNodeException
+     *             If a node with the same name already exists.
+     * @throws NodeNotFoundException
+     *             If the current node is no longer in the database.
+     * @throws FileManagerServiceException
+     *             If a problem occurs when handling the request.
+     *  
      */
     public FileManagerNode addFile(String name)
-        throws UnsupportedOperationException, NodeNotFoundException, DuplicateNodeException , FileManagerServiceException;
+            throws UnsupportedOperationException, DuplicateNodeFault, NodeNotFoundFault,
+            FileManagerFault, RemoteException;
 
     /**
      * Get a child node by path.
-     * @param path The path to the child node.
+     * 
+     * @param name
+     *            The name of the child node. NB nested paths (e.g. <code>'foo/bar/choo'</code>) aren't supported. 
+     * Instead do <code>n.getChild('foo').getChild('bar').getChild('choo')</code>
      * @return A reference to the child node.
-     * @throws UnsupportedOperationException If this node represents a file.
-     * @throws NodeNotFoundException If the node is not in the database.
-     * @throws FileManagerServiceException If a problem occurs when handling the request.
-     *
+     * @throws UnsupportedOperationException
+     *             If this node represents a file.
+     * @throws RemoteException
+     * @throws NodeNotFoundException
+     *             If the node is not in the database.
+     * @throws FileManagerServiceException
+     *             If a problem occurs when handling the request.
+     *  
      */
-    public FileManagerNode child(String path)
-        throws UnsupportedOperationException, NodeNotFoundException, FileManagerServiceException;
+    public FileManagerNode getChild(String name)
+            throws UnsupportedOperationException,  NodeNotFoundFault,
+            FileManagerFault, RemoteException;
 
     /**
-     * Open a java OutputStream to send (import) data into the node.
+     * Open a java OutputStream to write data into the node.
+     * 
      * @return An OutputStream connected directly to the node store.
-     * @throws IOException If a problem occurs openning the stream.
-     * @throws UnsupportedOperationException If the node represents a container.
-     * @throws NodeNotFoundException If the node is not in the database.
-     * @throws FileManagerServiceException If a problem occurs when handling the request.
-     *
+     * @throws IOException
+     *             If a problem occurs openning the stream.
+     * @throws UnsupportedOperationException
+     *             If the node represents a container.
+     * @throws NodeNotFoundException
+     *             If the node is not in the database.
+     * @throws FileManagerServiceException
+     *             If a problem occurs when handling the request.
+     *  
      */
-    public OutputStream importStream()
-        throws IOException, UnsupportedOperationException, NodeNotFoundException, FileManagerServiceException;
+    public OutputStream writeContent() throws IOException,
+            UnsupportedOperationException, NodeNotFoundFault,
+            FileManagerFault;
+
+    /** open a java output stream to append data into the node 
+     * 
+     * @see #writeContent()
+     */
+    public OutputStream appendContent() throws IOException,
+    UnsupportedOperationException, NodeNotFoundFault,
+    FileManagerFault;
 
     /**
-     * Open a java InputStream to read (export) data from the node.
+     * Open a java InputStream to read the  data content of a node.
+     * 
      * @return An InputStream connected directly to the node store.
-     * @throws IOException If a problem occurs openning the stream.
-     * @throws UnsupportedOperationException If the node represents a container.
-     * @throws NodeNotFoundException If the node is not in the database.
-     * @throws FileManagerServiceException If a problem occurs when handling the request.
-     *
+     * @throws IOException
+     *             If a problem occurs openning the stream.
+     * @throws UnsupportedOperationException
+     *             If the node represents a container.
+     * @throws NodeNotFoundException
+     *             If the node is not known, or has no data.
+     * @throws FileManagerServiceException
+     *             If a problem occurs when handling the request.
+     *  
      */
-    public InputStream exportStream()
-        throws IOException, UnsupportedOperationException, NodeNotFoundException, FileManagerServiceException;
+    public InputStream readContent() throws IOException,
+            UnsupportedOperationException,NodeNotFoundFault,
+            FileManagerFault;
 
     /**
      * Get a URL to access the node data from.
+     * 
      * @return A URL which connects directly to the node store.
-     * @throws UnsupportedOperationException If the node represents a container.
-     * @throws NodeNotFoundException If the node is not in the database.
-     * @throws FileManagerServiceException If a problem occurs when handling the request.
-     *
+     * @throws UnsupportedOperationException
+     *             If the node represents a folder
+     * @throws RemoteException
+     * @throws MalformedURLException
+     * @throws NodeNotFoundException
+     *             If the node is not in the database.
+     * @throws FileManagerServiceException
+     *             If a problem occurs when handling the request.
+     *  
      */
-    public URL exportURL()
-        throws UnsupportedOperationException, NodeNotFoundException, FileManagerServiceException;
+    public URL contentURL() throws UnsupportedOperationException,
+        NodeNotFoundFault, FileManagerFault, MalformedURLException, RemoteException;
 
     /**
-     * Import data from a URL.
-     * @throws UnsupportedOperationException If the node represents a container.
-     * @throws NodeNotFoundException If the node is not in the database.
-     * @throws FileManagerServiceException If a problem occurs when handling the request.
-     *
+     * copy content of an external resource into the node. (import a URL resource)
+     * 
+     * @throws UnsupportedOperationException
+     *             If the node represents a folder
+     * @throws MalformedURIException
+     * @throws RemoteException
+     * @throws NodeNotFoundException
+     *             If the node is not in the database.
+     * @throws FileManagerServiceException
+     *             If a problem occurs when handling the request.
+     *  
      */
-    public void importData(URL url)
-        throws UnsupportedOperationException, NodeNotFoundException, FileManagerServiceException;
+    public void copyURLToContent(URL url) throws UnsupportedOperationException,
+            NodeNotFoundFault, FileManagerFault, RemoteException, MalformedURIException;
 
+  
     /**
-     * Get the ivorn identifier of the FileStore for the node data.
-     * @return The Ivorn for the FileStore where the data is stored.
-     * @throws UnsupportedOperationException If the node represents a container (although future extensions may allow this).
-     * @throws FileManagerIdentifierException If the location Ivorn is not valid.
-     *
+     * export node content to a URL.
+     * 
+     * @throws UnsupportedOperationException
+     *             If the node represents a folder
+     * @throws MalformedURIException
+     * @throws RemoteException
+     * @throws NodeNotFoundException
+     *             If the node is not in the database.
+     * @throws FileManagerServiceException
+     *             If a problem occurs when handling the request.
+     *  
      */
-    public Ivorn location()
-        throws UnsupportedOperationException, FileManagerIdentifierException;
+    public void copyContentToURL(URL url) throws UnsupportedOperationException,
+            NodeNotFoundFault, FileManagerFault, RemoteException, MalformedURIException;
+  
+    
+   /** synchronize this node with the filemanager server.
+    * - local node will be updated to reflect any changes on server, and any observers of the node notified.
+    * @throws NodeNotFoundFault
+    *  if the node is not known.
+    * @throws FileManagerFault
+    *   somethings gone wrong.
+    * @throws RemoteException
+    * somethings gone very wrong.
+    */
+    public void refresh() throws NodeNotFoundFault,
+            FileManagerFault, RemoteException;
 
-    /**
-     * Refresh the node properties after a file transfer has completed.
-     * If the node has stored data, this will trigger a call to the FileStore to refresh the data properties.
-     * @throws NodeNotFoundException If the node no longer exists in the server database.
-     * @throws FileManagerServiceException If a problem occurs when handling the request. 
-     *
+    /** Notify the filemanager that a write to the content of this node has completed.
+     * <p>
+     * This will cause the filemanager to update its properties (size, modification date, etc) based on the new content.
+     * This in turn causes a {@link #refresh()} to happen, which updates the local node based on changes in the server.
+     * 
+     * <p>
+     * Temporary work-around until filestore calls back to filemanager with this information itself.
+     * @throws RemoteException
+     * 
+     * @throws NodeNotFoundException
+     *             If the node no longer exists in the server database.
+     * @throws FileManagerServiceException
+     *             If a problem occurs when handling the request.
+     *  
      */
-    public void refresh()
-        throws NodeNotFoundException, FileManagerServiceException;
-
-    /**
-     * Get the content size for a data node.
-     * @return The size of the stored data for a data node, or -1 for a container node.
-     *
-     */
-    public long size() ;
-
-    /**
-     * Get the data file create date.
-     * This is the create date of the imported data in the filestore.
-     * To get the general create date, use <code>getCreateDate()</code>.
-     * @return The file create date, if the node has stored data, or null if the node does not contains any data.
-     *
-     */
-    public Date getFileCreateDate();
-
-    /**
-     * Get the data file modified date.
-     * This is the modified date of the imported data in the filestore.
-     * To get the general modified date, use <code>getModifyDate()</code>.
-     * @return The file modified date, if the node has stored data, or null if the node does not contains any data.
-     *
-     */
-    public Date getFileModifyDate();
-
-    /**
-     * Get the node create date.
-     * This is the create date of the metadata node in the filemanager.
-     * To get the general create date, use <code>getCreateDate()</code>.
-     * @return The node create date.
-     *
-     */
-    public Date getNodeCreateDate();
-
-    /**
-     * Get the node modified date.
-     * This is the modified date of the metadata node in the filemanager.
-     * To get the general modified date, use <code>getModifyDate()</code>.
-     * @return The node modified date.
-     *
-     */
-    public Date getNodeModifyDate();
-
-    /**
-     * Get the create date.
-     * @return The create date.
-     *
-     */
-    public Date getCreateDate();
-
-    /**
-     * Get the modified date.
-     * @return The modified date.
-     *
-     */
-    public Date getModifyDate();
-
-    /**
-     * An iterator for child nodes.
-     *
-     */
-    public interface NodeIterator
-        {
-        /**
-         * Check if the there are more nodes in the iteration.
-         *
-         */
-        public boolean hasNext() ;
-
-        /**
-         * Get the next node in the iteration.
-         * @throws NodeNotFoundException If the node is no longer in the server database (this can happen if another client deletes the node after this iterator was created).
-         * @throws FileManagerServiceException If a problem occurs when handling the request.
-         *
-         */
-        public FileManagerNode next()
-            throws NodeNotFoundException, FileManagerServiceException ;
-
-        }
+    public void transferCompleted() throws NodeNotFoundFault, FileManagerFault, RemoteException;
 
     /**
      * Get an iterator for the child nodes of this node.
-     * @throws NodeNotFoundException If this node is no longer in the server database.
-     * @throws FileManagerServiceException If a problem occurs when handling the request.
-     * @throws UnsupportedOperationException If the node does not represent a container.
-     *
+     * 
+     * @throws NodeNotFoundException
+     *             If this node is no longer in the server database.
+     * @throws FileManagerServiceException
+     *             If a problem occurs when handling the request.
+     * @throws UnsupportedOperationException
+     *             If the node does not represent a container.
+     *  
      */
-    public NodeIterator iterator()
-        throws NodeNotFoundException, FileManagerServiceException ;
+    public NodeIterator iterator() throws NodeNotFoundFault,
+            FileManagerFault;
+    
+    /** access the metadata for a node 
+     * @return metadata object (never null)
+     * */
+    public NodeMetadata getMetadata();
+        
+    /** add an observer to this node - the observer will be notified whenever the data of this node changes */
+    public void addObserver(Observer o);
+    /** remove an observer from this node */
+    public void deleteObserver(Observer o);
+    
+  
 
-    }
-
-
-
-
+}
 

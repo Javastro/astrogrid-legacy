@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<classpath>
+  <classpathentry excluding="" kind="src" path="src/java">
+  </classpathentry>
+  <classpathentry output="target/test-classes" kind="src" path="src/test">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/junit/jars/junit-3.8.1.jar">
+  </classpathentry>
+  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/astrogrid-common-0.7.0.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/astrogrid-filemanager-common-0.8-b004fm.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/astrogrid-filestore-common-0.8-b004fs.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/astrogrid-filestore-client-0.8-b004fs.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/astrogrid-community-common-0.8-b003ct.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/astrogrid-community-client-0.8-b003ct.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/astrogrid-community-resolver-0.8-b003ct.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/astrogrid-registry-common-0.8-b002r.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/astrogrid-registry-client-lite-0.8-b002r.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/astrogrid-store-client-0.8-b005m.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/axis/jars/axis-1.1.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/commons-discovery/jars/commons-discovery-20030211.213356.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/jaxrpc-api/jars/jaxrpc-api-1.0.3.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/saaj/jars/saaj.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/wsdl4j/jars/wsdl4j-1.0.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/ant/jars/ant-1.5.3-1.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/commons-logging/jars/commons-logging-1.0.3.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/log4j/jars/log4j-1.2.8.jar">
+  </classpathentry>
+  <classpathentry kind="output" path="target/classes">
+  </classpathentry>
+</classpath>

@@ -1,10 +1,30 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/src/java/org/astrogrid/filemanager/client/FileManagerClientFactory.java,v $</cvs:source>
- * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2005/02/10 12:44:10 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2005/03/11 13:37:06 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  * <cvs:log>
  *   $Log: FileManagerClientFactory.java,v $
+ *   Revision 1.4  2005/03/11 13:37:06  clq2
+ *   new filemanager merged with filemanager-nww-jdt-903-943
+ *
+ *   Revision 1.3.2.5  2005/03/01 15:07:29  nw
+ *   close to finished now.
+ *
+ *   Revision 1.3.2.4  2005/02/27 23:03:12  nw
+ *   first cut of talking to filestore
+ *
+ *   Revision 1.3.2.3  2005/02/18 15:50:15  nw
+ *   lots of changes.
+ *   introduced new schema-driven soap binding, got soap-based unit tests
+ *   working again (still some failures)
+ *
+ *   Revision 1.3.2.2  2005/02/11 14:27:52  nw
+ *   refactored, split out candidate classes.
+ *
+ *   Revision 1.3.2.1  2005/02/10 16:23:14  nw
+ *   formatted code
+ *
  *   Revision 1.3  2005/02/10 12:44:10  jdt
  *   Merge from dave-dev-200502010902
  *
@@ -26,196 +46,189 @@
  * </cvs:log>
  *
  */
-package org.astrogrid.filemanager.client ;
+package org.astrogrid.filemanager.client;
 
-import java.net.URL;
-
+import org.astrogrid.community.common.exception.CommunityException;
+import org.astrogrid.community.common.security.data.SecurityToken;
+import org.astrogrid.community.resolver.CommunityAccountSpaceResolver;
+import org.astrogrid.community.resolver.CommunityPasswordResolver;
+import org.astrogrid.community.resolver.CommunityTokenResolver;
+import org.astrogrid.filemanager.common.BundlePreferences;
+import org.astrogrid.filemanager.resolver.NodeDelegateResolver;
+import org.astrogrid.filemanager.resolver.NodeDelegateResolverImpl;
+import org.astrogrid.registry.RegistryException;
 import org.astrogrid.store.Ivorn;
 
-import org.astrogrid.community.common.security.data.SecurityToken;
-
-import org.astrogrid.community.resolver.CommunityTokenResolver;
-import org.astrogrid.community.resolver.CommunityPasswordResolver;
-
-import org.astrogrid.filemanager.resolver.FileManagerDelegateResolver;
-import org.astrogrid.filemanager.client.exception.FileManagerLoginException;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 /**
- * A factory for instances of the FileManager client interface.
- *
+ * A factory for instances of FileManagerClient.
+ * <p>
+ * Login using one of the login() methods to gain access to a {@link FileManagerClient} instance.
+ * 
+ * @modified nww - defined constructors in terms of each other,
+ * @modified nww - preserved whole object passing into FileManagerClientImpl -
+ *                   as has most of the same needs.
+ * @modified nww - moved creation of final resolver into this class.
+ * @modified nww - no need to hang onto registry endpoint anymore - removed.
  */
-public class FileManagerClientFactory
-    {
+public class FileManagerClientFactory {
     /**
-     * Public constructor using the default Registry endpoint and resolver.
-     *
+     * Public constructor using the default Registry endpoint and default bundling behaviour.
+     *  
      */
-    public FileManagerClientFactory()
-        {
-        this.registry = null;
-        //
-        // Create our resolvers.
-        tokenResolver = new CommunityTokenResolver();
-        loginResolver = new CommunityPasswordResolver();
-		managerResolver = null ;
-        }
+    public FileManagerClientFactory() {
+        this(new BundlePreferences());
+    }
+    
+    /** Construct a new FileManagerClientFactory, using default registry endpoint.
+     * @param prefs descirption of the prefetching to do by this client.
+     */
+    public FileManagerClientFactory(BundlePreferences prefs) {
+        this(new NodeDelegateResolverImpl(prefs));
+    }
 
+  
     /**
-     * Public constructor using a specific Registry endpoint.
-     *
+     * Public constructor using a specific Registry endpoint and FileManager
+     * delegate resolver.
+     *  
      */
-    public FileManagerClientFactory(URL registry)
-        {
-        this.registry = registry;
+    public FileManagerClientFactory(URL registryEndpoint, NodeDelegateResolver resolver) {
         //
         // Create our resolvers.
-        tokenResolver = new CommunityTokenResolver(
-            this.registry
-            );
-        loginResolver = new CommunityPasswordResolver(
-            this.registry
-            );
-		this.managerResolver = null ;
-        }
-
-    /**
-     * Public constructor using a specific Registry endpoint and FileManager delegate  resolver.
-     *
-     */
-    public FileManagerClientFactory(URL registry, FileManagerDelegateResolver resolver)
-        {
-        this.registry = registry;
-        //
-        // Create our resolvers.
-        tokenResolver = new CommunityTokenResolver(
-            this.registry
-            );
-        loginResolver = new CommunityPasswordResolver(
-            this.registry
-            );
-		this.managerResolver = resolver ;
-        }
+        tokenResolver = new CommunityTokenResolver(registryEndpoint);
+        loginResolver = new CommunityPasswordResolver(registryEndpoint);
+        accountResolver = new CommunityAccountSpaceResolver(registryEndpoint);
+        this.managerResolver = resolver;
+    }
 
     /**
      * Public constructor using a specific FileManager delegate resolver.
-     *
+     *  
      */
-    public FileManagerClientFactory(FileManagerDelegateResolver resolver)
-        {
-        this.registry = null;
-		this.managerResolver = resolver ;
+    public FileManagerClientFactory(NodeDelegateResolver resolver) {
+        this.managerResolver = resolver;
         //
         // Create our resolvers.
         tokenResolver = new CommunityTokenResolver();
         loginResolver = new CommunityPasswordResolver();
-        }
-
-    /**
-     * Our registry endpoint URL.
-     *
-     */
-    private URL registry ;
+        accountResolver = new CommunityAccountSpaceResolver();
+    }
 
     /**
      * Our Community token resolver.
-     *
+     *  
      */
-    private CommunityTokenResolver tokenResolver ;
+    private final CommunityTokenResolver tokenResolver;
 
     /**
      * Our Community password resolver.
-     *
+     *  
      */
-    private CommunityPasswordResolver loginResolver ;
+    private final CommunityPasswordResolver loginResolver;
 
-	/**
-	 * Our FileManager delegate resolver.
-	 *
-	 */
-	private FileManagerDelegateResolver managerResolver;
+    /**
+     * Our FileManager delegate resolver.
+     *  
+     */
+    private final NodeDelegateResolver managerResolver;
+
+    /**
+     * Our Community account space resolver. - not actually used in the factory,
+     * but created in same way, and required by the FileManagerCLient
+     *  
+     */
+    private final CommunityAccountSpaceResolver accountResolver;
 
     /**
      * Login to a Community account using acciunt the identifier and password.
-     * @param account  The Community account identifier.
-     * @param password The Community account password.
-     * @return A FileManagerClient authenticated using the account identifier and password.
-     * @throws FileManagerLoginException If the login fails.
-     *
+     * 
+     * @param account
+     *                    The Community account identifier.
+     * @param password
+     *                    The Community account password.
+     * @return A FileManagerClient authenticated using the account identifier
+     *               and password.
+     * @throws RegistryException
+     * @throws CommunityException
+     * @throws URISyntaxException
+
+     *  
      */
-    public FileManagerClient login(Ivorn account, String password)
-        throws FileManagerLoginException
-        {
-        try {
-            //
-            // Validate the account and password.
-// Add an Ivorn method to the community resolver.
-            SecurityToken token = loginResolver.checkPassword(
-                account.toString(),
-                password
-                );
-            //
-            // Create a FileManagerClient with the new token.
-            return new FileManagerClientImpl(
-                this.registry,
-                token,
-				managerResolver
-                );
-            }
-        catch (Exception ouch)
-            {
-            throw new FileManagerLoginException(
-                "Unable to login",
-                ouch
-                );
-            }
+    public FileManagerClient login(Ivorn account, String password) throws CommunityException,  RegistryException, URISyntaxException{
+        if (account == null) {
+            throw new IllegalArgumentException("Cannot pass in null account ivorn");
         }
+        if (password == null) {
+            throw new IllegalArgumentException("Cannot pass in null password");
+        }
+            SecurityToken token = loginResolver.checkPassword(account.toString(), password);
+        return new FileManagerClientImpl(this, token);
+
+    }
 
     /**
      * Login with a security token.
-     * @param token A valid security token containing the account details and authentication.
+     * 
+     * @param token
+     *                    A valid security token containing the account details and
+     *                    authentication.
      * @return A FileManagerClient authenticated using the security token.
-     * @throws FileManagerLoginException If the unable to validate the token.
-     *
+     * @throws CommunityException
+     * @throws RegistryException
+     * @throws URISyntaxException
+     *  
      */
-    public FileManagerClient login(SecurityToken token)
-        throws FileManagerLoginException
-        {
-        try {
-            //
-            // Validate the security token.
+    public FileManagerClient login(SecurityToken token) throws CommunityException,RegistryException, URISyntaxException{
+
             token = tokenResolver.checkToken(token);
-            //
-            // Create a FileManagerClient with the new token.
-            return new FileManagerClientImpl(
-                this.registry,
-                token,
-				managerResolver
-                );
-            }
-        catch (Exception ouch)
-            {
-            throw new FileManagerLoginException(
-                "Unable to validate token",
-                ouch
-                );
-            }
-        }
+
+        return new FileManagerClientImpl(this, token);
+
+    }
 
     /**
      * Login anonymously.
-     * @return A FileManagerClient with no associated account.
-     *
+     *  @todo don't like this.. but need to leave this in for now.
+     * @return A FileManagerClient with no associated account - cannot access <code>home</code>
+     *  
      */
-    public FileManagerClient login()
-        {
+    public FileManagerClient login() {
         //
         // Create a FileManagerClient with no authentication.
-        return new FileManagerClientImpl(
-            this.registry,
-			null,
-			managerResolver
-            );
-        }
+        return new FileManagerClientImpl(this);
     }
 
+    protected CommunityPasswordResolver getLoginResolver() {
+        return this.loginResolver;
+    }
+
+    protected NodeDelegateResolver getManagerResolver() {
+        return this.managerResolver;
+    }
+
+    protected CommunityAccountSpaceResolver getAccountResolver() {
+        return this.accountResolver;
+    }
+
+    protected CommunityTokenResolver getTokenResolver() {
+        return this.tokenResolver;
+    }
+    public String toString() {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("[FileManagerClientFactory:");
+        buffer.append(" tokenResolver: ");
+        buffer.append(tokenResolver);
+        buffer.append(" loginResolver: ");
+        buffer.append(loginResolver);
+        buffer.append(" managerResolver: ");
+        buffer.append(managerResolver);
+        buffer.append(" accountResolver: ");
+        buffer.append(accountResolver);
+        buffer.append("]");
+        return buffer.toString();
+    }
+}
 

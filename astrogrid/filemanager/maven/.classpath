@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<classpath>
+  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/axis/jars/axis-1.1.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/commons-discovery/jars/commons-discovery-20030211.213356.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/jaxrpc-api/jars/jaxrpc-api-1.0.3.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/saaj/jars/saaj.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/wsdl4j/jars/wsdl4j-1.0.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/junit/jars/junit-3.8.1.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/ant/jars/ant-1.5.3-1.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/commons-logging/jars/commons-logging-1.0.3.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/log4j/jars/log4j-1.2.8.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/commons-transaction/jars/commons-transaction-1.0.1.jar">
+  </classpathentry>
+  <classpathentry kind="output" path="target/classes">
+  </classpathentry>
+</classpath>

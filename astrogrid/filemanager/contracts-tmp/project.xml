@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
+    <extend>../maven/project.xml</extend>
+    <artifactId>astrogrid-filemanager-contract</artifactId>
+    <currentVersion>${astrogrid.filemanager.version}</currentVersion>
+    <name>Astrogrid FileManager Contract</name>
+    <description>A temporary placeholder till Guy is ready with The Real Thing TM</description>
+    <shortDescription>A temporary placeholder till Guy is ready with The Real Thing TM</shortDescription>
+    <build>
+        <sourceDirectory>src/java</sourceDirectory>
+        <resources>
+            <resource>
+                <directory>${basedir}/src/java</directory>
+                <includes>
+                    <include>wsdd/*.wsdd</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>${basedir}</directory>
+                <includes>
+                    <include>wsdl/*.wsdl</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
+    </build>
+
+</project>

@@ -1,0 +1,22 @@
+LATER:
+
+- synch my wsdl with guy's - take guy's namespace, keep my changes.
+FEATURES:
+
+- pass attributes through to filestore - e.g. mimetype override. 
+	- requires method for editng attributes on the client.
+- get mimetype detection working in filestore - do I need to pass filename to the store to let it guess?
+- bulk delete (i.e. delete folder & contents).
+	- dangerous.
+	- implement TrashCan idea - move deleted files to trashcan (storing original location as an attribute). Items remain in trashcan for a long,
+	but not indefinate period - just enough time for user to go 'crap!!' and undo a delete.
+		- requires an undo method too.
+
+TESTS
+- tests for bunching.
+- check caching behaviour is correct.
+- repeat tests for mock / in-memory components.s
+
+
+
+

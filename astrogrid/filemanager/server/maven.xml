@@ -2,29 +2,15 @@
 <!--+
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/server/maven.xml,v $</cvs:source>
-    | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2005/01/13 17:23:15 $</cvs:date>
-    | <cvs:version>$Revision: 1.3 $</cvs:version>
-    | <cvs:log>
-    |   $Log: maven.xml,v $
-    |   Revision 1.3  2005/01/13 17:23:15  jdt
-    |   merges from dave-dev-200412201250
-    |
-    |   Revision 1.2.4.1  2005/01/12 14:28:46  dave
-    |   Changed tabs to spaces ...
-    |
-    |   Revision 1.2  2004/11/25 00:20:27  jdt
-    |   Merge from dave-dev-200410061224-200411221626
-    |
-    |   Revision 1.1.2.1  2004/11/17 07:56:33  dave
-    |   Added server mock and webapp build scripts ...
-    |
-    | </cvs:log>
+    | <cvs:author>$Author: clq2 $</cvs:author>
+    | <cvs:date>$Date: 2005/03/11 13:37:06 $</cvs:date>
+    | <cvs:version>$Revision: 1.4 $</cvs:version>
     |
     +-->
 <project
     xmlns:core="jelly:core"
     xmlns:maven="jelly:maven"
+    xmlns:deploy="deploy"
     xmlns:ant="jelly:ant"
     xmlns:util="jelly:util"
     xmlns:log="jelly:log"
@@ -34,38 +20,13 @@
     default="astrogrid-rebuild-snapshot"
     >
 
-    <!--+
-        | Import the goals from our parent project.
-        | Looks like this gets included anyway, possibly because our project inherits from ../maven.project.xml ?
-    <core:import inherit="true" file="${maven.build.dir}/../../maven/maven.xml"/>
-        +-->
 
-    <!--+
-        | Debug info ....
-        +-->
-    <goal name="info">
-        <ant:echo message="Build directory : ${maven.build.dir}"/>
-        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
-        <ant:echo message="Build version   : ${pom.currentVersion}"/>
-    </goal>
-
-    <!-- ================ Reactor goals ================ -->
-
-    <!--+
-        | Clean, build and install our snapshot jar.
-        +-->
-    <goal name="astrogrid-rebuild-snapshot">
-        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
-        <ant:echo message="Build version   : ${pom.currentVersion}"/>
-        <ant:echo message="Build directory : ${maven.build.dir}"/>
-        <attainGoal name="clean"/>
-        <attainGoal name="astrogrid-install-snapshot"/>
-    </goal>
+        <!-- ================ Mandatory goals ================ -->
 
     <!--+
         | Clean our build target.
         +-->
-    <goal name="clean">
+    <goal name="astrogrid-clean">
         <ant:echo message="Build artifact  : ${pom.artifactId}"/>
         <ant:echo message="Build version   : ${pom.currentVersion}"/>
         <ant:echo message="Build directory : ${maven.build.dir}"/>
@@ -82,15 +43,7 @@
         <!--+
             | Build our artifact jar.
             +-->
-        <attainGoal name="jar:jar"/>
-        <!--+
-            | Install our artifact jar.
-            +-->
-        <artifact:install
-            artifact="${maven.build.dir}/${maven.final.name}.jar"
-            project="${pom}"
-            type="jar"
-            />
+        <attainGoal name="war:install"/>
     </goal>
 
     <!--+
@@ -100,23 +53,8 @@
         <ant:echo message="Build artifact  : ${pom.artifactId}"/>
         <ant:echo message="Build version   : ${pom.currentVersion}"/>
         <ant:echo message="Build directory : ${maven.build.dir}"/>
-        <!--+
-            | Create our snapshot name.
-            +-->
-        <maven:snapshot project="${pom}"/>
-        <core:set var="maven.final.name" value="${snapshotSignature}"/>
-        <!--+
-            | Build our snapshot jar.
-            +-->
-        <attainGoal name="jar:jar"/>
-        <!--+
-            | Install our snapshot jar(s).
-            +-->
-        <artifact:install-snapshot
-            artifact="${maven.build.dir}/${maven.final.name}.jar"
-            project="${pom}"
-            type="jar"
-            />
+
+        <attainGoal name="war:install-snapshot"/>
     </goal>
 
     <!--+
@@ -129,15 +67,7 @@
         <!--+
             | Create our artifact jar.
             +-->
-        <attainGoal name="astrogrid-install-artifact"/>
-        <!--+
-            | Deploy our artifact jar.
-            +-->
-        <artifact:deploy
-            artifact="${maven.build.dir}/${maven.final.name}.jar"
-            project="${pom}"
-            type="jar"
-            />
+        <attainGoal name="war:deploy"/>
     </goal>
 
     <!--+
@@ -147,27 +77,90 @@
         <ant:echo message="Build artifact  : ${pom.artifactId}"/>
         <ant:echo message="Build version   : ${pom.currentVersion}"/>
         <ant:echo message="Build directory : ${maven.build.dir}"/>
-        <!--+
-            | Create our snapshot jar.
-            +-->
-        <attainGoal name="astrogrid-install-snapshot"/>
-        <!--+
-            | Deploy our snapshot jar(s).
-            +-->
-        <artifact:deploy-snapshot
-            artifact="${maven.build.dir}/${maven.final.name}.jar"
-            project="${pom}"
-            type="jar"
-            />
+
+        <attainGoal name="war:snapshot-deploy"/>
     </goal>
 
-    <!-- ================ Component goals ================ -->
+    <!-- ================ Optional goals ================ -->
+
+    <!--+
+        | Clean, build and install our snapshot jar.
+        +-->
+    <goal name="astrogrid-rebuild-snapshot">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <attainGoal name="clean"/>
+        <attainGoal name="astrogrid-install-snapshot"/>
+    </goal>
+
+    <!--+
+        | Debug info ....
+        +-->
+    <goal name="info">
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+    </goal>
+
+
+
+    <!-- ================ Boilerplate ================ -->
+
+   <!--+
+           | After the war has been initialised, but before it gets zipped, we need to extract
+       | what we need from the contracts jar, and stuff it in
+       +-->
+   <postGoal name="war:init">
+                <attainGoal name="configure-webapp"/>
+   </postGoal>
+
+   <!-- Grab the contracts jar, and extract the bits we need-->
+   <goal name="grab-resources">
+        <echo>Grabbing resources from jars.  Getting contract version ${astrogrid.contracts.version}</echo>
+        <mkdir dir="${working.dir}" />
+        <deploy:copy-deps todir="${working.dir}"/>
+        <unjar dest="${working.dir}/wsdd" overwrite="true">
+                <fileset dir="${working.dir}">
+                        <include name="${astrogrid.contracts.jar}-${astrogrid.contracts.version}.jar" />
+                </fileset>
+                <patternset>
+                        <include name="${astrogrid.contracts.filemanager.wsdd}" />
+                        <!--include name="schema/**" /-->
+                        <!--include name="wsdl/**" /-->
+                </patternset>
+        </unjar>
+        <!-- now set correct implementation class -->
+        <replace file="${working.dir}/wsdd/${astrogrid.contracts.filemanager.wsdd}"
+                token="org.astrogrid.filemanager.common.FileManagerBindingImpl"
+                value="org.astrogrid.filemanager.server.TheFileManager"
+                summary="true"
+        />
+   </goal>
+
+   <goal name="configure-webapp" prereqs="grab-resources" >
+        <!-- run the admin client over processed wsdd -->
+        <mkdir dir="${maven.war.webapp.dir}/WEB-INF"/>
+        <java classname="org.apache.axis.utils.Admin" dir="${maven.war.webapp.dir}/WEB-INF"
+                classpathref="maven.dependency.classpath" fork="yes" failonerror="true">
+                <arg value="server" />
+                <arg value="${working.dir}/wsdd/${astrogrid.contracts.filemanager.wsdd}" />
+        </java>
+   </goal>
+   <goal name="foo">
+           <!--+
+            | Deploy our services.
+            +-->
+        <ant:echo message=""/>
+        <ant:echo message="Deploying WebServices ..."/>
+        <filemanager:service.deploy service.name="FileManager"/>
+    </goal>
 
     <!--+
         | Prepare for the java:compile task.
         | Generates the WSDL, WSDD and Java stubs for our service interface(s).
         +-->
-    <preGoal name="java:compile">
+    <preGoal name="old-java:compile">
         <ant:echo message=""/>
         <ant:echo message="Artifact : ${pom.artifactId}"/>
         <ant:echo message="Preparing for java:compile ...."/>
@@ -203,7 +196,7 @@
         | Adds the generated WSDL and WSDD files into the jar META-INF.
         | Adds the database configuration files to the classpath.
         +-->
-    <preGoal name="jar:jar">
+    <preGoal name="old-jar:jar">
         <ant:echo message=""/>
         <ant:echo message="Artifact : ${pom.artifactId}"/>
         <ant:echo message="Preparing for jar:jar ...."/>
@@ -247,7 +240,7 @@
     <!--+
         | Deploy our WebServices into our local Axis WebApp.
         +-->
-    <preGoal name="test:test">
+    <preGoal name="old-test:test">
         <ant:echo message=""/>
         <ant:echo message="Artifact : ${pom.artifactId}"/>
         <ant:echo message="Preparing services for tests"/>
@@ -280,4 +273,123 @@
         <ant:echo message="Artifact : ${pom.artifactId}"/>
         <ant:echo message="Cleaning up after JUnit tests ...."/>
     </postGoal>
+
+        <!-- ================ Custom tag library ================ -->
+
+    <!--+
+        | Define our local tag library.
+        +-->
+    <define:taglib uri="org.astrogrid.filemanager">
+        <!--+
+            | Test tag, debug only.
+            | Attrib : message - The debug message to print.
+            |
+            +-->
+        <define:tag name="debug.tag">
+            <ant:echo message="Message ${message}"/>
+        </define:tag>
+
+        <!--+
+            | Generate the WSDL and stubs for a WebService.
+            | Attrib : service.name      eg. SecurityManager
+            | Attrib : service.wsdd      eg. org/astrogrid/community/common/security/manager/deploy.wsdd
+            | Attrib : service.class     eg. org.astrogrid.community.server.security.manager.SecurityManagerImpl
+            | Attrib : service.interface eg. org.astrogrid.community.common.security.manager.SecurityManager
+            | Attrib : service.namespace eg. urn:manager.security.common.community.astrogrid.org
+            |
+            +-->
+        <define:tag name="service.generate">
+            <!--+
+                | Generate our WSDL.
+                +-->
+            <ant:echo message=""/>
+            <ant:echo message="Generating WSDL for ${service.name}"/>
+            <ant:axis.java2wsdl
+                output="${wsdlDir}/${service.name}.wsdl"
+                classname="${service.interface}"
+                location="${axisUrl}/services/${service.name}"
+                namespace="${service.namespace}"
+                style="RPC"
+                >
+                <classpath>
+                    <ant:path refid="maven.dependency.classpath"/>
+                    <ant:pathelement path="${maven.build.dest}"/>
+                </classpath>
+            </ant:axis.java2wsdl>
+            <!--+
+                | Generate our stubs.
+                +-->
+            <ant:echo message=""/>
+            <ant:echo message="Generating Java stubs for ${service.name}"/>
+            <ant:axis.wsdl2java
+                verbose="false"
+                serverside="true"
+                skeletondeploy="false"
+                output="${tempDir}"
+                url="file:///${wsdlDir}/${service.name}.wsdl"
+                >
+            </ant:axis.wsdl2java>
+            <!--+
+                | Modify the WSDD to use our implementation classes.
+                +-->
+            <ant:echo message=""/>
+            <ant:echo message="Updating WSDD implementaion class for ${service.name}"/>
+            <ant:xslt style="${project.base.root}/maven/src/xsl/wsdd-impl.xsl"
+                in="${tempDir}/${service.wsdd}"
+                out="${wsddDir}/${service.name}.wsdd">
+                <outputproperty name="method" value="xml"/>
+                <outputproperty name="indent" value="yes"/>
+                <param name="service"   expression="${service.name}"/>
+                <param name="classname" expression="${service.class}"/>
+            </ant:xslt>
+            <!--+
+                | Modify the WSDD deployment scope
+                +-->
+            <ant:echo message=""/>
+            <ant:echo message="Updating WSDD service scope for ${service.name}"/>
+            <ant:xslt style="${project.base.root}/maven/src/xsl/wsdd-scope.xsl"
+                in="${wsddDir}/${service.name}.wsdd"
+                out="${wsddDir}/${service.name}.wsdd.tmp">
+                <outputproperty name="method" value="xml"/>
+                <outputproperty name="indent" value="yes"/>
+                <param name="service" expression="${service.name}"/>
+                <param name="scope"   expression="Application"/>
+            </ant:xslt>
+            <ant:move
+                verbose="true"
+                file="${wsddDir}/${service.name}.wsdd.tmp"
+                toFile="${wsddDir}/${service.name}.wsdd"
+                />
+            <!--+
+                | Copy the generated Java files we want to use.
+                +-->
+            <ant:echo message=""/>
+            <ant:echo message="Copying generated Java for ${service.name}"/>
+            <ant:copy verbose="false" toDir="${javaDir}">
+                <fileset dir="${tempDir}">
+                    <include name="**/${service.name}Service.java"/>
+                    <include name="**/${service.name}ServiceLocator.java"/>
+                    <include name="**/${service.name}SoapBindingStub.java"/>
+                </fileset>
+            </ant:copy>
+        </define:tag>
+
+        <!--+
+            | Deploy a WebService into the local Axis config.
+            | Attrib : service.name eg. SecurityManager
+            +-->
+        <define:tag name="service.deploy">
+            <ant:echo message=""/>
+            <ant:echo message="Deploying ${service.name}"/>
+            <ant:echo message="  WSDD : ${wsddDir}/${service.name}.wsdd"/>
+            <ant:java classname="org.apache.axis.utils.Admin"
+                dir="${axisDir}/WEB-INF"
+                classpathref="maven.dependency.classpath"
+                fork="true"
+                >
+                <arg value="server"/>
+                <arg value="${wsddDir}/${service.name}.wsdd"/>
+            </ant:java>
+        </define:tag>
+    </define:taglib>
 </project>

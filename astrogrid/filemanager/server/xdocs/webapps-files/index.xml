@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<document>
+    <properties>
+        <title>FileManager</title>
+    </properties>
+    <body>
+        <section name="Welcome to FileManager">
+            <p> Some semi-useful text to come here.... </p>
+        </section>
+        <section name="Installation Tests">
+            <p>Check that Axis is <a href="happyaxis.jsp">happy</a></p>
+        </section>
+    </body>
+</document>

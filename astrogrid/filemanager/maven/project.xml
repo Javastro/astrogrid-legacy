@@ -2,11 +2,25 @@
 <!--+
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/maven/project.xml,v $</cvs:source>
-    | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2005/02/10 14:17:21 $</cvs:date>
-    | <cvs:version>$Revision: 1.3 $</cvs:version>
+    | <cvs:author>$Author: clq2 $</cvs:author>
+    | <cvs:date>$Date: 2005/03/11 13:37:06 $</cvs:date>
+    | <cvs:version>$Revision: 1.4 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.4  2005/03/11 13:37:06  clq2
+    |   new filemanager merged with filemanager-nww-jdt-903-943
+    |
+    |   Revision 1.3.2.4  2005/03/02 01:51:52  nw
+    |   fixed up imports
+    |
+    |   Revision 1.3.2.3  2005/02/25 12:33:48  nw
+    |   finished transactional store
+    |
+    |   Revision 1.3.2.2  2005/02/18 15:50:14  nw
+    |   lots of changes.
+    |   introduced new schema-driven soap binding, got soap-based unit tests
+    |   working again (still some failures)
+    |
     |   Revision 1.3  2005/02/10 14:17:21  jdt
     |   merge from  filemanager-nww-903
     |
@@ -56,90 +70,9 @@
         +-->
 
     <!--+
-        | The external libraries required to build our components.
+        | The external libraries required to build our components common to all subprojects
         +-->
     <dependencies>
-    <!-- NWW - added the jars these projects really depend upon -->
-       <dependency>
-       <!-- necessary hack, as we depend on two artifacts (axis.war, axis.jar) with
-       same name -->
-      <artifactId>axis-force-dep</artifactId>
-      <groupId>axis</groupId>
-      <version>1.1</version>
-      <jar>axis-1.1.jar</jar>
-      <!-- later
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties> -->
-    </dependency>
-    <!-- probably not needed at the moment
-    <dependency>
-      <artifactId>axis-ant</artifactId>
-      <groupId>axis</groupId>
-      <version>1.1</version>
-    </dependency>
-    -->
-    <dependency>
-      <artifactId>commons-discovery</artifactId>
-      <groupId>commons-discovery</groupId>
-      <version>20030211.213356</version>
-      <!-- <properties>
-        <war.bundle>true</war.bundle>
-      </properties> -->
-    </dependency>
-    <dependency>
-      <id>jaxrpc-api</id>
-      <version>1.0.3</version>
-      <!--<properties>
-        <war.bundle>true</war.bundle>
-      </properties>-->
-    </dependency>
-    <dependency>
-      <id>saaj</id>
-      <version>1.0</version>
-      <jar>saaj.jar</jar>
-      <!--<properties>
-        <war.bundle>true</war.bundle>
-      </properties>-->
-    </dependency>
-    <dependency>
-      <id>wsdl4j</id>
-      <version>1.0</version>
-      <!--<properties>
-        <war.bundle>true</war.bundle>
-      </properties>-->
-    </dependency>
-    <!-- NWW end -->
-        <!--+
-            | The Axis webapp war file.
-            +-->
-        <dependency>
-            <groupId>axis</groupId>
-            <artifactId>axis</artifactId>
-            <version>1.1</version>
-            <type>war</type>
-            <url>http://ws.apache.org/axis/index.html</url>
-        </dependency>
-        <!--+
-            | JUnit library for test tasks.
-            +-->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>3.8.1</version>
-            <type>jar</type>
-            <url>http://www.junit.org/</url>
-        </dependency>
-        <!--+
-            | Ant library for test tasks.
-            +-->
-        <dependency>
-            <groupId>ant</groupId>
-            <artifactId>ant</artifactId>
-            <version>1.5.3-1</version>
-            <type>jar</type>
-            <url>http://ant.apache.org/</url>
-        </dependency>
         <!--+
             | Commons logging API.
             +-->
@@ -162,50 +95,63 @@
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
+        <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>3.8</version>
+                <type>jar</type>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <!-- axis libraries -->
+        <dependency>
+            <artifactId>axis-ant</artifactId>
+            <groupId>axis</groupId>
+            <version>1.1</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <artifactId>axis</artifactId>
+            <groupId>axis</groupId>
+            <version>1.1</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+                    <dependency>
+            <id>wsdl4j</id>
+            <version>1.0</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <artifactId>commons-discovery</artifactId>
+            <groupId>commons-discovery</groupId>
+            <version>20030211.213356</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <id>jaxrpc-api</id>
+            <version>1.0.3</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <id>saaj</id>
+            <version>1.0</version>
+            <jar>saaj.jar</jar>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
     </dependencies>
 
-    <!--+
-        | The list of reports to generate for each component.
-        +-->
-    <reports>
-        <report>
-            maven-changelog-plugin
-        </report>
-        <report>
-            maven-changes-plugin
-        </report>
-        <report>
-            maven-checkstyle-plugin
-        </report>
-        <report>
-            maven-clover-plugin
-        </report>
-        <report>
-            maven-developer-activity-plugin
-        </report>
-        <report>
-            maven-file-activity-plugin
-        </report>
-        <report>
-            maven-javadoc-plugin
-        </report>
-        <report>
-            maven-junit-report-plugin
-        </report>
-        <report>
-            maven-jxr-plugin
-        </report>
-        <report>
-            maven-license-plugin
-        </report>
-        <report>
-            maven-pmd-plugin
-        </report>
-        <report>
-            maven-tasklist-plugin
-        </report>
-        <report>
-            maven-simian-plugin
-        </report>
-    </reports>
 </project>

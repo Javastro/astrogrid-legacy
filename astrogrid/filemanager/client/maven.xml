@@ -2,30 +2,9 @@
 <!--+
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/maven.xml,v $</cvs:source>
-    | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2005/01/13 17:23:15 $</cvs:date>
-    | <cvs:version>$Revision: 1.3 $</cvs:version>
-    | <cvs:log>
-    |   $Log: maven.xml,v $
-    |   Revision 1.3  2005/01/13 17:23:15  jdt
-    |   merges from dave-dev-200412201250
-    |
-    |   Revision 1.2.4.2  2005/01/12 14:20:57  dave
-    |   Replaced tabs with spaces ....
-    |
-    |   Revision 1.2.4.1  2005/01/10 15:36:27  dave
-    |   Refactored store into a separate interface and mock impl ...
-    |
-    |   Revision 1.2  2004/11/25 00:20:29  jdt
-    |   Merge from dave-dev-200410061224-200411221626
-    |
-    |   Revision 1.1.2.2  2004/11/18 14:39:32  dave
-    |   Added SOAP delegate, RemoteException decoding and test case.
-    |
-    |   Revision 1.1.2.1  2004/11/13 01:41:26  dave
-    |   Created initial client API ....
-    |
-    | </cvs:log>
+    | <cvs:author>$Author: clq2 $</cvs:author>
+    | <cvs:date>$Date: 2005/03/11 13:37:05 $</cvs:date>
+    | <cvs:version>$Revision: 1.4 $</cvs:version>
     |
     +-->
 <project
@@ -41,11 +20,50 @@
     default="astrogrid-rebuild-snapshot"
     >
 
+
+	<!-- ================ Mandatory goals ================ -->
+   <goal name="astrogrid-install-artifact">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <attainGoal name="jar:install"/>
+    </goal>
+
     <!--+
-        | Import the common from our parent project.
-        | Looks like this gets included anyway, possibly because our project inherits from ../maven.project.xml ?
-    <core:import inherit="true" file="${maven.build.dir}/../../maven/maven.xml"/>
+        | Build and install our snapshot jar(s).
         +-->
+    <goal name="astrogrid-install-snapshot">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+		<attainGoal name="jar:install-snapshot"/>
+    </goal>
+
+    <!--+
+        | Build and deploy our artifact jar.
+        +-->
+    <goal name="astrogrid-deploy-artifact">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+		<attainGoal name="jar:deploy"/>
+    </goal>
+
+    <!--+
+        | Build and deploy our snapshot jar(s).
+        +-->
+    <goal name="astrogrid-deploy-snapshot">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+		<attainGoal name="jar:deploy-snapshot"/>
+    </goal>
+    
+    <goal name="astrogrid-deploy-site">
+		<attainGoal name="site:deploy"/>
+    </goal>
+
+    <!-- ================ Optional goals ================ -->
 
     <!--+
         | Debug info ....
@@ -55,9 +73,6 @@
         <ant:echo message="Build artifact  : ${pom.artifactId}"/>
         <ant:echo message="Build version   : ${pom.currentVersion}"/>
     </goal>
-
-    <!-- ================ Reactor goals ================ -->
-
     <!--+
         | Clean, build and install our snapshot jar.
         +-->
@@ -72,101 +87,16 @@
     <!--+
         | Clean our build target.
         +-->
-    <goal name="clean">
+    <preGoal name="clean">
         <ant:echo message="Build artifact  : ${pom.artifactId}"/>
         <ant:echo message="Build version   : ${pom.currentVersion}"/>
         <ant:echo message="Build directory : ${maven.build.dir}"/>
-        <attainGoal name="clean:clean"/>
-    </goal>
+    </preGoal>
 
     <!--+
         | Build and install our artifact jar.
         +-->
-    <goal name="astrogrid-install-artifact">
-        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
-        <ant:echo message="Build version   : ${pom.currentVersion}"/>
-        <ant:echo message="Build directory : ${maven.build.dir}"/>
-        <!--+
-            | Build our artifact jar.
-            +-->
-        <attainGoal name="jar:jar"/>
-        <!--+
-            | Install our artifact jar.
-            +-->
-        <artifact:install
-            artifact="${maven.build.dir}/${maven.final.name}.jar"
-            project="${pom}"
-            type="jar"
-            />
-    </goal>
-
-    <!--+
-        | Build and install our snapshot jar(s).
-        +-->
-    <goal name="astrogrid-install-snapshot">
-        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
-        <ant:echo message="Build version   : ${pom.currentVersion}"/>
-        <ant:echo message="Build directory : ${maven.build.dir}"/>
-        <!--+
-            | Create our snapshot name.
-            +-->
-        <maven:snapshot project="${pom}"/>
-        <core:set var="maven.final.name" value="${snapshotSignature}"/>
-        <!--+
-            | Build our snapshot jar.
-            +-->
-        <attainGoal name="jar:jar"/>
-        <!--+
-            | Install our snapshot jar(s).
-            +-->
-        <artifact:install-snapshot
-            artifact="${maven.build.dir}/${maven.final.name}.jar"
-            project="${pom}"
-            type="jar"
-            />
-    </goal>
-
-    <!--+
-        | Build and deploy our artifact jar.
-        +-->
-    <goal name="astrogrid-deploy-artifact">
-        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
-        <ant:echo message="Build version   : ${pom.currentVersion}"/>
-        <ant:echo message="Build directory : ${maven.build.dir}"/>
-        <!--+
-            | Create our artifact jar.
-            +-->
-        <attainGoal name="astrogrid-install-artifact"/>
-        <!--+
-            | Deploy our artifact jar.
-            +-->
-        <artifact:deploy
-            artifact="${maven.build.dir}/${maven.final.name}.jar"
-            project="${pom}"
-            type="jar"
-            />
-    </goal>
-
-    <!--+
-        | Build and deploy our snapshot jar(s).
-        +-->
-    <goal name="astrogrid-deploy-snapshot">
-        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
-        <ant:echo message="Build version   : ${pom.currentVersion}"/>
-        <ant:echo message="Build directory : ${maven.build.dir}"/>
-        <!--+
-            | Create our snapshot jar.
-            +-->
-        <attainGoal name="astrogrid-install-snapshot"/>
-        <!--+
-            | Deploy our snapshot jar(s).
-            +-->
-        <artifact:deploy-snapshot
-            artifact="${maven.build.dir}/${maven.final.name}.jar"
-            project="${pom}"
-            type="jar"
-            />
-    </goal>
+ 
 
     <!-- ================ Custom tags ================ -->
 
@@ -218,7 +148,7 @@
         | Prepare for the java:compile task.
         | Generate the WSDL and Java stubs for our service interface(s).
         +-->
-    <preGoal name="java:compile">
+    <goal name="old-generate-stuff">
         <ant:echo message=""/>
         <ant:echo message="Artifact : ${pom.artifactId}"/>
         <ant:echo message="Preparing for java:compile ...."/>
@@ -254,12 +184,12 @@
             +-->
         <ant:path id="astro.includes" location="${javaDir}"/>
         <maven:addPath id="maven.compile.src.set" refid="astro.includes"/>
-    </preGoal>
+    </goal>
 
     <!--+
         | Deploy our WebServices into our local Axis WebApp.
         +-->
-    <preGoal name="test:test">
+    <preGoal name="old-test:test">
         <ant:echo message=""/>
         <ant:echo message="Artifact : ${pom.artifactId}"/>
         <ant:echo message="Preparing services for tests"/>
@@ -309,7 +239,7 @@
     <!--+
         | Clean up after our tests.
         +-->
-    <postGoal name="test:test">
+    <postGoal name="old-test:test">
         <ant:echo message=""/>
         <ant:echo message="Artifact : ${pom.artifactId}"/>
         <ant:echo message="Cleaning up after JUnit tests"/>
@@ -319,7 +249,7 @@
         | Prepare the files for the jar goal.
         | Adds the generated WSDL files into the jar META-INF.
         +-->
-    <preGoal name="jar:jar">
+    <preGoal name="old-jar:jar">
         <ant:echo message=""/>
         <ant:echo message="Artifact : ${pom.artifactId}"/>
         <ant:echo message="Preparing for jar:jar ...."/>

@@ -3,33 +3,8 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/project.xml,v $</cvs:source>
     | <cvs:author>$Author: clq2 $</cvs:author>
-    | <cvs:date>$Date: 2005/01/28 10:43:58 $</cvs:date>
-    | <cvs:version>$Revision: 1.4 $</cvs:version>
-    | <cvs:log>
-    |   $Log: project.xml,v $
-    |   Revision 1.4  2005/01/28 10:43:58  clq2
-    |   dave_dev_200501141257 (filemanager)
-    |
-    |   Revision 1.3.2.2  2005/01/25 08:01:15  dave
-    |   Added tests for FileManagerClientFactory ....
-    |
-    |   Revision 1.3.2.1  2005/01/23 05:39:44  dave
-    |   Added initial implementation of FileManagerClient ...
-    |
-    |   Revision 1.3  2005/01/13 17:23:15  jdt
-    |   merges from dave-dev-200412201250
-    |
-    |   Revision 1.2.4.1  2004/12/22 07:38:36  dave
-    |   Started to move towards StoreClient API ...
-    |
-    |   Revision 1.2  2004/11/25 00:20:29  jdt
-    |   Merge from dave-dev-200410061224-200411221626
-    |
-    |   Revision 1.1.2.1  2004/11/13 01:41:26  dave
-    |   Created initial client API ....
-    |
-    | </cvs:log>
-    |
+    | <cvs:date>$Date: 2005/03/11 13:37:05 $</cvs:date>
+    | <cvs:version>$Revision: 1.5 $</cvs:version>
     +-->
 <project
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -55,30 +30,18 @@
         | The short description should be limited to a single line.
         +-->
     <shortDescription>
-        Short description of the project ....
+        The delegate jar to facilitate calling the filemanager webservice from java clients
     </shortDescription>
 
     <!--+
         | A detailed description of the project.
-        | This is used to generate the front page of the projects web site. 
+        | This is used to generate the front page of the projects web site.
         +-->
     <description>
         <![CDATA[
-            Long description of the project, including <i>HTML</i> tags ....
+            The delegate jar to facilitate calling the filemanager webservice from java clients.
         ]]>
     </description>
-
-    <!--+
-        | Our cvs repository location.
-        +-->
-    <repository>
-        <connection>
-            scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/filemanager/client
-        </connection>
-        <developerConnection>
-            scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/filemanager/client
-        </developerConnection>
-    </repository>
 
     <!--+
         | The external libraries required to build our component.
@@ -95,12 +58,12 @@
             <url>http://www.astrogrid.org/</url>
         </dependency>
         <!--+
-            | The FileManager common classes.
+            | The AstroGrid contracts
             +-->
         <dependency>
             <groupId>${pom.groupId}</groupId>
-            <artifactId>astrogrid-filemanager-common</artifactId>
-            <version>${astrogrid.filemanager.version}</version>
+            <artifactId>${astrogrid.contracts.jar}</artifactId>
+            <version>${astrogrid.contracts.version}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>
@@ -171,17 +134,16 @@
                 <jar.fileset>true</jar.fileset>
             </properties>
         </dependency>
-        <!--+
-            | The MySpace client components.
-            | Contains the StoreClient and StoreFile interfaces.
-            +-->
-        <dependency>
-            <groupId>${pom.groupId}</groupId>
-            <artifactId>astrogrid-store-client</artifactId>
-            <version>${astrogrid.mySpace.version}</version>
-            <type>jar</type>
-            <url>http://www.astrogrid.org/</url>
-        </dependency>
+        <!-- used to implement a weak-reference cache -->
+    <dependency>
+      <id>commons-collections</id>
+      <version>3.0</version>
+      <properties>
+        <jar.fileset>true</jar.fileset>
+      </properties>
+    </dependency>
+
+    <!-- other standard dependencies - axis libs, log4j, junit, are inherited from maven project -->
 
     </dependencies>
 

@@ -1,11 +1,34 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/src/java/org/astrogrid/filemanager/resolver/FileManagerEndpointResolverImpl.java,v $</cvs:source>
- * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2005/01/13 17:23:15 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2005/03/11 13:37:05 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: FileManagerEndpointResolverImpl.java,v $
+ *   Revision 1.4  2005/03/11 13:37:05  clq2
+ *   new filemanager merged with filemanager-nww-jdt-903-943
+ *
+ *   Revision 1.3.8.6  2005/03/01 15:07:35  nw
+ *   close to finished now.
+ *
+ *   Revision 1.3.8.5  2005/02/18 15:50:14  nw
+ *   lots of changes.
+ *   introduced new schema-driven soap binding, got soap-based unit tests
+ *   working again (still some failures)
+ *
+ *   Revision 1.3.8.4  2005/02/11 17:16:03  nw
+ *   knock on effect of renaming and making IvornFactory static
+ *
+ *   Revision 1.3.8.3  2005/02/11 16:03:20  nw
+ *   refactoring cuts these down quite a bit. which is nice.
+ *
+ *   Revision 1.3.8.2  2005/02/11 14:31:47  nw
+ *   still need to refactor these.
+ *
+ *   Revision 1.3.8.1  2005/02/10 16:23:14  nw
+ *   formatted code
+ *
  *   Revision 1.3  2005/01/13 17:23:15  jdt
  *   merges from dave-dev-200412201250
  *
@@ -24,233 +47,111 @@
  * </cvs:log>
  *
  */
-package org.astrogrid.filemanager.resolver ;
+package org.astrogrid.filemanager.resolver;
 
-import org.apache.commons.logging.Log ;
-import org.apache.commons.logging.LogFactory ;
+import org.astrogrid.filemanager.common.ivorn.IvornParser;
+import org.astrogrid.registry.client.RegistryDelegateFactory;
+import org.astrogrid.registry.client.query.RegistryService;
+import org.astrogrid.store.Ivorn;
 
-import java.net.URL ;
-import java.net.MalformedURLException ;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
-import org.astrogrid.store.Ivorn ;
-import org.astrogrid.registry.RegistryException;
-import org.astrogrid.registry.client.RegistryDelegateFactory ;
-import org.astrogrid.registry.client.query.RegistryService ;
-
-import org.astrogrid.filemanager.common.ivorn.FileManagerIvornParser ;
-import org.astrogrid.filemanager.common.ivorn.FileManagerIvornFactory ;
-
-import org.astrogrid.filemanager.common.exception.FileManagerIdentifierException ;
-
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 /**
- * A helper class to resolve an Ivron into a service endpoint.
- * Note, this class should not be used by external components.
- *
+ * A helper class to resolve an Ivron into a service endpoint. Note, this class
+ * should not be used by external components.
+ * 
+ * @modified nww removed unused helper methods.
+ * @modified nww made package-private - so it can't be used by external
+ *                   components.
+ * @modifed nww called static methods on registry delegate factory in static
+ *                   way.
+ * @modified nww removed constructors only used by tetsts, and vice versa.
+ * @modified nww inverted conditionals to make logic shorted
+ *  
  */
-public class FileManagerEndpointResolverImpl
-    implements FileManagerEndpointResolver
-    {
+class FileManagerEndpointResolverImpl implements FileManagerEndpointResolver {
     /**
      * Our debug logger.
-     *
+     *  
      */
-    private static Log log = LogFactory.getLog(FileManagerEndpointResolverImpl.class);
+    private static Log log = LogFactory
+            .getLog(FileManagerEndpointResolverImpl.class);
 
     /**
-     * Protected constructor, using the default Registry service.
-     *
+     * Public constructor,using the default Registry service.
+     *  
      */
-    protected FileManagerEndpointResolverImpl()
-        {
-        this(
-            (URL) null
-            ) ;
-        }
-
-    /**
-     * Protected constructor, for a specific Registry service.
-     * @param endpoint The endpoint address for our RegistryDelegate.
-     *
-     */
-    protected FileManagerEndpointResolverImpl(URL registry)
-        {
-        this(
-            registry,
-            new RegistryDelegateFactory()
-            ) ;
-        }
-
-    /**
-     * Protected constructor, for a specific Registry service.
-     * @param registry The endpoint address for our registry service.
-     * @param factory A factory to create our registry delegate.
-     *
-     */
-    protected FileManagerEndpointResolverImpl(URL registry, RegistryDelegateFactory factory)
-        {
-        log.debug("") ;
-        log.debug("----\"----") ;
-        log.debug("FileManagerEndpointResolverImpl()") ;
-        log.debug("  Registry : " + registry) ;
-        if (null == factory)
-            {
-            throw new IllegalArgumentException(
-                "Null registry delegate factory"
-                ) ;
-            }
-        if (null == registry)
-            {
-            this.registry = factory.createQuery() ;
-            }
-        else {
-            this.registry = factory.createQuery(registry) ;
-            }
-        }
-
-    /**
-     * Public constructor, using a specific registry delegate.
-     * @param registry The registry delegate.
-     *
-     */
-    protected FileManagerEndpointResolverImpl(RegistryService registry)
-        {
-        if (null == registry)
-            {
-            throw new IllegalArgumentException(
-                "Null registry delegate"
-                ) ;
-            }
-        this.registry = registry ;
-        }
+    public FileManagerEndpointResolverImpl() {
+        this.registry = RegistryDelegateFactory.createQuery();
+    }
 
     /**
      * Our Registry delegate.
-     *
+     *  
      */
-    private RegistryService registry ;
-
+    private final RegistryService registry;
+ 
     /**
      * Resolve an Ivorn into a service endpoint.
-     * @param ivorn An Ivorn containing a filemanager identifier.
+     * 
+     * @param ivorn
+     *                    An Ivorn containing a filemanager identifier.
      * @return The endpoint address for the service.
-     * @throws FileManagerResolverException If unable to resolve the identifier.
-     *
+     * @throws FileManagerResolverException
+     *                     If unable to resolve the identifier.
+     *  
      */
-    public URL resolve(Ivorn ivorn)
-        throws FileManagerResolverException
-        {
-        log.debug("") ;
-        log.debug("----\"----") ;
-        log.debug("FileManagerEndpointResolverImpl.resolve()") ;
-        log.debug("  Ivorn : " + ((null != ivorn) ? ivorn.toString() : "null")) ;
-        //
-        // Check for null ivorn.
-        if (null == ivorn)
-            {
-            throw new IllegalArgumentException(
-                "Null service ivorn"
-                ) ;
-            }
-        //
-        // Parse the ivorn and resolve it.
+    public URL resolve(Ivorn ivorn) throws FileManagerResolverException {
+        log.debug("FileManagerEndpointResolverImpl.resolve(" + ivorn + ")");
+        if (null == ivorn) {
+            throw new IllegalArgumentException("Null service ivorn");
+        }
+        // Get our service Ivorn.
+        Ivorn ivorn1 = null;
         try {
-            return this.resolve(
-                new FileManagerIvornParser(ivorn)
-                ) ;
-            }
-        catch (FileManagerIdentifierException ouch)
-            {
+            IvornParser parser = new IvornParser(ivorn);
+            ivorn1 = parser.getServiceIvorn();
+        } catch (URISyntaxException ouch) {
             throw new FileManagerResolverException(
-                "Unable to parse service ivorn : '" + ivorn.toString() + "'"
-                );
-            }
+                    "Unable to parse service ivorn : '" + ivorn.toString()
+                            + "'");
+        }
+        // Lookup the service in the registry.
+        String endpoint = null;
+        try {
+            endpoint = registry.getEndPointByIdentifier(ivorn1);
+        } catch (Throwable ouch2) {
+            log.debug("FAIL : Registry lookup failed", ouch2);
+            throw new FileManagerResolverException(
+                    "Registry lookup failed for ivorn : '" + ivorn1.toString()
+                            + "'", ouch2);
+        }
+        if (endpoint == null) { // failed to find it in the reg.
+            throw new FileManagerResolverException(
+                    "Registry returned null endpoint address for ivorn", ivorn1);
+        }
+        log.debug("PASS : Got service endpoint " + endpoint);
+        try {
+            return new URL(endpoint);
+        } catch (MalformedURLException ouch3) {
+            throw new FileManagerResolverException(
+                    "Unable to parse Registry response into endpoint URL",
+                    ivorn1);
         }
 
-    /**
-     * Resolve an Ivorn parser into a service endpoint.
-     * @param parser A FileManagerIvornParser containing the Filestore identifier.
-     * @return The endpoint address for the service.
-     * @throws FileManagerResolverException If unable to resolve the identifier.
-     *
-     */
-    protected URL resolve(FileManagerIvornParser parser)
-        throws FileManagerResolverException
-        {
-        log.debug("") ;
-        log.debug("----\"----") ;
-        log.debug("FileManagerEndpointResolverImpl.resolve()") ;
-        log.debug("  Ivorn : " + ((null != parser) ? parser.getIvorn().toString() : null)) ;
-        //
-        // Check for null parser.
-        if (null == parser)
-            {
-            throw new IllegalArgumentException(
-                "Null ivorn parser"
-                ) ;
-            }
-        //
-        // Get our service Ivorn.
-        Ivorn ivorn = null ;
-        try {
-            ivorn = parser.getServiceIvorn() ;
-            }
-        catch (FileManagerIdentifierException ouch)
-            {
-            throw new FileManagerResolverException(
-                "Unable to parse service ivorn"
-                );
-            }
-        //
-        // Lookup the service in the registry.
-        String endpoint = null ;
-        try {
-            endpoint = registry.getEndPointByIdentifier(
-                ivorn
-                ) ;
-            }
-        catch (Throwable ouch)
-            {
-            log.debug("FAIL : Registry lookup failed")  ;
-            log.debug("  Exception : " + ouch)  ;
-            throw new FileManagerResolverException(
-                "Registry lookup failed for ivorn : '" + ivorn.toString() + "'",
-                ouch
-                ) ;
-            }
-        //
-        // If we found an entry in the Registry.
-        if (null != endpoint)
-            {
-            log.debug("PASS : Got service endpoint")  ;
-            log.debug("  Endpoint : " + endpoint)  ;
-            //
-            // Convert it into an endpoint URL.
-            try {
-                return new URL(
-                    endpoint
-                    ) ;
-                }
-            //
-            // Report the problem in a Exception.
-            catch (MalformedURLException ouch)
-                {
-                throw new FileManagerResolverException(
-                    "Unable to parse Registry response into endpoint URL",
-                    ivorn
-                    ) ;
-                }
-            }
-        //
-        // If we didn't get a service endpoint.
-        else {
-            //
-            // Report the problem in a Exception.
-            throw new FileManagerResolverException(
-                "Registry returned null endpoint address for ivorn",
-                ivorn
-                ) ;
-            }
-        }
     }
+    public String toString() {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("[FileManagerEndpointResolverImpl:");
+        buffer.append(" registry: ");
+        buffer.append(registry);
+        buffer.append("]");
+        return buffer.toString();
+    }
+}
 

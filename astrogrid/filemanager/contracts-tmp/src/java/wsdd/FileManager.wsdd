@@ -1,0 +1,201 @@
+<!-- Use this file to deploy some handlers/chains and services      -->
+<!-- Two ways to do this:                                           -->
+<!--   java org.apache.axis.client.AdminClient deploy.wsdd          -->
+<!--      after the axis server is running                          -->
+<!-- or                                                             -->
+<!--   java org.apache.axis.utils.Admin client|server deploy.wsdd   -->
+<!--      from the same directory that the Axis engine runs         -->
+
+<deployment
+    xmlns="http://xml.apache.org/axis/wsdd/"
+    xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+
+  <!-- Services from FileManager WSDL service -->
+
+  <service name="FileManagerPort" provider="java:RPC" style="wrapped" use="literal">
+      <parameter name="wsdlTargetNamespace" value="urn:astrogrid:schema:filemanager:FileManager:v0.1"/>
+      <parameter name="wsdlServiceElement" value="FileManager"/>
+      <parameter name="wsdlServicePort" value="FileManagerPort"/>
+      <parameter name="className" value="org.astrogrid.filemanager.common.FileManagerBindingImpl"/>
+      <parameter name="wsdlPortType" value="FileManagerPortType"/>
+      <operation name="dummyMessageWorkAroundForAxis" qname="operNS:dummyMessageWorkAroundForAxis" xmlns:operNS="urn:astrogrid:schema:filemanager:FileManager:v0.1" >
+        <parameter name="ignored" type="tns:Ivorn" xmlns:tns="urn:astrogrid:schema:filemanager:FileManager:v0.1"/>
+        <parameter name="ignoredToo" type="tns:TransferInfo" xmlns:tns="urn:astrogrid:schema:filemanager:FileManager:v0.1"/>
+      </operation>
+      <operation name="getNode" qname="operNS:getNode" xmlns:operNS="urn:astrogrid:schema:filemanager:FileManager:v0.1" returnQName="node" returnType="rtns:Node" xmlns:rtns="urn:astrogrid:schema:filemanager:FileManager:v0.1" >
+        <parameter name="nodeIvorn" type="tns:NodeIvorn" xmlns:tns="urn:astrogrid:schema:filemanager:FileManager:v0.1"/>
+        <parameter name="hints" type="tns:BundlePreferences" xmlns:tns="urn:astrogrid:schema:filemanager:FileManager:v0.1"/>
+        <fault name="FileManagerFault" qname="message" class="org.astrogrid.filemanager.common.FileManagerFault" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <fault name="NodeNotFoundFault" qname="message" class="org.astrogrid.filemanager.common.NodeNotFoundFault" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <operation name="addAccount" qname="operNS:addAccount" xmlns:operNS="urn:astrogrid:schema:filemanager:FileManager:v0.1" returnQName="node" returnType="rtns:Node" xmlns:rtns="urn:astrogrid:schema:filemanager:FileManager:v0.1" >
+        <parameter name="ident" type="tns:AccountIdent" xmlns:tns="urn:astrogrid:schema:filemanager:FileManager:v0.1"/>
+        <parameter name="hints" type="tns:BundlePreferences" xmlns:tns="urn:astrogrid:schema:filemanager:FileManager:v0.1"/>
+        <fault name="DuplicateNodeFault" qname="message" class="org.astrogrid.filemanager.common.DuplicateNodeFault" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <fault name="FileManagerFault" qname="message" class="org.astrogrid.filemanager.common.FileManagerFault" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <operation name="getAccount" qname="operNS:getAccount" xmlns:operNS="urn:astrogrid:schema:filemanager:FileManager:v0.1" returnQName="node" returnType="rtns:Node" xmlns:rtns="urn:astrogrid:schema:filemanager:FileManager:v0.1" >
+        <parameter name="ident" type="tns:AccountIdent" xmlns:tns="urn:astrogrid:schema:filemanager:FileManager:v0.1"/>
+        <parameter name="hints" type="tns:BundlePreferences" xmlns:tns="urn:astrogrid:schema:filemanager:FileManager:v0.1"/>
+        <fault name="FileManagerFault" qname="message" class="org.astrogrid.filemanager.common.FileManagerFault" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <fault name="NodeNotFoundFault" qname="message" class="org.astrogrid.filemanager.common.NodeNotFoundFault" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <operation name="getIdentifier" qname="operNS:getIdentifier" xmlns:operNS="urn:astrogrid:schema:filemanager:FileManager:v0.1" returnQName="ivorn" returnType="rtns:Ivorn" xmlns:rtns="urn:astrogrid:schema:filemanager:FileManager:v0.1" >
+      </operation>
+      <operation name="copy" qname="operNS:copy" xmlns:operNS="urn:astrogrid:schema:filemanager:FileManager:v0.1" returnQName="node" returnType="rtns:Node" xmlns:rtns="urn:astrogrid:schema:filemanager:FileManager:v0.1" >
+        <parameter name="nodeIvorn" type="tns:NodeIvorn" xmlns:tns="urn:astrogrid:schema:filemanager:FileManager:v0.1"/>
+        <parameter name="newParent" type="tns:NodeIvorn" xmlns:tns="urn:astrogrid:schema:filemanager:FileManager:v0.1"/>
+        <parameter name="newNodeName" type="tns:NodeName" xmlns:tns="urn:astrogrid:schema:filemanager:FileManager:v0.1"/>
+        <parameter name="newLocation" type="tns:anyURI" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <fault name="DuplicateNodeFault" qname="message" class="org.astrogrid.filemanager.common.DuplicateNodeFault" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <fault name="FileManagerFault" qname="message" class="org.astrogrid.filemanager.common.FileManagerFault" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <fault name="NodeNotFoundFault" qname="message" class="org.astrogrid.filemanager.common.NodeNotFoundFault" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <operation name="move" qname="operNS:move" xmlns:operNS="urn:astrogrid:schema:filemanager:FileManager:v0.1" returnQName="node" returnType="rtns:Node" xmlns:rtns="urn:astrogrid:schema:filemanager:FileManager:v0.1" >
+        <parameter name="nodeIvorn" type="tns:NodeIvorn" xmlns:tns="urn:astrogrid:schema:filemanager:FileManager:v0.1"/>
+        <parameter name="newParent" type="tns:NodeIvorn" xmlns:tns="urn:astrogrid:schema:filemanager:FileManager:v0.1"/>
+        <parameter name="newNodeName" type="tns:NodeName" xmlns:tns="urn:astrogrid:schema:filemanager:FileManager:v0.1"/>
+        <parameter name="newLocation" type="tns:anyURI" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <fault name="DuplicateNodeFault" qname="message" class="org.astrogrid.filemanager.common.DuplicateNodeFault" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <fault name="FileManagerFault" qname="message" class="org.astrogrid.filemanager.common.FileManagerFault" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <fault name="NodeNotFoundFault" qname="message" class="org.astrogrid.filemanager.common.NodeNotFoundFault" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <operation name="delete" qname="operNS:delete" xmlns:operNS="urn:astrogrid:schema:filemanager:FileManager:v0.1" returnQName="node" returnType="rtns:Node" xmlns:rtns="urn:astrogrid:schema:filemanager:FileManager:v0.1" >
+        <parameter name="nodeIvorn" type="tns:NodeIvorn" xmlns:tns="urn:astrogrid:schema:filemanager:FileManager:v0.1"/>
+        <fault name="FileManagerFault" qname="message" class="org.astrogrid.filemanager.common.FileManagerFault" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <fault name="NodeNotFoundFault" qname="message" class="org.astrogrid.filemanager.common.NodeNotFoundFault" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <operation name="readContent" qname="operNS:readContent" xmlns:operNS="urn:astrogrid:schema:filemanager:FileManager:v0.1" returnQName="info" returnType="rtns:TransferInfo" xmlns:rtns="urn:astrogrid:schema:filemanager:FileManager:v0.1" >
+        <parameter name="nodeIvorn" type="tns:NodeIvorn" xmlns:tns="urn:astrogrid:schema:filemanager:FileManager:v0.1"/>
+        <fault name="FileManagerFault" qname="message" class="org.astrogrid.filemanager.common.FileManagerFault" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <fault name="NodeNotFoundFault" qname="message" class="org.astrogrid.filemanager.common.NodeNotFoundFault" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <operation name="writeContent" qname="operNS:writeContent" xmlns:operNS="urn:astrogrid:schema:filemanager:FileManager:v0.1" returnQName="info" returnType="rtns:TransferInfo" xmlns:rtns="urn:astrogrid:schema:filemanager:FileManager:v0.1" >
+        <parameter name="nodeIvorn" type="tns:NodeIvorn" xmlns:tns="urn:astrogrid:schema:filemanager:FileManager:v0.1"/>
+        <fault name="FileManagerFault" qname="message" class="org.astrogrid.filemanager.common.FileManagerFault" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <fault name="NodeNotFoundFault" qname="message" class="org.astrogrid.filemanager.common.NodeNotFoundFault" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <operation name="appendContent" qname="operNS:appendContent" xmlns:operNS="urn:astrogrid:schema:filemanager:FileManager:v0.1" returnQName="info" returnType="rtns:TransferInfo" xmlns:rtns="urn:astrogrid:schema:filemanager:FileManager:v0.1" >
+        <parameter name="nodeIvorn" type="tns:NodeIvorn" xmlns:tns="urn:astrogrid:schema:filemanager:FileManager:v0.1"/>
+        <fault name="FileManagerFault" qname="message" class="org.astrogrid.filemanager.common.FileManagerFault" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <fault name="NodeNotFoundFault" qname="message" class="org.astrogrid.filemanager.common.NodeNotFoundFault" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <operation name="copyURLToContent" qname="operNS:copyURLToContent" xmlns:operNS="urn:astrogrid:schema:filemanager:FileManager:v0.1" returnQName="node" returnType="rtns:Node" xmlns:rtns="urn:astrogrid:schema:filemanager:FileManager:v0.1" >
+        <parameter name="nodeIvorn" type="tns:NodeIvorn" xmlns:tns="urn:astrogrid:schema:filemanager:FileManager:v0.1"/>
+        <parameter name="url" type="tns:anyURI" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <fault name="FileManagerFault" qname="message" class="org.astrogrid.filemanager.common.FileManagerFault" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <fault name="NodeNotFoundFault" qname="message" class="org.astrogrid.filemanager.common.NodeNotFoundFault" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <operation name="copyContentToURL" qname="operNS:copyContentToURL" xmlns:operNS="urn:astrogrid:schema:filemanager:FileManager:v0.1" >
+        <parameter name="nodeIvorn" type="tns:NodeIvorn" xmlns:tns="urn:astrogrid:schema:filemanager:FileManager:v0.1"/>
+        <parameter name="url" type="tns:TransferInfo" xmlns:tns="urn:astrogrid:schema:filemanager:FileManager:v0.1"/>
+        <fault name="FileManagerFault" qname="message" class="org.astrogrid.filemanager.common.FileManagerFault" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <fault name="NodeNotFoundFault" qname="message" class="org.astrogrid.filemanager.common.NodeNotFoundFault" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <operation name="refresh" qname="operNS:refresh" xmlns:operNS="urn:astrogrid:schema:filemanager:FileManager:v0.1" returnQName="node" returnType="rtns:Node" xmlns:rtns="urn:astrogrid:schema:filemanager:FileManager:v0.1" >
+        <parameter name="nodeIvorn" type="tns:NodeIvorn" xmlns:tns="urn:astrogrid:schema:filemanager:FileManager:v0.1"/>
+        <parameter name="hints" type="tns:BundlePreferences" xmlns:tns="urn:astrogrid:schema:filemanager:FileManager:v0.1"/>
+        <fault name="FileManagerFault" qname="message" class="org.astrogrid.filemanager.common.FileManagerFault" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <fault name="NodeNotFoundFault" qname="message" class="org.astrogrid.filemanager.common.NodeNotFoundFault" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <operation name="addNode" qname="operNS:addNode" xmlns:operNS="urn:astrogrid:schema:filemanager:FileManager:v0.1" returnQName="node" returnType="rtns:Node" xmlns:rtns="urn:astrogrid:schema:filemanager:FileManager:v0.1" >
+        <parameter name="parentIvorn" type="tns:NodeIvorn" xmlns:tns="urn:astrogrid:schema:filemanager:FileManager:v0.1"/>
+        <parameter name="newNodeName" type="tns:NodeName" xmlns:tns="urn:astrogrid:schema:filemanager:FileManager:v0.1"/>
+        <parameter name="nodeType" type="tns:NodeTypes" xmlns:tns="urn:astrogrid:schema:filemanager:FileManager:v0.1"/>
+        <fault name="DuplicateNodeFault" qname="message" class="org.astrogrid.filemanager.common.DuplicateNodeFault" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <fault name="FileManagerFault" qname="message" class="org.astrogrid.filemanager.common.FileManagerFault" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <fault name="NodeNotFoundFault" qname="message" class="org.astrogrid.filemanager.common.NodeNotFoundFault" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <parameter name="allowedMethods" value="copyContentToURL readContent copyURLToContent getAccount copy getNode delete dummyMessageWorkAroundForAxis appendContent addAccount writeContent getIdentifier move addNode refresh"/>
+      <parameter name="scope" value="Application"/>
+
+      <typeMapping
+        xmlns:ns="urn:astrogrid:schema:filemanager:FileManager:v0.1"
+        qname="ns:NodeIvorn"
+        type="java:org.astrogrid.filemanager.common.NodeIvorn"
+        serializer="org.apache.axis.encoding.ser.SimpleSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.SimpleDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="urn:astrogrid:schema:filemanager:FileManager:v0.1"
+        qname="ns:child"
+        type="java:org.astrogrid.filemanager.common.Child"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="urn:astrogrid:schema:filemanager:FileManager:v0.1"
+        qname="ns:NodeTypes"
+        type="java:org.astrogrid.filemanager.common.NodeTypes"
+        serializer="org.apache.axis.encoding.ser.EnumSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.EnumDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="urn:astrogrid:schema:filemanager:FileManager:v0.1"
+        qname="ns:Node"
+        type="java:org.astrogrid.filemanager.common.Node"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="urn:astrogrid:schema:filemanager:FileManager:v0.1"
+        qname="ns:DataLocation"
+        type="java:org.astrogrid.filemanager.common.DataLocation"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="urn:astrogrid:schema:filemanager:FileManager:v0.1"
+        qname="ns:AccountIdent"
+        type="java:org.astrogrid.filemanager.common.AccountIdent"
+        serializer="org.apache.axis.encoding.ser.SimpleSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.SimpleDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="urn:astrogrid:schema:filemanager:FileManager:v0.1"
+        qname="ns:NodeName"
+        type="java:org.astrogrid.filemanager.common.NodeName"
+        serializer="org.apache.axis.encoding.ser.SimpleSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.SimpleDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="urn:astrogrid:schema:filemanager:FileManager:v0.1"
+        qname="ns:BundlePreferences"
+        type="java:org.astrogrid.filemanager.common.BundlePreferences"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="urn:astrogrid:schema:filemanager:FileManager:v0.1"
+        qname="ns:Ivorn"
+        type="java:org.astrogrid.filemanager.common.Ivorn"
+        serializer="org.apache.axis.encoding.ser.SimpleSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.SimpleDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="urn:astrogrid:schema:filemanager:FileManager:v0.1"
+        qname="ns:attribute"
+        type="java:org.astrogrid.filemanager.common.Attribute"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="urn:astrogrid:schema:filemanager:FileManager:v0.1"
+        qname="ns:TransferInfo"
+        type="java:org.astrogrid.filemanager.common.TransferInfo"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+  </service>
+</deployment>
