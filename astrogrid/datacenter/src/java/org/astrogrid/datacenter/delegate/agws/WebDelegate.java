@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegate.java,v 1.1 2003/10/06 18:55:21 mch Exp $
+ * $Id: WebDelegate.java,v 1.2 2003/10/13 14:13:47 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -291,7 +291,7 @@ public class WebDelegate implements AdqlQuerier
    /* Returns the metadata
    */
    public Metadata getMetadata() throws DatacenterException {
-      return new Metadata(binding.getMetadata());
+      return new Metadata(binding.getMetadata(null));
    }
 
    /**
@@ -360,6 +360,10 @@ public class WebDelegate implements AdqlQuerier
 
 /*
 $Log: WebDelegate.java,v $
+Revision 1.2  2003/10/13 14:13:47  nw
+massaged one method to fit wih new delegate. still lots more to do here
+- don't understand intentions here myself
+
 Revision 1.1  2003/10/06 18:55:21  mch
 Naughtily large set of changes converting to SOAPy bean/interface-based delegates
 
