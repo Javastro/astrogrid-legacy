@@ -1,5 +1,5 @@
 /*
- * $Id: DatacenterDelegate.java,v 1.8 2003/09/09 17:50:07 mch Exp $
+ * $Id: DatacenterDelegate.java,v 1.9 2003/09/10 17:57:31 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -12,7 +12,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Vector;
 import javax.xml.rpc.ServiceException;
-import org.astrogrid.datacenter.common.DocMessageHelper;
+import org.astrogrid.datacenter.common.ServiceIdHelper;
 import org.astrogrid.datacenter.delegate.dummy.DummyDelegate;
 import org.astrogrid.datacenter.common.ServiceStatus;
 import org.astrogrid.log.Log;
@@ -103,7 +103,7 @@ public abstract class DatacenterDelegate
     */
    public String getIdFromResponse(Element response)
    {
-      NodeList ids = response.getElementsByTagName(DocMessageHelper.SERVICE_ID_TAG);
+      NodeList ids = response.getElementsByTagName(ServiceIdHelper.SERVICE_ID_TAG);
 
       Log.affirm(ids.getLength() == 1, "More than one service ID in response...");
 
@@ -157,6 +157,9 @@ public abstract class DatacenterDelegate
 
 /*
 $Log: DatacenterDelegate.java,v $
+Revision 1.9  2003/09/10 17:57:31  mch
+Tidied xml doc helpers and fixed (?) job/web listeners
+
 Revision 1.8  2003/09/09 17:50:07  mch
 Class renames, configuration key fixes, registry/metadata methods and spawning query methods
 

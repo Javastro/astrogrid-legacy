@@ -1,4 +1,4 @@
-/*$Id: DataQueryServiceTest.java,v 1.7 2003/09/10 14:48:35 nw Exp $
+/*$Id: DataQueryServiceTest.java,v 1.8 2003/09/10 17:57:52 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -142,8 +142,9 @@ public class DataQueryServiceTest extends HsqlTestCase {
         /* (non-Javadoc)
          * @see org.astrogrid.datacenter.service.ServiceListener#serviceStatusChanged(java.lang.String)
          */
-        public void serviceStatusChanged(ServiceStatus newStatus) {
-            statusList.add(newStatus);
+    
+        public void serviceStatusChanged(DatabaseQuerier querier) {
+            statusList.add(querier.getStatus());
         }
 
         public ServiceStatus getLast()
@@ -151,12 +152,14 @@ public class DataQueryServiceTest extends HsqlTestCase {
            return (ServiceStatus) statusList.get(statusList.size()-1);
         }
     }
-
 }
 
 
 /*
 $Log: DataQueryServiceTest.java,v $
+Revision 1.8  2003/09/10 17:57:52  mch
+Tidied xml doc helpers and fixed (?) job/web listeners
+
 Revision 1.7  2003/09/10 14:48:35  nw
 fixed breaking tests
 

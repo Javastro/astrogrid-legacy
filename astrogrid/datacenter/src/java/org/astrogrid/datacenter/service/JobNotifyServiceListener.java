@@ -1,5 +1,5 @@
 /*
- * $Id: WebNotifyServiceListener.java,v 1.4 2003/09/10 17:57:31 mch Exp $
+ * $Id: JobNotifyServiceListener.java,v 1.1 2003/09/10 17:57:31 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -21,17 +21,13 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 /**
- * This is an implementation of a listener design for remote listeners (ie service
- * clients). So this must be capable of passing that information back to the remote
- * client.
- *
- * @todo this is just a placeholder at the moment, need to work out how
- * the notification thing will work, also non-blocking queries etc....
+ * Very much like the WebNotifyServiceListener, this one creates a special
+ * Iteration 02 document specifically made for notifying the job execution system
  *
  * @author M Hill
  */
 
-public class WebNotifyServiceListener implements ServiceListener
+public class JobNotifyServiceListener implements ServiceListener
 {
    private URL clientListener = null;
 
@@ -40,35 +36,47 @@ public class WebNotifyServiceListener implements ServiceListener
     *
     * @todo design &amp; implement properly...
     */
-   public WebNotifyServiceListener(URL aClientListener)
+   public JobNotifyServiceListener(URL aClientListener)
    {
       this.clientListener = aClientListener;
    }
 
    /** Called by the service when it has a
     * status change. Opens a connection to the URL and sends it a document, which
-    * is defined in StatusHelper
+    * is defined in ????
     */
    public void serviceStatusChanged(DatabaseQuerier querier)
    {
       Log.trace("WebNotifyServiceListener.serviceStatusChanged("+querier.getStatus()+")") ;
 
       try {
-         Document statusDoc = DocHelper.wrap(StatusHelper.makeStatusTag(querier.getHandle(), querier.getStatus().getText()));
+//         String
+//            requestTemplate = Configuration.getProperty( MONITOR_REQUEST_TEMPLATE) ;
+
+         //make list of method parameters
+//       Object [] parms = new Object[]
+//       {
+//          MessageFormat.format(requestTemplate,
+//                               new Object[] { newStatus.getText(), serviceId }
+//                               )
+//       } ;
+         Document statusDoc = DocHelper.wrap(StatusHelper.makeJobNotificationTag(querier.getHandle(), querier.getStatus().getText()));
 
          Object[] parms = new Object[]
          {
-            XMLUtils.DocumentToString(statusDoc)
+            XMLUtils.DocumentToString(statusDoc.getOwnerDocument())
          };
 
          Call call = (Call) new Service().createCall() ;
 
          call.setTargetEndpointAddress( clientListener ) ;
-         call.setOperationName( "serviceStatusChanged" ) ;  // Set method to invoke (same as ServiceListener)
-         call.addParameter("serviceStatusXML", XMLType.XSD_STRING,ParameterMode.IN);
+         call.setOperationName( "monitorJob" ) ;  // Set method to invoke
+         call.addParameter("monitorJobXML", XMLType.XSD_STRING,ParameterMode.IN);
          call.setReturnType(XMLType.XSD_STRING);
 
          call.invokeOneWay( parms ) ;
+
+
       }
       catch (ServiceException e)
       {
@@ -87,8 +95,8 @@ public class WebNotifyServiceListener implements ServiceListener
 }
 
 /*
-$Log: WebNotifyServiceListener.java,v $
-Revision 1.4  2003/09/10 17:57:31  mch
+$Log: JobNotifyServiceListener.java,v $
+Revision 1.1  2003/09/10 17:57:31  mch
 Tidied xml doc helpers and fixed (?) job/web listeners
 
 Revision 1.3  2003/09/09 18:33:09  mch

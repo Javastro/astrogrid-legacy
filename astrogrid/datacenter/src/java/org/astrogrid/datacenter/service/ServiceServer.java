@@ -1,5 +1,5 @@
 /*
- * $Id: ServiceServer.java,v 1.4 2003/09/10 12:08:44 mch Exp $
+ * $Id: ServiceServer.java,v 1.5 2003/09/10 17:57:31 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -11,10 +11,9 @@ import java.io.IOException;
 import java.net.URL;
 import org.apache.axis.utils.XMLUtils;
 import org.apache.xpath.XPathAPI;
+import org.astrogrid.datacenter.common.ResponseHelper;
 import org.astrogrid.datacenter.config.Configuration;
-import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
-import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.log.Log;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -108,7 +107,7 @@ public abstract class ServiceServer
     */
    public Element getServiceStatus(String serviceID) throws Throwable
    {
-      return ResultsHelper.makeStatusResponse(getService(serviceID));
+      return ResponseHelper.makeStatusResponse(getService(serviceID)).getDocumentElement();
    }
 
    /**
@@ -122,9 +121,9 @@ public abstract class ServiceServer
    /**
     * Registers a client as a listener - ie it will receive notifications
     */
-   public void registerServiceListener(String serviceID, URL listenerUrl)
+   public void registerServiceListener(String serviceID, ServiceListener listener)
    {
-      getService(serviceID).registerServiceListener(new WebNotifyServiceListener(serviceID, listenerUrl));
+      getService(serviceID).registerServiceListener(listener);
    }
 
 }

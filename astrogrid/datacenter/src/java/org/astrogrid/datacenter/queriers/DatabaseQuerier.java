@@ -1,5 +1,5 @@
 /*
- * $Id: DatabaseQuerier.java,v 1.16 2003/09/10 17:24:50 mch Exp $
+ * $Id: DatabaseQuerier.java,v 1.17 2003/09/10 17:57:31 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,17 +9,23 @@ package org.astrogrid.datacenter.queriers;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
+import org.astrogrid.datacenter.common.DocMessageHelper;
+import org.astrogrid.datacenter.common.ServiceStatus;
 import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.datacenter.query.QueryException;
+import org.astrogrid.datacenter.service.JobNotifyServiceListener;
 import org.astrogrid.datacenter.service.ServiceListener;
+import org.astrogrid.datacenter.service.WebNotifyServiceListener;
 import org.astrogrid.datacenter.service.Workspace;
-import org.astrogrid.datacenter.common.ServiceStatus;
 import org.astrogrid.log.Log;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 /**
  * The Querier classes handle a single, individual query to an individual
@@ -137,7 +143,7 @@ public abstract class DatabaseQuerier implements Runnable
     * @throws DatabaseAccessException on error (contains cause exception)
     *
     */
-   public static DatabaseQuerier createQuerier(Element domContainingQuery) throws DatabaseAccessException
+   public static DatabaseQuerier createQuerier(Element domContainingQuery) throws DatabaseAccessException, MalformedURLException
    {
       String querierClass = Configuration.getProperty(DATABASE_QUERIER_KEY);
 //       "org.astrogrid.datacenter.queriers.sql.SqlQuerier"    //default to general SQL querier
@@ -165,6 +171,8 @@ public abstract class DatabaseQuerier implements Runnable
          DatabaseQuerier querier = (DatabaseQuerier)constr.newInstance(new Object[]{});
          querier.setQuery(domContainingQuery);
 
+         querier.registerWebListeners(domContainingQuery); //looks through dom for web listeners
+         
          return querier;
       } // NWW - temporarily added more to messages being thrown back - as we're not getting the embedded exceptions back on the server side.
        // think this is an issue with WSDL and DatabaseAccessException not having a null constructor - because is subclass of IOException.
@@ -208,10 +216,12 @@ public abstract class DatabaseQuerier implements Runnable
     *
     * @see doBlockingQuery
     */
-   public static DatabaseQuerier spawnQuery(Element domContainingQuery) throws QueryException, DatabaseAccessException
+   public static DatabaseQuerier spawnQuery(Element domContainingQuery) throws QueryException, DatabaseAccessException, MalformedURLException
    {
+      //make correct querier
       DatabaseQuerier querier = DatabaseQuerier.createQuerier(domContainingQuery);
 
+      //start querying on different thread
       Thread thread = new Thread(querier);
 
       thread.start();
@@ -219,6 +229,34 @@ public abstract class DatabaseQuerier implements Runnable
       return querier;
    }
 
+   /**
+    * Examines given DOM for tags requesting notifications
+    */
+   public void registerWebListeners(Element domContainingQuery) throws MalformedURLException
+   {
+      //look for anonymous web listeners
+      NodeList listenerTags = domContainingQuery.getElementsByTagName(DocMessageHelper.LISTENER_TAG);
+
+      for (int i=0; i<listenerTags.getLength();i++)
+      {
+         WebNotifyServiceListener listener = new WebNotifyServiceListener(
+            new URL(((Element) listenerTags.item(i)).getNodeValue())
+         );
+      }
+      
+      //look for job web listeners
+      listenerTags = domContainingQuery.getElementsByTagName(DocMessageHelper.JOBLISTENER_TAG);
+
+      for (int i=0; i<listenerTags.getLength();i++)
+      {
+         JobNotifyServiceListener listener = new JobNotifyServiceListener(
+            new URL(((Element) listenerTags.item(i)).getNodeValue())
+         );
+         
+      }
+      
+   }
+   
    /**
     * Runnable implementation - this method is called when the thread to run
     * this asynchronously is started.  @see spawnQuery
@@ -397,15 +435,14 @@ public abstract class DatabaseQuerier implements Runnable
       serviceListeners.add(aListener);
    }
 
-   /** informs all listeners of the new status change. Not threadsafe...
+   /** informs all listeners of the new status change. Not threadsafe... should
+    * call setStatus() rather than this directly
     */
-   protected void fireStatusChanged(ServiceStatus newStatus)
+   private void fireStatusChanged(ServiceStatus newStatus)
    {
-      status = newStatus;
-
       for (int i=0;i<serviceListeners.size();i++)
       {
-         ((ServiceListener) serviceListeners.get(i)).serviceStatusChanged(newStatus);
+         ((ServiceListener) serviceListeners.get(i)).serviceStatusChanged(this);
       }
    }
 

@@ -1,5 +1,5 @@
 /*
- * $Id: DocMessageHelper.java,v 1.2 2003/09/09 18:31:18 mch Exp $
+ * $Id: DocMessageHelper.java,v 1.3 2003/09/10 17:57:31 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -24,60 +24,10 @@ import org.astrogrid.log.Log;
 
 public class DocMessageHelper
 {
-   public static final String SERVICE_ID_TAG = "ServiceId";
-
-   public static Element makeServiceIdTag(String id) throws IOException, ParserConfigurationException, SAXException
-   {
-      String tagString = "<"+SERVICE_ID_TAG+">"+id+"</"+SERVICE_ID_TAG+">";
-
-      return XMLUtils.newDocument(tagString).getDocumentElement();
-
-   }
-
-   public static String getServiceId(Element domContainingId)
-   {
-      NodeList idNodes = domContainingId.getElementsByTagName(SERVICE_ID_TAG);
-
-      Log.affirm(idNodes.getLength() == 1, "Should only be 1 service id tag in an element");
-
-      return idNodes.item(0).getNodeValue();
-   }
 
    public static final String COMMUNITY_TAG = "Community";
+   public static final String LISTENER_TAG = "NotifyMe";
+   public static final String JOBLISTENER_TAG = "NotifyJob";
 
-
-   /**
-    * Status doc
-    */
-   public static Element makeStatusDoc(String serviceId, String status) throws SAXException
-   {
-      try
-      {
-         /*
-         String doc =
-          "<DatacenterStatus>\n"
-         +"   "+makeServiceIdTag(serviceId)+"\n"
-         +"   <STATUS>"+status+"</STATUS>\n"
-         +"</StatusResponse>\n";
-          */
-
-         //It02 workflow-specific version
-         String doc =
-            "<?xml version='1.0' encoding='UTF8'?> "+
-            "<job name='"+serviceId+"'  >"+
-               "<jobstep name='"+serviceId+"' status='"+status+"'/>"+
-            "</job>";
-
-         return XMLUtils.newDocument(doc).getDocumentElement();
-      }
-      catch (java.io.IOException e)
-      {
-         throw new SAXException(e);
-      }
-      catch (javax.xml.parsers.ParserConfigurationException e)
-      {
-         throw new SAXException(e);
-      }
-   }
 }
 

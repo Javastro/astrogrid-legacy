@@ -1,5 +1,5 @@
 /*
- * $Id: SocketHandler.java,v 1.3 2003/09/10 12:08:44 mch Exp $
+ * $Id: SocketHandler.java,v 1.4 2003/09/10 17:57:31 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -10,14 +10,15 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
-import javax.xml.parsers.ParserConfigurationException;
 import org.apache.axis.utils.XMLUtils;
+import org.astrogrid.datacenter.common.ResponseHelper;
+import org.astrogrid.datacenter.common.ServiceStatus;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.service.ServiceListener;
-import org.astrogrid.datacenter.common.ServiceStatus;
 import org.astrogrid.log.Log;
 import org.w3c.dom.Element;
+import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 /**
@@ -43,15 +44,15 @@ public class SocketHandler extends ServiceServer implements Runnable, ServiceLis
    /** called when the status changes - writes out the new status to the
     * socket
     */
-   public void serviceStatusChanged(ServiceStatus newStatus)
+   public void serviceStatusChanged(DatabaseQuerier querier)
    {
       try
       {
-         out.writeChars(""+newStatus);
+         out.writeChars(""+querier.getStatus());
       }
       catch (IOException e)
       {
-         Log.logError("Could not pass service Status change ("+newStatus+") to socket client",e);
+         Log.logError("Could not pass service Status change ("+querier.getStatus()+") to socket client",e);
       }
 
    }
@@ -81,9 +82,9 @@ public class SocketHandler extends ServiceServer implements Runnable, ServiceLis
 
                querier.setStatus(ServiceStatus.RUNNING_RESULTS);
 
-               Element response = ResultsHelper.makeResultsResponse(querier, querier.getResults().toVotable().getDocumentElement());
+               Document response = ResponseHelper.makeResultsResponse(querier, querier.getResults().toVotable().getDocumentElement());
 
-               XMLUtils.DocumentToStream(response.getOwnerDocument(), out);
+               XMLUtils.DocumentToStream(response, out);
             }
             catch (IOException e)
             {
@@ -119,6 +120,9 @@ public class SocketHandler extends ServiceServer implements Runnable, ServiceLis
 
 /*
 $Log: SocketHandler.java,v $
+Revision 1.4  2003/09/10 17:57:31  mch
+Tidied xml doc helpers and fixed (?) job/web listeners
+
 Revision 1.3  2003/09/10 12:08:44  mch
 Changes to make web interface more consistent
 

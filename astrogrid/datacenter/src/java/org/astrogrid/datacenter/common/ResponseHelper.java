@@ -1,0 +1,105 @@
+/*
+ * $Id: ResponseHelper.java,v 1.1 2003/09/10 17:57:31 mch Exp $
+ *
+ * (C) Copyright Astrogrid...
+ */
+
+package org.astrogrid.datacenter.common;
+
+import org.apache.axis.utils.XMLUtils;
+import org.astrogrid.datacenter.queriers.DatabaseQuerier;
+import org.w3c.dom.Element;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+
+/**
+ * A set of methods to help build documents that will contain results
+ * information.  Really a temporary class until we work out what the
+ * results documents will look like and create some generated code for them.
+ *
+ * @author M Hill
+ */
+
+public class ResponseHelper
+{
+   public final static String QUERY_RESPONSE_TAG = "QueryStarted";
+
+   public final static String DATACENTER_RESULTS_TAG = "DatacenterResults";
+   
+   /**
+    * Returns an element that indicates the query has started
+    *<p>
+    * If the query has already got an exception, throws this so that
+    * client gets it (don't like this, very general)
+    */
+   public static Document makeStartQueryResponse(DatabaseQuerier querier) throws Throwable
+   {
+      if (querier.getStatus() == ServiceStatus.ERROR)
+      {
+         throw querier.getError();
+      }
+
+      String doc =
+          "<"+QUERY_RESPONSE_TAG+">\n"
+         +"   "+StatusHelper.makeStatusTag(querier.getHandle(), querier.getStatus().getText())
+         +"</"+QUERY_RESPONSE_TAG+">\n";
+
+      return DocHelper.wrap(doc);
+   }
+
+   /**
+    * Returns a document that indicates the status of the query.  This is based
+    * on the StatusHelper.makeStatus, but wrapped up in a document
+    * <p>
+    * If the query has already got an exception, throws this so that
+    * client gets it (don't like this, very general)
+    */
+   public static Document makeStatusResponse(DatabaseQuerier querier) throws Throwable
+   {
+      if (querier.getStatus() == ServiceStatus.ERROR)
+      {
+         throw querier.getError();
+      }
+
+      String doc =
+         StatusHelper.makeStatusTag(querier.getHandle(), querier.getStatus().getText());
+
+      return DocHelper.wrap(doc);
+   }
+
+   /**
+    * Makes a document up with the results incorporated - note that the results
+    * are given separately as a pre-worked out Element (results parameter) as
+    * there may be different formats...
+    * <p>
+    * If the query has already got an exception, throws this so that
+    * client gets it (don't like this, very general)
+    */
+   public static Document makeResultsResponse(DatabaseQuerier querier, Element results) throws Throwable
+   {
+      if (querier.getStatus() == ServiceStatus.ERROR)
+      {
+         throw querier.getError();
+      }
+
+      //default to votable
+      if (results == null)
+      {
+         results = querier.getResults().toVotable().getDocumentElement();
+      }
+      
+      String doc =
+          ServiceIdHelper.makeTagWithServiceIdAttr(DATACENTER_RESULTS_TAG, querier.getHandle())+"\n"
+         +"   <TIME>"+querier.getQueryTimeTaken()+"<TIME>\n"
+         +"   <Results type='votable'>\n"
+         +XMLUtils.ElementToString(results)
+         +"   </Results>\n"
+         +"</"+DATACENTER_RESULTS_TAG+">\n";
+
+      return DocHelper.wrap(doc);
+ 
+   }
+
+
+}
+

@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.11 2003/09/10 14:53:05 nw Exp $
+ * $Id: AxisDataServer.java,v 1.12 2003/09/10 17:57:31 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,15 +7,14 @@
 package org.astrogrid.datacenter.service;
 
 import java.io.IOException;
-import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.datacenter.common.DocMessageHelper;
+import org.astrogrid.datacenter.common.ResponseHelper;
+import org.astrogrid.datacenter.common.ServiceIdHelper;
 import org.astrogrid.datacenter.common.ServiceStatus;
 import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.astrogrid.datacenter.query.QueryException;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
@@ -87,7 +86,7 @@ public class AxisDataServer extends ServiceServer
 
       querier.setStatus(ServiceStatus.RUNNING_RESULTS);
 
-      return ResultsHelper.makeResultsResponse(querier, querier.getResults().toVotable().getDocumentElement());
+      return ResponseHelper.makeResultsResponse(querier, querier.getResults().toVotable().getDocumentElement()).getDocumentElement();
    }
 
    /**
@@ -103,7 +102,7 @@ public class AxisDataServer extends ServiceServer
       DatabaseQuerier querier = DatabaseQuerier.spawnQuery(soapBody);
 
       //construct reply with id in it...
-      return ResultsHelper.makeStartQueryResponse(querier);
+      return ResponseHelper.makeStartQueryResponse(querier).getDocumentElement();
    }
 
    /**
@@ -119,7 +118,7 @@ public class AxisDataServer extends ServiceServer
     */
    public Element getResultsAndClose(Element soapBody) throws IOException, SAXException, Throwable
    {
-      String serviceID = DocMessageHelper.getServiceId(soapBody);
+      String serviceID = ServiceIdHelper.getServiceId(soapBody);
       DatabaseQuerier querier = DatabaseQuerier.getQuerier(serviceID);
 
       //has querier finished?
@@ -130,10 +129,10 @@ public class AxisDataServer extends ServiceServer
       }
       else
       {
-         return ResultsHelper.makeResultsResponse(
+         return ResponseHelper.makeResultsResponse(
             querier,
             querier.getResults().toVotable().getDocumentElement()
-         );
+         ).getDocumentElement();
 
       }
    }
@@ -149,7 +148,7 @@ public class AxisDataServer extends ServiceServer
     */
    public void abortQuery(Element soapBody)
    {
-      String serviceID = DocMessageHelper.getServiceId(soapBody);
+      String serviceID = ServiceIdHelper.getServiceId(soapBody);
       DatabaseQuerier querier = DatabaseQuerier.getQuerier(serviceID);
 
       querier.abort();

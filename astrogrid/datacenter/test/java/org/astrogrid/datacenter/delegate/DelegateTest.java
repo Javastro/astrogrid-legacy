@@ -1,5 +1,5 @@
 /*
- * $Id: DelegateTest.java,v 1.3 2003/09/09 17:57:47 mch Exp $
+ * $Id: DelegateTest.java,v 1.4 2003/09/10 17:57:52 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -23,7 +23,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.datacenter.common.DocMessageHelper;
+import org.astrogrid.datacenter.common.ServiceIdHelper;
 import org.astrogrid.datacenter.query.QueryException;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -75,7 +75,7 @@ public class DelegateTest extends TestCase implements DatacenterStatusListener
       Element response = delegate.spawnAdqlQuery(adqlQuery);
 
       //check status
-      String id = DocMessageHelper.getServiceId(response);
+      String id = ServiceIdHelper.getServiceId(response);
       response = delegate.getResults(id);
 
 

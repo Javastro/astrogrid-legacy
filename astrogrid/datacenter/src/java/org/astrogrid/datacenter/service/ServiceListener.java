@@ -1,12 +1,12 @@
 /*
- * $Id: ServiceListener.java,v 1.5 2003/09/09 17:52:29 mch Exp $
+ * $Id: ServiceListener.java,v 1.6 2003/09/10 17:57:31 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
 
 package org.astrogrid.datacenter.service;
 
-import org.astrogrid.datacenter.common.ServiceStatus;
+import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 
 
 /**
@@ -21,11 +21,14 @@ public interface ServiceListener
    /** Called by the service when it has a
     * status change
     */
-   public void serviceStatusChanged(ServiceStatus newStatus);
+   public void serviceStatusChanged(DatabaseQuerier querier);
 }
 
 /*
 $Log: ServiceListener.java,v $
+Revision 1.6  2003/09/10 17:57:31  mch
+Tidied xml doc helpers and fixed (?) job/web listeners
+
 Revision 1.5  2003/09/09 17:52:29  mch
 ServiceStatus move and config key fix
 
