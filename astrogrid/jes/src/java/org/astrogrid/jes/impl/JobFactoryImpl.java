@@ -624,13 +624,12 @@ public class JobFactoryImpl implements JobFactory {
 				while( rs.next() ) {
 					
 					jobStep = new JobStep( job ) ; 
-					job.addJobStep( jobStep ) ;
 					jobStep.setStepNumber( new Integer( rs.getString( COL_JOBSTEP_STEPNUMBER ).trim() ) ) ;
 					jobStep.setName( rs.getString( COL_JOBSTEP_STEPNAME ).trim() ) ;
 					jobStep.setStatus( rs.getString( COL_JOBSTEP_STATUS ).trim() ) ;
 					jobStep.setComment( rs.getString( COL_JOBSTEP_COMMENT ) ) ;
-					
 					findQuery( jobStep ) ;
+					job.addJobStep( jobStep ) ;
 					
 				} // end while 
 
@@ -792,9 +791,9 @@ public class JobFactoryImpl implements JobFactory {
 	            // (In fact nothing but foreign keys)
 	            // We assume here that everything is OK... (no database corruption)
 				query = new Query( jobStep ) ;
-				jobStep.setQuery( query ) ;		
 				findCatalogs( query ) ;
-				
+				jobStep.setQuery( query ) ;		
+					
 				if( rs.next() == true ) {
 					// We have a duplicate Query!!! This should be impossible...
 					Message
@@ -920,9 +919,9 @@ public class JobFactoryImpl implements JobFactory {
 					
 					catalog = new Catalog( query ) ; 					
 					catalog.setName( rs.getString( COL_CATALOG_CATALOGNAME ) ) ;
-					query.addCatalog( catalog ) ;
 					findTables( catalog ) ;
 					findServices( catalog ) ;
+					query.addCatalog( catalog ) ;
 					
 				} // end while 
 
