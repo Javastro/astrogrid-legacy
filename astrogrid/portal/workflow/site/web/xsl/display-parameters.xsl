@@ -76,7 +76,7 @@
                                             <xsl:attribute name="type">text</xsl:attribute>
                                             <xsl:attribute name="name">param-value</xsl:attribute>
                                             <xsl:attribute name="size">30</xsl:attribute>
-                                            <xsl:attribute name="readonly">true</xsl:attribute>
+<!--                                            <xsl:attribute name="readonly">true</xsl:attribute>  -->
                                             <xsl:attribute name="value"><xsl:value-of select="@param-value" /></xsl:attribute>
                                         </xsl:element>
                                     </xsl:when>
@@ -86,7 +86,7 @@
                                             <xsl:attribute name="type">text</xsl:attribute>
                                             <xsl:attribute name="name">param-value</xsl:attribute>
                                             <xsl:attribute name="size">30</xsl:attribute>
-                                            <xsl:attribute name="readonly">true</xsl:attribute>                                  
+<!--                                            <xsl:attribute name="readonly">true</xsl:attribute>    -->
                                             <xsl:attribute name="value"><xsl:value-of select="@param-value" /></xsl:attribute>
                                         </xsl:element>
                                     </xsl:when>
