@@ -1,10 +1,23 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/integrationTests/auto-integration/test/java/org/astrogrid/filestore/integration/FileStoreIntegrationTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/08/18 19:00:01 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2004/08/23 16:14:55 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreIntegrationTest.java,v $
+ *   Revision 1.6  2004/08/23 16:14:55  dave
+ *   Changed integration test configuration to run two filestores.
+ *
+ *   Revision 1.5.8.3  2004/08/21 00:04:32  dave
+ *   Changed myspace manager to use filestrore one.
+ *   Changed filestore tests to use filestore two.
+ *
+ *   Revision 1.5.8.2  2004/08/20 21:29:33  dave
+ *   Moved test properties back to main config.
+ *
+ *   Revision 1.5.8.1  2004/08/20 21:08:01  dave
+ *   Separated out config and deployment for filestore-one.
+ *
  *   Revision 1.5  2004/08/18 19:00:01  dave
  *   Myspace manager modified to use remote filestore.
  *   Tested before checkin - integration tests at 91%.
@@ -60,6 +73,9 @@ public class FileStoreIntegrationTest
     public void setUp()
         throws Exception
         {
+		//
+		// Initialise our config.
+		config = SimpleConfig.getSingleton();
         //
         // Create our test targets.
 		FileStoreDelegateResolver resolver = new FileStoreDelegateResolver() ;
@@ -68,7 +84,7 @@ public class FileStoreIntegrationTest
 			resolver.resolve(
 				new Ivorn(
 					getConfigProperty(
-						"org.astrogrid.filestore.service.ivorn"
+						"org.astrogrid.filestore.two.ivorn"
 						)
 					)
 				) ;
@@ -77,7 +93,7 @@ public class FileStoreIntegrationTest
 	/**
 	 * Our AstroGrid configuration.
 	 */
-	private static Config config = SimpleConfig.getSingleton();
+	private Config config ;
 
 	/**
 	 * Helper method to get a config property.

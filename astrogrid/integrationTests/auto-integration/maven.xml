@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.82 2004/08/20 15:18:30 dave Exp $ -->
+<!-- $Id: maven.xml,v 1.83 2004/08/23 16:14:55 dave Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -52,10 +52,10 @@
         <filter token="TOMCATLOC" value="${tomcat.location}" />
         <filter token="REGAUTHORITY" value="${registry.authorityid}" />
         <filter token="TOMCATPORT" value="${tomcat.port}"/>
-                <!--filter token="VERSION" value="${version}"/-->
-                                <filter token="VERSION" value="${astrogrid.iteration}"/>
-                <filter token="MAILHOST" value="${mailhost}" />
-            <filter token="TOOLBASEDIR" value="${work.dir}"/> <!--this is the directory that is the root of CEA command line applications set it to the workdir for autointegration purposes-->
+        <!--filter token="VERSION" value="${version}"/-->
+        <filter token="VERSION" value="${astrogrid.iteration}"/>
+        <filter token="MAILHOST" value="${mailhost}" />
+        <filter token="TOOLBASEDIR" value="${work.dir}"/> <!--this is the directory that is the root of CEA command line applications set it to the workdir for autointegration purposes-->
 
 <!-- setup -->
 <goal name="init" prereqs="tomcat-declare-tasks">
@@ -79,8 +79,6 @@
 
         <attainGoal name="common-libs-deploy" />
         <attainGoal name="configuration-deploy" />
-        <sleep seconds="2" />
-        <attainGoal name="myspace-store-deploy" />
         <sleep seconds="2" />
         <attainGoal name="reg-deploy" />
         <sleep seconds="4" />
@@ -112,7 +110,6 @@
 <goal name="undeploy-all" prereqs="init" description="undeploy all webapps">
         <echo>*** Undeploying all webapps...</echo>
         <attainGoal name="configuration-undeploy" />
-        <attainGoal name="myspace-store-undeploy" />
         <attainGoal name="jes-undeploy" />
         <attainGoal name="cea-server-undeploy" />
         <attainGoal name="cea-commandline-undeploy" />
@@ -194,9 +191,9 @@
         <echo>Setting up working directory</echo>
         <mkdir dir="${work.dir}" />
         <copy todir="${work.dir}" overwrite="true" filtering="true">
-                        <fileset dir="work">
-                                <exclude name="**/filestore/data/*"/>
-                        </fileset>
+            <fileset dir="work">
+                <exclude name="**/filestore/data/*"/>
+            </fileset>
         </copy>
         <!-- make everything world-accessible - necessary as tomcat may be running as different user to
         whoever is executing this script
@@ -232,14 +229,18 @@
 </goal>
 
 <goal name="setup-filestore" description="filestore setup">
-        <echo>Configuring Filestore repository</echo>
-    <mkdir dir="${work.dir}/filestore/repository"/>
-    <mkdir dir="${work.dir}/filestore/data"/>
-        <copy todir="${work.dir}">
-                <fileset dir="work">
-                        <include name="**/filestore/data/*"/>
-                </fileset>
-        </copy>
+	<echo>Configuring test data and repository for filestore one ....</echo>
+	<mkdir dir="${work.dir}/filestore-one/repository"/>
+	<mkdir dir="${work.dir}/filestore-one/data"/>
+	<copy todir="${work.dir}/filestore-one/data">
+		<fileset dir="work/filestore/data"/>
+	</copy>
+	<echo>Configuring test data and repository for filestore two ....</echo>
+	<mkdir dir="${work.dir}/filestore-two/repository"/>
+	<mkdir dir="${work.dir}/filestore-two/data"/>
+	<copy todir="${work.dir}/filestore-two/data">
+		<fileset dir="work/filestore/data"/>
+	</copy>
 </goal>
 
 <goal name="setup-community" description="Community setup">
@@ -509,19 +510,6 @@
         </j:catch>
 </goal>
 
-<!-- need a webspace store for myspace?? - this is a first stab -->
-<goal name="myspace-store-deploy">
-        <copy todir="${temporary.dir}/myspace-store" filtering="true">
-                <fileset dir="webapps/myspace-store" />
-        </copy>
-        <jar destfile="${temporary.dir}/myspace-store.war" basedir="${temporary.dir}/myspace-store">
-        </jar>
-        <j:catch>
-                <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-                        path="/myspace-store" war="file:///${temporary.dir}/myspace-store.war" />
-        </j:catch>
-</goal>
-
 <!-- context- driven webapps ////////////////////////////////-->
 <goal name="jes-deploy">
         <copy todir="${temporary.dir}/jes" filtering="true">
@@ -606,17 +594,58 @@
   </j:catch>
 </goal>
 
-<goal name="filestore-deploy" >
-        <copy todir="${temporary.dir}/filestore" filtering="true">
-                <fileset dir="contexts/filestore"/>
-        </copy>
-        <war update="true" destfile="${temporary.dir}/astrogrid-filestore-${pom.currentVersion}.war">
-                <metainf dir="${temporary.dir}/filestore"/>
-        </war>
-  <j:catch>
-  <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/astrogrid-filestore-${pom.currentVersion}" war="file:///${temporary.dir}/astrogrid-filestore-${pom.currentVersion}.war"/>
-  </j:catch>
+<goal name="filestore-deploy">
+	<!--+
+		| Deploy filestore one.
+		+-->
+	<j:set var="filestore.name" value="filestore-one"/>
+	<attainGoal name="filestore-deploy-sub"/>
+	<!--+
+		| Deploy filestore two.
+		+-->
+	<j:set var="filestore.name" value="filestore-two"/>
+	<attainGoal name="filestore-deploy-sub"/>
+</goal>
+
+<goal name="filestore-deploy-sub">
+	<echo>Deploying ${filestore.name} ....</echo>
+	<!--+
+		| Setup the params.
+		+-->
+	<j:set var="filestore.webapp"    value="astrogrid-${filestore.name}-${pom.currentVersion}"/>
+	<filter token="FILESTORE_NAME"   value="${filestore.name}"/>
+	<filter token="FILESTORE_WEBAPP" value="${filestore.webapp}"/>
+	<!--+
+		| Make a copy of the war file.
+		+-->
+	<copy filtering="false"
+		file="${temporary.dir}/astrogrid-filestore-${pom.currentVersion}.war"
+		toFile="${temporary.dir}/${filestore.webapp}.war"
+		/>
+	<!--+
+		| Copy the context file.
+		+-->
+	<copy todir="${temporary.dir}/${filestore.name}" filtering="true">
+		<fileset dir="contexts/filestore"/>
+	</copy>
+	<!--+
+		| Update the war file.
+		+-->
+	<war update="true" destfile="${temporary.dir}/${filestore.webapp}.war">
+		<metainf dir="${temporary.dir}/${filestore.name}"/>
+	</war>
+	<!--+
+		| Deploy the war file into Tomcat.
+		+-->
+	<j:catch>
+		<tomcat-deploy
+			url="${tomcat.manager.url}"
+			username="${tomcat.manager.username}"
+			password="${tomcat.manager.password}"
+			path="/${filestore.webapp}"
+			war="file:///${temporary.dir}/${filestore.webapp}.war"
+			/>
+	</j:catch>
 </goal>
 
 <goal name="pal-deploy" >
@@ -716,10 +745,14 @@
 </goal>
 
 <goal name="filestore-undeploy" >
-  <j:catch>
-  <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/astrogrid-filestore-${pom.currentVersion}" />
-  </j:catch>
+	<j:catch>
+	<tomcat-remove
+		url="${tomcat.manager.url}"
+		username="${tomcat.manager.username}"
+		password="${tomcat.manager.password}"
+		path="/${filestore.webapp}"
+		/>
+	</j:catch>
 </goal>
 
 <goal name="cea-server-undeploy" >
@@ -774,12 +807,6 @@
   <j:catch>
         <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
                 path="/astrogrid-autoconfiguration" />
-  </j:catch>
-</goal>
-<goal name="myspace-store-undeploy" >
-  <j:catch>
-        <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-                path="/myspace-store" />
   </j:catch>
 </goal>
 

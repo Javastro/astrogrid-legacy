@@ -22,7 +22,7 @@
  <vr:Resource xsi:type="ServiceType">
     <Identifier>
       <AuthorityID>@REGAUTHORITY@</AuthorityID>
-      <ResourceKey>filestore</ResourceKey>
+      <ResourceKey>filestore-two</ResourceKey>
     </Identifier>
     <Title>Filestore Service Entry</Title>
     <Summary>
@@ -52,7 +52,7 @@
     <Subject>Users VOSpace</Subject>
     <Interface>
       <Invocation>WebService</Invocation>
-      <AccessURL use="base">@TOMCATROOT@/astrogrid-filestore-SNAPSHOT/services/FileStore?wsdl</AccessURL>
+      <AccessURL use="base">@TOMCATROOT@/astrogrid-filestore-two-@VERSION@/services/FileStore?wsdl</AccessURL>
     </Interface>
   </vr:Resource>
 </VODescription>

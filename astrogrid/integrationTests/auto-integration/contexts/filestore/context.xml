@@ -1,6 +1,6 @@
-<Context path="/astrogrid-filestore-SNAPSHOT">
+<Context path="/@FILESTORE_WEBAPP@">
     <Environment
         name="org.astrogrid.config.url"
         override="false" type="java.lang.String"
-        value="@CONFIGPATH@/AstroGridConfig.properties"/>
+        value="@CONFIGPATH@/@FILESTORE_NAME@.properties"/>
 </Context>
