@@ -50,7 +50,7 @@ public class ServerTest extends TestCase
       assertNotNull(server);
 
       //load test query file
-      URL url = getClass().getResource("testQuery.xml");
+      URL url = getClass().getResource("adqlQuery3.xml");
       Document fileDoc = XMLUtils.newDocument(url.openConnection().getInputStream());
       assertNotNull(fileDoc);
 
@@ -91,6 +91,9 @@ public class ServerTest extends TestCase
 
 /*
 $Log: ServerTest.java,v $
+Revision 1.8  2003/11/06 22:10:22  mch
+Work with adql not it02 query
+
 Revision 1.7  2003/11/05 18:54:43  mch
 Build fixes for change to SOAPy Beans and new delegates
 
