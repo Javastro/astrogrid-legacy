@@ -1,5 +1,5 @@
 /*
- * $Id: WorkFlowToApplicationTest.java,v 1.3 2004/03/22 19:48:27 mch Exp $
+ * $Id: WorkFlowToApplicationTest.java,v 1.4 2004/03/22 20:02:18 mch Exp $
  *
  * Created on 07-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -11,7 +11,7 @@
  *
  */
 
-package org.astrogrid.integrationTests.applications;
+package org.astrogrid.integrationtest.applications;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,7 +35,7 @@ import org.astrogrid.community.User;
 import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.community.beans.v1.Credentials;
 import org.astrogrid.community.beans.v1.Group;
-import org.astrogrid.integrationTests.common.ConfManager;
+import org.astrogrid.integrationtest.common.ConfManager;
 import org.astrogrid.jes.delegate.JesDelegateException;
 import org.astrogrid.jes.delegate.JesDelegateFactory;
 import org.astrogrid.jes.delegate.JobController;
@@ -43,7 +43,7 @@ import org.astrogrid.mySpace.delegate.MySpaceClient;
 import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
 import org.astrogrid.mySpace.delegate.helper.MySpaceHelper;
 import org.astrogrid.portal.workflow.WKF;
-import org.astrogrid.registry.beans.resource.VODescription;
+//import org.astrogrid.registry.beans.resource.VODescription;
 import org.astrogrid.workflow.beans.v1.Input;
 import org.astrogrid.workflow.beans.v1.Output;
 import org.astrogrid.workflow.beans.v1.Sequence;
@@ -252,3 +252,4 @@ public class WorkFlowToApplicationTest extends TestCase {
    }
 
 }
+
