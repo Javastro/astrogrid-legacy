@@ -795,6 +795,11 @@ public class RegistryManager
    protected String getClassName()
    { Class currentClass = this.getClass();
      String name =  currentClass.getName();
+     int dotPos = name.lastIndexOf(".");
+     if (dotPos > -1)
+     {  name = name.substring(dotPos+1, name.length() );
+     }
+
      return name;
    }    
 }
