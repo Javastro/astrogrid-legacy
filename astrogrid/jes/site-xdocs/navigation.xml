@@ -5,18 +5,24 @@
 
   <body>
      <menu name="Documentation">
-       <item name="Install" href="INSTALL"/>
-       <item name="Read me" href="README"/>
+       <item name="Install" href="INSTALL.xml"/>
+       <item name="Read me" href="README.xml"/>
     </menu>
 
     <menu name="Installation Checks">
             <item name="Axis Check" href="happyaxis.jsp" />
             <item name="Installation Tests" href="TestServlet?suite=org.astrogrid.jes.component.ComponentManagerFactory" />
-        	<item name="Fingerprint" href="fingerprint.jsp" />
-        	<item name="View web services" href="servlet/AxisServlet" />
+                <item name="Fingerprint" href="fingerprint.jsp" />
+                <item name="View web services" href="servlet/AxisServlet" />
+    </menu>
+
+    <menu name="Resources">
+            <item name="Schema" href="schema" />
+        <item name="WSDL" href="wsdl" />
+        <item name="Sample Config File" href="astrogrid.properties" />
     </menu>
     <links>
-       <item name="AstroGrid"       href="http://www.astrogrid.org"/>
+       <item name="AstroGrid" href="http://www.astrogrid.org"/>
     </links>
   </body>
 </project>

@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<document>
+<properties>
+        <author email="nw@jb.man.ac.uk">Noel Winstanley</author>
+        <title>Astrogrid Job Execution System</title>
+</properties>
+<body>
+<section name="JES">
+<p>
+Welcome to JES - if you can see this page, the first steps of installation are complete.
+Follow the 'installation tests' links on the menu to run diagnostics on the installation
+
+</p>
+</section>
+</body>
+</document>
