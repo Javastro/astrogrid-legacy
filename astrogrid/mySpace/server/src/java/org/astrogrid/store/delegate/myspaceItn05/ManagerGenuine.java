@@ -1145,8 +1145,7 @@ public class ManagerGenuine implements Manager
 
          boolean astroGridLog = true; // Write AstroGrid log?
          boolean mySpaceLog = true;   // Write MySpace log?
-//         boolean echoLog = false;     // Echo log to standard out?
-         boolean echoLog = true;
+         boolean echoLog = false;     // Echo log to standard out?
 
          String mySpaceLogFileName = registryName + ".log";
 
