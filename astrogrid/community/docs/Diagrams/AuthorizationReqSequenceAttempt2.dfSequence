@@ -1,0 +1,228 @@
+package id3oxmqdipw0ulmdipw3ako;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id3oxmqdipw0ulmdipw3ako.node:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:design#Class#id3oxmqdipw0ulmdipw3ako.node1:oiref><oihard>
+@__modelType reference 
+*/
+class reference2 {
+}/**
+@__ref <oiref:design#Class#id3oxmqdipw0ulmdipw3ako.node3:oiref><oihard>
+@__modelType reference 
+*/
+class reference4 {
+}/**
+@__ref <oiref:design#Class#id3oxmqdipw0ulmdipw3ako.node12:oiref><oihard>
+@__modelType reference 
+*/
+class reference13 {
+}/**
+@__ref <oiref:design#Class#id3oxmqdipw0ulmdipw3ako.node27:oiref><oihard>
+@__modelType reference 
+*/
+class reference28 {
+}/**
+@__ref <oiref:design#Class#id3oxmqdipw0ulmdipw3ako.node37:oiref><oihard>
+@__modelType reference 
+*/
+class reference38 {
+}}/**
+
+@__tags
+@shapeType SequenceDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions 
+<oigroup:<oiref:design#Class#id3oxmqdipw0ulmdipw3ako.node3.link:oiref>=782,246,782,240,822,240,822,252,791,252:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id3oxmqdipw0ulmdipw3ako.node1.link29:oiref>=389,350,119,16,0:oigroup>
+<oigroup:<oiref:design#Class#id3oxmqdipw0ulmdipw3ako.node1.link14:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id3oxmqdipw0ulmdipw3ako.node1.node26:oiref>=512,300,14,20,1:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id3oxmqdipw0ulmdipw3ako.node3.link25:oiref>=532,280,232,16,0:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id3oxmqdipw0ulmdipw3ako.node3.link:oiref>=795,252,241,16,0:oigroup>
+<oigroup:<oiref:design#Class#id3oxmqdipw0ulmdipw3ako.node27:oiref>=210,700,627,59,1:oigroup>
+<oigroup:<oiref:design#Class#id3oxmqdipw0ulmdipw3ako.node12:oiref>=220,210,226,42,1:oigroup>
+<oigroup:<oiref:design#Class#id3oxmqdipw0ulmdipw3ako.node3.node:oiref>=768,190,14,20,1:oigroup>
+<oigroup:<oiref:design#Class#id3oxmqdipw0ulmdipw3ako.node.node30:oiref>=241,370,14,20,1:oigroup>
+<oigroup:<oiref:design#Class#id3oxmqdipw0ulmdipw3ako.node.link10:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id3oxmqdipw0ulmdipw3ako.node.link9:oiref>=255,130,512,130:oigroup>
+<oigroup:<oiref:design#Class#id3oxmqdipw0ulmdipw3ako.node:oiref>=160,30,177,440,1:oigroup>
+<oigroup:<oiref:design#Class#id3oxmqdipw0ulmdipw3ako.node1.node:oiref>=512,130,14,20,1:oigroup>
+<oigroup:<oiref:design#Class#id3oxmqdipw0ulmdipw3ako.node3:oiref>=730,30,91,440,1:oigroup>
+<oigroup:<oiref:design#Class#id3oxmqdipw0ulmdipw3ako.node1.link:oiref>=526,190,768,190:oigroup>
+<oigroup:<oiref:design#Class#id3oxmqdipw0ulmdipw3ako.node1:oiref>=440,30,158,440,1:oigroup>
+<oigroup:<oiref:design#Class#id3oxmqdipw0ulmdipw3ako.node1.link29:oiref>=512,370,255,370:oigroup>
+<oigroup:<oiref:design#Class#id3oxmqdipw0ulmdipw3ako.node3.link16:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id3oxmqdipw0ulmdipw3ako.node3.link25:oiref>=768,300,526,300:oigroup>
+<oigroup:<oiref:design#Class#id3oxmqdipw0ulmdipw3ako.node37:oiref>=0,50,150,410,0:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id3oxmqdipw0ulmdipw3ako.node.link9:oiref>=259,110,198,16,0:oigroup>
+<oigroup:<oiref:design#Class#id3oxmqdipw0ulmdipw3ako.node3.node15:oiref>=777,246,14,20,1:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id3oxmqdipw0ulmdipw3ako.node1.link:oiref>=530,170,159,16,0:oigroup>
+*/
+class __positions {
+}/**
+@shapeType Object
+@__modelType node
+@name System needing Authorization
+@stereotype actor 
+*/
+class node {
+/**
+@shapeType MessageLink
+@__modelType link
+@__ref <oiref:design#Class#id3oxmqdipw0ulmdipw3ako.node1:oiref><oihard>
+@sendingInstant 130
+@processingDuration 20
+@sequenceNumber 1
+@diagram_uniqe_name <oiref:design#Class#id3oxmqdipw0ulmdipw3ako.diagram:oiref>
+@label Call Authenticate on WebService 
+*/
+class link9 {
+}/**
+@shapeType CollaborationLink
+@__modelType link
+@__ref <oiref:design#Class#id3oxmqdipw0ulmdipw3ako.node1:oiref><oihard> 
+*/
+class link10 {
+}/**
+@shapeType Activation
+@__modelType node
+@name Activation9
+@activationMessage <oiref:design#Class#id3oxmqdipw0ulmdipw3ako.node1.link29:oiref> 
+*/
+class node30 {
+}}/**
+@shapeType Object
+@__modelType node
+@name Authorization WebService 
+*/
+class node1 {
+/**
+@shapeType Activation
+@__modelType node
+@name Activation2
+@activationMessage <oiref:design#Class#id3oxmqdipw0ulmdipw3ako.node.link9:oiref> 
+*/
+class node {
+}/**
+@shapeType MessageLink
+@__modelType link
+@__ref <oiref:design#Class#id3oxmqdipw0ulmdipw3ako.node3:oiref><oihard>
+@sendingInstant 190
+@processingDuration 20
+@sequenceNumber 2
+@diagram_uniqe_name <oiref:design#Class#id3oxmqdipw0ulmdipw3ako.diagram:oiref>
+@label Query the CommunityDB. 
+*/
+class link {
+}/**
+@shapeType CollaborationLink
+@__modelType link
+@__ref <oiref:design#Class#id3oxmqdipw0ulmdipw3ako.node3:oiref><oihard> 
+*/
+class link14 {
+}/**
+@shapeType Activation
+@__modelType node
+@name Activation8
+@activationMessage <oiref:design#Class#id3oxmqdipw0ulmdipw3ako.node3.link25:oiref> 
+*/
+class node26 {
+}/**
+@shapeType MessageLink
+@__modelType link
+@__ref <oiref:design#Class#id3oxmqdipw0ulmdipw3ako.node:oiref><oihard>
+@sendingInstant 370
+@processingDuration 20
+@sequenceNumber 5
+@diagram_uniqe_name <oiref:design#Class#id3oxmqdipw0ulmdipw3ako.diagram:oiref>
+@label Return the results 
+*/
+class link29 {
+}}/**
+@shapeType Object
+@__modelType node
+@name CommunityDB 
+*/
+class node3 {
+/**
+@shapeType Activation
+@__modelType node
+@name Activation3
+@activationMessage <oiref:design#Class#id3oxmqdipw0ulmdipw3ako.node1.link:oiref> 
+*/
+class node {
+}/**
+@shapeType MessageLink
+@__modelType link
+@__ref <oiref:design#Class#id3oxmqdipw0ulmdipw3ako.node3:oiref><oihard>
+@sendingInstant 246
+@processingDuration 20
+@sequenceNumber 3
+@diagram_uniqe_name <oiref:design#Class#id3oxmqdipw0ulmdipw3ako.diagram:oiref>
+@label Lookup policy by userid for that resource 
+*/
+class link {
+}/**
+@shapeType Activation
+@__modelType node
+@name Activation4
+@activationMessage <oiref:design#Class#id3oxmqdipw0ulmdipw3ako.node3.link:oiref> 
+*/
+class node15 {
+}/**
+@shapeType CollaborationLink
+@__modelType link
+@__ref <oiref:design#Class#id3oxmqdipw0ulmdipw3ako.node3:oiref><oihard> 
+*/
+class link16 {
+}/**
+@shapeType MessageLink
+@__modelType link
+@__ref <oiref:design#Class#id3oxmqdipw0ulmdipw3ako.node1:oiref><oihard>
+@sendingInstant 300
+@processingDuration 20
+@sequenceNumber 4
+@diagram_uniqe_name <oiref:design#Class#id3oxmqdipw0ulmdipw3ako.diagram:oiref>
+@label Return the Policy column informations. 
+*/
+class link25 {
+}}/**
+@shapeType Note
+@__modelType node
+@name Note1
+@text This is calling it's local authorization
+webservice.
+*/
+class node12 {
+}/**
+@shapeType Note
+@__modelType node
+@name Note3
+@text The columns in the database that is being returned; I was thinking would be some boolean type columns with
+"Read,Write,Execute,Access,Assign" (Assign is sort of new, but says the user can assign other users to
+this resource. 
+*/
+class node27 {
+}/**
+@shapeType Note
+@__modelType node
+@name Note4
+@text This scenario should be able to apply for all systems- JES, DataCenter, Portal, and Myspace wanting Authorization for that system.  I would also make a wild assumptions userid's or I should I say usernames if they are our e-mail addresses will be
+unique everywhere.  It will be up to the Admins to determine what resources their really is for the systems.  And up to the Admins to determine the policy (read, write, or other actions)
+*/
+class node37 {
+}

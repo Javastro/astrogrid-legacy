@@ -6,7 +6,52 @@ package iduvendi7bhhxgdi7bk2nb;
 @__modelType diagram 
 */
 class diagram {
+/**
+@__ref <oiref:java#Class#AuthorizationDelegate:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
 }/**
+@__ref <oiref:java#Class#ResourceDataObject:oiref><oihard>
+@__modelType reference 
+*/
+class reference9 {
+}/**
+@__ref <oiref:java#Class#IDbObject:oiref><oihard>
+@__modelType reference 
+*/
+class reference11 {
+}/**
+@__ref <oiref:java#Class#GroupDataObject:oiref><oihard>
+@__modelType reference 
+*/
+class reference13 {
+}/**
+@__ref <oiref:java#Class#MembersDataObject:oiref><oihard>
+@__modelType reference 
+*/
+class reference15 {
+}/**
+@__ref <oiref:java#Class#AccountDataObject:oiref><oihard>
+@__modelType reference 
+*/
+class reference19 {
+}/**
+@__ref <oiref:java#Class#AccountDetailDataObject:oiref><oihard>
+@__modelType reference 
+*/
+class reference21 {
+}/**
+@__ref <oiref:java#Class#PermissionDataObject:oiref><oihard>
+@__modelType reference 
+*/
+class reference24 {
+}/**
+@__ref <oiref:java#Class#CommunityDbHelper:oiref><oihard>
+@__modelType reference 
+*/
+class reference26 {
+}}/**
 @__tags
 @shapeType ClassDiagram 
 */
@@ -16,7 +61,33 @@ class __tags {
 */
 class __options {
 }/**
-@__positions 
+@__positions <oigroup:<oiref:java#Class#GroupDataObject:oiref>=620,260,199,229,1:oigroup>
+<oigroup:<oiref:java#Implements#GroupDataObject#IDbObject:oiref>=719,260,830,175:oigroup>
+<oigroup:<oiref:java#Class#PermissionDataObject:oiref>=1290,280,200,213,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#PermissionDataObject#resource:oiref>=1290,456,1124,456:oigroup>
+<oigroup:<oiref:java#Implements#AccountDataObject#IDbObject:oiref>=240,270,766,175:oigroup>
+<oigroup:<oiref:java#Class#ResourceDataObject:oiref>=940,420,184,398,1:oigroup>
+<oigroup:<oiref:java#Implements#MembersDataObject#IDbObject:oiref>=461,270,782,175:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#MembersDataObject#group:oiref>=553,368,620,368:oigroup>
+<oigroup:<oiref:java#Implements#Account#IDbObject:oiref>=498,624,563,218:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#MembersDataObject#account:oiref>=370,368,340,368:oigroup>
+<oigroup:<oiref:java#Implements#AccountDataObjectg#IDbObject:oiref>=207,615,563,218:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#ResourceDataObject#groupOwner:oiref>=940,460,819,460:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#AccountDataObject#accountDetail:oiref>=246,483,246,520:oigroup>
+<oigroup:<oiref:java#Class#IDbObject:oiref>=750,10,160,165,1:oigroup>
+<oigroup:<oiref:java#Class#AccountDataObjectg:oiref>=143,615,129,82,1:oigroup>
+<oigroup:<oiref:java#Implements#AccountDetailDataObject#IDbObject:oiref>=309,520,806,175:oigroup>
+<oigroup:<oiref:java#Class#CommunityDbHelper:oiref>=300,30,167,85,1:oigroup>
+<oigroup:<oiref:java#Class#AuthorizationDataObject:oiref>=415,180,200,190,1:oigroup>
+<oigroup:<oiref:java#Class#AuthorizationDelegate:oiref>=20,20,200,238,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#GroupDataObject#groupOwner:oiref>=780,489,780,538,868,538,868,450,819,450:oigroup>
+<oigroup:<oiref:java#Implements#ResourceDataObject#IDbObject:oiref>=1032,420,871,175:oigroup>
+<oigroup:<oiref:java#Class#MembersDataObject:oiref>=370,270,183,197,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#PermissionDataObject#group:oiref>=1290,384,819,384:oigroup>
+<oigroup:<oiref:java#Class#AccountDetailDataObject:oiref>=200,520,172,309,1:oigroup>
+<oigroup:<oiref:java#Class#Account:oiref>=457,624,83,82,1:oigroup>
+<oigroup:<oiref:java#Class#AccountDataObject:oiref>=140,270,200,213,1:oigroup>
+<oigroup:<oiref:java#Implements#PermissionDataObject#IDbObject:oiref>=1390,280,895,175:oigroup>
 */
 class __positions {
 }

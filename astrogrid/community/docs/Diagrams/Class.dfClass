@@ -1,0 +1,37 @@
+package idtce6dixm6azkdixmaklr;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:java#Class#AuthorizationDelegate:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference {
+}/**
+@__ref <oiref:java#Class#AuthorizationDataObject:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference4 {
+}}/**
+
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions 
+
+<oigroup:<oiref:java#Class#AuthorizationDelegate:oiref>=40,150,200,238,1:oigroup>
+<oigroup:<oiref:java#Class#AuthorizationDataObject:oiref>=240,260,266,185,0:oigroup>
+*/
+class __positions {
+}
