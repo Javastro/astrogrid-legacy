@@ -84,6 +84,7 @@
     </dependency>
 
     <!-- more standard deps -->
+      <!-- axis, and the jars it relies upon -->
     <dependency>
       <id>axis</id>
       <version>1.1</version>
@@ -94,16 +95,11 @@
       <version>1.0</version>
     </dependency>
 
-    <dependency>
-      <id>castor</id>
-      <version>0.9.5</version>
-      <jar>castor-0.9.5-xml.jar</jar>
-    </dependency>
-
-    <dependency><!-- portions of this are required by castor -->
-	<id>xerces</id>
-	<version>2.4.0</version>
-    </dependency>
+	<dependency>
+		<id>saaj</id>
+		<version>1.0</version>
+		<jar>saaj.jar</jar>
+	</dependency>
 
     <dependency>
       <id>commons-logging</id>
@@ -112,25 +108,33 @@
 
     <dependency>
       <id>commons-discovery</id>
-      <version>SNAPSHOT</version>
+      <version>20030211.213356</version>
+      <!--<version>SNAPSHOT</version>-->
     </dependency>
-
-   <dependency> <!-- its only one file, maybe this occurs elsewhere -->
-      <id>jax-qname</id>
-      <version>UNKNOWN</version>
-      <jar>jax-qname.jar</jar>
-    </dependency>
-
+    
     <dependency>
       <id>jaxrpc-api</id>
       <version>1.0.3</version>
     </dependency>
-
+    
     <dependency>
       <id>xml-apis</id>
       <version>1.0.b2</version>
     </dependency>
+    
+    <!-- castor, and what it needs -->
+    <dependency>
+      <id>castor</id>
+      <version>0.9.5</version>
+      <jar>castor-0.9.5-xml.jar</jar>
+    </dependency>
 
+    <dependency>
+	<id>xerces</id>
+	<version>2.4.0</version>
+    </dependency>
+    
+	<!-- logging and testing -->
     <dependency>
       <id>junit</id>
       <version>3.8</version>
@@ -141,6 +145,21 @@
       <version>1.2.4</version>
     </dependency>
 
+	<!-- used as part of build - no need to deploy with final app.-->
+
+	<dependency>
+		<groupId>axis</groupId>
+		<artifactId>axis-ant</artifactId>
+		<version>1.1</version>
+	</dependency>
+
+  <!-- not yet available - downloaded by hand for now
+	<dependency>
+		<id>catalina-ant</id>
+		<version>4.1.24</version>
+		<url>http://www.codeczar.com/products/tomcat/distributions/catalina-ant-4.1.24.jar</url>
+	</dependency>
+-->
     <!-- database drivers -->
     <dependency>
     	<id>mm-mysql</id>
