@@ -1,5 +1,5 @@
 /*
- * $Id: DummyPluginsTest.java,v 1.5 2004/07/07 19:33:59 mch Exp $
+ * $Id: DummyPluginsTest.java,v 1.6 2004/08/02 13:59:53 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -58,7 +58,7 @@ public class DummyPluginsTest extends TestCase {
          numResults ++; //increment
       }
       
-      assertTrue(numResults==20); //should find this number
+      assertTrue(numResults==32); //should find this number
       
    }
 
