@@ -1,4 +1,4 @@
-/*$Id: DataCenterProviderServerInfo.java,v 1.1 2004/07/01 11:43:33 nw Exp $
+/*$Id: DataCenterProviderServerInfo.java,v 1.2 2004/07/19 10:21:44 nw Exp $
  * Created on 30-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -64,7 +64,7 @@ public class DataCenterProviderServerInfo implements ServerInfo {
 
         ParameterValue format= (ParameterValue)tool.findXPathValue("input/parameter[name='Format']");
         format.setIndirect(false); //@todo - need to check what default value for 'indirect' is when using a default parameter.
-        ParameterValue target = (ParameterValue)tool.findXPathValue("output/parameter[name='Target']");
+        ParameterValue target = (ParameterValue)tool.findXPathValue("output/parameter[name='Result']");
         target.setIndirect(false);        
     }
     /**
@@ -77,7 +77,7 @@ public class DataCenterProviderServerInfo implements ServerInfo {
 
         ParameterValue format= (ParameterValue)tool.findXPathValue("input/parameter[name='Format']");
         format.setIndirect(false); //@todo - need to check what default value for 'indirect' is when using a default parameter.
-        ParameterValue target = (ParameterValue)tool.findXPathValue("output/parameter[name='Target']");
+        ParameterValue target = (ParameterValue)tool.findXPathValue("output/parameter[name='Result']");
         target.setIndirect(true);
         target.setValue(outputURI);   
     }
@@ -88,6 +88,9 @@ public class DataCenterProviderServerInfo implements ServerInfo {
 
 /* 
 $Log: DataCenterProviderServerInfo.java,v $
+Revision 1.2  2004/07/19 10:21:44  nw
+fixed these to refer to the correct v06 cea datacenter application
+
 Revision 1.1  2004/07/01 11:43:33  nw
 cea refactor
  

@@ -40,7 +40,7 @@
                 </vr:Capability>
                 <vr:Interface>
                         <vr:Invocation>WebService</vr:Invocation>
-                        <vr:AccessURL use="base">@TOMCATROOT@/astrogrid-pal-SNAPSHOT/services/CeaDataService?wsdl</vr:AccessURL>
+                        <vr:AccessURL use="base">@TOMCATROOT@/astrogrid-pal-SNAPSHOT/services/CommonExecutionConnectorService</vr:AccessURL>
                 </vr:Interface>
                 <ManagedApplications>
                         <ApplicationReference>
