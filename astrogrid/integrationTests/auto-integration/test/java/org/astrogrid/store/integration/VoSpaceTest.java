@@ -1,4 +1,4 @@
-/*$Id: VoSpaceTest.java,v 1.3 2004/04/16 15:58:45 KevinBenson Exp $
+/*$Id: VoSpaceTest.java,v 1.4 2004/04/21 12:31:56 KevinBenson Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -39,12 +39,12 @@ public class VoSpaceTest extends TestCase {
    public void setUp() throws IOException, URISyntaxException {
       
       MYSPACEIVO = new Ivorn("ivo://org.astrogrid.localhost/myspace");
-      HOMESPACETARGETIVO = new Ivorn("ivo://org.astrogrid.localhost");
+      HOMESPACETARGETIVO = new Ivorn("ivo://org.astrogrid.localhost/myspace");
       TESTUSERIVO = new Ivorn("ivo://org.astrogrid.localhost/localtest");
       
-      root = "avodemo/";
+      root = "localtest/";
       
-      testUser = new User("avodemo", "test.astrogrid.org", "token");
+      testUser = new User("testuser", "org.astrogrid.localhost", "token");
    
       client = new VoSpaceClient(testUser);
       
@@ -86,6 +86,7 @@ public class VoSpaceTest extends TestCase {
     * not make much sense.  This is a bit of a combined one anyway... */
    public void testGetFile() throws IOException, URISyntaxException
    {
+      System.out.println("entering testGetFile and creating newfile.txt");
       Ivorn fileRn = createTestFile("newfile.txt");
       
       //check it's created OK
@@ -96,15 +97,19 @@ public class VoSpaceTest extends TestCase {
       assertTrue(file.isFile());
       
       //tidy up
+      System.out.println("now deleting the newfile.txt");
       client.delete(fileRn);
+      System.out.println("exiting testGetFile");
    }
 
   
    public void testMove() throws IOException, URISyntaxException
    {
+      System.out.println("enter testMove moving- moveSource.txt to moveTarget.txt");
       Ivorn source = createTestFile("moveSource.txt");
       Ivorn target = new Ivorn(MYSPACEIVO.toString()+"#"+root+"moveTarget.txt");
       
+      System.out.println("now moving");
       client.move(source, target);
       
       StoreFile file = client.getFile(target);
@@ -114,16 +119,21 @@ public class VoSpaceTest extends TestCase {
       //@todo check that the new file is the same as the created file... sometime
       
       //tidy up
+      System.out.println("now deleting the moveSource and moveTarget");
       client.delete(source);
       client.delete(target);
+      System.out.println("exiting testMove");      
    }
 
    public void testCopy() throws IOException, URISyntaxException
    {
+      System.out.println("enter testCopy() copySource.txt to copyTarget.txt");
       Ivorn source = createTestFile("copySource.txt");
       Ivorn target = new Ivorn(MYSPACEIVO.toString()+"#"+root+"copyTarget.txt");
       
-      client.move(source, target);
+      System.out.println("copying");
+      client.copy(source, target);
+      
       
       StoreFile file = client.getFile(target);
       assertNotNull(file);
@@ -132,12 +142,15 @@ public class VoSpaceTest extends TestCase {
       //@todo check that the new file is the same as the created file... sometime
 
       //tidy up
+      System.out.println("now deleting copySource and copyTarget");
       client.delete(source);
       client.delete(target);
+      System.out.println("exiting testCopy()");
    }
    
    public void testDelete() throws IOException, URISyntaxException
    {
+      System.out.println("entering testDelete() first createTestFile(deleteFile.txt)");
       Ivorn fileRn = createTestFile("deleteFile.txt");
       
       //check it's created OK
@@ -153,6 +166,7 @@ public class VoSpaceTest extends TestCase {
       file = client.getFile(fileRn);
       
       assertNull(file);
+      System.out.println("exiting testDelete()");
    }
    
    public void testDeleteUser() throws IOException, URISyntaxException {
@@ -186,6 +200,9 @@ public class VoSpaceTest extends TestCase {
 
 /*
 $Log: VoSpaceTest.java,v $
+Revision 1.4  2004/04/21 12:31:56  KevinBenson
+*** empty log message ***
+
 Revision 1.3  2004/04/16 15:58:45  KevinBenson
 create and delete user working through vospaceclient
 
