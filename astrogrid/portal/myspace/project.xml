@@ -51,7 +51,7 @@
 
       <!-- for VoSpaceResolver -->
         <dependency>
-            <artifactId>astrogrid-registry-client</artifactId>
+            <artifactId>astrogrid-registry-client-lite</artifactId>
          <groupId>org.astrogrid</groupId>
             <version>${pom.currentVersion}</version>
             <properties>

@@ -83,7 +83,7 @@
             +-->
         <dependency>
             <groupId>${pom.groupId}</groupId>
-            <artifactId>astrogrid-registry-client</artifactId>
+            <artifactId>astrogrid-registry-client-lite</artifactId>
             <version>${pom.currentVersion}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
