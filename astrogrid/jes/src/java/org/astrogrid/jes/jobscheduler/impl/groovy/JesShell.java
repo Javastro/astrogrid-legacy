@@ -1,4 +1,4 @@
-/*$Id: JesShell.java,v 1.10 2004/08/13 09:10:30 nw Exp $
+/*$Id: JesShell.java,v 1.11 2004/08/18 21:50:15 nw Exp $
  * Created on 29-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,9 @@
  *
 **/
 package org.astrogrid.jes.jobscheduler.impl.groovy;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.community.User;
@@ -23,7 +26,6 @@ import org.astrogrid.workflow.beans.v1.Set;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.While;
 
-import org.apache.log4j.Logger;
 import org.codehaus.groovy.control.CompilationFailedException;
 
 import groovy.lang.Binding;
@@ -37,14 +39,14 @@ import java.util.List;
 
 /** class that encapuslates the execution and evaluation of grouvy code.
  * @author Noel Winstanley nw@jb.man.ac.uk 29-Jul-2004
- * @todo add in ag scripting object here..
  *
  */
 public class JesShell {
     /**
      * Commons Logger for this class
      */
-    private static final Logger logger = Logger.getLogger(JesShell.class);
+    private static final Log logger = LogFactory.getLog(JesShell.class);
+
 
     /** Construct a new JesShell
      * 
@@ -76,10 +78,13 @@ public class JesShell {
         logger.info("firing " + r.getName());
         Binding bodyBinding = createBodyBinding(map,store);
         logger.debug(r);    
-        Script sc = shell.parse(r.getBody());       
+        Script sc = r.getCompiledBody();
+        if (sc == null) { // not there, compile it up..
+            sc = shell.parse(r.getBody());
+            r.setCompiledBody(sc);
+        }
         sc.setBinding(bodyBinding);
         sc.run();
-
     }
     
     public void executeScript(String script,String id, ActivityStatusStore map,List rules, PrintStream errStream, PrintStream outStream) throws CompilationFailedException, IOException {
@@ -127,16 +132,14 @@ public Object evaluateUserExpr(String expr,String id,ActivityStatusStore map, Li
     
 }
 
-    public boolean executeSet(Set set,String state,ActivityStatusStore map, List rules) throws CompilationFailedException, IOException {
+    public void executeSet(Set set,String state,ActivityStatusStore map, List rules) throws CompilationFailedException, IOException {
         Vars vars = map.getEnv(state);
         if (set.getValue() != null) {
             Object result = evaluateUserExpr(set.getValue(),state,map,rules);
             vars.set(set.getVar(),result);
-            return true;
         } else {
             // just a declaration, with no initialization.
             vars.set(set.getVar(),null);
-            return true;
         }
     }
     
@@ -228,7 +231,6 @@ public Object evaluateUserExpr(String expr,String id,ActivityStatusStore map, Li
         Binding b = createTriggerBinding(map);
         b.setVariable("rules",rules);
         b.setVariable("jes",jes);
-        b.setVariable("log",jes.getLog());
         b.setVariable("shell",this);
         return b;
     }
@@ -242,7 +244,6 @@ public Object evaluateUserExpr(String expr,String id,ActivityStatusStore map, Li
      */
     private Binding createScriptBinding(ActivityStatusStore map, List rules) {
         Binding b = new Binding();
-        b.setVariable("log",jes.getLog());
         b.setVariable("jes",jes);
         Astrogrid ag = Astrogrid.getInstance();
         b.setVariable("astrogrid",ag);        
@@ -277,6 +278,10 @@ public Object evaluateUserExpr(String expr,String id,ActivityStatusStore map, Li
 
 /* 
 $Log: JesShell.java,v $
+Revision 1.11  2004/08/18 21:50:15  nw
+improved error propagation and reporting.
+messages are now logged to workflow document
+
 Revision 1.10  2004/08/13 09:10:30  nw
 tidied imports
 

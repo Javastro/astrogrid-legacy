@@ -1,4 +1,4 @@
-/*$Id: JesInterface.java,v 1.8 2004/08/13 09:10:30 nw Exp $
+/*$Id: JesInterface.java,v 1.9 2004/08/18 21:50:15 nw Exp $
  * Created on 12-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -42,22 +42,22 @@ import java.util.List;
 
 /** provides an interface for executing groovy scripts to call methods back into jes 
  */
-public class  JesInterface {
+public class  JesInterface extends WorkflowLogger {
     /** construct a new interpreter environment
      * @param wf workflow object
      * @param disp ToolDispatcher
      */
     public JesInterface(Workflow wf, Dispatcher disp,GroovySchedulerImpl sched){
-        this.wf = wf;
+        super(wf);
         this.disp = disp;
-        this.sched = sched;
-        this.logger = LogFactory.getLog("script:  " + wf.getName());    }
+        this.sched = sched;    }
     
     protected final GroovySchedulerImpl sched;
-    protected final Workflow wf;
     protected final Dispatcher disp;
-    protected final Log logger;
 
+    
+    
+    
     /** the workflow object the script belongs to */
     public Workflow getWorkflow() {
         return wf;
@@ -82,11 +82,6 @@ public class  JesInterface {
     public Dispatcher getDispatcher() {
         return disp;
     }
-    /** a logger for the script to log information messages to */
-    public Log getLog() {
-        return logger;
-    }
-    
     // plus some helper methods.
 
     /** access object in workflow tree by id */
@@ -98,15 +93,20 @@ public class  JesInterface {
         if (result != null) {
             return result;
         } else {
+            int lastIndex = id.lastIndexOf('-');
+            if (lastIndex != -1) {
             // assume its a mangled id. try again, removing last portion.
-            return getId(id.substring(0,id.lastIndexOf('-')));
+                return getId(id.substring(0,lastIndex));
+            } else {
+                return null;
+            }
         }
     }
     /** 
      * dispatach a tool step 
      * @param id - the identifier of the step to execute
      * */ 
-    public void dispatchStep(String id, JesShell shell, ActivityStatusStore states, List rules) throws JesException {
+    public boolean dispatchStep(String id, JesShell shell, ActivityStatusStore states, List rules)  {
         Step step = (Step)getId(id);
           StepExecutionRecord er = AbstractJobSchedulerImpl.newStepExecutionRecord();
           step.addStepExecutionRecord(er);
@@ -114,51 +114,30 @@ public class  JesInterface {
                Tool tool = shell.evaluateTool(step.getTool(),id,states,rules);
                getDispatcher().dispatchStep(getWorkflow(),tool,id); 
                er.setStatus(ExecutionPhase.RUNNING);
+               return true;
            } catch (Throwable t) { // absolutely anything
-               getLog().info("Step execution failed:",t);                 
-                MessageType message = buildExceptionMessage(t,"Dispatcher");
-                er.addMessage(message);
+               error("Step execution failed:",t);                               
+                MessageType message = buildMessage("Failed to dispatch step",t);
+                message.setLevel(LogLevel.ERROR);
+                er.addMessage(message);                
                 er.setStatus(ExecutionPhase.ERROR);
                 er.setFinishTime(new Date());
+                return false;
            }                             
     }
     
 
-    /**
-     * @param t
-     * @return
-     */
-    private MessageType buildExceptionMessage(Throwable t, String source) {
-        MessageType message = new MessageType();
-        StringBuffer buff = new StringBuffer();
-            buff.append("Failed: ")
-           .append( t.getClass().getName())
-           .append('\n')
-           .append( t.getMessage())
-           .append('\n');
-        StringWriter writer = new StringWriter();                            
-           t.printStackTrace(new PrintWriter(writer));
-         buff.append(writer.toString());
-          
-        message.setContent(buff.toString());
-        message.setLevel(LogLevel.ERROR);
-        message.setSource(source);
-        message.setPhase(ExecutionPhase.ERROR);
-        message.setTimestamp(new Date());
-        return message;
-    }
-    public boolean executeSet(String id,JesShell shell,ActivityStatusStore map,List rules) throws JesException {
+    public boolean executeSet(String id,JesShell shell,ActivityStatusStore map,List rules)  {
         Set set = (Set)getId(id);
         try {
-            return shell.executeSet(set,id,map,rules);
+            shell.executeSet(set,id,map,rules);
+            return true;
         } catch (Throwable t) {
-            getLog().info("set failed",t);
-            MessageType message = buildExceptionMessage(t,"set " + set.getVar() + " := " + set.getValue());
-            this.getWorkflow().getJobExecutionRecord().addMessage(message);
+            error("set " + set.getVar() + ":= " + set.getValue() + " failed",t);
             return false;
         }
     }    
-    public boolean dispatchScript(String id,JesShell shell,ActivityStatusStore map,List rules) throws JesException {
+    public boolean dispatchScript(String id,JesShell shell,ActivityStatusStore map,List rules) {
         Script script = (Script)getId(id);        
         StepExecutionRecord er = AbstractJobSchedulerImpl.newStepExecutionRecord();
         script.addStepExecutionRecord(er);
@@ -175,24 +154,20 @@ public class  JesInterface {
             er.setStatus(ExecutionPhase.COMPLETED);
             return true;
         } catch (Throwable t) {
-            getLog().info("Script execution failed:",t);                 
-            MessageType message = buildExceptionMessage(t,"GroovyShell");
+            error("Script execution failed:",t);                 
+            MessageType message = buildMessage("Failed to execute script",t);
+            message.setLevel(LogLevel.ERROR);
             er.addMessage(message);
-            er.setStatus(ExecutionPhase.ERROR);            
-            er.setStatus(ExecutionPhase.ERROR);
+            er.setStatus(ExecutionPhase.ERROR);       
             return false;
         } finally { // want to record results, no matter what happened.
-           MessageType message = new MessageType();
-           message.setContent(err.toString());
+           MessageType message =buildMessage(err.toString());
            message.setLevel(LogLevel.INFO);
-           message.setPhase(ExecutionPhase.RUNNING);
            message.setSource("stderr");
            er.addMessage(message);
            
-           message = new MessageType();
-           message.setContent(out.toString());
+           message = buildMessage(out.toString());
            message.setLevel(LogLevel.INFO);
-           message.setPhase(ExecutionPhase.RUNNING);
            message.setSource("stdout");
            er.addMessage(message);
           er.setFinishTime(new Date());
@@ -217,6 +192,10 @@ public class  JesInterface {
 
 /* 
 $Log: JesInterface.java,v $
+Revision 1.9  2004/08/18 21:50:15  nw
+improved error propagation and reporting.
+messages are now logged to workflow document
+
 Revision 1.8  2004/08/13 09:10:30  nw
 tidied imports
 

@@ -239,8 +239,11 @@ finish - triggered by response from cea. collects any results from the call back
 	<name>step-start</name>
 	<trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == START</trigger>
 <body>
-states.setStatus('<xsl:value-of select="generate-id()"/>',STARTED);
-jes.dispatchStep('<xsl:value-of select="generate-id()"/>',shell,states,rules);
+if (jes.dispatchStep('<xsl:value-of select="generate-id()"/>',shell,states,rules)) {
+	states.setStatus('<xsl:value-of select="generate-id()"/>',STARTED);
+} else {
+	states.setStatus('<xsl:value-of select="generate-id()"/>',ERROR);
+}
 </body>
 </rule>
 
@@ -357,8 +360,15 @@ nusciance having to handle two forms of xml element - name, and via xsi type.
 	 <trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == START</trigger>
 <body>
 ifObj = jes.getId('<xsl:value-of select="generate-id()"/>');
-if (shell.evaluateIfCondition(ifObj,states,rules)) {
-		print("starting then branch");
+try {
+ condition = shell.evaluateIfCondition(ifObj,states,rules)
+} catch (Throwable e) {		
+        jes.error("Failed to evaluate if condition",e);
+		states.setStatus('<xsl:value-of select="generate-id()"/>', ERROR);
+		return;
+}
+
+if (condition) {
 	  	states.setStatus('<xsl:value-of select="generate-id(./wf:then/* | ./wf:Activity[@xsi:type='then']/*)"/>', START);
 		states.setStatus('<xsl:value-of select="generate-id()"/>', STARTED);
 		states.setEnv('<xsl:value-of select="generate-id(./wf:then/* | ./wf:Activity[@xsi:type='then']/*)"/>',states.getEnv('<xsl:value-of select="generate-id()"/>'));
@@ -405,7 +415,14 @@ to continue - if test passes, re-trigger body rule.
 	 <trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == START</trigger>
 	<body>
 whileObj = jes.getId('<xsl:value-of select="generate-id()"/>');
-if (shell.evaluateWhileCondition(whileObj,states,rules)) {		
+try {
+	condition = shell.evaluateWhileCondition(whileObj,states,rules);
+	} catch (Throwable t) {
+	    jes.error("Failed to evaluate while condition",e);
+		states.setStatus('<xsl:value-of select="generate-id()"/>', ERROR);
+		return;	
+	}
+if (condition) {		
 		states.setStatus('<xsl:value-of select="generate-id(./*)"/>',START);
 	       states.setStatus('<xsl:value-of select="generate-id()"/>',STARTED) ;
 		states.setEnv('<xsl:value-of select="generate-id(./*)"/>',states.getEnv('<xsl:value-of select="generate-id()"/>'));
@@ -419,7 +436,14 @@ if (shell.evaluateWhileCondition(whileObj,states,rules)) {
 	<trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == STARTED &amp;&amp; states.getStatus('<xsl:value-of select="generate-id(./*)"/>') == FINISHED</trigger>
 	<body>
 whileObj = jes.getId('<xsl:value-of select="generate-id()"/>');
-if (shell.evaluateWhileCondition(whileObj,states,rules)) {	
+try {
+	condition = shell.evaluateWhileCondition(whileObj,states,rules);
+	} catch (Throwable t) {
+	    jes.error("Failed to evaluate while condition",e);
+		states.setStatus('<xsl:value-of select="generate-id()"/>', ERROR);
+		return;	
+	}
+if (condition) {	
 		states.setStatus('<xsl:value-of select="generate-id(./*)"/>',START);
 } else {
 		states.setStatus('<xsl:value-of select="generate-id()"/>', FINISHED);
@@ -437,7 +461,13 @@ if (shell.evaluateWhileCondition(whileObj,states,rules)) {
 	 <trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == START</trigger> 
 	<body>
 	forObj = jes.getId('<xsl:value-of select="generate-id()"/>');
-	l = shell.evaluateForItems(forObj,states,rules);
+	try {
+		l = shell.evaluateForItems(forObj,states,rules);
+	} catch (Throwable t) {
+	    jes.error("Failed to evaluate for items",t);
+		states.setStatus('<xsl:value-of select="generate-id()"/>', ERROR);
+		return;	
+	}
 	if (! (l instanceof java.util.List)) { <!-- try and coerce it -->
 	l = l.toList();
 	}
@@ -494,8 +524,13 @@ issues
 	<body>
 myID = '<xsl:value-of select="generate-id()"/>';
 parforObj = jes.getId(myID);
-log.error(parforObj);
-items = shell.evaluateParforItems(parforObj,states,rules);
+try {
+	items = shell.evaluateParforItems(parforObj,states,rules);
+} catch (Throwable t) {
+        jes.error("Failed to evaluate parfor items",t);
+		states.setStatus('<xsl:value-of select="generate-id()"/>', ERROR);
+		return;	
+}
 stateNames = [	<xsl:for-each select=".//*"><xsl:if test="position() != 1">,</xsl:if>
 &lt;&lt;&lt;ID
 (<xsl:value-of select="generate-id()"/>)

@@ -1,4 +1,4 @@
-/*$Id: Rule.java,v 1.5 2004/08/13 09:10:30 nw Exp $
+/*$Id: Rule.java,v 1.6 2004/08/18 21:50:15 nw Exp $
  * Created on 26-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -41,6 +41,7 @@ public class Rule {
     protected String name;
     protected String body;
     protected transient Script compiledTrigger;
+    protected transient Script compiledBody;
     /** returns true if trigger of rule succeeds. 
      * @throws IOException
      * @throws CompilationFailedException*/
@@ -124,6 +125,14 @@ public class Rule {
         return this.compiledTrigger;
     }
     
+    public void setCompiledBody(Script script) {
+        this.compiledBody = script;
+    }
+    
+    public Script getCompiledBody() {
+        return this.compiledBody;
+    }
+    
     public String toString() {
         StringBuffer buffer = new StringBuffer();
         buffer.append("[Rule:");
@@ -184,6 +193,10 @@ public class Rule {
 
 /* 
 $Log: Rule.java,v $
+Revision 1.6  2004/08/18 21:50:15  nw
+improved error propagation and reporting.
+messages are now logged to workflow document
+
 Revision 1.5  2004/08/13 09:10:30  nw
 tidied imports
 
