@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegateTest.java,v 1.9 2004/08/02 14:57:32 mch Exp $
+ * $Id: WebDelegateTest.java,v 1.10 2004/08/19 14:56:47 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -27,10 +27,10 @@ public class WebDelegateTest extends TestCase
 {
 
    //an astrogrid web service
-   private static String TEST_PAL_041 = "http://twmbarlwm.star.le.ac.uk/astrogrid-pal-SNAPSHOT/services/AxisDataServer";
+   private static String TEST_PAL_041 = "http://twmbarlwm.star.le.ac.uk:8888/astrogrid-pal-SNAPSHOT/services/AxisDataServer";
 
       //an astrogrid web service
-   private static String TEST_PAL_05 = "http://twmbarlwm.star.le.ac.uk/astrogrid-pal-SNAPSHOT/services/AxisDataService05";
+   private static String TEST_PAL_05 = "http://twmbarlwm.star.le.ac.uk:8888/astrogrid-pal-SNAPSHOT/services/AxisDataService05";
 
    /**
     * Tests a cone search on the old delegate
@@ -77,6 +77,9 @@ public class WebDelegateTest extends TestCase
 
 /*
  * $Log: WebDelegateTest.java,v $
+ * Revision 1.10  2004/08/19 14:56:47  mch
+ * Update to connect to twmbarlwm:8888
+ *
  * Revision 1.9  2004/08/02 14:57:32  mch
  * Fixed to use twmbarlwm as server to test against
  *
