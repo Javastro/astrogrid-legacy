@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.3 2003/09/15 22:56:32 mch Exp $
+/*$Id: AllTests.java,v 1.4 2003/11/06 16:46:28 mch Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,11 +30,23 @@ public class AllTests {
         //$JUnit-END$
         return suite;
     }
+    
+    /**
+     * Runs the test case.
+     */
+    public static void main(String args[])
+    {
+       junit.textui.TestRunner.run(suite());
+    }
+    
 }
 
 
 /*
 $Log: AllTests.java,v $
+Revision 1.4  2003/11/06 16:46:28  mch
+Added main method
+
 Revision 1.3  2003/09/15 22:56:32  mch
 Test fixes
 
