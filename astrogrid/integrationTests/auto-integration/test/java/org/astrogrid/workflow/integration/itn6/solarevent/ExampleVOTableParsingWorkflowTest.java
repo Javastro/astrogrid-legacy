@@ -1,4 +1,4 @@
-/*$Id: ExampleVOTableParsingWorkflowTest.java,v 1.4 2004/08/12 22:05:43 nw Exp $
+/*$Id: ExampleVOTableParsingWorkflowTest.java,v 1.5 2004/08/17 13:33:36 nw Exp $
  * Created on 06-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -55,24 +55,10 @@ public class ExampleVOTableParsingWorkflowTest extends SimpleFitsWorkflowTest{
                 "parser = new XmlParser(); //create new parser \n" +
                 "nodes = parser.parseText(votable); //parse votable into node tree\n" +
                 "urls = nodes.depthFirst().findAll{it.name() == 'STREAM'}.collect{it.value()}.flatten(); // filter node tree on 'STREAM', project value\n" +
-                "print(urls); // show what we've found\n" /*+ for another test
-                "sinkStep = jes.getSteps().find {it.getName() == 'sink-step'}; // find next step in workflow\n" +
-                "inputs = sinkStep.getTool().getInput(); // get to set of input parameters" +
-                "urls.each { p = jes.newParameter(); p.setName('url'); p.setValue(it); inputs.addParameter(p);} // add a new parameter for each url\n"
-                */
+                "print(urls); // show what we've found\n" 
         );
         wf.getSequence().addActivity(sc);
-      
-       /*
-        // now the app that consumes the list of parameters. - a dummy for now.
-        descr = reg.getDescriptionFor(URL_LIST_SINK);
-        Tool sinkTool = descr.createToolFromDefaultInterface();
-        // populate other parameters here.
-        Step sink = new Step();
-        sink.setName("sink-step");
-        sink.setTool(sinkTool);
-        wf.getSequence().addActivity(sink);
-        */
+
                 
     }
     
@@ -110,6 +96,9 @@ public class ExampleVOTableParsingWorkflowTest extends SimpleFitsWorkflowTest{
 
 /* 
 $Log: ExampleVOTableParsingWorkflowTest.java,v $
+Revision 1.5  2004/08/17 13:33:36  nw
+cleaned up
+
 Revision 1.4  2004/08/12 22:05:43  nw
 added checking of results of steps, and parsing of urls in interstep script
 
