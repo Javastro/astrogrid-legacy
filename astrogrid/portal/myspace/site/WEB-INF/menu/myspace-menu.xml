@@ -6,19 +6,19 @@
       contents="MySpace"
       contents-hover="MySpace"
       uri=""
-      target="_self"
+      target="_top"
       status-text="MySpace...">
     <agp:item
         contents="Explorer"
         contents-hover="Explorer"
         uri="/astrogrid-portal/main/mount/myspace/myspace-explorer"
-        target="_self"
+        target="_top"
         status-text="AstroGrid MySpace Explorer"/>
     <agp:item
         contents="MicroBrowser"
         contents-hover="MicroBrowser"
         uri='javascript:void(window.open("/astrogrid-portal/lean/mount/myspace/myspace-micro?ivorn=myivorn&amp;agsl=myagsl", "mySpaceMicro", "toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=yes, scrollbars=yes, width=300, height=200"))'
-        target="_self"
+        target="_top"
         status-text="AstroGrid MySpace MicroBrowser"/>
   </agp:menu>
 </agp:menu-def>
