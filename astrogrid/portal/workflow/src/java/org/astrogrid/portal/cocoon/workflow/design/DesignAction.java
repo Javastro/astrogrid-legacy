@@ -117,7 +117,8 @@ public class DesignAction extends AbstractAction {
         LOCATION_PARAMETER = "location",
 	    PARAM_NAME_PARAMETER = "param-name",
 	    PARAM_VALUE_PARAMETER = "param-value",
-        DIRECTION_PARAMETER = "direction";
+        DIRECTION_PARAMETER = "direction",
+	    STEP_DESCRIPTION_PARAMETER = "step-description";
         
     public static final String
         QUERY_NAME_PARAMETER = "query-name",
@@ -142,7 +143,8 @@ public class DesignAction extends AbstractAction {
 	    ACTION_INSERT_INPUT_PARAMETER = "insert-input-value",
 	    ACTION_INSERT_OUTPUT_PARAMETER = "insert-output-value",
 	    ACTION_RESET_PARAMETER = "reset-parameter",
-	    ACTION_REMOVE_TOOL_FROM_STEP = "remove-tool-from-step",	    
+	    ACTION_REMOVE_TOOL_FROM_STEP = "remove-tool-from-step",
+	    ACTION_ADD_STEP_DESCRIPTION = "add-step-description", 	    
         ACTION_READ_LISTS = "read-lists";
         
     public static final String
@@ -320,7 +322,10 @@ public class DesignAction extends AbstractAction {
     			}
 				else if( action.equals( ACTION_CREATE_TOOL ) ) {
 					this.createTool();                     								
-				}  
+				}
+				else if( action.equals( ACTION_ADD_STEP_DESCRIPTION )){
+					this.insertStepDescription();  
+				}
                 else {
                     debug( "unsupported action"); 
                 }
@@ -370,7 +375,7 @@ public class DesignAction extends AbstractAction {
                 // JL Note: Iteration 3 way of doing things...
                 // PJN note: alterred slightly, also not sure if LoginAction intends to put security token into session?
 
-          
+         
                 this.userid = (String)session.getAttribute( COMMUNITY_ACCOUNT_TAG );  
                 trace( "userid: " + userid ) ;             
                 this.community = (String)session.getAttribute( COMMUNITY_NAME_TAG );
@@ -1106,8 +1111,6 @@ public class DesignAction extends AbstractAction {
                     
     } // end of deleteParameter() 
 
-
-
  
  
 		private void insertInputParameterIntoTool() throws ConsistencyException {
@@ -1215,6 +1218,43 @@ public class DesignAction extends AbstractAction {
 		} // end of insertOutputParameterIntoTool()
 
 
+		private void insertStepDescription() throws ConsistencyException {
+			if( TRACE_ENABLED ) trace( "DesignActionImpl.insertStepDescription() entry" ) ;
+			
+             Step
+                step = null ;
+            
+			 try {
+	
+			    String
+                   stepActivityKey = request.getParameter( ACTIVITY_KEY_PARAMETER ) ;
+				String
+				    description = request.getParameter( STEP_DESCRIPTION_PARAMETER ) ;
+                                
+				if ( stepActivityKey == null) {
+					debug( "stepActivityKey is null" ) ;
+				}
+
+				Activity
+					activity = workflow.getActivity( stepActivityKey ) ;
+                    
+				if( activity instanceof Step ) {
+					step = (Step)activity ;
+				    step.setDescription( description ) ;
+				}
+				else {
+					throw new ConsistencyException() ;
+				}
+				
+				
+			
+				
+			}
+			finally {
+				if( TRACE_ENABLED ) trace( "DesignActionImpl.insertStepDescription() exit" ) ;
+			}
+                    
+		} // end of insertStepDescription()
 
 
         
