@@ -1,4 +1,4 @@
-/*$Id: DefaultMetadataService.java,v 1.5 2004/08/28 07:17:34 pah Exp $
+/*$Id: DefaultMetadataService.java,v 1.6 2004/09/07 13:29:46 pah Exp $
  * Created on 21-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,7 +26,7 @@ import junit.framework.TestCase;
 
 /** Standard implementation of the {@link org.astrogrid.applications.manager.MetadataService} component
  * @author Noel Winstanley nw@jb.man.ac.uk 21-May-2004
- *
+ * @TODO need to rationalize with the {@link org.astrogrid.applications.description.registry} classes which is the definitive source....
  */
 public class DefaultMetadataService implements MetadataService, ComponentDescriptor {
     private static final Log logger = LogFactory.getLog(DefaultMetadataService.class);
@@ -56,6 +56,7 @@ public class DefaultMetadataService implements MetadataService, ComponentDescrip
           mar.setNamespaceMapping("cea", Namespaces.VOCEA); 
           mar.setNamespaceMapping("ceapd", Namespaces.CEAPD);
           mar.setNamespaceMapping("ceab", Namespaces.CEAB);
+          mar.setNamespaceMapping("vr", Namespaces.VORESOURCE);
           mar.marshal(provider.getVODescription());
           sw.close();                
           return sw.toString();
@@ -103,6 +104,9 @@ public class DefaultMetadataService implements MetadataService, ComponentDescrip
 
 /* 
 $Log: DefaultMetadataService.java,v $
+Revision 1.6  2004/09/07 13:29:46  pah
+made sure that the vr namespace is declared
+
 Revision 1.5  2004/08/28 07:17:34  pah
 commandline parameter passing - unit tests ok
 
