@@ -1,5 +1,5 @@
 /*
- * $Id: XsvTableWriter.java,v 1.4 2005/03/30 18:25:45 mch Exp $
+ * $Id: XsvTableWriter.java,v 1.5 2005/03/30 21:51:25 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,11 +9,12 @@ package org.astrogrid.tableserver.out;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.Writer;
+import java.security.Principal;
 import java.util.Date;
 import org.apache.commons.logging.Log;
-import org.astrogrid.tableserver.metadata.ColumnInfo;
 import org.astrogrid.slinger.mime.MimeTypes;
+import org.astrogrid.slinger.targets.TargetIdentifier;
+import org.astrogrid.tableserver.metadata.ColumnInfo;
 
 /**
  * For writing out tables in something-separated form, eg comma separated or
@@ -33,9 +34,10 @@ public class XsvTableWriter extends AsciiTableSupport {
    /**
     * Construct this wrapping the given stream.  Values on a line will be separated with the given string
     */
-   public XsvTableWriter(Writer target, String title, String variableSeparator) throws IOException {
-      printOut = new PrintWriter(new BufferedWriter(target));
-      separator = variableSeparator;
+   public XsvTableWriter(TargetIdentifier target, String title, String variableSeperator, Principal user) throws IOException {
+      target.setMimeType(getMimeType(), user);
+      printOut = new PrintWriter(new BufferedWriter(target.resolveWriter(user)));
+      separator = variableSeperator;
    }
    
    /** Closes writer
@@ -142,6 +144,9 @@ public class XsvTableWriter extends AsciiTableSupport {
 
 /*
  $Log: XsvTableWriter.java,v $
+ Revision 1.5  2005/03/30 21:51:25  mch
+ Fix to return Votable fits list for url list
+
  Revision 1.4  2005/03/30 18:25:45  mch
  fix for sql-server jdbc problem
 

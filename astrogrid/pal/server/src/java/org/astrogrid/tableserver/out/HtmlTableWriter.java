@@ -1,5 +1,5 @@
 /*
- * $Id: HtmlTableWriter.java,v 1.3 2005/03/30 15:52:15 mch Exp $
+ * $Id: HtmlTableWriter.java,v 1.4 2005/03/30 21:51:25 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,14 +8,12 @@ package org.astrogrid.tableserver.out;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.Writer;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.security.Principal;
 import java.util.Date;
 import org.apache.commons.logging.Log;
-import org.astrogrid.cfg.ConfigFactory;
-import org.astrogrid.tableserver.metadata.ColumnInfo;
 import org.astrogrid.slinger.mime.MimeTypes;
+import org.astrogrid.slinger.targets.TargetIdentifier;
+import org.astrogrid.tableserver.metadata.ColumnInfo;
 
 /**
  * For writing out tables in html form
@@ -36,8 +34,11 @@ public class HtmlTableWriter extends AsciiTableSupport {
    /**
     * Construct this wrapping the given stream.  Writes out the first few tags
     */
-   public HtmlTableWriter(Writer target, String title, String comment) throws IOException {
-      printOut = new PrintWriter(new BufferedWriter(target));
+   public HtmlTableWriter(TargetIdentifier target, String title, String comment, Principal user) throws IOException {
+      
+      target.setMimeType(MimeTypes.HTML, user);
+      
+      printOut = new PrintWriter(new BufferedWriter(target.resolveWriter(user)));
       
       printOut.println("<HTML>");
       
@@ -173,6 +174,9 @@ public class HtmlTableWriter extends AsciiTableSupport {
 
 /*
  $Log: HtmlTableWriter.java,v $
+ Revision 1.4  2005/03/30 21:51:25  mch
+ Fix to return Votable fits list for url list
+
  Revision 1.3  2005/03/30 15:52:15  mch
  debug etc for bad sql types
 

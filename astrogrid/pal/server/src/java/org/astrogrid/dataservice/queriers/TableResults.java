@@ -1,5 +1,5 @@
 /*
- * $Id: TableResults.java,v 1.6 2005/03/30 18:54:03 mch Exp $
+ * $Id: TableResults.java,v 1.7 2005/03/30 21:51:25 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -52,6 +52,7 @@ public abstract class TableResults implements QueryResults
    /** Subclasses implement suitable ways of writing their results to the given TableWriter    */
    public abstract void writeTable(TableWriter tableWriter, QuerierStatus statusToUpdate) throws IOException;
 
+
    /** returns the formats that this result implementation can produce (ie VOTABLE, HTML, CSV, etc) */
    public static String[] listFormats() {
       return new String[] { ReturnTable.VOTABLE, ReturnTable.CSV, ReturnTable.HTML };
@@ -73,6 +74,33 @@ public abstract class TableResults implements QueryResults
       }
    }
    
+   /** Subclasses override to make spocial table writers.  requested format is given
+    * as a mime type*/
+   public TableWriter makeTableWriter(TargetIdentifier target, String requestedFormat, Principal user) throws IOException {
+
+      if (requestedFormat.equals(ReturnTable.VOTABLE)) {
+         return new VoTableWriter(target, "Query Results", user);
+      }
+      else if (requestedFormat.equals(ReturnTable.CSV)) {
+         return new XsvTableWriter(target, "Query Results", ",", user);
+      }
+      else if (requestedFormat.equals(ReturnTable.TSV)) {
+         return new XsvTableWriter(target, "Query Results", "\t", user);
+      }
+      else if (requestedFormat.equals(ReturnTable.HTML)) {
+         return new HtmlTableWriter(target, "Query Results", querier.getQuery().toString(), user);
+      }
+//      else if (format.equals(ReturnTable.FITS)) {
+//         tableWriter = new StilStarTableWriter(new FitsTableWriter(), out);
+//      }
+      else if (requestedFormat.equals(ReturnTable.DEFAULT)) {
+         return new VoTableWriter(target, "Query Results", user);
+      }
+      else {
+         throw new IllegalArgumentException("Unknown results format "+requestedFormat+" given");
+      }
+   }
+   
    /** Sends a table */
    public void sendTable(ReturnTable returns, Principal user) throws IOException {
       
@@ -90,36 +118,7 @@ public abstract class TableResults implements QueryResults
 
       status.setMessage("Sending results to "+target.toString()+" as "+format);
 
-      //Set mime type before sending
-      target.setMimeType(format, querier.getUser());
-      
-      Writer out = target.resolveWriter(querier.getUser());
-      assert (out != null);
-
-      TableWriter tableWriter = null;
-
-      if (format.equals(ReturnTable.VOTABLE)) {
-         tableWriter = new VoTableWriter(out, "Query Results");
-      }
-      else if (format.equals(ReturnTable.CSV)) {
-         tableWriter = new XsvTableWriter(out, "Query Results", ",");
-      }
-      else if (format.equals(ReturnTable.TSV)) {
-         tableWriter = new XsvTableWriter(out, "Query Results", "\t");
-      }
-      else if (format.equals(ReturnTable.HTML)) {
-         tableWriter = new HtmlTableWriter(out, "Query Results", querier.getQuery().toString());
-      }
-//      else if (format.equals(ReturnTable.FITS)) {
-//         tableWriter = new StilStarTableWriter(new FitsTableWriter(), out);
-//      }
-      else if (format.equals(ReturnTable.DEFAULT)) {
-         format = ReturnTable.VOTABLE;
-         tableWriter = new VoTableWriter(out, "Query Results");
-      }
-      else {
-         throw new IllegalArgumentException("Unknown results format in return spec "+returns+" given");
-      }
+      TableWriter tableWriter = makeTableWriter(target, format, user);
       
       //add  a filteredtablewriters if any
       Class filterClass = ConfigFactory.getCommonConfig().getClass(TABLE_FILTERS_KEY,  null);

@@ -1,5 +1,5 @@
 /*
- * $Id: VoTableWriter.java,v 1.3 2005/03/30 18:54:03 mch Exp $
+ * $Id: VoTableWriter.java,v 1.4 2005/03/30 21:51:25 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,6 +9,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.security.Principal;
 import java.util.Date;
 import org.apache.commons.logging.Log;
 import org.astrogrid.slinger.mime.MimeTypes;
@@ -55,8 +56,11 @@ public class VoTableWriter implements TableWriter {
    /**
     * Construct this wrapping the given stream.  Writes out the first few tags
     */
-   public VoTableWriter(Writer target, String title) throws IOException {
-      printOut = new PrintWriter(new BufferedWriter(target));
+   public VoTableWriter(TargetIdentifier target, String title, Principal user) throws IOException {
+      
+      target.setMimeType(MimeTypes.VOTABLE, user);
+      
+      printOut = new PrintWriter(new BufferedWriter(target.resolveWriter(user)));
       
 //         printOut.println("<!DOCTYPE VOTABLE SYSTEM 'http://us-vo.org/xml/VOTable.dtd'>");
          printOut.println("<VOTABLE version='1.0'>");
@@ -216,6 +220,9 @@ public class VoTableWriter implements TableWriter {
 
 /*
  $Log: VoTableWriter.java,v $
+ Revision 1.4  2005/03/30 21:51:25  mch
+ Fix to return Votable fits list for url list
+
  Revision 1.3  2005/03/30 18:54:03  mch
  fixes to results format
 

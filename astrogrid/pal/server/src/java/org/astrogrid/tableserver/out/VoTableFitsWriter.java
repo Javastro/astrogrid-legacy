@@ -1,20 +1,15 @@
 /*
- * $Id: VoTableFitsWriter.java,v 1.1 2005/03/21 18:45:55 mch Exp $
+ * $Id: VoTableFitsWriter.java,v 1.2 2005/03/30 21:51:25 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.tableserver.out;
 
-import org.astrogrid.tableserver.metadata.*;
-
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.Writer;
-import org.apache.commons.logging.Log;
-import org.astrogrid.tableserver.jdbc.RdbmsTableMetaDocGenerator;
-import org.astrogrid.slinger.mime.MimeTypes;
+import java.security.Principal;
+import org.astrogrid.slinger.targets.TargetIdentifier;
+import org.astrogrid.tableserver.metadata.ColumnInfo;
 
 /**
  * For writing out fits wrapped in votable
@@ -28,8 +23,8 @@ public class VoTableFitsWriter extends VoTableWriter {
    /**
     * Construct this wrapping the given stream.  Writes out the first few tags
     */
-   public VoTableFitsWriter(Writer target, String title) throws IOException {
-      super(target, title);
+   public VoTableFitsWriter(TargetIdentifier target, String title, Principal user) throws IOException {
+      super(target, title, user);
       
    }
    
@@ -60,6 +55,9 @@ public class VoTableFitsWriter extends VoTableWriter {
 
 /*
  $Log: VoTableFitsWriter.java,v $
+ Revision 1.2  2005/03/30 21:51:25  mch
+ Fix to return Votable fits list for url list
+
  Revision 1.1  2005/03/21 18:45:55  mch
  Naughty big lump of changes
 

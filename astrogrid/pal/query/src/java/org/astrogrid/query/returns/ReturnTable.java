@@ -1,5 +1,5 @@
 /*
- * $Id: ReturnTable.java,v 1.2 2005/03/30 18:25:45 mch Exp $
+ * $Id: ReturnTable.java,v 1.3 2005/03/30 21:51:25 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -28,11 +28,12 @@ public class ReturnTable  extends ReturnSpec {
    Expression[] sortOrder = null;
    
    /** Another format particular to tables */
-   public static final String CSV      = MimeTypes.CSV;
-   public static final String VOTABLE  = MimeTypes.VOTABLE;
-   public static final String HTML     = MimeTypes.HTML;
-   public static final String TSV      = MimeTypes.TSV;
-   public static final String FITS     = MimeTypes.FITS;
+   public static final String CSV          = MimeTypes.CSV;
+   public static final String VOTABLE      = MimeTypes.VOTABLE;
+   public static final String VOTABLE_FITSLIST  = MimeTypes.VOTABLE_FITSLIST;
+   public static final String HTML         = MimeTypes.HTML;
+   public static final String TSV          = MimeTypes.TSV;
+   public static final String FITS         = MimeTypes.FITS;
    
    /** Creates a definitiont hat will return all columns */
    public ReturnTable(TargetIdentifier aTarget) {
@@ -106,6 +107,9 @@ public class ReturnTable  extends ReturnSpec {
 }
 /*
  $Log: ReturnTable.java,v $
+ Revision 1.3  2005/03/30 21:51:25  mch
+ Fix to return Votable fits list for url list
+
  Revision 1.2  2005/03/30 18:25:45  mch
  fix for sql-server jdbc problem
 
