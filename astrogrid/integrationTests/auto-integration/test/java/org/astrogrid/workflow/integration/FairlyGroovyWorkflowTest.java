@@ -1,4 +1,4 @@
-/*$Id: FairlyGroovyWorkflowTest.java,v 1.1 2004/08/04 16:49:32 nw Exp $
+/*$Id: FairlyGroovyWorkflowTest.java,v 1.2 2004/08/12 14:46:11 nw Exp $
  * Created on 04-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -125,7 +125,7 @@ public class FairlyGroovyWorkflowTest extends AbstractTestForWorkflow{
         assertNotNull(resultMessage);
         assertEquals("true",resultMessage.getContent());
         
-        step = (Step)result.getSequence().getActivity(5);
+        step = (Step)result.getSequence().getActivity(4);
         assertNotNull(step);
         ser = step.getStepExecutionRecord(0);
         assertNotNull(ser);
@@ -146,6 +146,9 @@ public class FairlyGroovyWorkflowTest extends AbstractTestForWorkflow{
 
 /* 
 $Log: FairlyGroovyWorkflowTest.java,v $
+Revision 1.2  2004/08/12 14:46:11  nw
+fixed buglet
+
 Revision 1.1  2004/08/04 16:49:32  nw
 added test for scripting extensions to workflow
  
