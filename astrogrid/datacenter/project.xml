@@ -152,6 +152,10 @@
       <version>UNKNOWN</version>
       <jar>jconn2.jar</jar>
     </dependency>
+    <dependency><!-- hsqldb - for testing -->
+    	<id>hsqldb</id>
+    	<version>1.7.1</version>
+    </dependency>
 	<!-- add entry for ms sql server -->
 
   </dependencies>
