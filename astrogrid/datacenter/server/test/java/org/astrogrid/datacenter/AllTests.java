@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.8 2004/01/15 16:41:44 nw Exp $
+/*$Id: AllTests.java,v 1.9 2004/01/15 17:39:26 nw Exp $
  * Created on 21-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,27 +33,7 @@ public class AllTests {
 
     public static Test suite() {
         TestSuite suite = new TestSuite("Test for Datacenter Server");
-        //$JUnit-BEGIN$
-        //suite.addTest(QueryTestSuite.suite());
-        //$JUnit-END$
-        // and add other suites too.
-            try {
-                Class c = Class.forName("org.astrogrid.datacenter.ClientTests");
-                Method m = c.getMethod("suite",new Class[]{});
-                m.invoke(null,null);
-            } catch (ClassNotFoundException e) {
-                // oh well, not on the classpath then.
-            } catch (SecurityException e) {
-                e.printStackTrace();
-            } catch (NoSuchMethodException e) {
-                e.printStackTrace();
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            }
+
         suite.addTest(org.astrogrid.datacenter.queriers.AllTests.suite());
         suite.addTest(org.astrogrid.datacenter.service.AllTests.suite());
         suite.addTest(org.astrogrid.datacenter.queriers.sql.AllTests.suite());
@@ -68,6 +48,9 @@ public class AllTests {
 
 /*
 $Log: AllTests.java,v $
+Revision 1.9  2004/01/15 17:39:26  nw
+removed dodgy cruft.
+
 Revision 1.8  2004/01/15 16:41:44  nw
 removed duplicate test
 
