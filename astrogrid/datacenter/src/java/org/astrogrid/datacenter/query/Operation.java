@@ -10,7 +10,7 @@
  */
 package org.astrogrid.datacenter.query;
 
-import org.apache.log4j.Logger;
+import org.astrogrid.log.Log;
 
 import org.astrogrid.i18n.AstroGridMessage;
 import org.w3c.dom.Element;
@@ -35,12 +35,6 @@ import org.w3c.dom.NodeList;
  * @since   AstroGrid 1.2
  */
 public abstract class Operation /*extends SQLComponent*/ implements Operand {
-
-   private static final boolean
-      TRACE_ENABLED = true ;
-
-   private static Logger
-      logger = Logger.getLogger( Operation.class ) ;
 
    private static final String
       ASTROGRIDERROR_COULD_NOT_CREATE_OPERATION_FROM_ELEMENT = "AGDTCE00410",
@@ -87,7 +81,7 @@ public abstract class Operation /*extends SQLComponent*/ implements Operand {
 
 
    public static Operation createOperation( Element opElement , Catalog catalog ) throws QueryException {
-      if( TRACE_ENABLED ) logger.debug( "Operation.createOperation(): entry") ;
+      Log.trace( "Operation.createOperation(): entry") ;
 
       Operation
           newOp = null ;
@@ -191,7 +185,7 @@ public abstract class Operation /*extends SQLComponent*/ implements Operand {
                   message = new AstroGridMessage( ASTROGRIDERROR_UNSUPPORTED_SQL_OPERATION
                                                  , Operation.class.getName()
                                                  , opName ) ;
-                logger.error( message.toString() ) ;
+                Log.logError( message.toString() ) ;
                 throw new QueryException( message );
          }
 
@@ -199,7 +193,7 @@ public abstract class Operation /*extends SQLComponent*/ implements Operand {
 
       }
       finally {
-         if( TRACE_ENABLED ) logger.debug( "Operation.createOperation(): exit") ;
+         Log.trace( "Operation.createOperation(): exit") ;
       }
 
       return newOp ;
@@ -208,7 +202,7 @@ public abstract class Operation /*extends SQLComponent*/ implements Operand {
 
 
    public Operation( Element operationElement , Catalog catalog ) throws QueryException {
-      if( TRACE_ENABLED ) logger.debug( "Operation(Element): entry") ;
+      Log.trace( "Operation(Element): entry") ;
 
       try {
 
@@ -264,11 +258,11 @@ public abstract class Operation /*extends SQLComponent*/ implements Operand {
          AstroGridMessage
             message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_OPERATION_FROM_ELEMENT
                                               , this);
-         logger.error( message.toString(), ex ) ;
+         Log.logError( message.toString(), ex ) ;
          throw new QueryException( message, ex );
       }
       finally {
-         if( TRACE_ENABLED ) logger.debug( "Operation(Element): exit") ;
+         Log.trace( "Operation(Element): exit") ;
       }
 
    } // end of Operation( Element operationElement , Catalog catalog )

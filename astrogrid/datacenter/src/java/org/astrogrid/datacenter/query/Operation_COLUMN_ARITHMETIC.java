@@ -14,7 +14,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.astrogrid.log.Log;
 
 import org.w3c.dom.Element;
 
@@ -45,12 +45,6 @@ import org.w3c.dom.Element;
  */
 public class Operation_COLUMN_ARITHMETIC extends Operation {
 
-   private static final boolean
-      TRACE_ENABLED = true ;
-
-   private static Logger
-      logger = Logger.getLogger( Operation_COLUMN_ARITHMETIC.class ) ;
-
    // TemplateS for the ARITHMETIC query   (PJN Note: crude but effective)
    public static final String []
       TEMPLATES   =  { "( {0} )"
@@ -74,7 +68,7 @@ public class Operation_COLUMN_ARITHMETIC extends Operation {
 
 
    public String toSQLString() {
-      if( TRACE_ENABLED ) logger.debug( "Operation_COLUMN_ARITHMETIC.toSQLString(): entry") ;
+      Log.trace( "Operation_COLUMN_ARITHMETIC.toSQLString(): entry") ;
 
       String
           retValue = null ;
@@ -91,7 +85,7 @@ public class Operation_COLUMN_ARITHMETIC extends Operation {
 
             }
             finally {
-         if( TRACE_ENABLED ) logger.debug( "Operation_COLUMN_ARITHMETIC.toSQLString(): exit") ;
+         Log.trace( "Operation_COLUMN_ARITHMETIC.toSQLString(): exit") ;
             }
 
       return retValue ;
@@ -100,7 +94,7 @@ public class Operation_COLUMN_ARITHMETIC extends Operation {
 
 
       public void push( Operand operand ) {
-      if( TRACE_ENABLED ) logger.debug( "Operation_COLUMN_ARITHMETIC.push(): entry") ;
+      Log.trace( "Operation_COLUMN_ARITHMETIC.push(): entry") ;
 
       try {
 
@@ -108,7 +102,7 @@ public class Operation_COLUMN_ARITHMETIC extends Operation {
          operands.add( operand ) ;
 
       } finally {
-         if( TRACE_ENABLED ) logger.debug( "Operation_COLUMN_ARITHMETIC.push(): exit") ;
+         Log.trace( "Operation_COLUMN_ARITHMETIC.push(): exit") ;
       }
 
 

@@ -12,7 +12,7 @@ package org.astrogrid.datacenter.query;
 
 import java.text.MessageFormat;
 
-import org.apache.log4j.Logger;
+import org.astrogrid.log.Log;
 
 import org.w3c.dom.Element;
 
@@ -35,12 +35,6 @@ import org.w3c.dom.Element;
  */
 public abstract class Operation_MagnitudeComparison extends Operation {
 
-   private static final boolean
-      TRACE_ENABLED = true ;
-
-   private static Logger
-      logger = Logger.getLogger( Operation_MagnitudeComparison.class ) ;
-
    private Operand
       operandOne,
       operandTwo ;
@@ -52,7 +46,7 @@ public abstract class Operation_MagnitudeComparison extends Operation {
 
 
    public String toSQLString() {
-      if( TRACE_ENABLED ) logger.debug( "Operation_MagnitudeComparison.toSQLString(): entry") ;
+      Log.trace( "Operation_MagnitudeComparison.toSQLString(): entry") ;
 
       String
          retValue = null ;
@@ -66,7 +60,7 @@ public abstract class Operation_MagnitudeComparison extends Operation {
            retValue = MessageFormat.format( this.getTemplate(), inserts ) ;
         }
         finally {
-         if( TRACE_ENABLED ) logger.debug( "Operation_MagnitudeComparison.toSQLString(): exit") ;
+         Log.trace( "Operation_MagnitudeComparison.toSQLString(): exit") ;
         }
 
       return retValue ;
@@ -75,7 +69,7 @@ public abstract class Operation_MagnitudeComparison extends Operation {
 
 
     public void push( Operand operand ) {
-      if( TRACE_ENABLED ) logger.debug( "Operation_MagnitudeComparison.push(): entry") ;
+      Log.trace( "Operation_MagnitudeComparison.push(): entry") ;
 
       try {
 
@@ -90,7 +84,7 @@ public abstract class Operation_MagnitudeComparison extends Operation {
          }
 
       } finally {
-         if( TRACE_ENABLED ) logger.debug( "Operation_MagnitudeComparison.push(): exit") ;
+         Log.trace( "Operation_MagnitudeComparison.push(): exit") ;
       }
 
 

@@ -12,7 +12,7 @@ package org.astrogrid.datacenter.query;
 
 import java.text.MessageFormat;
 
-import org.apache.log4j.Logger;
+import org.astrogrid.log.Log;
 
 import org.w3c.dom.Element;
 
@@ -35,12 +35,6 @@ import org.w3c.dom.Element;
  */
 public class Operation_NOT_NULL extends Operation {
 
-   private static final boolean
-      TRACE_ENABLED = true ;
-
-   private static Logger
-      logger = Logger.getLogger( Operation_NOT_NULL.class ) ;
-
    // Template for the SQL NOT NULL query
    public static final String
       TEMPLATE = "( {0} NOT NULL )" ;
@@ -55,7 +49,7 @@ public class Operation_NOT_NULL extends Operation {
 
 
    public String toSQLString() {
-      if( TRACE_ENABLED ) logger.debug( "Operation_NOT_NULL.toSQLString(): entry") ;
+      Log.trace( "Operation_NOT_NULL.toSQLString(): entry") ;
 
       String
          retValue = null ;
@@ -68,7 +62,7 @@ public class Operation_NOT_NULL extends Operation {
            retValue = MessageFormat.format( this.getTemplate(), inserts ) ;
         }
         finally {
-         if( TRACE_ENABLED ) logger.debug( "Operation_NOT_NULL.toSQLString(): exit") ;
+         Log.trace( "Operation_NOT_NULL.toSQLString(): exit") ;
         }
 
       return retValue ;
@@ -77,7 +71,7 @@ public class Operation_NOT_NULL extends Operation {
 
 
     public void push( Operand operand ) {
-      if( TRACE_ENABLED ) logger.debug( "Operation_NOT_NULL.push(): entry") ;
+      Log.trace( "Operation_NOT_NULL.push(): entry") ;
 
       try {
 
@@ -89,7 +83,7 @@ public class Operation_NOT_NULL extends Operation {
          }
 
       } finally {
-         if( TRACE_ENABLED ) logger.debug( "Operation_NOT_NULL.push(): exit") ;
+         Log.trace( "Operation_NOT_NULL.push(): exit") ;
       }
 
 

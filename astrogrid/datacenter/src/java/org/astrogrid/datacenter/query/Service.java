@@ -10,7 +10,7 @@
  */
 package org.astrogrid.datacenter.query;
 
-import org.apache.log4j.Logger;
+import org.astrogrid.log.Log;
 
 import org.astrogrid.i18n.AstroGridMessage;
 import org.w3c.dom.Element;
@@ -32,12 +32,6 @@ import org.w3c.dom.Element;
  */
 public class Service {
 
-   private static final boolean
-      TRACE_ENABLED = true ;
-
-   private static Logger
-      logger = Logger.getLogger( Service.class ) ;
-
    private static final String
       ASTROGRIDERROR_COULD_NOT_CREATE_SERVICE = "AGDTCE00450" ;
 
@@ -46,7 +40,7 @@ public class Service {
       url ;
 
    public Service( Element serviceElement ) throws QueryException {
-      if( TRACE_ENABLED ) logger.debug( "Service(Element): entry") ;
+      Log.trace( "Service(Element): entry") ;
 
       try {
          setName(serviceElement.getAttribute( AdqlTags.SERVICE_NAME_ATTR )) ;
@@ -56,11 +50,11 @@ public class Service {
          AstroGridMessage
             message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_SERVICE
                                               , this);
-         logger.error( message.toString(), ex ) ;
+         Log.logError( message.toString(), ex ) ;
          throw new QueryException( message, ex );
       }
       finally {
-         if( TRACE_ENABLED ) logger.debug( "Service(Element): exit") ;
+         Log.trace( "Service(Element): exit") ;
       }
 
    } // end of Service( Element )

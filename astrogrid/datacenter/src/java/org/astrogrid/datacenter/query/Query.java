@@ -10,7 +10,7 @@
  */
 package org.astrogrid.datacenter.query;
 
-import org.apache.log4j.Logger;
+import org.astrogrid.log.Log;
 
 //import org.astrogrid.datacenter.impl.QueryFactoryImpl;
 import org.astrogrid.i18n.AstroGridMessage;
@@ -19,12 +19,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class Query {
-
-   private static final boolean
-      TRACE_ENABLED = true ;
-
-    private static Logger
-       logger = Logger.getLogger( Query.class ) ;
 
     private static final String
        ASTROGRIDERROR_COULD_NOT_CREATE_QUERY_FROM_ELEMENTS = "AGDTCE00055" ;
@@ -48,7 +42,7 @@ public class Query {
        groupByObject ;
 
     public Query( Element elementIncQuery) throws QueryException {
-      if( TRACE_ENABLED ) logger.debug( "Query(Element,QueryFactory): entry") ;
+      Log.trace( "Query(Element,QueryFactory): entry") ;
 
       Element queryElement = null;
 
@@ -123,11 +117,11 @@ public class Query {
          AstroGridMessage
             message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_QUERY_FROM_ELEMENTS
                                               , this);
-         logger.error( message.toString(), ex ) ;
+         Log.logError( message.toString(), ex ) ;
          throw new QueryException( message, ex );
       }
       finally {
-         if( TRACE_ENABLED ) logger.debug( "Query(Element,QueryFactory): exit") ;
+         Log.trace( "Query(Element,QueryFactory): exit") ;
       }
 
     } // end of Query()
@@ -141,9 +135,9 @@ public class Query {
 
 
     public void execute() throws QueryException  {
-      if( TRACE_ENABLED ) logger.debug( "Query.execute(): entry") ;
+      Log.trace( "Query.execute(): entry") ;
       factory.execute( this ) ;
-      if( TRACE_ENABLED ) logger.debug( "Query.execute(): exit") ;
+      Log.trace( "Query.execute(): exit") ;
     }
 
 
@@ -155,7 +149,7 @@ public class Query {
      */
 
     public String toSQLString() {
-      if( TRACE_ENABLED ) logger.debug( "Query.toSQLString(): entry") ;
+      Log.trace( "Query.toSQLString(): entry") ;
 
       StringBuffer
          buffer = new StringBuffer(256) ;
@@ -180,8 +174,8 @@ public class Query {
 
       }
       finally {
-         logger.debug( "SQL Query: " + buffer.toString() ) ;
-         if( TRACE_ENABLED ) logger.debug( "Query.toSQLString(): exit") ;
+         Log.logDebug( "SQL Query: " + buffer.toString() ) ;
+         Log.trace( "Query.toSQLString(): exit") ;
       }
 
       return buffer.toString() ;

@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.astrogrid.log.Log;
 
 import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.i18n.AstroGridMessage;
@@ -37,12 +37,6 @@ import org.w3c.dom.NodeList;
  * @since   AstroGrid 1.2
  */
 public class Return extends SQLComponent{
-
-   private static final boolean
-      TRACE_ENABLED = true ;
-
-   private static Logger
-      logger = Logger.getLogger( Return.class ) ;
 
    private static final String
       ASTROGRIDERROR_COULD_NOT_CREATE_RETURN_FROM_ELEMENT = "AGDTCE00240",
@@ -67,7 +61,7 @@ public class Return extends SQLComponent{
        operation ;
 
     public Return( Element returnElement, Catalog catalog ) throws QueryException {
-      if( TRACE_ENABLED ) logger.debug( "Return(Element): entry") ;
+      Log.trace( "Return(Element): entry") ;
 
       try {
 
@@ -95,11 +89,11 @@ public class Return extends SQLComponent{
          AstroGridMessage
             message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_RETURN_FROM_ELEMENT
                                               , this);
-         logger.error( message.toString(), ex ) ;
+         Log.logError( message.toString(), ex ) ;
          throw new QueryException( message, ex );
       }
       finally {
-         if( TRACE_ENABLED ) logger.debug( "Return(Element): exit") ;
+         Log.trace( "Return(Element): exit") ;
       }
     }  // end of Return(Element)
 
@@ -153,10 +147,10 @@ public class Return extends SQLComponent{
          AstroGridMessage
             message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_SQL_FOR_RETURN
                                               , this);
-         logger.error( message.toString(), ex ) ;
+         Log.logError( message.toString(), ex ) ;
       }
       finally {
-         if( TRACE_ENABLED ) logger.debug( "Return(Element): exit") ;
+         Log.trace( "Return(Element): exit") ;
       }
 
       return buffer.toString() ;
@@ -176,7 +170,7 @@ public class Return extends SQLComponent{
  * @return        <code>String</code> columnHeading
  */
    private String getColumnHeading( Catalog catalog, String UCD ) {
-      if( TRACE_ENABLED ) logger.debug( "getColumnHeading(): entry") ;
+      Log.trace( "getColumnHeading(): entry") ;
       String
          columnHeading = "" ;
       StringBuffer
@@ -194,7 +188,7 @@ public class Return extends SQLComponent{
                 .append( catalog.getName() )
                 .append( "." )
                 .append( UCD ) ;
-            logger.debug("Return: getColumnHeading(): key: "+buffer.toString().toUpperCase() );
+            Log.logDebug("Return: getColumnHeading(): key: "+buffer.toString().toUpperCase() );
             columnHeading = Configuration.getProperty( buffer.toString());
          }
          else {
@@ -215,7 +209,7 @@ public class Return extends SQLComponent{
 
                origBuffer = buffer.toString();
 
-               logger.debug("Return: getColumnHeading(): key: "+buffer.toString().toLowerCase().toUpperCase() );
+               Log.logDebug("Return: getColumnHeading(): key: "+buffer.toString().toLowerCase().toUpperCase() );
                 columnHeading = Configuration.getProperty( buffer.toString());
                if ((columnHeading != null) && (columnHeading.length() > 0 )) // break as soon as column heading found
                   break;
@@ -232,10 +226,10 @@ public class Return extends SQLComponent{
          AstroGridMessage
             message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_MAP_CATALOG_UCD_TO_COLUMN_HEADING
                                               , this);
-         logger.error( message.toString(), ex ) ;
+         Log.logError( message.toString(), ex ) ;
       }
       finally {
-         if( TRACE_ENABLED ) logger.debug( "getColumnHeading(): exit") ;
+         Log.trace( "getColumnHeading(): exit") ;
       }
       return (columnHeading=="")?UCD:columnHeading;
    } // end of getColumnHeading()
@@ -258,7 +252,7 @@ public class Return extends SQLComponent{
            ( name.indexOf( SQL_INSERT ) != -1 ) || ( name.indexOf( SQL_INSERT_LOWER ) != -1 ) ||
            ( name.indexOf( SQL_UPDATE ) != -1 ) || ( name.indexOf( SQL_UPDATE_LOWER ) != -1) ) {
 
-         logger.debug( "Attempt to enter malicious SQL using type PASSTHROUGH in Field" ) ;
+         Log.logDebug( "Attempt to enter malicious SQL using type PASSTHROUGH in Field" ) ;
          returnString = "" ;
       }
 

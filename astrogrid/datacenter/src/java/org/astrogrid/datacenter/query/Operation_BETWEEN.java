@@ -12,7 +12,7 @@ package org.astrogrid.datacenter.query;
 
 import java.text.MessageFormat;
 
-import org.apache.log4j.Logger;
+import org.astrogrid.log.Log;
 
 import org.w3c.dom.Element;
 
@@ -40,12 +40,6 @@ import org.w3c.dom.Element;
  */
 public class Operation_BETWEEN extends Operation {
 
-   private static final boolean
-      TRACE_ENABLED = true ;
-
-   private static Logger
-      logger = Logger.getLogger( Operation_BETWEEN.class ) ;
-
    public static final String
       TEMPLATE = "( {0} BETWEEN {1} AND {2} )" ;
 
@@ -57,12 +51,12 @@ public class Operation_BETWEEN extends Operation {
 
    public Operation_BETWEEN( Element opElement , Catalog catalog ) throws QueryException {
       super( opElement, catalog ) ;
-      if( TRACE_ENABLED ) logger.debug( "Operation_BETWEEN(): entry/exit") ;
+      Log.trace( "Operation_BETWEEN(): entry/exit") ;
    }
 
 
    public String toSQLString() {
-      if( TRACE_ENABLED ) logger.debug( "Operation_BETWEEN.toSQLString(): entry") ;
+      Log.trace( "Operation_BETWEEN.toSQLString(): entry") ;
 
       String
          retValue = null ;
@@ -77,7 +71,7 @@ public class Operation_BETWEEN extends Operation {
            retValue = MessageFormat.format( this.getTemplate(), inserts ) ;
         }
         finally {
-         if( TRACE_ENABLED ) logger.debug( "Operation_BETWEEN.toSQLString(): exit") ;
+         Log.trace( "Operation_BETWEEN.toSQLString(): exit") ;
         }
 
       return retValue ;
@@ -86,14 +80,14 @@ public class Operation_BETWEEN extends Operation {
 
 
     public void push( Operand operand ) {
-      if( TRACE_ENABLED ) logger.debug( "Operation_BETWEEN.push(): entry") ;
+      Log.trace( "Operation_BETWEEN.push(): entry") ;
 
       try {
 
          // JBL Note: this should be an assert, but for some reason I cannot get it
          // past the syntax checker.
          if( operand instanceof Field == false ) {
-                logger.debug( "Operand is not an instance of Field") ;
+                Log.logDebug( "Operand is not an instance of Field") ;
          }
 
          Field
@@ -113,7 +107,7 @@ public class Operation_BETWEEN extends Operation {
          }
 
       } finally {
-         if( TRACE_ENABLED ) logger.debug( "Operation_BETWEEN.push(): exit") ;
+         Log.trace( "Operation_BETWEEN.push(): exit") ;
       }
 
     } // end of push()

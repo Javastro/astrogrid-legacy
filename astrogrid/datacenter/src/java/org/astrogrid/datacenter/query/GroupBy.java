@@ -12,7 +12,7 @@ package org.astrogrid.datacenter.query;
 
 import java.util.Iterator;
 
-import org.apache.log4j.Logger;
+import org.astrogrid.log.Log;
 
 import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.i18n.AstroGridMessage;
@@ -44,12 +44,6 @@ import org.w3c.dom.NodeList;
  */
 public class GroupBy extends SQLComponent {
 
-   private static final boolean
-      TRACE_ENABLED = true ;
-
-   private static Logger
-      logger = Logger.getLogger( Operation_GROUP_BY.class ) ;
-
    private static final String
        ASTROGRIDERROR_COULD_NOT_CREATE_GROUPBY_ELEMENT = "AGDTCE00500",
       ASTROGRIDERROR_COULD_NOT_CREATE_SQL_FOR_GROUPBY = "AGDTCE00510",
@@ -62,7 +56,7 @@ public class GroupBy extends SQLComponent {
       catalog ;
 
    public GroupBy( Element orderElement, Catalog catalog ) throws QueryException {
-      if( TRACE_ENABLED ) logger.debug( "GroupBy(Element, Catalog): entry") ;
+      Log.trace( "GroupBy(Element, Catalog): entry") ;
 
       try {
 
@@ -88,11 +82,11 @@ public class GroupBy extends SQLComponent {
       catch( Exception ex ) {
          AstroGridMessage
             message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_GROUPBY_ELEMENT ) ;
-         logger.error( message.toString(), ex ) ;
+         Log.logError( message.toString(), ex ) ;
          throw new QueryException( message, ex );
       }
       finally {
-         if( TRACE_ENABLED ) logger.debug( "GroupBy(Element): exit") ;
+         Log.trace( "GroupBy(Element): exit") ;
       }
 
    } // end of Order( Element )
@@ -115,10 +109,10 @@ public class GroupBy extends SQLComponent {
          catch( Exception ex) {
             AstroGridMessage
                message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_SQL_FOR_GROUPBY ) ;
-            logger.error( message.toString(), ex ) ;
+            Log.logError( message.toString(), ex ) ;
          }
          finally {
-            if( TRACE_ENABLED ) logger.debug( "GROUPBY(Element, Catalog): exit") ;
+            Log.trace( "GROUPBY(Element, Catalog): exit") ;
          }
 
          return returnValue;
@@ -138,7 +132,7 @@ public class GroupBy extends SQLComponent {
     * @return        <code>String</code> columnHeading
     */
       private String getColumnHeading(Catalog catalog, String UCD) {
-         if( TRACE_ENABLED ) logger.debug( "getColumnHeading(): entry") ;
+         Log.trace( "getColumnHeading(): entry") ;
          String
             columnHeading = "" ;
          StringBuffer
@@ -153,7 +147,7 @@ public class GroupBy extends SQLComponent {
                    .append( catalog.getName() )
                    .append( "." )
                    .append( UCD ) ;
-               logger.debug("Return: getColumnHeading(): key: "+buffer.toString().toUpperCase() ) ;
+               Log.logDebug("Return: getColumnHeading(): key: "+buffer.toString().toUpperCase() ) ;
                columnHeading = Configuration.getProperty( buffer.toString());
             }
             else {
@@ -171,7 +165,7 @@ public class GroupBy extends SQLComponent {
                       .append( table.getName().toUpperCase() )
                       .append( "." )
                       .append( UCD ) ;
-                  logger.debug("Return: getColumnHeading(): key: "+buffer.toString().toLowerCase().toUpperCase() );
+                  Log.logDebug("Return: getColumnHeading(): key: "+buffer.toString().toLowerCase().toUpperCase() );
                   columnHeading = Configuration.getProperty( buffer.toString()) ;
                   if (columnHeading.length() > 0 ) // break as soon as column heading found
                      break;
@@ -184,10 +178,10 @@ public class GroupBy extends SQLComponent {
          catch (Exception ex) {
             AstroGridMessage
                message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_MAP_CATALOG_UCD_TO_COLUMN_HEADING ) ;
-            logger.error( message.toString(), ex ) ;
+            Log.logError( message.toString(), ex ) ;
          }
          finally {
-            if( TRACE_ENABLED ) logger.debug( "getColumnHeading(): exit") ;
+            Log.trace( "getColumnHeading(): exit") ;
          }
          return (columnHeading=="")?UCD:columnHeading;
       } // end of getColumnHeading()

@@ -14,7 +14,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.astrogrid.log.Log;
 
 import org.w3c.dom.Element;
 
@@ -36,12 +36,6 @@ import org.w3c.dom.Element;
  * @since   AstroGrid 1.2
  */
 public class Operation_COLUMN_DIVIDE extends Operation {
-
-   private static final boolean
-      TRACE_ENABLED = true ;
-
-   private static Logger
-      logger = Logger.getLogger( Operation_COLUMN_DIVIDE.class ) ;
 
    // TemplateS for the DIVIDE query   (PJN Note: crude but effective)
    public static final String []
@@ -66,7 +60,7 @@ public class Operation_COLUMN_DIVIDE extends Operation {
 
 
    public String toSQLString() {
-      if( TRACE_ENABLED ) logger.debug( "Operation_COLUMN_DIVIDE.toSQLString(): entry") ;
+      Log.trace( "Operation_COLUMN_DIVIDE.toSQLString(): entry") ;
 
       String
           retValue = null ;
@@ -88,7 +82,7 @@ public class Operation_COLUMN_DIVIDE extends Operation {
 
             }
             finally {
-         if( TRACE_ENABLED ) logger.debug( "Operation_COLUMN_DIVIDE.toSQLString(): exit") ;
+         Log.trace( "Operation_COLUMN_DIVIDE.toSQLString(): exit") ;
             }
       } //end of else
 
@@ -98,7 +92,7 @@ public class Operation_COLUMN_DIVIDE extends Operation {
 
 
       public void push( Operand operand ) {
-      if( TRACE_ENABLED ) logger.debug( "Operation_COLUMN_DIVIDE.push(): entry") ;
+      Log.trace( "Operation_COLUMN_DIVIDE.push(): entry") ;
 
       try {
 
@@ -106,7 +100,7 @@ public class Operation_COLUMN_DIVIDE extends Operation {
          operands.add( operand ) ;
 
       } finally {
-         if( TRACE_ENABLED ) logger.debug( "Operation_COLUMN_DIVIDE.push(): exit") ;
+         Log.trace( "Operation_COLUMN_DIVIDE.push(): exit") ;
       }
 
 

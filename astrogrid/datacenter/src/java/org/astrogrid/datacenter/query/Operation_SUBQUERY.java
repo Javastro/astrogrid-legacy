@@ -13,7 +13,7 @@ package org.astrogrid.datacenter.query;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.astrogrid.log.Log;
 
 import org.w3c.dom.Element;
 
@@ -42,12 +42,6 @@ import org.w3c.dom.Element;
  */
 public class Operation_SUBQUERY extends Operation {
 
-   private static final boolean
-      TRACE_ENABLED = true ;
-
-   private static Logger
-      logger = Logger.getLogger( Operation_SUBQUERY.class ) ;
-
    private Return
        returnObject ;
 
@@ -67,7 +61,7 @@ public class Operation_SUBQUERY extends Operation {
 
 
    public String toSQLString() {
-       if( TRACE_ENABLED ) logger.debug( "Operation_SUBQUERY.toSQLString(): entry") ;
+       Log.trace( "Operation_SUBQUERY.toSQLString(): entry") ;
 
       StringBuffer
           buffer = new StringBuffer(256) ;
@@ -91,8 +85,8 @@ public class Operation_SUBQUERY extends Operation {
 
        }
        finally {
-          logger.debug( "SQL Query: " + buffer.toString() ) ;
-          if( TRACE_ENABLED ) logger.debug( "Operation_SUBQUERY.toSQLString(): exit") ;
+          Log.logDebug( "SQL Query: " + buffer.toString() ) ;
+          Log.trace( "Operation_SUBQUERY.toSQLString(): exit") ;
        }
 
        return buffer.toString() ;
@@ -101,7 +95,7 @@ public class Operation_SUBQUERY extends Operation {
 
 
     public void push( Operand operand ) {
-      if( TRACE_ENABLED ) logger.debug( "Operation_SUBQUERY.push(): entry") ;
+      Log.trace( "Operation_SUBQUERY.push(): entry") ;
 
       try {
 
@@ -110,7 +104,7 @@ public class Operation_SUBQUERY extends Operation {
 
       }
       finally {
-         if( TRACE_ENABLED ) logger.debug( "Operation_SUBQUERY.push(): exit") ;
+         Log.trace( "Operation_SUBQUERY.push(): exit") ;
       }
 
    } // end of push()

@@ -12,7 +12,7 @@ package org.astrogrid.datacenter.query;
 
 import java.text.MessageFormat;
 
-import org.apache.log4j.Logger;
+import org.astrogrid.log.Log;
 
 import org.w3c.dom.Element;
 
@@ -35,12 +35,6 @@ import org.w3c.dom.Element;
  */
 public class Operation_CONE extends Operation {
 
-   private static final boolean
-      TRACE_ENABLED = true ;
-
-   private static Logger
-      logger = Logger.getLogger( Operation_CONE.class ) ;
-
    public static final String
 //    TEMPLATE       = "(DEGREES(ACOS(SIN(RADIANS(DEC)) * SIN(RADIANS( {0} )) + COS(RADIANS(DEC)) * COS(RADIANS( {0})) " +
 //                      "COS(RADIANS( {1} ))) < {2} )))" ,
@@ -58,7 +52,7 @@ public class Operation_CONE extends Operation {
 
 
    public String toSQLString() {
-      if( TRACE_ENABLED ) logger.debug( "Operation_CONE.toSQLString(): entry") ;
+      Log.trace( "Operation_CONE.toSQLString(): entry") ;
 
       String
          retValue = null ;
@@ -73,7 +67,7 @@ public class Operation_CONE extends Operation {
            retValue = MessageFormat.format( this.getTemplate(), inserts ) ;
         }
         finally {
-         if( TRACE_ENABLED ) logger.debug( "Operation_CONE.toSQLString(): exit") ;
+         Log.trace( "Operation_CONE.toSQLString(): exit") ;
         }
 
       return retValue ;
@@ -82,14 +76,14 @@ public class Operation_CONE extends Operation {
 
 
     public void push( Operand operand ) {
-      if( TRACE_ENABLED ) logger.debug( "Operation_CONE.push(): entry") ;
+      Log.trace( "Operation_CONE.push(): entry") ;
 
       try {
 
          // JBL Note: this should be an assert, but for some reason I cannot get it
          // past the syntax checker.
          if( operand instanceof Field == false ) {
-                logger.debug( "Operand is not an instance of Field") ;
+                Log.logDebug( "Operand is not an instance of Field") ;
          }
 
          Field
@@ -109,7 +103,7 @@ public class Operation_CONE extends Operation {
          }
 
       } finally {
-         if( TRACE_ENABLED ) logger.debug( "Operation_CONE.push(): exit") ;
+         Log.trace( "Operation_CONE.push(): exit") ;
       }
 
     } // end of push()

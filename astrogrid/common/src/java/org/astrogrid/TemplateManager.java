@@ -3,9 +3,9 @@
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
  */
 package org.astrogrid;
@@ -13,7 +13,7 @@ package org.astrogrid;
 import java.util.Hashtable ;
 import java.io.IOException ;
 import java.io.BufferedInputStream ;
-import org.apache.log4j.Logger;
+import org.astrogrid.log.Log;
 import org.astrogrid.i18n.AstroGridMessage ;
 
 import org.jconfig.utils.*;
@@ -25,91 +25,82 @@ import java.io.* ;
  *
  * @author  Jeff Lusted
  * @version 1.0 08-Jul-2003
- * @see     
- * @see     
+ * @see
+ * @see
  * @since   AstroGrid 1.2
  */
 public class TemplateManager {
-	
-	/** Compile-time switch used to turn tracing on/off. 
-	  * Set this to false to eliminate all trace statements within the byte code.*/	 
-	private static final boolean 
-		TRACE_ENABLED = true ;
-			
+
     private static TemplateManager
         singletonTemplateManager = new TemplateManager() ;
-	
-	/** Log4J logger for this class. */    			    			   			
-	private static Logger 
-		logger = Logger.getLogger( TemplateManager.class ) ;
-	
-	private static String	
-	    ASTROGRIDERROR_UNABLE_TO_LOCATE_TEMPLATE = "AG{0}Z00007:{1}: Unable to locate template file [{2}]" ;
+
+   private static String
+       ASTROGRIDERROR_UNABLE_TO_LOCATE_TEMPLATE = "AG{0}Z00007:{1}: Unable to locate template file [{2}]" ;
 
     private Hashtable
         templates = new Hashtable() ;
-        
-        
-	public static TemplateManager getInstance(){ return singletonTemplateManager; }
-	
-	      
+
+
+   public static TemplateManager getInstance(){ return singletonTemplateManager; }
+
+
     private TemplateManager() {}
-    
-    
+
+
     public String getTemplate( String subsystemAcronym, String name ) {
-		if( TRACE_ENABLED ) logger.debug( "getTemplate(): entry") ;	
-		
-		String
-		   targetTemplate = null ; 
-		BufferedInputStream
-			bistream = null ;
-		   	
-		try {
-			
-			targetTemplate = (String)templates.get( name ) ;
-			
-			if( targetTemplate == null ) {
-                
+      Log.trace( "getTemplate(): entry") ;
+
+      String
+         targetTemplate = null ;
+      BufferedInputStream
+         bistream = null ;
+
+      try {
+
+         targetTemplate = (String)templates.get( name ) ;
+
+         if( targetTemplate == null ) {
+
                 ResourceLocator
                     resourceLocator = new ResourceLocator( name ) ;
-                    
+
                 BufferedReader
                     bufferedReader = new BufferedReader( new FileReader( resourceLocator.getFile() ) ) ;
-				
-				StringBuffer
-				    sBuffer = new StringBuffer( 1024 ) ;
-                String 
+
+            StringBuffer
+                sBuffer = new StringBuffer( 1024 ) ;
+                String
                     line = null ;
-			        
-				line = bufferedReader.readLine() ;
-			    while( line != null ){
-			    	sBuffer.append( line ) ;
+
+            line = bufferedReader.readLine() ;
+             while( line != null ){
+               sBuffer.append( line ) ;
                     line = bufferedReader.readLine() ;
-			    }
-	
-				targetTemplate = sBuffer.toString() ;
-				templates.put( name, targetTemplate ) ;
-					
-			} // endif
-			
-		}
-		catch ( IOException ex ) {
-			
-			AstroGridMessage
-				message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_LOCATE_TEMPLATE
+             }
+
+            targetTemplate = sBuffer.toString() ;
+            templates.put( name, targetTemplate ) ;
+
+         } // endif
+
+      }
+      catch ( IOException ex ) {
+
+         AstroGridMessage
+            message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_LOCATE_TEMPLATE
                                               , subsystemAcronym
                                               , Configurator.getClassName( TemplateManager.class )
                                               , name ) ;
-			logger.error( message.toString(), ex ) ;
-			
-		}
-		finally {
-			if( bistream != null ) try{ bistream.close(); } catch( IOException ioex ){ ; }
-			if( TRACE_ENABLED ) logger.debug( "getTemplate(): exit") ;			
-		}
-		
-		return targetTemplate ;
-		
+         Log.logError( message.toString(), ex ) ;
+
+      }
+      finally {
+         if( bistream != null ) try{ bistream.close(); } catch( IOException ioex ){ ; }
+         Log.trace( "getTemplate(): exit") ;
+      }
+
+      return targetTemplate ;
+
     } // end of getTemplate()
 
 

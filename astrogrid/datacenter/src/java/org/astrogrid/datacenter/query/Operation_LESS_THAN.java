@@ -10,8 +10,6 @@
  */
 package org.astrogrid.datacenter.query;
 
-import org.apache.log4j.Logger;
-
 import org.w3c.dom.Element;
 
 /**
@@ -31,12 +29,6 @@ import org.w3c.dom.Element;
  * @since   AstroGrid 1.2
  */
 public class Operation_LESS_THAN extends Operation_MagnitudeComparison {
-
-   private static final boolean
-      TRACE_ENABLED = true ;
-
-   private static Logger
-      logger = Logger.getLogger( Operation_LESS_THAN.class ) ;
 
    // Template for the SQL LESS_THAN query
    public static final String

@@ -14,7 +14,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.astrogrid.log.Log;
 
 import org.w3c.dom.Element;
 
@@ -37,12 +37,6 @@ import org.w3c.dom.Element;
  */
 public class Operation_AVG extends Operation {
 
-   private static final boolean
-      TRACE_ENABLED = true ;
-
-   private static Logger
-      logger = Logger.getLogger( Operation_AVG.class ) ;
-
    // Template for the SQL AVG
    public static final String
       TEMPLATE = " AVG({0}) "  ;
@@ -56,7 +50,7 @@ public class Operation_AVG extends Operation {
 
 
    public String toSQLString() {
-      if( TRACE_ENABLED ) logger.debug( "Operation_AVG.toSQLString(): entry") ;
+      Log.trace( "Operation_AVG.toSQLString(): entry") ;
 
       String
          retValue = null ;
@@ -71,7 +65,7 @@ public class Operation_AVG extends Operation {
 
       }
       finally {
-         if( TRACE_ENABLED ) logger.debug( "Operation_AVG.toSQLString(): exit") ;
+         Log.trace( "Operation_AVG.toSQLString(): exit") ;
       }
 
       return retValue ;
@@ -80,7 +74,7 @@ public class Operation_AVG extends Operation {
 
 
    public void push( Operand operand ) {
-      if( TRACE_ENABLED ) logger.debug( "Operation_AVG.push(): entry") ;
+      Log.trace( "Operation_AVG.push(): entry") ;
 
       try {
 
@@ -88,7 +82,7 @@ public class Operation_AVG extends Operation {
          operands.add( operand ) ;
 
       } finally {
-         if( TRACE_ENABLED ) logger.debug( "Operation_AVG.push(): exit") ;
+         Log.trace( "Operation_AVG.push(): exit") ;
       }
 
 

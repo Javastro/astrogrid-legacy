@@ -14,7 +14,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.astrogrid.log.Log;
 
 import org.w3c.dom.Element;
 
@@ -36,12 +36,6 @@ import org.w3c.dom.Element;
  * @since   AstroGrid 1.2
  */
 public class Operation_COLUMN_MULTIPLY extends Operation {
-
-   private static final boolean
-      TRACE_ENABLED = true ;
-
-   private static Logger
-      logger = Logger.getLogger( Operation_COLUMN_MULTIPLY.class ) ;
 
    // TemplateS for the MULTIPLY query   (PJN Note: crude but effective)
    public static final String []
@@ -66,7 +60,7 @@ public class Operation_COLUMN_MULTIPLY extends Operation {
 
 
    public String toSQLString() {
-      if( TRACE_ENABLED ) logger.debug( "Operation_COLUMN_MULTIPLY.toSQLString(): entry") ;
+      Log.trace( "Operation_COLUMN_MULTIPLY.toSQLString(): entry") ;
 
       String
           retValue = null ;
@@ -89,7 +83,7 @@ public class Operation_COLUMN_MULTIPLY extends Operation {
 
             }
             finally {
-               if( TRACE_ENABLED ) logger.debug( "Operation_COLUMN_MULTIPLY.toSQLString(): exit") ;
+               Log.trace( "Operation_COLUMN_MULTIPLY.toSQLString(): exit") ;
             }
       } //end of else
 
@@ -99,7 +93,7 @@ public class Operation_COLUMN_MULTIPLY extends Operation {
 
 
       public void push( Operand operand ) {
-      if( TRACE_ENABLED ) logger.debug( "Operation_COLUMN_MULTIPLY.push(): entry") ;
+      Log.trace( "Operation_COLUMN_MULTIPLY.push(): entry") ;
 
       try {
 
@@ -107,7 +101,7 @@ public class Operation_COLUMN_MULTIPLY extends Operation {
          operands.add( operand ) ;
 
       } finally {
-         if( TRACE_ENABLED ) logger.debug( "Operation_COLUMN_MULTIPLY.push(): exit") ;
+         Log.trace( "Operation_COLUMN_MULTIPLY.push(): exit") ;
       }
 
 

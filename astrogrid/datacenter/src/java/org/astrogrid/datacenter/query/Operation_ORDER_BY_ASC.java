@@ -12,7 +12,7 @@ package org.astrogrid.datacenter.query;
 
 import java.text.MessageFormat;
 
-import org.apache.log4j.Logger;
+import org.astrogrid.log.Log;
 
 import org.w3c.dom.Element;
 
@@ -38,12 +38,6 @@ import org.w3c.dom.Element;
 
 public class Operation_ORDER_BY_ASC extends Operation {
 
-   private static final boolean
-      TRACE_ENABLED = true ;
-
-   private static Logger
-      logger = Logger.getLogger( Operation_ORDER_BY_ASC.class ) ;
-
    private Field
        field ;
 
@@ -57,7 +51,7 @@ public class Operation_ORDER_BY_ASC extends Operation {
    }
 
    public String toSQLString() {
-      if( TRACE_ENABLED ) logger.debug( "Operation_ORDER_BY_ASC.toSQLString(): entry") ;
+      Log.trace( "Operation_ORDER_BY_ASC.toSQLString(): entry") ;
 
       String
           retValue = null ;
@@ -70,7 +64,7 @@ public class Operation_ORDER_BY_ASC extends Operation {
          retValue = MessageFormat.format( this.getTemplate(), inserts ) ;
       }
       finally {
-          if( TRACE_ENABLED ) logger.debug( "Operation_ORDER_BY_ASC.toSQLString(): exit") ;
+          Log.trace( "Operation_ORDER_BY_ASC.toSQLString(): exit") ;
       }
 
       return retValue ;
@@ -78,12 +72,12 @@ public class Operation_ORDER_BY_ASC extends Operation {
    } // end of toSQLString()
 
       public void push( Operand operand ) {
-      if( TRACE_ENABLED ) logger.debug( "Operation_ORDER_BY_ASC.push(): entry") ;
+      Log.trace( "Operation_ORDER_BY_ASC.push(): entry") ;
 
       try {
 
          if( operand instanceof Field == false ) {
-             logger.debug( "Operand is not an instance of Field") ;
+             Log.logDebug( "Operand is not an instance of Field") ;
          }
 
          Field
@@ -93,7 +87,7 @@ public class Operation_ORDER_BY_ASC extends Operation {
 
       }
       finally {
-         if( TRACE_ENABLED ) logger.debug( "Operation_ORDER_BY_ASC.push(): exit") ;
+         Log.trace( "Operation_ORDER_BY_ASC.push(): exit") ;
       }
 
    } // end of push()

@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.astrogrid.log.Log;
 import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.i18n.AstroGridMessage;
 import org.w3c.dom.Element;
@@ -38,12 +38,6 @@ import org.w3c.dom.NodeList;
  */
 public class From extends SQLComponent {
 
-   private static final boolean
-      TRACE_ENABLED = true ;
-
-   private static Logger
-      logger = Logger.getLogger( From.class ) ;
-
    private static final String
       ASTROGRIDERROR_COULD_NOT_CREATE_FROM_FROM_ELEMENT = "AGDTCE00200",
        ASTROGRIDERROR_COULD_NOT_CREATE_SQL_FOR_FROM = "AGDTCE00210" ;
@@ -52,7 +46,7 @@ public class From extends SQLComponent {
       catalogs = new ArrayList() ;
 
    public From( Element fromElement ) throws QueryException {
-      if( TRACE_ENABLED ) logger.debug( "From(Element): entry") ;
+      Log.trace( "From(Element): entry") ;
 
       try {
 
@@ -76,11 +70,11 @@ public class From extends SQLComponent {
          AstroGridMessage
             message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_FROM_FROM_ELEMENT
                                               , this ) ;
-         logger.error( message.toString(), ex ) ;
+         Log.logError( message.toString(), ex ) ;
          throw new QueryException( message, ex );
       }
       finally {
-         if( TRACE_ENABLED ) logger.debug( "From(Element): exit") ;
+         Log.trace( "From(Element): exit") ;
       }
 
    } // end of From( Element )
@@ -145,10 +139,10 @@ public class From extends SQLComponent {
          AstroGridMessage
             message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_SQL_FOR_FROM
                                               , this);
-         logger.error( message.toString(), ex ) ;
+         Log.logError( message.toString(), ex ) ;
       }
       finally {
-         if( TRACE_ENABLED ) logger.debug( "Return(Element): exit") ;
+         Log.trace( "Return(Element): exit") ;
       }
 
       return buffer.toString() ;

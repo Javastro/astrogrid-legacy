@@ -12,7 +12,7 @@ package org.astrogrid.datacenter.query;
 
 import java.util.Iterator;
 
-import org.apache.log4j.Logger;
+import org.astrogrid.log.Log;
 import org.astrogrid.i18n.AstroGridMessage;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -34,14 +34,8 @@ import org.astrogrid.datacenter.config.Configuration;
  * @see     org.astrogrid.Query
  * @since   AstroGrid 1.2
  */
-public class Field extends SQLComponent  implements Operand{
-
-   private static final boolean
-      TRACE_ENABLED = true ;
-
-   private static Logger
-      logger = Logger.getLogger( Field.class ) ;
-
+public class Field extends SQLComponent  implements Operand
+{
    private static final String
       ASTROGRIDERROR_UNKNOWN_FIELD_TYPE_ENCOUNTERED = "AGDTCE00430" ;
 
@@ -67,7 +61,7 @@ public class Field extends SQLComponent  implements Operand{
 
 
     public Field( Element fieldElement, Catalog catalog ) throws QueryException {
-      if( TRACE_ENABLED ) logger.debug( "Field(): enter") ;
+      Log.trace( "Field(): enter") ;
 
       try {
          this.catalog = catalog;
@@ -98,7 +92,7 @@ public class Field extends SQLComponent  implements Operand{
                message = new AstroGridMessage( ASTROGRIDERROR_UNKNOWN_FIELD_TYPE_ENCOUNTERED
                                                  , this
                                                  , type ) ;
-            logger.error( message.toString() ) ;
+            Log.logError( message.toString() ) ;
             throw new QueryException( message ) ;
          }
 
@@ -116,7 +110,7 @@ public class Field extends SQLComponent  implements Operand{
 
       } // end of try
       finally {
-         if( TRACE_ENABLED ) logger.debug( "Field(): exit") ;
+         Log.trace( "Field(): exit") ;
       }
 
     } // end of Field()
@@ -132,7 +126,7 @@ public class Field extends SQLComponent  implements Operand{
     * @return        <code>String</code> columnHeading
     */
       private String getColumnHeading() {
-         if( TRACE_ENABLED ) logger.debug( "Field.getColumnHeading(): entry") ;
+         Log.trace( "Field.getColumnHeading(): entry") ;
 
          if( this.type == TYPE_COLUMN )
              return this.getName() ;
@@ -156,7 +150,7 @@ public class Field extends SQLComponent  implements Operand{
                   .append( catalog.getName() )
                   .append( "." )
                   .append( this.getName() );
-               logger.debug( "Criteria: getColumnHeading(): key: " + buffer.toString().toUpperCase() ) ;
+               Log.logDebug( "Criteria: getColumnHeading(): key: " + buffer.toString().toUpperCase() ) ;
                columnHeading = Configuration.getProperty( buffer.toString().toUpperCase()) ;
 
             }
@@ -175,7 +169,7 @@ public class Field extends SQLComponent  implements Operand{
                      .append( table.getName().toUpperCase() )
                      .append( "." )
                      .append( this.getName() );
-                  logger.debug("Criteria: getColumnHeading(): key: "+buffer.toString().toUpperCase() );
+                  Log.logDebug("Criteria: getColumnHeading(): key: "+buffer.toString().toUpperCase() );
                   columnHeading = Configuration.getProperty( buffer.toString().toUpperCase());
                   if ( columnHeading.length() > 0 ) // break as soon as column heading found
                      break;
@@ -188,10 +182,10 @@ public class Field extends SQLComponent  implements Operand{
 //       catch (Exception ex) {
 //          Message
 //             message = new Message( ASTROGRIDERROR_UNABLE_TO_MAP_CATALOG_UCD_TO_COLUMN_HEADING ) ;
-//          logger.error( message.toString(), ex ) ;
+//          Log.logError( message.toString(), ex ) ;
 //       }
          finally {
-            if( TRACE_ENABLED ) logger.debug( "Field.getColumnHeading(): exit") ;
+            Log.trace( "Field.getColumnHeading(): exit") ;
          }
 
          return ( columnHeading == "" )  ?  this.getName()  :  columnHeading ;
@@ -210,7 +204,7 @@ public class Field extends SQLComponent  implements Operand{
 
 
    public String toSQLString() {
-      if( TRACE_ENABLED ) logger.debug( "Field.toSQLString(): entry") ;
+      Log.trace( "Field.toSQLString(): entry") ;
 
       String
          retValue = null ;
@@ -230,11 +224,11 @@ public class Field extends SQLComponent  implements Operand{
          }
          else {
             ; // It should be impossible to get here!
-            logger.debug( "We have an errant type in Field" ) ;
+            Log.logDebug( "We have an errant type in Field" ) ;
          }
       }
       finally {
-         if( TRACE_ENABLED ) logger.debug( "Field.toSQLString(): exit") ;
+         Log.trace( "Field.toSQLString(): exit") ;
       }
 
       return retValue ;
@@ -260,7 +254,7 @@ public class Field extends SQLComponent  implements Operand{
             ( name.indexOf( SQL_INSERT ) != -1 ) || ( name.indexOf( SQL_INSERT_LOWER ) != -1 ) ||
             ( name.indexOf( SQL_UPDATE ) != -1 ) || ( name.indexOf( SQL_UPDATE_LOWER ) != -1) ) {
 
-         logger.debug( "Attempt to enter malicious SQL using type PASSTHROUGH in Field" ) ;
+         Log.logDebug( "Attempt to enter malicious SQL using type PASSTHROUGH in Field" ) ;
          returnString = "" ;
       }
 

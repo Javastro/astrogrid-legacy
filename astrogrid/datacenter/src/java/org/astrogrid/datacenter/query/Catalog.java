@@ -14,11 +14,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.astrogrid.i18n.AstroGridMessage;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import org.astrogrid.log.Log;
 
 /**
  * The <code>Catalog</code> class represents operations within an
@@ -37,12 +37,6 @@ import org.w3c.dom.NodeList;
  */
 public class Catalog {
 
-   private static final boolean
-      TRACE_ENABLED = true ;
-
-   private static Logger
-      logger = Logger.getLogger( Catalog.class ) ;
-
    private static final String
       ASTROGRIDERROR_COULD_NOT_CREATE_CATALOG_FROM_ELEMENT = "AGDTCE00420" ;
 
@@ -55,8 +49,9 @@ public class Catalog {
    private List
        services = new ArrayList() ;
 
-   public Catalog( Element catalogElement ) throws QueryException {
-      if( TRACE_ENABLED ) logger.debug( "Operation(Element): entry") ;
+   public Catalog( Element catalogElement ) throws QueryException
+   {
+      Log.trace( "Operation(Element): entry") ;
 
       try {
 
@@ -92,11 +87,11 @@ public class Catalog {
          AstroGridMessage
             message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_CATALOG_FROM_ELEMENT
                                               , this ) ;
-         logger.error( message.toString(), ex ) ;
+         Log.logError( message.toString(), ex ) ;
          throw new QueryException( message, ex );
       }
       finally {
-         if( TRACE_ENABLED ) logger.debug( "Operation(Element): exit") ;
+         Log.trace( "Operation(Element): exit") ;
       }
 
    } // end of Catalog( Element )

@@ -14,7 +14,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.astrogrid.log.Log;
 
 import org.w3c.dom.Element;
 
@@ -32,12 +32,6 @@ import org.w3c.dom.Element;
  * @since   AstroGrid 1.2
  */
 public class Operation_ORDER_BY_AND extends Operation {
-
-   private static final boolean
-      TRACE_ENABLED = true ;
-
-   private static Logger
-      logger = Logger.getLogger( Operation_ORDER_BY_AND.class ) ;
 
    // TemplateS for the SQL ORDER AND query   (PJN Note: crude but effective)
    public static final String []
@@ -61,7 +55,7 @@ public class Operation_ORDER_BY_AND extends Operation {
 
 
    public String toSQLString() {
-      if( TRACE_ENABLED ) logger.debug( "Operation_ORDER_BY_AND.toSQLString(): entry") ;
+      Log.trace( "Operation_ORDER_BY_AND.toSQLString(): entry") ;
 
       String
           retValue = null ;
@@ -79,7 +73,7 @@ public class Operation_ORDER_BY_AND extends Operation {
 
       }
       finally {
-         if( TRACE_ENABLED ) logger.debug( "Operation_ORDER_BY_AND.toSQLString(): exit") ;
+         Log.trace( "Operation_ORDER_BY_AND.toSQLString(): exit") ;
       }
 
       return retValue ;
@@ -88,7 +82,7 @@ public class Operation_ORDER_BY_AND extends Operation {
 
 
       public void push( Operand operand ) {
-      if( TRACE_ENABLED ) logger.debug( "Operation_ORDER_BY_AND.push(): entry") ;
+      Log.trace( "Operation_ORDER_BY_AND.push(): entry") ;
 
       try {
 
@@ -96,7 +90,7 @@ public class Operation_ORDER_BY_AND extends Operation {
          operands.add( operand ) ;
 
       } finally {
-         if( TRACE_ENABLED ) logger.debug( "Operation_ORDER_BY_AND.push(): exit") ;
+         Log.trace( "Operation_ORDER_BY_AND.push(): exit") ;
       }
 
 

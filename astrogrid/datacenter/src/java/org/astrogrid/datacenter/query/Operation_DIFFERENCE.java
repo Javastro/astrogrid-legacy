@@ -12,7 +12,7 @@ package org.astrogrid.datacenter.query;
 
 import java.text.MessageFormat;
 
-import org.apache.log4j.Logger;
+import org.astrogrid.log.Log;
 
 import org.w3c.dom.Element;
 
@@ -35,12 +35,6 @@ import org.w3c.dom.Element;
  */
 public class Operation_DIFFERENCE extends Operation {
 
-   private static final boolean
-      TRACE_ENABLED = true ;
-
-  private static Logger
-      logger = Logger.getLogger( Operation_DIFFERENCE.class ) ;
-
    // Template for the SQL AND query
    public static final String
       TEMPLATE = "( DIFFERENCE {0} {1} )" ; // JBL Note: check the syntax for a DIFFERENCE
@@ -56,7 +50,7 @@ public class Operation_DIFFERENCE extends Operation {
 
 
    public String toSQLString() {
-      if( TRACE_ENABLED ) logger.debug( "Operation_DIFFERENCE.toSQLString(): entry") ;
+      Log.trace( "Operation_DIFFERENCE.toSQLString(): entry") ;
 
       String
          retValue = null ;
@@ -73,7 +67,7 @@ public class Operation_DIFFERENCE extends Operation {
            retValue = MessageFormat.format( this.getTemplate(), inserts ) ;
         }
         finally {
-         if( TRACE_ENABLED ) logger.debug( "Operation_DIFFERENCE.toSQLString(): exit") ;
+         Log.trace( "Operation_DIFFERENCE.toSQLString(): exit") ;
         }
 
       return retValue ;
@@ -82,7 +76,7 @@ public class Operation_DIFFERENCE extends Operation {
 
 
     public void push( Operand operand ) {
-      if( TRACE_ENABLED ) logger.debug( "Operation_DIFFERENCE.push(): entry") ;
+      Log.trace( "Operation_DIFFERENCE.push(): entry") ;
 
       try {
 
@@ -97,7 +91,7 @@ public class Operation_DIFFERENCE extends Operation {
          }
 
       } finally {
-         if( TRACE_ENABLED ) logger.debug( "Operation_DIFFERENCE.push(): exit") ;
+         Log.trace( "Operation_DIFFERENCE.push(): exit") ;
       }
 
 
