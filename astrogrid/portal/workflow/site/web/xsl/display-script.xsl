@@ -73,7 +73,7 @@
                       <xsl:attribute name="value"></xsl:attribute>
                     </xsl:when>
                     <xsl:otherwise>
-                      <xsl:attribute name="value"><xsl:value-of select="normalize-space(@script-desc)"/></xsl:attribute>
+                      <xsl:attribute name="value"><xsl:value-of select="@script-desc"/></xsl:attribute>
                     </xsl:otherwise>
                   </xsl:choose>
                 </input>                  
@@ -133,7 +133,7 @@
               <td>
                 Description:
               </td>
-              <td colspan="3"><xsl:value-of select="normalize-space(@script-desc)"/></td>
+              <td colspan="3"><xsl:value-of select="@script-desc"/></td>
             </tr>
             <tr>
               <td>Body:</td>

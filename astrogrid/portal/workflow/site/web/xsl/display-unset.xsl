@@ -49,7 +49,7 @@
                       <xsl:attribute name="value"></xsl:attribute>
                     </xsl:when>
                     <xsl:otherwise>
-                      <xsl:attribute name="value"><xsl:value-of select="normalize-space(@unset-var)"/></xsl:attribute>
+                      <xsl:attribute name="value"><xsl:value-of select="@unset-var"/></xsl:attribute>
                     </xsl:otherwise>
                   </xsl:choose>
                 </input>                                 
