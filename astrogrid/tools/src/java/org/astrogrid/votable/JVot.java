@@ -1,5 +1,5 @@
 /*
- $Id: JVot.java,v 1.2 2002/12/03 17:27:52 mch Exp $
+ $Id: JVot.java,v 1.3 2002/12/14 20:10:30 mch Exp $
 
  Date       Author      Changes
  $date$     M Hill      Created
@@ -47,7 +47,13 @@ public class JVot extends JTable
       {
          VOTableUtil.Field field = (VOTableUtil.Field)votModel.getFieldAt(i);
 
-         model.addColumn(field.getName()+" ["+field.getUcd()+"]");
+         String ucd = "";
+         if (field.getUcd() != null)
+         {
+            ucd = " ["+field.getUcd()+"]";
+         }
+         
+         model.addColumn(field.getName()+ucd);
       }
 
       VOTableUtil.Tabledata data = votModel.getData().getTabledata();

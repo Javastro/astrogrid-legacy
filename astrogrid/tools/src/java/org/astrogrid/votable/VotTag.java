@@ -164,8 +164,12 @@ public class VotTag extends AbstractVotTag
       {
          String line = "<FIELD ID=\""+fieldDesc.getId()+ "\""
             + " name=\""+fieldDesc.getName()+"\""
-            + " datatype=\""+fieldDesc.getDatatype()+"\""
-            + " ucd=\""+fieldDesc.getUcd()+"\"";
+            + " datatype=\""+fieldDesc.getDatatype()+"\"";
+
+         if (fieldDesc.getUcd() != null)
+         {
+            line = line + " ucd=\""+fieldDesc.getUcd()+"\"";
+         }
 
          if (fieldDesc.getArraysize() != NOT_ARRAY)
             if (fieldDesc.getArraysize() == VARIABLE_ARRAY)
