@@ -1,5 +1,5 @@
 /*
- * $Id: TestDelegate.java,v 1.1 2003/08/28 00:02:20 mch Exp $
+ * $Id: TestDelegate.java,v 1.2 2003/08/28 13:22:09 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -31,6 +31,9 @@ public class TestDelegate extends TestCase implements DatacenterStatusListener
 {
    Vector statusChangedList = new Vector();
 
+   /**
+    * Creates a delegate, passes it a query and checks the return values
+    */
    public void testDelegates() throws ServiceException, MalformedURLException, SAXException, ParserConfigurationException, IOException, QueryException
    {
       DatacenterDelegate delegate = DatacenterDelegate.makeDelegate(null);
@@ -42,15 +45,21 @@ public class TestDelegate extends TestCase implements DatacenterStatusListener
       Element adqlQuery = XMLUtils.newDocument(url.openConnection().getInputStream()).getDocumentElement();
 
       //'submit' query to dummy service
-      delegate.adqlCountDatacenter(adqlQuery);
+      int count = delegate.adqlCountDatacenter(adqlQuery);
 
-      delegate.adqlQueryDatacenter(adqlQuery);
+      Element votable = delegate.adqlQueryDatacenter(adqlQuery);
 
       //check that some statuses are returned
       assertTrue("Status's not been returned", statusChangedList.size() != 0);
 
+      //check the votable is valid
+      //errr somehow
+
    }
 
+   /** 'Callback' method called by Delegate when its status changes.  Stores
+    * the status returned so that the tests above can examine them
+    */
    public void datacenterStatusChanged(String newStatus)
    {
       statusChangedList.add(newStatus);
