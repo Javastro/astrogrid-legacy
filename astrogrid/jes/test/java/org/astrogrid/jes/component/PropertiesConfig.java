@@ -1,4 +1,4 @@
-/*$Id: PropertiesConfig.java,v 1.4 2004/10/07 14:33:44 mch Exp $
+/*$Id: PropertiesConfig.java,v 1.5 2004/10/08 16:26:24 mch Exp $
  * Created on 27-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -57,6 +57,13 @@ public class PropertiesConfig extends Config {
         throw new UnsupportedOperationException("Didn't think this was used");
     }
 
+    /**
+     * @see org.astrogrid.config.Config#getProperties(java.lang.String).
+     * Unused in this implementation
+     */
+    public void setProperties(String key, Object[] values) {
+        throw new UnsupportedOperationException("Didn't think this was used");
+    }
     
     /**
      * @see org.astrogrid.config.Config#loadUrl(java.net.URL)
@@ -80,6 +87,9 @@ public class PropertiesConfig extends Config {
 
 /*
 $Log: PropertiesConfig.java,v $
+Revision 1.5  2004/10/08 16:26:24  mch
+Updated to match new Config
+
 Revision 1.4  2004/10/07 14:33:44  mch
 Added new Config method
 
@@ -95,3 +105,4 @@ Revision 1.1  2004/03/03 01:13:42  nw
 updated jes to work with regenerated workflow object model
  
 */
+
