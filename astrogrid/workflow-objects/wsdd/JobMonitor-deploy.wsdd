@@ -1,0 +1,52 @@
+<!-- Use this file to deploy some handlers/chains and services      -->
+<!-- Two ways to do this:                                           -->
+<!--   java org.apache.axis.client.AdminClient deploy.wsdd          -->
+<!--      after the axis server is running                          -->
+<!-- or                                                             -->
+<!--   java org.apache.axis.utils.Admin client|server deploy.wsdd   -->
+<!--      from the same directory that the Axis engine runs         -->
+
+<deployment
+    xmlns="http://xml.apache.org/axis/wsdd/"
+    xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+
+  <!-- Services from JobMonitorService WSDL service -->
+
+  <service name="JobMonitorService" provider="java:RPC" style="document" use="literal">
+      <parameter name="wsdlTargetNamespace" value="urn:jes/jobmonitor/v1"/>
+      <parameter name="wsdlServiceElement" value="JobMonitorService"/>
+      <parameter name="wsdlServicePort" value="JobMonitorService"/>
+      <parameter name="className" value="org.astrogrid.jes.delegate.v1.jobmonitor.JobMonitorServiceSoapBindingImpl"/>
+      <parameter name="wsdlPortType" value="JobMonitor"/>
+      <operation name="monitorJob" qname="monitorJob" >
+        <parameter name="jobInfo" type="tns:JobInfo" xmlns:tns="urn:jes/types/v1"/>
+      </operation>
+      <parameter name="allowedMethods" value="monitorJob"/>
+      <parameter name="scope" value="Application"/>
+
+      <typeMapping
+        xmlns:ns="urn:jes/types/v1"
+        qname="ns:JobInfo"
+        type="java:org.astrogrid.jes.types.v1.JobInfo"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="urn:jes/types/v1"
+        qname="ns:jobURN"
+        type="java:org.astrogrid.jes.types.v1.JobURN"
+        serializer="org.apache.axis.encoding.ser.SimpleSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.SimpleDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="urn:jes/types/v1"
+        qname="ns:status"
+        type="java:org.astrogrid.jes.types.v1.Status"
+        serializer="org.apache.axis.encoding.ser.EnumSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.EnumDeserializerFactory"
+        encodingStyle=""
+      />
+  </service>
+</deployment>

@@ -1,0 +1,63 @@
+<!-- Use this file to deploy some handlers/chains and services      -->
+<!-- Two ways to do this:                                           -->
+<!--   java org.apache.axis.client.AdminClient deploy.wsdd          -->
+<!--      after the axis server is running                          -->
+<!-- or                                                             -->
+<!--   java org.apache.axis.utils.Admin client|server deploy.wsdd   -->
+<!--      from the same directory that the Axis engine runs         -->
+
+<deployment
+    xmlns="http://xml.apache.org/axis/wsdd/"
+    xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+
+  <!-- Services from JobControllerService WSDL service -->
+
+  <service name="JobControllerService" provider="java:RPC" style="document" use="literal">
+      <parameter name="wsdlTargetNamespace" value="urn:jes/jobcontroller/v1"/>
+      <parameter name="wsdlServiceElement" value="JobControllerService"/>
+      <parameter name="wsdlServicePort" value="JobControllerService"/>
+      <parameter name="className" value="org.astrogrid.jes.delegate.v1.jobcontroller.JobControllerServiceSoapBindingImpl"/>
+      <parameter name="wsdlPortType" value="JobController"/>
+      <operation name="submitJob" qname="submitJob" returnQName="submitJobReturn" returnType="rtns:SubmissionResponse" xmlns:rtns="urn:jes/types/v1" >
+        <parameter name="workflowXML" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <operation name="readJobList" qname="readJobList" returnQName="userJobListReturn" returnType="rtns:WorkflowList" xmlns:rtns="urn:jes/types/v1" >
+        <parameter name="criteria" type="tns:ListCriteria" xmlns:tns="urn:jes/types/v1"/>
+      </operation>
+      <parameter name="allowedMethods" value="readJobList submitJob"/>
+      <parameter name="scope" value="Application"/>
+
+      <typeMapping
+        xmlns:ns="urn:jes/types/v1"
+        qname="ns:jobURN"
+        type="java:org.astrogrid.jes.types.v1.JobURN"
+        serializer="org.apache.axis.encoding.ser.SimpleSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.SimpleDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="urn:jes/types/v1"
+        qname="ns:WorkflowList"
+        type="java:org.astrogrid.jes.types.v1.WorkflowList"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="urn:jes/types/v1"
+        qname="ns:SubmissionResponse"
+        type="java:org.astrogrid.jes.types.v1.SubmissionResponse"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="urn:jes/types/v1"
+        qname="ns:ListCriteria"
+        type="java:org.astrogrid.jes.types.v1.ListCriteria"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+  </service>
+</deployment>
