@@ -79,10 +79,10 @@ public class DesignAction extends AbstractAction {
 	public static final String CONFIRM_PARAM_TAG = "confirm" ;
     
     public static final String
-        HTTP_WORKFLOW_TAG = "" ;
+        HTTP_WORKFLOW_TAG = "workflow-tag" ;
         
     public static final String
-        WORKFLOW_NAME_PARAMETER = "" ; 
+        WORKFLOW_NAME_PARAMETER = "workflow-name" ; 
 
     public static final String 
         ACTION_CREATE_WORKFLOW = "create-workflow" ,
@@ -214,9 +214,13 @@ public class DesignAction extends AbstractAction {
                 else {
                     ; // unsupported action
                 }
+                // Save the workflow in the session object...
+                debug( "about to set session attribute..." ) ;
+                session.setAttribute( HTTP_WORKFLOW_TAG, workflow ) ;
+                debug( session.getAttribute(HTTP_WORKFLOW_TAG).toString() ) ;
             }
             catch( ConsistencyException cex ) {
-                ;
+                debug( "ConsistencyException occurred");
             }
             finally {
                 if( TRACE_ENABLED ) trace( "DesignActionImpl.act() exit" ) ;  
@@ -250,13 +254,16 @@ public class DesignAction extends AbstractAction {
         
         private void consistencyCheck() throws ConsistencyException {
             
+            userid = "jl99" ;   //JBL note.
+            
             if( userid == null ) {
                 ; // redirection required 
                 throw new ConsistencyException() ;
             }
             else if( action == null ) {
                 
-                throw new ConsistencyException() ;
+                debug( "action is null" ) ;
+                // throw new ConsistencyException() ;
      
             }
 
@@ -277,10 +284,12 @@ public class DesignAction extends AbstractAction {
                 }
                 
                 if( workflow == null ) {
-                    Workflow.createWorkflow( userid, community, name ) ; 
+                    Workflow.createWorkflow( userid, community, name ) ;
+                    workflow.setDescription( "Some Query against USNOB" ) ; 
                 }
                 else if( workflow.isDirty() && (bConfirm == true) ) {
                     Workflow.createWorkflow( userid, community, name ) ;
+                    workflow.setDescription( "Some Query against USNOB" ) ;
                 }
         
             }
@@ -318,6 +327,8 @@ public class DesignAction extends AbstractAction {
                 
                 String
                     name = request.getParameter( WORKFLOW_NAME_PARAMETER ) ;
+                  
+                 name = "jeff1" ;
                     
                 if( name == null ) {
                     ; // some logging here
@@ -333,7 +344,11 @@ public class DesignAction extends AbstractAction {
                 else if( bConfirm == true ) {
                     workflow = Workflow.readWorkflow( userid, community, name ) ;
                 }        
-                     
+                debug( "userid: " + workflow.getUserid() ) ;
+                debug( "community: " + workflow.getCommunity() ) ;
+                debug( "name: " + workflow.getName() ) ; 
+                debug( "description: " + workflow.getDescription() ) ;      
+                    
             }
             finally {
                 if( TRACE_ENABLED ) trace( "DesignActionImpl.() exit" ) ;
