@@ -4,8 +4,8 @@
   xsi:noNamespaceSchemaLocation="maven-project.xsd">
 
   <pomVersion>3</pomVersion>
-  <id>project-id</id>
-  <name>project-name</name>
+  <id>astrogrid-tools</id>
+  <name>AstroGrid Tools</name>
 
   <currentVersion>HEAD</currentVersion>
   
@@ -17,7 +17,7 @@
   <inceptionYear>2002</inceptionYear>
   <package>org.astrogrid</package>
   
-  <shortDescription>AstroGrid Project Description</shortDescription>
+  <shortDescription>AstroGrid Tools</shortDescription>
   
   <repository>
     <connection>
@@ -27,24 +27,9 @@
   
   <developers>
     <developer>
-      <name>Peter Shillan</name>
-      <id>gps</id>
-      <email>gps@roe.ac.uk</email>
-    </developer>
-    <developer>
-      <name>Elizabeth Auden</name>
-      <id>eca</id>
-      <email>eca@mssl.ucl.ac.uk</email>
-    </developer>
-    <developer>
-      <name>Pedro Contreras</name>
-      <id>pc</id>
-      <email>P.Contreras@qub.ac.uk</email>
-    </developer>
-    <developer>
-      <name>Roy Platon</name>
-      <id>rtp</id>
-      <email>R.T.Platon@rl.ac.uk</email>
+      <name>Martin Hill</name>
+      <id>mch</id>
+      <email>mch@roe.ac.uk</email>
     </developer>
   </developers>
   
@@ -55,18 +40,21 @@
     </dependency>
 
     <dependency>
-      <id>xmlBlaster</id>
-      <version>0.845</version>
+      <id>breezetk</id>
+      <version>unknown</version>
+      <jar>breezetk.jar</jar>
     </dependency>
 
     <dependency>
-      <id>jms</id>
-      <version>1.0.2a</version>
+      <id>PrimArray</id>
+      <version>unknown</version>
+      <jar>PrimArray.jar</jar>
     </dependency>
 
     <dependency>
-      <id>activation</id>
-      <version>1.0.2</version>
+      <id>VOTableUtil</id>
+      <version>unknown</version>
+      <jar>VOTableUtil.jar</jar>
     </dependency>
   </dependencies>
   
