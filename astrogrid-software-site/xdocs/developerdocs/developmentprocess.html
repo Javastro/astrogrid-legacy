@@ -1,47 +1,281 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML>
-	<HEAD>
-		<TITLE>Astrogrid Development Processes</TITLE>
-	</HEAD>
-	<BODY LANG="en-GB" DIR="LTR">
-		<H1>AstroGrid Development Processes</H1>
-		<H2>Introduction</H2>
-		<P> The AstroGrid Development process is the result of wide 
-			consultation amongst developers and six iterations of experience of 
-			developing a complex, leading-edge system with a distributed team. 
-			</P>
-		<P> It exists both to ensure the <a 
-			href="http://wiki.astrogrid.org/bin/view/Astrogrid/GridQualityCrisis">quality</a> of AstroGrid code 
-			and to maximize the efficiency of the team. Consequently, some 
-			aspects involve extra work for the individual in order to reduce 
-			the risk to the team as a whole. </P>
-		<H2>The Development Process</H2>
-		<P>
-			<ol>
-				<li> All development will be broken into discrete, small work 
-					units</li>
-				<li> When work commences, a local snapshot of HEAD will be 
-					taken and a branch created for the work unit</li>
-				<li> All development will take place on this branch</li>
-				<li> Code will be committed to the branch very frequently (many 
-					times a day)</li>
-				<li> Unit tests will be built/extended as code is developed 
-					(before code is developed, as per XP?)</li>
-				<li> Code will be continuously unit tested</li>
-				<li> When the work unit is complete and passes unit tests, it 
-					will be <a href="http://www.astrogrid.org/maven/docs/SNAPSHOT/integrationTests">Integration Tested</a> locally</li>
-				<li> Problems within the work unit will be resolved</li>
-				<li> A local copy of the latest HEAD code will be taken and the 
-					Integration Tests run locally again</li>
-				<li> Again, any work unit problems will be addressed</li>
-				<li> The developer is then left with true Integration issues 
-					which require the involvement of other engineers. These 
-					issues will be resolved on the branch</li>
-				<li> Finally, the work unit branch will be committed to HEAD 
-					and the results of the automated builds will be monitored 
-					and issues resolved (potentially by repeating the steps 
-					above)</li>
-			</ol>
-		</P>
-	</BODY>
-</HTML>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 TRANSITIONAL//EN">
+<html>
+<head>
+  <title>AstroGrid Development
+Process</title>
+</head>
+<body>
+<h1>Development and Integration
+Procedure</h1>
+<h2>Introduction</h2>
+This document describes the new development process that will be
+followed from iteration 7. It addresses the difficulties
+experienced in previous iterations with obtaining a stable
+codebase while retaining the advantages of continuous
+integration.
+The main features of the process are:
+<ul>
+  <li>single-committer head -
+developers will work on branches with
+completed, tested work units passed to the I&amp;R team for
+merging into head,</li>
+  <li>clearly defined dependency
+versions - components will be
+developed against defined dependencies, rather than the latest
+snapshot of the code. This prevents work on one component
+adversely affecting another,</li>
+  <li>nursery build - there <span style="font-style: italic;">will</span>
+be automatic builds of the
+branched code, in order to catch problems earlier.&nbsp; These
+builds
+will produce SNAPSHOT jars, much as we do now.&nbsp; However, the
+nursery build is purely for information and early warning of
+inconsistencies between components.</li>
+</ul>
+<h2>Planning</h2>
+<table style="width: 100%;" border="1">
+  <tbody>
+    <tr>
+      <td>
+      <div align="center"><b>Step</b></div>
+      </td>
+      <td style="width: 150px;">
+      <div align="center"><b>Who</b></div>
+      </td>
+    </tr>
+    <tr>
+      <td>Functional and science
+requirements for iteration
+determined</td>
+      <td style="width: 150px;">TSP</td>
+    </tr>
+    <tr>
+      <td>First cut into
+Implementation Cases published</td>
+      <td style="width: 150px;">TechLead</td>
+    </tr>
+    <tr>
+      <td>Tasks agreed and
+reordered</td>
+      <td style="width: 150px;">TechLead
++ WGL</td>
+    </tr>
+    <tr>
+      <td>Tasks divided into Work
+Units (of no more than an estimated 5
+days effort, incl. acceptance) and assigned</td>
+      <td style="width: 150px;">WGL
++ Dev</td>
+    </tr>
+    <tr>
+      <td>Tasks and Work Units
+(incl. detailed delivery and acceptance
+criteria) documented on ImplCases Wiki pages</td>
+      <td style="width: 150px;">TechLead,
+WGL + Dev</td>
+    </tr>
+  </tbody>
+</table>
+<h2>Coding</h2>
+<table style="width: 100%;" border="1">
+  <tbody>
+    <tr>
+      <td>
+      <div align="center"><b>Step</b></div>
+      </td>
+      <td style="width: 150px;">
+      <div align="center"><b>Who</b></div>
+      </td>
+    </tr>
+    <tr>
+      <td>BugZilla ticket raised
+for each Task and Work Unit,
+dependencies shown</td>
+      <td style="width: 150px;">TechLead
++ WGL</td>
+    </tr>
+    <tr>
+      <td>New branch taken (agreed
+naming convention <a href="#1">[1]</a>)
+for assigned Work Unit, status on ImplCases Wiki
+changed to "Started" and BugZilla ticket updated <a href="#2">[2]</a></td>
+      <td style="width: 150px;">Dev</td>
+    </tr>
+    <tr>
+      <td>Branch tag is emailed to
+I&amp;R so that they can include the
+branch in the nursery build<br>
+      </td>
+      <td style="width: 150px;">Dev<br>
+      </td>
+    </tr>
+    <tr>
+      <td>Latest version of
+maven-base project checked out from cvs and
+installed in parallel to your project.<br>
+This contains a project.properties file defining the latest
+published AstroGrid binaries.</td>
+      <td style="width: 150px;">Dev</td>
+    </tr>
+    <tr>
+      <td>Run maven on your
+project to download the correct dependency
+binaries <a href="#3">[3]</a></td>
+      <td style="width: 150px;">Dev</td>
+    </tr>
+    <tr>
+      <td>When the Work Unit is
+implemented and local integration tests
+pass, update maven-base from cvs&nbsp; and use Maven to download
+the latest
+binaries (if changed) and test again until no problems found (may
+require several downloads if bug fixing takes a long time). <a
+ href="#4">[4]</a><br>
+See the <a
+ href="http://www.astrogrid.org/maven/docs/SNAPSHOT/integrationTests/index.html">Integration
+Test</a> pages for
+information on how to locally integration test a
+component.<br>
+      <br>
+      <div align="center">THERE
+IS NO EXCUSE FOR THIS NOT TAKING
+PLACE</div>
+      </td>
+      <td style="width: 150px;">Dev</td>
+    </tr>
+    <tr>
+      <td>I&amp;R are notified
+that branch is ready for acceptance
+testing</td>
+      <td style="width: 150px;">Dev</td>
+    </tr>
+  </tbody>
+</table>
+<h2>Acceptance Testing and Merging
+into Head</h2>
+<table style="width: 100%;" border="1">
+  <tbody>
+    <tr>
+      <td>
+      <div align="center"><b>Step</b></div>
+      </td>
+      <td style="width: 150px;">
+      <div align="center"><b>Who</b></div>
+      </td>
+    </tr>
+    <tr>
+      <td>Branch is merged into
+HEAD, built
+and tested (acceptance is based on passing the original
+acceptance test)</td>
+      <td style="width: 150px;">I&amp;R</td>
+    </tr>
+    <tr>
+      <td>If the Work Unit is
+accepted:
+      <ul>
+        <li>Merged code is checked
+into head and tagged <a href="#5">[5]</a></li>
+        <li>Project dependencies
+are updated in maven-base (all
+components)</li>
+        <li>New binaries are built
+and published ready for download <a href="#6">[6]</a></li>
+        <li>Developers are
+informed that a new build is available, should
+they want to update.</li>
+        <li>New binaries are
+deployed as the new TechPreview</li>
+        <li>Work Unit status on
+ImplCases Wiki page set to
+"Completed"</li>
+        <li>BugZilla ticket closed</li>
+      </ul>
+      </td>
+      <td style="width: 150px;">I&amp;R</td>
+    </tr>
+    <tr>
+      <td>If the Work Unit is
+rejected:
+      <ul>
+        <li>Reason for rejection
+will be sent to developer</li>
+        <li>Problem fixed and
+cycle above repeated</li>
+      </ul>
+      </td>
+      <td style="width: 150px;">I&amp;R
++ Dev</td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<h2>Automatic Builds and the
+Nursery</h2>
+I&amp;R will maintain a nursery area where the latest branches are
+tested against each other before being put forward for acceptance
+testing. To support this developers must notify I&amp;R of the
+branch and module name they would like built. Regular, scheduled
+builds will take place (as they are now against HEAD), of all the
+nursery components against each other. The results will be
+published as they are today. The results of these tests will
+allow similar interoperability checks against emerging code but
+by keeping such builds in the nursery, HEAD is kept clear for
+acceptance testing only. Automated builds against HEAD will stop;
+HEAD will be built on demand by the I&amp;R team as new branches
+are accepted and new binaries published.
+<BR></BR>
+Notes:
+<ol>
+  <li><a name="1"></a> <a
+ href="http://wiki.astrogrid.org/bin/view/Support/UsingCVS">http://wiki.astrogrid.org/bin/view/Support/UsingCVS</a></li>
+  <li><a name="2"></a>When
+you branch, ensure that you add a
+version tag to the point in head at which you branched, otherwise
+I&amp;R will not be able to merge your code.&nbsp; Eclipse does
+this
+automatically when it creates a branch - if you use CVS from the
+commandline it might not.&nbsp; You will probably need to branch
+both
+your component and auto-integration.</li>
+  <li><a name="3"></a>Eclipse
+users should run "maven eclipse" to
+update the dependencies in their IDE.&nbsp; If you wish, you may
+instead work against the nursery builds - I&amp;R can supply you
+with a build.properties file to override the settings in
+maven-base.
+However, you must still do your final, pre-merge
+testing against the latest <span style="font-style: italic;">accepted</span>
+builds.</li>
+  <li><a name="4"></a>There
+is therefore an incentive to get your
+changes sent to I&amp;R for merging first!</li>
+  <li><a name="5"></a>We
+need a convention for tagging completed,
+accepted work in head.&nbsp; This tag would also be used to label
+the
+binaries, thus when story 6.2 finishes we tag the code with
+(e.g.) accepted6.2, and build astrogrid-common-6.2.jar etc.</li>
+  <li><a name="6"></a>This
+might need to be repeated a second time
+to iron out any circular dependencies</li>
+</ol>
+Conditions:
+<ol>
+  <li>All developers must follow
+the same procedures for this to
+work</li>
+  <li>All code, no matter how
+trivial must be written on a branch
+(i.e. no code fixes direct to HEAD)</li>
+  <li>Developers must only branch
+the code they intend to modify.
+This avoids the proliferation of confusing and unnecessary tags
+etc)</li>
+  <li>Code merges and commits to
+HEAD will be undertaken by the
+I&amp;R team ONLY, no-one else; regular reports will be produced
+to monitor this</li>
+</ol>
+</body>
+</html>
