@@ -1,4 +1,4 @@
-/*$Id: CompositeFitsVotableParsingConcatWorkflowTest.java,v 1.1 2004/08/17 15:38:23 nw Exp $
+/*$Id: CompositeFitsVotableParsingConcatWorkflowTest.java,v 1.2 2004/08/22 01:49:08 nw Exp $
  * Created on 12-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -89,6 +89,7 @@ public class CompositeFitsVotableParsingConcatWorkflowTest extends SimpleFitsWor
         Step sink = new Step();
         sink.setName("concat-step");
         sink.setTool(concatTool);
+        sink.setResultVar("finalResults"); // don't want, but reduces chance of race conditions in  test.
         wf.getSequence().addActivity(sink);
                         
         
@@ -110,6 +111,9 @@ public class CompositeFitsVotableParsingConcatWorkflowTest extends SimpleFitsWor
 
 /* 
 $Log: CompositeFitsVotableParsingConcatWorkflowTest.java,v $
+Revision 1.2  2004/08/22 01:49:08  nw
+improved concurrent behaviour
+
 Revision 1.1  2004/08/17 15:38:23  nw
 set of integration tests that require external resources.
 

@@ -1,4 +1,4 @@
-/*$Id: SimpleSECWorkflowTest.java,v 1.1 2004/08/17 15:38:23 nw Exp $
+/*$Id: SimpleSECWorkflowTest.java,v 1.2 2004/08/22 01:50:47 nw Exp $
  * Created on 12-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -75,6 +75,7 @@ public class SimpleSECWorkflowTest  extends AbstractTestForWorkflow implements S
         s.setDescription("SEC query");
         s.setName(SEC_APP);
         s.setTool(secTool);
+        s.setResultVar("results"); // improves concurrent behaviour for testing
         wf.getSequence().addActivity(s);
     }
 
@@ -95,6 +96,9 @@ public class SimpleSECWorkflowTest  extends AbstractTestForWorkflow implements S
 
 /* 
 $Log: SimpleSECWorkflowTest.java,v $
+Revision 1.2  2004/08/22 01:50:47  nw
+improved concurrent behaviour
+
 Revision 1.1  2004/08/17 15:38:23  nw
 set of integration tests that require external resources.
 
