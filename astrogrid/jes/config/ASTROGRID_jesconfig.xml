@@ -36,6 +36,12 @@
   
   <!-- JES CATEGORY =========================================================== -->  
   <category name="JES">
+    <!-- Please change localhost to indicate a unique jes for this installation. 
+         This value is used to record jobs submitted and is also attached to each
+         individual job step irrespective of where the job step actually executes.
+         For distributed jobs, this helps to locate where the job originated from
+         and will help immensely in any error situation.
+    -->
     <property name="ID" value="jes@localhost" />
   </category>
  
@@ -51,7 +57,7 @@
   <!-- CONTROLLER CATEGORY ================================================================= -->     
   <category name="CONTROLLER">
     <property name="PARSER.VALIDATION" value="false" />
-    <property name="TEMPLATE.RESPONSE" value="JobController.xmltemplate" />  
+    <property name="TEMPLATE.SUBMIT_JOB_RESPONSE" value="JobControllerResponse.xmltemplate" />  
     <property name="URL" value="http://localhost:8080/astrogrid-jes/services/JobControllerService" />
   </category>  
   
