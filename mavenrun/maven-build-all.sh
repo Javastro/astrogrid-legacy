@@ -27,6 +27,7 @@ $SCRIPTHOME/maven-build-new.sh scripting >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build-new.sh security >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build-new.sh warehouse >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build-new.sh workflow >> $BUILD_DIR/$LOG_FILE 2>&1
+$SCRIPTHOME/maven-build.sh ui >> $BUILD_DIR/$LOG_FILE 2>&1
 
 $SCRIPTHOME/maven-build-new.sh maven-site >> $BUILD_DIR/$LOG_FILE 2>&1
 
