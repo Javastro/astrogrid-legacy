@@ -3,8 +3,11 @@
 <project xmlns:j="jelly:core"  xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="jar:jar">
 <!-- hooks to farm out everything to subprojects -->
 
-<!-- this is the goal called by nightly build -->
-<preGoal name="jar:deploy-snapshot">
+<!-- Astrogrid custom goals -->
+<!-- Only install the minimum for the autobuild for now
+	 see http://www.astrogrid.org/maven/build/SimpleMavenProject/goalsSummary.html -->
+<goal name="astrogrid-deploy-snapshot">
+	<echo message="Master Project: astrogrid-deploy-snapshot"/>
 	<maven:reactor
 	  basedir="${basedir}"
 	  postProcessing="false"
@@ -17,10 +20,9 @@
 	 	goals="webapp-site,war:deploy-snapshot"
 		ignoreFailures="true" />
 
-</preGoal>
-
-
-<preGoal name="jar:install-snapshot">
+</goal>
+<goal name="astrogrid-install-snapshot">
+	<echo message="Master Project: astrogrid-install-snapshot"/>
 	<maven:reactor
 	  basedir="${basedir}"
 	  postProcessing="false"
@@ -32,21 +34,15 @@
 	 <maven:maven descriptor="${basedir}/pal/project.xml"
 	 	goals="webapp-site,war:install-snapshot"
 		ignoreFailures="true" />
-</preGoal>
-
-<!-- goal called by nightly build -->
-<preGoal name="site:fsdeploy">
-	<!-- fix suggested by john - breaks everything else it seems.
-	<maven:reactor
-		basedir="${basedir}"
-		postProcessing="false"
-		includes="*/project.xml,implementations/*/project.xml"
-		goals="dist:prepare-bin-filesystem"
-		banner="preparing filesystems"
-		ignoreFailures="true" />
-		-->
+</goal>
+<goal name="astrogrid-site-deploy">
+	<echo message="Master Project: astrogrid-site-deploy"/>
 	<attainGoal name="multiproject:site" />
-</preGoal>
+</goal>
+<goal name="astrogrid-clean">
+	<echo message="Master Project: astrogrid-clean"/>
+	<attainGoal name="multiproject:clean" />
+</goal>
 
 <!--
 stand - alone goals - development helpers, not additions to main build
