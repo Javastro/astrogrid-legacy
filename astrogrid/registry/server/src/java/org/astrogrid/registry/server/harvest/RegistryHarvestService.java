@@ -159,7 +159,7 @@ public class RegistryHarvestService {
           if(onlyRegistries) {
              //query for all the Registry types which should be all of them with an xsi:type="RegistryType"
              //xqlQuery = "declare namespace vr = \"http://www.ivoa.net/xml/VOResource/v0.9\"; //vr:Resource[@xsi:type='RegistryType']";
-             xqlQuery = "//*:Resource[@xsi:type='RegistryType']";
+             xqlQuery = "//*:Resource[@xsi:type='RegistryType' or @xsi:type='Registry']";
              harvestDoc = qdb.runQuery(collectionName,xqlQuery);
              //System.out.println("The harvestDoc = " + DomHelper.DocumentToString(harvestDoc));
              if(harvestDoc != null) {
@@ -174,7 +174,11 @@ public class RegistryHarvestService {
                if(useDates) {
                   Document statDoc = qdb.getResource("statv"+versionNumber,RegistryServerHelper.getIdentifier(elem));
                   String dateString = DomHelper.getNodeTextValue(statDoc,"StatsDateMillis");
-                  Date dt = new Date(Long.parseLong(dateString));
+                  
+                  Date dt = null;
+                  if(dateString != null && dateString.trim().length() > 0) {
+                      dt = new Date(Long.parseLong(dateString));
+                  }
                   //harvestResource(elem,dt);
                   beginHarvest(elem,dt);
                }else {
@@ -198,7 +202,10 @@ public class RegistryHarvestService {
                if(useDates) {
                   Document statDoc = qdb.getResource("statv"+versionNumber,RegistryServerHelper.getIdentifier(elem));
                   String dateString = DomHelper.getNodeTextValue(statDoc,"StatsDateMillis");
-                  Date dt = new Date(Long.parseLong(dateString));
+                  Date dt = null;
+                  if(dateString != null && dateString.trim().length() > 0) {
+                      dt = new Date(Long.parseLong(dateString));
+                  }
                   //harvestResource(elem,dt);
                   beginHarvest(elem,dt);
                }else {
@@ -307,7 +314,7 @@ private class HarvestThread extends Thread {
       //invocationtype is either WebService or WebBrowser.
       Node typeAttribute = resource.getAttributes().getNamedItem("xsi:type");
       isRegistryType = (typeAttribute != null) &&
-                       (typeAttribute.getNodeValue().equals("RegistryType"));
+                       (typeAttribute.getNodeValue().indexOf("Registry") >= 0);
  //   System.out.println("RegistryType attribute =" + isRegistryType);
 
       nl = ((Element) resource).getElementsByTagNameNS("*","AccessURL");

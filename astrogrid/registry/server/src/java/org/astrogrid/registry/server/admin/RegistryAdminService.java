@@ -358,7 +358,11 @@ public class RegistryAdminService {
                      //update this registry resource into our registry.
                      try {
                         udbService.updateQuery(tempIdent,"xml",collectionName,root);
-                        udbService.updateQuery(tempIdent,"xml","statv" + versionNumber,createStats(tempIdent));
+                        if(authorityID.equals(ident)) {
+                            udbService.updateQuery(tempIdent,"xml","statv" + versionNumber,createStats(tempIdent));
+                        }else {
+                            udbService.updateQuery(tempIdent,"xml","statv" + versionNumber,createStats(tempIdent,false));
+                        }
                      } catch(MalformedURLException mue) {
                         log.error(mue);
                         throw new AxisFault("Malformed URL on the update", mue);
@@ -383,16 +387,6 @@ public class RegistryAdminService {
                                 ((HashMap)otherAuths.get(versionNumber)).put(manageNodeVal,null);
                             }//if
                         }//for
-                        /*
-                        RegistryHarvestService rhs = new RegistryHarvestService();
-                        try {
-                            //rhs.harvestResource(currentResource,null);
-                        }catch(RegistryException re) {
-                            log.error(re);
-                        }catch(IOException ioe) {
-                            log.error(ioe);
-                        }
-                        */
                      }
                   }else if(nodeVal != null && 
                            nodeVal.indexOf("Authority") != -1)
@@ -710,8 +704,6 @@ public class RegistryAdminService {
          if(defaultNS != null && defaultNS.trim().length() > 0) {
              currentResource.setAttribute("xmlns",defaultNS);
          }             
-         
-
          root = update.createElement("AstrogridResource");
          root.appendChild(currentResource);
          RegistryServerHelper.
@@ -754,6 +746,33 @@ public class RegistryAdminService {
       }//if
       log.debug("end updateNoCheck");
    }
+   
+   
+   private Node createStats( String tempIdent, boolean addMillis) {
+       log.debug("start createStats");
+       Date statsTimeMillis = new Date();
+       DateFormat shortDT = DateFormat.getDateTimeInstance();
+       String statsXML = "<ResourceStat><Identifier>" + tempIdent +
+                                "</Identifier>";
+       if(addMillis) {
+           statsXML += "<StatsDateMillis>" +
+                       statsTimeMillis.getTime() +
+                       "</StatsDateMillis>";
+       }
+       statsXML += "<StatsDate>" +
+                        shortDT.format(statsTimeMillis) +
+                    "</StatsDate></ResourceStat>";
+       try {
+          log.debug("end createStats");
+          return DomHelper.newDocument(statsXML).getDocumentElement();
+       }
+       catch ( Exception e ) {
+       // This will be improved shortly with other Exception handling!
+          e.printStackTrace();
+          log.error(e);
+      }
+      return null;
+   }
 
    /**
     * Create statistical data to store in the eXist database when each 
@@ -765,25 +784,7 @@ public class RegistryAdminService {
     * @return Node representing the <ResourceStat> Element
     */     
    private Node createStats( String tempIdent ) {
-      log.debug("start createStats");
-      Date statsTimeMillis = new Date();
-      DateFormat shortDT = DateFormat.getDateTimeInstance();
-      String statsXML = "<ResourceStat><Identifier>" + tempIdent +
-                               "</Identifier><StatsDateMillis>" +
-                               statsTimeMillis.getTime() +
-                               "</StatsDateMillis><StatsDate>" +
-                               shortDT.format(statsTimeMillis) +
-                               "</StatsDate></ResourceStat>";
-      try {
-         log.debug("end createStats");
-         return DomHelper.newDocument(statsXML).getDocumentElement();
-      }
-      catch ( Exception e ) {
-      // This will be improved shortly with other Exception handling!
-         e.printStackTrace();
-         log.error(e);
-     }
-     return null;
+       return createStats(tempIdent,true);
    }
 
    /**
