@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/junit/org/astrogrid/community/resolver/CommunityAccountSpaceResolverTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/24 16:56:25 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityAccountSpaceResolverTestCase.java,v $
+ *   Revision 1.5  2004/03/24 16:56:25  dave
+ *   Merged development branch, dave-dev-200403231641, into HEAD
+ *
+ *   Revision 1.4.2.1  2004/03/24 15:19:20  dave
+ *   Added check for Throwable on registry call.
+ *   Added more JUnit tests.
+ *
  *   Revision 1.4  2004/03/23 16:34:08  dave
  *   Merged development branch, dave-dev-200403191458, into HEAD
  *
@@ -88,17 +95,14 @@ public class CommunityAccountSpaceResolverTestCase
 		if (DEBUG_FLAG) System.out.println("  Home   : " + home) ;
 		//
 		// Initialise our mock service.
-		PolicyManager manager = PolicyManagerMockDelegate.addManager(ident) ;
-		//
-		// Create an Ivorn parser.
-		CommunityIvornParser parser = new CommunityIvornParser(ident) ;
+		PolicyManager manager = new PolicyManagerMockDelegate() ;
 		//
 		// Add the account.
-		AccountData created = manager.addAccount(parser.getAccountIdent()) ;
-		//
-		// Set the Account home address.
+		AccountData created = new AccountData(
+			new CommunityIvornParser(ident).getAccountIdent()
+			) ;
 		created.setHomeSpace(home.toString()) ;
-		manager.setAccount(created) ;
+		manager.addAccount(created) ;
 		//
 		// Create our target Ivorn.
         Ivorn target = CommunityAccountIvornFactory.createMock(
@@ -112,6 +116,17 @@ public class CommunityAccountSpaceResolverTestCase
 		//
 		// Ask our resolver for the home address.
 		Ivorn found = resolver.resolve(target) ;
+		assertNotNull(
+			"Failed to resolve home space",
+			found
+			) ;
 		if (DEBUG_FLAG) System.out.println("  Found : " + found) ;
+        //
+        // Check that the home space is right.
+        assertEquals(
+        	"Wrong ivorn",
+        	"ivo://org.astrogrid.mock.myspace/toad/public#qwertyuiop.xml",
+        	found.toString()
+        	) ;
         }
     }

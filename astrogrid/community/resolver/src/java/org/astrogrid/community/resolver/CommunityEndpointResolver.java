@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/CommunityEndpointResolver.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/24 16:56:25 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityEndpointResolver.java,v $
+ *   Revision 1.5  2004/03/24 16:56:25  dave
+ *   Merged development branch, dave-dev-200403231641, into HEAD
+ *
+ *   Revision 1.4.2.1  2004/03/24 15:19:20  dave
+ *   Added check for Throwable on registry call.
+ *   Added more JUnit tests.
+ *
  *   Revision 1.4  2004/03/23 16:34:08  dave
  *   Merged development branch, dave-dev-200403191458, into HEAD
  *
@@ -196,6 +203,14 @@ public class CommunityEndpointResolver
         		) ;
         	}
         //
+        // Check for null community.
+        if (null == parser.getCommunityIdent())
+        	{
+        	throw new CommunityIdentifierException(
+        		"Null community identifier"
+        		) ;
+        	}
+        //
         // Create our service Ivorn.
         Ivorn ivorn  = CommunityServiceIvornFactory.createIvorn(
             parser.getCommunityIdent(),
@@ -205,9 +220,19 @@ public class CommunityEndpointResolver
         if (DEBUG_FLAG) System.out.println("  Ivorn    : " + ivorn)  ;
         //
         // Lookup the service in the registry.
-        String endpoint = registry.getEndPointByIdentifier(
-        	ivorn.getPath()
-        	) ;
+		String endpoint = null ;
+		try {
+	        endpoint = registry.getEndPointByIdentifier(
+    	    	ivorn.getPath()
+        		) ;
+			}
+		catch (Throwable ouch)
+			{
+			throw new CommunityResolverException(
+				"Registry lookup failed",
+				ouch
+				) ;
+			}
         //
         // If we found an entry in the Registry.
         if (null != endpoint)

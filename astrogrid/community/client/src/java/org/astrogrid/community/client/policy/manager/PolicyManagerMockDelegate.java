@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/client/src/java/org/astrogrid/community/client/policy/manager/PolicyManagerMockDelegate.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/19 14:43:14 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/24 16:56:25 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManagerMockDelegate.java,v $
+ *   Revision 1.6  2004/03/24 16:56:25  dave
+ *   Merged development branch, dave-dev-200403231641, into HEAD
+ *
+ *   Revision 1.5.4.1  2004/03/24 15:25:22  dave
+ *   Tidied up PolicyManagerMockDelegate.
+ *   Modified SecurityServiceCoreDelegate to make a token invalid if the validation fails.
+ *
  *   Revision 1.5  2004/03/19 14:43:14  dave
  *   Merged development branch, dave-dev-200403151155, into HEAD
  *
@@ -58,88 +65,5 @@ public class PolicyManagerMockDelegate
         this.setPolicyManager(
             new PolicyManagerMock()
             ) ;
-        }
-
-    /**
-     * Public constructor.
-     * @param ivorn The identifier for the delegate.
-     * @throws CommunityIdentifierException If the identifier is not valid.
-     *
-     */
-    public PolicyManagerMockDelegate(Ivorn ivorn)
-        throws CommunityIdentifierException
-        {
-        super() ;
-        //
-        // Set our PolicyManager service.
-        this.setPolicyManager(
-            getManager(ivorn)
-            ) ;
-        }
-
-    /**
-     * Our map of delegates, indexed by identifier.
-     *
-     */
-    private static Map map = new HashMap() ;
-
-    /**
-     * Get a PolicyManager for an Ivorn identifier.
-     * @param ivorn The identifier for the PolicyManager.
-     * @return A reference to a PolicyManager, or null if not found in our map.
-     * @throws CommunityIdentifierException If the identifier is not valid.
-     *
-     */
-    protected static PolicyManager getManager(Ivorn ivorn)
-        throws CommunityIdentifierException
-        {
-        return getManager(
-            new CommunityIvornParser(ivorn)
-            ) ;
-        }
-
-    /**
-     * Get a PolicyManager for an Ivorn identifier.
-     * @param parser The identifier for the PolicyManager.
-     * @return A reference to a PolicyManager, or null if not found in our map.
-     *
-     */
-    protected static PolicyManager getManager(CommunityIvornParser parser)
-        {
-        return (PolicyManager) map.get(parser.getCommunityIdent()) ;
-        }
-
-    /**
-     * Add a new PolicyManager for an identifier.
-     * This will replace any existing PolicyManager for the identifier.
-     * This enables a JUnit test to reset the PolicyManager for an identifier.
-     * @param ivorn The identifier for the PolicyManager.
-     * @return A reference to a new PolicyManager.
-     * @throws CommunityIdentifierException If the identifier is not valid.
-     *
-     */
-    public static PolicyManager addManager(Ivorn ivorn)
-        throws CommunityIdentifierException
-        {
-        return addManager(
-            new CommunityIvornParser(ivorn)
-            ) ;
-        }
-
-    /**
-     * Add a new PolicyManager for an identifier.
-     * This will replace any existing PolicyManager for the identifier.
-     * This enables a JUnit test to reset the PolicyManager for an identifier.
-     * @param parser The identifier for the PolicyManager.
-     *
-     */
-    public static PolicyManager addManager(CommunityIvornParser parser)
-        {
-        PolicyManager manager = new PolicyManagerMock() ;
-        map.put(
-            parser.getCommunityIdent(),
-            manager
-            ) ;
-        return manager ;
         }
     }

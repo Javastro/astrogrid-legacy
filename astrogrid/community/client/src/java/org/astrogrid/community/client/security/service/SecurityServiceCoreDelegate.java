@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/client/src/java/org/astrogrid/community/client/security/service/SecurityServiceCoreDelegate.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/24 16:56:25 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityServiceCoreDelegate.java,v $
+ *   Revision 1.6  2004/03/24 16:56:25  dave
+ *   Merged development branch, dave-dev-200403231641, into HEAD
+ *
+ *   Revision 1.5.2.1  2004/03/24 15:25:22  dave
+ *   Tidied up PolicyManagerMockDelegate.
+ *   Modified SecurityServiceCoreDelegate to make a token invalid if the validation fails.
+ *
  *   Revision 1.5  2004/03/23 16:34:08  dave
  *   Merged development branch, dave-dev-200403191458, into HEAD
  *
@@ -158,6 +165,9 @@ public class SecurityServiceCoreDelegate
             // Catch anything that went BANG.
             catch (RemoteException ouch)
                 {
+				//
+				// Set the token staus.
+				token.setStatus(SecurityToken.INVALID_TOKEN) ;
 				//
 				// Try converting the Exception.
 				convertServiceException(ouch) ;

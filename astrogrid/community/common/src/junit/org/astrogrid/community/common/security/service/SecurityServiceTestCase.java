@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/junit/org/astrogrid/community/common/security/service/SecurityServiceTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/08 13:42:33 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/24 16:56:25 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityServiceTestCase.java,v $
+ *   Revision 1.4  2004/03/24 16:56:25  dave
+ *   Merged development branch, dave-dev-200403231641, into HEAD
+ *
+ *   Revision 1.3.18.1  2004/03/24 16:53:57  dave
+ *   Added test password to SecurityServiceMoc.k
+ *
  *   Revision 1.3  2004/03/08 13:42:33  dave
  *   Updated Maven goals.
  *   Replaced tabs with Spaces.
@@ -38,6 +44,8 @@ import org.astrogrid.community.common.policy.manager.AccountManagerMock ;
 
 import org.astrogrid.community.common.security.manager.SecurityManager ;
 import org.astrogrid.community.common.security.manager.SecurityManagerMock ;
+
+import org.astrogrid.community.common.exception.CommunitySecurityException ;
 
 /**
  * A JUnit test case for our mock SecurityService.
@@ -78,4 +86,58 @@ public class SecurityServiceTestCase
         // Reset our database tables.
         this.resetDatabase() ;
         }
+
+	/**
+	 * Test the mock password.
+	 *
+	 */
+	public void testMockPassword()
+		throws Exception
+		{
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("SecurityServiceTestCase.testMockPassword()") ;
+		//
+		// Create our mock service.
+		SecurityServiceMock mock = new SecurityServiceMock() ;
+		//
+		// Clear the password.
+		mock.setPassword(null) ;
+		//
+		// Check that the wrong password works.
+		assertNotNull(
+			"Check password returned null",
+			mock.checkPassword("frog", "unknown")
+			) ;
+		//
+		// Set the password.
+		mock.setPassword("ribbet") ;
+		//
+		// Check that the right password works.
+		assertNotNull(
+			"Check password returned null",
+			mock.checkPassword("frog", "ribbet")
+			) ;
+		//
+		// Check that the wrong passord fails.
+		try {
+			mock.checkPassword("frog", "unknown") ;
+            fail("Expected CommunitySecurityException") ;
+            }
+		catch (CommunitySecurityException ouch)
+			{
+            if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
+            if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+            if (DEBUG_FLAG) System.out.println("Class     : " + ouch.getClass()) ;
+			}
+		//
+		// Clear the password.
+		mock.setPassword(null) ;
+		//
+		// Check that the wrong password works.
+		assertNotNull(
+			"Check password returned null",
+			mock.checkPassword("frog", "unknown")
+			) ;
+		}
     }

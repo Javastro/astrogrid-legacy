@@ -1,11 +1,20 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/security/service/SecurityServiceTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/24 16:56:25 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityServiceTest.java,v $
+ *   Revision 1.5  2004/03/24 16:56:25  dave
+ *   Merged development branch, dave-dev-200403231641, into HEAD
+ *
+ *   Revision 1.4.2.2  2004/03/24 16:53:57  dave
+ *   Added test password to SecurityServiceMoc.k
+ *
+ *   Revision 1.4.2.1  2004/03/23 19:28:23  dave
+ *   Added test to check token status is valid.
+ *
  *   Revision 1.4  2004/03/23 16:34:08  dave
  *   Merged development branch, dave-dev-200403191458, into HEAD
  *
@@ -222,10 +231,16 @@ public class SecurityServiceTest
             account.getIdent(),
             token.getAccount()
             ) ;
+        //
+        // Check that the token is valid.
+        assertTrue(
+            "Token is not valid",
+            token.isValid()
+            ) ;
         }
 
     /**
-     * Check tha we can validate a SecurityToken.
+     * Check that we can validate a SecurityToken.
      *
      */
     public void testCheckToken()
@@ -272,6 +287,12 @@ public class SecurityServiceTest
             original.getAccount()
             ) ;
         //
+        // Check that the token is valid.
+        assertTrue(
+            "Token is not valid",
+            original.isValid()
+            ) ;
+        //
         // Check that we can validate our token
         SecurityToken response = securityService.checkToken(original) ;
         //
@@ -286,6 +307,12 @@ public class SecurityServiceTest
             "Token has wrong account",
             account.getIdent(),
             response.getAccount()
+            ) ;
+        //
+        // Check that the token is valid.
+        assertTrue(
+            "Token is not valid",
+            response.isValid()
             ) ;
         //
         // Check that the two tokens have different values.
@@ -319,6 +346,12 @@ public class SecurityServiceTest
             if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
             if (DEBUG_FLAG) System.out.println("Class     : " + ouch.getClass()) ;
 			}
+        //
+        // Check that the original is no longer valid.
+		assertFalse(
+			"Original token still valid",
+			original.isValid()
+			) ;
         }
 
     /**
@@ -372,10 +405,16 @@ public class SecurityServiceTest
             original.getAccount()
             ) ;
         //
+        // Check that the token is valid.
+        assertTrue(
+            "Token is not valid",
+            original.isValid()
+            ) ;
+        //
         // Check that we can validate our token
         Object[] array = securityService.splitToken(original, SPLIT_COUNT) ;
         //
-        // Check that we got a token.
+        // Check that we got an array.
         assertNotNull(
             "NULL token array",
             array
@@ -398,6 +437,12 @@ public class SecurityServiceTest
                 account.getIdent(),
                 token.getAccount()
                 ) ;
+	        //
+	        // Check that the token is valid.
+	        assertTrue(
+	            "Token is not valid",
+	            token.isValid()
+	            ) ;
             //
             // Check that the token has a different value.
             checkNotEqual(
@@ -430,6 +475,12 @@ public class SecurityServiceTest
             if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
             if (DEBUG_FLAG) System.out.println("Class     : " + ouch.getClass()) ;
 			}
+        //
+        // Check that the original is no longer valid.
+		assertFalse(
+			"Original token still valid",
+			original.isValid()
+			) ;
         }
     }
 

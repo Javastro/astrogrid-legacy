@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/junit/org/astrogrid/community/resolver/CommunityAccountResolverTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/24 16:56:25 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityAccountResolverTestCase.java,v $
+ *   Revision 1.5  2004/03/24 16:56:25  dave
+ *   Merged development branch, dave-dev-200403231641, into HEAD
+ *
+ *   Revision 1.4.2.1  2004/03/24 15:19:20  dave
+ *   Added check for Throwable on registry call.
+ *   Added more JUnit tests.
+ *
  *   Revision 1.4  2004/03/23 16:34:08  dave
  *   Merged development branch, dave-dev-200403191458, into HEAD
  *
@@ -79,39 +86,33 @@ public class CommunityAccountResolverTestCase
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("CommunityAccountResolverTestCase.testResolveMock()") ;
-        //
-        // Create our Account Ivorn.
-        Ivorn ident = CommunityAccountIvornFactory.createMock(
-        	"community",
-        	"frog"
-        	) ;
-		if (DEBUG_FLAG) System.out.println("  Ident  : " + ident) ;
-		//
-		// Create our myspace Ivorn.
-		Ivorn home = new MockIvorn("myspace", "toad") ;
-		if (DEBUG_FLAG) System.out.println("  Home   : " + home) ;
-		//
-		// Initialise our mock service.
-		PolicyManager manager = PolicyManagerMockDelegate.addManager(ident) ;
-		//
-		// Create an Ivorn parser.
-		CommunityIvornParser parser = new CommunityIvornParser(ident) ;
-		//
-		// Add the account.
-		AccountData created = manager.addAccount(parser.getAccountIdent()) ;
 		//
 		// Create our target Ivorn.
-        Ivorn target = CommunityAccountIvornFactory.createMock(
+        Ivorn ivorn = CommunityAccountIvornFactory.createMock(
         	"community",
         	"frog/public#qwertyuiop.xml"
         	) ;
-		if (DEBUG_FLAG) System.out.println("  Target : " + target) ;
+		if (DEBUG_FLAG) System.out.println("  Ivorn : " + ivorn) ;
+		//
+		// Initialise our mock service.
+		PolicyManager manager = new PolicyManagerMockDelegate() ;
+		//
+		// Add the account.
+		AccountData created = manager.addAccount(
+			new CommunityIvornParser(ivorn).getAccountIdent()
+			) ;
 		//
 		// Create our resolver.
 		CommunityAccountResolver resolver = new CommunityAccountResolver() ;
 		//
 		// Ask our resolver for the account data.
-		AccountData found = resolver.resolve(target) ;
-		if (DEBUG_FLAG) System.out.println("  Found : " + found) ;
+		AccountData found = resolver.resolve(ivorn) ;
+		if (DEBUG_FLAG) System.out.println("  Found : " + ivorn) ;
+		assertNotNull(
+			"Failed to find account",
+			found) ;
+        //
+        // Check that the two objects represent the same Account.
+        assertEquals("Different identifiers", created, found) ;
         }
     }

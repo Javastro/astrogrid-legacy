@@ -1,11 +1,20 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/security/service/SecurityServiceMock.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/24 16:56:25 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityServiceMock.java,v $
+ *   Revision 1.5  2004/03/24 16:56:25  dave
+ *   Merged development branch, dave-dev-200403231641, into HEAD
+ *
+ *   Revision 1.4.2.2  2004/03/24 16:53:57  dave
+ *   Added test password to SecurityServiceMoc.k
+ *
+ *   Revision 1.4.2.1  2004/03/23 19:28:23  dave
+ *   Added test to check token status is valid.
+ *
  *   Revision 1.4  2004/03/23 16:34:08  dave
  *   Merged development branch, dave-dev-200403191458, into HEAD
  *
@@ -90,6 +99,30 @@ public class SecurityServiceMock
         if (DEBUG_FLAG) System.out.println("SecurityServiceMock()") ;
         }
 
+	/**
+	 * Our test password.
+	 *
+	 */
+	private static String secret = null ;
+
+	/**
+	 * Access to out test password.
+	 *
+	 */
+	public static String getPassword()
+		{
+		return secret ;
+		}
+
+	/**
+	 * Access to out test password.
+	 *
+	 */
+	public static void setPassword(String value)
+		{
+		secret = value ;
+		}
+
     /**
      * Our hash table of tokens.
      *
@@ -156,6 +189,9 @@ public class SecurityServiceMock
         	ivorn.toString()
         	) ;
         //
+        // Mark the token as valid.
+        token.setStatus(SecurityToken.VALID_TOKEN) ;
+        //
         // Add the token to our map.
         map.put(token.getToken(), token) ;
         //
@@ -173,16 +209,42 @@ public class SecurityServiceMock
      *
      */
     public SecurityToken checkPassword(String ident, String value)
-		throws CommunityIdentifierException
+		throws CommunitySecurityException, CommunityIdentifierException
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("SecurityServiceMock.checkPassword()") ;
         if (DEBUG_FLAG) System.out.println("  Ident : " + ident) ;
         if (DEBUG_FLAG) System.out.println("  Value : " + value) ;
-        //
-        // Just return a new token.
-        return this.createToken(ident) ;
+		//
+		// If we have a test password.
+		if (null != secret)
+			{
+			//
+			// Check the password matches.
+			if (secret.equals(value))
+				{
+		        //
+		        // Return a new token.
+		        return this.createToken(ident) ;
+				}
+			//
+			// If the passwords don't match.
+			else {
+				//
+				// Throw an Exception
+				throw new CommunitySecurityException(
+					"Invalid password"
+					) ;
+				}
+			}
+		//
+		// If we don't have a test password.
+		else {
+	        //
+	        // Just return a new token.
+	        return this.createToken(ident) ;
+			}
         }
 
     /**
@@ -203,6 +265,9 @@ public class SecurityServiceMock
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("SecurityServiceMock.checkToken()") ;
         if (DEBUG_FLAG) System.out.println("  Token : " + original) ;
+		//
+		// Mark the original as invalid.
+		original.setStatus(SecurityToken.INVALID_TOKEN) ;
         //
         // See if we still have the orginal
         SecurityToken match = (SecurityToken) map.get(original.getToken()) ;

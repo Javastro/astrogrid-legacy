@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/exception/CommunityResolverException.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/19 14:43:15 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/24 16:56:25 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityResolverException.java,v $
+ *   Revision 1.3  2004/03/24 16:56:25  dave
+ *   Merged development branch, dave-dev-200403231641, into HEAD
+ *
+ *   Revision 1.2.4.1  2004/03/24 15:19:20  dave
+ *   Added check for Throwable on registry call.
+ *   Added more JUnit tests.
+ *
  *   Revision 1.2  2004/03/19 14:43:15  dave
  *   Merged development branch, dave-dev-200403151155, into HEAD
  *
@@ -41,6 +48,17 @@ public class CommunityResolverException
 	public CommunityResolverException(String message)
 		{
 		super(message) ;
+		}
+
+	/**
+	 * Public constructor.
+	 * @param message The Exception message.
+     * @param cause   The root cause of this Exception.
+	 *
+	 */
+	public CommunityResolverException(String message, Throwable cause)
+		{
+		super(message, cause) ;
 		}
 
 	/**
