@@ -1,14 +1,18 @@
 /*
- * $Id: PiperTest.java,v 1.3 2004/03/02 11:55:28 mch Exp $
+ * $Id: PiperTest.java,v 1.4 2004/09/24 14:17:40 pah Exp $
  */
 
 package org.astrogrid.io;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.lang.reflect.Array;
+import java.util.Arrays;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -45,6 +49,17 @@ public class PiperTest extends TestCase
       assertEquals("Pipe has changed contents", testContents, writer.toString());
    }
 
+   public void testBig() throws Exception
+   {
+       FileOutputStream fs = new FileOutputStream("/dev/null");
+       byte[] testin = new byte[1024*1024*31];
+       Arrays.fill(testin, (byte)1);
+       
+       System.out.println("attempting big copy");
+       Piper.pipe(new ByteArrayInputStream(testin), fs);
+       System.out.println("finished big copy");
+   }   
+   
 
     /**
      * Assembles and returns a test suite made up of all the testXxxx() methods
@@ -66,6 +81,9 @@ public class PiperTest extends TestCase
 
 /*
  $Log: PiperTest.java,v $
+ Revision 1.4  2004/09/24 14:17:40  pah
+ added excessive transfer size warning at 30M
+
  Revision 1.3  2004/03/02 11:55:28  mch
  Changed to more thorough buffered pipe tests
 

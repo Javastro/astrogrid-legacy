@@ -1,5 +1,5 @@
 /*
- * $Id: Piper.java,v 1.4 2004/03/02 11:58:00 mch Exp $
+ * $Id: Piper.java,v 1.5 2004/09/24 14:17:40 pah Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -9,6 +9,9 @@
  */
 
 package org.astrogrid.io;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.io.*;
 
@@ -20,7 +23,14 @@ import java.io.*;
 
 public class Piper
 {
+    /**
+     * Logger for this class
+     */
+    private static final Log logger = LogFactory.getLog(Piper.class);
+
    private static final int BLOCK_SIZE = 2048;
+   /** level above which warnings will be issued about transfer sizes*/
+   private static final int EXCESSIVE_SIZE_WARNING_LEVEL=1024*1024*30; 
    
    /** Utility class - should not be instantiated */
    private Piper() {}
@@ -33,11 +43,20 @@ public class Piper
    public static void pipe(InputStream in, OutputStream out) throws IOException
    {
       byte[] block = new byte[BLOCK_SIZE];
+      int ibytes = 0;
+      int imult = 1;
       int read = in.read(block);
+      ibytes += read;
       while (read > -1)
       {
          out.write(block,0, read);
          read = in.read(block);
+         ibytes += read;
+         if(ibytes > imult *  EXCESSIVE_SIZE_WARNING_LEVEL)
+         {
+             logger.warn("pipe has read "+ibytes);
+             imult++;
+         }
       }
    }
    
@@ -60,11 +79,20 @@ public class Piper
    public static void pipe(Reader in, Writer out) throws IOException
    {
       char[] block = new char[BLOCK_SIZE];
+      int ichar = 0;
+      int imult = 1;
       int read = in.read(block);
+      ichar += read; 
       while (read > -1)
       {
          out.write(block,0, read);
          read = in.read(block);
+         ichar += read; 
+         if(ichar > imult * EXCESSIVE_SIZE_WARNING_LEVEL)
+         {
+             logger.warn("piper has read "+ ichar);
+             imult++;
+         }
       }
    }
 
@@ -81,9 +109,12 @@ public class Piper
 }
 
 /* $Log: Piper.java,v $
- * Revision 1.4  2004/03/02 11:58:00  mch
- * Fixed buffer not flushing
+ * Revision 1.5  2004/09/24 14:17:40  pah
+ * added excessive transfer size warning at 30M
  *
+/* Revision 1.4  2004/03/02 11:58:00  mch
+/* Fixed buffer not flushing
+/*
 /* Revision 1.3  2004/02/17 14:31:49  mch
 /* Minor changes to please checkstyle
 /*
