@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegate.java,v 1.27 2004/03/08 15:54:57 mch Exp $
+ * $Id: WebDelegate.java,v 1.28 2004/03/09 13:01:08 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -36,7 +36,6 @@ import org.astrogrid.datacenter.delegate.DatacenterException;
 import org.astrogrid.datacenter.delegate.DatacenterQuery;
 import org.astrogrid.datacenter.delegate.DatacenterResults;
 import org.astrogrid.datacenter.delegate.FullSearcher;
-import org.astrogrid.datacenter.delegate.agws.WebDelegate;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Msrl;
@@ -446,6 +445,9 @@ public class WebDelegate implements FullSearcher, ConeSearcher, ApplicationContr
 
 /*
  $Log: WebDelegate.java,v $
+ Revision 1.28  2004/03/09 13:01:08  mch
+ Removed self import
+
  Revision 1.27  2004/03/08 15:54:57  mch
  Better exception passing, removed Metdata
 
@@ -482,6 +484,9 @@ public class WebDelegate implements FullSearcher, ConeSearcher, ApplicationContr
  Revision 1.16  2004/01/08 15:48:17  mch
  Allow myspace references to be given
 $Log: WebDelegate.java,v $
+Revision 1.28  2004/03/09 13:01:08  mch
+Removed self import
+
 Revision 1.27  2004/03/08 15:54:57  mch
 Better exception passing, removed Metdata
 
