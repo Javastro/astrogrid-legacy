@@ -15,9 +15,8 @@
     <ag-div>
       <agComponentTitle>MySpace Explorer</agComponentTitle>
       
-<!--
       <ag-onload function="nofooter();"/>
--->
+
       <ag-link rel="stylesheet" type="text/css" href="/astrogrid-portal/mount/myspace/xmlTree.css"/>
       <ag-link rel="stylesheet" type="text/css" href="/astrogrid-portal/mount/myspace/myspace.css"/>
       <ag-script type="text/javascript" src="/astrogrid-portal/mount/myspace/xmlTree.js"/>
