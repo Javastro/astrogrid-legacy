@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/cocoon/explorer/xsl/Attic/explorer.xsl,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/27 00:04:36 $</cvs:author>
-    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/27 02:43:18 $</cvs:author>
+    | <cvs:version>$Revision: 1.3 $</cvs:version>
     | <cvs:log>
     | $Log: explorer.xsl,v $
+    | Revision 1.3  2003/06/27 02:43:18  dave
+    | Added images to tree nodes
+    |
     | Revision 1.2  2003/06/27 00:04:36  dave
     | Added Cocoon 2.0 binary and updated MySpace jar
     |
@@ -34,8 +37,17 @@
 		+-->
 	<xsl:template match="/page">
 		<page>
+			<!-- Add the css elements for our tree -->
+			<style>
+				<![CDATA[
+					table.tree { background:#ffffff; color:black; font-size:10pt; font-style:normal; font-weight:normal; font-family:arial, serif}
+					tr.tree    { background:#ffffff; color:black; font-size:10pt; font-style:normal; font-weight:normal; font-family:arial, serif}
+					td.tree    { background:#ffffff; color:black; font-size:10pt; font-style:normal; font-weight:normal; font-family:arial, serif}
+				]]>
+			</style>
+			<!-- Add our page menu -->
 			<menu>
-				<!-- Add our menu items -->
+				<!-- Add our top level item -->
 				<link type="menu" selected="true">
 					<display>Explorer</display>
 					<href>
@@ -53,10 +65,11 @@
 							<param name="action">create-view</param>
 						</href>
 					</link>
-					<!-- Add our current views -->
+					<!-- Add a list of our current views -->
 					<xsl:call-template name="menu-views"/>
 				</link>
 			</menu>
+			<!-- Add our page content -->
 			<content>
 				<!-- Check the page action -->
 				<xsl:choose>
@@ -109,100 +122,112 @@
 	    | Process our current view.
 	    +-->
 	<xsl:template match="page/view">
-		<table border="1">
-			<tr>
-				<td>View ident</td>
-				<td>
-					<xsl:value-of select="/page/view/@ident"/>
-				</td>
-				<td align="right">
-					<link type="close">
-						<display>Close</display>
-						<href>
-							<base><xsl:value-of select="$page"/></base>
-							<param name="action">delete-view</param>
-							<param name="confirm">true</param>
-							<param name="AST-VIEW"><xsl:value-of select="/page/view/@ident"/></param>
-						</href>
-					</link>
-				</td>
-			</tr>
-			<tr>
-				<td>Service</td>
-				<td colspan="2">
-					<xsl:value-of select="/page/view/@service"/>
-				</td>
-			</tr>
-			<tr>
-				<td>Explorer</td>
-				<td colspan="2">
-					<xsl:value-of select="/page/view/@path"/>
-				</td>
-			</tr>
-			<tr>
-				<td>Current</td>
-				<td colspan="2">
-					<xsl:value-of select="/page/view/current/@path"/>
-				</td>
-			</tr>
-			<tr>
-				<td>Selected</td>
-				<td colspan="2">
-					<xsl:value-of select="/page/view/selected/@path"/>
-				</td>
-			</tr>
-			<tr>
-				<td>Action</td>
-				<td colspan="2">
-					<xsl:value-of select="/page/view/selected/@action"/>
-				</td>
-			</tr>
-		</table>
-		<!-- Check the page action -->
-		<xsl:choose>
-			<!-- Display the delete item form -->
-			<xsl:when test="$action = 'create-folder'">
-				<xsl:call-template name="create-folder"/>
-			</xsl:when>
+		<p>
+			<table border="1">
+				<tr>
+					<td>View ident</td>
+					<td>
+						<xsl:value-of select="/page/view/@ident"/>
+					</td>
+					<td align="right">
+						<link type="close">
+							<display>Close</display>
+							<href>
+								<base><xsl:value-of select="$page"/></base>
+								<param name="action">delete-view</param>
+								<param name="confirm">true</param>
+								<param name="AST-VIEW"><xsl:value-of select="/page/view/@ident"/></param>
+							</href>
+						</link>
+					</td>
+				</tr>
+				<tr>
+					<td>Service</td>
+					<td colspan="2">
+						<xsl:value-of select="/page/view/@service"/>
+					</td>
+				</tr>
+<!--
+				<tr>
+					<td>Explorer</td>
+					<td colspan="2">
+						<xsl:value-of select="/page/view/@path"/>
+					</td>
+				</tr>
+				<tr>
+					<td>Current</td>
+					<td colspan="2">
+						<xsl:value-of select="/page/view/current/@path"/>
+					</td>
+				</tr>
+				<tr>
+					<td>Selected</td>
+					<td colspan="2">
+						<xsl:value-of select="/page/view/selected/@path"/>
+					</td>
+				</tr>
+				<tr>
+					<td>Action</td>
+					<td colspan="2">
+						<xsl:value-of select="/page/view/selected/@action"/>
+					</td>
+				</tr>
+-->
+			</table>
+		</p>
+		<p>
+			<!-- Check the page action -->
+			<xsl:choose>
+				<!-- Display the delete item form -->
+				<xsl:when test="$action = 'create-folder'">
+					<xsl:call-template name="create-folder"/>
+				</xsl:when>
+				<!-- Display the delete item form -->
+				<xsl:when test="$action = 'delete-item'">
+					<xsl:call-template name="delete-item"/>
+				</xsl:when>
+				<!-- Display the rename item form -->
+				<xsl:when test="$action = 'rename-item'">
+					<xsl:call-template name="rename-item"/>
+				</xsl:when>
+				<!-- Display our tree -->
+				<xsl:otherwise>
+					<xsl:apply-templates select="/page/view/tree"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</p>
+	</xsl:template>
 
-			<!-- Display the delete item form -->
-			<xsl:when test="$action = 'delete-item'">
-				<xsl:call-template name="delete-item"/>
-			</xsl:when>
-			<!-- Display the rename item form -->
-			<xsl:when test="$action = 'rename-item'">
-				<xsl:call-template name="rename-item"/>
-			</xsl:when>
-			<!-- Display our view tree -->
-			<xsl:otherwise>
-				<!-- Process the tree nodes -->
-				<table border="1">
-					<xsl:apply-templates select="/page/view/tree/node"/>
-				</table>
-			</xsl:otherwise>
-		</xsl:choose>
+	<!--+
+	    | Process our tree.
+	    +-->
+	<xsl:template match="/page/view/tree">
+		<table class="tree" border="0" cellpadding="0" cellspacing="0">
+			<xsl:apply-templates select="/page/view/tree/node"/>
+		</table>
 	</xsl:template>
 
 	<!--+
 	    | Process our tree nodes.
 	    +-->
 	<xsl:template match="/page/view/tree//node">
-		<tr>
-			<td>
+		<tr class="tree">
+			<td class="tree" width="200" align="left" valign="middle">
 				<!-- Add the indentation -->
 				<xsl:call-template name="node-indent"/>
 				<!-- Add the node link -->
 				<xsl:choose>
 					<!-- If this is a folder -->
 					<xsl:when test="@type = '1'">
-						<link type="folder">
+						<link type="node">
 							<!-- If this matches the explorer path -->
 							<xsl:if test="@path = /page/view/@path">
 								<xsl:attribute name="selected">true</xsl:attribute>
 							</xsl:if>
-							<display>
+							<image src="images/cont.icon.gif"/>
+							<text>
 								<xsl:value-of select="@name"/>
-							</display>
+							</text>
 							<href>
 								<base><xsl:value-of select="$page"/></base>
 								<param name="action">explorer-path</param>
@@ -213,14 +238,15 @@
 					</xsl:when>
 					<!-- If this is an item -->
 					<xsl:when test="@type = '2'">
-						<link type="item">
+						<link type="node">
 							<!-- If this matches the current path -->
 							<xsl:if test="@path = /page/view/current/@path">
 								<xsl:attribute name="selected">true</xsl:attribute>
 							</xsl:if>
-							<display>
+							<image src="images/item.icon.gif"/>
+							<text>
 								<xsl:value-of select="@name"/>
-							</display>
+							</text>
 							<href>
 								<base><xsl:value-of select="$page"/></base>
 								<param name="action">current-path</param>
@@ -231,7 +257,10 @@
 					</xsl:when>
 				</xsl:choose>
 			</td>
-			<td>
+			<td class="tree" width="5">
+				<xsl:text> </xsl:text>
+			</td>
+			<td class="tree" align="left" valign="middle">
 				<xsl:call-template name="node-actions"/>
 			</td>
 		</tr>
@@ -243,20 +272,38 @@
 	    | Generate the indentation for a tree node.
 	    +-->
 	<xsl:template name="node-indent">
-		<!-- For each parent node in the tree -->
+		<!-- Indent for each parent node in the tree -->
 		<xsl:for-each select="ancestor::node">
 			<xsl:call-template name="node-parent"/>
 		</xsl:for-each>
-		<!-- For this node -->
+		<!-- Add the symbol for this node -->
 		<xsl:choose>
-			<!-- If this node is not the last in its group -->
-			<xsl:when test="@more = 'true'">
-				<xsl:text>.+-</xsl:text>
+			<!-- If this node is a container -->
+			<xsl:when test="@type = '1'">
+				<xsl:choose>
+					<!-- If this node is not the last in its group -->
+					<xsl:when test="@more = 'true'">
+						<img border="0" src="images/cont.node.mid.gif"/>
+					</xsl:when>
+					<!-- If this node is the last in its group -->
+					<xsl:otherwise>
+						<img border="0" src="images/cont.node.end.gif"/>
+					</xsl:otherwise>
+				</xsl:choose>
 			</xsl:when>
-			<!-- If this node is the last in its group -->
-			<xsl:otherwise>
-				<xsl:text>.+-</xsl:text>
-			</xsl:otherwise>
+			<!-- If this node is an item -->
+			<xsl:when test="@type = '2'">
+				<xsl:choose>
+					<!-- If this node is not the last in its group -->
+					<xsl:when test="@more = 'true'">
+						<img border="0" src="images/item.node.mid.gif"/>
+					</xsl:when>
+					<!-- If this node is the last in its group -->
+					<xsl:otherwise>
+						<img border="0" src="images/item.node.end.gif"/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
 		</xsl:choose>
 	</xsl:template>
 
@@ -267,11 +314,11 @@
 		<xsl:choose>
 			<!-- If the PARENT node has more siblings -->
 			<xsl:when test="@more = 'true'">
-				<xsl:text>.|..</xsl:text>
+				<img border="0" src="images/tree.bar.gif"/>
 			</xsl:when>
 			<!-- If the PARENT node is the last in its group -->
 			<xsl:otherwise>
-				<xsl:text>....</xsl:text>
+				<img border="0" src="images/tree.gap.gif"/>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>

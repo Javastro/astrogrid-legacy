@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/cocoon/common/xsl/Attic/template.xsl,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/26 14:15:10 $</cvs:author>
-    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/27 02:43:18 $</cvs:author>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
     | <cvs:log>
     | $Log: template.xsl,v $
+    | Revision 1.2  2003/06/27 02:43:18  dave
+    | Added images to tree nodes
+    |
     | Revision 1.1  2003/06/26 14:15:10  dave
     | Added explorer pages and actions to Cocoon
     |
@@ -20,7 +23,9 @@
 	<xsl:template match="/page">
 		<html>
 			<head>
-				<xsl:apply-templates select="header"/>
+				<style>
+					<xsl:apply-templates select="style"/>
+				</style>
 			</head>
 			<body>
 				<table border="1" width="800" height="100%">
@@ -56,8 +61,8 @@
 		</html>
 	</xsl:template>
 
-	<!-- Match the page header -->
-	<xsl:template match="/page/header">
+	<!-- Match a page style element -->
+	<xsl:template match="/page/style">
 		<xsl:apply-templates/>
 	</xsl:template>
 
@@ -69,13 +74,85 @@
 	</xsl:template>
 
 	<!-- Match a menu link -->
-	<xsl:template name="menu" match="/page/menu//link">
+	<xsl:template match="link[@type = 'menu']">
+		<!-- Add a table row for this item -->
 		<tr>
-			<xsl:call-template name="link"/>
+			<a>
+				<xsl:attribute name="href">
+					<xsl:value-of select="href/base"/>
+					<xsl:for-each select="href/param">
+						<xsl:choose>
+							<xsl:when test="position() = 1">
+								<xsl:text>?</xsl:text>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:text>&amp;</xsl:text>
+							</xsl:otherwise>
+						</xsl:choose>
+						<xsl:value-of select="@name"/>
+						<xsl:text>=</xsl:text>
+						<xsl:value-of select="text()"/>
+					</xsl:for-each>
+				</xsl:attribute>
+				<xsl:choose>
+					<!-- If this link is selected -->
+					<xsl:when test="@selected = 'true'">
+						<b>
+							<xsl:text>[</xsl:text>
+							<xsl:value-of select="display/text()"/>
+							<xsl:text>]</xsl:text>
+						</b>
+					</xsl:when>
+					<!-- If this link is NOT selected -->
+					<xsl:otherwise>
+						<xsl:text>[</xsl:text>
+						<xsl:value-of select="display/text()"/>
+						<xsl:text>]</xsl:text>
+					</xsl:otherwise>
+				</xsl:choose>
+			</a>
 		</tr>
-		<xsl:for-each select="link">
-			<xsl:call-template name="menu"/>
-		</xsl:for-each>
+		<!-- Process any child items -->
+		<xsl:apply-templates select="link"/>
+	</xsl:template>
+
+	<!-- Generate a tree node link -->
+	<xsl:template match="link[@type = 'node']">
+		<a>
+			<xsl:attribute name="href">
+				<xsl:value-of select="href/base"/>
+				<xsl:for-each select="href/param">
+					<xsl:choose>
+						<xsl:when test="position() = 1">
+							<xsl:text>?</xsl:text>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:text>&amp;</xsl:text>
+						</xsl:otherwise>
+					</xsl:choose>
+					<xsl:value-of select="@name"/>
+					<xsl:text>=</xsl:text>
+					<xsl:value-of select="text()"/>
+				</xsl:for-each>
+			</xsl:attribute>
+			<img border="0">
+				<xsl:attribute name="src">
+					<xsl:value-of select="image/@src"/>
+				</xsl:attribute>
+			</img>
+			<xsl:choose>
+				<!-- If this link is selected -->
+				<xsl:when test="@selected = 'true'">
+					<strong>
+						<xsl:value-of select="text"/>
+					</strong>
+				</xsl:when>
+				<!-- If this link is NOT selected -->
+				<xsl:otherwise>
+					<xsl:value-of select="text"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</a>
 	</xsl:template>
 
 	<!-- Generate a href link -->

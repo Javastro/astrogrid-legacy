@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/Attic/build.xml,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/26 23:20:27 $</cvs:author>
-    | <cvs:version>$Revision: 1.20 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/27 02:43:18 $</cvs:author>
+    | <cvs:version>$Revision: 1.21 $</cvs:version>
     | <cvs:log>
     | $Log: build.xml,v $
+    | Revision 1.21  2003/06/27 02:43:18  dave
+    | Added images to tree nodes
+    |
     | Revision 1.20  2003/06/26 23:20:27  dave
     | Updated build to switch between Cocoon 2.0, Cocoon 2.1, Axis 1.0 and Axis 1.1
     |
@@ -645,8 +648,6 @@
 
 	<!-- Deploy our cocoon site -->
 	<target name="cocoon.site.deploy" depends="cocoon.init">
-		<!-- Patch the Cocoon sitemap -->
-		<antcall target="cocoon.sitemap.patch"/>
 		<!-- Copy our site files -->
 		<copy verbose="false" toDir="${site.cocoon}">
 			<fileset dir="src/cocoon">
