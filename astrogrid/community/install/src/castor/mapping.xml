@@ -3,10 +3,16 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/castor/mapping.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
-    | <cvs:version>$Revision: 1.3 $</cvs:version>
+    | <cvs:date>$Date: 2004/04/15 02:27:46 $</cvs:date>
+    | <cvs:version>$Revision: 1.4 $</cvs:version>
     | <cvs:log>
     |   $Log: mapping.xml,v $
+    |   Revision 1.4  2004/04/15 02:27:46  dave
+    |   Merged development branch, dave-dev-200404071355, into HEAD
+    |
+    |   Revision 1.3.14.1  2004/04/09 00:32:11  dave
+    |   Refactored the JNDI context tasks.
+    |
     |   Revision 1.3  2004/03/30 01:40:03  dave
     |   Merged development branch, dave-dev-200403242058, into HEAD
     |
@@ -32,25 +38,9 @@
         <field name="groups" collection="collection" type="org.astrogrid.community.common.policy.data.GroupData">
             <bind-xml name="group" location="groups"/>
         </field>
-
         <field name="passwords" collection="map" type="org.exolab.castor.mapping.MapItem">
             <bind-xml name="password" location="passwords"/>
         </field>
-        <!--+
-            | Needs Castor 0.9.5.3
-        <field name="passwords" collection="map">
-            <bind-xml name="password" location="passwords">
-                <class name="org.exolab.castor.mapping.MapItem">
-                    <field name="key" type="java.lang.String">
-                        <bind-xml name="account" node="attribute"/>
-                    </field>
-                    <field name="value" type="java.lang.String">
-                        <bind-xml name="password" node="attribute"/>
-                    </field>
-                </class>
-            </bind-xml>
-        </field>
-            +-->
     </class>
 
     <!--+
@@ -93,20 +83,5 @@
             <bind-xml name="description" node="element"/>
         </field>
     </class>
-
-    <!--
-    <class name="org.astrogrid.community.server.security.data.PasswordData">
-        <map-to xml="password"/>
-        <field name="account" type="java.lang.String">
-            <bind-xml name="account" node="attribute"/>
-        </field>
-        <field name="password" type="java.lang.String">
-            <bind-xml name="password" node="attribute"/>
-        </field>
-        <field name="encryption" type="java.lang.String">
-            <bind-xml name="encryption" node="attribute"/>
-        </field>
-    </class>
-    -->
 
 </mapping>

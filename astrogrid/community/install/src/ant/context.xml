@@ -1,0 +1,390 @@
+<?xml version="1.0"?>
+<!--+
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/ant/context.xml,v $</cvs:source>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2004/04/15 02:27:46 $</cvs:date>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:log>
+    |   $Log: context.xml,v $
+    |   Revision 1.2  2004/04/15 02:27:46  dave
+    |   Merged development branch, dave-dev-200404071355, into HEAD
+    |
+    |   Revision 1.1.2.2  2004/04/15 02:19:40  dave
+    |   Refactored install script to work with Tomcat 4.x and 5.x (incomplete).
+    |
+    |   Revision 1.1.2.1  2004/04/09 00:32:11  dave
+    |   Refactored the JNDI context tasks.
+    |
+    | </cvs:log>
+    |
+    | A toolkit of Ant tasks to create JNDI context entries.
+    |
+    |
+    +-->
+<project default="init" basedir="." name="jndi-context">
+
+
+    <!--+
+        | Load our tomcat properties (optional).
+        +-->
+    <property file="${basedir}/tomcat.properties"/>
+
+    <!--+
+        | Default Tomcat properties.
+        +-->
+    <property name="tomcat.home" value="${env.CATALINA_HOME}"/>
+    <property name="tomcat.host" value="localhost"/>
+    <property name="tomcat.port" value="8080"/>
+    <property name="tomcat.url"  value="http://${tomcat.host}:${tomcat.port}"/>
+
+    <!-- ================ Global server entries ================ -->
+
+    <!--+
+        | Add a property to the global config.
+        +-->
+    <target name="server.global.property" depends="">
+        <echo message=""/>
+        <echo message="Adding global JNDI property to server config/"/>
+        <echo message="  tomcat.home    : ${tomcat.home}"/>
+        <echo message="  property.name  : ${property.name}"/>
+        <echo message="  property.type  : ${property.type}"/>
+        <echo message="  property.value : ${property.value}"/>
+        <!--+
+            | Modify the Tomcat config file.
+            +-->
+        <xslt style="${basedir}/xsl/context/global-property.xsl"
+            in="${tomcat.home}/conf/server.xml"
+            out="${tomcat.home}/conf/server.xml.tmp">
+            <outputproperty name="method" value="xml"/>
+            <outputproperty name="indent" value="yes"/>
+            <param name="property.name"  expression="${property.name}"/>
+            <param name="property.type"  expression="${property.type}"/>
+            <param name="property.value" expression="${property.value}"/>
+        </xslt>
+        <!--+
+            | Replace the existing config file with the new one.
+            +-->
+        <move overwrite="true" failonerror="false"
+            file="${tomcat.home}/conf/server.xml.tmp"
+            tofile="${tomcat.home}/conf/server.xml"/>
+    </target>
+
+    <!--+
+        | Add a resource to the global config.
+        +-->
+    <target name="server.global.resource" depends="">
+        <echo message=""/>
+        <echo message="Adding global JNDI resource to server config."/>
+        <echo message="  tomcat.home   : ${tomcat.home}"/>
+        <echo message="  resource.name : ${resource.name}"/>
+        <echo message="  resource.type : ${resource.type}"/>
+        <echo message="  resource.auth : ${resource.auth}"/>
+        <!--+
+            | Modify the Tomcat config file.
+            +-->
+        <xslt style="${basedir}/xsl/context/global-resource.xsl"
+            in="${tomcat.home}/conf/server.xml"
+            out="${tomcat.home}/conf/server.xml.tmp">
+            <outputproperty name="method" value="xml"/>
+            <outputproperty name="indent" value="yes"/>
+            <param name="resource.name" expression="${resource.name}"/>
+            <param name="resource.type" expression="${resource.type}"/>
+            <param name="resource.auth" expression="${resource.auth}"/>
+        </xslt>
+        <!--+
+            | Replace the existing config file with the new one.
+            +-->
+        <move overwrite="true" failonerror="false"
+            file="${tomcat.home}/conf/server.xml.tmp"
+            tofile="${tomcat.home}/conf/server.xml"/>
+    </target>
+
+    <!--+
+        | Add a database params block to the global config.
+        +-->
+    <target name="server.global.resource.params" depends="">
+        <echo message=""/>
+        <echo message="Adding global JNDI resource params to server config."/>
+        <echo message="  tomcat.home   : ${tomcat.home}"/>
+        <echo message="  resource.name : ${resource.name}"/>
+        <echo message="  database.url  : ${database.url}"/>
+        <echo message="  database.user : ${database.user}"/>
+        <echo message="  database.pass : ${database.pass}"/>
+        <echo message="  database.driver.name  : ${database.driver.name}"/>
+        <echo message="  database.driver.class : ${database.driver.class}"/>
+        <!--+
+            | Modify the Tomcat config file.
+            +-->
+        <xslt style="${basedir}/xsl/context/global-resource-params.xsl"
+            in="${tomcat.home}/conf/server.xml"
+            out="${tomcat.home}/conf/server.xml.tmp">
+            <outputproperty name="method" value="xml"/>
+            <outputproperty name="indent" value="yes"/>
+            <param name="resource.name"         expression="${resource.name}"/>
+            <param name="database.url"          expression="${database.url}"/>
+            <param name="database.user"         expression="${database.user}"/>
+            <param name="database.pass"         expression="${database.pass}"/>
+            <param name="database.driver.name"  expression="${database.driver.name}"/>
+            <param name="database.driver.class" expression="${database.driver.class}"/>
+        </xslt>
+        <!--+
+            | Replace the existing config file with the new one.
+            +-->
+        <move overwrite="true" failonerror="false"
+            file="${tomcat.home}/conf/server.xml.tmp"
+            tofile="${tomcat.home}/conf/server.xml"/>
+    </target>
+
+    <!-- ================ Server context entries ================ -->
+
+    <!--+
+        | Add a local context to the Tomcat config.
+        +-->
+    <target name="server.context.insert" depends="">
+        <echo message=""/>
+        <echo message="Adding WebApp context to server config."/>
+        <echo message="  tomcat.home  : ${tomcat.home}"/>
+        <echo message="  context.path : ${context.path}"/>
+        <echo message="  context.base : ${context.base}"/>
+        <!--+
+            | Modify the Tomcat config file.
+            +-->
+        <xslt style="${basedir}/xsl/context/context-insert.xsl"
+            in="${tomcat.home}/conf/server.xml"
+            out="${tomcat.home}/conf/server.xml.tmp">
+            <outputproperty name="method" value="xml"/>
+            <outputproperty name="indent" value="yes"/>
+            <param name="context.path" expression="${context.path}"/>
+            <param name="context.base" expression="${context.base}"/>
+        </xslt>
+        <!--+
+            | Replace the existing config file with the new one.
+            +-->
+        <move overwrite="true" failonerror="false"
+            file="${tomcat.home}/conf/server.xml.tmp"
+            tofile="${tomcat.home}/conf/server.xml"/>
+    </target>
+
+    <!--+
+        | Add a property to a context.
+        +-->
+    <target name="server.context.property" depends="">
+        <echo message=""/>
+        <echo message="Adding JNDI property to server context."/>
+        <echo message="  tomcat.home    : ${tomcat.home}"/>
+        <echo message="  context.path   : ${context.path}"/>
+        <echo message="  property.name  : ${property.name}"/>
+        <echo message="  property.type  : ${property.type}"/>
+        <echo message="  property.value : ${property.value}"/>
+        <!--+
+            | Modify the Tomcat config file.
+            +-->
+        <xslt style="${basedir}/xsl/context/context-property.xsl"
+            in="${tomcat.home}/conf/server.xml"
+            out="${tomcat.home}/conf/server.xml.tmp">
+            <outputproperty name="method" value="xml"/>
+            <outputproperty name="indent" value="yes"/>
+            <param name="context.path"   expression="${context.path}"/>
+            <param name="property.name"  expression="${property.name}"/>
+            <param name="property.type"  expression="${property.type}"/>
+            <param name="property.value" expression="${property.value}"/>
+        </xslt>
+        <!--+
+            | Replace the existing config file with the new one.
+            +-->
+        <move overwrite="true" failonerror="false"
+            file="${tomcat.home}/conf/server.xml.tmp"
+            tofile="${tomcat.home}/conf/server.xml"/>
+    </target>
+
+    <!--+
+        | Add a reference to a global property.
+        +-->
+    <target name="server.context.reference" depends="">
+        <echo message=""/>
+        <echo message="Adding JNDI reference to server context."/>
+        <echo message="  tomcat.home   : ${tomcat.home}"/>
+        <echo message="  context.path  : ${context.path}"/>
+        <echo message="  property.name : ${property.name}"/>
+        <echo message="  property.type : ${property.type}"/>
+        <echo message="  property.link : ${property.link}"/>
+        <!--+
+            | Modify the Tomcat config file.
+            +-->
+        <xslt style="${basedir}/xsl/context/context-reference.xsl"
+            in="${tomcat.home}/conf/server.xml"
+            out="${tomcat.home}/conf/server.xml.tmp">
+            <outputproperty name="method" value="xml"/>
+            <outputproperty name="indent" value="yes"/>
+            <param name="context.path"  expression="${context.path}"/>
+            <param name="property.name" expression="${property.name}"/>
+            <param name="property.type" expression="${property.type}"/>
+            <param name="property.link" expression="${property.link}"/>
+        </xslt>
+        <!--+
+            | Replace the existing config file with the new one.
+            +-->
+        <move overwrite="true" failonerror="false"
+            file="${tomcat.home}/conf/server.xml.tmp"
+            tofile="${tomcat.home}/conf/server.xml"/>
+    </target>
+
+    <!-- ================ Local context entries ================ -->
+
+    <!--+
+        | Create an initial local context.
+        +-->
+    <target name="local.context.create" depends="">
+        <echo message=""/>
+        <echo message="Creating local context file."/>
+        <echo message="  context.file   : ${context.file}"/>
+        <echo message="  context.path   : ${context.path}"/>
+        <echo message="  context.base   : ${context.base}"/>
+        <!--+
+            | Modify the template file.
+            +-->
+        <xslt style="${basedir}/xsl/context/context-create.xsl"
+            in="${basedir}/xml/context/context.xml"
+            out="${context.file}">
+            <outputproperty name="method" value="xml"/>
+            <outputproperty name="indent" value="yes"/>
+            <param name="context.path"   expression="${context.path}"/>
+            <param name="context.base"   expression="${context.base}"/>
+        </xslt>
+    </target>
+
+    <!--+
+        | Add a property to a local context.
+        +-->
+    <target name="local.context.property" depends="">
+        <echo message=""/>
+        <echo message="Adding JNDI property to a local context file."/>
+        <echo message="  context.file   : ${context.file}"/>
+        <echo message="  context.path   : ${context.path}"/>
+        <echo message="  property.name  : ${property.name}"/>
+        <echo message="  property.type  : ${property.type}"/>
+        <echo message="  property.value : ${property.value}"/>
+        <!--+
+            | Modify the context file.
+            +-->
+        <xslt style="${basedir}/xsl/context/context-property.xsl"
+            in="${context.file}"
+            out="${context.file}.tmp">
+            <outputproperty name="method" value="xml"/>
+            <outputproperty name="indent" value="yes"/>
+            <param name="context.path"   expression="${context.path}"/>
+            <param name="property.name"  expression="${property.name}"/>
+            <param name="property.type"  expression="${property.type}"/>
+            <param name="property.value" expression="${property.value}"/>
+        </xslt>
+        <!--+
+            | Replace the existing context file with the new one.
+            +-->
+        <move overwrite="true" failonerror="false"
+            file="${context.file}.tmp"
+            tofile="${context.file}"/>
+    </target>
+
+    <!--+
+        | Add a reference to a global property.
+        +-->
+    <target name="local.context.reference" depends="">
+        <echo message=""/>
+        <echo message="Adding global JNDI reference a local context file."/>
+        <echo message="  context.file  : ${context.file}"/>
+        <echo message="  context.path  : ${context.path}"/>
+        <echo message="  property.name : ${property.name}"/>
+        <echo message="  property.type : ${property.type}"/>
+        <echo message="  property.link : ${property.link}"/>
+        <!--+
+            | Modify the context file.
+            +-->
+        <xslt style="${basedir}/xsl/context/context-reference.xsl"
+            in="${context.file}"
+            out="${context.file}.tmp">
+            <outputproperty name="method" value="xml"/>
+            <outputproperty name="indent" value="yes"/>
+            <param name="context.path"  expression="${context.path}"/>
+            <param name="property.name" expression="${property.name}"/>
+            <param name="property.type" expression="${property.type}"/>
+            <param name="property.link" expression="${property.link}"/>
+        </xslt>
+        <!--+
+            | Replace the existing context file with the new one.
+            +-->
+        <move overwrite="true" failonerror="false"
+            file="${context.file}.tmp"
+            tofile="${context.file}"/>
+    </target>
+
+    <!--+
+        | Add a resource to a local context file.
+        +-->
+    <target name="local.context.resource" depends="">
+        <echo message=""/>
+        <echo message="Adding a JNDI resource to a local context file."/>
+        <echo message="  context.file  : ${context.file}"/>
+        <echo message="  context.path  : ${context.path}"/>
+        <echo message="  resource.name : ${resource.name}"/>
+        <echo message="  resource.type : ${resource.type}"/>
+        <echo message="  resource.auth : ${resource.auth}"/>
+        <!--+
+            | Modify the context file.
+            +-->
+        <xslt style="${basedir}/xsl/context/context-resource.xsl"
+            in="${context.file}"
+            out="${context.file}.tmp">
+            <outputproperty name="method" value="xml"/>
+            <outputproperty name="indent" value="yes"/>
+            <param name="context.path"  expression="${context.path}"/>
+            <param name="resource.name" expression="${resource.name}"/>
+            <param name="resource.type" expression="${resource.type}"/>
+            <param name="resource.auth" expression="${resource.auth}"/>
+        </xslt>
+        <!--+
+            | Replace the existing context file with the new one.
+            +-->
+        <move overwrite="true" failonerror="false"
+            file="${context.file}.tmp"
+            tofile="${context.file}"/>
+    </target>
+
+    <!--+
+        | Add a resource params block to a local context file.
+        +-->
+    <target name="local.context.resource.params" depends="">
+        <echo message=""/>
+        <echo message="Adding JNDI resource params to a local context file."/>
+        <echo message="  context.file  : ${context.file}"/>
+        <echo message="  context.path  : ${context.path}"/>
+        <echo message="  resource.name : ${resource.name}"/>
+        <echo message="  database.url  : ${database.url}"/>
+        <echo message="  database.user : ${database.user}"/>
+        <echo message="  database.pass : ${database.pass}"/>
+        <echo message="  database.driver.name  : ${database.driver.name}"/>
+        <echo message="  database.driver.class : ${database.driver.class}"/>
+        <!--+
+            | Modify the context file.
+            +-->
+        <xslt style="${basedir}/xsl/context/context-resource-params.xsl"
+            in="${context.file}"
+            out="${context.file}.tmp">
+            <outputproperty name="method" value="xml"/>
+            <outputproperty name="indent" value="yes"/>
+            <param name="context.path"  expression="${context.path}"/>
+            <param name="resource.name" expression="${resource.name}"/>
+            <param name="database.url"  expression="${database.url}"/>
+            <param name="database.user" expression="${database.user}"/>
+            <param name="database.pass" expression="${database.pass}"/>
+            <param name="database.driver.name"  expression="${database.driver.name}"/>
+            <param name="database.driver.class" expression="${database.driver.class}"/>
+        </xslt>
+        <!--+
+            | Replace the existing context file with the new one.
+            +-->
+        <move overwrite="true" failonerror="false"
+            file="${context.file}.tmp"
+            tofile="${context.file}"/>
+    </target>
+
+</project>

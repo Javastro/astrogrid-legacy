@@ -4,10 +4,16 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/Attic/project.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
-    | <cvs:version>$Revision: 1.10 $</cvs:version>
+    | <cvs:date>$Date: 2004/04/15 02:27:46 $</cvs:date>
+    | <cvs:version>$Revision: 1.11 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.11  2004/04/15 02:27:46  dave
+    |   Merged development branch, dave-dev-200404071355, into HEAD
+    |
+    |   Revision 1.10.14.1  2004/04/08 13:56:03  dave
+    |   Updated the install tools and data files.
+    |
     |   Revision 1.10  2004/03/30 01:40:03  dave
     |   Merged development branch, dave-dev-200403242058, into HEAD
     |
@@ -103,6 +109,18 @@
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>
+
+        <!--+
+            | The MySpace delegate.
+            +-->
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>astrogrid-mySpace</artifactId>
+            <version>${pom.currentVersion}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+        </dependency>
+
         <!--+
             | The new Castor libraries.
             | Can't use these yet, because the mapping file URL has moved.

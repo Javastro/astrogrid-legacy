@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+    |
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/config/community/org.astrogrid.iter-5.test.roe.xml,v $</cvs:source>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2004/04/15 02:27:46 $</cvs:date>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:log>
+    |   $Log: org.astrogrid.iter-5.test.roe.xml,v $
+    |   Revision 1.2  2004/04/15 02:27:46  dave
+    |   Merged development branch, dave-dev-200404071355, into HEAD
+    |
+    |   Revision 1.1.2.1  2004/04/08 13:56:02  dave
+    |   Updated the install tools and data files.
+    |
+    | </cvs:log>
+    |
+    +-->
+<community ident="ivo://org.astrogrid.iter-5.test.roe">
+    <!--+
+        | The community Accounts.
+        +-->
+    <accounts>
+        <!--+
+            | Astrogrid developers.
+            +-->
+        <account ident="ivo://org.astrogrid.iter-5.test.roe/al">
+            <display>Andy Lawrence</display>
+            <description>Astrogrid project lead</description>
+            <email>al@mail.astrogrid.org</email>
+        </account>
+        <account ident="ivo://org.astrogrid.iter-5.test.roe/acd">
+            <display>Clive Davenhall</display>
+            <description>Astrogrid developer</description>
+            <email>acd@mail.astrogrid.org</email>
+        </account>
+        <account ident="ivo://org.astrogrid.iter-5.test.roe/jdt">
+            <display>John Taylor</display>
+            <description>Astrogrid developer</description>
+            <email>jdt@mail.astrogrid.org</email>
+        </account>
+        <account ident="ivo://org.astrogrid.iter-5.test.roe/mch">
+            <display>Martin Hill</display>
+            <description>Astrogrid developer</description>
+            <email>mch@mail.astrogrid.org</email>
+        </account>
+        <account ident="ivo://org.astrogrid.iter-5.test.roe/gps">
+            <display>Peter Shillan</display>
+            <description>Astrogrid developer</description>
+            <email>gps@mail.astrogrid.org</email>
+        </account>
+        <!--+
+            | Astrogrid scientists.
+            +-->
+        <account ident="ivo://org.astrogrid.iter-5.test.roe/rgm">
+            <display>Bob Mann</display>
+            <description>Astrogrid scientist</description>
+            <email>rgm@mail.astrogrid.org</email>
+        </account>
+        <!--+
+            | Test Accounts.
+            +-->
+        <account ident="ivo://org.astrogrid.iter-5.test.roe/frog">
+            <display>Green Frog</display>
+            <description>Astrogrid tester</description>
+            <email>frog@mail.astrogrid.org</email>
+        </account>
+        <account ident="ivo://org.astrogrid.iter-5.test.roe/toad">
+            <display>Brown Toad</display>
+            <description>Astrogrid tester</description>
+            <email>toad@mail.astrogrid.org</email>
+        </account>
+        <account ident="ivo://org.astrogrid.iter-5.test.roe/newt">
+            <display>Grey newt</display>
+            <description>Astrogrid tester</description>
+            <email>newt@mail.astrogrid.org</email>
+        </account>
+
+    </accounts>
+    <!--+
+        | The community Groups.
+        +-->
+    <groups>
+        <group ident="ivo://org.astrogrid.iter-5.test.roe/public">
+            <description>Public group</description>
+        </group>
+        <group ident="ivo://org.astrogrid.iter-5.test.roe/user">
+            <description>General users group</description>
+        </group>
+        <group ident="ivo://org.astrogrid.iter-5.test.roe/java">
+            <description>Java developers group</description>
+        </group>
+        <group ident="ivo://org.astrogrid.iter-5.test.roe/astro">
+            <description>Astronomers group</description>
+        </group>
+    </groups>
+
+    <!--+
+        | The community passwords.
+        +-->
+    <passwords>
+        <!--+
+            | Astrogrid developers.
+            +-->
+        <password account="ivo://org.astrogrid.iter-5.test.roe/al"   password="qwerty"/>
+        <password account="ivo://org.astrogrid.iter-5.test.roe/acd"  password="qwerty"/>
+        <password account="ivo://org.astrogrid.iter-5.test.roe/jdt"  password="qwerty"/>
+        <password account="ivo://org.astrogrid.iter-5.test.roe/mch"  password="qwerty"/>
+        <password account="ivo://org.astrogrid.iter-5.test.roe/gps"  password="qwerty"/>
+        <!--+
+            | Astrogrid scientists.
+            +-->
+        <password account="ivo://org.astrogrid.iter-5.test.roe/rgm"  password="qwerty"/>
+        <!--+
+            | Test accounts.
+            +-->
+        <password account="ivo://org.astrogrid.iter-5.test.roe/frog" password="qwerty"/>
+        <password account="ivo://org.astrogrid.iter-5.test.roe/toad" password="qwerty"/>
+        <password account="ivo://org.astrogrid.iter-5.test.roe/newt" password="qwerty"/>
+    </passwords>
+</community>

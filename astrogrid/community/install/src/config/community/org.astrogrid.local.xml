@@ -3,10 +3,16 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/config/community/org.astrogrid.local.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/04/01 07:09:39 $</cvs:date>
-    | <cvs:version>$Revision: 1.3 $</cvs:version>
+    | <cvs:date>$Date: 2004/04/15 02:27:46 $</cvs:date>
+    | <cvs:version>$Revision: 1.4 $</cvs:version>
     | <cvs:log>
     |   $Log: org.astrogrid.local.xml,v $
+    |   Revision 1.4  2004/04/15 02:27:46  dave
+    |   Merged development branch, dave-dev-200404071355, into HEAD
+    |
+    |   Revision 1.3.10.1  2004/04/08 13:56:02  dave
+    |   Updated the install tools and data files.
+    |
     |   Revision 1.3  2004/04/01 07:09:39  dave
     |   Merged development branch, dave-dev-200403300547, into HEAD
     |
@@ -21,26 +27,23 @@
         | The community Accounts.
         +-->
     <accounts>
-	    <!--+
-	        | Test Accounts.
-	        +-->
-        <account ident="ivo://org.astrogrid.local/dave">
-            <display>Dave Morris</display>
-            <description>Astrogrid developer</description>
-            <home>ivo://org.astrogrid.local/dave</home>
-            <email>dave@mail.astrogrid.org</email>
+        <!--+
+            | Test Accounts.
+            +-->
+        <account ident="ivo://org.astrogrid.local/frog">
+            <display>Green Frog</display>
+            <description>Astrogrid tester</description>
+            <email>frog@mail.astrogrid.org</email>
         </account>
-        <account ident="ivo://org.astrogrid.local/kevin">
-            <display>Kevin Benson</display>
-            <description>Astrogrid developer</description>
-            <home>ivo://org.astrogrid.local/kevin</home>
-            <email>kevin@mail.astrogrid.org</email>
+        <account ident="ivo://org.astrogrid.local/toad">
+            <display>Brown Toad</display>
+            <description>Astrogrid tester</description>
+            <email>toad@mail.astrogrid.org</email>
         </account>
-        <account ident="ivo://org.astrogrid.local/guy">
-            <display>Guy Rixon</display>
-            <description>Astrogrid developer</description>
-            <home>ivo://org.astrogrid.local/guy</home>
-            <email>guy@mail.astrogrid.org</email>
+        <account ident="ivo://org.astrogrid.local/newt">
+            <display>Grey newt</display>
+            <description>Astrogrid tester</description>
+            <email>newt@mail.astrogrid.org</email>
         </account>
     </accounts>
     <!--+
@@ -65,12 +68,12 @@
         | The passwords.
         +-->
     <passwords>
-	    <!--+
-	        | Test Accounts.
-	        +-->
-        <password account="ivo://org.astrogrid.local/dave"   password="qwerty"/>
-        <password account="ivo://org.astrogrid.local/kevin"  password="qwerty"/>
-        <password account="ivo://org.astrogrid.local/guy"    password="qwerty"/>
+        <!--+
+            | Test Accounts.
+            +-->
+        <password account="ivo://org.astrogrid.local/frog"  password="qwerty"/>
+        <password account="ivo://org.astrogrid.local/toad"  password="qwerty"/>
+        <password account="ivo://org.astrogrid.local/newt"  password="qwerty"/>
     </passwords>
 
 </community>

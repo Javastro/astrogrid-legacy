@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/ivorn/CommunityIvornParser.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:date>$Date: 2004/04/15 02:27:46 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityIvornParser.java,v $
+ *   Revision 1.7  2004/04/15 02:27:46  dave
+ *   Merged development branch, dave-dev-200404071355, into HEAD
+ *
+ *   Revision 1.6.14.1  2004/04/08 13:56:02  dave
+ *   Updated the install tools and data files.
+ *
  *   Revision 1.6  2004/03/30 01:40:03  dave
  *   Merged development branch, dave-dev-200403242058, into HEAD
  *
@@ -56,6 +62,7 @@ import org.astrogrid.common.ivorn.MockIvorn ;
 
 import org.astrogrid.config.Config ;
 import org.astrogrid.config.SimpleConfig ;
+import org.astrogrid.config.PropertyNotFoundException ;
 
 import org.astrogrid.community.common.exception.CommunityServiceException ;
 import org.astrogrid.community.common.exception.CommunityIdentifierException ;
@@ -670,7 +677,6 @@ public class CommunityIvornParser
     /**
      * Access to the local Community identifier.
      * @throws CommunityServiceException If the local Community identifier is not set.
-     * @todo Trap org.astrogrid.config.PropertyNotFoundException and throw an Exception.
      *
      */
     public static String getLocalIdent()
@@ -679,23 +685,31 @@ public class CommunityIvornParser
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("CommunityIvornParser.getLocalIdent()") ;
-        //
-        // Get the local identifier from our configuration.
-        String local = (String) config.getProperty(LOCAL_COMMUNITY_PROPERTY) ;
-        if (DEBUG_FLAG) System.out.println("  Local : " + local) ;
-        //
-        // If we found the local ident.
-        if (null != local)
-            {
-            return local ;
+		try {
+	        //
+	        // Get the local identifier from our configuration.
+	        String local = (String) config.getProperty(LOCAL_COMMUNITY_PROPERTY) ;
+	        if (DEBUG_FLAG) System.out.println("  Local : " + local) ;
+	        //
+	        // If we found the local ident.
+	        if (null != local)
+	            {
+	            return local ;
+	            }
+	        //
+	        // If we didn't find the local ident.
+	        else {
+	            throw new CommunityServiceException(
+	                "Local Community identifier not configured"
+	                ) ;
+	            }
             }
-        //
-        // If we didn't find the local ident.
-        else {
+		catch (PropertyNotFoundException ouch)
+			{
             throw new CommunityServiceException(
                 "Local Community identifier not configured"
                 ) ;
-            }
+			}
         }
 
     /**

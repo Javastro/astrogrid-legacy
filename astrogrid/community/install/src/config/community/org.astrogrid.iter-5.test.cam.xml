@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+    |
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/config/community/org.astrogrid.iter-5.test.cam.xml,v $</cvs:source>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2004/04/15 02:27:46 $</cvs:date>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:log>
+    |   $Log: org.astrogrid.iter-5.test.cam.xml,v $
+    |   Revision 1.2  2004/04/15 02:27:46  dave
+    |   Merged development branch, dave-dev-200404071355, into HEAD
+    |
+    |   Revision 1.1.2.1  2004/04/08 13:56:02  dave
+    |   Updated the install tools and data files.
+    |
+    | </cvs:log>
+    |
+    +-->
+<community ident="ivo://org.astrogrid.iter-5.test.cam">
+    <!--+
+        | The community Accounts.
+        +-->
+    <accounts>
+        <!--+
+            | Astrogrid developers.
+            +-->
+        <account ident="ivo://org.astrogrid.iter-5.test.cam/guy">
+            <display>Guy Rixon</display>
+            <description>Astrogrid developer</description>
+            <email>guy@mail.astrogrid.org</email>
+        </account>
+        <account ident="ivo://org.astrogrid.iter-5.test.cam/dave">
+            <display>Dave Morris</display>
+            <description>Astrogrid developer</description>
+            <email>dave@mail.astrogrid.org</email>
+        </account>
+        <account ident="ivo://org.astrogrid.iter-5.test.cam/kona">
+            <display>Kona Andrews</display>
+            <description>Astrogrid developer</description>
+            <email>kona@mail.astrogrid.org</email>
+        </account>
+        <!--+
+             | Astrogrid scientists.
+            +-->
+        <account ident="ivo://org.astrogrid.iter-5.test.cam/rgm">
+            <display>Richard McMahon</display>
+            <description>Astrogrid scientist</description>
+            <email>rgm@mail.astrogrid.org</email>
+        </account>
+        <account ident="ivo://org.astrogrid.iter-5.test.cam/naw">
+            <display>Nicholas Walton</display>
+            <description>Astrogrid scientist</description>
+            <email>naw@mail.astrogrid.org</email>
+        </account>
+        <!--+
+            | Test Accounts.
+            +-->
+        <account ident="ivo://org.astrogrid.iter-5.test.cam/frog">
+            <display>Green Frog</display>
+            <description>Astrogrid tester</description>
+            <email>frog@mail.astrogrid.org</email>
+        </account>
+        <account ident="ivo://org.astrogrid.iter-5.test.cam/toad">
+            <display>Brown Toad</display>
+            <description>Astrogrid tester</description>
+            <email>toad@mail.astrogrid.org</email>
+        </account>
+        <account ident="ivo://org.astrogrid.iter-5.test.cam/newt">
+            <display>Grey newt</display>
+            <description>Astrogrid tester</description>
+            <email>newt@mail.astrogrid.org</email>
+        </account>
+    </accounts>
+    <!--+
+        | The community Groups.
+        +-->
+    <groups>
+        <group ident="ivo://org.astrogrid.iter-5.test.cam/public">
+            <description>Public group</description>
+        </group>
+        <group ident="ivo://org.astrogrid.iter-5.test.cam/user">
+            <description>General users group</description>
+        </group>
+        <group ident="ivo://org.astrogrid.iter-5.test.cam/java">
+            <description>Java developers group</description>
+        </group>
+        <group ident="ivo://org.astrogrid.iter-5.test.cam/astro">
+            <description>Astronomers group</description>
+        </group>
+    </groups>
+
+    <!--+
+        | The community passwords.
+        +-->
+    <passwords>
+        <!--+
+             | Astrogrid developers.
+            +-->
+        <password account="ivo://org.astrogrid.iter-5.test.cam/dave"  password="qwerty"/>
+        <password account="ivo://org.astrogrid.iter-5.test.cam/guy"   password="qwerty"/>
+        <password account="ivo://org.astrogrid.iter-5.test.cam/kona"  password="qwerty"/>
+        <!--+
+             | Astrogrid scientists.
+            +-->
+        <password account="ivo://org.astrogrid.iter-5.test.cam/naw"   password="qwerty"/>
+        <password account="ivo://org.astrogrid.iter-5.test.cam/rgm"   password="qwerty"/>
+        <!--+
+             | Test accounts.
+            +-->
+        <password account="ivo://org.astrogrid.iter-5.test.cam/frog"  password="qwerty"/>
+        <password account="ivo://org.astrogrid.iter-5.test.cam/toad"  password="qwerty"/>
+        <password account="ivo://org.astrogrid.iter-5.test.cam/newt"  password="qwerty"/>
+    </passwords>
+
+</community>

@@ -1,36 +1,18 @@
 <?xml version="1.0"?>
 <!--+
-    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/xsl/webapp/Attic/context-property.xsl,v $</cvs:source>
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/xsl/context/context-property.xsl,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
+    | <cvs:date>$Date: 2004/04/15 02:27:46 $</cvs:date>
     | <cvs:version>$Revision: 1.2 $</cvs:version>
     | <cvs:log>
     |   $Log: context-property.xsl,v $
-    |   Revision 1.2  2004/03/30 01:40:03  dave
-    |   Merged development branch, dave-dev-200403242058, into HEAD
+    |   Revision 1.2  2004/04/15 02:27:46  dave
+    |   Merged development branch, dave-dev-200404071355, into HEAD
     |
-    |   Revision 1.1.2.1  2004/03/28 02:00:55  dave
-    |   Added database management tasks.
-    |
-    |   Revision 1.2  2004/02/20 21:11:05  dave
-    |   Merged development branch, dave-dev-200402120832, into HEAD
-    |
-    |   Revision 1.1.2.2  2004/02/16 15:20:54  dave
-    |   Changed tabs to spaces
-    |
-    |   Revision 1.1.2.1  2004/02/15 00:28:22  dave
-    |   Added tools for adding separate webapp context file to Tomcat
+    |   Revision 1.1.2.1  2004/04/09 00:32:11  dave
+    |   Refactored the JNDI context tasks.
     |
     | </cvs:log>
-    |
-    | XST transform to add an Environment property to a Tomcat context.
-    | This should work on either a context in a Tomcat server.xml file, or in a separate context file.
-    |
-    | Params :
-    |   context.path - the URL base for the context (this is used to identify which context to modify).
-    |   property.name  - the JNDI name of the property.
-    |   property.type  - the Java type of the property.
-    |   property.value - the value of the property.
     |
     +-->
 <xsl:stylesheet
@@ -46,7 +28,7 @@
     <xsl:param name="property.value"/>
 
     <!--+
-        | Process a matching 'Context' element that already contains our property.
+        | Process a 'Context' element that already contains our property.
         +-->
     <xsl:template match="//Context[@path = $context.path][Environment/@name = $property.name]">
         <xsl:copy>
@@ -62,7 +44,7 @@
     </xsl:template>
 
     <!--+
-        | Process a matching 'Context' element that does NOT contain our property.
+        | Process a 'Context' element that does NOT contain our property.
         +-->
     <xsl:template match="//Context[@path = $context.path][not(Environment/@name = $property.name)]">
         <xsl:copy>
@@ -82,8 +64,7 @@
     </xsl:template>
 
     <!--+
-        | Process our property element.
-        | Match an Environment element with the right name, that is a child of a Context with the right path.
+        | Process an 'Environment' element with the right name and a parent 'Context' with the right path.
         +-->
     <xsl:template name="property" match="Environment[@name = $property.name][parent::Context/@path = $context.path]">
         <xsl:element name="Environment">

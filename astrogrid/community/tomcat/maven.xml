@@ -4,10 +4,19 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/tomcat/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/04/01 07:09:39 $</cvs:date>
-    | <cvs:version>$Revision: 1.8 $</cvs:version>
+    | <cvs:date>$Date: 2004/04/15 02:27:46 $</cvs:date>
+    | <cvs:version>$Revision: 1.9 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.9  2004/04/15 02:27:46  dave
+    |   Merged development branch, dave-dev-200404071355, into HEAD
+    |
+    |   Revision 1.8.10.2  2004/04/15 02:19:40  dave
+    |   Refactored install script to work with Tomcat 4.x and 5.x (incomplete).
+    |
+    |   Revision 1.8.10.1  2004/04/08 13:56:03  dave
+    |   Updated the install tools and data files.
+    |
     |   Revision 1.8  2004/04/01 07:09:39  dave
     |   Merged development branch, dave-dev-200403300547, into HEAD
     |
@@ -361,6 +370,14 @@
             <entry key="org.astrogrid.community.ident"
                 value="${org.astrogrid.community.ident}"/>
         </ant:propertyfile>
+        <!--+
+            | Set the test account.
+            +-->
+        <ant:propertyfile
+            file="${maven.build.dir}/resolver/resolver.properties">
+            <entry key="org.astrogrid.community.account"
+                value="${org.astrogrid.community.account}"/>
+        </ant:propertyfile>
     </goal>
 
     <!-- ================ Install kit goals ================ -->
@@ -431,8 +448,8 @@
             +-->
         <ant:propertyfile
             file="${maven.build.dir}/install/install.properties">
-            <entry key="config.home"
-                value="${maven.build.dir}/config"/>
+            <entry key="org.astrogrid.config.url"
+                value="${maven.build.dir}/config/astrogrid.properties"/>
         </ant:propertyfile>
         <!--+
             | Set the database location.
@@ -594,14 +611,34 @@
         | Install our database.
         +-->
     <goal name="database.install">
-	    <!--+
-	        | Reset our database tables.
-	        +-->
+        <!--+
+            | Create our database data directory.
+            +-->
+        <ant:mkdir dir="${maven.build.dir}/database"/>
+        <!--+
+            | Reset our database tables.
+            +-->
         <attainGoal name="database.reset"/>
-	    <!--+
-	        | Load our database data.
-	        +-->
+        <!--+
+            | Load our database data.
+            +-->
         <attainGoal name="database.load"/>
+    </goal>
+
+    <!-- ================ Registry goals ================ -->
+
+    <!--+
+        | Register our service.
+        +-->
+    <goal name="service.register">
+        <!--+
+            | Call the task in our install script.
+            +-->
+        <ant:ant
+            target="service.register"
+            dir="${maven.build.dir}/install"
+            antfile="${maven.build.dir}/install/install.xml"
+            />
     </goal>
 
     <!-- ================ Local resolver goals ================ -->

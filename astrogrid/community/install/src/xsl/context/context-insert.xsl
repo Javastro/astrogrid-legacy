@@ -1,11 +1,17 @@
 <?xml version="1.0"?>
 <!--+
-    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/xsl/webapp/Attic/context-insert.xsl,v $</cvs:source>
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/xsl/context/context-insert.xsl,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
+    | <cvs:date>$Date: 2004/04/15 02:27:46 $</cvs:date>
     | <cvs:version>$Revision: 1.2 $</cvs:version>
     | <cvs:log>
     |   $Log: context-insert.xsl,v $
+    |   Revision 1.2  2004/04/15 02:27:46  dave
+    |   Merged development branch, dave-dev-200404071355, into HEAD
+    |
+    |   Revision 1.1.2.1  2004/04/09 00:32:11  dave
+    |   Refactored the JNDI context tasks.
+    |
     |   Revision 1.2  2004/03/30 01:40:03  dave
     |   Merged development branch, dave-dev-200403242058, into HEAD
     |
