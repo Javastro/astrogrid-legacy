@@ -7,7 +7,6 @@ import javax.xml.rpc.handler.HandlerInfo;
 import javax.xml.rpc.handler.MessageContext;
 import javax.xml.rpc.handler.soap.SOAPMessageContext;
 import javax.xml.rpc.JAXRPCException;
-import javax.xml.soap.SOAPException;
 import javax.xml.soap.SOAPMessage;
 
 
@@ -68,6 +67,7 @@ public class ClientCredentialHandler extends GenericHandler {
    *         JAXRPCException if the construction of the header fails
    */
   public boolean handleRequest (MessageContext mc) throws JAXRPCException {
+    System.out.println("Entering ClientCredentialHandler.handleRequest()");
     SOAPMessage sm = this.getMessage(mc);
     assert (this.guard != null);
 
@@ -75,6 +75,7 @@ public class ClientCredentialHandler extends GenericHandler {
     try {
       WsseHeaderElement wsse = new WsseHeaderElement(this.guard, sm);
       wsse.write();
+      System.out.println(sm.getSOAPPart().getEnvelope());
     }
     catch (Exception e1) {
       throw new JAXRPCException("Failed to write a WS-Security header", e1);
