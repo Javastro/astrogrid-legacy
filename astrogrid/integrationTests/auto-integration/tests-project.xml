@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: tests-project.xml,v 1.1 2004/03/16 17:48:34 nw Exp $ -->
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="maven-project.xsd">
+    <extend>../../maven-base/project.xml</extend>
+    <id>auto-integration-tests</id>
+    <name>Tests for Automated Integration.</name>
+    <description>
+    This project document defines the tests to execute against the installed local astorgrid setup.
+    In a separate project, so that the parent project can be used in isolation, just to set up an integration machine.
+    </description>
+
+    <build>
+        <sourceDirectory>src/java</sourceDirectory>
+        <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
+        <unitTest>
+            <includes>
+                <include>**/*Test.java</include>
+            </includes>
+            <resources>
+                <resource>
+                    <directory>${basedir}/test/java</directory>
+                    <includes>
+                        <include>**/*.xml</include>
+                        <include>**/*.xmltemplate</include>
+                        <include>**/*.properties</include>
+                        <include>**/*.sql</include>
+                        <include>**/*.ddl</include>
+                    </includes>
+                </resource>
+            </resources>
+        </unitTest>
+    </build>
+    <dependencies>
+
+                <!-- scripting interface -->
+                <dependency>
+                        <artifactId>js</artifactId>
+                        <groupId>rhino</groupId>
+                        <version>1.5R4.1</version>
+                </dependency>
+                <dependency>
+                        <artifactId>astrogrid-scripting</artifactId>
+                        <version>SNAPSHOT</version>
+                        <groupId>org.astrogrid</groupId>
+                </dependency>
+
+                <!-- used within scripting interface -->
+                <dependency>
+                        <artifactId>commons-digester</artifactId>
+                        <groupId>commons-digester</groupId>
+                        <version>1.5</version>
+                </dependency>
+            <dependency>
+                    <id>commons-beanutils</id>
+                        <version>1.6</version>
+            </dependency>
+            <dependency>
+                    <id>commons-collections</id>
+                    <version>3.0</version>
+            </dependency>
+
+                <!-- interface to workflow system -->
+                <dependency>
+                        <artifactId>astrogrid-workflow</artifactId>
+                        <version>SNAPSHOT</version>
+                        <groupId>org.astrogrid</groupId>
+                </dependency>
+                <dependency>
+                        <artifactId>astrogrid-common</artifactId>
+                        <version>SNAPSHOT</version>
+                        <groupId>org.astrogrid</groupId>
+                </dependency>
+        <!-- registry -->
+                <dependency>
+                        <artifactId>astrogrid-registry-client</artifactId>
+                        <groupId>org.astrogrid</groupId>
+                        <version>SNAPSHOT</version>
+                </dependency>
+                <dependency>
+                        <artifactId>astrogrid-registry-common</artifactId>
+                        <groupId>org.astrogrid</groupId>
+                        <version>SNAPSHOT</version>
+                </dependency>
+        <!-- myspace -->
+                <dependency>
+                        <artifactId>astrogrid-mySpace</artifactId>
+                        <version>SNAPSHOT</version>
+                        <groupId>org.astrogrid</groupId>
+                        <type>jar</type>
+                </dependency>
+        <!-- jes -->
+                <dependency>
+                           <groupId>org.astrogrid</groupId>
+                           <artifactId>astrogrid-jes-delegate</artifactId>
+                           <version>SNAPSHOT</version>
+                    </dependency>
+                <dependency>
+                           <groupId>org.astrogrid</groupId>
+                           <artifactId>astrogrid-workflow-objects</artifactId>
+                           <version>SNAPSHOT</version>
+                </dependency>
+        <!-- datacenter -->
+                <dependency>
+                        <groupId>org.astrogrid</groupId>
+                        <artifactId>astrogrid-datacenter-client</artifactId>
+                        <version>SNAPSHOT</version>
+                </dependency>
+        <!-- applications -->
+                <dependency>
+                        <groupId>org.astrogrid</groupId>
+                        <artifactId>astrogrid-applications-client</artifactId>
+                        <version>SNAPSHOT</version>
+                </dependency>
+     <!-- Third party dependencies -->
+                <!-- axis libs -->
+                <dependency>
+                        <artifactId>commons-logging</artifactId>
+                        <groupId>commons-logging</groupId>
+                        <version>1.0.3</version>
+                </dependency>
+                <dependency>
+                           <artifactId>commons-discovery</artifactId>
+                           <groupId>commons-discovery</groupId>
+                           <version>20030211.213356</version>
+                </dependency>
+                <dependency>
+                    <artifactId>jaxrpc</artifactId>
+                    <groupId>jaxrpc</groupId>
+                    <version>UNKNOWN</version>
+                    <jar>jaxrpc.jar</jar>
+                </dependency>
+                    <dependency>
+                      <artifactId>saaj</artifactId>
+                      <groupId>saaj</groupId>
+                      <version>UNKNOWN</version>
+                      <jar>saaj.jar</jar>
+                    </dependency>
+                <dependency>
+                        <artifactId>axis</artifactId>
+                        <groupId>axis</groupId>
+                        <version>1.1</version>
+                </dependency>
+                    <dependency>
+                            <id>log4j</id>
+                        <version>1.2.8</version>
+                    </dependency>
+                       <!-- helper for object models -->
+                <dependency>
+                        <artifactId>commons-jxpath</artifactId>
+                        <groupId>commons-jxpath</groupId>
+                        <version>1.1</version>
+                </dependency>
+                <!-- required by castor -->
+                <dependency>
+                        <artifactId>castor</artifactId>
+                        <groupId>castor</groupId>
+                        <version>0.9.5-xml</version>
+                </dependency>
+                 <dependency>
+                        <id>xerces</id>
+                        <version>2.4.0</version>
+                    </dependency>
+                    <dependency>
+                              <id>xml-apis</id>
+                              <version>1.0.b2</version>
+                    </dependency>
+        <!-- for development -->
+        <dependency>
+            <artifactId>junit</artifactId>
+            <groupId>junit</groupId>
+            <version>3.8</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
+
+    </dependencies>
+</project>

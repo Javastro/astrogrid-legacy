@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: project.xml,v 1.1 2004/03/16 17:48:34 nw Exp $ -->
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="maven-project.xsd">
+    <extend>../../maven-base/project.xml</extend>
+    <id>auto-integration</id>
+    <name>Automated Integration Testing</name>
+    <description>
+    Automated integration testing. This project will install all the astorgrid components
+    (someday) to a local tomcat5 server, and set up the required configuration and workfing
+    directories. Then a batch of integration tests are run against the installed components.
+    </description>
+
+    <build />
+    <dependencies>
+        <!-- war files to install -->
+        <dependency>
+                <artifactId>astrogrid-jes</artifactId>
+                <groupId>org.astrogrid</groupId>
+                <version>SNAPSHOT</version>
+                <type>war</type>
+        </dependency>
+        <dependency>
+                <artifactId>astrogrid-applications</artifactId>
+                <groupId>org.astrogrid</groupId>
+                <version>SNAPSHOT</version>
+                <type>war</type>
+        </dependency>
+        <dependency>
+                <artifactId>astrogrid-mySpace</artifactId>
+                <groupId>org.astrogrid</groupId>
+                <version>SNAPSHOT</version>
+                <type>war</type>
+        </dependency>
+        <dependency>
+                <artifactId>astrogrid-registry</artifactId>
+                <groupId>org.astrogrid</groupId>
+                <version>SNAPSHOT</version>
+                <type>war</type>
+        </dependency>
+        <dependency>
+                <artifactId>pal</artifactId>
+                <groupId>org.astrogrid</groupId>
+                <version>SNAPSHOT</version>
+                <type>war</type>
+        </dependency>
+        <!-- cheeky little database driver -->
+                   <dependency>
+                        <id>hsqldb</id>
+                        <version>1.7.1</version>
+                    </dependency>
+        <!-- for development -->
+        <dependency>
+            <artifactId>catalina-ant</artifactId>
+            <groupId>catalina-ant</groupId>
+            <version>4.1.24</version>
+        </dependency>
+        <!-- dunno if we need this here -->
+        <dependency>
+            <artifactId>junit</artifactId>
+            <groupId>junit</groupId>
+            <version>3.8</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
+
+    </dependencies>
+</project>

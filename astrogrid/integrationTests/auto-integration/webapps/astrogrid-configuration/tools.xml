@@ -1,0 +1,33 @@
+<tools>
+<!-- list of known tools, and the endpoint of the application controller that provides them-->
+<!--
+    <tool
+            name="QueryTool"
+            location="@TOMCATROOT@/astrogrid-applications-SNAPSHOT/services/ApplicationControllerService"
+            interface="simple"
+            />
+    <tool
+            name="DataFederation"
+            location="@TOMCATROOT@/astrogrid-applications-SNAPSHOT/services/ApplicationControllerService"
+            interface="Smain"
+            />
+-->
+    <tool
+            name="testapp"
+            location="@TOMCATROOT@/astrogrid-applications-SNAPSHOT/services/ApplicationControllerService"
+            interface="I1"
+            />
+<!--
+    <tool
+            name="SExtractor"
+             location="@TOMCATROOT@/astrogrid-applications-SNAPSHOT/services/ApplicationControllerService"
+             interface="Simple"
+            />
+    <tool
+            name="HyperZ"
+            location="@TOMCATROOT@/astrogrid-applications-SNAPSHOT/services/ApplicationControllerService"
+            interface="simple"
+             />
+-->
+
+</tools>

@@ -1,0 +1,7 @@
+<Context path="/astrogrid-mySpace-SNAPSHOT">
+
+                <Environment description="MySpace Config URL"
+                                         name="org.astrogrid.mySpace.config.url"
+                                         override="false" type="java.lang.String"
+                                         value="@CONFIGPATH@/ASTROGRID_myspacemanagerconfig.xml"/>
+</Context>

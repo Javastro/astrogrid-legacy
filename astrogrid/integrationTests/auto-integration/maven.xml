@@ -1,0 +1,312 @@
+<?xml version="1.0" ?>
+<!-- extension maven script -->
+<project xmlns:j="jelly:core"  xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="jar:jar">
+
+
+<!-- edit these properties to fit your own installation
+        maybe should be loaded from a separate properties file??
+
+-->
+<property name="tomcat.host" value="localhost"/>
+<property name="tomcat.port" value="8080"/>
+<property name="tomcat.url" value="http://${tomcat.host}:${tomcat.port}"/>
+<property name="tomcat.manager.url" value="${tomcat.url}/manager"/>
+
+<!-- location of tomcat common library -->
+<property name="tomcat.common.lib.dir" location="/var/lib/tomcat5/common/lib" />
+
+<!-- location of where to place the working directory -->
+<property name="work.dir" location="/home/noel/integration-work" />
+
+<!-- other, non-configurable properties -->
+
+<!-- temp dir - used for mangling files, etc -->
+<property name="temporary.dir" location="${basedir}/tmp" />
+<property name="config.webapp.name" value="astrogrid-configuration" />
+
+<!-- setup -->
+<goal name="init" prereqs="tomcat-declare-tasks">
+        <!-- tokens to subst into config files -->
+        <filter token="WORKDIR" value="${work.dir}" />
+        <filter token="CONFIGPATH" value="${tomcat.url}/${config.webapp.name}" />
+        <filter token="TOMCATROOT" value="${tomcat.url}" />
+        <delete dir="${temporary.dir}" />
+        <mkdir dir="${temporary.dir}" />
+        <deploy:copy-deps todir="${temporary.dir}" />
+</goal>
+
+<!-- main goals //////////////////////////////////////////////////////////////////////////////////// -->
+<goal name="cycle" prereqs="undeploy-all, setup-working-dir, deploy-all, list, int-test"
+ description="remove previously installed, recreated working dir, redeploy webapps, run tests" />
+
+<goal name="deploy-all" prereqs="init" description="deploy all webapps">
+        <attainGoal name="common-libs-deploy" />
+        <attainGoal name="configuration-deploy" />
+        <attainGoal name="myspace-store-deploy" />
+        <attainGoal name="jes-deploy" />
+        <attainGoal name="apps-deploy" />
+        <attainGoal name="reg-deploy" />
+        <attainGoal name="myspace-deploy" />
+        <attainGoal name="pal-deploy" />
+</goal>
+
+<goal name="undeploy-all" prereqs="init" description="undeploy all webapps">
+        <attainGoal name="configuration-undeploy" />
+        <attainGoal name="myspace-store-undeploy" />
+        <attainGoal name="jes-undeploy" />
+        <attainGoal name="apps-undeploy" />
+        <attainGoal name="reg-undeploy" />
+        <attainGoal name="myspace-undeploy" />
+        <attainGoal name="pal-undeploy" />
+</goal>
+
+<goal name="list" prereqs="init" description="list deployed webapps">
+        <tomcat-list url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}" />
+</goal>
+
+
+<goal name="int-test" description="run integration tests">
+        <maven:maven descriptor="${basedir}/tests-project.xml" goals="test" />
+</goal>
+
+<goal name="ui-int-test" description="run integration tests in ui runner">
+        <maven:maven descriptor="${basedir}/tests-project.xml" goals="test:ui" />
+</goal>
+
+<goal name="scripting-gui" description="run javascript gui">
+        <maven:maven descriptor="${basedir}/tests-project.xml" goals="run-scripting-gui" />
+</goal>
+
+<!-- Working direcotry //////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+<goal name="setup-working-dir" description="create working dir, copy across templates">
+
+        <mkdir dir="${work.dir}" />
+
+        <copy todir="${work.dir}" overwrite="true" filtering="true">
+                <fileset dir="work" />
+        </copy>
+
+        <attainGoal name="setup-applications" />
+        <attainGoal name="setup-myspace" />
+        <attainGoal name="setup-workflow" />
+        <attainGoal name="setup-jes" />
+
+        <!-- make everything world-accessible - necessary as tomcat may be running as different user to
+        whoever is executing this script -->
+        <chmod file="${work.dir}" perm="a+rwx" type="dir"/>
+        <chmod dir="${work.dir}" perm="a+rwx" type="dir">
+                <include name="**/*" />
+        </chmod>
+        <chmod dir="${work.dir}" perm="a+rw" type="file">
+                <include name="**/*" />
+        </chmod>
+
+</goal>
+
+<goal name="setup-applications" description="setup specific to applications">
+        <!-- make all scripts executable -->
+        <chmod dir="${work.dir}/applications" perm="a+x">
+                <include name="*.sh" />
+        </chmod>
+        <!-- initialize database : no need, db contents could be stored as a template really.-->
+        <sql driver="org.hsqldb.jdbcDriver" url="jdbc:hsqldb:${work.dir}/applications/application-db"
+             classpathref="maven.dependency.classpath"
+             userid="sa" password="" print="true"
+            ><![CDATA[
+        DROP TABLE exestat IF EXISTS ;
+        CREATE TABLE exestat
+                    (
+                    executionId      INTEGER IDENTITY,
+                    jobstepId    VARCHAR ,
+                    program      VARCHAR ,
+                    starttime        DATETIME DEFAULT 'now',
+                    endtime TIMESTAMP
+            ) ;
+           ]]></sql>
+</goal>
+
+<goal name="setup-myspace" description="myspace setup">
+</goal>
+
+<goal name="setup-workflow" description="workflow setup">
+</goal>
+<goal name="setup-jes" description="jes setup">
+</goal>
+<!-- probably more to come here .. -->
+
+<!-- pregoals ///////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+  <preGoal name="java:compile">
+     <mkdir dir="${basedir}/target/classes" />     <!-- Clover fails if this dir is not present -->
+  </preGoal>
+
+  <preGoal name="test:test-resources">
+          <copy todir="test/java" filtering="true">
+                <fileset dir="client-config" />
+        </copy>
+  </preGoal>
+
+
+<goal name="run-scripting-gui" description="don't call directly - use scripting-gui goal">
+        <mkdir dir="${temporary.dir}/client" />
+        <copy todir="${temporary.dir}/client" filtering="true">
+                <fileset dir="client-config" />
+        </copy>
+        <!-- classname="org.mozilla.javascript.tools.shell.Main" for command-line version -->
+        <java classname="org.mozilla.javascript.tools.debugger.Main"
+                fork="true" classpathref="maven.dependency.classpath"
+                dir="${temporary.dir}/client">
+        </java>
+</goal>
+
+
+<!-- deployment //////////////////////////////////////////////////////////////////////// -->
+
+<goal name="common-libs-deploy" description="copy db drivers, etc into shared directory">
+        <copy todir="${tomcat.common.lib.dir}">
+                <fileset dir="${temporary.dir}">
+                        <include name="hsql*.jar" />
+                        <!-- may need to add more here later -->
+                </fileset>
+        </copy>
+</goal>
+
+<!-- hand assembled webapps ///////////////////////////////////////-->
+<goal name="configuration-deploy" description="create and install configuration webapp">
+        <copy todir="${temporary.dir}/astrogrid-configuration" filtering="true">
+                <fileset dir="webapps/astrogrid-configuration" />
+        </copy>
+        <jar destfile="${temporary.dir}/${config.webapp.name}.war" basedir="${temporary.dir}/astrogrid-configuration">
+        </jar>
+        <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
+                path="/${config.webapp.name}" war="file://${temporary.dir}/${config.webapp.name}.war" />
+</goal>
+
+<!-- need a webspace store for myspace?? - this is a first stab -->
+<goal name="myspace-store-deploy">
+        <copy todir="${temporary.dir}/myspace-store" filtering="true">
+                <fileset dir="webapps/myspace-store" />
+        </copy>
+        <jar destfile="${temporary.dir}/myspace-store.war" basedir="${temporary.dir}/myspace-store">
+        </jar>
+        <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
+                path="/myspace-store" war="file://${temporary.dir}/myspace-store.war" />
+</goal>
+
+<!-- context- driven webapps ////////////////////////////////-->
+<goal name="jes-deploy">
+        <copy todir="${temporary.dir}/jes" filtering="true">
+                <fileset dir="contexts/jes" />
+        </copy>
+        <war update="true" destfile="${temporary.dir}/astrogrid-jes-SNAPSHOT.war">
+                <metainf dir="${temporary.dir}/jes"/>
+        </war>
+  <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
+          path="/astrogrid-jes-SNAPSHOT" war="file://${temporary.dir}/astrogrid-jes-SNAPSHOT.war"/>
+</goal>
+
+<goal name="apps-deploy" >
+        <copy todir="${temporary.dir}/applications" filtering="true">
+                <fileset dir="contexts/applications" />
+        </copy>
+        <war update="true" destfile="${temporary.dir}/astrogrid-applications-SNAPSHOT.war">
+                <metainf dir="${temporary.dir}/applications"/>
+        </war>
+  <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
+          path="/astrogrid-applications-SNAPSHOT" war="file://${temporary.dir}/astrogrid-applications-SNAPSHOT.war"/>
+</goal>
+
+<goal name="reg-deploy" >
+        <copy todir="${temporary.dir}/registry" filtering="true">
+                <fileset dir="contexts/registry" />
+        </copy>
+        <war update="true" destfile="${temporary.dir}/astrogrid-registry-SNAPSHOT.war">
+                <metainf dir="${temporary.dir}/registry"/>
+        </war>
+  <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
+          path="/astrogrid-registry-SNAPSHOT" war="file://${temporary.dir}/astrogrid-registry-SNAPSHOT.war"/>
+</goal>
+
+<goal name="myspace-deploy" >
+        <copy todir="${temporary.dir}/myspace" filtering="true">
+                <fileset dir="contexts/myspace" />
+        </copy>
+        <war update="true" destfile="${temporary.dir}/astrogrid-mySpace-SNAPSHOT.war">
+                <metainf dir="${temporary.dir}/myspace"/>
+        </war>
+  <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
+          path="/astrogrid-mySpace-SNAPSHOT" war="file://${temporary.dir}/astrogrid-mySpace-SNAPSHOT.war"/>
+</goal>
+
+<goal name="pal-deploy" >
+        <copy todir="${temporary.dir}/pal" filtering="true">
+                <fileset dir="contexts/pal" />
+        </copy>
+        <war update="true" destfile="${temporary.dir}/pal-SNAPSHOT.war">
+                <metainf dir="${temporary.dir}/pal"/>
+        </war>
+  <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
+          path="/astrogrid-pal-SNAPSHOT" war="file://${temporary.dir}/pal-SNAPSHOT.war"/>
+</goal>
+
+<!-- undeploy ///////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+<goal name="reg-undeploy" >
+  <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
+          path="/astrogrid-registry-SNAPSHOT" />
+</goal>
+
+<goal name="myspace-undeploy" >
+  <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
+          path="/astrogrid-mySpace-SNAPSHOT" />
+</goal>
+
+<goal name="apps-undeploy" >
+  <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
+          path="/astrogrid-applications-SNAPSHOT" />
+</goal>
+
+<goal name="jes-undeploy" >
+  <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
+          path="/astrogrid-jes-SNAPSHOT" />
+</goal>
+
+
+<goal name="pal-undeploy" >
+  <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
+          path="/astrogrid-pal-SNAPSHOT" />
+</goal>
+
+
+<goal name="configuration-undeploy" >
+        <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
+                path="/astrogrid-configuration" />
+</goal>
+<goal name="myspace-store-undeploy" >
+        <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
+                path="/myspace-store" />
+</goal>
+
+
+<!-- boilerplate below here /////////////////////////////////////////////////////////////////////////////////////////////-->
+
+  <goal name="axis-declare-tasks">
+     <taskdef resource="axis-tasks.properties"  classpathref="maven.dependency.classpath" />
+  </goal>
+
+<!-- tomcat tools -->
+<goal name="tomcat-declare-tasks">
+   <!-- Configure the custom Ant tasks for the Manager application -->
+  <taskdef name="tomcat-deploy"    classname="org.apache.catalina.ant.DeployTask" classpathref="maven.dependency.classpath"/>
+  <taskdef name="tomcat-install"   classname="org.apache.catalina.ant.InstallTask" classpathref="maven.dependency.classpath"/>
+  <taskdef name="tomcat-list"      classname="org.apache.catalina.ant.ListTask" classpathref="maven.dependency.classpath"/>
+  <taskdef name="tomcat-reload"    classname="org.apache.catalina.ant.ReloadTask" classpathref="maven.dependency.classpath"/>
+  <taskdef name="tomcat-remove"    classname="org.apache.catalina.ant.RemoveTask" classpathref="maven.dependency.classpath"/>
+  <taskdef name="tomcat-resources" classname="org.apache.catalina.ant.ResourcesTask" classpathref="maven.dependency.classpath"/>
+  <taskdef name="tomcat-roles"     classname="org.apache.catalina.ant.RolesTask" classpathref="maven.dependency.classpath"/>
+  <taskdef name="tomcat-start"     classname="org.apache.catalina.ant.StartTask" classpathref="maven.dependency.classpath"/>
+  <taskdef name="tomcat-stop"      classname="org.apache.catalina.ant.StopTask" classpathref="maven.dependency.classpath"/>
+  <taskdef name="tomcat-undeploy"  classname="org.apache.catalina.ant.UndeployTask" classpathref="maven.dependency.classpath"/>
+</goal>
+
+</project>

@@ -1,0 +1,175 @@
+<?xml version="1.0" ?>
+
+<!-- Each MySpaceManager is configured by setting properties within
+     this file.  -->
+
+<properties>
+
+  <!-- GENERAL CATEGORY ====================================================
+      -->
+
+    <category name="GENERAL">
+      <property name="VERSION" value="1.3" />
+    </category>
+
+  <!-- MESSAGES CATEGORY ===================================================
+
+    The following are the base name, language code and country code for
+    the properties file which contains all the messages which can be
+    issued by a MySpace manager.
+
+    For example, given the following values:
+
+      INSTALLATION.BASENAME=ASTROGRID_myspacemanagermessages
+      INSTALLATION.LANGUAGECODE=en
+      INSTALLATION.COUNTRYCODE=US
+
+    suiteable file names would be:
+
+      ASTROGRID_myspacemanagermessages.properties
+                                            - installation default messages,
+
+      ASTROGRID_myspacemanagermessages_en.properties
+                                        - English language default messages,
+
+      ASTROGRID_myspacemanagermessages_en_US.properties
+                                    - US specific English language messages.
+       -->
+
+    <category name="MESSAGES">
+      <property name="INSTALLATION.BASENAME"
+        value="ASTROGRID_myspacemanagermessages" />
+      <property name="INSTALLATION.LANGUAGECODE" value="" />
+      <property name="INSTALLATION.COUNTRYCODE" value="" />
+    </category>
+
+
+  <!-- MYSPACEMANAGER CATEGORY =============================================
+      -->
+    <category name="MYSPACEMANAGER">
+      <property name="PARSER.VALIDATION" value="false" />
+
+      <!-- REGISTRYCONF
+
+        The directory where the MySpace Manager will get and log
+        information.  -->
+
+        <property name="REGISTRYCONF"
+           value="@WORKDIR@/myspace/astrogrid-mySpace-SNAPSHOT" />
+
+
+      <!-- MYSPACEMANAGERURL
+
+        The URL of the Web service instantiating the deployed MySpace
+        Manager.  -->
+
+        <property name="MYSPACEMANAGERURL"
+          value="@TOMCATROOT@/astrogrid-mySpace-SNAPSHOT/services/MySpaceManager" />
+
+
+      <!-- MYSPACEMANAGERURLs
+
+        A list of the URLs for remote MySpace systems which the
+        deployed MySpace Manager knows about.
+
+        Note that in Itn. 4 this list should end in a comm (`,').  -->
+
+        <property name="MYSPACEMANAGERURLs"
+          value="@TOMCATROOT@/astrogrid-mySpace-SNAPSHOT/services/MySpaceManager," />
+
+
+      <!-- MYSPACESERVERURL
+
+        The URL for the MySpace Server managed by the MySpace Manager.  -->
+
+        <property name="MYSPACESERVERURL"
+          value="http://astrogrid1.jb.man.ac.uk:8080/mySpace-SNAPSHOT/services/ServerManager" />
+
+
+      <!-- SERVERDEPLOYMENT
+
+        Specify how the MySpace system is to be configured.  The options
+         are as follows:
+
+        SEPARATESERVERS
+          The Servers are run as separate Web services (a full deplyment).
+
+        INTERNALSERVERS
+          The servers are incorporated within the Java program program
+          constituting the Manager.
+
+        MANAGERONLY
+          The Manager is run without servers.  This mode is useful for
+          debugging only.
+
+        The options must be spelt precisely as shown above, but any
+        capitalisation is permitted.  -->
+
+        <property name="SERVERDEPLOYMENT" value="INTERNALSERVERS" />
+
+
+      <!-- DEBUG
+
+        Flag controlling whether de-bugging output is written to the
+        MySpace log files.  Such output is produced only if the value
+        is set to the word `true', though any capitalisation is
+        permitted.  In normal operation the value should not be `true'.  -->
+
+        <property name="DEBUG" value="true" />
+
+      <!-- CHECKPERMISSIONS
+
+        Flag controlling whether the MySpace Manager will check that
+        the requested operations are permitted by calling an AstroGrid
+        permissions server.  Such checking are performed only if the value
+        is set to the word `true', though any capitalisation is
+        permitted.  In normal operation the value should usually be
+        `true'.  If permissions are disabled then operations are always
+        permitted; this option is primarily useful during software
+        development.  -->
+
+        <property name="CHECKPERMISSIONS" value="false" />
+
+
+      <!-- TEMPLATE.REQUEST
+
+        MySpace Request Template -->
+
+        <property name="TEMPLATE.REQUEST"
+          value="MSManagerRequestTemplate.xml" />
+
+
+      <!-- TEMPLATE.RESPONSE
+
+        MySpace Response Template -->
+
+        <property name="TEMPLATE.RESPONSE"
+          value="MSManagerResponseTemplate.xml" />
+
+
+      <!-- TEMPLATE.RESPONSEHEAD
+
+        MySpace ResponseHead Template -->
+
+        <property name="TEMPLATE.RESPONSEHEAD"
+          value="MSManagerResponseHeadTemplate.xml" />
+
+
+      <!-- TEMPLATE.RESPONSEELEMENT
+
+        MySpace ResponseElement Template -->
+
+        <property name="TEMPLATE.RESPONSEELEMENT"
+          value="MSManagerResponseElementTemplate.xml" />
+
+
+      <!-- TEMPLATE.RESPONSEFOOT
+
+        MySpace ResponseFoot Template -->
+
+        <property name="TEMPLATE.RESPONSEFOOT"
+          value="MSManagerResponseFootTemplate.xml" />
+  </category>
+
+</properties>
+

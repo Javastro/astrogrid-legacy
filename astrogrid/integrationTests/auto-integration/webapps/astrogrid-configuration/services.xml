@@ -1,0 +1,35 @@
+<?xml version="1.0" ?>
+<services>
+<!-- configuration file for scripting - lists all known services. -->
+<service type="Application">
+        <endpoint>@TOMCATROOT@/astrogrid-applications-SNAPSHOT/services/ApplicationControllerService</endpoint>
+        <description>An applications service</description>
+</service>
+<service type="jobcontrol">
+        <endpoint>@TOMCATROOT@/astrogrid-jes-SNAPSHOT/services/JobControllerService</endpoint>
+        <description>a job controller</description>
+</service>
+<service type="jobmonitor">
+        <endpoint>@TOMCATROOT@/astrogrid-jes-SNAPSHOT/services/JobMonitorService</endpoint>
+        <description>a job monitor</description>
+</service>
+<!--
+<service type="Datacenter">
+        <endpoint>http://grendel12.roe.ac.uk:8080/pal-SNAPSHOT/services/AxisDataServer</endpoint>
+        <description>6DF, ROE</description>
+</service>
+<service type="Datacenter">
+        <endpoint>http://cass123.ast.cam.ac.uk:9080/pal-SNAPSHOT/services/AxisDataServer</endpoint>
+        <description>WFS, Cambridge</description>
+</service>
+<service type="Datacenter">
+        <endpoint>http://vm07.astrogrid.org:8080/pal/services/AxisDataServer</endpoint>
+        <description>merlin, test</description>
+</service>
+-->
+<service type="Myspace">
+        <endpoint>@TOMCATROOT@/astrogrid-mySpace-SNAPSHOT/services/MySpaceManager</endpoint>
+        <description>local myspace</description>
+</service>
+<!-- more to come here -->
+</services>

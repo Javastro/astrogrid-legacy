@@ -1,0 +1,20 @@
+#
+# Example servers file for a simple MySpace service.
+#
+# Author:
+#   A C Davenhall (ACD), Edinburgh.
+#
+# History:
+#   6/1/04 (ACD): Original version.
+#
+
+#
+# In a simple MySpace service only a single server is present.  The
+# items specified for the server are its name (which must be serv1),
+# expiry period (in days), base URI and base directory are given, in
+# that order.  Each item must be separated by one or more spaces.
+
+#server serv1  23  http://www.blue.nowhere.org/s1/  /base/direct/s1/
+server serv1 23 http://localhost:8080/myspace-store /var/lib/tomcat5/webapps/myspace-store
+
+
