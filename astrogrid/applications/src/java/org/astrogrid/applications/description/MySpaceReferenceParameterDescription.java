@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceReferenceParameterDescription.java,v 1.3 2004/01/13 00:12:43 pah Exp $
+ * $Id: MySpaceReferenceParameterDescription.java,v 1.4 2004/01/15 13:51:26 pah Exp $
  *
  * Created on 26 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.astrogrid.applications.AbstractApplication;
 import org.astrogrid.applications.FileParameter;
-import org.astrogrid.applications.FileReferenceParameter;
+import org.astrogrid.applications.MySpaceReferenceParameter;
 import org.astrogrid.applications.Parameter;
 import org.astrogrid.applications.common.config.ApplicationControllerConfig;
 import org.astrogrid.community.User;
@@ -43,7 +43,7 @@ public class MySpaceReferenceParameterDescription extends ParameterDescription {
     */
    public List process(Parameter parameter) {
       //we know that we must be dealing with a file reference parameter - do cast to get extra functionality
-      FileReferenceParameter frefParameter = (FileReferenceParameter)parameter;
+      MySpaceReferenceParameter frefParameter = (MySpaceReferenceParameter)parameter;
       AbstractApplication application = frefParameter.getApplication();
       //create a local file reference to copy the myspace file to and store in the 
       File localFile = application.createLocalTempFile();
@@ -97,7 +97,7 @@ public class MySpaceReferenceParameterDescription extends ParameterDescription {
     * @see org.astrogrid.applications.description.ParameterDescription#createValueObject(org.astrogrid.applications.AbstractApplication)
     */
    public Parameter createValueObject(AbstractApplication app) {
-      return new FileReferenceParameter(app, this);
+      return new MySpaceReferenceParameter(app, this);
    }
 
 }

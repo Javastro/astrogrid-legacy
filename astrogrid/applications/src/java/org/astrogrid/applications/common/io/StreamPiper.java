@@ -1,5 +1,5 @@
 /*
- * $Id: StreamPiper.java,v 1.1 2003/12/07 01:09:48 pah Exp $
+ * $Id: StreamPiper.java,v 1.2 2004/01/15 13:51:26 pah Exp $
  * 
  * Created on 05-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk) adapted from original in ACE package by Martin Hill
  *
@@ -17,6 +17,11 @@ import java.io.*;
 
 import org.astrogrid.log.*;
 
+/**
+ * @author Paul Harrison (pah@jb.man.ac.uk)
+ * @version $Name:  $
+ * @since iteration4.1
+ */
 public class StreamPiper implements Runnable
 {
    static private org.apache.commons.logging.Log logger =
