@@ -4,8 +4,8 @@
   xsi:noNamespaceSchemaLocation="maven-project.xsd">
 
   <pomVersion>3</pomVersion>
-  <id>registry</id>
-  <name>astrogrid-registry</name>
+  <id>project-id</id>
+  <name>project-name</name>
 
   <currentVersion>HEAD</currentVersion>
   
@@ -14,14 +14,14 @@
     <url>http://www.astrogrid.org</url>
   </organization>
   
-  <inceptionYear>2003</inceptionYear>
-  <package>org.astrogrid.registry</package>
+  <inceptionYear>2002</inceptionYear>
+  <package>org.astrogrid</package>
   
-  <shortDescription>AstroGrid Registry Components</shortDescription>
+  <shortDescription>AstroGrid Project Description</shortDescription>
   
   <repository>
     <connection>
-      scm:cvs:ext:gps@cvs.astrogrid.org:/devel:astrogrid/registry
+      scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/registry
     </connection>
   </repository>
   
