@@ -1,5 +1,5 @@
 /*
- * $Id: TabularDbResources.java,v 1.6 2005/03/24 18:36:35 mch Exp $
+ * $Id: TabularDbResources.java,v 1.7 2005/03/31 12:10:28 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,6 +7,7 @@
 package org.astrogrid.tableserver.metadata;
 
 import java.io.IOException;
+import org.astrogrid.dataservice.metadata.MetadataException;
 import org.astrogrid.dataservice.metadata.VoResourcePlugin;
 import org.astrogrid.dataservice.metadata.VoTypes;
 import org.astrogrid.dataservice.metadata.v0_10.VoResourceSupport;
@@ -38,6 +39,9 @@ public class TabularDbResources extends VoResourceSupport implements VoResourceP
       
       //only one catalog in resource at the moment
       String catalog = reader.getCatalogs()[0];
+      if (catalog == null) {
+         throw new MetadataException("No Catalog found in metadoc");
+      }
       tabularDb.append(
          "<tdb:name>"+catalog+"</tdb:name>"+
          "<tdb:description/>"

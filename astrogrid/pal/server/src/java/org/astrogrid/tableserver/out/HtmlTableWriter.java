@@ -1,5 +1,5 @@
 /*
- * $Id: HtmlTableWriter.java,v 1.4 2005/03/30 21:51:25 mch Exp $
+ * $Id: HtmlTableWriter.java,v 1.5 2005/03/31 12:10:28 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -94,7 +94,11 @@ public class HtmlTableWriter extends AsciiTableSupport {
       printOut.println("</TR>");
       printOut.println("<TH>Java Class</TH>");
       for (int i = 0; i < cols.length; i++) {
-         printOut.print("<TH>"+cols[i].getJavaType().getName()+"</TH>");
+         printOut.print("<TH>");
+         if (cols[i].getJavaType() != null) {
+            cols[i].getJavaType().getName();
+         }
+         printOut.print("</TH>");
       }
       printOut.println("</TR>");
 
@@ -150,7 +154,7 @@ public class HtmlTableWriter extends AsciiTableSupport {
                   align = "align='left'";
                }
             }
-            printOut.println("<TD "+align+">"+colValues[i].toString()+"</TD>");
+            printOut.println("<TD "+align+">"+colValues[i]+"</TD>");
          }
       }
       printOut.println("</TR>");
@@ -174,6 +178,9 @@ public class HtmlTableWriter extends AsciiTableSupport {
 
 /*
  $Log: HtmlTableWriter.java,v $
+ Revision 1.5  2005/03/31 12:10:28  mch
+ Fixes and workarounds for null values, misisng metadoc columns
+
  Revision 1.4  2005/03/30 21:51:25  mch
  Fix to return Votable fits list for url list
 

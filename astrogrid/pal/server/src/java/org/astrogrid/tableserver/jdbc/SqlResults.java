@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.7 2005/03/30 18:25:45 mch Exp $
+ * $Id: SqlResults.java,v 1.8 2005/03/31 12:10:28 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -122,6 +122,11 @@ public class SqlResults extends TableResults {
                   log.error(me+" guessing which column "+metadata.getColumnName(i)+" belongs to which table");
                   //but carry on outputting nothing useful for this one
                }
+               if (cols[i-1] == null) {
+                  cols[i-1] = new ColumnInfo();
+                  cols[i-1].setName(metadata.getColumnName(i));
+                  cols[i-1].setId("?."+metadata.getColumnName(i));
+               }
             }
             else if (colDefs[i-1] instanceof ColumnReference) {
                ColumnReference colRef = (ColumnReference) colDefs[i-1];
@@ -136,14 +141,16 @@ public class SqlResults extends TableResults {
                //should probably throw an exception...
                throw new IllegalArgumentException("Column Definition "+colDefs[i-1]+" is not a ColumnReference; not suitable for SQL data");
             }
-            if (cols[i-1] != null) {
-               cols[i-1].setBackType(""+metadata.getColumnType(i)); //read direct from sql metadata
-               try {
-                  cols[i-1].setJavaType(Class.forName(metadata.getColumnClassName(i))); //read from sql metadata and convert
-               }
-               catch (ClassNotFoundException cnfe) {
-                  log.error(cnfe+" for column "+i);
-               }
+            cols[i-1].setBackType(""+metadata.getColumnType(i)); //read direct from sql metadata
+            try {
+               cols[i-1].setJavaType(Class.forName(metadata.getColumnClassName(i))); //read from sql metadata and convert
+            }
+            catch (ClassNotFoundException cnfe) {
+               log.error(cnfe+" for column "+i,cnfe);
+            }
+            catch (SQLException se) {
+               //log but carry on; eg postgres drivers don't seem to have implemented getColumnClassName
+               log.error(se+" for column "+i,se);
             }
             
          }
@@ -200,7 +207,7 @@ public class SqlResults extends TableResults {
       catch (SQLException sqle)
       {
          log.error(sqle+" reading results",sqle);
-         throw new DatacenterException(sqle+", converting to Html", sqle);
+         throw new DatacenterException(sqle+", reading results", sqle);
       }
       
       //don't close sqlResults - seems to cause the results to cycle through
@@ -224,6 +231,9 @@ public class SqlResults extends TableResults {
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.8  2005/03/31 12:10:28  mch
+ Fixes and workarounds for null values, misisng metadoc columns
+
  Revision 1.7  2005/03/30 18:25:45  mch
  fix for sql-server jdbc problem
 

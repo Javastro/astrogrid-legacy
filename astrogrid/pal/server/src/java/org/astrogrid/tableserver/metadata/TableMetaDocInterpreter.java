@@ -1,5 +1,5 @@
 /*
- * $Id: TableMetaDocInterpreter.java,v 1.7 2005/03/30 15:52:15 mch Exp $
+ * $Id: TableMetaDocInterpreter.java,v 1.8 2005/03/31 12:10:28 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,9 +8,10 @@ package org.astrogrid.tableserver.metadata;
 
 import java.io.IOException;
 import java.net.URL;
-import javax.xml.parsers.ParserConfigurationException;
-import org.astrogrid.cfg.ConfigReader;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.cfg.ConfigFactory;
+import org.astrogrid.cfg.ConfigReader;
 import org.astrogrid.dataservice.metadata.MetadataException;
 import org.astrogrid.tableserver.metadata.ColumnInfo;
 import org.astrogrid.tableserver.metadata.TableInfo;
@@ -34,6 +35,7 @@ import org.xml.sax.SAXException;
 
 public class TableMetaDocInterpreter
 {
+   Log log = LogFactory.getLog(TableMetaDocInterpreter.class);
    
    Element metadoc;
 // Element[] catalogs; //root list of catalogs
@@ -58,6 +60,7 @@ public class TableMetaDocInterpreter
    /** Loads metadoc from given URL */
    private void loadUrl(URL url) throws IOException {
       try {
+         log.debug("Loading metadoc from "+url);
          metadoc = DomHelper.newDocument(url).getDocumentElement();
       }
       catch (SAXException e) {

@@ -1,5 +1,5 @@
 /*
- * $Id: XsvTableWriter.java,v 1.5 2005/03/30 21:51:25 mch Exp $
+ * $Id: XsvTableWriter.java,v 1.6 2005/03/31 12:10:28 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -102,7 +102,9 @@ public class XsvTableWriter extends AsciiTableSupport {
          }
       }
       for (int i = 0; i < cols.length; i++) {
-         printOut.print(cols[i].getJavaType().getName());
+         if (cols[i].getJavaType() != null) {
+            printOut.print(cols[i].getJavaType().getName());
+         }
          if (i < cols.length-1) {
             printOut.print(separator);
          }
@@ -144,6 +146,9 @@ public class XsvTableWriter extends AsciiTableSupport {
 
 /*
  $Log: XsvTableWriter.java,v $
+ Revision 1.6  2005/03/31 12:10:28  mch
+ Fixes and workarounds for null values, misisng metadoc columns
+
  Revision 1.5  2005/03/30 21:51:25  mch
  Fix to return Votable fits list for url list
 
