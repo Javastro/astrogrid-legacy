@@ -1,10 +1,12 @@
 /*
- * $Id: DataServer.java,v 1.3 2004/03/08 13:24:35 mch Exp $
+ * $Id: DataServer.java,v 1.4 2004/03/09 21:07:10 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.service;
+import org.astrogrid.datacenter.adql.generated.*;
+
 import java.io.IOException;
 import java.net.URI;
 import org.apache.commons.logging.Log;
@@ -12,10 +14,6 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.adql.ADQLException;
 import org.astrogrid.datacenter.adql.ADQLUtils;
-import org.astrogrid.datacenter.adql.generated.Circle;
-import org.astrogrid.datacenter.adql.generated.Select;
-import org.astrogrid.datacenter.adql.generated.TableExpression;
-import org.astrogrid.datacenter.adql.generated.Where;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.Querier;
@@ -83,6 +81,16 @@ public class DataServer
          c.setRadius(ADQLUtils.mkApproxNum(sr));
          w.setCircle(c);
 
+         //now set FROM from configuration
+         From f = new From();
+         tc.setFromClause(f);
+         ArrayOfTable tables = new ArrayOfTable();
+         Table t = new Table();
+         t.setName("TARGET"); //should get from config
+         t.setAliasName("t");
+         tables.addTable(t);
+         f.setTableReference(tables);
+      
          QueryResults results = askAdql(user, s);
          
          //bit of a botch at the moment - converts VOTable back into string/input stream for returning...
