@@ -47,7 +47,8 @@ class CreateRegistry
 //         Create a registry manager to which the new entries will be
 //         written.
 
-            RegistryManager reg = new RegistryManager("example", "new");
+            RegistryManager reg = new RegistryManager(registryName,
+              "new");
 
             DataItemRecord itemRec = new DataItemRecord();
 
@@ -79,9 +80,9 @@ class CreateRegistry
             }
 
 //
-//         Finalize the registry in order to write it to disk.
+//         Write the registry file to disk.
 
-            reg.finalize();
+            reg.rewriteRegistryFile();
 
 //
 //         Close the input file.
