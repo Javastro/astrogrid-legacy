@@ -1,4 +1,4 @@
-/*$Id: WorkflowEndToEndTest.java,v 1.3 2004/04/14 15:28:47 nw Exp $
+/*$Id: WorkflowEndToEndTest.java,v 1.4 2004/04/14 16:42:37 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -75,6 +75,7 @@ public class WorkflowEndToEndTest extends AbstractTestForIntegration {
 
     /** build a simple one-step workflow */
     private void buildSimpleWorkflowDocument() throws WorkflowInterfaceException, ToolValidationException {
+        wf.setName("Simple Workflow");
             // create a tool
            ApplicationDescription descr = reg.getDescriptionFor(reg.listApplications()[0]);
            assertNotNull("could not get application description",descr);
@@ -102,6 +103,7 @@ public class WorkflowEndToEndTest extends AbstractTestForIntegration {
     /** build a multi-step workflow 
      * @todo add correct parameters to tools*/
     private void buildComplexWorkflowDocument() throws WorkflowInterfaceException, ToolValidationException {
+        wf.setName("Complex Workflow");
         // build step that queries datacenter
         ApplicationDescription datacenterDescription = reg.getDescriptionFor(DATASET_NAME);
         assertNotNull("Could not find description for datacenter " + DATASET_NAME,datacenterDescription);
@@ -165,6 +167,9 @@ public class WorkflowEndToEndTest extends AbstractTestForIntegration {
 
 /* 
 $Log: WorkflowEndToEndTest.java,v $
+Revision 1.4  2004/04/14 16:42:37  nw
+fixed tests to break more sensibly
+
 Revision 1.3  2004/04/14 15:28:47  nw
 updated tests to fit with new WorkspaceStore interface
 

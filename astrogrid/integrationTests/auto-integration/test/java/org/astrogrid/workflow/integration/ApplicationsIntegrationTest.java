@@ -1,4 +1,4 @@
-/*$Id: ApplicationsIntegrationTest.java,v 1.4 2004/04/14 10:16:40 nw Exp $
+/*$Id: ApplicationsIntegrationTest.java,v 1.5 2004/04/14 16:42:37 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,6 +14,7 @@ import org.astrogrid.applications.beans.v1.ApplicationList;
 import org.astrogrid.applications.delegate.CommonExecutionConnectorClient;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.portal.workflow.intf.ApplicationDescription;
+import org.astrogrid.portal.workflow.intf.ApplicationRegistry;
 import org.astrogrid.scripting.Service;
 import org.astrogrid.workflow.beans.v1.Tool;
 
@@ -69,9 +70,10 @@ public class ApplicationsIntegrationTest extends AbstractTestForIntegration {
         // I guess its xml or something. need to add further testing here
     }
     /** @todo query registry for a named test application*/
-    /*
+    
     public void testExecute() throws Exception {
         // hack, will need to find application description by name later.
+        ApplicationRegistry reg = ag.getWorkflowManager().getToolRegistry();
         ApplicationDescription descr = reg.getDescriptionFor(reg.listApplications()[0]);
         assertNotNull("could not get application description",descr);
         Tool tool = descr.createToolFromDefaultInterface();
@@ -82,12 +84,15 @@ public class ApplicationsIntegrationTest extends AbstractTestForIntegration {
         id.setValue(this.getClass().getName());
        String returnEndpoint ="http://www.dont.care.for.now";      
       String execId = delegate.execute(tool,id,returnEndpoint);
-    }*/
+    }
 }
 
 
 /* 
 $Log: ApplicationsIntegrationTest.java,v $
+Revision 1.5  2004/04/14 16:42:37  nw
+fixed tests to break more sensibly
+
 Revision 1.4  2004/04/14 10:16:40  nw
 added to the workflow integration tests
 
