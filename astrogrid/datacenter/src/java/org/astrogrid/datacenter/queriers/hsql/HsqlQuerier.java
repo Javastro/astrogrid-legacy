@@ -1,4 +1,4 @@
-/*$Id: HsqlQuerier.java,v 1.7 2003/09/22 16:51:24 mch Exp $
+/*$Id: HsqlQuerier.java,v 1.8 2003/09/24 21:03:19 nw Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,9 +25,9 @@ import org.xml.sax.SAXException;
  */
 public class HsqlQuerier extends SqlQuerier {
 
-    public HsqlQuerier(Element dom) throws DatabaseAccessException, IOException, SAXException
+    public HsqlQuerier() throws DatabaseAccessException, IOException, SAXException
     {
-        super(dom);
+        super();
     }
 
    /**
@@ -63,6 +63,9 @@ public class HsqlQuerier extends SqlQuerier {
 
 /*
 $Log: HsqlQuerier.java,v $
+Revision 1.8  2003/09/24 21:03:19  nw
+altered querier constructors.
+
 Revision 1.7  2003/09/22 16:51:24  mch
 Now posts results to dummy myspace
 

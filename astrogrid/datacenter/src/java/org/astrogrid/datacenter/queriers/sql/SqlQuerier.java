@@ -1,5 +1,5 @@
 /*
- * $Id: SqlQuerier.java,v 1.18 2003/09/22 16:51:24 mch Exp $
+ * $Id: SqlQuerier.java,v 1.19 2003/09/24 21:03:19 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -72,9 +72,9 @@ public class SqlQuerier extends DatabaseQuerier
     * </ul>
 
     */
-   public SqlQuerier(Element domContainingQuery) throws DatabaseAccessException, IOException, SAXException
+   public SqlQuerier() throws DatabaseAccessException, IOException, SAXException
    {
-      super(domContainingQuery);
+      super();
 
       String userId = Configuration.getProperty(USER_KEY);
       String password = Configuration.getProperty(PASSWORD_KEY);

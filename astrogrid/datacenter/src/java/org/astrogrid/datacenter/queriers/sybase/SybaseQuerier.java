@@ -1,4 +1,4 @@
-/*$Id: SybaseQuerier.java,v 1.8 2003/09/22 16:51:24 mch Exp $
+/*$Id: SybaseQuerier.java,v 1.9 2003/09/24 21:03:19 nw Exp $
  * Created on 03-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,9 +27,9 @@ public class SybaseQuerier extends SqlQuerier
      * @param ds
      * @throws DatabaseAccessException
      */
-   public SybaseQuerier(Element dom) throws DatabaseAccessException, IOException, SAXException
+   public SybaseQuerier() throws DatabaseAccessException, IOException, SAXException
    {
-        super(dom);
+        super();
    }
 
    /**
@@ -73,6 +73,9 @@ public class SybaseQuerier extends SqlQuerier
 
 /*
 $Log: SybaseQuerier.java,v $
+Revision 1.9  2003/09/24 21:03:19  nw
+altered querier constructors.
+
 Revision 1.8  2003/09/22 16:51:24  mch
 Now posts results to dummy myspace
 

@@ -1,5 +1,5 @@
 /*
- * $Id: MySqlQuerier.java,v 1.15 2003/09/22 16:51:24 mch Exp $
+ * $Id: MySqlQuerier.java,v 1.16 2003/09/24 21:03:19 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -21,10 +21,7 @@ import org.xml.sax.SAXException;
 
 public class MySqlQuerier extends SqlQuerier
 {
-   public MySqlQuerier(Element dom) throws DatabaseAccessException, IOException, SAXException
-   {
-      super(dom);
-   }
+
 
    /**
     * Also starts Sybase jdbc driver... hardcoded, don't like this!
@@ -55,7 +52,16 @@ public class MySqlQuerier extends SqlQuerier
    }
     /**/
 
-   protected QueryTranslator createQueryTranslator()
+   /**
+     * @throws DatabaseAccessException
+     * @throws IOException
+     * @throws SAXException
+     */
+    public MySqlQuerier() throws DatabaseAccessException, IOException, SAXException {
+        super();
+    }
+
+    protected QueryTranslator createQueryTranslator()
    {
       return new MySqlQueryTranslator();
    }

@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.4 2003/09/08 16:44:53 mch Exp $
+ * $Id: SqlResults.java,v 1.5 2003/09/24 21:03:19 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -62,7 +62,7 @@ public class SqlResults implements QueryResults
       {
          //don't know how big the result set is so use the workspace - unless
          //it's null, in which case work from memory
-         if (workspace == null)
+         if (workspace != null)
          {
             File workfile = workspace.makeWorkFile("votableResults.vot.xml"); //should go into workspace...
    
