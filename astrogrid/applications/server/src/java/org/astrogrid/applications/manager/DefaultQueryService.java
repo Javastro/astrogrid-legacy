@@ -1,4 +1,4 @@
-/*$Id: DefaultQueryService.java,v 1.4 2004/07/09 14:48:24 nw Exp $
+/*$Id: DefaultQueryService.java,v 1.5 2004/07/23 08:42:57 nw Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -63,7 +63,7 @@ public class DefaultQueryService implements QueryService, ComponentDescriptor {
             retval = app.createTemplateMessage();
            retval.setContent(app.getStatus().toString());
            retval.setLevel(LogLevel.INFO);
-           retval.setPhase(ExecutionPhase.RUNNING);
+           retval.setPhase(app.getStatus().toExecutionPhase());
         }
         else // look in the persistance store
         {
@@ -164,6 +164,9 @@ public class DefaultQueryService implements QueryService, ComponentDescriptor {
 
 /* 
 $Log: DefaultQueryService.java,v $
+Revision 1.5  2004/07/23 08:42:57  nw
+fixed phase reporting bug.
+
 Revision 1.4  2004/07/09 14:48:24  nw
 updated to match change in type of register*Listener methods in cec wsdl
 
