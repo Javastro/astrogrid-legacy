@@ -1,5 +1,5 @@
 /*
- * $Id: LocalFileStore.java,v 1.3 2004/03/02 00:15:39 mch Exp $
+ * $Id: LocalFileStore.java,v 1.4 2004/03/02 11:53:35 mch Exp $
  *
  */
 
@@ -58,6 +58,7 @@ public class LocalFileStore implements StoreClient
       }
    }
 
+
    /**
     * Sets up the root for this instance determined from the configuration root,
     * or creates one off the system-dependent
@@ -69,15 +70,26 @@ public class LocalFileStore implements StoreClient
       String root = SimpleConfig.getSingleton().getString("LocalFileStoreRoot", null);
       
       if (root == null) {
-         //create file in temporary area, and
-         rootDir = File.createTempFile("LocalFileStore","Root" );
-         // change to be a directory here.
-         rootDir.delete();
-         rootDir.mkdir();
+         //find the temporary file area as assigned by the operating system
+         rootDir = File.createTempFile("LocalFileStore","Root" ); //create file in temporary area
+         rootDir.delete();    //don't need the file
+
+         //create directory LocalFileStore off temporary area.  NB we could use
+         //the created file above as a directory name, but that means that two
+         //created file stores would not overlap.
+         rootDir = new File(rootDir.getParentFile(), "LocalFileStore");
+         if (!rootDir.isDirectory()) {
+            boolean success = rootDir.delete();
+            if (!success) throw new IOException("LocalFileStore directory ["+rootDir+"] is not a directory and cannot be deleted");
+         }
+         
+         if (!rootDir.exists()) {
+            rootDir.mkdir();
+         }
       }
    }
    
-   /** As the empty constructor, but uses the given creates a subdirectory off the normal
+   /** As the empty constructor, but creates a subdirectory off the normal
     * root with the name given.  This allows us to create several local stores
     * in the local filespace
     */
@@ -88,6 +100,7 @@ public class LocalFileStore implements StoreClient
       if (!rootDir.exists()) {
          rootDir.mkdir();
       }
+      log.debug("LocalFileStore["+name+"] created at "+rootDir);
    }
 
    /** As the named constructor, but uses the given Agsl that defines the name
@@ -272,7 +285,7 @@ public class LocalFileStore implements StoreClient
       
       if (target.getEndpoint().equals("file://"+rootDir.getName())) {
          //same store so make a file
-         out = new FileOutputStream(makeLocalPath(target.getPath()));
+         out = new FileOutputStream(makeLocalPath(target.getPath()), false);
       }
       else {
          StoreClient targetStore = StoreDelegateFactory.createDelegate(getOperator(), target);
@@ -322,6 +335,9 @@ public class LocalFileStore implements StoreClient
 
 /*
 $Log: LocalFileStore.java,v $
+Revision 1.4  2004/03/02 11:53:35  mch
+Fixes to copy and move tests
+
 Revision 1.3  2004/03/02 00:15:39  mch
 Renamed MyspaceIt04Delegate from misleading ServerDelegate
 
