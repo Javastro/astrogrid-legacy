@@ -2,11 +2,14 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/java/org/astrogrid/portal/util/xml/sax/junit/Attic/JUnitTestCase.java,v $</cvs:source>
  * <cvs:date>$Author: dave $</cvs:date>
- * <cvs:author>$Date: 2003/06/17 15:17:34 $</cvs:author>
- * <cvs:version>$Revision: 1.1 $</cvs:version>
+ * <cvs:author>$Date: 2003/06/18 01:38:14 $</cvs:author>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
  * $Log: JUnitTestCase.java,v $
+ * Revision 1.2  2003/06/18 01:38:14  dave
+ * Fixed bug in XML parser tests
+ *
  * Revision 1.1  2003/06/17 15:17:34  dave
  * Added links to live MySpace, including initial XML parser for lookup results
  *
@@ -92,7 +95,9 @@ public class JUnitTestCase
 			//
 			// Check we got the right exception.
 			assertEquals(exception.getClass(),   expected.getClass())   ;
-			assertEquals(exception.getMessage(), expected.getMessage()) ;
+			//
+			// Message is diffrent in JDK-1.4.1 and JDK-1.4.2
+			//assertEquals(exception.getMessage(), expected.getMessage()) ;
 			}
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
