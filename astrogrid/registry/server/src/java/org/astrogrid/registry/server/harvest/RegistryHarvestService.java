@@ -192,13 +192,30 @@ public class RegistryHarvestService implements
     */  
    public Document harvestResource(Document resources){
 
+      NodeList voList = resources.getElementsByTagNameNS("http://www.ivoa.net/xml/VOResource/v0.9","VODescription");
+         
+      if(voList.getLength() == 0) {
+         voList = resources.getElementsByTagNameNS("vr","VODescription");
+      }
+      if(voList.getLength() == 0) {
+         voList = resources.getElementsByTagName("VODescription");
+      }
+      if(voList.getLength() == 0) {
+         voList = resources.getElementsByTagName("vr:VODescription");
+      }
+      if(voList.getLength() == 0) {
+         System.out.println("error, could not find VOdescription");
+         return null;   
+      }
+
+
       //This next statement will go away with Castor.
       ArrayList al = new ArrayList();
       RegistryAdminService ras = new RegistryAdminService();
       try {
          //System.out.println("what was passed in at harvestResoruce = " + DomHelper.DocumentToString(resources));
          XSLHelper xs = new XSLHelper();
-         Document resourceChange = xs.transformDatabaseProcess((Node)resources);
+         Document resourceChange = xs.transformDatabaseProcess((Node)voList.item(0));
          System.out.println("the resourceChange = " + DomHelper.DocumentToString(resourceChange));
          Document castorXS = xs.transformCastorProcess((Node)resourceChange);
          System.out.println("castorxs = " + DomHelper.DocumentToString(castorXS));
@@ -283,6 +300,7 @@ public class RegistryHarvestService implements
             voList = resource.getElementsByTagName("vr:VODescription");
          }
          if(voList.getLength() == 0) {
+            System.out.println("error, could not find VOdescription");
             return null;   
          }
          RegistryAdminService ras = new RegistryAdminService();
