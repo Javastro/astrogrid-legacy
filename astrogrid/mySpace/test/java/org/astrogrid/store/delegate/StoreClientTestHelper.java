@@ -1,4 +1,4 @@
-/*$Id: StoreClientTestHelper.java,v 1.2 2004/03/14 13:48:13 mch Exp $
+/*$Id: StoreClientTestHelper.java,v 1.3 2004/04/16 16:11:11 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -92,7 +92,15 @@ public abstract class StoreClientTestHelper extends TestCase {
     */
    public void assertFoldersWork(StoreClient store) throws IOException {
       
-      store.newFolder(path+"NewFolder");
+      try {
+         store.newFolder(path+"NewFolder");
+      }
+      catch (StoreException e) {
+         if (e.getMessage().indexOf("AGMMCE00215")==-1) {
+            throw e;
+         }
+      }
+
 
       //create file in new folder
       store.putString("This is just a test file for "+this.getClass(), "NewFolder/NewFile.txt", false);
@@ -107,6 +115,8 @@ public abstract class StoreClientTestHelper extends TestCase {
       store.delete(path+"NewFolder/NewFile.txt");
       
       assertNull(store.getFile(path+"NewFolder/NewFile.txt"));
+      
+      
       
    }
    
@@ -215,6 +225,9 @@ public abstract class StoreClientTestHelper extends TestCase {
 
 /*
 $Log: StoreClientTestHelper.java,v $
+Revision 1.3  2004/04/16 16:11:11  mch
+Ignore newFolder if it already exists (eg broken previous test)
+
 Revision 1.2  2004/03/14 13:48:13  mch
 Fixed misrename
 
