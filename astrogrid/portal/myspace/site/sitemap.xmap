@@ -11,7 +11,7 @@
     | the accompanying documentation. The sitemaps which come with each
     | sample and each block will help to explain.
     |
-    | CVS $Id: sitemap.xmap,v 1.3 2004/02/05 17:30:39 gps Exp $
+    | CVS $Id: sitemap.xmap,v 1.4 2004/03/08 12:43:41 gps Exp $
     +-->
 <map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
 
@@ -111,6 +111,7 @@
       | entirely and execution proceeds from the element right below the action.
       +-->
     <map:actions>
+      <map:action name="myspace-change" src="org.astrogrid.portal.myspace.acting.ChangeAction"/>
       <map:action name="myspace-copy" src="org.astrogrid.portal.myspace.acting.CopyAction"/>
       <map:action name="myspace-delete" src="org.astrogrid.portal.myspace.acting.DeleteAction"/>
       <map:action name="myspace-rename" src="org.astrogrid.portal.myspace.acting.RenameAction"/>
@@ -187,11 +188,17 @@
       <map:select type="request-parameter">
         <map:parameter name="parameter-name" value="myspace-action"/>
         
+        <map:when test="Change">
+          <map:act type="myspace-change">
+            <map:parameter name="myspace-end-point" value="myspace-end-point"/>
+          </map:act>
+        </map:when>
+        
         <map:when test="Copy">
           <map:act type="myspace-copy">
             <map:parameter name="myspace-end-point" value="myspace-end-point"/>
-            <map:parameter name="username" value="username"/>
-            <map:parameter name="community-id" value="community-id"/>
+            <map:parameter name="username" value="user"/>
+            <map:parameter name="community-id" value="community_name"/>
             <map:parameter name="credential" value="credential"/>
 
             <map:parameter name="myspace-old-name" value="myspace-old-name"/>
@@ -202,8 +209,8 @@
         <map:when test="Delete">
           <map:act type="myspace-delete">
             <map:parameter name="myspace-end-point" value="myspace-end-point"/>
-            <map:parameter name="username" value="username"/>
-            <map:parameter name="community-id" value="community-id"/>
+            <map:parameter name="username" value="user"/>
+            <map:parameter name="community-id" value="community_name"/>
             <map:parameter name="credential" value="credential"/>
 
             <map:parameter name="myspace-old-name" value="myspace-old-name"/>
@@ -214,8 +221,8 @@
           <map:act type="myspace-rename">
             <map:parameter name="myspace-old-name" value="myspace-old-name"/>
             <map:parameter name="myspace-end-point" value="myspace-end-point"/>
-            <map:parameter name="username" value="username"/>
-            <map:parameter name="community-id" value="community-id"/>
+            <map:parameter name="username" value="user"/>
+            <map:parameter name="community-id" value="community_name"/>
             <map:parameter name="credential" value="credential"/>
 
             <map:parameter name="myspace-new-name" value="myspace-new-name"/>
@@ -225,8 +232,8 @@
         <map:when test="NewContainer">
           <map:act type="myspace-newcon">
             <map:parameter name="myspace-end-point" value="myspace-end-point"/>
-            <map:parameter name="username" value="username"/>
-            <map:parameter name="community-id" value="community-id"/>
+            <map:parameter name="username" value="user"/>
+            <map:parameter name="community-id" value="community_name"/>
             <map:parameter name="credential" value="credential"/>
 
             <map:parameter name="myspace-new-name" value="myspace-new-name"/>
@@ -236,8 +243,8 @@
         <map:when test="ExtendLease">
           <map:act type="myspace-extend-lease">
             <map:parameter name="myspace-end-point" value="myspace-end-point"/>
-            <map:parameter name="username" value="username"/>
-            <map:parameter name="community-id" value="community-id"/>
+            <map:parameter name="username" value="user"/>
+            <map:parameter name="community-id" value="community_name"/>
             <map:parameter name="credential" value="credential"/>
 
             <map:parameter name="myspace-old-name" value="myspace-old-name"/>
@@ -248,8 +255,8 @@
         <map:when test="Chown">
           <map:act type="myspace-chown">
             <map:parameter name="myspace-end-point" value="myspace-end-point"/>
-            <map:parameter name="username" value="username"/>
-            <map:parameter name="community-id" value="community-id"/>
+            <map:parameter name="username" value="user"/>
+            <map:parameter name="community-id" value="community_name"/>
             <map:parameter name="credential" value="credential"/>
 
             <map:parameter name="myspace-old-name" value="myspace-old-name"/>
@@ -264,8 +271,8 @@
         <map:when test="UploadURL">
           <map:act type="myspace-upload">
             <map:parameter name="myspace-end-point" value="myspace-end-point"/>
-            <map:parameter name="username" value="username"/>
-            <map:parameter name="community-id" value="community-id"/>
+            <map:parameter name="username" value="user"/>
+            <map:parameter name="community-id" value="community_name"/>
             <map:parameter name="credential" value="credential"/>
 
             <map:parameter name="myspace-name" value="myspace-new-name"/>
@@ -282,8 +289,8 @@
     <map:resource name="myspace-geturl">
       <map:act type="myspace-geturl">
         <map:parameter name="myspace-end-point" value="myspace-end-point"/>
-        <map:parameter name="username" value="username"/>
-        <map:parameter name="community-id" value="community-id"/>
+        <map:parameter name="username" value="user"/>
+        <map:parameter name="community-id" value="community_name"/>
         <map:parameter name="credential" value="credential"/>
         <map:parameter name="myspace-name" value="myspace-old-name"/>
       </map:act>
@@ -358,10 +365,12 @@
         <!-- Call MySpace list XML generator -->
         <map:generate type="myspace-holding-gen">
           <map:parameter name="myspace-end-point" value="myspace-end-point"/>
-          <map:parameter name="username" value="username"/>
-          <map:parameter name="community-id" value="community-id"/>
+          <map:parameter name="username" value="user"/>
+          <map:parameter name="community-id" value="community_name"/>
           <map:parameter name="credential" value="credential"/>
+<!--
           <map:parameter name="myspace-query" value="/avodemo@test.astrogrid.org/*"/>
+-->
         </map:generate>
         
         <!-- Transform using custom MySpace transformer -->
@@ -377,8 +386,8 @@
       <map:match pattern="webstart/**.xml">
         <map:act type="myspace-geturl">
           <map:parameter name="myspace-end-point" value="myspace-end-point"/>
-          <map:parameter name="username" value="username"/>
-          <map:parameter name="community-id" value="community-id"/>
+          <map:parameter name="username" value="user"/>
+          <map:parameter name="community-id" value="community_name"/>
           <map:parameter name="credential" value="credential"/>
           <map:parameter name="myspace-name" value="myspace-old-name"/>
 
@@ -392,7 +401,7 @@
         </map:act>
       </map:match>
       
-      <map:match pattern="**.xml">
+      <map:match pattern="*.xml">
         <map:generate type="file" src="web/static/{1}.xml"/>
         <map:transform src="cocoon://xml2html.xsl"/>
         <map:serialize type="xml"/>
