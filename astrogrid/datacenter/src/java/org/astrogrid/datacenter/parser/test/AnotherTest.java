@@ -1,5 +1,8 @@
 package org.astrogrid.datacenter.parser.test;
 
+import java.io.*;
+import org.astrogrid.datacenter.parser.util.*;
+
 /**
  *
  * @author Pedro Contreras <mailto:p.contreras@qub.ac.uk><p>
@@ -12,9 +15,6 @@ package org.astrogrid.datacenter.parser.test;
  *
  */
 
-import java.io.*;
-
-import parser.util.*;
 
 public class AnotherTest {
 

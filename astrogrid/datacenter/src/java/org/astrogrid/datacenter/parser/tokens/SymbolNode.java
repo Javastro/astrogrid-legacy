@@ -1,4 +1,4 @@
-package parser.tokens;
+package org.astrogrid.datacenter.parser.tokens;
 
 import java.io.*;
 import java.util.*;
