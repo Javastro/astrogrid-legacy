@@ -1,18 +1,24 @@
 <?xml version="1.0" ?>
 <!-- extension maven script -->
-<project xmlns:j="jelly:core"  xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="pal">
+<project xmlns:j="jelly:core"  xmlns:u="jelly:util" xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="pal">
 
 
 <property name="server.dir" location="${basedir}/../server" />
 <property name="delegate.dir" location="${basedir}/../client" />
 <property name="implementations.dir" location="${basedir}/../implementations" />
-<property name="webapp.root" location="${basedir}/target/astrogrid-datacenter-pal" />
+<property name="webapp.root" location="${basedir}/target/pal" />
 <property name="webapp.docs" location="${basedir}/target/webapp-docs" />
 
 
 <goal name="pal">
+  <attainGoal name="clean" />
+  <echo>**** buiulding site **** </echo>
+  <attainGoal name="site" />
+  <echo>**** building webapp documentation ****</echo>
   <attainGoal name="webapp-site" />
+  <echo>*** assembling war ***</echo>
   <attainGoal name="war:war" />
+
 </goal>
 
 <!-- hook to add our own things to the mix -->
@@ -27,9 +33,18 @@
 
 <goal name="webapp-site" description="generate webapp docs to a temp direcotry, for inclusion later in webapp - work around for a bug that stops build">
 	<echo> generating webapp site into ${webapp.docs}" </echo>
-	<mkdir dir="${webapp.docs}" />
+	<!-- first merge two doc sets - site xdocs take precendence  -->
+	<property name="tmp.docs" location="${basedir}/target/webapp-docs-src" />
+	<mkdir dir="${tmp.docs}" />
+	<copy todir="${tmp.docs}">
+		<fileset dir="${basedir}/site-xdocs" />
+	</copy>
+	<copy overwrite="false" todir="${tmp.docs}">
+		<fileset dir="${basedir}/xdocs" />
+	</copy>
 	<j:set var="maven.docs.dest" value="${webapp.docs}" />
-	<j:set var="maven.docs.src" value="${basedir}/site-xdocs" />
+	<j:set var="maven.docs.src" value="${tmp.docs}" />
+	<mkdir dir="${webapp.docs}" />
 	<attainGoal name="site:generate" />
 </goal>
 
@@ -69,10 +84,32 @@
 </goal>
 
 <goal name="configure-webapp" description="set properties in web.xml, server-config.wsdd, etc">
-	<!-- patch server-config with wsdd file contained in client.jar
-		patch web.xml
-		configure jsp unit testing harness.
-		 -->
+	<!-- patch server-config with wsdd file contained in client.jar -->
+	<property name="working.dir" location="${basedir}/target/tmp" />
+	<mkdir dir="${working.dir}" />
+	<deploy:copy-deps todir="${working.dir}" />
+	<unjar dest="${working.dir}" overwrite="true">
+		<fileset dir="${working.dir}">
+			<include name="*client*.jar" />
+		</fileset>
+		<patternset>
+			<include name="wsdd/**" />
+			<include name="xsd/**" />
+			<include name="wsdl/**" />
+		</patternset>
+	</unjar>
+	<delete>
+		<fileset dir="${working.dir}">
+			<include name="*.jar" />
+		</fileset>
+	</delete>
+  	<!-- hack from mailing list to fix Maven XLST bug -->
+	${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}	
+	<xslt in="${working.dir}/wsdd/deploy.wsdd"
+	      out="${webapp.root}/WEB-INF/server-config.wsdd"
+	      extension=".wsdd"
+	      style="${basedir}/build/server-config.xsl"
+	/>
 </goal>
 
 </project>

@@ -1,0 +1,30 @@
+<?xml version="1.0" ?>
+<document>
+<properties>
+	<author email="nw@jb.man.ac.uk">Noel Winstanley</author>
+	<title>Datacenter Configuration</title>
+</properties>
+
+<body>
+
+<section name="JNDI">
+
+</section>
+<section name="Datasource" >
+
+</section>
+<section name="Properties file">
+
+<source>
+example properties file.
+</source>
+<a href="AstoGridConfig.properties">Example properties file</a>
+
+</section>
+<section name="Advanced Configuraration">
+
+</section>
+
+
+</body>
+</document>

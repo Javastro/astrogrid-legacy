@@ -3,10 +3,12 @@
 
   <title>AstroGrid Project</title>
   <body>
-    <menu name="Download Snapshots">
-      <item name="Web archive (.war)" href="pal.war" />
-      <item name="All-in-one bundle (.zip)" href="pal.zip" />
+    <menu name="PAL">
+	<item name="INSTALL" href="INSTALL.html" />
+	<item name="Configuration" href="configuration.html" />
+	<item name="Other back-ends" href="other-back-end.html" />
     </menu>
+
     <links>
        <item name="AstroGrid"  href="http://www.astrogrid.org"/>
        <item name="Projects"   href="http://www.astrogrid.org/maven/build/index.html"/>

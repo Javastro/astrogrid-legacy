@@ -10,25 +10,7 @@
   <name>Publishers Astrogrid Library</name>
   <currentVersion>HEAD</currentVersion>
 
-	<description><![CDATA[
-	Everything you need to publish a data archive, wrapped up in one big bundle.
-	<p />
-	 The name of the war produced by this project is <tt>pal</tt>
-	 To add a dependency on this project to your own project, add the following to your <tt>project.xml</tt>
-	 <source>
-	   &lt;dependencies&gt;
-	   ...
-	  	&lt;dependency&gt;
-		&lt;groupId&gt;astrogrid-datacenter&lt;/groupId&gt;
-		&lt;artifactId&gt;pal&lt;/artifactId&gt;
-		&lt;version&gt;SNAPSHOT&lt;/version&gt;
-		&lt;type&gt;war&lt;/type&gt;
-		&lt;/dependency&gt;
-	   ...
-	   &lt;dependencies&gt;
-	 </source>
-	 	]]>
-	</description>
+
 
   <!-- must be on a single line -->
   <shortDescription>Publishers Astrogrid Library</shortDescription>
@@ -115,7 +97,13 @@
       <war.bundle>true</war.bundle>
     </properties>
     </dependency>
+    <dependency>
+    	<id>log4j</id>
+	<version>1.2.8</version>
+	<war.bundle>true</war.bundle>
+    </dependency>
   </dependencies>
+
 
   <!-- build information for the project -->
    <reports>

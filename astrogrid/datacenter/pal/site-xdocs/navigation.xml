@@ -3,8 +3,12 @@
 
   <title>AstroGrid Project</title>
   <body>
-   <menu>
-     <item name="Home" href="index.html" />
+      <menu name="Documents">
+	<item name="INSTALL" href="INSTALL.html" />
+	<item name="Configuration" href="configuration.html" />
+	<item name="Other back-ends" href="other-back-end.html" />
+    </menu>
+   <menu name="Code">
      <item name="Implementation Examples" href="implementations" />
      <item name="Axis Fingerprint" href="fingerprint.jsp" />
      <item name="Axis Install Check" href="happyaxis.jsp" />
