@@ -1,4 +1,4 @@
-/*$Id: AstrogridAssert.java,v 1.1 2004/08/27 12:42:58 nw Exp $
+/*$Id: AstrogridAssert.java,v 1.2 2004/08/27 12:48:08 nw Exp $
  * Created on 27-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -56,26 +56,26 @@ public class AstrogridAssert extends XMLAssert{
     // assertions for votable.
     /** assert is a votable document 
      * @asserts doctype, and dtd validates */
-    public void assertVotable(String s) throws SAXException, IOException, TransformerException, ParserConfigurationException {
+    public static void assertVotable(String s) throws SAXException, IOException, TransformerException, ParserConfigurationException {
         assertXpathExists("/" + VOTABLE_DOCTYPE,s);
         assertXMLValid(s,VOTABLE_SYSTEM_ID,VOTABLE_DOCTYPE);
     }
     /** assert is a votable document 
      * @asserts doctype, and dtd validates */
-    public void assertVotable(InputStream is) throws SAXException, IOException, TransformerException, ParserConfigurationException{
+    public static void assertVotable(InputStream is) throws SAXException, IOException, TransformerException, ParserConfigurationException{
         Document d = DomHelper.newDocument(is);
         assertVotable(d);
     }
 
     /** assert is a votable document 
      * @asserts doctype, and dtd validates */
-    public void assertVotable(Document d) throws SAXException, IOException, TransformerException, ParserConfigurationException {
+    public static void assertVotable(Document d) throws SAXException, IOException, TransformerException, ParserConfigurationException {
         assertXpathExists("/" + VOTABLE_DOCTYPE,d);
         assertXMLValid(new Validator(d,VOTABLE_SYSTEM_ID,VOTABLE_DOCTYPE));
     }
     /** assert is a votable document 
      * @asserts doctype, and dtd validates */    
-    public void assertVotable(Element e) throws SAXException, ParserConfigurationException {
+    public static void assertVotable(Element e) throws SAXException, ParserConfigurationException {
         assertEquals(VOTABLE_DOCTYPE,e.getLocalName());
         assertXMLValid(DomHelper.ElementToString(e),VOTABLE_SYSTEM_ID,VOTABLE_DOCTYPE);
     }
@@ -110,6 +110,10 @@ public class AstrogridAssert extends XMLAssert{
 
 /* 
 $Log: AstrogridAssert.java,v $
+Revision 1.2  2004/08/27 12:48:08  nw
+started class of static assertions relevant to astrogird - assertVotable() for starters.
+Also provides methods to check format of xml documents.
+
 Revision 1.1  2004/08/27 12:42:58  nw
 started class of static assertions relevant to astrogird - assertVotable() for starters.
 Also provides methods to check format of xml documents.
