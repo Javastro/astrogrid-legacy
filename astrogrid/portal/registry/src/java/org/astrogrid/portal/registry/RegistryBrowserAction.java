@@ -107,25 +107,7 @@ public class RegistryBrowserAction extends AbstractAction
    public static final String ERROR_MESSAGE = "errormessage";
    
    public static Config conf = null;   
-   
-   //* This is a list of current servers (should be in Config file) */
-   private static int NSERVERS = 5;
-   private static final String SERVERS[][] = {
-      {"localhost",
-       "localhost:8080/astrogrid-registry-SNAPSHOT" },
-      {"RAL",
-       "stargrid1.bnsc.rl.ac.uk:8080/astrogrid-registry-webapp" },
-      {"Leicester",
-       "twmbarlwm.astrogrid.org:8080/astrogrid-registry-SNAPSHOT" },
-      {"Manchester",
-       "astrogrid3.jb.man.ac.uk:8080/astrogrid-registry-SNAPSHOT" },
-      {"MSSL",
-       "msslxy.mssl.ucl.ac.uk:8080/astrogrid-registry-SNAPSHOT" },
-      {"Cambridge", "" },
-      {"Edinburgh", "" },
-      {"", "" }
-   };   
-  
+     
    static {
       if(conf == null) {
          conf = org.astrogrid.config.SimpleConfig.getSingleton();
@@ -151,9 +133,6 @@ public class RegistryBrowserAction extends AbstractAction
       String errorMessage = null;
       int crit_number = 0;
       Document registryDocument = null;
-      // LinkedHashMap compareTypeList = new LinkedHashMap();            
-      // ArrayList joinTypes = new ArrayList();
-      LinkedHashMap Servers = new LinkedHashMap();
       ArrayList resultlist = null;      
       String result = null;
       String resultid = null;
@@ -166,33 +145,16 @@ public class RegistryBrowserAction extends AbstractAction
       String authid = request.getParameter(PARAM_AUTHORITY_ID);
       String resourcekey = request.getParameter(PARAM_RESOURCE_KEY);
       String title = request.getParameter(PARAM_TITLE);
-      String server = request.getParameter(PARAM_SERVER);
 
      
       if(DEBUG_FLAG) {
          printDebug( method, "the action is = " + action );      
          printDebug( method, "the mainElem = " + mainElem );
-         printDebug( method, "the server = " + server );
          printDebug( method, "the authority = " + identifier );
          printDebug( method, "the title = " + title );
 		 printDebug( method, "the authid = " + authid );
 		 printDebug( method, "the resourcekey = " + resourcekey );
       }            
-
-      String endpoint = null;
-
-      // Check for server name and get web service
-      for ( int i = 0; i < NSERVERS; i++ ) {
-         Servers.put( SERVERS[i][0],
-                  "http://" + SERVERS[i][1] + "/services/Registry");
-         printDebug( method, "Server " + i + " = " +
-                                     SERVERS[i][0] + " (" +SERVERS[i][1] +")");
-         if ( SERVERS[i][0].equals(server) )
-            endpoint="http://" + SERVERS[i][1] + "/services/Registry";
-      }
-	  request.setAttribute("Servers", Servers);      
-
-      printDebug( method, "Service = " + endpoint);
 
       // Initial Query Action.
       if( QUERY_ACTION.equals(action) ) {
@@ -203,10 +165,8 @@ public class RegistryBrowserAction extends AbstractAction
 
          try {
             // Now lets submit the query.
-            URL url = new URL( endpoint );               
-            RegistryService rs = RegistryDelegateFactory.createQuery(url);
+            RegistryService rs = RegistryDelegateFactory.createQuery( );
             printDebug( method, "Service = " + rs);
-            //Document doc = rs.submitQuery( query );
             Document doc = rs.submitQuery( query );
 
             //create the results and put it in the request.
@@ -266,11 +226,8 @@ public class RegistryBrowserAction extends AbstractAction
 				   printDebug( method, "tableQuery = " + tableQuery);
 				
 		      }	
-			  endpoint = "http://localhost:8080/astrogrid-registry-SNAPSHOT/services/Registry";
 							  
-			  printDebug( method, "Service = " + endpoint);
-			  URL url = new URL( endpoint );               
-			  RegistryService rs = RegistryDelegateFactory.createQuery(url);
+			  RegistryService rs = RegistryDelegateFactory.createQuery();
 			  printDebug( method, "Service = " + rs);
 			  Document doc = rs.submitQuery( tableQuery );
 			 
@@ -376,30 +333,30 @@ public class RegistryBrowserAction extends AbstractAction
      if ( CATALOG_SEARCH.equals( main ) ) {
        query += "\n<selectionOp op='$and$'/>" +
                 "\n<selectionSequence>\n" +
-                "<selection item='Type' itemOp='EQ' value='Catalog'/>" +
-                "<selectionOp op='OR'/>" +
-                "<selection item='Type' itemOp='EQ' value='Archive'/>" +
+                //"<selection item='@xsi:Type' itemOp='EQ' value='TabularSkyService'/>" +
+                //"<selectionOp op='OR'/>" +
+                "<selection item='vr:Type' itemOp='EQ' value='Catalog'/>" +
                 "\n</selectionSequence>";
      }
      else if ( TOOL_SEARCH.equals( main ) ) {
        query += "\n<selectionOp op='$and$'/>" +
-     "\n<selection item='@*:type' itemOp='EQ' value='CeaApplicationType'/>";
+     "\n<selection item='@xsi:type' itemOp='EQ' value='CeaApplicationType'/>";
      }
 
      // Now lets check for other filters.
      if ( identifier != null && identifier.length() > 0 )
         query += "\n<selectionOp op='AND'/>" +
-"<selection item='AuthorityID' itemOp='CONTAINS' value='"+identifier+"'/>";
+          "<selection item='vr:Identifier/vr:AuthorityID' itemOp='CONTAINS'" + 
+          "value='" + identifier + "'/>";
      if ( title != null && title.length() > 0 )
         query += "\n<selectionOp op='AND'/>" +
-           "<selection item='Title' itemOp='CONTAINS' value='"+title+"'/>";
+         "<selection item='vr:Title' itemOp='CONTAINS' value='" + title + "'/>";
 
      // End of Query.
      query += "\n</selectionSequence></query>";
 
      return query;
    }
-
 
    private String getResultMessage(Document doc) {
       String message = null;

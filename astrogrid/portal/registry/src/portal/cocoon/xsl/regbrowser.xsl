@@ -17,8 +17,10 @@
 	  <ag-div>	      
 	    <!-- Add our page content -->
 		<content>
-		  <agPUBMessage>Query the Registry Microbrowser - <xsl:value-of select="$mainelement"/></agPUBMessage> 
-		  <ag-script type="text/javascript" src="/astrogrid-portal/extras.js"/>		    
+		  <agPUBMessage>
+        Query the Registry Microbrowser - <xsl:value-of select="$mainelement"/>
+          </agPUBMessage> 
+		  <ag-script type="text/javascript" src="/astrogrid-portal/extras.js"/>
 		  <xsl:apply-templates/>
 		</content>
 	  </ag-div>
@@ -102,19 +104,6 @@
       </input>      
       <br/>
 
-      <label>Server:
-      <select name="Server">
-        <xsl:for-each select="//BrowserQuery/servers/server">
-          <xsl:element name="option">
-            <xsl:attribute name="value"><xsl:value-of
-                                       select="@name"/></xsl:attribute>
-            <xsl:value-of select="@name"/>
-          </xsl:element>          
-        </xsl:for-each>
-      </select>
-      </label>
-      <br/>
-      
       <label>Select a <xsl:value-of select="$mainelement"/>
              with the ANY or NONE of the following criteria:
       </label>
@@ -171,7 +160,8 @@
     <xsl:choose>
       <xsl:when test="$mainelement = 'Catalog'">   <!-- CATALOG --> 
         <p>
-          <form method="post" action="registrybrowser.html" name="RegistryBrowser" id="RegistryBrowser">
+          <form method="post" action="registrybrowser.html"
+                name="RegistryBrowser" id="RegistryBrowser">
             <input type="hidden" name="action" value="selectentry" />
             <input type="hidden" name="mainelement">
               <xsl:attribute name="value">
@@ -181,7 +171,8 @@
             Select a <xsl:value-of select="$mainelement"/> from the following:      
             <br/>
               <table>                    
-              <xsl:for-each select="//BrowserQuery/BrowserBody/ResultsList/result">
+              <xsl:for-each
+                    select="//BrowserQuery/BrowserBody/ResultsList/result">
                 <tr>
                   <td>
                 <strong> <xsl:value-of select="@key"/> </strong>
@@ -197,7 +188,7 @@
                   <td>                                           
                     <input type="radio" name="selection" id="selection">
                       <xsl:attribute name="value">
-                        <xsl:value-of select="../@identifier"/>/<xsl:value-of select="."/>
+             <xsl:value-of select="../@identifier"/>/<xsl:value-of select="."/>
                       </xsl:attribute>
                     </input>
                     <xsl:value-of select="."/>
@@ -207,8 +198,8 @@
               </xsl:for-each>
             </table>
             <input name="queryregistry" type="button" value="Browse...">
-              <xsl:attribute name="onClick">findSelection()</xsl:attribute>                                                        
-            </input>                                                         
+              <xsl:attribute name="onClick">findSelection()</xsl:attribute>
+            </input>
             <xsl:text>          </xsl:text>
             <input type="submit" name="queryregistry" value="Restart" />
             <xsl:text>          </xsl:text>
@@ -219,10 +210,12 @@
     
         <xsl:otherwise>           <!-- TOOL -->
           <p>
-            <form method="post" action="registrybrowser.html" name="RegistryBrowser">
+            <form method="post" action="registrybrowser.html"
+                  name="RegistryBrowser">
               <input type="hidden" name="action" value="selectentry" />
               <input type="hidden" name="authId">
-                <xsl:attribute name="value"><xsl:value-of select="$authId"/></xsl:attribute>
+                <xsl:attribute name="value"><xsl:value-of
+                               select="$authId"/></xsl:attribute>
               </input>
               <input type="hidden" name="resourceKey">
                  <xsl:attribute name="value">
@@ -234,9 +227,10 @@
                   <xsl:value-of select="$mainelement"/>
                 </xsl:attribute>
               </input>
-              Select a <xsl:value-of select="$mainelement"/> from the following:      
+              Select a <xsl:value-of select="$mainelement"/> from the following:
               <br/>      
-                <xsl:for-each select="//BrowserQuery/BrowserBody/ResultsList/result">                
+                <xsl:for-each
+                   select="//BrowserQuery/BrowserBody/ResultsList/result">
                   <input type="radio" name="selection" id="selection">
                     <xsl:attribute name="value">
                       <xsl:value-of select="@identifier"/>
@@ -247,7 +241,10 @@
                   <br/> 
                 </xsl:for-each>
               <input type="button" value="Select">               
-                <xsl:attribute name="onClick">getSelectionId('<xsl:value-of select="$authId"/>','<xsl:value-of select="$resourceKey"/>');</xsl:attribute>                              
+                <xsl:attribute name="onClick">
+                   getSelectionId('<xsl:value-of select="$authId"/>','
+                                   <xsl:value-of select="$resourceKey"/>');
+                </xsl:attribute>                              
               </input>                                             
               <xsl:text>          </xsl:text>
               <input type="submit" name="queryregistry" value="Restart" />
