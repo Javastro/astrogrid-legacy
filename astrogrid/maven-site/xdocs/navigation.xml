@@ -1,47 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="AstroGrid">
-
-  <title>AstroGrid Project</title>
-
-  <body>
-    <links>
-       <item name="AstroGrid" href="http://www.astrogrid.org"/>
-       <item name="Projects" href="index.html"/>
-    </links>
-    <menu name="Projects">
-      <item name="Applications Integration"     href="applications/index.html"/>
-      <item name="Common"           href="common/index.html"/>
-      <item name="Community"        href="community/index.html"/>
-      <item name="DataCenter"       href="datacenter/index.html"/>
-      <item name="Job Management"   href="jes/index.html"/>
-      <item name="mySpace"          href="mySpace/index.html"/>
-      <item name="Portal"          href="portal/index.html"/>
-      <item name="Registry"         href="registry/index.html"/>
-      <item name="Scripting"		href="scripting/index.html" />      
-      <item name="Warehouse"        href="warehouse/index.html"/>
-      <item name="Workflow"          href="workflow/index.html"/>
-      <item name="Workflow Common Objects" href="astrogrid-workflow-objects/index.html" />
-    </menu>
-    <menu name="Integration and Logs">
-      <item name="Integration Testing" href="integrationTests/index.html"/>
-      <item name="Maven Build Logs" href="/logs.html" collapse="true">
-       <item name="Applications Integration"           href="log/maven-build-applications.log" />
-       <item name="Common"           href="log/maven-build-common.log" />
-       <item name="Community"           href="log/maven-build-community.log" />
-       <item name="DataCenter"       href="log/maven-build-datacenter.log" />
-       <item name="Job Management"   href="log/maven-build-jes.log" />
-       <item name="mySpace"          href="log/maven-build-mySpace.log" />
-       <item name="Portal"          href="log/maven-build-portal.log" />
-       <item name="Registry"         href="log/maven-build-registry.log" />
-       <item name="Scripting"			href="log/maven-build-scripting.log" />
-       <item name="Warehouse"        href="log/maven-build-warehouse.log" />
-       <item name="Workflow"         href="log/maven-build-workflow.log" />
-       <item name="Workflow Common Objects" href="log/maven-build-astrogrid-workflow-objects.log" />
-       <item name="Integration Tests" href="log/maven-build-integrationTests.log" />
-      </item>
-    </menu>
-        <menu name="Releases">
-    	<item name="Itn05 Snapshots" href="http://wiki.astrogrid.org/bin/view/Astrogrid/Itn05Snapshots"/>
-    </menu>
-  </body>
+	<title>AstroGrid Project</title>
+	<body>
+		<links>
+			<item name="AstroGrid" href="http://www.astrogrid.org"/>
+			<item name="Projects" href="index.html"/>
+		</links>
+		<menu name="Projects">
+			<item name="Applications Integration" 
+				href="applications/index.html"/>
+			<item name="Common" href="common/index.html"/>
+			<item name="Community" href="community/index.html"/>
+			<item name="DataCenter" href="datacenter/index.html"/>
+			<item name="Job Management" href="jes/index.html"/>
+			<item name="mySpace" href="mySpace/index.html"/>
+			<item name="Portal" href="portal/index.html"/>
+			<item name="Registry" href="registry/index.html"/>
+			<item name="Scripting" href="scripting/index.html" />
+			<item name="Warehouse" href="warehouse/index.html"/>
+			<item name="Workflow" href="workflow/index.html"/>
+			<item name="Workflow Common Objects" 
+				href="astrogrid-workflow-objects/index.html" />
+		</menu>
+		<menu name="Integration and Logs">
+			<item name="Integration Testing" 
+				href="integrationTests/index.html"/>
+			<item name="Maven Build Logs" href="/logs.html" collapse="true">
+				<item name="Applications Integration" 
+					href="log/maven-build-applications.log" />
+				<item name="Common" href="log/maven-build-common.log" />
+				<item name="Community" href="log/maven-build-community.log" />
+				<item name="DataCenter" href="log/maven-build-datacenter.log" />
+				<item name="Job Management" href="log/maven-build-jes.log" />
+				<item name="mySpace" href="log/maven-build-mySpace.log" />
+				<item name="Portal" href="log/maven-build-portal.log" />
+				<item name="Registry" href="log/maven-build-registry.log" />
+				<item name="Scripting" href="log/maven-build-scripting.log" />
+				<item name="Warehouse" href="log/maven-build-warehouse.log" />
+				<item name="Workflow" href="log/maven-build-workflow.log" />
+				<item name="Workflow Common Objects" 
+					href="log/maven-build-astrogrid-workflow-objects.log" />
+				<item name="Integration Tests" 
+					href="log/maven-build-integrationTests.log" />
+			</item>
+		</menu>
+		<menu name="Releases">
+			<item name="Itn05 Snapshots" 
+				href="http://wiki.astrogrid.org/bin/view/Astrogrid/Itn05Snapshots"/>
+			<item name="Astrogrid Maven Repository" 
+				href="http://www.astrogrid.org/maven/org.astrogrid"/>
+		</menu>
+	</body>
 </project>
