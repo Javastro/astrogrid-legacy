@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+
+<menu
+    xmlns="http://www.astrogrid.org/portal"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.astrogrid.org/portal menu-schema.xsd"
+    name="data-query">
+  <item>
+    <link>data-query.html</link>
+    <description>Data Query Builder</description>
+  </item>
+</menu>
