@@ -77,7 +77,7 @@ public class LoginAction extends AbstractAction
       CommunityConfig.loadConfig();
       String commName = CommunityConfig.getCommunityName();
       if(commName == null || commName.length() <= 0) {
-         errorMessage = "No community name is found";
+         errorMessage = "No community name is found and is required for logging in.";
       }else {
          session.setAttribute("community_name", commName); 
       }
@@ -95,20 +95,22 @@ public class LoginAction extends AbstractAction
       if(HTTPS_CONNECTION.equals(secureConn)) {
          
          if(!request.isSecure()) {
-            try {
-               secure_url = "https://" + request.getServerName() + ":" + securePort + request.getRequestURI();
-               redirector.redirect(false,secure_url);
-             }catch(Exception e) {
-                e.printStackTrace();
-             }
+            if(securePort == null || securePort.length() <= 0) {
+               errorMessage = "No security port could be found and is required for a secure ssl connection for loggin in.";   
+            } else {
+               try {
+                  secure_url = "https://" + request.getServerName() + ":" + securePort + request.getRequestURI();
+                  redirector.redirect(false,secure_url);
+                }catch(Exception e) {
+                   e.printStackTrace();
+                }
+            }
          }
       }
       
       String admin = CommunityConfig.getAdministrator();
       String adminEmail = CommunityConfig.getAdministratorEmail();
       
-      
-
       if(LOGIN_ACTION.equals(action)) {
          //call authenticateLogin
          //call authorizePortal()

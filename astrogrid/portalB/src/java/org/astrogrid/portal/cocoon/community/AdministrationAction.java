@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.LinkedHashMap;
 import org.astrogrid.community.delegate.policy.AdministrationDelegate;
 import org.astrogrid.community.policy.data.GroupData;
 import org.astrogrid.community.common.CommunityConfig;
@@ -115,6 +116,10 @@ public class AdministrationAction extends AbstractAction
 		// Get our current request and session.
 		Request request = ObjectModelHelper.getRequest(objectModel);
       Session session = request.getSession();
+
+      //Create a new HashMap for our results.  Will be used to
+      //pass to the transformer (xsl page)
+      Map results = new HashMap();
       
             
       String errorMessage = null;
@@ -134,17 +139,25 @@ public class AdministrationAction extends AbstractAction
       
       String redirect_url = null;
       if(HTTPS_CONNECTION.equals(secureConn) && 
-         (ACTION_INSERT_ACCOUNT.equals(processAction) || ACTION_CHANGE_PASSWORD.equals(processAction) )) {
+         (ACTION_INSERT_ACCOUNT.equals(action) || ACTION_CHANGE_PASSWORD.equals(action) )) {
          if(!request.isSecure()) {
-            try {
-               redirect_url = "https://" + request.getServerName() + ":" +
-                            securePort + request.getRequestURI() + "?" +
-                            request.getQueryString();
-               System.out.println(redirect_url);
-               redirector.redirect(true,redirect_url);
-             }catch(Exception e) {
-                e.printStackTrace();
-             }
+            if(securePort == null || securePort.length() <= 0) {
+               errorMessage = "Cannot find a secure url port for redirecting which is required for this operation.";
+               results.put(ACTION,action);
+               results.put("errormessage",errorMessage);
+               results.put("message",message);
+               return results;               
+            }else {
+               try {
+                  redirect_url = "https://" + request.getServerName() + ":" +
+                               securePort + request.getRequestURI() + "?" +
+                               request.getQueryString();
+                  System.out.println(redirect_url);
+                  redirector.redirect(true,redirect_url);
+                }catch(Exception e) {
+                   e.printStackTrace();
+                }
+            }
          }
       }else {
          if(request.isSecure()) {
@@ -160,27 +173,26 @@ public class AdministrationAction extends AbstractAction
          }
       }
       
-      
-      
-      
 		if(DEBUG_FLAG) {
 			System.out.println("the action is = " + action);		
 		}
       AdministrationDelegate adminDelegate = new AdministrationDelegate();
+
       String ident = (String)request.getParameter(IDENT);
       boolean isAdmin = false;
-      Hashtable actionTable = new Hashtable();
+      LinkedHashMap actionTable = new LinkedHashMap();
       String comm_account = (String)session.getAttribute("community_account");
       if(comm_account == null || comm_account.length() <= 0) {
          comm_account = (String)session.getAttribute("user");
       }
-      
-      //String [][]actionChoices = null;
+
+      try {
+         adminDelegate.getPassword(comm_account);
+      }catch(Exception e) {
+        e.printStackTrace();  
+      }      
+
       if(comm_account == null) {
-         //actionChoices = new String[0][2];
-         //actionChoices[0][0] = ACTION_INSERT_ACCOUNT;
-         //actionChoices[0][1] = "Insert Account";
-         //user is a new user registring
          actionTable.put(ACTION_INSERT_ACCOUNT,"Insert Account");
       }else {
          try {
@@ -191,79 +203,26 @@ public class AdministrationAction extends AbstractAction
          }
 
          if(isAdmin) {
-            //actionChoices = new String[16][2];
             actionTable.put(ACTION_INSERT_ACCOUNT,"Insert Account");
-            //actionChoices[0][0] = ACTION_INSERT_ACCOUNT;
-            //actionChoices[0][1] = "Insert Account";
             actionTable.put(ACTION_REMOVE_ACCOUNT,"Remove Account");
-            //actionChoices[1][0] = ACTION_REMOVE_ACCOUNT;
-            //actionChoices[1][1] = "Remove Account";            
             actionTable.put(ACTION_INSERT_GROUP,"Insert Group");
-            //actionChoices[1][0] = ACTION_INSERT_GROUP;
-            //actionChoices[1][1] = "Insert Group";                        
             actionTable.put(ACTION_REMOVE_GROUP,"Remove Group");
-            //actionChoices[2][0] = ACTION_REMOVE_GROUP;
-            //actionChoices[2][1] = "Remove Group";                                    
             actionTable.put(ACTION_INSERT_COMMUNITY,"Insert Community");
-            //actionChoices[3][0] = ACTION_INSERT_COMMUNITY;
-            //actionChoices[3][1] = "Insert Community";                                                
             actionTable.put(ACTION_REMOVE_COMMUNITY,"Remove Community");
-            //actionChoices[4][0] = ACTION_REMOVE_COMMUNITY;
-           // actionChoices[4][1] = "Remove Community";                                                            
             actionTable.put(ACTION_INSERT_RESOURCE,"Insert Resource");
-            //actionChoices[5][0] = ACTION_INSERT_RESOURCE;
-            //actionChoices[5][1] = "Insert Resource";                                                            
-            
             actionTable.put(ACTION_REMOVE_RESOURCE,"Remove Resource");
-            //actionChoices[6][0] = ACTION_REMOVE_RESOURCE;
-            //actionChoices[6][1] = "Remove Resource";                                                            
-            
-            actionTable.put(ACTION_INSERT_MEMBER,"Insert Member");
-            //actionChoices[7][0] = ACTION_INSERT_MEMBER;
-            //actionChoices[7][1] = "Insert Member";                                                            
-            
+            actionTable.put(ACTION_INSERT_MEMBER,"Insert Member");            
             actionTable.put(ACTION_REMOVE_MEMBER,"Remove Member");
-            //actionChoices[8][0] = ACTION_REMOVE_MEMBER;
-            //actionChoices[8][1] = "Remove Member";                                                            
-            
             actionTable.put(ACTION_INSERT_PERMISSION,"Insert Permission");
-            //actionChoices[9][0] = ACTION_INSERT_PERMISSION;
-            //actionChoices[9][1] = "Insert Permission";                                                            
-            
             actionTable.put(ACTION_REMOVE_PERMISSION,"Remove Permission");
-            //actionChoices[10][0] = ACTION_REMOVE_PERMISSION;
-            //actionChoices[10][1] = "Remove Permission";                                                            
-            
             actionTable.put(ACTION_VIEW_COMMUNITY,"View Community");
-            //actionChoices[11][0] = ACTION_VIEW_COMMUNITY;
-            //actionChoices[11][1] = "View Community";                                                            
-            
             actionTable.put(ACTION_VIEW_ACCOUNTS,"View Accounts");
-            //actionChoices[12][0] = ACTION_VIEW_ACCOUNTS;
-            //actionChoices[12][1] = "View Accounts";                                                            
-                     
             actionTable.put(ACTION_VIEW_RESOURCES,"View Resources");
-            //actionChoices[13][0] = ACTION_VIEW_RESOURCES;
-            //actionChoices[13][1] = "View Resources";
-            
             actionTable.put(ACTION_VIEW_GROUPS,"View Groups");
-            //actionChoices[14][0] = ACTION_VIEW_GROUPS;
-            //actionChoices[14][1] = "View Groups";
-            
             actionTable.put(ACTION_CHANGE_PASSWORD,"Change of Password");
-            //actionChoices[15][0] = ACTION_CHANGE_PASSWORD;
-            //actionChoices[15][1] = "Change of Password";
-//            actionTable.put(ACTION_VIEW_MEMBERS,"View Members");
-         }else {
-            //actionChoices = new String[2][2];            
+         }else {            
             actionTable.put(ACTION_VIEW_GROUPS,"View Groups");
-            //actionChoices[0][0] = ACTION_VIEW_GROUPS;
-            //actionChoices[0][1] = "View Groups";
-            
             actionTable.put(ACTION_CHANGE_PASSWORD,"Change of Password");
-            //actionChoices[1][0] = ACTION_CHANGE_PASSWORD;
-            //actionChoices[1][1] = "Change of Password";
-
          }
       }      
       
@@ -390,7 +349,6 @@ public class AdministrationAction extends AbstractAction
             errorMessage = "No insert empty community";
          } 
       } else if(ACTION_INSERT_ACCOUNT.equals(processAction)) {
-         System.out.println("Entering INSERT account ident val = " + ident);
          if(ident != null && ident.length() > 0) {
             String pass = request.getParameter("password");
             if(pass == null || pass.trim().length() <= 0) {
@@ -461,11 +419,12 @@ public class AdministrationAction extends AbstractAction
          if(ident != null && ident.length() > 0) {
             try {
                ident = (String)session.getAttribute("community_account");
+               String accountPassword = adminDelegate.getPassword(ident);
                AccountData ad = adminDelegate.getAccount(ident);
                String password = request.getParameter("current_password");
                String newpassword = request.getParameter("new_password");
                String verifypassword = request.getParameter("verify_password");
-               if(ad.getPassword().equals(password)) {
+               if(accountPassword.equals(password)) {
                   if(newpassword.equals(verifypassword)) {
                      if(newpassword == null || newpassword.trim().length() <= 0) {
                         errorMessage = "You cannot have an empty new password";
@@ -540,14 +499,8 @@ public class AdministrationAction extends AbstractAction
               errorMessage = "No insert empty community";
            } 
       }      
-
-
-      
 		
 		//
-		//Create a new HashMap for our results.  Will be used to
-		//pass to the transformer (xsl page)
-		Map results = new HashMap();
 		results.put(ACTION,action);
       results.put("errormessage",errorMessage);
       results.put("message",message);

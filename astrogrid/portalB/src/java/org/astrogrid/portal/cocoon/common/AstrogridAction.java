@@ -12,22 +12,6 @@ import java.util.HashMap;
 
 /**
  *
- * Class Name: DataQueryServlet
- * Purpose:  Main purpose to interact with DataQuery.jsp and give it all the necessary information for interacting with the user.
- * Also to take request from the DataQuery.jsp and act on those requests.
- * The types of request submitted are:
- * 1.) Send a Query - Which means sending a query to the JobController webservice.
- * 2.) Add Selection - Which means adding return columns/UCD's and Data Sets into the query
- * 3.) Remove Selection - Which means remove a column/UCD from the query
- * 4.) Add Criteria - Which means to add criteria to the "where" clause.
- * 5.) Remove Criteria - Which means to remove criteria from the where clause
- * 
- * Finally for initiation purposes the servlet will call the Registry WebService for getting all the DataSet names and their
- * corresponding columns and ucd's.  This will refreash after 5 hours in case the registry is changed.
- * 
- * @see org.astrogrid.portal.generated.jobcontroller.client
- * @see org.astrogrid.portal.generated.registry.client * 
- * @author Kevin Benson
  *
  */
 public class AstrogridAction extends AbstractAction
