@@ -1,11 +1,11 @@
-/*$Id: DatacenterApplication.java,v 1.6 2004/08/25 23:38:34 mch Exp $
+/*$Id: DatacenterApplication.java,v 1.7 2004/09/06 15:20:47 mch Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
 **/
 package org.astrogrid.datacenter.service.v06;
@@ -40,7 +40,7 @@ import java.util.Iterator;
 /** Represents a query running against the datacenter.
  * <p />
  * Datacenter already has a framework for starting asynchronous queries and then monitoring their progress.
- * This class wraps the datacenter framework, mapping querier events into events in the CEA framework. 
+ * This class wraps the datacenter framework, mapping querier events into events in the CEA framework.
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Jul-2004
  *
  */
@@ -65,7 +65,7 @@ public class DatacenterApplication extends AbstractApplication implements Querie
     }
     protected final Account acc;
     /** the datacenter system object - a static, which provides access to the datacenter query framework */
-    protected final DataServer serv;   
+    protected final DataServer serv;
 
     /** id allocated by datacenter to this querier */
     protected String querierID;
@@ -99,20 +99,21 @@ public class DatacenterApplication extends AbstractApplication implements Querie
         try {
             TargetIndicator ti = CEATargetIndicator.newInstance();
             String resultsFormat = (String)findInputParameterAdapter(DatacenterApplicationDescription.FORMAT).process();
-            Query query = buildQuery(getApplicationInterface());        
+            Query query = buildQuery(getApplicationInterface());
             Querier querier = Querier.makeQuerier(acc,query,ti,resultsFormat);
-            querier.addListener(this);        
+            querier.addListener(this);
 
             setStatus(Status.INITIALIZED);
-            querierID = serv.submitQuerier(querier);  
-            logger.info("assigned QuerierID " + querierID);                 
+            querierID = serv.submitQuerier(querier);
+            logger.info("assigned QuerierID " + querierID);
             return true;
         }
         catch (Throwable e) {
-            throw new CeaException("Could not execute application",e);
+           logger.error("Datacenter.execute() could not execute application",e);
+           throw new CeaException("Could not execute application",e);
         }
     }
-    /** Implemented by calling abot on the querier object - so if the underlyng database back end supports abort, the cec does too 
+    /** Implemented by calling abot on the querier object - so if the underlyng database back end supports abort, the cec does too
      * @see org.astrogrid.applications.Application#attemptAbort()
      */
     public boolean attemptAbort() {
@@ -133,7 +134,7 @@ public class DatacenterApplication extends AbstractApplication implements Querie
     /** callback method for our associated querier
      * <p />Through this method, this class receives notifications in changes of state of the running query.
      * These state changes and messages are propagated onto the cea framework,
-     * and results are grabbed from the query at the appropriate time. 
+     * and results are grabbed from the query at the appropriate time.
      * @see org.astrogrid.datacenter.queriers.QuerierListener#queryStatusChanged(org.astrogrid.datacenter.queriers.Querier)
      */
     public void queryStatusChanged(final Querier querier) {
@@ -153,13 +154,13 @@ public class DatacenterApplication extends AbstractApplication implements Querie
            this.setStatus(Status.WRITINGBACK);
            final ParameterAdapter result = (ParameterAdapter)outputParameterAdapters().next();
            //necessary to perform write-back in separate thread - as we don't know what thread is calling this callback
-           // and it mustn't be the same one as is going to write out the output - otherwise we'll deadlock on the pipe. 
+           // and it mustn't be the same one as is going to write out the output - otherwise we'll deadlock on the pipe.
            Thread worker = new Thread() {
                public void run() {
-                    try {               
+                    try {
                         CEATargetIndicator ti = (CEATargetIndicator)querier.getResultsTarget();
                         result.writeBack(ti);
-                        setStatus(Status.COMPLETED); // now the application has completed..                        
+                        setStatus(Status.COMPLETED); // now the application has completed..
                     } catch (CeaException e) {
                         reportError("Failed to write back parameter values",e);
                     }
@@ -184,11 +185,11 @@ public class DatacenterApplication extends AbstractApplication implements Querie
                // probably already happened then
                reportMessage("coudln't close pipe" + e.getMessage());
            }
-           // we report this, but don't consider the application complete until it finishes its writing back thread           
+           // we report this, but don't consider the application complete until it finishes its writing back thread
            //this.setStatus(Status.COMPLETED);
            this.reportMessage(qs.toString());
            
-       } else if (state.equals(QueryState.UNKNOWN)) {           
+       } else if (state.equals(QueryState.UNKNOWN)) {
            this.setStatus(Status.UNKNOWN);
            this.reportMessage(qs.toString());
            
@@ -213,8 +214,11 @@ public class DatacenterApplication extends AbstractApplication implements Querie
 }
 
 
-/* 
+/*
 $Log: DatacenterApplication.java,v $
+Revision 1.7  2004/09/06 15:20:47  mch
+Added logger message for execute()
+
 Revision 1.6  2004/08/25 23:38:34  mch
 (Days changes) moved many query- and results- related classes, renamed packages, added tests, added CIRCLE to sql/adql parsers
 
