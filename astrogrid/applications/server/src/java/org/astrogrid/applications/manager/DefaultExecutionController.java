@@ -1,5 +1,5 @@
 /*
- * $Id: DefaultExecutionController.java,v 1.5 2004/09/10 18:30:42 pah Exp $
+ * $Id: DefaultExecutionController.java,v 1.6 2004/09/10 21:30:30 pah Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -110,15 +110,19 @@ public String init(Tool tool, String jobstepID) throws CeaException {
   * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
   */
  public void update(Observable o, Object arg) {
-//TODO maybe reinstate this check - at the moment it is giving lots of false positives as the VM does not seem to realize that the concrete application classes that are all derived from AbstractApplication (whihc is that class that actually implements Application) are themselves types of Application.     
-//     if (! (o instanceof Application && arg instanceof Status)) {
-//         logger.warn("Seem to be observing the wrong things.." + o.getClass().getName());
-//         return;
-//     }
+     if (! (o instanceof Application )) {
+         logger.warn("Seem to be observing the wrong things.." + o.getClass().getName());
+         return;
+     }
+     if(!( arg instanceof Status))
+     {
+         //NB this observer is only interested if there are status changes - don't need to issue any log warnings....
+         return;
+     }
      Status stat = (Status)arg;
      if (stat.equals(Status.COMPLETED) || stat.equals(Status.ERROR)) {
          Application app = (Application)o;
-        try {
+         try {
             executionHistory.moveApplicationFromCurrentSetToArchive(app.getID());
         } catch (PersistenceException e) { // oh well
               logger.error("Could not move application status to archive " + app.getID(),e);
