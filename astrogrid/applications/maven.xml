@@ -52,7 +52,7 @@
 				<include name="INSTALL"/>
 				<include name="README"/>
 			</fileset>
-			<fileset dir="${maven.build.dir}" include="ApplicationControllerDelegate-${pom.currentVersion}.jar" />
+			<fileset dir="${maven.build.dir}" includes="ApplicationControllerDelegate-${pom.currentVersion}.jar" />
 			<!-- need to do the sample config too -->
 		</copy>
 		<echo message="copying across xml schema"/>
@@ -69,7 +69,7 @@
 			<fileset dir="${basedir}/src/sql">
 				
 			</fileset>
-			<fileset dir="$basedir/" include="antutils.xml"/>
+			<fileset dir="${basedir}"> <include name="antutils.xml"/></fileset>
 		</copy>
 		
 		<echo message="copying across a test application - ${maven.test.dest}"/>
@@ -322,6 +322,11 @@ ApplicationConfigFile=${basedir}/test/config/TestApplicationConfig.xml
             </fileset>
             
          </jar>
+    </goal>
+    <goal name="webapp.patch" prereqs="java:compile">
+        <copy todir="${maven.war.webapp.dir}/WEB-INF/classes">
+          <fileset dir="${maven.build.dir}/classes"/>
+        </copy>
     </goal>
 <!-- boilerplate below here -->
  <!-- <goal name="dataserver-deploy" description="fire wsdd at axis to deploy dataserver"

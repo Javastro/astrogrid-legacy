@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationEnvironment.java,v 1.5 2003/12/08 15:00:47 pah Exp $
+ * $Id: ApplicationEnvironment.java,v 1.6 2003/12/15 14:29:49 pah Exp $
  *
  * Created on 24 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -62,8 +62,10 @@ public class ApplicationEnvironment {
 
       // set up the working directory
       config = ApplicationControllerConfig.getInstance();
+ 
 
       executionId = PersistenceEngine.getInstance().getNewID();
+      logger.info("new execution id="+executionId);
       executionDirectory =
          new File(
             config.getWorkingDirectory(),

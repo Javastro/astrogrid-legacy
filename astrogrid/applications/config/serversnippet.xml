@@ -1,0 +1,38 @@
+        <Context className="org.apache.catalina.core.StandardContext" cachingAllowed="true" charsetMapperClass="org.apache.catalina.util.CharsetMapper" cookies="true" crossContext="false" debug="0" displayName="Apache-Axis" docBase="/data/work/astrogrid/src/applications/target/astrogrid-applications" mapperClass="org.apache.catalina.core.StandardContextMapper" path="/astrogrid-applications" privileged="false" reloadable="false" swallowOutput="false" useNaming="true" wrapperClass="org.apache.catalina.core.StandardWrapper">
+          <Environment description="properties file" name="AstrogridApplicationsConfigURL" override="true" type="java.lang.String" value="file:///data/work/Test.properties"/>
+          <Resource name="jdbc/AstrogridACDatasource" scope="Shareable" type="javax.sql.DataSource"/>
+          <ResourceParams name="jdbc/AstrogridACDatasource">
+       <parameter>
+        <name>factory</name>
+        <value>org.apache.commons.dbcp.BasicDataSourceFactory</value>
+        </parameter>	  
+            <parameter>
+              <name>maxWait</name>
+              <value>5000</value>
+            </parameter>
+            <parameter>
+              <name>maxActive</name>
+              <value>4</value>
+            </parameter>
+            <parameter>
+              <name>password</name>
+              <value>veritas</value>
+            </parameter>
+            <parameter>
+              <name>url</name>
+              <value>jdbc:hsqldb:hsql://localhost:9001</value>
+            </parameter>
+            <parameter>
+              <name>driverClassName</name>
+              <value>org.hsqldb.jdbcDriver</value>
+            </parameter>
+            <parameter>
+              <name>maxIdle</name>
+              <value>2</value>
+            </parameter>
+            <parameter>
+              <name>username</name>
+              <value>sa</value>
+            </parameter>
+          </ResourceParams>
+        </Context>

@@ -1,5 +1,5 @@
 /*
- * $Id: PersistenceEngine.java,v 1.2 2003/12/07 01:09:48 pah Exp $
+ * $Id: PersistenceEngine.java,v 1.3 2003/12/15 14:29:49 pah Exp $
  * 
  * Created on 05-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -30,6 +30,9 @@ import org.astrogrid.applications.common.config.ApplicationControllerConfig;
  * @since iteration4
  */
 public class PersistenceEngine {
+   
+   static private org.apache.commons.logging.Log logger =
+      org.apache.commons.logging.LogFactory.getLog(PersistenceEngine.class);
 
    private static PersistenceEngine instance = null;
    private static DataSource ds;
@@ -57,14 +60,17 @@ public class PersistenceEngine {
     * @return a unique execution identifier.
     */
    public synchronized int getNewID() {
+      
+      logger.info("getting a new execution id form datasource="+ds.toString());
 
       Connection conn;
       ResultSet rs;
-      int id = 0;
+      int id = -1;
 
       try {
-         conn = ds.getConnection(config.getDBuser(), config.getDBpwd());
-
+         conn = ds.getConnection();
+         logger.info("got new conncection");
+ 
          PreparedStatement stmt =
             conn.prepareStatement(
                "insert into exestat (program) values ('new');call IDENTITY();");

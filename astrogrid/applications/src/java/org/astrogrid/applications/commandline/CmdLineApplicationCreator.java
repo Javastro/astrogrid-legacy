@@ -1,5 +1,5 @@
 /*
- * $Id: CmdLineApplicationCreator.java,v 1.3 2003/12/08 15:00:47 pah Exp $
+ * $Id: CmdLineApplicationCreator.java,v 1.4 2003/12/15 14:29:49 pah Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -19,6 +19,8 @@ import org.astrogrid.applications.description.ApplicationDescriptions;
 import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
 
 public class CmdLineApplicationCreator extends ApplicationFactory {
+   static private org.apache.commons.logging.Log logger =
+      org.apache.commons.logging.LogFactory.getLog(CmdLineApplicationCreator.class);
    private static CmdLineApplicationCreator instance = null;
    private ApplicationDescriptions ad;
    private CmdLineApplicationCreator(ApplicationDescriptions appdisc)
@@ -46,6 +48,7 @@ public class CmdLineApplicationCreator extends ApplicationFactory {
     */
    public AbstractApplication createApplication(String applicationId) throws ApplicationDescriptionNotFoundException {
       //TODO - need to make this create the appropriate application class if required by the applicationDescription
+      logger.info("creating application instance of "+applicationId);
       CmdLineApplication app = new CmdLineApplication();
          app.setApplicationDescription(ad.getDescription(applicationId));
 

@@ -47,10 +47,10 @@ class __tags {
 */
 class __options {
 }/**
-@__positions <oigroup:<oiref:java#Class#org.astrogrid.applications.commandline.CmdLineApplicationCreator:oiref>=600,10,200,207,1:oigroup>
+@__positions <oigroup:<oiref:java#Class#org.astrogrid.applications.commandline.CmdLineApplicationCreator:oiref>=600,10,200,230,1:oigroup>
 <oigroup:<oiref:java#Class#org.astrogrid.applications.commandline.ApplicationEnvironment:oiref>=340,10,200,308,1:oigroup>
 <oigroup:<oiref:java#Class#org.astrogrid.applications.commandline.CmdLineApplication:oiref>=54,10,200,476,1:oigroup>
-<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.commandline.CmdLineApplicationCreator#instance:oiref>=760,217,760,267,850,267,850,177,800,177:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.commandline.CmdLineApplicationCreator#instance:oiref>=760,240,760,290,850,290,850,200,800,200:oigroup>
 <oigroup:<oiref:design#Class#idv3x1dnym1eprdnym1uri.diagram:oiref>=860,10,200,141,1:oigroup>
 <oigroup:<oiref:java#Class#org.astrogrid.applications.commandline.XYZApplication:oiref>=350,420,121,89,1:oigroup>
 <oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.commandline.CmdLineApplication#applicationEnvironment:oiref>=254,164,340,164:oigroup>

@@ -1,5 +1,5 @@
 /*
- * $Id: BaseDBTestCase.java,v 1.1 2003/12/05 22:52:16 pah Exp $
+ * $Id: BaseDBTestCase.java,v 1.2 2003/12/15 14:29:49 pah Exp $
  * 
  * Created on 01-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -83,7 +83,7 @@ public class BaseDBTestCase extends TestCase {
          DatabaseUser = config.getProperty(ApplicationsConstants.DATABASE_USER_KEY);
          
          ds = new TestDataSource();
-         conn = ds.getConnection(DatabaseUser, DatabasePassword);
+         conn = ds.getConnection();
          
          //create the tables
          Class thisBaseClass = this.getClass();//Class.forName("org.astrogrid.community.common.db.HsqlDBInMemTestCase");
@@ -197,15 +197,14 @@ public class BaseDBTestCase extends TestCase {
         */
        public Connection getConnection() throws SQLException {
            // Auto-generated method stub
-           return DriverManager.getConnection (JDBC_URL, "sa", "");
+           return DriverManager.getConnection (JDBC_URL, DatabaseUser, DatabasePassword);
        }
 
        /* (non-Javadoc)
         * @see javax.sql.DataSource#getConnection(java.lang.String, java.lang.String)
         */
        public Connection getConnection(String username, String password) throws SQLException {
-           // Auto-generated method stub
-           return DriverManager.getConnection (JDBC_URL, username,password);
+         throw new UnsupportedOperationException("test datasource gets password from config because theat is the way that the real tomcat datasource works");
        }
    }    
 

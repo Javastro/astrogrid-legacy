@@ -11,7 +11,6 @@ public class ApplicationControllerServiceSoapBindingSkeleton implements org.astr
     private org.astrogrid.applications.service.ApplicationController impl;
     private static java.util.Map _myOperations = new java.util.Hashtable();
     private static java.util.Collection _myOperationsList = new java.util.ArrayList();
-
     /**
     * Returns List of OperationDesc objects with this name
     */

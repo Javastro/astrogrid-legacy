@@ -107,23 +107,16 @@ public class ApplicationControllerServiceSoapBindingStub extends org.apache.axis
             java.lang.Class arraydf = org.apache.axis.encoding.ser.ArrayDeserializerFactory.class;
             java.lang.Class simplesf = org.apache.axis.encoding.ser.SimpleSerializerFactory.class;
             java.lang.Class simpledf = org.apache.axis.encoding.ser.SimpleDeserializerFactory.class;
-            qName = new javax.xml.namespace.QName("urn:beans.applications.astrogrid.org", "User");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.applications.delegate.beans.User.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
-
-            qName = new javax.xml.namespace.QName("urn:beans.applications.astrogrid.org", "SimpleApplicationDescription");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.applications.delegate.beans.SimpleApplicationDescription.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
-
             qName = new javax.xml.namespace.QName("urn:beans.applications.astrogrid.org", "ParameterValues");
             cachedSerQNames.add(qName);
             cls = org.astrogrid.applications.delegate.beans.ParameterValues.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(beansf);
+            cachedDeserFactories.add(beandf);
+
+            qName = new javax.xml.namespace.QName("urn:beans.applications.astrogrid.org", "User");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.applications.delegate.beans.User.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
@@ -134,6 +127,13 @@ public class ApplicationControllerServiceSoapBindingStub extends org.apache.axis
             cachedSerClasses.add(cls);
             cachedSerFactories.add(arraysf);
             cachedDeserFactories.add(arraydf);
+
+            qName = new javax.xml.namespace.QName("urn:beans.applications.astrogrid.org", "SimpleApplicationDescription");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.applications.delegate.beans.SimpleApplicationDescription.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(beansf);
+            cachedDeserFactories.add(beandf);
 
     }
 
