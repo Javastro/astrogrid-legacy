@@ -154,7 +154,7 @@
 	<env-entry>
 		<description>The default registry version used, May be overriden on updates and queries based on vr namespace.</description>
 		<env-entry-name>reg.amend.defaultversion</env-entry-name>
-		<env-entry-value>0.10</env-entry-value>
+		<env-entry-value>0.9</env-entry-value>
 		<env-entry-type>java.lang.String</env-entry-type>
 	</env-entry>
 
