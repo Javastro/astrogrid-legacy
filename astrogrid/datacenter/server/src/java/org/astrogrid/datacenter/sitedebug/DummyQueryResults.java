@@ -1,16 +1,14 @@
 /*
- * $Id: DummyQueryResults.java,v 1.4 2004/03/09 21:05:25 mch Exp $
+ * $Id: DummyQueryResults.java,v 1.5 2004/03/09 22:59:04 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.sitedebug;
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URL;
+import java.io.*;
+
 import org.astrogrid.datacenter.queriers.QueryResults;
+import org.astrogrid.io.Piper;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -73,23 +71,20 @@ public class DummyQueryResults implements QueryResults
 
    }
 
+   /** Stream version of the writer */
+   public void toVotable(OutputStream out) throws IOException {
+      toVotable(new OutputStreamWriter(out));
+   }
+
    /**
     * Pipes the example file to the given output stream
     */
-   public void toVotable(OutputStream out) throws IOException
+   public void toVotable(Writer out) throws IOException
    {
       
-      InputStream in = new BufferedInputStream(getExampleStream());
+      Reader in = new InputStreamReader(getExampleStream());
 
-      byte[] block = new byte[100];
-      int bytesRead = 0;
-
-      while (in.available() > 0)
-      {
-         bytesRead = in.read(block);
-         out.write(block, 0, bytesRead);
-      }
-
+      Piper.bufferedPipe(in, out);
       in.close();
       out.close();
    }

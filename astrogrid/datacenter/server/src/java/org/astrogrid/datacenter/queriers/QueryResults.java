@@ -1,5 +1,5 @@
 /*
- * $Id: QueryResults.java,v 1.4 2004/03/09 21:54:58 mch Exp $
+ * $Id: QueryResults.java,v 1.5 2004/03/09 22:58:39 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -51,9 +51,9 @@ public interface QueryResults
     * This method streams the votable to the given output stream as it is
     * formed from the results.
     */
-   public void toVotable(OutputStream out) throws IOException, SAXException;
+   public void toVotable(OutputStream out) throws IOException;
 
    /** As above */
-   public void toVotable(Writer out) throws IOException, SAXException;
+   public void toVotable(Writer out) throws IOException;
 }
 

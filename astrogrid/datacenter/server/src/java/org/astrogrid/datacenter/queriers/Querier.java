@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.31 2004/03/09 21:04:30 mch Exp $
+ * $Id: Querier.java,v 1.32 2004/03/09 22:58:39 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -272,7 +272,6 @@ public abstract class Querier implements Runnable {
       
       StoreClient myspace = StoreDelegateFactory.createDelegate(user.toUser(), resultsDestination);
   
-      try {
          //stream results to string for outputting to myspace.   At
          //some point we should get a socket to stream to from myspace and stream
          //to that
@@ -284,10 +283,6 @@ public abstract class Querier implements Runnable {
          log.info("Querier ["+id+"] results sent");
       
          //resultsLoc = myspace.getUrl("/"+user.getAstrogridId()+"/"+myspaceFilename).toString();
-      }
-      catch (SAXException se) {
-         log.error("Could not create VOTable",se);
-      }
       
    }
    
@@ -459,6 +454,9 @@ public abstract class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.32  2004/03/09 22:58:39  mch
+ Provided for piping/writing out of results rather than returning as string
+
  Revision 1.31  2004/03/09 21:04:30  mch
  minor doc change
 

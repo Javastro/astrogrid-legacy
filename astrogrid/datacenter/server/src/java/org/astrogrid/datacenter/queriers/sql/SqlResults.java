@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.8 2004/03/09 21:54:58 mch Exp $
+ * $Id: SqlResults.java,v 1.9 2004/03/09 22:58:39 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -43,6 +43,7 @@ public class SqlResults implements QueryResults
    {
       this.sqlResults = givenResults;
       this.workspace = givenWorkspace;
+      
    }
    
    /**
@@ -65,10 +66,9 @@ public class SqlResults implements QueryResults
          }
          else
          {
-            ByteArrayOutputStream ba = new ByteArrayOutputStream();
-            toVotable(ba);
-            ba.close();
-            return DomHelper.newDocument(new ByteArrayInputStream(ba.toByteArray()));
+            StringWriter sw = new StringWriter();
+            toVotable(sw);
+            return DomHelper.newDocument(sw.toString());
          }
       }
       catch (ParserConfigurationException e)
@@ -196,6 +196,9 @@ public class SqlResults implements QueryResults
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.9  2004/03/09 22:58:39  mch
+ Provided for piping/writing out of results rather than returning as string
+
  Revision 1.8  2004/03/09 21:54:58  mch
  Added Writer methods to toVotables for JSPs
 
@@ -227,3 +230,4 @@ public class SqlResults implements QueryResults
  It03-Close
 
  */
+
