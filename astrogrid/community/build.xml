@@ -1,11 +1,17 @@
 <?xml version="1.0"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/Attic/build.xml,v $</cvs:source>
-    | <cvs:author>$Author: pah $</cvs:author>
-    | <cvs:date>$Date: 2003/09/17 15:15:11 $</cvs:date>
-    | <cvs:version>$Revision: 1.37 $</cvs:version>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2003/09/17 19:47:21 $</cvs:date>
+    | <cvs:version>$Revision: 1.38 $</cvs:version>
     | <cvs:log>
     |   $Log: build.xml,v $
+    |   Revision 1.38  2003/09/17 19:47:21  dave
+    |   1) Fixed classnotfound problems in the build.
+    |   2) Added the JUnit task to add the initial accounts and groups.
+    |   3) Got the build to work together with the portal.
+    |   4) Fixed some bugs in the Account handling.
+    |
     |   Revision 1.37  2003/09/17 15:15:11  pah
     |   got the server side authentication tests task to work
     |
@@ -397,13 +403,6 @@
 			<sysproperty key="catalina.base"      path="${tomcat.home}"/>
 			<sysproperty key="catalina.home"      path="${tomcat.home}"/>
 			<sysproperty key="java.io.tmpdir"     path="${tomcat.home}/temp"/>
-
-			<!-- Setup our server config -->
-<!-- ZRQ
-			<sysproperty key="org.astrogrid.policy.server.mapping"          value="file://${policy.server.base}/config/mapping.xml"/>
-			<sysproperty key="org.astrogrid.policy.server.database.config"  value="file://${policy.server.base}/config/database.xml"/>
-			<sysproperty key="org.astrogrid.policy.server.database.name"    value="${hsqldb.database}"/>
--->
 			<!-- Select the server JVM (fails on Linux JDK 1.4.0) -->
 			<!-- <jvmarg value="-server"/> -->
 			<!-- Args for the Tomcat Bootstrap class -->
@@ -1259,8 +1258,10 @@
 		<path refid="hsqldb.classpath"/>
 		<!-- The JConfig libraries -->
 		<path refid="jconfig.classpath"/>
-		<!-- Our server jar -->
+		<!-- Our policy jar -->
 		<pathelement path="${policy.base}/jar/${policy.server.jar}"/>
+		<!-- Our authentication jar -->
+		<pathelement path="${installkitdir}/${authentication.server.jar}"/>
 	</path>
 
 	<!--+
@@ -1538,12 +1539,13 @@
 				<!-- Include our JUnit tests -->
 				<include name="org/astrogrid/community/policy/server/junit/**"/>
 
-				<!--+
-					| PATCH : Include the auth data objects
-					| Required because the Castor mapping refers to org.astrogrid.community.authentication.data.SecurityToken.
-					| May cause problems if we want to deploy these in separate jars :-(
-					+-->
-				<include name="org/astrogrid/community/auth/data/*.java"/>
+			<!--+
+				| PATCH : Include the authentication data objects
+				| Required because the Castor mapping refers to org.astrogrid.community.authentication.data.SecurityToken.
+				| May cause problems if we want to deploy these in separate jars :-(
+				+-->
+				<include name="org/astrogrid/community/authentication/data/SecurityToken.java"/>
+				<include name="org/astrogrid/community/service/authentication/data/SecurityToken.java"/>
 
 			</fileset>
 		</copy>
@@ -1603,6 +1605,14 @@
 				<!-- Include our JUnit tests -->
 				<include name="org/astrogrid/community/policy/client/junit/**"/>
 
+			<!--+
+				| PATCH : Include the authentication data objects
+				| Required because the Castor mapping refers to org.astrogrid.community.authentication.data.SecurityToken.
+				| May cause problems if we want to deploy these in separate jars :-(
+				<include name="org/astrogrid/community/authentication/data/SecurityToken.java"/>
+				<include name="org/astrogrid/community/service/authentication/data/SecurityToken.java"/>
+				+-->
+
 			</fileset>
 		</copy>
 	</target>
@@ -1624,11 +1634,12 @@
 			<include name="org/astrogrid/community/policy/data/**"/>
 			<include name="org/astrogrid/community/policy/server/**"/>
 			<!--+
-				| PATCH : Include the auth data objects
+				| PATCH : Include the authentication data objects
 				| Required because the Castor mapping refers to org.astrogrid.community.authentication.data.SecurityToken.
 				| May cause problems if we want to deploy these in separate jars :-(
 				+-->
-			<include name="org/astrogrid/community/auth/data/**"/>
+			<include name="org/astrogrid/community/authentication/data/SecurityToken.java"/>
+			<include name="org/astrogrid/community/service/authentication/data/SecurityToken.java"/>
 
 			<classpath>
 				<!-- Include the JUnit libraries -->
@@ -1640,7 +1651,7 @@
 				<!-- Include the JConfig libraries -->
 				<path refid="jconfig.classpath"/>
 				<!-- include the myspace libraries of the delegate -->
-				<path refid="myspace.classpath"/>					
+				<path refid="myspace.classpath"/>
 			</classpath>
 		</javac>
 	</target>
@@ -1692,7 +1703,8 @@
 					| Required because the Castor mapping refers to org.astrogrid.community.authentication.data.SecurityToken.
 					| May cause problems if we want to deploy these in separate jars :-(
 					+-->
-				<include name="org/astrogrid/community/auth/data/**"/>
+				<include name="org/astrogrid/community/authentication/data/SecurityToken.class"/>
+				<include name="org/astrogrid/community/service/authentication/data/SecurityToken.class"/>
 			</fileset>
 		</jar>
 	</target>
@@ -1768,7 +1780,7 @@
 			</fileset>
 			<fileset dir="${basedir}/depends/myspace">
 				<include name="myspace-client.jar"/>
-			</fileset>			
+			</fileset>
 		</copy>
 		<!-- Copy our jar into the Axis WEB-INF/lib directory -->
 		<copy verbose="true" todir="${axis.webapp}/WEB-INF/lib">
@@ -2042,6 +2054,35 @@
 	<antcall target="policy.client.junit"/>
 		<!-- Display our database -->
 	<antcall target="hsqldb.database.select"/>
+	</target>
+
+	<!--+
+		| Run the initial accounts test.
+		| This uses a server side JUnit test to add the initial Accounts and Groups.
+		| This should be replaced by the XML loader ASAP.
+		+-->
+	<target name="policy.server.init" depends="">
+		<!-- Create our reports directory -->
+		<mkdir dir="${policy.base}/junit"/>
+		<!-- Run our JUnitTestCase tests -->
+		<junit printsummary="yes" haltonfailure="true" haltonerror="true" showoutput="true" fork="true">
+			<classpath>
+				<!-- The Policy classes -->
+				<path refid="policy.server.classpath"/>
+				<!-- The Auth classes -->
+				<path refid="authentication.client.classpath"/>
+			</classpath>
+			<!-- Generate an XML log file -->
+			<formatter type="xml"/>
+			<!-- Pass in the location of the config file -->
+			<sysproperty key="org.astrogrid.community.config" value="${config.file}"/>
+			<!-- Run the target JUnitTestCase tests -->
+			<batchtest todir="${policy.base}/junit">
+				<fileset dir="${policy.server.base}/classes">
+					<include name="org/astrogrid/community/policy/server/junit/manager/InitialAccountLoader.class"/>
+				</fileset>
+			</batchtest>
+		</junit>
 	</target>
 
 	<!--+
@@ -2669,8 +2710,13 @@ Start of Authentication "auth" tasks
 	    | Configuration properties.
 	    +-->
 	<property name="config.base" value="${basedir}/build/config"></property>
-	<property name="config.name" value="frog.xml"></property>
+	<property name="config.name" value="config.xml"></property>
 	<property name="config.file" value="${config.base}/${config.name}"></property>
+
+	<!--+
+	    | The community name (defaults to local host name).
+	    +-->
+	<property name="community.name" value="codon.demon.co.uk"></property>
 
 	<!--+
 		| Delete our configuration files.
@@ -2703,6 +2749,7 @@ Start of Authentication "auth" tasks
 			<outputproperty name="indent" value="yes"/>
 			<!-- Set the XSL params -->
 			<param name="category"         expression="org.astrogrid.community"/>
+			<param name="community.name"   expression="${community.name}"/>
 			<param name="database.name"    expression="${hsqldb.database}"/>
 			<param name="database.config"  expression="${config.base}/database.xml"/>
 			<param name="database.mapping" expression="${config.base}/mapping.xml"/>
@@ -2717,20 +2764,21 @@ Start of Authentication "auth" tasks
 	<target name="config.axis.jndi" depends="">
 		<echo message=""/>
 		<echo message="Modifying Axis web.xml ...."/>
-		<!-- Move the existing web.xml to a backup file -->
-		<move file="${axis.webapp}/WEB-INF/web.xml" tofile="${axis.webapp}/WEB-INF/web.xml.backup" overwrite="true" failonerror="false"/>
+		<!-- Copy the existing web.xml to a backup file -->
+		<copy file="${axis.webapp}/WEB-INF/web.xml" tofile="${axis.webapp}/WEB-INF/web.xml.old" overwrite="true" failonerror="false"/>
+
 		<!-- Transform the Axis web.xml, adding our JNDI property -->
 		<xslt style="src/xsl/build/config/webapp.xsl"
-		      in="${axis.webapp}/WEB-INF/web.xml.backup"
-		      out="${axis.webapp}/WEB-INF/web.xml">
+		      in="${axis.webapp}/WEB-INF/web.xml"
+		      out="${axis.webapp}/WEB-INF/web.xml.new">
 			<outputproperty name="method" value="xml"/>
 			<outputproperty name="indent" value="yes"/>
 			<!-- Set the XSL params -->
 			<param name="property.name"  expression="org.astrogrid.community.config"/>
 			<param name="property.value" expression="${config.file}"/>
 		</xslt>
-		<!-- Remove the temp file -->
-<!-- lets leave it for safety!		<delete file="${axis.webapp}/WEB-INF/web.tmp"/> -->
+		<!-- Replace the existing web.xml with the new one -->
+		<move file="${axis.webapp}/WEB-INF/web.xml.new" tofile="${axis.webapp}/WEB-INF/web.xml" overwrite="true" failonerror="false"/>
 	</target>
 
 	<!--+
@@ -2865,6 +2913,7 @@ Start of Authentication "auth" tasks
 	<target name="project.BUILD" depends="init">
 		<antcall target="config.BUILD"/>
 		<antcall target="policy.BUILD"/>
+		<antcall target="authentication.BUILD"/>
 	</target>
 
 	<!--+
@@ -2872,6 +2921,7 @@ Start of Authentication "auth" tasks
 	    +-->
 	<target name="project.DEPLOY" depends="init">
 		<antcall target="policy.DEPLOY"/>
+		<antcall target="authentication.DEPLOY"/>
 	</target>
 
 	<!--+

@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/common/Attic/CommunityConfig.java,v $</cvs:source>
- * <cvs:author>$Author: KevinBenson $</cvs:author>
- * <cvs:date>$Date: 2003/09/14 21:19:08 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:author>$Author: dave $</cvs:author>
+ * <cvs:date>$Date: 2003/09/17 19:47:21 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityConfig.java,v $
+ *   Revision 1.5  2003/09/17 19:47:21  dave
+ *   1) Fixed classnotfound problems in the build.
+ *   2) Added the JUnit task to add the initial accounts and groups.
+ *   3) Got the build to work together with the portal.
+ *   4) Fixed some bugs in the Account handling.
+ *
  *   Revision 1.4  2003/09/14 21:19:08  KevinBenson
  *   Added a PolicyServiceDelegate and some Configuration stuff added.
  *
@@ -80,7 +86,13 @@ public class CommunityConfig
 	public static final String DEFAULT_PROPERTY_NAME = "org.astrogrid.community.config";
 
 	/**
-	 * Our JConfig Configuration.
+	 * The name of the config property for our local community name.
+	 *
+	 */
+	public static final String COMMUNITY_PROPERTY_NAME = "community.name";
+
+	/**
+	 * Our JConfig Configuration instance.
 	 *
 	 */
 	private static Configuration config = null ;
@@ -218,6 +230,24 @@ public class CommunityConfig
 					e.printStackTrace();
 					config = null;
 					}
+				if (null != config)
+					{
+					//
+					// Store the path used to load it.
+					config.setProperty("config.location", path) ;
+					if (DEBUG_FLAG)
+						{
+						if (DEBUG_FLAG) System.out.println("  ----") ;
+						String[] names = config.getPropertyNames(DEFAULT_CATEGORY) ;
+						for (int i = 0 ; i < names.length ; i++)
+							{
+							String name = names[i] ;
+							String value = config.getProperty(name, "", DEFAULT_CATEGORY) ;
+							if (DEBUG_FLAG) System.out.println("  '" + name + "' : '" + value + "'") ;
+							}
+						if (DEBUG_FLAG) System.out.println("  ----") ;
+						}
+					}
 				}
 			}
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -257,12 +287,6 @@ public class CommunityConfig
 		}
 
 	/**
-	 * The name of the property for our local community name.
-	 *
-	 */
-	public static final String COMMUNITY_PROPERTY_NAME = "community.name";
-
-	/**
 	 * Our local community name.
 	 *
 	 */
@@ -279,20 +303,38 @@ public class CommunityConfig
 		// Try reading our config property.
 		if (null == community)
 			{
+			if (DEBUG_FLAG) System.out.println("getCommunityName()") ;
+			if (DEBUG_FLAG) System.out.println("  Trying config property '" + COMMUNITY_PROPERTY_NAME + "'") ;
 			community = getProperty(COMMUNITY_PROPERTY_NAME) ;
+			if (DEBUG_FLAG) System.out.println("  Config property result : " + community) ;
 			}
-         
-      if(community == null || community.length() <= 0) {
-   		//
-   		// Try our local host address.
-   		try {
-   			community = InetAddress.getLocalHost().getHostName() ;
-   			}
-   		catch (Exception ouch)
-   			{
-   			community = "localhost" ;
-   			}
-      }
+		//
+		// Try reading our system property.
+		if (null == community)
+			{
+			String name = CONFIG_NAME + "." + COMMUNITY_PROPERTY_NAME ;
+			if (DEBUG_FLAG) System.out.println("getCommunityName()") ;
+			if (DEBUG_FLAG) System.out.println("  Trying system property '" + name + "'") ;
+			community = System.getProperty(name) ;
+			if (DEBUG_FLAG) System.out.println("  System property result : " + community) ;
+			}
+		//
+		// Try using our hostname.
+		if(community == null || community.length() <= 0)
+			{
+			if (DEBUG_FLAG) System.out.println("getCommunityName()") ;
+			if (DEBUG_FLAG) System.out.println("  Trying localhost ....") ;
+			//
+			// Try our local host address.
+			try {
+				community = InetAddress.getLocalHost().getHostName() ;
+				}
+			catch (Exception ouch)
+				{
+				community = "localhost" ;
+				}
+			if (DEBUG_FLAG) System.out.println("  Localhost result : " + community) ;
+			}
 		return community ;
 		}
 

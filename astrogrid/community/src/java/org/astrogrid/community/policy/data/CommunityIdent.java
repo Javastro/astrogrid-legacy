@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/data/Attic/CommunityIdent.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/13 02:18:52 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/17 19:47:21 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityIdent.java,v $
+ *   Revision 1.4  2003/09/17 19:47:21  dave
+ *   1) Fixed classnotfound problems in the build.
+ *   2) Added the JUnit task to add the initial accounts and groups.
+ *   3) Got the build to work together with the portal.
+ *   4) Fixed some bugs in the Account handling.
+ *
  *   Revision 1.3  2003/09/13 02:18:52  dave
  *   Extended the jConfig configuration code.
  *
@@ -24,6 +30,12 @@ import org.astrogrid.community.common.CommunityConfig ;
 
 public class CommunityIdent
 	{
+	/**
+	 * The default account name.
+	 *
+	 */
+	public static String DEFAULT_ACCOUNT = "guest" ;
+
 	/**
 	 * The separator for name and community.
 	 *
@@ -66,6 +78,15 @@ public class CommunityIdent
 	 */
 	public CommunityIdent(String ident)
 		{
+		//
+		// Check for a null ident.
+		if ((null == ident) || (0 == ident.length()))
+			{
+			ident = DEFAULT_ACCOUNT ;
+			}
+		//
+		// Convert everything to lowercase.
+		ident = ident.toLowerCase() ;
 		//
 		// Save the ident.
 		this.ident = ident ;

@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/sql/hsqldb/Attic/create.sql,v $</cvs:source>
- * <cvs:author>$Author: pah $</cvs:author>
- * <cvs:date>$Date: 2003/09/15 21:51:45 $</cvs:date>
- * <cvs:version>$Revision: 1.8 $</cvs:version>
+ * <cvs:author>$Author: dave $</cvs:author>
+ * <cvs:date>$Date: 2003/09/17 19:47:21 $</cvs:date>
+ * <cvs:version>$Revision: 1.9 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: create.sql,v $
+ *   Revision 1.9  2003/09/17 19:47:21  dave
+ *   1) Fixed classnotfound problems in the build.
+ *   2) Added the JUnit task to add the initial accounts and groups.
+ *   3) Got the build to work together with the portal.
+ *   4) Fixed some bugs in the Account handling.
+ *
  *   Revision 1.8  2003/09/15 21:51:45  pah
  *   authentication database backend tested
  *
@@ -43,7 +49,7 @@ DROP TABLE accounts IF EXISTS ;
 CREATE TABLE accounts
     (
     ident       VARCHAR NOT NULL,
-    password  VARCHAR NOT  NULL,
+    password    VARCHAR NULL,
     description VARCHAR NULL,
     PRIMARY KEY ( ident )
     ) ;

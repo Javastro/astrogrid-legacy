@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/junit/manager/Attic/JUnitResourceTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/10 00:08:45 $</cvs:date>
- * <cvs:version>$Revision: 1.1 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/17 19:47:21 $</cvs:date>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: JUnitResourceTest.java,v $
+ *   Revision 1.2  2003/09/17 19:47:21  dave
+ *   1) Fixed classnotfound problems in the build.
+ *   2) Added the JUnit task to add the initial accounts and groups.
+ *   3) Got the build to work together with the portal.
+ *   4) Fixed some bugs in the Account handling.
+ *
  *   Revision 1.1  2003/09/10 00:08:45  dave
  *   Added getGroupMembers, ResourceIdent and JUnit tests for ResourceManager
  *
@@ -107,7 +113,10 @@ public class JUnitResourceTest
 
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("  Status") ;
-		if (DEBUG_FLAG) System.out.println("    Ident : " + status.getIdent()) ;
+		if (DEBUG_FLAG) System.out.println("    Config    : " + status.getConfigPath()) ;
+		if (DEBUG_FLAG) System.out.println("    Community : " + status.getCommunityName()) ;
+		if (DEBUG_FLAG) System.out.println("    Service   : " + status.getServiceUrl()) ;
+		if (DEBUG_FLAG) System.out.println("    Manager   : " + status.getManagerUrl()) ;
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("") ;

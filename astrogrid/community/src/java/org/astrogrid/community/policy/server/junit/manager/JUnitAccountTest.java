@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/junit/manager/Attic/JUnitAccountTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/10 06:03:27 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/17 19:47:21 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: JUnitAccountTest.java,v $
+ *   Revision 1.5  2003/09/17 19:47:21  dave
+ *   1) Fixed classnotfound problems in the build.
+ *   2) Added the JUnit task to add the initial accounts and groups.
+ *   3) Got the build to work together with the portal.
+ *   4) Fixed some bugs in the Account handling.
+ *
  *   Revision 1.4  2003/09/10 06:03:27  dave
  *   Added remote capability to Accounts
  *
@@ -122,7 +128,10 @@ public class JUnitAccountTest
 
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("  Status") ;
-		if (DEBUG_FLAG) System.out.println("    Ident : " + status.getIdent()) ;
+		if (DEBUG_FLAG) System.out.println("    Config    : " + status.getConfigPath()) ;
+		if (DEBUG_FLAG) System.out.println("    Community : " + status.getCommunityName()) ;
+		if (DEBUG_FLAG) System.out.println("    Service   : " + status.getServiceUrl()) ;
+		if (DEBUG_FLAG) System.out.println("    Manager   : " + status.getManagerUrl()) ;
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("") ;

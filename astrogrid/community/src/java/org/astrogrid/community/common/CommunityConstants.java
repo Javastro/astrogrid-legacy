@@ -1,5 +1,5 @@
 /*
- * $Id: CommunityConstants.java,v 1.2 2003/09/16 22:23:24 pah Exp $
+ * $Id: CommunityConstants.java,v 1.3 2003/09/17 19:47:21 dave Exp $
  * 
  * Created on 12-Sep-2003 by pah
  *
@@ -42,6 +42,5 @@ public final class CommunityConstants {
    * The property key used to retrieve the castor database name.
    */
   public static final String DATABASE_NAME_KEY = "database.name" ;
-
  
 }

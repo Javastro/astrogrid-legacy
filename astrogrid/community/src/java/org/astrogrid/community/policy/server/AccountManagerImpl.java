@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/AccountManagerImpl.java,v $</cvs:source>
- * <cvs:author>$Author: KevinBenson $</cvs:author>
- * <cvs:date>$Date: 2003/09/17 09:16:10 $</cvs:date>
- * <cvs:version>$Revision: 1.10 $</cvs:version>
+ * <cvs:author>$Author: dave $</cvs:author>
+ * <cvs:date>$Date: 2003/09/17 19:47:21 $</cvs:date>
+ * <cvs:version>$Revision: 1.11 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManagerImpl.java,v $
+ *   Revision 1.11  2003/09/17 19:47:21  dave
+ *   1) Fixed classnotfound problems in the build.
+ *   2) Added the JUnit task to add the initial accounts and groups.
+ *   3) Got the build to work together with the portal.
+ *   4) Fixed some bugs in the Account handling.
+ *
  *   Revision 1.10  2003/09/17 09:16:10  KevinBenson
  *   Added the Myspace call
  *
@@ -142,6 +148,15 @@ public class AccountManagerImpl
 				// Create the corresponding Group object.
 				group = new GroupData(ident.toString()) ;
 				group.setType(GroupData.SINGLE_TYPE) ;
+
+				//
+				// Create the default membership objects.
+// TODO
+// Need to add the account to the account group.
+// Need to add the account to the guest group.
+//				GroupMemberData groupmember = new GroupMemberData(ident.toString(), ident.toString()) ;
+//				GroupMemberData guestmember = new GroupMemberData(ident.toString(), "guest") ;
+
 				//
 				// Try performing our transaction.
 				try {
@@ -154,6 +169,13 @@ public class AccountManagerImpl
 					//
 					// Try creating the group in the database.
 					database.create(group);
+					//
+					// Try adding the account to the groups.
+// TODO
+// Need to add the account to the account group.
+// Need to add the account to the guest group.
+//					database.create(groupmember);
+//					database.create(guestmember);
 					}
 				//
 				// If we already have an object with that ident.
@@ -162,7 +184,7 @@ public class AccountManagerImpl
 					if (DEBUG_FLAG) System.out.println("") ;
 					if (DEBUG_FLAG) System.out.println("  ----") ;
 					if (DEBUG_FLAG) System.out.println("DuplicateIdentityException in addAccount()") ;
-               ouch.printStackTrace();
+					//ouch.printStackTrace();
 					//
 					// Set the response to null.
 					group   = null ;
@@ -178,7 +200,7 @@ public class AccountManagerImpl
 					if (DEBUG_FLAG) System.out.println("") ;
 					if (DEBUG_FLAG) System.out.println("  ----") ;
 					if (DEBUG_FLAG) System.out.println("Exception in addAccount()") ;
-               ouch.printStackTrace();
+					//ouch.printStackTrace();
 					//
 					// Set the response to null.
 					group   = null ;
@@ -238,15 +260,26 @@ public class AccountManagerImpl
 		// Need to return something to the client.
 		// Possibly a new DataObject ... ?
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
-      if(account != null) {
-         String myspaceCall = CommunityConfig.getProperty("myspace.url.webservice");
-         MySpaceManagerDelegate msmd = new MySpaceManagerDelegate(myspaceCall);
-         try {
-            msmd.createUser(ident.toString(),null);
-         }catch(Exception ouch) {
-            ouch.printStackTrace();
-         }
-      }
+
+		//
+		// Add the user to the local myspace.
+		if(account != null)
+			{
+			String myspaceUrl = CommunityConfig.getProperty("myspace.url.webservice");
+			//
+			// If we have a local MySpace service.
+			if ((null != myspaceUrl) && (myspaceUrl.length() > 0))
+				{
+				try {
+					MySpaceManagerDelegate msmd = new MySpaceManagerDelegate(myspaceUrl);
+					msmd.createUser(ident.toString(),null);
+					}
+				catch(Exception ouch)
+					{
+					ouch.printStackTrace();
+					}
+				}
+			}
 		return account ;
 		}
 
@@ -404,7 +437,9 @@ public class AccountManagerImpl
 					//
 					// Load the Account from the database.
 					account = (AccountData) database.load(AccountData.class, ident.toString()) ;
-               account.setPassword(null);
+					//
+					// Always set the password to null.
+					account.setPassword(null);
 					}
 				//
 				// If we couldn't find the object.
@@ -655,6 +690,8 @@ public class AccountManagerImpl
 //
 // TODO
 // Should remove the Account even if the Group does not exist.
+// Should remove the Account from all groups.
+// Should remove the Account from all permissions.
 //
 					}
 				//

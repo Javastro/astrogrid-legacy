@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/PolicyServiceImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/13 02:18:52 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/17 19:47:21 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyServiceImpl.java,v $
+ *   Revision 1.6  2003/09/17 19:47:21  dave
+ *   1) Fixed classnotfound problems in the build.
+ *   2) Added the JUnit task to add the initial accounts and groups.
+ *   3) Got the build to work together with the portal.
+ *   4) Fixed some bugs in the Account handling.
+ *
  *   Revision 1.5  2003/09/13 02:18:52  dave
  *   Extended the jConfig configuration code.
  *
@@ -116,11 +122,15 @@ public class PolicyServiceImpl
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("PolicyServiceImpl.getServiceStatus()") ;
 
-		ServiceData result =  new ServiceData() ;
-		result.setIdent(CommunityConfig.getCommunityName()) ;
+		ServiceData status =  new ServiceData() ;
+
+		status.setCommunityName(CommunityConfig.getCommunityName()) ;
+		status.setConfigPath(CommunityConfig.getProperty("config.location")) ;
+		status.setServiceUrl(CommunityConfig.getServiceUrl()) ;
+		status.setManagerUrl(CommunityConfig.getManagerUrl()) ;
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		return result ;
+		return status ;
 		}
 
 	/**

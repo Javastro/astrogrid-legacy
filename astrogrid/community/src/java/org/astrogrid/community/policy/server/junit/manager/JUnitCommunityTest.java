@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/junit/manager/Attic/JUnitCommunityTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/11 03:15:06 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/17 19:47:21 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: JUnitCommunityTest.java,v $
+ *   Revision 1.5  2003/09/17 19:47:21  dave
+ *   1) Fixed classnotfound problems in the build.
+ *   2) Added the JUnit task to add the initial accounts and groups.
+ *   3) Got the build to work together with the portal.
+ *   4) Fixed some bugs in the Account handling.
+ *
  *   Revision 1.4  2003/09/11 03:15:06  dave
  *   1) Implemented PolicyService internals - no tests yet.
  *   2) Added getLocalAccountGroups and getRemoteAccountGroups to PolicyManager.
@@ -50,18 +56,6 @@ public class JUnitCommunityTest
 	 *
 	 */
 	private static final String TEST_COMMUNITY_IDENT = "server.manager.server" ;
-
-	/**
-	 * Our test community service url.
-	 *
-	 */
-//	private static final String TEST_COMMUNITY_SERVICE_URL = "http://localhost:8080/axis/services/PolicyService" ;
-
-	/**
-	 * Our test community manager url.
-	 *
-	 */
-//	private static final String TEST_COMMUNITY_MANAGER_URL = "http://localhost:8080/axis/services/PolicyManager" ;
 
 	/**
 	 * The our fake Community ident.
@@ -130,7 +124,10 @@ public class JUnitCommunityTest
 
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("  Status") ;
-		if (DEBUG_FLAG) System.out.println("    Ident : " + status.getIdent()) ;
+		if (DEBUG_FLAG) System.out.println("    Config    : " + status.getConfigPath()) ;
+		if (DEBUG_FLAG) System.out.println("    Community : " + status.getCommunityName()) ;
+		if (DEBUG_FLAG) System.out.println("    Service   : " + status.getServiceUrl()) ;
+		if (DEBUG_FLAG) System.out.println("    Manager   : " + status.getManagerUrl()) ;
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("") ;

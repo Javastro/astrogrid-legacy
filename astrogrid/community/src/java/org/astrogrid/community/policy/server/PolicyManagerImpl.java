@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/PolicyManagerImpl.java,v $</cvs:source>
- * <cvs:author>$Author: KevinBenson $</cvs:author>
- * <cvs:date>$Date: 2003/09/15 16:05:45 $</cvs:date>
- * <cvs:version>$Revision: 1.19 $</cvs:version>
+ * <cvs:author>$Author: dave $</cvs:author>
+ * <cvs:date>$Date: 2003/09/17 19:47:21 $</cvs:date>
+ * <cvs:version>$Revision: 1.20 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManagerImpl.java,v $
+ *   Revision 1.20  2003/09/17 19:47:21  dave
+ *   1) Fixed classnotfound problems in the build.
+ *   2) Added the JUnit task to add the initial accounts and groups.
+ *   3) Got the build to work together with the portal.
+ *   4) Fixed some bugs in the Account handling.
+ *
  *   Revision 1.19  2003/09/15 16:05:45  KevinBenson
  *   *** empty log message ***
  *
@@ -185,23 +191,26 @@ public class PolicyManagerImpl
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("PolicyManagerImpl.getServiceStatus()") ;
 
-		ServiceData result =  new ServiceData() ;
-		result.setIdent(CommunityConfig.getCommunityName()) ;
+		ServiceData status =  new ServiceData() ;
+
+		status.setCommunityName(CommunityConfig.getCommunityName()) ;
+		status.setConfigPath(CommunityConfig.getProperty("config.location")) ;
+		status.setServiceUrl(CommunityConfig.getServiceUrl()) ;
+		status.setManagerUrl(CommunityConfig.getManagerUrl()) ;
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		return result ;
+		return status ;
 		}
-      
-      /**
-       * Create a new Account, given the Account name.
-       *
-       */
-      public String getPassword(String name)
-         {
-            return this.accountManager.getPassword(name);
-         }
 
-      
+	/**
+	 * Get the password for an Account.
+	 * This should only be available via an encrypted connection.
+	 *
+	 */
+	public String getPassword(String name)
+		{
+		return this.accountManager.getPassword(name);
+		}
 
 	/**
 	 * Create a new Account, given the Account name.
@@ -237,6 +246,9 @@ public class PolicyManagerImpl
 				//
 				// Use our local manager.
 				result = accountManager.addAccount(ident) ;
+// TODO
+// Need to add the account to the account group.
+// Need to add the account to the guest group.
 				}
 			//
 			// If the ident is not local.
