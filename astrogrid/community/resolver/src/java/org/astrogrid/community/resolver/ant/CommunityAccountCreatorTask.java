@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/ant/Attic/CommunityAccountCreatorTask.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/04/16 13:08:45 $</cvs:date>
- * <cvs:version>$Revision: 1.1 $</cvs:version>
+ * <cvs:date>$Date: 2004/04/16 13:28:57 $</cvs:date>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityAccountCreatorTask.java,v $
+ *   Revision 1.2  2004/04/16 13:28:57  dave
+ *   Added create account tool.
+ *
  *   Revision 1.1  2004/04/16 13:08:45  dave
  *   Added create account tool.
  *
@@ -24,6 +27,7 @@ import org.astrogrid.store.Ivorn ;
 
 import org.astrogrid.community.common.policy.data.AccountData ;
 
+import org.astrogrid.community.client.policy.manager.PolicyManagerDelegate ;
 import org.astrogrid.community.resolver.policy.manager.PolicyManagerResolver ;
 
 /**
