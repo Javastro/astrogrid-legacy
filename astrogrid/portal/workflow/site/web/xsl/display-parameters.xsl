@@ -66,9 +66,9 @@
                         </xsl:otherwise>
                     </xsl:choose>                                       
                 </tr>
-                <input type="hidden" name="action" value="insert-input-value" />
+                <input type="hidden" name="action" value="insert-parameter-value" />
                 <input type="hidden" name="param-name"><xsl:attribute name="value"><xsl:value-of select="@param-name"/></xsl:attribute></input>
-                <input type="hidden" name="activity-key"><xsl:attribute name="value"><xsl:value-of select="../../@key"/></xsl:attribute></input>            
+                <input type="hidden" name="activity_key"><xsl:attribute name="value"><xsl:value-of select="../../@key"/></xsl:attribute></input>            
                 <input type="hidden" name="direction"><xsl:attribute name="value"><xsl:value-of select="$direction"/></xsl:attribute></input>
             </form>
     </xsl:template>
