@@ -1,4 +1,4 @@
-/*$Id: DataServiceTest.java,v 1.2 2004/10/01 18:04:59 mch Exp $
+/*$Id: DataServiceTest.java,v 1.3 2004/10/05 15:27:35 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -95,8 +95,7 @@ public class DataServiceTest extends ServerTestCase {
       TaskStatus[] tasks = status.getTasks();
       assertTrue(tasks.length>1);
       
-      String s = SelfMonitorBody.getHtmlStatus(status);
-      assertNotNull(s);
+      SelfMonitorBody.writeHtmlStatus(new StringWriter(), status);
    }
     
     public void testAbort() throws Exception {
@@ -135,6 +134,9 @@ public class DataServiceTest extends ServerTestCase {
 
 /*
 $Log: DataServiceTest.java,v $
+Revision 1.3  2004/10/05 15:27:35  mch
+Minor changes to server status display
+
 Revision 1.2  2004/10/01 18:04:59  mch
 Some factoring out of status stuff, added monitor page
 

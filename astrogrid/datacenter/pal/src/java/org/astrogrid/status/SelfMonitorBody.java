@@ -1,5 +1,5 @@
 /*
- * $Id: SelfMonitorBody.java,v 1.2 2004/10/05 15:27:42 mch Exp $
+ * $Id: SelfMonitorBody.java,v 1.3 2004/10/05 15:28:33 mch Exp $
  */
 
 package org.astrogrid.status;
@@ -22,9 +22,9 @@ public class SelfMonitorBody  {
          "<p>Started: "+status.getStarted()+"</p>"+
             "<h3>Memory</h3>"+
             "<p>"+
-            "Free: "+Runtime.getRuntime().freeMemory()+"<br/>"+
-            "Max:  "+Runtime.getRuntime().maxMemory()+"<br/>"+
-            "Total:"+Runtime.getRuntime().totalMemory()+"<br/>"+
+            "Free: "+status.getFreeMemory()+"<br/>"+
+            "Max:  "+status.getMaxMemory()+"<br/>"+
+            "Total:"+status.getTotalMemory()+"<br/>"+
             "</p>"+
             "<h3>Tasks</h3>"+
             "<table>"+
@@ -68,3 +68,4 @@ public class SelfMonitorBody  {
          out.write("</tr>");
    }
 }
+
