@@ -1,4 +1,4 @@
-/*$Id: InMemorySystemTest.java,v 1.6 2004/03/07 21:04:39 nw Exp $
+/*$Id: InMemorySystemTest.java,v 1.7 2004/03/08 00:37:23 nw Exp $
  * Created on 19-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -90,9 +90,6 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
         super.setUp();
         ComponentManager cm = new TestComponentManager();        
         ComponentManagerFactory._setInstance(cm);
-        System.out.println(cm.information());
-        // force creation of scheduler.
-        cm.getScheduler();
     }
         
     protected static int WAIT_SECONDS = 5;
@@ -156,7 +153,6 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
          * @see org.astrogrid.jes.jobscheduler.JobScheduler#notifyJobFinished(org.astrogrid.jes.job.Job)
          */
         public void notifyJobFinished(Workflow job) {   
-            System.out.println("finished");         
             try {
                 barrier.barrier();
             } catch (InterruptedException e) {
@@ -171,6 +167,9 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
 
 /* 
 $Log: InMemorySystemTest.java,v $
+Revision 1.7  2004/03/08 00:37:23  nw
+tidied up
+
 Revision 1.6  2004/03/07 21:04:39  nw
 merged in nww-itn05-pico - adds picocontainer
 
