@@ -52,8 +52,7 @@
  
    <!-- URL
         This is the URL for the MySpace facility -->
-        <property name="URL" value="" />
-<!--    <property name="URL" value="http://astrogrid1.jb.man.ac.uk:8080/axis/services/MySpaceManager" /> -->
+    <property name="URL" value="http://vm05.astrogrid.org:8080/astrogrid-mySpace/services/MySpaceManager" /> 
    <!-- MySpace Request Template -->
     <property name="TEMPLATE.REQUEST" value="MySpaceManagerRequest.xmltemplate" />  
   </category>
@@ -63,18 +62,19 @@
 
    <!-- URL
         This is the URL for the Jes facility
-    <property name="URL" value="http://astrogrid1.jb.man.ac.uk:8080/axis/services/JobControllerService" />
+    <property name="URL" value="http://vm05.astrogrid.org:8080/astrogrid-jes/services/JobControllerService" />
      -->
-    <property name="URL" value="http://astrogrid1.jb.man.ac.uk:8080/jes-SNAPSHOT/services/JobControllerService" />  
+    <property name="URL" value="http://vm05.astrogrid.org:8080/astrogrid-jes/services/JobControllerService" />  
   </category>
   
   <!-- TOOLS LIST CATEGORY ========================================================== -->
   <category name="TOOLS_LIST">
-    <property name="TOTAL" value="4" />
-    <property name="NAME.0" value="QueryTool" />  
-    <property name="NAME.1" value="DataFederation" /> 
-    <property name="NAME.2" value="SExtractor" /> 
-    <property name="NAME.3" value="HyperZ" />     
+    <property name="TOTAL" value="5" />
+    <property name="NAME.0" value="testapp" />  
+    <property name="NAME.1" value="QueryTool" />  
+    <property name="NAME.2" value="DataFederation" /> 
+    <property name="NAME.3" value="SExtractor" /> 
+    <property name="NAME.4" value="HyperZ" />     
   </category>
   
   <!-- QueryTool CATEGORY ========================================================== -->
@@ -221,6 +221,44 @@
     <property name="OUTPUT_PARAM.DOCUMENTATION.output_catalog" value="The catalogue of estimated redshifts" />  
     <property name="OUTPUT_PARAM.CARDINALITY.MIN.output_catalog" value="1" />  
     <property name="OUTPUT_PARAM.CARDINALITY.MAX.output_catalog" value="1" />     
+  </category>
+  <!-- HyperZ CATEGORY ========================================================== -->
+  <category name="testapp">
+    <property name="DOCUMENTATION" value="A test application that is installed with every application controller" /> 
+     
+    <property name="INPUT_PARAMS.TOTAL" value="4" />
+    
+    <property name="INPUT_PARAM.NAME.0" value="P1" /> 
+    <property name="INPUT_PARAM.TYPE.P1" value="xs:integer" /> 
+    <property name="INPUT_PARAM.DOCUMENTATION.P1" value="wait time" />  
+    <property name="INPUT_PARAM.CARDINALITY.MIN.P1" value="1" />  
+    <property name="INPUT_PARAM.CARDINALITY.MAX.P1" value="1" />         
+
+    <property name="INPUT_PARAM.NAME.1" value="P2" />  
+    <property name="INPUT_PARAM.TYPE.P2" value="xs:double" /> 
+    <property name="INPUT_PARAM.DOCUMENTATION.P2" value="an example double" />  
+    <property name="INPUT_PARAM.CARDINALITY.MIN.P2" value="1" />  
+    <property name="INPUT_PARAM.CARDINALITY.MAX.P2" value="1" />
+      
+     <property name="INPUT_PARAM.NAME.2" value="P4" />       
+    <property name="INPUT_PARAM.TYPE.P4" value="xs:string" /> 
+    <property name="INPUT_PARAM.DOCUMENTATION.P4" value="The input catalogue of measured magnitude" />  
+    <property name="INPUT_PARAM.CARDINALITY.MIN.P4" value="1" />  
+    <property name="INPUT_PARAM.CARDINALITY.MAX.P4" value="1" />  
+
+     <property name="INPUT_PARAM.NAME.3" value="P9" />       
+    <property name="INPUT_PARAM.TYPE.P9" value="MySpace_FileReference" /> 
+    <property name="INPUT_PARAM.DOCUMENTATION.P9" value="a file to pass to application" />  
+    <property name="INPUT_PARAM.CARDINALITY.MIN.P9" value="1" />  
+    <property name="INPUT_PARAM.CARDINALITY.MAX.P9" value="1" />  
+               
+    <property name="OUTPUT_PARAMS.TOTAL" value="1" />
+    
+    <property name="OUTPUT_PARAM.NAME.0" value="P3" /> 
+    <property name="OUTPUT_PARAM.TYPE.P3" value="MySpace_FileReference" />    
+    <property name="OUTPUT_PARAM.DOCUMENTATION.P3" value="The results of the run" />  
+    <property name="OUTPUT_PARAM.CARDINALITY.MIN.P3" value="1" />  
+    <property name="OUTPUT_PARAM.CARDINALITY.MAX.P3" value="1" />     
   </category>
 
 </properties>
