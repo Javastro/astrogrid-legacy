@@ -202,6 +202,15 @@
     </unitTest>
 
     <resources>
+    
+      <!-- This the is product of the build of the ogsadai sub-project. -->
+      <resource>
+        <directory>ogsadai/target</directory>
+        <includes>
+          <include>astrogrid-datawarehouse-ogsadai-app-HEAD.jar</include>
+        </includes>
+      </resource>
+      
     	<resource><!-- config files -->
 		<directory>${basedir}/src/java</directory>
 		<includes>
