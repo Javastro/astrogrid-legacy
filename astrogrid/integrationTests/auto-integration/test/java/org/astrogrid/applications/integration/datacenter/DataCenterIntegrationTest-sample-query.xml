@@ -1,4 +1,4 @@
-<Select xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://tempuri.org/adql">
+<Select xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://adql.ivoa.net/v0.73">
 	<SelectionAll />
 	<TableClause>
 		<FromClause>
