@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryFunctionTest.java,v 1.14 2004/08/31 07:07:01 pah Exp $
+ * $Id: RegistryFunctionTest.java,v 1.15 2004/09/03 07:47:41 KevinBenson Exp $
  * 
  * Created on 07-May-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -58,6 +58,7 @@ public class RegistryFunctionTest extends RegistryBaseTest {
    
    public void testAddnew() throws RegistryException, URISyntaxException
    {
+      System.out.println("the entryurl = " + entryurl.toExternalForm());
       ras.updateFromURL(entryurl);
       Ivorn ivorn = new Ivorn("ivo://"+AUTHORITY_ID+"/"+RESOURCE_KEY);
       System.out.println(ivorn.toString()+" "+ivorn.toRegistryString());
@@ -77,7 +78,7 @@ public class RegistryFunctionTest extends RegistryBaseTest {
       Document doc = rs.getResourceByIdentifier(new Ivorn("ivo://"+AUTHORITY_ID+"/"+"testapp"));
       assertNotNull("failed to retrieve a known registry entry",doc);
       XMLUtils.DocumentToStream(doc,System.out);
-      NodeList nodelst = doc.getElementsByTagNameNS( "http://www.ivoa.net/xml/VOResource/v0.9", "Resource");
+      NodeList nodelst = doc.getElementsByTagNameNS( "*", "Resource");
       assertEquals("There should be exactly one entry returned for getResourceByIdentifierDOM",1, nodelst.getLength());
    }
    //TODO need tests for the other types of
