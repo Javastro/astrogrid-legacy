@@ -1,5 +1,5 @@
 /*
- * $Id: TemplateEditorPanel.java,v 1.1 2003/08/25 18:36:13 mch Exp $
+ * $Id: TemplateEditorPanel.java,v 1.2 2004/01/12 18:44:18 mch Exp $
  *
  * See end for log
  */
@@ -21,7 +21,6 @@ import java.util.Vector;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import org.astrogrid.common.myspace.MySpaceResolver;
 import org.astrogrid.intensity.Passband;
 import org.astrogrid.log.Log;
 import org.astrogrid.tools.xml.XmlOutput;
@@ -2626,8 +2625,11 @@ public class TemplateEditorPanel extends JTabbedPane
 // Version History
 //
 // $Log: TemplateEditorPanel.java,v $
-// Revision 1.1  2003/08/25 18:36:13  mch
-// *** empty log message ***
+// Revision 1.2  2004/01/12 18:44:18  mch
+// Removed unnecessary import
+//
+// Revision 1.1.1.1  2003/08/25 18:36:13  mch
+// Reimported to fit It02 source structure
 //
 // Revision 1.17  2003/07/11 10:43:46  mch
 // Fix for examining FITS headers; also better reporting on invalid web config files
