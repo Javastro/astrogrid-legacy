@@ -1,31 +1,21 @@
 /*
- * $Id: AxisDataServer.java,v 1.3 2004/10/05 14:56:45 mch Exp $
+ * $Id: AxisDataServer.java,v 1.4 2004/10/05 19:23:07 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.service;
 
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.URL;
 import javax.servlet.http.HttpServletRequest;
-import javax.xml.rpc.ServiceException;
-import javax.xml.rpc.server.ServiceLifecycle;
-import javax.xml.rpc.server.ServletEndpointContext;
 import org.apache.axis.AxisEngine;
 import org.apache.axis.AxisFault;
+import org.apache.axis.MessageContext;
 import org.apache.axis.server.AxisServer;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.astrogrid.community.Account;
-import org.astrogrid.datacenter.metadata.VoDescriptionServer;
-import org.astrogrid.datacenter.queriers.Querier;
-import org.astrogrid.datacenter.queriers.QuerierListener;
-import org.astrogrid.datacenter.queriers.status.QuerierStatus;
-import org.astrogrid.datacenter.query.Query;
-import org.astrogrid.datacenter.returns.TargetIndicator;
-import org.astrogrid.util.DomHelper;
+import org.apache.axis.transport.http.HTTPConstants;
+import java.net.MalformedURLException;
 
 /**
  * A class for serving data through an Axis webservice implementation.  It is
@@ -48,12 +38,24 @@ public class AxisDataServer extends DataServer {
    public final static boolean SERVERFAULT = false;
 
    /** set during init to the url stem for this context, eg http://grendel12.roe.ac.uk/pal-6df  */
-   protected static String contextUrlStem = null;
+   //protected static String contextUrlStem = null;
    
    
    /** Returns the url stem for this context, eg http://grendel12.roe.ac.uk/pal-6df  */
    public static String getUrlStem() {
-      return contextUrlStem;
+      MessageContext context = MessageContext.getCurrentContext();
+      if (context == null) {
+         return null;
+      }
+      HttpServletRequest req = (HttpServletRequest) context.getProperty(HTTPConstants.MC_HTTP_SERVLETREQUEST);
+      try {
+         URL server = new URL(req.getProtocol(), req.getServerName(), req.getServerPort(), req.getContextPath());
+         return server.toString();
+      }
+      catch (MalformedURLException e) {
+         //shouldn't happen
+         throw new RuntimeException("Http Request URL malformed: "+e);
+      }
    }
    
    public String getContext() {
@@ -106,6 +108,9 @@ public class AxisDataServer extends DataServer {
 
 /*
 $Log: AxisDataServer.java,v $
+Revision 1.4  2004/10/05 19:23:07  mch
+Added Kevin's url getter
+
 Revision 1.3  2004/10/05 14:56:45  mch
 Added new web interface and partial skynode
 
