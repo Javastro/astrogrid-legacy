@@ -42,15 +42,15 @@ import org.w3c.dom.Document ;
  * |   
  * |
  * |__ActivityContainer ( Abstract. Can contain any number of any instances
- *    |                   of an Activity apart from a Workflow itself )
- *    |
- *    |__Flow
- *    |
- *    |
- *    |__Sequence 
- *       |
- *       |
- *       |__Workflow
+ * |  |                   of an Activity apart from a Workflow itself )
+ * |  |
+ * |  |__Flow
+ * |  |
+ * |  |
+ * |  |__Sequence 
+ * |      
+ * |      
+ * |__Workflow
  * 
  * 
  * Workflow contains some static factory methods for manipulating Workflows
@@ -73,7 +73,7 @@ import org.w3c.dom.Document ;
  * @see     
  * @since   AstroGrid 1.3
  */
-public class Workflow extends Sequence {
+public class Workflow extends Activity {
     
     /** Compile-time switch used to turn tracing on/off. 
       * Set this to false to eliminate all trace statements within the byte code.*/         
@@ -100,8 +100,8 @@ public class Workflow extends Sequence {
         }
         
     }
-        
-        
+    
+    
     public static Workflow createWorkflow(  String userid, String community, String name  ) {
         if( TRACE_ENABLED ) trace( "Workflow.createWorkflow() entry") ;   
            
@@ -237,6 +237,9 @@ public class Workflow extends Sequence {
         userid,
         community ;
         
+    private Sequence
+        mySequence = null ;
+        
     private Map 
         activities = null ;
         
@@ -281,7 +284,7 @@ public class Workflow extends Sequence {
             Element
                element = document.getDocumentElement() ;   
                
-            name = element.getAttribute( SubmissionRequestDD.JOB_NAME_ATTR ) ;
+            name = element.getAttribute( WorkflowDD.WORKFLOW_NAME_ATTR ) ;
                        
             NodeList
                nodeList = element.getChildNodes() ; 
@@ -291,20 +294,10 @@ public class Workflow extends Sequence {
                     
                     element = (Element) nodeList.item(i) ;
                 
-                    if ( element.getTagName().equals( SubmissionRequestDD.JOBSTEP_ELEMENT ) ) {
-//                      name = element.getAttribute( SubmissionRequestDD.JOBSTEP_NAME_ATTR ).trim() ;
+                    if ( element.getTagName().equals( WorkflowDD.SEQUENCE_ELEMENT ) ) {
                         // We must be certain these appear in StepNumber order!
-                        jobSteps.add( new JobStep( this, element ) ) ;   
+                        mySequence = new Sequence( element ) ;   
                     }                   
-                    else if (element.getTagName().equals( SubmissionRequestDD.USERID_ELEMENT ) ) {                      
-                        userId = element.getFirstChild().getNodeValue().trim();
-                    }
-                    else if (element.getTagName().equals( SubmissionRequestDD.COMMUNITY_ELEMENT ) ) {                       
-                        community = element.getFirstChild().getNodeValue().trim();
-                    }
-                    else if (element.getTagName().equals( SubmissionRequestDD.DESCRIPTION_ELEMENT ) ) {                        
-                        description = element.getFirstChild().getNodeValue().trim();
-                    }
                     
                 } // end if
                                 
@@ -388,7 +381,7 @@ public class Workflow extends Sequence {
             inserts[0] = this.name ;
             inserts[1] = this.userid ;
             inserts[2] = this.community ;
-            inserts[3] = super.toXMLString() ;
+            inserts[3] = mySequence.toXMLString() ;
             
             response = MessageFormat.format( response, inserts ) ;
 
