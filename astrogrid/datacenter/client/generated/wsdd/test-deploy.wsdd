@@ -39,5 +39,6 @@
 <typeMapping xmlns:ns="http://www.astrogrid.org/datacenter/It04/dataserver/v1/types" qname="ns:makeQueryResponse" type="java:org.astrogrid.datacenter.axisdataserver.types._makeQueryResponse" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle=""/>
 <typeMapping xmlns:ns="http://astrogrid.org" qname="ns:AstroGridException" type="java:org.astrogrid.AstroGridException" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle=""/>
 <typeMapping xmlns:ns="http://www.astrogrid.org/datacenter/It04/dataserver/v1/types" qname="ns:getStatus" type="java:org.astrogrid.datacenter.axisdataserver.types._getStatus" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle=""/>
+<parameter xmlns="" value="/wsdl/AxisDataServer.wsdl" name="wsdlFile"/>
 </service>
 </deployment>

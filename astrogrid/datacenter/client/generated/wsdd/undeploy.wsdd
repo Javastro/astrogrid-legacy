@@ -8,5 +8,7 @@
 <!--      from the same directory that the Axis engine runs         -->
 <undeployment xmlns="http://xml.apache.org/axis/wsdd/">
 <!-- Services from AxisDataServerService WSDL service -->
-<service name="AxisDataServer"/>
+<service name="AxisDataServer">
+<parameter xmlns="" value="/wsdl/AxisDataServer.wsdl" name="wsdlFile"/>
+</service>
 </undeployment>
