@@ -42,10 +42,10 @@
     		<version>${astrogrid.aggregate.version}</version>
     	</dependency>    	
     	<dependency>
-    		<artifactId>jescript-shell</artifactId>
+    		<artifactId>astrogrid-desktop</artifactId>
     		<groupId>org.astrogrid</groupId>
     		<type>war</type>
-    		<version>${astrogrid.aggregate.version}</version>
+    		<version>${astrogrid.desktop.version}</version>
     	</dependency>
     	<dependency>
     		<artifactId>aladin-avo</artifactId>
