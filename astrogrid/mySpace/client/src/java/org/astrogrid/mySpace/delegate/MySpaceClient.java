@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceClient.java,v 1.1 2004/06/15 08:27:21 jdt Exp $
+ * $Id: MySpaceClient.java,v 1.2 2004/06/15 15:51:38 jdt Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -20,6 +20,7 @@ import java.util.Vector;
  * can spot & fix such changes at build time.
  *
  * @todo throw proper exceptions not the generic Exception...
+ * @deprecated - use VoSpaceClient
  *
  */
 
@@ -270,6 +271,9 @@ public interface MySpaceClient {
 
 /*
  $Log: MySpaceClient.java,v $
+ Revision 1.2  2004/06/15 15:51:38  jdt
+ Added deprecation warnings.
+
  Revision 1.1  2004/06/15 08:27:21  jdt
  Moved the old myspace delegate from server to client.  It's
  still used be a large number of components and needs to 

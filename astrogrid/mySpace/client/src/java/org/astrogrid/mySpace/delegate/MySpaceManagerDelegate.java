@@ -13,7 +13,10 @@ import org.astrogrid.mySpace.delegate.helper.*;
 
 //
 // Note: Throughout this class the acronym `MSS' denotes a MySpace System.
-
+/**
+ * 
+ * @deprecated - use VoSpaceClient
+ */
 public class MySpaceManagerDelegate implements MySpaceClient {
 
     private String mssUrl = " ";       // MSS the delegate is operating on.

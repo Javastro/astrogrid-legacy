@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceDelegateFactory.java,v 1.1 2004/06/15 08:27:21 jdt Exp $
+ * $Id: MySpaceDelegateFactory.java,v 1.2 2004/06/15 15:51:38 jdt Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,6 +14,7 @@ import org.astrogrid.mySpace.delegate.MySpaceManagerDelegate;
  * Creates the appropriate delegates to access myspace.
  * @TODO this factory is not really good enough, as it does not allow for the multiple managers that the real delegate can handle... - pah
  * @author M Hill
+ * @deprecated - use VoSpaceClient
  */
 
 public class MySpaceDelegateFactory {
@@ -63,6 +64,9 @@ public class MySpaceDelegateFactory {
 
 /*
 $Log: MySpaceDelegateFactory.java,v $
+Revision 1.2  2004/06/15 15:51:38  jdt
+Added deprecation warnings.
+
 Revision 1.1  2004/06/15 08:27:21  jdt
 Moved the old myspace delegate from server to client.  It's
 still used be a large number of components and needs to 

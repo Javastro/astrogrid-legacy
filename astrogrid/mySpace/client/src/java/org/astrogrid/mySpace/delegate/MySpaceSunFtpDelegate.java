@@ -1,5 +1,5 @@
 /*
- $Id: MySpaceSunFtpDelegate.java,v 1.1 2004/06/15 08:27:21 jdt Exp $
+ $Id: MySpaceSunFtpDelegate.java,v 1.2 2004/06/15 15:51:38 jdt Exp $
 
  (c) Copyright...
  */
@@ -24,6 +24,7 @@ import sun.net.ftp.FtpProtocolException;
  * that these are NOT supported directly.
  * <P>
  * Adapted from the ACE project
+ * @deprecated - use VoSpaceClient
  */
 
 public class MySpaceSunFtpDelegate implements MySpaceClient
