@@ -25,7 +25,7 @@ import java.net.*;
 public class FileTransferFake
 {  private String  importUrl;  // The URL to be retrieved.
    private String  fileName;   // The name of the file to be written.
-
+   private boolean appendFlag; // Append or overwrite new contents.
 //
 // Constructor.
 
@@ -35,11 +35,16 @@ public class FileTransferFake
  *
  * @param source      the URL from which to transfer.
  * @param destination the name of the file in which to put the data.
+ * @param appendFlag If true the contents will be appended to the end
+ *   of an existing file; otherwise any existing file will be
+ *   overwritten.
  */
 
-  public FileTransferFake (final String source, final String destination)
+  public FileTransferFake (final String source, final String destination,
+    boolean appendFlag)
   {  importUrl = source;
      fileName = destination;
+     appendFlag = appendFlag;
   }
 
 //
@@ -54,7 +59,10 @@ public class FileTransferFake
 
   public final void transfer ()
   {  
-     //REFACTORME - this is a mixture of streams and writers - probably not a good idea...
+//
+//  [TODO]: this method uses a mixture of streams and writers -
+//     probably not a good idea...
+
      try
      {  URL url = new URL(importUrl);
         InputStream iStream = url.openStream();
@@ -62,7 +70,8 @@ public class FileTransferFake
         int b;
 
         File outFile = new File(fileName);
-        PrintWriter out = new PrintWriter(new FileWriter(outFile) );
+        PrintWriter out = new PrintWriter(
+          new FileWriter(outFile, appendFlag) );
 
         while( (b = iStream.read())  !=  -1)
         {  out.write(b);

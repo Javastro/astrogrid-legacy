@@ -25,6 +25,13 @@ public class MySpaceUtils
    private static MySpaceStatus msstatus = new MySpaceStatus();
    private static String response = " ";
 
+/**
+ * Read a file and return its contents as a String.
+ *
+ * @param file The name of the file.
+ * @return The file contents.
+ */
+
    public static String readFromFile(File file)
    {  FileReader fileReader = null;
 
@@ -88,9 +95,20 @@ public class MySpaceUtils
          }
       }
    }
-   
 
-   public static boolean writeToFile(File file, String theString)
+
+/**
+ * Save the contents of a String as a file.
+ *
+ * @param file Name of the file.
+ * @param theString The String to be saved.
+ * @param appendFlag If true the contents will be appended to the end
+ *   of an existing file; otherwise any existing file will be
+ *   overwritten.
+ */
+
+   public static boolean writeToFile(File file, String theString,
+     boolean appendFlag)
    {  PrintWriter printWriter = null;   
     
       try
@@ -98,10 +116,11 @@ public class MySpaceUtils
 //
 //       Open file to write into
    
-          printWriter = new PrintWriter(new BufferedWriter( new FileWriter (file, true)));              
+          printWriter = new PrintWriter(new BufferedWriter(
+            new FileWriter (file, appendFlag) ) );              
           if ( DEBUG )
-          {  logger.appendMessage("MySpaceUtil file is:"
-               + file + ";  CONTENTS :" + theString);
+          {  logger.appendMessage("MySpaceUtil file name is:"
+               + file);
           }
 
 //
