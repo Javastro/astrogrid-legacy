@@ -52,7 +52,7 @@
             >
             <classpath>
         	   <pathelement location="${maven.build.dir}/${pom.artifactId}-${pom.currentVersion}.jar"/>
-    	       <pathelement path="${maven.build.dir}"/>
+
 	         </classpath>            
         </ant:java>
     

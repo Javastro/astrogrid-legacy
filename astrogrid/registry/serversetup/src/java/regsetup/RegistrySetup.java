@@ -319,7 +319,7 @@ public class RegistrySetup {
          }//while
       }//if         
          
-      String queryEndPoint = "http://msslxy.mssl.ucl.ac.uk/astrogrid-registry-webapp/services/Registry";
+      String queryEndPoint = "http://msslxy.mssl.ucl.ac.uk:8080/astrogrid-registry-webapp/services/Registry";
       System.out.println("What is the query endpoint of another Registry?");
       System.out.println("A default example is given you may hit <Return> to use the default: " + queryEndPoint);
 
@@ -473,9 +473,9 @@ public class RegistrySetup {
       String interfaceType = null;
       //d = new BufferedReader(new InputStreamReader(System.in));
       while(interfaceType == null || interfaceType.trim().length() <= 0) {
-         System.out.println("What is the interface Type must be WEBSERVICE OR WEBBROWSER normally WEBSERVICE for astrogrid?");
+         System.out.println("What is the interface Type must be WebService OR WebBrowser normally WEBSERVICE for astrogrid?");
          interfaceType = d.readLine();
-         if("WEBSERVICE".equals(interfaceType) || "WEBBROWSER".equals(interfaceType) ) {
+         if("WebService".equals(interfaceType) || "WebBrowser".equals(interfaceType) ) {
             //do nothing
          }else {
             interfaceType = null;
@@ -487,7 +487,8 @@ public class RegistrySetup {
       String accessURL = null;
       //d = new BufferedReader(new InputStreamReader(System.in));
       while(accessURL == null || accessURL.trim().length() <= 0) {
-         System.out.println("What is the AccessURL for the registry. Needs to be a WSDL for a WEBSERVICE type (currently this installer does not check though that it is a wsdl)?");         
+         System.out.println("What is the AccessURL for the registry. Needs to be a WSDL for a WebService type (currently this installer does not check though that it is a wsdl)?");
+         System.out.println("Example is this, but DO NOT use loacalhost ex: http://localhost:8080/astrogrid-registry-webapp/services/RegistryHarvest?wsdl")         
          accessURL = d.readLine();
       }
       //d.close();
@@ -570,7 +571,7 @@ public class RegistrySetup {
 
    if(enteredfrommenuone) {
       while(skipOption != null && skipOption.equals("cont")) {
-         System.out.println("You may exit now and go onto option number 3.  Hit <Return> to continue or type 'skip' to go to number 3?\r\n");
+         System.out.println("You may exit now and go onto option number 4.  Hit <Return> to continue or type 'skip' to exit?\r\n");
          skipOption = d.readLine();
          if(skipOption == null || skipOption.trim().length() <= 0) 
             skipOption = null;
