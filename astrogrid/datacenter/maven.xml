@@ -211,7 +211,7 @@ ADQL
   <delete dir="tmp" />
   <mkdir dir="tmp" />
   <deploy:copy-deps todir="tmp"
-  	excludes="breezetk,objectwiz-votable,VOTableUtil,castor,xerces,mm-mysql,jconn,hsqldb"
+  	excludes="breezetk,objectwiz-votable,VOTableUtil,castor,mm-mysql,jconn,hsqldb"
 	/>
   <!-- want to bundle everything required into a single jar file - easy to run, with no classpath greif. -->
   <jar destfile="packaging/pal/bin/test-server.jar">
