@@ -1,4 +1,4 @@
-/* $Id: PortalLoginPageTest.java,v 1.2 2004/04/07 15:51:22 jdt Exp $
+/* $Id: PortalLoginPageTest.java,v 1.1 2004/04/15 11:48:09 jdt Exp $
  * Created on Apr 7, 2004 by jdt
  * 
  * Copyright (C) AstroGrid. All rights reserved. 
@@ -8,14 +8,12 @@
  * in the LICENSE.txt file.
  *
  */
-package org.astrogrid.integrationtest.portal;
+package org.astrogrid.portal.integration;
 
 import net.sourceforge.jwebunit.WebTestCase;
 
-import org.astrogrid.integrationtest.common.ConfManager;
-
-import com.meterware.httpunit.HttpException;
-import com.meterware.httpunit.HttpInternalErrorException;
+import org.astrogrid.config.Config;
+import org.astrogrid.config.SimpleConfig;
 
 /**
  * Test that the portal login page functions correctly
@@ -24,6 +22,10 @@ import com.meterware.httpunit.HttpInternalErrorException;
  * @author jdt
  */
 public final class PortalLoginPageTest extends WebTestCase {
+    /**
+     * Configuration holding endpoints of tests
+     */
+    private static Config conf=SimpleConfig.getSingleton();
     /**
      * Form parameter name
      */
@@ -57,7 +59,7 @@ public final class PortalLoginPageTest extends WebTestCase {
      */
     protected void setUp() throws Exception {
         super.setUp();
-        final String url = ConfManager.getConfig().getString("org.astrogrid.portal.site");
+        final String url = conf.getString("org.astrogrid.portal.site");
         assert url!=null;
         log.debug("Setting portal URL to " + url);
         // Set up for jwebtest
@@ -198,6 +200,9 @@ public final class PortalLoginPageTest extends WebTestCase {
 
 /*
  *  $Log: PortalLoginPageTest.java,v $
+ *  Revision 1.1  2004/04/15 11:48:09  jdt
+ *  Moved to auto-integration
+ *
  *  Revision 1.2  2004/04/07 15:51:22  jdt
  *  added logout test
  *

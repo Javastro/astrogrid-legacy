@@ -1,20 +1,23 @@
-/* $Id: PortalLoginPageHttpUnitTest.java,v 1.1 2004/04/07 15:16:42 jdt Exp $
+/* $Id: PortalLoginPageHttpUnitTest.java,v 1.1 2004/04/15 11:48:09 jdt Exp $
  * Created on Apr 7, 2004 by jdt@roe.ac.uk
  * The integrationTests project
  * Copyright (c) Astrigrid 2004.  All rights reserved. 
  *
  */
-package org.astrogrid.integrationtest.portal;
+package org.astrogrid.portal.integration;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 
 import junit.framework.TestCase;
 
-import org.astrogrid.integrationtest.common.ConfManager;
+import org.astrogrid.config.Config;
+import org.astrogrid.config.SimpleConfig;
 import org.xml.sax.SAXException;
 
-import com.meterware.httpunit.*;
+import com.meterware.httpunit.WebConversation;
+import com.meterware.httpunit.WebForm;
+import com.meterware.httpunit.WebResponse;
 
 /**
  * Test that the portal login page functions correctly
@@ -32,6 +35,10 @@ public class PortalLoginPageHttpUnitTest extends TestCase {
     private String url;
     private WebConversation conversation;
     /**
+     * Configuration holding endpoints of tests
+     */
+    private static Config conf=SimpleConfig.getSingleton();
+    /**
      * Kick off the textui
      * @param args ignored
      */
@@ -46,7 +53,7 @@ public class PortalLoginPageHttpUnitTest extends TestCase {
      */
     protected void setUp() throws Exception {
         super.setUp();
-        url = ConfManager.getConfig().getString("org.astrogrid.portal.site");
+        url = conf.getString("org.astrogrid.portal.site");
         assert url!=null;
         log.debug("Setting portal URL to " + url);
         conversation = new WebConversation();
@@ -69,6 +76,9 @@ public class PortalLoginPageHttpUnitTest extends TestCase {
 
 /*
  *  $Log: PortalLoginPageHttpUnitTest.java,v $
+ *  Revision 1.1  2004/04/15 11:48:09  jdt
+ *  Moved to auto-integration
+ *
  *  Revision 1.1  2004/04/07 15:16:42  jdt
  *  Initial commit
  *

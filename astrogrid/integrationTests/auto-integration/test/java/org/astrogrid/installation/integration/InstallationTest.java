@@ -1,11 +1,11 @@
-/* $Id: InstallationTest.java,v 1.8 2004/04/13 10:30:54 jdt Exp $
+/* $Id: InstallationTest.java,v 1.1 2004/04/15 11:48:09 jdt Exp $
  * Created on Mar 29, 2004 by jdt
  * Copyright (C) AstroGrid. All rights reserved.
  * This software is published under the terms of the AstroGrid
  * Software License version 1.2, a copy of which has been included with this
  * distribution in the LICENSE.txt file.
  */
-package org.astrogrid.integrationtest.installation;
+package org.astrogrid.installation.integration;
 
 import java.io.IOException;
 import java.net.URL;
@@ -21,7 +21,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.astrogrid.config.Config;
-import org.astrogrid.integrationtest.common.ConfManager;
+import org.astrogrid.config.SimpleConfig;
 
 /**
  * Check that the test installations are where we expect them to be
@@ -37,7 +37,7 @@ public final class InstallationTest  {
     /**
      * Configuration holding endpoints of tests
      */
-    private static Config conf=ConfManager.getConfig();
+    private static Config conf=SimpleConfig.getSingleton();
     /**
      * Hide
      * Constructor
@@ -144,6 +144,9 @@ public final class InstallationTest  {
 
 /*
  *  $Log: InstallationTest.java,v $
+ *  Revision 1.1  2004/04/15 11:48:09  jdt
+ *  Moved to auto-integration
+ *
  *  Revision 1.8  2004/04/13 10:30:54  jdt
  *  tidied imports
  *
