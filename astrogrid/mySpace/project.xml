@@ -4,8 +4,8 @@
   xsi:noNamespaceSchemaLocation="maven-project.xsd">
 
   <pomVersion>3</pomVersion>
-  <id>project-id</id>
-  <name>project-name</name>
+  <id>astrogrid-myspace</id>
+  <name>AstroGrid MySpace</name>
 
   <currentVersion>HEAD</currentVersion>
   
@@ -17,7 +17,7 @@
   <inceptionYear>2002</inceptionYear>
   <package>org.astrogrid</package>
   
-  <shortDescription>AstroGrid Project Description</shortDescription>
+  <shortDescription>AstroGrid MySpace Components</shortDescription>
   
   <repository>
     <connection>
@@ -27,24 +27,19 @@
   
   <developers>
     <developer>
-      <name>Peter Shillan</name>
-      <id>gps</id>
-      <email>gps@roe.ac.uk</email>
+      <name>Keith Noddle</name>
+      <id>ktn</id>
+      <email>ktn@star.le.ac.uk</email>
     </developer>
     <developer>
-      <name>Elizabeth Auden</name>
-      <id>eca</id>
-      <email>eca@mssl.ucl.ac.uk</email>
+      <name>Clive Davenhall</name>
+      <id>acd</id>
+      <email>acd@roe.ac.uk</email>
     </developer>
     <developer>
-      <name>Pedro Contreras</name>
-      <id>pc</id>
-      <email>P.Contreras@qub.ac.uk</email>
-    </developer>
-    <developer>
-      <name>Roy Platon</name>
-      <id>rtp</id>
-      <email>R.T.Platon@rl.ac.uk</email>
+      <name>Catherine Ling Qin</name>
+      <id>clq2</id>
+      <email>clq2@star.le.ac.uk</email>
     </developer>
   </developers>
   
@@ -53,23 +48,8 @@
       <id>junit</id>
       <version>3.8</version>
     </dependency>
-
-    <dependency>
-      <id>xmlBlaster</id>
-      <version>0.845</version>
-    </dependency>
-
-    <dependency>
-      <id>jms</id>
-      <version>1.0.2a</version>
-    </dependency>
-
-    <dependency>
-      <id>activation</id>
-      <version>1.0.2</version>
-    </dependency>
   </dependencies>
-  
+
   <build>
     <sourceDirectory>src/java</sourceDirectory>
     <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
