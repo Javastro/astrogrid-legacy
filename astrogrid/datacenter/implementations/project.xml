@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project>
+<extend>${basedir}/../project-base.xml</extend>
+  <!-- the version of maven's project object model -->
+  <pomVersion>3</pomVersion>
+  
+  <!-- a unique name for this project -->
+  <id>astrogrid-datacenter-implementations</id>
+  <name>AstroGrid DataCenter Server Implementations</name>
+
+  <currentVersion>HEAD</currentVersion>
+
+	<description><![CDATA[
+	Astrogrid datacenter server-back ends that: interface to various database flavours;
+	delegate requests to another web service; supporting libraries; and code specific to single datacenters
+	]]>
+	</description>
+
+  <shortDescription>Astrogrid Datacenter Server Implementations</shortDescription>
+
+  <siteDirectory>/var/www/www/maven/build/datacenter/implementations</siteDirectory>
+
+  <repository>
+    <connection>
+      scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/datacenter/implementations
+    </connection>
+    <developerConnection>
+      scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/datacenter/implementations
+    </developerConnection>
+  </repository>
+
+
+</project>
+

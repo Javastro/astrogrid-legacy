@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<!-- extension maven script -->
+<project xmlns:j="jelly:core"  xmlns:maven="jelly:maven" default="site">
+
+<!--
+  <preGoal name="site">
+  	<attainGoal name="multiproject:site" />
+  </preGoal>
+  -->
+
+
+
+</project>
