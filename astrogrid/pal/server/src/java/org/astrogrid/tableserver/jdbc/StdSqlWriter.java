@@ -1,5 +1,5 @@
 /*
- * $Id: StdSqlWriter.java,v 1.6 2005/03/31 23:16:32 mch Exp $
+ * $Id: StdSqlWriter.java,v 1.7 2005/04/01 10:33:52 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -325,7 +325,7 @@ public class StdSqlWriter implements QueryVisitor {
             "POWER( SIN( ("+decColRad+" - ("+ (float) dec.asRadians()+") ) / 2 ) ,2) + "+
             "COS("+dec.asRadians()+") * COS("+decColRad+") * "+
             "POWER( SIN( ("+raColRad+" - "+(float) ra.asRadians()+") / 2 ), 2) "+
-            "))) < "+radius.asRadians()+
+            "))) < "+(float) radius.asRadians()+
             ")";
       }
       else {
@@ -386,11 +386,12 @@ public class StdSqlWriter implements QueryVisitor {
    /** Returns the given angle in the column's units.   Useful for making SQL a bit
     * simpler - convert the angles to the column units rather than vice versa with functions */
    public String getAngleInColUnits(Angle givenAngle, Units colUnits) {
+      /* @todo - note that the (float) typecasts are for postgres that can't cope with subtracting double precisions from single */
       if (colUnits.equals("rad")) {
-         return ""+givenAngle.asRadians();
+         return ""+(float) givenAngle.asRadians();
       }
       else if (colUnits.equals("deg")) {
-         return ""+givenAngle.asDegrees();
+         return ""+(float) givenAngle.asDegrees();
       }
       else if (colUnits.equals("marcsec")) {
          //this gives 2.3E8 etc which can cause confusion return ""+givenAngle.asArcSecs()*1000);
@@ -455,6 +456,9 @@ public class StdSqlWriter implements QueryVisitor {
 
 /*
  $Log: StdSqlWriter.java,v $
+ Revision 1.7  2005/04/01 10:33:52  mch
+ more temporary fixes for postgres
+
  Revision 1.6  2005/03/31 23:16:32  mch
  temp fix for postgres
 
