@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: document-all.sh,v 1.3 2004/12/20 11:05:25 jdt Exp $ 
+# $Id: document-all.sh,v 1.4 2004/12/20 11:09:10 jdt Exp $ 
 document-component.sh common $1
 document-component.sh ui $1
 document-component.sh workflow-objects $1
