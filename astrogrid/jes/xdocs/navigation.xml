@@ -6,6 +6,7 @@
   <body>
      <menu name="Install">
        <item name="Install" href="INSTALL"/>
+       <item name="Read me" href="README"/>
        <item name="Download" href="http://www.astrogrid.org/maven/astrogrid-jes/wars/astrogrid-jes-SNAPSHOT.war"/>
     </menu>
     <links>
