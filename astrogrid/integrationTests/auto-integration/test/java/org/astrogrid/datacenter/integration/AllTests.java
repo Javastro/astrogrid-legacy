@@ -1,4 +1,4 @@
-/* $Id: AllTests.java,v 1.2 2004/04/21 13:41:59 nw Exp $
+/* $Id: AllTests.java,v 1.3 2004/04/26 09:05:10 mch Exp $
  * Created on Apr 15, 2004 by jdt@roe.ac.uk
  * The auto-integration project
  * Copyright (c) Astrigrid 2004.  All rights reserved.
@@ -22,6 +22,7 @@ public class AllTests {
         TestSuite suite = new TestSuite("Datacenter");
         //$JUnit-BEGIN$
         suite.addTest(ConeTest.suite());
+        suite.addTest(AdqlTest.suite());
         suite.addTest(CeaTest.suite());
         suite.addTest(Query2MySpaceTest.suite());
         suite.addTest(IvoQuery2MySpaceTest.suite());
@@ -32,6 +33,9 @@ public class AllTests {
 }
 /*
  *  $Log: AllTests.java,v $
+ *  Revision 1.3  2004/04/26 09:05:10  mch
+ *  Added adql test
+ *
  *  Revision 1.2  2004/04/21 13:41:59  nw
  *  minor tweaks
  *
