@@ -55,6 +55,16 @@
       <war.bundle>true</war.bundle>
     </properties>
 	</dependency>
+
+	<dependency>
+		<groupId>astrogrid-datacenter</groupId>
+		<artifactId>cdsdelegate</artifactId>
+		<version>SNAPSHOT</version>
+		<properties>
+			<war.bundle>true</war.bundle>
+		</properties>
+	</dependency>
+
 	    <dependency>
         <id>astrogrid-mySpace</id>
         <version>SNAPSHOT</version>
