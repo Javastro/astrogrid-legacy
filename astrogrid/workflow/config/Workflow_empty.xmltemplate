@@ -4,7 +4,7 @@
    ------------------------------------------ -->
 <workflow name = "EmptySequence">
    <userid></userid>
-   <community></community>
+   <jes_community></jes_community>
    <description>description goes here</description>
    <sequence>
    </sequence>

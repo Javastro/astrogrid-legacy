@@ -2,9 +2,10 @@
 <!-- 
    | Workflow Template contains a flow of two steps 
    ----------------------------------------------------- -->
-<workflow name="TwoParallelJobsteps" templateName="TwoParallelJobsteps">
+<workflow name="TwoParallelJobsteps" 
+          templateName="TwoParallelJobsteps">
    <userid>user1</userid>
-   <community>community1</community>
+   <jes_community>community1</jes_community>
    <description>This is a two step job executed in parallel</description>   
    <!--
       | Every workflow begins with a top level sequence
@@ -16,10 +17,10 @@
          | but they will execute in parallel
          ----------------------------------------------- -->
          <step name="StepOne" stepNumber="1" sequenceNumber="1">   
-             <nulltool/>
+            <nulltool></nulltool>
          </step>
          <step name="StepTwo" stepNumber="2" sequenceNumber="1">
-            <nulltool/>
+            <nulltool></nulltool>
          </step>
       </flow>
    </sequence>

@@ -52,7 +52,7 @@
  
    <!-- URL
         This is the URL for the MySpace facility -->
-    <property name="URL" value="" /> 
+    <property name="URL" value="http://143.210.36.173:8080/axis/services/MySpaceManager" /> 
     
    <!-- MySpace Request Template -->
     <property name="TEMPLATE.REQUEST" value="MySpaceManagerRequest.xmltemplate" />  
@@ -63,7 +63,7 @@
 
    <!-- URL
         This is the URL for the Jes facility -->
-    <property name="URL" value="" /> 
+    <property name="URL" value="http://143.210.36.173:8080/axis/services/JobControllerService" /> 
   </category>
 
 </properties>

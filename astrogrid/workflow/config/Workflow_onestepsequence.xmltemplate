@@ -2,9 +2,10 @@
 <!-- 
    | Workflow Template contains a sequence of one step
    ----------------------------------------------------- -->
-<workflow name="OneStepJob" templateName="OneStepJob">
+<workflow name="OneStepJob" 
+          templateName="OneStepJob">
    <userid>user1</userid>
-   <community>community1</community>
+   <jes_community>community1</jes_community>
    <description>This is a one step job</description>   
    <!--
       | The top level structure within a workflow is
@@ -12,7 +13,7 @@
       -------------------------------------------------- -->
    <sequence>
       <step name="StepOne" stepNumber="1" sequenceNumber="1">
-         <nulltool/>
+         <nulltool></nulltool>
       </step>
    </sequence>
 </workflow>
