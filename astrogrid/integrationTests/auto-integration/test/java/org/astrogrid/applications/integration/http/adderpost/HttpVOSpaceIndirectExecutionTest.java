@@ -1,5 +1,5 @@
 /*
- * $Id: HttpVOSpaceIndirectExecutionTest.java,v 1.1 2004/09/14 16:35:15 jdt Exp $
+ * $Id: HttpVOSpaceIndirectExecutionTest.java,v 1.2 2004/09/15 14:30:57 jdt Exp $
  * 
  * Created on 11-May-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -62,7 +62,7 @@ public class HttpVOSpaceIndirectExecutionTest extends AbstractRunTestForCEA {
       client = new VoSpaceClient(user);
       assertNotNull(client);
       PrintWriter pw = new PrintWriter(new OutputStreamWriter(client.putStream(inputIvorn)));
-      pw.println("9112000");
+      pw.println("5");
       pw.close();
    }
 
