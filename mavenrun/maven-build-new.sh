@@ -61,9 +61,9 @@ echo "[ag-build-$PROJECT_NAME] generate and deploy site"
 echo "Executing astrogrid-deploy-site" >> $LOG_FILE 2>&1 
 if maven astrogrid-deploy-site >> $LOG_FILE 2>&1 
 then
-#OK
+   echo "*** SUCCESS ***\n" >> $LOG_FILE
 else
-#Something wrong...
+   echo "*** FAILURE ***\n" >> $LOG_FILE
    echo "astrogrid-deploy-site failed for $PROJECT_NAME" | mail -s "Build Failure" $ADMIN_EMAIL 
 fi
 
@@ -72,9 +72,9 @@ echo "[ag-build-$PROJECT_NAME] generate and deploy SNAPSHOT"
 echo "Executing astrogrid-deploy-snapshot" >> $LOG_FILE 2>&1 
 if maven astrogrid-deploy-snapshot >> $LOG_FILE 2>&1
 then
-#OK
+   echo "*** SUCCESS ***\n" >> $LOG_FILE
 else
-#Something wrong....
+   echo "*** FAILURE ***\n" >> $LOG_FILE
    echo "astrogrid-deploy-snapshot failed for $PROJECT_NAME" | mail -s "Build Failure" $ADMIN_EMAIL 
 fi
 
