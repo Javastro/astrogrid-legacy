@@ -1,5 +1,5 @@
 /*
- * $Id: Agsl.java,v 1.6 2004/03/09 23:18:58 mch Exp $
+ * $Id: Agsl.java,v 1.7 2004/03/14 01:24:54 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -29,6 +29,8 @@ import org.astrogrid.community.User;
  *    astrogrid:store:<url>
  *or
  *    astrogrid:store:myspace:[<serverId>@]<delegateendpoint>#myspacepath
+ *or (experimental)
+ *    astrogrid:store:mailto:<email address>
  *
  * The path can be null, ie referring just to a store service
  */
@@ -68,32 +70,36 @@ public class Agsl
     */
    public Agsl(String rl) throws MalformedURLException
    {
+      if (rl.toLowerCase().startsWith("mailto:")) {
+         rl = "astrogrid:store:"+rl;
+      }
+      
       if (rl.toLowerCase().startsWith(Vorl.SCHEME+":"))
       {
          rl = new Vorl(rl).toAgsl().toString();
       }
 
-         if (rl.toLowerCase().startsWith(SCHEME+":"))
-         {
-            rl = rl.substring(SCHEME.length()+1);
-         }
+      if (rl.toLowerCase().startsWith(SCHEME+":"))
+      {
+         rl = rl.substring(SCHEME.length()+1);
+      }
+      
+      if (Msrl.isMsrl(rl))
+      {
+         msrl = new Msrl(rl);
+      }
+      else
+      {
+         url = new URL(rl);
          
-         if (Msrl.isMsrl(rl))
-         {
-            msrl = new Msrl(rl);
+         //for some reason picks up # in authority if there's no slashes...
+         if (url.getAuthority().indexOf('#')>-1) {
+            url = new URL(url.getProtocol(),
+                          url.getHost().substring(0,url.getHost().indexOf('#')),
+                          url.getPort(),
+                          "#"+url.getRef());
          }
-         else
-         {
-            url = new URL(rl);
-            
-            //for some reason picks up # in authority if there's no slashes...
-            if (url.getAuthority().indexOf('#')>-1) {
-               url = new URL(url.getProtocol(),
-                             url.getHost().substring(0,url.getHost().indexOf('#')),
-                             url.getPort(),
-                             "#"+url.getRef());
-            }
-         }
+      }
    }
 
    /**
@@ -204,6 +210,9 @@ public class Agsl
 
 /*
 $Log: Agsl.java,v $
+Revision 1.7  2004/03/14 01:24:54  mch
+Added experimental email target
+
 Revision 1.6  2004/03/09 23:18:58  mch
 Added Vorl for 4.1 access
 
