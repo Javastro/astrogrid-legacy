@@ -235,6 +235,9 @@ public class Workflow extends Sequence {
     private Map 
         activities = Collections.synchronizedMap( new HashMap() ) ;
         
+    private boolean
+        dirty ;
+        
     /**
       * <p> 
       * Default constructor.
@@ -242,7 +245,7 @@ public class Workflow extends Sequence {
       * Gives a workflow with an empty sequence.
       * 
       **/           
-    public Workflow() {
+    private Workflow() {
         super() ;
         if( TRACE_ENABLED ) logger.debug( "Workflow() entry") ;  
         this.activities.put( this.getKey(), this ) ;
@@ -262,7 +265,7 @@ public class Workflow extends Sequence {
       * 
       * @see 
       **/        
-    public Workflow( String workflowXML ) {
+    private Workflow( String workflowXML ) {
         super() ;
         if( TRACE_ENABLED ) logger.debug( "Workflow(String) entry") ;
         
@@ -403,6 +406,14 @@ public class Workflow extends Sequence {
             if( TRACE_ENABLED ) logger.debug( "locateMySpace() exit") ;
         }
     }
+
+	private void setDirty(boolean dirty) {
+		this.dirty = dirty;
+	}
+
+	public boolean isDirty() {
+		return dirty;
+	}
     
     
 /*     
