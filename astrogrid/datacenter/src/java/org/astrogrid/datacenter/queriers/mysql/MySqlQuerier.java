@@ -1,5 +1,5 @@
 /*
- * $Id: MySqlQuerier.java,v 1.7 2003/09/04 09:23:16 nw Exp $
+ * $Id: MySqlQuerier.java,v 1.8 2003/09/04 14:36:49 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -22,7 +22,7 @@ public class MySqlQuerier extends SqlQuerier
 {
 
 
-   public static final String MYSQL_DRIVER = "com.mysql.jdbc.Driver";
+   public static final String MYSQL_DRIVER = "org.gjt.mm.mysql.Driver";
 /**
     * Constructor for test purposes really - assumes there is a mySQL
     * database server running on the localhost
