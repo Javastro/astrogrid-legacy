@@ -1,5 +1,5 @@
 /*
- * $Id: SqlParser.java,v 1.9 2004/09/01 12:04:43 mch Exp $
+ * $Id: SqlParser.java,v 1.10 2004/09/01 21:37:20 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -467,14 +467,14 @@ public class SqlParser  {
       scope = new Vector(); //clear scope
 
       //break down into SELECT ...  LIMIT ... FROM ... WHERE ... ORDER BY in that order
-      if (!sql.startsWith("SELECT")) {
+      if (!sql.toUpperCase().startsWith("SELECT")) {
          throw new IllegalArgumentException("SQL doesn't start with SELECT - Can't cope");
       }
       
-      int limitIdx = sql.indexOf("LIMIT");
-      int fromIdx = sql.indexOf("FROM");
-      int whereIdx = sql.indexOf("WHERE");
-      int orderByIdx = sql.indexOf("ORDER BY");
+      int limitIdx = sql.toUpperCase().indexOf("LIMIT");
+      int fromIdx = sql.toUpperCase().indexOf("FROM");
+      int whereIdx = sql.toUpperCase().indexOf("WHERE");
+      int orderByIdx = sql.toUpperCase().indexOf("ORDER BY");
 
       //start with FROM so we get the scope and aliases
       if (fromIdx == -1) {
@@ -598,6 +598,9 @@ public class SqlParser  {
 
 /*
  $Log: SqlParser.java,v $
+ Revision 1.10  2004/09/01 21:37:20  mch
+ Fix for lower case keywords
+
  Revision 1.9  2004/09/01 12:04:43  mch
  Removed upper case conversions
 
