@@ -1,0 +1,69 @@
+INSTALLATION NOTES:
+
+Installation Notes for Astrogrid Iteration 02 Registry
+27 June 2003
+Elizabeth Auden, MSSL
+
+I. PREREQUISITES: TOMCAT AND SOAP
+
+1.  Tomcat 4.1 is available for download from http://jakarta.apache.org/tomcat/tomcat-4.1-doc/index.html.  SOAP can be installed by placing soap.war in the Tomcat/webapps directory.  The Apache SOAP API version 2.2 can be downloaded from http://xml.apache.org/soap/index.html.  Place the file soap.war in the Tomcat/webapps directory, and make sure that activation.jar, mail.jar, and soap.jar are all placed in the Tomcat/lib directory and named in classpath.
+
+2.  The registry files use jar files for xml parsing and xql queries in addition to the SOAP related jar files.  Registry.war contains a directory called jar_files containg the following 6 jars and 1 war:
+
+	* activation.jar
+	* mail.jar
+	* soap.jar
+	* soap.war
+	* xerces.jar
+	* xml4j.jar
+	* xqlpdom_1_0_2.zip
+
+The jar files can be placed in $TOMCAT_HOME/common/lib directory, and they must be specified in classpath.  Place soap.war in the $TOMCAT_HOME/webapps directory.
+
+II. INSTALL REGISTRY FILES
+
+1. Place the following class files in $TOMCAT_HOME/webapps/soap/WEB-INF/classes/org/astrogrid/registry:
+
+	* QueryParser3_0.class
+	* Registry3_0.class
+	* RegistryInterface3_0.class
+
+2. Deploy the RegistryInterface3_0 web service.  To deploy in SOAP, go to the SOAP admin page located at http://yourmachinename:yourportal/soap/admin/index.html.  Click the "Deploy" button to the left.  Fill out the following fields:
+
+	* ID = urn:org.astrogrid.registry.RegistryInterface3_0
+	* Scope = Application
+	* Methods = submitQuery
+	*  Java Provider Provider Class = org.astrogrid.registry.RegistryInterface3_0
+
+Click "Deploy" at the bottom of the page.  You can now click the "List" button to the left to see urn:org.astrogrid.registry.RegistryInterface3_0 deployed as a service.
+
+3. Start up Tomcat.
+
+III. OPTIONAL CONFIGURATION
+
+The registry code accesses two parameters files, qpParameters.xml and parameters_v1_0.xml, and one registry file, registry_v1_0.xml.  These files have been included in registry.war, but the actual code accesses all three files at the following locations:
+
+http://msslxy.mssl.ucl.ac.uk:8080/org/astrogrid/registry/qpParameters.xml
+http://msslxy.mssl.ucl.ac.uk:8080/org/astrogrid/registry/parameters_v1_0.xml
+http://msslxy.mssl.ucl.ac.uk:8080/org/astrogrid/registry/registry_v1_0.xml
+
+If you would like to change the location of any of these three files, follow the next steps:
+
+1. To change the location of qpParameters.xml:
+
+A. Open org/astrogrid/registry/QueryParser3_0.java and search for "qpParameters.xml".  Change the URL given as "http://msslxy.mssl.ucl.ac.uk:8080/org/astrogrid/registry/qpParameters.xml" to the URL or file location you prefer.
+
+B. Compile QueryParser3_0.java and move the new class file to $TOMCAT_HOME/webapps/soap/WEB-INF/classes/org/astrogrid/registry.  Stop and restart Tomcat.
+
+2. To change the location of parameters_v1_0.xml:
+
+A. Open org/astrogrid/registry/Registry3_0.java and search for "parameters_v1_0.xml".  Change the URL given as "http://msslxy.mssl.ucl.ac.uk:8080/org/astrogrid/registry/parameters_v1_0.xml" to the URL or file location you prefer.
+
+B. Compile Registry3_0.java and move the new class file to $TOMCAT_HOME/webapps/soap/WEB-INF/classes/org/astrogrid/registry.  Stop and restart Tomcat.
+
+3. To change the location of registry_v1_0.xml:
+
+A. Follow the directions of step 2 to create a new location for parameters_v1_0.xml
+
+B. Once you have a new location for parameters_v1_0.xml, open parameters_v1_0.xml and search for the element  <registryFilename>.  Change the value of this element from  "http://msslxy.mssl.ucl.ac.uk:8080/org/astrogrid/registry/registry_v1_0.xml" to the URL or file location you prefer for registry_v1_0.xml.  No further class recompilation is required.
+
