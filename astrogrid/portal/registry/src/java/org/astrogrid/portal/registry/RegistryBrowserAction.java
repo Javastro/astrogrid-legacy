@@ -200,7 +200,7 @@ public class RegistryBrowserAction extends AbstractAction
 	  {
 	      try 
 	      {	
-		  String table = "";		 
+		      String table = "";		 
 		      printDebug( method, "In table action!!" ); 
 		      String uniqueID = request.getParameter(UNIQUE_ID);
 		      String tableQuery = null;
@@ -211,28 +211,44 @@ public class RegistryBrowserAction extends AbstractAction
 			 	  printDebug( method, "uniqueID - auth = " + authorityID );
 		           String resourceKey = uniqueID.substring(uniqueID.indexOf(SEPARATOR)+1,uniqueID.lastIndexOf(SEPARATOR)) ;
 				  printDebug( method, "uniqueID - res = " + resourceKey);
-		           table = uniqueID.substring(uniqueID.lastIndexOf(SEPARATOR)+1,uniqueID.length()) ;
-				  printDebug( method, "uniqueID -table = " + table);	
+		           table = uniqueID.substring(uniqueID.lastIndexOf(SEPARATOR)+1).trim() ;
+				  printDebug( method, "uniqueID - table = " + table);	
 
 		          tableQuery = "<query>\n<selectionSequence>"
 				             + "\n<selection item='searchElements' itemOp='EQ' value='Resource'/>"
 				             + "\n<selectionOp op='$and$'/>"
-				             + "<selection item='AuthorityID' itemOp='EQ' value='"+authorityID+"'/>"
+				             + "<selection item='vr:Identifier/vr:AuthorityID' itemOp='EQ' value='"+authorityID+"'/>"
 				             + "\n<selectionOp op='AND'/>"
-				             + "\n<selection item='ResourceKey' itemOp='EQ' value='"+resourceKey+"'/>"
-				             + "\n<selectionOp op='AND'/>"
-				             + "\n<selection item='Name' itemOp='EQ' value='"+table+"'/>"
-				             + "\n</selectionSequence></query>";				                 
+				             + "\n<selection item='vr:Identifier/vr:ResourceKey' itemOp='EQ' value='"+resourceKey+"'/>"	
+						     + "\n<selectionOp op='AND'/>"		
+							 + "<selection item='vr:Type' itemOp='EQ' value='Catalog'/>"
+				             + "\n</selectionSequence></query>";
+				             
+				             
+//						tableQuery = "<query>\n<selectionSequence>"
+//									 + "\n<selection item='searchElements' itemOp='EQ' value='Resource'/>"
+//									 + "\n<selectionOp op='$and$'/>"
+//									 + "<selection item='vr:Identifier/vr:AuthorityID' itemOp='EQ' value='"+authorityID+"'/>"
+//									 + "\n<selectionOp op='AND'/>"
+//									 + "\n<selection item='vr:Identifier/vr:ResourceKey' itemOp='EQ' value='"+resourceKey+"'/>"
+//						+ "\n<selectionOp op='AND'/>"
+//						+ "\n<selection item='vs:TabularSkyServicevr/vs:Table/vr:Name' itemOp='EQ' value='"+table+"'/>"				             
+//									 + "\n</selectionSequence></query>";
+
 				   printDebug( method, "tableQuery = " + tableQuery);
 				
 		      }	
 							  
 			  RegistryService rs = RegistryDelegateFactory.createQuery();
 			  printDebug( method, "Service = " + rs);
-			  Document doc = rs.submitQuery( tableQuery );
+			  Document doc = rs.submitQuery( tableQuery );	
+			  			  		  
 			 
-			  request.setAttribute("tableName", table);
-			  request.setAttribute("resultSingleCatalog", doc);
+			  //request.setAttribute("tableID", table);			  
+			  //request.setAttribute("resultSingleCatalog", doc);
+			  session.setAttribute("tableID", table);
+			  session.setAttribute("resultSingleCatalog", doc);
+			  
           } 
           catch( NoResourcesFoundException nrfe ) 
           {
