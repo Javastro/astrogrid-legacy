@@ -249,13 +249,19 @@ public class EntryNode implements StoreFile
  * Determine whether first entry is a child of the second entry.
  */
 
-  private boolean isChild(EntryNode firstEntry, EntryNode secondEntry)
-  {  boolean child = false;
+  private static boolean isChild(EntryNode child, EntryNode parent)
+  {
+      return (child.getPath().startsWith(parent.getPath()));
 
-     String firstName = firstEntry.getName();
-     String secondName = secondEntry.getName();
+      /* Temporary fix - problem with slashes changes - need to see what this
+      was trying to do - MCH
+      boolean child = false;
+
+     String firstName = firstEntry.getPath();
+     String secondName = secondEntry.getPath();
 
      int lastPos = firstName.lastIndexOf("/");
+      
 
      if ((secondName.equals("/") || secondName.equals("/*"))
             && (lastPos == 0) )
@@ -274,6 +280,7 @@ public class EntryNode implements StoreFile
 //      secondName + " " + child);
 
      return child;
+       */
   }
 
 
