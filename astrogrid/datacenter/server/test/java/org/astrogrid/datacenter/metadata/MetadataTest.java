@@ -1,4 +1,4 @@
-/*$Id: MetadataTest.java,v 1.3 2004/09/08 17:51:49 mch Exp $
+/*$Id: MetadataTest.java,v 1.4 2004/09/08 19:18:47 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -74,7 +74,17 @@ public class MetadataTest extends TestCase {
       Element rdbms = VoDescriptionServer.getResource("RdbmsMetadata");
       assertNotNull("No RdbmsMetadata in VODescription", rdbms);
    }
-   
+
+   public void testSampleGenerator() throws Throwable{
+      SampleStarsPlugin.initConfig();
+      
+      VoResourcePlugin plugin = new SampleStarsPlugin(null);
+      String resource = plugin.getVoResource();
+      Document resourceDoc = DomHelper.newDocument(resource);
+      assertHasRdbmsResource(resourceDoc);
+   }
+
+      
    public void testMetatdataFileServer() throws Throwable{
       
       SimpleConfig.setProperty("datacenter.metadata.plugin", FileResourcePlugin.class.getName());
@@ -109,6 +119,9 @@ public class MetadataTest extends TestCase {
 
 /*
  $Log: MetadataTest.java,v $
+ Revision 1.4  2004/09/08 19:18:47  mch
+ Minor fixes and tidy up
+
  Revision 1.3  2004/09/08 17:51:49  mch
  Fixes to log and metadata views
 

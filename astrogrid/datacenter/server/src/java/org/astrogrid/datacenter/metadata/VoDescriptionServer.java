@@ -1,5 +1,5 @@
 /*
- * $Id: VoDescriptionServer.java,v 1.9 2004/09/08 17:51:49 mch Exp $
+ * $Id: VoDescriptionServer.java,v 1.10 2004/09/08 19:18:47 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -117,7 +117,10 @@ public class VoDescriptionServer {
    public static String makeVoDescription() throws IOException, MetadataException {
 
       StringBuffer vod = new StringBuffer();
-      vod.append("<VODescription  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>\n");
+      vod.append("<VODescription  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' "+
+                                 "xmlns:vr='http://www.ivoa.net/xml/VOResource/v0.9' "+
+                                 "xmlns='http://www.ivoa.net/xml/VOResource/v0.9' "+  //default namespace
+                    ">\n");
       
       //lookup authority plugin
       String pluginClassName = SimpleConfig.getSingleton().getString("datacenter.authority.metadata.plugin",null);
