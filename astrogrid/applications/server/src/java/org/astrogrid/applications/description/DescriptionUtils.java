@@ -1,4 +1,4 @@
-/*$Id: DescriptionUtils.java,v 1.4 2004/08/16 11:03:07 nw Exp $
+/*$Id: DescriptionUtils.java,v 1.5 2004/08/17 15:08:26 nw Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -69,7 +69,7 @@ public class DescriptionUtils {
               try {
                   Cardinality c = appIface.getParameterCardinality(inputRefs[j]);
                   pref.setMaxoccurs(c.getMaxOccurs());
-                  pref.setMaxoccurs(c.getMinOccurs());
+                  pref.setMinoccurs(c.getMinOccurs());
               } catch (ParameterNotInInterfaceException e) {
                   // minor problem. not worth halting for.
                   logger.warn("Problem with representation of " + inputRefs[j],e);
@@ -83,7 +83,7 @@ public class DescriptionUtils {
               try {
                   Cardinality c = appIface.getParameterCardinality(outputRefs[j]);
                   pref.setMaxoccurs(c.getMaxOccurs());
-                  pref.setMaxoccurs(c.getMinOccurs());
+                  pref.setMinoccurs(c.getMinOccurs());
               } catch (ParameterNotInInterfaceException e) {
                   // minor problem. not worth halting for.
                   logger.warn("Problem with representation of " + outputRefs[j],e);
@@ -122,6 +122,9 @@ public class DescriptionUtils {
 
 /* 
 $Log: DescriptionUtils.java,v $
+Revision 1.5  2004/08/17 15:08:26  nw
+fixed but I introduced previously.
+
 Revision 1.4  2004/08/16 11:03:07  nw
 added classes to model cardinality of prefs.
 
