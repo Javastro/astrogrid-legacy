@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <div>
-	<form method="get" action="login-proc">
+	<form method="get" action="login-form">
 		<input type="hidden" name="action" value="login"/>
 		<table border="1">
 			<tr>
