@@ -1,5 +1,5 @@
 /*
- * $Id: DatabaseQuerier.java,v 1.12 2003/09/09 17:51:04 mch Exp $
+ * $Id: DatabaseQuerier.java,v 1.13 2003/09/10 09:59:52 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,6 +7,8 @@
 package org.astrogrid.datacenter.queriers;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Hashtable;
@@ -144,9 +146,18 @@ public abstract class DatabaseQuerier implements Runnable
       try
       {
          Class qClass =  Class.forName(querierClass);
-
-         DatabaseQuerier querier = (DatabaseQuerier)qClass.newInstance();
-
+           /* NWW - interesting bug here.
+      original code used class.newInstance(); this method doesn't declare it throws InvocationTargetException,
+      however, this exception _is_ thrown if an exception is thrown by the constructor (as is often the case at the moment)
+      worse, as InvocatioinTargetException is a checked exception, the compiler rejects code with a catch clause for invocationTargetExcetpion - as it thinks it cannot be thrown.
+      this means the exception boils out of the code, and is unstoppable - dodgy
+      
+      work-around - use the equivalent methods on java.lang.reflect.Constructor - which do throw the correct exceptions */
+      // Original Code
+      //DatabaseQuerier querier = (DatabaseQuerier)qClass.newInstance();
+        // safe equivalent
+         Constructor constr= qClass.getConstructor(new Class[]{});
+         DatabaseQuerier querier = (DatabaseQuerier)constr.newInstance(new Object[]{});
          querier.setQuery(domContainingQuery);
 
          return querier;
@@ -162,6 +173,13 @@ public abstract class DatabaseQuerier implements Runnable
       catch (InstantiationException e)
       {
          throw new DatabaseAccessException(e,"Could not load DatabaseQuerier '"+querierClass+"'");
+     } 
+     catch (NoSuchMethodException e) {
+         throw new DatabaseAccessException(e,"Could not load DatabaseQuerier '" + querierClass+"'");
+      } 
+      catch (InvocationTargetException e) {
+          // interested in the root cause here - invocation target is just a wrapper, and not meaningful in itself.
+          throw new DatabaseAccessException(e.getCause(),"Could not load DatabaseQuerier '" + querierClass + "'");
       }
    }
 
