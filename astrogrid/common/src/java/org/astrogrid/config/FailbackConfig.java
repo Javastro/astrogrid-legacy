@@ -1,5 +1,5 @@
 /*
- * $Id: FailbackConfig.java,v 1.3 2004/02/27 14:23:12 mch Exp $
+ * $Id: FailbackConfig.java,v 1.4 2004/03/01 14:06:39 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -9,11 +9,9 @@
 
 package org.astrogrid.config;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Hashtable;
@@ -23,8 +21,6 @@ import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
 import javax.naming.NoInitialContextException;
 import javax.naming.ServiceUnavailableException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * All Things To All Men Configuration file.
@@ -40,7 +36,8 @@ import org.apache.commons.logging.LogFactory;
  * - If that fails, throw an exception unless a default has been supplied.
  *
  * The configuration file locator works like this:
- * - look in jndi for the key "org.astrogrid.properties.url"
+ * - look in jndi for the key "org.astrogrid.config.url" which gives the url to the file
+ * - look in jndi for the key "org.astrogrid.config" which gives the property filename
  * - if that fails, look in the system environment vars for the same key
  * - if that fails, look for the file "astrogrid.properties" on the classpath (not yet implemented)
  * - if that fials, look for the file "astrogrid.properties" in the working directory
@@ -82,9 +79,12 @@ public class FailbackConfig extends Config {
    /** Properties file context */
    private Properties properties = null;
    
-   /** key used to find the properties file */
-   private static String propertyfileKey = "org.astrogrid.config.url";
+   /** JNDI key to url that locates the properties file */
+   private static String propertyUrlKey = "org.astrogrid.config.url";
    
+   /** JNDI key to properties file  */
+   private static String propertyKey = "org.astrogrid.config.filename";
+
    /** prefix to keys when accessing JNDI services.  No idea why this is required... */
    private static String jndiPrefix = "java:comp/env/";
 
@@ -156,32 +156,54 @@ public class FailbackConfig extends Config {
          
          //if jndi server is running, look up url in that
          if (jndiContext != null) {
-            String jndiKey = jndiPrefix+propertyfileKey;
+            String jndiUrlKey = jndiPrefix+propertyUrlKey;
+            String jndiFileKey = jndiPrefix+propertyKey;
+            String keyUsed = jndiUrlKey;
+            String urlValue = null; //so we can use in reporting exception
+            String filename = null;
             
             try {
-               fileUrl = new URL(jndiContext.lookup(jndiKey).toString());
+               urlValue = jndiContext.lookup(jndiUrlKey).toString();//so we can report in exception
+               fileUrl = new URL(urlValue);
+               filename = jndiContext.lookup(jndiFileKey).toString();
+               
+               //if they are both defined, throw an exception - sysadmin should only
+               //define one, then we know where we are
+               if ((fileUrl != null) && (filename != null)) {
+                  throw new ConfigException("Both "+jndiUrlKey+" and "+jndiFileKey+" defined in JNDI; specify only one");
+               }
+
+               //if filename given, locate
+               if (filename != null) {
+                  File propertyFile = new File(filename);
+                  fileUrl = propertyFile.toURL();
+                  keyUsed = jndiFileKey;
+               }
 
                loadFromUrl(fileUrl);
 
-               log.info("Configuration file loaded from '"+fileUrl.toString()+"' (from JNDI Key="+jndiKey+")");
+               log.info("Configuration file loaded from '"+fileUrl.toString()+"' (from JNDI Key="+keyUsed+")");
                
                return;
             }
             catch (NameNotFoundException nnfe) { } //not a problem, continue on
             catch (MalformedURLException mue) {
-               throw new ConfigException("Configuration file url given in JNDI (key="+jndiKey+") is malformed",mue);
+               throw new ConfigException("Configuration file url ("+urlValue+") given in JNDI (key="+jndiUrlKey+") is malformed",mue);
+            }
+            catch (FileNotFoundException fnfe) {
+               throw new ConfigException("Configuration file ("+filename+") given in JNDI (key="+jndiFileKey+") cannot be found",fnfe);
             }
             catch (NamingException ne) {
-               throw new ConfigException("Exception locating key="+jndiKey+" in JNDI", ne);
+               throw new ConfigException("Could not find key '"+jndiUrlKey+"' or '"+jndiFileKey+"' in JNDI", ne);
             }
             catch (IOException ioe) {
                throw new ConfigException("Exception loading property file at '"+fileUrl+
-                                            "' (returned by JNDI key="+jndiKey+")", ioe);
+                                            "' (returned by JNDI key "+keyUsed+")", ioe);
             }
          }
 
          //look up url in system environment
-         String sysEnvKey = propertyfileKey;
+         String sysEnvKey = propertyKey;
          String sysEnvUrl = System.getProperty(sysEnvKey);
          if (sysEnvUrl != null) {
             try {
@@ -335,6 +357,9 @@ public class FailbackConfig extends Config {
 }
 /*
 $Log: FailbackConfig.java,v $
+Revision 1.4  2004/03/01 14:06:39  mch
+Added filename failback and better error reporting
+
 Revision 1.3  2004/02/27 14:23:12  mch
 Changed loadUrl to loadFromUrl
 
