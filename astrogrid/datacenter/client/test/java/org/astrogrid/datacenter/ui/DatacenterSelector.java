@@ -1,5 +1,5 @@
 /*
- * $Id: DatacenterSelector.java,v 1.2 2004/02/24 16:04:02 mch Exp $
+ * $Id: DatacenterSelector.java,v 1.3 2004/03/02 01:33:24 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -41,12 +41,12 @@ public class DatacenterSelector extends JPanel  {
       serverEntryField.setEditable(true);
       
       serverEntryField.setDefaultList(new String[] {
-               "http://grendel12.roe.ac.uk:8080/PAL",
+               "http://grendel12.roe.ac.uk:8080/PAL-6dF",
                "http://astrogrid.ast.cam.ac.uk:9080/INT-WFS",
                "http://cass123.ast.cam.ac.uk:4040/pal-SNAPSHOT",
                "http://virtualsky.org/servlet/cover?CAT=messier",
                "http://adil.ncsa.uiuc.edu/cgi-bin/vocone?survey=f",
-               "http://vm07.astrogrid.org:8080/pal"
+               "http://vm07.astrogrid.org:8080/PAL"
             } );
       serverPasteBtn = new JPasteButton(serverEntryField);
 
@@ -99,6 +99,9 @@ public class DatacenterSelector extends JPanel  {
 
 /*
 $Log: DatacenterSelector.java,v $
+Revision 1.3  2004/03/02 01:33:24  mch
+Updates from chagnes to StoreClient and Agsls
+
 Revision 1.2  2004/02/24 16:04:02  mch
 Config refactoring and moved datacenter It04.1 VoSpaceStuff to myspace StoreStuff
 

@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceFileView.java,v 1.2 2004/02/24 16:04:02 mch Exp $
+ * $Id: MySpaceFileView.java,v 1.3 2004/03/02 01:33:24 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -13,8 +13,6 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.io.File;
 import java.io.IOException;
-import java.io.StringBufferInputStream;
-import java.util.StringTokenizer;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -22,15 +20,13 @@ import javax.swing.JTree;
 import javax.swing.ProgressMonitor;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
-import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.community.Account;
+import org.astrogrid.store.Agsl;
 import org.astrogrid.store.delegate.MySpaceFile;
-import org.astrogrid.store.delegate.MySpaceFileType;
 import org.astrogrid.store.delegate.MySpaceFolder;
 import org.astrogrid.store.delegate.StoreClient;
 import org.astrogrid.store.delegate.StoreDelegateFactory;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
+import org.astrogrid.store.delegate.StoreFile;
 
 /**
  * Lists the files in the server
@@ -68,7 +64,7 @@ public class MySpaceFileView extends JPanel {
          if ((server == null) || (server.trim().length() == 0)) {
             setDelegate(null);
          } else {
-            setDelegate(StoreDelegateFactory.createDelegate(getOperator(), server));
+            setDelegate(StoreDelegateFactory.createDelegate(getOperator().toUser(), new Agsl(server)));
          }
       }
       catch (IOException ioe)
@@ -114,12 +110,12 @@ public class MySpaceFileView extends JPanel {
       }
    }
    
-   public File getSelectedFile()
+   public StoreFile getSelectedFile()
    {
       if (listView.getSelectionPath() == null)  {
          return null;
       } else {
-         return (File) listView.getSelectionPath().getLastPathComponent();
+         return (StoreFile) listView.getSelectionPath().getLastPathComponent();
       }
    }
    
@@ -140,7 +136,7 @@ public class MySpaceFileView extends JPanel {
    }
    
    private class MySpaceFileModel extends DefaultTreeModel {
-      MySpaceFolder rootFolder = null;
+      StoreFile rootFolder = null;
       StoreClient delegate = null;
       
       public MySpaceFileModel(StoreClient aDelegate)  throws IOException {
@@ -158,7 +154,7 @@ public class MySpaceFileView extends JPanel {
             return;
          }
          
-         rootFolder = (MySpaceFolder) delegate.getEntries(null, "*");
+         rootFolder = (MySpaceFolder) delegate.getFiles("*");
       }
       
       /**
@@ -171,12 +167,7 @@ public class MySpaceFileView extends JPanel {
        * @return  the number of children of the node <code>parent</code>
        */
       public int getChildCount(Object parent) {
-         if (parent instanceof MySpaceFile) {
-            return 0;
-         }
-         else {
-            return ((MySpaceFolder) parent).getChildCount();
-         }
+         return ((StoreFile) parent).listFiles().length;
       }
       
       /**
@@ -193,7 +184,7 @@ public class MySpaceFileView extends JPanel {
          if ((parent == null) || (child == null)) {
             return -1;
          } else {
-            File[] files = ((MySpaceFolder) parent).listFiles();
+            StoreFile[] files = ((MySpaceFolder) parent).listFiles();
 
             for (int f=0;f<files.length;f++) {
                if (files[f].equals(child)) {
@@ -216,8 +207,7 @@ public class MySpaceFileView extends JPanel {
        * @return  true if <code>node</code> is a leaf
        */
       public boolean isLeaf(Object node) {
-         return (node instanceof MySpaceFile)
-            || ( ((MySpaceFolder) node).getChildCount() ==0);
+         return !((StoreFile) node).isFolder();
       }
       
       /**
@@ -274,7 +264,7 @@ public class MySpaceFileView extends JPanel {
                setIcon(closedIcon);
             }
         } else {
-            setToolTipText(((MySpaceFile) value).getPath());
+            setToolTipText(((StoreFile) value).toAgsl().toString());
         }
 
         return this;
@@ -287,6 +277,9 @@ public class MySpaceFileView extends JPanel {
 
 /*
  $Log: MySpaceFileView.java,v $
+ Revision 1.3  2004/03/02 01:33:24  mch
+ Updates from chagnes to StoreClient and Agsls
+
  Revision 1.2  2004/02/24 16:04:02  mch
  Config refactoring and moved datacenter It04.1 VoSpaceStuff to myspace StoreStuff
 

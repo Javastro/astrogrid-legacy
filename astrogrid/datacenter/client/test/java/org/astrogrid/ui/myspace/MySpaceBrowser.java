@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceBrowser.java,v 1.3 2004/02/24 16:04:02 mch Exp $
+ * $Id: MySpaceBrowser.java,v 1.4 2004/03/02 01:33:24 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -23,14 +23,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
 import org.astrogrid.io.Piper;
+import org.astrogrid.store.Agsl;
+import org.astrogrid.store.Msrl;
+import org.astrogrid.store.delegate.MySpaceFolder;
+import org.astrogrid.store.delegate.StoreFile;
 import org.astrogrid.ui.EscEnterListener;
 import org.astrogrid.ui.GridBagHelper;
 import org.astrogrid.ui.IconButtonHelper;
 import org.astrogrid.ui.JHistoryComboBox;
-import org.astrogrid.store.IvoRN;
-import org.astrogrid.store.AGSL;
-import org.astrogrid.store.delegate.MySpaceFile;
-import org.astrogrid.store.delegate.MySpaceFolder;
 
 /**
  * A Dialog Box that provides a client view onto a myspace.  Uses myspace
@@ -79,21 +79,21 @@ public class MySpaceBrowser extends JDialog
    Log log = LogFactory.getLog(MySpaceBrowser.class);
    
    /** Constructor - private, use showDialog() */
-   private MySpaceBrowser(Dialog owner, AGSL vorl, Account user, String action) throws IOException
+   private MySpaceBrowser(Dialog owner, Agsl vorl, Account user, String action) throws IOException
    {
       super( owner);
       init(vorl, user, action);
    }
    
    /** Constructor - private, use showDialog */
-   private MySpaceBrowser(Frame owner, AGSL vorl, Account user, String action) throws IOException
+   private MySpaceBrowser(Frame owner, Agsl vorl, Account user, String action) throws IOException
    {
       super( owner);
       init(vorl, user, action);
    }
    
    /** Constructor - private, use showDialog */
-   private MySpaceBrowser(AGSL vorl, Account user, String action) throws IOException
+   private MySpaceBrowser(Agsl vorl, Account user, String action) throws IOException
    {
       super();
       init(vorl, user, action);
@@ -102,7 +102,7 @@ public class MySpaceBrowser extends JDialog
    /** Constructor - returns an instance of this tied correctly to the parent frame/dialog owner
     * of the calling Component
     */
-   public static MySpaceBrowser showDialog(Component owner, AGSL vorl, Account user, String action) throws IOException
+   public static MySpaceBrowser showDialog(Component owner, Agsl vorl, Account user, String action) throws IOException
    {
       MySpaceBrowser browser = null;
 
@@ -144,7 +144,7 @@ public class MySpaceBrowser extends JDialog
    /**
     * Builds GUI and initialises components
     */
-   private void init(AGSL vorl, Account user, String action) throws IOException
+   private void init(Agsl vorl, Account user, String action) throws IOException
    {
       setTitle("Browsing MySpace as "+user);
       setModal(true);
@@ -154,8 +154,8 @@ public class MySpaceBrowser extends JDialog
       fileView = new MySpaceFileView(user);
       
       serverPicker.addItem(""); //empty one to start with
-      serverPicker.addItem("http://vm05.astrogrid.org:8080/astrogrid-mySpace");
-      serverPicker.addItem("http://grendel12.roe.ac.uk:8080/astrogrid-mySpace");
+      serverPicker.addItem("myspace:http://vm05.astrogrid.org:8080/astrogrid-mySpace");
+      serverPicker.addItem("myspace:http://grendel12.roe.ac.uk:8080/astrogrid-mySpace");
 
       filetypePicker.addItem("All Files");
 
@@ -299,8 +299,8 @@ public class MySpaceBrowser extends JDialog
       fileView.getList().addTreeSelectionListener(
          new TreeSelectionListener() {
             public void valueChanged(TreeSelectionEvent e) {
-               File f = fileView.getSelectedFile();
-               if (f instanceof MySpaceFile) {
+               StoreFile f = fileView.getSelectedFile();
+               if ((f!=null) && (f.isFile())) {
                   filenameField.setText(f.toString());
                }
             }
@@ -309,8 +309,8 @@ public class MySpaceBrowser extends JDialog
       
       if (vorl != null) {
             //pick server & should also go to file
-            serverPicker.addItem(vorl.getDelegateEndpoint());
-            serverPicker.setSelectedItem(vorl.getDelegateEndpoint());
+            serverPicker.addItem(vorl.getEndpoint());
+            serverPicker.setSelectedItem(vorl.getEndpoint());
       }
       
       new EscEnterListener(this, actBtn, cancelBtn, true);
@@ -482,12 +482,6 @@ public class MySpaceBrowser extends JDialog
    {
       String path = getFullPath();
    
-      //check a path (not just a folder) selected
-      if ((path == null) || (path.trim().length() == 0) || (path.endsWith("/"))) {
-         JOptionPane.showMessageDialog(this, "Select file to delete");
-         return;
-      }
-      
       //check a file doesn't exist with the same name
       //@todo
       
@@ -501,7 +495,7 @@ public class MySpaceBrowser extends JDialog
       }
    }
 
-      /**
+   /**
     * Copy selected item
     */
    public void copySelected()
@@ -516,14 +510,25 @@ public class MySpaceBrowser extends JDialog
       }
 
       //get new name
-      String newFilename = JOptionPane.showInputDialog(this, "New filename");
-      
+      String targetEntry = JOptionPane.showInputDialog(this, "target (Agsl or path from root)");
+      Agsl target;
       try {
-         fileView.getDelegate().copy(path, newFilename);
+         if (targetEntry.startsWith(Agsl.SCHEME)) {
+            target = new Agsl(targetEntry);
+         }
+         else {
+            target = fileView.getDelegate().getEndpoint();
+         }
+
+         fileView.getDelegate().copy(path, target);
          fileView.refreshList();
-      } catch (IOException ioe) {
-         log.error("Delete of '"+path+"' failed", ioe);
-         JOptionPane.showMessageDialog(this, "Delete of '"+path+"' failed: "+ioe, "MySpace Browser", JOptionPane.ERROR_MESSAGE);
+      }
+      catch (MalformedURLException mue) {
+         JOptionPane.showMessageDialog(this, "Invalid entry, should be of the form "+Agsl.FORM);
+      }
+      catch (IOException ioe) {
+         log.error("Copy of '"+path+"' failed", ioe);
+         JOptionPane.showMessageDialog(this, "Copy of '"+path+"' failed: "+ioe, "MySpace Browser", JOptionPane.ERROR_MESSAGE);
       }
       
    }
@@ -584,18 +589,10 @@ public class MySpaceBrowser extends JDialog
    }
     */
    
-   /** Returns myspace reference to selected file */
-   public AGSL getMySpaceRef() throws MalformedURLException
+   /** Returns AGSL reference to selected file */
+   public Agsl getAgsl() throws MalformedURLException
    {
-      //need to change the myspace individual@community to /community/individual for the ivo ref
-      String account = getFullPath().substring(0,getFullPath().indexOf("/",2));
-      int at = account.indexOf("@");
-      String individual = account.substring(1,at);
-      String community = account.substring(at+1);
-
-      IvoRN ivorn = new IvoRN(community, individual, getPath());
-      
-      return new AGSL(new URL(getServer()), ivorn);
+      return new Agsl(new Msrl(new URL(getServer()), getFullPath()));
    }
    
    /**
@@ -604,7 +601,7 @@ public class MySpaceBrowser extends JDialog
     */
    public String getFullPath()
    {
-      File selectedFile = fileView.getSelectedFile();
+      StoreFile selectedFile = fileView.getSelectedFile();
       if (selectedFile == null)
       {
          return null;
@@ -666,6 +663,9 @@ public class MySpaceBrowser extends JDialog
 
 /*
 $Log: MySpaceBrowser.java,v $
+Revision 1.4  2004/03/02 01:33:24  mch
+Updates from chagnes to StoreClient and Agsls
+
 Revision 1.3  2004/02/24 16:04:02  mch
 Config refactoring and moved datacenter It04.1 VoSpaceStuff to myspace StoreStuff
 

@@ -102,9 +102,9 @@ public class AdqlNvoConeTest extends OptionalTestCase
    /**
     * Tests a blocking query against a real service - Messier
     * @see http://voservices.org/cone/register/showlist.asp for a list of nvo cone search implementations
-    * 
     *
-    */
+    *
+    *this is an integration test really
    public void testMessier() throws ServiceException, MarshalException, ValidationException, IOException, ADQLException
    {
 
@@ -126,7 +126,7 @@ public class AdqlNvoConeTest extends OptionalTestCase
    /**
     * Tests an async query against a real service - NCSA Radio
     * @see http://voservices.org/cone/register/showlist.asp for a list of nvo cone search implementations
-    */
+    * this is an integration test really
    public void testNcsa() throws ServiceException, MarshalException, ValidationException, IOException, ADQLException
    {
       FullSearcher querier = DatacenterDelegateFactory.makeFullSearcher("http://adil.ncsa.uiuc.edu/cgi-bin/vocone?survey=f");
@@ -150,7 +150,7 @@ public class AdqlNvoConeTest extends OptionalTestCase
       checkResults(new ByteArrayInputStream(doc.getBytes()));
       
    }
-   
+    */
    
    
    public void checkResults(InputStream results)
@@ -195,6 +195,9 @@ public class AdqlNvoConeTest extends OptionalTestCase
 
 /*
  $Log: AdqlNvoConeTest.java,v $
+ Revision 1.8  2004/03/02 01:33:24  mch
+ Updates from chagnes to StoreClient and Agsls
+
  Revision 1.7  2004/01/23 11:12:01  nw
  altered to extend org.astrogrid.test.OptionalTestCase -
  means that these tests can be disabled as needed

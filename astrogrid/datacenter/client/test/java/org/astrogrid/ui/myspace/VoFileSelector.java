@@ -1,5 +1,5 @@
 /*
- * $Id: VoFileSelector.java,v 1.2 2004/02/24 16:04:02 mch Exp $
+ * $Id: VoFileSelector.java,v 1.3 2004/03/02 01:33:24 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -34,7 +34,7 @@ import org.astrogrid.ui.IconButtonHelper;
 import org.astrogrid.ui.JHistoryComboBox;
 import org.astrogrid.ui.JPasteButton;
 import org.astrogrid.ui.myspace.MySpaceBrowser;
-import org.astrogrid.store.AGSL;
+import org.astrogrid.store.Agsl;
 
 public class VoFileSelector extends JPanel implements KeyListener {
 
@@ -145,10 +145,10 @@ public class VoFileSelector extends JPanel implements KeyListener {
    }
 
    /** Returns the full vospace reference for the entry */
-   public AGSL toVospaceRL() throws MalformedURLException {
-        AGSL vorl = null;
+   public Agsl toAgsl() throws MalformedURLException {
+        Agsl vorl = null;
         if ((getFileLoc() != null) && (getFileLoc().trim().length()>0)) {
-           vorl = new AGSL(getFileLoc());
+           vorl = new Agsl(getFileLoc());
         }
         return vorl;
    }
@@ -156,19 +156,19 @@ public class VoFileSelector extends JPanel implements KeyListener {
    /** Start MySpace Browser */
    public void browseMySpace()
    {
-      AGSL vorl;
+      Agsl vorl;
       try {
-         vorl = toVospaceRL();
+         vorl = toAgsl();
       }
       catch (MalformedURLException mue) {} //ignore - it might be some other reference
          
       try
       {
          
-         MySpaceBrowser browser = MySpaceBrowser.showDialog(myspaceBrowserBtn, toVospaceRL(), operator, browserAction);
+         MySpaceBrowser browser = MySpaceBrowser.showDialog(myspaceBrowserBtn, toAgsl(), operator, browserAction);
          if (!browser.isCancelled())
          {
-            fileEntryField.setItem(browser.getMySpaceRef());
+            fileEntryField.setItem(browser.getAgsl());
             validate();
          }
       } catch (IOException ioe)
@@ -198,10 +198,10 @@ public class VoFileSelector extends JPanel implements KeyListener {
       }
       
       //is it valid?
-      if (AGSL.isVoRL(loc))
+      if (Agsl.isAgsl(loc))
       {
          try {
-            new AGSL(loc);
+            new Agsl(loc);
             setValid(true);
          } catch (MalformedURLException me) {
             setValid(false);
@@ -270,6 +270,9 @@ public class VoFileSelector extends JPanel implements KeyListener {
 
 /*
 $Log: VoFileSelector.java,v $
+Revision 1.3  2004/03/02 01:33:24  mch
+Updates from chagnes to StoreClient and Agsls
+
 Revision 1.2  2004/02/24 16:04:02  mch
 Config refactoring and moved datacenter It04.1 VoSpaceStuff to myspace StoreStuff
 

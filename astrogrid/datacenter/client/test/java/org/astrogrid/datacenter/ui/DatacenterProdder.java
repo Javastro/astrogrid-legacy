@@ -1,4 +1,4 @@
-/* $Id: DatacenterProdder.java,v 1.4 2004/02/24 16:04:02 mch Exp $
+/* $Id: DatacenterProdder.java,v 1.5 2004/03/02 01:33:24 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -16,9 +16,9 @@ import java.awt.event.ActionListener;
 import java.net.URL;
 import java.util.Date;
 import java.util.Properties;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.ProgressMonitor;
 import org.apache.axis.utils.XMLUtils;
@@ -27,20 +27,22 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.applications.delegate.ApplicationController;
 import org.astrogrid.applications.delegate.beans.ParameterValues;
 import org.astrogrid.community.Account;
+import org.astrogrid.community.User;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.datacenter.delegate.DatacenterQuery;
 import org.astrogrid.datacenter.delegate.DatacenterResults;
 import org.astrogrid.datacenter.delegate.FullSearcher;
+import org.astrogrid.store.Agsl;
+import org.astrogrid.store.delegate.StoreClient;
+import org.astrogrid.store.delegate.StoreDelegateFactory;
 import org.astrogrid.ui.EscEnterListener;
 import org.astrogrid.ui.GridBagHelper;
 import org.astrogrid.ui.IconFactory;
+import org.astrogrid.ui.JHistoryComboBox;
 import org.astrogrid.ui.Splash;
 import org.astrogrid.ui.myspace.MySpaceBrowser;
 import org.astrogrid.ui.myspace.VoFileSelector;
 import org.astrogrid.ui.votable.JVotBox;
-import org.astrogrid.store.AGSL;
-import org.astrogrid.store.delegate.StoreClient;
-import org.astrogrid.store.delegate.StoreDelegateFactory;
 import org.w3c.dom.Element;
 
 /**
@@ -61,9 +63,11 @@ public class DatacenterProdder extends JFrame
    JButton kickOffSearchButton;
    JButton blockSearchButton;
    JButton toolButton;
+   JButton jobButton;
    VoFileSelector queryLocator;
    VoFileSelector resultsLocator;
    DatacenterSelector datacenterLocator;
+   JHistoryComboBox jobMonitorField;
    
    Account user = Account.ANONYMOUS;
 
@@ -91,16 +95,25 @@ public class DatacenterProdder extends JFrame
       resultsLocator = new VoFileSelector("Results", MySpaceBrowser.SAVE_ACTION, Account.ANONYMOUS);
       resultsPanel.add(resultsLocator, BorderLayout.NORTH);
       
+      //job monitor field
+      jobMonitorField = new JHistoryComboBox();
+      jobMonitorField.setEditable(true);
+      
+      jobMonitorField.setDefaultList(new String[] {
+               "http://vm05.astrogrid.org:8080/astrogrid-jes/services/JobMonitorService"
+            });
       
       //button panel
       JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
       blockSearchButton = new JButton("Query (Block)", IconFactory.getIcon("Query"));
       kickOffSearchButton = new JButton("Query (KickOff)", IconFactory.getIcon("Query"));
       toolButton = new JButton("Query (Tool)", IconFactory.getIcon("Query"));
+      jobButton = new JButton("Query (Job)", IconFactory.getIcon("Query"));
       cancelButton = new JButton("Exit", IconFactory.getIcon("Exit"));
       buttonPanel.add(kickOffSearchButton);
       buttonPanel.add(blockSearchButton);
       buttonPanel.add(toolButton);
+      buttonPanel.add(jobButton);
       buttonPanel.add(cancelButton);
       
       kickOffSearchButton.addActionListener(
@@ -127,6 +140,13 @@ public class DatacenterProdder extends JFrame
          }
       );
       
+      jobButton.addActionListener(
+         new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+               runTool();
+            }
+         }
+      );
       cancelButton.addActionListener(
          new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -168,6 +188,14 @@ public class DatacenterProdder extends JFrame
       GridBagHelper.setControlConstraints(constraints);
       contents.add(resultsLocator.getControls(), constraints);
 
+      //job monitor
+      constraints.gridy++;
+      GridBagHelper.setLabelConstraints(constraints);
+      contents.add(new JLabel("Monitor"), constraints);
+      GridBagHelper.setEntryConstraints(constraints);
+      contents.add(jobMonitorField, constraints);
+      
+
       getContentPane().setLayout(new BorderLayout());
       getContentPane().add(contents, BorderLayout.NORTH);
       getContentPane().add(buttonPanel, BorderLayout.SOUTH);
@@ -206,6 +234,7 @@ public class DatacenterProdder extends JFrame
          queryLocator.setFileLoc(storedEntries.getProperty("Query",""));
          resultsLocator.setFileLoc(storedEntries.getProperty("Results",""));
          datacenterLocator.setText(storedEntries.getProperty("Datacenter",""));
+         jobMonitorField.setItem(storedEntries.getProperty("JobMonitor",""));
                                     
       } catch (IOException ioe) {} //ignore
    }
@@ -217,6 +246,7 @@ public class DatacenterProdder extends JFrame
          storedEntries.put("Query", queryLocator.getFileLoc());
          storedEntries.put("Results", resultsLocator.getFileLoc());
          storedEntries.put("Datacenter", datacenterLocator.getText());
+         storedEntries.put("JobMonitor", jobMonitorField.getText());
                                     
          storedEntries.store(new FileOutputStream(new File("DatacenterProdderEntries")), "Datacenter Prodder entries");
       } catch (IOException ioe) {} //ignore
@@ -239,9 +269,9 @@ public class DatacenterProdder extends JFrame
    public void kickOffSearch()  {
       
       storeEntries();
+      ProgressMonitor progBox = new ProgressMonitor(this, "Submitting Query","Connecting to datacenter",0,2);
       
       try {
-         ProgressMonitor progBox = new ProgressMonitor(this, "Submitting Query","Connecting to datacenter",0,2);
          
          progBox.setMillisToDecideToPopup(0);
          progBox.setMillisToPopup(0);
@@ -257,7 +287,7 @@ public class DatacenterProdder extends JFrame
          if (queryLocator.getFileLoc().startsWith("file")) {
             inQuery = new URL(queryLocator.getFileLoc()).openStream();
          } else {
-            inQuery = new AGSL(queryLocator.getFileLoc()).openStream();
+            inQuery = new Agsl(queryLocator.getFileLoc()).openStream(User.ANONYMOUS);
          }
 
          progBox.setProgress(2);
@@ -274,6 +304,9 @@ public class DatacenterProdder extends JFrame
          //if it's a file we'll need to load it and send it
          DatacenterQuery dcQuery = querier.makeQuery(queryDoc);
 
+         JFrame frame = new QueryPollingMonitor(dcQuery);
+         frame.show();
+         
          //set the results destination
          String resultsLoc = resultsLocator.getFileLoc();
          assert resultsLoc != null : "Need to specify results!";
@@ -289,11 +322,13 @@ public class DatacenterProdder extends JFrame
          dcQuery.start();
         
          log.info("...query started.");
-         progBox.setProgress(progBox.getMaximum()+1);   //close
       }
       catch (Exception e)
       {
-         e.printStackTrace();
+         log.error("Failed to kick off Query",e);
+      }
+      finally {
+         progBox.setProgress(progBox.getMaximum()+1);   //close
       }
 
    }
@@ -305,11 +340,11 @@ public class DatacenterProdder extends JFrame
       
       storeEntries();
       
+      ProgressMonitor progBox = new ProgressMonitor(this, "Running Query","Connecting to datacenter",0,6);
+      progBox.setMillisToDecideToPopup(0);
+      progBox.setMillisToPopup(0);
+
       try {
-         ProgressMonitor progBox = new ProgressMonitor(this, "Running Query","Connecting to datacenter",0,6);
-         
-         progBox.setMillisToDecideToPopup(0);
-         progBox.setMillisToPopup(0);
 
          //connect up to the datacenter
          log.info("Connecting to datacenter at "+datacenterLocator.getDelegateEndPoint());
@@ -322,7 +357,7 @@ public class DatacenterProdder extends JFrame
          if (queryLocator.getFileLoc().startsWith("file")) {
             inQuery = new URL(queryLocator.getFileLoc()).openStream();
          } else {
-            inQuery = new AGSL(queryLocator.getFileLoc()).openStream();
+            inQuery = new Agsl(queryLocator.getFileLoc()).openStream(User.ANONYMOUS);
          }
 
          progBox.setProgress(2);
@@ -352,10 +387,10 @@ public class DatacenterProdder extends JFrame
                throw new UnsupportedOperationException("Not yet implemented local file save");
             } else {
                log.info("Sending results to myspace...");
-               AGSL resultsRL = new AGSL(resultsLocator.getFileLoc());
+               Agsl resultsRL = new Agsl(resultsLocator.getFileLoc());
 
-               StoreClient vos = StoreDelegateFactory.createDelegate(user, resultsRL.getDelegateEndpoint().toString());
-               vos.putString(xml, resultsRL.getDelegateFileRef(), false);
+               StoreClient vos = StoreDelegateFactory.createDelegate(user.toUser(), resultsRL);
+               vos.putString(xml, resultsRL.getPath(), false);
                log.info("...results gone");
             }
          }
@@ -376,7 +411,10 @@ public class DatacenterProdder extends JFrame
       }
       catch (Exception e)
       {
-         e.printStackTrace();
+         log.error("Failed to start Query as tool",e);
+      }
+      finally {
+         progBox.setProgress(progBox.getMaximum()+1);   //close
       }
 
    }
@@ -388,9 +426,63 @@ public class DatacenterProdder extends JFrame
       
       storeEntries();
       
+      log.info("Querying as ApplicationController tool");
+      ProgressMonitor progBox = new ProgressMonitor(this, "Submitting Query","Connecting to datacenter",0,2);
+
       try  {
-         log.info("Querying as ApplicationController tool");
-         ProgressMonitor progBox = new ProgressMonitor(this, "Submitting Query","Connecting to datacenter",0,2);
+         
+         progBox.setMillisToDecideToPopup(0);
+         progBox.setMillisToPopup(0);
+
+         //connect up to the datacenter
+         log.info("Connecting to datacenter at "+datacenterLocator.getDelegateEndPoint());
+         ApplicationController tool = (ApplicationController) DatacenterDelegateFactory.makeFullSearcher(datacenterLocator.getDelegateEndPoint());
+
+         //set up the parameters
+         progBox.setProgress(1);
+         progBox.setNote("Setting up parameters");
+         log.info("Setting up parameters");
+         ParameterValues parameters =  new ParameterValues();
+         parameters.setParameterSpec(
+            "<tool><input>"+
+              "<parameter name='QueryMySpaceReference' type='MySpaceRef'>"+queryLocator.getFileLoc()+"</parameter>"+
+              "<parameter name='ResultsMySpaceReference' type='MySpaceRef'>"+resultsLocator.getFileLoc()+"</parameter>"+
+            "</input></tool>");
+         
+         String localId = "MadeUpLocalId:"+new Date().getSeconds();
+
+         //initialise
+         log.info("Initialising...");
+         String runId = tool.initializeApplication("Datacenter", localId, null, null, parameters);
+
+         //and GO!
+         progBox.setProgress(4);
+         progBox.setNote("Starting query");
+         log.info("Starting query");
+         tool.executeApplication(runId);
+        
+      }
+      catch (Exception e)
+      {
+         log.error("Failed to run Query",e);
+      }
+      finally {
+         progBox.setProgress(progBox.getMaximum()+1);   //close
+      }
+      
+   }
+   
+   /**
+    * Runs the query as a JobStep
+    */
+   public void runJob()   {
+      
+      storeEntries();
+      
+      log.info("Querying as ApplicationController tool");
+      ProgressMonitor progBox = new ProgressMonitor(this, "Submitting Query","Connecting to datacenter",0,2);
+
+      try  {
          
          progBox.setMillisToDecideToPopup(0);
          progBox.setMillisToPopup(0);
@@ -422,15 +514,16 @@ public class DatacenterProdder extends JFrame
          log.info("Starting query");
          tool.executeApplication(runId);
         
-         progBox.setProgress(progBox.getMaximum()+1);   //close
       }
       catch (Exception e)
       {
-         e.printStackTrace();
+         log.error("Failed to run Query",e);
+      }
+      finally {
+         progBox.setProgress(progBox.getMaximum()+1);   //close
       }
       
    }
-   
    
    /**
     * Runs the box
@@ -456,6 +549,9 @@ public class DatacenterProdder extends JFrame
 
 /*
  $Log: DatacenterProdder.java,v $
+ Revision 1.5  2004/03/02 01:33:24  mch
+ Updates from chagnes to StoreClient and Agsls
+
  Revision 1.4  2004/02/24 16:04:02  mch
  Config refactoring and moved datacenter It04.1 VoSpaceStuff to myspace StoreStuff
 
