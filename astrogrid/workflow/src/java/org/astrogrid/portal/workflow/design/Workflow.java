@@ -104,19 +104,24 @@ public class Workflow extends Sequence {
         
         
     public static Workflow createWorkflow(  String userid, String community, String name  ) {
-        if( TRACE_ENABLED ) logger.debug( "createWorkflow() entry") ;   
+        if( TRACE_ENABLED ) trace( "createWorkflow() entry") ;   
            
         Workflow
             workflow ;
+          
+        debug( "userid: " + userid ) ;
+        debug( "community: " + community ) ;
+        debug( "name: " + name ) ;          
             
         try {
             workflow = new Workflow() ;
             workflow.setUserid( userid) ;
             workflow.setCommunity( community ) ;
             workflow.setName( name ) ;
+            workflow.setDescription( "some description of a query" ) ; 
         }
         finally {
-            if( TRACE_ENABLED ) logger.debug( "createWorkflow() exit") ; 
+            if( TRACE_ENABLED ) trace( "createWorkflow() exit") ; 
         }
  
         return workflow ;
@@ -125,13 +130,15 @@ public class Workflow extends Sequence {
         
         
     public static Workflow readWorkflow( String userid, String community, String name ) {
-        if( TRACE_ENABLED ) logger.debug( "readWorkflow() entry") ; 
+        if( TRACE_ENABLED ) trace( "readWorkflow() entry") ; 
         
         Workflow
             workflow = null;
          
         try {
-        
+            
+            workflow = Workflow.createWorkflow( userid, community, name ) ;
+/*        
             MySpaceManagerDelegate
                 mySpace = new MySpaceManagerDelegate( Workflow.locateMySpace( userid, community ) ) ;
                 
@@ -141,12 +148,12 @@ public class Workflow extends Sequence {
                 workflowXML = mySpace.lookupDataHolderDetails( "" ) ;
                 
             workflow = new Workflow( workflowXML ) ;
-        
+*/        
         }
         catch ( Exception ex ) {
         }
         finally {
-            if( TRACE_ENABLED ) logger.debug( "readWorkflow() exit") ; 
+            if( TRACE_ENABLED ) trace( "readWorkflow() exit") ; 
         }
        
         return workflow ;
@@ -155,13 +162,13 @@ public class Workflow extends Sequence {
     
     
     public static boolean deleteWorkflow( String userid, String community, String name  ) {
-        if( TRACE_ENABLED ) logger.debug( "deleteWorkflow() entry") ; 
+        if( TRACE_ENABLED ) trace( "deleteWorkflow() entry") ; 
         
         boolean
-            retValue = false ;
+            retValue = true ;
          
         try {
-        
+  /*      
             MySpaceManagerDelegate
                 mySpace = new MySpaceManagerDelegate( Workflow.locateMySpace( userid, community ) ) ;
                 
@@ -171,12 +178,11 @@ public class Workflow extends Sequence {
                 responseXML = mySpace.deleteDataHolder( "" ) ;
                 
             //JBL decode the response here...
-        
-        }
-        catch ( Exception ex ) {
+   */     
+
         }
         finally {
-            if( TRACE_ENABLED ) logger.debug( "deleteWorkflow() exit") ; 
+            if( TRACE_ENABLED ) trace( "deleteWorkflow() exit") ; 
         }
         
         return retValue ;
@@ -185,13 +191,13 @@ public class Workflow extends Sequence {
     
     
     public static boolean saveWorkflow( Workflow workflow ) {
-        if( TRACE_ENABLED ) logger.debug( "saveWorkflow() entry") ; 
+        if( TRACE_ENABLED ) trace( "saveWorkflow() entry") ; 
         
      boolean
-         retValue = false ;
+         retValue = true ;
          
      try {
-        
+/*        
          //JBL serialize the Workflow to a suiteable XML file to be picked
          // up by MySpace. This is where we make use of the toXML() method
          // to pull the whole tree together...
@@ -208,12 +214,10 @@ public class Workflow extends Sequence {
              responseXML = mySpace.upLoad( "" ) ;
                 
          //JBL decode the response here...
-        
-     }
-     catch ( Exception ex ) {
+  */      
      }
      finally {
-         if( TRACE_ENABLED ) logger.debug( "saveWorkflow() exit") ; 
+         if( TRACE_ENABLED ) trace( "saveWorkflow() exit") ; 
      }
         
      return retValue ;
@@ -229,11 +233,12 @@ public class Workflow extends Sequence {
      
     private String
         name,
+        description,
         userid,
         community ;
         
     private Map 
-        activities = Collections.synchronizedMap( new HashMap() ) ;
+        activities = null ;
         
     private boolean
         dirty ;
@@ -247,9 +252,10 @@ public class Workflow extends Sequence {
       **/           
     private Workflow() {
         super() ;
-        if( TRACE_ENABLED ) logger.debug( "Workflow() entry") ;  
+        if( TRACE_ENABLED ) trace( "Workflow() entry") ;
+        this.activities = Collections.synchronizedMap( new HashMap() ) ;   
         this.activities.put( this.getKey(), this ) ;
-        if( TRACE_ENABLED ) logger.debug( "Workflow() exit") ;
+        if( TRACE_ENABLED ) trace( "Workflow() exit") ;
     }
     
     
@@ -267,7 +273,7 @@ public class Workflow extends Sequence {
       **/        
     private Workflow( String workflowXML ) {
         super() ;
-        if( TRACE_ENABLED ) logger.debug( "Workflow(String) entry") ;
+        if( TRACE_ENABLED ) trace( "Workflow(String) entry") ;
         
         try{
             this.activities.put( this.getKey(), this ) ;
@@ -278,7 +284,7 @@ public class Workflow extends Sequence {
             
         }
         finally {
-            if( TRACE_ENABLED ) logger.debug( "Workflow(String) exit") ;
+            if( TRACE_ENABLED ) trace( "Workflow(String) exit") ;
         }
         
     }
@@ -296,12 +302,12 @@ public class Workflow extends Sequence {
       * @see 
       **/     
     public Activity getActivity( String key ) {
-        if( TRACE_ENABLED ) logger.debug( "getActivity() entry") ; 
+        if( TRACE_ENABLED ) trace( "getActivity() entry") ; 
         try { 
             return (Activity)activities.get( new ActivityKey( key ) ) ;
         }
         finally {
-            if( TRACE_ENABLED ) logger.debug( "getActivity() exit") ;  
+            if( TRACE_ENABLED ) trace( "getActivity() exit") ;  
         }
     }
     
@@ -312,7 +318,7 @@ public class Workflow extends Sequence {
     
     
     public boolean putActivity( Activity activity ) {
-        if( TRACE_ENABLED ) logger.debug( "putActivity() entry") ;  
+        if( TRACE_ENABLED ) trace( "putActivity() entry") ;  
                
         boolean
             retValue = false ;
@@ -326,7 +332,7 @@ public class Workflow extends Sequence {
        
         }
         finally {
-            if( TRACE_ENABLED ) logger.debug( "putActivity() exit") ;  
+            if( TRACE_ENABLED ) trace( "putActivity() exit") ;  
         }
        
         return retValue ;
@@ -340,7 +346,7 @@ public class Workflow extends Sequence {
     
     
     public String toXMLString() {
-        if( TRACE_ENABLED ) logger.debug( "toXMLString() entry") ;  
+        if( TRACE_ENABLED ) trace( "toXMLString() entry") ;  
           
         String 
            response = WKF.getProperty( WKF.WORKFLOW_CATEGORY
@@ -365,7 +371,7 @@ public class Workflow extends Sequence {
             logger.error( message.toString(), ex ) ;
         } 
         finally {
-            if( TRACE_ENABLED ) logger.debug( "toXMLString() exit") ;    
+            if( TRACE_ENABLED ) trace( "toXMLString() exit") ;    
         }       
         
         return response ;                              
@@ -398,12 +404,12 @@ public class Workflow extends Sequence {
 	}
     
     private static String locateMySpace( String userid, String community ) {
-        if( TRACE_ENABLED ) logger.debug( "locateMySpace() entry") ;
+        if( TRACE_ENABLED ) trace( "locateMySpace() entry") ;
         try {
             return WKF.getProperty( WKF.MYSPACE_URL, WKF.MYSPACE_CATEGORY ) ;
         }
         finally {
-            if( TRACE_ENABLED ) logger.debug( "locateMySpace() exit") ;
+            if( TRACE_ENABLED ) trace( "locateMySpace() exit") ;
         }
     }
 
@@ -414,11 +420,27 @@ public class Workflow extends Sequence {
 	public boolean isDirty() {
 		return dirty;
 	}
+   
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getDescription() {
+        return description;
+    } 
+     
+    private static void trace( String traceString ) {
+        System.out.println( traceString ) ;
+        // logger.debug( traceString ) ;
+    }
     
-    
+    private static void debug( String logString ){
+        System.out.println( logString ) ;
+        // logger.debug( logString ) ;
+    }  
 /*     
     private Document parseRequest( String jobXML ) throws DatasetAgentException {   
-        if( TRACE_ENABLED ) logger.debug( "parseRequest() entry") ;
+        if( TRACE_ENABLED ) trace( "parseRequest() entry") ;
         
         Document 
            queryDoc = null;
@@ -432,7 +454,7 @@ public class Workflow extends Sequence {
            factory.setValidating( Boolean.getBoolean( DTC.getProperty( DTC.DATASETAGENT_PARSER_VALIDATION
                                                                      , DTC.DATASETAGENT_CATEGORY )  )  ) ;      
            builder = factory.newDocumentBuilder();
-           logger.debug( jobXML ) ;
+           trace( jobXML ) ;
            InputSource
               jobSource = new InputSource( new StringReader( jobXML ) );
            queryDoc = builder.parse( jobSource );
@@ -445,7 +467,7 @@ public class Workflow extends Sequence {
             throw new DatasetAgentException( message, ex );
         } 
         finally {
-            if( TRACE_ENABLED ) logger.debug( "parseRequest() exit") ;  
+            if( TRACE_ENABLED ) trace( "parseRequest() exit") ;  
         }
         
         return queryDoc ;
