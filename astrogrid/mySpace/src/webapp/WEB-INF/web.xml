@@ -58,10 +58,9 @@
     <welcome-file>index.jsp</welcome-file>
   </welcome-file-list>
 
-  <!--env-entry>
-    <description>Does this make a blind bit of difference</description>
-  	<env-entry-name>mmcConfigFileURL</env-entry-name>
-  	<env-entry-type>java.lang.String</env-entry-type>
-  </env-entry-->
+  <taglib>
+    <taglib-uri>http://jakarta.apache.org/taglibs/input-1.0</taglib-uri>
+    <taglib-location>/WEB-INF/taglibs-input.tld</taglib-location>
+  </taglib>
 
 </web-app>

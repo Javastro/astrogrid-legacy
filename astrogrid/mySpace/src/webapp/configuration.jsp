@@ -1,17 +1,25 @@
+<%@ taglib uri="http://jakarta.apache.org/taglibs/input-1.0" prefix="input" %>
 <%@ page import="org.astrogrid.mySpace.mySpaceManager.MMC,
 				 org.astrogrid.mySpace.mySpaceServer.MSC,
 				 org.astrogrid.AstroGridException,
                  java.io.PrintWriter,
+								 java.util.*,
+								 java.net.URL,
                  javax.naming.Context,
                  javax.naming.spi.NamingManager,
                  javax.naming.NamingException,
                  javax.naming.InitialContext"
    session="false" %>
-
+<jsp:useBean id="defaultsBean" class="org.astrogrid.mySpace.webapp.ConfigurationDefaultsBean" />
 <%
-//Do something here to see if called from configuration.jsp
-//and set vars in MMC appropriately.  Make sure you distinguish between MMC
-//and MSC
+
+String changeBtn = "change";
+String exportBtn = "export";
+String guessBtn = "guess";
+boolean changePressed = request.getParameterValues(changeBtn)!=null;
+boolean exportPressed = request.getParameterValues(exportBtn)!=null;
+boolean guessPressed = request.getParameterValues(guessBtn)!=null;
+
 %>	 
 
 <%
@@ -79,7 +87,12 @@ try {
       </head>
 
       <body class="composite">
-
+			<%
+Enumeration enum = request.getParameterNames();
+while(enum.hasMoreElements()) {
+			out.print(enum.nextElement()+"<BR>");
+			}%>
+			<BR>Change pressed:<%=changePressed%>
         <div id="banner" >
           <table border="0" width="100%" cellpadding="8" cellspacing="0" >
             <tr>
@@ -213,30 +226,41 @@ try {
 <!----------------------------------------------------------------------------->
 <!----------------The Guts of the page go here--------------------------------->
 <!----------------------------------------------------------------------------->      
-     
+
+
+<%--Override the bean properties with any which may have been set in the form--%> 
+<jsp:setProperty name="defaultsBean" property="*"/>
+<%--Now if guess has been pressed override those with our best guesses...--%>
+<%
+	if (guessPressed) {
+	   String baseURL = new URL ("http", request.getServerName(),
+		 							    request.getServerPort(), request.getContextPath()).toString();
+		 defaultsBean.setMsmUrl(baseURL+"/MySpaceManager");
+ 		 defaultsBean.setMssUrl("NotRequired");
+ 		 defaultsBean.setMsmsUrl(baseURL+"/MySpaceManager,");
+	} 
+%>     
 <%=message%>
 
-<form action="configuration.jsp" method="post">Version: <input
-type="text" name="version" value=
-"<%=MMC.getProperty(MMC.GENERAL_VERSION_NUMBER, MMC.GENERAL_CATEGORY) %>"
- size="15"><br>
-MySpaceManagerURL: <input type="text" name="msm_url" value=
-"<%=MMC.getProperty(MMC.mySpaceManagerLoc,MMC.CATLOG)%>" size=
-"100"><br>
-MySpaceServerURL: <input type="text" name="mss_url" value=
-"<%=MMC.getProperty(MMC.serverManagerLoc,MMC.CATLOG)%>" size=
-"100"><br>
-MySpaceServerURLs: <input type="text" name="msss_url" value=
-"<%=MMC.getProperty(MMC.MYSPACEMANAGERURLs,MMC.CATLOG)%>" size=
-"100"><br>
-<button type="submit">Change</button></form>
-(button is a dummy at the moment - these props are readonly....) 
-<!--
-Version in property file is: "<%=MMC.getProperty(MMC.GENERAL_VERSION_NUMBER, MMC.GENERAL_CATEGORY) %>" - should be "1.2".<P>
-MySpaceManagerURL :<%=MMC.getProperty(MMC.mySpaceManagerLoc,MMC.CATLOG)%><P>
-MySpaceServerURL :<%=MMC.getProperty(MMC.serverManagerLoc,MMC.CATLOG)%><P>
-MySpaceServerURLs :<%=MMC.getProperty(MMC.MYSPACEMANAGERURLs,MMC.CATLOG)%><P>
-<P>-->
+
+<input:form  bean="defaultsBean">
+Version: 
+<input:text name="version"  attributesText='size="15"' /><br>
+Location of Registry DB file: 
+<input:text name="registryconf" attributesText='size="100"'/> <br> 
+MySpaceManagerURL: 
+<input:text name="msmUrl"  attributesText='size="100"'/><br>
+MySpaceServerURL: 
+<input:text name="mssUrl"  attributesText='size="100"'/><br>
+MySpaceMangerURLs: 
+<input:text name="msmsUrl" attributesText='size="100"'/><br>
+<button type="submit" name="<%=changeBtn%>">Change</button>
+
+<button type="submit" name="<%=guessBtn%>" >Guess URLs</button>
+
+<button type="submit" name="<%=exportBtn%>">Export</button>
+</input:form>
+
 <p>Back to <a href="index.html">index page</a>.</p>
    
      
@@ -288,7 +312,7 @@ Not currently required.
                   
                     
                     
-                      ï¿½ 2002-2004, AstroGrid
+                      © 2002-2004, AstroGrid
                     
                   
                   
