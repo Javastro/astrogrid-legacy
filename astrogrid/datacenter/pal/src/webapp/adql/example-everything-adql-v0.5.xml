@@ -3,9 +3,6 @@ SELECT DISTINCT t.b, b.* FROM Tab AS t, Bob AS b WHERE NOT (-(MAX(b.dd ) ) < 4.5
 -->
 <Select xmlns="http://tempuri.org/adql" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 >
-    <OptionalAllOrDistinct>
-       <Option>DISTINCT</Option>
-    </OptionalAllOrDistinct>
     <SelectionList>
         <ColumnExpr>
             <SingleColumnReference>

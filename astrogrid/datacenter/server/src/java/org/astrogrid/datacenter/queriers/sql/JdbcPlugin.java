@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcPlugin.java,v 1.16 2004/08/11 18:54:54 mch Exp $
+ * $Id: JdbcPlugin.java,v 1.17 2004/08/13 08:52:24 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -167,23 +167,33 @@ public class JdbcPlugin extends QuerierPlugin  {
     * Returns the votable datatype for the given column.
     * @todo check these - these are made up/guessed
     */
-   public static String getVotableType(int sqlType) throws SQLException {
+   public static String getVotableTypeAttr(int sqlType) {
       
       switch (sqlType)
       {
-         case Types.BIGINT:   return "datatype='long'";
-         case Types.BOOLEAN:  return "datatype='boolean'";
          case Types.VARCHAR:  return "datatype='char' arraysize='*'";
-         case Types.CHAR:     return "datatype='char'";
-         case Types.DOUBLE:   return "datatype='double'";
-         case Types.FLOAT:    return "datatype='float'";
-         case Types.INTEGER:  return "datatype='int'";
-         case Types.REAL:     return "datatype='float'";
-         case Types.SMALLINT: return "datatype='short'";
-         case Types.TINYINT:  return "datatype='short'";
+         default: {
+            return "datatype='"+getVotableType(sqlType)+"'";
+         }
+      }
+   }
+   
+   public static String getVotableType(int sqlType) {
+      switch (sqlType)
+      {
+         case Types.BIGINT:   return "long";
+         case Types.BOOLEAN:  return "boolean";
+         case Types.VARCHAR:  return "char";
+         case Types.CHAR:     return "char";
+         case Types.DOUBLE:   return "double";
+         case Types.FLOAT:    return "float";
+         case Types.INTEGER:  return "int";
+         case Types.REAL:     return "float";
+         case Types.SMALLINT: return "short";
+         case Types.TINYINT:  return "short";
          default: {
             log.error("Don't know what SQL type "+sqlType+" should be in VOTable, storing as string");
-            return "datatype='char' arraysize='*'";
+            return "char";
          }
       }
    }
@@ -203,7 +213,7 @@ public class JdbcPlugin extends QuerierPlugin  {
          StringWriter sw = new StringWriter();
          XmlPrinter xw = new XmlPrinter(sw);
 
-         XmlTagPrinter metaTag = xw.newTag("AstroGridMetaTables");
+         XmlTagPrinter metaTag = xw.newTag("MetaTables");
 
          /** Get general info */
          String name = metadata.getDatabaseProductName();
@@ -255,7 +265,7 @@ public class JdbcPlugin extends QuerierPlugin  {
                   int sqlType = Integer.parseInt(getColumnValue(columns, "DATA_TYPE"));
                   XmlTagPrinter colTag = tableTag.newTag(
                      "Column",
-                     "name='"+getColumnValue(columns, "COLUMN_NAME")+"' "+getVotableType(sqlType)+" indexed='false'"
+                     "name='"+getColumnValue(columns, "COLUMN_NAME")+"' "+getVotableTypeAttr(sqlType)+" indexed='false'"
                   );
                   colTag.writeComment("schema='"+getColumnValue(columns, "TABLE_SCHEM")+"'");
                   colTag.writeComment("cat='"+getColumnValue(columns, "TABLE_CAT")+"'");

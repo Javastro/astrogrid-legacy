@@ -5,6 +5,7 @@
        org.apache.commons.logging.*,
        org.astrogrid.store.Agsl,
        org.astrogrid.community.Account,
+       org.astrogrid.datacenter.sqlparser.Sql2Adql05,
        org.astrogrid.datacenter.queriers.TargetIndicator,
        org.astrogrid.datacenter.query.AdqlQuery,
        org.astrogrid.datacenter.service.HtmlDataServer,
@@ -25,7 +26,7 @@
       TargetIndicator target =server.makeTarget(resultsTarget);
 
       if (target == null) {
-         server.askQuery(Account.ANONYMOUS, new AdqlQuery(adqlSql), out, resultsFormat);
+         server.askQuery(Account.ANONYMOUS, new AdqlQuery(Sql2Adql05.translate(adqlSql)), out, resultsFormat);
       }
       else {
          String id = server.submitQuery(Account.ANONYMOUS, new AdqlQuery(adqlSql), target, resultsFormat);
