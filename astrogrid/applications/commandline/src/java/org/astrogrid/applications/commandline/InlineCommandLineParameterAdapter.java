@@ -1,4 +1,4 @@
-/*$Id: InlineCommandLineParameterAdapter.java,v 1.2 2004/07/01 11:07:59 nw Exp $
+/*$Id: InlineCommandLineParameterAdapter.java,v 1.3 2004/07/23 07:46:16 nw Exp $
  * Created on 18-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,6 +21,13 @@ import org.astrogrid.applications.parameter.indirect.IndirectParameterValue;
  *
  */
 public class InlineCommandLineParameterAdapter extends DefaultParameterAdapter {
+    /**
+     * Not possible for this kind of parameter.
+     * @see org.astrogrid.applications.parameter.ParameterAdapter#writeBack(java.lang.Object)
+     */
+    public void writeBack(Object arg0) throws CeaException {
+        throw new CeaException("Programming Error - attempting to writeback to inline command line parameter");
+    }
     /** Construct a new CommandLineParameterAdapter
      * @param arg0
      * @param arg1
@@ -46,6 +53,9 @@ public class InlineCommandLineParameterAdapter extends DefaultParameterAdapter {
 
 /* 
 $Log: InlineCommandLineParameterAdapter.java,v $
+Revision 1.3  2004/07/23 07:46:16  nw
+cleaned up application / parameter adapter interface.
+
 Revision 1.2  2004/07/01 11:07:59  nw
 merged in branch
 nww-itn06-componentization

@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplication.java,v 1.3 2004/07/09 11:00:21 nw Exp $
+ * $Id: CommandLineApplication.java,v 1.4 2004/07/23 07:46:16 nw Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -16,10 +16,12 @@ import org.astrogrid.applications.ApplicationExecutionException;
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.DefaultIDs;
 import org.astrogrid.applications.Status;
+import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.description.ApplicationInterface;
+import org.astrogrid.applications.description.ParameterDescription;
 import org.astrogrid.applications.parameter.ParameterAdapter;
-import org.astrogrid.applications.parameter.ParameterAdapterFactory;
 import org.astrogrid.applications.parameter.ParameterWriteBackException;
+import org.astrogrid.applications.parameter.indirect.IndirectParameterValue;
 import org.astrogrid.applications.parameter.indirect.IndirectionProtocolLibrary;
 import org.astrogrid.workflow.beans.v1.Tool;
 
@@ -85,12 +87,19 @@ public class CommandLineApplication extends AbstractApplication implements Runna
       return true;
    }
 
-    /** override  so that commandline parameter adapters are returned. */
-    protected ParameterAdapterFactory createAdapterFactory() {   
-        return new CommandLineParameterAdapterFactory(lib,getApplicationEnvironment(),getApplicationInterface());     
-    }
-
-
+    /** override  so that commandline parameters are returned
+     * @see org.astrogrid.applications.AbstractApplication#instantiateAdapter(org.astrogrid.applications.beans.v1.parameters.ParameterValue, org.astrogrid.applications.description.ParameterDescription, org.astrogrid.applications.parameter.indirect.IndirectParameterValue)
+     */
+    protected ParameterAdapter instantiateAdapter( ParameterValue pval, ParameterDescription desr, IndirectParameterValue indirectVal) {                
+        CommandLineParameterDescription clpd = (CommandLineParameterDescription)desr;
+         if (!clpd.isFile()) {
+             logger.debug("treating " + pval.getName() + " as inline parameter");
+          return new InlineCommandLineParameterAdapter(pval, (CommandLineParameterDescription)desr, indirectVal);
+         } else {
+             logger.debug("treating " + pval.getName() +" as reference parameter");
+             return new ReferenceCommandLineParameterAdapter(getApplicationInterface(),pval, (CommandLineParameterDescription)desr,indirectVal,applicationEnvironment);
+         }
+      }
    protected void setupParameters() throws CeaException {
       // just setup the actual command line for now
       reportMessage("Setting up parameters");
@@ -102,7 +111,7 @@ public class CommandLineApplication extends AbstractApplication implements Runna
       reportMessage("Calling postParamSetupHook");
      postParamSetupHook();
      reportMessage("postParamSetupHook - completed");     
-     for (Iterator i = inputAdapters.iterator(); i.hasNext(); ) {
+     for (Iterator i = inputParameterAdapters(); i.hasNext(); ) {
          ParameterAdapter adapter = (ParameterAdapter)i.next();
          List vals = (List)adapter.process();
          for (Iterator j = vals.iterator(); j.hasNext(); ) {
@@ -110,7 +119,7 @@ public class CommandLineApplication extends AbstractApplication implements Runna
          }                  
      }
      
-     for (Iterator i = outputAdapters.iterator(); i.hasNext(); ) {
+     for (Iterator i = outputParameterAdapters(); i.hasNext(); ) {
          ParameterAdapter adapter = (ParameterAdapter)i.next();
          List vals = (List)adapter.process();
          for (Iterator j = vals.iterator(); j.hasNext(); ) {
@@ -172,7 +181,10 @@ public class CommandLineApplication extends AbstractApplication implements Runna
 /**
     *stop reader and writer threads and free up some resources 
     */
-   private final void endApplication() throws CeaException {
+   /**
+ * @throws CeaException
+ */
+private final void endApplication() throws CeaException {
       reportMessage("Ending application");
       errPiper.terminate();
       outPiper.terminate();
@@ -185,11 +197,10 @@ public class CommandLineApplication extends AbstractApplication implements Runna
       reportMessage("preWritebackHook - completed");
       // copy back any output parameters
       ApplicationInterface applicationInterface = getApplicationInterface();
-      for (Iterator i = outputAdapters.iterator(); i.hasNext(); ) {   
+      for (Iterator i = outputParameterAdapters(); i.hasNext(); ) {   
          ParameterAdapter adapter = (ParameterAdapter)i.next();
          try {         
             adapter.writeBack(null);
-            results.addResult(adapter.getWrappedParameter());
          } catch (ParameterWriteBackException e) {                        
                 reportError("There was a problem writing back parameter "+adapter.getWrappedParameter().getName(),e);
          }            

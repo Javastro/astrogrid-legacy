@@ -1,5 +1,5 @@
 /*
- * $Id: HyperZ.java,v 1.2 2004/07/01 11:07:59 nw Exp $
+ * $Id: HyperZ.java,v 1.3 2004/07/23 07:46:16 nw Exp $
  * 
  * Created on 16-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -16,12 +16,10 @@ package org.astrogrid.applications.commandline.hyperz;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.commandline.CommandLineApplication;
 import org.astrogrid.applications.commandline.CommandLineApplicationEnvironment;
-import org.astrogrid.applications.commandline.CommandLineParameterAdapterFactory;
 import org.astrogrid.applications.commandline.CommandLineParameterDescription;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.ParameterDescription;
 import org.astrogrid.applications.parameter.ParameterAdapter;
-import org.astrogrid.applications.parameter.ParameterAdapterFactory;
 import org.astrogrid.applications.parameter.indirect.IndirectParameterValue;
 import org.astrogrid.applications.parameter.indirect.IndirectionProtocolLibrary;
 import org.astrogrid.workflow.beans.v1.Tool;
@@ -88,37 +86,26 @@ public class HyperZ extends CommandLineApplication {
    
    
 
-    /**
-     * @see org.astrogrid.applications.AbstractApplication#createAdapterFactory()
-     */
-    protected ParameterAdapterFactory createAdapterFactory() {
-        return new HyperZParameterAdapterFactory(lib,getApplicationEnvironment(),getApplicationInterface());
-    }
-    
+   protected final VOTableSourceIndirector votableSource = new VOTableSourceIndirector(); // necessary, as we may see output param before input param!        
+   
     /** specialized parameter adapter factory, that will build custom parameter adapters for the input and output files - 
      * more structured than the previous technique of hacking with pre and post- hooks.     
      * @author Noel Winstanley nw@jb.man.ac.uk 07-Jun-2004
      *
      */
-    public static class HyperZParameterAdapterFactory extends CommandLineParameterAdapterFactory {
-        private HyperZParameterAdapterFactory(IndirectionProtocolLibrary arg0,CommandLineApplicationEnvironment env,ApplicationInterface interf) {
-            super(arg0,env,interf);           
-        }        
-        protected final VOTableSourceIndirector votableSource = new VOTableSourceIndirector(); // necessary, as we may see output param before input param!        
+  
         protected ParameterAdapter instantiateAdapter( ParameterValue pval, ParameterDescription desr, IndirectParameterValue indirectVal) {
             if (pval.getName().equals("input_catalog")) {
-                HyperZVOTableReader reader = new HyperZVOTableReader(appInterface,pval, (CommandLineParameterDescription) desr,env,indirectVal);
+                HyperZVOTableReader reader = new HyperZVOTableReader(getApplicationInterface(),pval, (CommandLineParameterDescription) desr,applicationEnvironment,indirectVal);
                 votableSource.setSource(reader);
                 return reader;
             } else if (pval.getName().equals("output_catalog")) {
-                return new HyperZVOTableWriter(appInterface, pval,(CommandLineParameterDescription)desr,env,indirectVal,votableSource);
+                return new HyperZVOTableWriter(getApplicationInterface(), pval,(CommandLineParameterDescription)desr,applicationEnvironment,indirectVal,votableSource);
             } else { // default behaviour                
                 return super.instantiateAdapter(pval,desr,indirectVal);
             }            
           }        
 
-
-}
 
     /* inderector - allows late binding between reader and writer */
     static class VOTableSourceIndirector implements HyperZVOTableWriter.VOTableSource {

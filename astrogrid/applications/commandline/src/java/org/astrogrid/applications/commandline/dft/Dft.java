@@ -1,5 +1,5 @@
 /*
- * $Id: Dft.java,v 1.2 2004/07/01 11:07:59 nw Exp $
+ * $Id: Dft.java,v 1.3 2004/07/23 07:46:16 nw Exp $
  * 
  * Created on 20-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -31,6 +31,7 @@ import java.util.List;
  * @since iteration4.1
  * @TODO should not really need this class - better to build adding standard parameters to the interface definition so that the standard commandline application could deal with it
  * @todo doubt this works in its current form. needs to be retested.
+ * @todo can't do it this way anymore - have tightened up the adapter interface. rewrite needed.
  */
 public class Dft extends CommandLineApplication {
 
@@ -57,6 +58,7 @@ public class Dft extends CommandLineApplication {
 
    /**
     * @TODO This is a quick and dirty manipulation of the parameters to get things running for the AVO demo - should think about the best general way to do this.
+    * @todo rewrite using custom adapters - this method isn't possible any more.
     * @see org.astrogrid.applications.commandline.CmdLineApplication#postParamSetupHook()
     */
    protected void postParamSetupHook() {
@@ -64,13 +66,14 @@ public class Dft extends CommandLineApplication {
       List newparams = new ArrayList();
 
     ParameterAdapter outputParam = findParameterAdapter("merged_output");
-    outputAdapters.remove(outputParam);
+    // not possible.
+    //outputAdapters.remove(outputParam);
     newparams.add(outputParam);
  //
       ReferenceCommandLineParameterAdapter mergeparam = null;
       StringBuffer sb = new StringBuffer();
  
-      for (Iterator iter = inputAdapters.iterator(); iter.hasNext();) {
+      for (Iterator iter = inputParameterAdapters(); iter.hasNext();) {
          ParameterAdapter element = (ParameterAdapter)iter.next();
          if (element.getWrappedParameter().getName().equals("matches")) {
             if (mergeparam == null) {
@@ -91,8 +94,9 @@ public class Dft extends CommandLineApplication {
       }
       mergeparam.getWrappedParameter().setValue("matches="+sb.toString());
       newparams.add(mergeparam);
-      inputAdapters.clear();
-      inputAdapters.addAll(newparams);
+      // not possible.
+      //inputAdapters.clear();
+      //inputAdapters.addAll(newparams);
 
    }
 
