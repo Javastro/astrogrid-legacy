@@ -1,5 +1,5 @@
 /*
- * $Id: ServiceServer.java,v 1.11 2003/09/17 14:51:30 nw Exp $
+ * $Id: ServiceServer.java,v 1.12 2003/09/17 14:56:25 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -59,7 +59,7 @@ public abstract class ServiceServer
       {
         // File metaFile = new File(Configuration.getProperty(METADATA_FILE_LOC_KEY, "metadata.xml"));
         // search for file, then for resource on classpath - fits better with appservers / servlet containers
-        String location = Configuration.getProperty(METADATA_FILE_LOC_KEY,"datacenter-metadata.xml");
+        String location = Configuration.getProperty(METADATA_FILE_LOC_KEY,"metadata.xml");
         File metaFile = new File(location);
         InputStream is = null;
         if (metaFile.exists() && metaFile.isFile()) {
