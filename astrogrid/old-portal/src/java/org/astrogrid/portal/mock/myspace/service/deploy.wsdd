@@ -2,10 +2,13 @@
 <!--
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/src/java/org/astrogrid/portal/mock/myspace/service/Attic/deploy.wsdd,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/10 10:54:27 $</cvs:author>
-    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/10 11:21:09 $</cvs:author>
+    | <cvs:version>$Revision: 1.3 $</cvs:version>
     | <cvs:log>
     | $Log: deploy.wsdd,v $
+    | Revision 1.3  2003/06/10 11:21:09  dave
+    | Fixed BeanMapping namespace in mock MySpace WSDD
+    |
     | Revision 1.2  2003/06/10 10:54:27  dave
     | Fixed bean mapping in MySpace WSDD
     |
@@ -27,6 +30,6 @@
 	<service name="myspace" style="java:RPC">
 		<parameter name="className"      value="org.astrogrid.portal.mock.myspace.service.MySpaceService"/>
 		<parameter name="allowedMethods" value="doNothing, getItem, findItems"/>
-		<beanMapping qname="myspace:MySpaceItem" xmlns:myspace="urn:MySpaceService" languageSpecificType="java:org.astrogrid.portal.mock.myspace.service.MySpaceItem"/>
+		<beanMapping qname="myspace:MySpaceItem" xmlns:myspace="http://service.myspace.mock.portal.astrogrid.org" languageSpecificType="java:org.astrogrid.portal.mock.myspace.service.MySpaceItem"/>
 	</service>
 </deployment>

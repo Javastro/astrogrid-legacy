@@ -2,10 +2,13 @@
 <!--
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/Attic/build.xml,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/10 10:39:18 $</cvs:author>
-    | <cvs:version>$Revision: 1.10 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/10 11:21:09 $</cvs:author>
+    | <cvs:version>$Revision: 1.11 $</cvs:version>
     | <cvs:log>
     | $Log: build.xml,v $
+    | Revision 1.11  2003/06/10 11:21:09  dave
+    | Fixed BeanMapping namespace in mock MySpace WSDD
+    |
     | Revision 1.10  2003/06/10 10:39:18  dave
     | Fixed bad URL in WSDL to Java task
     |
@@ -141,7 +144,7 @@
 	<property name="axis.servlet" value="axis"/>
 	<property name="axis.webapp"  value="${basedir}/build/axis/axis-1_1RC2/webapps/axis"/>
 
-	<property name="axis.host"   value="tyrosine.codon.demon.co.uk"/>
+	<property name="axis.host"   value="methionine.codon.demon.co.uk"/>
 	<property name="axis.port"   value="8080"/>
 	<property name="axis.server" value="${axis.host}:${axis.port}"/>
 	<property name="axis.url"    value="http://${axis.server}/${axis.servlet}"/>
@@ -1093,9 +1096,7 @@
 	</target>
 
 	<!-- Rebuild our mock MySpace service -->
-	<target name="myspace.REBUILD" depends="">
-		<!-- Remove our mock MySpace service -->
-		<antcall target="myspace.delete"/>
+	<target name="myspace.INSTALL" depends="">
 
 		<!-- Compile the server side code -->
 		<antcall target="myspace.service.java.compile"/>
