@@ -1,5 +1,5 @@
 /*
- * $Id: StoreBrowser.java,v 1.9 2005/04/01 10:41:02 mch Exp $
+ * $Id: StoreBrowser.java,v 1.10 2005/04/01 17:32:25 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -9,10 +9,13 @@
 
 package org.astrogrid.storebrowser.swing;
 import javax.swing.*;
+import org.astrogrid.storebrowser.tree.*;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -37,12 +40,9 @@ import org.astrogrid.slinger.sources.SourceIdentifier;
 import org.astrogrid.slinger.sources.SourceMaker;
 import org.astrogrid.slinger.targets.TargetIdentifier;
 import org.astrogrid.slinger.targets.TargetMaker;
-import org.astrogrid.storebrowser.folderlist.DirectoryModel;
-import org.astrogrid.storebrowser.folderlist.DirectoryView;
+import org.astrogrid.storebrowser.folderlist.DirectoryListModel;
+import org.astrogrid.storebrowser.folderlist.DirectoryListView;
 import org.astrogrid.storebrowser.textview.TextContentsView;
-import org.astrogrid.storebrowser.tree.StoreFileNode;
-import org.astrogrid.storebrowser.tree.StoreTreeView;
-import org.astrogrid.storebrowser.tree.StoresList;
 import org.astrogrid.ui.EscEnterListener;
 import org.astrogrid.ui.IconButtonHelper;
 import org.astrogrid.ui.JHistoryComboBox;
@@ -69,7 +69,7 @@ public class StoreBrowser extends JDialog
    
    /** Special case of contentPanel holding lists of files, so that we can
     examine it for selections, etc */
-   DirectoryView directoryView = new DirectoryView();
+   DirectoryListView directoryView = new DirectoryListView();
    
    //toolbar buttons
    JButton addStoreBtn = null;
@@ -242,7 +242,27 @@ public class StoreBrowser extends JDialog
          }
       );
       
-      
+      treeView.addMouseListener(new MouseAdapter() {
+               public void mousePressed(MouseEvent e) {
+                  if (e.isPopupTrigger()) {
+                     TreePath mousePath = treeView.getPathForLocation(e.getX(), e.getY());
+                     if (mousePath != null) {
+                        treeView.setSelectionPath(mousePath);
+                        StoreFileNode selectedNode = (StoreFileNode) mousePath.getLastPathComponent();
+                        if (selectedNode.getFile().isFolder()) {
+                           JPopupMenu menu = new FolderPopupMenu( (DirectoryTreeModel) treeView.getModel(), selectedNode);
+                           menu.show(treeView, e.getX(), e.getY());
+                        }
+                        else {
+                           JPopupMenu menu = new FilePopupMenu((DirectoryTreeModel) treeView.getModel(), selectedNode);
+                           menu.show(treeView, e.getX(), e.getY());
+                        }
+                     }
+                  }
+               }
+               
+      });
+   
       new EscEnterListener(this, null, null, true);
       
       pack();
@@ -266,8 +286,8 @@ public class StoreBrowser extends JDialog
          if (f.isFolder()) {
             //show directory view
             try {
-               directoryView = new DirectoryView();
-               directoryView.setModel(new DirectoryModel(f));
+               directoryView = new DirectoryListView();
+               directoryView.setModel(new DirectoryListModel(f));
                contentPanel.getViewport().setView(directoryView);
             }
             catch (IOException ioe) {
@@ -347,8 +367,8 @@ public class StoreBrowser extends JDialog
             PleaseWait waitBox = new PleaseWait(this, "Connecting to server");
             InputStream in = source.openInputStream();
             waitBox.hide();
-            log.info("Downloading from "+source+" to "+target);
-            PipeProgressMonitor monitor = new PipeProgressMonitor(in, this, "Downloading "+source+" to "+target, source+" downloaded", (int) source.getSize());
+            log.info("Copying from "+source+" to "+target);
+            PipeProgressMonitor monitor = new PipeProgressMonitor(in, this, "Copying "+source+" to "+target, source+" copied", (int) source.getSize());
             StreamPiper piper = new StreamPiper();
             piper.spawnPipe(in, out, monitor, StreamPiper.DEFAULT_BLOCK_SIZE);
          }

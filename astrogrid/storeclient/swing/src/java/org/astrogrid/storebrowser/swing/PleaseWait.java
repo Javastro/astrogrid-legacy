@@ -24,6 +24,17 @@ public class PleaseWait extends JDialog
 {
    public PleaseWait(Dialog parent, String message) {
       super(parent, "Please Wait...", false); //not modal
+      init(message);
+   }
+
+   
+   public PleaseWait(String message) {
+      super();
+      init(message);
+   }
+
+   /** Add components and show */
+   public void init(String message) {
       JPanel msgPanel = new JPanel(new BorderLayout());
       msgPanel.add(new JLabel(message), BorderLayout.CENTER);
       this.getRootPane().add(msgPanel);
@@ -31,5 +42,6 @@ public class PleaseWait extends JDialog
       invalidate();
       show();
    }
+   
 }
 

@@ -1,5 +1,5 @@
 /*
- * $Id: StoreFileNode.java,v 1.5 2005/04/01 01:54:56 mch Exp $
+ * $Id: StoreFileNode.java,v 1.6 2005/04/01 17:32:25 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -85,9 +85,9 @@ public class StoreFileNode extends DefaultMutableTreeNode implements TreeNode {
    }
 
    /**
-    * Returns true if the file is still being loaded */
+    * Returns true if the file is still being loaded or is incomplete */
    public boolean isLoading() {
-      return (completeness == 0);
+      return (completeness < 1);
    }
    
    /**

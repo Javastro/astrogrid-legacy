@@ -1,5 +1,5 @@
 /*
- * $Id: DirectoryModel.java,v 1.3 2005/04/01 01:54:56 mch Exp $
+ * $Id: DirectoryListModel.java,v 1.1 2005/04/01 17:32:25 mch Exp $
  */
 
 package org.astrogrid.storebrowser.folderlist;
@@ -16,16 +16,16 @@ import org.astrogrid.file.FileNode;
 import org.astrogrid.slinger.mime.MimeTypes;
 import org.astrogrid.storebrowser.swing.ChildrenLoader;
 
-public class DirectoryModel extends AbstractTableModel {
+public class DirectoryListModel extends AbstractTableModel {
    
-   Log log = LogFactory.getLog(DirectoryModel.class);
+   Log log = LogFactory.getLog(DirectoryListModel.class);
    
    protected FileNode directory = null;
    protected FileNode[] children = null;
 
    
    /** Construct view listing children of given node */
-   public DirectoryModel( FileNode dir) throws IOException {
+   public DirectoryListModel( FileNode dir) throws IOException {
 
       assert (dir != null) : "File is null";
       assert (dir.isFolder()) : "File "+dir+" is not a folder";

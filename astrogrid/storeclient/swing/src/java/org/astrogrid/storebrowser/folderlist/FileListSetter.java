@@ -1,5 +1,5 @@
 /*
- * $Id: FileListSetter.java,v 1.1 2005/04/01 01:54:56 mch Exp $
+ * $Id: FileListSetter.java,v 1.2 2005/04/01 17:32:25 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -20,9 +20,9 @@ import org.astrogrid.storebrowser.swing.ChildLoadCompleter;
 
 public class FileListSetter extends ChildLoadCompleter implements Runnable {
    
-   DirectoryModel model;
+   DirectoryListModel model;
    
-   public FileListSetter(DirectoryModel givenModel) {
+   public FileListSetter(DirectoryListModel givenModel) {
       this.model = givenModel;
    }
    

@@ -1,5 +1,5 @@
 /*
- * $Id: StoreTreeView.java,v 1.6 2005/04/01 10:41:02 mch Exp $
+ * $Id: StoreTreeView.java,v 1.7 2005/04/01 17:32:25 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -9,17 +9,21 @@
 
 package org.astrogrid.storebrowser.tree;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.security.Principal;
+import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.file.FileNode;
-import java.util.prefs.BackingStoreException;
 
 /**
  * A Tree view compnonent for displaying and exploring store file trees
@@ -43,6 +47,7 @@ public class StoreTreeView extends JTree {
       setRootVisible(false);
       
       setCellRenderer(new StoreNodeTreeCellRenderer());
+      
    }
    
    /** Convenience routine for returning the selected StoreFile rather than tree node */
@@ -114,6 +119,9 @@ public class StoreTreeView extends JTree {
 
 /*
  $Log: StoreTreeView.java,v $
+ Revision 1.7  2005/04/01 17:32:25  mch
+ experiemnts with actiosn
+
  Revision 1.6  2005/04/01 10:41:02  mch
  threading, preferences
 

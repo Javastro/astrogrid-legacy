@@ -54,7 +54,7 @@ public class PipeProgressMonitor  /* extends ProgressMonitorInputStream */ imple
    /** Called when pipe is complete */
    public void pipeComplete() {
       monitor.close();
-      JOptionPane.showConfirmDialog(parent, "Piping Complete", completed, JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
+      JOptionPane.showConfirmDialog(parent, completed, "Piping Complete", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
    }
    
    /** Called when any other Exception occurs */
