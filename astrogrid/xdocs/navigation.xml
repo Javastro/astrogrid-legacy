@@ -47,6 +47,8 @@
                 href="integrationTests/index.html"/>
             <item name="Test Results" 
                 href="integrationTests/junit-report.html"/>    
+		    <item name="BackUpInteReports" 
+                href="backupReports/integrationTests/"/>
         </menu>
 		<menu name="Deployment">
             <item name="main project" 
