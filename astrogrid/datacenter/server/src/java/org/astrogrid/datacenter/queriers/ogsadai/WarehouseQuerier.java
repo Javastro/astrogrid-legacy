@@ -1,58 +1,46 @@
 /*
- * $Id: WarehouseQuerier.java,v 1.2 2004/01/24 20:44:25 gtr Exp $
+ * $Id: WarehouseQuerier.java,v 1.3 2004/03/12 04:45:26 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.queriers.ogsadai;
 
-import org.astrogrid.datacenter.adql.ADQLException;
+import java.io.*;
+
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
-import org.astrogrid.datacenter.queriers.sql.AdqlQueryTranslator;
-import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.queriers.Querier;
-import org.astrogrid.datacenter.axisdataserver.types.Query;
+import org.astrogrid.datacenter.queriers.QuerierPlugin;
+import org.astrogrid.datacenter.queriers.ogsadai.PostgresAdqlQueryTranslator;
+import org.astrogrid.datacenter.queriers.status.QuerierComplete;
 import org.astrogrid.util.DomLoader;
-
+import org.astrogrid.util.Workspace;
 import org.w3c.dom.Document;
-
 import org.xml.sax.SAXException;
 
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.transform.stream.StreamResult;
-
-import java.io.IOException;
-import java.io.FileNotFoundException;
-import java.io.ByteArrayOutputStream;
-import java.io.FileReader;
-import java.io.StringReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-
-import org.astrogrid.config.SimpleConfig; 
-
 /**
- * An AstroGrid datacenter plugin Querier that provides access 
+ * An AstroGrid datacenter plugin Querier that provides access
  * to the AstroGrid OGSA-DAI Grid Data Warehouse.
  *
- * Due to incompatibilities between vanilla Axis and the customised 
+ * Due to incompatibilities between vanilla Axis and the customised
  * version of Axis used by OGSA-DAI, this plugin querier does not talk
  * directly to the OGSA-DAI installation.  (This allows us to insulate
  * the datacenter runtime from the customised Axis classes).
  *
- * Instead, it shells out to the command-line and invokes a 
- * {@link GdsQueryDelegate} (running in a new JVM) to perform 
- * the query and produce XML RowSet results.  
- * This <code>WarehouseQuerier</code> then converts these results to 
+ * Instead, it shells out to the command-line and invokes a
+ * {@link GdsQueryDelegate} (running in a new JVM) to perform
+ * the query and produce XML RowSet results.
+ * This <code>WarehouseQuerier</code> then converts these results to
  * VOTable for passing back up into the datacenter.
  *
- * Communication between this <code>WarehouseQuerier</code> and 
- * a {@link GdsQueryDelegate} is via temporary workspace files if available, 
- * or via process input and output streams otherwise.  
+ * Communication between this <code>WarehouseQuerier</code> and
+ * a {@link GdsQueryDelegate} is via temporary workspace files if available,
+ * or via process input and output streams otherwise.
  * I suspect this will have poor speed and scalability implications.
  *
  * @TOFIX The conversion from XML RowSet to VOTable perhaps involves
@@ -61,33 +49,35 @@ import org.astrogrid.config.SimpleConfig;
  *
  * @TOFIX Loading results as a DOM (using default OGSA-DAI data return
  * mechanism) is a Bad Idea.  Hope to get GridFTP transfers working soon.
- * 
+ *
  * @author K Andrews
  * @version 1.0
  * @see GdsQueryDelegate
  */
-public class WarehouseQuerier extends Querier
-{
+public class WarehouseQuerier extends QuerierPlugin {
+   
+   Workspace workspace = null;
+   
   /**
    * Default constructor initialises parent with query data.
    * Datacenter infrastructure takes care of loading config parameters
    * from toplevel AstroGridConfig.properties file.
-   * 
+   *
    * @param queryId  String identifier for tracking this query
    * @param query  Query representation in datacenter internal format
    * @throws DatabaseAccessException
    * @throws IOException
    * @throws SAXException
    */
-  public WarehouseQuerier(String queryId, Query query) 
-      throws DatabaseAccessException, IOException, SAXException {
-    super(queryId, query);
+  public WarehouseQuerier(Querier querier) throws IOException {
+    super(querier);
     log.debug("Constructing WarehouseQuerier");
+    workspace = new Workspace(querier.getId());
   }
 
   /**
    * Performs an actual database query (by shelling out to a
-   * GdsQueryDelegate running in a separate JVM). 
+   * GdsQueryDelegate running in a separate JVM).
    *
    * Converts input ADQL query into the SQL expected by the
    * GdsQueryDelegate, and converts GdsQueryDelegate's XML RowSet
@@ -103,20 +93,13 @@ public class WarehouseQuerier extends Querier
    * @return a QueryResults object wrapping the VOTable Document results.
    * @throws DatabaseAccessException
    */
-  public QueryResults doQuery() throws DatabaseAccessException {
+  public void askQuery() throws IOException {
 
-    String sql;
-    AdqlQueryTranslator translator = new AdqlQueryTranslator();
-    try {
-      sql = convertDecToDecl(escapeXmlSpecialChars(
-              (String) translator.translate(getQueryingElement())));
-      log.info("SQL query is " + sql);
-    }
-    catch (Exception e) {
-      log.error("ADQLQueryTranslator couldn't get SQL query from input ADQL");
-      throw new DatabaseAccessException("Couldn't get SQL query:" + 
-            e.getMessage());
-    }
+    //convert to SQL - throws QueryException out of this method if a problem with it
+    PostgresSqlMaker sqlMaker = new PostgresSqlMaker();
+    String sql = escapeXmlSpecialChars(sqlMaker.getSql(querier.getQuery()));
+     
+    log.info("SQL query is " + sql);
     log.debug("Successfully created SQL query from input ADQL");
 
     OutputStream output = null;
@@ -141,13 +124,19 @@ public class WarehouseQuerier extends Querier
       output = System.out;
     }
     Document results = doShelledOutQuery(sql, tempFile);
-    return new WarehouseResults(results);
+    processResults(new WarehouseResults(results));
   }
 
-  /** 
+   /** Abort - if this is called, try and top the query and tidy up */
+   public void abort() {
+      // TODO
+   }
+   
+
+ /**
    * Shells out to the command line to delegate the query operation to
    * a GdsQueryDelegate running in a separate JVM.
-   * 
+   *
    * The GdsQueryDelegate accepts SQL, performs the actual query via
    * OGSA-DAI, and returns XML RowSet results.
    *
@@ -156,8 +145,8 @@ public class WarehouseQuerier extends Querier
    * @return Document containing VOTable-ised query results
    * @throws DatabaseAccessException
    */
-  protected Document doShelledOutQuery(String sql, File tempFile) 
-      throws DatabaseAccessException { 
+  protected Document doShelledOutQuery(String sql, File tempFile)
+      throws DatabaseAccessException {
 
     log.debug("Commencing doShelledOutQuery");
 
@@ -176,17 +165,17 @@ public class WarehouseQuerier extends Querier
     cmdArgs[4] = getOgsaDaiRegistryString();
     if (tempFile != null) {
       cmdArgs[5] = tempFile.getAbsolutePath();
-      log.debug("Command is: " + cmdArgs[0] + " " + cmdArgs[1] + 
+      log.debug("Command is: " + cmdArgs[0] + " " + cmdArgs[1] +
             " " + cmdArgs[2] + " " + cmdArgs[3] + " " + cmdArgs[4]);
       // TOFIX REMOVE
-      System.out.println("Command is: " + cmdArgs[0] + " " + cmdArgs[1] + 
+      System.out.println("Command is: " + cmdArgs[0] + " " + cmdArgs[1] +
             " " + cmdArgs[2] + " " + cmdArgs[3] + " " + cmdArgs[4]);
-    } 
+    }
     else {
-      log.debug("Command is: " + cmdArgs[0] + " " + cmdArgs[1] + 
+      log.debug("Command is: " + cmdArgs[0] + " " + cmdArgs[1] +
             " " + cmdArgs[2] + " " + cmdArgs[3]);
       // TOFIX REMOVE
-      System.out.println("Command is: " + cmdArgs[0] + " " + cmdArgs[1] + 
+      System.out.println("Command is: " + cmdArgs[0] + " " + cmdArgs[1] +
             " " + cmdArgs[2] + " " + cmdArgs[3]);
     }
 
@@ -213,7 +202,7 @@ public class WarehouseQuerier extends Querier
               "WAREHOUSE_XslTransform", DEFAULT_XSL_TRANSFORM)));
     }
     catch (Exception e){
-      String errorMessage = 
+      String errorMessage =
         "Couldn't create XML->VOTable XSLT transformer: " + e.getMessage();
       log.error(errorMessage);
       throw new DatabaseAccessException(errorMessage);
@@ -222,7 +211,7 @@ public class WarehouseQuerier extends Querier
     ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
     if (tempFile == null) {
       // Had no temp file : expect results in stdout stream
-      // Need to extract the actual results 
+      // Need to extract the actual results
       String stdoutString = result.getStdout();
       int start = stdoutString.indexOf(WAREHOUSE_RESULT_START);
       int end = stdoutString.indexOf(WAREHOUSE_RESULT_END);
@@ -230,7 +219,7 @@ public class WarehouseQuerier extends Querier
 
       // Check we can find the results in the output stream
       if ((start == -1) || (end == -1) || (realstart == -1)) {
-        String errorMessage = 
+        String errorMessage =
           "Couldn't read results from shelled out query's output stream";
         log.error(errorMessage);
         throw new DatabaseAccessException(errorMessage);
@@ -240,10 +229,10 @@ public class WarehouseQuerier extends Querier
       try {
         transformer.transform(new StreamSource(new StringReader(realResult)),
            new StreamResult(byteStream));
-      } 
+      }
       catch (Exception e){ // SAXException, IOException
-        String errorMessage = 
-            "Couldn't transform XML to VOTable using XSLT transformer: " + 
+        String errorMessage =
+            "Couldn't transform XML to VOTable using XSLT transformer: " +
             e.getMessage();
         log.error(errorMessage);
         throw new DatabaseAccessException(errorMessage);
@@ -255,14 +244,14 @@ public class WarehouseQuerier extends Querier
       try {
         transformer.transform(new StreamSource(new FileReader(tempFile)),
            new StreamResult(byteStream));
-      } 
+      }
       catch (FileNotFoundException e) {
         throw new DatabaseAccessException(
             "Couldn't open results file " + tempFile.getAbsolutePath());
       }
       catch (Exception e){ // SAXException, IOException
         throw new DatabaseAccessException(
-            "Couldn't transform XML to VOTable using XSLT transformer: " + 
+            "Couldn't transform XML to VOTable using XSLT transformer: " +
             e.getMessage());
       }
     }
@@ -277,9 +266,9 @@ public class WarehouseQuerier extends Querier
       log.info("Parsed converted VOTable successfully");
       return resultsDoc;
     }
-    catch (Exception e) { //ParserConfigurationException, SAXException, 
+    catch (Exception e) { //ParserConfigurationException, SAXException,
                           //IOException
-      String errorMessage = 
+      String errorMessage =
           "Couldn't parse results VOTable from XSLT conversion";
       log.error(errorMessage + ": " + e.getMessage());
       throw new DatabaseAccessException(errorMessage);
@@ -287,16 +276,16 @@ public class WarehouseQuerier extends Querier
   }
 
   /**
-   * Assembles the URL of the OGSA-DAI registry to be used by the 
+   * Assembles the URL of the OGSA-DAI registry to be used by the
    * GdsQueryDelegate.
-   * 
+   *
    * @return  String holding full URL of the OGSA-DAI registry
    * @throws DatabaseAccessException
    */
   protected String getOgsaDaiRegistryString() throws DatabaseAccessException {
     String host = SimpleConfig.getProperty("WAREHOUSE_OgsaDaiHostString");
     if (host == null) {
-      String errorMessage = 
+      String errorMessage =
         "Fatal error: Property 'WAREHOUSE_OgsaDaiHostString' not found " +
         " in file 'AstroGridConfig.properties'";
       log.error(errorMessage);
@@ -304,7 +293,7 @@ public class WarehouseQuerier extends Querier
     }
     String registry = SimpleConfig.getProperty("WAREHOUSE_OgsaDaiRegistryString");
     if (registry == null) {
-      String errorMessage = 
+      String errorMessage =
         "Fatal error: Property 'WAREHOUSE_OgsaDaiRegistryString' not found" +
         " in file 'WarehouseQuerier.properties'";
       log.error(errorMessage);
@@ -316,17 +305,17 @@ public class WarehouseQuerier extends Querier
   /**
    * Assembles the fully-qualified path of the Java JVM to be shelled
    * out to.
-   * 
+   *
    * By default, looks for the environment variable JAVA_HOME and figures
    * out the path from that.
    *
    * If JAVA_HOME is not defined, looks for a local property instead.
-   * 
+   *
    * @return  String holding full path of the Java JVM binary
    * @throws DatabaseAccessException
    */
   protected String getJavaBinary() throws DatabaseAccessException {
-    // First, check if user has customised the JVM location 
+    // First, check if user has customised the JVM location
     //  in the WarehouseQuerier.properties file
     String customJVM = SimpleConfig.getProperty("WAREHOUSE_WarehouseJvm");
     if (customJVM != null) {
@@ -336,7 +325,7 @@ public class WarehouseQuerier extends Querier
       // No custom JVM - use JVM in JAVA_HOME
       String javaHome = System.getProperty("java.home");
       if (javaHome == null) {  //Shouldn't happen
-        String errorMessage = 
+        String errorMessage =
           "Fatal error: System property 'java.home' not defined! "+
              "Please set WAREHOUSE_WarehouseJvm property in " +
              "'AstroGridConfig.properties' file";
@@ -349,13 +338,13 @@ public class WarehouseQuerier extends Querier
         separator = "/";
       }
       // Assume JVM binary is called java and is in bin dir of JAVA_HOME
-      String fullPath = javaHome + separator + "bin" + separator + "java"; 
+      String fullPath = javaHome + separator + "bin" + separator + "java";
       File testFile = new File(fullPath);
       if (!(testFile.exists())) {
         //Try looking for a .exe version - might be running under Windows
         testFile = new File(fullPath + ".exe");
         if (!(testFile.exists())) {
-          String errorMessage = 
+          String errorMessage =
             "Fatal error: Java binary '" + fullPath + "[.exe]' not found! "+
                "Please set WAREHOUSE_WarehouseJvm property in " +
                "'AstroGridConfig.properties' file";
@@ -371,17 +360,17 @@ public class WarehouseQuerier extends Querier
   }
 
   /**
-   * Assembles the fully-qualified path of the Java executable jar 
+   * Assembles the fully-qualified path of the Java executable jar
    * containing the OGSA-DAI GdsQueryDelegate.
-   * 
+   *
    * The location and name of the jar can be customised for a given
    * installation in the WarehouseQuerier.properties file.
-   * 
+   *
    * @return  String holding full path of the GdsQueryDelegate executable jar
    * @throws DatabaseAccessException
    */
   protected String getExecutableJar() throws DatabaseAccessException {
-    // Extract path to directory containing executable jar 
+    // Extract path to directory containing executable jar
     String jarPath = SimpleConfig.getProperty("WAREHOUSE_ExecutableJarPath");
     if (jarPath == null) {
       String errorMessage = "Property 'WAREHOUSE_ExecutableJarPath' not set" +
@@ -405,7 +394,7 @@ public class WarehouseQuerier extends Querier
     // Extract name of executable jar
     String jarName = SimpleConfig.getProperty("WAREHOUSE_ExecutableJarName");
     if (jarName == null) {
-      String errorMessage = 
+      String errorMessage =
           "Property 'WAREHOUSE_ExecutableJarName' not set in " +
           "properties file 'AstroGridConfig.properties'";
       log.error(errorMessage);
@@ -414,57 +403,25 @@ public class WarehouseQuerier extends Querier
     return jarPath + jarName;
   }
 
-  /**
-   * Adjust SQL query (temporary kludge): datacenter default ADQL->SQL 
-   * translator produces DEC as column name where we need DECL.
-   * @return  String holding adjusted SQL query
-   */
-  protected String convertDecToDecl(String inString) {
-    String sqlString = inString;
-    while (true) {
-      String newString;
-      int index = sqlString.indexOf("t.DEC");
-      int index2 = sqlString.indexOf("t.DECL");
-      if (index != -1) {
-        if (index != index2) {  //DEC - change to decl
-          newString = 
-             sqlString.substring(0,index) +
-             "t.decl" + 
-             sqlString.substring(index+5);
-        }
-        else {  //DECL - change to decl
-          newString = 
-             sqlString.substring(0,index) +
-             "t.decl" + 
-             sqlString.substring(index+6);
-        }
-      } 
-      else {
-        break;  //No more occurrences of t.DEC
-      }
-      sqlString = newString;
-    }
-    return sqlString;
-  }
 
   /**
    * Adjust input string (SQL query) to escape XML special characters
    * likely to cause problems.
    * @return  Version of string with escaped XML special characters
    */
-  protected String escapeXmlSpecialChars(String inString) {        
+  protected String escapeXmlSpecialChars(String inString) {
     String outString = "";
     for (int i = 0; i < inString.length(); i++) {
       char c = inString.charAt(i);
       if (c == '<') {
         outString = outString + "&lt;";
-      } 
+      }
       else if (c == '>') {
         outString = outString + "&gt;";
-      } 
+      }
       else if (c == '&') {
         outString = outString + "&amp;";
-      } 
+      }
       else {
         outString = outString + c;
       }
@@ -474,10 +431,10 @@ public class WarehouseQuerier extends Querier
 
   // ----------------------------------------------------------
   // Fallback defaults for values that should be configured on a
-  // per-installation basis in the WarehouseServiceImpl.properties 
-  private final String DEFAULT_WAREHOUSE_JVM = 
+  // per-installation basis in the WarehouseServiceImpl.properties
+  private final String DEFAULT_WAREHOUSE_JVM =
         "/usr/bin/java";
-  private final String DEFAULT_XSL_TRANSFORM = 
+  private final String DEFAULT_XSL_TRANSFORM =
         "http://astrogrid.ast.cam.ac.uk/xslt/ag-warehouse-first.xsl";
 
   // Other utility strings
@@ -489,6 +446,9 @@ public class WarehouseQuerier extends Querier
 }
 /*
 $Log: WarehouseQuerier.java,v $
+Revision 1.3  2004/03/12 04:45:26  mch
+It05 MCH Refactor
+
 Revision 1.2  2004/01/24 20:44:25  gtr
 Merged from GDW-integration branch.
 

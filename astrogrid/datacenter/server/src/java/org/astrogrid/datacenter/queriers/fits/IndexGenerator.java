@@ -36,6 +36,7 @@ public class IndexGenerator
       
       for (int i=0;i<urls.length;i++)
       {
+         assert urls[i] != null;  //or could report it and continue?
          index.append(generateIndex(urls[i]));
       }
 
@@ -52,6 +53,8 @@ public class IndexGenerator
     */
    public static String generateIndex(URL fitsUrl) throws IOException
    {
+      assert fitsUrl != null;
+      
       Log.trace("Examining file "+fitsUrl+"...");
       return generateIndex(new FitsStreamReader(fitsUrl), fitsUrl.toString());
    }
@@ -194,6 +197,9 @@ public class IndexGenerator
 
 /*
 $Log: IndexGenerator.java,v $
+Revision 1.6  2004/03/12 04:45:26  mch
+It05 MCH Refactor
+
 Revision 1.5  2004/03/08 00:31:28  mch
 Split out webservice implementations for versioning
 

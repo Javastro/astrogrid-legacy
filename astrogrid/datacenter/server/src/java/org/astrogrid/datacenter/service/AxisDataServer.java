@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.33 2004/03/08 15:57:42 mch Exp $
+ * $Id: AxisDataServer.java,v 1.34 2004/03/12 04:45:26 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,19 +9,12 @@ package org.astrogrid.datacenter.service;
 import java.io.*;
 
 import org.apache.axis.AxisFault;
-import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.metadata.MetadataServer;
-import org.astrogrid.datacenter.queriers.Querier;
-import org.astrogrid.datacenter.queriers.QuerierManager;
-import org.astrogrid.datacenter.queriers.QuerierStatus;
-import org.astrogrid.datacenter.queriers.QueryResults;
-import org.astrogrid.datacenter.query.QueryState;
-import org.astrogrid.datacenter.snippet.ResponseHelper;
+import org.astrogrid.datacenter.queriers.status.QuerierStatus;
 import org.astrogrid.io.Piper;
-import org.w3c.dom.Element;
 
 /**
  * A class for serving data through an Axis webservice implementation.  It is
@@ -183,6 +176,9 @@ public abstract class AxisDataServer  {
 
 /*
 $Log: AxisDataServer.java,v $
+Revision 1.34  2004/03/12 04:45:26  mch
+It05 MCH Refactor
+
 Revision 1.33  2004/03/08 15:57:42  mch
 Fixes to ensure old ADQL interface works alongside new one and with old plugins
 

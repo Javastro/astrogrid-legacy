@@ -1,4 +1,4 @@
-/*$Id: QuerierManager.java,v 1.19 2004/03/08 15:57:42 mch Exp $
+/*$Id: QuerierManager.java,v 1.20 2004/03/12 04:45:26 mch Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,270 +11,109 @@
 package org.astrogrid.datacenter.queriers;
 
 import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Hashtable;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.axisdataserver.types.Query;
-import org.astrogrid.datacenter.query.QueryState;
-import org.astrogrid.store.Agsl;
+import org.astrogrid.datacenter.queriers.status.QuerierStatus;
 
-/** Manages the construction and initialization of Queriers, and maintains a collection of current Queriers
+/** Manages the construction and initialization of Queriers, and maintains a
+ * collection of current Queriers. It might run queues or something... later...
  *
  * <p>
  * @author Noel Winstanley nw@jb.man.ac.uk 24-Sep-2003
- * @see Querier
- *  @todo - move from a static container to an object - can then have multiple containers if needed.
- *
+ * @author mch
  */
-public class QuerierManager {
+public class QuerierManager implements QuerierListener {
+   
    
    private static final Log log = LogFactory.getLog(QuerierManager.class);
    
+   /** Identifier for this manager/querier container */
+   private String managerId;
+   
    /** lookup table of all the current queriers indexed by their handle*/
-   protected static Hashtable queriers = new Hashtable();
+   private Hashtable queriers = new Hashtable();
    
-   /** temporary used for generating unique handles - see generateHandle() */
-   static java.util.Random random = new java.util.Random();
+   /** lookup table by external references */
+   private Hashtable extIndex = new Hashtable();
+   
+   /** This isn't the right place to keep this, but it will do for now */
+   public final static String DEFAULT_MYSPACE = "DefaultMySpace";
+   
+   public QuerierManager(String givenId) {
+      this.managerId = givenId;
+   }
 
-   /** Key to which plugin (which sublcass of Querier) to use */
-   public static final String DATABASE_QUERIER_KEY = "DatabaseQuerierClass";
-   
-   /** Key to configuration entry for the default target myspace for this server */
-   public static final String DEFAULT_MYSPACE = "DefaultMySpace";
-   
-
-   public static Querier getQuerier(String qid) {
+   /** Return the querier with the given id */
+   public Querier getQuerier(String qid) {
       return (Querier) queriers.get(qid);
    }
    
-   /** Class method that returns a list of all the currently running queriers
+   /** Return the querier with the given id */
+   public Querier getQuerierByExt(String extRef) {
+      return (Querier) extIndex.get(extRef);
+   }
+
+   /** Returns a list of all the currently running queriers
     */
-   public static Collection getQueriers() {
+   public Collection getQueriers() {
       return queriers.values();
    }
    
-   
    /**
-    * A factory method that Returns a Querier implementation based on the
-    * settings in the configuration file and the document parameter.
-    * @throws DatabaseAccessException on error (contains cause exception)
-    * @deprecated Use createQuerier(Query);
-    * @todo - move the extra bits in this method into the OO-version
-    * @todo - temporarily commented out.
-    *
-   public static Querier createQuerier(Element rootElement)
-      throws DatabaseAccessException {
-      /*
-      Querier querier = new Querier(instantiateQuerierSPI(),null,null,null); // bodge
-      //assigns handle
-      try {
-         String handle = generateHandle();
-         String resultsDestination = AttomConfig.getProperty(QuerierManager.RESULTS_TARGET_KEY);
-         // extract values from document, if present.
-         if (rootElement != null) {
-            String aHandle = DocHelper.getTagValue(rootElement, DocMessageHelper.ASSIGNQuery_ID_TAG);
-            if (aHandle != null) {
-               handle = aHandle;
-            }
-            String aResultsDestination = DocHelper.getTagValue(rootElement, DocMessageHelper.RESULTS_TARGET_TAG);
-            if (aResultsDestination != null) {
-               resultsDestination = aResultsDestination;
-            }
-         }
-         if (queriers.get(handle) != null) {
-            log.error( "Handle '" + handle + "' already in use");
-            throw new IllegalArgumentException("Handle " + handle + " already in use");
-         }
-         //querier.setHandle(handle); bodge
-         queriers.put(handle, querier);
-         
-         //querier.setWorkspace(new Workspace(handle)); bodge
-         querier.setResultsDestination(resultsDestination);
-         
-         // finally
-         if (rootElement != null) {
-             // bodge
-            //querier.setCertification(CommunityHelper.getCertification(rootElement));
-           //Query q = (Query)Unmarshaller.unmarshal(Query.class,rootElement);
-           
-            //querier.setQuery(q);
-            querier.registerWebListeners(rootElement);  //looks through dom for web listeners
-         }
-         return querier;
-      }
-      catch (IOException e) {
-         reportException(e);
-      }*/
-      /*
-      catch (MarshalException e) {
-         reportException(e);
-      }
-      catch (ValidationException e) {
-         reportException(e);
-      }
-      
-   }
-    /**/
-    
-   /**
-    * Creates a querier with a generated (unique-to-this-service) handle
+    * Adds the given querier to this manager, and starts it off on a new
+    * thread
     */
-   public static Querier createQuerier(Query q) throws DatabaseAccessException {
-      return QuerierManager.createQuerier(q, generateQueryId());
-   }
-   
-    /**
-    * Creates a querier from an AGSL
-    *
-   public static Querier createQuerier(String internalQuery) throws DatabaseAccessException {
-      throw new UnsupportedOperationException();
-   }
-    */
-   
-   /**
-    * A factory method that Returns a Querier implementation based on the
-    * settings in the configuration file and the document parameter.
-    * @throws DatabaseAccessException on error (contains cause exception)
-    * @todo - add parsing of results target?
-    */
-   public static Querier createQuerier(Query query, String qid) throws DatabaseAccessException {
+   public void submitQuerier(Querier querier)  {
       
       //assigns handle
-      if (queriers.get(qid) != null) {
-         log.error( "Handle '" + qid + "' already in use");
-         throw new IllegalArgumentException("Handle " + qid + "already in use");
+      if (queriers.get(querier.getId()) != null) {
+         log.error( "Handle '" + querier.getId() + "' already in use");
+         throw new IllegalArgumentException("Handle " + querier.getId() + "already in use");
       }
-      Querier querier = instantiateQuerier(query, qid);
-      queriers.put(qid, querier);
-      querier.setState(QueryState.CONSTRUCTED);
-      return querier;
-   }
-   
-   /**
-    * Convenience method for nicely closing a querier.  Does not complain if
-    * reference is null or querier is not in list */
-   public static void closeQuerier(Querier querier) throws IOException
-   {
-      if (querier != null)
-      {
-         querier.close();
-      }
-   }
-   
-   /**
-    * Convenience method for nicely closing a querier.  Does not complain if
-    * reference is null or querier is not in list */
-   public static void closeQuerier(String queryId) throws IOException
-   {
-      if (queryId != null)
-      {
-         closeQuerier((Querier) queriers.get(queryId));
-      }
-   }
-   
-   
-   /** Instantiates the class with the given name.  This is useful for things
-    * such as 'plugins', where a class name might be given in a configuration file.
-    * Rather messily throws Throwable because anything might have
-    * gone wrong in the constructor.
-    * @todo 'factor out' to a utility class?
-    */
-   public static Object instantiate(String classname) throws Throwable {
+      queriers.put(querier.getId(), querier);
+      querier.addListener(this);
       
-      try {
-         Class qClass = Class.forName(classname);
-
-         /* NWW - interesting bug here.
-          original code used class.newInstance(); this method doesn't declare it throws InvocationTargetException,
-          however, this exception _is_ thrown if an exception is thrown by the constructor (as is often the case at the moment)
-          worse, as InvocatioinTargetException is a checked exception, the compiler rejects code with a catch clause for
-          invocationTargetExcetpion - as it thinks it cannot be thrown.
-          this means the exception boils out of the code, and is unstoppable - dodgy
-          work-around - use the equivalent methods on java.lang.reflect.Constructor - which do throw the correct exceptions */
-
-         Constructor constr = qClass.getConstructor(new Class[] { });
-         return constr.newInstance(new Object[] { } );
-         
-      } catch (InvocationTargetException e) {
-         // interested in the root cause here - invocation target is just a wrapper, and not meaningful in itself.
-         throw e.getCause();
-      }
+      Thread qth = new Thread(querier);
+      qth.start();
    }
-   
-   /** Instantiates the querier given in the configuration file
-    */
-   public static Querier instantiateQuerier(Query query, String id) throws DatabaseAccessException {
-      
-      String querierClass = SimpleConfig.getSingleton().getString(DATABASE_QUERIER_KEY, org.astrogrid.datacenter.sitedebug.DummyQuerier.class.getName());
 
-      /*
-      happens automatically now
-      if (querierClass == null) {
-         throw new DatabaseAccessException(" Server not configured properly: Querier key [" + DATABASE_QUERIER_KEY + "] "
-                                              + "cannot be found in the configuration file(s) '"  + AttomConfig.getLocations() + "'");
-      }
-       */
-
-      try {
-         Class qClass = Class.forName(querierClass);
-
-         /* NWW - interesting bug here.
-          original code used class.newInstance(); this method doesn't declare it throws InvocationTargetException,
-          however, this exception _is_ thrown if an exception is thrown by the constructor (as is often the case at the moment)
-          worse, as InvocatioinTargetException is a checked exception, the compiler rejects code with a catch clause for
-          invocationTargetExcetpion - as it thinks it cannot be thrown.
-          this means the exception boils out of the code, and is unstoppable - dodgy
-          work-around - use the equivalent methods on java.lang.reflect.Constructor - which do throw the correct exceptions */
-
-         Constructor constr = qClass.getConstructor(new Class[] {String.class, Query.class });
-         return (Querier) constr.newInstance(new Object[] {id, query});
-      }
-      catch (ClassNotFoundException cnfe) {
-         throw new DatabaseAccessException(cnfe, "Server not configured properly: plugin '"+querierClass+"' not found");
-      }
-      catch (ClassCastException cce) {
-         throw new DatabaseAccessException(cce, "Server not configured properly: plugin '"+querierClass+"' is not a Querier subclass");
-      }
-      catch (InvocationTargetException e) {
-         throw new DatabaseAccessException(e.getCause(), "Querier '"+querierClass+"' constructor failed: "+e);
-      }
-      catch (Exception e) {
-         throw new DatabaseAccessException(e, "Could not load Querier '"+querierClass+"': "+e);
-      }
-   }
-   
    /**
-    * Generates a handle for use by a particular instance; uses the current
-    * time to help us debug (ie we can look at the temporary directories and
-    * see which was the last run). Later we could add service/user information
-    * if available
-    * @todo not really unique...
+    * Adds the given querier to this manager, runs it, and returns the status
     */
-   public static String generateQueryId() {
-      Date todayNow = new Date();
-       return
-         todayNow.getYear()
-         + "-"
-         + todayNow.getMonth()
-         + "-"
-         + todayNow.getDate()
-         + "_"
-         + todayNow.getHours()
-         + "."
-         + todayNow.getMinutes()
-         + "."
-         + todayNow.getSeconds()
-         + "_"
-         //plus botched bit... not really unique
-         + (random.nextInt(8999999) + 1000000);
+   public QuerierStatus askQuerier(Querier querier)  throws IOException {
       
+      //assigns handle
+      if (queriers.get(querier.getId()) != null) {
+         log.error( "Handle '" + querier.getId() + "' already in use");
+         throw new IllegalArgumentException("Handle " + querier.getId() + "already in use");
+      }
+      queriers.put(querier.getId(), querier);
+      querier.addListener(this);
+      querier.ask();
+      return querier.getStatus();
    }
 
+   /**
+    * Removes the querier indexed by the given id from this manager
+    * commented out at the moment as I think only other managers should be
+    * able to do this... havne't thought enough about it.
+   public void removeQuerier(String id)  {
+      Querier q = (Querier) queriers.get(id);
+      q.removeListener(this);
+      
+      queriers.remove(id);
+   }
+   
+   /** A Querier manager must listen to it's queriers
+    */
+   public void queryStatusChanged(Querier querier) {
+      // TODO
+   }
+   
+   
+   
    
    
    
@@ -282,6 +121,9 @@ public class QuerierManager {
 
 /*
  $Log: QuerierManager.java,v $
+ Revision 1.20  2004/03/12 04:45:26  mch
+ It05 MCH Refactor
+
  Revision 1.19  2004/03/08 15:57:42  mch
  Fixes to ensure old ADQL interface works alongside new one and with old plugins
 

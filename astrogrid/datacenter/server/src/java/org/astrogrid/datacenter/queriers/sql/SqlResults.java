@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.14 2004/03/11 15:55:32 mch Exp $
+ * $Id: SqlResults.java,v 1.15 2004/03/12 04:45:26 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -15,6 +15,7 @@ import java.sql.Types;
 import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.logging.Log;
 import org.astrogrid.datacenter.queriers.QueryResults;
+import org.astrogrid.datacenter.queriers.status.QuerierProcessingResults;
 import org.astrogrid.util.DomHelper;
 import org.astrogrid.util.Workspace;
 import org.w3c.dom.Document;
@@ -32,17 +33,15 @@ import org.xml.sax.SAXException;
 public class SqlResults implements QueryResults
 {
    protected ResultSet sqlResults;
-   protected Workspace workspace = null;
    protected static final Log log = org.apache.commons.logging.LogFactory.getLog(SqlResults.class);
    /**
     * Construct this wrapper around the given JDBC/SQL ResultSet.  We don't
     * know how big this result set will be, so it's likely we'll need a workspace
     * for any temporary files created when doing conversions
     */
-   public SqlResults(ResultSet givenResults, Workspace givenWorkspace)
+   public SqlResults(ResultSet givenResults)
    {
       this.sqlResults = givenResults;
-      this.workspace = givenWorkspace;
       
    }
 
@@ -62,29 +61,16 @@ public class SqlResults implements QueryResults
    }
    
    /**
-    * Converts the resultset to VOTable Document.
+    * Converts the resultset to VOTable Document; this is likely to break if
+    * the table is large.  Should pipe in that case...
     */
-   public Document toVotable() throws IOException, SAXException
+   public Document toVotable(QuerierProcessingResults statusToUpdate) throws IOException, SAXException
    {
       try
       {
-         //don't know how big the result set is so use the workspace - unless
-         //it's null, in which case work from memory
-         if ((workspace != null) && (!workspace.isClosed()))
-         {
-            File workfile = workspace.makeWorkFile("votableResults.vot.xml"); //should go into workspace...
-            
-            OutputStream out = new FileOutputStream(workfile) ;
-            toVotable(out);
-            out.close();
-            return DomHelper.newDocument(new FileInputStream(workfile));
-         }
-         else
-         {
-            StringWriter sw = new StringWriter();
-            toVotable(sw);
-            return DomHelper.newDocument(sw.toString());
-         }
+         StringWriter sw = new StringWriter();
+         toVotable(sw, statusToUpdate);
+         return DomHelper.newDocument(sw.toString());
       }
       catch (ParserConfigurationException e)
       {
@@ -95,8 +81,8 @@ public class SqlResults implements QueryResults
    }
 
    /** Stream version of the writer */
-   public void toVotable(OutputStream out) throws IOException {
-      toVotable((Writer) new OutputStreamWriter(out));
+   public void toVotable(OutputStream out, QuerierProcessingResults statusToUpdate) throws IOException {
+      toVotable((Writer) new OutputStreamWriter(out), statusToUpdate);
    }
    
    /**
@@ -104,7 +90,7 @@ public class SqlResults implements QueryResults
     * is very pleasant, and will break when the votable format changes, but
     * is easy to fix...
     */
-   public void toVotable(Writer out) throws IOException
+   public void toVotable(Writer out, QuerierProcessingResults statusToUpdate) throws IOException
    {
       try
       {
@@ -140,6 +126,7 @@ public class SqlResults implements QueryResults
                                 + getVotableType(i)
                                 +" ucd='"+getUcdFor(metadata.getColumnName(i))+"' "
                                 +"/>");
+            statusToUpdate.setProgress("Processng Record "+i+" of "+getCount());
          }
 
          printOut.println("<DATA>");
@@ -197,7 +184,7 @@ public class SqlResults implements QueryResults
          case Types.SMALLINT: return "datatype='short'";
          case Types.TINYINT:  return "datatype='short'";
          default: {
-            log.warn("Cannot cope with type "+sqlResults.getMetaData().getColumnTypeName(col)+", assuming string");
+            log.error("Cannot cope with type "+sqlResults.getMetaData().getColumnTypeName(col)+", storing as string");
             return "datatype='char' arraysize='*'";
          }
       }
@@ -214,8 +201,11 @@ public class SqlResults implements QueryResults
 
 /*
  $Log: SqlResults.java,v $
- Revision 1.14  2004/03/11 15:55:32  mch
- Commited real fixes in right version to sql type
+ Revision 1.15  2004/03/12 04:45:26  mch
+ It05 MCH Refactor
+
+ Revision 1.12  2004/03/10 23:09:59  mch
+ Fixed unknown sql type stopping query
 
  Revision 1.11  2004/03/10 02:32:01  mch
  Removed getCount attempt

@@ -1,4 +1,4 @@
-/*$Id: AxisDataServerSoapBinding.java,v 1.5 2004/03/08 00:31:28 mch Exp $
+/*$Id: AxisDataServerSoapBinding.java,v 1.6 2004/03/12 04:45:26 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,8 +11,8 @@
 package org.astrogrid.datacenter.service;
 
 import java.io.IOException;
-
 import org.astrogrid.datacenter.axisdataserver.AxisDataServerSoapBindingSkeleton;
+import org.astrogrid.datacenter.service.v041.AxisDataServer_v0_4_1;
 
 /** Axis server-stub that wraps our service implementation
  * @see AxisDataServer
@@ -42,6 +42,9 @@ public class AxisDataServerSoapBinding
 
 /*
 $Log: AxisDataServerSoapBinding.java,v $
+Revision 1.6  2004/03/12 04:45:26  mch
+It05 MCH Refactor
+
 Revision 1.5  2004/03/08 00:31:28  mch
 Split out webservice implementations for versioning
 

@@ -1,5 +1,5 @@
 /*
- $Id: FitsStreamReader.java,v 1.2 2004/01/13 00:33:14 nw Exp $
+ $Id: FitsStreamReader.java,v 1.3 2004/03/12 04:45:26 mch Exp $
 
  Copyright (c) etc
  */
@@ -111,7 +111,8 @@ public class FitsStreamReader implements FitsReader
          //quick check for binary data, just in case there is something
          //wrong with the header we don't want to have to read the whole
          // image
-         /*
+            //you get some nulls in some text lines, on the other hand you also get some complete 0 blocks...
+         /**/
          for (int i=0;i<block.length;i++)
          {
             if ( ((block[i] >128) || (block[i] <32)) && (block[i] != 0)   )
@@ -123,7 +124,15 @@ public class FitsStreamReader implements FitsReader
                throw new IOException(msg);
             }
          }
-          */
+         boolean isNuls = true;
+         for (int i=0;i<block.length;i++) {
+            if (block[i] != 0) {
+               isNuls = false;
+               break;
+            }
+         }
+         if (isNuls) throw new IOException("All-Nuls block in image "+fitsName);
+
          //parse keyword
          keyword = new FitsKeyword(block);
          //add keyword if not null - *do* want to add END so that we can check that
@@ -168,7 +177,7 @@ public class FitsStreamReader implements FitsReader
       r = totBytesRead % 2880;
       skipTo(totBytesRead + r);
 
-      if (size >0) skipTo(totBytesRead + 28*80);
+      if (size >0) skipTo(totBytesRead + 2880);
       
       Log.trace("read to pos "+totBytesRead);
       
@@ -197,6 +206,9 @@ public class FitsStreamReader implements FitsReader
 
 /*
  $Log: FitsStreamReader.java,v $
+ Revision 1.3  2004/03/12 04:45:26  mch
+ It05 MCH Refactor
+
  Revision 1.2  2004/01/13 00:33:14  nw
  Merged in branch providing
  * sql pass-through

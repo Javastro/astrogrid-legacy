@@ -11,12 +11,16 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.Querier;
+import org.astrogrid.datacenter.queriers.QuerierPlugin;
 import org.astrogrid.datacenter.queriers.QueryResults;
-import org.astrogrid.datacenter.query.QueryState;
+import org.astrogrid.datacenter.queriers.query.AdqlQuery;
+import org.astrogrid.datacenter.queriers.query.AdqlQueryMaker;
+import org.astrogrid.datacenter.queriers.status.QuerierComplete;
+import org.astrogrid.datacenter.queriers.status.QuerierQuerying;
 import org.astrogrid.util.DomHelper;
+import org.astrogrid.util.Workspace;
 import org.w3c.dom.Element;
 
 /** Back-end Plugin Adapter - loads & wraps a {@link QuerierSPI} so that it appears as a {@link org.astrogrid.datacenter.queriers.Querier}
@@ -35,7 +39,7 @@ import org.w3c.dom.Element;
  * @todo give it a better name?
  */
 
-public class PluginQuerier extends Querier {
+public class PluginQuerier extends QuerierPlugin {
    
    /** the plugin we're managing */
    protected final QuerierSPI spi;
@@ -47,13 +51,13 @@ public class PluginQuerier extends Querier {
    
    /**
     * Standard Querier constructor */
-   public PluginQuerier(String queryId, Query query) throws IOException {
-      super(queryId, query);
+   public PluginQuerier(Querier querier) throws IOException {
+      super(querier);
       this.spi =  instantiateQuerierSPI();
    }
    
    /** Quickfix so that plugin tests work after my abstracting Querier.  spi
-    * should really be set using the configuration files - MCH, 1/12/2003 */
+    * should really be set using the configuration files - MCH, 1/12/2003 *
    public PluginQuerier(QuerierSPI givenSpi, String queryId, Query query) throws IOException
    {
       super(queryId, query);
@@ -68,13 +72,15 @@ public class PluginQuerier extends Querier {
     * <p>
     * Meanwhile, it ensures that the right status-change events are fired, times the execution, and catches and logs all errors raised by the plugin.
      */
-    public QueryResults doQuery() throws DatabaseAccessException {
+    public void askQuery() throws IOException {
         // initialize the spi.
-        spi.setWorkspace(workspace);
-        setState(QueryState.CONSTRUCTED);
+        spi.setWorkspace(new Workspace(querier.getId()));
         
+        AdqlQueryMaker adqlMaker = new AdqlQueryMaker();
+        AdqlQuery adql = adqlMaker.getAdqlQuery(querier.getQuery());
+      
         // find the translator
-        Element queryBody = query.getQueryBody();
+        Element queryBody = adql.toDom().getDocumentElement();
         String namespaceURI = queryBody.getNamespaceURI();
         if (namespaceURI == null) {
             // maybe not using namespace aware parser - see if we can find an xmlns attribute instead
@@ -98,20 +104,18 @@ public class PluginQuerier extends Querier {
                 throw new DatabaseAccessException("Translation result " + intermediateRep.getClass().getName() + " not of expected type " + expectedType.getName());
             }
         } catch (Throwable t) {
-            throw new DatabaseAccessException(t,"Translation phase failed:" + t.getMessage());
+            throw new DatabaseAccessException("Translation phase failed:" + t.getMessage(),t);
         }
 
         
         //do the query.
-        setState(QueryState.RUNNING_QUERY);
-        setStartTime(new Date());
+        querier.setStatus(new QuerierQuerying());
         try {
             QueryResults results = spi.doQuery(intermediateRep,expectedType);
-            setCompletedTime(new Date());
-            setState(QueryState.QUERY_COMPLETE);
-            return results;
+            processResults(results);
+            close();
         } catch (Throwable t) {
-            throw new DatabaseAccessException(t,"Query phase failed:" + t.getMessage());
+            throw new DatabaseAccessException("Query phase failed:" + t.getMessage(),t);
         }
     }
 
@@ -167,13 +171,12 @@ public class PluginQuerier extends Querier {
     
    private static void reportException(Throwable t) throws DatabaseAccessException {
       log.error("Could not load Database Querier: " + t.getMessage(),t);
-      throw new DatabaseAccessException(t,"Could not load Database Querier: " + t.getMessage());
+      throw new DatabaseAccessException("Could not load Database Querier: " + t.getMessage(),t);
    }
       
        
-/** calls close method on querierSPI before closing Querier itself */
+/** calls close method on querierSPI  */
    public void close() throws IOException {
-      try {
          if (spi != null) {
             try {
             spi.close();
@@ -182,14 +185,14 @@ public class PluginQuerier extends Querier {
                throw new IOException(e.getMessage());
             }
          }
-      } finally {
-         super.close();
-      }
    }
 
 }
 /*
  $Log: PluginQuerier.java,v $
+ Revision 1.9  2004/03/12 04:45:26  mch
+ It05 MCH Refactor
+
  Revision 1.8  2004/03/08 00:31:28  mch
  Split out webservice implementations for versioning
 

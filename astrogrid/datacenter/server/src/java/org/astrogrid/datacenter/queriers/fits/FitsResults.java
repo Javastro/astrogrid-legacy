@@ -1,5 +1,5 @@
 /*
- * $Id: FitsResults.java,v 1.5 2004/03/10 02:36:25 mch Exp $
+ * $Id: FitsResults.java,v 1.6 2004/03/12 04:45:26 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -10,6 +10,7 @@ import java.io.*;
 
 import javax.xml.parsers.ParserConfigurationException;
 import org.astrogrid.datacenter.queriers.QueryResults;
+import org.astrogrid.datacenter.queriers.status.QuerierProcessingResults;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -42,11 +43,12 @@ public class FitsResults implements QueryResults {
    /**
     * Converts the resultset to VOTable Document.
     */
-   public Document toVotable() throws IOException, SAXException {
+   public Document toVotable(QuerierProcessingResults statusToUpdate) throws IOException, SAXException {
       try {
          ByteArrayOutputStream ba = new ByteArrayOutputStream();
-         toVotable(ba);
+         toVotable(ba, statusToUpdate);
          ba.close();
+         statusToUpdate.setProgress("Converting to DOM");
          return DomHelper.newDocument(new ByteArrayInputStream(ba.toByteArray()));
       }
       catch (ParserConfigurationException e) {
@@ -57,8 +59,8 @@ public class FitsResults implements QueryResults {
    }
    
    /** Stream version of the writer */
-   public void toVotable(OutputStream out) throws IOException {
-      toVotable(new OutputStreamWriter(out));
+   public void toVotable(OutputStream out, QuerierProcessingResults statusToUpdate) throws IOException {
+      toVotable(new OutputStreamWriter(out), statusToUpdate);
    }
    
 
@@ -67,7 +69,7 @@ public class FitsResults implements QueryResults {
     * is very pleasant, and will break when the votable format changes, but
     * is easy to fix...
     */
-   public void toVotable(Writer out) throws IOException {
+   public void toVotable(Writer out, QuerierProcessingResults statusToUpdate) throws IOException {
 
       PrintWriter printOut = new PrintWriter(new BufferedWriter(out));
       
@@ -94,6 +96,7 @@ public class FitsResults implements QueryResults {
       printOut.println("<DATA>");
       
       for (int i=0;i<filenames.length;i++) {
+         statusToUpdate.setProgress("Adding File "+i+" of "+getCount());
          printOut.println("<FITS>");
          printOut.println("   <STREAM>"+filenames+"</STREAM>");
          
@@ -117,6 +120,9 @@ public class FitsResults implements QueryResults {
 
 /*
  $Log: FitsResults.java,v $
+ Revision 1.6  2004/03/12 04:45:26  mch
+ It05 MCH Refactor
+
  Revision 1.5  2004/03/10 02:36:25  mch
  Added getCount
 

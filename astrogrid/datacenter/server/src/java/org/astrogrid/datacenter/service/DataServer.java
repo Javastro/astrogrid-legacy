@@ -1,30 +1,25 @@
 /*
- * $Id: DataServer.java,v 1.12 2004/03/10 02:38:33 mch Exp $
+ * $Id: DataServer.java,v 1.13 2004/03/12 04:45:26 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.service;
-import org.astrogrid.datacenter.adql.generated.*;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.net.URI;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
-import org.astrogrid.datacenter.adql.ADQLException;
-import org.astrogrid.datacenter.adql.ADQLUtils;
-import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
-import org.astrogrid.datacenter.queriers.QuerierStatus;
 import org.astrogrid.datacenter.queriers.QueryResults;
-import org.astrogrid.datacenter.query.QueryState;
-import org.xml.sax.SAXException;
+import org.astrogrid.datacenter.queriers.query.ConeQuery;
+import org.astrogrid.datacenter.queriers.query.Query;
+import org.astrogrid.datacenter.queriers.status.QuerierStatus;
+import org.astrogrid.store.Agsl;
 
 /**
  * Framework for managing a datacenter.
@@ -50,6 +45,7 @@ public class DataServer
 {
    protected static Log log = LogFactory.getLog(DataServer.class);
    
+   public final QuerierManager querierManager = new QuerierManager("DataServer");
 
    /**
     * Runs a blocking SQL query.  Many systems will have this disabled; it
@@ -67,121 +63,42 @@ public class DataServer
    }
    
    /**
-    * Runs a (blocking) cone search, returning a Votable
+    * Runs a (blocking) cone search, sending a string to the given out
     */
-   public String searchCone(Account user, double ra, double dec, double sr) throws IOException, ADQLException, SAXException {
-      try {
-         Select s = ADQLUtils.buildMinimalQuery();
-         TableExpression tc = new TableExpression();
-         s.setTableClause(tc);
-         
-         Where w = new Where();
-         tc.setWhereClause(w);
-         
-         Circle c = new Circle();
-         c.setDec(ADQLUtils.mkApproxNum(dec));
-         c.setRa(ADQLUtils.mkApproxNum(ra));
-         c.setRadius(ADQLUtils.mkApproxNum(sr));
-         w.setCircle(c);
-
-         //now set FROM from configuration
-         From f = new From();
-         tc.setFromClause(f);
-         ArrayOfTable tables = new ArrayOfTable();
-         Table t = new Table();
-         t.setName("TARGET"); //should get from config
-         t.setAliasName("t");
-         tables.addTable(t);
-         f.setTableReference(tables);
+   public void searchCone(Account user, double ra, double dec, double sr, Writer out) throws IOException {
+      askQuery(user, new ConeQuery(ra, dec, sr), out);
+   }
+   
+   /**
+    * Runs a (blocking) ADQL/XML/OM query, outputting the results as votable to the given stream
+    */
+   public void askQuery(Account user, Query query, Writer out) throws IOException {
       
-         StringWriter sw = new StringWriter();
-         log.debug("asking ADQL");
-         askAdql(user, s, sw);
-         
-         log.debug("Returning: "+sw.toString());
-         return sw.toString();
+      try {
+         Querier querier = Querier.makeQuerier(user, query, out, QueryResults.FORMAT_VOTABLE);
+         querierManager.askQuerier(querier);
       }
       catch (Throwable th) {
          log.error(th);
-         return exceptionAsHtml("searchCone", th);
+         out.write(exceptionAsHtml("askQuery("+user+", "+query+", "+out+")", th));
       }
    }
-   
+ 
    /**
-    * Runs a blocking ADQL/XML/OM query, outputting the results as votable to the given stream
+    * Submits a (non-blocking) ADQL/XML/OM query, returning the query's external
+    * reference id.  Results will be output to given Agsl
     */
-   public QuerierStatus askAdql(Account user, Select adql, Writer out) throws IOException, ADQLException {
+   public String submitQuery(Account user, Query query, Agsl out) throws IOException {
       
-      Query q = new Query();
-      q.setQueryBody(ADQLUtils.toQueryBody(adql));
-      
-      Querier querier =  QuerierManager.createQuerier(q);
-      QueryResults results = querier.doQuery();
-      log.debug("Found "+results.getCount()+" matches");
-      querier.setState(QueryState.RUNNING_RESULTS);
-      results.toVotable(out);
-      querier.setState(QueryState.FINISHED);
-      QuerierManager.closeQuerier(querier);
-      return querier.getStatus();
-   }
-   
-   /**
-    * Runs a blocking ADQL/SQL query
-    */
-   public QuerierStatus askAdqlSql(Account user, String adqlSql, Writer out) throws IOException, ADQLException {
-
-      throw new UnsupportedOperationException();
-   }
-
-   /**
-    * Submites an asynchronous ADQL query
-    */
-   public QuerierStatus submitAdql(Account user, Select adql, URI monitor) throws IOException, ADQLException {
-      
-      Query q = new Query();
-      q.setQueryBody(ADQLUtils.toQueryBody(adql));
-      
-      Querier querier =  QuerierManager.createQuerier(q);
-      Thread qth = new Thread(querier);
-      qth.start();
-      return querier.getStatus();
-   }
-   
-
-   /**
-    * Runs a blocking query.
-    *
-   public QueryResults askQuery(Account user, NewQuery query) {
-      Querier querier = QuerierManager.createQuerier(query);
-      return querier.doQuery();
-   }
-   
-   /**
-    * Submits a query for asynchronous (non-blocking) processing.
-    *
-   public QuerierStatus submitQuery(Account user, Agsl queryAgsl, URL monitor, String clientRef) throws IOException {
-      
-      throw new UnsupportedOperationException();
-
-      InputStream in = queryAgsl.openStream(user.toUser());
-      Querier querier = QuerierManager.createQuerier(query);
-      Thread queryThread = new Thread(querier);
-      queryThread.start();
-      
-      return querier.getStatus();
-   }
-
-   /**
-    * Submits a query for asynchronous (non-blocking) processing.
-    * Not sure how all this is going to work yet.
-    *
-   public QuerierStatus submitQuery(Account user, NewQuery query, URL monitor, String clientRef) {
-      
-      Querier querier = QuerierManager.createQuerier(query);
-      Thread queryThread = new Thread(querier);
-      queryThread.start();
-      
-      return querier.getStatus();
+      try {
+         Querier querier = Querier.makeQuerier(user, query, out, QueryResults.FORMAT_VOTABLE);
+         querierManager.submitQuerier(querier);
+         return querier.getExtRef();
+      }
+      catch (Throwable th) {
+         log.error(th);
+         return "ERROR: submitQuery("+user+", "+query+", "+out+"): "+th;
+      }
    }
 
    /**
@@ -189,7 +106,7 @@ public class DataServer
     */
    public QuerierStatus getQueryStatus(Account user, String queryId)
    {
-      return getQuerier(queryId).getStatus();
+      return querierManager.getQuerierByExt(queryId).getStatus();
    }
 
    /**
@@ -197,7 +114,7 @@ public class DataServer
     * back end.  NB the id given is the *datacenters* id.
     */
    public QuerierStatus abortQuery(Account user, String queryId) {
-      return getQuerier(queryId).abort();
+      return querierManager.getQuerierByExt(queryId).abort();
    }
    
    /**
@@ -209,10 +126,10 @@ public class DataServer
    
    /**
     * Returns the querier corresponding to the given ID
-    */
-   protected Querier getQuerier(String queryId)
+    * don't ask the server - ask the right manager
+   public Querier getQuerier(String queryId)
    {
-      Querier q = QuerierManager.getQuerier(queryId);
+      Querier q = querierManager.getQuerier(queryId);
       if (q == null) {
          throw new IllegalArgumentException("No Querier found for ID="+queryId);
       }
@@ -229,7 +146,6 @@ public class DataServer
       th.printStackTrace(new PrintWriter(sw));
             
       return
-//       "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0 Transitional//EN'>\n"+
          "<html>\n"+
          "<head><title>"+title+"</title></head>\n"+
          "<body>\n"+

@@ -1,5 +1,5 @@
 /*
- * $Id: SoapDataServer.java,v 1.2 2004/03/08 00:31:28 mch Exp $
+ * $Id: SoapDataServer.java,v 1.3 2004/03/12 04:45:26 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,12 +14,11 @@ import javax.xml.rpc.soap.SOAPFaultException;
 import javax.xml.soap.Detail;
 import javax.xml.soap.SOAPException;
 import javax.xml.soap.SOAPFactory;
-import org.apache.axis.AxisFault;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.metadata.MetadataServer;
-import org.astrogrid.datacenter.queriers.QuerierStatus;
+import org.astrogrid.datacenter.queriers.status.QuerierStatus;
 import org.astrogrid.io.Piper;
 
 /**
@@ -156,6 +155,9 @@ public abstract class SoapDataServer    {
 
 /*
 $Log: SoapDataServer.java,v $
+Revision 1.3  2004/03/12 04:45:26  mch
+It05 MCH Refactor
+
 Revision 1.2  2004/03/08 00:31:28  mch
 Split out webservice implementations for versioning
 

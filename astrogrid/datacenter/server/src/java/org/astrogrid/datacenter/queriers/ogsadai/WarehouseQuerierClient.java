@@ -21,13 +21,13 @@ public class WarehouseQuerierClient
 {
   public static void main(String args[]) throws Exception {
 
-    String errorString = 
+    String errorString =
       "Usage: java WarehouseQuerierClient <properties_fileName> <sql_query>";
 
     // We're not running within a datacenter;  throw junk
     // parameters at the constructor as we won't be using them.
     // TOFIX this may break in the future.
-    WarehouseQuerier querier = new WarehouseQuerier("Blah", null);
+    WarehouseQuerier querier = new WarehouseQuerier(null);
 
     String sql;
     String propertiesFile;
@@ -55,7 +55,7 @@ public class WarehouseQuerierClient
     SimpleConfig.load(propertiesFile);
 
     // Do actual query
-    Document result = querier.doShelledOutQuery(sql, null); 
+    Document result = querier.doShelledOutQuery(sql, null);
     printNode(result);
   }
 

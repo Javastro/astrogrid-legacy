@@ -1,35 +1,27 @@
 /*
- * $Id: Querier.java,v 1.32 2004/03/09 22:58:39 mch Exp $
+ * $Id: Querier.java,v 1.33 2004/03/12 04:45:26 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.queriers;
 
-import java.io.ByteArrayOutputStream;
+import org.astrogrid.datacenter.queriers.status.*;
+
 import java.io.IOException;
-import java.net.MalformedURLException;
+import java.io.OutputStream;
+import java.io.Writer;
 import java.net.URL;
 import java.util.Date;
 import java.util.Vector;
 import org.apache.commons.logging.Log;
 import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.axisdataserver.types.Query;
-import org.astrogrid.datacenter.queriers.QuerierManager;
-import org.astrogrid.datacenter.query.QueryException;
-import org.astrogrid.datacenter.query.QueryState;
-import org.astrogrid.datacenter.service.JobNotifyServiceListener;
-import org.astrogrid.datacenter.service.WebNotifyServiceListener;
-import org.astrogrid.datacenter.snippet.DocMessageHelper;
+import org.astrogrid.datacenter.queriers.query.Query;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Msrl;
 import org.astrogrid.store.delegate.StoreClient;
 import org.astrogrid.store.delegate.StoreDelegateFactory;
-import org.astrogrid.util.Workspace;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 /**
  * Represents a single running query.
@@ -52,186 +44,163 @@ import org.xml.sax.SAXException;
  * @author M Hill
  */
 
-public abstract class Querier implements Runnable {
+public class Querier implements Runnable {
    
    protected static final Log log = org.apache.commons.logging.LogFactory.getLog(Querier.class);
        
    /** query to perform */
-   protected final Query query;
+   private final Query query;
    
-   /** Temporary workspace for working files, and somewhere to put the results
-    * for non-blocking calls */
-   protected final Workspace workspace;
-   
-   /** A handle is used to identify a particular service.  It is also used as the
+   /** A handle is used to identify a particular query.  It is also used as the
     * basis for any temporary storage. */
    private final String id;
    
-   /** Queries might also be associated with some kind of external reference, assigned
-    * by the service user */
-   private final String extRef = null;
+   /** External reference used to identify a particular query */
+   private String extRef;
    
-   
-   /** certification information */
+   /** On whose behalf is this querier running */
    private final Account user;
 
-   /** List of serviceListeners who will be updated when the status changes */
-   private Vector serviceListeners = new Vector();
+   /** Plugin to run */
+   private QuerierPlugin plugin;
    
-   /** status of call */
-   private QueryState state = QueryState.UNKNOWN;
+   /** List of listeners who will be updated when the status changes */
+   private Vector listeners = new Vector();
    
-   /** If an error is thrown in the spawned thread, this holds the exception */
-   private Throwable error = null;
+   /** status of query */
+   private QuerierStatus status = new QuerierConstructed();
    
-   /**
-    * Where the result should be sent on completion.  Probably a myspace
-    * server URL
-    * initialized to value stored in configuration under {@link QuerierManager#RESULTS_TARGET_KEY}
-    */
-   private Agsl resultsDestination = null;
+   /** Format requested by user */
+   private String requestedFormat = QueryResults.FORMAT_VOTABLE; //by default
    
-   /** Handle to the results from the query - the location (prob myspace) where
-    * the results can be found */
-   //use resultsDestination private String resultsLoc = null;
+   /** Where the result should be sent (could be set as well as writer) */
+   private Agsl resultsTargetAgsl = null;
+
+   /** Where the result should be sent (could be set as well as agsl) */
+   private Writer resultsTargetStream = null;
    
-   /** For measuring how long the query took */
+   /** For measuring how long the query took - calculated from status change times*/
    private Date timeQueryStarted = null;
-   /** For measuring how long query took */
+   /** For measuring how long query took - calculated from status change times*/
    private Date timeQueryCompleted = null;
+   /** For measuring how long query took - calculated from status change times*/
+   private Date timeQuerierClosed = null;
+
+   /** temporary used for generating unique handles - see generateHandle() */
+   private static java.util.Random random = new java.util.Random();
+
+   /** Key to configuration entry for the default target myspace for this server */
+   public static final String DEFAULT_MYSPACE = "DefaultMySpace";
    
-   public Querier(String queryId, Query query) throws IOException {
-       this.id = queryId;
-       this.query = query;
-       workspace = new Workspace(queryId);
-       if ((query == null) || (query.getUser() == null)) {
-           this.user = Account.ANONYMOUS;
-       } else {
-           this.user = Account.ANONYMOUS;
-            //this.user = query.getUser();
+   /** Convenience constructor for other constructors, makers, etc */
+   protected Querier(Account forUser, Query query, String resultsFormat) throws IOException {
+      this.id = generateQueryId();
+      this.requestedFormat = resultsFormat;
+      this.user = forUser;
+      this.query = query;
+
+      this.extRef = this.id; //default to same as internal
+
+      //default results destination is taken from default myspace given in config
+      URL defaultMySpace = SimpleConfig.getSingleton().getUrl(DEFAULT_MYSPACE, null);
+      if (defaultMySpace != null) {
+          String path = user.getIndividual()+"@"+user.getCommunity()+"/serv1/votable/"+id+".vot";
+          resultsTargetAgsl = new Agsl(new Msrl(defaultMySpace, path));
        }
        
-       //default results destination is taken from default myspace given in config
-       URL defaultMySpace = SimpleConfig.getSingleton().getUrl(QuerierManager.DEFAULT_MYSPACE, null);
-       if (defaultMySpace != null) {
-          String path = user.getIndividual()+"@"+user.getCommunity()+"/serv1/votable/"+queryId+".vot";
-          resultsDestination = new Agsl(new Msrl(defaultMySpace, path));
-       }
+       //make plugin
+      QuerierPlugin plugin = QuerierPluginFactory.createPlugin(this);
+   }
+   
+   /** Convenience constructor for struct a querier from the given details. Takes a writer so generally used
+    * for blocking queries where the results have to be sent back to the calling client */
+   public static Querier makeQuerier(Account forUser, String extId, Query query, Writer whereToSendResults, String resultsFormat) throws IOException {
+      Querier querier = new Querier(forUser, query, resultsFormat);
+
+      querier.resultsTargetStream = whereToSendResults;
+      if (extId != null) { querier.extRef = extId; }
+      
+      return querier;
+   }
+   
+   /** Construct a querier from the given details. Takes an agsl for the results target so its
+    * up to the querier to send the results there */
+   public static Querier makeQuerier(Account forUser, String extId, Query query, Agsl whereToSendResults, String resultsFormat) throws IOException {
+      Querier querier = new Querier(forUser, query, resultsFormat);
+      
+      querier.resultsTargetAgsl = whereToSendResults;
+      if (extId != null) { querier.extRef = extId; }
+
+      return querier;
    }
 
-   /**
-    * Returns this instances handle
-    */
-   public String getQueryId() {
-      return id;
+   /** Construct a querier from the given details. Takes an agsl for the results target so its
+    * up to the querier to send the results there */
+   public static Querier makeQuerier(Account forUser, Query query, Writer whereToSendResults, String resultsFormat) throws IOException {
+      Querier querier = new Querier(forUser, query, resultsFormat);
+      
+      querier.resultsTargetStream = whereToSendResults;
+
+      return querier;
    }
 
-   /**
-    * Returns the external reference to this query - eg job step id
-    */
-   public String getExtRef() {
-      return id;
-   }
-   
-   /**
-    * Returns the query
-    */
-   protected Query getQuery() { return query; }
-   
-   /**
-    * Convenience routine for getting the querying element
-    */
-   
-   protected Element getQueryingElement()
-   {
-      return getQuery().getQueryBody();
-   }
+   /** Construct a querier from the given details. Takes an agsl for the results target so its
+    * up to the querier to send the results there */
+   public static Querier makeQuerier(Account forUser, Query query, Agsl whereToSendResults, String resultsFormat) throws IOException {
+      Querier querier = new Querier(forUser, query, resultsFormat);
+      
+      querier.resultsTargetAgsl = whereToSendResults;
 
-   /**
-    * Sets up the target of where the results will be sent to
-    */
-   public void setResultsDestination(String givenDestination) throws MalformedURLException {
-      log.debug("Setting results destination to "+givenDestination);
-      this.resultsDestination = new Agsl(givenDestination);
-      log.debug("...now set to AGSL "+this.resultsDestination);
+      return querier;
    }
    
-   /**
-    * Examines given DOM for tags requesting notifications.  Public so that
-    * listeners can be added after the querier is running.
-    */
-   public void registerWebListeners(Element domContainingListeners) throws MalformedURLException {
-      //look for anonymous web listeners
-      NodeList listenerTags = domContainingListeners.getElementsByTagName(DocMessageHelper.LISTENER_TAG);
-      
-      for (int i=0; i<listenerTags.getLength();i++) {
-         registerListener(new WebNotifyServiceListener(
-                             new URL(((Element) listenerTags.item(i)).getNodeValue()))
-                         );
-      }
-      
-      //look for job web listeners
-      listenerTags = domContainingListeners.getElementsByTagName(DocMessageHelper.JOBLISTENER_TAG);
-      
-      for (int i=0; i<listenerTags.getLength();i++) {
-         registerListener(new JobNotifyServiceListener(
-                             new URL(((Element) listenerTags.item(i)).getNodeValue()))
-                         );
-      }
-      
-   }
+   /** Returns this instances handle    */
+   public String getId() {       return id;   }
+
+   /** Returns the external reference to this query - eg job step id   */
+   public String getExtRef() {   return id;   }
+   
+   /** Returns the query for subclasses   */
+   public Query getQuery() { return query; }
+   
+   /** Returns the plugin - this is *only* for testing @todo a nicer way of doing this */
+   public QuerierPlugin getPlugin() { return plugin; }
+   
    
    /**
     * Runnable implementation - this method is called when the thread to run
-    * this asynchronously is started.  Sends the results to the destination
-    * specified in the input document.
+    * this asynchronously is started.  It should just do ask() and handle
+    * any error, because these won't go anywhere otherwise...
     */
    public void run() {
       log.info("Starting Query ["+id+"] asynchronously...");
       
       try {
-         //test the destination is OK for this user, etc, before doing query
-         testResultsDestination();
-         
-         QueryResults results = doQuery();
-         
-         setState(QueryState.RUNNING_RESULTS);
-         
-         //send the results to the desstinateion
-         sendResults(results);
-         
-         setState(QueryState.FINISHED);
-         
+         ask();
       }
-      catch (QueryException e) {
-         log.error("Could not construct query in spawned thread ",e);
-         setErrorStatus(e);
-      }
-      catch (DatabaseAccessException e) {
-         log.error("Could not access database in spawned thread ",e);
-         setErrorStatus(e);
-      }
-      catch (Exception e) {
-         log.error("Exception",e);
-         setErrorStatus(e);
+      catch (Throwable th) {
+         log.error("Exception",th);
+         setStatus(new QuerierError(th, ""));
       }
       log.info("...Ending asynchronous Query ["+id+"]");
       
    }
 
-   /** Subclasses override this method to carry out the query.
-     * Used by both synchronous (blocking) and asynchronous (threaded) querying
-     * through processQuery
+   /** Carries out the query via the plugin to do the query.
+    * The plugin does the complete conversion, query and
+    * results processing but there are helper methods here for it
      */
-   public abstract QueryResults doQuery() throws DatabaseAccessException;
-   
+   public void ask() throws IOException {
+      testResultsDestination();
 
-   /** TEMPORARY CONSTANT, until myspace build a delegate.
-    * then can replace with MySpaceDummyDelegate.DUMMY
-    * Use MyspaceDummyDelegate.DUMMY
-    *
-   public static final String TEMPORARY_DUMMY = "http://www.astrogrid.org/DUMMY/ADDRESS";
-    */
+      timeQueryStarted = new Date();
+      
+      QuerierPlugin plugin = QuerierPluginFactory.createPlugin(this);
+      
+      plugin.askQuery();
+
+      close();
+   }
    
    /**
     * Tests the destination exists and a file can be created on it.  This ensures
@@ -242,67 +211,45 @@ public abstract class Querier implements Runnable {
     *
     * @throws IOException if the operation fails for any reason
     */
-   protected void testResultsDestination() throws Exception {
-      if (resultsDestination == null) {
+   protected void testResultsDestination() throws IOException {
+      if ((resultsTargetAgsl == null) && (resultsTargetStream == null)) {
          log.error(
-               "No default myspace given in config file (key "+QuerierManager.DEFAULT_MYSPACE+"), "+
-               "or results destination specified");
+               "No default myspace given in config file (key "+Querier.DEFAULT_MYSPACE+"), "+
+               "or results destination specified, and no stream to return them");
          throw new IllegalStateException("no results destination");
       }
       
-      StoreClient store = StoreDelegateFactory.createDelegate(user.toUser(), resultsDestination);
+      if (resultsTargetAgsl != null) {
+         StoreClient store = StoreDelegateFactory.createDelegate(user.toUser(), resultsTargetAgsl);
       
-      store.putString("This is a test file to make sure we can create a file in the given myspace, so our query results are not lost",
-                        "testFile", false);
-   }
-   
-   /**
-    * Sends the given results to the myspace server.
-    * @todo At some point we ought to work out a way of streaming this to myspace
-    * - I expect this to break on very very large votables - mch.
-    */
-   protected void sendResults(QueryResults results) throws Exception {
-      if(results == null) {
-         log.error("No results to send");
-         throw new IllegalStateException("No results to send");
+         store.putString("This is a test file to make sure we can create a file in the given myspace, so our query results are not lost",
+                           "testFile", false);
+         store.delete("testFile");
       }
+   }
 
-      log.info("Querier ["+id+"] for "+user+", sending results to "+resultsDestination);
-      
-      
-      StoreClient myspace = StoreDelegateFactory.createDelegate(user.toUser(), resultsDestination);
-  
-         //stream results to string for outputting to myspace.   At
-         //some point we should get a socket to stream to from myspace and stream
-         //to that
-         ByteArrayOutputStream ba = new ByteArrayOutputStream();
-         results.toVotable(ba);
-         ba.close();
-         myspace.putString(ba.toString(), resultsDestination.getPath(), false);
-         
-         log.info("Querier ["+id+"] results sent");
-      
-         //resultsLoc = myspace.getUrl("/"+user.getAstrogridId()+"/"+myspaceFilename).toString();
-      
+   /** Sets results target.
+    * @deprecated - should be set in constructor - but v4.1 interface uses it */
+   public void setResultsTarget(Agsl agsl)      { resultsTargetAgsl = agsl; }
+   
+   /** Returns where the results are to be sent    */
+   public Agsl getResultsTargetAgsl()           {   return resultsTargetAgsl;  }
+
+   /** Returns the output stream where the results are to be sent
+    */
+   public Writer getResultsTargetStream()       {   return resultsTargetStream;  }
+
+   
+   public void close() {
+      setStatus(new QuerierComplete(this));
    }
    
-   
-   
-   /** Returns the location of the results (probably a url) - returns null if
-    * the results have not yet been returned from the data source
-    */
-   public String getResultsLoc() {     return resultsDestination.toString();  }
-   
-   protected void setStartTime(Date startTime)  { this.timeQueryStarted = startTime;  }
-   
-   protected void setCompletedTime(Date finishTime)  { this.timeQueryCompleted = finishTime; }
-
    /**
     * Returns the time it took to complete the query in milliseconds, or the
     * time since it started (if it's still running).  -1 if the query has not
     * yet started
     */
-   public double getQueryTimeTaken() {
+   public long getQueryTimeTaken() {
       //Log.affirm(timeQueryStarted != null, "Trying to get time taken by the query when it hasn't run"));
       if (timeQueryStarted == null) {
          return -1; //may not have started for some reason
@@ -321,13 +268,8 @@ public abstract class Querier implements Runnable {
     * Abort - stops query (if poss) and tidies up
     */
    public QuerierStatus abort() {
-      try {
-         close();
-      }
-      catch (IOException e) {
-         log.error("Aborting querier "+this,e);
-      }
-      setState(QueryState.ABORTED);
+      plugin.abort();
+      setStatus(new QuerierAborted());
       return getStatus();
    }
    
@@ -335,91 +277,49 @@ public abstract class Querier implements Runnable {
     * For debugging/display
     */
    public String toString() {
-      return "Querier ["+getQueryId()+"] ";
+      return "Querier ["+getId()+"] ";
    }
-   
-   /** close the querier - removes itself from the list and so will eventually
-    * be garbaged collected.  Subclasses should override to release eg database
-    * connection resources
-    */
-   public void close() throws IOException {
 
-      //clean up workspace
-      if (workspace != null) {
-         workspace.close();
-      }
-      // bit of a bodge - will sort out later
-      // see, need to have close() method on queriers and querier manager.
-      QuerierManager.getQueriers().remove(this);
+   /**
+    * Returns if the querier is closed and no more operations are possible
+    */
+   public boolean isClosed() {
+      return (status instanceof QuerierClosed);
    }
-   
    
    /**
     * Sets the status.  NB if the new status is ordered before the existing one,
     * throws an exception (as each querier should only handle one query).
     * Synchronised as the queriers may be running under a different thread
     */
-   public synchronized void setState(QueryState newStatus) {
+   public synchronized void setStatus(org.astrogrid.datacenter.queriers.status.QuerierStatus newStatus) {
 
+      //set times for info
+      if (status instanceof QuerierClosed) {
+         timeQuerierClosed = new Date();
+      }
+      if ((status instanceof QuerierQueried) && (timeQueryCompleted == null)) {
+         timeQueryCompleted = new Date();
+      }
+      
       log.info("Query ["+id+"] for "+user+", now "+newStatus);
       
-      if (state == QueryState.ERROR) {
-         log.error(
-            "Trying to start a step '"+newStatus+"' when the status is '"
-               +state+"'");
-         throw new IllegalStateException("Trying to start a step " + newStatus + " when the status is " + state);
+      if ((status instanceof QuerierError) || (newStatus.isBefore(status))) {
+         String msg = "Trying to start a step '"+newStatus+"' when status is already "+status;
+         log.error(msg);
+         throw new IllegalStateException(msg);
       }
       
-      if (newStatus.isBefore(state)) {
-         log.error(
-            "Trying to start a step '"+newStatus
-               +"' that has already been completed:"
-               +" status '"+state);
-         throw new IllegalStateException("Trying to start a step " + newStatus + "that has already been completed" + state);
-      }
+      status = newStatus;
       
-      state = newStatus;
-      
-      fireStatusChanged(state);
-   }
-   
-   
-   /**
-    * Special error status - generated when querier is in its own thread, so
-    * that it can be accessed by polling clients
-    */
-   public void setErrorStatus(Throwable th) {
-      setState(QueryState.ERROR);
-      
-      error = th;
-   }
-   
-   /**
-    * Returns the exception if an error has occured
-    */
-   public Throwable getError() {
-      if (state != QueryState.ERROR){
-         log.error(
-            "Trying to get exception but there is no error, status='"+state+"'");
-         throw new IllegalStateException("Trying to get an ecception, but there is no error, status=" + state);
-      }
-      
-      return error;
+      fireStatusChanged(status);
    }
    
    /**
     * Returns the status - contains more info than the state
     */
    public QuerierStatus getStatus() {
-      return new QuerierStatus(this);
-   }
-   
-   
-   /**
-    * Returns the current state
-    */
-   public QueryState getState() {
-      return state;
+      return status;
    }
    
    /**
@@ -428,25 +328,59 @@ public abstract class Querier implements Runnable {
     * just get 'starting', 'working' and 'completed' messages based around the
     * basic http exchange.
     */
-   public void registerListener(QuerierListener aListener) {
-      serviceListeners.add(aListener);
+   public void addListener(QuerierListener aListener) {
+      listeners.add(aListener);
    }
-   
+
+   /**
+    * Removes a listern
+    */
+   public void removeListener(QuerierListener aListener) {
+      listeners.remove(aListener);
+   }
    /** informs all listeners of the new status change. Not threadsafe... should
     * call setStatus() rather than this directly
     */
-   private void fireStatusChanged(QueryState newStatus) {
-      for (int i=0;i<serviceListeners.size();i++) {
+   private void fireStatusChanged(QuerierStatus newStatus) {
+      for (int i=0;i<listeners.size();i++) {
          try {
-            ((QuerierListener) serviceListeners.get(i)).queryStatusChanged(this);
+            ((QuerierListener) listeners.get(i)).queryStatusChanged(this);
          }
          catch (RuntimeException e) {
             //if there is a problem informing a listener, log it as an error but
             //get on with the query
-            log.error("Listener ("+serviceListeners.get(i)+") failed to handle status change to "+newStatus, e);
+            log.error("Listener ("+listeners.get(i)+") failed to handle status change to "+newStatus, e);
             
          }
       }
+   }
+
+   
+   /**
+    * Helper method to generates a handle for use by a particular instance; uses the current
+    * time to help us debug (ie we can look at the temporary directories and
+    * see which was the last run). Later we could add service/user information
+    * if available
+    * @todo not guaranteed to be unique...
+    */
+   protected static String generateQueryId() {
+      Date todayNow = new Date();
+       return
+         todayNow.getYear()
+         + "-"
+         + todayNow.getMonth()
+         + "-"
+         + todayNow.getDate()
+         + "_"
+         + todayNow.getHours()
+         + "."
+         + todayNow.getMinutes()
+         + "."
+         + todayNow.getSeconds()
+         + "_"
+         //plus botched bit... not really unique
+         + (random.nextInt(8999999) + 1000000);
+      
    }
    
 
@@ -454,6 +388,9 @@ public abstract class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.33  2004/03/12 04:45:26  mch
+ It05 MCH Refactor
+
  Revision 1.32  2004/03/09 22:58:39  mch
  Provided for piping/writing out of results rather than returning as string
 

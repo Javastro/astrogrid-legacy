@@ -1,5 +1,5 @@
 /*
- * $Id: QueryResults.java,v 1.6 2004/03/10 02:36:25 mch Exp $
+ * $Id: QueryResults.java,v 1.7 2004/03/12 04:45:26 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,6 +9,7 @@ package org.astrogrid.datacenter.queriers;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
+import org.astrogrid.datacenter.queriers.status.QuerierProcessingResults;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -27,6 +28,8 @@ import org.xml.sax.SAXException;
 
 public interface QueryResults
 {
+   public static final String FORMAT_VOTABLE = "VOTABLE"; //require results to be in votable format
+   
    /** Returns an inputstream to the raw binary data of the result set
     *
    public InputStream getInputStream() throws IOException;
@@ -42,7 +45,7 @@ public interface QueryResults
     * toVotable(OutputStream)
     *
     */
-   public Document toVotable() throws IOException, SAXException;
+   public Document toVotable(QuerierProcessingResults statusToUpdate) throws IOException, SAXException;
    
    /** All Virtual Observatories must be able to provide the results in VOTable
     * format.  It makes sense to throw XML formatting errors here as it
@@ -51,10 +54,10 @@ public interface QueryResults
     * This method streams the votable to the given output stream as it is
     * formed from the results.
     */
-   public void toVotable(OutputStream out) throws IOException;
+   public void toVotable(OutputStream out, QuerierProcessingResults statusToUpdate) throws IOException;
 
    /** As above */
-   public void toVotable(Writer out) throws IOException;
+   public void toVotable(Writer out, QuerierProcessingResults statusToUpdate) throws IOException;
    
    /** Returns the number of results - or -1 if unknown */
    public int getCount() throws IOException;

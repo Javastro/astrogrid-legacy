@@ -1,5 +1,5 @@
 /*
- * $Id: WarehouseResults.java,v 1.4 2004/03/10 02:36:25 mch Exp $
+ * $Id: WarehouseResults.java,v 1.5 2004/03/12 04:45:26 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -11,6 +11,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import org.astrogrid.datacenter.queriers.QueryResults;
+import org.astrogrid.datacenter.queriers.status.QuerierProcessingResults;
 import org.w3c.dom.Document;
 
 /**
@@ -39,13 +40,13 @@ public class WarehouseResults implements QueryResults
   /**
    * Return the VOTable document on demand.
    */
-  public Document toVotable() {
+  public Document toVotable(QuerierProcessingResults statusToUpdate) {
     return this.results;
   }
 
   /** Stream version of the writer */
-   public void toVotable(OutputStream out) throws IOException {
-      toVotable(new OutputStreamWriter(out));
+   public void toVotable(OutputStream out, QuerierProcessingResults statusToUpdate) throws IOException {
+      toVotable(new OutputStreamWriter(out), statusToUpdate);
    }
    
    /** Count */
@@ -57,7 +58,7 @@ public class WarehouseResults implements QueryResults
   /**
    * Return VOTable results to given outputstream.
    */
-  public void toVotable(Writer out) throws IOException
+  public void toVotable(Writer out, QuerierProcessingResults statusToUpdate) throws IOException
   {
     throw new IOException("Not implemented yet");
     /*
@@ -73,6 +74,9 @@ public class WarehouseResults implements QueryResults
 
 /*
  $Log: WarehouseResults.java,v $
+ Revision 1.5  2004/03/12 04:45:26  mch
+ It05 MCH Refactor
+
  Revision 1.4  2004/03/10 02:36:25  mch
  Added getCount
 
