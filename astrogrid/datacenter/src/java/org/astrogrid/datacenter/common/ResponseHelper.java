@@ -1,5 +1,5 @@
 /*
- * $Id: ResponseHelper.java,v 1.3 2003/09/14 21:28:37 mch Exp $
+ * $Id: ResponseHelper.java,v 1.4 2003/09/15 11:10:42 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -42,7 +42,7 @@ public class ResponseHelper
 
       String doc =
           "<"+QUERY_RESPONSE_TAG+">\n"
-         +"   "+StatusHelper.makeStatusTag(querier.getHandle(), querier.getStatus().getText())
+         +"   "+StatusHelper.makeStatusTag(querier.getHandle(), querier.getStatus())
          +"</"+QUERY_RESPONSE_TAG+">\n";
 
       return DocHelper.wrap(doc);
@@ -63,7 +63,7 @@ public class ResponseHelper
       }
 
       String doc =
-         StatusHelper.makeStatusTag(querier.getHandle(), querier.getStatus().getText());
+         StatusHelper.makeStatusTag(querier.getHandle(), querier.getStatus());
 
       return DocHelper.wrap(doc);
    }

@@ -1,5 +1,5 @@
 /*
- * $Id: StatusHelper.java,v 1.2 2003/09/11 13:26:20 nw Exp $
+ * $Id: StatusHelper.java,v 1.3 2003/09/15 11:12:04 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -25,12 +25,12 @@ import org.astrogrid.log.Log;
 public class StatusHelper
 {
    public final static String STATUS_TAG="Status";
-   
+
    /**
     * Returns a status tag for the given service id with the value of the given
     * status
     */
-   public static String makeStatusTag(String serviceId, String status)
+   public static String makeStatusTag(String serviceId, ServiceStatus status)
    {
        return
           "<"+STATUS_TAG+"  "+ServiceIdHelper.SERVICE_ID_ATT+"='"+serviceId+"'>\n"
@@ -42,14 +42,14 @@ public class StatusHelper
    /**
     * Returns an Iteration 02 job notification tag with status included
     */
-   public static String makeJobNotificationTag(String serviceId, String status) 
+   public static String makeJobNotificationTag(String serviceId, String status)
    {
       return
             "<job name='"+serviceId+"'  >"+
                "<jobstep name='"+serviceId+"' status='"+status+"'/>"+
             "</job>";
    }
-   
+
    /**
     * Returns the status of the given service id, given by a status tag in
     * the given dom document
@@ -64,7 +64,7 @@ public class StatusHelper
       {
          String serviceIdAttr =
             ((Element) idNodes.item(i)).getAttribute(ServiceIdHelper.SERVICE_ID_ATT);
-         
+
          if (serviceIdAttr.length() == 0)
          {
             //should now do something horrible, as we have a status with no
@@ -80,9 +80,9 @@ public class StatusHelper
                return ((Element) idNodes.item(i)).getNodeValue();
             }
          }
-         
+
       }
-      
+
       return null; //no status found for that service id
 
    }
