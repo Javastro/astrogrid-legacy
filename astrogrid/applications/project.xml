@@ -26,7 +26,10 @@
           <li>A wrapper to allow the application to retrieve/store information in MySpace.</li>
          </ol>
 This functionality is provided with the ApplicationController service, of which there can be specializations to call command line applications, datacentre and other general web services. In iteration 4 there is only a  specialization to call command line applications. 
-</p> ]]>
+</p> 
+
+<p>The delegate is built in the same directory using the delegate-project.xml, but all of the reports are generated from this main project</p>
+]]>
   </description>
 
   <shortDescription>AstroGrid Applications Integration Components</shortDescription>

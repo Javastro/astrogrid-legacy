@@ -34,6 +34,16 @@
 <property name="maven.war.src" value="${axis.webapp.srcdir}"/> 
 <property name="maven.war.webapp.dir" location="${maven.build.dir}/${pom.artifactId}" /> <!-- set this early to default - does not seem to be set n the war:webapp post goal -->
 
+<goal name="astrogrid-site">
+	    <attainGoal name="builddelegate" />
+		<attainGoal name="site:fsdeploy" />
+</goal>
+
+<goal name="astrogrid-deploy-snapshots">
+	<attainGoal name="jar:deploy-snapshot" />
+	<attainGoal name="war:deploy-snapshot" />
+</goal>
+
 
 	<preGoal name="war:init">
 	   <!-- make sure that the latest axis is in place necessary for the maven install -->
@@ -328,9 +338,16 @@ ApplicationConfigFile=${basedir}/test/config/TestApplicationConfig.xml
             />
     </goal>
 
+   <goal name="builddelegate" >
+   		<!--build and depoly the delegate jar - would really like to pass properties to this maven project to put the classes elsewhere, but it does not seem immediately possible from the -->
+		<maven:maven descriptor="${basedir}/delegate-project.xml" goals="jar:deploy-snapshot"/>
+   	
+   </goal>
 
     <goal name="delegatejar" prereqs="java:compile,test:compile">
-    <!-- would be nice to have -${pom.currentVersion} in name, but cannot with cvs tag stuff - need to think of something better-->
+    	
+    <!--This is now really obsolete - the separate project should be used
+    	 would be nice to have -${pom.currentVersion} in name, but cannot with cvs tag stuff - need to think of something better-->
          <jar destfile="${maven.build.dir}/ApplicationControllerDelegate.jar">
             <fileset dir="${maven.build.dest}">
                <include name="**/delegate/**" />
