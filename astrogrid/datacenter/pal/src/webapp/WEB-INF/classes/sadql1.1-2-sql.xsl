@@ -284,11 +284,11 @@
 <!-- nb assumes exponent is an integer number.. if it is a more complicated expression, or one that needs resolving, we cannot
     handle it -->
 
-<xsl:template name="LoopAppend">
+<!--xsl:template name="LoopAppend">
    <xsl:param name="N"/>
    <xsl:param name="Text"/>
    <xsl:text></xsl:text>
-</xsl:template>
+</xsl:template -->
        
     
 <!-- double argument functions -->

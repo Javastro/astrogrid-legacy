@@ -31,7 +31,7 @@
 
 
     </p></section>
-	<section name="Build" ><p>
+   <section name="Build" ><p>
     This project generates a large amount of source code automatically from XML schema and WSDL files in
     <tt>src/xsd</tt> and <tt>src/wsdl</tt>. This source is placed in a separate tree called <tt>generated/java</tt>.
    </p><p>
@@ -42,9 +42,9 @@
    </p><p>
    The code generation is <b>not</b> performed automatically by the nightly build: after editing the wsdl or schema files the
    <tt>generate-delegate</tt> goal must be run by hand; then the generated sources verified and checked back into CVS.
-	</p>
-	</section>
-	]]>
+   </p>
+   </section>
+   ]]>
    </description>
 
   <shortDescription>Client-side delegate and supporting libraries</shortDescription>
@@ -60,24 +60,24 @@
     </developerConnection>
   </repository>
 
-	<packageGroups>
-		<packageGroup>
-			<title>Public API</title>
-			<packages>org.astrogrid.datacenter.delegate:org.astrogrid.datacenter.query:org.astrogrid.datacenter.webnotify:org.astrogrid.datacenter.tools</packages>
-		</packageGroup>
-		<packageGroup>
-			<title>Query Languages</title>
-			<packages>org.astrogrid.datacenter.adql*:org.astrogrid.datacenter.sql</packages>
-		</packageGroup>
-		<packageGroup>
-			<title>Delegates</title>
-			<packages>org.astrogrid.datacenter.delegate.*</packages>
-		</packageGroup>
-		<packageGroup>
-			<title>Transport</title>
-			<packages>org.astrogrid.datacenter.axisdataserver*</packages>
-		</packageGroup>
-	</packageGroups>
+   <packageGroups>
+      <packageGroup>
+         <title>Public API</title>
+         <packages>org.astrogrid.datacenter.delegate:org.astrogrid.datacenter.query:org.astrogrid.datacenter.webnotify:org.astrogrid.datacenter.tools</packages>
+      </packageGroup>
+      <packageGroup>
+         <title>Query Languages</title>
+         <packages>org.astrogrid.datacenter.adql*:org.astrogrid.datacenter.sql</packages>
+      </packageGroup>
+      <packageGroup>
+         <title>Delegates</title>
+         <packages>org.astrogrid.datacenter.delegate.*</packages>
+      </packageGroup>
+      <packageGroup>
+         <title>Transport</title>
+         <packages>org.astrogrid.datacenter.axisdataserver*</packages>
+      </packageGroup>
+   </packageGroups>
 
 
   <!-- jar files the project is dependent on -->
@@ -92,7 +92,7 @@
       </properties>
     </dependency>
 
-    <!-- required for the ApplicationController interface -->
+    <!-- required for the ApplicationController interface
     <dependency>
       <groupId>astrogrid-applications</groupId>
       <artifactId>astrogrid-applications</artifactId>
@@ -101,6 +101,7 @@
         <war.bundle>true</war.bundle>
       </properties>
     </dependency>
+    not needed any more? -->
 
     <dependency>
       <id>breezetk</id>

@@ -1,4 +1,4 @@
-/*$Id: StdSqlMaker.java,v 1.5 2004/03/17 18:03:20 mch Exp $
+/*$Id: StdSqlMaker.java,v 1.6 2004/03/17 21:03:20 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -106,7 +106,7 @@ public class StdSqlMaker  extends SqlMaker {
         Translator trans = spi.getTranslatorMap().lookup(namespaceURI);
         if (trans != null) {
            String sql = useSpi(queryBody, trans);
-           log.info("Used SPI "+trans+") to translate ADQL ("+namespaceURI+") to '"+sql+"'");
+           log.debug("Used SPI "+trans+") to translate ADQL ("+namespaceURI+") to '"+sql+"'");
            return sql;
         }
         
@@ -150,7 +150,7 @@ public class StdSqlMaker  extends SqlMaker {
          xsltDoc = "sadql1.1-2-sql.xsl";
       }
       //look up in config but using above softcoded as defaults
-      String key = "datacenter.sqlmaker.xslt."+namespaceURI;
+      String key = "datacenter.sqlmaker.xslt."+namespaceURI.replaceAll(":","_");
       xsltDoc = SimpleConfig.getSingleton().getString(key, xsltDoc);
       
       if (xsltDoc == null) {
@@ -183,7 +183,7 @@ public class StdSqlMaker  extends SqlMaker {
          //botch botch botch - something funny with ADQL 0.7.3 schema to do with comparisons
          sql = sql.replaceAll("&gt;", ">").replaceAll("&lt;", "<");
          
-         log.info("Used "+xsltDoc+"(="+xsltUrl+" from "+key+") to translate ADQL ("+namespaceURI+") to '"+sql+"'");
+         log.debug("Used "+xsltDoc+"(="+xsltUrl+" from "+key+") to translate ADQL ("+namespaceURI+") to '"+sql+"'");
          
          return sql;
       }
@@ -203,6 +203,9 @@ public class StdSqlMaker  extends SqlMaker {
 
 /*
 $Log: StdSqlMaker.java,v $
+Revision 1.6  2004/03/17 21:03:20  mch
+Added SQL transformation tests
+
 Revision 1.5  2004/03/17 18:03:20  mch
 Added v0.8 ADQL
 

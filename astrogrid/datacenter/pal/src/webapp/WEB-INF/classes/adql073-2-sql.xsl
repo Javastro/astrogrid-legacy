@@ -48,10 +48,10 @@
                <xsl:when test="*[2] = ad:Order">
                   <xsl:text> </xsl:text>
                   <xsl:value-of select="*[2]/@Direction"/>
-                  <xsl:text>, </xsl:text>
+                  <xsl:text> , </xsl:text>
                </xsl:when>
                <xsl:otherwise>
-                  <xsl:text>, </xsl:text>
+                  <xsl:text> , </xsl:text>
                </xsl:otherwise>
             </xsl:choose>
          </xsl:for-each>
@@ -77,7 +77,7 @@
       <xsl:variable name="string">
          <xsl:for-each select="ad:Table">
             <xsl:value-of select="@Name"/>
-            <xsl:text> </xsl:text>
+            <xsl:text> AS </xsl:text>
             <xsl:value-of select="@Alias"/>
             <xsl:text>, </xsl:text>
          </xsl:for-each>
