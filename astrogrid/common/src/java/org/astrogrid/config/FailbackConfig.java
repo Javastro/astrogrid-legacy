@@ -1,5 +1,5 @@
 /*
- * $Id: FailbackConfig.java,v 1.7 2004/03/03 16:56:46 mch Exp $
+ * $Id: FailbackConfig.java,v 1.8 2004/03/03 17:11:07 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -368,11 +368,16 @@ public class FailbackConfig extends Config {
       out.println();
 
       //-- cache --
-      out.println("Cache:");
-      Enumeration c = cache.keys();
-      while (c.hasMoreElements()) {
-         Object key = c.nextElement();
-         out.println("  "+key+" = "+cache.get(key));
+      if (cache.isEmpty()) {
+         out.println("(Cache is empty)");
+      }
+      else {
+         out.println("Cache:");
+         Enumeration c = cache.keys();
+         while (c.hasMoreElements()) {
+            Object key = c.nextElement();
+            out.println("  "+key+" = "+cache.get(key));
+         }
       }
       
       //-- JNDI --
@@ -383,8 +388,8 @@ public class FailbackConfig extends Config {
             out.println("JNDI Environment:");
             Hashtable env = jndiContext.getEnvironment();
             Enumeration j = env.keys();
-            while (c.hasMoreElements()) {
-               Object key = c.nextElement();
+            while (j.hasMoreElements()) {
+               Object key = j.nextElement();
                out.println("  "+key+" = "+env.get(key));
             }
             out.println("JNDI Names:");
@@ -431,12 +436,27 @@ public class FailbackConfig extends Config {
          Object key = s.nextElement();
          out.println("  "+key+" = "+System.getProperty(key.toString()));
       }
-      
+
+      out.flush();
    }
    
+   /**
+    * Main method dumps config contents to console - useful for debugging
+    */
+   public static void main(String[] args) {
+      FailbackConfig config = new FailbackConfig(null);
+
+      //force lazy load
+      config.getProperty("Nuffink", null);
+
+      config.dumpConfig(new PrintWriter(System.out));
+   }
 }
 /*
 $Log: FailbackConfig.java,v $
+Revision 1.8  2004/03/03 17:11:07  mch
+Added command line dump and tested
+
 Revision 1.7  2004/03/03 16:56:46  mch
 minor comment change
 
