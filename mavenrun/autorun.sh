@@ -1,12 +1,12 @@
 #!/bin/bash
-# $Id: autorun.sh,v 1.11 2004/06/28 09:07:59 jdt Exp $ 
+# $Id: autorun.sh,v 1.12 2004/07/02 11:22:13 jdt Exp $ 
 OLDDIR=$PWD
 
 #setup paths etc
 source /etc/profile
-CHECKOUTHOME=/data/cvsDownloads/itn05
+CHECKOUTHOME=/data/cvsDownloads/itn06
 SCRIPTHOME=/home/integration/autobuilds
-BUILDHOME=/data/cvsDownloads/itn05/astrogrid/integrationTests/auto-integration
+BUILDHOME=/data/cvsDownloads/itn06/astrogrid/integrationTests/auto-integration
 LOGFILE=/home/integration/mavenrun/auto.log
 DATE=`date`
 TIMESTAMP=`date +%Y%m%d-%T`
@@ -30,7 +30,8 @@ $CATALINA_HOME/bin/startup.sh >> $LOGFILE 2>&1
 
 #update from cvs 
 cd $CHECKOUTHOME/astrogrid/integrationTests >> $LOGFILE 2>&1
-cvs update -PCd  >> $LOGFILE 2>&1
+rm -r auto-integration
+cvs checkout -P astrogrid/integrationTests/auto-integration  >> $LOGFILE 2>&1
 
 #run maven goals
 cd $BUILDHOME >> $LOGFILE 2>&1
