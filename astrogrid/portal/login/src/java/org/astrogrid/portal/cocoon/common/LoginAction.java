@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/src/java/org/astrogrid/portal/cocoon/common/LoginAction.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/01/09 10:13:42 $</cvs:date>
- * <cvs:version>$Revision: 1.11 $</cvs:version>
+ * <cvs:date>$Date: 2004/01/09 10:17:54 $</cvs:date>
+ * <cvs:version>$Revision: 1.12 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: LoginAction.java,v $
+ *   Revision 1.12  2004/01/09 10:17:54  dave
+ *   Fixed account param in LoginAction
+ *
  *   Revision 1.11  2004/01/09 10:13:42  dave
  *   Added message to login page
  *
@@ -55,7 +58,7 @@ public class LoginAction extends AbstractAction
 	public static final String NAME_PARAM = "name" ;
 	public static final String PASS_PARAM = "pass" ;
 	public static final String ACCOUNT_PARAM = "message" ;
-	public static final String MESSAGE_PARAM = "message" ;
+	public static final String MESSAGE_PARAM = "account" ;
 
 	public static final String POLICY_GROUP    = "guest" ;
 	public static final String POLICY_ACTION   = "read" ;
