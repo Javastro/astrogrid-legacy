@@ -1,5 +1,5 @@
 /*
- * $Id: SqlQuerier.java,v 1.19 2003/09/24 21:03:19 nw Exp $
+ * $Id: SqlQuerier.java,v 1.20 2003/09/25 01:24:50 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -36,14 +36,16 @@ import org.xml.sax.SAXException;
  *
  * <p>
  * forms a basis for oter implementations for different db flavours
+ * <p>
+ * NWW: altered to delay creating jdbcConnection until required by {@link #queryDatabase}. DatabaseQueriers are one-shot
+ * beasts anyhow, so this isn't a problem, but it fixes problems of moving jdbcConnection across threads when non-blocking querying is done. 
  * @author M Hill
  */
 
 public class SqlQuerier extends DatabaseQuerier
 {
-   /** the standard sql jdbc connection, opened when the instance is created */
-   protected Connection jdbcConnection = null;
-
+   /** connection to the database */
+   protected Connection jdbcConnection;
    /** configuration file key, that gives us the name of a datasource in JNDI to use for this database querier */
    public static final String JNDI_DATASOURCE_KEY = "DatabaseQuerier.JndiDatasource";
    /** configuration file key, stores a JDBC connection URL for tis database querier */
@@ -76,9 +78,12 @@ public class SqlQuerier extends DatabaseQuerier
    {
       super();
 
+   }
+
+protected Connection createConnection() throws DatabaseAccessException {
       String userId = Configuration.getProperty(USER_KEY);
       String password = Configuration.getProperty(PASSWORD_KEY);
-
+    
       // look for jndi link to datasource,
       String jndiDataSourceName = Configuration.getProperty(JNDI_DATASOURCE_KEY);
       if ( jndiDataSourceName != null)
@@ -87,15 +92,15 @@ public class SqlQuerier extends DatabaseQuerier
          {
             // look up data source,
             DataSource ds = (DataSource)new InitialContext().lookup(jndiDataSourceName);
-
+    
             //connect (using user/password if given)
             if (userId != null)
             {
-               jdbcConnection = ds.getConnection(userId, password);
+               return ds.getConnection(userId, password);
             }
             else
             {
-               jdbcConnection = ds.getConnection();
+               return ds.getConnection();
             }
          }
          catch (NamingException ne)
@@ -124,7 +129,7 @@ public class SqlQuerier extends DatabaseQuerier
                {
                   Properties connectionProperties = new Properties();
                   connectionProperties.load(new ByteArrayInputStream(connectionPropertyValue.getBytes()));
-                  jdbcConnection = DriverManager.getConnection(jdbcURL,connectionProperties);
+                  return DriverManager.getConnection(jdbcURL,connectionProperties);
                }
                catch (IOException ioe)
                {
@@ -142,11 +147,11 @@ public class SqlQuerier extends DatabaseQuerier
                   //if a user/password are set, use that
                   if (userId != null)
                   {
-                     jdbcConnection = DriverManager.getConnection(jdbcURL,userId, password);
+                     return DriverManager.getConnection(jdbcURL,userId, password);
                   }
                   else
                   {
-                     jdbcConnection = DriverManager.getConnection(jdbcURL);
+                     return DriverManager.getConnection(jdbcURL);
                   }
                }
                catch (SQLException se)
@@ -154,16 +159,14 @@ public class SqlQuerier extends DatabaseQuerier
                   throw new DatabaseAccessException(se,"Failed to connect to '"+jdbcURL+"'");
                }
             }
-
+    
          }
          else
          {
             throw new DatabaseAccessException("No information on how to connect to JDBC - no '"+JNDI_DATASOURCE_KEY+"' or '"+JDBC_URL_KEY+"' keys in configuration file");
          }
       }
-
-      Log.affirm(jdbcConnection != null, "jcbdConnection not set during construction");
-   }
+}
 
    /**
     * Starts the jdbc driver(s) used to connect to the database; this method
@@ -274,8 +277,10 @@ public class SqlQuerier extends DatabaseQuerier
     */
    public QueryResults queryDatabase(Query query) throws DatabaseAccessException {
       String sql = null;
+
       try
-      {
+      { 
+         jdbcConnection = createConnection();
          Statement statement = jdbcConnection.createStatement();
          QueryTranslator trans = createQueryTranslator();
          sql = query.toSql(trans);
@@ -288,17 +293,26 @@ public class SqlQuerier extends DatabaseQuerier
       } catch (Exception e) {
          throw new DatabaseAccessException(e,"an error occurred");
       }
+
    }
    /* (non-Javadoc)
     * @see org.astrogrid.datacenter.queriers.DatabaseQuerier#close()
     */
    public void close() throws DatabaseAccessException {
       try {
-         jdbcConnection.close();
+          if (jdbcConnection != null) {
+            jdbcConnection.close();
+          }
       } catch (SQLException e) {
          throw new DatabaseAccessException(e,"Exception occured when closing database");
       }
 
    }
+
+    /** try and close the db connection, if not already done so */
+    protected void finalize() throws Throwable {
+        this.close();
+        super.finalize();
+    }
 
 }
