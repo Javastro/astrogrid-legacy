@@ -174,7 +174,7 @@ public class JobMonitor {
         	}
         	// And finally, inform the message log of the MySpace details concerning this JobStep...
         	informAstroGridMessageLog( jobStep ) ;
-	        logger.debug( response.toString() );
+	        logger.debug( (response == null) ? " " : response.toString() );
 	        if( TRACE_ENABLED ) logger.debug( "monitorJob() exit") ;
         } 
          	
@@ -287,7 +287,7 @@ public class JobMonitor {
 		
 	    try {
 	    	
-			nodeList = monitorJobDocument.getChildNodes() ;  			
+			nodeList = monitorJobDocument.getDocumentElement().getChildNodes() ;  			
 			   
 			for( int i=0 ; i < nodeList.getLength() ; i++ ) {						
 				if( nodeList.item(i).getNodeType() != Node.ELEMENT_NODE )
@@ -297,6 +297,8 @@ public class JobMonitor {
 				if( element.getTagName().equals( MonitorRequestDD.JOBSTEP_ELEMENT ) ) {
 				    stepNumber = element.getAttribute( MonitorRequestDD.JOBSTEP_NUMBER_ATTR ).trim() ;  
 					status = element.getAttribute( MonitorRequestDD.JOBSTEP_STATUS_ATTR ).trim() ; 
+                    logger.debug( "stepNumber: " + stepNumber ) ;
+                    logger.debug( "status: " + status ) ;
 					break ;  
 				}
 				
@@ -304,24 +306,26 @@ public class JobMonitor {
 			
 		    while( iterator.hasNext() ) {
 			    jobStep = (JobStep)iterator.next() ;
-			    if( jobStep.getStepNumber().equals( Integer.valueOf( stepNumber ) ) ) 
-				   break ;
+			    if( jobStep.getStepNumber().equals( Integer.valueOf( stepNumber ) ) ) {
+                    jobStep.setStatus( status ) ;
+                    logger.debug( "jobStep status set to : " + status ) ;
+                    break ;
+			    }
 		    } // end while  
-		    
-			jobStep.setStatus( status ) ;
-		    
+		    		    
 			nodeList = element.getChildNodes() ;  			
 			   
 			for( int i=0 ; i < nodeList.getLength() ; i++ ) {						
 				if( nodeList.item(i).getNodeType() != Node.ELEMENT_NODE )
 					continue ;				
 				element = (Element) nodeList.item(i) ;
-				if( element.getTagName().equals( MonitorRequestDD.COMMENT_ELEMENT ) )
-					break ;
+				if( element.getTagName().equals( MonitorRequestDD.COMMENT_ELEMENT ) ) {
+                    jobStep.setComment( element.getNodeValue().trim() ) ; 
+                    logger.debug( "jobStep comment set to : " + jobStep.getComment() ) ;
+				}
+      
 			} // end for
-			
-			jobStep.setComment( element.getNodeValue().trim() ) ; 
-		    
+			 
 	    }
 	    finally {
 	    	
