@@ -237,8 +237,7 @@
                 </xsl:for-each>
               <input class="agActionButton" type="button" value="Select">               
                 <xsl:attribute name="onClick">
-                   getSelectionId('<xsl:value-of select="$authId"/>','
-                                   <xsl:value-of select="$resourceKey"/>');
+                   getSelectionId('<xsl:value-of select="$authId"/>','<xsl:value-of select="$resourceKey"/>');
                 </xsl:attribute>                              
               </input>                                             
               <xsl:text>          </xsl:text>
