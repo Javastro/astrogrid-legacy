@@ -30,20 +30,22 @@ public class Field {
 	
 	private static Logger 
 		logger = Logger.getLogger( Field.class ) ;
-		
-	private static final String
-		ASTROGRIDERROR_COULD_NOT_dosomething = "AGDTCE00???" ;	
+
 		
 	private String
 	   name ,
 	   type ,
 	   value;
+	   
+	private Catalog
+	    catalog;   
 
 
-    public Field( Element fieldElement ) throws QueryException {
+    public Field( Element fieldElement, Catalog catalog ) throws QueryException {
 		if( TRACE_ENABLED ) logger.debug( "Field(): enter") ; 	
 		   	
-		try {		 
+		try {	
+			this.catalog = catalog;	 
 		    name = fieldElement.getAttribute( JobDocDescriptor.FIELD_NAME_ATTR ) ;
 		    type = fieldElement.getAttribute( JobDocDescriptor.FIELD_TYPE_ATTR ) ;
 		    NodeList nodeList = fieldElement.getChildNodes();
@@ -79,6 +81,10 @@ public class Field {
 	
 	public String getValue() {
 		return value;
+	}
+	
+	public Catalog getCatalog() {
+		return catalog;
 	}
 	   
 } // end of class Field
