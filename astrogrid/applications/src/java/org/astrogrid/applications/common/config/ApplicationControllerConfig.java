@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationControllerConfig.java,v 1.11 2004/01/26 12:51:17 pah Exp $
+ * $Id: ApplicationControllerConfig.java,v 1.12 2004/01/26 17:46:09 pah Exp $
  * 
  * Created on 26-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -162,8 +162,8 @@ public class ApplicationControllerConfig {
       rep.append("</li>");
       
       rep.append("<li>");
-      rep.append(" Mail Session key: ");
-      rep.append(config.getProperty(ApplicationsConstants.SMTPServerKey));
+      rep.append(" Mail Session : ");
+      rep.append(mailSessionInstance());
       rep.append("</li>");
       
       rep.append("</ul>");
