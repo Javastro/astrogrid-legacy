@@ -1,4 +1,4 @@
-/*$Id: FitsResultsTest.java,v 1.4 2004/09/01 12:10:58 mch Exp $
+/*$Id: FitsResultsTest.java,v 1.5 2004/09/02 10:25:43 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -10,46 +10,68 @@
 package org.astrogrid.datacenter.queriers.fits;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.StringWriter;
+import javax.xml.parsers.ParserConfigurationException;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
-import org.astrogrid.datacenter.queriers.status.QuerierProcessingResults;
-import org.astrogrid.datacenter.query.ConeQuery;
-import org.astrogrid.datacenter.returns.ReturnTable;
-import org.astrogrid.datacenter.returns.TargetIndicator;
+import org.astrogrid.test.AstrogridAssert;
+import org.astrogrid.util.DomHelper;
+import org.xml.sax.SAXException;
 
 /** Test the Fits processing classes
  */
 public class FitsResultsTest extends TestCase
 {
 
-   String []fileURLS = {"http://msslxy.mssl.ucl.ac.uk:8080/TraceFits/ObtainFITS?_file=trace4a/tri/week20020728/tri20020728.0500",
-                        "http://msslxy.mssl.ucl.ac.uk:8080/TraceFits/ObtainFITS?_file=trace4a/tri/week20020728/tri20020728.0600"};
-   FitsResults fr = new FitsResults(fileURLS);
-   QuerierProcessingResults qpr;
-   protected Querier querier;
-   protected StringWriter sw;
-   
+   String [] exampleUrls = {"http://msslxy.mssl.ucl.ac.uk:8080/TraceFits/ObtainFITS?_file=trace4a/tri/week20020728/tri20020728.0500",
+                            "http://msslxy.mssl.ucl.ac.uk:8080/TraceFits/ObtainFITS?_file=trace4a/tri/week20020728/tri20020728.0600"};
+
+   FitsResults fixedResults = new FitsResults(exampleUrls);
+   FitsResults coneResults;
+                            
    protected void setUp() throws Exception{
       SimpleConfig.setProperty(QuerierPluginFactory.PLUGIN_KEY, FitsQuerierPlugin.class.getName());
-      sw = new StringWriter();
-      querier = Querier.makeQuerier(Account.ANONYMOUS, new ConeQuery(30,30,6), new TargetIndicator(sw), ReturnTable.VOTABLE);
-      qpr = new QuerierProcessingResults(querier);
-      
    }
 
-   public void testToVOotable() throws IOException
+   public void testToVotable() throws IOException, SAXException, ParserConfigurationException
    {
-      PrintWriter pw = new PrintWriter(System.out);
-      fr.toVotable(pw, qpr);
+      StringWriter sw = new StringWriter();
+      fixedResults.toVotable(sw, null);
+      
+      //check results
+      DomHelper.newDocument(sw.toString());
+      
+      AstrogridAssert.assertVotable(sw.toString());
    }
 
+   public void testToHtml() throws IOException, SAXException, ParserConfigurationException
+   {
+      StringWriter sw = new StringWriter();
+      fixedResults.toHtml(sw, null);
+      
+      //check results
+      DomHelper.newDocument(sw.toString());
+   }
+
+   public void testToCSV() throws IOException
+   {
+      StringWriter sw = new StringWriter();
+      fixedResults.toCSV(sw, null);
+   }
+
+   /*
+   public void testConeToVotable() throws IOException, IOException, SAXException, ParserConfigurationException {
+      StringWriter sw = new StringWriter();
+      Querier querier = Querier.makeQuerier(Account.ANONYMOUS, new ConeQuery(30,30,6), new TargetIndicator(sw), ReturnTable.VOTABLE);
+      
+      //check results
+      DomHelper.newDocument(sw.toString());
+   }
+    */
+   
    
    public static Test suite()
    {
@@ -72,6 +94,9 @@ public class FitsResultsTest extends TestCase
 
 /*
  $Log: FitsResultsTest.java,v $
+ Revision 1.5  2004/09/02 10:25:43  mch
+ Added tests
+
  Revision 1.4  2004/09/01 12:10:58  mch
  added results.toHtml
 
