@@ -1,4 +1,4 @@
-/*$Id: FitsQuerierTest.java,v 1.4 2004/01/13 00:33:14 nw Exp $
+/*$Id: FitsQuerierTest.java,v 1.5 2004/01/14 16:00:13 nw Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -33,7 +33,10 @@ public class FitsQuerierTest extends TestCase
    public void testCone() throws IOException
    {
       FitsQuerier querier = new FitsQuerier("DummyId", null);
-      fail("takes too long for a unit test");
+      if ("true".equals(System.getProperty("skip.long.tests"))) {
+         System.out.println("Skipping long test");
+         return;
+      }
       setIndex(querier);
       
       querier.coneSearch(300,60,12);
@@ -43,8 +46,11 @@ public class FitsQuerierTest extends TestCase
    public void testLots() throws IOException
    {
       org.astrogrid.log.Log.logToConsole();
-      fail("takes too long for a unit test");
       FitsQuerier querier = new FitsQuerier("test",null);
+      if ("true".equals(System.getProperty("skip.long.tests"))) {
+         System.out.println("Skipping long test");
+         return;
+      }      
       setIndex(querier);
 
       org.astrogrid.log.Log.trace("Starting cone search...");
@@ -113,6 +119,9 @@ public class FitsQuerierTest extends TestCase
 
 /*
  $Log: FitsQuerierTest.java,v $
+ Revision 1.5  2004/01/14 16:00:13  nw
+ tidied up switching out long tests.
+
  Revision 1.4  2004/01/13 00:33:14  nw
  Merged in branch providing
  * sql pass-through
