@@ -1,5 +1,5 @@
 /*
-   $Id: DomHelper.java,v 1.9 2004/08/16 07:11:45 KevinBenson Exp $
+   $Id: DomHelper.java,v 1.10 2004/08/16 07:15:40 KevinBenson Exp $
 
    (c) Copyright...
 */
@@ -53,6 +53,19 @@ public class DomHelper
           return getValue((Element) nodes.item(0));
        }
        throw new IllegalArgumentException(element+" is not an element node of "+parent.getNodeName());
+    }
+    
+    /** Convenience routine for returning the value of an element.  Allows for values that are
+     * child nodes (which seems to happen when the value is on a separate line from
+     * the opening tag) .
+     * - Just noticed this is not quite a duplicate of getNodeTextValue - I'm not
+     * sure they're quite right.
+     */
+    public static String getValue(Element element) {
+       if (element.getNodeValue() != null) {
+          return element.getNodeValue();
+       }
+       return element.getChildNodes().item(0).getNodeValue();
     }    
     
    /**
