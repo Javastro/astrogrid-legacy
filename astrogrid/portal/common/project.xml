@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="../maven-project.xsd">
-  <extend>../maven-base/project.xml</extend>
-  
-  <id>astrogrid-portal-common</id>
-  <name>AstroGrid Portal Common Project</name>
-
-
-  <build>
-    <sourceDirectory>src/java</sourceDirectory>
-    <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
-  </build>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:noNamespaceSchemaLocation="../../maven-base/xsd/maven-project.xsd">
+    <extend>../maven-base/project.xml</extend>
+    <id>astrogrid-portal-common</id>
+    <name>AstroGrid Portal Common Project</name>
+    <dependencies>
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-common</artifactId>
+            <version>${pom.currentVersion}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+        </dependency>
+    </dependencies>
+    <build>
+        <sourceDirectory>src/java</sourceDirectory>
+        <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
+    </build>
 </project>

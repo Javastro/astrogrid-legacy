@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <extend>../maven-base/project-include-dependencies.xml</extend>
+  <extend>../maven-base/project.xml</extend>
   
   <id>astrogrid-portal-base</id>
   <name>AstroGrid Portal Base Project</name>
