@@ -410,7 +410,7 @@ public class RegistryManager
                   else
                   {  MySpaceStatus status  =
                        new MySpaceStatus(
-                         MySpaceStatusCode.AGMMCW001543,
+                         MySpaceStatusCode.AGMMCW00151,
                          MySpaceStatusCode.WARN,
                          MySpaceStatusCode.NOLOG,
                          this.getClassName() );
