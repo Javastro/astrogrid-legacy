@@ -117,11 +117,21 @@ function setParentIVORNAgsl(parent_ivorn, parent_agsl){
 //                myspace_item.value));
 }
 
+function setParentHiddenField(field_name, field_value) {
+  if(field_name) {
+    parentDoc = window.opener.document;
+    parent_field = parentDoc.getElementById(field_name);    
+    if(field_value && field_value.length > 0) {
+      parent_field.value = field_value;
+    }
+  }
+}
+
 function submitParentForm(form_name, action) {
   parentDoc = window.opener.document;
-  parent_form = parentDoc.getElementById(form_name);
+  parent_form = parentDoc.getElementById(form_name); 
   if(parent_form) {
-    if(action && action.length() > 0) {
+    if(action && action.length > 0) {
       parent_form.action = action;
     }
     parent_form.submit();
