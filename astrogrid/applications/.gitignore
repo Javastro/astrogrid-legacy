@@ -6,3 +6,5 @@ tests.log
 server-config.wsdd
 velocity.log
 .project
+junit*.properties
+
