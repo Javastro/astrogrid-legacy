@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: build-all.sh,v 1.5 2005/01/13 11:51:58 jdt Exp $ 
+# $Id: build-all.sh,v 1.6 2005/02/01 17:53:08 jdt Exp $ 
 ##################################################
 #
 #  Build all the astrogrid components
@@ -28,7 +28,7 @@ build-component.sh community $1       #server
 
 build-component.sh jes $1 #client - will fail, build client only
 cd $CHECKOUTHOME/astrogrid/jes
-maven -p delegate-project astrogrid-install-artifact
+maven -p delegate-project.xml astrogrid-install-artifact
 
 build-component.sh applications $1
 build-component.sh workflow $1
