@@ -3,7 +3,15 @@ package org.astrogrid.mySpace.mySpaceManager;
 import java.io.*;
 import java.util.*;
 
+import org.apache.axis.client.Call;
+import org.apache.axis.client.Service;
+import javax.xml.rpc.ParameterMode;
+import javax.xml.rpc.encoding.XMLType;
+
+import org.apache.axis.AxisProperties;
 import org.astrogrid.mySpace.mySpaceStatus.*;
+
+import org.apache.log4j.Logger;
 
 /**
  * @author A C Davenhall (Edinburgh)
@@ -11,7 +19,11 @@ import org.astrogrid.mySpace.mySpaceStatus.*;
  */
 
 public class MySpaceActions
-{  private static String registryName;
+{  
+	private static Logger logger = Logger.getLogger(MySpaceActions.class);
+	private static boolean DEBUG = true;	
+	private static String registryName;
+	Call call = null;
 
 //
 // Constructor.
@@ -38,7 +50,8 @@ public class MySpaceActions
 
    public DataItemRecord lookupDataHolderDetails(String userID,
      String communityID, String jobID, int dataItemID)
-   {  DataItemRecord dataItem = new DataItemRecord();
+   {  
+   	  DataItemRecord dataItem = new DataItemRecord();
       dataItem = null;
 
 //
@@ -257,7 +270,7 @@ public class MySpaceActions
      String jobID, int oldDataItemID, String newDataItemName)
    {  DataItemRecord returnedDataItem = new DataItemRecord();
       returnedDataItem = null;
-
+    try{
 //
 //   Attempt to open the registry and proceed if ok.
 
@@ -338,6 +351,39 @@ public class MySpaceActions
 //                     PERFORM A TEST THAT ALL IS WELL (THE FAKE TEST
 //                     INSERTED BELOW SHOULD BE REMOVED).
 
+    					int containSepPos1 = newDataItemName.indexOf("/");
+						int containSepPos2 = newDataItemName.indexOf("/", containSepPos1+1);
+						int containSepPos3 = newDataItemName.indexOf("/", containSepPos2+1);
+
+                        String serverName;
+						if (containSepPos3 > 0)
+						{
+
+//
+//						  Check that the server name is valid.
+
+						   serverName = 
+							 newDataItemName.substring(containSepPos2+1, containSepPos3);
+						}
+						else
+						{  serverName = "";
+						}
+
+                        String serverDirectory = reg.getServerDirectory(serverName);
+
+                        String a = serverDirectory + oldDataItem.getDataItemFile();
+                        String b = serverDirectory + dataItemFileName;
+                        
+//							 System.out.println("serverName: " + serverName);
+					   call = createServerCall();
+					   call.setOperationName( "copyDataHolder" );			
+					   call.addParameter("arg0", XMLType.XSD_STRING, ParameterMode.IN);
+					   call.addParameter("arg1", XMLType.XSD_STRING, ParameterMode.IN);
+		
+					   call.setReturnType( org.apache.axis.encoding.XMLType.XSD_STRING);
+					   String serverResponse = (String)call.invoke( new Object[] {a,b} );
+					   if ( DEBUG )  logger.debug("GOT SERVERRESPONSE: "+serverResponse);
+
                         if (status.getSuccessStatus() )
                         {
 
@@ -380,7 +426,9 @@ public class MySpaceActions
 //   Re-write the registry.
 
 //      reg.finalize();
-
+    }catch(Exception e){
+     //...
+    }
       return returnedDataItem;
    }
 
@@ -793,7 +841,7 @@ public class MySpaceActions
    public boolean deleteDataHolder(String userID, String communityID,
      String jobID, int dataItemID)
    {  boolean returnStatus = false;
-
+    try{
 //
 //   Attempt to open the registry and proceed if ok.
 
@@ -867,6 +915,44 @@ public class MySpaceActions
 //                  THAT ALL IS WELL (THE FAKE TEST INSERTED BELOW SHOULD
 //                  BE REMOVED).
 
+                    String dataItemName = dataItem.getDataItemName();
+                    
+					int containSepPos1 = dataItemName.indexOf("/");
+					int containSepPos2 = dataItemName.indexOf("/", containSepPos1+1);
+					int containSepPos3 = dataItemName.indexOf("/", containSepPos2+1);
+
+					String serverName;
+					if (containSepPos3 > 0)
+					{
+
+//
+//					  Check that the server name is valid.
+
+					   serverName = 
+						 dataItemName.substring(containSepPos2+1, containSepPos3);
+					}
+					else
+					{  serverName = "";
+					}
+					
+					RegistryManager reg2 =
+					  new RegistryManager(registryName);
+					String serverDirectory = reg2.getServerDirectory(serverName);
+					reg2.finalize();
+
+					String a = serverDirectory + dataItem.getDataItemFile();
+
+                        
+//						 System.out.println("serverName: " + serverName);
+				   call = createServerCall();
+				   call.setOperationName( "deleteDataHolder" );			
+				   call.addParameter("arg0", XMLType.XSD_STRING, ParameterMode.IN);
+		
+				   call.setReturnType( org.apache.axis.encoding.XMLType.XSD_STRING);
+				   String serverResponse = (String)call.invoke( new Object[] {a} );
+				   if ( DEBUG )  logger.debug("GOT SERVERRESPONSE: "+serverResponse);
+
+
                      if (status.getSuccessStatus() )
                      {
 
@@ -906,7 +992,9 @@ public class MySpaceActions
 //   Re-write the registry.
 
 //      reg.finalize();
-
+    }catch(Exception e){
+     //...
+    }
       return returnStatus;
    }
 
@@ -1038,4 +1126,27 @@ public class MySpaceActions
 
       return canBeCreated;
    }
+   
+   private Call createServerCall(){
+	   Call call = null;
+	   try{
+		   String endpoint  = "http://localhost:8080/axis/services/MySpaceManager";
+		   Service service = new Service();
+		   call = (Call)service.createCall();
+		   call.setTargetEndpointAddress( new java.net.URL(endpoint) );
+		
+		   /*
+		   call.setOperationName( "moveDataHolder" );			
+		   call.addParameter("arg0", XMLType.XSD_STRING, ParameterMode.IN);
+		   call.addParameter("arg1", XMLType.XSD_STRING, ParameterMode.IN);
+		
+		   call.setReturnType( org.apache.axis.encoding.XMLType.XSD_STRING);
+		   String serverResponse = call.invoke( new Object[] {content,path} );
+		   */
+	   }catch(Exception e){
+		   MySpaceMessage message = new MySpaceMessage("ERROR_CALL_SERVER_MANAGER");
+		   message.getMessage(e.toString());
+	   }	
+	   return call;
+   }   
 }
