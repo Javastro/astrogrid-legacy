@@ -75,40 +75,60 @@ public class From {
 		   
 	} // end of From( Element )
 	
-
+/**
+ * Returns a String containing catalogue and table details.
+ * If the table element is empty then assume owner and table name are the same
+ * and the return is of the form: catalogue..catalogue.
+ * If there is one table element then the return is of the form: catalogue..table
+ * If there are a number of tables then the return will be a comma seperated list in the form:
+ * catalogue..table1, catalogue..table2, catalogue..table3 
+ */
 	public String toSQLString() {
-    	
+		
 		StringBuffer
-		   buffer = new StringBuffer(64) ;
-        Catalog 
-            catalog[] = this.catalogs;
+			buffer = new StringBuffer(64) ;
+		
+    	try {
+            Catalog 
+                catalog[] = this.catalogs;
         
-        for (int i=0; i < catalog.length; i++) {		    
+        	for (int i=0; i < catalog.length; i++) {		    
         	
-        	Table 
-        	    table[] = catalog[i].getTables();
+        		Table 
+        	        table[] = catalog[i].getTables();
         	
-        	if (table.length <= 0) {  // no table specified assume master and table name are same
-        		buffer.append(catalog[i].getName());
-        		buffer.append("..");
-        		buffer.append(catalog[i].getName());
-        	}
+        		if (table.length <= 0) {  // no table specified assume owner and table name are same
+        			buffer.append(catalog[i].getName());
+        			buffer.append("..");
+        			buffer.append(catalog[i].getName());
+        		}
         	
-        	else {
+        		else {
         		
-			    for (int j=0; j < table.length; j++) {
-			    	
-				    buffer.append(catalog[i].getName());
-				    buffer.append("..");
-				    buffer.append(table[j].getName());				
-				    buffer.append(",");
+			    	for (int j=0; j < table.length; j++) {
+			    		
+					    buffer.append(catalog[i].getName());
+				    	buffer.append("..");
+				        buffer.append(table[j].getName());				
+				        buffer.append(",");
 			           		
-				} // end of for (int j=0; j < table.length; j++)
+					} // end of for (int j=0; j < table.length; j++)
 					
-				buffer.deleteCharAt(buffer.length()-1); // remove final ","
-        	}
-    	} // end of for (int i=0; i < catalog.length; i++)
+					buffer.deleteCharAt(buffer.length()-1); // remove final ","
+        		}
+    		} // end of for (int i=0; i < catalog.length; i++)
     	   
+			
+    	}
+		catch( Exception ex) {
+			Message
+				message = new Message( ASTROGRIDERROR_COULD_NOT_dosomething ) ;
+			logger.error( message.toString(), ex ) ;   		
+		}
+		finally {
+			if( TRACE_ENABLED ) logger.debug( "Return(Element): exit") ;   	
+		}
+		
 		return buffer.toString() ;
     	
 	} // end of toSQLString()
