@@ -18,7 +18,7 @@
 			</CmdLineParameterDefn>
 			<CmdLineParameterDefn name="P2" type="double" commandPosition="2">
 				<agpd:UI_Name>String</agpd:UI_Name>
-				<agpd:UI_Description>Text<b>bold bit</b> This can be anything
+				<agpd:UI_Description>Text This can be anything
 				</agpd:UI_Description>
 				<agpd:UCD>String</agpd:UCD>
 				<agpd:DefaultValue>Text</agpd:DefaultValue>
@@ -114,7 +114,7 @@
 			</CmdLineParameterDefn>
 			<CmdLineParameterDefn name="p2" type="integer">
 				<agpd:UI_Name>String</agpd:UI_Name>
-				<agpd:UI_Description>Text<b>bold bit</b>
+				<agpd:UI_Description>Text
 				</agpd:UI_Description>
 				<agpd:UCD>String</agpd:UCD>
 				<agpd:DefaultValue>Text</agpd:DefaultValue>
