@@ -1,4 +1,4 @@
-/*$Id: CompositeFitsVotableParsingConcatWorkflowTest.java,v 1.3 2004/08/27 13:16:52 nw Exp $
+/*$Id: CompositeFitsVotableParsingConcatWorkflowTest.java,v 1.4 2004/09/03 13:28:15 nw Exp $
  * Created on 12-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -73,8 +73,9 @@ public class CompositeFitsVotableParsingConcatWorkflowTest extends SimpleFitsWor
                 "parser = new XmlParser(); //create new parser \n" +
                 "nodes = parser.parseText(votable); //parse votable into node tree\n" +
                 "urls = nodes.depthFirst().findAll{it.name() == 'STREAM'}.collect{it.value()}.flatten(); // filter node tree on 'STREAM', project value\n" +
+                "print(urls); // show what we've got\n" + 
                 "concatStep = jes.getSteps().find {it.getName() == 'concat-step'}; // find next step in workflow\n" +
-                "inputs = concatStep.getTool().getInput(); // get to set of input parameters" +
+                "inputs = concatStep.getTool().getInput(); // get to set of input parameters\n" +
                 "urls.each { p = jes.newParameter(); p.setName('src'); p.setIndirect(true); p.setValue(it); inputs.addParameter(p);} // add a new parameter for each url\n"                
         );
         wf.getSequence().addActivity(sc);
@@ -111,6 +112,9 @@ public class CompositeFitsVotableParsingConcatWorkflowTest extends SimpleFitsWor
 
 /* 
 $Log: CompositeFitsVotableParsingConcatWorkflowTest.java,v $
+Revision 1.4  2004/09/03 13:28:15  nw
+fixed buglet.
+
 Revision 1.3  2004/08/27 13:16:52  nw
 used AstrogridAssert to check results more thoroughly.
 
