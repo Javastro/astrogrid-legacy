@@ -1,5 +1,5 @@
 /*
- * $Id: CeaResourceServer.java,v 1.7 2004/11/04 18:25:50 mch Exp $
+ * $Id: CeaResourceServer.java,v 1.8 2004/11/05 19:12:59 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,18 +8,20 @@ package org.astrogrid.datacenter.metadata;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Date;
+import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.component.CEAComponentManagerFactory;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.metadata.VoDescriptionServer;
-import org.astrogrid.datacenter.service.ServletHelper;
 import org.astrogrid.io.xml.XmlPrinter;
 import org.astrogrid.io.xml.XmlTagPrinter;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  * Serves the CEA resources.  Bit of a mangled fudge at the moment to get
@@ -41,8 +43,6 @@ public class CeaResourceServer implements VoResourcePlugin {
 
       //add the voresource for the CEA access to the datacenter
       try {
-         //I've wrapped this in a separate try/catch so that problems with CEA
-         //don't stop the initialiser from working.. which is naughty
          String ceaVoDescription = CEAComponentManagerFactory.getInstance().getMetadataService().returnRegistryEntry();
          //extract the resource elements
          Document ceaDoc = DomHelper.newDocument(ceaVoDescription);
@@ -75,7 +75,13 @@ public class CeaResourceServer implements VoResourcePlugin {
 
          return returns;
          
-      } catch (Throwable th) {
+      } catch (SAXException th) {
+        log.error(th+" getting CEA resources",th);
+      }
+      catch (ParserConfigurationException th) {
+        log.error(th+" getting CEA resources",th);
+      }
+      catch (CeaException th) {
         log.error(th+" getting CEA resources",th);
       }
       return new String[] {} ;

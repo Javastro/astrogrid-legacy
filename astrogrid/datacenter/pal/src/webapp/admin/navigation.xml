@@ -26,8 +26,8 @@
          <li><a href="../docs/resourcePlugins.jsp">Configuring Metadata</a>
       </ul>
    </div>
-   <div id='menuContainer'>
-      <h5>Manager</h5>
+   <div id='menuTomcat'>
+      <h5>Tomcat</h5>
       <ul>
          <li><a href='/manager/html/'>Manager</a>
          <li><a href='/manager/reload?path=<%= request.getContextPath() %>'>Restart</a>
