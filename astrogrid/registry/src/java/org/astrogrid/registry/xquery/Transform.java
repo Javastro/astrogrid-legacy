@@ -1,6 +1,10 @@
 package org.astrogrid.registry.xquery
 
 import java.io.*;
+import java.net.URL;
+import java.net.MalformedURLException;
+import java.io.InputStream;
+
 
 /**
  * This class is used to open an Xquery file and transfer
@@ -8,27 +12,30 @@ import java.io.*;
  *
  */
 
-public class Transform {
+public  class Transform {
 
-  public static String fileToString(String filePath) {
-
-	String xquery = new String();
+  public static String URLFileToString(String filePath) throws MalformedURLException {
+	StringBuffer stringBuffer = new StringBuffer();
 
 	try {
-	  // create a file instance and a file InputStream
-	  File fileXQuery = new File(filePath);
-	  InputStream fileIn = new FileInputStream(fileXQuery);
+	  URL fileAddres = new URL(filePath);
+	  InputStream is = fileAddres.openStream();
+	  BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 
-	  // read file leght and change data type from double to byte
-	  double fileLeghtDouble = fileXQuery.length();
-	  byte fileLeght = (byte) fileLeghtDouble;
-	  byte buff[] = new byte[fileLeght];
-	  int i = fileIn.read(buff);
-	  xquery = new String(buff);
+	  while (true)
+	   {
+		 String string = reader.readLine();
+		 if (string != null)
+			stringBuffer.append(string).append("\n");
+		 else
+		 break;
+	   }
 	}
-	catch (IOException io) {
-	  io.printStackTrace();
-	}
-	return (xquery);
+	catch (IOException e) {}
+
+	String fileContent = stringBuffer.toString();
+
+	return(fileContent);
   }
+
 }
