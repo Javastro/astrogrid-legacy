@@ -1,0 +1,248 @@
+/*
+ * $Id: RdbmsTableMetaDocGenerator.java,v 1.1 2005/03/10 16:42:55 mch Exp $
+ *
+ * (C) Copyright Astrogrid...
+ */
+
+package org.astrogrid.tableserver.jdbc;
+
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Types;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.dataservice.queriers.DatabaseAccessException;
+import org.astrogrid.io.xml.XmlAsciiWriter;
+import org.astrogrid.io.xml.XmlPrinter;
+import org.astrogrid.webapp.DefaultServlet;
+
+/**
+ * Generates the table metadoc that describes a tabular dataset from the metadata
+ * provided by the JDBC connection.
+ */
+
+public class RdbmsTableMetaDocGenerator extends DefaultServlet {
+   
+   protected static Log log = LogFactory.getLog(RdbmsTableMetaDocGenerator.class);
+   
+   //should match the xml schema types
+   public static String INT = "integer";
+   public static String FLOAT = "double";
+   public static String BOOLEAN = "boolean";
+   public static String STRING = "string";
+   public static String DATE = "dateTime";
+   
+   /** Convenience routine for finding the value of a column in a result set row,
+    * but ignoring
+    * missing columns
+    */
+   protected String getColumnValue(ResultSet table, String column) {
+      try {
+         String s = table.getString(column);
+         if (s==null) {
+            return "";
+         }
+         else {
+            return s;
+         }
+      }
+      catch (SQLException e) {
+         return "(Unknown)";
+      }
+   }
+   
+   /**
+    * Returns the votable datatype for the given column.
+    * @todo check these - these are made up/guessed
+    */
+   public static String getType(int sqlType) {
+      
+      switch (sqlType) {
+         case Types.BIGINT:   return INT;
+         case Types.BOOLEAN:  return BOOLEAN;
+         case Types.VARCHAR:  return STRING;
+         case Types.CHAR:     return STRING;
+         case Types.DOUBLE:   return FLOAT;
+         case Types.FLOAT:    return FLOAT;
+         case Types.INTEGER:  return INT;
+         case Types.REAL:     return FLOAT;
+         case Types.SMALLINT: return INT;
+         case Types.TINYINT:  return INT;
+         case Types.DATE:     return DATE;
+         case Types.TIMESTAMP:return DATE;
+         default: {
+            log.error("Don't know what SQL type "+sqlType+" should be, storing as string", new RuntimeException()); //add runtime exception so we get a stack trace
+            return "char";
+         }
+      }
+   }
+   
+   /** Returns the metadata as a string */
+   public String getMetaDoc() throws IOException {
+      StringWriter sw = new StringWriter();
+      writeTableMetaDoc(sw);
+      return sw.toString();
+   }
+   
+   
+   /**
+    * Writes the metadata to the given stream.  Writes just one catalog for now */
+   public void writeTableMetaDoc(Writer out) throws IOException {
+      
+      out.write("<DatasetDescription targetNamespace='urn:astrogrid:schema:TableMetaDoc_v1'>\n");
+      
+      Connection connection = null;
+      try {
+         connection = JdbcPlugin.getJdbcConnection();
+         
+         DatabaseMetaData metadata = connection.getMetaData();
+
+         XmlAsciiWriter xw = new XmlAsciiWriter(out, false);
+
+         XmlPrinter catTag = xw.newTag("Catalog");
+
+         //get all tables
+         ResultSet tables = metadata.getTables(null, null, "%", null);
+
+         while (tables.next()) {
+            //ignore all tables beginning with 'sys' as these are standard system tables
+            //and we don't want to make these public.  I believe
+            if (!getColumnValue(tables, "TABLE_NAME").startsWith("sys")) {
+               String tableName = getColumnValue(tables, "TABLE_NAME");
+               XmlPrinter tableTag = catTag.newTag("Table", new String[] { "ID='"+tableName+"'"} );
+               tableTag.writeTag("Name", tableName );
+               tableTag.writeTag("Description", getColumnValue(tables, "REMARKS")+" "); //add space so we don't get an empty tag <Description/> which is a pain to fill in
+               //tableTag.writeComment("schema='"+getColumnValue(tables, "TABLE_SCHEM")+"'");
+               
+               ResultSet columns = metadata.getColumns(null, null, tables.getString("TABLE_NAME"), "%");
+               
+               while (columns.next()) {
+                  int sqlType = Integer.parseInt(getColumnValue(columns, "DATA_TYPE"));
+                  String colName = getColumnValue(columns, "COLUMN_NAME");
+                  XmlPrinter colTag = tableTag.newTag(
+                     "Column",
+                     new String[] { "ID='"+tableName+"."+colName+"'",
+                                    "indexed='false'" }
+                  );
+                  colTag.writeTag("Name", colName);
+                  colTag.writeTag("DataType", getType(sqlType));  //duplicate of attribute above, which includes width where nec,
+                  colTag.writeTag("Description", getColumnValue(columns, "REMARKS")+" "); //add space so we don't get an empty tag <Description/> which is a pain to fill in
+//                  colTag.writeTag("Link", new String[] { "text=''" }, " "); //add space so we don't get an empty tag <Description/> which is a pain to fill in
+                  colTag.writeTag("Units", " "); //for humans
+                  colTag.writeTag("DimEq", " "); //Dimension Equation
+                  colTag.writeTag("Scale", " "); //Scaling Factor for dimension equation
+                  colTag.writeTag("UCD", " ");
+                  colTag.writeTag("UcdPlus", " ");
+//                  colTag.writeTag("ErrorColumn", " ");
+                  //botch look for spatial coordinates
+                  if (colName.toLowerCase().equals("ra")) {
+                     colTag.writeTag("SkyPolarCoord", "RA");
+                  }
+                  if (colName.toLowerCase().equals("dec")) {
+                     colTag.writeTag("SkyPolarCoord", "DEC");
+                  }
+                  
+                  colTag.close();
+               }
+               
+               tableTag.close();
+            }
+         }
+         catTag.close();
+         xw.close();
+         
+         connection.close();
+      }
+      catch (SQLException e) {
+         throw new DatabaseAccessException("Could not get metadata: "+e,e);
+      }
+      out.write("</DatasetDescription>\n");
+      out.flush();
+   }
+   
+   
+   /** Generates the Queryable Resource which describes what can be queried
+    *
+   public void writeQueryableResource(Writer out, DatabaseMetaData metadata ) throws IOException {
+
+      try {
+         XmlAsciiWriter xw = new XmlAsciiWriter(out, false);
+
+         XmlPrinter metaTag = xw.newTag("Resource", new String[] { "xsi:type='Queryable'" });
+
+         String funcs = metadata.getNumericFunctions();
+
+         XmlPrinter funcTag = metaTag.newTag("Functions");
+         StringTokenizer tokenizer = new StringTokenizer(funcs,",");
+         while (tokenizer.hasMoreTokens()) {
+            funcTag.writeTag("Function", tokenizer.nextToken());
+         }
+         if (SimpleConfig.getSingleton().getBoolean("datacenter.implements.circle",false)) {
+            funcTag.writeTag("Function", "CIRCLE");
+         }
+         if (SimpleConfig.getSingleton().getBoolean("datacenter.implements.xmatch",false)) {
+            funcTag.writeTag("Function", "XMATCH");
+         }
+         
+         //get all tables
+         ResultSet tables = metadata.getTables(null, null, "%", null);
+
+         while (tables.next()) {
+            //ignore all tables beginning with 'sys' as these are standard system tables
+            //and we don't want to make these public.  I believe
+            if (!getColumnValue(tables, "TABLE_NAME").startsWith("sys")) {
+               ResultSet columns = metadata.getColumns(null, null, tables.getString("TABLE_NAME"), "%");
+               
+               while (columns.next()) {
+                  int sqlType = Integer.parseInt(getColumnValue(columns, "DATA_TYPE"));
+                  XmlPrinter colTag = metaTag.newTag("Field", new String[] { "indexed='false'" }  );
+                  colTag.writeTag("Name", getColumnValue(tables, "TABLE_NAME")+"."+getColumnValue(columns, "COLUMN_NAME"));
+                  colTag.writeTag("DataType", getVoType(sqlType));  //duplicate of attribute above, which includes width where nec, but
+                  colTag.writeTag("Description", getColumnValue(columns, "REMARKS")+" "); //add space so we don't get an empty tag <Description/> which is a pain to fill in
+                  colTag.writeTag("DimEq", " "); //Dimension Equation
+                  colTag.writeTag("Scale", " "); //Scaling Factor for dimension equation
+                  colTag.writeTag("Units", " ");
+                  colTag.writeTag("UCD", " ");
+                  colTag.writeTag("UcdPlus", " ");
+                  colTag.close();
+               }
+            }
+         }
+         metaTag.close();
+         xw.close();
+      }
+      catch (SQLException e) {
+         throw new DatabaseAccessException("Could not get metadata: "+e,e);
+      }
+
+   }
+
+   /** Servlet implementation so we can run it nicely from a web interface */
+   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+      try {
+         response.setContentType("text/xml");
+
+         writeTableMetaDoc(response.getWriter());
+      }
+      catch (Throwable th) {
+         doError(response, "Generating Resource Metadata",th);
+      }
+   }
+
+   /** for testing/debugging etc */
+   public static void main(String[] args) {
+            
+      
+   }
+   
+}
+
+

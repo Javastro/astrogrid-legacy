@@ -1,12 +1,9 @@
 <!-- Example metadata file -->
 <Resource >
-  <Identifier>
-     <AuthorityID>org.astrogrid.test</AuthorityID>
-     <ResourceKey>test/test</ResourceKey>
-  </Identifier>
+  <identifier>
+     ivo://org.astrogrid/test/test/test/etc
+  </identifier>
   <SomeRandom>Element</SomeRandom>
-
-
 </Resource>
 
 

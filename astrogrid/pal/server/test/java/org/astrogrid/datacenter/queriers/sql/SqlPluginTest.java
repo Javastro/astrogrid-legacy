@@ -1,4 +1,4 @@
-/*$Id: SqlPluginTest.java,v 1.3 2005/03/10 13:49:53 mch Exp $
+/*$Id: SqlPluginTest.java,v 1.4 2005/03/10 16:42:55 mch Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,9 +22,9 @@ import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.dataservice.metadata.VoDescriptionServer;
 import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.queriers.QuerierManager;
-import org.astrogrid.dataservice.queriers.sql.JdbcPlugin;
-import org.astrogrid.dataservice.queriers.sql.RdbmsTableMetaDocGenerator;
-import org.astrogrid.dataservice.queriers.test.SampleStarsPlugin;
+import org.astrogrid.tableserver.jdbc.JdbcPlugin;
+import org.astrogrid.tableserver.jdbc.RdbmsTableMetaDocGenerator;
+import org.astrogrid.tableserver.test.SampleStarsPlugin;
 import org.astrogrid.query.Query;
 import org.astrogrid.query.SimpleQueryMaker;
 import org.astrogrid.query.adql.AdqlQueryMaker;
@@ -218,6 +218,9 @@ public class SqlPluginTest extends ServerTestCase {
 
 /*
  $Log: SqlPluginTest.java,v $
+ Revision 1.4  2005/03/10 16:42:55  mch
+ Split fits, sql and xdb
+
  Revision 1.3  2005/03/10 13:49:53  mch
  Updating metadata
 

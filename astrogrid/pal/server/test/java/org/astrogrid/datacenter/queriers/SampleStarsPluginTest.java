@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsPluginTest.java,v 1.3 2005/03/10 13:49:53 mch Exp $
+ * $Id: SampleStarsPluginTest.java,v 1.4 2005/03/10 16:42:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -24,10 +24,10 @@ import org.astrogrid.dataservice.out.tables.VoTableWriter;
 import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.queriers.QuerierManager;
 import org.astrogrid.dataservice.queriers.TableResults;
-import org.astrogrid.dataservice.queriers.sql.JdbcConnections;
-import org.astrogrid.dataservice.queriers.sql.RdbmsTableMetaDocGenerator;
-import org.astrogrid.dataservice.queriers.test.PrecannedResults;
-import org.astrogrid.dataservice.queriers.test.SampleStarsPlugin;
+import org.astrogrid.tableserver.jdbc.JdbcConnections;
+import org.astrogrid.tableserver.jdbc.RdbmsTableMetaDocGenerator;
+import org.astrogrid.tableserver.test.PrecannedResults;
+import org.astrogrid.tableserver.test.SampleStarsPlugin;
 import org.astrogrid.io.NullOutputStream;
 import org.astrogrid.query.SimpleQueryMaker;
 import org.astrogrid.query.returns.ReturnTable;

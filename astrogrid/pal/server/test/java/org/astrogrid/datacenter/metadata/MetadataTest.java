@@ -1,4 +1,4 @@
-/*$Id: MetadataTest.java,v 1.5 2005/03/10 13:49:53 mch Exp $
+/*$Id: MetadataTest.java,v 1.6 2005/03/10 16:42:55 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,10 +20,10 @@ import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.dataservice.metadata.FileResourcePlugin;
 import org.astrogrid.dataservice.metadata.UrlResourcePlugin;
 import org.astrogrid.dataservice.metadata.VoDescriptionServer;
-import org.astrogrid.dataservice.metadata.tables.TableMetaDocInterpreter;
+import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
 import org.astrogrid.dataservice.metadata.v0_10.VoResourceSupport;
-import org.astrogrid.dataservice.queriers.sql.RdbmsTableMetaDocGenerator;
-import org.astrogrid.dataservice.queriers.test.SampleStarsPlugin;
+import org.astrogrid.tableserver.jdbc.RdbmsTableMetaDocGenerator;
+import org.astrogrid.tableserver.test.SampleStarsPlugin;
 import org.astrogrid.xml.DomHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -48,27 +48,19 @@ public class MetadataTest extends TestCase {
       Element[] resources = DomHelper.getChildrenByTagName(candidate.getDocumentElement(), "Resource");
       for (int r = 0; r < resources.length; r++) {
          String xsitype = resources[r].getAttribute("xsi:type");
-         Element[] idNodes = DomHelper.getChildrenByTagName(resources[r], "Identifier");
-         assertTrue("Should only be one identifier tag", idNodes.length==1);
+         Element[] idNodes = DomHelper.getChildrenByTagName(resources[r], "identifier");
+         assertEquals("identifier tags", 1, idNodes.length);
 
-         for (int i = 0; i < idNodes.length; i++) {
-            Element id = idNodes[i];
-            String authId = DomHelper.getValueOf(id, "AuthorityID");
-            String idConfig = SimpleConfig.getSingleton().getString(VoResourceSupport.AUTHID_KEY);
-            assertEquals("Authority ID incorrect in Resource type "+xsitype, idConfig, authId);
-
-            String resKey = DomHelper.getValueOf(id, "ResourceKey");
-            String resConfig = SimpleConfig.getSingleton().getString(VoResourceSupport.RESKEY_KEY);
-            if (!xsitype.equals("AuthorityType")) {
-               assertTrue("Resource Key is "+resKey+", should start with "+resConfig+" in Resource type "+xsitype, resKey.startsWith(resConfig));
-            }
+         Element idNode = idNodes[0];
+         String id = DomHelper.getValueOf(idNode);
+         String configAuth = SimpleConfig.getSingleton().getString(VoResourceSupport.AUTHID_KEY);
+         assertTrue("identity doesn't start with config'd authority '"+configAuth+"'", id.startsWith(configAuth));
             
-            //check for duplicates
-            if (ids.get(resKey) != null) {
-               fail("Duplicate ID "+resKey);
-            }
-            ids.put(resKey, resKey);
+         //check for duplicates
+         if (ids.get(id) != null) {
+            fail("Duplicate ID "+id);
          }
+         ids.put(id, id);
       }
    }
    

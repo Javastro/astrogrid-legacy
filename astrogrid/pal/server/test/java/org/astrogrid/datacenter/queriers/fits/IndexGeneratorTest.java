@@ -1,4 +1,4 @@
-/*$Id: IndexGeneratorTest.java,v 1.4 2005/03/10 13:59:00 KevinBenson Exp $
+/*$Id: IndexGeneratorTest.java,v 1.5 2005/03/10 16:42:55 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -18,7 +18,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.astrogrid.datacenter.fits.FitsTestSupport;
-import org.astrogrid.dataservice.queriers.fits.IndexGenerator;
+import org.astrogrid.fitsserver.setup.IndexGenerator;
 import org.astrogrid.util.DomHelper;
 import org.xml.sax.SAXException;
 
@@ -89,6 +89,9 @@ public class IndexGeneratorTest extends TestCase
 
 /*
  $Log: IndexGeneratorTest.java,v $
+ Revision 1.5  2005/03/10 16:42:55  mch
+ Split fits, sql and xdb
+
  Revision 1.4  2005/03/10 13:59:00  KevinBenson
  corrections to fits and testing to fits
 

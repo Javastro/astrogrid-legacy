@@ -1,4 +1,4 @@
-/*$Id: FitsQuerierTest.java,v 1.6 2005/03/10 14:01:35 KevinBenson Exp $
+/*$Id: FitsQuerierTest.java,v 1.7 2005/03/10 16:42:55 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -22,8 +22,8 @@ import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.fits.FitsTestSupport;
 import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.queriers.QuerierPluginFactory;
-import org.astrogrid.dataservice.queriers.fits.FitsQuerierPlugin;
-import org.astrogrid.dataservice.queriers.fits.IndexGenerator;
+import org.astrogrid.fitsserver.fits.FitsQuerierPlugin;
+import org.astrogrid.fitsserver.setup.IndexGenerator;
 import org.astrogrid.query.SimpleQueryMaker;
 import org.astrogrid.query.adql.AdqlQueryMaker;
 import org.astrogrid.query.returns.ReturnTable;
@@ -160,6 +160,9 @@ xmldb.admin.password=
 
 /*
  $Log: FitsQuerierTest.java,v $
+ Revision 1.7  2005/03/10 16:42:55  mch
+ Split fits, sql and xdb
+
  Revision 1.6  2005/03/10 14:01:35  KevinBenson
  new test for FitsQuerier
 

@@ -1,6 +1,6 @@
 
 /*
- * $Id: DatacenterApplicationTest.java,v 1.2 2005/02/28 18:47:05 mch Exp $
+ * $Id: DatacenterApplicationTest.java,v 1.3 2005/03/10 16:42:55 mch Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -37,7 +37,7 @@ import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.dataservice.queriers.QuerierPluginFactory;
 import org.astrogrid.dataservice.queriers.status.QuerierStatus;
-import org.astrogrid.dataservice.queriers.test.PrecannedPlugin;
+import org.astrogrid.tableserver.test.PrecannedPlugin;
 import org.astrogrid.dataservice.service.DataServer;
 import org.astrogrid.dataservice.service.cea.DatacenterApplication;
 import org.astrogrid.dataservice.service.cea.DatacenterApplicationDescription;
@@ -254,6 +254,9 @@ public class DatacenterApplicationTest extends ServerTestCase {
 
 /*
  $Log: DatacenterApplicationTest.java,v $
+ Revision 1.3  2005/03/10 16:42:55  mch
+ Split fits, sql and xdb
+
  Revision 1.2  2005/02/28 18:47:05  mch
  More compile fixes
 

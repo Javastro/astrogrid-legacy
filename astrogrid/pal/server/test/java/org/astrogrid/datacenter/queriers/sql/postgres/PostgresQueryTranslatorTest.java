@@ -1,4 +1,4 @@
-/*$Id: PostgresQueryTranslatorTest.java,v 1.2 2005/02/28 18:47:05 mch Exp $
+/*$Id: PostgresQueryTranslatorTest.java,v 1.3 2005/03/10 16:42:55 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,8 +14,8 @@ import java.io.InputStream;
 import java.util.Properties;
 import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.datacenter.queriers.sql.SqlQueryTranslatorTest;
-import org.astrogrid.dataservice.queriers.sql.SqlMaker;
-import org.astrogrid.dataservice.queriers.sql.postgres.PostgresSqlMaker;
+import org.astrogrid.tableserver.jdbc.SqlMaker;
+import org.astrogrid.tableserver.jdbc.postgres.PostgresSqlMaker;
 import org.astrogrid.query.Query;
 import org.astrogrid.query.adql.AdqlQueryMaker;
 import org.astrogrid.util.DomHelper;
@@ -104,6 +104,9 @@ public class PostgresQueryTranslatorTest extends ServerTestCase {
 
 /*
 $Log: PostgresQueryTranslatorTest.java,v $
+Revision 1.3  2005/03/10 16:42:55  mch
+Split fits, sql and xdb
+
 Revision 1.2  2005/02/28 18:47:05  mch
 More compile fixes
 

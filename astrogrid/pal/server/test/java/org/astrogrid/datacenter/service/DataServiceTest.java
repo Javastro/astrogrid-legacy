@@ -1,4 +1,4 @@
-/*$Id: DataServiceTest.java,v 1.2 2005/02/28 18:47:05 mch Exp $
+/*$Id: DataServiceTest.java,v 1.3 2005/03/10 16:42:55 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,7 +17,7 @@ import org.astrogrid.account.LoginAccount;
 import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.dataservice.queriers.status.QuerierAborted;
 import org.astrogrid.dataservice.queriers.status.QuerierStatus;
-import org.astrogrid.dataservice.queriers.test.SampleStarsPlugin;
+import org.astrogrid.tableserver.test.SampleStarsPlugin;
 import org.astrogrid.dataservice.service.DataServer;
 import org.astrogrid.dataservice.service.DataServiceStatus;
 import org.astrogrid.query.Query;
@@ -158,6 +158,9 @@ public class DataServiceTest extends ServerTestCase {
 
 /*
 $Log: DataServiceTest.java,v $
+Revision 1.3  2005/03/10 16:42:55  mch
+Split fits, sql and xdb
+
 Revision 1.2  2005/02/28 18:47:05  mch
 More compile fixes
 

@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierTest.java,v 1.2 2005/02/28 18:47:05 mch Exp $
+ * $Id: QuerierTest.java,v 1.3 2005/03/10 16:42:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -19,7 +19,7 @@ import org.astrogrid.dataservice.queriers.status.QuerierComplete;
 import org.astrogrid.dataservice.queriers.status.QuerierError;
 import org.astrogrid.dataservice.queriers.status.QuerierProcessingResults;
 import org.astrogrid.dataservice.queriers.status.QuerierQuerying;
-import org.astrogrid.dataservice.queriers.test.SampleStarsPlugin;
+import org.astrogrid.tableserver.test.SampleStarsPlugin;
 import org.astrogrid.query.QueryState;
 import org.astrogrid.query.SimpleQueryMaker;
 import org.astrogrid.query.returns.ReturnTable;

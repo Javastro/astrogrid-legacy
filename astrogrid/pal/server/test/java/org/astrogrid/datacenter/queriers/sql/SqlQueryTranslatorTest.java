@@ -1,4 +1,4 @@
-/*$Id: SqlQueryTranslatorTest.java,v 1.2 2005/02/28 18:47:05 mch Exp $
+/*$Id: SqlQueryTranslatorTest.java,v 1.3 2005/03/10 16:42:55 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,9 +14,9 @@ import java.util.Properties;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.dataservice.metadata.queryable.ConeConfigQueryableResource;
-import org.astrogrid.dataservice.queriers.sql.SqlMaker;
-import org.astrogrid.dataservice.queriers.sql.StdSqlMaker;
-import org.astrogrid.dataservice.queriers.test.SampleStarsPlugin;
+import org.astrogrid.tableserver.jdbc.SqlMaker;
+import org.astrogrid.tableserver.jdbc.StdSqlMaker;
+import org.astrogrid.tableserver.test.SampleStarsPlugin;
 import org.astrogrid.query.Query;
 import org.astrogrid.query.adql.AdqlQueryMaker;
 
@@ -103,6 +103,9 @@ public class SqlQueryTranslatorTest extends ServerTestCase {
 
 /*
 $Log: SqlQueryTranslatorTest.java,v $
+Revision 1.3  2005/03/10 16:42:55  mch
+Split fits, sql and xdb
+
 Revision 1.2  2005/02/28 18:47:05  mch
 More compile fixes
 
