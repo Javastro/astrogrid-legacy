@@ -266,14 +266,15 @@
       <!--+
           | Submit workflow
           +-->   
-      <xsl:template name="submit_workflow">
+      <xsl:template name="submit_workflow" method="get">
          <form name="submit_form" action="">               
             <table cellpadding="0" cellspacing="0">                      
                <p />                                     
                <tr>
                   <td>Job Name:</td>
-                  <td><input type="text" name="workflow-name" disabled="true" /></td>
+                  <td><input type="text" name="workflow-name" /></td>
                   <td><input type="submit" value="Submit" /></td>
+                  <input type="hidden" name="action" value="submit-workflow"/>
                </tr>                                                              
             </table> 
          </form>
