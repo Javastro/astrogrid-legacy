@@ -63,10 +63,9 @@ public class LoadAction extends AbstractAction {
     logger.debug("[act] params:  " + params);
     logger.debug("[act] request: " + request);
     
-    String endPoint = params.getParameter("myspace-end-point", "http://localhost:8080/myspace");
+    String endPoint = utils.getAnyParameter("myspace-end-point", "http://localhost:8080/myspace", params, request);
     logger.debug("[act] endPoint: " + endPoint);
-    // TODO: get user id from web page
-    // TODO: get community id (community delegate) 
+
     try {
       List delegateArgs = new ArrayList();
       delegateArgs.add(endPoint);
@@ -74,22 +73,19 @@ public class LoadAction extends AbstractAction {
     
       logger.debug("[act] myspace-delegate-class: " + delegate.getClass().getName());
 
-			String userId = utils.getRequestParameter("username", params, request);
+			String userId = utils.getAnyParameter("username", params, request);
 			logger.debug("[act] userId: " + userId);
 
-			String communityId = utils.getRequestParameter("community-id", params, request);
+			String communityId = utils.getAnyParameter("community-id", params, request);
 			logger.debug("[act] communityId: " + communityId);
 
-			String credential = utils.getRequestParameter("credential", params, request);
+			String credential = utils.getAnyParameter("credential", params, request);
 			logger.debug("[act] credential: " + credential);
 
-      String mySpaceName = utils.getRequestParameter("myspace-name", params, request);
+      String mySpaceName = utils.getAnyParameter("myspace-name", params, request);
 			logger.debug("[act] mySpaceName: " + mySpaceName);
 
       String adqlDocument = delegate.getDataHolding(userId, communityId, credential, mySpaceName);
-      
-      String mySpaceQuery = null;
-      delegate.listDataHoldings(userId, communityId, credential, buildQuery(userId, communityId, credential, mySpaceQuery));
       
       request.setAttribute("adql-document", adqlDocument);
       request.setAttribute("adql-document-loaded", "true");
@@ -117,9 +113,5 @@ public class LoadAction extends AbstractAction {
     logger.debug("[act] sitemapParams: " + sitemapParams);
     
     return sitemapParams;
-  }
-  
-  private String buildQuery(String userId, String communityId, String credential, String mySpaceQuery) {
-    return "/" + userId + "@" + communityId + "/server/QUERY/" + mySpaceQuery;
   }
 }

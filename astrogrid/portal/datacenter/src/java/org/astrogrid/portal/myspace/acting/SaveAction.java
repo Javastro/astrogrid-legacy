@@ -61,9 +61,8 @@ public class SaveAction extends AbstractAction {
 
     Request request = ObjectModelHelper.getRequest(objectModel);
     
-    String endPoint = params.getParameter("myspace-end-point", "http://localhost:8080/myspace");
-    // TODO: get user id from web page
-    // TODO: get community id (community delegate) 
+    String endPoint = utils.getAnyParameter("myspace-end-point", "http://localhost:8080/myspace", params, request);
+
     try {
       List delegateArgs = new ArrayList();
       delegateArgs.add(endPoint);
@@ -71,19 +70,19 @@ public class SaveAction extends AbstractAction {
       logger.debug("[act] myspace-delegate-class: " + delegate.getClass().getName());
     
       // do something
-			String userId = utils.getRequestParameter("username", params, request);
+			String userId = utils.getAnyParameter("username", params, request);
 			logger.debug("[act] userId: " + userId);
 
-			String communityId = utils.getRequestParameter("community-id", params, request);
+			String communityId = utils.getAnyParameter("community-id", params, request);
 			logger.debug("[act] communityId: " + communityId);
 
-			String credential = utils.getRequestParameter("credential", params, request);
+			String credential = utils.getAnyParameter("credential", params, request);
 			logger.debug("[act] credential: " + credential);
 
-			String mySpaceName = utils.getRequestParameter("myspace-name", params, request);
+			String mySpaceName = utils.getAnyParameter("myspace-name", params, request);
 			logger.debug("[act] mySpaceName: " + mySpaceName);
 
-      String adqlDocument = utils.getRequestParameter("adql-query", params, request);
+      String adqlDocument = utils.getAnyParameter("adql-query", params, request);
       
       boolean saved =
           delegate.saveDataHolding(

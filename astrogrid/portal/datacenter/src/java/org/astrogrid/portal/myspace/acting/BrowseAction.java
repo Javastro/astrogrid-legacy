@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import org.apache.avalon.framework.parameters.Parameters;
 import org.apache.cocoon.acting.AbstractAction;
@@ -63,10 +64,9 @@ public class BrowseAction extends AbstractAction {
     logger.debug("[act] params:  " + params);
     logger.debug("[act] request: " + request);
     
-    String endPoint = params.getParameter("myspace-end-point", "http://localhost:8080/myspace");
+    String endPoint = utils.getAnyParameter("myspace-end-point", "http://localhost:8080/myspace", params, request);
     logger.debug("[act] endPoint: " + endPoint);
-    // TODO: get user id from web page
-    // TODO: get community id (community delegate) 
+
     try {
       List delegateArgs = new ArrayList();
       delegateArgs.add(endPoint);
@@ -74,41 +74,40 @@ public class BrowseAction extends AbstractAction {
     
       logger.debug("[act] myspace-delegate-class: " + delegate.getClass().getName());
 
-			String userId = utils.getRequestParameter("username", params, request);
+			String userId = utils.getAnyParameter("username", params, request);
 			logger.debug("[act] userId: " + userId);
 
-			String communityId = utils.getRequestParameter("community-id", params, request);
+			String communityId = utils.getAnyParameter("community-id", params, request);
 			logger.debug("[act] communityId: " + communityId);
 
-			String credential = utils.getRequestParameter("credential", params, request);
+			String credential = utils.getAnyParameter("credential", params, request);
 			logger.debug("[act] credential: " + credential);
 
-      String mySpaceName = utils.getRequestParameter("myspace-name", params, request);
+      String mySpaceName = utils.getAnyParameter("myspace-name", params, request);
 			logger.debug("[act] mySpaceName: " + mySpaceName);
 
-      String adqlDocument = delegate.getDataHolding(userId, communityId, credential, mySpaceName);
+      String mySpaceQuery = utils.getAnyParameter("myspace-query", params, request);
+      logger.debug("[act] mySpaceQuery: " + mySpaceQuery);
+      Vector mySpaceItems = delegate.listDataHoldings(userId, communityId, credential, buildQuery(userId, communityId, credential, mySpaceQuery));
       
-      String mySpaceQuery = null;
-      delegate.listDataHoldings(userId, communityId, credential, buildQuery(userId, communityId, credential, mySpaceQuery));
-      
-      request.setAttribute("adql-document", adqlDocument);
-      request.setAttribute("adql-document-loaded", "true");
+      request.setAttribute("myspace-items", mySpaceItems);
+      request.setAttribute("myspace-items-loaded", "true");
 
-      logger.debug("[act] adql-document: " + adqlDocument);
-      logger.debug("[act] adql-document-loaded: true");
+      logger.debug("[act] myspace-items: " + mySpaceItems);
+      logger.debug("[act] myspace-items-loaded: true");
 
-      sitemapParams.put("adql-document-loaded", "true");
+      sitemapParams.put("myspace-items-loaded", "true");
     }
     catch(Exception e) {
-      request.setAttribute("adql-document-loaded", "false");
-      request.setAttribute("adql-document-error-message", e.getLocalizedMessage());
+      request.setAttribute("myspace-items-loaded", "false");
+      request.setAttribute("myspace-items-error-message", e.getLocalizedMessage());
       sitemapParams = null;
       
       logger.debug("[act] exception: " + e.getClass() + ", msg: " + e.getLocalizedMessage());
     }
     catch(Throwable t) {
-      request.setAttribute("adql-document-loaded", "false");
-			request.setAttribute("adql-document-error-message", t.getLocalizedMessage());
+      request.setAttribute("myspace-items-loaded", "false");
+			request.setAttribute("myspace-items-error-message", t.getLocalizedMessage());
       sitemapParams = null;
       
       logger.debug("[act] throwable: " + t.getClass() + ", msg: " + t.getLocalizedMessage());
