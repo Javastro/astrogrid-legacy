@@ -320,9 +320,30 @@
 	    | Submit workflow
 	    +-->	
 	<xsl:template name="submit_worklow">
-	    <p>
-	    <strong>To do</strong>
-	    </p>	    
+	    <form name="submitWorkflow" method="get" action="agworkflow-administer.html">
+          <table cellpadding="2" cellspacing="2" border="0">
+            <tbody>
+              <tr width="80%" align="center" valign="middle" style="color: rgb(51,51,255); background-color: rgb(204,204,204);">
+                <td width="0" height="0" colspan="6" rowspan="1" style=" font-family: arial,helvetica,sans-serif; font-size-adjust: 2; font-weight: bold; height: 30px; width: 200px;">
+                  Submit workflow
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Job Name:
+                </td>
+              <td>
+                <input type="text" size="40" name="workflow-name"></input>
+              </td>
+             </tr>
+             <tr>
+               <td>
+                 <input type="submit" name="action" value="submit-workflow"></input>
+               </td>
+             </tr>
+          </tbody>
+        </table>
+      </form>	    
 	</xsl:template>
 
 	<!--+
@@ -330,7 +351,7 @@
 	    +-->	
 	<xsl:template name="copy_worklow">
 	    <p>
-	    <strong>To do</strong>
+	    <strong>Further functionality to follow</strong>
 	    </p>	    
 	</xsl:template>
 	
@@ -339,7 +360,7 @@
 	    +-->	
 	<xsl:template name="send_worklow">
 	    <p>
-	    <strong>To do</strong>
+	    <strong>Further functionality to follow</strong>
 	    </p>	    
 	</xsl:template>	
 
