@@ -3,10 +3,13 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/config/community/org.astrogrid.localhost.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/04/15 02:27:46 $</cvs:date>
-    | <cvs:version>$Revision: 1.4 $</cvs:version>
+    | <cvs:date>$Date: 2004/04/23 16:58:13 $</cvs:date>
+    | <cvs:version>$Revision: 1.5 $</cvs:version>
     | <cvs:log>
     |   $Log: org.astrogrid.localhost.xml,v $
+    |   Revision 1.5  2004/04/23 16:58:13  dave
+    |   Added demo accounts
+    |
     |   Revision 1.4  2004/04/15 02:27:46  dave
     |   Merged development branch, dave-dev-200404071355, into HEAD
     |
@@ -45,6 +48,37 @@
             <description>Astrogrid tester</description>
             <email>newt@mail.astrogrid.org</email>
         </account>
+        <!--+
+            | Anonymous Account.
+            +-->
+        <account ident="ivo://org.astrogrid.localhost/anonymous">
+            <display>Anonymous</display>
+            <description>Astrogrid anonymous</description>
+            <email>anonymous@mail.astrogrid.org</email>
+        </account>
+        <!--+
+            | Demo Accounts.
+            +-->
+        <account ident="ivo://org.astrogrid.localhost/keith">
+            <display>Keith Noddle</display>
+            <description>Astrogrid demonstrator</description>
+            <email>keith@mail.astrogrid.org</email>
+        </account>
+        <account ident="ivo://org.astrogrid.localhost/andy">
+            <display>Andy Lawrence</display>
+            <description>Astrogrid demonstrator</description>
+            <email>andy@mail.astrogrid.org</email>
+        </account>
+        <account ident="ivo://org.astrogrid.localhost/tony">
+            <display>Tony Linde</display>
+            <description>Astrogrid demonstrator</description>
+            <email>tony@mail.astrogrid.org</email>
+        </account>
+        <account ident="ivo://org.astrogrid.localhost/nic">
+            <display>Nic Walton</display>
+            <description>Astrogrid demonstrator</description>
+            <email>nic@mail.astrogrid.org</email>
+        </account>
 
     </accounts>
     <!--+
@@ -54,7 +88,7 @@
         <group ident="ivo://org.astrogrid.localhost/public">
             <description>Public group</description>
         </group>
-        <group ident="ivo://org.astrogrid.localhost/user">
+        <group ident="ivo://org.astrogrid.localhost/users">
             <description>General users group</description>
         </group>
         <group ident="ivo://org.astrogrid.localhost/java">

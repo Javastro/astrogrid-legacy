@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/manager/AccountManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/04/16 09:36:21 $</cvs:date>
- * <cvs:version>$Revision: 1.15 $</cvs:version>
+ * <cvs:date>$Date: 2004/04/23 16:58:13 $</cvs:date>
+ * <cvs:version>$Revision: 1.16 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManagerImpl.java,v $
+ *   Revision 1.16  2004/04/23 16:58:13  dave
+ *   Added demo accounts
+ *
  *   Revision 1.15  2004/04/16 09:36:21  dave
  *   Changed string to Ivorn
  *
@@ -908,6 +911,7 @@ String string = ident.getAccountIdent() ;
                         	account.getIdent()
 							)
                         ) ;
+			        if (DEBUG_FLAG) System.out.println("  VoSpace ivorn : " + ivorn) ;
                     //
                     // Update the Account data
                     account.setHomeSpace(
