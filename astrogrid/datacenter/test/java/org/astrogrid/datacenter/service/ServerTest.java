@@ -35,7 +35,8 @@ public class ServerTest extends TestCase
     */
    public void testQueryService() throws IOException, QueryException,
                                           DatabaseAccessException,
-                                          SAXException, ParserConfigurationException
+                                          SAXException, ParserConfigurationException,
+                                          Throwable
    {
       //make sure database querier to be used is the dummy one - only available
       //in the test suite
@@ -50,7 +51,7 @@ public class ServerTest extends TestCase
       Document fileDoc = XMLUtils.newDocument(url.openConnection().getInputStream());
       assertNotNull(fileDoc);
       //submit query
-      Element votable = server.runQuery(fileDoc.getDocumentElement());
+      Element votable = server.doQuery(fileDoc.getDocumentElement());
       assertNotNull(votable);
    }
 
@@ -84,6 +85,9 @@ public class ServerTest extends TestCase
 
 /*
 $Log: ServerTest.java,v $
+Revision 1.4  2003/09/10 12:16:44  mch
+Changes to make web interface more consistent
+
 Revision 1.3  2003/09/07 18:58:58  mch
 Updated tests for weekends changes to main code (mostly threaded queries, typesafe ServiceStatus)
 

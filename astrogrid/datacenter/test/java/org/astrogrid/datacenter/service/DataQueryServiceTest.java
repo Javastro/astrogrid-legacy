@@ -1,4 +1,4 @@
-/*$Id: DataQueryServiceTest.java,v 1.5 2003/09/10 10:02:17 nw Exp $
+/*$Id: DataQueryServiceTest.java,v 1.6 2003/09/10 12:16:44 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -105,9 +105,11 @@ public class DataQueryServiceTest extends HsqlTestCase {
         assertNotNull(testQuery);
 
        //run query
-        Element result = querier.doQueryGetVotable(testQuery.getDocumentElement());
-        assertNotNull(result);
-        assertEquals("VOTABLE",result.getLocalName());
+        querier.setQuery(testQuery.getDocumentElement());
+        querier.doQuery();
+        Document votable = querier.getResults().toVotable();
+        assertNotNull(votable);
+        assertEquals("VOTABLE",votable.getLocalName());
         assertEquals(querier.getStatus(),ServiceStatus.FINISHED);
 
        // check what the listener recorded.
@@ -151,6 +153,9 @@ public class DataQueryServiceTest extends HsqlTestCase {
 
 /*
 $Log: DataQueryServiceTest.java,v $
+Revision 1.6  2003/09/10 12:16:44  mch
+Changes to make web interface more consistent
+
 Revision 1.5  2003/09/10 10:02:17  nw
 added key for hsqldb driver
 
