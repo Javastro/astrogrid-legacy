@@ -1,4 +1,4 @@
-/*$Id: SimpleSECWorkflowTest.java,v 1.2 2004/08/22 01:50:47 nw Exp $
+/*$Id: SimpleSECWorkflowTest.java,v 1.3 2004/08/27 13:16:52 nw Exp $
  * Created on 12-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,6 +15,7 @@ import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.io.Piper;
 import org.astrogrid.portal.workflow.intf.ApplicationDescription;
 import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
+import org.astrogrid.test.AstrogridAssert;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
@@ -86,8 +87,7 @@ public class SimpleSECWorkflowTest  extends AbstractTestForWorkflow implements S
         assertStepCompleted(s);
         ResultListType r = getResultOfStep(s);
         softAssertEquals("only expected a single result",1,r.getResultCount());
-        // now need to find helper to check that result is a votable.
-        System.out.println(r.getResult(0).getValue());
+        AstrogridAssert.assertVotable(r.getResult(0).getValue());
     }
 }
 
@@ -96,6 +96,9 @@ public class SimpleSECWorkflowTest  extends AbstractTestForWorkflow implements S
 
 /* 
 $Log: SimpleSECWorkflowTest.java,v $
+Revision 1.3  2004/08/27 13:16:52  nw
+used AstrogridAssert to check results more thoroughly.
+
 Revision 1.2  2004/08/22 01:50:47  nw
 improved concurrent behaviour
 

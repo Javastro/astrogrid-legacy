@@ -1,4 +1,4 @@
-/*$Id: DataCenterVOSpaceIndirectExecutionTest.java,v 1.1 2004/07/01 11:43:33 nw Exp $
+/*$Id: DataCenterVOSpaceIndirectExecutionTest.java,v 1.2 2004/08/27 13:16:52 nw Exp $
  * Created on 30-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,9 +16,11 @@ import org.astrogrid.applications.integration.AbstractRunTestForCEA;
 import org.astrogrid.io.Piper;
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.store.VoSpaceClient;
+import org.astrogrid.test.AstrogridAssert;
 import org.astrogrid.workflow.beans.v1.Tool;
 
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -53,11 +55,9 @@ public class DataCenterVOSpaceIndirectExecutionTest extends AbstractRunTestForCE
            String filePath = result.getValue();
            softAssertEquals(filePath,targetIvorn.toString());
            client = new VoSpaceClient(user);
-           Reader r = new InputStreamReader(client.getStream( new Ivorn(filePath)));
-           StringWriter sw = new StringWriter();
-           Piper.pipe(r,sw);
-           //@todo add further checking of contents.
-           assertNotNull(sw.toString());                   
+           InputStream is = client.getStream(new Ivorn(filePath));
+           assertNotNull(is);
+           AstrogridAssert.assertVotable(is);                
        }
        /**
         * @see org.astrogrid.applications.integration.AbstractRunTestForCEA#populateTool(org.astrogrid.workflow.beans.v1.Tool)
@@ -87,6 +87,9 @@ public class DataCenterVOSpaceIndirectExecutionTest extends AbstractRunTestForCE
 
 /* 
 $Log: DataCenterVOSpaceIndirectExecutionTest.java,v $
+Revision 1.2  2004/08/27 13:16:52  nw
+used AstrogridAssert to check results more thoroughly.
+
 Revision 1.1  2004/07/01 11:43:33  nw
 cea refactor
  

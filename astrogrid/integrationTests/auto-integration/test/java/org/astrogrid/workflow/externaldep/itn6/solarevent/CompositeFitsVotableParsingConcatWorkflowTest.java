@@ -1,4 +1,4 @@
-/*$Id: CompositeFitsVotableParsingConcatWorkflowTest.java,v 1.2 2004/08/22 01:49:08 nw Exp $
+/*$Id: CompositeFitsVotableParsingConcatWorkflowTest.java,v 1.3 2004/08/27 13:16:52 nw Exp $
  * Created on 12-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -101,7 +101,7 @@ public class CompositeFitsVotableParsingConcatWorkflowTest extends SimpleFitsWor
         try {            
             InputStream is = client.getStream(target);
             assertNotNull(is);
-            //@todo add some more checking of data here.
+            //@todo add some more checking of data here.           
         } catch (IOException e) {
             softFail("exception opening result stream" + e.getMessage());
         }        
@@ -111,6 +111,9 @@ public class CompositeFitsVotableParsingConcatWorkflowTest extends SimpleFitsWor
 
 /* 
 $Log: CompositeFitsVotableParsingConcatWorkflowTest.java,v $
+Revision 1.3  2004/08/27 13:16:52  nw
+used AstrogridAssert to check results more thoroughly.
+
 Revision 1.2  2004/08/22 01:49:08  nw
 improved concurrent behaviour
 

@@ -1,4 +1,4 @@
-/*$Id: ServerInstallationTest.java,v 1.2 2004/08/13 14:05:05 nw Exp $
+/*$Id: ServerInstallationTest.java,v 1.3 2004/08/27 13:16:52 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,6 +15,7 @@ import org.astrogrid.io.Piper;
 import org.astrogrid.portal.workflow.intf.ApplicationDescription;
 import org.astrogrid.portal.workflow.intf.ApplicationRegistry;
 import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
+import org.astrogrid.test.AstrogridAssert;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -69,14 +70,11 @@ public class ServerInstallationTest extends AbstractTestForCEA {
     
     
     public void testReturnRegistryEntry() throws Exception {
-        try {
         String entry = delegate.returnRegistryEntry();
         assertNotNull(entry);
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail(e.getMessage());
-        }
-        //@todo I guess its xml or something. need to add further testing here
+        AstrogridAssert.assertXMLValid("not valid xml returned",entry);
+        //@todo schema validate.
+
     }
 
     
@@ -85,6 +83,9 @@ public class ServerInstallationTest extends AbstractTestForCEA {
 
 /* 
 $Log: ServerInstallationTest.java,v $
+Revision 1.3  2004/08/27 13:16:52  nw
+used AstrogridAssert to check results more thoroughly.
+
 Revision 1.2  2004/08/13 14:05:05  nw
 tried to improve reporting on error
 

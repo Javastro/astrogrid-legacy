@@ -1,4 +1,4 @@
-/*$Id: DataCenterDirectExecutionTest.java,v 1.2 2004/08/13 14:04:46 nw Exp $
+/*$Id: DataCenterDirectExecutionTest.java,v 1.3 2004/08/27 13:16:52 nw Exp $
  * Created on 30-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,6 +14,7 @@ import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.integration.AbstractRunTestForCEA;
 import org.astrogrid.applications.integration.ServerInfo;
+import org.astrogrid.test.AstrogridAssert;
 import org.astrogrid.workflow.beans.v1.Tool;
 
 
@@ -31,14 +32,14 @@ public class DataCenterDirectExecutionTest extends AbstractRunTestForCEA {
         super(new DataCenterProviderServerInfo(), arg0);
     }
 
-    /**@todo further checking of results.
+    /**
      * @see org.astrogrid.applications.integration.AbstractRunTestForCEA#checkResults(org.astrogrid.applications.beans.v1.cea.castor.ResultListType)
      */
     protected void checkResults(ResultListType results) throws Exception {
         softAssertEquals("more than one result returned",1,results.getResultCount());
         ParameterValue result = results.getResult(0);
         assertNotNull(result);
-        // @todo result will be a votable. need to parse / verify this.
+        AstrogridAssert.assertVotable(result.getValue());
     }
 
     /**
@@ -53,6 +54,9 @@ public class DataCenterDirectExecutionTest extends AbstractRunTestForCEA {
 
 /* 
 $Log: DataCenterDirectExecutionTest.java,v $
+Revision 1.3  2004/08/27 13:16:52  nw
+used AstrogridAssert to check results more thoroughly.
+
 Revision 1.2  2004/08/13 14:04:46  nw
 documentation change only
 

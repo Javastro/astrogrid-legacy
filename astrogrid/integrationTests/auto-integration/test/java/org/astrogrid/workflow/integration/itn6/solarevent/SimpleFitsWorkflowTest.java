@@ -1,4 +1,4 @@
-/*$Id: SimpleFitsWorkflowTest.java,v 1.7 2004/08/17 13:35:58 nw Exp $
+/*$Id: SimpleFitsWorkflowTest.java,v 1.8 2004/08/27 13:18:08 nw Exp $
  * Created on 12-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,6 +18,7 @@ import org.astrogrid.io.Piper;
 import org.astrogrid.portal.workflow.intf.ApplicationDescription;
 import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
 import org.astrogrid.store.Ivorn;
+import org.astrogrid.test.AstrogridAssert;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
@@ -96,8 +97,7 @@ public class SimpleFitsWorkflowTest extends AbstractTestForWorkflow implements S
         assertStepCompleted(s);
         ResultListType r = getResultOfStep(s);
         softAssertEquals("only expected a single result",1,r.getResultCount());
-        // now need to find helper to check that result is a votable.
-        System.out.println(r.getResult(0).getValue());
+        AstrogridAssert.assertVotable(r.getResult(0).getValue());
         
        
     }
@@ -106,6 +106,9 @@ public class SimpleFitsWorkflowTest extends AbstractTestForWorkflow implements S
 
 /* 
 $Log: SimpleFitsWorkflowTest.java,v $
+Revision 1.8  2004/08/27 13:18:08  nw
+used AstrogridAssert to check results more thoroughly.
+
 Revision 1.7  2004/08/17 13:35:58  nw
 added constructor for subclassing with
 

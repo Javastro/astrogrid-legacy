@@ -1,4 +1,4 @@
-/*$Id: DataCenterFileIndirectExecutionTest.java,v 1.2 2004/07/20 01:59:25 nw Exp $
+/*$Id: DataCenterFileIndirectExecutionTest.java,v 1.3 2004/08/27 13:16:52 nw Exp $
  * Created on 30-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,8 +15,10 @@ import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.integration.AbstractRunTestForCEA;
 import org.astrogrid.applications.integration.ServerInfo;
 import org.astrogrid.io.Piper;
+import org.astrogrid.test.AstrogridAssert;
 import org.astrogrid.workflow.beans.v1.Tool;
 
+import java.io.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -59,10 +61,8 @@ public class DataCenterFileIndirectExecutionTest extends AbstractRunTestForCEA {
           softAssertTrue(result.getIndirect());
           String filePath = result.getValue();
           softAssertEquals(filePath,outputFile.toURI().toString());
-          StringWriter sw = new StringWriter();
-          Piper.pipe(new FileReader(new File(new URI(filePath))),sw);
-          //@todo add further checking of contents.
-          assertNotNull(sw.toString());         
+          InputStream is = new FileInputStream(new File(new URI(filePath)));
+          AstrogridAssert.assertVotable(is);     
       }
 
       /**
@@ -89,6 +89,9 @@ public class DataCenterFileIndirectExecutionTest extends AbstractRunTestForCEA {
 
 /* 
 $Log: DataCenterFileIndirectExecutionTest.java,v $
+Revision 1.3  2004/08/27 13:16:52  nw
+used AstrogridAssert to check results more thoroughly.
+
 Revision 1.2  2004/07/20 01:59:25  nw
 testing new datacenter cea
 
