@@ -96,7 +96,8 @@ public class DesignAction extends AbstractAction {
     public static final String
         HTTP_WORKFLOW_TAG = "workflow-tag",
         HTTP_TOOL_TAG = "tool-tag",
-        COMMUNITY_ACCOUNT_TAG = "user",
+        USER_TAG = "user",
+        COMMUNITY_ACCOUNT_TAG = "community_account",
         COMMUNITY_NAME_TAG = "community_name",
         CREDENTIAL_TAG = "credential",
         COMMUNITY_TOKEN_TAG = "token";
@@ -379,7 +380,7 @@ public class DesignAction extends AbstractAction {
                 // JL Note: Iteration 3 way of doing things...
                 // PJN note: alterred slightly, also not sure if LoginAction intends to put security token into session?
      
-                this.userid = (String)session.getAttribute( COMMUNITY_ACCOUNT_TAG );  
+                this.userid = (String)session.getAttribute( USER_TAG );  
                 trace( "userid: " + userid ) ;             
                 this.community = (String)session.getAttribute( COMMUNITY_NAME_TAG );
 				trace( "community: " + community ) ;              
@@ -1347,10 +1348,14 @@ public class DesignAction extends AbstractAction {
         
         private String communitySnippet() {
         
-            return CommunityMessage.getMessage(
-                    (String)session.getAttribute( CREDENTIAL_TAG ),
-                    (String)session.getAttribute( COMMUNITY_ACCOUNT_TAG ),
-                    (String)session.getAttribute( CREDENTIAL_TAG ) );
+            String message = CommunityMessage.getMessage(
+                             (String)session.getAttribute( CREDENTIAL_TAG ),
+                             (String)session.getAttribute( CREDENTIAL_TAG ),
+                             (String)session.getAttribute( COMMUNITY_NAME_TAG ) );
+            
+            if (TRACE_ENABLED ) trace("communitySnippet: " + message );
+                                
+            return message ;
                     
         }
 
