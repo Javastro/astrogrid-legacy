@@ -1,30 +1,32 @@
 /*
- * $Id: DummyPluginsTest.java,v 1.10 2004/09/01 12:10:58 mch Exp $
+ * $Id: SampleStarsPluginTest.java,v 1.1 2004/09/01 13:43:07 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.queriers;
 
-import org.astrogrid.datacenter.returns.*;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import javax.xml.parsers.ParserConfigurationException;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.astrogrid.community.Account;
+import org.astrogrid.datacenter.metadata.MetadataServer;
 import org.astrogrid.datacenter.queriers.sql.JdbcConnections;
-import org.astrogrid.datacenter.queriers.test.DummySqlPlugin;
 import org.astrogrid.datacenter.queriers.test.PrecannedResults;
+import org.astrogrid.datacenter.queriers.test.SampleStarsPlugin;
 import org.astrogrid.datacenter.query.ConeQuery;
+import org.astrogrid.datacenter.returns.ReturnTable;
+import org.astrogrid.datacenter.returns.TargetIndicator;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
-import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * Tests the dummy querier and resultset.
@@ -32,7 +34,7 @@ import javax.xml.parsers.ParserConfigurationException;
  * @author M Hill
  */
 
-public class DummyPluginsTest extends TestCase {
+public class SampleStarsPluginTest extends TestCase {
 
    /** Tests the precanned results.  Plugin test is done through QuerierTest */
    public void testFixedResults() throws IOException, SAXException, SQLException {
@@ -45,8 +47,8 @@ public class DummyPluginsTest extends TestCase {
    /** Test that we can connect to the dummy database */
    public void testDummyCatalog() throws IOException, SQLException {
       
-      //test the dummy sql ones
-      DummySqlPlugin.populateDb();
+      //call configuration so db is ready to be conected to independently
+      SampleStarsPlugin.populateDb();
       
       Connection connection = JdbcConnections.makeFromConfig().createConnection();
       Statement s = connection.createStatement();
@@ -68,7 +70,7 @@ public class DummyPluginsTest extends TestCase {
    public void testDummyPlugin() throws IOException, SQLException, SAXException, ParserConfigurationException {
       
       //make sure the configuration is correct for the plugin
-      DummySqlPlugin.initConfig();
+      //SampleStarsPlugin.initConfig();
       
       QuerierManager manager = new QuerierManager("DummyTest");
 
@@ -82,9 +84,9 @@ public class DummyPluginsTest extends TestCase {
    /** Tests the generated metadata */
    public void testAutoMetadata() throws Exception {
       
-      DummySqlPlugin.populateDb();
+      //SampleStarsPlugin.populateDb();
 
-      QuerierPlugin plugin = new DummySqlPlugin(null);
+      QuerierPlugin plugin = new SampleStarsPlugin(null);
       
       //generate metadata
       Document metadata = plugin.getMetadata();
@@ -94,13 +96,21 @@ public class DummyPluginsTest extends TestCase {
       
    }
    
+   /** Tests the served data plugin */
+   public void testMetadataServer() throws Exception {
+      Document metadata = MetadataServer.getMetadata();
+      
+      //debug
+      DomHelper.DocumentToStream(metadata, System.out);
+   }
+   
    /**
     * Assembles and returns a test suite made up of all the testXxxx() methods
     * of this class.
     */
    public static Test suite() {
       // Reflection is used here to add all the testXXX() methods to the suite.
-      return new TestSuite(DummyPluginsTest.class);
+      return new TestSuite(SampleStarsPluginTest.class);
    }
    
    /**
