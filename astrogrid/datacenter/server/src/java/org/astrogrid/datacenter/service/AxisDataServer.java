@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.10 2003/11/25 14:17:24 mch Exp $
+ * $Id: AxisDataServer.java,v 1.11 2003/11/25 15:27:27 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -128,7 +128,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
       if (resultsFormat == null || resultsFormat.length() == 0)  {
          throw new IllegalArgumentException("Empty parameter for results format");
       }
-      if (!resultsFormat.toLowerCase().equals(AdqlQuerier.VOTABLE))  {
+      if (!resultsFormat.toLowerCase().equals(AdqlQuerier.VOTABLE.toLowerCase()))  {
          log.error("Can only produce votable results");
          throw new IllegalArgumentException("Can only produce votable results");
       }
