@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.7 2005/02/15 18:31:57 mch Exp $ -->
+<!-- $Id: project.xml,v 1.8 2005/02/16 15:48:53 jdt Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../maven-base/xsd/maven-project.xsd">
     <extend>../maven-base/project.xml</extend>
     <id>astrogrid-slinger-master</id>
+    <currentVersion>${astrogrid.slinger.version}</currentVersion>
     <name>Astrogrid Slinger</name>
     <description> Slinger includes a set of classes and methods for identifying
     data points as both targets and sources, and opening streams to/from them.
