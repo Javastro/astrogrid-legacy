@@ -1,5 +1,5 @@
 /*
- * $Id: DataCentreApplication.java,v 1.3 2004/01/27 15:33:29 pah Exp $
+ * $Id: DataCentreApplication.java,v 1.4 2004/04/19 17:34:08 pah Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -14,8 +14,10 @@ package org.astrogrid.applications.datacentre;
 import java.io.File;
 
 import org.astrogrid.applications.AbstractApplication;
+import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.Result;
 import org.astrogrid.applications.manager.AbstractApplicationController;
+import org.astrogrid.applications.manager.ApplicationExitMonitor;
 import org.astrogrid.community.User;
 public class DataCentreApplication extends AbstractApplication {
 
@@ -28,10 +30,6 @@ public class DataCentreApplication extends AbstractApplication {
       // TODO Auto-generated constructor stub
    }
 
-   public boolean execute(){
-      // TODO Auto-generated method stub
-      throw new UnsupportedOperationException("DataCentreApplication.completionStatus() not implemented");
-   }
    
    /* (non-Javadoc)
     * @see org.astrogrid.applications.Application#completionStatus()
@@ -55,6 +53,15 @@ public class DataCentreApplication extends AbstractApplication {
    public Result[] retrieveResult() {
       // TODO Auto-generated method stub
       throw new UnsupportedOperationException("DataCentreApplication.retrieveResult() not implemented");
+   }
+
+
+   /** 
+    * @see org.astrogrid.applications.AbstractApplication#execute(org.astrogrid.applications.manager.ApplicationExitMonitor)
+    */
+   public boolean execute(ApplicationExitMonitor mon) throws CeaException {
+      // TODO Auto-generated method stub
+      throw new  UnsupportedOperationException("DataCentreApplication.execute() not implemented");
    }
 
 }

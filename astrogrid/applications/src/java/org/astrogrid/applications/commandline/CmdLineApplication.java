@@ -1,5 +1,5 @@
 /*
- * $Id: CmdLineApplication.java,v 1.20 2004/04/01 09:53:02 pah Exp $
+ * $Id: CmdLineApplication.java,v 1.21 2004/04/19 17:34:08 pah Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -25,11 +25,13 @@ import org.astrogrid.applications.AbstractApplication;
 import org.astrogrid.applications.ApplicationExecutionException;
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.Parameter;
+import org.astrogrid.applications.ParameterWriteBackException;
 import org.astrogrid.applications.Result;
 import org.astrogrid.applications.Status;
 import org.astrogrid.applications.common.io.StreamPiper;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.manager.AbstractApplicationController;
+import org.astrogrid.applications.manager.ApplicationExitMonitor;
 import org.astrogrid.community.User;
 import org.astrogrid.jes.delegate.JesDelegateException;
 import org.astrogrid.jes.delegate.JesDelegateFactory;
@@ -51,6 +53,7 @@ import org.astrogrid.jes.types.v1.cea.axis.MessageType;
  * @since iteration4
  */
 public class CmdLineApplication extends AbstractApplication implements Runnable {
+   private ApplicationExitMonitor exitMonitor;
    private Thread appWaitThread;
    private StreamPiper outPiper;
    private StreamPiper errPiper;
@@ -80,8 +83,9 @@ public class CmdLineApplication extends AbstractApplication implements Runnable 
       // TODO Auto-generated constructor stub
    }
 
-   public boolean execute() throws CeaException {
+   public boolean execute(ApplicationExitMonitor mon) throws CeaException {
 
+      this.exitMonitor = mon;
       setupParameters();
       preRunHook();
       startApplication();
@@ -125,6 +129,8 @@ public class CmdLineApplication extends AbstractApplication implements Runnable 
       errPiper.terminate();
       outPiper.terminate();
       process = null;
+      
+      status = Status.WRITINGBACK;
       // call the hook to allow manipulation by subclasses
       preWritebackHook();
       // copy back any output parameters
@@ -133,7 +139,33 @@ public class CmdLineApplication extends AbstractApplication implements Runnable 
          if (applicationInterface.parameterType(outparam.getName())
             == ApplicationInterface.ParameterDirection.OUTPUT) {
                
-            outparam.writeBack();
+            try {
+               outparam.writeBack();
+            }
+            catch (ParameterWriteBackException e) {
+               
+               
+               //try to tell the jobmonitor about the error...
+               if (jobMonitorURL != null && jobMonitorURL.length() > 0) {
+                  JobMonitor delegate = JesDelegateFactory.createJobMonitor(jobMonitorURL);
+
+                  try {
+                      MessageType ack = new MessageType();
+                      ack.setContent("There was a problem writing back parameter "+outparam.getName()+"\n"+e.getMessage());
+                      ack.setLevel(LogLevel.error);
+                      ack.setPhase(ExecutionPhase.RUNNING);
+                      ack.setSource(applicationDescription.getName());
+                      ack.setTimestamp(Calendar.getInstance());
+             
+                      JobIdentifierType id = new JobIdentifierType(jobStepID);           
+                      delegate.monitorJob(id,ack);
+                  }
+                  catch (JesDelegateException e1) {
+
+                     logger.error("error communicating with the jes monitor", e1);
+                  }
+               }
+            }
          }
 
       }
@@ -143,33 +175,27 @@ public class CmdLineApplication extends AbstractApplication implements Runnable 
 
       //inform the job monitor that we have finished - only if there is an endpoint specified...     
       if (jobMonitorURL != null && jobMonitorURL.length() > 0) {
-        //NWW: updated to new job montior delegate.
          JobMonitor delegate = JesDelegateFactory.createJobMonitor(jobMonitorURL);
 
          try {
              MessageType ack = new MessageType();
-             //FIXME - do the final callback....
-//             ack.setValue("comment");
-//             ack.setLevel(LogLevel.info);
-//             ack.setPhase(ExecutionPhase.COMPLETED);
-//             ack.setSource("CmdLineApplication");
-//             ack.setTimestamp(Calendar.getInstance());
+             ack.setContent("The application has completed with exit status="+exitStatus);
+             ack.setLevel(LogLevel.info);
+             ack.setPhase(ExecutionPhase.COMPLETED);
+             ack.setSource(applicationDescription.getName());
+             ack.setTimestamp(Calendar.getInstance());
              
              JobIdentifierType id = new JobIdentifierType(jobStepID);           
              delegate.monitorJob(id,ack);
-            //delegate.monitorJob(jobStepID, delegate.STATUS_COMPLETED, "comment");
-            // NWW end update
-         }
-         catch (NumberFormatException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
          }
          catch (JesDelegateException e) {
 
             logger.error("error communicating with the jes monitor", e);
          }
       }
-      //TODO should really log this information to the applicationController database.
+      //Finally signal to the executionController that we have finished.
+      
+      exitMonitor.registerApplicationExit(this);
 
    }
    

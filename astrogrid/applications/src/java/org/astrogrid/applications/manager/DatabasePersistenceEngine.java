@@ -1,5 +1,5 @@
 /*
- * $Id: DatabasePersistenceEngine.java,v 1.4 2004/04/01 09:53:02 pah Exp $
+ * $Id: DatabasePersistenceEngine.java,v 1.5 2004/04/19 17:34:08 pah Exp $
  * 
  * Created on 05-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -14,6 +14,7 @@
 package org.astrogrid.applications.manager;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -21,6 +22,9 @@ import java.sql.Statement;
 
 import javax.sql.DataSource;
 
+import org.astrogrid.applications.Parameter;
+import org.astrogrid.applications.Status;
+import org.astrogrid.applications.commandline.CmdLineApplication;
 import org.astrogrid.applications.common.config.CeaControllerConfig;
 
 /**
@@ -28,7 +32,7 @@ import org.astrogrid.applications.common.config.CeaControllerConfig;
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @version $Name:  $
  * @since iteration4
- * @TODO need to add more of the details of each execution to the database
+ * @TODO need to add more of the details of each execution to the database eg parameter to file mappings, execution status etc. 
  */
 public class DatabasePersistenceEngine implements PersistenceEngine {
 
@@ -41,9 +45,10 @@ public class DatabasePersistenceEngine implements PersistenceEngine {
    private DatabasePersistenceEngine(CeaControllerConfig conf) {
 
       assert conf != null : this;
-      config = conf ;
+      config = conf;
       ds = config.getDataSource();
-      assert ds != null : "datasource must be set for Database persistence engine to work";
+      assert ds
+         != null : "datasource must be set for Database persistence engine to work";
 
    }
    public static DatabasePersistenceEngine getInstance(CeaControllerConfig conf) {
@@ -64,7 +69,6 @@ public class DatabasePersistenceEngine implements PersistenceEngine {
     */
    public synchronized int getNewID() {
 
-      
       logger.info("getting a new execution id from datasource=" + ds.toString());
 
       Connection conn = null;
@@ -87,7 +91,7 @@ public class DatabasePersistenceEngine implements PersistenceEngine {
          }
       }
       catch (SQLException e) {
-        logger.error("problem getting execution id", e);
+         logger.error("problem getting execution id", e);
       }
       finally {
          try {
@@ -97,11 +101,139 @@ public class DatabasePersistenceEngine implements PersistenceEngine {
             }
          }
          catch (SQLException e1) {
-            logger.error("problem closing connection",e1);
+            logger.error("problem closing connection", e1);
          }
       }
       return id;
 
+   }
+
+   /**
+    * @param executionId
+    * @param status
+    * @throws PersistenceException
+    */
+   public void saveStatus(int executionId, Status status) throws PersistenceException {
+      Connection conn = null;
+
+      try {
+         conn = ds.getConnection();
+         PreparedStatement stmt =
+            conn.prepareStatement("update exestat set status=? where executionId = ?");
+         stmt.setString(1, status.toString());
+         stmt.setInt(2, executionId);
+         int irow = stmt.executeUpdate();
+         if (irow != 1) {
+            throw new ExecutionIDNotFoundError("unknown execution id =" + executionId);
+         }
+      }
+      catch (SQLException e) {
+         throw new PersistenceException("problem updating status", e);
+      }
+
+   }
+
+   public Status retrieveStatus(int executionId) throws ExecutionIDNotFoundError {
+      Connection conn = null;
+      String status;
+
+      try {
+         conn = ds.getConnection();
+         PreparedStatement stmt =
+            conn.prepareStatement("select status from exestat where executionId = ?");
+         stmt.setInt(1, executionId);
+         if (stmt.execute()) {
+
+            ResultSet rs = stmt.getResultSet();
+            if (rs.next()) {
+               status = rs.getString(1);
+            }
+            else {
+               throw new ExecutionIDNotFoundError(
+                  "problem finding status for executionid=" + executionId);
+
+            }
+
+         }
+         else {
+            throw new ExecutionIDNotFoundError(
+               "problem finding status for executionid=" + executionId);
+
+         }
+      }
+      catch (SQLException e) {
+         throw new ExecutionIDNotFoundError(
+            "problem finding status for executionid=" + executionId,
+            e);
+      }
+      return Status.valueOf(status);
+
+   }
+   /**
+    * @param app
+    * @TODO save much more comprehensive information
+    */
+   public void saveCmdLineAppEndStatus(CmdLineApplication app) {
+      Connection conn = null;
+
+      try {
+         int executionId = app.getApplicationEnvironment().getExecutionId();
+         conn = ds.getConnection();
+       
+         PreparedStatement stmt =
+            conn.prepareStatement("update exestat set status=?, endtime=? where executionId = ?");
+         stmt.setString(1, Status.COMPLETED.toString());
+         stmt.setDate(2, new Date(new java.util.Date().getTime()));
+         stmt.setInt(3, executionId);
+         int irow = stmt.executeUpdate();
+      }
+      catch (SQLException e) {
+         logger.error("problem updating end status", e);
+      }
+      
+   }
+   
+   /**
+    * @param app
+    * @TODO save much more comprehensive information/use castor to save whole application object with parameters....
+    */
+   public void saveCmdLineAppStartStatus(CmdLineApplication app) {
+      Connection conn = null;
+
+      try {
+         int executionId = app.getApplicationEnvironment().getExecutionId();
+         conn = ds.getConnection();
+       
+         PreparedStatement stmt =
+            conn.prepareStatement("update exestat set status=?,jobstepId=?,program=?,starttime=?, params=? where executionId = ?");
+         stmt.setString(1, Status.INITIALIZED.toString());
+         stmt.setString(2, app.getJobStepID());
+         stmt.setString(3, app.getApplicationDescription().getName());
+         stmt.setDate(4, new Date(new java.util.Date().getTime()));
+         stmt.setString(5, makeParamString(app));
+         stmt.setInt(6, executionId);
+         int irow = stmt.executeUpdate();
+      }
+      catch (SQLException e) {
+         logger.error("problem updating start status", e);
+      }
+      
+   }
+   /**
+    * @param app
+    * @return
+    */
+   private String makeParamString(CmdLineApplication app) {
+      StringBuffer retval = new StringBuffer();
+      Parameter[] params = app.getParameters();
+      for (int i = 0; i < params.length; i++) {
+         if (i != 0) {
+            retval.append(",");
+         }
+         retval.append(params[i].toString());
+         
+      }
+      return retval.toString();
    }
 
 }

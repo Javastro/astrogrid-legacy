@@ -1,5 +1,5 @@
 /*
- * $Id: Application.java,v 1.4 2004/03/23 12:51:25 pah Exp $
+ * $Id: Application.java,v 1.5 2004/04/19 17:34:08 pah Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -11,13 +11,16 @@
 
 package org.astrogrid.applications;
 
+import org.astrogrid.applications.manager.ApplicationExitMonitor;
+
 
 /**
  * @stereotype entity
  * @robustness Entity 
+ * @TODO this needs to be refactored to represent what an application is better
  */
 public interface Application {
-   boolean execute() throws CeaException;
+   boolean execute(ApplicationExitMonitor mon) throws CeaException;
    void addParameter(Parameter p);
    Result[] retrieveResult();
    int completionStatus();

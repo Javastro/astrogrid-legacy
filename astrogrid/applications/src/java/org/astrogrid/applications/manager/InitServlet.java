@@ -1,5 +1,5 @@
 /*
- * $Id: InitServlet.java,v 1.4 2004/04/16 11:14:33 pah Exp $
+ * $Id: InitServlet.java,v 1.5 2004/04/19 17:34:08 pah Exp $
  * 
  * Created on 14-Apr-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -52,7 +52,6 @@ public class InitServlet extends HttpServlet {
    public void init(ServletConfig conf) throws ServletException {
       // build the service endpoint & then call the service
 
-      //FIXME - this is not the servlet context that we need - don't think it is possible from init...
 
    }
 

@@ -1,5 +1,5 @@
 /*
- * $Id: BaseApplicationTestCase.java,v 1.4 2004/04/16 16:47:23 pah Exp $
+ * $Id: BaseApplicationTestCase.java,v 1.5 2004/04/19 17:34:08 pah Exp $
  * 
  * Created on 30-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -87,7 +87,7 @@ public abstract class BaseApplicationTestCase extends WorkFlowUsingTestCase {
 
    public final void testExecuteApplication() throws CeaException {
       setupTool();
-      runApplication();
+      executionId = runApplication();
       
       MessageType runStatus = controller.queryExecutionStatus(executionId);
       try {

@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractApplication.java,v 1.12 2004/03/23 12:51:25 pah Exp $
+ * $Id: AbstractApplication.java,v 1.13 2004/04/19 17:34:08 pah Exp $
  *
  * Created on 13 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -19,6 +19,7 @@ import java.util.List;
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.manager.AbstractApplicationController;
+import org.astrogrid.applications.manager.ApplicationExitMonitor;
 import org.astrogrid.community.User;
 
 /**
@@ -80,7 +81,7 @@ public abstract class AbstractApplication implements Application {
    /* (non-Javadoc)
     * @see org.astrogrid.applications.Application#execute()
     */
-   public abstract boolean execute() throws CeaException;
+   public abstract boolean execute(ApplicationExitMonitor mon) throws CeaException;
 
    /* (non-Javadoc)
     * @see org.astrogrid.applications.Application#retrieveResult()

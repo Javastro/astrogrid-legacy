@@ -1,5 +1,5 @@
 /*
- * $Id: Parameter.java,v 1.8 2004/03/23 12:51:25 pah Exp $
+ * $Id: Parameter.java,v 1.9 2004/04/19 17:34:08 pah Exp $
  *
  * Created on 13 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -28,6 +28,8 @@ abstract public class Parameter implements ParameterReturner, ParameterGetter{
    static protected org.apache.commons.logging.Log logger =
       org.apache.commons.logging.LogFactory.getLog(Parameter.class);
    protected AbstractApplication application;
+   protected boolean hasReadError = false;
+   protected boolean hasWriteBackError=false;
   
 
    protected String name;
@@ -95,8 +97,9 @@ abstract public class Parameter implements ParameterReturner, ParameterGetter{
     * writes a parameter back to the invoking process. The default is to do nothing, most parameter types do not get written back
     * @return
     */
-   public boolean writeBack()
+   public boolean writeBack() throws ParameterWriteBackException
    {
+      hasWriteBackError = false;
       return true;
    }
 

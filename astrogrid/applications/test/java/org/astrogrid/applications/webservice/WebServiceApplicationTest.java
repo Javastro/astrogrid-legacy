@@ -1,5 +1,5 @@
 /*
- * $Id: WebServiceApplicationTest.java,v 1.1 2004/01/27 15:33:29 pah Exp $
+ * $Id: WebServiceApplicationTest.java,v 1.2 2004/04/19 17:34:08 pah Exp $
  * 
  * Created on 27-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -13,7 +13,10 @@
 
 package org.astrogrid.applications.webservice;
 
+import org.astrogrid.applications.AbstractApplication;
+import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.common.config.BaseDBTestCase;
+import org.astrogrid.applications.manager.ApplicationExitMonitor;
 import org.astrogrid.applications.manager.CommandLineApplicationController;
 import org.astrogrid.community.User;
 
@@ -24,7 +27,7 @@ import junit.framework.TestCase;
  * @version $Name:  $
  * @since iteration4.1
  */
-public class WebServiceApplicationTest extends BaseDBTestCase {
+public class WebServiceApplicationTest extends BaseDBTestCase implements ApplicationExitMonitor {
 
    private WebServiceApplication webapp;
 
@@ -61,9 +64,9 @@ public class WebServiceApplicationTest extends BaseDBTestCase {
       }
    }
 
-   final public void testExecute() {
+   final public void testExecute() throws CeaException {
       try {
-           webapp.execute();
+           webapp.execute(this);
            fail("this has not been tested yet");
        }
        catch (UnsupportedOperationException e) {
@@ -91,6 +94,14 @@ public class WebServiceApplicationTest extends BaseDBTestCase {
        catch (UnsupportedOperationException e) {
           e.printStackTrace();
        }
+   }
+
+   /** 
+    * @see org.astrogrid.applications.manager.ApplicationExitMonitor#registerApplicationExit(org.astrogrid.applications.AbstractApplication)
+    */
+   public void registerApplicationExit(AbstractApplication app) {
+      // TODO Auto-generated method stub
+      throw new  UnsupportedOperationException("WebServiceApplicationTest.registerApplicationExit() not implemented");
    }
 
 

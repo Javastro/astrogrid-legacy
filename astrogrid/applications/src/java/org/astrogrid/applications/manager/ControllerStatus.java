@@ -1,5 +1,5 @@
 /*
- * $Id: Status.java,v 1.2 2004/03/23 12:51:26 pah Exp $
+ * $Id: ControllerStatus.java,v 1.1 2004/04/19 17:34:08 pah Exp $
  * 
  * Created on 17-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -23,12 +23,12 @@ import java.util.List;
  * @version $Name:  $
  * @since iteration5
  */
-public class Status {
+public class ControllerStatus {
    
    private static State currentState;
    private static List logs = new ArrayList();
    
-   public Status()
+   public ControllerStatus()
    {
       currentState = State.OK;
    }

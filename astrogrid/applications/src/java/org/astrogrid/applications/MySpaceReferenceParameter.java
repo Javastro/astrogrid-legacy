@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceReferenceParameter.java,v 1.7 2004/04/14 13:24:55 pah Exp $
+ * $Id: MySpaceReferenceParameter.java,v 1.8 2004/04/19 17:34:08 pah Exp $
  *
  * Created on 08 December 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -40,20 +40,23 @@ public class MySpaceReferenceParameter extends FileReferenceParameter {
    /* (non-Javadoc)
     * @see org.astrogrid.applications.Parameter#writeBack()
     */
-   public boolean writeBack() {
+   public boolean writeBack() throws ParameterWriteBackException {
       String importURL = null;
       //TODO might want to do something different for VOTABLES later on
       try {            
          User user = application.getUser();
-         URL url = new URL("file","",realFile.getAbsolutePath());
          VoSpaceClient voSpaceClient = new VoSpaceClient(user);
          OutputStream out = voSpaceClient.putStream(new Ivorn(rawValue));
          IOUtil.writeFile(out, realFile);
       }
       catch (IOException e) {
          logger.error("Myspace error - parameter"+ name+" value="+rawValue,e);
+         hasWriteBackError = true;
+         throw new ParameterWriteBackException("Myspace error - parameter"+ name+" value="+rawValue,e);
       } catch (URISyntaxException e) {
-         logger.error("problem creating a url to pass to myspacemanager", e);
+         hasWriteBackError = true;
+         logger.error("problem creating a url to pass to VOSpace Client", e);
+         throw new ParameterWriteBackException("problem creating a url to pass to VOSpace Client", e);
       }
       return true;
 

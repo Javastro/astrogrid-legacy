@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractApplicationController.java,v 1.20 2004/04/02 20:48:15 pah Exp $
+ * $Id: AbstractApplicationController.java,v 1.21 2004/04/19 17:34:08 pah Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -63,7 +63,7 @@ public abstract class AbstractApplicationController
     */
    protected ApplicationDescriptions applicationDescriptions;
    protected Map simpleDescriptions;
-   protected Status status;
+   protected ControllerStatus status;
    protected MySpaceLocator mySpaceLocator;
    protected RegistryQueryLocator registryLocator;
    protected RegistryAdminLocator registryAdminLocator;
@@ -77,7 +77,7 @@ public abstract class AbstractApplicationController
       MySpaceLocator mySpaceLocator,
       ServiceDesc desc) {
       logger.info("initializing application controller");
-      status = new Status();
+      status = new ControllerStatus();
       simpleDescriptions = new HashMap();
       // get the datasource
       this.config = config;

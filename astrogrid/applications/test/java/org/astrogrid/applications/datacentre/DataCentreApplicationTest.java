@@ -1,5 +1,5 @@
 /*
- * $Id: DataCentreApplicationTest.java,v 1.2 2003/12/31 00:56:17 pah Exp $
+ * $Id: DataCentreApplicationTest.java,v 1.3 2004/04/19 17:34:08 pah Exp $
  * 
  * Created on 11-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -13,6 +13,9 @@
 
 package org.astrogrid.applications.datacentre;
 
+import org.astrogrid.applications.AbstractApplication;
+import org.astrogrid.applications.CeaException;
+import org.astrogrid.applications.manager.ApplicationExitMonitor;
 import org.astrogrid.applications.manager.CommandLineApplicationController;
 import org.astrogrid.community.User;
 
@@ -23,7 +26,7 @@ import junit.framework.TestCase;
  * @version $Name:  $
  * @since iteration4
  */
-public class DataCentreApplicationTest extends TestCase {
+public class DataCentreApplicationTest extends TestCase implements ApplicationExitMonitor {
 
    /**
     * Constructor for DataCentreApplicationTest.
@@ -37,10 +40,18 @@ public class DataCentreApplicationTest extends TestCase {
       junit.textui.TestRunner.run(DataCentreApplicationTest.class);
    }
 
-   final public void testExecute() {
+   final public void testExecute() throws CeaException {
       //TODO trivial test - datacenter does not really exist yet
-      boolean result = new DataCentreApplication(new CommandLineApplicationController(), new User()).execute();
+      boolean result = new DataCentreApplication(new CommandLineApplicationController(), new User()).execute(this);
       assertEquals( false, result); //this will be true when it exists
+   }
+
+   /** 
+    * @see org.astrogrid.applications.manager.ApplicationExitMonitor#registerApplicationExit(org.astrogrid.applications.AbstractApplication)
+    */
+   public void registerApplicationExit(AbstractApplication app) {
+      // TODO Auto-generated method stub
+      throw new  UnsupportedOperationException("DataCentreApplicationTest.registerApplicationExit() not implemented");
    }
 
 }
