@@ -50,14 +50,12 @@
 */
 package org.astrogrid.portal.xslt;
 
-import org.apache.cocoon.xml.XMLUtils;
-
 /**
  * This class is used as a XSLT extension class. It is used by the XSP
  * generation stylesheet to escape XML characters to make a valid Java strings.
  *
  * @author <a href="mailto:vgritsenko@apache.org">Vadim Gritsenko</a>
- * @version CVS $Id: XSLTExtension.java,v 1.1 2003/12/18 10:56:05 gps Exp $
+ * @version CVS $Id: XSLTExtension.java,v 1.2 2004/01/07 12:52:35 gps Exp $
  */
 public class XSLTExtension {
 
