@@ -1,0 +1,9 @@
+<?xml version="1.0" ?>
+<!-- a meaningless, but schema-valid document -->
+<reg:Polygon coord_system_id="wibble" note="test" 
+	xmlns:reg="urn:nvo-region"
+	xmlns:coords="urn:nvo-coords">
+	<reg:Vertex>
+		<reg:Position  ID="wibble" coord_system_id="wibble"><coords:CoordFile>http://www.wibble.com</coords:CoordFile></reg:Position>
+	</reg:Vertex>
+</reg:Polygon>
