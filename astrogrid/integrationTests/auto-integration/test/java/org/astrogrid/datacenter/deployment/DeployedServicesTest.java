@@ -1,4 +1,4 @@
-/*$Id: DeployedServicesTest.java,v 1.3 2004/09/29 16:58:34 mch Exp $
+/*$Id: DeployedServicesTest.java,v 1.4 2004/09/29 18:42:46 mch Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,14 +12,19 @@ package org.astrogrid.datacenter.deployment;
 
 import java.io.IOException;
 import java.io.InputStream;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.rpc.ServiceException;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.delegate.ConeSearcher;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
+import org.astrogrid.datacenter.delegate.QuerySearcher;
+import org.astrogrid.datacenter.query.AdqlQuery;
+import org.astrogrid.datacenter.returns.ReturnTable;
+import org.astrogrid.datacenter.sqlparser.Sql2Adql074;
 import org.astrogrid.util.DomHelper;
 import org.xml.sax.SAXException;
-import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * Tests to see if the real deployed services are up.  This isn't really an
@@ -42,14 +47,18 @@ public class DeployedServicesTest extends TestCase {
       DomHelper.newDocument(is);
    }
    
-   /** Runs a cone search on SEC proxy on grendel12 */
-   public void testGrendelSecProxy() throws IOException, SAXException, IOException, ParserConfigurationException  {
-     ConeSearcher delegate = DatacenterDelegateFactory.makeConeSearcher(
+   /** Runs a simple adql search on SEC proxy on grendel12. No point in running
+    * a cone search - Solar Event Catalogues don't do cones */
+   public void testGrendelSecProxy() throws IOException, SAXException, IOException, ParserConfigurationException, ServiceException  {
+     QuerySearcher delegate = DatacenterDelegateFactory.makeQuerySearcher(
          Account.ANONYMOUS,
          "http://grendel12.roe.ac.uk:8080/pal-sec/services/AxisDataService05",
          DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
 
-      InputStream is = delegate.coneSearch(10,10,2);
+      String adqls = "SELECT * FROM sgas_event WHERE nar>9500 AND nar<9600";
+      String adqlx = Sql2Adql074.translate(adqls);
+      
+      InputStream is = delegate.askQuery(new AdqlQuery(adqlx), ReturnTable.VOTABLE);
       assertNotNull(is);
       DomHelper.newDocument(is);
    }
@@ -98,6 +107,9 @@ public class DeployedServicesTest extends TestCase {
 
 /*
 $Log: DeployedServicesTest.java,v $
+Revision 1.4  2004/09/29 18:42:46  mch
+Changed SEC test
+
 Revision 1.3  2004/09/29 16:58:34  mch
 Added SEC & Vizier grendel12 proxy tests
 
