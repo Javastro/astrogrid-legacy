@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceCommander.java,v 1.2 2004/02/17 11:56:12 mch Exp $
+ * $Id: MySpaceCommander.java,v 1.3 2004/02/17 12:01:24 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -20,9 +20,10 @@ package org.astrogrid.ui.myspace;
  * @author M Hill
  */
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+
 import org.astrogrid.community.Account;
+import org.astrogrid.io.Piper;
 import org.astrogrid.vospace.VospaceRL;
 import org.astrogrid.vospace.delegate.MySpaceEntry;
 import org.astrogrid.vospace.delegate.MySpaceFolder;
@@ -109,9 +110,18 @@ public class MySpaceCommander
    /**
     * Gets the files from the given VoRL to the given File
     */
-   public static void get(VospaceRL source, File target)
+   public static void get(VospaceRL source, File target) throws IOException
    {
-      throw new UnsupportedOperationException("Not written get yet");
+      VoSpaceClient delegate = contactServer(source);
+      
+      System.out.println("Connecting to source...");
+      InputStream in = new BufferedInputStream(delegate.getStream(source.getDelegateFileRef()));
+      OutputStream out = new BufferedOutputStream(new FileOutputStream(target));
+      
+      System.out.println("Copying...");
+      Piper.pipe(in, out);
+      System.out.println("..done");
+      out.close();
    }
 
    /**
@@ -151,6 +161,9 @@ public class MySpaceCommander
 
 /*
 $Log: MySpaceCommander.java,v $
+Revision 1.3  2004/02/17 12:01:24  mch
+Added Get command
+
 Revision 1.2  2004/02/17 11:56:12  mch
 Added List command
 
@@ -158,4 +171,5 @@ Revision 1.1  2004/02/17 03:47:04  mch
 Naughtily large lump of various fixes for demo
 
  */
+
 
