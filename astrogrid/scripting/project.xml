@@ -101,12 +101,6 @@
             <artifactId>astrogrid-workflow-objects</artifactId>
             <version>${astrogrid.workflowobjects.version}</version>
         </dependency>
-        <!-- datacenter -->
-        <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-datacenter-client</artifactId>
-            <version>${astrogrid.datacenter.version}</version>
-        </dependency>
         <!-- applications -->
         <dependency>
             <groupId>org.astrogrid</groupId>

@@ -1,4 +1,4 @@
-/*$Id: Service.java,v 1.13 2004/11/22 18:26:54 clq2 Exp $
+/*$Id: Service.java,v 1.14 2005/03/11 17:57:47 clq2 Exp $
  * Created on 27-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,6 @@
 package org.astrogrid.scripting;
 
 import org.astrogrid.applications.delegate.DelegateFactory;
-import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.jes.delegate.JesDelegateFactory;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
 
@@ -66,8 +65,8 @@ public class Service {
     */
    public Object createDelegate() throws  ServiceException, IOException {
       if (DATACENTER_SERVICE.equals(type)) {
-          logger.info("Creating datacenter delegate");
-         return DatacenterDelegateFactory.makeQuerySearcher(endpoint);
+          logger.error("Cannot create datacenter delegate - no longer supported");
+          throw new ServiceException("Cannot create datacenter delegate - no longer supported");
       } 
       if (REGISTRY_SERVICE.equals(type)) {
           logger.info("Creating registry delegate");
@@ -190,6 +189,12 @@ public class Service {
 
 /* 
 $Log: Service.java,v $
+Revision 1.14  2005/03/11 17:57:47  clq2
+scripting-nww-975
+
+Revision 1.13.22.1  2005/03/03 12:31:16  nw
+removed dep on deprecated jar.
+
 Revision 1.13  2004/11/22 18:26:54  clq2
 scripting-nww-715
 

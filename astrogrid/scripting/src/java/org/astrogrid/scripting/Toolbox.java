@@ -1,4 +1,4 @@
-/*$Id: Toolbox.java,v 1.5 2004/12/07 16:50:33 jdt Exp $
+/*$Id: Toolbox.java,v 1.6 2005/03/11 17:57:47 clq2 Exp $
  * Created on 19-Nov-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -209,11 +209,26 @@ public class Toolbox {
           return "Astrogrid Toolbox" + "\n" + this.getVersion();
        }
 
+    public static void main(String[] args) {
+        Toolbox tb = new Toolbox();
+        tb.getVersion();
+        System.out.println(tb);
+    }
+    
 }
 
 
 /* 
 $Log: Toolbox.java,v $
+Revision 1.6  2005/03/11 17:57:47  clq2
+scripting-nww-975
+
+Revision 1.5.18.1  2005/03/03 12:31:16  nw
+removed dep on deprecated jar.
+
+Revision 1.5.8.1  2005/01/13 11:46:34  nw
+saved work that I've not got time to do
+
 Revision 1.5  2004/12/07 16:50:33  jdt
 merges from scripting-nww-805
 

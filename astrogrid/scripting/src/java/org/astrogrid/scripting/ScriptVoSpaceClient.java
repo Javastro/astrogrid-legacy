@@ -1,4 +1,4 @@
-/*$Id: ScriptVoSpaceClient.java,v 1.3 2004/12/07 16:50:33 jdt Exp $
+/*$Id: ScriptVoSpaceClient.java,v 1.4 2005/03/11 17:57:47 clq2 Exp $
  * Created on 30-Nov-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,6 +22,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 /** Wrapper of standard vospace client that has string-friendly scripting methods.
+ * @deprecated - use alternative methods to talk to myspace - external values for example.
  * @author Noel Winstanley nw@jb.man.ac.uk 30-Nov-2004
  *
  */
@@ -80,6 +81,15 @@ public class ScriptVoSpaceClient extends VoSpaceClient {
 
 /* 
 $Log: ScriptVoSpaceClient.java,v $
+Revision 1.4  2005/03/11 17:57:47  clq2
+scripting-nww-975
+
+Revision 1.3.18.1  2005/03/03 12:31:16  nw
+removed dep on deprecated jar.
+
+Revision 1.3.8.1  2005/01/13 11:46:34  nw
+saved work that I've not got time to do
+
 Revision 1.3  2004/12/07 16:50:33  jdt
 merges from scripting-nww-805
 
