@@ -1,5 +1,5 @@
 /*
- * $Id: CommonExecutionConnectorServiceSoapBindingImpl.java,v 1.8 2004/09/10 13:53:14 jdt Exp $
+ * $Id: CommonExecutionConnectorServiceSoapBindingImpl.java,v 1.9 2004/09/20 16:41:48 pah Exp $
  * 
  * Created on 25-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -28,12 +28,9 @@ import org.astrogrid.jes.types.v1.cea.axis.ResultListType;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.axis._tool;
 
-import org.apache.axis.AxisFault;
 import org.apache.axis.description.ServiceDesc;
 import org.apache.axis.types.URI;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.rmi.RemoteException;
 
 /**
@@ -92,10 +89,13 @@ public class CommonExecutionConnectorServiceSoapBindingImpl implements CommonExe
              Tool ctool = Axis2Castor.convert(tool); 
             return cec.init(ctool, jobstepID.toString());
          }
-         catch (Throwable e) {
+         catch (Exception e) {
            logger.error("init(_tool tool = " + tool + ") - Throwable caught:", e);
-           //throw CeaFault.makeFault(e);
-           throw makeFault("an exception occurred in init",e);
+           throw CeaFault.makeFault(e);
+         }
+         catch(Throwable e) {
+            logger.error("init(_tool tool = " + tool + ") - Exception caught:", e);
+            throw CeaFault.makeFault(new Exception("an Throwable occurred in init", e));
          }
    }
 
@@ -105,9 +105,10 @@ public class CommonExecutionConnectorServiceSoapBindingImpl implements CommonExe
    public boolean execute(String arg0) throws RemoteException, CeaFault {
        try {
            return cec.execute(arg0);
+       } catch (Exception e) {
+           throw CeaFault.makeFault(e);
        } catch (Throwable e) {
-           logger.error("execute( " + arg0 + ") - throwable caught:" ,e);
-           throw makeFault("a throwable occurred in execute",e); 
+           throw CeaFault.makeFault(new Exception("a throwable occurred in execute",e)); 
        }
    }
 
@@ -117,9 +118,10 @@ public class CommonExecutionConnectorServiceSoapBindingImpl implements CommonExe
    public boolean abort(String executionId) throws RemoteException, CeaFault {
       try {
             return cec.abort(executionId);
+      } catch (Exception e) {
+          throw CeaFault.makeFault(e);
       } catch (Throwable t) {
-          logger.error("abort(" + executionId + ") - throwable caught:" ,t);
-          throw makeFault("a throwable occurred in abort",t);
+          throw CeaFault.makeFault(new Exception("a throwable occurred in abort",t));
    }
    }
 
@@ -133,10 +135,12 @@ public class CommonExecutionConnectorServiceSoapBindingImpl implements CommonExe
             org.astrogrid.applications.beans.v1.cea.castor.MessageType mess = query.queryExecutionStatus(executionId);
             return  Castor2Axis.convert(mess);
          }
+         catch (Exception e) {
+            throw CeaFault.makeFault(e);
+         }
          catch(Throwable e)
          {
-             logger.error("queryExecutionStatus(" + executionId + ") - throwable caught",e);
-            throw makeFault("an Throwable occurred in query status", e);
+            throw CeaFault.makeFault(new Exception("an Throwable occurred in query status", e));
          }
    }
      
@@ -146,9 +150,10 @@ public class CommonExecutionConnectorServiceSoapBindingImpl implements CommonExe
 public boolean registerResultsListener(String arg0, URI arg1) throws RemoteException, CeaFault {
     try {
         return query.registerResultsListener(arg0,new java.net.URI(arg1.toString()));
+    } catch (Exception e) {
+        throw CeaFault.makeFault(e);
     } catch (Throwable e) {
-        logger.error("registerResultsListener(" + arg0 + ", " + arg1 + ") - throwable caught",e);
-        throw makeFault("a throwable occurred in registerResultsListener",e);
+        throw CeaFault.makeFault(new Exception("a throwable occurred in registerResultsListener",e));
     }
 }
 
@@ -158,9 +163,10 @@ public boolean registerResultsListener(String arg0, URI arg1) throws RemoteExcep
 public boolean registerProgressListener(String arg0, URI arg1) throws RemoteException, CeaFault {
     try {
         return query.registerProgressListener(arg0,new java.net.URI(arg1.toString()));
+    } catch (Exception e) {
+        throw CeaFault.makeFault(e);
     } catch (Throwable e) {
-        logger.error("registerProgressListener(" + arg0 + ", " + arg1 + ") - throwable caught",e);
-        throw makeFault("a throwable occurred in registerProgressListener",e);
+        throw CeaFault.makeFault(new Exception("a throwable occurred in registerProgressListener",e));
     }
 }
 
@@ -170,9 +176,10 @@ public boolean registerProgressListener(String arg0, URI arg1) throws RemoteExce
 public ExecutionSummaryType getExecutionSummary(String arg0) throws RemoteException, CeaFault {
     try {
         return Castor2Axis.convert(query.getSummary(arg0));
+    } catch (Exception e) {
+        throw CeaFault.makeFault(e);
     } catch (Throwable e) {
-        logger.error("getExecutionSummary(" + arg0 + ") - throwable caught",e);
-        throw makeFault("a throwable occurred in getExecutionSummary",e);
+        throw CeaFault.makeFault(new Exception("a throwable occurred in getExecutionSummary",e));
     }
 }
 
@@ -184,9 +191,10 @@ public ExecutionSummaryType getExecutionSummary(String arg0) throws RemoteExcept
 public ResultListType getResults(String arg0) throws RemoteException, CeaFault {
     try {
         return Castor2Axis.convert(query.getResults(arg0));
+    } catch (Exception e) {
+        throw CeaFault.makeFault(e);
     } catch (Throwable e) {
-        logger.error("getResults(" + arg0 +") - throwable caught",e);
-        throw makeFault("a throwable occurred in getResults",e);
+        throw CeaFault.makeFault(new Exception("a throwable occurred in getResults",e));
     }
 }
    
@@ -195,47 +203,16 @@ public ResultListType getResults(String arg0) throws RemoteException, CeaFault {
   */
  public String returnRegistryEntry() throws RemoteException, CeaFault
  {
-	 if (logger.isTraceEnabled()) {
-		logger.trace("returnRegistryEntry() -- start");
-     }
-
      try {
-         final String registryEntry = CEAComponentManagerFactory.getInstance().getMetadataService().returnRegistryEntry();
- 		 if (logger.isTraceEnabled()) {
-			logger.trace("returnRegistryEntry() - end");
-		 }
-         return registryEntry;     
+         return CEAComponentManagerFactory.getInstance().getMetadataService().returnRegistryEntry();
+     } catch (Exception e) {
+		 logger.error("returnRegistryEntry()", e);
+         throw CeaFault.makeFault(e);       
      } catch (Throwable e) {
 		 logger.error("returnRegistryEntry()", e);
-         throw makeFault("A throwable occured in return registry entry",e);
+         throw CeaFault.makeFault(new Exception("A throwable occured in return registry entry",e));
      }
   }
 
- // cut-n-pasted from http://wiki.astrogrid.org/bin/view/Main/WebServiceExceptions - lets see if this gives any better error messages.
- protected AxisFault makeFault(String message, Throwable cause) {
-     return makeFault(false,message,cause);
- }
- 
- protected AxisFault makeFault(boolean blameClient, String message, Throwable cause) {
 
-     AxisFault fault = new AxisFault(message);
-
-     //set fault code according to standard (?) - should the client check what was sent
-     //or is the problem on the server.
-     if (blameClient) {
-       fault.setFaultCode("Client");
-     } else {
-       fault.setFaultCode("Server");
-     }
-
-     fault.clearFaultDetails();  
-     if (cause != null) {
-        StringWriter writer = new StringWriter();
-        cause.printStackTrace(new PrintWriter(writer));
-        fault.addFaultDetailString(writer.toString());
-     }
-
-     return fault;
-  } 
- 
 }
