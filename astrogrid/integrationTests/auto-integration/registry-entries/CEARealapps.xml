@@ -1020,8 +1020,7 @@
 		</vr:Capability>
 		<vr:Interface>
 			<vr:Invocation>WebService</vr:Invocation>
-			<vr:AccessURL use="base">
-						http://astrogrid.jb.man.ac.uk:8080/astrogrid-cea-commandline-SNAPSHOT/services/CommonExecutionConnectorService</vr:AccessURL>			<!--				&lt;vr:AccessURL use="base"&gt;
+			<vr:AccessURL use="base">http://astrogrid.jb.man.ac.uk:8080/astrogrid-cea-commandline-SNAPSHOT/services/CommonExecutionConnectorService</vr:AccessURL>			<!--				&lt;vr:AccessURL use="base"&gt;
 				@TOMCATROOT@/astrogrid-cea-commandline-@VERSION@/services/CommonExecutionConnectorService&lt;/vr:AccessURL&gt;
 -->
 
