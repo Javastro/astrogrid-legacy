@@ -31,7 +31,7 @@ import org.xmlBlaster.util.qos.QueryQosData;
 public class XmlBlasterUtil {
 
   // Common constants.
-  protected static final String CONTENT_TAGS = "<name>fred</name>";
+  protected static final String CLIENT_TAGS = "<name>fred</name>";
 
   // XMLBlaster objects.  
   private Global global;
@@ -63,6 +63,10 @@ public class XmlBlasterUtil {
   }
   
   public PublishReturnQos publishString(String content) throws XmlBlasterException {
+    return publishString(content, null);
+  }
+  
+  public PublishReturnQos publishString(String content, String clientTags) throws XmlBlasterException {
     // Quality of service request.
     PublishQos publishQos = new PublishQos(global);
     publishQos.setPriority(PriorityEnum.NORM_PRIORITY);
@@ -73,7 +77,13 @@ public class XmlBlasterUtil {
     
     // Client-specific key structure for message.
     PublishKey publishKey = new PublishKey(global);
-    publishKey.setClientTags(XmlBlasterUtil.CONTENT_TAGS);
+    
+    if(clientTags == null) {
+      publishKey.setClientTags(XmlBlasterUtil.CLIENT_TAGS);
+    }
+    else { 
+      publishKey.setClientTags(clientTags);
+    }
     
     return publishString(publishKey, content, publishQos);
   }
