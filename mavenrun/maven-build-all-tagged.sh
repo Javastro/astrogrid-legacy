@@ -34,6 +34,7 @@ $SCRIPTHOME/maven-build-tagged.sh workflow $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE
 
 $SCRIPTHOME/maven-build-tagged-new.sh maven-site $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
 
+MAVEN_PUBLIC=/var/www/www/maven
 DOCLOCATION=$MAVEN_PUBLIC/docs
 RELEASEDOCS=$DOCLOCATION/release
 

@@ -29,6 +29,7 @@ $SCRIPTHOME/maven-build-new.sh workflow >> $BUILD_DIR/$LOG_FILE 2>&1
 
 $SCRIPTHOME/maven-build-new.sh maven-site >> $BUILD_DIR/$LOG_FILE 2>&1
 
+MAVEN_PUBLIC=/var/www/www/maven
 DOCLOCATION=$MAVEN_PUBLIC/docs
 SNAPSHOTDOCS=$DOCLOCATION/snapshot
 echo "Moving docs to snapshot location" >> $BUILD_DIR/$LOG_FILE 2>&1
