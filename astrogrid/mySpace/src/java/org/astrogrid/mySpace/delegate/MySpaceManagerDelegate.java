@@ -37,8 +37,6 @@ public class MySpaceManagerDelegate implements MySpaceClient {
  */
 
     public MySpaceManagerDelegate() {
-        this.mssUrl = mssUrl;
-        this.queryMssUrl = queryMssUrl;
     }
 
 /**
