@@ -655,6 +655,24 @@ window.status = "Failed to identify " + thisName;
 	}
 }
 
+    
+      function toggleHelp(id)
+      {
+		if(document.getElementById(id).style.display == "none"){
+		  nofooter(); 
+		  document.getElementById(id).style.display = "";
+		} else {
+		    footer();
+			document.getElementById(id).style.display = "none";
+		}        
+	  }
+    
+
+
+
+
+
+
 function OutMouseComplex(destiny){
 	var thisName = destiny.id;
 	destiny.className = oldClass;
