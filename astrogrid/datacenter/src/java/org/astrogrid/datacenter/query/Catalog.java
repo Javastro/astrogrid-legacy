@@ -30,7 +30,8 @@ import java.util.Iterator ;
  * </pre></blockquote>
  * <p>
  *
- * @author  Jeff Lusted/Phil Nicolson
+ * @author  Jeff Lusted
+ * @author  Phil Nicolson
  * @version 1.0 27-May-2003
  * @see     org.astrogrid.datacenter.Query
  * @since   AstroGrid 1.2

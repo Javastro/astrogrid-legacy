@@ -46,7 +46,14 @@ public class Field implements Operand {
 	private static final String 
 	   TYPE_UCD      = new String( "UCD" ).intern() ,
 	   TYPE_COLUMN   = new String( "COLUMN" ).intern() ,
-	   TYPE_CONSTANT = new String( "CONSTANT" ).intern() ;
+	   TYPE_PASSTHROUGH = new String( "PASSTHROUGH" ).intern() ,
+	   TYPE_CONSTANT = new String( "CONSTANT" ).intern(),
+	   SQL_DELETE_LOWER = "delete",
+	   SQL_DELETE = "DELETE",
+	   SQL_UPDATE_LOWER = "update",
+	   SQL_UPDATE = "UPDATE",
+	   SQL_INSERT_LOWER = "insert",
+	   SQL_INSERT = "INSERT" ;
 		
 	private String
 	   name  = null,
@@ -62,18 +69,24 @@ public class Field implements Operand {
 		   	
 		try {	
 			this.catalog = catalog;	 
-		    this.name = fieldElement.getAttribute( RunJobRequestDD.FIELD_NAME_ATTR ).trim() ;
 		    
 		    this.type = fieldElement.getAttribute( RunJobRequestDD.FIELD_TYPE_ATTR ) ;
+		    
+		    if (this.type.equals( TYPE_PASSTHROUGH ) ) {
+				this.name = nameParse( fieldElement.getAttribute( RunJobRequestDD.FIELD_NAME_ATTR ).trim() ) ;
+		    }
+		    else {
+ 			    this.name = fieldElement.getAttribute( RunJobRequestDD.FIELD_NAME_ATTR ).trim() ;
+		    }
 		    
 			if( type != null )
 			   type = type.trim().toUpperCase() ;
 		    
-		    // Anything not defined as a column or a UCD is assumed to be a constant...
+		    // Anything not defined as a column, UCD or PASSTHROUGH is assumed to be a constant...
 			if( type == null  ||  type.equals( "" ) ) {
 			    type = TYPE_CONSTANT ;
 			}
-			else if(  type.equals( TYPE_COLUMN )  ||  type.equals( TYPE_UCD )  ) {
+			else if(  type.equals( TYPE_COLUMN )  ||  type.equals( TYPE_UCD ) || type.equals( TYPE_PASSTHROUGH ) ) {
                 // We grab the internalized representation from the string pool for performance reasons...
 				type = type.intern() ;  
 			}
@@ -223,5 +236,31 @@ public class Field implements Operand {
 		return retValue ;
 		
 	} // end of toSQLString()
+
+
+    /**
+     * Having the field type PASSTHROUGH opens up the Datacenter to the possibility of a 
+     * user entering valid, but malicious, SQL queries including DELETE, UPDATE and INSERT 
+     * statements. Although the query builder should prevent this happening nameParse() 
+     * is included as a cursory check against this happening. If name contains DELETE, UPDATE,
+     * INSERT an empty string is returned.
+     * 
+     * @param name
+     * @return returnString
+     */	
+	private String nameParse(String name) {
+		
+		String returnString = name ;
+		
+		if  ( ( name.indexOf( SQL_DELETE ) != -1 ) || ( name.indexOf( SQL_DELETE_LOWER) != -1 ) || 
+		      ( name.indexOf( SQL_INSERT ) != -1 ) || ( name.indexOf( SQL_INSERT_LOWER ) != -1 ) ||
+		      ( name.indexOf( SQL_UPDATE ) != -1 ) || ( name.indexOf( SQL_UPDATE_LOWER ) != -1) ) {
+			
+			logger.debug( "Attempt to enter malicious SQL using type PASSTHROUGH in Field" ) ;
+			returnString = "" ;
+		}
+		 
+		return returnString ;
+	} //end of maliciousParse
 	
 } // end of class Field
