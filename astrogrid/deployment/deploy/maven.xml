@@ -222,7 +222,7 @@
 		<attainGoal name="setup-working-dir" />
 		<attainGoal name="setup-registry" />
 		<attainGoal name="setup-community" />
-		<attainGoal name="setup-applications" />
+		<attainGoal name="setup-cea-cmd" />
 		<attainGoal name="setup-myspace" />
 		<!--Finally kick the CommonExecutionController to register itself-->
 		<http 
@@ -260,8 +260,8 @@
 			<include name="**/*" />
 		</chmod>
 	</goal>
-	<goal name="setup-applications" 
-		description="setup specific to applications">
+	<goal name="setup-cea-cmd" 
+		description="setup specific to cea-cmd">
 		<echo>Configuring Applications</echo>
 		<!-- registry -->
 		<copy todir="${temporary.dir}/registry-entries" filtering="true" overwrite="true">
@@ -523,8 +523,8 @@
 	<goal name="jes-deploy"  prereqs="tomcat-declare-tasks">
 		<ag:GetDeploy name="jes"/>
 	</goal>
-	<goal name="applications-deploy" prereqs="tomcat-declare-tasks" >
-		<echo>note that applications takes its local config from ${work.dir}/cea/config/CeaApplicationConfig.xml</echo>
+	<goal name="cea-cmd-deploy" prereqs="tomcat-declare-tasks" >
+		<echo>note that cea-cmd takes its local config from ${work.dir}/cea/config/CeaApplicationConfig.xml</echo>
 		<!-- note that this is not made a webapp for security reasons - also perhaps not all of the standard config is needed.... -->
 	   <copy file="webapps/astrogrid-configuration/AstroGridConfig.properties"
 		 tofile="${work.dir}/cea/config/astrogrid.properties" filtering="true" overwrite="true" />
@@ -602,8 +602,8 @@
 	<goal name="filestore-undeploy" prereqs="tomcat-declare-tasks" >
 		<ag:UnDeploy name="filestore"/>
 	</goal>
-	<goal name="apps-undeploy" prereqs="tomcat-declare-tasks" >
-		<ag:UnDeploy name="applications"/>
+	<goal name="cea-undeploy" prereqs="tomcat-declare-tasks" >
+		<ag:UnDeploy name="cea-commandline"/>
 	</goal>
 	<goal name="jes-undeploy" prereqs="tomcat-declare-tasks">
 		<ag:UnDeploy name="jes" />
