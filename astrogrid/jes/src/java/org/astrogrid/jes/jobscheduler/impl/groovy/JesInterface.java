@@ -1,4 +1,4 @@
-/*$Id: JesInterface.java,v 1.10 2004/09/06 16:47:04 nw Exp $
+/*$Id: JesInterface.java,v 1.11 2004/09/16 21:47:29 nw Exp $
  * Created on 12-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -148,12 +148,11 @@ public class  JesInterface extends WorkflowLogger {
 
         ByteArrayOutputStream err = new ByteArrayOutputStream();
         ByteArrayOutputStream out = new ByteArrayOutputStream();        
+        PrintStream errStream = new PrintStream(err);
+        PrintStream outStream = new PrintStream(out);
         try {
-            PrintStream errStream = new PrintStream(err);
-            PrintStream outStream = new PrintStream(out);
+ 
             shell.executeScript(script.getBody(),id,map,rules,errStream,outStream);
-            errStream.close();
-            outStream.close();
             er.setStatus(ExecutionPhase.COMPLETED);
             return true;
         } catch (Throwable t) {
@@ -164,6 +163,8 @@ public class  JesInterface extends WorkflowLogger {
             er.setStatus(ExecutionPhase.ERROR);       
             return false;
         } finally { // want to record results, no matter what happened.
+            errStream.close();
+            outStream.close();            
            MessageType message =buildMessage(err.toString());
            message.setLevel(LogLevel.INFO);
            message.setSource("stderr");
@@ -195,6 +196,9 @@ public class  JesInterface extends WorkflowLogger {
 
 /* 
 $Log: JesInterface.java,v $
+Revision 1.11  2004/09/16 21:47:29  nw
+made sure all streams are closed
+
 Revision 1.10  2004/09/06 16:47:04  nw
 javadoc
 

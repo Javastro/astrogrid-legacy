@@ -1,4 +1,4 @@
-/*$Id: GroovyTransformers.java,v 1.2 2004/07/30 15:42:34 nw Exp $
+/*$Id: GroovyTransformers.java,v 1.3 2004/09/16 21:46:54 nw Exp $
  * Created on 11-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,9 @@
 package org.astrogrid.jes.jobscheduler.impl.groovy;
 
 import org.astrogrid.component.descriptor.ComponentDescriptor;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.Templates;
@@ -31,10 +34,29 @@ public class GroovyTransformers implements GroovySchedulerImpl.Transformers, Com
      */
     public GroovyTransformers() throws TransformerConfigurationException {
         TransformerFactory fac = TransformerFactory.newInstance();
-        Source compilerSource = new StreamSource(this.getClass().getResourceAsStream(COMPILER_XSL));        
-        compilerTemplate = fac.newTemplates(compilerSource);
-        Source annotatorSource = new StreamSource(this.getClass().getResourceAsStream(ANNOTATOR_XSL));
-        annotatorTemplate = fac.newTemplates(annotatorSource);
+        InputStream compilerXSL = null;
+        InputStream annotatorXSL = null;
+        try {
+            compilerXSL = this.getClass().getResourceAsStream(COMPILER_XSL);
+            Source compilerSource = new StreamSource(compilerXSL);        
+            compilerTemplate = fac.newTemplates(compilerSource);
+            annotatorXSL = this.getClass().getResourceAsStream(ANNOTATOR_XSL);
+            Source annotatorSource = new StreamSource(annotatorXSL);
+            annotatorTemplate = fac.newTemplates(annotatorSource);
+        } finally {
+            if (compilerXSL != null) {
+                try { 
+                    compilerXSL.close();
+                } catch (IOException ioe) {
+                }
+            }
+            if (annotatorXSL != null) {
+                try {
+                    annotatorXSL.close();
+                } catch (IOException ioe) {
+                }
+            }
+        }
     }
     public static final String COMPILER_XSL = "workflow-compiler.xsl";
     public static final String ANNOTATOR_XSL = "id-annotate.xsl";
@@ -79,6 +101,9 @@ public class GroovyTransformers implements GroovySchedulerImpl.Transformers, Com
 
 /* 
 $Log: GroovyTransformers.java,v $
+Revision 1.3  2004/09/16 21:46:54  nw
+made sure all streams are closed
+
 Revision 1.2  2004/07/30 15:42:34  nw
 merged in branch nww-itn06-bz#441 (groovy scripting)
 

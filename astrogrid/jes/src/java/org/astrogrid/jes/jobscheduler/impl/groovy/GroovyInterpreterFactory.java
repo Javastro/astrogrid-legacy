@@ -1,4 +1,4 @@
-/*$Id: GroovyInterpreterFactory.java,v 1.4 2004/09/06 16:30:25 nw Exp $
+/*$Id: GroovyInterpreterFactory.java,v 1.5 2004/09/16 21:47:56 nw Exp $
  * Created on 14-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -78,6 +78,7 @@ public class GroovyInterpreterFactory {
         StringWriter writer =  new StringWriter();
         try {
             pickler.marshallInterpreter(writer,interp);
+            writer.close();
             pickleJar.setContent(writer.toString());
         }catch (Exception e) {
             throw new PickleException("Could not pickle interpreter",e);
@@ -88,25 +89,30 @@ public class GroovyInterpreterFactory {
      * deserialize previously created workflow interpreter. */
     public GroovyInterpreter unpickleFrom(JesInterface env) throws PickleException {        
         Extension pickleJar = (Extension)env.getWorkflow().findXPathValue(GroovyInterpreterFactory.EXTENSION_XPATH);
+        StringReader sr = new StringReader(pickleJar.getContent());
         try {
-        GroovyInterpreter gi = pickler.unmarshallInterpreter(new StringReader(pickleJar.getContent()));
+        GroovyInterpreter gi = pickler.unmarshallInterpreter(sr);
         gi.setJesInterface(env);
         return gi;
         } catch (Exception e) {
             throw new PickleException("Could not unpickle interpreter",e);
+        } finally {
+            sr.close();
         }
-
     }
     
     /** create a new workflow interpreter, populated with contents of rulesDoc */
     public GroovyInterpreter newInterpreter(String rulesDoc,JesInterface env) throws PickleException{
+        StringReader sr = new StringReader(rulesDoc);
         try {
-        List rs = pickler.unmarshallRuleStore(new StringReader(rulesDoc));
+        List rs = pickler.unmarshallRuleStore(sr);
         GroovyInterpreter interp = new GroovyInterpreter(rs);
         interp.setJesInterface(env);        
         return interp;
         } catch (Exception e) {
             throw new PickleException("Could not create new interpreter",e);
+        } finally {
+            sr.close();
         }
     }
 
@@ -116,6 +122,9 @@ public class GroovyInterpreterFactory {
 
 /* 
 $Log: GroovyInterpreterFactory.java,v $
+Revision 1.5  2004/09/16 21:47:56  nw
+made sure all streams are closed
+
 Revision 1.4  2004/09/06 16:30:25  nw
 javadoc
 
