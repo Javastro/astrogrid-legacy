@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/cocoon/explorer/xsl/Attic/explorer.xsl,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/27 03:17:38 $</cvs:author>
-    | <cvs:version>$Revision: 1.4 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/29 02:45:22 $</cvs:author>
+    | <cvs:version>$Revision: 1.5 $</cvs:version>
     | <cvs:log>
     | $Log: explorer.xsl,v $
+    | Revision 1.5  2003/06/29 02:45:22  dave
+    | Fixed display styles in explorer and add VOTable transform
+    |
     | Revision 1.4  2003/06/27 03:17:38  dave
     | Simplified page path in sitemap
     |
@@ -43,9 +46,18 @@
 			<!-- Add the css elements for our tree -->
 			<style>
 				<![CDATA[
-					table.tree { background:#ffffff; color:black; font-size:10pt; font-style:normal; font-weight:normal; font-family:arial, serif}
-					tr.tree    { background:#ffffff; color:black; font-size:10pt; font-style:normal; font-weight:normal; font-family:arial, serif}
-					td.tree    { background:#ffffff; color:black; font-size:10pt; font-style:normal; font-weight:normal; font-family:arial, serif}
+					table.info      { background:#FFFFFF; color:black; font-size:10pt; font-style:normal; font-weight:normal; font-family:arial, serif}
+					tr.info         { background:#FFFFFF; color:black; font-size:10pt; font-style:normal; font-weight:normal; font-family:arial, serif}
+					td.info         { background:#FFFFFF; color:black; font-size:10pt; font-style:normal; font-weight:normal; font-family:arial, serif}
+
+					table.tree      { background:#ffffff; color:black; font-size:10pt; font-style:normal; font-weight:normal; font-family:arial, serif}
+					tr.tree         { background:#ffffff; color:black; font-size:10pt; font-style:normal; font-weight:normal; font-family:arial, serif}
+					td.tree         { background:#ffffff; color:black; font-size:10pt; font-style:normal; font-weight:normal; font-family:arial, serif}
+
+					a:tree:link     { background:#ffffff; color:black; font-size:10pt; font-style:normal; font-weight:normal; font-family:arial, serif; text-decoration: none}
+					a:tree:active   { background:#ffffff; color:red;   font-size:10pt; font-style:normal; font-weight:normal; font-family:arial, serif; text-decoration: none}
+					a:tree:visited  { background:#ffffff; color:black; font-size:10pt; font-style:normal; font-weight:normal; font-family:arial, serif; text-decoration: none}
+					a:tree:hover    { background:#ffffff; color:red;   font-size:10pt; font-style:normal; font-weight:normal; font-family:arial, serif; text-decoration: none}
 				]]>
 			</style>
 			<!-- Add our page menu -->
@@ -90,6 +102,39 @@
 					</xsl:otherwise>
 				</xsl:choose>
 			</content>
+
+			<!--+
+			    | These elements are for debug only.
+			    +-->
+			<debug>
+				<link type="action">
+					<display>001</display>
+					<href>
+						<base><xsl:value-of select="$page"/></base>
+						<param name="AST-VIEW"><xsl:value-of select="/page/view/@ident"/></param>
+						<param name="cocoon-view">001</param>
+					</href>
+				</link>
+				<xsl:text> </xsl:text>
+				<link type="action">
+					<display>002</display>
+					<href>
+						<base><xsl:value-of select="$page"/></base>
+						<param name="AST-VIEW"><xsl:value-of select="/page/view/@ident"/></param>
+						<param name="cocoon-view">002</param>
+					</href>
+				</link>
+				<xsl:text> </xsl:text>
+				<link type="action">
+					<display>003</display>
+					<href>
+						<base><xsl:value-of select="$page"/></base>
+						<param name="AST-VIEW"><xsl:value-of select="/page/view/@ident"/></param>
+						<param name="cocoon-view">003</param>
+					</href>
+				</link>
+			</debug>
+
 		</page>
 	</xsl:template>
 
@@ -125,80 +170,86 @@
 	    | Process our current view.
 	    +-->
 	<xsl:template match="page/view">
-		<p>
-			<table border="1">
-				<tr>
-					<td>View ident</td>
-					<td>
-						<xsl:value-of select="/page/view/@ident"/>
-					</td>
-					<td align="right">
-						<link type="close">
-							<display>Close</display>
+		<table class="info" border="0"  cellpadding="0" cellspacing="0" width="650">
+			<tr class="info">
+				<td class="info" width="100">Service name</td>
+				<td class="info" colspan="2">
+					<xsl:value-of select="/page/view/@service"/>
+				</td>
+			</tr>
+			<tr class="info">
+				<td class="info" width="100">Explorer path</td>
+				<td class="info" width="500" align="left">
+					<xsl:value-of select="/page/view/@path"/>
+				</td>
+				<td class="info" width="50" align="right">
+					<link type="action">
+						<display>Close</display>
+						<href>
+							<base><xsl:value-of select="$page"/></base>
+							<param name="action">delete-view</param>
+							<param name="confirm">true</param>
+							<param name="AST-VIEW"><xsl:value-of select="/page/view/@ident"/></param>
+						</href>
+					</link>
+				</td>
+			</tr>
+			<tr class="info">
+				<td class="info" width="100">Current item</td>
+				<td class="info" width="550" align="left">
+					<xsl:value-of select="/page/view/current/@path"/>
+					<xsl:if test="/page/view/current/@type = '2'">
+						<xsl:text> </xsl:text>
+						<link type="action">
+							<display>View</display>
 							<href>
-								<base><xsl:value-of select="$page"/></base>
-								<param name="action">delete-view</param>
-								<param name="confirm">true</param>
-								<param name="AST-VIEW"><xsl:value-of select="/page/view/@ident"/></param>
+								<base>
+									<xsl:value-of select="$page"/>
+									<xsl:text>/view/</xsl:text>
+									<xsl:value-of select="/page/view/current/@uri"/>
+								</base>
 							</href>
 						</link>
-					</td>
-				</tr>
-				<tr>
-					<td>Service</td>
-					<td colspan="2">
-						<xsl:value-of select="/page/view/@service"/>
-					</td>
-				</tr>
-<!-- Only need this section for debug ...
-				<tr>
-					<td>Explorer</td>
-					<td colspan="2">
-						<xsl:value-of select="/page/view/@path"/>
-					</td>
-				</tr>
-				<tr>
-					<td>Current</td>
-					<td colspan="2">
-						<xsl:value-of select="/page/view/current/@path"/>
-					</td>
-				</tr>
-				<tr>
-					<td>Selected</td>
-					<td colspan="2">
-						<xsl:value-of select="/page/view/selected/@path"/>
-					</td>
-				</tr>
-				<tr>
-					<td>Action</td>
-					<td colspan="2">
+					</xsl:if>
+				</td>
+			</tr>
+			<tr class="info">
+				<td class="info" width="100">Selected action</td>
+				<td class="info" width="550" align="left">
+					<xsl:if test="/page/view/selected/@action != 'null'">
 						<xsl:value-of select="/page/view/selected/@action"/>
-					</td>
-				</tr>
--->
-			</table>
-		</p>
-		<p>
-			<!-- Check the page action -->
-			<xsl:choose>
-				<!-- Display the delete item form -->
-				<xsl:when test="$action = 'create-folder'">
-					<xsl:call-template name="create-folder"/>
-				</xsl:when>
-				<!-- Display the delete item form -->
-				<xsl:when test="$action = 'delete-item'">
-					<xsl:call-template name="delete-item"/>
-				</xsl:when>
-				<!-- Display the rename item form -->
-				<xsl:when test="$action = 'rename-item'">
-					<xsl:call-template name="rename-item"/>
-				</xsl:when>
-				<!-- Display our tree -->
-				<xsl:otherwise>
-					<xsl:apply-templates select="/page/view/tree"/>
-				</xsl:otherwise>
-			</xsl:choose>
-		</p>
+					</xsl:if>
+				</td>
+			</tr>
+			<tr class="info">
+				<td class="info" width="100">Selected item</td>
+				<td class="info" width="550" align="left">
+					<xsl:if test="/page/view/selected/@path != ''">
+						<xsl:value-of select="/page/view/selected/@path"/>
+					</xsl:if>
+				</td>
+			</tr>
+		</table>
+		<hr/>
+		<!-- Check the page action -->
+		<xsl:choose>
+			<!-- Display the delete item form -->
+			<xsl:when test="$action = 'create-folder'">
+				<xsl:call-template name="create-folder"/>
+			</xsl:when>
+			<!-- Display the delete item form -->
+			<xsl:when test="$action = 'delete-item'">
+				<xsl:call-template name="delete-item"/>
+			</xsl:when>
+			<!-- Display the rename item form -->
+			<xsl:when test="$action = 'rename-item'">
+				<xsl:call-template name="rename-item"/>
+			</xsl:when>
+			<!-- Display our tree -->
+			<xsl:otherwise>
+				<xsl:apply-templates select="/page/view/tree"/>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 
 	<!--+
@@ -214,8 +265,8 @@
 	    | Process our tree nodes.
 	    +-->
 	<xsl:template match="/page/view/tree//node">
-		<tr class="tree" valign="center">
-			<td class="tree" width="200" align="left" valign="center">
+		<tr class="tree" valign="middle">
+			<td class="tree" align="left" valign="bottom">
 				<!-- Add the indentation -->
 				<xsl:call-template name="node-indent"/>
 				<!-- Add the node link -->
@@ -259,7 +310,7 @@
 			<td class="tree" width="5">
 				<xsl:text> </xsl:text>
 			</td>
-			<td class="tree" align="left" valign="middle">
+			<td class="tree" align="left" valign="bottom">
 				<xsl:call-template name="node-actions"/>
 			</td>
 		</tr>
@@ -459,29 +510,12 @@
 		<form method="get">
 			<input type="hidden" name="action"  value="create-view"/>
 			<input type="hidden" name="confirm" value="true"/>
-			<table border="1">
-				<tr>
-					<td>
-						Path :
-					</td>
-					<td>
-						<select name="AST-PATH">
-							<xsl:for-each select="options/paths/path">
-								<xsl:element name="option">
-									<xsl:attribute name="value">
-										<xsl:value-of select="@path"/>
-									</xsl:attribute>
-									<xsl:value-of select="@name"/>
-								</xsl:element>
-							</xsl:for-each>
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<td>
+			<table class="info" border="0">
+				<tr class="info">
+					<td class="info">
 						Service :
 					</td>
-					<td>
+					<td class="info">
 						<select name="AST-SERVICE">
 							<xsl:for-each select="options/services/service">
 								<xsl:element name="option">
@@ -494,10 +528,10 @@
 						</select>
 					</td>
 				</tr>
-				<tr>
-					<td>
+				<tr class="info">
+					<td class="info">
 					</td>
-					<td>
+					<td class="info">
 						<input type="submit" value="Create"/>
 					</td>
 				</tr>
@@ -522,27 +556,27 @@
 			</input>
 			<input type="hidden" name="action"   value="create-folder"/>
 			<input type="hidden" name="confirm"  value="true"/>
-			<table border="1">
-				<tr>
-					<td>
-						Name
-					</td>
-					<td>
-						<input type="text" name="AST-NAME" value="New folder"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
+			<table class="info" border="0">
+				<tr class="info">
+					<td class="info">
 						Path
 					</td>
-					<td>
+					<td class="info">
 						<xsl:value-of select="/page/view/current/@path"/>
 					</td>
 				</tr>
-				<tr>
-					<td>
+				<tr class="info">
+					<td class="info">
+						Name
 					</td>
-					<td>
+					<td class="info">
+						<input type="text" name="AST-NAME" value="New folder"/>
+					</td>
+				</tr>
+				<tr class="info">
+					<td class="info">
+					</td>
+					<td class="info">
 						<input type="submit" value="Create"/>
 					</td>
 				</tr>
@@ -567,12 +601,20 @@
 			</input>
 			<input type="hidden" name="action"   value="rename-item"/>
 			<input type="hidden" name="confirm"  value="true"/>
-			<table border="1">
-				<tr>
-					<td>
+			<table class="info" border="0">
+				<tr class="info">
+					<td class="info">
+						Path
+					</td>
+					<td class="info">
+						<xsl:value-of select="/page/view/selected/@path"/>
+					</td>
+				</tr>
+				<tr class="info">
+					<td class="info">
 						Name
 					</td>
-					<td>
+					<td class="info">
 						<input type="text" name="AST-NAME">
 							<xsl:attribute name="value">
 								<xsl:value-of select="/page/view/selected/@name"/>
@@ -580,18 +622,10 @@
 						</input>
 					</td>
 				</tr>
-				<tr>
-					<td>
-						Path
+				<tr class="info">
+					<td class="info">
 					</td>
-					<td>
-						<xsl:value-of select="/page/view/selected/@path"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-					</td>
-					<td>
+					<td class="info">
 						<input type="submit" value="Rename"/>
 					</td>
 				</tr>
@@ -616,27 +650,27 @@
 			</input>
 			<input type="hidden" name="action"   value="delete-item"/>
 			<input type="hidden" name="confirm"  value="true"/>
-			<table border="1">
-				<tr>
-					<td>
+			<table class="info" border="0">
+				<tr class="info">
+					<td class="info">
 						Name
 					</td>
-					<td>
+					<td class="info">
 						<xsl:value-of select="/page/view/selected/@name"/>
 					</td>
 				</tr>
-				<tr>
-					<td>
+				<tr class="info">
+					<td class="info">
 						Path
 					</td>
-					<td>
+					<td class="info">
 						<xsl:value-of select="/page/view/selected/@path"/>
 					</td>
 				</tr>
-				<tr>
-					<td>
+				<tr class="info">
+					<td class="info">
 					</td>
-					<td>
+					<td class="info">
 						<input type="submit" value="Delete"/>
 					</td>
 				</tr>

@@ -2,11 +2,14 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/java/org/astrogrid/portal/services/myspace/client/data/Attic/DataNodeParser.java,v $</cvs:source>
  * <cvs:date>$Author: dave $</cvs:date>
- * <cvs:author>$Date: 2003/06/22 04:03:41 $</cvs:author>
- * <cvs:version>$Revision: 1.1 $</cvs:version>
+ * <cvs:author>$Date: 2003/06/29 02:45:22 $</cvs:author>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
  * $Log: DataNodeParser.java,v $
+ * Revision 1.2  2003/06/29 02:45:22  dave
+ * Fixed display styles in explorer and add VOTable transform
+ *
  * Revision 1.1  2003/06/22 04:03:41  dave
  * Added actions and parsers for MySpace messages
  *
@@ -332,9 +335,7 @@ public class DataNodeParser
 								if (DEBUG_FLAG) System.out.println("URI  : " + text) ;
 								if (null != node)
 									{
-									//
-									// Not implemented ....
-									//
+									node.setURI(text) ;
 									}
 								}
 							}

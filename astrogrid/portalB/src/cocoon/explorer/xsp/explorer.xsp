@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/cocoon/explorer/xsp/Attic/explorer.xsp,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/26 14:15:10 $</cvs:author>
-    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/29 02:45:22 $</cvs:author>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
     | <cvs:log>
     | $Log: explorer.xsp,v $
+    | Revision 1.2  2003/06/29 02:45:22  dave
+    | Fixed display styles in explorer and add VOTable transform
+    |
     | Revision 1.1  2003/06/26 14:15:10  dave
     | Added explorer pages and actions to Cocoon
     |
@@ -172,6 +175,40 @@
 						<xsp:attribute name="name"><xsp:expr>view.getCurrentName()</xsp:expr></xsp:attribute>
 						<xsp:attribute name="path"><xsp:expr>view.getCurrentPath()</xsp:expr></xsp:attribute>
 						<xsp:attribute name="href-path"><xsp:expr>view.getCurrentPathEncoded()</xsp:expr></xsp:attribute>
+						<xsp:logic>
+							<![CDATA[
+							if (view.getCurrentPath().length() > 0)
+								{
+								//
+								// Get the item data.
+								DataNode data = view.lookupItem(view.getCurrentPath()) ;
+								//
+								// If we got a response.
+								if (null != data)
+									{
+									]]>
+									<xsp:attribute name="type"><xsp:expr>data.getType()</xsp:expr></xsp:attribute>
+									<![CDATA[
+									//
+									// If this is an item.
+									if ("2".equals(data.getType()))
+										{
+										//
+										// Get the item URI.
+										DataNode export = view.exportItem(view.getCurrentPath()) ;
+										//
+										// If we got a response.
+										if (null != export)
+											{
+											]]>
+											<xsp:attribute name="uri"><xsp:expr>export.getURI()</xsp:expr></xsp:attribute>
+											<![CDATA[
+											}
+										}
+									}
+								}
+							]]>
+						</xsp:logic>
 					</current>
 					<selected>
 						<xsp:attribute name="name"><xsp:expr>view.getSelectedName()</xsp:expr></xsp:attribute>

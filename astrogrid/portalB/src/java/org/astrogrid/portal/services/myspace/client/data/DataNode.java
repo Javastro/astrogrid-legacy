@@ -2,11 +2,14 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/java/org/astrogrid/portal/services/myspace/client/data/Attic/DataNode.java,v $</cvs:source>
  * <cvs:date>$Author: dave $</cvs:date>
- * <cvs:author>$Date: 2003/06/26 14:15:10 $</cvs:author>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:author>$Date: 2003/06/29 02:45:22 $</cvs:author>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  * $Log: DataNode.java,v $
+ * Revision 1.3  2003/06/29 02:45:22  dave
+ * Fixed display styles in explorer and add VOTable transform
+ *
  * Revision 1.2  2003/06/26 14:15:10  dave
  * Added explorer pages and actions to Cocoon
  *
@@ -152,6 +155,31 @@ public class DataNode
 	public void setType(String type)
 		{
 		this.type = type ;
+		}
+
+
+	/**
+	 * Our item URI.
+	 *
+	 */
+	private String uri = "" ;
+
+	/**
+	 * Access to our URI.
+	 *
+	 */
+	public String getURI()
+		{
+		return this.uri ;
+		}
+
+	/**
+	 * Access to our URI.
+	 *
+	 */
+	public void setURI(String uri)
+		{
+		this.uri = uri ;
 		}
 
 	/**

@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/Attic/build.xml,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/27 02:43:18 $</cvs:author>
-    | <cvs:version>$Revision: 1.21 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/29 02:45:22 $</cvs:author>
+    | <cvs:version>$Revision: 1.22 $</cvs:version>
     | <cvs:log>
     | $Log: build.xml,v $
+    | Revision 1.22  2003/06/29 02:45:22  dave
+    | Fixed display styles in explorer and add VOTable transform
+    |
     | Revision 1.21  2003/06/27 02:43:18  dave
     | Added images to tree nodes
     |
@@ -256,7 +259,7 @@
 		<ant antfile="${project.home}/src/ant/tomcat.xml" target="tomcat.init"/>
 	</target>
 
-	<!-- Tomcat libraries for servlets -->
+	<!-- Tomcat servlet libraries (required for Axis 1.0) -->
 	<path id="tomcat.servlet.classpath">
 		<pathelement location="${tomcat.home}/common/lib/servlet.jar"/>
 	</path>
@@ -352,7 +355,7 @@
 			<classpath>
 				<!-- Our Axis libraries -->
 				<path refid="axis.classpath"/>
-				<!-- Our Tomcat libraries (required for Axis 1.0) -->
+				<!-- Tomcat servlet libraries (required for Axis 1.0) -->
 				<path refid="tomcat.servlet.classpath"/>
 			</classpath>
 		</taskdef>
@@ -811,7 +814,7 @@
 				<path refid="axis.classpath"/>
 				<!-- The JUnit libraries -->
 				<path refid="junit.classpath"/>
-				<!-- Plus the Ant libraries (required since JDK 1.4.2) -->
+				<!-- The Ant libraries (required since JDK 1.4.2) -->
 				<path refid="ant.classpath"/>
 			</classpath>
 			<!-- Generate an XML log file -->
@@ -969,8 +972,10 @@
 				<path refid="axis.classpath"/>
 				<!-- The JUnit libraries -->
 				<path refid="junit.classpath"/>
-				<!-- Plus the Ant libraries (required since JDK 1.4.2) -->
+				<!-- The Ant libraries (required since JDK 1.4.2) -->
 				<path refid="ant.classpath"/>
+				<!-- The Tomcat servlet libraries (required for Axis 1.0) -->
+				<path refid="tomcat.servlet.classpath"/>
 			</classpath>
 			<!-- Generate an XML log file -->
 			<formatter type="xml"/>
@@ -1047,7 +1052,7 @@
 				<path refid="axis.classpath"/>
 				<!-- Our Cocoon libraries -->
 				<path refid="cocoon.classpath"/>
-				<!-- Tomcat libraries for servlets -->
+				<!-- Tomcat servlet libraries (required for Axis 1.0) -->
 				<path refid="tomcat.servlet.classpath"/>
 			</classpath>
 		</javac>
@@ -1097,8 +1102,10 @@
 				<path refid="axis.classpath"/>
 				<!-- The JUnit libraries -->
 				<path refid="junit.classpath"/>
-				<!-- Plus the Ant libraries (required since JDK 1.4.2) -->
+				<!-- The Ant libraries (required since JDK 1.4.2) -->
 				<path refid="ant.classpath"/>
+				<!-- The Tomcat servlet libraries (required for Axis 1.0) -->
+				<path refid="tomcat.servlet.classpath"/>
 			</classpath>
 			<!-- Generate an XML log file -->
 			<formatter type="xml"/>
@@ -1481,8 +1488,10 @@
 				<path refid="axis.classpath"/>
 				<!-- The JUnit libraries -->
 				<path refid="junit.classpath"/>
-				<!-- Plus the Ant libraries (required since JDK 1.4.2) -->
+				<!-- The Ant libraries (required since JDK 1.4.2) -->
 				<path refid="ant.classpath"/>
+				<!-- Tomcat servlet libraries (required for Axis 1.0) -->
+				<path refid="tomcat.servlet.classpath"/>
 			</classpath>
 			<!-- Generate an XML log file -->
 			<formatter type="xml"/>
@@ -1590,8 +1599,10 @@
 				<path refid="axis.classpath"/>
 				<!-- The JUnit libraries -->
 				<path refid="junit.classpath"/>
-				<!-- Plus the Ant libraries (required since JDK 1.4.2) -->
+				<!-- The Ant libraries (required since JDK 1.4.2) -->
 				<path refid="ant.classpath"/>
+				<!-- The Tomcat servlet libraries (required for Axis 1.0) -->
+				<path refid="tomcat.servlet.classpath"/>
 			</classpath>
 			<!-- Generate an XML log file -->
 			<formatter type="xml"/>
@@ -1632,8 +1643,10 @@
 				<path refid="axis.classpath"/>
 				<!-- The JUnit libraries -->
 				<path refid="junit.classpath"/>
-				<!-- Plus the Ant libraries (required since JDK 1.4.2) -->
+				<!-- The Ant libraries (required since JDK 1.4.2) -->
 				<path refid="ant.classpath"/>
+				<!-- The Tomcat servlet libraries (required for Axis 1.0) -->
+				<path refid="tomcat.servlet.classpath"/>
 			</classpath>
 			<!-- Generate an XML log file -->
 			<formatter type="xml"/>
@@ -1676,8 +1689,10 @@
 				<path refid="axis.classpath"/>
 				<!-- The JUnit libraries -->
 				<path refid="junit.classpath"/>
-				<!-- Plus the Ant libraries (required since JDK 1.4.2) -->
+				<!-- The Ant libraries (required since JDK 1.4.2) -->
 				<path refid="ant.classpath"/>
+				<!-- The Tomcat servlet libraries (required for Axis 1.0) -->
+				<path refid="tomcat.servlet.classpath"/>
 			</classpath>
 			<!-- Generate an XML log file -->
 			<formatter type="xml"/>
@@ -1720,8 +1735,10 @@
 				<path refid="axis.classpath"/>
 				<!-- The JUnit libraries -->
 				<path refid="junit.classpath"/>
-				<!-- Plus the Ant libraries (required since JDK 1.4.2) -->
+				<!-- The Ant libraries (required since JDK 1.4.2) -->
 				<path refid="ant.classpath"/>
+				<!-- The Tomcat servlet libraries (required for Axis 1.0) -->
+				<path refid="tomcat.servlet.classpath"/>
 			</classpath>
 			<!-- Generate an XML log file -->
 			<formatter type="xml"/>
@@ -1762,8 +1779,10 @@
 				<path refid="axis.classpath"/>
 				<!-- The JUnit libraries -->
 				<path refid="junit.classpath"/>
-				<!-- Plus the Ant libraries (required since JDK 1.4.2) -->
+				<!-- The Ant libraries (required since JDK 1.4.2) -->
 				<path refid="ant.classpath"/>
+				<!-- The Tomcat servlet libraries (required for Axis 1.0) -->
+				<path refid="tomcat.servlet.classpath"/>
 			</classpath>
 			<!-- Generate an XML log file -->
 			<formatter type="xml"/>
@@ -1805,8 +1824,10 @@
 				<path refid="axis.classpath"/>
 				<!-- The JUnit libraries -->
 				<path refid="junit.classpath"/>
-				<!-- Plus the Ant libraries (required since JDK 1.4.2) -->
+				<!-- The Ant libraries (required since JDK 1.4.2) -->
 				<path refid="ant.classpath"/>
+				<!-- The Tomcat servlet libraries (required for Axis 1.0) -->
+				<path refid="tomcat.servlet.classpath"/>
 			</classpath>
 			<!-- Generate an XML log file -->
 			<formatter type="xml"/>
@@ -1814,6 +1835,50 @@
 			<batchtest todir="build/myspace/live/client/junit">
 				<fileset dir="build/myspace/live/client/classes">
 					<include name="**/myspace/client/actions/delete/junit/JUnitTestCase.class" />
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+
+
+	<!--+
+	    | Export an item from the registry.
+	    +-->
+	<target name="MYSPACE.client.junit.export" depends="MYSPACE.client.javac">
+		<!-- Wait for the Axis service -->
+		<antcall target="MYSPACE.wait"/>
+		<!-- Create the reports directory -->
+		<mkdir dir="build/myspace/live/client/junit"/>
+
+		<!-- Copy the test data for the xml parsers -->
+		<copy verbose="true" toDir="build/myspace/live/client/classes">
+			<fileset dir="src/java">
+				<!-- Include the XML test data -->
+				<include name="**/myspace/client/**/junit/*.xml"/>
+			</fileset>
+		</copy>
+
+		<!-- Run the JUnit tests -->
+		<junit printsummary="yes" haltonfailure="yes" showoutput="yes" fork="true">
+			<!-- Use our local classes -->
+			<classpath>
+				<!-- Our MySpace client classes -->
+				<pathelement path="build/myspace/live/client/classes"/>
+				<!-- The Axis libraries -->
+				<path refid="axis.classpath"/>
+				<!-- The JUnit libraries -->
+				<path refid="junit.classpath"/>
+				<!-- The Ant libraries (required since JDK 1.4.2) -->
+				<path refid="ant.classpath"/>
+				<!-- The Tomcat servlet libraries (required for Axis 1.0) -->
+				<path refid="tomcat.servlet.classpath"/>
+			</classpath>
+			<!-- Generate an XML log file -->
+			<formatter type="xml"/>
+			<!-- Run our JUnit tests -->
+			<batchtest todir="build/myspace/live/client/junit">
+				<fileset dir="build/myspace/live/client/classes">
+					<include name="**/myspace/client/actions/export/junit/JUnitTestCase.class" />
 				</fileset>
 			</batchtest>
 		</junit>
@@ -1847,8 +1912,10 @@
 				<path refid="axis.classpath"/>
 				<!-- The JUnit libraries -->
 				<path refid="junit.classpath"/>
-				<!-- Plus the Ant libraries (required since JDK 1.4.2) -->
+				<!-- The Ant libraries (required since JDK 1.4.2) -->
 				<path refid="ant.classpath"/>
+				<!-- Tomcat servlet libraries (required for Axis 1.0) -->
+				<path refid="tomcat.servlet.classpath"/>
 			</classpath>
 			<!-- Generate an XML log file -->
 			<formatter type="xml"/>
@@ -2044,6 +2111,51 @@
 	<target name="cocoon.REBUILD" depends="init">
 		<!-- Re-build the Cocoon webapp -->
 		<antcall target="cocoon.2.0.rebuild"/>
+	</target>
+
+
+	<!-- Export our files for a manual installation into Cocoon -->
+	<target name="cocoon.export" depends="init">
+		<!-- Delete the export directories -->
+		<delete dir="build/export" failonerror="false"/>
+		<!-- Create the export directories -->
+		<mkdir dir="build/export"/>
+		<mkdir dir="build/export/zip"/>
+		<mkdir dir="build/export/libraries"/>
+		<mkdir dir="build/export/explorer"/>
+
+		<!-- Copy our explorer files across (excluding the sitemap) -->
+		<copy verbose="false" toDir="build/export/explorer">
+			<fileset dir="src/cocoon">
+				<exclude name="**/CVS/**"/>
+				<exclude name="build.properties"/>
+				<exclude name="blocks.properties"/>
+				<exclude name="sitemap.xslt"/>
+				<exclude name="sitemap.xmap"/>
+			</fileset>
+		</copy>
+		<!-- Copy our portal jar -->
+		<copy verbose="false" toDir="build/export/libraries">
+			<fileset dir="${portal.build}/lib">
+				<include name="**/*.jar"/>
+			</fileset>
+		</copy>
+		<!-- Copy the Axis client jars -->
+		<copy verbose="false" toDir="build/export/libraries">
+			<fileset dir="${axis.webapp}/WEB-INF/lib">
+				<include name="**/*.jar"/>
+			</fileset>
+		</copy>
+
+		<!-- Zip the explorer files -->
+		<zip zipfile="build/export/zip/explorer-${build.time}.zip">
+			<zipfileset prefix="" dir="build/export/explorer"/>
+		</zip>
+		<!-- Zip the library files -->
+		<zip zipfile="build/export/zip/libraries-${build.time}.zip">
+			<zipfileset prefix="" dir="build/export/libraries"/>
+		</zip>
+
 	</target>
 
 </project>

@@ -2,11 +2,14 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/java/org/astrogrid/portal/cocoon/explorer/Attic/ExplorerView.java,v $</cvs:source>
  * <cvs:date>$Author: dave $</cvs:date>
- * <cvs:author>$Date: 2003/06/26 14:15:10 $</cvs:author>
- * <cvs:version>$Revision: 1.1 $</cvs:version>
+ * <cvs:author>$Date: 2003/06/29 02:45:22 $</cvs:author>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
  * $Log: ExplorerView.java,v $
+ * Revision 1.2  2003/06/29 02:45:22  dave
+ * Fixed display styles in explorer and add VOTable transform
+ *
  * Revision 1.1  2003/06/26 14:15:10  dave
  * Added explorer pages and actions to Cocoon
  *
@@ -62,6 +65,9 @@ import org.astrogrid.portal.services.myspace.client.actions.delete.DeleteRespons
 
 import org.astrogrid.portal.services.myspace.client.actions.create.CreateRequestBuilder ;
 import org.astrogrid.portal.services.myspace.client.actions.create.CreateResponseParser ;
+
+import org.astrogrid.portal.services.myspace.client.actions.export.ExportRequestBuilder ;
+import org.astrogrid.portal.services.myspace.client.actions.export.ExportResponseParser ;
 
 import org.astrogrid.portal.services.myspace.client.data.DataNode ;
 import org.astrogrid.portal.services.myspace.client.status.StatusNode ;
@@ -812,6 +818,156 @@ public class ExplorerView
 		//
 		// Return our status node.
 		return status ;
+		}
+
+	/**
+	 * Lookup a data item.
+	 *
+	 */
+	public DataNode lookupItem(String path)
+		{
+		DataNode   data   = null ;
+		StatusNode status = null ;
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("ExplorerView.lookupItem()") ;
+		if (DEBUG_FLAG) System.out.println("Path : " + path) ;
+		try {
+			//
+			// Create our service request
+			DetailsRequestBuilder request = new DetailsRequestBuilder(path) ;
+			if (DEBUG_FLAG)
+				{
+				System.out.println("----") ;
+				System.out.println(request) ;
+				System.out.println("----") ;
+				}
+			//
+			// Create our service instance.
+			initMySpaceService() ;
+			//
+			// Call our service method.
+			String response = myspaceService.lookupDataHolderDetails(request.toString()) ;
+			if (DEBUG_FLAG)
+				{
+				System.out.println("----") ;
+				System.out.println(response) ;
+				System.out.println("----") ;
+				}
+			//
+			// Create a parser.
+			DetailsResponseParser parser = new DetailsResponseParser() ;
+			//
+			// Parse the response.
+			parser.parse(response) ;
+			//
+			// Get the result status.
+			status = parser.getStatus() ;
+			//
+			// Get the result data.
+			data = parser.getData() ;
+			}
+		catch (RemoteException ouch)
+			{
+			//
+			// FIXME ....
+			if (DEBUG_FLAG) System.out.println("Exception calling WebService") ;
+			if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+			}
+		catch (IOException ouch)
+			{
+			//
+			// FIXME ....
+			if (DEBUG_FLAG) System.out.println("IOException in response parser") ;
+			if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+			}
+		catch (SAXException ouch)
+			{
+			//
+			// FIXME ....
+			if (DEBUG_FLAG) System.out.println("SAXException in response parser") ;
+			if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+			}
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("") ;
+		//
+		// Return our data node.
+		return data ;
+		}
+
+	/**
+	 * Export a data item.
+	 *
+	 */
+	public DataNode exportItem(String path)
+		{
+		DataNode   data   = null ;
+		StatusNode status = null ;
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("ExplorerView.exportItem()") ;
+		if (DEBUG_FLAG) System.out.println("Path : " + path) ;
+		try {
+			//
+			// Create our service request
+			ExportRequestBuilder request = new ExportRequestBuilder(path) ;
+			if (DEBUG_FLAG)
+				{
+				System.out.println("----") ;
+				System.out.println(request) ;
+				System.out.println("----") ;
+				}
+			//
+			// Create our service instance.
+			initMySpaceService() ;
+			//
+			// Call our service method.
+			String response = myspaceService.exportDataHolder(request.toString()) ;
+			if (DEBUG_FLAG)
+				{
+				System.out.println("----") ;
+				System.out.println(response) ;
+				System.out.println("----") ;
+				}
+			//
+			// Create a parser.
+			ExportResponseParser parser = new ExportResponseParser() ;
+			//
+			// Parse the response.
+			parser.parse(response) ;
+			//
+			// Get the result status.
+			status = parser.getStatus() ;
+			//
+			// Get the result data.
+			data = parser.getData() ;
+			}
+		catch (RemoteException ouch)
+			{
+			//
+			// FIXME ....
+			if (DEBUG_FLAG) System.out.println("Exception calling WebService") ;
+			if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+			}
+		catch (IOException ouch)
+			{
+			//
+			// FIXME ....
+			if (DEBUG_FLAG) System.out.println("IOException in response parser") ;
+			if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+			}
+		catch (SAXException ouch)
+			{
+			//
+			// FIXME ....
+			if (DEBUG_FLAG) System.out.println("SAXException in response parser") ;
+			if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+			}
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("") ;
+		//
+		// Return our data node.
+		return data ;
 		}
 
 	}

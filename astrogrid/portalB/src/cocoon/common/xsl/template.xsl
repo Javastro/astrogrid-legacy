@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/cocoon/common/xsl/Attic/template.xsl,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/27 03:17:38 $</cvs:author>
-    | <cvs:version>$Revision: 1.5 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/29 02:45:22 $</cvs:author>
+    | <cvs:version>$Revision: 1.6 $</cvs:version>
     | <cvs:log>
     | $Log: template.xsl,v $
+    | Revision 1.6  2003/06/29 02:45:22  dave
+    | Fixed display styles in explorer and add VOTable transform
+    |
     | Revision 1.5  2003/06/27 03:17:38  dave
     | Simplified page path in sitemap
     |
@@ -31,35 +34,39 @@
 			<head>
 				<style>
 					<xsl:apply-templates select="style"/>
+					table.menu { background:#ffffff; color:black; font-size:10pt; font-style:normal; font-weight:normal; font-family:arial, serif}
+					tr.menu    { background:#ffffff; color:black; font-size:10pt; font-style:normal; font-weight:normal; font-family:arial, serif}
+					td.menu    { background:#ffffff; color:black; font-size:10pt; font-style:normal; font-weight:normal; font-family:arial, serif}
 				</style>
 			</head>
-			<body>
+			<body bgcolor="#FFFFFF">
 				<table border="1" width="800" height="100%">
 					<tr>
-						<td width="100" height="100" align="left" valign="center">
+						<td width="150" height="100" align="left" valign="center">
 							logo
 						</td>
-						<td width="600" height="100" align="center" valign="center">
+						<td width="500" height="100" align="center" valign="center">
 							Header
 						</td>
-						<td width="100" height="100" align="center" valign="center">
+						<td width="150" height="100" align="center" valign="center">
 							Login
 						</td>
 					</tr>
 					<tr>
-						<td width="100" height="350" align="center" valign="top">
+						<td width="150" height="350" align="center" valign="top">
 							<xsl:apply-templates select="menu"/>
 						</td>
-						<td width="700" height="350" align="left"   valign="top" colspan="2">
+						<td width="650" height="350" align="left"   valign="top" colspan="2">
 							<xsl:apply-templates select="content"/>
 						</td>
 					</tr>
 					<tr>
-						<td width="100" height="100" align="center" valign="center">
+						<td width="150" height="100" align="center" valign="center">
 							Blank
 						</td>
-						<td width="700" height="100" align="center" valign="center" colspan="2">
-							Footer
+						<td width="650" height="100" align="center" valign="center" colspan="2">
+							<!-- Show the page debug links -->
+							<xsl:apply-templates select="debug"/>
 						</td>
 					</tr>
 				</table>
@@ -74,7 +81,7 @@
 
 	<!-- Match the page navigation -->
 	<xsl:template match="/page/menu">
-		<table border="1">
+		<table border="0" class="menu" cellpadding="0" cellspacing="0">
 			<xsl:apply-templates select="link"/>
 		</table>
 	</xsl:template>
@@ -82,41 +89,46 @@
 	<!-- Match a menu link -->
 	<xsl:template match="link[@type = 'menu']">
 		<!-- Add a table row for this item -->
-		<tr>
-			<a>
-				<xsl:attribute name="href">
-					<xsl:value-of select="href/base"/>
-					<xsl:for-each select="href/param">
-						<xsl:choose>
-							<xsl:when test="position() = 1">
-								<xsl:text>?</xsl:text>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:text>&amp;</xsl:text>
-							</xsl:otherwise>
-						</xsl:choose>
-						<xsl:value-of select="@name"/>
-						<xsl:text>=</xsl:text>
-						<xsl:value-of select="text()"/>
-					</xsl:for-each>
-				</xsl:attribute>
-				<xsl:choose>
-					<!-- If this link is selected -->
-					<xsl:when test="@selected = 'true'">
-						<b>
+		<tr class="menu">
+			<td class="menu">
+				<xsl:for-each select="ancestor::link">
+					<xsl:text>-- </xsl:text>
+				</xsl:for-each>
+				<a>
+					<xsl:attribute name="href">
+						<xsl:value-of select="href/base"/>
+						<xsl:for-each select="href/param">
+							<xsl:choose>
+								<xsl:when test="position() = 1">
+									<xsl:text>?</xsl:text>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:text>&amp;</xsl:text>
+								</xsl:otherwise>
+							</xsl:choose>
+							<xsl:value-of select="@name"/>
+							<xsl:text>=</xsl:text>
+							<xsl:value-of select="text()"/>
+						</xsl:for-each>
+					</xsl:attribute>
+					<xsl:choose>
+						<!-- If this link is selected -->
+						<xsl:when test="@selected = 'true'">
+							<span style="font-weight:bold">
+								<xsl:text>[</xsl:text>
+								<xsl:value-of select="display/text()"/>
+								<xsl:text>]</xsl:text>
+							</span>
+						</xsl:when>
+						<!-- If this link is NOT selected -->
+						<xsl:otherwise>
 							<xsl:text>[</xsl:text>
 							<xsl:value-of select="display/text()"/>
 							<xsl:text>]</xsl:text>
-						</b>
-					</xsl:when>
-					<!-- If this link is NOT selected -->
-					<xsl:otherwise>
-						<xsl:text>[</xsl:text>
-						<xsl:value-of select="display/text()"/>
-						<xsl:text>]</xsl:text>
-					</xsl:otherwise>
-				</xsl:choose>
-			</a>
+						</xsl:otherwise>
+					</xsl:choose>
+				</a>
+			</td>
 		</tr>
 		<!-- Process any child items -->
 		<xsl:apply-templates select="link"/>
@@ -124,7 +136,7 @@
 
 	<!-- Generate a tree node link -->
 	<xsl:template match="link[@type = 'node']">
-		<a>
+		<a class="tree">
 			<xsl:attribute name="href">
 				<xsl:value-of select="href/base"/>
 				<xsl:for-each select="href/param">
@@ -148,13 +160,12 @@
 			</img>
 			<!-- If we have some text -->
 			<xsl:if test="string-length(normalize-space(text)) > 0">
-				<xsl:text> </xsl:text> 
 				<xsl:choose>
 					<!-- If this link is selected -->
 					<xsl:when test="@selected = 'true'">
-						<strong>
+						<span style="font-weight:bold">
 							<xsl:value-of select="text"/>
-						</strong>
+						</span>
 					</xsl:when>
 					<!-- If this link is NOT selected -->
 					<xsl:otherwise>
@@ -187,11 +198,11 @@
 			<xsl:choose>
 				<!-- If this link is selected -->
 				<xsl:when test="@selected = 'true'">
-					<b>
+					<span style="font-weight:bold">
 						<xsl:text>[</xsl:text>
 						<xsl:value-of select="display/text()"/>
 						<xsl:text>]</xsl:text>
-					</b>
+					</span>
 				</xsl:when>
 				<!-- If this link is NOT selected -->
 				<xsl:otherwise>

@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/cocoon/Attic/sitemap.xmap,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/27 03:17:38 $</cvs:author>
-    | <cvs:version>$Revision: 1.3 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/29 02:45:22 $</cvs:author>
+    | <cvs:version>$Revision: 1.4 $</cvs:version>
     | <cvs:log>
     | $Log: sitemap.xmap,v $
+    | Revision 1.4  2003/06/29 02:45:22  dave
+    | Fixed display styles in explorer and add VOTable transform
+    |
     | Revision 1.3  2003/06/27 03:17:38  dave
     | Simplified page path in sitemap
     |
@@ -39,6 +42,32 @@
 <!-- =========================== Views =================================== -->
 
 	<map:views>
+
+		<!-- Original XML displayed as XML -->
+		<map:view name="000" from-label="000">
+			<map:serialize type="xml"/>
+		</map:view>
+
+		<!-- Original XML, displayed as XML/HTML -->
+		<map:view name="001" from-label="001">
+			<!-- Convert into XML/HTML -->
+			<map:transform src="common/xsl/xml-html.xsl"/>
+			<map:serialize type="html"/>
+		</map:view>
+
+		<!-- XML processed into a page, displayed as XML/HTML -->
+		<map:view name="002" from-label="002">
+			<!-- Convert into XML/HTML -->
+			<map:transform src="common/xsl/xml-html.xsl"/>
+			<map:serialize type="html"/>
+		</map:view>
+
+		<!-- Page wrapped in our template, displayed as XML/HTML -->
+		<map:view name="003" from-label="003">
+			<!-- Convert into XML/HTML -->
+			<map:transform src="common/xsl/xml-html.xsl"/>
+			<map:serialize type="html"/>
+		</map:view>
 	</map:views>
 
 <!-- =========================== Resources ================================= -->
@@ -51,84 +80,23 @@
 	<map:pipelines>
 		<map:pipeline>
 
-			<!-- Test page -->
-			<map:match pattern="test">
-				<!-- Generate our test page -->
-				<map:generate  src="common/xsp/test.xsp" type="serverpages"/>
-				<!-- Serialize as HTML -->
-				<map:transform src="common/xsl/xml-html.xsl"/>
-				<map:serialize type="html"/>
-			</map:match>
-
 			<!-- Explorer pages -->
 			<map:match pattern="explorer**">
-
-				<!-- Test page -->
-				<map:match pattern="explorer.000">
-					<!-- Call our explorer action -->
-					<map:act type="astrogrid-explorer">
-						<!-- Generate our page XML -->
-						<map:generate  src="explorer/xsp/explorer.xsp" type="serverpages"/>
-					</map:act>
-					<!-- Serialize as HTML -->
-					<map:transform src="common/xsl/xml-html.xsl"/>
-					<map:serialize type="html"/>
-				</map:match>
-
-				<!-- Test page -->
-				<map:match pattern="explorer.001">
-					<!-- Call our explorer action -->
-					<map:act type="astrogrid-explorer">
-						<!-- Generate our page XML -->
-						<map:generate  src="explorer/xsp/explorer.xsp" type="serverpages"/>
-						<!-- Convert the data into a page -->
-						<map:transform src="explorer/xsl/explorer.xsl">
-							<map:parameter name="action"  value="{action}"/>
-							<map:parameter name="confirm" value="{confirm}"/>
-						</map:transform>
-					</map:act>
-					<!-- Serialize as HTML -->
-					<map:transform src="common/xsl/xml-html.xsl"/>
-					<map:serialize type="html"/>
-				</map:match>
-
-				<!-- Test page -->
-				<map:match pattern="explorer.002">
-					<!-- Call our explorer action -->
-					<map:act type="astrogrid-explorer">
-						<!-- Generate our page XML -->
-						<map:generate  src="explorer/xsp/explorer.xsp" type="serverpages"/>
-						<!-- Convert the data into a page -->
-						<map:transform src="explorer/xsl/explorer.xsl">
-							<map:parameter name="action"  value="{action}"/>
-							<map:parameter name="confirm" value="{confirm}"/>
-						</map:transform>
-					</map:act>
-					<!-- Wrap the page in our HTML template -->
-					<map:transform src="common/xsl/template.xsl"/>
-					<!-- Encode our href URLs -->
-					<map:transform type="encodeURL"/>
-					<!-- Serialize as HTML -->
-					<map:transform src="common/xsl/xml-html.xsl"/>
-					<map:serialize type="html"/>
-				</map:match>
 
 				<!-- Explorer page -->
 				<map:match pattern="explorer">
 					<!-- Call our explorer action -->
 					<map:act type="astrogrid-explorer">
 						<!-- Generate our page XML -->
-						<map:generate  src="explorer/xsp/explorer.xsp" type="serverpages"/>
+						<map:generate src="explorer/xsp/explorer.xsp" type="serverpages" label="000, 001"/>
 						<!-- Convert the data into a page -->
-						<map:transform src="explorer/xsl/explorer.xsl">
+						<map:transform src="explorer/xsl/explorer.xsl" label="002">
 							<map:parameter name="action"  value="{action}"/>
 							<map:parameter name="confirm" value="{confirm}"/>
 						</map:transform>
 					</map:act>
 					<!-- Wrap the page in our HTML template -->
-					<map:transform src="common/xsl/template.xsl"/>
-					<!-- Encode our href URLs -->
-					<map:transform type="encodeURL"/>
+					<map:transform src="common/xsl/template.xsl" label="003"/>
 					<!-- Serialize as HTML -->
 					<map:serialize type="html"/>
 				</map:match>
@@ -136,6 +104,37 @@
 				<!-- Explorer images -->
 				<map:match pattern="explorer/images/*.gif">
 					<map:read src="explorer/images/{1}.gif" mime-type="images/gif"/>
+				</map:match>
+
+				<!-- VoTable view pages -->
+				<map:match pattern="explorer/view/http:/**">
+					<map:generate src="http://{1}"/>
+					<!-- Convert the VoTable data into HTML -->
+					<map:transform src="explorer/xsl/votable.xsl" label="002"/>
+					<!-- Wrap the page in our HTML template -->
+					<map:transform src="common/xsl/template.xsl" label="003"/>
+					<!-- Serialize as HTML -->
+					<map:serialize type="html"/>
+				</map:match>
+
+				<!-- VoTable test data -->
+				<map:match pattern="explorer/data/*">
+					<!-- Generate our XML data -->
+					<map:generate src="explorer/xml/votable.{1}.xml" label="000, 001"/>
+					<!-- Convert the VoTable data into HTML -->
+					<map:transform src="explorer/xsl/votable.xsl" label="002"/>
+					<!-- Wrap the page in our HTML template -->
+					<map:transform src="common/xsl/template.xsl" label="003"/>
+					<!-- Serialize as HTML -->
+					<map:serialize type="html"/>
+				</map:match>
+
+				<!-- MySpace data -->
+				<map:match pattern="explorer/myspace/*">
+					<!-- Generate our XML data -->
+					<map:generate src="/var/projects/astrogrid/astrogrid/portalB/build/myspace/live/service/temp/{1}" label="000, 001"/>
+					<!-- Serialize as XML -->
+					<map:serialize type="xml"/>
 				</map:match>
 
 			</map:match>
