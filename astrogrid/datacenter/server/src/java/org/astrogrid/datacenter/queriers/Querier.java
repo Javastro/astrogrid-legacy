@@ -15,6 +15,7 @@ import java.util.Vector;
 
 import org.apache.commons.logging.Log;
 import org.astrogrid.community.User;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.query.QueryStatus;
@@ -79,8 +80,9 @@ public abstract class Querier implements Runnable {
    /**
     * Where the result should be sent on completion.  Probably a myspace
     * server URL
+    * initialized to value stored in configuration under {@link QuerierManager#RESULTS_TARGET_KEY} 
     */
-   private String resultsDestination = null;
+   private String resultsDestination = SimpleConfig.getProperty(QuerierManager.RESULTS_TARGET_KEY);
    
    /** Handle to the results from the query - the location (prob myspace) where
     * the results can be found */
@@ -93,7 +95,7 @@ public abstract class Querier implements Runnable {
    
    public Querier(String queryId, Query query) throws IOException {
        this.id = queryId;
-       this.query = query;
+       this.query = query;       
        workspace = new Workspace(queryId);
        if ((query == null) || (query.getUser() == null)) {
            this.user = User.ANONYMOUS;
@@ -434,6 +436,10 @@ public abstract class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.17  2004/01/16 13:14:07  nw
+ initialized resultDestination to default myspace given in config.
+ previously wasn't being initialized.
+
  Revision 1.16  2004/01/15 17:38:25  nw
  adjusted how queriers close() themselves - altered so it
  works no matter if Querier.close() or QuerierManager.closeQuerier(q)
