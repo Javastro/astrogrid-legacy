@@ -81,21 +81,6 @@ public class SecurityGuard {
    *
    * @return the subject (never null)
    */
-  //public Subject getSubject () {
-  //  return this.gridSubject;
-  //}
-
-  /**
-   * Returns the JAAS Subject for grid credentials.
-   * The Subject contains the credentials and "principals"
-   * (i.e. identities) already set on the SecurityGuard.
-   * If this method is called immediately after construction
-   * then an empty Subject is returned. Note that altering
-   * the returned subject alters the information
-   * inside the SecurityGuard.
-   *
-   * @return the subject (never null)
-   */
   public Subject getGridSubject () {
     return this.gridSubject;
   }
