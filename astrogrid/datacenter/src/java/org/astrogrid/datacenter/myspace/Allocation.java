@@ -14,11 +14,13 @@ import org.apache.log4j.Logger;
 import org.astrogrid.datacenter.datasetagent.* ;
 import org.astrogrid.datacenter.job.* ;
 import org.astrogrid.datacenter.i18n.* ;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.text.MessageFormat ;
 import javax.xml.parsers.*;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource ;
+import org.xml.sax.SAXException;
 import java.io.StringReader ;
 
 import org.apache.axis.client.Service;
@@ -155,8 +157,8 @@ public class Allocation {
 			   parms = new Object[] { MessageFormat.format( requestTemplate, inserts ) } ;
 
 			Call 
-			   call = (Call) new Service().createCall() ;			  
-
+			   call = (Call) new Service().createCall() ;
+			   			  
 			call.setTargetEndpointAddress( new URL( DatasetAgent.getProperty( MYSPACE_URL ) ) ) ;
 			call.setOperationName( "upLoad" ) ;  // Set method to invoke		
 			call.addParameter("jobDetails", XMLType.XSD_STRING,ParameterMode.IN);
@@ -191,17 +193,17 @@ public class Allocation {
 	       
 		try { 		
 		   builder = factory.newDocumentBuilder();
-		   logger.debug( responseXML ) ;
+		   logger.debug( responseXML ) ;		   
 		   InputSource
 			  responseSource = new InputSource( new StringReader( responseXML ) );
-		   responseDoc = builder.parse( responseXML );
-		   
+			responseDoc = builder.parse( responseSource );		
+			
 		   NodeList
 			  nodeList1 = responseDoc.getChildNodes() ;
-			   
+			  
 		   Element
 			   element = null ;
-			
+			   
 		   // Focus on the results element...   
 		   for( int i=0 ; i < nodeList1.getLength() ; i++ ) {
 				if( nodeList1.item(i).getNodeType() != Node.ELEMENT_NODE )
@@ -211,13 +213,13 @@ public class Allocation {
 					break ;
 		   } // end for	
 
-           nodeList1 = element.getChildNodes() ;
-			
+           nodeList1 = element.getChildNodes() ;			
+
 		   // Focus on top level status element...   
 		   for( int i=0 ; i < nodeList1.getLength() ; i++ ) {
 			   if( nodeList1.item(i).getNodeType() != Node.ELEMENT_NODE )
 				   continue ;						
-			   element = (Element) nodeList1.item(i) ;				   			
+			   element = (Element) nodeList1.item(i) ;		   				   			
 			   if( element.getTagName().equals( MySpaceManagerResponseDD.STATUS_ELEMENT_01 ) ) 
 				   break ;
 		   } // end for	
@@ -225,48 +227,62 @@ public class Allocation {
 		   NodeList
 			  nodeList2 = element.getChildNodes() ;	
 			 
-			 
 		   // Focus on second level status element... 
 		   for( int i=0 ; i < nodeList2.getLength() ; i++ ) {
 				if( nodeList2.item(i).getNodeType() != Node.ELEMENT_NODE )
 					continue ;						
-				element = (Element) nodeList2.item(i) ;				   			
+				element = (Element) nodeList2.item(i) ;								   			
 				if( element.getTagName().equals( MySpaceManagerResponseDD.STATUS_ELEMENT_02 ) ) 
 					break ;
 		   } // end for	
-		   
+   
 		   String
-		        status = element.getNodeValue().trim(),  // retrieve the status value
+		        status = element.getFirstChild().getNodeValue(),  // retrieve the status value
 		        details = null ;
-		        
+		   if (status != null)
+		       status.trim() ;
+	        
 		   // If it is not a success, we also need the reason 
 		   // (the value of the details element)...
-		   if( !status.equalsIgnoreCase( MYSPACE_SUCCESS ) ) {	   			   
-		    
-			   for( int i=0 ; i < nodeList1.getLength() ; i++ ) {		   	
-				  if( nodeList1.item(i).getNodeType() != Node.ELEMENT_NODE )
+		   if( !status.equalsIgnoreCase( MYSPACE_SUCCESS ) ) {	   			   	    
+			   for( int i=0 ; i < nodeList2.getLength() ; i++ ) {		   	
+				  if( nodeList2.item(i).getNodeType() != Node.ELEMENT_NODE )
 					  continue ;						
-				  element = (Element) nodeList1.item(i) ;				   			
+				  element = (Element) nodeList2.item(i) ;				   			
 				  if( element.getTagName().equals( MySpaceManagerResponseDD.DETAILS_ELEMENT_02 ) ) 
 					  break ;
 			   } // end for	
-			   
-			   details = element.getNodeValue().trim() ;
+		   
+			   details = element.getFirstChild().getNodeValue() ;
+			   if (details != null)
+			       details = details.trim() ;
 		    
 		       Message
 			      message = new Message( ASTROGRIDERROR_MYSPACEMANAGER_RETURNED_AN_ERROR, status, details ) ; 
 		       logger.error( message.toString() ) ;
-		       throw new DatasetAgentException( message );	
+		       throw new AllocationException( message );	
 		      			   
 		   } // end for
 		   
 		}
-		catch ( Exception ex ) {
+		catch ( ParserConfigurationException pe ) {
 			Message
 				message = new Message( ASTROGRIDERROR_FAILED_TO_PARSE_MYSPACEMANAGER_RESPONSE ) ; 
-			logger.error( message.toString(), ex ) ;
-			throw new AllocationException( message, ex );
+			logger.error( message.toString(), pe ) ;
+			throw new AllocationException( message, pe );
 		} 
+		catch ( SAXException se ) {
+			Message
+				message = new Message( ASTROGRIDERROR_FAILED_TO_PARSE_MYSPACEMANAGER_RESPONSE ) ; 
+			logger.error( message.toString(), se ) ;
+			throw new AllocationException( message, se );
+		}	
+		catch ( IOException ie ) {
+			Message
+				message = new Message( ASTROGRIDERROR_FAILED_TO_PARSE_MYSPACEMANAGER_RESPONSE ) ; 
+			logger.error( message.toString(), ie ) ;
+			throw new AllocationException( message, ie );
+		}			
 		finally {
 			if( TRACE_ENABLED ) logger.debug( "diagnoseResponse() exit") ;	
 		}
