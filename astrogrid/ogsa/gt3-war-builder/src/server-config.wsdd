@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<deployment xmlns="http://xml.apache.org/axis/wsdd/" xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+ <globalConfiguration>
+  <parameter name="sendMultiRefs" value="true"/>
+  <parameter name="adminPassword" value="admin"/>
+  <parameter name="sweeperThreads" value="3"/>
+  <parameter name="notificationFactory" value="ogsi/NotificationSubscriptionFactoryService"/>
+  <parameter name="handleResolver" value="ogsi/HandleResolverService"/>
+  <parameter name="containerThreads" value="5"/>
+  <parameter name="ogsiLocation" value="ogsa/services/"/>
+  <parameter name="httpg.notificationFactory" value="core/notification/httpg/NotificationSubscriptionFactoryService"/>
+  <parameter name="axis.sendMinimizedElements" value="true"/>
+  <parameter name="authenticationService" value="gsi/AuthenticationService"/>
+  <parameter name="sendXMLDeclaration" value="true"/>
+  <parameter name="queryEvaluators" value="org.globus.ogsa.impl.core.service.ServiceDataNameEvaluator org.globus.ogsa.impl.core.service.ServiceDataXPathEvaluator org.globus.ogsa.impl.core.service.ServiceDataNameDeleteEvaluator org.globus.ogsa.impl.core.service.ServiceDataNameSetEvaluator"/>
+  <parameter name="secureNotificationFactory" value="gsi/SecureNotificationSubscriptionFactoryService"/>
+  <parameter name="sendXsiTypes" value="true"/>
+  <parameter name="attachments.implementation" value="org.apache.axis.attachments.AttachmentsImpl"/>
+
+  <parameter name="containerCert" value="/etc/grid-security/hostcert.pem"/>
+  <parameter name="containerKey"  value="/etc/grid-security/hostkey.pem"/>
+  <parameter name="authorization" value="gridmap"/>
+  <parameter name="gridmap"       value="/etc/grid-security/grid-mapfile"/>
+  
+  <requestFlow>
+   <handler type="URLMapper"/>
+   <handler type="PersistentServiceHandler"/>
+   <handler type="java:org.globus.ogsa.handlers.ServiceLoaderHandler"/>
+   <handler type="HandleResolverHandler"/>
+   <handler type="AuthenticationServiceHandler"/>
+   <handler type="java:org.globus.ogsa.handlers.RoutingSecRequestHandler"/>
+   <handler type="java:org.globus.ogsa.utils.JAXRPCHandler">
+    <parameter name="className" value="org.globus.ogsa.impl.security.authentication.wssec.WSSecurityHandler"/>
+   </handler>
+   <handler type="java:org.globus.ogsa.impl.security.authentication.SecurityPolicyHandler"/>
+   <handler type="java:org.globus.ogsa.impl.security.authorization.AuthorizationHandler"/>
+   <handler type="java:org.globus.ogsa.impl.security.authentication.CredentialRefreshHandler"/>
+   <handler type="java:org.apache.axis.handlers.JWSHandler">
+    <parameter name="scope" value="session"/>
+   </handler>
+   <handler type="OnceInvocationHandler"/>
+   <handler type="RoutingRequestHandler"/>
+  </requestFlow>
+  <responseFlow>
+   <handler type="RoutingResponseHandler"/>
+   <handler type="java:org.globus.ogsa.utils.JAXRPCHandler">
+    <parameter name="className" value="org.globus.ogsa.impl.security.authentication.X509SignHandler"/>
+   </handler>
+   <handler type="java:org.globus.ogsa.utils.JAXRPCHandler">
+    <parameter name="className" value="org.globus.ogsa.impl.security.authentication.GSSHandler"/>
+   </handler>
+  </responseFlow>
+ </globalConfiguration>
+ <handler name="AuthenticationServiceHandler" type="java:org.globus.ogsa.impl.security.authentication.service.AuthenticationServiceHandler"/>
+ <handler name="OnceInvocationHandler" type="java:org.globus.ogsa.handlers.OnceInvocationHandler"/>
+ <handler name="PersistentServiceHandler" type="java:org.globus.ogsa.handlers.PersistentServiceHandler"/>
+ <handler name="HandleResolverHandler" type="java:org.globus.ogsa.handlers.HandleResolverHandler"/>
+ <handler name="RoutingRequestHandler" type="java:org.globus.ogsa.handlers.RoutingRequestHandler"/>
+ <handler name="LocalResponder" type="java:org.apache.axis.transport.local.LocalResponder"/>
+ <handler name="URLMapper" type="java:org.apache.axis.handlers.http.URLMapper"/>
+ <handler name="RPCDispatcher" type="java:org.apache.axis.providers.java.RPCProvider"/>
+ <handler name="logger" type="java:org.apache.axis.handlers.LogHandler"/>
+ <handler name="Authenticate" type="java:org.apache.axis.handlers.SimpleAuthenticationHandler"/>
+ <handler name="MsgDispatcher" type="java:org.apache.axis.providers.java.MsgProvider"/>
+ <handler name="RoutingResponseHandler" type="java:org.globus.ogsa.handlers.RoutingResponseHandler"/>
+
+ <service name="core/logging/OgsiLoggingService" provider="Handler" style="wrapped" use="literal">
+  <parameter name="logBufferSize" value="12"/>
+  <parameter name="operationProviders" value="org.globus.ogsa.impl.ogsi.NotificationSourceProvider"/>
+  <parameter name="persistent" value="true"/>
+  <parameter name="schemaPath" value="schema/core/logging/logging_service.wsdl"/>
+  <parameter name="baseClassName" value="org.globus.ogsa.impl.core.logging.OgsiLogging"/>
+  <parameter name="handlerClass" value="org.globus.ogsa.handlers.RPCURIProvider"/>
+  <parameter name="logBufferSizeMax" value="1000"/>
+  <parameter name="className" value="org.globus.ogsa.core.logging.OgsiLoggingPortType"/>
+  <parameter name="allowedMethods" value="*"/>
+ </service>
+
+ <service name="core/notification/httpg/NotificationSubscriptionFactoryService" provider="Handler" style="wrapped" use="literal">
+  <parameter name="operationProviders" value="org.globus.ogsa.impl.ogsi.FactoryProvider"/>
+  <parameter name="persistent" value="true"/>
+  <parameter name="instance-schemaPath" value="schema/core/notification/gsi_notification_subscription_service.wsdl"/>
+  <parameter name="instance-className" value="org.gridforum.ogsi.GridService"/>
+  <parameter name="schemaPath" value="schema/core/factory/gsi_factory_service.wsdl"/>
+  <parameter name="baseClassName" value="org.globus.ogsa.impl.ogsi.PersistentGridServiceImpl"/>
+  <parameter name="handlerClass" value="org.globus.ogsa.handlers.RPCURIProvider"/>
+  <parameter name="className" value="org.gridforum.ogsi.Factory"/>
+  <parameter name="allowedMethods" value="*"/>
+  <parameter name="instance-baseClassName" value="org.globus.ogsa.impl.ogsi.NotificationSubscriptionImpl"/>
+  <parameter name="factoryCallback" value="org.globus.ogsa.impl.ogsi.DynamicFactoryCallbackImpl"/>
+ </service>
+
+ <service name="core/admin/AdminService" provider="Handler" style="wrapped" use="literal">
+  <parameter name="allowedMethods" value="*"/>
+  <parameter name="baseClassName" value="org.globus.ogsa.impl.core.admin.AdminServiceImpl"/>
+  <parameter name="persistent" value="true"/>
+  <parameter name="schemaPath" value="schema/core/admin/admin_service.wsdl"/>
+  <parameter name="className" value="org.globus.ogsa.core.admin.AdminServicePortType"/>
+  <parameter name="handlerClass" value="org.globus.ogsa.handlers.RPCURIProvider"/>
+  <parameter name="securityConfig" value="org/globus/ogsa/impl/core/admin/security-config.xml"/>
+  <parameter name="authorization" value="self"/>
+ </service>
+
+ <service name="core/management/OgsiManagementService" provider="Handler" style="wrapped" use="literal">
+  <parameter name="allowedMethods" value="*"/>
+  <parameter name="baseClassName" value="org.globus.ogsa.impl.core.management.OgsiManagement"/>
+  <parameter name="persistent" value="true"/>
+  <parameter name="schemaPath" value="schema/core/management/management_service.wsdl"/>
+  <parameter name="className" value="org.globus.ogsa.core.management.OgsiManagementPortType"/>
+  <parameter name="handlerClass" value="org.globus.ogsa.handlers.RPCURIProvider"/>
+  <parameter name="securityConfig" value="org/globus/ogsa/impl/core/management/security-config.xml"/>
+  <parameter name="operationProviders" value="org.globus.ogsa.impl.ogsi.NotificationSourceProvider org.globus.ogsa.impl.ogsi.ServiceGroupProvider"/>
+ </service>
+
+ <service name="ogsi/NotificationSubscriptionFactoryService" provider="Handler" style="wrapped" use="literal">
+  <parameter name="operationProviders" value="org.globus.ogsa.impl.ogsi.FactoryProvider"/>
+  <parameter name="persistent" value="true"/>
+  <parameter name="instance-schemaPath" value="schema/ogsi/ogsi_notification_subscription_service.wsdl"/>
+  <parameter name="instance-className" value="org.gridforum.ogsi.GridService"/>
+  <parameter name="schemaPath" value="schema/ogsi/ogsi_factory_service.wsdl"/>
+  <parameter name="baseClassName" value="org.globus.ogsa.impl.ogsi.PersistentGridServiceImpl"/>
+  <parameter name="handlerClass" value="org.globus.ogsa.handlers.RPCURIProvider"/>
+  <parameter name="className" value="org.gridforum.ogsi.Factory"/>
+  <parameter name="allowedMethods" value="*"/>
+  <parameter name="instance-baseClassName" value="org.globus.ogsa.impl.ogsi.NotificationSubscriptionImpl"/>
+  <parameter name="factoryCallback" value="org.globus.ogsa.impl.ogsi.DynamicFactoryCallbackImpl"/>
+ </service>
+
+ <service name="ogsi/HandleResolverService" provider="Handler" style="wrapped" use="literal">
+  <parameter name="allowedMethods" value="*"/>
+  <parameter name="baseClassName" value="org.globus.ogsa.impl.ogsi.HandleResolverImpl"/>
+  <parameter name="persistent" value="true"/>
+  <parameter name="schemaPath" value="schema/ogsi/ogsi_handle_resolver_service.wsdl"/>
+  <parameter name="bootstrap" value="true"/>
+  <parameter name="className" value="org.gridforum.ogsi.HandleResolver"/>
+  <parameter name="handlerClass" value="org.globus.ogsa.router.RedirectProvider"/>
+ </service>
+
+ <service name="core/jmsadapter/JMSAdapterFactoryService" provider="Handler" style="wrapped" use="literal">
+  <parameter name="java.naming.factory.initial" value="org.jnp.interfaces.NamingContextFactory"/>
+  <parameter name="name" value="JMS Adapter Factory"/>
+  <parameter name="operationProviders" value="org.globus.ogsa.impl.ogsi.FactoryProvider org.globus.ogsa.impl.ogsi.NotificationSourceProvider"/>
+  <parameter name="persistent" value="true"/>
+  <parameter name="instance-schemaPath" value="schema/core/notification/jms_adapter_service.wsdl"/>
+  <parameter name="instance-className" value="org.globus.ogsa.core.notification.JMSAdapterPortType"/>
+  <parameter name="schemaPath" value="schema/ogsi/ogsi_notification_factory_service.wsdl"/>
+  <parameter name="baseClassName" value="org.globus.ogsa.impl.ogsi.PersistentGridServiceImpl"/>
+  <parameter name="handlerClass" value="org.globus.ogsa.handlers.RPCURIProvider"/>
+  <parameter name="instance-name" value="JMS Adapter"/>
+  <parameter name="className" value="org.gridforum.ogsi.NotificationFactory"/>
+  <parameter name="java.naming.provider.url" value="localhost:1099"/>
+  <parameter name="allowedMethods" value="*"/>
+  <parameter name="java.naming.factory.url.pkgs" value="org.jboss.naming:org.jnp.interfaces"/>
+  <parameter name="factoryCallback" value="org.globus.ogsa.impl.ogsi.DynamicFactoryCallbackImpl"/>
+  <parameter name="instance-baseClassName" value="org.globus.ogsa.impl.core.notification.JMSAdapter"/>
+  <parameter name="instance-operationProviders" value="org.globus.ogsa.impl.ogsi.NotificationSourceProvider"/>
+ </service>
+
+ <service name="AdminService" provider="java:MSG">
+  <parameter name="allowedMethods" value="AdminService"/>
+  <parameter name="enableRemoteAdmin" value="false"/>
+  <parameter name="className" value="org.apache.axis.utils.Admin"/>
+ </service>
+
+ <service name="core/registry/ContainerRegistryService" provider="Handler" style="wrapped" use="literal">
+  <parameter name="allowedMethods" value="*"/>
+  <parameter name="baseClassName" value="org.globus.ogsa.impl.core.registry.ContainerRegistryImpl"/>
+  <parameter name="persistent" value="true"/>
+  <parameter name="schemaPath" value="schema/ogsi/ogsi_notification_service_group_service.wsdl"/>
+  <parameter name="className" value="org.gridforum.ogsi.NotificationSource"/>
+  <parameter name="handlerClass" value="org.globus.ogsa.handlers.RPCURIProvider"/>
+  <parameter name="operationProviders" value="org.globus.ogsa.impl.ogsi.NotificationSourceProvider org.globus.ogsa.impl.ogsi.ServiceGroupProvider"/>
+ </service>
+
+ <service name="gsi/AuthenticationService" provider="Handler" style="wrapped" use="literal">
+  <parameter name="allowedMethods" value="*"/>
+  <parameter name="baseClassName" value="org.globus.ogsa.impl.security.authentication.service.AuthenticationServiceImpl"/>
+  <parameter name="persistent" value="true"/>
+  <parameter name="schemaPath" value="schema/security/authentication/gss_secure_conversation_service.wsdl"/>
+  <parameter name="bootstrap" value="true"/>
+  <parameter name="className" value="org.globus.ogsa.security.authentication.SecureContextEstablishmentPortType"/>
+  <parameter name="handlerClass" value="org.globus.ogsa.router.RedirectProvider"/>
+ </service>
+
+ <service name="gsi/SecureNotificationSubscriptionFactoryService" provider="Handler" style="wrapped" use="literal">
+  <parameter name="operationProviders" value="org.globus.ogsa.impl.ogsi.FactoryProvider"/>
+  <parameter name="persistent" value="true"/>
+  <parameter name="instance-schemaPath" value="schema/ogsi/ogsi_notification_subscription_service.wsdl"/>
+  <parameter name="instance-className" value="org.gridforum.ogsi.GridService"/>
+  <parameter name="schemaPath" value="schema/ogsi/ogsi_factory_service.wsdl"/>
+  <parameter name="baseClassName" value="org.globus.ogsa.impl.ogsi.PersistentGridServiceImpl"/>
+  <parameter name="handlerClass" value="org.globus.ogsa.handlers.RPCURIProvider"/>
+  <parameter name="className" value="org.gridforum.ogsi.Factory"/>
+  <parameter name="allowedMethods" value="*"/>
+  <parameter name="instance-baseClassName" value="org.globus.ogsa.impl.security.authentication.SecureNotificationSubscriptionImpl"/>
+  <parameter name="factoryCallback" value="org.globus.ogsa.impl.ogsi.DynamicFactoryCallbackImpl"/>
+ </service>
+
+ <transport name="http">
+  <requestFlow>
+   <handler type="URLMapper"/>
+   <handler type="java:org.apache.axis.handlers.http.HTTPAuthHandler"/>
+  </requestFlow>
+ </transport>
+ <transport name="local">
+  <responseFlow>
+   <handler type="java:org.apache.axis.transport.local.LocalResponder"/>
+  </responseFlow>
+ </transport>
+ <transport name="SimpleHTTP">
+  <requestFlow>
+   <handler type="URLMapper"/>
+  </requestFlow>
+ </transport>
+
+ <!-- DAIServiceGroupRegistry Service Deployment -->
+ <service name="ogsadai/DAIServiceGroupRegistry" provider="Handler" style="wrapped" use="literal"> 
+  <parameter name="name" value="DAI Registry"/>
+  <parameter name="operationProviders" value="uk.org.ogsadai.service.daiservicegroups.impl.DAIServiceGroupProvider uk.org.ogsadai.service.daiservicegroups.impl.DAIServiceGroupRegistrationProvider org.globus.ogsa.impl.ogsi.NotificationSourceProvider"/>
+  <parameter name="persistent" value="true"/>
+  <parameter name="sweepServiceData" value="true"/>
+  <parameter name="instance-schemaPath" value="schema/ogsi/ogsi_service_group_entry_service.wsdl"/>
+  <parameter name="entryInstanceCreation" value="true"/>
+  <parameter name="schemaPath" value="schema/ogsadai/dai_service_group/dai_service_group_registration_service.wsdl"/>
+  <parameter name="baseClassName" value="org.globus.ogsa.impl.ogsi.PersistentGridServiceImpl"/>
+  <parameter name="handlerClass" value="org.globus.ogsa.handlers.RPCURIProvider"/>
+  <parameter name="className" value="uk.org.ogsadai.service.daiservicegroups.DAIServiceGroupRegistrationPortType"/>
+  <parameter name="allowedMethods" value="*"/>
+  <parameter name="disableFactoryRegistry" value="true"/>
+  <parameter name="factoryCallback" value="org.globus.ogsa.impl.ogsi.DynamicFactoryCallbackImpl"/> 
+  <parameter name="instance-baseClassName" value="org.globus.ogsa.impl.ogsi.ServiceGroupEntryImpl"/> 
+ </service>
+
+ <!-- GDSF Service Deployment -->
+ <service name="ogsadai/GridDataServiceFactory" provider="Handler" style="wrapped" use="literal">
+  <parameter name="ogsadai.gdsf.config.xml.file" value="@tomcat.home@/webapps/@web.app.name@/WEB-INF/etc/dataResourceConfig.xml"/>
+  <parameter name="ogsadai.gdsf.registrations.xml.file" value="@tomcat.home@/webapps/@web.app.name@/WEB-INF/etc/registrationList.xml"/>     
+  <parameter name="name" value="Grid Data Service Factory"/>
+  <parameter name="operationProviders" value="org.globus.ogsa.impl.ogsi.FactoryProvider"/>
+  <parameter name="persistent" value="true"/>
+  <parameter name="instance-schemaPath" value="schema/ogsadai/gds/gds_service.wsdl"/>
+  <parameter name="instance-className" value="uk.org.ogsadai.wsdl.gds.GDSPortType"/>
+  <parameter name="instance-baseClassName" value="uk.org.ogsadai.service.gds.GridDataService"/>
+  <parameter name="baseClassName" value="uk.org.ogsadai.service.gdsf.GridDataServiceFactory"/>
+  <parameter name="schemaPath" value="schema/ogsadai/gdsf/grid_data_service_factory_service.wsdl"/>
+  <parameter name="handlerClass" value="org.globus.ogsa.handlers.RPCURIProvider"/>
+  <parameter name="instance-name" value="Grid Data Service"/>
+  <parameter name="className" value="uk.org.ogsadai.wsdl.gdsf.GridDataServiceFactoryPortType"/>
+  <parameter name="allowedMethods" value="*"/>
+  <parameter name="factoryCallback" value="uk.org.ogsadai.service.gdsf.GridDataServiceFactoryCallback"/>
+  <parameter name="activateOnStartup" value="true"/>
+ </service>
+
+ <!-- Secure GDSF Service Deployment -->
+ <service name="ogsadai/SecureGridDataServiceFactory" provider="Handler" style="wrapped" use="literal">
+  <parameter name="instance-securityConfig" value="gds-security-config.xml"/>
+  <parameter name="ogsadai.gdsf.config.xml.file" value="@tomcat.home@/webapps/@web.app.name@/WEB-INF/etc/dataResourceConfig.xml"/>
+  <parameter name="ogsadai.gdsf.registrations.xml.file" value="@tomcat.home@/webapps/@web.app.name@/WEB-INF/etc/registrationList.xml"/>     
+  <parameter name="name" value="Secure Grid Data Service Factory"/>
+  <parameter name="operationProviders" value="org.globus.ogsa.impl.ogsi.FactoryProvider"/>
+  <parameter name="persistent" value="true"/>
+  <parameter name="instance-schemaPath" value="schema/ogsadai/gds/gds_service.wsdl"/>
+  <parameter name="instance-className" value="uk.org.ogsadai.wsdl.gds.GDSPortType"/>
+  <parameter name="instance-baseClassName" value="uk.org.ogsadai.service.gds.GridDataService"/>
+  <parameter name="baseClassName" value="uk.org.ogsadai.service.gdsf.GridDataServiceFactory"/>
+  <parameter name="schemaPath" value="schema/ogsadai/gdsf/grid_data_service_factory_service.wsdl"/>
+  <parameter name="handlerClass" value="org.globus.ogsa.handlers.RPCURIProvider"/>
+  <parameter name="instance-name" value="Secure Grid Data Service"/>
+  <parameter name="className" value="uk.org.ogsadai.wsdl.gdsf.GridDataServiceFactoryPortType"/>
+  <parameter name="allowedMethods" value="*"/>
+  <parameter name="factoryCallback" value="uk.org.ogsadai.service.gdsf.GridDataServiceFactoryCallback"/>
+  <parameter name="activateOnStartup" value="true"/>
+ </service>
+</deployment>
