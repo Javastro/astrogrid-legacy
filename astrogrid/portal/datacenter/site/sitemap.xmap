@@ -1,226 +1,257 @@
-<?xml version="1.0" encoding="UTF-8"?>
+
 <!--+
-    | This is the 'heart' of Cocoon. The sitemap maps URI space to 
-    | resources. It consists basicaly of two parts: components and
-    | pipelines. Pipelines are made out of components. There is such a
-    | vast number of components available that it would be impossible to
-    | describe them here, please refer to the accompanying
-    | documentation. For specific components, have a look also at the
-    | javadocs for them. Most pipelines are present to demonstrate some
-    | feature or technique, often they are explained in more detail in 
-    | the accompanying documentation. The sitemaps which come with each
-    | sample and each block will help to explain.
     |
-    | CVS $Id: sitemap.xmap,v 1.2 2003/12/08 11:07:33 gps Exp $
+    | Sub sitemap for MySpace Explorer.
+    |
+    ! Version 1.1
+    !
+    ! Authors: Roy Platon (r.t.platon@rl.ac.uk)
+    ! Date: 15th December 2003
     +-->
+
 <map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
 
-<!-- =========================== Components ================================ -->
+<!-- ======================== Components ================================ -->
 
-  <map:components>
+   <map:components>
+      <map:generators default="file"/>
+      <map:transformers default="xslt"/>
+      <map:readers default="resource">
+         <map:reader name="votable"
+              pool-max="32"
+              src="org.astrogrid.portal.cocoon.plugins.readers.VotableReader"/>
+      </map:readers>
+      <map:serializers default="html"/>
+      <map:selectors default="browser"/>
+      <map:matchers default="wildcard"/>
+      <map:actions>
+   	 <map:action name="astrogrid"
+               src="org.astrogrid.portal.cocoon.common.AstrogridAction"/>
+         <map:action name="astrogrid-explorer"
+               src="org.astrogrid.portal.cocoon.explorer.ExplorerAction"/>
+         <map:action name="astrogrid-query" 
+	       src="org.astrogrid.portal.cocoon.query.QueryAction"/>
+         <map:action name="astrogrid-admin" 
+               src="org.astrogrid.portal.cocoon.community.AdministrationAction">
+	    <map:action name="astrogrid-credentials"
+                src="org.astrogrid.portal.cocoon.community.CredentialAction"/>
+	    <map:action name="astrogrid-login"
+            src="org.astrogrid.portal.cocoon.common.LoginAction"/>
+	    <map:action name="astrogrid-workflow"
+            src="org.astrogrid.portal.cocoon.workflow.design.DesignAction"/>
 
-  <!--+
-      | All pipelines consist at least of two components: a generator, that
-      | produces the content, and a serialiser, that delivers the content to
-      | the client.
-      | 
-      | More precisely: a generator generates SAX events and a serializer
-      | consumes these events and produces a byte stream.
-      | 
-      | Some things to note here: each generator has a unique name, this
-      | name is mapped to a java class, one name is declared as the default
-      | generator. Each generator may have additional configurations as
-      | child elements.
-      | 
-      | Additional attributes are targeted at the component manager. The optional
-      | "label" attribute is relevant for the view concept below. The optional
-      | "logger" attribute defines the logging category where messages produced
-      | by a component should go. If there's no "logger" attribute, the category
-      | used is the one defined for the "sitemap" component in cocoon.xconf.
-      | 
-      | We have chosen in this sitemap to use a different logging category
-      | for each component, which allows fine-grained classification of log
-      | messages. But you are free to use any category you want.
-      | 
-      | It is possible to have the same java class declared as different
-      | generators by using different names. No configuration options are
-      | shared between these instances, however.
-      | 
-      | All components follow this scheme.
-      +-->
-    <map:generators default="file"/>
+         <!-- AstroGrid QB actions. -->
+         <map:action name="xml-validator" logger="sitemap.action.xml-validator"
+            src="org.astrogrid.datacenter.cocoon.acting.XMLValidatorAction"/>
 
-  <!--+
-      | Transformers can be placed inside the pipeline between the generator
-      | and the serializer. You may have as many transformers as you
-      | like. Transformers consume SAX events and emit SAX events.
-      |
-      | The "xslt" transformer is an example of a component with additional
-      | configuration.
-      +-->
-    <map:transformers default="xslt"/>
+         <map:action name="save-adql" logger="sitemap.action.save-adql"
+            src="org.astrogrid.datacenter.cocoon.acting.SaveAction"/>
 
-  <!--+
-      | Serializers consume SAX events and produce a character stream. Every
-      | pipeline needs to be terminated by a serializer.
-      +-->
-    <map:serializers default="html"/>
+         <map:action name="load-adql" logger="sitemap.action.load-adql"
+            src="org.astrogrid.datacenter.cocoon.acting.LoadAction"/>
 
-  <!--+
-      | Readers circumvent the XML oriented SAX pipeline model, think of a reader
-      | being a generator and a serializer at once thus a pipeline may not
-      | contain any generator, transformer or serializer in addition to a
-      | reader. They are useful for delivering binary content like images.
-      +-->
-    <map:readers default="resource"/>
-
-  <!--+
-      | Matchers are executed during pipeline setup. They decide if a
-      | pipeline fragment is used within a pipeline. Usually, the decision
-      | is based on a match on the requested URI but matchers exist, that
-      | match different things as well. Most often the fragment contained in
-      | a matcher has a generator as well as a serializer. This is not a
-      | necessity, matchers can be nested while chaining does not work.
-      +-->
-    <map:matchers default="wildcard"/>
-
-  <!--+
-      | Selectors are executed during pipeline setup. They can be used to
-      | determine which pipeline fragments should be combined. They are best
-      | compared with a java switch statement.
-      +-->
-    <map:selectors default="browser"/>
-
-  <!--+
-      | Actions are executed during pipeline setup. Their purpose is to
-      | execute some code that doesn't involve touching the stream of
-      | pipeline events. Example usage is to update databases, check external 
-      | resources, etc.. The execution may fail or complete successfully. Only 
-      | if the execution of the action was successful, the pipeline fragment 
-      | nested inside the action element is executed, otherwise, it's skipped
-      | entirely and execution proceeds from the element right below the action.
-      +-->
-    <map:actions></map:actions>
-
-  <!--+
-      | The different pipe implementations
-      | 
-      | NON-CACHING:
-      |   The non caching implementation of cocoon pipelines.
-      | 
-      | CACHING:
-      |   Traditional longest cacheable key caching.
-      | 
-      | CACHING-POINT:
-      |   The caching-point pipeline implements an extended             
-      |   caching algorithm which is of particular benefit for use with 
-      |   those pipelines that utilise cocoon-views and/or provide      
-      |   drill-down functionality.                                     
-      | 
-      | The autoCachingPoint algorithim (if enabled) will automatically
-      | cache common elements of the pipeline currently being processed - as well
-      | as the entire cacheable pipeline according to the "longest cacheable key"
-      | algorithm.
-      | 
-      | Consider the following simple pipeline, where generator G is labelled with
-      | a cocoon-view enabling the pipeline to serialize data to either html or pdf 
-      | depending on the value of cocoon-view (as provided by the request):
-      | G - T -  S(html)
-      | |__ T -  S(pdf)
-      | 
-      | If cocoon-view=html, then the caching-point algorithm will not only cache 
-      | the longest cacheable path, which would be GTS(html) but also the
-      | *common element* which in this case would be the results from G. If the
-      | next request to this pipeline was cocoon-view=pdf, then there would be no
-      | need to invoke the generator a second time, as it's value has already been
-      | cached (provided G generates the same cache key)
-      | 
-      | Also note: One can switch "Off" autoCachingPoint and use "pipeline-hints" to
-      | manually indicate that certain pipeline-components should be considered as
-      | cache points.
-      +-->
-    <map:pipes></map:pipes>
-
-  </map:components>
+         <map:action name="test-adql" logger="sitemap.action.test-adql"
+            src="org.astrogrid.datacenter.cocoon.acting.TestAction"/>
+ 
+      </map:actions>
+   </map:components>
 
 <!-- =========================== Views =================================== -->
 
-  <!--+
-      | Views provide different, well, views to resources. Views are
-      | orthogonal to pipelines. Please refer to the docs.
-      |
-      | It would be wise to disable any unneeded views in a 
-      | production environment in order to avoid exposing data
-      | that you may not necessarily wish to.
-      +-->
-  <map:views></map:views>
-
-<!-- =========================== Resources ================================= -->
-
-  <!--+
-      | Resources are pipeline fragments that may be used from different
-      | pipeline fragments. For our needs, they behave exactly like
-      | pipelines, only that they are not accessible from outside.
-      | Hence I will explain what's inside below for pipelines.
-      +-->
-  <map:resources></map:resources>
+   <!-- Views for MySpace Explorer -->
+   <map:views>
+      <!-- Original XML displayed as XML -->
+      <map:view name="000" from-label="000">
+         <map:serialize type="xml"/>
+      </map:view>
+      <!-- Original XML, displayed as XML/HTML -->
+      <map:view name="001" from-label="001">
+         <!-- Convert into XML/HTML -->
+         <map:transform src="common/xsl/xml-html.xsl"/>
+         <map:serialize type="html"/>
+      </map:view>
+      <!-- XML processed into a page, displayed as XML/HTML -->
+      <map:view name="002" from-label="002">
+         <!-- Convert into XML/HTML -->
+         <map:transform src="common/xsl/xml-html.xsl"/>
+         <map:serialize type="html"/>
+      </map:view>
+      <!-- Page wrapped in our template, displayed as XML/HTML -->
+      <map:view name="003" from-label="003">
+         <!-- Convert into XML/HTML -->
+         <map:transform src="common/xsl/xml-html.xsl"/>
+         <map:serialize type="html"/>
+      </map:view>
+   </map:views>
 
 <!-- ========================== Action sets ================================ -->
 
- <!--+
-     | Action sets group actions together. If some actions are often used
-     | together in pipeline fragments, it's easier to group them and refer
-     | to the group. For more info, please see the docs.
-     +-->
-  <map:action-sets></map:action-sets>
+<!-- ========================== Resources ================================= -->
 
-<!-- =========================== Pipelines ================================= -->
+   <map:resources>
+      <map:resource name="main-menu">
+      <map:transform type="xslt" src="qb/style/adql.xsl" label="page"/>
 
- <!--+
-     | Pipelines. The beef. Pipelines specify how the processing of your
-     | content is done. Usually, a pipeline consists of several fragments
-     | that specify the generation, transformation, and serialization of
-     | SAX events.
-     |
-     | Processing is done in two steps:
-     |
-     | 1) The top level elements are executed in order of appearance until
-     |    one signals success. These top level elements are usually
-     |    matchers.
-     |
-     |    Other components are called depth-first to determine what
-     |    fragments make up the processing pipeline. When a component
-     |    fails, no nested components are called but the next component on
-     |    the same level.
-     |
-     | 2) Once it is determined which generator, which transformers and
-     |    wich serializer is used, these components are executed. During
-     |    this, the pipeline may not be changed.
-     |
-     | You may have as many pipelines in your sitemap as you like.
-     +-->
-  <map:pipelines>
-    <map:component-configurations>
-      <global-variables>
-       <!--+
-           | Define global parameters here:
-           |   <skin>my_skin</skin>
-           |   ...
-           | You can access them by {global:*name*}, e.g. {global:skin}.
-           | These values are inherited into sub-sitemaps and can
-           | be extended there.
-           +--></global-variables>
-    </map:component-configurations>
+      <!-- Wrap the page in the Portal template -->
+      <map:act type="astrogrid">
+         <map:transform src="common/xsl/astrogrid.xsl" label="final">
+            <!-- Add the rest of the page names -->
+            <map:parameter name="credential"    value="{credential}" />
+            <map:parameter name="current-page"  value="agdataquery.html"/>
+            <map:parameter name="query-page"    value="agdataquery.html"/>
+            <map:parameter name="myspace-page"  value="agmyspace.html"/>
+            <map:parameter name="title-name"    value="Data Query"/>
+            <map:parameter name="home-page"     value="agindex.html"/>
+            <map:parameter name="admin-page"    value="agadministration.html"/>
+            <map:parameter name="help-page"     value="agdataqueryhelp.html"/>
+            <map:parameter name="registry-page" value="agregistry.html"/>
+            <map:parameter name="regadmin-page" value="agregadmin.html"/>
+            <map:parameter name="monitor-page"  value="agjobmonitor.html"/>
+            <map:parameter name="tools-page"    value="agtools.html"/>
+            <map:parameter name="logout-page"   value="aglogout.html"/>
+         </map:transform>
+       </map:act>
 
-  <!-- main pipeline -->
-    <map:pipeline>
-      <!-- xml -->
-      <map:match pattern="**.xml">
-        <map:generate type="file" src="web/static/{1}.xml"/>
-        <map:transform src="cocoon://xml2html.xsl"/>
-        <map:serialize type="xml"/>
-      </map:match>
-    </map:pipeline>
-  </map:pipelines>
+       <!-- Serialize as HTML -->
+       <map:serialize type="html"/> 
+    </map:resource>
+   </map:resources>
 
+<!-- ========================== Pipelines ================================= -->
+
+   <map:pipelines>
+      <map:pipeline>
+
+            <!-- Explorer page -->
+            <map:match pattern="agmyspace.html">
+            <!-- Call our explorer action -->
+               <map:act type="astrogrid-explorer">
+                  <!-- Set the session attribute to check for the user name -->
+                  <map:parameter name="user-param"  value="user"/>
+                  <!-- Generate our page XML -->
+                  <map:generate src="explorer/xsp/explorer.xsp"
+                     type="serverpages" label="xml, html"/>
+                  <!-- Convert the data into a page -->
+                  <map:transform src="explorer/xsl/explorer.xsl" label="page">
+                     <!-- Add the action params -->
+                     <map:parameter name="action"  value="{action}"/>
+                     <map:parameter name="confirm" value="{confirm}"/>
+                     <!-- Add the explorer page names -->
+                     <map:parameter name="explorer-page"
+                        value="agmyspace.html"/>
+                     <map:parameter name="votable-page"
+                        value="agvotable.html"/>
+					<map:parameter name="plot-page" value="agtopcat.html"/>
+                  </map:transform>
+               </map:act>
+               <!-- Wrap the page in our HTML template -->
+               <map:act type="astrogrid">
+		           <map:transform src="common/xsl/astrogrid.xsl" label="page">
+		              <!-- Add the rest of the page names -->
+		              <map:parameter name="credential" value="{credential}" />
+		              <map:parameter name="credential-page"
+                                   value="agcredentials.html" />
+                  <!-- Add the current page name -->
+                  <map:parameter name="current-page" value="agmyspace.html"/>
+                  <!-- Add the explorer page names -->
+                  <map:parameter name="explorer-page" value="agmyspace.html"/>
+                  <map:parameter name="votable-page"  value="agvotable.html"/>
+                  <!-- Add the rest of the page names -->
+                  <map:parameter name="home-page"     value="agindex.html"/>
+                  <map:parameter name="title-name"    value="Myspace"/>
+                  <map:parameter name="help-page"
+                                 value="agmyspacehelp.html"/>
+                  <map:parameter name="registry-page" value="agregistry.html"/>
+                  <map:parameter name="regadmin-page" value="agregadmin.html"/>
+                  <map:parameter name="query-page"    value="agdataquery.html"/>
+                  <map:parameter name="monitor-page"  value="agjobmonitor.html"/>
+                  <map:parameter name="tools-page"    value="agtools.html"/>
+	               <map:parameter name="admin-page"
+                                 value="agadministration.html"/>
+                  <map:parameter name="logout-page"   value="aglogout.html"/>
+               </map:transform>
+               </map:act>
+               <!-- Serialize as HTML -->
+               <map:serialize type="html"/>
+            </map:match>
+
+            <!-- VoTable data pages -->
+            <map:match pattern="agvotable.html">
+               <map:act type="request">
+                  <map:parameter name="parameters" value="true"/>
+                  <map:generate src="{data}"/>
+                  <!-- Convert the VoTable data into HTML -->
+                  <map:transform src="explorer/xsl/votable.xsl">
+                    <map:parameter name="explorer-page" value="agmyspace.html"/>
+                    <map:parameter name="votable-page"  value="agvotable.html"/>
+					     <map:parameter name="plot-page" value="agtopcat.html"/>
+                  </map:transform>
+                  <map:act type="astrogrid">
+                  <!-- Wrap the page in our HTML template -->
+                    <map:transform src="common/xsl/astrogrid.xsl" label="final">
+		                <map:parameter name="credential" value="{credential}" />
+		                <map:parameter name="current-page"
+                                     value="agdataquery.html"/>
+                  
+                  <!-- Add the explorer page names -->
+                      <map:parameter name="current-page"
+                                     value="agmyspace.html"/>
+                      <map:parameter name="explorer-page"
+                                     value="agmyspace.html"/>
+                      <map:parameter name="votable-page"
+                                     value="agvotable.html"/>
+                  <!-- Add the rest of the page names -->
+                      <map:parameter name="home-page"
+                                     value="agindex.html"/>
+                      <map:parameter name="help-page"
+                                     value="agmyspacehelp.html"/>
+                      <map:parameter name="registry-page"
+                                     value="agregistry.html"/>
+                      <map:parameter name="regadmin-page" 
+                                     value="agregadmin.html"/>
+                      <map:parameter name="query-page"
+                                     value="agdataquery.html"/>
+                      <map:parameter name="title-name"
+                                     value="MySpace"/>
+                      <map:parameter name="monitor-page"
+                                     value="agjobmonitor.html"/>
+                      <map:parameter name="tools-page"
+                                     value="agtools.html"/>
+                      <map:parameter name="logout-page"
+                                     value="aglogout.html"/>
+    	                <map:parameter name="admin-page" 
+                                     value="agadministration.html"/>
+                      <map:parameter name="current-page"
+                                     value="agmyspace.html"/>
+                    </map:transform>
+                  </map:act>
+                  <!-- Serialize as HTML -->
+                  <map:serialize type="html"/>
+               </map:act>
+            </map:match>
+
+            <!-- Explorer images -->
+            <map:match pattern="explorer/images/*.gif">
+               <map:read src="explorer/images/{1}.gif" mime-type="images/gif"/>
+            </map:match>
+
+            <!-- HTML pages -->
+            <map:match pattern="*.html">
+               <map:read mime-type="text/html" src="html/{1}.html"/>
+            </map:match>
+
+            <!-- Site XSP files -->
+            <map:match pattern="*.xsp">
+               <map:generate type="serverpages" src="xsp/{1}.xsp"/>
+               <map:transform src="xsl/{1}.xsl"/> 
+               <map:serialize type="html"/>
+            </map:match>
+
+<!-- Default page if no session "user" defined -->
+         <map:match pattern="*.html">
+            <map:read mime-type="text/html" src="html/agnotlogin.html"/>
+         </map:match>
+         
+      </map:pipeline>
+   </map:pipelines>
 </map:sitemap>
