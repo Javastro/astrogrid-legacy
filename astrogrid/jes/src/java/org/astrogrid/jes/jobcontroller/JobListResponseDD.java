@@ -14,7 +14,7 @@ package org.astrogrid.jes.jobcontroller;
 public final class JobListResponseDD {
 	
 	public static final String
-	    JOBLIST_REPONSE = "reponse" ;
+	    JOBLIST_RESPONSE = "response" ;
 	    
     public static final String 
         ARGUMENT_ELEMENT = "message" ;
