@@ -1,5 +1,5 @@
 /*
- * $Id: FailbackConfig.java,v 1.19 2004/03/31 11:00:14 mch Exp $
+ * $Id: FailbackConfig.java,v 1.20 2004/04/07 11:41:04 jdt Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -274,8 +274,8 @@ public class FailbackConfig extends Config {
          //it should be reported...
          log.warn("No configuration file found; if you need one, "+
                      "make sure "+configFilename+" or "+defaultFilename+" is in your classpath, "+
-                     "or set the JNDI key "+propertyUrlKey+" to it's URL, "+
-                     "or set the JNDI key "+propertyKey+" to it's file location");
+                     "or set the JNDI key "+propertyUrlKey+" to its URL, "+
+                     "or set the JNDI key "+propertyKey+" to its file location");
       }
    }
 
@@ -595,6 +595,9 @@ public class FailbackConfig extends Config {
 }
 /*
 $Log: FailbackConfig.java,v $
+Revision 1.20  2004/04/07 11:41:04  jdt
+Modified by the A.A.A.A.
+
 Revision 1.19  2004/03/31 11:00:14  mch
 Added keySet()
 
