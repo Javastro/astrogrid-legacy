@@ -6,6 +6,7 @@ import java.util.*;
 
 import java.net.URL;
 import org.apache.axis.client.Call;
+import javax.xml.rpc.ParameterMode;
 import org.apache.axis.client.Service;
 import org.apache.axis.encoding.XMLType;
 
@@ -578,6 +579,7 @@ public class QueryAction extends AbstractAction
 			Service service = new Service();
 			Call call = (Call)service.createCall();
 			call.setTargetEndpointAddress(new URL(endPoint));
+			call.addParameter( "request", XMLType.XSD_STRING, ParameterMode.IN );
 			call.setOperationName(new javax.xml.namespace.QName(nameSpace, methodName));
 			call.setReturnType(XMLType.XSD_STRING);
 			if(DEBUG_FLAG) {
