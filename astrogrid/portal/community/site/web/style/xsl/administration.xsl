@@ -366,9 +366,9 @@
 		<xsl:if test="$action = 'changeofpassword'">			
 			<form method="post" name="ChangeOfPassword">
 				<input type="hidden" name="processaction" value="changeofpassword" />
-				<strong>Current Password: </strong> <input type="password" name="currentpassword" /><br />
-				<strong>New Password: </strong> <input type="password" name="newpassword" /><br />
-				<strong>Verify Password: </strong> <input type="password" name="verifypassword" /><br />						
+				<strong>Current Password: </strong> <input type="password" name="current_password" /><br />
+				<strong>New Password: </strong> <input type="password" name="new_password" /><br />
+				<strong>Verify Password: </strong> <input type="password" name="verify_password" /><br />						
 				<input type="submit" name="changepassword" value="Change Password" />
 			</form>
 		</xsl:if>			
