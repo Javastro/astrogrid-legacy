@@ -1,5 +1,5 @@
 /*
- * $Id: SubmitAdqlSql.java,v 1.3 2004/10/12 23:09:53 mch Exp $
+ * $Id: SubmitAdqlSql.java,v 1.4 2004/10/13 01:28:59 mch Exp $
  */
 
 package org.astrogrid.datacenter.servlet;
@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
-import org.astrogrid.datacenter.query.AdqlQueryMaker;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.query.SqlQueryMaker;
 import org.astrogrid.datacenter.returns.ReturnSpec;
