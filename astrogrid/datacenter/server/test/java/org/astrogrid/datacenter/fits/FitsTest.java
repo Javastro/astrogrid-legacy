@@ -1,4 +1,4 @@
-/*$Id: FitsTest.java,v 1.1 2003/11/25 11:06:07 mch Exp $
+/*$Id: FitsTest.java,v 1.2 2003/11/27 17:28:09 nw Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -27,8 +27,9 @@ public class FitsTest extends TestCase
       assertNotNull(fits1);
       
       FitsReader reader = new FitsReader(fits1);
-      
+      assertNotNull(reader);
       FitsHeader header = reader.readHeader();
+      assertNotNull(header);
    }
    
    
@@ -52,6 +53,9 @@ public class FitsTest extends TestCase
 
 /*
  $Log: FitsTest.java,v $
+ Revision 1.2  2003/11/27 17:28:09  nw
+ finished plugin-refactoring
+
  Revision 1.1  2003/11/25 11:06:07  mch
  New FITS io package
 

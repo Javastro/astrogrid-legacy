@@ -1,4 +1,4 @@
-/*$Id: DatacenterTest.java,v 1.5 2003/11/21 17:37:56 nw Exp $
+/*$Id: DatacenterTest.java,v 1.6 2003/11/27 17:28:09 nw Exp $
  * Created on 19-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -67,12 +67,12 @@ public class DatacenterTest extends AbstractTestInstallation {
         DataSource ds = new HsqlTestCase.HsqlDataSource();
         conn = ds.getConnection();
         HsqlTestCase.runSQLScript(script,conn);
-        // Extract the wsdd file.
+        // Extract the wsdd file.#        
         String wsdd = ServerTestCase.getResourceAsString("/wsdd/deploy.wsdd");
         assertNotNull(wsdd);
         PrintWriter pw = new PrintWriter(new OutputStreamWriter(new FileOutputStream("AxisDataServer-deploy.wsdd")));
         pw.print(wsdd);
-        pw.close();
+        pw.close();        
      // deploy our 'server' locally
      
         String[] args = {"-l",
@@ -106,6 +106,9 @@ public class DatacenterTest extends AbstractTestInstallation {
 
 /*
 $Log: DatacenterTest.java,v $
+Revision 1.6  2003/11/27 17:28:09  nw
+finished plugin-refactoring
+
 Revision 1.5  2003/11/21 17:37:56  nw
 made a start tidying up the server.
 reduced the number of failing tests

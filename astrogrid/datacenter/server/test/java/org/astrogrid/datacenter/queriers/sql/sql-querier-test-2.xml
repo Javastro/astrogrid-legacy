@@ -1,6 +1,5 @@
 <?xml version="1.0" ?>
-<query type="adql">
-<Select>
+<Select xmlns="http://tempuri.org/adql">
 	<SelectionList>
 	  <ColumnExpr>
 		<SingleColumnReference>
@@ -20,4 +19,3 @@
 		</FromClause>
 	</TableClause>
 </Select>
-</query>

@@ -1,4 +1,4 @@
-/*$Id: AbstractTestInstallation.java,v 1.4 2003/11/27 00:52:58 nw Exp $
+/*$Id: AbstractTestInstallation.java,v 1.5 2003/11/27 17:28:09 nw Exp $
  * Created on 19-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -102,21 +102,22 @@ public abstract class AbstractTestInstallation extends ServerTestCase {
     }
  */    
     
-    public void testGetMetatdata() {
-        AdqlQuerier del = createDelegate();
+    public void testGetMetatdata() throws Throwable{
         try {
+        AdqlQuerier del = createDelegate();
             Metadata result = del.getMetadata();
             assertNotNull(result);
             Document d = result.getDocument();             
              assertIsMetadata(d);
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Could not get metadata:" + e.getMessage());
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
         }
     }
 
     /** do a standard (blocking) query for each query file found */
-    public void testDoBlockingQuery() throws Exception {
+    public void testDoBlockingQuery() throws Throwable {
+        try {
         AdqlQuerier del = createDelegate();
         FileProcessor fp = new FileProcessor() {
             protected void processStream(AdqlQuerier del, InputStream is) throws Exception{
@@ -124,10 +125,15 @@ public abstract class AbstractTestInstallation extends ServerTestCase {
             }
         };
         fp.findFiles(del);
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
+        }
     }
 
     /**do a nonblocking query for each file found */
-    public void testDoNonblockingQuery() throws Exception{
+    public void testDoNonblockingQuery() throws Throwable{
+        try {
         AdqlQuerier del = createDelegate();
         FileProcessor fp = new FileProcessor() {
             protected void processStream(AdqlQuerier del, InputStream is) throws Exception{
@@ -135,6 +141,10 @@ public abstract class AbstractTestInstallation extends ServerTestCase {
             }
         };
         fp.findFiles(del);
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
+        }
     }
 
     /** helper method to create a datacenter delegate, based on properties initialized in {@link setUp} */
@@ -157,35 +167,33 @@ public abstract class AbstractTestInstallation extends ServerTestCase {
 
     /** helper method to do a query */
     protected void doQuery(AdqlQuerier del, InputStream is) throws Exception {
-       
+       assertNotNull(is);
        Select adql = Select.unmarshalSelect(new InputStreamReader(is));
+       assertNotNull("query input is null",adql);
        DatacenterResults result = del.doQuery(AdqlQuerier.VOTABLE, adql);
         assertNotNull("Result of query was null",result);
-//        assertEquals("Result of query not in expected format","DatacenterResults",result.getLocalName());
-//        System.out.println("Results for blocking query");
-//        System.out.println(XMLUtils.ElementToString(result));
-    
+       Element vo = result.getVotable();
+       assertNotNull(vo);
+       assertIsVotable(vo); 
     }
 
 
 
     /** helper test method to do a non-blockinig query */
     protected void doNonBlockingQuery(AdqlQuerier del, InputStream is) throws Exception {
-
+        assertNotNull(is);
         Select adql = Select.unmarshalSelect(new InputStreamReader(is));
+        assertNotNull(adql);
         DatacenterQuery query = del.makeQuery(adql);
         // check the response document.
         assertNotNull("query creation response document is null",query);
-//        assertEquals("Query creation response document not in expected format","QueryCreated",queryIdDocument.getLocalName());
-//        Element queryIdEl = (Element)queryIdDocument.getElementsByTagName("QueryId").item(0) ;
         assertNotNull("Query response document has not ID",query.getId());
-//        String queryId = queryIdEl.getChildNodes().item(0).getNodeValue();
-//        assertNotNull("query ID is null",queryId);
+
         System.out.println("Non blocking QueryID:" + query.getId());
                
         QueryStatus stat = query.getStatus();
         assertNotNull("status is null",stat);
-        assertEquals("status code is not as expected",QueryStatus.CONSTRUCTED,stat);
+        assertEquals("status code is not as expected",QueryStatus.UNKNOWN,stat);
                       
         URL notifyURL = new URL("http://www.nobody.there.com");
         query.registerWebListener(notifyURL);
@@ -203,9 +211,8 @@ public abstract class AbstractTestInstallation extends ServerTestCase {
         DatacenterResults result = query.getResultsAndClose();
         assertNotNull("result of query is null",result);
         System.out.println("Results for Non-blocking query");
-//        System.out.println(XMLUtils.ElementToString(result));
-        // doesn't seem to return the document anymore - instead returns pointer to them.
-//        assertEquals("Result of query not in expected format","DatacenterResults",result.getLocalName());
+        assertTrue(result.isFits());
+        assertNotNull(result.getUrls());
   
     }
     
@@ -274,6 +281,9 @@ public abstract class AbstractTestInstallation extends ServerTestCase {
 
 /*
 $Log: AbstractTestInstallation.java,v $
+Revision 1.5  2003/11/27 17:28:09  nw
+finished plugin-refactoring
+
 Revision 1.4  2003/11/27 00:52:58  nw
 refactored to introduce plugin-back end and translator maps.
 interfaces in place. still broken code in places.

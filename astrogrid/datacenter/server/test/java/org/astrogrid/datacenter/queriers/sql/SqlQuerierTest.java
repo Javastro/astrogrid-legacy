@@ -1,4 +1,4 @@
-/*$Id: SqlQuerierTest.java,v 1.4 2003/11/27 00:52:58 nw Exp $
+/*$Id: SqlQuerierTest.java,v 1.5 2003/11/27 17:28:09 nw Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,12 +17,14 @@ import java.sql.Connection;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.axisdataserver.types._query;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QueryResults;
+import org.astrogrid.util.Workspace;
 import org.w3c.dom.Document;
 
 /** test out the vanilla sql querier over an in-memory hsqldb database
@@ -100,17 +102,20 @@ public class SqlQuerierTest extends ServerTestCase {
         assertNotNull(queryFile);        
         InputStream is = this.getClass().getResourceAsStream(queryFile);
         assertNotNull("Could not open query file :" + queryFile,is);
-        Select select = Select.unmarshalSelect(new InputStreamReader(is));               
+        Select select = Select.unmarshalSelect(new InputStreamReader(is));     
+        assertNotNull(select);          
         _query q = new _query();
         q.setQueryBody(ADQLUtils.marshallSelect(select).getDocumentElement());
-        Querier querier = new Querier(new SqlQuerierSPI(),q,null,"handle");
+        Querier querier = new Querier(new SqlQuerierSPI(),q,new Workspace("handle"),"handle");
         assertNotNull(querier);
         QueryResults results = querier.doQuery();
         assertNotNull(results);
 
         Document voElement = results.toVotable();
+        querier.close();
         assertIsVotable(voElement);
         // could add extra checking to compare with expected results here..
+        XMLUtils.PrettyDocumentToStream(voElement,System.out);
     }
 
 }
@@ -118,6 +123,9 @@ public class SqlQuerierTest extends ServerTestCase {
 
 /*
 $Log: SqlQuerierTest.java,v $
+Revision 1.5  2003/11/27 17:28:09  nw
+finished plugin-refactoring
+
 Revision 1.4  2003/11/27 00:52:58  nw
 refactored to introduce plugin-back end and translator maps.
 interfaces in place. still broken code in places.

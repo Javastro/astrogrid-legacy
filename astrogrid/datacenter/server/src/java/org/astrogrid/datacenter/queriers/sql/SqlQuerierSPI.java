@@ -1,5 +1,5 @@
 /*
- * $Id: SqlQuerierSPI.java,v 1.1 2003/11/27 00:52:58 nw Exp $
+ * $Id: SqlQuerierSPI.java,v 1.2 2003/11/27 17:28:09 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -110,7 +110,7 @@ protected Connection createConnection() throws DatabaseAccessException {
                return ds.getConnection();
             }
             } catch (NamingException e) {
-                log.info("Failed to retreive datasource from jndi",e);
+                log.info("Failed to retreive datasource from jndi: " + e.getMessage());
                 return null;
             } catch (SQLException e) {
                 throw new DatabaseAccessException("Failed to connect to database via JNDI datasource");

@@ -13,6 +13,8 @@ import java.net.URL;
 import java.util.Date;
 import java.util.List;
 import java.util.Vector;
+
+import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.axisdataserver.types._query;
@@ -58,7 +60,12 @@ public class Querier implements Runnable {
        this.spi = spi;
        this.workspace = workspace;
        this.query = query;
-       this.cert = (query.getCommunity() != null ? new Certification(query.getCommunity()) : null);
+       if (query.getCommunity() == null) {
+           log.warn("No community info: setting to unknown");
+           this.cert = new Certification("unknown","unknown");
+       } else {
+            this.cert = new Certification(query.getCommunity());
+       }
        this.handle = handle;
    }
    /** the plugin we're managing */
@@ -191,6 +198,11 @@ public class Querier implements Runnable {
         Element queryBody = query.getQueryBody();
         String namespaceURI = queryBody.getNamespaceURI();
         if (namespaceURI == null) {
+            // maybe not using namespace aware parser - see if we can find an xmlns attribute instead
+            namespaceURI = queryBody.getAttribute("xmlns");
+        }
+        if (namespaceURI == null) {            
+            XMLUtils.PrettyElementToStream(queryBody,System.out);
             throw new DatabaseAccessException("Query body has no namespace - cannot determine language");
         }
         Translator trans = spi.getTranslatorMap().lookup(namespaceURI);
@@ -228,7 +240,7 @@ public class Querier implements Runnable {
     * then can replace with MySpaceDummyDelegate.DUMMY
     * @todo update this constant with correct reference.
     */
-   public static final String TEMPORARY_DUMMY = "DUMMY";
+   public static final String TEMPORARY_DUMMY = "http://www.astrogrid.org/DUMMY/ADDRESS";
 
    /**
     * Tests the destination exists and a file can be created on it.  This ensures
@@ -250,6 +262,7 @@ public class Querier implements Runnable {
       MySpaceManagerDelegate myspace = null;
       
       if (resultsDestination.equals(TEMPORARY_DUMMY)) {
+          log.info("Using dummy myspace delegate");
          myspace = new MySpaceDummyDelegate(resultsDestination);
       } else {
          myspace = new MySpaceManagerDelegate(resultsDestination);
@@ -504,6 +517,9 @@ public class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.4  2003/11/27 17:28:09  nw
+ finished plugin-refactoring
+
  Revision 1.3  2003/11/27 00:52:58  nw
  refactored to introduce plugin-back end and translator maps.
  interfaces in place. still broken code in places.

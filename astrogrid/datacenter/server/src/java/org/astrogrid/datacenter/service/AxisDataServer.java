@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.13 2003/11/27 00:52:58 nw Exp $
+ * $Id: AxisDataServer.java,v 1.14 2003/11/27 17:28:09 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -66,7 +66,8 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
     * @todo NW this is a quick hack to get config from JNDI, as code in SImpleConfig doesn't want to work.
     * later find out why the library code isn't doing the job.
     */
-   public AxisDataServer() throws IOException {
+   public AxisDataServer()  {
+       try {
       try {
          String s = (String)new InitialContext().lookup("java:comp/env/org.astrogrid.config.url");
          System.out.println("Context value " + s);
@@ -75,6 +76,9 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
          log.warn("JNDI lookup failed");
          SimpleConfig.autoLoad();
       }
+       } catch(IOException e) {
+           log.error("Could not load configuration",e);
+       }
    }
    
    /**
@@ -126,6 +130,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
    public String doQuery(String resultsFormat,  _query q) throws IOException {
       
       if (resultsFormat == null || resultsFormat.length() == 0)  {
+          log.error("Empty parameter for results format");
          throw new IllegalArgumentException("Empty parameter for results format");
       }
       if (!resultsFormat.toLowerCase().equals(AdqlQuerier.VOTABLE.toLowerCase()))  {

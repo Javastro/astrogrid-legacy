@@ -1,4 +1,4 @@
-/*$Id: DataQueryServiceTest.java,v 1.7 2003/11/27 00:52:58 nw Exp $
+/*$Id: DataQueryServiceTest.java,v 1.8 2003/11/27 17:28:09 nw Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,6 +27,7 @@ import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
+import org.astrogrid.datacenter.axisdataserver.types.QueryHelper;
 import org.astrogrid.datacenter.axisdataserver.types._query;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
@@ -83,11 +84,11 @@ public class DataQueryServiceTest extends ServerTestCase {
         super.tearDown();
     }
 
-    public void testHandleUniqueness() throws IOException {
+    public void testHandleUniqueness() throws Exception {
         SimpleConfig.setProperty(QuerierManager.QUERIER_SPI_KEY,DummyQuerierSPI.class.getName());
-         Querier s1 = QuerierManager.createQuerier((_query)null);
+         Querier s1 = QuerierManager.createQuerier(QueryHelper.buildMinimalQuery());
          assertNotNull(s1);
-         Querier s2 = QuerierManager.createQuerier((_query)null);
+         Querier s2 = QuerierManager.createQuerier(QueryHelper.buildMinimalQuery());
          assertNotNull(s2);
          assertNotSame(s1,s2);
          assertTrue(! s1.getHandle().trim().equals(s2.getHandle().trim()));
@@ -105,8 +106,9 @@ public class DataQueryServiceTest extends ServerTestCase {
          query.setQueryBody(ADQLUtils.marshallSelect(s).getDocumentElement());
         
         Querier querier =  QuerierManager.createQuerier(query);
+        querier.setResultsDestination(Querier.TEMPORARY_DUMMY);
         assertNotNull(querier);
-        assertEquals(QueryStatus.CONSTRUCTED,querier.getStatus());
+        assertEquals(QueryStatus.UNKNOWN,querier.getStatus());
         assertEquals(-1.0,querier.getQueryTimeTaken(),0.001);
         TestListener l = new TestListener();
         querier.registerListener(l);
@@ -114,6 +116,11 @@ public class DataQueryServiceTest extends ServerTestCase {
 
        //run query
         querier.run(); // note this is running in the same thread - simpler for testing - we don't mind wating.
+        if (querier.getStatus().equals(QueryStatus.ERROR)){
+            Throwable t = querier.getError();
+            t.printStackTrace();
+            fail("querier raised error" + t.getMessage());
+        }        
         assertEquals(QueryStatus.FINISHED,querier.getStatus());
         assertTrue(querier.getQueryTimeTaken() > 0);
         URL votableLoc = new URL(querier.getResultsLoc());
@@ -162,6 +169,9 @@ public class DataQueryServiceTest extends ServerTestCase {
 
 /*
 $Log: DataQueryServiceTest.java,v $
+Revision 1.8  2003/11/27 17:28:09  nw
+finished plugin-refactoring
+
 Revision 1.7  2003/11/27 00:52:58  nw
 refactored to introduce plugin-back end and translator maps.
 interfaces in place. still broken code in places.

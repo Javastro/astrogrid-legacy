@@ -1,5 +1,5 @@
 /*
- * $Id: SocketHandler.java,v 1.9 2003/11/27 00:52:58 nw Exp $
+ * $Id: SocketHandler.java,v 1.10 2003/11/27 17:28:09 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -225,7 +225,7 @@ public class SocketHandler extends ServiceServer implements Runnable, QuerierLis
    private Querier getQuerierFromDoc(Document doc)
    {
       String queryId = QueryIdHelper.getQueryId(doc.getDocumentElement());
-      Querier querier = QuerierManager.getQuerier(queryId);
+      Querier querier = null; //NWW - fix QuerierManager.getQuerier(queryId);
       if (querier == null)
       {
          throw new IllegalArgumentException("No querier found for id='"+queryId+"'"
@@ -251,6 +251,9 @@ public class SocketHandler extends ServiceServer implements Runnable, QuerierLis
 
 /*
 $Log: SocketHandler.java,v $
+Revision 1.10  2003/11/27 17:28:09  nw
+finished plugin-refactoring
+
 Revision 1.9  2003/11/27 00:52:58  nw
 refactored to introduce plugin-back end and translator maps.
 interfaces in place. still broken code in places.

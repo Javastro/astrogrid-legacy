@@ -5,7 +5,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.astrogrid.datacenter.ServerTestCase;
-import org.astrogrid.datacenter.common.QueryHelper;
+import org.astrogrid.datacenter.axisdataserver.types.QueryHelper;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.DummyQuerierSPI;
 import org.astrogrid.datacenter.queriers.DummyQueryResults;

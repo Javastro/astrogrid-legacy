@@ -1,4 +1,4 @@
-/*$Id: QuerierManager.java,v 1.3 2003/11/27 00:52:58 nw Exp $
+/*$Id: QuerierManager.java,v 1.4 2003/11/27 17:28:09 nw Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -55,13 +55,7 @@ public class QuerierManager {
    /** Key to configuration entry for the default target myspace for this server */
    public static final String RESULTS_TARGET_KEY = "DefaultMySpace";
    
-   /** Class method that returns the querier instance with the given handle
-    * @deprecated - use getQuerier(QueryId);
-    */
-   public static Querier getQuerier(String aHandle) {
-      return (Querier) queriers.get(aHandle);
-   }
-   
+
    public static Querier getQuerier(_QueryId qid) {
       return (Querier) queriers.get(qid.getId());
    }
@@ -255,6 +249,9 @@ public class QuerierManager {
 
 /*
  $Log: QuerierManager.java,v $
+ Revision 1.4  2003/11/27 17:28:09  nw
+ finished plugin-refactoring
+
  Revision 1.3  2003/11/27 00:52:58  nw
  refactored to introduce plugin-back end and translator maps.
  interfaces in place. still broken code in places.

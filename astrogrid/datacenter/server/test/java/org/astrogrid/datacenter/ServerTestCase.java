@@ -1,4 +1,4 @@
-/*$Id: ServerTestCase.java,v 1.1 2003/11/21 17:37:56 nw Exp $
+/*$Id: ServerTestCase.java,v 1.2 2003/11/27 17:28:09 nw Exp $
  * Created on 20-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,6 +27,7 @@ import org.custommonkey.xmlunit.Validator;
 import org.custommonkey.xmlunit.XMLTestCase;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 
@@ -90,6 +91,11 @@ public class ServerTestCase extends XMLTestCase {
     public void assertIsVotable(Document d) throws SAXException, IOException, TransformerException, ParserConfigurationException {
         assertXpathExists("/" + VOTABLE_DOCTYPE,d);
         assertXMLValid(new Validator(d,VOTABLE_SYSTEM_ID,VOTABLE_DOCTYPE));
+    }
+    
+    public void assertIsVotable(Element e) throws SAXException, ParserConfigurationException {
+        assertEquals(VOTABLE_DOCTYPE,e.getLocalName());
+        assertXMLValid(XMLUtils.ElementToString(e),VOTABLE_SYSTEM_ID,VOTABLE_DOCTYPE);
     }
 
     /**
@@ -195,6 +201,9 @@ public class ServerTestCase extends XMLTestCase {
 
 /* 
 $Log: ServerTestCase.java,v $
+Revision 1.2  2003/11/27 17:28:09  nw
+finished plugin-refactoring
+
 Revision 1.1  2003/11/21 17:37:56  nw
 made a start tidying up the server.
 reduced the number of failing tests

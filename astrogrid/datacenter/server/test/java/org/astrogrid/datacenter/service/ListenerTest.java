@@ -48,16 +48,19 @@ public class ListenerTest extends ServerTestCase implements DelegateQueryListene
       // TODO
    }
    
+   public static String TEST_QUERY_DOCUMENT="/org/astrogrid/datacenter/queriers/sql/sql-querier-test-1.xml";
+   
    public void testDelegateListener() throws MalformedURLException, IOException, ServiceException, ADQLException, SAXException, ParserConfigurationException
    {
       //make sure it can be registered properly
       DummyDelegate delegate = (DummyDelegate) DatacenterDelegateFactory.makeAdqlQuerier(null);
       
-      URL url = getClass().getResource("testQuery.xml");
+      URL url = getClass().getResource(TEST_QUERY_DOCUMENT);
+      assertNotNull(url);
       Element adqlQuery = XMLUtils.newDocument(url.openConnection().getInputStream()).getDocumentElement();
 
       Select adql = ADQLUtils.unmarshalSelect(adqlQuery);
-      
+      assertNotNull(adql);
       DatacenterQuery query = delegate.makeQuery(adql);
       assertNotNull(query);
       query.registerListener(this);
@@ -70,7 +73,7 @@ public class ListenerTest extends ServerTestCase implements DelegateQueryListene
       //make sure it can be registered properly
       DummyDelegate delegate = (DummyDelegate) DatacenterDelegateFactory.makeAdqlQuerier(null);
       
-      URL url = getClass().getResource("testQuery.xml");
+      URL url = getClass().getResource(TEST_QUERY_DOCUMENT);
       Element adqlQuery = XMLUtils.newDocument(url.openConnection().getInputStream()).getDocumentElement();
 
       Select adql = ADQLUtils.unmarshalSelect(adqlQuery);
@@ -118,6 +121,9 @@ public class ListenerTest extends ServerTestCase implements DelegateQueryListene
 
 /*
 $Log: ListenerTest.java,v $
+Revision 1.7  2003/11/27 17:28:09  nw
+finished plugin-refactoring
+
 Revision 1.6  2003/11/27 00:52:58  nw
 refactored to introduce plugin-back end and translator maps.
 interfaces in place. still broken code in places.

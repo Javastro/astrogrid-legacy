@@ -1,4 +1,4 @@
-/*$Id: BaseQuerierSPI.java,v 1.1 2003/11/27 00:52:58 nw Exp $
+/*$Id: BaseQuerierSPI.java,v 1.2 2003/11/27 17:28:09 nw Exp $
  * Created on 26-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,8 +12,6 @@ package org.astrogrid.datacenter.queriers.spi;
 
 import org.apache.axis.components.logger.LogFactory;
 import org.apache.commons.logging.Log;
-import org.astrogrid.datacenter.queriers.QueryResults;
-import org.astrogrid.datacenter.queriers.spi.QuerierSPI.Config;
 import org.astrogrid.util.Workspace;
 
 /**
@@ -53,6 +51,9 @@ public abstract class BaseQuerierSPI implements QuerierSPI {
 
 /* 
 $Log: BaseQuerierSPI.java,v $
+Revision 1.2  2003/11/27 17:28:09  nw
+finished plugin-refactoring
+
 Revision 1.1  2003/11/27 00:52:58  nw
 refactored to introduce plugin-back end and translator maps.
 interfaces in place. still broken code in places.

@@ -1,6 +1,5 @@
 <?xml version="1.0" ?>
-<query type="adql">
-<Select xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<Select xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://tempuri.org/adql">
 <!-- equivalent to select p.firstName, p.id from person as p order by p.firstName -->
 	<SelectionList>
 	  <ColumnExpr>
@@ -61,4 +60,3 @@
       	</OrderList>
       </OrderBy>
 </Select>
-</query>

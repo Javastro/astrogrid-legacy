@@ -1,5 +1,5 @@
 /*
- * $Id: ServiceServer.java,v 1.8 2003/11/27 00:52:58 nw Exp $
+ * $Id: ServiceServer.java,v 1.9 2003/11/27 17:28:09 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -174,7 +174,7 @@ public abstract class ServiceServer
     */
    protected Querier getQuerier(_QueryId queryId)
    {
-      return QuerierManager.getQuerier(queryId.getId());
+      return QuerierManager.getQuerier(queryId);
    }
 
 
