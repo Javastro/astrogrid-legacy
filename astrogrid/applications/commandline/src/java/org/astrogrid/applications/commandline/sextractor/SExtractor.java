@@ -1,5 +1,5 @@
 /*
- * $Id: SExtractor.java,v 1.5 2004/09/23 22:44:23 pah Exp $
+ * $Id: SExtractor.java,v 1.6 2004/09/28 16:15:47 pah Exp $
  *
  * Created on 24 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -42,17 +42,6 @@ public class SExtractor extends CommandLineApplication {
    protected void preRunHook() {
       argvals.add("-CATALOG_TYPE");
       argvals.add("ASCII_HEAD");
-      // FIXME temp kludge to work for AVO demo
-      argvals.add("-FILTER_NAME");
-      argvals.add("/home/applications/demo/h_goods_r1.0z_detect_conv.txt");
-      argvals.add("-CHECKIMAGE_TYPE");
-      argvals.add("NONE");
-      argvals.add("-WEIGHT_TYPE");
-      argvals.add("NONE");
-      argvals.add("-DETECT_THRESH");
-      argvals.add("4.0");
-      argvals.add("-ANALYSIS_THRESH");
-      argvals.add("4.0");
    }
 
 
