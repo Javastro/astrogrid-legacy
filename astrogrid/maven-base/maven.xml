@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- $Id: maven.xml,v 1.13 2004/12/07 11:18:09 jdt Exp $ -->
+<!-- $Id: maven.xml,v 1.14 2005/03/31 13:38:15 jdt Exp $ -->
 <!-- extension maven script -->
 <project>
     <!-- This is just the base project for inheritance - it shouldn't be mavened -->
@@ -31,6 +31,20 @@
         <echo>UI ${astrogrid.ui.version}</echo>
         <echo>Portal ${astrogrid.portal.version}</echo>
         <echo>Aggregate ${astrogrid.aggregate.version}</echo>
-        <echo>Slinger ${astrogrid.slinger.version}</echo>
+
+        <echo>xmldb ${astrogrid.xmldb.version}</echo>
+        <echo>desktop ${astrogrid.desktop.version}</echo>
+        <echo>Contracts ${astrogrid.contracts.version}</echo>
+        <echo>Status ${astrogrid.status.version}</echo>
+        <echo>Storeclient ${astrogrid.storeclient.version}</echo>
+        
+        <echo>pal stable ${astrogrid.pal.version}</echo>
+        <echo>pal latest ${astrogrid.pal.latest}</echo>
+        <echo>config stable ${astrogrid.config.stable}</echo>
+        <echo>config latest ${astrogrid.config.latest}</echo>
+        <echo>utils stable ${astrogrid.utils.stable}</echo>
+        <echo>utils latest ${astrogrid.utils.latest}</echo>
+        <echo>xml latest ${astrogrid.xml.stable}</echo>
+        <echo>xml stable${astrogrid.xml.latest}</echo>
     </goal>
 </project>
