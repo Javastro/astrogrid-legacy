@@ -4,7 +4,8 @@
     <xsl:param name="image_path">/astrogrid-portal/mount/workflow/</xsl:param>  <!-- path to images -->
     
     <xsl:template match="workflow">
-    <ag-div>        
+    <ag-div>
+       <agComponentTitle>Workflow</agComponentTitle>        
         <ag-script type="text/javascript" src="/astrogrid-portal/mount/workflow/workflow-functions.js"/>
         <ag-link rel="stylesheet" type="text/css" href="/astrogrid-portal/mount/workflow/workflow.css"/>           
             <table border="1">
@@ -45,21 +46,21 @@
 
     <xsl:template match="*"> 
         <tr>
-<xsl:if test="name() = 'sequence'">
+          <xsl:if test="name() = 'sequence'">
             <xsl:call-template name="format-cells">
                 <xsl:with-param name="count" select="count(ancestor::*)"/>
             </xsl:call-template>                    
-</xsl:if>
-<xsl:if test="name() = 'flow'">
+          </xsl:if>
+          <xsl:if test="name() = 'flow'">
             <xsl:call-template name="format-cells">
                 <xsl:with-param name="count" select="count(ancestor::*)"/>
             </xsl:call-template>                    
-</xsl:if> 
-<xsl:if test="name() = 'step'">
+          </xsl:if> 
+          <xsl:if test="name() = 'step'">
             <xsl:call-template name="format-cells">
                 <xsl:with-param name="count" select="count(ancestor::*)"/>
             </xsl:call-template>                    
-</xsl:if>            
+          </xsl:if>            
             <td valign="top" align="left">            
                 <xsl:choose>                                      
                     <xsl:when test="name() = 'sequence'">  <!--  SEQUENCE -->         
