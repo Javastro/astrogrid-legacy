@@ -45,11 +45,15 @@ public abstract class Activity {
     private Activity
         parent ;
         
-    public Activity() {
+    private Activity() {
+    }
+        
+    public Activity( Activity parent ) {
         if( TRACE_ENABLED ) trace( "Activity() entry") ; 
         
         try {  
-            key = ActivityKey.createKey() ;
+            this.parent = parent ;
+            this.key = ActivityKey.createKey() ;
         }
         finally {
             if( TRACE_ENABLED ) trace( "Activity() exit") ; 
@@ -110,16 +114,24 @@ public abstract class Activity {
               
         try {
             
-            Activity
-                 parent = this.getParent(),
-                 workflowCandidate = this ;
+            if( this instanceof Workflow ) {
+                workflow = (Workflow)this ;
+            }
+            else {
+                   
+                Activity
+                     parent = this.getParent(),
+                     workflowCandidate = this ;
                  
-            while( parent != null ) {
-                 workflowCandidate = parent ;
-                 parent = this.getParent() ;
-             }
+                while( parent != null ) {
+                     workflowCandidate = parent ;
+                     parent = this.getParent() ;
+                 }
              
-             workflow = (Workflow)workflowCandidate ;
+                 workflow = (Workflow)workflowCandidate ;
+                 
+            }
+
         }
         catch( Exception ex ) {
             debug( "Exception: " + ex.getLocalizedMessage() ) ;

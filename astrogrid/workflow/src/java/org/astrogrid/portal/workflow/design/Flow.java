@@ -41,14 +41,14 @@ public class Flow extends ActivityContainer {
     private static Logger 
         logger = Logger.getLogger( Flow.class ) ;  
     
-    public Flow() {
-        super() ;
+    public Flow( Activity parent ) {
+        super( parent ) ;
         if( TRACE_ENABLED ) trace( "Flow() entry/exit") ; 
     }
    
    
-    public Flow( Element element ) {
-        super(element) ;
+    public Flow( Element element,  Activity parent ) {
+        super(element, parent) ;
         if( TRACE_ENABLED ) trace( "Flow(Element) entry/exit") ; 
     } 
     

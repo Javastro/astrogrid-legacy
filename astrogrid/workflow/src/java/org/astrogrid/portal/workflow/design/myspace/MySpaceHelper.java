@@ -1,5 +1,5 @@
 /*
- * @(#)MySpace.java   1.0
+ * @(#)MySpaceHelper.java   1.0
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -149,8 +149,11 @@ public class MySpaceHelper {
                 
             diagnoseResponse( responseXML ) ;
             
+            InputSource
+                source = new InputSource( new StringReader( responseXML ) );
+            
             // Once we've located the file ...
-            workflowString = getFile( "" ) ;
+            workflowString = getFile( extractPathName( XMLUtils.newDocument( source ) ) ) ;
             
         }
 //        catch( FileNotFoundException fnfex ) {
@@ -176,7 +179,26 @@ public class MySpaceHelper {
         boolean
             retValue = true ;
          
-        try {   
+        try { 
+
+/*
+            "<request>" +
+                "<elements>" +
+                    "<userID>clq</userID>" + //Mandatory
+                    "<communityID>Leicester</communityID>" + //Mandatory
+                    "<jobID>testIDIt10</jobID>" + //Mandatory
+                    "<mySpaceAction>deleteDataHolder</mySpaceAction>" +
+                    "<dataItemID></dataItemID>" +
+                    "<oldDataItemID></oldDataItemID>" +
+                    "<newDataItemName></newDataItemName>" + 
+                    "<newContainerName>x</newContainerName>" +
+                    "<query>x</query>" +
+                    "<newDataHolderName>xx</newDataHolderName>" +
+                    "<serverFileName>/clq/serv2/table26</serverFileName>" + //Mandatory //file that will be deleted
+                    "<fileSize></fileSize>" +
+                "</elements>" +
+            "</request>"; 
+*/
 
         }
         finally {
@@ -214,7 +236,7 @@ public class MySpaceHelper {
             OutputStream 
                 out = new BufferedOutputStream( new FileOutputStream( filePath ) ) ;           
             pStream = new PrintStream( out ) ;
-            pStream.print( xmlWorkflow ) ;  //JBL:  may need a loop here
+            pStream.print( xmlWorkflow ) ;  //JBL:  may need a loop here?
             pStream.flush() ;
             pStream.close() ;
             
@@ -269,9 +291,10 @@ public class MySpaceHelper {
 //            ;
 //        }
         catch( MySpaceException msex ) {
+            debug( "MySpaceException: " + msex.getAstroGridMessage().toString() );
         }
         catch( Exception ex ) {
-            ;
+            debug( "Exception: " + ex.getLocalizedMessage() );
         }
         finally {
             pStream.close() ;
@@ -284,6 +307,26 @@ public class MySpaceHelper {
     
     
     public static ListIterator readWorkflowList( String userid, String community ) {
+        
+/*
+            "<request>" +
+                "<elements>" +
+                    "<userID>clq</userID>" + //Mandatory
+                    "<communityID>Leicester</communityID>" + //Mandatory
+                    "<jobID>testIDIt2</jobID>" + //Mandatory
+                    "<mySpaceAction>lookupDataHoldersDetails</mySpaceAction>" + 
+                    "<dataItemID></dataItemID>" +
+                    "<oldDataItemID></oldDataItemID>" +
+                    "<newDataItemName>xx</newDataItemName>" +
+                    "<newContainerName>x</newContainerName>" +
+                    "<query>*</query>" + //Mandatory
+                    "<newDataHolderName>x</newDataHolderName>" +
+                    "<serverFileName>x</serverFileName>" +
+                    "<fileSize>x</fileSize>" +
+                "</elements>" +
+            "</request>";   
+*/
+               
         return null ;
     }
     
@@ -499,6 +542,10 @@ public class MySpaceHelper {
 
     } // end of diagnoseResponse()
     
+    
+    private static String extractPathName( Document doc ) {
+        return null ;
+    }
     
     
     private static String getFile( String filePath ) {

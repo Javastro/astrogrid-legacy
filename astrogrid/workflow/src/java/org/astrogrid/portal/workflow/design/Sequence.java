@@ -43,14 +43,14 @@ public class Sequence extends ActivityContainer {
         logger = Logger.getLogger( Sequence.class ) ;  
     
     
-    public Sequence() {
-        super() ;
+    public Sequence( Activity parent ) {
+        super( parent ) ;
         if( TRACE_ENABLED ) trace( "Sequence() entry/exit") ; 
     }
     
     
-    public Sequence( Element element ) {
-        super( element ) ;
+    public Sequence( Element element, Activity parent) {
+        super( element, parent ) ;
         if( TRACE_ENABLED ) trace( "Sequence(Element) entry/exit") ; 
     }
     

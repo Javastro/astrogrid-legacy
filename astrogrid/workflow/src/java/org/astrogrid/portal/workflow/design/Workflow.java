@@ -159,6 +159,7 @@ public class Workflow extends Activity {
                         
              InputSource
                 source = new InputSource( new StringReader( retrieveTemplate(templateName) ) );
+                
              workflow = new Workflow( XMLUtils.newDocument(source) ) ;  
               
  //JBL?            workflow = new Workflow( XMLUtils.newDocument( retrieveTemplate(templateName) ) ) ;
@@ -302,7 +303,7 @@ public class Workflow extends Activity {
       * 
       **/           
     private Workflow() {
-        super() ;
+        super(null) ; // null because no parent 
         if( TRACE_ENABLED ) trace( "Workflow() entry") ;
         this.activities = Collections.synchronizedMap( new HashMap() ) ;   
         this.activities.put( this.getKey(), this ) ;
@@ -323,10 +324,11 @@ public class Workflow extends Activity {
       * @see 
       **/        
     private Workflow( Document document ) {
-        super() ;
+        super(null) ; // null because no parent 
         if( TRACE_ENABLED ) trace( "Workflow(String) entry") ;
         
         try{
+            this.activities = Collections.synchronizedMap( new HashMap() ) ;
             this.activities.put( this.getKey(), this ) ;
             
             Element
@@ -353,10 +355,10 @@ public class Workflow extends Activity {
                         this.description = element.getFirstChild().getNodeValue().trim() ;
                     }  
                     else if ( element.getTagName().equals( WorkflowDD.SEQUENCE_ELEMENT ) ) {
-                        setChild(new Sequence( element )) ;   
+                        setChild(new Sequence( element, this )) ;   
                     } 
                     else if ( element.getTagName().equals( WorkflowDD.FLOW_ELEMENT ) ) {
-                        setChild(new Flow( element )) ;   
+                        setChild(new Flow( element, this )) ;   
                     } 
                                       
                     

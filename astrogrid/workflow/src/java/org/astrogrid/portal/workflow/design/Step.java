@@ -55,16 +55,17 @@ public class Step extends Activity {
         tool = NULLTOOL ;
     private Resources
         resources = null ;
+ 
     
-    public Step() {
-        super() ;
+    public Step( Activity parent ) {
+        super( parent ) ;
         if( TRACE_ENABLED ) trace( "Step() entry/exit") ;
         joinCondition = JoinCondition.ANY ; 
     }
     
  
-    public Step( Element element ) {
-        super() ;
+    public Step( Element element, Activity parent  ) {
+        super( parent ) ;
         if( TRACE_ENABLED ) trace( "Step(Element) entry") ; 
         
         try {

@@ -55,13 +55,13 @@ public abstract class ActivityContainer extends Activity {
     private LinkedList
         children = new LinkedList() ;
       
-    public ActivityContainer() {
-        super() ;
+    public ActivityContainer( Activity parent ) {
+        super( parent ) ;
     }
     
     
-    public ActivityContainer( Element element ) {
-        super() ;
+    public ActivityContainer( Element element, Activity parent ) {
+        super( parent ) ;
         if( TRACE_ENABLED ) trace( "ActivityContainer(Element) entry") ; 
         
         try {
@@ -75,13 +75,13 @@ public abstract class ActivityContainer extends Activity {
                     element = (Element) nodeList.item(i) ;
                 
                     if ( element.getTagName().equals( WorkflowDD.SEQUENCE_ELEMENT ) ) {
-                        this.add( new Sequence( element ) ) ;   
+                        this.add( new Sequence( element, this ) ) ;   
                     }   
                     else if( element.getTagName().equals( WorkflowDD.FLOW_ELEMENT ) ) {
-                        this.add( new Flow( element ) ) ;                
+                        this.add( new Flow( element, this ) ) ;                
                     }
                     else if( element.getTagName().equals( WorkflowDD.STEP_ELEMENT ) ) {
-                        this.add( new Step( element ) ) ;                
+                        this.add( new Step( element, this ) ) ;                
                     }
                     
                 } // end if
@@ -104,7 +104,7 @@ public abstract class ActivityContainer extends Activity {
     
     
     public synchronized Sequence createSequence( int index ) {
-        return (Sequence)this.add( index, new Sequence() ) ;
+        return (Sequence)this.add( index, new Sequence( this ) ) ;
     }
     
     
@@ -114,12 +114,12 @@ public abstract class ActivityContainer extends Activity {
     
     
     public synchronized Flow createFlow( int index ) {
-        return (Flow)this.add( index, new Flow() ) ;
+        return (Flow)this.add( index, new Flow( this ) ) ;
     }
     
     
     public synchronized Step createStep( int index ) {
-        return (Step)this.add( index, new Step() ) ;        
+        return (Step)this.add( index, new Step( this ) ) ;        
     }
    
     
@@ -145,7 +145,7 @@ public abstract class ActivityContainer extends Activity {
         
         try {
             children.add( activity ) ;
-            activity.setParent( this ) ;
+//           activity.setParent( this ) ;
             this.getWorkflow().putActivity( activity ) ;
         }
         finally {
