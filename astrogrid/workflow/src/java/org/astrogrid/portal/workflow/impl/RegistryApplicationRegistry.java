@@ -1,4 +1,4 @@
-/*$Id: RegistryApplicationRegistry.java,v 1.2 2004/03/11 13:53:36 nw Exp $
+/*$Id: RegistryApplicationRegistry.java,v 1.3 2004/04/05 15:14:59 nw Exp $
  * Created on 09-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,21 +11,38 @@
 package org.astrogrid.portal.workflow.impl;
 
 import org.astrogrid.applications.beans.v1.ApplicationBase;
+import org.astrogrid.applications.beans.v1.InterfacesType;
+import org.astrogrid.applications.beans.v1.Parameters;
+import org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition;
 import org.astrogrid.portal.workflow.intf.ApplicationDescription;
 import org.astrogrid.portal.workflow.intf.ApplicationRegistry;
 import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
 import org.astrogrid.registry.RegistryException;
+import org.astrogrid.registry.beans.cea.ApplicationDefinition;
+import org.astrogrid.registry.beans.resource.IdentifierType;
 import org.astrogrid.registry.beans.resource.ResourceType;
 import org.astrogrid.registry.beans.resource.VODescription;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.registry.client.query.RegistryService;
 
+import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.exolab.castor.xml.CastorException;
+import org.exolab.castor.xml.Unmarshaller;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URL;
 
 /** Implementation of ApplicationRegistry that resolves lookups using an astrogrid registry
+ * <p>
+ * @todo hacked at the moment to use the DOM-based queries. later use castor-object model ones.
  * @author Noel Winstanley nw@jb.man.ac.uk 09-Mar-2004
  *
  */
@@ -50,73 +67,83 @@ public class RegistryApplicationRegistry implements ApplicationRegistry {
         assert service != null;
     }
     protected final RegistryService service;
-    /** string query to to pass to registry to get list of tools back
-     * @todo find out what to put here 
+    /** string query to to pass to registry to get list of tools back 
      */
-    public final static String LIST_QUERY_STRING="dunno what goes here";
-    /**
-     * @see org.astrogrid.portal.workflow.intf.ApplicationRegistry#listApplications()
-     */
+    public final static String LIST_QUERY_STRING= "<query><selectionSequence>" +
+    "<selection item='searchElements' itemOp='EQ' value='Resource'/>" +
+    "<selectionOp op='$and$'/>" +
+    "<selection item='@*:type' itemOp='EQ' value='CeaApplicationType'/>"  +
+    /* don't think that we need these....
+    "<selectionOp op='OR'/>" +
+    "<selection item='@*:type' itemOp='EQ' value='CeaServiceType'/>"  +
+    */
+    "</selectionSequence></query>";
+
+    
+    
     public String[] listApplications() throws WorkflowInterfaceException {
-        try {
-        VODescription result = service.submitQueryString(LIST_QUERY_STRING);
-        if (result == null) {
-            logger.error("Registry returned null when queried for application list");
-            throw new WorkflowInterfaceException("Registry returned null when queried for application list");
-        }
-        ResourceType[] resources = result.getResource();
-        if (resources == null) { // registry returned null array - we'll return a list.
-            resources = new ResourceType[]{};
-        }
-        String[] names = new String[resources.length]; 
-        for (int i = 0; i < resources.length; i++) {
-            names[i] = resources[i].getShortName();
-        }
-        return names;        
+        try {           
+            Document doc = service.submitQueryStringDOM(LIST_QUERY_STRING);
+            assert doc != null;
+            NodeList nl = doc.getElementsByTagNameNS("*","Identifier");
+            
+            String[] names = new String[nl.getLength()];
+            for (int i = 0; i < nl.getLength(); i++) {
+                IdentifierType it = (IdentifierType)Unmarshaller.unmarshal(IdentifierType.class,nl.item(i));
+                names[i] = it.getAuthorityID() + "/" + it.getResourceKey();
+            }
+            return names;
+        } catch (CastorException e) {
+            logger.error("list applications failed - castor failed to parse result",e);
+            throw new WorkflowInterfaceException(e);                          
         } catch (RegistryException e) {
-            logger.error("listApplications failed",e);
+            logger.error("listApplications Failed with exception from registry",e);
             throw new WorkflowInterfaceException(e);
         }
     }
+    
     /**
      * @see org.astrogrid.portal.workflow.intf.ApplicationRegistry#getDescriptionFor(java.lang.String)
      */
     public ApplicationDescription getDescriptionFor(String applicationName) throws WorkflowInterfaceException {
         try {
-            VODescription result = service.submitQueryString(mkInfoQuery(applicationName));
-            if (result == null) {
-                logger.error("Registry returned null when queried for " + applicationName);
-                throw new WorkflowInterfaceException("Registry returned null when queried for " + applicationName);
+            Document doc = service.getResourceByIdentifierDOM(applicationName);
+            assert doc != null;
+            // navigate down to the bit we're interested in.
+            NodeList nl = doc.getElementsByTagNameNS("*","ApplicationDefinition");
+            if (nl.getLength() == 0) {                
+                throw new WorkflowInterfaceException("Registry entry for '" + applicationName + "' has no ApplicationDefinition Element");
             }
-            ApplicationBase base = convertDescriptionToApplication(result);
-            return new ApplicationDescription(base);
+            Element n = (Element)nl.item(0);
+          
+            n.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance"); // bug-fix work around.
+            ApplicationDefinition def = (ApplicationDefinition) Unmarshaller.unmarshal(ApplicationDefinition.class,n);
+            // now mangle across to the required types.
+            ApplicationBase appBase = new ApplicationBase();
+            appBase.setName(applicationName);
+            appBase.setInterfaces(def.getInterfaces());
+            BaseParameterDefinition[] paramdef = def.getParameters().getParameterDefinition();
+            Parameters params = new Parameters();
+           appBase.setParameters(params);
+           params.setParameter(paramdef);
+            return new ApplicationDescription(appBase);   
+        } catch (CastorException e) {
+            logger.error("getDescriptionFor " + applicationName + " - castor failed to parse result",e);
+            throw new WorkflowInterfaceException(e);         
         } catch (RegistryException e) {
-            logger.error("getDescriptionFor " + applicationName,e);
+            logger.error("getDescriptionFor " + applicationName + " - exception from registry",e);
             throw new WorkflowInterfaceException(e);
         }
     }
     
-    /** Converts a VODescription to an Application Descriptor
-     * @param result
-     * @return
-     * @todo implement me
-     */
-    private ApplicationBase convertDescriptionToApplication(VODescription result) {        
-        return new ApplicationBase(); // implement this!!
-    }
-    /** construct a query string to that will retreive info for this application 
-     * @param applicationName
-     * @return
-     * @todo implement me
-     */
-    private String mkInfoQuery(String applicationName) {
-        return applicationName; //implement this!!!!
-    }
 }
 
 
 /* 
 $Log: RegistryApplicationRegistry.java,v $
+Revision 1.3  2004/04/05 15:14:59  nw
+implemented
+
 Revision 1.2  2004/03/11 13:53:36  nw
 merged in branch bz#236 - implementation of interfaces
 
