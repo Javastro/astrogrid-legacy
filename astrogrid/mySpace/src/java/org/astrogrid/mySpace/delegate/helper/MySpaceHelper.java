@@ -1,15 +1,6 @@
 package org.astrogrid.mySpace.delegate.helper;
 
-import java.io.File;
-import java.io.FileReader;
-import java.util.Properties;
-import java.text.MessageFormat;
 import java.io.StringReader ;
-import java.util.HashMap;
-import java.util.Calendar;
-import java.io.PrintWriter;
-import java.io.FileOutputStream;
-
 import javax.xml.parsers.*;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource ;
