@@ -7,12 +7,15 @@
   <xsl:output
       method="xml"
       omit-xml-declaration="yes"/>
-      
+
   <xsl:param name="ivorn" select="myspace-ivorn"/>
   <xsl:param name="agsl" select="myspace-agsl"/>
 
   <xsl:param name="form_name" select="form_name"/>
   <xsl:param name="form_action" select="form_action"/>
+
+  <xsl:param name="field_name" select="field_name"/>
+  <xsl:param name="field_value" select="field_value"/>
 
   <xsl:template match="/">
     <html>
@@ -26,7 +29,7 @@
           null;
         </script>
       </head>
-      
+
       <body>
 <!--
         <p>
@@ -37,7 +40,7 @@
         <script type="text/javascript">
           window.document.title = "MySpace MicroBrowser";
         </script>
-        
+
         <form id="myspace-explorer-form" action=".">
         	<input name="myspace-endpoint" id="myspace-endpoint" type="hidden">
         		<xsl:attribute name="value"><xsl:value-of select="/myspace-tree/@endpoint"/></xsl:attribute>
@@ -61,13 +64,14 @@
             <xsl:attribute name="onclick">
               setNewIvorn();
               setParentIVORNAgsl('<xsl:value-of select="$ivorn"/>', '<xsl:value-of select="$agsl"/>');
+              setParentHiddenField('<xsl:value-of select="$field_name"/>', '<xsl:value-of select="$field_value"/>');
               submitParentForm('<xsl:value-of select="$form_name"/>', '<xsl:value-of select="$form_action"/>');
             </xsl:attribute>
           </input>
-          
+
           <input type="button" value="Cancel" onclick="window.close();"/>
         </form>
-        
+
         <xsl:apply-templates/>
       </body>
     </html>
@@ -87,7 +91,7 @@
         <xsl:attribute name="id">I<xsl:value-of select="@safe-name"/></xsl:attribute>
       </img>
     </span>
-    
+
     &#160;
     <span style="cursor:pointer;cursor:hand;">
       <xsl:attribute name="onclick">
@@ -117,9 +121,10 @@
     </span>
     <br/>
   </xsl:template>
-   
-   <!-- avoid output of text node 
+
+   <!-- avoid output of text node
         with default template -->
   <xsl:template match="@*|node()"/>
 
 </xsl:stylesheet>
+          
