@@ -36,17 +36,16 @@ public class GdsDelegateTest extends TestCase {
    * Test method to acquire a grid service handle from the registry
    * and set the handle to the gds instance.
    */
-  public void testSetFactoryGshFromRegistry() throws Exception {
+  public void testRegistryLookup1() throws Exception {
     GdsDelegate gds = new GdsDelegate();
     String factoryPort = null;
-    // Get factory handle from registry
 		
     // Test method with valid testRegistryUrl:
     try {
       gds.setFactoryGshFromRegistry(testRegistryUrl1, timeoutValue);
       assertNotNull(gds.factoryPort);
     }
-    catch (Exception e){}
+    catch (Exception e) {}
 		
     // Test method with invalid testRegistryUrl:
     String bogusRegistryUrl = "bogus";
@@ -54,7 +53,7 @@ public class GdsDelegateTest extends TestCase {
       gds.setFactoryGshFromRegistry(bogusRegistryUrl, timeoutValue);
       fail("Factory handle passed back from bogus registry");
     }
-    catch (Exception e){}	
+    catch (Exception e) {}	
 
     // Test method with invalid timeoutValue:
     int bogusTimeoutValue = -1;
@@ -63,9 +62,43 @@ public class GdsDelegateTest extends TestCase {
       fail("Factory handle passed back with timeoutValue set to -1");
     }
     catch (Exception e){}
-						
   }
 
+
+  /**
+   * Test the reading of the factory GSH from the registry.
+   * This tests the no-argument version of setFactoryGshFromRegistry
+   * that relies on the registry GSH being set through setRegistryGsh.
+   * A valid GSH for the registry is passed and a valid GSH
+   * for the factory is expected.
+   */
+  public void testRegistryLookup3 () throws Exception {
+    GdsDelegate gds = new GdsDelegate();
+    gds.setRegistryGsh("testRegistryUrl1");
+    gds.setFactoryGshFromRegistry();
+    assertNotNull(gds.factoryPort);
+  }
+
+
+  /**
+   * Test the reading of the factory GSH from the registry.
+   * This tests the no-argument version of setFactoryGshFromRegistry
+   * that relies on the registry GSH being set through setRegistryGsh.
+   * A bogus GSH for the registry is passed and an exception
+   * is expected.
+   */
+  public void testRegistryLookup4 () throws Exception {
+    GdsDelegate gds = new GdsDelegate();
+    gds.setRegistryGsh("bogus");
+    try {
+      gds.setFactoryGshFromRegistry();
+      fail("setFactoryGshFromRegistry() returned without " +
+           "exception for a bogus registry-GSH.");
+    }
+    catch (Exception e) {}
+    assertNull(gds.factoryPort);
+  }
+    
 
   /**
    * Test service connection.
@@ -94,18 +127,17 @@ public class GdsDelegateTest extends TestCase {
     assertNotNull(gds.applicationPort);
   }
 
+
   /**
    * Test the delegate methods for getting and setting
-   * factory handles.
+   * registry handles.
    */
-  public void testFactoryHandle() throws Exception {
-    GdsDelegate gds2 = new GdsDelegate();
-    try {
-      gds2.setFactoryGsh(this.factoryGsh2);
-      assertEquals(this.factoryGsh2, gds2.getFactoryGsh());
-    }
-    catch(Exception e){}
+  public void testRegistryHandle() throws Exception {
+    GdsDelegate gds = new GdsDelegate();
+    gds.setRegistryGsh(this.testRegistryUrl2);
+    assertEquals(this.testRegistryUrl2, gds.getRegistryGsh());
   }
+
 	
   /**
    * Test invocation of an SQL select statement on the GDS instance. 
