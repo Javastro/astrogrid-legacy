@@ -47,6 +47,7 @@ import org.apache.cocoon.environment.ObjectModelHelper;
  *
  */
 public class DesignAction extends AbstractAction {
+
     
     /** Compile-time switch used to turn tracing on/off. 
       * Set this to false to eliminate all trace statements within the byte code.*/         
@@ -256,6 +257,9 @@ public class DesignAction extends AbstractAction {
         
             try {
             	
+				String 
+				   errorMessage = null;
+            	
 				debug( "action is: " + action ) ;
                 
                 this.consistencyCheck() ;
@@ -267,9 +271,11 @@ public class DesignAction extends AbstractAction {
                 if( action.equals( ACTION_CREATE_WORKFLOW ) ) {
 					template = request.getParameter( TEMPLATE_PARAM_TAG ) ; 
 					if ( template.equals( EMPTY_TEMPLATE ) ) {
+						this.readQueryList() ;
 						this.createWorkflow() ;
 					}
                     else {
+                    	this.readQueryList() ;
 						this.createWorkflowFromTemplate( template ) ; 
                     }
                 }
@@ -289,9 +295,11 @@ public class DesignAction extends AbstractAction {
 					this.readLists() ; 
                 }
                 else if( action.equals( ACTION_CHOOSE_QUERY ) ) {
+					this.readQueryList() ;
                     this.chooseQuery() ; 
                 }
                 else if( action.equals( ACTION_EDIT_JOINCONDITION ) ) {
+					this.readQueryList() ;
                     this.editJoinCondition() ; 
                 }
                 else if( action.equals( ACTION_READ_WORKFLOW_LIST ) ) {
@@ -370,12 +378,12 @@ public class DesignAction extends AbstractAction {
                 
                  
                 
-                if( this.workflow != null ) {
+//                if( this.workflow != null ) {
 //                  workflow.setUserid( userid ) ;
 //                  workflow.setCommunity( community ) ;
-                    workflow.setGroup( group ) ;
-                    workflow.setToken( token ) ;  
-                }
+//                    workflow.setGroup( group ) ;
+//                    workflow.setToken( token ) ;  
+//                }
  
 /*          
                 JL Note: This is PortalB Iteration 2 way of doing things,...
@@ -400,12 +408,8 @@ public class DesignAction extends AbstractAction {
         
         private void consistencyCheck() throws ConsistencyException {
 			if( TRACE_ENABLED ) trace( "consistencyCheck() entry" ) ;
-			debug( "userid: " + userid ) ;
-			debug( "community: " + community ) ;
-			debug( "name: "  ) ; 
-			debug( "description: "  ) ; 
-            
-            
+			debug( "userid: " + this.userid ) ;
+			debug( "community: " + this.community ) ; 
             
             if( userid == null ) {
                 ; // redirection required 
@@ -555,6 +559,7 @@ public class DesignAction extends AbstractAction {
         private void createWorkflowFromTemplate( String template ) throws ConsistencyException {
             if( TRACE_ENABLED ) trace( "DesignActionImpl.createWorkflowFromTemplate() entry" ) ;
             debug ( "template: " + template ) ;
+           
               
             try {
 				String
@@ -562,16 +567,16 @@ public class DesignAction extends AbstractAction {
 				String
 					description = request.getParameter( WORKFLOW_DESCRIPTION_PARAMETER ) ;                    
                     
-				if( name == null ) {
-					; // some logging here
+				if( name == null || name.length() <= 0 ) {
+					this.request.setAttribute( ERROR_MESSAGE_PARAMETER, "Please enter workflow name" ) ;					
 					throw new ConsistencyException() ;
 				}
                 
-				if( description == null ) {
+				else if( description == null ) {
 					description = "no description entered" ;
 				}                
        
-				if( workflow == null ) {
+				else if( workflow == null ) {
 					workflow = Workflow.createWorkflowFromTemplate( userid, community, name, description, template  ) ; 
 				}
 				else if( workflow.isDirty() && (bConfirm == true) ) {
@@ -595,7 +600,7 @@ public class DesignAction extends AbstractAction {
             if( TRACE_ENABLED ) trace( "DesignActionImpl.submitWorkflow() entry" ) ;
 
             try {
-                
+
                 if( workflow == null ) {
                     ; // some logging here
                     throw new ConsistencyException() ; 
@@ -904,6 +909,7 @@ public class DesignAction extends AbstractAction {
                     (String)session.getAttribute( CREDENTIAL_TAG ) );
                     
         }
+
         
                       
     } // end of inner class DesignActionImpl

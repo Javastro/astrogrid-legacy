@@ -126,7 +126,7 @@
        <table border="0">
            <tr>
                <td>
-                   Workflows currently strored in your mySpace:
+                   <b>Workflows currently strored in your mySpace:</b>
                </td>
            </tr>
            <tr>
@@ -136,7 +136,9 @@
            <xsl:for-each select="//workflow">
            <tr>
                <td>
-                   <xsl:value-of select="@workflow-name"/>
+                  <xsl:if test="@workflow-name != 'null'">
+                     <xsl:value-of select="@workflow-name"/>
+                  </xsl:if>
                </td>
                <td>
                    <xsl:value-of select="@workflow-description"/>
@@ -152,8 +154,12 @@
 	<xsl:template name="list_query">
        <table border="0">
            <tr>
-               <td>
-                   Queries currently stored in your mySpace:
+              <td>
+              </td>
+           </tr>
+           <tr>
+              <td>
+                   <b>Queries currently stored in your mySpace:</b>
                </td>
            </tr>
            <tr>
@@ -162,12 +168,14 @@
            </tr>           
            <xsl:for-each select="//query">
            <tr>
-               <td>
+              <td>
+                 <xsl:if test="@query-name != 'null'">  
                    <xsl:value-of select="@query-name"/>
-               </td>
-               <td>
-                   <xsl:value-of select="@query-description"/>
-               </td>
+                 </xsl:if>
+              </td>
+              <td>
+                 <xsl:value-of select="@query-description"/>
+              </td>
            </tr>
            </xsl:for-each>
        </table>
@@ -233,7 +241,7 @@
             <tbody>
               <tr width="80%" align="center" valign="middle" style="color: rgb(51,51,255); background-color: rgb(204,204,204);">
                 <td width="0" height="0" colspan="6" rowspan="1" style=" font-family: arial,helvetica,sans-serif; font-size-adjust: 2; font-weight: bold; height: 30px; width: 200px;">
-                  Edit workflow
+                  Edit workflow 
                 </td>
               </tr>
               <tr>
