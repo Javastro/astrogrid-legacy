@@ -1,5 +1,5 @@
 /*
- * $Id: SimpleDescriptionLoader.java,v 1.1 2003/12/04 13:26:25 pah Exp $
+ * $Id: SimpleDescriptionLoader.java,v 1.2 2004/03/02 16:48:42 pah Exp $
  * 
  * Created on 04-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -28,10 +28,11 @@ import org.xml.sax.SAXException;
 import org.astrogrid.applications.manager.AbstractApplicationController;
 
 /**
- * Reads the application config file and returns a series of 
+ * Reads the application config file and returns a series of simple application descriptions.
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @version $Name:  $
  * @since iteration4
+ * @TODO this needs to be replaced by the new common object model/registry mechanisms
  */
 public class SimpleDescriptionLoader {
    /**

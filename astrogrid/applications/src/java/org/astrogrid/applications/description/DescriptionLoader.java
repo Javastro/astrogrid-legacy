@@ -1,5 +1,5 @@
 /*
- * $Id: DescriptionLoader.java,v 1.8 2004/01/09 00:25:08 pah Exp $
+ * $Id: DescriptionLoader.java,v 1.9 2004/03/02 16:48:42 pah Exp $
  *
  * Created on 26 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -54,7 +54,10 @@ public class DescriptionLoader {
       try {
          digester.clear();
          descriptions = (ApplicationDescriptions)digester.parse(configFile);
-         success = true;
+         if(descriptions != null )
+         {
+            success = true;
+         } 
       }
       catch (IOException e) {
          // TODO Auto-generated catch block

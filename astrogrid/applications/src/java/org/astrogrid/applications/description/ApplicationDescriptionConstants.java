@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationDescriptionConstants.java,v 1.1 2003/12/04 13:26:25 pah Exp $
+ * $Id: ApplicationDescriptionConstants.java,v 1.2 2004/03/02 16:48:42 pah Exp $
  * 
  * Created on 04-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -21,12 +21,12 @@ package org.astrogrid.applications.description;
 public final class ApplicationDescriptionConstants {
    public static final String NAME_ATTR = "name";
    public static final String APPLICATIONCONTROLLER_ELEMENT =
-      "ApplicationController";
+      "CommandLineExecutionControllerConfig";
    public static final String APPLICATION_ELEMENT =
-      "ApplicationController/Application";
+      APPLICATIONCONTROLLER_ELEMENT+ "/Application";
       public static final String EXPATH_ELEMENT = APPLICATION_ELEMENT + "/ExecutionPath";
    public static final String PARAMETER_ELEMENT =
-      "ApplicationController/Application/Parameters/Parameter";
+      APPLICATION_ELEMENT+"/Parameters/CmdLineParameterDefn";
    public static final String UI_NAME_ELEMENT = PARAMETER_ELEMENT + "/UI_NAME";
    public static final String UI_DESC_ELEMENT = PARAMETER_ELEMENT + "/UI_Description";
    public static final String UI_DESC_CHILDREN = PARAMETER_ELEMENT + "/UI_Description/?";
