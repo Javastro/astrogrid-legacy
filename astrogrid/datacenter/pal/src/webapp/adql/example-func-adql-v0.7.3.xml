@@ -1,0 +1,28 @@
+<!-- Select t.a, g.d from Tab a, Tab d where a.d < d.e and a.f < d.f order by t.f, g.b -->
+<Select>
+   <SelectionList>
+      <Alias As="MM">
+         <Function>
+            <Trignometric>SIN</Trignometric>
+            <Column Table="A" Name="b"/>
+         </Function>
+      </Alias>
+      <All/>
+   </SelectionList>
+   <From>
+      <Table Name="Tab" Alias="A"/>
+   </From>
+   <Where>
+      <Closed>
+         <Compare Comparison="<">
+            <Function>
+               <Math>LOG</Math>
+               <Column Table="A" Name="d"/>
+            </Function>
+            <Atom>
+               <Real>1.24</Real>
+            </Atom>
+         </Compare>
+      </Closed>
+   </Where>
+</Select>
