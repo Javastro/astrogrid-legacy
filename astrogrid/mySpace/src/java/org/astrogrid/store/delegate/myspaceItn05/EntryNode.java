@@ -10,7 +10,18 @@ import org.astrogrid.store.Agsl;
 
 /**
  * A <code>EntryNode</code> object stores the details held in a
- * MySpace registry for a single ...
+ * MySpace registry for a single entry in a MySpace Service (that is, a
+ * file, perhaps typically a VOTable).  The details held are things
+ * like: the MySpace name of the entry, the identifier of the user who
+ * owns it, its creation date etc.
+ *
+ * <p>
+ * If the <code>EntryNode</code> corresponds to a container then it
+ * will contain a list of any child <code>EntryNode</code>s.  Thus the
+ * <code>EntryNode</code> class is hierarchical and a given
+ * <code>EntryNode</code> will contain within itself an entire tree of
+ * any children.
+ * </p>
  *
  * @author A C Davenhall (Edinburgh)
  * @since Iteration 5.
@@ -32,7 +43,8 @@ public class EntryNode implements StoreFile
    private int    type;             // Type code (VOTable etc).
    private String permissionsMask;  // Access permissions mask.
 
-   ArrayList children = new ArrayList();
+   private ArrayList children = new ArrayList();
+   private EntryNode parent = null;
 
 //
 // Constructors.
@@ -67,6 +79,8 @@ public class EntryNode implements StoreFile
       this.size = size;
       this.type = type;
       this.permissionsMask = permissionsMask;
+
+      parent = null;
    }
 
 
@@ -85,6 +99,28 @@ public class EntryNode implements StoreFile
       this.size = entryResults.getSize();
       this.type = entryResults.getType();
       this.permissionsMask = entryResults.getPermissionsMask();
+
+      parent = null;
+   }
+
+
+/**
+ * Create a <code>EntryNode</code> object from the equivalent
+ * <code>EntryResults</code> object and set the parent.
+ */
+
+   public EntryNode (EntryResults entryResults, EntryNode parent)
+   {  this.entryName = entryResults.getEntryName();
+      this.entryId = entryResults.getEntryId();
+      this.entryUri = entryResults.getEntryUri();
+      this.ownerId = entryResults.getOwnerId();
+      this.creationDate = new Date( entryResults.getCreationDate() );
+      this.expiryDate = new Date( entryResults.getExpiryDate() );
+      this.size = entryResults.getSize();
+      this.type = entryResults.getType();
+      this.permissionsMask = entryResults.getPermissionsMask();
+
+      this.parent = parent;
    }
 
 
@@ -103,6 +139,8 @@ public class EntryNode implements StoreFile
       this.size = -1;
       this.type = EntryCodes.UNKNOWN;
       this.permissionsMask = null;
+
+      parent = null;
    }
 
 
@@ -152,6 +190,8 @@ public class EntryNode implements StoreFile
 //
 //   Set both the root and current element to this element.
 
+      parent = null;
+
       EntryNode root = this;
       EntryNode currentEntry = this;
 //      System.out.println("top name: " + currentEntry.getName() );
@@ -176,7 +216,8 @@ public class EntryNode implements StoreFile
          if (currentIndex < entries.size() - 1)
          {  currentIndex = currentIndex + 1;
             EntryNode nextEntry = new
-              EntryNode( (EntryResults)entries.get(currentIndex) );
+              EntryNode( (EntryResults)entries.get(currentIndex),
+                 currentEntry);
 
 //            System.out.println("current, next: " +
 //              currentEntry.getName() +" " + nextEntry.getName() );
@@ -256,7 +297,7 @@ public class EntryNode implements StoreFile
  * is always returned.
  */
    public StoreFile getParent()
-   {  return null;
+   {  return parent;
    }
    
 /**
@@ -277,9 +318,9 @@ public class EntryNode implements StoreFile
    }
    
 /** 
- * Return true if this EntryNode is a self-contained file.  For
- * example, a database table might be represented as a StoreFile but it
- * is not a file.  A value of false is always returned because currently
+ * Return true if this <code>EntryNode</code> is a self-contained file.
+ * For example, a database table might be represented as a StoreFile but
+ * it is not a file.  A value of false is always returned because currently
  * MySpace cannot handle database tables.
  */
    public boolean isFile()
@@ -287,13 +328,25 @@ public class EntryNode implements StoreFile
    }
    
 /**
- * If the EntryNode is a container then list all its children.  If it
- * is not a container then return null.  Note that here a value of
- * null is always returned, even if the EntryNode is a container.
+ * If the <code>EntryNode</code> is a container then list all its
+ * children.  Note that only direct child <code>EntryNode</code>s
+ * are listed, not grand-children or great-grandchildren.
  */
 
    public StoreFile[] listFiles()
-   {  return null;
+   {  StoreFile[] childArray = null;
+
+      if (children != null)
+      {  if (children.size() > 0)
+         {  childArray = new EntryNode[children.size()];
+
+            for (int loop=0; loop<children.size(); loop++)
+            {  childArray[loop] = (StoreFile)children.get(loop);
+            }
+         }
+      }
+
+      return childArray;
    }
    
 /** 
@@ -311,7 +364,7 @@ public class EntryNode implements StoreFile
    }
    
 /**
- * Return where to find this file using an AStrogrid Store Locator.
+ * Return where to find this file using an AstroGrid Store Locator.
  *
  * [TODO] Hmmm.  The following may or may not be correct!
 
@@ -430,17 +483,37 @@ public class EntryNode implements StoreFile
    {  return permissionsMask;
    }
 
+/**
+ * Return the short name of the entry (ie. the name without any
+ * preceding container path).
+ */
+
+   public String getShortName()
+   {  String shortName = "";
+
+      int lastSep = entryName.lastIndexOf("/");
+      if (lastSep>-1)
+      {  int stop = entryName.length();
+         shortName = entryName.substring(lastSep, stop);
+      }
+      else
+      {  shortName = entryName;
+      }
+
+      return shortName;
+   }
+   
 
 // ----------------------------------------------------------------------
 
 //
-// Methods of manipulating children.
+// Methods for manipulating children.
 
 /**
  * Add a child node.
  */
 
-   public void addChild(EntryNode child)
+   private void addChild(EntryNode child)
    {  // System.out.println("type: " + type);
 
       if (type == EntryCodes.CON)
@@ -552,7 +625,7 @@ public class EntryNode implements StoreFile
                for (int loop=0; loop<level-1; loop++)
                {  currentLine = currentLine + "  ";
                }
-               currentLine = currentLine + currentEntry.getName();
+               currentLine = currentLine + currentEntry.getShortName();
                if (currentEntry.getType() == EntryCodes.CON)
                {  currentLine = currentLine + " (container)";
                }
