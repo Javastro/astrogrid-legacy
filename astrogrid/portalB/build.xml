@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/Attic/build.xml,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/26 15:44:14 $</cvs:author>
-    | <cvs:version>$Revision: 1.18 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/26 15:59:21 $</cvs:author>
+    | <cvs:version>$Revision: 1.19 $</cvs:version>
     | <cvs:log>
     | $Log: build.xml,v $
+    | Revision 1.19  2003/06/26 15:59:21  dave
+    | Fixed Ant task for Cocoon blocks.properties
+    |
     | Revision 1.18  2003/06/26 15:44:14  dave
     | Included test data for the MySpace client JUnit tests
     |
@@ -473,7 +476,7 @@
 	<!-- Replace the Cocoon build.properties -->
 	<target name="cocoon.build.properties" depends="">
 		<!-- Install our own version of the build.properties -->
-		<copy verbose="true" overwrite="true" toDir="${cocoon.build}">
+		<copy verbose="true" overwrite="true" toDir="${cocoon.source}">
 			<fileset dir="src/cocoon">
 				<include name="build.properties"/>
 				<include name="blocks.properties"/>
