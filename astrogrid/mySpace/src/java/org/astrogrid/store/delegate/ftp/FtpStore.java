@@ -1,5 +1,5 @@
 /*
- $Id: FtpStore.java,v 1.2 2004/03/17 15:17:29 mch Exp $
+ $Id: FtpStore.java,v 1.3 2004/03/22 10:25:42 mch Exp $
 
  (c) Copyright...
  */
@@ -27,15 +27,13 @@ import sun.net.ftp.FtpProtocolException;
  * Adapted from the ACE project
  */
 
-public class FtpStore implements StoreClient
-{
+public class FtpStore extends StoreDelegate {
+   
    private String server = null;
    private int port = DEFAULT_PORT;
    private String rootDir = ""; //root directory for this user
    private URL endpoint = null;
    
-   private User operator = User.ANONYMOUS;
-
    private FullFtpClient ftpConnection = null;
 
    private final static int DEFAULT_PORT = 21;
@@ -167,8 +165,9 @@ public class FtpStore implements StoreClient
     * Construct myspace client using given endpoint, which is a complete location, eg
     * ftp://ftp.roe.ac.uk/pub/astrogrid
     */
-   public FtpStore(URL ftpEndPoint) throws IOException
+   public FtpStore(User anOperator, URL ftpEndPoint) throws IOException
    {
+      super(anOperator);
       this.endpoint = ftpEndPoint;
       server = ftpEndPoint.getHost();
       port = ftpEndPoint.getPort();
@@ -179,9 +178,9 @@ public class FtpStore implements StoreClient
    /**
     * Construct myspace client using given Agsl
     */
-   public FtpStore(Agsl agsl) throws IOException
+   public FtpStore(User anOperator, Agsl agsl) throws IOException
    {
-      this(new URL(agsl.getEndpoint()));
+      this(anOperator, new URL(agsl.getEndpoint()));
    }
 
    /**
@@ -202,7 +201,7 @@ public class FtpStore implements StoreClient
       try
       {
          ftpConnection = new FullFtpClient(server, port);
-         ftpConnection.login(operator.getUserId(), operator.getAccount());  //should be id & email
+         ftpConnection.login(getOperator().getUserId(), getOperator().getAccount());  //should be id & email
          ftpConnection.binary();
          // ftpConnection.endir("myspace");  //ensure directory myspace exists
          ftpConnection.cd(rootDir);
@@ -367,43 +366,17 @@ public class FtpStore implements StoreClient
    }
 
    /**
-    * Copies the contents of the file at the given source url to the given location
-    */
-   public void putUrl(URL source, String targetPath, boolean append) throws IOException {
-      pushStream(targetPath, source.openStream(), append);
-   }
-   
-   /**
-    * Puts the given byte buffer into the given location
-    */
-   public void putBytes(byte[] bytes, int offset, int length, String targetPath, boolean append) throws IOException {
-
-      putString(targetPath, new String(bytes, offset, length), append);
-   }
-
-   /**
-    * Puts the given string into the given location
-    */
-   public void putString(String contents, String targetPath, boolean append) throws IOException {
-
-      pushStream(targetPath, new StringBufferInputStream(contents), append);
-   }
-   
-   /**
-    * Copy a file
-    */
-   public void copy(String sourcePath, Agsl targetPath) throws IOException {
-      // TODO
-      throw new UnsupportedOperationException();
-   }
-   
-   /**
     * Streaming output - returns a stream that can be used to output to the given
     * location
     */
-   public OutputStream putStream(String targetPath) throws IOException {
-      // TODO
-      throw new UnsupportedOperationException();
+   public OutputStream putStream(String targetPath, boolean append) throws IOException {
+      ftpConnection.cdPath(targetPath);
+      if (append) {
+         return ftpConnection.append(new File(targetPath).getName());
+      }
+      else {
+         return ftpConnection.put(new File(targetPath).getName());
+      }
    }
    
    /**
@@ -417,7 +390,8 @@ public class FtpStore implements StoreClient
     * Create a container
     */
    public void newFolder(String targetPath) throws IOException {
-      // TODO
+      ftpConnection.cdPath(new File(targetPath).getParent());
+      ftpConnection.mkdir(new File(targetPath).getName());
    }
    
    /**
@@ -428,13 +402,6 @@ public class FtpStore implements StoreClient
    }
    
    /**
-    * Returns the user of this delegate - ie the account it is being used by
-    */
-   public User getOperator() {
-      return operator;
-   }
-   
-   /**
     * Gets the url to stream
     */
    public URL getUrl(String sourcePath) throws IOException {
@@ -442,13 +409,5 @@ public class FtpStore implements StoreClient
       return new URL(ftpConnection.getUrl(new File(sourcePath).getName()));
    }
 
-   /**
-    * Moves/Renames a file
-    */
-   public void move(String sourcePath, Agsl targetPath) throws IOException
-   {
-      copy(sourcePath, targetPath);
-      delete(sourcePath);
-   }
    
 }

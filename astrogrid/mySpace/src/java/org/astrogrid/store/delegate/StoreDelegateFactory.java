@@ -1,5 +1,5 @@
 /*
- * $Id: StoreDelegateFactory.java,v 1.8 2004/03/19 12:39:37 mch Exp $
+ * $Id: StoreDelegateFactory.java,v 1.9 2004/03/22 10:25:42 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -35,7 +35,7 @@ public class StoreDelegateFactory
          return new org.astrogrid.store.delegate.myspace.MySpaceIt04Delegate(operator, location.getEndpoint().toString());
       }
       if (location.getScheme().startsWith(Agsl.SCHEME+":ftp")) {
-         return new org.astrogrid.store.delegate.ftp.FtpStore(location);
+         return new org.astrogrid.store.delegate.ftp.FtpStore(operator, location);
       }
       if (location.getScheme().startsWith(Agsl.SCHEME+":file")) {
          return new org.astrogrid.store.delegate.local.LocalFileStore(location);
@@ -58,6 +58,9 @@ public class StoreDelegateFactory
 
 /*
 $Log: StoreDelegateFactory.java,v $
+Revision 1.9  2004/03/22 10:25:42  mch
+Added VoSpaceClient, StoreDelegate, some minor changes to StoreClient interface
+
 Revision 1.8  2004/03/19 12:39:37  mch
 Added StoreAdminClient implementation to LocalFileStore
 

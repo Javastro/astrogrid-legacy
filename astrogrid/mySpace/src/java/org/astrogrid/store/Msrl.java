@@ -1,5 +1,5 @@
 /*
- * $Id: Msrl.java,v 1.5 2004/03/14 03:31:54 mch Exp $
+ * $Id: Msrl.java,v 1.6 2004/03/22 10:25:42 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -175,11 +175,11 @@ public class Msrl
       return resolveURL().openStream();
    }
    
-   /** Opens an inputstream to the file.  Just like url.openStream()....
+   /** Opens an outputstream to the file.
     */
    public OutputStream openOutputStream() throws IOException {
       StoreClient myspace = StoreDelegateFactory.createDelegate(User.ANONYMOUS, toAgsl());
-      return myspace.putStream(getPath());
+      return myspace.putStream(getPath(), false);
    }
    
    /**
@@ -200,6 +200,9 @@ public class Msrl
 
 /*
 $Log: Msrl.java,v $
+Revision 1.6  2004/03/22 10:25:42  mch
+Added VoSpaceClient, StoreDelegate, some minor changes to StoreClient interface
+
 Revision 1.5  2004/03/14 03:31:54  mch
 Added openOutputStream
 

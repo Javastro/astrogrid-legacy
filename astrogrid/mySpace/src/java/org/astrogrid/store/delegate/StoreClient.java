@@ -1,5 +1,5 @@
 /*
- * $Id: StoreClient.java,v 1.5 2004/03/17 15:17:29 mch Exp $
+ * $Id: StoreClient.java,v 1.6 2004/03/22 10:25:42 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -61,6 +61,7 @@ public interface StoreClient {
 
    /**
     * Puts the given string into the given location
+    * @deprecated - use putBytes() or stream to putStream()
     */
    public void putString(String contents, String targetPath, boolean append) throws IOException;
 
@@ -73,7 +74,7 @@ public interface StoreClient {
     * Streaming output - returns a stream that can be used to output to the given
     * location
     */
-   public OutputStream putStream(String targetPath) throws IOException;
+   public OutputStream putStream(String targetPath, boolean append) throws IOException;
 
    /**
     * Gets a file's contents as a stream
@@ -81,7 +82,8 @@ public interface StoreClient {
    public InputStream getStream(String sourcePath) throws IOException;
    
    /**
-    * Gets the url to stream
+    * Gets the url to the given source file
+    * @deprecated? don't think we should always publish files as URLs... mch
     */
    public URL getUrl(String sourcePath) throws IOException;
 
@@ -91,14 +93,24 @@ public interface StoreClient {
    public void delete(String deletePath) throws IOException;
 
    /**
-    * Copy a file
+    * Copy a file to a target Agsl
     */
-   public void copy(String sourcePath, Agsl targetPath) throws IOException;
+   public void copy(String sourcePath, Agsl target) throws IOException;
    
    /**
-    * Moves/Renames a file
+    * Copy a file from a source Agsl
     */
-   public void move(String sourcePath, Agsl targetPath) throws IOException;
+   public void copy(Agsl source, String targetPath) throws IOException;
+   
+   /**
+    * Moves/Renames a file to a target Agsl
+    */
+   public void move(String sourcePath, Agsl target) throws IOException;
+   
+   /**
+    * Moves/Renames a file from a source Agsl
+    */
+   public void move(Agsl source, String targetPath) throws IOException;
    
    /**
     * Create a container
@@ -108,6 +120,9 @@ public interface StoreClient {
 
 /*
 $Log: StoreClient.java,v $
+Revision 1.6  2004/03/22 10:25:42  mch
+Added VoSpaceClient, StoreDelegate, some minor changes to StoreClient interface
+
 Revision 1.5  2004/03/17 15:17:29  mch
 Added putBytes
 

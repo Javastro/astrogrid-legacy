@@ -1,5 +1,5 @@
 /*
- * $Id: VoSpaceResolver.java,v 1.6 2004/03/19 12:48:03 mch Exp $
+ * $Id: VoSpaceResolver.java,v 1.7 2004/03/22 10:25:42 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -43,7 +43,7 @@ public class VoSpaceResolver {
    /**
     * Given an IVO Resource Name, resolves the AGSL
     */
-   public Agsl resolveAgsl(Ivorn ivorn) throws IOException {
+   public static Agsl resolveAgsl(Ivorn ivorn) throws IOException {
 
       //NB the implementation is not complete until we have sorted out how this is supposed to work in detail
       
@@ -78,7 +78,7 @@ public class VoSpaceResolver {
     * returns the appropriate StoreClient to access it. Ignores any fragment
     * given.  The user is the account attempting to access the store.
     */
-   public StoreClient resolveStore(User user, Ivorn ivorn) throws IOException {
+   public static StoreClient resolveStore(User user, Ivorn ivorn) throws IOException {
       return StoreDelegateFactory.createDelegate(user, resolveAgsl(ivorn));
    }
    
@@ -87,7 +87,7 @@ public class VoSpaceResolver {
     * lcoation.  The user is the account
     * attempting to access the file.
     */
-   public InputStream resolveInputStream(User user, Ivorn ivorn) throws IOException {
+   public static InputStream resolveInputStream(User user, Ivorn ivorn) throws IOException {
       return resolveAgsl(ivorn).openInputStream(user);
    }
    
@@ -95,13 +95,13 @@ public class VoSpaceResolver {
     * Given an IVO Resource Name, resolves a Stream to write to the given location.  The user is the account
     * attempting to access the file.
     */
-   public OutputStream resolveOutputStream(User user, Ivorn ivorn) throws IOException {
+   public static OutputStream resolveOutputStream(User user, Ivorn ivorn) throws IOException {
       return resolveAgsl(ivorn).openOutputStream(user);
    }
    
    /** Resolve using Registry
     */
-   public Agsl registryResolve(Ivorn ivorn) throws IOException {
+   public static Agsl registryResolve(Ivorn ivorn) throws IOException {
       /** This is the deprecated nyspace one; use the one in ivor if you want
        * real registry resolving *
       //lazy load registry delegate - also more robust in case it doesn't instantiate
@@ -139,7 +139,7 @@ public class VoSpaceResolver {
 
    /** Resolve using Community
     */
-   public Agsl communityResolve(Ivorn ivorn) throws IOException {
+   public static Agsl communityResolve(Ivorn ivorn) throws IOException {
       /**
 
        //lazy load delegate - also more robust in case it doesn't instantiate
@@ -172,6 +172,9 @@ public class VoSpaceResolver {
 
 /*
 $Log: VoSpaceResolver.java,v $
+Revision 1.7  2004/03/22 10:25:42  mch
+Added VoSpaceClient, StoreDelegate, some minor changes to StoreClient interface
+
 Revision 1.6  2004/03/19 12:48:03  mch
 added outputStream
 

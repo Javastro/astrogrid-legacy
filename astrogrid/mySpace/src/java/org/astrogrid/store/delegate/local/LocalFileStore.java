@@ -1,5 +1,5 @@
 /*
- * $Id: LocalFileStore.java,v 1.5 2004/03/19 12:39:37 mch Exp $
+ * $Id: LocalFileStore.java,v 1.6 2004/03/22 10:25:42 mch Exp $
  *
  */
 
@@ -27,7 +27,7 @@ import org.astrogrid.store.Agsl;
  * @author: M Hill
  */
 
-public class LocalFileStore implements StoreClient, StoreAdminClient {
+public class LocalFileStore extends StoreDelegate implements StoreAdminClient {
    
    /** The root directory for this file store instance */
    private File rootDir = null;
@@ -67,6 +67,8 @@ public class LocalFileStore implements StoreClient, StoreAdminClient {
     * even if they can't in the working directory)
     */
    public LocalFileStore() throws IOException {
+
+      super(User.ANONYMOUS);
       
       String root = SimpleConfig.getSingleton().getString("LocalFileStoreRoot", null);
       
@@ -115,7 +117,8 @@ public class LocalFileStore implements StoreClient, StoreAdminClient {
 
    /** Creates a local file store with the given file as the root
     */
-   public LocalFileStore(File givenRoot) {
+   public LocalFileStore(File givenRoot)  {
+      super(User.ANONYMOUS);
 
       this.rootDir = givenRoot;
    }
@@ -135,7 +138,7 @@ public class LocalFileStore implements StoreClient, StoreAdminClient {
 
    /**
     * Puts the given string into the given location
-    */
+    * now done via putBytes()
    public void putString(String contents, String targetPath, boolean append) throws IOException {
 
       //remove colons, spaces and slashes from filename
@@ -159,12 +162,6 @@ public class LocalFileStore implements StoreClient, StoreAdminClient {
       out.close();
    }
    
-   /**
-    * Returns the user of this delegate - ie the account it is being used by
-    */
-   public User getOperator() {
-      return User.ANONYMOUS;
-   }
    
    /**
     * Gets the url to stream.  Note that in this case, it can only return a file
@@ -248,11 +245,11 @@ public class LocalFileStore implements StoreClient, StoreAdminClient {
     * Streaming output - returns a stream that can be used to output to the given
     * location
     */
-   public OutputStream putStream(String targetPath) throws IOException {
+   public OutputStream putStream(String targetPath, boolean append) throws IOException {
 
       File target = makeLocalPath(targetPath);
       
-      return new FileOutputStream(target);
+      return new FileOutputStream(target, append);
    }
    
    /**
@@ -277,7 +274,7 @@ public class LocalFileStore implements StoreClient, StoreAdminClient {
    
    /**
     * Copies the contents of the file at the given source url to the given location
-    */
+    * done in StoreDelegate
    public void putUrl(URL source, String targetPath, boolean append) throws IOException {
 
       File target = makeLocalPath(targetPath);
@@ -305,7 +302,7 @@ public class LocalFileStore implements StoreClient, StoreAdminClient {
       }
       else {
          StoreClient targetStore = StoreDelegateFactory.createDelegate(getOperator(), target);
-         out = targetStore.putStream(target.getPath());
+         out = targetStore.putStream(target.getPath(), false);
       }
       
       //transfer
@@ -334,14 +331,6 @@ public class LocalFileStore implements StoreClient, StoreAdminClient {
       return new File(rootDir, path);
    }
 
-   /**
-    * Moves/Renames a file
-    */
-   public void move(String sourcePath, Agsl targetPath) throws IOException
-   {
-      copy(sourcePath, targetPath);
-      delete(sourcePath);
-   }
 
    /** USer friendly representation of this store */
    public String toString() {
@@ -368,6 +357,9 @@ public class LocalFileStore implements StoreClient, StoreAdminClient {
 
 /*
 $Log: LocalFileStore.java,v $
+Revision 1.6  2004/03/22 10:25:42  mch
+Added VoSpaceClient, StoreDelegate, some minor changes to StoreClient interface
+
 Revision 1.5  2004/03/19 12:39:37  mch
 Added StoreAdminClient implementation to LocalFileStore
 
