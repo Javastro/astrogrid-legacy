@@ -293,6 +293,17 @@ M. Bolzonella, J.-M. Miralles, R. Pelló, 2000, A&amp;A 363, 476-492
 					<pref ref="merged_output"/>
 				</output>
 			</Interface>
+			<Interface name="full">
+				<input>
+					<pref ref="targets" maxoccurs="0"/>
+					<pref ref="matches" maxoccurs="0"/>
+					<pref ref="matchRadius" minoccurs="0"/>
+					<pref ref="radMax" minoccurs="0"/>
+				</input>
+				<output>
+					<pref ref="merged_output"/>
+				</output>
+			</Interface>
 		</Interfaces>
 		<ExecutionPath>/home/applications/tools/dft/bin/dft</ExecutionPath>
 	</Application>
