@@ -1,5 +1,5 @@
 /*
- * $Id: DatasetAgent.java,v 1.18 2003/08/26 16:50:49 mch Exp $
+ * $Id: DatasetAgent.java,v 1.19 2003/08/27 09:52:40 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -202,9 +202,9 @@ public class DatasetAgent {
       }
       catch( Exception dex )
       {
-         if (dex instanceof AstroGridMessage)
+         if (dex instanceof AstroGridException)
          {
-            logger.error( ((AstroGridMessage) dex).toString(), dex ) ;
+            logger.error( ((AstroGridException) dex).toString(), dex ) ;
          }
 
          AstroGridMessage generalMessage = new AstroGridMessage( ASTROGRIDERROR_ULTIMATE_QUERYFAILURE
