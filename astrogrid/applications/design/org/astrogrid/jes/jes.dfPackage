@@ -130,7 +130,15 @@ class reference8 {
 @__fqn <oiref:#Package#org.astrogrid.jes.resultlistener:oiref> 
 */
 class reference71 {
-}}/**
+}
+/**
+@__ref <oiref:design#Class#idj7o4pdzmhdd9edzmhdt8q.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.jes.doc-files:oiref> 
+*/
+class reference14 {
+}
+}/**
 @__tags
 @shapeType ClassDiagram 
 */

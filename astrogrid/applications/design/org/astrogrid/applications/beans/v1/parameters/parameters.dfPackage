@@ -53,6 +53,18 @@ class reference87 {
 */
 class reference88 {
 }
+/**
+@__ref <oiref:java#Class#org.astrogrid.applications.beans.v1.parameters.OptionListDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference47 {
+}
+/**
+@__ref <oiref:java#Class#org.astrogrid.applications.beans.v1.parameters.OptionList:oiref><oihard>
+@__modelType reference 
+*/
+class reference48 {
+}
 }/**
 @__tags
 @shapeType ClassDiagram 
@@ -64,14 +76,17 @@ class __tags {
 class __options {
 }/**
 @__positions <oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.parameters.ParameterValueDescriptor:oiref>=10,630,200,291,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition#_optionList:oiref>=290,398,202,398:oigroup>
 <oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.parameters.XhtmlDocumentationDescriptor:oiref>=230,630,200,291,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.parameters.OptionList:oiref>=2,271,200,336,1:oigroup>
 <oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.parameters.TDocumentation:oiref>=730,10,200,366,1:oigroup>
 <oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.parameters.TDocumentationDescriptor:oiref>=510,10,200,291,1:oigroup>
 <oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition#_UI_Description:oiref>=290,133,210,133:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition:oiref>=290,10,200,576,1:oigroup>
 <oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.parameters.ParameterValue:oiref>=670,410,200,381,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition:oiref>=290,10,200,516,1:oigroup>
 <oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.parameters.XhtmlDocumentation:oiref>=10,10,200,246,1:oigroup>
 <oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinitionDescriptor:oiref>=450,630,200,291,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.parameters.OptionListDescriptor:oiref>=882,781,200,291,1:oigroup>
 <oigroup:<oiref:design#Class#id2eivadsekfnt0dsekg6n1.diagram:oiref>=950,10,179,117,1:oigroup>
 */
 class __positions {

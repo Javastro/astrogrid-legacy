@@ -18,7 +18,15 @@ class reference {
 @__fqn <oiref:#Package#org.astrogrid.applications.http.exceptions:oiref> 
 */
 class reference67 {
-}}/**
+}
+/**
+@__ref <oiref:design#Class#id2gvjcdzmhdd9edzmhdsn0.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.applications.http.script:oiref> 
+*/
+class reference16 {
+}
+}/**
 @__tags
 @shapeType ClassDiagram 
 */

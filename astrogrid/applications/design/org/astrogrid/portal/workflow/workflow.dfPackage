@@ -40,7 +40,15 @@ class reference34 {
 @__fqn <oiref:#Package#org.astrogrid.portal.workflow.intf:oiref> 
 */
 class reference50 {
-}}/**
+}
+/**
+@__ref <oiref:design#Class#idddmuldzmhdd9edzmhdtdo.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.portal.workflow.test:oiref> 
+*/
+class reference15 {
+}
+}/**
 @__tags
 @shapeType ClassDiagram 
 */

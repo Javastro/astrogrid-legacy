@@ -190,7 +190,68 @@ class reference36 {
 @__modelType reference 
 */
 class reference56 {
-}}/**
+}
+/**
+@__ref <oiref:java#Class#org.astrogrid.workflow.beans.v1.ScopeDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference37 {
+}
+/**
+@__ref <oiref:java#Class#org.astrogrid.workflow.beans.v1.TryDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference38 {
+}
+/**
+@__ref <oiref:java#Class#org.astrogrid.workflow.beans.v1.Set:oiref><oihard>
+@__modelType reference 
+*/
+class reference39 {
+}
+/**
+@__ref <oiref:java#Class#org.astrogrid.workflow.beans.v1.CatchDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference40 {
+}
+/**
+@__ref <oiref:java#Class#org.astrogrid.workflow.beans.v1.Unset:oiref><oihard>
+@__modelType reference 
+*/
+class reference41 {
+}
+/**
+@__ref <oiref:java#Class#org.astrogrid.workflow.beans.v1.SetDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference42 {
+}
+/**
+@__ref <oiref:java#Class#org.astrogrid.workflow.beans.v1.Catch:oiref><oihard>
+@__modelType reference 
+*/
+class reference43 {
+}
+/**
+@__ref <oiref:java#Class#org.astrogrid.workflow.beans.v1.Scope:oiref><oihard>
+@__modelType reference 
+*/
+class reference44 {
+}
+/**
+@__ref <oiref:java#Class#org.astrogrid.workflow.beans.v1.UnsetDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference45 {
+}
+/**
+@__ref <oiref:java#Class#org.astrogrid.workflow.beans.v1.Try:oiref><oihard>
+@__modelType reference 
+*/
+class reference46 {
+}
+}/**
 @__tags
 @shapeType ClassDiagram 
 */
@@ -200,71 +261,93 @@ class __tags {
 */
 class __options {
 }/**
-@__positions <oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.InputDescriptor:oiref>=3260,670,200,291,1:oigroup>
-<oigroup:<oiref:java#Extends#org.astrogrid.workflow.beans.v1.ScriptDescriptor#org.astrogrid.workflow.beans.v1.AbstractActivityDescriptor:oiref>=3250,361,2860,286:oigroup>
-<oigroup:<oiref:java#Extends#org.astrogrid.workflow.beans.v1.Script#org.astrogrid.workflow.beans.v1.AbstractActivity:oiref>=1490,326,1050,256:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.ScriptDescriptor:oiref>=3150,361,200,276,1:oigroup>
-<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.workflow.beans.v1.Workflow#_sequence:oiref>=900,1091,820,1091:oigroup>
-<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.workflow.beans.v1.For#_activity:oiref>=796,326,948,256:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.AbstractActivity1:oiref>=2499,7,200,242,1:oigroup>
-<oigroup:<oiref:design#Class#idrkk8dsekfnt0dsekg7fa.diagram:oiref>=3480,670,83,132,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.IfDescriptor:oiref>=2270,361,200,276,1:oigroup>
-<oigroup:<oiref:java#Extends#org.astrogrid.workflow.beans.v1.If#org.astrogrid.workflow.beans.v1.AbstractActivity:oiref>=143,326,900,256:oigroup>
-<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.workflow.beans.v1.Then#_activity:oiref>=210,133,884,133:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.WorkflowDescriptor:oiref>=3040,670,200,291,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.FlowDescriptor:oiref>=2380,697,200,276,1:oigroup>
-<oigroup:<oiref:java#Extends#org.astrogrid.workflow.beans.v1.Flow#org.astrogrid.workflow.beans.v1.ActivityContainer:oiref>=540,987,540,647:oigroup>
-<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.workflow.beans.v1.Tool#_output:oiref>=1720,1155,1640,1155:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.Workflow:oiref>=900,987,200,426,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.Then:oiref>=10,10,200,246,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.Output:oiref>=1440,987,200,336,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.ActivityContainer:oiref>=510,326,200,321,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.While:oiref>=950,326,200,291,1:oigroup>
-<oigroup:<oiref:java#Extends#org.astrogrid.workflow.beans.v1.WhileDescriptor#org.astrogrid.workflow.beans.v1.AbstractActivityDescriptor:oiref>=2810,361,2810,286:oigroup>
-<oigroup:<oiref:java#Extends#org.astrogrid.workflow.beans.v1.SequenceDescriptor#org.astrogrid.workflow.beans.v1.ActivityContainerDescriptor:oiref>=2645,697,2645,637:oigroup>
-<oigroup:<oiref:design#Class#idmi84dsekfnt0dsekg7ft.diagram:oiref>=2160,1010,200,237,1:oigroup>
-<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.workflow.beans.v1.Parfor#_activity:oiref>=1236,326,1016,256:oigroup>
-<oigroup:<oiref:java#Extends#org.astrogrid.workflow.beans.v1.Step#org.astrogrid.workflow.beans.v1.AbstractActivity:oiref>=1930,326,1930,316,1067,256:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.Step:oiref>=1830,326,200,591,1:oigroup>
-<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.workflow.beans.v1.If#_then:oiref>=76,326,76,256:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.OutputDescriptor:oiref>=1940,1010,200,291,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.Parfor:oiref>=1170,326,200,321,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.ActivityContainerDescriptor:oiref>=2490,361,200,276,1:oigroup>
-<oigroup:<oiref:java#Extends#org.astrogrid.workflow.beans.v1.ActivityContainerDescriptor#org.astrogrid.workflow.beans.v1.AbstractActivityDescriptor:oiref>=2590,361,2785,286:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.Sequence:oiref>=620,987,200,208,1:oigroup>
-<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.workflow.beans.v1.Else#_activity:oiref>=390,326,916,256:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.ThenDescriptor:oiref>=2820,670,200,291,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.StepDescriptor:oiref>=2050,361,200,276,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.For:oiref>=730,326,200,321,1:oigroup>
-<oigroup:<oiref:design#Class#id44p3ddsekfnt0dsekg7gf.diagram:oiref>=2380,1010,134,117,1:oigroup>
-<oigroup:<oiref:java#Extends#org.astrogrid.workflow.beans.v1.ParforDescriptor#org.astrogrid.workflow.beans.v1.AbstractActivityDescriptor:oiref>=3470,361,2885,286:oigroup>
-<oigroup:<oiref:java#Extends#org.astrogrid.workflow.beans.v1.Sequence#org.astrogrid.workflow.beans.v1.ActivityContainer:oiref>=665,987,665,647:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.WhileDescriptor:oiref>=2710,361,200,276,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.AbstractActivity:oiref>=884,10,200,246,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.ToolDescriptor:oiref>=3310,10,200,291,1:oigroup>
-<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.workflow.beans.v1.While#_activity:oiref>=982,326,982,256:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.ForDescriptor:oiref>=2930,361,200,276,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.Else:oiref>=290,326,200,246,1:oigroup>
-<oigroup:<oiref:java#Extends#org.astrogrid.workflow.beans.v1.StepDescriptor#org.astrogrid.workflow.beans.v1.AbstractActivityDescriptor:oiref>=2150,361,2735,286:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.Tool:oiref>=1720,987,200,336,1:oigroup>
-<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.workflow.beans.v1.Tool#_input:oiref>=1765,987,1765,662:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.ParforDescriptor:oiref>=3370,361,200,276,1:oigroup>
-<oigroup:<oiref:java#Extends#org.astrogrid.workflow.beans.v1.ActivityContainer#org.astrogrid.workflow.beans.v1.AbstractActivity:oiref>=610,326,932,256:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.If:oiref>=10,326,200,321,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.Input:oiref>=1610,326,200,336,1:oigroup>
+@__positions <oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.Unset:oiref>=2,121,200,231,1:oigroup>
 <oigroup:<oiref:java#Extends#org.astrogrid.workflow.beans.v1.Parfor#org.astrogrid.workflow.beans.v1.AbstractActivity:oiref>=1303,326,1033,256:oigroup>
-<oigroup:<oiref:java#Extends#org.astrogrid.workflow.beans.v1.While#org.astrogrid.workflow.beans.v1.AbstractActivity:oiref>=999,326,999,256:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.Flow:oiref>=400,987,200,208,1:oigroup>
-<oigroup:<oiref:java#Extends#org.astrogrid.workflow.beans.v1.For#org.astrogrid.workflow.beans.v1.AbstractActivity:oiref>=863,326,965,256:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.Script:oiref>=1390,326,200,411,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.SequenceDescriptor:oiref>=2600,697,200,276,1:oigroup>
-<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.workflow.beans.v1.If#_else:oiref>=210,449,290,449:oigroup>
-<oigroup:<oiref:java#Extends#org.astrogrid.workflow.beans.v1.ForDescriptor#org.astrogrid.workflow.beans.v1.AbstractActivityDescriptor:oiref>=3030,361,2835,286:oigroup>
-<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.workflow.beans.v1.Step#_tool:oiref>=1875,917,1875,987:oigroup>
-<oigroup:<oiref:java#Extends#org.astrogrid.workflow.beans.v1.IfDescriptor#org.astrogrid.workflow.beans.v1.AbstractActivityDescriptor:oiref>=2370,361,2760,286:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.workflow.beans.v1.Tool#_output:oiref>=1720,1155,1640,1155:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.ThenDescriptor:oiref>=2820,670,200,291,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.ToolDescriptor:oiref>=3310,10,200,291,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.workflow.beans.v1.If#_then:oiref>=76,326,76,256:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.ActivityContainer:oiref>=510,326,200,321,1:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.workflow.beans.v1.StepDescriptor#org.astrogrid.workflow.beans.v1.AbstractActivityDescriptor:oiref>=2150,361,2735,286:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.workflow.beans.v1.ActivityContainerDescriptor#org.astrogrid.workflow.beans.v1.AbstractActivityDescriptor:oiref>=2590,361,2785,286:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.workflow.beans.v1.Scope#org.astrogrid.workflow.beans.v1.AbstractActivity:oiref>=202,166,884,166:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.Script:oiref>=1390,326,200,381,1:oigroup>
 <oigroup:<oiref:java#Extends#org.astrogrid.workflow.beans.v1.FlowDescriptor#org.astrogrid.workflow.beans.v1.ActivityContainerDescriptor:oiref>=2535,697,2535,637:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.Input:oiref>=1610,326,200,336,1:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.workflow.beans.v1.ActivityContainer#org.astrogrid.workflow.beans.v1.AbstractActivity:oiref>=610,326,932,256:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.workflow.beans.v1.Parfor#_activity:oiref>=1236,326,1016,256:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.workflow.beans.v1.TryDescriptor#org.astrogrid.workflow.beans.v1.AbstractActivityDescriptor:oiref>=202,223,2710,223:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.InputDescriptor:oiref>=3260,670,200,291,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.workflow.beans.v1.Step#_tool:oiref>=1875,947,1875,987:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.TryDescriptor:oiref>=2,121,200,276,1:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.workflow.beans.v1.SequenceDescriptor#org.astrogrid.workflow.beans.v1.ActivityContainerDescriptor:oiref>=2645,697,2645,637:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.While:oiref>=950,326,200,261,1:oigroup>
+<oigroup:<oiref:design#Class#idmi84dsekfnt0dsekg7ft.diagram:oiref>=2160,1010,200,237,1:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.workflow.beans.v1.ParforDescriptor#org.astrogrid.workflow.beans.v1.AbstractActivityDescriptor:oiref>=3470,361,2885,286:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.OutputDescriptor:oiref>=1940,1010,200,291,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.Step:oiref>=1830,326,200,621,1:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.workflow.beans.v1.For#org.astrogrid.workflow.beans.v1.AbstractActivity:oiref>=863,326,965,256:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.workflow.beans.v1.UnsetDescriptor#org.astrogrid.workflow.beans.v1.AbstractActivityDescriptor:oiref>=202,203,2710,203:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.workflow.beans.v1.Flow#org.astrogrid.workflow.beans.v1.ActivityContainer:oiref>=540,987,540,647:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.Scope:oiref>=2,121,200,231,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.workflow.beans.v1.Then#_activity:oiref>=210,133,884,133:oigroup>
+<oigroup:<oiref:design#Class#id44p3ddsekfnt0dsekg7gf.diagram:oiref>=2380,1010,134,117,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.ScopeDescriptor:oiref>=2,121,200,276,1:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.workflow.beans.v1.ScopeDescriptor#org.astrogrid.workflow.beans.v1.AbstractActivityDescriptor:oiref>=202,233,2710,233:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.Then:oiref>=10,10,200,246,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.Sequence:oiref>=620,987,200,208,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.WhileDescriptor:oiref>=2710,361,200,276,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.Parfor:oiref>=1170,326,200,291,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.ActivityContainerDescriptor:oiref>=2490,361,200,276,1:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.workflow.beans.v1.IfDescriptor#org.astrogrid.workflow.beans.v1.AbstractActivityDescriptor:oiref>=2370,361,2760,286:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.workflow.beans.v1.ForDescriptor#org.astrogrid.workflow.beans.v1.AbstractActivityDescriptor:oiref>=3030,361,2835,286:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.workflow.beans.v1.While#org.astrogrid.workflow.beans.v1.AbstractActivity:oiref>=999,326,999,256:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.workflow.beans.v1.Try#org.astrogrid.workflow.beans.v1.AbstractActivity:oiref>=202,225,884,225:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.workflow.beans.v1.Step#org.astrogrid.workflow.beans.v1.AbstractActivity:oiref>=1930,326,1930,316,1067,256:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.workflow.beans.v1.Sequence#org.astrogrid.workflow.beans.v1.ActivityContainer:oiref>=665,987,665,647:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.CatchDescriptor:oiref>=2,121,200,291,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.AbstractActivityDescriptor:oiref>=2710,10,200,276,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.Output:oiref>=1440,987,200,336,1:oigroup>
 <oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.ElseDescriptor:oiref>=3090,10,200,291,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.AbstractActivityDescriptor:oiref>=2710,10,200,276,1:oigroup> 
+<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.StepDescriptor:oiref>=2050,361,200,276,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.workflow.beans.v1.Try#_catch:oiref>=202,214,202,214:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.If:oiref>=10,326,200,291,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.workflow.beans.v1.For#_activity:oiref>=796,326,948,256:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.workflow.beans.v1.Scope#_activity:oiref>=202,211,884,211:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.For:oiref>=730,326,200,291,1:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.workflow.beans.v1.Set#org.astrogrid.workflow.beans.v1.AbstractActivity:oiref>=202,188,884,188:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.workflow.beans.v1.If#_else:oiref>=210,449,290,449:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.WorkflowDescriptor:oiref>=3040,670,200,291,1:oigroup>
+<oigroup:<oiref:design#Class#idrkk8dsekfnt0dsekg7fa.diagram:oiref>=3480,670,83,132,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.Catch:oiref>=2,131,200,276,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.Try:oiref>=2,121,200,261,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.workflow.beans.v1.Else#_activity:oiref>=390,326,916,256:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.AbstractActivity1:oiref>=2499,7,200,242,1:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.workflow.beans.v1.If#org.astrogrid.workflow.beans.v1.AbstractActivity:oiref>=143,326,900,256:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.workflow.beans.v1.SetDescriptor#org.astrogrid.workflow.beans.v1.AbstractActivityDescriptor:oiref>=202,213,2710,213:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.workflow.beans.v1.Tool#_input:oiref>=1765,987,1765,662:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.Set:oiref>=2,121,200,261,1:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.workflow.beans.v1.Script#org.astrogrid.workflow.beans.v1.AbstractActivity:oiref>=1490,326,1050,256:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.workflow.beans.v1.Try#_activity:oiref>=202,245,884,245:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.Tool:oiref>=1720,987,200,336,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.Flow:oiref>=400,987,200,208,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.workflow.beans.v1.Catch#_activity:oiref>=202,235,884,235:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.SetDescriptor:oiref>=2,121,200,276,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.workflow.beans.v1.While#_activity:oiref>=982,326,982,256:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.workflow.beans.v1.Unset#org.astrogrid.workflow.beans.v1.AbstractActivity:oiref>=202,198,884,198:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.workflow.beans.v1.Workflow#_sequence:oiref>=900,1091,820,1091:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.Else:oiref>=290,326,200,246,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.SequenceDescriptor:oiref>=2600,697,200,276,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.UnsetDescriptor:oiref>=2,121,200,276,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.FlowDescriptor:oiref>=2380,697,200,276,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.AbstractActivity:oiref>=884,10,200,246,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.ParforDescriptor:oiref>=3370,361,200,276,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.ScriptDescriptor:oiref>=3150,361,200,276,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.Workflow:oiref>=900,987,200,396,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.IfDescriptor:oiref>=2270,361,200,276,1:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.workflow.beans.v1.WhileDescriptor#org.astrogrid.workflow.beans.v1.AbstractActivityDescriptor:oiref>=2810,361,2810,286:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.ForDescriptor:oiref>=2930,361,200,276,1:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.workflow.beans.v1.ScriptDescriptor#org.astrogrid.workflow.beans.v1.AbstractActivityDescriptor:oiref>=3250,361,2860,286:oigroup>
 */
 class __positions {
 }

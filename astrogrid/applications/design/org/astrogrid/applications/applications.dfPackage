@@ -164,7 +164,15 @@ class reference55 {
 @__modelType reference 
 */
 class reference56 {
-}}/**
+}
+/**
+@__ref <oiref:design#Class#id3mbj0dzmhdd9edzmhdstk.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.applications.apps:oiref> 
+*/
+class reference5 {
+}
+}/**
 @__tags
 @shapeType ClassDiagram 
 @stereotype framework
