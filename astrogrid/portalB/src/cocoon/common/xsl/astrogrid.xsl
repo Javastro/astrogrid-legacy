@@ -1,11 +1,15 @@
 <?xml version="1.0"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/cocoon/common/xsl/Attic/astrogrid.xsl,v $</cvs:source>
-    | <cvs:date>$Author: KevinBenson $</cvs:date>
-    | <cvs:author>$Date: 2003/09/14 21:11:26 $</cvs:author>
-    | <cvs:version>$Revision: 1.8 $</cvs:version>
+    | <cvs:date>$Author: eca $</cvs:date>
+    | <cvs:author>$Date: 2003/10/08 14:11:23 $</cvs:author>
+    | <cvs:version>$Revision: 1.9 $</cvs:version>
     | <cvs:log>
     | $Log: astrogrid.xsl,v $
+    | Revision 1.9  2003/10/08 14:11:23  eca
+    | Edited portalB/src/cocoon/common/xsl/astrogrid.xsl to include reg admin
+    | 8 October 2003 by Elizabeth Auden
+    |
     | Revision 1.8  2003/09/14 21:11:26  KevinBenson
     | Several small things cleared up on the portal interacting with the community.
     | Cleared up some validation bugs and made sure only Admin users can do certain
@@ -75,6 +79,7 @@
 	<xsl:param name="myspace-page">agmyspace.html</xsl:param>
 	<xsl:param name="help-page">agmyspacehelp.html</xsl:param>
 	<xsl:param name="registry-page">agregistry.html</xsl:param>
+	<xsl:param name="regadmin-page">agregadmin.html</xsl:param>
 	<xsl:param name="query-page">agdataquery.html</xsl:param>
 	<xsl:param name="admin-page">agdadministration.html</xsl:param>
 	<xsl:param name="title-name">Astrogrid</xsl:param>	
@@ -178,6 +183,14 @@
 									</xsl:attribute>
 									Browse Registry
 								</a>
+								<br/>
+								<br/>
+								<a class="menu">
+									<xsl:attribute name="href">
+										<xsl:value-of select="$regadmin-page"/>
+									</xsl:attribute>
+									Registry Admin
+								</a>								
 								<br/>
 								<br/>
 									<a class="menu">
