@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project>
+
+<extend>${basedir}/../project-base.xml</extend>
+  <!-- the version of maven's project object model -->
+  <pomVersion>3</pomVersion>
+
+  <!-- a unique name for this project -->
+  <id>astrogrid-datacenter-pal</id>
+  <name>Publishers Astrogrid Library</name>
+  <currentVersion>HEAD</currentVersion>
+
+	<description><![CDATA[
+	Everything you need to publish a data archive, wrapped up in one big bundle.
+	 	]]>
+	</description>
+
+  <!-- must be on a single line -->
+  <shortDescription>Publishers Astrogrid Library</shortDescription>
+
+  <siteDirectory>/var/www/www/maven/build/datacenter/pal</siteDirectory>
+
+  <repository>
+    <connection>
+      scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/datacenter/pal
+    </connection>
+    <developerConnection>
+      scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/datacenter/pal
+    </developerConnection>
+  </repository>
+
+
+
+  <!-- jar files the project is dependent on -->
+  <dependencies>
+  	<!-- dunno if this is going to be useful or not..
+  	<dependency>
+		<groupId>astrogrid-datacenter</groupId>
+		<artifactId>astrogrid-datacenter-implementations</artifactId>
+		<version>SNAPSHOT</version>
+	</dependency>
+	-->
+	<dependency>
+		<groupId>astrogrid-datacenter</groupId>
+		<artifactId>astrogrid-datacenter-server</artifactId>
+		<version>SNAPSHOT</version>
+		<properties>
+			<war.bundle>true</war.bundle>
+		</properties>
+	</dependency>
+
+	<dependency>
+		<groupId>astrogrid-datacenter</groupId>
+		<artifactId>astrogrid-datacenter-client</artifactId>
+		<version>SNAPSHOT</version>
+		    <properties>
+      <war.bundle>true</war.bundle>
+    </properties>
+	</dependency>
+	    <dependency>
+        <id>astrogrid-mySpace</id>
+        <version>SNAPSHOT</version>
+	    <properties>
+      <war.bundle>true</war.bundle>
+    </properties>
+    </dependency>
+
+    <dependency>
+      <id>breezetk</id>
+      <version>UNKNOWN</version>
+      <jar>breezetk.jar</jar>
+          <properties>
+      <war.bundle>true</war.bundle>
+    </properties>
+    </dependency>
+
+    <dependency>
+      <id>objectwiz-votable</id>
+      <version>UNKNOWN</version>
+      <jar>objectwiz-votable.jar</jar>
+          <properties>
+      <war.bundle>true</war.bundle>
+    </properties>
+    </dependency>
+
+    <dependency>
+      <id>VOTableUtil</id>
+      <version>UNKNOWN</version>
+      <jar>VOTableUtil.jar</jar>
+          <properties>
+      <war.bundle>true</war.bundle>
+    </properties>
+    </dependency>
+
+    <dependency><!-- hsqldb - for testing -->
+        <id>hsqldb</id>
+        <version>1.7.1</version>
+	    <properties>
+      <war.bundle>true</war.bundle>
+    </properties>
+    </dependency>
+  </dependencies>
+
+  <!-- build information for the project -->
+
+</project>
+

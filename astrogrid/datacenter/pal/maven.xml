@@ -1,0 +1,32 @@
+<?xml version="1.0" ?>
+<!-- extension maven script -->
+<project xmlns:j="jelly:core"  xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="jar:jar">
+<!-- location of generated source tree -->
+<property name="generated.src" location="${basedir}/generated/java" />
+<property name="generated.wsdd" location="${basedir}/generated/wsdd" />
+
+<!-- hook to add our own things to the mix -->
+<postGoal name="war:webapp">
+	<!-- so, what do I want to do.. -->
+	<attainGoal name="generate-doc" />
+	<attainGoal name="grab-delegate" />
+	<attainGoal name="grab-server" />
+	<attainGoal name="grab-implementations" />
+</postGoal>
+
+<goal name="generate-doc" description="generate documentation and place in webapp" >
+</goal>
+
+<goal name="grab-delegate" description="generate source and binary dists of the delegate, place in webapp, along with javadoc">
+</goal>
+
+<goal name="grab-server" description="generate source and binary dists of the server. place source dist and javadoc of server in webapp">
+</goal>
+
+<goal name="grab-server-tests" description="build server tests, grab into the webapp, hook jsp-testing front end onto them">
+</goal>
+
+<goal name="grab-implementations" description="generate source and binary dists of the implementations, place in webapp">
+</goal>
+
+</project>
