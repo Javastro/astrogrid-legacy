@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.26 2004/03/16 17:05:38 mch Exp $
+ * $Id: SqlResults.java,v 1.27 2004/03/18 00:31:33 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -102,7 +102,11 @@ public class SqlResults extends QueryResults
          int cols = metadata.getColumnCount();
          for (int i=1;i<=cols;i++)
          {
-            printOut.println("<FIELD ID='"+metadata.getTableName(i)+"."+metadata.getColumnName(i)+"' "
+            String tablename = "";
+            if (metadata.getTableName(i).length() >0) {
+               tablename = metadata.getTableName(i)+".";
+            }
+            printOut.println("<FIELD ID='"+tablename+metadata.getColumnName(i)+"' "
                                 +" name='"+metadata.getColumnLabel(i)+"' "
                                 + getVotableType(i)
                                 +" ucd='"+getUcdFor(metadata.getColumnName(i))+"' "
@@ -137,6 +141,7 @@ public class SqlResults extends QueryResults
                break;
             }
          }
+         statusToUpdate.addDetail(row+" rows sent");
          
          printOut.println("</TABLEDATA>");
          printOut.println("</DATA>");
@@ -199,10 +204,13 @@ public class SqlResults extends QueryResults
             if ((maxAllowed!=-1) && (row>maxAllowed)) {
                statusToUpdate.addDetail("Results limited to "+maxAllowed+" rows by datacenter");
                log.warn("Limiting returned results to "+maxAllowed);
+               printOut.println("------------- Results Limited to "+maxAllowed+" ------------");
                break;
             }
             
          }
+
+         statusToUpdate.addDetail(row+" rows sent");
          
          printOut.flush();
       }
@@ -251,6 +259,9 @@ public class SqlResults extends QueryResults
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.27  2004/03/18 00:31:33  mch
+ Added adql 7.3.1 tests and max row information to status
+
  Revision 1.26  2004/03/16 17:05:38  mch
  Prettified of max
 

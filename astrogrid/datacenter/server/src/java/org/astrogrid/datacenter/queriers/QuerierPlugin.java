@@ -1,23 +1,27 @@
 /*
- * $Id: QuerierPlugin.java,v 1.7 2004/03/15 19:16:12 mch Exp $
+ * $Id: QuerierPlugin.java,v 1.8 2004/03/18 00:31:33 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.queriers;
 
-import javax.mail.*;
-
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Properties;
+import javax.mail.Address;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.status.QuerierProcessingResults;
+import org.w3c.dom.Document;
 
 /**
  * Querier Plugins are used to carry out all the database specific backend
@@ -145,10 +149,21 @@ public abstract class QuerierPlugin  {
       }
    }
 
-   
+   /**
+    * All Plugins should implement this method to return some sort of
+    * information about the database (eg column names, etc) that should be
+    * published. The format of this is still to be decided, so at the moment
+    * the default is to retrun null
+    */
+   public Document getMetadata() throws IOException {
+      return null;
+   }
 }
 /*
  $Log: QuerierPlugin.java,v $
+ Revision 1.8  2004/03/18 00:31:33  mch
+ Added adql 7.3.1 tests and max row information to status
+
  Revision 1.7  2004/03/15 19:16:12  mch
  Lots of fixes to status updates
 

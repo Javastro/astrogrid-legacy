@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcPlugin.java,v 1.6 2004/03/16 17:14:31 mch Exp $
+ * $Id: JdbcPlugin.java,v 1.7 2004/03/18 00:31:33 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,6 +9,7 @@ package org.astrogrid.datacenter.queriers.sql;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -21,6 +22,10 @@ import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
 import org.astrogrid.datacenter.queriers.status.QuerierError;
 import org.astrogrid.datacenter.queriers.status.QuerierQueried;
 import org.astrogrid.datacenter.queriers.status.QuerierQuerying;
+import org.astrogrid.util.DomHelper;
+import org.w3c.dom.Document;
+import javax.xml.parsers.ParserConfigurationException;
+import org.xml.sax.SAXException;
 
 /**
  * A general purpose SQL Querier that will (hopefully) produce bog standard
@@ -54,10 +59,6 @@ public class JdbcPlugin extends QuerierPlugin  {
     */
    public void askQuery() throws IOException {
       
-      if (connectionManager == null) {
-         connectionManager = JdbcConnections.makeFromConfig();
-      }
-
       String sql = "(not set)";
       Connection jdbcConnection = null;
       
@@ -71,7 +72,7 @@ public class JdbcPlugin extends QuerierPlugin  {
       
          //connect to database
          log.debug("Connecting to the database");
-         jdbcConnection = connectionManager.createConnection();
+         jdbcConnection = getJdbcConnection();
          Statement statement = jdbcConnection.createStatement();
          
          querier.setStatus(new QuerierQuerying(querier));
@@ -128,5 +129,59 @@ public class JdbcPlugin extends QuerierPlugin  {
          throw new QuerierPluginException(msg, th);
       }
    }
+   
+   /** Creates a connection to the database */
+   protected static synchronized Connection getJdbcConnection() throws IOException, SQLException {
+      
+      if (connectionManager == null) {
+         connectionManager = JdbcConnections.makeFromConfig();
+      }
+      return connectionManager.createConnection();
+
+   }
+   
+   /** Gets metadata about the database. For SQL servers, this is a list of columns */
+   public Document getMetadata() throws IOException {
+
+      Connection connection = null;
+      try {
+         connection = getJdbcConnection();
+         
+         DatabaseMetaData metadata = connection.getMetaData();
+         
+         ResultSet columns = metadata.getColumns("*", "*", "*", "*");
+         
+         //bleurgh, writing by hand
+         StringBuffer s = new StringBuffer("<PluginMetadata>\n");
+         while (columns.next()) {
+            s.append("  <Column>\n"+
+                          "<Catalogue>"+columns.getString("TABLE_CAT")+"</Catalogue>\n"+
+                          "<Table>"+columns.getString("TABLE_NAME")+"</Table>\n"+
+                          "<Name>"+columns.getString("COLUMN_NAME")+"</Name>\n"+
+                          "<Type>"+columns.getString("DATA_TYPE")+"<Type>\n"+
+                        "</Column>\n"+
+                     "</PluginMetadata>\n");
+         }
+         
+         return DomHelper.newDocument(s.toString());
+         
+      }
+      catch (SQLException e) {
+         throw new DatabaseAccessException("Could not get metadata",e);
+      }
+      catch (ParserConfigurationException e) {
+         throw new DatabaseAccessException("Server not configured correctly ",e);
+      }
+      catch (SAXException e) {
+         throw new DatabaseAccessException("Server not configured correctly ",e);
+      }
+      finally {
+         //try to tidy up now
+         try {
+            if (connection != null) { connection.close(); }
+         } catch (SQLException e) { } //ignore
+      }
+   }
+   
    
 }
