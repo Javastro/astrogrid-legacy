@@ -5,28 +5,24 @@
   <agp:menu
       contents="File"
       contents-hover="File"
-      icon=""
       uri=""
       target="_self"
       status-text="File...">
     <agp:item
         contents="Open"
         contents-hover="Open"
-        icon=""
         uri=""
         target="_self"
         status-text="Open a workflow"/>
     <agp:item
         contents="Save"
         contents-hover="Save"
-        icon="images/Save.gif"
         uri=""
         target="_self"
         status-text="Save a workflow"/>
     <agp:item
         contents="Save As"
         contents-hover="Save As"
-        icon=""
         uri=""
         target="_self"
         status-text="Save a workflow as..."/>        
@@ -34,35 +30,30 @@
   <agp:menu
       contents="Edit"
       contents-hover="Edit"
-      icon=""
       uri=""
       target="_self"
       status-text="Edit workflow...">
     <agp:item
         contents="Insert step"
         contents-hover="Insert step"
-        icon=""
         uri="javascript:document.insert_step_form.submit();"
         target="_self"
         status-text="Insert step into workflow...."/>
     <agp:item
         contents="Insert flow"
         contents-hover="Insert flow"
-        icon=""
         uri="javascript:document.insert_flow_form.submit();"
         target="_self"
         status-text="Insert flow into workflow...."/>
     <agp:item
         contents="Insert sequence"
         contents-hover="Insert sequence"
-        icon=""
         uri="javascript:document.insert_sequence_form.submit();"
         target="_self"
         status-text="Insert sequence into workflow...."/>
     <agp:item
         contents="Remove activity"
         contents-hover="Remove activity"
-        icon=""
         uri="javascript:document.remove_activity_form.submit();"
         target="_self"
         status-text="Remove activity...."/>                        
