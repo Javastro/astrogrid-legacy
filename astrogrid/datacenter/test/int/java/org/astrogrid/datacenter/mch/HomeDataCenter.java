@@ -51,7 +51,7 @@ public class HomeDataCenter extends SocketServer
          //URL metadataUrl = HomeDataCenter.class.getResource("metadata.xml");
 //         Configuration.setProperty(ServiceServer.METADATA_FILE_LOC_KEY, metadataUrl.toString());
          Configuration.setProperty(ServiceServer.METADATA_FILE_LOC_KEY,
-               "C:\\astrogrid\\datacenter\\class\\org\\astrogrid\\datacenter\\mch\\metadata.xml");
+               "C:\\astrogrid\\class\\org\\astrogrid\\datacenter\\mch\\metadata.xml");
 
          //tell the queriers where to find the database connection
          Configuration.setProperty(SqlQuerier.JDBC_URL_KEY, "jdbc:mysql://localhost:3306/Catalogue");
@@ -69,11 +69,12 @@ public class HomeDataCenter extends SocketServer
          serverThread.start();
 
          //run a query direct
-         Log.trace("Running query directly...");
-         InputStream is = HomeDataCenter.class.getResourceAsStream("adqlQuery.xml");
-         Document doc = XMLUtils.newDocument(is);
+//         Log.trace("Running query directly...");
+//         InputStream is = HomeDataCenter.class.getResourceAsStream("adqlQuery.xml");
+//         Document doc = XMLUtils.newDocument(is);
 
-         DatabaseQuerier querier = DatabaseQuerier.doQueryGetResults(doc.getDocumentElement());
+//         DatabaseQuerier querier = DatabaseQuerier.createQuerier(doc.getDocumentElement());
+ //        querier.doQuery();
 
       }
       catch (Exception e)
@@ -85,6 +86,9 @@ public class HomeDataCenter extends SocketServer
 
 /*
  $Log: HomeDataCenter.java,v $
+ Revision 1.2  2003/09/17 06:55:44  mch
+ Changed metadata loc
+
  Revision 1.1  2003/09/15 11:46:18  mch
  MySql mchs home tester
 
