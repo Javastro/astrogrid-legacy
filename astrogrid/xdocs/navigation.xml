@@ -24,6 +24,7 @@
             <item name="Common" href="common/index.html"/>
             <item name="Community" href="community/index.html"/>
             <item name="DataCenter" href="datacenter/index.html"/>
+            <item name="FileStore" href="filestore/index.html"/>
             <item name="Job Management" href="jes/index.html"/>
             <item name="mySpace" href="mySpace/index.html"/>
             <item name="Portal" href="portal/index.html"/>
@@ -49,6 +50,7 @@
                 <item name="Common" href="log/maven-build-common.log" />
                 <item name="Community" href="log/maven-build-community.log" />
                 <item name="DataCenter" href="log/maven-build-datacenter.log" />
+                <item name="FileStore" href="log/maven-build-filestore.log"/>                
                 <item name="Job Management" href="log/maven-build-jes.log" />
                 <item name="mySpace" href="log/maven-build-mySpace.log" />
                 <item name="Portal" href="log/maven-build-portal.log" />
