@@ -60,7 +60,7 @@ echo `date` "[ag-build-$PROJECT_NAME] generate and deploy SNAPSHOT"
 echo "Executing astrogrid-deploy-snapshot" >> $LOG_FILE 2>&1 
 #Note that unit tests are skipped at this stage, since they have already
 #been run for the site docs
-if maven -Dmaven.test.skip=true -Dastrogrid.iteration=$ASTROGRID_VERSION -Dmaven.site.central.directory=$DOC_HOME astrogrid-deploy-snapshot >> $LOG_FILE 2>&1
+if maven -Dmaven.test.skip=false -Dastrogrid.iteration=$ASTROGRID_VERSION -Dmaven.site.central.directory=$DOC_HOME astrogrid-deploy-snapshot >> $LOG_FILE 2>&1
 then
    echo "*** SUCCESS ***" >> $LOG_FILE
 else
