@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+
+<xsp:page language="java" 
+		  xmlns:xsp="http://apache.org/xsp"
+		  xmlns:util="http://apache.org/xsp/util/2.0" xmlns:jpath="http://apache.org/xsp/jpath/1.0"
+		  xmlns:xsp-session="http://apache.org/xsp/session/2.0"
+  		  xmlns:xsp-request="http://apache.org/xsp/request/2.0"
+		>
+
+    <!--+
+        | Import any java classes here.
+        +-->
+
+        <xsp:structure>
+          <xsp:include>org.w3c.dom.Document</xsp:include>
+          <xsp:include>org.astrogrid.util.DomHelper</xsp:include>
+        </xsp:structure>
+
+        <results>
+          <xsp:logic>
+            <resourceDetails> 
+              <xsp:attribute name="resource_result_count"><xsp:expr>(String)session.getAttribute("resource_result_count")</xsp:expr></xsp:attribute>
+              <xsp:attribute name="resource_error_message"><xsp:expr>(String)session.getAttribute("resource_error_message")</xsp:expr></xsp:attribute>
+              <xsp:attribute name="resource_info_message"><xsp:expr>(String)session.getAttribute("resource_info_message")</xsp:expr></xsp:attribute>                     
+            </resourceDetails>
+
+            Object ob = null;            
+            
+            ob = session.getAttribute("resultDoc");
+            if ((ob != null) &amp;&amp; (ob instanceof Document))
+            {              
+              <resultsFromRegistry>
+                <util:include-expr>
+                  <util:expr>
+                    DomHelper.DocumentToString((Document)ob)
+                  </util:expr>
+                </util:include-expr>
+              </resultsFromRegistry>
+            }
+            else
+            {
+              <resultsFromRegistry></resultsFromRegistry>
+            }         
+                                       
+          </xsp:logic>          
+        <xsp-session:set-attribute name="resultDoc" value="null"/>
+        <xsp-session:set-attribute name="resource_result_count" value="null"/>      
+        <xsp-session:set-attribute name="resource_error_message" value="null"/>                          
+        <xsp-session:set-attribute name="resource_info_message" value="null"/>                        
+        </results>
+
+</xsp:page>

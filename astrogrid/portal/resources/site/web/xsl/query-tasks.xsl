@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+
+  <!--+ 
+       | Author: Phil Nicolson "pjn3@star.le.ac.uk"
+       | Date:   Nov 2004
+       +-->
+
+  <!--+
+       |
+       +-->
+    <xsl:template name="query-tasks">
+      <div id="query-tasks" style="display:none ">
+        <form name="query_form" 
+              id="query_form" 
+              method="post"
+              action="/astrogrid-portal/bare/mount/resources/resourceResults.html" 
+              target="resourcesResultsFrame">
+          <table border="1" cellpadding="5">
+            <tr valign="top">
+              <td rowspan="3">
+                <table>
+                  <tr>
+                    <td colspan="3" 
+                        align="center" 
+                        style="cursor: help"
+                        title="Search uses 'contains' eg: where title contains Energetic, and is case insensitive." 
+                        onblur="defocusit(this)" 
+                        onfocus="focusit(this)">
+                      General Constraints
+                    </td>
+                  </tr>
+                  <tr>
+                    <td> Task name: </td>
+                    <td> contains </td>
+                    <td>
+                      <input title="eg: org.astrogrid.localhost - (AuthorityID, ResourceKey)"  
+                             name="taskNameField" 
+                             id="taskNameField" 
+                             type="text" 
+                             onblur="defocusit(this)" 
+                             onfocus="focusit(this)">
+                      </input>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td> Task title: </td>
+                    <td> contains </td>
+                    <td>
+                      <input title="eg: Trace Instrument Fits Catalogue"  
+                             name="titleField" 
+                             id="titleField" 
+                             type="text" 
+                             onblur="defocusit(this)" 
+                             onfocus="focusit(this)">
+                      </input>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td> Description: </td>
+                    <td> contains </td>
+                    <td>
+                      <input title="eg: part of the astrogrid CEA" 
+                             name="descriptionField" 
+                             id="descriptionField" 
+                             type="text" 
+                             onblur="defocusit(this)" 
+                             onfocus="focusit(this)">
+                      </input>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td align="center" colspan="3">
+                      and<input type="radio" name="TaskAndOr" value="AND" checked="true"/>
+                      or<input type="radio" name="TaskAndOr" value="OR"/>
+                    </td>
+                  </tr>                                    
+                </table>
+              </td>          
+            </tr>
+            <tr>
+              <td align="center">
+                <input class="agActionButton" type="submit" name="action" value="search for tasks" /><br />
+                <input class="agActionButton" value="reset" type="reset" />
+                <input type="hidden" name="returnDisplay" value="query-tasks" />
+              </td>
+            </tr>
+          </table>
+        </form>
+      </div>                                                                                                
+    </xsl:template>            
+</xsl:stylesheet>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+  <resourceBrowserSelect>
+    
+    <!-- Temp approach - need to populate select lists dynamically at some point --> 
+     
+    <!--
+       Contents of facility element taken from Hydra db 30/11/04
+       version: astrogridv0_9
+       declare namespace vr = "http://www.ivoa.net/xml/VOResource/v0.9";
+       for $x in //vr:Resource[(vr:Type = 'Catalog')] return $x/vr:Facility
+    -->
+    <facilityKeys>
+      <Facility>CGRO</Facility>
+      <Facility>Copernicus</Facility>
+      <Facility>Einstein</Facility> 
+      <Facility>EUVE</Facility>
+      <Facility>EXOSAT</Facility>
+      <Facility>FAUST</Facility>
+      <Facility>GRANAT</Facility>
+      <Facility>HEAO</Facility>
+      <Facility>Hipparcos</Facility>
+      <Facility>HST</Facility>
+      <Facility>IRAS</Facility>
+      <Facility>IUE</Facility>               
+      <Facility>OAO-2</Facility>
+      <Facility>ROSAT</Facility>
+      <Facility>SOHO</Facility>
+      <Facility>TD1</Facility>  
+      <Facility>UIT</Facility>
+    </facilityKeys>        
+    
+    <!--
+       Contents of subject element taken from Hydra db 30/11/04
+       version: astrogridv0_9
+       declare namespace vr = "http://www.ivoa.net/xml/VOResource/v0.9";
+       for $x in //vr:Resource[(vr:Type = 'Catalog')] return $x/vr:Subject
+    -->
+    <keywordKeys>
+      <Subject>Abundances</Subject>
+      <Subject>AGN</Subject>
+      <Subject>Associations</Subject>
+      <Subject>Binaries:eclipsing</Subject>
+      <Subject>Clusters_of_galaxies</Subject>
+      <Subject>Extinction</Subject>
+      <Subject>Globular_Clusters</Subject>  
+      <Subject>Gravitational_lensing</Subject>
+      <Subject>Interstellar_Medium</Subject>
+      <Subject>Masers</Subject>
+      <Subject>Models</Subject>
+      <Subject>Multiple_Stars</Subject>
+      <Subject>Nebulae</Subject> 
+      <Subject>NOAA</Subject> 
+      <Subject>Open_Clusters</Subject>  
+      <Subject>Parallaxes</Subject>
+      <Subject>Photometry:intermediate-band</Subject>  
+      <Subject>Photometry</Subject>
+      <Subject>Photometry:wide-band</Subject>
+      <Subject>Planets+Asteroids</Subject>
+      <Subject>Polarization</Subject> 
+      <Subject>Positional_Data</Subject>
+      <Subject>Proper_Motions</Subject> 
+      <Subject>QSOs</Subject>
+      <Subject>Redshifts</Subject>
+      <Subject>Rotational_Velocities</Subject>
+      <Subject>solar events</Subject>  
+      <Subject>Spectral_Classification</Subject>  
+      <Subject>Spectrophotometry</Subject> 
+      <Subject>Spectroscopy</Subject> 
+      <Subject>Stars:early-type</Subject>
+      <Subject>Stars:Emission</Subject>
+      <Subject>Stars:late-type</Subject> 
+      <Subject>Stars:peculiar</Subject> 
+      <Subject>Stars</Subject>
+      <Subject>Stars:variable</Subject> 
+      <Subject>Stars:WR</Subject>
+      <Subject>SuperNovae_Remnants</Subject>
+      <Subject>SuperNovae</Subject>
+      <Subject>Velocities</Subject>
+      <Subject>YSOs</Subject>
+    </keywordKeys>
+    
+    <wavelengthKeys>
+      <Wavelength>Gamma Rays</Wavelength>
+      <Wavelength>X-Ray</Wavelength>
+      <Wavelength>EUV</Wavelength>
+      <Wavelength>UV</Wavelength>
+      <Wavelength>Optical</Wavelength>
+      <Wavelength>Infrared</Wavelength>
+      <Wavelength>Millimeter</Wavelength>
+      <Wavelength>Radio</Wavelength>
+    </wavelengthKeys>
+    
+  </resourceBrowserSelect>

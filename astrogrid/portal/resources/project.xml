@@ -27,6 +27,31 @@
       </properties>
     </dependency>
     
+    <!--registry-->
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-registry-client-lite</artifactId>
+      <version>${astrogrid.registry.version}</version>
+      <type>jar</type>
+      <url>http://www.astrogrid.org/</url>
+     </dependency>
+     
+     <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-registry-common</artifactId>
+      <version>${astrogrid.registry.version}</version>
+      <type>jar</type>
+      <url>http://www.astrogrid.org/</url>
+     </dependency>
+     
+     <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-registry-server</artifactId>
+      <version>${astrogrid.registry.version}</version>
+      <type>jar</type>
+      <url>http://www.astrogrid.org/</url>
+     </dependency>
+    
     <!-- Log4J-->
     <dependency>
       <groupId>log4j</groupId>

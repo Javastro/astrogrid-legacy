@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<xsp:page language="java" 
+		  create-session="true"
+		  xmlns:xsp="http://apache.org/xsp"
+		  xmlns:util="http://apache.org/xsp/util/2.0"
+		  xmlns:xsp-session="http://apache.org/xsp/session/2.0"
+  		  xmlns:xsp-request="http://apache.org/xsp/request/2.0"
+		>
+
+  <xsp:structure>
+  </xsp:structure>
+
+  <resources>
+
+    <xsp:logic>
+	  String tomcat;
+	  tomcat = java.lang.System.getProperty("catalina.home");
+	  tomcat += "/webapps/astrogrid-portal/mount/resources/xml/facilityKeywordTemplate.xml";
+
+	  <util:include-file>
+	    <util:name><xsp:expr>tomcat</xsp:expr></util:name>
+	  </util:include-file>
+    </xsp:logic>
+
+  </resources>
+
+</xsp:page>

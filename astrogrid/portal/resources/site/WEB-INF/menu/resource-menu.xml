@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<agp:menu-def
+    name="resource-menu"
+    xmlns:agp="http://www.astrogrid.org/portal">
+  <agp:menu
+      contents="Resource"
+      contents-hover="Resource"
+      uri=""
+      target="_top"
+      status-text="Resource...">
+    <agp:item
+        contents="Temp testing menu"
+        contents-hover="Temp testing menu"
+        uri="/astrogrid-portal/main/mount/resources/agresources.html"
+        target="_top"
+        status-text="Astrogrid Portal Workflow: Job Manager..."/>
+  </agp:menu>
+</agp:menu-def>
