@@ -20,6 +20,7 @@ import org.astrogrid.util.DomHelper;
 import java.util.ArrayList;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.server.query.RegistryService;
+import org.astrogrid.registry.server.harvest.RegistryHarvestService;
 import org.xml.sax.helpers.DefaultHandler;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -69,6 +70,19 @@ public class RegistryAdminService {
          otherAuths = new HashMap();
       }      
    }
+   
+   public Document harvestResource(Document resources)  throws AxisFault {
+       RegistryHarvestService rhs = new RegistryHarvestService();
+       try {   
+          rhs.harvestResource(resources,null);
+       }catch(IOException ioe) {
+          throw new AxisFault("IOE problem",ioe);
+       }catch(RegistryException re) {
+        throw new AxisFault("Registry exception", re);
+       }
+       return resources;      
+   }
+   
    
    
    /**

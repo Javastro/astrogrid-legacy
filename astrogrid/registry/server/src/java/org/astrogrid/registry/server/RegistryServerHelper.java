@@ -60,12 +60,29 @@ public class RegistryServerHelper {
 
    private static final Log log = LogFactory.getLog(RegistryServerHelper.class);
 
+   private static String versionNumber = null;
    static {
-      if(conf == null) {
+      if(conf == null) {        
          conf = org.astrogrid.config.SimpleConfig.getSingleton();
+         versionNumber = conf.getString("org.astrogrid.registry.version");         
       }      
    }
    
+   
+   public static String getIdentifier(Node nd) throws IOException {
+   	String ident = null;
+      String temp = null;
+      NodeList nl = null;
+   	if("0_9".equals(versionNumber)) {
+           ident = DomHelper.getNodeTextValue(nd,"AuthorityID","vr");
+           
+           temp = DomHelper.getNodeTextValue(nd,"ResourceKey","vr");
+           if(temp != null) ident += "/" + temp;
+   	}else {
+   		ident = DomHelper.getNodeTextValue(nd,"Identifier","vr");
+      }
+      return ident;
+   }
          
    public static void initStatusMessage() throws IOException {
       log.debug("start initStatusMessage");      
@@ -150,8 +167,8 @@ public class RegistryServerHelper {
       QueryDBService qdb = new QueryDBService();
       String regAuthID = conf.getString("org.astrogrid.registry.authorityid");
       String collectionName = "astrogridv" + conf.getString("org.astrogrid.registry.version");
-      String xqlQuery = "//vr:Resource[@xsi:type='RegistryType' and Identifier/AuthorityID != '" +
-                         regAuthID +"']";
+      String xqlQuery = "for $x in //vr:Resource where @xsi:type='RegistryType' and vr:Identifier/vr:AuthorityID != '" +
+                         regAuthID +"' return $x";
       regEntry = qdb.runQuery(collectionName,xqlQuery);
       
       if(regEntry != null) {
@@ -195,8 +212,8 @@ public class RegistryServerHelper {
       String regAuthID = conf.getString("org.astrogrid.registry.authorityid");
       String collectionName = "astrogridv" + conf.getString("org.astrogrid.registry.version");
       
-      String xqlQuery = "//vr:Resource[@xsi:type='RegistryType' and Identifier/AuthorityID = '" +
-                         regAuthID +"']";
+      String xqlQuery = "for $x in //vr:Resource where @xsi:type='RegistryType' and vr:Identifier/vr:AuthorityID = '" +
+                         regAuthID +"' return $x";
       regEntry = qdb.runQuery(collectionName,xqlQuery);
 
       if(regEntry != null) {
