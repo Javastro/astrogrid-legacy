@@ -1,4 +1,4 @@
-/* $Id: JobFactoryImplTest.java,v 1.3 2003/11/12 11:59:30 jdt Exp $
+/* $Id: JobFactoryImplTest.java,v 1.4 2003/11/12 12:49:42 jdt Exp $
  * Created on 31-Oct-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,6 +8,8 @@
  * with this distribution in the LICENSE.txt file. 
  */
 package org.astrogrid.jes.impl;
+import java.lang.reflect.InvocationTargetException;
+
 import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.naming.spi.NamingManager;
@@ -17,79 +19,118 @@ import org.astrogrid.jes.JES;
 import org.astrogrid.jes.job.JobException;
 import org.astrogrid.jes.testutils.naming.SimpleContextFactoryBuilder;
 import junit.framework.TestCase;
+import junit.runner.TestCaseClassLoader;
 /**
  * Test the {@link JobFactoryImpl} class.
  * @author jdt
  */
 public final class JobFactoryImplTest extends TestCase {
-    private static final String TEST_DB = JES.getProperty(JES.JOB_DATASOURCE,JES.JOB_CATEGORY);
-    private jdbcDataSource datasource;
+  /**
+   * The name of the test database in the naming service 
+   */
+  private static final String TEST_DB =
+    JES.getProperty(JES.JOB_DATASOURCE, JES.JOB_CATEGORY);
     /**
-     * Constructor for JobFactoryImplTest.
-     * @param arg0 test name
+     * The datasource used for testing
      */
-    public JobFactoryImplTest(final String arg0) throws NamingException {
-        super(arg0);
-        if (!NamingManager.hasInitialContextFactoryBuilder()) {
-		NamingManager.setInitialContextFactoryBuilder(
-			new SimpleContextFactoryBuilder());
-        }
+  private jdbcDataSource datasource;
+  /**
+   * Constructor for JobFactoryImplTest.
+   * @param arg0 test name
+   * @throws NamingException if there's a problem setting up the InitialContextFactoryBuilder
+   */
+  public JobFactoryImplTest(final String arg0) throws NamingException {
+    super(arg0);
+    if (!NamingManager.hasInitialContextFactoryBuilder()) {
+      NamingManager.setInitialContextFactoryBuilder(
+        new SimpleContextFactoryBuilder());
     }
-    /**
-     * Fire up the JUnit text gui
-     * @param args ignored
-     */
-    public static void main(final String[] args) {
-        junit.textui.TestRunner.run(JobFactoryImplTest.class);
-    }
-    
-    public void setUp() throws NamingException {
-		//First setup the database
-        datasource = new jdbcDataSource();
-		datasource.setDatabase(".");
-		//conn = ds.getConnection("sa",""); gonna need to set the authentication up for later tests
-		//Now stick it in the NamingService
+  }
+  /**
+   * Fire up the JUnit text gui
+   * @param args ignored
+   */
+  public static void main(final String[] args) {
+    junit.textui.TestRunner.run(JobFactoryImplTest.class);
+  }
 
-		Context ctx = NamingManager.getInitialContext(null);
-		ctx.bind(TEST_DB, datasource);
-		System.out.println(datasource);
+  /**
+   * Create the testdatabase and bind into the NamingService
+   * @throws NamingException if there's a problem with the NamingService
+   * @see junit.framework.TestCase#setUp()
+   */
+  public void setUp() throws NamingException {
+    //First setup the database
+    datasource = new jdbcDataSource();
+    datasource.setDatabase(".");
     
-    }
-    /**
-     * Let's see if we can persuade it to use our naming service and database.
-     * @throws NamingException if the naming service falls over
-     * @throws JobException if there's an exception in the JobFactoryImpl class
-     */
-    public final void testDataSource() throws JobException  {
+    //Now stick it in the NamingService
+    Context ctx = NamingManager.getInitialContext(null);
+    ctx.bind(TEST_DB, datasource);
+    System.out.println(datasource);
+  }
+  /**
+   * Does the JobFactoryImpl use the data source we've stuck in the Naming Service?
+   * @throws JobException if there's an exception in the JobFactoryImpl class
+   */
+  public final void testDataSource() throws JobException {
+    DataSource jobFactoryDataSource = JobFactoryImpl.getDataSource();
+    assertEquals(
+      "Expect to get the DataSource we stored in the NamingService",
+      datasource,
+      jobFactoryDataSource);
+  }
+  /**
+   * If no datasource has been set up then we expect
+   * a nice clean exit.  
+   * @throws NamingException Problem with NamingService
+   * @throws ClassNotFoundException If there's a problem loading the JobFactoryImpl class
+   * @throws IllegalAccessException On reflection...
+   * @throws NoSuchMethodException On reflection...
+   */
+  public final void testNoDataSource()
+    throws
+      NamingException,
+      ClassNotFoundException,
+      IllegalAccessException,
+      NoSuchMethodException {
+        
+    //For this test we need to remove the datasource from the naming service
+    //so that the JobFactoryImpl can't find it.
+    Context ctx = NamingManager.getInitialContext(null);
+    System.out.println(ctx.lookup(TEST_DB));
+    ctx.unbind(TEST_DB);
 
-        //see DATASOURCE property in the *_jesconfig.xml file
-        DataSource jobFactoryDataSource = JobFactoryImpl.getDataSource();
-        assertEquals(
-            "Expect to get the DataSource we stored in the NamingService",
-            datasource,
-            jobFactoryDataSource);
+    //Unfortunately, the JobFactoryImpl stores the datasource as a static variable
+    //hence it will still have a copy from the previous test.  We get round this by
+    //loading the class again using JUnit's class loader.
+    ClassLoader cl = new TestCaseClassLoader();
+    Class klass =
+      Class.forName("org.astrogrid.jes.impl.JobFactoryImpl", true, cl);
+
+    try {
+      //Unfortunately it seems we need to use a load of reflection to actually
+      //use the class - otherwise we end up using the one loaded by the system
+      //class loader.  This is horrible. 
+      Object jobFactoryDataSource =
+        klass.getMethod("getDataSource", null).invoke(null, null);
+      fail("Expected a runtime exception here because the Naming Service hasn't been given a datasource");
+    } catch (InvocationTargetException jex) {
+      // expect this to wrap a JobException
+      //Another consequence of using our own class loader is that instanceof
+      //doesn't seem to work properly, hence this hack to check the class.
+      String className = jex.getCause().getClass().toString();
+      assertTrue(
+        "Should get a JobException if no datasource can be found",
+        className.indexOf("org.astrogrid.jes.job.JobException") != -1);
     }
-	/**
-	 * If no datasource has been set up then we expect
-	 * a nice clean exit.  @todo think about this - is it possible
-	 * that the naming service used in the previous test could interfere with this?
-	 * @todo need to use a separate class loader to chuck the singleton out
-	 */
-	public final void testNoDataSource() throws NamingException {
-		Context ctx = NamingManager.getInitialContext(null);
-		System.out.println(ctx.lookup(TEST_DB));
-		ctx.unbind(TEST_DB);
-		try {
-			DataSource jobFactoryDataSource = JobFactoryImpl.getDataSource();
-			System.out.println(jobFactoryDataSource);
-			fail("Expected a runtime exception here because the Naming Service hasn't been given a datasource");
-		} catch (JobException jex) {
-			// expect this  	
-		} 
-	}
+  }
 }
 /*
 *$Log: JobFactoryImplTest.java,v $
+*Revision 1.4  2003/11/12 12:49:42  jdt
+*Fixed the new test - now tests for a clean exit if there's no datasource available.
+*
 *Revision 1.3  2003/11/12 11:59:30  jdt
 *Fixed a bug that stopped Maven running last night.
 *
