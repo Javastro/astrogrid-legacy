@@ -66,7 +66,7 @@ public class WorkflowTestSuite extends TestCase {
 	
     
     
-    public void tostWorkflowActivityNavigation() {
+    public void testWorkflowActivityNavigation() {
          logger.info( "enter: WorkflowTestSuite.testWorkflowActivityNavigation()" ); 
         
          final String 
@@ -112,7 +112,7 @@ public class WorkflowTestSuite extends TestCase {
     
     
 
-    public void tostCreateWorkflowFromTemplate_MissingTemplate() {
+    public void testCreateWorkflowFromTemplate_MissingTemplate() {
         logger.info( "enter: WorkflowTestSuite.testCreateWorkflowFromTemplate_MissingTemplate()" ); 
         
         final String 
@@ -137,7 +137,7 @@ public class WorkflowTestSuite extends TestCase {
     } // end of testCreateWorkflowFromTemplate_MissingTemplate()
 
 
-    public void tostCreateWorkflowFromTemplate_OneStepTemplate() {
+    public void testCreateWorkflowFromTemplate_OneStepTemplate() {
         logger.info( "enter: WorkflowTestSuite.testCreateWorkflowFromTemplate_OneStepTemplate()" ); 
         
         final String 
@@ -165,7 +165,7 @@ public class WorkflowTestSuite extends TestCase {
 
 
 
-    public void tostSaveWorkflow() {
+    public void testSaveWorkflow() {
          logger.info( "enter: WorkflowTestSuite.testSaveWorkflow()" ); 
         
         final String 
@@ -206,7 +206,7 @@ public class WorkflowTestSuite extends TestCase {
 
 
 
-    public void tostReadWorkflowList() {
+    public void testReadWorkflowList() {
          logger.info( "enter: WorkflowTestSuite.testReadWorkflowList()" ); 
         
          final String 
@@ -217,7 +217,7 @@ public class WorkflowTestSuite extends TestCase {
             iterator ;
             
          try{
-             iterator = Workflow.readWorkflowList( userid, community, communitySnippet(), filter ) ;
+             iterator = Workflow.readWorkflowList( communitySnippet(), filter ) ;
              
              while ( iterator.hasNext() ) {
                  logger.info( "Workflow Name: " + (String)iterator.next() ) ;
@@ -238,7 +238,7 @@ public class WorkflowTestSuite extends TestCase {
  
  
  
-    public void tostReadWorkflow() {
+    public void testReadWorkflow() {
          logger.info( "enter: WorkflowTestSuite.testReadWorkflow()" ); 
         
          final String 
@@ -249,7 +249,7 @@ public class WorkflowTestSuite extends TestCase {
             workflow ;
             
          try{
-             workflow = Workflow.readWorkflow( userid, community, communitySnippet(), name) ;
+             workflow = Workflow.readWorkflow( communitySnippet(), name) ;
             
              logger.info( "Workflow: " + workflow.toXMLString() ) ;
  
@@ -271,7 +271,7 @@ public class WorkflowTestSuite extends TestCase {
     
     
 
-    public void tostDeleteWorkflow() {
+    public void testDeleteWorkflow() {
          logger.info( "enter: WorkflowTestSuite.testDeleteWorkflow()" ); 
         
         final String 
@@ -282,7 +282,7 @@ public class WorkflowTestSuite extends TestCase {
             ret = false ;
             
         try{
-            ret = Workflow.deleteWorkflow( userid, community, communitySnippet(), name) ;
+            ret = Workflow.deleteWorkflow( communitySnippet(), name) ;
             
             logger.info( "deleted: " + ret ) ;
  
@@ -303,7 +303,7 @@ public class WorkflowTestSuite extends TestCase {
 
 
 
-    public void tostReadQueryList() {
+    public void testReadQueryList() {
          logger.info( "enter: WorkflowTestSuite.testReadQueryList()" ); 
         
          final String 
@@ -314,7 +314,7 @@ public class WorkflowTestSuite extends TestCase {
             iterator ;
             
          try{
-             iterator = Query.readQueryList( userid, community, communitySnippet(), filter) ;
+             iterator = Workflow.readQueryList( communitySnippet(), filter) ;
              
  //            logger.info( "iterator: " + iterator ) ;
  //            logger.info( "About to execute iterator: iterator.next()" ) ;
@@ -339,20 +339,20 @@ public class WorkflowTestSuite extends TestCase {
     
     
     
-    public void tostReadQuery() {
+    public void testReadQuery() {
          logger.info( "enter: WorkflowTestSuite.testReadQuery()" ); 
         
          final String 
              userid = "jl99",
              community = "star.le.ac.uk",
              name = "query_20031008.xml" ;
-         Query
-            query ;
+         String
+             query ;
             
          try{
-             query = Query.readQuery( userid, community, communitySnippet(), name) ;
+             query = Workflow.readQuery( communitySnippet(), name) ;
             
-             logger.info( "Query looks like: " + query.toXMLString() ) ;
+             logger.info( "Query looks like: " + query ) ;
  
              assertTrue( true ) ;    
          }
@@ -369,7 +369,7 @@ public class WorkflowTestSuite extends TestCase {
    
    
    
-    public void tostSubmitWorkflow() {
+    public void testSubmitWorkflow() {
          logger.info( "enter: WorkflowTestSuite.testSubmitWorkflow()" ); 
         
         final String 
@@ -429,7 +429,7 @@ public class WorkflowTestSuite extends TestCase {
               
           Workflow
               workflow = null ;
-          Query
+          String
               query = null ;
           Sequence
               sequence = null ;
@@ -451,10 +451,8 @@ public class WorkflowTestSuite extends TestCase {
              workflow.setToken( "1234") ; //any old token at present
              workflow.setGroup( group ); 
              
-             query = Query.readQuery( userid
-                                    , community
-                                    , communitySnippet()
-                                    , queryName ) ;
+             query = Workflow.readQuery( communitySnippet()
+                                       , queryName ) ;
              
              sequence = (Sequence)workflow.getChild() ;
              
@@ -464,7 +462,7 @@ public class WorkflowTestSuite extends TestCase {
                  activity = iterator.next() ;
                  if( activity instanceof Step ) {
                      step = (Step)activity ;
-                     step.setTool( query ) ;
+                    // step.setTool( query ) ;
                      break ;
                  }
              }
