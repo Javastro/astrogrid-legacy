@@ -1,11 +1,11 @@
-/*$Id: AllTests.java,v 1.2 2003/10/14 12:59:40 nw Exp $
+/*$Id: AllTests.java,v 1.3 2003/11/06 17:52:14 mch Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
 **/
 package org.astrogrid.datacenter.queriers.sql;
@@ -29,11 +29,23 @@ public class AllTests {
         //$JUnit-END$
         return suite;
     }
-}
+
+     /**
+     * Runs the test case.
+     */
+    public static void main(String args[])
+    {
+       junit.textui.TestRunner.run(suite());
+    }
+
+ }
 
 
-/* 
+/*
 $Log: AllTests.java,v $
+Revision 1.3  2003/11/06 17:52:14  mch
+Added main
+
 Revision 1.2  2003/10/14 12:59:40  nw
 moved SqlQueryTranslator here from removed adql package
 
