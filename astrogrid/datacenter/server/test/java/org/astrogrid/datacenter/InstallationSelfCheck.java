@@ -1,4 +1,4 @@
-/*$Id: InstallationSelfCheck.java,v 1.15 2004/03/12 20:11:09 mch Exp $
+/*$Id: InstallationSelfCheck.java,v 1.16 2004/03/13 14:32:25 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,7 +25,7 @@ import org.astrogrid.datacenter.queriers.QuerierPlugin;
 import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.query.ConeQuery;
-import org.astrogrid.datacenter.service.CeaService;
+import org.astrogrid.datacenter.service.AxisDataServer;
 import org.astrogrid.datacenter.service.v041.AxisDataServer_v0_4_1;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Msrl;
@@ -58,7 +58,6 @@ public class InstallationSelfCheck extends TestCase {
    /** Checks we can create the various interfaces */
    public void testInstantiateServer() throws IOException {
       new AxisDataServer_v0_4_1();
-      new CeaService();
       //new SkyNode();
    }
    
@@ -119,6 +118,9 @@ public class InstallationSelfCheck extends TestCase {
 
 /*
  $Log: InstallationSelfCheck.java,v $
+ Revision 1.16  2004/03/13 14:32:25  mch
+ Removed Cea test
+
  Revision 1.15  2004/03/12 20:11:09  mch
  It05 Refactor (Client)
 
