@@ -1,5 +1,5 @@
 /*
- * $Id: PalProxyPlugin.java,v 1.7 2004/11/03 00:17:56 mch Exp $
+ * $Id: PalProxyPlugin.java,v 1.8 2004/11/08 12:04:47 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,6 +14,8 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
+import org.astrogrid.datacenter.delegate.QuerySearcher;
 import org.astrogrid.datacenter.queriers.DefaultPlugin;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.VotableInResults;
@@ -21,6 +23,8 @@ import org.astrogrid.datacenter.queriers.status.QuerierQuerying;
 import org.astrogrid.datacenter.query.Adql074Writer;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.slinger.UriTarget;
+import org.astrogrid.util.DomHelper;
+import javax.xml.rpc.ServiceException;
 
 /**
  * A plugin that passes the query on to a remote PAL installation
@@ -31,6 +35,15 @@ import org.astrogrid.slinger.UriTarget;
 public class PalProxyPlugin extends DefaultPlugin {
    
    public static final String PAL_TARGET = "datacenter.palproxy.targetstem";
+
+   /** false if forwardable targets are given to target; true if results must come back through the proxy */
+   public static final String PROXY_RESULTS = "datacenter.palproxy.proxyresults";
+
+   private boolean proxyResults = true;
+   
+   public PalProxyPlugin() {
+      proxyResults = SimpleConfig.getSingleton().getBoolean(PROXY_RESULTS, proxyResults);
+   }
    
    /** performs a synchronous call to the database, submitting the given query
     *
@@ -39,6 +52,35 @@ public class PalProxyPlugin extends DefaultPlugin {
 
       querier.setStatus(new QuerierQuerying(querier.getStatus()));
       useServlet(query, querier);
+   }
+   
+   /** Use the Datacenter delegate */
+   public void useDelegate(Query query, Querier querier) throws IOException {
+
+      proxyResults = true; //need an asynch way of specifying target. Or just use servlets
+      
+      String endpoint = SimpleConfig.getSingleton().getUrl(PAL_TARGET)+"/services/AxisDataService05";
+      
+      QuerySearcher delegate = null;
+      try {
+         delegate = DatacenterDelegateFactory.makeQuerySearcher(
+            Account.ANONYMOUS,
+            endpoint,
+            DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
+
+      }
+      catch (ServiceException e) {
+         throw new IOException(e+", connecting to "+endpoint);
+      }
+
+      delegate.setTimeout(60000);
+      InputStream in = delegate.askQuery(query);
+      
+      if (proxyResults) {
+         VotableInResults vot = new VotableInResults(querier, in);
+         vot.send(query.getResultsDef(), querier.getUser());
+      }
+      
    }
    
    
@@ -64,8 +106,16 @@ public class PalProxyPlugin extends DefaultPlugin {
                       "&Format="+URLEncoder.encode("VOTABLE")
                     );
 
-      if (query.getTarget() instanceof UriTarget) {
-         out.writeBytes("&Target="+URLEncoder.encode( ((UriTarget) query.getTarget()).toURI().toString()));
+      if (!query.getTarget().isForwardable()) {
+         proxyResults = true; //has to proxy non-forwardable targets, eg streams
+      }
+      
+      if (proxyResults) {
+         //send results back to this proxy
+         out.writeBytes("&TargetResponse="+URLEncoder.encode("true"));
+      }
+      else {
+         out.writeBytes("&TargetURI="+URLEncoder.encode( ((UriTarget) query.getTarget()).toURI().toString()));
       }
       out.flush();
       out.close();
@@ -74,7 +124,7 @@ public class PalProxyPlugin extends DefaultPlugin {
       
       InputStream in = connection.getInputStream();
 
-      if (!query.getTarget().isForwardable()) {
+      if (proxyResults) {
          VotableInResults vot = new VotableInResults(querier, in);
          vot.send(query.getResultsDef(), querier.getUser());
       }
@@ -86,10 +136,6 @@ public class PalProxyPlugin extends DefaultPlugin {
             throw new UnsupportedOperationException("Not done yet");
    }
 
-   /** Use the remote PAL's SOAP interface */
-   public void useSoap() {
-      throw new UnsupportedOperationException("Use the servlet method for now");
-   }
    
 }
 
