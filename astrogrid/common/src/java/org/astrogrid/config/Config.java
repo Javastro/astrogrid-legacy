@@ -1,5 +1,5 @@
 /*
- * $Id: Config.java,v 1.7 2003/12/16 13:13:12 mch Exp $
+ * $Id: Config.java,v 1.8 2003/12/16 13:52:53 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -147,10 +147,17 @@ public abstract class Config {
    /**
     * Autoload looks for the properties file in jndi, then the environment variables,
     * then the classpath, then the local (working) directory.
+    * 
+    * synchronized method - only loads the first time is called.
     * @return true if load succeeded
+    * 
     */
-   public void autoLoad() throws IOException {
-      
+   public synchronized void autoLoad() throws IOException {
+      if (hasAutoLoaded) {
+         log.debug("second call to autoLoad - ignoring");
+         return;
+      }
+      hasAutoLoaded = true;
       boolean loaded = loadJndiUrl(getJndiKey());
       
       if (!loaded) {
@@ -167,6 +174,9 @@ public abstract class Config {
          }
       }
    }
+   
+   /** flag used internally to prevent autoLoad running more than once */
+   protected boolean hasAutoLoaded = false;
 
    /**
     * Loads the properties at the given inputstream.
