@@ -1,31 +1,32 @@
 ******************************************************
 Deployment Description
-Astrogrid Registry Iteration 01
-14/03/03
+Astrogrid Registry Iteration 03
+22/10/03
 Elizabeth Auden
 ******************************************************
 
-1. Place RegistryService.java in directory org/astrogrid/registry
-2. Place registry.xml in directory org/astrogrid/registry
-3. Make the following packages accessible through classpath:
+1. Change to the $TOMCAT_HOME/webapps directory and create directory org/astrogrid if it does not already exist.  Copy CVS /devel/astrogrid/registry/config/registry_files.zip into this directory.  * Rename the file * to registry.zip  and unzip.  Change to directory /org/astrogrid/registry and open file parameters_v1_0.xml.  Edit the <registryFilename> element to reflect the URL of the registry deployment site.  For example, if the site's Tomcat index page can be seen at http://www.yoursite.com:8080,  change
 
-	import java.io.*;
-	import javax.xml.parsers.*;
-	import org.w3c.dom.*;
+<registryFilename>http://143.210.36.175:8080/org/astrogrid/registry/registry_v1_1.xml </registryFilename>
 
-4. Run RegistryService.java from the command line: 
-	java org.astrogrid.registry.RegistryService <methodName> <queryElement> <queryElementValue>
+to 
 
-	where method name is one of:
+<registryFilename>http://www.yoursite.com:8080/org/astrogrid/registry/registry_v1_1.xml</registryFilename>
 
-		queryServices
-		listAllServices
-		listServiceMetadata
-		listRegistryMetadata
-		listServiceMetadataFormat
+2. Change to the $TOMCAT_HOME/webapps/axis/WEB-INF/classes directory.  Create directory org/astrogrid if it does not already exist.  Copy CVS /devel/astrogrid/registry/config/registry.zip to this directory and unzip.
 
-	where queryElement and queryElementValue are pairs such as:
+3. View the deploy.wsdd file in the $TOMCAT_HOME/webapps/axis/WEB-INF/classes directory.  Add the following lines to deploy.wsdd:
 
-		id		ThisRegistry
-		master		http://www.astrogrid.org/8080
-		publisher	Clive Page
+<service name="RegistryAdminService" provider="java:RPC">
+<parameter name="className" value="org.astrogrid.registry.RegistryAdminService"/>
+<parameter name="allowedMethods" value="adminQuery"/>
+</service>
+
+<service name="RegistryInterface3_0" provider="java:RPC">
+<parameter name="className" value="org.astrogrid.registry.RegistryInterface3_0"/>
+<parameter name="allowedMethods" value="*"/>
+</service>
+
+4. Stop and restart Tomcat.  Navigate to the directory holding deploy.wsdd and run the command "java org.apache.axis.client.AdminClient  deploy.wsdd".
+
+5. The registry browser and admin web services are now deployed.

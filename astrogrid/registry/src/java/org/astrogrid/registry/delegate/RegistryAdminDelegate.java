@@ -1,35 +1,37 @@
-package org.astrogrid.registry.delegate; 
+/**
+ *  Delegate for RegistryInterface3_0, the It03 Registry web service.
+ *  @author=Elizabeth Auden
+ *  22 October 2003
+ */
 
-import java.net.URL ;
-import java.net.MalformedURLException ;
-import java.rmi.RemoteException;
+package org.astrogrid.registry.delegate.registry;
+import org.astrogrid.registry.delegate.stubs.impl.* ;
 
-public class RegistryAdminDelegate { 
-	private String targetEndPoint = null; 
-	public RegistryAdminDelegate(String targetEndPoint) {
-		 this.targetEndPoint = targetEndPoint;
-    }
-	public String adminQuery(String adminQuery) throws MalformedURLException, RemoteException {
-	  	 org.astrogrid.registry.stubs.RegistryAdminServiceSoapBindingStub binding;
-         String value;
-	  	 try { binding = (org.astrogrid.registry.stubs.RegistryAdminServiceSoapBindingStub)
-	  	 	 new org.astrogrid.registry.stubs.RegistryAdminServiceServiceLocator().getRegistryAdminService(new URL(targetEndPoint));
-			 value = (String)binding.adminQuery(adminQuery);
-		 }
-		 catch( MalformedURLException mex ) {
-		 	 value = mex.toString();
-		 }
-		catch( RemoteException rex ) {
-			value = rex.toString();
+public class RegistryAdminDelegate {
+   
+	private String targetEndPoint = null;
+	public RegistryDelegate(String targetEndPoint) {
+	  this.targetEndPoint = targetEndPoint;
+	}
+    
+	public String adminQuery(String query) throws Exception {
+		RegistryAdminServiceSoapBindingStub binding;
+		try {
+			binding = (RegistryAdminServiceSoapBindingStub)
+						  new RegistryAdminServiceServiceLocator().getRegistryAdminService(targetEndPoint);
 		}
-	  	 catch (javax.xml.rpc.ServiceException jre) {
-	  	 	 value = jre.toString();
-	  	 	 if(jre.getLinkedCause()!=null) jre.getLinkedCause().printStackTrace();
-	  	 	  //do something } // Time out after a minute binding.setTimeout(60000);
-	     }
+		catch (javax.xml.rpc.ServiceException jre) {
+			if(jre.getLinkedCause()!=null)
+				jre.getLinkedCause().printStackTrace();
+				//do something
+		}
 
-	  	 return value; 
-	  	 	   //After returning the response you may have validate or 
-	  	 	   //some other helper methods in this delegate to help you.
-    } 	    
-} 
+		// Time out after a minute
+		binding.setTimeout(60000);
+		String value = binding.submitJob(req);
+		return (String)value;
+		//After returning the response you may have validate or
+		//some other helper methods in this delegate to help you.
+	}
+
+}
