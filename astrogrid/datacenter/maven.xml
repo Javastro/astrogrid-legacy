@@ -4,29 +4,29 @@
 <!-- hooks to farm out everything to subprojects -->
 <preGoal name="jar">
 	<attainGoal name="multiproject:artifact" />
-	<maven:maven descriptor="${basedir}/pal/project.xml" goals="war:war" />
+	<maven:maven descriptor="pal/project.xml" goals="war:war" />
 </preGoal>
 
 <preGoal name="jar:deploy">
 	<attainGoal name="multiproject:deploy" />
-	<maven:maven descriptor="${basedir}/pal/project.xml" goals="war:deploy" />
+	<maven:maven descriptor="pal/project.xml" goals="war:deploy" />
 </preGoal>
 
 <!-- this is the goal called by nightly build -->
 <preGoal name="jar:deploy-snapshot">
 	<attainGoal name="multiproject:deploy-snapshot" />
 	<!-- necessary to call this one by hand - as multiproject seems to conflict with calling maven scripts by hand -->
-	<maven:maven descriptor="${basedir}/pal/project.xml" goals="war:deploy-snapshot" />
+	<maven:maven descriptor="pal/project.xml" goals="war:deploy-snapshot" />
 </preGoal>
 
 <preGoal name="jar:install">
 	<attainGoal name="multiproject:install" />
-	<maven:maven descriptor="${basedir}/pal/project.xml" goals="war:install" />
+	<maven:maven descriptor="pal/project.xml" goals="war:install" />
 </preGoal>
 
 <preGoal name="jar:install-snapshot">
 	<attainGoal name="multiproject:install-snapshot" />
-	<maven:maven descriptor="${basedir}/pal/project.xml" goals="war:install-snapshot" />
+	<maven:maven descriptor="pal/project.xml" goals="war:install-snapshot" />
 </preGoal>
 
 <!-- goal called by nightly build -->
