@@ -79,6 +79,7 @@
     </properties>
     </dependency>
 
+   <!-- used for XML databases -->
    <dependency>
        <groupId>org.astrogrid</groupId>
        <artifactId>astrogrid-exist-server</artifactId>
@@ -89,6 +90,24 @@
           <war.bundle>true</war.bundle>
       </properties>
    </dependency>
+
+    <!-- registry - used to submit metadata -->
+    <dependency>
+      <artifactId>astrogrid-registry-client-lite</artifactId>
+      <groupId>org.astrogrid</groupId>
+      <version>${pom.currentVersion}</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+    <dependency>
+      <artifactId>astrogrid-registry-common</artifactId>
+      <groupId>org.astrogrid</groupId>
+      <version>${pom.currentVersion}</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
 
     <!-- required for the CEA server -->
     <dependency>
