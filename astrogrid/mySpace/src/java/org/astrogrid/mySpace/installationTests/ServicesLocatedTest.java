@@ -1,4 +1,4 @@
-/* $Id: ServicesLocatedTest.java,v 1.1 2004/01/21 17:02:43 jdt Exp $
+/* $Id: ServicesLocatedTest.java,v 1.2 2004/01/23 15:22:04 jdt Exp $
  * Created on 21-Jan-2004 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -85,7 +85,7 @@ public class ServicesLocatedTest extends TestCase {
     } catch (IOException e) {
       log.debug(e);
       fail(
-        "The end point " + endPoint + " is not a valid URL, or is unreachable");
+        "The end point " + endPoint + " is not a valid URL, or is unreachable.  Check your configuration");
     }
   }
 
@@ -93,6 +93,9 @@ public class ServicesLocatedTest extends TestCase {
 
 /*
 *$Log: ServicesLocatedTest.java,v $
+*Revision 1.2  2004/01/23 15:22:04  jdt
+**** empty log message ***
+*
 *Revision 1.1  2004/01/21 17:02:43  jdt
 *Initial commit
 *
