@@ -26,6 +26,7 @@
                 <item name="Applications" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=astrogrid-cea-*-0.7-b*.war"/>
                 <item name="Community" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=astrogrid-community-*-0.7-b*.war"/>
                 <item name="DataCenter" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=*pal-0.7-b*.war"/>
+                <item name="FileManager" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=astrogrid-filemanager-0.7-b*.war"/>
                 <item name="FileStore" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=astrogrid-filestore-0.7-b*.war"/>
                 <item name="Job Management" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=astrogrid-jes-0.7-b*.war"/>
                 <item name="mySpace" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=astrogrid-mySpace-0.7-b*.war"/>
@@ -37,6 +38,7 @@
                 <item name="Applications" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-cea-client-0.7-b*.jar"/>
                 <item name="Community" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-community-client-0.7-b*.jar"/>
                 <item name="DataCenter" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-datacenter-client-0.7-b*.jar"/>
+                <item name="FileManager" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-filemanager-client-0.7-b*.jar"/>
                 <item name="FileStore" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-filestore-client-0.7-b*.jar"/>
                 <item name="Job Management" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-jes-delegate-0.7-b*.jar"/>
                 <item name="StoreClient" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-store-client-0.7-b*.jar"/>
@@ -47,6 +49,7 @@
                 <item name="Community" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-community-*-0.7-b*.jar"/>
                 <item name="Registry" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-registry-common-0.7-b*.jar"/>
                 <item name="Security" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-security-0.7-b*.jar" />
+                <item name="Slinger" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-slinger-0.7-b*.jar" />
                 <item name="Workflow" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-workflow-0.7-b*.jar"/>
                 <item name="Workflow Common Objects" 
                     href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-workflow-objects-0.7-b*.jar" />
@@ -72,7 +75,7 @@
             <item name="Registry" href="registry/index.html"/>
             <item name="Scripting" href="scripting/index.html" />
             <item name="Security" href="security/index.html" />
-            <item name="Slinger *NEW*" href="filemanager/index.html"/>            
+            <item name="Slinger *NEW*" href="slinger/index.html"/>            
             <item name="UI" href="ui/index.html" />
             <!--item name="Warehouse" href="warehouse/index.html"/-->
             <item name="Workflow" href="workflow/index.html"/>
