@@ -1,11 +1,14 @@
 /*
- * $Id: FtpDelegateTest.java,v 1.2 2003/12/03 17:41:23 mch Exp $
+ * $Id: FtpDelegateTest.java,v 1.1 2004/01/23 16:26:33 jdt Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
-package org.astrogrid.mySpace.delegate;
+package org.astrogrid.longUnitTests.mySpace.delegate;
 import java.io.IOException;
+
+import org.astrogrid.mySpace.delegate.MySpaceSunFtpDelegate;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -21,10 +24,22 @@ import junit.framework.TestSuite;
  */
 
 public class FtpDelegateTest extends TestCase {
-
+  /**
+   * Commons-logging logger
+   */
+  private static org.apache.commons.logging.Log log =
+    org.apache.commons.logging.LogFactory.getLog(FtpDelegateTest.class);
+    
+/**
+ * URL of server to use for tests
+ */
    public static final String TEST_FTP_SERVER = "ftp://ftp.roe.ac.uk/pub/astrogrid";
 
-   public void testFtp() throws IOException {
+   /**
+    * Test FTP Delegate
+    * @throws IOException on problems connecting
+    */
+  public final void testFtp() throws IOException {
 
       MySpaceSunFtpDelegate pub = new MySpaceSunFtpDelegate(TEST_FTP_SERVER);
       //pub.setLogin("astrogrid","astrogrid");
@@ -32,12 +47,12 @@ public class FtpDelegateTest extends TestCase {
       pub.connect();
 
       String url = pub.publiciseToServer("test", getClass().getResource("aFile.txt").openStream());
-      org.astrogrid.log.Log.trace("File available at '"+url+"'");
+      log.trace("File available at '"+url+"'");
 //      pub.updateFromServer(url, "");
 
       pub.disconnect();
 
-      org.astrogrid.log.Log.trace("...disconnected");
+      log.trace("...disconnected");
    }
 
 
@@ -53,6 +68,11 @@ public class FtpDelegateTest extends TestCase {
 
 /*
  $Log: FtpDelegateTest.java,v $
+ Revision 1.1  2004/01/23 16:26:33  jdt
+ Moved out of mySpace tests to  integrationTests org.astrogrid.integrationTests.mySpace.delegate.FtpDelegateTest
+ This test requires network resources that might not be available on a users local machine,
+ so out it goes.
+
  Revision 1.2  2003/12/03 17:41:23  mch
  Removed manager empty test
 
