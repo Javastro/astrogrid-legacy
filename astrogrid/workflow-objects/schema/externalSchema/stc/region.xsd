@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Arnold Rots (Smithsonian Astrophysical Observatory) -->
-<!-- $Id: region.xsd,v 1.2 2004/03/09 14:33:20 pah Exp $ -->
+<!-- $Id: region.xsd,v 1.1 2004/05/06 08:09:02 pah Exp $ -->
 <!-- Schema Definition for Regions -->
 <xs:schema targetNamespace="urn:nvo-region" xmlns:crd="urn:nvo-coords" xmlns:reg="urn:nvo-region" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
 	<xs:import namespace="urn:nvo-coords" schemaLocation="http://hea-www.harvard.edu/~arots/nvometa/coords.xsd"/>
@@ -219,6 +219,9 @@
 	</xs:element>
 	<!--Change log 
 $Log: region.xsd,v $
+Revision 1.1  2004/05/06 08:09:02  pah
+moved some schema around
+
 Revision 1.2  2004/03/09 14:33:20  pah
 result of merge wfo_pah_147
 
