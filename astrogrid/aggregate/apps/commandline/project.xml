@@ -3,7 +3,7 @@
         <extend>${basedir}/../../../maven-base/project.xml</extend>
         <currentVersion>${astrogrid.aggregate.version}</currentVersion>
         <id>commandline</id>
-        <name>Astrogrid Commandline Tools</name>
+        <name>Astrogrid Commandline Scripting and Tools</name>
         <description>Package of Groovy distribution with Astrogrid Scripting CDK, plus configuration files and commandline utilities</description>
         <shortDescription>Commandline Tools for working with Astrogrid</shortDescription>
 

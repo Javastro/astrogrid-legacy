@@ -43,8 +43,8 @@
                  </fileset>
                 </delete>
                 <!-- rename our docs, to prevent them getting overwritten -->
-                <mkdir dir="${maven.dist.bin.assembly.dir}/ag-docs" />
-                <move todir="${maven.dist.bin.assembly.dir}/ag-docs">
+                <mkdir dir="${maven.dist.bin.assembly.dir}/commandline-docs" />
+                <move todir="${maven.dist.bin.assembly.dir}/commandline-docs">
                 	<fileset dir="${maven.dist.bin.assembly.dir}/docs" />
                 </move>
                 <!-- copy in our dependent distros. -->
@@ -89,14 +89,36 @@
                 		<include name="*.tar.gz" />
                 	</fileset>
                 </delete>
-                <!-- copy in scripts -->
-                <copy todir="${maven.dist.bin.assembly.dir}/bin">
+                <!-- copy in ag tools -->
+                <mkdir dir="${maven.dist.bin.assembly.dir}/astrogrid-tools" />
+                <copy todir="${maven.dist.bin.assembly.dir}/astrogrid-tools">
                 	<fileset dir="${basedir}/src/scripts" />
                 </copy>
                 <!-- copy in configuration files -->
                 <copy todir="${maven.dist.bin.assembly.dir}/conf">
                 	<fileset dir="${basedir}/src/conf" />
                 </copy>
+                <!-- copy in new binaries -->
+                <copy todir="${maven.dist.bin.assembly.dir}/bin">
+                	<fileset dir="${basedir}/src/bin" />
+                </copy>
+                <!-- move docs around a bit -->
+                <mkdir dir="${maven.dist.bin.assembly.dir}/groovy-docs" />
+                <move todir="${maven.dist.bin.assembly.dir}/groovy-docs">
+                	<fileset dir="${maven.dist.bin.assembly.dir}/docs" />
+                </move>
+                <delete dir="${maven.dist.bin.assembly.dir}/docs" />                                
+                <move todir="${maven.dist.bin.assembly.dir}/docs">
+                	<fileset dir="${maven.dist.bin.assembly.dir}/commandline-docs" />
+                </move>
+                <delete dir="${maven.dist.bin.assembly.dir}/commandline-docs"/>
+                <!-- add final index page -->
+ <echo file="${maven.dist.bin.assembly.dir}/README">
+  README
+  =======
+  See docs/index.html
+   
+   </echo>
         </postGoal>
 
 
