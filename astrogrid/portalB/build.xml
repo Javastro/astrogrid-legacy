@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/Attic/build.xml,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/24 15:36:41 $</cvs:author>
-    | <cvs:version>$Revision: 1.14 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/26 14:48:19 $</cvs:author>
+    | <cvs:version>$Revision: 1.15 $</cvs:version>
     | <cvs:log>
     | $Log: build.xml,v $
+    | Revision 1.15  2003/06/26 14:48:19  dave
+    | Added explorer pages and actions to Cocoon
+    |
     | Revision 1.14  2003/06/24 15:36:41  dave
     | Adding initial XSP pages
     |
@@ -316,7 +319,7 @@
 
 	<!-- ================ Axis tasks ================ -->
 
-	<!-- Axis libraries -->
+	<!-- The Axis libraries -->
 	<path id="axis.classpath">
 		<pathelement location="${axis.home}/lib/axis.jar"/>
 		<pathelement location="${axis.home}/lib/axis-ant.jar"/>
@@ -431,6 +434,12 @@
 	</target>
 
 	<!-- ================ Cocoon tasks ================ -->
+	<!-- The Cocoon libraries required to build our components -->
+	<path id="cocoon.classpath">
+		<pathelement location="${cocoon.webapp}/WEB-INF/lib/cocoon-2.1-dev.jar"/>
+		<pathelement location="${cocoon.webapp}/WEB-INF/lib/avalon-framework-4.1.3.jar"/>
+	</path>
+
 	<!-- Checkout a specific version of the Cocoon source from cvs --> 
 	<target name="cocoon.source.fetch" depends="">
 		<!-- Checkout a specific version of the Cocoon build --> 
@@ -450,6 +459,16 @@
 	<!-- Delete the Cocoon build -->
 	<target name="cocoon.build.delete" depends="">
 		<delete dir="${cocoon.build}" failonerror="false"/>
+	</target>
+
+	<!-- Replace the Cocoon build.properties -->
+	<target name="cocoon.build.properties" depends="">
+		<!-- Install our own version of the build.properties -->
+		<copy verbose="true" overwrite="true" toDir="${cocoon.build}">
+			<fileset dir="src/cocoon">
+				<include name="build.properties"/>
+			</fileset>
+		</copy>
 	</target>
 
 	<!-- Build the Cocoon web-app -->
@@ -549,6 +568,10 @@
 
 	<!-- Build our Cocoon webapp from clean -->
 	<target name="cocoon.BUILD" depends="init">
+		<!-- Replace the Cocoon build.properties -->
+		<antcall target="cocoon.build.properties"/>
+		<!-- Build the Cocoon web-app -->
+		<antcall target="cocoon.webapp.build"/>
 		<!-- Build the Cocoon web-app -->
 		<antcall target="cocoon.webapp.build"/>
 		<!-- Patch the Cocoon sitemap -->
@@ -571,14 +594,14 @@
 		<antcall target="cocoon.BUILD"/>
 	</target>
 
-<!-- FROG -->
-
 	<!-- Deploy our cocoon site -->
 	<target name="cocoon.site.deploy" depends="">
 		<!-- Copy our site files -->
 		<copy verbose="false" toDir="${cocoon.site}">
 			<fileset dir="src/cocoon">
 				<exclude name="**/CVS/**"/>
+				<exclude name="build.properties"/>
+				<exclude name="sitemap.xslt"/>
 			</fileset>
 		</copy>
 		<!-- Copy our portal jar -->
@@ -594,13 +617,7 @@
 		    +-->
 		<copy verbose="false" toDir="${cocoon.webapp}/WEB-INF/lib">
 			<fileset dir="${axis.home}/lib">
-				<include name="axis.jar"/>
-				<include name="axis-ant.jar"/>
-				<include name="commons-discovery.jar"/>
-				<include name="commons-logging.jar"/>
-				<include name="jaxrpc.jar"/>
-				<include name="saaj.jar"/>
-				<include name="wsdl4j.jar"/>
+				<include name="**/*.jar"/>
 			</fileset>
 		</copy>
 	</target>
@@ -939,7 +956,8 @@
 				<exclude name="**/services/**"/>
 				<!-- Exclude any mock service classes -->
 				<exclude name="**/mock/**"/>
-				<!-- Exclude the generated classes
+				<!-- Exclude the generated classes -->
+				<!-- DEPRECATED, causes conflicts depending on the Axis version used to generate the stubs
 				<exclude name="**/generated/**"/>
 				-->
 			</fileset>
@@ -955,13 +973,15 @@
 		       >
 			<classpath>
 				<!-- Our mock MySpace client classes -->
-				<!--
+				<!-- DEPRECATED, causes conflicts with the live classes
 				<pathelement path="build/myspace/mock/client/classes"/>
 				-->
 				<!-- Our live MySpace client classes -->
 				<pathelement path="build/myspace/live/client/classes"/>
-				<!-- The Axis libraries -->
+				<!-- Our Axis libraries -->
 				<path refid="axis.classpath"/>
+				<!-- Our Cocoon libraries -->
+				<path refid="cocoon.classpath"/>
 				<!-- Tomcat libraries for servlets -->
 				<path refid="tomcat.servlet.classpath"/>
 			</classpath>
@@ -1058,11 +1078,9 @@
 		</copy>
 	</target>
 
-	<!-- Rebuild our portal java code -->
-	<target name="portal.REBUILD" depends="init">
-		<!-- Delete our portal components -->
-		<antcall target="portal.delete"/>
-		<!-- Build our portal components -->
+	<!-- Build our portal java code -->
+	<target name="portal.BUILD" depends="init">
+		<!-- Compile our portal components -->
 		<antcall target="portal.javac"/>
 		<!-- Test our portal components
 		<antcall target="portal.junit"/>
@@ -1074,6 +1092,14 @@
 		    | FIXME : Deprecated, should use site.deploy instead
 		<antcall target="portal.deploy"/>
 		    +-->
+	</target>
+
+	<!-- Rebuild our portal java code -->
+	<target name="portal.REBUILD" depends="init">
+		<!-- Delete our portal components -->
+		<antcall target="portal.delete"/>
+		<!-- Build our portal components -->
+		<antcall target="portal.BUILD"/>
 	</target>
 
 	<!-- ================ Live MySpace tasks ================ -->
@@ -1794,6 +1820,12 @@
 		    +-->
 		<antcall target="project.BUILD"/>
 
+		<!--+
+		    | Install our Cocoon site components.
+		    | This assumes that we have a ready built Cocoon WebApp to install.
+		    +-->
+		<antcall target="COCOON.INSTALL"/>
+
 		<echo message="Ok ... Astrogrid portal is running."/>
 	</target>
 
@@ -1839,7 +1871,7 @@
 		<antcall target="project.RUN"/>
 	</target>
 
-	<target name="COCOON.TEST" depends="init">
+	<target name="COCOON.INSTALL" depends="init">
 		<!-- Deploy our Cocoon site -->
 		<antcall target="cocoon.site.deploy"/>
 		<!-- Add our site to the sitemap -->
@@ -1848,6 +1880,14 @@
 		<antcall target="cocoon.webapp.install"/>
 	</target>
 
+	<target name="COCOON.TEST" depends="init">
+		<!-- Build our portal classes -->
+		<antcall target="portal.BUILD"/>
+		<!-- Remove our Cocoon WebApp -->
+		<antcall target="cocoon.webapp.remove"/>
+		<!-- Install our Cocoon WebApp -->
+		<antcall target="COCOON.INSTALL"/>
+	</target>
 
 </project>
 
