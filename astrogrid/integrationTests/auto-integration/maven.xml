@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.60 2004/07/19 23:42:07 dave Exp $ -->
+<!-- $Id: maven.xml,v 1.61 2004/07/22 11:08:38 nw Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -85,8 +85,6 @@
         <attainGoal name="portal-deploy" />
         <sleep seconds="4" />
         <attainGoal name="setup" />
-        <sleep seconds="2" />
-        <attainGoal name="filestore-deploy" />
 </goal>
 
 <goal name="undeploy-all" prereqs="init" description="undeploy all webapps">
@@ -164,6 +162,7 @@
         <attainGoal name="setup-cea-http" />
         <attainGoal name="setup-myspace" />
         <attainGoal name="setup-filestore" />
+        <attainGoal name="copy-test-resources" />
 </goal>
 
 <goal name="setup-working-dir" description="create working dir, copy across templates">
@@ -206,7 +205,7 @@
 </goal>
 
 <goal name="setup-filestore" description="filestore setup">
-	<echo>Configuring Filestore</echo>
+        <echo>Configuring Filestore</echo>
     <mkdir dir="${work.dir}/filestore"/>
 </goal>
 
@@ -388,9 +387,13 @@
   </preGoal>
 
   <preGoal name="test:test-resources">
-            <echo>Copying global config file across to the client / test code</echo>
-          <copy file="webapps/astrogrid-configuration/AstroGridConfig.properties" tofile="test/java/astrogrid.properties" filtering="true" overwrite="true" />
+        <attainGoal name="copy-test-resources" />
   </preGoal>
+
+  <goal name="copy-test-resources" description="takes a copy of the config, puts it on the classpath for the test classes to find">
+          <echo>Copying global config file across to the client / test code</echo>
+          <copy file="webapps/astrogrid-configuration/AstroGridConfig.properties" tofile="test/java/astrogrid.properties" filtering="true" overwrite="true" />
+  </goal>
 
 
 <goal name="run-scripting-gui" description="don't call directly - use scripting-gui goal">
