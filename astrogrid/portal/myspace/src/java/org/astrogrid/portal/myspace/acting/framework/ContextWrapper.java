@@ -18,7 +18,7 @@ public interface ContextWrapper {
   public static final String PARAM_END_POINT = "myspace-end-point";
 
   public static final String DEFAULT_PARAM_PROTOCOL = "none";
-  public static final String DEFAULT_END_POINT = "file://astrogrid-portal-myspace";
+  public static final String DEFAULT_END_POINT = "file://astrogrid-myspace-file";
 
   /**
    * Return a named parameter.

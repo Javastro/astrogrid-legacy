@@ -19,7 +19,11 @@
       <ag-script type="text/javascript" src="/astrogrid-portal/mount/myspace/myspace.js"/>
       
       <div>
-        <form id="myspace-explorer-form" action="." method="POST" enctype="multipart/form-data">
+        <form
+            id="myspace-explorer-form"
+            action="/astrogrid-portal/main/mount/myspace/myspace-explorer"
+            method="POST"
+            enctype="multipart/form-data">
           <div id="myspace-tools">
             <div id="myspace-tools-header">
               MySpace Tools
@@ -33,9 +37,6 @@
             <input name="myspace-action" type="submit" value="myspace-new-container"><br/></input>
             <input name="myspace-action" type="submit" value="myspace-upload"><br/></input>
             <input name="myspace-action" type="submit" value="myspace-upload-url"><br/></input>
-            <hr/>
-            <input name="myspace-action" type="submit" value="TopCat" onclick="myspace_votable_topcat();"><br/></input>
-            <input name="myspace-action" type="submit" value="Aladin" onclick="myspace_votable_aladin();"><br/></input>
           </div>
 
           <div>

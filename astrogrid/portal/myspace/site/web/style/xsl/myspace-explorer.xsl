@@ -5,7 +5,7 @@
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:agp-myspace="http://astrogrid.org/xsp/myspace/1.0">
   <xsl:template match="/">
-    <xsl:apply-templates select="//ag-div"/>
+    <xsl:apply-templates select="/explorer/tree/*"/>
   </xsl:template>
   
   <xsl:template match="ag-div">
@@ -13,7 +13,9 @@
       <xsl:apply-templates select="@*"/>
         <ag-script type="text/javascript" src="/astrogrid-portal/mount/myspace/utils.js"/>
         <ag-script type="text/javascript" src="/astrogrid-portal/mount/myspace/explorer.js"/>
+<!--
         <ag-onload function="reset_action('myspace-explorer-form', '/astrogrid-portal/main/mount/myspace/myspace-explorer')"/>
+-->
       <xsl:apply-templates/>
     </xsl:copy>
   </xsl:template>
@@ -22,7 +24,7 @@
     <table>
       <tr>
         <td>MySpace End Point:</td>
-        <td><xsl:copy-of select="//select[@id = 'myspace-end-point-select']"/>
+        <td><xsl:copy-of select="/explorer/select/select"/>
         <xsl:copy-of select="//input[@id = 'myspace-end-point']"/></td>
         <td><input name="myspace-action" type="submit" value="myspace-change"/></td>
       </tr>

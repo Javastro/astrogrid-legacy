@@ -23,7 +23,8 @@ public class ChangeHandler extends AbstractMySpaceHandler {
    */
   protected void executeTemplateMethod(Map results) throws Throwable {
     // Set the new MySpace end point.
-    String endPoint = context.getEndPoint();
+    String endPoint = context.getParameter(ContextWrapper.PARAM_END_POINT, ContextWrapper.DEFAULT_END_POINT);
+//    String endPoint = context.getEndPoint();
     
     if(endPoint != null && endPoint.length() > 0) {
       addGlobalResult(ContextWrapper.PARAM_END_POINT, endPoint, results);

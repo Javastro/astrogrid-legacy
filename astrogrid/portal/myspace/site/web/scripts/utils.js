@@ -4,6 +4,7 @@ function copy_from_to(fromId, toId) {
   
   if(fromField && toField) {
     toField.value = fromField.value;
+    alert('done copy');
   }
 }
 

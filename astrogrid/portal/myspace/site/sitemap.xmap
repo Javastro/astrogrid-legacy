@@ -11,7 +11,7 @@
     | the accompanying documentation. The sitemaps which come with each
     | sample and each block will help to explain.
     |
-    | CVS $Id: sitemap.xmap,v 1.7 2004/04/21 10:26:43 gps Exp $
+    | CVS $Id: sitemap.xmap,v 1.8 2004/04/22 10:24:09 gps Exp $
     +-->
 <map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
 
@@ -385,7 +385,6 @@
       </map:match>
 
       <map:match pattern="myspace-tree.xml">
-
         <map:call resource="myspace-action-submit"/>
         
         <map:generate type="myspace-holding-gen">
@@ -426,6 +425,11 @@
       </map:match>
 
       <!-- xsp -->
+      <map:match pattern="myspace.xsp">
+        <map:generate type="serverpages" src="web/dynamic/myspace.xsp"/>
+        <map:serialize type="xml"/>
+      </map:match>
+
       <map:match pattern="**.xsp">
         <map:generate type="serverpages" src="web/dynamic/{1}.xsp"/>
         <map:transform src="cocoon://xml2html.xsl"/>
