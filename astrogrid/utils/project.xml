@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- $Id: project.xml,v 1.1 2005/03/22 13:00:41 mch Exp $ -->
+
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+    xsi:noNamespaceSchemaLocation="..//maven-base/xsd/maven-project.xsd">
+
+    <!--will eventually extend from /base when Maven RC3 installed-->
+
+    <extend>${basedir}/../maven-base/project.xml</extend>
+
+    <currentVersion>${astrogrid.utils.latest}</currentVersion>
+
+    <id>astrogrid-utils</id>
+
+    <name>Astrogrid Utility Package</name>
+
+    <description>Utility/Miscellaneous classes that don't desere their own packages</description>
+
+    <shortDescription>AstroGrid Utilities</shortDescription>
+
+    <dependencies>
+       <dependency>
+         <id>commons-logging</id>
+         <version>1.0.3</version>
+       </dependency>
+
+        <dependency>
+            <artifactId>astrogrid-config</artifactId>
+            <groupId>org.astrogrid</groupId>
+            <version>${astrogrid.config.stable}</version>
+        </dependency>
+    </dependencies>
+
+</project>
+
+
+
+
+
+
+
