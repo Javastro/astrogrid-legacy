@@ -1,5 +1,5 @@
 /*
- * $Id: DummyDelegate.java,v 1.4 2003/11/17 16:59:12 mch Exp $
+ * $Id: DummyDelegate.java,v 1.5 2003/11/18 10:43:55 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -18,7 +18,6 @@ import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.query.QueryStatus;
 import org.astrogrid.datacenter.snippet.DocHelper;
 import org.astrogrid.datacenter.snippet.QueryIdHelper;
-import org.astrogrid.datacenter.snippet.ResponseHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -129,7 +128,7 @@ public class DummyDelegate implements AdqlQuerier, ConeSearcher
 
    /**
     * Dummy create query method - returns an example 'created' response
-    */
+    *
    public Element makeQuery(Element adql)
    {
       setStatus(QueryStatus.CONSTRUCTED);
@@ -344,6 +343,9 @@ public class DummyDelegate implements AdqlQuerier, ConeSearcher
 
 /*
 $Log: DummyDelegate.java,v $
+Revision 1.5  2003/11/18 10:43:55  mch
+Removed dependency on ResponseHelper
+
 Revision 1.4  2003/11/17 16:59:12  mch
 ConeSearcher.coneSearch now returns stream not parsed element, throws IOException
 
