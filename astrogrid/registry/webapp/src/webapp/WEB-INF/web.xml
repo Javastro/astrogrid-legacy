@@ -39,7 +39,9 @@
 <servlet>
    <servlet-name>RegistryHarvest</servlet-name>
    <servlet-class>astrogrid.registry.harvest.daemon.HarvestDaemon</servlet-class>
+   <!--
    <load-on-startup>1</load-on-startup>
+   -->
 </servlet>
 
     <servlet>
