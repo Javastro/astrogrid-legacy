@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceReferenceParameterDescription.java,v 1.6 2004/03/23 12:51:26 pah Exp $
+ * $Id: MySpaceReferenceParameterDescription.java,v 1.7 2004/04/14 13:24:55 pah Exp $
  *
  * Created on 26 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -24,18 +24,24 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.cocoon.util.IOUtils;
+
 import org.astrogrid.applications.AbstractApplication;
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.FileParameter;
 import org.astrogrid.applications.MySpaceReferenceParameter;
 import org.astrogrid.applications.Parameter;
 import org.astrogrid.applications.common.config.CeaControllerConfig;
+import org.astrogrid.applications.common.io.IOUtil;
 import org.astrogrid.applications.manager.externalservices.ServiceNotFoundException;
 import org.astrogrid.community.User;
 import org.astrogrid.mySpace.delegate.MySpaceClient;
 import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManager;
+import org.astrogrid.store.Ivorn;
+import org.astrogrid.store.VoSpaceClient;
 
 /**
+ * Describes a reference to "MySpace". In iteration 5 this is actually an ivorn
  * @TODO need to improve error handling...
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @version $Name:  $
@@ -54,41 +60,20 @@ public class MySpaceReferenceParameterDescription extends ParameterDescription {
       frefParameter.setRealFile(localFile);
       List result = new ArrayList();
 
-         MySpaceClient mySpaceManager =
-            application.getController().getMySpaceLocator().getClient();
          User user = application.getUser();
+         VoSpaceClient voSpaceClient = new VoSpaceClient(user);
          String urlstring = null;
 
          //get the myspace file and copy it locally...
          if (application.getApplicationInterface().parameterType(name) == ApplicationInterface.ParameterDirection.INPUT) {
-            try {
-               urlstring =
-                  mySpaceManager.getDataHoldingUrl(
-                     user.getAccount(),
-                     user.getGroup(),
-                     user.getToken(),
-                     frefParameter.getRawValue());
+           logger.info("trying to get myspace value for "+ frefParameter.getName()+"="+frefParameter.getRawValue());
+           try {
+               InputStream is = voSpaceClient.getStream(new Ivorn(frefParameter.getRawValue()));
+               IOUtil.copyStreamToFile(is, localFile);
             }
             catch (Exception e) {
                logger.error("could not get parameter "+name+"="+frefParameter.getRawValue(), e);
               throw new ParameterMySpaceReferenceNotFound("could not get parameter "+name, e);
-            }
-           logger.info("trying to get myspace value from " + urlstring);
-          try {
-                 URL url = new URL(urlstring);
-                  BufferedInputStream in = new BufferedInputStream(url.openStream());
-                  BufferedOutputStream out =
-                     new BufferedOutputStream(new FileOutputStream(localFile));
-                  int c;
-                  while ((c = in.read()) != -1) {
-                     out.write(c);
-                  }
-                  in.close();
-                  out.close();
-            }
-            catch (IOException e1) {
-              logger.error("could not get parameter "+name+"="+urlstring, e1);
-              throw new ParameterReferenceValueNotUploadedException("could not get parameter "+name, e1);
             }
          }
 
