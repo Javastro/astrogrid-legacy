@@ -1,4 +1,4 @@
-/*$Id: EgsoQuerierPlugin.java,v 1.4 2004/09/07 00:54:20 mch Exp $
+/*$Id: EgsoQuerierPlugin.java,v 1.5 2004/09/29 13:39:01 mch Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,12 +11,17 @@
 package org.astrogrid.datacenter.sec.querier;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.rpc.ServiceException;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierPlugin;
+import org.astrogrid.datacenter.queriers.QuerierPluginException;
 import org.astrogrid.datacenter.queriers.VotableResults;
+import org.astrogrid.datacenter.queriers.sql.StdSqlMaker;
 import org.astrogrid.datacenter.sec.secdelegate.egso.EgsoDelegate;
 import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 /** Datacenter querier that performs queries against SEC webservice.
  * @author Kevin Benson kmb@mssl.ucl.ac.uk
@@ -26,26 +31,39 @@ public class EgsoQuerierPlugin extends QuerierPlugin {
    protected EgsoDelegate delegate;
 
    /** @todo check configuration for endpoint setting before settling with default */
-   public EgsoQuerierPlugin(Querier querier) throws ServiceException {
+   public EgsoQuerierPlugin(Querier querier) throws ServiceException, MalformedURLException {
       super(querier);
       delegate = new EgsoDelegate();
    }
    
-   /* (non-Javadoc)
-    * @see org.astrogrid.datacenter.queriers.spi.QuerierSPI#doQuery(java.lang.Object, java.lang.Class)
+   /** Called by the querier plugin mechanism to do the query.
+    * The EGSO service takes an SQL string and returns a VOTable.
     */
    public void askQuery() throws IOException {
-      EgsoQueryMaker translator = new EgsoQueryMaker();
-      EgsoQuery query = translator.getEgsoQuery(querier.getQuery());
-      Document resultsVotDoc = query.doDelegateQuery(delegate);
-      VotableResults results = new VotableResults(querier, resultsVotDoc);
-      results.send(querier.getReturnSpec(), querier.getUser());
+      //convert query to SQL
+      StdSqlMaker ssm = new StdSqlMaker();
+      String sql = ssm.getSql(querier.getQuery());
+
+      try {
+         Document resultsVotDoc = delegate.doQuery(sql);
+         VotableResults results = new VotableResults(querier, resultsVotDoc);
+         results.send(querier.getReturnSpec(), querier.getUser());
+      }
+      catch (SAXException e) {
+         throw new QuerierPluginException("Egso Delegate doQuery() did not return valid SQL: "+e,e);
+      }
+      catch (ParserConfigurationException e) {
+         throw new QuerierPluginException("Server not configured correctly",e);
+      }
    }
 }
 
 
 /*
  $Log: EgsoQuerierPlugin.java,v $
+ Revision 1.5  2004/09/29 13:39:01  mch
+ Removed obsolete ADQL 0.5
+
  Revision 1.4  2004/09/07 00:54:20  mch
  Tidied up Querier/Plugin/Results, and removed deprecated SPI-visitor-SQL-translator
 

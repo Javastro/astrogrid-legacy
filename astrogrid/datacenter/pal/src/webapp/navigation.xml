@@ -6,7 +6,7 @@
          <li><a href="INSTALL.html">INSTALL</a>
          <li><a href="RELEASE.html">RELEASE</a>
          <!-- <li><a href="WEB-INF/classes/default.properties">Sample Configuration</a> -->
-         <li><a href="self-test.html">Installation Test</a>
+         <li><a href="self-test.jsp">Installation Test</a>
          <li><a href="fingerprint.jsp">Fingerprint</a>
          <li><a href="servlet/AxisServlet">SOAP WSDL</a>
          <li><a href="client-dist/astrogrid-datacenter-client-SNAPSHOT.zip">Java client API</a>
@@ -26,7 +26,6 @@
    <div id='menuServer'>
       <h5>Server</h5>
       <ul>
-         <li><a href='index.html'>Index</a>
          <li><a href="serverStatus.jsp">Status</a>
          <li><a href="viewMetadata.jsp">Metadata</a>
          <li><a href="admin/GetLog">Log</a>

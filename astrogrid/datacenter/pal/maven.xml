@@ -1,4 +1,4 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="iso-8859-1"?>
 <!-- extension maven script -->
 <project xmlns:j="jelly:core"  xmlns:u="jelly:util" xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="pal">
 
@@ -23,7 +23,6 @@
    <echo message="pal: war:war"/>
     <attainGoal name="grab-resources" />
     <attainGoal name="configure-webapp" />
-   <attainGoal name="webapp-site" />
 </preGoal>
 
 
@@ -53,7 +52,7 @@
    <delete file="${basedir}/src/webapp/WEB-INF/server-config.xml" quiet="true"/>
    <!-- construct classpath to run axis under.
     necessary to do this, rather than just using 'maven.dependency.classpath' as there's 2 versioins of axis in the deps (arg).
-    the real one, and a duff one used within the warehouse that has ogsa extensions. we want to make shore we get the real one -->
+    the real one, and a duff one used within the warehouse that has ogsa extensions. we want to make sure we get the real one -->
    <path id="axis.classpath">
         <fileset dir="${working.dir}">
                 <exclude name="*ogsadai*" />

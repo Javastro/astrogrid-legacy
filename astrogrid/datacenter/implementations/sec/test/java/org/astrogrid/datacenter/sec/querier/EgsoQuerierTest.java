@@ -1,4 +1,4 @@
-/*$Id: EgsoQuerierTest.java,v 1.5 2004/09/02 12:44:35 mch Exp $
+/*$Id: EgsoQuerierTest.java,v 1.6 2004/09/29 13:37:36 mch Exp $
  * Created on 01-Dec-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,7 +17,6 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.ServerTestCase;
-import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.query.AdqlQuery;
@@ -84,6 +83,8 @@ public class EgsoQuerierTest extends ServerTestCase {
     * @param queryFile resource file of query
     */
    protected void askAdqlFromFile(String queryFile) throws Exception {
+      fail("Need to update test to ADQL 0.7.4+");
+      /*
       assertNotNull(queryFile);
       InputStream is = this.getClass().getResourceAsStream(queryFile);
       assertNotNull("Could not open query file :" + queryFile,is);
@@ -97,6 +98,7 @@ public class EgsoQuerierTest extends ServerTestCase {
       
       Document results = DomHelper.newDocument(sw.toString());
       assertIsVotable(results);
+       */
    }
    
    QuerierManager manager = new QuerierManager("SqlQuerierTest");
@@ -106,6 +108,9 @@ public class EgsoQuerierTest extends ServerTestCase {
 
 /*
 $Log: EgsoQuerierTest.java,v $
+Revision 1.6  2004/09/29 13:37:36  mch
+Removed obsolete ADQL 0.5
+
 Revision 1.5  2004/09/02 12:44:35  mch
 Fixed FORMAT_VOTABLEs
 
