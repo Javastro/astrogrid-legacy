@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.11 2004/11/08 15:04:15 mch Exp $
+ * $Id: SqlResults.java,v 1.12 2004/11/08 16:15:50 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -152,6 +152,7 @@ public class SqlResults extends QueryResults {
                printOut.println(" ------------------ Querier Aborted ----------------- ");
                return;
             }
+            printOut.flush(); //so we see each row as it arrives on the browser
          }
          statusToUpdate.addDetail(row+" rows sent");
          statusToUpdate.clearProgress();
@@ -339,6 +340,9 @@ public class SqlResults extends QueryResults {
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.12  2004/11/08 16:15:50  mch
+ added flush to each row
+
  Revision 1.11  2004/11/08 15:04:15  mch
  cleared progress once complete
 
@@ -493,6 +497,7 @@ public class SqlResults extends QueryResults {
  It03-Close
 
  */
+
 
 
 
