@@ -487,10 +487,10 @@ public class Workflow extends Activity {
         templateName ;
         
     private ActivityContainer 
-        child = null ;
+        child ;
         
     private Map 
-        activities = null ;
+        activities ;
         
     private boolean
         dirty ;
@@ -590,6 +590,7 @@ public class Workflow extends Activity {
     public Activity getActivity( String key ) {
         if( TRACE_ENABLED ) trace( "Workflow.getActivity() entry") ; 
         try { 
+            if( TRACE_ENABLED )debug( "key: [" + key +"]" ) ;
             if( TRACE_ENABLED ) debug( "activities: " + activities.toString() ) ;
             return (Activity)activities.get( new ActivityKey( key ) ) ;
             
