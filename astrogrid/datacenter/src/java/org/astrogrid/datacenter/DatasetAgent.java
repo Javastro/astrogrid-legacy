@@ -1,12 +1,18 @@
-
-
+/*
+ * @(#)DatasetAgent.java   1.0
+ *
+ * AstroGrid Copyright notice.
+ * 
+ */
 package org.astrogrid.datacenter;
 
-import org.astrogrid.i18n.* ;
+import org.astrogrid.datacenter.i18n.* ;
 
 import org.apache.log4j.Logger;
 
 import java.util.Properties;
+import java.util.ResourceBundle ;
+import java.util.Locale ;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.StringReader ;
@@ -15,23 +21,31 @@ import javax.xml.parsers.*;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource ;
 
+/**
+ * The <code>DatasetAgent</code> class represents 
+ * <p>
+ *
+ * @author  Jeff Lusted
+ * @version 1.0 28-May-2003
+ * @since   AstroGrid 1.2
+ */
 public class DatasetAgent {
-	
+	 
 	private static final boolean 
 		TRACE_ENABLED = true ;
 			
 	private static final String 
-		CONFIG_FILENAME = "ASTROGRID_datasetconfig.properties" ;
-		
-		
-		
-	private static final String
-	    ASTROGRIDERROR_COULD_NOT_READ_CONFIGFILE    = "AGDTCE0001",
-	    ASTROGRIDERROR_DATASETAGENT_NOT_INITIALIZED = "AGDTCE0002",
-	    ASTROGRIDERROR_FAILED_TO_PARSE_JOB_REQUEST  = "AGDTCE0003",
-	    ASTROGRIDERROR_TERMINAL_FAILURE             = "AGDTCE0004";
+		CONFIG_FILENAME              = "ASTROGRID_datasetconfig.properties",
+		CONFIG_MESSAGES_BASENAME     = "MESSAGES.INSTALLATION.BASENAME" ,
+		CONFIG_MESSAGES_LANGUAGECODE = "MESSAGES.INSTALLATION.LANGUAGECODE" ,
+	    CONFIG_MESSAGES_COUNTRYCODE  = "MESSAGES.INSTALLATION.COUNTRYCODE" ;
 	    
-			
+	private static final String
+	    ASTROGRIDERROR_COULD_NOT_READ_CONFIGFILE    = "AGDTCE00010",
+	    ASTROGRIDERROR_DATASETAGENT_NOT_INITIALIZED = "AGDTCE00020",
+	    ASTROGRIDERROR_FAILED_TO_PARSE_JOB_REQUEST  = "AGDTCE00030",
+	    ASTROGRIDERROR_ULTIMATE_QUERYFAILURE        = "AGDTCE00040";
+	    			
 	private static Logger 
 		logger = Logger.getLogger( DatasetAgent.class ) ;
 		
@@ -52,6 +66,9 @@ public class DatasetAgent {
 		    configurationProperties.load(istream);
 		    istream.close();
 			logger.debug( configurationProperties.toString() ) ;
+			
+			// If successful so far, load installation-type messages
+			configureMessages() ;
 		}
 		catch ( IOException ex ) {
 			Message
@@ -65,7 +82,40 @@ public class DatasetAgent {
 		
 		return ;
 
-	  } // end of doConfigure()
+	} // end of doConfigure()
+	  
+	  
+    private static void configureMessages() {
+		if( TRACE_ENABLED ) logger.debug( "configureMessages(): entry") ;
+			
+		try {
+			
+			String 
+			    messageBundleBaseName = getProperty( CONFIG_MESSAGES_BASENAME ), 
+			    language = getProperty( CONFIG_MESSAGES_LANGUAGECODE ),
+			    country = getProperty( CONFIG_MESSAGES_COUNTRYCODE ) ;
+			
+			if( messageBundleBaseName != null ) {
+				     
+			    if( (language != null) && (language != "") )  {
+			    	
+				   Locale
+				      locale =  new Locale( language, (country != null ? country : "") );
+				   Message.setMessageResource( ResourceBundle.getBundle( messageBundleBaseName, locale ) ) ;	
+				   
+			    }
+			    else {
+                   Message.setMessageResource( ResourceBundle.getBundle( messageBundleBaseName ) ) ;	
+			    }
+			    
+			}
+			
+		}
+		finally {
+			if( TRACE_ENABLED ) logger.debug( "configureMessages(): exit") ;	 
+		}
+		 	  
+	} // end of configureMessages()
 	  
 	
 	public static String getProperty( String key ) {
@@ -97,45 +147,55 @@ public class DatasetAgent {
     	
 		String
 			response = null ;
+		Job
+		    job = null ;
 		Query
 			query = null ;
 		Allocation
 		    allocation = null ;
 			
-		try {  
+		try { 
+			// If properties file is not loaded, we bail out...
+			// Each DatasetAgent MUST be properly initialized! 
 	        checkPropertiesLoaded() ;
     		
+    		// Parse the request and create the necessary Job structures, including Query...
          	Document
     		   queryDoc = parseRequest( jobXML ) ;
-            //
-            // Note - nothing on Jobs so far...
-            //   	
-    		QueryFactory
-    		   queryFactory = Query.getFactory( "USNOB" ) ;
-    		query = queryFactory.createQuery( queryDoc ) ;
-			query.execute() ;
-			   			   
-			MySpaceFactory
-			   mySpaceFactory = Allocation.getFactory() ;
-			allocation = mySpaceFactory.allocateCacheSpace( "Job/JobstepId", 256 ) ;
+            job = Job.getFactory().createJob( queryDoc ) ;
+            
+            // Execute the Query...
+			job.getJobStep().getQuery().execute() ;
+			   	
+			// Acquire some temporary file space...		   
+			allocation = Allocation.getFactory().allocateCacheSpace( job.getId() ) ;
 			   
+			// Produce VOTable and write it to a temporary file...   
 			VOTable
 			   votable = query.toVOTable( allocation ) ;
+			  
+			// Inform MySpace that file is ready for pickup...   
+			allocation.informMySpace() ;
+            			
+			// Inform JobMonitor (within JES) of successful jobstep completion...
+			job.informJobMonitor( true ) ;
 			
 			// temporary, for testing
-            response = votable.toString() ;
-            			
-			// Now touch the job monitor if you can....
-				
+			response = votable.toString() ;	
     	}
-    	catch( Exception ex ) {
-    		// If we were responding, we would format our error response here...
-			response = ex.getMessage() ; 
+    	catch( DatacenterException dex ) {
 			Message
-				message = new Message( ASTROGRIDERROR_TERMINAL_FAILURE ) ;
-			logger.error( message.toString(), ex ) ;
+			    detailMessage = dex.getAstroGridMessage() ,  
+				generalMessage = new Message( ASTROGRIDERROR_ULTIMATE_QUERYFAILURE ) ;
+			logger.error( detailMessage.toString(), dex ) ;
+			logger.error( generalMessage.toString() ) ;
+ 
+			// Inform JobMonitor within JES of unsuccessful jobstep completion...
+			job.informJobMonitor( false ) ;	
+					
+			// If we were responding, we would format our error response here...
 			if( response == null ) {
-				response = message.toString() ;
+				response = generalMessage.toString() + "/n" + detailMessage.toString();
 			}
     	}
     	finally {
@@ -149,11 +209,13 @@ public class DatasetAgent {
 
 
     private void checkPropertiesLoaded() throws DatasetAgentException {
+		if( TRACE_ENABLED ) logger.debug( "checkPropertiesLoaded() entry") ;
 		if( configurationProperties == null ) {
 			Message
 				message = new Message( ASTROGRIDERROR_DATASETAGENT_NOT_INITIALIZED ) ;
 			logger.error( message.toString() ) ;
 		}
+		if( TRACE_ENABLED ) logger.debug( "checkPropertiesLoaded() exit") ;
     } // end checkPropertiesLoaded()
     
 
@@ -176,9 +238,9 @@ public class DatasetAgent {
 		}
 		catch ( Exception ex ) {
 			Message
-				message = new Message( ASTROGRIDERROR_FAILED_TO_PARSE_JOB_REQUEST ) ;
+				message = new Message( ASTROGRIDERROR_FAILED_TO_PARSE_JOB_REQUEST ) ; 
 			logger.error( message.toString(), ex ) ;
-			throw new DatasetAgentException( message.toString(), ex );
+			throw new DatasetAgentException( message, ex );
 		} 
 		finally {
 			if( TRACE_ENABLED ) logger.debug( "parseRequest() exit") ;	
@@ -191,12 +253,10 @@ public class DatasetAgent {
 
     private void resourceCleanup( Query query, Allocation allocation ) {   	
 		if( TRACE_ENABLED ) logger.debug( "resourceCleanup() entry") ;
-		if( query != null )
-		    query.close() ;
-		if( allocation != null )
-		    allocation.close() ;
+		if( query != null ) query.close() ;
+		if( allocation != null ) allocation.close() ;
 		if( TRACE_ENABLED ) logger.debug( "resourceCleanup() exit") ;  		 	
     }
 
  
-}
+} // end of class DatasetAgent

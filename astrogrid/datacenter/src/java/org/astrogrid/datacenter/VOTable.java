@@ -1,8 +1,7 @@
 package org.astrogrid.datacenter;
 
 import org.apache.log4j.Logger;
-
-import org.astrogrid.i18n.*;
+import org.astrogrid.datacenter.i18n.*;
 
 
 public class VOTable {
@@ -11,10 +10,10 @@ public class VOTable {
 		TRACE_ENABLED = true ;
 	
 	private static Logger 
-		logger = Logger.getLogger( Query.class ) ;
+		logger = Logger.getLogger( VOTable.class ) ;
 		
 	private static String
-	    ASTROGRIDERROR_COULD_NOT_CREATE_VOTABLEFACTORY_IMPL = "Could not create votable factory" ;
+	    ASTROGRIDERROR_COULD_NOT_CREATE_VOTABLEFACTORY_IMPL = "AGDTCE00120" ;
         
     private static String
         VOTABLEFACTORY_KEY = "VOTABLEFACTORY" ; 
@@ -53,7 +52,7 @@ public class VOTable {
 			Message
 				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_VOTABLEFACTORY_IMPL, implementationFactoryName ) ;
 			logger.error( message.toString(), ex ) ;
-			throw new VOTableException( message.toString(), ex );
+			throw new VOTableException( message, ex );
 		}
 		finally{
 			if( TRACE_ENABLED ) logger.debug( "getFactory(): exit") ; 	

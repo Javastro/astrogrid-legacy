@@ -1,14 +1,24 @@
-
+/*
+ * @(#)Allocation.java   1.0
+ *
+ * AstroGrid Copyright notice.
+ * 
+ */
 package org.astrogrid.datacenter;
 
 import org.apache.log4j.Logger;
-
-import org.astrogrid.i18n.*;
-
-import java.net.URL;
+import org.astrogrid.datacenter.i18n.*;
 import java.io.OutputStream;
 
 
+/**
+ * The <code>Allocation</code> class represents 
+ * <p>
+ *
+ * @author  Jeff Lusted
+ * @version 1.0 27-May-2003
+ * @since   AstroGrid 1.2
+ */
 public class Allocation {
 	
 	private static final boolean 
@@ -18,7 +28,7 @@ public class Allocation {
 		logger = Logger.getLogger( Allocation.class ) ;
 		
 	private static String
-		ASTROGRIDERROR_COULD_NOT_CREATE_MYSPACEFACTORY_IMPL = "Could not create myspace factory" ;
+		ASTROGRIDERROR_COULD_NOT_CREATE_MYSPACEFACTORY_IMPL = "AGDTCE00090" ;
         
 	private static String
 		MYSPACEFACTORY_KEY = "MYSPACEFACTORY_KEY" ; 
@@ -29,7 +39,7 @@ public class Allocation {
 	private OutputStream
 	    outputStream = null ;
 	
-	public static MySpaceFactory getFactory() throws java.lang.Exception { 
+	public static MySpaceFactory getFactory() throws AllocationException { 
 		if( TRACE_ENABLED ) logger.debug( "getFactory(): entry") ;   	
     	
 		String
@@ -51,7 +61,7 @@ public class Allocation {
 			Message
 				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_MYSPACEFACTORY_IMPL, implementationFactoryName ) ;
 			logger.error( message.toString(), ex ) ;
-			throw new VOTableException( message.toString(), ex );
+			throw new AllocationException( message, ex );
 		}
 		finally{
 			if( TRACE_ENABLED ) logger.debug( "getFactory(): exit") ; 	
@@ -94,6 +104,10 @@ public class Allocation {
     	}  
     	
     }// end of close()
+    
+    
+    public void informMySpace() throws AllocationException {
+    }
 
 
 }// end of class Allocation
