@@ -11,7 +11,6 @@
   
   <!-- Determine what the top-level project root is -->
   <j:set var="project.base.root" value="${pom.parentBasedir().getParentFile().getCanonicalFile()}/build"/>
-
   <!-- Load the global properties -->
   <u:properties file="${project.base.root}/global.properties"/>
   <!-- dynamically computed properties -->
