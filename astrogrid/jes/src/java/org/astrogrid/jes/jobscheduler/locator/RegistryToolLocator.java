@@ -1,4 +1,4 @@
-/*$Id: RegistryToolLocator.java,v 1.5 2004/04/08 14:43:26 nw Exp $
+/*$Id: RegistryToolLocator.java,v 1.6 2004/04/21 10:05:51 nw Exp $
  * Created on 08-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,14 +14,26 @@ import org.astrogrid.jes.JesException;
 import org.astrogrid.jes.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.jobscheduler.Locator;
 import org.astrogrid.registry.RegistryException;
+import org.astrogrid.registry.beans.resource.IdentifierType;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.registry.client.query.RegistryService;
+import org.astrogrid.store.Ivorn;
 import org.astrogrid.workflow.beans.v1.Step;
 
+import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.exolab.castor.xml.CastorException;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.Unmarshaller;
+import org.exolab.castor.xml.ValidationException;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
 
+import java.io.StringWriter;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.StringTokenizer;
 
 import junit.framework.Test;
 
@@ -43,22 +55,124 @@ public class RegistryToolLocator implements Locator, ComponentDescriptor {
     
     protected final URL url;
     protected final RegistryService delegate;
-    
+
     /**
      * @see org.astrogrid.jes.jobscheduler.Locator#locateTool(org.astrogrid.workflow.beans.v1.Step)
-     */
-    public String locateTool(Step js) throws JesException {
-        try {
+     */    
+    public String locateTool(Step js) throws JesException{
+            String name = js.getTool().getName();
+            if (name == null ) {
+                throw reportError("Unnamed tool - cannot locate it");
+            }
+            logger.debug("retreiving tool location for " +name);
+            Document toolDocument;
+            try {
+                toolDocument = delegate.getResourceByIdentifierDOM(name);
+                if (logger.isDebugEnabled()) {
+                    StringWriter sw = new StringWriter();
+                    XMLUtils.PrettyDocumentToWriter(toolDocument,sw);
+                    logger.debug("ToolDocument\n" + sw.toString());
+                }
+            }
+            catch (RegistryException e) {
+                throw reportError("Could not get registry entry for tool " + name,e);
+            }            
 
-            logger.debug("retreiving tool location for " + js.getTool().getName());
-            String endpoint = delegate.getEndPointByIdentifier(js.getTool().getName());
+        IdentifierType toolId = null;
+        try {            
+            IdentifierType[] toolIds = getIdentifiers(toolDocument);
+            if (toolIds.length == 0) {
+                throw reportError("No identifiers in registry entry for tool" + name);
+            }           
+            toolId = toolIds[0];
+        } catch (CastorException e) {
+            throw reportError("Could not parse return document for tool" + name,e);
+        }            
+            logger.debug("found tool: " + toolId.getAuthorityID() + " / " + toolId.getResourceKey());
+             
+            // now query registry for all entries the provide this.
+            String queryString = buildQueryString(toolId);
+            logger.debug("Query to find services supporting this:" + queryString);
+            Document results = null;
+            try {
+               results = delegate.submitQueryStringDOM(queryString);
+               if (logger.isDebugEnabled()) {
+                   StringWriter sw = new StringWriter();
+                   XMLUtils.PrettyDocumentToWriter(results,sw);
+                   logger.debug("Query Results\n" + sw.toString());
+               }
+            } catch (RegistryException e) {
+                throw reportError("Failed to query registry for services providing tool " + name,e);
+            }
+            // found identifiers
+            IdentifierType[] serviceIds = null;
+            try {
+                serviceIds = getIdentifiers(results);
+                logger.debug("Found " + serviceIds.length + " matching services");
+                if (serviceIds.length == 0) {
+                    throw reportError("Tool " + name + " has no known service providers");
+                }
+            } catch (CastorException e) {
+                throw reportError("Failed to extract identifiers from query document",e);
+            }
+            
+            String endpoint = null;            
+            for (int i = 0; i < serviceIds.length && endpoint == null; i++) {
+                String serviceName = serviceIds[i].getAuthorityID() + "/" + serviceIds[i].getResourceKey();
+                try {
+                    endpoint = delegate.getEndPointByIdentifier(serviceName);
+                    logger.debug("Service " + serviceName + " resolved to endpoint " + endpoint);
+                } catch (RegistryException e) {
+                    logger.warn("Query registry about " + serviceName + " failed",e);
+                }
+            }
+                       
             logger.debug("registry resolved to " + endpoint);
             return endpoint;
-        } catch (RegistryException e) {
-            logger.error("Registry exception when resolving " + js.getTool().getName(),e);
-            throw new JesException("Failed to locate tool due to error",e);
-        }
     }
+    
+    
+    private JesException reportError(String s, Exception e) {
+        logger.error(s,e);
+        return new JesException(s,e);
+    }
+    private JesException reportError(String s) {
+        logger.error(s);
+        return new JesException(s);
+    }    
+    
+    /**
+     * @param toolId
+     */
+    private String buildQueryString(IdentifierType toolId) {
+    
+        return "<query><selectionSequence>" +
+                    "<selection item='searchElements' itemOp='EQ' value='Resource'/>" +
+                    "<selectionOp op='$and$'/>" +
+                    "<selection item='@*:type' itemOp='EQ' value='CeaServiceType'/>"  +
+                    "<selectionOp op='AND'/>" +
+                    "<selection item='ManagedApplications/*:ApplicationReference/*:AuthorityID' itemOp='EQ' value='" + toolId.getAuthorityID() + "'/>"  +
+                    "<selectionOp op='AND'/>" +
+                    "<selection item='ManagedApplications/*:ApplicationReference/*:ResourceKey' itemOp='EQ' value='" + toolId.getResourceKey() + "'/>"  +                                           
+                    /* don't think that we need these....
+                    "<selectionOp op='OR'/>" +
+                    "<selection item='@*:type' itemOp='EQ' value='CeaServiceType'/>"  +
+                    */
+                "</selectionSequence></query>";    
+    }
+
+    /**
+     queries registry to get tool entry, extract details from this.
+     */
+    private IdentifierType[] getIdentifiers(Document doc)throws CastorException  {
+            NodeList nl = doc.getElementsByTagNameNS("*","Identifier");
+            IdentifierType[] results = new IdentifierType[nl.getLength()];
+            for (int i = 0; i < nl.getLength(); i++) {
+                results[i] = (IdentifierType)Unmarshaller.unmarshal(IdentifierType.class,nl.item(0));
+            }
+            return results;
+    }    
+        
     /**
      * @see org.astrogrid.jes.jobscheduler.Locator#getToolInterface(org.astrogrid.workflow.beans.v1.Step)
      */
@@ -89,6 +203,9 @@ public class RegistryToolLocator implements Locator, ComponentDescriptor {
 
 /* 
 $Log: RegistryToolLocator.java,v $
+Revision 1.6  2004/04/21 10:05:51  nw
+implemented correctly - passes integration testing
+
 Revision 1.5  2004/04/08 14:43:26  nw
 added delete and abort job functionality
 
