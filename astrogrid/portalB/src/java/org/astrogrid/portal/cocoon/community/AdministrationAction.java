@@ -13,26 +13,15 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import org.astrogrid.community.delegate.policy.AdministrationDelegate;
 import org.astrogrid.community.policy.data.GroupData;
+import org.astrogrid.community.policy.data.GroupMemberData;
 import org.astrogrid.community.policy.data.AccountData;
 import org.astrogrid.community.policy.data.ResourceData;
 
 /**
  *
- * Class Name: DataQueryServlet
- * Purpose:  Main purpose to interact with DataQuery.jsp and give it all the necessary information for interacting with the user.
- * Also to take request from the DataQuery.jsp and act on those requests.
- * The types of request submitted are:
- * 1.) Send a Query - Which means sending a query to the JobController webservice.
- * 2.) Add Selection - Which means adding return columns/UCD's and Data Sets into the query
- * 3.) Remove Selection - Which means remove a column/UCD from the query
- * 4.) Add Criteria - Which means to add criteria to the "where" clause.
- * 5.) Remove Criteria - Which means to remove criteria from the where clause
+ * AdministrationAction is a custom cocoon Action used for the Administraiton page.  And is used in conjunction with
+ * astrogrid.xsl and astrogrid.xsp
  * 
- * Finally for initiation purposes the servlet will call the Registry WebService for getting all the DataSet names and their
- * corresponding columns and ucd's.  This will refreash after 5 hours in case the registry is changed.
- * 
- * @see org.astrogrid.portal.generated.jobcontroller.client
- * @see org.astrogrid.portal.generated.registry.client * 
  * @author Kevin Benson
  *
  */
@@ -82,7 +71,7 @@ public class AdministrationAction extends AbstractAction
    
    private static final String ACTION_VIEW_COMMUNITY = "viewcommunity";   
    
-   private static final String ACTION_VIEW_RESOURCES = "viewresources";   
+   private static final String ACTION_VIEW_RESOURCES = "viewresources";
    
    private static final String ACTION_CHANGE_PASSWORD = "changeofpassword";
    
@@ -162,29 +151,36 @@ public class AdministrationAction extends AbstractAction
       
       session.setAttribute("actionlist",actionTable);
       
+      String community = request.getParameter("community");
+      if(community == null || community.length() > 0) {
+         //community = session.getAttribute("community_name");
+         community = "localhost";
+      }
+      
+      
       if(ACTION_REMOVE_GROUP.equals(action) || ACTION_VIEW_GROUPS.equals(action) ||
          ACTION_REMOVE_MEMBER.equals(action) || ACTION_INSERT_MEMBER.equals(action) ||
          ACTION_INSERT_PERMISSION.equals(action) || ACTION_REMOVE_PERMISSION.equals(action)) {
         try {
-         ArrayList al = adminDelegate.getGroupList();
+         ArrayList al = adminDelegate.getGroupList(community);
          session.setAttribute(PARAM_GROUP_LIST,al);
-              
         }catch(Exception e) {
             errorMessage = e.toString();
             e.printStackTrace();
         }
       }
-      if(ACTION_REMOVE_COMMUNITY.equals(action) || ACTION_VIEW_COMMUNITY.equals(action)) {
+      
+      if(ACTION_REMOVE_COMMUNITY.equals(action) || ACTION_VIEW_COMMUNITY.equals(action) ||
+         ACTION_INSERT_MEMBER.equals(action)) {
         try {
          ArrayList al = adminDelegate.getCommunityList();
          session.setAttribute(PARAM_COMMUNITY_LIST,al);
-           
         }catch(Exception e) {
             errorMessage = e.toString();
             e.printStackTrace();
         }
-      }      
-      
+      }
+            
       if(ACTION_REMOVE_RESOURCE.equals(action) ||  ACTION_INSERT_PERMISSION.equals(action)
          || ACTION_REMOVE_PERMISSION.equals(action) || ACTION_VIEW_RESOURCES.equals(action) ) {
         try {
@@ -201,7 +197,7 @@ public class AdministrationAction extends AbstractAction
       if(ACTION_REMOVE_ACCOUNT.equals(action) || ACTION_REMOVE_MEMBER.equals(action) 
          || ACTION_INSERT_MEMBER.equals(action) || ACTION_VIEW_ACCOUNTS.equals(action)) {
               try {
-               ArrayList al = adminDelegate.getAccountList();
+               ArrayList al = adminDelegate.getAccountList(community);
                session.setAttribute(PARAM_ACCOUNT_LIST,al);
               }catch(Exception e) {
                   errorMessage = e.toString();
