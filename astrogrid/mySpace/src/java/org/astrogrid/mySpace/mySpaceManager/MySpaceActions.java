@@ -138,28 +138,31 @@ public class MySpaceActions
 //
 //      print out details of registry config. file.
 
-         int expiryPeriod = reg.getExpiryPeriod();
-         System.out.println("Expiry period (days): " + expiryPeriod);
+//         int expiryPeriod = reg.getExpiryPeriod();
+//         System.out.println("Expiry period (days): " + expiryPeriod);
 
-         Vector serverNames = reg.getServerNames();
+//         Vector serverNames = reg.getServerNames();
 
-         if (serverNames != null)
-         {  int numServers = serverNames.size();
+//         if (serverNames != null)
+//         {  int numServers = serverNames.size();
 
-            String serverName;
-            String serverURI;
+//            String serverName;
+//            String serverURI;
+//            String serverDirectory;
 
-            for (int loop=0; loop < numServers; loop++)
-            {  serverName = (String)serverNames.get(loop);
-               serverURI = reg.getServerURI(serverName);
+//            for (int loop=0; loop < numServers; loop++)
+//            {  serverName = (String)serverNames.get(loop);
+//               serverURI = reg.getServerURI(serverName);
+//               serverDirectory = reg.getServerDirectory(serverName);
 
-               System.out.println("Server " + loop + " is called "
-                 + serverName + " at " + serverURI);
-            }
-         }
-         else
-         {  System.out.println("No servers specified.");
-         }
+//               System.out.println("Server " + loop + " is called "
+//                 + serverName + " at " + serverURI + " and "
+//                 + serverDirectory);
+//            }
+//         }
+//         else
+//         {  System.out.println("No servers specified.");
+//         }
 
 //  -- end debug ----------------------------------------------
 
@@ -976,7 +979,7 @@ public class MySpaceActions
             String serverName = 
               newDataItemName.substring(containSepPos2+1, containSepPos3);
 
-            System.out.println("serverName: " + serverName);
+//            System.out.println("serverName: " + serverName);
 
             RegistryManager reg = new RegistryManager(registryName);
             if(reg.isServerName(serverName))
