@@ -1,4 +1,4 @@
-/*$Id: PropertiesConfig.java,v 1.2 2004/03/05 16:16:55 nw Exp $
+/*$Id: PropertiesConfig.java,v 1.3 2004/04/06 08:29:55 nw Exp $
  * Created on 27-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.net.URL;
 import java.util.Properties;
+import java.util.Set;
 
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 27-Feb-2004
@@ -58,11 +59,20 @@ public class PropertiesConfig extends Config {
      */
     public void dumpConfig(Writer arg0) {
     }
+    /**
+     * @see org.astrogrid.config.Config#keySet()
+     */
+    public Set keySet() {
+        return props.keySet();
+    }
 }
 
 
 /* 
 $Log: PropertiesConfig.java,v $
+Revision 1.3  2004/04/06 08:29:55  nw
+bugfix
+
 Revision 1.2  2004/03/05 16:16:55  nw
 worked now object model through jes.
 implemented basic scheduling policy
