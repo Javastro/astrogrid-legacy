@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/GroupManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/11 03:15:06 $</cvs:date>
- * <cvs:version>$Revision: 1.11 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/12 12:59:17 $</cvs:date>
+ * <cvs:version>$Revision: 1.12 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: GroupManagerImpl.java,v $
+ *   Revision 1.12  2003/09/12 12:59:17  dave
+ *   1) Fixed RemoteException handling in the manager and service implementations.
+ *
  *   Revision 1.11  2003/09/11 03:15:06  dave
  *   1) Implemented PolicyService internals - no tests yet.
  *   2) Added getLocalAccountGroups and getRemoteAccountGroups to PolicyManager.
@@ -47,7 +50,7 @@
  */
 package org.astrogrid.community.policy.server ;
 
-import java.rmi.RemoteException ;
+//import java.rmi.RemoteException ;
 
 import java.util.Vector ;
 import java.util.Collection ;
@@ -118,7 +121,6 @@ public class GroupManagerImpl
 	 *
 	 */
 	public GroupData addGroup(String name)
-		throws RemoteException
 		{
 		return this.addGroup(new CommunityIdent(name)) ;
 		}
@@ -128,7 +130,6 @@ public class GroupManagerImpl
 	 *
 	 */
 	protected GroupData addGroup(CommunityIdent ident)
-		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -243,7 +244,6 @@ public class GroupManagerImpl
 	 *
 	 */
 	public GroupData getGroup(String name)
-		throws RemoteException
 		{
 		return this.getGroup(new CommunityIdent(name)) ;
 		}
@@ -253,7 +253,6 @@ public class GroupManagerImpl
 	 *
 	 */
 	protected GroupData getGroup(CommunityIdent ident)
-		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -363,7 +362,6 @@ public class GroupManagerImpl
 	 *
 	 */
 	public GroupData setGroup(GroupData group)
-		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -484,7 +482,6 @@ public class GroupManagerImpl
 	 *
 	 */
 	public GroupData delGroup(String name)
-		throws RemoteException
 		{
 		return this.delGroup(new CommunityIdent(name)) ;
 		}
@@ -494,7 +491,6 @@ public class GroupManagerImpl
 	 *
 	 */
 	protected GroupData delGroup(CommunityIdent ident)
-		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -612,7 +608,6 @@ public class GroupManagerImpl
 	 *
 	 */
 	public Object[] getLocalGroups()
-		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -1138,7 +1133,6 @@ public class GroupManagerImpl
 	 *
 	 */
 	public Object[] getLocalAccountGroups(String account)
-		throws RemoteException
 		{
 		return this.getLocalAccountGroups(new CommunityIdent(account)) ;
 		}
@@ -1148,7 +1142,6 @@ public class GroupManagerImpl
 	 *
 	 */
 	protected Object[] getLocalAccountGroups(CommunityIdent account)
-		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -1239,91 +1232,4 @@ public class GroupManagerImpl
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		return array ;
 		}
-
-/*
- *
-   public Object[] getAccountGroupList(String account) throws RemoteException {
-      if (DEBUG_FLAG) System.out.println("") ;
-      if (DEBUG_FLAG) System.out.println("----\"----") ;
-      if (DEBUG_FLAG) System.out.println("GroupManagerImpl.getGroupList()") ;
-
-      //
-      // Try QUERY the database.
-      Object[] array = null ;
-
-      try {
-         //
-         // Begin a new database transaction.
-         database.begin();
-         //
-         // Create our OQL query.
-         OQLQuery query = database.getOQLQuery(
-            "SELECT groups FROM org.astrogrid.community.policy.data.GroupData groups where ident = $1 and type = $2"
-            );
-         query.bind(account);
-         query.bind(GroupData.MULTI_TYPE);
-         
-         //
-         // Execute our query.
-         QueryResults results = query.execute();
-         //
-         // Transfer our results to a vector.
-         Collection collection = new Vector() ;
-         while (results.hasMore())
-         {
-            collection.add(results.next()) ;
-         }
-         // 
-         // Convert it into an array.
-         array = collection.toArray() ;
-      //
-      // If anything went bang.
-      }catch (Exception ouch)
-         {
-         if (DEBUG_FLAG) System.out.println("") ;
-         if (DEBUG_FLAG) System.out.println("  ----") ;
-         if (DEBUG_FLAG) System.out.println("Generic exception in getGroupList()") ;
-
-         //
-         // Set the response to null.
-         array = null ;
-
-         if (DEBUG_FLAG) System.out.println("  ----") ;
-         if (DEBUG_FLAG) System.out.println("") ;
-         }
-      //
-      // Commit the transaction.
-      finally
-         {
-         try {
-            if (null != array)
-               {
-               database.commit() ;
-               }
-            else {
-               database.rollback() ;
-               }
-            }
-         catch (Exception ouch)
-            {
-            if (DEBUG_FLAG) System.out.println("") ;
-            if (DEBUG_FLAG) System.out.println("  ----") ;
-            if (DEBUG_FLAG) System.out.println("Generic exception in getGroupList() finally clause") ;
-
-            //
-            // Set the response to null.
-            array = null ;
-
-            if (DEBUG_FLAG) System.out.println("  ----") ;
-            if (DEBUG_FLAG) System.out.println("") ;
-            }
-         }
-
-      if (DEBUG_FLAG) System.out.println("----\"----") ;
-      return array;
-      
-   }
- *
- */
-
 	}

@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/AccountManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/10 17:21:43 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/12 12:59:17 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManagerImpl.java,v $
+ *   Revision 1.7  2003/09/12 12:59:17  dave
+ *   1) Fixed RemoteException handling in the manager and service implementations.
+ *
  *   Revision 1.6  2003/09/10 17:21:43  dave
  *   Added remote functionality to groups.
  *
@@ -29,7 +32,7 @@
  */
 package org.astrogrid.community.policy.server ;
 
-import java.rmi.RemoteException ;
+//import java.rmi.RemoteException ;
 
 import java.util.Vector ;
 import java.util.Collection ;
@@ -96,7 +99,6 @@ public class AccountManagerImpl
 	 *
 	 */
 	public AccountData addAccount(String name)
-		throws RemoteException
 		{
 		return this.addAccount(new CommunityIdent(name)) ;
 		}
@@ -106,7 +108,6 @@ public class AccountManagerImpl
 	 *
 	 */
 	protected AccountData addAccount(CommunityIdent ident)
-		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -234,7 +235,6 @@ public class AccountManagerImpl
 	 *
 	 */
 	public AccountData getAccount(String name)
-		throws RemoteException
 		{
 		return this.getAccount(new CommunityIdent(name)) ;
 		}
@@ -244,7 +244,6 @@ public class AccountManagerImpl
 	 *
 	 */
 	protected AccountData getAccount(CommunityIdent ident)
-		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -354,7 +353,6 @@ public class AccountManagerImpl
 	 *
 	 */
 	public AccountData setAccount(AccountData account)
-		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -476,7 +474,6 @@ public class AccountManagerImpl
 	 *
 	 */
 	public AccountData delAccount(String name)
-		throws RemoteException
 		{
 		return this.delAccount(new CommunityIdent(name)) ;
 		}
@@ -486,7 +483,6 @@ public class AccountManagerImpl
 	 *
 	 */
 	protected AccountData delAccount(CommunityIdent ident)
-		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -613,7 +609,6 @@ public class AccountManagerImpl
 	 *
 	 */
 	public Object[] getLocalAccounts()
-		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;

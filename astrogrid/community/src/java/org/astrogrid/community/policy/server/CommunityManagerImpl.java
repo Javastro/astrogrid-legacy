@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/CommunityManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/11 03:15:06 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/12 12:59:17 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityManagerImpl.java,v $
+ *   Revision 1.6  2003/09/12 12:59:17  dave
+ *   1) Fixed RemoteException handling in the manager and service implementations.
+ *
  *   Revision 1.5  2003/09/11 03:15:06  dave
  *   1) Implemented PolicyService internals - no tests yet.
  *   2) Added getLocalAccountGroups and getRemoteAccountGroups to PolicyManager.
@@ -29,7 +32,7 @@
  */
 package org.astrogrid.community.policy.server ;
 
-import java.rmi.RemoteException ;
+//import java.rmi.RemoteException ;
 
 import java.net.URL ;
 
@@ -97,7 +100,6 @@ public class CommunityManagerImpl
 	 *
 	 */
 	public CommunityData addCommunity(String name)
-		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -197,7 +199,6 @@ public class CommunityManagerImpl
 	 *
 	 */
 	public CommunityData getCommunity(String ident)
-		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -280,7 +281,6 @@ public class CommunityManagerImpl
 	 *
 	 */
 	public CommunityData setCommunity(CommunityData community)
-		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -372,7 +372,6 @@ public class CommunityManagerImpl
 	 *
 	 */
 	public Object[] getCommunityList()
-		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -457,7 +456,6 @@ public class CommunityManagerImpl
 	 *
 	 */
 	public CommunityData delCommunity(String ident)
-		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -546,7 +544,6 @@ public class CommunityManagerImpl
 	 *
 	 */
 	public PolicyManager getPolicyManager(String name)
-		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -575,7 +572,6 @@ public class CommunityManagerImpl
 	 *
 	 */
 	public PolicyManager getPolicyManager(CommunityData community)
-		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -615,7 +611,6 @@ public class CommunityManagerImpl
 	 *
 	 */
 	public PolicyService getPolicyService(String name)
-		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -644,7 +639,6 @@ public class CommunityManagerImpl
 	 *
 	 */
 	public PolicyService getPolicyService(CommunityData community)
-		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;

@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/PermissionManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/10 02:56:03 $</cvs:date>
- * <cvs:version>$Revision: 1.1 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/12 12:59:17 $</cvs:date>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PermissionManagerImpl.java,v $
+ *   Revision 1.2  2003/09/12 12:59:17  dave
+ *   1) Fixed RemoteException handling in the manager and service implementations.
+ *
  *   Revision 1.1  2003/09/10 02:56:03  dave
  *   Added PermissionManager and tests
  *
@@ -14,7 +17,7 @@
  */
 package org.astrogrid.community.policy.server ;
 
-import java.rmi.RemoteException ;
+//import java.rmi.RemoteException ;
 
 import java.util.Vector ;
 import java.util.Collection ;
@@ -82,7 +85,6 @@ public class PermissionManagerImpl
 	 *
 	 */
 	public PolicyPermission addPermission(String resourceName, String groupName, String action)
-		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -220,7 +222,6 @@ public class PermissionManagerImpl
 	 *
 	 */
 	public PolicyPermission getPermission(String resourceName, String groupName, String action)
-		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -365,7 +366,6 @@ public class PermissionManagerImpl
 	 *
 	 */
 	public PolicyPermission setPermission(PolicyPermission permission)
-		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -514,7 +514,6 @@ public class PermissionManagerImpl
 	 *
 	 */
 	public boolean delPermission(String resourceName, String groupName, String action)
-		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;

@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/PolicyManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/11 03:15:06 $</cvs:date>
- * <cvs:version>$Revision: 1.16 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/12 12:59:17 $</cvs:date>
+ * <cvs:version>$Revision: 1.17 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManagerImpl.java,v $
+ *   Revision 1.17  2003/09/12 12:59:17  dave
+ *   1) Fixed RemoteException handling in the manager and service implementations.
+ *
  *   Revision 1.16  2003/09/11 03:15:06  dave
  *   1) Implemented PolicyService internals - no tests yet.
  *   2) Added getLocalAccountGroups and getRemoteAccountGroups to PolicyManager.
@@ -66,19 +69,6 @@
 package org.astrogrid.community.policy.server ;
 
 import java.rmi.RemoteException ;
-
-//import java.util.Vector ;
-//import java.util.Collection ;
-
-//import org.exolab.castor.jdo.Database;
-//import org.exolab.castor.jdo.OQLQuery;
-//import org.exolab.castor.jdo.QueryResults;
-//import org.exolab.castor.jdo.PersistenceException ;
-//import org.exolab.castor.jdo.ObjectNotFoundException ;
-//import org.exolab.castor.jdo.DatabaseNotFoundException ;
-//import org.exolab.castor.jdo.DuplicateIdentityException ;
-//import org.exolab.castor.jdo.TransactionNotInProgressException ;
-//import org.exolab.castor.jdo.ClassNotPersistenceCapableException ;
 
 import org.astrogrid.community.policy.data.GroupData ;
 import org.astrogrid.community.policy.data.ServiceData ;
@@ -183,7 +173,6 @@ public class PolicyManagerImpl
 	 *
 	 */
 	public ServiceData getServiceStatus()
-		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -201,7 +190,6 @@ public class PolicyManagerImpl
 	 *
 	 */
 	public AccountData addAccount(String name)
-		throws RemoteException
 		{
 		return this.addAccount(new CommunityIdent(name)) ;
 		}
@@ -211,7 +199,6 @@ public class PolicyManagerImpl
 	 *
 	 */
 	protected AccountData addAccount(CommunityIdent ident)
-		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -246,8 +233,17 @@ public class PolicyManagerImpl
 					{
 					if (DEBUG_FLAG) System.out.println("PASS : Found remote manager") ;
 					//
-					// Use the remote manager.
-					result = remote.addAccount(ident.toString()) ;
+					// Try asking the remote manager.
+					try {
+						result = remote.addAccount(ident.toString()) ;
+						}
+					//
+					// Catch a remote Exception from the SOAP call.
+					catch (RemoteException ouch)
+						{
+						if (DEBUG_FLAG) System.out.println("FAIL : Remote service call failed.") ;
+						result = null ;
+						}
 					//
 					// If we got a result.
 					if (null != result)
@@ -264,6 +260,7 @@ public class PolicyManagerImpl
 				// If we didn't get a remote manager.
 				else {
 					if (DEBUG_FLAG) System.out.println("FAIL : Unknown remote manager") ;
+					result = null ;
 					}
 				}
 			}
@@ -271,6 +268,7 @@ public class PolicyManagerImpl
 		// If the ident is not valid.
 		else {
 			if (DEBUG_FLAG) System.out.println("FAIL : Ident not valid") ;
+			result = null ;
 			}
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -282,7 +280,6 @@ public class PolicyManagerImpl
 	 *
 	 */
 	public AccountData getAccount(String name)
-		throws RemoteException
 		{
 		return this.getAccount(new CommunityIdent(name)) ;
 		}
@@ -292,7 +289,6 @@ public class PolicyManagerImpl
 	 *
 	 */
 	protected AccountData getAccount(CommunityIdent ident)
-		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -327,8 +323,17 @@ public class PolicyManagerImpl
 					{
 					if (DEBUG_FLAG) System.out.println("PASS : Found remote manager") ;
 					//
-					// Use the remote manager.
-					result = remote.getAccount(ident.toString()) ;
+					// Try asking the remote manager.
+					try {
+						result = remote.getAccount(ident.toString()) ;
+						}
+					//
+					// Catch a remote Exception from the SOAP call.
+					catch (RemoteException ouch)
+						{
+						if (DEBUG_FLAG) System.out.println("FAIL : Remote service call failed.") ;
+						result = null ;
+						}
 					//
 					// If we got a result.
 					if (null != result)
@@ -345,6 +350,7 @@ public class PolicyManagerImpl
 				// If we didn't get a remote manager.
 				else {
 					if (DEBUG_FLAG) System.out.println("FAIL : Unknown remote manager") ;
+					result = null ;
 					}
 				}
 			}
@@ -352,6 +358,7 @@ public class PolicyManagerImpl
 		// If the ident is not valid.
 		else {
 			if (DEBUG_FLAG) System.out.println("FAIL : Ident not valid") ;
+			result = null ;
 			}
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -363,7 +370,6 @@ public class PolicyManagerImpl
 	 *
 	 */
 	public AccountData setAccount(AccountData account)
-		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -399,8 +405,17 @@ public class PolicyManagerImpl
 					{
 					if (DEBUG_FLAG) System.out.println("PASS : Found remote manager") ;
 					//
-					// Use the remote manager.
-					result = remote.setAccount(account) ;
+					// Try asking the remote manager.
+					try {
+						result = remote.setAccount(account) ;
+						}
+					//
+					// Catch a remote Exception from the SOAP call.
+					catch (RemoteException ouch)
+						{
+						if (DEBUG_FLAG) System.out.println("FAIL : Remote service call failed.") ;
+						result = null ;
+						}
 					//
 					// If we got a result.
 					if (null != result)
@@ -417,6 +432,7 @@ public class PolicyManagerImpl
 				// If we didn't get a remote manager.
 				else {
 					if (DEBUG_FLAG) System.out.println("FAIL : Unknown remote manager") ;
+					result = null ;
 					}
 				}
 			}
@@ -424,6 +440,7 @@ public class PolicyManagerImpl
 		// If the ident is not valid.
 		else {
 			if (DEBUG_FLAG) System.out.println("FAIL : Ident not valid") ;
+			result = null ;
 			}
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -435,7 +452,6 @@ public class PolicyManagerImpl
 	 *
 	 */
 	public AccountData delAccount(String name)
-		throws RemoteException
 		{
 		return this.delAccount(new CommunityIdent(name)) ;
 		}
@@ -445,7 +461,6 @@ public class PolicyManagerImpl
 	 *
 	 */
 	protected AccountData delAccount(CommunityIdent ident)
-		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -480,8 +495,17 @@ public class PolicyManagerImpl
 					{
 					if (DEBUG_FLAG) System.out.println("PASS : Found remote manager") ;
 					//
-					// Use the remote manager.
-					result = remote.delAccount(ident.toString()) ;
+					// Try asking the remote manager.
+					try {
+						result = remote.delAccount(ident.toString()) ;
+						}
+					//
+					// Catch a remote Exception from the SOAP call.
+					catch (RemoteException ouch)
+						{
+						if (DEBUG_FLAG) System.out.println("FAIL : Remote service call failed.") ;
+						result = null ;
+						}
 					//
 					// If we got a result.
 					if (null != result)
@@ -498,6 +522,7 @@ public class PolicyManagerImpl
 				// If we didn't get a remote manager.
 				else {
 					if (DEBUG_FLAG) System.out.println("FAIL : Unknown remote manager") ;
+					result = null ;
 					}
 				}
 			}
@@ -505,6 +530,7 @@ public class PolicyManagerImpl
 		// If the ident is not valid.
 		else {
 			if (DEBUG_FLAG) System.out.println("FAIL : Ident not valid") ;
+			result = null ;
 			}
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -516,7 +542,6 @@ public class PolicyManagerImpl
 	 *
 	 */
 	public Object[] getLocalAccounts()
-		throws RemoteException
 		{
 		return accountManager.getLocalAccounts() ;
 		}
@@ -526,7 +551,6 @@ public class PolicyManagerImpl
 	 *
 	 */
 	public Object[] getRemoteAccounts(String name)
-		throws RemoteException
 		{
 		Object[] results = null ;
 		//
@@ -551,8 +575,17 @@ public class PolicyManagerImpl
 				{
 				if (DEBUG_FLAG) System.out.println("PASS : Found remote manager") ;
 				//
-				// Use the remote manager.
-				results = remote.getLocalAccounts() ;
+				// Try asking the remote manager.
+				try {
+					results = remote.getLocalAccounts() ;
+					}
+				//
+				// Catch a remote Exception from the SOAP call.
+				catch (RemoteException ouch)
+					{
+					if (DEBUG_FLAG) System.out.println("FAIL : Remote service call failed.") ;
+					results = null ;
+					}
 				//
 				// If we got a result.
 				if (null != results)
@@ -569,6 +602,7 @@ public class PolicyManagerImpl
 			// If we didn't get a remote manager.
 			else {
 				if (DEBUG_FLAG) System.out.println("FAIL : Unknown remote manager") ;
+				results = null ;
 				}
 			}
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -580,7 +614,6 @@ public class PolicyManagerImpl
 	 *
 	 */
 	public GroupData addGroup(String name)
-		throws RemoteException
 		{
 		return this.addGroup(new CommunityIdent(name)) ;
 		}
@@ -590,7 +623,6 @@ public class PolicyManagerImpl
 	 *
 	 */
 	protected GroupData addGroup(CommunityIdent ident)
-		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -625,8 +657,17 @@ public class PolicyManagerImpl
 					{
 					if (DEBUG_FLAG) System.out.println("PASS : Found remote manager") ;
 					//
-					// Use the remote manager.
-					result = remote.addGroup(ident.toString()) ;
+					// Try asking the remote manager.
+					try {
+						result = remote.addGroup(ident.toString()) ;
+						}
+					//
+					// Catch a remote Exception from the SOAP call.
+					catch (RemoteException ouch)
+						{
+						if (DEBUG_FLAG) System.out.println("FAIL : Remote service call failed.") ;
+						result = null ;
+						}
 					//
 					// If we got a result.
 					if (null != result)
@@ -643,6 +684,7 @@ public class PolicyManagerImpl
 				// If we didn't get a remote manager.
 				else {
 					if (DEBUG_FLAG) System.out.println("FAIL : Unknown remote manager") ;
+					result = null ;
 					}
 				}
 			}
@@ -650,6 +692,7 @@ public class PolicyManagerImpl
 		// If the ident is not valid.
 		else {
 			if (DEBUG_FLAG) System.out.println("FAIL : Ident not valid") ;
+			result = null ;
 			}
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -661,7 +704,6 @@ public class PolicyManagerImpl
 	 *
 	 */
 	public GroupData getGroup(String name)
-		throws RemoteException
 		{
 		return this.getGroup(new CommunityIdent(name)) ;
 		}
@@ -671,7 +713,6 @@ public class PolicyManagerImpl
 	 *
 	 */
 	protected GroupData getGroup(CommunityIdent ident)
-		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -706,8 +747,17 @@ public class PolicyManagerImpl
 					{
 					if (DEBUG_FLAG) System.out.println("PASS : Found remote manager") ;
 					//
-					// Use the remote manager.
-					result = remote.getGroup(ident.toString()) ;
+					// Try asking the remote manager.
+					try {
+						result = remote.getGroup(ident.toString()) ;
+						}
+					//
+					// Catch a remote Exception from the SOAP call.
+					catch (RemoteException ouch)
+						{
+						if (DEBUG_FLAG) System.out.println("FAIL : Remote service call failed.") ;
+						result = null ;
+						}
 					//
 					// If we got a result.
 					if (null != result)
@@ -724,6 +774,7 @@ public class PolicyManagerImpl
 				// If we didn't get a remote manager.
 				else {
 					if (DEBUG_FLAG) System.out.println("FAIL : Unknown remote manager") ;
+					result = null ;
 					}
 				}
 			}
@@ -731,6 +782,7 @@ public class PolicyManagerImpl
 		// If the ident is not valid.
 		else {
 			if (DEBUG_FLAG) System.out.println("FAIL : Ident not valid") ;
+			result = null ;
 			}
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -742,7 +794,6 @@ public class PolicyManagerImpl
 	 *
 	 */
 	public GroupData setGroup(GroupData group)
-		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -778,8 +829,17 @@ public class PolicyManagerImpl
 					{
 					if (DEBUG_FLAG) System.out.println("PASS : Found remote manager") ;
 					//
-					// Use the remote manager.
-					result = remote.setGroup(group) ;
+					// Try asking the remote manager.
+					try {
+						result = remote.setGroup(group) ;
+						}
+					//
+					// Catch a remote Exception from the SOAP call.
+					catch (RemoteException ouch)
+						{
+						if (DEBUG_FLAG) System.out.println("FAIL : Remote service call failed.") ;
+						result = null ;
+						}
 					//
 					// If we got a result.
 					if (null != result)
@@ -796,6 +856,7 @@ public class PolicyManagerImpl
 				// If we didn't get a remote manager.
 				else {
 					if (DEBUG_FLAG) System.out.println("FAIL : Unknown remote manager") ;
+					result = null ;
 					}
 				}
 			}
@@ -803,6 +864,7 @@ public class PolicyManagerImpl
 		// If the ident is not valid.
 		else {
 			if (DEBUG_FLAG) System.out.println("FAIL : Ident not valid") ;
+			result = null ;
 			}
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -814,7 +876,6 @@ public class PolicyManagerImpl
 	 *
 	 */
 	public GroupData delGroup(String name)
-		throws RemoteException
 		{
 		return this.delGroup(new CommunityIdent(name)) ;
 		}
@@ -824,7 +885,6 @@ public class PolicyManagerImpl
 	 *
 	 */
 	protected GroupData delGroup(CommunityIdent ident)
-		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -859,8 +919,17 @@ public class PolicyManagerImpl
 					{
 					if (DEBUG_FLAG) System.out.println("PASS : Found remote manager") ;
 					//
-					// Use the remote manager.
-					result = remote.delGroup(ident.toString()) ;
+					// Try asking the remote manager.
+					try {
+						result = remote.delGroup(ident.toString()) ;
+						}
+					//
+					// Catch a remote Exception from the SOAP call.
+					catch (RemoteException ouch)
+						{
+						if (DEBUG_FLAG) System.out.println("FAIL : Remote service call failed.") ;
+						result = null ;
+						}
 					//
 					// If we got a result.
 					if (null != result)
@@ -877,6 +946,7 @@ public class PolicyManagerImpl
 				// If we didn't get a remote manager.
 				else {
 					if (DEBUG_FLAG) System.out.println("FAIL : Unknown remote manager") ;
+					result = null ;
 					}
 				}
 			}
@@ -884,6 +954,7 @@ public class PolicyManagerImpl
 		// If the ident is not valid.
 		else {
 			if (DEBUG_FLAG) System.out.println("FAIL : Ident not valid") ;
+			result = null ;
 			}
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -895,7 +966,6 @@ public class PolicyManagerImpl
 	 *
 	 */
 	public Object[] getLocalGroups()
-		throws RemoteException
 		{
 		return groupManager.getLocalGroups() ;
 		}
@@ -905,7 +975,6 @@ public class PolicyManagerImpl
 	 *
 	 */
 	public Object[] getRemoteGroups(String name)
-		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -934,8 +1003,17 @@ public class PolicyManagerImpl
 				{
 				if (DEBUG_FLAG) System.out.println("PASS : Found remote manager") ;
 				//
-				// Use the remote manager.
-				results = remote.getLocalGroups() ;
+				// Try asking the remote manager.
+				try {
+					results = remote.getLocalGroups() ;
+					}
+				//
+				// Catch a remote Exception from the SOAP call.
+				catch (RemoteException ouch)
+					{
+					if (DEBUG_FLAG) System.out.println("FAIL : Remote service call failed.") ;
+					results = null ;
+					}
 				//
 				// If we got a result.
 				if (null != results)
@@ -952,6 +1030,7 @@ public class PolicyManagerImpl
 			// If we didn't get a remote manager.
 			else {
 				if (DEBUG_FLAG) System.out.println("FAIL : Unknown remote manager") ;
+				results = null ;
 				}
 			}
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -963,7 +1042,6 @@ public class PolicyManagerImpl
 	 *
 	 */
 	public GroupMemberData addGroupMember(String account, String group)
-		throws RemoteException
 		{
 		return this.addGroupMember(new CommunityIdent(account), new CommunityIdent(group)) ;
 		}
@@ -975,7 +1053,6 @@ public class PolicyManagerImpl
 	 *
 	 */
 	protected GroupMemberData addGroupMember(CommunityIdent account, CommunityIdent group)
-		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -1067,7 +1144,6 @@ public class PolicyManagerImpl
 	 *
 	 */
 	public GroupMemberData delGroupMember(String account, String group)
-		throws RemoteException
 		{
 		return this.delGroupMember(new CommunityIdent(account), new CommunityIdent(group)) ;
 		}
@@ -1078,7 +1154,6 @@ public class PolicyManagerImpl
 	 *
 	 */
 	protected GroupMemberData delGroupMember(CommunityIdent account, CommunityIdent group)
-		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -1156,7 +1231,6 @@ public class PolicyManagerImpl
 	 *
 	 */
 	public Object[] getGroupMembers(String name)
-		throws RemoteException
 		{
 		return this.getGroupMembers(new CommunityIdent(name)) ;
 		}
@@ -1167,7 +1241,6 @@ public class PolicyManagerImpl
 	 *
 	 */
 	protected Object[] getGroupMembers(CommunityIdent ident)
-		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -1207,8 +1280,17 @@ public class PolicyManagerImpl
 				{
 				if (DEBUG_FLAG) System.out.println("PASS : Found remote manager") ;
 				//
-				// Use the remote manager.
-				results = remote.getGroupMembers(ident.toString()) ;
+				// Try asking the remote manager.
+				try {
+					results = remote.getGroupMembers(ident.toString()) ;
+					}
+				//
+				// Catch a remote Exception from the SOAP call.
+				catch (RemoteException ouch)
+					{
+					if (DEBUG_FLAG) System.out.println("FAIL : Remote service call failed.") ;
+					results = null ;
+					}
 				//
 				// If we got a result.
 				if (null != results)
@@ -1225,6 +1307,7 @@ public class PolicyManagerImpl
 			// If we didn't get a remote manager.
 			else {
 				if (DEBUG_FLAG) System.out.println("FAIL : Unknown remote manager") ;
+				results = null ;
 				}
 			}
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -1232,20 +1315,10 @@ public class PolicyManagerImpl
 		}
 
 	/**
-	 *
-	 *
-	public Object[] getAccountGroupList(String account) throws RemoteException
-		{
-		return groupManager.getAccountGroupList(account) ;
-		}
-	 */
-
-	/**
 	 * Get a list of local Groups that an Account belongs to, given the Account name.
 	 *
 	 */
 	public Object[] getLocalAccountGroups(String account)
-		throws RemoteException
 		{
 		return this.getLocalAccountGroups(new CommunityIdent(account)) ;
 		}
@@ -1255,7 +1328,6 @@ public class PolicyManagerImpl
 	 *
 	 */
 	protected Object[] getLocalAccountGroups(CommunityIdent account)
-		throws RemoteException
 		{
 		return groupManager.getLocalAccountGroups(account) ;
 		}
@@ -1265,7 +1337,6 @@ public class PolicyManagerImpl
 	 *
 	 */
 	public Object[] getRemoteAccountGroups(String account, String community)
-		throws RemoteException
 		{
 		return this.getRemoteAccountGroups(new CommunityIdent(account), community) ;
 		}
@@ -1275,7 +1346,6 @@ public class PolicyManagerImpl
 	 *
 	 */
 	protected Object[] getRemoteAccountGroups(CommunityIdent account, String community)
-		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -1305,8 +1375,17 @@ public class PolicyManagerImpl
 				{
 				if (DEBUG_FLAG) System.out.println("PASS : Found remote manager") ;
 				//
-				// Use the remote manager.
-				results = remote.getLocalAccountGroups(account.toString()) ;
+				// Try asking the remote manager.
+				try {
+					results = remote.getLocalAccountGroups(account.toString()) ;
+					}
+				//
+				// Catch a remote Exception from the SOAP call.
+				catch (RemoteException ouch)
+					{
+					if (DEBUG_FLAG) System.out.println("FAIL : Remote service call failed.") ;
+					results = null ;
+					}
 				//
 				// If we got a result.
 				if (null != results)
@@ -1323,52 +1402,45 @@ public class PolicyManagerImpl
 			// If we didn't get a remote manager.
 			else {
 				if (DEBUG_FLAG) System.out.println("FAIL : Unknown remote manager") ;
+				results = null ;
 				}
 			}
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		return results ;
 		}
 
-//
-// ZRQ got so far ....
-//
-
 	/**
 	 * Create a new Community.
 	 *
 	 */
 	public CommunityData addCommunity(String ident)
-		throws RemoteException
 		{
 		return communityManager.addCommunity(ident) ;
 		}
 
 	/**
-	 * Request an Community details.
+	 * Request a Community details.
 	 *
 	 */
 	public CommunityData getCommunity(String ident)
-		throws RemoteException
 		{
 		return communityManager.getCommunity(ident) ;
 		}
 
 	/**
-	 * Update an Community details.
+	 * Update a Community details.
 	 *
 	 */
 	public CommunityData setCommunity(CommunityData community)
-		throws RemoteException
 		{
 		return communityManager.setCommunity(community) ;
 		}
 
 	/**
-	 * Delete an Community.
+	 * Delete a Community.
 	 *
 	 */
 	public CommunityData delCommunity(String ident)
-		throws RemoteException
 		{
 		return communityManager.delCommunity(ident) ;
 		}
@@ -1378,7 +1450,6 @@ public class PolicyManagerImpl
 	 *
 	 */
 	public Object[] getCommunityList()
-		throws RemoteException
 		{
 		return communityManager.getCommunityList() ;
 		}
@@ -1389,7 +1460,7 @@ public class PolicyManagerImpl
        *
        */
       public ResourceData addResource(String name)
-         throws RemoteException {
+         {
             return resourceManager.addResource(name);
          }
 
@@ -1397,8 +1468,7 @@ public class PolicyManagerImpl
        * Request an Resource details.
        *
        */
-      public ResourceData getResource(String ident)
-         throws RemoteException {
+      public ResourceData getResource(String ident) {
             return resourceManager.getResource(ident);
          }
 
@@ -1406,8 +1476,7 @@ public class PolicyManagerImpl
        * Update an Resource details.
        *
        */
-      public ResourceData setResource(ResourceData resource)
-         throws RemoteException {
+      public ResourceData setResource(ResourceData resource) {
             return resourceManager.setResource(resource);
          }
 
@@ -1415,8 +1484,7 @@ public class PolicyManagerImpl
        * Delete an Resource.
        *
        */
-      public boolean delResource(String ident)
-         throws RemoteException {
+      public boolean delResource(String ident) {
             return resourceManager.delResource(ident);
             
          }
@@ -1425,8 +1493,7 @@ public class PolicyManagerImpl
        * Request a list of Resources.
        *
        */
-      public Object[] getResourceList()
-         throws RemoteException {
+      public Object[] getResourceList() {
             return resourceManager.getResourceList();
          }
       
@@ -1436,7 +1503,6 @@ public class PolicyManagerImpl
 	 *
 	 */
 	public PolicyPermission addPermission(String resource, String group, String action)
-		throws RemoteException
 		{
 		return permissionManager.addPermission(resource, group, action) ;
 		}
@@ -1446,7 +1512,6 @@ public class PolicyManagerImpl
 	 *
 	 */
 	public PolicyPermission getPermission(String resource, String group, String action)
-		throws RemoteException
 		{
 		return permissionManager.getPermission(resource, group, action) ;
 		}
@@ -1456,7 +1521,6 @@ public class PolicyManagerImpl
 	 *
 	 */
 	public PolicyPermission setPermission(PolicyPermission permission)
-		throws RemoteException
 		{
 		return permissionManager.setPermission(permission) ;
 		}
@@ -1466,7 +1530,6 @@ public class PolicyManagerImpl
 	 *
 	 */
 	public boolean delPermission(String resource, String group, String action)
-		throws RemoteException
 		{
 		return permissionManager.delPermission(resource, group, action) ;
 		}
@@ -1475,9 +1538,7 @@ public class PolicyManagerImpl
 	 * Request a list of PolicyPermissions for a resource.
 	 *
 	public Object[] getPermissionList(String resource)
-		throws RemoteException;
 	 */
-
 
 	}
 

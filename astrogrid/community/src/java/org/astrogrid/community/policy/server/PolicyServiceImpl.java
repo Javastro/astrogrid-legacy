@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/PolicyServiceImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/11 03:15:06 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/12 12:59:17 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyServiceImpl.java,v $
+ *   Revision 1.4  2003/09/12 12:59:17  dave
+ *   1) Fixed RemoteException handling in the manager and service implementations.
+ *
  *   Revision 1.3  2003/09/11 03:15:06  dave
  *   1) Implemented PolicyService internals - no tests yet.
  *   2) Added getLocalAccountGroups and getRemoteAccountGroups to PolicyManager.
@@ -22,26 +25,7 @@
  */
 package org.astrogrid.community.policy.server ;
 
-//import java.io.IOException ;
 import java.rmi.RemoteException ;
-
-//import java.util.Vector ;
-//import java.util.Collection ;
-
-//import org.exolab.castor.jdo.JDO;
-//import org.exolab.castor.jdo.Database;
-//import org.exolab.castor.jdo.OQLQuery;
-//import org.exolab.castor.jdo.QueryResults;
-//import org.exolab.castor.jdo.PersistenceException ;
-//import org.exolab.castor.jdo.ObjectNotFoundException ;
-//import org.exolab.castor.jdo.DatabaseNotFoundException;
-
-//import org.exolab.castor.util.Logger;
-
-//import org.exolab.castor.mapping.Mapping;
-//import org.exolab.castor.mapping.MappingException;
-
-//import org.exolab.castor.persist.spi.Complex ;
 
 import org.astrogrid.community.policy.data.ServiceData ;
 import org.astrogrid.community.policy.data.CommunityIdent ;
@@ -123,7 +107,6 @@ public class PolicyServiceImpl
 	 *
 	 */
 	public ServiceData getServiceStatus()
-		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -141,7 +124,6 @@ public class PolicyServiceImpl
 	 *
 	 */
 	public PolicyPermission checkPermissions(PolicyCredentials credentials, String resource, String action)
-		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -212,7 +194,6 @@ public class PolicyServiceImpl
 	 *
 	 */
 	public PolicyCredentials checkMembership(PolicyCredentials credentials)
-		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -272,8 +253,18 @@ public class PolicyServiceImpl
 				{
 				if (DEBUG_FLAG) System.out.println("PASS : Found remote service") ;
 				//
-				// Ask the remote service to check the credentials.
-				PolicyCredentials result = remote.checkMembership(credentials) ;
+				// Try asking the remote manager.
+				PolicyCredentials result = null ;
+				try {
+					result = remote.checkMembership(credentials) ;
+					}
+				//
+				// Catch a remote Exception from the SOAP call.
+				catch (RemoteException ouch)
+					{
+					if (DEBUG_FLAG) System.out.println("FAIL : Remote service call failed.") ;
+					result = null ;
+					}
 				//
 				// If we got a result.
 				if (null != result)
@@ -286,7 +277,7 @@ public class PolicyServiceImpl
 						if (DEBUG_FLAG) System.out.println("PASS : Remote response is valid") ;
 						//
 						// Update the credentials.
-						credentials.setStatus(PolicyCredentials.STATUS_VALID) ;
+						credentials.setStatus(result.getStatus()) ;
 						credentials.setReason(result.getReason()) ;
 						}
 					//
@@ -295,7 +286,7 @@ public class PolicyServiceImpl
 						if (DEBUG_FLAG) System.out.println("FAIL : Remote response is not valid") ;
 						//
 						// Update the credentials.
-						credentials.setStatus(PolicyCredentials.STATUS_NOT_VALID) ;
+						credentials.setStatus(result.getStatus()) ;
 						credentials.setReason(result.getReason()) ;
 						}
 					}

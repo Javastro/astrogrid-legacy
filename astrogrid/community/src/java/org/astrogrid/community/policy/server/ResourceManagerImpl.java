@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/ResourceManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/10 00:08:45 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/12 12:59:17 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: ResourceManagerImpl.java,v $
+ *   Revision 1.3  2003/09/12 12:59:17  dave
+ *   1) Fixed RemoteException handling in the manager and service implementations.
+ *
  *   Revision 1.2  2003/09/10 00:08:45  dave
  *   Added getGroupMembers, ResourceIdent and JUnit tests for ResourceManager
  *
@@ -17,7 +20,7 @@
  */
 package org.astrogrid.community.policy.server ;
 
-import java.rmi.RemoteException ;
+//import java.rmi.RemoteException ;
 
 import java.util.Vector ;
 import java.util.Collection ;
@@ -83,7 +86,6 @@ public class ResourceManagerImpl
     *
     */
    public ResourceData addResource(String name)
-      throws RemoteException
       {
       if (DEBUG_FLAG) System.out.println("") ;
       if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -198,7 +200,6 @@ public class ResourceManagerImpl
     *
     */
    public ResourceData getResource(String name)
-      throws RemoteException
       {
       if (DEBUG_FLAG) System.out.println("") ;
       if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -309,7 +310,6 @@ public class ResourceManagerImpl
     *
     */
    public ResourceData setResource(ResourceData resource)
-      throws RemoteException
       {
       if (DEBUG_FLAG) System.out.println("") ;
       if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -425,7 +425,6 @@ public class ResourceManagerImpl
     *
     */
    public Object[] getResourceList()
-      throws RemoteException
       {
       if (DEBUG_FLAG) System.out.println("") ;
       if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -509,7 +508,6 @@ public class ResourceManagerImpl
     *
     */
    public boolean delResource(String name)
-      throws RemoteException
       {
       if (DEBUG_FLAG) System.out.println("") ;
       if (DEBUG_FLAG) System.out.println("----\"----") ;
