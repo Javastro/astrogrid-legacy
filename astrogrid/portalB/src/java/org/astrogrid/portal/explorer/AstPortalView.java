@@ -2,11 +2,14 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/java/org/astrogrid/portal/explorer/Attic/AstPortalView.java,v $</cvs:source>
  * <cvs:date>$Author: dave $</cvs:date>
- * <cvs:author>$Date: 2003/06/23 11:19:03 $</cvs:author>
- * <cvs:version>$Revision: 1.7 $</cvs:version>
+ * <cvs:author>$Date: 2003/06/23 23:21:11 $</cvs:author>
+ * <cvs:version>$Revision: 1.8 $</cvs:version>
  *
  * <cvs:log>
  * $Log: AstPortalView.java,v $
+ * Revision 1.8  2003/06/23 23:21:11  dave
+ * Updated the page actions
+ *
  * Revision 1.7  2003/06/23 11:19:03  dave
  * Added service location to view pages
  *
@@ -73,6 +76,9 @@ import org.astrogrid.portal.services.myspace.client.actions.move.MoveResponsePar
 
 import org.astrogrid.portal.services.myspace.client.actions.delete.DeleteRequestBuilder ;
 import org.astrogrid.portal.services.myspace.client.actions.delete.DeleteResponseParser ;
+
+import org.astrogrid.portal.services.myspace.client.actions.create.CreateRequestBuilder ;
+import org.astrogrid.portal.services.myspace.client.actions.create.CreateResponseParser ;
 
 import org.astrogrid.portal.services.myspace.client.data.DataNode ;
 import org.astrogrid.portal.services.myspace.client.status.StatusNode ;
@@ -177,9 +183,9 @@ public class AstPortalView
 	 * Access to our selected item.
 	 *
 	 */
-	public void setItem(String path)
+	public void setItem(String item)
 		{
-		this.item = path ;
+		this.item = item ;
 		}
 
 	/**
@@ -201,9 +207,9 @@ public class AstPortalView
 	 * Access to our destination path.
 	 *
 	 */
-	public void setDestPath(String path)
+	public void setDestPath(String dest)
 		{
-		this.dest = path ;
+		this.dest = dest ;
 		}
 
 	/**
@@ -228,6 +234,15 @@ public class AstPortalView
 	public void setDestName(String name)
 		{
 		this.name = name ;
+		}
+
+	/**
+	 * Access to our destination file.
+	 *
+	 */
+	public String getDestFile()
+		{
+		return this.dest + "/" + this.name ;
 		}
 
 	/**
@@ -523,9 +538,21 @@ public class AstPortalView
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("AstPortalView.copyItem()") ;
 		try {
+//
+// FIXME : Could be nicer ... call the MySpace service to check for an existing item.
+// Problem is that doing a lookup for something that isn't there breaks the MySpace service.
+//
+			//
+			// If we are copying the item into the same directory.
+			if (this.getItem().equals(this.getDestFile()))
+				{
+				//
+				// Add 'Copy of' to the name
+				this.setDestName("Copy-of-" + this.getDestName()) ;
+				}
 			//
 			// Create our service request
-			CopyRequestBuilder request = new CopyRequestBuilder(this.getItem(), (this.getDestPath() + "/" + this.getDestName())) ;
+			CopyRequestBuilder request = new CopyRequestBuilder(this.getItem(), this.getDestFile()) ;
 			if (DEBUG_FLAG)
 				{
 				System.out.println("----") ;
@@ -695,6 +722,80 @@ public class AstPortalView
 			//
 			// Create a parser.
 			DeleteResponseParser parser = new DeleteResponseParser() ;
+			//
+			// Parse the response.
+			parser.parse(response) ;
+			//
+			// Get the result status.
+			status = parser.getStatus() ;
+			//
+			// Get the result data.
+			data = parser.getData() ;
+			}
+		catch (RemoteException ouch)
+			{
+			//
+			// FIXME ....
+			if (DEBUG_FLAG) System.out.println("Exception calling WebService") ;
+			if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+			}
+		catch (IOException ouch)
+			{
+			//
+			// FIXME ....
+			if (DEBUG_FLAG) System.out.println("IOException in response parser") ;
+			if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+			}
+		catch (SAXException ouch)
+			{
+			//
+			// FIXME ....
+			if (DEBUG_FLAG) System.out.println("SAXException in response parser") ;
+			if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+			}
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("") ;
+		//
+		// Return our status node.
+		return status ;
+		}
+
+	/**
+	 * Create a new container.
+	 *
+	 */
+	public StatusNode createContainer(String name, String path)
+		{
+		DataNode   data   = null ;
+		StatusNode status = null ;
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("AstPortalView.createContainer()") ;
+		try {
+			//
+			// Create our service request
+			CreateRequestBuilder request = new CreateRequestBuilder(name, path) ;
+			if (DEBUG_FLAG)
+				{
+				System.out.println("----") ;
+				System.out.println(request) ;
+				System.out.println("----") ;
+				}
+			//
+			// Create our service instance.
+			initMySpaceService() ;
+			//
+			// Call our service method.
+			String response = myspaceService.createContainer(request.toString()) ;
+			if (DEBUG_FLAG)
+				{
+				System.out.println("----") ;
+				System.out.println(response) ;
+				System.out.println("----") ;
+				}
+			//
+			// Create a parser.
+			CreateResponseParser parser = new CreateResponseParser() ;
 			//
 			// Parse the response.
 			parser.parse(response) ;

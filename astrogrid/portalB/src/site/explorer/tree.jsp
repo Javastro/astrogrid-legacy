@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/site/explorer/Attic/tree.jsp,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/23 11:19:03 $</cvs:author>
-    | <cvs:version>$Revision: 1.4 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/23 23:21:12 $</cvs:author>
+    | <cvs:version>$Revision: 1.5 $</cvs:version>
     | <cvs:log>
     | $Log: tree.jsp,v $
+    | Revision 1.5  2003/06/23 23:21:12  dave
+    | Updated the page actions
+    |
     | Revision 1.4  2003/06/23 11:19:03  dave
     | Added service location to view pages
     |
@@ -238,12 +241,12 @@ if ("close".equals(action))
 						<table border="1">
 							<tr>
 								<td>Name</td>
-								<td>Ident</td>
-								<td>Type</td>
 								<td>View</td>
 								<td>Copy</td>
 								<td>Move</td>
 								<td>Delete</td>
+								<td>Rename</td>
+								<td>Create</td>
 							</tr>
 							<%
 							if (null != view)
@@ -264,6 +267,8 @@ if ("close".equals(action))
 													// Add the indentation.
 													for (int i = 0 ; i < level ; i++)
 														{
+														writer.write("&nbsp;") ;
+														writer.write("&nbsp;") ;
 														writer.write("&nbsp;") ;
 														writer.write("&nbsp;") ;
 														}
@@ -301,16 +306,7 @@ if ("close".equals(action))
 														writer.write(node.getName()) ;
 														}
 												writer.write("</td>") ;
-												writer.write("<td>") ;
-													writer.write("[") ;
-													writer.write(node.getIdent()) ;
-													writer.write("]") ;
-												writer.write("</td>") ;
-												writer.write("<td>") ;
-													writer.write("[") ;
-													writer.write(node.getType()) ;
-													writer.write("]") ;
-												writer.write("</td>") ;
+
 												writer.write("<td>") ;
 													//
 													// If this node is an item, add an 'item' link to select it.
@@ -335,7 +331,7 @@ if ("close".equals(action))
 														writer.write("item") ;
 														writer.write("\"") ;
 														writer.write(">") ;
-															writer.write("[V]") ;
+															writer.write("[View]") ;
 														writer.write("</a>") ;
 														}
 													//
@@ -360,7 +356,7 @@ if ("close".equals(action))
 														writer.write("path") ;
 														writer.write("\"") ;
 														writer.write(">") ;
-															writer.write("[V]") ;
+															writer.write("[View]") ;
 														writer.write("</a>") ;
 														}
 												writer.write("</td>") ;
@@ -389,7 +385,7 @@ if ("close".equals(action))
 														writer.write("item") ;
 														writer.write("\"") ;
 														writer.write(">") ;
-															writer.write("[C]") ;
+															writer.write("[Copy]") ;
 														writer.write("</a>") ;
 														}
 													//
@@ -423,7 +419,7 @@ if ("close".equals(action))
 														writer.write("item") ;
 														writer.write("\"") ;
 														writer.write(">") ;
-															writer.write("[M]") ;
+															writer.write("[Move]") ;
 														writer.write("</a>") ;
 														}
 													//
@@ -442,7 +438,7 @@ if ("close".equals(action))
 														writer.write(" ") ;
 														writer.write("href=") ;
 														writer.write("\"") ;
-														writer.write("tree.jsp") ;
+														writer.write("delete.jsp") ;
 														writer.write("?") ;
 														writer.write("view") ;
 														writer.write("=") ;
@@ -454,14 +450,82 @@ if ("close".equals(action))
 														writer.write("&") ;
 														writer.write("action") ;
 														writer.write("=") ;
-														writer.write("delete") ;
+														writer.write("item") ;
 														writer.write("\"") ;
 														writer.write(">") ;
-															writer.write("[D]") ;
+															writer.write("[Delete]") ;
 														writer.write("</a>") ;
 														}
 													//
 													// If this one of the top levels, we can't delete it.
+													else {
+														writer.write("-") ;
+														}
+												writer.write("</td>") ;
+
+												writer.write("<td>") ;
+													//
+													// If this node an item.
+													if ("2".equals(node.getType()))
+														{
+														writer.write("<a") ;
+														writer.write(" ") ;
+														writer.write("href=") ;
+														writer.write("\"") ;
+														writer.write("name.jsp") ;
+														writer.write("?") ;
+														writer.write("view") ;
+														writer.write("=") ;
+														writer.write(view.getIdent()) ;
+														writer.write("&") ;
+														writer.write("path") ;
+														writer.write("=") ;
+														writer.write(node.getPath()) ;
+														writer.write("&") ;
+														writer.write("action") ;
+														writer.write("=") ;
+														writer.write("item") ;
+														writer.write("\"") ;
+														writer.write(">") ;
+															writer.write("[Name]") ;
+														writer.write("</a>") ;
+														}
+													//
+													// If this node isn't an item.
+													else {
+														writer.write("-") ;
+														}
+												writer.write("</td>") ;
+
+												writer.write("<td>") ;
+													//
+													// If this node is a container below the top two levels.
+													if ("1".equals(node.getType()) && level > 1)
+														{
+														writer.write("<a") ;
+														writer.write(" ") ;
+														writer.write("href=") ;
+														writer.write("\"") ;
+														writer.write("create.jsp") ;
+														writer.write("?") ;
+														writer.write("view") ;
+														writer.write("=") ;
+														writer.write(view.getIdent()) ;
+														writer.write("&") ;
+														writer.write("path") ;
+														writer.write("=") ;
+														writer.write(node.getPath()) ;
+														writer.write("&") ;
+														writer.write("action") ;
+														writer.write("=") ;
+														writer.write("select") ;
+														writer.write("\"") ;
+														writer.write(">") ;
+															writer.write("[New]") ;
+														writer.write("</a>") ;
+														}
+													//
+													// If this node isn't a container.
 													else {
 														writer.write("-") ;
 														}

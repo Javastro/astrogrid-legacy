@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/site/explorer/Attic/move.jsp,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/23 11:19:03 $</cvs:author>
-    | <cvs:version>$Revision: 1.3 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/23 23:21:12 $</cvs:author>
+    | <cvs:version>$Revision: 1.4 $</cvs:version>
     | <cvs:log>
     | $Log: move.jsp,v $
+    | Revision 1.4  2003/06/23 23:21:12  dave
+    | Updated the page actions
+    |
     | Revision 1.3  2003/06/23 11:19:03  dave
     | Added service location to view pages
     |
@@ -99,9 +102,6 @@ if ("path".equals(action))
 		//
 		// Set our view path.
 		view.setPath(path) ;
-		//
-		// Set our destination path.
-		view.setDestPath(path) ;
 		}
 	}
 
@@ -128,26 +128,23 @@ if ("item".equals(action))
 		//
 		// Set the destination path.
 		view.setDestPath(file.getParent()) ;
-		//
-		// Set the view path
-		view.setPath(file.getParent()) ;
 		}
 	}
 
 //
-// If the action is 'move'.
-if ("Move".equals(action))
+// If the action is 'paste'.
+if ("paste".equals(action))
 	{
 	//
-	// Get the name from our request params.
-	String name = request.getParameter("name") ;
+	// Get the path from our request params.
+	String path = request.getParameter("path") ;
 	//
 	// If we have a view
 	if (null != view)
 		{
 		//
-		// Set the destination name.
-		view.setDestName(name) ;
+		// Set the destination path.
+		view.setDestPath(path) ;
 		//
 		// Perform the move.
 		StatusNode status = view.moveItem() ;
@@ -158,7 +155,7 @@ if ("Move".equals(action))
 			//
 			// Redirect back to the view page.
 			response.sendRedirect(
-				response.encodeRedirectURL("tree.jsp?view=" + view.getIdent() + "&path=" + view.getDestPath() + "/" + view.getDestName() + "&action=item")
+				response.encodeRedirectURL("tree.jsp?view=" + view.getIdent() + "&path=" + view.getDestFile() + "&action=item")
 				) ;
 			}
 		//
@@ -168,22 +165,6 @@ if ("Move".equals(action))
 			// FIXME : Need to display something usefull to the user ...
 			//
 			}
-		}
-	}
-
-//
-// If the action is 'cancel'.
-if ("Cancel".equals(action))
-	{
-	//
-	// If we have a view
-	if (null != view)
-		{
-		//
-		// Redirect back to the view page.
-		response.sendRedirect(
-			response.encodeRedirectURL("tree.jsp?view=" + view.getIdent() + "&path=" + view.getItem() + "&action=item")
-			) ;
 		}
 	}
 
@@ -253,26 +234,19 @@ if ("Cancel".equals(action))
 							</tr>
 						</table>
 						<br>
-						Item :
+						<b>Move Item</b> :
 						<table border="1">
 							<tr>
-								<td>Path</td>
+								<td>From</td>
 								<td><%= view.getItem() %></td>
 							</tr>
 							<tr>
-								<td>Dest</td>
+								<td>Path</td>
 								<td><%= view.getDestPath() %></td>
 							</tr>
 							<tr>
-								<form method="get">
-									<td>Name</td>
-									<td>
-										<input name="view"   type="hidden" value="<%= view.getIdent() %>"/>
-										<input name="name"   type="text"   value="<%= view.getDestName() %>"/>
-										<input name="action" type="submit" value="Move"/>
-										<input name="action" type="submit" value="Cancel"/>
-									</td>
-								</form>
+								<td>Name</td>
+								<td><%= view.getDestName() %></td>
 							</tr>
 						</table>
 						<br>
@@ -280,9 +254,7 @@ if ("Cancel".equals(action))
 						<table border="1">
 							<tr>
 								<td>Name</td>
-								<td>Ident</td>
-								<td>Type</td>
-								<td>View</td>
+								<td>Action</td>
 							</tr>
 							<%
 							if (null != view)
@@ -303,6 +275,8 @@ if ("Cancel".equals(action))
 													// Add the indentation
 													for (int i = 0 ; i < level ; i++)
 														{
+														writer.write("&nbsp;") ;
+														writer.write("&nbsp;") ;
 														writer.write("&nbsp;") ;
 														writer.write("&nbsp;") ;
 														}
@@ -340,42 +314,73 @@ if ("Cancel".equals(action))
 														writer.write(node.getName()) ;
 														}
 												writer.write("</td>") ;
-												writer.write("<td>") ;
-													writer.write("[") ;
-													writer.write(node.getIdent()) ;
-													writer.write("]") ;
-												writer.write("</td>") ;
-												writer.write("<td>") ;
-													writer.write("[") ;
-													writer.write(node.getType()) ;
-													writer.write("]") ;
-												writer.write("</td>") ;
+
 												writer.write("<td>") ;
 													//
-													// If this node is a container below the top two levels.
-													if ("1".equals(node.getType()) && level > 1)
+													// If this node is a container.
+													if ("1".equals(node.getType()))
 														{
-														writer.write("<a") ;
-														writer.write(" ") ;
-														writer.write("href=") ;
-														writer.write("\"") ;
-														writer.write("copy.jsp") ;
-														writer.write("?") ;
-														writer.write("view") ;
-														writer.write("=") ;
-														writer.write(view.getIdent()) ;
-														writer.write("&") ;
-														writer.write("path") ;
-														writer.write("=") ;
-														writer.write(node.getPath()) ;
-														writer.write("&") ;
-														writer.write("action") ;
-														writer.write("=") ;
-														writer.write("path") ;
-														writer.write("\"") ;
-														writer.write(">") ;
-															writer.write("[V]") ;
-														writer.write("</a>") ;
+														//
+														// If this node is a container below the top two levels.
+														if (level > 1)
+															{
+															//
+															// If this is the same container.
+															if (node.getPath().equals(view.getDestPath()))
+																{
+																writer.write("-") ;
+																}
+															//
+															// If this is not the same container.
+															else {
+																writer.write("<a") ;
+																writer.write(" ") ;
+																writer.write("href=") ;
+																writer.write("\"") ;
+																writer.write("move.jsp") ;
+																writer.write("?") ;
+																writer.write("view") ;
+																writer.write("=") ;
+																writer.write(view.getIdent()) ;
+																writer.write("&") ;
+																writer.write("path") ;
+																writer.write("=") ;
+																writer.write(node.getPath()) ;
+																writer.write("&") ;
+																writer.write("action") ;
+																writer.write("=") ;
+																writer.write("paste") ;
+																writer.write("\"") ;
+																writer.write(">") ;
+																	writer.write("[Paste]") ;
+																writer.write("</a>") ;
+																}
+															}
+														//
+														// If this is one of the top two levels.
+														else {
+															writer.write("<a") ;
+															writer.write(" ") ;
+															writer.write("href=") ;
+															writer.write("\"") ;
+															writer.write("move.jsp") ;
+															writer.write("?") ;
+															writer.write("view") ;
+															writer.write("=") ;
+															writer.write(view.getIdent()) ;
+															writer.write("&") ;
+															writer.write("path") ;
+															writer.write("=") ;
+															writer.write(node.getPath()) ;
+															writer.write("&") ;
+															writer.write("action") ;
+															writer.write("=") ;
+															writer.write("path") ;
+															writer.write("\"") ;
+															writer.write(">") ;
+																writer.write("[View]") ;
+															writer.write("</a>") ;
+															}
 														}
 													//
 													// If this node isn't a container.
@@ -383,6 +388,7 @@ if ("Cancel".equals(action))
 														writer.write("-") ;
 														}
 												writer.write("</td>") ;
+
 											writer.write("</tr>") ;
 											}
 										catch (IOException ouch)
