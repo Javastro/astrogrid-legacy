@@ -187,7 +187,7 @@ public class DesignAction extends AbstractAction {
         ACTION_READ_QUERY = "read-query",
         ACTION_READ_QUERY_LIST = "read-query-list",
 	    ACTION_CREATE_TOOL = "create-tool-for-step",
-        ACTION_INSERT_TOOL_INTO_STEP = "insert-tool-into-step",
+        ACTION_INSERT_TOOL_INTO_STEP = "insert-task-into-step",
         ACTION_INSERT_STEP = "insert-step",
         ACTION_INSERT_SEQUENCE = "insert-sequence", 
         ACTION_INSERT_FLOW = "insert-flow",

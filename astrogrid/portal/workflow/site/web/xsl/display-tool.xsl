@@ -54,12 +54,12 @@
                             <td width="50%" height="100%" valign="top">
                                 <table width="100%"  border="1" cellspacing="0" cellpadding="0">
                                     <tr>                         
-                                        <div style="color: blue; background-color: lightblue; text-align: center;">Tool</div>
+                                        <div style="color: blue; background-color: lightblue; text-align: center;">Task</div>
                                         <td width="30%">Name:</td>
                                         <td width="70%">
                                             <input type="text" width="40" name="tool_name" id="tool_name"></input>
                                             <a>
-                                                <input class="agActionButton" type="submit" name="action" value="insert-tool-into-step" />
+                                                <input class="agActionButton" type="submit" name="action" value="insert-task-into-step" />
                                             </a>
                                         </td>
                                     </tr>                                                                      
@@ -70,7 +70,7 @@
                                                 <select name="tool_list" size="1" id="select_list" onClick="if(document.properties_form.select_list.value=='browse') javascript:void(window.open('/astrogrid-portal/lean/mount/registry/registrybrowser.html?mainelement=Tool&amp;authId=tool_name', 'RegistryMicro', 'toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=yes, scrollbars=yes, width=450, height=500')); 
                                                                                                             else if (document.properties_form.select_list.value=='none') alert('Please select....');
                                                                                                             else document.properties_form.tool_name.value = document.properties_form.select_list.value;">
-	                                                <option value="none" selected="true">-- Select tool --</option>
+	                                                <option value="none" selected="true">-- Select task --</option>
 	                                                <option value="browse">-- Browse registry --</option>
                                                     <xsl:for-each select="toolsAvailable">
                                                         <xsl:element name="option">

@@ -77,7 +77,7 @@
          try {
                <xsp:element name="tool">
                   <xsp:attribute name="tool-name"><xsp:expr>tool.getName()</xsp:expr></xsp:attribute>
-                  <xsp:attribute name="tool-documentation"><xsp:expr>new String("unavailable")</xsp:expr></xsp:attribute>                                    
+                  <xsp:attribute name="tool-documentation"><xsp:expr>new String("Documentation currently unavailable for this task")</xsp:expr></xsp:attribute>                                    
                   <xsp:logic>displayParamsList( tool );</xsp:logic>                                                                     
                </xsp:element>
          }
