@@ -1,5 +1,5 @@
 /*
- * $Id: CeaDataService.java,v 1.5 2004/04/23 10:54:01 nw Exp $
+ * $Id: CeaDataService.java,v 1.6 2004/04/23 12:13:05 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -112,7 +112,8 @@ public class CeaDataService extends AxisDataServer implements org.astrogrid.appl
       assert (value.getName().equals("Format"));
       String format = value.getValue();
       
-      value = parameters.getInput().getParameter(2);
+      // NWW: target is an output parameter.
+      value = parameters.getOutput().getParameter(0);
       assert (value.getName().equals("Target"));
       
       Agsl resultsTarget;
@@ -162,6 +163,9 @@ public class CeaDataService extends AxisDataServer implements org.astrogrid.appl
 
 /*
 $Log: CeaDataService.java,v $
+Revision 1.6  2004/04/23 12:13:05  nw
+corrected retreival of 'target' parameter value - its an output parameter
+
 Revision 1.5  2004/04/23 10:54:01  nw
 updated to fit with new cea service interface
 (just class name changes)
