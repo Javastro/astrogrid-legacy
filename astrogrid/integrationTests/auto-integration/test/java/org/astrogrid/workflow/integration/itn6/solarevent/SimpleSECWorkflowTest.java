@@ -1,4 +1,4 @@
-/*$Id: SimpleSECWorkflowTest.java,v 1.3 2004/08/12 21:30:07 nw Exp $
+/*$Id: SimpleSECWorkflowTest.java,v 1.4 2004/08/12 22:05:43 nw Exp $
  * Created on 12-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.workflow.integration.itn6.solarevent;
 
+import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.io.Piper;
 import org.astrogrid.portal.workflow.intf.ApplicationDescription;
@@ -79,10 +80,12 @@ public class SimpleSECWorkflowTest  extends AbstractTestForWorkflow implements S
     public void checkExecutionResults(Workflow result) throws Exception {
         super.checkExecutionResults(result);
         
-        // dump to screen for now.
-        Document doc = XMLUtils.newDocument();
-        Marshaller.marshal(result,doc);
-        XMLUtils.PrettyDocumentToStream(doc,System.out);
+        Step s = (Step)result.getSequence().getActivity(0);
+        assertStepCompleted(s);
+        ResultListType r = getResultOfStep(s);
+        softAssertEquals("only expected a single result",1,r.getResultCount());
+        // now need to find helper to check that result is a votable.
+        System.out.println(r.getResult(0).getValue());
     }
 }
 
@@ -91,6 +94,9 @@ public class SimpleSECWorkflowTest  extends AbstractTestForWorkflow implements S
 
 /* 
 $Log: SimpleSECWorkflowTest.java,v $
+Revision 1.4  2004/08/12 22:05:43  nw
+added checking of results of steps, and parsing of urls in interstep script
+
 Revision 1.3  2004/08/12 21:30:07  nw
 got it working. nice.
 
