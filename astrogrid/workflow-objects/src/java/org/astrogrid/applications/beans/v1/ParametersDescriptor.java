@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ParametersDescriptor.java,v 1.13 2004/03/10 13:58:28 pah Exp $
+ * $Id: ParametersDescriptor.java,v 1.14 2004/03/10 17:13:59 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class ParametersDescriptor.
  * 
- * @version $Revision: 1.13 $ $Date: 2004/03/10 13:58:28 $
+ * @version $Revision: 1.14 $ $Date: 2004/03/10 17:13:59 $
  */
 public class ParametersDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 
@@ -68,7 +68,7 @@ public class ParametersDescriptor extends org.exolab.castor.xml.util.XMLClassDes
         //-- initialize element descriptors
         
         //-- _parameterList
-        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.astrogrid.applications.beans.v1.Parameter.class, "_parameterList", "Parameter", org.exolab.castor.xml.NodeType.Element);
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition.class, "_parameterList", "Parameter", org.exolab.castor.xml.NodeType.Element);
         handler = (new org.exolab.castor.xml.XMLFieldHandler() {
             public java.lang.Object getValue( java.lang.Object object ) 
                 throws IllegalStateException
@@ -81,25 +81,24 @@ public class ParametersDescriptor extends org.exolab.castor.xml.util.XMLClassDes
             {
                 try {
                     Parameters target = (Parameters) object;
-                    target.addParameter( (org.astrogrid.applications.beans.v1.Parameter) value);
+                    target.addParameter( (org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition) value);
                 }
                 catch (java.lang.Exception ex) {
                     throw new IllegalStateException(ex.toString());
                 }
             }
             public java.lang.Object newInstance( java.lang.Object parent ) {
-                return new org.astrogrid.applications.beans.v1.Parameter();
+                return new org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition();
             }
         } );
         desc.setHandler(handler);
         desc.setNameSpaceURI("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1");
-        desc.setRequired(true);
         desc.setMultivalued(true);
         addFieldDescriptor(desc);
         
         //-- validation code for: _parameterList
         fieldValidator = new org.exolab.castor.xml.FieldValidator();
-        fieldValidator.setMinOccurs(1);
+        fieldValidator.setMinOccurs(0);
         { //-- local scope
         }
         desc.setValidator(fieldValidator);

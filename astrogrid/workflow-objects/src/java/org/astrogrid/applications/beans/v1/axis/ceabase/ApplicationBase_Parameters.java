@@ -8,24 +8,24 @@
 package org.astrogrid.applications.beans.v1.axis.ceabase;
 
 public class ApplicationBase_Parameters  implements java.io.Serializable {
-    private org.astrogrid.applications.beans.v1.axis.ceabase._Parameter[] parameter;
+    private org.astrogrid.applications.beans.v1.axis.ceaparameters.BaseParameterDefinition[] parameter;
 
     public ApplicationBase_Parameters() {
     }
 
-    public org.astrogrid.applications.beans.v1.axis.ceabase._Parameter[] getParameter() {
+    public org.astrogrid.applications.beans.v1.axis.ceaparameters.BaseParameterDefinition[] getParameter() {
         return parameter;
     }
 
-    public void setParameter(org.astrogrid.applications.beans.v1.axis.ceabase._Parameter[] parameter) {
+    public void setParameter(org.astrogrid.applications.beans.v1.axis.ceaparameters.BaseParameterDefinition[] parameter) {
         this.parameter = parameter;
     }
 
-    public org.astrogrid.applications.beans.v1.axis.ceabase._Parameter getParameter(int i) {
+    public org.astrogrid.applications.beans.v1.axis.ceaparameters.BaseParameterDefinition getParameter(int i) {
         return parameter[i];
     }
 
-    public void setParameter(int i, org.astrogrid.applications.beans.v1.axis.ceabase._Parameter value) {
+    public void setParameter(int i, org.astrogrid.applications.beans.v1.axis.ceaparameters.BaseParameterDefinition value) {
         this.parameter[i] = value;
     }
 
@@ -79,7 +79,8 @@ public class ApplicationBase_Parameters  implements java.io.Serializable {
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("parameter");
         elemField.setXmlName(new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "Parameter"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "Parameter"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.astrogrid.org/schema/AGParameterDefinition/v1", "BaseParameterDefinition"));
+        elemField.setMinOccurs(0);
         typeDesc.addFieldDesc(elemField);
     }
 

@@ -28,7 +28,8 @@
         <parameter qname="pns:executionId" xmlns:pns="urn:impl.cea.applications.astrogrid.org" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
         <fault name="abortFault" qname="message" class="org.astrogrid.applications.service.v1.cea.CeaFault" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
       </operation>
-      <operation name="listApplications" qname="operNS:listApplications" xmlns:operNS="urn:impl.cea.applications.astrogrid.org" returnQName="retNS:listApplicationsReturn" xmlns:retNS="urn:impl.cea.applications.astrogrid.org" returnType="rtns:ApplicationList" xmlns:rtns="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" >
+      <operation name="listApplications" qname="operNS:listApplications" xmlns:operNS="urn:impl.cea.applications.astrogrid.org" returnQName="retNS:listApplicationsReturn" xmlns:retNS="urn:impl.cea.applications.astrogrid.org" returnType="rtns:string" xmlns:rtns="http://www.w3.org/2001/XMLSchema" >
+        <parameter qname="pns:ApplicationList" xmlns:pns="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" type="tns:>ApplicationList" xmlns:tns="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1"/>
         <fault name="listApplicationsFault" qname="message" class="org.astrogrid.applications.service.v1.cea.CeaFault" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
       </operation>
       <operation name="getApplicationDescription" qname="operNS:getApplicationDescription" xmlns:operNS="urn:impl.cea.applications.astrogrid.org" returnQName="retNS:getApplicationDescriptionReturn" xmlns:retNS="urn:impl.cea.applications.astrogrid.org" returnType="rtns:string" xmlns:rtns="http://www.w3.org/2001/XMLSchema" >
@@ -156,14 +157,6 @@
         encodingStyle=""
       />
       <typeMapping
-        xmlns:ns="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1"
-        qname="ns:>Parameter"
-        type="java:org.astrogrid.applications.beans.v1.axis.ceabase._Parameter"
-        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
-        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
-        encodingStyle=""
-      />
-      <typeMapping
         xmlns:ns="http://www.astrogrid.org/schema/AGParameterDefinition/v1"
         qname="ns:xhtmlDocumentation"
         type="java:org.astrogrid.applications.beans.v1.axis.ceaparameters.XhtmlDocumentation"
@@ -247,6 +240,14 @@
         xmlns:ns="urn:impl.cea.applications.astrogrid.org"
         qname="ns:>returnRegistryEntryResponse"
         type="java:org.astrogrid.applications.service.v1.cea.impl._returnRegistryEntryResponse"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="urn:impl.cea.applications.astrogrid.org"
+        qname="ns:>listApplicationsResponse"
+        type="java:org.astrogrid.applications.service.v1.cea.impl._listApplicationsResponse"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
         encodingStyle=""
@@ -381,14 +382,6 @@
       />
       <typeMapping
         xmlns:ns="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1"
-        qname="ns:ApplicationList"
-        type="java:org.astrogrid.applications.beans.v1.axis.ceabase.ApplicationList"
-        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
-        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
-        encodingStyle=""
-      />
-      <typeMapping
-        xmlns:ns="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1"
         qname="ns:CommandLineApplication"
         type="java:org.astrogrid.applications.beans.v1.axis.ceabase.CommandLineApplication"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
@@ -473,6 +466,14 @@
         type="java:org.astrogrid.community.beans.v1.axis.SecurityToken"
         serializer="org.apache.axis.encoding.ser.SimpleSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.SimpleDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1"
+        qname="ns:>ApplicationList"
+        type="java:org.astrogrid.applications.beans.v1.axis.ceabase._ApplicationList"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
         encodingStyle=""
       />
       <typeMapping

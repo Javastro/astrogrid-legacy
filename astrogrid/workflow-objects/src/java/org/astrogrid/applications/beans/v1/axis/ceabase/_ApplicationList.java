@@ -1,5 +1,5 @@
 /**
- * ApplicationList.java
+ * _ApplicationList.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis WSDL2Java emitter.
@@ -7,10 +7,10 @@
 
 package org.astrogrid.applications.beans.v1.axis.ceabase;
 
-public class ApplicationList  implements java.io.Serializable {
+public class _ApplicationList  implements java.io.Serializable {
     private org.astrogrid.applications.beans.v1.axis.ceabase.ApplicationBase[] applicationDefn;
 
-    public ApplicationList() {
+    public _ApplicationList() {
     }
 
     public org.astrogrid.applications.beans.v1.axis.ceabase.ApplicationBase[] getApplicationDefn() {
@@ -31,8 +31,8 @@ public class ApplicationList  implements java.io.Serializable {
 
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof ApplicationList)) return false;
-        ApplicationList other = (ApplicationList) obj;
+        if (!(obj instanceof _ApplicationList)) return false;
+        _ApplicationList other = (_ApplicationList) obj;
         if (obj == null) return false;
         if (this == obj) return true;
         if (__equalsCalc != null) {
@@ -72,7 +72,7 @@ public class ApplicationList  implements java.io.Serializable {
 
     // Type metadata
     private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(ApplicationList.class);
+        new org.apache.axis.description.TypeDesc(_ApplicationList.class);
 
     static {
         typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "ApplicationList"));

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: DataCentreApplication.java,v 1.13 2004/03/10 13:58:29 pah Exp $
+ * $Id: DataCentreApplication.java,v 1.14 2004/03/10 17:13:59 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1;
@@ -24,7 +24,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Description of a data centre application
  * 
- * @version $Revision: 1.13 $ $Date: 2004/03/10 13:58:29 $
+ * @version $Revision: 1.14 $ $Date: 2004/03/10 17:13:59 $
  */
 public class DataCentreApplication extends org.astrogrid.applications.beans.v1.ApplicationBase 
 implements java.io.Serializable

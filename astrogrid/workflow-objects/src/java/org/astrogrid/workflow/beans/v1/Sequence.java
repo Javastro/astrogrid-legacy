@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Sequence.java,v 1.13 2004/03/10 13:58:29 pah Exp $
+ * $Id: Sequence.java,v 1.14 2004/03/10 17:13:59 pah Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -24,7 +24,7 @@ import org.xml.sax.ContentHandler;
 /**
  * a collection of activities to be performed sequentially
  * 
- * @version $Revision: 1.13 $ $Date: 2004/03/10 13:58:29 $
+ * @version $Revision: 1.14 $ $Date: 2004/03/10 17:13:59 $
  */
 public class Sequence extends org.astrogrid.workflow.beans.v1.ActivityContainer 
 implements java.io.Serializable

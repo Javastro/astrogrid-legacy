@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ExecutionPhaseDescriptor.java,v 1.11 2004/03/10 13:58:29 pah Exp $
+ * $Id: ExecutionPhaseDescriptor.java,v 1.12 2004/03/10 17:13:59 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1.cea.castor.types;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class ExecutionPhaseDescriptor.
  * 
- * @version $Revision: 1.11 $ $Date: 2004/03/10 13:58:29 $
+ * @version $Revision: 1.12 $ $Date: 2004/03/10 17:13:59 $
  */
 public class ExecutionPhaseDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 
