@@ -19,7 +19,8 @@ public class StreamPiper implements Runnable
    private String name = null;
    private InputStream in = null;
    private OutputStream out = null;
-
+   private Thread t = null;
+   
    /**
     * Constructor - also a creates a thread to run this and starts it.  Naming
     * pipes are handy for tracking errors, as they run in their own thread and
@@ -33,10 +34,15 @@ public class StreamPiper implements Runnable
       this.in = source;
       this.out = redirect;
 
-      Thread t = new Thread(this);
+      t = new Thread(this);
       t.start();
    }
 
+   public void setPriority(int newPriority)
+   {
+      t.setPriority(newPriority);
+   }
+   
    /**
     * method run by the thread.  This method will run 'forever' until the
     * thread is terminated or the source stream is empty.  Only problems at
