@@ -1534,6 +1534,9 @@ public class Workflow extends Activity {
                         (p.getValue() == null || p.getValue().equals("") ) ) {
                             
                         p.setValue( newValue ) ;
+                        if(p.getCardinality().getMaximum() <= -1) {
+                            tool.newInputParameter( "VOTfiles" ) ;
+                        }
                         retValue = true ;
                         break ;
                     }
@@ -1542,6 +1545,9 @@ public class Workflow extends Activity {
                              (oldValue.equals( p.getValue() )) ) {
                                  
                         p.setValue( newValue ) ;
+						if(p.getCardinality().getMaximum() <= -1) {
+						    tool.newInputParameter( "VOTfiles" ) ;
+						}
                         retValue = true ;
                         break ;
                     }
