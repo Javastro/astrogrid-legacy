@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- $Id: project.xml,v 1.12 2004/04/23 16:43:12 jdt Exp $ -->
+<!-- $Id: project.xml,v 1.13 2004/04/23 18:13:09 jdt Exp $ -->
 <project>
     <pomVersion>3</pomVersion>
     <id>astrogrid-master</id>
@@ -14,7 +14,7 @@
     <inceptionYear>2002</inceptionYear>
     <issueTrackingUrl>http://www.astrogrid.org/bugzilla/</issueTrackingUrl>
     <package>org.astrogrid</package>
-    <siteDirectory>${astrogrid.docs}/${astrogrid.iteration}/${astrogrid.name}</siteDirectory>
+    <siteDirectory>/var/www/www/maven/build/${astrogrid.name}</siteDirectory>
     <logo>http://www.astrogrid.org/images/AGlogo</logo>
     <repository>
         <connection> 
