@@ -73,7 +73,7 @@
     <!-- The Job Factory -->
     <property name="FACTORY" value="org.astrogrid.jes.impl.DummyJobFactoryImpl" /> <!--dummy for testing-->
     <!-- The Job Data Source -->
-    <property name="DATASOURCE" value="foo" /> <!-- HSQL Test database-->
+    <property name="DATASOURCE" value="testDatabase" /> <!-- HSQL Test database-->
     <!-- The Job table names -->
     <property name="JOB" value="jes..job" />
     <property name="JOBSTEP" value="jes..jobstep" />
