@@ -159,11 +159,6 @@
         </dependency>
         <dependency>
            <groupId>org.astrogrid</groupId>
-           <artifactId>astrogrid-workflow</artifactId>
-           <version>SNAPSHOT</version>
-        </dependency>
-        <dependency>
-           <groupId>org.astrogrid</groupId>
            <artifactId>astrogrid-applications</artifactId>
            <version>SNAPSHOT</version>
         </dependency>
