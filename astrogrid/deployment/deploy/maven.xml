@@ -262,6 +262,7 @@
 	</goal>
 	<goal name="setup-cea-cmd" 
 		description="setup specific to cea-cmd">
+		<mkdir dir="${workdir}/cea/commandline/store"/>
 		<echo>Configuring Applications</echo>
 		<!-- registry -->
 		<copy todir="${temporary.dir}/registry-entries" filtering="true" overwrite="true">
@@ -271,27 +272,6 @@
 		</copy>
 		<ag:register entry="${temporary.dir}/registry-entries/CeaRegistry.xml"/>
 		
-		<!-- make all scripts executable -->
-		<chmod dir="${work.dir}/applications" perm="a+x">
-			<include name="*.sh" />
-		</chmod>
-		<!-- initialize database : no need, db contents should be stored as a template really.-->
-		<sql driver="org.hsqldb.jdbcDriver" 
-			url="jdbc:hsqldb:${work.dir}/applications/application-db" 
-			classpathref="maven.dependency.classpath" userid="sa" password="" 
-			print="true" ><![CDATA[
-        DROP TABLE exestat IF EXISTS ;
-        CREATE TABLE exestat
-                    (
-    executionId      INTEGER IDENTITY,
-    jobstepId    VARCHAR ,
-    program      VARCHAR ,
-    starttime        DATETIME DEFAULT 'now',
-    params         VARCHAR,
-    endtime TIMESTAMP,
-    status  VARCHAR
-            ) ;
-           ]]></sql>
 	</goal>
 	
 	<goal name="setup-myspace" description="myspace setup">
