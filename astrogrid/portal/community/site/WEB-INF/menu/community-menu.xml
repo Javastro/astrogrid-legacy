@@ -13,7 +13,7 @@
           contents-hover="Administration"
           uri="/astrogrid-portal/main/mount/community/administration.html"
           target="_self"
-          status-text="Administre community features"/>
+          status-text="Handle community issues"/>
       <agp:item
           contents="Manage Credentials"
           contents-hover="Credentials"
