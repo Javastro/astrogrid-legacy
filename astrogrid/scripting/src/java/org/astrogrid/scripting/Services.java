@@ -1,4 +1,4 @@
-/*$Id: Services.java,v 1.11 2004/08/09 09:11:24 nw Exp $
+/*$Id: Services.java,v 1.12 2004/08/09 09:55:17 nw Exp $
  * Created on 27-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -36,8 +36,8 @@ public class Services {
     private static final Logger logger = Logger.getLogger(Services.class);
 
    
-   /** default location of service list document - in this package on the classpath */
-   public static final String DEFAULT_SERVICE_LIST= "services.xml";
+   /** default location of service list document - at the root of the classpath */
+   public static final String DEFAULT_SERVICE_LIST= "/services.xml";
    
    /** key to look in config for a service list */
    public static final String SERVICE_LIST_URL_KEY = "scripting.service.list.url";
@@ -238,6 +238,9 @@ public class Services {
 
 /* 
 $Log: Services.java,v $
+Revision 1.12  2004/08/09 09:55:17  nw
+altered default location on classpath to look for services.xml
+
 Revision 1.11  2004/08/09 09:11:24  nw
 added logging.
 improved toString()
