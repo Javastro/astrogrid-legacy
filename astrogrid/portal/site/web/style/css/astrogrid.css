@@ -66,6 +66,11 @@ p.main-menu-header
 p.main-menu-body
 {
   /*
+    Borders.
+    */
+  border-bottom-style:    dotted;
+
+  /*
     Fonts.
     */
   font-family:            arial, "lucida console", sans-serif;
