@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: tests-project.xml,v 1.33 2004/09/22 13:38:57 jdt Exp $ -->
+<!-- $Id: tests-project.xml,v 1.34 2004/10/06 23:15:08 pah Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
     <id>auto-integration-tests</id>
@@ -123,6 +123,15 @@
 			<artifactId>astrogrid-datacenter-client</artifactId>
 			<version>${pom.currentVersion}</version>
 		</dependency>
+		       <!-- for datacenter implementation tests -->
+       <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>pal</artifactId>
+            <version>${pom.currentVersion}</version>
+            <type>jar</type>
+            <properties/>
+        </dependency>
+		
 		<!-- applications -->
 		<dependency>
 			<groupId>org.astrogrid</groupId>
