@@ -45,7 +45,7 @@
                 <ManagedApplications>
                         <ApplicationReference>
                                 <vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
-                                <vr:ResourceKey>cds_dixon</vr:ResourceKey>
+                                <vr:ResourceKey>cds_dixon_dsa</vr:ResourceKey>
                         </ApplicationReference>
                 </ManagedApplications>
         </vr:Resource>
