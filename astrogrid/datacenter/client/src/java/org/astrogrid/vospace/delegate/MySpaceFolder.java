@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceFolder.java,v 1.1 2004/02/15 23:16:06 mch Exp $
+ * $Id: MySpaceFolder.java,v 1.2 2004/02/17 15:15:27 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -10,7 +10,6 @@
 package org.astrogrid.vospace.delegate;
 
 import java.io.File;
-import java.util.Enumeration;
 import java.util.Hashtable;
 
 /**
@@ -97,6 +96,9 @@ public class MySpaceFolder extends File {
 
 /*
  $Log: MySpaceFolder.java,v $
+ Revision 1.2  2004/02/17 15:15:27  mch
+ Removed unused imports
+
  Revision 1.1  2004/02/15 23:16:06  mch
  New-style VoSpace delegates.  Not agreed so private to datacenter for the moment
 

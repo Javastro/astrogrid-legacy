@@ -1,5 +1,5 @@
 /*
- * $Id: DatacenterDelegateFactory.java,v 1.13 2004/02/16 23:33:42 mch Exp $
+ * $Id: DatacenterDelegateFactory.java,v 1.14 2004/02/17 15:14:44 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -9,18 +9,11 @@ import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URL;
 import javax.xml.rpc.ServiceException;
-
-import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.community.Account;
-import org.astrogrid.datacenter.adql.ADQLException;
-import org.astrogrid.datacenter.adql.ADQLUtils;
-import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.delegate.agws.WebDelegate;
 import org.astrogrid.datacenter.delegate.dummy.DummyDelegate;
 import org.astrogrid.datacenter.delegate.nvocone.AdqlNvoConeDelegate;
 import org.astrogrid.datacenter.delegate.nvocone.NvoConeSearchDelegate;
-import org.astrogrid.datacenter.sql.SQLUtils;
-import org.w3c.dom.Element;
 /**
  * Constructs the right delegate for the given service
  *
@@ -138,6 +131,9 @@ public class DatacenterDelegateFactory {
 }
 /*
  $Log: DatacenterDelegateFactory.java,v $
+ Revision 1.14  2004/02/17 15:14:44  mch
+ Removed unused imports
+
  Revision 1.13  2004/02/16 23:33:42  mch
  Changed to use Account and AttomConfig
 
