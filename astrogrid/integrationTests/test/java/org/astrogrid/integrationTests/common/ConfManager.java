@@ -1,4 +1,4 @@
-/* $Id: ConfManager.java,v 1.1 2004/01/19 17:11:06 jdt Exp $
+/* $Id: ConfManager.java,v 1.2 2004/01/22 16:14:18 nw Exp $
  * Created on 19-Jan-2004 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,7 +21,7 @@ import org.apache.commons.logging.LogFactory;
  * @TODO tidy up once Eclipse is  working properly again
  */
 public final class ConfManager {
-  /**
+   /**
    * Logger
    */
   private static final Log log = LogFactory.getLog(ConfManager.class);
@@ -34,6 +34,11 @@ public final class ConfManager {
    * 
    */
   public static final String MYSPACE_ENDPOINT = "mySpaceEndPoint";
+  
+  /** name of key in properties file for merlin endpoint
+   */
+  public static final String MERLIN_ENDPOINT = "merlinDatacenterEndPoint";
+   
   /**
    * Singleton
    */
@@ -87,10 +92,27 @@ public final class ConfManager {
     assert(mySpaceEndPoint != null);
     return mySpaceEndPoint;
   }
+  /** get the endpoint of a datacenter server containing the merlin dataset
+   * 
+   * @return string containing url
+   * @thows IOException if we can't load props
+   */
+  public String getMerlinDatacenterEndPoint() throws Exception {
+     if (fileNotLoaded) {
+        throw new IOException("config file not loaded");
+     }
+     final String merlinEndpoint = props.getProperty(ConfManager.MERLIN_ENDPOINT);
+     log.debug("Merlin Datacenter endpoint " + merlinEndpoint);
+     assert merlinEndpoint != null && merlinEndpoint.length() > 0;
+     return merlinEndpoint;
+  }
 }
 
 /*
 *$Log: ConfManager.java,v $
+*Revision 1.2  2004/01/22 16:14:18  nw
+*added conf entry for merlin datacenter
+*
 *Revision 1.1  2004/01/19 17:11:06  jdt
 *Refactored
 *
