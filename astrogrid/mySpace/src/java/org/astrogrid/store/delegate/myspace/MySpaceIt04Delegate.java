@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceIt04Delegate.java,v 1.8 2004/03/16 22:42:18 mch Exp $
+ * $Id: MySpaceIt04Delegate.java,v 1.9 2004/03/17 23:37:22 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -208,7 +208,7 @@ public class MySpaceIt04Delegate implements StoreClient
             for (int loop = offset; loop<length; loop++) {
                toSend.append(bytes[loop]+" ");
             }
-            log.debug("MySpace.putBytes("+toSend.toString()+")");
+            //log.debug("MySpace.putBytes("+toSend.toString()+")");
             
             MySpaceHelper helper = new MySpaceHelper();
             String jobDetails = helper.buildSave(operator.getUserId(), operator.getCommunity(), operator.getToken(),
@@ -434,6 +434,9 @@ public class MySpaceIt04Delegate implements StoreClient
 
 /*
 $Log: MySpaceIt04Delegate.java,v $
+Revision 1.9  2004/03/17 23:37:22  mch
+Removed debug print of encoded string
+
 Revision 1.8  2004/03/16 22:42:18  mch
 fixed upload speed
 
