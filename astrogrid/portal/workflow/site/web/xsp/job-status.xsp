@@ -237,7 +237,7 @@
          try{
             if( TRACE_ENABLED ) trace( "workflow-main-xsp: Retrieving workflow from session object start") ;
             //================================================================================
-            workflow = (Workflow)<xsp-session:get-attribute name="workflow-tag" as="object"/> ;
+            workflow = (Workflow)<xsp-session:get-attribute name="workflow-staus-tag" as="object"/> ;
                   
             //================================================================================
 	

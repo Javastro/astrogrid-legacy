@@ -106,6 +106,7 @@ public class JesAction extends AbstractAction {
     public static final String HTTP_JOBLIST_TAG = "job-list-tag" ,
 							   JOBURN_PARAMETER = "jobURN" ,
                                HTTP_WORKFLOW_TAG = "workflow-tag",
+	                           HTTP_WORKFLOW_STATUS_TAG = "workflow-staus-tag",
                                COMMUNITY_ACCOUNT_TAG = "user" ,
                                COMMUNITY_NAME_TAG = "community_name" ,
                                CREDENTIAL_TAG = "credential" ,
@@ -494,7 +495,7 @@ public class JesAction extends AbstractAction {
 										
 					// Save the workflow in the session object...
 					debug( "about to set workflow session attribute..." ) ;
-					session.setAttribute( HTTP_WORKFLOW_TAG, workflow ) ;
+					session.setAttribute( HTTP_WORKFLOW_STATUS_TAG, workflow ) ;
 				}											
 				
 			}
