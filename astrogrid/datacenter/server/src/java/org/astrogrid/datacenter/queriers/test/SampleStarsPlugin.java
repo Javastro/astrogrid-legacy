@@ -1,5 +1,5 @@
 /*
- * $Id: DummySqlPlugin.java,v 1.10 2004/08/18 22:28:45 mch Exp $
+ * $Id: SampleStarsPlugin.java,v 1.1 2004/09/01 13:40:32 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -26,12 +26,12 @@ import org.w3c.dom.Document;
  * @author M Hill
  */
 
-public class DummySqlPlugin extends JdbcPlugin
+public class SampleStarsPlugin extends JdbcPlugin
 {
    
    private static boolean populated = false;
    
-   public DummySqlPlugin(Querier querier) throws IOException
+   public SampleStarsPlugin(Querier querier) throws IOException
    {
       super(querier);
       
@@ -42,7 +42,7 @@ public class DummySqlPlugin extends JdbcPlugin
    /** Sets up the configuration etc for accessing this database */
    public static void initConfig() {
       
-      SimpleConfig.setProperty(QuerierPluginFactory.PLUGIN_KEY, DummySqlPlugin.class.getName());
+      SimpleConfig.setProperty(QuerierPluginFactory.PLUGIN_KEY, SampleStarsPlugin.class.getName());
       SimpleConfig.setProperty(JdbcPlugin.SQL_TRANSLATOR, StdSqlMaker.class.getName());
 
       SimpleConfig.setProperty(SqlMaker.CONE_SEARCH_RA_COL_KEY, "RA");
@@ -168,7 +168,7 @@ public class DummySqlPlugin extends JdbcPlugin
       //check metadata
       /*
       try {
-         JdbcPlugin plugin = new DummySqlPlugin(null);
+         JdbcPlugin plugin = new SampleStarsPlugin(null);
          Document metadata = plugin.getMetadata();
          log.info(DomHelper.DocumentToString(metadata));
       } catch (IOException ioe) {
@@ -198,7 +198,10 @@ public class DummySqlPlugin extends JdbcPlugin
    
 }
    /*
-   $Log: DummySqlPlugin.java,v $
+   $Log: SampleStarsPlugin.java,v $
+   Revision 1.1  2004/09/01 13:40:32  mch
+   Renamed dummy to samplestars and added metadata server
+
    Revision 1.10  2004/08/18 22:28:45  mch
    Switched to search on table (index search fails..) and background stars less dense
 
