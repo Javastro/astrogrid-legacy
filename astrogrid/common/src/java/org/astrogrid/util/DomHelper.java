@@ -1,5 +1,5 @@
 /*
-   $Id: DomHelper.java,v 1.13 2004/08/20 13:25:29 mch Exp $
+   $Id: DomHelper.java,v 1.14 2004/09/08 17:30:06 mch Exp $
 
    (c) Copyright...
 */
@@ -40,6 +40,8 @@ public class DomHelper
      */
     public static String getValue(Element parent, String child) {
       
+      assert parent != null : "Attempted to get value of "+child+" of null parent element";
+      
       NodeList nodes = parent.getChildNodes();
       
       if ((nodes==null) || (nodes.getLength()==0)) {
@@ -62,6 +64,9 @@ public class DomHelper
      * sure they're quite right.
      */
     public static String getValue(Element element) {
+
+      assert element != null : "Attempted to get value of null element";
+      
        if (element.getNodeValue() != null) {
           return element.getNodeValue();
        }
