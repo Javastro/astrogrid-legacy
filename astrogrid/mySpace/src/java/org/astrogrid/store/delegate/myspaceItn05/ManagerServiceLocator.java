@@ -5,9 +5,9 @@
  * by the Apache Axis WSDL2Java emitter.
  */
 
-package org.astrogrid.myspace.delegate;
+package org.astrogrid.store.delegate.myspaceItn05;
 
-public class ManagerServiceLocator extends org.apache.axis.client.Service implements org.astrogrid.myspace.delegate.ManagerService {
+public class ManagerServiceLocator extends org.apache.axis.client.Service implements org.astrogrid.store.delegate.myspaceItn05.ManagerService {
 
     // Use to get a proxy class for AstrogridMyspace
     private final java.lang.String AstrogridMyspace_address = "http://grendel12.roe.ac.uk:8080/astrogrid-myspace";
@@ -27,7 +27,7 @@ public class ManagerServiceLocator extends org.apache.axis.client.Service implem
         AstrogridMyspaceWSDDServiceName = name;
     }
 
-    public org.astrogrid.myspace.delegate.Manager getAstrogridMyspace() throws javax.xml.rpc.ServiceException {
+    public org.astrogrid.store.delegate.myspaceItn05.Manager getAstrogridMyspace() throws javax.xml.rpc.ServiceException {
        java.net.URL endpoint;
         try {
             endpoint = new java.net.URL(AstrogridMyspace_address);
@@ -38,9 +38,9 @@ public class ManagerServiceLocator extends org.apache.axis.client.Service implem
         return getAstrogridMyspace(endpoint);
     }
 
-    public org.astrogrid.myspace.delegate.Manager getAstrogridMyspace(java.net.URL portAddress) throws javax.xml.rpc.ServiceException {
+    public org.astrogrid.store.delegate.myspaceItn05.Manager getAstrogridMyspace(java.net.URL portAddress) throws javax.xml.rpc.ServiceException {
         try {
-            org.astrogrid.myspace.delegate.AstrogridMyspaceSoapBindingStub _stub = new org.astrogrid.myspace.delegate.AstrogridMyspaceSoapBindingStub(portAddress, this);
+            org.astrogrid.store.delegate.myspaceItn05.AstrogridMyspaceSoapBindingStub _stub = new org.astrogrid.store.delegate.myspaceItn05.AstrogridMyspaceSoapBindingStub(portAddress, this);
             _stub.setPortName(getAstrogridMyspaceWSDDServiceName());
             return _stub;
         }
@@ -56,8 +56,8 @@ public class ManagerServiceLocator extends org.apache.axis.client.Service implem
      */
     public java.rmi.Remote getPort(Class serviceEndpointInterface) throws javax.xml.rpc.ServiceException {
         try {
-            if (org.astrogrid.myspace.delegate.Manager.class.isAssignableFrom(serviceEndpointInterface)) {
-                org.astrogrid.myspace.delegate.AstrogridMyspaceSoapBindingStub _stub = new org.astrogrid.myspace.delegate.AstrogridMyspaceSoapBindingStub(new java.net.URL(AstrogridMyspace_address), this);
+            if (org.astrogrid.store.delegate.myspaceItn05.Manager.class.isAssignableFrom(serviceEndpointInterface)) {
+                org.astrogrid.store.delegate.myspaceItn05.AstrogridMyspaceSoapBindingStub _stub = new org.astrogrid.store.delegate.myspaceItn05.AstrogridMyspaceSoapBindingStub(new java.net.URL(AstrogridMyspace_address), this);
                 _stub.setPortName(getAstrogridMyspaceWSDDServiceName());
                 return _stub;
             }

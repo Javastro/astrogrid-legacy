@@ -5,10 +5,10 @@
  * by the Apache Axis WSDL2Java emitter.
  */
 
-package org.astrogrid.myspace.delegate;
+package org.astrogrid.store.delegate.myspaceItn05;
 
-public class AstrogridMyspaceSoapBindingSkeleton implements org.astrogrid.myspace.delegate.Manager, org.apache.axis.wsdl.Skeleton {
-    private org.astrogrid.myspace.delegate.Manager impl;
+public class AstrogridMyspaceSoapBindingSkeleton implements org.astrogrid.store.delegate.myspaceItn05.Manager, org.apache.axis.wsdl.Skeleton {
+    private org.astrogrid.store.delegate.myspaceItn05.Manager impl;
     private static java.util.Map _myOperations = new java.util.Hashtable();
     private static java.util.Collection _myOperationsList = new java.util.ArrayList();
 
@@ -239,21 +239,21 @@ public class AstrogridMyspaceSoapBindingSkeleton implements org.astrogrid.myspac
     }
 
     public AstrogridMyspaceSoapBindingSkeleton() {
-        this.impl = new org.astrogrid.myspace.delegate.AstrogridMyspaceSoapBindingImpl();
+        this.impl = new org.astrogrid.store.delegate.myspaceItn05.AstrogridMyspaceSoapBindingImpl();
     }
 
-    public AstrogridMyspaceSoapBindingSkeleton(org.astrogrid.myspace.delegate.Manager impl) {
+    public AstrogridMyspaceSoapBindingSkeleton(org.astrogrid.store.delegate.myspaceItn05.Manager impl) {
         this.impl = impl;
     }
-    public org.astrogrid.myspace.delegate.KernelResults getBytes(java.lang.String in0, boolean in1) throws java.rmi.RemoteException
+    public org.astrogrid.store.delegate.myspaceItn05.KernelResults getBytes(java.lang.String in0, boolean in1) throws java.rmi.RemoteException
     {
-        org.astrogrid.myspace.delegate.KernelResults ret = impl.getBytes(in0, in1);
+        org.astrogrid.store.delegate.myspaceItn05.KernelResults ret = impl.getBytes(in0, in1);
         return ret;
     }
 
-    public org.astrogrid.myspace.delegate.KernelResults getString(java.lang.String in0, boolean in1) throws java.rmi.RemoteException
+    public org.astrogrid.store.delegate.myspaceItn05.KernelResults getString(java.lang.String in0, boolean in1) throws java.rmi.RemoteException
     {
-        org.astrogrid.myspace.delegate.KernelResults ret = impl.getString(in0, in1);
+        org.astrogrid.store.delegate.myspaceItn05.KernelResults ret = impl.getString(in0, in1);
         return ret;
     }
 
@@ -263,75 +263,75 @@ public class AstrogridMyspaceSoapBindingSkeleton implements org.astrogrid.myspac
         return ret;
     }
 
-    public org.astrogrid.myspace.delegate.KernelResults getEntriesList(java.lang.String in0, boolean in1) throws java.rmi.RemoteException
+    public org.astrogrid.store.delegate.myspaceItn05.KernelResults getEntriesList(java.lang.String in0, boolean in1) throws java.rmi.RemoteException
     {
-        org.astrogrid.myspace.delegate.KernelResults ret = impl.getEntriesList(in0, in1);
+        org.astrogrid.store.delegate.myspaceItn05.KernelResults ret = impl.getEntriesList(in0, in1);
         return ret;
     }
 
-    public org.astrogrid.myspace.delegate.KernelResults putString(java.lang.String in0, java.lang.String in1, int in2, int in3, boolean in4) throws java.rmi.RemoteException
+    public org.astrogrid.store.delegate.myspaceItn05.KernelResults putString(java.lang.String in0, java.lang.String in1, int in2, int in3, boolean in4) throws java.rmi.RemoteException
     {
-        org.astrogrid.myspace.delegate.KernelResults ret = impl.putString(in0, in1, in2, in3, in4);
+        org.astrogrid.store.delegate.myspaceItn05.KernelResults ret = impl.putString(in0, in1, in2, in3, in4);
         return ret;
     }
 
-    public org.astrogrid.myspace.delegate.KernelResults putBytes(java.lang.String in0, byte[] in1, int in2, int in3, boolean in4) throws java.rmi.RemoteException
+    public org.astrogrid.store.delegate.myspaceItn05.KernelResults putBytes(java.lang.String in0, byte[] in1, int in2, int in3, boolean in4) throws java.rmi.RemoteException
     {
-        org.astrogrid.myspace.delegate.KernelResults ret = impl.putBytes(in0, in1, in2, in3, in4);
+        org.astrogrid.store.delegate.myspaceItn05.KernelResults ret = impl.putBytes(in0, in1, in2, in3, in4);
         return ret;
     }
 
-    public org.astrogrid.myspace.delegate.KernelResults putUri(java.lang.String in0, java.lang.String in1, int in2, int in3, boolean in4) throws java.rmi.RemoteException
+    public org.astrogrid.store.delegate.myspaceItn05.KernelResults putUri(java.lang.String in0, java.lang.String in1, int in2, int in3, boolean in4) throws java.rmi.RemoteException
     {
-        org.astrogrid.myspace.delegate.KernelResults ret = impl.putUri(in0, in1, in2, in3, in4);
+        org.astrogrid.store.delegate.myspaceItn05.KernelResults ret = impl.putUri(in0, in1, in2, in3, in4);
         return ret;
     }
 
-    public org.astrogrid.myspace.delegate.KernelResults createContainer(java.lang.String in0, boolean in1) throws java.rmi.RemoteException
+    public org.astrogrid.store.delegate.myspaceItn05.KernelResults createContainer(java.lang.String in0, boolean in1) throws java.rmi.RemoteException
     {
-        org.astrogrid.myspace.delegate.KernelResults ret = impl.createContainer(in0, in1);
+        org.astrogrid.store.delegate.myspaceItn05.KernelResults ret = impl.createContainer(in0, in1);
         return ret;
     }
 
-    public org.astrogrid.myspace.delegate.KernelResults copyFile(java.lang.String in0, java.lang.String in1, boolean in2) throws java.rmi.RemoteException
+    public org.astrogrid.store.delegate.myspaceItn05.KernelResults copyFile(java.lang.String in0, java.lang.String in1, boolean in2) throws java.rmi.RemoteException
     {
-        org.astrogrid.myspace.delegate.KernelResults ret = impl.copyFile(in0, in1, in2);
+        org.astrogrid.store.delegate.myspaceItn05.KernelResults ret = impl.copyFile(in0, in1, in2);
         return ret;
     }
 
-    public org.astrogrid.myspace.delegate.KernelResults moveFile(java.lang.String in0, java.lang.String in1, boolean in2) throws java.rmi.RemoteException
+    public org.astrogrid.store.delegate.myspaceItn05.KernelResults moveFile(java.lang.String in0, java.lang.String in1, boolean in2) throws java.rmi.RemoteException
     {
-        org.astrogrid.myspace.delegate.KernelResults ret = impl.moveFile(in0, in1, in2);
+        org.astrogrid.store.delegate.myspaceItn05.KernelResults ret = impl.moveFile(in0, in1, in2);
         return ret;
     }
 
-    public org.astrogrid.myspace.delegate.KernelResults deleteFile(java.lang.String in0, boolean in1) throws java.rmi.RemoteException
+    public org.astrogrid.store.delegate.myspaceItn05.KernelResults deleteFile(java.lang.String in0, boolean in1) throws java.rmi.RemoteException
     {
-        org.astrogrid.myspace.delegate.KernelResults ret = impl.deleteFile(in0, in1);
+        org.astrogrid.store.delegate.myspaceItn05.KernelResults ret = impl.deleteFile(in0, in1);
         return ret;
     }
 
-    public org.astrogrid.myspace.delegate.KernelResults extendLifetime(java.lang.String in0, long in1, boolean in2) throws java.rmi.RemoteException
+    public org.astrogrid.store.delegate.myspaceItn05.KernelResults extendLifetime(java.lang.String in0, long in1, boolean in2) throws java.rmi.RemoteException
     {
-        org.astrogrid.myspace.delegate.KernelResults ret = impl.extendLifetime(in0, in1, in2);
+        org.astrogrid.store.delegate.myspaceItn05.KernelResults ret = impl.extendLifetime(in0, in1, in2);
         return ret;
     }
 
-    public org.astrogrid.myspace.delegate.KernelResults changeOwner(java.lang.String in0, java.lang.String in1, boolean in2) throws java.rmi.RemoteException
+    public org.astrogrid.store.delegate.myspaceItn05.KernelResults changeOwner(java.lang.String in0, java.lang.String in1, boolean in2) throws java.rmi.RemoteException
     {
-        org.astrogrid.myspace.delegate.KernelResults ret = impl.changeOwner(in0, in1, in2);
+        org.astrogrid.store.delegate.myspaceItn05.KernelResults ret = impl.changeOwner(in0, in1, in2);
         return ret;
     }
 
-    public org.astrogrid.myspace.delegate.KernelResults createAccount(java.lang.String in0, boolean in1) throws java.rmi.RemoteException
+    public org.astrogrid.store.delegate.myspaceItn05.KernelResults createAccount(java.lang.String in0, boolean in1) throws java.rmi.RemoteException
     {
-        org.astrogrid.myspace.delegate.KernelResults ret = impl.createAccount(in0, in1);
+        org.astrogrid.store.delegate.myspaceItn05.KernelResults ret = impl.createAccount(in0, in1);
         return ret;
     }
 
-    public org.astrogrid.myspace.delegate.KernelResults deleteAccount(java.lang.String in0, boolean in1) throws java.rmi.RemoteException
+    public org.astrogrid.store.delegate.myspaceItn05.KernelResults deleteAccount(java.lang.String in0, boolean in1) throws java.rmi.RemoteException
     {
-        org.astrogrid.myspace.delegate.KernelResults ret = impl.deleteAccount(in0, in1);
+        org.astrogrid.store.delegate.myspaceItn05.KernelResults ret = impl.deleteAccount(in0, in1);
         return ret;
     }
 

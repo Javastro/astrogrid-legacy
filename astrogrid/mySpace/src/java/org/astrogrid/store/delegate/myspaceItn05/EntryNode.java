@@ -1,4 +1,4 @@
-package org.astrogrid.myspace.delegate;
+package org.astrogrid.store.delegate.myspaceItn05;
 
 import java.util.ArrayList;
 import java.util.Date;

@@ -77,7 +77,7 @@ javac *.java
 # Move the WSDL and WSDD files to their final resting place.
 
 echo "Move the WSDL and WSDD files to their final resting place..."
-cp ./deploy.wsdd  ../../../../../../wsdd/.
-cp ./undeploy.wsdd  ../../../../../../wsdd/.
+cp ./deploy.wsdd  ../../../../../../../wsdd/.
+cp ./undeploy.wsdd  ../../../../../../../wsdd/.
 
-cp ../../../../wp.wsdl  ../../../../../../wsdl/.
+cp ../../../../../wp.wsdl  ../../../../../../../wsdl/.

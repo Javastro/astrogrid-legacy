@@ -5,9 +5,9 @@
  * by the Apache Axis WSDL2Java emitter.
  */
 
-package org.astrogrid.myspace.delegate;
+package org.astrogrid.store.delegate.myspaceItn05;
 
-public class AstrogridMyspaceSoapBindingStub extends org.apache.axis.client.Stub implements org.astrogrid.myspace.delegate.Manager {
+public class AstrogridMyspaceSoapBindingStub extends org.apache.axis.client.Stub implements org.astrogrid.store.delegate.myspaceItn05.Manager {
     private java.util.Vector cachedSerClasses = new java.util.Vector();
     private java.util.Vector cachedSerQNames = new java.util.Vector();
     private java.util.Vector cachedSerFactories = new java.util.Vector();
@@ -23,7 +23,7 @@ public class AstrogridMyspaceSoapBindingStub extends org.apache.axis.client.Stub
         oper.addParameter(new javax.xml.namespace.QName("", "in0"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, org.apache.axis.description.ParameterDesc.IN, false, false);
         oper.addParameter(new javax.xml.namespace.QName("", "in1"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"), boolean.class, org.apache.axis.description.ParameterDesc.IN, false, false);
         oper.setReturnType(new javax.xml.namespace.QName("urn:Kernel", "KernelResults"));
-        oper.setReturnClass(org.astrogrid.myspace.delegate.KernelResults.class);
+        oper.setReturnClass(org.astrogrid.store.delegate.myspaceItn05.KernelResults.class);
         oper.setReturnQName(new javax.xml.namespace.QName("", "getBytesReturn"));
         oper.setStyle(org.apache.axis.enum.Style.RPC);
         oper.setUse(org.apache.axis.enum.Use.ENCODED);
@@ -34,7 +34,7 @@ public class AstrogridMyspaceSoapBindingStub extends org.apache.axis.client.Stub
         oper.addParameter(new javax.xml.namespace.QName("", "in0"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, org.apache.axis.description.ParameterDesc.IN, false, false);
         oper.addParameter(new javax.xml.namespace.QName("", "in1"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"), boolean.class, org.apache.axis.description.ParameterDesc.IN, false, false);
         oper.setReturnType(new javax.xml.namespace.QName("urn:Kernel", "KernelResults"));
-        oper.setReturnClass(org.astrogrid.myspace.delegate.KernelResults.class);
+        oper.setReturnClass(org.astrogrid.store.delegate.myspaceItn05.KernelResults.class);
         oper.setReturnQName(new javax.xml.namespace.QName("", "getStringReturn"));
         oper.setStyle(org.apache.axis.enum.Style.RPC);
         oper.setUse(org.apache.axis.enum.Use.ENCODED);
@@ -54,7 +54,7 @@ public class AstrogridMyspaceSoapBindingStub extends org.apache.axis.client.Stub
         oper.addParameter(new javax.xml.namespace.QName("", "in0"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, org.apache.axis.description.ParameterDesc.IN, false, false);
         oper.addParameter(new javax.xml.namespace.QName("", "in1"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"), boolean.class, org.apache.axis.description.ParameterDesc.IN, false, false);
         oper.setReturnType(new javax.xml.namespace.QName("urn:Kernel", "KernelResults"));
-        oper.setReturnClass(org.astrogrid.myspace.delegate.KernelResults.class);
+        oper.setReturnClass(org.astrogrid.store.delegate.myspaceItn05.KernelResults.class);
         oper.setReturnQName(new javax.xml.namespace.QName("", "getEntriesListReturn"));
         oper.setStyle(org.apache.axis.enum.Style.RPC);
         oper.setUse(org.apache.axis.enum.Use.ENCODED);
@@ -68,7 +68,7 @@ public class AstrogridMyspaceSoapBindingStub extends org.apache.axis.client.Stub
         oper.addParameter(new javax.xml.namespace.QName("", "in3"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"), int.class, org.apache.axis.description.ParameterDesc.IN, false, false);
         oper.addParameter(new javax.xml.namespace.QName("", "in4"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"), boolean.class, org.apache.axis.description.ParameterDesc.IN, false, false);
         oper.setReturnType(new javax.xml.namespace.QName("urn:Kernel", "KernelResults"));
-        oper.setReturnClass(org.astrogrid.myspace.delegate.KernelResults.class);
+        oper.setReturnClass(org.astrogrid.store.delegate.myspaceItn05.KernelResults.class);
         oper.setReturnQName(new javax.xml.namespace.QName("", "putStringReturn"));
         oper.setStyle(org.apache.axis.enum.Style.RPC);
         oper.setUse(org.apache.axis.enum.Use.ENCODED);
@@ -82,7 +82,7 @@ public class AstrogridMyspaceSoapBindingStub extends org.apache.axis.client.Stub
         oper.addParameter(new javax.xml.namespace.QName("", "in3"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"), int.class, org.apache.axis.description.ParameterDesc.IN, false, false);
         oper.addParameter(new javax.xml.namespace.QName("", "in4"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"), boolean.class, org.apache.axis.description.ParameterDesc.IN, false, false);
         oper.setReturnType(new javax.xml.namespace.QName("urn:Kernel", "KernelResults"));
-        oper.setReturnClass(org.astrogrid.myspace.delegate.KernelResults.class);
+        oper.setReturnClass(org.astrogrid.store.delegate.myspaceItn05.KernelResults.class);
         oper.setReturnQName(new javax.xml.namespace.QName("", "putBytesReturn"));
         oper.setStyle(org.apache.axis.enum.Style.RPC);
         oper.setUse(org.apache.axis.enum.Use.ENCODED);
@@ -96,7 +96,7 @@ public class AstrogridMyspaceSoapBindingStub extends org.apache.axis.client.Stub
         oper.addParameter(new javax.xml.namespace.QName("", "in3"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"), int.class, org.apache.axis.description.ParameterDesc.IN, false, false);
         oper.addParameter(new javax.xml.namespace.QName("", "in4"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"), boolean.class, org.apache.axis.description.ParameterDesc.IN, false, false);
         oper.setReturnType(new javax.xml.namespace.QName("urn:Kernel", "KernelResults"));
-        oper.setReturnClass(org.astrogrid.myspace.delegate.KernelResults.class);
+        oper.setReturnClass(org.astrogrid.store.delegate.myspaceItn05.KernelResults.class);
         oper.setReturnQName(new javax.xml.namespace.QName("", "putUriReturn"));
         oper.setStyle(org.apache.axis.enum.Style.RPC);
         oper.setUse(org.apache.axis.enum.Use.ENCODED);
@@ -107,7 +107,7 @@ public class AstrogridMyspaceSoapBindingStub extends org.apache.axis.client.Stub
         oper.addParameter(new javax.xml.namespace.QName("", "in0"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, org.apache.axis.description.ParameterDesc.IN, false, false);
         oper.addParameter(new javax.xml.namespace.QName("", "in1"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"), boolean.class, org.apache.axis.description.ParameterDesc.IN, false, false);
         oper.setReturnType(new javax.xml.namespace.QName("urn:Kernel", "KernelResults"));
-        oper.setReturnClass(org.astrogrid.myspace.delegate.KernelResults.class);
+        oper.setReturnClass(org.astrogrid.store.delegate.myspaceItn05.KernelResults.class);
         oper.setReturnQName(new javax.xml.namespace.QName("", "createContainerReturn"));
         oper.setStyle(org.apache.axis.enum.Style.RPC);
         oper.setUse(org.apache.axis.enum.Use.ENCODED);
@@ -119,7 +119,7 @@ public class AstrogridMyspaceSoapBindingStub extends org.apache.axis.client.Stub
         oper.addParameter(new javax.xml.namespace.QName("", "in1"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, org.apache.axis.description.ParameterDesc.IN, false, false);
         oper.addParameter(new javax.xml.namespace.QName("", "in2"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"), boolean.class, org.apache.axis.description.ParameterDesc.IN, false, false);
         oper.setReturnType(new javax.xml.namespace.QName("urn:Kernel", "KernelResults"));
-        oper.setReturnClass(org.astrogrid.myspace.delegate.KernelResults.class);
+        oper.setReturnClass(org.astrogrid.store.delegate.myspaceItn05.KernelResults.class);
         oper.setReturnQName(new javax.xml.namespace.QName("", "copyFileReturn"));
         oper.setStyle(org.apache.axis.enum.Style.RPC);
         oper.setUse(org.apache.axis.enum.Use.ENCODED);
@@ -131,7 +131,7 @@ public class AstrogridMyspaceSoapBindingStub extends org.apache.axis.client.Stub
         oper.addParameter(new javax.xml.namespace.QName("", "in1"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, org.apache.axis.description.ParameterDesc.IN, false, false);
         oper.addParameter(new javax.xml.namespace.QName("", "in2"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"), boolean.class, org.apache.axis.description.ParameterDesc.IN, false, false);
         oper.setReturnType(new javax.xml.namespace.QName("urn:Kernel", "KernelResults"));
-        oper.setReturnClass(org.astrogrid.myspace.delegate.KernelResults.class);
+        oper.setReturnClass(org.astrogrid.store.delegate.myspaceItn05.KernelResults.class);
         oper.setReturnQName(new javax.xml.namespace.QName("", "moveFileReturn"));
         oper.setStyle(org.apache.axis.enum.Style.RPC);
         oper.setUse(org.apache.axis.enum.Use.ENCODED);
@@ -142,7 +142,7 @@ public class AstrogridMyspaceSoapBindingStub extends org.apache.axis.client.Stub
         oper.addParameter(new javax.xml.namespace.QName("", "in0"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, org.apache.axis.description.ParameterDesc.IN, false, false);
         oper.addParameter(new javax.xml.namespace.QName("", "in1"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"), boolean.class, org.apache.axis.description.ParameterDesc.IN, false, false);
         oper.setReturnType(new javax.xml.namespace.QName("urn:Kernel", "KernelResults"));
-        oper.setReturnClass(org.astrogrid.myspace.delegate.KernelResults.class);
+        oper.setReturnClass(org.astrogrid.store.delegate.myspaceItn05.KernelResults.class);
         oper.setReturnQName(new javax.xml.namespace.QName("", "deleteFileReturn"));
         oper.setStyle(org.apache.axis.enum.Style.RPC);
         oper.setUse(org.apache.axis.enum.Use.ENCODED);
@@ -154,7 +154,7 @@ public class AstrogridMyspaceSoapBindingStub extends org.apache.axis.client.Stub
         oper.addParameter(new javax.xml.namespace.QName("", "in1"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "long"), long.class, org.apache.axis.description.ParameterDesc.IN, false, false);
         oper.addParameter(new javax.xml.namespace.QName("", "in2"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"), boolean.class, org.apache.axis.description.ParameterDesc.IN, false, false);
         oper.setReturnType(new javax.xml.namespace.QName("urn:Kernel", "KernelResults"));
-        oper.setReturnClass(org.astrogrid.myspace.delegate.KernelResults.class);
+        oper.setReturnClass(org.astrogrid.store.delegate.myspaceItn05.KernelResults.class);
         oper.setReturnQName(new javax.xml.namespace.QName("", "extendLifetimeReturn"));
         oper.setStyle(org.apache.axis.enum.Style.RPC);
         oper.setUse(org.apache.axis.enum.Use.ENCODED);
@@ -166,7 +166,7 @@ public class AstrogridMyspaceSoapBindingStub extends org.apache.axis.client.Stub
         oper.addParameter(new javax.xml.namespace.QName("", "in1"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, org.apache.axis.description.ParameterDesc.IN, false, false);
         oper.addParameter(new javax.xml.namespace.QName("", "in2"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"), boolean.class, org.apache.axis.description.ParameterDesc.IN, false, false);
         oper.setReturnType(new javax.xml.namespace.QName("urn:Kernel", "KernelResults"));
-        oper.setReturnClass(org.astrogrid.myspace.delegate.KernelResults.class);
+        oper.setReturnClass(org.astrogrid.store.delegate.myspaceItn05.KernelResults.class);
         oper.setReturnQName(new javax.xml.namespace.QName("", "changeOwnerReturn"));
         oper.setStyle(org.apache.axis.enum.Style.RPC);
         oper.setUse(org.apache.axis.enum.Use.ENCODED);
@@ -177,7 +177,7 @@ public class AstrogridMyspaceSoapBindingStub extends org.apache.axis.client.Stub
         oper.addParameter(new javax.xml.namespace.QName("", "in0"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, org.apache.axis.description.ParameterDesc.IN, false, false);
         oper.addParameter(new javax.xml.namespace.QName("", "in1"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"), boolean.class, org.apache.axis.description.ParameterDesc.IN, false, false);
         oper.setReturnType(new javax.xml.namespace.QName("urn:Kernel", "KernelResults"));
-        oper.setReturnClass(org.astrogrid.myspace.delegate.KernelResults.class);
+        oper.setReturnClass(org.astrogrid.store.delegate.myspaceItn05.KernelResults.class);
         oper.setReturnQName(new javax.xml.namespace.QName("", "createAccountReturn"));
         oper.setStyle(org.apache.axis.enum.Style.RPC);
         oper.setUse(org.apache.axis.enum.Use.ENCODED);
@@ -188,7 +188,7 @@ public class AstrogridMyspaceSoapBindingStub extends org.apache.axis.client.Stub
         oper.addParameter(new javax.xml.namespace.QName("", "in0"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, org.apache.axis.description.ParameterDesc.IN, false, false);
         oper.addParameter(new javax.xml.namespace.QName("", "in1"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"), boolean.class, org.apache.axis.description.ParameterDesc.IN, false, false);
         oper.setReturnType(new javax.xml.namespace.QName("urn:Kernel", "KernelResults"));
-        oper.setReturnClass(org.astrogrid.myspace.delegate.KernelResults.class);
+        oper.setReturnClass(org.astrogrid.store.delegate.myspaceItn05.KernelResults.class);
         oper.setReturnQName(new javax.xml.namespace.QName("", "deleteAccountReturn"));
         oper.setStyle(org.apache.axis.enum.Style.RPC);
         oper.setUse(org.apache.axis.enum.Use.ENCODED);
@@ -223,14 +223,14 @@ public class AstrogridMyspaceSoapBindingStub extends org.apache.axis.client.Stub
             java.lang.Class simpledf = org.apache.axis.encoding.ser.SimpleDeserializerFactory.class;
             qName = new javax.xml.namespace.QName("urn:Kernel", "StatusResults");
             cachedSerQNames.add(qName);
-            cls = org.astrogrid.myspace.delegate.StatusResults.class;
+            cls = org.astrogrid.store.delegate.myspaceItn05.StatusResults.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
             qName = new javax.xml.namespace.QName("urn:Kernel", "KernelResults");
             cachedSerQNames.add(qName);
-            cls = org.astrogrid.myspace.delegate.KernelResults.class;
+            cls = org.astrogrid.store.delegate.myspaceItn05.KernelResults.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
@@ -244,7 +244,7 @@ public class AstrogridMyspaceSoapBindingStub extends org.apache.axis.client.Stub
 
             qName = new javax.xml.namespace.QName("urn:Kernel", "EntryResults");
             cachedSerQNames.add(qName);
-            cls = org.astrogrid.myspace.delegate.EntryResults.class;
+            cls = org.astrogrid.store.delegate.myspaceItn05.EntryResults.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
@@ -307,7 +307,7 @@ public class AstrogridMyspaceSoapBindingStub extends org.apache.axis.client.Stub
         }
     }
 
-    public org.astrogrid.myspace.delegate.KernelResults getBytes(java.lang.String in0, boolean in1) throws java.rmi.RemoteException {
+    public org.astrogrid.store.delegate.myspaceItn05.KernelResults getBytes(java.lang.String in0, boolean in1) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -328,14 +328,14 @@ public class AstrogridMyspaceSoapBindingStub extends org.apache.axis.client.Stub
         else {
             extractAttachments(_call);
             try {
-                return (org.astrogrid.myspace.delegate.KernelResults) _resp;
+                return (org.astrogrid.store.delegate.myspaceItn05.KernelResults) _resp;
             } catch (java.lang.Exception _exception) {
-                return (org.astrogrid.myspace.delegate.KernelResults) org.apache.axis.utils.JavaUtils.convert(_resp, org.astrogrid.myspace.delegate.KernelResults.class);
+                return (org.astrogrid.store.delegate.myspaceItn05.KernelResults) org.apache.axis.utils.JavaUtils.convert(_resp, org.astrogrid.store.delegate.myspaceItn05.KernelResults.class);
             }
         }
     }
 
-    public org.astrogrid.myspace.delegate.KernelResults getString(java.lang.String in0, boolean in1) throws java.rmi.RemoteException {
+    public org.astrogrid.store.delegate.myspaceItn05.KernelResults getString(java.lang.String in0, boolean in1) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -356,9 +356,9 @@ public class AstrogridMyspaceSoapBindingStub extends org.apache.axis.client.Stub
         else {
             extractAttachments(_call);
             try {
-                return (org.astrogrid.myspace.delegate.KernelResults) _resp;
+                return (org.astrogrid.store.delegate.myspaceItn05.KernelResults) _resp;
             } catch (java.lang.Exception _exception) {
-                return (org.astrogrid.myspace.delegate.KernelResults) org.apache.axis.utils.JavaUtils.convert(_resp, org.astrogrid.myspace.delegate.KernelResults.class);
+                return (org.astrogrid.store.delegate.myspaceItn05.KernelResults) org.apache.axis.utils.JavaUtils.convert(_resp, org.astrogrid.store.delegate.myspaceItn05.KernelResults.class);
             }
         }
     }
@@ -391,7 +391,7 @@ public class AstrogridMyspaceSoapBindingStub extends org.apache.axis.client.Stub
         }
     }
 
-    public org.astrogrid.myspace.delegate.KernelResults getEntriesList(java.lang.String in0, boolean in1) throws java.rmi.RemoteException {
+    public org.astrogrid.store.delegate.myspaceItn05.KernelResults getEntriesList(java.lang.String in0, boolean in1) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -412,14 +412,14 @@ public class AstrogridMyspaceSoapBindingStub extends org.apache.axis.client.Stub
         else {
             extractAttachments(_call);
             try {
-                return (org.astrogrid.myspace.delegate.KernelResults) _resp;
+                return (org.astrogrid.store.delegate.myspaceItn05.KernelResults) _resp;
             } catch (java.lang.Exception _exception) {
-                return (org.astrogrid.myspace.delegate.KernelResults) org.apache.axis.utils.JavaUtils.convert(_resp, org.astrogrid.myspace.delegate.KernelResults.class);
+                return (org.astrogrid.store.delegate.myspaceItn05.KernelResults) org.apache.axis.utils.JavaUtils.convert(_resp, org.astrogrid.store.delegate.myspaceItn05.KernelResults.class);
             }
         }
     }
 
-    public org.astrogrid.myspace.delegate.KernelResults putString(java.lang.String in0, java.lang.String in1, int in2, int in3, boolean in4) throws java.rmi.RemoteException {
+    public org.astrogrid.store.delegate.myspaceItn05.KernelResults putString(java.lang.String in0, java.lang.String in1, int in2, int in3, boolean in4) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -440,14 +440,14 @@ public class AstrogridMyspaceSoapBindingStub extends org.apache.axis.client.Stub
         else {
             extractAttachments(_call);
             try {
-                return (org.astrogrid.myspace.delegate.KernelResults) _resp;
+                return (org.astrogrid.store.delegate.myspaceItn05.KernelResults) _resp;
             } catch (java.lang.Exception _exception) {
-                return (org.astrogrid.myspace.delegate.KernelResults) org.apache.axis.utils.JavaUtils.convert(_resp, org.astrogrid.myspace.delegate.KernelResults.class);
+                return (org.astrogrid.store.delegate.myspaceItn05.KernelResults) org.apache.axis.utils.JavaUtils.convert(_resp, org.astrogrid.store.delegate.myspaceItn05.KernelResults.class);
             }
         }
     }
 
-    public org.astrogrid.myspace.delegate.KernelResults putBytes(java.lang.String in0, byte[] in1, int in2, int in3, boolean in4) throws java.rmi.RemoteException {
+    public org.astrogrid.store.delegate.myspaceItn05.KernelResults putBytes(java.lang.String in0, byte[] in1, int in2, int in3, boolean in4) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -468,14 +468,14 @@ public class AstrogridMyspaceSoapBindingStub extends org.apache.axis.client.Stub
         else {
             extractAttachments(_call);
             try {
-                return (org.astrogrid.myspace.delegate.KernelResults) _resp;
+                return (org.astrogrid.store.delegate.myspaceItn05.KernelResults) _resp;
             } catch (java.lang.Exception _exception) {
-                return (org.astrogrid.myspace.delegate.KernelResults) org.apache.axis.utils.JavaUtils.convert(_resp, org.astrogrid.myspace.delegate.KernelResults.class);
+                return (org.astrogrid.store.delegate.myspaceItn05.KernelResults) org.apache.axis.utils.JavaUtils.convert(_resp, org.astrogrid.store.delegate.myspaceItn05.KernelResults.class);
             }
         }
     }
 
-    public org.astrogrid.myspace.delegate.KernelResults putUri(java.lang.String in0, java.lang.String in1, int in2, int in3, boolean in4) throws java.rmi.RemoteException {
+    public org.astrogrid.store.delegate.myspaceItn05.KernelResults putUri(java.lang.String in0, java.lang.String in1, int in2, int in3, boolean in4) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -496,14 +496,14 @@ public class AstrogridMyspaceSoapBindingStub extends org.apache.axis.client.Stub
         else {
             extractAttachments(_call);
             try {
-                return (org.astrogrid.myspace.delegate.KernelResults) _resp;
+                return (org.astrogrid.store.delegate.myspaceItn05.KernelResults) _resp;
             } catch (java.lang.Exception _exception) {
-                return (org.astrogrid.myspace.delegate.KernelResults) org.apache.axis.utils.JavaUtils.convert(_resp, org.astrogrid.myspace.delegate.KernelResults.class);
+                return (org.astrogrid.store.delegate.myspaceItn05.KernelResults) org.apache.axis.utils.JavaUtils.convert(_resp, org.astrogrid.store.delegate.myspaceItn05.KernelResults.class);
             }
         }
     }
 
-    public org.astrogrid.myspace.delegate.KernelResults createContainer(java.lang.String in0, boolean in1) throws java.rmi.RemoteException {
+    public org.astrogrid.store.delegate.myspaceItn05.KernelResults createContainer(java.lang.String in0, boolean in1) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -524,14 +524,14 @@ public class AstrogridMyspaceSoapBindingStub extends org.apache.axis.client.Stub
         else {
             extractAttachments(_call);
             try {
-                return (org.astrogrid.myspace.delegate.KernelResults) _resp;
+                return (org.astrogrid.store.delegate.myspaceItn05.KernelResults) _resp;
             } catch (java.lang.Exception _exception) {
-                return (org.astrogrid.myspace.delegate.KernelResults) org.apache.axis.utils.JavaUtils.convert(_resp, org.astrogrid.myspace.delegate.KernelResults.class);
+                return (org.astrogrid.store.delegate.myspaceItn05.KernelResults) org.apache.axis.utils.JavaUtils.convert(_resp, org.astrogrid.store.delegate.myspaceItn05.KernelResults.class);
             }
         }
     }
 
-    public org.astrogrid.myspace.delegate.KernelResults copyFile(java.lang.String in0, java.lang.String in1, boolean in2) throws java.rmi.RemoteException {
+    public org.astrogrid.store.delegate.myspaceItn05.KernelResults copyFile(java.lang.String in0, java.lang.String in1, boolean in2) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -552,14 +552,14 @@ public class AstrogridMyspaceSoapBindingStub extends org.apache.axis.client.Stub
         else {
             extractAttachments(_call);
             try {
-                return (org.astrogrid.myspace.delegate.KernelResults) _resp;
+                return (org.astrogrid.store.delegate.myspaceItn05.KernelResults) _resp;
             } catch (java.lang.Exception _exception) {
-                return (org.astrogrid.myspace.delegate.KernelResults) org.apache.axis.utils.JavaUtils.convert(_resp, org.astrogrid.myspace.delegate.KernelResults.class);
+                return (org.astrogrid.store.delegate.myspaceItn05.KernelResults) org.apache.axis.utils.JavaUtils.convert(_resp, org.astrogrid.store.delegate.myspaceItn05.KernelResults.class);
             }
         }
     }
 
-    public org.astrogrid.myspace.delegate.KernelResults moveFile(java.lang.String in0, java.lang.String in1, boolean in2) throws java.rmi.RemoteException {
+    public org.astrogrid.store.delegate.myspaceItn05.KernelResults moveFile(java.lang.String in0, java.lang.String in1, boolean in2) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -580,14 +580,14 @@ public class AstrogridMyspaceSoapBindingStub extends org.apache.axis.client.Stub
         else {
             extractAttachments(_call);
             try {
-                return (org.astrogrid.myspace.delegate.KernelResults) _resp;
+                return (org.astrogrid.store.delegate.myspaceItn05.KernelResults) _resp;
             } catch (java.lang.Exception _exception) {
-                return (org.astrogrid.myspace.delegate.KernelResults) org.apache.axis.utils.JavaUtils.convert(_resp, org.astrogrid.myspace.delegate.KernelResults.class);
+                return (org.astrogrid.store.delegate.myspaceItn05.KernelResults) org.apache.axis.utils.JavaUtils.convert(_resp, org.astrogrid.store.delegate.myspaceItn05.KernelResults.class);
             }
         }
     }
 
-    public org.astrogrid.myspace.delegate.KernelResults deleteFile(java.lang.String in0, boolean in1) throws java.rmi.RemoteException {
+    public org.astrogrid.store.delegate.myspaceItn05.KernelResults deleteFile(java.lang.String in0, boolean in1) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -608,14 +608,14 @@ public class AstrogridMyspaceSoapBindingStub extends org.apache.axis.client.Stub
         else {
             extractAttachments(_call);
             try {
-                return (org.astrogrid.myspace.delegate.KernelResults) _resp;
+                return (org.astrogrid.store.delegate.myspaceItn05.KernelResults) _resp;
             } catch (java.lang.Exception _exception) {
-                return (org.astrogrid.myspace.delegate.KernelResults) org.apache.axis.utils.JavaUtils.convert(_resp, org.astrogrid.myspace.delegate.KernelResults.class);
+                return (org.astrogrid.store.delegate.myspaceItn05.KernelResults) org.apache.axis.utils.JavaUtils.convert(_resp, org.astrogrid.store.delegate.myspaceItn05.KernelResults.class);
             }
         }
     }
 
-    public org.astrogrid.myspace.delegate.KernelResults extendLifetime(java.lang.String in0, long in1, boolean in2) throws java.rmi.RemoteException {
+    public org.astrogrid.store.delegate.myspaceItn05.KernelResults extendLifetime(java.lang.String in0, long in1, boolean in2) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -636,14 +636,14 @@ public class AstrogridMyspaceSoapBindingStub extends org.apache.axis.client.Stub
         else {
             extractAttachments(_call);
             try {
-                return (org.astrogrid.myspace.delegate.KernelResults) _resp;
+                return (org.astrogrid.store.delegate.myspaceItn05.KernelResults) _resp;
             } catch (java.lang.Exception _exception) {
-                return (org.astrogrid.myspace.delegate.KernelResults) org.apache.axis.utils.JavaUtils.convert(_resp, org.astrogrid.myspace.delegate.KernelResults.class);
+                return (org.astrogrid.store.delegate.myspaceItn05.KernelResults) org.apache.axis.utils.JavaUtils.convert(_resp, org.astrogrid.store.delegate.myspaceItn05.KernelResults.class);
             }
         }
     }
 
-    public org.astrogrid.myspace.delegate.KernelResults changeOwner(java.lang.String in0, java.lang.String in1, boolean in2) throws java.rmi.RemoteException {
+    public org.astrogrid.store.delegate.myspaceItn05.KernelResults changeOwner(java.lang.String in0, java.lang.String in1, boolean in2) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -664,14 +664,14 @@ public class AstrogridMyspaceSoapBindingStub extends org.apache.axis.client.Stub
         else {
             extractAttachments(_call);
             try {
-                return (org.astrogrid.myspace.delegate.KernelResults) _resp;
+                return (org.astrogrid.store.delegate.myspaceItn05.KernelResults) _resp;
             } catch (java.lang.Exception _exception) {
-                return (org.astrogrid.myspace.delegate.KernelResults) org.apache.axis.utils.JavaUtils.convert(_resp, org.astrogrid.myspace.delegate.KernelResults.class);
+                return (org.astrogrid.store.delegate.myspaceItn05.KernelResults) org.apache.axis.utils.JavaUtils.convert(_resp, org.astrogrid.store.delegate.myspaceItn05.KernelResults.class);
             }
         }
     }
 
-    public org.astrogrid.myspace.delegate.KernelResults createAccount(java.lang.String in0, boolean in1) throws java.rmi.RemoteException {
+    public org.astrogrid.store.delegate.myspaceItn05.KernelResults createAccount(java.lang.String in0, boolean in1) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -692,14 +692,14 @@ public class AstrogridMyspaceSoapBindingStub extends org.apache.axis.client.Stub
         else {
             extractAttachments(_call);
             try {
-                return (org.astrogrid.myspace.delegate.KernelResults) _resp;
+                return (org.astrogrid.store.delegate.myspaceItn05.KernelResults) _resp;
             } catch (java.lang.Exception _exception) {
-                return (org.astrogrid.myspace.delegate.KernelResults) org.apache.axis.utils.JavaUtils.convert(_resp, org.astrogrid.myspace.delegate.KernelResults.class);
+                return (org.astrogrid.store.delegate.myspaceItn05.KernelResults) org.apache.axis.utils.JavaUtils.convert(_resp, org.astrogrid.store.delegate.myspaceItn05.KernelResults.class);
             }
         }
     }
 
-    public org.astrogrid.myspace.delegate.KernelResults deleteAccount(java.lang.String in0, boolean in1) throws java.rmi.RemoteException {
+    public org.astrogrid.store.delegate.myspaceItn05.KernelResults deleteAccount(java.lang.String in0, boolean in1) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -720,9 +720,9 @@ public class AstrogridMyspaceSoapBindingStub extends org.apache.axis.client.Stub
         else {
             extractAttachments(_call);
             try {
-                return (org.astrogrid.myspace.delegate.KernelResults) _resp;
+                return (org.astrogrid.store.delegate.myspaceItn05.KernelResults) _resp;
             } catch (java.lang.Exception _exception) {
-                return (org.astrogrid.myspace.delegate.KernelResults) org.apache.axis.utils.JavaUtils.convert(_resp, org.astrogrid.myspace.delegate.KernelResults.class);
+                return (org.astrogrid.store.delegate.myspaceItn05.KernelResults) org.apache.axis.utils.JavaUtils.convert(_resp, org.astrogrid.store.delegate.myspaceItn05.KernelResults.class);
             }
         }
     }

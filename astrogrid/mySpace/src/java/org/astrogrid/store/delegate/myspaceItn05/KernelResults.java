@@ -5,15 +5,15 @@
  * by the Apache Axis WSDL2Java emitter.
  */
 
-package org.astrogrid.myspace.delegate;
+package org.astrogrid.store.delegate.myspaceItn05;
 
 public class KernelResults  implements java.io.Serializable {
     private byte[] contentsBytes;
     private java.lang.String contentsString;
     private java.lang.Object[] entries;
-    private org.astrogrid.myspace.delegate.EntryResults entryResults;
+    private org.astrogrid.store.delegate.myspaceItn05.EntryResults entryResults;
     private java.lang.Object[] statusList;
-    private org.astrogrid.myspace.delegate.StatusResults statusResults;
+    private org.astrogrid.store.delegate.myspaceItn05.StatusResults statusResults;
 
     public KernelResults() {
     }
@@ -42,11 +42,11 @@ public class KernelResults  implements java.io.Serializable {
         this.entries = entries;
     }
 
-    public org.astrogrid.myspace.delegate.EntryResults getEntryResults() {
+    public org.astrogrid.store.delegate.myspaceItn05.EntryResults getEntryResults() {
         return entryResults;
     }
 
-    public void setEntryResults(org.astrogrid.myspace.delegate.EntryResults entryResults) {
+    public void setEntryResults(org.astrogrid.store.delegate.myspaceItn05.EntryResults entryResults) {
         this.entryResults = entryResults;
     }
 
@@ -58,11 +58,11 @@ public class KernelResults  implements java.io.Serializable {
         this.statusList = statusList;
     }
 
-    public org.astrogrid.myspace.delegate.StatusResults getStatusResults() {
+    public org.astrogrid.store.delegate.myspaceItn05.StatusResults getStatusResults() {
         return statusResults;
     }
 
-    public void setStatusResults(org.astrogrid.myspace.delegate.StatusResults statusResults) {
+    public void setStatusResults(org.astrogrid.store.delegate.myspaceItn05.StatusResults statusResults) {
         this.statusResults = statusResults;
     }
 

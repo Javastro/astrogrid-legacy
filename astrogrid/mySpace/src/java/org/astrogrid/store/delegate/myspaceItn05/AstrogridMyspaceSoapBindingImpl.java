@@ -12,10 +12,10 @@
  * @version Iteration 5.
  */
 
-package org.astrogrid.myspace.delegate;
+package org.astrogrid.store.delegate.myspaceItn05;
 
 public class AstrogridMyspaceSoapBindingImpl implements 
-  org.astrogrid.myspace.delegate.Manager
+  org.astrogrid.store.delegate.myspaceItn05.Manager
 {
    public String heartBeat() throws java.rmi.RemoteException
    {

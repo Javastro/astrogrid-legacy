@@ -1,4 +1,4 @@
-package org.astrogrid.myspace.delegate;
+package org.astrogrid.store.delegate.myspaceItn05;
 
 /**
  * The <code>EntryCodes</code> class defines the values for the various

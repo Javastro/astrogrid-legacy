@@ -5,7 +5,7 @@
  * by the Apache Axis WSDL2Java emitter.
  */
 
-package org.astrogrid.myspace.delegate;
+package org.astrogrid.store.delegate.myspaceItn05;
 
 public class StatusResults  implements java.io.Serializable {
     private java.lang.String message;
