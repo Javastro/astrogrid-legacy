@@ -60,6 +60,8 @@ public class JobStep {
 		try {
 		 
 		   setName(element.getAttribute( SubmissionRequestDD.JOBSTEP_NAME_ATTR )) ;
+		   setStatus( STATUS_INITIALIZED ) ;
+		   setComment( "" ) ;
 		
 		   NodeList
 			  nodeList = element.getChildNodes() ;
