@@ -17,3 +17,4 @@ cd $BUILDHOME
 echo $BUILDHOME
 maven undeploy-all
 maven deploy-all
+maven astrogrid-deploy-all
