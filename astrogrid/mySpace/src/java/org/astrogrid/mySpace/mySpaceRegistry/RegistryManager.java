@@ -11,11 +11,11 @@ public class RegistryManager {
     	return true;
     }
 
-    public DataItemRecords[] lookUpDataItemRecord1(String msRegistryID, String dataHolderExpr, DataItemRecord dataitemrecord) {
+    public DataItemRecord[] lookUpDataItemRecord1(String msRegistryID, String dataHolderExpr, DataItemRecord dataitemrecord) {
         return vec;
     }
 
-    public DataItemRecords[] lookUpDataItemRecord(String msRegistryID, int dataHolderID, DataItemRecord dataitemrecord) {
+    public DataItemRecord[] lookUpDataItemRecord(String msRegistryID, int dataHolderID, DataItemRecord dataitemrecord) {
         return vec;
     }
 
