@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: autorun.sh,v 1.7 2004/05/24 12:25:26 jdt Exp $ 
+# $Id: autorun.sh,v 1.8 2004/05/24 12:30:06 jdt Exp $ 
 OLDDIR=$PWD
 
 #setup paths etc
@@ -35,24 +35,24 @@ echo $BUILDHOME >> $LOGFILE
 
 if maven undeploy-all >> $LOGFILE 2>&1
 then
-   echo "*** SUCCESS ***\n" >> $LOG_FILE
+   echo "*** SUCCESS ***\n" >> $LOGFILE
 else
-   echo "*** FAILURE ***\n" >> $LOG_FILE
-   cat $LOG_FILE | mail -s "undeploy-all Failure in integration tests" $ADMIN_EMAIL 
+   echo "*** FAILURE ***\n" >> $LOGFILE
+   cat $LOGFILE | mail -s "undeploy-all Failure in integration tests" $ADMIN_EMAIL 
 fi
 if maven maven deploy-all >> $LOGFILE 2>&1
 then
-   echo "*** SUCCESS ***\n" >> $LOG_FILE
+   echo "*** SUCCESS ***\n" >> $LOGFILE
 else
-   echo "*** FAILURE ***\n" >> $LOG_FILE
-   cat $LOG_FILE | mail -s "deploy-all Failure in integration tests" $ADMIN_EMAIL 
+   echo "*** FAILURE ***\n" >> $LOGFILE
+   cat $LOGFILE | mail -s "deploy-all Failure in integration tests" $ADMIN_EMAIL 
 fi
 if maven -Dorg.astrogrid.autobuild=true astrogrid-deploy-site >> $LOGFILE 2>&1
 then
-   echo "*** SUCCESS ***\n" >> $LOG_FILE
+   echo "*** SUCCESS ***\n" >> $LOGFILE
 else
-   echo "*** FAILURE ***\n" >> $LOG_FILE
-   cat $LOG_FILE | mail -s "astrogrid-deploy-site Failure in integration tests" $ADMIN_EMAIL 
+   echo "*** FAILURE ***\n" >> $LOGFILE
+   cat $LOGFILE | mail -s "astrogrid-deploy-site Failure in integration tests" $ADMIN_EMAIL 
 fi
 
 scp $LOGFILE maven@www.astrogrid.org:/var/www/www/maven/docs/snapshot/log/integration.log
