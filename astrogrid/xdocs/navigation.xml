@@ -110,6 +110,7 @@
                     href="log/maven-build-applications.log" />
                 <item name="Common" href="log/maven-build-common.log" />
                 <item name="Community" href="log/maven-build-community.log" />
+                <itn name="Contracts" href="log/maven-build-contracts.log"/>
                 <item name="DataCenter" href="log/maven-build-datacenter.log" />
 				 <item name="eXist" href="log/maven-build-eXist.log" />
                  <item name="FileManager" href="log/maven-build-filemanager.log"/>  
