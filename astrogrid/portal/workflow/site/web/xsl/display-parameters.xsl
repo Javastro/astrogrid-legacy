@@ -67,7 +67,7 @@
                         <font size="-1">
                             <xsl:element name="a">                                    
                                 <xsl:attribute name="href">javascript:void(0);</xsl:attribute>
-                                <xsl:attribute name="onMouseOver">this.T_TITLE='Parameter: <xsl:value-of select="@param-UI-name" /> '; this.T_WIDTH=250; this.T_DELAY=500; return escape('' +
+                                <xsl:attribute name="onMouseOver">this.T_TITLE='Parameter: <xsl:value-of select="@param-UI-name" /> '; this.T_WIDTH=250; this.T_DELAY=500; this.T_STICKY=true; return escape('' +
                                                     ' &lt;b&gt;Description: &lt;/b&gt; <xsl:value-of select="@param-UI-description" /> ' +
                                                     ' &lt;br/&gt; &lt;b&gt;Type:&lt;/b&gt; <xsl:value-of select="@param-type" /> ' +
                                                     ' &lt;br/&gt; &lt;b&gt;Subtype:&lt;/b&gt; <xsl:value-of select="@param-subtype"/> ' +
