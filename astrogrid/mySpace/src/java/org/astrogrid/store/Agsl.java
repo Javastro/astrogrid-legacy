@@ -1,5 +1,5 @@
 /*
- * $Id: Agsl.java,v 1.10 2004/03/15 18:18:31 mch Exp $
+ * $Id: Agsl.java,v 1.11 2004/03/18 20:00:47 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -62,7 +62,7 @@ public class Agsl
     */
    public Agsl(String endpoint, String path) throws MalformedURLException
    {
-      this(SCHEME+":"+endpoint+"#"+path);
+      this(SCHEME+":"+endpoint.trim()+"#"+path.trim());
    }
    
    /** Make a reference from the given string representation. Takes agsl forms,
@@ -71,6 +71,8 @@ public class Agsl
     */
    public Agsl(String rl) throws MalformedURLException
    {
+      rl = rl.trim();
+      
       if (rl.toLowerCase().startsWith("mailto:")) {
          rl = "astrogrid:store:"+rl;
       }
@@ -230,6 +232,9 @@ public class Agsl
 
 /*
 $Log: Agsl.java,v $
+Revision 1.11  2004/03/18 20:00:47  mch
+Added trims
+
 Revision 1.10  2004/03/15 18:18:31  mch
 Added file output
 
