@@ -639,10 +639,11 @@ public class DesignAction extends AbstractAction {
             }
             catch( CommunityIdentifierException cix ) {
                 cix.printStackTrace();
-            }
-            catch( WorkflowInterfaceException wix ) {
+            }         
+            catch( WorkflowInterfaceException wix ) {            	
+				session.setAttribute( WORKFLOW_SUBMIT_MESSAGE, "An error has occured whilst trying to save your workflow (possibly because your workflow failed to validate - e.g. do all steps contain tools)" ) ;
                 wix.printStackTrace();
-            }
+               }
             finally {
                 if( TRACE_ENABLED ) trace( "DesignActionImpl.saveWorkflow() exit" ) ;
             }
