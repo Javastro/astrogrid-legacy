@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcPlugin.java,v 1.12 2004/07/14 18:04:02 mch Exp $
+ * $Id: JdbcPlugin.java,v 1.13 2004/07/16 17:11:03 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -152,6 +152,18 @@ public class JdbcPlugin extends QuerierPlugin  {
       return connectionManager.createConnection();
 
    }
+
+   /** Convenience routine for finding a column in a result set, but ignoring
+    * missing columns
+    */
+   public String getColumnValue(ResultSet table, String column) {
+      try {
+         return table.getString(column);
+      }
+      catch (SQLException e) {
+         return "(Unknown)";
+      }
+   }
    
    /** Gets metadata about the database. For SQL servers, this is a list of columns */
    public Document getMetadata() throws IOException {
@@ -162,46 +174,6 @@ public class JdbcPlugin extends QuerierPlugin  {
          
          DatabaseMetaData metadata = connection.getMetaData();
          
-         /** bleurgh, writing by hand
-         StringBuffer s = new StringBuffer("<TabularMetadata>\n");
-
-         //get all tables
-         ResultSet tables = metadata.getTables(null, null, "*", null);
-
-         while (tables.next()) {
-            s.append("  <Table name='"+tables.getString("TABLE_NAME")+"'>\n");
-            s.append("    <!-- schema='"+tables.getString("TABLE_SCHEM")+"' -->\n");
-            s.append("    <!-- cat='"+tables.getString("TABLE_CAT")+"' -->\n");
-            s.append("    <!-- type='"+tables.getString("TABLE_TYPE")+"' -->\n");
-            s.append("    <Description>"+tables.getString("REMARKS")+"</Description>\n");
-            s.append("    <!-- type cat='"+tables.getString("TYPE_CAT")+"' -->\n");
-            s.append("    <!-- type schema='"+tables.getString("TYPE_SCHEM")+"' -->\n");
-            s.append("    <!-- type name='"+tables.getString("TYPE_NAME")+"' -->\n");
-            s.append("    <!-- self ref='"+tables.getString("SELF_REFERENCING_COL_NAME")+"' -->\n");
-            s.append("    <!-- ref gen='"+tables.getString("REF_GENERATION")+"' -->\n");
-            
-            ResultSet columns = metadata.getColumns("*", "*", "*", "*");
-            
-            while (columns.next()) {
-               s.append("  <Column name='"+columns.getString("COLUMN_NAME")+"'>\n"+
-                          "<!-- Catalogue="+columns.getString("TABLE_CAT")+" -->\n"+
-                          "<!-- Scheme="+columns.getString("TABLE_SCHEM")+" -->\n"+
-                          "<!-- Table="+columns.getString("TABLE_NAME")+" -->\n"+
-                          "<DataType>"+columns.getString("DATA_TYPE")+"<DataType>\n"+
-                          "<Description>"+columns.getString("REMARKS")+"<Description>\n"+
-                          "<Units>   </Units>\n"+
-                          "<UCD>       </UCD>\n"+
-                          "<UcdPlus>   </UcdPlus>\n"+
-                          "<ErrorColumn>   </ErrorColumn>\n"+
-                        "  </Column>\n"
-                       );
-            }
-            
-            s.append("  </Table>");
-         }
-         
-         s.append("</TabularMetadata>\n");
-          /**/
          
          /** Alternative XmlWriter form */
          StringWriter sw = new StringWriter();
@@ -232,26 +204,26 @@ public class JdbcPlugin extends QuerierPlugin  {
          ResultSet tables = metadata.getTables(null, null, "%", null);
 
          while (tables.next()) {
-            XmlTagPrinter tableTag = metaTag.newTag("Table", "name='"+tables.getString("TABLE_NAME")+"'");
-            tableTag.writeTag("Description", tables.getString("REMARKS"));
-            tableTag.writeComment("schema='"+tables.getString("TABLE_SCHEM")+"'");
-            tableTag.writeComment("cat='"+tables.getString("TABLE_CAT")+"'");
-            tableTag.writeComment("type='"+tables.getString("TABLE_TYPE")+"'");
-//            tableTag.writeComment("typecat='"+tables.getString("TYPE_CAT")+"'");
-//            tableTag.writeComment("typeschema='"+tables.getString("TYPE_SCHEM")+"'");
-//            tableTag.writeComment("typename='"+tables.getString("TYPE_NAME")+"'");
-//            tableTag.writeComment("selfref='"+tables.getString("SELF_REFERENCING_COL_NAME")+"'");
-//            tableTag.writeComment("refgen='"+tables.getString("REF_GENERATION")+"'");
+            XmlTagPrinter tableTag = metaTag.newTag("Table", "name='"+getColumnValue(tables, "TABLE_NAME")+"'");
+            tableTag.writeTag("Description", getColumnValue(tables, "REMARKS"));
+            tableTag.writeComment("schema='"+getColumnValue(tables, "TABLE_SCHEM")+"'");
+            tableTag.writeComment("cat='"+getColumnValue(tables, "TABLE_CAT")+"'");
+            tableTag.writeComment("type='"+getColumnValue(tables, "TABLE_TYPE")+"'");
+            tableTag.writeComment("typecat='"+getColumnValue(tables, "TYPE_CAT")+"'");
+            tableTag.writeComment("typeschema='"+getColumnValue(tables, "TYPE_SCHEM")+"'");
+            tableTag.writeComment("typename='"+getColumnValue(tables, "TYPE_NAME")+"'");
+            tableTag.writeComment("selfref='"+getColumnValue(tables, "SELF_REFERENCING_COL_NAME")+"'");
+            tableTag.writeComment("refgen='"+getColumnValue(tables, "REF_GENERATION")+"'");
             
             ResultSet columns = metadata.getColumns(null, null, tables.getString("TABLE_NAME"), "%");
             
             while (columns.next()) {
-               XmlTagPrinter colTag = tableTag.newTag("Column", "name='"+columns.getString("COLUMN_NAME")+"'");
-               colTag.writeComment("schema='"+tables.getString("TABLE_SCHEM")+"'");
-               colTag.writeComment("cat='"+tables.getString("TABLE_CAT")+"'");
-               colTag.writeComment("table='"+tables.getString("TABLE_NAME")+"'");
-               colTag.writeTag("DataType", columns.getString("DATA_TYPE"));
-               colTag.writeTag("Description", columns.getString("REMARKS"));
+               XmlTagPrinter colTag = tableTag.newTag("Column", "name='"+getColumnValue(columns, "COLUMN_NAME")+"'");
+               colTag.writeComment("schema='"+getColumnValue(columns, "TABLE_SCHEM")+"'");
+               colTag.writeComment("cat='"+getColumnValue(columns, "TABLE_CAT")+"'");
+               colTag.writeComment("table='"+getColumnValue(columns, "TABLE_NAME")+"'");
+               colTag.writeTag("DataType", getColumnValue(columns, "DATA_TYPE"));
+               colTag.writeTag("Description", getColumnValue(columns, "REMARKS"));
                colTag.writeTag("Units", " ");
                colTag.writeTag("UCD", " ");
                colTag.writeTag("UcdPlus", " ");
