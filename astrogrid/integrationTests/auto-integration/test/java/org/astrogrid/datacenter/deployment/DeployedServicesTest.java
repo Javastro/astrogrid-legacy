@@ -1,4 +1,4 @@
-/*$Id: DeployedServicesTest.java,v 1.5 2004/10/06 22:03:45 mch Exp $
+/*$Id: DeployedServicesTest.java,v 1.6 2004/10/29 17:55:13 mch Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -42,6 +42,7 @@ public class DeployedServicesTest extends TestCase {
          "http://grendel12.roe.ac.uk:8080/pal-6df/services/AxisDataService05",
          DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
 
+      delegate.setTimeout(60000);
       InputStream is = delegate.coneSearch(10,10,2);
       assertNotNull(is);
       DomHelper.newDocument(is);
@@ -54,6 +55,7 @@ public class DeployedServicesTest extends TestCase {
          Account.ANONYMOUS,
          "http://grendel12.roe.ac.uk:8080/pal-sec/services/AxisDataService05",
          DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
+      delegate.setTimeout(60000);
 
       String adqls = "SELECT * FROM sgas_event WHERE nar>9500 AND nar<9600";
       
@@ -71,6 +73,7 @@ public class DeployedServicesTest extends TestCase {
          Account.ANONYMOUS,
          "http://grendel12.roe.ac.uk:8080/pal-vizier/services/AxisDataService05",
          DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
+      delegate.setTimeout(60000);
 
       InputStream is = delegate.coneSearch(10,10,2);
       assertNotNull(is);
@@ -83,6 +86,7 @@ public class DeployedServicesTest extends TestCase {
          Account.ANONYMOUS,
          "http://astrogrid.roe.ac.uk:8080/pal-sss/services/AxisDataService05",
          DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
+      delegate.setTimeout(60000);
 
       InputStream is = delegate.coneSearch(10,10,2);
       assertNotNull(is);
@@ -95,6 +99,7 @@ public class DeployedServicesTest extends TestCase {
          Account.ANONYMOUS,
          "http://ag01.ast.cam.ac.uk:8080/astrogrid-pal-Itn05_release/services/AxisDataService05",
          DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
+      delegate.setTimeout(60000);
 
       InputStream is = delegate.coneSearch(10,10,2);
       assertNotNull(is);
@@ -109,6 +114,9 @@ public class DeployedServicesTest extends TestCase {
 
 /*
 $Log: DeployedServicesTest.java,v $
+Revision 1.6  2004/10/29 17:55:13  mch
+Added timeouts
+
 Revision 1.5  2004/10/06 22:03:45  mch
 Following Query model changes in PAL
 
