@@ -78,29 +78,17 @@
       <war.bundle>true</war.bundle>
     </properties>
     </dependency>
-    <!-- NWW: 12/7/04 - this dependency is only required by one legacy, non functional class
-          - JobNotifyServiceListener. Removing this class (part of AxisDataServer_v0_4_1) would
-          tidy things up a lot. Current jes servers won't ever use this interface.
-    -->
-    <dependency>
-      <groupId>org.astrogrid</groupId>
-      <artifactId>astrogrid-jes-delegate</artifactId>
-      <version>${pom.currentVersion}</version>
-      <properties>
-         <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
 
-	<dependency>
-	    <groupId>org.astrogrid</groupId>
-	    <artifactId>astrogrid-exist-server</artifactId>
-		<version>${pom.currentVersion}</version>
-	    <type>jar</type>
-	    <url>http://www.astrogrid.org/</url>
-	    <properties>
-		    <war.bundle>true</war.bundle>
-		</properties>            
-	</dependency>
+   <dependency>
+       <groupId>org.astrogrid</groupId>
+       <artifactId>astrogrid-exist-server</artifactId>
+      <version>${pom.currentVersion}</version>
+       <type>jar</type>
+       <url>http://www.astrogrid.org/</url>
+       <properties>
+          <war.bundle>true</war.bundle>
+      </properties>
+   </dependency>
 
     <!-- required for the CEA server -->
     <dependency>
