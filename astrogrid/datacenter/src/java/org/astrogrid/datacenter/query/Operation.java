@@ -62,8 +62,12 @@ public abstract class Operation implements Operand {
         NOT_NULL = "NOT_NULL",
         BETWEEN = "BETWEEN",
         LIKE = "LIKE",
+        COLUMN_ARITHMETIC = "COLUMN_ARITHMETIC",
         MINUS = "MINUS",
         PLUS = "PLUS",
+        MULTIPLY = "MULTIPLY",
+        DIVIDE = "DIVIDE",
+        EXISTS = "EXISTS",
         ORDER_BY_DESC = "ORDER_BY_DESC",
         ORDER_BY_ASC = "ORDER_BY_ASC",
         ORDER_BY_AND = "ORDER_BY_AND",
@@ -74,7 +78,7 @@ public abstract class Operation implements Operand {
 		name = null ;
 	    
 	private Catalog
-		catalog;    
+		catalog;
 		
 		
 	public static Operation createOperation( Element opElement , Catalog catalog ) throws QueryException {	
@@ -134,13 +138,25 @@ public abstract class Operation implements Operand {
 			}
 			else if( opName.equals( Operation.LIKE ) ) {
 				newOp = new Operation_LIKE( opElement, catalog ) ;
-			}	
+			}
+			else if( opName.equals( Operation.COLUMN_ARITHMETIC ) ) {
+				newOp = new Operation_COLUMN_ARITHMETIC( opElement, catalog ) ;
+			}				
 			else if( opName.equals( Operation.MINUS ) ) {
-				newOp = new Operation_MINUS( opElement, catalog ) ;
+				newOp = new Operation_COLUMN_MINUS( opElement, catalog ) ;
 			}			
 			else if( opName.equals( Operation.PLUS ) ) {
-				newOp = new Operation_PLUS( opElement, catalog ) ;
-			}		
+				newOp = new Operation_COLUMN_PLUS( opElement, catalog ) ;
+			}
+			else if( opName.equals( Operation.MULTIPLY ) ) {
+				newOp = new Operation_COLUMN_MULTIPLY( opElement, catalog ) ;
+			}				
+			else if( opName.equals( Operation.DIVIDE ) ) {
+				newOp = new Operation_COLUMN_DIVIDE( opElement, catalog ) ;
+			}			
+			else if( opName.equals( Operation.EXISTS ) ) {
+				newOp = new Operation_EXISTS( opElement, catalog ) ;
+			}				
 			else if( opName.equals( Operation.ORDER_BY_DESC ) ) {
 				newOp = new Operation_ORDER_BY_DESC( opElement, catalog ) ;
 			}	
@@ -152,7 +168,10 @@ public abstract class Operation implements Operand {
 			}	
 			else if( opName.equals( Operation.GROUP_BY ) ) {
 				newOp = new Operation_GROUP_BY( opElement, catalog ) ;
-			}											
+			}
+			else if( opName.equals( Operation.SUBQUERY ) ) {
+				newOp = new Operation_SUBQUERY( opElement, catalog ) ;
+			}																
 			else {
 				Message
 	               message = new Message( ASTROGRIDERROR_UNSUPPORTED_SQL_OPERATION, opName ) ;
@@ -180,29 +199,50 @@ public abstract class Operation implements Operand {
 			this.catalog = catalog;	
 			
 			NodeList
-			   nodeList = operationElement.getChildNodes() ;
+			   nodeList = operationElement.getChildNodes() ;			   
 			   
 			Element
 				element ;
+
+
+			if (operationElement.getAttribute( RunJobRequestDD.OP_NAME_ATTR ).equals( RunJobRequestDD.SUBQUERY_ELEMENT )) {
 								
-			for( int i=0 ; i < nodeList.getLength() ; i++ ) {
+				for( int i=0 ; i < nodeList.getLength() ; i++ ) {				
+					if( nodeList.item(i).getNodeType() != Node.ELEMENT_NODE )
+						continue ;				
+		            element = (Element) nodeList.item(i) ;										
+		            if( element.getTagName().equals( RunJobRequestDD.FROM_ELEMENT ) ) {
+			            setFrom(new From(element)) ;
+		            }
+    		        else if( element.getTagName().equals( RunJobRequestDD.RETURN_ELEMENT ) ) {
+	    		        setReturn(new Return(element, catalog)) ;
+		            }
+		            else if( element.getTagName().equals( RunJobRequestDD.CRITERIA_ELEMENT ) ) {
+			            setCriteria( new Criteria( element , catalog ) ) ;
+		            }							    
+			        else {
+			            ; // PJN Note: What do I do here?
+		            }
 				
-				if( nodeList.item(i).getNodeType() != Node.ELEMENT_NODE )
-				    continue ;				
-				element = (Element) nodeList.item(i) ;
-								
-				if( element.getTagName().equals( RunJobRequestDD.OP_ELEMENT ) ) {
-					this.push( Operation.createOperation( element , catalog ) ) ;
-				}
-				else if( element.getTagName().equals( RunJobRequestDD.FIELD_ELEMENT ) ) {
-				    this.push( new Field( element, catalog ) ) ;						
-			    } 			    
-			    else {
-					; // JBL Note: What do I do here?
-				}
-				
-			} // end for		
-	
+	            } // end for
+            } // end if
+            
+			else {					
+			    for( int i=0 ; i < nodeList.getLength() ; i++ ) {				
+				    if( nodeList.item(i).getNodeType() != Node.ELEMENT_NODE )
+				        continue ;				
+				    element = (Element) nodeList.item(i) ;								
+				    if( element.getTagName().equals( RunJobRequestDD.OP_ELEMENT ) ) {
+					    this.push( Operation.createOperation( element , catalog ) ) ;
+				    }
+				    else if( element.getTagName().equals( RunJobRequestDD.FIELD_ELEMENT ) ) {
+				        this.push( new Field( element, catalog ) ) ;						
+			        } 			    
+			        else {
+					    ; // JBL Note: What do I do here?
+				    }
+			    } // end for		
+			} // end else
 		}
 		catch( Exception ex ) {
 			Message
@@ -224,6 +264,10 @@ public abstract class Operation implements Operand {
 	public Catalog getCatalog() { return catalog; }
 	
 	public abstract void push( Operand operand ) ;
+
+	public void setFrom(From fromObject) { fromObject = fromObject ; }
+	public void setReturn(Return returnObject) { returnObject = returnObject ; }	
+	public void setCriteria(Criteria criteria) { criteria = criteria ; }		
 	
 	
 } // end of class Operation

@@ -1,5 +1,5 @@
 /*
- * @(#)Operation_ASC.java   1.0
+ * @(#)Operation_ORDER_BY_ASC.java   1.0
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -15,12 +15,15 @@ import org.apache.log4j.Logger;
 import org.w3c.dom.* ;
 
 /**
- * The <code>Operation_DESC</code> class represents operations within an 
+ * The <code>Operation_ORDER_BY_ASC</code> class represents operations within an 
  * SQL query string.
  * <p>
  * Some example text. For example:
  * <p><blockquote><pre>
- *     
+ *     SELECT COLUMN_ONE, COLUMN_TWO, COLUMN_THREE 
+ *       FROM USNOB
+ *     WHERE (COLUMN_FOUR > COLUMN_FIVE )
+ *     ORDER BY COLUMN_ONE DESC, COLUMN_TWO DESC,COLUMN_THREE ASC
  * </pre></blockquote>
  * <p>
  *
@@ -42,7 +45,8 @@ public class Operation_ORDER_BY_ASC extends Operation {
 	private Field
 		 field ;		
 	
-	// Template for the SQL DESC query   
+	// Template for the SQL ASC query - the 'ORDER BY' part is included in the Query class
+	// so that multiple elements are not a problem.
 	public static final String
 		TEMPLATE = " {0} ASC " ;
 		
@@ -59,13 +63,13 @@ public class Operation_ORDER_BY_ASC extends Operation {
 		Object []
 		    inserts = new Object[1] ;
         
-			try {   
-			    inserts[0] = field.toSQLString() ;
-				retValue = MessageFormat.format( this.getTemplate(), inserts ) ;
-			}
-			finally {
-			    if( TRACE_ENABLED ) logger.debug( "Operation_ORDER_BY_ASC.toSQLString(): exit") ;         	        
-			}
+		try {   
+		    inserts[0] = field.toSQLString() ;
+			retValue = MessageFormat.format( this.getTemplate(), inserts ) ;
+		}
+		finally {
+		    if( TRACE_ENABLED ) logger.debug( "Operation_ORDER_BY_ASC.toSQLString(): exit") ;         	        
+		}
         
 		return retValue ;
 		

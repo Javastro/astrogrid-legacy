@@ -11,13 +11,10 @@
 package org.astrogrid.datacenter.query;
 
 import org.apache.log4j.Logger;
-// import org.astrogrid.datacenter.datasetagent.*;
-// import org.astrogrid.datacenter.i18n.*;
-import java.util.ArrayList;
-import java.util.List ;
-// import java.util.Iterator ;
 import org.w3c.dom.* ;
 
+import java.util.ArrayList;
+import java.util.List ;
 import java.text.MessageFormat ;
 
 
@@ -27,7 +24,7 @@ import java.text.MessageFormat ;
  * <p>
  * Some example text. For example:
  * <p><blockquote><pre>
- *     
+ *     OR
  * </pre></blockquote>
  * <p>
  *

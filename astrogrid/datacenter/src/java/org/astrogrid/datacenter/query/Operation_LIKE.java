@@ -11,22 +11,27 @@
 package org.astrogrid.datacenter.query;
 
 import org.apache.log4j.Logger;
-// import org.astrogrid.datacenter.datasetagent.*;
-// import org.astrogrid.datacenter.i18n.*;
 import org.w3c.dom.* ;
 
 /**
- * The <code>Operation_EQUALS</code> class represents operations within an 
+ * The <code>Operation_LIKE</code> class represents operations within an 
  * SQL query string.
  * <p>
- * Some example text. For example:
+ * The LIKE predicate applies ony to character strings and tests to see if a 
+ * string conforms to a specified pattern.Two wild-cards are allowed, '%' and '_'. 
+ * The '_' character represents a single arbitary character, 
+ * the '%' represents an arbitary substring, possibly of zero length.
+ * <p>
+ * For example:
  * <p><blockquote><pre>
- *     
+ * SELECT *
+ *     FROM USNOB
+ * WHERE COLUMN_TWO LIKE '%STAR'    
  * </pre></blockquote>
  * <p>
  *
- * @author  Jeff Lusted
  * @author  Phill Nicolson
+ * @author  Jeff Lusted
  * @version 1.0 27-May-2003
  * @see     org.astrogrid.datacenter.Query
  * @since   AstroGrid 1.2

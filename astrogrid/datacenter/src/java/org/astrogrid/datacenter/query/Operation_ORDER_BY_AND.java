@@ -21,11 +21,7 @@ import java.text.MessageFormat ;
  * The <code>Operation_ORDER_BY_AND</code> class represents operation within an 
  * SQL query string.
  * <p>
- * Some example text. For example:
- * <p><blockquote><pre>
- *     
- * </pre></blockquote>
- * <p>
+ * Seperates each column used in an ORDER BY clause with a 'comma' rather than an 'and'.
  *
  * @author  Phill Nicolson
  * @author  Jeff Lusted
@@ -63,7 +59,7 @@ public class Operation_ORDER_BY_AND extends Operation {
 	
 	
 	public String toSQLString() {
-		if( TRACE_ENABLED ) logger.debug( "Operation_AND.toSQLString(): entry") ;  
+		if( TRACE_ENABLED ) logger.debug( "Operation_ORDER_BY_AND.toSQLString(): entry") ;  
 		 	
 		String
 			 retValue = null ; 	
@@ -71,17 +67,18 @@ public class Operation_ORDER_BY_AND extends Operation {
 		Object []
 			 inserts = new Object[ operands.size() ] ;   
         
-				try { 
+		try { 
         	  
 			for( int i = 0; i < operands.size(); i++ ) {
 				inserts[i] = ((Operand)operands.get( i )).toSQLString() ;
 			}
-					 retValue = MessageFormat.format( this.getTemplate(), inserts ) ;
+			
+			retValue = MessageFormat.format( this.getTemplate(), inserts ) ;
            
-				}
-				finally {
-			if( TRACE_ENABLED ) logger.debug( "Operation_AND.toSQLString(): exit") ;         	        
-				}
+		}
+		finally {
+			if( TRACE_ENABLED ) logger.debug( "Operation_ORDER_BY_AND.toSQLString(): exit") ;         	        
+		}
         
 		return retValue ;
 		
@@ -89,7 +86,7 @@ public class Operation_ORDER_BY_AND extends Operation {
 
 
 		public void push( Operand operand ) {
-		if( TRACE_ENABLED ) logger.debug( "Operation_AND.push(): entry") ;  
+		if( TRACE_ENABLED ) logger.debug( "Operation_ORDER_BY_AND.push(): entry") ;  
 		
 		try {
 			
@@ -97,7 +94,7 @@ public class Operation_ORDER_BY_AND extends Operation {
 			operands.add( operand ) ;
 			
 		} finally {
-			if( TRACE_ENABLED ) logger.debug( "Operation_AND.push(): exit") ; 
+			if( TRACE_ENABLED ) logger.debug( "Operation_ORDER_BY_AND.push(): exit") ; 
 		}
 
     	
@@ -107,4 +104,4 @@ public class Operation_ORDER_BY_AND extends Operation {
 	public String getTemplate() { return TEMPLATES[ operands.size() - 2 ] ; }
 
 	
-} // end of class Operation_AND
+} // end of class Operation_ORDER_BY_AND

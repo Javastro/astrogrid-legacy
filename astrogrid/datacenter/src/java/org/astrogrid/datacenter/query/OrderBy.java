@@ -1,5 +1,5 @@
 /*
- * @(#)From.java   1.0
+ * @(#)OrderBy.java   1.0
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -18,7 +18,7 @@ import org.w3c.dom.* ;
 import java.util.Iterator ;
 
 /**
- * The <code>OrderBy</code> class represents the Order By part of an SQL query
+ * The <code>OrderBy</code> class represents the Order By clause of an SQL query
  * <p>
  * Introductory text.... For example:
  * <p><blockquote><pre>
@@ -41,19 +41,15 @@ public class OrderBy {
 		logger = Logger.getLogger( OrderBy.class ) ;
 		
 	private static final String
-		ASTROGRIDERROR_COULD_NOT_CREATE_FROM_ORDER_ELEMENT = "AGDTCE00???",
-	    ASTROGRIDERROR_COULD_NOT_CREATE_SQL_FOR_ORDERBY = "AGDTCE00???",
+	    ASTROGRIDERROR_COULD_NOT_CREATE_ORDERBY_FROM_ELEMENT = "AGDTCE00520",
+	    ASTROGRIDERROR_COULD_NOT_CREATE_SQL_FOR_ORDERBY = "AGDTCE00530",
 	    ASTROGRIDERROR_UNABLE_TO_MAP_CATALOG_UCD_TO_COLUMN_HEADING = "AGDTCE00250" ;
 
 	private Operation 
 		 operation ;		 	 
 		
 	private Catalog
-		catalog ;	
-	    
-	private static final String
-	/** Property file key for the job database JNDI location */    			
-	    QUERY_FROM_SEPARATOR = "QUERY.FROM.SEPARATOR" ;	    
+		catalog ;	  
 	   
 	public OrderBy( Element orderElement, Catalog catalog ) throws QueryException {
 		if( TRACE_ENABLED ) logger.debug( "OrderBy(Element): entry") ;
@@ -81,7 +77,7 @@ public class OrderBy {
 		}
 		catch( Exception ex ) {
 			Message
-				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_FROM_ORDER_ELEMENT ) ;
+				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_ORDERBY_FROM_ELEMENT ) ;
 			logger.error( message.toString(), ex ) ;
 			throw new QueryException( message, ex );    		
 		}
@@ -123,7 +119,7 @@ public class OrderBy {
 	/**
 	 * Returns a <code>String</code> value of the column heading for a specific catalog, table
 	 * and UCD (unified content descriptor) combination. The mapping is detailed in the 
-	 * <code>ASROGRID_datasetconfig.properties</code> file. The frmat of the mapping key is:
+	 * <code>ASROGRID_datasetconfig.properties</code> file. The format of the mapping key is:
 	 * <catalog>.<table>.<UCD> 
 	 *
 	 * @see             org.astrogrid.datacenter.ASROGRID_datasetconfig.properties
@@ -134,19 +130,21 @@ public class OrderBy {
 		private String getColumnHeading(Catalog catalog, String UCD) {
 			if( TRACE_ENABLED ) logger.debug( "getColumnHeading(): entry") ;
 			String 
-				columnHeading = "";
+				columnHeading = "" ;
 			StringBuffer
-				buffer = new StringBuffer(64) ; 
+				buffer = new StringBuffer(64) ;				
+				 
 			try {
 			 
 				// If no tables assosciated with catalog assume table name same as catalog... 
-				if ( catalog.getNumberTables() <= 0) {  
-					buffer.append(catalog.getName());
-					buffer.append(".");
-					buffer.append(catalog.getName());
-					buffer.append(".");
-					buffer.append(UCD);
-					logger.debug("Return: getColumnHeading(): key: "+buffer.toString().toUpperCase() );				
+				if ( catalog.getNumberTables() <= 0 ) {  
+					buffer
+					    .append(catalog.getName() ) 
+					    .append( "." ) 
+					    .append( catalog.getName() ) 
+					    .append( "." ) 
+					    .append( UCD ) ;
+					logger.debug( "Return: getColumnHeading(): key: "+buffer.toString().toUpperCase() );				
 					columnHeading = DatasetAgent.getProperty( buffer.toString().toUpperCase() ) ;					
 				}
 				else {
@@ -157,17 +155,18 @@ public class OrderBy {
 					    table = null ;
 			
 					while( iterator.hasNext() ) { 
-					    table = (Table)iterator.next() ;
-						buffer.append(catalog.getName());
-					    buffer.append(".");
-					    buffer.append(table.getName().toUpperCase());
-					    buffer.append(".");
-					    buffer.append(UCD);	
-					    logger.debug("Return: getColumnHeading(): key: "+buffer.toString().toLowerCase().toUpperCase() );
+					    table = ( Table )iterator.next() ;
+						buffer
+						    .append( catalog.getName() ) 
+					        .append( "." ) 
+					        .append( table.getName().toUpperCase() )
+					        .append( "." )
+					        .append( UCD ) ;	
+					    logger.debug( "Return: getColumnHeading(): key: "+buffer.toString().toLowerCase().toUpperCase() ) ;
 					    columnHeading = DatasetAgent.getProperty( buffer.toString().toUpperCase() ) ;
-						if (columnHeading.length() > 0) // break as soon as column heading found
+						if ( columnHeading.length() > 0 ) // break as soon as column heading found
 						    break; 
-						buffer.delete(0,buffer.length());
+						buffer.delete( 0,buffer.length() ) ;
 					} // end of while
 			
 				} // end else
@@ -181,7 +180,7 @@ public class OrderBy {
 			finally {
 				if( TRACE_ENABLED ) logger.debug( "getColumnHeading(): exit") ;
 			}
-			return (columnHeading=="")?UCD:columnHeading;
+			return ( columnHeading=="" )?UCD:columnHeading ;
 		} // end of getColumnHeading()
 
 	public void setOperation(Operation operation) { this.operation = operation ; }

@@ -36,14 +36,19 @@ public class Query {
         factory ;
         
     private Criteria 
-        criteria ;
+        criteria ;       
         
     private Return
         returnObject ;
         
     private From
         fromObject ;
+        
+    private OrderBy
+        orderByObject ;        
 	
+	private GroupBy
+	    groupByObject ;	
 	
     public Query( Element queryElement, QueryFactory factory ) throws QueryException {
 		if( TRACE_ENABLED ) logger.debug( "Query(Element,QueryFactory): entry") ;
@@ -58,6 +63,8 @@ public class Query {
 				element ;
 			Catalog
 			    catalog = null;
+			OrderBy
+			    orderBy;
 			
 			// JBL Note: the following piece of code is fragile...
 			// If the FROM element is not the first, the constructors for
@@ -97,7 +104,12 @@ public class Query {
 				else if( element.getTagName().equals( RunJobRequestDD.RETURN_ELEMENT ) ) {
 				    setReturn(new Return( element, catalog )) ;
 				}
-				
+				else if( element.getTagName().equals( RunJobRequestDD.ORDER_ELEMENT ) ) {
+					setOrderBy(new OrderBy( element, catalog )) ;
+				}				
+				else if( element.getTagName().equals( RunJobRequestDD.GROUP_ELEMENT ) ) {
+					setGroupBy(new GroupBy( element, catalog )) ;
+				}				
 			} // end for		
 			
 		}
@@ -200,7 +212,11 @@ public class Query {
 			    .append( " FROM ")
 			    .append( getFrom().toSQLString() )
 			    .append( (this.criteria == null)  ?  ""  :  " WHERE "  )
-			    .append( (this.criteria == null)  ?  ""  :  getCriteria().toSQLString()  ) ;
+			    .append( (this.criteria == null)  ?  ""  :  getCriteria().toSQLString() )
+			    .append( (this.orderByObject == null)  ?  ""  :  " ORDER BY "  )
+				.append( (this.orderByObject == null)  ?  ""  :  getOrderBy().toSQLString() ) 
+			    .append( (this.groupByObject == null)  ?  ""  :  " GROUP BY "  )
+		        .append( (this.groupByObject == null)  ?  ""  :  getGroupBy().toSQLString() ) ;			    
 			     
 		}
 		finally {
@@ -220,6 +236,12 @@ public class Query {
 	public Return getReturn() {	return returnObject; }
 
 	public void setFrom(From fromObject) { this.fromObject = fromObject; }
-	public From getFrom() {	return fromObject; }    
+	public From getFrom() {	return fromObject; } 
+	
+	public void setOrderBy(OrderBy orderByObject) { this.orderByObject = orderByObject; }
+	public OrderBy getOrderBy() { return orderByObject; }
+	
+	public void setGroupBy(GroupBy groupByObject) { this.groupByObject = groupByObject; }
+	public GroupBy getGroupBy() { return groupByObject; }		   
     
 } // end of class Query
