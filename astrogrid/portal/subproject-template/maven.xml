@@ -1,0 +1,51 @@
+<?xml version="1.0" ?>
+<project
+    xmlns:j="jelly:core"
+    xmlns:maven="jelly:maven"
+    xmlns:ant="jelly:ant"
+    xmlns:deploy="deploy"
+    xmlns:util="jelly:util"
+    xmlns:doc="doc"
+    default="jar:jar">
+    
+  <!--
+    Move the web source into the subcomponent directory.
+    -->
+  <postGoal name="war:webapp">
+    <j:set var="webapp.dir" value="${pom.getPluginContext('maven-war-plugin').getVariable('maven.war.webapp.dir')}"/>
+    
+    <j:set var="webapp.dir.mount" value="${webapp.dir}/mount"/>
+    <j:set var="webapp.dir.mount.component" value="${webapp.dir.mount}/subproject"/>
+    <j:set var="webapp.dir.mount.component.web" value="${webapp.dir.mount.component}/web"/>
+
+    <ant:mkdir dir="${webapp.dir.mount}"/>
+    <ant:mkdir dir="${webapp.dir.mount.component}"/>
+    <ant:mkdir dir="${webapp.dir.mount.component.web}"/>
+    
+    <ant:move todir="${webapp.dir.mount.component.web}">
+      <ant:fileset dir="${webapp.dir}/web"/>
+    </ant:move>
+
+    <ant:move todir="${webapp.dir.mount.component}">
+      <ant:fileset dir="${webapp.dir}">
+        <ant:filename name="sitemap.xconf"/>
+      </ant:fileset>
+    </ant:move>
+
+    <ant:echo>
+      <![CDATA[<ant:move todir="${webapp.dir.mount.component}">
+        <ant:fileset dir="${webapp.dir}">
+          <ant:filename name="sitemap.xmap"/>
+          <ant:filename name="maven.log"/>
+        </ant:fileset>
+      </ant:move>]]>
+    </ant:echo>
+
+    <ant:move todir="${webapp.dir.mount.component}">
+      <ant:fileset dir="${webapp.dir}">
+        <ant:include name="sitemap.xmap"/>
+        <ant:include name="maven.log"/>
+      </ant:fileset>
+    </ant:move>
+  </postGoal>
+</project>
