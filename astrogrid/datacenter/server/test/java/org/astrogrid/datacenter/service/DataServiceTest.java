@@ -1,4 +1,4 @@
-/*$Id: DataServiceTest.java,v 1.13 2004/09/08 16:12:32 mch Exp $
+/*$Id: DataServiceTest.java,v 1.14 2004/09/08 16:21:04 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,17 +9,13 @@
  *
 **/
 package org.astrogrid.datacenter.service;
-import java.io.FileNotFoundException;
 import java.io.StringWriter;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import org.astrogrid.community.Account;
-import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.ServerTestCase;
-import org.astrogrid.datacenter.metadata.FileResourcePlugin;
-import org.astrogrid.datacenter.metadata.VoResourcePlugin;
-import org.astrogrid.datacenter.metadata.VoDescriptionServer;
 import org.astrogrid.datacenter.queriers.sql.SqlPluginTest;
+import org.astrogrid.datacenter.queriers.test.SampleStarsPlugin;
 import org.astrogrid.datacenter.query.AdqlQuery;
 import org.astrogrid.datacenter.query.ConeQuery;
 import org.astrogrid.datacenter.returns.ReturnTable;
@@ -47,6 +43,8 @@ public class DataServiceTest extends ServerTestCase {
     protected void setUp() throws Exception {
        super.setUp();
 
+       SampleStarsPlugin.initConfig();
+       
        server = new DataServer();
        
        query1 = new AdqlQuery(SqlPluginTest.class.getResourceAsStream("sample-adql0.7.4-1.xml"));
@@ -127,6 +125,9 @@ public class DataServiceTest extends ServerTestCase {
 
 /*
 $Log: DataServiceTest.java,v $
+Revision 1.14  2004/09/08 16:21:04  mch
+Added SampleStarsPlugin init
+
 Revision 1.13  2004/09/08 16:12:32  mch
 Fix tests to use ADQL 0.7.4
 
