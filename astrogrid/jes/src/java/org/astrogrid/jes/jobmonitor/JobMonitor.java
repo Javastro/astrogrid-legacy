@@ -73,7 +73,8 @@ public class JobMonitor {
 		ASTROGRIDERROR_ULTIMATE_MONITORFAILURE      = "AGJESE00530",
 	    ASTROGRIDERROR_FAILED_TO_INFORM_SCHEDULER   = "AGJESE00440",
 	    ASTROGRIDERROR_FAILED_TO_FORMAT_SCHEDULE    = "AGJESE00430",
-	    ASTROGRIDERROR_FAILED_TO_CONTACT_MESSAGELOG = "AGJESE00550" ;
+	    ASTROGRIDERROR_FAILED_TO_CONTACT_MESSAGELOG = "AGJESE00550",
+        ASTROGRIDINFO_JOB_STATUS_MESSAGE            = "AGJESI00560" ;
 	        			
 	private static final String
 	    PARSER_VALIDATION = "PARSER.VALIDATION" ;
@@ -501,7 +502,7 @@ public class JobMonitor {
 			inserts[3] = "JobStep Completion" ;                             // subject
 			
 			//JBL Note: this requires elucidation...
-			inserts[4] = jobStep.getParent().getId() + " " + jobStep.getComment() ; // message
+			inserts[4] = formatStatusMessage( jobStep ) ;
 			 
 			InputSource
 				requestSource = new InputSource( new StringReader( MessageFormat.format( requestString, inserts ) ) ) ;
@@ -526,6 +527,41 @@ public class JobMonitor {
 		}
 					
 	} // end of informAstroGridMessageLog()
+	
+	
+	private String formatStatusMessage ( JobStep jobStep ) {
+		if( TRACE_ENABLED ) logger.debug( "formatStatusMessage(): entry") ;	
+		
+		Message
+		   message = null ;
+		Job
+		   job = jobStep.getParent() ;	
+		
+		try {
+			// AGJESI00560=:JobMonitor: Job status [{0}] job name [{1}] userid [{2}] community [{3}] job id [{4}] step name [{5}] \
+			// step number [{6}] step status [{7}] step message [{8}]
+			Object []
+				inserts = new Object[ 9 ] ;
+			inserts[0] = job.getStatus() ;           
+			inserts[1] = job.getName() ;
+			inserts[2] = job.getUserId() ;
+			inserts[3] = job.getCommunity() ;
+			inserts[4] = job.getId() ;
+			inserts[5] = jobStep.getName() ;
+			inserts[6] = jobStep.getStepNumber() ;
+			inserts[7] = jobStep.getStatus() ;
+			inserts[8] = jobStep.getComment() ;
+			 
+			message = new Message( ASTROGRIDINFO_JOB_STATUS_MESSAGE, inserts ) ;
+					
+		}
+		finally {
+			if( TRACE_ENABLED ) logger.debug( "formatStatusMessage(): exit") ;		
+		}
+		
+		return message.toString() ;
+		
+	} // end of formatStatusMessage()
 	
 
 } // end of class JobMonitor

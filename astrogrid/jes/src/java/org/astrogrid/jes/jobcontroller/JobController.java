@@ -23,6 +23,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.StringReader ; 
 import java.text.MessageFormat ;
+import java.util.Date ;
+import java.sql.Timestamp ;
 
 import javax.xml.parsers.*;
 import org.w3c.dom.*;
@@ -32,8 +34,8 @@ import org.apache.axis.client.Service;
 import org.apache.axis.client.Call;
 import org.apache.axis.encoding.XMLType;
 import javax.xml.rpc.ParameterMode;
-
-// import org.apache.axis.utils.XMLUtils;
+import org.apache.axis.message.SOAPBodyElement ;
+import org.apache.axis.utils.XMLUtils ;
 
 import java.net.URL;
 
@@ -94,17 +96,22 @@ public class JobController {
 	    ASTROGRIDINFO_JOB_SUCCESSFULLY_SUBMITTED    = "AGJESI00050",
 		ASTROGRIDERROR_FAILED_TO_FORMAT_RESPONSE    = "AGJESE00400",
 	    ASTROGRIDERROR_FAILED_TO_INFORM_SCHEDULER   = "AGJESE00410",
-	    ASTROGRIDERROR_FAILED_TO_FORMAT_SCHEDULE    = "AGJESE00420";
+	    ASTROGRIDERROR_FAILED_TO_FORMAT_SCHEDULE    = "AGJESE00420",
+        ASTROGRIDERROR_FAILED_TO_CONTACT_MESSAGELOG = "AGJESE00060",
+        ASTROGRIDINFO_JOB_STATUS_MESSAGE            = "AGJESI00070" ;
 	        			
 	private static final String
 	    PARSER_VALIDATION = "PARSER.VALIDATION" ;
 	    
 	private static final String 
 		SUBMIT_JOB_RESPONSE_TEMPLATE = "SUBMIT_JOB_RESPONSE.TEMPLATE",
-	    SCHEDULE_JOB_REQUEST_TEMPLATE = "SCHEDULE_JOB_REQUEST.TEMPLATE" ;
+	    SCHEDULE_JOB_REQUEST_TEMPLATE = "SCHEDULE_JOB_REQUEST.TEMPLATE",
+        MESSAGE_LOG_REQUEST_TEMPLATE  = "ASTROGRID_MESSAGE_LOG_REQUEST.TEMPLATE" ;
 		
     private static final String 
-	    SCHEDULER_URL = "SCHEDULER.URL" ;
+	    SCHEDULER_URL = "SCHEDULER.URL" ,
+        MESSAGE_LOG_URL = "ASTROGRID_MESSAGE_LOG.URL" ,
+        CONTROLLER_URL = "CONTROLLER.URL" ;
 	    			
 	private static Logger 
 		logger = Logger.getLogger( JobController.class ) ;
@@ -231,7 +238,7 @@ public class JobController {
 		if( TRACE_ENABLED ) logger.debug( "getProperty(): entry") ;
 		
 		String
-			retValue = configurationProperties.getProperty( key ) ;
+			retValue = configurationProperties.getProperty( key.toUpperCase() ) ;
 		if( TRACE_ENABLED ) logger.debug( "getProperty(): exit") ;			
 		return ( retValue == null ? "" : retValue.trim() ) ;
 		
@@ -342,6 +349,8 @@ public class JobController {
         	}
 			// Inform JobScheduler (within JES) that a job may require scheduling...
 			informJobScheduler( job ) ;
+			// And finally, inform the AstroGrid message log of the submission details...
+			informAstroGridMessageLog( job ) ;
 	        logger.debug( response.toString() );
 	        if( TRACE_ENABLED ) logger.debug( "submitJob() exit") ;
         }
@@ -458,6 +467,87 @@ public class JobController {
 		return response ;
 		
 	} // end of formatScheduleRequest()
+	
+	
+	private void informAstroGridMessageLog( Job job ) {
+		if( TRACE_ENABLED ) logger.debug( "informAstroGridMessageLog(): entry") ;
+		
+		try {
+			
+			Call 
+			   call = (Call) new Service().createCall() ;
+			   
+			call.setTargetEndpointAddress( new URL( JobController.getProperty( MESSAGE_LOG_URL ) ) ) ;
+      
+			SOAPBodyElement[] 
+			   bodyElement = new SOAPBodyElement[1];
+			   
+			String
+				requestString = JobController.getProperty( MESSAGE_LOG_REQUEST_TEMPLATE ) ;
+			Object []
+				inserts = new Object[ 5 ] ;
+			inserts[0] = JobController.getProperty( CONTROLLER_URL ) ;            // source
+			//JBL Note: what should this be...
+			inserts[1] = JobController.getProperty( CONTROLLER_URL ) ;            // destination
+			inserts[2] = new Timestamp( new Date().getTime() ).toString() ;       // timestamp - is this OK?
+			inserts[3] = "Job submitted" ;                                        // subject
+			
+			//JBL Note: this requires elucidation...
+			inserts[4] = formatStatusMessage( job ) ;
+			 
+			InputSource
+				requestSource = new InputSource( new StringReader( MessageFormat.format( requestString, inserts ) ) ) ;
+			bodyElement[0] = new SOAPBodyElement( XMLUtils.newDocument( requestSource ).getDocumentElement() ) ;
+    
+			logger.debug( "[call] url: " + JobController.getProperty( MESSAGE_LOG_URL ) ) ;
+			logger.debug( "[call] msg: " + bodyElement[0] ) ;
+       
+			Object 
+			   result = call.invoke(bodyElement);
+
+			logger.debug( "[call] res: " + result ) ;
+    
+		}
+		catch( Exception ex ) {
+			Message
+			   message = new Message( ASTROGRIDERROR_FAILED_TO_CONTACT_MESSAGELOG ) ;
+			logger.debug( message.toString(), ex ) ;
+		}
+		finally {
+			if( TRACE_ENABLED ) logger.debug( "informAstroGridMessageLog(): exit") ;	
+		}
+					
+	} // end of informAstroGridMessageLog()
+	
+	
+	private String formatStatusMessage ( Job job ) {
+		if( TRACE_ENABLED ) logger.debug( "formatStatusMessage(): entry") ;	
+		
+		Message
+		   message = null ;	
+		
+		try {
+			// AGJESI00070=:JobController: Job status [{0}] job name [{1}] userid [{2}] community [{3}] job id [{4}] 
+			Object []
+				inserts = new Object[ 5 ] ;
+			inserts[0] = job.getStatus() ;           
+			inserts[1] = job.getName() ;
+			inserts[2] = job.getUserId() ;
+			inserts[3] = job.getCommunity() ;
+			inserts[4] = job.getId() ;
+			 
+			message = new Message( ASTROGRIDINFO_JOB_STATUS_MESSAGE, inserts ) ;
+					
+		}
+		catch( Exception ex ) {
+		}
+		finally {
+			if( TRACE_ENABLED ) logger.debug( "formatStatusMessage(): exit") ;		
+		}
+		
+		return message.toString() ;
+		
+	} // end of formatStatusMessage()
 	
 
 } // end of class JobController

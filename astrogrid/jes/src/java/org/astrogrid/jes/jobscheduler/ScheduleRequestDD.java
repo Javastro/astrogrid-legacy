@@ -20,6 +20,7 @@ public final class ScheduleRequestDD {
 	    JOB_URN_ATTR = "jobURN",
 	    JOB_USERID_ATTR = "userid",
 	    JOB_COMMUNITY_ATTR = "community",
-	    JOB_TIMESTAMP_ATTR = "time";
+	    JOB_TIMESTAMP_ATTR = "time",
+	    JOB_MONITOR_URL = "jobMonitorURL";
 	 
 }

@@ -35,7 +35,7 @@ import org.apache.axis.client.Service;
 import org.apache.axis.client.Call;
 import org.apache.axis.encoding.XMLType;
 import javax.xml.rpc.ParameterMode;
-// import org.apache.axis.utils.XMLUtils;
+import org.apache.axis.utils.XMLUtils;
 
 import java.net.URL;
 
@@ -80,7 +80,8 @@ public class JobScheduler {
         REQUISTRY_REQUEST_TEMPLATE = "ASTROGRID_REQUISTRY_REQUEST.TEMPLATE";
 	    
 	private static final String
-        ASTROGRID_REGISTRY_URL = "ASTROGRID_REGISTRY.URL" ;
+        ASTROGRID_REGISTRY_URL = "ASTROGRID_REGISTRY.URL",
+        MONITOR_URL = "MONITOR.URL" ;
 	    			
 	private static Logger 
 		logger = Logger.getLogger( JobScheduler.class ) ;
@@ -411,8 +412,33 @@ public class JobScheduler {
 		
         try {
         	
-        	// JBL Note: This is probably not sufficient in anything but the short term...
-        	request = job.getDocumentXML() ;
+			InputSource
+			   jobSource = new InputSource( new StringReader( job.getDocumentXML() ) );
+			
+            Document
+               doc = XMLUtils.newDocument( jobSource ) ;
+               
+            Element
+               element = doc.getDocumentElement() ;   // This should pick up the "job" element
+               
+            // set the Job id, it's job URN
+            element.setAttribute( ScheduleRequestDD.JOB_URN_ATTR,job.getId() ) ; 
+			element.setAttribute( ScheduleRequestDD.JOB_MONITOR_URL, JobScheduler.getProperty( MONITOR_URL ) ) ; 
+               
+               /*
+                * 
+                * 
+                * 	    JOB_ELEMENT = "job",
+	    JOB_NAME_ATTR = "name",
+	    JOB_URN_ATTR = "jobURN",
+	    JOB_USERID_ATTR = "userid",
+	    JOB_COMMUNITY_ATTR = "community",
+	    JOB_TIMESTAMP_ATTR = "time";
+                * 
+                * 
+                * 
+                */
+               
 
 		}
 		catch ( Exception ex ) {
