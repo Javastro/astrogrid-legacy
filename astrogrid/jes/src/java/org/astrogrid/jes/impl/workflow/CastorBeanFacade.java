@@ -1,4 +1,4 @@
-/*$Id: CastorBeanFacade.java,v 1.6 2004/03/09 14:23:12 nw Exp $
+/*$Id: CastorBeanFacade.java,v 1.7 2004/03/15 00:06:57 nw Exp $
  * Created on 11-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,21 +10,13 @@
 **/
 package org.astrogrid.jes.impl.workflow;
 
-import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.jes.JesException;
 import org.astrogrid.jes.component.ComponentDescriptor;
 import org.astrogrid.jes.job.BeanFacade;
 import org.astrogrid.jes.job.JobFactory;
 import org.astrogrid.jes.job.SubmitJobRequest;
-import org.astrogrid.jes.types.v1.JobURN;
-import org.astrogrid.workflow.beans.v1.Workflow;
 
 import org.exolab.castor.xml.CastorException;
-
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 import junit.framework.Test;
 
@@ -90,6 +82,9 @@ public class CastorBeanFacade implements BeanFacade, ComponentDescriptor {
 
 /* 
 $Log: CastorBeanFacade.java,v $
+Revision 1.7  2004/03/15 00:06:57  nw
+removed SchedulerNotifier interface - replaced references to it by references to JobScheduler interface - identical
+
 Revision 1.6  2004/03/09 14:23:12  nw
 integrated new JobController wsdl interface
 

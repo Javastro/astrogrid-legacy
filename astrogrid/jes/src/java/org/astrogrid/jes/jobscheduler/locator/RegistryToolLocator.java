@@ -1,4 +1,4 @@
-/*$Id: RegistryToolLocator.java,v 1.2 2004/03/09 14:41:44 nw Exp $
+/*$Id: RegistryToolLocator.java,v 1.3 2004/03/15 00:06:57 nw Exp $
  * Created on 08-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,8 +17,6 @@ import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.registry.client.query.RegistryService;
 import org.astrogrid.workflow.beans.v1.Step;
-
-import org.exolab.castor.xml.ValidationException;
 
 import java.net.URL;
 
@@ -82,6 +80,9 @@ public class RegistryToolLocator implements Locator, ComponentDescriptor {
 
 /* 
 $Log: RegistryToolLocator.java,v $
+Revision 1.3  2004/03/15 00:06:57  nw
+removed SchedulerNotifier interface - replaced references to it by references to JobScheduler interface - identical
+
 Revision 1.2  2004/03/09 14:41:44  nw
 updated to track changes to registry delegate
 

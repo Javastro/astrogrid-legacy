@@ -1,4 +1,4 @@
-/*$Id: MockJobScheduler.java,v 1.5 2004/03/07 21:04:39 nw Exp $
+/*$Id: MockJobScheduler.java,v 1.6 2004/03/15 00:06:57 nw Exp $
  * Created on 18-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,8 +15,6 @@ import org.astrogrid.jes.component.ComponentDescriptor;
 import org.astrogrid.jes.types.v1.JobURN;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.jes.types.v1.cea.axis.MessageType;
-
-import java.rmi.RemoteException;
 
 import junit.framework.Test;
 
@@ -42,20 +40,20 @@ public class MockJobScheduler implements JobScheduler , ComponentDescriptor{
     /**
      * @see org.astrogrid.jes.delegate.v1.jobscheduler.JobScheduler#scheduleNewJob(org.astrogrid.jes.types.v1.JobURN)
      */
-    public void scheduleNewJob(JobURN request) throws RemoteException {
+    public void scheduleNewJob(JobURN request) throws Exception {
         callCount++;
         if (! willSucceed) {
-            throw new RemoteException("You wanted me to fail");
+            throw new Exception("You wanted me to fail");
         }
     }
 
     /**
      * @see org.astrogrid.jes.delegate.v1.jobscheduler.JobScheduler#resumeJob(org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType, org.astrogrid.jes.types.v1.cea.axis.MessageType)
      */
-    public void resumeJob(JobIdentifierType arg0, MessageType arg1) throws RemoteException {
+    public void resumeJob(JobIdentifierType arg0, MessageType arg1) throws Exception {
         callCount++;
         if (! willSucceed) {
-            throw new RemoteException("you wanted me to fail");
+            throw new Exception("you wanted me to fail");
         }
     }
     /**
@@ -82,6 +80,9 @@ public class MockJobScheduler implements JobScheduler , ComponentDescriptor{
 
 /* 
 $Log: MockJobScheduler.java,v $
+Revision 1.6  2004/03/15 00:06:57  nw
+removed SchedulerNotifier interface - replaced references to it by references to JobScheduler interface - identical
+
 Revision 1.5  2004/03/07 21:04:39  nw
 merged in nww-itn05-pico - adds picocontainer
 

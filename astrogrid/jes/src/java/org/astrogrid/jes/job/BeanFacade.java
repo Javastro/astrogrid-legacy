@@ -1,4 +1,4 @@
-/*$Id: BeanFacade.java,v 1.6 2004/03/09 14:23:12 nw Exp $
+/*$Id: BeanFacade.java,v 1.7 2004/03/15 00:06:57 nw Exp $
  * Created on 11-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,11 +9,7 @@
  *
 **/
 package org.astrogrid.jes.job;
-import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.jes.JesException;
-import org.astrogrid.workflow.beans.v1.Workflow;
-
-import java.util.Iterator;
 /** Interface that separates details of object model implementation from the service implementations
  * @author Noel Winstanley nw@jb.man.ac.uk 11-Feb-2004
  *
@@ -27,6 +23,9 @@ public interface  BeanFacade {
 }
 /* 
 $Log: BeanFacade.java,v $
+Revision 1.7  2004/03/15 00:06:57  nw
+removed SchedulerNotifier interface - replaced references to it by references to JobScheduler interface - identical
+
 Revision 1.6  2004/03/09 14:23:12  nw
 integrated new JobController wsdl interface
 

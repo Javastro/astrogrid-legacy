@@ -1,4 +1,4 @@
-/*$Id: ListJobsSuccessTest.java,v 1.4 2004/03/09 14:23:54 nw Exp $
+/*$Id: ListJobsSuccessTest.java,v 1.5 2004/03/15 00:06:57 nw Exp $
  * Created on 17-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,10 +12,7 @@ package org.astrogrid.jes.jobcontroller;
 import org.astrogrid.community.beans.v1.axis.Identifier;
 import org.astrogrid.community.beans.v1.axis._Account;
 import org.astrogrid.jes.types.v1.WorkflowSummary;
-import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
-
-import java.io.StringReader;
 /** Test the listJobs method of the job controller
  * @author Noel Winstanley nw@jb.man.ac.uk 17-Feb-2004
  *
@@ -61,6 +58,9 @@ public class ListJobsSuccessTest extends AbstractTestForJobController {
 }
 /* 
 $Log: ListJobsSuccessTest.java,v $
+Revision 1.5  2004/03/15 00:06:57  nw
+removed SchedulerNotifier interface - replaced references to it by references to JobScheduler interface - identical
+
 Revision 1.4  2004/03/09 14:23:54  nw
 tests that exercise the job contorller service implememntiton
 

@@ -1,4 +1,4 @@
-/*$Id: RegistryEndpointFromConfig.java,v 1.1 2004/03/08 00:36:34 nw Exp $
+/*$Id: RegistryEndpointFromConfig.java,v 1.2 2004/03/15 00:06:57 nw Exp $
  * Created on 08-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,6 @@ package org.astrogrid.jes.component.production;
 import org.astrogrid.config.Config;
 import org.astrogrid.jes.component.SimpleComponentDescriptor;
 import org.astrogrid.jes.jobscheduler.locator.RegistryToolLocator.RegistryEndpoint;
-import org.astrogrid.registry.client.RegistryDelegateFactory;
 
 import java.net.URL;
 
@@ -42,6 +41,9 @@ public class RegistryEndpointFromConfig extends SimpleComponentDescriptor implem
 
 /* 
 $Log: RegistryEndpointFromConfig.java,v $
+Revision 1.2  2004/03/15 00:06:57  nw
+removed SchedulerNotifier interface - replaced references to it by references to JobScheduler interface - identical
+
 Revision 1.1  2004/03/08 00:36:34  nw
 added configuration of registry tool locator to production components
  

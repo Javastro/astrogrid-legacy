@@ -7,8 +7,6 @@ import org.astrogrid.jes.delegate.JobSummary;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
-import java.rmi.RemoteException;
-
 /**
  * Test implementation of a job controller delegate - performs no communication, returns dummy data.
  * @author  Jeff Lusted

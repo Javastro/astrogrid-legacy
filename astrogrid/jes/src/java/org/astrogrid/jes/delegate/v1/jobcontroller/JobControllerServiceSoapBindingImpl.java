@@ -18,8 +18,6 @@ import org.astrogrid.jes.types.v1.WorkflowSummary;
 
 import java.rmi.RemoteException;
 
-import javax.xml.rpc.holders.StringHolder;
-
 public class JobControllerServiceSoapBindingImpl implements org.astrogrid.jes.delegate.v1.jobcontroller.JobController{
     public JobControllerServiceSoapBindingImpl() {
         jc = ComponentManagerFactory.getInstance().getController();

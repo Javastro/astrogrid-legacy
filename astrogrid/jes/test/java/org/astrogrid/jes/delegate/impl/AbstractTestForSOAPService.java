@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForSOAPService.java,v 1.3 2004/03/09 14:23:36 nw Exp $
+/*$Id: AbstractTestForSOAPService.java,v 1.4 2004/03/15 00:06:57 nw Exp $
  * Created on 05-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,19 +10,16 @@
 **/
 package org.astrogrid.jes.delegate.impl;
 
-import org.astrogrid.jes.comm.MockSchedulerNotifier;
-import org.astrogrid.jes.comm.SchedulerNotifier;
+import org.astrogrid.jes.comm.JobScheduler;
 import org.astrogrid.jes.component.BasicComponentManager;
-import org.astrogrid.jes.component.ComponentManager;
-import org.astrogrid.jes.component.ComponentManagerFactory;
 import org.astrogrid.jes.jobscheduler.Dispatcher;
+import org.astrogrid.jes.jobscheduler.MockJobScheduler;
 import org.astrogrid.jes.jobscheduler.dispatcher.MockDispatcher;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.jes.types.v1.cea.axis.MessageType;
 
 import org.picocontainer.MutablePicoContainer;
 
-import EDU.oswego.cs.dl.util.concurrent.Mutex;
 import EDU.oswego.cs.dl.util.concurrent.Sync;
 import junit.framework.TestCase;
 
@@ -53,16 +50,16 @@ public class AbstractTestForSOAPService extends TestCase {
             pico.registerComponentImplementation(Dispatcher.class,MockDispatcher.class);                       
             
             // scheduler that notifies of completion by releasing a barrier
-            pico.unregisterComponent(SchedulerNotifier.class);
-            pico.registerComponentImplementation(SchedulerNotifier.class,MySchedulerNotifier.class);
+            pico.unregisterComponent(JobScheduler.class);
+            pico.registerComponentImplementation(JobScheduler.class,MyMockJobScheduler.class);
             pico.registerComponentInstance(barrier);                  
         }           
 
     
     }
     /** scheduler notifier that releases barrier when finished */
-    protected static class MySchedulerNotifier extends MockSchedulerNotifier {
-        public MySchedulerNotifier(Sync barrier) throws InterruptedException {
+    protected static class MyMockJobScheduler extends MockJobScheduler {
+        public MyMockJobScheduler(Sync barrier) throws InterruptedException {
             this.barrier = barrier;
             barrier.acquire();
         }
@@ -83,6 +80,9 @@ public class AbstractTestForSOAPService extends TestCase {
 
 /* 
 $Log: AbstractTestForSOAPService.java,v $
+Revision 1.4  2004/03/15 00:06:57  nw
+removed SchedulerNotifier interface - replaced references to it by references to JobScheduler interface - identical
+
 Revision 1.3  2004/03/09 14:23:36  nw
 tests that exercise the soap transport
 

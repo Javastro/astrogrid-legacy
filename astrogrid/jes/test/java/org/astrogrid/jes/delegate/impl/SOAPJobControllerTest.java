@@ -1,4 +1,4 @@
-/*$Id: SOAPJobControllerTest.java,v 1.3 2004/03/09 15:04:42 nw Exp $
+/*$Id: SOAPJobControllerTest.java,v 1.4 2004/03/15 00:06:57 nw Exp $
  * Created on 05-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -68,7 +68,7 @@ public class SOAPJobControllerTest extends AbstractTestForSOAPService {
         protected void setUp() throws Exception{   
             ComponentManager cm = new TestComponentManager(new Mutex());        
             ComponentManagerFactory._setInstance(cm);
-            assertTrue(ComponentManagerFactory.getInstance().getNotifier() instanceof MySchedulerNotifier); 
+            assertTrue(ComponentManagerFactory.getInstance().getNotifier() instanceof MyMockJobScheduler); 
             deployLocalController();
         }
     }
@@ -177,6 +177,9 @@ public class SOAPJobControllerTest extends AbstractTestForSOAPService {
 
 /* 
 $Log: SOAPJobControllerTest.java,v $
+Revision 1.4  2004/03/15 00:06:57  nw
+removed SchedulerNotifier interface - replaced references to it by references to JobScheduler interface - identical
+
 Revision 1.3  2004/03/09 15:04:42  nw
 renamed JobInfo to JobSummary
 

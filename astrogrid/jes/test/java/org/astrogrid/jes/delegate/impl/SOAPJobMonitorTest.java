@@ -1,4 +1,4 @@
-/*$Id: SOAPJobMonitorTest.java,v 1.3 2004/03/09 14:23:36 nw Exp $
+/*$Id: SOAPJobMonitorTest.java,v 1.4 2004/03/15 00:06:57 nw Exp $
  * Created on 05-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,11 +10,11 @@
 **/
 package org.astrogrid.jes.delegate.impl;
 
-import org.astrogrid.jes.comm.MockSchedulerNotifier;
 import org.astrogrid.jes.component.ComponentManager;
 import org.astrogrid.jes.component.ComponentManagerFactory;
 import org.astrogrid.jes.delegate.JesDelegateFactory;
 import org.astrogrid.jes.delegate.JobMonitor;
+import org.astrogrid.jes.jobscheduler.MockJobScheduler;
 import org.astrogrid.jes.testutils.io.FileResourceLoader;
 import org.astrogrid.jes.types.v1.cea.axis.ExecutionPhase;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
@@ -52,7 +52,7 @@ public class SOAPJobMonitorTest extends AbstractTestForSOAPService {
         barrier = new Mutex();
         ComponentManager cm = new TestComponentManager(barrier);        
         ComponentManagerFactory._setInstance(cm);
-        assertTrue(ComponentManagerFactory.getInstance().getNotifier() instanceof MySchedulerNotifier);
+        assertTrue(ComponentManagerFactory.getInstance().getNotifier() instanceof MyMockJobScheduler);
        deployLocalMonitor();
        delegate = JesDelegateFactory.createJobMonitor(MONITOR_ENDPOINT);
        assertNotNull(delegate);
@@ -73,7 +73,7 @@ public class SOAPJobMonitorTest extends AbstractTestForSOAPService {
     public void testEmptyData() throws Exception {
         delegate.monitorJob(id,info);
         assertTrue("notification times out",barrier.attempt(Sync.ONE_SECOND * 10));
-        MockSchedulerNotifier noti = (MockSchedulerNotifier)ComponentManagerFactory.getInstance().getNotifier();
+        MockJobScheduler noti = (MockJobScheduler)ComponentManagerFactory.getInstance().getNotifier();
         assertEquals(1,noti.getCallCount());
     }
     
@@ -105,6 +105,9 @@ public class SOAPJobMonitorTest extends AbstractTestForSOAPService {
 
 /* 
 $Log: SOAPJobMonitorTest.java,v $
+Revision 1.4  2004/03/15 00:06:57  nw
+removed SchedulerNotifier interface - replaced references to it by references to JobScheduler interface - identical
+
 Revision 1.3  2004/03/09 14:23:36  nw
 tests that exercise the soap transport
 

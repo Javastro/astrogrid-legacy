@@ -1,4 +1,4 @@
-/*$Id: ListJobsStoreFailureTest.java,v 1.4 2004/03/09 14:23:54 nw Exp $
+/*$Id: ListJobsStoreFailureTest.java,v 1.5 2004/03/15 00:06:57 nw Exp $
  * Created on 17-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,10 +18,8 @@ import org.astrogrid.jes.impl.workflow.AbstractJobFactoryImpl;
 import org.astrogrid.jes.impl.workflow.MockJobFactoryImpl;
 import org.astrogrid.jes.job.JobException;
 import org.astrogrid.jes.types.v1.WorkflowSummary;
-import org.astrogrid.jes.util.JesUtil;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
-import java.io.IOException;
 import java.util.Iterator;
 
 /** test behaviour of job controller listing tests when store fails.
@@ -77,6 +75,9 @@ public class ListJobsStoreFailureTest extends AbstractTestForJobController {
 
 /* 
 $Log: ListJobsStoreFailureTest.java,v $
+Revision 1.5  2004/03/15 00:06:57  nw
+removed SchedulerNotifier interface - replaced references to it by references to JobScheduler interface - identical
+
 Revision 1.4  2004/03/09 14:23:54  nw
 tests that exercise the job contorller service implememntiton
 

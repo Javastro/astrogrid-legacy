@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForJobController.java,v 1.3 2004/03/09 14:23:54 nw Exp $
+/*$Id: AbstractTestForJobController.java,v 1.4 2004/03/15 00:06:57 nw Exp $
  * Created on 17-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,13 +11,13 @@
 package org.astrogrid.jes.jobcontroller;
 
 import org.astrogrid.jes.AbstractTestWorkflowInputs;
-import org.astrogrid.jes.comm.MockSchedulerNotifier;
-import org.astrogrid.jes.comm.SchedulerNotifier;
+import org.astrogrid.jes.comm.JobScheduler;
 import org.astrogrid.jes.impl.workflow.AbstractJobFactoryImpl;
 import org.astrogrid.jes.impl.workflow.CastorBeanFacade;
 import org.astrogrid.jes.impl.workflow.InMemoryJobFactoryImpl;
 import org.astrogrid.jes.job.BeanFacade;
 import org.astrogrid.jes.job.SubmitJobRequest;
+import org.astrogrid.jes.jobscheduler.MockJobScheduler;
 import org.astrogrid.jes.testutils.io.FileResourceLoader;
 import org.astrogrid.jes.util.JesUtil;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
@@ -49,8 +49,8 @@ public abstract class AbstractTestForJobController extends AbstractTestWorkflowI
     /**
      *Override to set up different test conditions
      */
-    protected SchedulerNotifier createNotifier() {
-        return new MockSchedulerNotifier();
+    protected JobScheduler createNotifier() {
+        return new MockJobScheduler();
     }
 
 
@@ -81,7 +81,7 @@ public abstract class AbstractTestForJobController extends AbstractTestWorkflowI
     protected BeanFacade facade;
 
 
-    protected SchedulerNotifier nudger;
+    protected JobScheduler nudger;
 
 
     protected JobController jc;
@@ -114,6 +114,9 @@ public abstract class AbstractTestForJobController extends AbstractTestWorkflowI
 
 /* 
 $Log: AbstractTestForJobController.java,v $
+Revision 1.4  2004/03/15 00:06:57  nw
+removed SchedulerNotifier interface - replaced references to it by references to JobScheduler interface - identical
+
 Revision 1.3  2004/03/09 14:23:54  nw
 tests that exercise the job contorller service implememntiton
 

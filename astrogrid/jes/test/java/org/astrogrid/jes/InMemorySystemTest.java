@@ -1,4 +1,4 @@
-/*$Id: InMemorySystemTest.java,v 1.10 2004/03/14 23:03:16 nw Exp $
+/*$Id: InMemorySystemTest.java,v 1.11 2004/03/15 00:06:57 nw Exp $
  * Created on 19-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -73,12 +73,12 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
             pico.registerComponentImplementation(Dispatcher.class,ShortCircuitDispatcher.class);
                        
             // scheduler that notifies of completion by releasing a barrier
-            pico.unregisterComponent(JobScheduler.class);
+            pico.unregisterComponent(SCHEDULER_ENGINE);
             DefaultComponentAdapterFactory fac = new DefaultComponentAdapterFactory();
             pico.registerComponent(
                 new ImplementationHidingComponentAdapter(
                     new CachingComponentAdapter(
-                        fac.createComponentAdapter(JobScheduler.class,ObservableJobScheduler.class,null)
+                        fac.createComponentAdapter(SCHEDULER_ENGINE,ObservableJobScheduler.class,null)
                         //new DefaultComponentAdapterFactory(JobScheduler.class,ObservableJobScheduler.class)
                     )
                   )
@@ -169,6 +169,9 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
 
 /* 
 $Log: InMemorySystemTest.java,v $
+Revision 1.11  2004/03/15 00:06:57  nw
+removed SchedulerNotifier interface - replaced references to it by references to JobScheduler interface - identical
+
 Revision 1.10  2004/03/14 23:03:16  nw
 fixed to fit in with naming change in picocontainer
 

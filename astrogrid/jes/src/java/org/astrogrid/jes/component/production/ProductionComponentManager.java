@@ -1,4 +1,4 @@
-/*$Id: ProductionComponentManager.java,v 1.3 2004/03/08 00:36:34 nw Exp $
+/*$Id: ProductionComponentManager.java,v 1.4 2004/03/15 00:06:57 nw Exp $
  * Created on 07-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,7 +14,6 @@ import org.astrogrid.config.PropertyNotFoundException;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.jes.comm.JobScheduler;
 import org.astrogrid.jes.comm.MemoryQueueSchedulerNotifier;
-import org.astrogrid.jes.comm.SchedulerNotifier;
 import org.astrogrid.jes.component.ComponentDescriptor;
 import org.astrogrid.jes.component.ComponentManagerException;
 import org.astrogrid.jes.component.EmptyComponentManager;
@@ -35,6 +34,9 @@ import org.astrogrid.jes.jobscheduler.locator.RegistryToolLocator;
 import org.astrogrid.jes.jobscheduler.locator.XMLFileLocator;
 import org.astrogrid.jes.jobscheduler.policy.LinearPolicy;
 
+import org.picocontainer.Parameter;
+import org.picocontainer.defaults.ComponentParameter;
+
 import javax.sql.DataSource;
 /** Implementation of Component Manager used in production / deployed jes system.
  * instantiates production set of components, configured from a Config class.
@@ -54,8 +56,11 @@ public final class ProductionComponentManager extends EmptyComponentManager {
         try {
          pico.registerComponentInstance("jes-meta",JES_META);
          pico.registerComponentInstance(Config.class,conf); 
-         pico.registerComponentImplementation(SchedulerNotifier.class,MemoryQueueSchedulerNotifier.class);
-         pico.registerComponentImplementation(JobScheduler.class,org.astrogrid.jes.jobscheduler.JobScheduler.class);
+         pico.registerComponentImplementation(JobScheduler.class,MemoryQueueSchedulerNotifier.class,
+            new Parameter[]{
+                new ComponentParameter(SCHEDULER_ENGINE)
+            });
+         pico.registerComponentImplementation(SCHEDULER_ENGINE,org.astrogrid.jes.jobscheduler.JobScheduler.class);
          registerPolicy();
          
          pico.registerComponentImplementation(Dispatcher.class,ApplicationControllerDispatcher.class);
@@ -172,6 +177,9 @@ public final class ProductionComponentManager extends EmptyComponentManager {
 
 /* 
 $Log: ProductionComponentManager.java,v $
+Revision 1.4  2004/03/15 00:06:57  nw
+removed SchedulerNotifier interface - replaced references to it by references to JobScheduler interface - identical
+
 Revision 1.3  2004/03/08 00:36:34  nw
 added configuration of registry tool locator to production components
 

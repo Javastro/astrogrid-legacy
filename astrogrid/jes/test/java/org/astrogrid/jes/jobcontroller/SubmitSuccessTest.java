@@ -1,4 +1,4 @@
-/* $Id: SubmitSuccessTest.java,v 1.5 2004/03/09 14:23:54 nw Exp $
+/* $Id: SubmitSuccessTest.java,v 1.6 2004/03/15 00:06:57 nw Exp $
  * Created on 29-Oct-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,8 +9,7 @@
  */
 package org.astrogrid.jes.jobcontroller;
 
-import org.astrogrid.jes.comm.MockSchedulerNotifier;
-import org.astrogrid.jes.util.JesUtil;
+import org.astrogrid.jes.jobscheduler.MockJobScheduler;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
  
@@ -33,7 +32,7 @@ public class SubmitSuccessTest extends AbstractTestForJobController {
     
     assertNotNull("Result from submitJob should not be null", urn);
     // now check what job store and nudger have seen.
-    assertTrue(((MockSchedulerNotifier)nudger).getCallCount() > 0);
+    assertTrue(((MockJobScheduler)nudger).getCallCount() > 0);
     //
     Workflow storedJob = fac.findJob(urn);
     assertNotNull(storedJob);
@@ -42,6 +41,9 @@ public class SubmitSuccessTest extends AbstractTestForJobController {
 
 /*
 *$Log: SubmitSuccessTest.java,v $
+*Revision 1.6  2004/03/15 00:06:57  nw
+*removed SchedulerNotifier interface - replaced references to it by references to JobScheduler interface - identical
+*
 *Revision 1.5  2004/03/09 14:23:54  nw
 *tests that exercise the job contorller service implememntiton
 *

@@ -1,4 +1,4 @@
-/*$Id: ComponentManager.java,v 1.5 2004/03/07 21:04:38 nw Exp $
+/*$Id: ComponentManager.java,v 1.6 2004/03/15 00:06:57 nw Exp $
  * Created on 07-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,6 @@
 **/
 package org.astrogrid.jes.component;
 import org.astrogrid.jes.comm.JobScheduler;
-import org.astrogrid.jes.comm.SchedulerNotifier;
 import org.astrogrid.jes.delegate.v1.jobcontroller.JobController;
 import org.astrogrid.jes.delegate.v1.jobmonitor.JobMonitor;
 import org.astrogrid.jes.job.BeanFacade;
@@ -32,11 +31,11 @@ public interface ComponentManager extends Startable{
     /**
      * @return
      */
-    public abstract SchedulerNotifier getNotifier();
+    public abstract JobScheduler getNotifier();
     /**
      * @return
      */
-    public abstract JobScheduler getScheduler();
+    //public abstract JobScheduler getScheduler();
     public abstract JobMonitor getMonitor();
     public abstract JobController getController();
     /** used for debugging / output to JSP */
@@ -47,6 +46,9 @@ public interface ComponentManager extends Startable{
 }
 /* 
 $Log: ComponentManager.java,v $
+Revision 1.6  2004/03/15 00:06:57  nw
+removed SchedulerNotifier interface - replaced references to it by references to JobScheduler interface - identical
+
 Revision 1.5  2004/03/07 21:04:38  nw
 merged in nww-itn05-pico - adds picocontainer
 

@@ -1,4 +1,4 @@
-/*$Id: SubmitNotifierFailureTest.java,v 1.3 2004/03/09 14:23:54 nw Exp $
+/*$Id: SubmitNotifierFailureTest.java,v 1.4 2004/03/15 00:06:57 nw Exp $
  * Created on 17-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,9 +10,9 @@
 **/
 package org.astrogrid.jes.jobcontroller;
 
-import org.astrogrid.jes.comm.MockSchedulerNotifier;
-import org.astrogrid.jes.comm.SchedulerNotifier;
+import org.astrogrid.jes.comm.JobScheduler;
 import org.astrogrid.jes.impl.workflow.InMemoryJobFactoryImpl;
+import org.astrogrid.jes.jobscheduler.MockJobScheduler;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
 /** Test what happens when notifier fails.
@@ -34,7 +34,7 @@ public class SubmitNotifierFailureTest extends AbstractTestForJobController {
     protected void performTest(JobURN urn) throws Exception {
         assertNotNull(seenException);
         // check notifier was called - double check we failed in the right place.
-        assertTrue(((MockSchedulerNotifier)nudger).getCallCount() > 0);
+        assertTrue(((MockJobScheduler)nudger).getCallCount() > 0);
 
         // look into store - shoudn't be an entry in the store for it. (i.e. should have been cleaned out when failed to submit).
         // in this case, means the store should be empty.
@@ -44,8 +44,8 @@ public class SubmitNotifierFailureTest extends AbstractTestForJobController {
     /**
      * @see org.astrogrid.jes.jobcontroller.AbstractTest#createNotifier()
      */
-    protected SchedulerNotifier createNotifier() {
-        return new MockSchedulerNotifier(false);
+    protected JobScheduler createNotifier() {
+        return new MockJobScheduler(false);
     }
 
 }
@@ -53,6 +53,9 @@ public class SubmitNotifierFailureTest extends AbstractTestForJobController {
 
 /* 
 $Log: SubmitNotifierFailureTest.java,v $
+Revision 1.4  2004/03/15 00:06:57  nw
+removed SchedulerNotifier interface - replaced references to it by references to JobScheduler interface - identical
+
 Revision 1.3  2004/03/09 14:23:54  nw
 tests that exercise the job contorller service implememntiton
 

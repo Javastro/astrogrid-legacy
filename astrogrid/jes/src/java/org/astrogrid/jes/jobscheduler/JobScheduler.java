@@ -54,8 +54,11 @@ public class JobScheduler implements org.astrogrid.jes.comm.JobScheduler, Compon
         this.facade = facade;
         this.dispatcher = dispatcher;
     }
+    /** the policy used to determine which steps to run next */
     protected final Policy policy;
+    /** facade to a job factory */
     protected final BeanFacade facade;
+    /** dispatcher for new jobs */
     protected final Dispatcher dispatcher;
     
 
@@ -164,7 +167,6 @@ public class JobScheduler implements org.astrogrid.jes.comm.JobScheduler, Compon
                  return;
              }        
                   
-             // compute by applying xpath to workflow. has to wait until we remove job.
              String xpath = JesUtil.extractXPath(id);
              Step jobStep = (Step)job.findXPathValue(xpath);
              if (jobStep == null) {

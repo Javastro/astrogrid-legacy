@@ -1,4 +1,4 @@
-/*$Id: BasicComponentManagerTest.java,v 1.2 2004/03/07 21:04:38 nw Exp $
+/*$Id: BasicComponentManagerTest.java,v 1.3 2004/03/15 00:06:57 nw Exp $
  * Created on 27-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -62,10 +62,7 @@ public class BasicComponentManagerTest extends TestCase {
     public void testGetNotifier() {
         assertNotNull(cm.getNotifier());
     }
-    
-    public void testGetScheduler() {
-        assertNotNull(cm.getScheduler());
-    }
+
     
     public void testInformation() {
         String result = cm.information();
@@ -82,6 +79,9 @@ public class BasicComponentManagerTest extends TestCase {
 
 /* 
 $Log: BasicComponentManagerTest.java,v $
+Revision 1.3  2004/03/15 00:06:57  nw
+removed SchedulerNotifier interface - replaced references to it by references to JobScheduler interface - identical
+
 Revision 1.2  2004/03/07 21:04:38  nw
 merged in nww-itn05-pico - adds picocontainer
 

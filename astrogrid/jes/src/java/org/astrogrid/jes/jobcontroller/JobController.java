@@ -10,10 +10,9 @@
  */
 package org.astrogrid.jes.jobcontroller;
 
-import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.community.beans.v1.axis._Account;
 import org.astrogrid.jes.JesException;
-import org.astrogrid.jes.comm.SchedulerNotifier;
+import org.astrogrid.jes.comm.JobScheduler;
 import org.astrogrid.jes.component.ComponentDescriptor;
 import org.astrogrid.jes.delegate.v1.jobcontroller.JesFault;
 import org.astrogrid.jes.job.BeanFacade;
@@ -26,14 +25,10 @@ import org.astrogrid.jes.types.v1.WorkflowSummary;
 import org.astrogrid.jes.util.JesUtil;
 import org.astrogrid.workflow.beans.v1.Workflow;
 
-import org.apache.axis.AxisFault;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.exolab.castor.xml.CastorException;
 
-import java.io.IOException;
 import java.io.StringWriter;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -80,14 +75,14 @@ import junit.framework.Test;
  */
 public class JobController implements org.astrogrid.jes.delegate.v1.jobcontroller.JobController, ComponentDescriptor{
     
-    public JobController(BeanFacade facade,SchedulerNotifier nudger) {
+    public JobController(BeanFacade facade,JobScheduler nudger) {
         assert facade != null;
         assert nudger != null;
         this.facade = facade;
         this.nudger = nudger;
     }
     protected final BeanFacade facade;
-    protected final SchedulerNotifier nudger;
+    protected final JobScheduler nudger;
 
 	private static final Log
 		logger = LogFactory.getLog( JobController.class ) ;
@@ -130,7 +125,7 @@ public class JobController implements org.astrogrid.jes.delegate.v1.jobcontrolle
 	        factory = facade.getJobFactory() ;
 	        factory.begin() ;
 	        job = factory.createJob( req) ;
-            nudger.scheduleNewJob(job.getJobExecutionRecord().getJobId());                    		
+            nudger.scheduleNewJob(JesUtil.castor2axis(job.getJobExecutionRecord().getJobId()));                    		
 			factory.end ( true ) ;   // Commit and cleanup                    		
             return new JobURN(job.getJobExecutionRecord().getJobId().getContent());
         }

@@ -10,7 +10,7 @@
  */
 package org.astrogrid.jes.jobmonitor; 
 
-import org.astrogrid.jes.comm.SchedulerNotifier;
+import org.astrogrid.jes.comm.JobScheduler;
 import org.astrogrid.jes.component.ComponentDescriptor;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.jes.types.v1.cea.axis.MessageType;
@@ -34,13 +34,14 @@ public class JobMonitor implements org.astrogrid.jes.delegate.v1.jobmonitor.JobM
 		logger = LogFactory.getLog( JobMonitor.class ) ;
          
         
-    public JobMonitor(SchedulerNotifier nudger) {
+    public JobMonitor(JobScheduler nudger) {
         assert nudger != null;
         this.nudger = nudger; 
 
     }
 
-    protected final SchedulerNotifier nudger;
+    protected final JobScheduler
+     nudger;
     
     /** do a load of validity checks, then pass on to schedulerr 
      * @todo add validity checks*/

@@ -1,4 +1,4 @@
-/*$Id: MemoryQueueSchedulerNotifier.java,v 1.5 2004/03/07 21:04:39 nw Exp $
+/*$Id: MemoryQueueSchedulerNotifier.java,v 1.6 2004/03/15 00:06:57 nw Exp $
  * Created on 18-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,10 +11,9 @@
 package org.astrogrid.jes.comm;
 
 import org.astrogrid.jes.component.ComponentDescriptor;
+import org.astrogrid.jes.types.v1.JobURN;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.jes.types.v1.cea.axis.MessageType;
-import org.astrogrid.jes.util.JesUtil;
-import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -27,7 +26,7 @@ import junit.framework.Test;
  * @author Noel Winstanley nw@jb.man.ac.uk 18-Feb-2004
  *
  */
-public class MemoryQueueSchedulerNotifier implements SchedulerNotifier , ComponentDescriptor{
+public class MemoryQueueSchedulerNotifier implements JobScheduler , ComponentDescriptor{
     /**
      *  Construct a new MemoryQueueSchedulerNotifier
      * @param exec executor to use to service each of the tasks
@@ -83,7 +82,7 @@ public class MemoryQueueSchedulerNotifier implements SchedulerNotifier , Compone
             return new Runnable() {
                 public void run() {
                     try {
-                    js.scheduleNewJob(JesUtil.castor2axis(urn));
+                    js.scheduleNewJob(urn);
                     } catch (Exception e) {
                         logger.warn("schedule new job",e);
                     }
@@ -129,6 +128,9 @@ public class MemoryQueueSchedulerNotifier implements SchedulerNotifier , Compone
 
 /* 
 $Log: MemoryQueueSchedulerNotifier.java,v $
+Revision 1.6  2004/03/15 00:06:57  nw
+removed SchedulerNotifier interface - replaced references to it by references to JobScheduler interface - identical
+
 Revision 1.5  2004/03/07 21:04:39  nw
 merged in nww-itn05-pico - adds picocontainer
 

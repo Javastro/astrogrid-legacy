@@ -11,7 +11,7 @@
 package org.astrogrid.jes;
 
 
-
+/** base exception type for the Job Execution System */
 public class JesException extends Exception {
 
     public JesException(String s) {
