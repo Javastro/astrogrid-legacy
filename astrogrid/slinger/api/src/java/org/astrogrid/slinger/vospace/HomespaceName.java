@@ -1,5 +1,5 @@
 /*
- * $Id: HomespaceName.java,v 1.4 2005/03/28 01:48:09 mch Exp $
+ * $Id: HomespaceName.java,v 1.5 2005/03/31 09:04:12 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -170,8 +170,6 @@ public class HomespaceName implements SRI, TargetIdentifier, SourceIdentifier
       String lookedIn = "";
 
       //create backwards compatible ivorn-syntax homespace, as community still expects the form "ivo://community/individual#path"
-      IVORN ivoForm = toIvoForm();
-      org.astrogrid.store.Ivorn oldHomespaceId = ivoForm.toOldIvorn(); //new org.astrogrid.store.Ivorn(ivoForm.getAuthority(), ivoForm.getKey(), ivoForm.getPath());
 
       //look up in config first
       String key = "homespace."+getName();
@@ -191,11 +189,14 @@ public class HomespaceName implements SRI, TargetIdentifier, SourceIdentifier
          }
       }
 
-      try {
-         CommunityAccountSpaceResolver communityResolver = new CommunityAccountSpaceResolver();
+      IVORN ivoForm = toIvoForm();
+      CommunityAccountSpaceResolver communityResolver = new CommunityAccountSpaceResolver();
 //        Ivorn homespaceIvorn = community.resolve(homespace);
-         lookedIn += "Community ("+communityResolver+") ";
-         IVOSRN storepoint = new IVOSRN(new IVOSRN(communityResolver.resolve(oldHomespaceId).toString()), getPath());
+      lookedIn += "Community ("+communityResolver+") ";
+      org.astrogrid.store.Ivorn oldHomespaceId = ivoForm.toOldIvorn();
+      try {
+         org.astrogrid.store.Ivorn homespaceService = communityResolver.resolve(oldHomespaceId);
+         IVOSRN storepoint = new IVOSRN(new IVOSRN(homespaceService.toString()), getPath());
          return storepoint;
       }
       catch (URISyntaxException use) {
@@ -247,6 +248,11 @@ public class HomespaceName implements SRI, TargetIdentifier, SourceIdentifier
       IVOSRN ivosrn = name.resolveIvosrn();
       System.out.println("->"+ivosrn);
       
+      name = new HomespaceName("homespace:guest04@uk.ac.le.star/votable/secresult1.vot");
+      System.out.println(name);
+
+      ivosrn = name.resolveIvosrn();
+      System.out.println("->"+ivosrn);
       /*
 //      SRL msrl = ivosrn.resolveSrl();
 //      System.out.println("->"+ivosrnmsrl);
@@ -266,6 +272,9 @@ public class HomespaceName implements SRI, TargetIdentifier, SourceIdentifier
 
 /*
 $Log: HomespaceName.java,v $
+Revision 1.5  2005/03/31 09:04:12  mch
+Added volist and some fixes to homespace resolvign
+
 Revision 1.4  2005/03/28 01:48:09  mch
 Added socket source/target, and makeFile instead of outputChild
 

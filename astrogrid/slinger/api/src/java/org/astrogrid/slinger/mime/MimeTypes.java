@@ -1,5 +1,5 @@
 /*
- * $Id: MimeTypes.java,v 1.1 2005/02/14 20:47:38 mch Exp $
+ * $Id: MimeTypes.java,v 1.2 2005/03/31 09:04:12 mch Exp $
  *
  */
 
@@ -23,27 +23,15 @@ public interface MimeTypes  {
    public static final String FITS        = "application/fits"  ;
 
    //see ivoa forum comments http://www.ivoa.net/forum/dal/0406/0198.htm.
-   public static final String VOTABLE  = "application/x-votable+xml";
+   public static final String VOTABLE           = "application/x-votable+xml";
+   public static final String VOTABLE_FITSLIST  = "application/x-votable+xml+fitslist";
    
    public static final String JOB      = "text/xml +org.astrogrid.job"      ;
    public static final String WORKFLOW = "text/xml +org.astrogrid.workflow" ;
 
    public static final String ADQL     = "text/xml +org.astrogrid.adql"     ;
-   public static final String VOLIST   = "text/xml +org.astrogrid.volist"  ;
+//   public static final String VOLIST   = "text/xml +org.astrogrid.volist"  ;
 
 }
-/*
- *   $Log: MimeTypes.java,v $
- *   Revision 1.1  2005/02/14 20:47:38  mch
- *   Split into API and webapp
- *
- *   Revision 1.3  2005/01/26 17:31:56  mch
- *   Split slinger out to scapi, swib, etc.
- *
- *   Revision 1.1.2.2  2004/12/06 00:07:31  mch
- *   Added clip, addstore and fixes
- *
- *   Revision 1.1.2.1  2004/11/25 07:18:13  mch
- *   added mime names
- *
- */
+
+
