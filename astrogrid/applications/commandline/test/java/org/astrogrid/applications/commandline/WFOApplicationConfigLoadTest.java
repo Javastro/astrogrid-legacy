@@ -1,5 +1,5 @@
 /*
- * $Id: WFOApplicationConfigLoadTest.java,v 1.2 2004/07/01 11:07:59 nw Exp $
+ * $Id: WFOApplicationConfigLoadTest.java,v 1.3 2004/11/27 13:20:02 pah Exp $
  * 
  * Created on 17-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -61,7 +61,7 @@ public class WFOApplicationConfigLoadTest extends DescriptionBaseTestCase {
       assertEquals("number of test applications", 3, clconf.getApplicationCount());
       CommandLineApplication application = clconf.getApplication(0);
       assertNotNull(application);
-      assertEquals("application name", "testapp", application.getName());
+      assertEquals("application name", "fake.authority.id/testapp", application.getName());
 
    }
 

@@ -45,7 +45,20 @@ class reference2 {
 @__modelType reference 
 */
 class reference4 {
-}}/**
+}
+/**
+@__ref <oiref:design#Class#id10m9sdseq8h5sdses45cg.nodeidat2cte1ti3spje1tk2tio:oiref><oihard>
+@__modelType reference 
+*/
+class reference1 {
+}
+/**
+@__ref <oiref:design#Class#id10m9sdseq8h5sdses45cg.nodeidihbjge1ti3spje1tk99uf:oiref><oihard>
+@__modelType reference 
+*/
+class reference6 {
+}
+}/**
 
 @__tags
 @shapeType SequenceDiagram */
@@ -54,7 +67,12 @@ class __tags {
 @__options option.sequenceDiagram.showMessageDescription = false
 option.detail = Design
 option.referenced = Show name
-option.diagram.wrapLinkLabelText = true 
+option.diagram.wrapLinkLabelText = true
+option.orientation = Landscape
+option.fittopage = true
+option.printheader = false
+option.printfooter = false
+option.boundingbox = false
 */
 class __options {
 }/**
@@ -74,53 +92,58 @@ class __options {
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node21.link31:oiref>=574,1067,971,1067:oigroup>
 <oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id10m9sdseq8h5sdses45cg.node21.link25:oiref>=584,580,400,60,0:oigroup>
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node2.link:oiref>=786,503,574,503:oigroup>
+<oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.nodeidat2cte1ti3spje1tk2tio:oiref>=640,240,300,90,0:oigroup>
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node:oiref>=30,30,366,1290,0:oigroup>
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node21.node28:oiref>=560,778,14,299,0:oigroup>
 <oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id10m9sdseq8h5sdses45cg.node21.link31:oiref>=584,997,400,60,0:oigroup>
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node21.node8:oiref>=560,1220,14,20,1:oigroup>
 <oigroup:Composite#sendTime#<oiref:design#Class#id10m9sdseq8h5sdses45cg.node2.link:oiref>=700,513,76,15,0:oigroup>
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node23.node:oiref>=971,650,14,20,1:oigroup>
-<oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node21.link29:oiref>=574,860,1224,860:oigroup>
+<oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node21.link29:oiref>=574,860,1154,860:oigroup>
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node21.node56:oiref>=560,162,14,20,1:oigroup>
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node23.node32:oiref>=971,1067,14,20,1:oigroup>
 <oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id10m9sdseq8h5sdses45cg.node21.link29:oiref>=584,835,134,15,0:oigroup>
-<oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node44.node:oiref>=1418,950,14,20,1:oigroup>
-<oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node1.link:oiref>=1483,989,1432,960:oigroup>
+<oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node44.node:oiref>=1328,950,14,20,1:oigroup>
+<oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node1.link:oiref>=1253,799,1335,950:oigroup>
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node21.node62:oiref>=560,280,14,20,1:oigroup>
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node21.link:oiref>=574,402,739,402:oigroup>
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node.link55:oiref>=220,162,560,162:oigroup>
-<oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node1:oiref>=1483,970,147,99,0:oigroup>
+<oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node1:oiref>=1180,700,147,99,0:oigroup>
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node2.node:oiref>=786,402,14,386,0:oigroup>
-<oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node21.link63:oiref>=574,950,1418,950:oigroup>
+<oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node21.link63:oiref>=574,950,1328,950:oigroup>
 <oigroup:Composite#sendTime#<oiref:design#Class#id10m9sdseq8h5sdses45cg.node2.link27:oiref>=619,788,157,15,0:oigroup>
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node21:oiref>=419,30,297,1290,0:oigroup>
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node2:oiref>=739,367,108,429,0:oigroup>
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node.link61:oiref>=220,280,560,280:oigroup>
-<oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node44:oiref>=1350,30,150,1290,0:oigroup>
+<oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node44:oiref>=1260,30,150,1290,0:oigroup>
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node21.node59:oiref>=560,220,14,20,1:oigroup>
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node21.link64:oiref>=:oigroup>
-<oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node3:oiref>=1570,630,145,186,0:oigroup>
+<oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node3:oiref>=1000,550,145,186,0:oigroup>
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node.link1:oiref>=:oigroup>
 <oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id10m9sdseq8h5sdses45cg.node.link55:oiref>=230,107,400,45,1:oigroup>
 <oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id10m9sdseq8h5sdses45cg.node21.link63:oiref>=584,895,400,45,1:oigroup>
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node23:oiref>=900,30,156,1290,0:oigroup>
 <oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id10m9sdseq8h5sdses45cg.node21.link:oiref>=584,377,58,15,0:oigroup>
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node.link58:oiref>=220,220,560,220:oigroup>
-<oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node4:oiref>=1160,30,143,1290,0:oigroup>
+<oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node4:oiref>=1090,30,143,1290,0:oigroup>
 <oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id10m9sdseq8h5sdses45cg.node.link5:oiref>=230,1062,400,45,1:oigroup>
 <oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id10m9sdseq8h5sdses45cg.node.link61:oiref>=230,225,400,45,1:oigroup>
 <oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id10m9sdseq8h5sdses45cg.node.link:oiref>=230,325,276,15,0:oigroup>
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node.link:oiref>=220,350,560,350:oigroup>
+<oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.nodeidihbjge1ti3spje1tk99uf.linkid8ls89e1ti3spje1tkdhzz:oiref>=1230,1350,978,1087:oigroup>
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node21.node23:oiref>=560,503,14,157,1:oigroup>
-<oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node3.link:oiref>=1642,816,1231,860:oigroup>
+<oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node3.link:oiref>=1092,736,1161,860:oigroup>
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node21.link4:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.nodeidat2cte1ti3spje1tk2tio.linkidj9j21e1ti3spje1tk5u4j:oiref>=793,330,793,402:oigroup>
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node21.node:oiref>=560,350,14,82,0:oigroup>
 <oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id10m9sdseq8h5sdses45cg.node.link7:oiref>=230,1165,400,45,1:oigroup>
 <oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id10m9sdseq8h5sdses45cg.node.link58:oiref>=230,165,400,45,1:oigroup>
-<oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node4.node:oiref>=1224,860,14,20,1:oigroup>
+<oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node4.node:oiref>=1154,860,14,20,1:oigroup>
 <oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id10m9sdseq8h5sdses45cg.node2.link:oiref>=635,478,141,15,0:oigroup>
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node.link5:oiref>=220,1117,560,1117:oigroup>
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node21.link25:oiref>=574,650,971,650:oigroup>
+<oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.nodeidihbjge1ti3spje1tk99uf:oiref>=1020,1350,380,120,0:oigroup>
+<oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.nodeidihbjge1ti3spje1tk99uf.linkidi27jve1ti3spje1tke12l:oiref>=1335,1350,1335,970:oigroup>
 <oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id10m9sdseq8h5sdses45cg.node2.link27:oiref>=645,753,131,15,0:oigroup>
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node21.link30:oiref>=:oigroup>
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node2.link27:oiref>=786,778,574,778:oigroup>
@@ -594,3 +617,42 @@ class node3 {
 */
 class link {
 }}
+/**
+@shapeType Note
+@__modelType node
+@name Note3
+@text This is the process that is to be executed. 
+It is defined as a process that can consume or create data. So this can include Unix
+ command line tools, database queries, web services etc. 
+*/
+class nodeidat2cte1ti3spje1tk2tio {
+/**
+@shapeType NoteLink
+@__modelType link
+@__ref <oiref:design#Class#id10m9sdseq8h5sdses45cg.node2.node:oiref><oihard> 
+*/
+class linkidj9j21e1ti3spje1tk5u4j {
+}
+}
+/**
+@shapeType Note
+@__modelType node
+@name Note4
+@text The monitoring/resultListening services could be hosted by the same process as the invoking service - they are shown as conceptually separate because the endpoints of these services are passed in as an argument to the registering call. Indeed, if required, there could be many status and results listeners for a single application execution. 
+*/
+class nodeidihbjge1ti3spje1tk99uf {
+/**
+@shapeType NoteLink
+@__modelType link
+@__ref <oiref:design#Class#id10m9sdseq8h5sdses45cg.node23.node32:oiref><oihard> 
+*/
+class linkid8ls89e1ti3spje1tkdhzz {
+}
+/**
+@shapeType NoteLink
+@__modelType link
+@__ref <oiref:design#Class#id10m9sdseq8h5sdses45cg.node44.node:oiref><oihard> 
+*/
+class linkidi27jve1ti3spje1tke12l {
+}
+}

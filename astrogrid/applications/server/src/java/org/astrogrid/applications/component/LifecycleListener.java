@@ -1,4 +1,4 @@
-/*$Id: LifecycleListener.java,v 1.4 2004/10/08 20:00:20 pah Exp $
+/*$Id: LifecycleListener.java,v 1.5 2004/11/27 13:20:03 pah Exp $
  * Created on 16-Sep-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -84,10 +84,11 @@ public class LifecycleListener implements ServletContextListener {
 //                            e);
 //        }
         //just use the standard config ability to write a property.
-       
-        SimpleConfig.getSingleton().setProperty(EmptyCEAComponentManager.SERVICE_ENDPOINT_URL, endpointURL);
-        logger.info("service endpoint stored as "+endpointURL);
-        storedEndpoint = true;
+ 
+//because of possible firewalling NAT issues, it is impossible to set this reliably - better to make this an install config issue      
+//        SimpleConfig.getSingleton().setProperty(EmptyCEAComponentManager.SERVICE_ENDPOINT_URL, endpointURL);
+//        logger.info("service endpoint stored as "+endpointURL);
+//        storedEndpoint = true;
     }
     
     static boolean storedEndpoint = false;
@@ -106,6 +107,12 @@ public class LifecycleListener implements ServletContextListener {
 
 /* 
 $Log: LifecycleListener.java,v $
+Revision 1.5  2004/11/27 13:20:03  pah
+result of merge of pah_cea_bz561 branch
+
+Revision 1.4.2.1  2004/11/15 16:56:20  pah
+do not try to store the service url - firewall NAT might make this pointless - better to set in config
+
 Revision 1.4  2004/10/08 20:00:20  pah
 do not store the endpoint here - not good
 

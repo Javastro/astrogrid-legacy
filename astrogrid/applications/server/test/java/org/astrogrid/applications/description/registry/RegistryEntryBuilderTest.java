@@ -1,4 +1,4 @@
-/*$Id: RegistryEntryBuilderTest.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: RegistryEntryBuilderTest.java,v 1.3 2004/11/27 13:20:03 pah Exp $
  * Created on 26-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -41,7 +41,7 @@ public class RegistryEntryBuilderTest extends TestCase {
      */
     protected void setUp() throws Exception {
         super.setUp();
-        ApplicationDescriptionLibrary lib = new TestApplicationDescriptionLibrary("testapp");
+        ApplicationDescriptionLibrary lib = new TestApplicationDescriptionLibrary("astrogrid.org/testapp");
         RegistryEntryBuilder.URLs urls = new RegistryEntryBuilder.URLs() {
             URL serviceURL =  new URL("http://locahost:8080/astrogrid-applications-SNAPSHOT/services/CommonExecutionConnectorService");                
            
@@ -96,6 +96,12 @@ public class RegistryEntryBuilderTest extends TestCase {
 
 /* 
 $Log: RegistryEntryBuilderTest.java,v $
+Revision 1.3  2004/11/27 13:20:03  pah
+result of merge of pah_cea_bz561 branch
+
+Revision 1.2.90.1  2004/11/04 16:49:17  pah
+put in the authorityid into the testapp name
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization

@@ -1,5 +1,5 @@
 /*
- * $Id: InitServlet.java,v 1.10 2004/09/22 10:52:50 pah Exp $
+ * $Id: InitServlet.java,v 1.11 2004/11/27 13:20:03 pah Exp $
  * 
  * Created on 14-Apr-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -26,6 +26,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.beans.v1.cea.castor.ExecutionSummaryType;
+import org.astrogrid.applications.description.registry.RegistryUploader;
+import org.astrogrid.applications.manager.MetadataService;
+import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.registry.client.RegistryDelegateFactory;
 
 /**
  * A simple servlet that starts cea service, by instantiating the pico container
@@ -50,10 +54,10 @@ public class InitServlet extends HttpServlet {
      * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if (! LifecycleListener.storedEndpoint) {
+//always do it for now         if (! LifecycleListener.storedEndpoint) {
             URL url = makeEndPointURL(req);
             LifecycleListener.writeEndpointConfig(url);
-        }
+//        }
         // expect a 'method' parameter.
         PrintWriter writer = resp.getWriter();
         String method = req.getParameter("method");
@@ -69,6 +73,29 @@ public class InitServlet extends HttpServlet {
             getExecutionSummary(writer, execId);
 
         }
+        else if (method.trim().toLowerCase().equals("register")) {
+           String endpoint = req.getParameter("endpoint");
+           if(endpoint == null)
+           {
+              endpoint = (String)SimpleConfig.getSingleton().getProperty(RegistryDelegateFactory.ADMIN_URL_PROPERTY);
+           }
+           resp.setContentType("text/html");
+           try {
+            writer.println("<html><head></head><body><p>registered with registry at "+endpoint+"</p>");
+            MetadataService voProvider = CEAComponentManagerFactory.getInstance().getMetadataService();
+           
+            RegistryUploader regUploader = CEAComponentManagerFactory.getInstance().getRegistryUploaderService();
+            regUploader.write(endpoint);
+           writer.println("</p><p>success</p></body></html>");
+         }
+         catch (Exception e) {
+            writer.println("<p>error registering</p><pre>");
+            e.printStackTrace(writer);
+            writer.println("</pre></body></html>");
+         }
+          
+       }
+        
         else if (method.trim().toLowerCase().equals("startup")) {
             logger.info("Starting CEA server");
             CEAComponentManagerFactory.getInstance();
@@ -81,7 +108,8 @@ public class InitServlet extends HttpServlet {
         }
     }
     
-    protected void returnRegistryEntry(PrintWriter pw) throws ServletException {
+ 
+   protected void returnRegistryEntry(PrintWriter pw) throws ServletException {
         try {
             String regEntry = CEAComponentManagerFactory.getInstance().getMetadataService().returnRegistryEntry();
             pw.print(regEntry);

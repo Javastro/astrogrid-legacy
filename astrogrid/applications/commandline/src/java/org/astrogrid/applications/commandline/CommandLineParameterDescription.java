@@ -1,4 +1,4 @@
-/*$Id: CommandLineParameterDescription.java,v 1.4 2004/09/09 12:22:12 pah Exp $
+/*$Id: CommandLineParameterDescription.java,v 1.5 2004/11/27 13:20:02 pah Exp $
  * Created on 17-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -45,6 +45,9 @@ public class CommandLineParameterDescription extends BaseParameterDescription {
 
     /** flag that indicates application expects a file-reference containing this parameter in the arguments, rather than the parameter value itself. NB This default should match the schema default*/ 
     private boolean fileRef = true;
+    
+    /** if non-null, then the application will always write output to a file with this name */
+    private String localFileName = null;
 
     /**
      * Adds any necessary switches to the commandline parameter. This is controlled by the @link #commandPosition, @link #commandSwitch and @link #switchType fields. 
@@ -156,11 +159,23 @@ public class CommandLineParameterDescription extends BaseParameterDescription {
         this.fileRef = isFile;
     }
 
+   public String getLocalFileName() {
+      return localFileName;
+   }
+   public void setLocalFileName(String localFileName) {
+      this.localFileName = localFileName;
+   }
 }
 
 
 /* 
 $Log: CommandLineParameterDescription.java,v $
+Revision 1.5  2004/11/27 13:20:02  pah
+result of merge of pah_cea_bz561 branch
+
+Revision 1.4.26.1  2004/11/15 16:53:56  pah
+enable pickup of locally generated file name
+
 Revision 1.4  2004/09/09 12:22:12  pah
 change the fileref default to match schema
 

@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineDescriptionsLoaderTest.java,v 1.6 2004/09/10 12:13:37 pah Exp $
+ * $Id: CommandLineDescriptionsLoaderTest.java,v 1.7 2004/11/27 13:20:02 pah Exp $
  * 
  * Created on 26-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -19,6 +19,7 @@ import org.astrogrid.applications.commandline.CommandLineParameterDescription;
 import org.astrogrid.applications.commandline.DescriptionBaseTestCase;
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationInterface;
+import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.Cardinality;
 import org.astrogrid.applications.description.ParameterDescription;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
@@ -76,6 +77,12 @@ public class CommandLineDescriptionsLoaderTest extends DescriptionBaseTestCase {
                 CommandLineApplicationDescription.class));
         container.registerComponentImplementation(InMemoryIdGen.class);
         container.registerComponentImplementation(DefaultProtocolLibrary.class);
+        container.registerComponentInstance(BaseApplicationDescriptionLibrary.AppAuthorityIDResolver.class, new BaseApplicationDescriptionLibrary.AppAuthorityIDResolver(){/* (non-Javadoc)
+       * @see org.astrogrid.applications.description.BaseApplicationDescriptionLibrary.AppAuthorityIDResolver#getAuthorityID()
+       */
+      public String getAuthorityID() {
+        return "org.astrogrid.test";
+      }});
         container
                 .registerComponentImplementation(ApplicationDescriptionEnvironment.class);
 
@@ -92,7 +99,7 @@ public class CommandLineDescriptionsLoaderTest extends DescriptionBaseTestCase {
                     public URL getURL() {
                         return inputFile;
                     }
-                }, new CommandLineApplicationDescriptionFactory(container));
+                }, new CommandLineApplicationDescriptionFactory(container),(ApplicationDescriptionEnvironment)container.getComponentInstanceOfType(ApplicationDescriptionEnvironment.class));
         assertNotNull("cannot create the DescriptionLoader", dl);
 
     }
@@ -108,12 +115,13 @@ public class CommandLineDescriptionsLoaderTest extends DescriptionBaseTestCase {
             assertTrue(x instanceof CommandLineApplicationDescription);
             CommandLineApplicationDescription ad = (CommandLineApplicationDescription)x;
             assertEquals("instance class", ad.getInstanceClass(), null);
+            assertTrue("the application description not correct", ad.getAppDescription().equals("testapp is just for testing"));
 
             assertTrue("execution path", ad.getExecutionPath().endsWith(
                     "testapp.sh")); //this is dependent on the actual location
             ParameterDescription[] params = ad.getParameterDescriptions();
             assertNotNull("no parameters returned", params);
-            assertEquals("there should be 14 parameters ", 13, params.length);
+            assertEquals("there should be 14 parameters ", 14, params.length);
             //now look at the parameters in detail
             ParameterDescription p1 = params[0];
 
@@ -179,7 +187,7 @@ public class CommandLineDescriptionsLoaderTest extends DescriptionBaseTestCase {
                 fail("paramter not found");
             }
             String[] pd2s = intf.getArrayofOutputs();
-            assertEquals("wrong number of output parametes", 2, pd2s.length);
+            assertEquals("wrong number of output parametes", 3, pd2s.length);
             try {
                 ParameterDescription inp1 = intf.getOutputParameter("P3");
                 assertTrue(inp1 instanceof CommandLineParameterDescription);
@@ -195,6 +203,8 @@ public class CommandLineDescriptionsLoaderTest extends DescriptionBaseTestCase {
             Cardinality c1 = intf.getParameterCardinality("P1");
             assertTrue("P1 should be mandatory", c1.getMinOccurs() == 1);
             assertTrue("p1 should occur only once", c1.getMaxOccurs() == 1);
+            CommandLineParameterDescription p14 = (CommandLineParameterDescription)intf.getOutputParameter("P14");
+            assertTrue("P14 should have a localfile reference", p14.getLocalFileName().equals("testlocalfile"));
         }
         catch (ApplicationDescriptionNotFoundException e) {
             fail("expected test application " + TESTAPPNAME + "not found");

@@ -1,4 +1,4 @@
-/*$Id: JavaClassApplicationDescriptionLibrary.java,v 1.4 2004/09/01 15:42:26 jdt Exp $
+/*$Id: JavaClassApplicationDescriptionLibrary.java,v 1.5 2004/11/27 13:20:03 pah Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,6 +26,7 @@ import java.lang.reflect.Modifier;
  * This class constructs {@link org.astrogrid.applications.javaclass.JavaClassApplicationDescription} for each static method in its parameter class,
  * and then collects them as an {@link org.astrogrid.applications.description.ApplicationDescriptionLibrary}
  * @author Noel Winstanley nw@jb.man.ac.uk 08-Jun-2004
+ * @author Paul Harrison (pah@jb.man.ac.uk)
  * @see org.astrogrid.applications.javaclass.JavaClassApplicationDescription
  * @see org.astrogrid.applications.description.ApplicationDescriptionLibrary
  *
@@ -40,25 +41,22 @@ public class JavaClassApplicationDescriptionLibrary extends BaseApplicationDescr
 
     /** Construct a new JavaClassApplicationDescriptionLibrary, based on static methods of parameter class
      * @param implClass - class of static methods, each of which will provide an application for the library.
-     * @param community configuration object specifiying under which community (authority?) the applications are to be placed 
+     * @param authidResolver configuration object specifiying under which community (authority?) the applications are to be placed 
      * @param env standard container object for helper code.
      * 
      */
-    public JavaClassApplicationDescriptionLibrary(Class implClass, Community community,ApplicationDescriptionEnvironment env) {
-        super();
+    public JavaClassApplicationDescriptionLibrary(Class implClass, ApplicationDescriptionEnvironment env) {
+        super(env);
         this.implClass= implClass;
-        this.env = env;
-        this.community = community;
-        populate(implClass,env.getIdGen());
+        populate(implClass,env.getIdGen(), env.getAuthIDResolver());
     }
-    protected final Community community;
     protected final Class implClass;
-    protected final ApplicationDescriptionEnvironment env;
     /** populates the library using reflection on the methods of the parameter class
      * @param imp
+    * @param authidresolver
      */
-    protected final void populate(Class imp,IdGen idgen) {
-        String communityName = community.getCommunity();
+    protected final void populate(Class imp,IdGen idgen, BaseApplicationDescriptionLibrary.AppAuthorityIDResolver authidresolver) {
+        String communityName = authidresolver.getAuthorityID();
         Method[] methods = imp.getDeclaredMethods();
         for (int i = 0; i < methods.length; i++) {
             Method m = methods[i];
@@ -87,6 +85,12 @@ public class JavaClassApplicationDescriptionLibrary extends BaseApplicationDescr
 
 /* 
 $Log: JavaClassApplicationDescriptionLibrary.java,v $
+Revision 1.5  2004/11/27 13:20:03  pah
+result of merge of pah_cea_bz561 branch
+
+Revision 1.4.36.1  2004/11/09 09:21:16  pah
+initial attempt to rationalise authorityID use & self registering
+
 Revision 1.4  2004/09/01 15:42:26  jdt
 Merged in Case 3
 

@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractApplication.java,v 1.9 2004/09/20 16:40:43 pah Exp $
+ * $Id: AbstractApplication.java,v 1.10 2004/11/27 13:20:02 pah Exp $
  *
  * Created on 13 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -139,6 +139,7 @@ public abstract class AbstractApplication extends Observable implements Applicat
     /** hook that specialized subclasses can overried - to return a custom adapter  
      * used in {@link #createAdapters}
      * @return a {@link DefaultParameterAdapter}
+     * @TODO perhaps make this create different types of adapter dependent on parameter type.
      */
     protected ParameterAdapter instantiateAdapter(ParameterValue pval, ParameterDescription descr,ExternalValue indirectVal) {
         return new DefaultParameterAdapter(pval,descr,indirectVal);

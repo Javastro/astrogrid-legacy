@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractApplicationDescription.java,v 1.4 2004/07/26 12:07:38 nw Exp $
+ * $Id: AbstractApplicationDescription.java,v 1.5 2004/11/27 13:20:02 pah Exp $
  * 
  * Created on 14-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -48,6 +48,14 @@ public abstract class AbstractApplicationDescription implements ApplicationDescr
    private final Map parameterMap;
    /** an environment object of supporting components (name generation, etc).*/
     protected final ApplicationDescriptionEnvironment env;
+   /** this is a human readable description of the application
+    */
+   private String appDescription = "not set";
+   /** a name for the application to be used in the UI.
+    */
+   private String uIName= "not set";
+   /** a url with more information about the application */
+   private String referenceURL =  "http://www.astrogrid.org/";
    
    /** 
     *  Construct a new AbstractApplicationDescription
@@ -141,6 +149,30 @@ public void addParameterDescription(ParameterDescription param) {
         + "\n-------------------------------------------------------------";
     }
 
+   public String getAppDescription() {
+     return appDescription;
+   }
+   public String getUIName() {
+      return uIName;
+   }
+   public void setAppDescription(String appDescription) {
+      this.appDescription = appDescription;
+   }
+   public void setUIName(String name) {
+      uIName = name;
+   }
+   /* (non-Javadoc)
+    * @see org.astrogrid.applications.description.ApplicationDescription#getReferenceURL()
+    */
+   public String getReferenceURL() {
+     return referenceURL;
+   }
+   /**
+    * @param referenceURL The referenceURL to set.
+    */
+   public void setReferenceURL(String referenceURL) {
+      this.referenceURL = referenceURL;
+   }
 }
 
 

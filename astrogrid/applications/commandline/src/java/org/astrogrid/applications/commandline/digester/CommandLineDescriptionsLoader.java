@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineDescriptionsLoader.java,v 1.6 2004/09/22 10:52:50 pah Exp $
+ * $Id: CommandLineDescriptionsLoader.java,v 1.7 2004/11/27 13:20:03 pah Exp $
  *
  * Created on 26 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -24,6 +24,7 @@ import org.astrogrid.applications.beans.v1.ParameterRef;
 import org.astrogrid.applications.commandline.CommandLineParameterDescription;
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
+import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.description.exception.ApplicationDescriptionNotLoadedException;
 import org.w3c.dom.Node;
 import org.xml.sax.Attributes;
@@ -48,8 +49,9 @@ public class CommandLineDescriptionsLoader extends BaseApplicationDescriptionLib
     }
 
 
-   public CommandLineDescriptionsLoader(DescriptionURL finder, CommandLineApplicationDescriptionFactory appDescFactory) 
+   public CommandLineDescriptionsLoader(DescriptionURL finder, CommandLineApplicationDescriptionFactory appDescFactory, ApplicationDescriptionEnvironment envin) 
    throws ApplicationDescriptionNotLoadedException {
+          super(envin);
           this.configFile = finder.getURL();
           this.appDescFactory = appDescFactory;
           loadDescription();
@@ -89,6 +91,9 @@ public class CommandLineDescriptionsLoader extends BaseApplicationDescriptionLib
       // set the appropriate attributes
       digester.addSetProperties(CommandLineApplicationDescriptionsConstants.APPLICATION_ELEMENT);
       digester.addCallMethod(CommandLineApplicationDescriptionsConstants.EXPATH_ELEMENT, "setExecutionPath", 0);
+      digester.addCallMethod(CommandLineApplicationDescriptionsConstants.LONGNAME_ELEMENT, "setUIName", 0);      
+      digester.addCallMethod(CommandLineApplicationDescriptionsConstants.DESCRIPTION_ELEMENT, "setAppDescription", 0);
+      digester.addCallMethod(CommandLineApplicationDescriptionsConstants.URL_ELEMENT, "setReferenceURL", 0);
 
       // add the appropriate paramter element and set its properties
       digester.addObjectCreate(CommandLineApplicationDescriptionsConstants.PARAMETER_ELEMENT,CommandLineParameterDescription.class);
@@ -101,6 +106,7 @@ public class CommandLineDescriptionsLoader extends BaseApplicationDescriptionLib
       digester.addCallMethod(CommandLineApplicationDescriptionsConstants.UCD_ELEMENT, "setUcd", 0);
       digester.addCallMethod(CommandLineApplicationDescriptionsConstants.DEFVAL_ELEMENT, "setDefaultValue", 0);
       digester.addCallMethod(CommandLineApplicationDescriptionsConstants.UNITSL_ELEMENT, "setUnits", 0);
+      
            
       // add the parameter to the list of paramters      
       digester.addSetNext(CommandLineApplicationDescriptionsConstants.PARAMETER_ELEMENT, "addParameterDescription");

@@ -1,5 +1,5 @@
 /*
- * $Id: MergingParameterAdapter.java,v 1.1 2004/10/05 16:04:45 pah Exp $
+ * $Id: MergingParameterAdapter.java,v 1.2 2004/11/27 13:20:02 pah Exp $
  * 
  * Created on 23-Sep-2004 by Paul Harrison (pah@jb.man.ac.uk)
  * Copyright 2004 AstroGrid. All rights reserved.
@@ -122,7 +122,7 @@ public class MergingParameterAdapter extends DefaultCommandLineParameterAdapter 
             }
          }
          concentrator.setHaveListedSwitches(true);
-         return desc.addCmdlineAdornment(output.toString());
+         return cmdParamDesc.addCmdlineAdornment(output.toString());
       }
    }
 

@@ -1,4 +1,4 @@
-/*$Id: CommandLineApplicationTest.java,v 1.9 2004/09/30 15:10:00 pah Exp $
+/*$Id: CommandLineApplicationTest.java,v 1.10 2004/11/27 13:20:02 pah Exp $
  * Created on 27-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -63,6 +63,8 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
 
     private static final String PAR4_DATA = "any old rubbish";
 
+   private static final String LOCALFILE_DATA = "some local test content";
+
     /**
      * Constructor for CmdLineApplicationTest.
      * 
@@ -103,9 +105,14 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
                 assertTrue("P3 does not contain expected string", result.getValue().indexOf(TEST_DATA) != -1);
             }
             else if (result.getName().equals("P2")) {
-                assertTrue("P2 does not contain expected string", result.getValue().indexOf(PAR4_DATA) != -1);
-                
-            }
+               assertTrue("P2 does not contain expected string", result.getValue().indexOf(PAR4_DATA) != -1);
+               
+           }
+            else if (result.getName().equals("P14")) {
+               assertTrue("P14 does not contain expected string", result.getValue().indexOf(LOCALFILE_DATA) != -1);
+               
+           }
+            
             else {
                 fail("unknown result pararmeter  " + result.getName()
                         + " returned");
@@ -140,12 +147,16 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
         ParameterValue echo = new ParameterValue();
         echo.setName("P2");
         echo.setIndirect(false);
+        ParameterValue localfileout = new ParameterValue();
+        localfileout.setName("P14");
+        localfileout.setIndirect(false);
 
         t.getInput().addParameter(inFile1);
         t.getInput().addParameter(inFile);
         t.getInput().addParameter(p4);
         t.getOutput().addParameter(out);
         t.getOutput().addParameter(echo);
+        t.getOutput().addParameter(localfileout);
    }
 
    /** calls application, with indirect parameter values */
@@ -161,7 +172,11 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
         File parameterEchoFile = File.createTempFile(
                 "CommandLineApplicationTest-paramecho", null);
         File par4file = File.createTempFile("CommandLineApplicationTest-p4",
-                null);
+              null);
+      
+        File par14file = File.createTempFile("CommandLineApplicationTest-p14",
+              null);
+      
 
         PrintWriter pw = new PrintWriter(new FileWriter(inputFile));
         pw.println(TEST_DATA);
@@ -197,12 +212,18 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
         p4.setName("P4");
         p4.setIndirect(true);
         p4.setValue(par4file.toURI().toString());
+        
+        ParameterValue p14 = new ParameterValue();
+        p14.setName("P14");
+        p14.setIndirect(true);
+        p14.setValue(par14file.toURI().toString());
 
         t.getInput().addParameter(inFile1);
         t.getInput().addParameter(inFile);
         t.getOutput().addParameter(out);
         t.getInput().addParameter(p4);
         t.getOutput().addParameter(echo);
+        t.getOutput().addParameter(p14);
         ResultListType results = execute(t);
         for (int i = 0; i < results.getResultCount(); i++) {
             ParameterValue result = results.getResult(i);
@@ -210,14 +231,19 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
             System.out.println("result par name = " + result.getName());
 
             if (result.getName().equals("P3")) {
-                assertEquals("results not in expected place",
+                assertEquals("P3 results not in expected place",
                         result.getValue(), outputFile.toURI().toString());
                 checkContent(outputFile, TEST_DATA);
             }
             else if (result.getName().equals("P2")) {
-                assertEquals("results not in expected place",
-                        result.getValue(), parameterEchoFile.toURI().toString());
-                checkContent(parameterEchoFile, PAR4_DATA);
+               assertEquals("P2 results not in expected place",
+                       result.getValue(), parameterEchoFile.toURI().toString());
+               checkContent(parameterEchoFile, PAR4_DATA);
+            }
+               else if (result.getName().equals("P14")) {
+                  assertEquals("P14 results not in expected place",
+                          result.getValue(), par14file.toURI().toString());
+                  checkContent(par14file, LOCALFILE_DATA);
 
             }
             else {
@@ -302,6 +328,9 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
         
     }
 
+   /**
+    * N.B. will see writeback errors for the output parameters in stderr when running this test - this is normal.
+    */
    public void testSeeError() {
            Tool t = null;
            try {
@@ -326,6 +355,7 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
            assertNotNull(monitor.sawApp);
            assertTrue(monitor.sawError);
            // check it completed, not in error, etc.
+           assertEquals("should have seen 4 warnings before final error status",4, monitor.nwarn);
            assertEquals("application should have ended with error status",
                    Status.ERROR, app.getStatus());
    
@@ -367,11 +397,11 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
                 Status.COMPLETED, app.getStatus());
         // check results.
         ResultListType results = app.getResult();
-        assertEquals(2, results.getResultCount());
+        assertEquals(3, results.getResultCount());
         // NB cannot make assumption about result order.....
         System.out.println("results returned in order="
                 + results.getResult(0).getName() + ","
-                + results.getResult(1).getName());
+                + results.getResult(1).getName()+ results.getResult(2).getName());
 
         return results;
     }
@@ -379,6 +409,15 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
 
 /*
  * $Log: CommandLineApplicationTest.java,v $
+ * Revision 1.10  2004/11/27 13:20:02  pah
+ * result of merge of pah_cea_bz561 branch
+ *
+ * Revision 1.9.6.2  2004/11/15 16:53:56  pah
+ * enable pickup of locally generated file name
+ *
+ * Revision 1.9.6.1  2004/10/27 16:04:05  pah
+ * pulled up an AbstractParameterAdapter
+ *
  * Revision 1.9  2004/09/30 15:10:00  pah
  * try to test for failure a bit better
  *

@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractCmdLineAppTestCase.java,v 1.2 2004/09/30 15:10:00 pah Exp $
+ * $Id: AbstractCmdLineAppTestCase.java,v 1.3 2004/11/27 13:20:02 pah Exp $
  * 
  * Created on 23-Sep-2004 by Paul Harrison (pah@jb.man.ac.uk)
  * Copyright 2004 AstroGrid. All rights reserved.
@@ -85,6 +85,13 @@ public abstract class AbstractCmdLineAppTestCase extends
         DefaultProtocolLibrary lib = new DefaultProtocolLibrary();
         lib.addProtocol(new FileProtocol());
         container.registerComponentInstance(lib);
+        container.registerComponentInstance(BaseApplicationDescriptionLibrary.AppAuthorityIDResolver.class, new BaseApplicationDescriptionLibrary.AppAuthorityIDResolver(){/* (non-Javadoc)
+            * @see org.astrogrid.applications.description.BaseApplicationDescriptionLibrary.AppAuthorityIDResolver#getAuthorityID()
+            */
+           public String getAuthorityID() {
+             return "org.astrogrid.test";
+           }});
+
         container
                 .registerComponentImplementation(ApplicationDescriptionEnvironment.class);
         CommandLineApplicationDescriptionFactory descFactory = new CommandLineApplicationDescriptionFactory(
@@ -102,7 +109,7 @@ public abstract class AbstractCmdLineAppTestCase extends
                     public URL getURL() {
                         return inputFile;
                     }
-                }, descFactory);
+                }, descFactory, (ApplicationDescriptionEnvironment)container.getComponentInstanceOfType(ApplicationDescriptionEnvironment.class));
         assertNotNull("cannot create the DescriptionLoader", dl);
         descs = dl;
         testAppDescr = (CommandLineApplicationDescription)descs.getDescription(TESTAPPNAME);
@@ -117,7 +124,7 @@ public abstract class AbstractCmdLineAppTestCase extends
     protected BaseApplicationDescriptionLibrary descs;
     protected CommandLineApplicationDescription testAppDescr;
     private DefaultExecutionController controller;
-    protected static final int WAIT_SECONDS = 30;
+    protected static final int WAIT_SECONDS = 300;
     
     /**
      * Create a tool instance to run.

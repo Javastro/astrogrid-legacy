@@ -1,4 +1,4 @@
-/*$Id: TestApplicationDescriptionLibrary.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: TestApplicationDescriptionLibrary.java,v 1.3 2004/11/27 13:20:02 pah Exp $
  * Created on 26-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -38,7 +38,7 @@ public class TestApplicationDescriptionLibrary implements ApplicationDescription
         if (! name.equals(RES_NAME)) {
             throw new ApplicationDescriptionNotFoundException("no entry for " + name);
         }
-        ApplicationDescriptionEnvironment env = new ApplicationDescriptionEnvironment(null,null);
+        ApplicationDescriptionEnvironment env = new ApplicationDescriptionEnvironment(null,null,null);
         AbstractApplicationDescription appDesc =   new AbstractApplicationDescription(env) {
             public Application initializeApplication(String jobStepID, User user, Tool tool )
                 throws Exception {
@@ -74,6 +74,12 @@ public class TestApplicationDescriptionLibrary implements ApplicationDescription
 
 /* 
 $Log: TestApplicationDescriptionLibrary.java,v $
+Revision 1.3  2004/11/27 13:20:02  pah
+result of merge of pah_cea_bz561 branch
+
+Revision 1.2.90.1  2004/11/09 09:21:16  pah
+initial attempt to rationalise authorityID use & self registering
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization

@@ -1,4 +1,4 @@
-/*$Id: ExternalValue.java,v 1.3 2004/09/30 15:12:25 pah Exp $
+/*$Id: ExternalValue.java,v 1.4 2004/11/27 13:20:02 pah Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,7 +18,8 @@ import java.io.OutputStream;
  * <p>
  * Because of this vagueness, the interface provides the bare minimum for working with the external value.
  * @TODO rename the methods in this interface so that the imply opening a stream rather than reading and writing...
- * @TODO add method to copyto local file - to take advantage of any any specialization that the protocol might have to do this...then the paramter adapters should be rewritten to use this.
+ * @TODO add method to copyto local file - to take advantage of any any secialization that the protocol might have to do this...then the paramter adapters should be rewritten to use this. (also exportFrom & getURL)
+ * @TODO would be nice to have a string returning the "location" value also
  * @author Noel Winstanley nw@jb.man.ac.uk 16-Jun-2004
  * @author Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -46,6 +47,15 @@ public interface ExternalValue {
 
 /* 
 $Log: ExternalValue.java,v $
+Revision 1.4  2004/11/27 13:20:02  pah
+result of merge of pah_cea_bz561 branch
+
+Revision 1.3.6.2  2004/11/25 15:36:20  pah
+another idea in a comment
+
+Revision 1.3.6.1  2004/11/04 16:56:13  pah
+new comment
+
 Revision 1.3  2004/09/30 15:12:25  pah
 comment on future enhancement
 

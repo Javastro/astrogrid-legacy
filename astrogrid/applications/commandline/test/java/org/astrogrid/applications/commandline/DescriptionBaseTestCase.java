@@ -1,5 +1,5 @@
 /*
- * $Id: DescriptionBaseTestCase.java,v 1.3 2004/09/23 22:44:23 pah Exp $
+ * $Id: DescriptionBaseTestCase.java,v 1.4 2004/11/27 13:20:02 pah Exp $
  * 
  * Created on 04-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -75,12 +75,6 @@ public class DescriptionBaseTestCase extends TestCase {
       super.setUp();      
       inputFile = this.getClass().getResource(appInfo.getConfigFileName());
       assertNotNull("application config file not found:", inputFile);
-      int i = appInfo.getAppName().indexOf("/");
-      
-      if (i != -1) {
-         TESTAPPNAME = appInfo.getAppName().substring(i+1);
-      }
-      else
       {
          TESTAPPNAME = appInfo.getAppName();
       }

@@ -1,4 +1,4 @@
-/*$Id: TestCommunity.java,v 1.3 2004/07/26 12:07:38 nw Exp $
+/*$Id: TestAuthorityResolver.java,v 1.2 2004/11/27 13:20:02 pah Exp $
  * Created on 23-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,18 +8,26 @@
  * with this distribution in the LICENSE.txt file.  
  *
 **/
-package org.astrogrid.applications.javaclass;
+package org.astrogrid.applications.description.base;
+
+import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
 
 
 
-public class TestCommunity implements JavaClassApplicationDescriptionLibrary.Community {
-    public String getCommunity() {
+public class TestAuthorityResolver implements BaseApplicationDescriptionLibrary.AppAuthorityIDResolver {
+    public String getAuthorityID() {
         return "org.astrogrid.test";
     }
 }
 
 /* 
-$Log: TestCommunity.java,v $
+$Log: TestAuthorityResolver.java,v $
+Revision 1.2  2004/11/27 13:20:02  pah
+result of merge of pah_cea_bz561 branch
+
+Revision 1.1.2.1  2004/11/09 09:21:16  pah
+initial attempt to rationalise authorityID use & self registering
+
 Revision 1.3  2004/07/26 12:07:38  nw
 renamed indirect package to protocol,
 renamed classes and methods within protocol package

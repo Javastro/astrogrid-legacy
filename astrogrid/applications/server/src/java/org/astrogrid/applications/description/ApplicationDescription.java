@@ -1,4 +1,4 @@
-/*$Id: ApplicationDescription.java,v 1.4 2004/08/28 07:17:34 pah Exp $
+/*$Id: ApplicationDescription.java,v 1.5 2004/11/27 13:20:02 pah Exp $
  * Created on 25-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,12 +22,30 @@ public interface ApplicationDescription {
     /** Access the name of the application. Each application should be uniquely identified by its name.
     * @return a string in format <tt><i>authority-id</i>/<i>application-name</i></tt>
     * @todo wonder if the name of an application should be an ivo:// style thingie? - as its something that is indexable into the registry, etc.
+    * @todo this would be better called ID to be compatible with the idea of what it is in the registry
     */
-    public  String getName();
+    public String getName();
+    
+    /** Access the name of the application that is to be used for display purposes.
+    * @return a human friendly name for the application.
+    */
+   public String getUIName();
+    
+    /**
+     * Access a short description of the purpose of the application.
+    * @return the description.
+    */
+   public String getAppDescription();
     /**
     * Acess the list of all parameters defined for this application (no matter what interface they occur in).
     * @return the array of parameter definitions
     */
+   
+   /**
+    * Access a URL that acts as a reference to a (non-CEA) humanreadable description.
+    * @return
+    */
+   public String getReferenceURL();
     public  ParameterDescription[] getParameterDescriptions();
     /**
     * Access the description for a named parameter
@@ -60,6 +78,12 @@ public interface ApplicationDescription {
 }
 /* 
 $Log: ApplicationDescription.java,v $
+Revision 1.5  2004/11/27 13:20:02  pah
+result of merge of pah_cea_bz561 branch
+
+Revision 1.4.38.1  2004/11/04 16:58:33  pah
+improve registry entry building
+
 Revision 1.4  2004/08/28 07:17:34  pah
 commandline parameter passing - unit tests ok
 

@@ -1,4 +1,4 @@
-/*$Id: DefaultParameterAdapter.java,v 1.9 2004/09/22 10:52:51 pah Exp $
+/*$Id: DefaultParameterAdapter.java,v 1.10 2004/11/27 13:20:02 pah Exp $
  * Created on 04-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -31,32 +31,30 @@ import java.io.StringWriter;
  * <p/>
  * Handles both direct and indirect parameters, returing them as an in-memory string.
  * @see org.astrogrid.applications.parameter.protocol.ProtocolLibrary#getExternalValue(ParameterValue)
+ * @author Noel Winstanley (nw@jb.man.ac.uk)
+ * @author Paul Harrison (pah@jb.man.ac.uk)
+ * @todo should really do different things according to what the type of the parameter is.
  * @todo check whether it is really appropriate use Readers and Writers to access the indirect parameters
  */
-public class DefaultParameterAdapter implements ParameterAdapter {
+public class DefaultParameterAdapter extends AbstractParameterAdapter {
     /**
+     * Constructor.
+    * @param val
+    * @param description
+    * @param externalVal
+    */
+   public DefaultParameterAdapter(ParameterValue val, ParameterDescription description, ExternalValue externalVal) {
+      super(val, description, externalVal);
+      
+   }
+
+   /**
      * Commons Logger for this class
      */
     private static final Log logger = LogFactory
             .getLog(DefaultParameterAdapter.class);
 
-    /** Construct a new DefaultParameterAdapter
-     * @param val the parameter value to adapt.
-     * @param description the description associated with this value.
-     * @param externalVal wrapper around the external location that contains the true value of the parameter (in case of direct parameters, is null) 
-     */
-    public DefaultParameterAdapter(ParameterValue val,ParameterDescription description,ExternalValue externalVal) {
-        this.val = val;
-        this.description = description;
-        this.externalVal = externalVal;
-    }
-    /** the parameter value */
-    protected final ParameterValue val;
-    /** the parameter descritpion */
-    protected final ParameterDescription description;
-    /** indirection to the external location containing the true value of an indirect parameter */
-    protected final ExternalValue externalVal;
-    /**
+     /**
      * retreives the value for this paramter
      * if the parameter is direct, just return the value of the parameter value itself, 
      * if indirect, retreive the value from the {@link #externalVal}
@@ -126,14 +124,16 @@ public class DefaultParameterAdapter implements ParameterAdapter {
             }
         }
     }
-
-    public ParameterValue getWrappedParameter() {
-        return val;
-    }
 }
 
 /* 
 $Log: DefaultParameterAdapter.java,v $
+Revision 1.10  2004/11/27 13:20:02  pah
+result of merge of pah_cea_bz561 branch
+
+Revision 1.9.10.1  2004/10/27 16:04:05  pah
+pulled up an AbstractParameterAdapter
+
 Revision 1.9  2004/09/22 10:52:51  pah
 getting rid of some unused imports
 

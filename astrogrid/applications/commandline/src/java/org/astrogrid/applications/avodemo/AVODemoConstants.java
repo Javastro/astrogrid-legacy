@@ -1,5 +1,5 @@
 /*
- * $Id: AVODemoConstants.java,v 1.2 2004/09/09 06:42:06 pah Exp $
+ * $Id: AVODemoConstants.java,v 1.3 2004/11/27 13:20:02 pah Exp $
  * 
  * Created on 23-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -27,7 +27,7 @@ public final static String GROUP = "test";
 public final static String TOKEN = "dummy";
 public final static String appconEndPoint = "http://astrogrid.jb.man.ac.uk:8080/astrogrid-applications-Int05_release/services/ApplicationControllerService";
 public final static String SENDMAILHOST = "localhost";
-public static final String COMMUNITY = "org.astrogrid.localhost";
+public static final String COMMUNITY = "org.astrogrid";
 public static final String MYSPACE = COMMUNITY + "/myspace";
 public static final String SEXTRACTOR = COMMUNITY+"/SExtractor";
 public static final String HYPERZ = COMMUNITY+"/HyperZ";

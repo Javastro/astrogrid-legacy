@@ -1,4 +1,4 @@
-/*$Id: CatApplicationDescription.java,v 1.7 2004/09/22 10:52:50 pah Exp $
+/*$Id: CatApplicationDescription.java,v 1.8 2004/11/27 13:20:02 pah Exp $
  * Created on 16-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -70,7 +70,9 @@ public class CatApplicationDescription extends AbstractApplicationDescription
     
     /** set up metadata for this instance */
     private final void setMetaData() {
-        setName("org.astrogrid.localhost/concat");
+        StringBuffer thename = new StringBuffer(env.getAuthIDResolver().getAuthorityID());
+        thename.append("/concat");
+        setName(thename.toString());
         BaseParameterDescription result = new BaseParameterDescription();
         result.setName("result");
         result.setDisplayName("Result");
@@ -232,6 +234,12 @@ public class CatApplicationDescription extends AbstractApplicationDescription
 
 /* 
 $Log: CatApplicationDescription.java,v $
+Revision 1.8  2004/11/27 13:20:02  pah
+result of merge of pah_cea_bz561 branch
+
+Revision 1.7.10.1  2004/11/09 09:21:16  pah
+initial attempt to rationalise authorityID use & self registering
+
 Revision 1.7  2004/09/22 10:52:50  pah
 getting rid of some unused imports
 

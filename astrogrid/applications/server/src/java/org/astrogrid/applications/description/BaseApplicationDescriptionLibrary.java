@@ -1,4 +1,4 @@
-/*$Id: BaseApplicationDescriptionLibrary.java,v 1.6 2004/09/07 08:06:39 pah Exp $
+/*$Id: BaseApplicationDescriptionLibrary.java,v 1.7 2004/11/27 13:20:02 pah Exp $
  * Created on 17-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.applications.description;
 
+import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
 
@@ -34,21 +35,23 @@ public class BaseApplicationDescriptionLibrary implements ApplicationDescription
      */
     private static final Log logger = LogFactory.getLog(BaseApplicationDescriptionLibrary.class);
     
-    /** configuration interface - defines the name of the community the applications will be added to. 
-     * @TODO - this is really the authorityID not community. I think this needs a little more thought - the registry will have to be consulted on the name/authorityID in real deployments*/
+    /** configuration interface - defines the name of the authority the applications will be added to. 
+     * @TODO - this should probably not be here - there is of course a tie in with the @see org.astrogrid.applications.manager.MetadataService and @see org.astrogrid.applications.component.ProvidesVODescription - they all need refactoring slightly to make clear which has overall control, when the exact interaction with the registry is determined - what protocol is to be used to detemine the authorityid that will be allowed?*/
 
-    public interface Community {
-        String getCommunity();
+    public interface AppAuthorityIDResolver {
+        String getAuthorityID();
     }
 
-    /** Construct a new BaseApplicationDescriptionLibrary
-     * 
-     */
-    public BaseApplicationDescriptionLibrary() {
-        super();
-    }
 
-    /**
+    /**Construct a new BaseApplicationDescriptionLibrary
+    * @param env2
+    */
+   public BaseApplicationDescriptionLibrary(ApplicationDescriptionEnvironment env2) {
+      
+     this.env = env2;
+   }
+
+   /**
          * @see org.astrogrid.applications.description.ApplicationDescriptionLibrary#getDescription(java.lang.String)
          */
     public ApplicationDescription getDescription(String name) throws ApplicationDescriptionNotFoundException {
@@ -101,12 +104,19 @@ public class BaseApplicationDescriptionLibrary implements ApplicationDescription
      */
     public Test getInstallationTest() {
         return null;
-    }    
+    }
+   protected final ApplicationDescriptionEnvironment env;    
 }
 
 
 /* 
 $Log: BaseApplicationDescriptionLibrary.java,v $
+Revision 1.7  2004/11/27 13:20:02  pah
+result of merge of pah_cea_bz561 branch
+
+Revision 1.6.28.1  2004/11/09 09:21:16  pah
+initial attempt to rationalise authorityID use & self registering
+
 Revision 1.6  2004/09/07 08:06:39  pah
 todo added - need to remove confusion between community and authorityid
 

@@ -1,4 +1,4 @@
-/*$Id: JavaClassProviderTest.java,v 1.4 2004/09/17 01:22:12 nw Exp $
+/*$Id: JavaClassProviderTest.java,v 1.5 2004/11/27 13:20:02 pah Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,6 +18,7 @@ import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
+import org.astrogrid.applications.description.base.TestAuthorityResolver;
 import org.astrogrid.applications.manager.idgen.IdGen;
 import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
 import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
@@ -49,9 +50,9 @@ public class JavaClassProviderTest extends TestCase {
         IdGen idgen = new InMemoryIdGen();
         ProtocolLibrary protocolLib = new DefaultProtocolLibrary();
         monitor = new MockMonitor();
-        ApplicationDescriptionEnvironment env = new ApplicationDescriptionEnvironment(idgen,protocolLib);
-        JavaClassApplicationDescriptionLibrary.Community community = new TestCommunity();
-        lib = new JavaClassApplicationDescriptionLibrary(SampleJavaClassApplications.class,community,env);
+        JavaClassApplicationDescriptionLibrary.AppAuthorityIDResolver aresolver = new TestAuthorityResolver();
+        ApplicationDescriptionEnvironment env = new ApplicationDescriptionEnvironment(idgen,protocolLib,aresolver);
+        lib = new JavaClassApplicationDescriptionLibrary(SampleJavaClassApplications.class,env);
         assertNotNull(lib);
     }
     protected ApplicationDescriptionLibrary lib;
@@ -131,6 +132,12 @@ public class JavaClassProviderTest extends TestCase {
 
 /* 
 $Log: JavaClassProviderTest.java,v $
+Revision 1.5  2004/11/27 13:20:02  pah
+result of merge of pah_cea_bz561 branch
+
+Revision 1.4.16.1  2004/11/09 09:21:16  pah
+initial attempt to rationalise authorityID use & self registering
+
 Revision 1.4  2004/09/17 01:22:12  nw
 updated tests
 

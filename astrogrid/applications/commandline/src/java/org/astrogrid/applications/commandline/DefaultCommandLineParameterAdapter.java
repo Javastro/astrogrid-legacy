@@ -1,5 +1,5 @@
 /*
- * $Id: DefaultCommandLineParameterAdapter.java,v 1.2 2004/09/24 12:24:35 pah Exp $
+ * $Id: DefaultCommandLineParameterAdapter.java,v 1.3 2004/11/27 13:20:02 pah Exp $
  * 
  * Created on 20-Aug-2004 by Paul Harrison (pah@jb.man.ac.uk)
  * Copyright 2004 AstroGrid. All rights reserved.
@@ -35,6 +35,7 @@ import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.ParameterDirection;
 import org.astrogrid.applications.description.exception.ParameterNotInInterfaceException;
+import org.astrogrid.applications.parameter.AbstractParameterAdapter;
 import org.astrogrid.applications.parameter.ParameterAdapter;
 import org.astrogrid.applications.parameter.ParameterAdapterException;
 import org.astrogrid.applications.parameter.ParameterWriteBackException;
@@ -60,7 +61,7 @@ import org.astrogrid.io.Piper;
  * @version $Name:  $
  * @since iteration6
  */
-public class DefaultCommandLineParameterAdapter implements CommandLineParameterAdapter {
+public class DefaultCommandLineParameterAdapter extends AbstractParameterAdapter implements CommandLineParameterAdapter {
     /**
      * Logger for this class
      */
@@ -69,12 +70,7 @@ public class DefaultCommandLineParameterAdapter implements CommandLineParameterA
 
     protected boolean isOutputOnly;
 
-    protected final ParameterValue pval;
-
-    protected final CommandLineParameterDescription desc;
-
-    protected final ExternalValue indirect;
-
+ 
     protected File referenceFile = null;
 
     protected final CommandLineApplicationEnvironment env;
@@ -83,17 +79,24 @@ public class DefaultCommandLineParameterAdapter implements CommandLineParameterA
      */
     protected String commandLineVal;
 
+    protected final CommandLineParameterDescription cmdParamDesc;
+
     public DefaultCommandLineParameterAdapter(ApplicationInterface appInterface,
             ParameterValue pval, CommandLineParameterDescription desc,
             ExternalValue indirect, CommandLineApplicationEnvironment env) {
-        this.pval = pval;
-        this.desc = desc;
-        this.indirect = indirect;
+       super(pval,desc, indirect);
+        this.cmdParamDesc = desc;
         this.env = env;
-        this.referenceFile = env.getTempFile();
+        if (cmdParamDesc.getLocalFileName() == null) {
+         this.referenceFile = env.getTempFile();
+      }
+        else // use the file name that the application generates
+        {
+           this.referenceFile = new File(env.getExecutionDirectory(), cmdParamDesc.getLocalFileName());
+        }
         try {
             this.isOutputOnly = appInterface.getParameterDirection(
-                    pval.getName()).equals(ParameterDirection.OUTPUT);
+                    val.getName()).equals(ParameterDirection.OUTPUT);
         }
         catch (ParameterNotInInterfaceException e) {
             // very unlikely.
@@ -114,9 +117,9 @@ public class DefaultCommandLineParameterAdapter implements CommandLineParameterA
      */
     public Object process() throws CeaException {
         
-        commandLineVal = pval.getValue();
+        commandLineVal = val.getValue();
         if (logger.isDebugEnabled()) {
-            logger.debug("process() - start "+pval.getName()+"="+pval.getValue());
+            logger.debug("process() - start "+val.getName()+"="+val.getValue());
         }
 
         if (!isOutputOnly) {
@@ -126,20 +129,20 @@ public class DefaultCommandLineParameterAdapter implements CommandLineParameterA
             OutputStream os = null;
             try {
 
-                if (indirect == null) {
-                    if (desc.isFileRef()) // but the commandline app expects a
+                if (externalVal == null) {
+                    if (cmdParamDesc.isFileRef()) // but the commandline app expects a
                     // file
                     {
 
-                        String value = pval.getValue();
+                        String value = val.getValue();
                         pw = new PrintWriter(new FileWriter(
                                 referenceFile));
                         pw.println(value);
                         pw.close();
 
                         if (logger.isDebugEnabled()) {
-                            logger.debug("process() local copied - " + pval.getName() + "="
-                                    + pval.getValue() + " direct, fileref="
+                            logger.debug("process() local copied - " + val.getName() + "="
+                                    + val.getValue() + " direct, fileref="
                                     + referenceFile.getAbsolutePath());
                         }
                         commandLineVal = referenceFile.getAbsolutePath();
@@ -147,43 +150,43 @@ public class DefaultCommandLineParameterAdapter implements CommandLineParameterA
                     }
                     else {
                         if (logger.isDebugEnabled()) {
-                            logger.debug("process() - local copied - " + pval.getName() + "="
-                                    + pval.getValue() + " direct");
+                            logger.debug("process() - local copied - " + val.getName() + "="
+                                    + val.getValue() + " direct");
                         }
-                        commandLineVal = pval.getValue();
+                        commandLineVal = val.getValue();
 
                     }
                 }
                 else {
-                    if (desc.isFileRef()) { //a indirect param/ file ref cmdline 
-                        is = indirect.read();
+                    if (cmdParamDesc.isFileRef()) { //a externalVal param/ file ref cmdline 
+                        is = externalVal.read();
                         os = new FileOutputStream(referenceFile);
                         Piper.bufferedPipe(is, os);
                         is.close();
                         os.close();
                         if (logger.isDebugEnabled()) {
-                            logger.debug("process() - local copied - " + pval.getName() + "="
-                                    + pval.getValue() + " indirect, fileref="
+                            logger.debug("process() - local copied - " + val.getName() + "="
+                                    + val.getValue() + " externalVal, fileref="
                                     + referenceFile.getAbsolutePath());
                         }
                         commandLineVal = referenceFile.getAbsolutePath();
                     }
-                    else // an indirect param/ direct cmdline
+                    else // an externalVal param/ direct cmdline
                     {
                         //TODO - does this deal with new lines in the way that we might want?
-                        ir = new InputStreamReader(indirect
+                        ir = new InputStreamReader(externalVal
                                 .read());
                         StringWriter sw = new StringWriter();
                         Piper.pipe(ir, sw);
                         ir.close();
                         sw.close();
-                        pval.setValue(sw.toString()); //TODO do we really want to set this - or is just 
+                        val.setValue(sw.toString()); //TODO do we really want to set this - or is just 
                         if (logger.isDebugEnabled()) {
-                            logger.debug("process() - local copied - " + pval.getName() + "="
-                                    + pval.getValue() + " indirect");
+                            logger.debug("process() - local copied - " + val.getName() + "="
+                                    + val.getValue() + " externalVal");
                         }
 
-                        commandLineVal = pval.getValue();
+                        commandLineVal = val.getValue();
 
                     }
                 }
@@ -191,7 +194,7 @@ public class DefaultCommandLineParameterAdapter implements CommandLineParameterA
 
             catch (IOException e) {
                 throw new ParameterAdapterException(
-                        "Could not process parameter " + pval.getName(), e);
+                        "Could not process parameter " + val.getName(), e);
             }
             finally // close all open resources
             {
@@ -202,8 +205,8 @@ public class DefaultCommandLineParameterAdapter implements CommandLineParameterA
             /* this is an output parameter - must write to a file*/
             commandLineVal = referenceFile.getAbsolutePath();
             if (logger.isDebugEnabled()) {
-                logger.debug("process() - local copied - " + pval.getName() + "="
-                        + pval.getValue() + " output fileref="+commandLineVal);
+                logger.debug("process() - local copied - " + val.getName() + "="
+                        + val.getValue() + " output fileref="+commandLineVal);
             }
 
             
@@ -213,7 +216,7 @@ public class DefaultCommandLineParameterAdapter implements CommandLineParameterA
 
     /**
      * ignore the value passed , copy contents of reference file back to the
-     * original parameter (direct or indirect)
+     * original parameter (direct or externalVal)
      * 
      * @see org.astrogrid.applications.parameter.ParameterAdapter#writeBack(java.lang.Object)
      */
@@ -222,19 +225,20 @@ public class DefaultCommandLineParameterAdapter implements CommandLineParameterA
         Reader r = null;
         InputStream is = null;
         OutputStream os = null;
+        assert arg0 == null : "the writeback parameter is ignored in DefaultCommandLineParameterAdapter - it should be null";
         try {
-            if (desc.isFileRef()) {
-                if (indirect == null) {
+            if (cmdParamDesc.isFileRef()) {
+                if (externalVal == null) {
                     sw = new StringWriter();
                     r = new FileReader(referenceFile);
 
                     Piper.pipe(r, sw);
                     r.close();
                     sw.close();
-                    pval.setValue(sw.toString());
+                    val.setValue(sw.toString());
                     if (logger.isDebugEnabled()) {
                         logger.debug("writeBack() - direct/fileref "
-                                + desc.getName() + "=" + pval.getValue()
+                                + cmdParamDesc.getName() + "=" + val.getValue()
                                 + " from file "
                                 + referenceFile.getAbsolutePath());
                     }
@@ -242,12 +246,12 @@ public class DefaultCommandLineParameterAdapter implements CommandLineParameterA
                 else {
                     is = new FileInputStream(referenceFile);
                     if (logger.isDebugEnabled()) {
-                        logger.debug("writeBack() - indirect " + desc.getName()
-                                + "="+pval.getValue()+" from file "
+                        logger.debug("writeBack() - externalVal " + cmdParamDesc.getName()
+                                + "="+val.getValue()+" from file "
                                 + referenceFile.getAbsolutePath());
                     }
 
-                    os = indirect.write();
+                    os = externalVal.write();
                     Piper.bufferedPipe(is, os);
                     is.close();
                     os.close();
@@ -257,13 +261,13 @@ public class DefaultCommandLineParameterAdapter implements CommandLineParameterA
                 //this is not possible in command-line as the app has to write output to a file. Someone could try to configure such a thing though.
                 new ParameterWriteBackException(
                         "configuration error - attempting a writeback of non file-referenced parameter "
-                                + desc.getName());
+                                + cmdParamDesc.getName());
             }
 
         }
         catch (IOException e) {
             throw new ParameterWriteBackException(
-                    "Could not write back parameter" + pval.getName(), e);
+                    "Could not write back parameter" + val.getName(), e);
         }
         finally // ensure that all the streams have been closed
         {
@@ -319,18 +323,12 @@ public class DefaultCommandLineParameterAdapter implements CommandLineParameterA
         }
     }
 
-    /**
-     * @see org.astrogrid.applications.parameter.ParameterAdapter#getWrappedParameter()
-     */
-    public ParameterValue getWrappedParameter() {
-        return pval;
-    }
-
+ 
     /* (non-Javadoc)
      * @see org.astrogrid.applications.parameter.CommandLineParameterAdapter#addSwitches()
      */
     public List addSwitches() throws CeaException {
-       return desc.addCmdlineAdornment(commandLineVal);
+       return cmdParamDesc.addCmdlineAdornment(commandLineVal);
     }
     
     

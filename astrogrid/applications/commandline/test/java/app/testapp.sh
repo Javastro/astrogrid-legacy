@@ -74,4 +74,4 @@ fi
 if [[ -n $P3 ]]; then
 cat $P9 >> $P3
 fi
-echo "some test content" > testlocalfile
+echo "some local test content" > testlocalfile

@@ -2,7 +2,7 @@
 <!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
 <CommandLineExecutionControllerConfig xmlns="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1
 \\pahlaptop\work\astrogrid\indsrc\workflow-objects\schema\AGApplicationBase.xsd">
-	<Application name="testapp">
+	<Application name="fake.authority.id/testapp">
 		<!-- do not test specific instance app for now -->
 		<!--This is the main test application-->
 		<Parameters>
@@ -58,7 +58,7 @@
 			</CmdLineParameterDefn>
 			<CmdLineParameterDefn name="P9" type="text" fileRef="true">
 				<agpd:UI_Name/>
-				<agpd:UI_Description>The contents of this file will be copied to the output</agpd:UI_Description>
+				<agpd:UI_Description>The contents of this file will be copied to the output when run</agpd:UI_Description>
 			</CmdLineParameterDefn>
 			<CmdLineParameterDefn name="P10" type="boolean" fileRef="false"/>
 			<CmdLineParameterDefn name="P11" type="anyURI"/>
@@ -66,7 +66,10 @@
 				<agpd:UI_Name/>
 				<agpd:UI_Description/>
 			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="P13" type="double" fileRef="false"/>
+			<CmdLineParameterDefn name="P13" type="double" fileRef="false"/> 
+			<CmdLineParameterDefn  name="P14" type="text" fileRef="true" localFileName="testlocalfile">
+				<agpd:UI_Description>the test application will write a message to this file</agpd:UI_Description>
+			</CmdLineParameterDefn>
 		</Parameters>
 		<Interfaces>
 			<Interface name="I1">
@@ -80,6 +83,7 @@
 				<output>
 					<pref ref="P3"/>
 					<pref ref="P2"/>
+					<pref ref="P14"/>
 				</output>
 			</Interface>
 			<Interface name="Ilocal">
@@ -102,6 +106,9 @@
 			</Interface>
 		</Interfaces>
 		<ExecutionPath>@TOOLBASEDIR@/testapp.sh</ExecutionPath>
+		<Description>testapp is just for testing</Description>
+		<ReferenceURL>http://www.astrogrid.org/maven/docs/snapshot/applications</ReferenceURL>
+		
 	</Application>
 	<Application name="testap2">
 		<!-- do not test specific instance app for now -->

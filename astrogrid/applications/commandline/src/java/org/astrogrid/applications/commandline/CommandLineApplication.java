@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplication.java,v 1.16 2004/09/29 16:28:45 pah Exp $
+ * $Id: CommandLineApplication.java,v 1.17 2004/11/27 13:20:02 pah Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -119,8 +119,8 @@ public class CommandLineApplication extends AbstractApplication implements Runna
            //FIXME - need to check that the ordering of "equal" objects stays the same with thiss algorithm
             DefaultCommandLineParameterAdapter p1 = (DefaultCommandLineParameterAdapter)o1;
             DefaultCommandLineParameterAdapter p2 = (DefaultCommandLineParameterAdapter)o2;
-            int pos1 = p1.desc.getCommandPosition();
-            int pos2 = p2.desc.getCommandPosition();
+            int pos1 = p1.cmdParamDesc.getCommandPosition();
+            int pos2 = p2.cmdParamDesc.getCommandPosition();
             if(pos1 == -1) // indicates that it is not a position dependent
                           // parameter
             {

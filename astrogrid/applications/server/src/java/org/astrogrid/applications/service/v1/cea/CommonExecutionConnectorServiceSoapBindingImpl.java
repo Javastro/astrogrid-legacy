@@ -1,5 +1,5 @@
 /*
- * $Id: CommonExecutionConnectorServiceSoapBindingImpl.java,v 1.10 2004/10/29 15:07:21 nw Exp $
+ * $Id: CommonExecutionConnectorServiceSoapBindingImpl.java,v 1.11 2004/11/27 13:20:03 pah Exp $
  * 
  * Created on 25-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -95,7 +95,7 @@ public class CommonExecutionConnectorServiceSoapBindingImpl implements CommonExe
          }
          catch(Throwable e) {
             logger.error("init(_tool tool = " + tool + ") - Exception caught:", e);
-            throw CeaFault.makeFault(new Exception("an Throwable occurred in init", e));
+            throw CeaFault.makeFault(new Exception("an Throwable occurred in init-"+e.getMessage(), e));
          }
    }
 
@@ -111,7 +111,7 @@ public class CommonExecutionConnectorServiceSoapBindingImpl implements CommonExe
            throw CeaFault.makeFault(e);
        } catch (Throwable e) {
         logger.error("execute("+ arg0 +")", e);
-           throw CeaFault.makeFault(new Exception("a throwable occurred in execute",e)); 
+           throw CeaFault.makeFault(new Exception("a throwable occurred in execute-"+e.getMessage(),e)); 
        }
    }
 
@@ -147,7 +147,7 @@ public class CommonExecutionConnectorServiceSoapBindingImpl implements CommonExe
          catch(Throwable e)
          {
             logger.error("queryExecutionStatus(" + executionId+")", e);
-            throw CeaFault.makeFault(new Exception("an Throwable occurred in query status", e));
+            throw CeaFault.makeFault(new Exception("an Throwable occurred in query status-"+e.getMessage(), e));
          }
    }
      
@@ -162,7 +162,7 @@ public boolean registerResultsListener(String arg0, URI arg1) throws RemoteExcep
         throw CeaFault.makeFault(e);
     } catch (Throwable e) {
         logger.error("registerResultsListener(" + arg0 + ", " + arg1 +")", e);
-        throw CeaFault.makeFault(new Exception("a throwable occurred in registerResultsListener",e));
+        throw CeaFault.makeFault(new Exception("a throwable occurred in registerResultsListener-"+e.getMessage(),e));
     }
 }
 
@@ -178,7 +178,7 @@ public boolean registerProgressListener(String arg0, URI arg1) throws RemoteExce
     } catch (Throwable e) {
         logger.error("registerProgressListener(" + arg0 + ", " + arg1 +")", e);
 
-        throw CeaFault.makeFault(new Exception("a throwable occurred in registerProgressListener",e));
+        throw CeaFault.makeFault(new Exception("a throwable occurred in registerProgressListener-"+e.getMessage(),e));
     }
 }
 
@@ -193,7 +193,7 @@ public ExecutionSummaryType getExecutionSummary(String arg0) throws RemoteExcept
         throw CeaFault.makeFault(e);
     } catch (Throwable e) {
         logger.error("getExecutionSummary("+arg0+")", e);
-        throw CeaFault.makeFault(new Exception("a throwable occurred in getExecutionSummary",e));
+        throw CeaFault.makeFault(new Exception("a throwable occurred in getExecutionSummary-"+e.getMessage(),e));
     }
 }
 /**
@@ -208,7 +208,7 @@ public ResultListType getResults(String arg0) throws RemoteException, CeaFault {
     } catch (Throwable e) {
         logger.error("getResults("+arg0+")", e);
 
-        throw CeaFault.makeFault(new Exception("a throwable occurred in getResults",e));
+        throw CeaFault.makeFault(new Exception("a throwable occurred in getResults-"+e.getMessage(),e));
     }
 }
    
@@ -224,7 +224,7 @@ public ResultListType getResults(String arg0) throws RemoteException, CeaFault {
          throw CeaFault.makeFault(e);       
      } catch (Throwable e) {
 		 logger.error("returnRegistryEntry()", e);
-         throw CeaFault.makeFault(new Exception("A throwable occured in return registry entry",e));
+         throw CeaFault.makeFault(new Exception("A throwable occured in return registry entry-"+e.getMessage(),e));
      }
   }
 

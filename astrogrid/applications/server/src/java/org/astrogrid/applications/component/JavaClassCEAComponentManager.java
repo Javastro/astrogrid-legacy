@@ -1,4 +1,4 @@
-/*$Id: JavaClassCEAComponentManager.java,v 1.4 2004/07/26 12:07:38 nw Exp $
+/*$Id: JavaClassCEAComponentManager.java,v 1.5 2004/11/27 13:20:03 pah Exp $
  * Created on 10-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,9 +32,6 @@ public class JavaClassCEAComponentManager extends EmptyCEAComponentManager {
     /** key to look in config under for the name of the java class to expose as cea applications (optional, defaulrs to {@link SampleJavaClassApplications})
      * @see #registerJavaClassProvider(MutablePicoContainer, Config)*/
     public final static String SERVER_CLASS_NAME = "cea.javaclass.server.class";
-    /** key to look in config under for the community to add provided applications to (optional, defaults to 'org.astrogrid.localhost') 
-     * @see #registerJavaClassProvider(MutablePicoContainer, Config)*/
-    public final static String COMMUNITY_NAME = "cea.javaclass.community.name";
     /** Construct a new JavaClassCEAComponentManger, with all necessary components registered
      * <p />
      * registers the java class provider, plus all the standard services defined in {@link EmptyCEAComponentManager}
@@ -48,6 +45,8 @@ public class JavaClassCEAComponentManager extends EmptyCEAComponentManager {
         EmptyCEAComponentManager.registerDefaultPersistence(pico,config);
         // metadata
         EmptyCEAComponentManager.registerDefaultVOProvider(pico,config);
+        //registry uploader
+        EmptyCEAComponentManager.registerDefaultRegistryUploader(pico);
         // the protocol lib
         EmptyCEAComponentManager.registerProtocolLibrary(pico);
         EmptyCEAComponentManager.registerStandardIndirectionProtocols(pico);
@@ -59,13 +58,6 @@ public class JavaClassCEAComponentManager extends EmptyCEAComponentManager {
      * @see {@link #SERVER_CLASS_NAME}
      * @see {@link #COMMUNITY_KEY} */       
     public static final void registerJavaClassProvider(MutablePicoContainer pico, final Config config){    
-        pico.registerComponentInstance(new JavaClassApplicationDescriptionLibrary.Community() {
-            protected final String community = config.getString(COMMUNITY_NAME,"org.astrogrid.localhost");
-            public String getCommunity() {
-                return community;
-            }
-        }
-        );    
         pico.registerComponentImplementation(JavaClassApplicationDescriptionLibrary.class,JavaClassApplicationDescriptionLibrary.class);
 
         // implementation class for the java cea server
@@ -83,6 +75,12 @@ public class JavaClassCEAComponentManager extends EmptyCEAComponentManager {
 
 /* 
 $Log: JavaClassCEAComponentManager.java,v $
+Revision 1.5  2004/11/27 13:20:03  pah
+result of merge of pah_cea_bz561 branch
+
+Revision 1.4.70.1  2004/11/09 09:21:16  pah
+initial attempt to rationalise authorityID use & self registering
+
 Revision 1.4  2004/07/26 12:07:38  nw
 renamed indirect package to protocol,
 renamed classes and methods within protocol package

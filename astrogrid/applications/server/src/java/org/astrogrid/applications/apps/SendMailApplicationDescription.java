@@ -1,4 +1,4 @@
-/*$Id: SendMailApplicationDescription.java,v 1.5 2004/09/17 01:21:12 nw Exp $
+/*$Id: SendMailApplicationDescription.java,v 1.6 2004/11/27 13:20:02 pah Exp $
  * Created on 11-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -69,14 +69,16 @@ public class SendMailApplicationDescription extends AbstractApplicationDescripti
     /** Construct a new SendMailApp
      * @param env
      */
-    public SendMailApplicationDescription(ApplicationDescriptionEnvironment env) {
+    public SendMailApplicationDescription(ApplicationDescriptionEnvironment env ) {
         super(env);
         this.setMetaData();
     }
     
     /** set up metadata for this instance */
     private final void setMetaData() {
-        setName("org.astrogrid.localhost/sendmail"); 
+        StringBuffer thename = new StringBuffer(env.getAuthIDResolver().getAuthorityID());
+        thename.append("/sendmail");
+        setName(thename.toString());
         BaseParameterDescription to = new BaseParameterDescription();
         to.setName(TO);
         to.setDisplayName("To-Address");
@@ -253,6 +255,12 @@ public class SendMailApplicationDescription extends AbstractApplicationDescripti
 
 /* 
 $Log: SendMailApplicationDescription.java,v $
+Revision 1.6  2004/11/27 13:20:02  pah
+result of merge of pah_cea_bz561 branch
+
+Revision 1.5.16.1  2004/11/09 09:21:16  pah
+initial attempt to rationalise authorityID use & self registering
+
 Revision 1.5  2004/09/17 01:21:12  nw
 altered to work with new threadpool
 

@@ -3,7 +3,7 @@
 #A wrapper to run the starburst99 code in a way that is reasonably CEA Friendly
 # note that this does away with the normal scripts that wrap the fortran executable
 
-dlib=`basename $0` # needs to be called with full path...
+dlib=`dirname $0` # needs to be called with full path...
 # first parse the commandline parameters
 
 until [ ${#*} -eq 0 ]  # Until all parameters used up...
@@ -64,15 +64,15 @@ EOD
 
 #link up standard models
 	# Tracks + Spectral type calibration:
-if [ !(-e tracks) ] then
+if [ ! -e tracks ] ; then
  ln -s $dlib/tracks
 fi
 	# Atmosphere models:
-if [ !(-e lejeune) ] then
+if [ ! -e lejeune ] ; then
 ln -s $dlib/lejeune 
 fi
 	# Spectral libraries:
-if [ !(-e auxil) ] then
+if [ ! -e auxil ] ; then
 ln -s $dlib/auxil
 fi
 
@@ -80,22 +80,4 @@ fi
 
 # run the program
 
-./galaxy_linux
-
-# move the output files...would be nicer if this was done in config as a standard service of a commandline app.
-/bin/mv fort.99 $output
-/bin/mv fort.98 $quanta
-/bin/mv fort.97 $snr
-/bin/mv fort.96 $hrd
-/bin/mv fort.95 $power
-/bin/mv fort.94 $sptyp1
-/bin/mv fort.90 $sptyp2
-/bin/mv fort.93 $yield
-/bin/mv fort.92 $spectrum
-/bin/mv fort.91 $uvline
-/bin/mv fort.89 $color
-/bin/mv fort.88 $ewidth
-/bin/mv fort.87 $irfeature
-/bin/mv fort.86 $ovi
-/bin/mv fort.85 $hires
-/bin/mv fort.84 $wrlines
+$dlib/galaxy_linux

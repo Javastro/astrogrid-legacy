@@ -1,0 +1,369 @@
+\documentclass[11pt,twoside]{article}
+\usepackage{adassconf}
+\begin{document}   % Leave intact
+\paperID{P1.3.4}
+
+\title{The AstroGrid Common Execution Architecture (CEA)}
+
+
+
+\author{Paul Harrison}
+\affil{AstroGrid, Jodrell Bank Observatory, Manchester University, UK}
+\author{Noel Winstanley}
+\affil{AstroGrid, Jodrell Bank Observatory, Manchester University, UK}
+\author{John Taylor}
+\affil{AstroGrid, Royal Observatory Edinburgh, UK}
+\contact{Paul Harrison}
+\email{paul.harrison@manchester.ac.uk}
+\paindex{Harrison, P.A.}
+\aindex{Winstanley, N}
+\aindex{Taylor, J. D.}
+\authormark{Harrison, Winstanley \& Taylor}
+\keywords{software: architecture, AstroGrid, Web: Services, Observatory:
+virtual}
+
+\begin{abstract}
+The UK Virtual Observatory (VO) project AstroGrid (see \htmladdURL{http://www.astrogrid.org}
+and related talks at this meeting) began in 2001 and is nearing the successful
+completion of its first release in December 2004.
+
+ This paper describes AstroGrid's Common Execution Architecture (CEA). This is
+an attempt to create a reasonably small set of interfaces and schema to model
+how to execute a typical astronomical application within the VO. 
+
+The CEA has been designed primarily to work within a web services framework,
+with the parameter passing mechanism layered on top of this so that the web
+interface for all applications is described by a single constant piece of WSDL
+- the differences between applications are expressed by the registry entries
+for each application.  Within AstroGrid we have created pluggable components
+that can wrap legacy command-line applications, HTTP GET/POST applications and
+databases as CEA compliant web services, which when combined with the Astrogrid
+Workflow component make distributed processing within the VO a reality.
+See \htmladdURL{http://www.astrogrid.org/maven/docs/snapshot/applications/}
+for current information.
+\end{abstract}
+\section{Introduction}
+
+
+ The Common Execution Architecture (CEA) is an attempt to create a reasonably
+ small set of interfaces and schema to model how to execute a typical
+ Astronomical application within the Virtual Observatory (VO). In this context
+ an application can be any process that consumes or produces data, so in
+ existing terminology could include;
+\begin{itemize}
+\item 
+
+ A Unix command line application 
+
+\item 
+
+ A database query 
+
+\item 
+
+ A web service 
+
+
+\end{itemize}
+
+
+ The CEA has been primarily designed to work within a web services calling
+ mechanism, although it is possible to have specific language bindings using
+ the same interfaces. For example Astrogrid has a Java implementation of the
+ interfaces that can be called directly from a Java executable.
+\subsection{Motivation}
+
+
+ The primary requirements motivating the creation of this architecture are;
+\begin{itemize}
+\item 
+
+ To create a uniform interface and model for an application and its parameters. This has twin benefits; 
+
+
+
+\begin{enumerate}
+\item 
+
+ It allows VO infrastructure writers a single model of an application that that have to code for. 
+
+\item 
+
+ Application writers know what they have to implement to be compatible with a VO Infrastructure. 
+
+
+\end{enumerate}
+
+\item 
+
+ To provide a higher level description than WSDL 1.1 can offer. 
+
+\item 
+
+ Restrict the almost limitless possibilities allowed by WSDL into a manageable subset. 
+
+\item 
+
+ Provide specific semantics for some astronomical quantities. 
+
+\item 
+
+ Provide extra information not allowed in WSDL - e.g. default values, descriptions for use in a GUI etc. 
+
+\item 
+
+ To provide extensions with the VO Resource schema (See the IVOA WG) that can describe a general application 
+
+\item 
+
+ To provide asynchronous operation of an application - This is essential as the
+ call tree that invokes the application cannot be expected to be active for
+ extremely long lasting operations - e.g. a user from a web browser invokes a
+ data-mining operation that takes days
+
+\item 
+
+ Provide callback for notification of finishing. 
+
+\item 
+
+ Provide polling mechanisms for status.
+
+\item 
+
+ To allow for the data flow to not necessarily have to follow the call tree. In
+ a typical application execution the results are returned to the invoking
+ process - In a VO scenario, it can be useful if the application can be
+ instructed to pass the results on to a different location
+
+
+\end{itemize}
+\subsection{Origins}
+
+ Amongst the VO specifications there was no existing model for applications
+ that was defined at the level at which this design attempts to address. In the
+ VOResource schema an application is defined as a Service with the interface
+ definition. The interface definition either relies on referring to a WSDL
+ definition of the service, or on other schema extending the service definition
+ to provide some specific detail as in the case of a Simple Image Access
+ service. There is no general definition of an application in the resource specification.
+
+
+ It is clear that the WSDL model of an interface has had a large influence on
+ the design of the CEA, but it should be remembered that the CEA is
+ intentionally layered on top of WSDL,  so that CEA controls the scope and
+ semantics of operations. There is only one WSDL definition for all
+ applications, so as far as web services are concerned the interface is
+ constant.  CEA works by transporting meta information about the application
+ interface within this constant WSDL interface.
+\section{Interfaces}
+\begin{figure}
+\plotone{P1.3.4_1.epsi}
+\caption{CEA Call Sequence}
+\end{figure}
+ The 3 WSDL ports that are used to interact within CEA are briefly described below;
+\subsubsection{CommonExecutionConnector}
+ This is the main port that is used to communicate with the application. The main operations in this port are;
+\begin{itemize}
+\item 
+ \textbf{init}
+ - this will initialize the application environment - returns and executionId
+by which any particular execution run can be referenced later. 
+\item 
+ \textbf{registerResultsListener}
+ - any number of services can register themselves as wanting to receive the results from the run when they are available as long as they implement the ResultsListener port below 
+\item 
+ \textbf{registerProgressListener}
+ - any number of services can register themselves as wanting to receive status messages during the run as long as they implement the JobMonitor port below 
+
+\item 
+
+ \textbf{execute}
+ - will actually start the asynchronous execution of the application specified in the init call. 
+
+\item 
+
+ \textbf{queryExecutionStatus}
+ - this call can be used to actively obtain the execution status of a running application, rather than passively waiting for it as a JobMonitor 
+
+\item 
+
+ \textbf{abort}
+ - will attempt to abort the execution of an application 
+
+\item 
+
+ \textbf{getExecutionSummary}
+ - request summary information about the application execution 
+
+\item 
+
+ \textbf{getResults} - actively request the results of the application
+ execution, rather than passively waiting for them as a ResultsListener.
+
+\item 
+
+ \textbf{returnRegistryEntry} - this returns the registry entry for the
+ particular CommonExecutionConnector instance - this will probably be removed
+ from this interface to be replaced by the equivalent operation in the standard
+ VO service definitions.
+\end{itemize}
+\subsubsection{JobMonitor}
+ The only operation in the JobmMonitor port is the monitorJob operation, which
+ expects to receive a message with the job-identifier-type (as specified in the
+ original init operation of the CommonExectutionConnector port) and a status
+ message
+\subsubsection{ResultsListener}
+ The only operation is the putResults on the ResultsListener port. This accepts
+ a message that contains a job-identifier-type and a result-list-type, which is
+ just a list of parameterValues.
+\subsection{Objects}  
+
+ The objects that participate in CEA can be split into two groups
+\begin{enumerate}
+\item 
+
+ Those used to describe the application in the registry 
+\begin{itemize}
+\item 
+
+ \emph{Application}
+ the overall application, which has a series of 
+
+\item 
+
+ \emph{Parameter }
+which are the detailed descriptions of the parameters and their types. 
+
+
+\end{itemize}
+
+\item 
+
+ Those used to describe the application in the WSDL interface 
+\begin{itemize}
+\item 
+
+ \emph{Tool}
+ - An instance of an application with real parameter values. 
+
+\item 
+
+ \emph{ParameterValue}
+ which is used to pass a values to a Tool. 
+
+
+\end{itemize}
+
+
+\end{enumerate}
+\subsubsection{Application}
+
+
+ As this model depicts an application in CEA is really quite a simple entity
+ consisting of 1 or more interfaces that consist of 0 or more input parameters
+ and 0 or more output parameters.
+\subsubsection{Parameter Definition}
+
+
+ The description of the parameters and the parameter values are probably the
+ heart of the CEA. It is the model for the parameters that allow us to add
+ semantic meaning, and to give the flexibility in how the parameters are
+ transported. The implementation is still in its infancy, but it is hoped that
+ the parameter definition will be extended to encompass any data models that
+ the VO produces.
+\subsubsection{Tool}
+
+
+ The tool represents the full collection of parameters that are passed to a
+ particular interface of an application and the results that are returned.
+\subsubsection{ParameterValue}
+
+
+ The parameterValue model is simple but powerful representation of the
+ parameters that are passed to an application. The parameterValue element has a
+Value subelement with a string representation of the value as well as having  2
+ attributes
+\begin{itemize}
+\item 
+
+ \textbf{name} - The name of the parameter. 
+
+\item 
+
+ \textbf{indirect} - This describes whether the value element of the parameter should be
+ used as is (indirect=''false''), or if the value of the parameter
+ represents a URI from which the actual value should be fetched
+ (indirect=''true''). It has not been defined what is the minimum set of transport
+ mechanisms a service should understand to be CEA compliant, but the different
+ sorts of transport mechanism are expected to include
+\begin{itemize}
+\item 
+
+ SOAP messages 
+
+\item 
+
+ http get/put 
+
+\item 
+
+ SOAP attachments 
+
+\item 
+
+ ftp/gridftp 
+
+\item 
+
+ MySpace 
+
+\item 
+
+ local filestore 
+
+\end{itemize}
+
+
+\end{itemize}
+\section{Astrogrid Implementation}
+\subsection{CEA}
+
+
+ AstroGrid has created a set of 
+ \htmladdnormallink{software that implements the CEA}{http://www.astrogrid.org/maven/docs/snapshot/applications/}. The main
+ server components that implement the CommonExecutionConnector web service are
+ called ExecutionControllers and there are currently two specialized adapter
+ controllers for
+\begin{itemize}
+\item 
+
+ Wrapping legacy command line applications in the framework.
+
+\item 
+
+ Wrapping legacy GET/POST style HTTP applications in the framework.
+
+
+\end{itemize}
+
+ There are plans for a further adapter for other web services themselves as
+ well as the possibility of creating new applications that directly implement
+ the CEA.
+\subsection{Job Execution System (JES)/Workflow}
+
+ The CEA only specifies how to call applications, there is another component,  \htmladdnormallinkfoot{JES}{http://www.astrogrid.org/maven/docs/SNAPSHOT/jes/},
+ with the responsibility for actually organising the order of execution of a
+ sequence of applications.
+. The
+ job system in AstroGrid is driven from the workflow which has an
+ \htmladdnormallink{xml schema
+ representation}{http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/workflow-objects/schema/Workflow.xsd?rev=HEAD&content-type=text/plain}.
+ The unit of execution within the workflow is a Step, which can itself be part
+ of a Sequence (a set of actions performed in series) or a Flow (a set of
+ actions performed in parallel). The Step contains a Tool which is the full CEA
+ description of a particular execution instance of an application. This paper
+ does not discuss the full complexity of the workflow which also includes a
+ scripting component known as JEScript (based on the Java scripting language
+ Groovy) which allows workflows to be arbitrarily complex.
+\end{document}

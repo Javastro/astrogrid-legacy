@@ -1,4 +1,4 @@
-/*$Id: HttpApplicationCEAComponentManager.java,v 1.1 2004/09/02 10:19:17 jdt Exp $
+/*$Id: HttpApplicationCEAComponentManager.java,v 1.2 2004/11/27 13:20:03 pah Exp $
  * Created on Jul 24, 2004 or thereabouts
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -35,14 +35,7 @@ public class HttpApplicationCEAComponentManager extends EmptyCEAComponentManager
 	private static final Log logger = LogFactory
 			.getLog(HttpApplicationCEAComponentManager.class);
 
-    /**
-     * key to look in config under for the community to add provided
-     * applications to (optional, defaults to 'org.astrogrid.localhost')
-     * 
-     * @see #registerHttpApplicationProvider(MutablePicoContainer, Config)
-     */
-    public final static String COMMUNITY_NAME = "cea.httpapplication.community.name";
-
+ 
     /**
      * Construct a new HttpApplicationCEAComponentManager, with all necessary
      * components registered
@@ -61,6 +54,10 @@ public class HttpApplicationCEAComponentManager extends EmptyCEAComponentManager
         EmptyCEAComponentManager.registerDefaultPersistence(pico, config);
         // metadata
         EmptyCEAComponentManager.registerDefaultVOProvider(pico, config);
+        
+        //registry uploader
+        EmptyCEAComponentManager.registerDefaultRegistryUploader(pico);
+
         // the protocol lib
         EmptyCEAComponentManager.registerProtocolLibrary(pico);
         EmptyCEAComponentManager.registerStandardIndirectionProtocols(pico);
@@ -81,13 +78,6 @@ public class HttpApplicationCEAComponentManager extends EmptyCEAComponentManager
 			logger.debug("registerHttpApplicationProvider(MutablePicoContainer, Config) - start");
 		}
 
-        pico.registerComponentInstance(new BaseApplicationDescriptionLibrary.Community() {
-            protected final String community = config.getString(COMMUNITY_NAME, "org.astrogrid.localhost");
-
-            public String getCommunity() {
-                return community;
-            }
-        });
         pico.registerComponentImplementation(HttpApplicationDescriptionLibrary.class,
                 HttpApplicationDescriptionLibrary.class);
         pico.registerComponentImplementation(RegistryQuerier.class, RegistryQuerierImpl.class);
@@ -100,6 +90,12 @@ public class HttpApplicationCEAComponentManager extends EmptyCEAComponentManager
 
 /*
  * $Log: HttpApplicationCEAComponentManager.java,v $
+ * Revision 1.2  2004/11/27 13:20:03  pah
+ * result of merge of pah_cea_bz561 branch
+ *
+ * Revision 1.1.34.1  2004/11/09 09:21:16  pah
+ * initial attempt to rationalise authorityID use & self registering
+ *
  * Revision 1.1  2004/09/02 10:19:17  jdt
  * Moved to a more sensible package (from org.astrogrid.applications.component)
  *

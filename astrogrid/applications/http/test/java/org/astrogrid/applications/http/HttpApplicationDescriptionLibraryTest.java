@@ -1,4 +1,4 @@
-/*$Id: HttpApplicationDescriptionLibraryTest.java,v 1.2 2004/09/01 15:42:26 jdt Exp $
+/*$Id: HttpApplicationDescriptionLibraryTest.java,v 1.3 2004/11/27 13:20:02 pah Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -10,12 +10,16 @@ package org.astrogrid.applications.http;
 
 import java.io.IOException;
 
-import org.astrogrid.applications.http.test.TestRegistryQuerier;
-import org.astrogrid.community.resolver.ant.CommunityAccountCreatorTask;
+import junit.framework.TestCase;
+
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
 
-import junit.framework.TestCase;
+import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
+import org.astrogrid.applications.http.test.TestRegistryQuerier;
+import org.astrogrid.applications.manager.idgen.IdGen;
+import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
+import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
 
 /**
  * JUnit Test
@@ -30,7 +34,12 @@ public class HttpApplicationDescriptionLibraryTest extends TestCase {
     }
 
     public void setUp() throws MarshalException, ValidationException, IOException {
-        httpApplicationDescriptionLibrary = new HttpApplicationDescriptionLibrary(new TestRegistryQuerier(), new TestCommunity(), null);  
+      
+      IdGen id = new InMemoryIdGen();
+       DefaultProtocolLibrary lib = new DefaultProtocolLibrary();
+       TestAuthority resol = new TestAuthority();
+      ApplicationDescriptionEnvironment env = new ApplicationDescriptionEnvironment(id, lib, resol);
+      httpApplicationDescriptionLibrary = new HttpApplicationDescriptionLibrary(new TestRegistryQuerier(),  env);  
     }
     /*
      * Class under test for String getDescription()

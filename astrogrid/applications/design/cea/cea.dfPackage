@@ -80,7 +80,34 @@ class __tags {
 */
 class __options {
 }/**
-@__positions <oigroup:<oiref:java#Extends#cea.InputParameter#cea.BaseParameter:oiref>=70,159,70,99:oigroup>
+@__positions <oigroup:<oiref:java#Class#cea.Interface:oiref>=9,9,102,112,1:oigroup>
+<oigroup:<oiref:java#Extends#cea.ServiceType#cea.ResourceType:oiref>=224,278,153,82:oigroup>
+<oigroup:<oiref:java#Class#cea.Application:oiref>=294,94,113,144,1:oigroup>
+<oigroup:<oiref:java#Extends#cea.CeaService#cea.ServiceType:oiref>=36,220,196,278:oigroup>
+<oigroup:Composite#clientCardinality#MemberLink#<oiref:java#Member#cea.CeaService#lnkCeaService:oiref>=41,220,30,15,0:oigroup>
+<oigroup:<oiref:java#Class#cea.InputParameterValue:oiref>=230,0,141,81,1:oigroup>
+<oigroup:<oiref:java#Class#cea.Output:oiref>=170,370,200,332,1:oigroup>
+<oigroup:Composite#supplierCardinality#MemberLink#<oiref:java#Member#cea.Application#lnkInterface:oiref>=115,88,30,15,0:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#cea.Interface#lnkOutputParameterValue:oiref>=60,121,60,304:oigroup>
+<oigroup:<oiref:java#Class#cea.BaseParameterValue:oiref>=124,124,153,142,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#cea.Interface#lnkInputParameterValue:oiref>=111,45,230,45:oigroup>
+<oigroup:Composite#supplierCardinality#MemberLink#<oiref:java#Member#cea.CeaService#lnkCeaService:oiref>=223,266,30,15,0:oigroup>
+<oigroup:<oiref:java#Class#cea.ResourceType:oiref>=121,1,98,81,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#cea.CeaService#lnkCeaService:oiref>=75,220,305,277:oigroup>
+<oigroup:<oiref:java#Extends#cea.InputParameter#cea.BaseParameter:oiref>=70,159,70,99:oigroup>
+<oigroup:<oiref:java#Extends#cea.InputParameterValue#cea.BaseParameterValue:oiref>=253,81,253,124:oigroup>
+<oigroup:<oiref:java#Extends#cea.OutputParameterValue#cea.BaseParameterValue:oiref>=140,304,140,266:oigroup>
+<oigroup:Composite#supplierCardinality#MemberLink#<oiref:java#Member#cea.Interface#lnkInputParameterValue:oiref>=196,26,30,15,0:oigroup>
+<oigroup:<oiref:java#Class#cea.OutputParameterValue:oiref>=4,304,152,81,1:oigroup>
+<oigroup:Composite#supplierCardinality#MemberLink#<oiref:java#Member#cea.Interface#lnkOutputParameterValue:oiref>=26,285,30,15,0:oigroup>
+<oigroup:Composite#label#MemberLink#<oiref:java#Member#cea.CeaService#lnkCeaService:oiref>=194,227,71,15,1:oigroup>
+<oigroup:<oiref:java#Class#cea.ServiceType:oiref>=168,278,85,81,1:oigroup>
+<oigroup:<oiref:java#Class#cea.CeaApplication:oiref>=267,277,106,81,1:oigroup>
+<oigroup:<oiref:java#Extends#cea.CeaApplication#cea.ResourceType:oiref>=339,277,186,82:oigroup>
+<oigroup:<oiref:java#Class#cea._tool:oiref>=420,0,200,272,1:oigroup>
+<oigroup:<oiref:java#Class#cea.CeaService:oiref>=9,139,83,81,1:oigroup>
+<oigroup:<oiref:java#Class#cea.Input:oiref>=380,380,200,332,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#cea.Application#lnkInterface:oiref>=294,107,111,107:oigroup>
 */
 class __positions {
 }

@@ -1,4 +1,4 @@
-/*$Id: AbstractApplicationTest.java,v 1.4 2004/07/26 12:07:38 nw Exp $
+/*$Id: AbstractApplicationTest.java,v 1.5 2004/11/27 13:20:02 pah Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -58,7 +58,7 @@ public class AbstractApplicationTest extends TestCase {
             }
         };
        
-     ApplicationDescriptionEnvironment env = new ApplicationDescriptionEnvironment(null,null);
+     ApplicationDescriptionEnvironment env = new ApplicationDescriptionEnvironment(null,null,null);
     description = new AbstractApplicationDescription(env) {
         public Application initializeApplication(String jobStepID, User user, Tool tool) throws Exception {
             return null;
@@ -184,6 +184,12 @@ public class AbstractApplicationTest extends TestCase {
 
 /* 
 $Log: AbstractApplicationTest.java,v $
+Revision 1.5  2004/11/27 13:20:02  pah
+result of merge of pah_cea_bz561 branch
+
+Revision 1.4.70.1  2004/11/09 09:21:16  pah
+initial attempt to rationalise authorityID use & self registering
+
 Revision 1.4  2004/07/26 12:07:38  nw
 renamed indirect package to protocol,
 renamed classes and methods within protocol package

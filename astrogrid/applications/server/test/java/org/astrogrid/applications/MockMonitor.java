@@ -1,4 +1,4 @@
-/*$Id: MockMonitor.java,v 1.6 2004/09/30 15:12:48 pah Exp $
+/*$Id: MockMonitor.java,v 1.7 2004/11/27 13:20:02 pah Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,6 +32,7 @@ public class MockMonitor implements Observer{
     
     public boolean sawExit = false;
     public boolean sawError = false;
+    public int nwarn = 0;
     public Application sawApp = null;
     /**
      * @see org.astrogrid.applications.manager.observer.ApplicationProgressObserver#notifyStateChange(org.astrogrid.applications.Application, org.astrogrid.applications.Status)
@@ -68,6 +69,10 @@ public class MockMonitor implements Observer{
         if (type.getLevel() == LogLevel.ERROR || type.getLevel() == LogLevel.WARN) {
             System.err.println("saw  "+type.getLevel().toString()+"\n" + type.getContent());
         }
+        if(type.getLevel() == LogLevel.WARN)
+        {
+           nwarn++;
+        }
         
     }
 
@@ -82,6 +87,12 @@ public class MockMonitor implements Observer{
 
 /* 
 $Log: MockMonitor.java,v $
+Revision 1.7  2004/11/27 13:20:02  pah
+result of merge of pah_cea_bz561 branch
+
+Revision 1.6.6.1  2004/10/27 16:02:16  pah
+counts warnings
+
 Revision 1.6  2004/09/30 15:12:48  pah
 try to test for failure a bit better
 

@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryUploader.java,v 1.5 2004/09/22 10:52:50 pah Exp $
+ * $Id: RegistryUploader.java,v 1.6 2004/11/27 13:20:03 pah Exp $
  * 
  * Created on 24-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -13,6 +13,8 @@
 
 package org.astrogrid.applications.description.registry;
 
+import java.net.URL;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -23,6 +25,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.applications.component.ProvidesVODescription;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
+import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.registry.client.admin.RegistryAdminService;
 import org.exolab.castor.xml.Marshaller;
 import org.picocontainer.Startable;
@@ -61,9 +64,18 @@ public class RegistryUploader implements Startable, ComponentDescriptor{
      * @throws Exception
      * @see #start()
      */
-    public void write() throws Exception
+    public void write(String endpoint) throws Exception
     {
-       RegistryAdminService delegate = adminLocator.getClient();
+       RegistryAdminService delegate;
+       if(endpoint == null)
+       {
+       delegate = adminLocator.getClient();
+       }
+       else
+       {
+          delegate = RegistryDelegateFactory.createAdmin(new URL(endpoint));
+       }
+       logger.info("registering this service with registry");//TODO would be nice if the registry delegate would identify the endpoint
        DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
        //TODO testme
        Document doc = builder.newDocument();
@@ -74,14 +86,17 @@ public class RegistryUploader implements Startable, ComponentDescriptor{
     }
 
     /**calls {@link #write}, logging errors.
+     * @TODO - perhaps re-enable this one day when we have a good way of getting hold of the service end point in time.
      * @see org.picocontainer.Startable#start()
      */
     public void start() {
-        try {
-            this.write();
-        } catch (Exception e) {
-            logger.error("start()", e);
-        }
+       
+//        try {
+//          
+//            this.write();
+//        } catch (Exception e) {
+//            logger.error("start()", e);
+//        }
     }
 
     /**

@@ -1,4 +1,4 @@
-/*$Id: ApplicationDescriptionEnvironment.java,v 1.4 2004/07/26 12:07:38 nw Exp $
+/*$Id: ApplicationDescriptionEnvironment.java,v 1.5 2004/11/27 13:20:02 pah Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.applications.description.base;
 
+import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
 import org.astrogrid.applications.manager.idgen.IdGen;
 import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
@@ -29,13 +30,15 @@ public class ApplicationDescriptionEnvironment implements ComponentDescriptor {
     /** Construct a new ApplicationDescriptionEnvironment
      * 
      */
-    public ApplicationDescriptionEnvironment(IdGen id,ProtocolLibrary lib) {        
+    public ApplicationDescriptionEnvironment(IdGen id,ProtocolLibrary lib, BaseApplicationDescriptionLibrary.AppAuthorityIDResolver appAuthorityIDResolver) {        
         super();
         this.id =id;
         this.lib = lib;
+        this.authIDresolver = appAuthorityIDResolver;
     }
     protected final IdGen id;
     protected final ProtocolLibrary lib;
+    protected final BaseApplicationDescriptionLibrary.AppAuthorityIDResolver authIDresolver;
    
     
     /**Access the unique id generator
@@ -52,6 +55,14 @@ public class ApplicationDescriptionEnvironment implements ComponentDescriptor {
      */
     public ProtocolLibrary getProtocolLib() {
         return this.lib;
+    }
+    
+    /**Access the resolver that will return the appropriate authorityID that applications can be registered under.
+    * @return the resolver
+    */
+   public BaseApplicationDescriptionLibrary.AppAuthorityIDResolver getAuthIDResolver()
+    {
+       return this.authIDresolver;
     }
 
     /**
@@ -82,6 +93,12 @@ public class ApplicationDescriptionEnvironment implements ComponentDescriptor {
 
 /* 
 $Log: ApplicationDescriptionEnvironment.java,v $
+Revision 1.5  2004/11/27 13:20:02  pah
+result of merge of pah_cea_bz561 branch
+
+Revision 1.4.70.1  2004/11/09 09:21:16  pah
+initial attempt to rationalise authorityID use & self registering
+
 Revision 1.4  2004/07/26 12:07:38  nw
 renamed indirect package to protocol,
 renamed classes and methods within protocol package

@@ -1,4 +1,4 @@
-/*$Id: EmptyCEAComponentManager.java,v 1.10 2004/11/05 13:07:04 nw Exp $
+/*$Id: EmptyCEAComponentManager.java,v 1.11 2004/11/27 13:20:03 pah Exp $
  * Created on 04-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -101,6 +101,10 @@ public abstract class EmptyCEAComponentManager extends EmptyComponentManager imp
     
     public final QueryService getQueryService() {
         return (QueryService)this.pico.getComponentInstanceOfType(QueryService.class);
+    }
+    
+    public final RegistryUploader getRegistryUploaderService() {
+       return (RegistryUploader)this.pico.getComponentInstance(RegistryUploader.class);
     }
     /** dummy component that ensures required componets are registered with the container
      * not interesting, but needs to be publc so that picocontainer can instantiate it */ 
@@ -216,6 +220,15 @@ public abstract class EmptyCEAComponentManager extends EmptyComponentManager imp
     /** key to query config for the url of this services endpoint (optional, recommended, otherwise makes a best guess)
      * @see #registerDefaultVOProvider(MutablePicoContainer, Config)*/
     public static final String SERVICE_ENDPOINT_URL = "cea.service.endpoint.url";
+    
+    /**
+     * key to look in config under for the authorityid to add provided
+     * applications to (optional, defaults to 'org.astrogrid.localhost')
+     * 
+     * @see #registerDefaultVOProvider(MutablePicoContainer, Config)
+     */
+    public final static String AUTHORITY_NAME = "cea.application.authorityid";
+
     /** register the standard VO Provider - the component that generates the registry entry.
      *  standard provider operates by constructing VODecription from applicationDescriptions in library
      * @param pico
@@ -237,6 +250,13 @@ public abstract class EmptyCEAComponentManager extends EmptyComponentManager imp
                 return serviceEndpoint;
             }
         });
+        pico.registerComponentInstance(new BaseApplicationDescriptionLibrary.AppAuthorityIDResolver() {
+           protected final String auth = config.getString(AUTHORITY_NAME, "org.astrogrid.localhost");
+
+           public String getAuthorityID() {
+               return auth;
+           }
+       });
 
         } catch (MalformedURLException e) {
             // unlikely this will happen
@@ -313,6 +333,9 @@ public abstract class EmptyCEAComponentManager extends EmptyComponentManager imp
 
 /* 
 $Log: EmptyCEAComponentManager.java,v $
+Revision 1.11  2004/11/27 13:20:03  pah
+result of merge of pah_cea_bz561 branch
+
 Revision 1.10  2004/11/05 13:07:04  nw
 added option to use memory-backed execution history.
 

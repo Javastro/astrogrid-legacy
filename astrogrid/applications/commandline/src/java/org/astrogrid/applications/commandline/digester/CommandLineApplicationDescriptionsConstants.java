@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationDescriptionsConstants.java,v 1.3 2004/08/27 19:39:54 pah Exp $
+ * $Id: CommandLineApplicationDescriptionsConstants.java,v 1.4 2004/11/27 13:20:03 pah Exp $
  * 
  * Created on 04-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -24,7 +24,10 @@ final class CommandLineApplicationDescriptionsConstants {
       "CommandLineExecutionControllerConfig";
    public static final String APPLICATION_ELEMENT =
       APPLICATIONCONTROLLER_ELEMENT+ "/Application";
-      public static final String EXPATH_ELEMENT = APPLICATION_ELEMENT + "/ExecutionPath";
+   public static final String EXPATH_ELEMENT = APPLICATION_ELEMENT + "/ExecutionPath";
+   public static final String LONGNAME_ELEMENT = APPLICATION_ELEMENT + "/LongName";
+   public static final String DESCRIPTION_ELEMENT = APPLICATION_ELEMENT + "/Description";
+   public static final String URL_ELEMENT = APPLICATION_ELEMENT + "/ReferenceURL";
    public static final String PARAMETER_ELEMENT =
       APPLICATION_ELEMENT+"/Parameters/CmdLineParameterDefn";
    public static final String UI_NAME_ELEMENT = PARAMETER_ELEMENT + "/*:UI_Name";

@@ -60,14 +60,14 @@ class __options {
 }/**
 @__positions <oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.Status#NEW:oiref>=20,300,20,590,410,590,410,20,210,20:oigroup>
 <oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.Status#RUNNING:oiref>=40,300,40,510,390,510,390,100,210,100:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.Application:oiref>=10,690,200,283,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.Application:oiref>=10,690,200,313,1:oigroup>
 <oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.Status#ERROR:oiref>=130,300,130,390,300,390,300,220,210,220:oigroup>
 <oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.Status#COMPLETED:oiref>=50,300,50,470,380,470,380,140,210,140:oigroup>
 <oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.Status#WRITINGBACK:oiref>=90,300,90,430,340,430,340,180,210,180:oigroup>
 <oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.cea.castor.ResultListType:oiref>=940,10,200,336,1:oigroup>
 <oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.Status#INITIALIZED:oiref>=30,300,30,550,400,550,400,60,210,60:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.description.ApplicationDescription:oiref>=230,690,200,193,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.description.ApplicationInterface:oiref>=450,690,200,208,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.description.ApplicationDescription:oiref>=230,690,200,238,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.description.ApplicationInterface:oiref>=450,690,200,223,1:oigroup>
 <oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.parameters.ParameterValue:oiref>=720,10,200,381,1:oigroup>
 <oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.Status#UNKNOWN:oiref>=170,300,170,350,260,350,260,260,210,260:oigroup>
 <oigroup:<oiref:java#Class#org.astrogrid.applications.Status:oiref>=10,10,200,290,1:oigroup>

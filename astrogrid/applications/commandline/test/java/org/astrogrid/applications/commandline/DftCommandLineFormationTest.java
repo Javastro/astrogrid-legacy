@@ -1,5 +1,5 @@
 /*
- * $Id: DftCommandLineFormationTest.java,v 1.2 2004/09/30 15:10:00 pah Exp $
+ * $Id: DftCommandLineFormationTest.java,v 1.3 2004/11/27 13:20:02 pah Exp $
  * 
  * Created on 23-Sep-2004 by Paul Harrison (pah@jb.man.ac.uk)
  * Copyright 2004 AstroGrid. All rights reserved.
@@ -32,7 +32,7 @@ public class DftCommandLineFormationTest extends AbstractCmdLineRealAppTestCase 
         super(new TestAppInfo(){
 
             public String getAppName() {
-               return "REGAUTHORITY.CrossMatcher";
+               return "org.astrogrid/CrossMatcher";
             }
 
             public String getConfigFileName() {
@@ -70,10 +70,10 @@ public class DftCommandLineFormationTest extends AbstractCmdLineRealAppTestCase 
         input.addParameter(param);
         param.setName("targets");
 
-        String myspaceBaseRef="file:///nout/";
+        String myspaceBaseRef="file:///tmp/";
         
         param.setValue(myspaceBaseRef + "sexout_z");
-        param.setIndirect(false);
+        param.setIndirect(true);
 
         param = new ParameterValue();
         param.setName("matches");

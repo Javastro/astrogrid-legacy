@@ -1,4 +1,4 @@
-/*$Id: InMemoryExecutionHistoryTest.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: InMemoryExecutionHistoryTest.java,v 1.3 2004/11/27 13:20:02 pah Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,9 +15,9 @@ import org.astrogrid.applications.beans.v1.cea.castor.ExecutionSummaryType;
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
+import org.astrogrid.applications.description.base.TestAuthorityResolver;
 import org.astrogrid.applications.javaclass.JavaClassApplicationDescriptionLibrary;
 import org.astrogrid.applications.javaclass.SampleJavaClassApplications;
-import org.astrogrid.applications.javaclass.TestCommunity;
 import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
 import org.astrogrid.community.User;
 import org.astrogrid.workflow.beans.v1.Input;
@@ -43,8 +43,8 @@ public class InMemoryExecutionHistoryTest extends TestCase {
      */
     protected void setUp() throws Exception {
         super.setUp();
-        ApplicationDescriptionEnvironment env = new ApplicationDescriptionEnvironment(new InMemoryIdGen(),null);
-        lib = new JavaClassApplicationDescriptionLibrary(SampleJavaClassApplications.class,new TestCommunity(),env);
+        ApplicationDescriptionEnvironment env = new ApplicationDescriptionEnvironment(new InMemoryIdGen(),null, new TestAuthorityResolver());
+        lib = new JavaClassApplicationDescriptionLibrary(SampleJavaClassApplications.class,env);
         appDesc = lib.getDescription(lib.getApplicationNames()[0]);
         assertNotNull(appDesc);
         Tool tool = new Tool();
@@ -98,6 +98,12 @@ public class InMemoryExecutionHistoryTest extends TestCase {
 
 /* 
 $Log: InMemoryExecutionHistoryTest.java,v $
+Revision 1.3  2004/11/27 13:20:02  pah
+result of merge of pah_cea_bz561 branch
+
+Revision 1.2.90.1  2004/11/09 09:21:16  pah
+initial attempt to rationalise authorityID use & self registering
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization

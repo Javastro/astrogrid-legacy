@@ -1,4 +1,4 @@
-/*$Id: HttpApplicationProviderTest.java,v 1.9 2004/11/08 17:59:21 jdt Exp $
+/*$Id: HttpApplicationProviderTest.java,v 1.10 2004/11/27 13:20:02 pah Exp $
  * Created on 30-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -68,11 +68,11 @@ public class HttpApplicationProviderTest extends TestCase {
         DefaultProtocolLibrary protocolLib = new DefaultProtocolLibrary();
         protocolLib.addProtocol(new FileProtocol()); //this is done by the component manager normally
         monitor = new MockMonitor();
-        ApplicationDescriptionEnvironment env = new ApplicationDescriptionEnvironment(idgen,protocolLib);
-        HttpApplicationDescriptionLibrary.Community community = new TestCommunity();
+        HttpApplicationDescriptionLibrary.AppAuthorityIDResolver aresolver = new TestAuthority();
+        ApplicationDescriptionEnvironment env = new ApplicationDescriptionEnvironment(idgen,protocolLib, aresolver);
         RegistryQuerier querier = new TestRegistryQuerier();
         numberOfApps = querier.getHttpApplications().size();
-        applicationDescriptionLibrary = new HttpApplicationDescriptionLibrary(querier, community,env);
+        applicationDescriptionLibrary = new HttpApplicationDescriptionLibrary(querier, env);
         assertNotNull(applicationDescriptionLibrary);
     }
     protected ApplicationDescriptionLibrary applicationDescriptionLibrary;
@@ -371,6 +371,9 @@ public class HttpApplicationProviderTest extends TestCase {
 
 /* 
 $Log: HttpApplicationProviderTest.java,v $
+Revision 1.10  2004/11/27 13:20:02  pah
+result of merge of pah_cea_bz561 branch
+
 Revision 1.9  2004/11/08 17:59:21  jdt
 Fixed a unit test.
 

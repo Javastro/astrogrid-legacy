@@ -1,4 +1,4 @@
-/*$Id: CommandLineApplicationDescriptionTest.java,v 1.3 2004/07/26 12:03:33 nw Exp $
+/*$Id: CommandLineApplicationDescriptionTest.java,v 1.4 2004/11/27 13:20:02 pah Exp $
  * Created on 27-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,7 @@ package org.astrogrid.applications.commandline;
 
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.description.ApplicationInterface;
+import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.description.base.BaseApplicationInterface;
 import org.astrogrid.applications.manager.idgen.IdGen;
@@ -61,7 +62,13 @@ public class CommandLineApplicationDescriptionTest extends TestCase {
         container.registerComponentInstance(fac);
         ProtocolLibrary lib = new DefaultProtocolLibrary();
         container.registerComponentInstance(lib);
-        appDescEnv = new ApplicationDescriptionEnvironment(idgen,lib);
+        //FIXME need to think about how the cmdline apps have their authorityID set....
+        appDescEnv = new ApplicationDescriptionEnvironment(idgen,lib, new BaseApplicationDescriptionLibrary.AppAuthorityIDResolver(){/* (non-Javadoc)
+       * @see org.astrogrid.applications.description.BaseApplicationDescriptionLibrary.AppAuthorityIDResolver#getAuthorityID()
+       */
+      public String getAuthorityID() {
+        return "org.astrogrid.test" ;
+      }});
         descr = new CommandLineApplicationDescription(appDescEnv,container);
         
         descr.setName("test");
@@ -95,6 +102,12 @@ public class CommandLineApplicationDescriptionTest extends TestCase {
 
 /* 
 $Log: CommandLineApplicationDescriptionTest.java,v $
+Revision 1.4  2004/11/27 13:20:02  pah
+result of merge of pah_cea_bz561 branch
+
+Revision 1.3.70.1  2004/11/09 09:21:16  pah
+initial attempt to rationalise authorityID use & self registering
+
 Revision 1.3  2004/07/26 12:03:33  nw
 updated to match name changes in cea server library
 

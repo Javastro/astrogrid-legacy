@@ -1,4 +1,4 @@
-/*$Id: SystemTest.java,v 1.5 2004/09/17 01:22:12 nw Exp $
+/*$Id: SystemTest.java,v 1.6 2004/11/27 13:20:03 pah Exp $
  * Created on 09-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,9 +21,9 @@ import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
+import org.astrogrid.applications.description.base.TestAuthorityResolver;
 import org.astrogrid.applications.javaclass.JavaClassApplicationDescriptionLibrary;
 import org.astrogrid.applications.javaclass.SampleJavaClassApplications;
-import org.astrogrid.applications.javaclass.TestCommunity;
 import org.astrogrid.applications.manager.idgen.IdGen;
 import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
 import org.astrogrid.applications.manager.persist.ExecutionHistory;
@@ -65,8 +65,8 @@ public class SystemTest extends TestCase {
         DefaultProtocolLibrary protocolLib = new DefaultProtocolLibrary();
         protocolLib.addProtocol(new FileProtocol());
         assertTrue(protocolLib.isProtocolSupported("file"));
-        ApplicationDescriptionEnvironment env = new ApplicationDescriptionEnvironment(idgen,protocolLib);
-        lib = new JavaClassApplicationDescriptionLibrary(SampleJavaClassApplications.class,new TestCommunity(),env);
+        ApplicationDescriptionEnvironment env = new ApplicationDescriptionEnvironment(idgen,protocolLib,new TestAuthorityResolver());
+        lib = new JavaClassApplicationDescriptionLibrary(SampleJavaClassApplications.class,env);
         controller = new DefaultExecutionController(lib,history);
         querier = new DefaultQueryService(history);
         
@@ -155,6 +155,12 @@ public class SystemTest extends TestCase {
 
 /* 
 $Log: SystemTest.java,v $
+Revision 1.6  2004/11/27 13:20:03  pah
+result of merge of pah_cea_bz561 branch
+
+Revision 1.5.16.1  2004/11/09 09:21:16  pah
+initial attempt to rationalise authorityID use & self registering
+
 Revision 1.5  2004/09/17 01:22:12  nw
 updated tests
 

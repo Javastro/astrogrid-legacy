@@ -5,11 +5,12 @@
     <menu name="Installation">
       <item name="Install doc" href="provider/INSTALL.html" />
       <item name="Release doc" href="RELEASE.html" />
-      <item name="Fingerprint" href="fingerprint.jsp" />
       <item name="Axis Check" href="happyaxis.jsp" />
+      <item name="Fingerprint" href="fingerprint.jsp" />
       <item name="Installation Tests" href="TestServlet?suite=org.astrogrid.applications.component.CEAComponentManagerFactory" />
       <item name="View web services" href="servlet/AxisServlet" />
       <item name="View VODescription" href="cec-http?method=returnRegistryEntry" />
+	  <item name="Register" href="cec-http?method=register" />
     </menu>
     <menu name="Resources">
       <item name="WSDL" href="wsdl" />

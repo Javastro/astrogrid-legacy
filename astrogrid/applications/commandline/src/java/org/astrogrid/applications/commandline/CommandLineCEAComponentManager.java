@@ -1,4 +1,4 @@
-/*$Id: CommandLineCEAComponentManager.java,v 1.3 2004/07/09 11:00:41 nw Exp $
+/*$Id: CommandLineCEAComponentManager.java,v 1.4 2004/11/27 13:20:02 pah Exp $
  * Created on 04-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -48,9 +48,10 @@ public class CommandLineCEAComponentManager extends EmptyCEAComponentManager imp
          * when server is restarted, as cea-commandline comes up before registry - so can't register.
          * which sounds fair enought, but kevin thinks this is causing the whole system to hang.
          * @todo - investigate
-         
+         * reinstated but the start method is disabled.
+         */
         EmptyCEAComponentManager.registerDefaultRegistryUploader(pico);
-        */
+        
         // now need the other side - the cec manager itself.
         EmptyCEAComponentManager.registerDefaultServices(pico);        
         EmptyCEAComponentManager.registerDefaultPersistence(pico,config);
@@ -97,6 +98,12 @@ public class CommandLineCEAComponentManager extends EmptyCEAComponentManager imp
 
 /* 
 $Log: CommandLineCEAComponentManager.java,v $
+Revision 1.4  2004/11/27 13:20:02  pah
+result of merge of pah_cea_bz561 branch
+
+Revision 1.3.90.1  2004/11/09 09:21:16  pah
+initial attempt to rationalise authorityID use & self registering
+
 Revision 1.3  2004/07/09 11:00:41  nw
 removed auto-registration component for now
 

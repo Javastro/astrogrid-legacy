@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryEntryBuilder.java,v 1.4 2004/08/28 07:17:34 pah Exp $
+ * $Id: RegistryEntryBuilder.java,v 1.5 2004/11/27 13:20:03 pah Exp $
  * 
  * Created on 22-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -71,6 +71,9 @@ public class RegistryEntryBuilder implements ProvidesVODescription , ComponentDe
 
   /** library to generate description for */
    private final ApplicationDescriptionLibrary lib;
+private VODescription template;
+private String serverID;
+private String authorityID;
 
     /** Configuration interface - specifies location of resources required by {@link RegistryEntryBuilder}
      * @author Noel Winstanley nw@jb.man.ac.uk 26-Jul-2004
@@ -92,7 +95,13 @@ public class RegistryEntryBuilder implements ProvidesVODescription , ComponentDe
    public RegistryEntryBuilder(ApplicationDescriptionLibrary lib, URLs urls) {
       this.lib = lib;
       this.urls = urls;
-      //FIXME need to read the template to get hold of the AuthorityID and the serverID to have those set early
+      try {
+         //FIXME need to read the template to get hold of the AuthorityID and the serverID to have those set early
+         template = makeTemplate();
+      }
+      catch (Exception e) {
+         logger.error("error with template", e);
+      }
    }
 
    /**
@@ -101,12 +110,14 @@ public class RegistryEntryBuilder implements ProvidesVODescription , ComponentDe
     */
    public VODescription makeEntry() throws MarshalException, ValidationException, IOException, ApplicationDescriptionNotFoundException {
       VODescription vodesc = new VODescription();
-      VODescription template = makeTemplate();
       CeaApplicationType applicationTemplate =
          (CeaApplicationType)template.getResource(0);
       CeaServiceType serviceTemplate = (CeaServiceType)template.getResource(1);
 
       CeaServiceType service = cloneTemplate(serviceTemplate);
+      //set the service idetifier just in case this has been redefined from the UI
+      service.getIdentifier().setAuthorityID(getAuthorityID());
+      service.getIdentifier().setResourceKey(serverID);
       ManagedApplications managedApplications = new ManagedApplications();
       service.setManagedApplications(managedApplications);
       ApplicationList applist = makeApplist(lib);
@@ -114,10 +125,15 @@ public class RegistryEntryBuilder implements ProvidesVODescription , ComponentDe
       for (int i = 0; i < applist.getApplicationDefnCount(); i++) {
 
          ApplicationBase theapp = applist.getApplicationDefn(i);
+         ApplicationDescription theAppDesc  = lib.getDescription(theapp.getName());
          
          if (theapp.getName() != null) { //TODO this test is only here to get round a bug in the container, where a null application seems to be instantiated.
             CeaApplicationType appentry = makeApplicationEntry(
                     applicationTemplate, theapp);
+            appentry.getSummary().setDescription(theAppDesc.getAppDescription());
+            appentry.getSummary().setReferenceURL(theAppDesc.getReferenceURL());
+            appentry.setTitle(theAppDesc.getUIName());
+            appentry.setShortName(theAppDesc.getUIName());//this is probably not appropriate
             vodesc.addResource(appentry);
             //add this application to the list of managed applications.
             managedApplications.addApplicationReference(appentry
@@ -150,6 +166,8 @@ public class RegistryEntryBuilder implements ProvidesVODescription , ComponentDe
 
       CeaApplicationType entry = cloneTemplate(template);
       entry.getIdentifier().setResourceKey(stripAuthorityFragment(app.getName()));
+      entry.getIdentifier().setAuthorityID(getAuthorityFragment(app.getName()));
+      //TODO need to get the long description in here too
       ApplicationDefinition applicationDefinition = new ApplicationDefinition();
       // set the interfaces - easy it is the same type...     
       applicationDefinition.setInterfaces(app.getInterfaces());
@@ -171,6 +189,15 @@ public class RegistryEntryBuilder implements ProvidesVODescription , ComponentDe
        } else {
            return s;
        }
+   }
+   private String getAuthorityFragment(String s)
+   {
+      if (s.indexOf('/') != -1) {
+         return s.substring(0, s.indexOf('/'));
+     } else {
+         return null;
+     }
+
    }
 
    /**
@@ -274,27 +301,39 @@ public VODescription getVODescription() throws CastorException,  ApplicationDesc
 private VODescription makeTemplate() throws IOException, MarshalException, ValidationException  {
     logger.info("using " + urls.getRegistryTemplate() + " as registry template");
     InputStreamReader iStream = new InputStreamReader(urls.getRegistryTemplate().openStream());
-    VODescription template = VODescription.unmarshalVODescription(iStream);
-    return template;
+    VODescription temp = VODescription.unmarshalVODescription(iStream);
+    //reset the authorityID and the server ID from the server entry
+     if( temp.getResource(1) instanceof CeaServiceType )  
+     {
+        CeaServiceType service = (CeaServiceType)temp.getResource(1);
+        authorityID = service.getIdentifier().getAuthorityID();
+        serverID = service.getIdentifier().getResourceKey();
+        logger.info("from template the service is called "+service.getIdentifier().toString());
+     }
+     else
+     {
+        logger.error("template not in expected format - resulting VODescriptions may be wrong");
+     }
+    return temp;
 }
 
-
+public void reloadTemplate() throws MarshalException, ValidationException, IOException
+{
+   template=makeTemplate();
+}
 
     /* (non-Javadoc)
      * @see org.astrogrid.applications.component.ProvidesVODescription#getAuthorityID()
      */
     public String getAuthorityID() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-                "RegistryEntryBuilder.getAuthorityID() not implemented");
+       return authorityID;
     }
     /* (non-Javadoc)
      * @see org.astrogrid.applications.component.ProvidesVODescription#setServerID(java.lang.String)
      */
     public String setServerID(String id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-                "RegistryEntryBuilder.setServerID() not implemented");
+       serverID = id;
+       return serverID;
     }
 /**
  * @see org.astrogrid.component.descriptor.ComponentDescriptor#getName()

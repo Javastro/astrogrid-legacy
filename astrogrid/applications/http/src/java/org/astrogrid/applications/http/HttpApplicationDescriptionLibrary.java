@@ -1,4 +1,4 @@
-/*$Id: HttpApplicationDescriptionLibrary.java,v 1.5 2004/09/01 15:42:26 jdt Exp $
+/*$Id: HttpApplicationDescriptionLibrary.java,v 1.6 2004/11/27 13:20:03 pah Exp $
  * Created on Jul 24, 2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -40,17 +40,15 @@ public class HttpApplicationDescriptionLibrary extends BaseApplicationDescriptio
      * querier to contact the registry
      * 
      */
-    public HttpApplicationDescriptionLibrary(RegistryQuerier querier, Community community, ApplicationDescriptionEnvironment env) throws IOException {
-        super();
+    public HttpApplicationDescriptionLibrary(RegistryQuerier querier, ApplicationDescriptionEnvironment env) throws IOException {
+        super(env);
         if (log.isTraceEnabled()) {
             log.trace("HttpApplicationDescriptionLibrary(RegistryQuerier querier = " + querier
-                    + ", Community community = " + community + ", ApplicationDescriptionEnvironment env = " + env
+                    + ", ApplicationDescriptionEnvironment env = " + env
                     + ") - start");
         }
 
         this.querier = querier;
-        this.community = community;
-        this.env = env;
         populate();
 
         if (log.isTraceEnabled()) {
@@ -58,10 +56,7 @@ public class HttpApplicationDescriptionLibrary extends BaseApplicationDescriptio
         }
     }
     
-    //@TODO check with Noel about the non-privateness of all this
-    protected final Community community;
     
-    protected final ApplicationDescriptionEnvironment env;
     /** 
      * Populate the library
      * @throws IOException if there was a problem in the querier.  Typically this will be a failure of the 
@@ -72,15 +67,15 @@ public class HttpApplicationDescriptionLibrary extends BaseApplicationDescriptio
             log.trace("populate() - start");
         }
 
-        final String communityName = community.getCommunity();
+        final String authorityId = env.getAuthIDResolver().getAuthorityID();
         final Collection apps = querier.getHttpApplications();
-        assert communityName!=null;
+        assert authorityId!=null;
         assert apps!=null;
 
         final Iterator it = apps.iterator();
         while (it.hasNext()) {
             final CeaHttpApplicationType app = (CeaHttpApplicationType) it.next(); 
-            super.addApplicationDescription(new HttpApplicationDescription(app, communityName, env)); 
+            super.addApplicationDescription(new HttpApplicationDescription(app, authorityId, env)); 
         }
 
         if (log.isTraceEnabled()) {
@@ -111,10 +106,7 @@ public class HttpApplicationDescriptionLibrary extends BaseApplicationDescriptio
         buffer.append(log);
         buffer.append(" querier: ");
         buffer.append(querier);
-        buffer.append(" community: ");
-        buffer.append(community);
-        buffer.append(" env: ");
-        buffer.append(env);
+        buffer.append(super.toString());
         buffer.append("]");
         String returnString = buffer.toString();
         return returnString;
@@ -123,6 +115,12 @@ public class HttpApplicationDescriptionLibrary extends BaseApplicationDescriptio
 
 /* 
 $Log: HttpApplicationDescriptionLibrary.java,v $
+Revision 1.6  2004/11/27 13:20:03  pah
+result of merge of pah_cea_bz561 branch
+
+Revision 1.5.36.1  2004/11/09 09:21:16  pah
+initial attempt to rationalise authorityID use & self registering
+
 Revision 1.5  2004/09/01 15:42:26  jdt
 Merged in Case 3
 

@@ -1,4 +1,4 @@
-/*$Id: CEAComponentManager.java,v 1.3 2004/07/23 13:21:21 nw Exp $
+/*$Id: CEAComponentManager.java,v 1.4 2004/11/27 13:20:03 pah Exp $
  * Created on 04-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.applications.component;
 
+import org.astrogrid.applications.description.registry.RegistryUploader;
 import org.astrogrid.applications.manager.ExecutionController;
 import org.astrogrid.applications.manager.MetadataService;
 import org.astrogrid.applications.manager.QueryService;
@@ -28,12 +29,20 @@ public interface CEAComponentManager extends ComponentManager {
     public MetadataService getMetadataService();
     /** @return the query component that allows inspection of progress */
     public QueryService getQueryService();
-
+    /** @return the component that will upload to the registry */
+    public RegistryUploader getRegistryUploaderService();
+    
 }
 
 
 /* 
 $Log: CEAComponentManager.java,v $
+Revision 1.4  2004/11/27 13:20:03  pah
+result of merge of pah_cea_bz561 branch
+
+Revision 1.3.76.1  2004/11/09 09:21:16  pah
+initial attempt to rationalise authorityID use & self registering
+
 Revision 1.3  2004/07/23 13:21:21  nw
 Javadocs
 

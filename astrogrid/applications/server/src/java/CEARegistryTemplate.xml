@@ -9,8 +9,7 @@
     
     The most important entries that will need customization are the AuthorityID entries, which must match a value that the local registry will accept.
     -->
-<vr:VODescription xmlns="http://www.ivoa.net/xml/CEAService/v0.1" xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9" xmlns:vt="http://www.ivoa.net/xml/VOTable/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.ivoa.net/xml/CEAService/v0.1
-\\pahlaptop\work\astrogrid\indsrc\workflow-objects\schema\VOCEA.xsd">
+<vr:VODescription xmlns="http://www.ivoa.net/xml/CEAService/v0.1" xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9" xmlns:vt="http://www.ivoa.net/xml/VOTable/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
 	<vr:Resource xsi:type="java:org.astrogrid.registry.beans.cea.CeaApplicationType">
 		<!--The authorityID has to be chosen here as the registry is  using this identifier to
 		     determine which are "local" registry entries.
@@ -18,7 +17,7 @@
 		     
 		     The name of the resource might be better categorised by prepending "cea/" not sure if this is necessary....-->
 		<vr:Identifier>
-			<vr:AuthorityID>org.astrogrid.localhost</vr:AuthorityID>
+			<vr:AuthorityID>org.astrogrid</vr:AuthorityID>
 			<vr:ResourceKey>TemplateEntry</vr:ResourceKey>
 		</vr:Identifier>
 		<vr:Title>TemplateEntry</vr:Title>
@@ -43,7 +42,7 @@
 				<vr:Name>Astrogrid</vr:Name>
 				<vr:Logo>??</vr:Logo>
 			</vr:Creator>
-			<vr:Version>Iteration 5</vr:Version>
+			<vr:Version>Iteration 6</vr:Version>
 		</vr:Curation>
 		<vr:Subject>???</vr:Subject>
 		<ApplicationDefinition>
@@ -61,13 +60,13 @@
 		<!--The autorityID has been chosen to be astrogrid.org as I believe that these should be defined at this level - however the registry is probably using this identifier to determine which are "local" registry entries, so there might be something else set as standard. The name of the resource might be better categorised by prepending "cea/" not sure if this is necessary....-->
 		<vr:Identifier>
 			<vr:AuthorityID>org.astrogrid.localhost</vr:AuthorityID>
-			<vr:ResourceKey>TemplateEntry</vr:ResourceKey>
+			<vr:ResourceKey>ServiceName</vr:ResourceKey>
 		</vr:Identifier>
 		<vr:Title>TemplateEntry</vr:Title>
-		<vr:ShortName>TemplateEntry</vr:ShortName>
+		<vr:ShortName>ServiceName</vr:ShortName>
 		<vr:Summary>
 			<vr:Description>This is part of the astrogrid CEA.</vr:Description>
-			<vr:ReferenceURL>http://www.astrogrid.org/maven/build/applications/</vr:ReferenceURL>
+			<vr:ReferenceURL>http://www.astrogrid.org/maven/docs/snapshot/applications/</vr:ReferenceURL>
 		</vr:Summary>
 		<vr:Type>Other</vr:Type>
 		<vr:Curation>
@@ -85,13 +84,13 @@
 				<vr:Name>Astrogrid</vr:Name>
 				<vr:Logo>??</vr:Logo>
 			</vr:Creator>
-			<vr:Version>Iteration 5</vr:Version>
+			<vr:Version>Iteration 6</vr:Version>
 		</vr:Curation>
 		<vr:Subject>???</vr:Subject>
 		<vr:Capability>
-			<vr:StandardURL>http://www.astrogrid.org/maven/build/applications/</vr:StandardURL>
+			<vr:StandardURL>http://www.astrogrid.org/maven/docs/snapshot/applications/</vr:StandardURL>
 			<vr:StandardID>
-				<vr:AuthorityID>astrogrid.og</vr:AuthorityID>
+				<vr:AuthorityID>org.astrogrid</vr:AuthorityID>
 				<vr:ResourceKey>CommonExecutionArchitucture</vr:ResourceKey>
 			</vr:StandardID>
 		</vr:Capability>

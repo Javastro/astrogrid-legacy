@@ -2,7 +2,7 @@
 <!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
 <CommandLineExecutionControllerConfig xmlns="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
 	<!-- put the real applications here - note that they are not autodeployed, so the paths are fixed strings - this is more of a registry test....-->
-	<Application name="REGAUTHORITY.SExtractor" instanceClass="org.astrogrid.applications.commandline.sextractor.SExtractor">
+	<Application name="org.astrogrid/SExtractor" instanceClass="org.astrogrid.applications.commandline.sextractor.SExtractor">
 		<!--This is the application to concentrate on for the end of this iteration-->
 		<Parameters>
 			<!-- temporarily turn the images into direct file references - for performance during the AVO demo -->
@@ -188,12 +188,12 @@
 			</Interface>
 		</Interfaces>
 		<ExecutionPath>/home/applications/tools/sextractor-2.3/sex</ExecutionPath>
+		<LongName>SExtractor</LongName>
 		<Description>SExtractor is a program that builds a catalogue of objects from an astronomical image. Although it is particularly oriented towards reduction of large scale galaxy-survey data, it performs rather well on moderately crowded star fields. 
-
-</Description>
+        </Description>
 		<ReferenceURL>http://terapix.iap.fr/cplt/oldSite/soft/sextractor/</ReferenceURL>
 	</Application>
-	<Application name="REGAUTHORITY.HyperZ" instanceClass="org.astrogrid.applications.commandline.hyperz.HyperZ">
+	<Application name="org.astrogrid/HyperZ" instanceClass="org.astrogrid.applications.commandline.hyperz.HyperZ">
 		<!--HyperZ is another tool that will be driven by config files - however this might not be the full set necessary to run this tool.-->
 		<Parameters>
 			<CmdLineParameterDefn name="config_file" type="binary" commandPosition="1">
@@ -236,13 +236,15 @@
 			</Interface>
 		</Interfaces>
 		<ExecutionPath>/home/applications/tools/ZPHOT/hyperzwrapper.sh</ExecutionPath>
+		<LongName>HyperZ</LongName>
+		
 		<Description>We refer to the paper
 "Photometric Redshifts based on standard SED fitting procedures" 
 M. Bolzonella, J.-M. Miralles, R. Pelló, 2000, A&amp;A 363, 476-492
 </Description>
 		<ReferenceURL>http://webast.ast.obs-mip.fr/hyperz/</ReferenceURL>
 	</Application>
-	<Application name="REGAUTHORITY.CrossMatcher" instanceClass="org.astrogrid.applications.commandline.dft.Dft">
+	<Application name="org.astrogrid/CrossMatcher" instanceClass="org.astrogrid.applications.commandline.dft.Dft">
 		<!--This is Patricio's data federation tool that will be needed for the january demo I believe - It is more complicated than those above in that it has more different types of parameter. Additionally I think that it would be good for the UI to be able to look into the VOTables to give the user a list of columns to chose from - otherwise this would be a very painful process for the user.-->
 		<!-- these parameters are incorrect in the latest verison of the tool -->
 		<Parameters>
@@ -261,6 +263,7 @@ M. Bolzonella, J.-M. Miralles, R. Pelló, 2000, A&amp;A 363, 476-492
 			<CmdLineParameterDefn name="matchRadius" type="double" commandSwitch="String" fileRef="false">
 				<agpd:UI_Name>Match Radius</agpd:UI_Name>
 				<agpd:UI_Description>??</agpd:UI_Description>
+				<agpd:Units>arcsec</agpd:Units>
 			</CmdLineParameterDefn>
 			<CmdLineParameterDefn name="radMax" type="double" commandSwitch="String" fileRef="false">
 				<agpd:UI_Name>Maximum search radius</agpd:UI_Name>
@@ -305,8 +308,9 @@ M. Bolzonella, J.-M. Miralles, R. Pelló, 2000, A&amp;A 363, 476-492
 			</Interface>
 		</Interfaces>
 		<ExecutionPath>/home/applications/tools/dft/bin/dft</ExecutionPath>
+		<LongName>AG Cross Matcher</LongName>
 	</Application>
-	<Application name="REGAUTHORITY.BPZ">
+	<Application name="org.astrogrid/BPZ">
 		<!--Another photometric redshift tool - need to complete the parameter definitions...-->
 		<Parameters>
 			<CmdLineParameterDefn type="text" name="SPECTRA">
@@ -420,10 +424,11 @@ M. Bolzonella, J.-M. Miralles, R. Pelló, 2000, A&amp;A 363, 476-492
 			</Interface>
 		</Interfaces>
 		<ExecutionPath>/home/applications/tools/bpz/bpz.py</ExecutionPath>
+		<LongName>BPZ</LongName>
 		<Description>The software below implements the Bayesian photometric redshift method described in Benitez 2000 . </Description>
 		<ReferenceURL>http://acs.pha.jhu.edu/~txitxo/bayesian.html</ReferenceURL>
 	</Application>
-	<Application name="REGAUTHORITY.swarp">
+	<Application name="org.astrogrid/swarp">
 		<!--can resample images - only define the very simplest interface at the moment - using a parameter files-->
 		<Parameters>
 			<CmdLineParameterDefn name="Image" type="FITS" commandPosition="1" fileRef="true">
@@ -451,10 +456,11 @@ M. Bolzonella, J.-M. Miralles, R. Pelló, 2000, A&amp;A 363, 476-492
 			</Interface>
 		</Interfaces>
 		<ExecutionPath>/home/applications/tools/swarp-2.10/bin/swarp</ExecutionPath>
+		<LongName>SWarp</LongName>
 		<Description>SWarp is a program that resamples and co-adds together FITS images using any arbitrary astrometric projection defined in the WCS standard.</Description>
 		<ReferenceURL>http://terapix.iap.fr/rubrique.php?id_rubrique=49</ReferenceURL>
 	</Application>
-	<Application name="REGAUTHORITY.annz">
+	<Application name="org.astrogrid/annz">
 		<Parameters>
 			<CmdLineParameterDefn name="INPUT_PHOTOM" type="binary" commandPosition="1"/>
 			<CmdLineParameterDefn name="OUTPUT" type="binary" commandPosition="2"/>
@@ -472,21 +478,181 @@ M. Bolzonella, J.-M. Miralles, R. Pelló, 2000, A&amp;A 363, 476-492
 			</Interface>
 		</Interfaces>
 		<ExecutionPath>/home/applications/tools/annz/bin/annz_test</ExecutionPath>
+		<LongName>ANNZ</LongName>
 		<ReferenceURL>http://www.ast.cam.ac.uk/~aac/</ReferenceURL>
 	</Application>
-	<Application name="REGAUTHORITY.Pegase">
-		<Parameters/>
+	<Application name="org.astrogrid/Pegase">
+		<Parameters>
+			<CmdLineParameterDefn  name="IMF" type="integer" fileRef="false">
+				<agpd:UI_Name>Initial Mass Function</agpd:UI_Name>
+				<agpd:UI_Description>
+   1: IMF_Kennicutt.dat                                                       
+   2: IMF_Kroupa.dat                                                          
+   3: IMF_MillerScalo.dat                                                     
+   4: IMF_Salpeter.dat                                                        
+   5: IMF_Scalo86.dat                                                         
+   6: IMF_Scalo98.dat                                                         
+   7: lognormal IMF
+   8: Rana &amp; Basu (1992)
+   9: Ferrini (1991)
+
+					
+				</agpd:UI_Description>
+				<agpd:DefaultValue>4</agpd:DefaultValue>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="LMASS" type="double"  fileRef="false">
+				<agpd:UI_Name>Lower mass</agpd:UI_Name>
+				<agpd:UI_Description>Lower mass</agpd:UI_Description>
+				<agpd:Units>Solar Masses</agpd:Units>
+				<agpd:DefaultValue>0.1</agpd:DefaultValue>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="UMASS" type="double"  fileRef="false">
+				<agpd:UI_Name>Upper mass</agpd:UI_Name>
+				<agpd:UI_Description>Upper mass</agpd:UI_Description>
+				<agpd:Units>Solar Masses</agpd:Units>
+				<agpd:DefaultValue>120.0</agpd:DefaultValue>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn  name="SNMODEL" type="text" fileRef="false">
+				<agpd:UI_Name>SN Model (A/B/C)</agpd:UI_Name>
+				<agpd:UI_Description> model A, B or C of Woosley &amp; Weaver </agpd:UI_Description>
+				<agpd:DefaultValue>B</agpd:DefaultValue>
+				<agpd:OptionList>
+					<agpd:OptionVal>A</agpd:OptionVal>
+					<agpd:OptionVal>B</agpd:OptionVal>
+					<agpd:OptionVal>C</agpd:OptionVal>
+				</agpd:OptionList>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn  name="WINDS" type="boolean" fileRef="false">
+				<agpd:UI_Name>Stellar Winds</agpd:UI_Name>
+				<agpd:UI_Description></agpd:UI_Description>
+				<agpd:DefaultValue>Y</agpd:DefaultValue>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn  name="BINFRAC" type="double" fileRef="false">
+				<agpd:UI_Name>binary fraction</agpd:UI_Name>
+				<agpd:UI_Description>Fraction of close binary systems</agpd:UI_Description>
+				<agpd:DefaultValue>0.05</agpd:DefaultValue>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn  name="METALICITY" type="double" fileRef="false">
+				<agpd:UI_Name>Metalicity</agpd:UI_Name>
+				<agpd:UI_Description>Metallicity (mass fraction) of the ISM at t=0 (real in [0.,1.])</agpd:UI_Description>
+				<agpd:DefaultValue>0.0</agpd:DefaultValue>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="INFALL" type="boolean" fileRef="false">
+				<agpd:UI_Name>Infall</agpd:UI_Name>
+				<agpd:DefaultValue>y</agpd:DefaultValue>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="INFALLTIME" type="double" fileRef="false">
+				<agpd:UI_Name>Infall Timescale</agpd:UI_Name>
+				<agpd:UI_Description>Infall timescale (Myr, real)</agpd:UI_Description>
+				<agpd:DefaultValue>0.10000E+04</agpd:DefaultValue>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="INFALLMETAL" type="double" fileRef="false">
+				<agpd:UI_Name>Infall Metalicity</agpd:UI_Name>
+				<agpd:UI_Description>Metallicity of the infalling gas (mass fraction, real in [0.,1.])</agpd:UI_Description>
+				<agpd:DefaultValue>0</agpd:DefaultValue>
+			</CmdLineParameterDefn>
+			
+			<CmdLineParameterDefn type="integer" name="SFSCENARIO" fileRef="false">
+				<agpd:UI_Name>Star formation scenario</agpd:UI_Name>
+				<agpd:UI_Description> 
+	Type of star formation scenario?
+ -2: file giving the SFR and the metallicity
+ -1: file giving the SFR
+  0: instantaneous burst
+  1: SFR=p1 from t=0 to p2
+  2: SFR=p2*exp(-t/p1)/p1
+  3: SFR=(Mgas^p1)/p2
+ 10 or more: code of the SFR law you have implemented in "spectra.f"
+					
+				</agpd:UI_Description>
+				<agpd:DefaultValue>0</agpd:DefaultValue>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn type="boolean" name="CONEVOL" fileRef="false">
+				<agpd:UI_Name>Consistent Evolution</agpd:UI_Name>
+				<agpd:UI_Description> Consistent evolution of the stellar metallicity (y/n)?</agpd:UI_Description>
+				<agpd:DefaultValue>y</agpd:DefaultValue>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn type="double" name="SMETAL" fileRef="false">
+				<agpd:UI_Name>Stellar metallicity</agpd:UI_Name>
+				<agpd:UI_Description>(real in [0.,1.])</agpd:UI_Description>
+				<agpd:DefaultValue>0.02</agpd:DefaultValue>
+				
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn type="double"	 name="FRACSUB" fileRef="false">
+				<agpd:UI_Name>SubStellar fraction</agpd:UI_Name>
+				<agpd:UI_Description>Mass fraction of substellar objects formed (real in [0.,1.])</agpd:UI_Description>
+				<agpd:DefaultValue>0</agpd:DefaultValue>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn  name="GALWIND" type="boolean" fileRef="false">
+				<agpd:UI_Name>Galactic winds</agpd:UI_Name>
+				<agpd:UI_Description></agpd:UI_Description>
+				<agpd:DefaultValue>n</agpd:DefaultValue>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn  name="GALWINDAGE" type="double" fileRef="false">
+				<agpd:UI_Name>Galactic wind age</agpd:UI_Name>
+				<agpd:UI_Description>Age of the galactic winds (Myr, real)</agpd:UI_Description>
+				<agpd:DefaultValue>0.20001E+05</agpd:DefaultValue>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="NEBEMISS" type="boolean" fileRef="false">
+				<agpd:UI_Name>Nebular Emission</agpd:UI_Name>
+				<agpd:UI_Description></agpd:UI_Description>
+				<agpd:DefaultValue>n</agpd:DefaultValue>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="GLOBALEXTINCTION" type="integer" fileRef="false">
+				<agpd:UI_Name>Global Extinction?</agpd:UI_Name>
+				<agpd:UI_Description>
+ 0: No extinction
+ 1: Extinction for a spheroidal geometry
+ 2: Extinction for a disk geometry: inclination-averaged
+ 3: Extinction for a disk geometry: specific inclination
+					
+				</agpd:UI_Description>
+				<agpd:DefaultValue>0</agpd:DefaultValue>
+			</CmdLineParameterDefn> 
+			<!-- raw output files -->
+			<CmdLineParameterDefn type="binary" name="SPECTRA" fileRef="true" localFileName="spectra1.dat">
+				<agpd:UI_Name>Synthesized spectra</agpd:UI_Name>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn type="binary" name="COLOURS" fileRef="true" localFileName="colours1.dat">
+				<agpd:UI_Name>Synthesized colours</agpd:UI_Name>
+			</CmdLineParameterDefn>
+		</Parameters>
+		
 		<Interfaces>
 			<Interface name="simple">
-				<input/>
-				<output/>
+				<input>
+					<pref ref="IMF"></pref>
+					<pref ref="LMASS"></pref>
+					<pref ref="UMASS"></pref>
+					<pref ref="SNMODEL"></pref>
+					<pref ref="WINDS"></pref>
+					<pref ref="BINFRAC"></pref>
+					<pref ref="METALICITY"></pref>
+					<pref ref="INFALL"></pref>
+					<pref ref="INFALLTIME" minoccurs="0"></pref>
+					<pref ref="INFALLMETAL" minoccurs="0"></pref>
+					<pref ref="SFSCENARIO"></pref>
+					<pref ref="CONEVOL"></pref>
+					<pref ref="SMETAL" minoccurs="0"></pref>
+					<pref ref="FRACSUB"></pref>
+					<pref ref="GALWIND"></pref>
+					<pref ref="GALWINDAGE" minoccurs="0"></pref>
+					<pref ref="NEBEMISS"></pref>
+					<pref ref="GLOBALEXTINCTION"></pref>
+					
+			    </input>
+				<output>
+					<pref ref="SPECTRA"/>
+					<pref ref="COLOURS"/>
+					</output>
 			</Interface>
 		</Interfaces>
-		<ExecutionPath>/home/applications/tools</ExecutionPath>
+		<ExecutionPath>/home/applications/tools/PEGASE.2/runpegase.sh</ExecutionPath>
+		<LongName>Pegase</LongName>
 		<Description>PEGASE is a code which computes the spectral evolution of galaxies. The evolution of the stars, gas and metals is computed according to user selected star formation laws and initial stellar mass function.  The stellar evolutionary tracks extend from the main sequence to the white dwarf stage. The emission of the gas in HII regions is also taken into account. The effect of extinction by dust is also modelled using a radiative transfer code.</Description>
 		<ReferenceURL>http://www2.iap.fr/users/fioc/PEGASE.html</ReferenceURL>
 	</Application>
-	<Application name="REGAUTHORITY.Starburst99">
+	<Application name="org.astrogrid/Starburst99">
 		<Parameters>
 		 <CmdLineParameterDefn name="NAME" type="text" fileRef="false">
 				<agpd:UI_Name>NAME</agpd:UI_Name>
@@ -742,7 +908,7 @@ ISOCHRONE ON  LARGE GRID (=2) OR FULL ISOCHRONE (=3):</agpd:UI_Name>
 		</CmdLineParameterDefn>
 	   </Parameters>
 		<Interfaces>
-			<Interface name="simple">
+			<Interface name="full">
 				<input>
 					<pref ref="NAME"/>
 					<pref ref="ISF"/>
@@ -771,7 +937,7 @@ ISOCHRONE ON  LARGE GRID (=2) OR FULL ISOCHRONE (=3):</agpd:UI_Name>
 					<pref ref="output"/>
 					<pref ref="quanta"/>
 					<pref ref="snr"/>
-					<pref ref="hrd"/>
+					<pref ref="hrd"/> 
 					<pref ref="power"/>
 					<pref ref="sptyp1"/>
 					<pref ref="sptyp2"/>
@@ -789,18 +955,57 @@ ISOCHRONE ON  LARGE GRID (=2) OR FULL ISOCHRONE (=3):</agpd:UI_Name>
 			</Interface>
 		</Interfaces>
 		<ExecutionPath>/home/applications/tools/starburst99/starburst99_wrapper.sh</ExecutionPath>
+		<LongName>Starburst 99</LongName>
 		<Description>Starburst99 is a web based software and data package designed to model spectrophotometric and related properties of star-forming galaxies.</Description>
 		<ReferenceURL>http://www.stsci.edu/science/starburst99/</ReferenceURL>
 	</Application>
-	<Application name="REGAUTHORITY.Galexyev">
-		<Parameters/>
+	<Application name="org.astrogrid/Galaxev">
+		<Parameters>
+			<CmdLineParameterDefn  name="CONFIGFILE" type="text" commandPosition="1">
+				<agpd:UI_Name>Config File</agpd:UI_Name>
+				<agpd:UI_Description>Padovani style config file</agpd:UI_Description>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="ABMAG" type="text" fileRef="true" localFileName="testout.1ABmag">
+				<agpd:UI_Name>AB Magnitudes</agpd:UI_Name>
+				<agpd:UI_Description>AB magnitudes in
+SDSS filters as function of galaxy Age</agpd:UI_Description>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="VEGAMAGS" type="text" fileRef="true" localFileName="testout.1color">
+				<agpd:UI_Name>Vega Colours</agpd:UI_Name>
+				<agpd:UI_Description>mags and colors
+(Vega) as function of galaxy Age in standard filters</agpd:UI_Description>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="OTHERMAGS" type="text" fileRef="true" localFileName="testout.2color">
+				<agpd:UI_Name>Other Magnitudes</agpd:UI_Name>
+				<agpd:UI_Description>mags and colours with more filter sets</agpd:UI_Description>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="SPECTRA" type="text" fileRef="true" localFileName="testout_ages">
+				<agpd:UI_Name>Spectra at Ages</agpd:UI_Name>
+				<agpd:UI_Description> Spectra (lambda
+&amp; fluxes at chosen ages).</agpd:UI_Description>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="MAGZF1" type="text" fileRef="true" localFileName="testout.magnitude_FILTER1">
+				<agpd:UI_Name>Magnitudes Filter 1</agpd:UI_Name>
+				<agpd:UI_Description> Magnitude
+redshift evolution in FILTER1</agpd:UI_Description>
+			</CmdLineParameterDefn>
+			</Parameters>
 		<Interfaces>
 			<Interface name="simple">
-				<input/>
-				<output/>
+				<input>
+					<pref ref="CONFIGFILE"/>
+				</input>
+				<output>
+					<pref ref="ABMAG"/>
+					<pref ref="VEGAMAGS"/>
+					<pref ref="OTHERMAGS"/>
+					<pref ref="SPECTRA"/>
+					<pref ref="MAGZF1"/>
+			    </output>
 			</Interface>
 		</Interfaces>
-		<ExecutionPath>/home/applications/tools</ExecutionPath>
+		<ExecutionPath>/home/applications/tools/bc03/rungalaxev.sh</ExecutionPath>
+		<LongName>Galexev</LongName>
 		<Description>GALAXEV is a library of evolutionary stellar population synthesis models computed using the new isochrone synthesis code of Bruzual &amp;Charlot (2003). This code allows one to computes the spectral evolution of stellar populations in wide ranges of ages and metallicities at a resolution of 3 Å across the whole wavelength range from 3200 Å to 9500 Å, and at lower resolution outside this range. </Description>
 		<ReferenceURL>http://www.cida.ve/~bruzual/bc2003</ReferenceURL>
 	</Application>
