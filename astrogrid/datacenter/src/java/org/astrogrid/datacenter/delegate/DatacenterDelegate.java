@@ -1,5 +1,5 @@
 /*
- * $Id: DatacenterDelegate.java,v 1.14 2003/09/15 16:11:44 mch Exp $
+ * $Id: DatacenterDelegate.java,v 1.15 2003/09/15 16:47:53 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -101,18 +101,6 @@ public abstract class DatacenterDelegate
     */
    public abstract Element spawnAdqlQuery(Element adql) throws IOException;
 
-   /**
-    * Examines the given response DOM element (returned by spawnAdqlQuery) and
-    * returns the service ID
-    */
-   public String getIdFromResponse(Element response)
-   {
-      NodeList ids = response.getElementsByTagName(ServiceIdHelper.SERVICE_ID_TAG);
-
-      Log.affirm(ids.getLength() == 1, "More than one service ID in response...");
-
-      return ids.item(0).getNodeValue();
-   }
 
    /**
     * Polls the status of the service, returning the results when they're
@@ -168,6 +156,9 @@ public abstract class DatacenterDelegate
 
 /*
 $Log: DatacenterDelegate.java,v $
+Revision 1.15  2003/09/15 16:47:53  mch
+removed unused service id extractor (now in helper)
+
 Revision 1.14  2003/09/15 16:11:44  mch
 Fixes to handle updates when multiple queries are running through one delegate
 
