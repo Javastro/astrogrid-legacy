@@ -1,30 +1,57 @@
-package test.org.astrogrid.mySpace.mySpaceStatus;
+// package org.astrogrid.mySpace.mySpaceStatus;
 
 import junit.framework.*;
+
 import org.astrogrid.mySpace.mySpaceStatus.MySpaceStatusCode;
 
-/** JUnit TestCase. 
- * @testfamily JUnit
- * @testkind testcase
- * @testsetup Default TestCase
- * @testedclass org.astrogrid.mySpace.mySpaceStatus.MySpaceStatusCode*/
-public class TestMySpaceStatusCode extends TestCase {
-    /** Constructs a test case with the given name. */
-    public TestMySpaceStatusCode(String name) {
-        super(name);
-    }
+/**
+ * Junit tests for the <code>MySpaceStatusCode</code> class.
+ *
+ * @author A C Davenhall (Edinburgh)
+ * @version Iteration 2.
+ */
 
-    /** Sets up the fixture, for example, open a network connection. This method is called before a test is executed. */
-    protected void setUp() {
-        // Write your code here
-    }
+public class TestMySpaceStatusCode extends TestCase
+{
 
-    /** Tears down the fixture, for example, close a network connection. This method is called after a test is executed. */
-    protected void tearDown() {
-        // Write your code here
-    }
+/**
+ * Standard constructor for JUnit test classes.
+ */
 
-    public void testToString() {
-        fail("not implemented");
-    }
+   public TestMySpaceStatusCode (String name)
+   {  super(name);
+   }
+
+/**
+ * Test the <code>getCode</code> method.  
+ */
+
+   public void testGetCode()
+   {  MySpaceStatusCode msStatusCode = new MySpaceStatusCode(
+        MySpaceStatusCode.MS_E_REGDWRT, MySpaceStatusCode.ERROR);
+      
+      Assert.assertEquals(msStatusCode.getCode(), "MS_E_REGDWRT");
+   }
+
+/**
+ * Test the <code>toString</code> method.  
+ */
+
+   public void testToString()
+   {  MySpaceStatusCode msStatusCode = new MySpaceStatusCode(
+        MySpaceStatusCode.MS_E_REGDWRT, MySpaceStatusCode.ERROR);
+      
+      Assert.assertEquals(msStatusCode.toString(),
+        "!Error:   [MS_E_REGDWRT]: Failed to write registry data file.");
+   }
+
+/**
+ * Main method to run the class.
+ */
+
+   public static void main (String[] args)
+   {
+//    junit.textui.TestRunner.run (TestMySpaceStatusCode.class);
+      junit.swingui.TestRunner.run (TestMySpaceStatusCode.class);
+   }
 }
