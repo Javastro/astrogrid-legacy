@@ -1,4 +1,4 @@
-/*$Id: ResultTransformerSet.java,v 1.1 2005/02/21 11:25:07 nw Exp $
+/*$Id: StringResultTransformerSet.java,v 1.1 2005/02/22 01:10:31 nw Exp $
  * Created on 09-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,32 +8,34 @@
  * with this distribution in the LICENSE.txt file.  
  *
 **/
-package org.astrogrid.desktop.service;
+package org.astrogrid.desktop.service.conversion;
 
-import org.astrogrid.desktop.service.conversion.DefaultHtmlTransformer;
-import org.astrogrid.desktop.service.conversion.DefaultPlainTransformer;
-import org.astrogrid.desktop.service.conversion.DefaultXmlTransformer;
+import org.astrogrid.desktop.service.annotation.ResultTransformerSet;
+import org.astrogrid.desktop.service.conversion.transformers.DefaultHtmlTransformer;
+import org.astrogrid.desktop.service.conversion.transformers.DefaultPlainTransformer;
+import org.astrogrid.desktop.service.conversion.transformers.DefaultXmlTransformer;
+import org.astrogrid.desktop.service.conversion.transformers.TypeStructureTransformer;
 
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.functors.NOPTransformer;
 
-/** Bean that contains a set of transformers to convert a result into a variety of different forms.
+/** 
  *  - default - configured to return strings.
  * @author Noel Winstanley nw@jb.man.ac.uk 09-Feb-2005
  *
  */
-public class ResultTransformerSet {
+public class StringResultTransformerSet implements ResultTransformerSet {
 
     /** Construct a new TransformerSet
      * 
      */
-    public ResultTransformerSet() {
+    protected StringResultTransformerSet() {
         super();
         this.htmlTransformer = DefaultHtmlTransformer.getInstance();
         this.plainTransformer = DefaultPlainTransformer.getInstance();
         this.xmlTransformer = DefaultXmlTransformer.getInstance();
-        this.xmlrpcTransformer = NOPTransformer.getInstance();
-        this.xmlrpcType = "string";        
+        this.xmlrpcTransformer = TypeStructureTransformer.getInstance();
+        this.xmlrpcType = STRING;        
     }
 
     /** simple type of this value used in xmlrpc - one of  'int', 'boolean' , 'string', 'double', 'dateTime.iso8601', 'base64', 'struct', 'array' */
@@ -51,7 +53,7 @@ public class ResultTransformerSet {
         return this.htmlTransformer;
     }
 
-    public void setHtmlTransformer(Transformer htmlTransformer) {
+    protected void setHtmlTransformer(Transformer htmlTransformer) {
         this.htmlTransformer = htmlTransformer;
     }
 
@@ -59,7 +61,7 @@ public class ResultTransformerSet {
         return this.plainTransformer;
     }
 
-    public void setPlainTransformer(Transformer plainTransformer) {
+    protected void setPlainTransformer(Transformer plainTransformer) {
         this.plainTransformer = plainTransformer;
     }
 
@@ -67,7 +69,7 @@ public class ResultTransformerSet {
         return this.xmlrpcTransformer;
     }
 
-    public void setXmlrpcTransformer(Transformer xmlrpcTransformer) {
+    protected void setXmlrpcTransformer(Transformer xmlrpcTransformer) {
         this.xmlrpcTransformer = xmlrpcTransformer;
     }
 
@@ -75,7 +77,7 @@ public class ResultTransformerSet {
         return this.xmlTransformer;
     }
 
-    public void setXmlTransformer(Transformer xmlTransformer) {
+    protected void setXmlTransformer(Transformer xmlTransformer) {
         this.xmlTransformer = xmlTransformer;
     }
 
@@ -83,15 +85,24 @@ public class ResultTransformerSet {
         return this.xmlrpcType;
     }
 
-    public void setXmlrpcType(String xmlrpcType) {
+    protected void setXmlrpcType(String xmlrpcType) {
         this.xmlrpcType = xmlrpcType;
     }
+    
+    public static ResultTransformerSet getInstance() {
+        return theInstance;
+    }
+    
+    private static ResultTransformerSet theInstance = new StringResultTransformerSet(); 
 
 }
 
 
 /* 
-$Log: ResultTransformerSet.java,v $
+$Log: StringResultTransformerSet.java,v $
+Revision 1.1  2005/02/22 01:10:31  nw
+enough of a prototype here to do a show-n-tell on.
+
 Revision 1.1  2005/02/21 11:25:07  nw
 first add to cvs
  

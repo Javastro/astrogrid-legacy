@@ -1,4 +1,4 @@
-/*$Id: Services.java,v 1.1 2005/02/21 11:25:07 nw Exp $
+/*$Id: Services.java,v 1.2 2005/02/22 01:10:31 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,8 @@
 **/
 package org.astrogrid.desktop.service;
 
+import org.astrogrid.desktop.service.annotation.MetadataHelper;
+import org.astrogrid.desktop.service.annotation.ServiceDoc;
 import org.astrogrid.desktop.ui.BrowserControl;
 import org.astrogrid.desktop.ui.Desktop;
 import org.astrogrid.desktop.ui.WebstartBrowserControl;
@@ -90,7 +92,7 @@ public class Services extends DefaultPicoContainer {
     /** populate container with services */
     protected final void registerServices() {
         // add new services to this array.
-        Class[] services = new Class[]{Applications.class, Community.class,Configuration.class,Jobs.class};
+        Class[] services = new Class[]{Applications.class, Community.class,Configuration.class,Jobs.class,Registry.class,Vospace.class};
         
         for (int i = 0; i < services.length; i++) {
             ServiceDoc doc = MetadataHelper.getServiceDocForClass(services[i]);
@@ -106,6 +108,9 @@ public class Services extends DefaultPicoContainer {
 
 /* 
 $Log: Services.java,v $
+Revision 1.2  2005/02/22 01:10:31  nw
+enough of a prototype here to do a show-n-tell on.
+
 Revision 1.1  2005/02/21 11:25:07  nw
 first add to cvs
  

@@ -1,4 +1,4 @@
-/*$Id: HtmlServlet.java,v 1.1 2005/02/21 11:25:07 nw Exp $
+/*$Id: HtmlServlet.java,v 1.2 2005/02/22 01:10:31 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,11 +11,11 @@
 package org.astrogrid.desktop.protocol.http;
 
 import org.astrogrid.desktop.service.Configuration;
-import org.astrogrid.desktop.service.MetadataHelper;
-import org.astrogrid.desktop.service.MethodDoc;
-import org.astrogrid.desktop.service.ParamDoc;
-import org.astrogrid.desktop.service.ReturnDoc;
-import org.astrogrid.desktop.service.ServiceDoc;
+import org.astrogrid.desktop.service.annotation.MetadataHelper;
+import org.astrogrid.desktop.service.annotation.MethodDoc;
+import org.astrogrid.desktop.service.annotation.ParamDoc;
+import org.astrogrid.desktop.service.annotation.ReturnDoc;
+import org.astrogrid.desktop.service.annotation.ServiceDoc;
 
 import org.apache.commons.beanutils.MethodUtils;
 
@@ -32,7 +32,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
+/** servlet that exposes servlets over plain http/html
  * @author Noel Winstanley nw@jb.man.ac.uk 31-Jan-2005
  *
  */
@@ -92,26 +92,30 @@ public class HtmlServlet extends AbstractReflectionServlet {
             out.println("<br/>");
         }        
         out.println(returnDoc);
-
         
-        out.println("<hr/><h2>Call HTML endpoint</h2><form name='call' method='POST' action='./html'><table>");
-        for (Iterator params = paramDocs.iterator(); params.hasNext(); ) {
-            out.println("<tr><td>");
-            ParamDoc p  = (ParamDoc)params.next();
-            out.println(p.getName());
-            out.println("</td><td>");
-            out.println("<input type='text' name='" +p.getName() + "'>");
-            out.println("</td></tr>");
+        for (Iterator i = resultTypes.iterator(); i.hasNext(); ) {
+            String method = i.next().toString();
+            out.println("<hr/><h2>Call " + method +" endpoint</h2>");
+            out.println("<form name='call' method='POST' action='./" + method+ "'><table>");
+            for (Iterator params = paramDocs.iterator(); params.hasNext(); ) {
+                out.println("<tr><td>");
+                ParamDoc p  = (ParamDoc)params.next();
+                out.println(p.getName());
+                out.println("</td><td>");
+                out.println("<input type='text' name='" +p.getName() + "'>");
+                out.println("</td></tr>");
+            }
+            out.println("</table><input type='submit' value='Call'></form>");
         }
-        out.println("</table><input type='submit' value='Call'></form>");
-        
+        /*
         out.println("<hr/><h2>Endpoints</h2><table>");
         out.println("<tr><th>Endpoint</th><th>POST?</th><th>GET?</th></td>");
         out.println("<tr><td><a href='./html'>html</a></td><td>Y</td><td>Y</td></tr>");
         out.println("<tr><td><a href='./plain'>plain</a></td><td>Y</td><td>Y</td></tr>");
         out.println("<tr><td><a href='./xml'>xml</a></td><td>Y</td><td>Y</td></tr>");
         out.println("<tr><td><a href='../../xmlrpc'>xmlrpc</a></td><td>N</td><td>Y</td></tr>");        
-        out.println("</table>");                
+        out.println("</table>");
+        */                
         footer(out);
     }
     
@@ -120,7 +124,9 @@ public class HtmlServlet extends AbstractReflectionServlet {
     static {
         resultTypes.add("html");
         resultTypes.add("plain");
+        /** not supported for now
         resultTypes.add("xml");
+        */
     }
     
 
@@ -193,6 +199,9 @@ public class HtmlServlet extends AbstractReflectionServlet {
 
 /* 
 $Log: HtmlServlet.java,v $
+Revision 1.2  2005/02/22 01:10:31  nw
+enough of a prototype here to do a show-n-tell on.
+
 Revision 1.1  2005/02/21 11:25:07  nw
 first add to cvs
  

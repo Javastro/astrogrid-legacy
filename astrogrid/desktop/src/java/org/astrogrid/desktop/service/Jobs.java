@@ -1,4 +1,4 @@
-/*$Id: Jobs.java,v 1.1 2005/02/21 11:25:07 nw Exp $
+/*$Id: Jobs.java,v 1.2 2005/02/22 01:10:31 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,8 +10,11 @@
 **/
 package org.astrogrid.desktop.service;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import org.astrogrid.community.beans.v1.Account;
-import org.astrogrid.desktop.service.conversion.CastorBUConvertor;
+import org.astrogrid.desktop.service.conversion.CastorBeanUtilsConvertor;
 import org.astrogrid.portal.workflow.intf.JobExecutionService;
 import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
 import org.astrogrid.workflow.beans.v1.Workflow;
@@ -19,19 +22,25 @@ import org.astrogrid.workflow.beans.v1.execution.JobURN;
 import org.astrogrid.workflow.beans.v1.execution.WorkflowSummaryType;
 
 import org.apache.commons.beanutils.ConvertUtils;
-import org.apache.commons.beanutils.Converter;
+
+import org.astrogrid.desktop.service.conversion.*;
+import org.astrogrid.desktop.service.annotation.*;
 
 /** Job management service.
  * @author Noel Winstanley nw@jb.man.ac.uk 02-Feb-2005
- *@@ServiceDoc("jobs","manage your submitted jobs - still work in progress")
+ *@@ServiceDoc("jobs","submit and manage workflows")
  */
 public class Jobs {
+    /**
+     * Commons Logger for this class
+     */
+    private static final Log logger = LogFactory.getLog(Jobs.class);
 
     // register parameter converters here - link them into the default infrastructure,
     // then no need to annotate each method separately. :)
     static {
-        ConvertUtils.register(CastorBUConvertor.getInstance(),Workflow.class);
-        ConvertUtils.register(CastorBUConvertor.getInstance(),JobURN.class);
+        ConvertUtils.register(CastorBeanUtilsConvertor.getInstance(),Workflow.class);
+        ConvertUtils.register(CastorBeanUtilsConvertor.getInstance(),JobURN.class);
 
     }
     
@@ -52,7 +61,7 @@ public class Jobs {
         return community.getEnv().getAccount();
     }
     /**@@MethodDoc("list","list my jobs")
-     * @@.return ReturnDoc("List of job identifiers",xmlrpcType="array")
+     * @@.return ReturnDoc("List of job identifiers",rts=ArrayResultTransformerSet.getInstance())
      * @todo add an axmlrpc convertor for this type.
      * @throws WorkflowInterfaceException
      */
@@ -66,7 +75,7 @@ public class Jobs {
     }
     
     /**@@MethodDoc("fullList","list summaries for each job")
-     * @@.return ReturnDoc("List of workflow summaries",xmlrpcType="array")
+     * @@.return ReturnDoc("List of workflow summaries",rts=ArrayResultTransformerSet.getInstance())
      * @todo this method won't work at the moment - as underlying method doesn't return full info
      */
     public WorkflowSummaryType[] fullList() throws WorkflowInterfaceException {
@@ -75,7 +84,7 @@ public class Jobs {
     
     
     /** @@MethodDoc("getJob","Retreive a workflow transcript")
-     * @@.return ReturnDoc("A workflow document")
+     * @@.return ReturnDoc("A workflow document",rts=WorkflowResultTransformerSet.getInstance())
      * @@.jobURN ParamDoc("jobURN","identifier to retrive workflow for");
 
      */
@@ -83,17 +92,24 @@ public class Jobs {
         return getJes().readJob(jobURN);
     }
     
-    /**@@MethodDoc("getJobSummary","Retreive summary for a job")
-     * 
-     * @param jobURN
-     * @return
+    /**@throws WorkflowInterfaceException
+     * @@MethodDoc("getJobSummary","Retreive summary for a job")
+     * @@.return ReturnDoc("A summary of the jobs progress")
+     * @@.jobURN ParamDoc("jobURN","identifier to retreive workflow for");
      */
-    public String getJobSummary(JobURN jobURN) {
-        return "not implemented";
+    public String getJobSummary(JobURN jobURN) throws WorkflowInterfaceException {
+        WorkflowSummaryType[] summs =  getJes().listJobs(getAccount());
+        for (int i = 0; i < summs.length; i++) {
+            if (summs[i].getJobId().equals(jobURN)) {
+                return summs[i].getStatus().toString();
+            }
+        }
+        return "not found";
+        
     }
     
     /** @@MethodDoc("cancelJob","cancel a running job")
-     * @.return ReturnDoc("true if successful",xmlrpcType="boolean")
+     * @.return ReturnDoc("true if successful",rts=BooleanResultTransformerSet.getInstance())
      * @.jobURN ParamDoc("jobURN","identifier of workflow to cancel")
      * @param jobURN
      * @return
@@ -105,7 +121,7 @@ public class Jobs {
     }
     
     /** @@MethodDoc("deleteJob","delete a job")
-     * @.return ReturnDoc("true if successful",xmlrpcType="boolean")
+     * @.return ReturnDoc("true if successful",rts=BooleanResultTransformerSet.getInstance())
      * @.jobURN ParamDoc("jobURN","identifier of workflow to delete")
      * @param jobURN
      * @return
@@ -132,6 +148,9 @@ public class Jobs {
 
 /* 
 $Log: Jobs.java,v $
+Revision 1.2  2005/02/22 01:10:31  nw
+enough of a prototype here to do a show-n-tell on.
+
 Revision 1.1  2005/02/21 11:25:07  nw
 first add to cvs
  

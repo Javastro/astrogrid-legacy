@@ -1,4 +1,4 @@
-/*$Id: Community.java,v 1.1 2005/02/21 11:25:07 nw Exp $
+/*$Id: Community.java,v 1.2 2005/02/22 01:10:31 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,18 +10,20 @@
 **/
 package org.astrogrid.desktop.service;
 
-import org.astrogrid.community.common.exception.CommunityException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import org.astrogrid.community.common.exception.CommunityIdentifierException;
 import org.astrogrid.community.common.exception.CommunitySecurityException;
 import org.astrogrid.community.common.exception.CommunityServiceException;
 import org.astrogrid.community.resolver.exception.CommunityResolverException;
 import org.astrogrid.desktop.ui.BrowserControl;
 import org.astrogrid.desktop.ui.LoginDialogue;
-import org.astrogrid.desktop.service.conversion.*;
 import org.astrogrid.registry.RegistryException;
-import org.astrogrid.store.Ivorn;
 import org.astrogrid.ui.script.LoginFactory;
 import org.astrogrid.ui.script.ScriptEnvironment;
+import org.astrogrid.desktop.service.conversion.*;
+import org.astrogrid.desktop.service.annotation.*;
 
 import java.util.Observable;
 
@@ -30,6 +32,10 @@ import java.util.Observable;
  *@@ServiceDoc("community","user management and authentication")
  */
 public class Community extends Observable {
+    /**
+     * Commons Logger for this class
+     */
+    private static final Log logger = LogFactory.getLog(Community.class);
 
     /** Construct a new Community
      * 
@@ -47,7 +53,7 @@ public class Community extends Observable {
      * @throws CommunityServiceException
      * @throws CommunityResolverException
      * @@MethodDoc("login","login to astrogrid");
-       @@.return ReturnDoc("Success code",xmlrpcType="boolean")
+       @@.return ReturnDoc("Success code",rts=BooleanResultTransformerSet.getInstance())
        @@.username ParamDoc("username","user to log in as")
        @@.password ParamDoc("password","Password for this user")
        @@.community ParamDoc("community","Community the user belongs to")
@@ -60,7 +66,7 @@ public class Community extends Observable {
     }
     
     /** @@MethodDoc("logout","logout of astrogrid")
-     * @@.return ReturnDoc("Success code",xmlrpcType="boolean")     
+       @@.return ReturnDoc("Success code",rts=BooleanResultTransformerSet.getInstance())
      */
     public boolean logout() {
         env = null;
@@ -120,6 +126,9 @@ public class Community extends Observable {
 
 /* 
 $Log: Community.java,v $
+Revision 1.2  2005/02/22 01:10:31  nw
+enough of a prototype here to do a show-n-tell on.
+
 Revision 1.1  2005/02/21 11:25:07  nw
 first add to cvs
  

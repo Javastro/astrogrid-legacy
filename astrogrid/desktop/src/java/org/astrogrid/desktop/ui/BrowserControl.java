@@ -1,4 +1,4 @@
-/*$Id: BrowserControl.java,v 1.1 2005/02/21 11:25:07 nw Exp $
+/*$Id: BrowserControl.java,v 1.2 2005/02/22 01:10:31 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,6 +13,8 @@ package org.astrogrid.desktop.ui;
 import java.net.URL;
 
 /** interface services have into the browser 
+ * @todo implement a browser control that fires off http://jrex.mozdev.org/ - java implementaiton of mozilla.
+ *  - launch this as an optional plugin in jnlp.
  * @author Noel Winstanley nw@jb.man.ac.uk 01-Feb-2005
  *
  */
@@ -28,6 +30,9 @@ public interface BrowserControl {
 
 /* 
 $Log: BrowserControl.java,v $
+Revision 1.2  2005/02/22 01:10:31  nw
+enough of a prototype here to do a show-n-tell on.
+
 Revision 1.1  2005/02/21 11:25:07  nw
 first add to cvs
  

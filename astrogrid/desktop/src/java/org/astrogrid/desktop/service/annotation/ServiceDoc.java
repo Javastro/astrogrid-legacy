@@ -1,4 +1,4 @@
-/*$Id: ServiceDoc.java,v 1.1 2005/02/21 11:25:07 nw Exp $
+/*$Id: ServiceDoc.java,v 1.1 2005/02/22 01:10:31 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,11 +8,11 @@
  * with this distribution in the LICENSE.txt file.  
  *
 **/
-package org.astrogrid.desktop.service;
-
+package org.astrogrid.desktop.service.annotation;
+import org.apache.commons.attributes.Target;
 /** Documentation annotation for a service..
  * @author Noel Winstanley nw@jb.man.ac.uk 31-Jan-2005
- *
+ *@@Target(Target.CLASS)
  */
 public class ServiceDoc {
 
@@ -55,6 +55,9 @@ public class ServiceDoc {
 
 /* 
 $Log: ServiceDoc.java,v $
+Revision 1.1  2005/02/22 01:10:31  nw
+enough of a prototype here to do a show-n-tell on.
+
 Revision 1.1  2005/02/21 11:25:07  nw
 first add to cvs
  

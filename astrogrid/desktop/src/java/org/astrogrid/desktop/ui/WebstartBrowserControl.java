@@ -1,4 +1,4 @@
-/*$Id: WebstartBrowserControl.java,v 1.1 2005/02/21 11:25:07 nw Exp $
+/*$Id: WebstartBrowserControl.java,v 1.2 2005/02/22 01:10:31 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,7 +15,7 @@ import org.apache.commons.logging.LogFactory;
 
 import org.astrogrid.desktop.DesktopServer;
 import org.astrogrid.desktop.UrlRoot;
-import org.astrogrid.desktop.service.MetadataHelper;
+import org.astrogrid.desktop.service.annotation.MetadataHelper;
 
 import org.apache.commons.beanutils.MethodUtils;
 
@@ -26,7 +26,7 @@ import java.net.URL;
  * @author Noel Winstanley nw@jb.man.ac.uk 01-Feb-2005
  *
  */
-public class WebstartBrowserControl implements BrowserControl {
+public class WebstartBrowserControl extends FallbackBrowserControl implements BrowserControl {
     /**
      * Commons Logger for this class
      */
@@ -37,7 +37,7 @@ public class WebstartBrowserControl implements BrowserControl {
      * 
      */
     public WebstartBrowserControl(UrlRoot root)  {
-        this.root = root;
+        super(root);
         try {
         Class managerClass = Class.forName("javax.jnlp.ServiceManager");
         if (managerClass != null) {
@@ -51,15 +51,8 @@ public class WebstartBrowserControl implements BrowserControl {
         
     }
     protected Object basicService;
-    protected final UrlRoot root;
 
-    /**
-     * @see org.astrogrid.desktop.ui.BrowserControl#openURL(java.lang.String)
-     */
-    public void openURL(String stringUrl) throws Exception{
-        URL url = new URL(stringUrl);
-        openURL(url);
-    }
+
 
     /**
      * @see org.astrogrid.desktop.ui.BrowserControl#openURL(java.net.URL)
@@ -67,24 +60,22 @@ public class WebstartBrowserControl implements BrowserControl {
     public void openURL(URL url) throws Exception {
         if (basicService == null) {
             logger.error("Can't open URL - no basic jnlp service");
+            super.openURL(url);
         } else {
             MethodUtils.invokeMethod(basicService,"showDocument",url);
         }
     }
 
-    /**
-     * @see org.astrogrid.desktop.ui.BrowserControl#openRelative(java.lang.String)
-     */
-    public void openRelative(String relativeURL) throws Exception {
-        URL url = new URL(root.getUrlRoot()+ relativeURL);
-        openURL(url);
-    }
+
 
 }
 
 
 /* 
 $Log: WebstartBrowserControl.java,v $
+Revision 1.2  2005/02/22 01:10:31  nw
+enough of a prototype here to do a show-n-tell on.
+
 Revision 1.1  2005/02/21 11:25:07  nw
 first add to cvs
  

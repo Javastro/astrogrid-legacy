@@ -1,4 +1,4 @@
-/*$Id: AbstractReflectionServlet.java,v 1.1 2005/02/21 11:25:07 nw Exp $
+/*$Id: AbstractReflectionServlet.java,v 1.2 2005/02/22 01:10:31 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Abstract servlet class for working with services.
+/** Abstract servlet class for exposing services.
  * @author Noel Winstanley nw@jb.man.ac.uk 31-Jan-2005
  *  
  */
@@ -122,6 +122,9 @@ public abstract class AbstractReflectionServlet extends HttpServlet {
 
 /*
  * $Log: AbstractReflectionServlet.java,v $
+ * Revision 1.2  2005/02/22 01:10:31  nw
+ * enough of a prototype here to do a show-n-tell on.
+ *
  * Revision 1.1  2005/02/21 11:25:07  nw
  * first add to cvs
  *

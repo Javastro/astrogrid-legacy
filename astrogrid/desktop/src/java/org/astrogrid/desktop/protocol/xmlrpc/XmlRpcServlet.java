@@ -1,4 +1,4 @@
-/*$Id: XmlRpcServlet.java,v 1.1 2005/02/21 11:25:07 nw Exp $
+/*$Id: XmlRpcServlet.java,v 1.2 2005/02/22 01:10:31 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,15 +10,18 @@
 **/
 package org.astrogrid.desktop.protocol.xmlrpc;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import org.astrogrid.desktop.DesktopServer;
 import org.astrogrid.desktop.Main;
 import org.astrogrid.desktop.service.Community;
-import org.astrogrid.desktop.service.MetadataHelper;
-import org.astrogrid.desktop.service.MethodDoc;
-import org.astrogrid.desktop.service.ParamDoc;
-import org.astrogrid.desktop.service.ReturnDoc;
-import org.astrogrid.desktop.service.ServiceDoc;
 import org.astrogrid.desktop.service.Services;
+import org.astrogrid.desktop.service.annotation.MetadataHelper;
+import org.astrogrid.desktop.service.annotation.MethodDoc;
+import org.astrogrid.desktop.service.annotation.ParamDoc;
+import org.astrogrid.desktop.service.annotation.ReturnDoc;
+import org.astrogrid.desktop.service.annotation.ServiceDoc;
 
 import org.apache.commons.beanutils.MethodUtils;
 import org.apache.xmlrpc.XmlRpcException;
@@ -32,6 +35,7 @@ import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -41,10 +45,15 @@ import javax.servlet.http.HttpServletResponse;
 
 /** Implementation of full-features xmlrpc server over the Service objects.
  *  - uses annotations to publish methods, and implement 'system' methods.
+ * @todo future - look at other xmlrpc implementations..
  * @author Noel Winstanley nw@jb.man.ac.uk 31-Jan-2005
  *
  */
 public class XmlRpcServlet extends HttpServlet {
+    /**
+     * Commons Logger for this class
+     */
+    private static final Log logger = LogFactory.getLog(XmlRpcServlet.class);
 
     /** process an xmlrpc call */
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -95,6 +104,11 @@ public class XmlRpcServlet extends HttpServlet {
     
     /** class that exposes one of our annotated services as a xml service */
     public class ServiceXmlRpcHandler implements XmlRpcHandler {
+        /**
+         * Commons Logger for this class
+         */
+        private final Log logger = LogFactory.getLog(ServiceXmlRpcHandler.class);
+
         public ServiceXmlRpcHandler(Object service) {
             this.service = service;
             sd = MetadataHelper.getServiceDoc(service);            
@@ -106,7 +120,7 @@ public class XmlRpcServlet extends HttpServlet {
          * @see org.apache.xmlrpc.XmlRpcHandler#execute(java.lang.String, java.util.Vector)
          */
         public Object execute(String method, Vector inputArgs) throws Exception {
-
+            /** @todo make this demand-driven instead.. */
             if (! (method.equalsIgnoreCase("community.login") || method.startsWith("configuration."))) {
                 community.loginIfNecessary();
             }            
@@ -128,13 +142,24 @@ public class XmlRpcServlet extends HttpServlet {
                 args[i] = ( (ParamDoc) pds.get(i)).getConverter().convert(parameterTypes[i],inputArgs.get(i));
             }
             // call method
-            Object result = MethodUtils.invokeMethod(service,method,args);
-            return rd.getRts().getXmlrpcTransformer().transform(result);
+            try {
+                Object result = MethodUtils.invokeMethod(service,method,args);
+                return rd.getRts().getXmlrpcTransformer().transform(result);                
+            } catch (Exception t) {
+                t.printStackTrace();
+                logger.warn(t);
+               throw t;
+            }
         }
     }
    
     /** implementation of the system-introspection service */
     public static class SystemXmlRpcHandler implements XmlRpcHandler {
+        /**
+         * Commons Logger for this class
+         */
+        private static final Log logger = LogFactory.getLog(SystemXmlRpcHandler.class);
+
         public SystemXmlRpcHandler(Services services) {
             this.services = services;
         }
@@ -257,6 +282,9 @@ public class XmlRpcServlet extends HttpServlet {
 
 /* 
 $Log: XmlRpcServlet.java,v $
+Revision 1.2  2005/02/22 01:10:31  nw
+enough of a prototype here to do a show-n-tell on.
+
 Revision 1.1  2005/02/21 11:25:07  nw
 first add to cvs
  

@@ -1,4 +1,4 @@
-/*$Id: DesktopServer.java,v 1.1 2005/02/21 11:25:07 nw Exp $
+/*$Id: DesktopServer.java,v 1.2 2005/02/22 01:10:31 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,8 +23,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Random;
 
 /** Factory to create a webserver, listening to a random port, with a hashed key path.
+ * @todo find a spare port
  * @author Noel Winstanley nw@jb.man.ac.uk 31-Jan-2005
  *
  */
@@ -52,9 +54,10 @@ public class DesktopServer extends Server implements UrlRoot{
     private void findSparePort() {
         port= 8050;
     }
-    //@todo implement
+    /* generates a random string */
     private void genKey() {
-        key= "wibble";
+        Random r = new Random();
+        key = Long.toString(Math.abs(r.nextLong()),16);        
     }
     
     
@@ -84,6 +87,9 @@ public class DesktopServer extends Server implements UrlRoot{
 
 /* 
 $Log: DesktopServer.java,v $
+Revision 1.2  2005/02/22 01:10:31  nw
+enough of a prototype here to do a show-n-tell on.
+
 Revision 1.1  2005/02/21 11:25:07  nw
 first add to cvs
  

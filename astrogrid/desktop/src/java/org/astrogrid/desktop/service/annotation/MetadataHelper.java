@@ -1,4 +1,4 @@
-/*$Id: MetadataHelper.java,v 1.1 2005/02/21 11:25:07 nw Exp $
+/*$Id: MetadataHelper.java,v 1.1 2005/02/22 01:10:31 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,7 +8,7 @@
  * with this distribution in the LICENSE.txt file.  
  *
 **/
-package org.astrogrid.desktop.service;
+package org.astrogrid.desktop.service.annotation;
 
 import org.apache.commons.attributes.Attributes;
 
@@ -18,7 +18,7 @@ import java.util.List;
 
 /** Helpler methods for working with metadata.
  * @author Noel Winstanley nw@jb.man.ac.uk 31-Jan-2005
- *
+ * @todo move all metadata classes to a separate package, once have found out how to set import path for annotations.
  */
 public class MetadataHelper {
 
@@ -92,6 +92,9 @@ public class MetadataHelper {
 
 /* 
 $Log: MetadataHelper.java,v $
+Revision 1.1  2005/02/22 01:10:31  nw
+enough of a prototype here to do a show-n-tell on.
+
 Revision 1.1  2005/02/21 11:25:07  nw
 first add to cvs
  

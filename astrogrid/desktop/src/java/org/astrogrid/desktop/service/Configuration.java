@@ -1,4 +1,4 @@
-/*$Id: Configuration.java,v 1.1 2005/02/21 11:25:07 nw Exp $
+/*$Id: Configuration.java,v 1.2 2005/02/22 01:10:31 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,25 +10,23 @@
 **/
 package org.astrogrid.desktop.service;
 
+import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.desktop.ui.Desktop;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import org.astrogrid.AstroGridException;
-import org.astrogrid.config.Config;
-import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.desktop.service.conversion.*;
-import org.astrogrid.desktop.ui.Desktop;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.prefs.BackingStoreException;
-import java.util.prefs.NodeChangeEvent;
-import java.util.prefs.NodeChangeListener;
 import java.util.prefs.PreferenceChangeEvent;
 import java.util.prefs.PreferenceChangeListener;
 import java.util.prefs.Preferences;
+
+import org.astrogrid.desktop.service.conversion.*;
+import org.astrogrid.desktop.service.annotation.*;
 
 /** Implementation of a configuration service - backed by java.util.prefs.
  * and keeps astrogrid's configuration system in-synch.
@@ -84,7 +82,7 @@ public class Configuration implements PreferenceChangeListener {
     protected final Preferences userPrefs;
     
     /**@@MethodDoc("setKey","set a configuration key")
-     @@.return ReturnDoc("Success code",xmlrpcType="boolean")
+     @@.return ReturnDoc("Success code",rts=BooleanResultTransformerSet.getInstance())
      @@.key ParamDoc("key","Key to set");
      @@.value ParamDoc("value","Value to set to")
      */
@@ -102,14 +100,14 @@ public class Configuration implements PreferenceChangeListener {
     }
     
     /**@@MethodDoc("listKeys","list configutation keys")
-     * @@.return ReturnDoc("array of keys",xmlrpcType="array",xmlrpcTransformer=ToVectorTransformer.getInstance())
-     */
+     * @@.return ReturnDoc("array of keys",rts=ArrayResultTransformerSet.getInstance())
+     * */
     public String[] listKeys() throws BackingStoreException {
         return userPrefs.keys();
     }
     
     /** @@MethodDoc("list","list configuration entries")
-     * @@.return ReturnDoc("map of key, value pairs",xmlrpcType="struct",xmlrpcTransformer=ToHashtableTransformer.getInstance())
+     * @@.return ReturnDoc("map of key, value pairs",rts=StructResultTransformerSet.getInstance())
      * @return
      * @throws BackingStoreException
      */
@@ -152,6 +150,9 @@ public class Configuration implements PreferenceChangeListener {
 
 /* 
 $Log: Configuration.java,v $
+Revision 1.2  2005/02/22 01:10:31  nw
+enough of a prototype here to do a show-n-tell on.
+
 Revision 1.1  2005/02/21 11:25:07  nw
 first add to cvs
  

@@ -1,4 +1,4 @@
-/*$Id: CastorBUConvertor.java,v 1.1 2005/02/21 11:25:07 nw Exp $
+/*$Id: CastorBeanUtilsConvertor.java,v 1.1 2005/02/22 01:10:31 nw Exp $
  * Created on 03-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,7 +23,7 @@ import java.io.StringReader;
  * @author Noel Winstanley nw@jb.man.ac.uk 03-Feb-2005
  *
  */
-public final class CastorBUConvertor implements Converter {
+public final class CastorBeanUtilsConvertor implements Converter {
     public Object convert(Class arg0, Object arg1) {
         
         try {
@@ -36,14 +36,17 @@ public final class CastorBUConvertor implements Converter {
         
     }
     
-    private static final Converter theInstance = new CastorBUConvertor();
+    private static final Converter theInstance = new CastorBeanUtilsConvertor();
     public static final Converter getInstance() {
         return theInstance;
     }
 }
 
 /* 
-$Log: CastorBUConvertor.java,v $
+$Log: CastorBeanUtilsConvertor.java,v $
+Revision 1.1  2005/02/22 01:10:31  nw
+enough of a prototype here to do a show-n-tell on.
+
 Revision 1.1  2005/02/21 11:25:07  nw
 first add to cvs
  

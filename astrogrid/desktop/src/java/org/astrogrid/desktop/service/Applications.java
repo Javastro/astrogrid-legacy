@@ -1,4 +1,4 @@
-/*$Id: Applications.java,v 1.1 2005/02/21 11:25:07 nw Exp $
+/*$Id: Applications.java,v 1.2 2005/02/22 01:10:31 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,29 +10,31 @@
 **/
 package org.astrogrid.desktop.service;
 
+import org.astrogrid.applications.beans.v1.Interface;
+import org.astrogrid.applications.beans.v1.ParameterRef;
+import org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition;
+import org.astrogrid.desktop.service.conversion.CastorBeanUtilsConvertor;
 import org.astrogrid.portal.workflow.intf.ApplicationDescription;
 import org.astrogrid.portal.workflow.intf.ApplicationDescriptionSummary;
 import org.astrogrid.portal.workflow.intf.ApplicationRegistry;
 import org.astrogrid.portal.workflow.intf.ToolValidationException;
 import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
 import org.astrogrid.workflow.beans.v1.Tool;
-import org.astrogrid.applications.beans.v1.Interface;
-import org.astrogrid.applications.beans.v1.ParameterRef;
-import org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition;
-import org.astrogrid.desktop.service.conversion.*;
 
-import org.apache.commons.beanutils.ConvertUtils;
-import org.apache.commons.beanutils.Converter;
-import org.apache.commons.collections.functors.NOPTransformer;
+import org.astrogrid.desktop.service.conversion.*;
+import org.astrogrid.desktop.service.annotation.*;
 
 import org.apache.axis.utils.XMLUtils;
+import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.commons.beanutils.Converter;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -43,10 +45,14 @@ import java.net.URL;
  *and dispatch tool document to a server.
  */
 public class Applications {
+    /**
+     * Commons Logger for this class
+     */
+    private static final Log logger = LogFactory.getLog(Applications.class);
 
     // register parameter convertors.
     static {
-        ConvertUtils.register(CastorBUConvertor.getInstance(),Tool.class);
+        ConvertUtils.register(CastorBeanUtilsConvertor.getInstance(),Tool.class);
         ConvertUtils.register(new Converter() {
 
             public Object convert(Class arg0, Object arg1) {
@@ -72,7 +78,7 @@ public class Applications {
 
     /** @throws WorkflowInterfaceException
      * @@MethodDoc("list","list names of registered applications")
-     * @@.return ReturnDoc("List of application names",xmlrpcType="array")
+     * @@.return ReturnDoc("List of application names",rts = ArrayResultTransformerSet.getInstance())
      */
     public String[] list() throws WorkflowInterfaceException {    
 
@@ -91,8 +97,7 @@ public class Applications {
 
     /** @throws WorkflowInterfaceException
      * @@MethodDoc("fullList","list info of each  registered applications")
-     * @@.return ReturnDoc("List of application names",xmlrpcType="array")
-     * @todo add an xmlrpc convertor to this type.
+     * @@.return ReturnDoc("List of application names",rts = ArrayResultTransformerSet.getInstance())
      */
     public ApplicationDescriptionSummary[] fullList() throws WorkflowInterfaceException {       
         return getAppReg().listUIApplications();
@@ -100,7 +105,7 @@ public class Applications {
     }
     
     /** @@MethodDoc("getRegEntry","Return full registry entry for an application")
-     * @@.return ReturnDoc("XML of registry entry",xmlTransformer=NOPTransformer.getInstance())
+     * @@.return ReturnDoc("XML of registry entry",rts = XmlDocumentResultTransformerSet.getInstance())
      * @@.applicationName ParamDoc("applicationName","registry key of the application to query for");
      * @param applicationName
      * @throws WorkflowInterfaceException
@@ -129,20 +134,21 @@ public class Applications {
          BaseParameterDefinition[] params = descr.getParameters().getParameter();
          for(int i = 0; i < params.length; i++) {
             BaseParameterDefinition param = params[i];
-            result.append("Parameter ")
+            result.append("\nParameter ")
+                .append("\n")
                 .append(param.getUI_Name())
                 .append("\n")
-                .append(param.getUI_Description().getContent())
-                .append("\n");
+                .append(param.getUI_Description().getContent());
+
          
-         if (param.getName() != null) result.append("\n\t").append("name :").append(param.getName());
-         if (param.getType() != null) result.append("\n\t").append("type :").append(param.getType());
-         if (param.getSubType() != null) result.append("\n\t").append("subtype :").append(param.getSubType());
-         if (param.getUnits() != null) result.append("\n\t").append("units :").append(param.getUnits());
-         if (param.getAcceptEncodings() != null) result.append("\n\t").append("accept encodings :").append(param.getAcceptEncodings());
-         if (param.getDefaultValue() != null) result.append("\n\t").append("default value :").append(param.getDefaultValue());
-         if (param.getUCD() != null) result.append("\n\t").append("UCD :").append(param.getUCD());  
-         if (param.getOptionList() != null) result.append("\n\t").append("option list :").append(param.getOptionList());         
+         if (param.getName() != null && param.getName().trim().length() > 0) result.append("\n\t").append("name :").append(param.getName());
+         if (param.getType() != null ) result.append("\n\t").append("type :").append(param.getType());
+         if (param.getSubType() != null && param.getSubType().trim().length() > 0) result.append("\n\t").append("subtype :").append(param.getSubType());
+         if (param.getUnits() != null && param.getUnits().trim().length() > 0) result.append("\n\t").append("units :").append(param.getUnits());
+         if (param.getAcceptEncodings() != null && param.getAcceptEncodings().trim().length() > 0) result.append("\n\t").append("accept encodings :").append(param.getAcceptEncodings());
+         if (param.getDefaultValue() != null && param.getDefaultValue().trim().length() > 0) result.append("\n\t").append("default value :").append(param.getDefaultValue());
+         if (param.getUCD() != null && param.getUCD().trim().length() > 0) result.append("\n\t").append("UCD :").append(param.getUCD());  
+         if (param.getOptionList() != null ) result.append("\n\t").append("option list :").append(param.getOptionList());         
 
          }
            Interface[] ifaces = descr.getInterfaces().get_interface();
@@ -154,7 +160,7 @@ public class Applications {
                ParameterRef[] prefs = iface.getInput().getPref();
                for (int j = 0; j < prefs.length; j++) {
                    ParameterRef p = prefs[j];
-                   result.append("\t ").append(p.getRef()).append("max ").append(p.getMaxoccurs()).append(", min ").append(p.getMinoccurs()).append("\n");
+                   result.append("\t ").append(p.getRef()).append(" max ").append(p.getMaxoccurs()).append(", min ").append(p.getMinoccurs()).append("\n");
                }
                result.append("\nOutputs\n");
                prefs = iface.getOutput().getPref();
@@ -168,7 +174,7 @@ public class Applications {
     }    
     
     /** @@MethodDoc("getToolTemplate","Return a template tool document for an application")
-     * @@.return ReturnDoc("Tool Document object",xmlTransformer=CastorXmlTransformer.getInstance(),xmlrpcTransformer=CastorXmlTransformer.getInstance())
+     * @@.return ReturnDoc("Tool Document object",rts=CastorDocumentResultTransformerSet.getInstance())
      * @@.applicationName ParamDoc("applicationName","name of the application to build template for")
      * @@.interfaceName ParamDoc("interfaceName","name of the interface in the application to build template for - use 'default' for default template")
      * @throws WorkflowInterfaceException
@@ -194,7 +200,7 @@ public class Applications {
     }
     
     /** @@MethodDoc("validateTool","Validate a tool document against an application description")
-     * @@.return ReturnDoc("true if valid. some kind of exception if invalid (will sort that later",xmlrpcType="boolean")
+     * @@.return ReturnDoc("true if valid. some kind of exception if invalid (will sort that later",rts=BooleanResultTransformerSet.getInstance())
      * @@.applicationName  ParamDoc("applicationName","name of the application to validate the tool document against.")
      * @@.toolDocument ParamDoc("document","content of the tool document to validate")
      */
@@ -205,12 +211,12 @@ public class Applications {
     }
     
     /** @throws IOException
-     * @@MethodDoc("validateTool","Validate a tool document (referenced by url) against an application description")
-     * @@.return ReturnDoc("true if valid. some kind of exception if invalid (will sort that later",xmlrpcType="boolean")
+     * @@MethodDoc("validateToolFile","Validate a tool document (referenced by url) against an application description")
+     * @@.return ReturnDoc("true if valid. some kind of exception if invalid (will sort that later",rts=BooleanResultTransformerSet.getInstance())
      * @@.applicationName  ParamDoc("applicationName","name of the application to validate the tool document against.")
      * @@.toolDocument ParamDoc("toolDocument","content of the tool document to validate")
      */
-    public boolean validateToolFile(String applicationName,URL toolDocumentURL) throws WorkflowInterfaceException, MarshalException, ValidationException, ToolValidationException, IOException {
+    public boolean validateToolFile(String applicationName,URL toolDocumentURL) throws WorkflowInterfaceException, MarshalException, ValidationException, ToolValidationException, IOException {        
         ApplicationDescription descr = getAppReg().getDescriptionFor(applicationName);
         Reader r = new InputStreamReader(toolDocumentURL.openStream());
         Tool tool = Tool.unmarshalTool(r);
@@ -225,6 +231,9 @@ public class Applications {
 
 /* 
 $Log: Applications.java,v $
+Revision 1.2  2005/02/22 01:10:31  nw
+enough of a prototype here to do a show-n-tell on.
+
 Revision 1.1  2005/02/21 11:25:07  nw
 first add to cvs
  

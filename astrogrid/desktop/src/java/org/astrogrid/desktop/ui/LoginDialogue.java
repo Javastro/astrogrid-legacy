@@ -1,4 +1,4 @@
-/*$Id: LoginDialogue.java,v 1.1 2005/02/21 11:25:07 nw Exp $
+/*$Id: LoginDialogue.java,v 1.2 2005/02/22 01:10:31 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,7 +33,6 @@ import org.astrogrid.store.tree.TreeClientFactory;
 
 /**
  * Dialog for logging in to an Astrogrid community.
- * The most useful method is {@link #openTreeClientDialog}, which 
  * can be used on its own to acquire a logged-in 
  * {@link org.astrogrid.store.tree.TreeClient}.
  *
@@ -217,6 +216,9 @@ public class LoginDialogue extends JPanel {
 
 /* 
 $Log: LoginDialogue.java,v $
+Revision 1.2  2005/02/22 01:10:31  nw
+enough of a prototype here to do a show-n-tell on.
+
 Revision 1.1  2005/02/21 11:25:07  nw
 first add to cvs
  

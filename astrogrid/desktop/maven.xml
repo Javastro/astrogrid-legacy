@@ -2,6 +2,11 @@
 <!-- extension maven script -->
 <project xmlns:j="jelly:core" default="astrogrid-build-site" xmlns:jsl="jelly:jsl" xmlns:jxml="jelly:xml">
 
+<!-- NB - this project uses metadata atrributes, which have to be compiled into sources
+using the commons-attributes maven plugin. This should just automagically happen, based on 
+a dependency on the commons-attributes-plugin, and a few keys set in project.properties.
+-->
+
 
         <goal name="astrogrid-deploy-site">
             <echo message="Please deploy the site docs from the base myspace project"/>
