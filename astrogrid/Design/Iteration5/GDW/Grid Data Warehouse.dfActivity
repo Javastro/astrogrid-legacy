@@ -1,0 +1,589 @@
+package id4ncrhdraleup4dralg9j9;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node12:oiref><oihard>
+@__modelType reference 
+*/
+class reference13 {
+}/**
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node17:oiref><oihard>
+@__modelType reference 
+*/
+class reference18 {
+}/**
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node22:oiref><oihard>
+@__modelType reference 
+*/
+class reference23 {
+}/**
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node28:oiref><oihard>
+@__modelType reference 
+*/
+class reference29 {
+}/**
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node34:oiref><oihard>
+@__modelType reference 
+*/
+class reference35 {
+}}/**
+
+@__tags
+@shapeType ActivityDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions 
+
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node12.node2:oiref>=410,220,209,24,0:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node12.node26.link:oiref>=510,1220,510,1260,222,1260:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node12.node4:oiref>=420,1020,150,130,0:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node15.node34.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node28.node:oiref>=1080,1090,150,60,0:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node2.link:oiref>=129,183,129,210:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node12.node2.link:oiref>=514,244,514,271:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node28:oiref>=1050,860,220,380,0:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node19.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node7.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node13:oiref>=150,1400,15,15,1:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node22.node15:oiref>=1070,676,121,23,1:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node17.node16.link:oiref>=868,903,1126,906:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node17:oiref>=690,240,250,1140,0:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node22.node24:oiref>=1060,716,210,37,0:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node17.link:oiref>=158,1363,158,1400:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node17.node2:oiref>=700,280,238,37,0:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node12.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node:oiref>=20,40,290,1530,0:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node12.node16.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node17.node62.link17:oiref>=854,636,854,672:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node15.node29.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node6.link9:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node15.node32.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node15.node24.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node15.node24.link31:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node28.node15:oiref>=1126,896,121,23,1:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node12.node26:oiref>=440,1160,148,60,0:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node28.node24:oiref>=1060,940,208,37,0:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node2:oiref>=30,160,199,23,1:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node10.link:oiref>=155,1271,155,1340:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node12.node29.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node38.link:oiref>=:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4ncrhdraleup4dralg9j9.node17.node16.link:oiref>=963,915,59,17,1:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node22:oiref>=1050,640,222,186,0:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node22.node25.link:oiref>=1158,799,1020,860,775,1050:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node8.link11:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node62.link17:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node17.node30.link:oiref>=810,1090,810,1130:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node17.node14.link:oiref>=938,685,1070,686:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node15.node.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node17.node14:oiref>=798,672,140,23,1:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node17.node16:oiref>=700,890,168,23,1:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4ncrhdraleup4dralg9j9.node17.node14.link:oiref>=960,695,59,17,1:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node15.node35.link37:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node22.node10.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node15.node27.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node17.node9:oiref>=730,480,60,20,1:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node3.link:oiref>=290,232,410,232:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node22.node3.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node28.node15.link:oiref>=1186,919,1186,940:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node17.node42.link8:oiref>=760,370,760,420:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4ncrhdraleup4dralg9j9.node22.node25.link:oiref>=860,980,95,17,1:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node17.node30:oiref>=740,1050,150,40,0:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node12.node3.link:oiref>=642,294,700,294:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4ncrhdraleup4dralg9j9.node17.node2.link:oiref>=770,324,120,17,1:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node17.node32:oiref>=710,1130,200,6,0:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node17.node12:oiref>=880,510,15,15,1:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node12.node35.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node12.node27.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node22.node15.link:oiref>=1130,699,1130,716:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node17.node7:oiref>=700,420,228,37,1:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4ncrhdraleup4dralg9j9.node17.node42.link8:oiref>=770,386,34,17,1:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node1.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node28.node36.link:oiref>=1065,1070,990,1070,890,1070:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node12.node3:oiref>=392,271,250,38,0:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node12.node1.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node17.node42.link6:oiref>=790,360,890,360,888,390:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4ncrhdraleup4dralg9j9.node17.node9.link13:oiref>=825,500,29,17,1:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4ncrhdraleup4dralg9j9.node17.node7.link:oiref>=770,459,128,17,1:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node17.node9.link11:oiref>=760,500,760,540:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node17.node9.link13:oiref>=790,490,890,490,888,510:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4ncrhdraleup4dralg9j9.node28.node36.link:oiref>=892,1080,95,17,1:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node12.node25.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node28.node.link:oiref>=1155,1090,1155,1083:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node15.node38.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node17.node10:oiref>=710,540,228,54,1:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node15.node25.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node28.node25.link37:oiref>=1165,1029,1165,1060:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node22.node25:oiref>=1070,776,176,23,1:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node1.link:oiref>=120,112,120,160:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node17.node62.link18:oiref>=794,636,794,890:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node17.node10.link:oiref>=815,594,815,630:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node28.node36:oiref>=1065,1060,201,23,1:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4ncrhdraleup4dralg9j9.node17.node42.link6:oiref>=825,370,29,17,1:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node12.link18:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node17.node38.link:oiref>=:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4ncrhdraleup4dralg9j9.node17.node9.link11:oiref>=770,511,34,17,1:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node34:oiref>=1280,980,200,260,0:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node10:oiref>=89,1248,133,23,1:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node17.node:oiref>=880,390,15,15,1:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node34.link:oiref>=1280,1071,1266,1071:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node28.node25:oiref>=1064,1006,204,23,1:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node12.node:oiref>=440,1373,162,35,0:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node6.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node17.node32.link33:oiref>=810,1136,810,1180,720,1180,588,1180:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node17.node7.link:oiref>=760,457,760,480:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node15.node24.link30:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node17.node2.link:oiref>=760,317,760,350:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node62.link18:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node17.node62:oiref>=720,630,190,6,0:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node12:oiref>=390,190,250,1220,0:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node1:oiref>=114,100,12,12,1:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node3:oiref>=30,210,260,37,0:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node28.node24.link:oiref>=1160,977,1160,1006:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node12.node.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node22.node24.link:oiref>=1158,753,1158,776:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node17:oiref>=60,1340,203,23,1:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node17.node26.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id4ncrhdraleup4dralg9j9.node17.node42:oiref>=730,350,60,20,1:oigroup>
+*/
+class __positions {
+}/**
+@shapeType SwimLane
+@__modelType node
+@name DataCenter Front End
+@backgroundColor 200,200,200 
+*/
+class node {
+/**
+@shapeType StartState
+@__modelType node
+@name StartState1 
+*/
+class node1 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node2:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Request comes in for a Query 
+*/
+class node2 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node3:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name ADQL Query passed to GDW plugin
+*/
+class node3 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node12.node2:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Results Received 
+*/
+class node10 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node17:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Results handled by datacenter
+*/
+class node17 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node13:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType EndState
+@__modelType node
+@name EndState1
+@backgroundColor 0,0,0 
+*/
+class node13 {
+}}/**
+@shapeType SwimLane
+@__modelType node
+@name GDW Plugin (within DataCenter)
+@backgroundColor 200,200,200 
+*/
+class node12 {
+/**
+@shapeType Activity
+@__modelType node
+@name Query translated to PostgreSQL
+*/
+class node2 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node12.node3:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Shelled-out call to GDSQueryDelegate in separate JVM
+*/
+class node3 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node17.node2:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Notify datacenter that query has finished 
+*/
+class node {
+}/**
+@shapeType Activity
+@__modelType node
+@name Return results from file or gsiftp url to datacenter
+*/
+class node26 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node.node10:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Note
+@__modelType node
+@name Note1
+@text Note: Currently using local file (not gsiftp) for delivery of results to datacenter  (gsiftp functionality is present but unused in GDS client). 
+*/
+class node4 {
+}}/**
+@shapeType SwimLane
+@__modelType node
+@name Separate GDSQueryDelegate (own JVM)
+@backgroundColor 200,200,200 
+*/
+class node17 {
+/**
+@shapeType Activity
+@__modelType node
+@name Call GDS Registry to get GDS Factory
+*/
+class node2 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node17.node42:oiref><oihard> 
+@sendClause Got a GDS Factory?
+*/
+class link {
+}}/**
+@shapeType Decision
+@__modelType node
+@name Decision1 
+*/
+class node42 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node17.node:oiref><oihard>
+@sendClause No 
+*/
+class link6 {
+}/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node17.node7:oiref><oihard>
+@sendClause Yes 
+*/
+class link8 {
+}}/**
+@shapeType EndState
+@__modelType node
+@name EndState2 
+*/
+class node {
+}/**
+@shapeType Activity
+@__modelType node
+@name Use GDS Factory to create GDS instance
+*/
+class node7 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node17.node9:oiref><oihard>
+@sendClause Got a GDS instance? 
+*/
+class link {
+}}/**
+@shapeType Decision
+@__modelType node
+@name Decision1 
+*/
+class node9 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node17.node10:oiref><oihard>
+@sendClause Yes 
+*/
+class link11 {
+}/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node17.node12:oiref><oihard>
+@sendClause No 
+*/
+class link13 {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Assemble chain of OGSA-DAI activities for querying and results delivery 
+*/
+class node10 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node17.node62:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType EndState
+@__modelType node
+@name EndState3 
+*/
+class node12 {
+}/**
+@shapeType SyncBar
+@__modelType node
+@name SyncBar1 
+*/
+class node62 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node17.node14:oiref><oihard> 
+*/
+class link17 {
+}/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node17.node16:oiref><oihard> 
+*/
+class link18 {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Delivery to local file 
+*/
+class node14 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node22.node15:oiref><oihard>
+@event Call GDS
+@name Call GDS 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Delivery to GridFTP URL
+*/
+class node16 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node28.node15:oiref><oihard>
+@event Call GDS
+@name Call GDS
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Notify caller that query has finished
+*/
+class node30 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node17.node32:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType SyncBar
+@__modelType node
+@name SyncBar1 
+@backgroundColor 0,0,0
+*/
+class node32 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node12.node26:oiref><oihard>
+*/
+class link33 {
+}}}/**
+@shapeType SwimLane
+@__modelType node
+@name Co-located OGSA-DAI service
+@backgroundColor 200,200,200 
+*/
+class node22 {
+/**
+@shapeType Activity
+@__modelType node
+@name Run SQL Query
+*/
+class node15 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node22.node24:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Translate results to VOTable using XSLT Activity
+*/
+class node24 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node22.node25:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Deliver results to local file
+*/
+class node25 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node17.node30:oiref><oihard>
+@event Service finished
+@name Service finished
+*/
+class link {
+}}}/**
+@shapeType SwimLane
+@__modelType node
+@name Arbitrary OGSA-DAI service
+@backgroundColor 200,200,200 
+*/
+class node28 {
+/**
+@shapeType Activity
+@__modelType node
+@name Run SQL Query
+*/
+class node15 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node28.node24:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Translate results to VOTable using XSLT Activity
+*/
+class node24 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node28.node25:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Deliver results to GridFTP URL
+*/
+class node25 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node28.node36:oiref><oihard> 
+*/
+class link37 {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Notify that transfer is complete
+*/
+class node36 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node17.node30:oiref><oihard>
+@event Service finished
+@name Service finished
+*/
+class link {
+}}/**
+@shapeType Note
+@__modelType node
+@name Note4
+@text This bit is yucky;  currently cheating by polling instead.
+*/
+class node {
+/**
+@shapeType NoteLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node28.node36:oiref><oihard> 
+*/
+class link {
+}}}/**
+@shapeType Note
+@__modelType node
+@name Note3
+@text Note:  this step will require that the appropriate authentication methods have been set up.  TheGDSQueryDelegate will need to be initialised with the appropriate X.509 credentials, which the GridFTP server will have to recognise.  Additionally, some means will be required to pass AstroGrid user auth/auth information into and out of OGSA-DAI, eg by temporary X.509 certificates generated by MySpace as required. 
+*/
+class node34 {
+/**
+@shapeType NoteLink
+@__modelType link
+@__ref <oiref:design#Class#id4ncrhdraleup4dralg9j9.node28.node36:oiref><oihard> 
+*/
+class link {
+}}
