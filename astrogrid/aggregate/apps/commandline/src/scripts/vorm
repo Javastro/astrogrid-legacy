@@ -47,25 +47,27 @@ client.delete(ivo)
 void displayHelp() {
         (new HelpFormatter()).printHelp(
 <<<DOC
-vorm <options> <resource>
+vorm [options] <resource>
   remove a myspace resource
+  if the resource is a directory, it must be empty.
+ <resource> may either be specified in full ivo://..  or abridged #... forms.  
 
 DOC
 ,o)
 }
-String mkFull(s) { // make this the full form of whatever it is.
+Object mkFull(s) { // make this the full form of myspace reference.
    u = null;
    if (s.startsWith "ivo://") {
-        return s;
+        return astrogrid.objectBuilder.newIvorn(s)
    }
-   tok = new java.util.StringTokenizer(s,"/");
+   tok = s.tokenize("/").reverse();
    if (s.startsWith "#/") {
-        tok.nextToken() // skip junk
-        u = tok.nextToken()
-        return astrogrid.objectBuilder.newIvorn(account.community,u,s.substring(1)).toString()
-   } else  if (s.startsWith("#")) { // error tolerant, of not qute correct syntax
-        u = tok.nextToken().substring(1)
-        return astrogrid.objectBuilder.newIvorn(accouont.community,u,"/" + s.substring(1)).toString()
+       tok.pop()// skip junk
+        u = tok.pop()
+        return astrogrid.objectBuilder.newIvorn(account.community,u,s.substring 1)
+   } else  if (s.startsWith "#") { // error tolerant, of not qute correct syntax
+        u = tok.pop().substring 1        
+        return astrogrid.objectBuilder.newIvorn(account.community,u,"/" + s.substring(1))
    } else { // assume to be something else, and pass thru
      return s
    }
