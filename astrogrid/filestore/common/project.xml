@@ -3,10 +3,13 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/common/project.xml,v $</cvs:source>
     | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2004/11/25 00:19:27 $</cvs:date>
-    | <cvs:version>$Revision: 1.4 $</cvs:version>
+    | <cvs:date>$Date: 2004/12/13 14:49:21 $</cvs:date>
+    | <cvs:version>$Revision: 1.5 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.5  2004/12/13 14:49:21  jdt
+    |   Some pruning, that factors out more of the commonality into maven-base
+    |
     |   Revision 1.4  2004/11/25 00:19:27  jdt
     |   Merge from dave-dev-200410061224-200411221626
     |
@@ -59,18 +62,6 @@
         | A short description of the project.
         +-->
     <shortDescription>Short description of the project ....</shortDescription>
-
-    <!--+
-        | Our cvs repository location.
-        +-->
-    <repository>
-        <connection>
-            scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/filestore/common
-        </connection>
-        <developerConnection>
-            scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/filestore/common
-        </developerConnection>
-    </repository>
 
     <!--+
         | The external dependencies required to build and test the project.

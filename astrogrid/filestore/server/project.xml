@@ -3,10 +3,13 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/server/project.xml,v $</cvs:source>
     | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2004/12/13 00:51:56 $</cvs:date>
-    | <cvs:version>$Revision: 1.8 $</cvs:version>
+    | <cvs:date>$Date: 2004/12/13 14:49:21 $</cvs:date>
+    | <cvs:version>$Revision: 1.9 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.9  2004/12/13 14:49:21  jdt
+    |   Some pruning, that factors out more of the commonality into maven-base
+    |
     |   Revision 1.8  2004/12/13 00:51:56  jdt
     |   merge from FLS_JDT_861
     |
@@ -87,18 +90,6 @@
             Long description of the project, including <i>HTML</i> tags ....
         ]]>
     </description>
-
-    <!--+
-        | Our cvs repository location.
-        +-->
-    <repository>
-        <connection>
-            scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/filestore/server
-        </connection>
-        <developerConnection>
-            scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/filestore/server
-        </developerConnection>
-    </repository>
 
     <!--+
         | The external libraries required to build our component.

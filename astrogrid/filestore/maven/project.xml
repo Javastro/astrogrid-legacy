@@ -3,10 +3,13 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/maven/project.xml,v $</cvs:source>
     | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2004/11/25 00:19:20 $</cvs:date>
-    | <cvs:version>$Revision: 1.8 $</cvs:version>
+    | <cvs:date>$Date: 2004/12/13 14:49:21 $</cvs:date>
+    | <cvs:version>$Revision: 1.9 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.9  2004/12/13 14:49:21  jdt
+    |   Some pruning, that factors out more of the commonality into maven-base
+    |
     |   Revision 1.8  2004/11/25 00:19:20  jdt
     |   Merge from dave-dev-200410061224-200411221626
     |
@@ -62,54 +65,6 @@
         | The Java package name of the project.
         +-->
     <package>org.astrogrid.filestore</package>
-
-    <!--+
-        | The project developers.
-        +-->
-    <developers>
-        <!--+
-            | Catherine Qin
-            +-->
-        <developer>
-            <name>Catherine Qin</name>
-            <id>clq2</id>
-            <email>clq2@star.le.ac.uk</email>
-            <organization>Leicester</organization>
-            <roles>
-                <role>Software Developer</role>
-            </roles>
-        </developer>
-        <!--+
-            | Clive Davenhall
-            +-->
-        <developer>
-            <name>Clive Davenhall</name>
-            <id>acd</id>
-            <email>acd@roe.ac.uk</email>
-            <organization>ROE</organization>
-            <roles>
-                <role>Software Developer</role>
-            </roles>
-        </developer>
-        <!--+
-            | Dave Morris
-            +-->
-        <developer>
-            <name>Dave Morris</name>
-            <id>dave</id>
-            <email>maven-report@codon.demon.co.uk</email>
-            <organization>IoA Cambridge</organization>
-            <roles>
-                <role>Software developer</role>
-            </roles>
-        </developer>
-    </developers>
-
-    <!--+
-        | Describes the licenses for this project.
-    <licenses>
-    </licenses>
-        +-->
 
     <!--+
         | The external libraries required to build our components.
@@ -168,49 +123,4 @@
             </properties>
         </dependency>
     </dependencies>
-
-    <!--+
-        | The list of reports to generate for each component.
-        +-->
-    <reports>
-        <report>
-            maven-changelog-plugin
-        </report>
-        <report>
-            maven-changes-plugin
-        </report>
-        <report>
-            maven-checkstyle-plugin
-        </report>
-        <report>
-            maven-clover-plugin
-        </report>
-        <report>
-            maven-developer-activity-plugin
-        </report>
-        <report>
-            maven-file-activity-plugin
-        </report>
-        <report>
-            maven-javadoc-plugin
-        </report>
-        <report>
-            maven-junit-report-plugin
-        </report>
-        <report>
-            maven-jxr-plugin
-        </report>
-        <report>
-            maven-license-plugin
-        </report>
-        <report>
-            maven-pmd-plugin
-        </report>
-        <report>
-            maven-tasklist-plugin
-        </report>
-        <report>
-            maven-simian-plugin
-        </report>
-    </reports>
 </project>
