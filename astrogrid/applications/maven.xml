@@ -36,6 +36,7 @@
 
 <goal name="astrogrid-deploy-site">
 	    <attainGoal name="builddelegate" />
+	    <attainGoal name="site" /><!-- NWW: added - necessary, as site:fsdeploy won't do it by itself -->
 		<attainGoal name="site:fsdeploy" />
 </goal>
 
