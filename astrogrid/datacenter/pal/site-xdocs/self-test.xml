@@ -5,7 +5,7 @@
 	<title>PAL - Self Test</title>
 </properties>
 <body>
-<section name="Test &amp; Debug Axis"><p>
+<section name="Test and Debug Axis"><p>
 PAL uses Apache Axis as its underlying SOAP transport mechanism.
 
 <ul>
@@ -22,7 +22,7 @@ status page, the likely cause is that you have multiple XML parsers in
 your classpath. Clean up your classpath by eliminating extraneous parsers.
 </p>
 </section>
-<section name="Test &amp; Debug PAL">
+<section name="Test and Debug PAL">
 <p>
 <ul>
 
