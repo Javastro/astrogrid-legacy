@@ -20,7 +20,8 @@ org.astrogrid.registry.version=0_9
 vm05.astrogrid.org/MyspaceManager=file:///C:/Development/temp/registry/cache/Myspace.xml
 
 #Used for junit tests.
-#org.astrogrid.registry.admin.junit.endpoint=http://localhost:8080/astrogrid-registry-webapp/services/RegistryAdmin
-#org.astrogrid.registry.harvest.junit.endpoint=http://localhost:8080/astrogrid-registry-webapp/services/RegistryHarvest
+#org.astrogrid.registry.admin.junit.endpoint=http://stargrid1.bnsc.rl.ac.uk:8080/astrogrid-registry-webapp/services/RegistryAdmin
+#org.astrogrid.registry.harvest.junit.endpoint=http://stargrid1.bnsc.rl.ac.uk:8080/astrogrid-registry-webapp/services/RegistryHarvest
+#org.astrogrid.registry.query.junit.endpoint=http://msslxy.mssl.ucl.ac.uk:8080/astrogrid-registry-webapp/services/Registry
 #org.astrogrid.registry.query.junit.endpoint=http://localhost:8080/astrogrid-registry-webapp/services/Registry
 
