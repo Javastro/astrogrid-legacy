@@ -21,7 +21,15 @@
 
 
     function populate_tool_details(step_name, edit_condition, step_description, stepNumber, tool_name, tool_documentation)
-    {                      
+    {
+        if (step_description == "null")
+        {
+            step_description = "no description enetered..";
+        } 
+        if (tool_name == "null")
+        {
+            tool_name = "please select..";
+        }                              
         document.properties_form.step_name.value = step_name;
         document.properties_form.edit_condition.value = edit_condition; 
         document.properties_form.step_description.value = step_description;  
