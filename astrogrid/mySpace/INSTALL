@@ -34,11 +34,11 @@ For more comprehansive installation of Tomcat and Axis please refer to http://wi
 
 5. Deploy mySpace Web Services and configure it to suit mySpace
 
-1) Check out latest version of mySpace.jar from CVS and place it into $CATALINA_HOME/webapps/axis/WEB-INF/classes
+1) Check out latest version of mySpace.jar from CVS and place it into $CATALINA_HOME/
 
 2) Without leaving this directory, unjar mySpace.jar
 
-3) Make sure tomcat is running, type java org.apache.axis.client.AdminClient deploy-msManager.wsdd, this will deploy MySpaceManager at http://localhost:8080/axis/services/MySpaceManager
+3) Make sure tomcat is running, goto $CATALINA_HOME/webapps/axis/WEB-INF, type java org.apache.axis.client.AdminClient deploy-msManager.wsdd, this will deploy MySpaceManager at http://localhost:8080/axis/services/MySpaceManager
 
 4) Type java org.apache.axis.client.AdminClient deploy-msServer.wsdd, this will deploy MySpaceManager at http://localhost:8080/axis/services/ServerManager
 
@@ -50,8 +50,10 @@ MYSPACEMANAGER=pointing to MySpaceManager web service you deployed
 SERVERMANAGER=pointing to ServerManager web service you deployed 
 
 6)open example.config
-Edit the third argument of each line to match whatever you setup for TEMPPATHTO in statuscode.lis file.
+* Edit the third argument of each line to match whatever you setup for TEMPPATHTO in statuscode.lis file.
 eg: http://hydra.star.le.ac.uk:8080/mySpace/
+* Edit the fourth argument of each line to match wherever the actural folder path of dataholders
+eg: $CATALINA_HOME/webapps/mySpace
 
 7) Create folder where the TEMPPATHTO is pointing to.
 eg: /usr/local/jakarta-tomcat-4.1.24/webapps/mySpace/
