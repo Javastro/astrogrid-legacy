@@ -17,7 +17,7 @@ import org.astrogrid.applications.beans.v1.ParameterRef;
 import org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition;
 import org.astrogrid.applications.beans.v1.parameters.types.ParameterTypes;
 import org.astrogrid.registry.beans.cea.ApplicationDefinition;
-import org.astrogrid.registry.beans.cea.CeaApplication;
+import org.astrogrid.registry.beans.cea.CeaApplicationType;
 import org.astrogrid.registry.beans.cea.Parameters;
 import org.astrogrid.registry.beans.resource.ContactType;
 import org.astrogrid.registry.beans.resource.CurationType;
@@ -29,7 +29,7 @@ import org.astrogrid.registry.beans.resource.VODescription;
 import junit.framework.TestCase;
 
 /*
- * $Id: CEARegistryRoundTripTest.java,v 1.1 2004/03/23 16:34:16 pah Exp $
+ * $Id: CEARegistryRoundTripTest.java,v 1.2 2004/03/26 12:31:10 pah Exp $
  * 
  * Created on 15-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -67,7 +67,7 @@ public class CEARegistryRoundTripTest extends TestCase {
       CurationType curation = new CurationType();
       IdentifierType identifier = new IdentifierType();
       VODescription description = new VODescription();
-      CeaApplication applicationType = new CeaApplication();
+      CeaApplicationType applicationType = new CeaApplicationType();
       description.addResource(applicationType);
 
 
