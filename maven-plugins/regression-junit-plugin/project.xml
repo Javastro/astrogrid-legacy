@@ -1,0 +1,44 @@
+<project>
+    <pomVersion>3</pomVersion>
+    <name>JUnit Regression Maven Plugin</name>
+    <groupId>org.astrogrid</groupId>
+    <artifactId>regression-test-plugin</artifactId>
+    <organization/>
+    <description>Proof of concept.  Based on nw's work in the auto-integration project.</description>
+    <shortDescription>A Maven plugin to generate full junit reports with regression analysis</shortDescription>
+    <versions/>
+    <branches/>
+    <mailingLists/>
+    <developers/>
+    <dependencies>
+        <dependency>
+            <groupId>commons-jelly</groupId>
+            <artifactId>commons-jelly-tags-jsl</artifactId>
+            <version>20030211.143151</version>
+            <properties/>
+        </dependency>
+        <dependency>
+            <groupId>commons-jelly</groupId>
+            <artifactId>commons-jelly-tags-xml</artifactId>
+            <version>20030211.142705</version>
+            <url>http://jakarta.apache.org/commons/jelly/libs/xml/</url>
+            <properties/>
+        </dependency>
+    </dependencies>
+    <build>
+        <unitTest/>
+        <resources>
+            <resource>
+                <directory>${basedir}</directory>
+                <includes>
+                    <include>**/*.xml</include>
+                    <include>**/*.jelly</include>
+                    <include>**/*.properties</include>
+                    <include>**/*.xsl</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
+    </build>
+    <properties/>
+</project>
