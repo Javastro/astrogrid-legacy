@@ -71,7 +71,7 @@
                 </jsl:template>
              </jsl:stylesheet>
              <!-- read in original jnlp -->
-             <jxml:parse var="originalJNLP" xml="file:///${basedir}/target/${pom.artifactId}/${pom.artifactId}.jnlp" />
+             <jxml:parse var="originalJNLP" xml="file:/${basedir}/target/${pom.artifactId}/${pom.artifactId}.jnlp" />
              <!-- apply stylesheet -->
              <j:file name="${maven.build.dir}/${pom.artifactId}/${pom.artifactId}.jnlp">
                 <jsl:style stylesheet="${patch}" select="$originalJNLP" />
