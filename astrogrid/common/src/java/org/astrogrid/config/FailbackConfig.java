@@ -1,5 +1,5 @@
 /*
- * $Id: FailbackConfig.java,v 1.26 2004/08/25 00:34:15 mch Exp $
+ * $Id: FailbackConfig.java,v 1.27 2004/10/05 19:32:43 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -9,6 +9,7 @@
 
 package org.astrogrid.config;
 
+import java.util.*;
 import javax.naming.*;
 
 import java.io.File;
@@ -19,11 +20,6 @@ import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.AccessControlException;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Properties;
-import java.util.Set;
 
 /**
  * All Things To All Men Configuration.
@@ -479,6 +475,69 @@ public class FailbackConfig extends Config {
    }
 
    /**
+    * Returns array of values for the given key. Throws exception if property not found in Jndi,
+    * then configuration file, then system environment.
+    */
+   public Object[] getProperties(String key)  {
+
+      assertKeyValid(key);
+
+      String lookedIn = "Cache";
+      
+      //first look in cache
+      if (cache.containsKey(key)) {
+         return new Object[] { cache.get(key) };
+      }
+         
+      //first look in jndi
+      try {
+         if (!jndiInitialised) { initialiseJndi(); }
+      
+         if (jndiContext != null) {
+            lookedIn = lookedIn + ", JNDI";
+            NamingEnumeration en = jndiContext.list(jndiPrefix+key);
+            Vector values = new Vector();
+            while (en.hasMoreElements()) {
+               values.add(en.nextElement());
+            }
+            return values.toArray();
+         }
+         else {
+            lookedIn = lookedIn + ", (No JNDI)";
+         }
+      }
+      catch (NameNotFoundException nnfe) { } //ignore, we'll look somewhere else
+      catch (NamingException ne) {
+         throw new ConfigException(ne+" locating key="+key+" in JNDI", ne);
+      }
+
+      //try the properties file
+      if (!fileInitialised) { initialiseFile(); }
+
+      if (properties == null) {
+         lookedIn = lookedIn +", (no config file)";
+      }
+      else {
+         String value = properties.getProperty(key);
+         lookedIn = lookedIn +", config file(s) ("+loadedFrom()+")";
+      
+         if (value != null) {
+            return new Object[] { value };
+         }
+      }
+      
+      //try the system environment
+      lookedIn = lookedIn +", sysenv";
+      String value = System.getProperty(key);
+      if (value != null) {
+         return new Object[] { value };
+      }
+      
+      throw new PropertyNotFoundException("Could not find '"+key+"' in: "+lookedIn);
+   }
+
+
+   /**
     * Returns a list of keys.  This list is made up of the values in the
     * cache, JNDI, properties file and system environment keys; note that duplicate
     * keys will be hidden.
@@ -632,6 +691,9 @@ public class FailbackConfig extends Config {
 }
 /*
 $Log: FailbackConfig.java,v $
+Revision 1.27  2004/10/05 19:32:43  mch
+Added getProperties
+
 Revision 1.26  2004/08/25 00:34:15  mch
 Updated documentaiton
 
