@@ -1,5 +1,5 @@
 /*
- * $Id: InterfaceDescriptionNotFoundException.java,v 1.1 2003/12/01 15:46:46 pah Exp $
+ * $Id: InterfaceDescriptionNotFoundException.java,v 1.2 2003/12/03 11:48:48 pah Exp $
  * 
  * Created on 01-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -19,5 +19,33 @@ package org.astrogrid.applications.description.exception;
  * @since iteration4
  */
 public class InterfaceDescriptionNotFoundException extends Exception {
+
+ 
+   /**
+    * @param message
+    */
+   public InterfaceDescriptionNotFoundException(String message) {
+      super(message);
+      // TODO Auto-generated constructor stub
+   }
+
+   /**
+    * @param cause
+    */
+   public InterfaceDescriptionNotFoundException(Throwable cause) {
+      super(cause);
+      // TODO Auto-generated constructor stub
+   }
+
+   /**
+    * @param message
+    * @param cause
+    */
+   public InterfaceDescriptionNotFoundException(
+      String message,
+      Throwable cause) {
+      super(message, cause);
+      // TODO Auto-generated constructor stub
+   }
 
 }

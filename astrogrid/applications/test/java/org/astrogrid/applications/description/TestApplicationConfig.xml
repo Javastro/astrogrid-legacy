@@ -30,6 +30,7 @@
 			<Parameter name="P8" type="agpd:ADQL"/>
 			<Parameter name="P9" type="agpd:MySpace_FileReference"/>
 			<Parameter name="P10" type="xs:boolean"/>
+			<Parameter name="P11" type="xs:anyURI"/>
 		</Parameters>
 		<Interfaces>
 			<Interface name="I1">

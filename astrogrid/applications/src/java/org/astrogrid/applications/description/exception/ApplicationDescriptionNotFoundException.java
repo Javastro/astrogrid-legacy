@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationDescriptionNotFoundException.java,v 1.1 2003/11/26 22:07:24 pah Exp $
+ * $Id: ApplicationDescriptionNotFoundException.java,v 1.2 2003/12/03 11:48:48 pah Exp $
  * 
  * Created on 26-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -24,6 +24,14 @@ public class ApplicationDescriptionNotFoundException extends Exception {
    public ApplicationDescriptionNotFoundException(String name)
    {
       this.name = name;
+   }
+   
+
+   /* (non-Javadoc)
+    * @see java.lang.Object#toString()
+    */
+   public String toString() {
+return super.toString() + "unknown application="+name;
    }
 
 }

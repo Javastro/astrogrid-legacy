@@ -1,5 +1,5 @@
 /*
- * $Id: ParameterCreationFactory.java,v 1.1 2003/11/29 00:50:14 pah Exp $
+ * $Id: ParameterCreationFactory.java,v 1.2 2003/12/03 11:48:48 pah Exp $
  * 
  * Created on 28-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -81,13 +81,23 @@ class ParameterCreationFactory extends AbstractObjectCreationFactory {
                 return new ADQLParameterDescription();
 
              }
+         else
+             if (type.equals("xs:boolean")) {
+                return new BooleanParameterDescription();
+
+             }
+         else
+             if (type.equals("xs:anyURI")) {
+                return new URIParameterDescription();
+
+             }
                   
                   else {
-                     throw new ParameterTypeNotDefinedException();
+                     throw new ParameterTypeNotDefinedException(type);
                   }
       }
       else {
-         throw new ParameterTypeNotDefinedException();
+         throw new ParameterTypeNotDefinedException("");
       }
    }
 

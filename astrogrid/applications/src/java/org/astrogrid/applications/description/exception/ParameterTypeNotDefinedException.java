@@ -1,5 +1,5 @@
 /*
- * $Id: ParameterTypeNotDefinedException.java,v 1.1 2003/11/29 00:50:14 pah Exp $
+ * $Id: ParameterTypeNotDefinedException.java,v 1.2 2003/12/03 11:48:48 pah Exp $
  * 
  * Created on 28-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -20,5 +20,25 @@ package org.astrogrid.applications.description.exception;
  * @since iteration4
  */
 public class ParameterTypeNotDefinedException extends Exception {
+
+   private String typename;
+
+   /**
+    * @param type
+    */
+   public ParameterTypeNotDefinedException(String type) {
+      
+     this.typename = type;
+   }
+   
+   
+
+   /* (non-Javadoc)
+    * @see java.lang.Object#toString()
+    */
+   public String toString() {
+      return  super.toString() + " unknown type="+typename;
+   }
+   
 
 }

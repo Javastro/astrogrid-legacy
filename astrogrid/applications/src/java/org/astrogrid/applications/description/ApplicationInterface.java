@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationInterface.java,v 1.3 2003/12/01 15:46:46 pah Exp $
+ * $Id: ApplicationInterface.java,v 1.4 2003/12/03 11:48:48 pah Exp $
  *
  * Created on 26 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -119,7 +119,7 @@ public class ApplicationInterface {
          }
       }
       else {
-         throw new ParameterNotInInterfaceException();
+         throw new ParameterNotInInterfaceException("unknown parameter="+name);
       }
       return ad;
    }
@@ -137,7 +137,7 @@ public class ApplicationInterface {
           }
        }
        else {
-          throw new ParameterNotInInterfaceException();
+          throw new ParameterNotInInterfaceException("unknown parameter="+name);
        }
        return ad;
     }

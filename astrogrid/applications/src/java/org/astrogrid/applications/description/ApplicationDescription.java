@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationDescription.java,v 1.4 2003/12/01 22:24:59 pah Exp $
+ * $Id: ApplicationDescription.java,v 1.5 2003/12/03 11:48:48 pah Exp $
  * 
  * Created on 14-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -141,7 +141,7 @@ public class ApplicationDescription {
          return (ApplicationInterface)interfaces.get(name);
       }
       else
-        throw new InterfaceDescriptionNotFoundException();
+        throw new InterfaceDescriptionNotFoundException("unknown interface="+name);
    }
    /**
     * @return
