@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.28 2004/07/01 23:07:14 mch Exp $
+ * $Id: SqlResults.java,v 1.29 2004/07/03 16:53:11 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -181,7 +181,7 @@ public class SqlResults extends QueryResults
          int cols = metadata.getColumnCount();
          for (int i=1;i<=cols;i++)
          {
-            printOut.print(metadata.getTableName(i)+"."+metadata.getColumnName(i)+", ");
+            printOut.print(/* sometimes not implemented metadata.getTableName(i)+"."+ */ metadata.getColumnName(i)+", ");
          }
 
          printOut.println();
@@ -261,6 +261,9 @@ public class SqlResults extends QueryResults
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.29  2004/07/03 16:53:11  mch
+ Removed getTableName() which is not always implemented
+
  Revision 1.28  2004/07/01 23:07:14  mch
  Introduced metadata generator
 
