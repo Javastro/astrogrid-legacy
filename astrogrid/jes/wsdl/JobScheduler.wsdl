@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<wsdl:definitions targetNamespace="jobScheduler.astrogrid.org" 
-                  xmlns:impl="jobScheduler.astrogrid.org" 
-                  xmlns:intf="jobScheduler.astrogrid.org" 
+<wsdl:definitions targetNamespace="urn:jobScheduler.astrogrid.org" 
+                  xmlns:impl="urn:jobScheduler.astrogrid.org" 
+                  xmlns:intf="urn:jobScheduler.astrogrid.org" 
                   xmlns:apachesoap="http://xml.apache.org/xml-soap" 
                   xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" 
                   xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
@@ -27,18 +27,18 @@
          <wsdl:input name="scheduleJobRequest">
             <wsdlsoap:body use="encoded" 
                            encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" 
-                           namespace="jobScheduler.astrogrid.org"/>
+                           namespace="urn:jobScheduler.astrogrid.org"/>
          </wsdl:input>
          <wsdl:output name="scheduleJobResponse">
             <wsdlsoap:body use="encoded" 
                            encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" 
-                           namespace="jobScheduler.astrogrid.org"/>
+                           namespace="urn:jobScheduler.astrogrid.org"/>
          </wsdl:output>
       </wsdl:operation>
    </wsdl:binding>
    <wsdl:service name="JobSchedulerService">
       <wsdl:port name="JobSchedulerService" binding="impl:JobSchedulerServiceSoapBinding">
-         <wsdlsoap:address location="localhost://8080/axis/services/JobSchedulerService"/>
+         <wsdlsoap:address location="http://localhost:8080/axis/services/JobSchedulerService"/>
       </wsdl:port>
    </wsdl:service>
 </wsdl:definitions>

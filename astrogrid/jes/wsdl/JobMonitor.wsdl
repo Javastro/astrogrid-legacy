@@ -38,7 +38,7 @@
    </wsdl:binding>
    <wsdl:service name="JobMonitorService">
       <wsdl:port name="JobMonitorService" binding="impl:JobMonitorServiceSoapBinding">
-         <wsdlsoap:address location="localhost://8080/axis/services/JobMonitorService"/>
+         <wsdlsoap:address location="http://localhost:8080/axis/services/JobMonitorService"/>
       </wsdl:port>
    </wsdl:service>
 </wsdl:definitions>
