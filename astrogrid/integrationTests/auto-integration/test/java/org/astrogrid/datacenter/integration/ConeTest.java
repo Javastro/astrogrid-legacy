@@ -1,4 +1,4 @@
-/*$Id: ConeTest.java,v 1.5 2004/05/13 12:25:04 mch Exp $
+/*$Id: ConeTest.java,v 1.6 2004/08/31 17:42:43 mch Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,6 +20,10 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.delegate.ConeSearcher;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
+import org.astrogrid.util.DomHelper;
+import org.w3c.dom.Document;
+import javax.xml.parsers.ParserConfigurationException;
+import org.xml.sax.SAXException;
 
 /**
  * Test the cone-search delegate against std PAL
@@ -31,7 +35,8 @@ public class ConeTest extends TestCase implements StdKeys {
 
    /**
     * Run some cone searches on std PAL it04
-    */
+    * no longer used
+   
    public void testStdConeSearch04() throws IOException {
       
       ConeSearcher delegate = DatacenterDelegateFactory.makeConeSearcher(Account.ANONYMOUS, PAL_v041_ENDPOINT, DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
@@ -51,7 +56,7 @@ public class ConeTest extends TestCase implements StdKeys {
    /**
     * Run some cone searches on std PAL it05
     */
-   public void testStdConeSearch05() throws IOException {
+   public void testStdConeSearch05() throws IOException, IOException, ParserConfigurationException, SAXException {
       
       ConeSearcher delegate = DatacenterDelegateFactory.makeConeSearcher(Account.ANONYMOUS, PAL_v05_ENDPOINT, DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
       assertNotNull("delegate was null",delegate);
@@ -59,10 +64,12 @@ public class ConeTest extends TestCase implements StdKeys {
       InputStream is = delegate.coneSearch(10,10,2);
       assertNotNull(is);
       //should be empty votable
+      Document results = DomHelper.newDocument(is);
       
       is = delegate.coneSearch(30,30,6);
       assertNotNull(is);
       //should be some results
+      results = DomHelper.newDocument(is);
       
    
    }
@@ -85,6 +92,9 @@ public class ConeTest extends TestCase implements StdKeys {
 
 /*
 $Log: ConeTest.java,v $
+Revision 1.6  2004/08/31 17:42:43  mch
+Added results DOM parsing
+
 Revision 1.5  2004/05/13 12:25:04  mch
 Fixes to create user, and switched to mostly testing it05 interface
 
