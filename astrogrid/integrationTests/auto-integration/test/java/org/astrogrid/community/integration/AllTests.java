@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.3 2004/09/09 01:19:50 dave Exp $
+/*$Id: AllTests.java,v 1.4 2004/11/22 14:48:37 jdt Exp $
  * Created on 21-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,6 +25,8 @@ public class AllTests {
         TestSuite suite = new TestSuite("Community");
         //$JUnit-BEGIN$
         suite.addTest(new TestSuite(CommunityAccountResolverTest.class));
+        suite.addTest(new TestSuite(CommunityGroupTest.class));
+        suite.addTest(new TestSuite(CommunityPermissionTest.class));
         //$JUnit-END$
         return suite;
     }
@@ -33,6 +35,13 @@ public class AllTests {
 
 /* 
 $Log: AllTests.java,v $
+Revision 1.4  2004/11/22 14:48:37  jdt
+Merges from Comm_KMB_585
+
+Revision 1.3.38.1  2004/11/08 22:18:38  KevinBenson
+The new integration tests for community and also the ability to split out community
+into 2 communities now in our auto-integration.
+
 Revision 1.3  2004/09/09 01:19:50  dave
 Updated MIME type handling in MySpace.
 Extended test coverage for MIME types in FileStore and MySpace.

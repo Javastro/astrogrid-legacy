@@ -1,10 +1,10 @@
-<Context path="/astrogrid-community-SNAPSHOT">
+<Context path="/astrogrid-community-two-SNAPSHOT">
 
     <Environment
         description="Community identifier"
         name="org.astrogrid.community.ident"
         override="false" type="java.lang.String"
-        value="@COMMUNITYID@"/>
+        value="@COMMUNITYID@.two"/>
 
     <Environment
         description="Community identifier"
@@ -27,11 +27,11 @@
         name="jdbc/org.astrogrid.community.database">
         <parameter>
             <name>url</name>
-            <value>jdbc:hsqldb:@WORKDIR@/org.astrogrid.community</value>
+            <value>jdbc:hsqldb:@WORKDIR@/org.astrogrid.community.two</value>
         </parameter>
         <parameter>
             <name>driverName</name>
-            <value>jdbc:hsqldb:@WORKDIR@/org.astrogrid.community</value>
+            <value>jdbc:hsqldb:@WORKDIR@/org.astrogrid.community.two</value>
         </parameter>
         <parameter>
             <name>driverClassName</name>

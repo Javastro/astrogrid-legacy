@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.127 2004/11/09 14:11:18 pah Exp $ -->
+<!-- $Id: maven.xml,v 1.128 2004/11/22 14:48:37 jdt Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -45,7 +45,7 @@
 <property name="registry.exclusions" value="examples/**" />
 	
 		
-			<!--+
+<!--+
     | need to rationalize the use of the astrogrid.iteration - pah
     | better name would be astrogrid.release - i.e. it is intended to be SNAPSHOT for the current iteration and the iteration TAG for preious ones
     +-->
@@ -70,14 +70,16 @@
         <j:if test="${empty(context.getVariable('registry.authorityid'))}">
                 <j:set var="registry.authorityid" value="org.astrogrid.localhost"/>
         </j:if>
-        <property name="communityid" value="${registry.authorityid}" /> <!--NB in general it is *not* true that community=authority this is a temporary measure to start the refactoring of the code-->
+
+	    <property name="communityid" value="${registry.authorityid}" /> <!--NB in general it is *not* true that community=authority this is a temporary measure to start the refactoring of the code-->
+	
         <!-- tokens to subst into config files -->
         <filter token="WORKDIR" value="${work.dir}" />
         <filter token="CONFIGPATH" value="${tomcat.url}/${config.webapp.name}" />
         <filter token="TOMCATROOT" value="${tomcat.url}" />
         <filter token="TOMCATLOC" value="${tomcat.location}" />
         <filter token="REGAUTHORITY" value="${registry.authorityid}" />
-                <filter token="COMMUNITYID" value="${communityid}" />
+        <filter token="COMMUNITYID" value="${communityid}" />
 
         <filter token="TOMCATPORT" value="${tomcat.port}"/>
         <filter token="VERSION" value="${astrogrid.iteration}"/>
@@ -97,8 +99,8 @@
 
 
 <goal name="init" prereqs="declare-tasks">
-                <echo>AuthorityID used: ${registry.authorityid}</echo>
-                                <echo>Community ivo identifier: ${communityid}</echo>
+        <echo>AuthorityID used: ${registry.authorityid}</echo>
+        <echo>Community ivo identifier: ${communityid}</echo>
 <!--do not delete the temporary directory here - pah-->
         <mkdir dir="${temporary.dir}" />
         <deploy:copy-deps todir="${temporary.dir}" />
@@ -110,6 +112,10 @@
                       tofile="${temporary.dir}/pal-sec-${pom.currentVersion}.war" />
                 <copy file="${temporary.dir}/pal-${pom.currentVersion}.war"
                               tofile="${temporary.dir}/pal-cds-${pom.currentVersion}.war" />
+    	<copy file="${temporary.dir}/astrogrid-community-${pom.currentVersion}.war"
+          tofile="${temporary.dir}/astrogrid-community-two-${pom.currentVersion}.war" />
+                	
+                	
 </goal>
 
 <!-- main goals //////////////////////////////////////////////////////////////////////////////////// -->
@@ -150,6 +156,8 @@
         <sleep seconds="2" />
         <attainGoal name="community-deploy"/>
         <sleep seconds="2" />
+        <attainGoal name="community-deploy-two"/>
+        <sleep seconds="2" />        
         <attainGoal name="portal-deploy" />
         <sleep seconds="4" />
         <attainGoal name="setup" />
@@ -183,6 +191,8 @@
         <sleep seconds="2" />
         <attainGoal name="community-deploy"/>
         <sleep seconds="2" />
+	    <attainGoal name="community-deploy-two"/>
+    	<sleep seconds="2" />
         <attainGoal name="setup" />
 </goal>
 
@@ -201,6 +211,7 @@
         <attainGoal name="pal-sec-undeploy" />
         <attainGoal name="pal-cds-undeploy" />
         <attainGoal name="community-undeploy" />
+	    <attainGoal name="community-two-undeploy" />	
         <attainGoal name="portal-undeploy" />
 </goal>
 
@@ -219,6 +230,7 @@
         <attainGoal name="pal-sec-undeploy" />
         <attainGoal name="pal-cds-undeploy" />
         <attainGoal name="community-undeploy" />
+	    <attainGoal name="community-two-undeploy" />	
 </goal>
 
 <goal name="list" prereqs="init" description="list deployed webapps">
@@ -446,7 +458,7 @@
     <propertyfile
         file="${temporary.dir}/community/toolkit/install.properties">
         <entry key="org.astrogrid.community.ident"
-            value="${registry.authorityid}"/>
+            value="${communityid}"/>
     </propertyfile>
     <!--+
         | Set the registry endpoint.
@@ -454,7 +466,7 @@
     <propertyfile
         file="${temporary.dir}/community/toolkit/install.properties">
         <entry key="org.astrogrid.registry.url"
-            value="${registry.endpoint}"/>
+            value="${registry.endpoint}Query"/>
     </propertyfile>
     <!--+
         | Set the registry admin endpoint.
@@ -480,18 +492,23 @@
 <goal name="community-database">
     <echo message=""/>
     <echo message="Installing community database ...."/>
+    <echo>Community ivo identifier: ${communityid}</echo>	
     <!--+
         | Wait for our service to respond.
-        +-->
+
     <attainGoal name="community-wait"/>
+            +-->
     <!--+
         | Reset our database tables.
         +-->
     <ant
         target="database.reset"
         dir="${temporary.dir}/community/toolkit"
-        antfile="${temporary.dir}/community/toolkit/install.xml"
-        />
+        antfile="${temporary.dir}/community/toolkit/install.xml">
+    	<property name="org.astrogrid.community.ident" value="${communityid}"/>
+    	<property name="service.url" value="${tomcat.url}/astrogrid-community-SNAPSHOT/services"/>    	
+    	
+    </ant>
     <!--+
         | Load our database tables.
         +-->
@@ -500,9 +517,33 @@
         dir="${temporary.dir}/community/toolkit"
         antfile="${temporary.dir}/community/toolkit/install.xml"
         >
-                <!-- load the community from a file local to the autointegration rather than out of the community install kit -->
-                <property name="community.xmlfile" value="file:///${work.dir}/community/demoaccounts.xml"/>
-                </ant>
+        <!-- load the community from a file local to the autointegration rather than out of the community install kit -->
+    	<property name="org.astrogrid.community.ident" value="${communityid}"/>
+    	<property name="service.url" value="${tomcat.url}/astrogrid-community-SNAPSHOT/services"/>    	
+        <property name="community.xmlfile" value="file:///${work.dir}/community/demoaccounts.xml"/>
+    </ant>
+	
+    <ant
+        target="database.reset"
+        dir="${temporary.dir}/community/toolkit"
+        antfile="${temporary.dir}/community/toolkit/install.xml">
+    	<property name="org.astrogrid.community.ident" value="${communityid}.two"/>
+    	<property name="service.url" value="${tomcat.url}/astrogrid-community-two-SNAPSHOT/services"/>
+    	
+    </ant>
+	
+	
+    <ant
+        target="database.load"
+        dir="${temporary.dir}/community/toolkit"
+        antfile="${temporary.dir}/community/toolkit/install.xml"
+        >
+        <!-- load the community from a file local to the autointegration rather than out of the community install kit -->
+    	<property name="org.astrogrid.community.ident" value="${communityid}.two"/>
+    	<property name="service.url" value="${tomcat.url}/astrogrid-community-two-SNAPSHOT/services"/>
+    	<property name="community.xmlfile" value="file:///${work.dir}/community/demoaccounts_two.xml"/>
+    </ant>
+	
 </goal>
 
 <!--+
@@ -511,20 +552,30 @@
 <goal name="community-register">
     <echo message=""/>
     <echo message="Registering community service ...."/>
+    <echo>Community ivo identifier: ${communityid}</echo>
     <j:expr value="${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}"/>
     <echo message=""/>
     <!--+
         | Wait for our service to respond.
-        +-->
     <attainGoal name="community-wait"/>
+        +-->    
     <!--+
         | Register our service(s).
         +-->
     <ant target="service.register"
          dir="${temporary.dir}/community/toolkit"
-         antfile="${temporary.dir}/community/toolkit/install.xml"
-         />
+         antfile="${temporary.dir}/community/toolkit/install.xml">
+    	<property name="org.astrogrid.community.ident" value="${communityid}"/>
+    	<property name="service.url" value="${tomcat.url}/astrogrid-community-SNAPSHOT/services"/>
+	</ant>
+    <ant target="service.register"
+         dir="${temporary.dir}/community/toolkit"
+         antfile="${temporary.dir}/community/toolkit/install.xml">
+    	<property name="org.astrogrid.community.ident" value="${communityid}.two"/>
+    	<property name="service.url" value="${tomcat.url}/astrogrid-community-two-SNAPSHOT/services"/>
+	</ant>	
 </goal>
+	
 <!--+
     | Wait for the Community service to respond.
     +-->
@@ -840,6 +891,7 @@
 
 
 <goal name="community-deploy">
+    <echo>Community ivo identifier: ${communityid}</echo>	
     <copy todir="${temporary.dir}/community/webapp" filtering="true">
         <fileset dir="contexts/community" />
     </copy>
@@ -856,6 +908,26 @@
         war="file:///${temporary.dir}/astrogrid-community-${pom.currentVersion}.war"
         />
 </goal>
+	
+	<goal name="community-deploy-two">
+        <echo>Community ivo identifier: ${communityid}</echo>
+	    <copy todir="${temporary.dir}/community_two/webapp" filtering="true">
+	        <fileset dir="contexts/community_two" />
+	    </copy>
+	    <ag:maybe-enable-cougaar webapp="community" />
+	    <war update="true" destfile="${temporary.dir}/astrogrid-community-two-${pom.currentVersion}.war">
+	        <metainf dir="${temporary.dir}/community_two/webapp"/>
+	    </war>
+	    <tomcat-deploy
+	        update="true"
+	        url="${tomcat.manager.url}"
+	        username="${tomcat.manager.username}"
+	        password="${tomcat.manager.password}"
+	        path="/astrogrid-community-two-${pom.currentVersion}"
+	        war="file:///${temporary.dir}/astrogrid-community-two-${pom.currentVersion}.war"
+	        />
+	</goal>
+
 
 <!-- undeploy ///////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <goal name="reg-undeploy" >
@@ -983,6 +1055,16 @@
         path="/astrogrid-community-${pom.currentVersion}" />
 
 </goal>
+	
+	<goal name="community-two-undeploy" >
+
+	    <tomcat-remove
+	        url="${tomcat.manager.url}"
+	        username="${tomcat.manager.username}"
+	        password="${tomcat.manager.password}"
+	        path="/astrogrid-community-two-${pom.currentVersion}" />
+
+	</goal>	
 
 <goal name="CLEANTOMCAT" description="run this to clean out tomcat directories if tomcat not running - will clean the tmp and working directories">
         <delete includeEmptyDirs="true" defaultexcludes="false" >
