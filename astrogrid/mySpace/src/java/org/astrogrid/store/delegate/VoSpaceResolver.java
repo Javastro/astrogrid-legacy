@@ -1,5 +1,5 @@
 /*
- * $Id: VoSpaceResolver.java,v 1.9 2004/03/31 16:43:04 KevinBenson Exp $
+ * $Id: VoSpaceResolver.java,v 1.10 2004/04/05 12:47:22 KevinBenson Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -84,6 +84,8 @@ public class VoSpaceResolver {
 
       if (agsl == null) {
          throw new FileNotFoundException("Cannot resolve "+ivorn);
+      }else {
+         System.out.println("the agsl = " + agsl.toString());
       }
 
       return agsl;
@@ -147,6 +149,7 @@ public class VoSpaceResolver {
                   remainder = remainder.substring(1);
                }
             }
+            System.out.println("Lookfor endpoint with ident = " + ci.getCommunityName()+"/"+ci.getAccountName());
             String vospaceEndPoint = registry.getEndPointByIdentifier(ci.getCommunityName()+"/"+ci.getAccountName());
             if(vospaceEndPoint == null) {
                //Okay got a vospaceendpoint back lets check if their was no resource key if so then
@@ -155,8 +158,9 @@ public class VoSpaceResolver {
                if(vospaceEndPoint == null) {
                   throw new ResolverException("Registry failed resolving "+ivorn);
                }
+               remainder = ci.getAccountName() + remainder;
             }
-            System.out.println("Quick debug: Registry found = " + vospaceEndPoint);
+            System.out.println("Quick debug: Registry found = " + vospaceEndPoint + " with remainder = " + remainder);
             return new Agsl(Msrl.SCHEME + ":" + vospaceEndPoint,remainder);
          }
          catch (Exception e) {
@@ -202,11 +206,12 @@ public class VoSpaceResolver {
             System.out.println("the commname = " + ci.getCommunityName());
             System.out.println("the account name = " + ci.getAccountName());
             System.out.println("the remainder = " + ci.getRemainder());
-            String remainder = "";
+            String remainder = "/" + ci.getAccountName();
             if(ci.getRemainder() != null && ci.getRemainder().trim().length() > 0) {
-               remainder = ci.getRemainder();
+               remainder += ci.getRemainder();
             }                        
-            Ivorn regIvo = new Ivorn(ci.getCommunityName() + "/" + VOSPACE_CLASS_RESOURCE_KEY_LOOKUP + remainder);                        
+            
+            Ivorn regIvo = new Ivorn(Ivorn.SCHEME + "://" + ci.getCommunityName() + "/" + VOSPACE_CLASS_RESOURCE_KEY_LOOKUP + remainder);                        
             return registryResolve(regIvo);
          }catch(ResolverException re) {
             //okay the community found an ivo, but it was not in the registry
@@ -234,6 +239,9 @@ public class VoSpaceResolver {
 
 /*
 $Log: VoSpaceResolver.java,v $
+Revision 1.10  2004/04/05 12:47:22  KevinBenson
+small changes and debug printouts for now.
+
 Revision 1.9  2004/03/31 16:43:04  KevinBenson
 Okay still needs some testing, but checking in for now.  almost ready.
 
