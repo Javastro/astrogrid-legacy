@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
+    <pomVersion>3</pomVersion>    
     <currentVersion>$Name:  $</currentVersion>
     <organization>
         <name>AstroGrid</name>
@@ -196,7 +197,7 @@
         </developer>
         <developer>
             <name> Tony Linde </name>
-            <id>
+            <id>ael
             </id>
             <email> ael@star.le.ac.uk </email>
             <organization> Leicester </organization>
