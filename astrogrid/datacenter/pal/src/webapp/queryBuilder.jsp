@@ -116,7 +116,6 @@ Select which columns you will be using to search:
          <tr>
          <td><input type='checkbox' name='searchColumn' value='<%= colId %>' <%= getChecked(searchCols,colId) %> ></td>
          <td><input type='checkbox' name='resultColumn' value='<%= colId %>' <%= getChecked(resultCols,colId) %> ></td>
-         <td><%= tableName %></td>
          <td><%= colName %></td>
          <td><%= DomHelper.getValue(colElement, "Units") %></td>
          <td><%= DomHelper.getValue(colElement, "UCD") %></td>
@@ -275,11 +274,24 @@ you are building a query to be inserted into a workflow for example
          outColRefs.add(new ColumnReference(tableName, colName));
       }
    }
+   ResultsDefinition resultsDef = null;
+   if (outColRefs.size() > 0) {
+      resultsDef = new TableResultsDefinition(null, (NumericExpression[]) outColRefs.toArray(new NumericExpression[] {}));
+   }
+   else {
+      resultsDef = new TableResultsDefinition(null); //all columns
+   }
+
+   //build up list of search tables
+   Vector searchTables = new Vector();
+   for (int i = 0; i < searchCols.length; i++) {
+      String table = searchCols[i].substring(0, searchCols[i].indexOf("."));
+      if (!searchTables.contains(table)) {
+         searchTables.add(table);
+      }
+   }
    
-   
-   Query query = new Query(searchCols,
-                           criteria,
-                           new TableResultsDefinition(null, (NumericExpression[]) outColRefs.toArray(new NumericExpression[] {})));
+   Query query = new Query( (String[]) searchTables.toArray(new String[] {}), criteria, resultsDef);
          
    String adqlXml = "";
    if (request.getParameter("MakeAdql074") != null) {
