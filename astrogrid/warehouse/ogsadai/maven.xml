@@ -12,10 +12,15 @@
   </goal>
 
   <!-- After compiling, copy all properties files in the source tree to
-       the classes tree in the build. -->
+       the classes tree in the build.  Same for test and test-classes. -->
   <postGoal name="java:compile">
     <copy toDir="${basedir}/target/classes">
       <fileset dir="src/java">
+        <include name="**/*.properties"/> 
+      </fileset>
+    </copy>
+    <copy toDir="${basedir}/target/test-classes">
+      <fileset dir="test">
         <include name="**/*.properties"/> 
       </fileset>
     </copy>
