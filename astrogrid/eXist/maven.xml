@@ -23,8 +23,8 @@
     <!--+
         | Hook for build script site:fsdeploy
         +-->
-    <preGoal name="site:fsdeploy">
-        <ant:echo message="${pom.artifactId} - site:fsdeploy"/>
+    <preGoal name="site:sshdeploy">
+        <ant:echo message="${pom.artifactId} - site:sshdeploy"/>
         <ant:echo message=" build  location : ${maven.docs.dest}"/>
         <ant:echo message=" deploy location : ${site.deploy.directory}"/>
 		<!--+
@@ -155,6 +155,21 @@
             ignoreFailures="false"
             />
     </goal>
+    
+    <!--+
+        | Build and deploy our components.
+        +-->
+    <goal name="astrogrid-deploy-artifact">
+        <maven:reactor
+            basedir="${basedir}"
+            postProcessing="false"
+            includes="server/project.xml,webapp/project.xml"
+            goals="astrogrid-deploy-artifact"
+            banner="Deploying snapshot artifact : "
+            ignoreFailures="false"
+            />
+    </goal>
+    
     
  
 

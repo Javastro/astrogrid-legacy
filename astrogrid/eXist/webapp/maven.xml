@@ -21,90 +21,55 @@
         |     install-snapshot
         |     site
         +-->
-
+        
     <!--+
-        | Build and install our artifact war.
+        | Build and install our component war.
+        | (required as a target goal for the reactor)
         +-->
     <goal name="astrogrid-install-artifact">
         <ant:echo message="Build artifact  : ${pom.artifactId}"/>
         <ant:echo message="Build version   : ${pom.currentVersion}"/>
         <ant:echo message="Build directory : ${maven.build.dir}"/>
-        <!--+
-            | Build our artifact war.
-            +-->
-        <attainGoal name="war:war"/>
-        <!--+
-            | Rename our war to include the version.
-            +-->
-        <ant:move
-            file="${maven.build.dir}/${maven.war.final.name}"
-            toFile="${maven.build.dir}/${maven.final.name}.war"
-            />
-        <!--+
-            | Install our artifact war.
-            +-->
-		<artifact:install
-			artifact="${maven.build.dir}/${maven.final.name}.war"
-			project="${pom}"
-			type="war"
-			/>
+        <ant:echo message="Building component artifact ...."/>
+        <attainGoal name="war:install"/>
     </goal>
         
+        
     <!--+
-        | Build and install our snapshot war(s).
+        | Build and install our snapshot war.
+        | (required as a target goal for the reactor)
         +-->
     <goal name="astrogrid-install-snapshot">
         <ant:echo message="Build artifact  : ${pom.artifactId}"/>
         <ant:echo message="Build version   : ${pom.currentVersion}"/>
         <ant:echo message="Build directory : ${maven.build.dir}"/>
-        <!--+
-            | Create our snapshot name.
-            +-->
-        <maven:snapshot project="${pom}"/>
-        <core:set var="maven.final.name" value="${snapshotSignature}"/>
-        <!--+
-            | Build our snapshot war.
-            +-->
-        <attainGoal name="war:war"/>
-        <!--+
-            | Rename our war to include the version.
-            +-->
-        <ant:move
-            file="${maven.build.dir}/${maven.war.final.name}"
-            toFile="${maven.build.dir}/${maven.final.name}.war"
-            />
-        <!--+
-            | Install our snapshot war(s).
-            +-->
-		<artifact:install-snapshot
-			artifact="${maven.build.dir}/${maven.final.name}.war"
-			project="${pom}"
-			type="war"
-			/>
+        <ant:echo message="Building snapshot artifact ...."/>
+        <attainGoal name="war:install-snapshot"/>
+      -->
+      <!--+
+         | Create the war file.
+      <attainGoal name="war:war"/>
+         +-->
+      <!--+
+         | The rest is basically copy-paste from jar:deploy-snapshot.
+      <maven:snapshot project="${pom}"/>
+      <core:set var="artifactFile" value="${pom.artifactId}.war"/>
+      <core:set var="snapshotFile" value="${pom.artifactId}-${snapshotVersion}.war"/>
+      <ant:move file="${maven.build.dir}/${artifactFile}" toFile="${maven.build.dir}/${snapshotFile}"/>
+      <ant:property name="jardir__" value="${maven.repo.local}/${pom.artifactDirectory}/jars"/>
+      <ant:mkdir dir="${jardir__}"/>
+      <ant:copy
+         file="${maven.build.dir}/${artifactFile}"
+         tofile="${jardir__}/${pom.artifactId}-SNAPSHOT.jar"
+         overwrite="true"
+         />
+      <ant:copy
+         file="${maven.build.dir}/${artifactFile}"
+         tofile="${jardir__}/${maven.final.name}.jar"
+         />
+         +-->
     </goal>
         
-        
-    <!--+
-        | Build and deploy our artifact war.
-        +-->
-    <goal name="astrogrid-deploy-artifact">
-        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
-        <ant:echo message="Build version   : ${pom.currentVersion}"/>
-        <ant:echo message="Build directory : ${maven.build.dir}"/>
-        <!--+
-            | Create our artifact war.
-            +-->
-        <attainGoal name="astrogrid-install-artifact"/>
-        <!--+
-            | Deploy our artifact war.
-            +-->
-		<artifact:deploy
-			artifact="${maven.build.dir}/${maven.final.name}.war"
-			project="${pom}"
-			type="war"
-			/>
-    </goal>
-    
     <!--+
         | Build and deploy our snapshot war(s).
         +-->
@@ -126,6 +91,27 @@
 			/>
     </goal>
     
+    <!--+
+        | Build and deploy our artifact war.
+        +-->
+    <goal name="astrogrid-deploy-artifact">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <!--+
+            | Create our artifact war.
+            +-->
+        <attainGoal name="astrogrid-install-artifact"/>
+        <!--+
+            | Deploy our artifact war.
+            +-->
+		<artifact:deploy
+			artifact="${maven.build.dir}/${maven.final.name}.war"
+			project="${pom}"
+			type="war"
+			/>
+    </goal>
+    
         
 
     <!--+
@@ -136,6 +122,19 @@
         <ant:echo message="Build artifact  : ${pom.artifactId}"/>
         <ant:echo message="Build version   : ${pom.currentVersion}"/>
     </goal>
+
+    <!--+
+        | Clean our build target.
+        | (required as a target goal for the reactor)
+        +-->
+    <preGoal name="clean">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <ant:echo message="Cleaning build target ...."/>
+    </preGoal>
+
+
 
     <!--+
         | Initialise the webapp files.
@@ -195,6 +194,20 @@
                 <include name="**/*.wsdd"/>
             </fileset>
         </ant:copy>
+		<!--
+        <ant:copy verbose="false" todir="${axisDir}">
+            <ant:fileset dir="jsp">
+            </ant:fileset>
+        </ant:copy>
+		-->
+		<!--
+        <ant:mkdir dir="${axisDir}/WEB-INF/classes"/>
+        <ant:copy verbose="false"
+         file="${basedir}/log4j.properties"
+         todir="${axisDir}/WEB-INF/classes"
+         overwrite="true"
+         />
+        -->
         
         <!--+
             | Initialise our classpaths.
