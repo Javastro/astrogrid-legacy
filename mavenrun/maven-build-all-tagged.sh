@@ -25,7 +25,7 @@ $SCRIPTHOME/maven-build-tagged.sh maven-base $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FI
 $SCRIPTHOME/maven-build-tagged.sh common $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build-tagged.sh applications $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build-tagged.sh community $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
-$SCRIPTHOME/maven-build-tagged.sh datacenter $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
+$SCRIPTHOME/maven-build-tagged-new.sh datacenter $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build-tagged.sh jes $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build-tagged.sh mySpace $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build-tagged.sh portal $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
