@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractApplicationController.java,v 1.14 2004/03/23 12:51:26 pah Exp $
+ * $Id: AbstractApplicationController.java,v 1.15 2004/03/26 00:56:53 pah Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -34,6 +34,7 @@ import org.astrogrid.applications.description.ApplicationDescriptions;
 import org.astrogrid.applications.description.DescriptionLoader;
 import org.astrogrid.applications.description.SimpleApplicationDescription;
 import org.astrogrid.applications.description.SimpleDescriptionLoader;
+import org.astrogrid.applications.service.v1.cea.CeaFault;
 
 /**
  * Provides a some generic applicationController methods.
@@ -175,6 +176,15 @@ public abstract class AbstractApplicationController implements CommonExecutionCo
    public String returnRegistryEntry() {
       // TODO Auto-generated method stub
       throw new UnsupportedOperationException("AbstractApplicationController.returnRegistryEntry() not implemented");
+   }
+
+   protected CeaFault createFault(String message, Exception e) {
+       logger.info("failed with exception",e);
+      CeaFault jf = new CeaFault(message);
+       jf.setStackTrace(e.getStackTrace());
+       jf.setFaultReason(e.getMessage());
+       jf.setFaultCodeAsString(e.getClass().getName());
+       return jf;
    }
 
 }

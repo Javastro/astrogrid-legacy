@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationController.java,v 1.18 2004/03/23 12:51:25 pah Exp $
+ * $Id: CommandLineApplicationController.java,v 1.19 2004/03/26 00:56:53 pah Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -34,6 +34,7 @@ import org.astrogrid.applications.description.exception.ApplicationDescriptionNo
 import org.astrogrid.applications.description.exception.InterfaceDescriptionNotFoundException;
 import org.astrogrid.applications.manager.externalservices.MySpaceFromConfig;
 import org.astrogrid.applications.manager.externalservices.RegistryFromConfig;
+import org.astrogrid.applications.service.v1.cea.CeaFault;
 import org.astrogrid.community.User;
 import org.astrogrid.workflow.beans.v1.Tool;
 
