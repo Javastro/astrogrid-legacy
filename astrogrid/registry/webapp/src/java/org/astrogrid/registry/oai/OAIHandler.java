@@ -102,20 +102,23 @@ public class OAIHandler extends HttpServlet {
 	super.init(config);
 	String fileName =
 	    config.getServletContext().getInitParameter("properties");
+    String versionNumber =
+       config.getInitParameter("registry_version");
 	try {
 	    ServletContext context = getServletContext();
 	    attributes = new HashMap();
 	    Enumeration attrNames = context.getAttributeNames();
 	    while (attrNames.hasMoreElements()) {
-		String attrName = (String)attrNames.nextElement();
-		attributes.put(attrName, context.getAttribute(attrName));
-	    }
+	        String attrName = (String)attrNames.nextElement();
+	        attributes.put(attrName, context.getAttribute(attrName));
+	    }//while
 	    //FileInputStream in = new FileInputStream(fileName);
        System.out.println("the filename = " + fileName);
        URL configUrl = this.getClass().getClassLoader().getResource(fileName);       
 	    Properties properties = new Properties();
 	    //properties.load(in);
-       properties.load(configUrl.openStream());       
+       properties.load(configUrl.openStream());
+       properties.setProperty("registry_version",versionNumber);
 	    attributes.put("OAIHandler.properties", properties);
        
             String temp = properties.getProperty("OAIHandler.debug");

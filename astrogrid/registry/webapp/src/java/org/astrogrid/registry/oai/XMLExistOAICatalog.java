@@ -107,17 +107,12 @@ public class XMLExistOAICatalog extends AbstractCatalog {
    private ArrayList sets = null;
    private Transformer getMetadataTransformer = null;
    private boolean schemaLocationIndexed = false;
-   private static String collectionName = null;
-   private static String versionNumber = null;
    private static String returnVersionNumber = null;
    public static Config conf = null;
 
    static {
       if(conf == null) {
          conf = org.astrogrid.config.SimpleConfig.getSingleton();
-         versionNumber = conf.getString("org.astrogrid.registry.version");
-         returnVersionNumber = conf.getString("org.astrogrid.registry.return.version");
-         collectionName = "astrogridv" + versionNumber;
       }
    }
 
@@ -125,8 +120,14 @@ public class XMLExistOAICatalog extends AbstractCatalog {
 
          System.out.println("I am in the constructor");
       try {
+         String versionNumber = properties.getProperty("registry_version",null);
+         if(versionNumber == null)
+             versionNumber = conf.getString("org.astrogrid.registry.version");
+         
+         versionNumber = versionNumber.replace('.','_');
+         String collectionName = "astrogridv" + versionNumber;
          String temp;
-         debug = true;
+         debug = false;
             //temp=properties.getProperty("XMLFileOAICatalog.schemaLocationIndexed");
             //if ("true".equals(temp)) schemaLocationIndexed = true;
 
@@ -149,7 +150,7 @@ public class XMLExistOAICatalog extends AbstractCatalog {
          }
 
          String auth = (String)keyIter.next();
-         String xqlQuery = "for $x in //vr:Resource where $x/vr:Identifier/vr:AuthorityID = '" + auth + "'";
+         String xqlQuery = RegistryServerHelper.getXQLDeclarations(versionNumber) + " for $x in //vr:Resource where $x/vr:Identifier/vr:AuthorityID = '" + auth + "'";
          while(keyIter.hasNext()) {
             xqlQuery += " or $x/vr:Identifier/vr:AuthorityID = '" + (String)keyIter.next() + "'";
          }
@@ -176,10 +177,17 @@ public class XMLExistOAICatalog extends AbstractCatalog {
          */
 
          Document resultDoc = null;
-         System.out.println("the verisonNumber = " + versionNumber + " the return version number = " + returnVersionNumber);
+         System.out.println("the verisonNumber = " + versionNumber);
          XSLHelper xsh = new XSLHelper();
          resultDoc = sourceFile;
-         Document oaiDoc = xsh.transformToOAI(resultDoc,returnVersionNumber);
+         /*
+         if(!versionNumber.equals(returnVersionNumber)) {
+            resultDoc = xsh.transformResultVersions(sourceFile,versionNumber,returnVersionNumber);
+         }else {
+            resultDoc = sourceFile;
+         }
+         */
+         Document oaiDoc = xsh.transformToOAI(resultDoc,versionNumber);
 
          //System.out.println("the oai version = " + DomHelper.DocumentToString(oaiDoc));
          String xmlDoc = DomHelper.DocumentToString(oaiDoc);
