@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <xsl:stylesheet 
-	version="1.0" 
-	xmlns="http://www.ivoa.net/xml/VOResource/v0.9"
+	version="1.0"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9"
@@ -19,7 +18,7 @@
 	<xsl:output method="xml" />
 	
     <xsl:template match="vr:Service">
-        <xsl:element name="vr:Resource">        
+        <xsl:element name="vr:Resource">
             <xsl:attribute name="xsi:type">
                 <xsl:text>ServiceType</xsl:text>
             </xsl:attribute>
@@ -31,7 +30,7 @@
     <xsl:template match="vs:SkyService">
         <xsl:element name="vr:Resource">
             <xsl:attribute name="xsi:type">
-                <xsl:text>vs:SkyServiceType</xsl:text>
+                <xsl:text>SkyServiceType</xsl:text>
             </xsl:attribute>
       		<xsl:apply-templates/>            
         </xsl:element>
@@ -65,8 +64,6 @@
             </xsl:attribute>
 		<xsl:apply-templates/>            
         </xsl:element>
-        <!-- Process the rest of the elements -->
-
     </xsl:template>
     
     <xsl:template match="cs:ConeSearch">
@@ -193,7 +190,7 @@
     
     
     <xsl:template match="vr:VODescription">
-        <xsl:element name="vr:VODescription" namespace="vr">
+        <xsl:element name="vr:VODescription">
 			<xsl:apply-templates/>            
         </xsl:element>
     </xsl:template>       
