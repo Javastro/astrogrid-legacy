@@ -123,8 +123,8 @@ public class Catalog {
 	} // end of Catalog( Element )
 
 
-	public void setName(String name) { this.name = name; }
-	public String getName() { return name; }
+	public void setName(String name) { this.name = name.trim(); }
+	public String getName() { return name.trim(); }
 
 	public Iterator getTables() { return tables.iterator() ; }
 	public boolean addTable( Table table ) { return tables.add( table ) ; }

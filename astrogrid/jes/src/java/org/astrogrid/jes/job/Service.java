@@ -75,8 +75,8 @@ public class Service {
 	} // end of Service( Element )
 
 
-	public void setName(String name) { this.name = name; }
-	public String getName() { return name; }
+	public void setName(String name) { this.name = name.trim(); }
+	public String getName() { return name.trim(); }
 
 	public void setUrl(String url) { this.url = url; }
 	public String getUrl() { return url; }

@@ -73,8 +73,8 @@ public class Table {
 	} // end of Table( Element )
 
 
-	public void setName(String name) { this.name = name; }
-	public String getName() { return name; }
+	public void setName(String name) { this.name = name.trim(); }
+	public String getName() { return name.trim(); }
 
 	public void setParent(Catalog parent) { this.parent = parent; }
 	public Catalog getParent() { return parent; }	   
