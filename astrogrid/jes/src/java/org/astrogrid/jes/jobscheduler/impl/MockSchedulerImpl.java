@@ -1,4 +1,4 @@
-/*$Id: MockJobScheduler.java,v 1.6 2004/03/15 00:06:57 nw Exp $
+/*$Id: MockSchedulerImpl.java,v 1.1 2004/03/15 00:30:54 nw Exp $
  * Created on 18-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,10 +8,10 @@
  * with this distribution in the LICENSE.txt file.  
  *
 **/
-package org.astrogrid.jes.jobscheduler;
+package org.astrogrid.jes.jobscheduler.impl;
 
-import org.astrogrid.jes.comm.JobScheduler;
 import org.astrogrid.jes.component.ComponentDescriptor;
+import org.astrogrid.jes.jobscheduler.JobScheduler;
 import org.astrogrid.jes.types.v1.JobURN;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.jes.types.v1.cea.axis.MessageType;
@@ -22,14 +22,14 @@ import junit.framework.Test;
  * @author Noel Winstanley nw@jb.man.ac.uk 18-Feb-2004
  *
  */
-public class MockJobScheduler implements JobScheduler , ComponentDescriptor{
+public class MockSchedulerImpl implements JobScheduler , ComponentDescriptor{
     /** Construct a new MockJobScheduler
      * 
      */
-    public MockJobScheduler() {
+    public MockSchedulerImpl() {
         this(true);
     }
-    public MockJobScheduler(boolean willSucceed) {
+    public MockSchedulerImpl(boolean willSucceed) {
         this.willSucceed = willSucceed;
     }
     protected final boolean willSucceed;
@@ -79,7 +79,10 @@ public class MockJobScheduler implements JobScheduler , ComponentDescriptor{
 
 
 /* 
-$Log: MockJobScheduler.java,v $
+$Log: MockSchedulerImpl.java,v $
+Revision 1.1  2004/03/15 00:30:54  nw
+factored implemetation of scheduler out of parent package.
+
 Revision 1.6  2004/03/15 00:06:57  nw
 removed SchedulerNotifier interface - replaced references to it by references to JobScheduler interface - identical
 
