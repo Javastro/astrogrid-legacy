@@ -22,8 +22,13 @@
    RegistryService server = new RegistryService();
 
          String selectQuery = "<query><selectionSequence>" +
-           "<selection item='searchElements' itemOp='EQ' value='all'/>" +
+         "<selection item='searchElements' itemOp='EQ' value='all'/>" +
+         "<selectionOp op='$and$'/>" +
+         "<selection item='AuthorityID' itemOp='NE' value=''/>";                    
          "</selectionSequence></query>";
+         
+
+
    
    Document query = DomHelper.newDocument(selectQuery);
    

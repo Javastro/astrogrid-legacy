@@ -1,4 +1,4 @@
-<%@ page import="org.astrogrid.registry.server.harvest.*,
+<%@ page import="org.astrogrid.registry.server.admin.*,
                  org.astrogrid.store.Ivorn,
                  org.w3c.dom.Document,
                  org.astrogrid.io.Piper,
@@ -9,7 +9,7 @@
     session="false" %>
 
 <html>
-<head><title>Viewing Registry Entry</title>
+<head><title>Add Resource Entry</title>
 </head>
 
 <body>
@@ -22,9 +22,11 @@
 
 <pre>
 <%
-   RegistryHarvestService server = new RegistryHarvestService();
+   //RegistryHarvestService server = new RegistryHarvestService();
+   RegistryAdminService server = new RegistryAdminService();
 
-   Document entry = server.harvestFromResource(DomHelper.newDocument(resource));
+   //Document entry = server.harvestFromResource(DomHelper.newDocument(resource));
+   Document entry = server.update(DomHelper.newDocument(resource));
    
    if (entry == null) {
       out.write("<p>No entry returned</p>");

@@ -224,6 +224,13 @@
                 <include name="**/*.wsdd"/>
             </fileset>
         </ant:copy>
+
+        <ant:copy verbose="false" todir="${axisDir}">
+            <ant:fileset dir="jsp">
+            </ant:fileset>
+        </ant:copy>    
+        
+        
         <!--+
             | Initialise our classpaths.
             +-->
