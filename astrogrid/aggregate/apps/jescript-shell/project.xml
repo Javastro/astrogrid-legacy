@@ -3,9 +3,9 @@
         <extend>${basedir}/../../../maven-base/project.xml</extend>
         <currentVersion>${astrogrid.aggregate.version}</currentVersion>
         <id>jescript-shell</id>
-        <name>JEScript commandline shell</name>
-        <description>Package of groovy shell with Astrogrid System Objects</description>
-        <shortDescription>Groovy JEScript Shell</shortDescription>
+        <name>JEScript Console</name>
+        <description>Package of Groovy Console with Astrogrid System Objects</description>
+        <shortDescription>Groovy JEScript Console</shortDescription>
 
         <dependencies>
                 <!-- this dep must always be first in the list -->
@@ -29,23 +29,20 @@
                     <jnlp.jar>true</jnlp.jar>
                 </properties>
     </dependency>
+    
 
+    <!-- needed for compilation only -->
+    <!-- don't know if the first ones of these are needed -->
     <dependency>
        <groupId>org.astrogrid</groupId>
        <artifactId>astrogrid-scripting</artifactId>
        <version>${astrogrid.scripting.version}</version>
-                <properties>
-                    <jnlp.jar>true</jnlp.jar>
-                </properties>
     </dependency>
     <!-- scripting uses externalValue classes - currently in cea server. will factor out later into a smaller package -->
         <dependency>
                 <groupId>org.astrogrid</groupId>
                 <artifactId>astrogrid-cea-server</artifactId>
                 <version>${astrogrid.applications.version}</version>
-                <properties>
-                    <jnlp.jar>true</jnlp.jar>
-                </properties>
         </dependency>
         <!-- helper libraries -->
         <dependency>
@@ -53,21 +50,12 @@
                 <artifactId>stil</artifactId>
                 <version>2.0-1</version>
                 <url>http://www.star.bristol.ac.uk/~mbt/stil/</url>
-                <properties>
-                    <jnlp.jar>true</jnlp.jar>
-                </properties>
         </dependency>
     <dependency>
       <artifactId>junit</artifactId>
       <groupId>junit</groupId>
       <version>3.8</version>
-      <properties>
-                    <jnlp.jar>true</jnlp.jar>
-      </properties>
-    </dependency>       
-        
-        
-    <!-- needed for compilation only -->
+    </dependency>                       
     <dependency>
        <groupId>org.astrogrid</groupId>
        <artifactId>astrogrid-workflow-objects</artifactId>
@@ -98,29 +86,7 @@
                 <version>${astrogrid.community.version}</version>
         </dependency>
 
-    <!-- think astrogrid comes with these anyhow..
-    <dependency>
-      <groupId>xerces</groupId>
-      <artifactId>xerces</artifactId>
-      <version>2.4.0</version>
-      <url>http://xml.apache.org/</url>
-                <properties>
-                    <jnlp.jar>true</jnlp.jar>
-                    <jnlp.main.jar>true</jnlp.main.jar>
-                </properties>
-    </dependency>
 
-    <dependency>
-      <groupId>xml-apis</groupId>
-      <artifactId>xml-apis</artifactId>
-      <version>1.0.b2</version>
-      <url>http://xml.apache.org/</url>
-                      <properties>
-                    <jnlp.jar>true</jnlp.jar>
-                    <jnlp.main.jar>true</jnlp.main.jar>
-                </properties>
-    </dependency>
--->
         <!-- stuff required in maven build -->
         <dependency>
             <groupId>commons-jelly</groupId>

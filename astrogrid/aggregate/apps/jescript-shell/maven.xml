@@ -6,14 +6,14 @@
         <goal name="astrogrid-deploy-site">
             <echo message="Please deploy the site docs from the base myspace project"/>
         </goal>
-        <goal name="astrogrid-deploy-snapshot" prereqs="war:deploy-snapshot"/>
-        <goal name="astrogrid-build-snapshot" prereqs="war:war">
+        <goal name="astrogrid-deploy-snapshot" prereqs="jar:deploy-snapshot,war:deploy-snapshot"/>
+        <goal name="astrogrid-build-snapshot" prereqs="jar:snapshot,war:war">
                 <echo>NB - no goal exists to build war snapshot - called war:war instead </echo>
         </goal>
-        <goal name="astrogrid-install-snapshot" prereqs="war:install-snapshot"/>
-        <goal name="astrogrid-deploy-artifact" prereqs="war:deploy"/>
-        <goal name="astrogrid-build-artifact" prereqs="war:war"/>
-        <goal name="astrogrid-install-artifact" prereqs="war:install"/>
+        <goal name="astrogrid-install-snapshot" prereqs="jar:install-snapshot,war:install-snapshot"/>
+        <goal name="astrogrid-deploy-artifact" prereqs="jar:deploy,war:deploy"/>
+        <goal name="astrogrid-build-artifact" prereqs="jar:jar,war:war"/>
+        <goal name="astrogrid-install-artifact" prereqs="jar:install,war:install"/>
 
 
         <postGoal name="java:compile">
@@ -69,8 +69,8 @@
                 <jsl:template match="resources">
                         <jxml:copy>
                                 <jxml:element name="extension">
-                                        <jxml:attribute name="name">Astrogrid Workflow CDK</jxml:attribute>                                        
-                                        <jxml:attribute name="href">http://software.astrogrid.org/jnlp/astrogrid-cdk-workflow/astrogrid-cdk-workflow.jnlp</jxml:attribute>
+                                        <jxml:attribute name="name">Astrogrid Script CDK</jxml:attribute>                                        
+                                        <jxml:attribute name="href">http://software.astrogrid.org/jnlp/astrogrid-cdk-scripting/astrogrid-cdk-scripting.jnlp</jxml:attribute>
                                         <!-- for dev only 
                                         <jxml:attribute name="href">http://localhost:8080/astrogrid-cdk-workflow/astrogrid-cdk-workflow.jnlp</jxml:attribute>
                                         -->
