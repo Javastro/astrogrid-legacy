@@ -1,0 +1,9 @@
+<!-- Web Services Deployment Descriptor for the undeploying DatasetAgent service
+     1) Ensure Tomcat is running
+     2) Enter the following:
+              java org.apache.axis.client.AdminClient DatasetAgent-undeploy.wsdd -l http://localhost:8080/axis/services/AdminService DatasetAgent-undeploy.wsdd
+-->
+
+<undeployment xmlns="http://xml.apache.org/axis/wsdd/">
+  <service name="org.astrogrid.datacenter.datasetagent.DatasetAgent"/>
+</undeployment>
