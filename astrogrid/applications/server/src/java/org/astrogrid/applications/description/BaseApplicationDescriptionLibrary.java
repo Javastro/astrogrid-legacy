@@ -1,4 +1,4 @@
-/*$Id: BaseApplicationDescriptionLibrary.java,v 1.8 2004/12/03 15:33:39 jdt Exp $
+/*$Id: BaseApplicationDescriptionLibrary.java,v 1.9 2004/12/03 15:37:05 jdt Exp $
  * Created on 17-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -42,12 +42,6 @@ public class BaseApplicationDescriptionLibrary implements ApplicationDescription
         String getAuthorityID();
     }
 
-    /** Construct a new BaseApplicationDescriptionLibrary
-     * 
-     */
-    public BaseApplicationDescriptionLibrary() {
-        super();
-    }
 
     /**Construct a new BaseApplicationDescriptionLibrary
     * @param env2
@@ -117,6 +111,9 @@ public class BaseApplicationDescriptionLibrary implements ApplicationDescription
 
 /* 
 $Log: BaseApplicationDescriptionLibrary.java,v $
+Revision 1.9  2004/12/03 15:37:05  jdt
+restored it how it was....change PAL instead.
+
 Revision 1.8  2004/12/03 15:33:39  jdt
 restored the default ctor, otherwise PAL breaks.
 
