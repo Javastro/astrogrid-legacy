@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Calendar;
 import java.util.Set;
 import java.util.Iterator;
+import org.astrogrid.registry.common.RegistryConfig;
 
 /**
  * 
@@ -45,6 +46,8 @@ public class RegistryService implements
     */
    private String endPoint = null;
    
+   private boolean dummyMode = false;
+   
      
 
    /**
@@ -62,6 +65,8 @@ public class RegistryService implements
     */     
    public RegistryService(String endPoint) {
       this.endPoint = endPoint;
+      RegistryConfig.loadConfig();
+      dummyMode = Boolean.valueOf(RegistryConfig.getProperty("dummy.mode.on","false")).booleanValue();
    }
     
 
@@ -82,7 +87,25 @@ public class RegistryService implements
       return _call;       
    }
    
+   private Document getDummyDocument() throws Exception {
+      DocumentBuilder registryBuilder = null;
+      registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+      return registryBuilder.parse(RegistryConfig.getDummyTemplate());     
+   }
+   
+   /**
+      * Small convenience method to allow clients to pass in xml strings to be converted to DOM before
+      * sending it along the web service.
+      * 
+      * @param query string to be converted to a DOM object
+      * @return XML docuemnt object representing the result of the query.
+      * @author Kevin Benson 
+      */   
    public Document submitQueryString(String query) throws Exception {
+      if(dummyMode) return getDummyDocument();
+      if(this.endPoint == null || this.endPoint.trim().length() <= 0) {
+         throw new IllegalAccessException("This method cannot be accessed when no registry location is defined.");   
+      }
       Reader reader2 = new StringReader(query);
       InputSource inputSource = new InputSource(reader2);
       DocumentBuilder registryBuilder = null;
@@ -99,10 +122,13 @@ public class RegistryService implements
    * 
    * @param query XML document object representing the query language used on the registry.
    * @return XML docuemnt object representing the result of the query.
-   * @deprecated Being deprecated this method now only returns the full XML document.
    * @author Kevin Benson 
    */        
    public Document submitQuery(Document query) throws Exception {
+      if(dummyMode) return getDummyDocument();
+      if(this.endPoint == null || this.endPoint.trim().length() <= 0) {
+         throw new IllegalAccessException("This method cannot be accessed when no registry location is defined.");   
+      }
       String requestQuery =   XMLUtils.ElementToString(query.getDocumentElement());
       requestQuery = "<submitQuery xmlns='http://query.server.registry.astrogrid.org'>" + requestQuery + "</submitQuery>";
       
@@ -127,52 +153,11 @@ public class RegistryService implements
       return sbe.getAsDocument();       
    }
 
-   public Document fullNodeQuery(String query) throws Exception {
-      Reader reader2 = new StringReader(query);
-      InputSource inputSource = new InputSource(reader2);
-      DocumentBuilder registryBuilder = null;
-      registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-      Document doc = registryBuilder.parse(inputSource);
-      return fullNodeQuery(doc);         
-   }
-   
-
-   /**
-     * fullNodeQuery queries the registry with the a XML docuemnt object, and returns the results
-     * in a XML Document object query.
-     * 
-     * @param query XML document object representing the query language used on the registry.
-     * @return XML docuemnt object representing the result of the query.
-     * @author Kevin Benson 
-     */   
-   public Document fullNodeQuery(Document query) throws Exception {
-
-      String requestQuery =   XMLUtils.ElementToString(query.getDocumentElement());
-      requestQuery = "<fullNodeQuery xmlns='http://query.server.registry.astrogrid.org'>" + requestQuery + "</fullNodeQuery>";
-      
-      Reader reader2 = new StringReader(requestQuery);
-      InputSource inputSource = new InputSource(reader2);
-      //get a call object operation to the web service.
-      Call call = getCall();
-      
-      DocumentBuilder registryBuilder = null;
-      registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-      Document doc = registryBuilder.parse(inputSource);
-      
-      SOAPBodyElement sbeRequest = new SOAPBodyElement(doc.getDocumentElement());
-      sbeRequest.setName("fullNodeQuery");
-      sbeRequest.setNamespaceURI("http://query.server.registry.astrogrid.org");
-      
-      System.out.println("sending " + XMLUtils.DocumentToString(doc));
-      
-      Vector result = (Vector) call.invoke (new Object[] {sbeRequest});
-
-      SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
-      System.out.println("received " + XMLUtils.DocumentToString(sbe.getAsDocument()));
-      return sbe.getAsDocument();         
-   }
-   
    public Document harvestQuery(String dateSince) throws Exception {
+      if(dummyMode) return getDummyDocument();
+      if(this.endPoint == null || this.endPoint.trim().length() <= 0) {
+         throw new IllegalAccessException("This method cannot be accessed when no registry location is defined.");   
+      }      
       SimpleDateFormat sdf = null;
       Date dat = null;
       if(dateSince.indexOf("T") == -1) {
@@ -187,6 +172,10 @@ public class RegistryService implements
    }
    
    public Document harvestQuery(Date dateSince) throws Exception {
+      if(dummyMode) return getDummyDocument();
+      if(this.endPoint == null || this.endPoint.trim().length() <= 0) {
+         throw new IllegalAccessException("This method cannot be accessed when no registry location is defined.");   
+      }      
       SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
       DocumentBuilder registryBuilder = null;
       registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -204,6 +193,10 @@ public class RegistryService implements
    }
    
    public Document harvestQuery(Document query) throws Exception {
+      if(dummyMode) return getDummyDocument();
+      if(this.endPoint == null || this.endPoint.trim().length() <= 0) {
+         throw new IllegalAccessException("This method cannot be accessed when no registry location is defined.");   
+      }      
       String requestQuery =   XMLUtils.ElementToString(query.getDocumentElement());
       requestQuery = "<harvestQuery xmlns='http://query.server.registry.astrogrid.org'>" + requestQuery + "</harvestQuery>";
 
@@ -229,7 +222,11 @@ public class RegistryService implements
       return sbe.getAsDocument();         
    }
    
-   public Document loadRegistry(Document query) throws Exception {      
+   public Document loadRegistry(Document query) throws Exception {
+      if(dummyMode) return getDummyDocument();
+      if(this.endPoint == null || this.endPoint.trim().length() <= 0) {
+         throw new IllegalAccessException("This method cannot be accessed when no registry location is defined.");   
+      }
       Call call = getCall();
       DocumentBuilder registryBuilder = null;
       registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -260,6 +257,37 @@ public class RegistryService implements
       return hm;      
    }
    
+   public String getResourceByIdentifier(String ident) throws Exception {
+      if(dummyMode) return "dummy";
+      String returnVal = null;
+      boolean checkConfig = true;
+      if(this.endPoint != null || this.endPoint.trim().length() > 0) {
+         int iTemp = 0;
+         iTemp = ident.indexOf("/");
+         if(iTemp == -1) iTemp = ident.length();
+         String selectQuery = "<query><selectionSequence>" +
+         "<selection item='searchElements' itemOp='EQ' value='all'/>" +
+         "<selectionOp op='$and$'/>" +
+         "<selection item='AuthorityID' itemOp='EQ' value='" + ident.substring(0,iTemp) + "'/>";
+         if(iTemp < ident.length()) {
+            selectQuery += "<selectionOp op='AND'/>" + 
+            "<selection item='ResourceKey' itemOp='EQ' value='" + ident.substring((iTemp+1)) + "'/>";
+         }
+         selectQuery += "</selectionSequence></query>";
+         Document doc = submitQueryString(selectQuery);
+         if(doc != null) {
+            returnVal = XMLUtils.DocumentToString(doc);
+            if(returnVal.indexOf("AuthorityID") != -1) {
+               checkConfig = false;
+            }//if
+         }//if
+      }//if
+      if(checkConfig) {
+         returnVal = RegistryConfig.getProperty(ident);   
+      }
+      return returnVal;
+   }
+      
    public static Document buildOAIDocument(Document responseDoc,String accessURL, String dateStamp,Map requestVars) {
       SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
       String xmlDoc = "<OAI-PMH xmlns='http://www.openarchives.org/OAI/2.0/' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd'>";
@@ -300,7 +328,4 @@ public class RegistryService implements
       }
       return doc;
    }
-   
-   
-   
 }

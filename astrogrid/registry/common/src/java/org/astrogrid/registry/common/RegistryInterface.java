@@ -20,14 +20,6 @@ public interface RegistryInterface{
     * @throws Exception
     */
    public Document submitQuery(Document query) throws Exception;
-   /**
-    * This method will be deleted in time. See submitQuery
-    * @param query
-    * @return
-    * @throws Exception
-    * @see submitQuery
-    */
-   public Document fullNodeQuery(Document query) throws Exception;
    
    /**
     * Queries for all the information changed since a particular date.  The DOM model passed in has only one main
@@ -46,6 +38,6 @@ public interface RegistryInterface{
     * @return A document object conforming of only this registry entry.
     * @throws Exception
     */
-   public Document loadRegistry(Document query) throws Exception;   
+   public Document loadRegistry(Document query) throws Exception;
    
 }

@@ -121,6 +121,11 @@ public class RegistryConfig
     */
    public static final String RESOURCE_XML_TEMPLATE = "resource.xml.template";
    
+   /**
+    * The name of the Dummy tempalte
+    *
+    */
+   public static final String DUMMY_XML_TEMPLATE = "dummy.xml.template";
 
 	/**
 	 * The name of the publsih registry's authority id used by this registry. (Currently not used)
@@ -508,6 +513,33 @@ public class RegistryConfig
     File fi = new File(regResourceTemplate);
     return fi;
    }
+   
+   
+   /**
+   * Organisatin Template file and location
+   *
+   */
+   private static String regDummyTemplate = null ;
+
+   /**
+   * Static method to get our Organisation template
+   *
+   */
+   public static File getDummyTemplate() {
+    //
+    // Try reading our config property.
+    if ((null == regDummyTemplate) || (regDummyTemplate.length() <= 0))
+       {
+       if (DEBUG_FLAG) System.out.println("getDummyTemplate()") ;
+       if (DEBUG_FLAG) System.out.println("  Trying config property '" + DUMMY_XML_TEMPLATE + "'") ;
+       regDummyTemplate = getProperty(DUMMY_XML_TEMPLATE);
+       if (null != regDummyTemplate) regDummyTemplate = regDummyTemplate.trim();
+       if (DEBUG_FLAG) System.out.println("  Config property result : " + regDummyTemplate);
+    }
+    File fi = new File(regDummyTemplate);
+    return fi;
+   }
+   
    
    
 

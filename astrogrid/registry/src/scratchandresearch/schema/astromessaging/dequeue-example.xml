@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<agr:message
-  xmlns:agr="http://www.astrogrid.org/registry"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.astrogrid.org/registry astrogrid-messaging.xsd">
-  
-  <agr:dequeue queue-name="queue1"/>
-  
-</agr:message>

@@ -17,6 +17,7 @@ import org.w3c.dom.Node;
 import java.io.Reader;
 import java.io.StringReader;
 import org.xml.sax.InputSource;
+import org.astrogrid.registry.common.RegistryConfig;
 
 /**
  * Class Name: RegistryAdminService
@@ -36,7 +37,8 @@ public class RegistryAdminService implements
     * target end point  is the location of the webservice. 
     */
     private String endPoint = null; 
-
+    private boolean dummyMode = false;
+    
     /**
      * Empty constructor that defaults the end point to local host.
      * @author Kevin Benson
@@ -52,6 +54,8 @@ public class RegistryAdminService implements
     */ 
    public RegistryAdminService(String endPoint) {
       this.endPoint = endPoint;
+      RegistryConfig.loadConfig();
+      dummyMode = Boolean.valueOf(RegistryConfig.getProperty("dummy.mode.on","false")).booleanValue();
    }
     
    /**

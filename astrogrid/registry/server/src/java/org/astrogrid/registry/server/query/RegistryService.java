@@ -42,42 +42,17 @@ public class RegistryService implements
    * @author Kevin Benson 
    */
    public Document submitQuery(Document query) throws Exception {
-    Document registryDoc = null;
-    System.out.println("received = " + XMLUtils.DocumentToString(query));    
-    try {
-		registryDoc = QueryParser3_0.parseQuery(query);
-      System.out.println("the registryDoc = " + XMLUtils.DocumentToString(registryDoc));
-	} catch (ClassNotFoundException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
-   return registryDoc;
-	//return query;
-  }
-  
-  /**
-    * fullNodeQuery queries the registry with the a XML docuemnt object, and returns the results
-    * in a XML Document object query.
-    * 
-    * @param query XML document object representing the query language used on the registry.
-    * @return XML docuemnt object representing the result of the query.
-    * @deprecated Being deprecated this method now only returns the full XML document.
-    * @author Kevin Benson 
-    */  
-  public Document fullNodeQuery(Document query) throws Exception {
-   Document registryDoc = null;
-   System.out.println("received = " + XMLUtils.DocumentToString(query));
-	try {
-      //Go query the registry.
-		registryDoc = QueryParser3_0.parseFullNodeQuery(query);
-      System.out.println("the registryDoc = " + XMLUtils.DocumentToString(registryDoc));
-   } catch (ClassNotFoundException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      Document registryDoc = null;
+      System.out.println("received = " + XMLUtils.DocumentToString(query));    
+      try {
+   		registryDoc = QueryParser3_0.parseQuery(query);
+         System.out.println("the registryDoc = " + XMLUtils.DocumentToString(registryDoc));
+   	} catch (ClassNotFoundException e) {
+   		// TODO Auto-generated catch block
+   		e.printStackTrace();
+   	}
+      return registryDoc;
    }
-   //return the response
-   return registryDoc;
-  }
   
    public Document harvestQuery(Document query) throws Exception {
       System.out.println("received = " + XMLUtils.DocumentToString(query));

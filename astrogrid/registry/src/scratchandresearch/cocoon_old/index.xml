@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-
-<agtemplate title="Registry Index" help="agregistryhelp.html">
-
-  <h2><a href="agregistrybrowse"> Browse registry </a></h2>
-  <h2><a href="agregistryupdate"> Update registry </a></h2>
-
-</agtemplate>

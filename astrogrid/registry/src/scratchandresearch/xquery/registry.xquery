@@ -1,1 +1,0 @@
-//registry/service/contact
