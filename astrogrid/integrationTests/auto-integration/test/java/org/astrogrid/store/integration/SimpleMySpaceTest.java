@@ -79,7 +79,7 @@ public final class SimpleMySpaceTest extends TestCase {
         myspace.setThrow(true);
         mySpaceWiper = new MySpaceWiper(myspace);
         defaultUser =
-            "NeilHamilton" + Long.toString(System.currentTimeMillis());
+            "JonathonAitken" + Long.toString(System.currentTimeMillis());
         createUser(defaultUser, defaultCommunity);
     }
     /**
