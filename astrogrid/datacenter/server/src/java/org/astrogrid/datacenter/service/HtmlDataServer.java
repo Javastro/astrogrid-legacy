@@ -1,5 +1,5 @@
 /*
- * $Id: HtmlDataServer.java,v 1.13 2004/07/06 16:00:30 mch Exp $
+ * $Id: HtmlDataServer.java,v 1.14 2004/07/15 17:07:35 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -18,6 +18,7 @@ import org.astrogrid.datacenter.queriers.TargetIndicator;
 import org.astrogrid.datacenter.queriers.status.QuerierStatus;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.store.Agsl;
+import java.net.URISyntaxException;
 
 /**
  * A set of dataserver methods for serving data in HTML form, eg for servlets
@@ -75,20 +76,12 @@ public class HtmlDataServer
    /**
     * Convenience routine for JSPs; decides where target should be from
     * resultsTarget string */
-   public static TargetIndicator makeTarget(String resultsTarget) throws MalformedURLException {
-      TargetIndicator target = null;
+   public static TargetIndicator makeTarget(String resultsTarget) throws MalformedURLException, URISyntaxException {
       if ( (resultsTarget == null) || (resultsTarget.trim().length()==0)) {
-         target = null; //so caller knows that it has to use some other target
+         return null; //so caller knows that it has to use some other target
       }
-      else {
-         if (resultsTarget.startsWith("mailto:")) {
-            target = new TargetIndicator(resultsTarget.substring(7));
-         }
-         else {
-            target = new TargetIndicator(new Agsl(resultsTarget));
-         }
-      }
-      return target;
+
+      return TargetIndicator.makeIndicator(resultsTarget);
    }
 
    
