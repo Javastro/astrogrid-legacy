@@ -1,4 +1,4 @@
-/*$Id: MySpaceTest.java,v 1.2 2004/03/12 23:55:04 jdt Exp $
+/*$Id: MySpaceTest.java,v 1.3 2004/03/22 16:31:37 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -7,24 +7,86 @@
  * Software License version 1.2, a copy of which has been included
  * with this distribution in the LICENSE.txt file.
  *
- */
+**/
 package org.astrogrid.integrationtest.store;
 
-import junit.framework.TestCase;
+import java.io.IOException;
+import junit.framework.Test;
+import junit.framework.TestSuite;
+import org.astrogrid.community.User;
+import org.astrogrid.integrationtest.common.ConfManager;
+import org.astrogrid.store.Agsl;
+import org.astrogrid.store.delegate.local.LocalFileStore;
+import org.astrogrid.store.delegate.myspace.MySpaceIt04Delegate;
 
 /** Tests the automatically deployed myspace on VM07
  *
  * @author mch
  */
 
-public final class MySpaceTest extends TestCase {
-    /** 
-     * reminder to jdt and mch to reinstate this
-     * @TODO reinstate this test
-     *
+public class MySpaceTest extends StoreClientTestHelper {
+
+   private static User testUser;
+
+   public static String MYSPACE;
+
+   public MySpaceTest() throws IOException {
+      super();
+      
+      MYSPACE = ConfManager.getInstance().getMySpaceEndPoint();//"http://vm05.astrogrid.org:8080/astrogrid-mySpace/services/MySpaceManager";
+      testUser = new User("Me", "Us", "Loony");
+   }
+   
+   public void testStoreAccess() throws IOException
+   {
+      assertStoreAccess(new MySpaceIt04Delegate(testUser, MYSPACE), new MySpaceIt04Delegate(testUser, MYSPACE), new LocalFileStore());
+   }
+
+   /** Tests getFile etc - if these are failing the rest of the tests might
+    * not make much sense.  This is a bit of a combined one anyway... */
+   public void testGetFile() throws IOException
+   {
+      assertGetFileWorks(new MySpaceIt04Delegate(testUser, MYSPACE));
+   }
+
+   /** Tests making folders and paths and stuff.  A bit
+    */
+   public void testFolders() throws IOException {
+      assertFoldersWork(new MySpaceIt04Delegate(testUser, MYSPACE));
+      
+   }
+   
+   public void testMove() throws IOException
+   {
+      assertMove(new MySpaceIt04Delegate(testUser, MYSPACE), new Agsl(MYSPACE, path+COPY_TEST ));
+   }
+
+   public void testCopy() throws IOException
+   {
+      assertCopy(new MySpaceIt04Delegate(testUser, MYSPACE), new Agsl(MYSPACE, path+COPY_TEST));
+   }
+   
+   public void testDelete() throws IOException {
+      assertDelete(new MySpaceIt04Delegate(testUser, MYSPACE));
+   }
+   
+    /**
+     * Assembles and returns a test suite made up of all the testXxxx() methods
+      * of this class.
      */
-    public void testIFail(){
-        fail();
+    public static Test suite() {
+        // Reflection is used here to add all the testXXX() methods to the suite.
+        return new TestSuite(MySpaceTest.class);
+    }
+
+    /**
+     * Runs the test case.
+     */
+    public static void main(String args[])
+    {
+       path = "avodemo@test.astrogrid.org/serv1/mch/";
+       
+       junit.textui.TestRunner.run(suite());
     }
 
 }
@@ -32,29 +94,15 @@ public final class MySpaceTest extends TestCase {
 
 /*
 $Log: MySpaceTest.java,v $
-Revision 1.2  2004/03/12 23:55:04  jdt
-temp changes to get the project building
+Revision 1.3  2004/03/22 16:31:37  mch
+Fixed tests for new StoreClient package
 
-Revision 1.1  2004/03/04 19:06:04  jdt
-Package name changed to lower case to satisfy coding standards.  mea culpa - didn't read the Book.  Tx Martin.
+Revision 1.3  2004/03/22 15:01:14  mch
+Copied in StoreClientTestHelper
 
 Revision 1.1  2004/03/02 01:20:23  mch
 Added Vm05 Myspace tests
 
-Revision 1.1  2004/03/01 22:35:09  mch
-Tests for StoreClient
-
-Revision 1.4  2004/03/01 16:51:10  mch
-Removed test for equality between local filespaces
-
-Revision 1.3  2004/01/23 15:22:27  jdt
-added logging
-
-Revision 1.2  2003/12/03 17:39:25  mch
-New factory/interface based store delegates
-
-Revision 1.1  2003/09/22 17:36:09  mch
-tests for storeDumnmyDelegate
 
 */
 
