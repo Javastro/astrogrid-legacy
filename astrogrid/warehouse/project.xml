@@ -15,7 +15,7 @@
 	</ul>
 	</p>
 
-<section name="Installation"><p>
+<section name="Installation"><p> 
 
 The front-end web service is available for download. Please download warehouse.war. The front-end web-service works with a back-end grid (OGSI) service. The back-end components are not currently distributed by AstroGrid as they are difficult to install. 
 </p><p>
