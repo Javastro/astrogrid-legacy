@@ -35,6 +35,10 @@ import uk.org.ogsadai.service.daiservicegroups.helpers.DAIServiceGroupQueryHelpe
  * in the delegate.  The caller must either set this GSH directly,
  * using {@link setFactoryHandle} or tell the delegate to obtain
  * it from the OGSA-DAI registry using {@link setFactoryGshFromRegistry}.
+ *
+ * THIS CLASS HAS BEEN DEPRECATED AND IS NO LONGER IN USE.
+ *
+ * @deprecated
  */
 public class GdsDelegate extends GridServiceDelegate {
 

@@ -1,5 +1,5 @@
 /*
- * $Id: GdsQueryDelegate.java,v 1.14 2004/03/24 12:35:18 kea Exp $
+ * $Id: GdsQueryDelegate.java,v 1.15 2004/03/25 17:22:43 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -55,51 +55,67 @@ import java.util.Calendar;
 import java.util.TimeZone;
                                                                                 
 /**
- *
- * @author K Andrews
- */
-
-/**
  * A high-level delegate for invoking a query on an OGSA-DAI Grid Data Service.
  * 
  * This class uses the OGDA-DAI client toolkit, introduced in OGSA-DAI 3.1,
  * to interact with the OGSA-DAI GDS.  The toolkit abstracts away most of
  * the detail of the underlying service, which is good as the whole grid 
  * infrastructure is about to change out from under us.
+ *
+ * @author K Andrews
  */
 public class GdsQueryDelegate 
 {
+  static Logger logger = Logger.getLogger("GdsQueryLogger");
+
   /**
    * Default empty constructor.
    * 
-   * @throws Exception
    * @throws IOException
    * @throws SAXException
    */
-  
-  static Logger logger = Logger.getLogger("GdsQueryLogger");
-  
-  public GdsQueryDelegate() 
-      throws Exception, IOException, SAXException {
+  public GdsQueryDelegate() throws IOException, SAXException 
+  {
     super();    //Can throw IOException and SAXException
   }
 
-  /*
+  /**
    * Uses an OGSA-DAI Grid Data Service to perform the supplied SQL query.
    *
-   * @returns Document containing XML RowSet database query results
+   * @param sql String containing the SQL query to be performed
+   *
+   * @param registryUrlString String containing the URL of the DAI Registry
+   *  to be used to find a GDS factory
+   *
+   * @param outputUrl String containing the URL to which results should be
+   * returned;  can be a file:// or gsiftp:// URL.
+   *
    * @throws Exception
-
    */
   public void doRealQuery(String sql, String registryUrlString, 
-        String outputUrl) throws Exception {
-
+        String outputUrl) throws Exception 
+  {
     int timeout = 300;  // TOFIX configurable?
 
     ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
     String xmlString ="";
 
-    // TOFIX CHECK FOR NULL PARAMETERS HERE 
+    // Check for null parameters
+    if (sql == null) {
+      String errMess = "Input sql query cannot be null";
+      logger.error(errMess);
+      throw new Exception(errMess);
+    }
+    if (registryUrlString == null) {
+      String errMess = "Input registry URL cannot be null";
+      logger.error(errMess);
+      throw new Exception(errMess);
+    }
+    if (outputUrl == null) {
+      String errMess = "Output results URL cannot be null";
+      logger.error(errMess);
+      throw new Exception(errMess);
+    }
 
     // Parse the delivery URL.  GlobusURL is used insted of java.net.URL
     // in order to include gsiftp URLs.
@@ -118,9 +134,23 @@ public class GdsQueryDelegate
       // Get the registry
       ServiceGroupRegistry registry = 
             ServiceFetcher.getRegistry(registryUrlString);
+      if (registry == null) {
+        String errMess = 
+            "Couldn't get ServiceGroupRegistry from URL "
+            + registryUrlString;
+        logger.error(errMess);
+        throw new Exception(errMess);
+      }
 
       // Get the factory from the registry
       String factoryHandle = getFactoryHandle(registry, needSecure);
+      if (factoryHandle == null) {
+        String errMess = 
+            "Couldn't get handle for GDS factory from registry at "
+            + registryUrlString;
+        logger.error(errMess);
+        throw new Exception(errMess);
+      }
 
       // Locate the Factory
       GridDataServiceFactory factory = 
@@ -142,6 +172,7 @@ public class GdsQueryDelegate
       logger.info("Sending SQL Query \"" + sql + "\" to GDS");                                                                                
       // Set up the XSLT transform at the server end
       // First, delivery of the stylesheet
+      // KLUDGE - hardwired transform address!!
       DeliverFromURL xsltDelivery = new DeliverFromURL(
             "http://astrogrid.ast.cam.ac.uk/xslt/ag-warehouse-first.xsl");
       request.addActivity(xsltDelivery);
@@ -227,13 +258,12 @@ public class GdsQueryDelegate
         if (status.indexOf(OGSADAI_STATUS_COMPLETE) != -1) {  //Completed
           break;  // Out of while loop
         }
-        else if (status.indexOf(OGSADAI_STATUS_INCOMPLETE) == -1) {  
-          // Unknown status
-          String errMess = "blah";
-          logger.error(errMess);
-          throw new Exception(errMess);
+        else if (status.indexOf("status=\"ERROR\"") != -1) { //Error 
+          logger.error(status);
+          throw new Exception(status);
         }
-        else {
+        else if (status.indexOf(OGSADAI_STATUS_INCOMPLETE) != -1) { 
+          //Still going
           //Min termination 2 hours from now
           refreshTermination(gds,2);  
 
@@ -241,8 +271,14 @@ public class GdsQueryDelegate
           Thread.currentThread().sleep(1000*multFac);
 
           if (multFac < 300) { //Arbitrary max wait of 5 minutes 
-            multFac = multFac + 1;  //Wait longer next time
+            //multFac = multFac + 1;  //Wait longer next time
           }
+        }
+        else {
+          //Unknown status, 
+          String errMess = "Didn't understand status: " + status;
+          logger.error(errMess);
+          throw new Exception(errMess);
         }
       }
       //Got here, so request has completed successfully and can return
@@ -261,17 +297,47 @@ public class GdsQueryDelegate
     }
   }
 
-  protected void refreshTermination( GridDataService gds, 
-        int offsetHours) throws Exception 
+  /**
+   * Utility function to set or refresh the termination time of a
+   * Grid Data Service.  Sets the termination time to be after 
+   * offsetHours hours, and before (offsetHours+1) hours.
+   *
+   * @param gds GridDataService whose termination time is to be adjusted
+   *
+   * @param offsetHours Minimum hours from now for termination 
+   *
+   * @throws Exception
+   */
+  protected void refreshTermination( GridDataService gds, int offsetHours) 
+      throws Exception
   {
-    // Set initial termination time min 2Hrs, max 3Hrs after now
-    Calendar term = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
-    term.add(Calendar.HOUR, offsetHours);
-    gds.requestTerminationAfter(new ExtendedDateTimeType(term));
-    term.add(Calendar.HOUR, 1);
-    gds.requestTerminationBefore(new ExtendedDateTimeType(term));
+    try {
+      // Set initial termination time min 2Hrs, max 3Hrs after now
+      Calendar term = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+      term.add(Calendar.HOUR, offsetHours);
+      gds.requestTerminationAfter(new ExtendedDateTimeType(term));
+      term.add(Calendar.HOUR, 1);
+      gds.requestTerminationBefore(new ExtendedDateTimeType(term));
+    }
+    catch (Exception e) {
+      throw new Exception(e.getMessage());
+    }
   }
 
+  /**
+   * Utility function to get a factory handle string from a DAI registry.
+   * If needSecure is true, looks for a secure service factory handle.  
+   * If not, looks for an insecure (normal) service factory handle first,
+   * and returns a secure one if an insecure one can't be found.
+   *
+   * @param registry The ServiceGroupRegistry to search for a factory handle
+   *
+   * @param needsSecure If true, look for a secure service
+   *
+   * @return String holding factory handle string
+   *
+   * @throws Exception
+   */
   protected String getFactoryHandle(
       ServiceGroupRegistry registry, boolean needSecure) throws Exception
   {
@@ -281,56 +347,63 @@ public class GdsQueryDelegate
     //
     GridServiceMetaData gsmd[] = 
         registry.listServices(OGSADAIConstants.GDSF_PORT_TYPE);
-    String factoryHandle = null;
 
     if (needSecure) {
       for (int i = 0; i < gsmd.length; i++) {
         String handle = gsmd[i].getHandle();
         if (handle.toUpperCase().indexOf("SECURE") != -1) { //Secure found
-          factoryHandle = handle;
-          break;
+          return handle;
         }
       }
-      if (factoryHandle == null) {
-        String errMess = 
-          "Couldn't find secure Grid Data Service Factory to use; " +
-          "please choose a different results delivery method";
-        logger.error(errMess);
-        throw new Exception(errMess);
-      }
+      // If got here, no secure handle
+      String errMess = 
+        "Couldn't find secure Grid Data Service Factory to use; " +
+        "please choose a different results delivery method";
+      logger.error(errMess);
+      throw new Exception(errMess);
     }
     else {
+      String secureHandle = null;
       for (int i = 0; i < gsmd.length; i++) {
         String handle = gsmd[i].getHandle();
-        String secureHandle = null;
         if (handle.toUpperCase().indexOf("SECURE") != -1) { //Secure found
           secureHandle = handle;
         }
         else {
-          factoryHandle = handle;
-          break;
-        }
-        if (factoryHandle == null) {
-          if (secureHandle == null) {
-            String errMess = 
-              "Couldn't find any Grid Data Service Factory to use; " +
-              "please check you are using the correct DAI registry";
-            logger.error(errMess);
-            throw new Exception(errMess);
-          }
-          else {
-            // Use secure handle if no insecure available
-            logger.warn(
-              "Couldn't find standard Grid Data Service Factory to use; " +
-              "using Secure GDSF instead.");
-          }
+          // Non-secure found, return this
+          return handle;
         }
       }
+      if (secureHandle == null) {
+         String errMess = 
+           "Couldn't find any Grid Data Service Factory to use; " +
+           "please check you are using the correct DAI registry";
+         logger.error(errMess);
+         throw new Exception(errMess);
+       }
+       else {
+         // Use secure handle if no insecure available
+         logger.warn(
+           "Couldn't find standard Grid Data Service Factory to use; " +
+           "using Secure GDSF instead.");
+         return secureHandle;
+      }
     }
-    return factoryHandle;
+    //Shouldn't get here
   }
 
   /**
+   * An entry point so that a GDS query can be run from the command line.
+   * Expects the following parameters in the following order:
+   * - the SQL query string to be run
+   * - the URL of the OGSA-DAI registry from which to find the GDS
+   * - the URL of the results destination (file:// or gsiftp://).l
+   *
+   * So, for example:
+   * java org.astrogrid.warehouse.ogsadai.GdsQueryDelegate \\
+   *   "SELECT * from first * LIMIT 5000" \\
+   *   http://localhost:8080/ogsa/services/ogsadai/DAIServiceGroupRegistry \\
+   *   file:///tmp/TEMPFILE
    */
   public static void main(String args[]) throws Exception {
 
@@ -412,6 +485,9 @@ public class GdsQueryDelegate
 }
 /*
 $Log: GdsQueryDelegate.java,v $
+Revision 1.15  2004/03/25 17:22:43  kea
+Tidying javadocs, deprecating old classes, improved error handling etc.
+
 Revision 1.14  2004/03/24 12:35:18  kea
 Proper lifetime management; selective use of secure services (only for
 GridFTP delivery, not for file delivery).

@@ -17,6 +17,11 @@ import org.globus.ogsa.wsdl.GSR;
 import org.globus.ogsa.utils.QueryHelper;
 import org.apache.log4j.Logger;
 
+/**
+ * THIS CLASS HAS BEEN DEPRECATED AND IS NO LONGER IN USE.
+ *
+ * @deprecated
+ */
 public class GridServiceDelegate {
 
   /**
