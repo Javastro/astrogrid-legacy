@@ -8,7 +8,7 @@ xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1"
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
 
-	<vr:Resource status="active" xsi:type="cea:CeaApplicationType">
+	<vr:Resource status="active" xsi:type="CeaApplicationType">
 		<vr:Identifier>
 			<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID> 
 			<vr:ResourceKey>CallMakeMPEGFitsImages</vr:ResourceKey>
@@ -69,7 +69,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 			</cea:Interfaces>
 		</cea:ApplicationDefinition>
 	</vr:Resource>
-	<vr:Resource status="active" xsi:type="cea:CeaApplicationType" 
+	<vr:Resource status="active" xsi:type="CeaApplicationType" 
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 		<vr:Identifier>
 			<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
@@ -140,7 +140,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 			</cea:Interfaces>
 		</cea:ApplicationDefinition>
 	</vr:Resource>
-	<vr:Resource status="active" xsi:type="cea:CeaServiceType" 
+	<vr:Resource status="active" xsi:type="CeaServiceType" 
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 		<vr:Identifier>
 			<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
