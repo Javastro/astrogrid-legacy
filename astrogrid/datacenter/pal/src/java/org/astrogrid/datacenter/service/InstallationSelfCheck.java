@@ -1,4 +1,4 @@
-/*$Id: InstallationSelfCheck.java,v 1.3 2004/09/29 17:29:21 mch Exp $
+/*$Id: InstallationSelfCheck.java,v 1.4 2004/10/05 18:24:19 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,16 +11,16 @@
 package org.astrogrid.datacenter.service;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.lang.reflect.Constructor;
-import java.net.URL;
 import junit.framework.TestCase;
 import org.astrogrid.community.Account;
-import org.astrogrid.community.User;
 import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.datacenter.delegate.ConeSearcher;
+import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.datacenter.metadata.VoDescriptionServer;
 import org.astrogrid.datacenter.queriers.Querier;
-import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.QuerierPlugin;
 import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
 import org.astrogrid.datacenter.query.ConeQuery;
@@ -28,11 +28,6 @@ import org.astrogrid.datacenter.returns.ReturnTable;
 import org.astrogrid.datacenter.returns.TargetIndicator;
 import org.astrogrid.datacenter.service.DataServer;
 import org.astrogrid.datacenter.service.v05.AxisDataService_v05;
-import org.astrogrid.store.Agsl;
-import org.astrogrid.store.Msrl;
-import org.astrogrid.store.delegate.StoreClient;
-import org.astrogrid.store.delegate.StoreDelegateFactory;
-import org.astrogrid.util.Workspace;
 
 /** Unit test for checking an installation - checks location of config files, etc.
  * <p>
@@ -87,7 +82,17 @@ public class InstallationSelfCheck extends TestCase {
                       new ReturnTable(new TargetIndicator(sw), ReturnTable.VOTABLE));
    }
 
-   /** Submits a number of cone searches */
+   /** Checks that the delegates can connect correctly */
+   public void testSoapDelegate() throws Throwable {
+      ConeSearcher searcher = DatacenterDelegateFactory.makeConeSearcher(Account.ANONYMOUS,
+                                                                         AxisDataServer.getUrlStem()+"/services/AxisDataServer06",
+                                                                         DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
+      InputStream is = searcher.coneSearch(30, 30, 6);
+
+      assertNotNull(is);
+   }
+   
+   /** Submits a number of cone searches, starting small and getting larger */
    public void testMiniSoak() throws Throwable
    {
       DataServer server = new DataServer();
@@ -134,6 +139,9 @@ public class InstallationSelfCheck extends TestCase {
 
 /*
  $Log: InstallationSelfCheck.java,v $
+ Revision 1.4  2004/10/05 18:24:19  mch
+ Added SOAP test
+
  Revision 1.3  2004/09/29 17:29:21  mch
  Removed unused tests
 
