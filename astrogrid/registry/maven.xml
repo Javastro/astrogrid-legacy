@@ -40,7 +40,7 @@
     <!--+
         | Hook for build script jar:deploy-snapshot
         | Delete the extra jar file.
-        +-->
+            +-->
     <postGoal name="jar:deploy-snapshot">
 		<ant:echo message=""/>
 		<ant:echo message="Post processing jar:deploy-snapshot"/>
@@ -55,13 +55,15 @@
 		</ant:exec>
     </postGoal>
 
+
     <!--+
         | Hook for build script war:deploy-snapshot
         | Does nothing, 'deploy-snapshot' will have been called by 'jar:deploy-snapshot'.
-        +-->
+            +-->
     <goal name="war:deploy-snapshot">
         <ant:echo message="Skipping war:deploy-snapshot, already done by jar:deploy-snapshot"/>
     </goal>
+
 
     <!--+
         | Primary goals are :
@@ -151,7 +153,7 @@
             basedir="${basedir}"
             postProcessing="false"
             includes="common/project.xml,client/project.xml,client-lite/project.xml,server/project.xml,webapp/project.xml"
-            goals="deploy-snapshot"
+            goals="astrogrid-deploy-snapshot"
             banner="Deploying snapshot artifact : "
             ignoreFailures="false"
             />
