@@ -29,18 +29,18 @@
 
       <typeMapping
         xmlns:ns="urn:jes/types/v1"
-        qname="ns:jobURN"
-        type="java:org.astrogrid.jes.types.v1.JobURN"
-        serializer="org.apache.axis.encoding.ser.SimpleSerializerFactory"
-        deserializer="org.apache.axis.encoding.ser.SimpleDeserializerFactory"
-        encodingStyle=""
-      />
-      <typeMapping
-        xmlns:ns="urn:jes/types/v1"
         qname="ns:WorkflowList"
         type="java:org.astrogrid.jes.types.v1.WorkflowList"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="urn:jes/types/v1"
+        qname="ns:jobURN"
+        type="java:org.astrogrid.jes.types.v1.JobURN"
+        serializer="org.apache.axis.encoding.ser.SimpleSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.SimpleDeserializerFactory"
         encodingStyle=""
       />
       <typeMapping

@@ -2,7 +2,6 @@
 <wsdl:definitions targetNamespace="urn:jes/jobscheduler/v1"
                 xmlns="urn:jes/jobscheduler/v1"
                 xmlns:types="urn:jes/types/v1"
-                xmlns:ceat="http://www.astrogrid.org/schema/CEATypes/v1" 
 
                   xmlns:apachesoap="http://xml.apache.org/xml-soap"
                   xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
@@ -12,37 +11,29 @@
  <wsdl:documentation>
          Interface definition for the scheduler web service - unsure if really should be a web service.
  </wsdl:documentation>
- 	<wsdl:import location="../schema/JesTypes.xsd" namespace="urn:jes/types/v1" />
- 		<wsdl:import location="../schema/CEATypes.xsd" namespace="http://www.astrogrid.org/schema/CEATypes/v1" />
-   <wsdl:types />
- 
+         <wsdl:import location="../schema/JesTypes.xsd" namespace="urn:jes/types/v1" />
+
+
    <wsdl:message name="scheduleJobRequest">
       <wsdl:part name="request" type="types:jobURN"/>
    </wsdl:message>
 
    <wsdl:message name="resumeJobRequest">
-	  <wsdl:part type="ceat:job-identifier-type" name="id" />
-      <wsdl:part type="ceat:message-type" name="feedback"/>
+           <wsdl:part element="types:resumeJob" />
    </wsdl:message>
-   
+
    <wsdl:portType name="JobScheduler">
-      <wsdl:operation name="scheduleNewJob" parameterOrder="request">
-      	<wsdl:documentation>
-      		call to schedule a new job
-      	</wsdl:documentation>
+      <wsdl:operation name="scheduleNewJob" >
          <wsdl:input name="scheduleJobRequest" message="scheduleJobRequest"/>
       </wsdl:operation>
-      
-      <wsdl:operation name="resumeJob" parameterOrder="id feedback">
-      	<wsdl:documentation>
-      		call to resume execution of a job, after tool completes.
-      	</wsdl:documentation>
+
+      <wsdl:operation name="resumeJob" >
          <wsdl:input name="resumeJobRequest" message="resumeJobRequest"/>
-      </wsdl:operation>      
+      </wsdl:operation>
    </wsdl:portType>
-   
-   
-  
+
+
+
    <wsdl:binding name="JobSchedulerServiceSoapBinding" type="JobScheduler">
       <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
       <wsdl:operation name="scheduleNewJob">
@@ -52,10 +43,10 @@
          </wsdl:input>
       </wsdl:operation>
       <wsdl:operation name="resumeJob">
-      	<wsdlsoap:operation soapAction="resumeJob" />
-      	<wsdl:input>
-      		<wsdlsoap:body use="literal" />
-      	</wsdl:input>
+              <wsdlsoap:operation soapAction="resumeJob" />
+              <wsdl:input>
+                      <wsdlsoap:body use="literal" />
+              </wsdl:input>
       </wsdl:operation>
    </wsdl:binding>
 

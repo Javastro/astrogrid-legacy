@@ -12,27 +12,19 @@
 
   <!-- Services from JobMonitorService WSDL service -->
 
-  <service name="JobMonitorService" provider="java:RPC" style="document" use="literal">
+  <service name="JobMonitorService" provider="java:RPC" style="wrapped" use="literal">
       <parameter name="wsdlTargetNamespace" value="urn:jes/jobmonitor/v1"/>
       <parameter name="wsdlServiceElement" value="JobMonitorService"/>
       <parameter name="wsdlServicePort" value="JobMonitorService"/>
       <parameter name="className" value="org.astrogrid.jes.delegate.v1.jobmonitor.JobMonitorServiceSoapBindingImpl"/>
       <parameter name="wsdlPortType" value="JobMonitor"/>
-      <operation name="monitorJob" qname="monitorJob" >
-        <parameter name="id" type="tns:job-identifier-type" xmlns:tns="http://www.astrogrid.org/schema/CEATypes/v1"/>
-        <parameter name="feedback" type="tns:message-type" xmlns:tns="http://www.astrogrid.org/schema/CEATypes/v1"/>
+      <operation name="monitorJob" qname="operNS:monitorJob" xmlns:operNS="urn:jes/types/v1" >
+        <parameter qname="pns:job-identifier" xmlns:pns="http://www.astrogrid.org/schema/CEATypes/v1" type="tns:job-identifier-type" xmlns:tns="http://www.astrogrid.org/schema/CEATypes/v1"/>
+        <parameter qname="pns:message" xmlns:pns="http://www.astrogrid.org/schema/CEATypes/v1" type="tns:message-type" xmlns:tns="http://www.astrogrid.org/schema/CEATypes/v1"/>
       </operation>
       <parameter name="allowedMethods" value="monitorJob"/>
       <parameter name="scope" value="Application"/>
 
-      <typeMapping
-        xmlns:ns="http://www.astrogrid.org/schema/CEATypes/v1"
-        qname="ns:job-identifier-type"
-        type="java:org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType"
-        serializer="org.apache.axis.encoding.ser.SimpleSerializerFactory"
-        deserializer="org.apache.axis.encoding.ser.SimpleDeserializerFactory"
-        encodingStyle=""
-      />
       <typeMapping
         xmlns:ns="http://www.astrogrid.org/schema/CEATypes/v1"
         qname="ns:execution-phase"
@@ -51,10 +43,18 @@
       />
       <typeMapping
         xmlns:ns="http://www.astrogrid.org/schema/CEATypes/v1"
-        qname="ns:message-type"
-        type="java:org.astrogrid.jes.types.v1.cea.axis.MessageType"
+        qname="ns:job-identifier-type"
+        type="java:org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType"
         serializer="org.apache.axis.encoding.ser.SimpleSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.SimpleDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://www.astrogrid.org/schema/CEATypes/v1"
+        qname="ns:message-type"
+        type="java:org.astrogrid.jes.types.v1.cea.axis.MessageType"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
         encodingStyle=""
       />
   </service>

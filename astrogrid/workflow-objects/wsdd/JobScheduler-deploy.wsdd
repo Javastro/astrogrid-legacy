@@ -64,8 +64,8 @@
         xmlns:ns="http://www.astrogrid.org/schema/CEATypes/v1"
         qname="ns:message-type"
         type="java:org.astrogrid.jes.types.v1.cea.axis.MessageType"
-        serializer="org.apache.axis.encoding.ser.SimpleSerializerFactory"
-        deserializer="org.apache.axis.encoding.ser.SimpleDeserializerFactory"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
         encodingStyle=""
       />
   </service>
