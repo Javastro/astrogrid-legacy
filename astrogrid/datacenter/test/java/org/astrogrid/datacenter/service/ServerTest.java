@@ -25,6 +25,7 @@ import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
+import org.astrogrid.datacenter.queriers.DatabaseQuerierManager;
 import org.astrogrid.datacenter.query.QueryException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -43,7 +44,7 @@ public class ServerTest extends TestCase
    {
       //make sure database querier to be used is the dummy one - only available
       //in the test suite
-      Configuration.setProperty(DatabaseQuerier.DATABASE_QUERIER_KEY, "org.astrogrid.datacenter.queriers.DummyQuerier");
+      Configuration.setProperty(DatabaseQuerierManager.DATABASE_QUERIER_KEY, "org.astrogrid.datacenter.queriers.DummyQuerier");
 
       //create the server
       AxisDataServer server = new AxisDataServer();
@@ -88,6 +89,9 @@ public class ServerTest extends TestCase
 
 /*
 $Log: ServerTest.java,v $
+Revision 1.6  2003/09/24 21:12:35  nw
+updated to refer to manager
+
 Revision 1.5  2003/09/17 14:53:02  nw
 tidied imports
 
