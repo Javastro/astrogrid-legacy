@@ -1,11 +1,12 @@
 /*
- * $Id: QuerierQueried.java,v 1.1 2004/03/12 04:45:26 mch Exp $
+ * $Id: QuerierQueried.java,v 1.2 2004/03/15 17:11:31 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.queriers.status;
 
+import java.util.Date;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.query.QueryState;
 
@@ -20,6 +21,7 @@ public class QuerierQueried extends QuerierStatus
    String resultsCanBeFoundAt = null;
    
    public QuerierQueried(Querier querier) {
+      addDetail("Queried at "+new Date());
       timeTaken = querier.getQueryTimeTaken();
 //    resultsCount = querier.get
    }
@@ -35,6 +37,9 @@ public class QuerierQueried extends QuerierStatus
 
 /*
 $Log: QuerierQueried.java,v $
+Revision 1.2  2004/03/15 17:11:31  mch
+Better information
+
 Revision 1.1  2004/03/12 04:45:26  mch
 It05 MCH Refactor
 

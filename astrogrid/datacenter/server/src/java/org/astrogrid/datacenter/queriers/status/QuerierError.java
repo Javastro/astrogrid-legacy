@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierError.java,v 1.3 2004/03/14 19:12:33 mch Exp $
+ * $Id: QuerierError.java,v 1.4 2004/03/15 17:11:31 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,6 +8,8 @@ package org.astrogrid.datacenter.queriers.status;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import org.astrogrid.datacenter.queriers.QuerierPluginException;
+import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.query.QueryState;
 
 public class QuerierError extends QuerierStatus implements QuerierClosed
@@ -16,8 +18,18 @@ public class QuerierError extends QuerierStatus implements QuerierClosed
    String message;
    
    public QuerierError(String givenMessage, Throwable causeOfError) {
-      this.cause = causeOfError;
       this.message = givenMessage;
+
+      //unwrap wrapping exceptions
+      if ((causeOfError instanceof QuerierPluginException) ||
+         (causeOfError instanceof QueryException))
+      {
+         addDetail(causeOfError.toString());
+         addDetail("Caused By: ");
+         causeOfError = causeOfError.getCause();
+      }
+
+      this.cause = causeOfError;
       StringWriter sw = new StringWriter();
       cause.printStackTrace(new PrintWriter(sw));
       this.details.add(sw.toString());
@@ -41,6 +53,9 @@ public class QuerierError extends QuerierStatus implements QuerierClosed
 
 /*
 $Log: QuerierError.java,v $
+Revision 1.4  2004/03/15 17:11:31  mch
+Better information
+
 Revision 1.3  2004/03/14 19:12:33  mch
 Added stack trace to error details
 

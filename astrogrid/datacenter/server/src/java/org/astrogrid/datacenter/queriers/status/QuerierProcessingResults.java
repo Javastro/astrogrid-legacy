@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierProcessingResults.java,v 1.1 2004/03/12 04:45:26 mch Exp $
+ * $Id: QuerierProcessingResults.java,v 1.2 2004/03/15 17:11:31 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -15,6 +15,7 @@ public class QuerierProcessingResults extends QuerierQueried
    
    public QuerierProcessingResults(Querier querier) {
       super(querier);
+      addDetail("Processing Results");
    }
    
    public QueryState getState() { return QueryState.RUNNING_RESULTS; }
@@ -30,6 +31,9 @@ public class QuerierProcessingResults extends QuerierQueried
 
 /*
 $Log: QuerierProcessingResults.java,v $
+Revision 1.2  2004/03/15 17:11:31  mch
+Better information
+
 Revision 1.1  2004/03/12 04:45:26  mch
 It05 MCH Refactor
 
