@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="urn:jes/jobcontroller/v1"
+                  xmlns="urn:jes/jobcontroller/v1"
+                  xmlns:intf="urn:jes/jobcontroller/v1"
+                  xmlns:types="urn:jes/types/v1"
+
+                  xmlns:apachesoap="http://xml.apache.org/xml-soap"
+                  xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+                  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+
+   <wsdl:documentation>
+           Interface definition for the controller web service
+   </wsdl:documentation>
+
+	<wsdl:import location="../schema/JesTypes.xsd" namespace="urn:jes/types/v1" />
+   <wsdl:types />
+
+
+   <wsdl:message name="submitJobRequest">
+           <wsdl:documentation>
+        workflowXML is stringified version of a workflow document, conforming to the workflow schema.
+        </wsdl:documentation>
+      <wsdl:part name="workflowXML" type="xsd:string"/>
+   </wsdl:message>
+
+   <wsdl:message name="submitJobResponse">
+      <wsdl:part name="submitJobReturn" type="types:SubmissionResponse"/>
+   </wsdl:message>
+
+   <wsdl:message name="userJobListRequest">
+      <wsdl:part name="criteria" type="types:ListCriteria"/>
+   </wsdl:message>
+
+   <wsdl:message name="userJobListResponse">
+      <wsdl:part name="userJobListReturn" type="types:WorkflowList"/>
+   </wsdl:message>
+
+   <wsdl:portType name="JobController">
+      <wsdl:operation name="submitJob" parameterOrder="workflowXML">
+         <wsdl:input name="submitJobRequest" message="submitJobRequest"/>
+         <wsdl:output name="submitJobResponse" message="submitJobResponse"/>
+         <!-- should return faults here too -->
+      </wsdl:operation>
+      <wsdl:operation name="readJobList" parameterOrder="criteria">
+         <wsdl:input name="userJobListRequest" message="userJobListRequest"/>
+         <wsdl:output name="userJobListResponse" message="userJobListResponse"/>
+         <!-- faults here too -->
+      </wsdl:operation>
+   </wsdl:portType>
+
+   <wsdl:binding name="JobControllerServiceSoapBinding" type="JobController">
+      <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="submitJob">
+         <wsdlsoap:operation soapAction="submitJob"/>
+         <wsdl:input>
+            <wsdlsoap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <wsdlsoap:body use="literal" />
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="readJobList">
+         <wsdlsoap:operation soapAction="readJobList"/>
+         <wsdl:input>
+            <wsdlsoap:body use="literal" />
+         </wsdl:input>
+         <wsdl:output >
+            <wsdlsoap:body use="literal"  />
+         </wsdl:output>
+      </wsdl:operation>
+   </wsdl:binding>
+
+   <wsdl:service name="JobControllerService">
+      <wsdl:port name="JobControllerService" binding="JobControllerServiceSoapBinding">
+         <wsdlsoap:address location="http://localhost:8080/axis/services/JobControllerService"/>
+      </wsdl:port>
+   </wsdl:service>
+
+</wsdl:definitions>
