@@ -67,16 +67,26 @@ public class MySpaceDummyDelegate extends MySpaceManagerDelegate
       //replace all ":"s and "/"s with "_"s,
       String dirName = givenEndPoint.replace(':', '_');
       dirName = givenEndPoint.replace('/', '_');
+      //use createTemporary file instead - will always be able to create it somewhere.
+      try {
+        dir = File.createTempFile("MySpaceDummy" + dirName,"");
 
+      // now make a directory here.
+      dir.delete();
+      dir.mkdir();
+      /*
       dir = new File(dirName);
 
       if (!dir.exists())
       {
          dir.mkdir();
       }
-
+    */
       Log.affirm(dir.exists(), "Failed to make dir "+dirName);
       Log.affirm(dir.isDirectory(), "Dir "+dirName+" is not a directory");
+      } catch (IOException e) {
+          throw new RuntimeException("Couldn't create dummy myspace ",e);
+      }
    }
 
    /**
