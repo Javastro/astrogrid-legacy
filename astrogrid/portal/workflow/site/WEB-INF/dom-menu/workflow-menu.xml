@@ -58,6 +58,13 @@
         icon=""
         uri="javascript:document.insert_sequence_form.submit();"
         target="_self"
-        status-text="Insert sequence into workflow...."/>                
+        status-text="Insert sequence into workflow...."/>
+    <agp:item
+        contents="Remove activity"
+        contents-hover="Remove activity"
+        icon=""
+        uri="javascript:document.remove_activity_form.submit();"
+        target="_self"
+        status-text="Remove activity...."/>                        
   </agp:menu>
 </agp:menu-def>

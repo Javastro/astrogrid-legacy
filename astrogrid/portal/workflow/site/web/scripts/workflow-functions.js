@@ -39,6 +39,8 @@
        document.insert_flow_form.activity_key.value = id;
        document.insert_step_form.activity_index_key.value = index;
        document.insert_step_form.activity_key.value = id;
+       document.remove_activity_form.activity_index_key.value = index;
+       document.remove_activity_form.activity_key.value = id;              
     } 
   
                

@@ -101,7 +101,12 @@
                    <input type="hidden" name="activity_key"/>
                    <input type="hidden" name="activity_index_key"/>
                    <input type="hidden"  name="action" value="insert-step"/>            
-                </form>                                
+                </form>
+                <form action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" name="remove_activity_form">
+                   <input type="hidden" name="activity_key"/>
+                   <input type="hidden" name="activity_index_key"/>
+                   <input type="hidden"  name="action" value="remove-activity"/>            
+                </form>                                                                              
         </xsl:template>
         
 </xsl:stylesheet>
