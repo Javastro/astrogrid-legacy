@@ -129,7 +129,7 @@
       <rights>NULL</rights> 
    </content>
  
-   <serviceMetadataConcepts xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   <serviceMetadataConcept xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:noNamespaceSchemaLocation="http://www.astrogrid.org/schema/service.xsd">
       <interfaceMetadata>
          <serviceInterfaceUrl>http://surfwww.mssl.ucl.ac.uk/surf/data_request.html</serviceInterfaceUrl> 
@@ -145,7 +145,7 @@
             <serviceMaxNrows>INF</serviceMaxNrows> 
          </serviceRestriction>
       </capabilitiesMetadata>
-   </serviceMetadataConcepts>
+   </serviceMetadataConcept>
 </service>
 
 <service>
