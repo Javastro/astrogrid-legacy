@@ -1,5 +1,5 @@
 /*
- * $Id: DatacenterDelegateFactory.java,v 1.18 2004/04/22 15:14:34 mch Exp $
+ * $Id: DatacenterDelegateFactory.java,v 1.19 2004/07/07 22:22:57 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -9,6 +9,7 @@ import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URL;
 import javax.xml.rpc.ServiceException;
+import org.apache.axis.AxisFault;
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.delegate.agws.WebDelegate_v041;
 import org.astrogrid.datacenter.delegate.agws.WebDelegate_v05;
@@ -64,8 +65,20 @@ public class DatacenterDelegateFactory {
       }
       if (serviceType.equals(ASTROGRID_WEB_SERVICE)) {
          try {
-            return new WebDelegate_v041(new URL(givenEndPoint));
-         } catch (ServiceException e) {
+            if (givenEndPoint.endsWith("AxisDataServer")) {
+               return new WebDelegate_v041(new URL(givenEndPoint));
+            }
+            else if (givenEndPoint.endsWith("AxisDataService05")) {
+               return new WebDelegate_v05(new URL(givenEndPoint));
+            }
+            else {
+               throw new DatacenterException("Don't know what delegate to use for endpoint '"+givenEndPoint+"'");
+            }
+         }
+         catch (ServiceException e) {
+            throw new DatacenterException("Could not connect to " + givenEndPoint, e);
+         }
+         catch (AxisFault e) {
             throw new DatacenterException("Could not connect to " + givenEndPoint, e);
          }
       }
@@ -135,6 +148,9 @@ public class DatacenterDelegateFactory {
 }
 /*
  $Log: DatacenterDelegateFactory.java,v $
+ Revision 1.19  2004/07/07 22:22:57  mch
+ Updated delegate to use latest cone searcher
+
  Revision 1.18  2004/04/22 15:14:34  mch
  Introduced WebDelegate_v05
 
