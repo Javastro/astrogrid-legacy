@@ -3,21 +3,21 @@
 <!--fill in the passwords below-->
 <root>
    <servers>
-      <a>
+      <c>
         <url>http://vm05.astrogrid.org:8080/manager/</url>
         <user>tomcat</user>
         <password>gandalf</password>
-      </a>
-      <b>
+      </c>
+      <a>
         <url>http://vm06.astrogrid.org:8080/manager/</url>
         <user>tomcat</user>
         <password>tomcat</password>
-      </b>
-      <c>
+      </a>
+      <b>
         <url>http://vm07.astrogrid.org:8080/manager/</url>
         <user>eca</user>
         <password>allareas</password>
-      </c>
+      </b>
       <d>
         <url>vm08.astrogrid.org:8080/manager/</url>
         <user>tomcat</user>
