@@ -17,10 +17,6 @@ import java.lang.SecurityException;
 //log4j
 import org.apache.log4j.Logger;
 
-//xml
-import org.w3c.dom.Node;
-import org.w3c.dom.NamedNodeMap;
-
 /**
  * @WebService
  * 
@@ -129,7 +125,7 @@ public class ServerManager {
 			logger.error("FAULT ServerManagetr.saveDataHolder!!! "+e);
 			MySpaceMessage message = new MySpaceMessage("ERR_SAVE_DATAHOLDER");
 			status.addCode(MySpaceStatusCode.ERR_SAVE_DATAHOLDER,MySpaceStatusCode.ERROR);
-			response = FAULT+MySpaceStatusCode.ERR_SAVE_DATAHOLDER;			
+			response = FAULT+MySpaceStatusCode.ERR_SAVE_DATAHOLDER+"::"+e.toString();			
 			return response; //temp code for now, should catch the exception and return proper error message
 		}finally{
 			//close file

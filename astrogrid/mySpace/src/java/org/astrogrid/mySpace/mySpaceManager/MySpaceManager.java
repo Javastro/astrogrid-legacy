@@ -191,6 +191,8 @@ public String upLoad(String jobDetails){
 			}else if(serverResponse.startsWith(FAULT)){
 				int len = serverResponse.length()-1;
 				details = serverResponse.trim().substring(5,len);
+				response = util.buildMySpaceManagerResponse(null,FAULT,details,"");
+				return response;
 			}
 	
 		//   Get other stuff which can usefully be returned.
@@ -239,7 +241,7 @@ public String upLoad(String jobDetails){
   */
 
    public String lookupDataHolderDetails(String jobDetails){
-	if ( DEBUG )  logger.debug("MySpaceManager.moveDataHolder");
+	if ( DEBUG )  logger.debug("MySpaceManager.lookupDataHolderDetails");
 	DataItemRecord dataitem = null;
 	loadProperties();
 	registryName = conProperties.getProperty(REGPATH);	
@@ -434,7 +436,7 @@ public String upLoad(String jobDetails){
 
    public String copyDataHolder(String jobDetails)
    {
-	if ( DEBUG )  logger.debug("MySpaceManager.moveDataHolder");
+	if ( DEBUG )  logger.debug("MySpaceManager.copyDataHolder");
 	DataItemRecord dataitem = null;
 	loadProperties();
 	registryName = conProperties.getProperty(REGPATH);	
@@ -608,6 +610,7 @@ public String upLoad(String jobDetails){
   */
 
    public String exportDataHolder(String jobDetails){
+	if ( DEBUG )  logger.debug("MySpaceManager.exportDataHolder");
 	DataItemRecord dataitem = null;
 	String dataHolderURI = "";
 	loadProperties();
@@ -685,7 +688,7 @@ public String upLoad(String jobDetails){
   */
 
    public String createContainer(String jobDetails){
-	if ( DEBUG )  logger.debug("MySpaceManager.moveDataHolder");
+	if ( DEBUG )  logger.debug("MySpaceManager.createContainer");
 	DataItemRecord dataitem = null;
 	loadProperties();
 	registryName = conProperties.getProperty(REGPATH);	
@@ -857,14 +860,6 @@ private Call createServerManagerCall(){
 		call = (Call)service.createCall();
 		call.setTargetEndpointAddress( new java.net.URL(endpoint) );
 		
-		/*
-		call.setOperationName( "moveDataHolder" );			
-		call.addParameter("arg0", XMLType.XSD_STRING, ParameterMode.IN);
-		call.addParameter("arg1", XMLType.XSD_STRING, ParameterMode.IN);
-		
-		call.setReturnType( org.apache.axis.encoding.XMLType.XSD_STRING);
-		String serverResponse = call.invoke( new Object[] {content,path} );
-		*/
 	}catch(Exception e){
 		MySpaceMessage message = new MySpaceMessage("ERROR_CALL_SERVER_MANAGER");
 		message.getMessage(e.toString());
