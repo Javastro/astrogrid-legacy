@@ -1,11 +1,205 @@
 <?xml version="1.0"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/site/sitemap.xmap,v $</cvs:source>
-    | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/01/09 11:17:50 $</cvs:date>
-    | <cvs:version>$Revision: 1.8 $</cvs:version>
+    | <cvs:author>$Author: jdt $</cvs:author>
+    | <cvs:date>$Date: 2004/03/19 12:40:09 $</cvs:date>
+    | <cvs:version>$Revision: 1.9 $</cvs:version>
+    +-->
+<map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
+<!-- ======================== Components ================================ -->
+   <map:components>
+      <map:generators default="file" />
+
+      <map:transformers default="xslt" />
+
+      <map:readers default="resource" />
+
+      <map:serializers default="html" />
+
+      <map:selectors default="browser" />
+
+      <map:selector name="parameter" logger="sitemap.selector.parameter" src="org.apache.cocoon.selection.ParameterSelector" />
+
+      <map:matchers default="wildcard" />
+
+      <map:actions>
+         <map:action name="astro-login" src="org.astrogrid.portal.cocoon.common.LoginAction" />
+      </map:actions>
+   </map:components>
+
+<!-- =========================== Views =================================== -->
+<!--+
+        | Views for debugging XSL transforms
+        +-->
+   <map:views>
+<!-- Original XML displayed as XML -->
+      <map:view name="000" from-label="000">
+         <map:serialize type="xml" />
+      </map:view>
+
+<!-- Original XML, displayed as XML/HTML -->
+      <map:view name="001" from-label="001">
+<!-- Convert into XML/HTML -->
+         <map:transform src="web/style/xsl/xml-html.xsl" />
+
+         <map:serialize type="html" />
+      </map:view>
+
+<!-- XML processed into a page, displayed as XML/HTML -->
+      <map:view name="002" from-label="002">
+<!-- Convert into XML/HTML -->
+         <map:transform src="web/style/xsl/xml-html.xsl" />
+
+         <map:serialize type="html" />
+      </map:view>
+
+<!-- Page wrapped in our template, displayed as XML/HTML -->
+      <map:view name="003" from-label="003">
+<!-- Convert into XML/HTML -->
+         <map:transform src="web/style/xsl/xml-html.xsl" />
+
+         <map:serialize type="html" />
+      </map:view>
+   </map:views>
+
+<!-- ========================== Resources ================================= -->
+   <map:resources>
+   </map:resources>
+
+<!-- ========================== Pipelines ================================= -->
+   <map:pipelines>
+   <!--+
+       | Main pipeline.
+       +-->
+      <map:pipeline>
+      <!-- Login page -->
+         <map:match pattern="login-form">
+         <!--+
+             | Call the LoginAction to validate the name and password.
+             +-->
+            <map:act type="astro-login">
+            <!--+
+                | If we are logged in, display a nice page.
+		        | We can't do a redirect, because this page is requested indirectly
+		        | via the map:aggregate in the main site map.
+		        +-->
+               <map:generate type="serverpages" src="xsp/login-pass.xsp" />
+               <map:serialize type="xml" />
+            </map:act>
+
+            <!--+
+                | If we are not logged in, display the login form.
+                +-->
+            <map:generate type="serverpages" src="xsp/login-form.xsp" />
+
+            <map:serialize type="xml" />
+         </map:match>
+
+         <!-- New Login page -->
+         <map:match pattern="login-jdt">
+         <!--+
+             | If we are not logged in, display the login form.
+             +-->
+            <map:act type="form-validator">
+               <map:parameter name="descriptor" value="cocoon:/defs/logon-def.xml" />
+               <map:parameter name="validate-set" value="login" />
+               <!--validation succeeded-->
+               <map:act type="astro-login">
+                  <!--login successful-->
+                  <map:generate type="file" src="xml/login-pass.xml" />
+                  <map:serialize type="xml" />
+               </map:act>
+               <!-- login unsuccessful -->
+               <map:generate type="file" src="xml/login-failed.xml" label="raw" />
+               <map:transform type="xslt" src="style/info.xsl" />
+               <map:serialize type="xml" />
+            </map:act>
+            <!--if the validation fails (or it's first time thru) -->
+            <map:generate type="serverpages" src="xsp/logon.xsp" label="000" />
+						<map:transform type="xslt" src="style/logon.xsl" />
+            <map:serialize type="xml" />
+         </map:match>
+				 
+				 <!-- Register page -->
+         <map:match pattern="register">
+         <!--+
+             | If we are not registered, display the register form.
+             +-->
+            <map:act type="form-validator">
+               <map:parameter name="descriptor" value="cocoon:/defs/logon-def.xml" />
+               <map:parameter name="validate-set" value="register" />
+               <!--validation succeeded-->
+               <!--map:act put action here
+							 -->
+               <!-- Registration successful -->
+               <map:generate type="file" src="xml/registered.xml" />
+               <map:transform type="xslt" src="style/info.xsl" />
+               <map:serialize type="xml" />
+            </map:act>
+            <!--if the validation fails (or it's first time thru) -->
+            <map:generate type="serverpages" src="xsp/register.xsp"/>
+						<map:transform type="xslt" src="style/logon.xsl" />
+            <map:serialize type="xml" />
+         </map:match>
+				 
+				 <!-- Reminder page -->
+         <map:match pattern="reminder">
+         <!--+
+             | If we are not registered, display the register form.
+             +-->
+            <map:act type="form-validator">
+               <map:parameter name="descriptor" value="cocoon:/defs/logon-def.xml" />
+               <map:parameter name="validate" value="email" />
+               <!--validation succeeded-->
+               <!--map:act put action here
+							 -->
+               <!-- Registration successful -->
+               <map:generate type="file" src="xml/reminderrequested.xml" />
+               <map:transform type="xslt" src="style/info.xsl" />
+               <map:serialize type="xml" />
+            </map:act>
+            <!--if the validation fails (or it's first time thru) -->
+            <map:generate type="serverpages" src="xsp/reminder.xsp"/>
+						<map:transform type="xslt" src="style/logon.xsl" />
+            <map:serialize type="xml" />
+         </map:match>
+
+         <map:match pattern="**/*.xml">
+            <map:generate type="file" src="{1}/{2}.xml" />
+
+            <map:serialize type="xml" />
+         </map:match>
+
+         <map:match pattern="*.xsl">
+            <map:generate type="file" src="style/{1}.xsl" />
+
+            <map:serialize type="xml" />
+         </map:match>
+
+         <map:match pattern="login-oops">
+            <map:generate type="serverpages" src="xsp/logon.xsp" label="000" />
+            <map:transform type="xslt" src="style/logon.xsl" />
+            <map:serialize type="xml" />
+         </map:match>
+      </map:pipeline>
+   </map:pipelines>
+</map:sitemap>
+
+<!--+
     | <cvs:log>
     |   $Log: sitemap.xmap,v $
+    |   Revision 1.9  2004/03/19 12:40:09  jdt
+    |   Merge from PLGN_JDT_bz199b.
+    |   Refactored log in pages to use xsp and xsl style sheets.  
+    |   Added pages for requesting a login, and requesting
+    |   a password reminder.
+    |
+    |   Revision 1.8.14.3  2004/03/19 02:46:45  jdt
+    |   Added registration and reminder pages.  Add pattern validation to email addresses.
+    |
+    |   Revision 1.8.14.1  2004/03/19 00:08:16  jdt
+    |   added a temporary logon-jdt pattern to the pipeline
+    |
     |   Revision 1.8  2004/01/09 11:17:50  dave
     |   Tidying up ... converted tabs to spaces
     |
@@ -24,94 +218,4 @@
     | </cvs:log>
     |
     +-->
-<map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
 
-<!-- ======================== Components ================================ -->
-
-    <map:components>
-        <map:generators default="file"/>
-        <map:transformers default="xslt"/>
-        <map:readers default="resource"/>
-        <map:serializers default="html"/>
-        <map:selectors default="browser"/>
-
-        <map:selector
-            name="parameter"
-            logger="sitemap.selector.parameter"
-            src="org.apache.cocoon.selection.ParameterSelector"/>
-
-        <map:matchers default="wildcard"/>
-        <map:actions>
-            <map:action
-                name="astro-login" 
-                src="org.astrogrid.portal.cocoon.common.LoginAction"/>
-        </map:actions>
-    </map:components>
-
-<!-- =========================== Views =================================== -->
-
-    <!--+
-        | Views for debugging XSL transforms
-        +-->
-    <map:views>
-        <!-- Original XML displayed as XML -->
-        <map:view name="000" from-label="000">
-            <map:serialize type="xml"/>
-        </map:view>
-        <!-- Original XML, displayed as XML/HTML -->
-        <map:view name="001" from-label="001">
-            <!-- Convert into XML/HTML -->
-            <map:transform src="web/style/xsl/xml-html.xsl"/>
-            <map:serialize type="html"/>
-        </map:view>
-        <!-- XML processed into a page, displayed as XML/HTML -->
-        <map:view name="002" from-label="002">
-            <!-- Convert into XML/HTML -->
-            <map:transform src="web/style/xsl/xml-html.xsl"/>
-            <map:serialize type="html"/>
-        </map:view>
-        <!-- Page wrapped in our template, displayed as XML/HTML -->
-        <map:view name="003" from-label="003">
-            <!-- Convert into XML/HTML -->
-            <map:transform src="web/style/xsl/xml-html.xsl"/>
-            <map:serialize type="html"/>
-        </map:view>
-    </map:views>
-
-<!-- ========================== Resources ================================= -->
-
-    <map:resources>
-    </map:resources>
-
-<!-- ========================== Pipelines ================================= -->
-
-    <map:pipelines>
-        <!--+
-            | Main pipeline.
-            +-->
-        <map:pipeline>
-
-            <!-- Login page -->
-            <map:match pattern="login-form">
-                <!--+
-                    | Call the LoginAction to validate the name and password.
-                    +-->
-                <map:act type="astro-login">
-                    <!--+
-                        | If we are logged in, display a nice page.
-                        | We can't do a redirect, because this page is requested indirectly
-                        | via the map:aggregate in the main site map.
-                        +-->
-                    <map:generate type="serverpages" src="xsp/login-pass.xsp"/>
-                    <map:serialize type="xml"/>
-                </map:act>
-                <!--+
-                    | If we are not logged in, display the login form.
-                    +-->
-                <map:generate type="serverpages" src="xsp/login-form.xsp"/>
-                <map:serialize type="xml"/>
-            </map:match>
-
-        </map:pipeline>
-    </map:pipelines>
-</map:sitemap>

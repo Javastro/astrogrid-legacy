@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!-- $Id: logon-def.xml,v 1.2 2004/03/19 12:40:09 jdt Exp $ -->
+<!--+
+    Validation file for use in the validator action
+    +-->
+<root>
+  <parameter name="user" type="string" max-len="100" nullable="no"/>
+  <parameter name="community" type="string" max-len="100" nullable="no"/>
+  <parameter name="pass" type="string" max-len="100" nullable="no"/>
+  <parameter name="name" type="string" max-len="100" nullable="no"/>
+  <parameter name="email" type="string" max-len="100" nullable="no" matches-regex="^[\d\w][\d\w\-_\.]*@([\d\w\-_]+\.)+(\w){2,4}$"/>
+
+  <constraint-set name="login">
+    <validate name="user"/>
+    <validate name="community"/>
+    <validate name="pass"/>
+  </constraint-set>	 
+  
+  <constraint-set name="register">
+    <validate name="name"/>
+    <validate name="email"/>
+  </constraint-set>
+</root>
+		
+		
+<!-- $Log: logon-def.xml,v $
+<!-- Revision 1.2  2004/03/19 12:40:09  jdt
+<!-- Merge from PLGN_JDT_bz199b.
+<!-- Refactored log in pages to use xsp and xsl style sheets.  
+<!-- Added pages for requesting a login, and requesting
+<!-- a password reminder.
+<!--
+<!-- Revision 1.1.2.2  2004/03/19 02:46:45  jdt
+<!-- Added registration and reminder pages.  Add pattern validation to email addresses.
+<!-- -->
+<!-- Revision 1.1.2.1  2004/03/18 20:46:11  jdt -->
+<!-- Form validation -->
+

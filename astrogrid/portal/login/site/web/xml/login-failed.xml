@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!--+
+    | <cvs:id>$Id: login-failed.xml,v 1.2 2004/03/19 12:40:09 jdt Exp $</cvs:id>
+    | <cvs:author>$Author: jdt $</cvs:author>
+    |
+    +-->
+<page>
+<title>
+		Log On failed.
+</title>
+<content>
+    Log on has failed.  Please check your username and password and <a href="login-jdt">try again</a>.
+</content>
+</page>
+<!--+
+    | <cvs:log>
+    |   $Log: login-failed.xml,v $
+    |   Revision 1.2  2004/03/19 12:40:09  jdt
+    |   Merge from PLGN_JDT_bz199b.
+    |   Refactored log in pages to use xsp and xsl style sheets.  
+    |   Added pages for requesting a login, and requesting
+    |   a password reminder.
+    |
+    |   Revision 1.1.2.1  2004/03/19 00:10:09  jdt
+    |   new file
+    |
+    |
+    | </cvs:log>
+		+-->

@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!--+
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/site/web/xml/reminderrequested.xml,v $</cvs:source>
+    | <cvs:author>$Author: jdt $</cvs:author>
+    | <cvs:date>$Date: 2004/03/19 12:40:09 $</cvs:date>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    +-->
+<page>
+<title>
+	Reminder requested.
+</title>
+<content>
+    Thankyou.  A message has been sent to the administrator who will contact you in due course.
+</content>
+</page>
+<!--+
+    | <cvs:log>
+    |   $Log: reminderrequested.xml,v $
+    |   Revision 1.2  2004/03/19 12:40:09  jdt
+    |   Merge from PLGN_JDT_bz199b.
+    |   Refactored log in pages to use xsp and xsl style sheets.  
+    |   Added pages for requesting a login, and requesting
+    |   a password reminder.
+    |
+    |   Revision 1.1.2.1  2004/03/19 02:46:45  jdt
+    |   Added registration and reminder pages.  Add pattern validation to email addresses.
+    |
+    |
+    | </cvs:log>
+    |
+    +-->

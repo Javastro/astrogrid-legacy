@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<xsp:page language="java" 
+      xmlns:xsp="http://apache.org/xsp"
+      xmlns:xsp-request="http://apache.org/xsp/request/2.0"
+      xmlns:xsp-formval="http://apache.org/xsp/form-validator/2.0">
+  
+<page>
+	<xsp-formval:descriptor name="cocoon:/defs/logon-def.xml" constraint-set="register"/>
+	<xsp:logic>
+		boolean  notNew = <xsp-request:get-parameter name="visited"/> != null ;
+	</xsp:logic>
+	
+    <!--enable this to see the raw results from the form validation-->	
+    <!--xsp-formval:results/-->
+    <title>Register</title>
+    <content>
+     <login-form action="register" method="get" message="Please enter your name and email address.">
+       <login-input type="text" name="name" size="60" caption="Name:">
+           <xsp:attribute name="value"><xsp-request:get-parameter name="name" default=""/></xsp:attribute>
+       </login-input> 
+       <login-input type="text" name="email" size="60" caption="Email:">
+           <xsp:attribute name="value"><xsp-request:get-parameter name="email" default=""/></xsp:attribute>
+       </login-input>
+       <login-input type="submit" name="fred" value="Register"/>
+     </login-form>
+	 <!--TODO see if we can move this into a stylesheet or logic sheet too-->
+	 <P>
+     <xsp:logic>
+       if (notNew &amp;&amp; <xsp-formval:is-error name="name"/>) {
+	     <xsp-formval:on-null name="name"><error>Name must be filled in.</error></xsp-formval:on-null>
+       }
+       if (notNew &amp;&amp; <xsp-formval:is-error name="email"/>) {
+	     <xsp-formval:on-null name="email"><error>Email address must be filled in.</error></xsp-formval:on-null>
+	     <xsp-formval:on-nomatch name="email"><error>That is not a valid email address.</error></xsp-formval:on-nomatch>
+       }
+     </xsp:logic>
+	 </P>
+    </content>
+</page>
+</xsp:page>
+

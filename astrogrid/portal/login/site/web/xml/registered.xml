@@ -1,16 +1,29 @@
 <?xml version="1.0"?>
 <!--+
-    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/site/web/xml/Attic/login-pass.xml,v $</cvs:source>
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/site/web/xml/registered.xml,v $</cvs:source>
     | <cvs:author>$Author: jdt $</cvs:author>
     | <cvs:date>$Date: 2004/03/19 12:40:09 $</cvs:date>
     | <cvs:version>$Revision: 1.2 $</cvs:version>
+    +-->
+<page>
+<title>
+	Registration completed.
+</title>
+<content>
+    Thankyou for registering with Astrogrid.  A message has been sent to the administrator who will contact you in due course.
+</content>
+</page>
+<!--+
     | <cvs:log>
-    |   $Log: login-pass.xml,v $
+    |   $Log: registered.xml,v $
     |   Revision 1.2  2004/03/19 12:40:09  jdt
     |   Merge from PLGN_JDT_bz199b.
     |   Refactored log in pages to use xsp and xsl style sheets.  
     |   Added pages for requesting a login, and requesting
     |   a password reminder.
+    |
+    |   Revision 1.1.2.1  2004/03/19 02:46:45  jdt
+    |   Added registration and reminder pages.  Add pattern validation to email addresses.
     |
     |   Revision 1.1.14.1  2004/03/19 00:09:53  jdt
     |   Changed to be pure content, with the style added by the 
@@ -28,11 +41,3 @@
     | </cvs:log>
     |
     +-->
-<page>
-<title>
-		Welcome to Astrogrid.
-</title>
-<content>
-    You are now logged in.
-</content>
-</page>

@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<xsp:page language="java" 
+      xmlns:xsp="http://apache.org/xsp"
+      xmlns:xsp-request="http://apache.org/xsp/request/2.0"
+      xmlns:xsp-formval="http://apache.org/xsp/form-validator/2.0">
+  
+<page>
+	<xsp-formval:descriptor name="cocoon:/defs/logon-def.xml" constraint-set="login"/>
+	<xsp:logic>
+		boolean  notNew = <xsp-request:get-parameter name="visited"/> != null ;
+	</xsp:logic>
+	
+
+    
+    <title>Log On</title>
+    <content>
+     <login-form action="login-jdt" method="get" message="Please enter your username, community and password.">
+       <login-input type="text" name="user" size="60" caption="Username:">
+           <xsp:attribute name="value"><xsp-request:get-parameter name="user" default=""/></xsp:attribute>
+       </login-input> 
+       <login-input type="text" name="community" size="60" caption="Community:">
+           <xsp:attribute name="value"><xsp-request:get-parameter name="community" default=""/></xsp:attribute>
+       </login-input>
+       <login-input type="password" name="pass" size="60" caption="Password:">
+           <xsp:attribute name="value"><xsp-request:get-parameter name="pass" default=""/></xsp:attribute>
+       </login-input>  
+       <login-input type="submit" name="fred" value="Log On"/>
+     </login-form>
+	 <!--TODO see if we can move this into a stylesheet or logic sheet too-->
+	 
+     <xsp:logic>
+       if (notNew &amp;&amp; <xsp-formval:is-error name="user"/>) {
+	     <xsp-formval:on-null name="user"><error>User name must be filled in.</error></xsp-formval:on-null>
+       }
+       if (notNew &amp;&amp; <xsp-formval:is-error name="community"/>) {
+	     <xsp-formval:on-null name="community"><error>Community must be filled in.</error></xsp-formval:on-null>
+       }
+       if (notNew &amp;&amp; <xsp-formval:is-error name="pass"/>) {
+	     <xsp-formval:on-null name="pass"><error>Password must be filled in.</error></xsp-formval:on-null>
+       }
+     </xsp:logic>
+     <!--enable this to see the raw results from the form validation-->	
+	 <!--P><xsp-formval:results/></P-->
+     <P>
+    	 Forgotten your <A href="reminder">password</A>?  
+
+    	 Need to <a href="register">register</a> for this service?
+     </P>
+    </content>
+</page>
+</xsp:page>
+
