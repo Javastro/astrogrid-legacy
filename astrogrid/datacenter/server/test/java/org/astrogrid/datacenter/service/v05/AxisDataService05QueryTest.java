@@ -1,4 +1,4 @@
-/*$Id: AxisDataService05QueryTest.java,v 1.1 2004/07/06 18:48:34 mch Exp $
+/*$Id: AxisDataService05QueryTest.java,v 1.2 2004/08/02 14:59:43 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -76,7 +76,7 @@ public class AxisDataService05QueryTest extends ServerTestCase {
     
     public void testAbort() throws Exception {
        
-       String qid = server.submitAdqlQuery(query1.toAdqlString(), "astrogrid:store:null", "VOTABLE");
+       String qid = server.submitAdqlQuery(query1.toAdqlString(), "astrogrid:store:email:mch@roe.ac.uk", "VOTABLE");
        assertNotNull(qid);
        server.abortQuery(qid);
 
@@ -109,6 +109,9 @@ public class AxisDataService05QueryTest extends ServerTestCase {
 
 /*
 $Log: AxisDataService05QueryTest.java,v $
+Revision 1.2  2004/08/02 14:59:43  mch
+Fix to have valid Agsl
+
 Revision 1.1  2004/07/06 18:48:34  mch
 Series of unit test fixes
 
