@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.12 2004/04/23 16:12:49 pah Exp $
+/*$Id: AllTests.java,v 1.13 2004/04/26 12:17:56 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,20 +24,23 @@ public class AllTests {
         TestSuite suite = new TestSuite("Workflow");
         //$JUnit-BEGIN$
         suite.addTest(new TestSuite(CompositeWorkflowEndToEndTest.class));
+        suite.addTest(FlowWorkflowTest.suite());
         suite.addTest(new TestSuite(JesInstallationTest.class));
         suite.addTest(new TestSuite(JesSelfTest.class));
+        suite.addTest(MySpaceCommandlineWorkflowEndToEndTest.suite());
         suite.addTest(new TestSuite(MySpaceIntegrationTest.class));
         suite.addTest(new TestSuite(RegistryIntegrationTest.class));
         suite.addTest(SimpleCommandlineWorkflowEndToEndTest.suite());
-        suite.addTest(MySpaceCommandlineWorkflowEndToEndTest.suite());
         suite.addTest(SimpleDSAWorkflowEndToEndTest.suite());
-        suite.addTest(FlowWorkflowTest.suite());
         //$JUnit-END$
         return suite;
     }
 }
 /* 
 $Log: AllTests.java,v $
+Revision 1.13  2004/04/26 12:17:56  nw
+*** empty log message ***
+
 Revision 1.12  2004/04/23 16:12:49  pah
 added the myspace testapp test
 
