@@ -2,11 +2,14 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/java/org/astrogrid/portal/cocoon/explorer/Attic/ExplorerView.java,v $</cvs:source>
  * <cvs:date>$Author: clq2 $</cvs:date>
- * <cvs:author>$Date: 2003/09/19 16:19:03 $</cvs:author>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:author>$Date: 2003/10/03 12:35:55 $</cvs:author>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  *
  * <cvs:log>
  * $Log: ExplorerView.java,v $
+ * Revision 1.7  2003/10/03 12:35:55  clq2
+ * added new functions
+ *
  * Revision 1.6  2003/09/19 16:19:03  clq2
  * *** empty log message ***
  *
@@ -83,6 +86,9 @@ import org.astrogrid.portal.services.myspace.client.actions.export.ExportRespons
 
 import org.astrogrid.portal.services.myspace.client.data.DataNode ;
 import org.astrogrid.portal.services.myspace.client.status.StatusNode ;
+ 
+import org.astrogrid.mySpace.delegate.helper.*;
+import org.astrogrid.mySpace.delegate.mySpaceManager.*;
 
 //
 // Import the WSDL generated client stubs.
@@ -392,7 +398,7 @@ public class ExplorerView
 	 *
 	 */
 	protected MySpaceManager myspaceService ;
-
+	
 	/**
 	 * Initialise our MySpace service.
 	 * Calls the next methods with reset = false.
@@ -412,7 +418,7 @@ public class ExplorerView
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("AstPortalView.initMySpaceService()   BEIJING BICICAL") ;
+		if (DEBUG_FLAG) System.out.println("ExplorerView.initMySpaceService()   BEIJING BICICAL") ;
 		if (DEBUG_FLAG) System.out.println("Service : " + myspaceLocation) ;
 
 		//
@@ -424,6 +430,7 @@ public class ExplorerView
 
 		//
 		// If we don't have a service instance.
+		
 		if (null == myspaceService)
 			{
 			try {
@@ -462,6 +469,7 @@ public class ExplorerView
 			}
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("") ;
+		
 		return (null != myspaceService)  ;
 		}
 
@@ -498,23 +506,23 @@ public class ExplorerView
 				System.out.println(response) ;
 				System.out.println("----") ;
 				}
-			System.out.println("00000000000000000Sunday");
+			
 			//
 			// Create a parser.
 			LookupResponseParser parser = new LookupResponseParser() ;
-			System.out.println("1111111111111111111111111");
+			
 			//
 			// Parse the response.
 			parser.parse(response) ;
-			System.out.println("22222222222222222222222222");
+			
 			//
 			// Get the result status.
 			status = parser.getStatus() ;
-			System.out.println("3333333333333333333333333333333"+status.getStatus());
+			System.out.println("status: "+status.getStatus());
 			//
 			// Get the result tree.
 			tree = parser.getTree() ;
-			System.out.println("4444444444444444444444444444"+tree.getName());
+			
 			}
 		catch (RemoteException ouch)
 			{

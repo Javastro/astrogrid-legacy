@@ -2,11 +2,14 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/java/org/astrogrid/portal/cocoon/explorer/Attic/ExplorerAction.java,v $</cvs:source>
  * <cvs:date>$Author: clq2 $</cvs:date>
- * <cvs:author>$Date: 2003/09/18 11:53:14 $</cvs:author>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:author>$Date: 2003/10/03 12:35:55 $</cvs:author>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  * $Log: ExplorerAction.java,v $
+ * Revision 1.6  2003/10/03 12:35:55  clq2
+ * added new functions
+ *
  * Revision 1.5  2003/09/18 11:53:14  clq2
  * added action create/delete user and change owner.
  *
@@ -706,6 +709,7 @@ public class ExplorerAction
 					}
 					
 					if (EXTENDLEASE_ITEM_ACTION.equals(action)){
+						/*
 						if (DEBUG_FLAG) System.out.println("ExplorerAction.act: Extendlease for an item") ;
 						//
 						// Get the path from the request params.
@@ -729,7 +733,72 @@ public class ExplorerAction
 						// Clear the action and confirm values.
 						// FIXME : Only do this is the action worked.
 						action  = null ;
-						confirm = null ;						
+						confirm = null ;	
+						*/	
+						String from = request.getParameter(EXPLORER_PATH_PARAM) ;
+						String name = request.getParameter(EXPLORER_NAME_PARAM) ;
+						if (DEBUG_FLAG) System.out.println("ExtendLease for an item") ;
+						if (DEBUG_FLAG) System.out.println("From    : " + from) ;
+						if (DEBUG_FLAG) System.out.println("Name    : " + name) ;
+						//
+						// If we have a path.
+						if (null != from)
+							{
+							//
+							// If the action has been confirmed.
+							if ("true".equals(confirm))
+								{
+								//
+								// Get the base folder.
+								File file = new File(from) ;
+								String base = file.getParent() ;
+								//
+								// Create the destination path.
+								String dest = base + "/" + name ;
+								//
+								// If the source and destination are the same.
+								if (from.equals(base))
+									{
+									if (DEBUG_FLAG) System.out.println("ACTION : extend lease...") ;
+									if (DEBUG_FLAG) System.out.println("ERROR  : source and destination are the same") ;
+									}
+								//
+								// If the source and destination are different.
+								else {
+									//
+									// Move the item to the new location.
+									view.moveItem(from, dest) ;
+									}
+								//
+								// Change the current path.
+								view.setCurrentPath(dest) ;
+								//
+								// Clear the selected path and action.
+								// FIXME : Only do this is the action worked.
+								view.setSelectedPath(null) ;
+								view.setSelectedAction(null) ;
+								//
+								// Clear the action and confirm values.
+								// FIXME : Only do this is the action worked.
+								action  = null ;
+								confirm = null ;
+								}
+							//
+							// If the action has not been confirmed.
+							else {
+								//
+								// Change the current path.
+								view.setCurrentPath(from) ;
+								//
+								// Change the selected path and action.
+								view.setSelectedPath(from) ;
+								view.setSelectedAction(RENAME_ITEM_ACTION) ;
+								//
+								// Set the action and confirm values.
+								action  = RENAME_ITEM_ACTION ;
+								confirm = "false" ;
+								}
+							}				
 					}			
 					
 					if(CHANGE_OWNER.equals(action))	{
