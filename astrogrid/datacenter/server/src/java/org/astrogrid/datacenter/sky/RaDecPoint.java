@@ -1,5 +1,5 @@
 /*
- * $Id: RaDecPoint.java,v 1.2 2004/07/06 16:02:03 mch Exp $
+ * $Id: RaDecPoint.java,v 1.3 2004/07/12 22:15:06 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -10,6 +10,9 @@ package org.astrogrid.datacenter.sky;
 /**
  * Represents a point on the sky using RA and Dec.
  * These SkyPoint representations are immutable.
+ *
+ * Declination (dec) is measured as an angle from the north pole; the equator is 90 degrees,
+ * the south pole is 180 degrees
  *
  * @author M Hill
  */
@@ -74,6 +77,9 @@ public class RaDecPoint implements SkyPoint {
 }
 /*
  $Log: RaDecPoint.java,v $
+ Revision 1.3  2004/07/12 22:15:06  mch
+ Added SkyCircle and some methods to Angle
+
  Revision 1.2  2004/07/06 16:02:03  mch
  Minor tidying up etc
 

@@ -1,5 +1,5 @@
 /*
- * $Id: Angle.java,v 1.1 2004/03/12 04:45:26 mch Exp $
+ * $Id: Angle.java,v 1.2 2004/07/12 22:15:06 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -34,6 +34,9 @@ public class Angle
    /** Ratio of degrees to mils (military units) */
    public final static int DEG2MIL = 20;
 
+   /** Ratio of hours to degrees */
+   public final static int HRS2DEG = 15;
+   
    /** Construct from existing angle */
    public Angle(Angle anAngle)
    {
@@ -66,17 +69,23 @@ public class Angle
       }
    }
 
+   /** Creates an angle from degrees */
+   public static Angle fromDegrees(double deg)  { return new Angle(deg); }
+   
    /** Creates an angle from angle measured in radians */
-   public static Angle makeAngleFromRadians(double rad)   {  return new Angle(RAD2DEG * rad);   }
+   public static Angle fromRadians(double rad)   {  return new Angle(RAD2DEG * rad);   }
 
    /** Set angle from angle measured in mils (military units) */
-   public static Angle makeAngleFromMils(double mils)    {  return new Angle(mils/DEG2MIL); }
+   public static Angle fromMils(double mils)    {  return new Angle(mils/DEG2MIL); }
 
    /** Set angle from angle measured in minutes of an arc */
-   public static Angle makeAngleFromArcMins(double arcmins)    {  return new Angle(arcmins/60); }
+   public static Angle fromArcMins(double arcmins)    {  return new Angle(arcmins/60); }
 
    /** Set angle from angle measured in seconds of an arc */
-   public static Angle makeAngleFromArcSecs(double arcsecs)    {  return new Angle(arcsecs/3600); }
+   public static Angle fromArcSecs(double arcsecs)    {  return new Angle(arcsecs/3600); }
+
+   /** Creates an angle from hours */
+   public static Angle fromHours(double hours)  { return new Angle(hours*HRS2DEG); }
 
    /** Return internal representation of angle */
    private double getAngle()              {  return degs;   }
@@ -84,10 +93,10 @@ public class Angle
    /** Return whole degrees of angle */
    public int getDegrees()                {  return (asSecs() / 3600) % 360;  }
 
-   /** Return minutes part of angle */
+   /** Return minutes part of degrees of an angle */
    public int getMins()                   {  return (Math.abs(asSecs()) / 60) % 60;     }
 
-   /** Return seconds part of angle */
+   /** Return seconds part of degrees of an angle */
    public int getSecs()                   {  return Math.abs(asSecs()) % 60;            }
 
    /** Return angle in seconds of an arc */
@@ -156,6 +165,9 @@ public class Angle
 
 /*
 $Log: Angle.java,v $
+Revision 1.2  2004/07/12 22:15:06  mch
+Added SkyCircle and some methods to Angle
+
 Revision 1.1  2004/03/12 04:45:26  mch
 It05 MCH Refactor
 

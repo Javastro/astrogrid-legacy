@@ -1,5 +1,5 @@
 /*
- * $Id: SkyQuad.java,v 1.2 2004/07/06 16:02:03 mch Exp $
+ * $Id: SkyQuad.java,v 1.3 2004/07/12 22:15:06 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -12,7 +12,10 @@ import java.awt.Dimension;
 /**
  * Represents a 'rectangular' area on the sky defined by opposite corner points.
  * As the sky is not flat, this is not a rectangle but a four-sided shape with
- * straight lines along the line of view (great circles on the sky)
+ * straight lines along the line of view (great circles on the sky); it is
+ * a rectangle in coordinate space not on the sky.
+ *
+ * Not sure how you would use this over the pole...
  *
  * @author M Hill
  */
@@ -91,6 +94,9 @@ public class SkyQuad implements SkyRegion {
 }
 /*
  $Log: SkyQuad.java,v $
+ Revision 1.3  2004/07/12 22:15:06  mch
+ Added SkyCircle and some methods to Angle
+
  Revision 1.2  2004/07/06 16:02:03  mch
  Minor tidying up etc
 
