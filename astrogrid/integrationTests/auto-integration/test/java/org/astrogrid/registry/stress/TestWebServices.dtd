@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!ELEMENT TestWebServices (WebServiceTest+)>
+<!ELEMENT WebServiceTest (Runnable)>
+<!ELEMENT Runnable (TestCase+)>
+<!ELEMENT Thread (#PCDATA)>
+<!ELEMENT TestCase (Thread+)>
+<!ATTLIST WebServiceTest
+	name CDATA #REQUIRED
+	fullclassname CDATA #REQUIRED
+	threadstyle (sequential | synchroneous) #REQUIRED	
+>
+<!ATTLIST Runnable
+	type (junit) #REQUIRED
+>
+<!ATTLIST TestCase
+	name CDATA #REQUIRED
+	loop CDATA #REQUIRED
+	threadstyle (sequential | synchroneous) #REQUIRED	
+>
+<!ATTLIST Thread
+	number CDATA #REQUIRED
+	loop CDATA #REQUIRED
+	threadstyle (sequential | synchroneous) #REQUIRED
+>

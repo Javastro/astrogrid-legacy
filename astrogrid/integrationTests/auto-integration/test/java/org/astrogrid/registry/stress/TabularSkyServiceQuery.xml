@@ -1,0 +1,7 @@
+<query>
+	<selectionSequence>
+		<selection item="searchElements" itemOp="EQ" value="Resource"/>
+		<selectionOp op="$and$"/>
+		<selection item="@xsi:type" itemOp="EQ" value="TabularSkyService"/>
+	</selectionSequence>
+</query>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestWebServices>
+	<WebServiceTest name="ExampleTest" fullclassname="org.astrogrid.registry.stress.QueryeXistStress" threadstyle="sequential">
+		<Runnable type="junit">
+			<!-- 
+				This testCase is actually 115 users at once. Normally you would just want to
+				define one Thread element, the only slight advantage is that the printout at the end
+				does thave the thread number on it, but that is all.
+			 -->
+			<TestCase name="testService" loop="1"  threadstyle="sequential">
+				<Thread number="5"  loop="1" threadstyle="synchroneous" />
+				<Thread number="10"  loop="1" threadstyle="synchroneous" />
+				<Thread number="100"  loop="1" threadstyle="synchroneous" />
+			</TestCase>
+			<!-- Does 10 users all at once then 6 users. -->
+			<TestCase name="testService" loop="1"  threadstyle="sequential">
+				<Thread number="10"  loop="1" threadstyle="sequential" />
+				<Thread number="2"  loop="1" threadstyle="synchroneous" />
+				<Thread number="4"  loop="1" threadstyle="synchroneous" />
+			</TestCase>
+		</Runnable>
+	</WebServiceTest>
+	<WebServiceTest name="ExampleTest1" fullclassname="org.astrogrid.workflow.integration.MySpaceIntegrationTest" threadstyle="sequential">
+		<Runnable type="junit">
+			<!--simulates 5 users at once and each of these 5 users do the same unit test 50 times. -->
+			<TestCase name="testService" loop="1"  threadstyle="sequential">
+				<Thread number="5"  loop="50" threadstyle="synchroneous" />
+			</TestCase>
+			<!-- 
+				Simiulates 10 users at once then 4 users at once then does it 50 times.
+			-->
+			<TestCase name="testService" loop="50"  threadstyle="sequential">
+				<Thread number="10"  loop="1" threadstyle="sequential" />
+				<Thread number="4"  loop="1" threadstyle="synchroneous" />
+			</TestCase>
+		</Runnable>
+	</WebServiceTest>
+<!-- The next 2 WebService Test everything is defined as synchroneous , meaning everything both junit tests
+will be ran at the same time. If you add everyting up this is 127 users for the first webservicetest runnit at the
+same time as 127 users on the second web service test case yikes.  Keep in mind you have to increase a 
+property in tomcat to accept anything over (I think around 30 threads) -->
+<WebServiceTest name="ExampleTest2" fullclassname="calculate.CalculateTestCase" threadstyle="synchroneous">
+		<Runnable type="junit">
+			<TestCase name="testService" loop="1"  threadstyle="synchroneous">
+				<Thread number="5"  loop="1" threadstyle="synchroneous" />
+				<Thread number="10"  loop="1" threadstyle="synchroneous" />
+				<Thread number="100"  loop="1" threadstyle="synchroneous" />
+			</TestCase>
+			<TestCase name="testService" loop="1"  threadstyle="synchroneous">
+				<Thread number="2"  loop="1" threadstyle="synchroneous" />
+				<Thread number="4"  loop="1" threadstyle="synchroneous" />
+				<Thread number="6"  loop="1" threadstyle="synchroneous" />
+			</TestCase>
+		</Runnable>
+	</WebServiceTest>
+	<WebServiceTest name="ExampleTest3" fullclassname="calculaterpc.CalculateRPCTestCase" threadstyle="synchroneous">
+		<Runnable type="junit">
+			<TestCase name="testService" loop="1"  threadstyle="synchroneous">
+				<Thread number="5"  loop="1" threadstyle="synchroneous" />
+				<Thread number="10"  loop="1" threadstyle="synchroneous" />
+				<Thread number="100"  loop="1" threadstyle="synchroneous" />
+			</TestCase>
+			<TestCase name="testService" loop="1"  threadstyle="synchroneous">
+				<Thread number="2"  loop="1" threadstyle="synchroneous" />
+				<Thread number="4"  loop="1" threadstyle="synchroneous" />
+				<Thread number="6"  loop="1" threadstyle="synchroneous" />
+			</TestCase>
+		</Runnable>
+	</WebServiceTest>
+</TestWebServices>

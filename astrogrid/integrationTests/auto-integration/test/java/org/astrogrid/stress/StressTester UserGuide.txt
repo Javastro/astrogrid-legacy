@@ -1,0 +1,64 @@
+StressTester UserGuide:
+
+This is just a rough outline on how to use the StressTester.
+WSTester is a small application that can Test/BenchMark/Stress Test any junit 
+classes.  Because of that I should really change the name of this application, 
+but my primary goal was testing Web Services a long time ago.  Currently today I could not find
+really any decent tools (also free) that benchmarked web services with the 
+exception of one tool called TestMaker (previously known as Load), but I 
+could never get it to work like I wanted and required a lot of effort and 
+eventually I just gave up.
+
+StressTester works by reading in a XML file that points to your Junit class along
+with various Thread numbers and loops.  StressTester is quite flexible and allows
+you to run Threads and/or TestCases sequentially or synchronous.  You can have
+an xml file test 1 junit class or many junit classes and do them 1
+at a time (sequentially) or part of them at the same time or all of them at the
+same time. Just follow the xml example on setting it up to process your junit
+class.  Currently just look at the examples don't try running them, look at 
+test/java/org/astrogrid/registry/stress for an actual stress test. Look at RegistryStress.java
+for the junit class that sends it the registry_stress.xml doing the test.
+
+Originally StressTester was writing out files and probably it would be nice to put it back
+because it allowed you to get a text file where you could import into spreadsheets and 
+make graphs. 
+
+READ THIS PARAGRAPH:
+The original thought was even to allow you to define the test method name inside your
+junit test that you wanted to run.  But it never quite worked out, so it runs all the
+test methods in your junit class. Hence be warned that the time that is printed out from
+StressTester is the time that it took for the wole junit class to run, hence I recommend making
+several small unit tests with maybe one method in it, if you want to stress test a particular procedure/operation.
+
+
+
+"threadStyle" attribute is maybe the only thing that needs a little explaining
+about the xml document.  It has only 2 possibilities "sequential" and synchronous"
+If a "sequential" is ever found it will process that element/task and wait until 
+it is completed before going to the next task.
+If a "synchronous" is found it puts this task in an array and goes to the next
+task/element until a sequential is reached or end of xml document. In which
+case it then submits everything it has at one time. (Actually to be more exact it schedules
+a time for all these threads to happen at the same time.)  This attribute can be 
+placed on the Thread element, TestCase element or WebService element. BUT BE 
+WARNED AGAIN OF A LIMITATION THAT ONCE IT FINDS A SEQUENTIAL ATTRIBUTE ELEMENT THEN IT 
+WILL PROCESS EVERYTHING UP TO THAT SEQUENTIAL ELEMENT AND THEN BEGIN AGAIN.
+
+ONE LAST NOTE YOU CAN INCREASE THE THREAD NUMBER TO WHAT YOU LIKE, BUT TOMCAT DOES
+HAVE A LIMIT AND WILL PROBABLY YOU TO CHANGE A MAX_THREADS PROPERTY TO SOMETHING HIGHER OTHERWISE
+TOMCAT WILL CHUNK A FEW EXCEPTIONS AT YOU. NOT SURE ABOUT TOMCT 5, BUT 4 WOULD ACTUALLY HALT AND 
+STOP TOMCAT WHEN REACHED.
+
+Potential Enhancements:
+Okay because of things coming up in Iteration 3 I do not foresee making these
+enhancements, but if you want to give it a go then please do.
+1.)  Okay their is no Commenting
+2.)  I originally wrote this very quickly so definetly a few bad coding 
+areas are in their, hmmm probably a lot :).
+3.)  I was currently looking into having the "name" attribute in the 
+TestCase element be a method name if you wanted to test individual methods
+in your junit class.  
+4.)  Finally when I keep looking at the main StressTester class I can't help, but
+think their might be a way to make this application a Junit class itself sort
+of a Junit TestCase that tests other Junit tests.  If that is possible and all
+the code was nice and neat heck why not submit this to Junit themselves.
