@@ -1,4 +1,4 @@
-/*$Id: Query2MySpaceTest.java,v 1.5 2004/05/14 11:02:05 mch Exp $
+/*$Id: Query2MySpaceTest.java,v 1.6 2004/05/21 10:52:31 jdt Exp $
  * Created on 22-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -53,7 +53,7 @@ public class Query2MySpaceTest extends TestCase {
     * retreive from myspace, check they're what we expect
     */
    public void testSubmit() throws Exception {
-      
+      /*
       Agsl resultsTarget = new Agsl(StdKeys.MYSPACE, resultsPath);
 
       InputStream in = this.getClass().getResourceAsStream("SimpleStarQuery-adql05.xml");
@@ -70,7 +70,7 @@ public class Query2MySpaceTest extends TestCase {
       //wait until query finishes
       do {
          stat = delegate.getStatus(queryId);
-      } while (!stat.equals(QueryState.FINISHED) && (!stat.equals(QueryState.ERROR))); /* need some extra timout here too */
+      } while (!stat.equals(QueryState.FINISHED) && (!stat.equals(QueryState.ERROR))); // need some extra timout here too 
  
       //see if results are in expected myspace location
       StoreClient store = StoreDelegateFactory.createDelegate(Account.ANONYMOUS.toUser(), resultsTarget);
@@ -78,7 +78,8 @@ public class Query2MySpaceTest extends TestCase {
       
       Document resultDoc = DomHelper.newDocument(store.getStream(resultsTarget.getPath()));
       assertNotNull("null result document",resultDoc);
-      
+      */
+      fail("Fix these compile errors");
    }
    
     /**
@@ -100,6 +101,11 @@ public class Query2MySpaceTest extends TestCase {
 
 /*
 $Log: Query2MySpaceTest.java,v $
+Revision 1.6  2004/05/21 10:52:31  jdt
+Temporary quick fixes to deal with compilation errors following
+changes to Agsl constructor.
+See bugs 334 and 335
+
 Revision 1.5  2004/05/14 11:02:05  mch
 Fixed a number of errors
 

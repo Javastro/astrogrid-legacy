@@ -47,8 +47,8 @@ public class DeployedManagerTest extends TestCase
 // of operations on the remote Manager.
 
 
-   public void testDeployedManager()
-   {  try
+   public void testDeployedManager() 
+   { /* try
       {
 //
 //      Create the contents which will subsequently be imported as a
@@ -211,7 +211,8 @@ public class DeployedManagerTest extends TestCase
       catch(Exception e)
       {  System.out.println("Exception thrown.");
          e.printStackTrace();
-      }
+      }*/
+       fail("Fix these compile errors");
    }
 
 
