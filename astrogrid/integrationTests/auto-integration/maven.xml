@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.103 2004/09/14 17:02:51 nw Exp $ -->
+<!-- $Id: maven.xml,v 1.104 2004/09/15 18:10:48 KevinBenson Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -267,6 +267,7 @@
 
 <goal name="setup-exist" description="PUT documents in eXist">
          <echo>Configuring eXist entries</echo>
+		<delete dir="${temporary.dir}/exist-entries" />	
         <copy todir="${temporary.dir}/exist-entries" filtering="true">
                 <fileset dir="exist-entries">
                         <include name="**/*.xml" />
@@ -307,6 +308,7 @@
 <goal name="setup-registry" description="populate the registry">
         <echo>Configuring Registry</echo>
         <!-- expand tokens -->
+		<delete dir="${temporary.dir}/registry-entries" />
         <copy todir="${temporary.dir}/registry-entries" filtering="true">
                 <fileset dir="registry-entries">
                         <include name="**/*.xml" />
