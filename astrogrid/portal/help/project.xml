@@ -12,7 +12,7 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-common</artifactId>
-      <version>${pom.currentVersion}</version>
+      <version>${astrogrid.common.version}</version>
     </dependency>
 
     <!-- Portal Common  -->
@@ -26,7 +26,7 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-store-client</artifactId>
-      <version>${pom.currentVersion}</version>
+      <version>${astrogrid.mySpace.version}</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>

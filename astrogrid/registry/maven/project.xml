@@ -6,7 +6,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="maven-project.xsd">
 	<extend>${basedir}/../../maven-base/project.xml</extend>
-
+    <currentVersion>${astrogrid.registry.version}</currentVersion>
 
     <!--+
         | The external libraries required to build our components.

@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
-<!-- $Id: project.xml,v 1.27 2004/09/07 14:05:43 jdt Exp $ -->
+<!-- $Id: project.xml,v 1.28 2004/11/23 18:40:50 jdt Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="xsd/maven-project.xsd">
     <pomVersion>3</pomVersion>
     <name>Astrogrid Master Maven POM</name>
     <groupId>org.astrogrid</groupId>
     <artifactId>astrogrid-master</artifactId>
-    <currentVersion>SNAPSHOT</currentVersion>
+    <currentVersion>ERROR</currentVersion><!--temp measure to identify problems-->
     <organization>
         <name>AstroGrid</name>
         <url>http://www.astrogrid.org</url>

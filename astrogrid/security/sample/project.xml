@@ -6,8 +6,9 @@
 
     <extend>../../maven-base/project.xml</extend>
 
-    <id>astrogrid-security-sample</id>
+    <artifactId>astrogrid-security-sample</artifactId>
     <groupId>org.astrogrid</groupId>
+    <currentVersion>${astrogrid.security.version}</currentVersion>
 
     <name>AstroGrid security sample service and client</name>
 
@@ -41,7 +42,7 @@
         <dependency>
           <groupId>org.astrogrid</groupId>
           <artifactId>astrogrid-common</artifactId>
-          <version>${pom.currentVersion}</version>
+          <version>${astrogrid.common.version}</version>
           <type>jar</type>
           <properties>
 	    <war.bundle>true</war.bundle>
@@ -51,7 +52,7 @@
         <dependency>
           <groupId>org.astrogrid</groupId>
           <artifactId>astrogrid-community-client</artifactId>
-          <version>${pom.currentVersion}</version>
+          <version>${astrogrid.community.version}</version>
           <type>jar</type>
           <properties>
 	    <war.bundle>true</war.bundle>
@@ -61,7 +62,7 @@
         <dependency>
           <groupId>org.astrogrid</groupId>
           <artifactId>astrogrid-community-common</artifactId>
-          <version>${pom.currentVersion}</version>
+          <version>${astrogrid.community.version}</version>
           <type>jar</type>
           <properties>
 	    <war.bundle>true</war.bundle>
@@ -71,7 +72,7 @@
         <dependency>
           <groupId>org.astrogrid</groupId>
           <artifactId>astrogrid-community-resolver</artifactId>
-          <version>${pom.currentVersion}</version>
+          <version>${astrogrid.community.version}</version>
           <type>jar</type>
           <properties>
 	    <war.bundle>true</war.bundle>
@@ -80,8 +81,8 @@
         
         <dependency>
           <groupId>org.astrogrid</groupId>
-          <artifactId>astrogrid-registry-client</artifactId>
-          <version>${pom.currentVersion}</version>
+          <artifactId>astrogrid-registry-client-lite</artifactId>
+          <version>${astrogrid.registry.version}</version>
           <type>jar</type>
           <properties>
 	    <war.bundle>true</war.bundle>
@@ -91,7 +92,7 @@
         <dependency>
           <groupId>org.astrogrid</groupId>
           <artifactId>astrogrid-registry-common</artifactId>
-          <version>${pom.currentVersion}</version>
+          <version>${astrogrid.registry.version}</version>
           <type>jar</type>
           <properties>
 	    <war.bundle>true</war.bundle>

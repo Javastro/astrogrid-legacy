@@ -3,10 +3,17 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/project.xml,v $</cvs:source>
     | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2004/11/05 18:19:37 $</cvs:date>
-    | <cvs:version>$Revision: 1.14 $</cvs:version>
+    | <cvs:date>$Date: 2004/11/23 18:40:50 $</cvs:date>
+    | <cvs:version>$Revision: 1.15 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.15  2004/11/23 18:40:50  jdt
+    |   Merges from  BLD_JDT_648.  The long awaited move to versioned jars and wars.  Fingers crossed.  See:
+    |   http://software.astrogrid.org/developerdocs/developmentprocess.html
+    |
+    |   Revision 1.14.8.1  2004/11/12 00:45:53  jdt
+    |   Switched to use fixed version numbers, defined in a properties file
+    |
     |   Revision 1.14  2004/11/05 18:19:37  jdt
     |   Restored the <report> tags - these are needed to override those in maven-base, and prevent the root project
     |   trying to generate reports for checkstyle etc, which are inappropriate.
@@ -51,7 +58,7 @@
         | The short name of the project.
         | This is used when naming jars and distribution files.
         +-->
-    <id>astrogrid-community-project</id>
+    <artifactId>astrogrid-community-project</artifactId>
 
     <!--+
         | The full name of the project.

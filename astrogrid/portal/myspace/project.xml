@@ -1,210 +1,198 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="../maven-project.xsd">
-  <extend>../maven-base/project.xml</extend>
-  
-  <id>astrogrid-portal-myspace</id>
-  <name>AstroGrid Portal MySpace Project</name>
-
-  <dependencies>
-    <!-- Common -->
-    <dependency>
-      <groupId>org.astrogrid</groupId>
-      <artifactId>astrogrid-common</artifactId>
-      <version>${pom.currentVersion}</version>
-    </dependency>
-    
-    <!-- Portal Common -->
-    <dependency>
-      <groupId>org.astrogrid</groupId>
-      <artifactId>astrogrid-portal-common</artifactId>
-      <version>${pom.currentVersion}</version>
-    </dependency>
-    
-    <!-- MySpace -->
-    <dependency>
-      <groupId>org.astrogrid</groupId>
-      <artifactId>astrogrid-store-client</artifactId>
-      <version>${pom.currentVersion}</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-
-    <!-- Servlet API -->
-    <dependency>
-      <groupId>servletapi</groupId>
-      <artifactId>servletapi</artifactId>
-      <version>2.2</version>
-    </dependency>
-
-    <!-- Mock Objects -->
-    <dependency>
-      <groupId>mmmockobjects</groupId>
-      <artifactId>mmmockobjects</artifactId>
-      <version>1.11.0</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-
-      <!-- for VoSpaceResolver -->
+<project>
+    <extend>../maven-base/project.xml</extend>
+    <artifactId>astrogrid-portal-myspace</artifactId>
+    <name>AstroGrid Portal MySpace Project</name>
+    <dependencies>
         <dependency>
-            <artifactId>astrogrid-registry-client-lite</artifactId>
-         <groupId>org.astrogrid</groupId>
-            <version>${pom.currentVersion}</version>
-            <properties>
-                <war.bundle>true</war.bundle>
-            </properties>
-        </dependency>
-        <dependency>
-            <artifactId>astrogrid-registry-common</artifactId>
-         <groupId>org.astrogrid</groupId>
-            <version>${pom.currentVersion}</version>
-            <properties>
-                <war.bundle>true</war.bundle>
-            </properties>
-        </dependency>
-    
-    <!-- MYSPACE -->
-        <dependency>
-            <artifactId>astrogrid-common</artifactId>
             <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-portal-common</artifactId>
             <version>${pom.currentVersion}</version>
-            <properties>
-                <war.bundle>true</war.bundle>
-            </properties>
+            <type>jar</type>
+            <properties/>
         </dependency>
-        
-        <!-- mch why is this in?! dependency>
-            <artifactId>astrogrid-datacenter-client</artifactId>
-            <groupId>astrogrid-datacenter</groupId>
-            <version>${pom.currentVersion}</version>
-            <properties>
-                <war.bundle>true</war.bundle>
-            </properties>
-        </dependency>
-        -->
         <dependency>
-            <artifactId>commons-discovery</artifactId>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-store-client</artifactId>
+            <version>${astrogrid.mySpace.version}</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>servletapi</groupId>
+            <artifactId>servletapi</artifactId>
+            <version>2.2</version>
+            <type>jar</type>
+            <properties/>
+        </dependency>
+        <dependency>
+            <groupId>mmmockobjects</groupId>
+            <artifactId>mmmockobjects</artifactId>
+            <version>1.11.0</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-registry-client-lite</artifactId>
+            <version>${astrogrid.registry.version}</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-registry-common</artifactId>
+            <version>${astrogrid.registry.version}</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-common</artifactId>
+            <version>${astrogrid.common.version}</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
             <groupId>commons-discovery</groupId>
+            <artifactId>commons-discovery</artifactId>
             <version>20030211.213356</version>
+            <type>jar</type>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
         <dependency>
-            <artifactId>cog-jglobus</artifactId>
             <groupId>cog-jglobus</groupId>
+            <artifactId>cog-jglobus</artifactId>
             <version>OGSA3.0</version>
+            <type>jar</type>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
         <dependency>
-            <artifactId>axis</artifactId>
             <groupId>axis</groupId>
+            <artifactId>axis</artifactId>
             <version>1.1</version>
+            <type>jar</type>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
         <dependency>
-            <artifactId>jax-qname</artifactId>
             <groupId>jax-qname</groupId>
+            <artifactId>jax-qname</artifactId>
             <version>UNKNOWN</version>
             <jar>jax-qname.jar</jar>
+            <type>jar</type>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
         <dependency>
-            <artifactId>jaxrpc-api</artifactId>
             <groupId>jaxrpc-api</groupId>
+            <artifactId>jaxrpc-api</artifactId>
             <version>1.0.3</version>
+            <type>jar</type>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
         <dependency>
-            <artifactId>jconfig</artifactId>
             <groupId>jconfig</groupId>
+            <artifactId>jconfig</artifactId>
             <version>2.1</version>
+            <type>jar</type>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
         <dependency>
-            <artifactId>junit</artifactId>
             <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
             <version>3.8</version>
+            <type>jar</type>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
         <dependency>
-            <artifactId>log4j</artifactId>
             <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
             <version>1.2.4</version>
+            <type>jar</type>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
         <dependency>
-            <artifactId>saaj-api</artifactId>
             <groupId>saaj-api</groupId>
+            <artifactId>saaj-api</artifactId>
             <version>1.1.1</version>
+            <type>jar</type>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
         <dependency>
-            <artifactId>wsdl4j</artifactId>
             <groupId>wsdl4j</groupId>
+            <artifactId>wsdl4j</artifactId>
             <jar>wsdl4j.jar</jar>
+            <type>jar</type>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
         <dependency>
-            <artifactId>hsqldb</artifactId>
             <groupId>hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
             <version>1.7.1</version>
+            <type>jar</type>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
         <dependency>
-            <artifactId>commons-logging</artifactId>
             <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
             <version>1.0.3</version>
+            <type>jar</type>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
         <dependency>
-            <artifactId>junitee</artifactId>
             <groupId>junitee</groupId>
+            <artifactId>junitee</artifactId>
             <version>1.8</version>
+            <type>jar</type>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
-  </dependencies>
-  
-  <build>
-    <sourceDirectory>src/java</sourceDirectory>
-    <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
-    
-    <unitTest>
-      <includes>
-        <include>**/*.java</include>
-      </includes>
-      <excludes>
-        <exclude>mock/**/*.java</exclude>
-        <exclude>org/astrogrid/portal/myspace/acting/framework/BaseHandlerTest.java</exclude>
-      </excludes>
-    </unitTest>
-  </build>
+    </dependencies>
+    <build>
+        <sourceDirectory>src/java</sourceDirectory>
+        <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
+        <unitTest>
+            <includes>
+                <include>**/*.java</include>
+            </includes>
+            <excludes>
+                <exclude>mock/**/*.java</exclude>
+                <exclude>org/astrogrid/portal/myspace/acting/framework/BaseHandlerTest.java</exclude>
+            </excludes>
+        </unitTest>
+    </build>
+    <properties/>
 </project>

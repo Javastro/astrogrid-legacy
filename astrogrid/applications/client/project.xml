@@ -2,6 +2,7 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <extend>../../maven-base/project.xml</extend>
 <id>astrogrid-cea-client</id>
+<currentVersion>${astrogrid.applications.version}</currentVersion>
 <name>CEA Client</name>
 <description>Client / Delegate library for communicatng with CEA services</description>
 <shortDescription>AstroGrid CEA Client</shortDescription>
@@ -18,12 +19,12 @@
   <dependency>
     <artifactId>astrogrid-common</artifactId>
     <groupId>org.astrogrid</groupId>
-    <version>${pom.currentVersion}</version>
+    <version>${astrogrid.common.version}</version>
   </dependency>
   <dependency>
     <groupId>org.astrogrid</groupId>
     <artifactId>astrogrid-workflow-objects</artifactId>
-    <version>${pom.currentVersion}</version>
+    <version>${astrogrid.workflowobjects.version}</version>
   </dependency>
   <dependency>
     <groupId>junit</groupId>

@@ -1,26 +1,19 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="../maven-project.xsd">
-  <extend>../maven-base/project.xml</extend>
-  
-  <id>astrogrid-portal-community</id>
-  <name>AstroGrid Portal Community</name>
-
-  <dependencies>
-    <!-- Common -->
+<project>
+    <extend>../maven-base/project.xml</extend>
+    <artifactId>astrogrid-portal-community</artifactId>
+    <name>AstroGrid Portal Community</name>
+    <dependencies>
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-common</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.common.version}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
-        
-    <dependency>
+        <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-portal-common</artifactId>
             <version>${pom.currentVersion}</version>
@@ -29,70 +22,69 @@
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
-        </dependency>        
-
+        </dependency>
         <dependency>
             <groupId>${pom.groupId}</groupId>
             <artifactId>astrogrid-registry-common</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.registry.version}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
                 <jar.fileset>true</jar.fileset>
             </properties>
         </dependency>
-
-
-
-    <!--+
-    	| Community client jars
-    	+-->
-    <dependency>
-      <groupId>org.astrogrid</groupId>
-      <artifactId>astrogrid-community-client</artifactId>
-      <version>${pom.currentVersion}</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-
-    <dependency>
-      <groupId>org.astrogrid</groupId>
-      <artifactId>astrogrid-community-common</artifactId>
-      <version>${pom.currentVersion}</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-
-    <dependency>
-      <groupId>org.astrogrid</groupId>
-      <artifactId>astrogrid-community-resolver</artifactId>
-      <version>${pom.currentVersion}</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-    
-        <dependency >
-            <id>cocoon</id>
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-community-client</artifactId>
+            <version>${astrogrid.community.version}</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-community-common</artifactId>
+            <version>${astrogrid.community.version}</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-community-resolver</artifactId>
+            <version>${astrogrid.community.version}</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>cocoon</groupId>
+            <artifactId>cocoon</artifactId>
             <version>2.1.2</version>
+            <type>jar</type>
+            <properties/>
         </dependency>
-        
-        <dependency >
-            <id>avalon-framework</id>
+        <dependency>
+            <groupId>avalon-framework</groupId>
+            <artifactId>avalon-framework</artifactId>
             <version>20020627</version>
+            <type>jar</type>
+            <properties/>
         </dependency>
-        
-        <dependency >
-            <id>excalibur-pool</id>
+        <dependency>
+            <groupId>excalibur-pool</groupId>
+            <artifactId>excalibur-pool</artifactId>
             <version>20020820</version>
-        </dependency>        
-    
-  </dependencies>
-  
-  <build>
-    <sourceDirectory>src/java</sourceDirectory>
-    <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
-  </build>
+            <type>jar</type>
+            <properties/>
+        </dependency>
+    </dependencies>
+    <build>
+        <sourceDirectory>src/java</sourceDirectory>
+        <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
+    </build>
+    <properties/>
 </project>

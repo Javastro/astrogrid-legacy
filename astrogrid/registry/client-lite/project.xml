@@ -206,7 +206,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-common</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.common.version}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>

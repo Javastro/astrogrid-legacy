@@ -1,6 +1,7 @@
 <project>
     <extend>../server/project.xml</extend>
     <artifactId>astrogrid-cea-http</artifactId>
+    <currentVersion>${astrogrid.applications.version}</currentVersion>
     <name>AstroGrid HTTP applications CEA server</name>
     <description>
         Library to publish HTTP applications in the Common Execution Architecture

@@ -1,27 +1,18 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="../maven-project.xsd">
+<project>
     <extend>../maven-base/project.xml</extend>
-    <id>astrogrid-portal-login</id>
+    <artifactId>astrogrid-portal-login</artifactId>
     <name>AstroGrid Portal Login</name>
     <dependencies>
-        <!--+
-            | The AstroGrid common components.
-            +-->
         <dependency>
             <groupId>${pom.groupId}</groupId>
             <artifactId>astrogrid-common</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.common.version}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
-        <!--+
-            | Portal
-            +-->
         <dependency>
             <groupId>${pom.groupId}</groupId>
             <artifactId>astrogrid-portal-common</artifactId>
@@ -32,13 +23,10 @@
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
-        <!--+
-            | Community components.
-            +-->
         <dependency>
             <groupId>${pom.groupId}</groupId>
             <artifactId>astrogrid-community-common</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.community.version}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
@@ -48,7 +36,7 @@
         <dependency>
             <groupId>${pom.groupId}</groupId>
             <artifactId>astrogrid-community-client</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.community.version}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
@@ -58,46 +46,38 @@
         <dependency>
             <groupId>${pom.groupId}</groupId>
             <artifactId>astrogrid-community-resolver</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.community.version}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
-        <!--+
-            | The Registry common classes.
-            +-->
         <dependency>
             <groupId>${pom.groupId}</groupId>
             <artifactId>astrogrid-registry-common</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.registry.version}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
-        <!--+
-            | The Registry client components.
-            +-->
         <dependency>
             <groupId>${pom.groupId}</groupId>
             <artifactId>astrogrid-registry-client-lite</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.registry.version}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
-        <!--+
-            | Both these are needed for javamail
-            +-->
         <dependency>
             <groupId>sun</groupId>
             <artifactId>mail</artifactId>
             <version>1.3.1</version>
+            <type>jar</type>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
@@ -106,35 +86,29 @@
             <groupId>activation</groupId>
             <artifactId>activation</artifactId>
             <version>1.0.2</version>
+            <type>jar</type>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
-        <!--+
-            | Mock maker needed only for testing
-            +-->
         <dependency>
             <groupId>mmmockobjects</groupId>
             <artifactId>mmmockobjects</artifactId>
             <version>1.11.0</version>
+            <type>jar</type>
             <properties>
                 <war.bundle>false</war.bundle>
             </properties>
         </dependency>
-        <!--+
-            |  Web service stuff
-            +-->
         <dependency>
             <groupId>axis</groupId>
             <artifactId>axis</artifactId>
             <version>1.1</version>
+            <type>jar</type>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
-        <!--+
-            | The Castor XML jars - required for registry delegate.
-            +-->
         <dependency>
             <groupId>castor</groupId>
             <artifactId>castor</artifactId>
@@ -160,6 +134,7 @@
             <groupId>commons-discovery</groupId>
             <artifactId>commons-discovery</artifactId>
             <version>SNAPSHOT</version>
+            <type>jar</type>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
@@ -168,6 +143,7 @@
             <groupId>commons-jxpath</groupId>
             <artifactId>commons-jxpath</artifactId>
             <version>1.1</version>
+            <type>jar</type>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
@@ -176,6 +152,7 @@
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
             <version>1.0.3</version>
+            <type>jar</type>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
@@ -184,6 +161,7 @@
             <groupId>jakarta-regexp</groupId>
             <artifactId>jakarta-regexp</artifactId>
             <version>1.3</version>
+            <type>jar</type>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
@@ -193,6 +171,7 @@
             <artifactId>jaxrpc</artifactId>
             <version>unknown</version>
             <jar>jaxrpc.jar</jar>
+            <type>jar</type>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
@@ -230,21 +209,20 @@
             <artifactId>saaj</artifactId>
             <version>unknown</version>
             <jar>saaj.jar</jar>
+            <type>jar</type>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
-        <dependency >
+        <dependency>
             <groupId>wsdl4j</groupId>
             <artifactId>wsdl4j</artifactId>
             <version>1.4</version>
+            <type>jar</type>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
-        <!--+
-            | The Xerces library that Castor relies on.
-            +-->
         <dependency>
             <groupId>xerces</groupId>
             <artifactId>xerces</artifactId>
@@ -255,9 +233,6 @@
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
-        <!--+
-            | The XML library that Xerces relies on.
-            +-->
         <dependency>
             <groupId>xml-apis</groupId>
             <artifactId>xml-apis</artifactId>
@@ -278,4 +253,5 @@
             </includes>
         </unitTest>
     </build>
+    <properties/>
 </project>

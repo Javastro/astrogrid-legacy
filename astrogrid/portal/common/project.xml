@@ -3,13 +3,13 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
     xsi:noNamespaceSchemaLocation="../../maven-base/xsd/maven-project.xsd">
     <extend>../maven-base/project.xml</extend>
-    <id>astrogrid-portal-common</id>
+    <artifactId>astrogrid-portal-common</artifactId>
     <name>AstroGrid Portal Common Project</name>
     <dependencies>
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-common</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.common.version}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>

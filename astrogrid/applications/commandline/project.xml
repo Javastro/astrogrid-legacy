@@ -5,6 +5,7 @@
     - in this way we inhierit all the dependencies -->
   <extend>${basedir}/../server/project.xml</extend>
   <id>astrogrid-cea-commandline</id>
+  <currentVersion>${astrogrid.applications.version}</currentVersion>
   <name>AstroGrid Commandline applications CEA server</name>
 
   <description><![CDATA[

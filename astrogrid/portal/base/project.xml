@@ -3,7 +3,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <extend>../maven-base/project.xml</extend>
   
-  <id>astrogrid-portal-base</id>
+  <artifactId>astrogrid-portal-base</artifactId>
   <name>AstroGrid Portal Base Project</name>
 
   <dependencies>
@@ -21,7 +21,7 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-common</artifactId>
-      <version>${pom.currentVersion}</version>
+      <version>${astrogrid.common.version}</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>

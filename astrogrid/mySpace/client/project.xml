@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.6 2004/09/28 10:24:19 dave Exp $ -->
+<!-- $Id: project.xml,v 1.7 2004/11/23 18:40:50 jdt Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../maven-base/xsd/maven-project.xsd">
     <!--will eventually extend from /base when Maven RC3 installed-->
@@ -16,7 +16,7 @@
         <dependency>
             <artifactId>astrogrid-registry-client-lite</artifactId>
          <groupId>org.astrogrid</groupId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.registry.version}</version>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
@@ -24,7 +24,7 @@
         <dependency>
             <artifactId>astrogrid-registry-common</artifactId>
          <groupId>org.astrogrid</groupId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.registry.version}</version>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
@@ -34,7 +34,7 @@
         <dependency>
             <artifactId>astrogrid-common</artifactId>
             <groupId>org.astrogrid</groupId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.common.version}</version>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
@@ -53,7 +53,7 @@
 			| The Jakarta commons collection tools.
 			+-->
 		<dependency>
-			<groupId>commons-collections</groupId>
+			<groupId>jakarta-commons</groupId>
 			<artifactId>commons-collections</artifactId>
 			<version>3.1</version>
 			<type>jar</type>
@@ -188,23 +188,11 @@
             <type>tld</type>
         </dependency>
 
-
-        <!--+
-            | The AstroGrid common components.
-            +-->
-        <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-common</artifactId>
-	        <version>${pom.currentVersion}</version>
-            <type>jar</type>
-            <url>http://www.astrogrid.org/</url>
-        </dependency>
-
     <!-- UI stuff for web UI JSPs -->
     <dependency>
       <artifactId>astrogrid-ui</artifactId>
       <groupId>org.astrogrid</groupId>
-        <version>${pom.currentVersion}</version>
+        <version>${astrogrid.ui.version}</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
@@ -226,7 +214,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-common</artifactId>
-        	<version>${pom.currentVersion}</version>
+        	<version>${astrogrid.community.version}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>
@@ -236,7 +224,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-client</artifactId>
-    	    <version>${pom.currentVersion}</version>
+    	    <version>${astrogrid.community.version}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>
@@ -246,7 +234,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-resolver</artifactId>
-	        <version>${pom.currentVersion}</version>
+	        <version>${astrogrid.community.version}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>

@@ -13,49 +13,49 @@
        <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-common</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.common.version}</version>
             <type>jar</type>
             <properties/>
         </dependency>
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-jes</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.jes.version}</version>
             <type>war</type>
             <properties/>
         </dependency>
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-cea-server</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.applications.version}</version>
             <type>war</type>
             <properties/>
         </dependency>
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-cea-commandline</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.applications.version}</version>
             <type>war</type>
             <properties/>
         </dependency>
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-cea-http</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.applications.version}</version>
             <type>war</type>
             <properties/>
         </dependency>
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-mySpace</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.mySpace.version}</version>
             <type>war</type>
             <properties/>
         </dependency>
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-registry</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.registry.version}</version>
             <type>war</type>
             <properties/>
         </dependency>
@@ -69,36 +69,36 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>pal</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.datacenter.version}</version>
             <type>war</type>
             <properties/>
         </dependency>
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-portal</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.portal.version}</version>
             <type>war</type>
             <properties/>
         </dependency>
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-deployment</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.deployment.version}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>
                 <!--registry upload-->
-                <dependency>
+        <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-registry-client-lite</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.registry.version}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>
                  <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-registry-common</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.registry.version}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>
@@ -189,7 +189,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.community.version}</version>
             <type>war</type>
             <url>http://www.astrogrid.org/</url>
             <properties/>
@@ -197,7 +197,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-install</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.community.version}</version>
             <type>zip</type>
             <url>http://www.astrogrid.org/</url>
             <properties/>
@@ -227,7 +227,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-filestore</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.filestore.version}</version>
             <type>war</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>

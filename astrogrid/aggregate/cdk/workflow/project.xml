@@ -78,7 +78,7 @@
                 <dependency>
                         <groupId>org.astrogrid</groupId>
                         <artifactId>astrogrid-workflow</artifactId>
-                        <version>${pom.currentVersion}</version>
+                        <version>${astrogrid.workflow.version}</version>
                         <url>http://www.astrogrid.org/</url>
                         <properties>
                                 <jnlp.jar>true</jnlp.jar>
@@ -88,7 +88,7 @@
                 <dependency>
                            <groupId>org.astrogrid</groupId>
                            <artifactId>astrogrid-jes-delegate</artifactId>
-                           <version>${pom.currentVersion}</version>
+                           <version>${astrogrid.jes.version}</version>
                         <url>http://www.astrogrid.org/</url>
                         <properties>
                                 <jnlp.jar>true</jnlp.jar>
@@ -97,7 +97,7 @@
                 <dependency>
                            <groupId>org.astrogrid</groupId>
                            <artifactId>astrogrid-workflow-objects</artifactId>
-                           <version>${pom.currentVersion}</version>
+                           <version>${astrogrid.workflow.version}</version>
                         <url>http://www.astrogrid.org/</url>
                         <properties>
                                 <jnlp.jar>true</jnlp.jar>
@@ -107,7 +107,7 @@
                 <dependency>
                            <groupId>org.astrogrid</groupId>
                            <artifactId>astrogrid-cea-client</artifactId>
-                           <version>${pom.currentVersion}</version>
+                           <version>${astrogrid.applications.version}</version>
                         <url>http://www.astrogrid.org/</url>
                         <properties>
                                 <jnlp.jar>true</jnlp.jar>

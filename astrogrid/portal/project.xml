@@ -5,7 +5,8 @@
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
 	<extend>../maven-base/project.xml</extend>
     <pomVersion>3</pomVersion>
-    <id>astrogrid-portal</id>
+    <artifactId>astrogrid-portal</artifactId>
+    <currentVersion>${astrogrid.portal.version}</currentVersion>
     <name>AstroGrid Portal</name>
 
     <description>

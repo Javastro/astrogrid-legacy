@@ -2,11 +2,18 @@
 <!--+
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/client/project.xml,v $</cvs:source>
-    | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/07/27 13:41:17 $</cvs:date>
-    | <cvs:version>$Revision: 1.6 $</cvs:version>
+    | <cvs:author>$Author: jdt $</cvs:author>
+    | <cvs:date>$Date: 2004/11/23 18:40:50 $</cvs:date>
+    | <cvs:version>$Revision: 1.7 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.7  2004/11/23 18:40:50  jdt
+    |   Merges from  BLD_JDT_648.  The long awaited move to versioned jars and wars.  Fingers crossed.  See:
+    |   http://software.astrogrid.org/developerdocs/developmentprocess.html
+    |
+    |   Revision 1.6.74.1  2004/11/12 00:45:53  jdt
+    |   Switched to use fixed version numbers, defined in a properties file
+    |
     |   Revision 1.6  2004/07/27 13:41:17  dave
     |   Merged development branch, dave-dev-200407261230, into HEAD
     |
@@ -104,7 +111,7 @@
         <dependency>
             <groupId>${pom.groupId}</groupId>
             <artifactId>astrogrid-common</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.common.version}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>
@@ -124,7 +131,7 @@
         <dependency>
             <groupId>${pom.groupId}</groupId>
             <artifactId>astrogrid-registry-common</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.registry.version}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
@@ -137,7 +144,7 @@
         <dependency>
             <groupId>${pom.groupId}</groupId>
             <artifactId>astrogrid-registry-client-lite</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.registry.version}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>

@@ -81,7 +81,7 @@
         <dependency>
             <artifactId>astrogrid-common</artifactId>
             <groupId>org.astrogrid</groupId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.common.version}</version>
         </dependency>
         
         <dependency>

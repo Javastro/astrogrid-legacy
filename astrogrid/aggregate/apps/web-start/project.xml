@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.1 2004/11/18 17:37:08 nw Exp $ -->
+<!-- $Id: project.xml,v 1.2 2004/11/23 18:40:50 jdt Exp $ -->
 <project>
     <extend>${basedir}/../../../maven-base/project.xml</extend>
+    <currentVersion>${astrogrid.aggregate.version}</currentVersion>
     <id>web-start</id>
     <name>Web-Start helper servlet</name>
     <description>Servlet to help publishing apps using JNLP - allows config properties and params to be passed in

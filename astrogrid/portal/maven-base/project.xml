@@ -12,7 +12,8 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
     <extend>${basedir}/../../maven-base/project.xml</extend>
-    <id>astrogrid-portal-maven-base</id>
+    <artifactId>astrogrid-portal-maven-base</artifactId>
+    <currentVersion>${astrogrid.portal.version}</currentVersion>
     <name>AstroGrid Portal Base POM</name>
     <shortDescription>AstroGrid Web Portal Base POM</shortDescription>
     <build>

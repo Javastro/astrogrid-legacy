@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
     <extend>${basedir}/../../../maven-base/project.xml</extend>
+    <currentVersion>${astrogrid.aggregate.version}</currentVersion>
     <id>astrogrid-cdk-core</id>
     <name>Core Client Developer Kit (CDK)</name>
     <description><![CDATA[
@@ -87,7 +88,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-common</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.common.version}</version>
             <url>http://www.astrogrid.org/</url>
             <properties>
                 <jnlp.jar>${shall.bundle.core}</jnlp.jar>
@@ -99,7 +100,7 @@
        <dependency>
             <artifactId>astrogrid-store-client</artifactId>
             <groupId>org.astrogrid</groupId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.mySpace.version}</version>
             <url>http://www.astrogrid.org/</url>
             <properties>
                     <jnlp.jar>${shall.bundle.core}</jnlp.jar>
@@ -109,7 +110,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-filestore-client</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.filestore.version}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
@@ -121,7 +122,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-common</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.community.version}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
@@ -132,7 +133,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-client</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.community.version}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
@@ -143,7 +144,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-resolver</artifactId>
-                <version>${pom.currentVersion}</version>
+                <version>${astrogrid.community.version}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
@@ -155,7 +156,7 @@
         <dependency>
             <artifactId>astrogrid-registry-common</artifactId>
             <groupId>org.astrogrid</groupId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.registry.version}</version>
             <url>http://www.astrogrid.org/</url>
             <properties>
                    <jnlp.jar>${shall.bundle.core}</jnlp.jar>
@@ -165,7 +166,7 @@
         <dependency>
             <artifactId>astrogrid-registry-client-lite</artifactId>
          <groupId>org.astrogrid</groupId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.registry.version}</version>
             <url>http://www.astrogrid.org/</url>
             <properties>
                    <jnlp.jar>${shall.bundle.core}</jnlp.jar>

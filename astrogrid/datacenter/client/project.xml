@@ -3,7 +3,7 @@
 <extend>${basedir}/../build/project-base.xml</extend>
 
   <!-- a unique name for this project -->
-  <id>astrogrid-datacenter-client</id>
+  <artifactId>astrogrid-datacenter-client</artifactId>
   <name>AstroGrid DataCenter Client Delegate</name>
 
 
@@ -83,8 +83,8 @@
     <!-- required for the NVO cone search delegate -->
     <dependency>
       <artifactId>astrogrid-store-client</artifactId>
-          <groupId>org.astrogrid</groupId>
-      <version>${pom.currentVersion}</version>
+      <groupId>org.astrogrid</groupId>
+      <version>${astrogrid.mySpace.version}</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
@@ -110,7 +110,7 @@
     <dependency>
          <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-ui</artifactId>
-      <version>${pom.currentVersion}</version>
+      <version>${astrogrid.ui.version}</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>

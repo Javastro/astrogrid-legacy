@@ -2,7 +2,8 @@
 <!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by John Taylor (ROE) -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
     <extend>../maven-base/project.xml</extend>
-        <id>astrogrid-workflow</id>
+        <artifactId>astrogrid-workflow</artifactId>
+        <currentVersion>${astrogrid.workflow.version}</currentVersion>
         <name>AstroGrid Workflow</name>
         <description>
          Interface into the workflow object model and jes web service for use by the Cocoon GUI
@@ -45,19 +46,19 @@
         <!-- astrogrid -specific deps -->
                 <dependency>
                         <artifactId>astrogrid-common</artifactId>
-                        <version>${pom.currentVersion}</version>
+                        <version>${astrogrid.common.version}</version>
                         <groupId>org.astrogrid</groupId>
                 </dependency>
         <!-- registry -->
                 <dependency>
                         <artifactId>astrogrid-registry-client-lite</artifactId>
                         <groupId>org.astrogrid</groupId>
-                        <version>${pom.currentVersion}</version>
+                        <version>${astrogrid.registry.version}</version>
                 </dependency>
                 <dependency>
                         <artifactId>astrogrid-registry-common</artifactId>
                         <groupId>org.astrogrid</groupId>
-                        <version>${pom.currentVersion}</version>
+                        <version>${astrogrid.registry.version}</version>
                 </dependency>
                      <dependency >
                            <id>wsdl4j</id>
@@ -67,19 +68,19 @@
         <!-- myspace -->
                 <dependency>
                         <artifactId>astrogrid-store-client</artifactId>
-                        <version>${pom.currentVersion}</version>
+                        <version>${astrogrid.mySpace.version}</version>
                         <groupId>org.astrogrid</groupId>
                 </dependency>
         <!-- jes -->
                 <dependency>
                            <groupId>org.astrogrid</groupId>
                            <artifactId>astrogrid-jes-delegate</artifactId>
-                           <version>${pom.currentVersion}</version>
+                           <version>${astrogrid.jes.version}</version>
                     </dependency>
                 <dependency>
                            <groupId>org.astrogrid</groupId>
                            <artifactId>astrogrid-workflow-objects</artifactId>
-                           <version>${pom.currentVersion}</version>
+                           <version>${astrogrid.workflowobjects.version}</version>
                 </dependency>
      <!-- Third party dependencies -->
                 <dependency>

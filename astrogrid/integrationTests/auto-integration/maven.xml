@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.129 2004/11/23 15:46:06 jdt Exp $ -->
+<!-- $Id: maven.xml,v 1.130 2004/11/23 18:40:50 jdt Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -49,9 +49,9 @@
     | need to rationalize the use of the astrogrid.iteration - pah
     | better name would be astrogrid.release - i.e. it is intended to be SNAPSHOT for the current iteration and the iteration TAG for preious ones
     +-->
-        <j:if test="${empty(context.getVariable('astrogrid.iteration'))}">
-                <j:set var="astrogrid.iteration" value="SNAPSHOT"/>
-        </j:if>
+<j:if test="${empty(context.getVariable('astrogrid.iteration'))}">
+    <j:set var="astrogrid.iteration" value="SNAPSHOT"/>
+</j:if>
 <property name="astrogrid.release" value="${astrogrid.iteration}"/>
 <!--+
     | Please avoid using 'version' it is already set by the Java VM.
@@ -106,17 +106,15 @@
         <mkdir dir="${temporary.dir}" />
         <deploy:copy-deps todir="${temporary.dir}" />
 <!-- important to do this before the original gets patched -->
-                <copy file="${temporary.dir}/pal-${pom.currentVersion}.war"
-                      tofile="${temporary.dir}/pal-fits-${pom.currentVersion}.war" />
+        <copy file="${temporary.dir}/pal-${astrogrid.datacenter.version}.war"
+                      tofile="${temporary.dir}/pal-fits-${astrogrid.datacenter.version}.war" />
 
-                <copy file="${temporary.dir}/pal-${pom.currentVersion}.war"
-                      tofile="${temporary.dir}/pal-sec-${pom.currentVersion}.war" />
-                <copy file="${temporary.dir}/pal-${pom.currentVersion}.war"
-                              tofile="${temporary.dir}/pal-cds-${pom.currentVersion}.war" />
-    	<copy file="${temporary.dir}/astrogrid-community-${pom.currentVersion}.war"
-          tofile="${temporary.dir}/astrogrid-community-two-${pom.currentVersion}.war" />
-                	
-                	
+        <copy file="${temporary.dir}/pal-${astrogrid.datacenter.version}.war"
+                      tofile="${temporary.dir}/pal-sec-${astrogrid.datacenter.version}.war" />
+        <copy file="${temporary.dir}/pal-${astrogrid.datacenter.version}.war"
+                              tofile="${temporary.dir}/pal-cds-${astrogrid.datacenter.version}.war" />
+    	<copy file="${temporary.dir}/astrogrid-community-${astrogrid.community.version}.war"
+          tofile="${temporary.dir}/astrogrid-community-two-${astrogrid.community.version}.war" />
 </goal>
 
 <!-- main goals //////////////////////////////////////////////////////////////////////////////////// -->
@@ -456,7 +454,7 @@
     <!--+
         | Unpack our toolkit.
         +-->
-    <unzip src="${temporary.dir}/astrogrid-community-install-${astrogrid.iteration}.zip" dest="${temporary.dir}/community/toolkit"/>
+    <unzip src="${temporary.dir}/astrogrid-community-install-${astrogrid.community.version}.zip" dest="${temporary.dir}/community/toolkit"/>
     <!--+
         | Set the community ident.
         +-->
@@ -580,7 +578,6 @@
     	<property name="service.url" value="${tomcat.url}/astrogrid-community-two-SNAPSHOT/services"/>
 	</ant>	
 </goal>
-	
 <!--+
     | Wait for the Community service to respond.
     +-->
@@ -648,6 +645,7 @@
                         <include name="activation*.jar" /> <!-- required by mail - dunno why tomcat doesn't ship with these.. -->
                 </fileset>
         </copy>
+        <echo message="If this is the first time you have run AGINAB since installing Tomcat you will need to bounce Tomcat and restart this script!"/>
 </goal>
 
 <!-- hand assembled webapps ///////////////////////////////////////-->
@@ -658,8 +656,8 @@
         <jar destfile="${temporary.dir}/${config.webapp.name}.war" basedir="${temporary.dir}/astrogrid-configuration">
         </jar>
 
-                <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-                        path="/${config.webapp.name}" war="file:///${temporary.dir}/${config.webapp.name}.war" />
+        <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
+              path="/${config.webapp.name}" war="file:///${temporary.dir}/${config.webapp.name}.war" />
 
 </goal>
 <goal name="testdata-deploy" description="create and install testdata webapp" >
@@ -668,10 +666,8 @@
         </copy>
         <jar destfile="${temporary.dir}/${testdata.webapp.name}.war" basedir="${temporary.dir}/test-data">
         </jar>
-
-                <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
+        <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
                         path="/${testdata.webapp.name}" war="file:///${temporary.dir}/${testdata.webapp.name}.war" />
-
 </goal>
 
 <!-- context- driven webapps ////////////////////////////////-->
@@ -680,11 +676,11 @@
                 <fileset dir="contexts/jes" />
         </copy>
        <ag:maybe-enable-cougaar webapp="jes" />
-        <war update="true" destfile="${temporary.dir}/astrogrid-jes-${pom.currentVersion}.war">
+        <war update="true" destfile="${temporary.dir}/astrogrid-jes-${astrogrid.jes.version}.war">
                 <metainf dir="${temporary.dir}/jes"/>
         </war>
   <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/astrogrid-jes-${pom.currentVersion}" war="file:///${temporary.dir}/astrogrid-jes-${pom.currentVersion}.war"/>
+          path="/astrogrid-jes-${pom.currentVersion}" war="file:///${temporary.dir}/astrogrid-jes-${astrogrid.jes.version}.war"/>
 </goal>
 
 <goal name="cea-server-deploy"   >
@@ -692,30 +688,26 @@
                 <fileset dir="contexts/cea-server" />
         </copy>
        <ag:maybe-enable-cougaar webapp="cea-server" />
-        <war update="true" destfile="${temporary.dir}/astrogrid-cea-server-${pom.currentVersion}.war">
+        <war update="true" destfile="${temporary.dir}/astrogrid-cea-server-${astrogrid.applications.version}.war">
                 <metainf dir="${temporary.dir}/cea-server"/>
         </war>
 
   <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/astrogrid-cea-server-${pom.currentVersion}" war="file:///${temporary.dir}/astrogrid-cea-server-${pom.currentVersion}.war"/>
+          path="/astrogrid-cea-server-${pom.currentVersion}" war="file:///${temporary.dir}/astrogrid-cea-server-${astrogrid.applications.version}.war"/>
 
 </goal>
 
-<goal name="cea-commandline-deploy"   >
-        <copy todir="${temporary.dir}/cea-commandline" filtering="true">
-                <fileset dir="contexts/cea-commandline" />
-        </copy>
-		<echo>
-			using config file ${cea.cmd.config}
-		</echo>
-       <ag:maybe-enable-cougaar webapp="cea-commandline" />
-        <war update="true" destfile="${temporary.dir}/astrogrid-cea-commandline-${pom.currentVersion}.war">
-                <metainf dir="${temporary.dir}/cea-commandline"/>
-        </war>
-
-  <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/astrogrid-cea-commandline-${pom.currentVersion}" war="file:///${temporary.dir}/astrogrid-cea-commandline-${pom.currentVersion}.war"/>
-
+<goal name="cea-commandline-deploy" >
+    <copy todir="${temporary.dir}/cea-commandline" filtering="true">
+        <fileset dir="contexts/cea-commandline" />
+    </copy>
+    <echo> using config file ${cea.cmd.config} </echo>
+    <ag:maybe-enable-cougaar webapp="cea-commandline" />
+    <war update="true" destfile="${temporary.dir}/astrogrid-cea-commandline-${astrogrid.applications.version}.war">
+        <metainf dir="${temporary.dir}/cea-commandline"/>
+    </war>
+    <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}" 
+        path="/astrogrid-cea-commandline-${pom.currentVersion}" war="file:///${temporary.dir}/astrogrid-cea-commandline-${astrogrid.applications.version}.war"/>
 </goal>
 
 <goal name="cea-http-deploy" >
@@ -723,12 +715,12 @@
                 <fileset dir="contexts/cea-http" />
         </copy>
        <ag:maybe-enable-cougaar webapp="cea-http" />
-        <war update="true" destfile="${temporary.dir}/astrogrid-cea-http-${pom.currentVersion}.war">
+        <war update="true" destfile="${temporary.dir}/astrogrid-cea-http-${astrogrid.applications.version}.war">
                 <metainf dir="${temporary.dir}/cea-http"/>
         </war>
 
   <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/astrogrid-cea-http-${pom.currentVersion}" war="file:///${temporary.dir}/astrogrid-cea-http-${pom.currentVersion}.war"/>
+          path="/astrogrid-cea-http-${pom.currentVersion}" war="file:///${temporary.dir}/astrogrid-cea-http-${astrogrid.applications.version}.war"/>
 
 </goal>
 
@@ -749,12 +741,12 @@
     </copy>
     <ag:maybe-enable-cougaar webapp="registry" />
 
-    <war update="true" destfile="${temporary.dir}/astrogrid-registry-${pom.currentVersion}.war">
+    <war update="true" destfile="${temporary.dir}/astrogrid-registry-${astrogrid.registry.version}.war">
                 <classes dir="${temporary.dir}/registry"/>
     </war>
 
           <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/astrogrid-registry-${pom.currentVersion}" war="file:///${temporary.dir}/astrogrid-registry-${pom.currentVersion}.war"/>
+          path="/astrogrid-registry-${pom.currentVersion}" war="file:///${temporary.dir}/astrogrid-registry-${astrogrid.registry.version}.war"/>
 
 
           <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
@@ -767,12 +759,12 @@
                 <fileset dir="contexts/myspace" />
         </copy>
         <ag:maybe-enable-cougaar webapp="mySpace" />
-        <war update="true" destfile="${temporary.dir}/astrogrid-mySpace-${pom.currentVersion}.war">
+        <war update="true" destfile="${temporary.dir}/astrogrid-mySpace-${astrogrid.mySpace.version}.war">
                 <metainf dir="${temporary.dir}/myspace"/>
         </war>
 
   <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/astrogrid-mySpace-${pom.currentVersion}" war="file:///${temporary.dir}/astrogrid-mySpace-${pom.currentVersion}.war"/>
+          path="/astrogrid-mySpace-${pom.currentVersion}" war="file:///${temporary.dir}/astrogrid-mySpace-${astrogrid.mySpace.version}.war"/>
 
 </goal>
 
@@ -801,7 +793,7 @@
         | Make a copy of the war file.
         +-->
     <copy filtering="false"
-        file="${temporary.dir}/astrogrid-filestore-${pom.currentVersion}.war"
+        file="${temporary.dir}/astrogrid-filestore-${astrogrid.filestore.version}.war"
         toFile="${temporary.dir}/${filestore.webapp}.war"
         />
     <!--+
@@ -835,29 +827,29 @@
                 <fileset dir="contexts/pal" />
         </copy>
        <ag:maybe-enable-cougaar webapp="pal" />
-        <war update="true" destfile="${temporary.dir}/pal-${pom.currentVersion}.war">
+        <war update="true" destfile="${temporary.dir}/pal-${astrogrid.datacenter.version}.war">
                 <metainf dir="${temporary.dir}/pal"/>
         </war>
 
   <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/astrogrid-pal-${pom.currentVersion}" war="file:///${temporary.dir}/pal-${pom.currentVersion}.war"/>
+          path="/astrogrid-pal-${pom.currentVersion}" war="file:///${temporary.dir}/pal-${astrogrid.datacenter.version}.war"/>
 
 </goal>
 
 <!-- NOEL - cougaar taglib won't work with these pal wars - pal uses a different naming pattern. arse -->
 <goal name="pal-fits-deploy" >
-                <copy file="${temporary.dir}/pal-${pom.currentVersion}.war"
-                      tofile="${temporary.dir}/pal-fits-${pom.currentVersion}.war" />
+                <copy file="${temporary.dir}/pal-${astrogrid.datacenter.version}.war"
+                      tofile="${temporary.dir}/pal-fits-${astrogrid.datacenter.version}.war" />
         <copy todir="${temporary.dir}/pal_fits" filtering="true">
                 <fileset dir="contexts/pal_fits" />
         </copy>
        <ag:maybe-enable-cougaar webapp="pal_fits" />
-        <war update="true" destfile="${temporary.dir}/pal-fits-${pom.currentVersion}.war">
+        <war update="true" destfile="${temporary.dir}/pal-fits-${astrogrid.datacenter.version}.war">
                 <metainf dir="${temporary.dir}/pal_fits"/>
         </war>
 
   <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/astrogrid-pal-fits-${pom.currentVersion}" war="file:///${temporary.dir}/pal-fits-${pom.currentVersion}.war"/>
+          path="/astrogrid-pal-fits-${pom.currentVersion}" war="file:///${temporary.dir}/pal-fits-${astrogrid.datacenter.version}.war"/>
 
 </goal>
 
@@ -866,12 +858,12 @@
                 <fileset dir="contexts/pal_sec" />
         </copy>
        <ag:maybe-enable-cougaar webapp="pal-sec" />
-        <war update="true" destfile="${temporary.dir}/pal-sec-${pom.currentVersion}.war">
+        <war update="true" destfile="${temporary.dir}/pal-sec-${astrogrid.datacenter.version}.war">
                 <metainf dir="${temporary.dir}/pal_sec"/>
         </war>
 
   <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/astrogrid-pal-sec-${pom.currentVersion}" war="file:///${temporary.dir}/pal-sec-${pom.currentVersion}.war"/>
+          path="/astrogrid-pal-sec-${pom.currentVersion}" war="file:///${temporary.dir}/pal-sec-${astrogrid.datacenter.version}.war"/>
 
 </goal>
 
@@ -881,12 +873,12 @@
                         <fileset dir="contexts/pal_cds" />
                 </copy>
                 <ag:maybe-enable-cougaar webapp="pal_cds" />
-                <war update="true" destfile="${temporary.dir}/pal-cds-${pom.currentVersion}.war">
+                <war update="true" destfile="${temporary.dir}/pal-cds-${astrogrid.datacenter.version}.war">
                         <metainf dir="${temporary.dir}/pal_cds"/>
                 </war>
 
           <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-                  path="/astrogrid-pal-cds-${pom.currentVersion}" war="file:///${temporary.dir}/pal-cds-${pom.currentVersion}.war"/>
+                  path="/astrogrid-pal-cds-${pom.currentVersion}" war="file:///${temporary.dir}/pal-cds-${astrogrid.datacenter.version}.war"/>
 
         </goal>
 
@@ -896,12 +888,12 @@
                 <fileset dir="contexts/portal" />
         </copy>
        <ag:maybe-enable-cougaar webapp="portal" />
-        <war update="true" destfile="${temporary.dir}/astrogrid-portal-${pom.currentVersion}.war">
+        <war update="true" destfile="${temporary.dir}/astrogrid-portal-${astrogrid.portal.version}.war">
                 <metainf dir="${temporary.dir}/portal" />
         </war>
 
         <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-                path="/astrogrid-portal" war="file:///${temporary.dir}/astrogrid-portal-${pom.currentVersion}.war" />
+                path="/astrogrid-portal" war="file:///${temporary.dir}/astrogrid-portal-${astrogrid.portal.version}.war" />
 
 </goal>
 
@@ -912,7 +904,7 @@
         <fileset dir="contexts/community" />
     </copy>
        <ag:maybe-enable-cougaar webapp="community" />
-    <war update="true" destfile="${temporary.dir}/astrogrid-community-${pom.currentVersion}.war">
+    <war update="true" destfile="${temporary.dir}/astrogrid-community-${astrogrid.community.version}.war">
         <metainf dir="${temporary.dir}/community/webapp"/>
     </war>
     <tomcat-deploy
@@ -921,7 +913,7 @@
         username="${tomcat.manager.username}"
         password="${tomcat.manager.password}"
         path="/astrogrid-community-${pom.currentVersion}"
-        war="file:///${temporary.dir}/astrogrid-community-${pom.currentVersion}.war"
+        war="file:///${temporary.dir}/astrogrid-community-${astrogrid.community.version}.war"
         />
 </goal>
 	
@@ -931,7 +923,7 @@
 	        <fileset dir="contexts/community_two" />
 	    </copy>
 	    <ag:maybe-enable-cougaar webapp="community" />
-	    <war update="true" destfile="${temporary.dir}/astrogrid-community-two-${pom.currentVersion}.war">
+	    <war update="true" destfile="${temporary.dir}/astrogrid-community-two-${astrogrid.community.version}.war">
 	        <metainf dir="${temporary.dir}/community_two/webapp"/>
 	    </war>
 	    <tomcat-deploy
@@ -940,10 +932,9 @@
 	        username="${tomcat.manager.username}"
 	        password="${tomcat.manager.password}"
 	        path="/astrogrid-community-two-${pom.currentVersion}"
-	        war="file:///${temporary.dir}/astrogrid-community-two-${pom.currentVersion}.war"
+	        war="file:///${temporary.dir}/astrogrid-community-two-${astrogrid.community.version}.war"
 	        />
 	</goal>
-
 
 <!-- undeploy ///////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <goal name="reg-undeploy" >
@@ -1091,20 +1082,21 @@
 	</goal>	
 
 <goal name="CLEANTOMCAT" description="run this to clean out tomcat directories if tomcat not running - will clean the tmp and working directories">
-        <delete includeEmptyDirs="true" defaultexcludes="false" >
+        <echo message="Cleaning out files in ${tomcat.location}"/>
+            <delete includeEmptyDirs="true" defaultexcludes="false" >
                 <fileset dir="${tomcat.location}/webapps" >
                         <include name="astrogrid-*/**"/>
                         <include name="exist*/**"/>
-           </fileset>
+                </fileset>
                 <fileset dir="${tomcat.location}/work/Catalina/localhost" >
                         <include name="*/**"/>
-           </fileset>
+                </fileset>
                 <fileset dir="${tomcat.location}/conf/Catalina/localhost" >
                         <include name="astrogrid-*.xml"/>
-           </fileset>
+                </fileset>
                 <fileset dir="${tomcat.location}/logs" >
                         <include name="*"/>
-           </fileset>
+                </fileset>
         </delete>
                 <!-- clean the temp dir here as well -->
                 <delete dir="${temporary.dir}" />

@@ -5,7 +5,8 @@
 
   <extend>../maven-base/project.xml</extend>
   
-  <id>astrogrid-security</id>
+  <artifactId>astrogrid-security</artifactId>
+  <currentVersion>${astrogrid.security.version}</currentVersion>
   <name>AstroGrid security facade</name>
 
   <shortDescription>A collection of APIs abstracting security in web services.</shortDescription>
@@ -57,42 +58,42 @@
       <groupId>org.astrogrid</groupId>
       <type>jar</type>
       <artifactId>astrogrid-common</artifactId>
-      <version>${pom.currentVersion}</version>
+      <version>${astrogrid.common.version}</version>
     </dependency>
   
     <dependency>
       <groupId>org.astrogrid</groupId>
       <type>jar</type>
       <artifactId>astrogrid-community-client</artifactId>
-      <version>${pom.currentVersion}</version>
+      <version>${astrogrid.community.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.astrogrid</groupId>
       <type>jar</type>
       <artifactId>astrogrid-community-common</artifactId>
-      <version>${pom.currentVersion}</version>
+      <version>${astrogrid.community.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.astrogrid</groupId>
       <type>jar</type>
       <artifactId>astrogrid-community-resolver</artifactId>
-      <version>${pom.currentVersion}</version>
+      <version>${astrogrid.community.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.astrogrid</groupId>
       <type>jar</type>
-      <artifactId>astrogrid-registry-client</artifactId>
-      <version>${pom.currentVersion}</version>
+      <artifactId>astrogrid-registry-client-lite</artifactId>
+      <version>${astrogrid.registry.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.astrogrid</groupId>
       <type>jar</type>
       <artifactId>astrogrid-registry-common</artifactId>
-      <version>${pom.currentVersion}</version>
+      <version>${astrogrid.registry.version}</version>
     </dependency>
   
     <dependency>

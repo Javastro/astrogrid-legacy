@@ -239,7 +239,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-common</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.common.version}</version>
             <type>jar</type>
             <properties>
                 <war.bundle>true</war.bundle>
@@ -274,7 +274,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-exist-server</artifactId>
-	        <version>${pom.currentVersion}</version>
+	        <version>${astrogrid.eXist.version}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>

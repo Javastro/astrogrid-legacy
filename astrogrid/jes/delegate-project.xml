@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: delegate-project.xml,v 1.5 2004/06/11 19:28:18 pah Exp $ -->
+<!-- $Id: delegate-project.xml,v 1.6 2004/11/23 18:40:50 jdt Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <extend>../maven-base/project.xml</extend>
     <id>astrogrid-jes-delegate</id>
+    <currentVersion>${astrogrid.jes.version}</currentVersion>
     <name>AstroGrid Job Management</name>
     <description>Delegate jar for the JES controller.
                 This is soley a packaging project - all documentation, testing, etc handled by main project.xml</description>
@@ -75,7 +76,7 @@
         <dependency>
             <artifactId>astrogrid-workflow-objects</artifactId>
             <groupId>org.astrogrid</groupId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.workflowobjects.version}</version>
 
         </dependency>
         <dependency>
@@ -86,7 +87,7 @@
 <dependency>
             <artifactId>astrogrid-common</artifactId>
             <groupId>org.astrogrid</groupId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.common.version}</version>
         </dependency>
     </dependencies>
 </project>

@@ -2,7 +2,8 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
 
     <extend>../maven-base/project.xml</extend>
-        <id>astrogrid-scripting</id>
+        <artifactId>astrogrid-scripting</artifactId>
+        <currentVersion>${astrogrid.scripting.version}</currentVersion>
         <name>Astrogrid Scripting Language Interface</name>
         <description><![CDATA[
           This project defines a container class called '<tt>org.astrogrid.scripting.Toolbox</tt>'
@@ -61,29 +62,29 @@
        <!-- interface to workflow system -->
         <dependency>
             <artifactId>astrogrid-workflow</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.workflow.version}</version>
             <groupId>org.astrogrid</groupId>
         </dependency>
         <dependency>
             <artifactId>astrogrid-common</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.common.version}</version>
             <groupId>org.astrogrid</groupId>
         </dependency>
         <!-- registry -->
         <dependency>
             <artifactId>astrogrid-registry-client-lite</artifactId>
             <groupId>org.astrogrid</groupId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.registry.version}</version>
         </dependency>
         <dependency>
             <artifactId>astrogrid-registry-common</artifactId>
             <groupId>org.astrogrid</groupId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.registry.version}</version>
         </dependency>
         <!-- myspace -->
         <dependency>
             <artifactId>astrogrid-store-client</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.mySpace.version}</version>
             <groupId>org.astrogrid</groupId>
             <type>jar</type>
         </dependency>
@@ -91,45 +92,45 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-jes-delegate</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.jes.version}</version>
         </dependency>
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-workflow-objects</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.workflowobjects.version}</version>
         </dependency>
         <!-- datacenter -->
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-datacenter-client</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.datacenter.version}</version>
         </dependency>
         <!-- applications -->
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-cea-client</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.applications.version}</version>
         </dependency>
         <dependency>
                 <groupId>org.astrogrid</groupId>
                 <artifactId>astrogrid-cea-server</artifactId>
-                <version>${pom.currentVersion}</version>
+                <version>${astrogrid.applications.version}</version>
         </dependency>
         <!-- community -->
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-common</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.community.version}</version>
         </dependency>
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-client</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.community.version}</version>
         </dependency>
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-resolver</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.community.version}</version>
         </dependency>
         <!-- Third party dependencies -->
         <!-- axis libs -->
@@ -201,6 +202,4 @@
                 <url>http://www.star.bristol.ac.uk/~mbt/stil/</url>
         </dependency>
     </dependencies>
-
-
 </project>
