@@ -146,6 +146,7 @@ public class DesignAction extends AbstractAction {
         LOCATION_PARAMETER = "location",
 	    PARAM_NAME_PARAMETER = "param-name",
 	    PARAM_VALUE_PARAMETER = "param-value",
+        ORIG_PARAM_VALUE_PARAMETER = "original-param-value",        
         DIRECTION_PARAMETER = "direction",
 	    STEP_NAME_PARAMETER = "step_name",
 	    STEP_DESCRIPTION_PARAMETER = "step_description";
@@ -933,7 +934,8 @@ this.readToolList(); // temp PJN
               
          try {
             // Tool should already have been inserted into step
-									
+			
+            String oldParameterValue = request.getParameter( ORIG_PARAM_VALUE_PARAMETER );						
 			String parameterName = request.getParameter( PARAM_NAME_PARAMETER ) ;				    					
 			String parameterValue = request.getParameter( PARAM_VALUE_PARAMETER ) ;
 			String activityKey = request.getParameter( ACTIVITY_KEY_PARAMETER ) ;
@@ -959,7 +961,7 @@ this.readToolList(); // temp PJN
             WorkflowHelper.insertInputParameterValue( applDescription
                                                     , tool
                                                     , parameterName
-                                                    , null
+                                                    , oldParameterValue
                                                     , parameterValue ) ;
 				
 		  }
@@ -984,6 +986,7 @@ this.readToolList(); // temp PJN
 				 // Tool should already have been inserted into step
 									
 			     String
+                    oldParameterValue = request.getParameter( ORIG_PARAM_VALUE_PARAMETER ),
 					parameterName = request.getParameter( PARAM_NAME_PARAMETER ),			  
 					parameterValue = request.getParameter( PARAM_VALUE_PARAMETER ) ;
                             
@@ -1005,7 +1008,7 @@ this.readToolList(); // temp PJN
                WorkflowHelper.insertOutputParameterValue( applDescription
                                                         , tool
                                                         , parameterName
-                                                        , null
+                                                        , oldParameterValue
                                                         , parameterValue ) ;
 				
 		   }
