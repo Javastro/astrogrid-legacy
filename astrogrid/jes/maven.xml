@@ -32,9 +32,9 @@
    <!--<property name="maven.war.src" value="${axis.webapp.srcdir}"/> deleted by JDT for quick and dirty war-->
 
 <postGoal name="war:webapp">
-  <echo message="${maven.war.src}"/>
-  <echo message="Copying xml templates and properties across to src directory"/>
-	<copy todir="${maven.build.dest}" overwrite="yes">
+	<j:set var="classes.dir" value="${pom.getPluginContext('maven-war-plugin').getVariable('webapp.build.classes')}" />
+	<echo message="Copying xml templates and properties across from ${maven.conf.dir} to ${classes.dir} directory"/>
+  	<copy todir="${classes.dir}" overwrite="yes">
 		<fileset dir="${maven.conf.dir}"> 
 			<exclude name = "ASTROGRID_jesconfig.xml"/> <!-- exclude this because we don't want to overwrite an edited one-->
 		</fileset>
@@ -43,7 +43,7 @@
 	<copy todir="${maven.war.webapp.dir}/maven" overwrite="yes">
 		<fileset dir="${maven.docs.dest}"/> 
 	</copy>
-	<echo message="copying across a readme and sample config file"/>
+	<echo message="copying across a readme and install file"/>
 	<copy todir="${maven.war.webapp.dir}" overwrite="yes">
 		<fileset dir="${basedir}">
 			<include name="README"/>
