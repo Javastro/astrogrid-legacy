@@ -88,7 +88,7 @@ public class XQueryExecution
           * the xmlToXQL method.
           */
 
-            xml_to_xql = "//vr:Resource[" + xmlToXQL(ssList.item(0)) + "]";
+            xml_to_xql = "declare namespace vr = \"http://www.ivoa.net/xml/VOResource/v0.9\"; //vr:Resource[" + xmlToXQL(ssList.item(0)) + "]";
             return xml_to_xql;
          }
          else {
