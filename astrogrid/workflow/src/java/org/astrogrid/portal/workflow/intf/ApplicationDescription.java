@@ -1,4 +1,4 @@
-/*$Id: ApplicationDescription.java,v 1.2 2004/03/11 13:53:36 nw Exp $
+/*$Id: ApplicationDescription.java,v 1.3 2004/03/12 14:53:09 nw Exp $
  * Created on 09-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,6 +22,7 @@ import org.astrogrid.workflow.beans.v1.Input;
 import org.astrogrid.workflow.beans.v1.Output;
 import org.astrogrid.workflow.beans.v1.Tool;
 
+import org.exolab.castor.types.AnyNode;
 import org.exolab.castor.xml.ValidationException;
 
 import java.util.HashMap;
@@ -139,8 +140,13 @@ public class ApplicationDescription  {
         paramVal.setName(defn.getName());
         paramVal.setType(defn.getType());
         Object o= defn.getDefaultValue();
-        if (o != null) {
-            paramVal.setContent(o.toString());
+        if (o != null) { // work around here.. - extension schema, so there's a hole, where an anynode appears. orsomething.
+            if (o instanceof AnyNode) {
+                AnyNode any = (AnyNode)o;
+                paramVal.setContent(any.getStringValue());
+            } else {
+               paramVal.setContent(o.toString());
+            }
         }
         return paramVal;
     }
@@ -266,6 +272,9 @@ public class ApplicationDescription  {
 
 /* 
 $Log: ApplicationDescription.java,v $
+Revision 1.3  2004/03/12 14:53:09  nw
+bugfix for default parameters
+
 Revision 1.2  2004/03/11 13:53:36  nw
 merged in branch bz#236 - implementation of interfaces
 
