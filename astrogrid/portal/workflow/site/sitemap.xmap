@@ -163,7 +163,13 @@
       <!-- Original XML displayed as XML -->
       <map:view name="000" from-label="000">
          <map:serialize type="xml"/>
-      </map:view>  
+      </map:view>
+      <map:view name="001" from-label="000">
+         <map:serialize type="xml"/>
+      </map:view>
+      <map:view name="002" from-label="000">
+         <map:serialize type="xml"/>
+      </map:view>              
   </map:views>
 
 <!-- =========================== Resources ================================= -->
@@ -255,9 +261,9 @@
           <map:serialize type="html" />
         </map:match>
         
-        <map:match pattern="agjobmanager-status.html">            
+        <map:match pattern="agjobmanager-job-status.html">            
           <map:act type="astrogrid-jes" />
-          <map:generate src="web/xsp/job-list.xsp" type="serverpages" label="002" />
+          <map:generate src="web/xsp/job-status.xsp" type="serverpages" label="002" />
           <map:transform src="web/xsl/display-job-status.xsl">
           <map:parameter name="use-request-parameters" value="true"/>
           <!-- Add the action params -->
