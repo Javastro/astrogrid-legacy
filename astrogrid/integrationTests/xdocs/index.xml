@@ -23,6 +23,8 @@
        <subsection name="What's next?">
        	<P>
        		All components bar registry are being deployed, but only mySpace and JES are configured correctly.  Rest are pending....
+       		<BR/>
+       		WE NEED MORE TESTS!
        	</P>
        </subsection>
     </section>
