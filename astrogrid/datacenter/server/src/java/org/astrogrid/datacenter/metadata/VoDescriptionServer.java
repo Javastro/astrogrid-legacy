@@ -1,5 +1,5 @@
 /*
- * $Id: VoDescriptionServer.java,v 1.6 2004/09/07 14:51:48 mch Exp $
+ * $Id: VoDescriptionServer.java,v 1.7 2004/09/08 14:45:27 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -175,11 +175,13 @@ public class VoDescriptionServer {
    }
 
    /**
-    * Sends the voDescription to the registry
+    * Sends the voDescription to the registry, returning list of Registries that
+    * it was sent to
     */
-   public void pushToRegistry() throws IOException, RegistryException {
+   public static String[] pushToRegistry() throws IOException, RegistryException {
       RegistryAdminService service = RegistryDelegateFactory.createAdmin();
       service.update(getVoDescription());
+      return new String[] { SimpleConfig.getSingleton().getString(RegistryDelegateFactory.ADMIN_URL_PROPERTY) };
    }
    
    
