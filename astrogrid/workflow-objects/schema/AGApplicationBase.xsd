@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: AGApplicationBase.xsd,v 1.5 2004/03/10 17:13:11 pah Exp $ -->
+<!-- $Id: AGApplicationBase.xsd,v 1.6 2004/03/13 00:36:02 pah Exp $ -->
 <!-- This is refactored from the AGParameterDefinition.xsd -->
-<!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by Paul Harrison (Jodrell Bank Observatory) -->
+<!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
 <xs:schema targetNamespace="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:agab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:import namespace="http://www.astrogrid.org/schema/AGParameterDefinition/v1" schemaLocation="AGParameterDefinition.xsd"/>
 	<xs:annotation>
@@ -68,14 +68,14 @@
 			<xs:element name="input">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="pref" type="agab:parameterRef" maxOccurs="unbounded"/>
+						<xs:element name="pref" type="agab:parameterRef" minOccurs="0" maxOccurs="unbounded"/>
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
 			<xs:element name="output">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="pref" type="agab:parameterRef" maxOccurs="unbounded"/>
+						<xs:element name="pref" type="agab:parameterRef" minOccurs="0" maxOccurs="unbounded"/>
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
@@ -253,17 +253,17 @@
 	</xs:element>
 	<!--need a way to represent a list of applications-->
 	<xs:element name="ApplicationList">
-	<xs:complexType >
-		<xs:annotation>
-			<xs:documentation>list of applications</xs:documentation>
-		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="ApplicationDefn" type="agab:ApplicationBase" maxOccurs="unbounded">
-				<xs:annotation>
-					<xs:documentation>This is a generic application definition that does not take in all of the specializations for web/commandline etc</xs:documentation>
-				</xs:annotation>
-			</xs:element>
-		</xs:sequence>
-	</xs:complexType>
+		<xs:complexType>
+			<xs:annotation>
+				<xs:documentation>list of applications</xs:documentation>
+			</xs:annotation>
+			<xs:sequence>
+				<xs:element name="ApplicationDefn" type="agab:ApplicationBase" maxOccurs="unbounded">
+					<xs:annotation>
+						<xs:documentation>This is a generic application definition that does not take in all of the specializations for web/commandline etc</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
 	</xs:element>
 </xs:schema>
