@@ -108,7 +108,7 @@ public class JobFactoryImpl implements JobFactory {
 	  * 
 	  **/             
 	public static DataSource getDataSource() throws JobException {
-		if( TRACE_ENABLED ) logger.debug( "getDataSource(): entry") ; 
+		if( TRACE_ENABLED ) logger.debug( "JobFactoryImpl.getDataSource(): entry") ; 
 	
 		String
 		   datasourceName = null ;
@@ -147,7 +147,7 @@ public class JobFactoryImpl implements JobFactory {
 			throw new JobException( message, ne );
 		}
 		finally{
-			if( TRACE_ENABLED ) logger.debug( "getDataSource(): exit") ; 	
+			if( TRACE_ENABLED ) logger.debug( "JobFactoryImpl.getDataSource(): exit") ; 	
 		}
 		
 		return datasource ;	
@@ -172,7 +172,7 @@ public class JobFactoryImpl implements JobFactory {
 	 * 
 	 **/             
     public Job create( Document jobDoc ) throws JobException  {
-		if( TRACE_ENABLED ) logger.debug( "createJob(): entry") ;  
+		if( TRACE_ENABLED ) logger.debug( "JobFactoryImpl.createJob(): entry") ;  
 		 	
     	JobImpl
     	   job = null ;
@@ -191,7 +191,7 @@ public class JobFactoryImpl implements JobFactory {
 			
 			// We need this for occasional fudging...
 			// See update()
-		    job.setFactoryImpl( this ) ;
+		    JobImpl.setFactoryImpl( this ) ;
 			
 			Object []
 			   inserts = new Object[8] ;
@@ -223,7 +223,7 @@ public class JobFactoryImpl implements JobFactory {
     	}
     	finally {
     		if( statement != null) { try { statement.close(); } catch( SQLException sex ) {;} }
-			if( TRACE_ENABLED ) logger.debug( "createJob(): exit") ;   	
+			if( TRACE_ENABLED ) logger.debug( "JobFactoryImpl.createJob(): exit") ;   	
     	}
     	
 		return job ;
@@ -247,7 +247,7 @@ public class JobFactoryImpl implements JobFactory {
 	   * @exception - org.astrogrid.JobException
 	   */	
     public void update( Job job ) throws JobException {
-		if( TRACE_ENABLED ) logger.debug( "updateJob(): entry") ;  
+		if( TRACE_ENABLED ) logger.debug( "JobFactoryImpl.updateJob(): entry") ;  
 		  	   
 		try {
 			
@@ -272,7 +272,7 @@ public class JobFactoryImpl implements JobFactory {
 			throw new JobException( message, ex ) ; 		
 		}
 		finally {
-			if( TRACE_ENABLED ) logger.debug( "updateJob(): exit") ;   	
+			if( TRACE_ENABLED ) logger.debug( "JobFactoryImpl.updateJob(): exit") ;   	
 		}
     	   	   	
     } // end of update()
@@ -292,7 +292,7 @@ public class JobFactoryImpl implements JobFactory {
 	   * @exception - org.astrogrid.JobException
 	   */	 
     public Job find( String jobURN ) throws JobException {
-		if( TRACE_ENABLED ) logger.debug( "findJob(): entry") ;  
+		if( TRACE_ENABLED ) logger.debug( "JobFactoryImpl.findJob(): entry") ;  
 		 	
 		JobImpl
 		   job = new JobImpl() ;
@@ -344,7 +344,7 @@ public class JobFactoryImpl implements JobFactory {
 		finally {
 			if( rs != null ) { try { rs.close(); } catch( SQLException sex ) {;} }
 			if( statement != null) { try { statement.close(); } catch( SQLException sex ) {;} }
-			if( TRACE_ENABLED ) logger.debug( "findJob(): exit") ;   	
+			if( TRACE_ENABLED ) logger.debug( "JobFactoryImpl.findJob(): exit") ;   	
 		}  	
     	
 		return new JobImpl() ; 
@@ -363,7 +363,7 @@ public class JobFactoryImpl implements JobFactory {
 	   * @exception - org.astrogrid.JobException
 	   */	     
     public String delete( Job job ) throws JobException { 
-		if( TRACE_ENABLED ) logger.debug( "deleteJob(): entry") ;  
+		if( TRACE_ENABLED ) logger.debug( "JobFactoryImpl.deleteJob(): entry") ;  
 		 	
 		Statement   
 		   statement = null ;
@@ -389,7 +389,7 @@ public class JobFactoryImpl implements JobFactory {
 		}
 		finally {
 			if( statement != null) { try { statement.close(); } catch( SQLException sex ) {;} }
-			if( TRACE_ENABLED ) logger.debug( "deleteJob(): exit") ;   	
+			if( TRACE_ENABLED ) logger.debug( "JobFactoryImpl.deleteJob(): exit") ;   	
 		}  	
     	    	
 		return job.getId() ;   

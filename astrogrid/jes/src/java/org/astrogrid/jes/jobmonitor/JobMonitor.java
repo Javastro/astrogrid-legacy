@@ -20,7 +20,7 @@ import org.apache.log4j.Logger;
 import java.util.Properties;
 import java.util.ResourceBundle ;
 import java.util.Locale ;
-import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.IOException;
 import java.io.StringReader ; 
 import java.text.MessageFormat ;
@@ -104,7 +104,8 @@ public class JobMonitor {
 		configurationProperties = new Properties();
 		
 		try {
-			FileInputStream istream = new FileInputStream( CONFIG_FILENAME );
+			InputStream 
+	            istream = JobMonitor.class.getClassLoader().getResourceAsStream( CONFIG_FILENAME ) ;
 			configurationProperties.load(istream);
 			istream.close();
 			logger.debug( configurationProperties.toString() ) ;

@@ -24,7 +24,7 @@ import java.util.MissingResourceException ;
  * properties file(s) which can be produced on a per language basis
  * or even a per country basis.
  * <p> 
- * The basic AstroGrid file is ASTROGRID_jesmessages.properties
+ * The basic AstroGrid file is ASTROGRID_datacentermessages.properties
  * Each properties file is loaded as a resource bundle.
  * <p>
  * The philosophy on messages is two-fold:
@@ -59,9 +59,11 @@ public class Message {
 	
 	/** These messages are ones hard-coded in the program. */	
 	private static final String
-		ASTROGRIDERROR_MESSAGEKEY_NULL = "AGDTCZ00003:Message: Message key is null",
-		ASTROGRIDERROR_MESSAGE_PATTERN_OR_INSERTS_INVALID = "AGDTCZ00004:Message: Message pattern or inserts are invalid",
-		ASTROGRIDERROR_MESSAGE_NOT_FOUND_IN_RESOURCEBUNDLE = "AGDTCZ00005:Message: Message not found in ResourceBundle" ;
+        ASTROGRIDERROR_MESSAGEKEY_NULL = "AGDTCZ00003:Message: Message key is null",
+        ASTROGRIDERROR_MESSAGE_PATTERN_OR_INSERTS_INVALID = 
+			 "AGDTCZ00004:Message: Message pattern or its inserts are invalid for message with key [{0}]",
+        ASTROGRIDERROR_MESSAGE_NOT_FOUND_IN_RESOURCEBUNDLE = 
+			 "AGDTCZ00005:Message: Message with key [{0}] not found in ResourceBundle" ;
 	
 	/** The installation default language resource bundle. */	
     private static ResourceBundle
@@ -199,12 +201,16 @@ public class Message {
 			logger.debug( ASTROGRIDERROR_MESSAGEKEY_NULL ) ;  
 		}
 		catch( MissingResourceException mrex ) {
-			retValue = ASTROGRIDERROR_MESSAGE_NOT_FOUND_IN_RESOURCEBUNDLE ;
-			logger.debug( ASTROGRIDERROR_MESSAGE_NOT_FOUND_IN_RESOURCEBUNDLE ) ;  
+			Object[]
+			   oa = {key} ;
+			retValue = MessageFormat.format( ASTROGRIDERROR_MESSAGE_NOT_FOUND_IN_RESOURCEBUNDLE, oa ) ;
+			logger.debug( retValue ) ;   
 		}
 		catch( IllegalArgumentException iaex ) {
-			retValue = ASTROGRIDERROR_MESSAGE_PATTERN_OR_INSERTS_INVALID ;
-			logger.debug( ASTROGRIDERROR_MESSAGE_PATTERN_OR_INSERTS_INVALID ) ;  
+			Object[]
+			   oa = {key} ;
+			retValue = MessageFormat.format( ASTROGRIDERROR_MESSAGE_PATTERN_OR_INSERTS_INVALID, oa ) ;
+			logger.debug( retValue ) ;  
 		}
 		finally {   
 			if( TRACE_ENABLED ) logger.debug( "toString(ResourceBundle): exit") ;

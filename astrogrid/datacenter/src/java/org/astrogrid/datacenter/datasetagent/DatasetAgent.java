@@ -21,7 +21,7 @@ import org.apache.log4j.Logger;
 import java.util.Properties;
 import java.util.ResourceBundle ;
 import java.util.Locale ;
-import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.IOException;
 import java.io.StringReader ;
 
@@ -80,8 +80,8 @@ public class DatasetAgent {
 	    CONFIG_MESSAGES_COUNTRYCODE  = "MESSAGES.INSTALLATION.COUNTRYCODE" ;
 	    
 	private static final String
-	    ASTROGRIDERROR_COULD_NOT_READ_CONFIGFILE    = "AGDTCZ00001:JobController: Could not read my configuration file",
-	    ASTROGRIDERROR_DATASETAGENT_NOT_INITIALIZED = "AGDTCZ00002:JobController: Not initialized. Perhaps my configuration file is missing.",
+	    ASTROGRIDERROR_COULD_NOT_READ_CONFIGFILE    = "AGDTCZ00001:DatasetAgent: Could not read my configuration file {0}",
+	    ASTROGRIDERROR_DATASETAGENT_NOT_INITIALIZED = "AGDTCZ00002:DatasetAgent: Not initialized. Perhaps my configuration file is missing.",
 	    ASTROGRIDERROR_FAILED_TO_PARSE_JOB_REQUEST  = "AGDTCE00030",
 	    ASTROGRIDERROR_ULTIMATE_QUERYFAILURE        = "AGDTCE00040";
 	    
@@ -119,10 +119,12 @@ public class DatasetAgent {
 	private static void doConfigure() {
 		if( TRACE_ENABLED ) logger.debug( "doConfigure(): entry") ;
 				
-		configurationProperties = new Properties();
+		configurationProperties = new Properties() ;
 		
 		try {
-		    FileInputStream istream = new FileInputStream( CONFIG_FILENAME );
+
+		    InputStream 
+		        istream = DatasetAgent.class.getClassLoader().getResourceAsStream( CONFIG_FILENAME ) ;
 		    configurationProperties.load(istream);
 		    istream.close();
 			logger.debug( configurationProperties.toString() ) ;
@@ -317,13 +319,19 @@ public class DatasetAgent {
 
     private void checkPropertiesLoaded() throws DatasetAgentException {
 		if( TRACE_ENABLED ) logger.debug( "checkPropertiesLoaded() entry") ;
-		if( configurationProperties == null ) {
-			Message
-				message = new Message( ASTROGRIDERROR_DATASETAGENT_NOT_INITIALIZED ) ;
-			logger.error( message.toString() ) ;
-			throw new DatasetAgentException( message ) ;
+		
+		try{
+			if( configurationProperties == null ) {
+				Message
+					message = new Message( ASTROGRIDERROR_DATASETAGENT_NOT_INITIALIZED ) ;
+				logger.error( message.toString() ) ;
+				throw new DatasetAgentException( message ) ;
+			}
 		}
-		if( TRACE_ENABLED ) logger.debug( "checkPropertiesLoaded() exit") ;
+		finally {
+			if( TRACE_ENABLED ) logger.debug( "checkPropertiesLoaded() exit") ;
+		}
+
     } // end checkPropertiesLoaded()
     
 

@@ -83,7 +83,7 @@ public class MySpaceFactoryImpl implements MySpaceFactory {
     
     
 	public void close( Allocation allocation ) throws AllocationException {
-		if( TRACE_ENABLED ) logger.debug( "allocateCacheSpace(): entry") ; 
+		if( TRACE_ENABLED ) logger.debug( "close(): entry") ; 
 				
 		try {
 			destroyCompressedOutputStream( allocation.getOutputStream() ) ;	
@@ -107,7 +107,7 @@ public class MySpaceFactoryImpl implements MySpaceFactory {
     	    buffer = new StringBuffer( 64 ) ;
     	
 		buffer
-		    .append( "file://" )  // JBL Note: this is a quick fix for AstroGrid iteration 2
+//JBL Note: .append( "file://" )  // JBL Note: this is a quick fix for AstroGrid iteration 2
 		    .append( DatasetAgent.getProperty( MYSPACECACHE_DIRECTORY ) ) 
 		    .append( System.getProperty( "file.separator" ) )
 		    .append( jobID.replace( ':', '.' ) ) ;
