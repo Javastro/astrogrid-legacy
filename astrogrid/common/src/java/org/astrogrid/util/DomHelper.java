@@ -1,5 +1,5 @@
 /*
-   $Id: DomHelper.java,v 1.11 2004/08/19 09:04:41 mch Exp $
+   $Id: DomHelper.java,v 1.12 2004/08/19 19:45:10 mch Exp $
 
    (c) Copyright...
 */
@@ -44,7 +44,7 @@ public class DomHelper
     public static String getValue(Element parent, String element) {
        NodeList nodes = parent.getElementsByTagName(element);
        if ((nodes==null) || (nodes.getLength()==0)) {
-          return null;
+          return "";
        }
        if (nodes.getLength()>1) {
           throw new IllegalArgumentException("More than one "+element+" in element "+parent.getNodeName());
