@@ -1,12 +1,15 @@
 /*
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/java/org/astrogrid/portal/cocoon/explorer/Attic/ExplorerView.java,v $</cvs:source>
- * <cvs:date>$Author: KevinBenson $</cvs:date>
- * <cvs:author>$Date: 2003/07/10 14:22:38 $</cvs:author>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Author: clq2 $</cvs:date>
+ * <cvs:author>$Date: 2003/09/09 13:56:43 $</cvs:author>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  * $Log: ExplorerView.java,v $
+ * Revision 1.4  2003/09/09 13:56:43  clq2
+ * MySpace new UI
+ *
  * Revision 1.3  2003/07/10 14:22:38  KevinBenson
  * I might have to get rid of these WS_FTP.log files not sure how they got their.  Anyays just fixing some compiling mistakes.
  *
@@ -320,6 +323,7 @@ public class ExplorerView
 	public void setSelectedAction(String action)
 		{
 		this.action = action ;
+		System.out.println("ExplorerView.setSelectedAction: action: "+action);
 		}
 
 	/**
@@ -401,7 +405,7 @@ public class ExplorerView
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("AstPortalView.initMySpaceService()") ;
+		if (DEBUG_FLAG) System.out.println("AstPortalView.initMySpaceService()   BEIJING BICICAL") ;
 		if (DEBUG_FLAG) System.out.println("Service : " + myspaceLocation) ;
 
 		//
@@ -464,7 +468,7 @@ public class ExplorerView
 		StatusNode status = null ;
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("AstPortalView.getTree()") ;
+		if (DEBUG_FLAG) System.out.println("ExploreView.getTree()") ;
 		try {
 			//
 			// Create our service request
@@ -487,18 +491,23 @@ public class ExplorerView
 				System.out.println(response) ;
 				System.out.println("----") ;
 				}
+			System.out.println("00000000000000000Sunday");
 			//
 			// Create a parser.
 			LookupResponseParser parser = new LookupResponseParser() ;
+			System.out.println("1111111111111111111111111");
 			//
 			// Parse the response.
 			parser.parse(response) ;
+			System.out.println("22222222222222222222222222");
 			//
 			// Get the result status.
 			status = parser.getStatus() ;
+			System.out.println("3333333333333333333333333333333"+status.getStatus());
 			//
 			// Get the result tree.
 			tree = parser.getTree() ;
+			System.out.println("4444444444444444444444444444"+tree.getName());
 			}
 		catch (RemoteException ouch)
 			{
@@ -518,7 +527,7 @@ public class ExplorerView
 			{
 			//
 			// FIXME ....
-			if (DEBUG_FLAG) System.out.println("SAXException in response parser") ;
+			if (DEBUG_FLAG) System.out.println("SAXException in response parserCATHERINE") ;
 			if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
 			}
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -608,6 +617,7 @@ public class ExplorerView
 	 */
 	public StatusNode copyItem(String from, String dest)
 		{
+			System.out.println("ExploerView.debug:::: XX"+"from="+from+" to="+dest);
 		DataNode   data   = null ;
 		StatusNode status = null ;
 		if (DEBUG_FLAG) System.out.println("") ;
@@ -623,21 +633,24 @@ public class ExplorerView
 			CopyRequestBuilder request = new CopyRequestBuilder(from, dest) ;
 			if (DEBUG_FLAG)
 				{
-				System.out.println("----") ;
+				System.out.println("----request") ;
 				System.out.println(request) ;
-				System.out.println("----") ;
+				System.out.println("----/request") ;
 				}
 			//
 			// Create our service instance.
 			initMySpaceService() ;
 			//
 			// Call our service method.
-			String response = myspaceService.copyDataHolder(request.toString()) ;
+			
+			String response = myspaceService.copyDataHolder(request.toString()) ; 
+			if (DEBUG_FLAG) System.out.println("xxxxxxxxxxxxxx request2222 = "+request.toString());
+						//String response = myspaceService.copyDataHolder(request) ;
 			if (DEBUG_FLAG)
 				{
-				System.out.println("----") ;
+				System.out.println("----response") ;
 				System.out.println(response) ;
-				System.out.println("----") ;
+				System.out.println("----/respons") ;
 				}
 			//
 			// Create a parser.
@@ -905,7 +918,7 @@ public class ExplorerView
 		}
 
 	/**
-	 * Export a data item.
+	 * Export a data item.-this is view votable
 	 *
 	 */
 	public DataNode exportItem(String path)
@@ -977,6 +990,12 @@ public class ExplorerView
 		//
 		// Return our data node.
 		return data ;
+		}
+		
+		public DataNode extendLease(String path){
+			if (DEBUG_FLAG) System.out.println("Entering ExplorerView.extendLease()..path: "+path) ;
+			DataNode   data   = null ;
+			return data;
 		}
 
 	}

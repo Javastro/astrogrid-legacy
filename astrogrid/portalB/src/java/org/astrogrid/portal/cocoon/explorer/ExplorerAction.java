@@ -1,12 +1,15 @@
 /*
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/java/org/astrogrid/portal/cocoon/explorer/Attic/ExplorerAction.java,v $</cvs:source>
- * <cvs:date>$Author: dave $</cvs:date>
- * <cvs:author>$Date: 2003/07/03 13:06:25 $</cvs:author>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Author: clq2 $</cvs:date>
+ * <cvs:author>$Date: 2003/09/09 13:56:43 $</cvs:author>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  * $Log: ExplorerAction.java,v $
+ * Revision 1.4  2003/09/09 13:56:43  clq2
+ * MySpace new UI
+ *
  * Revision 1.3  2003/07/03 13:06:25  dave
  * Fixed explorer path on deleting the current folder
  *
@@ -158,6 +161,16 @@ public class ExplorerAction
 	 *
 	 */
 	public static final String DELETE_ITEM_ACTION = "delete-item" ;
+	
+	/**
+	 * Http request action to extendlease for an item.
+	 */
+	public static final String EXTENDLEASE_ITEM_ACTION = "extendlease-item" ;
+	
+	/**
+	 * Http request param for extentionPeriod value
+	 */
+	//public static final int EXTENTION_PERIOD ="AST-EXTENT-PERIOD";
 
 	/**
 	 * Our action method.
@@ -672,7 +685,36 @@ public class ExplorerAction
 							}
 						}
 					}
+					
+					if (EXTENDLEASE_ITEM_ACTION.equals(action)){
+						if (DEBUG_FLAG) System.out.println("ExplorerAction.act: Extendlease for an item") ;
+						//
+						// Get the path from the request params.
+						String path = request.getParameter(EXPLORER_PATH_PARAM) ;
+						
+						if (DEBUG_FLAG) System.out.println("ExtendLease for an item") ;
+						if (DEBUG_FLAG) System.out.println("Path    : " + path) ;
+						//
+						// Change the current path.
+						view.setCurrentPath(path) ;
+						//
+						// Change the selected path.
+						view.setSelectedPath(path) ;
+						//
+						// Change the selected action.
+						view.setSelectedAction(EXTENDLEASE_ITEM_ACTION) ;
+						
+						view.extendLease(path);
+						
+						//
+						// Clear the action and confirm values.
+						// FIXME : Only do this is the action worked.
+						action  = null ;
+						confirm = null ;						
+					}					
 				}
+				
+				
 
 			//
 			// If we have an explorer view.
@@ -697,4 +739,7 @@ public class ExplorerAction
 		if (DEBUG_FLAG) System.out.println("") ;
 		return results ;
 		}
+
 	}
+      
+
