@@ -31,7 +31,7 @@ import org.astrogrid.registry.client.admin.RegistryAdminDocumentHelper;
 import org.astrogrid.registry.client.admin.RegistryAdminService;
 import org.astrogrid.registry.client.query.RegistryService;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
-import org.exolab.castor.xml.ValidationException;
+
 
 import org.astrogrid.config.Config;
 

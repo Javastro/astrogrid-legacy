@@ -1,21 +1,18 @@
 package org.astrogrid.registry.server.query;
 
 import org.astrogrid.registry.server.QueryParser3_0;
-import java.rmi.RemoteException; 
 
 import org.w3c.dom.Document;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import org.apache.axis.utils.XMLUtils;
-import org.w3c.dom.Element;
 import java.io.Reader;
 import java.io.StringReader;
 import org.xml.sax.InputSource;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Node;
 import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.SAXException;
 import java.io.IOException;
+
 
 import org.astrogrid.config.Config;
 

@@ -26,6 +26,7 @@ import java.util.Iterator;
 
 import org.exolab.castor.xml.*;
 import org.astrogrid.registry.beans.resource.*;
+import org.astrogrid.registry.RegistryException;
 
 
 import javax.xml.rpc.ServiceException;
@@ -135,7 +136,7 @@ public class RegistryService  {
       return null;     
    }
    
-   public Document submitQueryStringDOM(String query) throws org.exolab.castor.xml.ValidationException {
+   public Document submitQueryStringDOM(String query) throws RegistryException {
       try {
          Reader reader2 = new StringReader(query);
          InputSource inputSource = new InputSource(reader2);
@@ -144,26 +145,27 @@ public class RegistryService  {
          Document doc = registryBuilder.parse(inputSource);
          return submitQueryDOM(doc);
       }catch(ParserConfigurationException pce) {
-         pce.printStackTrace();
+         throw new RegistryException(pce);
       }catch(IOException ioe) {
-         ioe.printStackTrace();   
+         throw new RegistryException(ioe);   
       }catch(SAXException sax) {
-         sax.printStackTrace();   
+         throw new RegistryException(sax);   
       }
-      return null;
    }
    
-   public Document submitQueryDOM(Document query) throws org.exolab.castor.xml.ValidationException {
+   public Document submitQueryDOM(Document query) throws RegistryException {
       Document doc = null;
       try {
          VODescription vo = submitQuery(query);
          DocumentBuilder registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
          doc = registryBuilder.newDocument();
          Marshaller.marshal(vo,doc);
-      }catch(Exception e) {
-         e.printStackTrace();
+      }catch(ValidationException ve) {
+         throw new RegistryException(ve);   
+      }catch(MarshalException me) {
+         throw new RegistryException(me);   
       }finally {
-         return doc;   
+         return doc;
       }
    }
    
@@ -176,7 +178,7 @@ public class RegistryService  {
       * @return XML docuemnt object representing the result of the query.
       * @author Kevin Benson 
       */   
-   public VODescription submitQueryString(String query) throws org.exolab.castor.xml.ValidationException {
+   public VODescription submitQueryString(String query) throws RegistryException {
       try {
          Reader reader2 = new StringReader(query);
          InputSource inputSource = new InputSource(reader2);
@@ -185,13 +187,12 @@ public class RegistryService  {
          Document doc = registryBuilder.parse(inputSource);
          return submitQuery(doc);
       }catch(ParserConfigurationException pce) {
-         pce.printStackTrace();
+         throw new RegistryException(pce);
       }catch(IOException ioe) {
-         ioe.printStackTrace();   
+         throw new RegistryException(ioe);   
       }catch(SAXException sax) {
-         sax.printStackTrace();   
-      }
-      return null;         
+         throw new RegistryException(sax);   
+      }         
    }
    
    /**
@@ -204,16 +205,18 @@ public class RegistryService  {
    * @return XML docuemnt object representing the result of the query.
    * @author Kevin Benson 
    */        
-   public VODescription submitQuery(Document query) throws org.exolab.castor.xml.ValidationException {
+   public VODescription submitQuery(Document query) throws RegistryException {
       DocumentBuilder registryBuilder = null;
       Document doc = null;
       Document resultDoc = null;
       try {
-      VODescription vp = (VODescription)Unmarshaller.unmarshal(org.astrogrid.registry.beans.resource.VODescription.class,query);
-      }catch(Exception e) {
-         e.printStackTrace();
-      }         
-         
+         VODescription vp = (VODescription)Unmarshaller.unmarshal(org.astrogrid.registry.beans.resource.VODescription.class,query);
+      }catch(ValidationException ve) {
+         throw new RegistryException(ve);   
+      }catch(MarshalException me) {
+         throw new RegistryException(me);   
+      }
+        
       try {
          registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
          doc = registryBuilder.newDocument();
@@ -243,17 +246,14 @@ public class RegistryService  {
       }catch(RemoteException re) {
          vo = null;
          re.printStackTrace();
-      }catch (Exception e) {
+      } catch (Exception e) {
          vo = null;
          e.printStackTrace();
-      }
-      if(vo != null) {
-         vo.validate();         
       }
       return vo;
    }
    
-   public Document loadRegistryDOM(Document query)  throws org.exolab.castor.xml.ValidationException  {
+   public Document loadRegistryDOM(Document query)  throws RegistryException  {
       Document doc = null;
       
          VODescription vo = submitQuery(query);
@@ -262,14 +262,16 @@ public class RegistryService  {
          doc = registryBuilder.newDocument();
          Marshaller.marshal(vo,doc);
       }catch(MarshalException me) {
-         me.printStackTrace();
-      } catch(ParserConfigurationException pce) {
-         pce.printStackTrace();
+         throw new RegistryException(me);
+      }catch(ParserConfigurationException pce) {
+         throw new RegistryException(pce);
+      }catch(ValidationException ve) {
+         throw new RegistryException(ve);   
       }
       return doc;
    }
    
-   public VODescription loadRegistry(Document query)  throws org.exolab.castor.xml.ValidationException {
+   public VODescription loadRegistry(Document query)  throws RegistryException {
       /*
        * Actually take these next few lines out
        * It swhould get the value for the default authority id then
@@ -316,7 +318,7 @@ public class RegistryService  {
       }  
    }
    
-   public HashMap managedAuthorities() throws org.exolab.castor.xml.ValidationException {
+   public HashMap managedAuthorities() throws RegistryException {
       HashMap hm = null;
       Document doc = loadRegistryDOM(null);      
       if(doc != null) {
@@ -329,20 +331,25 @@ public class RegistryService  {
       return hm;      
    }
    
-   public Document getResourceByIdentifierDOM(String ident)  throws org.exolab.castor.xml.ValidationException {
+   public Document getResourceByIdentifierDOM(String ident)  throws RegistryException {
       Document doc = null;
+      VODescription vo = getResourceByIdentifier(ident);
       try {
-         VODescription vo = getResourceByIdentifier(ident);
+         
          DocumentBuilder registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
          doc = registryBuilder.newDocument();
          Marshaller.marshal(vo,doc);
-      }catch(Exception e) {
-         e.printStackTrace();
+      }catch(MarshalException me) {
+         throw new RegistryException(me);
+      }catch(ValidationException ve) {
+         throw new RegistryException(ve);
+      }catch(ParserConfigurationException pce) {
+         throw new RegistryException(pce);   
       }
       return doc;
    }
    
-   public VODescription getResourceByIdentifier(String ident)  throws org.exolab.castor.xml.ValidationException {
+   public VODescription getResourceByIdentifier(String ident)  throws RegistryException {
       if(dummyMode) return null;
       String returnVal = null;
       boolean checkConfig = true;
@@ -364,21 +371,24 @@ public class RegistryService  {
          doc = submitQueryStringDOM(selectQuery);
          try {
             vo = (VODescription)Unmarshaller.unmarshal(org.astrogrid.registry.beans.resource.VODescription.class,doc);
-         }catch (MarshalException me) {
-            me.printStackTrace();   
+         }catch(MarshalException me) {
+            throw new RegistryException(me);   
+         }catch(ValidationException ve) {
+            throw new RegistryException(ve);   
          }         
       }else {
          try {
             vo = (VODescription)Unmarshaller.unmarshal(org.astrogrid.registry.beans.resource.VODescription.class,conf.getDom(ident));
-            vo.validate();
          }catch(MarshalException me) {
-            me.printStackTrace();   
+            throw new RegistryException(me);   
+         }catch(ValidationException ve) {
+            throw new RegistryException(ve);   
          }
       }
       return vo;
    }
    
-   public String getEndPointByIdentifier(String ident) throws org.exolab.castor.xml.ValidationException {
+   public String getEndPointByIdentifier(String ident) throws RegistryException {
       Document doc = getResourceByIdentifierDOM(ident);
       //check for an AccessURL
       //if AccessURL is their and it is a web service then get the wsdl

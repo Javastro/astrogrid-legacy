@@ -42,6 +42,7 @@ import org.exolab.castor.xml.*;
 import org.astrogrid.registry.beans.resource.*;
 import org.astrogrid.registry.beans.resource.types.InvocationType;
 import org.astrogrid.registry.beans.resource.registry.RegistryType;
+import org.astrogrid.registry.RegistryException;
 
 
 
@@ -167,7 +168,7 @@ public class RegistryHarvestService implements
     * @return XML docuemnt object representing the result of the query.
     * @author Kevin Benson 
     */  
-   public Document harvestResource(Document query) throws ValidationException{
+   public Document harvestResource(Document query) throws RegistryException{
 
       //This next statement will go away with Castor.
       try {
@@ -192,8 +193,11 @@ public class RegistryHarvestService implements
             beginHarvest(null,(ServiceType)al.get(i));
          }
       }catch(MarshalException me) {
-         me.printStackTrace();
+         throw new RegistryException(me);
+      }catch(ValidationException ve) {
+         throw new RegistryException(ve);
       }
+      
       /*
        * 
        * Lets throw it to Castor and get an Object model instead and get the identifier that way.
@@ -217,7 +221,7 @@ public class RegistryHarvestService implements
      * @return XML docuemnt object representing the result of the query.
      * @author Kevin Benson 
      */  
-   public Document harvestFromResource(Document query) throws ValidationException{
+   public Document harvestFromResource(Document query) throws RegistryException {
       try {
           //Now get the dateFrom element value as well.
           NodeList nl = query.getElementsByTagName("VODescription");
@@ -245,7 +249,9 @@ public class RegistryHarvestService implements
              }
          }//if
       }catch(MarshalException me) {
-          me.printStackTrace();
+         throw new RegistryException(me);
+      }catch(ValidationException ve) {
+         throw new RegistryException(ve);
       }
       return null;         
     }
@@ -259,7 +265,7 @@ public class RegistryHarvestService implements
        * @return XML docuemnt object representing the result of the query.
        * @author Kevin Benson 
        */  
-      public Document harvestAll(Document query) throws ValidationException {
+      public Document harvestAll(Document query) throws RegistryException {
          Document harvestedDoc = null;
          //This next statement will go away with Castor.            
          NodeList nl = query.getElementsByTagNameNS("http://www.ivoa.net/xml/VOResource/v0.9","Identifier");

@@ -24,6 +24,7 @@ import java.rmi.RemoteException;
 
 import org.exolab.castor.xml.*;
 import org.astrogrid.registry.beans.resource.*;
+import org.astrogrid.registry.RegistryException;
 
 
 import org.astrogrid.config.Config;
@@ -109,10 +110,11 @@ public class RegistryAdminService {
     
   
   
-   public Document update(VODescription vo) throws ValidationException {
-      vo.validate();
+   public Document update(VODescription vo) throws RegistryException {
+      
       Document resultDoc = null;
       try {
+         vo.validate();
          DocumentBuilder registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
          Document doc = registryBuilder.newDocument();
          Marshaller.marshal(vo,doc);
@@ -120,10 +122,13 @@ public class RegistryAdminService {
          resultDoc = update(doc);
       }catch(MarshalException me) {
          resultDoc = null;
-         me.printStackTrace();   
+         throw new RegistryException(me);   
       }catch(ParserConfigurationException pce) {
          resultDoc = null;
-         pce.printStackTrace();   
+         throw new RegistryException(pce);   
+      }catch(ValidationException ve) {
+         resultDoc = null;
+         throw new RegistryException(ve);   
       }finally {
          return resultDoc;   
       }
@@ -138,7 +143,7 @@ public class RegistryAdminService {
     * @author Kevin Benson
     * 
     */   
-   public Document update(Document query) throws ValidationException {
+   public Document update(Document query) throws RegistryException {
 
       DocumentBuilder registryBuilder = null;
       Document doc = null;
@@ -146,9 +151,10 @@ public class RegistryAdminService {
       if(!validated) {
          try {
             VODescription vo = (VODescription)Unmarshaller.unmarshal(VODescription.class,query);
-            vo.validate();
          }catch(MarshalException me) {
-            me.printStackTrace();   
+            throw new RegistryException(me);   
+         }catch(ValidationException ve) {
+            throw new RegistryException(ve);   
          }
       }
       try {
