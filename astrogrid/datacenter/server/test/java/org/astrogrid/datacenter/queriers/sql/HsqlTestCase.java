@@ -1,4 +1,4 @@
-/*$Id: HsqlTestCase.java,v 1.1 2003/11/14 00:38:29 mch Exp $
+/*$Id: HsqlTestCase.java,v 1.2 2003/11/20 15:45:47 nw Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -111,9 +111,11 @@ public abstract class HsqlTestCase extends TestCase {
  */
     public static void runSQLScript(String script, Connection conn) throws SQLException {
         StringTokenizer tok = new StringTokenizer(script,";");
+        assertTrue(tok.hasMoreElements());
         while (tok.hasMoreElements()) {
             String command = tok.nextToken();
             Statement stmnt = conn.createStatement();
+            assertNotNull(stmnt);
             stmnt.execute(command);
         }
     }
@@ -128,9 +130,11 @@ public abstract class HsqlTestCase extends TestCase {
           InputStream is = HsqlTestCase.class.getResourceAsStream(resource);
             assertNotNull(is);
               String script = streamToString(is);
+              assertNotNull(script);
         return script;
     }
     public static String streamToString(InputStream is) throws IOException {
+        assertNotNull(is);
           BufferedReader r = new BufferedReader(new InputStreamReader(is));
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
@@ -164,6 +168,9 @@ public abstract class HsqlTestCase extends TestCase {
 
 /*
 $Log: HsqlTestCase.java,v $
+Revision 1.2  2003/11/20 15:45:47  nw
+started looking at tese tests
+
 Revision 1.1  2003/11/14 00:38:29  mch
 Code restructure
 

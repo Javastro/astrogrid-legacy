@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.3 2003/11/18 14:37:35 nw Exp $
+/*$Id: AllTests.java,v 1.4 2003/11/20 15:45:47 nw Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,6 +27,7 @@ public class AllTests {
         suite.addTest(ServerTest.suite());
         suite.addTest(DataQueryServiceTest.suite());
         suite.addTest(ListenerTest.suite());
+        suite.addTest(ResponseHelperTest.suite());
         //$JUnit-END$
         return suite;
     }
@@ -44,6 +45,9 @@ public class AllTests {
 
 /*
 $Log: AllTests.java,v $
+Revision 1.4  2003/11/20 15:45:47  nw
+started looking at tese tests
+
 Revision 1.3  2003/11/18 14:37:35  nw
 removed references to WorkspaceTest - has now been moved to astrogrid-common
 

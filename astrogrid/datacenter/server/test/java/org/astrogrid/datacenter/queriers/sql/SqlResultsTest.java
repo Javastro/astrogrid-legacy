@@ -1,4 +1,4 @@
-/*$Id: SqlResultsTest.java,v 1.1 2003/11/14 00:38:29 mch Exp $
+/*$Id: SqlResultsTest.java,v 1.2 2003/11/20 15:45:47 nw Exp $
  * Created on 03-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -41,8 +41,15 @@ public class SqlResultsTest extends TestCase {
          assertNotNull(conn);
            String script = HsqlTestCase.getResourceAsString("create-test-db.sql");
          HsqlTestCase.runSQLScript(script,conn);
+        Statement stmnt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
+        ResultSet rs = stmnt.executeQuery("select id,firstName,lastName from people order by id"); // deterministic query
+        assertNotNull(rs);
+        assertTrue(rs.first());
+        res = new SqlResults(rs, null);
+        assertNotNull(res);
      }
      protected Connection conn;
+     protected SqlResults res;
 
     /*
      * @see TestCase#tearDown()
@@ -54,13 +61,9 @@ public class SqlResultsTest extends TestCase {
     }
 
 
-    public void testExerciseSqlResults() throws Exception  {
-        Statement stmnt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
-        ResultSet rs = stmnt.executeQuery("select id,firstName,lastName from people order by id"); // deterministic query
-        assertNotNull(rs);
-        assertTrue(rs.first());
-        SqlResults res = new SqlResults(rs, null);
-        assertNotNull(res);
+    public void testToVotable() throws Exception  {
+
+        
 //temporarily removed as its changed - should write a test, slap wrist now,
 //        InputStream is = res.getInputStream();
 //        assertNotNull(is);
@@ -71,7 +74,11 @@ public class SqlResultsTest extends TestCase {
 //        assertEquals(expected.trim(),result.trim());
        
        Document votable = res.toVotable();
+       assertNotNull(votable);
+       assertEquals("VOTABLE",votable.getDocumentElement().getLocalName());       
     }
+    
+    
     
     // would like to do same with other method too. - needs link to workspace.
 }
@@ -79,6 +86,9 @@ public class SqlResultsTest extends TestCase {
 
 /*
 $Log: SqlResultsTest.java,v $
+Revision 1.2  2003/11/20 15:45:47  nw
+started looking at tese tests
+
 Revision 1.1  2003/11/14 00:38:29  mch
 Code restructure
 

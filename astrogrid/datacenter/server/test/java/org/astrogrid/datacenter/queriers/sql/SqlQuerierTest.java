@@ -1,4 +1,4 @@
-/*$Id: SqlQuerierTest.java,v 1.1 2003/11/14 00:38:29 mch Exp $
+/*$Id: SqlQuerierTest.java,v 1.2 2003/11/20 15:45:47 nw Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -60,7 +60,9 @@ public class SqlQuerierTest extends TestCase {
         HsqlTestCase.initializeConfiguration();
         querier = new SqlQuerier();
         String script = HsqlTestCase.getResourceAsString("create-test-db.sql");
+        assertNotNull(script);
         conn = new HsqlTestCase.HsqlDataSource().getConnection();
+        assertNotNull(conn);
         HsqlTestCase.runSQLScript(script,conn);
     }
 
@@ -96,6 +98,7 @@ public class SqlQuerierTest extends TestCase {
      * @throws Exception
      */
     protected void performQuery(String queryFile) throws Exception {
+        assertNotNull(queryFile);
         InputStream is = this.getClass().getResourceAsStream(queryFile);
         assertNotNull("Could not open query file :" + queryFile,is);
         Document doc = XMLUtils.newDocument(is);
@@ -125,6 +128,9 @@ public class SqlQuerierTest extends TestCase {
 
 /*
 $Log: SqlQuerierTest.java,v $
+Revision 1.2  2003/11/20 15:45:47  nw
+started looking at tese tests
+
 Revision 1.1  2003/11/14 00:38:29  mch
 Code restructure
 
