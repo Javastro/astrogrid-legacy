@@ -1,10 +1,10 @@
 /*
- * $Id: QueryIdHelper.java,v 1.1 2003/11/14 00:36:40 mch Exp $
+ * $Id: QueryIdHelper.java,v 1.2 2003/11/17 12:36:17 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
-package org.astrogrid.datacenter.common;
+package org.astrogrid.datacenter.snippet;
 
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.log.Log;

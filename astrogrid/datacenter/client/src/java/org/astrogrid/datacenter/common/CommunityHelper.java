@@ -1,10 +1,10 @@
 /*
- * $Id: CommunityHelper.java,v 1.1 2003/11/14 00:36:40 mch Exp $
+ * $Id: CommunityHelper.java,v 1.2 2003/11/17 12:36:17 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
 
-package org.astrogrid.datacenter.common;
+package org.astrogrid.datacenter.snippet;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -85,6 +85,9 @@ public class CommunityHelper
 
 /*
 $Log: CommunityHelper.java,v $
+Revision 1.2  2003/11/17 12:36:17  mch
+Moved common to snippet
+
 Revision 1.1  2003/11/14 00:36:40  mch
 Code restructure
 
