@@ -1,4 +1,4 @@
-/*$Id: ApplicationRegistry.java,v 1.3 2004/11/11 00:54:18 clq2 Exp $
+/*$Id: ApplicationRegistry.java,v 1.4 2004/11/12 18:14:43 clq2 Exp $
  * Created on 01-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -41,8 +41,8 @@ public interface ApplicationRegistry {
 
 /* 
 $Log: ApplicationRegistry.java,v $
-Revision 1.3  2004/11/11 00:54:18  clq2
-nww's bug590
+Revision 1.4  2004/11/12 18:14:43  clq2
+nww-itn07-590b again.
 
 Revision 1.2.116.1  2004/11/10 13:33:32  nw
 added new method to ApplicationRegistry - listUIApplications

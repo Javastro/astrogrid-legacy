@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.4 2004/11/11 00:54:18 clq2 Exp $
+/*$Id: AllTests.java,v 1.5 2004/11/12 18:14:43 clq2 Exp $
  * Created on 10-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -31,8 +31,8 @@ public class AllTests {
 }
 /* 
 $Log: AllTests.java,v $
-Revision 1.4  2004/11/11 00:54:18  clq2
-nww's bug590
+Revision 1.5  2004/11/12 18:14:43  clq2
+nww-itn07-590b again.
 
 Revision 1.3.116.1  2004/11/10 13:34:10  nw
 Removed RegistryApplicationRegitryTest - not possible to unit-test this.

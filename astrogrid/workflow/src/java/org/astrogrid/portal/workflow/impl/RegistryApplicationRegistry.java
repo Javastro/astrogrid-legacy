@@ -1,4 +1,4 @@
-/*$Id: RegistryApplicationRegistry.java,v 1.9 2004/11/11 00:54:18 clq2 Exp $
+/*$Id: RegistryApplicationRegistry.java,v 1.10 2004/11/12 18:14:43 clq2 Exp $
  * Created on 09-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -115,7 +115,8 @@ public class RegistryApplicationRegistry implements ApplicationRegistry {
             Element resource = (Element)nl.item(i);
             String authId =  resource.getElementsByTagNameNS("*","AuthorityID").item(0).getFirstChild().getNodeValue();
             String resourceKey = resource.getElementsByTagNameNS("*","ResourceKey").item(0).getFirstChild().getNodeValue();
-            
+            String title = resource.getElementsByTagNameNS("*","Title").item(0).getFirstChild().getNodeValue();
+            /* crap - was extracting the wrong thing. wanted title instead
             NodeList uiElement = resource.getElementsByTagNameNS("*","UI_Name");
             String uiName = "unavailable";
             if(uiElement.getLength() > 0) {
@@ -124,13 +125,13 @@ public class RegistryApplicationRegistry implements ApplicationRegistry {
                     uiName = n.getNodeValue();
                 }
             }
-            
+            */
             NodeList interfaces = resource.getElementsByTagNameNS("*","Interface");
             String[] interfaceNames = new String[interfaces.getLength()];
             for (int j = 0; j < interfaces.getLength(); j++) {
                 interfaceNames[j] = ((Element)interfaces.item(j)).getAttribute("name");
             }
-            descs[i] = new ApplicationDescriptionSummary(authId + "/" + resourceKey,uiName,interfaceNames);
+            descs[i] = new ApplicationDescriptionSummary(authId + "/" + resourceKey,title,interfaceNames);
             
         }
         return descs;
@@ -190,8 +191,11 @@ public class RegistryApplicationRegistry implements ApplicationRegistry {
 
 /* 
 $Log: RegistryApplicationRegistry.java,v $
-Revision 1.9  2004/11/11 00:54:18  clq2
-nww's bug590
+Revision 1.10  2004/11/12 18:14:43  clq2
+nww-itn07-590b again.
+
+Revision 1.8.4.2  2004/11/11 14:37:16  nw
+bugfix. was exracting the wrong field
 
 Revision 1.8.4.1  2004/11/10 13:33:32  nw
 added new method to ApplicationRegistry - listUIApplications
