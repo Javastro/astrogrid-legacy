@@ -105,9 +105,17 @@
     <!-- TOOLS CATEGORY =============================================================== -->    
   <category name="TOOLS">
     <!-- Location of various tools -->
-    <property name="QueryTool" value="http://astrogrid3.jb.man.ac.uk:8080/axis/services/????" />
-    <property name="Sextractor" value="http://astrogrid3.jb.man.ac.uk:8080/axis/services/????" />
-    <property name="VOTableMerge" value="http://astrogrid3.jb.man.ac.uk:8080/axis/services/????" />
+    <property name="LOCATION.QueryTool" value="http://astrogrid3.jb.man.ac.uk:8080/axis/services/????" />
+    <property name="LOCATION.DataFederation" value="http://astrogrid3.jb.man.ac.uk:8080/axis/services/????" />
+    <property name="LOCATION.SExtractor" value="http://astrogrid3.jb.man.ac.uk:8080/axis/services/????" />
+    <property name="LOCATION.HyperZ" value="http://astrogrid3.jb.man.ac.uk:8080/axis/services/????" />
+    
+    <!-- Tool interfaces -->
+    <property name="INTERFACE.QueryTool" value="simple" />
+    <property name="INTERFACE.DataFederation" value="Smain" />
+    <property name="INTERFACE.SExtractor" value="Simple" />
+    <property name="INTERFACE.HyperZ" value="simple" />
+    
   </category>  
 
 </properties>

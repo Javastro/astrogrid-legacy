@@ -182,9 +182,9 @@ public class JobScheduler {
             while( iterator.hasNext() ) {
                 step = (JobStep)iterator.next() ;
                 this.dispatchOneStep( communitySnippet, step ) ;
-                step.setStatus( JobStep.STATUS_RUNNING ) ;
-                job.setStatus( Job.STATUS_RUNNING ) ;
             }
+            
+            job.setStatus( Job.STATUS_RUNNING ) ;
                   
         }
         catch ( Exception ex ) {
@@ -214,7 +214,8 @@ public class JobScheduler {
         String
             requestXML = null,
             toolLocation = null,
-            jobMonitorURL = null ;
+            jobMonitorURL = null,
+            toolInterface = null ;
         ApplicationController
             applicationController = null ;
         int
@@ -222,41 +223,43 @@ public class JobScheduler {
         ParameterValues
             parameterValues = null ;
         boolean
-            bSubmit = false ;
+            bSubmit = true ;
         
         try {
            
             toolLocation = locateTool( step ) ;
-//            applicationController = DelegateFactory.createDelegate( toolLocation ) ;
-//            parameterValues.setParameterSpec( step.getTool().toJESXMLString() ) ; 
-//            // Need to add method name to parameterValues
-//            
-//            final Job parent = step.getParent();
-//            final User user = new User();
-//            user.setAccount(parent.getUserId());
-//            user.setGroup(parent.getGroup());
-//            user.setToken(parent.getToken());
-//            
-//            // set the URL for the JobMonitor so that it can be contacted... 
-//            jobMonitorURL = JES.getProperty( JES.MONITOR_URL, JES.MONITOR_CATEGORY ) ; 
-//           
+            toolInterface = this.getToolInterface( step ) ;
+            applicationController = DelegateFactory.createDelegate( toolLocation ) ;
+            parameterValues.setParameterSpec( step.getTool().toJESXMLString() ) ; 
+            parameterValues.setMethodName( toolInterface ) ;
+            
+            final Job parent = step.getParent();
+            final User user = new User();
+            user.setAccount(parent.getUserId());
+            user.setGroup(parent.getGroup());
+            user.setToken(parent.getToken());
+            
+            // set the URL for the JobMonitor so that it can be contacted... 
+            jobMonitorURL = JES.getProperty( JES.MONITOR_URL, JES.MONITOR_CATEGORY ) ; 
+           
 //            applicationID = applicationController.initializeApplication( step.getParent().getId()
 //                                                                       , step.getStepNumber().toString()
 //                                                                       , jobMonitorURL
 //                                                                       , user
 //                                                                       , parameterValues ) ;
 //                                                                        
-//            bSubmit = applicationController.executeApplication( applicationID ) ; 
-//            if( bSubmit == true ) { 
-//                step.setStatus( JobStep.STATUS_RUNNING ) ;                                                          
-//            }
-//            else {
-//                step.setStatus( JobStep.STATUS_IN_ERROR ) ;
-//                AstroGridMessage
-//                    message = new AstroGridMessage( ASTROGRIDERROR_FAILED_WHEN_CONTACTING_APPLICATION_CONTROLLER
-//                                                  , this.getComponentName() ) ; 
-//                throw new JesException(message) ;
-//            }
+//            bSubmit = applicationController.executeApplication( applicationID ) ;
+ 
+            if( bSubmit == true ) { 
+                step.setStatus( JobStep.STATUS_RUNNING ) ;                                                          
+            }
+            else {
+                step.setStatus( JobStep.STATUS_IN_ERROR ) ;
+                AstroGridMessage
+                    message = new AstroGridMessage( ASTROGRIDERROR_FAILED_WHEN_CONTACTING_APPLICATION_CONTROLLER
+                                                  , this.getComponentName() ) ; 
+                throw new JesException(message) ;
+            }
   
         }
         catch( Exception rex ) {
@@ -325,7 +328,7 @@ public class JobScheduler {
 		
 		try {
 		
-            toolLocation = JES.getProperty( toolName
+            toolLocation = JES.getProperty( JES.TOOLS_LOCATION + toolName
                                           , JES.TOOLS_CATEGORY ) ;
 
 		}
@@ -343,6 +346,28 @@ public class JobScheduler {
 		return toolLocation ;					
 		
 	} // end JobScheduler.locateTool()
+    
+    
+    private String getToolInterface( JobStep step ) throws JesException { 
+        if( TRACE_ENABLED ) logger.debug( "JobScheduler.getToolInterface() entry") ;
+        
+        String
+            toolInterface  = null,
+            toolName = step.getTool().getName() ;
+             
+        try {
+        
+            toolInterface = JES.getProperty( JES.TOOLS_INTERFACE + toolName
+                                          , JES.TOOLS_CATEGORY ) ;
+
+        }
+        finally {
+            if( TRACE_ENABLED ) logger.debug( "JobScheduler.getToolInterface() exit") ;   
+        }
+        
+        return toolInterface ;                   
+        
+    } // end JobScheduler.getToolInterface()
         
     
     private ArrayList identifyDispatchableCandidates( Job job ) {
