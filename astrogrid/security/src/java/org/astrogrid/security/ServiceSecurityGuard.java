@@ -79,7 +79,7 @@ public class ServiceSecurityGuard extends SecurityGuard {
    * @return true if the call is anonymous
    */
   public boolean isAnonymous () {
-    Set principals = this.getSubject().getPrincipals();
+    Set principals = this.getGridSubject().getPrincipals();
     return (principals.size() > 0);
   }
 

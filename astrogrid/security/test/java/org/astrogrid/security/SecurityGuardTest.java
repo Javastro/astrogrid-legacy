@@ -35,29 +35,67 @@ public class SecurityGuardTest extends TestCase {
    */
   public void testPassword () throws Exception {
     SecurityGuard g = new SecurityGuard();
-    Password p1 = new Password("secret", true);
-    g.setPassword(p1);
-    Password p2 = g.getPassword();
-    assertEquals("Password matches", "secret", p2.getPlainPassword());
+    g.setPassword("secret");
+    assertEquals("Password matches", "secret", g.getPassword());
+  }
+
+  /**
+   * Tests the ssoUsername property.
+   */
+  public void testSsoUsername () throws Exception {
+    SecurityGuard g = new SecurityGuard();
+    g.setSsoUsername("fred");
+    assertEquals("fred", g.getSsoUsername());
+  }
+
+  /**
+   * Tests the ssoPassword property.
+   */
+  public void testSsoPassword () throws Exception {
+    SecurityGuard g = new SecurityGuard();
+    g.setSsoPassword("secret");
+    assertEquals("Password matches", "secret", g.getSsoPassword());
   }
 
 
   /**
-   * Tests the subject property. This property
-   * encapsulates credential from the security guard
+   * Tests the gridSubject property. This property
+   * encapsulates credentials from the security guard
    * in a JAAS subject.
    */
-  public void testSubject () throws Exception {
+  public void testSsoSubject () throws Exception {
     SecurityGuard g = new SecurityGuard();
-    assertNotNull("Has JAAS Subject", g.getSubject());
+    assertNotNull("Has JAAS Subject", g.getSsoSubject());
 
     // Test adding the token to the subject.  This test is
     // passed if no exceptions are thrown.
     NonceToken t1 = new NonceToken("secret");  // arbitrary text
-    g.getSubject().getPrivateCredentials().add(t1);
+    g.getSsoSubject().getPrivateCredentials().add(t1);
 
     // Test retreiving the token.
-    Set tokens = g.getSubject().getPrivateCredentials(NonceToken.class);
+    Set tokens = g.getSsoSubject().getPrivateCredentials(NonceToken.class);
+    assertEquals("Exactly one token", 1, tokens.size());
+    NonceToken t2 = (NonceToken)tokens.iterator().next();
+    assertEquals("Tokens match", t1, t2);
+  }
+
+
+  /**
+   * Tests the gridSubject property. This property
+   * encapsulates credentials from the security guard
+   * in a JAAS subject.
+   */
+  public void testGridSubject () throws Exception {
+    SecurityGuard g = new SecurityGuard();
+    assertNotNull("Has JAAS Subject", g.getGridSubject());
+
+    // Test adding the token to the subject.  This test is
+    // passed if no exceptions are thrown.
+    NonceToken t1 = new NonceToken("secret");  // arbitrary text
+    g.getGridSubject().getPrivateCredentials().add(t1);
+
+    // Test retreiving the token.
+    Set tokens = g.getGridSubject().getPrivateCredentials(NonceToken.class);
     assertEquals("Exactly one token", 1, tokens.size());
     NonceToken t2 = (NonceToken)tokens.iterator().next();
     assertEquals("Tokens match", t1, t2);
@@ -72,7 +110,7 @@ public class SecurityGuardTest extends TestCase {
     SecurityGuard g = new SecurityGuard();
     g.setNonceToken(t1);
 
-    Subject s = g.getSubject();
+    Subject s = g.getGridSubject();
     Set tokens = s.getPrivateCredentials(NonceToken.class);
     assertEquals("Exactly one token", 1, tokens.size());
     Set names = s.getPrincipals();

@@ -98,7 +98,7 @@ public class ClientSecurityGuard extends SecurityGuard {
     // Create the configuration for the handler. This is always the
     // same and applies to any number of web-service port-types.
     Hashtable config = new Hashtable();
-    config.put("Subject", this.getSubject());
+    config.put("Subject", this.getGridSubject());
     QName[] handlers = new QName[] {};
     HandlerInfo info = new HandlerInfo(ClientCredentialHandler.class,
                                        config,

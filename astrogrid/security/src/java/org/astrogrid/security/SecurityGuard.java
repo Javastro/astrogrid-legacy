@@ -24,6 +24,13 @@ import javax.security.auth.Subject;
  * are used to authenticate messages to services in the grid. A user
  * obtains the grid credentials by signing on with the SSO credentials.
  *
+ * The two sets of credentials are stored in a pair of JAAS Subjects.
+ * These are available to applications as the properties ssoSubject and
+ * gridSubject. Note that this property may be got but not set; a
+ * caller is not allowed to impose a complete new subject or to make
+ * a subject null.  However, a caller may get a reference to one of the
+ * subjects and change that subject's contents.
+ *
  * @see {@link ClientSecurityGuard}
  * @see {@link ServiceSecurityGuard}
  *
@@ -32,26 +39,80 @@ import javax.security.auth.Subject;
 public class SecurityGuard {
 
   /**
-   * The JAAS subject.
+   * The JAAS subject for grid credentials.
    */
-  protected Subject subject;
+  protected Subject gridSubject;
+
+  /**
+   * The JAAS subject for single-sign-on credentials.
+   */
+  protected Subject ssoSubject;
 
 
   /**
-   * Constructs a SecurityGuard with an empty
-   * JAAS subject.
+   * Constructs a SecurityGuard with empty
+   * JAAS subjects.
    */
   public SecurityGuard () {
-    this.subject = new Subject();
+    this.gridSubject = new Subject();
+    this.ssoSubject  = new Subject();
   }
 
 
   /**
    * Constructs a SecurityGuard with a
-   * given JAAS subject.
+   * given JAAS subject for grid credentials.
+   * No SSO credentials are set.
    */
   public SecurityGuard (Subject s) {
-    this.subject = s;
+    this.gridSubject = s;
+    this.ssoSubject  = new Subject();
+  }
+
+
+  /**
+   * Returns the JAAS Subject for grid credentials.
+   * The Subject contains the credentials and "principals"
+   * (i.e. identities) already set on the SecurityGuard.
+   * If this method is called immediately after construction
+   * then an empty Subject is returned. Note that altering
+   * the returned subject alters the information
+   * inside the SecurityGuard.
+   *
+   * @return the subject (never null)
+   */
+  //public Subject getSubject () {
+  //  return this.gridSubject;
+  //}
+
+  /**
+   * Returns the JAAS Subject for grid credentials.
+   * The Subject contains the credentials and "principals"
+   * (i.e. identities) already set on the SecurityGuard.
+   * If this method is called immediately after construction
+   * then an empty Subject is returned. Note that altering
+   * the returned subject alters the information
+   * inside the SecurityGuard.
+   *
+   * @return the subject (never null)
+   */
+  public Subject getGridSubject () {
+    return this.gridSubject;
+  }
+
+  /**
+   * Returns the JAAS Subject for single-sign-on credentials.
+   * The Subject contains the credentials and "principals"
+   * (i.e. identities) already set on the SecurityGuard.
+   * If this method is called immediately after construction
+   * then an empty Subject is returned. Note that altering
+   * the returned subject alters the information
+   * inside the SecurityGuard.
+   *
+   * @return the subject (never null)
+   */
+  public Subject getSsoSubject () {
+    return this.ssoSubject;
   }
 
 
@@ -62,7 +123,7 @@ public class SecurityGuard {
    */
   public void setUsername (String name) {
     AccountName account = new AccountName(name);
-    this.subject.getPrincipals().add(account);
+    this.gridSubject.getPrincipals().add(account);
   }
 
   /**
@@ -71,7 +132,7 @@ public class SecurityGuard {
    * @return the user-name (may be null if the property is not set)
    */
   public String getUsername () {
-    Set names = this.subject.getPrincipals();
+    Set names = this.gridSubject.getPrincipals();
     if (names.size() == 0) {
       return null;
     }
@@ -87,7 +148,7 @@ public class SecurityGuard {
   public void setPassword (String word) {
     try {
       Password p = new Password(word, false);
-      this.subject.getPrivateCredentials().add(p);
+      this.gridSubject.getPrivateCredentials().add(p);
     }
     catch (Exception e) {
       // Ignore the exception for now.
@@ -101,7 +162,7 @@ public class SecurityGuard {
    * @return the password (may be null if the property is not set)
    */
    public String getPassword () {
-     Set passwords = this.subject.getPrivateCredentials(Password.class);
+     Set passwords = this.gridSubject.getPrivateCredentials(Password.class);
      if (passwords.size() == 0) {
        return null;
      }
@@ -118,9 +179,9 @@ public class SecurityGuard {
    * a Principal.
    */
   public void setNonceToken(NonceToken t) {
-    this.subject.getPrivateCredentials().add(t);
+    this.gridSubject.getPrivateCredentials().add(t);
     AccountName n = new AccountName(t.getAccount());
-    this.subject.getPrincipals().add(n);
+    this.gridSubject.getPrincipals().add(n);
   }
 
 
@@ -130,7 +191,7 @@ public class SecurityGuard {
    * @return the token (null if no token is set)
    */
   public NonceToken getNonceToken () {
-    Set tokens = this.subject.getPrivateCredentials(NonceToken.class);
+    Set tokens = this.gridSubject.getPrivateCredentials(NonceToken.class);
     if (tokens.size() > 0) {
       return (NonceToken) tokens.iterator().next();
     }
@@ -138,23 +199,6 @@ public class SecurityGuard {
       return null;
     }
   }
-
-
-  /**
-   * Returns the JAAS Subject.  The Subject
-   * contains the credentials and "principals"
-   * (i.e. identities) already set on the SecurityGuard.
-   * If this method is called immediately after construction
-   * then an empty Subject is returned. Note that altering
-   * the returned subject alters the information
-   * inside the SecurityGuard.
-   *
-   * @return the subject (never null)
-   */
-  public Subject getSubject () {
-    return this.subject;
-  }
-
 
 
   /**
