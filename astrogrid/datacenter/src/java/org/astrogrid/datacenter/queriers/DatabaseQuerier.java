@@ -1,5 +1,5 @@
 /*
- * $Id: DatabaseQuerier.java,v 1.15 2003/09/10 14:49:12 nw Exp $
+ * $Id: DatabaseQuerier.java,v 1.16 2003/09/10 17:24:50 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -72,6 +72,11 @@ public abstract class DatabaseQuerier implements Runnable
    /** Handle to the results from the query */
    protected QueryResults results = null;
 
+   /** For measuring how long the query took */
+   private Date timeQueryStarted = null;
+   /** For measuring how long query took */
+   private Date timeQueryCompleted = null;
+   
    /**
     * Constructor - creates a handle to identify this instance
     */
@@ -174,10 +179,10 @@ public abstract class DatabaseQuerier implements Runnable
       catch (InstantiationException e)
       {
          throw new DatabaseAccessException(e,"Could not load DatabaseQuerier '"+querierClass+"' :" + e.getMessage());
-     } 
+     }
      catch (NoSuchMethodException e) {
          throw new DatabaseAccessException(e,"Could not load DatabaseQuerier '" + querierClass+"' :" + e.getMessage());
-      } 
+      }
       catch (InvocationTargetException e) {
           // interested in the root cause here - invocation target is just a wrapper, and not meaningful in itself.
           throw new DatabaseAccessException(e.getCause(),"Could not load DatabaseQuerier '" + querierClass + "' :" + e.getCause().getMessage());
@@ -258,12 +263,30 @@ public abstract class DatabaseQuerier implements Runnable
       return results;
    }
 
+   
    /**
-    * Returns the workspace
+    * Returns the time it took to complete the query in milliseconds, or the
+    * time since it started (if it's still running).  -1 if the query has not
+    * yet started
     */
-   public Workspace getWorkspace()
+   public double getQueryTimeTaken()
    {
-      return workspace;
+      //Log.affirm(timeQueryStarted != null, "Trying to get time taken by the query when it hasn't run"));
+      if (timeQueryStarted == null)
+      {
+         return -1; //may not have started for some reason
+      }
+         
+      
+      if (timeQueryCompleted == null)
+      {
+         Date timeNow = new Date();
+         return timeNow.getTime() - timeQueryStarted.getTime();
+      }
+      else
+      {
+         return timeQueryCompleted.getTime() - timeQueryStarted.getTime();
+      }
    }
 
    /**
