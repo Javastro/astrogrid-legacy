@@ -47,6 +47,39 @@ public class AdministrationDelegate {
       }      
    }
    
+   private String getSecureURL() {
+     
+      String policyURL = CommunityConfig.getProperty("policy.manager.secure.url");
+      if(policyURL != null && policyURL.trim().length() > 0) {
+         return policyURL;
+      }
+      policyURL = CommunityConfig.getManagerUrl();
+      System.out.println("manager url = " + policyURL);
+      policyURL = policyURL.replaceAll("http","https");
+      int index = policyURL.indexOf(":");
+      
+      String securePort = CommunityConfig.getProperty("community.secure.port");
+      System.out.println("the secure port = " + securePort + " and index = " + index);      
+      if(securePort != null && securePort.length() > 0) {
+         System.out.println("try the regex");
+         policyURL.replaceAll("\\d",(":" + securePort));
+      }else {
+         return null;
+      }
+      System.out.println("The PolicyURL = " + policyURL);
+      return policyURL;      
+   }
+   
+   
+   public String getPassword(String name) throws Exception {
+      String policyURL = getSecureURL();
+      if(policyURL == null) {
+         throw new Exception("This operation requires a secure ssl connection which cannot be found for retrieving the password.");
+      }
+      PolicyManager secureService = getService(policyURL);
+      return secureService.getPassword(name);      
+   }
+   
    
    /**
     * Creates a new permission in the database tying a resource to a group for a specefic action.
@@ -190,7 +223,12 @@ public class AdministrationDelegate {
     * @throws Exception
     */
    public AccountData setAccount(AccountData ad) throws Exception {
-      return service.setAccount(ad);  
+      String policyURL = getSecureURL();
+      if(policyURL == null) {
+         throw new Exception("A Secure ssl connection is required for updating an account, and cannot be found.");
+      }
+      PolicyManager secureService = getService(policyURL);
+      return secureService.setAccount(ad);  
    }
    
    /**

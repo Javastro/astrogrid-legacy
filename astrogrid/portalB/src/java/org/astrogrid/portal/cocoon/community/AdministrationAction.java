@@ -186,12 +186,13 @@ public class AdministrationAction extends AbstractAction
          comm_account = (String)session.getAttribute("user");
       }
 
+/*
       try {
          adminDelegate.getPassword(comm_account);
       }catch(Exception e) {
         e.printStackTrace();  
       }      
-
+*/
       if(comm_account == null) {
          actionTable.put(ACTION_INSERT_ACCOUNT,"Insert Account");
       }else {
