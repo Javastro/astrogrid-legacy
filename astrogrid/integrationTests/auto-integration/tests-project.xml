@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: tests-project.xml,v 1.14 2004/06/16 21:16:55 jdt Exp $ -->
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+<!-- $Id: tests-project.xml,v 1.15 2004/07/01 11:42:32 nw Exp $ -->
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
     <id>auto-integration-tests</id>
     <name>Tests for Automated Integration.</name>
-    <description> This project document defines the tests to execute against 
-        the installed local astorgrid setup. In a separate project, so that the 
-        parent project can be used in isolation, just to set up an integration 
+    <description> This project document defines the tests to execute against
+        the installed local astorgrid setup. In a separate project, so that the
+        parent project can be used in isolation, just to set up an integration
         machine. </description>
     <logo>http://www.astrogrid.org/images/AGlogo</logo>
     <organization>
@@ -15,14 +15,14 @@
         <logo>http://www.astrogrid.org/images/AGlogo</logo>
     </organization>
     <siteAddress>cvs.astrogrid.org</siteAddress>
-    <siteDirectory> 
+    <siteDirectory>
         /var/www/www/maven/docs/SNAPSHOT/integrationTests</siteDirectory>
     <repository>
-        <connection> 
-            scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/integrationTests/auto-integration 
+        <connection>
+            scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/integrationTests/auto-integration
             </connection>
-        <url> 
-            http://www.astrogrid.org/viewcvs/astrogrid/integrationTests/auto-integration/ 
+        <url>
+            http://www.astrogrid.org/viewcvs/astrogrid/integrationTests/auto-integration/
             </url>
     </repository>
     <build>
@@ -121,7 +121,7 @@
         <!-- applications -->
         <dependency>
             <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-applications-client</artifactId>
+            <artifactId>astrogrid-cea-client</artifactId>
             <version>SNAPSHOT</version>
         </dependency>
         <!-- community -->
@@ -239,6 +239,13 @@
         </dependency>
         <!--End Portal testing-->
         <!-- for development -->
+        <dependency>
+                <artifactId>groboutils</artifactId>
+                <groupId>groboutils</groupId>
+                <version>4</version>
+                <jar>GroboUtils-4-core.jar</jar>
+                <url>http://prdownloads.sourceforge.net/groboutils/GroboUtils-4-core.jar</url>
+        </dependency>
         <dependency>
             <artifactId>junit</artifactId>
             <groupId>junit</groupId>
