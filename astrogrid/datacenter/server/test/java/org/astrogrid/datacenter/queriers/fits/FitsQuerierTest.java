@@ -1,4 +1,4 @@
-/*$Id: FitsQuerierTest.java,v 1.17 2004/08/18 18:44:12 mch Exp $
+/*$Id: FitsQuerierTest.java,v 1.18 2004/08/18 21:36:28 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -46,7 +46,7 @@ public class FitsQuerierTest extends TestCase
    public void testPluginClass() throws IOException {
       Querier querier = Querier.makeQuerier(Account.ANONYMOUS, new ConeQuery(300, 60, 12), new TargetIndicator("astrogrid:store:null"), QueryResults.FORMAT_VOTABLE);
       
-      assertTrue("Plugin not FitsQuerierPlugin", querier.getPlugin() instanceof FitsQuerierPlugin);
+      assertTrue("Plugin '"+querier.getPlugin()+"' not FitsQuerierPlugin", querier.getPlugin() instanceof FitsQuerierPlugin);
    }
    
    public void testCone() throws IOException
@@ -54,7 +54,7 @@ public class FitsQuerierTest extends TestCase
       StringWriter sw = new StringWriter();
       Querier querier = Querier.makeQuerier(Account.ANONYMOUS, new ConeQuery(300, 60, 12), new TargetIndicator(sw), QueryResults.FORMAT_VOTABLE);
       
-      assertTrue("Plugin not FitsQuerierPlugin", querier.getPlugin() instanceof FitsQuerierPlugin);
+      assertTrue("Plugin '"+querier.getPlugin()+"' not FitsQuerierPlugin", querier.getPlugin() instanceof FitsQuerierPlugin);
       
       querier.ask();
       
@@ -83,6 +83,9 @@ public class FitsQuerierTest extends TestCase
 
 /*
  $Log: FitsQuerierTest.java,v $
+ Revision 1.18  2004/08/18 21:36:28  mch
+ Added better error msg
+
  Revision 1.17  2004/08/18 18:44:12  mch
  Created metadata plugin service and added helper methods
 
