@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<metadataFormats xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="c:\Astrogrid\registry\registryCurationMetadata.xsd">
+
+<metadataFormat>
+  <id>DemoCatalogMF</id>
+  <catalogElement>Coverage: RA</catalogElement>
+  <catalogElement>Coverage: Dec</catalogElement>
+  <catalogElement>Wavelength Range</catalogElement>
+  <catalogElement>Time</catalogElement>
+
+</metadataFormat>
+
+<metadataFormat>
+  <id>ObjectCatalogMF</id>
+  <catalogElement>Object Name</catalogElement>
+  <catalogElement>Coverage: Instruments</catalogElement>
+  <catalogElement>Coverage: galactic longitude</catalogElement>
+  <catalogElement>Coverage: galactic latitude</catalogElement>
+</metadataFormat>
+
+<metadataFormat>
+  <id>InstrumentCatalogMF</id>
+  <catalogElement>Coverage: Instruments</catalogElement>
+  <catalogElement>Coverage: galactic longitude</catalogElement>
+  <catalogElement>Coverage: galactic latitude</catalogElement>
+</metadataFormat>
+
+<metadataFormat>
+  <id>PeanutCatalogMF</id>
+  <catalogElement>Characters</catalogElement>
+  <catalogElement>Cartoon Strips</catalogElement>
+  <catalogElement>Cartoon Dates</catalogElement>
+  <catalogElement>Holiday TV Shows</catalogElement>
+</metadataFormat>
+
+</metadataFormats>

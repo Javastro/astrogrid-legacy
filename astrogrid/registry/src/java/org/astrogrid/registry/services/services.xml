@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="c:\Astrogrid\registry\registryCurationMetadata.xsd">
+
+<service>
+  <id>serviceAAA111</id>
+  <title>WavelengthConverter</title>
+  <publisher>MSSL</publisher>
+  <creator>Elizabeth Auden</creator>
+  <description>This service converts wavelength to frequency and vice versa.</description> 
+  <contributor>Elizabeth Auden</contributor>
+  <date>26/02/03</date>
+  <version>1.0</version>
+  <uri>http://www.mssl.ucl.ac.uk</uri>
+  <resourceURL>http://www.mssl.ucl.ac.uk</resourceURL>
+  <serviceURL>http://localhost:8080</serviceURL>
+  <allowedMethods>
+    <allowedMethod>wavelengthToFrequency</allowedMethod>
+    <allowedMethod>frequencyToWavelength</allowedMethod>
+  </allowedMethods>
+  <supportedMFs>
+    <metadataFormat>DemoCatalogMF</metadataFormat>
+  </supportedMFs>
+  <contact>
+    <name>Elizabeth Auden</name>
+    <email>eca@mssl.ucl.ac.uk</email>
+  </contact>
+</service>
+
+<service>
+  <id>serviceBBB222</id>
+  <title>Precession</title>
+  <publisher>MSSL</publisher>
+  <creator>Elizabeth Auden</creator>
+  <description>This service precesses right ascension and declination between astronomical epochs.</description> 
+  <contributor>Elizabeth Auden</contributor>
+  <date>26/02/03</date>
+  <version>1.0</version>
+  <uri>http://www.mssl.ucl.ac.uk</uri>
+  <resourceURL>http://www.mssl.ucl.ac.uk</resourceURL>
+  <serviceURL>http://localhost:8080</serviceURL>
+  <allowedMethods>
+    <allowedMethod>precessRA</allowedMethod>
+    <allowedMethod>precessDec</allowedMethod>
+  </allowedMethods>
+  <supportedMFs>
+    <metadataFormat>ObjectCatalogMF</metadataFormat>
+    <metadataFormat>DemoCatalogMF</metadataFormat>
+    <metadataFormat>PeanutCatalogMF</metadataFormat>
+  </supportedMFs>
+  <contact>
+    <name>Elizabeth Auden</name>
+    <email>eca@mssl.ucl.ac.uk</email>
+  </contact>
+</service>
+</services>

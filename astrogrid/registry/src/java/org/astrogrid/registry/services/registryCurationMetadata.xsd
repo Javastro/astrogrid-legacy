@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    
+    <xs:element name="id" type="xs:string"/>
+    <xs:element name="title" type="xs:string"/>
+    <xs:element name="publisher" type="xs:string"/>
+    <xs:element name="creator" type="xs:string"/>
+    <xs:element name="description" type="xs:string"/>
+    <xs:element name="contributor" type="xs:string"/>
+    <xs:element name="date" type="xs:date"/>
+    <xs:element name="version" type="xs:string"/>
+    <xs:element name="uri" type="xs:string"/>
+    <xs:element name="resourceURL" type="xs:string"/>
+    <xs:element name="serviceURL" type="xs:string"/>
+    
+    <xs:element name="subjectList">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element  name="subject" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:element name="contact">
+        <xs:complexType>
+            <xs:attribute name="name" type="xs:string"/>
+            <xs:attribute name="email" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:element name="curation">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="id"/>
+                <xs:element ref="title"/>
+                <xs:element ref="publisher"/>
+                <xs:element ref="creator"/>
+                <xs:element ref="subjectList"/>
+                <xs:element ref="description"/>
+                <xs:element ref="contributor"/>
+                <xs:element ref="date"/>
+                <xs:element ref="version"/>
+                <xs:element ref="uri"/>
+                <xs:element ref="resourceURL"/>
+                <xs:element ref="serviceURL"/>
+                <xs:element ref="contact"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
