@@ -20,7 +20,7 @@
         | The short name of the project.
         | This is used when naming jars and distribution files.
         +-->
-    <id>astrogrid-registry</id>
+    <id>astrogrid-registry-master</id>
 
     <!--+
         | The full name of the project.
@@ -107,8 +107,8 @@
 			The registry allows you to build at the top level or at it's sub-project level.  
 			Here are the maven goals for building the registry.
 			<ul>
-				<li>clean - cleans out and removes all previous builds.</li>
-				<li>install-snapshot - Builds all the necessry jar and war files.</li>
+				<li>astrogrid-clean - cleans out and removes all previous builds.</li>
+				<li>astrogrid-install-snapshot - Builds all the necessry jar and war files.</li>
 				<li>astrogrid-deploy-snapshot - Builds and deploys the snapshot onto the repository.</li>
 				<li>astrogrid-deploy-site - Generates reports and documents to be deployed on the site repository.</li>
 			</ul>

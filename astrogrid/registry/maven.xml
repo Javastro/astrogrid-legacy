@@ -14,41 +14,17 @@
     xmlns:deploy="deploy"
     >
 
-    <!--+
-        | Current build script goals.
-        | These are hooks to catch the goals called by the current build script.
-        | The build script goals like java:compile don't really apply in the context of the multiproject build.
-        +-->
 
-    <!--+
-        | Hook for build script java:compile
-        | Calls install-artifact to build and install our SNAPSHOT jars.
-        |  <preGoal name="java:compile">
-        |     <attainGoal name="clean"/>
-        |     <attainGoal name="install-snapshot"/>
-        |  </preGoal>
-        +-->
 
-    <!--+
-        | Hook for build script clover:html-report
-        | Calls clover-report on the relevant sub-projects.
-        +-->
-    <goal name="clover:html-report">
-        <attainGoal name="clover-report"/>
-    </goal>
 
-    <!--+
-        | Hook for build script site:site
-        | Calls 'site' on the relevant sub-projects.
-        +-->
-    <goal name="site:site">
-        <attainGoal name="site"/>
-    </goal>
+
+
     
     <goal name="astrogrid-deploy-site">
-    	<attainGoal name="site" />
+    	<attainGoal name="astrogrid-build-site" />
         <attainGoal name="site:fsdeploy"/>
     </goal>
+ 
 
     <!--+
         | Hook for build script site:fsdeploy
@@ -65,21 +41,6 @@
 	        <core:expr value="${pom.setSiteDirectory(deployLocation)}"/>
 		</core:if>
     </preGoal>
-
-    <!--+
-        | Hook for build script jar:deploy-snapshot
-        | Calls 'deploy-snapshot' on the relevant sub-projects.
-        | I can't make this a goal, because it breaks the real call to
-        | 'jar:deploy-snapshot' in the sub-project tasks.
-        +-->
-    <preGoal name="jar:deploy-snapshot">
-        <attainGoal name="deploy-snapshot"/>
-    </preGoal>
-    
-    <goal name="astrogrid-deploy-snapshot">
-    	<attainGoal name="jar:deploy-snapshot" />
-    </goal>
-    
 
     <!--+
         | Hook for build script jar:deploy-snapshot
@@ -127,28 +88,18 @@
     <!--+
         | Clean out all of the build targets.
         +-->
-    <goal name="clean">
+    <goal name="astrogrid-clean">
         <!--+
             | Clean our sub-projects.
             +-->
-        <maven:reactor
-            basedir="${basedir}"
-            postProcessing="false"
-            includes="common/project.xml,client/project.xml,client-lite/project.xml,server/project.xml,webapp/project.xml"
-            goals="clean"
-            banner="Cleaning build targets : "
-            ignoreFailures="false"
-            />
-        <!--+
-            | Clean this project target.
-            +-->
-        <!-- <attainGoal name="clean:clean"/> -->
+            <attainGoal name="multiproject:clean"/>
+            <attainGoal name="clean:clean"/>
     </goal>
 
     <!--+
         | Build and install our component artifacts.
         +-->
-    <goal name="install-artifact">
+    <goal name="astrogrid-install-artifact">
         <maven:reactor
             basedir="${basedir}"
             postProcessing="false"
@@ -162,7 +113,7 @@
     <!--+
         | Build and install our snapshot artifacts.
         +-->
-    <goal name="install-snapshot">
+    <goal name="astrogrid-install-snapshot">
         <maven:reactor
             basedir="${basedir}"
             postProcessing="false"
@@ -193,47 +144,14 @@
         | This can be called fom outside, or recursively by site:generate.
         | (required as a target goal for the reactor in multiproject:site)
         +-->
-    <goal name="site">
-        <!--+
-            | Check if we have already been called.
-            | This target can be called fom outside, or recursively by site:generate.
-            +-->
-        <ant:echo message="${pom.artifactId} - site"/>
-        <ant:echo message="  recursionTest : ${recursionTest}"/>
-        <core:switch on="${recursionTest}">
-            <!--+
-                | If we have already been called for this project.
-                +-->
-            <core:case value="${pom.artifactId}">
-                <!--+
-                    | Generate the project site by calling the site plugin goal.
-                    +-->
-                <ant:echo message="Build artifact  : ${pom.artifactId}"/>
-                <ant:echo message="Build version   : ${pom.currentVersion}"/>
-                <ant:echo message="Build directory : ${maven.build.dir}"/>
-                <ant:echo message="Building sub-project site : "/>
-                <attainGoal name="site:generate"/>
-            </core:case>
-            <!--+
-                | If this is the first time we have been called.
-                +-->
-            <core:default>
-                <!--+
-                    | Set our recursion check.
-                    +-->
-                <core:set var="recursionTest" value="${pom.artifactId}"/>
-                <!--+
-                    | Generate our sub-project sites by calling the multiproject plugin goal.
-                    +-->
+    <goal name="astrogrid-build-site">
                 <attainGoal name="multiproject:site"/>
-            </core:default>
-        </core:switch>
     </goal>
 
     <!--+
         | Deploy our snapshot artifacts.
         +-->
-    <goal name="deploy-snapshot">
+    <goal name="astrogrid-deploy-snapshot">
         <maven:reactor
             basedir="${basedir}"
             postProcessing="false"
@@ -244,6 +162,6 @@
             />
     </goal>
     
-    <goal name="astrogrid-install-snapshot" prereqs="multiproject:install-snapshot"/>
+ 
 
 </project>

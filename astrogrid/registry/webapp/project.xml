@@ -10,7 +10,7 @@
     <!--+
         | Extend the common project descriptor.
         +-->
-    <extend>../maven/project.xml</extend>
+    <extend>${basedir}/../maven/project.xml</extend>
 
     <!--+
         | The current version of the Maven project descriptor.
