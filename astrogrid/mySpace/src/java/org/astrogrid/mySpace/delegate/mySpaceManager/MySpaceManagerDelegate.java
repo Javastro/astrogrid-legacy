@@ -16,7 +16,7 @@ import org.astrogrid.mySpace.delegate.helper.*;
 
 public class MySpaceManagerDelegate {
 
-    private String mssUrl = null;      // MSS the delegate is operating on.
+    private String mssUrl = null;       // MSS the delegate is operating on.
     private Vector queryMssUrl = null; // Vector of MSSs to query.
    
     private String value ="";
@@ -100,7 +100,7 @@ public class MySpaceManagerDelegate {
  * a single asterisk.
  */
 
-    public void setQueryMssUrl(Vector queryMssUrl) {
+    public void setQueryMssUrl(Vector queryMssUrl) throws Exception{
         if (queryMssUrl.size() == 1) {
             if ( ((String)queryMssUrl.elementAt(0)).equals("*") ) {
                 this.queryMssUrl = this.getAllMssUrl();
@@ -134,7 +134,7 @@ public class MySpaceManagerDelegate {
         }
         
         try{
-           allMssUrls  = binding.allMssUrls();
+           allMssUrls  = binding.getServerURLs();
         }catch(java.rmi.RemoteException re) {
            re.printStackTrace();
         }

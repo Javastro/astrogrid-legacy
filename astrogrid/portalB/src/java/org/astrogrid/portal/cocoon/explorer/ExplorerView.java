@@ -2,11 +2,14 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/java/org/astrogrid/portal/cocoon/explorer/Attic/ExplorerView.java,v $</cvs:source>
  * <cvs:date>$Author: clq2 $</cvs:date>
- * <cvs:author>$Date: 2003/09/18 11:53:14 $</cvs:author>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:author>$Date: 2003/09/19 16:19:03 $</cvs:author>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  * $Log: ExplorerView.java,v $
+ * Revision 1.6  2003/09/19 16:19:03  clq2
+ * *** empty log message ***
+ *
  * Revision 1.5  2003/09/18 11:53:14  clq2
  * added action create/delete user and change owner.
  *
@@ -181,6 +184,7 @@ public class ExplorerView
 	 */
 	public String getExplorerPath()
 		{
+			if (DEBUG_FLAG) System.out.println("Explorer.getExplorerPath :"+path);
 		return (null != path) ? this.path : "" ;
 		}
 

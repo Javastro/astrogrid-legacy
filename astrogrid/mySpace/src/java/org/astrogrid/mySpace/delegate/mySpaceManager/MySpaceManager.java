@@ -23,4 +23,5 @@ public interface MySpaceManager extends java.rmi.Remote {
     public boolean deleteUser(java.lang.String userid, java.lang.String communityid) throws java.rmi.RemoteException;
     public java.lang.String changeOwner(java.lang.String userid, java.lang.String communityid, java.lang.String dataHolderName, java.lang.String newOwnerID) throws java.rmi.RemoteException;
     public java.lang.String listExpiredDataHolders(java.lang.String jobDetails) throws java.rmi.RemoteException;
+    public java.util.Vector getServerURLs() throws java.rmi.RemoteException;
 }
