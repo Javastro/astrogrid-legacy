@@ -16,8 +16,9 @@ import org.astrogrid.mySpace.delegate.helper.*;
 
 public class MySpaceManagerDelegate {
 
-    private String mssUrl = null;       // MSS the delegate is operating on.
-    private Vector queryMssUrl = null; // Vector of MSSs to query.
+    private String mssUrl = " ";       // MSS the delegate is operating on.
+    private Vector queryMssUrl = new Vector(); // Vector of MSSs to query.
+    private boolean DEBUG = true;
    
     private String value ="";
 
@@ -32,8 +33,8 @@ public class MySpaceManagerDelegate {
  */
 
     public MySpaceManagerDelegate() {
-        this.mssUrl = null;
-        this.queryMssUrl = null;
+        this.mssUrl = mssUrl;
+        this.queryMssUrl = queryMssUrl;
     }
 
 /**
@@ -44,6 +45,7 @@ public class MySpaceManagerDelegate {
 
     public MySpaceManagerDelegate(String mssUrl) {
         this.mssUrl = mssUrl;
+        System.out.println("initializor: mssUrl: "+mssUrl);
         (this.queryMssUrl).add(mssUrl);
     }    
     
@@ -170,20 +172,30 @@ public class MySpaceManagerDelegate {
  * containing the MySpace names which matched the query.
  */
  
-    public Vector listDataHoldings(String userId, String communityId,
+    public Vector listDataHoldings(String userId, String communityId, 
       String query)throws Exception {
         Vector returnList = new Vector();
-
+        if (DEBUG) System.out.println("listDataholdings..."+userId +":   :"+communityId+": query:"+query);
         try {
             for (int loop = 0; loop<queryMssUrl.size(); loop++) {
                 String currentResponse = this.internalDataHoldings(
                   userId, communityId, query,
                   (String)queryMssUrl.elementAt(loop) );
-
                 MySpaceHelper helper = new MySpaceHelper();
+				if (DEBUG) System.out.println("currentResponse from internalDataHoldings: "+currentResponse);
                 Vector currentList  = helper.getList(currentResponse);
-
+				if (DEBUG){ 
+					System.out.println("size: "+currentList.size()); 
+					for (int j=0;j<currentList.size();j++){
+						System.out.println(" currentlist: "+currentList.elementAt(j));
+					}
+				}
                 returnList.add(currentList);
+                if (DEBUG){
+                	for (int i=0;i<returnList.size();i++){
+                		System.out.println("returnList from delegate: "+returnList.elementAt(i));
+                	}
+                }
             }
            
         }catch(java.rmi.RemoteException re) {
@@ -832,6 +844,7 @@ public class MySpaceManagerDelegate {
             MySpaceHelper helper = new MySpaceHelper();
             String jobDetails = helper.buildListDataHoldings(userId, communityId, criteria);
             response = binding.lookupDataHoldersDetails(jobDetails);
+            
         }   
         catch(java.rmi.RemoteException re) {
             re.printStackTrace();
