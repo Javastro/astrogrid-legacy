@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- $Id: project.xml,v 1.1 2005/02/17 18:37:35 mch Exp $ -->
+
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+    xsi:noNamespaceSchemaLocation="//../maven-base/xsd/maven-project.xsd">
+
+    <!--will eventually extend from /base when Maven RC3 installed-->
+
+    <extend>${basedir}/../../maven-base/project.xml</extend>
+
+    <currentVersion>${astrogrid.pal.version}</currentVersion>
+
+    <id>astrogrid-pal-units</id>
+
+    <name>Astrogrid Units Library</name>
+
+    <description>Library for handling units</description>
+
+    <shortDescription>AstroGrid Units Library</shortDescription>
+
+    <dependencies>
+
+       <!-- for logging -->
+       <dependency>
+            <artifactId>commons-logging</artifactId>
+            <groupId>commons-logging</groupId>
+            <version>1.0.3</version>
+       </dependency>
+
+    </dependencies>
+
+</project>
+
+
+
+
+
+
+

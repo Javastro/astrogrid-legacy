@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SQL equivalent
+SELECT * FROM Tab t
+-->
+<Select xmlns="http://tempuri.org/adql" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://tempuri.org/adql ADQLSchemav06.xsd">
+    <SelectionList>
+        <AllSelectionItem/>
+    </SelectionList>
+    <TableClause>
+        <FromClause>
+            <TableReference>
+                <Table>
+                    <Name>first</Name>
+                    <AliasName>f</AliasName>
+                </Table>
+            </TableReference>
+        </FromClause>
+    </TableClause>
+</Select>

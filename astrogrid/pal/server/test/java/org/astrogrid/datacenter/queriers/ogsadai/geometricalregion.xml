@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- SQL equivalent: FIND POINT INSIDE A GEOMETRICAL REGION
+SELECT ra, decl, phot_flux_int FROM first WHERE first.errbox && xmm1.errbox
+-->
+<Select xmlns="http://tempuri.org/adql" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tempuri.org/adql ADQLSchemav06.xsd">
+    <Selection>
+        <AliasSelectionItem>
+            <ColumnExpr>
+                <SingleColumnReference>
+                    <Name>ra</Name>
+                </SingleColumnReference>
+            </ColumnExpr>
+        </AliasSelectionItem>
+        <AliasSelectionItem>
+            <ColumnExpr>
+                <SingleColumnReference>
+                    <Name>decl</Name>
+                </SingleColumnReference>
+            </ColumnExpr>
+        </AliasSelectionItem>
+        <AliasSelectionItem>
+            <ColumnExpr>
+                <SingleColumnReference>
+                    <Name>phot_flux_int</Name>
+                </SingleColumnReference>
+            </ColumnExpr>
+        </AliasSelectionItem>
+    </Selection>
+    <TableClause>
+        <FromClause>
+            <TableReference>
+                <Table>
+                    <Name>first</Name>
+                </Table>
+            </TableReference>
+        </FromClause>
+        <WhereClause>
+            <PredicateSearch>
+                <ComparisonPred>
+                    <FirstExpr xsi:type="ColumnExpr">
+                        <SingleColumnReference>
+                            <TableName>first</TableName>
+                            <Name>errbox</Name>
+                        </SingleColumnReference>
+                    </FirstExpr>
+                    <Compare>&lt;&gt;</Compare>
+                    <SecondExpr xsi:type="ColumnExpr">
+                        <SingleColumnReference>
+                            <TableName>xmm1</TableName>
+                            <Name>errbox</Name>
+                        </SingleColumnReference>
+                    </SecondExpr>
+                </ComparisonPred>
+            </PredicateSearch>
+        </WhereClause>
+    </TableClause>
+</Select>

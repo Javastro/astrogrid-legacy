@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- $Id: project.xml,v 1.1 2005/02/17 18:37:34 mch Exp $ -->
+
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+    xsi:noNamespaceSchemaLocation="//../maven-base/xsd/maven-project.xsd">
+
+    <!--will eventually extend from /base when Maven RC3 installed-->
+
+    <extend>${basedir}/../../maven-base/project.xml</extend>
+
+    <currentVersion>${astrogrid.pal.version}</currentVersion>
+
+    <id>astrogrid-pal-api</id>
+
+    <name>Astrogrid Dataservice API Package</name>
+
+    <description>Astrogrid API to accessing data</description>
+
+    <shortDescription>AstroGrid Dataservice API</shortDescription>
+
+    <dependencies>
+
+      <dependency>
+         <artifactId>astrogrid-common</artifactId>
+         <groupId>org.astrogrid</groupId>
+         <version>${astrogrid.common.version}</version>
+      </dependency>
+
+      <dependency>
+         <artifactId>astrogrid-query</artifactId>
+         <groupId>org.astrogrid</groupId>
+         <version>${astrogrid.pal.version}</version>
+      </dependency>
+
+       <!-- used to talk to SkyNodes (instead of Axis) see SkyNodeClient_* -->
+       <dependency>
+         <id>activation</id>
+         <version>1.0.2</version>
+         <properties>
+           <war.bundle>true</war.bundle>
+         </properties>
+       </dependency>
+       <dependency>
+         <id>soap</id>
+         <version>2.3.1</version>
+         <properties>
+           <war.bundle>true</war.bundle>
+         </properties>
+       </dependency>
+
+        <dependency>
+          <id>saaj</id>
+          <version>1.0</version>
+          <jar>saaj.jar</jar>
+        </dependency>
+        
+       <!-- for logging -->
+       <dependency>
+            <artifactId>commons-logging</artifactId>
+            <groupId>commons-logging</groupId>
+            <version>1.0.3</version>
+       </dependency>
+
+
+    </dependencies>
+
+</project>
+
+
+
+
+
+
+

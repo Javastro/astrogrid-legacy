@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- $Id: project.xml,v 1.1 2005/02/17 18:37:34 mch Exp $ -->
+
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+    xsi:noNamespaceSchemaLocation="//../maven-base/xsd/maven-project.xsd">
+
+    <!--will eventually extend from /base when Maven RC3 installed-->
+
+    <extend>${basedir}/../../maven-base/project.xml</extend>
+
+    <currentVersion>${astrogrid.pal.version}</currentVersion>
+
+    <id>astrogrid-pal-fits</id>
+
+    <name>Astrogrid FITS Library</name>
+
+    <description>Incomplete library for reading FITS files.
+    Better to use a 3rd party library, such as the one(s) from starlink.
+    This one is for if we need more control for reading bits of FITS</description>
+
+    <shortDescription>AstroGrid FITS Library</shortDescription>
+
+    <dependencies>
+
+       <!-- for logging -->
+       <dependency>
+            <artifactId>commons-logging</artifactId>
+            <groupId>commons-logging</groupId>
+            <version>1.0.3</version>
+       </dependency>
+
+    </dependencies>
+
+</project>
+
+
+
+
+
+
+

@@ -1,0 +1,632 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://tempuri.org/adql" xmlns="http://tempuri.org/adql"
+    xmlns:nvo-region="urn:nvo-region" xmlns:nvo-coords="urn:nvo-coords">
+    <xs:import namespace="urn:nvo-region" schemaLocation="Region.xsd"/>
+    <xs:import namespace="urn:nvo-coords" schemaLocation="Coords.xsd"/>
+    <xs:element name="Literal" nillable="true" type="Literal"/>
+    <xs:complexType name="Literal" abstract="true"/>
+    <xs:element name="StringLiteral" nillable="true" type="StringLiteral"/>
+    <xs:complexType name="StringLiteral">
+        <xs:complexContent mixed="false">
+            <xs:extension base="Literal">
+                <xs:sequence>
+                    <xs:element minOccurs="0" maxOccurs="1" name="Value" type="ArrayOfString"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="ArrayOfString">
+        <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="unbounded" name="string" nillable="true" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="NumberLiteral" nillable="true" type="NumberLiteral"/>
+    <xs:complexType name="NumberLiteral">
+        <xs:complexContent mixed="false">
+            <xs:extension base="Literal">
+                <xs:sequence>
+                    <xs:choice minOccurs="1" maxOccurs="1">
+                        <xs:element minOccurs="0" maxOccurs="1" name="IntNum" type="IntNum"/>
+                        <xs:element minOccurs="0" maxOccurs="1" name="ApproxNum" type="ApproxNum"/>
+                    </xs:choice>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="IntNum">
+        <xs:complexContent mixed="false">
+            <xs:extension base="Number">
+                <xs:sequence>
+                    <xs:element minOccurs="1" maxOccurs="1" name="Value" type="xs:long"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="Number" abstract="true"/>
+    <xs:complexType name="ApproxNum">
+        <xs:complexContent mixed="false">
+            <xs:extension base="Number">
+                <xs:sequence>
+                    <xs:element minOccurs="1" maxOccurs="1" name="Value" type="xs:double"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="Number" nillable="true" type="Number"/>
+    <xs:element name="IntNum" nillable="true" type="IntNum"/>
+    <xs:element name="ApproxNum" nillable="true" type="ApproxNum"/>
+    <xs:element name="Atom" nillable="true" type="Atom"/>
+    <xs:complexType name="Atom">
+        <xs:sequence>
+            <xs:choice minOccurs="1" maxOccurs="1">
+                <xs:element minOccurs="0" maxOccurs="1" name="StringLiteral" type="StringLiteral"/>
+                <xs:element minOccurs="0" maxOccurs="1" name="NumberLiteral" type="NumberLiteral"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="Comparison" type="Comparison"/>
+    <xs:simpleType name="Comparison">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="="/>
+            <xs:enumeration value="&lt;&gt;"/>
+            <xs:enumeration value="&gt;"/>
+            <xs:enumeration value="&gt;="/>
+            <xs:enumeration value="&lt;"/>
+            <xs:enumeration value="&lt;="/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:element name="UnaryOperator" type="UnaryOperator"/>
+    <xs:simpleType name="UnaryOperator">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="+"/>
+            <xs:enumeration value="-"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:element name="BinaryOperator" type="BinaryOperator"/>
+    <xs:simpleType name="BinaryOperator">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="+"/>
+            <xs:enumeration value="-"/>
+            <xs:enumeration value="*"/>
+            <xs:enumeration value="/"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:element name="Table" nillable="true" type="Table"/>
+    <xs:complexType name="Table">
+        <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="1" name="Name" type="xs:string"/>
+            <xs:element minOccurs="0" maxOccurs="1" name="AliasName" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="ArchiveTable" nillable="true" type="ArchiveTable"/>
+    <xs:complexType name="ArchiveTable">
+        <xs:complexContent mixed="false">
+            <xs:extension base="Table">
+                <xs:sequence>
+                    <xs:element minOccurs="0" maxOccurs="1" name="Archive" type="xs:string"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="ColumnReference" nillable="true" type="ColumnReference"/>
+    <xs:complexType name="ColumnReference" abstract="true">
+        <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="1" name="TableName" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="SingleColumnReference" nillable="true" type="SingleColumnReference"/>
+    <xs:complexType name="SingleColumnReference">
+        <xs:complexContent mixed="false">
+            <xs:extension base="ColumnReference">
+                <xs:sequence>
+                    <xs:element minOccurs="0" maxOccurs="1" name="Name" type="xs:string"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="AllColumnReference" nillable="true" type="AllColumnReference"/>
+    <xs:complexType name="AllColumnReference">
+        <xs:complexContent mixed="false">
+            <xs:extension base="ColumnReference"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="Alias" nillable="true" type="Alias"/>
+    <xs:complexType name="Alias">
+        <xs:sequence>
+            <xs:element minOccurs="1" maxOccurs="1" name="Negate" type="xs:boolean"/>
+            <xs:element minOccurs="0" maxOccurs="1" name="Name" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="ScalarExpression" nillable="true" type="ScalarExpression"/>
+    <xs:complexType name="ScalarExpression" abstract="true"/>
+    <xs:element name="AtomExpr" nillable="true" type="AtomExpr"/>
+    <xs:complexType name="AtomExpr">
+        <xs:complexContent mixed="false">
+            <xs:extension base="ScalarExpression">
+                <xs:sequence>
+                    <xs:element minOccurs="0" maxOccurs="1" name="Value" type="Atom"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="ColumnExpr" nillable="true" type="ColumnExpr"/>
+    <xs:complexType name="ColumnExpr">
+        <xs:complexContent mixed="false">
+            <xs:extension base="ScalarExpression">
+                <xs:sequence>
+                    <xs:choice minOccurs="1" maxOccurs="1">
+                        <xs:element minOccurs="0" maxOccurs="1" name="AllColumnReference" type="AllColumnReference"/>
+                        <xs:element minOccurs="0" maxOccurs="1" name="SingleColumnReference" type="SingleColumnReference"/>
+                    </xs:choice>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="UnaryExpr" nillable="true" type="UnaryExpr"/>
+    <xs:complexType name="UnaryExpr">
+        <xs:complexContent mixed="false">
+            <xs:extension base="ScalarExpression">
+                <xs:sequence>
+                    <xs:element minOccurs="1" maxOccurs="1" name="Operator" type="UnaryOperator"/>
+                    <xs:element minOccurs="0" maxOccurs="1" name="Expr" type="ScalarExpression"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="BinaryExpr" nillable="true" type="BinaryExpr"/>
+    <xs:complexType name="BinaryExpr">
+        <xs:complexContent mixed="false">
+            <xs:extension base="ScalarExpression">
+                <xs:sequence>
+                    <xs:element minOccurs="0" maxOccurs="1" name="FirstExpr" type="ScalarExpression"/>
+                    <xs:element minOccurs="1" maxOccurs="1" name="Operator" type="BinaryOperator"/>
+                    <xs:element minOccurs="0" maxOccurs="1" name="SecondExpr" type="ScalarExpression"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="ClosedExpr" nillable="true" type="ClosedExpr"/>
+    <xs:complexType name="ClosedExpr">
+        <xs:complexContent mixed="false">
+            <xs:extension base="ScalarExpression">
+                <xs:sequence>
+                    <xs:element minOccurs="0" maxOccurs="1" name="Expr" type="ScalarExpression"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="FunctionExpr" nillable="true" type="FunctionExpr"/>
+    <xs:complexType name="FunctionExpr">
+        <xs:complexContent mixed="false">
+            <xs:extension base="ScalarExpression">
+                <xs:sequence>
+                    <xs:choice minOccurs="1" maxOccurs="1">
+                        <xs:element minOccurs="0" maxOccurs="1" name="AllExpressionsFunction" type="AllExpressionsFunction"/>
+                        <xs:element minOccurs="0" maxOccurs="1" name="ExpressionFunction" type="ExpressionFunction"/>
+                        <xs:element minOccurs="0" maxOccurs="1" name="MutipleColumnsFunction" type="MutipleColumnsFunction"/>
+                        <xs:element minOccurs="0" maxOccurs="1" name="DistinctColumnFunction" type="DistinctColumnFunction"/>
+                    </xs:choice>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="AllExpressionsFunction">
+        <xs:complexContent mixed="false">
+            <xs:extension base="Function">
+                <xs:sequence>
+                    <xs:element minOccurs="0" maxOccurs="1" name="Expr" type="ScalarExpression"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="Function" abstract="true">
+        <xs:sequence>
+            <xs:choice minOccurs="1" maxOccurs="1">
+                <xs:element minOccurs="1" maxOccurs="1" name="AggregateFunction" type="AggregateFunction"/>
+                <xs:element minOccurs="1" maxOccurs="1" name="MathFunction" type="MathFunction"/>
+                <xs:element minOccurs="1" maxOccurs="1" name="TrigonometricFunction" type="TrigonometricFunction"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:simpleType name="AggregateFunction">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="AVG"/>
+            <xs:enumeration value="MIN"/>
+            <xs:enumeration value="MAX"/>
+            <xs:enumeration value="SUM"/>
+            <xs:enumeration value="COUNT"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="MathFunction">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="ABS"/>
+            <xs:enumeration value="CEILING"/>
+            <xs:enumeration value="DEGREES"/>
+            <xs:enumeration value="EXP"/>
+            <xs:enumeration value="FLOOR"/>
+            <xs:enumeration value="LOG"/>
+            <xs:enumeration value="PI"/>
+            <xs:enumeration value="POWER"/>
+            <xs:enumeration value="RADIANS"/>
+            <xs:enumeration value="SQRT"/>
+            <xs:enumeration value="SQUARE"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="TrigonometricFunction">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="SIN"/>
+            <xs:enumeration value="COS"/>
+            <xs:enumeration value="TAN"/>
+            <xs:enumeration value="COT"/>
+            <xs:enumeration value="ASIN"/>
+            <xs:enumeration value="ACOS"/>
+            <xs:enumeration value="ATAN"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:complexType name="MutipleColumnsFunction">
+        <xs:complexContent mixed="false">
+            <xs:extension base="Function"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="DistinctColumnFunction">
+        <xs:complexContent mixed="false">
+            <xs:extension base="Function">
+                <xs:sequence>
+                    <xs:choice minOccurs="1" maxOccurs="1">
+                        <xs:element minOccurs="0" maxOccurs="1" name="AllColumnReference" type="AllColumnReference"/>
+                        <xs:element minOccurs="0" maxOccurs="1" name="SingleColumnReference" type="SingleColumnReference"/>
+                    </xs:choice>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="ExpressionFunction">
+        <xs:complexContent mixed="false">
+            <xs:extension base="Function">
+                <xs:sequence>
+                    <xs:element minOccurs="0" maxOccurs="1" name="Expr" type="ScalarExpression"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="Search" nillable="true" type="Search"/>
+    <xs:complexType name="Search" abstract="true"/>
+    <xs:element name="XMatch" nillable="true" type="XMatch"/>
+    <xs:complexType name="XMatch">
+        <xs:complexContent mixed="false">
+            <xs:extension base="Search">
+                <xs:sequence>
+                    <xs:element minOccurs="0" maxOccurs="1" name="Args" type="ArrayOfAlias"/>
+                    <xs:element minOccurs="1" maxOccurs="1" name="Compare" type="Comparison"/>
+                    <xs:choice minOccurs="1" maxOccurs="1">
+                        <xs:element minOccurs="0" maxOccurs="1" name="IntNum" type="IntNum"/>
+                        <xs:element minOccurs="0" maxOccurs="1" name="ApproxNum" type="ApproxNum"/>
+                    </xs:choice>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="ArrayOfAlias">
+        <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="unbounded" name="Alias" nillable="true" type="Alias"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="PredicateSearch" nillable="true" type="PredicateSearch"/>
+    <xs:complexType name="PredicateSearch">
+        <xs:complexContent mixed="false">
+            <xs:extension base="Search">
+                <xs:sequence>
+                    <xs:choice minOccurs="1" maxOccurs="1">
+                        <xs:element minOccurs="0" maxOccurs="1" name="LikePred" type="LikePred"/>
+                        <xs:element minOccurs="0" maxOccurs="1" name="ComparisonPred" type="ComparisonPred"/>
+                        <xs:element minOccurs="0" maxOccurs="1" name="BetweenPred" type="BetweenPred"/>
+                    </xs:choice>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="LikePred">
+        <xs:complexContent mixed="false">
+            <xs:extension base="Predicate">
+                <xs:sequence>
+                    <xs:element minOccurs="0" maxOccurs="1" name="Expr" type="ScalarExpression"/>
+                    <xs:element minOccurs="1" maxOccurs="1" name="Negate" type="xs:boolean"/>
+                    <xs:element minOccurs="0" maxOccurs="1" name="Value" type="Atom"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="Predicate" abstract="true"/>
+    <xs:complexType name="ComparisonPred">
+        <xs:complexContent mixed="false">
+            <xs:extension base="Predicate">
+                <xs:sequence>
+                    <xs:element minOccurs="0" maxOccurs="1" name="FirstExpr" type="ScalarExpression"/>
+                    <xs:element minOccurs="1" maxOccurs="1" name="Compare" type="Comparison"/>
+                    <xs:element minOccurs="0" maxOccurs="1" name="SecondExpr" type="ScalarExpression"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="BetweenPred">
+        <xs:complexContent mixed="false">
+            <xs:extension base="Predicate">
+                <xs:sequence>
+                    <xs:element minOccurs="0" maxOccurs="1" name="Expr" type="ScalarExpression"/>
+                    <xs:element minOccurs="1" maxOccurs="1" name="Negate" type="xs:boolean"/>
+                    <xs:element minOccurs="0" maxOccurs="1" name="FirstExpr" type="ScalarExpression"/>
+                    <xs:element minOccurs="0" maxOccurs="1" name="SecondExpr" type="ScalarExpression"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="Predicate" nillable="true" type="Predicate"/>
+    <xs:element name="LikePred" nillable="true" type="LikePred"/>
+    <xs:element name="BetweenPred" nillable="true" type="BetweenPred"/>
+    <xs:element name="ComparisonPred" nillable="true" type="ComparisonPred"/>
+    <xs:element name="UnionSearch" nillable="true" type="UnionSearch"/>
+    <xs:complexType name="UnionSearch">
+        <xs:complexContent mixed="false">
+            <xs:extension base="Search">
+                <xs:sequence>
+                    <xs:element minOccurs="0" maxOccurs="1" name="FirstCondition" type="Search"/>
+                    <xs:element minOccurs="0" maxOccurs="1" name="SecondCondition" type="Search"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="IntersectionSearch" nillable="true" type="IntersectionSearch"/>
+    <xs:complexType name="IntersectionSearch">
+        <xs:complexContent mixed="false">
+            <xs:extension base="Search">
+                <xs:sequence>
+                    <xs:element minOccurs="0" maxOccurs="1" name="FirstCondition" type="Search"/>
+                    <xs:element minOccurs="0" maxOccurs="1" name="SecondCondition" type="Search"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="InverseSearch" nillable="true" type="InverseSearch"/>
+    <xs:complexType name="InverseSearch">
+        <xs:complexContent mixed="false">
+            <xs:extension base="Search">
+                <xs:sequence>
+                    <xs:element minOccurs="0" maxOccurs="1" name="Condition" type="Search"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="ClosedSearch" nillable="true" type="ClosedSearch"/>
+    <xs:complexType name="ClosedSearch">
+        <xs:complexContent mixed="false">
+            <xs:extension base="Search">
+                <xs:sequence>
+                    <xs:element minOccurs="0" maxOccurs="1" name="Condition" type="Search"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="RegionSearch" nillable="true" type="RegionSearch"/>
+    <xs:complexType name="RegionSearch">
+        <xs:complexContent mixed="false">
+            <xs:extension base="Search">
+                <xs:sequence>
+                    <xs:element minOccurs="0" maxOccurs="1" name="Circle" xmlns:q1="urn:nvo-region" type="q1:regionType"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="AggregateFunction" type="AggregateFunction"/>
+    <xs:element name="TrigonometricFunction" type="TrigonometricFunction"/>
+    <xs:element name="MathFunction" type="MathFunction"/>
+    <xs:element name="Function" nillable="true" type="Function"/>
+    <xs:element name="MutipleColumnsFunction" nillable="true" type="MutipleColumnsFunction"/>
+    <xs:element name="DistinctColumnFunction" nillable="true" type="DistinctColumnFunction"/>
+    <xs:element name="AllExpressionsFunction" nillable="true" type="AllExpressionsFunction"/>
+    <xs:element name="ExpressionFunction" nillable="true" type="ExpressionFunction"/>
+    <xs:element name="Having" nillable="true" type="Having"/>
+    <xs:complexType name="Having">
+        <xs:sequence>
+            <xs:choice minOccurs="1" maxOccurs="1">
+                <xs:element minOccurs="0" maxOccurs="1" name="IntersectionSearch" type="IntersectionSearch"/>
+                <xs:element minOccurs="0" maxOccurs="1" name="ClosedSearch" type="ClosedSearch"/>
+                <xs:element minOccurs="0" maxOccurs="1" name="RegionSearch" type="RegionSearch"/>
+                <xs:element minOccurs="0" maxOccurs="1" name="InverseSearch" type="InverseSearch"/>
+                <xs:element minOccurs="0" maxOccurs="1" name="PredicateSearch" type="PredicateSearch"/>
+                <xs:element minOccurs="0" maxOccurs="1" name="UnionSearch" type="UnionSearch"/>
+                <xs:element minOccurs="0" maxOccurs="1" name="XMatch" type="XMatch"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="GroupBy" nillable="true" type="GroupBy"/>
+    <xs:complexType name="GroupBy">
+        <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element minOccurs="0" maxOccurs="1" name="AllColumnReference" type="AllColumnReference"/>
+                <xs:element minOccurs="0" maxOccurs="1" name="SingleColumnReference" type="SingleColumnReference"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="Where" nillable="true" type="Where"/>
+    <xs:complexType name="Where">
+        <xs:sequence>
+            <xs:choice minOccurs="1" maxOccurs="1">
+                <xs:element minOccurs="0" maxOccurs="1" name="IntersectionSearch" type="IntersectionSearch"/>
+                <xs:element minOccurs="0" maxOccurs="1" name="ClosedSearch" type="ClosedSearch"/>
+                <xs:element minOccurs="0" maxOccurs="1" name="RegionSearch" type="RegionSearch"/>
+                <xs:element minOccurs="0" maxOccurs="1" name="InverseSearch" type="InverseSearch"/>
+                <xs:element minOccurs="0" maxOccurs="1" name="PredicateSearch" type="PredicateSearch"/>
+                <xs:element minOccurs="0" maxOccurs="1" name="UnionSearch" type="UnionSearch"/>
+                <xs:element minOccurs="0" maxOccurs="1" name="XMatch" type="XMatch"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="From" nillable="true" type="From"/>
+    <xs:complexType name="From">
+        <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="1" name="TableReference" type="ArrayOfTable"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="ArrayOfTable">
+        <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="unbounded" name="Table" nillable="true" type="Table"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="TableExpression" nillable="true" type="TableExpression"/>
+    <xs:complexType name="TableExpression">
+        <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="1" name="FromClause" type="From"/>
+            <xs:element minOccurs="0" maxOccurs="1" name="WhereClause" type="Where"/>
+            <xs:element minOccurs="0" maxOccurs="1" name="GroupByClause" type="GroupBy"/>
+            <xs:element minOccurs="0" maxOccurs="1" name="HavingClause" type="Having"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="SelectionList" nillable="true" type="SelectionList"/>
+    <xs:complexType name="SelectionList">
+        <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element minOccurs="0" maxOccurs="1" name="AliasSelectionItem" type="AliasSelectionItem"/>
+                <xs:element minOccurs="0" maxOccurs="1" name="ExprSelectionItem" type="ExprSelectionItem"/>
+                <xs:element minOccurs="0" maxOccurs="1" name="AllSelectionItem" type="AllSelectionItem"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="AliasSelectionItem">
+        <xs:complexContent mixed="false">
+            <xs:extension base="SelectionItem">
+                <xs:sequence>
+                    <xs:choice minOccurs="1" maxOccurs="1">
+                        <xs:element minOccurs="0" maxOccurs="1" name="UnaryExpr" type="UnaryExpr"/>
+                        <xs:element minOccurs="0" maxOccurs="1" name="AtomExpr" type="AtomExpr"/>
+                        <xs:element minOccurs="0" maxOccurs="1" name="BinaryExpr" type="BinaryExpr"/>
+                        <xs:element minOccurs="0" maxOccurs="1" name="ColumnExpr" type="ColumnExpr"/>
+                        <xs:element minOccurs="0" maxOccurs="1" name="FunctionExpr" type="FunctionExpr"/>
+                        <xs:element minOccurs="0" maxOccurs="1" name="ClosedExpr" type="ClosedExpr"/>
+                    </xs:choice>
+                    <xs:element minOccurs="0" maxOccurs="1" name="AliasName" type="xs:string"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="SelectionItem" abstract="true"/>
+    <xs:complexType name="ExprSelectionItem">
+        <xs:complexContent mixed="false">
+            <xs:extension base="SelectionItem">
+                <xs:sequence>
+                    <xs:choice minOccurs="1" maxOccurs="1">
+                        <xs:element minOccurs="0" maxOccurs="1" name="UnaryExpr" type="UnaryExpr"/>
+                        <xs:element minOccurs="0" maxOccurs="1" name="BinaryExpr" type="BinaryExpr"/>
+                        <xs:element minOccurs="0" maxOccurs="1" name="ClosedExpr" type="ClosedExpr"/>
+                        <xs:element minOccurs="0" maxOccurs="1" name="ColumnExpr" type="ColumnExpr"/>
+                        <xs:element minOccurs="0" maxOccurs="1" name="FunctionExpr" type="FunctionExpr"/>
+                        <xs:element minOccurs="0" maxOccurs="1" name="AtomExpr" type="AtomExpr"/>
+                    </xs:choice>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="AllSelectionItem">
+        <xs:complexContent mixed="false">
+            <xs:extension base="SelectionItem"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="SelectionItem" nillable="true" type="SelectionItem"/>
+    <xs:element name="ExprSelectionItem" nillable="true" type="ExprSelectionItem"/>
+    <xs:element name="AllSelectionItem" nillable="true" type="AllSelectionItem"/>
+    <xs:element name="AliasSelectionItem" nillable="true" type="AliasSelectionItem"/>
+    <xs:element name="AllOrDistinct" type="AllOrDistinct"/>
+    <xs:simpleType name="AllOrDistinct">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="ALL"/>
+            <xs:enumeration value="DISTINCT"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:element name="SelectionOption" nillable="true" type="SelectionOption"/>
+    <xs:complexType name="SelectionOption">
+        <xs:sequence>
+            <xs:element minOccurs="1" maxOccurs="1" name="Option" type="AllOrDistinct"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="SelectionLimit" nillable="true" type="SelectionLimit"/>
+    <xs:complexType name="SelectionLimit">
+        <xs:sequence>
+            <xs:element minOccurs="1" maxOccurs="1" name="Count" type="IntNum"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="OrderDirection" type="OrderDirection"/>
+    <xs:simpleType name="OrderDirection">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="ASC"/>
+            <xs:enumeration value="DESC"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:element name="OrderOption" nillable="true" type="OrderOption"/>
+    <xs:complexType name="OrderOption">
+        <xs:sequence>
+            <xs:element minOccurs="1" maxOccurs="1" name="Direction" type="OrderDirection"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="Order" nillable="true" type="Order"/>
+    <xs:complexType name="Order">
+        <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="1" name="Expr" type="ScalarExpression"/>
+            <xs:element minOccurs="0" maxOccurs="1" name="Option" type="OrderOption"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="OrderExpression" nillable="true" type="OrderExpression"/>
+    <xs:complexType name="OrderExpression">
+        <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="1" name="OrderList" type="ArrayOfOrder"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="ArrayOfOrder">
+        <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="unbounded" name="Order" nillable="true" type="Order"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="Select" nillable="true" type="Select"/>
+    <xs:complexType name="Select">
+        <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="1" name="OptionalAllOrDistinct" type="SelectionOption"/>
+            <xs:element minOccurs="0" maxOccurs="1" name="OptionalTop" type="SelectionLimit"/>
+            <xs:element minOccurs="0" maxOccurs="1" name="Selection" type="SelectionList"/>
+            <xs:element minOccurs="0" maxOccurs="1" name="TableClause" type="TableExpression"/>
+            <xs:element minOccurs="0" maxOccurs="1" name="OrderBy" type="OrderExpression"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="regionType" nillable="true" xmlns:q2="urn:nvo-region" type="q2:regionType"/>
+    <xs:element name="constraintType" nillable="true" xmlns:q3="urn:nvo-region" type="q3:constraintType"/>
+    <xs:element name="coordsType" nillable="true" xmlns:q4="urn:nvo-coords" type="q4:coordsType"/>
+    <xs:element name="coordTimeType" nillable="true" xmlns:q5="urn:nvo-coords" type="q5:coordTimeType"/>
+    <xs:element name="astronTimeType" nillable="true" xmlns:q6="urn:nvo-coords" type="q6:astronTimeType"/>
+    <xs:element name="astronTimeTypeRelativeTime" nillable="true" xmlns:q7="urn:nvo-coords" type="q7:astronTimeTypeRelativeTime"/>
+    <xs:element name="astronTimeTypeRelativeTimeUnit" xmlns:q8="urn:nvo-coords" type="q8:astronTimeTypeRelativeTimeUnit"/>
+    <xs:element name="astronTimeTypeReference" nillable="true" xmlns:q9="urn:nvo-coords" type="q9:astronTimeTypeReference"/>
+    <xs:element name="astronTimeTypeReferenceTime_base" xmlns:q10="urn:nvo-coords" type="q10:astronTimeTypeReferenceTime_base"/>
+    <xs:element name="astronTimeTypeReferenceUnit" xmlns:q11="urn:nvo-coords" type="q11:astronTimeTypeReferenceUnit"/>
+    <xs:element name="timeScaleType" xmlns:q12="urn:nvo-coords" type="q12:timeScaleType"/>
+    <xs:element name="coordTimeValueType" nillable="true" xmlns:q13="urn:nvo-coords" type="q13:coordTimeValueType"/>
+    <xs:element name="velTimeUnitType" xmlns:q14="urn:nvo-coords" type="q14:velTimeUnitType"/>
+    <xs:element name="posCoordType" nillable="true" xmlns:q15="urn:nvo-coords" type="q15:posCoordType"/>
+    <xs:element name="posScalarType" nillable="true" xmlns:q16="urn:nvo-coords" type="q16:posScalarType"/>
+    <xs:element name="coordValueType" nillable="true" xmlns:q17="urn:nvo-coords" type="q17:coordValueType"/>
+    <xs:element name="posUnitType" xmlns:q18="urn:nvo-coords" type="q18:posUnitType"/>
+    <xs:element name="pos3VectorType" nillable="true" xmlns:q19="urn:nvo-coords" type="q19:pos3VectorType"/>
+    <xs:element name="coord3ValueType" nillable="true" xmlns:q20="urn:nvo-coords" type="q20:coord3ValueType"/>
+    <xs:element name="coord3SizeType" nillable="true" xmlns:q21="urn:nvo-coords" type="q21:coord3SizeType"/>
+    <xs:element name="angleUnitType" xmlns:q22="urn:nvo-coords" type="q22:angleUnitType"/>
+    <xs:element name="pos2VectorType" nillable="true" xmlns:q23="urn:nvo-coords" type="q23:pos2VectorType"/>
+    <xs:element name="coord2ValueType" nillable="true" xmlns:q24="urn:nvo-coords" type="q24:coord2ValueType"/>
+    <xs:element name="coord2SizeType" nillable="true" xmlns:q25="urn:nvo-coords" type="q25:coord2SizeType"/>
+    <xs:element name="velCoordType" nillable="true" xmlns:q26="urn:nvo-coords" type="q26:velCoordType"/>
+    <xs:element name="velScalarType" nillable="true" xmlns:q27="urn:nvo-coords" type="q27:velScalarType"/>
+    <xs:element name="vel3VectorType" nillable="true" xmlns:q28="urn:nvo-coords" type="q28:vel3VectorType"/>
+    <xs:element name="vel2VectorType" nillable="true" xmlns:q29="urn:nvo-coords" type="q29:vel2VectorType"/>
+    <xs:element name="coordSpectralType" nillable="true" xmlns:q30="urn:nvo-coords" type="q30:coordSpectralType"/>
+    <xs:element name="coordSpectralValueType" nillable="true" xmlns:q31="urn:nvo-coords" type="q31:coordSpectralValueType"/>
+    <xs:element name="spectralUnitType" xmlns:q32="urn:nvo-coords" type="q32:spectralUnitType"/>
+    <xs:element name="smallCircleType" nillable="true" xmlns:q33="urn:nvo-region" type="q33:smallCircleType"/>
+    <xs:element name="vertexType" nillable="true" xmlns:q34="urn:nvo-region" type="q34:vertexType"/>
+    <xs:element name="shapeType" nillable="true" xmlns:q35="urn:nvo-region" type="q35:shapeType"/>
+</xs:schema>
