@@ -31,8 +31,11 @@ target="vars">
 <tr valign="bottom"><td style="text-spacing: 1.2" align="center">
 <span style="line-height: 1.5">
 Click here to <br />
-<span name="lost"
+<!--
 onClick="popupBrowser('/astrogrid-portal/lean/mount/datacenter/catalogueBrowser.xml')" class="agActionButton">Select a Table</span><br />
+-->
+<span name="lost"
+onClick="popupBrowser('/astrogrid-portal/lean/mount/registry/registrybrowser.html?mainelement=Catalog&amp;authId=null&amp;resourceKey=null')" class="agActionButton">Select a Table</span><br />
 available to AstroGrid
 </span>
 </td>
