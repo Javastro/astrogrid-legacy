@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: tests-project.xml,v 1.42 2004/12/01 22:10:19 jdt Exp $ -->
+<!-- $Id: tests-project.xml,v 1.43 2004/12/03 14:23:17 jdt Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
     <extend>${basedir}/../../maven-base/project.xml</extend>
@@ -57,6 +57,7 @@
                         <include>**/*.properties</include>
                         <include>**/*.sql</include>
                         <include>**/*.ddl</include>
+                        <include>**/*.votable</include>
                     </includes>
                 </resource>
             </resources>
