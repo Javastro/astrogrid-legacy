@@ -8,8 +8,6 @@
 <property name="tomcat.url" value="http://${tomcat.host}:${tomcat.port}"/>
 <property name="tomcat.manager.url" value="${tomcat.url}/manager"/>
 
-
-
 <!-- other, non-configurable properties -->
 
 <!-- temp dir - used for mangling files, etc -->
@@ -44,6 +42,7 @@
         <attainGoal name="portal-deploy" />
         <attainGoal name="community-deploy"/>
         <attainGoal name="community-install"/>
+        <attainGoal name="community-register"/>
 </goal>
 
 <goal name="undeploy-all" prereqs="init" description="undeploy all webapps">
@@ -172,7 +171,7 @@
 <!-- deployment //////////////////////////////////////////////////////////////////////// -->
 
 <goal name="common-libs-deploy" description="copy db drivers, etc into shared directory">
-		<echo message="Tomcat common : ${tomcat.common.lib.dir}"/>
+        <echo message="Tomcat common : ${tomcat.common.lib.dir}"/>
         <copy verbose="true" todir="${tomcat.common.lib.dir}">
                 <fileset dir="${temporary.dir}">
                         <include name="hsql*.jar" />
@@ -290,7 +289,7 @@
 </goal>
 
 <!--+
-    | Deploy community.
+    | Deploy Community.
     +-->
 <goal name="community-deploy">
         <copy todir="${temporary.dir}/community" filtering="true">
@@ -314,7 +313,7 @@
 </goal>
 
 <!--+
-    | Configure community.
+    | Configure Community.
     +-->
 <goal name="community-install">
         <!--+
@@ -328,30 +327,6 @@
             file="${temporary.dir}/community/install.properties">
             <entry key="org.astrogrid.community.ident"
                 value="org.astrogrid.localhost"/>
-        </propertyfile>
-        <!--+
-            | Set the registry endpoint.
-            +-->
-        <propertyfile
-            file="${temporary.dir}/community/install.properties">
-            <entry key="org.astrogrid.registry.url"
-                value="${tomcat.url}/astrogrid-registry-webapp/services/Registry"/>
-        </propertyfile>
-        <!--+
-            | Set the registry admin endpoint.
-            +-->
-        <propertyfile
-            file="${temporary.dir}/community/install.properties">
-            <entry key="org.astrogrid.registry.admin"
-                value="${tomcat.url}/astrogrid-registry-webapp/services/RegistryAdmin"/>
-        </propertyfile>
-        <!--+
-            | Set the local hostname.
-            +-->
-        <propertyfile
-            file="${temporary.dir}/community/install.properties">
-            <entry key="service.host"
-                value="localhost"/>
         </propertyfile>
         <!--+
             | Wait for our service to respond.
@@ -376,11 +351,68 @@
 </goal>
 
 <!--+
+    | Register the Community.
+    +-->
+<goal name="community-register">
+
+        <!--+
+            | Fix the Maven JAXP properties.
+            +-->
+        <echo message="Fixing JAXP properties ...."/>
+        <j:expr value="${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}"/>
+        <echo message=""/>
+        <!--+
+            | Set the community ident.
+            +-->
+        <propertyfile
+            file="${temporary.dir}/community/install.properties">
+            <entry key="org.astrogrid.community.ident"
+                value="org.astrogrid.localhost"/>
+        </propertyfile>
+        <!--+
+            | Set the registry endpoint.
+            +-->
+        <propertyfile
+            file="${temporary.dir}/community/install.properties">
+            <entry key="org.astrogrid.registry.url"
+                value="${tomcat.url}//astrogrid-registry-SNAPSHOT/services/Registry"/>
+        </propertyfile>
+        <!--+
+            | Set the registry admin endpoint.
+            +-->
+        <propertyfile
+            file="${temporary.dir}/community/install.properties">
+            <entry key="org.astrogrid.registry.admin"
+                value="${tomcat.url}//astrogrid-registry-SNAPSHOT/services/RegistryAdmin"/>
+        </propertyfile>
+        <!--+
+            | Set the local hostname.
+            +-->
+        <propertyfile
+            file="${temporary.dir}/community/install.properties">
+            <entry key="service.host"
+                value="localhost"/>
+        </propertyfile>
+        <!--+
+            | Wait for our service to respond.
+            +-->
+        <attainGoal name="community-wait"/>
+        <!--+
+            | Register our service.
+            +-->
+        <ant
+            target="service.register"
+            dir="${temporary.dir}/community"
+            antfile="${temporary.dir}/community/install.xml"
+            />
+</goal>
+
+<!--+
     | Wait for the Community service to respond.
     +-->
 <goal name="community-wait">
-	<echo message="Waiting for Community webapp .."/>
-	<echo message="  URL : ${tomcat.url}/astrogrid-community/happyaxis.jsp"/>
+    <echo message="Waiting for Community webapp .."/>
+    <echo message="  URL : ${tomcat.url}/astrogrid-community/happyaxis.jsp"/>
     <waitfor maxwait="10" maxwaitunit="second" checkevery="500">
         <http url="${tomcat.url}/astrogrid-community/happyaxis.jsp"/>
     </waitfor>
