@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+<cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/src/site/home/Attic/test.xsp,v $</cvs:source>
+<cvs:date>$Author: dave $</cvs:date>
+<cvs:author>$Date: 2003/06/10 12:45:32 $</cvs:author>
+<cvs:version>$Revision: 1.1 $</cvs:version>
+<cvs:log>
+	$Log: test.xsp,v $
+	Revision 1.1  2003/06/10 12:45:32  dave
+	Added example test XSP page
+
+</cvs:log>
+ -->
+<xsp:page language="java"
+		xmlns:xsp="http://apache.org/xsp"
+		xmlns:xsp-request="http://apache.org/xsp/request/2.0"
+		>
+
+	<!--+
+	    | Import any additional required java classes here.
+	    +-->
+	<xsp:structure>
+		<xsp:include>java.util.Date</xsp:include>
+	</xsp:structure>
+
+	<!--+
+	    | Any 'class level' Java code goes here.
+	    | You can define class methods and class members as normal.
+	    | Enclosing the code in a CDATA block means that you don't have to escape < and > symbols.
+	    +-->
+	<xsp:logic>
+		<![CDATA[
+		]]>
+	</xsp:logic>
+
+	<!--+
+	    | The XSP page needs one non-xsp tag.
+	    | Anything in here gets added inside the Generator generate() method.
+	    +-->
+	<animals>
+
+		<!--+
+		    | Any code wrapped in xsp-logic tags will get added to the Generator generate() method.
+		    | Enclosing the code in a CDATA block means that you don't have to escape < and > symbols.
+		    +-->
+		<xsp:logic>
+			<![CDATA[
+			Date date = new Date() ;
+			]]>
+		</xsp:logic>
+
+		<!--+
+		    | You can use xsp-expr tags to include values in the SAX events.
+		    | The xsp-expr tags will convert the Java reference into a String.
+		    | In this example, it will resolve to date.toString(). 
+		    +-->
+		<now>
+			<xsp:expr>date</xsp:expr>
+		</now>
+
+		<!--+
+		    | Any tags in here will be generated as SAX events.
+		    +-->
+		<animal type="frog">Green Frog</animal>
+
+		<!--+
+		    | Alternatively, you can use the XSP element tags to build your elements..
+		    +-->
+		<xsp:element name="animal">
+			<xsp:attribute name="type">newt</xsp:attribute>
+			<xsp:text>Speckled Newt</xsp:text>
+		</xsp:element>
+
+		<!--+
+		    | Alternatively, you can generate your own SAX events in Java.
+		    | Easiest way to do this is to look at the generated Java for the XSP page (see below).
+		    | Enclosing the code in a CDATA block means that you don't have to escape < and > symbols.
+		    +-->
+		<xsp:logic>
+			<![CDATA[
+				xspAttr.clear();
+
+				xspAttr.addAttribute(
+					"",
+					"type",
+					"type",
+					"CDATA",
+					"toad"
+					);
+
+				this.contentHandler.startElement(
+					"",
+					"animal",
+					"animal",
+					xspAttr
+					);
+
+				xspAttr.clear();
+
+				this.characters("Brown Toad");
+
+				this.contentHandler.endElement(
+					"",
+					"animal",
+					"animal"
+					);
+			]]>
+		</xsp:logic>
+
+		<!--+
+		    | The best way to work out what is going on is to look at the generated Java file.
+		    | The easiest way to find the generated Java file to to cause a compiler error.
+		    | This section contains a deliberate typo, wich will fail to compile.
+		    | Uncomment the typo, and check the error message, this should give you the file name on the generated Java source.
+		    |
+		    | On my system, the error message is :
+		    |     Error compiling test_xsp:
+		    |     ERROR 1 (org/apache/cocoon/www/file_/var/projects/astrogrid/astrogrid/portal/build/site/home/test_xsp.java):
+		    |
+		    | This path is relative to the Cocoon work directory, nside the Tomcat work directory.
+		    |     Tomcat home : /usr/java/servers/tomcat/jakarta-tomcat-4.1.24-LE-jdk14
+		    |     Tomcat work : /usr/java/servers/tomcat/jakarta-tomcat-4.1.24-LE-jdk14/work/Standalone/localhost
+		    |     Cocoon work : /usr/java/servers/tomcat/jakarta-tomcat-4.1.24-LE-jdk14/work/Standalone/localhost/cocoon/cocoon-files
+		    |     XSP Java    : /usr/java/servers/tomcat/jakarta-tomcat-4.1.24-LE-jdk14/work/Standalone/localhost/cocoon/cocoon-files/org/apache/cocoon/www/file_/var/projects/astrogrid/astrogrid/portal/build/site/home/test_xsp.java
+		    |
+		    +-->
+		<xsp:logic>
+			<![CDATA[
+			//Frog bogus = new Frog() ;
+			]]>
+		</xsp:logic>
+
+	</animals>
+</xsp:page>

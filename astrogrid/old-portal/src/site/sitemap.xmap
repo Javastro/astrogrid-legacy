@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/src/site/Attic/sitemap.xmap,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/09 10:20:50 $</cvs:author>
-    | <cvs:version>$Revision: 1.6 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/10 12:45:32 $</cvs:author>
+    | <cvs:version>$Revision: 1.7 $</cvs:version>
     | <cvs:log>
     | $Log: sitemap.xmap,v $
+    | Revision 1.7  2003/06/10 12:45:32  dave
+    | Added example test XSP page
+    |
     | Revision 1.6  2003/06/09 10:20:50  dave
     | Added Axis integration tests
     |
@@ -207,6 +210,13 @@
 				<map:generate  src="home/hello.xml"/>
 				<map:transform src="tree/styles/tree-navigation.xsl"/>
 				<map:transform src="home/styles/table-layout.xsl"/>
+				<map:serialize type="html"/>
+			</map:match>
+
+			<!-- Test XSP page -->
+			<map:match pattern="test*">
+				<map:generate  src="home/test.xsp" type="serverpages"/>
+				<map:transform src="util/html/xml-html.xsl"/>
 				<map:serialize type="html"/>
 			</map:match>
 
