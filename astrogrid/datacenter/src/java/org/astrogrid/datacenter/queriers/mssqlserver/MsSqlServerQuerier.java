@@ -1,4 +1,4 @@
-/*$Id: MsSqlServerQuerier.java,v 1.1 2003/09/04 09:23:16 nw Exp $
+/*$Id: MsSqlServerQuerier.java,v 1.2 2003/09/05 13:21:08 nw Exp $
  * Created on 03-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,8 @@
  *
 **/
 package org.astrogrid.datacenter.queriers.mssqlserver;
+
+import java.util.Properties;
 
 import javax.sql.DataSource;
 
@@ -26,13 +28,13 @@ public class MsSqlServerQuerier extends SqlQuerier {
 
     public static final String SQL_SERVER_DRIVER = "unknown.class.fill.in";
     /**
-     * @param url
-     * @param driver
+     * @param url db url
+     * @param props connection parameters
      * @throws DatabaseAccessException
      */
-    public MsSqlServerQuerier(String url)
+    public MsSqlServerQuerier(String url,Properties props)
         throws DatabaseAccessException {
-        super(url, SQL_SERVER_DRIVER);
+        super(url, SQL_SERVER_DRIVER,props);
     }
 
     /**
@@ -56,6 +58,10 @@ public class MsSqlServerQuerier extends SqlQuerier {
 
 /* 
 $Log: MsSqlServerQuerier.java,v $
+Revision 1.2  2003/09/05 13:21:08  nw
+added hsqlDb querier
+updated others to accept properties in constructor
+
 Revision 1.1  2003/09/04 09:23:16  nw
 added martin's query results implementation
 abstract functionality from mysqlQuerier, places in SqlQuerier.

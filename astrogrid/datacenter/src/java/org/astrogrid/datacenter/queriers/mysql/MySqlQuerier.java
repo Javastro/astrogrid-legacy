@@ -1,10 +1,12 @@
 /*
- * $Id: MySqlQuerier.java,v 1.8 2003/09/04 14:36:49 nw Exp $
+ * $Id: MySqlQuerier.java,v 1.9 2003/09/05 13:21:08 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.queriers.mysql;
+
+import java.util.Properties;
 
 import javax.sql.DataSource;
 
@@ -26,10 +28,11 @@ public class MySqlQuerier extends SqlQuerier
 /**
     * Constructor for test purposes really - assumes there is a mySQL
     * database server running on the localhost
+    * @deprecated - dodgy leaving here. better to move to a testing sub-class.
     */
    public MySqlQuerier() throws DatabaseAccessException
    {
-      this("jdbc:mysql://localhost/Catalogue");
+      this("jdbc:mysql://localhost/Catalogue",null);
    }
 
     /**
@@ -41,13 +44,11 @@ public class MySqlQuerier extends SqlQuerier
     }
 
    /**
-    * Constructor takes the address of the server in the form
-    * jdbc:subprotocol:subname, eg:
-    * jdbc:mysql://localhost/Catalogue
+
     */
-   public MySqlQuerier(String url) throws DatabaseAccessException
+   public MySqlQuerier(String url,Properties props) throws DatabaseAccessException
    {
-        super(url,MYSQL_DRIVER); // check this.
+        super(url,MYSQL_DRIVER,props); 
    }
 
     protected QueryTranslator createQueryTranslator() {

@@ -1,5 +1,5 @@
 /*
- * $Id: SqlQuerier.java,v 1.4 2003/09/04 09:23:16 nw Exp $
+ * $Id: SqlQuerier.java,v 1.5 2003/09/05 13:21:08 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -22,6 +22,7 @@ import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.queriers.QueryTranslator;
 import org.exolab.castor.xml.MarshalException;
 import org.w3c.dom.Node;
+import java.util.Properties;
 
 /**
  * A general purpose SQL Querier that will (hopefully) produce bog standard
@@ -42,18 +43,14 @@ public class SqlQuerier extends DatabaseQuerier {
      * construct a querier
      * @param url jdbc url to connect to 
      * @param driver classname of database driver to use
+     * @param props map of connection keys (username,password)
      * @throws DatabaseAccessException
      */
-    public SqlQuerier(String url,String driver) throws DatabaseAccessException {
+    public SqlQuerier(String url,String driver,Properties props) throws DatabaseAccessException {
         try
         {
-           //declaring like this ensures the compiler checks that the driver is available
-           //org.gjt.mm.mysql.Driver.class.newInstance();
-
-           //or... which is not checked at compiletime but can be configured at runtime
-           //Class.forName("org.gjt.mm.mysql.Driver").newInstance();
            Class.forName(driver).newInstance();
-           jdbcConnection = DriverManager.getConnection(url);
+           jdbcConnection = DriverManager.getConnection(url,props);
         }
         catch (IllegalAccessException e)
         {
@@ -75,7 +72,7 @@ public class SqlQuerier extends DatabaseQuerier {
     }
     /** construct a querier from a datasource 
      * 
-     * @param ds datasource to take connection from
+     * @param ds datasource to take connection from - encapsulates db driver, url, parameters. and may provide caching
      * @throws DatabaseAccessException
      */
     public SqlQuerier(DataSource ds) throws DatabaseAccessException {
@@ -119,5 +116,16 @@ public class SqlQuerier extends DatabaseQuerier {
               throw new DatabaseAccessException(e,"an error occurred");
           }
        }
+    /* (non-Javadoc)
+     * @see org.astrogrid.datacenter.queriers.DatabaseQuerier#close()
+     */
+    public void close() throws DatabaseAccessException {
+        try {
+            jdbcConnection.close();
+        } catch (SQLException e) {
+            throw new DatabaseAccessException(e,"Exception occured when closing database");
+        }
+        
+    }
 
 }

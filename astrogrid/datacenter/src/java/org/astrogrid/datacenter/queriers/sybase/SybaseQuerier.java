@@ -1,4 +1,4 @@
-/*$Id: SybaseQuerier.java,v 1.2 2003/09/04 14:40:37 nw Exp $
+/*$Id: SybaseQuerier.java,v 1.3 2003/09/05 13:21:08 nw Exp $
  * Created on 03-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,8 @@
  *
 **/
 package org.astrogrid.datacenter.queriers.sybase;
+
+import java.util.Properties;
 
 import javax.sql.DataSource;
 
@@ -35,10 +37,11 @@ public class SybaseQuerier extends SqlQuerier {
 
     /**
      * @param url
+     * @param props
      * @throws DatabaseAccessException
      */
-    public SybaseQuerier(String url) throws DatabaseAccessException {
-        super(url,SYBASE_DRIVER);
+    public SybaseQuerier(String url,Properties props) throws DatabaseAccessException {
+        super(url,SYBASE_DRIVER,props);
     }
 
 
@@ -55,6 +58,10 @@ public class SybaseQuerier extends SqlQuerier {
 
 /* 
 $Log: SybaseQuerier.java,v $
+Revision 1.3  2003/09/05 13:21:08  nw
+added hsqlDb querier
+updated others to accept properties in constructor
+
 Revision 1.2  2003/09/04 14:40:37  nw
 fixed db driver name
 
