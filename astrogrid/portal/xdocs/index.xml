@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<document>
+  <properties>
+    <title>Portal Logon Pages</title>
+    <author email="jdt@roe.ac.uk">John Taylor</author>
+  </properties>
+
+  <body>
+    <section name="Installing the Portal">
+        <subsection name="A brief guide">
+        <p>
+            The links to the left give access to the latest war files.
+            <ul>
+                <li>Deploy the base war to Tomcat in the usual way.</li>
+                <li>Stop tomcat</li>
+                <li>Then take each
+            subcomponent war in turn and unzip it over the top of the webapp's
+            folder in Tomcat.           </li>
+            <li>Restart Tomcat</li>
+            </ul>
+            *NOTE* As of today (30/3/04) the portal <em>must</em> be deployed to a webapp named "astrogrid-portal".  
+            It is anticipated that this restriction will be removed soon.
+        </p>          
+        </subsection>
+    </section>
+  </body>
+</document>
