@@ -103,24 +103,9 @@
       <version>1.1.1</version>
     </dependency>
   
-      <dependency>
-      <id>jConfig.jar</id>
-      <version>1.2</version>
-    </dependency>
-  
-      <dependency>
-      <id>authentication-client-1.0.jar</id>
-      <version>UNKNOWN</version>
-    </dependency>
-  
-      <dependency>
-      <id>policy-client-1.0.jar</id>
-      <version>UNKNOWN</version>
-    </dependency>
-  
-      <dependency>
-      <id>wsdl4j.jar</id>
-      <version>UNKNOWN</version>
+    <dependency>
+      <id>wsdl4j</id>
+      <jar>wsdl4j.jar</jar>
     </dependency>
   </dependencies>
   
