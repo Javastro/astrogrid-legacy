@@ -1,4 +1,4 @@
-/*$Id: WorkflowManagerFactoryTest.java,v 1.4 2004/04/14 13:46:06 nw Exp $
+/*$Id: WorkflowManagerFactoryTest.java,v 1.5 2004/06/30 13:37:24 jl99 Exp $
  * Created on 10-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,14 +10,11 @@
 **/
 package org.astrogrid.portal.workflow.intf;
 
+import junit.framework.TestCase;
+
 import org.astrogrid.config.Config;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.jes.delegate.impl.JobControllerDelegateImpl;
-import org.astrogrid.mySpace.delegate.MySpaceClient;
-import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
-import org.astrogrid.mySpace.delegate.MySpaceDummyDelegate;
-
-import junit.framework.TestCase;
 
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 10-Mar-2004
@@ -61,6 +58,9 @@ public class WorkflowManagerFactoryTest extends TestCase {
 
 /* 
 $Log: WorkflowManagerFactoryTest.java,v $
+Revision 1.5  2004/06/30 13:37:24  jl99
+Reorg of import statements to cover removal of old MySpace delegate classes
+
 Revision 1.4  2004/04/14 13:46:06  nw
 implemented cut down workflow store interface over Ivo Delegate
 
