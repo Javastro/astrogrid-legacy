@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+
+<agtemplate title="Registry Index" help="agregistryhelp.html">
+
+  <h2><a href="browse"> Registry Browser </a></h2>
+  <h2><a href="admin"> Registry Administration </a></h2>
+
+</agtemplate>
