@@ -1,0 +1,548 @@
+
+<!--+
+    |
+    | Sub sitemap for Astrogrid services.
+    |
+    ! Version 1.1
+    !
+    ! Authors: Brian McIlwrath (bkm@star.rl.ac.uk)
+    !          Dave Morris     (dave@cam.as.ac.uk)
+    ! Date: 14th August 2003
+    +-->
+
+<map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
+
+<!-- ======================== Components ================================ -->
+
+   <map:components>
+      <map:generators default="file"/>
+      <map:transformers default="xslt"/>
+      <map:readers default="resource">
+         <map:reader name="votable"
+              pool-max="32"
+              src="org.astrogrid.portal.cocoon.plugins.readers.VotableReader"/>
+              
+         <map:reader name="oairegistry"
+              pool-max="32"
+              src="org.astrogrid.portal.cocoon.registry.readers.OAIHarvestReader"/>
+              
+      </map:readers>
+      <map:serializers default="html"/>
+      <map:selectors default="browser"/>
+      
+       <map:selector name="parameter"
+            logger="sitemap.selector.parameter"
+            src="org.apache.cocoon.selection.ParameterSelector"/>
+            
+      <map:matchers default="wildcard"/>
+      <map:actions>
+           <map:action name="astrogrid" src="org.astrogrid.portal.cocoon.common.AstrogridAction"/>
+         <map:action name="astrogrid-explorer"
+            src="org.astrogrid.portal.cocoon.explorer.ExplorerAction"/>
+         <map:action name="astrogrid-query" 
+         src="org.astrogrid.portal.cocoon.query.QueryAction"/>
+         <map:action name="astrogrid-admin" 
+            src="org.astrogrid.portal.cocoon.community.AdministrationAction"/>            
+       <map:action name="astrogrid-credentials" src="org.astrogrid.portal.cocoon.community.CredentialAction"/>
+       <map:action name="astrogrid-login" src="org.astrogrid.portal.cocoon.common.LoginAction"/>
+       <map:action name="astrogrid-registry-admin" src="org.astrogrid.portal.cocoon.registry.RegistryAdminAction"/>
+       <map:action name="astrogrid-registry-query" src="org.astrogrid.portal.cocoon.registry.RegistryQueryAction"/>
+       <map:action name="astrogrid-registry-options" src="org.astrogrid.portal.cocoon.registry.RegistryOptionAction"/>     
+       <map:action name="astrogrid-registry-harvest" src="org.astrogrid.portal.cocoon.registry.RegistryHarvestAction"/>
+      </map:actions>
+   </map:components>
+
+<!-- =========================== Views =================================== -->
+
+   <!-- Views for MySpace Explorer -->
+   <map:views>
+      <!-- Original XML displayed as XML -->
+      <map:view name="000" from-label="000">
+         <map:serialize type="xml"/>
+      </map:view>
+      <!-- Original XML, displayed as XML/HTML -->
+      <map:view name="001" from-label="001">
+         <!-- Convert into XML/HTML -->
+         <map:transform src="common/xsl/xml-html.xsl"/>
+         <map:serialize type="html"/>
+      </map:view>
+      <!-- XML processed into a page, displayed as XML/HTML -->
+      <map:view name="002" from-label="002">
+         <!-- Convert into XML/HTML -->
+         <map:transform src="common/xsl/xml-html.xsl"/>
+         <map:serialize type="html"/>
+      </map:view>
+      <!-- Page wrapped in our template, displayed as XML/HTML -->
+      <map:view name="003" from-label="003">
+         <!-- Convert into XML/HTML -->
+         <map:transform src="common/xsl/xml-html.xsl"/>
+         <map:serialize type="html"/>
+      </map:view>
+   </map:views>
+
+<!-- ========================== Resources ================================= -->
+
+   <map:resources>
+   </map:resources>
+
+<!-- ========================== Pipelines ================================= -->
+
+   <map:pipelines>
+      <map:pipeline>
+         <map:match pattern="">
+            <map:redirect-to uri="aglogin.html"/>
+         </map:match>
+
+         <!-- Registry browser and admin pages -->
+         <map:match pattern="registry">
+            <map:redirect-to uri="agregistry.html"/>
+         </map:match>
+         
+         <map:match pattern="agoairegistry">
+            <map:read type="oairegistry" mime-type="text/xml" src="{1}"/>
+         </map:match>         
+
+         <map:match pattern="agregistry.html">
+            <map:act type="astrogrid-registry-options">
+               <map:generate src="registry/xsp/regoptions.xsp" type="serverpages" label="000, 001"/>           
+              <map:transform src="registry/xsl/regoptions.xsl" label="002">
+                  <map:parameter name="errormessage" value="{errormessage}"/>
+              </map:transform>
+             </map:act>
+             <map:transform src="common/xsl/astrogrid.xsl" label="003">
+              <map:parameter name="current-page"  value="agdataquery.html"/>
+               <!-- Add the rest of the page names -->
+               <map:parameter name="current-page"  value="agregistry.html"/>
+               <map:parameter name="query-page"    value="agdataquery.html"/>
+               <map:parameter name="myspace-page"  value="agmyspace.html"/>
+               <map:parameter name="home-page"     value="agindex.html"/>
+               <map:parameter name="help-page"     value="agdataqueryhelp.html"/>
+               <map:parameter name="registry-page" value="agregistry.html"/>
+               <map:parameter name="regadmin-page" value="agregadmin.html"/>
+               <map:parameter name="monitor-page"  value="agjobmonitor.html"/>
+               <map:parameter name="tools-page"    value="agtools.html"/>
+               <map:parameter name="help-page"     value="registryoptionshelp.html"/>               
+               <map:parameter name="title-name"    value="Registry Options"/>               
+               <map:parameter name="admin-page"    value="agadministration.html"/>
+               <map:parameter name="logout-page"   value="aglogout.html"/>
+            </map:transform>
+            <map:serialize type="html"/>
+         </map:match>
+         
+         <map:match pattern="registryquery.html">
+            <map:act type="astrogrid-registry-query">
+               <map:generate src="registry/xsp/regquery.xsp" type="serverpages" label="000, 001"/>              
+              <map:transform src="registry/xsl/regquery.xsl" label="002">
+                  <map:parameter name="errormessage" value="{errormessage}"/>
+                  <map:parameter name="criteria_number" value="{criteria_number}" />
+                  <map:parameter name="mainelement" value="{mainelement}" />
+                  <map:parameter name="publishregistryname" value="{publishregistryname}" />
+                  <map:parameter name="searchregistryname" value="{searchregistryname}" />
+                  <map:parameter name="queryresult" value="{queryresult}" />
+              </map:transform>
+             </map:act>
+             <map:transform src="common/xsl/astrogrid.xsl" label="003">
+              <map:parameter name="current-page"  value="agdataquery.html"/>
+               <!-- Add the rest of the page names -->
+               <map:parameter name="current-page"  value="registryquery.html"/>
+               <map:parameter name="query-page"    value="agdataquery.html"/>
+               <map:parameter name="myspace-page"  value="agmyspace.html"/>
+               <map:parameter name="home-page"     value="agindex.html"/>
+               <map:parameter name="help-page"     value="agdataqueryhelp.html"/>
+               <map:parameter name="registry-page" value="agregistry.html"/>
+               <map:parameter name="regadmin-page" value="agregadmin.html"/>
+               <map:parameter name="monitor-page"  value="agjobmonitor.html"/>
+               <map:parameter name="tools-page"    value="agtools.html"/>
+               <map:parameter name="help-page"     value="registryqueryhelp.html"/>               
+               <map:parameter name="title-name"    value="Registry Query"/>
+               <map:parameter name="admin-page"    value="agadministration.html"/>
+               <map:parameter name="logout-page"   value="aglogout.html"/>
+            </map:transform>
+            <map:serialize type="html"/>
+         </map:match>
+         
+         <map:match pattern="registryupdate.html">
+            <map:act type="astrogrid-registry-admin">
+               <map:generate src="registry/xsp/regadmin.xsp" type="serverpages" label="000, 001"/>           
+              <map:transform src="registry/xsl/regadmin.xsl" label="002">
+                  <map:parameter name="errormessage" value="{errormessage}"/>
+                  <map:parameter name="mainelement" value="{mainelement}" />                    
+                  <map:parameter name="authID" value="{authID}" />                    
+                  <map:parameter name="resKey" value="{resKey}" />                    
+                  <map:parameter name="action" value="{action}" />
+                  <map:parameter name="message" value="{message}" />
+              </map:transform>
+             </map:act>
+             <map:transform src="common/xsl/astrogrid.xsl" label="003">
+              <map:parameter name="current-page"  value="agdataquery.html"/>
+               <!-- Add the rest of the page names -->
+               <map:parameter name="current-page"  value="registryupdate.html"/>
+               <map:parameter name="query-page"    value="agdataquery.html"/>
+               <map:parameter name="myspace-page"  value="agmyspace.html"/>
+               <map:parameter name="home-page"     value="agindex.html"/>
+               <map:parameter name="registry-page" value="agregistry.html"/>
+               <map:parameter name="regadmin-page" value="agregadmin.html"/>
+               <map:parameter name="monitor-page"  value="agjobmonitor.html"/>
+               <map:parameter name="tools-page"    value="agtools.html"/>
+               <map:parameter name="help-page"     value="registryupdatehelp.html"/>               
+               <map:parameter name="title-name"    value="Registry Update"/>               
+               <map:parameter name="admin-page"    value="agadministration.html"/>
+               <map:parameter name="logout-page"   value="aglogout.html"/>
+            </map:transform>
+            <map:serialize type="html"/>
+         </map:match>
+
+         <map:match pattern="registryharvest.html">
+            <map:act type="astrogrid-registry-harvest">
+               <map:generate src="registry/xsp/regharvest.xsp" type="serverpages" label="000, 001"/>          
+                    <map:transform src="registry/xsl/regharvest.xsl" label="002">
+                        <map:parameter name="errorMessage" value="{errorMessage}"/>
+                        <map:parameter name="harvestResult" value="{harvestResult}"/>                        
+                        <map:parameter name="registryXML" value="{registryXML}"/>                                                
+                        <map:parameter name="action" value="{action}" />
+                        <map:parameter name="message" value="{message}" />
+                    </map:transform>
+            </map:act>
+             <map:transform src="common/xsl/astrogrid.xsl" label="003">
+              <map:parameter name="current-page"  value="agdataquery.html"/>
+               <!-- Add the rest of the page names -->
+               <map:parameter name="current-page"  value="registryharvest.html"/>
+               <map:parameter name="query-page"    value="agdataquery.html"/>
+               <map:parameter name="myspace-page"  value="agmyspace.html"/>
+               <map:parameter name="home-page"     value="agindex.html"/>
+
+               <map:parameter name="registry-page" value="agregistry.html"/>
+               <map:parameter name="regadmin-page" value="agregadmin.html"/>
+               <map:parameter name="monitor-page"  value="agjobmonitor.html"/>
+               <map:parameter name="tools-page"    value="agtools.html"/>
+               <map:parameter name="help-page"     value="registryharvesthelp.html"/>               
+               <map:parameter name="title-name"    value="Harvest"/>               
+               <map:parameter name="admin-page"    value="agadministration.html"/>
+               <map:parameter name="logout-page"   value="aglogout.html"/>
+            </map:transform>
+            
+             <map:serialize type="html"/>
+
+         </map:match>
+         
+         
+
+         <map:match pattern="aglogin.html">
+            <map:act type="astrogrid-login">
+               <map:generate src="common/xsp/login.xsp" type="serverpages" label="000, 001"/>            
+              <map:transform src="common/xsl/login.xsl" label="002">
+                  <map:parameter name="action" value="{action}"/>
+                  <map:parameter name="errormessage" value="{errormessage}"/>
+                  <map:parameter name="admin" value="{admin}"/>
+                  <map:parameter name="adminEmail" value="{adminEmail}"/>
+                  <map:parameter name="message" value="{message}"/>
+                  <map:parameter name="secure_connection" value="{secure_connection}"/>
+                  <map:parameter name="secure_url" value="{secure_url}"/>
+              </map:transform>
+             </map:act>
+             <map:transform src="common/xsl/astrogrid.xsl" label="003">
+              <map:parameter name="current-page"  value="agdataquery.html"/>
+               <!-- Add the rest of the page names -->
+               <map:parameter name="current-page"  value="aglogin.html"/>
+               <map:parameter name="query-page"    value="agdataquery.html"/>
+               <map:parameter name="myspace-page"  value="agmyspace.html"/>
+               <map:parameter name="home-page"     value="agindex.html"/>
+               <map:parameter name="help-page"     value="agdataqueryhelp.html"/>
+               <map:parameter name="registry-page" value="agregistry.html"/>
+               <map:parameter name="regadmin-page" value="agregadmin.html"/>
+               <map:parameter name="monitor-page"  value="agjobmonitor.html"/>
+               <map:parameter name="tools-page"    value="agtools.html"/>
+               <map:parameter name="title-name"  value="Login"/>               
+               <map:parameter name="admin-page"    value="agadministration.html"/>
+               <map:parameter name="logout-page"   value="aglogout.html"/>
+            </map:transform>
+            <!-- Serialize as HTML -->
+            <map:serialize type="html"/>
+         </map:match>
+
+         <map:match pattern="agnologin.html">
+            <map:read mime-type="text/html" src="html/agnologin.html"/>
+         </map:match>
+
+         <!-- Site images -->
+         <map:match pattern="*.gif">
+            <map:read src="images/{1}.gif" mime-type="images/gif"/>
+         </map:match>
+         <map:match pattern="*.png">
+            <map:read src="images/{1}.png" mime-type="images/png"/>
+         </map:match>
+
+         <!-- Administration page -->
+         <map:match pattern="agadministration.html">
+            <!-- Call our query action -->
+            <map:act type="astrogrid-admin">
+               <!-- Set the session attribute to check for the user name -->
+               <map:parameter name="user-param"  value="user"/>
+               <!-- Generate our page XML -->
+               <map:generate src="community/xsp/administration.xsp" type="serverpages" label="000, 001"/>
+               <!-- Convert the data into a page -->
+               <map:transform src="community/xsl/administration.xsl" label="002">
+                  <map:parameter name="action" value="{action}"/>
+                  <map:parameter name="errormessage" value="{errormessage}"/>
+                  <map:parameter name="message" value="{message}"/>
+               </map:transform>
+            </map:act>
+            <!-- Wrap the page in our HTML template -->
+            <map:act type="astrogrid">
+            <map:transform src="common/xsl/astrogrid.xsl" label="003">
+                    <map:parameter name="credential" value="{credential}" />
+                    <map:parameter name="current-page"  value="agdataquery.html"/>
+            
+               <!-- Add the rest of the page names -->
+               <map:parameter name="current-page"  value="agadministration.html"/>
+               <map:parameter name="query-page"    value="agdataquery.html"/>
+               <map:parameter name="myspace-page"  value="agmyspace.html"/>
+               <map:parameter name="home-page"     value="agindex.html"/>
+               <map:parameter name="help-page"     value="agdataqueryhelp.html"/>
+               <map:parameter name="registry-page" value="agregistry.html"/>
+               <map:parameter name="regadmin-page" value="agregadmin.html"/>
+               <map:parameter name="monitor-page"  value="agjobmonitor.html"/>
+               <map:parameter name="tools-page"    value="agtools.html"/>
+               <map:parameter name="title-name"  value="Administration"/>               
+               <map:parameter name="admin-page"    value="agadministration.html"/>
+               <map:parameter name="logout-page"   value="aglogout.html"/>
+            </map:transform>
+            </map:act>
+            <!-- Serialize as HTML -->
+            <map:serialize type="html"/>
+         </map:match>
+            
+
+
+
+         <!-- Block the rest of the sitemap to non-logged-in users -->
+         <map:match type="sessionstate" pattern="*">
+            <map:parameter name="attribute-name" value="user"/>
+            
+            <map:match pattern="index.html">
+               <map:redirect-to uri="agindex.html"/>
+            </map:match>
+
+            <map:match pattern="aglogout.html">
+               <map:generate type="serverpages" src="xsp/logout.xsp"/>
+               <map:transform src="xsl/redirect.xsl"/> 
+               <map:serialize type="html"/>
+            </map:match>
+
+            <map:match pattern="agtopcat.html">
+               <map:generate type="serverpages" src="plugins/xsp/topcat.xsp"/>
+               <map:transform src="plugins/xsl/topcat.xsl"/>
+               <map:serialize type="html"/>
+            </map:match>
+
+            
+            <map:match pattern="votable">
+             <map:read type="votable" mime-type="image/png" src="{1}.vot"/>
+            </map:match>            
+
+            <map:match pattern="agtemplate.xsl">
+               <map:redirect-to uri="xsl/agtemplate.xsl"/>
+            </map:match>
+
+            <!-- DataQuery page -->
+            <map:match pattern="agdataquery.html">
+               <!-- Call our query action -->
+               <map:act type="astrogrid-query">
+                  <!-- Set the session attribute to check for the user name -->
+                  <map:parameter name="user-param"  value="user"/>
+                  <!-- Generate our page XML -->
+                  <map:generate src="query/xsp/query.xsp" type="serverpages" label="000, 001"/>
+                  <!-- Convert the data into a page -->
+                  <map:transform src="query/xsl/query.xsl" label="002">
+                     <!-- Add the action params -->
+                     <map:parameter name="QueryString" value="{QueryString}"/>
+                     <map:parameter name="Script" value="{Script}"/>
+                     <map:parameter name="QueryStringSent" value="{QueryStringSent}"/>
+                     <map:parameter name="ErrorMessage" value="{ErrorMessage}"/>
+                     <map:parameter name="LastWebCall" value="{LastWebServiceXML}"/>
+                  </map:transform>
+               </map:act>
+               <!-- Wrap the page in our HTML template -->
+               <map:act type="astrogrid">
+                 <map:transform src="common/xsl/astrogrid.xsl" label="003">
+                    <!-- Add the rest of the page names -->
+                    <map:parameter name="credential" value="{credential}" />
+                    <map:parameter name="current-page"  value="agdataquery.html"/>
+                    <map:parameter name="query-page"    value="agdataquery.html"/>
+                    <map:parameter name="myspace-page"  value="agmyspace.html"/>
+                    <map:parameter name="title-name"  value="Data Query"/>
+                    <map:parameter name="home-page"     value="agindex.html"/>
+                    <map:parameter name="admin-page"    value="agadministration.html"/>
+                    <map:parameter name="help-page"     value="agdataqueryhelp.html"/>
+                    <map:parameter name="registry-page" value="agregistry.html"/>
+                    <map:parameter name="regadmin-page" value="agregadmin.html"/>
+                    <map:parameter name="monitor-page"  value="agjobmonitor.html"/>
+                    <map:parameter name="tools-page"    value="agtools.html"/>
+                    <map:parameter name="logout-page"   value="aglogout.html"/>
+                 </map:transform>
+             </map:act>
+               <!-- Serialize as HTML -->
+               <map:serialize type="html"/>
+            </map:match>
+            
+         <!-- Credentials page -->
+         <map:match pattern="agcredentials.html">
+            <!-- Call our query action -->
+            <map:act type="astrogrid-credentials">
+               <!-- Set the session attribute to check for the user name -->
+               <map:parameter name="user-param"  value="user"/>
+               <!-- Generate our page XML -->
+               <map:generate src="community/xsp/credentials.xsp" type="serverpages" label="000, 001"/>
+               <!-- Convert the data into a page -->
+               <map:transform src="community/xsl/credentials.xsl" label="002">
+                  <map:parameter name="credential" value="{credential}"/>
+               </map:transform>
+            </map:act>
+            <!-- Wrap the page in our HTML template -->
+            <map:transform src="common/xsl/astrogrid.xsl" label="003">
+               <!-- Add the rest of the page names -->
+               <map:parameter name="current-page"  value="agcredentials.html"/>
+               <map:parameter name="query-page"    value="agdataquery.html"/>
+               <map:parameter name="myspace-page"  value="agmyspace.html"/>
+               <map:parameter name="home-page"     value="agindex.html"/>
+               <map:parameter name="help-page"     value="agdataqueryhelp.html"/>
+               <map:parameter name="title-name"  value="Credentials"/>               
+               <map:parameter name="registry-page" value="agregistry.html"/>
+               <map:parameter name="regadmin-page" value="agregadmin.html"/>
+               <map:parameter name="monitor-page"  value="agjobmonitor.html"/>
+               <map:parameter name="tools-page"    value="agtools.html"/>
+               <map:parameter name="admin-page"    value="agadministration.html"/>
+               <map:parameter name="logout-page"   value="aglogout.html"/>
+            </map:transform>
+            <!-- Serialize as HTML -->
+            <map:serialize type="html"/>
+         </map:match>
+            
+            
+
+            <!-- Explorer page -->
+            <map:match pattern="agmyspace.html">
+            <!-- Call our explorer action -->
+               <map:act type="astrogrid-explorer">
+                  <!-- Set the session attribute to check for the user name -->
+                  <map:parameter name="user-param"  value="user"/>
+                  <!-- Generate our page XML -->
+                  <map:generate src="explorer/xsp/explorer.xsp"
+                     type="serverpages" label="000, 001"/>
+                  <!-- Convert the data into a page -->
+                  <map:transform src="explorer/xsl/explorer.xsl" label="002">
+                     <!-- Add the action params -->
+                     <map:parameter name="action"  value="{action}"/>
+                     <map:parameter name="confirm" value="{confirm}"/>
+                     <!-- Add the explorer page names -->
+                     <map:parameter name="explorer-page"
+                        value="agmyspace.html"/>
+                     <map:parameter name="votable-page"
+                        value="agvotable.html"/>
+               <map:parameter name="plot-page" value="agtopcat.html"/>
+                  </map:transform>
+               </map:act>
+               <!-- Wrap the page in our HTML template -->
+               <map:act type="astrogrid">
+                 <map:transform src="common/xsl/astrogrid.xsl" label="003">
+                    <!-- Add the rest of the page names -->
+                    <map:parameter name="credential" value="{credential}" />
+                    <map:parameter name="credential-page" value="agcredentials.html" />
+                  <!-- Add the current page name -->
+                  <map:parameter name="current-page" value="agmyspace.html"/>
+                  <!-- Add the explorer page names -->
+                  <map:parameter name="explorer-page" value="agmyspace.html"/>
+                  <map:parameter name="votable-page"  value="agvotable.html"/>
+                  <!-- Add the rest of the page names -->
+                  <map:parameter name="home-page"     value="agindex.html"/>
+                  <map:parameter name="title-name"  value="Myspace"/>
+                  <map:parameter name="help-page"     value="agmyspacehelp.html"/>
+                  <map:parameter name="registry-page" value="agregistry.html"/>
+                  <map:parameter name="regadmin-page" value="agregadmin.html"/>
+                  <map:parameter name="query-page"    value="agdataquery.html"/>
+                  <map:parameter name="monitor-page"  value="agjobmonitor.html"/>
+                  <map:parameter name="tools-page"    value="agtools.html"/>
+                 <map:parameter name="admin-page"    value="agadministration.html"/>
+                  <map:parameter name="logout-page"   value="aglogout.html"/>
+               </map:transform>
+               </map:act>
+               <!-- Serialize as HTML -->
+               <map:serialize type="html"/>
+            </map:match>
+
+            <!-- VoTable data pages -->
+            <map:match pattern="agvotable.html">
+               <map:act type="request">
+                  <map:parameter name="parameters" value="true"/>
+                  <map:generate src="{data}"/>
+                  <!-- Convert the VoTable data into HTML -->
+                  <map:transform src="explorer/xsl/votable.xsl">
+                    <map:parameter name="explorer-page" value="agmyspace.html"/>
+                    <map:parameter name="votable-page"  value="agvotable.html"/>
+               <map:parameter name="plot-page" value="agtopcat.html"/>                    
+                  </map:transform>
+                      <map:act type="astrogrid">
+                  <!-- Wrap the page in our HTML template -->
+                  <map:transform src="common/xsl/astrogrid.xsl" label="003">
+                    <map:parameter name="credential" value="{credential}" />
+                    <map:parameter name="current-page"  value="agdataquery.html"/>
+                  
+                  <!-- Add the explorer page names -->
+                   <map:parameter name="current-page"  value="agmyspace.html"/>
+                   <map:parameter name="explorer-page" value="agmyspace.html"/>
+                   <map:parameter name="votable-page"  value="agvotable.html"/>
+                   <!-- Add the rest of the page names -->
+                   <map:parameter name="home-page"     value="agindex.html"/>
+                   <map:parameter name="help-page"     value="agmyspacehelp.html"/>
+                   <map:parameter name="registry-page" value="agregistry.html"/>
+                   <map:parameter name="regadmin-page" value="agregadmin.html"/>
+                   <map:parameter name="query-page"    value="agdataquery.html"/>
+                   <map:parameter name="title-name"  value="MySpace"/>                   
+                   <map:parameter name="monitor-page"  value="agjobmonitor.html"/>
+                   <map:parameter name="tools-page"    value="agtools.html"/>
+                   <map:parameter name="logout-page"   value="aglogout.html"/>
+                    <map:parameter name="admin-page"    value="agadministration.html"/>
+                   <map:parameter name="current-page" value="agmyspace.html"/>                   
+                  </map:transform>
+                  </map:act>
+                  <!-- Serialize as HTML -->
+                  <map:serialize type="html"/>
+               </map:act>
+            </map:match>
+
+<!-- PJN -->    
+
+<!-- PJN -->
+
+
+
+
+
+
+            <!-- Explorer images -->
+            <map:match pattern="explorer/images/*.gif">
+               <map:read src="explorer/images/{1}.gif" mime-type="images/gif"/>
+            </map:match>
+
+            <!-- HTML pages -->
+            <map:match pattern="*.html">
+               <map:read mime-type="text/html" src="html/{1}.html"/>
+            </map:match>
+
+            <!-- Site XSP files -->
+            <map:match pattern="*.xsp">
+               <map:generate type="serverpages" src="xsp/{1}.xsp"/>
+               <map:transform src="xsl/{1}.xsl"/> 
+               <map:serialize type="html"/>
+            </map:match>
+
+         </map:match> <!-- On sessionstate "user" -->
+
+<!-- Default page if no session "user" defined -->
+         <map:match pattern="*.html">
+            <map:read mime-type="text/html" src="html/agnotlogin.html"/>
+         </map:match>
+         
+      </map:pipeline>
+   </map:pipelines>
+</map:sitemap>
