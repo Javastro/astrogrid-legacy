@@ -1,4 +1,4 @@
-/*$Id: HttpApplicationProviderTest.java,v 1.8 2004/09/26 23:34:47 jdt Exp $
+/*$Id: HttpApplicationProviderTest.java,v 1.9 2004/11/08 17:59:21 jdt Exp $
  * Created on 30-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -350,19 +350,18 @@ public class HttpApplicationProviderTest extends TestCase {
      * @todo NWW: this isn't observable anymore. 
      */
     public void testPreProcess() throws Exception {
-            try {
-                ApplicationDescription hw = getApplicationDescription("/AdderPreProcess");
-                
-                Tool tool  = (Tool) toolUnmarshaller.unmarshallFromFile("tool-Adder1.xml");
-                
-                Application app = hw.initializeApplication("testrun",user,tool);
-                assertNotNull(app);
-                app.addObserver(monitor);
-                app.execute();
-            }   catch (UnsupportedOperationException e) {
-                return; //expected
-            }
-            fail("Expected an UnsupportedOperationException");
+
+            ApplicationDescription hw = getApplicationDescription("/AdderPreProcess");
+            
+            Tool tool  = (Tool) toolUnmarshaller.unmarshallFromFile("tool-Adder1.xml");
+            
+            Application app = hw.initializeApplication("testrun",user,tool);
+            assertNotNull(app);
+            app.addObserver(monitor);
+            app.execute();
+            monitor.waitFor(10);
+            //Should fail internally with an UnsupportedOperationException
+            assertTrue(monitor.sawError);
     }
     
     //@TODO what if the registry entry is garbage?
@@ -372,6 +371,9 @@ public class HttpApplicationProviderTest extends TestCase {
 
 /* 
 $Log: HttpApplicationProviderTest.java,v $
+Revision 1.9  2004/11/08 17:59:21  jdt
+Fixed a unit test.
+
 Revision 1.8  2004/09/26 23:34:47  jdt
 Added a unit test that checks that indirect input params are handled right.
 
