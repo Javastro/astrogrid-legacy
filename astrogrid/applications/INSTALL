@@ -1,0 +1,21 @@
+
+
+The basic install medium is a war file called applications-integration.war, which can be found at
+
+http://cvs.astrogrid.org/maven/astrogrid-applications/wars/astrogrid-applications.war
+
+To do the inital install of the application it needs simply to be added into $TOMCAT_HOME/webapps directory and start tomcat.
+This will install the basic files required to run the service along with some example configuration files as well as a test application.
+
+At this point you can obtain more information by looking at the web site itself
+
+http://localhost:8080/astrogrid-applications/
+
+where detailed explanations of the confuration steps are contained. In summary you need to
+
+  1 configure a database to store the management information that the application controller needs.
+  2  configure two JNDI resources in tomcat
+     * jdbc/AstrogridACDatasource that points to the database created in step 1
+     * AstrogridApplicationsConfigURL is a URL that points to a file that contains the main configuration data for the application
+      controller including another pointer to a file that describes the actual applications that the controller manages.
+
