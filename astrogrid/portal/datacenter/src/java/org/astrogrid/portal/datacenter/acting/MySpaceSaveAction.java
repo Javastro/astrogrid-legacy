@@ -97,21 +97,60 @@ public class MySpaceSaveAction extends AbstractAction {
       
       try {
           
+          // First, attempt to filter out any error messages
+          // left over from a previous attempt ...
+          int i = adqlAsString.indexOf( "Error returned: ") ;
+          
+          if( i > 0 ) {
+              char c = adqlAsString.charAt(i--);         
+              while( c == '\n' || c == '\t' || c == ' ') {
+                  i--;
+                  if(i<0) break;
+                  c = adqlAsString.charAt(i) ;
+              }             
+          }
+
+          if( i > 0 ) {
+              adqlAsString = adqlAsString.substring(0, i) ;
+          }
+          else if( i == 0 ) {
+              adqlAsString = " " ;
+          }
+          
+          session.setAttribute( SESSIONKEY_ADQL_AS_STRING, adqlAsString ) ;       
           adqlAsXML = Sql2Adql074.translate( adqlAsString ) ;      
           logger.debug("[act] adqlAsXML (x): " + adqlAsXML);
       
-          buffer
-            .append( adqlAsXML.substring( 0, adqlAsXML.indexOf( "?>" ) + 2 ) )
-            .append( "<?qb-sql-source " )
-            .append( adqlAsString )
-            .append( " ?>" )
-            .append( "<?qb-registry-resources " )
-            .append( resourceId != null ? (String)resourceId : "none" )
-            .append( " ?>" ) 
-            .append( adqlAsXML.substring( adqlAsXML.indexOf( "?>" ) + 2 ) ) ;
+          // JL. This is a hack. 
+          // The parser seems not to be supplying the xml "header";
+          // ie: the xml Processing Instruction.
+          // So, if it's not there, we supply it. 
+          // I'm also raising a bug on the parser. 
+          if( adqlAsXML.indexOf( "<?xml" ) < 0 ) {
+              buffer
+                .append( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" ) 
+                .append( "<?qb-sql-source " )
+                .append( adqlAsString )
+                .append( " ?>" )
+                .append( "<?qb-registry-resources " )
+                .append( resourceId != null ? (String)resourceId : "none" )
+                .append( " ?>" ) 
+                .append( adqlAsXML ) ;
+          }
+          else {
+              buffer
+                .append( adqlAsXML.substring( 0, adqlAsXML.indexOf( "?>" ) + 2 ) ) 
+                .append( "<?qb-sql-source " )
+                .append( adqlAsString )
+                .append( " ?>" )
+                .append( "<?qb-registry-resources " )
+                .append( resourceId != null ? (String)resourceId : "none" )
+                .append( " ?>" ) 
+                .append( adqlAsXML.substring( adqlAsXML.indexOf( "?>" ) + 2 ) ) ;
+          }
             
           session.removeAttribute( SESSIONKEY_ADQL_ERROR ) ;
-            
+  
       }
       catch ( Exception ex ) {
           
@@ -123,7 +162,16 @@ public class MySpaceSaveAction extends AbstractAction {
             .append( "<?qb-registry-resources " )
             .append( resourceId != null ? (String)resourceId : "none" )
             .append( " ?>" ) ;
-                        
+            
+          StringBuffer adqlBuffer = new StringBuffer( adqlAsString.length() + 64 ) ;
+          
+          adqlBuffer
+            .append( adqlAsString )
+            .append( "\n\n")
+            .append( "Error returned: ")
+            .append( ex.getLocalizedMessage() ) ;
+            
+          session.setAttribute( SESSIONKEY_ADQL_AS_STRING, adqlBuffer.toString() ) ;                     
           session.setAttribute( SESSIONKEY_ADQL_ERROR, ex.getLocalizedMessage() ) ;
           logger.debug("[act] adql error: " + ex.getLocalizedMessage() ) ;
                   
