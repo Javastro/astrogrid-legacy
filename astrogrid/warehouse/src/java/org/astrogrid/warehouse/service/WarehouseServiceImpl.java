@@ -1,5 +1,5 @@
 /*
- * $Id: WarehouseServiceImpl.java,v 1.8 2003/11/06 12:55:39 kea Exp $
+ * $Id: WarehouseServiceImpl.java,v 1.9 2003/11/17 09:56:13 kea Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -192,7 +192,7 @@ public class WarehouseServiceImpl
 
     if (invokedViaAxis) {
 
-      String[] cmdArgs = new String[5];
+      String[] cmdArgs = new String[6];
       cmdArgs[0] = serviceProperties.getProperty(
                     "WAREHOUSE_JVM", DEFAULT_WAREHOUSE_JVM);
       cmdArgs[1] = "-cp";
@@ -444,6 +444,9 @@ public class WarehouseServiceImpl
 }
 /*
 $Log: WarehouseServiceImpl.java,v $
+Revision 1.9  2003/11/17 09:56:13  kea
+Array bounds fix.
+
 Revision 1.8  2003/11/06 12:55:39  kea
 Moved various string constants into properties files.
 Took out OGSA-DAI cruft from WarehouseServiceImpl (OGSA-DAI-specific
