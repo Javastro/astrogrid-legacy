@@ -166,7 +166,9 @@
     <dependency>
     	<id>xmlunit</id>
 	<version>1.0</version>
-	<war.bundle>true</war.bundle>
+	<properties>
+		<war.bundle>true</war.bundle>
+	</properties>
     </dependency>
     </dependencies>
 
@@ -182,13 +184,10 @@
       <resources>
         <resource>
           <directory>${basedir}/test/java</directory>
-          <includes>
-            <include>**/*.xml</include>
-            <include>**/*.xsl</include>
-	    <include>**/*.properties</include>
-	    <include>**/*.sql</include>
-	    <include>**/*.js</include>
-          </includes>
+	  <!--everything else but the sources -->
+	  <excludes>
+	  	<exclude>**/*.java</exclude>
+	  </excludes>
         </resource>
       </resources>
     </unitTest>
@@ -237,7 +236,7 @@
     <report>
       maven-javadoc-plugin
     </report>
-    <!-- seems to screw up at the moment..
+    <!-- makes the build break sometimes. not worth it.
     <report>
       maven-jdepend-plugin
     </report>

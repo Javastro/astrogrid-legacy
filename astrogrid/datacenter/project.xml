@@ -43,6 +43,9 @@
     </report>
     <report>
       maven-changes-plugin
+    </report>    
+    <report>
+      maven-dashboard-plugin
     </report>
     <report>
       maven-developer-activity-plugin
