@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Edited by Pedro Contreras -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="hiperz" type="hiperzType">
+		<xs:annotation>
+			<xs:documentation>parameters definition for hiperz (no include package make_catalogue)</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="hiperzType">
+		<xs:sequence>
+			<xs:element name="configPathfile">
+				<xs:annotation>
+					<xs:documentation>this element contains the configuration file address</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="configFile">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="inputParam" type="inputParamType"/>
+						<xs:element name="ouputParam" type="ouputParamType"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="inputParamType">
+		<xs:sequence>
+			<xs:element name="aovsed" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>file-path containing the spectrum of Vega</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="filtersRes" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>file-path containing the filter transmition functions</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="filtersFile" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>file containing information about filters. This file have three  column; id for each filter, correction and  rule ofr undetected object.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="templatesFiles" type="xs:string"/>
+			<xs:element name="filtMABS" type="xs:integer">
+				<xs:annotation>
+					<xs:documentation>Filter number for absolute magnitude estimate</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="errMagMin" type="xs:decimal">
+				<xs:annotation>
+					<xs:documentation>Photometric error</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="zMin" type="xs:decimal">
+				<xs:annotation>
+					<xs:documentation>Min limit of redshift range</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="zMax" type="xs:decimal">
+				<xs:annotation>
+					<xs:documentation>Max limit pf redshift range</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="zStep"/>
+			<xs:element name="zStepType"/>
+			<xs:element name="catalogType" type="xs:integer"/>
+			<xs:element name="catalogFile" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Name input photometric  catalogue</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="magType" type="xs:integer">
+				<xs:annotation>
+					<xs:documentation>Magnitud used in the catalogue</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="reddeningLow" type="xs:integer">
+				<xs:annotation>
+					<xs:documentation>Check the parameters type</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="avMin" type="xs:integer"/>
+			<xs:element name="avMax" type="xs:integer"/>
+			<xs:element name="avStep" type="xs:integer"/>
+			<xs:element name="ageCheck" type="xs:string"/>
+			<xs:element name="probThresh">
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:minInclusive value="0"/>
+						<xs:maxInclusive value="100"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="outputFile" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>out put file name without extention</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="outputOptionFile">
+				<xs:annotation>
+					<xs:documentation>check if the types are correct, , there are 5 options</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:attribute name="catphot_file" type="xs:string" use="optional"/>
+					<xs:attribute name="zphot_file" type="xs:string" use="optional"/>
+					<xs:attribute name="logphot_file" type="xs:string" use="optional"/>
+					<xs:attribute name="sed_temp_file" type="xs:string" use="optional"/>
+					<xs:attribute name="sed_obs_file" type="xs:string" use="optional"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="outputType">
+				<xs:annotation>
+					<xs:documentation>check the types</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:minInclusive value="0"/>
+						<xs:maxInclusive value="2"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="omegaM" type="xs:double"/>
+			<xs:element name="omegaV" type="xs:double"/>
+			<xs:element name="ho" type="xs:double"/>
+			<xs:element name="zCluster" type="xs:string"/>
+			<xs:element name="mABSMin" type="xs:double"/>
+			<xs:element name="mABSMax" type="xs:double"/>
+			<xs:element name="matrix" type="xs:double"/>
+			<xs:element name="espectrum" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>option y/n</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ebvMw" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="reddening_low">
+		<xs:annotation>
+			<xs:documentation>check parameters</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="LMC_from_fitzpatrick" type="xs:integer" use="optional" default="3"/>
+			<xs:attribute name="MW_from_Seaton" type="xs:integer" use="optional" default="2"/>
+			<xs:attribute name="MW_from_Allen" type="xs:integer" use="optional" default="1"/>
+			<xs:attribute name="SMC_from_Prevot" type="xs:integer" use="optional" default="4"/>
+			<xs:attribute name="Starburst_galaxies_from_Calzetti" type="xs:integer" use="optional" default="5"/>
+			<xs:attribute name="no_redding" type="xs:integer" use="optional" default="0"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="ouputParamType">
+		<xs:sequence>
+			<xs:element name="catalogueFile" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Name photometric catalogue file</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="nameTemplates" type="xs:string"/>
+			<xs:element name="filters" type="xs:string"/>
+			<xs:element name="rangeStepRedshift" type="xs:string"/>
+			<xs:element name="rangeStepAvRedshift" type="xs:string"/>
+			<xs:element name="rangeAndFilter" type="xs:string"/>
+			<xs:element name="cosmologicalParameters" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>
