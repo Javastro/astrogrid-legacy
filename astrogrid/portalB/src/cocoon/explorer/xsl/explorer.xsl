@@ -2,12 +2,12 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/cocoon/explorer/xsl/Attic/explorer.xsl,v $</cvs:source>
     | <cvs:date>$Author: clq2 $</cvs:date>
-    | <cvs:author>$Date: 2003/10/03 12:14:37 $</cvs:author>
-    | <cvs:version>$Revision: 1.11 $</cvs:version>
+    | <cvs:author>$Date: 2003/10/06 16:57:02 $</cvs:author>
+    | <cvs:version>$Revision: 1.12 $</cvs:version>
     | <cvs:log>
     | $Log: explorer.xsl,v $
-    | Revision 1.11  2003/10/03 12:14:37  clq2
-    | added more new functions and Keiven's plot been put back from version 1.09
+    | Revision 1.12  2003/10/06 16:57:02  clq2
+    | changed tags
     |
     | Revision 1.10  2003/09/19 16:23:23  clq2
     | new functions
@@ -848,7 +848,7 @@
 				</tr>
 				<tr class="info">
 					<td class="info">
-						Name
+						ExtendPeriod(days)
 					</td>
 					<td class="info">
 						<input type="text" name="AST-NAME">
