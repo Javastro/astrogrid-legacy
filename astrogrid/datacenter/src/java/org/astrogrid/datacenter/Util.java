@@ -1,5 +1,5 @@
 /*
- * $Id: Util.java,v 1.3 2003/08/28 15:30:32 nw Exp $
+ * $Id: Util.java,v 1.4 2003/09/03 13:42:04 nw Exp $
  * Created on 19-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,13 +9,13 @@
  * with this distribution in the LICENSE.txt file. 
  */
 package org.astrogrid.datacenter;
-import org.astrogrid.Configurator;
+
 
 /**
  * Some static helper methods
  * <p>
  * Don't add things to this class willy-nilly -- put them where they belong instead.
- * FUTURE - may well remove this all together.
+ *@todo  remove this class all together, once we've trashed the old classes that use it.
  * @author Noel nw@jb.man.ac.uk
   */
 public class Util {
@@ -28,12 +28,26 @@ public class Util {
 	 * @return returns unqualified class name (i.e. all package names stripped off)
 	 */
 	public static String getComponentName(Class class1) {
-		return Configurator.getClassName(class1);
+        String className = class1.getName();
+        char[] chars = className.toCharArray();
+        int lastDot = 0;
+        for (int i = 0; i < chars.length; i++) {
+            if (chars[i] == '.') {
+                lastDot = i + 1;
+            } else if (chars[i] == '$') {  // handle inner classes
+                chars[i] = '.';
+            }
+        }
+        return new String(chars, lastDot, chars.length - lastDot);
 	}
 
 }
 /*
  * $Log: Util.java,v $
+ * Revision 1.4  2003/09/03 13:42:04  nw
+ * removed dependency on jconfig library,
+ * updated project.xml to reflect this.
+ *
  * Revision 1.3  2003/08/28 15:30:32  nw
  * minor fixes to javadoc
  *

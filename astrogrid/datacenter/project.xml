@@ -90,11 +90,6 @@
       <version>SNAPSHOT</version>
     </dependency>
 
-	<dependency>
-		<id>commons-lang</id>
-		<version>SNAPSHOT</version>
-	</dependency>
-
     <dependency>
       <id>jax-qname</id>
       <version>UNKNOWN</version>
@@ -111,11 +106,13 @@
       <version>UNKNOWN</version>
       <jar>jconn2.jar</jar>
     </dependency>
-
+    
+	<!-- NW: not needed any more
     <dependency>
       <id>jconfig</id>
       <version>2.1</version>
     </dependency>
+-->
 
     <dependency>
       <id>junit</id>
