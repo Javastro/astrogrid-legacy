@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/Attic/build.xml,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/30 18:10:52 $</cvs:author>
-    | <cvs:version>$Revision: 1.32 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/30 18:40:24 $</cvs:author>
+    | <cvs:version>$Revision: 1.33 $</cvs:version>
     | <cvs:log>
     | $Log: build.xml,v $
+    | Revision 1.33  2003/06/30 18:40:24  dave
+    | Updated release build
+    |
     | Revision 1.32  2003/06/30 18:10:52  dave
     | Added release task to REBUILD
     |
@@ -2092,6 +2095,8 @@
 	<target name="project.REBUILD" depends="init">
 		<!-- Delete everything -->
 		<delete dir="build" failonerror="false"/>
+		<!-- Delete everything -->
+		<antcall target="release.DELETE"/>
 		<!-- Clear the Tomcat endorsed libraries -->
 		<antcall target="tomcat.RESET"/>
 		<!-- Unpack the Axis binary -->
@@ -2301,14 +2306,22 @@
 		<tomcat.install username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/source" war="file://${basedir}"/>
 	</target>
 
+	<!-- Remove our project webapps-->
+	<target name="release.DELETE" depends="">
+		<delete verbose="true" failonerror="false" dir="${tomcat.home}/webapps/cocoon"/>
+		<delete verbose="true" failonerror="false" file="${tomcat.home}/webapps/cocoon.war"/>
+		<delete verbose="true" failonerror="false" dir="${tomcat.home}/webapps/DataQuery"/>
+		<delete verbose="true" failonerror="false" file="${tomcat.home}/webapps/DataQuery.war"/>
+	</target>
+
 	<!-- Release our project -->
 	<target name="project.RELEASE" depends="">
 		<antcall target="query.release"/>
 		<antcall target="cocoon.release"/>
 		<antcall target="project.webapp.install"/>
 		<echo message="Installing project webapps ...."/>
-		<tomcat.install username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/cocoon" war="file://${basedir}/build/release/cocoon/cocoon.war"/>
-		<tomcat.install username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/DataQuery" war="file://${basedir}/build/release/DataQuery/DataQuery.war"/>
+		<copy verbose="false" file="build/release/cocoon/cocoon.war" toFile="${tomcat.home}/webapps/cocoon.war"/>
+		<copy verbose="false" file="build/release/DataQuery/DataQuery.war" toFile="${tomcat.home}/webapps/DataQuery.war"/>
 	</target>
 
 </project>
