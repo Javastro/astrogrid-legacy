@@ -56,6 +56,14 @@
       <id>log4j</id>
       <version>1.2.8</version>
     </dependency>
+    <dependency>
+			<artifactId>jconfig</artifactId>
+			<groupId>jconfig</groupId>
+			<version>2.1</version>
+			<properties>
+				<war.bundle>true</war.bundle>
+			</properties>
+	</dependency>
   </dependencies>
   
   <build>
