@@ -21,10 +21,8 @@ public class WarehouseQuerierClient
 {
   public static void main(String args[]) throws Exception {
 
-    SimpleConfig.autoLoad();
-
     String errorString = 
-      "Usage: java WarehouseQuerierClient sql_query";
+      "Usage: java WarehouseQuerierClient <properties_fileName> <sql_query>";
 
     // We're not running within a datacenter;  throw junk
     // parameters at the constructor as we won't be using them.
@@ -32,22 +30,31 @@ public class WarehouseQuerierClient
     WarehouseQuerier querier = new WarehouseQuerier("Blah", null);
 
     String sql;
+    String propertiesFile;
     try {
       int len = args.length;
       if (len == 0) {
         throw new DatabaseAccessException(errorString);
       }
-      sql = args[0];
+      propertiesFile= args[0];
+      if (propertiesFile.equals(null)) {
+        throw new DatabaseAccessException(errorString);
+      }
+      sql = args[1];
       if (sql.equals(null)) {
         throw new DatabaseAccessException(errorString);
       }
-      if (len > 1) {
+      if (len > 2) {
         throw new DatabaseAccessException(errorString);
       }
     }
     catch (ArrayIndexOutOfBoundsException e) {
       throw new DatabaseAccessException(errorString);
     }
+    // Load config properties from config file
+    SimpleConfig.load(propertiesFile);
+
+    // Do actual query
     Document result = querier.doShelledOutQuery(sql, null); 
     printNode(result);
   }
