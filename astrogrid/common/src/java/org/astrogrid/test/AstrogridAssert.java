@@ -1,4 +1,4 @@
-/*$Id: AstrogridAssert.java,v 1.5 2004/09/02 10:14:00 nw Exp $
+/*$Id: AstrogridAssert.java,v 1.6 2004/09/02 11:25:25 nw Exp $
  * Created on 27-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -59,7 +59,7 @@ public class AstrogridAssert extends XMLAssert{
         VOTABLE_SYSTEM_ID = AstrogridAssert.class.getResource("VOTable.dtd");
     }
     /** system id for votable dtd - i.e. absolute location on classpath of votable dtd */
-    public static final URL VOTABLE_SYSTEM_ID;
+    public static URL VOTABLE_SYSTEM_ID;
     /** doctype for votable */
     public static final String VOTABLE_DOCTYPE = "VOTABLE";
     
@@ -166,7 +166,7 @@ public class AstrogridAssert extends XMLAssert{
      */
     public static void assertSchemaValid(String xml,String rootElementName,Map schemaLocations) {
         try {
-            assertXpathEvaluatesTo(rootElementName,"local-name(/node())",xml);
+            assertXpathEvaluatesTo(rootElementName,"local-name(/*)",xml);
         } catch (Exception e) {
             fail("Failed to extract root element name " + e.getMessage());
         }
@@ -225,7 +225,7 @@ public class AstrogridAssert extends XMLAssert{
         
         String locationString = mkSchemaLocationString(schemaLocations);
         try {
-            XMLReader reader = XMLReaderFactory.createXMLReader();            
+            XMLReader reader = XMLReaderFactory.createXMLReader("org.apache.xerces.parsers.SAXParser");
             reader.setFeature("http://xml.org/sax/features/validation",true);
             reader.setFeature("http://apache.org/xml/features/validation/schema",true);
             reader.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation",locationString);                
@@ -315,6 +315,9 @@ public class AstrogridAssert extends XMLAssert{
 
 /* 
 $Log: AstrogridAssert.java,v $
+Revision 1.6  2004/09/02 11:25:25  nw
+got schema validation working.
+
 Revision 1.5  2004/09/02 10:14:00  nw
 improved documentation
 
