@@ -36,14 +36,21 @@
 <property name="maven.war.webapp.dir" location="${maven.build.dir}/${pom.artifactId}" /> <!-- set this early to default - does not seem to be set n the war:webapp post goal -->
 
 <goal name="astrogrid-deploy-site">
-	    <attainGoal name="builddelegate" />
 	    <mkdir dir="${maven.build.dest}" />
 	    <attainGoal name="site" /><!-- NWW: added - necessary, as site:fsdeploy won't do it by itself -->
 		<attainGoal name="site:fsdeploy" />
 </goal>
 
-<goal name="astrogrid-deploy-snapshot" prereqs="jar:deploy-snapshot,war:deploy-snapshot" />
-<goal name="astrogrid-install-snapshot" prereqs="jar:install-snapshot,war:install-snapshot" />
+<goal name="astrogrid-install-snapshot">
+        <maven:maven descriptor="${basedir}/delegate-project.xml" goals="jar:install-snapshot" />
+        <attainGoal name="jar:install-snapshot" />
+        <attainGoal name="war:install-snapshot" />
+</goal>
+<goal name="astrogrid-deploy-snapshot">
+		<maven:maven descriptor="${basedir}/delegate-project.xml" goals="jar:deploy-snapshot" />
+        <attainGoal name="jar:deploy-snapshot" />
+        <attainGoal name="war:deploy-snapshot" />
+</goal>
 <goal name="astrogrid-deploy-artifact" prereqs="jar:deploy,war:deploy"/>
 
 
@@ -170,17 +177,6 @@ RegistryTemplate=file://${basedir}/config/CEARegistryTemplate.xml
      </javac>
   </goal>
 
-  <goal name="generate-delegate" description="generate classes from wsdl" prereqs="axis-declare-tasks">
-  	<delete><!-- clean out to start with -->
-  	     <!-- need to save the server side skeleton -->
-		<fileset dir="${generated.src}" >
-			<include name="**/*.java" />
-			<include name="**/*.class" />
-			<include name="**/*.wsdd" />
-		</fileset>
-	</delete>
-	<attainGoal name="wsdl2java" />
-   </goal>
    
    <goal name="java2wsdl" prereqs="axis-declare-tasks">
      <maven:addPath id="maven.dependency.classpath" refid="axis.classpath"/>
@@ -206,9 +202,6 @@ RegistryTemplate=file://${basedir}/config/CEARegistryTemplate.xml
      
    <property name="wsdl.file" value="${generated.dir}/wsdl/${appint.service.name}.wsdl"/>
    
-   <goal name="service-prepare-dependencies" prereqs="jar">
-   <!-- do not really need to to this with the maven war goal - use that instead....-->
-   </goal>
 
 
 <!-- stand - alone goals - not addons to main build -->
@@ -288,6 +281,15 @@ RegistryTemplate=file://${basedir}/config/CEARegistryTemplate.xml
         <arg value="server"/>
         <arg value="${working.dir}/wsdd/CommonExecutionConnector-deploy.wsdd"/>
 	</java>
+	
+<!--Try noels way...          
+        ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
+        <xslt in="${working.dir}/wsdd/CommonExecutionConnector-deploy.wsdd"
+              out="${maven.war.webapp.dir}/WEB-INF/server-config.wsdd"
+              extension=".wsdd"
+              style="${basedir}/src/xslt/server-config.xsl"
+        />
+ -->
 
 </goal>
     
@@ -338,21 +340,6 @@ RegistryTemplate=file://${basedir}/config/CEARegistryTemplate.xml
         
     </goal>
 <!-- boilerplate below here -->
- <!-- <goal name="dataserver-deploy" description="fire wsdd at axis to deploy dataserver"
-  	prereqs="axis-declare-tasks">
-  	<axis-admin xmlfile="wsdd/AxisDataServer-deploy.wsdd" />
-  </goal>
-
-  <goal name="dataserver-undeploy" description="fire wsdd at axis to undeploy dataserver"
-   	prereqs="axis-declare-tasks">
-  	<axis-admin xmlfile="wsdd/AxisDataServer-undeploy.wsdd" />
-  </goal>
-    <preGoal name="test:test">
-    <j:thread>
-      <attainGoal name="start_test_server"/>
-    </j:thread>
-    <sleep seconds="10"/>
-  </preGoal>
 
   
 -->
