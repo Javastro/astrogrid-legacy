@@ -2,13 +2,16 @@
 <!--
 <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/Attic/build.xml,v $</cvs:source>
 <cvs:date>$Author: dave $</cvs:date>
-<cvs:author>$Date: 2003/06/03 13:45:22 $</cvs:author>
-<cvs:version>$Revision: 1.4 $</cvs:version>
+<cvs:author>$Date: 2003/06/04 10:00:25 $</cvs:author>
+<cvs:version>$Revision: 1.5 $</cvs:version>
 <cvs:log>
 	$Log: build.xml,v $
+	Revision 1.5  2003/06/04 10:00:25  dave
+	Removed reference to lib directory
+
 	Revision 1.4  2003/06/03 13:45:22  dave
 	Removed lib from classpath reference
-
+	
 	Revision 1.3  2003/06/03 13:16:47  dave
 	Added initial iter 02 code
 	
@@ -158,8 +161,6 @@
 		<path id="test.classpath">
 			<!-- Our own classes -->
 			<pathelement path="build/classes"/>
-			<!-- Our own libraries -->
-			<fileset dir="lib" includes="**/*.jar"/>
 			<!-- The JUnit libraries -->
 			<pathelement path="${junit.classpath}"/>
 			<!-- FIXME (required since JDK 1.4.2) -->
