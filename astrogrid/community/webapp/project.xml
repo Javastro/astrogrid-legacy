@@ -4,10 +4,13 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/webapp/project.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/03/30 01:40:04 $</cvs:date>
-    | <cvs:version>$Revision: 1.8 $</cvs:version>
+    | <cvs:date>$Date: 2004/04/15 16:20:50 $</cvs:date>
+    | <cvs:version>$Revision: 1.9 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.9  2004/04/15 16:20:50  dave
+    |   Updated webapp depends to include VoSpaceClient
+    |
     |   Revision 1.8  2004/03/30 01:40:04  dave
     |   Merged development branch, dave-dev-200403242058, into HEAD
     |
@@ -197,21 +200,17 @@
             </properties>
         </dependency>
         <!--+
-            | The new Castor libraries.
-            | Can't use these yet, because the mapping file URL has moved.
-        <dependency>
-            <groupId>castor</groupId>
-            <artifactId>castor</artifactId>
-            <version>0.9.5.3</version>
-            <type>jar</type>
-            <url>http://www.castor.org/</url>
-            <properties>
-                <war.bundle>true</war.bundle>
-            </properties>
-        </dependency>
+            | The MySpace delegate.
             +-->
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>astrogrid-mySpace</artifactId>
+            <version>${pom.currentVersion}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+        </dependency>
         <!--+
-            | The old Castor JDO library.
+            | The Castor JDO library.
             +-->
         <dependency>
             <groupId>castor</groupId>
@@ -236,8 +235,7 @@
             </properties>
         </dependency>
         <!--+
-            | The old Castor XML library - required for Registry delegate.
-            | Not required if we use the new libraries.
+            | The Castor XML library - required for Registry delegate.
             +-->
         <dependency>
             <groupId>castor</groupId>
