@@ -200,6 +200,7 @@ function openRightTab(){
 </xsl:choose>
 </xsl:variable>
 
+<xsl:variable name="DQtableID"><xsl:value-of select="//*/DQtableID" /></xsl:variable>
 <!--
 <div id="itchy" style="position:absolute"><ilayer name="itchy4" bgcolor="#eeeeee">
 </div>
@@ -551,7 +552,7 @@ FROM USNO as u SELECT * where u.bmag2 &lt; 15
 </center>
 </form>
 
-<xsl:if test="//*/profile/hintsOn = 'true' and /AstroGrid/DQtableID = 'null'">
+<xsl:if test="//*/profile/hintsOn = 'true' and $DQtableID = 'AGblank'">
 <div id="tipsi" height="100" width="300" style="border: solid 1px orange; display: none">
 <table class="compact14" border="0" width="100%">
 <tr><td align="left">
