@@ -1,0 +1,74 @@
+<HTML>
+<STYLE>
+A:link {text-decoration: underline; color: darkmagenta;}
+A:visited {text-decoration: underline; color: darkmagenta;}
+#f0 { font-family: "Helvetica"; font-size: 10pt;  }
+#f1 { font-family: "SansSerif"; font-size: 10pt;  }
+#f2 { font-family: "SansSerif"; font-size: 8pt;  }
+#f3 { font-family: "SansSerif"; font-size: 14pt; font-style: italic; font-weight: bold; color: #FFFFFF;  }
+#f4 { font-family: "SansSerif"; font-size: 12pt; font-weight: bold; color: #FFFFFF;  }
+#f5 { font-family: "SansSerif"; font-size: 12pt; font-style: italic;  }
+#f6 { font-family: "SansSerif"; font-size: 12pt; font-weight: bold;  }
+#f7 { font-family: "SansSerif"; font-size: 8pt; font-weight: bold;  }
+#f8 { font-family: "SansSerif"; font-size: 10pt; font-style: italic; font-weight: bold;  }
+#f9 { font-family: "SansSerif"; font-size: 11pt; font-style: italic; font-weight: bold;  }
+#f10 { font-family: "SansSerif"; font-size: 10pt; font-style: italic;  }
+#f11 { font-family: "SansSerif"; font-size: 10pt; font-weight: bold;  }
+#f12 { font-family: "SansSerif"; font-size: 9pt; font-style: italic; font-weight: bold;  }
+#f13 { font-family: "SansSerif"; font-size: 9pt; font-weight: bold;  }
+#f14 { font-family: "SansSerif"; font-size: 9pt;  }
+#f15 { font-family: "SansSerif"; font-size: 8pt; font-style: italic;  }
+#f16 { font-family: "monospace"; font-size: 9pt;  }
+#f17 { font-family: "SansSerif"; font-size: 9pt; font-weight: bold; color: #800080;  }
+#f18 { font-family: "SansSerif"; font-size: 8pt; font-style: italic; font-weight: bold;  }
+</STYLE>
+<BODY BGCOLOR="white">
+<BASEFONT ID="f0">
+<DIV STYLE="margin-left:2pt;margin-top:5pt;"><IMG SRC="doc-images/ActivityDiagram6.png"> <FONT ID="f6">Activity Diagram</FONT> <FONT ID="f5"><U>register-resource</U></FONT></DIV>
+<DIV STYLE="margin-left:3pt;margin-top:4pt;"><FONT ID="f2">package:</FONT> <FONT ID="f7"><A HREF="Package.html">use-cases</A></FONT></DIV>
+<DIV STYLE="margin-top:16pt;margin-left:2pt;"><IMG SRC="doc-images/register-resource_ActivityDiagram.gif" USEMAP="#M1"><MAP NAME="M1"><AREA SHAPE="rect" COORDS="60,63,230,90" HREF="register-resource.html#R1"><AREA SHAPE="rect" COORDS="60,300,230,330" HREF="register-resource.html#R2"><AREA SHAPE="rect" COORDS="61,241,231,270" HREF="register-resource.html#R3"><AREA SHAPE="rect" COORDS="61,180,230,210" HREF="register-resource.html#R4"><AREA SHAPE="rect" COORDS="60,120,226,146" HREF="register-resource.html#R5"></MAP></DIV>
+<DIV STYLE="margin-top:16pt;margin-left:2pt;"><FONT ID="f8" STYLE="background-color:#DCDCDC;">Diagram Contents Summary</FONT></DIV>
+<DIV STYLE="margin-left:10pt;margin-top:8pt;"><IMG SRC="doc-images/tv-activity6.png"> <FONT ID="f7">Activity </FONT><FONT ID="f2"><U><A HREF="register-resource.html#R5">Choose authority ID</A></U></FONT></DIV>
+<DIV STYLE="margin-left:10pt;margin-top:2pt;"><IMG SRC="doc-images/tv-activity6.png"> <FONT ID="f7">Activity </FONT><FONT ID="f2"><U><A HREF="register-resource.html#R1">Choose registry</A></U></FONT></DIV>
+<DIV STYLE="margin-left:10pt;margin-top:2pt;"><IMG SRC="doc-images/tv-activity6.png"> <FONT ID="f7">Activity </FONT><FONT ID="f2"><U><A HREF="register-resource.html#R4">Choose resource key</A></U></FONT></DIV>
+<DIV STYLE="margin-left:10pt;margin-top:2pt;"><IMG SRC="doc-images/tv-activity6.png"> <FONT ID="f7">Activity </FONT><FONT ID="f2"><U><A HREF="register-resource.html#R3">Create VOResource</A></U></FONT></DIV>
+<DIV STYLE="margin-left:10pt;margin-top:2pt;"><IMG SRC="doc-images/tv-activity6.png"> <FONT ID="f7">Activity </FONT><FONT ID="f2"><U><A HREF="register-resource.html#R2">Upload VOResource</A></U></FONT></DIV>
+<DIV STYLE="margin-top:13pt;margin-left:2pt;"><TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="98%"><TR BGCOLOR="#C0C0C0"><TD><FONT ID="f9">Activity Detail</FONT></TD></TR></TABLE></DIV>
+<DIV STYLE="margin-left:2pt;margin-top:11pt;"><IMG SRC="doc-images/Activity6.png"> <FONT ID="f11"><A NAME="R5"></A>Activity </FONT><FONT ID="f10">Choose authority ID</FONT></DIV>
+<DIV STYLE="margin-top:8pt;margin-left:17pt;"><FONT ID="f2">User chooses the authority ID for the resource to be registered. In the current, AstroGrid system, this must be the single authority ID that is managed by the chosen registry. Use rcan look up this ID by querying the chosen registry through its web interface.</FONT></DIV>
+<DIV STYLE="margin-top:13pt;margin-left:17pt;"><FONT ID="f12" STYLE="background-color:#DCDCDC;">Transition links</FONT></DIV>
+<DIV STYLE="margin-left:23pt;margin-top:8pt;"><FONT ID="f14"><A NAME="R6"></A>to</FONT><FONT ID="f14"> </FONT><FONT ID="f13">Activity</FONT><FONT ID="f14"> </FONT><FONT ID="f14"><U><A HREF="register-resource.html#R4">Choose resource key</A></U></FONT></DIV>
+<DIV STYLE="margin-left:2pt;margin-top:16pt;"><IMG SRC="doc-images/Activity6.png"> <FONT ID="f11"><A NAME="R1"></A>Activity </FONT><FONT ID="f10">Choose registry</FONT></DIV>
+<DIV STYLE="margin-top:8pt;margin-left:17pt;"><FONT ID="f2">User chooses the publishing registry in which to make the registration. In a mature VO, all registrations eventually propgate to all full registries via the harvesting process, so the choice of publishing registry is a matter of convenience. In the short term, harvesting is probably incomplete, so User must choose the publishing registry to suit the intended spread of the information.</FONT></DIV>
+<DIV STYLE="margin-top:13pt;margin-left:17pt;"><FONT ID="f12" STYLE="background-color:#DCDCDC;">Transition links</FONT></DIV>
+<DIV STYLE="margin-left:23pt;margin-top:8pt;"><FONT ID="f14"><A NAME="R7"></A>to</FONT><FONT ID="f14"> </FONT><FONT ID="f13">Activity</FONT><FONT ID="f14"> </FONT><FONT ID="f14"><U><A HREF="register-resource.html#R5">Choose authority ID</A></U></FONT></DIV>
+<DIV STYLE="margin-left:2pt;margin-top:16pt;"><IMG SRC="doc-images/Activity6.png"> <FONT ID="f11"><A NAME="R4"></A>Activity </FONT><FONT ID="f10">Choose resource key</FONT></DIV>
+<DIV STYLE="margin-top:8pt;margin-left:17pt;"><FONT ID="f2">User chooses the resource key for the new resource. The key must be unique within the registry. User can trawl through the entire registry checking uniqueness, or can agree a key with the registry operator.</FONT></DIV>
+<DIV STYLE="margin-top:13pt;margin-left:17pt;"><FONT ID="f12" STYLE="background-color:#DCDCDC;">Transition links</FONT></DIV>
+<DIV STYLE="margin-left:23pt;margin-top:8pt;"><FONT ID="f14"><A NAME="R8"></A>to</FONT><FONT ID="f14"> </FONT><FONT ID="f13">Activity</FONT><FONT ID="f14"> </FONT><FONT ID="f14"><U><A HREF="register-resource.html#R3">Create VOResource</A></U></FONT></DIV>
+<DIV STYLE="margin-left:2pt;margin-top:16pt;"><IMG SRC="doc-images/Activity6.png"> <FONT ID="f11"><A NAME="R3"></A>Activity </FONT><FONT ID="f10">Create VOResource</FONT></DIV>
+<DIV STYLE="margin-top:8pt;margin-left:17pt;"><FONT ID="f2"><p> 
+User creates the resource metadata, an XML document of type VOresource, as a local file. User should validate this file using XML tools; the registry does not validate the VOResources it receives. 
+</p> 
+<p> 
+Most registrations use a sub-type of the basic VOResource. The types that are most relevant to AstroGrid are: 
+</p> 
+<dl> 
+<dt>ceaApplicationType</dt> 
+<dd>an application that can be run in a job-step</dd> 
+<dt>ceaServiceType</dt> 
+<dd> a job-manager service that can execute job-steps</dd> 
+<dt>serviceType</dt> 
+<dd>a generic, non-CEA service; used to register MySpace services/dd> 
+<dt>tabularSkyServiceType</dt> 
+<dd>a catalogue-archive service with non-CEA interfaces</dd> 
+</dl> 
+<p> 
+The types refer to W3C XML schemata published by IVOA. 
+</p></FONT></DIV>
+<DIV STYLE="margin-top:13pt;margin-left:17pt;"><FONT ID="f12" STYLE="background-color:#DCDCDC;">Transition links</FONT></DIV>
+<DIV STYLE="margin-left:23pt;margin-top:8pt;"><FONT ID="f14"><A NAME="R9"></A>to</FONT><FONT ID="f14"> </FONT><FONT ID="f13">Activity</FONT><FONT ID="f14"> </FONT><FONT ID="f14"><U><A HREF="register-resource.html#R2">Upload VOResource</A></U></FONT></DIV>
+<DIV STYLE="margin-left:2pt;margin-top:16pt;"><IMG SRC="doc-images/Activity6.png"> <FONT ID="f11"><A NAME="R2"></A>Activity </FONT><FONT ID="f10">Upload VOResource</FONT></DIV>
+<DIV STYLE="margin-top:8pt;margin-left:17pt;"><FONT ID="f2">User navigates to the registry's web interface using a web browser. User navigates to the page for adding a registry entry: this is a form with a text-entry box for entering a VODescription element. User copies his VOResource element into the desktop clipboard and pastes it into the VODescription in the form. user submits the form; the registry adds the VOResources to its collection of metadata.</FONT></DIV>
+</BODY>
+</HTML>

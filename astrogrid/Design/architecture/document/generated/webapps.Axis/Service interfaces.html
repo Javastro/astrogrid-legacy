@@ -24,7 +24,7 @@ A:visited {text-decoration: underline; color: darkmagenta;}
 </STYLE>
 <BODY BGCOLOR="white">
 <BASEFONT ID="f0">
-<DIV STYLE="margin-left:2pt;margin-top:6pt;"><IMG SRC="doc-images/ClassDiagram4.png"> <FONT ID="f6">Class Diagram</FONT> <FONT ID="f5"><U>Service interfaces</U></FONT></DIV>
+<DIV STYLE="margin-left:2pt;margin-top:6pt;"><IMG SRC="doc-images/ClassDiagram6.png"> <FONT ID="f6">Class Diagram</FONT> <FONT ID="f5"><U>Service interfaces</U></FONT></DIV>
 <DIV STYLE="margin-left:3pt;margin-top:4pt;"><FONT ID="f2">package:</FONT> <FONT ID="f7"><A HREF="Package.html">webapps.Axis</A></FONT></DIV>
 <DIV STYLE="margin-top:16pt;margin-left:2pt;"><IMG SRC="doc-images/Service interfaces_ClassDiagram.gif" USEMAP="#M1"><MAP NAME="M1"></MAP></DIV>
 <DIV STYLE="margin-top:11pt;margin-left:2pt;"><FONT ID="f2"><h2>WSDL contracts and Java interfaces for an AstroGrid web-service</h2><p>The web-service is defined by a Java interface coded by the author. From this are derived two WSDL contracts, one available at compile time and one at run time, after the service is deployed. </p><p>Each contract contains a port-type, a SOAP/HTTP binding for the port-type, and a WSDL service containing just the one port made from the single binding. The two contracts are equivalent but may use different names for their elements. The compile-time contract  has a default service-endpoint, while the run-time contract contains the true endpoint determined by deployment of the service. </p><p>For modelling purposes, the port-type is a specialization of the service-definition interface, the binding is a specialization of the port-type and the WSDL service-element is a specialization of the binding.  All these specializations are trivial: no extra attributes and operations are modelled (although the binding could be modelled to show the encoding details). The WSDL service is thus the interface that represents the web-service on component diagrams. </p><p>The compile-time contract is derived from the service definition in Java. The derivation may either be part of the build process, using Axis tools, or it may have been done as part of coding. In the latter case, the contract is stored in a .wsdl file which may (but need not) be included in the web application.</p><p>The run-time contract is typically derived from introspection, by the Axis framework, of the service implementation-class. Since the implementation class formally implements the service-definition interface, this means that the run-time contract is closely equivalent to the compile-time contract.  
@@ -40,18 +40,18 @@ or from the implementation class
 but not from both.</FONT></DIV>
 <DIV STYLE="margin-top:19pt;"><FONT ID="f8" STYLE="background-color:#DCDCDC;">Shortcuts to Elements</FONT></DIV>
 <DIV STYLE="margin-left:3pt;margin-top:9pt;"><IMG SRC="doc-images/icon_s11.png"> <FONT ID="f14">of</FONT> <FONT ID="f18">ClassDiagram</FONT> <FONT ID="f14"><U>Axis</U></FONT></DIV>
-<DIV STYLE="margin-left:13pt;margin-top:6pt;"><IMG SRC="doc-images/tv-interface4.png"> <FONT ID="f7">Interface </FONT><FONT ID="f2"><U>webapps.Axis.Binding</U></FONT></DIV>
+<DIV STYLE="margin-left:13pt;margin-top:6pt;"><IMG SRC="doc-images/tv-interface6.png"> <FONT ID="f7">Interface </FONT><FONT ID="f2"><U>webapps.Axis.Binding</U></FONT></DIV>
 <DIV STYLE="margin-left:3pt;margin-top:9pt;"><IMG SRC="doc-images/icon_s11.png"> <FONT ID="f14">of</FONT> <FONT ID="f18">ClassDiagram</FONT> <FONT ID="f14"><U>Axis</U></FONT></DIV>
-<DIV STYLE="margin-left:13pt;margin-top:6pt;"><IMG SRC="doc-images/tv-interface4.png"> <FONT ID="f7">Interface </FONT><FONT ID="f2"><U>webapps.Axis.CompileTimeContract</U></FONT></DIV>
+<DIV STYLE="margin-left:13pt;margin-top:6pt;"><IMG SRC="doc-images/tv-interface6.png"> <FONT ID="f7">Interface </FONT><FONT ID="f2"><U>webapps.Axis.CompileTimeContract</U></FONT></DIV>
 <DIV STYLE="margin-left:3pt;margin-top:9pt;"><IMG SRC="doc-images/icon_s11.png"> <FONT ID="f14">of</FONT> <FONT ID="f18">ClassDiagram</FONT> <FONT ID="f14"><U>Axis</U></FONT></DIV>
-<DIV STYLE="margin-left:13pt;margin-top:6pt;"><IMG SRC="doc-images/tv-interface4.png"> <FONT ID="f7">Interface </FONT><FONT ID="f2"><U>webapps.Axis.PortType</U></FONT></DIV>
+<DIV STYLE="margin-left:13pt;margin-top:6pt;"><IMG SRC="doc-images/tv-interface6.png"> <FONT ID="f7">Interface </FONT><FONT ID="f2"><U>webapps.Axis.PortType</U></FONT></DIV>
 <DIV STYLE="margin-left:3pt;margin-top:9pt;"><IMG SRC="doc-images/icon_s11.png"> <FONT ID="f14">of</FONT> <FONT ID="f18">ClassDiagram</FONT> <FONT ID="f14"><U>Axis</U></FONT></DIV>
-<DIV STYLE="margin-left:13pt;margin-top:6pt;"><IMG SRC="doc-images/tv-interface4.png"> <FONT ID="f7">Interface </FONT><FONT ID="f2"><U>webapps.Axis.RunTimeContract</U></FONT></DIV>
+<DIV STYLE="margin-left:13pt;margin-top:6pt;"><IMG SRC="doc-images/tv-interface6.png"> <FONT ID="f7">Interface </FONT><FONT ID="f2"><U>webapps.Axis.RunTimeContract</U></FONT></DIV>
 <DIV STYLE="margin-left:3pt;margin-top:9pt;"><IMG SRC="doc-images/icon_s11.png"> <FONT ID="f14">of</FONT> <FONT ID="f18">ClassDiagram</FONT> <FONT ID="f14"><U>Axis</U></FONT></DIV>
-<DIV STYLE="margin-left:13pt;margin-top:6pt;"><IMG SRC="doc-images/tv-interface4.png"> <FONT ID="f7">Interface </FONT><FONT ID="f2"><U>webapps.Axis.Service</U></FONT></DIV>
+<DIV STYLE="margin-left:13pt;margin-top:6pt;"><IMG SRC="doc-images/tv-interface6.png"> <FONT ID="f7">Interface </FONT><FONT ID="f2"><U>webapps.Axis.Service</U></FONT></DIV>
 <DIV STYLE="margin-left:3pt;margin-top:9pt;"><IMG SRC="doc-images/icon_s11.png"> <FONT ID="f14">of</FONT> <FONT ID="f18">ClassDiagram</FONT> <FONT ID="f14"><U>Axis</U></FONT></DIV>
-<DIV STYLE="margin-left:13pt;margin-top:6pt;"><IMG SRC="doc-images/tv-interface4.png"> <FONT ID="f7">Interface </FONT><FONT ID="f2"><U>webapps.Axis.ServiceDefinition</U></FONT></DIV>
+<DIV STYLE="margin-left:13pt;margin-top:6pt;"><IMG SRC="doc-images/tv-interface6.png"> <FONT ID="f7">Interface </FONT><FONT ID="f2"><U>webapps.Axis.ServiceDefinition</U></FONT></DIV>
 <DIV STYLE="margin-left:3pt;margin-top:9pt;"><IMG SRC="doc-images/icon_s11.png"> <FONT ID="f14">of</FONT> <FONT ID="f18">ClassDiagram</FONT> <FONT ID="f14"><U>Axis</U></FONT></DIV>
-<DIV STYLE="margin-left:13pt;margin-top:6pt;"><IMG SRC="doc-images/tv-class4.png"> <FONT ID="f7">Class </FONT><FONT ID="f2"><U>webapps.Axis.ServiceImplementation</U></FONT></DIV>
+<DIV STYLE="margin-left:13pt;margin-top:6pt;"><IMG SRC="doc-images/tv-class6.png"> <FONT ID="f7">Class </FONT><FONT ID="f2"><U>webapps.Axis.ServiceImplementation</U></FONT></DIV>
 </BODY>
 </HTML>
