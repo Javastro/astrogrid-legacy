@@ -43,6 +43,7 @@
 </goal>
 
 <goal name="astrogrid-deploy-snapshot" prereqs="jar:deploy-snapshot,war:deploy-snapshot" />
+<goal name="astrogrid-install-snapshot" prereqs="jar:install-snapshot,war:install-snapshot" />
 <goal name="astrogrid-deploy-artifact" prereqs="jar:deploy,war:deploy"/>
 
 

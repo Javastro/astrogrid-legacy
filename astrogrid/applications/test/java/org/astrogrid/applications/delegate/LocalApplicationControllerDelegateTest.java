@@ -1,5 +1,5 @@
 /*
- * $Id: LocalApplicationControllerDelegateTest.java,v 1.5 2004/04/14 13:19:48 pah Exp $
+ * $Id: LocalApplicationControllerDelegateTest.java,v 1.6 2004/04/15 08:45:51 pah Exp $
  * 
  * Created on 08-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -56,7 +56,7 @@ public class LocalApplicationControllerDelegateTest extends AbstractDelegateTest
          e1.printStackTrace();
       }
       endpoint = "local:///CommonExecutionConnectorService";
-      String[] args = { "-d", "-l", endpoint, deployFile.getAbsolutePath()};
+      String[] args = { "-d", "-l", "local:///AdminService", deployFile.getAbsolutePath()};
       try {
          org.apache.axis.client.AdminClient.main(args);
       }

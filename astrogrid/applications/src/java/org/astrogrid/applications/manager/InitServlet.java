@@ -1,5 +1,5 @@
 /*
- * $Id: InitServlet.java,v 1.1 2004/04/14 16:08:30 pah Exp $
+ * $Id: InitServlet.java,v 1.2 2004/04/15 08:45:51 pah Exp $
  * 
  * Created on 14-Apr-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -29,6 +29,8 @@ import org.astrogrid.applications.delegate.DelegateFactory;
  */
 public class InitServlet extends HttpServlet {
 
+   static private org.apache.commons.logging.Log logger =
+      org.apache.commons.logging.LogFactory.getLog(InitServlet.class);
    /**
     * 
     */
@@ -44,6 +46,7 @@ public class InitServlet extends HttpServlet {
       // build the service endpoint & then call the service
       
       String endpoint = conf.getServletContext().getRealPath("services/CommonExecutionConnectorService");
+      logger.info("initializing service at endpoint="+endpoint);
       
       CommonExecutionConnectorClient client = DelegateFactory.createDelegate(endpoint);
       try {
