@@ -168,7 +168,8 @@ public class DataQueryServlet extends HttpServlet {
 	private String send(QueryBuilder qb) {
 	  //this method will probably go away and call the Stubbs in the ASTQuery object to form
 	  //the xml needed for the query and send it to the webservice.
-        JobControllerServiceSoapBindingStub binding;
+        //JobControllerServiceSoapBindingStub binding;
+        org.astrogrid.portal.generated.jobcontroller.client.JobController binding;
         String xmlBuildResult = null;
         try {
 			CreateRequest cr = new CreateRequest();
@@ -177,9 +178,9 @@ public class DataQueryServlet extends HttpServlet {
 			xmlBuildResult = cr.writeDocument(doc);
 			//xmlBuildResult = xmlBuildResult.substring(xmlBuildResult.indexOf("<jo"));
 			System.out.println("The XmL going to the webservice is = " + xmlBuildResult);
-
-            binding = (org.astrogrid.portal.generated.jobcontroller.client.JobControllerServiceSoapBindingStub)
-                          new org.astrogrid.portal.generated.jobcontroller.client.JobControllerServiceLocator().getJobControllerService();
+			binding = new org.astrogrid.portal.generated.jobcontroller.client.JobControllerServiceLocator().getJobControllerService();
+//            binding = (org.astrogrid.portal.generated.jobcontroller.client.JobControllerServiceSoapBindingStub)
+//                          new org.astrogrid.portal.generated.jobcontroller.client.JobControllerServiceLocator().getJobControllerService();
 
         	String response = binding.submitJob(xmlBuildResult);
   //      	String response = binding.runQuery(new String());
