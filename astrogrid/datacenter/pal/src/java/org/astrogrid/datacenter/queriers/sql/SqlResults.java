@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.10 2004/11/05 12:26:49 mch Exp $
+ * $Id: SqlResults.java,v 1.11 2004/11/08 15:04:15 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -154,6 +154,7 @@ public class SqlResults extends QueryResults {
             }
          }
          statusToUpdate.addDetail(row+" rows sent");
+         statusToUpdate.clearProgress();
          
          printOut.println("</TABLEDATA>");
          printOut.println("</DATA>");
@@ -236,6 +237,7 @@ public class SqlResults extends QueryResults {
             }
          }
          statusToUpdate.addDetail(row+" rows sent");
+         statusToUpdate.clearProgress();
          
          printOut.println("</TABLE>");
          printOut.println("</BODY>");
@@ -308,6 +310,7 @@ public class SqlResults extends QueryResults {
          }
 
          statusToUpdate.addDetail(row+" rows sent");
+         statusToUpdate.clearProgress();
          
          printOut.flush();
       }
@@ -336,6 +339,9 @@ public class SqlResults extends QueryResults {
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.11  2004/11/08 15:04:15  mch
+ cleared progress once complete
+
  Revision 1.10  2004/11/05 12:26:49  mch
  Renamed RdbmsResourcePlugin
 
