@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForWorkflow.java,v 1.5 2004/08/05 08:14:20 nw Exp $
+/*$Id: AbstractTestForWorkflow.java,v 1.6 2004/08/12 14:29:39 nw Exp $
  * Created on 30-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -55,7 +55,7 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
     protected JobExecutionService jes;
     protected ApplicationRegistry reg;
     
-    protected abstract void buildWorkflow() throws WorkflowInterfaceException;
+    protected abstract void buildWorkflow() throws  Exception;
 
    public static final long WAIT_TIME = 240 * 1000;
 
@@ -124,6 +124,9 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
 
 /* 
 $Log: AbstractTestForWorkflow.java,v $
+Revision 1.6  2004/08/12 14:29:39  nw
+loosened up an exception type
+
 Revision 1.5  2004/08/05 08:14:20  nw
 minor improvement
 
