@@ -5,8 +5,8 @@
   <goal name="astrogrid-build-artifact" prereqs="jar" />
   <goal name="astrogrid-install-artifact" prereqs="jar:install" />
   <goal name="astrogrid-deploy-site">
-    <attainGoal name="site" />
-    <attainGoal name="site:fsdeploy" />
+    <!--attainGoal name="site" /-->
+    <attainGoal name="site:sshdeploy" />
   </goal>
   <goal name="astrogrid-install-snapshot" prereqs="jar:install-snapshot" />
   <goal name="astrogrid-build-snapshot" prereqs="jar:snapshot" />
