@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- $Id: index.xml,v 1.5 2004/06/18 11:38:09 jdt Exp $ -->
+<!-- $Id: index.xml,v 1.6 2004/07/23 13:28:15 jdt Exp $ -->
 <document>
 	<properties>
 		<title>Astrogrid Releases</title>
@@ -9,11 +9,15 @@
 		<section name="Current Astrogrid Releases">
 			<P> Follow the links to the left for the documentation for the 
 				current releases. This documentation in turn has links to the 
-				binaries and source code. </P>
+				binaries, source code and installation information. </P>
 			<subsection name="Itn06 Snapshot">
-				<P> The latest build is Itn06. This code is undergoing 
+				<P> The latest build is Itn06 Snapshot. This code is undergoing 
 					development and is built several times daily.  The latest Itn06 build is deployed
 					at least once a day to this portal on <a href="http://twmbarlwm.star.le.ac.uk:8080/astrogrid-portal">Twmbarlwm</a>.</P>
+			</subsection>
+			<subsection name="Itn06 Case 3">
+				<P> Case 3 will soon be branched.  The downloads for this case will then be available by following the links on the left.
+					</P>
 			</subsection>
 			<subsection name="Itn05 Release">
 				<P> The latest stable release is Itn05. </P>

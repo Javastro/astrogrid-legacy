@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: navigation.xml,v 1.7 2004/06/18 11:38:09 jdt Exp $ -->
+<!-- $Id: navigation.xml,v 1.8 2004/07/23 13:28:15 jdt Exp $ -->
 <project>
 
   <title>AstroGrid Project</title>
@@ -15,8 +15,20 @@
       <item name="Itn04_1"     href="http://www.astrogrid.org/maven/docs/Itn04_1_release/"/>
       <item name="Itn04"     href="http://wiki.astrogrid.org/bin/view/Astrogrid/SoftwareRelease"/>
     </menu>
-    <menu name="Binaries">
+    <menu name="All Downloads">
     	<item name="Astrogrid Repository" href="http://www.astrogrid.org/maven/org.astrogrid"/>
-    </menu>
+	</menu>
+	<menu name="Itn06 Snapshot">
+			<item name="Webapps" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=*SNAPSHOT*"/>
+			<item name="jars" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=*SNAPSHOT*"/>			
+	</menu>
+	<menu name="Itn06 6 Case 3">
+			<item name="Webapps" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=*case3-SNAPSHOT*"/>
+			<item name="jars" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=*case3-SNAPSHOT*"/>			
+	</menu>
+	<menu name="Itn05_release">
+			<item name="Webapps" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=*Itn05_release*"/>
+			<item name="jars" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=*Itn05_release*"/>			
+	</menu>
   </body>
 </project>
