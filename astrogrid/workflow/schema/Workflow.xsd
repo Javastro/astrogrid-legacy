@@ -19,17 +19,24 @@
 </xsd:element>
 
 <xsd:element name = "userid">
-   <xsd:complexType>
-      <xsd:sequence>
-      </xsd:sequence>
-   </xsd:complexType>
+   <xsd:simpleType>
+      <xsd:restriction base="string">
+      </xsd:restriction>
+   </xsd:simpleType>
 </xsd:element>
 
 <xsd:element name = "community">
-   <xsd:complexType>
-      <xsd:sequence>
-      </xsd:sequence>
-   </xsd:complexType>
+   <xsd:simpleType>
+      <xsd:restriction base="string">
+      </xsd:restriction>
+   </xsd:simpleType>
+</xsd:element>
+
+<xsd:element name = "description">
+   <xsd:simpleType>
+      <xsd:restriction base="string">
+      </xsd:restriction>
+   </xsd:simpleType>
 </xsd:element>
 
 <xsd:element name = "sequence">

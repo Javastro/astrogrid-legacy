@@ -106,7 +106,7 @@ public class Step extends Activity {
                         this.tool = new NullTool() ;   
                     }  
                     else if( element.getTagName().equals( WorkflowDD.QUERY_ELEMENT ) ) {
-                        this.tool = new QueryTool( element ) ;   
+                        this.tool = new Query( element ) ;   
                     }  
                     else if( element.getTagName().equals( WorkflowDD.RESOURCES_ELEMENT ) ) {
                         this.resources = new Resources( element ) ;                
@@ -181,9 +181,13 @@ public class Step extends Activity {
         try {
             
             Object []
-               inserts = new Object[2] ;
-            inserts[0] = this.getTool().toXMLString() ;
-            inserts[1] = ( (this.resources == null)  ?  " "  :  this.resources.toXMLString() ) ;
+               inserts = new Object[6] ;
+            inserts[0] = this.getName() ;
+            inserts[1] = this.getJoinCondition() ;
+            inserts[2] = new Integer( this.getStepNumber() ) ;
+            inserts[3] = new Integer( this.getSequenceNumber() ) ;
+            inserts[4] = this.getTool().toXMLString() ;
+            inserts[5] = ( (this.resources == null)  ?  " "  :  this.resources.toXMLString() ) ;
             
             response = MessageFormat.format( response, inserts ) ;
 

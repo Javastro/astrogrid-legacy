@@ -12,9 +12,7 @@
       -------------------------------------------------- -->
    <sequence>
       <step name="StepOne" stepNumber="1" sequenceNumber="1">
-         <tool>      
-            <nulltool/>
-         </tool>
+         <nulltool/>
       </step>
    </sequence>
 </workflow>

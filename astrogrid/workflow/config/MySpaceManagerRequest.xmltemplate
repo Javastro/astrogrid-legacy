@@ -6,5 +6,12 @@
         <communityID>{1}</communityID> 
         <jobID>{2}</jobID> 
         <serverFileName>{3}</serverFileName> 
+		<mySpaceAction>{4}</mySpaceAction>
+		<dataItemID>{5}</dataItemID>
+		<oldDataItemID>{6}</oldDataItemID>
+		<newDataItemName>{7}</newDataItemName>
+		<newContainerName>{8}</newContainerName>
+		<query>{9}</query>
+		<newDataHolderName>{10}</newDataHolderName>
     </elements> 
 </request>

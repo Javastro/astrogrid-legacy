@@ -37,7 +37,7 @@ public final class NullTool implements Tool {
         logger = Logger.getLogger( NullTool.class ) ; 
     
     public static final String 
-        xmlString = "<tool><nulltool/></tool>";
+        xmlString = "<nulltool/>";
         
         
     public String getToolType() { return "NullTool" ; }

@@ -16,8 +16,12 @@ import java.util.ListIterator;
 import java.util.Map ;
 import java.util.Collections ;
 import java.text.MessageFormat ;
+import java.io.InputStream ;
+import org.xml.sax.* ;
+import java.io.StringReader ;
 
 import org.apache.log4j.Logger ;
+import org.apache.axis.utils.XMLUtils ;
 import org.w3c.dom.* ;
 
 import org.astrogrid.i18n.*;
@@ -103,7 +107,7 @@ public class Workflow extends Activity {
     }
     
     
-    public static Workflow createWorkflow(  String userid, String community, String name  ) {
+    public static Workflow createWorkflow(  String userid, String community, String name, String description  ) {
         if( TRACE_ENABLED ) trace( "Workflow.createWorkflow() entry") ;   
            
         Workflow
@@ -118,7 +122,7 @@ public class Workflow extends Activity {
             workflow.setUserid( userid) ;
             workflow.setCommunity( community ) ;
             workflow.setName( name ) ;
-            workflow.setDescription( "Description goes here" ) ; 
+            workflow.setDescription( description ) ; 
         }
         finally {
             if( TRACE_ENABLED ) trace( "Workflow.createWorkflow() exit") ; 
@@ -127,6 +131,52 @@ public class Workflow extends Activity {
         return workflow ;
         
     } // end createWorkflow()
+    
+    
+    public static Workflow createWorkflowFromTemplate(  String userid
+                                                      , String community
+                                                      , String name
+                                                      , String description
+                                                      , String templateName  ) {
+         if( TRACE_ENABLED ) trace( "Workflow.createWorkflowFromTemplate() entry") ;   
+           
+         Workflow
+             workflow = null ;
+         String
+            templateString = null ;
+          
+         debug( "userid: " + userid ) ;
+         debug( "community: " + community ) ;
+         debug( "name: " + name ) ;          
+            
+         try {
+                         
+             templateString = WKF.getProperty( WKF.WORKFLOW_XML_TEMPLATE
+                                              , WKF.WORKFLOW_CATEGORY ) ;
+                        
+             InputSource
+                source = new InputSource( new StringReader( templateString ) );
+                         
+             workflow = new Workflow( XMLUtils.newDocument(source) ) ;
+             workflow.setUserid( userid) ;
+             workflow.setCommunity( community ) ;
+             workflow.setName( name ) ;
+             workflow.setDescription( description ) ; 
+         }
+         catch( Exception ex) {
+             ;
+         }
+         finally {
+             if( TRACE_ENABLED ) trace( "Workflow.createWorkflowFromTemplate() exit") ; 
+         }
+ 
+         return workflow ;
+        
+     } // end createWorkflowFromTemplate()
+    
+    
+    
+    
         
         
     public static Workflow readWorkflow( String userid, String community, String name ) {
@@ -137,7 +187,7 @@ public class Workflow extends Activity {
          
         try {
             
-            workflow = Workflow.createWorkflow( userid, community, name ) ;
+            workflow = Workflow.createWorkflow( userid, community, name, "" ) ;
 /*        
             MySpaceManagerDelegate
                 mySpace = new MySpaceManagerDelegate( Workflow.locateMySpace( userid, community ) ) ;
@@ -168,18 +218,12 @@ public class Workflow extends Activity {
             retValue = true ;
          
         try {
-  /*      
-            MySpaceManagerDelegate
-                mySpace = new MySpaceManagerDelegate( Workflow.locateMySpace( userid, community ) ) ;
-                
-            //JBL format`the MySpace request here
             
-            String
-                responseXML = mySpace.deleteDataHolder( "" ) ;
-                
-            //JBL decode the response here...
-   */     
+            MySpaceHelper.deleteWorkflow(  userid, community, name ) ; 
 
+        }
+        catch( Exception ex ) {
+            debug( "Exception" ) ;
         }
         finally {
             if( TRACE_ENABLED ) trace( "Workflow.deleteWorkflow() exit") ; 
@@ -198,10 +242,7 @@ public class Workflow extends Activity {
          
      try {
         
-        MySpaceHelper
-            myspace = new MySpaceHelper() ;
-        
-        myspace.saveWorkflow( workflow ) ;
+         MySpaceHelper.saveWorkflow( workflow ) ;
                
      }
      catch( Exception ex ) {
@@ -285,7 +326,16 @@ public class Workflow extends Activity {
                     
                     element = (Element) nodeList.item(i) ;
                 
-                    if ( element.getTagName().equals( WorkflowDD.SEQUENCE_ELEMENT ) ) {
+                    if ( element.getTagName().equals( WorkflowDD.USERID_ELEMENT ) ) {
+                        this.userid = element.getFirstChild().getNodeValue().trim() ;  
+                    }  
+                    else if( element.getTagName().equals( WorkflowDD.COMMUNITY_ELEMENT ) ) {
+                        this.community = element.getFirstChild().getNodeValue().trim() ;
+                    }  
+                    else if( element.getTagName().equals( WorkflowDD.DESCRIPTION_ELEMENT ) ) {
+                        this.description = element.getFirstChild().getNodeValue().trim() ;
+                    }  
+                    else if ( element.getTagName().equals( WorkflowDD.SEQUENCE_ELEMENT ) ) {
                         // We must be certain these appear in StepNumber order!
                         mySequence = new Sequence( element ) ;   
                     }                   
@@ -368,11 +418,12 @@ public class Workflow extends Activity {
         try {
             
             Object []
-               inserts = new Object[4] ;
+               inserts = new Object[5] ;
             inserts[0] = this.name ;
             inserts[1] = this.userid ;
             inserts[2] = this.community ;
-            inserts[3] = mySequence.toXMLString() ;
+            inserts[3] = this.description ;
+            inserts[4] = mySequence.toXMLString() ;
             
             response = MessageFormat.format( response, inserts ) ;
 

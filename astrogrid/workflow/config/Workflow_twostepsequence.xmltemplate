@@ -11,19 +11,15 @@
       | enclosed within a sequence block
       -------------------------------------------------- -->
    <sequence>
-      <step name="StepOne" joinCondition="true" stepNumber="1" sequenceNumber="1">
-         <tool>      
-            <nulltool/>
-         </tool>
+      <step name="StepOne" joinCondition="true" stepNumber="1" sequenceNumber="1">     
+         <nulltool/>
       </step>
       <!--
          | This step will only execute if the previous step
          | executed with a return code of true
          ----------------------------------------------- -->
       <step name="StepTwo" joinCondition="true" stepNumber="2" sequenceNumber="2">
-         <tool>
-            <nulltool/>
-         </tool>
+         <nulltool/>
       </step>
    </sequence>
 </workflow>

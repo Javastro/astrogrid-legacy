@@ -41,7 +41,9 @@ public class WorkflowDD {
         STEP_JOINCONDITION_ATTR = "stepJoinCondition";
         
     public static final String
-        QUERY_ELEMENT = "query",
+        QUERY_ELEMENT = "select",
+        QUERY_NAME_ELEMENT = "queryName",
+        QUERY_DESCRIPTION_ELEMENT = "queryDescription",
         NULL_TOOL_ELEMENT = "nulltool",
         RESOURCES_ELEMENT = "resources";
         
@@ -75,7 +77,7 @@ public class WorkflowDD {
         
     public static final String
         QUERY_TEMPLATE =
-        "<query>" +        "</query>" ;  
+        "<select>" +        "</select>" ;  
         
     public static final String
         RESOURCES_TEMPLATE =

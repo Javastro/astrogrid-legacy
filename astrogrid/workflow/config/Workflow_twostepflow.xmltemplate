@@ -15,15 +15,11 @@
          | These two steps will be dispatched in this order
          | but they will execute in parallel
          ----------------------------------------------- -->
-         <step name="StepOne" stepNumber="1" sequenceNumber="1">
-            <tool>      
-               <nulltool/>
-            </tool>
+         <step name="StepOne" stepNumber="1" sequenceNumber="1">   
+             <nulltool/>
          </step>
          <step name="StepTwo" stepNumber="2" sequenceNumber="1">
-            <tool>
-               <nulltool/>
-            </tool>
+            <nulltool/>
          </step>
       </flow>
    </sequence>

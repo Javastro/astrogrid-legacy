@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream ;
 import java.text.MessageFormat ;
+import java.util.ListIterator;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -80,16 +81,106 @@ public class MySpaceHelper {
         
     private static String
         MYSPACE_SUCCESS = "success" ;
-        
-    private static MySpaceManagerDelegate
-        mySpace ;
     
-    public MySpaceHelper() {
+    private MySpaceHelper() {
     }
     
     
+    public static Workflow readWorkflow( String userid, String community, String name ) {
+        if( TRACE_ENABLED ) trace( "MySpaceHelper.readWorkflow() entry") ; 
+        
+        Workflow
+            workflow = null;
+         
+        try {
+            MySpaceManagerDelegate
+                mySpace = new MySpaceManagerDelegate( WKF.getProperty( WKF.MYSPACE_URL, WKF.MYSPACE_CATEGORY ) ) ;
+              
+            // Format the MySpace request...
+            String
+               requestTemplate = WKF.getProperty( WKF.MYSPACE_REQUEST_TEMPLATE
+                                                , WKF.MYSPACE_CATEGORY ) ;
+/*                                               
+            "<request>" +
+                "<elements>" +
+                    "<userID>clq</userID>" + //Mandatory
+                    "<communityID>Leicester</communityID>" + //Mandatory
+                    "<jobID>testIDIt2</jobID>" + //Mandatory
+                    "<mySpaceAction>lookupDataHolderDetails</mySpaceAction>" +
+                    "<dataItemID></dataItemID>" +
+                    "<oldDataItemID></oldDataItemID>" +
+                    "<newDataItemName></newDataItemName>" + 
+                    "<newContainerName>x</newContainerName>" +
+                    "<query>x</query>" +
+                    "<newDataHolderName>xx</newDataHolderName>" +
+                    "<serverFileName>/clq/serv2/</serverFileName>" + //Mandatory // dataholer need to look up
+                    "<fileSize></fileSize>" +
+                "</elements>" +
+            "</request>"; 
+*/                                                
+                                                
+            Object []
+               inserts = new Object[11] ;
+            inserts[0] = workflow.getUserid() ;
+            inserts[1] = workflow.getCommunity() ;
+            inserts[2] = generateFileName( workflow ) ;
+            inserts[3] = "lookupDataHolderDetails" ;
+            inserts[4] = "" ;
+            inserts[5] = "" ;
+            inserts[6] = "" ;
+            inserts[7] = "" ;
+            inserts[8] = "" ;
+            inserts[9] = "/" + workflow.getUserid() + "/" + "serv2" ;
+            inserts[10] = filePath ;
+            inserts[11] = "" ;
+            
+            String
+               xmlRequest = MessageFormat.format( requestTemplate, inserts );
+            
+            // Get the MySpaceManager to pick up the file...
+            String
+                responseXML = mySpace.upLoad( xmlRequest ) ;
+                
+            diagnoseResponse( responseXML ) ;
+        }
+//        catch( FileNotFoundException fnfex ) {
+//            ;
+//        }
+        catch( MySpaceException msex ) {
+        }
+        catch( Exception ex ) {
+            ;         
+        }
+        catch ( Exception ex ) {
+        }
+        finally {
+            if( TRACE_ENABLED ) trace( "MySpaceHelper.readWorkflow() exit") ; 
+        }
+       
+        return workflow ;
+        
+    }
     
-    public void saveWorkflow( Workflow workflow ) throws WorkflowException {
+    
+    public static boolean deleteWorkflow( String userid, String community, String name  ) {
+        if( TRACE_ENABLED ) trace( "MySpaceHelper.deleteWorkflow() entry") ; 
+        
+        boolean
+            retValue = true ;
+         
+        try {   
+
+        }
+        finally {
+            if( TRACE_ENABLED ) trace( "MySpaceHelper.deleteWorkflow() exit") ; 
+        }
+        
+        return retValue ;
+        
+    }
+       
+    
+    public static void saveWorkflow( Workflow workflow ) throws WorkflowException {
         if( TRACE_ENABLED ) trace( "MySpace.saveWorkflow() entry") ; 
         
         PrintStream
@@ -99,7 +190,7 @@ public class MySpaceHelper {
             
             String
                 xmlWorkflow = workflow.toXMLString(),
-                filePath = this.generateFileName( workflow ) ;
+                filePath = generateFileName( workflow ) ;
  
 /*JBL note. Not so sure about files that may already exist...
                
@@ -126,13 +217,36 @@ public class MySpaceHelper {
             String
                requestTemplate = WKF.getProperty( WKF.MYSPACE_REQUEST_TEMPLATE
                                                 , WKF.MYSPACE_CATEGORY ) ;
+/*                                               
+            "<userID>clq</userID>" + //Mandatory
+            "<communityID>Leicester</communityID>" + //Mandatory
+            "<jobID>testIDIt2</jobID>" + //
+            "<mySpaceAction>upLoad</mySpaceAction>" + 
+            "<dataItemID></dataItemID>" +
+            "<oldDataItemID></oldDataItemID>" +
+            "<newDataItemName></newDataItemName>" +
+            "<newContainerName</newContainerName>" +
+            "<query></query>" +
+            "<newDataHolderName>/clq/serv2/tablexx</newDataHolderName>" + //Mandatory
+            "<serverFileName>/tmp/test</serverFileName>" + //Mandatory //this is the file datacentre will upload
+            "<fileSize>1</fileSize>" + //Mandatory
+*/                                                
                                                 
             Object []
-               inserts = new Object[4] ;
+               inserts = new Object[11] ;
             inserts[0] = workflow.getUserid() ;
             inserts[1] = workflow.getCommunity() ;
-            inserts[2] = this.generateFileName( workflow ) ;
-            inserts[3] = filePath ;
+            inserts[2] = " " ;
+            inserts[3] = "upLoad" ;
+            inserts[4] = " " ;
+            inserts[5] = " " ;
+            inserts[6] = " " ;
+            inserts[7] = " " ;
+            inserts[8] = " " ;
+            inserts[9] = generateDataHolderName( workflow.getUserid()
+                                               , generateFileName( workflow ) ) ;
+            inserts[10] = filePath ;
+            inserts[11] = "1" ;
             
             String
                xmlRequest = MessageFormat.format( requestTemplate, inserts );
@@ -161,7 +275,37 @@ public class MySpaceHelper {
     } // end of saveWorkflow()
     
     
-    private String generateFullyQualifiedPathName( Workflow workflow ) {
+    public static ListIterator readWorkflowList( String userid, String community ) {
+        return null ;
+    }
+    
+    
+    public static Query readQuery( String userid, String community, String name ) {
+        if( TRACE_ENABLED ) trace( "MySpace.readQuery() entry") ; 
+        
+        Query
+            query = null;
+         
+        try {
+                  
+        }
+        catch ( Exception ex ) {
+        }
+        finally {
+            if( TRACE_ENABLED ) trace( "MySpace.readQuery() exit") ; 
+        }
+       
+        return query ;
+        
+    }
+    
+    
+    public static ListIterator readQueryList( String userid, String community ) {
+        return null ;
+    }
+    
+    
+    private static String generateFullyQualifiedPathName( Workflow workflow ) {
         if( TRACE_ENABLED ) trace( "MySpace.generateFullyQualifiedPathName() entry") ; 
         
         StringBuffer
@@ -172,7 +316,7 @@ public class MySpaceHelper {
                 .append( WKF.getProperty( WKF.MYSPACE_CACHE_DIRECTORY
                                         , WKF.MYSPACE_CATEGORY ) )  
                 .append( System.getProperty( "file.separator" ) )
-                .append( this.generateFileName( workflow ) ) ;           
+                .append( generateFileName( workflow ) ) ;           
         }
         finally {
             if( TRACE_ENABLED ) trace( "MySpace.generateFullyQualifiedPathName() exit") ; 
@@ -183,7 +327,7 @@ public class MySpaceHelper {
     } // end of generateFullyQualifiedPathName()
     
     
-    private String generateFileName( Workflow workflow ) {
+    private static String generateFileName( Workflow workflow ) {
         if( TRACE_ENABLED ) trace( "MySpace.generateFileName() entry") ; 
         
         StringBuffer
@@ -206,10 +350,34 @@ public class MySpaceHelper {
          
         return nameBuffer.toString() ;
         
-    } // end of generateFileName()   
+    } // end of generateFileName()  
     
     
-    private void diagnoseResponse( String responseXML ) throws MySpaceException {    
+    private static String generateDataHolderName( String userid, String fileName ) {
+        if( TRACE_ENABLED ) trace( "MySpaceHelper.generateDataHolderName() entry") ;
+        
+        StringBuffer
+            retVal = new StringBuffer( 64 ) ;
+        
+        try {
+            retVal
+                .append( "/" )
+                .append( userid )
+                .append( "/" )
+                .append( "serv1")
+                .append( "/")
+                .append( fileName ) ;
+        }
+        finally {
+            
+        }
+        
+        return retVal.toString() ;
+        
+    }
+    
+    
+    private static void diagnoseResponse( String responseXML ) throws MySpaceException {    
         if( TRACE_ENABLED ) trace( "diagnoseResponse() entry") ;
         
         Document 
