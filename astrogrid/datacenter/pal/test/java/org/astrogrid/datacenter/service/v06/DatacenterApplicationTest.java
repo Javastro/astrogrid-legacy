@@ -1,6 +1,6 @@
 
 /*
- * $Id: DatacenterApplicationTest.java,v 1.6 2004/11/03 00:17:56 mch Exp $
+ * $Id: DatacenterApplicationTest.java,v 1.7 2004/12/03 16:01:57 jdt Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,6 +25,7 @@ import org.astrogrid.applications.Status;
 import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
+import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
 import org.astrogrid.applications.manager.observer.AbstractProgressListener;
@@ -76,7 +77,11 @@ public class DatacenterApplicationTest extends ServerTestCase {
       super.setUp();
       ds = new DataServer();
       SimpleConfig.setProperty(QuerierPluginFactory.QUERIER_PLUGIN_KEY,PrecannedPlugin.class.getName());
-      env = new ApplicationDescriptionEnvironment(new InMemoryIdGen(),new DefaultProtocolLibrary());
+      env = new ApplicationDescriptionEnvironment(new InMemoryIdGen(),new DefaultProtocolLibrary(), new BaseApplicationDescriptionLibrary.AppAuthorityIDResolver() {
+        public String getAuthorityID() {
+            return "org.astrogrid.test";
+        }
+    });
       appDesc = new DatacenterApplicationDescription("test",ds,env,new DirectExecutor());
       user = new User();
       tool = new Tool();
@@ -244,6 +249,9 @@ public class DatacenterApplicationTest extends ServerTestCase {
 
 /*
  $Log: DatacenterApplicationTest.java,v $
+ Revision 1.7  2004/12/03 16:01:57  jdt
+ Fix to keep pace with changes in applications
+
  Revision 1.6  2004/11/03 00:17:56  mch
  PAL_MCH Candidate 2 merge
 

@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplicationDescriptionLibraryTest.java,v 1.1 2004/09/28 15:11:33 mch Exp $
+/*$Id: DatacenterApplicationDescriptionLibraryTest.java,v 1.2 2004/12/03 16:01:57 jdt Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,7 @@ package org.astrogrid.datacenter.service.v06;
 
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
+import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
 import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
@@ -38,7 +39,12 @@ public class DatacenterApplicationDescriptionLibraryTest extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         dataServer = new DataServer();
-        env = new ApplicationDescriptionEnvironment(new InMemoryIdGen(),new DefaultProtocolLibrary());
+        env = new ApplicationDescriptionEnvironment(new InMemoryIdGen(),new DefaultProtocolLibrary(), new BaseApplicationDescriptionLibrary.AppAuthorityIDResolver() {
+			public String getAuthorityID() {
+				return "org.astrogrid.test";
+			}
+        }   
+        );
         DatacenterApplicationDescriptionLibrary.DatacenterMetadata md = new DatacenterApplicationDescriptionLibrary.DatacenterMetadata() {
             public String getName() {
                 return "testdsa";
@@ -60,6 +66,9 @@ public class DatacenterApplicationDescriptionLibraryTest extends TestCase {
 }
 /* 
 $Log: DatacenterApplicationDescriptionLibraryTest.java,v $
+Revision 1.2  2004/12/03 16:01:57  jdt
+Fix to keep pace with changes in applications
+
 Revision 1.1  2004/09/28 15:11:33  mch
 Moved server test directory to pal
 

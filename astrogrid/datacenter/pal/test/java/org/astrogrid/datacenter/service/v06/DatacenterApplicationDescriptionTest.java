@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplicationDescriptionTest.java,v 1.2 2004/11/09 17:42:22 mch Exp $
+/*$Id: DatacenterApplicationDescriptionTest.java,v 1.3 2004/12/03 16:01:57 jdt Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,7 @@ package org.astrogrid.datacenter.service.v06;
 
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationInterface;
+import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.description.exception.ParameterNotInInterfaceException;
 import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
@@ -40,7 +41,11 @@ public class DatacenterApplicationDescriptionTest extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         ds = new DataServer();
-        env = new ApplicationDescriptionEnvironment(new InMemoryIdGen(),new DefaultProtocolLibrary());
+        env = new ApplicationDescriptionEnvironment(new InMemoryIdGen(),new DefaultProtocolLibrary(), new BaseApplicationDescriptionLibrary.AppAuthorityIDResolver() {
+            public String getAuthorityID() {
+                return "org.astrogrid.test";
+            }
+        });
         appDesc = new DatacenterApplicationDescription("testdss",ds,env,new DirectExecutor());
     }
     protected ApplicationDescription appDesc;
@@ -67,6 +72,9 @@ public class DatacenterApplicationDescriptionTest extends TestCase {
 
 /*
 $Log: DatacenterApplicationDescriptionTest.java,v $
+Revision 1.3  2004/12/03 16:01:57  jdt
+Fix to keep pace with changes in applications
+
 Revision 1.2  2004/11/09 17:42:22  mch
 Fixes to tests after fixes for demos, incl adding closable to targetIndicators
 
