@@ -1,15 +1,23 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <document>
 <properties>
-	<author email="nw@jb.man.ac.uk">Noel Winstanley</author>
-	<title>Publisher's Astrogrid Library</title>
+   <author email="nw@jb.man.ac.uk">Noel Winstanley</author>
+   <title>Publisher's Astrogrid Library</title>
 </properties>
 <body>
-<section name="PAL">
+<section name="Welcome">
 <p>
-Welcome to PAL - if you can see this page, the first steps of installation are complete.
-Go the the <a href="self-test.html">self-test page</a> to run diagnostics on the installation.
-
+Welcome to PAL - the Publisher's Astrogrid Library.  This is a standard AstroGrid
+datacenter interface to the publisher's data.
+</p>
+<p> To query that data using this interface, go to the 'Ask Query' on the left.
+</p>
+</section>
+<section name="Install Notes">
+<p>
+If you have just installed PAL, then you can now run some
+<a href="self-test.html">self-tests</a> to run diagnostics, or go the
+read how to <a href="configuration.html">configure your datacenter</a>
 </p>
 </section>
 </body>
