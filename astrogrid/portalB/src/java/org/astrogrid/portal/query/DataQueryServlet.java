@@ -163,6 +163,8 @@ public class DataQueryServlet extends HttpServlet {
 					userName = "demouser";
 				}
 			}
+			session.setAttribute("username",userName);
+			userName = (String)session.getAttribute("username");
 			qb.setUserName(userName);
 		}		
 
@@ -173,8 +175,9 @@ public class DataQueryServlet extends HttpServlet {
 				if(!validParameter(community)) {
 					community = "democomm";
 				}//if
-				session.setAttribute("community",community);							
 			}//if
+			session.setAttribute("community",community);
+			userName = (String)session.getAttribute("username");
 			qb.setCommunity(community);
 		}
 		System.out.println("the username = " + qb.getUserName());

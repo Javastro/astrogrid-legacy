@@ -35,7 +35,7 @@ public class CreateRequest {
 	private final String FIELD_ELEMENT = "field";
 	private final String OPERATION_ELEMENT = "operation";
 	private final String CRITERIA_ELEMENT = "criteria";
-	private final String JOBCONTROLLER_URL = "http://hydra.star.le.ac.uk:8080/axis/services/JobControllerService"; 
+	private final String JOBCONTROLLER_URL = "http://hydra.star.le.ac.uk:8080/axis/services/DatasetAgent"; 
 
 	public CreateRequest() {
 

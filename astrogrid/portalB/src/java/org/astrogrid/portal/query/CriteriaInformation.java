@@ -15,7 +15,7 @@ public class CriteriaInformation {
 	private String filterType = null;
 	private String value = null;
 	private String joinType = null;
-	private String functionValues = null;
+	private String functionValues = "";
 	private CriteriaInformation linkedCriteria = null;
 
 
@@ -33,6 +33,9 @@ public class CriteriaInformation {
 		this.value = value;
 		this.joinType = joinType;
 		this.functionValues = functionValues;
+		if(this.functionValues == null) {
+			this.functionValues = "";
+		}
 	}
 
 	/**
