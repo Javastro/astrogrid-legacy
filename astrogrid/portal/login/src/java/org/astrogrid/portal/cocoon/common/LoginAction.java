@@ -1,9 +1,9 @@
 /**
- * <cvs:id>$Id: LoginAction.java,v 1.27 2004/05/14 19:32:40 KevinBenson Exp $</cvs:id>
+ * <cvs:id>$Id: LoginAction.java,v 1.28 2004/05/27 17:17:13 jdt Exp $</cvs:id>
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/src/java/org/astrogrid/portal/cocoon/common/LoginAction.java,v $</cvs:source>
- * <cvs:author>$Author: KevinBenson $</cvs:author>
- * <cvs:date>$Date: 2004/05/14 19:32:40 $</cvs:date>
- * <cvs:version>$Revision: 1.27 $</cvs:version>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2004/05/27 17:17:13 $</cvs:date>
+ * <cvs:version>$Revision: 1.28 $</cvs:version>
  */
 package org.astrogrid.portal.cocoon.common;
 import java.net.MalformedURLException;
@@ -124,9 +124,7 @@ public final class LoginAction extends AbstractAction {
 
         // Ensure logger is set correctly
         checkLogger();
-        //
-        // Initialise our community config.
-         init(); //@TODO jdt this is still required when we set the credential.  Is this still necessary? 
+
         //
         // Get our current request and session.
         final Request request = ObjectModelHelper.getRequest(objectModel);
@@ -217,7 +215,7 @@ public final class LoginAction extends AbstractAction {
         session.setAttribute(SessionKeys.USER, name);
         session.setAttribute(
             SessionKeys.CREDENTIAL,
-            "guest@" + CommunityConfig.getCommunityName());
+            "guest@is.this.needed?");
         session.setAttribute(SessionKeys.COMMUNITY_ACCOUNT, token.getAccount());
         session.setAttribute(
             SessionKeys.COMMUNITY_NAME,
@@ -257,17 +255,7 @@ public final class LoginAction extends AbstractAction {
         }
         return newParam;
     }
-    /**
-     * Load our community config.
-     *  
-     */
-    public void init() {
-        log.debug("LoginAction:init()");
 
-        //
-        // Load our community config.
-        CommunityConfig.loadConfig();
-    }
     /**
      * During unit tests the logger isn't setup properly, hence this method to
      * use a console logger instead.  Also will log to console
@@ -285,6 +273,9 @@ public final class LoginAction extends AbstractAction {
 /**
  * <cvs:log>
  * $Log: LoginAction.java,v $
+ * Revision 1.28  2004/05/27 17:17:13  jdt
+ * removed obsolete reference to CommunityConfig
+ *
  * Revision 1.27  2004/05/14 19:32:40  KevinBenson
  * new temporary session variable for the community authority
  *
