@@ -1,4 +1,4 @@
-/*$Id: WorkflowManagerFactory.java,v 1.9 2004/04/14 13:45:48 nw Exp $
+/*$Id: WorkflowManagerFactory.java,v 1.10 2004/04/14 13:48:26 nw Exp $
  * Created on 24-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -37,11 +37,7 @@ import java.net.URL;
  * <p>
  * The keys that control the configuration of the workflow manager are all defined in this class:
  * <h2>Workflow Store</h2>
- * <ul>
- * <li>{@link #WORKFLOW_STORE_KEY}
- * <li>{@link #WORKFLOW_MYSPACE_STORE_ENDPOINT_KEY}
- * <li>{@link #WORKFLOW_FILE_STORE_BASEDIR_KEY}
- * </ul>
+ * Based on the VoSpaceClient delegate - configuration details given there. no futher configuration here.
  * <h2>Application Registry</h2>
  * <li>
  * <li>{@link #WORKFLOW_APPLIST_KEY}
@@ -175,6 +171,9 @@ public class WorkflowManagerFactory {
 
 /* 
 $Log: WorkflowManagerFactory.java,v $
+Revision 1.10  2004/04/14 13:48:26  nw
+updated docs
+
 Revision 1.9  2004/04/14 13:45:48  nw
 implemented cut down workflow store interface over Ivo Delegate
 
