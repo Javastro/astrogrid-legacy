@@ -253,6 +253,9 @@ jes.dispatchStep('<xsl:value-of select="generate-id()"/>',shell,states,rules);
 		</trigger>
 <body>
 states.setStatus('<xsl:value-of select="generate-id()"/>',FINISHED);
+<xsl:if test="@result-var and @result-var != ''"><!-- if we previously set this flag state, reset it -->
+			&amp;&amp; states.setStatus('<xsl:value-of select="generate-id()"/>' + "-results",START);
+		</xsl:if>
 </body>
 </rule>
 </xsl:template>
@@ -410,7 +413,8 @@ tested
 	 <name>while-init</name>
 	 <trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == START</trigger>
 	<body>
-if (<xsl:value-of select="@test" />) {
+whileObj = jes.getId('<xsl:value-of select="generate-id()"/>');
+if (shell.evaluateWhileCondition(whileObj,states,rules)) {		
 		states.setStatus('<xsl:value-of select="generate-id(./*)"/>',START);
 	       states.setStatus('<xsl:value-of select="generate-id()"/>',STARTED) ;
 		states.setEnv('<xsl:value-of select="generate-id(./*)"/>',states.getEnv('<xsl:value-of select="generate-id()"/>'));
@@ -423,7 +427,8 @@ if (<xsl:value-of select="@test" />) {
 	 <name>while-loop</name>
 	<trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == STARTED &amp;&amp; states.getStatus('<xsl:value-of select="generate-id(./*)"/>') == FINISHED</trigger>
 	<body>
-if (<xsl:value-of select="@test" />) {
+whileObj = jes.getId('<xsl:value-of select="generate-id()"/>');
+if (shell.evaluateWhileCondition(whileObj,states,rules)) {	
 		states.setStatus('<xsl:value-of select="generate-id(./*)"/>',START);
 } else {
 		states.setStatus('<xsl:value-of select="generate-id()"/>', FINISHED);

@@ -1,4 +1,4 @@
-/*$Id: JesShell.java,v 1.6 2004/08/05 09:59:58 nw Exp $
+/*$Id: JesShell.java,v 1.7 2004/08/05 10:56:23 nw Exp $
  * Created on 29-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,6 +16,7 @@ import org.astrogrid.workflow.beans.v1.Input;
 import org.astrogrid.workflow.beans.v1.Output;
 import org.astrogrid.workflow.beans.v1.Set;
 import org.astrogrid.workflow.beans.v1.Tool;
+import org.astrogrid.workflow.beans.v1.While;
 
 import org.apache.log4j.Logger;
 import org.codehaus.groovy.control.CompilationFailedException;
@@ -141,6 +142,10 @@ public Object evaluateUserExpr(String expr,String id,ActivityStatusStore map, Ru
         
     }
     
+    public Object evaluateWhileCondition(While whileObj,ActivityStatusStore map,RuleStore rules) throws CompilationFailedException, IOException {
+        return evaluateUserExpr(whileObj.getTest(), whileObj.getId(),map,rules);
+    }
+    
     public Tool evaluateTool(Tool original,String id,ActivityStatusStore map, RuleStore rules) throws CompilationFailedException, IOException {
         Tool copy = new Tool();
         copy.setInterface(original.getInterface());
@@ -250,6 +255,9 @@ public Object evaluateUserExpr(String expr,String id,ActivityStatusStore map, Ru
 
 /* 
 $Log: JesShell.java,v $
+Revision 1.7  2004/08/05 10:56:23  nw
+implemented while loop construct
+
 Revision 1.6  2004/08/05 09:59:58  nw
 implemented if statement
 
