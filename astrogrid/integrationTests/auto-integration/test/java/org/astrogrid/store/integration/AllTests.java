@@ -1,4 +1,4 @@
-/* $Id: AllTests.java,v 1.4 2004/04/20 14:45:37 nw Exp $
+/* $Id: AllTests.java,v 1.5 2004/04/21 10:47:34 nw Exp $
  * Created on Apr 15, 2004 by jdt@roe.ac.uk
  * The auto-integration project
  * Copyright (c) Astrigrid 2004.  All rights reserved.
@@ -20,15 +20,19 @@ public class AllTests {
     public static Test suite() {
         TestSuite suite = new TestSuite("Store");
         //$JUnit-BEGIN$
+        suite.addTest(new TestSuite(DeployedManagerTest.class));
         suite.addTest(MySpaceTest.suite());
         suite.addTest(VoSpaceTest.suite());
-        suite.addTest(new TestSuite(DeployedManagerTest.class));
+        suite.addTest(new TestSuite(SimpleMySpaceTest.class));
         //$JUnit-END$
         return suite;
     }
 }
 /*
  *  $Log: AllTests.java,v $
+ *  Revision 1.5  2004/04/21 10:47:34  nw
+ *  fixed test suite
+ *
  *  Revision 1.4  2004/04/20 14:45:37  nw
  *  added in new test
  *
