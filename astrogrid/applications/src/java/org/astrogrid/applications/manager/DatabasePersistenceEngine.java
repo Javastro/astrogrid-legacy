@@ -1,5 +1,5 @@
 /*
- * $Id: DatabasePersistenceEngine.java,v 1.3 2004/03/23 19:46:04 pah Exp $
+ * $Id: DatabasePersistenceEngine.java,v 1.4 2004/04/01 09:53:02 pah Exp $
  * 
  * Created on 05-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -87,8 +87,7 @@ public class DatabasePersistenceEngine implements PersistenceEngine {
          }
       }
       catch (SQLException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
+        logger.error("problem getting execution id", e);
       }
       finally {
          try {

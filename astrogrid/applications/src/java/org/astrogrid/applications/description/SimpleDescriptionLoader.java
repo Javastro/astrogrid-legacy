@@ -1,5 +1,5 @@
 /*
- * $Id: SimpleDescriptionLoader.java,v 1.4 2004/03/29 12:34:58 pah Exp $
+ * $Id: SimpleDescriptionLoader.java,v 1.5 2004/04/01 09:53:02 pah Exp $
  * 
  * Created on 04-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -98,12 +98,11 @@ public class SimpleDescriptionLoader {
          success = true;
       }
       catch (IOException e) {
-         // TODO Auto-generated catch block
+
          e.printStackTrace();
          success = false;
       }
       catch (SAXException e) {
-         // TODO Auto-generated catch block
          e.printStackTrace();
          success = false;
       }

@@ -1,5 +1,5 @@
 /*
- * $Id: ParameterLoader.java,v 1.5 2003/12/31 00:56:17 pah Exp $
+ * $Id: ParameterLoader.java,v 1.6 2004/04/01 09:53:02 pah Exp $
  * 
  * Created on 08-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -26,6 +26,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import org.astrogrid.applications.AbstractApplication;
+import org.astrogrid.applications.description.exception.ParameterValuesParseError;
 
 /**
  * @author Paul Harrison (pah@jb.man.ac.uk)
@@ -40,15 +41,14 @@ public class ParameterLoader {
    private Digester digester;
    private AbstractApplication application;
    
-   public ParameterLoader(AbstractApplication application)
+   public ParameterLoader(AbstractApplication application) throws ParameterValuesParseError
    {
       this.application = application;
       try {
          createDigester();
       }
       catch (ParserConfigurationException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
+         throw new ParameterValuesParseError("problem creating the parameter value digester", e);
       }
    }
 
@@ -62,7 +62,7 @@ public class ParameterLoader {
       
    }
    
-   public boolean loadParameters(String parameterspec)
+   public boolean loadParameters(String parameterspec) throws ParameterValuesParseError
    {
       boolean success = false;
       
@@ -74,13 +74,11 @@ public class ParameterLoader {
          success=true;
       }
       catch (IOException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
+         throw new ParameterValuesParseError("error loading parameter values", e);
       }
       catch (SAXException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
-      }
+         throw new ParameterValuesParseError("error loading parameter values", e);
+     }
       
       
       return success;

@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceReferenceParameter.java,v 1.5 2004/03/23 12:51:25 pah Exp $
+ * $Id: MySpaceReferenceParameter.java,v 1.6 2004/04/01 09:53:02 pah Exp $
  *
  * Created on 08 December 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -51,20 +51,25 @@ public class MySpaceReferenceParameter extends FileReferenceParameter {
          mySpaceManager.saveDataHolding(user.getUserId(), user.getCommunity(), user.getToken(), rawValue, content, "data"   , mySpaceManager.OVERWRITE);
       }
       catch (MalformedURLException e) {
-         // TODO Auto-generated catch block
+         // TODO Auto-generated catch block - need to pass this back in a status message....
          logger.error("problem creating a url to pass to myspacemanager", e);
         
       }
       catch (IOException e) {
-         logger.error(e);
+         logger.error("Myspace error - parameter"+ name+" value="+rawValue,e);
       }
       catch (Exception e) {
-        logger.error(e);
+        logger.error("Myspace error - parameter"+ name+" value="+rawValue,e);
       }
       return true;
 
    }
    
+   /**
+    * @param file
+    * @return
+    * @deprecated
+    */
    private String getFileContent(File file)
    {
       String line = null;

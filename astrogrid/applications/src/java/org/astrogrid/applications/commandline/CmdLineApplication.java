@@ -1,5 +1,5 @@
 /*
- * $Id: CmdLineApplication.java,v 1.19 2004/03/23 12:51:26 pah Exp $
+ * $Id: CmdLineApplication.java,v 1.20 2004/04/01 09:53:02 pah Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -165,8 +165,8 @@ public class CmdLineApplication extends AbstractApplication implements Runnable 
             e.printStackTrace();
          }
          catch (JesDelegateException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+
+            logger.error("error communicating with the jes monitor", e);
          }
       }
       //TODO should really log this information to the applicationController database.
@@ -220,8 +220,8 @@ public class CmdLineApplication extends AbstractApplication implements Runnable 
 
       }
       catch (InterruptedException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
+         // TODO need to work out if it was interrupted on purpose and do something appropriate...
+         logger.error("application "+applicationDescription.getName()+" was interrupted", e);
       }
    }
 

@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationController.java,v 1.22 2004/03/30 22:45:09 pah Exp $
+ * $Id: CommandLineApplicationController.java,v 1.23 2004/04/01 09:53:02 pah Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -28,11 +28,27 @@ import org.astrogrid.applications.Status;
 import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.commandline.CmdLineApplication;
 import org.astrogrid.applications.commandline.CmdLineApplicationEnvironment;
-import org.astrogrid.applications.commandline.exceptions.CannotCreateWorkingDirectoryException;
+import org
+   .astrogrid
+   .applications
+   .commandline
+   .exceptions
+   .CannotCreateWorkingDirectoryException;
 import org.astrogrid.applications.common.config.CeaControllerConfig;
 import org.astrogrid.applications.description.ParameterLoader;
-import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
-import org.astrogrid.applications.description.exception.InterfaceDescriptionNotFoundException;
+import org
+   .astrogrid
+   .applications
+   .description
+   .exception
+   .ApplicationDescriptionNotFoundException;
+import org
+   .astrogrid
+   .applications
+   .description
+   .exception
+   .InterfaceDescriptionNotFoundException;
+import org.astrogrid.applications.description.exception.ParameterValuesParseError;
 import org.astrogrid.applications.manager.externalservices.MySpaceFromConfig;
 import org.astrogrid.applications.manager.externalservices.MySpaceLocator;
 import org.astrogrid.applications.manager.externalservices.RegistryAdminFromConfig;
@@ -72,19 +88,18 @@ public class CommandLineApplicationController extends AbstractApplicationControl
     */
    public CommandLineApplicationController() {
 
-      this(
-         new ServiceDesc()); // make a dummy service description...
+      this(new ServiceDesc()); // make a dummy service description...
 
    }
-   
-   public CommandLineApplicationController(ServiceDesc desc)
-   {
-      this(ThisConfig.getInstance(),
-      new RegistryFromConfig(ThisConfig.getInstance()),
-      new RegistryAdminFromConfig(ThisConfig.getInstance()),
-      new MySpaceFromConfig(ThisConfig.getInstance()),
-      desc);
-     
+
+   public CommandLineApplicationController(ServiceDesc desc) {
+      this(
+         ThisConfig.getInstance(),
+         new RegistryFromConfig(ThisConfig.getInstance()),
+         new RegistryAdminFromConfig(ThisConfig.getInstance()),
+         new MySpaceFromConfig(ThisConfig.getInstance()),
+         desc);
+
    }
 
    /**
@@ -99,8 +114,13 @@ public class CommandLineApplicationController extends AbstractApplicationControl
       RegistryAdminLocator iregistryAdminLocator,
       MySpaceLocator imySpaceLocator,
       ServiceDesc idesc) {
-         
-      super(iconfig, iregistryQueryLocator,iregistryAdminLocator, imySpaceLocator, idesc);
+
+      super(
+         iconfig,
+         iregistryQueryLocator,
+         iregistryAdminLocator,
+         imySpaceLocator,
+         idesc);
       logger.info("starting CommandLineApplicationController");
       instance = this;
       runningApplications = new HashMap();
@@ -130,55 +150,40 @@ public class CommandLineApplicationController extends AbstractApplicationControl
       String applicationID,
       String jobstepID,
       String jobMonitorURL,
-      ParameterValues parameters) {
+      ParameterValues parameters)
+      throws
+         ApplicationDescriptionNotFoundException,
+         CannotCreateWorkingDirectoryException,
+         InterfaceDescriptionNotFoundException, ParameterValuesParseError {
       int executionId = -1;
 
       // create the application object
       ApplicationFactory factory = CmdLineApplicationCreator.getInstance(this);
-      try {
-         User user = new User(); //TODO this needs to be obtained from the context
-         CmdLineApplication cmdLineApplication =
-            (CmdLineApplication)factory.createApplication(applicationID, user);
+      User user = new User(); //TODO this needs to be obtained from the context
+      CmdLineApplication cmdLineApplication =
+         (CmdLineApplication)factory.createApplication(applicationID, user);
 
-         try {
-            // create the application environment
-            CmdLineApplicationEnvironment environment =
-               new CmdLineApplicationEnvironment(config);
-            cmdLineApplication.setApplicationEnvironment(environment);
-            executionId = environment.getExecutionId();
-            try {
-               cmdLineApplication.setApplicationInterface(
-                  cmdLineApplication.getApplicationDescription().getInterface(
-                     parameters.getMethodName()));
-            }
-            catch (InterfaceDescriptionNotFoundException e1) {
-               logger.error("cannot find interface", e1);
-            }
+      // create the application environment
+      CmdLineApplicationEnvironment environment =
+         new CmdLineApplicationEnvironment(config);
+      cmdLineApplication.setApplicationEnvironment(environment);
+      executionId = environment.getExecutionId();
 
-            //TODO parse the parameter values and set up the parameter array
-            ParameterLoader pl = new ParameterLoader(cmdLineApplication);
-            pl.loadParameters(parameters.getParameterSpec());
+      cmdLineApplication.setApplicationInterface(
+         cmdLineApplication.getApplicationDescription().getInterface(
+            parameters.getMethodName()));
 
-            // add this application to the execution map
-            runningApplications.put(Integer.toString(executionId), cmdLineApplication);
+      //TODO parse the parameter values and set up the parameter array
+      ParameterLoader pl = new ParameterLoader(cmdLineApplication);
+      pl.loadParameters(parameters.getParameterSpec());
 
-            // set up the job step paramters
-            cmdLineApplication.setJobMonitorURL(jobMonitorURL);
-            cmdLineApplication.setJobStepID(jobstepID);
-            cmdLineApplication.setStatus(Status.INITIALIZED);
+      // add this application to the execution map
+      runningApplications.put(Integer.toString(executionId), cmdLineApplication);
 
-         }
-         catch (CannotCreateWorkingDirectoryException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-
-         }
-
-      }
-      catch (ApplicationDescriptionNotFoundException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
-      }
+      // set up the job step paramters
+      cmdLineApplication.setJobMonitorURL(jobMonitorURL);
+      cmdLineApplication.setJobStepID(jobstepID);
+      cmdLineApplication.setStatus(Status.INITIALIZED);
 
       // the external representation of the execution ID is a string
       return Integer.toString(executionId);
@@ -214,25 +219,29 @@ public class CommandLineApplicationController extends AbstractApplicationControl
     */
    public String execute(Tool tool, String jobstepID, String jobMonitorURL)
       throws CeaException {
-         // TODO need to drive the castor object model lower than this.
-         ParameterValues parameters = new ParameterValues();
-         parameters.setMethodName(tool.getInterface());
-         StringWriter sw = new StringWriter();
-         try {
-            tool.marshal(sw);
-            parameters.setParameterSpec(sw.toString());
-         }
-         catch (MarshalException e) {
-           throw new ApplicationExecutionException("could not marshal the tool parameters to a string", e);
-         }
-         catch (ValidationException e) {
-           throw new ApplicationExecutionException("validation error when marshalling tool parameters", e);
-         }
-         String executionId;
-         executionId =
-            initializeApplication(tool.getName(), jobstepID, jobMonitorURL, parameters);
-         executeApplication(executionId);
-         return executionId;
+      // TODO need to drive the castor object model lower than this.
+      ParameterValues parameters = new ParameterValues();
+      parameters.setMethodName(tool.getInterface());
+      StringWriter sw = new StringWriter();
+      try {
+         tool.marshal(sw);
+         parameters.setParameterSpec(sw.toString());
+      }
+      catch (MarshalException e) {
+         throw new ApplicationExecutionException(
+            "could not marshal the tool parameters to a string",
+            e);
+      }
+      catch (ValidationException e) {
+         throw new ApplicationExecutionException(
+            "validation error when marshalling tool parameters",
+            e);
+      }
+      String executionId;
+      executionId =
+         initializeApplication(tool.getName(), jobstepID, jobMonitorURL, parameters);
+      executeApplication(executionId);
+      return executionId;
    }
 
    /** 
@@ -240,7 +249,7 @@ public class CommandLineApplicationController extends AbstractApplicationControl
     */
    public MessageType queryExecutionStatus(String executionId) throws CeaException {
       // TODO Auto-generated method stub
-      throw new  UnsupportedOperationException("CommandLineApplicationController.queryExecutionStatus() not implemented");
+      throw new UnsupportedOperationException("CommandLineApplicationController.queryExecutionStatus() not implemented");
    }
 
 }

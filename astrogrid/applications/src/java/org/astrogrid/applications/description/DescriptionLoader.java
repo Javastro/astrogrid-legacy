@@ -1,5 +1,5 @@
 /*
- * $Id: DescriptionLoader.java,v 1.10 2004/03/23 12:51:26 pah Exp $
+ * $Id: DescriptionLoader.java,v 1.11 2004/04/01 09:53:02 pah Exp $
  *
  * Created on 26 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -42,14 +42,13 @@ public class DescriptionLoader {
    private AbstractApplicationController appController;
 
    private Digester digester;
-   public DescriptionLoader(AbstractApplicationController ac) {
+   public DescriptionLoader(AbstractApplicationController ac) throws ApplicationDescriptionNotLoadedException {
       appController = ac;
       try {
          createDigester();
       }
       catch (ParserConfigurationException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
+        throw new ApplicationDescriptionNotLoadedException("cannot create digester", e);
       }
    }
    public void loadDescription(URL configFile) throws ApplicationDescriptionNotLoadedException {
