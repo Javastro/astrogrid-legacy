@@ -559,21 +559,23 @@ public class MySpaceManagerDelegate implements MySpaceClient {
         }
         try{
 //
-//         Encode the string (in order to prevent an XML-snippet from
-//         confusing Axis etc).
+//         Encode the string (in order to prevent an XML-snippet or
+//         line break from confusing Axis etc).
+
+//            System.out.println("fileContent: " + fileContent);
 
             int contentLength = fileContent.length();
-            byte[] contentBytes = fileContent.getBytes("UTF-8");
-
-            int temp;
+            String transport = "";
 
             for (int loop = 0; loop<contentLength; loop++)
-            {  temp = contentBytes[loop] + 1;
-               contentBytes[loop] = (byte)temp;
+            {  String currentStr = fileContent.substring(loop, loop+1);
+               char currentchar = currentStr.charAt(0);
+               byte number = (byte)currentchar;
+
+               transport = transport +  number + " ";
             }
 
-            String transport = new String(contentBytes);
-
+//            System.out.println("transport: " + transport);
 
             MySpaceHelper helper = new MySpaceHelper();
             String jobDetails = helper.buildSave(userId, communityId, credential, fileName, transport, category, action);

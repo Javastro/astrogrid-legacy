@@ -135,19 +135,33 @@ public class MySpaceManager {
 //
 //				Decode the file contents (they have been
 //				encoded in order to prevent Axis etc. getting
-//				confused if the contents are an XML-fragment.
+//				confused if the contents are an XML-fragment
+//                              or contain line-breaks.
 
-				int contentLength = fileContent.length();
-				byte[] contentBytes = fileContent.getBytes("UTF-8");
+                                int count = -1;
+                                int start = 0;
+                                int stop = 0;
 
-				int temp;
+                                String numBuffer = "";
+                                StringBuffer contentBuffer = new StringBuffer();
+                                int contentLength = fileContent.length();
 
-				for (int loop = 0; loop<contentLength; loop++)
-				{  temp = contentBytes[loop] - 1;
-				   contentBytes[loop] = (byte)temp;
-				}
+                                for (int loop = 0; loop<contentLength; loop++)
+                                {  String thisStr = fileContent.substring(loop, loop+1);
 
-				String decodedContent = new String(contentBytes);
+
+                                   if ( thisStr.equals(" "))
+                                   {  stop = loop;
+                                      numBuffer = fileContent.substring(start, stop);
+                                      Byte numberByte = new Byte(numBuffer);
+                                      byte number = numberByte.byteValue();
+                                      char currentChar = (char)number;
+                                      contentBuffer.append(currentChar);
+                                      start = stop + 1;
+                                   }
+                                }
+
+                                String decodedContent = contentBuffer.toString();
 
 				if ( DEBUG ) logger.appendMessage("About to invoke myspaceaction.upLoadDataHolder");  
 				msA.setRegistryName(registryName);
