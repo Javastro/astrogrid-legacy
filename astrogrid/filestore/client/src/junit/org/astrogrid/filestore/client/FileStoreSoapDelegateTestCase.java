@@ -1,11 +1,18 @@
 /*
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/client/src/junit/org/astrogrid/filestore/client/FileStoreSoapDelegateTestCase.java,v $</cvs:source>
- * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/11/25 00:19:27 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2005/01/28 10:44:01 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreSoapDelegateTestCase.java,v $
+ *   Revision 1.4  2005/01/28 10:44:01  clq2
+ *   dave_dev_200501141257 (filemanager)
+ *
+ *   Revision 1.3.10.1  2005/01/15 04:50:58  dave
+ *   Added created and modified dates to server ....
+ *   Removed log debug messages from JUnit tests ...
+ *
  *   Revision 1.3  2004/11/25 00:19:27  jdt
  *   Merge from dave-dev-200410061224-200411221626
  *
@@ -42,12 +49,6 @@ import org.astrogrid.filestore.common.FileStoreTest ;
 public class FileStoreSoapDelegateTestCase
 	extends FileStoreTest
 	{
-    /**
-     * Base URL for our SOAP endpoints.
-     *
-     */
-//    private static String URL_BASE = "local://" ;
-
     /**
      * Setup our test.
      * Creates the Soap delegate to test.

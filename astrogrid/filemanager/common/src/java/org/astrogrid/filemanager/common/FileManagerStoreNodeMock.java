@@ -1,10 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/common/src/java/org/astrogrid/filemanager/common/Attic/FileManagerStoreNodeMock.java,v $</cvs:source>
- * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2005/01/13 17:23:15 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2005/01/28 10:43:58 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  * <cvs:log>
  *   $Log: FileManagerStoreNodeMock.java,v $
+ *   Revision 1.3  2005/01/28 10:43:58  clq2
+ *   dave_dev_200501141257 (filemanager)
+ *
+ *   Revision 1.2.2.1  2005/01/18 14:52:48  dave
+ *   Added node create and modify dates ..
+ *
  *   Revision 1.2  2005/01/13 17:23:15  jdt
  *   merges from dave-dev-200412201250
  *
@@ -94,7 +100,19 @@ public class FileManagerStoreNodeMock
         this.setIvorn(ivorn) ;
         this.setName(name)   ;
         this.setType(type)   ;
+		//
+		// Set our node dates.
+		properties.created() ;
         }
+
+	/**
+	 * Update our modify date.
+	 *
+	 */
+	protected void modified()
+		{
+		properties.modified();
+		}
 
     /**
      * Our internal map of child nodes.
@@ -163,6 +181,9 @@ public class FileManagerStoreNodeMock
                 log.warn(ouch);
                 }
             }
+		//
+		// Update the modified date.
+		this.modified();
         }
 
     /**
@@ -196,6 +217,9 @@ public class FileManagerStoreNodeMock
         else {
             throw new NodeNotFoundException() ;
             }
+		//
+		// Update the modified date.
+		this.modified();
         }
 
     /**

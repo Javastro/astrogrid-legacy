@@ -1,10 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/common/src/java/org/astrogrid/filemanager/common/Attic/FileManagerStoreNode.java,v $</cvs:source>
- * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2005/01/13 17:23:15 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2005/01/28 10:43:58 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  * <cvs:log>
  *   $Log: FileManagerStoreNode.java,v $
+ *   Revision 1.3  2005/01/28 10:43:58  clq2
+ *   dave_dev_200501141257 (filemanager)
+ *
+ *   Revision 1.2.2.1  2005/01/15 08:25:20  dave
+ *   Added file create and modify dates to manager and client API ...
+ *
  *   Revision 1.2  2005/01/13 17:23:15  jdt
  *   merges from dave-dev-200412201250
  *
@@ -43,7 +49,7 @@ public interface FileManagerStoreNode
     {
 
     /**
-     * Get an array of the child nodes.
+     * Get a Collection of the child nodes.
      *
      */
     public Collection getChildren();
@@ -118,12 +124,6 @@ public interface FileManagerStoreNode
      *
      */
     public String getIdent();
-
-    /**
-     * Set the node ivorn.
-     *
-    public void setIvorn(Ivorn ivorn);
-     */
 
     /**
      * Get the parent ivorn.

@@ -1,10 +1,16 @@
 /*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/src/java/org/astrogrid/filemanager/client/Attic/FileManagerSoapDelegate.java,v $</cvs:source>
- * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2005/01/13 17:23:15 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/src/java/org/astrogrid/filemanager/client/delegate/Attic/FileManagerSoapDelegate.java,v $</cvs:source>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2005/01/28 10:43:58 $</cvs:date>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  * <cvs:log>
  *   $Log: FileManagerSoapDelegate.java,v $
+ *   Revision 1.2  2005/01/28 10:43:58  clq2
+ *   dave_dev_200501141257 (filemanager)
+ *
+ *   Revision 1.1.2.1  2005/01/22 07:54:16  dave
+ *   Refactored delegate into a separate package ....
+ *
  *   Revision 1.3  2005/01/13 17:23:15  jdt
  *   merges from dave-dev-200412201250
  *
@@ -23,7 +29,7 @@
  * </cvs:log>
  *
  */
-package org.astrogrid.filemanager.client ;
+package org.astrogrid.filemanager.client.delegate ;
 
 import java.net.URL;
 import java.net.MalformedURLException;

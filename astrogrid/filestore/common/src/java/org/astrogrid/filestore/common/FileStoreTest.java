@@ -1,10 +1,36 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/common/src/java/org/astrogrid/filestore/common/FileStoreTest.java,v $</cvs:source>
- * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/11/25 00:19:19 $</cvs:date>
- * <cvs:version>$Revision: 1.11 $</cvs:version>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2005/01/28 10:43:58 $</cvs:date>
+ * <cvs:version>$Revision: 1.12 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreTest.java,v $
+ *   Revision 1.12  2005/01/28 10:43:58  clq2
+ *   dave_dev_200501141257 (filemanager)
+ *
+ *   Revision 1.11.10.7  2005/01/20 07:18:04  dave
+ *   Tided up tabs to spaces ..
+ *
+ *   Revision 1.11.10.6  2005/01/19 13:22:25  dave
+ *   Removed fragile date test (fails if it takes less than 1ms to update a file) ..
+ *
+ *   Revision 1.11.10.5  2005/01/19 12:56:16  dave
+ *   Added sleep to date tests to avoid race condition ...
+ *
+ *   Revision 1.11.10.4  2005/01/17 17:19:21  dave
+ *   Fixed bug in FileManagerImpl test (missing '/' in repository path on Unix) ...
+ *   Changed tabs to spaces ..
+ *
+ *   Revision 1.11.10.3  2005/01/15 08:25:50  dave
+ *   Refactored file created and modified date handling ..
+ *
+ *   Revision 1.11.10.2  2005/01/15 04:50:58  dave
+ *   Added created and modified dates to server ....
+ *   Removed log debug messages from JUnit tests ...
+ *
+ *   Revision 1.11.10.1  2005/01/15 03:46:50  dave
+ *   Added initial tests for create and modified date(s) ..
+ *
  *   Revision 1.11  2004/11/25 00:19:19  jdt
  *   Merge from dave-dev-200410061224-200411221626
  *
@@ -120,12 +146,11 @@
  */
 package org.astrogrid.filestore.common ;
 
-import org.apache.commons.logging.Log ;
-import org.apache.commons.logging.LogFactory ;
-
 import java.net.URL ;
 import java.net.URLConnection ;
 import java.net.HttpURLConnection ;
+
+import java.util.Date ;
 
 import java.io.OutputStream ;
 import java.io.BufferedOutputStream;
@@ -153,1635 +178,1454 @@ import org.astrogrid.filestore.common.transfer.TransferProperties ;
  *
  */
 public class FileStoreTest
-	extends TestCase
-	{
+    extends TestCase
+    {
     /**
-     * Our debug logger.
+     * The name of our test property.
      *
      */
-    private static Log log = LogFactory.getLog(FileStoreTest.class);
+    public static final String TEST_PROPERTY_NAME  = "test.property" ;
 
-	/**
-	 * The name of our test property.
-	 *
-	 */
-	public static final String TEST_PROPERTY_NAME  = "test.property" ;
+    /**
+     * The value of our test property.
+     *
+     */
+    public static final String TEST_PROPERTY_VALUE  = "alphabet" ;
 
-	/**
-	 * The value of our test property.
-	 *
-	 */
-	public static final String TEST_PROPERTY_VALUE  = "alphabet" ;
+    /**
+     * A test string.
+     * "A short test string ...."
+     *
+     */
+    public static final String TEST_STRING = "A short test string ...." ;
 
-	/**
-	 * A test string.
-	 * "A short test string ...."
-	 *
-	 */
-	public static final String TEST_STRING = "A short test string ...." ;
+    /**
+     * A test string.
+     * " plus a bit more ...."
+     *
+     */
+    public static final String EXTRA_STRING = " plus a bit more ...." ;
 
-	/**
-	 * A test string.
-	 * " plus a bit more ...."
-	 *
-	 */
-	public static final String EXTRA_STRING = " plus a bit more ...." ;
+    /**
+     * A test byte array.
+     * "A short byte array ...."
+     *
+     */
+    public static final byte[] TEST_BYTES = {
+        0x41,
+        0x20,
+        0x73,
+        0x68,
+        0x6f,
+        0x72,
+        0x74,
+        0x20,
+        0x62,
+        0x79,
+        0x74,
+        0x65,
+        0x20,
+        0x61,
+        0x72,
+        0x72,
+        0x61,
+        0x79,
+        0x20,
+        0x2e,
+        0x2e,
+        0x2e,
+        0x2e
+        } ;
 
-	/**
-	 * A test byte array.
-	 * "A short byte array ...."
-	 *
-	 */
-	public static final byte[] TEST_BYTES = {
-		0x41,
-		0x20,
-		0x73,
-		0x68,
-		0x6f,
-		0x72,
-		0x74,
-		0x20,
-		0x62,
-		0x79,
-		0x74,
-		0x65,
-		0x20,
-		0x61,
-		0x72,
-		0x72,
-		0x61,
-		0x79,
-		0x20,
-		0x2e,
-		0x2e,
-		0x2e,
-		0x2e
-		} ;
+    /**
+     * A test byte array.
+     * " plus a few more ...."
+     *
+     */
+    public static final byte[] EXTRA_BYTES = {
+        0x20,
+        0x70,
+        0x6c,
+        0x75,
+        0x73,
+        0x20,
+        0x61,
+        0x20,
+        0x66,
+        0x65,
+        0x77,
+        0x20,
+        0x6d,
+        0x6f,
+        0x72,
+        0x65,
+        0x20,
+        0x2e,
+        0x2e,
+        0x2e,
+        0x2e
+        } ;
 
-	/**
-	 * A test byte array.
-	 * " plus a few more ...."
-	 *
-	 */
-	public static final byte[] EXTRA_BYTES = {
-		0x20,
-		0x70,
-		0x6c,
-		0x75,
-		0x73,
-		0x20,
-		0x61,
-		0x20,
-		0x66,
-		0x65,
-		0x77,
-		0x20,
-		0x6d,
-		0x6f,
-		0x72,
-		0x65,
-		0x20,
-		0x2e,
-		0x2e,
-		0x2e,
-		0x2e
-		} ;
+    /**
+     * Test properties prefix.
+     *
+     */
+    public static final String TEST_PROPERTY_PREFIX = "org.astrogrid.filestore.test" ;
 
-	/**
-	 * Test properties prefix.
-	 *
-	 */
-	public static final String TEST_PROPERTY_PREFIX = "org.astrogrid.filestore.test" ;
+    /**
+     * Helper method to get a local property.
+     *
+     */
+    public String getTestProperty(String name)
+        {
+        return System.getProperty(TEST_PROPERTY_PREFIX + "." + name) ;
+        }
 
-	/**
-	 * Helper method to get a local property.
-	 *
-	 */
-	public String getTestProperty(String name)
-		{
-		return System.getProperty(TEST_PROPERTY_PREFIX + "." + name) ;
-		}
+    /**
+     * Test utility to compare two arrays of bytes.
+     *
+     */
+    public static void assertEquals(byte[] left, byte[] right)
+        {
+        assertEquals(
+            "Different array length",
+            left.length,
+            right.length
+            ) ;
+        for (int i = 0 ; i < left.length ; i++)
+            {
+            assertEquals(
+                "Wrong value for byte[" + i + "]",
+                left[i],
+                right[i]
+                ) ;
+            }
+        }
 
-	/**
-	 * Debug utility to print an array of bytes.
-	 *
-	 */
-	public static void printBytes(byte[] data)
-		{
-		log.debug("--------") ;
-		for (int i = 0 ; i < data.length ; i++)
-			{
-			log.debug(
-				"[" + i + "] '" + Integer.toHexString(data[i]) + "'"
-				) ;
-			}
-		log.debug("--------") ;
-		}
+    /**
+     * Internal reference to our target service.
+     *
+     */
+    protected FileStore target ;
 
-	/**
-	 * Test utility to compare two arrays of bytes.
-	 *
-	 */
-	public static void assertEquals(byte[] left, byte[] right)
-		{
-		log.debug("--------") ;
-		assertEquals(
-			"Different array length",
-			left.length,
-			right.length
-			) ;
-		for (int i = 0 ; i < left.length ; i++)
-			{
-			log.debug(
-				"[" + i + "] " + Integer.toHexString(left[i]) + ":" + Integer.toHexString(right[i])
-				) ;
-			assertEquals(
-				"Wrong value for byte[" + i + "]",
-				left[i],
-				right[i]
-				) ;
-			}
-		log.debug("--------") ;
-		}
+    /**
+     * Test that we can get the service identifier..
+     *
+     */
+    public void testGetServiceIdentifier()
+        throws Exception
+        {
+        assertNotNull(
+            "Null service identifier",
+            target.identifier()
+            ) ;
+        }
 
-	/**
-	 * Internal reference to our target service.
-	 *
-	 */
-	protected FileStore target ;
+    /**
+     * Check the identifier properties.
+     *
+     */
+    protected void checkIdentProperties(FileProperty[] properties)
+        throws Exception
+        {
+        checkIdentProperties(
+            new FileProperties(
+                properties
+                )
+            ) ;
+        }
 
-	/**
-	 * Test that the Exception handling works.
-	 * Removed, because it causes a SAX Exception in Axis.
-	 * Need to figure out why before we use this test.
-	public void testIdentifierException()
-		throws Exception
-		{
-		try {
-			target.throwIdentifierException() ;
-			}
-		catch (FileStoreIdentifierException ouch)
-			{
-			return ;
-			}
-		fail("Expected FileStoreIdentifierException") ;
-		}
-	 */
+    /**
+     * Check the identifier properties.
+     *
+     */
+    protected void checkIdentProperties(FileProperties properties)
+        throws Exception
+        {
+        //
+        // Check the info is not null.
+        assertNotNull(
+            "Null properties",
+            properties
+            ) ;
+        //
+        // Check the server ivorn is correct.
+        assertEquals(
+            "Wrong service ivorn in FileProperties",
+            target.identifier(),
+            properties.getStoreServiceIvorn().toString()
+            ) ;
+        //
+        // Check the resource ident is not null.
+        assertNotNull(
+            "Null resource ident in properties",
+            properties.getStoreResourceIdent()
+            ) ;
+        //
+        // Check the resource ivorn is correct.
+        assertEquals(
+            "Wrong resource ident in properties",
+            properties.getStoreResourceIvorn().toString(),
+            FileStoreIvornFactory.createIdent(
+                target.identifier(),
+                properties.getStoreResourceIdent()
+                )
+            ) ;
+        //
+        // Check the resource URL is not null.
+        assertNotNull(
+            "Null resource URL in properties",
+            properties.getProperty(
+                FileProperties.STORE_RESOURCE_URL
+                )
+            ) ;
+        }
 
-	/**
-	 * Test that we can get the service identifier..
-	 *
-	 */
-	public void testGetServiceIdentifier()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testGetServiceIdentifier()") ;
-		assertNotNull(
-			"Null service identifier",
-			target.identifier()
-			) ;
-		}
+    /**
+     * Set the type properties.
+     *
+     */
+    protected void configTypeProperties(FileProperties properties, String mime)
+        {
+        properties.setProperty(
+            FileProperties.MIME_TYPE_PROPERTY,
+            mime
+            ) ;
+        }
 
-	/**
-	 * Check the identifier properties.
-	 *
-	 */
-	protected void checkIdentProperties(FileProperty[] properties)
-		throws Exception
-		{
-		checkIdentProperties(
-			new FileProperties(
-				properties
-				)
-			) ;
-		}
+    /**
+     * Check the type properties.
+     *
+     */
+    protected void checkTypeProperties(FileProperties properties, String mime)
+        throws Exception
+        {
+        //
+        // Check the info is not null.
+        assertNotNull(
+            "Null properties",
+            properties
+            ) ;
+        //
+        // Check the mime type.
+        assertEquals(
+            "Wrong mime type property",
+            mime,
+            properties.getProperty(
+                FileProperties.MIME_TYPE_PROPERTY
+                )
+            ) ;
+        }
 
-	/**
-	 * Check the identifier properties.
-	 *
-	 */
-	protected void checkIdentProperties(FileProperties properties)
-		throws Exception
-		{
-		//
-		// Check the info is not null.
-		assertNotNull(
-			"Null properties",
-			properties
-			) ;
-		//
-		// Check the server ivorn is correct.
-		assertEquals(
-			"Wrong service ivorn in FileProperties",
-			target.identifier(),
-			properties.getStoreServiceIvorn().toString()
-			) ;
-		//
-		// Check the resource ident is not null.
-		assertNotNull(
-			"Null resource ident in properties",
-			properties.getStoreResourceIdent()
-			) ;
-		//
-		// Check the resource ivorn is correct.
-		assertEquals(
-			"Wrong resource ident in properties",
-			properties.getStoreResourceIvorn().toString(),
-			FileStoreIvornFactory.createIdent(
-				target.identifier(),
-				properties.getStoreResourceIdent()
-				)
-			) ;
-		//
-		// Check the resource URL is not null.
-		assertNotNull(
-			"Null resource URL in properties",
-			properties.getProperty(
-				FileProperties.STORE_RESOURCE_URL
-				)
-			) ;
-		}
+    /**
+     * Set the test property.
+     *
+     */
+    protected void configTestProperty(FileProperties properties, String value)
+        {
+        properties.setProperty(
+            TEST_PROPERTY_NAME,
+            value
+            ) ;
+        }
 
-	/**
-	 * Set the type properties.
-	 *
-	 */
-	protected void configTypeProperties(FileProperties properties, String mime)
-		{
-		properties.setProperty(
-			FileProperties.MIME_TYPE_PROPERTY,
-			mime
-			) ;
-		}
-
-	/**
-	 * Check the type properties.
-	 *
-	 */
-	protected void checkTypeProperties(FileProperties properties, String mime)
-		throws Exception
-		{
-		//
-		// Check the info is not null.
-		assertNotNull(
-			"Null properties",
-			properties
-			) ;
-		//
-		// Check the mime type.
-		assertEquals(
-			"Wrong mime type property",
-			mime,
-			properties.getProperty(
-				FileProperties.MIME_TYPE_PROPERTY
-				)
-			) ;
-		}
-
-	/**
-	 * Set the test property.
-	 *
-	 */
-	protected void configTestProperty(FileProperties properties, String value)
-		{
-		properties.setProperty(
-			TEST_PROPERTY_NAME,
-			value
-			) ;
-		}
-
-	/**
-	 * Check the test property.
-	 *
-	 */
-	protected void checkTestProperty(FileProperties properties, String value)
-		throws Exception
-		{
-		//
-		// Check the ivoa type.
-		assertEquals(
-			"Wrong test property value",
-			value,
-			properties.getProperty(
-				TEST_PROPERTY_NAME
-				)
-			) ;
-		}
+    /**
+     * Check the test property.
+     *
+     */
+    protected void checkTestProperty(FileProperties properties, String value)
+        throws Exception
+        {
+        //
+        // Check the ivoa type.
+        assertEquals(
+            "Wrong test property value",
+            value,
+            properties.getProperty(
+                TEST_PROPERTY_NAME
+                )
+            ) ;
+        }
 
 //
 // Import strings.
 //
 
-	/**
-	 * Check we get the right Exception if we import a null string.
-	 *
-	 */
-	public void testImportNullString()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testImportNullString()") ;
-		try {
-			target.importString(
-				null,
-				null
-				) ;
-			}
-		catch (FileStoreException ouch)
-			{
-			return ;
-			}
-		fail("Expected FileStoreException") ;
-		}
+    /**
+     * Check we get the right Exception if we import a null string.
+     *
+     */
+    public void testImportNullString()
+        throws Exception
+        {
+        try {
+            target.importString(
+                null,
+                null
+                ) ;
+            }
+        catch (FileStoreException ouch)
+            {
+            return ;
+            }
+        fail("Expected FileStoreException") ;
+        }
 
-	/**
-	 * Check we can import a string.
-	 *
-	 */
-	public void testImportString()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testImportString()") ;
-		//
-		// Import the test string.
-		FileProperties properties = new FileProperties(
-			target.importString(
-				null,
-				TEST_STRING
-				)
-			) ;
-		//
-		// Check the identifier properties.
-		checkIdentProperties(
-			properties
-			) ;
-		//
-		// Check the type properties.
-		checkTypeProperties(
-			properties,
-			null
-			) ;
-		//
-		// Check the test properties.
-		checkTestProperty(
-			properties,
-			null
-			) ;
-		}
+    /**
+     * Check we can import a string.
+     *
+     */
+    public void testImportString()
+        throws Exception
+        {
+        //
+        // Import the test string.
+        FileProperties properties = new FileProperties(
+            target.importString(
+                null,
+                TEST_STRING
+                )
+            ) ;
+        //
+        // Check the identifier properties.
+        checkIdentProperties(
+            properties
+            ) ;
+        //
+        // Check the type properties.
+        checkTypeProperties(
+            properties,
+            null
+            ) ;
+        //
+        // Check the test properties.
+        checkTestProperty(
+            properties,
+            null
+            ) ;
+        }
 
-	/**
-	 * Check we can store a string, with additional info.
-	 *
-	 */
-	public void testImportStringInfo()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testImportStringInfo()") ;
-		//
-		// Create our data info.
-		FileProperties properties = new FileProperties() ;
-		//
-		// Set the type properties.
-		configTypeProperties(
-			properties,
-			FileProperties.MIME_TYPE_XML
-			) ;
-		//
-		// Set the test properties.
-		configTestProperty(
-			properties,
-			TEST_PROPERTY_VALUE
-			) ;
-		//
-		// Import the test string.
-		FileProperties imported = new FileProperties(
-			target.importString(
-				properties.toArray(),
-				TEST_STRING
-				)
-			) ;
-		//
-		// Check the identifier properties.
-		checkIdentProperties(
-			imported
-			) ;
-		//
-		// Check the type properties.
-		checkTypeProperties(
-			imported,
-			FileProperties.MIME_TYPE_XML
-			) ;
-		//
-		// Check the test properties.
-		checkTestProperty(
-			imported,
-			TEST_PROPERTY_VALUE
-			) ;
-		}
+    /**
+     * Check we can store a string, with additional info.
+     *
+     */
+    public void testImportStringInfo()
+        throws Exception
+        {
+        //
+        // Create our data info.
+        FileProperties properties = new FileProperties() ;
+        //
+        // Set the type properties.
+        configTypeProperties(
+            properties,
+            FileProperties.MIME_TYPE_XML
+            ) ;
+        //
+        // Set the test properties.
+        configTestProperty(
+            properties,
+            TEST_PROPERTY_VALUE
+            ) ;
+        //
+        // Import the test string.
+        FileProperties imported = new FileProperties(
+            target.importString(
+                properties.toArray(),
+                TEST_STRING
+                )
+            ) ;
+        //
+        // Check the identifier properties.
+        checkIdentProperties(
+            imported
+            ) ;
+        //
+        // Check the type properties.
+        checkTypeProperties(
+            imported,
+            FileProperties.MIME_TYPE_XML
+            ) ;
+        //
+        // Check the test properties.
+        checkTestProperty(
+            imported,
+            TEST_PROPERTY_VALUE
+            ) ;
+        }
 
-	/**
-	 * Check we get the right Exception for a null ident.
-	 *
-	 */
-	public void testExportNullString()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testExportNullString()") ;
-		try {
-			target.exportString(
-				null
-				) ;
-			}
-		catch (FileStoreIdentifierException ouch)
-			{
-			return ;
-			}
-		fail("Expected FileStoreIdentifierException") ;
-		}
+    /**
+     * Check we get the right Exception for a null ident.
+     *
+     */
+    public void testExportNullString()
+        throws Exception
+        {
+        try {
+            target.exportString(
+                null
+                ) ;
+            }
+        catch (FileStoreIdentifierException ouch)
+            {
+            return ;
+            }
+        fail("Expected FileStoreIdentifierException") ;
+        }
 
-	/**
-	 * Check we get the right Exception for an unknown ident.
-	 *
-	 */
-	public void testExportUnknownString()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testExportUnknownString()") ;
-		try {
-			target.exportString(
-				"unknown"
-				) ;
-			}
-		catch (FileStoreNotFoundException ouch)
-			{
-			return ;
-			}
-		fail("Expected FileStoreNotFoundException") ;
-		}
+    /**
+     * Check we get the right Exception for an unknown ident.
+     *
+     */
+    public void testExportUnknownString()
+        throws Exception
+        {
+        try {
+            target.exportString(
+                "unknown"
+                ) ;
+            }
+        catch (FileStoreNotFoundException ouch)
+            {
+            return ;
+            }
+        fail("Expected FileStoreNotFoundException") ;
+        }
 
-	/**
-	 * Check we can import a string and export it as a string.
-	 *
-	 */
-	public void testImportStringExportString()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testImportStringExportString()") ;
-		//
-		// Import the test string.
-		FileProperties imported = new FileProperties(
-			target.importString(
-				null,
-				TEST_STRING
-				)
-			) ;
-		//
-		// Check the identifier properties.
-		checkIdentProperties(
-			imported
-			) ;
-		//
-		// Check that we get the same string back.
-		assertEquals(
-			"Wrong string returned",
-			TEST_STRING,
-			target.exportString(
-				imported.getStoreResourceIdent()
-				)
-			) ;
-		}
+    /**
+     * Check we can import a string and export it as a string.
+     *
+     */
+    public void testImportStringExportString()
+        throws Exception
+        {
+        //
+        // Import the test string.
+        FileProperties imported = new FileProperties(
+            target.importString(
+                null,
+                TEST_STRING
+                )
+            ) ;
+        //
+        // Check the identifier properties.
+        checkIdentProperties(
+            imported
+            ) ;
+        //
+        // Check that we get the same string back.
+        assertEquals(
+            "Wrong string returned",
+            TEST_STRING,
+            target.exportString(
+                imported.getStoreResourceIdent()
+                )
+            ) ;
+        }
 
-	/**
-	 * Check we can import a string and export it as bytes.
-	 *
-	 */
-	public void testImportStringExportBytes()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testImportStringExportBytes()") ;
-		//
-		// Import the test string.
-		FileProperties imported = new FileProperties(
-			target.importString(
-				null,
-				TEST_STRING
-				)
-			) ;
-		//
-		// Check the identifier properties.
-		checkIdentProperties(
-			imported
-			) ;
-		//
-		// Check that we get the same string back.
-		assertEquals(
-			"Wrong bytes returned",
-			TEST_STRING,
-			new String(
-				target.exportBytes(
-					imported.getStoreResourceIdent()
-					)
-				)
-			) ;
-		}
+    /**
+     * Check we can import a string and export it as bytes.
+     *
+     */
+    public void testImportStringExportBytes()
+        throws Exception
+        {
+        //
+        // Import the test string.
+        FileProperties imported = new FileProperties(
+            target.importString(
+                null,
+                TEST_STRING
+                )
+            ) ;
+        //
+        // Check the identifier properties.
+        checkIdentProperties(
+            imported
+            ) ;
+        //
+        // Check that we get the same string back.
+        assertEquals(
+            "Wrong bytes returned",
+            TEST_STRING,
+            new String(
+                target.exportBytes(
+                    imported.getStoreResourceIdent()
+                    )
+                )
+            ) ;
+        }
 
-	/**
-	 * Check we get the right Exception if we import a null byte array.
-	 *
-	 */
-	public void testImportNullBytes()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testImportNullBytes()") ;
-		try {
-			target.importBytes(
-				null,
-				null
-				) ;
-			}
-		catch (FileStoreException ouch)
-			{
-			return ;
-			}
-		fail("Expected FileStoreException") ;
-		}
+    /**
+     * Check we get the right Exception if we import a null byte array.
+     *
+     */
+    public void testImportNullBytes()
+        throws Exception
+        {
+        try {
+            target.importBytes(
+                null,
+                null
+                ) ;
+            }
+        catch (FileStoreException ouch)
+            {
+            return ;
+            }
+        fail("Expected FileStoreException") ;
+        }
 
-	/**
-	 * Check we can import a byte array.
-	 *
-	 */
-	public void testImportBytes()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testImportBytes()") ;
-		FileProperties imported = new FileProperties(
-			target.importBytes(
-				null,
-				TEST_BYTES
-				)
-			) ;
-		//
-		// Check the identifier properties.
-		checkIdentProperties(
-			imported
-			) ;
-		//
-		// Check the type properties.
-		checkTypeProperties(
-			imported,
-			null
-			) ;
-		//
-		// Check the test properties.
-		checkTestProperty(
-			imported,
-			null
-			) ;
-		}
+    /**
+     * Check we can import a byte array.
+     *
+     */
+    public void testImportBytes()
+        throws Exception
+        {
+        FileProperties imported = new FileProperties(
+            target.importBytes(
+                null,
+                TEST_BYTES
+                )
+            ) ;
+        //
+        // Check the identifier properties.
+        checkIdentProperties(
+            imported
+            ) ;
+        //
+        // Check the type properties.
+        checkTypeProperties(
+            imported,
+            null
+            ) ;
+        //
+        // Check the test properties.
+        checkTestProperty(
+            imported,
+            null
+            ) ;
+        }
 
-	/**
-	 * Check we can import a byte array, with additional info.
-	 *
-	 */
-	public void testImportBytesInfo()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testImportBytesInfo()") ;
-		//
-		// Create our data info.
-		FileProperties properties = new FileProperties() ;
-		//
-		// Set the type properties.
-		configTypeProperties(
-			properties,
-			FileProperties.MIME_TYPE_XML
-			) ;
-		//
-		// Set the test properties.
-		configTestProperty(
-			properties,
-			TEST_PROPERTY_VALUE
-			) ;
-		//
-		// Import the test bytes.
-		FileProperties imported = new FileProperties(
-			target.importBytes(
-				properties.toArray(),
-				TEST_BYTES
-				)
-			) ;
-		//
-		// Check the identifier properties.
-		checkIdentProperties(
-			imported
-			) ;
-		//
-		// Check the type properties.
-		checkTypeProperties(
-			imported,
-			FileProperties.MIME_TYPE_XML
-			) ;
-		//
-		// Check the test properties.
-		checkTestProperty(
-			imported,
-			TEST_PROPERTY_VALUE
-			) ;
-		}
+    /**
+     * Check we can import a byte array, with additional info.
+     *
+     */
+    public void testImportBytesInfo()
+        throws Exception
+        {
+        //
+        // Create our data info.
+        FileProperties properties = new FileProperties() ;
+        //
+        // Set the type properties.
+        configTypeProperties(
+            properties,
+            FileProperties.MIME_TYPE_XML
+            ) ;
+        //
+        // Set the test properties.
+        configTestProperty(
+            properties,
+            TEST_PROPERTY_VALUE
+            ) ;
+        //
+        // Import the test bytes.
+        FileProperties imported = new FileProperties(
+            target.importBytes(
+                properties.toArray(),
+                TEST_BYTES
+                )
+            ) ;
+        //
+        // Check the identifier properties.
+        checkIdentProperties(
+            imported
+            ) ;
+        //
+        // Check the type properties.
+        checkTypeProperties(
+            imported,
+            FileProperties.MIME_TYPE_XML
+            ) ;
+        //
+        // Check the test properties.
+        checkTestProperty(
+            imported,
+            TEST_PROPERTY_VALUE
+            ) ;
+        }
 
-	/**
-	 * Check we get the right Exception for a null ident.
-	 *
-	 */
-	public void testExportNullBytes()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testExportNullBytes()") ;
-		try {
-			target.exportBytes(
-				null
-				) ;
-			}
-		catch (FileStoreIdentifierException ouch)
-			{
-			return ;
-			}
-		fail("Expected FileStoreIdentifierException") ;
-		}
+    /**
+     * Check we get the right Exception for a null ident.
+     *
+     */
+    public void testExportNullBytes()
+        throws Exception
+        {
+        try {
+            target.exportBytes(
+                null
+                ) ;
+            }
+        catch (FileStoreIdentifierException ouch)
+            {
+            return ;
+            }
+        fail("Expected FileStoreIdentifierException") ;
+        }
 
-	/**
-	 * Check we get the right Exception for an unknown ident.
-	 *
-	 */
-	public void testExportUnknownBytes()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testExportUnknownBytes()") ;
-		try {
-			target.exportBytes(
-				"unknown"
-				) ;
-			}
-		catch (FileStoreNotFoundException ouch)
-			{
-			return ;
-			}
-		fail("Expected FileStoreNotFoundException") ;
-		}
+    /**
+     * Check we get the right Exception for an unknown ident.
+     *
+     */
+    public void testExportUnknownBytes()
+        throws Exception
+        {
+        try {
+            target.exportBytes(
+                "unknown"
+                ) ;
+            }
+        catch (FileStoreNotFoundException ouch)
+            {
+            return ;
+            }
+        fail("Expected FileStoreNotFoundException") ;
+        }
 
-	/**
-	 * Check we can import bytes and export it as bytes.
-	 *
-	 */
-	public void testImportBytesExportBytes()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testImportBytesExportBytes()") ;
-		//
-		// Import the test bytes.
-		FileProperties imported = new FileProperties(
-			target.importBytes(
-				null,
-				TEST_BYTES
-				)
-			) ;
-		//
-		// Check the identifier properties.
-		checkIdentProperties(
-			imported
-			) ;
-		//
-		// Check that we get the same data back.
-		assertEquals(
-			TEST_BYTES,
-			target.exportBytes(
-				imported.getStoreResourceIdent()
-				)
-			) ;
-		}
+    /**
+     * Check we can import bytes and export it as bytes.
+     *
+     */
+    public void testImportBytesExportBytes()
+        throws Exception
+        {
+        //
+        // Import the test bytes.
+        FileProperties imported = new FileProperties(
+            target.importBytes(
+                null,
+                TEST_BYTES
+                )
+            ) ;
+        //
+        // Check the identifier properties.
+        checkIdentProperties(
+            imported
+            ) ;
+        //
+        // Check that we get the same data back.
+        assertEquals(
+            TEST_BYTES,
+            target.exportBytes(
+                imported.getStoreResourceIdent()
+                )
+            ) ;
+        }
 
-	/**
-	 * Check we can import bytes and export it as a string.
-	 *
-	 */
-	public void testImportBytesExportString()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testImportBytesExportString()") ;
-		//
-		// Import the test bytes.
-		FileProperties imported = new FileProperties(
-			target.importBytes(
-				null,
-				TEST_BYTES
-				)
-			) ;
-		//
-		// Check the identifier properties.
-		checkIdentProperties(
-			imported
-			) ;
-		//
-		// Check that we get the right string back.
-		assertEquals(
-			"Wrong bytes returned",
-			new String(
-				TEST_BYTES
-				),
-			target.exportString(
-				imported.getStoreResourceIdent()
-				)
-			) ;
-		}
+    /**
+     * Check we can import bytes and export it as a string.
+     *
+     */
+    public void testImportBytesExportString()
+        throws Exception
+        {
+        //
+        // Import the test bytes.
+        FileProperties imported = new FileProperties(
+            target.importBytes(
+                null,
+                TEST_BYTES
+                )
+            ) ;
+        //
+        // Check the identifier properties.
+        checkIdentProperties(
+            imported
+            ) ;
+        //
+        // Check that we get the right string back.
+        assertEquals(
+            "Wrong bytes returned",
+            new String(
+                TEST_BYTES
+                ),
+            target.exportString(
+                imported.getStoreResourceIdent()
+                )
+            ) ;
+        }
 
-	/**
-	 * Check we get the right Exception for a null ident.
-	 *
-	 */
-	public void testRequestNullInfo()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testRequestNullInfo()") ;
-		try {
-			target.properties(
-				null
-				) ;
-			}
-		catch (FileStoreIdentifierException ouch)
-			{
-			return ;
-			}
-		fail("Expected FileStoreIdentifierException") ;
-		}
+    /**
+     * Check we get the right Exception for a null ident.
+     *
+     */
+    public void testRequestNullInfo()
+        throws Exception
+        {
+        try {
+            target.properties(
+                null
+                ) ;
+            }
+        catch (FileStoreIdentifierException ouch)
+            {
+            return ;
+            }
+        fail("Expected FileStoreIdentifierException") ;
+        }
 
-	/**
-	 * Check we get the right Exception for an unknown ident.
-	 *
-	 */
-	public void testRequestUnknownInfo()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testRequestUnknownInfo()") ;
-		try {
-			target.properties(
-				"unknown"
-				) ;
-			}
-		catch (FileStoreNotFoundException ouch)
-			{
-			return ;
-			}
-		fail("Expected FileStoreNotFoundException") ;
-		}
+    /**
+     * Check we get the right Exception for an unknown ident.
+     *
+     */
+    public void testRequestUnknownInfo()
+        throws Exception
+        {
+        try {
+            target.properties(
+                "unknown"
+                ) ;
+            }
+        catch (FileStoreNotFoundException ouch)
+            {
+            return ;
+            }
+        fail("Expected FileStoreNotFoundException") ;
+        }
 
-	/**
-	 * Check we can import a string and request the info for it.
-	 *
-	 */
-	public void testRequestStringInfo()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testRequestStringInfo()") ;
-		//
-		// Store the test string.
-		FileProperties imported = new FileProperties(
-			target.importString(
-				null,
-				TEST_STRING
-				)
-			) ;
-		//
-		// Check that we can find it.
-		FileProperties requested = new FileProperties(
-			target.properties(
-				imported.getStoreResourceIdent()
-				)
-			) ;
-		//
-		// Check the identifiers are the same.
-		assertEquals(
-			"Requested ident not the same as imported",
-			imported.getStoreResourceIdent(),
-			requested.getStoreResourceIdent()
-			) ;
-		}
+    /**
+     * Check we can import a string and request the info for it.
+     *
+     */
+    public void testRequestStringInfo()
+        throws Exception
+        {
+        //
+        // Store the test string.
+        FileProperties imported = new FileProperties(
+            target.importString(
+                null,
+                TEST_STRING
+                )
+            ) ;
+        //
+        // Check that we can find it.
+        FileProperties requested = new FileProperties(
+            target.properties(
+                imported.getStoreResourceIdent()
+                )
+            ) ;
+        //
+        // Check the identifiers are the same.
+        assertEquals(
+            "Requested ident not the same as imported",
+            imported.getStoreResourceIdent(),
+            requested.getStoreResourceIdent()
+            ) ;
+        }
 
-	/**
-	 * Check we can import bytes and request the info for it.
-	 *
-	 */
-	public void testRequestBytesInfo()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testRequestBytesInfo()") ;
-		//
-		// Store the test string.
-		FileProperties imported = new FileProperties(
-			target.importBytes(
-				null,
-				TEST_BYTES
-				)
-			) ;
-		//
-		// Check that we can find it.
-		FileProperties requested = new FileProperties(
-			target.properties(
-				imported.getStoreResourceIdent()
-				)
-			) ;
-		//
-		// Check the identifiers are the same.
-		assertEquals(
-			"Requested ident not the same as imported",
-			imported.getStoreResourceIdent(),
-			requested.getStoreResourceIdent()
-			) ;
-		}
+    /**
+     * Check we can import bytes and request the info for it.
+     *
+     */
+    public void testRequestBytesInfo()
+        throws Exception
+        {
+        //
+        // Store the test string.
+        FileProperties imported = new FileProperties(
+            target.importBytes(
+                null,
+                TEST_BYTES
+                )
+            ) ;
+        //
+        // Check that we can find it.
+        FileProperties requested = new FileProperties(
+            target.properties(
+                imported.getStoreResourceIdent()
+                )
+            ) ;
+        //
+        // Check the identifiers are the same.
+        assertEquals(
+            "Requested ident not the same as imported",
+            imported.getStoreResourceIdent(),
+            requested.getStoreResourceIdent()
+            ) ;
+        }
 
-	/**
-	 * Check we get the right Exception for a null ident.
-	 *
-	 */
-	public void testDeleteNull()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testDeleteNull()") ;
-		try {
-			target.delete(
-				null
-				) ;
-			}
-		catch (FileStoreIdentifierException ouch)
-			{
-			return ;
-			}
-		fail("Expected FileStoreIdentifierException") ;
-		}
+    /**
+     * Check we get the right Exception for a null ident.
+     *
+     */
+    public void testDeleteNull()
+        throws Exception
+        {
+        try {
+            target.delete(
+                null
+                ) ;
+            }
+        catch (FileStoreIdentifierException ouch)
+            {
+            return ;
+            }
+        fail("Expected FileStoreIdentifierException") ;
+        }
 
-	/**
-	 * Check we get the right Exception for an unknown ident.
-	 *
-	 */
-	public void testDeleteUnknown()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testDeleteUnknown()") ;
-		try {
-			target.delete(
-				"unknown"
-				) ;
-			}
-		catch (FileStoreNotFoundException ouch)
-			{
-			return ;
-			}
-		fail("Expected FileStoreNotFoundException") ;
-		}
+    /**
+     * Check we get the right Exception for an unknown ident.
+     *
+     */
+    public void testDeleteUnknown()
+        throws Exception
+        {
+        try {
+            target.delete(
+                "unknown"
+                ) ;
+            }
+        catch (FileStoreNotFoundException ouch)
+            {
+            return ;
+            }
+        fail("Expected FileStoreNotFoundException") ;
+        }
 
-	/**
-	 * Check we can import a string and delete it.
-	 *
-	 */
-	public void testDeleteString()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testDeleteString()") ;
-		//
-		// Store the test string.
-		FileProperties imported = new FileProperties(
-			target.importString(
-				null,
-				TEST_STRING
-				)
-			) ;
-		//
-		// Check that we can delete it.
-		FileProperties deleted = new FileProperties(
-			target.delete(
-				imported.getStoreResourceIdent()
-				)
-			) ;
-		//
-		// Check the properties are the same.
-		assertEquals(
-			"Deleted properties not the same as imported",
-			imported.getStoreResourceIdent(),
-			deleted.getStoreResourceIdent()
-			) ;
-		}
+    /**
+     * Check we can import a string and delete it.
+     *
+     */
+    public void testDeleteString()
+        throws Exception
+        {
+        //
+        // Store the test string.
+        FileProperties imported = new FileProperties(
+            target.importString(
+                null,
+                TEST_STRING
+                )
+            ) ;
+        //
+        // Check that we can delete it.
+        FileProperties deleted = new FileProperties(
+            target.delete(
+                imported.getStoreResourceIdent()
+                )
+            ) ;
+        //
+        // Check the properties are the same.
+        assertEquals(
+            "Deleted properties not the same as imported",
+            imported.getStoreResourceIdent(),
+            deleted.getStoreResourceIdent()
+            ) ;
+        }
 
-	/**
-	 * Check we can import a byte array and delete it.
-	 *
-	 */
-	public void testDeleteBytes()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testDeleteBytes()") ;
-		//
-		// Store the test string.
-		FileProperties imported = new FileProperties(
-			target.importBytes(
-				null,
-				TEST_BYTES
-				)
-			) ;
-		//
-		// Check that we can delete it.
-		FileProperties deleted = new FileProperties(
-			target.delete(
-				imported.getStoreResourceIdent()
-				)
-			) ;
-		//
-		// Check the properties are the same.
-		assertEquals(
-			"Deleted properties not the same as imported",
-			imported.getStoreResourceIdent(),
-			deleted.getStoreResourceIdent()
-			) ;
-		}
+    /**
+     * Check we can import a byte array and delete it.
+     *
+     */
+    public void testDeleteBytes()
+        throws Exception
+        {
+        //
+        // Store the test string.
+        FileProperties imported = new FileProperties(
+            target.importBytes(
+                null,
+                TEST_BYTES
+                )
+            ) ;
+        //
+        // Check that we can delete it.
+        FileProperties deleted = new FileProperties(
+            target.delete(
+                imported.getStoreResourceIdent()
+                )
+            ) ;
+        //
+        // Check the properties are the same.
+        assertEquals(
+            "Deleted properties not the same as imported",
+            imported.getStoreResourceIdent(),
+            deleted.getStoreResourceIdent()
+            ) ;
+        }
 
-	/**
-	 * Check we can't query the info on something that we have deleted.
-	 *
-	 */
-	public void testInfoDeleted()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testInfoDeleted()") ;
-		//
-		// Store the test string.
-		FileProperties imported = new FileProperties(
-			target.importString(
-				null,
-				TEST_STRING
-				)
-			) ;
-		//
-		// Check that we can delete it.
-		FileProperties deleted = new FileProperties(
-			target.delete(
-				imported.getStoreResourceIdent()
-				)
-			) ;
-		//
-		// Check that we can't find it.
-		try {
-			target.properties(
-				imported.getStoreResourceIdent()
-				) ;
-			}
-		catch (FileStoreNotFoundException ouch)
-			{
-			return ;
-			}
-		fail("Expected FileStoreNotFoundException") ;
-		}
+    /**
+     * Check we can't query the info on something that we have deleted.
+     *
+     */
+    public void testInfoDeleted()
+        throws Exception
+        {
+        //
+        // Store the test string.
+        FileProperties imported = new FileProperties(
+            target.importString(
+                null,
+                TEST_STRING
+                )
+            ) ;
+        //
+        // Check that we can delete it.
+        FileProperties deleted = new FileProperties(
+            target.delete(
+                imported.getStoreResourceIdent()
+                )
+            ) ;
+        //
+        // Check that we can't find it.
+        try {
+            target.properties(
+                imported.getStoreResourceIdent()
+                ) ;
+            }
+        catch (FileStoreNotFoundException ouch)
+            {
+            return ;
+            }
+        fail("Expected FileStoreNotFoundException") ;
+        }
 
-	/**
-	 * Check we can't export something that we have deleted.
-	 *
-	 */
-	public void testExportDeleted()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testExportDeleted()") ;
-		//
-		// Store the test string.
-		FileProperties imported = new FileProperties(
-			target.importString(
-				null,
-				TEST_STRING
-				)
-			) ;
-		//
-		// Check that we can delete it.
-		FileProperties deleted = new FileProperties(
-			target.delete(
-				imported.getStoreResourceIdent()
-				)
-			) ;
-		//
-		// Check that we can't export it.
-		try {
-			target.exportString(
-				imported.getStoreResourceIdent()
-				) ;
-			}
-		catch (FileStoreNotFoundException ouch)
-			{
-			return ;
-			}
-		fail("Expected FileStoreNotFoundException") ;
-		}
+    /**
+     * Check we can't export something that we have deleted.
+     *
+     */
+    public void testExportDeleted()
+        throws Exception
+        {
+        //
+        // Store the test string.
+        FileProperties imported = new FileProperties(
+            target.importString(
+                null,
+                TEST_STRING
+                )
+            ) ;
+        //
+        // Check that we can delete it.
+        FileProperties deleted = new FileProperties(
+            target.delete(
+                imported.getStoreResourceIdent()
+                )
+            ) ;
+        //
+        // Check that we can't export it.
+        try {
+            target.exportString(
+                imported.getStoreResourceIdent()
+                ) ;
+            }
+        catch (FileStoreNotFoundException ouch)
+            {
+            return ;
+            }
+        fail("Expected FileStoreNotFoundException") ;
+        }
 
-	/**
-	 * Check we get the right Exception for a null string.
-	 *
-	 */
-	public void testAppendNullString()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testAppendNullString()") ;
-		try {
-			target.appendString(
-				"anything",
-				null
-				) ;
-			}
-		catch (FileStoreException ouch)
-			{
-			return ;
-			}
-		fail("Expected FileStoreException") ;
-		}
+    /**
+     * Check we get the right Exception for a null string.
+     *
+     */
+    public void testAppendNullString()
+        throws Exception
+        {
+        try {
+            target.appendString(
+                "anything",
+                null
+                ) ;
+            }
+        catch (FileStoreException ouch)
+            {
+            return ;
+            }
+        fail("Expected FileStoreException") ;
+        }
 
-	/**
-	 * Check we get the right Exception for a null ident.
-	 *
-	 */
-	public void testAppendStringNullIdent()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testAppendStringNullIdent()") ;
-		try {
-			target.appendString(
-				null,
-				EXTRA_STRING
-				) ;
-			}
-		catch (FileStoreIdentifierException ouch)
-			{
-			return ;
-			}
-		fail("Expected FileStoreIdentifierException") ;
-		}
+    /**
+     * Check we get the right Exception for a null ident.
+     *
+     */
+    public void testAppendStringNullIdent()
+        throws Exception
+        {
+        try {
+            target.appendString(
+                null,
+                EXTRA_STRING
+                ) ;
+            }
+        catch (FileStoreIdentifierException ouch)
+            {
+            return ;
+            }
+        fail("Expected FileStoreIdentifierException") ;
+        }
 
-	/**
-	 * Check we get the right Exception for an unknown ident.
-	 *
-	 */
-	public void testAppendStringUnknownIdent()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testAppendStringUnknownIdent()") ;
-		try {
-			target.appendString(
-				"unknown",
-				EXTRA_STRING
-				) ;
-			}
-		catch (FileStoreNotFoundException ouch)
-			{
-			return ;
-			}
-		fail("Expected FileStoreNotFoundException") ;
-		}
+    /**
+     * Check we get the right Exception for an unknown ident.
+     *
+     */
+    public void testAppendStringUnknownIdent()
+        throws Exception
+        {
+        try {
+            target.appendString(
+                "unknown",
+                EXTRA_STRING
+                ) ;
+            }
+        catch (FileStoreNotFoundException ouch)
+            {
+            return ;
+            }
+        fail("Expected FileStoreNotFoundException") ;
+        }
 
-	/**
-	 * Check we can append a string.
-	 *
-	 */
-	public void testImportStringAppendString()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testImportStringAppendString()") ;
-		//
-		// Import the test string.
-		FileProperties imported = new FileProperties(
-			target.importString(
-				null,
-				TEST_STRING
-				)
-			) ;
-		//
-		// Append the extra string.
-		FileProperties modified = new FileProperties(
-			target.appendString(
-				imported.getStoreResourceIdent(),
-				EXTRA_STRING
-				)
-			) ;
-		//
-		// Check we get the right string back.
-		assertEquals(
-			"Wrong string returned",
-			(TEST_STRING + EXTRA_STRING),
-			target.exportString(
-				modified.getStoreResourceIdent()
-				)
-			) ;
-		}
+    /**
+     * Check we can append a string.
+     *
+     */
+    public void testImportStringAppendString()
+        throws Exception
+        {
+        //
+        // Import the test string.
+        FileProperties imported = new FileProperties(
+            target.importString(
+                null,
+                TEST_STRING
+                )
+            ) ;
+        //
+        // Append the extra string.
+        FileProperties modified = new FileProperties(
+            target.appendString(
+                imported.getStoreResourceIdent(),
+                EXTRA_STRING
+                )
+            ) ;
+        //
+        // Check we get the right string back.
+        assertEquals(
+            "Wrong string returned",
+            (TEST_STRING + EXTRA_STRING),
+            target.exportString(
+                modified.getStoreResourceIdent()
+                )
+            ) ;
+        }
 
-	/**
-	 * Check we can append some bytes.
-	 *
-	 */
-	public void testImportStringAppendBytes()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testImportStringAppendBytes()") ;
-		//
-		// Import the test string.
-		FileProperties imported = new FileProperties(
-			target.importString(
-				null,
-				TEST_STRING
-				)
-			) ;
-		//
-		// Append the extra string.
-		FileProperties modified = new FileProperties(
-			target.appendBytes(
-				imported.getStoreResourceIdent(),
-				EXTRA_BYTES
-				)
-			) ;
-		//
-		// Check we get the right string back.
-		assertEquals(
-			"Wrong string returned",
-			(TEST_STRING + new String(EXTRA_BYTES)),
-			target.exportString(
-				modified.getStoreResourceIdent()
-				)
-			) ;
-		}
+    /**
+     * Check we can append some bytes.
+     *
+     */
+    public void testImportStringAppendBytes()
+        throws Exception
+        {
+        //
+        // Import the test string.
+        FileProperties imported = new FileProperties(
+            target.importString(
+                null,
+                TEST_STRING
+                )
+            ) ;
+        //
+        // Append the extra string.
+        FileProperties modified = new FileProperties(
+            target.appendBytes(
+                imported.getStoreResourceIdent(),
+                EXTRA_BYTES
+                )
+            ) ;
+        //
+        // Check we get the right string back.
+        assertEquals(
+            "Wrong string returned",
+            (TEST_STRING + new String(EXTRA_BYTES)),
+            target.exportString(
+                modified.getStoreResourceIdent()
+                )
+            ) ;
+        }
 
-	/**
-	 * Check we get the right Exception for a null ident.
-	 *
-	 */
-	public void testDuplicateNullIdent()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testDuplicateNullIdent()") ;
-		try {
-			target.duplicate(
-				null,
-				null
-				) ;
-			}
-		catch (FileStoreIdentifierException ouch)
-			{
-			return ;
-			}
-		fail("Expected FileStoreIdentifierException") ;
-		}
+    /**
+     * Check we get the right Exception for a null ident.
+     *
+     */
+    public void testDuplicateNullIdent()
+        throws Exception
+        {
+        try {
+            target.duplicate(
+                null,
+                null
+                ) ;
+            }
+        catch (FileStoreIdentifierException ouch)
+            {
+            return ;
+            }
+        fail("Expected FileStoreIdentifierException") ;
+        }
 
-	/**
-	 * Check we get the right Exception for an unknown ident.
-	 *
-	 */
-	public void testDuplicateUnknownIdent()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testDuplicateUnknownIdent()") ;
-		try {
-			target.duplicate(
-				"unknown",
-				null
-				) ;
-			}
-		catch (FileStoreNotFoundException ouch)
-			{
-			return ;
-			}
-		fail("Expected FileStoreNotFoundException") ;
-		}
+    /**
+     * Check we get the right Exception for an unknown ident.
+     *
+     */
+    public void testDuplicateUnknownIdent()
+        throws Exception
+        {
+        try {
+            target.duplicate(
+                "unknown",
+                null
+                ) ;
+            }
+        catch (FileStoreNotFoundException ouch)
+            {
+            return ;
+            }
+        fail("Expected FileStoreNotFoundException") ;
+        }
 
-	/**
-	 * Check a duplicate gets a new ident.
-	 *
-	 */
-	public void testDuplicateIdent()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testDuplicateIdent()") ;
-		//
-		// Import the test string.
-		FileProperties imported = new FileProperties(
-			target.importString(
-				null,
-				TEST_STRING
-				)
-			) ;
-		//
-		// Create a duplicate
-		FileProperties duplicate = new FileProperties(
-			target.duplicate(
-				imported.getStoreResourceIdent(),
-				null
-				)
-			) ;
-		//
-		// Check the identifiers are different.
-		assertFalse(
-			"Duplicate identifiers",
-			imported.getStoreResourceIdent().equals(
-				duplicate.getStoreResourceIdent()
-				)
-			) ;
-		}
+    /**
+     * Check a duplicate gets a new ident.
+     *
+     */
+    public void testDuplicateIdent()
+        throws Exception
+        {
+        //
+        // Import the test string.
+        FileProperties imported = new FileProperties(
+            target.importString(
+                null,
+                TEST_STRING
+                )
+            ) ;
+        //
+        // Create a duplicate
+        FileProperties duplicate = new FileProperties(
+            target.duplicate(
+                imported.getStoreResourceIdent(),
+                null
+                )
+            ) ;
+        //
+        // Check the identifiers are different.
+        assertFalse(
+            "Duplicate identifiers",
+            imported.getStoreResourceIdent().equals(
+                duplicate.getStoreResourceIdent()
+                )
+            ) ;
+        }
 
-	/**
-	 * Check a duplicate gets the right data.
-	 *
-	 */
-	public void testDuplicateString()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testDuplicateString()") ;
-		//
-		// Import the test string.
-		FileProperties imported = new FileProperties(
-			target.importString(
-				null,
-				TEST_STRING
-				)
-			) ;
-		//
-		// Create a duplicate
-		FileProperties duplicate = new FileProperties(
-			target.duplicate(
-				imported.getStoreResourceIdent(),
-				null
-				)
-			) ;
-		//
-		// Check we get the same string back.
-		assertEquals(
-			"Wrong string returned",
-			TEST_STRING,
-			target.exportString(
-				duplicate.getStoreResourceIdent()
-				)
-			) ;
-		}
+    /**
+     * Check a duplicate gets the right data.
+     *
+     */
+    public void testDuplicateString()
+        throws Exception
+        {
+        //
+        // Import the test string.
+        FileProperties imported = new FileProperties(
+            target.importString(
+                null,
+                TEST_STRING
+                )
+            ) ;
+        //
+        // Create a duplicate
+        FileProperties duplicate = new FileProperties(
+            target.duplicate(
+                imported.getStoreResourceIdent(),
+                null
+                )
+            ) ;
+        //
+        // Check we get the same string back.
+        assertEquals(
+            "Wrong string returned",
+            TEST_STRING,
+            target.exportString(
+                duplicate.getStoreResourceIdent()
+                )
+            ) ;
+        }
 
-	/**
-	 * Check a duplicate gets the right info.
-	 *
-	 */
-	public void testDuplicateInfo()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testDuplicateInfo()") ;
-		//
-		// Create our data info.
-		FileProperties properties = new FileProperties() ;
-		//
-		// Set the type properties.
-		configTypeProperties(
-			properties,
-			FileProperties.MIME_TYPE_XML
-			) ;
-		//
-		// Set the test properties.
-		configTestProperty(
-			properties,
-			TEST_PROPERTY_VALUE
-			) ;
-		//
-		// Import the test bytes.
-		FileProperties imported = new FileProperties(
-			target.importBytes(
-				properties.toArray(),
-				TEST_BYTES
-				)
-			) ;
-		//
-		// Create a duplicate
-		FileProperties duplicate = new FileProperties(
-			target.duplicate(
-				imported.getStoreResourceIdent(),
-				null
-				)
-			) ;
-		//
-		// Check the identifier properties.
-		checkIdentProperties(
-			duplicate
-			) ;
-		//
-		// Check the type properties.
-		checkTypeProperties(
-			duplicate,
-			FileProperties.MIME_TYPE_XML
-			) ;
-		//
-		// Check the test properties.
-		checkTestProperty(
-			duplicate,
-			TEST_PROPERTY_VALUE
-			) ;
-		}
+    /**
+     * Check a duplicate gets the right info.
+     *
+     */
+    public void testDuplicateInfo()
+        throws Exception
+        {
+        //
+        // Create our data info.
+        FileProperties properties = new FileProperties() ;
+        //
+        // Set the type properties.
+        configTypeProperties(
+            properties,
+            FileProperties.MIME_TYPE_XML
+            ) ;
+        //
+        // Set the test properties.
+        configTestProperty(
+            properties,
+            TEST_PROPERTY_VALUE
+            ) ;
+        //
+        // Import the test bytes.
+        FileProperties imported = new FileProperties(
+            target.importBytes(
+                properties.toArray(),
+                TEST_BYTES
+                )
+            ) ;
+        //
+        // Create a duplicate
+        FileProperties duplicate = new FileProperties(
+            target.duplicate(
+                imported.getStoreResourceIdent(),
+                null
+                )
+            ) ;
+        //
+        // Check the identifier properties.
+        checkIdentProperties(
+            duplicate
+            ) ;
+        //
+        // Check the type properties.
+        checkTypeProperties(
+            duplicate,
+            FileProperties.MIME_TYPE_XML
+            ) ;
+        //
+        // Check the test properties.
+        checkTestProperty(
+            duplicate,
+            TEST_PROPERTY_VALUE
+            ) ;
+        }
 
-	/**
-	 * Check we can modify a duplicate.
-	 *
-	 */
-	public void testDuplicateAppend()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testDuplicateAppend()") ;
-		//
-		// Import the test string.
-		FileProperties imported = new FileProperties(
-			target.importString(
-				null,
-				TEST_STRING
-				)
-			) ;
-		//
-		// Create a duplicate.
-		FileProperties duplicate = new FileProperties(
-			target.duplicate(
-				imported.getStoreResourceIdent(),
-				null
-				)
-			) ;
-		//
-		// Modify the duplicate.
-		FileProperties modified = new FileProperties(
-			target.appendString(
-				duplicate.getStoreResourceIdent(),
-				EXTRA_STRING
-				)
-			) ;
-		//
-		// Check the original is unchanged.
-		assertEquals(
-			"Wrong string returned",
-			TEST_STRING,
-			target.exportString(
-				imported.getStoreResourceIdent()
-				)
-			) ;
-		//
-		// Check the duplicate has changed.
-		assertEquals(
-			"Wrong string returned",
-			(TEST_STRING + EXTRA_STRING),
-			target.exportString(
-				modified.getStoreResourceIdent()
-				)
-			) ;
-		}
+    /**
+     * Check we can modify a duplicate.
+     *
+     */
+    public void testDuplicateAppend()
+        throws Exception
+        {
+        //
+        // Import the test string.
+        FileProperties imported = new FileProperties(
+            target.importString(
+                null,
+                TEST_STRING
+                )
+            ) ;
+        //
+        // Create a duplicate.
+        FileProperties duplicate = new FileProperties(
+            target.duplicate(
+                imported.getStoreResourceIdent(),
+                null
+                )
+            ) ;
+        //
+        // Modify the duplicate.
+        FileProperties modified = new FileProperties(
+            target.appendString(
+                duplicate.getStoreResourceIdent(),
+                EXTRA_STRING
+                )
+            ) ;
+        //
+        // Check the original is unchanged.
+        assertEquals(
+            "Wrong string returned",
+            TEST_STRING,
+            target.exportString(
+                imported.getStoreResourceIdent()
+                )
+            ) ;
+        //
+        // Check the duplicate has changed.
+        assertEquals(
+            "Wrong string returned",
+            (TEST_STRING + EXTRA_STRING),
+            target.exportString(
+                modified.getStoreResourceIdent()
+                )
+            ) ;
+        }
 
-	/**
-	 * Check we get the right Exception for a null url.
-	 *
-	 */
-	public void testCreateNullUrlGetTransfer()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testCreateNullUrlGetTransfer()") ;
-		try {
-			new UrlGetTransfer(
-				null
-				) ;
-			}
-		catch (IllegalArgumentException ouch)
-			{
-			return ;
-			}
-		fail("Expected IllegalArgumentException") ;
-		}
+    /**
+     * Check we get the right Exception for a null url.
+     *
+     */
+    public void testCreateNullUrlGetTransfer()
+        throws Exception
+        {
+        try {
+            new UrlGetTransfer(
+                null
+                ) ;
+            }
+        catch (IllegalArgumentException ouch)
+            {
+            return ;
+            }
+        fail("Expected IllegalArgumentException") ;
+        }
 
-	/**
-	 * Check we can create a transfer info.
-	 *
-	 */
-	public void testCreateUrlGetTransfer()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testCreateUrlGetTransfer()") ;
-		log.debug("--------") ;
-		log.debug(
-			getTestProperty(
-				"data.file.text"
-				)
-			) ;
-		log.debug("--------") ;
-		assertNotNull(
-			"Null transfer info",
-			new UrlGetTransfer(
-				new URL(
-					getTestProperty(
-						"data.file.text"
-						)
-					)
-				)
-			) ;
-		}
+    /**
+     * Check we can create a transfer info.
+     *
+     */
+    public void testCreateUrlGetTransfer()
+        throws Exception
+        {
+        assertNotNull(
+            "Null transfer info",
+            new UrlGetTransfer(
+                new URL(
+                    getTestProperty(
+                        "data.file.text"
+                        )
+                    )
+                )
+            ) ;
+        }
 
-	/**
-	 * Check we get the right Exception for a null transfer properties.
-	 *
-	 */
-	public void testImportNullTransfer()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testImportNullTransfer()") ;
-		try {
-			target.importData(
-				null
-				) ;
-			}
-		catch (FileStoreTransferException ouch)
-			{
-			return ;
-			}
-		fail("Expected FileStoreTransferException") ;
-		}
+    /**
+     * Check we get the right Exception for a null transfer properties.
+     *
+     */
+    public void testImportNullTransfer()
+        throws Exception
+        {
+        try {
+            target.importData(
+                null
+                ) ;
+            }
+        catch (FileStoreTransferException ouch)
+            {
+            return ;
+            }
+        fail("Expected FileStoreTransferException") ;
+        }
 
-	/**
-	 * Check that we get the right exception from a failed import.
-	 *
-	 */
-	public void testImportMissing()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testImportMissing()") ;
-		try {
-			target.importData(
-				new UrlGetTransfer(
-					new URL(
-						getTestProperty(
-							"data.file.miss"
-							)
-						)
-					)
-				) ;
-			}
-		catch (FileStoreTransferException ouch)
-			{
-			return ;
-			}
-		fail("Expected FileStoreTransferException") ;
-		}
+    /**
+     * Check that we get the right exception from a failed import.
+     *
+     */
+    public void testImportMissing()
+        throws Exception
+        {
+        try {
+            target.importData(
+                new UrlGetTransfer(
+                    new URL(
+                        getTestProperty(
+                            "data.file.miss"
+                            )
+                        )
+                    )
+                ) ;
+            }
+        catch (FileStoreTransferException ouch)
+            {
+            return ;
+            }
+        fail("Expected FileStoreTransferException") ;
+        }
 
-	/**
-	 * Check that we can import a local file.
-	 *
-	 */
-	public void testImportFile()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testImportFile()") ;
-		TransferProperties transfer = 
-			target.importData(
-				new UrlGetTransfer(
-					new URL(
-						getTestProperty(
-							"data.file.text"
-							)
-						)
-					)
-				) ;
-		assertNotNull(
-			"Null transfer properties",
-			transfer
-			) ;
-		}
+    /**
+     * Check that we can import a local file.
+     *
+     */
+    public void testImportFile()
+        throws Exception
+        {
+        TransferProperties transfer = 
+            target.importData(
+                new UrlGetTransfer(
+                    new URL(
+                        getTestProperty(
+                            "data.file.text"
+                            )
+                        )
+                    )
+                ) ;
+        assertNotNull(
+            "Null transfer properties",
+            transfer
+            ) ;
+        }
 
-	/**
-	 * Check that we can import from a http server.
-	 *
-	 */
-	public void testImportHttp()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testImportHttp()") ;
-		TransferProperties transfer = 
-			target.importData(
-				new UrlGetTransfer(
-					new URL(
-						getTestProperty(
-							"data.http.html"
-							)
-						)
-					)
-				) ;
-		assertNotNull(
-			"Null transfer properties",
-			transfer
-			) ;
-		}
+    /**
+     * Check that we can import from a http server.
+     *
+     */
+    public void testImportHttp()
+        throws Exception
+        {
+        TransferProperties transfer = 
+            target.importData(
+                new UrlGetTransfer(
+                    new URL(
+                        getTestProperty(
+                            "data.http.html"
+                            )
+                        )
+                    )
+                ) ;
+        assertNotNull(
+            "Null transfer properties",
+            transfer
+            ) ;
+        }
 
-	/**
-	 * Check that we get valid file properties from an import.
-	 *
-	 */
-	public void testImportProperties()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testImportProperties()") ;
-		TransferProperties transfer = 
-			target.importData(
-				new UrlGetTransfer(
-					new URL(
-						getTestProperty(
-							"data.file.text"
-							)
-						)
-					)
-				) ;
-		assertNotNull(
-			"Null transfer properties",
-			transfer
-			) ;
-		checkIdentProperties(
-			transfer.getFileProperties()
-			) ;
-		}
+    /**
+     * Check that we get valid file properties from an import.
+     *
+     */
+    public void testImportProperties()
+        throws Exception
+        {
+        TransferProperties transfer = 
+            target.importData(
+                new UrlGetTransfer(
+                    new URL(
+                        getTestProperty(
+                            "data.file.text"
+                            )
+                        )
+                    )
+                ) ;
+        assertNotNull(
+            "Null transfer properties",
+            transfer
+            ) ;
+        checkIdentProperties(
+            transfer.getFileProperties()
+            ) ;
+        }
 
 //
 // Check test properties after an import.
@@ -1795,841 +1639,847 @@ public class FileStoreTest
 // Check the MD5 after an import.
 //
 
-	/**
-	 * Check that an imported file contains the right content.
-	 *
-	 */
-	public void testImportContent()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testImportContent()") ;
-		//
-		// Import a text file.
-		TransferProperties transfer = 
-			target.importData(
-				new UrlGetTransfer(
-					new URL(
-						getTestProperty(
-							"data.file.text"
-							)
-						)
-					)
-				) ;
-		//
-		// Get the imported data properties.
-		FileProperties imported = new FileProperties(
-			transfer.getFileProperties()
-			) ;
-		//
-		// Check the imported content.
-		assertEquals(
-			"Wrong content from URL import",
-			TEST_STRING,
-			target.exportString(
-				imported.getStoreResourceIdent()
-				)
-			) ;
-		}
+    /**
+     * Check that an imported file contains the right content.
+     *
+     */
+    public void testImportContent()
+        throws Exception
+        {
+        //
+        // Import a text file.
+        TransferProperties transfer = 
+            target.importData(
+                new UrlGetTransfer(
+                    new URL(
+                        getTestProperty(
+                            "data.file.text"
+                            )
+                        )
+                    )
+                ) ;
+        //
+        // Get the imported data properties.
+        FileProperties imported = new FileProperties(
+            transfer.getFileProperties()
+            ) ;
+        //
+        // Check the imported content.
+        assertEquals(
+            "Wrong content from URL import",
+            TEST_STRING,
+            target.exportString(
+                imported.getStoreResourceIdent()
+                )
+            ) ;
+        }
 
-	/**
-	 * Check that imported HTML has the right type.
-	 *
-	 */
-	public void testImportTypeHtml()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testImportTypeHtml()") ;
-		//
-		// Import a text file.
-		TransferProperties transfer = 
-			target.importData(
-				new UrlGetTransfer(
-					new URL(
-						getTestProperty(
-							"data.http.html"
-							)
-						)
-					)
-				) ;
-		//
-		// Get the imported data properties.
-		FileProperties imported = new FileProperties(
-			transfer.getFileProperties()
-			) ;
-		//
-		// Check the imported data has the right type.
-		checkTypeProperties(
-			imported,
-			"text/html; charset=ISO-8859-1"
-			) ;
-		}
+    /**
+     * Check that imported HTML has the right type.
+     *
+     */
+    public void testImportTypeHtml()
+        throws Exception
+        {
+        //
+        // Import a text file.
+        TransferProperties transfer = 
+            target.importData(
+                new UrlGetTransfer(
+                    new URL(
+                        getTestProperty(
+                            "data.http.html"
+                            )
+                        )
+                    )
+                ) ;
+        //
+        // Get the imported data properties.
+        FileProperties imported = new FileProperties(
+            transfer.getFileProperties()
+            ) ;
+        //
+        // Check the imported data has the right type.
+        checkTypeProperties(
+            imported,
+            "text/html; charset=ISO-8859-1"
+            ) ;
+        }
 
-	/**
-	 * Check that an imported jar has the right type.
-	 *
-	 */
-	public void testImportTypeJar()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testImportTypeJar()") ;
-		//
-		// Import a text file.
-		TransferProperties transfer = 
-			target.importData(
-				new UrlGetTransfer(
-					new URL(
-						getTestProperty(
-							"data.http.jar"
-							)
-						)
-					)
-				) ;
-		//
-		// Get the imported data properties.
-		FileProperties imported = new FileProperties(
-			transfer.getFileProperties()
-			) ;
-		//
-		// Check the imported data has the right type.
-		checkTypeProperties(
-			imported,
-			"text/plain; charset=ISO-8859-1"
-			) ;
-		}
+    /**
+     * Check that an imported jar has the right type.
+     *
+     */
+    public void testImportTypeJar()
+        throws Exception
+        {
+        //
+        // Import a text file.
+        TransferProperties transfer = 
+            target.importData(
+                new UrlGetTransfer(
+                    new URL(
+                        getTestProperty(
+                            "data.http.jar"
+                            )
+                        )
+                    )
+                ) ;
+        //
+        // Get the imported data properties.
+        FileProperties imported = new FileProperties(
+            transfer.getFileProperties()
+            ) ;
+        //
+        // Check the imported data has the right type.
+        checkTypeProperties(
+            imported,
+            "text/plain; charset=ISO-8859-1"
+            ) ;
+        }
 
-	/**
-	 * Check that an imported properties has the right source.
-	 *
-	 */
-	public void testImportSource()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testImportSource()") ;
-		//
-		// Import a text file.
-		TransferProperties transfer = 
-			target.importData(
-				new UrlGetTransfer(
-					new URL(
-						getTestProperty(
-							"data.http.html"
-							)
-						)
-					)
-				) ;
-		//
-		// Get the imported data properties.
-		FileProperties imported = new FileProperties(
-			transfer.getFileProperties()
-			) ;
-		//
-		// Check the imported data has the right source.
-		assertEquals(
-			"Wrong string returned",
-			getTestProperty(
-				"data.http.html"
-				),
-			imported.getProperty(
-				FileProperties.TRANSFER_SOURCE_URL
-				)
-			) ;
-		}
+    /**
+     * Check that an imported properties has the right source.
+     *
+     */
+    public void testImportSource()
+        throws Exception
+        {
+        //
+        // Import a text file.
+        TransferProperties transfer = 
+            target.importData(
+                new UrlGetTransfer(
+                    new URL(
+                        getTestProperty(
+                            "data.http.html"
+                            )
+                        )
+                    )
+                ) ;
+        //
+        // Get the imported data properties.
+        FileProperties imported = new FileProperties(
+            transfer.getFileProperties()
+            ) ;
+        //
+        // Check the imported data has the right source.
+        assertEquals(
+            "Wrong string returned",
+            getTestProperty(
+                "data.http.html"
+                ),
+            imported.getProperty(
+                FileProperties.TRANSFER_SOURCE_URL
+                )
+            ) ;
+        }
 
-	/**
-	 * Check that an imported byte array has the right size.
-	 *
-	 */
-	public void testImportBytesSize()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testImportBytesSize()") ;
-		//
-		// Import some bytes.
-		FileProperties imported = new FileProperties(
-			target.importBytes(
-				null,
-				TEST_BYTES
-				)
-			) ;
-		//
-		// Check the imported file size.
-		assertEquals(
-			TEST_BYTES.length,
-			imported.getContentSize()
-			) ;
-		}
+    /**
+     * Check that an imported byte array has the right size.
+     *
+     */
+    public void testImportBytesSize()
+        throws Exception
+        {
+        //
+        // Import some bytes.
+        FileProperties imported = new FileProperties(
+            target.importBytes(
+                null,
+                TEST_BYTES
+                )
+            ) ;
+        //
+        // Check the imported file size.
+        assertEquals(
+            TEST_BYTES.length,
+            imported.getContentSize()
+            ) ;
+        }
 
-	/**
-	 * Check that an imported string has the right size.
-	 *
-	 */
-	public void testImportStringSize()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testImportStringSize()") ;
-		//
-		// Import the test string.
-		FileProperties imported = new FileProperties(
-			target.importString(
-				null,
-				TEST_STRING
-				)
-			) ;
-		//
-		// Check the imported file size.
-		assertEquals(
-			TEST_STRING.getBytes().length,
-			imported.getContentSize()
-			) ;
-		}
+    /**
+     * Check that an imported string has the right size.
+     *
+     */
+    public void testImportStringSize()
+        throws Exception
+        {
+        //
+        // Import the test string.
+        FileProperties imported = new FileProperties(
+            target.importString(
+                null,
+                TEST_STRING
+                )
+            ) ;
+        //
+        // Check the imported file size.
+        assertEquals(
+            TEST_STRING.getBytes().length,
+            imported.getContentSize()
+            ) ;
+        }
 
-	/**
-	 * Check that an appended byte array has the right size.
-	 *
-	 */
-	public void testAppendBytesSize()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testAppendBytesSize()") ;
-		//
-		// Import some bytes.
-		FileProperties imported = new FileProperties(
-			target.importBytes(
-				null,
-				TEST_BYTES
-				)
-			) ;
-		//
-		// Append some bytes.
-		FileProperties modified = new FileProperties(
-			target.appendBytes(
-				imported.getStoreResourceIdent(),
-				EXTRA_BYTES
-				)
-			) ;
-		//
-		// Check the imported file size.
-		assertEquals(
-			TEST_BYTES.length + EXTRA_BYTES.length,
-			modified.getContentSize()
-			) ;
-		}
+    /**
+     * Check that an appended byte array has the right size.
+     *
+     */
+    public void testAppendBytesSize()
+        throws Exception
+        {
+        //
+        // Import some bytes.
+        FileProperties imported = new FileProperties(
+            target.importBytes(
+                null,
+                TEST_BYTES
+                )
+            ) ;
+        //
+        // Append some bytes.
+        FileProperties modified = new FileProperties(
+            target.appendBytes(
+                imported.getStoreResourceIdent(),
+                EXTRA_BYTES
+                )
+            ) ;
+        //
+        // Check the imported file size.
+        assertEquals(
+            TEST_BYTES.length + EXTRA_BYTES.length,
+            modified.getContentSize()
+            ) ;
+        }
 
-	/**
-	 * Check that an imported file URL has the right size.
-	 *
-	 */
-	public void testImportFileUrlSize()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testImportFileUrlSize()") ;
-		//
-		// Create our URL.
-		URL url = new URL(
-			getTestProperty(
-				"data.file.text"
-				)
-			) ;
-		//
-		// Import some bytes.
-		TransferProperties transfer = 
-			target.importData(
-				new UrlGetTransfer(
-					url
-					)
-				) ;
-		//
-		// Get the file properties.
-		FileProperties properties = new FileProperties(
-			transfer.getFileProperties()
-			) ;
-		//
-		// Check the imported file size.
-		assertEquals(
-			url.openConnection().getContentLength(),
-			properties.getContentSize()
-			) ;
-		}
+    /**
+     * Check that an imported file URL has the right size.
+     *
+     */
+    public void testImportFileUrlSize()
+        throws Exception
+        {
+        //
+        // Create our URL.
+        URL url = new URL(
+            getTestProperty(
+                "data.file.text"
+                )
+            ) ;
+        //
+        // Import some bytes.
+        TransferProperties transfer = 
+            target.importData(
+                new UrlGetTransfer(
+                    url
+                    )
+                ) ;
+        //
+        // Get the file properties.
+        FileProperties properties = new FileProperties(
+            transfer.getFileProperties()
+            ) ;
+        //
+        // Check the imported file size.
+        assertEquals(
+            url.openConnection().getContentLength(),
+            properties.getContentSize()
+            ) ;
+        }
 
-	/**
-	 * Check that an imported http URL has the right size.
-	 *
-	 */
-	public void testImportHttpUrlSize()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testImportHttpUrlSize()") ;
-		//
-		// Create our URL.
-		URL url = new URL(
-			getTestProperty(
-				"data.http.jar"
-				)
-			) ;
-		//
-		// Import the data.
-		TransferProperties transfer = 
-			target.importData(
-				new UrlGetTransfer(
-					url
-					)
-				) ;
-		//
-		// Get the file properties.
-		FileProperties properties = new FileProperties(
-			transfer.getFileProperties()
-			) ;
-		//
-		// Check the imported file size.
-		assertEquals(
-			url.openConnection().getContentLength(),
-			properties.getContentSize()
-			) ;
-		}
+    /**
+     * Check that an imported http URL has the right size.
+     *
+     */
+    public void testImportHttpUrlSize()
+        throws Exception
+        {
+        //
+        // Create our URL.
+        URL url = new URL(
+            getTestProperty(
+                "data.http.jar"
+                )
+            ) ;
+        //
+        // Import the data.
+        TransferProperties transfer = 
+            target.importData(
+                new UrlGetTransfer(
+                    url
+                    )
+                ) ;
+        //
+        // Get the file properties.
+        FileProperties properties = new FileProperties(
+            transfer.getFileProperties()
+            ) ;
+        //
+        // Check the imported file size.
+        assertEquals(
+            url.openConnection().getContentLength(),
+            properties.getContentSize()
+            ) ;
+        }
 
-	/**
-	 * Check that imported string has the right type.
-	 *
-	 */
-	public void testImportStringAsXmlVotable()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testImportStringAsXmlVotable()") ;
-		//
-		// Create our data info.
-		FileProperties properties = new FileProperties() ;
-		//
-		// Set the mime type property.
-		properties.setProperty(
-			FileProperties.MIME_TYPE_PROPERTY,
-			FileProperties.MIME_TYPE_VOTABLE
-			) ;
-		//
-		// Import the test string.
-		FileProperties imported = new FileProperties(
-			target.importString(
-				properties.toArray(),
-				TEST_STRING
-				)
-			) ;
-		//
-		// Get the file properties.
-		FileProperties requested = new FileProperties(
-			target.properties(
-				imported.getStoreResourceIdent()
-				)
-			) ;
-		//
-		// Check the mime type.
-		assertEquals(
-			FileProperties.MIME_TYPE_VOTABLE,
-			requested.getProperty(
-				FileProperties.MIME_TYPE_PROPERTY
-				)
-			) ;
-		}
+    /**
+     * Check that imported string has the right type.
+     *
+     */
+    public void testImportStringAsXmlVotable()
+        throws Exception
+        {
+        //
+        // Create our data info.
+        FileProperties properties = new FileProperties() ;
+        //
+        // Set the mime type property.
+        properties.setProperty(
+            FileProperties.MIME_TYPE_PROPERTY,
+            FileProperties.MIME_TYPE_VOTABLE
+            ) ;
+        //
+        // Import the test string.
+        FileProperties imported = new FileProperties(
+            target.importString(
+                properties.toArray(),
+                TEST_STRING
+                )
+            ) ;
+        //
+        // Get the file properties.
+        FileProperties requested = new FileProperties(
+            target.properties(
+                imported.getStoreResourceIdent()
+                )
+            ) ;
+        //
+        // Check the mime type.
+        assertEquals(
+            FileProperties.MIME_TYPE_VOTABLE,
+            requested.getProperty(
+                FileProperties.MIME_TYPE_PROPERTY
+                )
+            ) ;
+        }
 
-	/**
-	 * Check that appended string has the right type.
-	 *
-	 */
-	public void testAppendStringAsXmlVotable()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testAppendStringAsXmlVotable()") ;
-		//
-		// Create our file properties.
-		FileProperties properties = new FileProperties() ;
-		//
-		// Set the mime type property.
-		properties.setProperty(
-			FileProperties.MIME_TYPE_PROPERTY,
-			FileProperties.MIME_TYPE_VOTABLE
-			) ;
-		//
-		// Import the test string.
-		FileProperties imported = new FileProperties(
-			target.importString(
-				properties.toArray(),
-				TEST_STRING
-				)
-			) ;
-		//
-		// Append the extra string.
-		FileProperties modified = new FileProperties(
-			target.appendString(
-				imported.getStoreResourceIdent(),
-				EXTRA_STRING
-				)
-			) ;
-		//
-		// Get the file properties.
-		FileProperties requested = new FileProperties(
-			target.properties(
-				imported.getStoreResourceIdent()
-				)
-			) ;
-		//
-		// Check the mime type.
-		assertEquals(
-			FileProperties.MIME_TYPE_VOTABLE,
-			requested.getProperty(
-				FileProperties.MIME_TYPE_PROPERTY
-				)
-			) ;
-		}
+    /**
+     * Check that appended string has the right type.
+     *
+     */
+    public void testAppendStringAsXmlVotable()
+        throws Exception
+        {
+        //
+        // Create our file properties.
+        FileProperties properties = new FileProperties() ;
+        //
+        // Set the mime type property.
+        properties.setProperty(
+            FileProperties.MIME_TYPE_PROPERTY,
+            FileProperties.MIME_TYPE_VOTABLE
+            ) ;
+        //
+        // Import the test string.
+        FileProperties imported = new FileProperties(
+            target.importString(
+                properties.toArray(),
+                TEST_STRING
+                )
+            ) ;
+        //
+        // Append the extra string.
+        FileProperties modified = new FileProperties(
+            target.appendString(
+                imported.getStoreResourceIdent(),
+                EXTRA_STRING
+                )
+            ) ;
+        //
+        // Get the file properties.
+        FileProperties requested = new FileProperties(
+            target.properties(
+                imported.getStoreResourceIdent()
+                )
+            ) ;
+        //
+        // Check the mime type.
+        assertEquals(
+            FileProperties.MIME_TYPE_VOTABLE,
+            requested.getProperty(
+                FileProperties.MIME_TYPE_PROPERTY
+                )
+            ) ;
+        }
 
-	/**
-	 * Check that an imported URL has the right type.
-	 *
-	 */
-	public void testImportUrlAsVotable()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testImportUrlAsVotable()") ;
-		//
-		// Create our file properties.
-		FileProperties properties = new FileProperties() ;
-		//
-		// Set the mime type property.
-		properties.setProperty(
-			FileProperties.MIME_TYPE_PROPERTY,
-			FileProperties.MIME_TYPE_VOTABLE
-			) ;
-		//
-		// Transfer the data.
-		TransferProperties transfer = 
-			target.importData(
-				new UrlGetTransfer(
-					new URL(
-						getTestProperty(
-							"data.http.jar"
-							)
-						),
-					properties
-					)
-				) ;
-		//
-		// Get the file properties.
-		FileProperties requested = new FileProperties(
-			transfer.getFileProperties()
-			) ;
-		//
-		// Check the mime type.
-		assertEquals(
-			FileProperties.MIME_TYPE_VOTABLE,
-			requested.getProperty(
-				FileProperties.MIME_TYPE_PROPERTY
-				)
-			) ;
-		}
+    /**
+     * Check that an imported URL has the right type.
+     *
+     */
+    public void testImportUrlAsVotable()
+        throws Exception
+        {
+        //
+        // Create our file properties.
+        FileProperties properties = new FileProperties() ;
+        //
+        // Set the mime type property.
+        properties.setProperty(
+            FileProperties.MIME_TYPE_PROPERTY,
+            FileProperties.MIME_TYPE_VOTABLE
+            ) ;
+        //
+        // Transfer the data.
+        TransferProperties transfer = 
+            target.importData(
+                new UrlGetTransfer(
+                    new URL(
+                        getTestProperty(
+                            "data.http.jar"
+                            )
+                        ),
+                    properties
+                    )
+                ) ;
+        //
+        // Get the file properties.
+        FileProperties requested = new FileProperties(
+            transfer.getFileProperties()
+            ) ;
+        //
+        // Check the mime type.
+        assertEquals(
+            FileProperties.MIME_TYPE_VOTABLE,
+            requested.getProperty(
+                FileProperties.MIME_TYPE_PROPERTY
+                )
+            ) ;
+        }
 
 /*
  * Gradually moving tests from ExtendedTestCase into here ...
  *
  */
 
-	/**
-	 * Check we can send a null transfer properties.
-	 *
-	 */
-	public void testImportInitNullTransfer()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testImportInitNullTransfer()") ;
-		try {
-			target.importInit(
-				null
-				) ;
-			}
-		catch (FileStoreTransferException ouch)
-			{
-			return ;
-			}
-		fail("Expected FileStoreTransferException") ;
-		}
+    /**
+     * Check we can send a null transfer properties.
+     *
+     */
+    public void testImportInitNullTransfer()
+        throws Exception
+        {
+        try {
+            target.importInit(
+                null
+                ) ;
+            }
+        catch (FileStoreTransferException ouch)
+            {
+            return ;
+            }
+        fail("Expected FileStoreTransferException") ;
+        }
 
-	/**
-	 * Check we can initiate an import.
-	 *
-	 */
-	public void testImportInit()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testImportInit()") ;
-		TransferProperties transfer = new UrlPutTransfer() ;
-		assertNotNull(
-			target.importInit(
-				transfer
-				)
-			);
-		}
+    /**
+     * Check we can initiate an import.
+     *
+     */
+    public void testImportInit()
+        throws Exception
+        {
+        TransferProperties transfer = new UrlPutTransfer() ;
+        assertNotNull(
+            target.importInit(
+                transfer
+                )
+            );
+        }
 
-	/**
-	 * Check that the transfer properties contains a URL.
-	 *
-	 */
-	public void testImportInitURL()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testImportInitURL()") ;
-		TransferProperties transfer = new UrlPutTransfer() ;
-		transfer = target.importInit(
-			transfer
-			) ;
-		assertNotNull(
-			transfer.getLocation()
-			);
-		}
+    /**
+     * Check that the transfer properties contains a URL.
+     *
+     */
+    public void testImportInitURL()
+        throws Exception
+        {
+        TransferProperties transfer = new UrlPutTransfer() ;
+        transfer = target.importInit(
+            transfer
+            ) ;
+        assertNotNull(
+            transfer.getLocation()
+            );
+        }
 
-	/**
-	 * Check that we can open the import URL.
-	 *
-	 */
-	public void testImportInitURLConnection()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testImportInitURLConnection()") ;
-		TransferProperties transfer = new UrlPutTransfer() ;
-		transfer = target.importInit(
-			transfer
-			) ;
-		URL url = new URL(
-			transfer.getLocation()
-			) ;
-		assertNotNull(
-			url.openConnection()
-			);
-		}
+    /**
+     * Check that we can open the import URL.
+     *
+     */
+    public void testImportInitURLConnection()
+        throws Exception
+        {
+        TransferProperties transfer = new UrlPutTransfer() ;
+        transfer = target.importInit(
+            transfer
+            ) ;
+        URL url = new URL(
+            transfer.getLocation()
+            ) ;
+        assertNotNull(
+            url.openConnection()
+            );
+        }
 
-	/**
-	 * Check that we get valid file properties for an import.
-	 *
-	 */
-	public void testImportInitProperties()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testImportInitProperties()") ;
-		TransferProperties transfer = new UrlPutTransfer() ;
-		transfer = target.importInit(
-			transfer
-			) ;
-		assertNotNull(
-			transfer.getFileProperties()
-			);
-		}
+    /**
+     * Check that we get valid file properties for an import.
+     *
+     */
+    public void testImportInitProperties()
+        throws Exception
+        {
+        TransferProperties transfer = new UrlPutTransfer() ;
+        transfer = target.importInit(
+            transfer
+            ) ;
+        assertNotNull(
+            transfer.getFileProperties()
+            );
+        }
 
-	/**
-	 * Check that we can transfer some data.
-	 *
-	 */
-	public void testImportInitWrite()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testImportInitWrite()") ;
-		//
-		// Initiate our transfer.
-		TransferProperties transfer = target.importInit(
-			new UrlPutTransfer()
-			) ;
-		//
-		// Transfer our data.
-		FileStoreOutputStream stream = new FileStoreOutputStream(
-			transfer.getLocation()
-			) ;
-		stream.open() ;
-		stream.write(
-			TEST_BYTES
-			) ;
-		stream.close() ;
-		}
+    /**
+     * Check that we can transfer some data.
+     *
+     */
+    public void testImportInitWrite()
+        throws Exception
+        {
+        //
+        // Initiate our transfer.
+        TransferProperties transfer = target.importInit(
+            new UrlPutTransfer()
+            ) ;
+        //
+        // Transfer our data.
+        FileStoreOutputStream stream = new FileStoreOutputStream(
+            transfer.getLocation()
+            ) ;
+        stream.open() ;
+        stream.write(
+            TEST_BYTES
+            ) ;
+        stream.close() ;
+        }
 
 //
 // .............
 //
 
-	/**
-	 * Check we get the right Exception for a null transfer properties.
-	 *
-	 */
-	public void testExportInitNullTransfer()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testExportInitNullTransfer()") ;
-		try {
-			target.exportInit(
-				null
-				) ;
-			}
-		catch (FileStoreTransferException ouch)
-			{
-			return ;
-			}
-		fail("Expected FileStoreTransferException") ;
-		}
+    /**
+     * Check we get the right Exception for a null transfer properties.
+     *
+     */
+    public void testExportInitNullTransfer()
+        throws Exception
+        {
+        try {
+            target.exportInit(
+                null
+                ) ;
+            }
+        catch (FileStoreTransferException ouch)
+            {
+            return ;
+            }
+        fail("Expected FileStoreTransferException") ;
+        }
 
-	/**
-	 * Check we get the right Exception for an unknown file.
-	 *
-	 */
-	public void testExportInitNullProperties()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testExportInitNullProperties()") ;
-		TransferProperties transfer = new UrlGetRequest() ;
-		try {
-			target.exportInit(
-				transfer
-				) ;
-			}
-		catch (FileStoreNotFoundException ouch)
-			{
-			return ;
-			}
-		fail("Expected FileStoreNotFoundException") ;
-		}
+    /**
+     * Check we get the right Exception for an unknown file.
+     *
+     */
+    public void testExportInitNullProperties()
+        throws Exception
+        {
+        TransferProperties transfer = new UrlGetRequest() ;
+        try {
+            target.exportInit(
+                transfer
+                ) ;
+            }
+        catch (FileStoreNotFoundException ouch)
+            {
+            return ;
+            }
+        fail("Expected FileStoreNotFoundException") ;
+        }
 
-	/**
-	 * Check that we get a transfer properties for an export.
-	 *
-	 */
-	public void testExportInitTransfer()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testExportInitTransfer()") ;
-		//
-		// Initiate our import transfer.
-		TransferProperties importTransfer = target.importInit(
-			new UrlPutTransfer()
-			) ;
-		//
-		// Open an output stream.
-		FileStoreOutputStream importStream = new FileStoreOutputStream(
-			importTransfer.getLocation()
-			) ;
-		//
-		// Open our stream.
-		importStream.open() ;
-		//
-		// Transfer our data.
-		importStream.write(
-			TEST_BYTES
-			) ;
-		//
-		// Close our stream.
-		importStream.close() ;
-		//
-		// Get the file properties.
-		FileProperties properties = new FileProperties(
-			importTransfer.getFileProperties()
-			) ;
-		//
-		// Initiate our export transfer.
-		TransferProperties exportTransfer = target.exportInit(
-			new UrlGetRequest(
-				properties
-				)
-			) ;
-		assertNotNull(
-			exportTransfer
-			);
-		}
+    /**
+     * Check that we get a transfer properties for an export.
+     *
+     */
+    public void testExportInitTransfer()
+        throws Exception
+        {
+        //
+        // Initiate our import transfer.
+        TransferProperties importTransfer = target.importInit(
+            new UrlPutTransfer()
+            ) ;
+        //
+        // Open an output stream.
+        FileStoreOutputStream importStream = new FileStoreOutputStream(
+            importTransfer.getLocation()
+            ) ;
+        //
+        // Open our stream.
+        importStream.open() ;
+        //
+        // Transfer our data.
+        importStream.write(
+            TEST_BYTES
+            ) ;
+        //
+        // Close our stream.
+        importStream.close() ;
+        //
+        // Get the file properties.
+        FileProperties properties = new FileProperties(
+            importTransfer.getFileProperties()
+            ) ;
+        //
+        // Initiate our export transfer.
+        TransferProperties exportTransfer = target.exportInit(
+            new UrlGetRequest(
+                properties
+                )
+            ) ;
+        assertNotNull(
+            exportTransfer
+            );
+        }
 
-	/**
-	 * Check that we get the right Exception for a null file identifier.
-	 *
-	 */
-	public void testExportInitEmptyProperties()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testExportInitEmptyProperties()") ;
-		//
-		// Create our file properties.
-		FileProperties properties = new FileProperties() ;
-		//
-		// Create our transfer request.
-		TransferProperties transfer = new UrlGetRequest(
-			properties
-			) ;
-		try {
-			target.exportInit(
-				transfer
-				) ;
-			}
-		catch (FileStoreNotFoundException ouch)
-			{
-			return ;
-			}
-		fail("Expected FileStoreNotFoundException") ;
-		}
+    /**
+     * Check that we get the right Exception for a null file identifier.
+     *
+     */
+    public void testExportInitEmptyProperties()
+        throws Exception
+        {
+        //
+        // Create our file properties.
+        FileProperties properties = new FileProperties() ;
+        //
+        // Create our transfer request.
+        TransferProperties transfer = new UrlGetRequest(
+            properties
+            ) ;
+        try {
+            target.exportInit(
+                transfer
+                ) ;
+            }
+        catch (FileStoreNotFoundException ouch)
+            {
+            return ;
+            }
+        fail("Expected FileStoreNotFoundException") ;
+        }
 
-	/**
-	 * Check that we get the right Exception for an unknown file identifier.
-	 *
-	 */
+    /**
+     * Check that we get the right Exception for an unknown file identifier.
+     *
+     */
 // ....
 
-	/**
-	 * Check that the transfer properties contains a location URL.
-	 *
-	 */
-	public void testExportInitTransferLocation()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testExportInitTransferLocation()") ;
-		//
-		// Initiate our import transfer.
-		TransferProperties importTransfer = target.importInit(
-			new UrlPutTransfer()
-			) ;
-		//
-		// Open an output stream.
-		FileStoreOutputStream importStream = new FileStoreOutputStream(
-			importTransfer.getLocation()
-			) ;
-		//
-		// Open our stream.
-		importStream.open() ;
-		//
-		// Transfer our data.
-		importStream.write(
-			TEST_BYTES
-			) ;
-		//
-		// Close our stream.
-		importStream.close() ;
-		//
-		// Get the file properties.
-		FileProperties properties = new FileProperties(
-			importTransfer.getFileProperties()
-			) ;
-		//
-		// Initiate our export transfer.
-		TransferProperties exportTransfer = target.exportInit(
-			new UrlGetRequest(
-				properties
-				)
-			) ;
-		assertNotNull(
-			exportTransfer.getLocation()
-			);
-		}
+    /**
+     * Check that the transfer properties contains a location URL.
+     *
+     */
+    public void testExportInitTransferLocation()
+        throws Exception
+        {
+        //
+        // Initiate our import transfer.
+        TransferProperties importTransfer = target.importInit(
+            new UrlPutTransfer()
+            ) ;
+        //
+        // Open an output stream.
+        FileStoreOutputStream importStream = new FileStoreOutputStream(
+            importTransfer.getLocation()
+            ) ;
+        //
+        // Open our stream.
+        importStream.open() ;
+        //
+        // Transfer our data.
+        importStream.write(
+            TEST_BYTES
+            ) ;
+        //
+        // Close our stream.
+        importStream.close() ;
+        //
+        // Get the file properties.
+        FileProperties properties = new FileProperties(
+            importTransfer.getFileProperties()
+            ) ;
+        //
+        // Initiate our export transfer.
+        TransferProperties exportTransfer = target.exportInit(
+            new UrlGetRequest(
+                properties
+                )
+            ) ;
+        assertNotNull(
+            exportTransfer.getLocation()
+            );
+        }
 
-	/**
-	 * Check that we read data from an export stream.
-	 *
-	 */
-	public void testExportInitRead()
-		throws Exception
-		{
-		log.debug("") ;
-		log.debug("----\"----") ;
-		log.debug("FileStoreTest.testExportInitRead()") ;
-		//
-		// Initiate our import transfer.
-		TransferProperties importTransfer = target.importInit(
-			new UrlPutTransfer()
-			) ;
-		//
-		// Open an output stream.
-		FileStoreOutputStream importStream = new FileStoreOutputStream(
-			importTransfer.getLocation()
-			) ;
-		//
-		// Open our stream.
-		importStream.open() ;
-		//
-		// Transfer our data.
-		importStream.write(
-			TEST_BYTES
-			) ;
-		//
-		// Close our stream.
-		importStream.close() ;
-		//
-		// Get the file properties.
-		FileProperties properties = new FileProperties(
-			importTransfer.getFileProperties()
-			) ;
-		//
-		// Initiate our export transfer.
-		TransferProperties exportTransfer = target.exportInit(
-			new UrlGetRequest(
-				properties
-				)
-			) ;
-		//
-		// Get an input stream to the file.
-		FileStoreInputStream exportStream = new FileStoreInputStream(
-			exportTransfer.getLocation()
-			);
-		//
-		// Open our input stream.
-		exportStream.open() ;
-		//
-		// Create our buffer stream.
-		ByteArrayOutputStream buffer = new ByteArrayOutputStream() ;
-		//
-		// Read our test bytes.
-		TransferUtil util = new TransferUtil(
-			exportStream,
-			buffer
-			);
-		util.transfer();
-		//
-		// Close our input stream.
-		exportStream.close() ;
-		//
-		// Check we got the right data back.
-		assertEquals(
-			TEST_BYTES,
-			buffer.toByteArray()
-			);
-		}
-	}
+    /**
+     * Check that we read data from an export stream.
+     *
+     */
+    public void testExportInitRead()
+        throws Exception
+        {
+        //
+        // Initiate our import transfer.
+        TransferProperties importTransfer = target.importInit(
+            new UrlPutTransfer()
+            ) ;
+        //
+        // Open an output stream.
+        FileStoreOutputStream importStream = new FileStoreOutputStream(
+            importTransfer.getLocation()
+            ) ;
+        //
+        // Open our stream.
+        importStream.open() ;
+        //
+        // Transfer our data.
+        importStream.write(
+            TEST_BYTES
+            ) ;
+        //
+        // Close our stream.
+        importStream.close() ;
+        //
+        // Get the file properties.
+        FileProperties properties = new FileProperties(
+            importTransfer.getFileProperties()
+            ) ;
+        //
+        // Initiate our export transfer.
+        TransferProperties exportTransfer = target.exportInit(
+            new UrlGetRequest(
+                properties
+                )
+            ) ;
+        //
+        // Get an input stream to the file.
+        FileStoreInputStream exportStream = new FileStoreInputStream(
+            exportTransfer.getLocation()
+            );
+        //
+        // Open our input stream.
+        exportStream.open() ;
+        //
+        // Create our buffer stream.
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream() ;
+        //
+        // Read our test bytes.
+        TransferUtil util = new TransferUtil(
+            exportStream,
+            buffer
+            );
+        util.transfer();
+        //
+        // Close our input stream.
+        exportStream.close() ;
+        //
+        // Check we got the right data back.
+        assertEquals(
+            TEST_BYTES,
+            buffer.toByteArray()
+            );
+        }
+
+    /**
+     * Check we can get the initial dates for a file.
+     *
+     */
+    public void testInitialDates()
+        throws Exception
+        {
+        //
+        // Import the test string.
+        FileProperties properties = new FileProperties(
+            target.importString(
+                null,
+                TEST_STRING
+                )
+            ) ;
+        //
+        // Check the create date.
+        Date created = properties.getFileCreateDate();
+        assertNotNull(
+            created
+            );
+        //
+        // Check the modified date.
+        Date modified = properties.getFileModifyDate();
+        assertNotNull(
+            modified
+            );
+        }
+
+    /**
+     * Check that adding some data changes the modified date.
+     *
+     */
+    public void testModifiedDates()
+        throws Exception
+        {
+        //
+        // Import the test string.
+        FileProperties imported = new FileProperties(
+            target.importString(
+                null,
+                TEST_STRING
+                )
+            ) ;
+        //
+        // Get the initial dates.
+        Date initialCreateDate = imported.getFileCreateDate();
+        Date initialModifyDate = imported.getFileModifyDate();
+        //
+        // Pause for a bit ....
+        Thread.sleep(1000);
+        //
+        // Append the extra string.
+        FileProperties modified = new FileProperties(
+            target.appendString(
+                imported.getStoreResourceIdent(),
+                EXTRA_STRING
+                )
+            ) ;
+        //
+        // Get the updated dates.
+        Date updatedCreateDate = modified.getFileCreateDate();
+        Date updatedModifyDate = modified.getFileModifyDate();
+        //
+        // Check the create dates are the same.
+        assertEquals(
+            initialCreateDate,
+            updatedCreateDate
+            );
+        //
+        // Check the modified date has changed.
+        assertTrue(
+            updatedModifyDate.after(
+                initialModifyDate
+                )
+            );
+        }
+    }

@@ -1,11 +1,18 @@
 /*
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/server/src/java/org/astrogrid/filestore/server/repository/RepositoryImpl.java,v $</cvs:source>
- * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/12/16 17:25:49 $</cvs:date>
- * <cvs:version>$Revision: 1.14 $</cvs:version>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2005/01/28 10:43:58 $</cvs:date>
+ * <cvs:version>$Revision: 1.15 $</cvs:version>
  * <cvs:log>
  *   $Log: RepositoryImpl.java,v $
+ *   Revision 1.15  2005/01/28 10:43:58  clq2
+ *   dave_dev_200501141257 (filemanager)
+ *
+ *   Revision 1.14.6.1  2005/01/15 04:50:58  dave
+ *   Added created and modified dates to server ....
+ *   Removed log debug messages from JUnit tests ...
+ *
  *   Revision 1.14  2004/12/16 17:25:49  jdt
  *   merge from dave-dev-200410061224-200412161312
  *
@@ -122,6 +129,8 @@ import java.net.URL ;
 import java.net.URLConnection ;
 import java.net.MalformedURLException ;
 
+import java.util.Date ;
+
 import java.io.File ;
 import java.io.IOException ;
 import java.io.InputStream ;
@@ -144,6 +153,8 @@ import org.astrogrid.filestore.common.exception.FileStoreServiceException ;
 import org.astrogrid.filestore.common.exception.FileStoreTransferException ;
 
 import org.astrogrid.filestore.common.FileStoreConfig ;
+import org.astrogrid.filestore.common.FileStoreDateFormat;
+
 import org.astrogrid.filestore.server.FileStoreConfigImpl ;
 
 /**
@@ -335,6 +346,17 @@ public class RepositoryImpl
             //
             // Create a new identifier.
             this.ident = new FileIdentifier() ;
+			//
+			// Create an ISO date formatter.
+			FileStoreDateFormat formatter = new FileStoreDateFormat();
+            //
+            // Set the create date.
+			this.properties.setProperty(
+				FileProperties.FILE_CREATED_DATE_PROPERTY,
+				formatter.format(
+					new Date()
+					)
+				) ;
             //
             // Update and save the properties.
             this.update() ;
@@ -444,6 +466,17 @@ public class RepositoryImpl
                         ident.toString()
                         ).toString()
                     ) ;
+				//
+				// Create an ISO date formatter.
+				FileStoreDateFormat formatter = new FileStoreDateFormat();
+	            //
+	            // Set the modified date.
+				this.properties.setProperty(
+					FileProperties.FILE_MODIFIED_DATE_PROPERTY,
+					formatter.format(
+						new Date()
+						)
+					) ;
                 }
             //
             // Save the properties.

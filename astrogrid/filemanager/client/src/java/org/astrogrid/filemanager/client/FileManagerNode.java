@@ -1,10 +1,31 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/src/java/org/astrogrid/filemanager/client/FileManagerNode.java,v $</cvs:source>
- * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2005/01/13 17:23:15 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2005/01/28 10:43:57 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  * <cvs:log>
  *   $Log: FileManagerNode.java,v $
+ *   Revision 1.5  2005/01/28 10:43:57  clq2
+ *   dave_dev_200501141257 (filemanager)
+ *
+ *   Revision 1.4.2.6  2005/01/26 12:24:19  dave
+ *   Removed type from add(), replaced with addNode() and addFile() ...
+ *
+ *   Revision 1.4.2.5  2005/01/21 14:41:57  dave
+ *   Added importData(URL url) to the API (needs implementation and tests).
+ *
+ *   Revision 1.4.2.4  2005/01/21 13:07:37  dave
+ *   Added exportURL to the node API ...
+ *
+ *   Revision 1.4.2.3  2005/01/21 12:18:54  dave
+ *   Changed input() and output() to exportStream() and importStream() ...
+ *
+ *   Revision 1.4.2.2  2005/01/19 11:39:26  dave
+ *   Added combined create and modify date ...
+ *
+ *   Revision 1.4.2.1  2005/01/15 08:25:20  dave
+ *   Added file create and modify dates to manager and client API ...
+ *
  *   Revision 1.4  2005/01/13 17:23:15  jdt
  *   merges from dave-dev-200412201250
  *
@@ -54,6 +75,10 @@
  */
 package org.astrogrid.filemanager.client ;
 
+import java.net.URL ;
+
+import java.util.Date ;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -80,14 +105,14 @@ public interface FileManagerNode
     /**
      * The node type for a file.
      *
-     */
     public static final String FILE_NODE = FileManagerProperties.DATA_NODE_TYPE ;
+     */
 
     /**
      * The node type for a container.
      *
-     */
     public static final String CONTAINER_NODE = FileManagerProperties.CONTAINER_NODE_TYPE ;
+     */
 
     /**
      * Get the node ivorn.
@@ -172,17 +197,27 @@ public interface FileManagerNode
     /**
      * Add a new child node.
      * @param name The node name.
-     * @param type The node type (either FILE_NODE or CONTAINER_NODE).
      * @return A new node for the container.
      * @throws UnsupportedOperationException If this node represents a file.
      * @throws DuplicateNodeException If a node with the same name already exists.
      * @throws NodeNotFoundException If the current node is no longer in the database.
      * @throws FileManagerServiceException If a problem occurs when handling the request.
-     * @see FILE_NODE
-     * @see CONTAINER_NODE
      *
      */
-    public FileManagerNode add(String name, String type)
+    public FileManagerNode addNode(String name)
+        throws UnsupportedOperationException, NodeNotFoundException, DuplicateNodeException , FileManagerServiceException;
+
+    /**
+     * Add a new file node.
+     * @param name The node name.
+     * @return A new node for the file.
+     * @throws UnsupportedOperationException If this node represents a file.
+     * @throws DuplicateNodeException If a node with the same name already exists.
+     * @throws NodeNotFoundException If the current node is no longer in the database.
+     * @throws FileManagerServiceException If a problem occurs when handling the request.
+     *
+     */
+    public FileManagerNode addFile(String name)
         throws UnsupportedOperationException, NodeNotFoundException, DuplicateNodeException , FileManagerServiceException;
 
     /**
@@ -198,26 +233,49 @@ public interface FileManagerNode
         throws UnsupportedOperationException, NodeNotFoundException, FileManagerServiceException;
 
     /**
-     * Open an output stream to write data to the node.
+     * Open a java OutputStream to send (import) data into the node.
+     * @return An OutputStream connected directly to the node store.
      * @throws IOException If a problem occurs openning the stream.
      * @throws UnsupportedOperationException If the node represents a container.
      * @throws NodeNotFoundException If the node is not in the database.
      * @throws FileManagerServiceException If a problem occurs when handling the request.
      *
      */
-    public OutputStream output()
+    public OutputStream importStream()
         throws IOException, UnsupportedOperationException, NodeNotFoundException, FileManagerServiceException;
 
     /**
-     * Open an input stream to read data from the node.
+     * Open a java InputStream to read (export) data from the node.
+     * @return An InputStream connected directly to the node store.
      * @throws IOException If a problem occurs openning the stream.
      * @throws UnsupportedOperationException If the node represents a container.
      * @throws NodeNotFoundException If the node is not in the database.
      * @throws FileManagerServiceException If a problem occurs when handling the request.
      *
      */
-    public InputStream input()
+    public InputStream exportStream()
         throws IOException, UnsupportedOperationException, NodeNotFoundException, FileManagerServiceException;
+
+    /**
+     * Get a URL to access the node data from.
+     * @return A URL which connects directly to the node store.
+     * @throws UnsupportedOperationException If the node represents a container.
+     * @throws NodeNotFoundException If the node is not in the database.
+     * @throws FileManagerServiceException If a problem occurs when handling the request.
+     *
+     */
+    public URL exportURL()
+        throws UnsupportedOperationException, NodeNotFoundException, FileManagerServiceException;
+
+    /**
+     * Import data from a URL.
+     * @throws UnsupportedOperationException If the node represents a container.
+     * @throws NodeNotFoundException If the node is not in the database.
+     * @throws FileManagerServiceException If a problem occurs when handling the request.
+     *
+     */
+    public void importData(URL url)
+        throws UnsupportedOperationException, NodeNotFoundException, FileManagerServiceException;
 
     /**
      * Get the ivorn identifier of the FileStore for the node data.
@@ -245,6 +303,56 @@ public interface FileManagerNode
      *
      */
     public long size() ;
+
+    /**
+     * Get the data file create date.
+     * This is the create date of the imported data in the filestore.
+     * To get the general create date, use <code>getCreateDate()</code>.
+     * @return The file create date, if the node has stored data, or null if the node does not contains any data.
+     *
+     */
+    public Date getFileCreateDate();
+
+    /**
+     * Get the data file modified date.
+     * This is the modified date of the imported data in the filestore.
+     * To get the general modified date, use <code>getModifyDate()</code>.
+     * @return The file modified date, if the node has stored data, or null if the node does not contains any data.
+     *
+     */
+    public Date getFileModifyDate();
+
+    /**
+     * Get the node create date.
+     * This is the create date of the metadata node in the filemanager.
+     * To get the general create date, use <code>getCreateDate()</code>.
+     * @return The node create date.
+     *
+     */
+    public Date getNodeCreateDate();
+
+    /**
+     * Get the node modified date.
+     * This is the modified date of the metadata node in the filemanager.
+     * To get the general modified date, use <code>getModifyDate()</code>.
+     * @return The node modified date.
+     *
+     */
+    public Date getNodeModifyDate();
+
+    /**
+     * Get the create date.
+     * @return The create date.
+     *
+     */
+    public Date getCreateDate();
+
+    /**
+     * Get the modified date.
+     * @return The modified date.
+     *
+     */
+    public Date getModifyDate();
 
     /**
      * An iterator for child nodes.

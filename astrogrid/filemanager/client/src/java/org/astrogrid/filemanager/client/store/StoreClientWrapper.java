@@ -1,10 +1,25 @@
 /*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/src/java/org/astrogrid/filemanager/client/Attic/StoreClientWrapper.java,v $</cvs:source>
- * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2005/01/13 17:23:15 $</cvs:date>
+ * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/src/java/org/astrogrid/filemanager/client/store/Attic/StoreClientWrapper.java,v $</cvs:source>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2005/01/28 10:43:58 $</cvs:date>
  * <cvs:version>$Revision: 1.2 $</cvs:version>
  * <cvs:log>
  *   $Log: StoreClientWrapper.java,v $
+ *   Revision 1.2  2005/01/28 10:43:58  clq2
+ *   dave_dev_200501141257 (filemanager)
+ *
+ *   Revision 1.1.2.2  2005/01/26 12:24:22  dave
+ *   Removed type from add(), replaced with addNode() and addFile() ...
+ *
+ *   Revision 1.1.2.1  2005/01/22 07:54:16  dave
+ *   Refactored delegate into a separate package ....
+ *
+ *   Revision 1.2.2.2  2005/01/21 13:07:37  dave
+ *   Added exportURL to the node API ...
+ *
+ *   Revision 1.2.2.1  2005/01/21 12:18:54  dave
+ *   Changed input() and output() to exportStream() and importStream() ...
+ *
  *   Revision 1.2  2005/01/13 17:23:15  jdt
  *   merges from dave-dev-200412201250
  *
@@ -24,7 +39,7 @@
  * </cvs:log>
  *
  */
-package org.astrogrid.filemanager.client ;
+package org.astrogrid.filemanager.client.store;
 
 import java.net.URL;
 
@@ -50,6 +65,9 @@ import org.astrogrid.filemanager.common.exception.NodeNotFoundException;
 import org.astrogrid.filemanager.common.exception.DuplicateNodeException;
 import org.astrogrid.filemanager.common.exception.FileManagerServiceException;
 import org.astrogrid.filemanager.common.exception.FileManagerIdentifierException;
+
+import org.astrogrid.filemanager.client.FileManagerNode;
+import org.astrogrid.filemanager.client.delegate.FileManagerDelegate;
 
 /**
  * A wrapper for the FileManager delegate to implement the StoreClient API.
@@ -240,38 +258,6 @@ public class StoreClientWrapper
         }
 
     /**
-     * Create a new container.
-     * @param path The path of the new folder.
-     *
-     */
-    public void newFolder(String path)
-        throws IOException
-        {
-        log.debug("StoreClientWrapper.newFolder(String)");
-        log.debug("  Path : " + path);
-        addNode(
-            path,
-            FileManagerNode.CONTAINER_NODE
-            );
-        }
-
-    /**
-     * Create a new file.
-     * @param string The path of the new file.
-     *
-     */
-    public FileManagerNode newFile(String path)
-        throws IOException
-        {
-        log.debug("StoreClientWrapper.newFile(String)");
-        log.debug("  Path  : " + path);
-        return addNode(
-            path,
-            FileManagerNode.FILE_NODE
-            );
-        }
-
-    /**
      * Get the parent from a path.
      * @param path The path to parse.
      * @return The parent path.
@@ -329,17 +315,15 @@ public class StoreClientWrapper
         }
 
     /**
-     * Create a new node.
-     * @param target The node path.
-     * @param type   The node type.
+     * Create a new container.
+     * @param target The path of the new folder.
      *
      */
-    protected FileManagerNode addNode(String target, String type)
+    public void newFolder(String target)
         throws IOException
         {
-        log.debug("StoreClientWrapper.addNode(String, String)");
-        log.debug("  Path : " + target);
-        log.debug("  Type : " + type);
+        log.debug("StoreClientWrapper.newFolder(String)");
+        log.debug("  Path  : " + target);
         //
         // Separate the path into path and name.
         String name = getFileName(target);
@@ -379,9 +363,8 @@ public class StoreClientWrapper
                 }
             //
             // Create the new node.
-            return parent.add(
-                name,
-                type
+            parent.addNode(
+                name
                 );
             }
         catch (NodeNotFoundException ouch)
@@ -409,6 +392,97 @@ public class StoreClientWrapper
                 );
             }
         }
+
+    /**
+     * Create a new file.
+     * @param string The path of the new file.
+     *
+     */
+    public FileManagerNode newFile(String target)
+        throws IOException
+        {
+        log.debug("StoreClientWrapper.newFile(String)");
+        log.debug("  Path  : " + target);
+        //
+        // Separate the path into path and name.
+        String name = getFileName(target);
+        String path = getFilePath(target);
+        if (null == path)
+            {
+            throw new FileNotFoundException(
+                "Unable to parse file path"
+                );
+            }
+        if (null == name)
+            {
+            throw new FileNotFoundException(
+                "Unable to parse file name"
+                );
+            }
+        try {
+            //
+            // Generate the parent ivorn.
+            Ivorn ivorn = factory.ivorn(
+                this.getIvorn(),
+                path
+                );
+            log.debug("  Ivorn : " + ivorn.toString());
+            //
+            // Find the parent node.
+            FileManagerNode parent = delegate.getNode(
+                ivorn
+                );
+            //
+            // Check it is a container.
+            if (parent.isContainer() == false)
+                {
+                throw new FileNotFoundException(
+                    "Parent node is not a container"
+                    );
+                }
+            //
+            // Create the new node.
+            return parent.addFile(
+                name
+                );
+            }
+        catch (NodeNotFoundException ouch)
+            {
+            throw new FileNotFoundException(
+                ouch.getMessage()
+                );
+            }
+        catch (DuplicateNodeException ouch)
+            {
+            throw new IOException(
+                ouch.getMessage()
+                );
+            }
+        catch (FileManagerIdentifierException ouch)
+            {
+            throw new IOException(
+                ouch.getMessage()
+                );
+            }
+        catch (FileManagerServiceException ouch)
+            {
+            throw new IOException(
+                ouch.getMessage()
+                );
+            }
+        }
+
+    /**
+     * Create a new node.
+     * @param target The node path.
+     * @param type   The node type.
+     *
+    protected FileManagerNode addNode(String target, String type)
+        throws IOException
+        {
+        log.debug("StoreClientWrapper.addNode(String, String)");
+        }
+     */
 
     /**
      * Puts the given byte buffer from offset of length bytes, to the given target.
@@ -543,14 +617,13 @@ public class StoreClientWrapper
             // Create the node if it does not exist.
             catch (NodeNotFoundException ouch)
                 {
-                node = this.addNode(
-                    path,
-                    FileManagerNode.FILE_NODE
+                node = this.newFile(
+                    path
                     );
                 }
             //
             // Return an output stream to the node.
-            return node.output();
+            return node.importStream();
             }
         catch (NodeNotFoundException ouch)
             {
@@ -598,7 +671,7 @@ public class StoreClientWrapper
                     );
             //
             // Return an output stream to the node.
-            return node.input();
+            return node.exportStream();
             }
         catch (NodeNotFoundException ouch)
             {
@@ -704,5 +777,8 @@ public class StoreClientWrapper
             "Move not implemented (yet)"
             );
         }
+
+
+
     }
 

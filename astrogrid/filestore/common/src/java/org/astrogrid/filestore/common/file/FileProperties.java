@@ -1,10 +1,23 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/common/src/java/org/astrogrid/filestore/common/file/FileProperties.java,v $</cvs:source>
- * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/12/16 17:25:49 $</cvs:date>
- * <cvs:version>$Revision: 1.9 $</cvs:version>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2005/01/28 10:44:01 $</cvs:date>
+ * <cvs:version>$Revision: 1.10 $</cvs:version>
  * <cvs:log>
  *   $Log: FileProperties.java,v $
+ *   Revision 1.10  2005/01/28 10:44:01  clq2
+ *   dave_dev_200501141257 (filemanager)
+ *
+ *   Revision 1.9.6.3  2005/01/18 14:54:49  dave
+ *   Refactored properties ..
+ *
+ *   Revision 1.9.6.2  2005/01/15 08:25:50  dave
+ *   Refactored file created and modified date handling ..
+ *
+ *   Revision 1.9.6.1  2005/01/14 21:01:33  dave
+ *   Added FileStoreDateFormat utility to handle dates in ISO format ....
+ *   Fixed the file:/// problem on Unix ...
+ *
  *   Revision 1.9  2004/12/16 17:25:49  jdt
  *   merge from dave-dev-200410061224-200412161312
  *
@@ -106,12 +119,15 @@ import java.io.OutputStream ;
 
 import java.util.Map ;
 import java.util.Map.Entry ;
+import java.util.Date ;
 import java.util.Iterator ;
 import java.util.Properties ;
 import java.util.Enumeration ;
 
+import java.text.ParseException ;
 import org.astrogrid.store.Ivorn ;
 
+import org.astrogrid.filestore.common.FileStoreDateFormat;
 import org.astrogrid.filestore.common.ivorn.FileStoreIvornParser ;
 import org.astrogrid.filestore.common.ivorn.FileStoreIvornFactory ;
 import org.astrogrid.filestore.common.exception.FileStoreIdentifierException ;
@@ -121,431 +137,493 @@ import org.astrogrid.filestore.common.exception.FileStoreIdentifierException ;
  *
  */
 public class FileProperties
-	{
-	/**
-	 * The property key for the resource ivorn.
-	 *
-	 */
-	public static final String STORE_RESOURCE_IVORN  = "org.astrogrid.filestore.resource.ivorn" ;
+    {
+    /**
+     * The property key for the resource ivorn.
+     *
+     */
+    public static final String STORE_RESOURCE_IVORN  = "org.astrogrid.filestore.resource.ivorn" ;
 
-	/**
-	 * The property key for the resource URL.
-	 *
-	 */
-	public static final String STORE_RESOURCE_URL  = "org.astrogrid.filestore.resource.url" ;
+    /**
+     * The property key for the resource URL.
+     *
+     */
+    public static final String STORE_RESOURCE_URL  = "org.astrogrid.filestore.resource.url" ;
 
-	/**
-	 * The property key for the transfer source URL.
-	 *
-	 */
-	public static final String TRANSFER_SOURCE_URL  = "org.astrogrid.filestore.transfer.source.url" ;
+    /**
+     * The property key for the transfer source URL.
+     *
+     */
+    public static final String TRANSFER_SOURCE_URL  = "org.astrogrid.filestore.transfer.source.url" ;
 
-	/**
-	 * The property key for content size.
-	 *
-	 */
-	public static final String CONTENT_SIZE_PROPERTY  = "org.astrogrid.filestore.content.size" ;
+    /**
+     * The property key for content size.
+     *
+     */
+    public static final String CONTENT_SIZE_PROPERTY  = "org.astrogrid.filestore.content.size" ;
 
-	/**
-	 * The property key for content type.
-	 *
-	 */
-	public static final String MIME_TYPE_PROPERTY  = "org.astrogrid.filestore.content.type" ;
+    /**
+     * The property key for content type.
+     *
+     */
+    public static final String MIME_TYPE_PROPERTY  = "org.astrogrid.filestore.content.type" ;
 
-	/**
-	 * The property key for content encoding.
-	 *
-	 */
-	public static final String MIME_ENCODING_PROPERTY  = "org.astrogrid.filestore.content.encoding" ;
+    /**
+     * The property key for content encoding.
+     *
+     */
+    public static final String MIME_ENCODING_PROPERTY  = "org.astrogrid.filestore.content.encoding" ;
 
-	/**
-	 * Known MIME type values.
-	 *
-	 */
-	public static final String MIME_TYPE_TEXT     = "text/raw"  ;
-	public static final String MIME_TYPE_XML      = "text/xml"  ;
-	public static final String MIME_TYPE_HTML     = "text/html"  ;
+    /**
+     * The property key for the file create date.
+     *
+     */
+    public static final String FILE_CREATED_DATE_PROPERTY  = "org.astrogrid.filestore.created.date" ;
 
-	public static final String MIME_TYPE_VOLIST   = "text/xml +org.astrogrid.mime.volist"  ;
-	public static final String MIME_TYPE_VOTABLE  = "text/xml +org.astrogrid.mime.votable" ;
+    /**
+     * The property key for the file modify date.
+     *
+     */
+    public static final String FILE_MODIFIED_DATE_PROPERTY  = "org.astrogrid.filestore.modified.date" ;
 
-	public static final String MIME_TYPE_JOB      = "text/xml +org.astrogrid.mime.job"      ;
-	public static final String MIME_TYPE_WORKFLOW = "text/xml +org.astrogrid.mime.workflow" ;
+    /**
+     * Known MIME type values.
+     *
+     */
+    public static final String MIME_TYPE_TEXT     = "text/raw"  ;
+    public static final String MIME_TYPE_XML      = "text/xml"  ;
+    public static final String MIME_TYPE_HTML     = "text/html"  ;
 
-	public static final String MIME_TYPE_ADQL     = "text/xml +org.astrogrid.mime.adql"     ;
+    public static final String MIME_TYPE_VOLIST   = "text/xml +org.astrogrid.mime.volist"  ;
+    public static final String MIME_TYPE_VOTABLE  = "text/xml +org.astrogrid.mime.votable" ;
 
-	/**
-	 * Public constructor.
-	 *
-	 */
-	public FileProperties()
-		{
-		}
+    public static final String MIME_TYPE_JOB      = "text/xml +org.astrogrid.mime.job"      ;
+    public static final String MIME_TYPE_WORKFLOW = "text/xml +org.astrogrid.mime.workflow" ;
 
-	/**
-	 * Public constructor from an array of values.
-	 * @param array An array of property values.
-	 *
-	 */
-	public FileProperties(FileProperty[] array)
-		{
-		if (null != array)
-			{
-			for (int i = 0 ; i < array.length ; i++)
-				{
-				this.setProperty(
-					array[i].getName(),
-					array[i].getValue()
-					) ;
-				}
-			}
-		}
+    public static final String MIME_TYPE_ADQL     = "text/xml +org.astrogrid.mime.adql"     ;
 
-	/**
-	 * Public constructor from another set of properties.
-	 * @param that The other set of properties.
-	 *
-	 */
-	public FileProperties(FileProperties that)
-		{
-		this(
-			that.toArray()
-			) ;
-		}
+    /**
+     * Public constructor.
+     *
+     */
+    public FileProperties()
+        {
+        }
 
-	/**
-	 * Our internal map of properties.
-	 *
-	 */
-	private Properties properties = new Properties() ;
+    /**
+     * Public constructor from an array of values.
+     * @param array An array of property values.
+     *
+     */
+    public FileProperties(FileProperty[] array)
+        {
+        if (null != array)
+            {
+            for (int i = 0 ; i < array.length ; i++)
+                {
+                this.setProperty(
+                    array[i].getName(),
+                    array[i].getValue()
+                    ) ;
+                }
+            }
+        }
 
-	/**
-	 * Access to our list of properties.
-	 *
-	 */
-	protected Map getProperties()
-		{
-		return this.properties ;
-		}
+    /**
+     * Public constructor from another set of properties.
+     * @param that The other set of properties.
+     *
+     */
+    public FileProperties(FileProperties that)
+        {
+        this(
+            that.toArray()
+            ) ;
+        }
 
-	/**
-	 * Get a property.
-	 *
-	 */
-	public String getProperty(String key)
-		{
-		return properties.getProperty(key) ;
-		}
+    /**
+     * Our internal map of properties.
+     *
+     */
+    private Properties properties = new Properties() ;
 
-	/**
-	 * Set a property.
-	 * @param key The property key (name).
-	 * @param value The property value.
-	 *
-	 */
-	public void setProperty(String key, String value)
-		{
-		if (null != key)
-			{
-			if (null != value)
-				{
-				properties.setProperty(key, value) ;
-				}
-			}
-		}
+    /**
+     * Access to our list of properties.
+     *
+     */
+    protected Map getProperties()
+        {
+        return this.properties ;
+        }
 
-	/**
-	 * Set a property.
-	 * @param property The property to set.
-	 *
-	 */
-	public void setProperty(FileProperty property)
-		{
-		if (null != property)
-			{
-			this.setProperty(
-				property.getName(),
-				property.getValue()
-				) ;
-			}
-		}
+    /**
+     * Get a property.
+     *
+     */
+    public String getProperty(String key)
+        {
+        return properties.getProperty(key) ;
+        }
 
-	/**
-	 * Merge the properties from another map.
-	 * @param that The set of properties to merge.
-	 *
-	 */
-	public void merge(FileProperties that)
-		{
-		if (null != that)
-			{
-			Iterator iter = that.properties.entrySet().iterator() ;
-			while (iter.hasNext())
-				{
-				Entry  entry = (Entry) iter.next() ;
-				String key   = (String) entry.getKey();
-				String value = (String) entry.getValue();
-				if (null != value)
-					{
-					this.setProperty(
-						key,
-						value
-						) ;
-					}
-				}
-			}
-		}
+    /**
+     * Set a property.
+     * @param key The property key (name).
+     * @param value The property value.
+     *
+     */
+    public void setProperty(String key, String value)
+        {
+        if (null != key)
+            {
+            if (null != value)
+                {
+                properties.setProperty(key, value) ;
+                }
+            }
+        }
 
-	/**
-	 * Merge the properties from another map, using a filter to exclude specific properties.
-	 * @param that   The set of properties to merge.
-	 * @param filter The filter for excluded properties.
-	 *
-	 */
-	public void merge(FileProperties that, PropertyFilter filter)
-		{
-		if (null != that)
-			{
-			Iterator iter = that.properties.entrySet().iterator() ;
-			while (iter.hasNext())
-				{
-				Entry entry = (Entry) iter.next() ;
-				FileProperty property = filter.filter(
-					new FileProperty(
-						(String) entry.getKey(),
-						(String) entry.getValue()
-						)
-					) ;
-				if (null != property)
-					{
-					this.setProperty(
-						property
-						) ;
-					}
-				}
-			}
-		}
+    /**
+     * Set a property.
+     * @param property The property to set.
+     *
+     */
+    public void setProperty(FileProperty property)
+        {
+        if (null != property)
+            {
+            this.setProperty(
+                property.getName(),
+                property.getValue()
+                ) ;
+            }
+        }
 
-	/**
-	 * Merge the properties from an array.
-	 * @param arrya  The set of properties to merge.
-	 * @param filter The filter for excluded properties.
-	 *
-	 */
-	public void merge(FileProperty[] array, PropertyFilter filter)
-		{
-		if (null != array)
-			{
-			for (int i = 0 ; i < array.length ; i++)
-				{
-				FileProperty property = filter.filter(
-					array[i]
-					) ;
-				if (null != property)
-					{
-					this.setProperty(
-						property
-						) ;
-					}
-				}
-			}
-		}
+    /**
+     * Merge the properties from another map.
+     * @param that The set of properties to merge.
+     *
+     */
+    public void merge(FileProperties that)
+        {
+        if (null != that)
+            {
+            Iterator iter = that.properties.entrySet().iterator() ;
+            while (iter.hasNext())
+                {
+                Entry  entry = (Entry) iter.next() ;
+                String key   = (String) entry.getKey();
+                String value = (String) entry.getValue();
+                if (null != value)
+                    {
+                    this.setProperty(
+                        key,
+                        value
+                        ) ;
+                    }
+                }
+            }
+        }
 
-	/**
-	 * Convert our properties into an array.
-	 *
-	 */
-	public FileProperty[] toArray()
-		{
-		//
-		// Create an empty array.
-		FileProperty[] array = new FileProperty[this.properties.size()] ;
-		//
-		// Transfer the values.
-		Iterator iter = this.properties.entrySet().iterator() ;
-		for (int i = 0 ; i < array.length ; i++)
-			{
-			array[i] = new FileProperty(
-				(Entry) iter.next()
-				) ;
-			}
-		return array ;
-		}
+    /**
+     * Merge the properties from another map, using a filter to exclude specific properties.
+     * @param that   The set of properties to merge.
+     * @param filter The filter for excluded properties.
+     *
+     */
+    public void merge(FileProperties that, PropertyFilter filter)
+        {
+        if (null != that)
+            {
+            Iterator iter = that.properties.entrySet().iterator() ;
+            while (iter.hasNext())
+                {
+                Entry entry = (Entry) iter.next() ;
+                FileProperty property = filter.filter(
+                    new FileProperty(
+                        (String) entry.getKey(),
+                        (String) entry.getValue()
+                        )
+                    ) ;
+                if (null != property)
+                    {
+                    this.setProperty(
+                        property
+                        ) ;
+                    }
+                }
+            }
+        }
 
-	/**
-	 * Load our properties from a file.
-	 *
-	 */
-	public void load(InputStream stream)
-		throws IOException
-		{
-		this.properties.load(
-			stream
-			) ;
-		}
+    /**
+     * Merge the properties from an array.
+     * @param arrya  The set of properties to merge.
+     * @param filter The filter for excluded properties.
+     *
+     */
+    public void merge(FileProperty[] array, PropertyFilter filter)
+        {
+        if (null != array)
+            {
+            for (int i = 0 ; i < array.length ; i++)
+                {
+                FileProperty property = filter.filter(
+                    array[i]
+                    ) ;
+                if (null != property)
+                    {
+                    this.setProperty(
+                        property
+                        ) ;
+                    }
+                }
+            }
+        }
 
-	/**
-	 * Save our properties to a file.
-	 *
-	 */
-	public void save(OutputStream stream)
-		throws IOException
-		{
-		this.properties.store(
-			stream,
-			this.getClass().getName()
-			) ;
-		}
+    /**
+     * Convert our properties into an array.
+     *
+     */
+    public FileProperty[] toArray()
+        {
+        //
+        // Create an empty array.
+        FileProperty[] array = new FileProperty[this.properties.size()] ;
+        //
+        // Transfer the values.
+        Iterator iter = this.properties.entrySet().iterator() ;
+        for (int i = 0 ; i < array.length ; i++)
+            {
+            array[i] = new FileProperty(
+                (Entry) iter.next()
+                ) ;
+            }
+        return array ;
+        }
 
-	/**
-	 * Get the resource ivorn.
-	 * @throws FileStoreIdentifierException if the service or resource identifiers are invalid.
-	 *
-	 */
-	public Ivorn getStoreResourceIvorn()
-		throws FileStoreIdentifierException
-		{
-		String ivorn = this.getProperty(
-			STORE_RESOURCE_IVORN
-			) ;
-		if (null != ivorn)
-			{
-			try {
-				return new Ivorn(
-					ivorn
-					) ;
-				}
-			catch (Exception ouch)
-				{
-				throw new FileStoreIdentifierException(
-					ivorn
-					);
-				}
-			}
-		else {
-			return null ;
-			}
-		}
+    /**
+     * Load our properties from a file.
+     *
+     */
+    public void load(InputStream stream)
+        throws IOException
+        {
+        this.properties.load(
+            stream
+            ) ;
+        }
 
-	/**
-	 * Set the resource ivorn.
-	 * @throws FileStoreIdentifierException if the service or resource identifiers are invalid.
-	 *
-	 */
-	public void setStoreResourceIvorn(Ivorn ivorn)
-		{
-		if (null != ivorn)
-			{
-			this.setProperty(
-				STORE_RESOURCE_IVORN,
-				ivorn.toString()
-				) ;
-			}
-		else {
-			this.setProperty(
-				STORE_RESOURCE_IVORN,
-				null
-				) ;
-			}
-		}
+    /**
+     * Save our properties to a file.
+     *
+     */
+    public void save(OutputStream stream)
+        throws IOException
+        {
+        this.properties.store(
+            stream,
+            this.getClass().getName()
+            ) ;
+        }
 
-	/**
-	 * Get the service ivorn.
-	 * @throws FileStoreIdentifierException if the service identifier is invalid.
-	 *
-	 */
-	public Ivorn getStoreServiceIvorn()
-		throws FileStoreIdentifierException
-		{
-		String ivorn = this.getProperty(
-			STORE_RESOURCE_IVORN
-			) ;
-		if (null != ivorn)
-			{
-			return new FileStoreIvornParser(
-				ivorn
-				).getServiceIvorn() ;
-			}
-		else {
-			return null ;
-			}
-		}
+    /**
+     * Get the resource ivorn.
+     * @throws FileStoreIdentifierException if the service or resource identifiers are invalid.
+     *
+     */
+    public Ivorn getStoreResourceIvorn()
+        throws FileStoreIdentifierException
+        {
+        String ivorn = this.getProperty(
+            STORE_RESOURCE_IVORN
+            ) ;
+        if (null != ivorn)
+            {
+            try {
+                return new Ivorn(
+                    ivorn
+                    ) ;
+                }
+            catch (Exception ouch)
+                {
+                throw new FileStoreIdentifierException(
+                    ivorn
+                    );
+                }
+            }
+        else {
+            return null ;
+            }
+        }
 
-	/**
-	 * Get the resource identifier.
-	 *
-	 */
-	public String getStoreResourceIdent()
-		throws FileStoreIdentifierException
-		{
-		String ivorn = this.getProperty(
-			STORE_RESOURCE_IVORN
-			) ;
-		if (null != ivorn)
-			{
-			return new FileStoreIvornParser(
-				ivorn
-				).getResourceIdent() ;
-			}
-		else {
-			return null ;
-			}
-		}
+    /**
+     * Set the resource ivorn.
+     * @throws FileStoreIdentifierException if the service or resource identifiers are invalid.
+     *
+     */
+    public void setStoreResourceIvorn(Ivorn ivorn)
+        {
+        if (null != ivorn)
+            {
+            this.setProperty(
+                STORE_RESOURCE_IVORN,
+                ivorn.toString()
+                ) ;
+            }
+        else {
+            this.setProperty(
+                STORE_RESOURCE_IVORN,
+                null
+                ) ;
+            }
+        }
 
-	/**
-	 * Get the content size.
-	 *
-	 */
-	public long getContentSize()
-		{
-		String string = getProperty(
-			FileProperties.CONTENT_SIZE_PROPERTY
-			) ;
-		if (null != string)
-			{
-			try {
-				return Long.parseLong(string) ;
-				}
-			catch (NumberFormatException ouch)
-				{
-				return -1L ;
-				}
-			}
-		else {
-			return 0L ;
-			}
-		}
+    /**
+     * Get the service ivorn.
+     * @throws FileStoreIdentifierException if the service identifier is invalid.
+     *
+     */
+    public Ivorn getStoreServiceIvorn()
+        throws FileStoreIdentifierException
+        {
+        String ivorn = this.getProperty(
+            STORE_RESOURCE_IVORN
+            ) ;
+        if (null != ivorn)
+            {
+            return new FileStoreIvornParser(
+                ivorn
+                ).getServiceIvorn() ;
+            }
+        else {
+            return null ;
+            }
+        }
 
-	/**
-	 * Get the content mime type.
-	 *
-	 */
-	public String getContentType()
-		{
-		return getProperty(
-			FileProperties.MIME_TYPE_PROPERTY
-			) ;
-		}
+    /**
+     * Get the resource identifier.
+     *
+     */
+    public String getStoreResourceIdent()
+        throws FileStoreIdentifierException
+        {
+        String ivorn = this.getProperty(
+            STORE_RESOURCE_IVORN
+            ) ;
+        if (null != ivorn)
+            {
+            return new FileStoreIvornParser(
+                ivorn
+                ).getResourceIdent() ;
+            }
+        else {
+            return null ;
+            }
+        }
 
-	/**
-	 * Get the (external) resource URL.
-	 * @throws FileStoreIdentifierException if the service or resource identifiers are invalid.
-	 * @deprecated Use exportInit on the parent service to get a transfer URL.
-	 *
-	 */
-	public URL getStoreResourceUrl()
-		{
-		try {
-			return new URL(
-				this.getProperty(
-					STORE_RESOURCE_URL
-					)
-				) ;
-			}
-		catch (Exception ouch)
-			{
-			return null ;
-			}
-		}
-	}
+    /**
+     * Get the content size.
+     *
+     */
+    public long getContentSize()
+        {
+        String string = getProperty(
+            FileProperties.CONTENT_SIZE_PROPERTY
+            ) ;
+        if (null != string)
+            {
+            try {
+                return Long.parseLong(string) ;
+                }
+            catch (NumberFormatException ouch)
+                {
+                return -1L ;
+                }
+            }
+        else {
+            return 0L ;
+            }
+        }
+
+    /**
+     * Get the content mime type.
+     *
+     */
+    public String getContentType()
+        {
+        return getProperty(
+            FileProperties.MIME_TYPE_PROPERTY
+            ) ;
+        }
+
+    /**
+     * Get the (external) resource URL.
+     * @throws FileStoreIdentifierException if the service or resource identifiers are invalid.
+     * @deprecated Use exportInit on the parent service to get a transfer URL.
+     *
+     */
+    public URL getStoreResourceUrl()
+        {
+        try {
+            return new URL(
+                this.getProperty(
+                    STORE_RESOURCE_URL
+                    )
+                ) ;
+            }
+        catch (Exception ouch)
+            {
+            return null ;
+            }
+        }
+
+    /**
+     * Get the file create date.
+     * @return The file create date, if the file has stored data, or null if the file does not contains any data.
+     *
+     */
+    public Date getFileCreateDate()
+        {
+        //
+        // Create our ISO date format.
+        FileStoreDateFormat formatter = new FileStoreDateFormat() ;
+        //
+        // Parse the date property.
+        try {
+            return formatter.parse(
+                this.getProperty(
+                    FileProperties.FILE_CREATED_DATE_PROPERTY
+                    )
+                );
+            }
+        catch (ParseException ouch)
+            {
+            return null ;
+            }
+        }
+
+    /**
+     * Get the file modified date.
+     * @return The file modified date, if the file has stored data, or null if the file does not contains any data.
+     *
+     */
+    public Date getFileModifyDate()
+        {
+        //
+        // Create our ISO date format.
+        FileStoreDateFormat formatter = new FileStoreDateFormat() ;
+        //
+        // Parse the date property.
+        try {
+            return formatter.parse(
+                this.getProperty(
+                    FileProperties.FILE_MODIFIED_DATE_PROPERTY
+                    )
+                );
+            }
+        catch (ParseException ouch)
+            {
+            return null ;
+            }
+        }
+    }
 

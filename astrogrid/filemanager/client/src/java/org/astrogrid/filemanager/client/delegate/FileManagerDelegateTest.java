@@ -1,10 +1,22 @@
 /*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/src/java/org/astrogrid/filemanager/client/Attic/FileManagerDelegateTest.java,v $</cvs:source>
- * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2005/01/13 17:23:15 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/src/java/org/astrogrid/filemanager/client/delegate/Attic/FileManagerDelegateTest.java,v $</cvs:source>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2005/01/28 10:43:58 $</cvs:date>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  * <cvs:log>
  *   $Log: FileManagerDelegateTest.java,v $
+ *   Revision 1.2  2005/01/28 10:43:58  clq2
+ *   dave_dev_200501141257 (filemanager)
+ *
+ *   Revision 1.1.2.1  2005/01/22 07:54:16  dave
+ *   Refactored delegate into a separate package ....
+ *
+ *   Revision 1.4.2.2  2005/01/19 12:55:34  dave
+ *   Added sleep to date tests to avoid race condition ...
+ *
+ *   Revision 1.4.2.1  2005/01/15 08:25:20  dave
+ *   Added file create and modify dates to manager and client API ...
+ *
  *   Revision 1.4  2005/01/13 17:23:15  jdt
  *   merges from dave-dev-200412201250
  *
@@ -65,10 +77,11 @@
  * </cvs:log>
  *
  */
-package org.astrogrid.filemanager.client;
+package org.astrogrid.filemanager.client.delegate ;
 
 import java.io.ByteArrayOutputStream;
 
+import java.util.Date ;
 import java.util.List ;
 import java.util.Iterator ;
 
@@ -88,6 +101,8 @@ import org.astrogrid.filemanager.common.exception.NodeNotFoundException ;
 import org.astrogrid.filemanager.common.exception.DuplicateNodeException;
 import org.astrogrid.filemanager.common.exception.FileManagerServiceException;
 import org.astrogrid.filemanager.common.exception.FileManagerPropertiesException;
+
+import org.astrogrid.filemanager.client.FileManagerNode;
 
 /**
  * A generic test for the FileManager delegate API.
@@ -3020,6 +3035,92 @@ System.out.println("");
             toad.location()
             );
         }
+
+    /**
+     * Check that the file create and modify dates are set.
+     *
+     */
+    public void testImportDates()
+        throws Exception
+        {
+        //
+        // Create the account home.
+        FileManagerNode home = delegate.addAccount(
+            accountIvorn
+            ) ;
+        //
+        // Add our source node.
+        FileManagerNode frog =
+            delegate.add(
+                home,
+                "frog",
+                FileManagerProperties.DATA_NODE_TYPE
+                ) ;
+		//
+		// Get the initial file dates.
+		Date initialFileCreateDate = frog.getFileCreateDate();
+		Date initialFileModifyDate = frog.getFileModifyDate();
+		//
+		// Pause for a bit ....
+		Thread.sleep(1000);
+        //
+        // Create our import request properties.
+        FileManagerProperties importRequest = new FileManagerProperties() ;
+        //
+        // Set the resource ivorn.
+        importRequest.setManagerResourceIvorn(
+            frog.ivorn()
+            );
+        //
+        // Call our manager to initiate the import.
+        TransferProperties importTransfer =
+            delegate.importInit(
+                importRequest
+                ) ;
+        //
+        // Create an output stream to the target.
+        FileStoreOutputStream importStream = new FileStoreOutputStream(
+            importTransfer.getLocation()
+            ) ;
+        //
+        // Transfer our data.
+        importStream.open() ;
+        importStream.write(
+            TEST_BYTES
+            ) ;
+        importStream.close() ;
+		//
+		// Refresh the node properties.
+		frog.refresh();
+		//
+		// Get the updated dates.
+		Date updatedFileCreateDate = frog.getFileCreateDate();
+		Date updatedFileModifyDate = frog.getFileModifyDate();
+		//
+		// Check the first set of dates are null.
+		assertNull(
+			initialFileCreateDate
+			);
+		assertNull(
+			initialFileModifyDate
+			);
+		//
+		// Check the final dates are not null.
+		assertNotNull(
+			updatedFileCreateDate
+			);
+		assertNotNull(
+			updatedFileModifyDate
+			);
+		//
+		// Check the modified date is after the create date.
+		assertTrue(
+			updatedFileModifyDate.after(
+				updatedFileCreateDate
+				)
+			);
+        }
+
     }
 
 

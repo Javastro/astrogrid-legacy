@@ -1,10 +1,20 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/common/src/java/org/astrogrid/filemanager/common/Attic/FileManager.java,v $</cvs:source>
- * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2005/01/13 17:23:15 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2005/01/28 10:43:58 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  * <cvs:log>
  *   $Log: FileManager.java,v $
+ *   Revision 1.5  2005/01/28 10:43:58  clq2
+ *   dave_dev_200501141257 (filemanager)
+ *
+ *   Revision 1.4.2.2  2005/01/21 14:42:27  dave
+ *   Changed tabs to spaces ..
+ *
+ *   Revision 1.4.2.1  2005/01/20 07:17:14  dave
+ *   Added import data from URL to server side logic ....
+ *   Tidied up tabs in some files.
+ *
  *   Revision 1.4  2005/01/13 17:23:15  jdt
  *   merges from dave-dev-200412201250
  *
@@ -236,7 +246,6 @@ public interface FileManager
 
     /**
      * Initialise a data transfer into a FileStore.
-     * The request properties need to specify the (ivorn) identifier of an existing node, or the identifier of a parent node and the new node name and path.
      * @param request The request properties.
      * @throws NodeNotFoundException If the target node does not exist.
      * @throws FileManagerServiceException If a problem occurs when handling the request.
@@ -260,6 +269,36 @@ public interface FileManager
      *
      */
     public TransferProperties exportInit(FileProperty[] request)
+        throws
+            RemoteException,
+            NodeNotFoundException,
+            FileManagerServiceException;
+
+    /**
+     * Transfer data from a source URL into a node.
+     * @param request The transfer request properties.
+     * @return The updated file properties for the node, after the transfer.
+     * @throws NodeNotFoundException If the target node does not exist.
+     * @throws FileManagerServiceException If a problem occurs when handling the request.
+     * @throws RemoteException If the WebService call fails.
+     * @todo Refactor this to handle path, and create missing folders.
+     *
+     */
+    public FileProperty[] importData(TransferProperties request)
+        throws
+            RemoteException,
+            NodeNotFoundException,
+            FileManagerServiceException;
+
+    /**
+     * Transfer data transfer from a node into destination URL.
+     * @param request The request properties.
+     * @throws NodeNotFoundException If the target node does not exist.
+     * @throws FileManagerServiceException If a problem occurs when handling the request.
+     * @throws RemoteException If the WebService call fails.
+     *
+     */
+    public TransferProperties exportData(FileProperty[] request)
         throws
             RemoteException,
             NodeNotFoundException,

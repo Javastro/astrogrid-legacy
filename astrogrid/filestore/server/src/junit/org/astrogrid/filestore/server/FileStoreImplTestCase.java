@@ -1,10 +1,21 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/server/src/junit/org/astrogrid/filestore/server/FileStoreImplTestCase.java,v $</cvs:source>
- * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/12/13 00:51:56 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2005/01/28 10:44:01 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreImplTestCase.java,v $
+ *   Revision 1.5  2005/01/28 10:44:01  clq2
+ *   dave_dev_200501141257 (filemanager)
+ *
+ *   Revision 1.4.8.2  2005/01/17 17:19:21  dave
+ *   Fixed bug in FileManagerImpl test (missing '/' in repository path on Unix) ...
+ *   Changed tabs to spaces ..
+ *
+ *   Revision 1.4.8.1  2005/01/15 04:50:58  dave
+ *   Added created and modified dates to server ....
+ *   Removed log debug messages from JUnit tests ...
+ *
  *   Revision 1.4  2004/12/13 00:51:56  jdt
  *   merge from FLS_JDT_861
  *
@@ -52,53 +63,50 @@ import org.astrogrid.filestore.common.transfer.mock.Handler ;
  *
  */
 public class FileStoreImplTestCase
-	extends FileStoreTest
-	{
-
-
-	/**
-	 * Setup our test.
-	 *
-	 */
-	public void setUp()
-		{
-		//
-		// Initialise our mock URL handler.
-		Handler.register() ;
-		//
-		// Create our test config.
-		FileStoreConfig config = new FileStoreConfigImpl()
-			{
-			/**
-			 * Generate a resource URL.
-			 * @param ident - the resource identifier.
-			 * @throws FileStoreServiceException if unable to read the property.
-			 *
-			 */
-			public URL getResourceUrl(String ident)
-				throws FileStoreServiceException
-				{
-				try {
-					return new URL(
-						"file:///" + 
-						this.getDataDirectory()
-						+ "/" + ident + ".dat"
-						) ;
-					}
-				catch (Throwable ouch)
-					{
-					throw new FileStoreServiceException(
-						"Unable to generate resource URL.",
-						ouch
-						) ;
-					}
-				}
-			} ;
-
-		//
-		// Create our target filestore.
-		this.target = new FileStoreImpl(
-			config
-			) ;
-		}
-	}
+    extends FileStoreTest
+    {
+    /**
+     * Setup our test.
+     *
+     */
+    public void setUp()
+        {
+        //
+        // Initialise our mock URL handler.
+        Handler.register() ;
+        //
+        // Create our test config.
+        FileStoreConfig config = new FileStoreConfigImpl()
+            {
+            /**
+             * Generate a resource URL.
+             * @param ident - the resource identifier.
+             * @throws FileStoreServiceException if unable to read the property.
+             *
+             */
+            public URL getResourceUrl(String ident)
+                throws FileStoreServiceException
+                {
+                try {
+                    return new URL(
+                        "file:////" + 
+                        this.getDataDirectory()
+                        + "/" + ident + ".dat"
+                        ) ;
+                    }
+                catch (Throwable ouch)
+                    {
+                    throw new FileStoreServiceException(
+                        "Unable to generate resource URL.",
+                        ouch
+                        ) ;
+                    }
+                }
+            } ;
+        //
+        // Create our target filestore.
+        this.target = new FileStoreImpl(
+            config
+            ) ;
+        }
+    }

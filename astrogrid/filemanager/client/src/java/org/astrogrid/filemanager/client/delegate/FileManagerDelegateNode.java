@@ -1,10 +1,37 @@
 /*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/src/java/org/astrogrid/filemanager/client/Attic/FileManagerNodeImpl.java,v $</cvs:source>
- * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2005/01/13 17:23:15 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/src/java/org/astrogrid/filemanager/client/delegate/Attic/FileManagerDelegateNode.java,v $</cvs:source>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2005/01/28 10:43:58 $</cvs:date>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  * <cvs:log>
- *   $Log: FileManagerNodeImpl.java,v $
+ *   $Log: FileManagerDelegateNode.java,v $
+ *   Revision 1.2  2005/01/28 10:43:58  clq2
+ *   dave_dev_200501141257 (filemanager)
+ *
+ *   Revision 1.1.2.2  2005/01/26 12:24:20  dave
+ *   Removed type from add(), replaced with addNode() and addFile() ...
+ *
+ *   Revision 1.1.2.1  2005/01/22 07:54:16  dave
+ *   Refactored delegate into a separate package ....
+ *
+ *   Revision 1.4.2.6  2005/01/21 14:41:58  dave
+ *   Added importData(URL url) to the API (needs implementation and tests).
+ *
+ *   Revision 1.4.2.5  2005/01/21 13:07:37  dave
+ *   Added exportURL to the node API ...
+ *
+ *   Revision 1.4.2.4  2005/01/21 12:18:54  dave
+ *   Changed input() and output() to exportStream() and importStream() ...
+ *
+ *   Revision 1.4.2.3  2005/01/19 11:39:28  dave
+ *   Added combined create and modify date ...
+ *
+ *   Revision 1.4.2.2  2005/01/18 14:52:48  dave
+ *   Added node create and modify dates ..
+ *
+ *   Revision 1.4.2.1  2005/01/15 08:25:20  dave
+ *   Added file create and modify dates to manager and client API ...
+ *
  *   Revision 1.4  2005/01/13 17:23:15  jdt
  *   merges from dave-dev-200412201250
  *
@@ -64,11 +91,14 @@
  * </cvs:log>
  *
  */
-package org.astrogrid.filemanager.client ;
+package org.astrogrid.filemanager.client.delegate ;
 
 import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
 
+import java.net.URL ;
+
+import java.util.Date ;
 import java.util.List ;
 import java.util.Iterator ;
 
@@ -92,11 +122,13 @@ import org.astrogrid.filemanager.common.exception.FileManagerIdentifierException
 import org.astrogrid.filemanager.common.exception.FileManagerServiceException;
 import org.astrogrid.filemanager.common.exception.FileManagerPropertiesException;
 
+import org.astrogrid.filemanager.client.FileManagerNode;
+
 /**
  * Client implementation of the FileManagerNode interface.
  *
  */
-public class FileManagerNodeImpl
+public class FileManagerDelegateNode
     implements FileManagerNode
     {
 
@@ -104,7 +136,7 @@ public class FileManagerNodeImpl
      * Our debug logger.
      *
      */
-    protected static Log log = LogFactory.getLog(FileManagerNodeImpl.class);
+    protected static Log log = LogFactory.getLog(FileManagerDelegateNode.class);
 
     /**
      * A reference to the FileManagerDelegate that created this node.
@@ -118,7 +150,7 @@ public class FileManagerNodeImpl
      * @param properties An array of properties for the node.
      *
      */
-    protected FileManagerNodeImpl(FileManagerCoreDelegate delegate, FileProperty[] properties)
+    protected FileManagerDelegateNode(FileManagerCoreDelegate delegate, FileProperty[] properties)
         {
         this(
             delegate,
@@ -134,7 +166,7 @@ public class FileManagerNodeImpl
      * @param properties An array of properties for the node.
      *
      */
-    protected FileManagerNodeImpl(FileManagerCoreDelegate delegate, FileManagerProperties properties)
+    protected FileManagerDelegateNode(FileManagerCoreDelegate delegate, FileManagerProperties properties)
         {
         if (null == delegate)
             {
@@ -190,6 +222,82 @@ public class FileManagerNodeImpl
         return properties.getContentSize();
         }
 
+
+    /**
+     * Get the data file create date.
+     * @return The file create date, if the node has stored data, or null if the node does not contains any data.
+     *
+     */
+    public Date getFileCreateDate()
+        {
+        return properties.getFileCreateDate();
+        }
+
+    /**
+     * Get the data file modified date.
+     * @return The file modified date, if the node has stored data, or null if the node does not contains any data.
+     *
+     */
+    public Date getFileModifyDate()
+        {
+        return properties.getFileModifyDate();
+        }
+
+    /**
+     * Get the node create date.
+     * @return The node create date.
+     *
+     */
+    public Date getNodeCreateDate()
+        {
+        return properties.getNodeCreateDate();
+        }
+
+    /**
+     * Get the node modified date.
+     * @return The node modified date.
+     *
+     */
+    public Date getNodeModifyDate()
+        {
+        return properties.getNodeModifyDate();
+        }
+
+    /**
+     * Get the create date.
+     * @return The create date.
+     *
+     */
+    public Date getCreateDate()
+        {
+        return getNodeCreateDate();
+        }
+
+    /**
+     * Get the modified date.
+     * This returns whichever is the most recent modified date, for the node or the file.
+     * @return The modified date.
+     *
+     */
+    public Date getModifyDate()
+        {
+        Date node = getNodeModifyDate();
+        Date file = getFileModifyDate();
+        if (null != file)
+            {
+            if (file.after(node))
+                {
+                return file ;
+                }
+            else {
+                return node ;
+                }
+            }
+        else {
+            return node ;
+            }
+        }
+
     /**
      * Get the node (FileStore) location of the node data.
      * This returns the (FileStore) location where the data is actually stored.
@@ -209,6 +317,7 @@ public class FileManagerNodeImpl
      * @return The parent node, or null for a root node.
      * @throws NodeNotFoundException If the node is not in the database.
      * @throws FileManagerServiceException If a problem occurs when handling the request.
+     * @todo Check for an existing node in the local cache.
      *
      */
     public FileManagerNode parent()
@@ -265,17 +374,63 @@ public class FileManagerNodeImpl
     /**
      * Add a new child node.
      * @param name The node name.
-     * @param type The node type (either FILE_NODE or CONTAINER_NODE).
      * @return A new node for the container.
      * @throws UnsupportedOperationException If this node represents a file.
      * @throws DuplicateNodeException If a node with the same name already exists.
      * @throws NodeNotFoundException If the current node is no longer in the database.
      * @throws FileManagerServiceException If a problem occurs when handling the request.
-     * @see FILE_NODE
-     * @see CONTAINER_NODE
      *
      */
-    public FileManagerNode add(String name, String type)
+    public FileManagerNode addNode(String name)
+        throws
+        	UnsupportedOperationException,
+        	NodeNotFoundException,
+        	DuplicateNodeException,
+        	FileManagerServiceException
+		{
+		return this.add(
+			name,
+			FileManagerProperties.CONTAINER_NODE_TYPE
+			);
+		}
+
+    /**
+     * Add a new file node.
+     * @param name The node name.
+     * @return A new node for the file.
+     * @throws UnsupportedOperationException If this node represents a file.
+     * @throws DuplicateNodeException If a node with the same name already exists.
+     * @throws NodeNotFoundException If the current node is no longer in the database.
+     * @throws FileManagerServiceException If a problem occurs when handling the request.
+     *
+     */
+    public FileManagerNode addFile(String name)
+        throws
+        	UnsupportedOperationException,
+        	NodeNotFoundException,
+        	DuplicateNodeException ,
+        	FileManagerServiceException
+		{
+		return this.add(
+			name,
+			FileManagerProperties.DATA_NODE_TYPE
+			);
+		}
+
+    /**
+     * Add a new child node.
+     * @param name The node name.
+     * @param type The node type (either DATA_NODE_TYPE or CONTAINER_NODE_TYPE).
+     * @return A new node for the container.
+     * @throws UnsupportedOperationException If this node represents a file.
+     * @throws DuplicateNodeException If a node with the same name already exists.
+     * @throws NodeNotFoundException If the current node is no longer in the database.
+     * @throws FileManagerServiceException If a problem occurs when handling the request.
+     * @see FileManagerProperties.DATA_NODE_TYPE
+     * @see FileManagerProperties.CONTAINER_NODE_TYPE
+     *
+     */
+    protected FileManagerNode add(String name, String type)
         throws UnsupportedOperationException, NodeNotFoundException, DuplicateNodeException , FileManagerServiceException
         {
         if (null == name)
@@ -350,14 +505,15 @@ public class FileManagerNodeImpl
         }
 
     /**
-     * Open an output stream to the node.
+     * Open a java OutputStream to send (import) data into the node.
+     * @return An OutputStream connected directly to the node store.
      * @throws IOException If a problem occurs openning the stream.
      * @throws UnsupportedOperationException If the node represents a container.
      * @throws NodeNotFoundException If the node is not in the database.
      * @throws FileManagerServiceException If a problem occurs when handling the request.
      *
      */
-    public OutputStream output()
+    public OutputStream importStream()
         throws
             IOException,
             UnsupportedOperationException,
@@ -421,16 +577,40 @@ public class FileManagerNodeImpl
         }
 
     /**
-     * Open an input stream to the node.
+     * Open a java InputStream to read (export) data from the node.
+     * @return An InputStream connected directly to the node store.
      * @throws IOException If a problem occurs openning the stream.
      * @throws UnsupportedOperationException If the node represents a container.
      * @throws NodeNotFoundException If the node is not in the database.
      * @throws FileManagerServiceException If a problem occurs when handling the request.
      *
      */
-    public InputStream input()
+    public InputStream exportStream()
         throws
             IOException,
+            UnsupportedOperationException,
+            NodeNotFoundException,
+            FileManagerServiceException
+        {
+        //
+        // Open an output stream to the target.
+        FileStoreInputStream stream = new FileStoreInputStream(
+            exportURL()
+            ) ;
+        stream.open() ;
+        return stream ;
+        }
+
+    /**
+     * Get a URL to access the node data from.
+     * @return A URL which connects directly to the node store.
+     * @throws UnsupportedOperationException If the node represents a container.
+     * @throws NodeNotFoundException If the node is not in the database.
+     * @throws FileManagerServiceException If a problem occurs when handling the request.
+     *
+     */
+    public URL exportURL()
+        throws
             UnsupportedOperationException,
             NodeNotFoundException,
             FileManagerServiceException
@@ -438,7 +618,7 @@ public class FileManagerNodeImpl
         if (!this.isFile())
             {
             throw new UnsupportedOperationException(
-                "Node is not a file."
+                "Not a data node."
                 );
             }
         //
@@ -452,13 +632,18 @@ public class FileManagerNodeImpl
             // Check we got a transfer location (URL).
             if (null != transfer.getLocation())
                 {
-                //
-                // Open an output stream to the target.
-                FileStoreInputStream stream = new FileStoreInputStream(
-                    transfer.getLocation()
-                    ) ;
-                stream.open() ;
-                return stream ;
+                try {
+                    return new URL(
+                        transfer.getLocation()
+                        );
+                    }
+                catch (Exception ouch)
+                    {
+                    throw new FileManagerServiceException(
+                        "Unable to get transfer location (URL)",
+                        ouch
+                        );
+                    }
                 }
             //
             // If we didn't get a transfer location (URL).
@@ -475,6 +660,21 @@ public class FileManagerNodeImpl
                 ouch
                 );
             }
+        }
+
+    /**
+     * Import data from a URL.
+     * @throws UnsupportedOperationException If the node represents a container.
+     * @throws NodeNotFoundException If the node is not in the database.
+     * @throws FileManagerServiceException If a problem occurs when handling the request.
+     *
+     */
+    public void importData(URL url)
+        throws UnsupportedOperationException, NodeNotFoundException, FileManagerServiceException
+        {
+        throw new UnsupportedOperationException(
+            "Not implemented yet ..."
+            );
         }
 
 
@@ -619,13 +819,14 @@ public class FileManagerNodeImpl
      * Clients should call this method after a data import has completed to update the node properties.
      * @throws NodeNotFoundException If the node no longer exists in the server database.
      * @throws FileManagerServiceException If a problem occurs when handling the request. 
+     * @todo Also needs to update list of children ?
      *
      */
     public void refresh()
         throws NodeNotFoundException, FileManagerServiceException
         {
         log.debug("");
-        log.debug("FileManagerNodeImpl.refresh()");
+        log.debug("FileManagerDelegateNode.refresh()");
         try {
             this.properties = new FileManagerProperties(
                 delegate.refresh(
@@ -711,7 +912,7 @@ public class FileManagerNodeImpl
         throws NodeNotFoundException, FileManagerServiceException
         {
         log.debug("");
-        log.debug("FileManagerNodeImpl.iterator()");
+        log.debug("FileManagerDelegateNode.iterator()");
         try {
             return new NodeIteratorImpl(
                 delegate.getChildren(

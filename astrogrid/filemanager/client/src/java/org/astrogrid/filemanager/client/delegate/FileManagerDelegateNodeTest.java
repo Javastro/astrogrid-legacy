@@ -1,10 +1,34 @@
 /*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/src/java/org/astrogrid/filemanager/client/Attic/FileManagerNodeTest.java,v $</cvs:source>
- * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2005/01/13 17:23:15 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/src/java/org/astrogrid/filemanager/client/delegate/Attic/FileManagerDelegateNodeTest.java,v $</cvs:source>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2005/01/28 10:43:58 $</cvs:date>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  * <cvs:log>
- *   $Log: FileManagerNodeTest.java,v $
+ *   $Log: FileManagerDelegateNodeTest.java,v $
+ *   Revision 1.2  2005/01/28 10:43:58  clq2
+ *   dave_dev_200501141257 (filemanager)
+ *
+ *   Revision 1.1.2.2  2005/01/26 12:24:21  dave
+ *   Removed type from add(), replaced with addNode() and addFile() ...
+ *
+ *   Revision 1.1.2.1  2005/01/22 07:54:16  dave
+ *   Refactored delegate into a separate package ....
+ *
+ *   Revision 1.3.2.5  2005/01/21 13:07:37  dave
+ *   Added exportURL to the node API ...
+ *
+ *   Revision 1.3.2.4  2005/01/21 12:18:54  dave
+ *   Changed input() and output() to exportStream() and importStream() ...
+ *
+ *   Revision 1.3.2.3  2005/01/19 12:55:35  dave
+ *   Added sleep to date tests to avoid race condition ...
+ *
+ *   Revision 1.3.2.2  2005/01/19 11:39:28  dave
+ *   Added combined create and modify date ...
+ *
+ *   Revision 1.3.2.1  2005/01/17 13:04:42  dave
+ *   Added client node test for FileStore dates ...
+ *
  *   Revision 1.3  2005/01/13 17:23:15  jdt
  *   merges from dave-dev-200412201250
  *
@@ -80,7 +104,11 @@
  * </cvs:log>
  *
  */
-package org.astrogrid.filemanager.client;
+package org.astrogrid.filemanager.client.delegate;
+
+import java.net.URL;
+
+import java.util.Date;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -88,6 +116,7 @@ import java.io.ByteArrayOutputStream;
 
 import org.astrogrid.store.Ivorn ;
 
+import org.astrogrid.filestore.common.FileStoreInputStream;
 import org.astrogrid.filestore.common.transfer.TransferUtil;
 
 import org.astrogrid.filemanager.common.BaseTest;
@@ -95,11 +124,13 @@ import org.astrogrid.filemanager.common.BaseTest;
 import org.astrogrid.filemanager.common.exception.NodeNotFoundException ;
 import org.astrogrid.filemanager.common.exception.DuplicateNodeException;
 
+import org.astrogrid.filemanager.client.FileManagerNode;
+
 /**
  * A generic test for the FileManagerNode API.
  *
  */
-public class FileManagerNodeTest
+public class FileManagerDelegateNodeTest
     extends BaseTest
     {
 
@@ -172,9 +203,8 @@ public class FileManagerNodeTest
         {
         FileManagerNode home = account() ;
         try {
-            home.add(
-                null,
-                FileManagerNode.CONTAINER_NODE
+            home.addNode(
+                null
                 );
             }
         catch (IllegalArgumentException ouch)
@@ -193,7 +223,7 @@ public class FileManagerNodeTest
         {
         FileManagerNode home = account() ;
         try {
-            home.add(
+            ((FileManagerDelegateNode)home).add(
                 "frog",
                 null
                 );
@@ -214,9 +244,8 @@ public class FileManagerNodeTest
         {
         FileManagerNode home = account() ;
         assertNotNull(
-            home.add(
-                "frog",
-                FileManagerNode.CONTAINER_NODE
+            home.addNode(
+                "frog"
                 )
             );
         }
@@ -229,14 +258,12 @@ public class FileManagerNodeTest
         throws Exception
         {
         FileManagerNode home = account() ;
-        home.add(
-            "frog",
-            FileManagerNode.CONTAINER_NODE
+        home.addNode(
+            "frog"
             );
         try {
-            home.add(
-                "frog",
-                FileManagerNode.CONTAINER_NODE
+            home.addNode(
+                "frog"
                 );
             }
         catch (DuplicateNodeException  ouch)
@@ -254,9 +281,8 @@ public class FileManagerNodeTest
         throws Exception
         {
         FileManagerNode home = account() ;
-        FileManagerNode frog = home.add(
-            "frog",
-            FileManagerNode.CONTAINER_NODE
+        FileManagerNode frog = home.addNode(
+            "frog"
             );
         assertEquals(
             "frog",
@@ -272,9 +298,8 @@ public class FileManagerNodeTest
         throws Exception
         {
         FileManagerNode home = account() ;
-        FileManagerNode frog = home.add(
-            "frog",
-            FileManagerNode.CONTAINER_NODE
+        FileManagerNode frog = home.addNode(
+            "frog"
             );
         assertTrue(
             frog.isContainer()
@@ -292,9 +317,8 @@ public class FileManagerNodeTest
         throws Exception
         {
         FileManagerNode home = account() ;
-        FileManagerNode frog = home.add(
-            "frog",
-            FileManagerNode.CONTAINER_NODE
+        FileManagerNode frog = home.addNode(
+            "frog"
             );
         assertNotNull(
             frog.ivorn()
@@ -309,9 +333,8 @@ public class FileManagerNodeTest
         throws Exception
         {
         FileManagerNode home = account() ;
-        FileManagerNode frog = home.add(
-            "frog",
-            FileManagerNode.CONTAINER_NODE
+        FileManagerNode frog = home.addNode(
+            "frog"
             );
         assertNotNull(
             frog.parent()
@@ -326,14 +349,12 @@ public class FileManagerNodeTest
         throws Exception
         {
         FileManagerNode home = account() ;
-        FileManagerNode frog = home.add(
-            "frog",
-            FileManagerNode.CONTAINER_NODE
+        FileManagerNode frog = home.addNode(
+            "frog"
             );
         try {
-            frog.add(
-                null,
-                FileManagerNode.CONTAINER_NODE
+            frog.addNode(
+                null
                 );
             }
         catch (IllegalArgumentException ouch)
@@ -351,12 +372,11 @@ public class FileManagerNodeTest
         throws Exception
         {
         FileManagerNode home = account() ;
-        FileManagerNode frog = home.add(
-            "frog",
-            FileManagerNode.CONTAINER_NODE
+        FileManagerNode frog = home.addNode(
+            "frog"
             );
         try {
-            frog.add(
+            ((FileManagerDelegateNode)frog).add(
                 "frog",
                 null
                 );
@@ -376,14 +396,12 @@ public class FileManagerNodeTest
         throws Exception
         {
         FileManagerNode home = account() ;
-        FileManagerNode frog = home.add(
-            "frog",
-            FileManagerNode.CONTAINER_NODE
+        FileManagerNode frog = home.addNode(
+            "frog"
             );
         assertNotNull(
-            frog.add(
-                "toad",
-                FileManagerNode.CONTAINER_NODE
+            frog.addNode(
+                "toad"
                 )
             );
         }
@@ -396,18 +414,15 @@ public class FileManagerNodeTest
         throws Exception
         {
         FileManagerNode home = account() ;
-        FileManagerNode frog = home.add(
-            "frog",
-            FileManagerNode.CONTAINER_NODE
+        FileManagerNode frog = home.addNode(
+            "frog"
             );
-        frog.add(
-            "toad",
-            FileManagerNode.CONTAINER_NODE
+        frog.addNode(
+            "toad"
             );
         try {
-            frog.add(
-                "toad",
-                FileManagerNode.CONTAINER_NODE
+            frog.addNode(
+                "toad"
                 );
             }
         catch (DuplicateNodeException  ouch)
@@ -425,13 +440,11 @@ public class FileManagerNodeTest
         throws Exception
         {
         FileManagerNode home = account() ;
-        FileManagerNode frog = home.add(
-            "frog",
-            FileManagerNode.CONTAINER_NODE
+        FileManagerNode frog = home.addNode(
+            "frog"
             );
-        FileManagerNode toad = frog.add(
-            "toad",
-            FileManagerNode.CONTAINER_NODE
+        FileManagerNode toad = frog.addNode(
+            "toad"
             );
         assertEquals(
             "toad",
@@ -447,13 +460,11 @@ public class FileManagerNodeTest
         throws Exception
         {
         FileManagerNode home = account() ;
-        FileManagerNode frog = home.add(
-            "frog",
-            FileManagerNode.CONTAINER_NODE
+        FileManagerNode frog = home.addNode(
+            "frog"
             );
-        FileManagerNode toad = frog.add(
-            "toad",
-            FileManagerNode.CONTAINER_NODE
+        FileManagerNode toad = frog.addNode(
+            "toad"
             );
         assertTrue(
             toad.isContainer()
@@ -471,13 +482,11 @@ public class FileManagerNodeTest
         throws Exception
         {
         FileManagerNode home = account() ;
-        FileManagerNode frog = home.add(
-            "frog",
-            FileManagerNode.CONTAINER_NODE
+        FileManagerNode frog = home.addNode(
+            "frog"
             );
-        FileManagerNode toad = frog.add(
-            "toad",
-            FileManagerNode.CONTAINER_NODE
+        FileManagerNode toad = frog.addNode(
+            "toad"
             );
         assertNotNull(
             toad.ivorn()
@@ -493,9 +502,8 @@ public class FileManagerNodeTest
         {
         FileManagerNode home = account() ;
         try {
-            home.add(
-                null,
-                FileManagerNode.FILE_NODE
+            home.addFile(
+                null
                 );
             }
         catch (IllegalArgumentException ouch)
@@ -514,7 +522,7 @@ public class FileManagerNodeTest
         {
         FileManagerNode home = account() ;
         try {
-            home.add(
+            ((FileManagerDelegateNode)home).add(
                 "frog",
                 null
                 );
@@ -535,9 +543,8 @@ public class FileManagerNodeTest
         {
         FileManagerNode home = account() ;
         assertNotNull(
-            home.add(
-                "frog",
-                FileManagerNode.FILE_NODE
+            home.addFile(
+                "frog"
                 )
             );
         }
@@ -550,14 +557,12 @@ public class FileManagerNodeTest
         throws Exception
         {
         FileManagerNode home = account() ;
-        home.add(
-            "frog",
-            FileManagerNode.FILE_NODE
+        home.addFile(
+            "frog"
             );
         try {
-            home.add(
-                "frog",
-                FileManagerNode.FILE_NODE
+            home.addFile(
+                "frog"
                 );
             }
         catch (DuplicateNodeException  ouch)
@@ -575,9 +580,8 @@ public class FileManagerNodeTest
         throws Exception
         {
         FileManagerNode home = account() ;
-        FileManagerNode frog = home.add(
-            "frog",
-            FileManagerNode.FILE_NODE
+        FileManagerNode frog = home.addFile(
+            "frog"
             );
         assertEquals(
             "frog",
@@ -593,9 +597,8 @@ public class FileManagerNodeTest
         throws Exception
         {
         FileManagerNode home = account() ;
-        FileManagerNode frog = home.add(
-            "frog",
-            FileManagerNode.FILE_NODE
+        FileManagerNode frog = home.addFile(
+            "frog"
             );
         assertFalse(
             frog.isContainer()
@@ -613,9 +616,8 @@ public class FileManagerNodeTest
         throws Exception
         {
         FileManagerNode home = account() ;
-        FileManagerNode frog = home.add(
-            "frog",
-            FileManagerNode.FILE_NODE
+        FileManagerNode frog = home.addFile(
+            "frog"
             );
         assertNotNull(
             frog.ivorn()
@@ -630,9 +632,8 @@ public class FileManagerNodeTest
         throws Exception
         {
         FileManagerNode home = account() ;
-        FileManagerNode frog = home.add(
-            "frog",
-            FileManagerNode.FILE_NODE
+        FileManagerNode frog = home.addFile(
+            "frog"
             );
         assertNotNull(
             frog.parent()
@@ -687,9 +688,8 @@ public class FileManagerNodeTest
         throws Exception
         {
         FileManagerNode home = account() ;
-        FileManagerNode frog = home.add(
-            "frog",
-            FileManagerNode.CONTAINER_NODE
+        FileManagerNode frog = home.addNode(
+            "frog"
             );
         assertNotNull(
             home.child(
@@ -706,17 +706,14 @@ public class FileManagerNodeTest
         throws Exception
         {
         FileManagerNode home = account() ;
-        FileManagerNode frog = home.add(
-            "frog",
-            FileManagerNode.CONTAINER_NODE
+        FileManagerNode frog = home.addNode(
+            "frog"
             );
-        FileManagerNode toad = frog.add(
-            "toad",
-            FileManagerNode.CONTAINER_NODE
+        FileManagerNode toad = frog.addNode(
+            "toad"
             );
-        FileManagerNode newt = toad.add(
-            "newt",
-            FileManagerNode.CONTAINER_NODE
+        FileManagerNode newt = toad.addNode(
+            "newt"
             );
         assertNotNull(
             home.child(
@@ -758,17 +755,14 @@ public class FileManagerNodeTest
         throws Exception
         {
         FileManagerNode home = account() ;
-        FileManagerNode frog = home.add(
-            "frog",
-            FileManagerNode.CONTAINER_NODE
+        FileManagerNode frog = home.addNode(
+            "frog"
             );
-        FileManagerNode toad = frog.add(
-            "toad",
-            FileManagerNode.CONTAINER_NODE
+        FileManagerNode toad = frog.addNode(
+            "toad"
             );
-        FileManagerNode newt = toad.add(
-            "newt",
-            FileManagerNode.CONTAINER_NODE
+        FileManagerNode newt = toad.addNode(
+            "newt"
             );
         assertNotNull(
             delegate.getNode(
@@ -785,14 +779,12 @@ public class FileManagerNodeTest
         throws Exception
         {
         FileManagerNode home = account() ;
-        FileManagerNode frog = home.add(
-            "frog",
-            FileManagerNode.FILE_NODE
+        FileManagerNode frog = home.addFile(
+            "frog"
             );
         try {
-            frog.add(
-                "toad",
-                FileManagerNode.FILE_NODE
+            frog.addFile(
+                "toad"
                 );
             }
         catch (UnsupportedOperationException  ouch)
@@ -810,14 +802,12 @@ public class FileManagerNodeTest
         throws Exception
         {
         FileManagerNode home = account() ;
-        FileManagerNode frog = home.add(
-            "frog",
-            FileManagerNode.FILE_NODE
+        FileManagerNode frog = home.addFile(
+            "frog"
             );
         try {
-            frog.add(
-                "toad",
-                FileManagerNode.CONTAINER_NODE
+            frog.addNode(
+                "toad"
                 );
             }
         catch (UnsupportedOperationException  ouch)
@@ -835,9 +825,8 @@ public class FileManagerNodeTest
         throws Exception
         {
         FileManagerNode home = account() ;
-        FileManagerNode frog = home.add(
-            "frog",
-            FileManagerNode.FILE_NODE
+        FileManagerNode frog = home.addFile(
+            "frog"
             );
         try {
             frog.child(
@@ -859,12 +848,11 @@ public class FileManagerNodeTest
         throws Exception
         {
         FileManagerNode home = account() ;
-        FileManagerNode frog = home.add(
-            "frog",
-            FileManagerNode.CONTAINER_NODE
+        FileManagerNode frog = home.addNode(
+            "frog"
             );
         try {
-            frog.output();
+            frog.importStream();
             }
         catch (UnsupportedOperationException  ouch)
             {
@@ -881,12 +869,11 @@ public class FileManagerNodeTest
         throws Exception
         {
         FileManagerNode home = account() ;
-        FileManagerNode frog = home.add(
-            "frog",
-            FileManagerNode.FILE_NODE
+        FileManagerNode frog = home.addFile(
+            "frog"
             );
         assertNotNull(
-            frog.output()
+            frog.importStream()
             );
         }
 
@@ -898,13 +885,12 @@ public class FileManagerNodeTest
         throws Exception
         {
         FileManagerNode home = account() ;
-        FileManagerNode frog = home.add(
-            "frog",
-            FileManagerNode.FILE_NODE
+        FileManagerNode frog = home.addFile(
+            "frog"
             );
         //
         // Open an output stream to our file.
-        OutputStream output = frog.output() ;
+        OutputStream output = frog.importStream() ;
         //
         // Send it some test data.
         output.write(
@@ -927,12 +913,11 @@ public class FileManagerNodeTest
         throws Exception
         {
         FileManagerNode home = account() ;
-        FileManagerNode frog = home.add(
-            "frog",
-            FileManagerNode.CONTAINER_NODE
+        FileManagerNode frog = home.addNode(
+            "frog"
             );
         try {
-            frog.input();
+            frog.exportStream();
             }
         catch (UnsupportedOperationException  ouch)
             {
@@ -950,12 +935,11 @@ public class FileManagerNodeTest
         throws Exception
         {
         FileManagerNode home = account() ;
-        FileManagerNode frog = home.add(
-            "frog",
-            FileManagerNode.FILE_NODE
+        FileManagerNode frog = home.addFile(
+            "frog"
             );
         try {
-            frog.input();
+            frog.exportStream();
             }
         catch (NodeNotFoundException ouch)
             {
@@ -972,13 +956,12 @@ public class FileManagerNodeTest
         throws Exception
         {
         FileManagerNode home = account() ;
-        FileManagerNode frog = home.add(
-            "frog",
-            FileManagerNode.FILE_NODE
+        FileManagerNode frog = home.addFile(
+            "frog"
             );
         //
         // Open an output stream to our file.
-        OutputStream output = frog.output() ;
+        OutputStream output = frog.importStream() ;
         //
         // Send it some test data.
         output.write(
@@ -988,7 +971,7 @@ public class FileManagerNodeTest
         //
         // Check we can get an input stream.
         assertNotNull(
-            frog.input()
+            frog.exportStream()
             );
         }
 
@@ -1000,13 +983,12 @@ public class FileManagerNodeTest
         throws Exception
         {
         FileManagerNode home = account() ;
-        FileManagerNode frog = home.add(
-            "frog",
-            FileManagerNode.FILE_NODE
+        FileManagerNode frog = home.addFile(
+            "frog"
             );
         //
         // Open an output stream to our file.
-        OutputStream output = frog.output() ;
+        OutputStream output = frog.importStream() ;
         //
         // Send it some test data.
         output.write(
@@ -1015,7 +997,7 @@ public class FileManagerNodeTest
         output.close() ;
         //
         // Open an input stream from our file.
-        InputStream input = frog.input() ;
+        InputStream input = frog.exportStream() ;
         //
         // Create a buffer stream.
         ByteArrayOutputStream buffer = new ByteArrayOutputStream() ;
@@ -1042,9 +1024,8 @@ public class FileManagerNodeTest
         throws Exception
         {
         FileManagerNode home = account() ;
-        FileManagerNode frog = home.add(
-            "frog",
-            FileManagerNode.FILE_NODE
+        FileManagerNode frog = home.addFile(
+            "frog"
             );
         assertEquals(
             filestores[0],
@@ -1060,13 +1041,12 @@ public class FileManagerNodeTest
         throws Exception
         {
         FileManagerNode home = account() ;
-        FileManagerNode frog = home.add(
-            "frog",
-            FileManagerNode.FILE_NODE
+        FileManagerNode frog = home.addFile(
+            "frog"
             );
         //
         // Open an output stream to our file.
-        OutputStream output = frog.output() ;
+        OutputStream output = frog.importStream() ;
         //
         // Send it some test data.
         output.write(
@@ -1093,9 +1073,8 @@ public class FileManagerNodeTest
         throws Exception
         {
         FileManagerNode home = account();
-        FileManagerNode frog = home.add(
-            "frog",
-            FileManagerNode.FILE_NODE
+        FileManagerNode frog = home.addFile(
+            "frog"
             );
         assertNotNull(
             home
@@ -1139,13 +1118,11 @@ public class FileManagerNodeTest
         throws Exception
         {
         FileManagerNode home = account();
-        FileManagerNode frog = home.add(
-            "frog",
-            FileManagerNode.FILE_NODE
+        FileManagerNode frog = home.addFile(
+            "frog"
             );
-        FileManagerNode toad = home.add(
-            "toad",
-            FileManagerNode.FILE_NODE
+        FileManagerNode toad = home.addFile(
+            "toad"
             );
         try {
             frog.move(
@@ -1178,9 +1155,8 @@ public class FileManagerNodeTest
         throws Exception
         {
         FileManagerNode home = account();
-        FileManagerNode frog = home.add(
-            "frog",
-            FileManagerNode.CONTAINER_NODE
+        FileManagerNode frog = home.addNode(
+            "frog"
             );
         frog.move(
             "toad",
@@ -1218,13 +1194,11 @@ public class FileManagerNodeTest
         throws Exception
         {
         FileManagerNode home = account();
-        FileManagerNode frog = home.add(
-            "frog",
-            FileManagerNode.CONTAINER_NODE
+        FileManagerNode frog = home.addNode(
+            "frog"
             );
-        FileManagerNode toad = frog.add(
-            "toad",
-            FileManagerNode.CONTAINER_NODE
+        FileManagerNode toad = frog.addNode(
+            "toad"
             );
         assertNotNull(
             home.child(
@@ -1273,17 +1247,14 @@ public class FileManagerNodeTest
         throws Exception
         {
         FileManagerNode home = account();
-        FileManagerNode frog = home.add(
-            "frog",
-            FileManagerNode.CONTAINER_NODE
+        FileManagerNode frog = home.addNode(
+            "frog"
             );
-        FileManagerNode toad = frog.add(
-            "toad",
-            FileManagerNode.CONTAINER_NODE
+        FileManagerNode toad = frog.addNode(
+            "toad"
             );
-        FileManagerNode fish = home.add(
-            "fish",
-            FileManagerNode.CONTAINER_NODE
+        FileManagerNode fish = home.addNode(
+            "fish"
             );
         assertNotNull(
             home.child(
@@ -1321,9 +1292,8 @@ public class FileManagerNodeTest
         throws Exception
         {
         FileManagerNode home = account() ;
-        FileManagerNode frog = home.add(
-            "frog",
-            FileManagerNode.FILE_NODE
+        FileManagerNode frog = home.addFile(
+            "frog"
             );
         assertEquals(
             filestores[0],
@@ -1350,14 +1320,13 @@ public class FileManagerNodeTest
         //
         // Create the data node.
         FileManagerNode home = account() ;
-        FileManagerNode frog = home.add(
-            "frog",
-            FileManagerNode.FILE_NODE
+        FileManagerNode frog = home.addFile(
+            "frog"
             );
 
         //
         // Open an output stream to our file.
-        OutputStream output = frog.output() ;
+        OutputStream output = frog.importStream() ;
         //
         // Send it some test data.
         output.write(
@@ -1387,7 +1356,7 @@ public class FileManagerNodeTest
 
         //
         // Open an input stream from our file.
-        InputStream input = frog.input() ;
+        InputStream input = frog.exportStream() ;
         //
         // Create a buffer stream.
         ByteArrayOutputStream buffer = new ByteArrayOutputStream() ;
@@ -1417,9 +1386,8 @@ public class FileManagerNodeTest
         //
         // Create the data node.
         FileManagerNode home = account() ;
-        FileManagerNode frog = home.add(
-            "frog",
-            FileManagerNode.FILE_NODE
+        FileManagerNode frog = home.addFile(
+            "frog"
             );
 
         //
@@ -1434,7 +1402,7 @@ public class FileManagerNodeTest
 
         //
         // Open an output stream to our file.
-        OutputStream output = frog.output() ;
+        OutputStream output = frog.importStream() ;
         //
         // Send it some test data.
         output.write(
@@ -1464,9 +1432,8 @@ public class FileManagerNodeTest
         //
         // Create our test node(s).
         FileManagerNode home = account() ;
-        FileManagerNode frog = home.add(
-            "frog",
-            FileManagerNode.CONTAINER_NODE
+        FileManagerNode frog = home.addNode(
+            "frog"
             );
         //
         // Get an iterator for the child nodes.
@@ -1488,21 +1455,17 @@ public class FileManagerNodeTest
         //
         // Create the data node(s).
         FileManagerNode home = account() ;
-        FileManagerNode frog = home.add(
-            "frog",
-            FileManagerNode.CONTAINER_NODE
+        FileManagerNode frog = home.addNode(
+            "frog"
             );
-        FileManagerNode toad = home.add(
-            "toad",
-            FileManagerNode.FILE_NODE
+        FileManagerNode toad = home.addFile(
+            "toad"
             );
-        FileManagerNode newt = home.add(
-            "newt",
-            FileManagerNode.CONTAINER_NODE
+        FileManagerNode newt = home.addNode(
+            "newt"
             );
-        FileManagerNode fish = newt.add(
-            "fish",
-            FileManagerNode.FILE_NODE
+        FileManagerNode fish = newt.addFile(
+            "fish"
             );
         //
         // Get an iterator for the child nodes.
@@ -1557,13 +1520,11 @@ public class FileManagerNodeTest
         //
         // Create the data node(s).
         FileManagerNode home = account() ;
-        FileManagerNode frog = home.add(
-            "frog",
-            FileManagerNode.CONTAINER_NODE
+        FileManagerNode frog = home.addNode(
+            "frog"
             );
-        FileManagerNode toad = home.add(
-            "toad",
-            FileManagerNode.FILE_NODE
+        FileManagerNode toad = home.addFile(
+            "toad"
             );
         //
         // Create a copy of toad.
@@ -1601,19 +1562,16 @@ public class FileManagerNodeTest
         //
         // Create the data node(s).
         FileManagerNode home = account() ;
-        FileManagerNode frog = home.add(
-            "frog",
-            FileManagerNode.CONTAINER_NODE
+        FileManagerNode frog = home.addNode(
+            "frog"
             );
-        FileManagerNode toad = home.add(
-            "toad",
-            FileManagerNode.FILE_NODE
+        FileManagerNode toad = home.addFile(
+            "toad"
             );
         //
         // Create the target container.
-        FileManagerNode newt = home.add(
-            "newt",
-            FileManagerNode.CONTAINER_NODE
+        FileManagerNode newt = home.addNode(
+            "newt"
             );
         //
         // Create a copy of toad.
@@ -1651,25 +1609,21 @@ public class FileManagerNodeTest
         //
         // Create the data node(s).
         FileManagerNode home = account() ;
-        FileManagerNode frog = home.add(
-            "frog",
-            FileManagerNode.CONTAINER_NODE
+        FileManagerNode frog = home.addNode(
+            "frog"
             );
-        FileManagerNode toad = home.add(
-            "toad",
-            FileManagerNode.FILE_NODE
+        FileManagerNode toad = home.addFile(
+            "toad"
             );
-
         //
         // Open an output stream to our file.
-        OutputStream output = toad.output() ;
+        OutputStream output = toad.importStream() ;
         //
         // Send it some test data.
         output.write(
             TEST_BYTES
             ) ;
         output.close() ;
-
         //
         // Create a copy of toad.
         FileManagerNode copy = toad.copy(
@@ -1677,10 +1631,9 @@ public class FileManagerNodeTest
             null,
             null
             );
-
         //
         // Open an input stream from our file.
-        InputStream input = copy.input() ;
+        InputStream input = copy.exportStream() ;
         //
         // Create a buffer stream.
         ByteArrayOutputStream buffer = new ByteArrayOutputStream() ;
@@ -1709,18 +1662,15 @@ public class FileManagerNodeTest
         //
         // Create the data node(s).
         FileManagerNode home = account() ;
-        FileManagerNode frog = home.add(
-            "frog",
-            FileManagerNode.CONTAINER_NODE
+        FileManagerNode frog = home.addNode(
+            "frog"
             );
-        FileManagerNode toad = home.add(
-            "toad",
-            FileManagerNode.FILE_NODE
+        FileManagerNode toad = home.addFile(
+            "toad"
             );
-
         //
         // Open an output stream to our file.
-        OutputStream output = toad.output() ;
+        OutputStream output = toad.importStream() ;
         //
         // Send it some test data.
         output.write(
@@ -1734,7 +1684,6 @@ public class FileManagerNodeTest
             filestores[0],
             toad.location()
             );
-
         //
         // Create a copy of toad.
         FileManagerNode copy = toad.copy(
@@ -1742,23 +1691,239 @@ public class FileManagerNodeTest
             null,
             filestores[1]
             );
-
-System.out.println("");
-System.out.println("------------------");
-System.out.println("");
         //
         // Check the data location.
         assertEquals(
             filestores[1],
             copy.location()
             );
-System.out.println("");
-System.out.println("------------------");
-System.out.println("");
-
         //
         // Open an input stream from our file.
-        InputStream input = copy.input() ;
+        InputStream input = copy.exportStream() ;
+        //
+        // Create a buffer stream.
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream() ;
+        //
+        // Read the data from the file into the buffer.
+        new TransferUtil(
+            input,
+            buffer
+            ).transfer();
+        input.close();
+        //
+        // Check we got the right data back.
+        assertEquals(
+            TEST_BYTES,
+            buffer.toByteArray()
+            );
+        }
+
+    /*
+     * Check the file modified dates.
+     *
+     */
+    public void testFileDates()
+        throws Exception
+        {
+        //
+        // Create the data node(s).
+        FileManagerNode home = account() ;
+        FileManagerNode frog = home.addNode(
+            "frog"
+            );
+        FileManagerNode toad = home.addFile(
+            "toad"
+            );
+        //
+        // Check the filestore dates are null.
+        assertNull(
+            toad.getFileCreateDate()
+            );
+        assertNull(
+            toad.getFileModifyDate()
+            );
+        //
+        // Pause for a bit ....
+        Thread.sleep(1000);
+        //
+        // Open an output stream to our file.
+        OutputStream output = toad.importStream() ;
+        //
+        // Send it some test data.
+        output.write(
+            TEST_BYTES
+            ) ;
+        output.close() ;
+        //
+        // Refresh the node properties.
+        toad.refresh();
+        //
+        // Check the filestore dates are valid.
+        assertNotNull(
+            toad.getFileCreateDate()
+            );
+        assertNotNull(
+            toad.getFileModifyDate()
+            );
+        //
+        // Check the modified date is after the create date.
+        assertTrue(
+            toad.getFileModifyDate().after(
+                toad.getFileCreateDate()
+                )
+            );
+        }
+
+    /*
+     * Check the node modified dates.
+     *
+     */
+    public void testNodeDates()
+        throws Exception
+        {
+        //
+        // Create the data node(s).
+        FileManagerNode home = account() ;
+        FileManagerNode frog = home.addNode(
+            "frog"
+            );
+        FileManagerNode toad = home.addFile(
+            "toad"
+            );
+        //
+        // Check the filestore dates are valid.
+        assertNotNull(
+            toad.getNodeCreateDate()
+            );
+        assertNotNull(
+            toad.getNodeModifyDate()
+            );
+        //
+        // Pause for a bit ....
+        Thread.sleep(1000);
+        //
+        // Open an output stream to our file.
+        OutputStream output = toad.importStream() ;
+        //
+        // Send it some test data.
+        output.write(
+            TEST_BYTES
+            ) ;
+        output.close() ;
+        //
+        // Refresh the node properties.
+        toad.refresh();
+        //
+        // Check the node dates are valid.
+        assertNotNull(
+            toad.getNodeCreateDate()
+            );
+        assertNotNull(
+            toad.getNodeModifyDate()
+            );
+        //
+        // Check the modified date is after the create date.
+        assertTrue(
+            toad.getNodeModifyDate().after(
+                toad.getNodeCreateDate()
+                )
+            );
+        }
+
+    /*
+     * Check the modified dates.
+     *
+     */
+    public void testDates()
+        throws Exception
+        {
+        //
+        // Create the data node(s).
+        FileManagerNode home = account() ;
+        FileManagerNode frog = home.addNode(
+            "frog"
+            );
+        FileManagerNode toad = home.addFile(
+            "toad"
+            );
+        //
+        // Check the dates are not null.
+        assertNotNull(
+            toad.getCreateDate()
+            );
+        assertNotNull(
+            toad.getModifyDate()
+            );
+        //
+        // Pause for a bit ....
+        Thread.sleep(1000);
+        //
+        // Open an output stream to our file.
+        OutputStream output = toad.importStream() ;
+        //
+        // Send it some test data.
+        output.write(
+            TEST_BYTES
+            ) ;
+        output.close() ;
+        //
+        // Refresh the node properties.
+        toad.refresh();
+        //
+        // Check the dates are valid.
+        assertNotNull(
+            toad.getCreateDate()
+            );
+        assertNotNull(
+            toad.getModifyDate()
+            );
+        //
+        // Check the modified date is after the create date.
+        assertTrue(
+            toad.getModifyDate().after(
+                toad.getCreateDate()
+                )
+            );
+        //
+        // Check we get the original create date.
+        assertEquals(
+            toad.getNodeCreateDate(),
+            toad.getCreateDate()
+            );
+        }
+
+    /**
+     * Check we can get an export URL to access node data.
+     *
+     */
+    public void testExportUrlValid()
+        throws Exception
+        {
+        FileManagerNode home = account() ;
+        FileManagerNode frog = home.addFile(
+            "frog"
+            );
+        //
+        // Open an output stream to our file.
+        OutputStream output = frog.importStream() ;
+        //
+        // Send it some test data.
+        output.write(
+            TEST_BYTES
+            ) ;
+        output.close() ;
+        //
+        // Get a URL to access our data.
+        URL url = frog.exportURL();
+        assertNotNull(
+            url
+            );
+        //
+        // Open an input stream to the URL.
+        FileStoreInputStream input = new FileStoreInputStream(
+            url
+            ) ;
+        input.open() ;
         //
         // Create a buffer stream.
         ByteArrayOutputStream buffer = new ByteArrayOutputStream() ;

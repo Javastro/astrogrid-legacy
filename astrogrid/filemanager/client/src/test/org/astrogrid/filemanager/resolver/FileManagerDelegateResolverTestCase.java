@@ -1,10 +1,23 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/src/test/org/astrogrid/filemanager/resolver/Attic/FileManagerDelegateResolverTestCase.java,v $</cvs:source>
- * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2005/01/13 17:23:15 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2005/01/28 10:44:02 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  * <cvs:log>
  *   $Log: FileManagerDelegateResolverTestCase.java,v $
+ *   Revision 1.5  2005/01/28 10:44:02  clq2
+ *   dave_dev_200501141257 (filemanager)
+ *
+ *   Revision 1.4.2.3  2005/01/25 11:15:58  dave
+ *   Fixed NullPointer bug in manager.
+ *   Refactored client test case ...
+ *
+ *   Revision 1.4.2.2  2005/01/25 08:01:16  dave
+ *   Added tests for FileManagerClientFactory ....
+ *
+ *   Revision 1.4.2.1  2005/01/22 07:54:16  dave
+ *   Refactored delegate into a separate package ....
+ *
  *   Revision 1.4  2005/01/13 17:23:15  jdt
  *   merges from dave-dev-200412201250
  *
@@ -33,16 +46,14 @@ package org.astrogrid.filemanager.resolver ;
 
 import java.net.URL ;
 
-import junit.framework.TestCase ;
-
 import org.apache.axis.client.Call ;
 
 import org.astrogrid.store.Ivorn ;
 
 import org.astrogrid.registry.client.query.RegistryService ;
 
-import org.astrogrid.filemanager.client.FileManagerTestMock;
 
+import org.astrogrid.filemanager.common.BaseTest ;
 import org.astrogrid.filemanager.common.FileManager;
 import org.astrogrid.filemanager.common.FileManagerMock;
 import org.astrogrid.filemanager.common.FileManagerStore;
@@ -52,8 +63,10 @@ import org.astrogrid.filemanager.common.FileManagerConfigMock;
 
 import org.astrogrid.filemanager.common.ivorn.FileManagerIvornFactory;
 
-import org.astrogrid.filemanager.client.FileManagerDelegate ;
-import org.astrogrid.filemanager.client.FileManagerSoapDelegate ;
+import org.astrogrid.filemanager.client.FileManagerTestMock;
+
+import org.astrogrid.filemanager.client.delegate.FileManagerDelegate ;
+import org.astrogrid.filemanager.client.delegate.FileManagerSoapDelegate ;
 import org.astrogrid.filemanager.common.exception.FileManagerIdentifierException ;
 
 import org.astrogrid.filestore.client.FileStoreMockDelegate;
@@ -64,14 +77,8 @@ import org.astrogrid.filestore.resolver.FileStoreDelegateResolverMock ;
  *
  */
 public class FileManagerDelegateResolverTestCase
-    extends TestCase
+    extends BaseTest
     {
-
-    /**
-     * Test properties prefix.
-     *
-     */
-    public static final String TEST_PROPERTY_PREFIX = "org.astrogrid.filemanager.test" ;
 
     /**
      * A set of ivorn identifiers for our target file stores.
@@ -86,6 +93,9 @@ public class FileManagerDelegateResolverTestCase
     public void setUp()
         throws Exception
         {
+		//
+		// Initialise our base class.
+		super.setUp();
         //
         // Initialise the Axis 'local:' URL protocol.
         Call.initialize() ;
@@ -129,15 +139,6 @@ public class FileManagerDelegateResolverTestCase
         //
         // Initialise our ivorn factory.
         FileManagerTestMock.factory = new FileManagerIvornFactory();
-        }
-
-    /**
-     * Helper method to get a local property.
-     *
-     */
-    public String getTestProperty(String name)
-        {
-        return System.getProperty(TEST_PROPERTY_PREFIX + "." + name) ;
         }
 
     /**

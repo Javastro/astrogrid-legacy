@@ -1,10 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/common/src/junit/org/astrogrid/filestore/common/FileStoreTestCase.java,v $</cvs:source>
- * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/11/25 00:19:27 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2005/01/28 10:43:58 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreTestCase.java,v $
+ *   Revision 1.4  2005/01/28 10:43:58  clq2
+ *   dave_dev_200501141257 (filemanager)
+ *
+ *   Revision 1.3.10.1  2005/01/15 04:50:58  dave
+ *   Added created and modified dates to server ....
+ *   Removed log debug messages from JUnit tests ...
+ *
  *   Revision 1.3  2004/11/25 00:19:27  jdt
  *   Merge from dave-dev-200410061224-200411221626
  *
@@ -34,9 +41,6 @@
  */
 package org.astrogrid.filestore.common ;
 
-import org.apache.commons.logging.Log ;
-import org.apache.commons.logging.LogFactory ;
-
 /**
  * A JUnit test case for the store service.
  *
@@ -44,12 +48,6 @@ import org.apache.commons.logging.LogFactory ;
 public class FileStoreTestCase
 	extends FileStoreTest
 	{
-    /**
-     * Our debug logger.
-     *
-     */
-    private static Log log = LogFactory.getLog(FileStoreTestCase.class);
-
 	/**
 	 * Setup our test.
 	 *

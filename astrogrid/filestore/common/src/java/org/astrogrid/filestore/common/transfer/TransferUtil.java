@@ -1,10 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/common/src/java/org/astrogrid/filestore/common/transfer/TransferUtil.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/07/21 18:11:55 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2005/01/28 10:44:00 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  * <cvs:log>
  *   $Log: TransferUtil.java,v $
+ *   Revision 1.3  2005/01/28 10:44:00  clq2
+ *   dave_dev_200501141257 (filemanager)
+ *
+ *   Revision 1.2.98.1  2005/01/20 07:18:05  dave
+ *   Tided up tabs to spaces ..
+ *
  *   Revision 1.2  2004/07/21 18:11:55  dave
  *   Merged development branch, dave-dev-200407201059, into HEAD
  *
@@ -26,85 +32,85 @@ import java.io.IOException  ;
  *
  */
 public class TransferUtil
-	{
+    {
 
-	/**
-	 * The size of our copy buffer (8k bytes).
-	 *
-	 */
-	private static final int BUFFER_SIZE = 8 * 1024 ;
+    /**
+     * The size of our copy buffer (8k bytes).
+     *
+     */
+    private static final int BUFFER_SIZE = 8 * 1024 ;
 
-	/**
-	 * Public constructor.
-	 *
-	 */
-	public TransferUtil(InputStream in, OutputStream out)
-		{
-		this.in  = in  ;
-		this.out = out ;
-		}
+    /**
+     * Public constructor.
+     *
+     */
+    public TransferUtil(InputStream in, OutputStream out)
+        {
+        this.in  = in  ;
+        this.out = out ;
+        }
 
-	/**
-	 * Our transfer buffer.
-	 *
-	 */
-	byte[] buffer = new byte[BUFFER_SIZE] ;
+    /**
+     * Our transfer buffer.
+     *
+     */
+    byte[] buffer = new byte[BUFFER_SIZE] ;
 
-	/**
-	 * Our input stream.
-	 *
-	 */
-	private InputStream in ;
+    /**
+     * Our input stream.
+     *
+     */
+    private InputStream in ;
 
-	/**
-	 * Our output stream.
-	 *
-	 */
-	private OutputStream out ;
+    /**
+     * Our output stream.
+     *
+     */
+    private OutputStream out ;
 
-	/**
-	 * The number of bytes transferred so far.
-	 *
-	 */
-	private int total ;
+    /**
+     * The number of bytes transferred so far.
+     *
+     */
+    private int total ;
 
-	/**
-	 * Access to our total.
-	 *
-	 */
-	public int getTotal()
-		{
-		return this.total ;
-		}
+    /**
+     * Access to our total.
+     *
+     */
+    public int getTotal()
+        {
+        return this.total ;
+        }
 
-	/**
-	 * Transfer data from one stream to another.
-	 * @return The number fo bytes transferred.
-	 *
-	 */
-	public int transfer()
-		throws IOException
-		{
-		int count = 0;
-		try {
-			do {
-				this.total += count ;
-				this.out.write(this.buffer, 0, count);
-				count = this.in.read(this.buffer, 0, this.buffer.length);
-				}
-			while (count != -1);
-			}
-		finally {
-			if (null != out)
-				{
-				this.out.close() ;
-				}
-			if (null != in)
-				{
-				this.in.close() ;
-				}
-			}
-		return this.total ;
-		}
-	}
+    /**
+     * Transfer data from one stream to another.
+     * @return The number fo bytes transferred.
+     *
+     */
+    public int transfer()
+        throws IOException
+        {
+        int count = 0;
+        try {
+            do {
+                this.total += count ;
+                this.out.write(this.buffer, 0, count);
+                count = this.in.read(this.buffer, 0, this.buffer.length);
+                }
+            while (count != -1);
+            }
+        finally {
+            if (null != out)
+                {
+                this.out.close() ;
+                }
+            if (null != in)
+                {
+                this.in.close() ;
+                }
+            }
+        return this.total ;
+        }
+    }
 

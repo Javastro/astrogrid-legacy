@@ -1,10 +1,27 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/common/src/java/org/astrogrid/filemanager/common/Attic/FileManagerTest.java,v $</cvs:source>
- * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2005/01/13 17:23:15 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2005/01/28 10:43:58 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  * <cvs:log>
  *   $Log: FileManagerTest.java,v $
+ *   Revision 1.5  2005/01/28 10:43:58  clq2
+ *   dave_dev_200501141257 (filemanager)
+ *
+ *   Revision 1.4.2.4  2005/01/25 11:16:00  dave
+ *   Fixed NullPointer bug in manager.
+ *   Refactored client test case ...
+ *
+ *   Revision 1.4.2.3  2005/01/20 07:17:17  dave
+ *   Added import data from URL to server side logic ....
+ *   Tidied up tabs in some files.
+ *
+ *   Revision 1.4.2.2  2005/01/19 12:55:36  dave
+ *   Added sleep to date tests to avoid race condition ...
+ *
+ *   Revision 1.4.2.1  2005/01/15 08:25:20  dave
+ *   Added file create and modify dates to manager and client API ...
+ *
  *   Revision 1.4  2005/01/13 17:23:15  jdt
  *   merges from dave-dev-200412201250
  *
@@ -146,6 +163,8 @@ package org.astrogrid.filemanager.common ;
 
 import java.net.URL ;
 
+import java.util.Date ;
+
 import java.io.InputStream ;
 import java.io.OutputStream ;
 import java.io.ByteArrayOutputStream ;
@@ -153,9 +172,11 @@ import java.io.FileNotFoundException ;
 
 import org.astrogrid.store.Ivorn ;
 
+import org.astrogrid.filestore.common.file.FileProperties ;
 import org.astrogrid.filestore.common.FileStoreInputStream ;
 import org.astrogrid.filestore.common.FileStoreOutputStream ;
 import org.astrogrid.filestore.common.transfer.TransferProperties ;
+import org.astrogrid.filestore.common.transfer.UrlGetTransfer ;
 
 import org.astrogrid.filestore.common.transfer.TransferUtil ;
 
@@ -956,11 +977,30 @@ public class FileManagerTest
                 null
                 ) ;
             }
-        catch (IllegalArgumentException ouch)
+        catch (NodeNotFoundException ouch)
             {
             return ;
             }
-        fail("Expected IllegalArgumentException") ;
+        fail("Expected NodeNotFoundException") ;
+        }
+
+    /**
+     * Check that we get the right exception for an empty ident.
+     *
+     */
+    public void testGetNodeNone()
+        throws Exception
+        {
+        try {
+            target.getNode(
+                "ivo://unknown"
+                ) ;
+            }
+        catch (NodeNotFoundException ouch)
+            {
+            return ;
+            }
+        fail("Expected NodeNotFoundException") ;
         }
 
     /**
@@ -2973,7 +3013,6 @@ public class FileManagerTest
                 FileManagerProperties.DATA_NODE_TYPE
                 )
             );
-
         //
         // Call our manager to initiate the import.
         TransferProperties importTransfer =
@@ -2992,7 +3031,6 @@ public class FileManagerTest
             TEST_BYTES
             ) ;
         importStream.close() ;
-
         //
         // Create our copy request.
         FileManagerProperties request = new FileManagerProperties() ;
@@ -3012,7 +3050,6 @@ public class FileManagerTest
                 request.toArray()
                 )
             ) ;
-
         //
         // Call our manager to initiate the export.
         TransferProperties exportTransfer =
@@ -3041,9 +3078,7 @@ public class FileManagerTest
             TEST_BYTES,
             buffer.toByteArray()
             );
-
         }
-
 
     /**
      * Check we can copy a data node to another location.
@@ -3393,5 +3428,562 @@ public class FileManagerTest
         fail("Expected FileNotFoundException") ;
         }
      */
-    }
 
+    /**
+     * Check that the file create and modify dates are set.
+     *
+     */
+    public void testImportDates()
+        throws Exception
+        {
+        //
+        // Create our test account.
+        FileManagerProperties home = new FileManagerProperties(
+            target.addAccount(
+                accountName
+                )
+            );
+        //
+        // Create our target node.
+        FileManagerProperties frog = new FileManagerProperties(
+            target.addNode(
+                home.getManagerResourceIvorn().toString(),
+                "frog",
+                FileManagerProperties.DATA_NODE_TYPE
+                )
+            );
+        //
+        // Get the initial dates.
+        Date frogCreateDate = frog.getFileCreateDate();
+        Date frogModifyDate = frog.getFileModifyDate();
+        //
+        // Refresh the node properties.
+        FileManagerProperties toad = new FileManagerProperties(
+            target.refresh(
+                frog.getManagerResourceIvorn().toString()
+                )
+            );
+        //
+        // Get the updated dates.
+        Date toadCreateDate = toad.getFileCreateDate();
+        Date toadModifyDate = toad.getFileModifyDate();
+        //
+        // Pause for a bit ....
+        Thread.sleep(1000);
+        //
+        // Call our manager to initiate the import.
+        TransferProperties importTransfer =
+            target.importInit(
+                frog.toArray()
+                ) ;
+        //
+        // Create an output stream to the target.
+        FileStoreOutputStream importStream = new FileStoreOutputStream(
+            importTransfer.getLocation()
+            ) ;
+        //
+        // Transfer our data.
+        importStream.open() ;
+        importStream.write(
+            TEST_BYTES
+            ) ;
+        importStream.close() ;
+        //
+        // Refresh the node properties.
+        FileManagerProperties newt = new FileManagerProperties(
+            target.refresh(
+                frog.getManagerResourceIvorn().toString()
+                )
+            );
+        //
+        // Get the final dates.
+        Date newtCreateDate = newt.getFileCreateDate();
+        Date newtModifyDate = newt.getFileModifyDate();
+
+        System.out.println("");
+        System.out.println("Created  : " + frogCreateDate);
+        System.out.println("Modified : " + frogModifyDate);
+
+        System.out.println("");
+        System.out.println("Created  : " + toadCreateDate);
+        System.out.println("Modified : " + toadModifyDate);
+
+        System.out.println("");
+        System.out.println("Created  : " + newtCreateDate);
+        System.out.println("Modified : " + newtModifyDate);
+        //
+        // Check the first set of dates are null.
+        assertNull(
+            frogCreateDate
+            );
+        assertNull(
+            frogModifyDate
+            );
+        assertNull(
+            toadCreateDate
+            );
+        assertNull(
+            toadModifyDate
+            );
+        //
+        // Check the final dates are not null.
+        assertNotNull(
+            newtCreateDate
+            );
+        assertNotNull(
+            newtModifyDate
+            );
+        //
+        // Check the modified date is after the create date.
+        assertTrue(
+            newtModifyDate.after(
+                newtCreateDate
+                )
+            );
+        }
+
+    /**
+     * Test that we get the right Exception for null request.
+     *
+     */
+    public void testImportDataNullRequest()
+        throws Exception
+        {
+        //
+        // Try to import the data.
+        try {
+            target.importData(
+                null
+                );
+            }
+        catch (NodeNotFoundException ouch)
+            {
+            return ;
+            }
+        fail("Expected NodeNotFoundException") ;
+        }
+
+    /**
+     * Test that we get the right Exception for null properties.
+     *
+     */
+    public void testImportDataNullProperties()
+        throws Exception
+        {
+        //
+        // Try to import the data.
+        try {
+            target.importData(
+                new UrlGetTransfer(
+                    new URL(
+                        getTestProperty(
+                            "data.file.text"
+                            )
+                        ),
+                    (FileManagerProperties)null
+                    )
+                );
+            }
+        catch (NodeNotFoundException ouch)
+            {
+            return ;
+            }
+        fail("Expected NodeNotFoundException") ;
+        }
+
+    /**
+     * Test that we get the right Exception for empty properties.
+     *
+     */
+    public void testImportDataEmptyProperties()
+        throws Exception
+        {
+        //
+        // Create our test properties.
+        FileManagerProperties properties = new FileManagerProperties() ;
+        //
+        // Try to import the data.
+        try {
+            target.importData(
+                new UrlGetTransfer(
+                    new URL(
+                        getTestProperty(
+                            "data.file.text"
+                            )
+                        ),
+                    properties
+                    )
+                );
+            }
+        catch (NodeNotFoundException ouch)
+            {
+            return ;
+            }
+        fail("Expected NodeNotFoundException") ;
+        }
+
+    /**
+     * Test that we get the right Exception for an unknown node.
+     *
+     */
+    public void testImportDataUnknownNode()
+        throws Exception
+        {
+        //
+        // Create the ivorn factory.
+        FileManagerIvornFactory factory = new FileManagerIvornFactory() ;
+        //
+        // Create our request properties.
+        FileManagerProperties properties = new FileManagerProperties() ;
+        //
+        // Set the resource ivorn.
+        properties.setManagerResourceIvorn(
+            factory.ident(
+                target.getIdentifier()
+                )
+            );
+        //
+        // Try to import the data.
+        try {
+            target.importData(
+                new UrlGetTransfer(
+                    new URL(
+                        getTestProperty(
+                            "data.file.text"
+                            )
+                        ),
+                    properties
+                    )
+                );
+            }
+        catch (NodeNotFoundException ouch)
+            {
+            return ;
+            }
+        fail("Expected NodeNotFoundException") ;
+        }
+
+    /**
+     * Test that we get the right Exception for container node.
+     *
+     */
+    public void testImportDataContainerNode()
+        throws Exception
+        {
+        //
+        // Create our test account.
+        FileManagerProperties home = new FileManagerProperties(
+            target.addAccount(
+                accountName
+                )
+            );
+        //
+        // Create our target node.
+        FileManagerProperties frog = new FileManagerProperties(
+            target.addNode(
+                home.getManagerResourceIvorn().toString(),
+                "frog",
+                FileManagerProperties.CONTAINER_NODE_TYPE
+                )
+            );
+        //
+        // Try to import the data.
+        try {
+            target.importData(
+                new UrlGetTransfer(
+                    new URL(
+                        getTestProperty(
+                            "data.file.text"
+                            )
+                        ),
+                    frog
+                    )
+                );
+            }
+        catch (FileManagerServiceException ouch)
+            {
+            return ;
+            }
+        fail("Expected FileManagerServiceException") ;
+        }
+
+    /**
+     * Check that we can import data from local file.
+     *
+     */
+    public void testImportDataFile()
+        throws Exception
+        {
+        //
+        // Create our test account.
+        FileManagerProperties home = new FileManagerProperties(
+            target.addAccount(
+                accountName
+                )
+            );
+        //
+        // Create our target node.
+        FileManagerProperties frog = new FileManagerProperties(
+            target.addNode(
+                home.getManagerResourceIvorn().toString(),
+                "frog",
+                FileManagerProperties.DATA_NODE_TYPE
+                )
+            );
+        //
+        // Import the data.
+        target.importData(
+            new UrlGetTransfer(
+                new URL(
+                    getTestProperty(
+                        "data.file.text"
+                        )
+                    ),
+                frog
+                )
+            );
+        }
+
+    /**
+     * Check that we get the right data from a local file.
+     *
+     */
+    public void testImportDataFileData()
+        throws Exception
+        {
+        //
+        // Create our test account.
+        FileManagerProperties home = new FileManagerProperties(
+            target.addAccount(
+                accountName
+                )
+            );
+        //
+        // Create our target node.
+        FileManagerProperties frog = new FileManagerProperties(
+            target.addNode(
+                home.getManagerResourceIvorn().toString(),
+                "frog",
+                FileManagerProperties.DATA_NODE_TYPE
+                )
+            );
+        //
+        // Import the data.
+        target.importData(
+            new UrlGetTransfer(
+                new URL(
+                    getTestProperty(
+                        "data.file.text"
+                        )
+                    ),
+                frog
+                )
+            );
+        //
+        // Create our request properties.
+        FileManagerProperties exportRequest = new FileManagerProperties() ;
+        //
+        // Set the target node ivorn.
+        exportRequest.setManagerResourceIvorn(
+            frog.getManagerResourceIvorn()
+            );
+        //
+        // Call our manager to initiate the export.
+        TransferProperties exportTransfer =
+            target.exportInit(
+                exportRequest.toArray()
+                ) ;
+        //
+        // Get an input stream to the export location.
+        FileStoreInputStream exportStream = new FileStoreInputStream(
+            exportTransfer.getLocation()
+            );
+        //
+        // Create our buffer stream.
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream() ;
+        //
+        // Read the data from the export location.
+        exportStream.open();
+        TransferUtil util =
+            new TransferUtil(
+                exportStream,
+                buffer
+                );
+        int count = util.transfer();
+        exportStream.close();
+        //
+        // Check we got the right data back.
+        assertEquals(
+            TEST_STRING,
+            new String(
+                buffer.toByteArray()
+                )
+            );
+        }
+
+    /**
+     * Check that we can't change the name with an import.
+     *
+     */
+    public void testImportDataName()
+        throws Exception
+        {
+        //
+        // Create our test account.
+        FileManagerProperties home = new FileManagerProperties(
+            target.addAccount(
+                accountName
+                )
+            );
+        //
+        // Create our target node.
+        FileManagerProperties frog =
+            new FileManagerProperties(
+                target.addNode(
+                    home.getManagerResourceIvorn().toString(),
+                    "frog",
+                    FileManagerProperties.DATA_NODE_TYPE
+                    )
+                );
+        //
+        // Modify the node name.
+        frog.setManagerResourceName(
+            "toad"
+            );
+        //
+        // Import the data.
+        FileManagerProperties toad = 
+            new FileManagerProperties(
+                target.importData(
+                    new UrlGetTransfer(
+                        new URL(
+                            getTestProperty(
+                                "data.file.text"
+                                )
+                            ),
+                        frog
+                        )
+                    )
+                );
+        //
+        // Check we still have the original name.
+        assertEquals(
+            "frog",
+            toad.getManagerResourceName()
+            );
+        }
+
+    /**
+     * Check that we can't change the parent with an import.
+     *
+     */
+    public void testImportDataParent()
+        throws Exception
+        {
+        //
+        // Create our test account.
+        FileManagerProperties home = new FileManagerProperties(
+            target.addAccount(
+                accountName
+                )
+            );
+        //
+        // Create our target node.
+        FileManagerProperties frog =
+            new FileManagerProperties(
+                target.addNode(
+                    home.getManagerResourceIvorn().toString(),
+                    "frog",
+                    FileManagerProperties.DATA_NODE_TYPE
+                    )
+                );
+        //
+        // Create our other parent node.
+        FileManagerProperties newt =
+            new FileManagerProperties(
+                target.addNode(
+                    home.getManagerResourceIvorn().toString(),
+                    "newt",
+                    FileManagerProperties.CONTAINER_NODE_TYPE
+                    )
+                );
+        //
+        // Modify the node parent.
+        frog.setManagerParentIvorn(
+            newt.getManagerResourceIvorn()
+            );
+        //
+        // Import the data.
+        FileManagerProperties toad = 
+            new FileManagerProperties(
+                target.importData(
+                    new UrlGetTransfer(
+                        new URL(
+                            getTestProperty(
+                                "data.file.text"
+                                )
+                            ),
+                        frog
+                        )
+                    )
+                );
+        //
+        // Check we still have the original name.
+        assertEquals(
+            home.getManagerResourceIvorn(),
+            toad.getManagerParentIvorn()
+            );
+        }
+
+    /**
+     * Check that we can't change the type with an import.
+     *
+     */
+    public void testImportDataType()
+        throws Exception
+        {
+        //
+        // Create our test account.
+        FileManagerProperties home = new FileManagerProperties(
+            target.addAccount(
+                accountName
+                )
+            );
+        //
+        // Create our target node.
+        FileManagerProperties frog =
+            new FileManagerProperties(
+                target.addNode(
+                    home.getManagerResourceIvorn().toString(),
+                    "frog",
+                    FileManagerProperties.DATA_NODE_TYPE
+                    )
+                );
+        //
+        // Modify the node type.
+        frog.setManagerResourceType(
+            FileManagerProperties.CONTAINER_NODE_TYPE
+            );
+        //
+        // Import the data.
+        FileManagerProperties toad = 
+            new FileManagerProperties(
+                target.importData(
+                    new UrlGetTransfer(
+                        new URL(
+                            getTestProperty(
+                                "data.file.text"
+                                )
+                            ),
+                        frog
+                        )
+                    )
+                );
+        //
+        // Check we still have the original name.
+        assertEquals(
+            FileManagerProperties.DATA_NODE_TYPE,
+            toad.getManagerResourceType()
+            );
+        }
+    }

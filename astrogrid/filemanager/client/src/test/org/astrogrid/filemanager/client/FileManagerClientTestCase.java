@@ -1,22 +1,19 @@
 /*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/src/test/org/astrogrid/filemanager/client/Attic/StoreClientSoapDelegateTestCase.java,v $</cvs:source>
- * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2005/01/13 17:23:15 $</cvs:date>
+ * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/src/test/org/astrogrid/filemanager/client/Attic/FileManagerClientTestCase.java,v $</cvs:source>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2005/01/28 10:43:58 $</cvs:date>
  * <cvs:version>$Revision: 1.2 $</cvs:version>
  * <cvs:log>
- *   $Log: StoreClientSoapDelegateTestCase.java,v $
- *   Revision 1.2  2005/01/13 17:23:15  jdt
- *   merges from dave-dev-200412201250
+ *   $Log: FileManagerClientTestCase.java,v $
+ *   Revision 1.2  2005/01/28 10:43:58  clq2
+ *   dave_dev_200501141257 (filemanager)
  *
- *   Revision 1.1.2.3  2005/01/12 14:20:57  dave
- *   Replaced tabs with spaces ....
+ *   Revision 1.1.2.1  2005/01/25 11:15:58  dave
+ *   Fixed NullPointer bug in manager.
+ *   Refactored client test case ...
  *
- *   Revision 1.1.2.2  2005/01/10 15:36:27  dave
- *   Refactored store into a separate interface and mock impl ...
- *
- *   Revision 1.1.2.1  2005/01/07 12:18:00  dave
- *   Added StoreClientWrapperTest
- *   Added StoreFileWrapper
+ *   Revision 1.1.2.1  2005/01/25 08:01:16  dave
+ *   Added tests for FileManagerClientFactory ....
  *
  * </cvs:log>
  *
@@ -27,33 +24,34 @@ import org.apache.axis.client.Call ;
 
 import org.astrogrid.store.Ivorn ;
 
-import org.astrogrid.filemanager.common.FileManager;
-import org.astrogrid.filemanager.common.FileManagerMock;
+import org.astrogrid.filemanager.client.FileManagerTestMock;
+
+import org.astrogrid.filemanager.common.FileManagerStore;
 import org.astrogrid.filemanager.common.FileManagerStoreMock;
 import org.astrogrid.filemanager.common.FileManagerConfigMock;
 import org.astrogrid.filemanager.common.ivorn.FileManagerIvornFactory;
 
 import org.astrogrid.filestore.client.FileStoreMockDelegate;
-import org.astrogrid.filestore.resolver.FileStoreDelegateResolverMock;
+import org.astrogrid.filestore.resolver.FileStoreDelegateResolverMock ;
 
 /**
- * A JUnit test for the StoreClient mock delegate implementation.
+ * Junit test for the FileManagerClient.
  *
  */
-public class StoreClientSoapDelegateTestCase
-    extends StoreClientWrapperTest
-    {
+public class FileManagerClientTestCase
+	extends FileManagerClientTest
+	{
 
-    /**
-     * Setup our test ...
-     *
-     */
-    public void setUp()
-        throws Exception
-        {
-        //
-        // Setup our base class.
-        super.setUp() ;
+	/**
+	 * Setup our test.
+	 *
+	 */
+	public void setUp()
+		throws Exception
+		{
+		//
+		// Initialise our base class.
+		super.setUp();
         //
         // Initialise the Axis 'local:' URL protocol.
         Call.initialize() ;
@@ -68,7 +66,11 @@ public class StoreClientSoapDelegateTestCase
         // Initialise our manager config.
         FileManagerTestMock.config = 
             new FileManagerConfigMock(
-                new Ivorn("ivo://filemanager"),
+                new Ivorn(
+                    getTestProperty(
+                        "service.ivorn"
+                        )
+                    ),
                 filestores[0]
                 );
         //
@@ -93,16 +95,6 @@ public class StoreClientSoapDelegateTestCase
         //
         // Initialise our ivorn factory.
         FileManagerTestMock.factory = new FileManagerIvornFactory();
-        //
-        // Create our target delegate.
-        this.delegate = new FileManagerSoapDelegate(
-            "local:///FileManager"
-            ) ;
-        //
-        // Create our target wrapper.
-        this.wrapper = new StoreClientWrapper(
-            this.delegate
-            );
-        }
-    }
+		}
 
+	}

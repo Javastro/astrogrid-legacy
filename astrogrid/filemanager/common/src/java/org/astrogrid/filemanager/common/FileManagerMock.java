@@ -1,10 +1,21 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/common/src/java/org/astrogrid/filemanager/common/Attic/FileManagerMock.java,v $</cvs:source>
- * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2005/01/13 17:23:15 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2005/01/28 10:43:58 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  * <cvs:log>
  *   $Log: FileManagerMock.java,v $
+ *   Revision 1.5  2005/01/28 10:43:58  clq2
+ *   dave_dev_200501141257 (filemanager)
+ *
+ *   Revision 1.4.2.2  2005/01/25 11:15:58  dave
+ *   Fixed NullPointer bug in manager.
+ *   Refactored client test case ...
+ *
+ *   Revision 1.4.2.1  2005/01/20 07:17:15  dave
+ *   Added import data from URL to server side logic ....
+ *   Tidied up tabs in some files.
+ *
  *   Revision 1.4  2005/01/13 17:23:15  jdt
  *   merges from dave-dev-200412201250
  *
@@ -90,6 +101,8 @@
  */
 package org.astrogrid.filemanager.common ;
 
+import java.net.URL ;
+
 import java.util.Map ;
 import java.util.Vector ;
 import java.util.HashMap ;
@@ -105,7 +118,8 @@ import org.astrogrid.store.Ivorn ;
 import org.astrogrid.filestore.common.file.FileProperty ;
 import org.astrogrid.filestore.common.file.FileProperties ;
 
-import org.astrogrid.filestore.common.transfer.UrlGetRequest ;
+import org.astrogrid.filestore.common.transfer.UrlGetRequest  ;
+import org.astrogrid.filestore.common.transfer.UrlGetTransfer ;
 import org.astrogrid.filestore.common.transfer.UrlPutTransfer ;
 import org.astrogrid.filestore.common.transfer.TransferProperties ;
 
@@ -319,7 +333,7 @@ public class FileManagerMock
         log.debug("  Ivorn : " + ivorn);
         if (null == ivorn)
             {
-            throw new IllegalArgumentException(
+            throw new NodeNotFoundException(
                 "Null identifier"
                 ) ;
             }
@@ -336,6 +350,12 @@ public class FileManagerMock
             throw new NodeNotFoundException(
                 "Unable to parse node identifier"
                 );
+            }
+        if (null == path)
+            {
+            throw new NodeNotFoundException(
+                "Null node identifier"
+                ) ;
             }
         //
         // Split the ident on '/'
@@ -854,7 +874,7 @@ public class FileManagerMock
         throws FileManagerServiceException, NodeNotFoundException
         {
         log.debug("");
-        log.debug("FileManagerMock.importInit(Properties)");
+        log.debug("FileManagerMock.importInit(FileProperty[])");
         if (null == request)
             {
             throw new NodeNotFoundException(
@@ -929,6 +949,14 @@ public class FileManagerMock
         log.debug("  Node : " + node.getName());
         log.debug("  Node : " + node.getIdent());
         //
+        // Check the node is a data node.
+        if (node.isDataNode() != true)
+            {
+            throw new FileManagerServiceException(
+                "Invalid operation, not a data node"
+                );
+            }
+        //
         // Get the current node properties.
         FileManagerProperties current = node.getProperties();
         //
@@ -979,24 +1007,6 @@ public class FileManagerMock
                     "Unable to parse store location"
                     );
                 }
-/*
- *
-            //
-            // Use the request location.
-//TODO
-// Check for an implied move ?
-//
-            try {
-                target = request.getStoreResourceIvorn() ;
-                }
-            catch (FileStoreIdentifierException ouch)
-                {
-                throw new FileManagerServiceException(
-                    "Unable to parse resource identifier"
-                    );
-                }
- *
- */
             //
             // If the target location is still null.
             if (null == target)
@@ -1149,7 +1159,7 @@ public class FileManagerMock
         throws FileManagerServiceException, NodeNotFoundException
         {
         log.debug("");
-        log.debug("FileManagerMock.exportInit(Properties)");
+        log.debug("FileManagerMock.exportInit(FileProperty[])");
         if (null == request)
             {
             throw new NodeNotFoundException(
@@ -2346,4 +2356,243 @@ public class FileManagerMock
             log.debug("FAIL  : Node is a container node");
             }
         }
+
+    /**
+     * Transfer data from a source URL into a node.
+     * @param request The transfer request properties.
+     * @return The updated file properties for the node, after the transfer.
+     * @throws NodeNotFoundException If the target node does not exist.
+     * @throws FileManagerServiceException If a problem occurs when handling the request.
+     * @todo Refactor this to handle path, and create missing folders.
+     *
+     */
+    public FileProperty[] importData(TransferProperties request)
+        throws
+            NodeNotFoundException,
+            FileManagerServiceException
+        {
+        log.debug("");
+        log.debug("FileManagerMock.importData(TransferProperties)");
+        if (null == request)
+            {
+            throw new NodeNotFoundException(
+                "Null transfer properties"
+                ) ;
+            }
+        //
+        // Get the node properties from the transfer.
+        FileManagerProperties properties = new FileManagerProperties(
+            request.getFileProperties()
+            );
+        if (null == properties)
+            {
+            throw new NodeNotFoundException(
+                "Null target properties"
+                ) ;
+            }
+        //
+        // Parse the node identifier.
+        String ident = null ;
+        try {
+            ident = properties.getManagerResourceIdent() ;
+            }
+        catch (FileManagerIdentifierException ouch)
+            {
+            throw new NodeNotFoundException(
+                "Unable to parse resource ivorn"
+                );
+            }
+        //
+        // If we don't have a node identifier.
+        if (null == ident)
+            {
+            throw new NodeNotFoundException(
+                "Null node identifier"
+                );
+            }
+        //
+        // If we have a node identifier.
+        else {
+            //
+            // Check if the node exists.
+            if (store.hasNode(ident))
+                {
+                FileManagerStoreNode node = store.getNode(ident) ;
+                log.debug("");
+                log.debug("  Node : " + node.getName());
+                log.debug("  Node : " + node.getIdent());
+                //
+                // Initiate the transfer.
+                return this.importData(
+                    node,
+                    request
+                    ) ;
+                }
+            //
+            // If the node does not exist.
+            else {
+                throw new NodeNotFoundException();
+                }
+            }
+        }
+
+    /**
+     * Transfer data from a source URL into a node.
+     * @param node The target node.
+     * @param request The transfer request properties.
+     * @return The updated properties for the node.
+     * @throws NodeNotFoundException If the target node does not exist.
+     * @throws FileManagerServiceException If a problem occurs when handling the request.
+     * @todo Refactor this to handle path, and create missing folders.
+     *
+     */
+    protected FileProperty[] importData(FileManagerStoreNode node, TransferProperties request)
+        throws FileManagerServiceException, NodeNotFoundException
+        {
+        log.debug("");
+        log.debug("FileManagerMock.importData(Node, TransferProperties)");
+        log.debug("  Node : " + node.getName());
+        log.debug("  Node : " + node.getIdent());
+        //
+        // Check the node is a data node.
+        if (node.isDataNode() != true)
+            {
+            throw new FileManagerServiceException(
+                "Invalid operation, not a data node"
+                );
+            }
+        //
+        // Check the transfer request has a URL.
+        if (null == request.getLocation())
+            {
+            throw new FileManagerServiceException(
+                "Null source URL"
+                );
+            }
+        //
+        // Parse the source URL.
+        URL source = null ;
+        try {
+            source = new URL(
+                request.getLocation()
+                );
+            }
+        catch(Exception ouch)
+            {
+            throw new FileManagerServiceException(
+                "Invalid source URL",
+                ouch
+                );
+            }
+        //
+        // Get the current node properties.
+        FileManagerProperties current = node.getProperties();
+        //
+        // Merge the request properties.
+        current.merge(
+            request.getFileProperties(),
+            new FileManagerPropertyFilter()
+            );
+        //
+        // Create a new transfer request.
+        TransferProperties transfer = new UrlGetTransfer(
+            source,
+            current
+            );
+        //
+        // Get the current filestore.
+        Ivorn target = null ;
+        try {
+            target = current.getStoreResourceIvorn() ;
+            }
+        catch (FileStoreIdentifierException ouch)
+            {
+            log.warn("");
+            log.warn("Unable to parse store location");
+            log.warn(ouch);
+            throw new FileManagerServiceException(
+                "Unable to parse store location"
+                );
+            }
+        //
+        // If we don't have a target filestore.
+        if (null == target)
+            {
+            //
+            // Use the node location.
+            try {
+                target = current.getManagerLocationIvorn();
+                }
+            catch (FileManagerIdentifierException ouch)
+                {
+                log.warn("");
+                log.warn("Unable to parse store location");
+                log.warn(ouch);
+                throw new FileManagerServiceException(
+                    "Unable to parse store location"
+                    );
+                }
+            //
+            // If the target location is still null.
+            if (null == target)
+                {
+                //
+                // Use the default filestore.
+                target = config.getFileStoreIvorn() ;
+                }
+            }
+        //
+        // Resolve the target filestore.
+        FileStoreDelegate filestore = resolve(
+            target
+            ) ;
+        //
+        // Call the filestore to transfer the data.
+        TransferProperties response = null ;
+        try {
+            response = 
+                filestore.importData(
+                    transfer
+                    ) ;
+            }
+        catch (Exception ouch)
+            {
+            log.debug("Exception thrown by FileStore.importdata()");
+            log.debug("  Exception : " + ouch);
+            throw new FileManagerServiceException(
+                "Error occurred when calling FileStore service"
+                );
+            }
+        //
+        // Merge the response properties.
+        current.merge(
+            response.getFileProperties(),
+            new FileManagerPropertyFilter()
+            );
+        //
+        // Save these as the new properties.
+        node.setProperties(
+            current
+            ) ;
+        //
+        // Return the response properties.
+        return current.toArray() ;
+        }
+
+
+    /**
+     * Transfer data transfer from a node into destination URL.
+     * @param request The request properties.
+     * @throws NodeNotFoundException If the target node does not exist.
+     * @throws FileManagerServiceException If a problem occurs when handling the request.
+     *
+     */
+    public TransferProperties exportData(FileProperty[] request)
+        throws
+            NodeNotFoundException,
+            FileManagerServiceException
+        {
+        return null ;
+        }
+
     }

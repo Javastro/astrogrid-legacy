@@ -1,10 +1,16 @@
 /*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/src/java/org/astrogrid/filemanager/client/Attic/StoreClientWrapperTest.java,v $</cvs:source>
- * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2005/01/13 17:23:15 $</cvs:date>
+ * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/src/java/org/astrogrid/filemanager/client/store/Attic/StoreClientWrapperTest.java,v $</cvs:source>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2005/01/28 10:43:58 $</cvs:date>
  * <cvs:version>$Revision: 1.2 $</cvs:version>
  * <cvs:log>
  *   $Log: StoreClientWrapperTest.java,v $
+ *   Revision 1.2  2005/01/28 10:43:58  clq2
+ *   dave_dev_200501141257 (filemanager)
+ *
+ *   Revision 1.1.2.1  2005/01/22 07:54:16  dave
+ *   Refactored delegate into a separate package ....
+ *
  *   Revision 1.2  2005/01/13 17:23:15  jdt
  *   merges from dave-dev-200412201250
  *
@@ -21,7 +27,7 @@
  * </cvs:log>
  *
  */
-package org.astrogrid.filemanager.client;
+package org.astrogrid.filemanager.client.store;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -37,6 +43,9 @@ import org.astrogrid.filemanager.common.BaseTest;
 
 import org.astrogrid.filemanager.common.exception.NodeNotFoundException ;
 import org.astrogrid.filemanager.common.exception.DuplicateNodeException;
+
+import org.astrogrid.filemanager.client.FileManagerNode;
+import org.astrogrid.filemanager.client.delegate.FileManagerDelegate;
 
 /**
  * A generic test for the StoreClientWrapper API.

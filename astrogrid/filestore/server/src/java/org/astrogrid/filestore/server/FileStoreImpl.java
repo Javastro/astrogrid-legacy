@@ -1,11 +1,18 @@
 /*
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/server/src/java/org/astrogrid/filestore/server/FileStoreImpl.java,v $</cvs:source>
- * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/12/16 17:25:49 $</cvs:date>
- * <cvs:version>$Revision: 1.11 $</cvs:version>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2005/01/28 10:44:03 $</cvs:date>
+ * <cvs:version>$Revision: 1.12 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreImpl.java,v $
+ *   Revision 1.12  2005/01/28 10:44:03  clq2
+ *   dave_dev_200501141257 (filemanager)
+ *
+ *   Revision 1.11.6.1  2005/01/17 17:19:21  dave
+ *   Fixed bug in FileManagerImpl test (missing '/' in repository path on Unix) ...
+ *   Changed tabs to spaces ..
+ *
  *   Revision 1.11  2004/12/16 17:25:49  jdt
  *   merge from dave-dev-200410061224-200412161312
  *
@@ -475,14 +482,14 @@ public class FileStoreImpl
         {
         //
         // Locate the container.
-		RepositoryContainer container = repository.load(
-			ident
-			);
-		//
-		// Update and save the properties.
-		container.update() ;
-		//
-		// Return the updated properties.
+        RepositoryContainer container = repository.load(
+            ident
+            );
+        //
+        // Update and save the properties.
+        container.update() ;
+        //
+        // Return the updated properties.
         return container.properties().toArray() ;
         }
 
@@ -514,17 +521,17 @@ public class FileStoreImpl
                 transfer.getFileProperties()
                 )
             ) ;
-		//
-		// Set the transfer import URL.
-		transfer.setLocation(
-			config.getResourceUrl(
-				container.ident().toString()
-				).toString()
-			) ;
+        //
+        // Set the transfer import URL.
+        transfer.setLocation(
+            config.getResourceUrl(
+                container.ident().toString()
+                ).toString()
+            ) ;
         log.debug("  URL : " + transfer.getLocation()) ;
-		//
-		// Update and save the container.
-		container.update() ;
+        //
+        // Update and save the container.
+        container.update() ;
         //
         // Add the updated file properties.
         transfer.setFileProperties(
@@ -601,14 +608,14 @@ public class FileStoreImpl
      * Prepare to send a data object to a remote destination.
      * Essentially, this returns a vaild URL to access data in the TransferProperties location.
      * @param transfer A TransferProperties describing the transfer.
-	 * @throws FileStoreTransferException if the transfer properties are null.
-	 * @throws FileStoreNotFoundException If unable to locate the target object.
-	 * @throws FileStoreServiceException if unable handle the request.
+     * @throws FileStoreTransferException if the transfer properties are null.
+     * @throws FileStoreNotFoundException If unable to locate the target object.
+     * @throws FileStoreServiceException if unable handle the request.
      * @return A new TransferProperties describing the transfer.
      *
      */
     public TransferProperties exportInit(TransferProperties transfer)
-		throws FileStoreTransferException, FileStoreServiceException, FileStoreNotFoundException
+        throws FileStoreTransferException, FileStoreServiceException, FileStoreNotFoundException
         {
         log.debug("") ;
         log.debug("----\"----") ;
@@ -621,58 +628,58 @@ public class FileStoreImpl
                 "Null transfer properties"
                 ) ;
             }
-		//
-		// Get the transfer file properties.
-		FileProperties properties = new FileProperties(
-			transfer.getFileProperties()
-			) ;
-		//
-		// Get the file identifier.
-		String ident = null ;
-		try {
-			ident = properties.getStoreResourceIdent();
-			}
-		catch (FileStoreIdentifierException ouch)
-			{
-			throw new FileStoreNotFoundException(
-				"Unable to parse resource identifier"
-				) ;
-			}
-		//
-		// If we have a valid identifier.
-		if (null != ident)
-			{
-	        //
-	        // Try to locate the container.
-			try {
-				RepositoryContainer container = repository.load(ident) ;
+        //
+        // Get the transfer file properties.
+        FileProperties properties = new FileProperties(
+            transfer.getFileProperties()
+            ) ;
+        //
+        // Get the file identifier.
+        String ident = null ;
+        try {
+            ident = properties.getStoreResourceIdent();
+            }
+        catch (FileStoreIdentifierException ouch)
+            {
+            throw new FileStoreNotFoundException(
+                "Unable to parse resource identifier"
+                ) ;
+            }
+        //
+        // If we have a valid identifier.
+        if (null != ident)
+            {
+            //
+            // Try to locate the container.
+            try {
+                RepositoryContainer container = repository.load(ident) ;
 //
 // Update the transfer properties.
 //
-				//
-				// Set the transfer import URL.
-				transfer.setLocation(
-					config.getResourceUrl(
-						container.ident().toString()
-						).toString()
-					) ;
-		        log.debug("  URL : " + transfer.getLocation()) ;
-				return transfer ;
-				}
-			catch (FileStoreIdentifierException ouch)
-				{
-				throw new FileStoreNotFoundException(
-					"Unable to load resource properties"
-					) ;
-				}
-			}
-		//
-		// If we don't have a valid identifier.
-		else {
-			throw new FileStoreNotFoundException(
-				"Null target file identifier"
-				);
-			}
+                //
+                // Set the transfer import URL.
+                transfer.setLocation(
+                    config.getResourceUrl(
+                        container.ident().toString()
+                        ).toString()
+                    ) ;
+                log.debug("  URL : " + transfer.getLocation()) ;
+                return transfer ;
+                }
+            catch (FileStoreIdentifierException ouch)
+                {
+                throw new FileStoreNotFoundException(
+                    "Unable to load resource properties"
+                    ) ;
+                }
+            }
+        //
+        // If we don't have a valid identifier.
+        else {
+            throw new FileStoreNotFoundException(
+                "Null target file identifier"
+                );
+            }
         }
 
     /**

@@ -1,10 +1,16 @@
 /*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/src/test/org/astrogrid/filemanager/client/Attic/FileManagerSoapDelegateTestCase.java,v $</cvs:source>
- * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2005/01/13 17:23:15 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/src/test/org/astrogrid/filemanager/client/delegate/Attic/FileManagerSoapDelegateTestCase.java,v $</cvs:source>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2005/01/28 10:43:59 $</cvs:date>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  * <cvs:log>
  *   $Log: FileManagerSoapDelegateTestCase.java,v $
+ *   Revision 1.2  2005/01/28 10:43:59  clq2
+ *   dave_dev_200501141257 (filemanager)
+ *
+ *   Revision 1.1.2.1  2005/01/22 07:54:16  dave
+ *   Refactored delegate into a separate package ....
+ *
  *   Revision 1.4  2005/01/13 17:23:15  jdt
  *   merges from dave-dev-200412201250
  *
@@ -36,7 +42,7 @@
  * </cvs:log>
  *
  */
-package org.astrogrid.filemanager.client;
+package org.astrogrid.filemanager.client.delegate;
 
 import org.apache.axis.client.Call ;
 
@@ -47,6 +53,8 @@ import org.astrogrid.filemanager.common.FileManagerMock;
 import org.astrogrid.filemanager.common.FileManagerStoreMock;
 import org.astrogrid.filemanager.common.FileManagerConfigMock;
 import org.astrogrid.filemanager.common.ivorn.FileManagerIvornFactory;
+
+import org.astrogrid.filemanager.client.FileManagerTestMock;
 
 import org.astrogrid.filestore.client.FileStoreMockDelegate;
 import org.astrogrid.filestore.resolver.FileStoreDelegateResolverMock;

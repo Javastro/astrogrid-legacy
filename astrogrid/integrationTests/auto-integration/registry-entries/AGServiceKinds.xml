@@ -99,6 +99,38 @@
 		<Subject>String</Subject>
 		<ContentLevel>General</ContentLevel>
 	</Resource>
+	<Resource updated="2005-01-21T05:40:22Z" status="active">
+		<Identifier>
+			<AuthorityID>org.astrogrid</AuthorityID>
+			<ResourceKey>FilemanagerKind</ResourceKey>
+		</Identifier>
+		<Title>The definition of a FileManager service kind</Title>
+		<ShortName>FileManagerKind</ShortName>
+		<Summary>
+			<Description>This is a resource that describes the general class of astrogrid service of a particular kind. Other resources can point to this resource to make it clear that they are of this particular kind.</Description>
+			<ReferenceURL>http://www.astrogrid.org</ReferenceURL>
+		</Summary>
+		<Type>Other</Type>
+		<vr:Curation>
+			<vr:Publisher>
+				<vr:Title>Astrogrid</vr:Title>
+				<vr:Description>Astrogrid is a UK consortium aiming to provide Virtual Observatory software.</vr:Description>
+				<vr:ReferenceURL>http://www.astrogrid.org/</vr:ReferenceURL>
+			</vr:Publisher>
+			<vr:Contact>
+				<vr:Name>Tony Linde</vr:Name>
+				<vr:Email>ael@star.le.ac.uk</vr:Email>
+			</vr:Contact>
+			<vr:Date>2005-01-21</vr:Date>
+			<vr:Creator>
+				<vr:Name>Astrogrid</vr:Name>
+				<vr:Logo>??</vr:Logo>
+			</vr:Creator>
+			<vr:Version>Iteration 7</vr:Version>
+		</vr:Curation>
+		<Subject>String</Subject>
+		<ContentLevel>General</ContentLevel>
+	</Resource>
 	<Resource  updated="2004-11-20T15:34:22Z" status="active" >
 		<Identifier>
 			<AuthorityID>org.astrogrid</AuthorityID>

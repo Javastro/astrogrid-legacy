@@ -1,10 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/common/src/java/org/astrogrid/filemanager/common/Attic/FileManagerProperties.java,v $</cvs:source>
- * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2005/01/13 17:23:15 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2005/01/28 10:43:58 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  * <cvs:log>
  *   $Log: FileManagerProperties.java,v $
+ *   Revision 1.5  2005/01/28 10:43:58  clq2
+ *   dave_dev_200501141257 (filemanager)
+ *
+ *   Revision 1.4.2.1  2005/01/18 14:52:48  dave
+ *   Added node create and modify dates ..
+ *
  *   Revision 1.4  2005/01/13 17:23:15  jdt
  *   merges from dave-dev-200412201250
  *
@@ -59,7 +65,9 @@
  */
 package org.astrogrid.filemanager.common ;
 
+import java.util.Date;
 import java.util.Iterator;
+import java.text.ParseException ;
 
 import org.astrogrid.store.Ivorn ;
 
@@ -69,6 +77,7 @@ import org.astrogrid.filemanager.common.exception.FileManagerIdentifierException
 import org.astrogrid.filestore.common.file.FileProperty ;
 import org.astrogrid.filestore.common.file.FileProperties ;
 import org.astrogrid.filestore.common.file.PropertyFilter ;
+import org.astrogrid.filestore.common.FileStoreDateFormat;
 
 /**
  * A wrapper for the FileStore properties to include the FileManager properties.
@@ -121,6 +130,18 @@ public class FileManagerProperties
     public static final String CONTAINER_NODE_TYPE = "org.astrogrid.filemanager.node.type.container" ;
 
     /**
+     * The property key for the node create date.
+     *
+     */
+    public static final String NODE_CREATED_DATE_PROPERTY  = "org.astrogrid.filemanager.created.date" ;
+
+    /**
+     * The property key for the node modify date.
+     *
+     */
+    public static final String NODE_MODIFIED_DATE_PROPERTY  = "org.astrogrid.filemanager.modified.date" ;
+
+    /**
      * Public constructor.
      *
      */
@@ -147,6 +168,63 @@ public class FileManagerProperties
     public FileManagerProperties(FileProperties that)
         {
         super(that) ;
+        }
+
+    /**
+     * Set a property - automagically updates the modified date at the same time.
+     * @param key The property key (name).
+     * @param value The property value.
+     *
+     */
+    public void setProperty(String key, String value)
+        {
+        //
+        // Set the property.
+        super.setProperty(
+            key,
+            value
+            );
+        //
+        // Update the modified date.
+        this.modified();
+        }
+
+    /**
+     * Set the node create date.
+     *
+     */
+    protected void created()
+        {
+        //
+        // Create our ISO date formatter.
+        FileStoreDateFormat formatter = new FileStoreDateFormat() ;
+        //
+        // Store the date property as an ISO string.
+        this.setProperty(
+            NODE_CREATED_DATE_PROPERTY,
+            formatter.format(
+                new Date()
+                )
+            );
+        }
+
+    /**
+     * Set the node modified date.
+     *
+     */
+    public void modified()
+        {
+        //
+        // Create our ISO date formatter.
+        FileStoreDateFormat formatter = new FileStoreDateFormat() ;
+        //
+        // Store the date property as an ISO string.
+        super.setProperty(
+            NODE_MODIFIED_DATE_PROPERTY,
+            formatter.format(
+                new Date()
+                )
+            );
         }
 
     /**
@@ -456,6 +534,16 @@ public class FileManagerProperties
             String current = this.getProperty(key);
             String changed = that.getProperty(key);
             //
+            // Skip the node create and modify dates ....
+            if (NODE_CREATED_DATE_PROPERTY.equals(key))
+                {
+                continue ;
+                }
+            if (NODE_MODIFIED_DATE_PROPERTY.equals(key))
+                {
+                continue ;
+                }
+            //
             // If the changed property is not null.
             if (null != changed)
                 {
@@ -486,6 +574,56 @@ public class FileManagerProperties
         //
         // Return the new set of properties.
         return results ;
+        }
+
+    /**
+     * Get the node create date.
+     * @return The node create date.
+     *
+     */
+    public Date getNodeCreateDate()
+        {
+        //
+        // Create our ISO date format.
+        FileStoreDateFormat formatter = new FileStoreDateFormat() ;
+        //
+        // Parse the date property.
+        try {
+            return formatter.parse(
+                this.getProperty(
+                    NODE_CREATED_DATE_PROPERTY
+                    )
+                );
+            }
+        catch (ParseException ouch)
+            {
+            return null ;
+            }
+        }
+
+    /**
+     * Get the node modified date.
+     * @return The node modified date.
+     *
+     */
+    public Date getNodeModifyDate()
+        {
+        //
+        // Create our ISO date format.
+        FileStoreDateFormat formatter = new FileStoreDateFormat() ;
+        //
+        // Parse the date property.
+        try {
+            return formatter.parse(
+                this.getProperty(
+                    NODE_MODIFIED_DATE_PROPERTY
+                    )
+                );
+            }
+        catch (ParseException ouch)
+            {
+            return null ;
+            }
         }
     }
 

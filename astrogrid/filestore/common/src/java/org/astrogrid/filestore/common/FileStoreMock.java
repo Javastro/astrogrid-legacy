@@ -1,10 +1,20 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/common/src/java/org/astrogrid/filestore/common/FileStoreMock.java,v $</cvs:source>
- * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/12/16 17:25:49 $</cvs:date>
- * <cvs:version>$Revision: 1.11 $</cvs:version>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2005/01/28 10:43:58 $</cvs:date>
+ * <cvs:version>$Revision: 1.12 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreMock.java,v $
+ *   Revision 1.12  2005/01/28 10:43:58  clq2
+ *   dave_dev_200501141257 (filemanager)
+ *
+ *   Revision 1.11.6.2  2005/01/15 03:46:50  dave
+ *   Added initial tests for create and modified date(s) ..
+ *
+ *   Revision 1.11.6.1  2005/01/14 21:01:33  dave
+ *   Added FileStoreDateFormat utility to handle dates in ISO format ....
+ *   Fixed the file:/// problem on Unix ...
+ *
  *   Revision 1.11  2004/12/16 17:25:49  jdt
  *   merge from dave-dev-200410061224-200412161312
  *
@@ -148,6 +158,7 @@ import java.net.MalformedURLException ;
 
 import java.util.Map ;
 import java.util.HashMap ;
+import java.util.Date ;
 
 import org.astrogrid.filestore.common.file.FileIdentifier ;
 import org.astrogrid.filestore.common.file.FileProperty ;
@@ -240,6 +251,7 @@ public class FileStoreMock
 
 		/**
 		 * Public constructor.
+		 * @param props The file properties.
 		 * @throws FileStoreServiceException If unable to handle the request.
 		 *
 		 */
@@ -284,6 +296,18 @@ public class FileStoreMock
 			// Update our properties.
 			this.update() ;
 			}
+
+		/**
+		 * The file create data.
+		 *
+		 */
+		private Date created = new Date() ;
+
+		/**
+		 * The file modified data.
+		 *
+		 */
+		private Date modified = new Date() ;
 
 		/**
 		 * Internal identifier.
@@ -497,12 +521,34 @@ public class FileStoreMock
 					)
 				) ;
 			//
-			// Update the service URL.
+			// ** Update the service URL - deprecated **
 			this.properties.setProperty(
 				FileProperties.STORE_RESOURCE_URL,
 				config.getResourceUrl(
 					this.ident()
 					).toString()
+				) ;
+			//
+			// Create our date formatter.
+			FileStoreDateFormat formatter = new FileStoreDateFormat();
+			//
+			// Set the create date.
+			this.properties.setProperty(
+				FileProperties.FILE_CREATED_DATE_PROPERTY,
+				formatter.format(
+					created
+					)
+				) ;
+			//
+			// Update the modified date.
+			modified = new Date() ;
+			//
+			// Set the modified date.
+			this.properties.setProperty(
+				FileProperties.FILE_MODIFIED_DATE_PROPERTY,
+				formatter.format(
+					modified
+					)
 				) ;
 			}
 

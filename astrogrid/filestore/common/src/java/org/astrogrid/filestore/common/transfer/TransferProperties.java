@@ -1,10 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/common/src/java/org/astrogrid/filestore/common/transfer/TransferProperties.java,v $</cvs:source>
- * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/11/25 00:19:20 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2005/01/28 10:44:00 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  * <cvs:log>
  *   $Log: TransferProperties.java,v $
+ *   Revision 1.5  2005/01/28 10:44:00  clq2
+ *   dave_dev_200501141257 (filemanager)
+ *
+ *   Revision 1.4.10.1  2005/01/20 07:18:04  dave
+ *   Tided up tabs to spaces ..
+ *
  *   Revision 1.4  2004/11/25 00:19:20  jdt
  *   Merge from dave-dev-200410061224-200411221626
  *
@@ -63,215 +69,215 @@ import org.astrogrid.filestore.common.identifier.UniqueIdentifier;
  *
  */
 public class TransferProperties
-	{
+    {
 
-	/**
-	 * Public constructor.
-	 * Required for Axis to serialize this as a Bean.
-	 *
-	 */
-	public TransferProperties()
-		{
-		}
+    /**
+     * Public constructor.
+     * Required for Axis to serialize this as a Bean.
+     *
+     */
+    public TransferProperties()
+        {
+        }
 
-	/**
-	 * Public constructor.
-	 * @param ident A unique identifier for the transfer.
-	 *
-	 */
-	public TransferProperties(String ident)
-		{
-		this(
-			ident,
-			(FileProperty[]) null
-			) ;
-		}
+    /**
+     * Public constructor.
+     * @param ident A unique identifier for the transfer.
+     *
+     */
+    public TransferProperties(String ident)
+        {
+        this(
+            ident,
+            (FileProperty[]) null
+            ) ;
+        }
 
-	/**
-	 * Public constructor.
-	 * @param properties The properties for the file to transfer
-	 *
-	 */
-	public TransferProperties(FileProperties properties)
-		{
-		this(
-			null,
-			(null != properties) ? properties.toArray() : (FileProperty[]) null
-			) ;
-		}
+    /**
+     * Public constructor.
+     * @param properties The properties for the file to transfer
+     *
+     */
+    public TransferProperties(FileProperties properties)
+        {
+        this(
+            null,
+            (null != properties) ? properties.toArray() : (FileProperty[]) null
+            ) ;
+        }
 
-	/**
-	 * Public constructor.
-	 * @param ident A unique identifier for the transfer.
-	 * @param properties The properties for the file to transfer
-	 *
-	 */
-	public TransferProperties(String ident, FileProperties properties)
-		{
-		this(
-			ident,
-			(null != properties) ? properties.toArray() : (FileProperty[]) null
-			) ;
-		}
+    /**
+     * Public constructor.
+     * @param ident A unique identifier for the transfer.
+     * @param properties The properties for the file to transfer
+     *
+     */
+    public TransferProperties(String ident, FileProperties properties)
+        {
+        this(
+            ident,
+            (null != properties) ? properties.toArray() : (FileProperty[]) null
+            ) ;
+        }
 
-	/**
-	 * Public constructor.
-	 * @param ident A unique identifier for the transfer.
-	 * @param properties The properties for the file to transfer
-	 *
-	 */
-	public TransferProperties(String ident, FileProperty[] properties)
-		{
-		this.setIdent(
-			ident
-			) ;
-		this.setFileProperties(
-			properties
-			) ;
-		}
+    /**
+     * Public constructor.
+     * @param ident A unique identifier for the transfer.
+     * @param properties The properties for the file to transfer
+     *
+     */
+    public TransferProperties(String ident, FileProperty[] properties)
+        {
+        this.setIdent(
+            ident
+            ) ;
+        this.setFileProperties(
+            properties
+            ) ;
+        }
 
-	/**
-	 * The transfer identifier.
-	 *
-	 */
-	private String ident ;
+    /**
+     * The transfer identifier.
+     *
+     */
+    private String ident ;
 
-	/**
-	 * Access to our ident.
-	 *
-	 */
-	public String getIdent()
-		{
-		return this.ident ;
-		}
+    /**
+     * Access to our ident.
+     *
+     */
+    public String getIdent()
+        {
+        return this.ident ;
+        }
 
-	/**
-	 * Access to our ident.
-	 *
-	 */
-	public void setIdent(String value)
-		{
-		this.ident = value ;
-		}
+    /**
+     * Access to our ident.
+     *
+     */
+    public void setIdent(String value)
+        {
+        this.ident = value ;
+        }
 
-	/**
-	 * The transfer location (URL).
-	 * eg http://host.domain/path/file
-	 *
-	 */
-	private String location ;
+    /**
+     * The transfer location (URL).
+     * eg http://host.domain/path/file
+     *
+     */
+    private String location ;
 
-	/**
-	 * Access to the transfer location (URL).
-	 * eg http://host.domain/path/file
-	 *
-	 */
-	public String getLocation()
-		{
-		return this.location ;
-		}
+    /**
+     * Access to the transfer location (URL).
+     * eg http://host.domain/path/file
+     *
+     */
+    public String getLocation()
+        {
+        return this.location ;
+        }
 
-	/**
-	 * Access to the transfer location (URL).
-	 * eg http://host.domain/path/file
-	 * @param The transfer location (RL).
-	 *
-	 */
-	public void setLocation(String value)
-		{
-		this.location = value ;
-		}
+    /**
+     * Access to the transfer location (URL).
+     * eg http://host.domain/path/file
+     * @param The transfer location (RL).
+     *
+     */
+    public void setLocation(String value)
+        {
+        this.location = value ;
+        }
 
-	/**
-	 * The transfer protocol.
-	 * eg http, ftp
-	 * @todo generate this from our URL ?
-	 *
-	 */
-	private String protocol ;
+    /**
+     * The transfer protocol.
+     * eg http, ftp
+     * @todo generate this from our URL ?
+     *
+     */
+    private String protocol ;
 
-	/**
-	 * Access to the transfer protocol.
-	 * eg http, ftp
-	 * @todo generate this from our URL ?
-	 *
-	 */
-	public String getProtocol()
-		{
-		return this.protocol ;
-		}
+    /**
+     * Access to the transfer protocol.
+     * eg http, ftp
+     * @todo generate this from our URL ?
+     *
+     */
+    public String getProtocol()
+        {
+        return this.protocol ;
+        }
 
-	/**
-	 * Access to the transfer protocol.
-	 * eg http, ftp
-	 * @todo generate this from our URL ?
-	 *
-	 */
-	public void setProtocol(String value)
-		{
-		this.protocol = value ;
-		}
+    /**
+     * Access to the transfer protocol.
+     * eg http, ftp
+     * @todo generate this from our URL ?
+     *
+     */
+    public void setProtocol(String value)
+        {
+        this.protocol = value ;
+        }
 
-	/**
-	 * The transfer method.
-	 * eg GET, PUT, POST
-	 *
-	 */
-	private String method ;
+    /**
+     * The transfer method.
+     * eg GET, PUT, POST
+     *
+     */
+    private String method ;
 
-	/**
-	 * Access to the transfer method.
-	 * eg GET, PUT, POST
-	 *
-	 */
-	public String getMethod()
-		{
-		return this.method ;
-		}
+    /**
+     * Access to the transfer method.
+     * eg GET, PUT, POST
+     *
+     */
+    public String getMethod()
+        {
+        return this.method ;
+        }
 
-	/**
-	 * Access to the transfer method.
-	 * eg GET, PUT, POST
-	 *
-	 */
-	public void setMethod(String value)
-		{
-		this.method = value ;
-		}
+    /**
+     * Access to the transfer method.
+     * eg GET, PUT, POST
+     *
+     */
+    public void setMethod(String value)
+        {
+        this.method = value ;
+        }
 
-	/**
-	 * The file properties for the transferred data.
-	 *
-	 */
-	private FileProperty[] properties ;
+    /**
+     * The file properties for the transferred data.
+     *
+     */
+    private FileProperty[] properties ;
 
-	/**
-	 * Access to our file properties.
-	 *
-	 */
-	public FileProperty[] getFileProperties()
-		{
-		return this.properties ;
-		}
+    /**
+     * Access to our file properties.
+     *
+     */
+    public FileProperty[] getFileProperties()
+        {
+        return this.properties ;
+        }
 
-	/**
-	 * Set the transfer properties.
-	 *
-	 */
-	public void setFileProperties(FileProperties properties)
-		{
-		this.setFileProperties(
-			properties.toArray()
-			);
-		}
+    /**
+     * Set the transfer properties.
+     *
+     */
+    public void setFileProperties(FileProperties properties)
+        {
+        this.setFileProperties(
+            properties.toArray()
+            );
+        }
 
-	/**
-	 * Set the transfer properties.
-	 *
-	 */
-	public void setFileProperties(FileProperty[] properties)
-		{
-		this.properties = properties ;
-		}
-	}
+    /**
+     * Set the transfer properties.
+     *
+     */
+    public void setFileProperties(FileProperty[] properties)
+        {
+        this.properties = properties ;
+        }
+    }
 

@@ -1,10 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/common/src/test/org/astrogrid/filemanager/common/Attic/FileManagerPropertiesTestCase.java,v $</cvs:source>
- * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2005/01/13 17:23:15 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2005/01/28 10:44:04 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  * <cvs:log>
  *   $Log: FileManagerPropertiesTestCase.java,v $
+ *   Revision 1.4  2005/01/28 10:44:04  clq2
+ *   dave_dev_200501141257 (filemanager)
+ *
+ *   Revision 1.3.2.1  2005/01/18 14:52:48  dave
+ *   Added node create and modify dates ..
+ *
  *   Revision 1.3  2005/01/13 17:23:15  jdt
  *   merges from dave-dev-200412201250
  *
@@ -25,6 +31,9 @@ package org.astrogrid.filemanager.common ;
 import junit.framework.TestCase ;
 
 import org.astrogrid.store.Ivorn ;
+
+import org.astrogrid.filestore.common.file.FileProperty ;
+import org.astrogrid.filestore.common.file.FileProperties ;
 
 /**
  * A JUnit test case for the FileManagerProperties.
@@ -82,7 +91,7 @@ public class FileManagerPropertiesTestCase
         toad.setManagerResourceName("toad");
         FileManagerProperties newt = frog.difference(toad);
         assertEquals(
-            1,
+            2,
             newt.toArray().length
             );
         assertEquals(
@@ -104,7 +113,7 @@ public class FileManagerPropertiesTestCase
         toad.setManagerResourceName("toad");
         FileManagerProperties newt = frog.difference(toad);
         assertEquals(
-            1,
+            2,
             newt.toArray().length
             );
         assertEquals(

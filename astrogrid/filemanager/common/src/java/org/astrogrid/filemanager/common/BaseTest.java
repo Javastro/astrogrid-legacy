@@ -1,10 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/common/src/java/org/astrogrid/filemanager/common/Attic/BaseTest.java,v $</cvs:source>
- * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2005/01/13 17:23:15 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2005/01/28 10:43:58 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  * <cvs:log>
  *   $Log: BaseTest.java,v $
+ *   Revision 1.5  2005/01/28 10:43:58  clq2
+ *   dave_dev_200501141257 (filemanager)
+ *
+ *   Revision 1.4.2.1  2005/01/25 08:01:16  dave
+ *   Added tests for FileManagerClientFactory ....
+ *
  *   Revision 1.4  2005/01/13 17:23:15  jdt
  *   merges from dave-dev-200412201250
  *
@@ -191,6 +197,9 @@ public class BaseTest
     public void setUp()
         throws Exception
         {
+		//
+		// Initialise our base class.
+		super.setUp();
         //
         // Create our test accounts.
         accountIvorn = CommunityAccountIvornFactory.createLocal(
@@ -212,7 +221,7 @@ public class BaseTest
         }
 
     /**
-     * Compare tow ivorns.
+     * Compare two ivorns.
      *
      */
     public boolean compare(Ivorn frog, Ivorn toad)

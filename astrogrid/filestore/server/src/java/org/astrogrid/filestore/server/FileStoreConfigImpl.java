@@ -1,11 +1,18 @@
 /*
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/server/src/java/org/astrogrid/filestore/server/FileStoreConfigImpl.java,v $</cvs:source>
- * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/12/13 00:51:56 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2005/01/28 10:44:04 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreConfigImpl.java,v $
+ *   Revision 1.4  2005/01/28 10:44:04  clq2
+ *   dave_dev_200501141257 (filemanager)
+ *
+ *   Revision 1.3.8.1  2005/01/17 17:19:21  dave
+ *   Fixed bug in FileManagerImpl test (missing '/' in repository path on Unix) ...
+ *   Changed tabs to spaces ..
+ *
  *   Revision 1.3  2004/12/13 00:51:56  jdt
  *   merge from FLS_JDT_861
  *
@@ -71,241 +78,241 @@ import org.astrogrid.filestore.common.FileStoreConfig ;
  *
  */
 public class FileStoreConfigImpl
-	implements FileStoreConfig
-	{
+    implements FileStoreConfig
+    {
     /**
      * Our debug logger.
      *
      */
     private static Log log = LogFactory.getLog(FileStoreConfigImpl.class);
 
-	/**
-	 * The config property key for our service name.
-	 *
-	 */
-	public static final String SERVICE_NAME = "org.astrogrid.filestore.service.name" ;
+    /**
+     * The config property key for our service name.
+     *
+     */
+    public static final String SERVICE_NAME = "org.astrogrid.filestore.service.name" ;
 
-	/**
-	 * Reference to our AstroGrid config.
-	 *
-	 */
-	private Config config ;
+    /**
+     * Reference to our AstroGrid config.
+     *
+     */
+    private Config config ;
 
-	/**
-	 * Public constructor, using the default AstroGrid config.
-	 *
-	 */
-	public FileStoreConfigImpl()
-		{
-		this(
-			SimpleConfig.getSingleton()
-			) ;
-		}
+    /**
+     * Public constructor, using the default AstroGrid config.
+     *
+     */
+    public FileStoreConfigImpl()
+        {
+        this(
+            SimpleConfig.getSingleton()
+            ) ;
+        }
 
-	/**
-	 * Public constructor, using a specific config.
-	 * @param config Reference to the config to use.
-	 *
-	 */
-	public FileStoreConfigImpl(Config config)
-		{
-		this.config = config ;
-		}
+    /**
+     * Public constructor, using a specific config.
+     * @param config Reference to the config to use.
+     *
+     */
+    public FileStoreConfigImpl(Config config)
+        {
+        this.config = config ;
+        }
 
-	/**
-	 * Access to the local service name.
-	 *
-	 */
-	public String getServiceName()
-		{
-		String name = (String) config.getProperty(
-			SERVICE_NAME
-			) ;
-		return name ;
-		}
+    /**
+     * Access to the local service name.
+     *
+     */
+    public String getServiceName()
+        {
+        String name = (String) config.getProperty(
+            SERVICE_NAME
+            ) ;
+        return name ;
+        }
 
-	/**
-	 * Access to a config property, using the service name prefix.
-	 * @param name The property name (this is combined with the service name to make the full property key).
-	 *
-	 */
-	public String getServiceProperty(String name)
-		{
-		log.debug("");
-		log.debug("FileStoreConfigImpl.getServiceProperty()");
-		log.debug("  Name  : " + name);
-		String index = getServiceName() + "." + name ;
-		log.debug("  Index : " + index);
-		String value = (String) config.getProperty(
-			index
-			) ;
-		log.debug("  Value : " + value);
-		return value ;
-		}
+    /**
+     * Access to a config property, using the service name prefix.
+     * @param name The property name (this is combined with the service name to make the full property key).
+     *
+     */
+    public String getServiceProperty(String name)
+        {
+        log.debug("");
+        log.debug("FileStoreConfigImpl.getServiceProperty()");
+        log.debug("  Name  : " + name);
+        String index = getServiceName() + "." + name ;
+        log.debug("  Index : " + index);
+        String value = (String) config.getProperty(
+            index
+            ) ;
+        log.debug("  Value : " + value);
+        return value ;
+        }
 
-	/**
-	 * Access to the local service ivorn.
-	 * @throws FileStoreServiceException if unable to read the property.
-	 *
-	 */
-	public Ivorn getServiceIvorn()
-		throws FileStoreServiceException
-		{
-		log.debug("");
-		log.debug("FileStoreConfigImpl.getServiceIvorn()");
-		try {
-			return new Ivorn(
-				getServiceProperty(
-					"service.ivorn"
-					)
-				) ;
-			}
-		catch (Throwable ouch)
-			{
+    /**
+     * Access to the local service ivorn.
+     * @throws FileStoreServiceException if unable to read the property.
+     *
+     */
+    public Ivorn getServiceIvorn()
+        throws FileStoreServiceException
+        {
+        log.debug("");
+        log.debug("FileStoreConfigImpl.getServiceIvorn()");
+        try {
+            return new Ivorn(
+                getServiceProperty(
+                    "service.ivorn"
+                    )
+                ) ;
+            }
+        catch (Throwable ouch)
+            {
             log.error("Unable to read service ivorn from config", ouch);
-			throw new FileStoreServiceException(
-				"Unable to read service ivorn from config.",
-				ouch
-				) ;
-			}
-		}
+            throw new FileStoreServiceException(
+                "Unable to read service ivorn from config.",
+                ouch
+                ) ;
+            }
+        }
 
-	/**
-	 * The local service URL.
-	 * @throws FileStoreServiceException if unable to read the property.
-	 *
-	 */
-	public URL getServiceUrl()
-		throws FileStoreServiceException
-		{
-		log.debug("");
-		log.debug("FileStoreConfigImpl.getServiceUrl()");
-		try {
-			return new URL(
-				getServiceProperty(
-					"service.url"
-					)
-				) ;
-			}
-		catch (Throwable ouch)
-			{
-			throw new FileStoreServiceException(
-				"Unable to generate service URL.",
-				ouch
-				) ;
-			}
-		}
+    /**
+     * The local service URL.
+     * @throws FileStoreServiceException if unable to read the property.
+     *
+     */
+    public URL getServiceUrl()
+        throws FileStoreServiceException
+        {
+        log.debug("");
+        log.debug("FileStoreConfigImpl.getServiceUrl()");
+        try {
+            return new URL(
+                getServiceProperty(
+                    "service.url"
+                    )
+                ) ;
+            }
+        catch (Throwable ouch)
+            {
+            throw new FileStoreServiceException(
+                "Unable to generate service URL.",
+                ouch
+                ) ;
+            }
+        }
 
-	/**
-	 * Generate a resource ivorn.
-	 * @param ident - the resource identifier.
-	 * @throws FileStoreServiceException if unable to read the property.
-	 *
-	 */
-	public Ivorn getResourceIvorn(String ident)
-		throws FileStoreServiceException
-		{
-		log.debug("");
-		log.debug("FileStoreConfigImpl.getResourceIvorn()");
-		log.debug("  Ident : " + ident);
-		try {
-			return FileStoreIvornFactory.createIvorn(
-				getServiceProperty(
-					"service.ivorn"
-					),
-				ident
-				) ;
-			}
-		catch (Throwable ouch)
-			{
-			throw new FileStoreServiceException(
-				"Unable to generate resource ivorn.",
-				ouch
-				) ;
-			}
-		}
+    /**
+     * Generate a resource ivorn.
+     * @param ident - the resource identifier.
+     * @throws FileStoreServiceException if unable to read the property.
+     *
+     */
+    public Ivorn getResourceIvorn(String ident)
+        throws FileStoreServiceException
+        {
+        log.debug("");
+        log.debug("FileStoreConfigImpl.getResourceIvorn()");
+        log.debug("  Ident : " + ident);
+        try {
+            return FileStoreIvornFactory.createIvorn(
+                getServiceProperty(
+                    "service.ivorn"
+                    ),
+                ident
+                ) ;
+            }
+        catch (Throwable ouch)
+            {
+            throw new FileStoreServiceException(
+                "Unable to generate resource ivorn.",
+                ouch
+                ) ;
+            }
+        }
 
-	/**
-	 * Generate a resource URL.
-	 * @param ident - the resource identifier.
-	 * @throws FileStoreServiceException if unable to read the property.
-	 *
-	 */
-	public URL getResourceUrl(String ident)
-		throws FileStoreServiceException
-		{
-		log.debug("");
-		log.debug("FileStoreConfigImpl.getResourceUrl()");
-		log.debug("  Ident : " + ident);
-		try {
-			return new URL(
-				getServiceProperty(
-					"service.url"
-					)
-				+ "/" + ident
-				) ;
-			}
-		catch (Throwable ouch)
-			{
-			throw new FileStoreServiceException(
-				"Unable to generate resource URL.",
-				ouch
-				) ;
-			}
-		}
+    /**
+     * Generate a resource URL.
+     * @param ident - the resource identifier.
+     * @throws FileStoreServiceException if unable to read the property.
+     *
+     */
+    public URL getResourceUrl(String ident)
+        throws FileStoreServiceException
+        {
+        log.debug("");
+        log.debug("FileStoreConfigImpl.getResourceUrl()");
+        log.debug("  Ident : " + ident);
+        try {
+            return new URL(
+                getServiceProperty(
+                    "service.url"
+                    )
+                + "/" + ident
+                ) ;
+            }
+        catch (Throwable ouch)
+            {
+            throw new FileStoreServiceException(
+                "Unable to generate resource URL.",
+                ouch
+                ) ;
+            }
+        }
 
-	/**
-	 * The repository data directory.
-	 * @throws FileStoreServiceException if unable to read the property.
-	 *
-	 */
-	public File getDataDirectory()
-		throws FileStoreServiceException
-		{
-		log.debug("");
-		log.debug("FileStoreConfigImpl.getDataDirectory()");
-		try {
-			return new File(
-				getServiceProperty(
-					"repository"
-					)
-				) ;
-			}
-		catch (Throwable ouch)
-			{
-			throw new FileStoreServiceException(
-				"Unable to read data directory from config.",
-				ouch
-				) ;
-			}
-		}
+    /**
+     * The repository data directory.
+     * @throws FileStoreServiceException if unable to read the property.
+     *
+     */
+    public File getDataDirectory()
+        throws FileStoreServiceException
+        {
+        log.debug("");
+        log.debug("FileStoreConfigImpl.getDataDirectory()");
+        try {
+            return new File(
+                getServiceProperty(
+                    "repository"
+                    )
+                ) ;
+            }
+        catch (Throwable ouch)
+            {
+            throw new FileStoreServiceException(
+                "Unable to read data directory from config.",
+                ouch
+                ) ;
+            }
+        }
 
-	/**
-	 * The repository info directory.
-	 * @throws FileStoreServiceException if unable to read the property.
-	 *
-	 */
-	public File getInfoDirectory()
-		throws FileStoreServiceException
-		{
-		log.debug("");
-		log.debug("FileStoreConfigImpl.getInfoDirectory()");
-		try {
-			return new File(
-				getServiceProperty(
-					"repository"
-					)
-				) ;
-			}
-		catch (Throwable ouch)
-			{
-			throw new FileStoreServiceException(
-				"Unable to read info directory from config.",
-				ouch
-				) ;
-			}
-		}
-	}
+    /**
+     * The repository info directory.
+     * @throws FileStoreServiceException if unable to read the property.
+     *
+     */
+    public File getInfoDirectory()
+        throws FileStoreServiceException
+        {
+        log.debug("");
+        log.debug("FileStoreConfigImpl.getInfoDirectory()");
+        try {
+            return new File(
+                getServiceProperty(
+                    "repository"
+                    )
+                ) ;
+            }
+        catch (Throwable ouch)
+            {
+            throw new FileStoreServiceException(
+                "Unable to read info directory from config.",
+                ouch
+                ) ;
+            }
+        }
+    }
 
 
 
