@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.20 2004/03/15 20:38:54 mch Exp $
+ * $Id: SqlResults.java,v 1.21 2004/03/15 20:39:31 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -36,7 +36,7 @@ public class SqlResults extends QueryResults
    /** Key used to find maximum number of rows allowed - defaults to 200, -1 = any */
    public final static String MAX_RETURN_ROWS_KEY = "datacenter.sql.maxreturn";
 
-   public final static int DEFAULT_MAX_RETURN_ROWS = 200;
+   public final static int DEFAULT_MAX_RETURN_ROWS = -1;
    
    /**
     * Construct this wrapper around the given JDBC/SQL ResultSet.  We don't
@@ -230,6 +230,9 @@ public class SqlResults extends QueryResults
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.21  2004/03/15 20:39:31  mch
+ Changed default to any - will initial default in default properties
+
  Revision 1.20  2004/03/15 20:38:54  mch
  Added max row limit
 
@@ -291,4 +294,5 @@ public class SqlResults extends QueryResults
  It03-Close
 
  */
+
 
