@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineVOSpaceIndirectExecutionTest.java,v 1.2 2004/09/02 17:11:31 pah Exp $
+ * $Id: CommandLineVOSpaceIndirectExecutionTest.java,v 1.3 2004/09/09 20:55:13 pah Exp $
  * 
  * Created on 11-May-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -75,7 +75,7 @@ public class CommandLineVOSpaceIndirectExecutionTest extends AbstractRunTestForC
 protected void checkResults(ResultListType results) throws Exception {
     assertNotNull(results);
     softAssertEquals("there should be 2 results",2,results.getResultCount());
-    ParameterValue result = (ParameterValue)results.findXPathValue("results[name='P3']");
+    ParameterValue result = (ParameterValue)results.findXPathValue("result[name='P3']");
     assertNotNull(result);
     softAssertTrue(result.getIndirect());
     String filePath = result.getValue();
