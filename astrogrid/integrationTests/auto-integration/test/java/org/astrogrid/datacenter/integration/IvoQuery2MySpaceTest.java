@@ -1,4 +1,4 @@
-/*$Id: IvoQuery2MySpaceTest.java,v 1.6 2004/07/07 22:28:15 mch Exp $
+/*$Id: IvoQuery2MySpaceTest.java,v 1.7 2004/07/08 07:48:53 mch Exp $
  * Created on 22-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -78,7 +78,7 @@ public class IvoQuery2MySpaceTest extends TestCase implements StdKeys {
             && (timeout.getSecsSince()<60) ); // ..or timesout
 
       if (timeout.getSecsSince()>=60) {
-         fail("query timed out");
+         fail("query timed out, query ["+queryId+"] status="+stat);
       }
  
       //see if results are in expected myspace location
@@ -112,6 +112,9 @@ public class IvoQuery2MySpaceTest extends TestCase implements StdKeys {
 
 /*
 $Log: IvoQuery2MySpaceTest.java,v $
+Revision 1.7  2004/07/08 07:48:53  mch
+More timeout info
+
 Revision 1.6  2004/07/07 22:28:15  mch
 Reintroduced tests, this time with timeout check
 

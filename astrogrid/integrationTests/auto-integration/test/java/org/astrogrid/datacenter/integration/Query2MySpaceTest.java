@@ -1,4 +1,4 @@
-/*$Id: Query2MySpaceTest.java,v 1.10 2004/05/25 13:34:33 mch Exp $
+/*$Id: Query2MySpaceTest.java,v 1.11 2004/07/08 07:48:40 mch Exp $
  * Created on 22-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -78,7 +78,7 @@ public class Query2MySpaceTest extends TestCase {
             && (timeout.getSecsSince()<60) ); // ..or timesout
 
       if (timeout.getSecsSince()>=60) {
-         fail("query timed out");
+         fail("query timed out, query ["+queryId+"] status="+stat);
       }
       
       //see if results are in expected myspace location
@@ -108,6 +108,9 @@ public class Query2MySpaceTest extends TestCase {
 
 /*
 $Log: Query2MySpaceTest.java,v $
+Revision 1.11  2004/07/08 07:48:40  mch
+More timeout info
+
 Revision 1.10  2004/05/25 13:34:33  mch
 Fixed lack of timeout
 
