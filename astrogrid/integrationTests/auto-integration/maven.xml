@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.104 2004/09/15 18:10:48 KevinBenson Exp $ -->
+<!-- $Id: maven.xml,v 1.105 2004/09/15 22:19:15 KevinBenson Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -98,6 +98,7 @@
         <sleep seconds="2" />
         <attainGoal name="reg-deploy" />
         <sleep seconds="4" />
+	    <!--
         <attainGoal name="jes-deploy" />
         <sleep seconds="2" />
         <attainGoal name="cea-server-deploy" />
@@ -122,6 +123,7 @@
         <sleep seconds="2" />
         <attainGoal name="portal-deploy" />
         <sleep seconds="4" />
+        -->
         <attainGoal name="setup" />
 </goal>
 
@@ -596,7 +598,7 @@
                 <metainf dir="${temporary.dir}/registry"/>
         </war>
   		-->
-	<copy todir="${temporary.dir}/registry" filtering="true">
+	<copy todir="${temporary.dir}/registry" filtering="true" overwrite="true">
             <fileset dir="webapps/astrogrid-configuration/registry">
             	<include name="astro*.prop*"/>
             </fileset>
