@@ -130,9 +130,11 @@ public class GdsDelegate extends GridServiceDelegate {
 
     // Submit the document and get the response.
     // applicationPort is the stub for the GDS set in place by
-    // {@link connect}.
+    // {@link connect}. Use a long timeout because the call is synchronous
+    // and the query may take a while.
     ExtensibilityType result = null;
     try {
+      ((Stub) this.applicationPort).setTimeout(30*60*1000);  // 30 min timeout
       result = ((GDSPortType) this.applicationPort).perform(document);
     }
     catch (Exception e) {
@@ -236,7 +238,7 @@ public class GdsDelegate extends GridServiceDelegate {
     }
     catch (Exception e) {
       throw new Exception("Can't get the GSH for the GDS factory "
-                          + " the OGSA-DAI registry at "
+                          + " from the OGSA-DAI registry at "
                           + registryUrl);
     }
 
