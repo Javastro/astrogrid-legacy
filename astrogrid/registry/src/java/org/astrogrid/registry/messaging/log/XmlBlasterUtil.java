@@ -28,7 +28,7 @@ import org.xmlBlaster.util.qos.QueryQosData;
 /**
  * @author peter.shillan <mailto:gps@roe.ac.uk />
  */
-public class XmlBlasterUtil {
+public class XmlBlasterUtil implements XmlBlaster {
 
   // Common constants.
   protected static final String CLIENT_TAGS = "<name>fred</name>";
@@ -51,6 +51,7 @@ public class XmlBlasterUtil {
     }
 
     global = Global.instance();
+    xmlBlasterAccess = global.getXmlBlasterAccess();
   }
   
   // Utility methods.
