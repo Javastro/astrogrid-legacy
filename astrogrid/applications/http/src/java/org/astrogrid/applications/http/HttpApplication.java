@@ -1,4 +1,4 @@
-/* $Id: HttpApplication.java,v 1.7 2004/09/26 23:29:38 jdt Exp $
+/* $Id: HttpApplication.java,v 1.8 2004/10/21 10:05:12 pah Exp $
  * Created on Jul 24, 2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -186,6 +186,7 @@ public boolean execute() throws CeaException {
             }
                     
             setStatus(Status.RUNNING);
+            log.info("calling url="+url);
             HttpServiceClient client = new HttpServiceClient(url, method);
             final String resultText = client.call(inputArguments);
             log.debug("run() - unprocessed result:  : resultText = " + resultText);
@@ -198,6 +199,7 @@ public boolean execute() throws CeaException {
             ParameterAdapter result = (ParameterAdapter) outputParamsIt.next();
             assert !outputParamsIt.hasNext() : "Expect there to be only one output parameter for an HttpApplication";
             result.writeBack(processedResult);
+            log.info("completed call successfully");
             setStatus(Status.COMPLETED);
         } catch (CeaException e) {
             log.error("run() - failed to write back param values", e);
@@ -242,6 +244,9 @@ public boolean execute() throws CeaException {
 
 /*
  * $Log: HttpApplication.java,v $
+ * Revision 1.8  2004/10/21 10:05:12  pah
+ * log the target url
+ *
  * Revision 1.7  2004/09/26 23:29:38  jdt
  * Put the processing of the parameters back before the creation of the calling document.  The calling doc is
  * created using whatever values are in the Tool doc at the time, so the parameter processing must be done first.
