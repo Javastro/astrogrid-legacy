@@ -17,7 +17,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
-import org.astrogrid.registry.server.RegistryFileHelper;
+import org.astrogrid.registry.server.RegistryServerHelper;
 import org.astrogrid.registry.server.query.RegistryService;
 import org.astrogrid.registry.server.admin.RegistryAdminService;
 import java.net.URL;
@@ -42,6 +42,9 @@ import org.astrogrid.registry.common.WSDLInformation;
 import org.astrogrid.registry.common.WSDLBasicInformation;
 import org.astrogrid.registry.common.XSLHelper;
 
+import java.net.MalformedURLException;
+import org.apache.axis.AxisFault;
+
 /**
  *
  * The RegistryHarvestService class is the main web service class dealing with
@@ -49,8 +52,7 @@ import org.astrogrid.registry.common.XSLHelper;
  * @link http://www.ivoa.net/twiki/bin/view/IVOA/IVOARegWp03
  * @author Kevin Benson
  */
-public class RegistryHarvestService implements
-                      org.astrogrid.registry.common.RegistryHarvestInterface {
+public class RegistryHarvestService {
 
    private static final Log log =
                           LogFactory.getLog(RegistryHarvestService.class);
@@ -74,21 +76,18 @@ public class RegistryHarvestService implements
     * @return XML docuemnt object representing the result of the query.
     * @author Kevin Benson
     */
-   public Document harvest(Document registry) {
+   public Document harvest(Document registry) throws AxisFault {
       log.debug("start harvest");
       try {
          RegistryService rs = new RegistryService();
          Document registryDoc = rs.loadRegistry(null);
 
          //Grab all the authority id's that is managed by this registry.
-         NodeList regNL = RegistryFileHelper.
-                             findNodeListFromXML("vg","ManagedAuthority",
-                                                registryDoc.getDocumentElement());
-
+         NodeList regNL = DomHelper.getNodeListTags(registryDoc,"ManagedAuthority","vg"); 
          //Construct the query in a string.
          String selectQuery = "<query><selectionSequence>" +
-            "<selection item='searchElements' itemOp='EQ' value='Resource'/>" +
-            "<selectionOp op='$and$'/>";
+              "<selection item='searchElements' itemOp='EQ' value='Resource'/>" +
+              "<selectionOp op='$and$'/>";
          if(regNL.getLength() > 0) {
             selectQuery +=
             "<selection item='Identifer/AuthorityID' itemOp='EQ' value='" +
@@ -109,7 +108,7 @@ public class RegistryHarvestService implements
          Document doc = registryBuilder.parse(inputSource);
 
          //performs the query and return the results.
-         Document responseDoc = XQueryExecution.parseFullNodeQuery(doc);
+         Document responseDoc = null;//XQueryExecution.parseFullNodeQuery(doc);
          return responseDoc;
       }catch(Exception e) {
          e.printStackTrace();
@@ -132,7 +131,7 @@ public class RegistryHarvestService implements
     * @return XML docuemnt object representing the result of the query.
     * @author Kevin Benson
     */
-   public Document harvestFrom(Document dateDom) {
+   public Document harvestFrom(Document dateDom)  throws AxisFault  {
       log.debug("start harvestFrom");
       try {
          //if there is no date or xml tag at all then call harvest
@@ -156,9 +155,7 @@ public class RegistryHarvestService implements
 
          //NodeList regNL = registryDoc.getElementsByTagNameNS("vg",
          //                                               "ManagedAuthority" );
-         NodeList regNL = RegistryFileHelper.
-                             findNodeListFromXML("vg","ManagedAuthority",
-                                                registryDoc.getDocumentElement());
+         NodeList regNL = DomHelper.getNodeListTags(registryDoc,"ManagedAuthority","vg");
 
          //This query for the moment is the same as harvest.  When the statistical
          //data is added which is coming soon, then this will be changed to get the
@@ -186,7 +183,7 @@ public class RegistryHarvestService implements
                                                   newDocumentBuilder();
          Document doc = registryBuilder.parse(inputSource);
          //perform the query and return it.
-         Document responseDoc = XQueryExecution.parseFullNodeQuery(doc);
+         Document responseDoc = null;//XQueryExecution.parseFullNodeQuery(doc);
          return responseDoc;
       }catch(Exception e) {
         e.printStackTrace();
@@ -204,7 +201,7 @@ public class RegistryHarvestService implements
     * @return null (nothing is returned on this web service operation).
     * @author Kevin Benson
     */
-   public Document harvestResource(Document resources){
+   public Document harvestResource(Document resources)  throws AxisFault {
       log.debug("start harvestResource");
       log.info("update harvestResource");
 
@@ -223,7 +220,12 @@ public class RegistryHarvestService implements
       log.info("THE RESOURCECHANGE IN HARVESTRESOURCE1 = " +
                DomHelper.DocumentToString((Document)harvestCopy));
       //Start a full (replicate) harvest on this registry.
-      beginHarvest(null,(Document)harvestCopy);
+      try {
+         beginHarvest(null,(Document)harvestCopy);
+      }catch(IOException ioe) {
+         throw new AxisFault("IO problem", ioe);   
+      }
+      
 
       log.info("exiting harvestResource");
       log.debug("end harvestResource");
@@ -241,28 +243,34 @@ public class RegistryHarvestService implements
      * @return null (nothing is returned on this web service operation).
      * @author Kevin Benson
      */
-   public Document harvestFromResource(Document resource) {
+   public Document harvestFromResource(Document resource)  throws AxisFault  {
       log.debug("start harvestFromResource");
       RegistryAdminService ras = new RegistryAdminService();
       XSLHelper xs = new XSLHelper();
       Document resourceChange = xs.transformDatabaseProcess(
                                    (Node)resource.getDocumentElement());
       //Now get the dateFrom element value as well.
-      ras.update(resourceChange);
-      beginHarvest(null,resourceChange);
+      ras.Update(resourceChange);
+      try {
+         beginHarvest(null,resourceChange);
+      }catch(IOException ioe) {
+         log.error(ioe);
+         throw new AxisFault("IO problem", ioe);
+      }
+      
       log.debug("end harvestFromResource");
       return null;
    }
 
 
    /**
-     * Will start a harvest of all the Registries known to this registry.
-     *
-     * @param resources XML document object representing the query language used on the registry.
-     * @return XML docuemnt object representing the result of the query.
-     * @author Kevin Benson
-     */
-   public Document harvestAll(Document resources) {
+       * Will start a harvest of all the Registries known to this registry.
+       *
+       * @param resources XML document object representing the query language used on the registry.
+       * @return XML docuemnt object representing the result of the query.
+       * @author Kevin Benson
+       */
+   public Document harvestAll(Document resources)  throws AxisFault  {
       log.debug("start harvestAll");
       Document harvestedDoc = null;
       //This next statement will go away with Castor.
@@ -307,7 +315,13 @@ private class HarvestThread extends Thread {
     */
     
    public void run() {
-      ras.updateNoCheck(updateDoc);
+      try {
+         ras.updateNoCheck(updateDoc);
+      }catch(MalformedURLException mue) {
+       mue.printStackTrace();   
+      }catch(IOException ioe) {
+         ioe.printStackTrace();   
+      }
    }
 
 }
@@ -323,7 +337,7 @@ private class HarvestThread extends Thread {
     * @param dt An optional date used to harvest from a particular date
     * @param resources Set of Resources to harvest on, normally a Registry Resource.
     */
-   public void beginHarvest(Date dt, Document resources) {
+   public void beginHarvest(Date dt, Document resources)  throws AxisFault, IOException  {
       log.debug("start beginHarvest");
       log.info("entered beginharvest");
       String accessURL = null;
@@ -333,24 +347,19 @@ private class HarvestThread extends Thread {
       RegistryAdminService ras = new RegistryAdminService();
       //log.info("THE FULL RESOURCES IN BEGINHARVEST = " +
       //         DomHelper.DocumentToString(resources));
-      NodeList resourceList = RegistryFileHelper.
-                                 findNodeListFromXML("vr","Resource",
-                                              resources.getDocumentElement());
+      NodeList resourceList = DomHelper.getNodeListTags(resources,"Resource","vr");
       //log.info("the getLength = " + resourceList.getLength());
       //go through all the resources
       for(int i = 0; i < resourceList.getLength();i++) {
          //get the accessurl and invocation type.
          //invocationtype is either WEbService or WebBrowser.
-         accessURL = RegistryFileHelper.findValueFromXML("AccessURL",
-                        (Element)resourceList.item(i));
-         invocationType = RegistryFileHelper.
-                             findValueFromXML("Invocation",
-                             (Element)resourceList.item(i));
+            accessURL = DomHelper.getNodeTextValue((Element)resourceList.item(i),"AccessURL","vr");
+            invocationType = DomHelper.getNodeTextValue((Element)resourceList.item(i),"Invocation","vr");
          log.info("The access URL = " + accessURL + " invocationType = " +
                   invocationType);
          if("WEBSERVICE".equals(invocationType)) {
             //call the service
-            //remember to look at the date
+            //remeber to look at the date
 
             if("?wsdl".indexOf(accessURL) == -1) {
                accessURL += "?wsdl";
@@ -481,8 +490,7 @@ private class HarvestThread extends Thread {
 
    /**
     * Method to establish a Service and a Call to the server side web service.
-    * @return Call object which has the necessary properties set for an Axis 
-    *  message style.
+    * @return Call object which has the necessary properties set for an Axis message style.
     * @throws Exception
     * @author Kevin Benson
     */

@@ -2,6 +2,10 @@ package org.astrogrid.registry;
 
 public class RegistryException extends Exception {
 
+   public RegistryException() {
+      
+   }
+
    public RegistryException(String msg) {
       //Need to log here.
       super(msg);
@@ -18,4 +22,9 @@ public class RegistryException extends Exception {
       super(msg, cause);
       cause.printStackTrace();      
    }  
+   
+   /** Constant for makeFault - input from client has caused problem */
+   protected final static boolean CLIENTFAULT = true;
+   /** Constant for makeFault - problem with server (or unknown) */
+   protected final static boolean SERVERFAULT = false;   
 }

@@ -130,7 +130,7 @@ public class RegistryQueryConfigJunit extends TestCase{
       assertNotNull(rs);
       if(rs.conf == null) return;      
       if(rs.conf.getString("vm05.astrogrid.org/ServiceTest",null) == null) return;            
-      Document doc = rs.getResourceByIdentifierDOM("vm05.astrogrid.org/ServiceTest");
+      Document doc = rs.getResourceByIdentifier("vm05.astrogrid.org/ServiceTest");
       assertNotNull(doc);
       if(DEBUG_FLAG) System.out.println("received in junit test = " + XMLUtils.DocumentToString(doc));
    }
@@ -140,7 +140,7 @@ public class RegistryQueryConfigJunit extends TestCase{
       assertNotNull(rs);
       if(rs.conf == null) return;      
       if(rs.conf.getString("vm05.astrogrid.org/OrganisationTest",null) == null) return;            
-      Document doc = rs.getResourceByIdentifierDOM("vm05.astrogrid.org/OrganisationTest");
+      Document doc = rs.getResourceByIdentifier("vm05.astrogrid.org/OrganisationTest");
       assertNotNull(doc);
       if(DEBUG_FLAG) System.out.println("received in junit test = " + XMLUtils.DocumentToString(doc));
    }
@@ -150,7 +150,7 @@ public class RegistryQueryConfigJunit extends TestCase{
       assertNotNull(rs);
       if(rs.conf == null) return;      
       if(rs.conf.getString("vm05.astrogrid.org/DataCollectionTest",null) == null) return;            
-      Document doc = rs.getResourceByIdentifierDOM("vm05.astrogrid.org/DataCollectionTest");
+      Document doc = rs.getResourceByIdentifier("vm05.astrogrid.org/DataCollectionTest");
       assertNotNull(doc);
       if(DEBUG_FLAG) System.out.println("received in junit test = " + XMLUtils.DocumentToString(doc));      
    }   
@@ -161,7 +161,7 @@ public class RegistryQueryConfigJunit extends TestCase{
       assertNotNull(rs);
       if(rs.conf == null) return;      
       if(rs.conf.getString("vm05.astrogrid.org/AuthorityTest",null) == null) return;            
-      Document doc = rs.getResourceByIdentifierDOM("vm05.astrogrid.org/AuthorityTest");
+      Document doc = rs.getResourceByIdentifier("vm05.astrogrid.org/AuthorityTest");
       assertNotNull(doc);
       if(DEBUG_FLAG) System.out.println("received in junit test = " + XMLUtils.DocumentToString(doc));
    }
@@ -171,7 +171,7 @@ public class RegistryQueryConfigJunit extends TestCase{
       assertNotNull(rs);
       if(rs.conf == null) return;
       if(rs.conf.getString("vm05.astrogrid.org/RegistryTest",null) == null) return;            
-      Document doc = rs.getResourceByIdentifierDOM("vm05.astrogrid.org/RegistryTest");
+      Document doc = rs.getResourceByIdentifier("vm05.astrogrid.org/RegistryTest");
       assertNotNull(doc);
       if(DEBUG_FLAG) System.out.println("received in junit test = " + XMLUtils.DocumentToString(doc));
       
@@ -182,7 +182,7 @@ public class RegistryQueryConfigJunit extends TestCase{
       assertNotNull(rs);
       if(rs.conf == null) return;
       if(rs.conf.getString("vm05.astrogrid.org/TabularSkyServiceTest",null) == null) return;            
-      Document doc = rs.getResourceByIdentifierDOM("vm05.astrogrid.org/TabularSkyServiceTest");
+      Document doc = rs.getResourceByIdentifier("vm05.astrogrid.org/TabularSkyServiceTest");
       assertNotNull(doc);
       if(DEBUG_FLAG) System.out.println("received in junit test = " + XMLUtils.DocumentToString(doc));
       
@@ -193,7 +193,7 @@ public class RegistryQueryConfigJunit extends TestCase{
       assertNotNull(rs);
       if(rs.conf == null) return;
       if(rs.conf.getString("vm05.astrogrid.org/Combo1Test",null) == null) return;            
-      Document doc = rs.getResourceByIdentifierDOM("vm05.astrogrid.org/Combo1Test");
+      Document doc = rs.getResourceByIdentifier("vm05.astrogrid.org/Combo1Test");
       assertNotNull(doc);
       if(DEBUG_FLAG) System.out.println("received in junit test = " + XMLUtils.DocumentToString(doc));
       

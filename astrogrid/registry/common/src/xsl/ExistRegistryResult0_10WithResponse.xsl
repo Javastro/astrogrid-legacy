@@ -4,14 +4,17 @@
 	version="1.0"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9">
+	xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9"
+	xmlns:exist="http://exist.sourceforge.net/NS/exist">
 
 	<xsl:output method="xml" />
 	
-    <xsl:template match="result">
-        <xsl:element name="vr:VODescription" namespace="vr">
-      		<xsl:apply-templates/>
-        </xsl:element>
+    <xsl:template match="exist:result">
+	    <xsl:element name="QueryResponse">
+	        <xsl:element name="VOResources">
+	      		<xsl:apply-templates/>
+	        </xsl:element>
+	    </xsl:element>	        
     </xsl:template>
 	
 	<xsl:template match="text()|processing-instruction()|comment()">

@@ -25,7 +25,7 @@ import junit.framework.*;
 import java.io.File;
 import java.util.Date;
 import org.astrogrid.registry.server.query.RegistryService;
-import org.astrogrid.registry.server.RegistryFileHelper;
+import org.astrogrid.registry.server.RegistryServerHelper;
 
 
 public class RegistryQueryJunit extends TestCase{ 

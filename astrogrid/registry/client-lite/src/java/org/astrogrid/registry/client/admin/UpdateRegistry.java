@@ -43,34 +43,38 @@ import org.astrogrid.registry.common.XSLHelper;
  *
  * 
  */
-public class RegistryAdminService { 
+public class UpdateRegistry { 
 
 
-   private static final String NAMESPACE_URI =  "http://admin.server.registry.astrogrid.org";
+   private static final String NAMESPACE_URI =  "http://www.ivoa.net/schemas/services/UpdateRegistry/wsdl";
+   
+   private static final String ADMIN_URL_PROPERTY = "org.astrogrid.registry.admin.endpoint";   
    
    private boolean validated = false;   
 
     /**
     * target end point  is the location of the webservice. 
     */
-   private URL endPoint = null; 
+   private URL endPoint = null;
+   
+   public static Config conf = null;    
 
    
 //   public static Config conf = null;
    
-//   static {
-//      if(conf == null) {
-//         conf = org.astrogrid.config.SimpleConfig.getSingleton();
-//      }      
-//   }
+   static {
+      if(conf == null) {
+         conf = org.astrogrid.config.SimpleConfig.getSingleton();
+      }      
+   }
    
     
     /**
      * Empty constructor that defaults the end point to local host.
      * @author Kevin Benson
      */
-   public RegistryAdminService() {
-       this(null);
+   public UpdateRegistry() {
+      this(conf.getUrl(ADMIN_URL_PROPERTY,null));
    }
    
    /**
@@ -78,7 +82,7 @@ public class RegistryAdminService {
     * @param endPoint location to the web service.
     * @author Kevin Benson
     */ 
-   public RegistryAdminService(URL endPoint) {
+   public UpdateRegistry(URL endPoint) {
       this.endPoint = endPoint;
    }
     
@@ -168,7 +172,6 @@ public class RegistryAdminService {
       System.out.println("the endpoint = " + this.endPoint.toString());
       System.out.println("okay calling update service with doc = " + DomHelper.DocumentToString(doc));
       SOAPBodyElement sbeRequest = new SOAPBodyElement(doc.getDocumentElement());      
-      //sbeRequest.setName("update");
       sbeRequest.setName("Update");
       sbeRequest.setNamespaceURI(NAMESPACE_URI);
       
@@ -212,63 +215,20 @@ public class RegistryAdminService {
       }catch(ParserConfigurationException pce) {
          throw new RegistryException(pce);
       }
-   }      
+   }  
    
-   /**
-    * Takes an XML Document to send to the update server side web service call.  Establishes
-    * a service and a call to the web service and call it's update method, using an Axis-Message
-    * style.  Then updates this document onto the registry.
-    * @param query Document a XML document dom object to be updated on the registry.
-    * @return the document updated on the registry is returned.
-    * @author Kevin Benson
-    * 
-    */   
-   public Document add(Document add) {
-      
-      DocumentBuilder registryBuilder = null;
-      Document doc = null;
-      Document resultDoc = null;
+   public Document updateFromString(String voresources) throws RegistryException {
       try {
-         registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-         doc = registryBuilder.newDocument();
-         Element root = doc.createElementNS(NAMESPACE_URI,"add");
-         doc.appendChild(root);
-         Node nd = doc.importNode(add.getDocumentElement(),true);
-         root.appendChild(nd);
-      }catch(ParserConfigurationException pce){
-         doc = null;
-         pce.printStackTrace();
-      }
+         return update(DomHelper.newDocument(voresources));
+      }catch(IOException ioe) {         
+         throw new RegistryException(ioe);      
+      }catch(SAXException sax) {
+         throw new RegistryException(sax);   
+      }catch(ParserConfigurationException pce) {
+         throw new RegistryException(pce);
+      }      
+   }    
       
-      if(doc == null) {
-         return null;   
-      }
-      
-      //Get the CAll.  
-      Call call = getCall(); 
-      
-      //Build up a SoapBodyElement to be sent in a Axis message style.
-      //Go ahead and reset a name and namespace to this as well.
-      SOAPBodyElement sbeRequest = new SOAPBodyElement(doc.getDocumentElement());      
-      sbeRequest.setName("add");
-      sbeRequest.setNamespaceURI(NAMESPACE_URI);
-      try {            
-         Vector result = (Vector) call.invoke (new Object[] {sbeRequest});
-         if(result.size() > 0) {
-            SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
-            resultDoc =  sbe.getAsDocument();
-         }
-      }catch(RemoteException re) {
-         resultDoc = null;
-         re.printStackTrace();
-      }catch (Exception e) {
-         resultDoc = null;
-         e.printStackTrace();
-      }finally {
-         return resultDoc;
-      }
-   }
-   
    public String getCurrentStatus() {
       String status = "";
       try {
@@ -312,8 +272,11 @@ public class RegistryAdminService {
       
       try {            
          Vector result = (Vector) call.invoke (new Object[] {sbeRequest});
-         SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
-         resultDoc = sbe.getAsDocument();
+         SOAPBodyElement sbe = null;
+         if(result.size() > 0) {         
+            sbe = (SOAPBodyElement) result.get(0);
+            resultDoc = sbe.getAsDocument();
+         }
       }catch(RemoteException re) {
          resultDoc = null;
          re.printStackTrace();

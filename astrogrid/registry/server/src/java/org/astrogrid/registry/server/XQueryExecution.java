@@ -10,24 +10,8 @@ import java.net.URL;
 import java.net.HttpURLConnection;
 import java.net.URLEncoder;
 import java.io.*;
-/*
-import org.xml.sax.InputSource;
-import java.io.StringReader;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.Reader;
-*/
 import java.util.Date;
-//import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-//import de.gmd.ipsi.xql.XQL;
-//import de.gmd.ipsi.xql.XQLRelationship;
-//import org.astrogrid.registry.server.RegistryFileHelper;
-//import org.xmldb.api.*;
-//import org.xmldb.api.base.*;
-//import org.xmldb.api.modules.*;
-//import org.exist.xmldb.*;
 import org.astrogrid.util.DomHelper;
 import org.astrogrid.config.Config;
 
@@ -75,60 +59,6 @@ public class XQueryExecution
    }
    
    /**
-    * parseQuery is for submitting a query and goes with the submitQuery from 
-    * the server side web service.  Currently being deprecated.
-    * 
-    * @param query XML document object representing the query language used on the registry.
-    * @return XML document object representing the result of the query.    
-    * @author Kevin Benson
-    */
-
-   public static Document parseQuery (Document query) {
-
-   /**
-    * Input string "query" is the XML formatted query from the Registry
-    * Interface3_0 web service.  First the prepareQuery method is called 
-    * to reformat the query as an XQL query and send the query to Registry3_0
-    * Then the received registry response XML formatted string is sent to the
-    * returnRecordKeyPairs method to reformat the response as a set of 
-    * response records with name / value key pairs. The response records are
-    * returned to the RegistryInterface3_0 web service.
-    * 
-    */
-      log.debug("start parseQuery");
-      //log.info("entered parseQuery");
-      //addXQLRelationShips();
-      return prepareQuery(query);
-   }
-   
-   /**
-    * parseFullQuery is for submitting a query and goes with the fullNodeQuery from the server side
-    * web service.
-    *
-    * @param query XML document object representing the query language used on the registry.
-    * @return XML docuemnt object representing the result of the query.
-    */   
-   public static Document parseFullNodeQuery (Document query) {
-
-    /**
-     * Input string "query" is the XML formatted query from the Registry
-     * Interface3_0 web service.  First the prepareQuery method is called 
-     * to reformat the query as an XQL query and send the query to Registry3_0
-     * Then the received registry response XML formatted string is returned to
-     * the RegistryInterface3_0 web service.
-     * 
-     */
-      log.debug("start parseFullNodeQuery");
-        
-      //addXQLRelationShips();
-      //String xqlResponse = prepareQuery(query);
-      //return xqlResponse;
-        	
-      return prepareQuery(query);
-   }
-   
-	
-   /**
     * Input Document is the XML formatted query from either the parseQuery
     * or parseFullNodeQuery method in this class. The prepareQuery method 
     * converts this XML string into an XQL query and sends it to the 
@@ -143,7 +73,7 @@ public class XQueryExecution
     * @return XML docuemnt object representing the result of the query.
     * @throws ClassNotFoundException
     */   
-   private static Document prepareQuery (Document query) {
+   public static String createXQL (Document query) {
 
    /**
     * First build a DOM tree out of the XML query.  
@@ -173,7 +103,6 @@ public class XQueryExecution
          Element docElement = (Element)doc.getDocumentElement();//.getFirstChild();
          NodeList ssList = docElement.
                            getElementsByTagName("selectionSequence");
-         //log.info("lenght ofsslist = " + ssList.getLength());
          if (ssList.getLength() != 0){
          /**
           * If the query is well formatted, proceed to convert query to XQL
@@ -181,7 +110,8 @@ public class XQueryExecution
           * the xmlToXQL method.
           */
 
-            xml_to_xql = xmlToXQL(ssList.item(0));
+            xml_to_xql = "//vr:Resource[" + xmlToXQL(ssList.item(0)) + "]";
+            return xml_to_xql;
          }
          else {
             msg = 
@@ -195,204 +125,11 @@ public class XQueryExecution
          e.printStackTrace();
          log.error(e);
       }
-         
       log.debug("end prepareQuery");
-      return runQuery(xml_to_xql);
+      //throw an excepiton instead of null.
+      return null;
    }
    
-   public static URL getQueryUrl(String xql)
-   {
-      log.debug("start getQueryUrl");
-      String location = conf.getString("exist.db.url");
-      String numberOfResourcesReturned = conf.getString(
-                                             "exist.query.returncount");
-      if(numberOfResourcesReturned == null || 
-         numberOfResourcesReturned.trim().length() <= 0)
-      {
-         numberOfResourcesReturned = "25";
-      }
-      
-      URL fullQueryURL = null;
-      try {
-         String versionNumber = conf.getString(
-                                    "org.astrogrid.registry.version");
-         location += "/servlet/db/astrogridv" + versionNumber + 
-                     "?_query=" + URLEncoder.encode(xql,"UTF-8") +
-                     "&_howmany=" + 
-                     numberOfResourcesReturned;
-         log.info("the full query url = " + location);         
-         fullQueryURL = new URL(location);
-         log.info("the fullQueryURL = " + fullQueryURL.toString());
-      } 
-      catch(MalformedURLException mue) {
-         mue.printStackTrace();
-         log.error(mue);
-      }
-      catch(UnsupportedEncodingException uee) {
-         uee.printStackTrace();
-         log.error(uee);
-      }
-      log.debug("end getQueryUrl");
-      return fullQueryURL;
-   }
-   
-   public static URL getUpdateURL(String collectionName, String xmlDocName)
-   {
-      log.debug("start getUpdateURL");
-      String location = conf.getString("exist.db.url");
-      location += "/servlet/db/" + collectionName + "/" + xmlDocName;
-      URL fullQueryURL = null;
-      log.info("the full update put url = " + location);
-      try {
-         fullQueryURL = new URL(location);
-      }
-      catch(MalformedURLException mue) {
-         mue.printStackTrace();
-         log.error(mue);   
-      } 
-      log.debug("end getUpdateURL");
-      return fullQueryURL;
-   } 
-   
-   public static boolean validReplace(Document compareDoc,
-                                      String compareElement)
-   {
-      log.debug("start validReplace");
-        
-      return true;      
-   }
-   
-   public static Document runQuery(String xql) {
-      log.debug("start runQuery");
-      Document queryDoc = null;
-      String fullQuery = null;
-      log.info("the xmlxql query = " + xql);
-      try {
-         long beginQ = System.currentTimeMillis();
-         log.info("Query begin time: " + beginQ);
-         fullQuery = "//*:Resource[" + xql + "]";
-         queryDoc = DomHelper.newDocument(getQueryUrl(fullQuery));
-         long endQ = System.currentTimeMillis();
-         log.info("Query end time: " + endQ);
-         log.info("Query total time: " + (endQ - beginQ));
-      }
-      catch(Exception e) {
-         e.printStackTrace();
-         log.error(e);   
-      }
-      log.debug("end runQuery");
-      return queryDoc;
-   }
-   
-   public static void updateQuery(String type, String collectionName,
-                                  String identifier, Node updateNode)
-   {
-      log.debug("start updateQuery");
-        
-      //Document queryDoc = runQuery(xql);      
-      //if(!validReplace(queryDoc, identifier )) return;
-            
-      try {
-         log.info("THE IDENTIFIER = " +  identifier);
-         String xmlDocName = identifier.replaceAll("[^\\w*]","_") + "." + type;
-         log.info("THE REPLACED DOC NAME = " + xmlDocName);
-         HttpURLConnection huc = (HttpURLConnection)
-                                 getUpdateURL(collectionName, xmlDocName).
-                                 openConnection();
-         huc.setRequestProperty("Content-Type", "text/xml");
-         //huc.setDoInput(false);
-         huc.setDoOutput(true);
-         huc.setRequestMethod("PUT");
-         huc.connect();
-         DataOutputStream dos = new DataOutputStream(huc.getOutputStream());
-         DomHelper.ElementToStream((Element)updateNode,dos);
-         dos.flush();
-         log.info("closing outputstream and content type = " +
-                  huc.getContentType());
-         dos.close();
-         log.info("disconnecting");
-         huc.disconnect();
-      }
-      catch(Exception e) {
-         e.printStackTrace();
-         log.error(e);   
-      }
-      log.debug("end updateQuery");
-   }//updateQuery
-   
-//   private static Collection loadDataBase() throws Exception {
-//     String driver = "org.exist.xmldb.DatabaseImpl";
-//     String uri = conf.getString("registry.exist.db.uri");//"xmldb:exist://localhost:8080/exist/xmlrpc"; 
-//      
-//     String collection = "/db";
-//     Class cl = Class.forName(driver);
-//     Database database = (Database)cl.newInstance();
-//     DatabaseManager.registerDatabase(database);
-//     log.info("Loading Database URI: " + uri + collection);
-//     Collection col = DatabaseManager.getCollection(uri+collection,"admin","");
-//     return col;
-//  }
-//    
-//   public static Document runQuery(String xql, String xmlDocName, Node updateNode) {
-//      
-//      Collection col = null;
-//      try {
-//         
-//         String fullQuery = null;
-//         log.info("the xmlxql query = " + xql);
-//         long beginQ = System.currentTimeMillis();
-//         col = loadDataBase();         
-//         XQueryService xqs = (XQueryService) col.getService("XQueryService", "1.0");
-//         log.info("Time taken to load database service = " + (System.currentTimeMillis() - beginQ));
-//         beginQ = System.currentTimeMillis();
-//         log.info("Query begin time: " + beginQ);
-//         fullQuery = "document()//*:Resource[" + xql + "]";
-//         log.info("Query being Ran = " + fullQuery);
-//         ResourceSet rset = xqs.query(fullQuery);
-//         long endQ = System.currentTimeMillis();
-//         log.info("Query end time: " + endQ);
-//         log.info("Query total time: " + (endQ - beginQ));
-//         Document resultDoc = DomHelper.newDocument();
-//         Element root = resultDoc.createElementNS("http://www.ivoa.net/xml/VOResource/v0.9","VODescription");
-//         root.setPrefix("vr");
-//         resultDoc.appendChild(root);
-//         resultDoc.
-//            
-//         Node nd = null;
-//         for(int i = 0;i < rset.getSize();i++) {
-//            beginQ = System.currentTimeMillis();
-//            XMLResource resTime = (XMLResource)rset.getResource(i);
-// //           log.info("the resTime ids = " + resTime.getId() + " the doc id = " + resTime.getDocumentId());
-//            nd = resTime.getContentAsDOM();
-//            Node resultNode = resultDoc.importNode(nd,true);
-//            root.appendChild(resultNode);
-//            if(updateNode != null && rset.getSize() == 1) {
-//               Resource deleteResource = col.getResource(resTime.getDocumentId());
-//               col.removeResource(deleteResource);
-//               log.info("Time taken to remove document = " + (System.currentTimeMillis() - beginQ));
-//            }
-//         }
-//         if(updateNode != null) {
-//            beginQ = System.currentTimeMillis();
-//            xmlDocName = xmlDocName.replaceAll("^\\w","_");
-//            log.info("Updating xml Document name = " + xmlDocName);            
-//            XMLResource addResource = (XMLResource)col.createResource(xmlDocName,"XMLResource");
-//            addResource.setContentAsDOM(updateNode);
-//            col.storeResource(addResource);
-//            log.info("Time taken to add/update document = " + (System.currentTimeMillis() - beginQ));
-//         }
-//         if(col != null) {
-//            col.close();
-//         }            
-//         return resultDoc;
-//      }catch(Exception e) {
-//         col = null;
-//         e.printStackTrace();
-//         log.error(e);   
-//      }
-//      return null;
-//   }
-
    private static String xmlToXQL(Node node) {
     /**
      * The xmlToXQL method converts an XML node query to XQL. Input 

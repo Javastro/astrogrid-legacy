@@ -25,7 +25,7 @@ import junit.framework.*;
 import java.io.File;
 import java.util.Date;
 import org.astrogrid.registry.server.admin.RegistryAdminService;
-import org.astrogrid.registry.server.RegistryFileHelper;
+import org.astrogrid.registry.server.RegistryServerHelper;
 
 
 public class RegistryAdminJunit extends TestCase{ 
@@ -89,7 +89,7 @@ public class RegistryAdminJunit extends TestCase{
   public void testMultCEA() throws Exception {
      if (DEBUG_FLAG) System.out.println("Begin testMultCEA");
      if(dbURI == null) return;
-     Document doc = ras.update(ras.conf.getDom("registry.junit.test/MultCEA"));      
+     Document doc = ras.Update(ras.conf.getDom("registry.junit.test/MultCEA"));      
      if(doc != null)      
         if (DEBUG_FLAG) System.out.println("loadRegistry returned = " + XMLUtils.DocumentToString(doc));
   }

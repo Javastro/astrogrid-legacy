@@ -28,6 +28,8 @@ import java.util.Iterator;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.common.XSLHelper;
 
+import org.astrogrid.util.DomHelper;
+
 import javax.xml.namespace.QName;
 import javax.xml.rpc.ServiceException;
 import javax.wsdl.xml.WSDLReader;
@@ -58,7 +60,7 @@ import org.astrogrid.store.Ivorn;
  * @link http://www.ivoa.net/twiki/bin/view/IVOA/IVOARegWp03
  * @author Kevin Benson
  */
-public class RegistryService  { 
+public class QueryRegistry  { 
  
    /**
     * target end point  is the location of the webservice. 
@@ -67,7 +69,9 @@ public class RegistryService  {
    
    private boolean useCache = false;
    
-   private static final String NAMESPACE_URI =  "http://query.server.registry.astrogrid.org";
+   private static final String NAMESPACE_URI =  "http://www.ivoa.net/schemas/services/QueryRegistry/wsdl";
+   
+   private static final String QUERY_URL_PROPERTY = "org.astrogrid.registry.query.endpoint";   
       
    public static Config conf = null;
    
@@ -83,8 +87,8 @@ public class RegistryService  {
     * Empty constructor that defaults the end point to local host.
     * @author Kevin Benson
     */
-   public RegistryService() {
-      this(null);
+   public QueryRegistry() {
+      this(conf.getUrl(QUERY_URL_PROPERTY,null));
    }
     
    
@@ -93,7 +97,7 @@ public class RegistryService  {
     * @param endPoint location to the web service.
     * @author Kevin Benson
     */     
-   public RegistryService(URL endPoint) {
+   public QueryRegistry(URL endPoint) {
       if(DEBUG_FLAG) System.out.println("entered const(url) of RegistryService");
       this.endPoint = endPoint;
       if(this.endPoint == null) {
@@ -122,16 +126,16 @@ public class RegistryService  {
       _call.setEncodingStyle(null);
       return _call;       
    }
-      
-   public Document submitQuery(String query) throws RegistryException {
-      if(DEBUG_FLAG) System.out.println("entered submitQueryStringDOM()");      
+   
+   public Document searchFromSADQL(String adql) throws RegistryException  {
+      //send to sadql->adql parser.
+      //call return search(adql);
+      return null;
+   }
+   
+   public Document search(String xadql) throws RegistryException  {
       try {
-         Reader reader2 = new StringReader(query);
-         InputSource inputSource = new InputSource(reader2);
-         DocumentBuilder registryBuilder = null;
-         registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-         Document doc = registryBuilder.parse(inputSource);
-         return submitQuery(doc);
+         return search(DomHelper.newDocument(xadql));
       }catch(ParserConfigurationException pce) {
          throw new RegistryException(pce);
       }catch(IOException ioe) {
@@ -139,7 +143,49 @@ public class RegistryService  {
       }catch(SAXException sax) {
          throw new RegistryException(sax);   
       }finally {
-         if(DEBUG_FLAG) System.out.println("exiting submitQueryStringDOM()");
+
+      }
+   }
+   
+   public Document search(Document adql) throws RegistryException {
+      Element currentRoot = adql.getDocumentElement();
+      Element newRoot = adql.createElementNS(NAMESPACE_URI,"Search");
+      newRoot.appendChild(currentRoot);
+      adql.appendChild(newRoot);
+      try {
+         Call call = getCall();
+         SOAPBodyElement sbeRequest = new SOAPBodyElement(adql.getDocumentElement());      
+         sbeRequest.setName("Search");
+         sbeRequest.setNamespaceURI(NAMESPACE_URI);
+         Vector result = (Vector) call.invoke (new Object[] {sbeRequest});
+         SOAPBodyElement sbe = null;
+         if(result.size() > 0) {         
+            sbe = (SOAPBodyElement) result.get(0);
+            return sbe.getAsDocument(); 
+         }
+      }catch(RemoteException re) {
+         throw new RegistryException(re);
+      }catch(ServiceException se) {
+         throw new RegistryException(se);
+      }
+      catch(Exception e) {
+         throw new RegistryException(e);
+      }
+      return null;
+   }
+      
+   public Document submitQuery(String query) throws RegistryException {
+      if(DEBUG_FLAG) System.out.println("entered submitQueryStringDOM()");      
+      try {
+         return submitQuery(DomHelper.newDocument(query));
+      }catch(ParserConfigurationException pce) {
+         throw new RegistryException(pce);
+      }catch(IOException ioe) {
+         throw new RegistryException(ioe);   
+      }catch(SAXException sax) {
+         throw new RegistryException(sax);   
+      }finally {
+         
       }
    }
    
@@ -168,9 +214,9 @@ public class RegistryService  {
          sbeRequest.setNamespaceURI(NAMESPACE_URI);
          Vector result = (Vector) call.invoke (new Object[] {sbeRequest});
          SOAPBodyElement sbe = null;
-         if(result.size() > 0) {
-            sbe  = (SOAPBodyElement) result.get(0);
-            return sbe.getAsDocument();  
+         if(result.size() > 0) {         
+            sbe = (SOAPBodyElement) result.get(0);
+            return sbe.getAsDocument(); 
          }
       }catch(RemoteException re) {
          throw new RegistryException(re);
@@ -184,7 +230,7 @@ public class RegistryService  {
    }
    
    public Document loadRegistry()  throws RegistryException  {
-      if(DEBUG_FLAG) System.out.println("loadRegistryDOM()");
+      if(DEBUG_FLAG) System.out.println("loadRegistry");
       Document doc = null;
       Document resultDoc = null;
       try {
@@ -205,9 +251,9 @@ public class RegistryService  {
                     
          Vector result = (Vector) call.invoke (new Object[] {sbeRequest});
          SOAPBodyElement sbe = null;
-         if(result.size() > 0) {         
-            sbe = (SOAPBodyElement) result.get(0);
-            return sbe.getAsDocument();
+         if(result.size() > 0) {
+          sbe = (SOAPBodyElement) result.get(0);
+          return sbe.getAsDocument();
          }
       }catch(RemoteException re) {
          throw new RegistryException(re);
@@ -219,18 +265,12 @@ public class RegistryService  {
       return null;
    }
       
-   public HashMap managedAuthorities() throws RegistryException {
+   public HashMap managedAuthorities() throws RegistryException, IOException {
       if(DEBUG_FLAG) System.out.println("entered managedAuthorities");      
       HashMap hm = null;
       Document doc = loadRegistry();      
       if(doc != null) {
-         NodeList nl = doc.getElementsByTagNameNS("vg","ManagedAuthority" );
-         //Okay for some reason vg seems to pick up the ManagedAuthority.
-         //Lets try to find it by the url namespace.
-         if(nl.getLength() == 0) {
-            nl = doc.getElementsByTagNameNS("http://www.ivoa.net/xml/VORegistry/v0.2","ManagedAuthority" );
-         }
-
+         NodeList nl = DomHelper.getNodeListTags(doc,"ManagedAuthority","vg");
          hm = new HashMap();
          for(int i = 0;i < nl.getLength();i++) {
             hm.put(nl.item(i).getFirstChild().getNodeValue(),null);   
@@ -298,6 +338,8 @@ public class RegistryService  {
          }catch(RegistryException re) {
             if(DEBUG_FLAG) System.out.println("status message for getEndPointByIdentifier: RegistryException was thrown (probably not a WebService InvocationType try to return the AccessURL)");
             //Log warning this was supposed to be a web service.
+         }catch(IOException ioe) {
+            throw new RegistryException(ioe);   
          }finally {
             if(DEBUG_FLAG) System.out.println("exiting getEndPointByIdentifier with ident = " + ident);
          }
@@ -305,43 +347,21 @@ public class RegistryService  {
       return returnVal;      
    }
 
-   public WSDLBasicInformation getBasicWSDLInformation(Ivorn ident) throws RegistryException {
+   public WSDLBasicInformation getBasicWSDLInformation(Ivorn ident) throws RegistryException, IOException {
       return getBasicWSDLInformation(ident.getPath());   
    }
    
-   private String getXMLValue(Document doc,String lookFor) {
-      NodeList nl = doc.getElementsByTagName(lookFor);
-      if(nl.getLength() > 0){ 
-         return nl.item(0).getFirstChild().getNodeValue();   
-      } 
-      nl = doc.getElementsByTagName("vr:" + lookFor);
-      if(nl.getLength() > 0){ 
-         return nl.item(0).getFirstChild().getNodeValue();   
-      } 
-      nl = doc.getElementsByTagNameNS("vr",lookFor);      
-      if(nl.getLength() > 0){ 
-         return nl.item(0).getFirstChild().getNodeValue();   
-      } 
-      
-      nl = doc.getElementsByTagNameNS("http://www.ivoa.net/xml/VOResource/v0.9",lookFor);      
-      if(nl.getLength() > 0){ 
-         return nl.item(0).getFirstChild().getNodeValue();   
-      } 
-      return null;
-   }
-      
-
-   public WSDLBasicInformation getBasicWSDLInformation(String ident) throws RegistryException {
+   public WSDLBasicInformation getBasicWSDLInformation(String ident) throws RegistryException, IOException {
       if(DEBUG_FLAG) System.out.println("entered getBasicWSDLInformation with ident = " + ident);
 
       Document voDoc = getResourceByIdentifier(ident);
       WSDLBasicInformation wsdlBasic = null;
-      String invocType = getXMLValue(voDoc,"Invocation");
+      String invocType = DomHelper.getNodeTextValue(voDoc,"Invocation","vr");
       if(invocType == null) {
          throw new RegistryException("cannot find invocation type");  
       }
       if("WebService".equals(invocType)) {
-         String accessURL = getXMLValue(voDoc,"AccessURL");
+         String accessURL = DomHelper.getNodeTextValue(voDoc,"AccessURL","vr");
          if(accessURL == null) {
             throw new RegistryException("Cound not find an AccessURL with a web service invocation type");
          }

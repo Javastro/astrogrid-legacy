@@ -155,7 +155,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-registry-common</artifactId>
-            <version>SNAPSHOT</version>
+	        <version>${pom.currentVersion}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>
@@ -163,10 +163,19 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-common</artifactId>
-            <version>SNAPSHOT</version>
+	        <version>${pom.currentVersion}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>
+
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-exist-server</artifactId>
+	        <version>${pom.currentVersion}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+        </dependency>
+
         
         <dependency>
         	<artifactId>commons-jxpath</artifactId>
@@ -208,7 +217,7 @@
             <version>20030211.213356</version>
         </dependency>        
         
-        <dependency >
+        <dependency>
             <id>axis</id>
             <version>1.1</version>
         </dependency>

@@ -130,6 +130,18 @@
         </dependency>
         
         <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-exist-server</artifactId>
+	        <version>${pom.currentVersion}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>            
+        </dependency>
+        
+        
+        <dependency>
         	<artifactId>commons-jxpath</artifactId>
             <groupId>commons-jxpath</groupId>
             <version>1.1</version>

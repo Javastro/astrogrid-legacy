@@ -15,6 +15,16 @@
   <service name="RegistryAdmin" style="message">
       <parameter name="wsdlTargetNamespace" value="urn:org.astrogrid.registry"/>
       <parameter name="className" value="org.astrogrid.registry.server.admin.RegistryAdminService"/>
-      <parameter name="allowedMethods" value="getStatus update"/>
+      <parameter name="allowedMethods" value="getStatus Update"/>
   </service>
+  
+  <service name="RegistryUpdate" provider="java:MSG" style="message" use="literal">
+      <parameter name="wsdlTargetNamespace" value="http://www.ivoa.net/schemas/services/UpdateRegistry/wsdl"/>
+      <parameter name="wsdlServiceElement" value="UpdateRegistryService"/>
+      <parameter name="wsdlServicePort" value="UpdateRegistrySOAPPort"/>
+      <parameter name="className" value="org.astrogrid.registry.server.admin.RegistryAdminService"/>
+      <parameter name="wsdlPortType" value="UpdateRegistryPortType"/>
+      <parameter name="allowedMethods" value="Update"/>
+   </service>  
+  
 </deployment>

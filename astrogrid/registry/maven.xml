@@ -22,14 +22,14 @@
     
     <goal name="astrogrid-deploy-site">
     	<attainGoal name="astrogrid-build-site" />
-        <attainGoal name="site:sshdeploy"/>
+        <attainGoal name="site:fsdeploy"/>
     </goal>
  
 
     <!--+
         | Hook for build script site:fsdeploy
         +-->
-    <preGoal name="site:sshdeploy">
+    <preGoal name="site:fsdeploy">
         <ant:echo message="${pom.artifactId} - site:fsdeploy"/>
         <ant:echo message=" build  location : ${maven.docs.dest}"/>
         <ant:echo message=" deploy location : ${site.deploy.directory}"/>

@@ -46,6 +46,92 @@ public class XSLHelper {
       return loader.getResourceAsStream(DEFAULT_CASTOR_XML);
    }
    
+
+   public String transformADQLToXQL(String versionNumber, Node doc) {
+      
+      Source xmlSource = new DOMSource(doc);
+      Document resultDoc = null;
+      
+      ClassLoader loader = this.getClass().getClassLoader();
+      InputStream is = null;
+      is = loader.getResourceAsStream("ADQLToXQL-" + versionNumber + ".xsl");
+      System.out.println("the file resource = " + "ADQLToXQL-" + versionNumber + ".xsl");
+      Source xslSource = new StreamSource(is);
+      DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+      
+      try {
+         builderFactory.setNamespaceAware(true);
+         DocumentBuilder builder = builderFactory.newDocumentBuilder();
+         resultDoc = builder.newDocument();
+         
+         TransformerFactory transformerFactory = TransformerFactory.newInstance();
+         //DOMResult result = new DOMResult(resultDoc);
+         StringWriter sw = new StringWriter();
+         StreamResult result = new StreamResult(sw);
+         
+         Transformer transformer = transformerFactory.newTransformer(xslSource);         
+         transformer.transform(xmlSource,result);
+         String xqlResult = sw.toString();
+         if (xqlResult.startsWith("<?")) {
+            xqlResult = xqlResult.substring(xqlResult.indexOf("?>")+2);
+         }
+         
+         
+         xqlResult = xqlResult.replaceAll("&gt;", ">").replaceAll("&lt;", "<");
+         return xqlResult;
+         //System.out.println("the resultwriter transform = " + sw.toString());
+         //System.out.println("The result of adql to xql = " + DomHelper.DocumentToString(resultDoc));
+      }catch(ParserConfigurationException pce) {
+         pce.printStackTrace();
+      }catch(TransformerConfigurationException tce) {
+         tce.printStackTrace();
+      }catch(TransformerException te) {
+         te.printStackTrace();
+      }
+      return null;
+   }
+   
+   
+   public Document transformExistResult(String versionNumber, boolean withResponseElement, Node doc) {
+      
+      Source xmlSource = new DOMSource(doc);
+      Document resultDoc = null;
+      
+      ClassLoader loader = this.getClass().getClassLoader();
+      InputStream is = null;
+      if(withResponseElement) {      
+         is = loader.getResourceAsStream("ExistRegistryResult" + versionNumber + "WithResponse.xsl");
+      } else {
+         is = loader.getResourceAsStream("ExistRegistryResult" + versionNumber + ".xsl");
+      }
+      
+      Source xslSource = new StreamSource(is);
+      
+      DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+      
+      try {
+         builderFactory.setNamespaceAware(true);
+         DocumentBuilder builder = builderFactory.newDocumentBuilder();
+         resultDoc = builder.newDocument();
+         //DocumentFragment df = resultDoc.createDocumentFragment();
+         TransformerFactory transformerFactory = TransformerFactory.newInstance();
+         
+         DOMResult result = new DOMResult(resultDoc);
+         Transformer transformer = transformerFactory.newTransformer(xslSource);
+         
+         transformer.transform(xmlSource,result);
+         //System.out.println("the resultwriter transform = " + sw.toString());
+      }catch(ParserConfigurationException pce) {
+         pce.printStackTrace();
+      }catch(TransformerConfigurationException tce) {
+         tce.printStackTrace();
+      }catch(TransformerException te) {
+         te.printStackTrace();
+      }
+      return resultDoc;
+   }
+   
+   
    
    
    public Document transformDatabaseProcess(Node doc) {

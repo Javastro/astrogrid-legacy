@@ -11,5 +11,6 @@
 
   <!-- Services from RegistryInterfaceService WSDL service -->
 
-  <service name="Registry"/>
+  <service name="RegistryAdmin"/>
+  <service name="RegistryUpdate"/>
 </undeployment>

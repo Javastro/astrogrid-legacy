@@ -8,7 +8,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.NamedNodeMap;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
-import org.astrogrid.registry.server.RegistryFileHelper;
+import org.astrogrid.registry.server.RegistryServerHelper;
 import javax.xml.parsers.ParserConfigurationException;
 import java.util.HashMap;
 import java.util.Date;
@@ -35,6 +35,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.net.MalformedURLException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.axis.AxisFault;
+import org.astrogrid.xmldb.eXist.server.UpdateDBService;
 
 /**
  * Class Name: RegistryAdminService
@@ -47,8 +49,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * 
  */
-public class RegistryAdminService implements
-                       org.astrogrid.registry.common.RegistryAdminInterface {
+public class RegistryAdminService {
                           
    private static final Log log = 
                                LogFactory.getLog(RegistryAdminService.class);
@@ -56,137 +57,29 @@ public class RegistryAdminService implements
    
    private static final String AUTHORITYID_PROPERTY = 
                                "org.astrogrid.registry.authorityid";
+   private static String versionNumber = null;
+   
+   private static HashMap manageAuths, otherAuths;
 
    static {
       if(conf == null) {
          conf = org.astrogrid.config.SimpleConfig.getSingleton();
+         versionNumber = conf.getString("org.astrogrid.registry.version");
+         manageAuths = new HashMap();
+         otherAuths = new HashMap();
       }      
    }
    
-   /**
-    * This method will soon be factored out because it is also in RegistryFileHelper class.
-    * @param doc
-    * @param tagName
-    * @param prefix
-    * @return
-    */
-   public NodeList getNodeListTags(Document doc,String tagName, String prefix)
-   {
-      log.debug("start getNodeListTags");
-      NodeList nl = doc.getElementsByTagName(tagName);
-      
-      if(nl.getLength() == 0) {
-         nl = doc.getElementsByTagNameNS(prefix,tagName );
-      }
-      if(nl.getLength() == 0) {
-         nl = doc.getElementsByTagName(prefix + ":" + tagName );
-      }
-      log.debug("end getNodeListTags");
-      return nl;
-   }
    
-   /**
-    * Updates a xml document that is a schema.
-    * 
-    * @param update a DOM object of a xml schema.
-    */
-   private void updateSchema(Document update) {
-      log.debug("start updateSchema");
-      //get all the schema tags.
-      NodeList nl = getNodeListTags(update,"schema","xs");
-      log.info("the nodelist length = " + nl.getLength());
-      //if there are none then leave.
-      if(nl == null || nl.getLength() == 0) {
-         //throw some type of exception;
-         return;   
-      }
-      //go through al the schema elements.
-      for(int i = 0;i < nl.getLength();i++) {
-         // use the targetnamespace for a unique name to the xml resource in 
-         // the exist db.
-         Node ident = ((Element)nl.item(i)).
-                                           getAttributeNode("targetNamespace");
-         String identifier = null;
-         if(ident != null && ident.getNodeValue() != null) {
-            identifier = ident.getNodeValue();
-         }
-         //if there was no targetNamespace then use the current time.
-         if(identifier == null) {
-            identifier = String.valueOf(System.currentTimeMillis());
-         }
-         log.info("the identifier in updateSchema = " + identifier);
-         //update the xml.
-         XQueryExecution.updateQuery("xsd","schemas",identifier,nl.item(i));
-      }//for
-      log.debug("end updateSchema");
-   }
-   
-   /**
-    * Updates a stylesheet xsl document into the database.
-    * @param update an XML dom object of a stylesheet
-    */
-   private void updateStyleSheet(Document update) {
-      log.debug("start updateStyleSheet");
-      //get the stylesheet tags.
-      NodeList nl = getNodeListTags(update,"stylesheet","xsl");
-      log.info("the nodelist length = " + nl.getLength());
-      //if there is no stylesheet elements then return.
-      if(nl == null || nl.getLength() == 0) {
-         //throw some type of exception;
-         return;   
-      }
-      //Need to make something unique, but for now this is just one
-      //style sheet unique to the registry.
-      for(int i = 0;i < nl.getLength();i++) {
-         XQueryExecution.updateQuery("xsl","xsl","regstylesheet",nl.item(i));
-      }//for
-      log.debug("end updateSchema");
-   }
-   
-   private final int RESOURCE_TYPE = 0;
-   private final int SCHEMA_TYPE =  1;
-   private final int STYLESHEET_TYPE = 2;
-   
-   /**
-    * Check the xml DOM object to see if it is a astrogrid resource, schema, or
-    * a stylesheet
-    * @param update
-    * @return
-    */
-   private int getUpdateType(Document update) {
-      log.debug("start getUpdateType");
-      NodeList nl = getNodeListTags(update,"Resource","vr");
-      if(nl.getLength() > 0)
-         return RESOURCE_TYPE;
-      nl = getNodeListTags(update,"schema","xs");
-      if(nl.getLength() > 0)
-         return SCHEMA_TYPE;
-      nl = getNodeListTags(update,"stylesheet","xsl");
-      if(nl.getLength() > 0)
-         return STYLESHEET_TYPE;
-      return -1;
-   }
-
    /**
    * Determines what type of xml document it is, such as a Resource entry
    * a schema file, or a stylesheet and calls the correct update method for
    * updating to the database.
    */   
-   public Document update(Document update) {
+   public Document Update(Document update) throws AxisFault {
       log.debug("start update");
       log.info("entered update on server side");
-      int updateType = getUpdateType(update);
-      if(updateType == -1) {
-         //throw an exception
-         return null;
-      }else if(updateType == RESOURCE_TYPE) {
-         return updateResource(update);
-      }else if(updateType == SCHEMA_TYPE) {
-         updateSchema(update);
-      }else if(updateType == STYLESHEET_TYPE) {
-         updateStyleSheet(update);
-      }
-      return null;
+      return updateResource(update);
    }
    
    /**
@@ -204,23 +97,54 @@ public class RegistryAdminService implements
     * @author Kevin Benson
     * 
     */   
-   public Document updateResource(Document update) {
+   public Document updateResource(Document update) throws AxisFault {
       log.debug("start updateResource");
       long beginUpdate = System.currentTimeMillis();
+
+      String authorityID = conf.getString("org.astrogrid.registry.authorityid");
+      
       // Transform the xml document into a consistent way.
       // xml can come in a few various forms.  This xsl will make it
       // consistent in the db and throughout this registry.
       XSLHelper xs = new XSLHelper();      
       Document xsDoc = xs.transformDatabaseProcess((Node)update.
                                                          getDocumentElement());
+                     
+      UpdateDBService udbService = new UpdateDBService();
+      String collectionName = "astrogridv" + versionNumber;                                                         
       log.info("server side update the xsDoc = " + 
                DomHelper.DocumentToString(xsDoc));
-      NodeList nl = getNodeListTags(xsDoc,"Resource","vr");
+      NodeList nl = null;
+      try {
+         nl = DomHelper.getNodeListTags(xsDoc,"Resource","vr");
+      } catch(IOException ioe) {
+         throw new AxisFault("No Resources to update");
+      }
       
-      // Get the managing authority id's and the authority id's that
-      // other registries used.
-      HashMap manageAuths = RegistryFileHelper.getManagedAuthorities();
-      HashMap otherAuths  = RegistryFileHelper.getOtherManagedAuthorities();
+      
+      try {
+         manageAuths = RegistryServerHelper.getManagedAuthorities();
+      }catch(SAXException se) {
+         //throw new AxisFault("Could not parse xml for getting the Managed Authorities", se);
+      }catch(MalformedURLException me) {
+       //  throw new AxisFault("Could not construct url to the query database", me);
+      }catch(ParserConfigurationException pce) {
+       //  throw new AxisFault("Server configuration error", pce);
+      }catch(IOException ioe) {
+       //  throw new AxisFault("IO problem", ioe);   
+      }
+      try {
+         otherAuths = RegistryServerHelper.getOtherManagedAuthorities();
+      }catch(SAXException se) {
+         //throw new AxisFault("Could not parse xml for getting the Managed Authorities", se);
+      }catch(MalformedURLException me) {
+         //  throw new AxisFault("Could not construct url to the query database", me);
+      }catch(ParserConfigurationException pce) {
+         //  throw new AxisFault("Server configuration error", pce);
+      }catch(IOException ioe) {
+         //  throw new AxisFault("IO problem", ioe);   
+      }
+      
       ArrayList al = new ArrayList();
       String xql = null;
       DocumentFragment df = null;
@@ -234,7 +158,7 @@ public class RegistryAdminService implements
       log.info("here is the nl length = " + nl.getLength() + 
                " and manauths size = " + manageAuths.size() + 
                " and otherAuths size = " + otherAuths.size());
-
+      
       final int resourceNum = nl.getLength();
       //go through the various resource entries.
       for(int i = 0;i < resourceNum;i++) {
@@ -253,12 +177,19 @@ public class RegistryAdminService implements
             root = xsDoc.createElement("AstrogridResource");
             root.appendChild(currentResource);
 
-            RegistryFileHelper.addStatusMessage("Entering new entry: " + 
+            RegistryServerHelper.addStatusMessage("Entering new entry: " + 
                                                 tempIdent);
-            XQueryExecution.updateQuery("xml","astrogridv" + versionNumber,
-                                        tempIdent,root);
-            XQueryExecution.updateQuery("xml","statv" + versionNumber,
-                                        tempIdent,createStats(tempIdent));
+            try {
+               udbService.updateQuery(tempIdent,"xml",collectionName,root);
+               udbService.updateQuery(tempIdent,"xml","statv" + versionNumber,createStats(tempIdent));
+            } catch(MalformedURLException mue) {
+               log.error(mue);
+               throw new AxisFault("Malformed URL on the update", mue);
+            } catch(IOException ioe) {
+               log.error(ioe);
+               throw new AxisFault("IO problem", ioe);
+            }
+
          }else {
             // It is not one this registry manages, so check it's attributes
             // and if it is a Registry type then go ahead and update it
@@ -279,14 +210,24 @@ public class RegistryAdminService implements
                      log.info("This is an RegistryType");
                      root = xsDoc.createElement("AstrogridResource");
                      root.appendChild(currentResource);
-                     RegistryFileHelper.addStatusMessage(
+                     RegistryServerHelper.addStatusMessage(
                               "Entering new entry: " + tempIdent);
                      //update this registry resource into our registry.
-                     XQueryExecution.updateQuery("xml","astrogridv" +
-                                                 versionNumber,tempIdent,root);
-                     XQueryExecution.updateQuery("xml","statv" +
-                                                 versionNumber,tempIdent,
-                                                 createStats(tempIdent));
+                     try {
+                        udbService.updateQuery(tempIdent,"xml",collectionName,root);
+                        udbService.updateQuery(tempIdent,"xml","statv" + versionNumber,createStats(tempIdent));
+                     } catch(MalformedURLException mue) {
+                        log.error(mue);
+                        throw new AxisFault("Malformed URL on the update", mue);
+                     } catch(IOException ioe) {
+                        log.error(ioe);
+                        throw new AxisFault("IO problem", ioe);
+                     }
+                     if(authorityID.equals(ident)) {
+                        manageAuths.put(ident,null);                        
+                     }else {
+                        otherAuths.put(ident,null);
+                     }
                   }else if(nodeVal != null && 
                            nodeVal.indexOf("AuthorityType") != -1)
                   {
@@ -295,7 +236,7 @@ public class RegistryAdminService implements
                      // registry as a new managed authority.
                      if(!otherAuths.containsKey((String)ident)) {
                         log.info(
-              "This is an AuthorityType and not managed by other authorities");
+                        "This is an AuthorityType and not managed by other authorities");
                         addManageError = false;
                         // Grab our current Registry resource we need to add
                         // a new managed authority tag.
@@ -306,12 +247,11 @@ public class RegistryAdminService implements
                         // so we can append a sibling to it, and
                         // use its info for creating another ManagedAuthority
                         // element.
-
                         Node manageNode = 
                                         getManagedAuthorityID(loadedRegistry);
                         if(manageNode != null) {
                            log.info(
-                     "creating new manage element for authorityid = " + ident);
+                             "creating new manage element for authorityid = " + ident);
                            // Create a new ManagedAuthority element.
                            Element newManage = loadedRegistry.
                                                createElementNS(
@@ -336,16 +276,19 @@ public class RegistryAdminService implements
                            root.appendChild(currentResource);
                            log.info(
                              "running query with new authorityentry = " + xql);
-                           RegistryFileHelper.addStatusMessage(
+                           RegistryServerHelper.addStatusMessage(
                               "Entering new entry: " + tempIdent);
+                           try {
+                              udbService.updateQuery(tempIdent,"xml",collectionName,root);
+                              udbService.updateQuery(tempIdent,"xml","statv" + versionNumber,createStats(tempIdent));
+                           } catch(MalformedURLException mue) {
+                              log.error(mue);
+                              throw new AxisFault("Malformed URL on the update", mue);
+                           } catch(IOException ioe) {
+                              log.error(ioe);
+                              throw new AxisFault("IO problem", ioe);
+                           }
 
-                           XQueryExecution.updateQuery("xml","astrogridv" +
-                                                        versionNumber,
-                                                        tempIdent,root);
-                           XQueryExecution.updateQuery("xml","statv" +
-                                                       versionNumber,
-                                                       tempIdent,
-                                                       createStats(tempIdent));
                            // Now get the information to re-update the
                            // Registry Resource which is for this registry.
                            ident = getAuthorityID(loadedRegistry.
@@ -361,15 +304,24 @@ public class RegistryAdminService implements
                                           createElement("AstrogridResource");
                            elem.appendChild(loadedRegistry.
                                             getDocumentElement());
-                           XQueryExecution.updateQuery("xml","astrogridv" + 
-                                                       versionNumber,tempIdent,
-                                                       elem);
+                           try {
+                              udbService.updateQuery(tempIdent,"xml",collectionName,elem);                                            
+                           } catch(MalformedURLException mue) {
+                              log.error(mue);
+                              throw new AxisFault("Malformed URL on the update", mue);
+                           } catch(IOException ioe) {
+                              log.error(ioe);
+                              throw new AxisFault("IO problem", ioe);
+                           }
+                           
+                           //XQueryExecution.updateQuery("xml","astrogridv" + 
+                           //                            versionNumber,tempIdent,
+                           //                            elem);
                            // reset our hashmap of the managed authorities.
                            // TODO: this is wrong should just add the new 
                            // ident to the hashmap and not re-query the db all
                            // over again.
-                           manageAuths = RegistryFileHelper.
-                                         doManageAuthorities();
+                           manageAuths.put(ident,null);
                         }else {
                            // This resource is already owned by another 
                            // Registry.
@@ -395,7 +347,7 @@ public class RegistryAdminService implements
                   " for ident  = " + tempIdent);
       }//for
        
-      // Constructs a small RegistryError element with all the
+      // Constructgs a small RegistryError element with all the
       // errored Resource that was not able to be updated in the db. 
       if(al != null && al.size() > 0) {
          try {
@@ -519,12 +471,12 @@ public class RegistryAdminService implements
     * 
     * @param xsDoc A DOM of XML of  one or more Resources.
     */
-   public void updateNoCheck(Document xsDoc) {
+   public void updateNoCheck(Document xsDoc) throws MalformedURLException, IOException {
       log.debug("start updateNoCheck");
 
       //log.info("This is xsDoc = " + XMLUtils.DocumentToString(xsDoc));
       //NodeList nl = xsDoc.getElementsByTagNameNS("vr","Resource" );
-      NodeList nl = getNodeListTags(xsDoc,"Resource","vr");
+      NodeList nl = DomHelper.getNodeListTags(xsDoc,"Resource","vr");
 
       String versionNumber = conf.getString("org.astrogrid.registry.version");
       ArrayList al = new ArrayList();
@@ -536,6 +488,9 @@ public class RegistryAdminService implements
       String resKey = null;
       boolean addManageError = false;
       String tempIdent = null;
+      String collectionName = "astrogridv" + versionNumber;
+      
+      UpdateDBService udbService = new UpdateDBService();
 
       // This does seem a little strange as if an infinte loop,
       // but later on an appendChild is performed which
@@ -551,10 +506,12 @@ public class RegistryAdminService implements
                   
          root = xsDoc.createElement("AstrogridResource");
          root.appendChild(currentResource);
-         RegistryFileHelper.
+         RegistryServerHelper.
                           addStatusMessage("Entering new entry: " + tempIdent);
-         XQueryExecution.updateQuery("xml","astrogridv" + versionNumber,
-                                     tempIdent,root);         
+         udbService.updateQuery(tempIdent,"xml",collectionName,root);                                                
+                          
+        // XQueryExecution.updateQuery("xml","astrogridv" + versionNumber,
+        //                             tempIdent,root);         
       }//for
       log.debug("end updateNoCheck");
    }
@@ -591,7 +548,7 @@ public class RegistryAdminService implements
    }
 
    /**
-    * Need to use RegistryFileHelper class to get the NodeList.
+    * Need to use RegistryServerHelper class to get the NodeList.
     * But leave for the moment.
     * @param doc
     * @return
@@ -622,7 +579,7 @@ public class RegistryAdminService implements
   
    /**
     * Gets the text out of the First authority id element.
-    * Need to use REgistryFileHelper class to get the NodeList. It has
+    * Need to use RegistryServerHelper class to get the NodeList. It has
     * already these common methods  in it.  Once it gets the NodeList
     * then return the text in the first child. 
     * @param doc xml element normally the full DOM root element.
@@ -655,7 +612,7 @@ public class RegistryAdminService implements
 
    /**
     * Gets the text out of the First ResourceKey element.
-    * Need to use REgistryFileHelper class to get the NodeList. It has
+    * Need to use RegistryServerHelper class to get the NodeList. It has
     * already these common methods  in it.  Once it gets the NodeList
     * then return the text in the first child. 
     * @param doc xml element normally the full DOM root element.
@@ -716,8 +673,7 @@ public class RegistryAdminService implements
 //   log.debug("start formInvalidAuthorityIDCheckQuery");
 //   String regAuthID = conf.getString(AUTHORITYID_PROPERTY);
 //   
-//   return ".//@*:type='RegistryType' and .//*:AuthorityID != '" + 
-//           regAuthID +"'";   
+//   return ".//@*:type='RegistryType' and .//*:AuthorityID != '" + regAuthID +"'";   
 //  }
 
  /**
@@ -735,7 +691,7 @@ public class RegistryAdminService implements
    * @author Kevin Benson
    * 
    */   
-   public Document getStatus(Document status) {
+   public Document getStatus(Document status) throws AxisFault {
 
       log.debug("start getStatus");
    
@@ -747,14 +703,17 @@ public class RegistryAdminService implements
          doc = registryBuilder.newDocument();
       
          Element elem = doc.createElement("status");
-         elem.appendChild(doc.createTextNode(RegistryFileHelper.
+         elem.appendChild(doc.createTextNode(RegistryServerHelper.
                                              getStatusMessage()));
          doc.appendChild(elem);
          log.info("Document returned for Status message = " +
                    DomHelper.DocumentToString(doc));
       } catch (ParserConfigurationException pce){
-         pce.printStackTrace();
          log.error(pce);
+         throw new AxisFault("Parser config problem", pce);
+      } catch (IOException ioe) {
+         log.error(ioe);
+         throw new AxisFault("IO problem", ioe);
       }
       log.debug("end getStatus");
       return doc;

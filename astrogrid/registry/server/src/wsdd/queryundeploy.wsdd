@@ -12,4 +12,5 @@
   <!-- Services from RegistryInterfaceService WSDL service -->
 
   <service name="Registry"/>
+  <service name="RegistryQuery"/>
 </undeployment>

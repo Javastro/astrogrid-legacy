@@ -141,8 +141,6 @@
 	     <mkdir dir="${basedir}/target/classes" />  
         <ant:copy verbose="false" todir="${maven.build.dest}">
             <ant:fileset dir="src/xsl">
-                <include name="CastorXSLProcess.xsl"/>
-                <include name="XSLDBProcess.xsl"/>
             </ant:fileset>
         </ant:copy>    
 	</preGoal>    

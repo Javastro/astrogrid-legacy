@@ -173,8 +173,4 @@
         <ant:echo message="copy junit xml contents"/>        
         <ant:copy overwrite="true" file="${basedir}/config/junitcache/registry.xml" toDir="${junit.template.data}"/>
     </preGoal>
-    
-    
-    
-
 </project>

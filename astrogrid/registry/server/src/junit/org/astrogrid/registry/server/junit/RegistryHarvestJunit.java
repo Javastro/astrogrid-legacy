@@ -25,7 +25,7 @@ import junit.framework.*;
 import java.io.File;
 import java.util.Date;
 import org.astrogrid.registry.server.harvest.RegistryHarvestService;
-import org.astrogrid.registry.server.RegistryFileHelper;
+import org.astrogrid.registry.server.RegistryServerHelper;
 
 
 public class RegistryHarvestJunit extends TestCase{ 
@@ -119,7 +119,7 @@ public class RegistryHarvestJunit extends TestCase{
          e.printStackTrace();
       }
    }      
-*/
+
 
    public void testHarvestResource() throws Exception {
       if (DEBUG_FLAG) System.out.println("Begin testHarvestResource");
@@ -136,7 +136,11 @@ public class RegistryHarvestJunit extends TestCase{
          e.printStackTrace();
       }
    }      
+*/   
+public void testSomething() {
    
+   
+}
    
    /*   
    public void testHarvestAll() throws Exception {

@@ -194,7 +194,7 @@ public class RegistryAdminService {
          registryBuilder = DocumentBuilderFactory.newInstance().
                                                  newDocumentBuilder();
          doc = registryBuilder.newDocument();
-         Element root = doc.createElementNS(NAMESPACE_URI,"update");
+         Element root = doc.createElementNS(NAMESPACE_URI,"Update");
          doc.appendChild(root);
          Node nd = doc.importNode(update.getDocumentElement(),true);
          root.appendChild(nd);
@@ -219,7 +219,7 @@ public class RegistryAdminService {
                DomHelper.DocumentToString(doc));
       SOAPBodyElement sbeRequest = new SOAPBodyElement(doc.
                                                        getDocumentElement());
-      sbeRequest.setName("update");
+      sbeRequest.setName("Update");
       sbeRequest.setNamespaceURI(NAMESPACE_URI);
       
       try {

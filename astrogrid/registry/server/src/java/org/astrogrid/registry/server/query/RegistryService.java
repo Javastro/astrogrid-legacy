@@ -17,6 +17,8 @@ import org.astrogrid.registry.server.XQueryExecution;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import org.astrogrid.xmldb.eXist.server.QueryDBService;
+import org.apache.axis.AxisFault;
 /**
  * 
  *  
@@ -25,8 +27,7 @@ import org.apache.commons.logging.LogFactory;
  * @link http://www.ivoa.net/twiki/bin/view/IVOA/IVOARegWp03
  * @author Kevin Benson
  */
-public class RegistryService implements
-                             org.astrogrid.registry.common.RegistryInterface {
+public class RegistryService {
 
    private static final Log log = LogFactory.getLog(RegistryService.class);
 
@@ -34,10 +35,13 @@ public class RegistryService implements
    
    private static final String AUTHORITYID_PROPERTY = 
                                           "org.astrogrid.registry.authorityid";
+                                          
+   private static String collectionName = null;                                          
    
    static {
       if(conf == null) {
          conf = org.astrogrid.config.SimpleConfig.getSingleton();
+         collectionName = "astrogridv" + conf.getString("org.astrogrid.registry.version");
       }      
    }
 
@@ -48,18 +52,18 @@ public class RegistryService implements
    * soon be rarely used for the ADQL version to be the standard for the
    * IVOA.
    * 
-   * @param query XML document object representing the query language used on
-   *  the registry.
+   * @param query XML document object representing the query language used on the registry.
    * @return XML docuemnt object representing the result of the query.
    * @author Kevin Benson 
    */
-   public Document submitQuery(Document query) {
+   public Document submitQuery(Document query) throws AxisFault {
       log.debug("start submitQuery");
       long beginQ = System.currentTimeMillis();
       Document registryDoc = null;
       //log.info("received = " + DomHelper.DocumentToString(query));
-      //parse query right now actually does the query.    
-      registryDoc = XQueryExecution.parseQuery(query);
+      //parse query right now actually does the query.
+      QueryDBService qdb = new QueryDBService();    
+      registryDoc = qdb.query(collectionName,XQueryExecution.createXQL(query));
       if(registryDoc != null)
          log.info("the registryDoc = " + DomHelper.
                                          DocumentToString(registryDoc));
@@ -77,7 +81,7 @@ public class RegistryService implements
     * @param query actually normally empty/null
     * @return XML docuemnt object representing the result of the query.
     */
-   public Document loadRegistry(Document query) {
+   public Document loadRegistry(Document query) throws AxisFault {
       log.debug("start loadRegistry");
       long beginQ = System.currentTimeMillis();
       String authorityID = conf.getString(AUTHORITYID_PROPERTY);
@@ -94,13 +98,8 @@ public class RegistryService implements
             "<selection item='@*:type' itemOp='EQ' value='RegistryType'/>"  +
          "</selectionSequence></query>";
       
-      try {
-         Reader reader2 = new StringReader(selectQuery);
-         InputSource inputSource = new InputSource(reader2);
-         DocumentBuilder registryBuilder = null;
-         registryBuilder = DocumentBuilderFactory.
-                           newInstance().newDocumentBuilder();
-         doc = registryBuilder.parse(inputSource);
+      try {         
+         doc = DomHelper.newDocument(selectQuery);
       }catch(ParserConfigurationException pce) {
          pce.printStackTrace();
          log.error(pce);
@@ -113,7 +112,10 @@ public class RegistryService implements
       }
       
       if(doc != null) {
-         responseDoc = XQueryExecution.parseQuery(doc);
+         QueryDBService qdb = new QueryDBService();
+         String xql = XQueryExecution.createXQL(doc);
+         log.info("The XQL String query = " + xql);
+         responseDoc = qdb.query(collectionName,xql);
       }
       log.info("Time taken to complete loadRegistry on server = " +
                (System.currentTimeMillis() - beginQ));
