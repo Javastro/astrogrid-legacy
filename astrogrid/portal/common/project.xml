@@ -13,16 +13,6 @@
   <name>AstroGrid Portal Common Project</name>
 
   <dependencies>
-    <!-- Common -->
-    <dependency>
-      <groupId>astrogrid-common</groupId>
-      <artifactId>astrogrid-common</artifactId>
-      <version>SNAPSHOT</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-    
     <!-- DO NOT INCLUDE PARENT DEPENDENCIES IN WAR -->
     &cocoon-deps;
   </dependencies>
