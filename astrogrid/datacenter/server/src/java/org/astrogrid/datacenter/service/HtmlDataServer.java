@@ -1,5 +1,5 @@
 /*
- * $Id: HtmlDataServer.java,v 1.8 2004/03/15 19:16:12 mch Exp $
+ * $Id: HtmlDataServer.java,v 1.9 2004/03/15 21:45:18 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -134,7 +134,9 @@ public class HtmlDataServer
                   "<b>No Query found for that ID</b>\n";
       }
       
-      html.append("<b>"+status.getState().toString()+"</b>\n");
+      html.append("<h2>"+status.getState().toString()+"</h2>\n");
+
+      html.append("<p><b>"+status.getNote()+"</b></p>\n");
       
       String[] details= status.getDetails();
       
