@@ -1,5 +1,19 @@
-
+/*
+ * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/src/java/org/astrogrid/portal/cocoon/common/LoginAction.java,v $</cvs:source>
+ * <cvs:author>$Author: dave $</cvs:author>
+ * <cvs:date>$Date: 2004/01/09 07:54:33 $</cvs:date>
+ * <cvs:version>$Revision: 1.9 $</cvs:version>
+ *
+ * <cvs:log>
+ *   $Log: LoginAction.java,v $
+ *   Revision 1.9  2004/01/09 07:54:33  dave
+ *   Added cvs logs
+ *
+ * </cvs:log>
+ *
+ */
 package org.astrogrid.portal.cocoon.common;
+
 import org.apache.avalon.framework.parameters.Parameters;
 import org.apache.cocoon.acting.AbstractAction;
 import org.apache.cocoon.environment.Request;
@@ -29,26 +43,26 @@ public class LoginAction extends AbstractAction
 	 */
 	public static boolean DEBUG_FLAG = true;
 
-	private static final String ACTION_PARAM = "action" ;
-	private static final String LOGIN_ACTION = "login" ;
+	public static final String ACTION_PARAM = "action" ;
+	public static final String LOGIN_ACTION = "login" ;
 
-	private static final String NAME_PARAM = "name" ;
-	private static final String PASS_PARAM = "pass" ;
-	private static final String MESSAGE_PARAM = "message" ;
+	public static final String NAME_PARAM = "name" ;
+	public static final String PASS_PARAM = "pass" ;
+	public static final String MESSAGE_PARAM = "message" ;
 
-	private static final String POLICY_GROUP    = "guest" ;
-	private static final String POLICY_ACTION   = "read" ;
-	private static final String POLICY_RESOURCE = "portal.site" ;
+	public static final String POLICY_GROUP    = "guest" ;
+	public static final String POLICY_ACTION   = "read" ;
+	public static final String POLICY_RESOURCE = "portal.site" ;
 
-	private static final String BAD_NAME_MESSAGE = "Please enter a valid account name" ;
-	private static final String BAD_PASS_MESSAGE = "Please enter a valid password" ;
-	private static final String SYSTEM_ERROR_MESSAGE = "System error - login failed" ;
+	public static final String BAD_NAME_MESSAGE = "Please enter a valid account name" ;
+	public static final String BAD_PASS_MESSAGE = "Please enter a valid password" ;
+	public static final String SYSTEM_ERROR_MESSAGE = "System error - login failed" ;
 
-	private static final String LOGIN_FAIL_MESSAGE = "Login rejected" ;
-	private static final String LOGIN_PASS_MESSAGE = "Login accepted" ;
+	public static final String LOGIN_FAIL_MESSAGE = "Login rejected" ;
+	public static final String LOGIN_PASS_MESSAGE = "Login accepted" ;
 
-	private static final String POLICY_FAIL_MESSAGE = "Permission revoked" ;
-	private static final String POLICY_PASS_MESSAGE = "Permission granted" ;
+	public static final String POLICY_FAIL_MESSAGE = "Permission revoked" ;
+	public static final String POLICY_PASS_MESSAGE = "Permission granted" ;
 
 	/**
 	 * Our action method.
