@@ -123,6 +123,21 @@
             </properties>            
         </dependency>
         
+        <!--+
+            | The worflow objects
+            +-->
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-workflow-objects</artifactId>
+            <version>SNAPSHOT</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        
+        
         <dependency>
             <artifactId>castor</artifactId>
             <groupId>castor</groupId>
