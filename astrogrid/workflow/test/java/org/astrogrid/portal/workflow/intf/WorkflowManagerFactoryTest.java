@@ -1,4 +1,4 @@
-/*$Id: WorkflowManagerFactoryTest.java,v 1.3 2004/03/16 00:40:35 nw Exp $
+/*$Id: WorkflowManagerFactoryTest.java,v 1.4 2004/04/14 13:46:06 nw Exp $
  * Created on 10-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -34,7 +34,6 @@ public class WorkflowManagerFactoryTest extends TestCase {
     /** test everyting gets created correctly in a simple setup */
     public void testSimpleSetup() throws Exception {
         Config conf = SimpleConfig.getSingleton();
-        conf.setProperty(WorkflowManagerFactory.WORKFLOW_STORE_KEY,"file");
         conf.setProperty(WorkflowManagerFactory.WORKFLOW_JES_ENDPOINT_KEY,"http://localhost:8080/jes-SNAPSHOT/services/JobController");
         createAndCheckManager(conf);
     }
@@ -43,8 +42,6 @@ public class WorkflowManagerFactoryTest extends TestCase {
     /** test everything gests create correctly in a dummy-delegate setup */
     public void testDummySetup() throws Exception {
         Config conf = SimpleConfig.getSingleton();
-        conf.setProperty(WorkflowManagerFactory.WORKFLOW_STORE_KEY,"myspace");
-        conf.setProperty(WorkflowManagerFactory.WORKFLOW_MYSPACE_STORE_ENDPOINT_KEY,MySpaceDummyDelegate.DUMMY);
         conf.setProperty(WorkflowManagerFactory.WORKFLOW_JES_ENDPOINT_KEY,JobControllerDelegateImpl.TEST_URI);
         createAndCheckManager(conf);  
     }
@@ -64,6 +61,9 @@ public class WorkflowManagerFactoryTest extends TestCase {
 
 /* 
 $Log: WorkflowManagerFactoryTest.java,v $
+Revision 1.4  2004/04/14 13:46:06  nw
+implemented cut down workflow store interface over Ivo Delegate
+
 Revision 1.3  2004/03/16 00:40:35  nw
 added unit test to check can create workflowManager based on dummy delegates
 

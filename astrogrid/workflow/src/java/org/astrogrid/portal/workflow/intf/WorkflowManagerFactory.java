@@ -1,4 +1,4 @@
-/*$Id: WorkflowManagerFactory.java,v 1.8 2004/04/14 13:05:20 nw Exp $
+/*$Id: WorkflowManagerFactory.java,v 1.9 2004/04/14 13:45:48 nw Exp $
  * Created on 24-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,6 +19,7 @@ import org.astrogrid.portal.workflow.impl.FileWorkflowStore;
 import org.astrogrid.portal.workflow.impl.JesJobExecutionService;
 import org.astrogrid.portal.workflow.impl.MySpaceWorkflowStore;
 import org.astrogrid.portal.workflow.impl.RegistryApplicationRegistry;
+import org.astrogrid.portal.workflow.impl.VoSpaceClientWorkflowStore;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -81,18 +82,7 @@ public class WorkflowManagerFactory {
     
     private WorkflowManager theInstance;
     
-    /** key to look under to determine implementation of workflow store to use.
-     * <p>
-     * possible values: <tt>file</tt> | <tt>myspace</tt> | <tt><i>java.class.name</i></tt>
-     * <br> default value: <tt>myspace</tt>
-     * 
-     */
-    public static final String WORKFLOW_STORE_KEY = "workflow.store";
-    /** key to look under to determine base directory to use for file-based workflow store 
-     * <br>default value: <tt>System.getProperty("java.io.tmpdir")</tt>*/
-    public static final String WORKFLOW_FILE_STORE_BASEDIR_KEY = "workflow.store.file.basedir";
-    /** key to look under to determine endpoint of myspace-based workflow store */
-    public static final String WORKFLOW_MYSPACE_STORE_ENDPOINT_KEY = "workflow.store.myspace.endpoint";
+
     /** key to look under to determin implmenetation of workflow applicationRegistry to use
      * <p>possible values: <tt>xml</tt> | <tt>registry</tt> | <tt><i>java.class.name</i></tt>
      * <br> default value: <tt>registry</tt>
@@ -175,45 +165,19 @@ public class WorkflowManagerFactory {
     }
 
     /**
-     *@todo implement this.
      */
     private WorkflowStore buildStore() throws Exception {
-        return null;
-        /*
-        try {
-            String option = conf.getString(WORKFLOW_STORE_KEY).trim();            
-            log.info(WORKFLOW_STORE_KEY + " := " + option);
-            if ("file".equalsIgnoreCase(option)) {
-                log.info("Creating file-backed workflow store");
-                String filepath = conf.getString(WORKFLOW_FILE_STORE_BASEDIR_KEY,System.getProperty("java.io.tmpdir"));
-                File f = new File(filepath);
-                log.info(WORKFLOW_FILE_STORE_BASEDIR_KEY + " := " + f.getAbsolutePath());
-                return new FileWorkflowStore(f);
-            } else if ("myspace".equalsIgnoreCase(option)) {
-                return buildDefaultStore();
-            } else {
-                log.info("option unrecognized - assuming its a java classname. attempting to instantiate..");
-                 Class clazz = Class.forName(option);
-                 return (WorkflowStore)clazz.newInstance();                
-            }
-        } catch (PropertyNotFoundException e) {
-            log.warn("no value for " + WORKFLOW_STORE_KEY + " falling back to default");
-            return buildDefaultStore();
-        }
-        */
+        return new VoSpaceClientWorkflowStore();
     }
-    /** build default myspace-based implementation */  
-    private WorkflowStore buildDefaultStore() throws PropertyNotFoundException, IOException{
-        log.info("Creating myspace-backed workflow store");
-        URL endpoint = conf.getUrl(WORKFLOW_MYSPACE_STORE_ENDPOINT_KEY);
-        return null;//new MySpaceWorkflowStore(endpoint);
-        
-    }
+
 }
 
 
 /* 
 $Log: WorkflowManagerFactory.java,v $
+Revision 1.9  2004/04/14 13:45:48  nw
+implemented cut down workflow store interface over Ivo Delegate
+
 Revision 1.8  2004/04/14 13:05:20  nw
 cut down workflow store interface. now to implement it.
 

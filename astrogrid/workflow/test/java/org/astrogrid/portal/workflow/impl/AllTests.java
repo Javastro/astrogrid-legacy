@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.2 2004/03/11 13:53:51 nw Exp $
+/*$Id: AllTests.java,v 1.3 2004/04/14 13:46:06 nw Exp $
  * Created on 10-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,7 +25,6 @@ public class AllTests {
         suite.addTest(new TestSuite(BasicWorkflowBuilderTest.class));
         suite.addTest(new TestSuite(FileApplicationRegistryTest.class));
         suite.addTest(new TestSuite(FileWorkflowStoreTest.class));
-        suite.addTest(new TestSuite(MySpaceWorkflowStoreTest.class));
         suite.addTest(new TestSuite(RegistryApplicationRegistryTest.class));
         //$JUnit-END$
         return suite;
@@ -33,6 +32,9 @@ public class AllTests {
 }
 /* 
 $Log: AllTests.java,v $
+Revision 1.3  2004/04/14 13:46:06  nw
+implemented cut down workflow store interface over Ivo Delegate
+
 Revision 1.2  2004/03/11 13:53:51  nw
 merged in branch bz#236 - implementation of interfaces
 
