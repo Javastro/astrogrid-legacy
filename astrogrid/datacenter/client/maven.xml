@@ -28,6 +28,7 @@ Outline:
 * generate classes from schema using castor - subgoal generate-adql
 * transform deployment descriptor to refer to castor serialization mechanism (via xslt) - subgoal transform-wsdd
 * munge axis-generated client stub to refer to castor classes (via search'n'replace, regexps) - subgoal munge-stub
+* do similar for axis-generated skeleton and test too.
 Result: rebuild generated/java src hierachy, wsdd/deploy.wsdd and wsdd/undeploy.wsdd
 Requires:
 * src/wsdl/AxisDataCenter.wsdl - web service descriptor
@@ -35,6 +36,8 @@ Requires:
 * src/xsd/ADQLschema.xsd - schema for ADQL
 * build/xslt/generate-wsdd.xsl - transformation for wsdd.
 * build/patch/* - patches to apply
+* build/castor-binding.xml - configuration for castor tasks
+* build/subst.properties - set of search n replace terms.
 	]]></description>
 	<!-- ensure the directories exist, remove previously generated products -->
 	<attainGoal name="clean-out" />

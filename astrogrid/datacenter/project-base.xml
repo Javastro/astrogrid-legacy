@@ -18,6 +18,7 @@
 
   <shortDescription>AstroGrid DataCenter Components</shortDescription>
 
+  <issueTrackingUrl>http://www.astrogrid.org/bugzilla/</issueTrackingUrl>
   <siteDirectory>/var/www/www/maven/build/datacenter</siteDirectory>
 
   <repository>
@@ -36,6 +37,9 @@
     	<id>mch</id>
     	<email>mch@roe.ac.uk</email>
 	<organization>ROE</organization>
+	<roles>
+		<role>Work group leader</role>
+	</roles>
     </developer>
 
     <developer>
@@ -52,6 +56,14 @@
 	<organization>JBO</organization>
     </developer>
   </developers>
+
+	<licenses>
+		<license>
+			<name>The AstroGrid Software License, Version 1.2</name>
+			<url>http://www.astrogrid.org</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
 
   <dependencies>
     <!-- astrogrid -specific deps -->
@@ -145,6 +157,9 @@
     <dependency>
       <id>junit</id>
       <version>3.8</version>
+      <properties>
+      <war.bundle>true</war.bundle>
+      </properties>
     </dependency>
     </dependencies>
 

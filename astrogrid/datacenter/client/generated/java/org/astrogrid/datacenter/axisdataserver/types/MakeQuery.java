@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: MakeQuery.java,v 1.1 2003/11/18 14:22:14 nw Exp $
+ * $Id: MakeQuery.java,v 1.2 2003/11/19 15:26:41 nw Exp $
  */
 
 package org.astrogrid.datacenter.axisdataserver.types;
@@ -24,7 +24,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Class MakeQuery.
  * 
- * @version $Revision: 1.1 $ $Date: 2003/11/18 14:22:14 $
+ * @version $Revision: 1.2 $ $Date: 2003/11/19 15:26:41 $
  */
 public class MakeQuery implements java.io.Serializable {
 

@@ -11,13 +11,21 @@
   <currentVersion>HEAD</currentVersion>
 
 	<description><![CDATA[
-	Astrogrid datacenter server-back ends that: interface to various database flavours;
-	delegate requests to another web service; supporting libraries; and code specific to single datacenters
+	Astrogrid datacenter server back-ends
+	<p />
+	Implementations and examples for
+	<ul>
+	<li>interface to various database flavours</li>
+	<li>delegate requests to another web service</li>
+	<li>supporting libraries for writing datacenters</li>
+	<li>code and configuration specific to single datacenters</li>
+	</ul>
 	]]>
 	</description>
 
   <shortDescription>Astrogrid Datacenter Server Implementations</shortDescription>
 
+  <url>http://www.astrogrid.org/maven/datacenter/implementations</url>
   <siteDirectory>/var/www/www/maven/build/datacenter/implementations</siteDirectory>
 
   <repository>
@@ -44,9 +52,6 @@
     </report>
     <report>
       maven-license-plugin
-    </report>
-    <report>
-      maven-linkcheck-plugin
     </report>
   </reports>
 

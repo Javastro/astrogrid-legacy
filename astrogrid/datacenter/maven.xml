@@ -4,24 +4,32 @@
 <!-- hooks to farm out everything to subprojects -->
 <preGoal name="jar">
 	<attainGoal name="multiproject:artifact" />
+	<maven:maven descriptor="${basedir}/pal/project.xml" goals="war:war" />
 </preGoal>
 
 <preGoal name="jar:deploy">
 	<attainGoal name="multiproject:deploy" />
+	<maven:maven descriptor="${basedir}/pal/project.xml" goals="war:deploy" />
 </preGoal>
 
+<!-- this is the goal called by nightly build -->
 <preGoal name="jar:deploy-snapshot">
 	<attainGoal name="multiproject:deploy-snapshot" />
+	<!-- necessary to call this one by hand - as multiproject seems to conflict with calling maven scripts by hand -->
+	<maven:maven descriptor="${basedir}/pal/project.xml" goals="war:deploy-snapshot" />
 </preGoal>
 
 <preGoal name="jar:install">
 	<attainGoal name="multiproject:install" />
+	<maven:maven descriptor="${basedir}/pal/project.xml" goals="war:install" />
 </preGoal>
 
 <preGoal name="jar:install-snapshot">
 	<attainGoal name="multiproject:install-snapshot" />
+	<maven:maven descriptor="${basedir}/pal/project.xml" goals="war:install-snapshot" />
 </preGoal>
 
+<!-- goal called by nightly build -->
 <preGoal name="site:fsdeploy">
 	<attainGoal name="multiproject:site" />
 </preGoal>
@@ -31,35 +39,6 @@
 <!--
 new goals
 -->
-
-<!--
-distribution - tasks to assemble build products.
-move all this into the pal distro.
--->
-<goal name="axis-zip" description="create zipped axis web-archive">
-<!-- copy dependent jars into template webapp, zip up into target directory-->
-	<delete>
-		<fileset dir="packaging/axis/WEB-INF/lib"
-			include="*.jar" />
-	</delete>
-	<!-- find a better way of doing this: e.g. attribute in project.xml -->
-	<deploy:copy-deps todir="packaging/axis/WEB-INF/lib"
-	   excludes="astrogrid-common,breezetk,objectwiz-votable,VOTableUtil,xml-apis,castor,xerces,junit,mm-mysql,jconn,hsqldb"
-	/>
-	<jar destfile="packaging/pal/lib/axis.war" basedir="packaging/axis" />
-</goal>
-
-<goal name="datacenter-server-zip" prereqs="jar:jar" description="create zipped datacenter server archive">
-	<delete>
-		<fileset dir="packaging/datacenter-server/WEB-INF/lib"
-			include="*.jar" />
-	</delete>
-	<deploy:copy-deps todir="packaging/datacenter-server/WEB-INF/lib"
-		excludes="axis,axis-ant,wsdl4j,saaj,commons-logging,commons-discovery,jaxrpc-api,junit,log4j" />
-	<copy file="${maven.build.dir}/astrogrid-datacenter-HEAD.jar" todir="packaging/datacenter-server/WEB-INF/lib" />
-	<echo file="packaging/datacenter-server/VERSION">${DSTAMP}</echo>
-	<zip destfile="packaging/pal/lib/datacenter-server.zip" basedir="packaging/datacenter-server"/>
-</goal>
 
 <goal name="datacenter-test-client-jar" prereqs="java:compile" description="create executable jar for datacenter test client">
   <delete dir="tmp" />
@@ -99,36 +78,6 @@ move all this into the pal distro.
 	</fileset>
   </jar>
 </goal>
-
-<preGoal name="pal-zip">
-	<tstamp />
-</preGoal>
-
-<goal name="pal-zip" description="bundle together everything required for a datacenter"
-   prereqs="axis-zip,datacenter-server-zip,datacenter-test-client-jar,datacenter-register-client-jar">
-	<!-- clean out for starters -->
-	<delete>
-		<fileset dir="packaging/pal">
-			<include name="doc/api/**" />
-			<include name="doc/src-doc/**" />
-		</fileset>
-	</delete>
-	<!-- grab generated documentation - assume already generated. do we want sources too?-->
-	<copy todir="packaging/pal/doc/api">
-		<fileset dir="${maven.build.dir}/docs/apidocs" />
-	</copy>
-	<copy todir="packaging/pal/doc/src-doc">
-		<fileset dir="${maven.build.dir}/docs/xref" />s
-	</copy>
-	<!-- add a timestamp -->
-	<echo file="packaging/pal/VERSION">${DSTAMP}</echo>
-	<!-- bundle everything together, place in target -->
-	<zip destfile="${maven.build.dir}/pal.zip"
-		basedir="packaging">
-		<include name="pal/**" />
-	</zip>
-</goal>
-
 <!--
 stand - alone goals - development helpers, not additions to main build
 -->
@@ -177,19 +126,6 @@ stand - alone goals - development helpers, not additions to main build
 		<echo>Grabbing deployment descriptors</echo>
 		<attainGoal name="get-descriptors" />
 	</j:if>
-  </goal>
-  <goal name="get-descriptors" description="extract descriptors from datacenter-common jar">
-  	<tempfile property="working.dir" />
-	<mkdir dir="${working.dir}"/>
-	<deploy:copy-deps todir="${working.dir}" />
-  	<unjar src="${working.dir}/astrogrid-datacenter-common-SNAPSHOT.jar" dest="${basedir}" overwrite="false">
-		<patternset>
-			<include name="wsdd/*.wsdd" />
-		</patternset>
-	</unjar>
-	<delete>
-		<fileset dir="${working.dir}" />
-	</delete>
   </goal>
 
 <!--

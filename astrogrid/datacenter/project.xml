@@ -11,12 +11,21 @@
   <currentVersion>HEAD</currentVersion>
 
 	<description><![CDATA[
-	Astrogrid datacenter: client delegates, server engine, server implementations, PAL
+	Astrogrid datacenter
+	<p />
+	Follow the links on the left to subprojects for
+	<ul>
+	  <li>client delegates</li>
+	  <li>server engine</li>
+	  <li>server implementations</li>
+	  <li>Publishers Astrogrid Library</li>
+	</ul>
 	]]>
 	</description>
 
   <shortDescription>Astrogrid Datacenter</shortDescription>
 
+  <url>http://www.astrogrid.org/maven/datacenter</url>
   <siteDirectory>/var/www/www/maven/build/datacenter</siteDirectory>
 
   <repository>

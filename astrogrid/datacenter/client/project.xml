@@ -11,17 +11,45 @@
   <currentVersion>HEAD</currentVersion>
 
 	<description><![CDATA[
-	 This project contains the client interface to the datacenter, plus supporting libraries
-	 At present this includes
+	 This project contains the delegate interface to the datacenter.
+	 <p />
+	 The name of the jar produced by this project is <tt>astrogrid-datacenter-client</tt>
+	 To add a dependency on this project to your own project, add the following to your <tt>project.xml</tt>
+	 <source>
+	   &lt;dependencies&gt;
+	   ...
+	  	&lt;dependency&gt;
+		&lt;groupId&gt;astrogrid-datacenter&lt;/groupId&gt;
+		&lt;artifactId&gt;astrogrid-datacenter-client&lt;/artifactId&gt;
+		&lt;version&gt;SNAPSHOT&lt;/version&gt;
+		&lt;/dependency&gt;
+	   ...
+	   &lt;dependencies&gt;
+	 </source>
+	 <p><subsection name="Other Uses" /></p>
+	 Apart from the delegate, some of the supporting libraries may be of use by themselves:
 	 <ul>
 	 <li>ADQL Object Model</li>
+	 <li>Bug-fixed Castor Axis Serializers</li>
 	 </ul>
 	 <p/>
-	 Still to do:
+	 <p><subsection name="Still to do" /></p>
 	 <ul>
-	 	<li>get serialization / deserialization test to pass</li>
+	 	<li>get serialization / deserialization tests to pass</li>
 
 	 </ul>
+	 <p><subsection name="Build" /></p>
+	 This project generates a large amount of source code automatically from XML schema and WSDL files in
+	 <tt>src/xsd</tt> and <tt>src/wsdl</tt>. This source is placed in a separate tree called <tt>generated/java</tt>.
+	<p />
+	 This maven project has an additional goal - <tt>generate-delegate</tt>
+	 that performs this code generation. The recipe used is based on
+	 <a href="http://www-106.ibm.com/developerworks/webservices/library/ws-castor">this article</a>.
+	 Castor and the wsdl2java tool from Axis are used as part of this.
+	 The goal is defined in the <tt>maven.xml</tt> file, where is is documented in more detail..
+	<p />
+	The code generation is <b>not</b> performed automatically by the nightly build: after editing the wsdl or schema files the
+	<tt>generate-delegate</tt> goal must be run by hand; then the generated sources verified and checked back into CVS.
 	 	]]>
 	</description>
 
