@@ -1,4 +1,5 @@
 <?xml version="1.0" ?>
+<query type="adql">
 <Select>
 	<SelectionList>
 	  <ColumnExpr>
@@ -19,3 +20,4 @@
 		</FromClause>
 	</TableClause>
 </Select>
+</query>

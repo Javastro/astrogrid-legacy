@@ -1,4 +1,4 @@
-/*$Id: SqlQuerierTest.java,v 1.7 2003/09/10 18:58:56 mch Exp $
+/*$Id: SqlQuerierTest.java,v 1.8 2003/09/11 11:06:10 nw Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -101,7 +101,7 @@ public class SqlQuerierTest extends TestCase {
 
         Element queryElement = doc.getDocumentElement();
         assertNotNull(queryElement);
-        assertEquals("Select",queryElement.getLocalName());
+        assertEquals("query",queryElement.getLocalName());
 
         QueryResults results = querier.queryDatabase(new Query(queryElement));
         assertNotNull(results);
@@ -123,6 +123,9 @@ public class SqlQuerierTest extends TestCase {
 
 /*
 $Log: SqlQuerierTest.java,v $
+Revision 1.8  2003/09/11 11:06:10  nw
+fixed to work with new query format
+
 Revision 1.7  2003/09/10 18:58:56  mch
 Preparing to generalise Query
 

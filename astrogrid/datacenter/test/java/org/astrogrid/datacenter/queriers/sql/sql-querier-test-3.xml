@@ -1,4 +1,5 @@
 <?xml version="1.0" ?>
+<query type="adql">
 <Select xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <!-- equivalent to select p.firstName, p.id from person as p order by p.firstName -->
 	<SelectionList>
@@ -60,3 +61,4 @@
       	</OrderList>
       </OrderBy>
 </Select>
+</query>

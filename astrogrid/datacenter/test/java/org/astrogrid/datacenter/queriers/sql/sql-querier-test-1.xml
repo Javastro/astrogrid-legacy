@@ -1,4 +1,5 @@
 <?xml version="1.0" ?>
+<query type="adql">
 <Select>
 	<SelectionAll />
 	<TableClause>
@@ -12,3 +13,4 @@
 		</FromClause>
 	</TableClause>
 </Select>
+</query>
