@@ -6,9 +6,6 @@ import javax.xml.namespace.QName;
 import javax.xml.rpc.handler.HandlerRegistry;
 import javax.xml.rpc.handler.HandlerInfo;
 import javax.xml.rpc.Service;
-import org.astrogrid.community.client.security.service.SecurityServiceDelegate;
-import org.astrogrid.community.resolver.security.service.SecurityServiceResolver;
-import org.astrogrid.store.Ivorn;
 
 /**
  * Access to the security tokens pertaining to the client side of
@@ -127,12 +124,8 @@ public class ClientSecurityGuard extends SecurityGuard {
                      + " with account name "
                      + u);
     try {
-      Ivorn accountId = new Ivorn(this.getUsername());
-      SecurityServiceResolver ssr = new SecurityServiceResolver();
-      SecurityServiceDelegate ssd = ssr.resolve(accountId);
-
-      NonceToken t
-          = new NonceToken(ssd.checkPassword(u, p));
+	  NonceToken t = NonceToken.signOn(this.getSsoUsername(),
+	                                   this.getSsoPassword());
       this.setNonceToken(t);
     }
     catch (Exception e) {

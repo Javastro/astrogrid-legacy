@@ -5,10 +5,6 @@ import javax.security.auth.Subject;
 import javax.xml.rpc.handler.MessageContext;
 import javax.xml.rpc.JAXRPCException;
 import javax.xml.soap.SOAPMessage;
-import org.astrogrid.community.client.security.service.SecurityServiceDelegate;
-import org.astrogrid.community.common.security.data.SecurityToken;
-import org.astrogrid.community.resolver.security.service.SecurityServiceResolver;
-import org.astrogrid.store.Ivorn;
 
 
 /**
@@ -77,27 +73,9 @@ public class ClientCredentialHandler extends CredentialHandler {
       Iterator credentials
           = subject.getPrivateCredentials(NonceToken.class).iterator();
       while (credentials.hasNext()) {
-        NonceToken n = (NonceToken) credentials.next();
-
-        // Remove the token from both subjects.
-        this.subject.getPrivateCredentials().remove(n);
-        subject.getPrivateCredentials().remove(n);
-
-        // Have the community that issued the token split it into two.
-        System.out.println("ClientCredentialHandler.getSubject(): "
-                         + "splitting a nonce token...");
-        Ivorn account = new Ivorn(n.getAccount());
-        SecurityServiceResolver ssr = new SecurityServiceResolver();
-        SecurityServiceDelegate ssd = ssr.resolve(account);
-        Object[] o = ssd.splitToken(n, 2);
-        assert(o.length == 2);
-        NonceToken n1 = new NonceToken((SecurityToken)o[0]);
-        NonceToken n2 = new NonceToken((SecurityToken)o[1]);
-        System.out.println("ClientCredentialHandler.getSubject(): "
-                         + "nonce token was split successfully.");
-
-        // Add one part of the split token to each Subject.
-        this.subject.getPrivateCredentials().add(n1);
+        NonceToken n1 = (NonceToken) credentials.next();
+        NonceToken n2 = n1.split();
+        subject.getPrivateCredentials().remove(n1);
         subject.getPrivateCredentials().add(n2);
       }
 

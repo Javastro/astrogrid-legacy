@@ -7,11 +7,9 @@ import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.login.FailedLoginException;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
-import org.astrogrid.community.client.security.service.SecurityServiceDelegate;
-import org.astrogrid.community.common.exception.CommunityIdentifierException;
-import org.astrogrid.community.common.exception.CommunitySecurityException;
-import org.astrogrid.community.resolver.security.service.SecurityServiceResolver;
 import org.astrogrid.security.AccountName;
+import org.astrogrid.security.InvalidAccountException;
+import org.astrogrid.security.InvalidCredentialException;
 import org.astrogrid.security.NonceToken;
 import org.astrogrid.store.Ivorn;
 
@@ -89,47 +87,35 @@ public class NonceTokenCheck implements LoginModule {
       throw new LoginException("Too many nonce tokens were presented.");
     }
     else {
-      oldToken = (NonceToken) tokens.iterator().next();
-      this.account = new AccountName(oldToken.getAccount());
+      this.token = (NonceToken) tokens.iterator().next();
+      this.account = new AccountName(this.token.getAccount());
     }
     System.out.println(" NonceTokenCheck.login(): attempting authentication for " +
                        this.account.getName() +
                        " with token " +
-                       oldToken.toString());
+                       this.token.toString());
 
     // Check the original token in the community service.
     // This can cause several types of exception to be thrown.
     try {
-      Ivorn accountId = new Ivorn(oldToken.getAccount());
-      SecurityServiceResolver ssr = new SecurityServiceResolver();
-      SecurityServiceDelegate ssd = ssr.resolve(accountId);
-      System.out.println("Existing token: " + oldToken.toString());
-      newToken = new NonceToken(ssd.checkToken(oldToken));
-      System.out.println("Returned token: " + newToken.toString());
+	  this.token.validate();
     }
-    catch (CommunitySecurityException e1) {
-      System.out.println("NonceTokenCheck.login(): authentication failed: is invalid.");
-      throw new FailedLoginException("Authentication with nonce token failed; "
-                                   + "nonce is invalid");
+    catch (InvalidAccountException iae) {
+      String message = "Authentication failed: " + iae.getMessage();
+      System.out.println("NonceTokenCheck.login(): " + message);
+      throw new FailedLoginException(message);
     }
-    catch (CommunityIdentifierException e2) {
-      System.out.println("NonceTokenCheck.login(): authentication failed: account ID is invalid.");
-          throw new FailedLoginException("Authentication with nonce token failed; "
-                                       + "account identifier is invalid");
+    catch (InvalidCredentialException ice) {
+      String message = "Authentication failed: " + ice.getMessage();
+      System.out.println("NonceTokenCheck.login(): " + message);
+      throw new FailedLoginException(message);
     }
-    catch (Exception e3) {
-      System.out.println("NonceTokenCheck.login(): authentication failed: problems with community service.");
-      throw new LoginException("Could not validate the nonce token; " +
-                               "problems with the community service: " +
-                               e3);
+    catch (Exception e) {
+      String message = "Authentication failed: " + e.getMessage();
+      System.out.println("NonceTokenCheck.login(): " + message);
+      throw new LoginException(message);
     }
 
-    // Store the new token and the account name until the commit phase.
-    // Throw away the old token.
-    assert(newToken != null);
-    this.subject.getPrivateCredentials().remove(oldToken);
-    this.token = newToken;
-    this.account = new AccountName(newToken.getAccount());
     return true;
   }
 
@@ -143,8 +129,6 @@ public class NonceTokenCheck implements LoginModule {
 	System.out.println("Entering NonceTokenCheck.commit()");
 	System.out.println("Committing Principal " + this.account.getName());
     this.subject.getPrincipals().add(this.account);
-    System.out.println("Committing private credential " + this.token.toString());
-    this.subject.getPrivateCredentials().add(this.token);
     return true;
   }
 
