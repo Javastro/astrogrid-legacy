@@ -1,4 +1,4 @@
-/*$Id: AbstractTestInstallation.java,v 1.13 2004/03/08 15:58:26 mch Exp $
+/*$Id: AbstractTestInstallation.java,v 1.14 2004/03/09 02:02:06 mch Exp $
  * Created on 19-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,6 +23,7 @@ import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.datacenter.delegate.DatacenterQuery;
 import org.astrogrid.datacenter.delegate.DatacenterResults;
 import org.astrogrid.datacenter.delegate.FullSearcher;
+import org.astrogrid.datacenter.metadata.MetadataServer;
 import org.astrogrid.datacenter.query.QueryState;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -93,8 +94,8 @@ public abstract class AbstractTestInstallation extends ServerTestCase {
     
     public void testGetMetatdata() throws Throwable{
         try {
-           FullSearcher del = createDelegate();
-           Document metadata = del.getMetadata();
+           MetadataServer server = new MetadataServer();
+           Document metadata = server.getMetadata();
            assertNotNull(metadata);
            assertIsMetadata(metadata);
         } catch (Throwable t) {
@@ -285,6 +286,9 @@ public abstract class AbstractTestInstallation extends ServerTestCase {
 
 /*
 $Log: AbstractTestInstallation.java,v $
+Revision 1.14  2004/03/09 02:02:06  mch
+MetadataServer now returns Document - test server not delegate
+
 Revision 1.13  2004/03/08 15:58:26  mch
 Fixes to ensure old ADQL interface works alongside new one and with old plugins
 
