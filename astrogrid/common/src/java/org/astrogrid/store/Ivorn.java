@@ -1,5 +1,5 @@
 /*
- * $Id: Ivorn.java,v 1.8 2004/07/06 19:24:25 mch Exp $
+ * $Id: Ivorn.java,v 1.9 2004/07/06 19:45:53 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -96,10 +96,20 @@ public class Ivorn
       return SCHEME+"://"+getPath();
    }
    
+   /** Returns true if the given string is likely to be an ivorn - ie if it
+    * starts with ivo://
+    */
+   public static boolean isIvorn(String aString) {
+      return aString.toLowerCase().startsWith(SCHEME+"://");
+   }
+   
 }
 
 /*
 $Log: Ivorn.java,v $
+Revision 1.9  2004/07/06 19:45:53  mch
+Added isIvorn
+
 Revision 1.8  2004/07/06 19:24:25  mch
 Minor fix :-)
 
