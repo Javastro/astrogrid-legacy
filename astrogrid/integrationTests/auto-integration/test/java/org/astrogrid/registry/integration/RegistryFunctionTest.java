@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryFunctionTest.java,v 1.4 2004/07/26 15:44:42 KevinBenson Exp $
+ * $Id: RegistryFunctionTest.java,v 1.5 2004/08/03 13:41:29 KevinBenson Exp $
  * 
  * Created on 07-May-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -61,7 +61,7 @@ public class RegistryFunctionTest extends RegistryBaseTestCase {
       adminDelegate.updateFromURL(entryurl);
       Ivorn ivorn = new Ivorn("ivo://"+AUTHORITY_ID+"/"+RESOURCE_KEY);
       System.out.println(ivorn.toString()+" "+ivorn.toRegistryString());
-      Document dom = delegate.getResourceByIdentifierDOM(ivorn);
+      Document dom = delegate.getResourceByIdentifier(ivorn);
       assertNotNull("did not return the resource as DOM", dom);
       Element doc = dom.getDocumentElement();
       XMLUtils.PrettyElementToStream(doc, System.out);
@@ -74,7 +74,7 @@ public class RegistryFunctionTest extends RegistryBaseTestCase {
    }
    public void testRetrieve() throws RegistryException, URISyntaxException
    {
-      Document doc = delegate.getResourceByIdentifierDOM(new Ivorn("ivo://"+AUTHORITY_ID+"/"+"SExtractor"));
+      Document doc = delegate.getResourceByIdentifier(new Ivorn("ivo://"+AUTHORITY_ID+"/"+"SExtractor"));
       assertNotNull("failed to retrieve a known registry entry",doc);
       XMLUtils.DocumentToStream(doc,System.out);
       NodeList nodelst = doc.getDocumentElement().getChildNodes();

@@ -130,6 +130,12 @@
             <url>http://jakarta.apache.org/commons/jelly/libs/xml/</url>
             <properties/>
         </dependency>
+		<dependency>
+            <groupId>commons-jelly</groupId>
+            <artifactId>commons-jelly-tags-http</artifactId>
+            <version>SNAPSHOT</version>
+            <properties/>
+        </dependency>        
         <!--+
             | Filestore WebApp.
             +-->

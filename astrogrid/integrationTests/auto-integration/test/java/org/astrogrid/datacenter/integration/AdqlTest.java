@@ -1,4 +1,4 @@
-/*$Id: AdqlTest.java,v 1.3 2004/05/13 12:25:04 mch Exp $
+/*$Id: AdqlTest.java,v 1.4 2004/08/03 13:41:29 KevinBenson Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -51,10 +51,44 @@ public class AdqlTest extends TestCase implements StdKeys {
       InputStream results = delegate.askQuery(query, "VOTABLE");
       assertNotNull(results);
       //should be empty votable
-      
-      
-   
    }
+   
+   public void testAdqlSearchForSEC() throws IOException, ServiceException, IOException {
+      //load query
+      InputStream is = this.getClass().getResourceAsStream("SimpleSECQuery-adql05.xml");
+      assertNotNull(is);
+      StringWriter out = new StringWriter();
+      Piper.pipe(new InputStreamReader(is),out);
+      AdqlQuery query = new AdqlQuery(out.toString());
+      
+      QuerySearcher delegate = DatacenterDelegateFactory.makeQuerySearcher(Account.ANONYMOUS,PAL_v05_SEC_ENDPOINT,DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
+      assertNotNull("delegate was null",delegate);
+
+      InputStream results = delegate.askQuery(query, "VOTABLE");
+      assertNotNull(results);
+      Piper.pipe(results,System.out);
+      //StringWriter outResult = new StringWriter();
+      //Piper.pipe(new InputStreamReader(results),System.out);
+   }
+
+   public void testAdqlSearchForFITS() throws IOException, ServiceException, IOException {
+      //load query
+      InputStream is = this.getClass().getResourceAsStream("SimpleFITSQuery-adql073.xml");
+      assertNotNull(is);
+      StringWriter out = new StringWriter();
+      Piper.pipe(new InputStreamReader(is),out);
+      AdqlQuery query = new AdqlQuery(out.toString());
+      
+      QuerySearcher delegate = DatacenterDelegateFactory.makeQuerySearcher(Account.ANONYMOUS,PAL_v05_FITS_ENDPOINT,DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
+      assertNotNull("delegate was null",delegate);
+
+      InputStream results = delegate.askQuery(query, "VOTABLE");
+      assertNotNull(results);
+      //StringWriter outResult = new StringWriter();
+      Piper.pipe(results,System.out);
+   }
+   
+   
    
     /**
      * Assembles and returns a test suite made up of all the testXxxx() methods
@@ -75,6 +109,15 @@ public class AdqlTest extends TestCase implements StdKeys {
 
 /*
 $Log: AdqlTest.java,v $
+Revision 1.4  2004/08/03 13:41:29  KevinBenson
+result of a merge with Itn06_case3 to change to using registry-client-lite and add some more int-test for fits and sec datacenter
+
+Revision 1.3.42.2  2004/07/30 13:04:41  KevinBenson
+changed hardcoded urls to the appropriate endpoint.  Also added in the fits stuff
+
+Revision 1.3.42.1  2004/07/30 12:44:45  KevinBenson
+Added the Fits int test to it
+
 Revision 1.3  2004/05/13 12:25:04  mch
 Fixes to create user, and switched to mostly testing it05 interface
 

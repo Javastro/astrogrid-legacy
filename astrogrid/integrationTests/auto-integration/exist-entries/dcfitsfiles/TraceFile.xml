@@ -1,0 +1,634 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FitsDataCenterIndex>
+<FitsFile>
+   <Filename>http://msslxy.mssl.ucl.ac.uk:8080/TraceFits/ObtainFITS?_file=trace4a/tri/week20020728/tri20020728.0500</Filename>
+   <Coverage shape="Polygon">
+   </Coverage>
+   <Keywords>
+      <SIMPLE>T</SIMPLE>
+      <BITPIX>8</BITPIX>
+      <NAXIS>1</NAXIS>
+      <NAXIS1>18719924</NAXIS1>
+      <EXTEND>T</EXTEND>
+      <EXT_NROW>142</EXT_NROW>
+      <IMG_VER>3.10000</IMG_VER>
+      <MPROGNAM>TR_REFORMAT.PR</MPROGNAM>
+      <MPROGVER>2.50000</MPROGVER>
+      <PROG_NAM>TR_WRT_FITS_I</PROG_NAM>
+      <PROG_VER>1.12000</PROG_VER>
+      <BEXTEN_V>1.00000</BEXTEN_V>
+      <PROG_RUN>28-Jul-2002 03:57:54.0</PROG_RUN>
+      <END>null</END>
+   </Keywords>
+</FitsFile>
+<FitsFile>
+   <Filename>http://msslxy.mssl.ucl.ac.uk:8080/TraceFits/ObtainFITS?_file=trace4a/tri/week20020728/tri20020728.0600</Filename>
+   <Coverage shape="Polygon">
+   </Coverage>
+   <Keywords>
+      <SIMPLE>T</SIMPLE>
+      <BITPIX>8</BITPIX>
+      <NAXIS>1</NAXIS>
+      <NAXIS1>17305476</NAXIS1>
+      <EXTEND>T</EXTEND>
+      <EXT_NROW>160</EXT_NROW>
+      <IMG_VER>3.10000</IMG_VER>
+      <MPROGNAM>TR_REFORMAT.PR</MPROGNAM>
+      <MPROGVER>2.50000</MPROGVER>
+      <PROG_NAM>TR_WRT_FITS_I</PROG_NAM>
+      <PROG_VER>1.12000</PROG_VER>
+      <BEXTEN_V>1.00000</BEXTEN_V>
+      <PROG_RUN>28-Jul-2002 14:59:35.0</PROG_RUN>
+      <END>null</END>
+   </Keywords>
+</FitsFile>
+<FitsFile>
+   <Filename>http://msslxy.mssl.ucl.ac.uk:8080/TraceFits/ObtainFITS?_file=trace4a/tri/week20020728/tri20020728.0700</Filename>
+   <Coverage shape="Polygon">
+   </Coverage>
+   <Keywords>
+      <SIMPLE>T</SIMPLE>
+      <BITPIX>8</BITPIX>
+      <NAXIS>1</NAXIS>
+      <NAXIS1>14285754</NAXIS1>
+      <EXTEND>T</EXTEND>
+      <EXT_NROW>108</EXT_NROW>
+      <IMG_VER>3.10000</IMG_VER>
+      <MPROGNAM>TR_REFORMAT.PR</MPROGNAM>
+      <MPROGVER>2.50000</MPROGVER>
+      <PROG_NAM>TR_WRT_FITS_I</PROG_NAM>
+      <PROG_VER>1.12000</PROG_VER>
+      <BEXTEN_V>1.00000</BEXTEN_V>
+      <PROG_RUN>28-Jul-2002 15:00:58.0</PROG_RUN>
+      <END>null</END>
+   </Keywords>
+</FitsFile>
+<FitsFile>
+   <Filename>http://msslxy.mssl.ucl.ac.uk:8080/TraceFits/ObtainFITS?_file=trace4a/tri/week20020728/tri20020728.0800</Filename>
+   <Coverage shape="Polygon">
+   </Coverage>
+   <Keywords>
+      <SIMPLE>T</SIMPLE>
+      <BITPIX>8</BITPIX>
+      <NAXIS>1</NAXIS>
+      <NAXIS1>16274456</NAXIS1>
+      <EXTEND>T</EXTEND>
+      <EXT_NROW>110</EXT_NROW>
+      <IMG_VER>3.10000</IMG_VER>
+      <MPROGNAM>TR_REFORMAT.PR</MPROGNAM>
+      <MPROGVER>2.50000</MPROGVER>
+      <PROG_NAM>TR_WRT_FITS_I</PROG_NAM>
+      <PROG_VER>1.12000</PROG_VER>
+      <BEXTEN_V>1.00000</BEXTEN_V>
+      <PROG_RUN>28-Jul-2002 15:01:55.0</PROG_RUN>
+      <END>null</END>
+   </Keywords>
+</FitsFile>
+<FitsFile>
+   <Filename>http://msslxy.mssl.ucl.ac.uk:8080/TraceFits/ObtainFITS?_file=trace4a/tri/week20020728/tri20020728.0900</Filename>
+   <Coverage shape="Polygon">
+   </Coverage>
+   <Keywords>
+      <SIMPLE>T</SIMPLE>
+      <BITPIX>8</BITPIX>
+      <NAXIS>1</NAXIS>
+      <NAXIS1>17801494</NAXIS1>
+      <EXTEND>T</EXTEND>
+      <EXT_NROW>152</EXT_NROW>
+      <IMG_VER>3.10000</IMG_VER>
+      <MPROGNAM>TR_REFORMAT.PR</MPROGNAM>
+      <MPROGVER>2.50000</MPROGVER>
+      <PROG_NAM>TR_WRT_FITS_I</PROG_NAM>
+      <PROG_VER>1.12000</PROG_VER>
+      <BEXTEN_V>1.00000</BEXTEN_V>
+      <PROG_RUN>28-Jul-2002 15:02:54.0</PROG_RUN>
+      <END>null</END>
+   </Keywords>
+</FitsFile>
+<FitsFile>
+   <Filename>http://msslxy.mssl.ucl.ac.uk:8080/TraceFits/ObtainFITS?_file=trace4a/tri/week20020728/tri20020730.2300</Filename>
+   <Coverage shape="Polygon">
+   </Coverage>
+   <Keywords>
+      <SIMPLE>T</SIMPLE>
+      <BITPIX>8</BITPIX>
+      <NAXIS>1</NAXIS>
+      <NAXIS1>19839456</NAXIS1>
+      <EXTEND>T</EXTEND>
+      <EXT_NROW>136</EXT_NROW>
+      <IMG_VER>3.10000</IMG_VER>
+      <MPROGNAM>TR_REFORMAT.PR</MPROGNAM>
+      <MPROGVER>2.50000</MPROGVER>
+      <PROG_NAM>TR_WRT_FITS_I</PROG_NAM>
+      <PROG_VER>1.12000</PROG_VER>
+      <BEXTEN_V>1.00000</BEXTEN_V>
+      <PROG_RUN>31-Jul-2002 03:34:17.0</PROG_RUN>
+      <END>null</END>
+   </Keywords>
+</FitsFile>
+<FitsFile>
+   <Filename>http://msslxy.mssl.ucl.ac.uk:8080/TraceFits/ObtainFITS?_file=trace4a/tri/week20020721/tri20020722.0700</Filename>
+   <Coverage shape="Polygon">
+   </Coverage>
+   <Keywords>
+      <SIMPLE>T</SIMPLE>
+      <BITPIX>8</BITPIX>
+      <NAXIS>1</NAXIS>
+      <NAXIS1>12834652</NAXIS1>
+      <EXTEND>T</EXTEND>
+      <EXT_NROW>232</EXT_NROW>
+      <IMG_VER>3.10000</IMG_VER>
+      <MPROGNAM>TR_REFORMAT.PR</MPROGNAM>
+      <MPROGVER>2.50000</MPROGVER>
+      <PROG_NAM>TR_WRT_FITS_I</PROG_NAM>
+      <PROG_VER>1.12000</PROG_VER>
+      <BEXTEN_V>1.00000</BEXTEN_V>
+      <PROG_RUN>22-Jul-2002 15:31:53.0</PROG_RUN>
+      <END>null</END>
+   </Keywords>
+</FitsFile>
+<FitsFile>
+   <Filename>http://msslxy.mssl.ucl.ac.uk:8080/TraceFits/ObtainFITS?_file=trace4a/tri/week20020721/tri20020722.0800</Filename>
+   <Coverage shape="Polygon">
+   </Coverage>
+   <Keywords>
+      <SIMPLE>T</SIMPLE>
+      <BITPIX>8</BITPIX>
+      <NAXIS>1</NAXIS>
+      <NAXIS1>34583012</NAXIS1>
+      <EXTEND>T</EXTEND>
+      <EXT_NROW>534</EXT_NROW>
+      <IMG_VER>3.10000</IMG_VER>
+      <MPROGNAM>TR_REFORMAT.PR</MPROGNAM>
+      <MPROGVER>2.50000</MPROGVER>
+      <PROG_NAM>TR_WRT_FITS_I</PROG_NAM>
+      <PROG_VER>1.12000</PROG_VER>
+      <BEXTEN_V>1.00000</BEXTEN_V>
+      <PROG_RUN>22-Jul-2002 15:32:55.0</PROG_RUN>
+      <END>null</END>
+   </Keywords>
+</FitsFile>
+<FitsFile>
+   <Filename>http://msslxy.mssl.ucl.ac.uk:8080/TraceFits/ObtainFITS?_file=trace4a/tri/week20020721/tri20020722.0900</Filename>
+   <Coverage shape="Polygon">
+   </Coverage>
+   <Keywords>
+      <SIMPLE>T</SIMPLE>
+      <BITPIX>8</BITPIX>
+      <NAXIS>1</NAXIS>
+      <NAXIS1>18244560</NAXIS1>
+      <EXTEND>T</EXTEND>
+      <EXT_NROW>358</EXT_NROW>
+      <IMG_VER>3.10000</IMG_VER>
+      <MPROGNAM>TR_REFORMAT.PR</MPROGNAM>
+      <MPROGVER>2.50000</MPROGVER>
+      <PROG_NAM>TR_WRT_FITS_I</PROG_NAM>
+      <PROG_VER>1.12000</PROG_VER>
+      <BEXTEN_V>1.00000</BEXTEN_V>
+      <PROG_RUN>22-Jul-2002 15:35:19.0</PROG_RUN>
+      <END>null</END>
+   </Keywords>
+</FitsFile>
+<FitsFile>
+   <Filename>http://msslxy.mssl.ucl.ac.uk:8080/TraceFits/ObtainFITS?_file=trace4a/tri/week20020721/tri20020723.0000</Filename>
+   <Coverage shape="Polygon">
+   </Coverage>
+   <Keywords>
+      <SIMPLE>T</SIMPLE>
+      <BITPIX>8</BITPIX>
+      <NAXIS>1</NAXIS>
+      <NAXIS1>24319292</NAXIS1>
+      <EXTEND>T</EXTEND>
+      <EXT_NROW>634</EXT_NROW>
+      <IMG_VER>3.10000</IMG_VER>
+      <MPROGNAM>TR_REFORMAT.PR</MPROGNAM>
+      <MPROGVER>2.50000</MPROGVER>
+      <PROG_NAM>TR_WRT_FITS_I</PROG_NAM>
+      <PROG_VER>1.12000</PROG_VER>
+      <BEXTEN_V>1.00000</BEXTEN_V>
+      <PROG_RUN>23-Jul-2002 04:36:50.0</PROG_RUN>
+      <END>null</END>
+   </Keywords>
+</FitsFile>
+<FitsFile>
+   <Filename>http://msslxy.mssl.ucl.ac.uk:8080/TraceFits/ObtainFITS?_file=trace4a/tri/week20020721/tri20020723.0100</Filename>
+   <Coverage shape="Polygon">
+   </Coverage>
+   <Keywords>
+      <SIMPLE>T</SIMPLE>
+      <BITPIX>8</BITPIX>
+      <NAXIS>1</NAXIS>
+      <NAXIS1>26944464</NAXIS1>
+      <EXTEND>T</EXTEND>
+      <EXT_NROW>634</EXT_NROW>
+      <IMG_VER>3.10000</IMG_VER>
+      <MPROGNAM>TR_REFORMAT.PR</MPROGNAM>
+      <MPROGVER>2.50000</MPROGVER>
+      <PROG_NAM>TR_WRT_FITS_I</PROG_NAM>
+      <PROG_VER>1.12000</PROG_VER>
+      <BEXTEN_V>1.00000</BEXTEN_V>
+      <PROG_RUN>23-Jul-2002 04:40:07.0</PROG_RUN>
+      <END>null</END>
+   </Keywords>
+</FitsFile>
+<FitsFile>
+   <Filename>http://msslxy.mssl.ucl.ac.uk:8080/TraceFits/ObtainFITS?_file=trace4a/tri/week20020721/tri20020726.1800</Filename>
+   <Coverage shape="Polygon">
+   </Coverage>
+   <Keywords>
+      <SIMPLE>T</SIMPLE>
+      <BITPIX>8</BITPIX>
+      <NAXIS>1</NAXIS>
+      <NAXIS1>30345312</NAXIS1>
+      <EXTEND>T</EXTEND>
+      <EXT_NROW>310</EXT_NROW>
+      <IMG_VER>3.10000</IMG_VER>
+      <MPROGNAM>TR_REFORMAT.PR</MPROGNAM>
+      <MPROGVER>2.50000</MPROGVER>
+      <PROG_NAM>TR_WRT_FITS_I</PROG_NAM>
+      <PROG_VER>1.12000</PROG_VER>
+      <BEXTEN_V>1.00000</BEXTEN_V>
+      <PROG_RUN>19-Aug-2002 18:44:21.0</PROG_RUN>
+      <END>null</END>
+   </Keywords>
+</FitsFile>
+<FitsFile>
+   <Filename>http://msslxy.mssl.ucl.ac.uk:8080/TraceFits/ObtainFITS?_file=trace4a/tri/week20020721/tri20020726.1900</Filename>
+   <Coverage shape="Polygon">
+   </Coverage>
+   <Keywords>
+      <SIMPLE>T</SIMPLE>
+      <BITPIX>8</BITPIX>
+      <NAXIS>1</NAXIS>
+      <NAXIS1>40829344</NAXIS1>
+      <EXTEND>T</EXTEND>
+      <EXT_NROW>557</EXT_NROW>
+      <IMG_VER>3.10000</IMG_VER>
+      <MPROGNAM>TR_REFORMAT.PR</MPROGNAM>
+      <MPROGVER>2.50000</MPROGVER>
+      <PROG_NAM>TR_WRT_FITS_I</PROG_NAM>
+      <PROG_VER>1.12000</PROG_VER>
+      <BEXTEN_V>1.00000</BEXTEN_V>
+      <PROG_RUN>27-Jul-2002 04:28:16.0</PROG_RUN>
+      <END>null</END>
+   </Keywords>
+</FitsFile>
+<FitsFile>
+   <Filename>http://msslxy.mssl.ucl.ac.uk:8080/TraceFits/ObtainFITS?_file=trace4a/tri/week20020721/tri20020726.2000</Filename>
+   <Coverage shape="Polygon">
+   </Coverage>
+   <Keywords>
+      <SIMPLE>T</SIMPLE>
+      <BITPIX>8</BITPIX>
+      <NAXIS>1</NAXIS>
+      <NAXIS1>38609656</NAXIS1>
+      <EXTEND>T</EXTEND>
+      <EXT_NROW>444</EXT_NROW>
+      <IMG_VER>3.10000</IMG_VER>
+      <MPROGNAM>TR_REFORMAT.PR</MPROGNAM>
+      <MPROGVER>2.50000</MPROGVER>
+      <PROG_NAM>TR_WRT_FITS_I</PROG_NAM>
+      <PROG_VER>1.12000</PROG_VER>
+      <BEXTEN_V>1.00000</BEXTEN_V>
+      <PROG_RUN>19-Aug-2002 18:50:46.0</PROG_RUN>
+      <END>null</END>
+   </Keywords>
+</FitsFile>
+<FitsFile>
+   <Filename>http://msslxy.mssl.ucl.ac.uk:8080/TraceFits/ObtainFITS?_file=trace4a/tri/week19990502/tri19990504.0800</Filename>
+   <Coverage shape="Polygon">
+   </Coverage>
+   <Keywords>
+      <SIMPLE>T</SIMPLE>
+      <BITPIX>8</BITPIX>
+      <NAXIS>1</NAXIS>
+      <NAXIS1>27837998</NAXIS1>
+      <EXTEND>T</EXTEND>
+      <EXT_NROW>386</EXT_NROW>
+      <IMG_VER>3.10000</IMG_VER>
+      <MPROGNAM>TR_REFORMAT.PR</MPROGNAM>
+      <MPROGVER>2.50000</MPROGVER>
+      <PROG_NAM>TR_WRT_FITS_I</PROG_NAM>
+      <PROG_VER>1.12000</PROG_VER>
+      <BEXTEN_V>1.00000</BEXTEN_V>
+      <PROG_RUN>5-Jan-2000 19:38:48.0</PROG_RUN>
+      <END>null</END>
+   </Keywords>
+</FitsFile>
+<FitsFile>
+   <Filename>http://msslxy.mssl.ucl.ac.uk:8080/TraceFits/ObtainFITS?_file=trace4a/tri/week19990502/tri19990504.0900</Filename>
+   <Coverage shape="Polygon">
+   </Coverage>
+   <Keywords>
+      <SIMPLE>T</SIMPLE>
+      <BITPIX>8</BITPIX>
+      <NAXIS>1</NAXIS>
+      <NAXIS1>35017774</NAXIS1>
+      <EXTEND>T</EXTEND>
+      <EXT_NROW>449</EXT_NROW>
+      <IMG_VER>3.10000</IMG_VER>
+      <MPROGNAM>TR_REFORMAT.PR</MPROGNAM>
+      <MPROGVER>2.50000</MPROGVER>
+      <PROG_NAM>TR_WRT_FITS_I</PROG_NAM>
+      <PROG_VER>1.12000</PROG_VER>
+      <BEXTEN_V>1.00000</BEXTEN_V>
+      <PROG_RUN>5-May-1999 03:07:50.0</PROG_RUN>
+      <END>null</END>
+   </Keywords>
+</FitsFile>
+<FitsFile>
+   <Filename>http://msslxy.mssl.ucl.ac.uk:8080/TraceFits/ObtainFITS?_file=trace4a/tri/week19990502/tri19990504.1000</Filename>
+   <Coverage shape="Polygon">
+   </Coverage>
+   <Keywords>
+      <SIMPLE>T</SIMPLE>
+      <BITPIX>8</BITPIX>
+      <NAXIS>1</NAXIS>
+      <NAXIS1>31207076</NAXIS1>
+      <EXTEND>T</EXTEND>
+      <EXT_NROW>447</EXT_NROW>
+      <IMG_VER>3.10000</IMG_VER>
+      <MPROGNAM>TR_REFORMAT.PR</MPROGNAM>
+      <MPROGVER>2.50000</MPROGVER>
+      <PROG_NAM>TR_WRT_FITS_I</PROG_NAM>
+      <PROG_VER>1.12000</PROG_VER>
+      <BEXTEN_V>1.00000</BEXTEN_V>
+      <PROG_RUN>25-May-1999 15:50:33.0</PROG_RUN>
+      <END>null</END>
+   </Keywords>
+</FitsFile>
+<FitsFile>
+   <Filename>http://msslxy.mssl.ucl.ac.uk:8080/TraceFits/ObtainFITS?_file=trace4a/tri/week19990502/tri19990504.1100</Filename>
+   <Coverage shape="Polygon">
+   </Coverage>
+   <Keywords>
+      <SIMPLE>T</SIMPLE>
+      <BITPIX>8</BITPIX>
+      <NAXIS>1</NAXIS>
+      <NAXIS1>31143900</NAXIS1>
+      <EXTEND>T</EXTEND>
+      <EXT_NROW>439</EXT_NROW>
+      <IMG_VER>3.10000</IMG_VER>
+      <MPROGNAM>TR_REFORMAT.PR</MPROGNAM>
+      <MPROGVER>2.50000</MPROGVER>
+      <PROG_NAM>TR_WRT_FITS_I</PROG_NAM>
+      <PROG_VER>1.12000</PROG_VER>
+      <BEXTEN_V>1.00000</BEXTEN_V>
+      <PROG_RUN>25-May-1999 15:56:06.0</PROG_RUN>
+      <END>null</END>
+   </Keywords>
+</FitsFile>
+<FitsFile>
+   <Filename>http://msslxy.mssl.ucl.ac.uk:8080/TraceFits/ObtainFITS?_file=trace4a/tri/week19990502/tri19990504.1200</Filename>
+   <Coverage shape="Polygon">
+   </Coverage>
+   <Keywords>
+      <SIMPLE>T</SIMPLE>
+      <BITPIX>8</BITPIX>
+      <NAXIS>1</NAXIS>
+      <NAXIS1>30785684</NAXIS1>
+      <EXTEND>T</EXTEND>
+      <EXT_NROW>442</EXT_NROW>
+      <IMG_VER>3.10000</IMG_VER>
+      <MPROGNAM>TR_REFORMAT.PR</MPROGNAM>
+      <MPROGVER>2.50000</MPROGVER>
+      <PROG_NAM>TR_WRT_FITS_I</PROG_NAM>
+      <PROG_VER>1.12000</PROG_VER>
+      <BEXTEN_V>1.00000</BEXTEN_V>
+      <PROG_RUN>25-May-1999 16:03:16.0</PROG_RUN>
+      <END>null</END>
+   </Keywords>
+</FitsFile>
+<FitsFile>
+   <Filename>http://msslxy.mssl.ucl.ac.uk:8080/TraceFits/ObtainFITS?_file=trace4a/tri/week19990502/tri19990504.1300</Filename>
+   <Coverage shape="Polygon">
+   </Coverage>
+   <Keywords>
+      <SIMPLE>T</SIMPLE>
+      <BITPIX>8</BITPIX>
+      <NAXIS>1</NAXIS>
+      <NAXIS1>32067922</NAXIS1>
+      <EXTEND>T</EXTEND>
+      <EXT_NROW>399</EXT_NROW>
+      <IMG_VER>3.10000</IMG_VER>
+      <MPROGNAM>TR_REFORMAT.PR</MPROGNAM>
+      <MPROGVER>2.50000</MPROGVER>
+      <PROG_NAM>TR_WRT_FITS_I</PROG_NAM>
+      <PROG_VER>1.12000</PROG_VER>
+      <BEXTEN_V>1.00000</BEXTEN_V>
+      <PROG_RUN>25-May-1999 16:08:01.0</PROG_RUN>
+      <END>null</END>
+   </Keywords>
+</FitsFile>
+<FitsFile>
+   <Filename>http://msslxy.mssl.ucl.ac.uk:8080/TraceFits/ObtainFITS?_file=trace4a/tri/week19990502/tri19990504.1400</Filename>
+   <Coverage shape="Polygon">
+   </Coverage>
+   <Keywords>
+      <SIMPLE>T</SIMPLE>
+      <BITPIX>8</BITPIX>
+      <NAXIS>1</NAXIS>
+      <NAXIS1>22135208</NAXIS1>
+      <EXTEND>T</EXTEND>
+      <EXT_NROW>556</EXT_NROW>
+      <IMG_VER>3.10000</IMG_VER>
+      <MPROGNAM>TR_REFORMAT.PR</MPROGNAM>
+      <MPROGVER>2.50000</MPROGVER>
+      <PROG_NAM>TR_WRT_FITS_I</PROG_NAM>
+      <PROG_VER>1.12000</PROG_VER>
+      <BEXTEN_V>1.00000</BEXTEN_V>
+      <PROG_RUN>25-May-1999 16:12:49.0</PROG_RUN>
+      <END>null</END>
+   </Keywords>
+</FitsFile>
+<FitsFile>
+   <Filename>http://msslxy.mssl.ucl.ac.uk:8080/TraceFits/ObtainFITS?_file=trace4a/tri/week19990502/tri19990504.1500</Filename>
+   <Coverage shape="Polygon">
+   </Coverage>
+   <Keywords>
+      <SIMPLE>T</SIMPLE>
+      <BITPIX>8</BITPIX>
+      <NAXIS>1</NAXIS>
+      <NAXIS1>15412448</NAXIS1>
+      <EXTEND>T</EXTEND>
+      <EXT_NROW>510</EXT_NROW>
+      <IMG_VER>3.10000</IMG_VER>
+      <MPROGNAM>TR_REFORMAT.PR</MPROGNAM>
+      <MPROGVER>2.50000</MPROGVER>
+      <PROG_NAM>TR_WRT_FITS_I</PROG_NAM>
+      <PROG_VER>1.12000</PROG_VER>
+      <BEXTEN_V>1.00000</BEXTEN_V>
+      <PROG_RUN>6-May-1999 03:16:47.0</PROG_RUN>
+      <END>null</END>
+   </Keywords>
+</FitsFile>
+<FitsFile>
+   <Filename>http://msslxy.mssl.ucl.ac.uk:8080/TraceFits/ObtainFITS?_file=trace4a/tri/week19990502/tri19990504.1600</Filename>
+   <Coverage shape="Polygon">
+   </Coverage>
+   <Keywords>
+      <SIMPLE>T</SIMPLE>
+      <BITPIX>8</BITPIX>
+      <NAXIS>1</NAXIS>
+      <NAXIS1>13524236</NAXIS1>
+      <EXTEND>T</EXTEND>
+      <EXT_NROW>502</EXT_NROW>
+      <IMG_VER>3.10000</IMG_VER>
+      <MPROGNAM>TR_REFORMAT.PR</MPROGNAM>
+      <MPROGVER>2.50000</MPROGVER>
+      <PROG_NAM>TR_WRT_FITS_I</PROG_NAM>
+      <PROG_VER>1.12000</PROG_VER>
+      <BEXTEN_V>1.00000</BEXTEN_V>
+      <PROG_RUN>6-May-1999 03:19:33.0</PROG_RUN>
+      <END>null</END>
+   </Keywords>
+</FitsFile>
+<FitsFile>
+   <Filename>http://msslxy.mssl.ucl.ac.uk:8080/TraceFits/ObtainFITS?_file=trace4a/tri/week20020901/tri20020903.0000</Filename>
+   <Coverage shape="Polygon">
+   </Coverage>
+   <Keywords>
+      <SIMPLE>T</SIMPLE>
+      <BITPIX>8</BITPIX>
+      <NAXIS>1</NAXIS>
+      <NAXIS1>25897024</NAXIS1>
+      <EXTEND>T</EXTEND>
+      <EXT_NROW>354</EXT_NROW>
+      <IMG_VER>3.10000</IMG_VER>
+      <MPROGNAM>TR_REFORMAT.PR</MPROGNAM>
+      <MPROGVER>2.50000</MPROGVER>
+      <PROG_NAM>TR_WRT_FITS_I</PROG_NAM>
+      <PROG_VER>1.12000</PROG_VER>
+      <BEXTEN_V>1.00000</BEXTEN_V>
+      <PROG_RUN>3-Sep-2002 04:00:15.0</PROG_RUN>
+      <END>null</END>
+   </Keywords>
+</FitsFile>
+<FitsFile>
+   <Filename>http://msslxy.mssl.ucl.ac.uk:8080/TraceFits/ObtainFITS?_file=trace4a/tri/week20020901/tri20020903.0100</Filename>
+   <Coverage shape="Polygon">
+   </Coverage>
+   <Keywords>
+      <SIMPLE>T</SIMPLE>
+      <BITPIX>8</BITPIX>
+      <NAXIS>1</NAXIS>
+      <NAXIS1>15508716</NAXIS1>
+      <EXTEND>T</EXTEND>
+      <EXT_NROW>458</EXT_NROW>
+      <IMG_VER>3.10000</IMG_VER>
+      <MPROGNAM>TR_REFORMAT.PR</MPROGNAM>
+      <MPROGVER>2.50000</MPROGVER>
+      <PROG_NAM>TR_WRT_FITS_I</PROG_NAM>
+      <PROG_VER>1.12000</PROG_VER>
+
+      <BEXTEN_V>1.00000</BEXTEN_V>
+      <PROG_RUN>3-Sep-2002 04:02:36.0</PROG_RUN>
+      <END>null</END>
+   </Keywords>
+</FitsFile>
+<FitsFile>
+   <Filename>http://msslxy.mssl.ucl.ac.uk:8080/TraceFits/ObtainFITS?_file=trace4a/tri/week20020901/tri20020903.0200</Filename>
+   <Coverage shape="Polygon">
+   </Coverage>
+   <Keywords>
+      <SIMPLE>T</SIMPLE>
+      <BITPIX>8</BITPIX>
+      <NAXIS>1</NAXIS>
+      <NAXIS1>15829660</NAXIS1>
+      <EXTEND>T</EXTEND>
+      <EXT_NROW>510</EXT_NROW>
+      <IMG_VER>3.10000</IMG_VER>
+      <MPROGNAM>TR_REFORMAT.PR</MPROGNAM>
+      <MPROGVER>2.50000</MPROGVER>
+      <PROG_NAM>TR_WRT_FITS_I</PROG_NAM>
+      <PROG_VER>1.12000</PROG_VER>
+      <BEXTEN_V>1.00000</BEXTEN_V>
+      <PROG_RUN>3-Sep-2002 04:05:09.0</PROG_RUN>
+      <END>null</END>
+   </Keywords>
+</FitsFile>
+<FitsFile>
+   <Filename>http://msslxy.mssl.ucl.ac.uk:8080/TraceFits/ObtainFITS?_file=trace4a/tri/week20020901/tri20020903.0300</Filename>
+   <Coverage shape="Polygon">
+   </Coverage>
+   <Keywords>
+      <SIMPLE>T</SIMPLE>
+      <BITPIX>8</BITPIX>
+      <NAXIS>1</NAXIS>
+      <NAXIS1>15450426</NAXIS1>
+      <EXTEND>T</EXTEND>
+      <EXT_NROW>468</EXT_NROW>
+      <IMG_VER>3.10000</IMG_VER>
+      <MPROGNAM>TR_REFORMAT.PR</MPROGNAM>
+      <MPROGVER>2.50000</MPROGVER>
+      <PROG_NAM>TR_WRT_FITS_I</PROG_NAM>
+      <PROG_VER>1.12000</PROG_VER>
+      <BEXTEN_V>1.00000</BEXTEN_V>
+      <PROG_RUN>3-Sep-2002 04:07:59.0</PROG_RUN>
+      <END>null</END>
+   </Keywords>
+</FitsFile>
+<FitsFile>
+   <Filename>http://msslxy.mssl.ucl.ac.uk:8080/TraceFits/ObtainFITS?_file=trace4a/tri/week20020901/tri20020903.0400</Filename>
+   <Coverage shape="Polygon">
+   </Coverage>
+   <Keywords>
+      <SIMPLE>T</SIMPLE>
+      <BITPIX>8</BITPIX>
+      <NAXIS>1</NAXIS>
+      <NAXIS1>16018722</NAXIS1>
+      <EXTEND>T</EXTEND>
+      <EXT_NROW>486</EXT_NROW>
+      <IMG_VER>3.10000</IMG_VER>
+      <MPROGNAM>TR_REFORMAT.PR</MPROGNAM>
+      <MPROGVER>2.50000</MPROGVER>
+      <PROG_NAM>TR_WRT_FITS_I</PROG_NAM>
+      <PROG_VER>1.12000</PROG_VER>
+      <BEXTEN_V>1.00000</BEXTEN_V>
+      <PROG_RUN>3-Sep-2002 04:10:40.0</PROG_RUN>
+      <END>null</END>
+   </Keywords>
+</FitsFile>
+<FitsFile>
+   <Filename>http://msslxy.mssl.ucl.ac.uk:8080/TraceFits/ObtainFITS?_file=trace4a/tri/week20020901/tri20020903.1700</Filename>
+   <Coverage shape="Polygon">
+   </Coverage>
+   <Keywords>
+      <SIMPLE>T</SIMPLE>
+      <BITPIX>8</BITPIX>
+      <NAXIS>1</NAXIS>
+      <NAXIS1>27020746</NAXIS1>
+      <EXTEND>T</EXTEND>
+      <EXT_NROW>622</EXT_NROW>
+      <IMG_VER>3.10000</IMG_VER>
+      <MPROGNAM>TR_REFORMAT.PR</MPROGNAM>
+      <MPROGVER>2.50000</MPROGVER>
+      <PROG_NAM>TR_WRT_FITS_I</PROG_NAM>
+      <PROG_VER>1.12000</PROG_VER>
+      <BEXTEN_V>1.00000</BEXTEN_V>
+      <PROG_RUN>5-Sep-2002 03:24:20.0</PROG_RUN>
+      <END>null</END>
+   </Keywords>
+</FitsFile>
+<FitsFile>
+   <Filename>http://msslxy.mssl.ucl.ac.uk:8080/TraceFits/ObtainFITS?_file=trace4a/tri/week20020901/tri20020903.1800</Filename>
+   <Coverage shape="Polygon">
+   </Coverage>
+   <Keywords>
+      <SIMPLE>T</SIMPLE>
+      <BITPIX>8</BITPIX>
+      <NAXIS>1</NAXIS>
+      <NAXIS1>26177594</NAXIS1>
+      <EXTEND>T</EXTEND>
+      <EXT_NROW>748</EXT_NROW>
+      <IMG_VER>3.10000</IMG_VER>
+      <MPROGNAM>TR_REFORMAT.PR</MPROGNAM>
+      <MPROGVER>2.50000</MPROGVER>
+      <PROG_NAM>TR_WRT_FITS_I</PROG_NAM>
+      <PROG_VER>1.12000</PROG_VER>
+      <BEXTEN_V>1.00000</BEXTEN_V>
+      <PROG_RUN>4-Sep-2002 04:50:45.0</PROG_RUN>
+      <END>null</END>
+   </Keywords>
+</FitsFile>
+</FitsDataCenterIndex>

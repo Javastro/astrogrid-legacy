@@ -1,0 +1,62 @@
+<?xml version="1.0" ?>
+<!-- SQL equivalent
+SELECT t.a, g.d FROM Tab a, Tab d WHERE a.d < d.e AND a.f < d.f ORDER BY t.f, g.b
+-->
+<Select xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://tempuri.org/adql">
+<SelectionAll />
+  <TableClause>
+    <FromClause>
+      <TableReference>
+        <Table>
+          <Name>sgas_event</Name>
+          <AliasName>se</AliasName>
+        </Table>
+      </TableReference>
+    </FromClause>
+    <WhereClause>
+      <IntersectionSearch>
+        <FirstCondition xsi:type="PredicateSearch">
+          <ComparisonPred>
+            <FirstExpr xsi:type="ColumnExpr">
+              <SingleColumnReference>
+                <TableName>se</TableName>
+                <Name>nar</Name>
+              </SingleColumnReference>
+            </FirstExpr>
+            <Compare>&lt;</Compare>
+            <SecondExpr xsi:type="AtomExpr">
+              <Value>
+                <NumberLiteral>
+	                <ApproxNum>
+    	    	        <Value>9600</Value>
+        	        </ApproxNum>
+                </NumberLiteral>
+              </Value>
+            </SecondExpr>
+          </ComparisonPred>
+        </FirstCondition>
+        <SecondCondition xsi:type="PredicateSearch">
+          <ComparisonPred>
+            <FirstExpr xsi:type="ColumnExpr">
+              <SingleColumnReference>
+                <TableName>se</TableName>
+                <Name>nar</Name>
+              </SingleColumnReference>
+            </FirstExpr>
+            <Compare>&gt;</Compare>
+            <SecondExpr xsi:type="AtomExpr">
+              <Value>
+                <NumberLiteral>
+	                <ApproxNum>
+    	    	        <Value>9500</Value>
+        	        </ApproxNum>
+                </NumberLiteral>
+              </Value>
+            </SecondExpr>
+          </ComparisonPred>
+        </SecondCondition>
+      </IntersectionSearch>
+    </WhereClause>
+  </TableClause>
+</Select>

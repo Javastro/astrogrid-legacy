@@ -6,7 +6,7 @@
       <Table Name="TEST" Alias="t"/>
    </From>
    <Where>
-   	<AND>
+   	<And>
       <Compare Comparison="=">
          <Column Name="vr:Resource/Identifier/AuthorityID"/>
          <Atom><String>org.astrogrid.localhost</String></Atom>
@@ -15,6 +15,6 @@
          <Column Name="vr:Resource/Identifier/ResourceKey"/>
          <Atom><String>sia</String></Atom>
       </Compare>      
-      </AND>
+      </And>
    </Where>
 </Select>

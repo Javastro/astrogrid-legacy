@@ -1,4 +1,4 @@
-/*$Id: RegistryServiceClientTestCase.java,v 1.1 2004/07/26 14:07:59 KevinBenson Exp $
+/*$Id: RegistryServiceClientTest.java,v 1.2 2004/08/03 13:41:29 KevinBenson Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,7 +30,7 @@ import java.net.URL;
  * @author Paul Harrison pah@jb.man.ac.uk 07-May-2004
  *
  */
-public class RegistryServiceClientTestCase extends RegistryBaseTestCase {
+public class RegistryServiceClientTest extends TestCase {
     
    //public static final String SERVICE_ENDPOINT = "http://localhost:8080/astrogrid-registry-SNAPSHOT/services/Registry" ;    
    
@@ -39,15 +39,14 @@ public class RegistryServiceClientTestCase extends RegistryBaseTestCase {
      * Constructor for RegistryInstallationTest.
      * @param arg0
      */
-    public RegistryServiceClientTestCase(String arg0) {
+    public RegistryServiceClientTest(String arg0) {
         super(arg0);
         
     }
             
     public void testLoadRegistry() throws RegistryException
     {
-       HashMap auth = delegate.managedAuthorities();
-       rs.loadRegistry();
+       HashMap auth = rs.managedAuthorities();
        assertNotNull(auth);
        assertTrue("There are no managed authorities", !auth.isEmpty());
     }

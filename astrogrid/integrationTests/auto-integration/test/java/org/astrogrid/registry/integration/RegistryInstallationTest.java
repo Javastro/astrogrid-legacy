@@ -1,4 +1,4 @@
-/*$Id: RegistryInstallationTest.java,v 1.6 2004/07/26 15:44:42 KevinBenson Exp $
+/*$Id: RegistryInstallationTest.java,v 1.7 2004/08/03 13:41:29 KevinBenson Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -43,7 +43,7 @@ public class RegistryInstallationTest extends RegistryBaseTestCase {
     }
     
     public void testRoot() throws Exception {
-        Document doc = delegate.loadRegistryDOM();
+        Document doc = delegate.loadRegistry();
        //Document doc = delegate.loadRegistry();
         assertNotNull(doc);
         XMLUtils.PrettyDocumentToStream(doc,System.out);
@@ -68,6 +68,12 @@ public class RegistryInstallationTest extends RegistryBaseTestCase {
 
 /* 
 $Log: RegistryInstallationTest.java,v $
+Revision 1.7  2004/08/03 13:41:29  KevinBenson
+result of a merge with Itn06_case3 to change to using registry-client-lite and add some more int-test for fits and sec datacenter
+
+Revision 1.6.2.1  2004/07/27 07:35:12  KevinBenson
+Changed to use the new lighter version of the registry
+
 Revision 1.6  2004/07/26 15:44:42  KevinBenson
 *** empty log message ***
 
