@@ -1,4 +1,4 @@
-/*$Id: EmptyCEAComponentManager.java,v 1.9 2004/09/22 10:52:50 pah Exp $
+/*$Id: EmptyCEAComponentManager.java,v 1.10 2004/11/05 13:07:04 nw Exp $
  * Created on 04-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,6 +32,7 @@ import org.astrogrid.applications.manager.idgen.GloballyUniqueIdGen;
 import org.astrogrid.applications.manager.idgen.IdGen;
 import org.astrogrid.applications.manager.persist.ExecutionHistory;
 import org.astrogrid.applications.manager.persist.FileStoreExecutionHistory;
+import org.astrogrid.applications.manager.persist.InMemoryExecutionHistory;
 import org.astrogrid.applications.parameter.protocol.AgslProtocol;
 import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
 import org.astrogrid.applications.parameter.protocol.FileProtocol;
@@ -178,20 +179,37 @@ public abstract class EmptyCEAComponentManager extends EmptyComponentManager imp
      * @see #registerDefaultPersistence(MutablePicoContainer, Config) */
     public static final String FILESTORE_BASEDIR = "cea.filestore.basedir";
     
+    /** key used to determine which persistence back-end to use -
+     * <br> valid values - <tt>file</tt>, <tt>memory</tt>
+     * <br>optional- defaults to <tt>file</tt>*/
+    public static final String PERSISTENCE_BACKEND = "cea.persistence.backend";
+    
     /** register the standard persistence system - globally unique id generation, and file-based exection history 
      * configured by {@link #FILESTORE_BASEDIR}
      * */
     protected static final void registerDefaultPersistence(MutablePicoContainer pico, final Config config) {
-        log.info("Registering default persistence system");
-        pico.registerComponentImplementation(ExecutionHistory.class,FileStoreExecutionHistory.class); 
-        pico.registerComponentInstance(FileStoreExecutionHistory.StoreDir.class, new FileStoreExecutionHistory.StoreDir(){
-            private final File dir= new File(config.getString(FILESTORE_BASEDIR,System.getProperty("java.io.tmpdir")));
-            public File getDir() {
-                return dir;
+
+        String backend = System.getProperty(PERSISTENCE_BACKEND,"file").toLowerCase().trim();
+        if (backend.equals("memory")) {
+            log.warn("Only using memory-based persistence system - all history will be lost on restart");
+            pico.registerComponentImplementation(ExecutionHistory.class,InMemoryExecutionHistory.class);
+        } else {
+            if (! backend.equals("file")) {
+                log.error("Unrecognized value '" + backend + "' for key " +  PERSISTENCE_BACKEND + " - defaulting to file-based persistence");
             }
-        });
+            log.info("Registering file-based persistence system");
+            pico.registerComponentImplementation(ExecutionHistory.class,FileStoreExecutionHistory.class);
+            pico.registerComponentInstance(FileStoreExecutionHistory.StoreDir.class, new FileStoreExecutionHistory.StoreDir(){
+                private final File dir= new File(config.getString(FILESTORE_BASEDIR,System.getProperty("java.io.tmpdir")));
+                public File getDir() {
+                    return dir;
+                }
+            });
+        } 
         pico.registerComponentImplementation(IdGen.class,GloballyUniqueIdGen.class);        
     }
+
+    
     /** key to query config for the url of the registry template to use (optional, default='/CEARegistryTemplate.xml' on classpath) 
      * @see #registerDefaultVOProvider(MutablePicoContainer, Config)*/
     public static final String REGISTRY_TEMPLATE_URL  ="cea.registry.template.url";
@@ -295,6 +313,9 @@ public abstract class EmptyCEAComponentManager extends EmptyComponentManager imp
 
 /* 
 $Log: EmptyCEAComponentManager.java,v $
+Revision 1.10  2004/11/05 13:07:04  nw
+added option to use memory-backed execution history.
+
 Revision 1.9  2004/09/22 10:52:50  pah
 getting rid of some unused imports
 
