@@ -559,6 +559,7 @@ public class MySpaceManagerDelegate {
         try{
             MySpaceHelper helper = new MySpaceHelper();
             String jobDetails = helper.buildSaveURL(userId, communityId, credential, fileName, importURL, category, action);
+            System.out.println("filename: "+fileName+ "importURL: "+importURL);
             binding.upLoadURL(jobDetails);
             isSaved = true;
         }catch(java.rmi.RemoteException re) {

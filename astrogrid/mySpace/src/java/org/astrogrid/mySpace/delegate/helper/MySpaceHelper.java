@@ -84,9 +84,9 @@ public class MySpaceHelper{
 			request.append(credential);
 			request.append("</credential>");
 
-			request.append("<importURL>") ;
+			request.append("<importURI>") ;
 			request.append(importURL) ;
-			request.append("</importURL>") ;
+			request.append("</importURI>") ;
 			
 			request.append("<newDataHolderName>") ;
 			request.append(fileFullName) ;
