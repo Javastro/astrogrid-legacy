@@ -45,7 +45,7 @@
                                     <tr>
                                         <td>Description:</td>
                                         <td>
-                                            <textarea name="step_description" cols="45" rows="2" >...</textarea>
+                                            <textarea name="step_description" cols="45" rows="2" readonly="true">...</textarea>
                                             <input type="submit" name="action" value="add-step-description" />
                                         </td>
                                     </tr>
