@@ -1,5 +1,5 @@
 /*
- * $Id: DatabaseQuerier.java,v 1.24 2003/09/15 22:38:42 mch Exp $
+ * $Id: DatabaseQuerier.java,v 1.25 2003/09/16 15:23:16 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -201,64 +201,34 @@ public abstract class DatabaseQuerier implements Runnable
    }
 
    /**
-    * Convenience class method - runs a blocking query.  NB the given DOM document may include other tags, so we need
-    * to extract the right elements
-    */
-   public static DatabaseQuerier doQueryGetResults(Element domContainingQuery) throws QueryException, DatabaseAccessException, IOException
-   {
-      DatabaseQuerier querier = DatabaseQuerier.createQuerier(domContainingQuery);
-
-      querier.doQuery();
-
-      return querier;
-   }
-
-   /**
-    * Spawns a query in a separate thread.  It's a good idea to listen to the
-    * status changes so you can see when the query has completed...
-    *
-    * @see doBlockingQuery
-    */
-   public static DatabaseQuerier tspawnQuery(Element domContainingQuery) throws QueryException, DatabaseAccessException, MalformedURLException
-   {
-      //make correct querier
-      DatabaseQuerier querier = DatabaseQuerier.createQuerier(domContainingQuery);
-
-      //start querying on different thread
-      Thread thread = new Thread(querier);
-
-      thread.start();
-
-      return querier;
-   }
-
-   /**
     * Examines given DOM for tags requesting notifications
     */
-   public void registerWebListeners(Element domContainingQuery) throws MalformedURLException
+   public void registerWebListeners(Element domContainingListeners) throws MalformedURLException
    {
       //look for anonymous web listeners
-      NodeList listenerTags = domContainingQuery.getElementsByTagName(DocMessageHelper.LISTENER_TAG);
+      NodeList listenerTags = domContainingListeners.getElementsByTagName(DocMessageHelper.LISTENER_TAG);
 
       for (int i=0; i<listenerTags.getLength();i++)
       {
          WebNotifyServiceListener listener = new WebNotifyServiceListener(
             new URL(((Element) listenerTags.item(i)).getNodeValue())
          );
+         registerListener(new QueryStatusForwarder(listener));
       }
 
       //look for job web listeners
-      listenerTags = domContainingQuery.getElementsByTagName(DocMessageHelper.JOBLISTENER_TAG);
+      listenerTags = domContainingListeners.getElementsByTagName(DocMessageHelper.JOBLISTENER_TAG);
 
       for (int i=0; i<listenerTags.getLength();i++)
       {
          JobNotifyServiceListener listener = new JobNotifyServiceListener(
             new URL(((Element) listenerTags.item(i)).getNodeValue())
          );
-
+         registerListener(new QueryStatusForwarder(listener));
       }
 
    }
+    /**/
 
    /**
     * Runnable implementation - this method is called when the thread to run

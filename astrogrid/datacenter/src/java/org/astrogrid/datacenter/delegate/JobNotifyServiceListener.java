@@ -1,5 +1,5 @@
 /*
- * $Id: JobNotifyServiceListener.java,v 1.3 2003/09/16 12:54:05 mch Exp $
+ * $Id: JobNotifyServiceListener.java,v 1.4 2003/09/16 15:23:16 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -29,9 +29,8 @@ import org.xml.sax.SAXException;
  * @author M Hill
  */
 
-public class JobNotifyServiceListener implements QueryListener
+public class JobNotifyServiceListener extends WebNotifyServiceListener
 {
-   private URL clientListener = null;
 
    /**
     * Create a listener which will send service updates to the given URL
@@ -40,7 +39,7 @@ public class JobNotifyServiceListener implements QueryListener
     */
    public JobNotifyServiceListener(URL aClientListener)
    {
-      this.clientListener = aClientListener;
+      super(aClientListener);
    }
 
    /** Called by the service when it has a
@@ -93,6 +92,9 @@ public class JobNotifyServiceListener implements QueryListener
 
 /*
 $Log: JobNotifyServiceListener.java,v $
+Revision 1.4  2003/09/16 15:23:16  mch
+Listener fixes and rationalisation
+
 Revision 1.3  2003/09/16 12:54:05  mch
 DocHelper.wrap now throws IllegalArgumentException (runtime error) rather than SAXException, as XML is all softwired
 

@@ -1,5 +1,5 @@
 /*
- * $Id: DatacenterDelegate.java,v 1.19 2003/09/16 12:48:56 nw Exp $
+ * $Id: DatacenterDelegate.java,v 1.20 2003/09/16 15:23:16 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -12,6 +12,7 @@ import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.Vector;
 import javax.xml.rpc.ServiceException;
+import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.common.QueryStatus;
 import org.astrogrid.datacenter.delegate.dummy.DummyDelegate;
 import org.w3c.dom.Element;
@@ -35,6 +36,9 @@ public abstract class DatacenterDelegate
    /** list of DatacenterStatusListener instances that have registered to listen
     * to status changes */
    private Vector statusListeners = new Vector();
+
+   /** element describing the user, community, id, authorisation, etc */
+   private Element user = null;
 
    /** Creates a delegate given an endpoint (a url to the service). If the endPoint
     * is null, creates a dummy delegate that can be used to test against.
@@ -69,6 +73,31 @@ public abstract class DatacenterDelegate
       }
 
       throw new IllegalArgumentException("Don't know what delegate to start for '"+givenEndPoint);
+   }
+
+   /**
+    * Sets the community element (ie the element used to identify & authorise
+    * the user
+    */
+   public void setUser(Element givenUserElement)
+   {
+      user = givenUserElement;
+   }
+
+   /**
+    * Returns the user element as a community tag string for inserting into
+    * documents to be sent to the server
+    */
+   public String getUserTag()
+   {
+      if (user == null)
+      {
+         return "";
+      }
+      else
+      {
+         return XMLUtils.ElementToString(user);
+      }
    }
 
    /**
@@ -128,7 +157,7 @@ public abstract class DatacenterDelegate
    /**
     * Polls the service and asks for the current status
     */
-   public abstract QueryStatus getQueryStatus(String queryId) throws RemoteException;
+   public abstract QueryStatus getQueryStatus(String queryId) throws IOException;
 
 
    /**
@@ -162,6 +191,9 @@ public abstract class DatacenterDelegate
 
 /*
 $Log: DatacenterDelegate.java,v $
+Revision 1.20  2003/09/16 15:23:16  mch
+Listener fixes and rationalisation
+
 Revision 1.19  2003/09/16 12:48:56  nw
 adjusted to fix most mismatches
 

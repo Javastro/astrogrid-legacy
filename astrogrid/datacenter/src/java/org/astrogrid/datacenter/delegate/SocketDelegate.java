@@ -1,5 +1,5 @@
 /*
- * $Id: SocketDelegate.java,v 1.11 2003/09/15 22:38:42 mch Exp $
+ * $Id: SocketDelegate.java,v 1.12 2003/09/16 15:23:16 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -11,17 +11,21 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.Socket;
-import java.net.URL;
 import java.rmi.RemoteException;
-import javax.xml.parsers.ParserConfigurationException;
-import org.astrogrid.datacenter.common.ResponseHelper;
+import java.util.Hashtable;
+import org.apache.axis.utils.XMLUtils;
+import org.astrogrid.datacenter.common.DocHelper;
+import org.astrogrid.datacenter.common.QueryIdHelper;
 import org.astrogrid.datacenter.common.QueryStatus;
+import org.astrogrid.datacenter.common.ResponseHelper;
+import org.astrogrid.datacenter.common.StatusHelper;
 import org.astrogrid.datacenter.io.SocketXmlInputStream;
 import org.astrogrid.datacenter.io.SocketXmlOutputStream;
 import org.astrogrid.datacenter.io.TraceInputStream;
 import org.astrogrid.log.Log;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
@@ -47,15 +51,32 @@ public class SocketDelegate extends DatacenterDelegate
 
    /** Output stream to the socket connection */
    private SocketXmlOutputStream out = null;
-
    /** Input stream from the socket connection */
    private SocketXmlInputStream in = null;
 
-   /** String used to request registry metadata */
-   public static final String REQ_REG_METADATA_TAG = "RequestRegistryMetata";
+   /** listeners to query status changes, keyed by queryId */
+   private Hashtable listeners = new Hashtable();
 
+   /** String used to request registry metadata */
+   public static final String REQ_REGISTRY_METADATA_TAG = "RequestRegistryMetata";
    /** String used to request metadata */
    public static final String REQ_METADATA_TAG = "RequestMetata";
+
+   /** Synchronous/blocking query */
+   public static final String DO_QUERY_TAG = "SynchronousQuery";
+
+   /** String used to create a query */
+   public static final String CREATE_QUERY_TAG = "CreateQuery";
+   /** String used to start a query */
+   public static final String START_QUERY_TAG = "StartQuery";
+
+   public static final String REGISTER_LISTENER_TAG = "RegisterListener";
+   public static final String ABORT_QUERY_TAG = "AbortQuery";
+   public static final String REQ_RESULTS_TAG = "RequestResults";
+   public static final String REQ_STATUS_TAG = "RequestStatus";
+
+   /** Tag used when sending asynchronous status notifications */
+   public static final String NOTIFY_STATUS_TAG = "NotifyStatus";
 
    /** Don't use this directly - use the factory method
     * DatacenterDelegate.makeDelegate() in case we need to create new sorts
@@ -121,45 +142,54 @@ public class SocketDelegate extends DatacenterDelegate
     * results part of the returned document, which may be VOTable or otherwise
     * depending on the results format specified in the ADQL
     */
-   public synchronized Element query(Element adql) throws IOException
+   public Element query(Element adql) throws IOException
    {
-      Log.trace("SocketDelegate: Writing Query");
-      //send query document
-      out.writeAsDoc(adql);
+      //need to construct a wrapper around the given element, bit messy this
+      String query = XMLUtils.ElementToString(adql);
+      String reqTag = "<"+DO_QUERY_TAG+">\n"
+                     +getUserTag()+"\n"
+                     +query
+                     +"\n</"+DO_QUERY_TAG+">";
 
-      try
-      {
-         //blocking read for response
-         Log.trace("SocketDelegate: Waiting for query response...");
-         return in.readDoc().getDocumentElement();
-      }
-      catch (org.xml.sax.SAXException e)
-      {
-         //somethings gone wrong at the server end - returning invalid XML
-         IOException ioe = new IOException("Invalid XML returned by server");
-         ioe.initCause(e);
-         throw ioe;
-      }
-      catch (javax.xml.parsers.ParserConfigurationException e)
-      {
-         //somethings wrong here with the parser configuration, which is not normal
-         throw new RuntimeException("Could not interpret returned XML, parser not configured?",e);
-      }
+      return atomicSendReceive(reqTag);
    }
 
-   public synchronized Element getResults(String id) throws RemoteException
+   /** Constructs a query at the server with the given adql
+    */
+   public Element makeQuery(Element adql) throws RemoteException, IOException
    {
-      throw new UnsupportedOperationException("Not implemented yet");
+      //need to construct a wrapper around the given element, bit messy this
+      String query = XMLUtils.ElementToString(adql);
+      String reqTag = "<"+CREATE_QUERY_TAG+">\n"
+                     +getUserTag()+"\n"
+                     +query
+                     +"\n</"+CREATE_QUERY_TAG+">";
+
+      return atomicSendReceive(reqTag);
    }
 
-   public synchronized Element makeQuery(Element adql) throws RemoteException
+   /** Constructs a query at the server with the given adql
+    */
+   public Element startQuery(String queryId) throws RemoteException, IOException
    {
-      throw new UnsupportedOperationException("Not implemented yet");
+      String reqTag = "<"+START_QUERY_TAG+">\n"
+                     +getUserTag()+"\n"
+                     +QueryIdHelper.makeQueryIdTag(queryId)+"\n"
+                     +"\n</"+START_QUERY_TAG+">";
+
+      return atomicSendReceive(reqTag);
    }
 
-   public synchronized Element startQuery(String queryId) throws RemoteException
+   /** Get the results of a query (or the status so far)
+    */
+   public Element getResults(String queryId) throws RemoteException, IOException
    {
-      throw new UnsupportedOperationException("Not implemented yet");
+      String reqTag = "<"+REQ_RESULTS_TAG+">\n"
+                     +getUserTag()+"\n"
+                     +QueryIdHelper.makeQueryIdTag(queryId)+"\n"
+                     +"\n</"+REQ_RESULTS_TAG+">";
+
+      return atomicSendReceive(reqTag);
    }
 
    /**
@@ -167,7 +197,7 @@ public class SocketDelegate extends DatacenterDelegate
     * doing checks on how big the result set is likely to be before it has to be
     * transferred about the net.
     */
-   public synchronized int adqlCountDatacenter(Element adql)
+   public int adqlCountDatacenter(Element adql)
    {
       throw new UnsupportedOperationException();
    }
@@ -177,62 +207,133 @@ public class SocketDelegate extends DatacenterDelegate
     * center serves) in the form required by registries. See the VOResource
     * schema; I think that is what this should return...
     */
-   public synchronized Element getRegistryMetadata() throws IOException
+   public Element getRegistryMetadata() throws IOException
    {
-      Log.trace("SocketDelegate: Writing Request Metadata tag");
+      Element response = atomicSendReceive("<"+REQ_REGISTRY_METADATA_TAG+"/>\n");
 
-      out.writeAsDoc("<"+REQ_REG_METADATA_TAG+"/>\n");
-
-      try
-      {
-         Log.trace("SocketDelegate: Waiting for metadata...");
-         Document response = in.readDoc();
-         Log.trace("Response="+response.getDocumentElement().getNodeName());
-
-         if (response.getElementsByTagName(ResponseHelper.ERROR_TAG).getLength() >0)
-         {
-            //response was an error
-            Log.logError("Server error getting metadata: "+
-                        response.getElementsByTagName(ResponseHelper.ERROR_TAG).item(0).getNodeValue()
-                        );
-            return null;
-         }
-
-         return response.getDocumentElement();
-      }
-      catch (ParserConfigurationException e)
-      {
-         throw new RuntimeException("Application not set up correctly",e);
-      }
-      catch (SAXException e)
-      {
-         throw new IOException("Response from server not XML: "+e);
-      }
+      return response;
    }
 
    /**
     * Polls the service and asks for the current status
     */
-   public synchronized QueryStatus getQueryStatus(String id)
+   public QueryStatus getQueryStatus(String queryId) throws IOException
    {
-      return QueryStatus.UNKNOWN;
+      String reqTag = "<"+REQ_STATUS_TAG+">\n"
+                     +getUserTag()+"\n"
+                     +QueryIdHelper.makeQueryIdTag(queryId)+"\n"
+                     +"\n</"+REQ_STATUS_TAG+">";
+
+      Element response = atomicSendReceive(reqTag);
+
+      return StatusHelper.getServiceStatus(response);
    }
 
-
    /**
-    * Register listener
+    * Register listener. The delegate is already a listener for all status
+    * updates; the given listener is therefore registered locally to be
+    * informed as necessary
     */
    public void registerListener(String queryId, DatacenterStatusListener listener)
    {
-      //action depends on listener
-      throw new UnsupportedOperationException("Not implemented yet");
+      listeners.put(queryId, listener);
    }
 
+   /**
+    * An asynchronous message was received from the server.  Currently only
+    * status notifications arrive this way - so call status listeners
+    */
+   private void notifyReceived(Element response)
+   {
+      NodeList statusNodes = response.getElementsByTagName(StatusHelper.STATUS_TAG);
+
+      for (int i=0;i<statusNodes.getLength();i++)
+      {
+         Element status = ((Element) statusNodes.item(i));
+
+         String queryId = status.getAttribute(QueryIdHelper.QUERY_ID_ATT);
+
+         DatacenterStatusListener listener = (DatacenterStatusListener) listeners.get(queryId);
+         listener.datacenterStatusChanged(queryId, StatusHelper.getServiceStatus(status));
+      }
+   }
+
+   /**
+    * Takes the given xml snippet string, converts into a DOM and runs the
+    * atomic SendReceive method
+    *
+    * @see atomicSendReceive(Element)
+    */
+   private Element atomicSendReceive(String xml) throws IOException
+   {
+      return atomicSendReceive(DocHelper.wrap(xml).getDocumentElement());
+   }
+
+   /**
+    * Threadsafe 'atomic' operation that sends given Document and returns the
+    * received Document.  As long as all operations by the delegate run through
+    * this method, then all responses will match all requests (there is no
+    * danger of a second request being sent before the first response has been
+    * returned).  However the delegate
+    * will block, so synchronous queries will prevent any other operations while
+    * it runs
+    */
+   private synchronized Element atomicSendReceive(Element request) throws IOException
+   {
+      //send request
+      Log.trace("SocketDelegate: Sending request ["+request.getNodeName()+"]...");
+      out.writeAsDoc(request);
+
+      //wait for response
+      try
+      {
+         Log.trace("SocketDelegate: ...waiting for response...");
+
+         //now just to make things difficult, notification messages may arrive
+         //at any time, so we need to be able to trap those
+         boolean responseToRequestReceived = false;//have we received the response to the above request?
+         Document response = null;
+
+         while (!responseToRequestReceived)
+         {
+            response = in.readDoc();
+            Log.trace("SocketDelegate: ...response received ["+response.getDocumentElement().getNodeName()+"]");
+
+            if (response.getElementsByTagName(NOTIFY_STATUS_TAG).getLength() >0)
+            {
+               //notification
+               notifyReceived(response.getDocumentElement());
+            }
+            else
+            {
+               responseToRequestReceived = true;
+            }
+         }
+
+         //check for error
+         if (response.getElementsByTagName(ResponseHelper.ERROR_TAG).getLength() >0)
+         {
+            //response was an error - not sure what to do with this - log it and return it for now
+            Log.logError("Server error: "+
+                        response.getElementsByTagName(ResponseHelper.ERROR_TAG).item(0).getNodeValue()
+                        );
+         }
+
+         return response.getDocumentElement();
+      }
+      catch (SAXException se)
+      {
+         throw new IOException("Server returned invalid XML: "+se);
+      }
+   }
 
 }
 
 /*
 $Log: SocketDelegate.java,v $
+Revision 1.12  2003/09/16 15:23:16  mch
+Listener fixes and rationalisation
+
 Revision 1.11  2003/09/15 22:38:42  mch
 Split spawnQuery into make and start, so we can add listeners in between
 

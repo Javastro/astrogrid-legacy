@@ -1,5 +1,5 @@
 /*
- * $Id: SocketHandler.java,v 1.10 2003/09/15 22:05:34 mch Exp $
+ * $Id: SocketHandler.java,v 1.11 2003/09/16 15:23:16 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -10,16 +10,17 @@ import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
-import org.astrogrid.datacenter.common.ResponseHelper;
+import org.astrogrid.datacenter.common.QueryIdHelper;
 import org.astrogrid.datacenter.common.QueryStatus;
+import org.astrogrid.datacenter.common.ResponseHelper;
 import org.astrogrid.datacenter.common.StatusHelper;
 import org.astrogrid.datacenter.delegate.SocketDelegate;
 import org.astrogrid.datacenter.io.SocketXmlInputStream;
 import org.astrogrid.datacenter.io.SocketXmlOutputStream;
 import org.astrogrid.datacenter.io.TraceInputStream;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
-import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.queriers.QueryListener;
+import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.log.Log;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -64,7 +65,12 @@ public class SocketHandler extends ServiceServer implements Runnable, QueryListe
    {
       try
       {
-         out.writeAsDoc(StatusHelper.makeStatusTag(querier.getHandle(), querier.getStatus()));
+         String notifyTag =
+            "<"+SocketDelegate.NOTIFY_STATUS_TAG+">\n"+
+            StatusHelper.makeStatusTag(querier.getHandle(), querier.getStatus())+
+            "</"+SocketDelegate.NOTIFY_STATUS_TAG+">";
+
+         out.writeAsDoc(notifyTag);
       }
       catch (IOException e)
       {
@@ -95,23 +101,68 @@ public class SocketHandler extends ServiceServer implements Runnable, QueryListe
                Document docRequest = in.readDoc();
 
                //what kind of operation is it?
-               if (docRequest.getElementsByTagName(SocketDelegate.REQ_REG_METADATA_TAG).getLength() > 0)
+               if (docRequest.getElementsByTagName(SocketDelegate.REQ_REGISTRY_METADATA_TAG).getLength() > 0)
                {
                   //requested registry metadata
                   Log.trace("SocketHandler: Writing registry metadata");
 
                   out.writeAsDoc(getVOResource());
                }
-               else
+               else if (docRequest.getElementsByTagName(SocketDelegate.CREATE_QUERY_TAG).getLength() > 0)
                {
-                  //assume a blocking query
-                  DatabaseQuerier querier = DatabaseQuerier.doQueryGetResults(docRequest.getDocumentElement());
+                  //create a query
+                  Log.trace("SocketHandler: Creating a query");
+                  DatabaseQuerier querier = DatabaseQuerier.createQuerier(docRequest.getDocumentElement());
+                  out.writeAsDoc(ResponseHelper.makeQueryCreatedResponse(querier).getDocumentElement());
+               }
+               else if (docRequest.getElementsByTagName(SocketDelegate.START_QUERY_TAG).getLength() > 0)
+               {
+                  //start an existing query
+                  Log.trace("SocketHandler: Starting a query");
+                  DatabaseQuerier querier = DatabaseQuerier.getQuerier(QueryIdHelper.getQueryId(docRequest.getDocumentElement()));
+
+                  Thread queryThread = new Thread(querier);
+                  queryThread.start();
+
+                  out.writeAsDoc(ResponseHelper.makeQueryStartedResponse(querier).getDocumentElement());
+               }
+               else if (docRequest.getElementsByTagName(SocketDelegate.REGISTER_LISTENER_TAG).getLength() > 0)
+               {
+                  //register listeners
+                  DatabaseQuerier querier = DatabaseQuerier.getQuerier(QueryIdHelper.getQueryId(docRequest.getDocumentElement()));
+                  querier.registerWebListeners(docRequest.getDocumentElement());
+                  out.writeAsDoc(ResponseHelper.makeStatusResponse(querier).getDocumentElement());
+               }
+               else if (docRequest.getElementsByTagName(SocketDelegate.ABORT_QUERY_TAG).getLength() > 0)
+               {
+                  Log.logError("Not implemented yet: "+ docRequest.getDocumentElement().getNodeName());
+               }
+               else if (docRequest.getElementsByTagName(SocketDelegate.REQ_RESULTS_TAG).getLength() > 0)
+               {
+                  Log.logError("Not implemented yet: "+ docRequest.getDocumentElement().getNodeName());
+               }
+               else if (docRequest.getElementsByTagName(SocketDelegate.REQ_STATUS_TAG).getLength() > 0)
+               {
+                  Log.logError("Not implemented yet: "+ docRequest.getDocumentElement().getNodeName());
+               }
+               else if (docRequest.getElementsByTagName(SocketDelegate.DO_QUERY_TAG).getLength() > 0)
+               {
+                  //a blocking/synchronous query
+                  DatabaseQuerier querier = DatabaseQuerier.createQuerier(docRequest.getDocumentElement());
+                  querier.registerListener(this);
+                  querier.doQuery();
 
                   querier.setStatus(QueryStatus.RUNNING_RESULTS);
 
                   Document response = ResponseHelper.makeResultsResponse(querier, querier.getResults().toVotable().getDocumentElement());
 
                   out.writeAsDoc(response.getDocumentElement());
+               }
+               else
+               {
+                  //unknown command
+                  Log.logError("Document received but don't know how to handle it.  Root element="+
+                                 docRequest.getDocumentElement().getNodeName());
                }
             }
             catch (SocketException e)
@@ -163,6 +214,9 @@ public class SocketHandler extends ServiceServer implements Runnable, QueryListe
 
 /*
 $Log: SocketHandler.java,v $
+Revision 1.11  2003/09/16 15:23:16  mch
+Listener fixes and rationalisation
+
 Revision 1.10  2003/09/15 22:05:34  mch
 Renamed service id to query id throughout to make identifying state clearer
 

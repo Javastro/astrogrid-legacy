@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.18 2003/09/16 13:25:00 nw Exp $
+ * $Id: AxisDataServer.java,v 1.19 2003/09/16 15:23:16 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -83,7 +83,9 @@ public class AxisDataServer extends ServiceServer
     */
    public Element doQuery(Element soapBody) throws IOException, DatabaseAccessException, QueryException, Throwable
    {
-      DatabaseQuerier querier = DatabaseQuerier.doQueryGetResults(soapBody);
+      DatabaseQuerier querier = DatabaseQuerier.createQuerier(soapBody);
+
+      querier.doQuery();
 
       querier.setStatus(QueryStatus.RUNNING_RESULTS);
 
@@ -196,12 +198,12 @@ public class AxisDataServer extends ServiceServer
     */
    public void registerWebListener(Element soapBody, WebNotifyServiceListener listener)
    {
-       String queryId = QueryIdHelper.getQueryId(soapBody);
-      DatabaseQuerier querier = DatabaseQuerier.getQuerier(queryId);
+      DatabaseQuerier querier = DatabaseQuerier.getQuerier(QueryIdHelper.getQueryId(soapBody));
 
       querier.registerListener(new QueryStatusForwarder(listener));
    }
 
 }
+
 
 

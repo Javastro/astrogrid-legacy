@@ -1,5 +1,5 @@
 /*
- * $Id: WebNotifyServiceListener.java,v 1.4 2003/09/16 13:24:27 nw Exp $
+ * $Id: WebNotifyServiceListener.java,v 1.5 2003/09/16 15:23:16 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -33,7 +33,7 @@ public class WebNotifyServiceListener implements DatacenterStatusListener
 {
    /** URL of client listener - this is a web service that will receive
     * a document containing the new status */
-   private URL clientListener = null;
+   protected URL clientListener = null;
 
    /**
     * Create a listener which will send service updates to the given URL
@@ -101,6 +101,9 @@ public void setClientListener(URL url) {
 
 /*
 $Log: WebNotifyServiceListener.java,v $
+Revision 1.5  2003/09/16 15:23:16  mch
+Listener fixes and rationalisation
+
 Revision 1.4  2003/09/16 13:24:27  nw
 added default constructor and getter/setter pair - makes
 it sufficiently beanlike to be transported via SOAP

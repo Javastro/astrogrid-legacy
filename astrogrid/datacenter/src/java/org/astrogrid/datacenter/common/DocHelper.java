@@ -1,5 +1,5 @@
 /*
- * $Id: DocHelper.java,v 1.5 2003/09/16 12:51:11 mch Exp $
+ * $Id: DocHelper.java,v 1.6 2003/09/16 15:23:16 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -31,7 +31,7 @@ public class DocHelper
    {
       try
       {
-        InputStream is = new ByteArrayInputStream(xmlSnippet.getBytes());
+         InputStream is = new ByteArrayInputStream(xmlSnippet.getBytes());
          return XMLUtils.newDocument(is);
       }
       catch (IOException e)
