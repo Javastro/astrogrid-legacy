@@ -8,7 +8,9 @@
         <table border="1" cellpadding="0" cellspacing="0">
             <tr>
                 <td align="center" colspan="4">
-                    Parameters for <xsl:value-of select="@name"/>
+                    <div class="agWorkflow_table_header">
+                        Parameters for <xsl:value-of select="@name"/>
+                    </div>
                 </td>
             </tr>
             <tr>
@@ -45,7 +47,6 @@
 
     <!--+
           | Match the parameter element.
-          | TODO: include as hidden parameters in page
           +-->
     <xsl:template match="parameter">
         <xsl:param name="direction"/>
@@ -53,14 +54,8 @@
             <tr>
                 <td><xsl:value-of select="@name"/></td>
                 <td><xsl:value-of select="@type"/></td>
-                <xsl:choose>
-                    <xsl:when test="@value !=null ">
-                        <td><xsl:value-of select="@value"/></td>
-                    </xsl:when>
-                    <xsl:when test="@value = null ">
-                        <td><input type="submit" value="Submit" /></td>
-                    </xsl:when>
-                </xsl:choose>                         
+                <td><xsl:value-of select="./"/></td>
+<td><input name="Input" type="button" value="... " onClick="popUpWindow('myspace_blank.html',200,200,200,200);"/></td>                
             </tr>
             <input type="hidden" name="action" value="insert-value" />
             <input type="hidden" name="param-name"><xsl:attribute name="value"></xsl:attribute></input>
