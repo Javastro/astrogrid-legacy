@@ -106,31 +106,31 @@
 
     <dependency>
       <id>jaxrpc.jar</id>
-      <version>SNAPSHOT</version>
+      <version>UNKNOWN</version>
     </dependency>
   </dependencies>
   
       <dependency>
       <id>jConfig.jar</id>
-      <version>SNAPSHOT</version>
+      <version>1.2</version>
     </dependency>
   </dependencies>
   
       <dependency>
       <id>authentication-client-1.0.jar</id>
-      <version>SNAPSHOT</version>
+      <version>UNKNOWN</version>
     </dependency>
   </dependencies>
   
       <dependency>
       <id>policy-client-1.0.jar</id>
-      <version>SNAPSHOT</version>
+      <version>UNKNOWN</version>
     </dependency>
   </dependencies>
   
       <dependency>
       <id>wsdl4j.jar</id>
-      <version>SNAPSHOT</version>
+      <version>UNKNOWN</version>
     </dependency>
   </dependencies>
   
