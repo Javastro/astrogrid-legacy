@@ -1,0 +1,26 @@
+<project name="mySpaceHelper" default="dbcreate">
+    <property file="${user.home}/build.properties"  ></property>
+     <property name="hsqldb.home"     value="${basedir}/build/db"/>
+    <property name="hsqldb.host"     value="localhost"/>
+    <property name="hsqldb.port"     value="9001"/>
+    <property name="hsqldb.name"     value="TestDB"/>
+    <property name="hsqldb.user"     value="sa"/>
+    <property name="hsqldb.pass"     value="veritas"/>
+    <property name="hsqldb.timeout"  value="60"/>
+    <property name="tomcat.home" location="/usr/local/tomcat"></property>
+    <property name="webapp.home" location="${basedir}/target/astrogrid-mySpace"></property>
+    <path id="testpath">
+    <fileset dir="${tomcat.home}/common/lib" includes="*.jar"/>
+    <fileset dir="${tomcat.home}/common/endorsed" includes="*.jar"/>
+    <fileset dir="${webapp.home}/WEB-INF/lib/" includes="*.jar"/>
+    <pathelement location="${webapp.home}/WEB-INF/classes/"/>
+    <fileset dir="${basedir}" includes="*.jar"/>
+    </path>
+    <target name="dbcreate">
+    <java classname="org.astrogrid.mySpace.mySpaceDemo.CreateMySpaceRegistry" >
+       <classpath refid="testpath"></classpath>
+       <arg value="/data/work/setup/astrogrid-mySpace"/>
+    </java>
+    </target>
+
+</project>
