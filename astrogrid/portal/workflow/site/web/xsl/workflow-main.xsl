@@ -68,6 +68,11 @@
             <xsl:call-template name="list_query" />
             <xsl:call-template name="list_tools" />                         
          </xsl:if>
+         <xsl:if test="$action = 'remove-workflow-from-session'">
+            <xsl:call-template name="list_workflow"/>
+            <xsl:call-template name="list_query" />
+            <xsl:call-template name="list_tools" />                         
+         </xsl:if>                  
          <xsl:if test="$action = 'read-workflow'">
             <xsl:call-template name="view_workflow_details"/>             
          </xsl:if>
@@ -75,7 +80,6 @@
             <xsl:call-template name="create_workflow"/>             
          </xsl:if>
          <xsl:if test="$action = 'insert-tool-into-step'">
-<!--             <xsl:call-template name="create_workflow"/> -->
             <xsl:call-template name="insert_parameter"/> 
          </xsl:if>
          <xsl:if test="$action = 'insert-input-value'">
@@ -87,11 +91,14 @@
          <xsl:if test="$action = 'reset-parameter'">
             <xsl:call-template name="insert_parameter"/>             
          </xsl:if>                        
+         <xsl:if test="$action = 'add-step-description'">
+            <xsl:call-template name="insert_parameter"/>             
+         </xsl:if>         
          <xsl:if test="$action = 'parameters-complete'">
             <xsl:call-template name="create_workflow"/>             
          </xsl:if>
          <xsl:if test="$action = 'remove-tool-from-step'">
-            <xsl:call-template name="create_workflow"/>             
+            <xsl:call-template name="create_workflow"/>
          </xsl:if>                  
          <xsl:if test="$action = 'templates'">
             <xsl:call-template name="templates"/>             
@@ -259,7 +266,7 @@
                                  </xsl:if>
                                  <xsl:if test="@tool-name != 'null'">
                                     <td><xsl:value-of select="@tool-name" /></td>
-                                    <td align="center"><input type="submit" value="Reset" /></td>
+                                    <td align="center"><input type="submit" value="Change" /></td>
                                     <input type="hidden" name="action"  value="remove-tool-from-step" />
                                  </xsl:if>
                               </xsl:for-each><!-- end of tool -->
@@ -272,14 +279,20 @@
                   </table>
                </td>
             </tr>
-            <form name="create_form">
-               <tr>
-                  <td>
+            <tr>
+               <td>
+                  <form name="create_form">
                      <input type="hidden" name="action"  value="save-workflow" />
                      <input type="submit" value="Save workflow" />
-                  </td>
-               </tr>
-            </form>                                                                                                                
+                  </form>
+               </td>
+               <td>
+                  <form name="clear_form">
+                     <input type="hidden" name="action"  value="remove-workflow-from-session" />
+                     <input type="submit" value="Clear" />
+                  </form>
+               </td>                  
+            </tr>                                                                                               
          </table> 
       </xsl:template>
 
@@ -335,12 +348,12 @@
                                     <td><!-- start of input column -->
                                        <xsl:for-each select="inputParam">
                                           <xsl:if test="@param-value != ''">
+                                             <p />
                                              <table border="0" cellpadding="0" cellspacing="0">
                                                 <tr><td>Name: </td><td><xsl:value-of select="@param-name"/></td></tr>
                                                 <tr><td>Type: </td><td><xsl:value-of select="@param-type"/></td></tr>
                                                 <tr><td>Value: </td><td><xsl:value-of select="@param-value"/></td></tr>
                                              </table>
-                                             <p />
                                           </xsl:if>
                                        </xsl:for-each>
                                     </td><!-- end of input column -->
@@ -448,6 +461,27 @@
             <table cellpadding="0" cellspacing="0" border="0">   
                <xsl:for-each select="//step">           
                   <xsl:if test="$activity-key = @key">
+                     <table cellpadding="0" cellspacing="1" border="0">
+                        <tr>
+                           <td>Step name: </td>
+                           <td><xsl:value-of select="@step-name" /></td>    
+                        </tr>
+                        <tr>
+                           <td>Step description: </td>
+                           <xsl:if test="@step-description != 'null'">                           
+                              <td><xsl:value-of select="@step-description" /></td>
+                           </xsl:if>
+                           <xsl:if test="@step-description = 'null'">
+                              <form name="step_description_form">                          
+                                 <td><input type="text" name="step-description" /></td>
+                                 <td><input type="submit" value="Add description" /></td>
+                                 <input type="hidden" name="activity-key"><xsl:attribute name="value"><xsl:value-of select="$activity-key"/></xsl:attribute></input>              
+                                 <input type="hidden" name="action" value="add-step-description" />
+                              </form>
+                           </xsl:if>                           
+                        </tr>
+                     </table>
+                     <p />                      
                   <xsl:for-each select="tool">
                      <table cellpadding="0" cellspacing="0" border="0">   
                         <tr>
