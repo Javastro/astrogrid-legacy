@@ -18,7 +18,8 @@ import org.astrogrid.common.creator.CreatorException;
 import org.astrogrid.datacenter.cocoon.acting.utils.ActionUtils;
 import org.astrogrid.datacenter.cocoon.acting.utils.ActionUtilsFactory;
 import org.astrogrid.datacenter.cocoon.acting.utils.ValidationHandler;
-import org.astrogrid.datacenter.delegate.DatacenterDelegate;
+import org.astrogrid.datacenter.delegate.deprecated.It03DatacenterDelegate;
+import org.astrogrid.datacenter.delegate.deprecated.It03DatacenterDelegateFactory;
 import org.w3c.dom.Element;
 
 /**
@@ -74,7 +75,7 @@ public class TestAction extends AbstractAction {
       String datacenterEndPoint = utils.getRequestParameter("datacenter-end-point", params, request);
       logger.debug("[act] datacenter end point: " + datacenterEndPoint);
       
-      DatacenterDelegate delegate =
+      It03DatacenterDelegate delegate =
         getDelegate(params, utils, request, delegateClassName, datacenterEndPoint);
       logger.debug("[act] datacenter delegate class: " + delegate.getClass().getName());
       
@@ -86,7 +87,7 @@ public class TestAction extends AbstractAction {
 
       Element queryResult = null;
       try {
-        queryResult = delegate.query(queryInput);
+        queryResult = delegate.doQuery(queryInput);
       }
       catch(Throwable t) {
         logger.error("[act] throwable: " + t + ", msg: " + t.getLocalizedMessage());
@@ -109,19 +110,19 @@ public class TestAction extends AbstractAction {
     return sitemapParams;
   }
 
-  private DatacenterDelegate getDelegate(Parameters params, ActionUtils utils, Request request, String delegateClassName, String datacenterEndPoint) throws CreatorException, MalformedURLException, ServiceException, IOException {
-    DatacenterDelegate delegate = null;
+  private It03DatacenterDelegate getDelegate(Parameters params, ActionUtils utils, Request request, String delegateClassName, String datacenterEndPoint) throws CreatorException, MalformedURLException, ServiceException, IOException {
+    It03DatacenterDelegate delegate = null;
     
     if(delegateClassName.length() > 0) {
       delegate =
-          (DatacenterDelegate) utils.getNewObject(
+          (It03DatacenterDelegate) utils.getNewObject(
               "datacenter-delegate-class", params, request, null);
     }
     else if(datacenterEndPoint.length() > 0){
-      delegate = DatacenterDelegate.makeDelegate(datacenterEndPoint);
+      delegate = It03DatacenterDelegateFactory.makeDelegate(datacenterEndPoint);
     }
     else {
-      delegate = DatacenterDelegate.makeDelegate(null);
+      delegate = It03DatacenterDelegateFactory.makeDelegate(null);
     }
   
     return delegate;
