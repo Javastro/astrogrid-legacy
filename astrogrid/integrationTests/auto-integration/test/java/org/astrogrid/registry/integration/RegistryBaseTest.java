@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryBaseTest.java,v 1.1 2004/08/05 12:13:58 KevinBenson Exp $
+ * $Id: RegistryBaseTest.java,v 1.2 2004/08/13 14:08:21 nw Exp $
  * 
  * Created on 07-May-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -27,6 +27,9 @@ import junit.framework.TestCase;
  * @author Paul Harrison (pah@jb.man.ac.uk) 07-May-2004
  * @version $Name:  $
  * @since iteration5
+ * @todo as this is an abstract class, it can't be executed itself. should be renamed to something not ending in 'Test' so that
+ * maven doesn't attempt to run it as part of the integration tests (giving a false failure). I suggest something like 'AbstractTestForRegistry'
+ * 
  */
 public abstract class RegistryBaseTest extends TestCase {
 
