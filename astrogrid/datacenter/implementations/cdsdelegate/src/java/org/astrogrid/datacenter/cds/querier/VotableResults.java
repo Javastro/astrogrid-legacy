@@ -1,4 +1,4 @@
-/*$Id: VotableResults.java,v 1.1 2004/03/13 23:40:59 mch Exp $
+/*$Id: VotableResults.java,v 1.2 2004/03/14 03:04:57 mch Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,7 +23,7 @@ import org.xml.sax.SAXException;
  * @author Noel Winstanley nw@jb.man.ac.uk 13-Nov-2003
  *
  */
-public class VotableResults implements QueryResults {
+public class VotableResults extends QueryResults {
 
     protected final Document doc;
 
@@ -38,31 +38,28 @@ public class VotableResults implements QueryResults {
        return -1;
     }
     
-    /* (non-Javadoc)
-     * @see org.astrogrid.datacenter.queriers.QueryResults#toVotable()
-     */
-    public Document toVotable(QuerierProcessingResults querierStatus) throws IOException, SAXException {
-        return doc;
-    }
-
-    /* (non-Javadoc)
-     * @see org.astrogrid.datacenter.queriers.QueryResults#toVotable(java.io.OutputStream)
-     */
-    public void toVotable(OutputStream out, QuerierProcessingResults querierStatus) throws IOException {
-        XMLUtils.DocumentToStream(doc,out);
-    }
-
-    /* (non-Javadoc)
-     * @see org.astrogrid.datacenter.queriers.QueryResults#toVotable(java.io.OutputStream)
+    /**
+     * Easy one - writes out VOTable in memory to writer
      */
     public void toVotable(Writer out, QuerierProcessingResults querierStatus) throws IOException {
         XMLUtils.DocumentToWriter(doc,out);
     }
+    
+    /**
+     * writes out VOTable in memory to writer in CSV form
+     */
+    public void toCSV(Writer out, QuerierProcessingResults querierStatus) throws IOException {
+        throw new UnsupportedOperationException("Not yet impelmeneted");
+    }
+    
 }
 
 
 /*
 $Log: VotableResults.java,v $
+Revision 1.2  2004/03/14 03:04:57  mch
+Added CSV writer
+
 Revision 1.1  2004/03/13 23:40:59  mch
 Changes to adapt to It05 refactor
 
