@@ -1,4 +1,4 @@
-/*$Id: FitsTest.java,v 1.9 2004/01/23 11:14:09 nw Exp $
+/*$Id: FitsTest.java,v 1.10 2004/03/09 12:17:11 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -47,9 +47,9 @@ public class FitsTest extends OptionalTestCase
             new URL("http://www.roe.ac.uk/~mch/r169097.fit"),
             new URL("http://www.roe.ac.uk/~mch/r169101.fit")
      };
-
-      String index = IndexGenerator.generateIndex(fits);
-      assertNotNull(index);
+//takes ages! find some smaller files!
+//      String index = IndexGenerator.generateIndex(fits);
+//      assertNotNull(index);
    }
 
    
@@ -73,6 +73,9 @@ public class FitsTest extends OptionalTestCase
 
 /*
  $Log: FitsTest.java,v $
+ Revision 1.10  2004/03/09 12:17:11  mch
+ Temporarily removed tests on large fits files
+
  Revision 1.9  2004/01/23 11:14:09  nw
  altered to extend org.astrogrid.test.OptionalTestCase -
  means that these tests can be disabled as needed
