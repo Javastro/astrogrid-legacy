@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.1 2003/08/21 12:29:18 nw Exp $
+/*$Id: AllTests.java,v 1.2 2003/08/22 10:37:48 nw Exp $
  * Created on 21-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,6 +30,7 @@ public class AllTests {
         // and add other suites too.
         suite.addTest(org.astrogrid.datacenter.config.AllTests.suite());
         suite.addTest(org.astrogrid.datacenter.datasetagent.AllTests.suite());
+        suite.addTest(org.astrogrid.datacenter.impl.abstr.AllTests.suite());
         return suite;
     }
 }
@@ -37,6 +38,9 @@ public class AllTests {
 
 /* 
 $Log: AllTests.java,v $
+Revision 1.2  2003/08/22 10:37:48  nw
+added test hierarchy for Job / JobStep
+
 Revision 1.1  2003/08/21 12:29:18  nw
 added unit testing for factory manager hierarchy.
 added 'AllTests' suite classes to draw unit tests together - single
