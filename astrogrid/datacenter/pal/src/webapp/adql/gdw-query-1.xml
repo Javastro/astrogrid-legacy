@@ -1,3 +1,7 @@
+<!--  Equivalent SQL:  
+  SELECT * FROM first WHERE DECL > 59.9;
+-->
+
 <Select xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://tempuri.org/adql">
 	<SelectionAll />
 	<TableClause>

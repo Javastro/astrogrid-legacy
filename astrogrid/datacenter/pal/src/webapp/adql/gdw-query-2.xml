@@ -1,0 +1,60 @@
+<!--
+ Equivalent SQL:  SELECT * FROM xmm1 WHERE DECL > 60 AND DECL < 62;
+-->
+<Select xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://tempuri.org/adql">
+	<SelectionAll />
+	<TableClause>
+		<FromClause>
+			<TableReference>
+				<Table>
+					<Name>xmm1</Name>
+					<AliasName>f</AliasName>
+				</Table>
+			</TableReference>
+		</FromClause>
+    <WhereClause>
+      <IntersectionSearch>
+        <FirstCondition xsi:type="PredicateSearch">
+          <ComparisonPred>
+            <FirstExpr xsi:type="ColumnExpr">
+              <SingleColumnReference>
+                <TableName>f</TableName>
+                <Name>DECL</Name>
+              </SingleColumnReference>
+            </FirstExpr>
+            <Compare>&gt;</Compare>
+            <SecondExpr xsi:type="AtomExpr">
+              <Value>
+                <NumberLiteral>
+                  <ApproxNum>
+                    <Value>60</Value>
+                  </ApproxNum>
+                </NumberLiteral>
+              </Value>
+            </SecondExpr>
+          </ComparisonPred>
+        </FirstCondition>
+        <SecondCondition xsi:type="PredicateSearch">
+          <ComparisonPred>
+            <FirstExpr xsi:type="ColumnExpr">
+              <SingleColumnReference>
+                <TableName>f</TableName>
+                <Name>DECL</Name>
+              </SingleColumnReference>
+            </FirstExpr>
+            <Compare>&lt;</Compare>
+            <SecondExpr xsi:type="AtomExpr">
+              <Value>
+                <NumberLiteral>
+                  <ApproxNum>
+                    <Value>62</Value>
+                  </ApproxNum>
+                </NumberLiteral>
+              </Value>
+            </SecondExpr>
+          </ComparisonPred>
+        </SecondCondition>
+      </IntersectionSearch>
+    </WhereClause>
+	</TableClause>
+</Select>
