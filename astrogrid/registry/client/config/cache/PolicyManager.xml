@@ -30,7 +30,7 @@
       <Description>
          Authenticate a particular token and authenticate users.
       </Description>
-      <ReferenceURL>http://www.astrogrid.org/maven/build/community</ReferenceURL>
+      <ReferenceURL>http://www.astrogrid.org/maven/docs/snapshot/community</ReferenceURL>
     </Summary>
     <RelatedResource>
        <Relationship>related-to</Relationship>
