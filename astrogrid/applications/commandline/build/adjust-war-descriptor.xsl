@@ -14,6 +14,9 @@
         </env-entry>
 </xsl:template>
 
+<xsl:template priority="2" match="web-app/display-name">
+        <display-name>Astrogrid CEA Server (cmdline)</display-name>
+</xsl:template>	
 
 <!-- copy-all template - matches everything else -->
 <xsl:template match="node()|@*" priority="1">

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    <Resource status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaHttpApplicationType">
+        <Identifier>
+            <AuthorityID>org.astrogrid.jdt.test</AuthorityID>
+            <ResourceKey>Badder</ResourceKey>
+        </Identifier>
+        <Title>An application with a duff URL that should timeout</Title>
+        <ShortName>BadAss</ShortName>
+        <Summary>
+            <Description>This is part of the astrogrid CEA.</Description>
+            <ReferenceURL>http://www.astrogrid.org/maven/docs/snapshot/applications/</ReferenceURL>
+        </Summary>
+        <Type>Other</Type>
+        <Curation>
+            <Publisher>
+                <Title>Astrogrid</Title>
+                <Description>blah blab</Description>
+                <ReferenceURL>http://www.astrogrid.org/</ReferenceURL>
+            </Publisher>
+            <Contact>
+                <Name>John Taylor</Name>
+                <Email>jdt@roe.ac.uk</Email>
+            </Contact>
+            <Date role="representative">2004-03-26</Date>
+            <Creator>
+                <Name>Astrogrid</Name>
+                <Logo>??</Logo>
+            </Creator>
+            <Version>Iteration 6</Version>
+        </Curation>
+        <Subject>???</Subject>
+        <cea:ApplicationDefinition>
+			<cea:ApplicationKind>http</cea:ApplicationKind>
+            <cea:Parameters>
+                <cea:ParameterDefinition name="x" type="text"/>
+				<cea:ParameterDefinition name="y" type="text"/>
+				<cea:ParameterDefinition name="z" type="text"/>
+				<cea:ParameterDefinition name="sum" type="text"/>
+            </cea:Parameters>
+            <cea:Interfaces>
+                <ns29:Interface name="TheRightInterface" xmlns:ns29="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1">
+                    <ns29:input>
+						<ns29:pref ref="x"/>
+						<ns29:pref ref="y"/>
+					</ns29:input>
+                    <ns29:output>
+                        <ns29:pref ref="sum"/>
+                    </ns29:output>
+                </ns29:Interface>
+            </cea:Interfaces>
+        </cea:ApplicationDefinition>
+		<cea:CeaHttpAdapterSetup>
+			<!--Ensure the following doesn't match an open port-->
+			<URL method="get">http://127.0.0.1:5384/foo</URL>
+		</cea:CeaHttpAdapterSetup>
+    </Resource>

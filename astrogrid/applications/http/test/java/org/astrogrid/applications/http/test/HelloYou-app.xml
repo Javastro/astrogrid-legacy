@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    <Resource status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaHttpApplicationType">
+        <Identifier>
+            <AuthorityID>org.astrogrid.jdt.test</AuthorityID>
+            <ResourceKey>HelloYou</ResourceKey>
+        </Identifier>
+        <Title>An http-get HelloYou App</Title>
+        <ShortName>Echoer</ShortName>
+        <Summary>
+            <Description>This is part of the astrogrid CEA. </Description>
+            <ReferenceURL>http://www.astrogrid.org/maven/docs/snapshot/applications/</ReferenceURL>
+        </Summary>
+        <Type>Other</Type>
+        <Curation>
+            <Publisher>
+                <Title>Astrogrid</Title>
+                <Description>blah blab</Description>
+                <ReferenceURL>http://www.astrogrid.org/</ReferenceURL>
+            </Publisher>
+            <Contact>
+                <Name>John Taylor</Name>
+                <Email>jdt@roe.ac.uk</Email>
+            </Contact>
+            <Date role="representative">2004-03-26</Date>
+            <Creator>
+                <Name>Astrogrid</Name>
+                <Logo>??</Logo>
+            </Creator>
+            <Version>Iteration 6</Version>
+        </Curation>
+        <Subject>???</Subject>
+        <cea:ApplicationDefinition>
+			<cea:ApplicationKind>http</cea:ApplicationKind>
+            <cea:Parameters>
+                <cea:ParameterDefinition name="Message" type="text"/>
+				<cea:ParameterDefinition name="Result" type="text"/>
+            </cea:Parameters>
+            <cea:Interfaces>
+                <ns29:Interface name="iface1" xmlns:ns29="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1">
+                    <ns29:input>
+						<ns29:pref ref="message"/>
+						</ns29:input>
+                    <ns29:output>
+                        <ns29:pref ref="result"/>
+                    </ns29:output>
+                </ns29:Interface>
+            </cea:Interfaces>
+        </cea:ApplicationDefinition>
+		<cea:CeaHttpAdapterSetup>
+			<!--Ensure the following matches that in the test webserver-->
+			<URL>http://127.0.0.1:8078/helloYou</URL>
+		</cea:CeaHttpAdapterSetup>
+    </Resource>

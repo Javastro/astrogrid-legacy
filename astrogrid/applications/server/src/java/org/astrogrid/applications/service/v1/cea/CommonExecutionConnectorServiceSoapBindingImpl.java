@@ -1,5 +1,5 @@
 /*
- * $Id: CommonExecutionConnectorServiceSoapBindingImpl.java,v 1.5 2004/08/28 07:17:34 pah Exp $
+ * $Id: CommonExecutionConnectorServiceSoapBindingImpl.java,v 1.6 2004/09/01 15:42:26 jdt Exp $
  * 
  * Created on 25-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -12,6 +12,9 @@
  */ 
 
 package org.astrogrid.applications.service.v1.cea;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import org.astrogrid.applications.component.CEAComponentManagerFactory;
 import org.astrogrid.applications.manager.ExecutionController;
@@ -41,9 +44,12 @@ import java.rmi.RemoteException;
  * @since iteration5
  */
 public class CommonExecutionConnectorServiceSoapBindingImpl implements CommonExecutionConnector {
-      static private org.apache.commons.logging.Log logger =
-         org.apache.commons.logging.LogFactory.getLog(
-            CommonExecutionConnectorServiceSoapBindingImpl.class);
+    /**
+     * Logger for this class
+     */
+    private static final Log logger = LogFactory.getLog(CommonExecutionConnectorServiceSoapBindingImpl.class);
+
+
       
       protected  final ExecutionController cec;
       protected final QueryService query;
@@ -84,10 +90,11 @@ public class CommonExecutionConnectorServiceSoapBindingImpl implements CommonExe
             return cec.init(ctool, jobstepID.toString());
          }
          catch (Exception e) {
+           logger.error("init(_tool tool = " + tool + ") - Throwable caught:", e);
            throw CeaFault.makeFault(e);
          }
-         catch(Throwable e)
-         {
+         catch(Throwable e) {
+            logger.error("init(_tool tool = " + tool + ") - Exception caught:", e);
             throw CeaFault.makeFault(new Exception("an Throwable occurred in init", e));
          }
    }
@@ -199,8 +206,10 @@ public ResultListType getResults(String arg0) throws RemoteException, CeaFault {
      try {
          return CEAComponentManagerFactory.getInstance().getMetadataService().returnRegistryEntry();
      } catch (Exception e) {
+		 logger.error("returnRegistryEntry()", e);
          throw CeaFault.makeFault(e);       
      } catch (Throwable e) {
+		 logger.error("returnRegistryEntry()", e);
          throw CeaFault.makeFault(new Exception("A throwable occured in return registry entry",e));
      }
   }

@@ -10,9 +10,14 @@
                 <description><xsl:value-of select="description" /></description>
                 <env-entry-name><xsl:value-of select="env-entry-name" /></env-entry-name>
                 <env-entry-type><xsl:value-of select="env-entry-type" /></env-entry-type>
-                <env-entry-value> org.astrogrid.applications.commandline.CommandLineCEAComponentManager</env-entry-value>
+                <env-entry-value> org.astrogrid.applications.component.HttpApplicationCEAComponentManager</env-entry-value>
         </env-entry>
 </xsl:template>
+
+<xsl:template priority="2" match="web-app/display-name">
+        <display-name>Astrogrid CEA Server (http)</display-name>
+</xsl:template>	
+
 
 
 <!-- copy-all template - matches everything else -->

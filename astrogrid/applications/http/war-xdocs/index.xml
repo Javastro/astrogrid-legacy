@@ -1,0 +1,29 @@
+<?xml version="1.0" ?>
+<document>
+<properties>
+        <author email="jdt@roe.ac.uk">John Taylor</author>
+        <title>Http CEA Application Provider</title>
+</properties>
+
+<body>
+<section name="Description">
+<p>
+The <tt>Http</tt> CEA provides a mechanism to plug legacy http-get and http-post services such as SIAP servers into the Astrogrid
+architecture.
+</p>
+</section>
+
+<section name="Configuration">
+<p>
+Little configuration is required - the server merely requires the endpoint of a Registry to be supplied by setting
+the property <tt>org.astrogrid.registry.query.endpoint</tt>.
+</p>
+</section>
+
+<section name="Registry Entries">
+<p>
+TBD
+</p>
+</section>
+</body>
+</document>

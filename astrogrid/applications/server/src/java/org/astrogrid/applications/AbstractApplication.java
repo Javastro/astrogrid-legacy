@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractApplication.java,v 1.6 2004/08/28 07:17:34 pah Exp $
+ * $Id: AbstractApplication.java,v 1.7 2004/09/01 15:42:26 jdt Exp $
  *
  * Created on 13 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -299,6 +299,10 @@ public abstract class AbstractApplication extends Observable implements Applicat
    }
     public final String getID() {
         return ids.getId();
+    }
+    
+    public final Tool getTool() {
+        return tool;
     }
    
    public final ParameterValue[] getInputParameters() {

@@ -1,4 +1,4 @@
-/*$Id: JavaClassApplicationDescriptionLibrary.java,v 1.3 2004/07/26 10:21:47 nw Exp $
+/*$Id: JavaClassApplicationDescriptionLibrary.java,v 1.4 2004/09/01 15:42:26 jdt Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -37,14 +37,6 @@ public class JavaClassApplicationDescriptionLibrary extends BaseApplicationDescr
     private static final Log logger = LogFactory.getLog(JavaClassApplicationDescriptionLibrary.class);
 
 
-    /** configuration interface - defines the name of the community the applications will be added to. */
-    public interface Community {
-        /** access the name of the community to add these applications under
-         * @todo I think this should be named 'authority', not community.
-         * @return
-         */
-        String getCommunity();
-    }
 
     /** Construct a new JavaClassApplicationDescriptionLibrary, based on static methods of parameter class
      * @param implClass - class of static methods, each of which will provide an application for the library.
@@ -95,6 +87,12 @@ public class JavaClassApplicationDescriptionLibrary extends BaseApplicationDescr
 
 /* 
 $Log: JavaClassApplicationDescriptionLibrary.java,v $
+Revision 1.4  2004/09/01 15:42:26  jdt
+Merged in Case 3
+
+Revision 1.3.4.1  2004/08/09 16:36:25  jdt
+pulled up an interface so I can use it in http apps
+
 Revision 1.3  2004/07/26 10:21:47  nw
 javadoc
 

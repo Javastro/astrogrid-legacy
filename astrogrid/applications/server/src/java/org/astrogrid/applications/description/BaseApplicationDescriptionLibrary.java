@@ -1,4 +1,4 @@
-/*$Id: BaseApplicationDescriptionLibrary.java,v 1.4 2004/07/26 12:07:38 nw Exp $
+/*$Id: BaseApplicationDescriptionLibrary.java,v 1.5 2004/09/01 15:42:26 jdt Exp $
  * Created on 17-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,6 +33,12 @@ public class BaseApplicationDescriptionLibrary implements ApplicationDescription
      * Commons Logger for this class
      */
     private static final Log logger = LogFactory.getLog(BaseApplicationDescriptionLibrary.class);
+    
+    /** configuration interface - defines the name of the community the applications will be added to. */
+
+    public interface Community {
+        String getCommunity();
+    }
 
     /** Construct a new BaseApplicationDescriptionLibrary
      * 
@@ -100,6 +106,12 @@ public class BaseApplicationDescriptionLibrary implements ApplicationDescription
 
 /* 
 $Log: BaseApplicationDescriptionLibrary.java,v $
+Revision 1.5  2004/09/01 15:42:26  jdt
+Merged in Case 3
+
+Revision 1.4.2.1  2004/08/09 16:36:25  jdt
+pulled up an interface so I can use it in http apps
+
 Revision 1.4  2004/07/26 12:07:38  nw
 renamed indirect package to protocol,
 renamed classes and methods within protocol package

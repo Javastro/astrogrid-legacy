@@ -1,5 +1,5 @@
 /*
- * $Id: CommonExecutionConnectorDelegateImpl.java,v 1.2 2004/07/01 11:07:10 nw Exp $
+ * $Id: CommonExecutionConnectorDelegateImpl.java,v 1.3 2004/09/01 15:42:26 jdt Exp $
  * 
  * Created on 11-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -12,6 +12,11 @@
  */
 
 package org.astrogrid.applications.delegate.impl;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+
 
 import org.astrogrid.applications.beans.v1.ApplicationList;
 import org.astrogrid.applications.beans.v1.cea.castor.ExecutionSummaryType;
@@ -40,6 +45,11 @@ import java.rmi.RemoteException;
  */
 public class CommonExecutionConnectorDelegateImpl
    extends CommonExecutionConnectorDelegate {
+    /**
+     * Logger for this class
+     */
+    private static final Log log = LogFactory.getLog(CommonExecutionConnectorDelegateImpl.class);
+
 
    public CommonExecutionConnectorDelegateImpl(String targetEndPoint) {
       this.targetEndPoint = targetEndPoint;
@@ -70,6 +80,11 @@ public class CommonExecutionConnectorDelegateImpl
     */
    public String init(Tool tool, JobIdentifierType jobstepID)
       throws CEADelegateException {
+        if (log.isTraceEnabled()) {
+            log.trace("init(Tool tool = " + tool + ", JobIdentifierType jobstepID = " + jobstepID + ") - start");
+        }
+
+
       String result;
       CommonExecutionConnector cec = getBinding();
       try {
@@ -79,8 +94,14 @@ public class CommonExecutionConnectorDelegateImpl
          result = cec.init(atool, jobstepID);
       }
       catch (RemoteException e) {
+         log.error("init(Tool, JobIdentifierType)", e);
          throw new CEADelegateException("execution problem", e);
       }
+
+
+        if (log.isTraceEnabled()) {
+            log.trace("init(Tool, JobIdentifierType) - end - return value = " + result);
+        }
       return result;
    }
 

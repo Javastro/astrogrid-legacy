@@ -1,4 +1,4 @@
-/*$Id: MockMonitor.java,v 1.3 2004/07/26 12:07:38 nw Exp $
+/*$Id: MockMonitor.java,v 1.4 2004/09/01 15:42:26 jdt Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,6 +27,7 @@ public class MockMonitor implements Observer{
  
     
     public boolean sawExit = false;
+    public boolean sawError = false;
     public Application sawApp = null;
     /**
      * @see org.astrogrid.applications.manager.observer.ApplicationProgressObserver#notifyStateChange(org.astrogrid.applications.Application, org.astrogrid.applications.Status)
@@ -35,6 +36,9 @@ public class MockMonitor implements Observer{
         if (status.equals(Status.COMPLETED)) {
             sawApp = app;
             sawExit = true;
+        } else if (status.equals(Status.ERROR)) {
+            sawApp = app;
+            sawError = true;
         }
     }
 
@@ -59,6 +63,12 @@ public class MockMonitor implements Observer{
 
 /* 
 $Log: MockMonitor.java,v $
+Revision 1.4  2004/09/01 15:42:26  jdt
+Merged in Case 3
+
+Revision 1.3.2.1  2004/08/11 22:54:42  jdt
+Monitor now monitors errors too.
+
 Revision 1.3  2004/07/26 12:07:38  nw
 renamed indirect package to protocol,
 renamed classes and methods within protocol package
