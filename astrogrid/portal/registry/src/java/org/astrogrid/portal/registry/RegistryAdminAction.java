@@ -260,7 +260,7 @@ public class RegistryAdminAction extends AbstractAction
                      RegistryAdminService ras = RegistryDelegateFactory.createAdmin();
                      
                      if("add".equals(action)) {
-                        returnDocument = ras.add(finalDoc);
+                        returnDocument = ras.update(finalDoc);
                         if(finalDoc.getElementsByTagNameNS("http://www.ivoa.net/xml/VORegistry/v0.2","Authority").getLength() > 0) {
                            RegistryService rs2 = RegistryDelegateFactory.createQuery();
                            hm = rs2.managedAuthorities();
