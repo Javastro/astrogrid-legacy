@@ -1,5 +1,5 @@
 /*
- * $Id: ConfManager.java,v 1.3 2004/02/17 23:59:17 jdt Exp $ Created on
+ * $Id: ConfManager.java,v 1.4 2004/03/04 11:44:20 pah Exp $ Created on
  * 19-Jan-2004 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,12 +33,17 @@ public final class ConfManager {
    * Name of key in property file for endpoint
    *  
    */
-  public static final String MYSPACE_ENDPOINT = "mySpaceEndPoint";
+  private static final String MYSPACE_ENDPOINT = "mySpaceEndPoint";
 
   /**
    * name of key in properties file for merlin endpoint
    */
-  public static final String MERLIN_ENDPOINT = "merlinDatacenterEndPoint";
+  private static final String MERLIN_ENDPOINT = "merlinDatacenterEndPoint";
+  
+  /**
+   * name of key in properties file for the jobcontroller endpoint;
+   */
+  private static final String JOBCONTROLLER_ENDPOINT = "jobControlerEndPoint";
 
   /**
    * Singleton
@@ -92,6 +97,16 @@ public final class ConfManager {
       ConfManager.MYSPACE_ENDPOINT,
       "MySpace Web service end-point");
   }
+  
+  /**
+   * Gets the jobcontroller endpoint in the integration environment.
+ * @return the endpoint url
+ * @throws IOException
+ */
+public String getJobControllerEndPoint() throws IOException
+  {
+     return getProperty(JOBCONTROLLER_ENDPOINT, "job controller end point");
+  }
   /**
    * Gets the names property from the props file
    * @param propertyDescription description of the property (just used for logging)
@@ -124,6 +139,10 @@ public final class ConfManager {
 
 /*
  * $Log: ConfManager.java,v $
+ * Revision 1.4  2004/03/04 11:44:20  pah
+ * added jobcontroller endpoint getter
+ * made the keys private, so that user is forced to go via the singleton
+ *
  * Revision 1.3  2004/02/17 23:59:17  jdt
  * commented out lines killing the build, and made to conform to 
  * coding stds
