@@ -1,5 +1,5 @@
 /*
- * $Id: SqlQuerierSPI.java,v 1.1 2004/03/12 04:45:26 mch Exp $
+ * $Id: SqlQuerierSPI.java,v 1.2 2004/04/01 10:11:53 eca Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -24,7 +24,7 @@ import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.QueryResults;
-import org.astrogrid.datacenter.queriers.ogsadai.PostgresAdqlQueryTranslator;
+import org.astrogrid.datacenter.queriers.ogsadai.AdqlQueryTranslator;
 import org.astrogrid.datacenter.queriers.spi.BaseQuerierSPI;
 import org.astrogrid.datacenter.queriers.spi.QuerierSPI;
 import org.astrogrid.datacenter.queriers.sql.SqlResults;
@@ -65,7 +65,7 @@ public class SqlQuerierSPI extends BaseQuerierSPI implements QuerierSPI {
    
   /** configure translators */
   static {
-      map.add(ADQLUtils.ADQL_XMLNS,new PostgresAdqlQueryTranslator());
+      map.add(ADQLUtils.ADQL_XMLNS,new AdqlQueryTranslator());
 //      map.add(SQLUtils.SQL_XMLNS,new SqlQueryTranslator());
   }
 

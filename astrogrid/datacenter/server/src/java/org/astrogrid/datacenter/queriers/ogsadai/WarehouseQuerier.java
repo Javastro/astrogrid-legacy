@@ -1,5 +1,5 @@
 /*
- * $Id: WarehouseQuerier.java,v 1.11 2004/03/26 15:52:47 eca Exp $
+ * $Id: WarehouseQuerier.java,v 1.12 2004/04/01 10:10:09 eca Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -16,7 +16,6 @@ import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierPlugin;
-import org.astrogrid.datacenter.queriers.ogsadai.PostgresAdqlQueryTranslator;
 import org.astrogrid.datacenter.queriers.ogsadai.AdqlQueryTranslator;
 import org.astrogrid.datacenter.queriers.status.QuerierComplete;
 import org.astrogrid.util.DomLoader;
@@ -367,6 +366,11 @@ public class WarehouseQuerier extends QuerierPlugin {
 }
 /*
 $Log: WarehouseQuerier.java,v $
+Revision 1.12  2004/04/01 10:10:09  eca
+Replaced PostgresAdqlQueryTranslator with ogsadai.AdqlQueryTranslator.
+
+01/04/04 ElizabethAuden
+
 Revision 1.11  2004/03/26 15:52:47  eca
 datacenter.queriers.ogsadai.AdqlQueryTranslator now updated for
 1) optimized for Postgres
