@@ -26,7 +26,7 @@ To do this, carry out the following steps:
 </li><li>Create a  description of the data collection
 </li><li>Restart the servlet container
 </li><li>Test the installation
-</li><li>Add the data collection with the Astrogrid Registry
+</li><li>Register the data collection with the VO
 </li></ul>
 </p>
 </section>
@@ -42,8 +42,8 @@ installed and configured before installing the Datacenter Server.
 
 <section name="Download PAL">
 <p>
-The publishers astrogrid library is distributed as a J2EE Web Application (.war) file named <tt>pal.war</tt>
-To add a dependency on PAL to your own project, add the following to your <a href="http://maven.apache.org">maven</a> <tt>project.xml</tt>
+The publishers astrogrid library is distributed as a J2EE Web Application (.war) file.
+<!--To add a dependency on PAL to your own project, add the following to your <a href="http://maven.apache.org">maven</a> <tt>project.xml</tt>
 <source>
    &lt;dependencies&gt;
    ...
@@ -55,36 +55,29 @@ To add a dependency on PAL to your own project, add the following to your <a hre
    &lt;/dependency&gt;
    ...
    &lt;dependencies&gt;
-</source>
-Alternately, the latest snapshot of PAL can be downloaded directly from<br />
- <a href="http://www.astrogrid.org/maven/astrogrid-datacenter/wars/pal-SNAPSHOT.war"
- >http://www.astrogrid.org/maven/astrogrid-datacenter/wars/pal-SNAPSHOT.war</a>
+</source> -->
 </p>
 <p>
-Or the latest stable release (It4.1) from<br/>
- <a href="http://www.astrogrid.org/maven/astrogrid-datacenter/wars/pal-Itn04_1.war"
- >http://www.astrogrid.org/maven/astrogrid-datacenter/wars/pal-Itn04_1.war</a>
- </p>
+The latest snapshot of PAL can be downloaded directly from<br />
+<a href="http://www.astrogrid.org/maven/org.astrogrid/wars/pal-SNAPSHOT.war">here</a>. You can find
+other versions, jar files, etc for the AstroGrid project <a href="http://www.astrogrid.org/maven/build/">here</a>
+</p>
 </section>
 
 <section name="Deploy PAL">
 
 You can use the Tomcat manager to install PAL (see the Tomcat manager instructions)
-or you can do it by hand:
-<source>
-$ cp pal.war ${CATALINA_HOME}/webapps
-</source>
-<p>
-Copy <tt>pal.war</tt> to the <tt>webapps</tt> directory of your tomcat installation and
+or you can do it by hand - Copy <tt>pal.war</tt> to the <tt>webapps</tt> directory of your tomcat installation and
 restart your server:
-</p>
+
 <source>
+$ cp pal-SNAPSHOT.war ${CATALINA_HOME}/webapps
 $ ${CATALINA_HOME}/bin/shutdown.sh
 $ ${CATALINA_HOME}/bin/startup.sh
 </source>
 <p>
-Once tomcat has been restarted, the pal web application will be unpackaged into the directory <tt>webapps/pal</tt>. If installed on your
-machine in the default location, the web application root will be <a href="http://localhost:8080/pal">http://localhost:8080/pal</a>.
+Once tomcat has been restarted, the pal web application will be unpackaged into the directory <tt>webapps/pal-SNAPSHOT</tt>. If installed on your
+machine in the default location, the web application root will be <a href="http://localhost:8080/pal-SNAPSHOT">http://localhost:8080/pal-SNAPSHOT</a>.
 </p>
 
 </section>
@@ -97,23 +90,25 @@ your datacenter. However once PAL has been installed, it should be possible to
 run the <a href="self-test">installation tests</a> and some cone <a href="query-form">queries</a>
  on it, as it contains a simple SQL database by default.
 <p/>
-Read the <a href="configuration.html">configuration page</a> before going on, as you
+Read the configuration page before going on, as you
 will need to make a new configuration file to connect to your data.
 </p>
 </section>
 
-<section name="Connect to your data">
-
-<a href="connectdata.html">This page</a> describes how to configure and connect to your data.
-
-</section>
-
-
 <section name="Describe your data">
-<p>You need to write a description of the data collection provided by your installation. This document should conform to <b>(what schema?)</b>
-The location of this file can be set in the configuration file. The default location is <tt>metadata.xml</tt> on the classpath.
+
+<p>For your data to be published to the VO, it must be capable of presenting an
+XML document that describes that data.  This allows the VO's automatic tools
+to analyse what is available.</p>
+<p>See <a href='still.waiting.for.IVOA'>here</a> for information on how to write a VODescription
+metadata document.</p>
+<p>Once written, store it along with your properties file (ie where it won't get
+overwritten if you reinstall PAL) and set the property datacenter.metadata.file or
+datacenter.metadata.url to point to it.</p>
+<p>
+Finally your newly-published dataset must be added to a VO Registry. Somehow.
 </p>
-Finally your newly-published dataset must be added to an Astrogrid Registry. Somehow.
+
 </section>
 
 <section name="Verify the installation">

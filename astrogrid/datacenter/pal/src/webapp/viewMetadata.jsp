@@ -23,7 +23,7 @@
       String[] tables = MetadataServer.getTables();
       for (int table=0;table<tables.length;table++) {
 %>
-<h2>Table '<%=tables[table] %>'</h2>
+<h2>Table '<%=tables[table] %>' - <%= DomHelper.getValue(MetadataServer.getTableElement(tables[table]),"Title") %> </h2>
 <p><%= DomHelper.getValue(MetadataServer.getTableElement(tables[table]),"Description") %></p>
 <p>
 <table border=1 summary='Column details for table <%=tables[table] %>' cellpadding='5%'>
