@@ -141,7 +141,7 @@
 <xsl:template name="index.html">
 <html>
     <head>
-        <title>Unit Test Results.</title>
+        <title>Astrogrid Integration Test Results - <xsl:value-of select="@date"/></title>
     </head>
     <frameset cols="20%,80%">
         <frameset rows="30%,70%">
@@ -526,7 +526,8 @@ h6 {
         <tr valign="top">
                 <xsl:attribute name="class">
                         <xsl:choose>
-                                <xsl:when test="$successRate &lt; $baselineSuccessRate">Error</xsl:when><!-- work out test here -->
+                                <xsl:when test="$successRate &lt; $baselineSuccessRate">Error</xsl:when>
+                                <xsl:when test="total-tests &lt; $testCount">change</xsl:when>
                                 <xsl:otherwise>Pass</xsl:otherwise>
                         </xsl:choose>
                 </xsl:attribute>

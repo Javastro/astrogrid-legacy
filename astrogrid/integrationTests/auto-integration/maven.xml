@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.87 2004/08/29 22:46:26 nw Exp $ -->
+<!-- $Id: maven.xml,v 1.88 2004/09/01 11:49:04 nw Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -968,6 +968,7 @@
                         <include name="*.xml" />
                 </fileset>
         </fileScanner>
+        <j:new var="now" className="java.util.Date" />
         <j:forEach var="baselineFile" items="${files.iterator()}">
                 <echo>Merging baseline ${baselineFile}</echo>
                 <!-- parse this document in -->
@@ -979,10 +980,11 @@
                 <!-- define stylesheet -->
                 <jsl:stylesheet var="annotate">
                         <jsl:template match="testsuites">
-                                <jxml:copy select=".">
+                                  <jxml:element name="testsuites">
+                                        <jxml:attribute name="date">${now}</jxml:attribute>
                                         <jxml:copyOf select="$baseline/testsuites/baseline-summary" />
                                         <jsl:applyTemplates select="testsuite|baseline-summary"/>
-                                </jxml:copy>
+                                </jxml:element>
                         </jsl:template>
                         <jsl:template match="testsuite">
                                 <jxml:copy select=".">
