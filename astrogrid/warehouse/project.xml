@@ -64,24 +64,16 @@
       <version>SNAPSHOT</version>
     </dependency>
   
-    <!-- TOFIX CURRENTLY BUGGERED
     <dependency>
       <groupId>astrogrid-datacenter</groupId>
       <artifactId>astrogrid-datacenter-server</artifactId>
-      <version>SNAPSHOT</version>
-    </dependency>
-      -->
-      <!-- TEMP FIX -->
-    <dependency>
-      <groupId>astrogrid-datacenter</groupId>
-      <artifactId>astrogrid-datacenter-server</artifactId>
-      <version>TEMP</version>
+      <version>Itn04-2003-12-02</version>
     </dependency>
 
     <dependency>
       <groupId>astrogrid-datacenter</groupId>
       <artifactId>astrogrid-datacenter-client</artifactId>
-      <version>SNAPSHOT</version>
+      <version>Itn04-2003-12-02</version>
     </dependency>
 
     <!-- This is needed for runtime tests because 
@@ -129,16 +121,6 @@
       <version>1.0.b2</version>
     </dependency>
     
-    <dependency>
-      <id>MockMaker</id>
-      <version>1.11.0</version>
-    </dependency>
-    
-    <dependency>
-      <id>mmmockobjects</id>
-      <version>1.11.0</version>
-    </dependency>
-
     <dependency>
       <id>log4j</id>
       <version>1.2.4</version>
