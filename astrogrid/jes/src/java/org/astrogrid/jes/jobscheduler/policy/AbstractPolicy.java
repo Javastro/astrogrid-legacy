@@ -1,4 +1,4 @@
-/*$Id: AbstractPolicy.java,v 1.2 2004/03/15 23:45:07 nw Exp $
+/*$Id: AbstractPolicy.java,v 1.3 2004/03/18 01:28:19 nw Exp $
  * Created on 05-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.jes.jobscheduler.policy;
 
+import org.astrogrid.jes.component.descriptor.SimpleComponentDescriptor;
 import org.astrogrid.jes.jobscheduler.Policy;
 import org.astrogrid.jes.util.JesFunctions;
 import org.astrogrid.workflow.beans.v1.Workflow;
@@ -23,7 +24,7 @@ import org.apache.commons.logging.LogFactory;
  * @author Noel Winstanley nw@jb.man.ac.uk 05-Mar-2004
  *
  */
-public abstract class AbstractPolicy implements Policy {
+public abstract class AbstractPolicy extends SimpleComponentDescriptor implements Policy {
     protected static final Log logger = LogFactory.getLog("Policy");
     
     /** Construct a new AbstractPolicy
@@ -46,6 +47,9 @@ public abstract class AbstractPolicy implements Policy {
 
 /* 
 $Log: AbstractPolicy.java,v $
+Revision 1.3  2004/03/18 01:28:19  nw
+altered to extend simple component descriptor
+
 Revision 1.2  2004/03/15 23:45:07  nw
 improved javadoc
 
