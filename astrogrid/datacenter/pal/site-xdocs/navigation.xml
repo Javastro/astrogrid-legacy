@@ -9,13 +9,9 @@
       <item name="Sample Configuration" href="AstroGridConfig.properties" />
       <item name="Installation Test" href="self-test.html" />
    </menu>
-   <menu name="Server">
-      <item name="Status" href="serverStatus.jsp" />
-      <item name="Metadata" href="metadata.jsp" />
-   </menu>
    <menu name="Query">
       <item name="Ask Query" href="query-form.html" />
-      <item name="Sample Queries" href="adql" />
+      <item name="Examples" href="adql" />
       <item name="XML Schema" href="schema.html" />
    </menu>
    <menu name="Develop">
@@ -31,6 +27,10 @@
       <!-- download client
       - single jar,
       - supporting libs -->
+   </menu>
+   <menu name="Server">
+      <item name="Status" href="serverStatus.jsp" />
+      <item name="Metadata" href="metadata.jsp" />
    </menu>
 
    <links>
