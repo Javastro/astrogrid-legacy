@@ -1,4 +1,4 @@
-/*$Id: ProductionComponentManager.java,v 1.8 2004/03/18 10:54:22 nw Exp $
+/*$Id: ProductionComponentManager.java,v 1.9 2004/04/21 17:08:51 nw Exp $
  * Created on 07-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -177,13 +177,14 @@ public final class ProductionComponentManager extends EmptyComponentManager {
     }
     /** key to look in config for implementation of policy touse
      * <p>
-     * possible vales: <tt>linear</tt> | <tt>join</tt> | <tt>flow</tt> | <tt><i>java.class.name</i></tt><br />
-     * default: <tt>join</tt>
+     * possible vales: <tt>linear</tt> | <tt>join</tt> | <tt>flow</tt> | <tt>full</tt> | <tt><i>java.class.name</i></tt><br />
+     * default: <tt>flow</tt>
      */
     public static final String POLICY_KEY = "jes.policy";
     private static final ComponentDescriptor POLICY_META = new SimpleComponentDescriptor("Policy Configuration",
         "to select a policy implementation, set key " + POLICY_KEY + " to \n" + 
-           "'linear' - for scheduling policy that executes everything in a sequential manner, ignoring join conditions\n" +           "'join' - for scheduling policy that executes steps in a sequential manner, obeying join conditions\n" +           "'flow' - for scheduling polucy that executes steps in parallel where possible (in flows), obeying join conditions\n" +           " or name of java class to instantiate"
+           "'linear' - for scheduling policy that executes everything in a sequential manner, ignoring join conditions\n" +           "'join' - for scheduling policy that executes steps in a sequential manner, obeying join conditions\n" +           "'flow' - for scheduling polucy that executes steps in parallel where possible (in flows), ignoring join conditions\n" +
+           "'full' - for scheduling policy that executes step in parallel where possible ( in flows), following join conditions\n" +           " or name of java class to instantiate"
            );
             
 
@@ -192,7 +193,7 @@ public final class ProductionComponentManager extends EmptyComponentManager {
      */
     private final void registerPolicy() {
         pico.registerComponentInstance("policy-meta",POLICY_META);
-        String policy = conf.getString(POLICY_KEY,"join").trim();
+        String policy = conf.getString(POLICY_KEY,"flow").trim();
         if ("linear".equalsIgnoreCase(policy)) {
             pico.registerComponentImplementation(Policy.class,LinearPolicy.class);
         } else if ("flow".equalsIgnoreCase(policy)) {
@@ -216,6 +217,9 @@ public final class ProductionComponentManager extends EmptyComponentManager {
 
 /* 
 $Log: ProductionComponentManager.java,v $
+Revision 1.9  2004/04/21 17:08:51  nw
+updated to use flow scheduler
+
 Revision 1.8  2004/03/18 10:54:22  nw
 added code to make policy implementation configurable
 
