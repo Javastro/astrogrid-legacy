@@ -50,12 +50,13 @@ public class AdqlNvoConeDelegate extends NvoConeSearchDelegate implements AdqlQu
    Log log = LogFactory.getLog(AdqlNvoConeDelegate.class);
    
    private String userId, communityId, credentials = null;
-   
+   /** @todo - adjust to use the MySpaceDummyDelegate */
    private class NvoConeSearchDummyQuery implements DatacenterQuery
    {
       double ra, dec, sr = 0;
       String queryId = null;
-      String destinationServer = MySpaceDummyDelegate.DUMMY;
+      //@todo - fix this again.
+      String destinationServer = null; //MySpaceDummyDelegate.DUMMY;
       URL resultsUrl = null; //where to find the results
       //DatacenterResults results = null;
       QueryStatus status = null;
@@ -216,6 +217,7 @@ public class AdqlNvoConeDelegate extends NvoConeSearchDelegate implements AdqlQu
       
       /**
        * Send results to myspace
+       * @todo - temporarily commented out the myspaceDummyDelegate
        */
       public void sendResults(InputStream resultsDoc) throws IOException
       {
@@ -234,12 +236,13 @@ public class AdqlNvoConeDelegate extends NvoConeSearchDelegate implements AdqlQu
           */
          
          MySpaceManagerDelegate myspace = null;
-      
+      /*
          if (destinationServer.equals(MySpaceDummyDelegate.DUMMY)) {
             myspace = new MySpaceDummyDelegate(destinationServer.toString());
          } else {
+         */
             myspace = new MySpaceManagerDelegate(destinationServer.toString());
-         }
+         
 
          String myspaceFilename = getId()+"_results";
          ByteArrayOutputStream ba = new ByteArrayOutputStream();
@@ -388,6 +391,9 @@ public class AdqlNvoConeDelegate extends NvoConeSearchDelegate implements AdqlQu
 
 /*
 $Log: AdqlNvoConeDelegate.java,v $
+Revision 1.3  2003/11/18 14:24:57  nw
+temporarily commented out references to MySpaceDummyDelegate, so that the sustem will build
+
 Revision 1.2  2003/11/18 10:31:42  mch
 Moved WorkSpace to common
 
