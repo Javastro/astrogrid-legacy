@@ -119,6 +119,15 @@
       <war.bundle>true</war.bundle>
     </properties>
     </dependency>
+    <dependency>
+      <id>VOTableUtil</id>
+      <version>UNKNOWN</version>
+      <jar>VOTableUtil.jar</jar>
+          <properties>
+      <war.bundle>true</war.bundle>
+    </properties>
+    </dependency>
+
 
 
    <dependency>
