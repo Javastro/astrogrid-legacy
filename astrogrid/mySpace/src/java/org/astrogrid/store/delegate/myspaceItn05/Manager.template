@@ -291,7 +291,7 @@ public interface Manager extends java.rmi.Remote
  * @return Standard return object from the Manager.
  */
 
-   public KernelResults deleteAccount(String deadUser, boolean test) 
+   public KernelResults deleteAccount(String deadAccount, boolean test) 
      throws java.rmi.RemoteException;
 
 

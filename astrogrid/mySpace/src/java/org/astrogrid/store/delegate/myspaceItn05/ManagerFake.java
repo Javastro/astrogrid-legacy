@@ -801,7 +801,7 @@ public class ManagerFake implements Manager
  * @return Standard return object from the Manager.
  */
 
-   public KernelResults deleteAccount(String deadUser, boolean test) 
+   public KernelResults deleteAccount(String deadAccount, boolean test) 
      throws java.rmi.RemoteException
    {
 //

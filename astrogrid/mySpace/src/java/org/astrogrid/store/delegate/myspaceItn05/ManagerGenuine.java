@@ -4,7 +4,7 @@ package org.astrogrid.store.delegate.myspaceItn05;
  * ManagerGenuine.java
  *
  * <p>
- * Generate standard test responses from a MySpace Manager.
+ * Generate genuine responses from a MySpace Manager.
  * </p>
  *
  * @author A C Davenhall (Edinburgh)
@@ -14,8 +14,23 @@ package org.astrogrid.store.delegate.myspaceItn05;
 
 import java.util.*;
 
+import org.astrogrid.Configurator;
+import org.astrogrid.i18n.*;
+
+import org.astrogrid.mySpace.mySpaceManager.MMC;
+import org.astrogrid.mySpace.mySpaceManager.Configuration;
+import org.astrogrid.mySpace.mySpaceManager.DataItemRecord;
+import org.astrogrid.mySpace.mySpaceManager.MySpaceActions;
+import org.astrogrid.mySpace.mySpaceStatus.*;
+
 public class ManagerGenuine implements Manager
-{
+{  private MySpaceActions actions = new MySpaceActions();
+   private static MySpaceStatus status = new MySpaceStatus();
+   private static Logger logger = new Logger();
+
+   private String registryName = "";
+
+// ----------------------------------------------------------------------
 
 /**
  * `Heart-beat' method to check whether the Manager is up and running.
@@ -47,88 +62,74 @@ public class ManagerGenuine implements Manager
 
    public KernelResults getEntriesList(String query, boolean test)
      throws java.rmi.RemoteException
-   {
-//
-//   Generate the name of the file which matches the query.
-//
-//   If the does not end in a wild-card it is returned unaltered
-//   as the matching file name.  If it does then the wild card
-//   is removed and a fake ending for the file name substituted.
+   {  KernelResults results = new KernelResults();
 
-      String entryName = "";
-      int queryLen = query.length();
-      int astPos = query.lastIndexOf("*");
+      setUp();
 
-      if ((queryLen - 1) == astPos)
-      {  entryName = query.substring(0, queryLen - 1) + "xyz";
+      try
+      {
+//
+//      Write a message to the log file.
+
+         logger.setActionName("getEntriesList");
+         logger.appendMessage("Invoked getEntriesList...");
+
+//
+//      [TODO]: The following statement is a place-holder.  In due
+//      course obtain the account details from the SOAP header.  Also
+//      the account class will probably not be a String.
+
+         String account = null;
+         logger.setAccount(account);
+
+//
+//      Invoke the MySpaceActions object perform the appropriate tasks.
+
+         actions.setRegistryName(registryName);
+         Vector dataItems = actions.getEntriesList(account, query);
+
+         if (dataItems != null)
+         {
+//
+//         Copy the results to the return object.
+
+            int numEntries = dataItems.size();
+
+            if (numEntries > 0)
+            {  ArrayList entries = new ArrayList();
+
+               for(int loop=00; loop<numEntries; loop++)
+               {  DataItemRecord itemRecord = 
+                    (DataItemRecord)dataItems.elementAt(loop);
+                  EntryResults entry =
+                    itemRecord.getEntryResults();
+                  entries.add(entry);
+               }
+
+               results.setEntries(entries.toArray() );
+            }
+
+//
+//         Generate a success message.
+
+            status.addCode(MySpaceStatusCode.AGMMCI00001,
+              MySpaceStatusCode.INFO, MySpaceStatusCode.LOG,
+              this.getClassName() );
+         }
+
+//
+//      Copy any status messages to the results object.
+
+         ArrayList statusList = status.getStatusResults();
+         results.setStatusList(statusList.toArray() );
+         status.reset();
       }
-      else
-      {  entryName = query;
+      catch (Exception e)
+      {  logger.appendMessage("Exception in getEntriesList: " +
+           e.toString() );
       }
 
-//
-//   Generate an EntryResults for this file.
-
-      int    entryId = 0;
-      String entryUri = "http://blue.nowhere.org/f1";
-      String owner = "owner";
-      Date   creationDate = new Date(0);
-      Date   expiryDate = new Date(0);
-      long   creation = creationDate.getTime();
-      long   expiry = expiryDate.getTime();
-      int    size = 1;
-      int    type = EntryCodes.VOT;
-      String permissions = "permissions";
-
-      EntryResults entry = new EntryResults();
-
-      entry.setEntryName(entryName);
-      entry.setEntryId(entryId);
-      entry.setEntryUri(entryUri);
-      entry.setOwnerId(owner);
-      entry.setCreationDate(creation);
-      entry.setExpiryDate(expiry);
-      entry.setSize(size);
-      entry.setType(type);
-      entry.setPermissionsMask(permissions);
-
-//
-//   Add this EntryResults to a list of EntryRecords.
-
-      ArrayList entries = new ArrayList();
-      entries.add(entry);
-
-//
-//   Add the list of EntryResults to the returned KernelResults object.
-
-      KernelResults results = new KernelResults();
-      results.setEntries(entries.toArray() );
-
-//
-//   Generate a StatusResults for this operation.
-
-      int severity = StatusCodes.INFO;
-      String message = "getEntriesList executed successfully.";
-      Date timeStampDate = new Date(0);
-      long timeStamp = timeStampDate.getTime();
-
-      StatusResults status = new StatusResults();
-
-      status.setSeverity(severity);
-      status.setMessage(message);
-      status.setTimeStamp(timeStamp);
-
-//
-//   Add this StatusResults to a list of StatusRecords.
-
-      ArrayList statusList = new ArrayList();
-      statusList.add(status);
-
-//   Add the list of StatusResults to the returned KernelResults object.
-
-      results.setStatusList(statusList.toArray() );
-
-
+      logger.close();
       return results;
    }
 
@@ -158,37 +159,55 @@ public class ManagerGenuine implements Manager
    public KernelResults putString(String newFile, String contents, 
      int category, int dispatchExisting, boolean test) 
      throws java.rmi.RemoteException
-   {
+   {  KernelResults results = new KernelResults();
+
+      setUp();
+
+      try
+      {
 //
-//   Generate an object to hold the results returned by this method.
+//      Write a message to the log file.
 
-      KernelResults results = new KernelResults();
-
-//
-//   Generate a StatusResults for this operation.
-
-      int severity = StatusCodes.INFO;
-      String message = "putString executed successfully.";
-      Date timeStampDate = new Date(0);
-      long timeStamp = timeStampDate.getTime();
-
-      StatusResults status = new StatusResults();
-
-      status.setSeverity(severity);
-      status.setMessage(message);
-      status.setTimeStamp(timeStamp);
+         logger.setActionName("putString");
+         logger.appendMessage("Invoked putString...");
 
 //
-//   Add this StatusResults to a list of StatusRecords.
+//      [TODO]: The following statement is a place-holder.  In due
+//      course obtain the account details from the SOAP header.  Also
+//      the account class will probably not be a String.
 
-      ArrayList statusList = new ArrayList();
-      statusList.add(status);
+         String account = null;
+         logger.setAccount(account);
 
-//   Add the list of StatusResults to the returned KernelResults object.
+//
+//      Invoke the MySpaceActions object perform the appropriate tasks.
 
-      results.setStatusList(statusList.toArray() );
+         actions.setRegistryName(registryName);
+         boolean success = actions.putString(account, newFile, contents, 
+           category, dispatchExisting);
 
+//
+//      Generate a success method if the method succeeded.
 
+         if (success)
+         {  status.addCode(MySpaceStatusCode.AGMMCI00001,
+              MySpaceStatusCode.INFO, MySpaceStatusCode.LOG,
+              this.getClassName() );
+         }
+
+//
+//      Copy any status messages to the results object.
+
+         ArrayList statusList = status.getStatusResults();
+         results.setStatusList(statusList.toArray() );
+         status.reset();
+      }
+      catch (Exception e)
+      {  logger.appendMessage("Exception in putString: " +
+           e.toString() );
+      }
+
+      logger.close();
       return results;
    }
 
@@ -218,36 +237,7 @@ public class ManagerGenuine implements Manager
    public KernelResults putBytes(String newFile, byte[] contents, 
      int category, int dispatchExisting, boolean test) 
      throws java.rmi.RemoteException
-   {
-//
-//   Generate an object to hold the results returned by this method.
-
-      KernelResults results = new KernelResults();
-
-//
-//   Generate a StatusResults for this operation.
-
-      int severity = StatusCodes.INFO;
-      String message = "putBytes executed successfully.";
-      Date timeStampDate = new Date(0);
-      long timeStamp = timeStampDate.getTime();
-
-      StatusResults status = new StatusResults();
-
-      status.setSeverity(severity);
-      status.setMessage(message);
-      status.setTimeStamp(timeStamp);
-
-//
-//   Add this StatusResults to a list of StatusRecords.
-
-      ArrayList statusList = new ArrayList();
-      statusList.add(status);
-
-//   Add the list of StatusResults to the returned KernelResults object.
-
-      results.setStatusList(statusList.toArray() );
-
+   {  KernelResults results = new KernelResults();
 
       return results;
    }
@@ -278,35 +268,7 @@ public class ManagerGenuine implements Manager
    public KernelResults putUri(String newFile, String uri, int category, 
      int dispatchExisting, boolean test) 
      throws java.rmi.RemoteException
-   {
-//
-//   Generate an object to hold the results returned by this method.
-
-      KernelResults results = new KernelResults();
-
-//
-//   Generate a StatusResults for this operation.
-
-      int severity = StatusCodes.INFO;
-      String message = "putUri executed successfully.";
-      Date timeStampDate = new Date(0);
-      long timeStamp = timeStampDate.getTime();
-
-      StatusResults status = new StatusResults();
-
-      status.setSeverity(severity);
-      status.setMessage(message);
-      status.setTimeStamp(timeStamp);
-
-//
-//   Add this StatusResults to a list of StatusRecords.
-
-      ArrayList statusList = new ArrayList();
-      statusList.add(status);
-
-//   Add the list of StatusResults to the returned KernelResults object.
-
-      results.setStatusList(statusList.toArray() );
+   {  KernelResults results = new KernelResults();
 
 
       return results;
@@ -326,49 +288,80 @@ public class ManagerGenuine implements Manager
 
    public KernelResults getString (String fileName, boolean test) 
      throws java.rmi.RemoteException
-   {
+   {  KernelResults results = new KernelResults();
+
+      setUp();
+
+      try
+      {
 //
-//   Generate an object to hold the results returned by this method.
+//      Write a message to the log file.
 
-      KernelResults results = new KernelResults();
-
-//
-//   Generate the contents for the String.
-//
-//   TODO: may want to make the fake contents an XML fragment.
-
-      String contentsString = "The Snark was a Boojum you see.";
-
-//
-//   Add the contents to the results objects.
-
-      results.setContentsString(contentsString);
+         logger.setActionName("getString");
+         logger.appendMessage("Invoked getString...");
 
 //
-//   Generate a StatusResults for this operation.
+//      [TODO]: The following statement is a place-holder.  In due
+//      course obtain the account details from the SOAP header.  Also
+//      the account class will probably not be a String.
 
-      int severity = StatusCodes.INFO;
-      String message = "getString executed successfully.";
-      Date timeStampDate = new Date(0);
-      long timeStamp = timeStampDate.getTime();
-
-      StatusResults status = new StatusResults();
-
-      status.setSeverity(severity);
-      status.setMessage(message);
-      status.setTimeStamp(timeStamp);
+         String account = null;
+         logger.setAccount(account);
 
 //
-//   Add this StatusResults to a list of StatusRecords.
+//      Invoke the MySpaceActions object perform the appropriate tasks.
 
-      ArrayList statusList = new ArrayList();
-      statusList.add(status);
+         actions.setRegistryName(registryName);
 
-//   Add the list of StatusResults to the returned KernelResults object.
+         String contents = "";
+         Vector dataItems = actions.getEntriesList(account, fileName);
+         if (dataItems != null)
+         {  if (dataItems.size() > 0)
+            {  DataItemRecord itemRecord = 
+                 (DataItemRecord)dataItems.elementAt(0);
 
-      results.setStatusList(statusList.toArray() );
+               int dataItemId = itemRecord.getDataItemID();
+               contents = actions.getString(account, dataItemId);
+            }
+            else
+            {  status.addCode(MySpaceStatusCode.AGMMCE00201,
+                 MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
+                 this.getClassName() );
+            }
+         }
+         else
+         {  status.addCode(MySpaceStatusCode.AGMMCE00201,
+             MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
+             this.getClassName() );
+         }
 
+//
+//      Add the contents to the results objects.
 
+         results.setContentsString(contents);
+
+//
+//      Generate a success method if the method succeeded.
+
+         if (status.getSuccessStatus() )
+         {  status.addCode(MySpaceStatusCode.AGMMCI00001,
+              MySpaceStatusCode.INFO, MySpaceStatusCode.LOG,
+              this.getClassName() );
+         }
+
+//
+//      Copy any status messages to the results object.
+
+         ArrayList statusList = status.getStatusResults();
+         results.setStatusList(statusList.toArray() );
+         status.reset();
+      }
+      catch (Exception e)
+      {  logger.appendMessage("Exception in getString: " +
+           e.toString() );
+      }
+
+      logger.close();
       return results;
    }
 
@@ -387,46 +380,8 @@ public class ManagerGenuine implements Manager
 
    public KernelResults getBytes (String fileName, boolean test) 
      throws java.rmi.RemoteException
-   {
-//
-//   Generate an object to hold the results returned by this method.
+   {  KernelResults results = new KernelResults();
 
-      KernelResults results = new KernelResults();
-
-//
-//   Generate the byte array to be returned.
-
-      byte[] contentsBytes = new byte[] {1, 2, 3, 4, 5};
-
-//
-//   Add the contents to the results objects.
-
-      results.setContentsBytes(contentsBytes);
-
-
-//
-//   Generate a StatusResults for this operation.
-
-      int severity = StatusCodes.INFO;
-      String message = "getBytes executed successfully.";
-      Date timeStampDate = new Date(0);
-      long timeStamp = timeStampDate.getTime();
-
-      StatusResults status = new StatusResults();
-
-      status.setSeverity(severity);
-      status.setMessage(message);
-      status.setTimeStamp(timeStamp);
-
-//
-//   Add this StatusResults to a list of StatusRecords.
-
-      ArrayList statusList = new ArrayList();
-      statusList.add(status);
-
-//   Add the list of StatusResults to the returned KernelResults object.
-
-      results.setStatusList(statusList.toArray() );
 
 
       return results;
@@ -446,37 +401,55 @@ public class ManagerGenuine implements Manager
 
    public KernelResults createContainer(String newContainerName, 
      boolean test) throws java.rmi.RemoteException
-   {
+   {  KernelResults results = new KernelResults();
+
+      setUp();
+
+      try
+      {
 //
-//   Generate an object to hold the results returned by this method.
+//      Write a message to the log file.
 
-      KernelResults results = new KernelResults();
-
-//
-//   Generate a StatusResults for this operation.
-
-      int severity = StatusCodes.INFO;
-      String message = "createContainer executed successfully.";
-      Date timeStampDate = new Date(0);
-      long timeStamp = timeStampDate.getTime();
-
-      StatusResults status = new StatusResults();
-
-      status.setSeverity(severity);
-      status.setMessage(message);
-      status.setTimeStamp(timeStamp);
+         logger.setActionName("createContainer");
+         logger.appendMessage("Invoked createContainer...");
 
 //
-//   Add this StatusResults to a list of StatusRecords.
+//      [TODO]: The following statement is a place-holder.  In due
+//      course obtain the account details from the SOAP header.  Also
+//      the account class will probably not be a String.
 
-      ArrayList statusList = new ArrayList();
-      statusList.add(status);
+         String account = null;
+         logger.setAccount(account);
 
-//   Add the list of StatusResults to the returned KernelResults object.
+//
+//      Invoke the MySpaceActions object perform the appropriate tasks.
 
-      results.setStatusList(statusList.toArray() );
+         actions.setRegistryName(registryName);
+         boolean createOk = actions.createContainer(account,
+           newContainerName);
 
+//
+//      Generate a success method if the method succeeded.
 
+         if (status.getSuccessStatus() )
+         {  status.addCode(MySpaceStatusCode.AGMMCI00001,
+              MySpaceStatusCode.INFO, MySpaceStatusCode.LOG,
+              this.getClassName() );
+         }
+
+//
+//      Copy any status messages to the results object.
+
+         ArrayList statusList = status.getStatusResults();
+         results.setStatusList(statusList.toArray() );
+         status.reset();
+      }
+      catch (Exception e)
+      {  logger.appendMessage("Exception in createContaine: " +
+           e.toString() );
+      }
+
+      logger.close();
       return results;
    }
 
@@ -496,37 +469,75 @@ public class ManagerGenuine implements Manager
 
    public KernelResults copyFile(String oldFileName, String newFileName,
      boolean test) throws java.rmi.RemoteException
-   {
+   {  KernelResults results = new KernelResults();
+
+      setUp();
+
+      try
+      {
 //
-//   Generate an object to hold the results returned by this method.
+//      Write a message to the log file.
 
-      KernelResults results = new KernelResults();
-
-//
-//   Generate a StatusResults for this operation.
-
-      int severity = StatusCodes.INFO;
-      String message = "copyFile executed successfully.";
-      Date timeStampDate = new Date(0);
-      long timeStamp = timeStampDate.getTime();
-
-      StatusResults status = new StatusResults();
-
-      status.setSeverity(severity);
-      status.setMessage(message);
-      status.setTimeStamp(timeStamp);
+         logger.setActionName("copyFile");
+         logger.appendMessage("Invoked copyFile...");
 
 //
-//   Add this StatusResults to a list of StatusRecords.
+//      [TODO]: The following statement is a place-holder.  In due
+//      course obtain the account details from the SOAP header.  Also
+//      the account class will probably not be a String.
 
-      ArrayList statusList = new ArrayList();
-      statusList.add(status);
+         String account = null;
+         logger.setAccount(account);
 
-//   Add the list of StatusResults to the returned KernelResults object.
+//
+//      Invoke the MySpaceActions object perform the appropriate tasks.
 
-      results.setStatusList(statusList.toArray() );
+         actions.setRegistryName(registryName);
 
+         Vector dataItems = actions.getEntriesList(account, oldFileName);
+         if (dataItems != null)
+         {  if (dataItems.size() > 0)
+            {  DataItemRecord itemRecord = 
+                 (DataItemRecord)dataItems.elementAt(0);
 
+               int dataItemId = itemRecord.getDataItemID();
+               boolean deleteOk = actions.copyFile(account, dataItemId,
+                 newFileName);
+            }
+            else
+            {  status.addCode(MySpaceStatusCode.AGMMCE00201,
+                 MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
+                 this.getClassName() );
+            }
+         }
+         else
+         {  status.addCode(MySpaceStatusCode.AGMMCE00201,
+             MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
+             this.getClassName() );
+         }
+
+//
+//      Generate a success method if the method succeeded.
+
+         if (status.getSuccessStatus() )
+         {  status.addCode(MySpaceStatusCode.AGMMCI00001,
+              MySpaceStatusCode.INFO, MySpaceStatusCode.LOG,
+              this.getClassName() );
+         }
+
+//
+//      Copy any status messages to the results object.
+
+         ArrayList statusList = status.getStatusResults();
+         results.setStatusList(statusList.toArray() );
+         status.reset();
+      }
+      catch (Exception e)
+      {  logger.appendMessage("Exception in copyFile: " +
+           e.toString() );
+      }
+
+      logger.close();
       return results;
    }
 
@@ -546,37 +557,75 @@ public class ManagerGenuine implements Manager
 
    public KernelResults moveFile(String oldFileName, String newFileName,
      boolean test) throws java.rmi.RemoteException
-   {
+   {  KernelResults results = new KernelResults();
+
+      setUp();
+
+      try
+      {
 //
-//   Generate an object to hold the results returned by this method.
+//      Write a message to the log file.
 
-      KernelResults results = new KernelResults();
-
-//
-//   Generate a StatusResults for this operation.
-
-      int severity = StatusCodes.INFO;
-      String message = "moveFile executed successfully.";
-      Date timeStampDate = new Date(0);
-      long timeStamp = timeStampDate.getTime();
-
-      StatusResults status = new StatusResults();
-
-      status.setSeverity(severity);
-      status.setMessage(message);
-      status.setTimeStamp(timeStamp);
+         logger.setActionName("moveFile");
+         logger.appendMessage("Invoked moveFile...");
 
 //
-//   Add this StatusResults to a list of StatusRecords.
+//      [TODO]: The following statement is a place-holder.  In due
+//      course obtain the account details from the SOAP header.  Also
+//      the account class will probably not be a String.
 
-      ArrayList statusList = new ArrayList();
-      statusList.add(status);
+         String account = null;
+         logger.setAccount(account);
 
-//   Add the list of StatusResults to the returned KernelResults object.
+//
+//      Invoke the MySpaceActions object perform the appropriate tasks.
 
-      results.setStatusList(statusList.toArray() );
+         actions.setRegistryName(registryName);
 
+         Vector dataItems = actions.getEntriesList(account, oldFileName);
+         if (dataItems != null)
+         {  if (dataItems.size() > 0)
+            {  DataItemRecord itemRecord = 
+                 (DataItemRecord)dataItems.elementAt(0);
 
+               int dataItemId = itemRecord.getDataItemID();
+               boolean deleteOk = actions.moveFile(account, dataItemId,
+                 newFileName);
+            }
+            else
+            {  status.addCode(MySpaceStatusCode.AGMMCE00201,
+                 MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
+                 this.getClassName() );
+            }
+         }
+         else
+         {  status.addCode(MySpaceStatusCode.AGMMCE00201,
+             MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
+             this.getClassName() );
+         }
+
+//
+//      Generate a success method if the method succeeded.
+
+         if (status.getSuccessStatus() )
+         {  status.addCode(MySpaceStatusCode.AGMMCI00001,
+              MySpaceStatusCode.INFO, MySpaceStatusCode.LOG,
+              this.getClassName() );
+         }
+
+//
+//      Copy any status messages to the results object.
+
+         ArrayList statusList = status.getStatusResults();
+         results.setStatusList(statusList.toArray() );
+         status.reset();
+      }
+      catch (Exception e)
+      {  logger.appendMessage("Exception in moveFile: " +
+           e.toString() );
+      }
+
+      logger.close();
       return results;
    }
 
@@ -591,37 +640,74 @@ public class ManagerGenuine implements Manager
 
    public KernelResults deleteFile(String fileName, boolean test) 
      throws java.rmi.RemoteException
-   {
+   {  KernelResults results = new KernelResults();
+
+      setUp();
+
+      try
+      {
 //
-//   Generate an object to hold the results returned by this method.
+//      Write a message to the log file.
 
-      KernelResults results = new KernelResults();
-
-//
-//   Generate a StatusResults for this operation.
-
-      int severity = StatusCodes.INFO;
-      String message = "deleteFile executed successfully.";
-      Date timeStampDate = new Date(0);
-      long timeStamp = timeStampDate.getTime();
-
-      StatusResults status = new StatusResults();
-
-      status.setSeverity(severity);
-      status.setMessage(message);
-      status.setTimeStamp(timeStamp);
+         logger.setActionName("deleteFile");
+         logger.appendMessage("Invoked deleteFile...");
 
 //
-//   Add this StatusResults to a list of StatusRecords.
+//      [TODO]: The following statement is a place-holder.  In due
+//      course obtain the account details from the SOAP header.  Also
+//      the account class will probably not be a String.
 
-      ArrayList statusList = new ArrayList();
-      statusList.add(status);
+         String account = null;
+         logger.setAccount(account);
 
-//   Add the list of StatusResults to the returned KernelResults object.
+//
+//      Invoke the MySpaceActions object perform the appropriate tasks.
 
-      results.setStatusList(statusList.toArray() );
+         actions.setRegistryName(registryName);
 
+         Vector dataItems = actions.getEntriesList(account, fileName);
+         if (dataItems != null)
+         {  if (dataItems.size() > 0)
+            {  DataItemRecord itemRecord = 
+                 (DataItemRecord)dataItems.elementAt(0);
 
+               int dataItemId = itemRecord.getDataItemID();
+               boolean deleteOk = actions.deleteFile(account, dataItemId);
+            }
+            else
+            {  status.addCode(MySpaceStatusCode.AGMMCE00201,
+                 MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
+                 this.getClassName() );
+            }
+         }
+         else
+         {  status.addCode(MySpaceStatusCode.AGMMCE00201,
+             MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
+             this.getClassName() );
+         }
+
+//
+//      Generate a success method if the method succeeded.
+
+         if (status.getSuccessStatus() )
+         {  status.addCode(MySpaceStatusCode.AGMMCI00001,
+              MySpaceStatusCode.INFO, MySpaceStatusCode.LOG,
+              this.getClassName() );
+         }
+
+//
+//      Copy any status messages to the results object.
+
+         ArrayList statusList = status.getStatusResults();
+         results.setStatusList(statusList.toArray() );
+         status.reset();
+      }
+      catch (Exception e)
+      {  logger.appendMessage("Exception in deleteFile: " +
+           e.toString() );
+      }
+
+      logger.close();
       return results;
    }
 
@@ -640,35 +726,8 @@ public class ManagerGenuine implements Manager
 
    public KernelResults extendLifetime(String fileName, long newExpiryDate,
      boolean test) throws java.rmi.RemoteException
-   {
-//
-//   Generate an object to hold the results returned by this method.
+   {  KernelResults results = new KernelResults();
 
-      KernelResults results = new KernelResults();
-
-//
-//   Generate a StatusResults for this operation.
-
-      int severity = StatusCodes.INFO;
-      String message = "extendLifetime executed successfully.";
-      Date timeStampDate = new Date(0);
-      long timeStamp = timeStampDate.getTime();
-
-      StatusResults status = new StatusResults();
-
-      status.setSeverity(severity);
-      status.setMessage(message);
-      status.setTimeStamp(timeStamp);
-
-//
-//   Add this StatusResults to a list of StatusRecords.
-
-      ArrayList statusList = new ArrayList();
-      statusList.add(status);
-
-//   Add the list of StatusResults to the returned KernelResults object.
-
-      results.setStatusList(statusList.toArray() );
 
 
       return results;
@@ -690,35 +749,8 @@ public class ManagerGenuine implements Manager
 
    public KernelResults changeOwner(String fileName, String newOwner, 
      boolean test) throws java.rmi.RemoteException
-   {
-//
-//   Generate an object to hold the results returned by this method.
+   {  KernelResults results = new KernelResults();
 
-      KernelResults results = new KernelResults();
-
-//
-//   Generate a StatusResults for this operation.
-
-      int severity = StatusCodes.INFO;
-      String message = "changeOwner executed successfully.";
-      Date timeStampDate = new Date(0);
-      long timeStamp = timeStampDate.getTime();
-
-      StatusResults status = new StatusResults();
-
-      status.setSeverity(severity);
-      status.setMessage(message);
-      status.setTimeStamp(timeStamp);
-
-//
-//   Add this StatusResults to a list of StatusRecords.
-
-      ArrayList statusList = new ArrayList();
-      statusList.add(status);
-
-//   Add the list of StatusResults to the returned KernelResults object.
-
-      results.setStatusList(statusList.toArray() );
 
 
       return results;
@@ -746,37 +778,54 @@ public class ManagerGenuine implements Manager
 
    public KernelResults createAccount(String newAccount, boolean test)
      throws java.rmi.RemoteException
-   {
+   {  KernelResults results = new KernelResults();
+
+      setUp();
+
+      try
+      {
 //
-//   Generate an object to hold the results returned by this method.
+//      Write a message to the log file.
 
-      KernelResults results = new KernelResults();
-
-//
-//   Generate a StatusResults for this operation.
-
-      int severity = StatusCodes.INFO;
-      String message = "createAccount executed successfully.";
-      Date timeStampDate = new Date(0);
-      long timeStamp = timeStampDate.getTime();
-
-      StatusResults status = new StatusResults();
-
-      status.setSeverity(severity);
-      status.setMessage(message);
-      status.setTimeStamp(timeStamp);
+         logger.setActionName("createAccount");
+         logger.appendMessage("Invoked createAccount...");
 
 //
-//   Add this StatusResults to a list of StatusRecords.
+//      [TODO]: The following statement is a place-holder.  In due
+//      course obtain the account details from the SOAP header.  Also
+//      the account class will probably not be a String.
 
-      ArrayList statusList = new ArrayList();
-      statusList.add(status);
+         String account = null;
+         logger.setAccount(account);
 
-//   Add the list of StatusResults to the returned KernelResults object.
+//
+//      Invoke the MySpaceActions object perform the appropriate tasks.
 
-      results.setStatusList(statusList.toArray() );
+         actions.setRegistryName(registryName);
+         boolean success = actions.createAccount(account, newAccount);
 
+//
+//      Generate a success method if the method succeeded.
 
+         if (success)
+         {  status.addCode(MySpaceStatusCode.AGMMCI00001,
+              MySpaceStatusCode.INFO, MySpaceStatusCode.LOG,
+              this.getClassName() );
+         }
+
+//
+//      Copy any status messages to the results object.
+
+         ArrayList statusList = status.getStatusResults();
+         results.setStatusList(statusList.toArray() );
+         status.reset();
+      }
+      catch (Exception e)
+      {  logger.appendMessage("Exception in createAccount: " +
+           e.toString() );
+      }
+
+      logger.close();
       return results;
    }
 
@@ -801,39 +850,125 @@ public class ManagerGenuine implements Manager
  * @return Standard return object from the Manager.
  */
 
-   public KernelResults deleteAccount(String deadUser, boolean test) 
+   public KernelResults deleteAccount(String deadAccount, boolean test) 
      throws java.rmi.RemoteException
-   {
+   {  KernelResults results = new KernelResults();
+
+      setUp();
+
+      try
+      {
 //
-//   Generate an object to hold the results returned by this method.
+//      Write a message to the log file.
 
-      KernelResults results = new KernelResults();
-
-//
-//   Generate a StatusResults for this operation.
-
-      int severity = StatusCodes.INFO;
-      String message = "deleteAccount executed successfully.";
-      Date timeStampDate = new Date(0);
-      long timeStamp = timeStampDate.getTime();
-
-      StatusResults status = new StatusResults();
-
-      status.setSeverity(severity);
-      status.setMessage(message);
-      status.setTimeStamp(timeStamp);
+         logger.setActionName("deleteAccount");
+         logger.appendMessage("Invoked deleteAccount...");
 
 //
-//   Add this StatusResults to a list of StatusRecords.
+//      [TODO]: The following statement is a place-holder.  In due
+//      course obtain the account details from the SOAP header.  Also
+//      the account class will probably not be a String.
 
-      ArrayList statusList = new ArrayList();
-      statusList.add(status);
+         String account = null;
+         logger.setAccount(account);
 
-//   Add the list of StatusResults to the returned KernelResults object.
+//
+//      Invoke the MySpaceActions object perform the appropriate tasks.
 
-      results.setStatusList(statusList.toArray() );
+         actions.setRegistryName(registryName);
+         boolean success = actions.deleteAccount(account, deadAccount);
 
+//
+//      Generate a success method if the method succeeded.
 
+         if (success)
+         {  status.addCode(MySpaceStatusCode.AGMMCI00001,
+              MySpaceStatusCode.INFO, MySpaceStatusCode.LOG,
+              this.getClassName() );
+         }
+
+//
+//      Copy any status messages to the results object.
+
+         ArrayList statusList = status.getStatusResults();
+         results.setStatusList(statusList.toArray() );
+         status.reset();
+      }
+      catch (Exception e)
+      {  logger.appendMessage("Exception in deleteAccount: " +
+           e.toString() );
+      }
+
+      logger.close();
       return results;
+   }
+
+// ----------------------------------------------------------------------
+
+// Internal methods.
+
+/**
+ * Set up for running a Manager action.  Values are either read from
+ * the properties file or hard-coded.  [TODO]: ideally they should
+ * all be read from the properties file.
+ *
+ */
+
+// Note that the method is protected rather than private so that it can
+// be tested.
+
+   protected void setUp()
+   {  try
+      {  
+//
+//      Get the configuration options from the properties file.
+
+         Configuration config = new Configuration("dummy");
+
+//
+//      Get the MySpace registry name.
+
+         MMC.getInstance().checkPropertiesLoaded();
+         registryName = MMC.getProperty(MMC.REGISTRYCONF,
+             MMC.CATLOG);  
+
+//
+//      Set the log file options.
+//
+//      [TODO]: these too should be read from the properties file.
+
+         boolean astroGridLog = true; // Write AstroGrid log?
+         boolean mySpaceLog = true;   // Write MySpace log?
+//         boolean echoLog = false;     // Echo log to standard out?
+         boolean echoLog = true;
+
+         String mySpaceLogFileName = registryName + ".log";
+
+         Logger logger = new Logger(astroGridLog, mySpaceLog, echoLog,
+            mySpaceLogFileName);
+ 
+//         System.out.println("registryName, mySpaceLogFileName: \n"
+//           + "  " + registryName + "\n"
+//           + "  " + mySpaceLogFileName);
+      }
+      catch (Exception es)
+      {  es.printStackTrace();
+      }
+   }
+// -----------------------------------------------------------------
+
+/**
+ * Obtain the name of the current Java class.
+ */
+
+   protected String getClassName()
+   { Class currentClass = this.getClass();
+     String name =  currentClass.getName();
+     int dotPos = name.lastIndexOf(".");
+     if (dotPos > -1)
+     {  name = name.substring(dotPos+1, name.length() );
+     }
+
+     return name;
    }
 }

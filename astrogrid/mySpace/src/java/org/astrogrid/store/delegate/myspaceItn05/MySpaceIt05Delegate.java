@@ -168,6 +168,26 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
    {  return statusList;
    }
 
+/**
+ * Convenience method to list the error codes.  The codes accummulated
+ * by successive invocations of action methods to standard output.  Note
+ * that this method does not reset the list of error codes.
+ */
+
+   public void outputStatusList()
+   {  int numMessages = statusList.size();
+
+      if (numMessages > 0)
+      {  for(int loop=0; loop<numMessages; loop++)
+         {  StatusMessage message =
+             (StatusMessage)statusList.get(loop);
+            System.out.println(message.toString() );
+         }
+      }
+      else
+      {  System.out.println("No messages returned.");
+      }
+   }
 
 /**
  * Reset the list of error codes to contain zero entries.
@@ -910,7 +930,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
    {  boolean errorRaised = false;
 
       try
-      {  String account = newAccount.getAccount();
+      {  String account = newAccount.getUserId();
          KernelResults results = innerDelegate.createAccount(
            account, isTest);
 
@@ -963,7 +983,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
    {  boolean errorRaised = false;
 
       try
-      {  String account = deadAccount.getAccount();
+      {  String account = deadAccount.getUserId();
          KernelResults results = innerDelegate.deleteAccount(
            account, isTest);
 
@@ -1004,23 +1024,85 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
 /**
  * `Heart-beat' method to check whether the Manager is up and running.
  *
- * @return The standard string `Adsum.' (Latin for `I am here',
- *    apparently) is always returned.
+ * @return Return true if the Manager is responding; otherwise return
+ *  false.
  */
 
-   public String heartBeat() throws IOException
-   {  String result = "no response.";
+   public boolean heartBeat() throws IOException
+   {  boolean response = false;
 
       try
-      {  result = innerDelegate.heartBeat();
+      {  String result = innerDelegate.heartBeat();
+         if (result.equals("Adsum.") )
+         {  response = true;
+         }
       }
       catch (Exception all)
-      {  throw new IOException 
-           ("No reply from Manager service: " + endPoint );
+      {  response = false;
       }
 
-      return result;
+      return response;
    }
+
+
+// ----------------------------------------------------------------------
+
+/**
+ * Return the contents of a file as a String.
+ *
+ * @param targetPath Path to the file whose contents are to be
+ *    retrieved.
+ * @return The contents of the file.
+ */
+   public String getString(String targetPath) throws IOException
+   {  boolean errorRaised = false;
+      String contents = "";
+      try
+      {  
+//
+//      Attempt to retrieve the contents of the file as a String.
+
+         KernelResults results = innerDelegate.getString(targetPath,
+           isTest);
+
+//
+//      Obtain the retrieved contents from the results object.
+
+         if (results.getContentsString() != null)
+         {  contents = results.getContentsString();
+         }
+
+//
+//      Append and check any status messages.
+
+         Object[] statusResults = results.getStatusList();
+         errorRaised = this.appendAndCheckStatusMessages(
+           statusResults);
+
+//
+//      If an error was raised in the Manager and the delegate is
+//      configured to throw an exception in this case then do so.
+
+         if (errorRaised && this.throwExceptions)
+         {  throw new IOException();
+         }
+
+      }
+      catch (Exception e)
+      {  if (errorRaised && this.throwExceptions)
+         {  throw new IOException (this.messageFromManager);
+         }
+         else
+         {  throw new IOException (
+              "Failed to retrieve file contents as a String from service: " 
+              + this.endPoint);
+         }
+      }
+
+      return contents;
+   }
+
+
 
 // ----------------------------------------------------------------------
 

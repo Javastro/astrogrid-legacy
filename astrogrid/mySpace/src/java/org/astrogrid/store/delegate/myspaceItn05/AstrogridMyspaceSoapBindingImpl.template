@@ -32,7 +32,7 @@ public class AstrogridMyspaceSoapBindingImpl implements
          results = fake.getEntriesList(query, test);
       }
       else
-      {  ManagerFake genuine = new ManagerFake();
+      {  ManagerGenuine genuine = new ManagerGenuine();
          results = genuine.getEntriesList(query, test);
       }
 
@@ -51,7 +51,7 @@ public class AstrogridMyspaceSoapBindingImpl implements
             dispatchExisting, test);
       }
       else
-      {  ManagerFake genuine = new ManagerFake();
+      {  ManagerGenuine genuine = new ManagerGenuine();
          results = genuine.putString(newFile, contents,   category,
             dispatchExisting, test);
       }
@@ -71,7 +71,7 @@ public class AstrogridMyspaceSoapBindingImpl implements
            dispatchExisting, test);
       }
       else
-      {  ManagerFake genuine = new ManagerFake();
+      {  ManagerGenuine genuine = new ManagerGenuine();
          results = genuine.putBytes(newFile, contents,  category,
            dispatchExisting, test);
       }
@@ -90,7 +90,7 @@ public class AstrogridMyspaceSoapBindingImpl implements
            test);
       }
       else
-      {  ManagerFake genuine = new ManagerFake();
+      {  ManagerGenuine genuine = new ManagerGenuine();
          results = genuine.putUri(newFile, uri, category, dispatchExisting, 
            test);
       }
@@ -107,7 +107,7 @@ public class AstrogridMyspaceSoapBindingImpl implements
          results = fake.getString (fileName, test);
       }
       else
-      {  ManagerFake genuine = new ManagerFake();
+      {  ManagerGenuine genuine = new ManagerGenuine();
          results = genuine.getString(fileName, test);
       }
 
@@ -124,7 +124,7 @@ public class AstrogridMyspaceSoapBindingImpl implements
          results = fake.getBytes(fileName, test);
       }
       else
-      {  ManagerFake genuine = new ManagerFake();
+      {  ManagerGenuine genuine = new ManagerGenuine();
          results = genuine.getBytes(fileName, test);
       }
 
@@ -141,7 +141,7 @@ public class AstrogridMyspaceSoapBindingImpl implements
          results = fake.createContainer(newContainerName, test);
       }
       else
-      {  ManagerFake genuine = new ManagerFake();
+      {  ManagerGenuine genuine = new ManagerGenuine();
          results = genuine.createContainer(newContainerName, test);
       }
 
@@ -157,7 +157,7 @@ public class AstrogridMyspaceSoapBindingImpl implements
          results = fake.copyFile(oldFileName, newFileName, test);
       }
       else
-      {  ManagerFake genuine = new ManagerFake();
+      {  ManagerGenuine genuine = new ManagerGenuine();
          results = genuine.copyFile(oldFileName, newFileName, test);
       }
 
@@ -174,7 +174,7 @@ public class AstrogridMyspaceSoapBindingImpl implements
          results = fake.moveFile(oldFileName, newFileName, test);
       }
       else
-      {  ManagerFake genuine = new ManagerFake();
+      {  ManagerGenuine genuine = new ManagerGenuine();
          results = genuine.moveFile(oldFileName, newFileName, test);
       }
 
@@ -191,7 +191,7 @@ public class AstrogridMyspaceSoapBindingImpl implements
          results = fake.deleteFile(fileName, test);
       }
       else
-      {  ManagerFake genuine = new ManagerFake();
+      {  ManagerGenuine genuine = new ManagerGenuine();
          results = genuine.deleteFile(fileName, test);
       }
 
@@ -208,7 +208,7 @@ public class AstrogridMyspaceSoapBindingImpl implements
          results = fake.extendLifetime(fileName, newExpiryDate, test);
       }
       else
-      {  ManagerFake genuine = new ManagerFake();
+      {  ManagerGenuine genuine = new ManagerGenuine();
          results = genuine.extendLifetime(fileName, newExpiryDate, test);
       }
 
@@ -224,7 +224,7 @@ public class AstrogridMyspaceSoapBindingImpl implements
          results = fake.changeOwner(fileName, newOwner, test);
       }
       else
-      {  ManagerFake genuine = new ManagerFake();
+      {  ManagerGenuine genuine = new ManagerGenuine();
          results = genuine.changeOwner(fileName, newOwner, test);
       }
 
@@ -241,7 +241,7 @@ public class AstrogridMyspaceSoapBindingImpl implements
          results = fake.createAccount(newAccount, test);
       }
       else
-      {  ManagerFake genuine = new ManagerFake();
+      {  ManagerGenuine genuine = new ManagerGenuine();
          results = genuine.createAccount(newAccount, test);
       }
 
@@ -257,7 +257,7 @@ public class AstrogridMyspaceSoapBindingImpl implements
          results = fake.deleteAccount(deadUser, test);
       }
       else
-      {  ManagerFake genuine = new ManagerFake();
+      {  ManagerGenuine genuine = new ManagerGenuine();
          results = genuine.deleteAccount(deadUser, test);
       }
 
