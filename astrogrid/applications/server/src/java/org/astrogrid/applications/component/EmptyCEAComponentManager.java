@@ -1,4 +1,4 @@
-/*$Id: EmptyCEAComponentManager.java,v 1.7 2004/08/27 10:56:38 nw Exp $
+/*$Id: EmptyCEAComponentManager.java,v 1.8 2004/09/17 01:20:22 nw Exp $
  * Created on 04-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,12 +21,14 @@ import org.astrogrid.applications.description.base.ApplicationDescriptionEnviron
 import org.astrogrid.applications.description.registry.RegistryAdminLocator;
 import org.astrogrid.applications.description.registry.RegistryEntryBuilder;
 import org.astrogrid.applications.description.registry.RegistryUploader;
+import org.astrogrid.applications.manager.CeaThreadPool;
 import org.astrogrid.applications.manager.DefaultExecutionController;
 import org.astrogrid.applications.manager.DefaultMetadataService;
 import org.astrogrid.applications.manager.DefaultQueryService;
 import org.astrogrid.applications.manager.ExecutionController;
 import org.astrogrid.applications.manager.MetadataService;
 import org.astrogrid.applications.manager.QueryService;
+import org.astrogrid.applications.manager.ThreadPoolExecutionController;
 import org.astrogrid.applications.manager.idgen.GloballyUniqueIdGen;
 import org.astrogrid.applications.manager.idgen.IdGen;
 import org.astrogrid.applications.manager.persist.ExecutionHistory;
@@ -47,6 +49,8 @@ import org.astrogrid.registry.client.admin.RegistryAdminService;
 import org.picocontainer.ComponentAdapter;
 import org.picocontainer.MutablePicoContainer;
 import org.picocontainer.Startable;
+
+import EDU.oswego.cs.dl.util.concurrent.PooledExecutor;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -124,7 +128,9 @@ public abstract class EmptyCEAComponentManager extends EmptyComponentManager imp
     protected static final void registerDefaultServices(MutablePicoContainer pico) {
         log.info("Registering default services");
         pico.registerComponentImplementation(ApplicationDescriptionEnvironment.class,ApplicationDescriptionEnvironment.class);
-        pico.registerComponentImplementation(ExecutionController.class, DefaultExecutionController.class);
+        // trying something a little more intelligent.. pico.registerComponentImplementation(ExecutionController.class, DefaultExecutionController.class);
+        pico.registerComponentImplementation(ExecutionController.class,ThreadPoolExecutionController.class);
+        pico.registerComponentImplementation(PooledExecutor.class,CeaThreadPool.class);
         pico.registerComponentImplementation(MetadataService.class, DefaultMetadataService.class);     
         pico.registerComponentImplementation(QueryService.class,DefaultQueryService.class);   
        registerCompositeApplicationDescriptionLibrary(pico);
@@ -155,6 +161,7 @@ public abstract class EmptyCEAComponentManager extends EmptyComponentManager imp
             }
         });
     }
+    
     /** registers the standard indirection protocols - http:, ftp:, file: */
     protected static final void registerStandardIndirectionProtocols(MutablePicoContainer pico) {
         pico.registerComponentImplementation(HttpProtocol.class);
@@ -289,6 +296,12 @@ public abstract class EmptyCEAComponentManager extends EmptyComponentManager imp
 
 /* 
 $Log: EmptyCEAComponentManager.java,v $
+Revision 1.8  2004/09/17 01:20:22  nw
+added lifecycle listener and threadpool
+
+Revision 1.7.20.1  2004/09/14 13:45:38  nw
+made thread-pooled executor the default.
+
 Revision 1.7  2004/08/27 10:56:38  nw
 removed container-inspecting applicationDescriptionLibrary from default setup - cea-commandline doesn't like it.
 

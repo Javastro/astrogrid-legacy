@@ -1,5 +1,5 @@
 /*
- * $Id: InitServlet.java,v 1.8 2004/08/28 07:17:34 pah Exp $
+ * $Id: InitServlet.java,v 1.9 2004/09/17 01:20:22 nw Exp $
  * 
  * Created on 14-Apr-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -49,58 +49,18 @@ public class InitServlet extends HttpServlet {
 
    static private org.apache.commons.logging.Log logger =
       org.apache.commons.logging.LogFactory.getLog(InitServlet.class);
-   /** if this key is set to true in config, this servlet will start up the cea server. otherwise it will start on the first request 
-    * @see #init(ServletConfig)
-    * */
-    public static final String BOOT_CEA_KEY = "boot.cea";
+
     
-    private static boolean storedEndpoint = false;
-    /**
-     * just gets the component manager instance from the factory. 
-     * as part of this, the picocontainer is started.
-     * @todo doesn't seemt o want to work - url for resource is always null. arse.
-     * @see #BOOT_CEA_KEY
-     */
-    public void init(ServletConfig arg0) throws ServletException {
-        super.init(arg0);
-        try {
-            URL endpointURL = arg0.getServletContext().getResource("/");//try this to see if it needs to actually exist....
-            logger.info("Setting service endpoint to " + endpointURL);
-            // don't do this - it forces the whole config system to startup - which is a pain if the config file isn't available yet 
-            //SimpleConfig.getSingleton().setProperty(EmptyCEAComponentManager.SERVICE_ENDPOINT_URL,endpointURL);
-            // whack it in JNDI instead,
-            if (endpointURL != null) {
-                writeEndpointConfig(endpointURL);
-            } else {
-                logger.warn("Could not determine service endpoint");
-            } 
-        } catch (MalformedURLException e) {
-            logger.error("Could not set service endpoint url",e);            
-        }   
-        if ("true".equalsIgnoreCase(getInitParameter(BOOT_CEA_KEY))) {   
-            logger.info("Booting CEA Server");             
-            CEAComponentManagerFactory.getInstance();
-        }
-        logger.info("InitServlet: completed init");
-    }
+
 
  
-    /**
-     * @see javax.servlet.Servlet#destroy()
-     */
-    public void destroy() {
-        CEAComponentManagerFactory.stop();
-        super.destroy();
-    }
-
     /**
      * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if (! storedEndpoint) {
+        if (! LifecycleListener.storedEndpoint) {
             URL url = makeEndPointURL(req);
-            writeEndpointConfig(url);
-            storedEndpoint = true;
+            LifecycleListener.writeEndpointConfig(url);
         }
         // expect a 'method' parameter.
         PrintWriter writer = resp.getWriter();
@@ -176,28 +136,6 @@ public class InitServlet extends HttpServlet {
 
     }
 
-    /**
-     * Writes the endpoint url to Config. The endpoint can then be picked up from
-     * the config system. 
-     * 
-     * @param endpointURL
-     * @throws NamingException
-     */
-    private void writeEndpointConfig(URL endpointURL) {
-//        try {
-//            Context root = new InitialContext();
-//            String urlStr = endpointURL.toString();
-//            root.rebind("java:comp/env/"
-//                    + EmptyCEAComponentManager.SERVICE_ENDPOINT_URL, urlStr);
-//            root.close();
-//        }
-//        catch (NamingException e) {
-//            logger
-//                    .error("Could not set service endpoint url - JNDI problem",
-//                            e);
-//        }
-        //just use the standard config ability to write a property.
-        SimpleConfig.getSingleton().setProperty(EmptyCEAComponentManager.SERVICE_ENDPOINT_URL, endpointURL);
-    }
+
 
 }
