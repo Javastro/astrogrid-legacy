@@ -1,5 +1,5 @@
 /*
- * $Id: WarehouseServiceImpl.java,v 1.6 2003/10/30 21:11:06 kea Exp $
+ * $Id: WarehouseServiceImpl.java,v 1.7 2003/11/05 20:38:11 gtr Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -73,7 +73,8 @@ import uk.org.ogsadai.wsdl.gdsf.GridDataServiceFactoryServiceLocator;
  * it needs to shell out to the command-line and re-run itself using a 
  * separate JVM (which knows where to find all of the OGSA-DAI jars).
  *
- * @author K Andrews 
+ * @author K Andrews
+ * @author Guy Rixon
  */
 public class WarehouseServiceImpl
 {
@@ -85,7 +86,7 @@ public class WarehouseServiceImpl
      * The current workaround is for this class to invoke itself in
      * a separate JVM (outside axis/tomcat) via a system call.
      */ 
-    private boolean invokedViaAxis = true;
+    protected boolean invokedViaAxis = true;
 
     /**
      * Configuration properties for this service.
@@ -104,7 +105,6 @@ public class WarehouseServiceImpl
         "http://astrogrid.ast.cam.ac.uk:4040";
     private final String DEFAULT_REGISTRY_STRING = 
         "/ogsa/services/ogsadai/DAIServiceGroupRegistry";
-
     private final String DEFAULT_WAREHOUSE_JVM = 
         "/data/cass123a/gtr/jdk-ogsa/bin/java";
     private final String DEFAULT_WAREHOUSE_CLASSPATH =
@@ -131,6 +131,7 @@ public class WarehouseServiceImpl
       "</sqlQueryStatement>";
 
     private final String DEFAULT_PERFORM_FOOT = "</gridDataServicePerform>";
+
     // ----------------------------------------------------------
 
     // ----------------------------------------------------------
@@ -267,88 +268,51 @@ public class WarehouseServiceImpl
     //TOFIX Just a hardwired query for initial testing
     String query="SELECT * FROM catalogue WHERE POS_EQ_DEC > 89.9";
 
-    // All of the following lifted from package uk.org.ogsadai.client.Client.
-    // I don't understand it yet :-)
+    // Do a synchronous query using the GDS.
     try {
+    
       // Look at the registry to get the factory URL
       String factoryURLString = 
-         getFactoryUrlFromRegistry(registryURLString,timeout);
-      //String factoryURLString = HOST_STRING + FACTORY_STRING;
+          getFactoryUrlFromRegistry(registryURLString,timeout);
+      System.out.println("GDSF is " + factoryURLString);
+   
+      // Create a grid-service delegate for the GDS.  This handles the
+      // awkward semantics of the grid-service, including creating
+      // the grid-service instance.
+      System.out.println("Creating the GDS delegate...");
+      GdsDelegate gds = new GdsDelegate();
+      gds.setFactoryHandle(factoryURLString);
+      System.out.println("Connecting to the GDS...");
+      gds.connect();
 
-      // Get the factory portType and the grid service portType for
-      // the GDSF
-      GridDataServiceFactoryServiceLocator gdsfLocator = null;
-      GridDataServiceFactoryPortType gdsfFpt = null;
-      try {
-        gdsfLocator = new GridDataServiceFactoryServiceLocator();
-        gdsfFpt = gdsfLocator.getGridDataServiceFactoryPort(
-                    new URL(factoryURLString));
+      // Run the query in the GDS.  
+      // Receive in return an OGSA-DAI "response" document.
+      ExtensibilityType result = gds.performSelect(query);
 
-        // Set timeout of SOAP calls
-        ((Stub) gdsfFpt).setTimeout(timeout * 1000);
-      }
-      catch (Exception e) {
-        throw new RemoteException(
-          "Could not locate factory at: " + factoryURLString, e);
-      }
-      // Set up a CreationType for the creation of a GDS
-      // (includes a GDS Create document)
-      LocatorTypeHolder locator = new LocatorTypeHolder();
-      Calendar term = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
-      term.add(Calendar.HOUR, 2);
-      TerminationTimeType terminationTime = new TerminationTimeType();
-      terminationTime.setBefore(new ExtendedDateTimeType(term));
-      terminationTime.setAfter(new ExtendedDateTimeType(term));
-
-      ExtensibilityType creationParameters = null;
-      TerminationTimeTypeHolder currentTerminationTime = 
-          new TerminationTimeTypeHolder();
-      ExtensibilityTypeHolder extensibilityOutput = 
-          new ExtensibilityTypeHolder();
-
-      gdsfFpt.createService(terminationTime, creationParameters, locator,
-          currentTerminationTime, extensibilityOutput);
-
-      GDSServiceGridLocator gds = new GDSServiceGridLocator();
-      GDSPortType griddataservice = gds.getGDSPort(locator.value);
-
-      // Set timeout of SOAP calls
-      ((Stub) griddataservice).setTimeout(timeout * 1000 );
-
-      // Set up the script
-      ExtensibilityType document;
-      ExtensibilityType result;
-      Document msgDoc = 
-          XMLUtilities.xmlStringToDOM(makeXMLPerformDoc(query));
-      document =
-         AnyHelper.getExtensibility(msgDoc.getDocumentElement());
-
-      // Run the script
-      result = griddataservice.perform(document);
 
       // Output the results
       // TOFIX: Temporary hack until we can get GridFTP transfers
       // (a la MySpace) working.
       try {
-        FileWriter writer = new FileWriter("/tmp/WS_OGSA_OUTPUT");
+        FileWriter writer = new FileWriter("/tmp/WS_OGSA_OUTPUT_GTR");
         writer.write(AnyHelper.getAsString(result));
         writer.close();
       }
       catch (IOException e) {
         throw new RemoteException(
-         "Couldn't open destination file /tmp/WS_OGSA_OUTPUT",e);
+            "Couldn't open destination file /tmp/WS_OGSA_OUTPUT", e);
       }
 
-      // Clean up
-      griddataservice.destroy();
+      // Finished with the GDS.
+      gds.destroyServiceInstance();
     }
     catch (AxisFault e) {
         throw new RemoteException(
-          "Problem with Axis :" + e.getMessage(), e);
+          "Problem with Axis", e);
     }
     catch (Exception e) {
       throw new RemoteException(
-          "Unspecified exception: + e.getMessage()", e);
+          "Unspecified exception", e);
     }
     //queryFinished = true;
   }
@@ -367,24 +331,7 @@ public class WarehouseServiceImpl
     throw new RemoteException("Method not implemented yet\n");
   }
 
- /**
-  * Converts an SQL string into an XML Perform document for OGSA-DAI.
-  * Doesn't touch the actual SQL query, just wraps it up in suitable XML.
-  *
-  * @param sqlString  A string containing a pure SQL query.
-  */
-  private String makeXMLPerformDoc(String sqlString) {
-    return 
-      serviceProperties.getProperty(
-          "PERFORM_HEAD", DEFAULT_PERFORM_HEAD) + 
-      serviceProperties.getProperty(
-          "PERFORM_QUERY_START", DEFAULT_PERFORM_QUERY_START) + 
-      sqlString +
-      serviceProperties.getProperty(
-          "PERFORM_QUERY_END", DEFAULT_PERFORM_QUERY_END) + 
-      serviceProperties.getProperty(
-          "PERFORM_FOOT", DEFAULT_PERFORM_FOOT);
-  }
+
 
   /**
    * Obtains the factory URL from the specified registry.
@@ -521,6 +468,10 @@ public class WarehouseServiceImpl
 }
 /*
 $Log: WarehouseServiceImpl.java,v $
+Revision 1.7  2003/11/05 20:38:11  gtr
+Access to the GDS is now through a GdsDelegate. The invokedViaAxis attribute
+is changed to protected so that the Server class can set it.
+
 Revision 1.6  2003/10/30 21:11:06  kea
 Moved properties to properties file.
 
