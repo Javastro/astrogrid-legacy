@@ -1,5 +1,5 @@
 /*
- * $Id: ReturnSpec.java,v 1.1 2004/08/25 23:38:33 mch Exp $
+ * $Id: ReturnSpec.java,v 1.2 2004/08/27 09:31:16 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -20,7 +20,8 @@ public abstract class ReturnSpec  {
 
    TargetIndicator target = null;
    String compression = null;
-
+   long limit = -1;
+   
    /** No compression */
    public final static String NONE = "None";
    /** ZIP results */
@@ -39,9 +40,20 @@ public abstract class ReturnSpec  {
    /** See class constants for standard compressions, but bear in mind there may
     * be other ones supported by individual services */
    public String getCompression()                  { return compression; }
+   
+   /** Sets Limit to number of result items to be returned */
+   public void setLimit(long limit) {  this.limit = limit; }
+   
+   /** Returns Limit to number of result items to be returned */
+   public long getLimit() {      return limit;  }
+   
+   
 }
 /*
  $Log: ReturnSpec.java,v $
+ Revision 1.2  2004/08/27 09:31:16  mch
+ Added limit, order by, some page tidying, etc
+
  Revision 1.1  2004/08/25 23:38:33  mch
  (Days changes) moved many query- and results- related classes, renamed packages, added tests, added CIRCLE to sql/adql parsers
 

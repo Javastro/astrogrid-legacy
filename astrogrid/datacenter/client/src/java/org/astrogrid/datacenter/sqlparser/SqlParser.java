@@ -1,5 +1,5 @@
 /*
- * $Id: SqlParser.java,v 1.7 2004/08/26 11:47:16 mch Exp $
+ * $Id: SqlParser.java,v 1.8 2004/08/27 09:31:16 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -29,7 +29,7 @@ public class SqlParser  {
    
    Condition whereClause = null;
    
-   ReturnSpec resultsDef = null;
+   ReturnTable resultsDef = new ReturnTable(null);
    
    // the 'from' cluase - the list of tables to search
    Vector scope = new Vector();
@@ -372,13 +372,13 @@ public class SqlParser  {
     * look like.
     */
    private void parseSelect(String select) {
-      
+
       //special case of select all
       if (select.trim().equals("*")) {
-         resultsDef = new ReturnTable(null);
+         resultsDef.setColDefs(null);
       }
       else {
-         resultsDef = new ReturnTable(null, parseSelectList(select));
+         resultsDef.setColDefs(parseSelectList(select));
       }
    }
    
@@ -444,8 +444,16 @@ public class SqlParser  {
     
          orderBy.add(parseNumeric((colDef)));
       }
+
+      resultsDef.setSortOrder( (NumericExpression[]) orderBy.toArray(new NumericExpression[] {} ));
    }
-   
+
+   public void parseLimit(String limit) {
+         //find first token after LIMIT keyword as the number limit
+         StringTokenizer tokenizer = new StringTokenizer(limit.trim()," ");
+         resultsDef.setLimit(Integer.parseInt(tokenizer.nextToken()));
+   }
+      
    /**
     * Parses a full SQL statement, building up the alias list from the FROM
     * and/or SELECT statements, then creating a table results definition from the
@@ -458,11 +466,12 @@ public class SqlParser  {
       
       scope = new Vector(); //clear scope
 
-      //break down into SELECT ...  FROM ... WHERE ... ORDER BY in that order
+      //break down into SELECT ...  LIMIT ... FROM ... WHERE ... ORDER BY in that order
       if (!sql.startsWith("SELECT")) {
          throw new IllegalArgumentException("SQL doesn't start with SELECT - Can't cope");
       }
       
+      int limitIdx = sql.indexOf("LIMIT");
       int fromIdx = sql.indexOf("FROM");
       int whereIdx = sql.indexOf("WHERE");
       int orderByIdx = sql.indexOf("ORDER BY");
@@ -495,6 +504,11 @@ public class SqlParser  {
 
       //remove from
       sql = sql.substring(0, fromIdx-1);
+      
+      if (limitIdx > -1) {
+         parseLimit(sql.substring(limitIdx+5));
+         sql = sql.substring(0, limitIdx-1);
+      }
       
       parseSelect(sql.substring(6));//remove 'SELECT'
       
@@ -584,6 +598,9 @@ public class SqlParser  {
 
 /*
  $Log: SqlParser.java,v $
+ Revision 1.8  2004/08/27 09:31:16  mch
+ Added limit, order by, some page tidying, etc
+
  Revision 1.7  2004/08/26 11:47:16  mch
  Added tests based on Patricios errors and other SQl statements, and subsequent fixes...
 
@@ -609,5 +626,6 @@ public class SqlParser  {
  Added skeleton to recursive parser
 
  */
+
 
 

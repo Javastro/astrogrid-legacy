@@ -1,5 +1,5 @@
 /*
- * $Id: Sql2Adql074Test.java,v 1.2 2004/08/26 11:47:16 mch Exp $
+ * $Id: Sql2Adql074Test.java,v 1.3 2004/08/27 09:31:16 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -123,7 +123,17 @@ public class Sql2Adql074Test extends TestCase   {
          "SELECT * from IX/35/xmm1obs AS p where p.RA > 10"));
    }
       
-      public static Test suite() {
+   public void testLimit1() throws IOException, ParserConfigurationException {
+      assertValidXml(Sql2Adql074.translate(
+         "SELECT * LIMIT 12 from Table AS p where p.RA > 10"));
+   }
+
+   public void testLimit2() throws IOException, ParserConfigurationException {
+      assertValidXml(Sql2Adql074.translate(
+         "SELECT p.RA, p.DEC LIMIT   12   from IX/35/xmm1obs AS p where p.RA > 10"));
+   }
+
+   public static Test suite() {
       // Reflection is used here to add all the testXXX() methods to the suite.
       return new TestSuite(Sql2Adql074Test.class);
    }
@@ -139,6 +149,9 @@ public class Sql2Adql074Test extends TestCase   {
 
 /*
  $Log: Sql2Adql074Test.java,v $
+ Revision 1.3  2004/08/27 09:31:16  mch
+ Added limit, order by, some page tidying, etc
+
  Revision 1.2  2004/08/26 11:47:16  mch
  Added tests based on Patricios errors and other SQl statements, and subsequent fixes...
 

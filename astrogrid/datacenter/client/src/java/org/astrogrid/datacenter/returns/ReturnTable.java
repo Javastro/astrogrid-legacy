@@ -1,5 +1,5 @@
 /*
- * $Id: ReturnTable.java,v 1.1 2004/08/25 23:38:33 mch Exp $
+ * $Id: ReturnTable.java,v 1.2 2004/08/27 09:31:16 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -23,6 +23,7 @@ public class ReturnTable  extends ReturnSpec {
 
    NumericExpression[] colDefs = null;  //list of column definitions
 
+   NumericExpression[] sortOrder = null;
    
    /** Creates a definitiont hat will return all columns */
    public ReturnTable(TargetIndicator aTarget) {
@@ -33,16 +34,29 @@ public class ReturnTable  extends ReturnSpec {
    /** Creates a definitiont hat will return all the given columns */
    public ReturnTable(TargetIndicator aTarget, NumericExpression[] someColDefs) {
       this.target = aTarget;
-      if ((someColDefs.length == 1) && (someColDefs[0].toString().trim().equals("*"))) {
-         all = true;
-      }
-      else {
-         this.colDefs = someColDefs;
-         all = (colDefs == null);
-      }
+      setColDefs(someColDefs);
    }
    
    public NumericExpression[] getColDefs() { return colDefs; }
+
+   public void setColDefs(NumericExpression[] cols )  {
+      if (cols == null) {
+         all = true;
+         this.colDefs = null;
+      }
+      else if ((cols.length == 1) && (cols[0].toString().trim().equals("*"))) {
+         all = true;
+         this.colDefs = null;
+      }
+      else {
+         this.colDefs = cols;
+         all = false;
+      }
+   }
+
+   public NumericExpression[] getSortOrder() { return sortOrder; }
+
+   public void setSortOrder(NumericExpression[] order )  { this.sortOrder = order; }
 
    public boolean returnAll() {
       return all;
@@ -64,6 +78,9 @@ public class ReturnTable  extends ReturnSpec {
 }
 /*
  $Log: ReturnTable.java,v $
+ Revision 1.2  2004/08/27 09:31:16  mch
+ Added limit, order by, some page tidying, etc
+
  Revision 1.1  2004/08/25 23:38:33  mch
  (Days changes) moved many query- and results- related classes, renamed packages, added tests, added CIRCLE to sql/adql parsers
 

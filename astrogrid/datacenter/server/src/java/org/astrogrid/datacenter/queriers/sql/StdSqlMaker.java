@@ -1,4 +1,4 @@
-/*$Id: StdSqlMaker.java,v 1.19 2004/08/24 20:08:31 mch Exp $
+/*$Id: StdSqlMaker.java,v 1.20 2004/08/27 09:31:16 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -311,7 +311,9 @@ public class StdSqlMaker  extends SqlMaker {
             }
                
             //find specified sheet as resource of this class
-            xsltIn = StdSqlMaker.class.getResourceAsStream("./xslt/"+xsltDoc);
+            String path = StdSqlMaker.class.getPackage().toString().replace('.', '/').substring(8)+"/xslt/"+xsltDoc;
+            xsltIn = this.getClass().getClassLoader().getResourceAsStream(path);
+            //xsltIn = StdSqlMaker.class.getResourceAsStream("./xslt/"+xsltDoc); this seems to use a different ClassLoader in Tomcat and so fails to find the resource...
             whereIsDoc = StdSqlMaker.class+" resource ./xslt/"+xsltDoc;
             
             if (xsltIn == null) {
@@ -424,6 +426,9 @@ public class StdSqlMaker  extends SqlMaker {
 
 /*
 $Log: StdSqlMaker.java,v $
+Revision 1.20  2004/08/27 09:31:16  mch
+Added limit, order by, some page tidying, etc
+
 Revision 1.19  2004/08/24 20:08:31  mch
 Moved xslts to classpaths to fix ADQL-SQL translation problems, slightly improved query builder pages
 

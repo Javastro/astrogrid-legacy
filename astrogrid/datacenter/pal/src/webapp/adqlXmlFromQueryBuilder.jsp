@@ -60,14 +60,30 @@
                //add as AND to previous
                criteria = new LogicalExpression(criteria, "AND", newCriteria);
             }
-            else {
+            else if (request.getParameterValues("combine").equals("Union")) {
                //add as OR to previous
                criteria = new LogicalExpression(criteria, "OR", newCriteria);
+            }
+            else  {
+               throw new IllegalArgumentException("'Combine' not selected - select 'Intersection' or 'Union'");
             }
          }
       }
       
    }
+   //build up list of search tables - ie the scope
+   //this consists of any tables in both searchCols and resultCols
+   Vector searchTables = new Vector();
+   for (int i = 0; i < searchCols.length; i++) {
+      if (searchCols[i].indexOf(".") >-1) {
+         String table = searchCols[i].substring(0, searchCols[i].indexOf("."));
+         if (!searchTables.contains(table)) {
+            searchTables.add(table);
+         }
+      }
+   }
+   
+   
 
    //build up list of output columns
    Vector outColRefs = new Vector();
@@ -85,6 +101,11 @@
             colName = colRef.substring(colRef.indexOf(".")+1);
          }
          outColRefs.add(new ColumnReference(tableName, colName));
+
+         if (!searchTables.contains(tableName)) {
+            searchTables.add(tableName);
+         }
+
       }
    }
    ReturnSpec resultsDef = null;
@@ -95,17 +116,6 @@
       resultsDef = new ReturnTable(null); //all columns
    }
 
-   //build up list of search tables
-   Vector searchTables = new Vector();
-   for (int i = 0; i < searchCols.length; i++) {
-      if (searchCols[i].indexOf(".") >-1) {
-         String table = searchCols[i].substring(0, searchCols[i].indexOf("."));
-         if (!searchTables.contains(table)) {
-            searchTables.add(table);
-         }
-      }
-   }
-   
    Query query = new Query( (String[]) searchTables.toArray(new String[] {}), criteria, resultsDef);
          
    String adqlXml = "";

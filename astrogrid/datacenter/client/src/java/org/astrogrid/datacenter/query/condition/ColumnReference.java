@@ -1,5 +1,5 @@
 /*
- * $Id: ColumnReference.java,v 1.1 2004/08/25 23:38:33 mch Exp $
+ * $Id: ColumnReference.java,v 1.2 2004/08/27 09:31:16 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -16,11 +16,12 @@ package org.astrogrid.datacenter.query.condition;
 
 public class ColumnReference implements NumericExpression, StringExpression {
    
+   String datasetName = null;
    String tableName = null;
    String colName = null;
    
 
-   /**  */
+   /**  Creates a reference to a column in a table. */
    public ColumnReference(String aTableName, String aColName) {
       
       assert aTableName.indexOf(' ')==-1 : "Table name '"+aTableName+"' contains a space";
@@ -30,17 +31,33 @@ public class ColumnReference implements NumericExpression, StringExpression {
       this.colName = aColName;
    }
 
+   /**  Creates a reference to a column in a table in the given dataset. */
+   public ColumnReference(String aTableName, String aColName, String dataset) {
+
+      this(aTableName, aColName);
+      this.datasetName = dataset;
+   }
+
+   public String getDatasetName() { return datasetName; }
    public String getTableName() { return tableName; }
    public String getColName() { return colName; }
    
    /** For human debugging */
    public String toString() {
-      return "[ColRef] "+tableName+"."+colName;
+      if (datasetName != null) {
+         return "[ColRef "+datasetName+":"+tableName+"."+colName+"]";
+      }
+      else {
+         return "[ColRef "+tableName+"."+colName+"]";
+      }
    }
 }
 
 /*
 $Log: ColumnReference.java,v $
+Revision 1.2  2004/08/27 09:31:16  mch
+Added limit, order by, some page tidying, etc
+
 Revision 1.1  2004/08/25 23:38:33  mch
 (Days changes) moved many query- and results- related classes, renamed packages, added tests, added CIRCLE to sql/adql parsers
 
