@@ -1,13 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/common/src/java/org/astrogrid/filemanager/common/ivorn/Attic/FileManagerIvornFactory.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/11/25 00:20:29 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/12/16 17:25:49 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: FileManagerIvornFactory.java,v $
- *   Revision 1.2  2004/11/25 00:20:29  jdt
- *   Merge from dave-dev-200410061224-200411221626
+ *   Revision 1.3  2004/12/16 17:25:49  jdt
+ *   merge from dave-dev-200410061224-200412161312
+ *
+ *   Revision 1.1.2.5  2004/11/24 16:15:08  dave
+ *   Added node functions to client ...
  *
  *   Revision 1.1.2.4  2004/11/18 17:10:21  dave
  *   Updated mock ivorn handling
@@ -51,6 +54,33 @@ public class FileManagerIvornFactory
     /**
      * Create a filemanager ivorn.
      * @param  base The base filemanager ivorn.
+     * @param  path The node identifier or path.
+     * @return A new resource ivorn.
+     * @throws FileManagerIdentifierException if the filemanager or resource identifiers are invalid or null.
+     *
+     */
+    public Ivorn ivorn(Ivorn base, String path)
+        throws FileManagerIdentifierException
+		{
+		try {
+			return new Ivorn(
+				ident(
+					base,
+					path
+					)
+				) ;
+			}
+		catch (URISyntaxException ouch)
+			{
+			throw new FileManagerIdentifierException(
+				ouch
+				) ;
+			}
+		}
+
+    /**
+     * Create a filemanager ivorn.
+     * @param  base The base filemanager ivorn.
      * @return A new resource ivorn.
      * @throws FileManagerIdentifierException if the filemanager or resource identifiers are invalid or null.
      *
@@ -75,7 +105,7 @@ public class FileManagerIvornFactory
 
     /**
      * Create a filemanager ident.
-     * @param  base   The filemanager service ivorn.
+     * @param  base The filemanager service ivorn.
      * @return A new (ivorn) identifer.
      * @throws FileManagerIdentifierException if the filemanager or resource identifiers are null.
      * @todo Check that the base does not already have a #fragment ....
@@ -86,6 +116,24 @@ public class FileManagerIvornFactory
         {
 		return this.ident(
 			base.toString()
+			);
+		}
+
+    /**
+     * Create a filemanager ident.
+     * @param  base The filemanager service ivorn.
+     * @param  path The node identifier or path.
+     * @return A new (ivorn) identifer.
+     * @throws FileManagerIdentifierException if the filemanager or resource identifiers are null.
+     * @todo Check that the base does not already have a #fragment ....
+     *
+     */
+    public String ident(Ivorn base, String path)
+        throws FileManagerIdentifierException
+        {
+		return this.ident(
+			base.toString(),
+			path
 			);
 		}
 
@@ -149,8 +197,19 @@ public class FileManagerIvornFactory
             buffer.append("://") ;
             }
         buffer.append(base) ;
-        buffer.append("#") ;
-        buffer.append(ident) ;
+		//
+		// If the base already has a fragment delimiter.
+		if (-1 != base.indexOf('#'))
+			{
+			buffer.append("/") ;
+			buffer.append(ident) ;
+			}
+		//
+		// If the base does not have a fragment delimiter.
+		else {
+			buffer.append("#") ;
+			buffer.append(ident) ;
+			}
         log.debug("  Result : " + buffer.toString()) ;
         //
         // Return the new string.

@@ -1,12 +1,25 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/common/src/java/org/astrogrid/filemanager/common/Attic/FileManager.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/11/25 00:20:27 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/12/16 17:25:49 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  * <cvs:log>
  *   $Log: FileManager.java,v $
- *   Revision 1.2  2004/11/25 00:20:27  jdt
- *   Merge from dave-dev-200410061224-200411221626
+ *   Revision 1.3  2004/12/16 17:25:49  jdt
+ *   merge from dave-dev-200410061224-200412161312
+ *
+ *   Revision 1.1.2.24  2004/12/14 14:11:56  dave
+ *   Added delete to the server API ....
+ *
+ *   Revision 1.1.2.23  2004/12/11 05:59:17  dave
+ *   Added internal copy for nodes ...
+ *   Added local copy for data ...
+ *
+ *   Revision 1.1.2.22  2004/12/08 17:54:55  dave
+ *   Added update to FileManager client and server side ...
+ *
+ *   Revision 1.1.2.21  2004/12/02 19:11:54  dave
+ *   Added move name and parent to manager ...
  *
  *   Revision 1.1.2.20  2004/11/16 06:23:38  dave
  *   Updated commetnts and todo ...
@@ -141,6 +154,24 @@ public interface FileManager
 			NodeNotFoundException;
 
 	/**
+	 * Update the properties for a node, indexed by ident.
+	 * If this node has stored data, this will trigger a call to the FileStore to update the data properties.
+	 * @param ivorn The node identifier.
+	 * @return The node properties.
+	 * @throws FileManagerIdentifierException If the node identifier is invalid.
+	 * @throws NodeNotFoundException If the node does not exist.
+	 * @throws FileManagerServiceException If a problem occurs when handling the request. 
+     * @throws RemoteException If the WebService call fails.
+	 *
+	 */
+	public FileProperty[] update(String ivorn)
+		throws
+			RemoteException,
+			FileManagerIdentifierException,
+			FileManagerServiceException,
+			NodeNotFoundException;
+
+	/**
 	 * Get a specific child node, indexed by path.
 	 * @param ivorn The identifier of the parent node.
 	 * @param path The target node path.
@@ -199,14 +230,14 @@ public interface FileManager
 	/**
 	 * Initialise a data transfer into a FileStore.
 	 * The request properties need to specify the identifier of an existing node, or the identifier of a parent node and the new node name.
-	 * @param properties The request properties.
+	 * @param request The request properties.
 	 * @throws NodeNotFoundException If the target node does not exist.
 	 * @throws FileManagerServiceException If the service is unable to handle the request.
 	 * @throws FileManagerPropertiesException If the required properties are incomplete.
      * @throws RemoteException If the WebService call fails.
 	 *
 	 */
-	public TransferProperties importInit(FileProperty[] properties)
+	public TransferProperties importInit(FileProperty[] request)
 		throws
 			RemoteException,
 			FileManagerServiceException,
@@ -216,18 +247,74 @@ public interface FileManager
 	/**
 	 * Initialise a data transfer from a FileStore.
 	 * This calls the FileStore to get the HTTP (GET) URL to read the data from the FileStore.
-	 * @param properties The request properties.
+	 * @param request The request properties.
 	 * @throws NodeNotFoundException If the target node does not exist.
 	 * @throws FileManagerServiceException If the service is unable to handle the request.
-	 * @throws FileManagerPropertiesException If the required properties are incomplete.
+	 * @throws FileManagerPropertiesException If the transfer properties are incomplete.
      * @throws RemoteException If the WebService call fails.
 	 *
 	 */
 	public TransferProperties exportInit(FileProperty[] request)
 		throws
 			RemoteException,
+			NodeNotFoundException,
 			FileManagerServiceException,
+			FileManagerPropertiesException;
+
+	/**
+	 * Create a copy of a node.
+	 * If the node already has stored data, then this will create a new copy of the data.
+	 * @param  properties The request properties.
+	 * @return A set of properties for the new node.
+	 * @throws DuplicateNodeException If a node with the same name already exists in the metadata tree.
+	 * @throws NodeNotFoundException If the current node is no longer in the database.
+	 * @throws NodeNotFoundException If the new parent node is no longer in the database.
+	 * @throws FileManagerPropertiesException If the transfer properties are incomplete.
+	 * @throws FileManagerServiceException If a problem occurs when handling the request.
+     * @throws RemoteException If the WebService call fails.
+	 *
+	 */
+	public FileProperty[] copy(FileProperty[] request)
+		throws
+			RemoteException,
+			NodeNotFoundException,
+			DuplicateNodeException,
 			FileManagerPropertiesException,
-			NodeNotFoundException ;
+			FileManagerServiceException;
+
+	/**
+	 * Move a node to a new location.
+	 * If the node already has stored data, then this may involve transfering the data to a new location.
+	 * @param  properties The request properties.
+	 * @return A new set of properties for the node.
+	 * @throws DuplicateNodeException If a node with the same name already exists in the metadata tree.
+	 * @throws NodeNotFoundException If the current node is no longer in the database.
+	 * @throws NodeNotFoundException If the new parent node is no longer in the database.
+	 * @throws FileManagerPropertiesException If the transfer properties are incomplete.
+	 * @throws FileManagerServiceException If a problem occurs when handling the request.
+     * @throws RemoteException If the WebService call fails.
+	 *
+	 */
+	public FileProperty[] move(FileProperty[] request)
+		throws
+			RemoteException,
+			NodeNotFoundException,
+			DuplicateNodeException,
+			FileManagerPropertiesException,
+			FileManagerServiceException;
+
+	/**
+	 * Delete a node.
+	 * @param ident The node identifier.
+	 * @throws NodeNotFoundException If the node does not exist.
+	 * @throws FileManagerServiceException If a problem occurs when handling the request. 
+     * @throws RemoteException If the WebService call fails.
+	 *
+	 */
+	public void delete(String ident)
+		throws
+			RemoteException,
+			FileManagerServiceException,
+			NodeNotFoundException;
 
 	}

@@ -1,12 +1,25 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/common/src/java/org/astrogrid/filemanager/common/Attic/FileManagerProperties.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/11/25 00:20:29 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/12/16 17:25:49 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  * <cvs:log>
  *   $Log: FileManagerProperties.java,v $
- *   Revision 1.2  2004/11/25 00:20:29  jdt
- *   Merge from dave-dev-200410061224-200411221626
+ *   Revision 1.3  2004/12/16 17:25:49  jdt
+ *   merge from dave-dev-200410061224-200412161312
+ *
+ *   Revision 1.1.2.12  2004/12/06 13:29:02  dave
+ *   Added initial code for move location ....
+ *
+ *   Revision 1.1.2.11  2004/12/03 13:27:52  dave
+ *   Core of internal move is in place ....
+ *
+ *   Revision 1.1.2.10  2004/12/02 19:11:54  dave
+ *   Added move name and parent to manager ...
+ *
+ *   Revision 1.1.2.9  2004/11/29 18:05:07  dave
+ *   Refactored methods names ....
+ *   Added stubs for delete, copy and move.
  *
  *   Revision 1.1.2.8  2004/11/11 17:53:10  dave
  *   Removed Node interface from the server side ....
@@ -36,6 +49,8 @@
  *
  */
 package org.astrogrid.filemanager.common ;
+
+import java.util.Iterator;
 
 import org.astrogrid.store.Ivorn ;
 
@@ -77,6 +92,12 @@ public class FileManagerProperties
 	 *
 	 */
 	public static final String MANAGER_RESOURCE_NAME  = "org.astrogrid.filemanager.resource.name" ;
+
+	/**
+	 * The property key for the store service ivorn.
+	 *
+	 */
+	public static final String MANAGER_LOCATION_IVORN  = "org.astrogrid.filemanager.location.ivorn" ;
 
 	/**
 	 * Type name for a data node.
@@ -269,7 +290,7 @@ public class FileManagerProperties
 	 * @param ivorn The parent resource ivorn.
 	 *
 	 */
-	protected void setManagerParentIvorn(Ivorn ivorn)
+	public void setManagerParentIvorn(Ivorn ivorn)
 		{
 		if (null != ivorn)
 			{
@@ -291,7 +312,7 @@ public class FileManagerProperties
 	 * @param ivorn The parent resource ivorn.
 	 *
 	 */
-	protected void setManagerParentIvorn(String ivorn)
+	public void setManagerParentIvorn(String ivorn)
 		{
 		this.setProperty(
 			MANAGER_PARENT_IVORN,
@@ -314,7 +335,7 @@ public class FileManagerProperties
 	 * Set the resource (node) name.
 	 *
 	 */
-	protected void setManagerResourceName(String name)
+	public void setManagerResourceName(String name)
 		{
 		this.setProperty(
 			MANAGER_RESOURCE_NAME,
@@ -337,7 +358,7 @@ public class FileManagerProperties
 	 * Set the resource (node) type.
 	 *
 	 */
-	protected void setManagerResourceType(String type)
+	public void setManagerResourceType(String type)
 		{
 		this.setProperty(
 			MANAGER_RESOURCE_TYPE,
@@ -345,5 +366,117 @@ public class FileManagerProperties
 			) ;
 		}
 
+	/**
+	 * Get the filestore storage location.
+	 *
+	 */
+	public Ivorn getManagerLocationIvorn()
+		throws FileManagerIdentifierException
+		{
+		String ivorn = this.getProperty(
+			MANAGER_LOCATION_IVORN
+			) ;
+		if (null != ivorn)
+			{
+			try {
+				return new Ivorn(
+					ivorn
+					) ;
+				}
+			catch (Exception ouch)
+				{
+				throw new FileManagerIdentifierException(
+					ivorn
+					);
+				}
+			}
+		else {
+			return null ;
+			}
+		}
+
+	/**
+	 * Set the filestore storage location.
+	 * @param ivorn The filestore location.
+	 *
+	 */
+	public void setManagerLocationIvorn(Ivorn ivorn)
+		{
+		if (null != ivorn)
+			{
+			this.setProperty(
+				MANAGER_LOCATION_IVORN,
+				ivorn.toString()
+				) ;
+			}
+		else {
+			this.setProperty(
+				MANAGER_LOCATION_IVORN,
+				null
+				) ;
+			}
+		}
+
+	/**
+	 * Create a new set of properties containing the differences between this set and another.
+	 * This compares the properties in the target set and only transfers those which have
+	 * different values to those in the current set.
+	 * @param that The other set to compare with.
+	 * @return A new set containing only the properties that have been changed.
+	 *
+	 */
+	public FileManagerProperties difference(FileManagerProperties that)
+		{
+		if (null == that)
+			{
+			throw new IllegalArgumentException(
+				"Null properties"
+				);
+			}
+		//
+		// Create a new set of properties.
+		FileManagerProperties results = new FileManagerProperties();
+		//
+		// Get an iterator for the other properties.
+		Iterator iter = that.getProperties().keySet().iterator();
+		//
+		// Check each of the other properties.
+		while (iter.hasNext())
+			{
+			String key   = (String) iter.next();
+			String current = this.getProperty(key);
+			String changed = that.getProperty(key);
+			//
+			// If the changed property is not null.
+			if (null != changed)
+				{
+				//
+				// If our property is null.
+				if (null == current)
+					{
+					results.setProperty(
+						key,
+						changed
+						);
+					}
+				//
+				// If our property is not null.
+				else {
+					//
+					// If values are different.
+					if (!current.equals(changed))
+						{
+						results.setProperty(
+							key,
+							changed
+							);
+						}
+					}
+				}
+			}
+		//
+		// Return the new set of properties.
+		return results ;
+		}
 	}
 

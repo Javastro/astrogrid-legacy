@@ -1,12 +1,41 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/src/java/org/astrogrid/filemanager/client/Attic/FileManagerDelegateTest.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/11/25 00:20:29 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/12/16 17:25:49 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  * <cvs:log>
  *   $Log: FileManagerDelegateTest.java,v $
- *   Revision 1.2  2004/11/25 00:20:29  jdt
- *   Merge from dave-dev-200410061224-200411221626
+ *   Revision 1.3  2004/12/16 17:25:49  jdt
+ *   merge from dave-dev-200410061224-200412161312
+ *
+ *   Revision 1.1.2.14  2004/12/14 11:49:50  dave
+ *   Added data location copy test ....
+ *
+ *   Revision 1.1.2.13  2004/12/13 10:07:15  dave
+ *   Fixed copy tests for delegate ...
+ *
+ *   Revision 1.1.2.12  2004/12/10 05:21:25  dave
+ *   Added node and iterator to client API ...
+ *
+ *   Revision 1.1.2.11  2004/12/08 17:54:54  dave
+ *   Added update to FileManager client and server side ...
+ *
+ *   Revision 1.1.2.10  2004/12/08 01:56:04  dave
+ *   Added filestore location to move ...
+ *
+ *   Revision 1.1.2.9  2004/12/03 13:27:52  dave
+ *   Core of internal move is in place ....
+ *
+ *   Revision 1.1.2.8  2004/11/29 18:05:07  dave
+ *   Refactored methods names ....
+ *   Added stubs for delete, copy and move.
+ *
+ *   Revision 1.1.2.7  2004/11/26 04:22:24  dave
+ *   Added SOAP delegate node test ...
+ *   Added node export test ..
+ *
+ *   Revision 1.1.2.6  2004/11/24 16:15:08  dave
+ *   Added node functions to client ...
  *
  *   Revision 1.1.2.5  2004/11/17 07:56:33  dave
  *   Added server mock and webapp build scripts ...
@@ -30,10 +59,10 @@ package org.astrogrid.filemanager.client;
 
 import java.io.ByteArrayOutputStream;
 
-import org.astrogrid.store.Ivorn ;
+import java.util.List ;
+import java.util.Iterator ;
 
-import org.apache.commons.logging.Log ;
-import org.apache.commons.logging.LogFactory ;
+import org.astrogrid.store.Ivorn ;
 
 import org.astrogrid.filestore.common.file.FileProperty;
 import org.astrogrid.filestore.common.FileStoreInputStream;
@@ -48,6 +77,7 @@ import org.astrogrid.filemanager.common.ivorn.FileManagerIvornFactory;
 import org.astrogrid.filemanager.common.exception.NodeNotFoundException ;
 import org.astrogrid.filemanager.common.exception.DuplicateNodeException;
 import org.astrogrid.filemanager.common.exception.FileManagerServiceException;
+import org.astrogrid.filemanager.common.exception.FileManagerPropertiesException;
 
 /**
  * A generic test for the FileManager delegate API.
@@ -56,12 +86,11 @@ import org.astrogrid.filemanager.common.exception.FileManagerServiceException;
 public class FileManagerDelegateTest
 	extends BaseTest
 	{
-
-    /**
-     * Our debug logger.
-     *
-     */
-    protected static Log log = LogFactory.getLog(FileManagerDelegateTest.class);
+	/**
+	 * A set of ivorn identifiers for our target file stores.
+	 *
+	 */
+	protected Ivorn[] filestores ;
 
 	/**
 	 * Our identifier factory.
@@ -172,7 +201,7 @@ public class FileManagerDelegateTest
 		//
 		// Check the node ivorn.
 		assertNotNull(
-			home.getIvorn()
+			home.ivorn()
 			) ;
 		}
 
@@ -191,7 +220,7 @@ public class FileManagerDelegateTest
 		//
 		// Check the node ident.
 		assertNotNull(
-			home.getIvorn()
+			home.ivorn()
 			) ;
 		}
 
@@ -210,7 +239,7 @@ public class FileManagerDelegateTest
 		//
 		// Check the node name.
 		assertNotNull(
-			home.getName()
+			home.name()
 			) ;
 		}
 
@@ -282,9 +311,10 @@ public class FileManagerDelegateTest
 		throws Exception
 		{
 		try {
-			delegate.addContainer(
+			delegate.add(
 				null,
-				"frog"
+				"frog",
+				FileManagerProperties.CONTAINER_NODE_TYPE
 				) ;
 			}
 		catch (IllegalArgumentException ouch)
@@ -309,9 +339,10 @@ public class FileManagerDelegateTest
 		//
 		// Try adding a node with no name.
 		try {
-			delegate.addContainer(
+			delegate.add(
 				home,
-				null
+				null,
+				FileManagerProperties.CONTAINER_NODE_TYPE
 				) ;
 			}
 		catch (IllegalArgumentException ouch)
@@ -336,9 +367,10 @@ public class FileManagerDelegateTest
 		//
 		// Add a container node.
 		assertNotNull(
-			delegate.addContainer(
+			delegate.add(
 				home,
-				"frog"
+				"frog",
+				FileManagerProperties.CONTAINER_NODE_TYPE
 				)
 			);
 		}
@@ -358,13 +390,15 @@ public class FileManagerDelegateTest
 		//
 		// Try adding the same container twice.
 		try {
-			delegate.addContainer(
+			delegate.add(
 				home,
-				"frog"
+				"frog",
+				FileManagerProperties.CONTAINER_NODE_TYPE
 				) ;
-			delegate.addContainer(
+			delegate.add(
 				home,
-				"frog"
+				"frog",
+				FileManagerProperties.CONTAINER_NODE_TYPE
 				) ;
 			}
 		catch (DuplicateNodeException ouch)
@@ -389,14 +423,15 @@ public class FileManagerDelegateTest
 		//
 		// Add a container node.
 		FileManagerNode node =
-			delegate.addContainer(
+			delegate.add(
 				home,
-				"frog"
+				"frog",
+				FileManagerProperties.CONTAINER_NODE_TYPE
 				) ;
 		//
 		// Check the node ivorn.
 		assertNotNull(
-			node.getIvorn()
+			node.ivorn()
 			);
 		}
 
@@ -415,15 +450,16 @@ public class FileManagerDelegateTest
 		//
 		// Add a container node.
 		FileManagerNode node =
-			delegate.addContainer(
+			delegate.add(
 				home,
-				"frog"
+				"frog",
+				FileManagerProperties.CONTAINER_NODE_TYPE
 				) ;
 		//
 		// Check the node name.
 		assertEquals(
 			"frog",
-			node.getName()
+			node.name()
 			);
 		}
 
@@ -442,9 +478,10 @@ public class FileManagerDelegateTest
 		//
 		// Add a container node.
 		FileManagerNode node =
-			delegate.addContainer(
+			delegate.add(
 				home,
-				"frog"
+				"frog",
+				FileManagerProperties.CONTAINER_NODE_TYPE
 				) ;
 		//
 		// Check the node type.
@@ -464,9 +501,10 @@ public class FileManagerDelegateTest
 		throws Exception
 		{
 		try {
-			delegate.addFile(
+			delegate.add(
 				null,
-				"frog"
+				"frog",
+				FileManagerProperties.DATA_NODE_TYPE
 				) ;
 			}
 		catch (IllegalArgumentException ouch)
@@ -491,9 +529,10 @@ public class FileManagerDelegateTest
 		//
 		// Try adding a file with no name.
 		try {
-			delegate.addFile(
+			delegate.add(
 				home,
-				null
+				null,
+				FileManagerProperties.DATA_NODE_TYPE
 				) ;
 			}
 		catch (IllegalArgumentException ouch)
@@ -518,9 +557,10 @@ public class FileManagerDelegateTest
 		//
 		// Add a file node.
 		assertNotNull(
-			delegate.addFile(
+			delegate.add(
 				home,
-				"frog"
+				"frog",
+				FileManagerProperties.DATA_NODE_TYPE
 				)
 			);
 		}
@@ -540,13 +580,15 @@ public class FileManagerDelegateTest
 		//
 		// Try adding the same file twice.
 		try {
-			delegate.addFile(
+			delegate.add(
 				home,
-				"frog"
+				"frog",
+				FileManagerProperties.DATA_NODE_TYPE
 				) ;
-			delegate.addFile(
+			delegate.add(
 				home,
-				"frog"
+				"frog",
+				FileManagerProperties.DATA_NODE_TYPE
 				) ;
 			}
 		catch (DuplicateNodeException ouch)
@@ -571,14 +613,15 @@ public class FileManagerDelegateTest
 		//
 		// Add a file node.
 		FileManagerNode node =
-			delegate.addFile(
+			delegate.add(
 				home,
-				"frog"
+				"frog",
+				FileManagerProperties.DATA_NODE_TYPE
 				) ;
 		//
 		// Check the node ivorn.
 		assertNotNull(
-			node.getIvorn()
+			node.ivorn()
 			);
 		}
 
@@ -597,15 +640,16 @@ public class FileManagerDelegateTest
 		//
 		// Add a file node.
 		FileManagerNode node =
-			delegate.addFile(
+			delegate.add(
 				home,
-				"frog"
+				"frog",
+				FileManagerProperties.DATA_NODE_TYPE
 				) ;
 		//
 		// Check the node name.
 		assertEquals(
 			"frog",
-			node.getName()
+			node.name()
 			);
 		}
 
@@ -624,9 +668,10 @@ public class FileManagerDelegateTest
 		//
 		// Add a file node.
 		FileManagerNode node =
-			delegate.addFile(
+			delegate.add(
 				home,
-				"frog"
+				"frog",
+				FileManagerProperties.DATA_NODE_TYPE
 				) ;
 		//
 		// Check the node type.
@@ -635,6 +680,37 @@ public class FileManagerDelegateTest
 			);
 		assertTrue(
 			node.isFile()
+			);
+		}
+
+	/**
+	 * Check that the file has the right location.
+	 *
+	 */
+	public void testAddFileLocation()
+		throws Exception
+		{
+		//
+		// Create the account home.
+		FileManagerNode home = delegate.addAccount(
+			accountIvorn
+			) ;
+		//
+		// Add a file node.
+		FileManagerNode node =
+			delegate.add(
+				home,
+				"frog",
+				FileManagerProperties.DATA_NODE_TYPE
+				) ;
+		//
+		// Check the node location.
+		assertNotNull(
+			node.location()
+			);
+		assertEquals(
+			filestores[0].toString(),
+			node.location().toString()
 			);
 		}
 
@@ -697,15 +773,16 @@ public class FileManagerDelegateTest
 		//
 		// Add a container node.
 		FileManagerNode frog =
-			delegate.addContainer(
+			delegate.add(
 				home,
-				"frog"
+				"frog",
+				FileManagerProperties.CONTAINER_NODE_TYPE
 				) ;
 		//
 		// Check we can get the node.
 		assertNotNull(
 			delegate.getNode(
-				frog.getIvorn()
+				frog.ivorn()
 				)
 			);
 		}
@@ -725,21 +802,22 @@ public class FileManagerDelegateTest
 		//
 		// Add a container node.
 		FileManagerNode frog =
-			delegate.addContainer(
+			delegate.add(
 				home,
-				"frog"
+				"frog",
+				FileManagerProperties.CONTAINER_NODE_TYPE
 				) ;
 		//
 		// Check we can get the node.
 		FileManagerNode toad =
 			delegate.getNode(
-				frog.getIvorn()
+				frog.ivorn()
 				) ;
 		//
 		// Check the node ivorn.
 		assertEquals(
-			frog.getIvorn().toString(),
-			toad.getIvorn().toString()
+			frog.ivorn().toString(),
+			toad.ivorn().toString()
 			);
 		}
 
@@ -758,21 +836,22 @@ public class FileManagerDelegateTest
 		//
 		// Add a container node.
 		FileManagerNode frog =
-			delegate.addContainer(
+			delegate.add(
 				home,
-				"frog"
+				"frog",
+				FileManagerProperties.CONTAINER_NODE_TYPE
 				) ;
 		//
 		// Check we can get the node.
 		FileManagerNode toad =
 			delegate.getNode(
-				frog.getIvorn()
+				frog.ivorn()
 				) ;
 		//
 		// Check the node name.
 		assertEquals(
 			"frog",
-			toad.getName()
+			toad.name()
 			);
 		}
 
@@ -791,15 +870,16 @@ public class FileManagerDelegateTest
 		//
 		// Add a container node.
 		FileManagerNode frog =
-			delegate.addContainer(
+			delegate.add(
 				home,
-				"frog"
+				"frog",
+				FileManagerProperties.CONTAINER_NODE_TYPE
 				) ;
 		//
 		// Check we can get the node.
 		FileManagerNode toad =
 			delegate.getNode(
-				frog.getIvorn()
+				frog.ivorn()
 				) ;
 		//
 		// Check the node type.
@@ -826,15 +906,16 @@ public class FileManagerDelegateTest
 		//
 		// Add a file node.
 		FileManagerNode frog =
-			delegate.addFile(
+			delegate.add(
 				home,
-				"frog"
+				"frog",
+				FileManagerProperties.DATA_NODE_TYPE
 				) ;
 		//
 		// Check we can get the node.
 		assertNotNull(
 			delegate.getNode(
-				frog.getIvorn()
+				frog.ivorn()
 				)
 			);
 		}
@@ -854,21 +935,22 @@ public class FileManagerDelegateTest
 		//
 		// Add a file node.
 		FileManagerNode frog =
-			delegate.addFile(
+			delegate.add(
 				home,
-				"frog"
+				"frog",
+				FileManagerProperties.DATA_NODE_TYPE
 				) ;
 		//
 		// Check we can get the node.
 		FileManagerNode toad =
 			delegate.getNode(
-				frog.getIvorn()
+				frog.ivorn()
 				) ;
 		//
 		// Check the node ivorn.
 		assertEquals(
-			frog.getIvorn().toString(),
-			toad.getIvorn().toString()
+			frog.ivorn().toString(),
+			toad.ivorn().toString()
 			);
 		}
 
@@ -887,21 +969,22 @@ public class FileManagerDelegateTest
 		//
 		// Add a file node.
 		FileManagerNode frog =
-			delegate.addFile(
+			delegate.add(
 				home,
-				"frog"
+				"frog",
+				FileManagerProperties.DATA_NODE_TYPE
 				) ;
 		//
 		// Check we can get the node.
 		FileManagerNode toad =
 			delegate.getNode(
-				frog.getIvorn()
+				frog.ivorn()
 				) ;
 		//
 		// Check the node name.
 		assertEquals(
 			"frog",
-			toad.getName()
+			toad.name()
 			);
 		}
 
@@ -920,15 +1003,16 @@ public class FileManagerDelegateTest
 		//
 		// Add a file node.
 		FileManagerNode frog =
-			delegate.addFile(
+			delegate.add(
 				home,
-				"frog"
+				"frog",
+				FileManagerProperties.DATA_NODE_TYPE
 				) ;
 		//
 		// Check we can get the node.
 		FileManagerNode toad =
 			delegate.getNode(
-				frog.getIvorn()
+				frog.ivorn()
 				) ;
 		//
 		// Check the node type.
@@ -944,12 +1028,32 @@ public class FileManagerDelegateTest
 	 * Check that we get the right Exception for a null parent.
 	 *
 	 */
-	public void testGetChildNullParent()
+	public void testGetChildNullIvorn()
 		throws Exception
 		{
 		try {
 			delegate.getChild(
-				null,
+				(Ivorn) null,
+				"frog"
+				) ;
+			}
+		catch (IllegalArgumentException ouch)
+			{
+			return ;
+			}
+		fail("Expected IllegalArgumentException") ;
+		}
+
+	/**
+	 * Check that we get the right Exception for a null parent.
+	 *
+	 */
+	public void testGetChildNullNode()
+		throws Exception
+		{
+		try {
+			delegate.getChild(
+				(FileManagerNode) null,
 				"frog"
 				) ;
 			}
@@ -997,13 +1101,14 @@ public class FileManagerDelegateTest
 		//
 		// Add a file node.
 		FileManagerNode frog =
-			delegate.addFile(
+			delegate.add(
 				home,
-				"frog"
+				"frog",
+				FileManagerProperties.DATA_NODE_TYPE
 				) ;
 		try {
 			delegate.getChild(
-				home.getIvorn(),
+				home.ivorn(),
 				null
 				) ;
 			}
@@ -1029,13 +1134,14 @@ public class FileManagerDelegateTest
 		//
 		// Add a file node.
 		FileManagerNode frog =
-			delegate.addFile(
+			delegate.add(
 				home,
-				"frog"
+				"frog",
+				FileManagerProperties.DATA_NODE_TYPE
 				) ;
 		try {
 			delegate.getChild(
-				home.getIvorn(),
+				home.ivorn(),
 				"unknown"
 				) ;
 			}
@@ -1061,15 +1167,16 @@ public class FileManagerDelegateTest
 		//
 		// Add a file node.
 		FileManagerNode frog =
-			delegate.addFile(
+			delegate.add(
 				home,
-				"frog"
+				"frog",
+				FileManagerProperties.DATA_NODE_TYPE
 				) ;
 		//
 		// Check we can find the file.
 		assertNotNull(
 			delegate.getChild(
-				home.getIvorn(),
+				home.ivorn(),
 				"frog"
 				)
 			) ;
@@ -1094,80 +1201,200 @@ public class FileManagerDelegateTest
 		//
 		// Add a container node.
 		FileManagerNode frog =
-			delegate.addContainer(
+			delegate.add(
 				home,
-				"frog"
+				"frog",
+				FileManagerProperties.CONTAINER_NODE_TYPE
 				) ;
 		//
 		// Add a container node.
 		FileManagerNode toad =
-			delegate.addContainer(
+			delegate.add(
 				frog,
-				"toad"
+				"toad",
+				FileManagerProperties.CONTAINER_NODE_TYPE
 				) ;
 		//
 		// Add a file node.
 		FileManagerNode newt =
-			delegate.addFile(
+			delegate.add(
 				toad,
-				"newt"
+				"newt",
+				FileManagerProperties.DATA_NODE_TYPE
 				) ;
 		//
 		// Check we can find the file(s).
 		assertNotNull(
 			delegate.getChild(
-				home.getIvorn(),
+				home.ivorn(),
 				"frog"
 				)
 			) ;
 		assertNotNull(
 			delegate.getChild(
-				home.getIvorn(),
+				home.ivorn(),
 				"frog/toad"
 				)
 			) ;
 		assertNotNull(
 			delegate.getChild(
-				home.getIvorn(),
+				home.ivorn(),
 				"frog/toad/newt"
 				)
 			) ;
 
 		assertNotNull(
 			delegate.getChild(
-				home.getIvorn(),
+				home.ivorn(),
 				"/frog"
 				)
 			) ;
 		assertNotNull(
 			delegate.getChild(
-				home.getIvorn(),
+				home.ivorn(),
 				"/frog/toad"
 				)
 			) ;
 		assertNotNull(
 			delegate.getChild(
-				home.getIvorn(),
+				home.ivorn(),
 				"/frog/toad/newt"
 				)
 			) ;
 
 		assertNotNull(
 			delegate.getChild(
-				home.getIvorn(),
+				home.ivorn(),
 				"//frog"
 				)
 			) ;
 		assertNotNull(
 			delegate.getChild(
-				home.getIvorn(),
+				home.ivorn(),
 				"//frog//toad"
 				)
 			) ;
 		assertNotNull(
 			delegate.getChild(
-				home.getIvorn(),
+				home.ivorn(),
 				"//frog//toad//newt"
+				)
+			) ;
+		}
+
+	/**
+	 * Check we can get a nested node by Ivorn.
+	 *
+	 */
+	public void testGetNestedIvorn()
+		throws Exception
+		{
+		//
+		// Create the account home.
+		FileManagerNode home = delegate.addAccount(
+			accountIvorn
+			) ;
+		//
+		// Add a container node.
+		FileManagerNode frog =
+			delegate.add(
+				home,
+				"frog",
+				FileManagerProperties.CONTAINER_NODE_TYPE
+				) ;
+		//
+		// Add a container node.
+		FileManagerNode toad =
+			delegate.add(
+				frog,
+				"toad",
+				FileManagerProperties.CONTAINER_NODE_TYPE
+				) ;
+		//
+		// Add a file node.
+		FileManagerNode newt =
+			delegate.add(
+				toad,
+				"newt",
+				FileManagerProperties.DATA_NODE_TYPE
+				) ;
+		//
+		// Create our ivorn factory.
+		FileManagerIvornFactory factory = new FileManagerIvornFactory();
+		//
+		// Check we can find the file(s).
+		assertNotNull(
+			delegate.getNode(
+				factory.ivorn(
+					home.ivorn(),
+					"frog"
+					)
+				)
+			) ;
+		assertNotNull(
+			delegate.getNode(
+				factory.ivorn(
+					home.ivorn(),
+					"frog/toad"
+					)
+				)
+			) ;
+		assertNotNull(
+			delegate.getNode(
+				factory.ivorn(
+					home.ivorn(),
+					"frog/toad/newt"
+					)
+				)
+			) ;
+
+		assertNotNull(
+			delegate.getNode(
+				factory.ivorn(
+					home.ivorn(),
+					"/frog"
+					)
+				)
+			) ;
+		assertNotNull(
+			delegate.getNode(
+				factory.ivorn(
+					home.ivorn(),
+					"/frog/toad"
+					)
+				)
+			) ;
+		assertNotNull(
+			delegate.getNode(
+				factory.ivorn(
+					home.ivorn(),
+					"/frog/toad/newt"
+					)
+				)
+			) ;
+
+		assertNotNull(
+			delegate.getNode(
+				factory.ivorn(
+					home.ivorn(),
+					"//frog"
+					)
+				)
+			) ;
+		assertNotNull(
+			delegate.getNode(
+				factory.ivorn(
+					home.ivorn(),
+					"//frog//toad"
+					)
+				)
+			) ;
+		assertNotNull(
+			delegate.getNode(
+				factory.ivorn(
+					home.ivorn(),
+					"//frog//toad//newt"
+					)
 				)
 			) ;
 		}
@@ -1236,14 +1463,14 @@ public class FileManagerDelegateTest
 			) ;
 		//
 		// Get the (empty) list of child nodes.
-		String[] array = delegate.getChildren(
-			home.getIvorn()
+		List list = delegate.getChildren(
+			home.ivorn()
 			) ;
 		//
 		// Check the list is empty.
 		assertEquals(
 			0,
-			array.length
+			list.size()
 			) ;
 		}
 
@@ -1262,34 +1489,37 @@ public class FileManagerDelegateTest
 		//
 		// Add a container node.
 		FileManagerNode frog =
-			delegate.addContainer(
+			delegate.add(
 				home,
-				"frog"
+				"frog",
+				FileManagerProperties.CONTAINER_NODE_TYPE
 				) ;
 		//
 		// Add a container node.
 		FileManagerNode toad =
-			delegate.addContainer(
+			delegate.add(
 				home,
-				"toad"
+				"toad",
+				FileManagerProperties.CONTAINER_NODE_TYPE
 				) ;
 		//
 		// Add a file node.
 		FileManagerNode newt =
-			delegate.addFile(
+			delegate.add(
 				home,
-				"newt"
+				"newt",
+				FileManagerProperties.DATA_NODE_TYPE
 				) ;
 		//
 		// Get the list of child nodes.
-		String[] array = delegate.getChildren(
-			home.getIvorn()
+		List list = delegate.getChildren(
+			home.ivorn()
 			) ;
 		//
 		// Check the list contains three nodes.
 		assertEquals(
 			3,
-			array.length
+			list.size()
 			) ;
 		}
 
@@ -1308,20 +1538,21 @@ public class FileManagerDelegateTest
 		//
 		// Add a file node.
 		FileManagerNode newt =
-			delegate.addFile(
+			delegate.add(
 				home,
-				"newt"
+				"newt",
+				FileManagerProperties.DATA_NODE_TYPE
 				) ;
 		//
 		// Get the (empty) list of child nodes.
-		String[] array = delegate.getChildren(
-			newt.getIvorn()
+		List list = delegate.getChildren(
+			newt.ivorn()
 			) ;
 		//
 		// Check the list is empty.
 		assertEquals(
 			0,
-			array.length
+			list.size()
 			) ;
 		}
 
@@ -1419,9 +1650,10 @@ public class FileManagerDelegateTest
 		//
 		// Add a file node.
 		FileManagerNode newt =
-			delegate.addFile(
+			delegate.add(
 				home,
-				"newt"
+				"newt",
+				FileManagerProperties.DATA_NODE_TYPE
 				) ;
 		//
 		// Create our request properties.
@@ -1429,7 +1661,7 @@ public class FileManagerDelegateTest
 		//
 		// Set the resource ivorn.
 		request.setManagerResourceIvorn(
-			newt.getIvorn()
+			newt.ivorn()
 			);
 		//
 		// Call our manager to initiate the import.
@@ -1445,10 +1677,10 @@ public class FileManagerDelegateTest
 		}
 
 	/**
-	 * Check an import transfer has a location.
+	 * Check an import transfer has a URL.
 	 *
 	 */
-	public void testImportInitLocation()
+	public void testImportInitURL()
 		throws Exception
 		{
 		//
@@ -1460,9 +1692,10 @@ public class FileManagerDelegateTest
 		//
 		// Add a file node.
 		FileManagerNode newt =
-			delegate.addFile(
+			delegate.add(
 				home,
-				"newt"
+				"newt",
+				FileManagerProperties.DATA_NODE_TYPE
 				) ;
 		//
 		// Create our request properties.
@@ -1470,7 +1703,7 @@ public class FileManagerDelegateTest
 		//
 		// Set the resource ivorn.
 		request.setManagerResourceIvorn(
-			newt.getIvorn()
+			newt.ivorn()
 			);
 		//
 		// Call our manager to initiate the import.
@@ -1486,7 +1719,7 @@ public class FileManagerDelegateTest
 		}
 
 	/**
-	 * Check we can write data to the import location.
+	 * Check we can write data to the import URL.
 	 *
 	 */
 	public void testImportInitWrite()
@@ -1501,9 +1734,10 @@ public class FileManagerDelegateTest
 		//
 		// Add a file node.
 		FileManagerNode newt =
-			delegate.addFile(
+			delegate.add(
 				home,
-				"newt"
+				"newt",
+				FileManagerProperties.DATA_NODE_TYPE
 				) ;
 		//
 		// Create our request properties.
@@ -1511,7 +1745,7 @@ public class FileManagerDelegateTest
 		//
 		// Set the resource ivorn.
 		request.setManagerResourceIvorn(
-			newt.getIvorn()
+			newt.ivorn()
 			);
 		//
 		// Call our manager to initiate the import.
@@ -1623,9 +1857,10 @@ public class FileManagerDelegateTest
 		//
 		// Add a file node.
 		FileManagerNode newt =
-			delegate.addFile(
+			delegate.add(
 				home,
-				"newt"
+				"newt",
+				FileManagerProperties.DATA_NODE_TYPE
 				) ;
 		//
 		// Create our request properties.
@@ -1633,7 +1868,7 @@ public class FileManagerDelegateTest
 		//
 		// Set the resource ivorn.
 		request.setManagerResourceIvorn(
-			newt.getIvorn()
+			newt.ivorn()
 			);
 		//
 		// Call our manager to initiate the import.
@@ -1661,7 +1896,7 @@ public class FileManagerDelegateTest
 				request
 				) ;
 		//
-		// Create an output stream to the target.
+		// Create an input stream from the target.
 		FileStoreInputStream exportStream = new FileStoreInputStream(
 			exportTransfer.getLocation()
 			) ;
@@ -1683,9 +1918,1098 @@ public class FileManagerDelegateTest
 			TEST_BYTES,
 			buffer.toByteArray()
 			);
-
 		}
 
+	/**
+	 * Check we can update the properties after an import. 
+	 *
+	 */
+	public void testImportUpdateSize()
+		throws Exception
+		{
+		//
+		// Create the account home.
+		FileManagerNode home = delegate.addAccount(
+			accountIvorn
+			) ;
+		//
+		// Add a data node.
+		FileManagerNode frog = 
+			delegate.add(
+				home,
+				"frog",
+				FileManagerProperties.DATA_NODE_TYPE
+				);
+		//
+		// Update the node properties.
+		FileManagerProperties toad = 
+			delegate.update(
+				frog
+				);
+		//
+		// Check the data size.
+		assertEquals(
+			0,
+			toad.getContentSize()
+			);
+		//
+		// Create our request properties.
+		FileManagerProperties request = new FileManagerProperties() ;
+		//
+		// Set the resource ivorn.
+		request.setManagerResourceIvorn(
+			frog.ivorn()
+			);
+		//
+		// Call our manager to initiate the import.
+		TransferProperties importTransfer =
+			delegate.importInit(
+				request
+				) ;
+		//
+		// Create an output stream to the target.
+		FileStoreOutputStream importStream = new FileStoreOutputStream(
+			importTransfer.getLocation()
+			) ;
+		//
+		// Transfer our data.
+		importStream.open() ;
+		importStream.write(
+			TEST_BYTES
+			) ;
+		importStream.close() ;
+		//
+		// Update the node properties.
+		FileManagerProperties newt = 
+			delegate.update(
+				frog
+				);
+		//
+		// Check the data size.
+		assertEquals(
+			TEST_BYTES.length,
+			newt.getContentSize()
+			);
+		}
 
+	/**
+	 * Test we get the right Exception for a null request.
+	 *
+	 */
+	public void testMoveNullProperties()
+		throws Exception
+		{
+		try {
+			delegate.move(
+				null
+				);
+			}
+		catch (IllegalArgumentException ouch)
+			{
+			return ;
+			}
+		fail("Expected IllegalArgumentException");
+		}
+
+	/**
+	 * Test we can change the node name.
+	 *
+	 */
+	public void testMoveName()
+		throws Exception
+		{
+		//
+		// Create the account home.
+		FileManagerNode home = delegate.addAccount(
+			accountIvorn
+			) ;
+		//
+		// Add a data node.
+		FileManagerNode frog = 
+			delegate.add(
+				home,
+				"frog",
+				FileManagerProperties.DATA_NODE_TYPE
+				);
+		//
+		// Create our request properties.
+		FileManagerProperties request = new FileManagerProperties();
+		request.setManagerResourceIvorn(
+			frog.ivorn()
+			);
+		request.setManagerResourceName(
+			"toad"
+			);
+		//
+		// Check the node name.
+		assertEquals(
+			"frog",
+			frog.name()
+			);
+		//
+		// Execute the move.
+		FileManagerProperties result =
+			delegate.move(
+				request
+				);
+		//
+		// Check the node name.
+		assertEquals(
+			"toad",
+			result.getManagerResourceName()
+			);
+		}
+
+	/**
+	 * Check we get the right Exception for a duplicate name.
+	 *
+	 */
+	public void testMoveNameDuplicate()
+		throws Exception
+		{
+		//
+		// Create the account home.
+		FileManagerNode home = delegate.addAccount(
+			accountIvorn
+			) ;
+		//
+		// Add our data node(s).
+		FileManagerNode frog = 
+			delegate.add(
+				home,
+				"frog",
+				FileManagerProperties.DATA_NODE_TYPE
+				);
+		FileManagerNode toad = 
+			delegate.add(
+				home,
+				"toad",
+				FileManagerProperties.DATA_NODE_TYPE
+				);
+		//
+		// Create our move properties.
+		FileManagerProperties request = new FileManagerProperties();
+		request.setManagerResourceIvorn(
+			frog.ivorn()
+			);
+		request.setManagerResourceName(
+			"toad"
+			);
+		//
+		// Execute the move.
+		try {
+			delegate.move(
+				request
+				);
+			}
+		catch (DuplicateNodeException ouch)
+			{
+			return ;
+			}
+		fail("Expected DuplicateNodeException");
+		}
+
+	/**
+	 * Test we can change the node parent.
+	 *
+	 */
+	public void testMoveParent()
+		throws Exception
+		{
+		//
+		// Create the account home.
+		FileManagerNode home = delegate.addAccount(
+			accountIvorn
+			) ;
+		//
+		// Add our data node(s).
+		FileManagerNode frog = 
+			delegate.add(
+				home,
+				"frog",
+				FileManagerProperties.DATA_NODE_TYPE
+				);
+		//
+		// Add our container node.
+		FileManagerNode newt = 
+			delegate.add(
+				home,
+				"newt",
+				FileManagerProperties.CONTAINER_NODE_TYPE
+				);
+		//
+		// Create our move properties.
+		FileManagerProperties request = new FileManagerProperties();
+		request.setManagerResourceIvorn(
+			frog.ivorn()
+			);
+		request.setManagerParentIvorn(
+			newt.ivorn()
+			);
+		//
+		// Execute the move.
+		FileManagerProperties result = 
+			delegate.move(
+				request
+				);
+		//
+		// Check the node name.
+		assertEquals(
+			"frog",
+			result.getManagerResourceName()
+			);
+		//
+		// Check the node parent.
+		assertEquals(
+			newt.ivorn().toString(),
+			result.getManagerParentIvorn().toString()
+			);
+		}
+
+	/**
+	 * Test we can change the node name and parent.
+	 *
+	 */
+	public void testMoveNameParent()
+		throws Exception
+		{
+		//
+		// Create the account home.
+		FileManagerNode home = delegate.addAccount(
+			accountIvorn
+			) ;
+		//
+		// Add our data node(s).
+		FileManagerNode frog = 
+			delegate.add(
+				home,
+				"frog",
+				FileManagerProperties.DATA_NODE_TYPE
+				);
+		//
+		// Add our container node.
+		FileManagerNode newt = 
+			delegate.add(
+				home,
+				"newt",
+				FileManagerProperties.CONTAINER_NODE_TYPE
+				);
+		//
+		// Create our move properties.
+		FileManagerProperties request = new FileManagerProperties();
+		request.setManagerResourceIvorn(
+			frog.ivorn()
+			);
+		request.setManagerResourceName(
+			"toad"
+			);
+		request.setManagerParentIvorn(
+			newt.ivorn()
+			);
+		//
+		// Execute the move.
+		FileManagerProperties result = 
+			delegate.move(
+				request
+				);
+		//
+		// Check the node name.
+		assertEquals(
+			"toad",
+			result.getManagerResourceName()
+			);
+		//
+		// Check the node parent.
+		assertEquals(
+			newt.ivorn().toString(),
+			result.getManagerParentIvorn().toString()
+			);
+		}
+
+	/**
+	 * Check we get the right Exception for a duplicate name.
+	 *
+	 */
+	public void testMoveParentDuplicate()
+		throws Exception
+		{
+		//
+		// Create the account home.
+		FileManagerNode home = delegate.addAccount(
+			accountIvorn
+			) ;
+		//
+		// Add our container node.
+		FileManagerNode newt = 
+			delegate.add(
+				home,
+				"newt",
+				FileManagerProperties.CONTAINER_NODE_TYPE
+				);
+		//
+		// Add our data node(s).
+		FileManagerNode frog = 
+			delegate.add(
+				home,
+				"frog",
+				FileManagerProperties.DATA_NODE_TYPE
+				);
+		FileManagerNode toad = 
+			delegate.add(
+				newt,
+				"toad",
+				FileManagerProperties.DATA_NODE_TYPE
+				);
+		//
+		// Create our move properties.
+		FileManagerProperties request = new FileManagerProperties();
+		request.setManagerResourceIvorn(
+			frog.ivorn()
+			);
+		request.setManagerParentIvorn(
+			newt.ivorn()
+			);
+		request.setManagerResourceName(
+			"toad"
+			);
+		//
+		// Execute the move.
+		try {
+			delegate.move(
+				request
+				);
+			}
+		catch (DuplicateNodeException ouch)
+			{
+			return ;
+			}
+		fail("Expected DuplicateNodeException");
+		}
+
+	/**
+	 * Test we can change the data location of an empty node.
+	 *
+	 */
+	public void testMoveLocationEmpty()
+		throws Exception
+		{
+		//
+		// Create the account home.
+		FileManagerNode home = delegate.addAccount(
+			accountIvorn
+			) ;
+		//
+		// Add a data node.
+		FileManagerNode frog = 
+			delegate.add(
+				home,
+				"frog",
+				FileManagerProperties.DATA_NODE_TYPE
+				);
+		//
+		// Check the data location.
+		assertNotNull(
+			frog.location()
+			);
+		assertEquals(
+			filestores[0].toString(),
+			frog.location().toString()
+			);
+		//
+		// Create our request properties.
+		FileManagerProperties request = new FileManagerProperties();
+		request.setManagerResourceIvorn(
+			frog.ivorn()
+			);
+		request.setManagerLocationIvorn(
+			filestores[1]
+			);
+		//
+		// Execute the move.
+		FileManagerProperties result =
+			delegate.move(
+				request
+				);
+		//
+		// Update the node properties.
+		frog.update();
+		//
+		// Check the data location.
+		assertNotNull(
+			frog.location()
+			);
+		assertEquals(
+			filestores[1].toString(),
+			frog.location().toString()
+			);
+		}
+
+	/**
+	 * Test we can change the data location of a node with data.
+	 *
+	 */
+	public void testMoveLocationData()
+		throws Exception
+		{
+		//
+		// Create the account home.
+		FileManagerNode home = delegate.addAccount(
+			accountIvorn
+			) ;
+		//
+		// Add a data node.
+		FileManagerNode frog = 
+			delegate.add(
+				home,
+				"frog",
+				FileManagerProperties.DATA_NODE_TYPE
+				);
+		//
+		// Check the data location.
+		assertNotNull(
+			frog.location()
+			);
+		assertEquals(
+			filestores[0].toString(),
+			frog.location().toString()
+			);
+
+		//
+		// Create our import request properties.
+		FileManagerProperties importRequest = new FileManagerProperties() ;
+		//
+		// Set the resource ivorn.
+		importRequest.setManagerResourceIvorn(
+			frog.ivorn()
+			);
+		//
+		// Call our manager to initiate the import.
+		TransferProperties importTransfer =
+			delegate.importInit(
+				importRequest
+				) ;
+		//
+		// Create an output stream to the target.
+		FileStoreOutputStream importStream = new FileStoreOutputStream(
+			importTransfer.getLocation()
+			) ;
+		//
+		// Transfer our data.
+		importStream.open() ;
+		importStream.write(
+			TEST_BYTES
+			) ;
+		importStream.close() ;
+
+		//
+		// Create our transfer request properties.
+		FileManagerProperties moveRequest = new FileManagerProperties();
+		moveRequest.setManagerResourceIvorn(
+			frog.ivorn()
+			);
+		moveRequest.setManagerLocationIvorn(
+			filestores[1]
+			);
+		//
+		// Execute the move.
+		FileManagerProperties result =
+			delegate.move(
+				moveRequest
+				);
+
+		//
+		// Create our export request properties.
+		FileManagerProperties exportRequest = new FileManagerProperties() ;
+		//
+		// Set the resource ivorn.
+		exportRequest.setManagerResourceIvorn(
+			frog.ivorn()
+			);
+		//
+		// Call our manager to initiate the export.
+		TransferProperties exportTransfer =
+			delegate.exportInit(
+				exportRequest
+				) ;
+		//
+		// Create an input stream from the target.
+		FileStoreInputStream exportStream = new FileStoreInputStream(
+			exportTransfer.getLocation()
+			) ;
+		//
+		// Create our buffer stream.
+		ByteArrayOutputStream buffer = new ByteArrayOutputStream() ;
+		//
+		// Read the data from the export location.
+		exportStream.open();
+		new TransferUtil(
+			exportStream,
+			buffer
+			).transfer();
+		exportStream.close();
+		//
+		// Check we got the right data back.
+		assertEquals(
+			TEST_BYTES,
+			buffer.toByteArray()
+			);
+		}
+
+	/**
+	 * Check we get the right list of child nodes.
+	 *
+	 */
+	public void testGetChildrenIvorns()
+		throws Exception
+		{
+		//
+		// Create the account home.
+		FileManagerNode home = delegate.addAccount(
+			accountIvorn
+			) ;
+		//
+		// Add some data nodes.
+		FileManagerNode frog = 
+			delegate.add(
+				home,
+				"frog",
+				FileManagerProperties.DATA_NODE_TYPE
+				);
+		FileManagerNode toad = 
+			delegate.add(
+				home,
+				"toad",
+				FileManagerProperties.DATA_NODE_TYPE
+				);
+		FileManagerNode newt = 
+			delegate.add(
+				home,
+				"newt",
+				FileManagerProperties.DATA_NODE_TYPE
+				);
+		//
+		// Get the list of child nodes.
+		List list = delegate.getChildren(
+			home.ivorn()
+			) ;
+		//
+		// Check the list contains the right nodes.
+		int     totalFound = 0 ;
+		boolean frogFound  = false ;
+		boolean toadFound  = false ;
+		boolean newtFound  = false ;
+		Iterator iter = list.iterator();
+		while(iter.hasNext())
+			{
+			Ivorn ivorn = (Ivorn) iter.next();
+			if (ivorn.toString().equals(frog.ivorn().toString()))
+				{
+				totalFound++;
+				frogFound = true ;
+				}
+			if (ivorn.toString().equals(toad.ivorn().toString()))
+				{
+				totalFound++;
+				toadFound = true ;
+				}
+			if (ivorn.toString().equals(newt.ivorn().toString()))
+				{
+				totalFound++;
+				newtFound = true ;
+				}
+			}
+		assertEquals(
+			3,
+			totalFound
+			) ;
+		assertTrue(
+			frogFound
+			);
+		assertTrue(
+			toadFound
+			);
+		assertTrue(
+			newtFound
+			);
+		}
+
+	/**
+	 * Check we get the right Exception for a null request.
+	 *
+	 */
+	public void testCopyNullRequest()
+		throws Exception
+		{
+		try {
+			delegate.copy(
+				null
+				);
+			}
+		catch (IllegalArgumentException ouch)
+			{
+			return ;
+			}
+		fail("Expected IllegalArgumentException") ;
+		}
+
+	/**
+	 * Check we get the right Exception for a null resource.
+	 *
+	 */
+	public void testCopyNullResource()
+		throws Exception
+		{
+		//
+		// Create the account home.
+		FileManagerNode home = delegate.addAccount(
+			accountIvorn
+			) ;
+		//
+		// Create our request.
+		FileManagerProperties request = new FileManagerProperties() ;
+		request.setManagerParentIvorn(
+			home.ivorn()
+			);
+		request.setManagerResourceName(
+			"frog"
+			);
+		try {
+			delegate.copy(
+				request
+				);
+			}
+		catch (NodeNotFoundException ouch)
+			{
+			return ;
+			}
+		fail("Expected NodeNotFoundException") ;
+		}
+
+	/**
+	 * Check we get the right Exception for an unknown resource.
+	 *
+	 */
+	public void testCopyUnknownResource()
+		throws Exception
+		{
+		//
+		// Create the account home.
+		FileManagerNode home = delegate.addAccount(
+			accountIvorn
+			) ;
+		//
+		// Create our request.
+		FileManagerProperties request = new FileManagerProperties() ;
+		request.setManagerParentIvorn(
+			home.ivorn()
+			);
+		request.setManagerResourceIvorn(
+			"ivo://unknown#unknown"
+			);
+		request.setManagerResourceName(
+			"toad"
+			);
+		try {
+			delegate.copy(
+				request
+				);
+			}
+		catch (NodeNotFoundException ouch)
+			{
+			return ;
+			}
+		fail("Expected NodeNotFoundException") ;
+		}
+
+	/**
+	 * Check we get the right Exception for the same resource.
+	 *
+	 */
+	public void testCopyDuplicateSame()
+		throws Exception
+		{
+		//
+		// Create the account home.
+		FileManagerNode home = delegate.addAccount(
+			accountIvorn
+			) ;
+		//
+		// Add our data node.
+		FileManagerNode frog =
+			delegate.add(
+				home,
+				"frog",
+				FileManagerProperties.DATA_NODE_TYPE
+				) ;
+		//
+		// Create our copy request properties.
+		FileManagerProperties request = new FileManagerProperties() ;
+		request.setManagerResourceIvorn(
+			frog.ivorn()
+			);
+		request.setManagerParentIvorn(
+			home.ivorn()
+			);
+		request.setManagerResourceName(
+			"frog"
+			);
+		try {
+			delegate.copy(
+				request
+				);
+			}
+		catch (DuplicateNodeException ouch)
+			{
+			return ;
+			}
+		fail("Expected DuplicateNodeException") ;
+		}
+
+	/**
+	 * Check we get the right Exception for a duplicate node.
+	 *
+	 */
+	public void testCopyDuplicateNode()
+		throws Exception
+		{
+		//
+		// Create the account home.
+		FileManagerNode home = delegate.addAccount(
+			accountIvorn
+			) ;
+		//
+		// Add our source node.
+		FileManagerNode frog =
+			delegate.add(
+				home,
+				"frog",
+				FileManagerProperties.DATA_NODE_TYPE
+				) ;
+		//
+		// Add our target container.
+		FileManagerNode toad =
+			delegate.add(
+				home,
+				"toad",
+				FileManagerProperties.CONTAINER_NODE_TYPE
+				) ;
+		//
+		// Add our duplicate node.
+		FileManagerNode newt =
+			delegate.add(
+				toad,
+				"newt",
+				FileManagerProperties.DATA_NODE_TYPE
+				) ;
+		//
+		// Create our copy request.
+		FileManagerProperties request = new FileManagerProperties() ;
+		request.setManagerResourceIvorn(
+			frog.ivorn()
+			);
+		request.setManagerParentIvorn(
+			toad.ivorn()
+			);
+		request.setManagerResourceName(
+			"newt"
+			);
+		try {
+			delegate.copy(
+				request
+				);
+			}
+		catch (DuplicateNodeException ouch)
+			{
+			return ;
+			}
+		fail("Expected DuplicateNodeException") ;
+		}
+
+	/**
+	 * Check we can copy an empty node.
+	 *
+	 */
+	public void testCopyEmptyNode()
+		throws Exception
+		{
+		//
+		// Create the account home.
+		FileManagerNode home = delegate.addAccount(
+			accountIvorn
+			) ;
+		//
+		// Add our source node.
+		FileManagerNode frog =
+			delegate.add(
+				home,
+				"frog",
+				FileManagerProperties.DATA_NODE_TYPE
+				) ;
+		//
+		// Create our request.
+		FileManagerProperties request = new FileManagerProperties() ;
+		request.setManagerParentIvorn(
+			home.ivorn()
+			);
+		request.setManagerResourceIvorn(
+			frog.ivorn()
+			);
+		request.setManagerResourceName(
+			"toad"
+			);
+
+		//
+		// Create our copy.
+		FileManagerNode toad =
+			delegate.copy(
+				request
+				);
+		//
+		// Check we got the right name.
+		assertEquals(
+			"toad",
+			toad.name()
+			);
+		//
+		// Check we got the right parent.
+		assertEquals(
+			home.ivorn(),
+			toad.parent().ivorn()
+			);
+		}
+
+	/**
+	 * Check we can copy a node with data.
+	 *
+	 */
+	public void testCopyNodeData()
+		throws Exception
+		{
+		//
+		// Create the account home.
+		FileManagerNode home = delegate.addAccount(
+			accountIvorn
+			) ;
+		//
+		// Add our source node.
+		FileManagerNode frog =
+			delegate.add(
+				home,
+				"frog",
+				FileManagerProperties.DATA_NODE_TYPE
+				) ;
+		//
+		// Create our import request properties.
+		FileManagerProperties importRequest = new FileManagerProperties() ;
+		//
+		// Set the resource ivorn.
+		importRequest.setManagerResourceIvorn(
+			frog.ivorn()
+			);
+		//
+		// Call our manager to initiate the import.
+		TransferProperties importTransfer =
+			delegate.importInit(
+				importRequest
+				) ;
+		//
+		// Create an output stream to the target.
+		FileStoreOutputStream importStream = new FileStoreOutputStream(
+			importTransfer.getLocation()
+			) ;
+		//
+		// Transfer our data.
+		importStream.open() ;
+		importStream.write(
+			TEST_BYTES
+			) ;
+		importStream.close() ;
+
+		//
+		// Create our copy request.
+		FileManagerProperties request = new FileManagerProperties() ;
+		request.setManagerParentIvorn(
+			home.ivorn()
+			);
+		request.setManagerResourceIvorn(
+			frog.ivorn()
+			);
+		request.setManagerResourceName(
+			"toad"
+			);
+		//
+		// Create our copy.
+		FileManagerNode toad =
+			delegate.copy(
+				request
+				);
+
+		//
+		// Create our export request properties.
+		FileManagerProperties exportRequest = new FileManagerProperties() ;
+		//
+		// Set the resource ivorn.
+		exportRequest.setManagerResourceIvorn(
+			toad.ivorn()
+			);
+		//
+		// Call our manager to initiate the export.
+		TransferProperties exportTransfer =
+			delegate.exportInit(
+				exportRequest
+				) ;
+		//
+		// Create an input stream from the target.
+		FileStoreInputStream exportStream = new FileStoreInputStream(
+			exportTransfer.getLocation()
+			) ;
+		//
+		// Create our buffer stream.
+		ByteArrayOutputStream buffer = new ByteArrayOutputStream() ;
+		//
+		// Read the data from the export location.
+		exportStream.open();
+		new TransferUtil(
+			exportStream,
+			buffer
+			).transfer();
+		exportStream.close();
+		//
+		// Check we got the right data back.
+		assertEquals(
+			TEST_BYTES,
+			buffer.toByteArray()
+			);
+		}
+
+	/**
+	 * Check we can copy a data node to another location.
+	 *
+	 */
+	public void testCopyNodeLocation()
+		throws Exception
+		{
+		//
+		// Create the account home.
+		FileManagerNode home = delegate.addAccount(
+			accountIvorn
+			) ;
+		//
+		// Add our source node.
+		FileManagerNode frog =
+			delegate.add(
+				home,
+				"frog",
+				FileManagerProperties.DATA_NODE_TYPE
+				) ;
+
+		//
+		// Create our import request properties.
+		FileManagerProperties importRequest = new FileManagerProperties() ;
+		//
+		// Set the resource ivorn.
+		importRequest.setManagerResourceIvorn(
+			frog.ivorn()
+			);
+		//
+		// Call our manager to initiate the import.
+		TransferProperties importTransfer =
+			delegate.importInit(
+				importRequest
+				) ;
+		//
+		// Create an output stream to the target.
+		FileStoreOutputStream importStream = new FileStoreOutputStream(
+			importTransfer.getLocation()
+			) ;
+		//
+		// Transfer our data.
+		importStream.open() ;
+		importStream.write(
+			TEST_BYTES
+			) ;
+		importStream.close() ;
+
+		//
+		// Check the node location.
+		assertEquals(
+			filestores[0],
+			frog.location()
+			);
+
+		//
+		// Create our copy request.
+		FileManagerProperties request = new FileManagerProperties() ;
+		request.setManagerParentIvorn(
+			home.ivorn()
+			);
+		request.setManagerResourceIvorn(
+			frog.ivorn()
+			);
+		request.setManagerResourceName(
+			"toad"
+			);
+		request.setManagerLocationIvorn(
+			filestores[1]
+			);
+
+		//
+		// Create our copy.
+System.out.println("");
+System.out.println("------------------");
+System.out.println("");
+		FileManagerNode toad =
+			delegate.copy(
+				request
+				);
+System.out.println("");
+System.out.println("------------------");
+System.out.println("");
+
+		//
+		// Create our export request properties.
+		FileManagerProperties exportRequest = new FileManagerProperties() ;
+		//
+		// Set the resource ivorn.
+		exportRequest.setManagerResourceIvorn(
+			toad.ivorn()
+			);
+		//
+		// Call our manager to initiate the export.
+		TransferProperties exportTransfer =
+			delegate.exportInit(
+				exportRequest
+				) ;
+		//
+		// Create an input stream from the target.
+		FileStoreInputStream exportStream = new FileStoreInputStream(
+			exportTransfer.getLocation()
+			) ;
+		//
+		// Create our buffer stream.
+		ByteArrayOutputStream buffer = new ByteArrayOutputStream() ;
+		//
+		// Read the data from the export location.
+		exportStream.open();
+		new TransferUtil(
+			exportStream,
+			buffer
+			).transfer();
+		exportStream.close();
+		//
+		// Check we got the right data back.
+		assertEquals(
+			TEST_BYTES,
+			buffer.toByteArray()
+			);
+
+		//
+		// Check the node location.
+		assertEquals(
+			filestores[1],
+			toad.location()
+			);
+		}
 	}
+
 

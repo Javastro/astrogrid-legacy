@@ -1,12 +1,15 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/src/test/org/astrogrid/filemanager/resolver/Attic/FileManagerDelegateResolverTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/11/25 00:20:29 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/12/16 17:25:49 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  * <cvs:log>
  *   $Log: FileManagerDelegateResolverTestCase.java,v $
- *   Revision 1.2  2004/11/25 00:20:29  jdt
- *   Merge from dave-dev-200410061224-200411221626
+ *   Revision 1.3  2004/12/16 17:25:49  jdt
+ *   merge from dave-dev-200410061224-200412161312
+ *
+ *   Revision 1.1.2.2  2004/11/24 16:15:08  dave
+ *   Added node functions to client ...
  *
  *   Revision 1.1.2.1  2004/11/18 16:06:11  dave
  *   Added delegate resolver and tests ....
@@ -26,9 +29,18 @@ import org.astrogrid.store.Ivorn ;
 
 import org.astrogrid.registry.client.query.RegistryService ;
 
+import org.astrogrid.filemanager.common.FileManager;
+import org.astrogrid.filemanager.common.FileManagerMock;
+import org.astrogrid.filemanager.common.FileManagerConfigMock;
+
+import org.astrogrid.filemanager.common.ivorn.FileManagerIvornFactory;
+
 import org.astrogrid.filemanager.client.FileManagerDelegate ;
 import org.astrogrid.filemanager.client.FileManagerSoapDelegate ;
 import org.astrogrid.filemanager.common.exception.FileManagerIdentifierException ;
+
+import org.astrogrid.filestore.client.FileStoreMockDelegate;
+import org.astrogrid.filestore.resolver.FileStoreDelegateResolverMock ;
 
 /**
  * A JUnit test case for the service resolver.
@@ -54,6 +66,45 @@ public class FileManagerDelegateResolverTestCase
         //
         // Initialise the Axis 'local:' URL protocol.
         Call.initialize() ;
+		//
+		// Setup our filestore identifiers.
+		Ivorn[] filestores = new Ivorn[]
+			{
+			new Ivorn("ivo://filestore/alpha"),
+			new Ivorn("ivo://filestore/beta")
+			} ;
+		//
+		// Setup the default manager config.
+		FileManagerMock.defaultConfig = 
+			new FileManagerConfigMock(
+				new Ivorn(
+					getTestProperty(
+						"service.ivorn"
+						)
+					),
+				filestores[0]
+				);
+		//
+		// Initialise our filestore resolver.
+		FileStoreDelegateResolverMock resolver = new FileStoreDelegateResolverMock() ;
+		//
+		// Register our test filestore(s).
+		resolver.register(
+			new FileStoreMockDelegate(
+				filestores[0]
+				)
+			);
+		resolver.register(
+			new FileStoreMockDelegate(
+				filestores[1]
+				)
+			);
+		//
+		// Setup the default resolver.
+		FileManagerMock.defaultResolver = resolver ;
+		//
+		// Setup the default manager factory.
+		FileManagerMock.defaultFactory = new FileManagerIvornFactory();
         }
 
 	/**
@@ -147,7 +198,7 @@ public class FileManagerDelegateResolverTestCase
 			resolver.resolve(
 				new Ivorn(
 					getTestProperty(
-						"resolver.ivorn"
+						"service.ivorn"
 						)
 					)
 				) ;

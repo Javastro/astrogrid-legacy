@@ -1,12 +1,16 @@
 /*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/common/src/java/org/astrogrid/filemanager/common/Attic/FileManagerPropertyFilter.java,v $</cvs:source>
+ * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/common/src/java/org/astrogrid/filemanager/common/Attic/FileManagerResourceFilter.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
  * <cvs:date>$Date: 2004/12/16 17:25:49 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  * <cvs:log>
- *   $Log: FileManagerPropertyFilter.java,v $
- *   Revision 1.3  2004/12/16 17:25:49  jdt
+ *   $Log: FileManagerResourceFilter.java,v $
+ *   Revision 1.2  2004/12/16 17:25:49  jdt
  *   merge from dave-dev-200410061224-200412161312
+ *
+ *   Revision 1.1.2.1  2004/12/11 05:59:18  dave
+ *   Added internal copy for nodes ...
+ *   Added local copy for data ...
  *
  *   Revision 1.1.2.4  2004/12/08 01:56:04  dave
  *   Added filestore location to move ...
@@ -27,22 +31,24 @@ package org.astrogrid.filemanager.common ;
 
 import org.astrogrid.filestore.common.file.FileProperty ;
 import org.astrogrid.filestore.common.file.PropertyFilter ;
+import org.astrogrid.filestore.common.file.FileStorePropertyFilter ;
 
 /**
- * This filter excludes properties that should be set by the local FileManager service.
- * This prevents external entities from changing the local properties.
+ * This filter excludes the FileManager and filestore resource properties.
  *
  *
  */
-public class FileManagerPropertyFilter
+public class FileManagerResourceFilter
+	extends FileStorePropertyFilter
 	implements PropertyFilter
 	{
 	/**
 	 * Public constructor.
 	 *
 	 */
-	public FileManagerPropertyFilter()
+	public FileManagerResourceFilter()
 		{
+		super();
 		}
 
 	/**
@@ -57,21 +63,11 @@ public class FileManagerPropertyFilter
 			{
 			return null ;
 			}
-		if (FileManagerProperties.MANAGER_PARENT_IVORN.equals(property.getName()))
-			{
-			return null ;
-			}
-		if (FileManagerProperties.MANAGER_RESOURCE_TYPE.equals(property.getName()))
-			{
-			return null ;
-			}
-		if (FileManagerProperties.MANAGER_RESOURCE_NAME.equals(property.getName()))
-			{
-			return null ;
-			}
 		//
-		// Return the original property.
-		return property ;
+		// Filter the filestore properties.
+		return super.filter(
+			property
+			) ;
 		}
 	}
 

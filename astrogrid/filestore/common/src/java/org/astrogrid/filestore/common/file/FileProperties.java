@@ -1,12 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/common/src/java/org/astrogrid/filestore/common/file/FileProperties.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/11/25 00:19:27 $</cvs:date>
- * <cvs:version>$Revision: 1.8 $</cvs:version>
+ * <cvs:date>$Date: 2004/12/16 17:25:49 $</cvs:date>
+ * <cvs:version>$Revision: 1.9 $</cvs:version>
  * <cvs:log>
  *   $Log: FileProperties.java,v $
- *   Revision 1.8  2004/11/25 00:19:27  jdt
- *   Merge from dave-dev-200410061224-200411221626
+ *   Revision 1.9  2004/12/16 17:25:49  jdt
+ *   merge from dave-dev-200410061224-200412161312
+ *
+ *   Revision 1.7.24.9  2004/12/11 06:00:12  dave
+ *   Updates to support FileManager copy ....
+ *
+ *   Revision 1.7.24.8  2004/12/08 17:54:55  dave
+ *   Added update to FileManager client and server side ...
  *
  *   Revision 1.7.24.7  2004/11/17 19:06:30  dave
  *   Updated server configuration ...
@@ -266,6 +272,34 @@ public class FileProperties
 
 	/**
 	 * Merge the properties from another map.
+	 * @param that The set of properties to merge.
+	 *
+	 */
+	public void merge(FileProperties that)
+		{
+		if (null != that)
+			{
+			Iterator iter = that.properties.entrySet().iterator() ;
+			while (iter.hasNext())
+				{
+				Entry  entry = (Entry) iter.next() ;
+				String key   = (String) entry.getKey();
+				String value = (String) entry.getValue();
+				if (null != value)
+					{
+					this.setProperty(
+						key,
+						value
+						) ;
+					}
+				}
+			}
+		}
+
+	/**
+	 * Merge the properties from another map, using a filter to exclude specific properties.
+	 * @param that   The set of properties to merge.
+	 * @param filter The filter for excluded properties.
 	 *
 	 */
 	public void merge(FileProperties that, PropertyFilter filter)
@@ -294,7 +328,8 @@ public class FileProperties
 
 	/**
 	 * Merge the properties from an array.
-	 * @todo Need to refactor the skip as a filter.
+	 * @param arrya  The set of properties to merge.
+	 * @param filter The filter for excluded properties.
 	 *
 	 */
 	public void merge(FileProperty[] array, PropertyFilter filter)
@@ -477,7 +512,7 @@ public class FileProperties
 				}
 			}
 		else {
-			return -1L ;
+			return 0L ;
 			}
 		}
 

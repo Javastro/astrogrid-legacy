@@ -1,12 +1,34 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/src/java/org/astrogrid/filemanager/client/Attic/FileManagerCoreDelegate.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/11/25 00:20:29 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/12/16 17:25:49 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  * <cvs:log>
  *   $Log: FileManagerCoreDelegate.java,v $
- *   Revision 1.2  2004/11/25 00:20:29  jdt
- *   Merge from dave-dev-200410061224-200411221626
+ *   Revision 1.3  2004/12/16 17:25:49  jdt
+ *   merge from dave-dev-200410061224-200412161312
+ *
+ *   Revision 1.1.2.13  2004/12/13 10:07:15  dave
+ *   Fixed copy tests for delegate ...
+ *
+ *   Revision 1.1.2.12  2004/12/10 05:21:25  dave
+ *   Added node and iterator to client API ...
+ *
+ *   Revision 1.1.2.11  2004/12/08 17:54:54  dave
+ *   Added update to FileManager client and server side ...
+ *
+ *   Revision 1.1.2.10  2004/12/03 13:27:52  dave
+ *   Core of internal move is in place ....
+ *
+ *   Revision 1.1.2.9  2004/12/02 19:11:54  dave
+ *   Added move name and parent to manager ...
+ *
+ *   Revision 1.1.2.8  2004/11/29 18:05:07  dave
+ *   Refactored methods names ....
+ *   Added stubs for delete, copy and move.
+ *
+ *   Revision 1.1.2.7  2004/11/24 16:15:08  dave
+ *   Added node functions to client ...
  *
  *   Revision 1.1.2.6  2004/11/18 14:39:32  dave
  *   Added SOAP delegate, RemoteException decoding and test case.
@@ -31,9 +53,14 @@
  */
 package org.astrogrid.filemanager.client ;
 
-import java.net.URISyntaxException;
+import java.util.List ;
+import java.util.Arrays ;
+import java.util.ArrayList ;
+import java.util.Iterator ;
+import java.util.Collections ;
 
 import java.rmi.RemoteException ;
+import java.net.URISyntaxException;
 
 import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
@@ -99,10 +126,14 @@ public class FileManagerCoreDelegate
 	public Ivorn getServiceIvorn()
 		throws FileManagerServiceException
 		{
+		log.debug("");
+		log.debug("FileManagerCoreDelegate.getServiceIvorn()");
 		try {
-			return new Ivorn(
+			Ivorn ivorn = new Ivorn(
 				manager.getIdentifier()
 				) ;
+			log.debug("  Ivorn : " + ivorn.toString());
+			return ivorn ;
 			}
 		catch (URISyntaxException ouch)
 			{
@@ -134,6 +165,7 @@ public class FileManagerCoreDelegate
 	protected FileManagerNode node(FileProperty[] properties)
 		{
 		return new FileManagerNodeImpl(
+			this,
 			properties
 			);
 		}
@@ -217,17 +249,20 @@ public class FileManagerCoreDelegate
 		}
 
 	/**
-	 * Add a container node.
-	 * @param parent The parent node.
-	 * @param name The container name.
+	 * Add a new child node.
+	 * @param name The node name.
+	 * @param type The node type (either FILE_NODE or CONTAINER_NODE).
 	 * @return A new node for the container.
-	 * @throws FileManagerIdentifierException If the parent identifier is invalid.
-	 * @throws NodeNotFoundException If the parent node does not exist.
-	 * @throws FileManagerServiceException If a problem occurs when handling the request. 
+	 * @throws UnsupportedOperationException If this node represents a file.
+	 * @throws DuplicateNodeException If a node with the same name already exists.
+	 * @throws NodeNotFoundException If the current node is no longer in the database.
+	 * @throws FileManagerServiceException If a problem occurs when handling the request.
+	 * @see FILE_NODE
+	 * @see CONTAINER_NODE
 	 *
 	 */
-	protected FileManagerNode addContainer(FileManagerNode parent, String name)
-		throws FileManagerServiceException, FileManagerIdentifierException, DuplicateNodeException, NodeNotFoundException
+	protected FileManagerNode add(FileManagerNode parent, String name, String type)
+		throws UnsupportedOperationException, DuplicateNodeException, NodeNotFoundException, FileManagerServiceException, FileManagerIdentifierException 
 		{
 		if (null == parent)
 			{
@@ -235,7 +270,7 @@ public class FileManagerCoreDelegate
 				"Null parent node"
 				);
 			}
-		if (null == parent.getIvorn())
+		if (null == parent.ivorn())
 			{
 			throw new IllegalArgumentException(
 				"Null parent identifier"
@@ -244,7 +279,13 @@ public class FileManagerCoreDelegate
 		if (null == name)
 			{
 			throw new IllegalArgumentException(
-				"Null container name"
+				"Null node name"
+				);
+			}
+		if (null == type)
+			{
+			throw new IllegalArgumentException(
+				"Null node type"
 				);
 			}
 		//
@@ -256,9 +297,9 @@ public class FileManagerCoreDelegate
 			try {
 				return this.node(
 					manager.addNode(
-						parent.getIvorn().toString(),
+						parent.ivorn().toString(),
 						name,
-						FileManagerProperties.CONTAINER_NODE_TYPE
+						type
 						)
 					) ;
 				}
@@ -281,78 +322,7 @@ public class FileManagerCoreDelegate
 		//
 		// If the parent is not a container.
 		else {
-			throw new IllegalArgumentException(
-				"Parent node is not a container"
-				);
-			}
-		}
-
-	/**
-	 * Add a file node.
-	 * @param parent The parent node.
-	 * @param name The file name.
-	 * @return A new node for the file.
-	 * @throws FileManagerIdentifierException If the parent identifier is invalid.
-	 * @throws NodeNotFoundException If the parent node does not exist.
-	 * @throws FileManagerServiceException If a problem occurs when handling the request. 
-	 *
-	 */
-	protected FileManagerNode addFile(FileManagerNode parent, String name)
-		throws FileManagerServiceException, FileManagerIdentifierException, DuplicateNodeException, NodeNotFoundException
-		{
-		if (null == parent)
-			{
-			throw new IllegalArgumentException(
-				"Null parent node"
-				);
-			}
-		if (null == parent.getIvorn())
-			{
-			throw new IllegalArgumentException(
-				"Null parent identifier"
-				);
-			}
-		if (null == name)
-			{
-			throw new IllegalArgumentException(
-				"Null file name"
-				);
-			}
-		//
-		// Check the parent is a container.
-		if (parent.isContainer())
-			{
-			//
-			// Try to create the node.
-			try {
-				return this.node(
-					manager.addNode(
-						parent.getIvorn().toString(),
-						name,
-						FileManagerProperties.DATA_NODE_TYPE
-						)
-					) ;
-				}
-			catch (RemoteException ouch)
-				{
-				//
-				// Look for the expected exceptions.
-				serviceException(ouch);
-				identifierException(ouch);
-				duplicateNodeException(ouch);
-				nodeNotFoundException(ouch);
-				//
-				// Throw a generic service exception.
-				throw new FileManagerServiceException(
-					"Error occurred in WebService call",
-					ouch
-					) ;
-				}
-			}
-		//
-		// If the parent is not a container.
-		else {
-			throw new IllegalArgumentException(
+			throw new UnsupportedOperationException(
 				"Parent node is not a container"
 				);
 			}
@@ -367,7 +337,26 @@ public class FileManagerCoreDelegate
 	 * @throws FileManagerServiceException If a problem occurs when handling the request. 
 	 *
 	 */
-	protected FileManagerNode getNode(Ivorn ivorn)
+	public FileManagerNode getNode(Ivorn ivorn)
+		throws FileManagerServiceException, FileManagerIdentifierException, NodeNotFoundException
+		{
+		return this.node(
+			this.getProperties(
+				ivorn
+				)
+			) ;
+		}
+
+	/**
+	 * Get the properties for a specific node, indexed by ident.
+	 * @param ivorn The node identifier.
+	 * @return The array of properties for the node.
+	 * @throws FileManagerIdentifierException If the node identifier is invalid.
+	 * @throws NodeNotFoundException If the node does not exist.
+	 * @throws FileManagerServiceException If a problem occurs when handling the request. 
+	 *
+	 */
+	public FileProperty[] getProperties(Ivorn ivorn)
 		throws FileManagerServiceException, FileManagerIdentifierException, NodeNotFoundException
 		{
 		if (null == ivorn)
@@ -377,10 +366,8 @@ public class FileManagerCoreDelegate
 				);
 			}
 		try {
-			return this.node(
-				manager.getNode(
-					ivorn.toString()
-					)
+			return manager.getNode(
+				ivorn.toString()
 				);
 			}
 		catch (RemoteException ouch)
@@ -401,6 +388,31 @@ public class FileManagerCoreDelegate
 
 	/**
 	 * Get a specific child node, indexed by path.
+	 * @param node The parent node.
+	 * @param path  The target node path.
+	 * @return The node specified by the path.
+	 * @throws FileManagerIdentifierException If the node identifier is invalid.
+	 * @throws NodeNotFoundException If the node does not exist.
+	 * @throws FileManagerServiceException If a problem occurs when handling the request. 
+	 *
+	 */
+	protected FileManagerNode getChild(FileManagerNode node, String path)
+		throws FileManagerServiceException, FileManagerIdentifierException, NodeNotFoundException
+		{
+		if (null == node)
+			{
+			throw new IllegalArgumentException(
+				"Null parent node"
+				);
+			}
+		return getChild(
+			node.ivorn(),
+			path
+			);
+		}
+
+	/**
+	 * Get a specific child node, indexed by path.
 	 * @param ivorn The identifier of the parent node.
 	 * @param path  The target node path.
 	 * @return The node specified by the path.
@@ -415,7 +427,7 @@ public class FileManagerCoreDelegate
 		if (null == ivorn)
 			{
 			throw new IllegalArgumentException(
-				"Null identifier"
+				"Null parent identifier"
 				);
 			}
 		if (null == path)
@@ -451,14 +463,14 @@ public class FileManagerCoreDelegate
 	/**
 	 * Get the children of a specific node.
 	 * @param ivorn The identifier of the parent node.
-	 * @return An array of the child node names.
+	 * @return A List of Ivorns for the child nodes.
 	 * @throws FileManagerIdentifierException If the node identifier is invalid.
 	 * @throws NodeNotFoundException If the parent node does not exist.
 	 * @throws FileManagerServiceException If a problem occurs when handling the request. 
 	 * @todo Change this to return a list of the child ivorn(s) ... or 'child' objects (name, ivorn, type).
 	 *
 	 */
-	protected String[] getChildren(Ivorn ivorn)
+	protected List getChildren(Ivorn ivorn)
 		throws FileManagerServiceException, FileManagerIdentifierException, NodeNotFoundException
 		{
 		if (null == ivorn)
@@ -468,8 +480,31 @@ public class FileManagerCoreDelegate
 				);
 			}
 		try {
-			return manager.getChildren(
-				ivorn.toString()
+			List ivorns  = new ArrayList();
+			List strings = Arrays.asList(
+				manager.getChildren(
+					ivorn.toString()
+					)
+				);
+			Iterator iter = strings.iterator();
+			while (iter.hasNext())
+				{
+				try {
+					ivorns.add(
+						new Ivorn(
+							(String) iter.next()
+							)
+						);
+					}
+				catch (URISyntaxException ouch)
+					{
+					throw new FileManagerServiceException(
+						"Unable to parse node ivorn"
+						) ;
+					}
+				}
+			return Collections.unmodifiableList(
+				ivorns
 				);
 			}
 		catch (RemoteException ouch)
@@ -809,5 +844,147 @@ public class FileManagerCoreDelegate
 		log.debug("  Not handled") ;
 		}
 
+	/**
+	 * Move a node to a new location.
+	 * If the node already has stored data, then this may involve transfering the data to a new location.
+	 * @param request The properties for the move.
+	 * @return A new set of properties describing the node.
+	 *
+	 * @throws DuplicateNodeException If a node with the same name already exists in the metadata tree.
+	 * @throws NodeNotFoundException If the current node is no longer in the database.
+	 * @throws NodeNotFoundException If the new parent node is no longer in the database.
+	 * @throws FileManagerPropertiesException If the transfer properties are incomplete.
+	 * @throws FileManagerServiceException If a problem occurs when handling the request.
+	 *
+	 */
+	protected FileManagerProperties move(FileManagerProperties request)
+		throws DuplicateNodeException, NodeNotFoundException, FileManagerPropertiesException, FileManagerServiceException
+		{
+		if (null == request)
+			{
+			throw new IllegalArgumentException(
+				"Null request properties"
+				);
+			}
+		try {
+			return new FileManagerProperties(
+				manager.move(
+					request.toArray()
+					)
+				);
+			}
+		catch (RemoteException ouch)
+			{
+			//
+			// Look for the expected exceptions.
+			serviceException(ouch);
+			propertiesException(ouch);
+			nodeNotFoundException(ouch);
+			duplicateNodeException(ouch);
+			//
+			// Throw a generic service exception.
+			throw new FileManagerServiceException(
+				"Error occurred in WebService call",
+				ouch
+				) ;
+			}
+		}
+
+	/**
+	 * Update the properties for a node.
+	 * If this node has stored data, this will trigger a call to the FileStore to update the data properties.
+	 * @param node The node to update.
+	 * @return A new set of properties describing the node.
+	 *
+	 * @throws NodeNotFoundException If the node does not exist.
+	 * @throws FileManagerIdentifierException If the node identifier is invalid.
+	 * @throws FileManagerServiceException If a problem occurs when handling the request. 
+	 *
+	 */
+	public FileManagerProperties update(FileManagerNode node)
+		throws NodeNotFoundException, FileManagerIdentifierException, FileManagerServiceException
+		{
+		log.debug("");
+		log.debug("FileManagerCoreDelegate.update()");
+		if (null == node)
+			{
+			throw new IllegalArgumentException(
+				"Null node"
+				);
+			}
+		if (null == node.ivorn())
+			{
+			throw new IllegalArgumentException(
+				"Null node"
+				);
+			}
+		log.debug("  Node : " + node.ivorn().toString());
+		try {
+			return new FileManagerProperties(
+				manager.update(
+					node.ivorn().toString()
+					)
+				);
+			}
+		catch (RemoteException ouch)
+			{
+			//
+			// Look for the expected exceptions.
+			serviceException(ouch);
+			identifierException(ouch);
+			nodeNotFoundException(ouch);
+			//
+			// Throw a generic service exception.
+			throw new FileManagerServiceException(
+				"Error occurred in WebService call",
+				ouch
+				) ;
+			}
+		}
+
+	/**
+	 * Create a copy of a node.
+	 * If the node already has stored data, then this will create a new copy of the data.
+	 * @param  properties The request properties.
+	 * @return The new node.
+	 * @throws DuplicateNodeException If a node with the same name already exists in the metadata tree.
+	 * @throws NodeNotFoundException If the current node is no longer in the database.
+	 * @throws NodeNotFoundException If the new parent node is no longer in the database.
+	 * @throws FileManagerPropertiesException If the transfer properties are incomplete.
+	 * @throws FileManagerServiceException If a problem occurs when handling the request.
+	 *
+	 */
+	protected FileManagerNode copy(FileManagerProperties request)
+		throws DuplicateNodeException, NodeNotFoundException, FileManagerPropertiesException, FileManagerServiceException
+		{
+		if (null == request)
+			{
+			throw new IllegalArgumentException(
+				"Null request properties"
+				);
+			}
+		try {
+			return this.node(
+				manager.copy(
+					request.toArray()
+					)
+				);
+			}
+		catch (RemoteException ouch)
+			{
+			//
+			// Look for the expected exceptions.
+			serviceException(ouch);
+			propertiesException(ouch);
+			nodeNotFoundException(ouch);
+			duplicateNodeException(ouch);
+			//
+			// Throw a generic service exception.
+			throw new FileManagerServiceException(
+				"Error occurred in WebService call",
+				ouch
+				) ;
+			}
+		}
 	}
 

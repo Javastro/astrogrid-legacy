@@ -1,12 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/common/src/java/org/astrogrid/filemanager/common/Attic/BaseTest.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/11/25 00:20:27 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/12/16 17:25:49 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  * <cvs:log>
  *   $Log: BaseTest.java,v $
- *   Revision 1.2  2004/11/25 00:20:27  jdt
- *   Merge from dave-dev-200410061224-200411221626
+ *   Revision 1.3  2004/12/16 17:25:49  jdt
+ *   merge from dave-dev-200410061224-200412161312
+ *
+ *   Revision 1.1.2.5  2004/12/10 05:21:25  dave
+ *   Added node and iterator to client API ...
+ *
+ *   Revision 1.1.2.4  2004/11/24 16:15:08  dave
+ *   Added node functions to client ...
  *
  *   Revision 1.1.2.3  2004/11/16 03:25:37  dave
  *   Updated API to use full ivorn rather than ident ...
@@ -26,9 +32,6 @@ package org.astrogrid.filemanager.common ;
 
 import junit.framework.TestCase ;
 
-import org.apache.commons.logging.Log ;
-import org.apache.commons.logging.LogFactory ;
-
 import org.astrogrid.store.Ivorn ;
 import org.astrogrid.community.common.ivorn.CommunityAccountIvornFactory ;
 
@@ -39,11 +42,6 @@ import org.astrogrid.community.common.ivorn.CommunityAccountIvornFactory ;
 public class BaseTest
 	extends TestCase
 	{
-    /**
-     * Our debug logger.
-     *
-     */
-    protected static Log log = LogFactory.getLog(BaseTest.class);
 
 	/**
 	 * Test properties prefix.
@@ -135,28 +133,11 @@ public class BaseTest
 		} ;
 
 	/**
-	 * Debug utility to log an array of bytes.
-	 *
-	 */
-	public static void printBytes(byte[] data)
-		{
-		log.debug("--------") ;
-		for (int i = 0 ; i < data.length ; i++)
-			{
-			log.debug(
-				"[" + i + "] '" + Integer.toHexString(data[i]) + "'"
-				) ;
-			}
-		log.debug("--------") ;
-		}
-
-	/**
 	 * Test utility to compare two arrays of bytes.
 	 *
 	 */
 	public static void assertEquals(byte[] left, byte[] right)
 		{
-		log.debug("--------") ;
 		assertEquals(
 			"Different array length",
 			left.length,
@@ -164,16 +145,12 @@ public class BaseTest
 			) ;
 		for (int i = 0 ; i < left.length ; i++)
 			{
-			log.debug(
-				"[" + i + "] " + Integer.toHexString(left[i]) + ":" + Integer.toHexString(right[i])
-				) ;
 			assertEquals(
 				"Wrong value for byte[" + i + "]",
 				left[i],
 				right[i]
 				) ;
 			}
-		log.debug("--------") ;
 		}
 
 	/**
@@ -208,8 +185,6 @@ public class BaseTest
 	public void setUp()
 		throws Exception
 		{
-		log.debug("");
-		log.debug("BaseTest.setUp()");
 		//
 		// Create our test accounts.
 		accountIvorn = CommunityAccountIvornFactory.createLocal(
@@ -228,5 +203,28 @@ public class BaseTest
 		// Create our test account names.
 		accountName = accountIvorn.toString() ;
 		unknownName = unknownIvorn.toString() ;
+		}
+
+	/**
+	 * Compare tow ivorns.
+	 *
+	 */
+	public boolean compare(Ivorn frog, Ivorn toad)
+		{
+		return frog.toString().equals(
+			toad.toString()
+			);
+		}
+
+	/**
+	 * Compare two Ivorns.
+	 *
+	 */
+	public void assertEquals(Ivorn frog, Ivorn toad)
+		{
+		assertEquals(
+			frog.toString(),
+			toad.toString()
+			);
 		}
 	}

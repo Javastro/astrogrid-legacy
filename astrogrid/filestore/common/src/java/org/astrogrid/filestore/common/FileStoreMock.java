@@ -1,12 +1,21 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/common/src/java/org/astrogrid/filestore/common/FileStoreMock.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/11/25 00:19:19 $</cvs:date>
- * <cvs:version>$Revision: 1.10 $</cvs:version>
+ * <cvs:date>$Date: 2004/12/16 17:25:49 $</cvs:date>
+ * <cvs:version>$Revision: 1.11 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreMock.java,v $
- *   Revision 1.10  2004/11/25 00:19:19  jdt
- *   Merge from dave-dev-200410061224-200411221626
+ *   Revision 1.11  2004/12/16 17:25:49  jdt
+ *   merge from dave-dev-200410061224-200412161312
+ *
+ *   Revision 1.9.14.11  2004/12/11 06:00:12  dave
+ *   Updates to support FileManager copy ....
+ *
+ *   Revision 1.9.14.10  2004/12/08 17:54:55  dave
+ *   Added update to FileManager client and server side ...
+ *
+ *   Revision 1.9.14.9  2004/12/08 01:58:51  dave
+ *   Adde filestore location to filemanager move ...
  *
  *   Revision 1.9.14.8  2004/11/06 19:12:18  dave
  *   Refactored identifier properties ...
@@ -316,15 +325,17 @@ public class FileStoreMock
 		 * Access to the data size.
 		 *
 		 */
-		public int getSize()
+		public long getSize()
 			{
+			log.debug("") ;
+			log.debug("FileStoreMock.ContainerMock.getSize()") ;
+			long size = 0L ;
 			if (null != this.data)
 				{
-				return this.data.length ;
+				size = this.data.length ;
 				}
-			else {
-				return 0 ;
-				}
+			log.debug("  Size : " + String.valueOf(size)) ;
+			return size ;
 			}
 
 		/**
@@ -393,6 +404,9 @@ public class FileStoreMock
 		public void importData(URL url)
 			throws FileStoreServiceException, IOException
 			{
+			log.debug("") ;
+			log.debug("FileStoreMock.ContainerMock.importData(URL)") ;
+			log.debug("  URL : " + url.toString()) ;
 			//
 			// Open a connection to the URL.
 			URLConnection connection = url.openConnection() ;
@@ -465,6 +479,8 @@ public class FileStoreMock
 		public void update()
 			throws FileStoreServiceException
 			{
+			log.debug("") ;
+			log.debug("FileStoreMock.ContainerMock.update()") ;
 			//
 			// Update the resource ivorn.
 			this.properties.setStoreResourceIvorn(
@@ -523,6 +539,7 @@ public class FileStoreMock
 		/**
 		 * Create a connector for our mock URL.
 		 * @todo The Connector should contain the URL.
+		 * @todo The Connector should handle appends.
 		 *
 		 */
 		public Connector getMockConnector()
@@ -669,6 +686,7 @@ public class FileStoreMock
 		log.debug("") ;
 		log.debug("----\"----") ;
 		log.debug("FileStoreMock.appendString()") ;
+		log.debug("  Ident : " + ident) ;
 		//
 		// Check for null data.
 		if (null == data)
@@ -701,7 +719,8 @@ public class FileStoreMock
 		{
 		log.debug("") ;
 		log.debug("----\"----") ;
-		log.debug("FileStoreMock.appendString()") ;
+		log.debug("FileStoreMock.appendBytes()") ;
+		log.debug("  Ident : " + ident) ;
 		//
 		// Check for null data.
 		if (null == data)
@@ -753,6 +772,10 @@ public class FileStoreMock
 	public String exportString(String ident)
 		throws FileStoreServiceException, FileStoreIdentifierException, FileStoreNotFoundException
 		{
+		log.debug("") ;
+		log.debug("----\"----") ;
+		log.debug("FileStoreMock.exportString()") ;
+		log.debug("  Ident : " + ident) ;
 		return new String(
 			this.exportBytes(
 				ident
@@ -772,6 +795,10 @@ public class FileStoreMock
 	public byte[] exportBytes(String ident)
 		throws FileStoreServiceException, FileStoreIdentifierException, FileStoreNotFoundException
 		{
+		log.debug("") ;
+		log.debug("----\"----") ;
+		log.debug("FileStoreMock.exportBytes()") ;
+		log.debug("  Ident : " + ident) ;
 		//
 		// Check for null ident.
 		if (null == ident)
@@ -811,6 +838,10 @@ public class FileStoreMock
 	public FileProperty[] duplicate(String ident, FileProperty[] properties)
 		throws FileStoreServiceException, FileStoreIdentifierException, FileStoreNotFoundException
 		{
+		log.debug("") ;
+		log.debug("----\"----") ;
+		log.debug("FileStoreMock.duplicate()") ;
+		log.debug("  Ident : " + ident) ;
 		//
 		// Check for null ident.
 		if (null == ident)
@@ -864,6 +895,10 @@ public class FileStoreMock
 	public FileProperty[] delete(String ident)
 		throws FileStoreServiceException, FileStoreIdentifierException, FileStoreNotFoundException
 		{
+		log.debug("") ;
+		log.debug("----\"----") ;
+		log.debug("FileStoreMock.delete()") ;
+		log.debug("  Ident : " + ident) ;
 		//
 		// Check for null ident.
 		if (null == ident)
@@ -907,6 +942,10 @@ public class FileStoreMock
 	public FileProperty[] properties(String ident)
 		throws FileStoreServiceException, FileStoreIdentifierException, FileStoreNotFoundException
 		{
+		log.debug("") ;
+		log.debug("----\"----") ;
+		log.debug("FileStoreMock.properties()") ;
+		log.debug("  Ident : " + ident) ;
 		//
 		// Check for null ident.
 		if (null == ident)
@@ -920,6 +959,9 @@ public class FileStoreMock
 		// If we found a matching container.
 		if (null != container)
 			{
+			//
+			// Update the properties.
+			container.update();
 			//
 			// Return the container properties.
 			return container.properties().toArray() ;
@@ -1087,6 +1129,7 @@ public class FileStoreMock
 				"Unable to parse resource identifier"
 				) ;
 			}
+		log.debug("  Ident : " + ident) ;
 		//
 		// Try to locate our container.
 		ContainerMock container = (ContainerMock) map.get(ident) ;

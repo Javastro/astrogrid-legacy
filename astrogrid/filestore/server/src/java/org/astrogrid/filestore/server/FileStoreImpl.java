@@ -2,12 +2,15 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/server/src/java/org/astrogrid/filestore/server/FileStoreImpl.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/11/25 00:19:27 $</cvs:date>
- * <cvs:version>$Revision: 1.10 $</cvs:version>
+ * <cvs:date>$Date: 2004/12/16 17:25:49 $</cvs:date>
+ * <cvs:version>$Revision: 1.11 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreImpl.java,v $
- *   Revision 1.10  2004/11/25 00:19:27  jdt
- *   Merge from dave-dev-200410061224-200411221626
+ *   Revision 1.11  2004/12/16 17:25:49  jdt
+ *   merge from dave-dev-200410061224-200412161312
+ *
+ *   Revision 1.9.14.7  2004/12/08 17:54:55  dave
+ *   Added update to FileManager client and server side ...
  *
  *   Revision 1.9.14.6  2004/11/09 17:41:36  dave
  *   Added file:// URL handling to allow server URLs to be tested.
@@ -471,8 +474,16 @@ public class FileStoreImpl
         throws FileStoreServiceException, FileStoreIdentifierException, FileStoreNotFoundException
         {
         //
-        // Locate the container and return the info.
-        return repository.load(ident).properties().toArray() ;
+        // Locate the container.
+		RepositoryContainer container = repository.load(
+			ident
+			);
+		//
+		// Update and save the properties.
+		container.update() ;
+		//
+		// Return the updated properties.
+        return container.properties().toArray() ;
         }
 
     /**

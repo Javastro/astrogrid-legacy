@@ -1,35 +1,27 @@
 /*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/src/test/org/astrogrid/filemanager/client/Attic/FileManagerSoapDelegateTestCase.java,v $</cvs:source>
+ * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/src/test/org/astrogrid/filemanager/client/Attic/FileManagerMockDelegateNodeTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
  * <cvs:date>$Date: 2004/12/16 17:25:49 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  * <cvs:log>
- *   $Log: FileManagerSoapDelegateTestCase.java,v $
- *   Revision 1.3  2004/12/16 17:25:49  jdt
+ *   $Log: FileManagerMockDelegateNodeTestCase.java,v $
+ *   Revision 1.2  2004/12/16 17:25:49  jdt
  *   merge from dave-dev-200410061224-200412161312
  *
- *   Revision 1.1.2.4  2004/12/08 01:56:04  dave
+ *   Revision 1.1.2.3  2004/12/08 01:56:04  dave
  *   Added filestore location to move ...
  *
- *   Revision 1.1.2.3  2004/11/26 04:22:24  dave
+ *   Revision 1.1.2.2  2004/11/26 04:22:24  dave
  *   Added SOAP delegate node test ...
  *   Added node export test ..
  *
- *   Revision 1.1.2.2  2004/11/24 16:15:08  dave
+ *   Revision 1.1.2.1  2004/11/24 16:15:08  dave
  *   Added node functions to client ...
- *
- *   Revision 1.1.2.1  2004/11/18 14:39:32  dave
- *   Added SOAP delegate, RemoteException decoding and test case.
- *
- *   Revision 1.1.2.1  2004/11/13 01:41:26  dave
- *   Created initial client API ....
  *
  * </cvs:log>
  *
  */
 package org.astrogrid.filemanager.client;
-
-import org.apache.axis.client.Call ;
 
 import org.astrogrid.store.Ivorn ;
 
@@ -42,11 +34,11 @@ import org.astrogrid.filestore.client.FileStoreMockDelegate;
 import org.astrogrid.filestore.resolver.FileStoreDelegateResolverMock;
 
 /**
- * A JUnit test for the FileManagerSoapDelegate implementation.
+ * A JUnit test for the FileManager mock delegate nodes.
  *
  */
-public class FileManagerSoapDelegateTestCase
-	extends FileManagerDelegateTest
+public class FileManagerMockDelegateNodeTestCase
+	extends FileManagerNodeTest
 	{
 
 	/**
@@ -57,11 +49,8 @@ public class FileManagerSoapDelegateTestCase
 		throws Exception
 		{
 		//
-		// Setup our base class.
-		super.setUp() ;
-        //
-        // Initialise the Axis 'local:' URL protocol.
-        Call.initialize() ;
+		// Setup our account identifiers.
+		super.setUp();
 		//
 		// Setup our filestore identifiers.
 		filestores = new Ivorn[]
@@ -99,9 +88,8 @@ public class FileManagerSoapDelegateTestCase
 		FileManagerMock.defaultFactory = new FileManagerIvornFactory();
 		//
 		// Create our target delegate.
-		this.delegate = new FileManagerSoapDelegate(
-			"local:///FileManager"
-			) ;
+		this.delegate = new FileManagerMockDelegate();
 		}
+
 	}
 

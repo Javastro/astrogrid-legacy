@@ -1,12 +1,15 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/common/src/test/org/astrogrid/filemanager/common/Attic/FileManagerMockTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/11/25 00:20:29 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/12/16 17:25:49 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  * <cvs:log>
  *   $Log: FileManagerMockTestCase.java,v $
- *   Revision 1.2  2004/11/25 00:20:29  jdt
- *   Merge from dave-dev-200410061224-200411221626
+ *   Revision 1.3  2004/12/16 17:25:49  jdt
+ *   merge from dave-dev-200410061224-200412161312
+ *
+ *   Revision 1.1.2.6  2004/12/06 13:29:02  dave
+ *   Added initial code for move location ....
  *
  *   Revision 1.1.2.5  2004/11/18 14:39:32  dave
  *   Added SOAP delegate, RemoteException decoding and test case.
@@ -43,12 +46,6 @@ import org.astrogrid.filemanager.common.ivorn.FileManagerIvornFactory ;
 public class FileManagerMockTestCase
 	extends FileManagerTest
 	{
-
-	/**
-	 * A set of ivorn identifiers for target file stores.
-	 *
-	 */
-	protected Ivorn[] filestores ;
 
 	/**
 	 * Setup our test.

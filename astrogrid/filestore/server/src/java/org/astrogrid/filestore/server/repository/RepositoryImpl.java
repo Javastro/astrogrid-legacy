@@ -2,19 +2,15 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/server/src/java/org/astrogrid/filestore/server/repository/RepositoryImpl.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/12/13 00:51:56 $</cvs:date>
- * <cvs:version>$Revision: 1.13 $</cvs:version>
+ * <cvs:date>$Date: 2004/12/16 17:25:49 $</cvs:date>
+ * <cvs:version>$Revision: 1.14 $</cvs:version>
  * <cvs:log>
  *   $Log: RepositoryImpl.java,v $
- *   Revision 1.13  2004/12/13 00:51:56  jdt
- *   merge from FLS_JDT_861
+ *   Revision 1.14  2004/12/16 17:25:49  jdt
+ *   merge from dave-dev-200410061224-200412161312
  *
- *   Revision 1.12.2.1  2004/12/09 14:47:37  jdt
- *   Ensure that the outputstream buffer is flushed *before* we try to read it.  (Cause of two windows-only bugs:
- *   testImportBytesSize and testImportStringSize)
- *
- *   Revision 1.12  2004/11/25 00:19:27  jdt
- *   Merge from dave-dev-200410061224-200411221626
+ *   Revision 1.11.10.3  2004/12/08 17:54:55  dave
+ *   Added update to FileManager client and server side ...
  *
  *   Revision 1.11.10.2  2004/11/09 17:41:36  dave
  *   Added file:// URL handling to allow server URLs to be tested.
@@ -405,7 +401,7 @@ public class RepositoryImpl
                 }
             catch (FileStoreServiceException ouch)
                 {
-                return 0 ;
+                return 0L ;
                 }
             }
 
@@ -586,6 +582,9 @@ public class RepositoryImpl
             finally
                 {
                 //
+                // Update our properties.
+                this.update() ;
+                //
                 // Close our output stream.
                 try {
                     if (null != output)
@@ -600,10 +599,6 @@ public class RepositoryImpl
                     log.warn("Failed to close output stream") ;
                     log.warn("----") ;
                     }
-                
-                //
-                // Update our properties.
-                this.update() ;                
                 }
             }
 

@@ -1,12 +1,22 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/src/test/org/astrogrid/filemanager/client/Attic/FileManagerMockDelegateTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/11/25 00:20:30 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/12/16 17:25:49 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  * <cvs:log>
  *   $Log: FileManagerMockDelegateTestCase.java,v $
- *   Revision 1.2  2004/11/25 00:20:30  jdt
- *   Merge from dave-dev-200410061224-200411221626
+ *   Revision 1.3  2004/12/16 17:25:49  jdt
+ *   merge from dave-dev-200410061224-200412161312
+ *
+ *   Revision 1.1.2.5  2004/12/08 01:56:04  dave
+ *   Added filestore location to move ...
+ *
+ *   Revision 1.1.2.4  2004/11/26 04:22:24  dave
+ *   Added SOAP delegate node test ...
+ *   Added node export test ..
+ *
+ *   Revision 1.1.2.3  2004/11/24 16:15:08  dave
+ *   Added node functions to client ...
  *
  *   Revision 1.1.2.2  2004/11/18 14:39:32  dave
  *   Added SOAP delegate, RemoteException decoding and test case.
@@ -18,9 +28,6 @@
  *
  */
 package org.astrogrid.filemanager.client;
-
-import org.apache.commons.logging.Log ;
-import org.apache.commons.logging.LogFactory ;
 
 import org.astrogrid.store.Ivorn ;
 
@@ -39,18 +46,6 @@ import org.astrogrid.filestore.resolver.FileStoreDelegateResolverMock;
 public class FileManagerMockDelegateTestCase
 	extends FileManagerDelegateTest
 	{
-
-    /**
-     * Our debug logger.
-     *
-     */
-    protected static Log log = LogFactory.getLog(FileManagerMockDelegateTestCase.class);
-
-	/**
-	 * A set of ivorn identifiers for target file stores.
-	 *
-	 */
-	protected Ivorn[] filestores ;
 
 	/**
 	 * Setup our test ...

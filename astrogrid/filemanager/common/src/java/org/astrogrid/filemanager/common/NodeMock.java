@@ -1,12 +1,24 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/common/src/java/org/astrogrid/filemanager/common/Attic/NodeMock.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/11/25 00:20:27 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/12/16 17:25:49 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  * <cvs:log>
  *   $Log: NodeMock.java,v $
- *   Revision 1.2  2004/11/25 00:20:27  jdt
- *   Merge from dave-dev-200410061224-200411221626
+ *   Revision 1.3  2004/12/16 17:25:49  jdt
+ *   merge from dave-dev-200410061224-200412161312
+ *
+ *   Revision 1.1.2.21  2004/12/14 15:48:54  dave
+ *   Added delete from filemanager ....
+ *
+ *   Revision 1.1.2.20  2004/12/06 13:29:02  dave
+ *   Added initial code for move location ....
+ *
+ *   Revision 1.1.2.19  2004/12/02 19:11:54  dave
+ *   Added move name and parent to manager ...
+ *
+ *   Revision 1.1.2.18  2004/11/24 16:15:08  dave
+ *   Added node functions to client ...
  *
  *   Revision 1.1.2.17  2004/11/11 17:53:10  dave
  *   Removed Node interface from the server side ....
@@ -70,6 +82,7 @@ package org.astrogrid.filemanager.common ;
 import java.util.Map ;
 import java.util.HashMap ;
 import java.util.Collection ;
+import java.util.StringTokenizer ;
 
 import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
@@ -162,12 +175,18 @@ public class NodeMock
 	protected void addNode(NodeMock node)
 		throws DuplicateNodeException
 		{
+		log.debug("");
+		log.debug("NodeMock.addNode(Node)");
+		log.debug("  This : " + this.getName());
+		log.debug("  This : " + this.getIdent());
 		if (null == node)
 			{
 			throw new IllegalArgumentException(
 				"Null node"
 				) ;
 			}
+		log.debug("  Node : " + node.getName());
+		log.debug("  Node : " + node.getIdent());
 		//
 		// Check if a node already exists.
 		if (children.containsKey(node.getName()))
@@ -175,12 +194,60 @@ public class NodeMock
 			throw new DuplicateNodeException() ;
 			}
 		//
-		// Add the node to our list.
+		// If the node does not exist yet.
 		else {
+			//
+			// Add the node to our list.
 			children.put(
 				node.getName(),
 				node
 				);
+			//
+			// Set the parent ivorn.
+			try {
+				node.setParentIvorn(
+					this.getIvorn()
+					);
+				}
+			catch (FileManagerIdentifierException ouch)
+				{
+				log.warn("");
+				log.warn("Exception parsing parent ivorn");
+				log.warn(ouch);
+				}
+			}
+		}
+
+	/**
+	 * Remove a child node.
+	 * @param name The name of the child node to remove.
+	 * @throws NodeNotFoundException If the node does not exist.
+	 *
+	 */
+	protected void delNode(String name)
+		throws NodeNotFoundException
+		{
+		log.debug("");
+		log.debug("NodeMock.delNode(String)");
+		log.debug("  This : " + this.getName());
+		log.debug("  This : " + this.getIdent());
+		log.debug("  Name : " + name);
+		if (null == name)
+			{
+			throw new IllegalArgumentException(
+				"Null name"
+				) ;
+			}
+		//
+		// Remove the node if it exists.
+		if (children.containsKey(name))
+			{
+			children.remove(
+				name
+				);
+			}
+		else {
+			throw new NodeNotFoundException() ;
 			}
 		}
 
@@ -206,48 +273,52 @@ public class NodeMock
 				) ;
 			}
 		//
-		// Skip any leading '/' from the path.
-		while (path.startsWith("/"))
+		// Split the path on '/'
+		StringTokenizer tokens = new StringTokenizer(path, "/") ;
+		//
+		// Use the StringTokenizer to find the child node(s).
+		return this.getChild(
+			tokens
+			);
+		}
+
+	/**
+	 * Get a child node, indexed by path/name.
+	 * @param tokens A StringTokenizer of the path.
+	 * @return The target node.
+	 * @throws NodeNotFoundException if the child node does not exist.
+	 *
+	 */
+	protected NodeMock getChild(StringTokenizer tokens)
+		throws NodeNotFoundException
+		{
+		log.debug("");
+		log.debug("NodeMock.getChild(StringTokenizer)");
+		log.debug("  This  : " + this.getName());
+		log.debug("  This  : " + this.getIdent());
+		if (null == tokens)
 			{
-			if (path.length() > 1)
-				{
-				path = path.substring(1) ;
-				}
-			else {
-				path = "" ;
-				}
+			throw new IllegalArgumentException(
+				"Null tokens"
+				) ;
 			}
 		//
-		// If we have anything left.
-		if (path.length() > 0)
+		// If we have an initial token.
+		if (tokens.hasMoreTokens())
 			{
-			String step = path ;
-			String next = null ;
-			//
-			// If the path contains another '/'
-			int index = path.indexOf('/') ;
-			if (index > 0)
-				{
-				//
-				// Get the first step of the path.
-				step = path.substring(0, index) ;
-				//
-				// Get the rest of the path.
-				next = path.substring(index) ;
-				}
-			log.debug("  Step : " + step);
-			log.debug("  Next : " + next);
+			String name = tokens.nextToken();
+			log.debug("  Name : " + name);
 			//
 			// If we have a node for the first step.
-			if (children.containsKey(step))
+			if (children.containsKey(name))
 				{
-				NodeMock node = (NodeMock) children.get(step) ;
+				NodeMock node = (NodeMock) children.get(name) ;
 				//
 				// If we have more steps.
-				if (null != next)
+				if (tokens.hasMoreTokens())
 					{
 					return node.getChild(
-						next
+						tokens
 						) ;
 					}
 				//
@@ -257,11 +328,13 @@ public class NodeMock
 					}
 				}
 			//
-			// if we don't have a matching node.
+			// If we don't have a matching node.
 			else {
 				throw new NodeNotFoundException() ;
 				}
 			}
+		//
+		// If we don't have an initial token.
 		else {
 			throw new NodeNotFoundException() ;
 			}
@@ -279,9 +352,9 @@ public class NodeMock
 	 * @todo Need to make this a clone to prevent changes.
 	 *
 	 */
-	public FileProperty[] getProperties()
+	public FileManagerProperties getProperties()
 		{
-		return this.properties.toArray() ;
+		return this.properties ;
 		}
 
 	/**
@@ -351,9 +424,17 @@ public class NodeMock
 	 *
 	 */
 	public Ivorn getParentIvorn()
-		throws FileManagerIdentifierException
 		{
-		return properties.getManagerParentIvorn() ;
+		try {
+			return properties.getManagerParentIvorn();
+			}
+		catch (FileManagerIdentifierException ouch)
+			{
+			log.warn("");
+			log.warn("Exception parsing parent ivorn");
+			log.warn(ouch);
+			return null ;
+			}
 		}
 
 	/**
@@ -408,11 +489,37 @@ public class NodeMock
 		}
 
 	/**
-	 * Get the filestore location.
+	 * Check if this node is a container.
 	 *
-	public Ivorn getStoreServiceIvorn()
-		{
-		return this.properties.getStoreServiceIvorn();
-		}
 	 */
+	public boolean isContainer()
+		{
+		if (null != this.getType())
+			{
+			return FileManagerProperties.CONTAINER_NODE_TYPE.equals(
+				this.getType()
+				);
+			}
+		else {
+			return false ;
+			}
+		}
+
+	/**
+	 * Check if this node is a data node.
+	 *
+	 */
+	public boolean isDataNode()
+		{
+		if (null != this.getType())
+			{
+			return FileManagerProperties.DATA_NODE_TYPE.equals(
+				this.getType()
+				);
+			}
+		else {
+			return false ;
+			}
+		}
+
 	}
