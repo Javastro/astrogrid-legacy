@@ -1,12 +1,13 @@
 #!/bin/bash
-# $Id: autorun.sh,v 1.13 2004/07/04 21:11:58 jdt Exp $ 
+# $Id: autorun.sh,v 1.14 2004/07/04 21:20:50 anoncvs Exp $ 
 OLDDIR=$PWD
 
 #setup paths etc
 source /etc/profile
 CHECKOUTHOME=/data/cvsDownloads/itn06
+TESTMODULE=astrogrid/integrationTests/auto-integration
 SCRIPTHOME=/home/integration/autobuilds
-BUILDHOME=/data/cvsDownloads/itn06/astrogrid/integrationTests/auto-integration
+BUILDHOME=$CHECKOUTHOME/$TESTMODULE
 LOGFILE=/home/integration/mavenrun/auto.log
 DATE=`date`
 TIMESTAMP=`date +%Y%m%d-%T`
@@ -24,22 +25,18 @@ echo "Shutting down Tomcat" >> $LOGFILE
 $CATALINA_HOME/bin/shutdown.sh >> $LOGFILE 2>&1
 echo "Waiting for tomcat to shutdown...." >> $LOGFILE
 sleep 15
-
+maven CLEANTOMCAT >> $LOGFILE 2>&1
+echo "Starting Tomcat" >> $LOGFILE
+$CATALINA_HOME/bin/startup.sh >> $LOGFILE 2>&1
 
 #update from cvs 
-cd $CHECKOUTHOME/astrogrid/integrationTests >> $LOGFILE 2>&1
-rm -r auto-integration
-cvs checkout -P astrogrid/integrationTests/auto-integration  >> $LOGFILE 2>&1
+cd $CHECKOUTHOME >> $LOGFILE 2>&1
+rm -r $TESTMODULE
+cvs checkout -P $TESTMODULE >> $LOGFILE 2>&1
 
 #run maven goals
 cd $BUILDHOME >> $LOGFILE 2>&1
 echo $BUILDHOME >> $LOGFILE
-maven CLEANTOMCAT >> $LOGFILE 2>&1
-
-echo "Starting Tomcat" >> $LOGFILE
-$CATALINA_HOME/bin/startup.sh >> $LOGFILE 2>&1
-
-
 
 if maven undeploy-all >> $LOGFILE 2>&1
 then
