@@ -1,12 +1,12 @@
 /*
- * $Id: StatusHelper.java,v 1.1 2003/11/14 00:36:40 mch Exp $
+ * $Id: StatusHelper.java,v 1.2 2003/11/17 12:12:28 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.common;
 
-import org.astrogrid.datacenter.queriers.DatabaseQuerier;
+//import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.astrogrid.log.Log;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -27,7 +27,7 @@ public class StatusHelper
    /**
     * Returns a status tag for the given service id with the value of the given
     * status
-    */
+    */   
    public static String makeStatusTag(String queryId, QueryStatus status)
    {
        return
@@ -35,7 +35,7 @@ public class StatusHelper
          +status
          +"</"+STATUS_TAG+">\n";
 
-   }
+   }  
    /**
     * Returns a status tag for the given service status with the value of the given
     * status
@@ -49,30 +49,7 @@ public class StatusHelper
 
    }
 
-
-   /**
-    * Returns an Iteration 02 job notification tag with status included.  The
-    * It02 template was this:
-    * <pre>
-<?xml version="1.0" encoding="UTF8"?>
-<!-- Template for making SOAP requests to the JobMonitor -->
-<job name="{0}"
-     userid="{1}"
-     community="{2}"
-     jobURN="{3}"
-     time="{4}" >
-   <jobstep name="{5}" stepNumber="{6}" status="{7}"/>
-</job>
-   </pre>
-    */
-   public static String makeJobNotificationTag(DatabaseQuerier querier)
-   {
-      return
-            "<job name='"+querier.getHandle()+"'  time="+new Date()+"' >"+
-               "<jobstep name='"+querier.getHandle()+"' status='"+querier.getStatus()+"'/>"+
-            "</job>";
-   }
-
+ 
    /**
     * Returns the status of the given service id, given by a status tag in
     * the given dom document

@@ -1,4 +1,4 @@
-/*$Id: MarshallingTest.java,v 1.1 2003/11/14 00:36:40 mch Exp $
+/*$Id: MarshallingTest.java,v 1.2 2003/11/17 12:12:28 nw Exp $
  * Created on 28-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,10 +12,13 @@ package org.astrogrid.datacenter.adql;
 
 import java.io.Reader;
 import java.io.StringReader;
+import java.io.StringWriter;
 
 import junit.framework.TestCase;
 
 import org.astrogrid.datacenter.adql.generated.Select;
+import org.exolab.castor.xml.Marshaller;
+import org.exolab.castor.xml.Unmarshaller;
 /** unit test to exercise the marshalling / unmarshalling / validation framework of the generated castor classes
  * <p>
  * NB - to run this test, must have the castor-xml jar on classpath, and <i>also</i> the xerces.jar . Any other xml parser wont't do - 
@@ -87,6 +90,23 @@ public class MarshallingTest extends TestCase {
         assertEquals(xml,xml1);
     }
     
+    public void testRoundTrip2() throws Exception {
+        Select s = ADQLUtils.buildMinimalQuery();
+        StringWriter sw = new StringWriter();
+        Marshaller m = new Marshaller(sw);
+        m.marshal(s);
+        sw.close();
+        String xml = sw.toString();
+        assertNotNull(xml);
+        // now convert back again.
+        Reader reader = new StringReader(xml);
+        Object result = Unmarshaller.unmarshal(Select.class,reader);
+        assertNotNull(result);
+        assertTrue(result instanceof Select);
+        Select r = (Select)result;
+        assertTrue(r.isValid());
+    }
+    
 
 
 }
@@ -94,6 +114,9 @@ public class MarshallingTest extends TestCase {
 
 /* 
 $Log: MarshallingTest.java,v $
+Revision 1.2  2003/11/17 12:12:28  nw
+first stab at mavenizing the subprojects.
+
 Revision 1.1  2003/11/14 00:36:40  mch
 Code restructure
 

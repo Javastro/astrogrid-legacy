@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: AggregateFunction.java,v 1.1 2003/11/14 00:36:40 mch Exp $
+ * $Id: AggregateFunction.java,v 1.2 2003/11/17 12:12:28 nw Exp $
  */
 
 package org.astrogrid.datacenter.adql.generated.types;
@@ -20,7 +20,7 @@ import org.exolab.castor.xml.Unmarshaller;
 /**
  * Class AggregateFunction.
  * 
- * @version $Revision: 1.1 $ $Date: 2003/11/14 00:36:40 $
+ * @version $Revision: 1.2 $ $Date: 2003/11/17 12:12:28 $
  */
 public class AggregateFunction implements java.io.Serializable {
 

@@ -3,8 +3,11 @@ package org.astrogrid.datacenter.common;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+/** @NWW
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
+*/
 import org.w3c.dom.Document;
+
 
 /**
  * JUnit test case for StatusHelperTest
@@ -36,7 +39,7 @@ public class StatusHelperTest extends TestCase {
 
    }
    
-   /**
+   /*@NWW
    can't run this at the mo as we need to create a proper querier
    
    public void testMakeJobNotificationTag() throws Exception {

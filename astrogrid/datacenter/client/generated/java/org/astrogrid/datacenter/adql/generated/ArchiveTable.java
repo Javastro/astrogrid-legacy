@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ArchiveTable.java,v 1.1 2003/11/14 00:36:40 mch Exp $
+ * $Id: ArchiveTable.java,v 1.2 2003/11/17 12:12:28 nw Exp $
  */
 
 package org.astrogrid.datacenter.adql.generated;
@@ -24,7 +24,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Class ArchiveTable.
  * 
- * @version $Revision: 1.1 $ $Date: 2003/11/14 00:36:40 $
+ * @version $Revision: 1.2 $ $Date: 2003/11/17 12:12:28 $
  */
 public class ArchiveTable extends org.astrogrid.datacenter.adql.generated.Table 
 implements java.io.Serializable

@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.1 2003/11/14 00:36:40 mch Exp $
+/*$Id: AllTests.java,v 1.2 2003/11/17 12:12:28 nw Exp $
  * Created on 11-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,7 +30,7 @@ public class AllTests {
         suite.addTest(DocHelperTest.suite());
         suite.addTest(QueryIdHelperTest.suite());
         suite.addTest(StatusHelperTest.suite());
-        suite.addTest(ResponseHelperTest.suite());
+        //suite.addTest(ResponseHelperTest.suite());
         //$JUnit-END$
         return suite;
     }
@@ -39,6 +39,9 @@ public class AllTests {
 
 /*
 $Log: AllTests.java,v $
+Revision 1.2  2003/11/17 12:12:28  nw
+first stab at mavenizing the subprojects.
+
 Revision 1.1  2003/11/14 00:36:40  mch
 Code restructure
 
