@@ -41,21 +41,28 @@ public class ServiceCredentialHandler extends CredentialHandler {
     System.out.println("Entering ServiceCredentialHandler.handleRequest()");
     SOAPMessage sm = this.getMessage(mc);
     Subject s = new Subject();
+    mc.setProperty("Subject", s);
+
     try {
       WsseHeaderElement.parse(sm, s);
     }
-    catch (Exception e1) {
-      throw new JAXRPCException("Failed to parse a WS-Security header", e1);
+    catch (NoCredentialsException e1) {
+      // Don't authenticate.  Allow anonymous access.
+      System.out.println("No credentials were found. Access is anonymous.");
+      return true;
     }
+    catch (Exception e2) {
+      throw new JAXRPCException("Failed to parse a WS-Security header", e2);
+    }
+
     try {
       Configuration.setConfiguration(new SimpleLoginConfiguration());
       LoginContext l = new LoginContext("", s);
       l.login();
-      System.out.println("Authentication OK, setting Subject property...");
-      mc.setProperty("Subject", s);
+      System.out.println("Authentication OK.");
     }
-    catch (Exception e2) {
-      throw new JAXRPCException("Authentication failed", e2);
+    catch (Exception e3) {
+      throw new JAXRPCException("Authentication failed", e3);
     }
 
     return true;
