@@ -51,14 +51,14 @@ public class VOTableFactoryImpl implements VOTableFactory {
 
 
     public void stream( Query query, Allocation allocation ) throws VOTableException { 
-		if( TRACE_ENABLED ) logger.debug( "stream(): entry") ; 
+		if( TRACE_ENABLED ) logger.debug( "VOTableFactoryImpl.stream(): entry") ; 
 		  
 		ResultSetConverter 
 		    converter = new ResultSetToSimpleVOTable( doubleOutputPattern
 		                                            , floatOutputPattern
 		                                            , dateOutputPattern
 		                                            , timeOutputPattern
-		                                            , timestampOutputPattern ) ;   
+		                                            , timestampOutputPattern ) ;		                                               
 		PrintStream
 		   out = null ;                        
 		
@@ -89,7 +89,7 @@ public class VOTableFactoryImpl implements VOTableFactory {
 			    }
 			}
 			out = null ;
-			if( TRACE_ENABLED ) logger.debug( "stream(): exit") ; 
+			if( TRACE_ENABLED ) logger.debug( "VOTableFactoryImpl.stream(): exit") ; 
 		}
     
     } // end of stream()
