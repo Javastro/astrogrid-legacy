@@ -1,5 +1,5 @@
 /*
- * $Id: FtpDelegateTest.java,v 1.4 2004/01/26 11:53:59 jdt Exp $
+ * $Id: FtpDelegateTest.java,v 1.5 2004/01/26 12:55:27 jdt Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,11 +7,10 @@
 package org.astrogrid.mySpace.delegate;
 import java.io.IOException;
 
-import org.astrogrid.mySpace.delegate.MySpaceSunFtpDelegate;
-
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
+import org.astrogrid.test.OptionalTestCase;
 
 
 /**
@@ -23,7 +22,12 @@ import junit.framework.TestSuite;
  * @author M Hill
  */
 
-public class FtpDelegateTest extends TestCase {
+public class FtpDelegateTest extends OptionalTestCase {
+  static {
+//  This test should only be enabled when running on a machine with access to the ftp server
+//  This must be called before the superclass gets constucted, hence its odd placement here
+    OptionalTestCase.setDisabledByDefault(true); 
+  }
   /**
    * Commons-logging logger
    */
@@ -40,7 +44,6 @@ public class FtpDelegateTest extends TestCase {
     * @throws IOException on problems connecting
     */
   public final void testFtp() throws IOException {
-
       MySpaceSunFtpDelegate pub = new MySpaceSunFtpDelegate(TEST_FTP_SERVER);
       //pub.setLogin("astrogrid","astrogrid");
 
@@ -57,6 +60,8 @@ public class FtpDelegateTest extends TestCase {
 
 
    public static void main(String[] args) throws IOException {
+
+     
       org.astrogrid.log.Log.logToConsole();
       junit.textui.TestRunner.run(suite());
    }
@@ -68,6 +73,10 @@ public class FtpDelegateTest extends TestCase {
 
 /*
  $Log: FtpDelegateTest.java,v $
+ Revision 1.5  2004/01/26 12:55:27  jdt
+ adapted to use Noel's rather spiffing OptionalTestCase.  This test is now disabled by default, 
+ but will be re-enabled on maven, should we get an FTP server we can use.
+
  Revision 1.4  2004/01/26 11:53:59  jdt
  Restored
 
