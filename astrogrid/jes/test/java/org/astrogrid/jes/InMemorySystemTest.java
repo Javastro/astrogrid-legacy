@@ -1,4 +1,4 @@
-/*$Id: InMemorySystemTest.java,v 1.12 2004/03/15 00:32:01 nw Exp $
+/*$Id: InMemorySystemTest.java,v 1.13 2004/03/18 01:30:15 nw Exp $
  * Created on 19-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,6 +16,7 @@ import org.astrogrid.jes.component.ComponentManager;
 import org.astrogrid.jes.component.ComponentManagerFactory;
 import org.astrogrid.jes.delegate.v1.jobcontroller.JobController;
 import org.astrogrid.jes.job.BeanFacade;
+import org.astrogrid.jes.job.JobFactory;
 import org.astrogrid.jes.jobscheduler.Dispatcher;
 import org.astrogrid.jes.jobscheduler.JobScheduler;
 import org.astrogrid.jes.jobscheduler.Policy;
@@ -29,7 +30,9 @@ import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord;
 
 import org.apache.axis.utils.XMLUtils;
+import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
+import org.exolab.castor.xml.ValidationException;
 import org.picocontainer.MutablePicoContainer;
 import org.picocontainer.defaults.CachingComponentAdapter;
 import org.picocontainer.defaults.DefaultComponentAdapterFactory;
@@ -38,11 +41,16 @@ import org.w3c.dom.Document;
 
 import EDU.oswego.cs.dl.util.concurrent.CyclicBarrier;
 import EDU.oswego.cs.dl.util.concurrent.Sync;
+import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
 
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Iterator;
+
+import javax.xml.parsers.ParserConfigurationException;
 
 /** Test that builds entire system (out of in-memory components), and feeds workflow documents into it.
  * <p>
@@ -112,18 +120,27 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
         assertNotNull(docString);
         JobURN urn = getController().submitWorkflow(new WorkflowString(docString));
         assertNotNull(urn);
+
+        JobFactory fac = ComponentManagerFactory.getInstance().getFacade().getJobFactory();        
         // now wait for notification that the system has finished processing.
+        try {
         barrier.attemptBarrier(Sync.ONE_SECOND * WAIT_SECONDS);
+        } catch (TimeoutException te) {
+            try {
+                Workflow job = fac.findJob(JesUtil.axis2castor(urn));
+                dumpDocument(job,"workflow-timeout");
+            } catch (Exception e) {
+                System.out.println("everything's going wrong today");
+                e.printStackTrace();
+            }
+            fail("timed out waiting for the scheduler to complete");
+        }
         assertFalse("timed out waiting for the scheduler to complete",barrier.broken()); // if this is false, meanst that we timed out - need to increase the duration?
- 
-        Workflow job =  ComponentManagerFactory.getInstance().getFacade().getJobFactory().findJob(JesUtil.axis2castor(urn));
-        assertNotNull(job);
         
-        Document doc = XMLUtils.newDocument();
-        Marshaller.marshal(job,doc);
-        OutputStream outS = new FileOutputStream("workflow-output-" + resourceNum + ".xml");
-        XMLUtils.PrettyDocumentToStream(doc,outS);
-        outS.close();
+        Workflow job =  fac.findJob(JesUtil.axis2castor(urn));
+        assertNotNull(job);
+        dumpDocument(job,"workflow-output");
+
         
         // verify that all steps have been run
         for (Iterator i = JesUtil.getJobSteps(job); i.hasNext(); ) {
@@ -136,6 +153,14 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
         assertEquals(ExecutionPhase.COMPLETED,job.getJobExecutionRecord().getStatus());
          
     }
+    
+  protected void dumpDocument(Workflow job,String filename) throws ParserConfigurationException, MarshalException, ValidationException, IOException {        
+    Document doc = XMLUtils.newDocument();
+    Marshaller.marshal(job,doc);
+    OutputStream outS = new FileOutputStream(filename + "-" + resourceNum + ".xml");
+    XMLUtils.PrettyDocumentToStream(doc,outS);
+    outS.close();    
+  }
     /** extended job scheduler that will notify us when tasks are complete. 
      *does this by entering barrier when done - which releases other (presumbably blocked) thread.*/
     public static class ObservableJobScheduler extends org.astrogrid.jes.jobscheduler.impl.SchedulerImpl {
@@ -169,6 +194,9 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
 
 /* 
 $Log: InMemorySystemTest.java,v $
+Revision 1.13  2004/03/18 01:30:15  nw
+improved reporting when there's a timeout
+
 Revision 1.12  2004/03/15 00:32:01  nw
 merged contents of comm package into jobscheduler package.
 
