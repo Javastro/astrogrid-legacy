@@ -1,10 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/common/src/java/org/astrogrid/filemanager/common/Attic/FileManagerStoreMock.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2005/01/13 17:23:15 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2005/02/10 14:17:21 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  * <cvs:log>
  *   $Log: FileManagerStoreMock.java,v $
+ *   Revision 1.3  2005/02/10 14:17:21  jdt
+ *   merge from  filemanager-nww-903
+ *
+ *   Revision 1.2.4.1  2005/02/10 13:12:03  nw
+ *   fixed logging.
+ *   made this a cloning store - to prevent aliasing behaviour
+ *
  *   Revision 1.2  2005/01/13 17:23:15  jdt
  *   merges from dave-dev-200412201250
  *
@@ -25,20 +32,26 @@
  */
 package org.astrogrid.filemanager.common ;
 
-import java.util.Map ;
-import java.util.HashMap ;
+import org.astrogrid.filemanager.common.exception.DuplicateNodeException;
+import org.astrogrid.filemanager.common.exception.FileManagerServiceException;
+import org.astrogrid.filemanager.common.exception.NodeNotFoundException;
+import org.astrogrid.store.Ivorn;
 
-import org.apache.commons.logging.Log ;
-import org.apache.commons.logging.LogFactory ;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
-import org.astrogrid.store.Ivorn ;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.astrogrid.filemanager.common.exception.NodeNotFoundException ;
-import org.astrogrid.filemanager.common.exception.DuplicateNodeException ;
-import org.astrogrid.filemanager.common.exception.FileManagerServiceException ;
-
-/*
+/**
  * A HashTable implementation of the FileManagerStore interface.
+ * @modified nww - previous implementation wasn't a true model of a realistic store, as it 
+ * allowed aliasing - i.e. after adding a node to the store, further manipulations through a held
+ * reference were reflected in the store. This can't be implemented efficiency and simply in a
+ * persistent store. <p>
+ * Instead will clone copies of nodes as they are accessed the store, to remove
+ * possibliity of aliasing. <p>
+ * Will then add explicit <tt>commit()</tt> operation, and adjust unit tests until they succeed again. 
  *
  */
 public class FileManagerStoreMock
@@ -48,7 +61,7 @@ public class FileManagerStoreMock
      * Our debug logger.
      *
      */
-    private static Log log = LogFactory.getLog(FileManagerStoreMock.class);
+    private static Log logger = LogFactory.getLog(FileManagerStoreMock.class);
 
     /**
      * Public constructor.
@@ -62,7 +75,7 @@ public class FileManagerStoreMock
      * Our internal hash table.
      *
      */
-    private Map nodes = new HashMap() ;
+    private CloningMap nodes = new CloningMap();
 
     /**
      * Check if the store contains a node.
@@ -95,11 +108,11 @@ public class FileManagerStoreMock
     public FileManagerStoreNode addNode(Ivorn parent, Ivorn ivorn, String name, String type)
         throws DuplicateNodeException, FileManagerServiceException
         {
-        log.debug("");
-        log.debug("FileManagerStoreMock.addNode(String, String, String, String)");
-        log.debug("  Parent : " + ((null != parent) ? parent.toString() : null));
-        log.debug("  Ivorn  : " + ((null != ivorn)  ? ivorn.toString()  : null));
-        log.debug("  Name   : " + name);
+        if (logger.isDebugEnabled()) {
+            logger.debug("addNode(parent = " + parent + ", ivorn = " + ivorn
+                    + ", name = " + name + ", type = " + type + ") - start");
+        }        
+
         if (null == ivorn)
             {
             throw new IllegalArgumentException(
@@ -134,6 +147,10 @@ public class FileManagerStoreMock
             );
         //
         // Return the new node.
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("addNode() - end");
+        }
         return node ;
         }
 
@@ -146,9 +163,10 @@ public class FileManagerStoreMock
     public FileManagerStoreNode getNode(String ident)
         throws NodeNotFoundException, FileManagerServiceException
         {
-        log.debug("");
-        log.debug("FileManagerStoreMock.getNode(String)");
-        log.debug("  Ident  : " + ident);
+        if (logger.isDebugEnabled()) {
+            logger.debug("getNode(ident = " + ident + ") - start");
+        }
+
         if (null == ident)
             {
             throw new IllegalArgumentException(
@@ -157,9 +175,12 @@ public class FileManagerStoreMock
             }
         if (nodes.containsKey(ident))
             {
-            return (FileManagerStoreNode) nodes.get(
-                ident
-                );
+            FileManagerStoreNode returnFileManagerStoreNode = (FileManagerStoreNode) nodes
+                    .get(ident);
+            if (logger.isDebugEnabled()) {
+                logger.debug("getNode() - end");
+            }
+            return returnFileManagerStoreNode;
             }
         else {
             throw new NodeNotFoundException(
@@ -167,7 +188,30 @@ public class FileManagerStoreMock
                 );
             }
         }
+    /**
+     * @see org.astrogrid.filemanager.common.FileManagerStore#commitNode(org.astrogrid.filemanager.common.FileManagerStoreNode)
+     */
+    public void commitNode(FileManagerStoreNode node) throws NodeNotFoundException, FileManagerServiceException {
+        if (logger.isDebugEnabled()) {
+            logger.debug("commitNode(node = " + node + ") - start");
+        }
 
+        if (node == null) { 
+            throw new IllegalArgumentException("Null node");
+        }
+        String ident = node.getIdent();
+        if (ident == null) {
+            throw new IllegalArgumentException("Null node identifier");
+        }
+        if (!nodes.containsKey(ident)) {
+            throw new NodeNotFoundException("Node not in store");
+        }
+        nodes.put(ident,node);                    
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("commitNode() - end");
+        }
+    }
     /**
      * Remove an existing node from our store.
      * @param node The node to store.
@@ -178,6 +222,10 @@ public class FileManagerStoreMock
     public void delNode(FileManagerStoreNode node)
         throws NodeNotFoundException, FileManagerServiceException
         {
+        if (logger.isDebugEnabled()) {
+            logger.debug("delNode(node = " + node + ") - start");
+        }
+
         if (null == node)
             {
             throw new IllegalArgumentException(
@@ -202,13 +250,17 @@ public class FileManagerStoreMock
                 "Node not in store"
                 );
             }
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("delNode() - end");
+        }
         }
 
     /**
      * Our internal map of accounts.
      *
      */
-    private Map accounts = new HashMap() ;
+    private CloningMap accounts = new CloningMap() ;
 
     /**
      * Check if the store contains an account.
@@ -243,6 +295,11 @@ public class FileManagerStoreMock
     public void addAccount(String ident, FileManagerStoreNode root)
         throws DuplicateNodeException, FileManagerServiceException
         {
+        if (logger.isDebugEnabled()) {
+            logger.debug("addAccount(ident = " + ident + ", root = " + root
+                    + ") - start");
+        }
+
         if (null == ident)
             {
             throw new IllegalArgumentException(
@@ -267,6 +324,10 @@ public class FileManagerStoreMock
                 root
                 );
             }
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("addAccount() - end");
+        }
         }
 
     /**
@@ -280,6 +341,10 @@ public class FileManagerStoreMock
     public FileManagerStoreNode getAccount(String ident)
         throws NodeNotFoundException, FileManagerServiceException
         {
+        if (logger.isDebugEnabled()) {
+            logger.debug("getAccount(ident = " + ident + ") - start");
+        }
+
         if (null == ident)
             {
             throw new IllegalArgumentException(
@@ -288,9 +353,12 @@ public class FileManagerStoreMock
             }
         if (accounts.containsKey(ident))
             {
-            return (FileManagerStoreNode) accounts.get(
-                ident
-                );
+            FileManagerStoreNode returnFileManagerStoreNode = (FileManagerStoreNode) accounts
+                    .get(ident);
+            if (logger.isDebugEnabled()) {
+                logger.debug("getAccount() - end");
+            }
+            return returnFileManagerStoreNode;
             }
         else {
             throw new NodeNotFoundException(
@@ -309,6 +377,10 @@ public class FileManagerStoreMock
     public void delAccount(String ident)
         throws NodeNotFoundException, FileManagerServiceException
         {
+        if (logger.isDebugEnabled()) {
+            logger.debug("delAccount(ident = " + ident + ") - start");
+        }
+
         if (null == ident)
             {
             throw new IllegalArgumentException(
@@ -326,6 +398,48 @@ public class FileManagerStoreMock
                 "Account not found"
                 );
             }
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("delAccount() - end");
+        }
         }
 
+    /** subset of standard map that uses <tt>clone()</tt> to prevent aliasing problems
+     * not a full impl of map - only overrides methods necessary - i.e the ones used in this class. */
+    protected static class CloningMap {
+        /**
+         * Commons Logger for this class
+         */
+        private static final Log logger = LogFactory.getLog(CloningMap.class);
+
+        protected final Map map = new HashMap();
+       
+        public void put(Object key, FileManagerStoreNode value) {
+            if (! (value instanceof FileManagerStoreNodeMock)) {
+                throw new IllegalArgumentException("value must be of class FileManagerStoreNodeMock");
+            }
+            try {
+                map.put(key, ((FileManagerStoreNodeMock)value).clone());
+            } catch (CloneNotSupportedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+            public FileManagerStoreNode get(Object key) {
+                Object o = map.get(key);
+                try {
+                    return (FileManagerStoreNode) ((FileManagerStoreNodeMock)o).clone();
+                } catch (CloneNotSupportedException e) {
+                    throw new RuntimeException(e);
+                }
+        }
+        public boolean containsKey(Object key) {
+            return this.map.containsKey(key);
+        }
+        public void remove(Object key) {
+            this.map.remove(key);
+        }
+}
+
+
+    
     }

@@ -1,26 +1,8 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/common/src/java/org/astrogrid/filemanager/common/Attic/FileManagerStoreNodeMock.java,v $</cvs:source>
- * <cvs:author>$Author: clq2 $</cvs:author>
- * <cvs:date>$Date: 2005/01/28 10:43:58 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
- * <cvs:log>
- *   $Log: FileManagerStoreNodeMock.java,v $
- *   Revision 1.3  2005/01/28 10:43:58  clq2
- *   dave_dev_200501141257 (filemanager)
- *
- *   Revision 1.2.2.1  2005/01/18 14:52:48  dave
- *   Added node create and modify dates ..
- *
- *   Revision 1.2  2005/01/13 17:23:15  jdt
- *   merges from dave-dev-200412201250
- *
- *   Revision 1.1.2.2  2005/01/12 13:16:27  dave
- *   Changed tabs to spaces ...
- *
- *   Revision 1.1.2.1  2005/01/10 21:27:47  dave
- *   Refactores NodeMock as FileManagerStoreNode ...
- *
- * </cvs:log>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2005/02/10 14:17:20 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  */
 package org.astrogrid.filemanager.common ;
@@ -47,11 +29,22 @@ import org.astrogrid.filemanager.common.exception.FileManagerIdentifierException
 
 /**
  * A mock implementation of the node interface.
- *
+@modified nww added a clone method, which provides a deep copy.
  */
 public class FileManagerStoreNodeMock
-    implements FileManagerStoreNode
+    implements FileManagerStoreNode, Cloneable
     {
+
+    /** want to make a deep copy of this object - ensure total independence 
+     * found its sufficient to clone the current node, and its collections.
+     * the objects contained by these collections can be shared - 
+     * this reproduces the errors found in persistent implementation.*/
+    public  Object clone() throws CloneNotSupportedException {
+        FileManagerStoreNodeMock other = (FileManagerStoreNodeMock)super.clone();
+        other.children = new HashMap(this.children);
+        other.properties = new FileManagerProperties(this.properties);
+        return other;
+    }
 
     /**
      * Our debug logger.
@@ -116,18 +109,19 @@ public class FileManagerStoreNodeMock
 
     /**
      * Our internal map of child nodes.
-     *
+     *@todo replace this with a list of references back into store.
      */
     private Map children = new HashMap() ;
 
     /**
      * Get an array of the child nodes.
-     *
+     * @todo not so good - we lose control here of the contents. Would like to make this unmodifiable. 
      */
     public Collection getChildren()
         {
         //
         // Convert the map values into an array.
+        log.debug("getting children");
         return children.values() ;
         }
 
@@ -140,23 +134,19 @@ public class FileManagerStoreNodeMock
     public void addNode(FileManagerStoreNode node)
         throws DuplicateNodeException
         {
-        log.debug("");
-        log.debug("FileManagerStoreNode.addNode(Node)");
-        log.debug("  This : " + this.getName());
-        log.debug("  This : " + this.getIdent());
+        log.debug("FileManagerStoreNode.addNode" + node);
+        log.debug("  This : " + this);
         if (null == node)
             {
             throw new IllegalArgumentException(
                 "Null node"
                 ) ;
             }
-        log.debug("  Node : " + node.getName());
-        log.debug("  Node : " + node.getIdent());
-        //
+
         // Check if a node already exists.
         if (children.containsKey(node.getName()))
             {
-            throw new DuplicateNodeException() ;
+            throw new DuplicateNodeException(node.getName()) ;
             }
         //
         // If the node does not exist yet.
@@ -176,9 +166,7 @@ public class FileManagerStoreNodeMock
                 }
             catch (FileManagerIdentifierException ouch)
                 {
-                log.warn("");
-                log.warn("Exception parsing parent ivorn");
-                log.warn(ouch);
+                log.warn("Exception parsing parent ivorn",ouch);
                 }
             }
 		//
@@ -195,11 +183,8 @@ public class FileManagerStoreNodeMock
     public void delNode(String name)
         throws NodeNotFoundException
         {
-        log.debug("");
-        log.debug("FileManagerStoreNode.delNode(String)");
-        log.debug("  This : " + this.getName());
-        log.debug("  This : " + this.getIdent());
-        log.debug("  Name : " + name);
+        log.debug("FileManagerStoreNode.delNode(" + name +")");
+        log.debug("  This : " + this);
         if (null == name)
             {
             throw new IllegalArgumentException(
@@ -215,7 +200,7 @@ public class FileManagerStoreNodeMock
                 );
             }
         else {
-            throw new NodeNotFoundException() ;
+            throw new NodeNotFoundException(name) ;
             }
 		//
 		// Update the modified date.
@@ -232,11 +217,8 @@ public class FileManagerStoreNodeMock
     public FileManagerStoreNode getChild(String path)
         throws NodeNotFoundException
         {
-        log.debug("");
-        log.debug("FileManagerStoreNode.getChild()");
-        log.debug("  This : " + this.getName());
-        log.debug("  This : " + this.getIdent());
-        log.debug("  Path : " + path);
+        log.debug("FileManagerStoreNode.getChild(" + path +")");
+        log.debug("  This : " + this);
         if (null == path)
             {
             throw new IllegalArgumentException(
@@ -263,10 +245,8 @@ public class FileManagerStoreNodeMock
     public FileManagerStoreNode getChild(StringTokenizer tokens)
         throws NodeNotFoundException
         {
-        log.debug("");
         log.debug("FileManagerStoreNode.getChild(StringTokenizer)");
-        log.debug("  This  : " + this.getName());
-        log.debug("  This  : " + this.getIdent());
+        log.debug("  This  : " + this);
         if (null == tokens)
             {
             throw new IllegalArgumentException(
@@ -301,13 +281,14 @@ public class FileManagerStoreNodeMock
             //
             // If we don't have a matching node.
             else {
-                throw new NodeNotFoundException() ;
+                log.debug("Not found " + name);
+                throw new NodeNotFoundException(name) ;
                 }
             }
         //
         // If we don't have an initial token.
         else {
-            throw new NodeNotFoundException() ;
+            throw new NodeNotFoundException("no initial token") ;
             }
         }
 
@@ -334,6 +315,7 @@ public class FileManagerStoreNodeMock
      */
     public void setProperties(FileProperties properties)
         {
+        log.debug("Calling set properties");
         this.setProperties(
             properties.toArray()
             );
@@ -345,6 +327,7 @@ public class FileManagerStoreNodeMock
      */
     public void setProperties(FileProperty[] properties)
         {
+        log.debug("Calling set properties");
         this.properties.merge(
             properties,
             new FileManagerPropertyFilter()
@@ -372,9 +355,7 @@ public class FileManagerStoreNodeMock
             }
         catch (FileManagerIdentifierException ouch)
             {
-            log.warn("");
-            log.warn("Exception parsing node ivorn");
-            log.warn(ouch);
+            log.warn("Exception parsing node ivorn",ouch);
             return null ;
             }
         }
@@ -385,6 +366,7 @@ public class FileManagerStoreNodeMock
      */
     protected void setIvorn(Ivorn ivorn)
         {
+        log.debug("setting ivorn");
         this.properties.setManagerResourceIvorn(
             ivorn
             ) ;
@@ -406,6 +388,7 @@ public class FileManagerStoreNodeMock
      */
     public void setParentIvorn(Ivorn ivorn)
         {
+        log.debug("setting parent ivorn");
         this.properties.setManagerParentIvorn(
             ivorn
             ) ;
@@ -426,6 +409,7 @@ public class FileManagerStoreNodeMock
      */
     public void setName(String name)
         {
+        log.debug("setting name");
         this.properties.setManagerResourceName(
             name
             ) ;
@@ -446,6 +430,7 @@ public class FileManagerStoreNodeMock
      */
     public void setType(String type)
         {
+        log.debug("setting type" );
         this.properties.setManagerResourceType(
             type
             ) ;
@@ -485,4 +470,16 @@ public class FileManagerStoreNodeMock
             }
         }
 
+
+    public String toString() {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("[name: ");
+        buffer.append(getName());
+        buffer.append(" ident :");
+        buffer.append(getIdent());
+        buffer.append(" children: ");
+        buffer.append(children.size());
+        buffer.append("]");
+        return buffer.toString();
+    }
     }

@@ -1,165 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/common/src/java/org/astrogrid/filemanager/common/Attic/FileManagerTest.java,v $</cvs:source>
- * <cvs:author>$Author: clq2 $</cvs:author>
- * <cvs:date>$Date: 2005/01/28 10:43:58 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
- * <cvs:log>
- *   $Log: FileManagerTest.java,v $
- *   Revision 1.5  2005/01/28 10:43:58  clq2
- *   dave_dev_200501141257 (filemanager)
- *
- *   Revision 1.4.2.4  2005/01/25 11:16:00  dave
- *   Fixed NullPointer bug in manager.
- *   Refactored client test case ...
- *
- *   Revision 1.4.2.3  2005/01/20 07:17:17  dave
- *   Added import data from URL to server side logic ....
- *   Tidied up tabs in some files.
- *
- *   Revision 1.4.2.2  2005/01/19 12:55:36  dave
- *   Added sleep to date tests to avoid race condition ...
- *
- *   Revision 1.4.2.1  2005/01/15 08:25:20  dave
- *   Added file create and modify dates to manager and client API ...
- *
- *   Revision 1.4  2005/01/13 17:23:15  jdt
- *   merges from dave-dev-200412201250
- *
- *   Revision 1.3.4.6  2005/01/12 14:58:18  dave
- *   Removed delete test ..
- *
- *   Revision 1.3.4.5  2005/01/12 14:33:48  dave
- *   Removed System.out.println debug ...
- *
- *   Revision 1.3.4.4  2005/01/12 13:16:27  dave
- *   Changed tabs to spaces ...
- *
- *   Revision 1.3.4.3  2005/01/07 12:18:00  dave
- *   Added StoreClientWrapperTest
- *   Added StoreFileWrapper
- *
- *   Revision 1.3.4.2  2004/12/24 02:42:45  dave
- *   Changed delete to use ivorn ...
- *
- *   Revision 1.3.4.1  2004/12/24 02:05:05  dave
- *   Refactored exception handling, removing IdentifierException from the public API ...
- *
- *   Revision 1.3  2004/12/16 17:25:49  jdt
- *   merge from dave-dev-200410061224-200412161312
- *
- *   Revision 1.1.2.40  2004/12/16 13:12:12  dave
- *   Comment for the delete test ...
- *
- *   Revision 1.1.2.39  2004/12/14 17:29:40  dave
- *   Added delete from filemanager ....
- *
- *   Revision 1.1.2.38  2004/12/14 17:23:36  dave
- *   Added delete from filemanager ....
- *
- *   Revision 1.1.2.37  2004/12/14 16:36:54  dave
- *   Added delete from filemanager ....
- *
- *   Revision 1.1.2.36  2004/12/14 16:25:44  dave
- *   Added delete from filemanager ....
- *
- *   Revision 1.1.2.35  2004/12/14 16:02:10  dave
- *   Added delete from filemanager ....
- *
- *   Revision 1.1.2.34  2004/12/14 15:34:46  dave
- *   Added 'not there' test for delete ....
- *
- *   Revision 1.1.2.33  2004/12/14 14:44:46  dave
- *   Added test for copy empty location ...
- *
- *   Revision 1.1.2.32  2004/12/14 14:26:16  dave
- *   Added delete to the server API ....
- *
- *   Revision 1.1.2.31  2004/12/14 14:21:58  dave
- *   Added delete to the server API ....
- *
- *   Revision 1.1.2.30  2004/12/11 21:19:53  dave
- *   Added copy accross remote filestore(s) ...
- *
- *   Revision 1.1.2.29  2004/12/11 05:59:18  dave
- *   Added internal copy for nodes ...
- *   Added local copy for data ...
- *
- *   Revision 1.1.2.28  2004/12/10 05:21:25  dave
- *   Added node and iterator to client API ...
- *
- *   Revision 1.1.2.27  2004/12/08 17:54:55  dave
- *   Added update to FileManager client and server side ...
- *
- *   Revision 1.1.2.26  2004/12/08 01:56:04  dave
- *   Added filestore location to move ...
- *
- *   Revision 1.1.2.25  2004/12/06 13:29:02  dave
- *   Added initial code for move location ....
- *
- *   Revision 1.1.2.24  2004/12/04 05:22:21  dave
- *   Fixed null parent mistake ...
- *
- *   Revision 1.1.2.23  2004/12/02 19:11:54  dave
- *   Added move name and parent to manager ...
- *
- *   Revision 1.1.2.22  2004/11/26 05:07:17  dave
- *   Fixed node tests for integration ...
- *
- *   Revision 1.1.2.21  2004/11/24 16:15:08  dave
- *   Added node functions to client ...
- *
- *   Revision 1.1.2.20  2004/11/17 07:56:33  dave
- *   Added server mock and webapp build scripts ...
- *
- *   Revision 1.1.2.19  2004/11/16 03:25:37  dave
- *   Updated API to use full ivorn rather than ident ...
- *
- *   Revision 1.1.2.18  2004/11/13 01:39:03  dave
- *   Modifications to support the new client API ...
- *
- *   Revision 1.1.2.17  2004/11/11 17:53:10  dave
- *   Removed Node interface from the server side ....
- *
- *   Revision 1.1.2.16  2004/11/11 16:36:19  dave
- *   Changed getChildren to retunr array of names ...
- *
- *   Revision 1.1.2.15  2004/11/11 15:41:44  dave
- *   Renamed importInitEx and exportInitEx back to the original names ...
- *
- *   Revision 1.1.2.14  2004/11/11 15:30:37  dave
- *   Moving manager API to property[] rather than Node.
- *
- *   Revision 1.1.2.13  2004/11/10 18:32:57  dave
- *   Moved getAccount API to use properties ...
- *
- *   Revision 1.1.2.12  2004/11/10 17:00:11  dave
- *   Moving the manager API towards property based rather than node based ...
- *
- *   Revision 1.1.2.11  2004/11/06 20:03:17  dave
- *   Implemented ImportInit and ExportInit using properties
- *
- *   Revision 1.1.2.10  2004/11/05 05:58:31  dave
- *   Refactored the properties handling in importInitEx() ..
- *
- *   Revision 1.1.2.9  2004/11/05 02:23:45  dave
- *   Refactored identifiers are properties ...
- *
- *   Revision 1.1.2.8  2004/11/04 02:33:38  dave
- *   Refactored test to include multiple filestores ...
- *
- *   Revision 1.1.2.7  2004/11/02 15:05:13  dave
- *   Added old path tests back in ...
- *
- *   Revision 1.1.2.6  2004/11/01 16:23:22  dave
- *   Started integrating import and export with FileStore ...
- *
- *   Revision 1.1.2.5  2004/10/19 14:52:36  dave
- *   Refactored container and file into just node.
- *
- * </cvs:log>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2005/02/10 14:17:20 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  */
 package org.astrogrid.filemanager.common ;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.net.URL ;
 
@@ -195,6 +44,11 @@ public class FileManagerTest
     extends BaseTest
     {
     /**
+     * Commons Logger for this class
+     */
+    private static final Log logger = LogFactory.getLog(FileManagerTest.class);
+
+    /**
      * A set of ivorn identifiers for our target file stores.
      *
      */
@@ -213,9 +67,13 @@ public class FileManagerTest
     public void testTargetNotNull()
         throws Exception
         {
+        logger.info("testTargetNotNull() - start");
+
         assertNotNull(
             target
             ) ;
+
+        logger.info("testTargetNotNull() - end");
         }
 
     /**
@@ -225,6 +83,8 @@ public class FileManagerTest
     public void testAddAccountNull()
         throws Exception
         {
+        logger.info("testAddAccountNull() - start");
+
         try {
             target.addAccount(
                 null
@@ -232,9 +92,12 @@ public class FileManagerTest
             }
         catch (IllegalArgumentException ouch)
             {
+            logger.info("testAddAccountNull() - end");
             return ;
             }
         fail("Expected IllegalArgumentException") ;
+
+        logger.info("testAddAccountNull() - end");
         }
 
     /**
@@ -244,11 +107,15 @@ public class FileManagerTest
     public void testAddAccount()
         throws Exception
         {
+        logger.info("testAddAccount() - start");
+
         assertNotNull(
             target.addAccount(
                 accountName
                 )
             ) ;
+
+        logger.info("testAddAccount() - end");
         }
 
     /**
@@ -258,6 +125,8 @@ public class FileManagerTest
     public void testAddAccountDuplicate()
         throws Exception
         {
+        logger.info("testAddAccountDuplicate() - start");
+
         assertNotNull(
             target.addAccount(
                 accountName
@@ -270,9 +139,12 @@ public class FileManagerTest
             }
         catch (DuplicateNodeException ouch)
             {
+            logger.info("testAddAccountDuplicate() - end");
             return ;
             }
         fail("Expected DuplicateNodeException") ;
+
+        logger.info("testAddAccountDuplicate() - end");
         }
 
     /**
@@ -282,6 +154,8 @@ public class FileManagerTest
     public void testAddAccountIvorn()
         throws Exception
         {
+        logger.info("testAddAccountIvorn() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -294,6 +168,8 @@ public class FileManagerTest
         assertNotNull(
             home.getManagerResourceIvorn()
             ) ;
+
+        logger.info("testAddAccountIvorn() - end");
         }
 
     /**
@@ -303,6 +179,8 @@ public class FileManagerTest
     public void testAddAccountIdent()
         throws Exception
         {
+        logger.info("testAddAccountIdent() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -315,6 +193,8 @@ public class FileManagerTest
         assertNotNull(
             home.getManagerResourceIdent()
             ) ;
+
+        logger.info("testAddAccountIdent() - end");
         }
 
     /**
@@ -324,6 +204,8 @@ public class FileManagerTest
     public void testAddAccountService()
         throws Exception
         {
+        logger.info("testAddAccountService() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -336,6 +218,8 @@ public class FileManagerTest
         assertNotNull(
             home.getManagerServiceIvorn()
             ) ;
+
+        logger.info("testAddAccountService() - end");
         }
 
     /**
@@ -345,6 +229,8 @@ public class FileManagerTest
     public void testAddAccountName()
         throws Exception
         {
+        logger.info("testAddAccountName() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -358,6 +244,8 @@ public class FileManagerTest
             "home",
             home.getManagerResourceName()
             ) ;
+
+        logger.info("testAddAccountName() - end");
         }
 
     /**
@@ -367,6 +255,8 @@ public class FileManagerTest
     public void testGetAccountNull()
         throws Exception
         {
+        logger.info("testGetAccountNull() - start");
+
         try {
             target.getAccount(
                 null
@@ -374,9 +264,12 @@ public class FileManagerTest
             }
         catch (IllegalArgumentException ouch)
             {
+            logger.info("testGetAccountNull() - end");
             return ;
             }
         fail("Expected IllegalArgumentException") ;
+
+        logger.info("testGetAccountNull() - end");
         }
 
     /**
@@ -386,6 +279,8 @@ public class FileManagerTest
     public void testGetAccountUnknown()
         throws Exception
         {
+        logger.info("testGetAccountUnknown() - start");
+
         try {
             target.getAccount(
                 unknownName
@@ -393,9 +288,12 @@ public class FileManagerTest
             }
         catch (NodeNotFoundException ouch)
             {
+            logger.info("testGetAccountUnknown() - end");
             return ;
             }
         fail("Expected NodeNotFoundException") ;
+
+        logger.info("testGetAccountUnknown() - end");
         }
 
     /**
@@ -405,6 +303,8 @@ public class FileManagerTest
     public void testGetAccount()
         throws Exception
         {
+        logger.info("testGetAccount() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -424,6 +324,8 @@ public class FileManagerTest
         assertNotNull(
             test
             ) ;
+
+        logger.info("testGetAccount() - end");
         }
 
     /**
@@ -433,6 +335,8 @@ public class FileManagerTest
     public void testGetAccountName()
         throws Exception
         {
+        logger.info("testGetAccountName() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -453,6 +357,8 @@ public class FileManagerTest
             home.getManagerResourceName(),
             test.getManagerResourceName()
             ) ;
+
+        logger.info("testGetAccountName() - end");
         }
 
     /**
@@ -462,6 +368,8 @@ public class FileManagerTest
     public void testGetAccountIvorn()
         throws Exception
         {
+        logger.info("testGetAccountIvorn() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -482,6 +390,8 @@ public class FileManagerTest
             home.getManagerResourceIvorn(),
             test.getManagerResourceIvorn()
             ) ;
+
+        logger.info("testGetAccountIvorn() - end");
         }
 
     /**
@@ -491,6 +401,8 @@ public class FileManagerTest
     public void testGetAccountIdent()
         throws Exception
         {
+        logger.info("testGetAccountIdent() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -511,6 +423,8 @@ public class FileManagerTest
             home.getManagerResourceIdent(),
             test.getManagerResourceIdent()
             ) ;
+
+        logger.info("testGetAccountIdent() - end");
         }
 
     /**
@@ -520,6 +434,8 @@ public class FileManagerTest
     public void testGetAccountType()
         throws Exception
         {
+        logger.info("testGetAccountType() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -540,6 +456,8 @@ public class FileManagerTest
             FileManagerProperties.CONTAINER_NODE_TYPE,
             test.getManagerResourceType()
             ) ;
+
+        logger.info("testGetAccountType() - end");
         }
 
     /**
@@ -549,6 +467,8 @@ public class FileManagerTest
     public void testAddNodeNullParent()
         throws Exception
         {
+        logger.info("testAddNodeNullParent() - start");
+
         //
         // Try adding a node with no parent.
         try {
@@ -560,9 +480,12 @@ public class FileManagerTest
             }
         catch (IllegalArgumentException ouch)
             {
+            logger.info("testAddNodeNullParent() - end");
             return ;
             }
         fail("Expected IllegalArgumentException") ;
+
+        logger.info("testAddNodeNullParent() - end");
         }
 
     /**
@@ -572,6 +495,8 @@ public class FileManagerTest
     public void testAddNodeNullName()
         throws Exception
         {
+        logger.info("testAddNodeNullName() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -590,9 +515,12 @@ public class FileManagerTest
             }
         catch (IllegalArgumentException ouch)
             {
+            logger.info("testAddNodeNullName() - end");
             return ;
             }
         fail("Expected IllegalArgumentException") ;
+
+        logger.info("testAddNodeNullName() - end");
         }
 
     /**
@@ -602,6 +530,8 @@ public class FileManagerTest
     public void testAddNodeNullType()
         throws Exception
         {
+        logger.info("testAddNodeNullType() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -620,9 +550,12 @@ public class FileManagerTest
             }
         catch (IllegalArgumentException ouch)
             {
+            logger.info("testAddNodeNullType() - end");
             return ;
             }
         fail("Expected IllegalArgumentException") ;
+
+        logger.info("testAddNodeNullType() - end");
         }
 
     /**
@@ -632,6 +565,8 @@ public class FileManagerTest
     public void testAddNodeUnknownParent()
         throws Exception
         {
+        logger.info("testAddNodeUnknownParent() - start");
+
         try {
             target.addNode(
                 "ivo://unknown#unknown",
@@ -641,9 +576,12 @@ public class FileManagerTest
             }
         catch (NodeNotFoundException ouch)
             {
+            logger.info("testAddNodeUnknownParent() - end");
             return ;
             }
         fail("Expected NodeNotFoundException") ;
+
+        logger.info("testAddNodeUnknownParent() - end");
         }
 
     /**
@@ -653,6 +591,8 @@ public class FileManagerTest
     public void testAddContainerChild()
         throws Exception
         {
+        logger.info("testAddContainerChild() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -674,6 +614,8 @@ public class FileManagerTest
         assertNotNull(
             frog
             ) ;
+
+        logger.info("testAddContainerChild() - end");
         }
 
     /**
@@ -683,6 +625,8 @@ public class FileManagerTest
     public void testAddContainerName()
         throws Exception
         {
+        logger.info("testAddContainerName() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -705,6 +649,8 @@ public class FileManagerTest
             "frog",
             frog.getManagerResourceName()
             ) ;
+
+        logger.info("testAddContainerName() - end");
         }
 
     /**
@@ -714,6 +660,8 @@ public class FileManagerTest
     public void testAddContainerType()
         throws Exception
         {
+        logger.info("testAddContainerType() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -736,6 +684,8 @@ public class FileManagerTest
             FileManagerProperties.CONTAINER_NODE_TYPE,
             frog.getManagerResourceType()
             ) ;
+
+        logger.info("testAddContainerType() - end");
         }
 
     /**
@@ -745,6 +695,8 @@ public class FileManagerTest
     public void testAddContainerParent()
         throws Exception
         {
+        logger.info("testAddContainerParent() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -767,6 +719,8 @@ public class FileManagerTest
             home.getManagerResourceIvorn(),
             frog.getManagerParentIvorn()
             ) ;
+
+        logger.info("testAddContainerParent() - end");
         }
 
     /**
@@ -776,6 +730,8 @@ public class FileManagerTest
     public void testAddData()
         throws Exception
         {
+        logger.info("testAddData() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -797,6 +753,8 @@ public class FileManagerTest
         assertNotNull(
             frog
             ) ;
+
+        logger.info("testAddData() - end");
         }
 
     /**
@@ -806,6 +764,8 @@ public class FileManagerTest
     public void testAddDataName()
         throws Exception
         {
+        logger.info("testAddDataName() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -828,6 +788,8 @@ public class FileManagerTest
             "frog",
             frog.getManagerResourceName()
             ) ;
+
+        logger.info("testAddDataName() - end");
         }
 
     /**
@@ -837,6 +799,8 @@ public class FileManagerTest
     public void testAddDataType()
         throws Exception
         {
+        logger.info("testAddDataType() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -859,6 +823,8 @@ public class FileManagerTest
             FileManagerProperties.DATA_NODE_TYPE,
             frog.getManagerResourceType()
             ) ;
+
+        logger.info("testAddDataType() - end");
         }
 
     /**
@@ -868,6 +834,8 @@ public class FileManagerTest
     public void testAddDataParent()
         throws Exception
         {
+        logger.info("testAddDataParent() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -890,6 +858,8 @@ public class FileManagerTest
             home.getManagerResourceIvorn(),
             frog.getManagerParentIvorn()
             ) ;
+
+        logger.info("testAddDataParent() - end");
         }
 
     /**
@@ -899,6 +869,8 @@ public class FileManagerTest
     public void testAddDataLocation()
         throws Exception
         {
+        logger.info("testAddDataLocation() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -924,6 +896,8 @@ public class FileManagerTest
             filestores[0],
             frog.getManagerLocationIvorn()
             );
+
+        logger.info("testAddDataLocation() - end");
         }
 
     /**
@@ -933,6 +907,8 @@ public class FileManagerTest
     public void testAddChildToData()
         throws Exception
         {
+        logger.info("testAddChildToData() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -960,9 +936,12 @@ public class FileManagerTest
             }
         catch (UnsupportedOperationException ouch)
             {
+            logger.info("testAddChildToData() - end");
             return ;
             }
         fail("Expected UnsupportedOperationException") ;
+
+        logger.info("testAddChildToData() - end");
         }
 
     /**
@@ -972,6 +951,8 @@ public class FileManagerTest
     public void testGetNodeNull()
         throws Exception
         {
+        logger.info("testGetNodeNull() - start");
+
         try {
             target.getNode(
                 null
@@ -979,6 +960,7 @@ public class FileManagerTest
             }
         catch (NodeNotFoundException ouch)
             {
+            logger.info("testGetNodeNull() - end");
             return ;
             }
         fail("Expected NodeNotFoundException") ;
@@ -1010,6 +992,8 @@ public class FileManagerTest
     public void testGetNodeUnknown()
         throws Exception
         {
+        logger.info("testGetNodeUnknown() - start");
+
         try {
             target.getNode(
                 "ivo://unknown#unknown"
@@ -1017,9 +1001,12 @@ public class FileManagerTest
             }
         catch (NodeNotFoundException ouch)
             {
+            logger.info("testGetNodeUnknown() - end");
             return ;
             }
         fail("Expected NodeNotFoundException") ;
+
+        logger.info("testGetNodeUnknown() - end");
         }
 
     /**
@@ -1029,6 +1016,8 @@ public class FileManagerTest
     public void testGetNodeIvorn()
         throws Exception
         {
+        logger.info("testGetNodeIvorn() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -1058,6 +1047,8 @@ public class FileManagerTest
             frog.getManagerResourceIvorn().toString(),
             toad.getManagerResourceIvorn().toString()
             ) ;
+
+        logger.info("testGetNodeIvorn() - end");
         }
 
     /**
@@ -1067,6 +1058,8 @@ public class FileManagerTest
     public void testGetNodeName()
         throws Exception
         {
+        logger.info("testGetNodeName() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -1096,6 +1089,8 @@ public class FileManagerTest
             frog.getManagerResourceName(),
             toad.getManagerResourceName()
             ) ;
+
+        logger.info("testGetNodeName() - end");
         }
 
     /**
@@ -1105,6 +1100,8 @@ public class FileManagerTest
     public void testGetNodeIdent()
         throws Exception
         {
+        logger.info("testGetNodeIdent() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -1134,6 +1131,8 @@ public class FileManagerTest
             frog.getManagerResourceIdent(),
             toad.getManagerResourceIdent()
             ) ;
+
+        logger.info("testGetNodeIdent() - end");
         }
 
     /**
@@ -1143,6 +1142,8 @@ public class FileManagerTest
     public void testGetNodeType()
         throws Exception
         {
+        logger.info("testGetNodeType() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -1170,6 +1171,8 @@ public class FileManagerTest
             FileManagerProperties.DATA_NODE_TYPE,
             toad.getManagerResourceType()
             ) ;
+
+        logger.info("testGetNodeType() - end");
         }
 
     /**
@@ -1179,6 +1182,8 @@ public class FileManagerTest
     public void testGetNodeParent()
         throws Exception
         {
+        logger.info("testGetNodeParent() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -1206,6 +1211,8 @@ public class FileManagerTest
             home.getManagerResourceIvorn(),
             toad.getManagerParentIvorn()
             ) ;
+
+        logger.info("testGetNodeParent() - end");
         }
 
     /**
@@ -1215,6 +1222,8 @@ public class FileManagerTest
     public void testGetPathNullRoot()
         throws Exception
         {
+        logger.info("testGetPathNullRoot() - start");
+
         //
         // Try getting a node with no parent.
         try {
@@ -1225,9 +1234,12 @@ public class FileManagerTest
             }
         catch (IllegalArgumentException ouch)
             {
+            logger.info("testGetPathNullRoot() - end");
             return ;
             }
         fail("Expected IllegalArgumentException") ;
+
+        logger.info("testGetPathNullRoot() - end");
         }
 
     /**
@@ -1237,6 +1249,8 @@ public class FileManagerTest
     public void testGetPathNullPath()
         throws Exception
         {
+        logger.info("testGetPathNullPath() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -1254,9 +1268,12 @@ public class FileManagerTest
             }
         catch (IllegalArgumentException ouch)
             {
+            logger.info("testGetPathNullPath() - end");
             return ;
             }
         fail("Expected IllegalArgumentException") ;
+
+        logger.info("testGetPathNullPath() - end");
         }
 
     /**
@@ -1266,6 +1283,8 @@ public class FileManagerTest
     public void testGetPathUnknownParent()
         throws Exception
         {
+        logger.info("testGetPathUnknownParent() - start");
+
         //
         // Try getting a node with an unknown parent.
         try {
@@ -1276,9 +1295,12 @@ public class FileManagerTest
             }
         catch (NodeNotFoundException ouch)
             {
+            logger.info("testGetPathUnknownParent() - end");
             return ;
             }
         fail("Expected NodeNotFoundException") ;
+
+        logger.info("testGetPathUnknownParent() - end");
         }
 
     /**
@@ -1288,6 +1310,8 @@ public class FileManagerTest
     public void testGetPathUnknownPath()
         throws Exception
         {
+        logger.info("testGetPathUnknownPath() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -1305,9 +1329,12 @@ public class FileManagerTest
             }
         catch (NodeNotFoundException ouch)
             {
+            logger.info("testGetPathUnknownPath() - end");
             return ;
             }
         fail("Expected NodeNotFoundException") ;
+
+        logger.info("testGetPathUnknownPath() - end");
         }
 
     /**
@@ -1317,6 +1344,8 @@ public class FileManagerTest
     public void testGetPath()
         throws Exception
         {
+        logger.info("testGetPath() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -1355,6 +1384,8 @@ public class FileManagerTest
                 "frog/toad/newt"
                 )
             ) ;
+
+        logger.info("testGetPath() - end");
         }
 
     /**
@@ -1364,6 +1395,8 @@ public class FileManagerTest
     public void testGetChildrenNullParent()
         throws Exception
         {
+        logger.info("testGetChildrenNullParent() - start");
+
         //
         // Try getting the children for a null parent.
         try {
@@ -1373,9 +1406,12 @@ public class FileManagerTest
             }
         catch (IllegalArgumentException ouch)
             {
+            logger.info("testGetChildrenNullParent() - end");
             return ;
             }
         fail("Expected IllegalArgumentException") ;
+
+        logger.info("testGetChildrenNullParent() - end");
         }
 
     /**
@@ -1385,6 +1421,8 @@ public class FileManagerTest
     public void testGetChildrenUnknownParent()
         throws Exception
         {
+        logger.info("testGetChildrenUnknownParent() - start");
+
         //
         // Try getting the children for an unknown parent.
         try {
@@ -1394,9 +1432,12 @@ public class FileManagerTest
             }
         catch (NodeNotFoundException ouch)
             {
+            logger.info("testGetChildrenUnknownParent() - end");
             return ;
             }
         fail("Expected NodeNotFoundException") ;
+
+        logger.info("testGetChildrenUnknownParent() - end");
         }
 
     /**
@@ -1406,6 +1447,8 @@ public class FileManagerTest
     public void testGetChildrenEmpty()
         throws Exception
         {
+        logger.info("testGetChildrenEmpty() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -1424,6 +1467,8 @@ public class FileManagerTest
             0,
             array.length
             ) ;
+
+        logger.info("testGetChildrenEmpty() - end");
         }
 
     /**
@@ -1433,6 +1478,8 @@ public class FileManagerTest
     public void testGetChildren()
         throws Exception
         {
+        logger.info("testGetChildren() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -1474,6 +1521,8 @@ public class FileManagerTest
             3,
             array.length
             ) ;
+
+        logger.info("testGetChildren() - end");
         }
 
     /**
@@ -1483,6 +1532,8 @@ public class FileManagerTest
     public void testGetChildrenIvorns()
         throws Exception
         {
+        logger.info("testGetChildrenIvorns() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -1555,6 +1606,8 @@ public class FileManagerTest
         assertTrue(
             newtFound
             );
+
+        logger.info("testGetChildrenIvorns() - end");
         }
 
 //
@@ -1568,6 +1621,8 @@ public class FileManagerTest
     public void testGetDataChildrenEmpty()
         throws Exception
         {
+        logger.info("testGetDataChildrenEmpty() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -1595,6 +1650,8 @@ public class FileManagerTest
             0,
             array.length
             ) ;
+
+        logger.info("testGetDataChildrenEmpty() - end");
         }
 
     /**
@@ -1604,6 +1661,8 @@ public class FileManagerTest
     public void testGetContainerByPath()
         throws Exception
         {
+        logger.info("testGetContainerByPath() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -1692,6 +1751,8 @@ public class FileManagerTest
                 "//frog//toad//newt"
                 )
             ) ;
+
+        logger.info("testGetContainerByPath() - end");
         }
 
     /**
@@ -1701,6 +1762,8 @@ public class FileManagerTest
     public void testGetContainerByIvorn()
         throws Exception
         {
+        logger.info("testGetContainerByIvorn() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -1764,6 +1827,8 @@ public class FileManagerTest
                 home.getManagerResourceIvorn().toString() + "//frog//toad//newt"
                 )
             ) ;
+
+        logger.info("testGetContainerByIvorn() - end");
         }
 
     /**
@@ -1773,6 +1838,8 @@ public class FileManagerTest
     public void testImportInitNullProperties()
         throws Exception
         {
+        logger.info("testImportInitNullProperties() - start");
+
         try {
             target.importInit(
                 null
@@ -1780,9 +1847,12 @@ public class FileManagerTest
             }
         catch (NodeNotFoundException ouch)
             {
+            logger.info("testImportInitNullProperties() - end");
             return ;
             }
         fail("Expected NodeNotFoundException");
+
+        logger.info("testImportInitNullProperties() - end");
         }
 
     /**
@@ -1792,6 +1862,8 @@ public class FileManagerTest
     public void testImportInitNullIvorn()
         throws Exception
         {
+        logger.info("testImportInitNullIvorn() - start");
+
         //
         // Create our request properties.
         FileManagerProperties request = new FileManagerProperties() ;
@@ -1804,9 +1876,12 @@ public class FileManagerTest
             }
         catch (NodeNotFoundException ouch)
             {
+            logger.info("testImportInitNullIvorn() - end");
             return ;
             }
         fail("Expected NodeNotFoundException");
+
+        logger.info("testImportInitNullIvorn() - end");
         }
 
     /**
@@ -1816,6 +1891,8 @@ public class FileManagerTest
     public void testImportInitUnknownIvorn()
         throws Exception
         {
+        logger.info("testImportInitUnknownIvorn() - start");
+
         //
         // Create the ivorn factory.
         FileManagerIvornFactory factory = new FileManagerIvornFactory() ;
@@ -1838,9 +1915,12 @@ public class FileManagerTest
             }
         catch (NodeNotFoundException ouch)
             {
+            logger.info("testImportInitUnknownIvorn() - end");
             return ;
             }
         fail("Expected NodeNotFoundException");
+
+        logger.info("testImportInitUnknownIvorn() - end");
         }
 
     /**
@@ -1850,6 +1930,8 @@ public class FileManagerTest
     public void testImportInitValidNode()
         throws Exception
         {
+        logger.info("testImportInitValidNode() - start");
+
         //
         // Create our test account.
         FileManagerProperties home = new FileManagerProperties(
@@ -1885,6 +1967,8 @@ public class FileManagerTest
         assertNotNull(
             importTransfer
             );
+
+        logger.info("testImportInitValidNode() - end");
         }
 
     /**
@@ -1894,6 +1978,8 @@ public class FileManagerTest
     public void testImportInitWriteData()
         throws Exception
         {
+        logger.info("testImportInitWriteData() - start");
+
         //
         // Create our test account.
         FileManagerProperties home = new FileManagerProperties(
@@ -1936,6 +2022,8 @@ public class FileManagerTest
             TEST_BYTES
             ) ;
         importStream.close() ;
+
+        logger.info("testImportInitWriteData() - end");
         }
 
     /**
@@ -1945,6 +2033,8 @@ public class FileManagerTest
     public void testImportRefreshSize()
         throws Exception
         {
+        logger.info("testImportRefreshSize() - start");
+
         //
         // Create our test account.
         FileManagerProperties home = new FileManagerProperties(
@@ -2005,6 +2095,8 @@ public class FileManagerTest
             TEST_BYTES.length,
             newt.getContentSize()
             );
+
+        logger.info("testImportRefreshSize() - end");
         }
 
     /**
@@ -2014,6 +2106,8 @@ public class FileManagerTest
     public void testExportNullProperties()
         throws Exception
         {
+        logger.info("testExportNullProperties() - start");
+
         try {
             target.exportInit(
                 null
@@ -2021,9 +2115,12 @@ public class FileManagerTest
             }
         catch (NodeNotFoundException ouch)
             {
+            logger.info("testExportNullProperties() - end");
             return ;
             }
         fail("Expected NodeNotFoundException");
+
+        logger.info("testExportNullProperties() - end");
         }
 
     /**
@@ -2033,6 +2130,8 @@ public class FileManagerTest
     public void testExportNullIvorn()
         throws Exception
         {
+        logger.info("testExportNullIvorn() - start");
+
         //
         // Create our request properties.
         FileManagerProperties request = new FileManagerProperties() ;
@@ -2045,9 +2144,12 @@ public class FileManagerTest
             }
         catch (NodeNotFoundException ouch)
             {
+            logger.info("testExportNullIvorn() - end");
             return ;
             }
         fail("Expected NodeNotFoundException");
+
+        logger.info("testExportNullIvorn() - end");
         }
 
     /**
@@ -2057,6 +2159,8 @@ public class FileManagerTest
     public void testExportUnknownIvorn()
         throws Exception
         {
+        logger.info("testExportUnknownIvorn() - start");
+
         //
         // Create the ivorn factory.
         FileManagerIvornFactory factory = new FileManagerIvornFactory() ;
@@ -2079,9 +2183,12 @@ public class FileManagerTest
             }
         catch (NodeNotFoundException ouch)
             {
+            logger.info("testExportUnknownIvorn() - end");
             return ;
             }
         fail("Expected NodeNotFoundException");
+
+        logger.info("testExportUnknownIvorn() - end");
         }
 
     /**
@@ -2091,6 +2198,8 @@ public class FileManagerTest
     public void testExportValidNode()
         throws Exception
         {
+        logger.info("testExportValidNode() - start");
+
         //
         // Create our test account.
         FileManagerProperties home = new FileManagerProperties(
@@ -2153,6 +2262,8 @@ public class FileManagerTest
         assertNotNull(
             exportTransfer
             );
+
+        logger.info("testExportValidNode() - end");
         }
 
     /**
@@ -2162,6 +2273,8 @@ public class FileManagerTest
     public void testExportRead()
         throws Exception
         {
+        logger.info("testExportRead() - start");
+
         //
         // Create our test account.
         FileManagerProperties home = new FileManagerProperties(
@@ -2240,6 +2353,8 @@ public class FileManagerTest
             TEST_BYTES,
             buffer.toByteArray()
             );
+
+        logger.info("testExportRead() - end");
         }
 
     /**
@@ -2249,6 +2364,8 @@ public class FileManagerTest
     public void testMoveNullProperties()
         throws Exception
         {
+        logger.info("testMoveNullProperties() - start");
+
         try {
             target.move(
                 null
@@ -2256,9 +2373,12 @@ public class FileManagerTest
             }
         catch (NodeNotFoundException ouch)
             {
+            logger.info("testMoveNullProperties() - end");
             return ;
             }
         fail("Expected NodeNotFoundException");
+
+        logger.info("testMoveNullProperties() - end");
         }
 
     /**
@@ -2268,6 +2388,8 @@ public class FileManagerTest
     public void testMoveName()
         throws Exception
         {
+        logger.info("testMoveName() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -2312,6 +2434,8 @@ public class FileManagerTest
             "toad",
             result.getManagerResourceName()
             );
+
+        logger.info("testMoveName() - end");
         }
 
     /**
@@ -2321,6 +2445,8 @@ public class FileManagerTest
     public void testMoveNameDuplicate()
         throws Exception
         {
+        logger.info("testMoveNameDuplicate() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -2362,9 +2488,12 @@ public class FileManagerTest
             }
         catch (DuplicateNodeException ouch)
             {
+            logger.info("testMoveNameDuplicate() - end");
             return ;
             }
         fail("Expected DuplicateNodeException");
+
+        logger.info("testMoveNameDuplicate() - end");
         }
 
     /**
@@ -2374,6 +2503,8 @@ public class FileManagerTest
     public void testMoveParent()
         throws Exception
         {
+        logger.info("testMoveParent() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -2427,6 +2558,8 @@ public class FileManagerTest
             newt.getManagerResourceIvorn(),
             result.getManagerParentIvorn()
             );
+
+        logger.info("testMoveParent() - end");
         }
 
     /**
@@ -2436,6 +2569,8 @@ public class FileManagerTest
     public void testMoveNameParent()
         throws Exception
         {
+        logger.info("testMoveNameParent() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -2492,6 +2627,8 @@ public class FileManagerTest
             newt.getManagerResourceIvorn(),
             result.getManagerParentIvorn()
             );
+
+        logger.info("testMoveNameParent() - end");
         }
 
     /**
@@ -2501,6 +2638,8 @@ public class FileManagerTest
     public void testMoveParentDuplicate()
         throws Exception
         {
+        logger.info("testMoveParentDuplicate() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -2567,9 +2706,13 @@ public class FileManagerTest
                 "frog",
                 test.getManagerResourceName()
                 );
+
+            logger.info("testMoveParentDuplicate() - end");
             return ;
             }
         fail("Expected DuplicateNodeException");
+
+        logger.info("testMoveParentDuplicate() - end");
         }
 
     /**
@@ -2579,6 +2722,8 @@ public class FileManagerTest
     public void testMoveEmptyLocation()
         throws Exception
         {
+        logger.info("testMoveEmptyLocation() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -2629,6 +2774,8 @@ public class FileManagerTest
             filestores[1],
             result.getManagerLocationIvorn()
             );
+
+        logger.info("testMoveEmptyLocation() - end");
         }
 
     /**
@@ -2643,6 +2790,8 @@ public class FileManagerTest
     public void testMoveDataLocation()
         throws Exception
         {
+        logger.info("testMoveDataLocation() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -2737,6 +2886,8 @@ public class FileManagerTest
             TEST_BYTES,
             buffer.toByteArray()
             );
+
+        logger.info("testMoveDataLocation() - end");
         }
 
 /* TBD
@@ -2751,6 +2902,8 @@ public class FileManagerTest
     public void testCopyNullRequest()
         throws Exception
         {
+        logger.info("testCopyNullRequest() - start");
+
         try {
             target.copy(
                 null
@@ -2758,9 +2911,12 @@ public class FileManagerTest
             }
         catch (NodeNotFoundException ouch)
             {
+            logger.info("testCopyNullRequest() - end");
             return ;
             }
         fail("Expected NodeNotFoundException") ;
+
+        logger.info("testCopyNullRequest() - end");
         }
 
     /**
@@ -2770,6 +2926,8 @@ public class FileManagerTest
     public void testCopyNullResource()
         throws Exception
         {
+        logger.info("testCopyNullResource() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -2793,9 +2951,12 @@ public class FileManagerTest
             }
         catch (NodeNotFoundException ouch)
             {
+            logger.info("testCopyNullResource() - end");
             return ;
             }
         fail("Expected NodeNotFoundException") ;
+
+        logger.info("testCopyNullResource() - end");
         }
 
     /**
@@ -2805,6 +2966,8 @@ public class FileManagerTest
     public void testCopyUnknownResource()
         throws Exception
         {
+        logger.info("testCopyUnknownResource() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -2831,9 +2994,12 @@ public class FileManagerTest
             }
         catch (NodeNotFoundException ouch)
             {
+            logger.info("testCopyUnknownResource() - end");
             return ;
             }
         fail("Expected NodeNotFoundException") ;
+
+        logger.info("testCopyUnknownResource() - end");
         }
 
     /**
@@ -2843,6 +3009,8 @@ public class FileManagerTest
     public void testCopyDuplicateSame()
         throws Exception
         {
+        logger.info("testCopyDuplicateSame() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -2866,9 +3034,12 @@ public class FileManagerTest
             }
         catch (DuplicateNodeException ouch)
             {
+            logger.info("testCopyDuplicateSame() - end");
             return ;
             }
         fail("Expected DuplicateNodeException") ;
+
+        logger.info("testCopyDuplicateSame() - end");
         }
 
     /**
@@ -2878,6 +3049,8 @@ public class FileManagerTest
     public void testCopyDuplicateNode()
         throws Exception
         {
+        logger.info("testCopyDuplicateNode() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -2929,9 +3102,12 @@ public class FileManagerTest
             }
         catch (DuplicateNodeException ouch)
             {
+            logger.info("testCopyDuplicateNode() - end");
             return ;
             }
         fail("Expected DuplicateNodeException") ;
+
+        logger.info("testCopyDuplicateNode() - end");
         }
 
     /**
@@ -2941,6 +3117,8 @@ public class FileManagerTest
     public void testCopyEmptyNode()
         throws Exception
         {
+        logger.info("testCopyEmptyNode() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -2988,6 +3166,8 @@ public class FileManagerTest
             home.getManagerResourceIvorn(),
             result.getManagerParentIvorn()
             );
+
+        logger.info("testCopyEmptyNode() - end");
         }
 
     /**
@@ -2997,6 +3177,8 @@ public class FileManagerTest
     public void testCopyNodeData()
         throws Exception
         {
+        logger.info("testCopyNodeData() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -3087,6 +3269,8 @@ public class FileManagerTest
     public void testCopyNodeLocation()
         throws Exception
         {
+        logger.info("testCopyNodeLocation() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -3189,6 +3373,8 @@ public class FileManagerTest
             filestores[1],
             toad.getManagerLocationIvorn()
             );
+
+        logger.info("testCopyNodeLocation() - end");
         }
 
     /**
@@ -3198,6 +3384,8 @@ public class FileManagerTest
     public void testCopyEmptyLocation()
         throws Exception
         {
+        logger.info("testCopyEmptyLocation() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -3254,6 +3442,8 @@ public class FileManagerTest
             filestores[1],
             result.getManagerLocationIvorn()
             );
+
+        logger.info("testCopyEmptyLocation() - end");
         }
 
 
@@ -3281,6 +3471,8 @@ public class FileManagerTest
     public void testDeleteEmptyData()
         throws Exception
         {
+        logger.info("testDeleteEmptyData() - start");
+
         //
         // Create the account home.
         FileManagerProperties home = new FileManagerProperties(
@@ -3327,9 +3519,12 @@ public class FileManagerTest
             }
         catch (NodeNotFoundException ouch)
             {
+            logger.info("testDeleteEmptyData() - end");
             return ;
             }
         fail("Expected NodeNotFoundException") ;
+
+        logger.info("testDeleteEmptyData() - end");
         }
 
     /**

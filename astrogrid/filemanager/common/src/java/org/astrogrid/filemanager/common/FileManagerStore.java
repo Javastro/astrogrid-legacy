@@ -1,10 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/common/src/java/org/astrogrid/filemanager/common/Attic/FileManagerStore.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2005/01/13 17:23:15 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2005/02/10 14:17:20 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  * <cvs:log>
  *   $Log: FileManagerStore.java,v $
+ *   Revision 1.3  2005/02/10 14:17:20  jdt
+ *   merge from  filemanager-nww-903
+ *
+ *   Revision 1.2.4.1  2005/02/10 13:11:15  nw
+ *   added a commitNode method
+ *
  *   Revision 1.2  2005/01/13 17:23:15  jdt
  *   merges from dave-dev-200412201250
  *
@@ -31,9 +37,9 @@ import org.astrogrid.filemanager.common.exception.NodeNotFoundException ;
 import org.astrogrid.filemanager.common.exception.DuplicateNodeException ;
 import org.astrogrid.filemanager.common.exception.FileManagerServiceException ;
 
-/*
+/**
  * Public interface for a FileManager data store.
- *
+ *@modified nww added a {@link #commitNode} method
  */
 public interface FileManagerStore
     {
@@ -69,7 +75,7 @@ public interface FileManagerStore
      */
     public FileManagerStoreNode getAccount(String ident)
         throws NodeNotFoundException, FileManagerServiceException ;
-
+        
     /**
      * Remove an account from our store.
      * @param ident  The account identifier.
@@ -114,6 +120,14 @@ public interface FileManagerStore
     public FileManagerStoreNode getNode(String ident)
         throws NodeNotFoundException, FileManagerServiceException ;
 
+    /** 
+     * commit changes to an existing node back into the store
+     * @param node node to commit changes on
+     * @throws NodeNotFoundException if node is not in store already
+     * @throws FileManagerServiceException if a problem occurs when handling the request.
+     */
+    public void commitNode(FileManagerStoreNode node) throws NodeNotFoundException, FileManagerServiceException;
+    
     /**
      * Remove an existing node from our store.
      * @param node The node to store.

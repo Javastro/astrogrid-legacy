@@ -1,102 +1,8 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/common/src/java/org/astrogrid/filemanager/common/Attic/FileManagerMock.java,v $</cvs:source>
- * <cvs:author>$Author: clq2 $</cvs:author>
- * <cvs:date>$Date: 2005/01/28 10:43:58 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
- * <cvs:log>
- *   $Log: FileManagerMock.java,v $
- *   Revision 1.5  2005/01/28 10:43:58  clq2
- *   dave_dev_200501141257 (filemanager)
- *
- *   Revision 1.4.2.2  2005/01/25 11:15:58  dave
- *   Fixed NullPointer bug in manager.
- *   Refactored client test case ...
- *
- *   Revision 1.4.2.1  2005/01/20 07:17:15  dave
- *   Added import data from URL to server side logic ....
- *   Tidied up tabs in some files.
- *
- *   Revision 1.4  2005/01/13 17:23:15  jdt
- *   merges from dave-dev-200412201250
- *
- *   Revision 1.3.4.8  2005/01/12 14:33:48  dave
- *   Removed System.out.println debug ...
- *
- *   Revision 1.3.4.7  2005/01/12 13:16:27  dave
- *   Changed tabs to spaces ...
- *
- *   Revision 1.3.4.6  2005/01/12 12:40:08  dave
- *   Added account handling to store ...
- *
- *   Revision 1.3.4.5  2005/01/10 21:27:47  dave
- *   Refactores NodeMock as FileManagerStoreNode ...
- *
- *   Revision 1.3.4.4  2005/01/10 15:36:27  dave
- *   Refactored store into a separate interface and mock impl ...
- *
- *   Revision 1.3.4.3  2005/01/07 12:18:00  dave
- *   Added StoreClientWrapperTest
- *   Added StoreFileWrapper
- *
- *   Revision 1.3.4.2  2004/12/24 02:42:45  dave
- *   Changed delete to use ivorn ...
- *
- *   Revision 1.3.4.1  2004/12/24 02:05:05  dave
- *   Refactored exception handling, removing IdentifierException from the public API ...
- *
- *   Revision 1.3  2004/12/16 17:25:49  jdt
- *   merge from dave-dev-200410061224-200412161312
- *
- *   Revision 1.1.2.40  2004/12/14 17:17:01  dave
- *   Added delete from filemanager ....
- *
- *   Revision 1.1.2.39  2004/12/14 16:51:27  dave
- *   Added delete from filemanager ....
- *
- *   Revision 1.1.2.38  2004/12/14 16:02:09  dave
- *   Added delete from filemanager ....
- *
- *   Revision 1.1.2.37  2004/12/14 15:48:54  dave
- *   Added delete from filemanager ....
- *
- *   Revision 1.1.2.36  2004/12/14 15:44:12  dave
- *   Added delete from filemanager ....
- *
- *   Revision 1.1.2.35  2004/12/14 14:56:25  dave
- *   Added location change for copy empty ...
- *
- *   Revision 1.1.2.34  2004/12/14 14:44:46  dave
- *   Added test for copy empty location ...
- *
- *   Revision 1.1.2.33  2004/12/14 14:11:57  dave
- *   Added delete to the server API ....
- *
- *   Revision 1.1.2.32  2004/12/11 21:19:53  dave
- *   Added copy accross remote filestore(s) ...
- *
- *   Revision 1.1.2.31  2004/12/11 05:59:17  dave
- *   Added internal copy for nodes ...
- *   Added local copy for data ...
- *
- *   Revision 1.1.2.30  2004/12/10 05:21:25  dave
- *   Added node and iterator to client API ...
- *
- *   Revision 1.1.2.29  2004/12/08 17:54:55  dave
- *   Added update to FileManager client and server side ...
- *
- *   Revision 1.1.2.28  2004/12/08 01:56:04  dave
- *   Added filestore location to move ...
- *
- *   Revision 1.1.2.27  2004/12/06 13:29:02  dave
- *   Added initial code for move location ....
- *
- *   Revision 1.1.2.26  2004/12/04 05:22:21  dave
- *   Fixed null parent mistake ...
- *
- *   Revision 1.1.2.25  2004/12/02 19:11:54  dave
- *   Added move name and parent to manager ...
- *
- * </cvs:log>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2005/02/10 14:17:20 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  */
 package org.astrogrid.filemanager.common ;
@@ -140,7 +46,7 @@ import org.astrogrid.filemanager.common.exception.FileManagerPropertiesException
 
 /**
  * A mock implementation of the file manager interface.
- *
+ *@modified nww - added calls to commitNode where necessary/
  */
 public class FileManagerMock
     implements FileManager
@@ -149,7 +55,7 @@ public class FileManagerMock
      * Our debug logger.
      *
      */
-    private static Log log = LogFactory.getLog(FileManagerMock.class);
+    private static Log logger = LogFactory.getLog(FileManagerMock.class);
 
     /**
      * Our FileManager configuration.
@@ -243,9 +149,10 @@ public class FileManagerMock
     public FileProperty[] addAccount(String ident)
         throws FileManagerServiceException, DuplicateNodeException
         {
-        log.debug("");
-        log.debug("FileManagerMock.addAccount()");
-        log.debug("  Account : " + ident);
+        if (logger.isDebugEnabled()) {
+            logger.debug("addAccount(ident = " + ident + ") - start");
+        }
+
         if (null == ident)
             {
             throw new IllegalArgumentException(
@@ -275,7 +182,11 @@ public class FileManagerMock
             ) ;
         //
         // Return the new node.
-        return node.getProperties().toArray() ;
+        FileProperty[] returnFilePropertyArray = node.getProperties().toArray();
+        if (logger.isDebugEnabled()) {
+            logger.debug("addAccount() - end");
+        }
+        return returnFilePropertyArray ;
         }
 
     /**
@@ -289,9 +200,10 @@ public class FileManagerMock
     public FileProperty[] getAccount(String ident)
         throws FileManagerServiceException, NodeNotFoundException
         {
-        log.debug("");
-        log.debug("FileManagerMock.getAccount()");
-        log.debug("  Account : " + ident);
+        if (logger.isDebugEnabled()) {
+            logger.debug("getAccount(ident = " + ident + ") - start");
+        }
+
         if (null == ident)
             {
             throw new IllegalArgumentException(
@@ -307,12 +219,17 @@ public class FileManagerMock
             FileManagerStoreNode node = store.getAccount(ident);
             //
             // Return the node properties.
-            return node.getProperties().toArray() ;
+            FileProperty[] returnFilePropertyArray = node.getProperties()
+                    .toArray();
+            if (logger.isDebugEnabled()) {
+                logger.debug("getAccount() - end");
+            }
+            return returnFilePropertyArray ;
             }
         //
         // If the node does not exist.
         else {
-            throw new NodeNotFoundException() ;
+            throw new NodeNotFoundException(ident) ;
             }
         }
 
@@ -328,9 +245,10 @@ public class FileManagerMock
     public FileProperty[] getNode(String ivorn)
         throws FileManagerServiceException, NodeNotFoundException
         {
-        log.debug("");
-        log.debug("FileManagerMock.getNode()");
-        log.debug("  Ivorn : " + ivorn);
+        if (logger.isDebugEnabled()) {
+            logger.debug("getNode(ivorn = " + ivorn + ") - start");
+        }
+
         if (null == ivorn)
             {
             throw new NodeNotFoundException(
@@ -347,6 +265,8 @@ public class FileManagerMock
             }
         catch (FileManagerIdentifierException ouch)
             {
+            logger.error("getNode(String)", ouch);
+
             throw new NodeNotFoundException(
                 "Unable to parse node identifier"
                 );
@@ -376,18 +296,23 @@ public class FileManagerMock
                     {
                     node = node.getChild(tokens) ;
                     }
-                return node.getProperties().toArray() ;
+                FileProperty[] returnFilePropertyArray = node.getProperties()
+                        .toArray();
+                if (logger.isDebugEnabled()) {
+                    logger.debug("getNode() - end");
+                }
+                return returnFilePropertyArray ;
                 }
             //
             // If the node does not exist.
             else {
-                throw new NodeNotFoundException() ;
+                throw new NodeNotFoundException(ident) ;
                 }
             }
         //
         // If the path is empty
         else {
-            throw new NodeNotFoundException() ;
+            throw new NodeNotFoundException("no path") ;
             }
         }
 
@@ -403,9 +328,10 @@ public class FileManagerMock
     public FileProperty[] refresh(String ivorn)
         throws FileManagerServiceException, NodeNotFoundException
         {
-        log.debug("");
-        log.debug("FileManagerMock.refresh()");
-        log.debug("  Ivorn : " + ivorn);
+        if (logger.isDebugEnabled()) {
+            logger.debug("refresh(ivorn = " + ivorn + ") - start");
+        }
+
         if (null == ivorn)
             {
             throw new IllegalArgumentException(
@@ -422,6 +348,8 @@ public class FileManagerMock
             }
         catch (FileManagerIdentifierException ouch)
             {
+            logger.error("refresh(String)", ouch);
+
             throw new NodeNotFoundException(
                 "Unable to parse node identifier"
                 );
@@ -445,7 +373,7 @@ public class FileManagerMock
                     {
                     node = node.getChild(tokens) ;
                     }
-                log.debug("Found node ...");
+                logger.debug("Found node ...");
                 //
                 // Get the current node properties.
                 FileManagerProperties current = node.getProperties();
@@ -453,7 +381,7 @@ public class FileManagerMock
                 // If this is a file node.
                 if (node.isDataNode())
                     {
-                    log.debug("Found data node ...");
+                    logger.debug("Found data node ...");
                     //
                     // Get the current store location.
                     Ivorn  dataIvorn = null ;
@@ -464,9 +392,7 @@ public class FileManagerMock
                         }
                     catch (FileStoreIdentifierException ouch)
                         {
-                        log.warn("");
-                        log.warn("Unable to parse current store resource ivorn");
-                        log.warn(ouch);
+                        logger.warn("Unable to parse current store resource ivorn",ouch);
                         throw new FileManagerServiceException(
                             "Unable to parse current store resource ivorn"
                             );
@@ -475,14 +401,13 @@ public class FileManagerMock
                     // If the node has stored data.
                     if (null != dataIvorn)
                         {
-                        log.debug("Found store location ...");
-                        log.debug("  Ivorn : " + dataIvorn.toString());
+                        logger.debug("  Found store location " + dataIvorn);
                         //
                         // Resolve the source filestore
                         FileStoreDelegate filestore = resolve(
                             dataIvorn
                             ) ;
-                        log.debug("  PASS  : Got data filestore");
+                        logger.debug("  PASS  : Got data filestore");
                         //
                         // Update the filestore properties.
                         try {
@@ -493,24 +418,23 @@ public class FileManagerMock
                                     dataIdent
                                     )
                                 );
-                            log.debug("  PASS  : Got updated properties");
-                            log.debug("  Size  : " + String.valueOf(updated.getContentSize()));
+                            logger.debug("  PASS  : Got updated properties");
+                            logger.debug("  Size  : " + updated.getContentSize());
                             //
                             // Update the local properties.
                             current.merge(
                                 updated,
                                 new FileManagerPropertyFilter()
                                 );
-                            log.debug("  PASS  : Merged updated properties");
-                            log.debug("  Size  : " + String.valueOf(current.getContentSize()));
+                            logger.debug("  PASS  : Merged updated properties");
+                            logger.debug("  Size  : " + current.getContentSize());
                             }
 //
 // Should we treat this differently ?
 // FileStoreNotFoundException
                         catch(Exception ouch)
                             {
-                            log.warn("Exception thrown by FileStore.properties()");
-                            log.warn("  Exception : " + ouch);
+                            logger.warn("Exception thrown by FileStore.properties()",ouch);
 //
 // Set a property to indicate the data can't be accessed ?
 //
@@ -519,7 +443,11 @@ public class FileManagerMock
                     }
                 //
                 // Return the node properties.
-                return current.toArray() ;
+                FileProperty[] returnFilePropertyArray = current.toArray();
+                if (logger.isDebugEnabled()) {
+                    logger.debug("refresh() - end");
+                }
+                return returnFilePropertyArray ;
                 }
             //
             // If the node does not exist.
@@ -547,10 +475,11 @@ public class FileManagerMock
     public FileProperty[] getChild(String ivorn, String path)
         throws FileManagerServiceException, NodeNotFoundException
         {
-        log.debug("");
-        log.debug("FileManagerMock.getChild()");
-        log.debug("  Ivorn : " + ivorn);
-        log.debug("  Path  : " + path);
+        if (logger.isDebugEnabled()) {
+            logger.debug("getChild(ivorn = " + ivorn + ", path = " + path
+                    + ") - start");
+        }
+
         if (null == ivorn)
             {
             throw new IllegalArgumentException(
@@ -573,6 +502,8 @@ public class FileManagerMock
             }
         catch (FileManagerIdentifierException ouch)
             {
+            logger.error("getChild(String, String)", ouch);
+
             throw new NodeNotFoundException(
                 "Unable to parse parent identifier"
                 );
@@ -582,9 +513,7 @@ public class FileManagerMock
         if (store.hasNode(ident))
             {
             FileManagerStoreNode node = store.getNode(ident) ;
-            log.debug("");
-            log.debug("  Node : " + node.getName());
-            log.debug("  Node : " + node.getIdent());
+            logger.debug(node);
             //
             // Get the child node.
             return node.getChild(path).getProperties().toArray() ;
@@ -611,11 +540,11 @@ public class FileManagerMock
     public FileProperty[] addNode(String ivorn, String name, String type)
         throws FileManagerServiceException, DuplicateNodeException, NodeNotFoundException
         {
-        log.debug("");
-        log.debug("FileManagerMock.addNode(String, String, String)");
-        log.debug("  Parent : " + ivorn);
-        log.debug("  Name   : " + name);
-        log.debug("  Type   : " + type);
+        if (logger.isDebugEnabled()) {
+            logger.debug("addNode(ivorn = " + ivorn + ", name = " + name
+                    + ", type = " + type + ") - start");
+        }
+
         if (null == ivorn)
             {
             throw new IllegalArgumentException(
@@ -632,6 +561,8 @@ public class FileManagerMock
             }
         catch (FileManagerIdentifierException ouch)
             {
+            logger.error("addNode(String, String, String)", ouch);
+
             throw new NodeNotFoundException(
                 "Unable to parse parent identifier"
                 );
@@ -652,7 +583,12 @@ public class FileManagerMock
                     name,
                     type
                     ) ;
-                return child.getProperties().toArray() ;
+                FileProperty[] returnFilePropertyArray = child.getProperties()
+                        .toArray();
+                if (logger.isDebugEnabled()) {
+                    logger.debug("addNode() - end");
+                }
+                return returnFilePropertyArray ;
                 }
             //
             // If the node isn't a container.
@@ -684,18 +620,11 @@ public class FileManagerMock
     protected FileManagerStoreNode addNode(FileManagerStoreNode parent, String name, String type)
         throws FileManagerServiceException, DuplicateNodeException
         {
-        log.debug("");
-        log.debug("FileManagerMock.addNode(Node, String, String)");
-        log.debug("  Name   : " + name);
-        log.debug("  Type   : " + type);
-        if (null == parent)
-            {
-            log.debug("  Parent : -");
-            }
-        else {
-            log.debug("  Parent : " + parent.getIdent());
-            log.debug("  Parent : " + parent.getName());
-            }
+        if (logger.isDebugEnabled()) {
+            logger.debug("addNode(parent = " + parent + ", name = " + name
+                    + ", type = " + type + ") - start");
+        }
+
         if (null == name)
             {
             throw new IllegalArgumentException(
@@ -728,6 +657,7 @@ public class FileManagerMock
                 node.getProperties().setManagerLocationIvorn(
                     config.getFileStoreIvorn()
                     );
+                  store.commitNode(node);
                 }
             //
             // Add the child to the parent.
@@ -736,19 +666,29 @@ public class FileManagerMock
                 parent.addNode(
                     node
                     ) ;
+                store.commitNode(parent);
+                store.commitNode(node); // inefficient - possibly 2 commits. but clear for now.
+                // @todo in future, need to clean up the modifications to different objects.
+                
                 }
             //
             // Return the new node.
-            return node ;
+
+            if (logger.isDebugEnabled()) {
+                logger.debug("addNode() - end");
             }
+            return node ;
+            }        
         catch (FileManagerIdentifierException ouch)
             {
-            log.debug("Unable to create node identifier");
-            log.debug("Exception : " + ouch);
+            logger.debug("Unable to create node identifier",ouch);
             throw new FileManagerServiceException(
                 "Unable to create node identifier"
-                );
-            }
+                );            
+        } catch (NodeNotFoundException e) {
+            logger.debug("Couldn't find node to commit",e);
+            throw new FileManagerServiceException("Couldn't find node to commit",e);
+        }
         }
 
     /**
@@ -769,9 +709,10 @@ public class FileManagerMock
     public String[] getChildren(String ivorn)
         throws FileManagerServiceException, NodeNotFoundException
         {
-        log.debug("");
-        log.debug("FileManagerMock.getChildren(String)");
-        log.debug("  Ivorn : " + ivorn);
+        if (logger.isDebugEnabled()) {
+            logger.debug("getChildren(ivorn = " + ivorn + ") - start");
+        }
+
         if (null == ivorn)
             {
             throw new IllegalArgumentException(
@@ -788,6 +729,8 @@ public class FileManagerMock
             }
         catch (FileManagerIdentifierException ouch)
             {
+            logger.error("getChildren(String)", ouch);
+
             throw new NodeNotFoundException(
                 "Unable to parse parent identifier"
                 );
@@ -799,9 +742,7 @@ public class FileManagerMock
             //
             // Get the parent node.
             FileManagerStoreNode node = store.getNode(ident) ;
-            log.debug("");
-            log.debug("  Node : " + node.getName());
-            log.debug("  Node : " + node.getIdent());
+            logger.debug(node);
             //
             // Create an array of the child nodes.
             Collection nodes = node.getChildren() ;
@@ -820,12 +761,16 @@ public class FileManagerMock
                     }
                 catch (FileManagerIdentifierException ouch)
                     {
-                    log.warn("Unable to parse child node ivorn");
+                    logger.warn("Unable to parse child node ivorn");
                     }
                 }
             String[] array = (String[]) vector.toArray(
                 template
                 );
+
+            if (logger.isDebugEnabled()) {
+                logger.debug("getChildren() - end");
+            }
             return array ;
             }
         //
@@ -853,8 +798,7 @@ public class FileManagerMock
             }
         catch (Exception ouch)
             {
-            log.debug("Exception thrown by FileStoreResolver.resolve()");
-            log.debug("  Exception : " + ouch);
+            logger.debug("Exception thrown by FileStoreResolver.resolve()",ouch);
             throw new FileManagerServiceException(
                 "Unable to locate FileStore service"
                 );
@@ -873,8 +817,7 @@ public class FileManagerMock
     public TransferProperties importInit(FileProperty[] request)
         throws FileManagerServiceException, NodeNotFoundException
         {
-        log.debug("");
-        log.debug("FileManagerMock.importInit(FileProperty[])");
+        logger.debug("FileManagerMock.importInit(FileProperty[])");
         if (null == request)
             {
             throw new NodeNotFoundException(
@@ -914,9 +857,7 @@ public class FileManagerMock
             if (store.hasNode(ident))
                 {
                 FileManagerStoreNode node = store.getNode(ident) ;
-                log.debug("");
-                log.debug("  Node : " + node.getName());
-                log.debug("  Node : " + node.getIdent());
+                logger.debug(node);
                 //
                 // Initiate the transfer.
                 return this.importInit(
@@ -944,10 +885,11 @@ public class FileManagerMock
     protected TransferProperties importInit(FileManagerStoreNode node, FileManagerProperties request)
         throws FileManagerServiceException, NodeNotFoundException
         {
-        log.debug("");
-        log.debug("FileManagerMock.importInit(Node, Properties)");
-        log.debug("  Node : " + node.getName());
-        log.debug("  Node : " + node.getIdent());
+        if (logger.isDebugEnabled()) {
+            logger.debug("importInit(node = " + node + ", request = " + request
+                    + ") - start");
+        }
+
         //
         // Check the node is a data node.
         if (node.isDataNode() != true)
@@ -972,10 +914,8 @@ public class FileManagerMock
             target = current.getStoreResourceIvorn() ;
             }
         catch (FileStoreIdentifierException ouch)
-            {
-            log.warn("");
-            log.warn("Unable to parse store location");
-            log.warn(ouch);
+            {          
+            logger.warn("Unable to parse store location",ouch);
             throw new FileManagerServiceException(
                 "Unable to parse store location"
                 );
@@ -1000,9 +940,7 @@ public class FileManagerMock
                 }
             catch (FileManagerIdentifierException ouch)
                 {
-                log.warn("");
-                log.warn("Unable to parse store location");
-                log.warn(ouch);
+                logger.warn("Unable to parse store location",ouch);
                 throw new FileManagerServiceException(
                     "Unable to parse store location"
                     );
@@ -1025,9 +963,7 @@ public class FileManagerMock
             }
         catch (FileManagerIdentifierException ouch)
             {
-            log.warn("");
-            log.warn("Unable to set resource ivorn");
-            log.warn(ouch);
+            logger.warn("Unable to set resource ivorn",ouch);
             throw new FileManagerServiceException(
                 "Unable to parse resource ivorn"
                 );
@@ -1039,9 +975,7 @@ public class FileManagerMock
             }
         catch (FileManagerIdentifierException ouch)
             {
-            log.warn("");
-            log.warn("Unable to set parent ivorn");
-            log.warn(ouch);
+            logger.warn("Unable to set parent ivorn",ouch);
             throw new FileManagerServiceException(
                 "Unable to parse parent ivorn"
                 );
@@ -1070,8 +1004,7 @@ public class FileManagerMock
             }
         catch (Exception ouch)
             {
-            log.debug("Exception thrown by FileStore.importInit()");
-            log.debug("  Exception : " + ouch);
+            logger.debug("Exception thrown by FileStore.importInit()",ouch);
             throw new FileManagerServiceException(
                 "Error occurred when calling FileStore service"
                 );
@@ -1091,9 +1024,9 @@ public class FileManagerMock
             }
         catch (FileManagerIdentifierException ouch)
             {
-            log.warn("");
-            log.warn("Unable to set resource ivorn");
-            log.warn(ouch);
+            logger.warn("");
+            logger.warn("Unable to set resource ivorn");
+            logger.warn(ouch);
             throw new FileManagerServiceException(
                 "Unable to parse resource ivorn"
                 );
@@ -1105,9 +1038,9 @@ public class FileManagerMock
             }
         catch (FileManagerIdentifierException ouch)
             {
-            log.warn("");
-            log.warn("Unable to set parent ivorn");
-            log.warn(ouch);
+            logger.warn("");
+            logger.warn("Unable to set parent ivorn");
+            logger.warn(ouch);
             throw new FileManagerServiceException(
                 "Unable to parse parent ivorn"
                 );
@@ -1127,9 +1060,9 @@ public class FileManagerMock
             }
         catch (FileStoreIdentifierException ouch)
             {
-            log.warn("");
-            log.warn("Unable to set location ivorn");
-            log.warn(ouch);
+            logger.warn("");
+            logger.warn("Unable to set location ivorn");
+            logger.warn(ouch);
             response.setManagerLocationIvorn(
                 target
                 );
@@ -1139,11 +1072,16 @@ public class FileManagerMock
         node.setProperties(
             response
             ) ;
+        store.commitNode(node);
         //
         // Update the transfer properties.
         transfer.setFileProperties(
             response
             );
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("importInit() - end");
+        }
         return transfer ;
         }
 
@@ -1158,8 +1096,8 @@ public class FileManagerMock
     public TransferProperties exportInit(FileProperty[] request)
         throws FileManagerServiceException, NodeNotFoundException
         {
-        log.debug("");
-        log.debug("FileManagerMock.exportInit(FileProperty[])");
+        logger.debug("");
+        logger.debug("FileManagerMock.exportInit(FileProperty[])");
         if (null == request)
             {
             throw new NodeNotFoundException(
@@ -1199,9 +1137,9 @@ public class FileManagerMock
             if (store.hasNode(ident))
                 {
                 FileManagerStoreNode node = store.getNode(ident) ;
-                log.debug("");
-                log.debug("  Node : " + node.getName());
-                log.debug("  Node : " + node.getIdent());
+                logger.debug("");
+                logger.debug("  Node : " + node.getName());
+                logger.debug("  Node : " + node.getIdent());
                 //
                 // Initiate the transfer.
                 return this.exportInit(
@@ -1229,10 +1167,10 @@ public class FileManagerMock
     protected TransferProperties exportInit(FileManagerStoreNode node, FileManagerProperties request)
         throws FileManagerServiceException, NodeNotFoundException
         {
-        log.debug("");
-        log.debug("FileManagerMock.exportInit(Node, Properties)");
-        log.debug("  Node : " + node.getName());
-        log.debug("  Node : " + node.getIdent());
+        logger.debug("");
+        logger.debug("FileManagerMock.exportInit(Node, Properties)");
+        logger.debug("  Node : " + node.getName());
+        logger.debug("  Node : " + node.getIdent());
         //
         // Get the current node properties.
         FileManagerProperties current = node.getProperties();
@@ -1316,8 +1254,8 @@ public class FileManagerMock
             }
         catch (Exception ouch)
             {
-            log.debug("Exception thrown by FileStore.importInit()");
-            log.debug("  Exception : " + ouch);
+            logger.debug("Exception thrown by FileStore.importInit()");
+            logger.debug("  Exception : " + ouch);
             throw new FileManagerServiceException(
                 "Error occurred when calling FileStore service"
                 );
@@ -1363,6 +1301,7 @@ public class FileManagerMock
         node.setProperties(
             response
             ) ;
+        store.commitNode(node);
         //
         // Update the transfer properties.
         transfer.setFileProperties(
@@ -1385,8 +1324,8 @@ public class FileManagerMock
     public FileProperty[] move(FileProperty[] request)
         throws FileManagerServiceException, DuplicateNodeException, NodeNotFoundException
         {
-        log.debug("");
-        log.debug("FileManagerMock.move(FileProperty[])");
+        logger.debug("");
+        logger.debug("FileManagerMock.move(FileProperty[])");
         if (null == request)
             {
             throw new NodeNotFoundException(
@@ -1434,10 +1373,10 @@ public class FileManagerMock
     public FileProperty[] move(FileManagerStoreNode node, FileManagerProperties request)
         throws DuplicateNodeException, NodeNotFoundException, FileManagerServiceException
         {
-        log.debug("");
-        log.debug("FileManagerMock.move(Node, FileManagerProperties)");
-        log.debug("  Node : " + node.getName());
-        log.debug("  Node : " + node.getIdent());
+        logger.debug("");
+        logger.debug("FileManagerMock.move(Node, FileManagerProperties)");
+        logger.debug("  Node : " + node.getName());
+        logger.debug("  Node : " + node.getIdent());
         //
         // Get the current node properties.
         FileManagerProperties current = node.getProperties();
@@ -1511,12 +1450,12 @@ public class FileManagerMock
     protected void moveNode(FileManagerStoreNode node, String name, Ivorn dest)
         throws FileManagerServiceException, DuplicateNodeException, NodeNotFoundException
         {
-        log.debug("");
-        log.debug("FileManagerMock.move(Node, String, Ivorn)");
-        log.debug("  Node : " + node.getName());
-        log.debug("  Node : " + node.getIdent());
-        log.debug("  Name : " + name);
-        log.debug("  Dest : " + ((null != dest) ? dest.toString() : "null"));
+        logger.debug("");
+        logger.debug("FileManagerMock.move(Node, String, Ivorn)");
+        logger.debug("  Node : " + node.getName());
+        logger.debug("  Node : " + node.getIdent());
+        logger.debug("  Name : " + name);
+        logger.debug("  Dest : " + ((null != dest) ? dest.toString() : "null"));
         //
         // If the destination parent is set.
         if (null != dest)
@@ -1569,13 +1508,13 @@ public class FileManagerMock
     protected void moveNode(FileManagerStoreNode node, String name, FileManagerStoreNode dest)
         throws FileManagerServiceException, DuplicateNodeException
         {
-        log.debug("");
-        log.debug("FileManagerMock.moveNode(Node, String, Node)");
-        log.debug("  Node : " + node.getName());
-        log.debug("  Node : " + node.getIdent());
-        log.debug("  Name : " + name);
-        log.debug("  Dest : " + dest.getName());
-        log.debug("  Dest : " + dest.getIdent());
+        logger.debug("");
+        logger.debug("FileManagerMock.moveNode(Node, String, Node)");
+        logger.debug("  Node : " + node.getName());
+        logger.debug("  Node : " + node.getIdent());
+        logger.debug("  Name : " + name);
+        logger.debug("  Dest : " + dest.getName());
+        logger.debug("  Dest : " + dest.getIdent());
         //
         // Get the current parent.
         FileManagerStoreNode parent = null;
@@ -1614,14 +1553,22 @@ public class FileManagerMock
             node.setName(
                 name
                 );
+            try {
+                store.commitNode(node);
+            } catch (NodeNotFoundException e) {
+                throw new FileManagerServiceException("Node does not exist");
+            }
             }
         //
         // Add the node into the new parent.
         try {
             dest.addNode(
                 node
-                );
-            }
+                );            
+            store.commitNode(node);
+        } catch (NodeNotFoundException e) {
+                throw new FileManagerServiceException("Destination does not exist");
+        }
         catch (DuplicateNodeException ouch)
             {
             //
@@ -1629,25 +1576,31 @@ public class FileManagerMock
             node.setName(
                 prev
                 );
+            try {
+                store.commitNode(node);
+            } catch (NodeNotFoundException e) {
+                // oh well. 
+            }
             //
             // Re-throw the Exception.
             throw ouch ;
-            }
+            } 
         //
         // Remove the node from the old parent.
         try {
             parent.delNode(
                 prev
                 );
+              store.commitNode(parent);
             }
         catch (NodeNotFoundException ouch)
             {
             //
             // Log the error.
-            log.warn("");
-            log.warn("Move failed to remove node from original parent");
-            log.warn("Parent : " + parent.getIdent());
-            log.warn("Child  : " + node.getIdent());
+            logger.warn("");
+            logger.warn("Move failed to remove node from original parent");
+            logger.warn("Parent : " + parent.getIdent());
+            logger.warn("Child  : " + node.getIdent());
             }
         }
 
@@ -1718,17 +1671,17 @@ public class FileManagerMock
     protected void moveStore(FileManagerStoreNode node, Ivorn targetIvorn)
         throws DuplicateNodeException, NodeNotFoundException, FileManagerServiceException
         {
-        log.debug("");
-        log.debug("FileManagerMock.moveStore(Node, Ivorn)");
-        log.debug("  Node  : " + node.getName());
-        log.debug("  Node  : " + node.getIdent());
-        log.debug("  Dest  : " + targetIvorn.toString());
+        logger.debug("");
+        logger.debug("FileManagerMock.moveStore(Node, Ivorn)");
+        logger.debug("  Node  : " + node.getName());
+        logger.debug("  Node  : " + node.getIdent());
+        logger.debug("  Dest  : " + targetIvorn.toString());
         //
         // If the node is a data node.
         if (node.isDataNode())
             {
-            log.debug("");
-            log.debug("  PASS  : Node is a data node");
+            logger.debug("");
+            logger.debug("  PASS  : Node is a data node");
             //
             // Get the current node properties.
             FileManagerProperties current = node.getProperties();
@@ -1742,9 +1695,9 @@ public class FileManagerMock
                 }
             catch (FileStoreIdentifierException ouch)
                 {
-                log.warn("");
-                log.warn("Unable to parse current store resource ivorn");
-                log.warn(ouch);
+                logger.warn("");
+                logger.warn("Unable to parse current store resource ivorn");
+                logger.warn(ouch);
                 throw new FileManagerServiceException(
                     "Unable to parse current store resource ivorn"
                     );
@@ -1753,21 +1706,21 @@ public class FileManagerMock
             // If the node has some stored data.
             if (null != sourceIvorn)
                 {
-                log.debug("");
-                log.debug("  PASS  : Got store resource ivorn");
-                log.debug("  Ivorn : " + sourceIvorn.toString());
+                logger.debug("");
+                logger.debug("  PASS  : Got store resource ivorn");
+                logger.debug("  Ivorn : " + sourceIvorn.toString());
                 //
                 // Resolve the source filestore
                 FileStoreDelegate sourceStore = resolve(
                     sourceIvorn
                     ) ;
-                log.debug("  PASS  : Got source filestore");
+                logger.debug("  PASS  : Got source filestore");
                 //
                 // Resolve the target filestore
                 FileStoreDelegate targetStore = resolve(
                     targetIvorn
                     ) ;
-                log.debug("  PASS  : Got target filestore");
+                logger.debug("  PASS  : Got target filestore");
                 //
                 // Initiate the transfer from the source store.
                 TransferProperties transfer = null ;
@@ -1781,8 +1734,8 @@ public class FileManagerMock
                     }
                 catch (Exception ouch)
                     {
-                    log.debug("Exception thrown by FileStore.importInit()");
-                    log.debug("  Exception : " + ouch);
+                    logger.debug("Exception thrown by FileStore.importInit()");
+                    logger.debug("  Exception : " + ouch);
                     throw new FileManagerServiceException(
                         "Error occurred when calling FileStore service"
                         );
@@ -1798,8 +1751,8 @@ public class FileManagerMock
                     }
                 catch (Exception ouch)
                     {
-                    log.debug("Exception thrown by FileStore.importInit()");
-                    log.debug("  Exception : " + ouch);
+                    logger.debug("Exception thrown by FileStore.importInit()");
+                    logger.debug("  Exception : " + ouch);
                     throw new FileManagerServiceException(
                         "Error occurred when calling FileStore service"
                         );
@@ -1824,8 +1777,8 @@ public class FileManagerMock
                     }
                 catch (Exception ouch)
                     {
-                    log.warn("Exception thrown by FileStore.delete()");
-                    log.warn("  Exception : " + ouch);
+                    logger.warn("Exception thrown by FileStore.delete()");
+                    logger.warn("  Exception : " + ouch);
 //
 // Ignore any problems with the delete.
 // If the data has moved to the new server, then we shouldn't throw an Exception.
@@ -1837,9 +1790,9 @@ public class FileManagerMock
             //
             // If the node does not have any stored data yet.
             else {
-                log.debug("  PASS  : No data stored yet.");
-                log.debug("Setting location ivorn");
-                log.debug("  Dest  : " + targetIvorn.toString());
+                logger.debug("  PASS  : No data stored yet.");
+                logger.debug("Setting location ivorn");
+                logger.debug("  Dest  : " + targetIvorn.toString());
 //
 // Should we try to resolve the filestore, just to check ?
 //
@@ -1849,12 +1802,13 @@ public class FileManagerMock
                     targetIvorn
                     );
                 }
+                store.commitNode(node);
             }
         //
         // If the node is not a data node.
         else {
-            log.debug("");
-            log.debug("FAIL  : Node is not a data node");
+            logger.debug("");
+            logger.debug("FAIL  : Node is not a data node");
             //
             // This implies a recursive move for all the child nodes ....
             //
@@ -1881,8 +1835,8 @@ public class FileManagerMock
             DuplicateNodeException,
             FileManagerServiceException
         {
-        log.debug("");
-        log.debug("FileManagerMock.copy(FileProperty[])");
+        logger.debug("");
+        logger.debug("FileManagerMock.copy(FileProperty[])");
         if (null == request)
             {
             throw new NodeNotFoundException(
@@ -1930,16 +1884,16 @@ public class FileManagerMock
     protected FileManagerStoreNode copy(FileManagerStoreNode node, FileManagerProperties request)
         throws DuplicateNodeException, NodeNotFoundException, FileManagerServiceException
         {
-        log.debug("");
-        log.debug("FileManagerMock.copy(Node, FileManagerProperties)");
-        log.debug("  Node : " + node.getName());
-        log.debug("  Node : " + node.getIdent());
+        logger.debug("");
+        logger.debug("FileManagerMock.copy(Node, FileManagerProperties)");
+        logger.debug("  Node : " + node.getName());
+        logger.debug("  Node : " + node.getIdent());
         //
         // Check the node is a data node.
         if (node.isDataNode())
             {
-            log.debug("");
-            log.debug("PASS  : Node is a data node");
+            logger.debug("");
+            logger.debug("PASS  : Node is a data node");
             //
             // Get the current node properties.
             FileManagerProperties currentProperties = node.getProperties();
@@ -1978,7 +1932,7 @@ public class FileManagerMock
                 targetProperties.getManagerResourceName(),
                 FileManagerProperties.DATA_NODE_TYPE
                 );
-            log.debug("  PASS  : Created node copy");
+            logger.debug("  PASS  : Created node copy");
             //
             // Get the new node properties.
             FileManagerProperties resultProperties = resultNode.getProperties();
@@ -2000,7 +1954,7 @@ public class FileManagerMock
             // If the node has already been stored.
             if (null != currentStoreIvorn)
                 {
-                log.debug("  PASS  : Node has data");
+                logger.debug("  PASS  : Node has data");
                 //
                 // Get the changed data location.
                 Ivorn changedLocation = null ;
@@ -2058,8 +2012,8 @@ public class FileManagerMock
                         }
                     catch (Exception ouch)
                         {
-                        log.debug("Exception thrown by FileStore.importInit()");
-                        log.debug("  Exception : " + ouch);
+                        logger.debug("Exception thrown by FileStore.importInit()");
+                        logger.debug("  Exception : " + ouch);
                         throw new FileManagerServiceException(
                             "Unable to initiate data transfer"
                             );
@@ -2075,8 +2029,8 @@ public class FileManagerMock
                         }
                     catch (Exception ouch)
                         {
-                        log.debug("Exception thrown by FileStore.importInit()");
-                        log.debug("  Exception : " + ouch);
+                        logger.debug("Exception thrown by FileStore.importInit()");
+                        logger.debug("  Exception : " + ouch);
                         throw new FileManagerServiceException(
                             "Unable to complete data transfer"
                             );
@@ -2096,17 +2050,17 @@ public class FileManagerMock
                 //
                 // If the data location has not changed.
                 else {
-                    log.debug("  PASS  : Location not changed");
+                    logger.debug("  PASS  : Location not changed");
                     //
                     // Resolve the current filestore.
                     FileStoreDelegate filestore = resolve(
                         currentStoreIvorn
                         ) ;
-                    log.debug("  PASS  : Got current filestore");
+                    logger.debug("  PASS  : Got current filestore");
                     //
                     // Ask the filestore to duplicate the data.
                     try {
-                        log.debug("  PASS  : Asking filestore for duplicate");
+                        logger.debug("  PASS  : Asking filestore for duplicate");
                         //
                         // Ask the filestore to duplicate the data.
                         FileManagerProperties updatedProperties = new FileManagerProperties(
@@ -2115,19 +2069,19 @@ public class FileManagerMock
                                 resultProperties.toArray()
                                 )
                             );
-                        log.debug("  PASS  : Got duplicate from filestore");
+                        logger.debug("  PASS  : Got duplicate from filestore");
                         //
                         // Update the local properties.
                         resultProperties.merge(
                             updatedProperties,
                             new FileManagerPropertyFilter()
                             );
-                        log.debug("  PASS  : Merged updated properties");
+                        logger.debug("  PASS  : Merged updated properties");
                         }
                     catch(Exception ouch)
                         {
-                        log.warn("Exception thrown by FileStore.duplicate()");
-                        log.warn("  Exception : " + ouch);
+                        logger.warn("Exception thrown by FileStore.duplicate()");
+                        logger.warn("  Exception : " + ouch);
 //
 // Set a property to indicate the data can't be accessed ?
 // Pass the Exception on ?
@@ -2139,7 +2093,7 @@ public class FileManagerMock
             //
             // If the node has not been stored yet.
             else {
-                log.debug("  PASS  : Node is empty");
+                logger.debug("  PASS  : Node is empty");
                 //
                 // Get the changed data location.
                 Ivorn changedLocation = null ;
@@ -2156,7 +2110,7 @@ public class FileManagerMock
                 // If the data location has changed.
                 if (null != changedLocation)
                     {
-                    log.debug("  PASS  : Location changed");
+                    logger.debug("  PASS  : Location changed");
                     //
                     // Set the target location.
                     resultProperties.setManagerLocationIvorn(
@@ -2175,8 +2129,8 @@ public class FileManagerMock
         //
         // If the node is not a data node.
         else {
-            log.debug("");
-            log.debug("FAIL  : Node is not a data node");
+            logger.debug("");
+            logger.debug("FAIL  : Node is not a data node");
             //
             // This implies a recursive copy for all the child nodes ....
             throw new UnsupportedOperationException(
@@ -2198,9 +2152,9 @@ public class FileManagerMock
             NodeNotFoundException,
             FileManagerServiceException
         {
-        log.debug("");
-        log.debug("FileManagerMock.delete(String)");
-        log.debug("  Ivorn : " + ivorn);
+        logger.debug("");
+        logger.debug("FileManagerMock.delete(String)");
+        logger.debug("  Ivorn : " + ivorn);
         if (null == ivorn)
             {
             throw new IllegalArgumentException(
@@ -2240,10 +2194,10 @@ public class FileManagerMock
     protected void deleteNode(FileManagerStoreNode node)
         throws NodeNotFoundException, FileManagerServiceException
         {
-        log.debug("");
-        log.debug("FileManagerMock.delete(Node)");
-        log.debug("  Node : " + node.getName());
-        log.debug("  Node : " + node.getIdent());
+        logger.debug("");
+        logger.debug("FileManagerMock.delete(Node)");
+        logger.debug("  Node : " + node.getName());
+        logger.debug("  Node : " + node.getIdent());
         //
         // Get the node parent.
         FileManagerStoreNode parent = null;
@@ -2268,8 +2222,8 @@ public class FileManagerMock
         // If the node is a data node.
         if (node.isDataNode())
             {
-            log.debug("");
-            log.debug("PASS  : Node is a data node");
+            logger.debug("");
+            logger.debug("PASS  : Node is a data node");
             //
             // Get the current node properties.
             FileManagerProperties current = node.getProperties();
@@ -2283,9 +2237,9 @@ public class FileManagerMock
                 }
             catch (FileStoreIdentifierException ouch)
                 {
-                log.warn("");
-                log.warn("Unable to parse current store resource ivorn");
-                log.warn(ouch);
+                logger.warn("");
+                logger.warn("Unable to parse current store resource ivorn");
+                logger.warn(ouch);
                 throw new FileManagerServiceException(
                     "Unable to parse current store resource ivorn"
                     );
@@ -2294,16 +2248,16 @@ public class FileManagerMock
             // If the node has some stored data.
             if (null != sourceIvorn)
                 {
-                log.debug("");
-                log.debug("  PASS  : Node has stored data");
-                log.debug("  PASS  : Got store resource ivorn");
-                log.debug("  Ivorn : " + sourceIvorn.toString());
+                logger.debug("");
+                logger.debug("  PASS  : Node has stored data");
+                logger.debug("  PASS  : Got store resource ivorn");
+                logger.debug("  Ivorn : " + sourceIvorn.toString());
                 //
                 // Resolve the source filestore
                 FileStoreDelegate sourceStore = resolve(
                     sourceIvorn
                     ) ;
-                log.debug("  PASS  : Got source filestore");
+                logger.debug("  PASS  : Got source filestore");
                 //
                 // Remove the data from the filestore.
                 try {
@@ -2313,8 +2267,8 @@ public class FileManagerMock
                     }
                 catch (Exception ouch)
                     {
-                    log.warn("Exception thrown by FileStore.delete()");
-                    log.warn("  Exception : " + ouch);
+                    logger.warn("Exception thrown by FileStore.delete()");
+                    logger.warn("  Exception : " + ouch);
 //
 // Ignore any problems with the delete.
 //                    throw new FileManagerServiceException(
@@ -2325,7 +2279,7 @@ public class FileManagerMock
             //
             // If the node does not have any stored data.
             else {
-                log.debug("  PASS  : Node is empty");
+                logger.debug("  PASS  : Node is empty");
                 }
             //
             // Remove the node from our global map.
@@ -2338,22 +2292,23 @@ public class FileManagerMock
                 parent.delNode(
                     node.getName()
                     );
+                 store.commitNode(parent);
                 }
             catch (NodeNotFoundException ouch)
                 {
                 //
                 // Log the error.
-                log.warn("");
-                log.warn("Move failed to remove node from original parent");
-                log.warn("Parent : " + parent.getIdent());
-                log.warn("Child  : " + node.getIdent());
+                logger.warn("");
+                logger.warn("Move failed to remove node from original parent");
+                logger.warn("Parent : " + parent.getIdent());
+                logger.warn("Child  : " + node.getIdent());
                 }
             }
         //
         // If the node is a container.
         else {
-            log.debug("");
-            log.debug("FAIL  : Node is a container node");
+            logger.debug("");
+            logger.debug("FAIL  : Node is a container node");
             }
         }
 

@@ -3,10 +3,16 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/server/project.xml,v $</cvs:source>
     | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2004/11/25 00:20:27 $</cvs:date>
-    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:date>$Date: 2005/02/10 14:17:21 $</cvs:date>
+    | <cvs:version>$Revision: 1.3 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.3  2005/02/10 14:17:21  jdt
+    |   merge from  filemanager-nww-903
+    |
+    |   Revision 1.2.10.1  2005/02/10 13:07:54  nw
+    |   added in stuff for xstream persistence.
+    |
     |   Revision 1.2  2004/11/25 00:20:27  jdt
     |   Merge from dave-dev-200410061224-200411221626
     |
@@ -48,7 +54,7 @@
 
     <!--+
         | A detailed description of the project.
-        | This is used to generate the front page of the projects web site. 
+        | This is used to generate the front page of the projects web site.
         +-->
     <description>
         <![CDATA[
@@ -118,6 +124,22 @@
             <version>${astrogrid.community.version}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
+        </dependency>
+        <!-- simple xml serialization library -->
+        <dependency>
+                <groupId>xstream</groupId>
+                <artifactId>xstream</artifactId>
+                <version>1.1</version>
+                <type>jar</type>
+                <url>http://xstream.codehaus.org/</url>
+        </dependency>
+        <!-- quick xml pull parser - for faster performance of xstream -->
+        <dependency>
+                <groupId>xpp3</groupId>
+                <artifactId>xpp3_min</artifactId>
+                <version>1.1.3.4.I</version>
+                <type>jar</type>
+                <url>http://www.extreme.indiana.edu/xgws/xsoap/xpp/mxp1/index.html</url>
         </dependency>
     </dependencies>
 

@@ -3,10 +3,16 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/maven/project.xml,v $</cvs:source>
     | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2004/11/25 00:20:29 $</cvs:date>
-    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:date>$Date: 2005/02/10 14:17:21 $</cvs:date>
+    | <cvs:version>$Revision: 1.3 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.3  2005/02/10 14:17:21  jdt
+    |   merge from  filemanager-nww-903
+    |
+    |   Revision 1.2.10.1  2005/02/10 13:07:26  nw
+    |   added in true dependencies for filemanager. tidy up later.
+    |
     |   Revision 1.2  2004/11/25 00:20:29  jdt
     |   Merge from dave-dev-200410061224-200411221626
     |
@@ -24,7 +30,7 @@
         | Extend the global astrogrid project.xml.
         +-->
     <extend>../../maven-base/project.xml</extend>
-	<currentVersion>${astrogrid.filemanager.version}</currentVersion>
+        <currentVersion>${astrogrid.filemanager.version}</currentVersion>
     <!--+
         | The project developers.
         +-->
@@ -53,6 +59,57 @@
         | The external libraries required to build our components.
         +-->
     <dependencies>
+    <!-- NWW - added the jars these projects really depend upon -->
+       <dependency>
+       <!-- necessary hack, as we depend on two artifacts (axis.war, axis.jar) with
+       same name -->
+      <artifactId>axis-force-dep</artifactId>
+      <groupId>axis</groupId>
+      <version>1.1</version>
+      <jar>axis-1.1.jar</jar>
+      <!-- later
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties> -->
+    </dependency>
+    <!-- probably not needed at the moment
+    <dependency>
+      <artifactId>axis-ant</artifactId>
+      <groupId>axis</groupId>
+      <version>1.1</version>
+    </dependency>
+    -->
+    <dependency>
+      <artifactId>commons-discovery</artifactId>
+      <groupId>commons-discovery</groupId>
+      <version>20030211.213356</version>
+      <!-- <properties>
+        <war.bundle>true</war.bundle>
+      </properties> -->
+    </dependency>
+    <dependency>
+      <id>jaxrpc-api</id>
+      <version>1.0.3</version>
+      <!--<properties>
+        <war.bundle>true</war.bundle>
+      </properties>-->
+    </dependency>
+    <dependency>
+      <id>saaj</id>
+      <version>1.0</version>
+      <jar>saaj.jar</jar>
+      <!--<properties>
+        <war.bundle>true</war.bundle>
+      </properties>-->
+    </dependency>
+    <dependency>
+      <id>wsdl4j</id>
+      <version>1.0</version>
+      <!--<properties>
+        <war.bundle>true</war.bundle>
+      </properties>-->
+    </dependency>
+    <!-- NWW end -->
         <!--+
             | The Axis webapp war file.
             +-->
