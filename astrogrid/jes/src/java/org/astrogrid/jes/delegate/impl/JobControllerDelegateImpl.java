@@ -134,7 +134,6 @@ public class JobControllerDelegateImpl extends JobControllerDelegate {
             JobController jc = getBinding();
             System.out.println(urn.getContent());
             String result = jc.readJob(new org.astrogrid.jes.types.v1.JobURN(urn.getContent())).getValue();
-            System.out.println("result :" + result + ";");
             if (result == null || result.trim().length() == 0) {
                 throw new JesDelegateException("Null workflow returned");
             }
