@@ -5,10 +5,8 @@
 
 <!-- this is the goal called by nightly build -->
 <preGoal name="jar:deploy-snapshot">
-	<!-- feck - doesn't work. comment out for now.
-	hopefully maven will be fixed one day
+
 	<maven:maven descriptor="${basedir}/pal/project.xml" goals="webapp-site" />
-	-->
 	${systemScope.setProperty('goal','dist')}
 	<attainGoal name="multiproject:goal" /> <!-- packages everythin -->
 	<attainGoal name="multiproject:deploy-snapshot" /> <!-- make the artefacts -->
