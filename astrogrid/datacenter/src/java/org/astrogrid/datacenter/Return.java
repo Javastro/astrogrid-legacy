@@ -101,10 +101,10 @@ public class Return {
 		    buffer.append(" ");
 		    for (int i = 0; i < field.length; i++){
 		    	if (field[i].getType().equals(JobDocDescriptor.FIELD_TYPE_UCD)) {
-					buffer.append(getColumnHeading(catalog,field[i].getName()));
+					buffer.append(getColumnHeading( catalog, field[i].getName()) );
 		    	}
-		    	else {
-		    		buffer.append(field[i].getName());
+		    	else if (field[i].getType().equals(JobDocDescriptor.FIELD_TYPE_COLUMN)) {
+		    		buffer.append(getColumnHeading( catalog, field[i].getName()) );
 		    	}
 		        buffer.append(", ");			  
 		    } // end of for

@@ -50,20 +50,32 @@ public class Query {
 			   nodeList = queryElement.getChildNodes() ;
 			Element
 				element ;
+			Catalog
+			    catalog = null;
 						   
 			for( int i=0 ; i < nodeList.getLength() ; i++ ) {	
 				if( nodeList.item(i).getNodeType() != Node.ELEMENT_NODE )
 					continue ;				
 				element = (Element) nodeList.item(i) ;
 				
-				if( element.getTagName().equals( JobDocDescriptor.CRITERIA_ELEMENT ) ) {
-					setCriteria(new Criteria( element )) ;
+				if( element.getTagName().equals( JobDocDescriptor.FROM_ELEMENT ) ) {
+					setFrom(new From( element )) ;
+					NodeList nodeList2 = element.getChildNodes();
+					for( int j=0 ; j < nodeList2.getLength() ; j++ ) {
+					    if (nodeList2.item(j).getNodeType() != Node.ELEMENT_NODE) 
+						    continue;
+						    for (int k= 0 ; k < nodeList2.getLength() ; k++) {
+								element = (Element) nodeList2.item(k) ;
+								if (element.getTagName().equals(JobDocDescriptor.CATALOG_ELEMENT)) 
+									catalog = new Catalog( element );
+						    } // end of k						 
+					} // end of for j
+				} // end of if( element.getTagName().equals( JobDocDescriptor.FROM_ELEMENT ) ) {
+				else if( element.getTagName().equals( JobDocDescriptor.CRITERIA_ELEMENT ) ) {
+					setCriteria(new Criteria( element, catalog )) ;
 				}
 				else if( element.getTagName().equals( JobDocDescriptor.RETURN_ELEMENT ) ) {
-				    setReturn(new Return( element )) ;
-				}
-				else if( element.getTagName().equals( JobDocDescriptor.FROM_ELEMENT ) ) {
-					setFrom(new From( element )) ;
+				    setReturn(new Return( element, catalog )) ;
 				}
 				else {
 					; // JBL Note: What do I do here?
