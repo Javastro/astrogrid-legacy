@@ -88,7 +88,7 @@ public class MySpaceManager{
 	private static String regPathTemp = AxisProperties.getProperty("catalina.home")+"/conf/astrogrid/mySpace/" +"statuscodes.lis";
 	private String errCode="";
 	private Vector v = new Vector();
-	private String registryName = conProperties.getProperty(REGPATH);
+	private String registryName = " ";
 	private MySpaceActions msA = new MySpaceActions();
 
 // Constructor.
@@ -120,6 +120,7 @@ public String upLoad(String jobDetails){
 	Call call = null;
 	loadProperties();
 	String path=conProperties.getProperty(TEMPPATHTO); //Server Side file location,hard coded for now should be discussed
+	registryName = conProperties.getProperty(REGPATH);
 	if( DEBUG )  logger.debug("MySpaceManager.upLoad, getting file path for data holder to store on server." +path);
 		try{
 			request = util.getRequestAttributes(jobDetails);
@@ -159,10 +160,19 @@ public String upLoad(String jobDetails){
 			serverFileName = request.get("serverFileName").toString();
 			if ( DEBUG ) logger.debug(userID+"  "+communityID +"   "+jobID+"   "+newDataHolderName+"   "+fileSize+"   "+" serverFileName == "+serverFileName);
 
+			if ( DEBUG ) logger.debug("About to invoke myspaceaction.importdataholder");  
 			msA.setRegistryName(registryName);
+			RegistryManager reg = new RegistryManager(registryName);
+			String mySpaceFileName = "f" + reg.getNextDataItemID();
+			reg.finalize();
 			dataitem = msA.importDataHolder(
 			    userID, communityID, jobID, newDataHolderName,
-			    serverFileName, fileSize );
+			    mySpaceFileName, fileSize );
+			    
+			checkStatus("UPLOAD");
+			if(DEBUG) logger.debug("UPLOAD CHECKING ATTRIBUTES FOR CREATING DATAITEM:"
+			    + userID +"   "+communityID +"   "+jobID +"   "+newDataHolderName +"   "
+			      +serverFileName +"   "+fileSize +"   " +"   "+mySpaceFileName+"   registryName:"+registryName);
 			
 			content = MySpaceUtils.readFromFile(new File(serverFileName));
 
@@ -172,6 +182,7 @@ public String upLoad(String jobDetails){
 			call.addParameter("arg1", XMLType.XSD_STRING, ParameterMode.IN);
 		
 			call.setReturnType( org.apache.axis.encoding.XMLType.XSD_STRING);
+			path = path+mySpaceFileName;
 			String serverResponse = (String)call.invoke( new Object[] {content,path} );
 			if ( DEBUG )  logger.debug("GOT SERVERRESPONSE: "+serverResponse);
 			
@@ -194,24 +205,24 @@ public String upLoad(String jobDetails){
 			Date currentMySpaceDate = new Date();
 	
 		//   Format and return the results as XML.
-		if(dataitem!=null){
-			response = util.buildMySpaceManagerResponse(dataitem, returnStatus, details,"");
-			if (successStatus){
-				response = util.buildMySpaceManagerResponse(dataitem, SUCCESS, "","");		    	
-			}else {
-				v = status.getCodes();
-				for(int i=0;i<=v.size();i++){
-					MySpaceStatusCode currCode = (MySpaceStatusCode)v.elementAt(i); 
-					errCode=errCode+","+currCode.getCode();
-					response = util.buildMySpaceManagerResponse(null,FAULT,errCode,"");					
-				}		    	
-			}	
-		} else{
-			status.addCode(MySpaceStatusCode.MS_E_FLCRTDH,MySpaceStatusCode.ERROR);
-			MySpaceMessage message =  new MySpaceMessage("MS_E_FLCRTDH");
-			response = util.buildMySpaceManagerResponse(null,FAULT,MySpaceStatusCode.MS_E_FLCRTDH,"");  
-			return response;
-		}
+			if(dataitem!=null){
+				response = util.buildMySpaceManagerResponse(dataitem, returnStatus, details,"");
+				if (successStatus){
+					response = util.buildMySpaceManagerResponse(dataitem, SUCCESS, "","");		    	
+				}else {
+					v = status.getCodes();
+					for(int i=0;i<=v.size();i++){
+						MySpaceStatusCode currCode = (MySpaceStatusCode)v.elementAt(i); 
+						errCode=errCode+","+currCode.getCode();
+						response = util.buildMySpaceManagerResponse(null,FAULT,errCode,"");					
+					}		    	
+				}	
+			} else{
+				status.addCode(MySpaceStatusCode.MS_E_FLCRTDH,MySpaceStatusCode.ERROR);
+				MySpaceMessage message =  new MySpaceMessage("MS_E_FLCRTDH");
+				response = util.buildMySpaceManagerResponse(null,FAULT,MySpaceStatusCode.MS_E_FLCRTDH,"");  
+				return response;
+			}
 			if( DEBUG ) logger.debug("RESPONSE: "+response); 
 		}catch(Exception e){
 			logger.error("ERROR UPLOADING MYSPACEMANAGER" +e.toString());
@@ -231,6 +242,9 @@ public String upLoad(String jobDetails){
    public String lookupDataHolderDetails(String jobDetails){
 	if ( DEBUG )  logger.debug("MySpaceManager.moveDataHolder");
 	DataItemRecord dataitem = null;
+	loadProperties();
+	registryName = conProperties.getProperty(REGPATH);	
+	
 		try{
 			request = util.getRequestAttributes(jobDetails);
 			try{
@@ -312,22 +326,17 @@ public String upLoad(String jobDetails){
 	if ( DEBUG )  logger.debug("MySpaceManager.moveDataHolder");
 	DataItemRecord dataitem = null;
 	Vector itemRecVector = new Vector();
+	loadProperties();
+	registryName = conProperties.getProperty(REGPATH);	
 
 		try{
 			request = util.getRequestAttributes(jobDetails);
 			try{
 				if(request.get("userID")!=null) userID = request.get("userID").toString();
 				if(request.get("communityID")!=null) communityID = request.get("communityID").toString();
-				if(request.get("jobID")!=null) jobID = request.get("jobID").toString();				
+				if(request.get("jobID")!=null) jobID = request.get("jobID").toString();
+				if(request.get("query")!=null) query = request.get("query").toString();			
 				
-				try{
-					if(request.get("dataItemID")!=null) dataItemID = Integer.parseInt(request.get("dataItemID").toString());
-				}catch(NumberFormatException nfe){
-					MySpaceMessage message = new MySpaceMessage("NUMBER_FORMAT_ERROR");
-					status.addCode(MySpaceStatusCode.NUMBER_FORMAT_ERROR,MySpaceStatusCode.ERROR);
-					response = MySpaceStatusCode.NUMBER_FORMAT_ERROR;
-					return response;
-				}
 				//create a instance of DataItemRecord
 				//dataitem = new DataItemRecord("",  dataItemID, "", userID,  Calendar.getInstance().getTime(), Calendar.getInstance().getTime(), fileSize,  0,  "");
 				
@@ -344,9 +353,24 @@ public String upLoad(String jobDetails){
 
 			//registry is returning a null pointer so comment out for now awaiting for new code for MySpaceActions to be completed.
 			//dataitem = myspace.importDataHolder(userID,communityID,jobID,newDataHolderName,serverFileName,fileSize);
+			logger.debug("REGISTRYNAME IN LOOKUPDATAHOLDERSDETAILS: "+registryName);
 			msA.setRegistryName(registryName);
 			itemRecVector = msA.lookupDataHoldersDetails( userID, 
-			communityID, jobID, query);				
+			communityID, jobID, query);		
+
+			MySpaceStatus stat1 = new MySpaceStatus();
+			boolean successStat = stat1.getSuccessStatus();
+			Vector err = stat1.getCodes();
+			for (int i =0;i<err.size();i++){
+				MySpaceStatusCode code = (MySpaceStatusCode)err.elementAt(i);
+				String codeS = code.getCode();
+				if (DEBUG)logger.debug("STATUS CODE IN LOOKUPDATAHOLERSDETAILS IS: " +codeS);
+			}
+			if(DEBUG) logger.debug("SATAUES is :" +successStat);
+			if(DEBUG) logger.debug("LOOKUPDATAHOLDERSDETAILS CHECKING ATTRIBUTES FOR CREATING DATAITEM:"
+				+ userID +"   "+communityID +"   "+jobID +"   "+newDataHolderName +"   "
+				  +serverFileName +"   "+fileSize +"   " +"   registryName:"+registryName);
+								
 	
 		//   Get other stuff which can usefully be returned.
 		//   (Note that the current date needs to be returned to facilitate
@@ -361,17 +385,22 @@ public String upLoad(String jobDetails){
 		//   Format and return the results as XML.
 		    String header = util.buildMySpaceManagerResponseHeader( SUCCESS, "");
 		    String footer = util.buildMySpaceManagerResponseFooter();
-		    for(int i =0; i<=itemRecVector.size();i++){
+		    String element = "";
+		    logger.debug("DATAITEMRECORD VEC SIZE: "+itemRecVector.size());
+		    for(int i =0; i<itemRecVector.size();i++){
 				if(itemRecVector.elementAt(i)!=null){
-					response = util.buildMySpaceManagerResponse(dataitem, returnStatus, details,"");
+					//response = util.buildMySpaceManagerResponse(dataitem, returnStatus, details,"");
+					logger.debug("STATUS: "+successStatus +"   "+warningStatus);
 					if (successStatus){
-						response = response+util.buildMySpaceManagerResponseElement((DataItemRecord)itemRecVector.elementAt(i), SUCCESS, "");		    	
+						element = element+util.buildMySpaceManagerResponseElement((DataItemRecord)itemRecVector.elementAt(i), SUCCESS, "");
+						logger.debug("GETTING MULTI RESPONSE FOR ELEMENTS: "+response);	    	
 					}else {
 						v = status.getCodes();
 						for(int j=0;i<=v.size();j++){
 							MySpaceStatusCode currCode = (MySpaceStatusCode)v.elementAt(i); 
 							errCode=errCode+","+currCode.getCode();
 							response = util.buildMySpaceManagerResponse(null,FAULT,errCode,"");
+							logger.debug("ERROR LOOKUPDATAHOLDERSDETAILS: RESPONSE =" +response);
 							return response;					
 						}		    	
 					}	
@@ -382,7 +411,8 @@ public String upLoad(String jobDetails){
 					return response;
 				}		    			    	    	
 		    } 
-			if( DEBUG ) logger.debug("RESPONSE: "+response); 
+		    response = header+element+footer;
+			if( DEBUG ) logger.debug("LOOKUPDATAHOLDERSDETAILS: RESPONSE: "+response); 
 			return response;
 		}catch(Exception e){
 			logger.error("ERROR UPLOADING MYSPACEMANAGER" +e.toString());
@@ -405,6 +435,9 @@ public String upLoad(String jobDetails){
    {
 	if ( DEBUG )  logger.debug("MySpaceManager.moveDataHolder");
 	DataItemRecord dataitem = null;
+	loadProperties();
+	registryName = conProperties.getProperty(REGPATH);	
+	
 		try{
 			request = util.getRequestAttributes(jobDetails);
 			try{
@@ -412,19 +445,25 @@ public String upLoad(String jobDetails){
 				if(request.get("communityID")!=null) communityID = request.get("communityID").toString();
 				if(request.get("jobID")!=null) jobID = request.get("jobID").toString();				
 				if(request.get("newDataItemName")!=null) newDataItemName = request.get("newDataItemName").toString();
+				if(request.get("serverFileName")!=null) serverFileName = request.get("serverFileName").toString();
+				logger.debug(userID +"   "+communityID+"   " + jobID+"   " + newDataItemName +"SERVERFILENAME = "+serverFileName);
 				
-				try{
-					if(request.get("oldDataItemID")!=null) dataItemID = Integer.parseInt(request.get("oldDataItemID").toString());
-				}catch(NumberFormatException nfe){
-					MySpaceMessage message = new MySpaceMessage("NUMBER_FORMAT_ERROR");
-					status.addCode(MySpaceStatusCode.NUMBER_FORMAT_ERROR,MySpaceStatusCode.ERROR);
-					response = MySpaceStatusCode.NUMBER_FORMAT_ERROR;
-					return response;
-				}
-				//create a instance of DataItemRecord
 				msA.setRegistryName(registryName);
+				Vector dataItemRecords = msA.lookupDataHoldersDetails(
+				  userID, communityID, jobID, serverFileName);
+				checkStatus("COPYDATAHOLDERS STATUS ");
+				if (dataItemRecords != null)
+				{  DataItemRecord dataItem = (DataItemRecord)dataItemRecords.elementAt(0);
+				   oldDataItemID = dataItem.getDataItemID();
+				   logger.debug("TRING TO GET OLDDATAITEMID: " +oldDataItemID);
+				}else{
+					logger.debug("DATAITEMRCORDS = NULL!");
+				}
+				  
+				//create a instance of DataItemRecord
 				dataitem = msA.copyDataHolder(
 					userID, communityID, jobID, oldDataItemID, newDataItemName);	
+				checkStatus("COPYDATAHOLDERS STATUS AFTERCALLING MSA.COPYDATAHOLDER ");
 
 			}catch(NullPointerException npe){
 				MySpaceMessage message = new MySpaceMessage("NULL_POINTER_GETTING_REQUEST");
@@ -433,9 +472,6 @@ public String upLoad(String jobDetails){
 				return response;
 			}
 			
-		
-			
-
 			//registry is returning a null pointer so comment out for now awaiting for new code for MySpaceActions to be completed.
 			//dataitem = myspace.importDataHolder(userID,communityID,jobID,newDataHolderName,serverFileName,fileSize);
 						
@@ -495,6 +531,9 @@ public String upLoad(String jobDetails){
    public String moveDataHolder(String jobDetails){ 
 	if ( DEBUG )  logger.debug("MySpaceManager.moveDataHolder");
 	DataItemRecord dataitem = null;
+	loadProperties();
+	registryName = conProperties.getProperty(REGPATH);	
+	
 		try{
 			request = util.getRequestAttributes(jobDetails);
 			try{
@@ -502,19 +541,31 @@ public String upLoad(String jobDetails){
 				if(request.get("communityID")!=null) communityID = request.get("communityID").toString();
 				if(request.get("jobID")!=null) jobID = request.get("jobID").toString();				
 				if(request.get("newDataItemName")!=null) newDataItemName = request.get("newDataItemName").toString();
+				if(request.get("serverFileName")!=null) serverFileName = request.get("serverFileName").toString();
+				logger.debug(userID +"   "+communityID+"   " + jobID+"   " + newDataItemName +"SERVERFILENAME = "+serverFileName
+				   +"  registryName = "+registryName);
 				
-				try{
-					if(request.get("oldDataItemID")!=null) dataItemID = Integer.parseInt(request.get("oldDataItemID").toString());
-				}catch(NumberFormatException nfe){
-					MySpaceMessage message = new MySpaceMessage("NUMBER_FORMAT_ERROR");
-					status.addCode(MySpaceStatusCode.NUMBER_FORMAT_ERROR,MySpaceStatusCode.ERROR);
-					response = MySpaceStatusCode.NUMBER_FORMAT_ERROR;
-					return response;
-				}
-				//create a instance of DataItemRecord
 				msA.setRegistryName(registryName);
-				dataitem = msA.moveDataHolder( userID, communityID,
-				jobID, oldDataItemID, newDataItemName);					
+				Vector dataItemRecords = msA.lookupDataHoldersDetails(
+				  userID, communityID, jobID, serverFileName);
+				checkStatus("moveDATAHOLDERS STATUS ");
+				if (dataItemRecords != null){
+					DataItemRecord dataItem = (DataItemRecord)dataItemRecords.elementAt(0);
+				    oldDataItemID = dataItem.getDataItemID();
+				    logger.debug("TRING TO GET OLDDATAITEMID: " +oldDataItemID);
+				}else{
+					logger.debug("DATAITEMRCORDS = NULL!");
+				}
+				  
+				//create a instance of DataItemRecord
+				dataitem = msA.moveDataHolder(
+					userID, communityID, jobID, oldDataItemID, newDataItemName);	
+				checkStatus("moveDATAHOLDERS STATUS AFTERCALLING MSA.moveDATAHOLDER ");
+
+				//create a instance of DataItemRecord
+				//msA.setRegistryName(registryName);
+				//dataitem = msA.moveDataHolder( userID, communityID,
+				//jobID, oldDataItemID, newDataItemName);					
 
 			}catch(NullPointerException npe){
 				MySpaceMessage message = new MySpaceMessage("NULL_POINTER_GETTING_REQUEST");
@@ -539,8 +590,7 @@ public String upLoad(String jobDetails){
 			Date currentMySpaceDate = new Date();
 	
 		//   Format and return the results as XML.
-		if(dataitem!=null){
-			response = util.buildMySpaceManagerResponse(dataitem, returnStatus, details,"");
+		//if(dataitem!=null){ // commented out because of bug in MySpaceAction.delete always return null!
 			if (successStatus){
 				response = util.buildMySpaceManagerResponse(dataitem, SUCCESS, "","");		    	
 			}else {
@@ -551,12 +601,12 @@ public String upLoad(String jobDetails){
 					response = util.buildMySpaceManagerResponse(null,FAULT,errCode,"");					
 				}		    	
 			}	
-		} else{
-			status.addCode(MySpaceStatusCode.MS_E_FLCRTDH,MySpaceStatusCode.ERROR);
-			MySpaceMessage message =  new MySpaceMessage("MS_E_FLCRTDH");
-			response = util.buildMySpaceManagerResponse(null,FAULT,MySpaceStatusCode.MS_E_FLCRTDH,"");  
-			return response;
-		}
+		//} else{
+		//	status.addCode(MySpaceStatusCode.MS_E_FLCRTDH,MySpaceStatusCode.ERROR);
+			//MySpaceMessage message =  new MySpaceMessage("MS_E_FLCRTDH");
+			//response = util.buildMySpaceManagerResponse(null,FAULT,MySpaceStatusCode.MS_E_FLCRTDH,"");  
+			//return response;
+		//}
 			if( DEBUG ) logger.debug("RESPONSE: "+response); 
 			return response;
 		}catch(Exception e){
@@ -580,6 +630,9 @@ public String upLoad(String jobDetails){
    public String exportDataHolder(String jobDetails){
 	DataItemRecord dataitem = null;
 	String dataHolderURI = "";
+	loadProperties();
+	registryName = conProperties.getProperty(REGPATH);	
+	
 		try{
 			request = util.getRequestAttributes(jobDetails);
 			try{
@@ -663,6 +716,9 @@ public String upLoad(String jobDetails){
    public String createContainer(String jobDetails){
 	if ( DEBUG )  logger.debug("MySpaceManager.moveDataHolder");
 	DataItemRecord dataitem = null;
+	loadProperties();
+	registryName = conProperties.getProperty(REGPATH);	
+	
 		try{
 			request = util.getRequestAttributes(jobDetails);
 			try{
@@ -740,30 +796,37 @@ public String upLoad(String jobDetails){
   */
 
    public String deleteDataHolder(String jobDetails){
-	if ( DEBUG )  logger.debug("MySpaceManager.moveDataHolder");
+	if ( DEBUG )  logger.debug("MySpaceManager.deleteDataHolder");
 	boolean isDeleted = false;
 	DataItemRecord dataitem = null;
+	loadProperties();
+	registryName = conProperties.getProperty(REGPATH);	
+	
 		try{
 			request = util.getRequestAttributes(jobDetails);
 			try{
 				if(request.get("userID")!=null) userID = request.get("userID").toString();
 				if(request.get("communityID")!=null) communityID = request.get("communityID").toString();
 				if(request.get("jobID")!=null) jobID = request.get("jobID").toString();				
-				if(request.get("newDataItemName")!=null) newDataItemName = request.get("newDataItemName").toString();
+				if(request.get("serverFileName")!=null) serverFileName = request.get("serverFileName").toString();
 				
-				try{
-					if(request.get("oldDataItemID")!=null) dataItemID = Integer.parseInt(request.get("oldDataItemID").toString());
-				}catch(NumberFormatException nfe){
-					MySpaceMessage message = new MySpaceMessage("NUMBER_FORMAT_ERROR");
-					status.addCode(MySpaceStatusCode.NUMBER_FORMAT_ERROR,MySpaceStatusCode.ERROR);
-					response = MySpaceStatusCode.NUMBER_FORMAT_ERROR;
-					return response;
-				}
+				if( DEBUG ) logger.debug("GETTING ATTRIBUTES DELETE:"+ userID +"   "+communityID +"   "
+				    +jobID +"   "+"serverFileName :" +serverFileName);
+				
 				//create a instance of DataItemRecord
-				//dataitem = new DataItemRecord("",  dataItemID, "", userID,  Calendar.getInstance().getTime(), Calendar.getInstance().getTime(), fileSize,  0,  "");
 				msA.setRegistryName(registryName);
+				Vector dataItemRecords = msA.lookupDataHoldersDetails(
+				  userID, communityID, jobID, serverFileName);
+				if (dataItemRecords != null)
+				{  DataItemRecord dataItem = (DataItemRecord)dataItemRecords.elementAt(0);
+				   dataItemID = dataItem.getDataItemID();
+				   logger.debug("TRING TO GET dATAITEMID: " +dataItemID);
+				}else{
+					logger.debug("DATAITEMRCORDS = NULL!");
+				}				
 				isDeleted = msA.deleteDataHolder( userID, communityID,
 				jobID, dataItemID);		
+				checkStatus("DELETEDATAHOLDERS STATUS ");
 				
 			}catch(NullPointerException npe){
 				MySpaceMessage message = new MySpaceMessage("NULL_POINTER_GETTING_REQUEST");
@@ -788,8 +851,8 @@ public String upLoad(String jobDetails){
 			Date currentMySpaceDate = new Date();
 	
 		//   Format and return the results as XML.
-		if(dataitem!=null){
-			response = util.buildMySpaceManagerResponse(null, returnStatus, details,"");
+		if ( DEBUG )  logger.debug("SUCCESSSTATUS = "+successStatus +"ISDELETED IS: " +isDeleted);
+		if(isDeleted){		
 			if (successStatus){
 				response = util.buildMySpaceManagerResponse(null, SUCCESS, "","");		    	
 			}else {
@@ -857,7 +920,17 @@ private Call createServerManagerCall(){
 			if (DEBUG)  logger.error("MYSPACEUTILS IO EXCEPTION :" +ex.getMessage());
 	}
     }
-
+    private void checkStatus(String message){
+		MySpaceStatus stat1 = new MySpaceStatus();
+		boolean successStat = stat1.getSuccessStatus();
+		Vector err = stat1.getCodes();
+		for (int i =0;i<err.size();i++){
+			MySpaceStatusCode code = (MySpaceStatusCode)err.elementAt(i);
+			String codeS = code.getCode();
+			if (DEBUG)logger.debug("STATUS CODE IS: " +message +"  "+codeS);
+		}
+		if(DEBUG) logger.debug("SATAUES is :" +message +"  "+successStat);
+    }
 }
 
 

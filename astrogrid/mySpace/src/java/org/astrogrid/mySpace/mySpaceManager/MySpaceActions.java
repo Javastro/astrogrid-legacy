@@ -108,7 +108,8 @@ public class MySpaceActions
                   dataItem = dataItemFound;
                }
                else
-               {  status.addCode("MS-E-DHNTFND",
+               {    logger.debug("NOTFOUND DATAITEM HOW WIRED!!!");
+               	    status.addCode("MS-E-DHNTFND",
                     MySpaceStatusCode.ERROR);
                }
             }
@@ -140,7 +141,7 @@ public class MySpaceActions
 
 //
 //   Attempt to open the registry and proceed if ok.
-
+      if (DEBUG) logger.debug("IN MYSPACEACTIONS REGISTRYNAME = "+registryName);
       RegistryManager reg = new RegistryManager(registryName);
       MySpaceStatus status = new MySpaceStatus();
       if (status.getSuccessStatus())
@@ -310,7 +311,7 @@ public class MySpaceActions
 //
 //               Check that the specified output container can be
 //               created.
-
+                  if ( DEBUG ) logger.debug("CHECKCANBECREATED: "+newDataItemName);
                   if(this.checkCanBeCreated(newDataItemName, userAcc, jobID)
                     == true)
                   {
@@ -336,13 +337,18 @@ public class MySpaceActions
                        (newDataItemName, newdataItemID,
                        dataItemFileName, userID, creation, expiry,
                        99999, dataItemType, "permissions");
+                     if (newDataItem!=null){
+                     	if ( DEBUG ) logger.debug("NEWDATAITEMID: "+newDataItem.getDataItemID());
+                     }else{
+                     	if ( DEBUG ) logger.debug("NEWDATAITEM IS NULL!!");
+                     }
 
 //
 //                  Attempt to add this entry to the registry.
 
                      if (reg.addDataItemRecord(newDataItem) )
                      {
-
+                     	if ( DEBUG )logger.debug("ATTEMPT ADDING TO REGISTRY...");
 //
 //                     Attempt to copy the DataHolder.
 
@@ -373,7 +379,7 @@ public class MySpaceActions
 
                         String a = serverDirectory + oldDataItem.getDataItemFile();
                         String b = serverDirectory + dataItemFileName;
-                        
+                        if ( DEBUG ) logger.debug("COPYDATAHOLDER CALLING SERVERMANAGER: a = "+ a + ", b =" +b);
 //							 System.out.println("serverName: " + serverName);
 					   call = createServerCall();
 					   call.setOperationName( "copyDataHolder" );			
@@ -916,6 +922,7 @@ public class MySpaceActions
 //                  BE REMOVED).
 
                     String dataItemName = dataItem.getDataItemName();
+                    if(DEBUG) logger.debug("DATAITMENAME in ACTION IS: " +dataItemName);
                     
 					int containSepPos1 = dataItemName.indexOf("/");
 					int containSepPos2 = dataItemName.indexOf("/", containSepPos1+1);
@@ -930,6 +937,7 @@ public class MySpaceActions
 
 					   serverName = 
 						 dataItemName.substring(containSepPos2+1, containSepPos3);
+						if(DEBUG) logger.debug("SERVERNAME in ACTION IS: " +serverName);
 					}
 					else
 					{  serverName = "";
@@ -941,7 +949,7 @@ public class MySpaceActions
 					reg2.finalize();
 
 					String a = serverDirectory + dataItem.getDataItemFile();
-
+					if(DEBUG) logger.debug("a in ACTION IS: " +a);
                         
 //						 System.out.println("serverName: " + serverName);
 				   call = createServerCall();
@@ -1130,7 +1138,7 @@ public class MySpaceActions
    private Call createServerCall(){
 	   Call call = null;
 	   try{
-		   String endpoint  = "http://localhost:8080/axis/services/MySpaceManager";
+		   String endpoint  = "http://localhost:8080/axis/services/ServerManager";
 		   Service service = new Service();
 		   call = (Call)service.createCall();
 		   call.setTargetEndpointAddress( new java.net.URL(endpoint) );

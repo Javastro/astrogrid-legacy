@@ -3,6 +3,8 @@ package org.astrogrid.mySpace.mySpaceManager;
 import java.io.*;
 import java.util.*;
 
+import org.apache.log4j.Logger;
+
 import org.astrogrid.mySpace.mySpaceStatus.*;
 
 /**
@@ -45,7 +47,12 @@ import org.astrogrid.mySpace.mySpaceStatus.*;
  */
 
 public class RegistryManager
-{  private Map dataItemRecordHashMap = new HashMap ();
+{  
+   private static Logger logger = Logger.getLogger(RegistryManager.class);
+   
+   private static boolean DEBUG = true;
+	
+   private Map dataItemRecordHashMap = new HashMap ();
                            // Hash map holding the MySpace system registry.
    private String registryName;
                            // Name of the registry.
@@ -152,7 +159,9 @@ public class RegistryManager
 //   for serialising and writing to it.
 
       try
-      {  File registryFile = new File(registryFileName);
+      {  
+      	 if (DEBUG) logger.debug("ENTERING finalize in RegistryManager..registryFileName = "+registryFileName);
+      	 File registryFile = new File(registryFileName);
          FileOutputStream ros = new FileOutputStream(registryFile);
          ObjectOutputStream oos = new ObjectOutputStream(ros);
 
@@ -164,6 +173,7 @@ public class RegistryManager
 
          for (Iterator keyIter = keys.iterator(); keyIter.hasNext(); )
          {  String key =  (String)keyIter.next();
+			if (DEBUG) logger.debug("KEY="+key);
             DataItemRecord itemRec =
               (DataItemRecord)dataItemRecordHashMap.get(key);
             oos.writeObject(itemRec);

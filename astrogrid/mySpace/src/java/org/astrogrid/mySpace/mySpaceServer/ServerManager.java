@@ -45,7 +45,7 @@ public class ServerManager {
      * */
     public String deleteDataHolder(String dataHolderPath){
     	if (DEBUG)
-    		logger.debug("MySpace ServerManager.deleteDataHolder...");	
+    		logger.debug("MySpace ServerManager.deleteDataHolder..."+dataHolderPath);	
     	try{  		
     		File file = new File(dataHolderPath);   		
     		if  (file == null || !file.exists()){

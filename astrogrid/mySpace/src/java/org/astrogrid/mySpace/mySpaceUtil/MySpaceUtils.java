@@ -191,7 +191,7 @@ public class MySpaceUtils {
 			istream.close();
 			if (DEBUG)  logger.debug( "buildMySpaceManagerResponse_Header: " +conProperties.toString() ) ;
 			String template = conProperties.getProperty( D_RESPONSE_HEAD );
-			if (DEBUG)  logger.debug("buildMySpaceManagerResponse_Header = "+response);
+			if (DEBUG)  logger.debug("buildMySpaceManagerResponse_Header = "+template);
 			
 			Object [] inserts = new Object[3] ;
 			inserts[0] = status;
@@ -220,7 +220,7 @@ public class MySpaceUtils {
 			istream.close();
 			if (DEBUG)  logger.debug( "buildMySpaceManagerResponse_Element: " +conProperties.toString() ) ;
 			String template = conProperties.getProperty( D_RESPONSE_ELEMENT );
-			if (DEBUG)  logger.debug("buildMySpaceManagerResponse_Element = "+response);
+			if (DEBUG)  logger.debug("buildMySpaceManagerResponse_Element = "+template);
 			
 			Object [] inserts = new Object[8] ;
 
