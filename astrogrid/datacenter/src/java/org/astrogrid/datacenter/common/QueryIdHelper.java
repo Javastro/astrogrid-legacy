@@ -1,5 +1,5 @@
 /*
- * $Id: QueryIdHelper.java,v 1.3 2003/09/16 16:34:09 mch Exp $
+ * $Id: QueryIdHelper.java,v 1.4 2003/09/16 16:55:10 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -45,7 +45,11 @@ public class QueryIdHelper
       if (idNodes.getLength() == 0)
       {
          //no service id tag found, look for attribute in top tag
-         return domContainingId.getAttribute(QueryIdHelper.QUERY_ID_ATT);
+         String attribute = domContainingId.getAttribute(QueryIdHelper.QUERY_ID_ATT);
+
+         Log.affirm(attribute != null, "No query id tag or attribute found in "+XMLUtils.ElementToString(domContainingId));
+
+         return attribute;
       }
 
       Log.affirm(idNodes.getLength() == 1, "Should only be 1 service id tag in an element");
@@ -75,5 +79,6 @@ public class QueryIdHelper
       return "<"+tagName+"  "+QUERY_ID_ATT+"='"+id+"'>";
    }
 }
+
 
 
