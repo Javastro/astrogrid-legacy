@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForSchedulerImpl.java,v 1.3 2004/07/30 15:42:34 nw Exp $
+/*$Id: AbstractTestForSchedulerImpl.java,v 1.4 2004/08/18 21:51:17 nw Exp $
  * Created on 13-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,6 +13,10 @@ package org.astrogrid.jes.jobscheduler.impl;
 import org.astrogrid.jes.jobcontroller.AbstractTestForJobController;
 import org.astrogrid.jes.jobscheduler.Dispatcher;
 import org.astrogrid.jes.jobscheduler.dispatcher.MockDispatcher;
+import org.astrogrid.jes.jobscheduler.impl.groovy.GroovyInterpreterFactory;
+import org.astrogrid.jes.jobscheduler.impl.groovy.GroovySchedulerImpl;
+import org.astrogrid.jes.jobscheduler.impl.groovy.GroovyTransformers;
+import org.astrogrid.jes.jobscheduler.impl.groovy.XStreamPickler;
 
 /** Base class that creates framework for testing the scheduler. 
  * <p>
@@ -36,16 +40,27 @@ public abstract class AbstractTestForSchedulerImpl extends AbstractTestForJobCon
         
     }
     
+    protected void tearDown() {
+        dispatcher = null;
+        scheduler = null;
+        System.gc();
+    }
+    
  
     
     protected Dispatcher createDispatcher() {
         return new MockDispatcher();
     }
     
-    protected abstract AbstractJobSchedulerImpl createScheduler() throws Exception ;
-    
     protected Dispatcher dispatcher;
     protected AbstractJobSchedulerImpl scheduler;
+    /**
+     * @see org.astrogrid.jes.jobscheduler.impl.AbstractTestForSchedulerImpl#createScheduler()
+     */
+    protected AbstractJobSchedulerImpl createScheduler() throws Exception {
+    
+        return new GroovySchedulerImpl(fac,new GroovyTransformers(),dispatcher,new GroovyInterpreterFactory(new XStreamPickler())); 
+    }
     
 
 }
@@ -53,6 +68,9 @@ public abstract class AbstractTestForSchedulerImpl extends AbstractTestForJobCon
 
 /* 
 $Log: AbstractTestForSchedulerImpl.java,v $
+Revision 1.4  2004/08/18 21:51:17  nw
+removed - inlined code instead
+
 Revision 1.3  2004/07/30 15:42:34  nw
 merged in branch nww-itn06-bz#441 (groovy scripting)
 
