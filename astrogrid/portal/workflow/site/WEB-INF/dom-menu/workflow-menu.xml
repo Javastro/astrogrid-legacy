@@ -21,8 +21,8 @@
         target="_self"
         status-text="Save a workflow"/>
     <agp:item
-        contents="Submit workflow"
-        contents-hover="Submit workflow"
+        contents="Submit"
+        contents-hover="Submit"
         uri="/astrogrid-portal/main/mount/workflow/agjobmanager.html?action=submit-workflow"
         target="_self"
         status-text="Submit a workflow to the Job Entry System..."/>        
