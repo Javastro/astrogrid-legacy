@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE TestWebServices SYSTEM "TestWebServices.dtd">
+<TestWebServices>
+	<WebServiceTest name="CalculateDocument" fullclassname="calculate.CalculateTestCase" threadstyle="sequential">
+		<Runnable type="junit">
+			<TestCase name="testService" loop="1"  threadstyle="sequential">
+				<Thread number="1"  loop="1" threadstyle="sequential" />
+			</TestCase>
+		</Runnable>
+	</WebServiceTest>
+</TestWebServices>

@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<project default="tools.build" basedir=".">
+
+	<!-- Project build properties -->
+	<property name="project.home"    value="${basedir}"/>
+	<property name="project.name"    value="wstool"/>
+	<property name="project.version" value="1.0"/>
+
+	<!--+
+	    | Project site location.
+	    +-->
+	<property name="project.src"     value="${basedir}/src/java"/>
+<!--
+	<property name="site.build"   value="${basedir}/build/site"/>
+	<property name="site.webapp"  value="${basedir}/build/site/webapp"/>
+	<property name="site.cocoon"  value="${basedir}/build/site/cocoon"/>
+-->
+
+	<!--+
+	    | User preferences.
+	    | This is where to put local properties eg.tomcat installation path.
+	    | tomcat.home=/usr/java/servers/tomcat/jakarta-tomcat-4.1.24-LE-jdk14
+	    +-->
+	<property file="${user.home}/ant.properties"/>
+
+	<!-- Portal components -->
+	<property name="project.build" value="../build/release/tools"/>
+	
+	<target name="tools.build">
+		<!-- Compile our java classes -->
+		<antcall target="tools.javac"/>
+		
+		<copy toDir="${project.build}/classes">
+			<fileset dir="java">
+				<include name="**/org/tools/wstool/xml/*.xml"/>
+			</fileset>
+		</copy>
+		
+	</target>    
+	
+	<!-- ================ Ant tasks ================ -->
+	<!-- The Ant libraries -->
+	<path id="ant.classpath">
+		<pathelement location="${ant.home}/lib/ant.jar"/>
+		<pathelement location="${ant.home}/lib/optional.jar"/>
+	</path>
+
+
+	<target name="tools.javac">
+		<!-- Create our java source directory -->
+		<mkdir dir="${project.build}/java"/>
+		<!-- Copy our java source code -->
+		<copy toDir="${project.build}/java">
+			<fileset dir="java">
+			</fileset>
+		</copy>
+		<!-- Create our java classes directory -->
+		<mkdir dir="${project.build}/classes"/>
+	
+		<javac srcdir="${project.build}/java"
+		       destdir="${project.build}/classes"
+		       debug="on"
+		       deprecation="on"
+		       optimize="on"
+        />
+        
+	</target>
+
+	
+	<target name="tools.jar" depends="tools.javac" >
+		<jar destfile="${project.build}/classes/WSTool.jar">
+			<fileset dir="${project.build}/classes/">
+			</fileset>
+		</jar>
+	</target>
+	
+</project>
+
