@@ -8,6 +8,8 @@ import java.io.File;
 import org.globus.ftp.DataChannelAuthentication;
 import org.globus.ftp.GridFTPClient;
 import org.globus.ftp.Session;
+import org.globus.gsi.GlobusCredential;
+import org.globus.gsi.gssapi.GlobusGSSCredentialImpl;
 import org.globus.io.streams.GlobusFileInputStream;
 import org.globus.io.streams.GlobusFileOutputStream;
 import org.globus.io.streams.GlobusInputStream;
@@ -20,27 +22,20 @@ import org.ietf.jgss.GSSCredential;
 /**
  * A manager for the download of a single data-set from a URL.
  *
- * The client should create a fresh FileTransfer for each transfer.
- * There is no valid way to reuse one of these object for a second
- * transfer.  The source and destination of the data are set when
- * the FileTransfer is created.
+ * Each FileTransfer operates a single download from a fixed
+ * source URL to a fixed, local distination-file, the source
+ * and destination being set when the FileTransfer is constructed.
+ * There is no way to reuse a FileTransfer to download from a
+ * different URL.
  *
- * The data source may be either a single URL or an array of URLs
- * that are mirrors of the same data-set.  In the latter case,
- * the FileTransfer will start6 with the URL in element zero of
- * the array and try URLs in turn until a successful transfer is
- * achieved or until there are no more URLs.  The data destination
- * is always a file on the local file-system.
+ * The client is expected to construct a new FileTransfer for each
+ * download.  The intended usage is: construction; transfer;
+ * check results using accessors.
  *
- * Exceptions while downloading are caught.  On catching an
- * exception for a given URL, the class stores the exception
+ * Exceptions while transferring are caught.  On catching an
+ * exception for a given URL, the class discards the exception
  * and goes on to the next URL in the input set.  If there are
  * no more URLs to try, then a FileTransferException is thrown.
- * After the {@link transfer} completes or fails, the client may
- * retrieve the exceptions stored for the individual download
- * attempts by calling {@link getErrors}.  The URL, in the set of
- * mirrors, that actually supplied the data may be retrieved by
- * calling {@link getChosenUrl}.
  *
  * A FileTransfer is not MT-safe.
  *
@@ -168,6 +163,10 @@ public class FileTransfer {
   private void transfer(final String urlStr, final File localFile)
       throws FileTransferException {
 
+    //GlobusInputStream  in  = null;
+    //GlobusOutputStream out = null;
+    //GlobusURL          url = null;
+
     // Catch any exception and rethrow as a FileTransferException
     // with the original exception as the cause.
     try {
@@ -217,7 +216,6 @@ public class FileTransfer {
   private void useGridFtp (final GlobusURL url, final File localFile)
       throws Exception {
 
-    GSSCredential      cred      = null;
     GridFTPClient      hotClient = null;
 
     try {
@@ -226,13 +224,13 @@ public class FileTransfer {
 
       // Create a credential
       System.out.println("FileTransfer.transfer : creaing credentials");
-      ExtendedGSSManager manager =
-          (ExtendedGSSManager) ExtendedGSSManager.getInstance();
-      cred = manager.createCredential(GSSCredential.INITIATE_AND_ACCEPT);
+      GSSCredential credential = this.getCredential();
 
       // Authenticate to the server
-      System.out.println("FileTransfer.transfer : authenticating");
-      hotClient.authenticate(cred);
+      System.out.println("FileTransfer.transfer: authenticating");
+      hotClient.authenticate(credential);
+      System.out.println("FileTransfer.transfer: authenticated");
+
 
       // Set security parameters such as data channel authentication
       // (defined by the GridFTP protocol) and data channel
@@ -335,4 +333,63 @@ public class FileTransfer {
     }
   }
 
+
+  /**
+   * Obtains a proxy credential for use with GridFTP.
+   * If the calling user has a proxy already on file in a
+   * place known to the PKI, then that is used; this is the
+   * appropriate behaviour when this class is called on behalf
+   * of an end user.  Otherwise, the code attempts to create a
+   * proxy from the host certificate and key; this is
+   * appropriate when the class is called by a system daemon.
+   * If no proxy can be got by either method, an Exception is
+   * thrown.
+   *
+   * @throws Exception if neither a user or a host proxy can
+   *                   be obtained.
+   */
+  private GSSCredential getCredential () throws Exception {
+    GSSCredential credential = null;
+
+    // try to load the user's existing proxy.
+    Exception e1 = null;
+    try {
+
+      ExtendedGSSManager m =
+                  (ExtendedGSSManager) ExtendedGSSManager.getInstance();
+        credential = m.createCredential(GSSCredential.INITIATE_AND_ACCEPT);
+    }
+    catch (Exception e) {
+      e1 = e;
+    }
+    if (credential != null) return credential;
+
+    // Try to make a new proxy from the host's certficate and key.
+    Exception e2 = null;
+    try {
+      // KLUDGE! hard-coded locations for files!
+      GlobusCredential gc =
+          new GlobusCredential("/etc/grid-security/hostcert.pem",
+                               "/etc/grid-security/hostkey.pem");
+      credential =
+          new GlobusGSSCredentialImpl(gc, GSSCredential.INITIATE_AND_ACCEPT);
+      System.out.println(credential.getName().toString());
+      System.out.println(credential.getRemainingLifetime());
+      System.out.println(credential.getUsage());
+    }
+    catch (Exception e) {
+      e2 = e;
+    }
+    if (credential != null) return credential;
+
+    // If this point of the method is reached, then the method
+    // has failed to raise any credentials.
+    throw new Exception("No identity credentials could be obtained. "
+                        + "The user's proxy is not available ("
+                        + e1.getMessage()
+                        + ") and no proxy could be made from the "
+                        + "host certficate and private key ("
+                        + e2.getMessage()
+                        +").");
+  }
 }
