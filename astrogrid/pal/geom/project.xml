@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- $Id: project.xml,v 1.1 2005/03/21 18:33:06 mch Exp $ -->
+
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+    xsi:noNamespaceSchemaLocation="//../maven-base/xsd/maven-project.xsd">
+
+    <!--will eventually extend from /base when Maven RC3 installed-->
+
+    <extend>${basedir}/../../maven-base/project.xml</extend>
+
+    <currentVersion>${astrogrid.pal.latest}</currentVersion>
+
+    <id>astrogrid-pal-geom</id>
+
+    <name>Astrogrid Geometry Library</name>
+
+    <description>Geometry classes for helping deal with polar coordinates, solar coordinates etc.
+    At some point should look at replacing with an existing library; I looked at jSky but it's rather
+    specific to world coordinates and images; here I want something that can translate and transform
+    spherical coordinates and use the existing java 2d library for 'flat' ones.
+    
+    </description>
+
+    <shortDescription>AstroGrid Geometry Library</shortDescription>
+
+    <dependencies>
+
+
+    </dependencies>
+
+</project>
+
+
+
+
+
+
+
