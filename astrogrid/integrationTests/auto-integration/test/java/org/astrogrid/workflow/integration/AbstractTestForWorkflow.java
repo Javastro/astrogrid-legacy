@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForWorkflow.java,v 1.4 2004/08/04 16:49:32 nw Exp $
+/*$Id: AbstractTestForWorkflow.java,v 1.5 2004/08/05 08:14:20 nw Exp $
  * Created on 30-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -66,7 +66,7 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
         // i.e. its not in error             
     }
 
-    public void testWorkflow() throws WorkflowInterfaceException, InterruptedException {
+    public void testWorkflow() throws Exception {
         // check registry entries are there. - if not, no point continuing.
         for (int i = 0; i < applications.length; i++) {
             ApplicationDescription description = reg.getDescriptionFor(applications[i]);
@@ -114,27 +114,19 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
         }
         softAssertTrue("Job failed to complete in expected time",completed);
         // check results.        
-        try {
             Workflow result = jes.readJob(urn);
             assertNotNull("null workflow returned", result);
             checkExecutionResults(result);
-        }
-        catch (Exception e) {
-            softFail("exception in testCheckExecutionResults " + e.getClass().getName() + "\n" + e.getMessage());
-        }
-        // tidy up.
-        /* bad idea deleting the workflows - goot to keep around, no matter whether the test has succeeded
-        Workflow w1 = jes.readJob(urn);
-        if (w1.getJobExecutionRecord().getStatus().equals(ExecutionPhase.COMPLETED)) {
-            jes.deleteJob(urn);
-        }
-        */
+ 
     }
 }
 
 
 /* 
 $Log: AbstractTestForWorkflow.java,v $
+Revision 1.5  2004/08/05 08:14:20  nw
+minor improvement
+
 Revision 1.4  2004/08/04 16:49:32  nw
 added test for scripting extensions to workflow
 
