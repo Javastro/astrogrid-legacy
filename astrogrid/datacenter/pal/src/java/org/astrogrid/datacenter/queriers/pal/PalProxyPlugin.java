@@ -1,21 +1,23 @@
 /*
- * $Id: PalProxyPlugin.java,v 1.1 2004/10/12 23:09:53 mch Exp $
+ * $Id: PalProxyPlugin.java,v 1.2 2004/10/13 01:29:43 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.queriers.pal;
 
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierPlugin;
 import org.astrogrid.datacenter.queriers.VotableInResults;
-import org.astrogrid.datacenter.queriers.sql.StdSqlMaker;
 import org.astrogrid.datacenter.queriers.status.QuerierQuerying;
+import org.astrogrid.datacenter.query.Query2Adql074;
 import org.astrogrid.slinger.UriTarget;
 
 /**
@@ -44,22 +46,32 @@ public class PalProxyPlugin extends QuerierPlugin {
    
    /** Use the remote PAL's servlet interface */
    public void useServlet() throws IOException {
-      URL targetPal = new URL(SimpleConfig.getSingleton().getUrl(PAL_TARGET)+"/SubmitAdqlSql");
+      URL targetPal = new URL(SimpleConfig.getSingleton().getUrl(PAL_TARGET)+"/SubmitAdql");
       
       querier.getStatus().addDetail("Proxying to: "+targetPal);
       log.info("Proxying to: "+targetPal);
       
-      HttpURLConnection connection = (HttpURLConnection) targetPal.openConnection();
+      URLConnection connection = targetPal.openConnection();
       
 //      connection.setRequestProperty("AdqlXml", Query2Adql074.makeAdql(querier.getQuery()));
-      connection.setRequestMethod("POST");
-      connection.setRequestProperty("AdqlSql", new StdSqlMaker().getSql(querier.getQuery()));
-      connection.setRequestProperty("Format", "VOTABLE");
+      connection.setDoInput(true);
+      connection.setDoOutput(true);
+      connection.setUseCaches(false);
+      connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+
+      //write POST parameters
+      DataOutputStream out = new DataOutputStream(connection.getOutputStream());
+//      out.writeBytes( "AdqlSql="+URLEncoder.encode(new StdSqlMaker().getSql(querier.getQuery()))+
+      out.writeBytes( "AdqlXml="+URLEncoder.encode(Query2Adql074.makeAdql(querier.getQuery()))+
+                      "&Format="+URLEncoder.encode("VOTABLE")
+                    );
 
       if (querier.getQuery().getTarget() instanceof UriTarget) {
-         connection.setRequestProperty("Target", ((UriTarget) querier.getQuery().getTarget()).toURI().toString());
+         out.writeBytes("&Target="+URLEncoder.encode( ((UriTarget) querier.getQuery().getTarget()).toURI().toString()));
       }
-
+      out.flush();
+      out.close();
+      
       querier.setStatus(new QuerierQuerying(querier.getStatus()));
       
       InputStream in = connection.getInputStream();
