@@ -30,6 +30,7 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Vector;
+import java.util.Hashtable;
 
 import org.apache.axis.client.Call;
 import org.apache.axis.client.Service;
@@ -51,10 +52,9 @@ import org.astrogrid.xmldb.eXist.server.QueryDBService;
 
 /**
  *
- * The RegistryHarvestService class is the main web service class dealing with
- * harvesting from registries and returning information from a registry.
- * @link http://www.ivoa.net/twiki/bin/view/IVOA/IVOARegWp03
- * @author Kevin Benson
+ * RegistryHarvestService is no longer a web service class, but still posses the 
+ * harvesting mechanism that is used by server side servlets which uses
+ * automatic harvest mechanism and manual harvest by the user.
  */
 public class RegistryHarvestService {
 
@@ -161,7 +161,7 @@ public class RegistryHarvestService {
           if(onlyRegistries) {
              //query for all the Registry types which should be all of them with an xsi:type="RegistryType"
              //xqlQuery = "declare namespace vr = \"http://www.ivoa.net/xml/VOResource/v0.9\"; //vr:Resource[@xsi:type='RegistryType']";
-             xqlQuery = "//*:Resource[@xsi:type='RegistryType' or @xsi:type='Registry']";
+             xqlQuery = "//*:Resource[@xsi:type |= '*RegistryType*' or @xsi:type |= '*Registry*']";
              System.out.println("hello the xqlQuery = " + xqlQuery);
              log.info("the xqlQuery = " + xqlQuery);
              harvestDoc = qdb.runQuery(collectionName,xqlQuery);
@@ -196,7 +196,7 @@ public class RegistryHarvestService {
           }else {
             //query all Registry Types for Webbrowser or WebService interface
              //xqlQuery = "declare namespace vr = \"http://www.ivoa.net/xml/VOResource/v0.9\"; //vr:Resource[vr:Interface/vr:Invocation='WebBrowser' or vr:Interface/vr:Invocation='WebService']";
-             xqlQuery = "//*:Resource[*:/Interface/*:AccessURL]";
+             xqlQuery = "//*:Resource[*:/Interface/*:AccessURL or *:/interface/*:accessURL]";
              harvestDoc = qdb.runQuery(collectionName,xqlQuery);
              if(harvestDoc != null) {
                  tempDoc.appendChild(
@@ -306,7 +306,9 @@ private class HarvestThread extends Thread {
       boolean isRegistryType;
       Document doc = null;
       NodeList nl = null;
+      String soapActionURI = null;
       SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+      int threadCount = 0;
 
       //instantiate the Admin service that contains the update methods.
       RegistryAdminService ras = new RegistryAdminService();
@@ -338,8 +340,10 @@ private class HarvestThread extends Thread {
           //Need to look for interface here.
         //nl = ((Element) resource).getElementsByTagName("vr:Invocation");
           nl = ((Element) resource).getElementsByTagNameNS("*","interface");
-          typeAttribute = resource.getAttributes().getNamedItem("xsi:type");
-          invocationType = typeAttribute.getNodeValue();
+          if(nl.getLength() > 0) { 
+              typeAttribute = ((Element)nl.item(0)).getAttributes().getNamedItem("xsi:type");
+              invocationType = typeAttribute.getNodeValue();
+          }
       } else {
           invocationType = nl.item(0).getFirstChild().getNodeValue();
       }
@@ -382,13 +386,21 @@ private class HarvestThread extends Thread {
                String nameSpaceURI = WSDLInformation.
                                      getNameSpaceFromBinding(
 								        accessURL,interfaceMethod);
-
+               if(wsdlBasic.getEndPoint().keys().hasMoreElements()) {
+                   soapActionURI = wsdlBasic.getSoapActionURI(
+                     (String)wsdlBasic.getEndPoint().keys().nextElement() + 
+                     "_" + interfaceMethod);
+               }
+               if(soapActionURI != null) {
+                   callObj.setSOAPActionURI(soapActionURI);
+               }//if
+               log.info("SoapActionURI = " + soapActionURI);
                root = doc.createElementNS(nameSpaceURI,interfaceMethod);
                if(dt != null) {
                   childElem = doc.createElement("from");
                   childElem.appendChild(doc.createTextNode(sdf.format(dt)));
                   root.appendChild(childElem);
-               }
+               }//if
                doc.appendChild(root);
                log.info("Creating soap request for operation name = " +
                          interfaceMethod + " with namespaceuri = " +
@@ -425,6 +437,17 @@ private class HarvestThread extends Thread {
                           soapDoc = sbe.getAsDocument();
                           (new HarvestThread(ras,soapDoc.getDocumentElement().cloneNode(true))).start();
                            nl = DomHelper.getNodeListTags(soapDoc,"resumptionToken");
+                           threadCount++;                           
+                           if(threadCount > 19) {
+                               log.info("20 harvest threads have started recently, sleeping for 5 seconds. ");
+                               log.info("The activethread count = " + Thread.activeCount());
+                               try {
+                                   Thread.sleep(5000);
+                               }catch(InterruptedException ie) {
+                                   log.info("Possible interruption in the middle of harvest");
+                               }
+                               threadCount = 0;
+                           }//if
                       }//while
                    }//if
                }//if
@@ -432,7 +455,7 @@ private class HarvestThread extends Thread {
                 //log error
                 re.printStackTrace();
                 log.error(re);
-		    }
+            }
             catch(ParserConfigurationException pce) {
                 pce.printStackTrace();
                 log.error(pce);
@@ -442,7 +465,7 @@ private class HarvestThread extends Thread {
                 log.error(e);
             }
          }
-      }else if("WebBrowser".equals(invocationType)) {
+      }else if("WebBrowser".equals(invocationType) || "Extended".equals(invocationType)) {
          //its a web browser so assume for oai.
          try {
             String ending = "";
@@ -468,7 +491,7 @@ private class HarvestThread extends Thread {
             //         getLength());
             //if there are more paging(next) then keep calling them.
             while( (moreTokens = doc.getElementsByTagName("resumptionToken")).
-                                     getLength() > 0) {
+                                     getLength() > 0 && moreTokens.item(0).hasChildNodes()) {
                Node nd = moreTokens.item(0);
                if(accessURL.indexOf("?") != -1) {
                   accessURL = accessURL.substring(0,accessURL.indexOf("?"));
@@ -476,15 +499,28 @@ private class HarvestThread extends Thread {
                ending = "?verb=ListRecords&resumptionToken=" +
                          nd.getFirstChild().getNodeValue();
                log.info(
-               "the harvestcallregistry's accessurl inside the token calls = " +
+               "the harvestcallregistry's with resumptionToken accessurl inside the token calls = " +
                           accessURL + ending);
                doc = DomHelper.newDocument(new URL(accessURL + ending));
+               /*
                log.info("INSIDE THE MORETOKENS = " +
                         DomHelper.DocumentToString(doc) +
                         " resumption token length = "   +
                         doc.getElementsByTagName("resumptionToken").
                             getLength() );
+               */
                (new HarvestThread(ras,doc)).start();
+               threadCount++;                           
+               if(threadCount > 19) {
+                   log.info("20 harvest threads have started recently, sleeping for 5 seconds. ");
+                   log.info("The activethread count = " + Thread.activeCount());
+                   try {
+                       Thread.sleep(5000);
+                   }catch(InterruptedException ie) {
+                       log.info("Possible interruption in the middle of harvest");
+                   }
+                   threadCount = 0;
+               }//if
             }//while
          }catch(ParserConfigurationException pce) {
             pce.printStackTrace();
