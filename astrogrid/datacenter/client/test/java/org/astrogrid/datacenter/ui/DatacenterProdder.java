@@ -1,4 +1,4 @@
-/* $Id: DatacenterProdder.java,v 1.2 2004/02/17 15:03:44 mch Exp $
+/* $Id: DatacenterProdder.java,v 1.3 2004/02/19 23:28:55 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -16,6 +16,7 @@ import java.awt.event.ActionListener;
 import java.net.URL;
 import java.util.Date;
 import java.util.Properties;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -435,8 +436,8 @@ public class DatacenterProdder extends JFrame
 
       
       Splash s = new Splash("Datacenter Prodder","Desktop Client",
-                            "mch",
-                            Color.white,Color.blue,null,"AstroGrid");
+                            "mch/1.0",
+                            Color.white,Color.blue, IconFactory.getImage("AstroGrid"),"");
       
       DatacenterProdder frame = new DatacenterProdder();
       frame.pack();
@@ -451,6 +452,9 @@ public class DatacenterProdder extends JFrame
 
 /*
  $Log: DatacenterProdder.java,v $
+ Revision 1.3  2004/02/19 23:28:55  mch
+ Nicer Splash
+
  Revision 1.2  2004/02/17 15:03:44  mch
  Removed Group from Account
 
