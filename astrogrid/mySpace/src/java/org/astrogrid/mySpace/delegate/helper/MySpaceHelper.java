@@ -59,7 +59,7 @@ public class MySpaceHelper{
 	}
 	
 	public String buildSaveURL(String userid, String communityid, String credential, String fileName, String importURL, String category, String action){
-		String fileFullName = "/"+userid.trim()+"/"+communityid.trim()+"/serv1/"+category.toLowerCase().trim()+"/"+fileName.trim();
+		String fileFullName = "/"+userid.trim()+"@"+communityid.trim()+"/serv1/"+category.toLowerCase().trim()+"/"+fileName.trim();
 		StringBuffer request = new StringBuffer() ;
 		try {		
 			request.append("<request>") ;
