@@ -1,5 +1,5 @@
 /*
- * $Id: WarehouseServiceImpl.java,v 1.1 2003/10/07 17:09:51 kea Exp $
+ * $Id: WarehouseServiceImpl.java,v 1.2 2003/10/08 15:25:35 kea Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -7,8 +7,6 @@
 package org.astrogrid.warehouse.service;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.rmi.RemoteException;
 
 import org.w3c.dom.Element;
@@ -42,7 +40,7 @@ public class WarehouseServiceImpl
   */
   /*
   public Element coneSearch(double ra, double dec, double radius) 
-      throws java.rmi.RemoteException {
+                            throws java.rmi.RemoteException {
     throw new RemoteException("Method not implemented yet\n");
    }
  */
@@ -51,16 +49,16 @@ public class WarehouseServiceImpl
  * takes an adql document and returns an id for the query.
  */
   public String makeQuery(Element adql, String resultsFormat) 
-  		throws java.rmi.RemoteException {
-    throw new RemoteException("Method not implemented yet\n");
+                          throws java.rmi.RemoteException {
+      return "123456";
   }
 
  /**
   * set the myspace server where the results should be stored, for the 
   * given query id.
   */
-  public void setResultsDestination(String id, URL myspace) 
-  		throws java.rmi.RemoteException {
+  public void setResultsDestination(String id, String myspaceUrl) 
+                                    throws java.rmi.RemoteException {
     throw new RemoteException("Method not implemented yet\n");
   }
 
@@ -87,12 +85,22 @@ public class WarehouseServiceImpl
 }
 /*
 $Log: WarehouseServiceImpl.java,v $
+Revision 1.2  2003/10/08 15:25:35  kea
+Finalised interface classes required for end IT4 wk 2:
+    org.astrogrid.warehouse.delegate.WarehouseDelegateIfc
+    org.astrogrid.warehouse.service.WarehouseServiceIfc
+
+Changed URL parameter to String parameter in setResultsDestination()
+  methods to help with wsdl2java/java2wsdl auto-tooling.
+
+Added package-specific WarehouseException.
+
+Added wsdd files for deploying to Tomcat/Axis, and added temporary
+testing harness just to be sure we can deploy to Axis and talk to the
+(mostly unimplemented!) web service.
+
 Revision 1.1  2003/10/07 17:09:51  kea
 Adding webservice / webdelegate skeletons.
 Having diffs with wsdl2java-generated class names/structure.
 
 */
-
-
-
-  

@@ -27,61 +27,95 @@
 		</delete>
 	</preGoal>
 
-   <!-- This file is for local adjustments.  -->
-   <property file="config/build.properties"/>
+  <!-- This file is for local adjustments.  -->
+  <property file="config/build.properties"/>
    
-   <!-- This file specializes this template to a particular product. -->
-   <property file="config/template.properties"/>
+  <!-- This file specializes this template to a particular product. -->
+  <property file="config/template.properties"/>
    
-   <!-- These names are used in several targets. -->
-   <property name="wsdl.directory" value="wsdl"/>
-   <property name="wsdl.file"      value="${service.name}.wsdl"/>
-   <property name="wsdl.path"      value="${wsdl.directory}/${wsdl.file}"/>
+  <!-- These names are used in several targets. -->
+  <property name="wsdl.directory" value="wsdl"/>
+  <property name="wsdl.file"      value="${service.name}.wsdl"/>
+  <property name="wsdl.path"      value="${wsdl.directory}/${wsdl.file}"/>
 
-   <!-- Generate WSDL for the service starting from a Java class defining the
+  <!-- Generate WSDL for the service starting from a Java class defining the
         interface to a web-service port. -->
-   <target name="generateWSDL">
-      <echo message="Generating ${wsdl.file} from ${service.java.package}.${port.interface.java.class}..."/>
-      <mkdir dir="target/classes"/>
-      <javac srcdir="src/java" 
-             destdir="target/classes">
-         <include name="**/${port.interface.java.class}.java" />
-      </javac>
-      <mkdir dir="target/${wsdl.directory}"/>
-      <java classname="${java2wsdl.tool}" dir="./target/classes" fork="yes">
-         <arg value="-S"/>  
-         <arg value="${service.name}"/>  
-         <arg value="-l"/>  
-         <arg value="http://localhost/services/"/>  
-         <arg value="-n"/>  
-         <arg value="${service.xml.namespace.uri}"/>  
-         <arg value="-o"/>
-         <arg value="../../${wsdl.path}"/>
-         <arg value="${service.java.package}.${port.interface.java.class}"/>
+  <target name="generateWSDL">
+     <echo message="Generating ${wsdl.file} from ${service.java.package}.${port.interface.java.class}..."/>
+     <mkdir dir="target/classes"/>
+     <javac srcdir="src/java" 
+            destdir="target/classes">
+        <include name="**/${port.interface.java.class}.java" />
+     </javac>
+     <mkdir dir="target/${wsdl.directory}"/>
+     <java classname="${java2wsdl.tool}" dir="./target/classes" fork="yes">
+        <arg value="-S"/>  
+        <arg value="${service.name}"/>  
+        <arg value="-l"/>  
+        <arg value="http://localhost/services/"/>  
+        <arg value="-n"/>  
+        <arg value="${service.xml.namespace.uri}"/>  
+        <arg value="-o"/>
+        <arg value="../../${wsdl.path}"/>
+        <arg value="${service.java.package}.${port.interface.java.class}"/>
+     </java>
+  </target>
+
+  <!-- Generate Java classes, as source code, for the client
+        and the service, based on the WSDL file. -->
+  <target name="generateStubs" depends="generateWSDL">
+     <echo message="Generating stubs from ${wsdl.path} ..." />
+     <mkdir dir="target/src/java"/>
+     <java classname="${wsdl.tool}" dir="." fork="yes">
+        <arg value="-o"/>  
+        <arg value="target/src/java"/>  
+        <arg value="${wsdl.path}"/>
+     </java>
+  </target>
+
+   <!-- Deploy the webservice into tomcat. -->
+   <target name="deployToTomcat">
+     <path id="classpath">
+       <path refid="maven.dependency.classpath"/>
+     </path>
+     <echo message="Deploying webservice to tomcat at ${tomcat.home}..." />
+     <copy toDir="${tomcat.home}/webapps/axis/WEB-INF/classes">
+       <fileset dir="target/classes">
+         <include name="**/*.class"/> 
+       </fileset>
+     </copy>
+     <java classname="org.apache.axis.utils.Admin" 
+          classpathref="classpath"
+          dir="${tomcat.home}/webapps/axis/WEB-INF"
+          fork="yes" failonerror="true">
+       <arg value="server"/>
+       <arg value="${basedir}/wsdd/deploy.wsdd"/>
+     </java>
+  </target>
+             
+   <!-- Undeploy the webservice from tomcat. -->
+   <target name="undeployFromTomcat">
+     <path id="classpath">
+       <path refid="maven.dependency.classpath"/>
+     </path>
+      <java classname="org.apache.axis.utils.Admin"
+            dir="${tomcat.home}/webapps/axis/WEB-INF"
+            classpathref="classpath" fork="yes" failonerror="true">
+        <arg value="server"/>
+        <arg value="${basedir}/wsdd/undeploy.wsdd"/>
       </java>
    </target>
 
-   <!-- Generate Java classes, as source code, for the client
-        and the service, based on the WSDL file. -->
-   <target name="generateStubs" depends="generateWSDL">
-      <echo message="Generating stubs from ${wsdl.path} ..." />
-      <mkdir dir="target/src/java"/>
-      <java classname="${wsdl.tool}" dir="." fork="yes">
-         <arg value="-o"/>  
-         <arg value="target/src/java"/>  
-         <arg value="${wsdl.path}"/>
+   <!-- TEMPORARY TEST HARNESS -TOFIX REMOVE -->
+   <target name="tempTest">
+     <path id="classpath">
+       <path refid="maven.dependency.classpath"/>
+     </path>
+      <java classname="org.astrogrid.warehouse.delegate.WebDelegate"
+            dir="target/classes" fork="yes" failonerror="true">
+        <arg value=
+            "${tomcat.host}/axis/services/WarehouseServiceIfc"/>
       </java>
-
-    <!--
-      <echo message="Cleaning up unneeded classes ..." />
-      <delete>
-        <fileset dir="target/src/java">
-          <include name="**/${port.interface.java.class}.java"/>
-          <include name="**/${service.name}.java"/>
-        </fileset>
-      </delete>
-      -->
-
    </target>
 
 </project>

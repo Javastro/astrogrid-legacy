@@ -1,5 +1,5 @@
 /*
- * $Id: WarehouseServiceIfc.java,v 1.2 2003/10/07 17:09:51 kea Exp $
+ * $Id: WarehouseServiceIfc.java,v 1.3 2003/10/08 15:25:35 kea Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -7,8 +7,6 @@
 package org.astrogrid.warehouse.service;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.rmi.RemoteException;
 
 import org.w3c.dom.Element;
@@ -38,42 +36,53 @@ public interface WarehouseServiceIfc
   */
   /*
   public Element coneSearch(double ra, double dec, double radius) 
-      throws java.rmi.RemoteException;
+                            throws java.rmi.RemoteException;
  */
 
  /**
  * takes an adql document and returns an id for the query.
  */
   public String makeQuery(Element adql, String resultsFormat) 
-     throws java.rmi.RemoteException;
+                          throws java.rmi.RemoteException;
 
  /**
   * set the myspace server where the results should be stored, for the 
   * given query id.
   */
-  public void setResultsDestination(String id, URL myspace) 
-     throws java.rmi.RemoteException; 
+  public void setResultsDestination(String id, String myspaceUrl) 
+                                    throws java.rmi.RemoteException; 
 
  /** 
   * starts given query running
   */
-  public void startQuery(String id) 
-     throws java.rmi.RemoteException;
+  public void startQuery(String id) throws java.rmi.RemoteException;
 
  /**
   * - stops the given query
   */
-  public void abortQuery(String id) 
-      throws java.rmi.RemoteException;
+  public void abortQuery(String id) throws java.rmi.RemoteException;
 
  /**
   * - gets info on the query status
   */
-  public Element getStatus(String id) 
-     throws java.rmi.RemoteException;
+  public Element getStatus(String id) throws java.rmi.RemoteException;
 }
 /*
 $Log: WarehouseServiceIfc.java,v $
+Revision 1.3  2003/10/08 15:25:35  kea
+Finalised interface classes required for end IT4 wk 2:
+    org.astrogrid.warehouse.delegate.WarehouseDelegateIfc
+    org.astrogrid.warehouse.service.WarehouseServiceIfc
+
+Changed URL parameter to String parameter in setResultsDestination()
+  methods to help with wsdl2java/java2wsdl auto-tooling.
+
+Added package-specific WarehouseException.
+
+Added wsdd files for deploying to Tomcat/Axis, and added temporary
+testing harness just to be sure we can deploy to Axis and talk to the
+(mostly unimplemented!) web service.
+
 Revision 1.2  2003/10/07 17:09:51  kea
 Adding webservice / webdelegate skeletons.
 Having diffs with wsdl2java-generated class names/structure.

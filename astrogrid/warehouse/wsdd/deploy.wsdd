@@ -1,0 +1,45 @@
+<!-- Use this file to deploy some handlers/chains and services      -->
+<!-- Two ways to do this:                                           -->
+<!--   java org.apache.axis.client.AdminClient deploy.wsdd          -->
+<!--      after the axis server is running                          -->
+<!-- or                                                             -->
+<!--   java org.apache.axis.utils.Admin client|server deploy.wsdd   -->
+<!--      from the same directory that the Axis engine runs         -->
+
+<deployment
+    xmlns="http://xml.apache.org/axis/wsdd/"
+    xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+
+  <!-- Services from WarehouseService WSDL service -->
+
+  <service name="WarehouseServiceIfc" provider="java:RPC" style="rpc" use="encoded">
+      <parameter name="wsdlTargetNamespace" value="http://service.warehouse.astrogrid.org/"/>
+      <parameter name="wsdlServiceElement" value="WarehouseService"/>
+      <parameter name="wsdlServicePort" value="WarehouseServiceIfc"/>
+      <parameter name="className" value="org.astrogrid.warehouse.service.WarehouseServiceImpl"/>
+      <parameter name="wsdlPortType" value="WarehouseServiceIfc"/>
+      <operation name="getMetadata" qname="operNS:getMetadata" xmlns:operNS="http://service.warehouse.astrogrid.org/" returnQName="getMetadataReturn" returnType="rtns:Element" xmlns:rtns="http://xml.apache.org/xml-soap" >
+      </operation>
+      <operation name="getVoRegistryMetadata" qname="operNS:getVoRegistryMetadata" xmlns:operNS="http://service.warehouse.astrogrid.org/" returnQName="getVoRegistryMetadataReturn" returnType="rtns:Element" xmlns:rtns="http://xml.apache.org/xml-soap" >
+      </operation>
+      <operation name="makeQuery" qname="operNS:makeQuery" xmlns:operNS="http://service.warehouse.astrogrid.org/" returnQName="makeQueryReturn" returnType="rtns:string" xmlns:rtns="http://www.w3.org/2001/XMLSchema" >
+        <parameter name="in0" type="tns:Element" xmlns:tns="http://xml.apache.org/xml-soap"/>
+        <parameter name="in1" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <operation name="setResultsDestination" qname="operNS:setResultsDestination" xmlns:operNS="http://service.warehouse.astrogrid.org/" >
+        <parameter name="in0" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <parameter name="in1" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <operation name="startQuery" qname="operNS:startQuery" xmlns:operNS="http://service.warehouse.astrogrid.org/" >
+        <parameter name="in0" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <operation name="abortQuery" qname="operNS:abortQuery" xmlns:operNS="http://service.warehouse.astrogrid.org/" >
+        <parameter name="in0" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <operation name="getStatus" qname="operNS:getStatus" xmlns:operNS="http://service.warehouse.astrogrid.org/" returnQName="getStatusReturn" returnType="rtns:Element" xmlns:rtns="http://xml.apache.org/xml-soap" >
+        <parameter name="in0" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <parameter name="allowedMethods" value="setResultsDestination makeQuery getVoRegistryMetadata getStatus startQuery getMetadata abortQuery"/>
+
+  </service>
+</deployment>
