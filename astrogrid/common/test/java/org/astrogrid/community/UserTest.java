@@ -1,4 +1,4 @@
-/* $Id: UserTest.java,v 1.7 2004/05/11 08:33:37 pah Exp $
+/* $Id: UserTest.java,v 1.8 2004/05/11 09:13:22 pah Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -88,6 +88,14 @@ public class UserTest extends TestCase
       }
    }
 
+   public void testCommunitythere()
+   {
+      User user = new User("user@community", "group","token");
+      assertTrue("community not found", user.getCommunity().equals("community"));
+      user = new User("user","community","group","token");
+      assertTrue("community not found", user.getCommunity().equals("community"));
+      
+   }
 
     /**
      * Assembles and returns a test suite made up of all the testXxxx() methods
@@ -109,6 +117,9 @@ public class UserTest extends TestCase
 
 /*
 $Log: UserTest.java,v $
+Revision 1.8  2004/05/11 09:13:22  pah
+more community format tests
+
 Revision 1.7  2004/05/11 08:33:37  pah
 test the form of the account argument in constuctor
 
