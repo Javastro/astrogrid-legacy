@@ -14,6 +14,7 @@ import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Msrl;
 import org.astrogrid.store.delegate.StoreAdminClient;
 import org.astrogrid.store.delegate.StoreClient;
+import org.astrogrid.store.delegate.StoreDelegateFactory;
 import org.astrogrid.store.delegate.StoreException;
 import org.astrogrid.store.delegate.StoreFile;
 
@@ -218,7 +219,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
    public Agsl getEndpoint()
    {
       try {
-         Agsl agsl = new Agsl( Msrl.SCHEME + ":" + endPoint );
+         Agsl agsl = new Agsl( endPoint );
          return agsl;
       }catch(MalformedURLException mue) {
          mue.printStackTrace();
@@ -334,8 +335,10 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
    public StoreFile getFile(String path) throws IOException
    {
 
-      KernelResults results = innerDelegate.getEntriesList("/"+path,
-        isTest);
+      if (!path.startsWith("/")) path = "/"+path;
+      
+      
+      KernelResults results = innerDelegate.getEntriesList(path, isTest);
 
 //
 //   Append and check any status messages.
@@ -364,7 +367,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
      String targetPath, boolean append) throws IOException
    {
 
-      targetPath = "/"+targetPath;
+      if (!targetPath.startsWith("/")) targetPath = "/"+targetPath;
 //
 //   Determine how a pre-existing file with the specified name is
 //   to be dispatched.
@@ -419,7 +422,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
      boolean append) throws IOException
    {
 
-      targetPath = "/"+targetPath;
+      if (!targetPath.startsWith("/")) targetPath = "/"+targetPath;
 //
 //   Determine how a pre-existing file with the specified name is
 //   to be dispatched.
@@ -465,7 +468,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
      throws IOException
    {
 
-      targetPath = "/"+targetPath;
+      if (!targetPath.startsWith("/")) targetPath = "/"+targetPath;
 //
 //   Determine how a pre-existing file with the specified name is
 //   to be dispatched.
@@ -511,7 +514,10 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
 
    public OutputStream putStream(String targetPath, boolean append)
      throws IOException
-   {  return new MySpaceOutputStream("/"+targetPath, append);
+   {
+      if (!targetPath.startsWith("/")) targetPath = "/"+targetPath;
+      
+      return new MySpaceOutputStream(targetPath, append);
    }
 
 
@@ -569,8 +575,10 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
  */
 
    public void delete(String deletePath) throws IOException
-   {  KernelResults results = innerDelegate.deleteFile("/"+deletePath,
-        isTest);
+   {
+      if (!deletePath.startsWith("/")) deletePath = "/"+deletePath;
+      
+      KernelResults results = innerDelegate.deleteFile(deletePath, isTest);
 
 //
 //   Append and check any status messages.
@@ -582,20 +590,32 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
 
 // ----------------------------------------------------------------------
 
-/**
- * Copy a file to a target Agsl.
-    * @todo won't work between myspaces
+   /**
+    * Copy a file to a target Agsl.
+    * Because myspace can 'pull' better than push, this calls the target Agsl
+    * store (if different from this one) with a putUrl to the sourcepath
     */
 
-   public void copy(String sourcePath, Agsl targetPath) throws IOException
-   {  String targetFile = targetPath.getPath();
-      KernelResults results = innerDelegate.copyFile("/"+sourcePath,
-        "/"+targetFile, isTest);
-
+   public void copy(String sourcePath, Agsl target) throws IOException
+   {
+      if (target.getEndpoint().equals(getEndpoint())) {
+         String targetPath = target.getPath();
+         if (!targetPath.startsWith("/")) targetPath = "/"+targetPath;
+         if (!sourcePath.startsWith("/")) sourcePath = "/"+sourcePath;
+      
+         KernelResults results = innerDelegate.copyFile(sourcePath,
+               targetPath, isTest);
 //
 //   Append and check any status messages.
 
-      this.appendAndCheckStatusMessages(results);
+         this.appendAndCheckStatusMessages(results);
+
+      }
+      else {
+         StoreClient targetStore = StoreDelegateFactory.createDelegate(operator, target);
+         
+         targetStore.putUrl(getUrl(sourcePath), target.getPath(), false);
+      }
 
    }
 
@@ -607,15 +627,25 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
  */
 
    public void copy(Agsl source, String targetPath) throws IOException
-   {  String sourcePath = source.getPath();
-      KernelResults results = innerDelegate.copyFile("/"+sourcePath,
-        "/"+targetPath, isTest);
+   {
+      if (source.getEndpoint().equals(getEndpoint())) {
+         String sourcePath = source.getPath();
+         if (!targetPath.startsWith("/")) targetPath = "/"+targetPath;
+         if (!sourcePath.startsWith("/")) sourcePath = "/"+sourcePath;
+      
+         KernelResults results = innerDelegate.copyFile(sourcePath, targetPath, isTest);
 
 //
 //   Append and check any status messages.
 
-      this.appendAndCheckStatusMessages(results);
-
+         this.appendAndCheckStatusMessages(results);
+      }
+      else
+      {
+         StoreClient sourceStore = StoreDelegateFactory.createDelegate(operator, source);
+         
+         putUrl(sourceStore.getUrl(source.getPath()), targetPath, false);
+      }
    }
 
 // ----------------------------------------------------------------------
@@ -624,17 +654,12 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
  * Move (or rename) a file to a target Agsl.
  */
 
-   public void move(String sourcePath, Agsl targetPath) throws IOException
-   {  String targetFile = targetPath.getPath();
+   public void move(String sourcePath, Agsl target) throws IOException
+   {
+      //could call innerdelegate move if target/source stores are the same
       
-      KernelResults results = innerDelegate.moveFile("/"+sourcePath,
-        "/"+targetFile, isTest);
-
-//
-//   Append and check any status messages.
-
-      this.appendAndCheckStatusMessages(results);
-
+      copy(sourcePath, target);
+      delete(sourcePath);
    }
 
 
@@ -645,15 +670,11 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
  */
 
    public void move(Agsl source, String targetPath) throws IOException
-   {  String sourcePath = source.getPath();
-      KernelResults results = innerDelegate.moveFile("/"+sourcePath,
-        "/"+targetPath, isTest);
-
-//
-//   Append and check any status messages.
-
-      this.appendAndCheckStatusMessages(results);
-
+   {
+      //could call innerdelegate move if target/source stores are the same
+      
+      copy(source, targetPath);
+      StoreDelegateFactory.createDelegate(operator, source);
    }
 
 
@@ -664,8 +685,10 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
  */
 
    public void newFolder(String targetPath) throws IOException
-   {  KernelResults results = innerDelegate.createContainer(
-        "/"+targetPath, isTest);
+   {
+      if (!targetPath.startsWith("/")) targetPath = "/"+targetPath;
+
+      KernelResults results = innerDelegate.createContainer(targetPath, isTest);
 
 //
 //   Append and check any status messages.
@@ -778,11 +801,11 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
    public String getString(String targetPath) throws IOException
    {  String contents = "";
 
+     if (!targetPath.startsWith("/")) targetPath = "/"+targetPath;
 //
 //   Attempt to retrieve the contents of the file as a String.
 
-      KernelResults results = innerDelegate.getString("/"+targetPath,
-        isTest);
+      KernelResults results = innerDelegate.getString(targetPath, isTest);
 
 //
 //   Obtain the retrieved contents from the results object.
@@ -812,10 +835,11 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
    public byte[] getBytes(String targetPath) throws IOException
    {  byte[] contents = null;
 
+     if (!targetPath.startsWith("/")) targetPath = "/"+targetPath;
 //
 //   Attempt to retrieve the contents of the file as a String.
 
-      KernelResults results = innerDelegate.getBytes("/"+targetPath,
+      KernelResults results = innerDelegate.getBytes(targetPath,
         isTest);
 
 //
