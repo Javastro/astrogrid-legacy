@@ -1,0 +1,27 @@
+     
+<Select xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://tempuri.org/adql">
+
+    <SelectionAll/>
+    
+    <WhereClause>
+      <Condition xsi:type="RegionSearch">
+        <Region xmlns:q1="urn:nvo-region" xsi:type="q1:circleType">
+          <q1:Center>
+            <Pos3Vector xmlns="urn:nvo-coords">
+              <CoordValue>
+                <Value>
+                  <double>1.2</double>
+                  <double>2.4</double>
+                  <double>2.4</double>
+                </Value>
+              </CoordValue>
+            </Pos3Vector>
+          </q1:Center>
+          <q1:Radius>0.2</q1:Radius>
+        </Region>
+      </Condition>
+    </WhereClause>
+     
+</Select>
+   
+

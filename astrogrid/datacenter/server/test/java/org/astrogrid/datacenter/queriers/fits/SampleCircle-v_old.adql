@@ -1,0 +1,23 @@
+     
+<Select xmlns:xsd='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+   <SelectionAll />
+   <TableClause>
+     <FromClause>
+         <TableReference>
+         <Table>
+           <Name>objects</Name>
+           <AliasName>cat</AliasName>
+         </Table>
+         </TableReference>
+     </FromClause>
+     <WhereClause>
+         <Circle>
+                    <Ra><Value>308</Value></Ra>
+                    <Dec><Value>60</Value></Dec>
+            <Radius><Value>12</Value></Radius>
+          </Circle>
+    </WhereClause>
+   </TableClause>
+</Select>
+      
+
