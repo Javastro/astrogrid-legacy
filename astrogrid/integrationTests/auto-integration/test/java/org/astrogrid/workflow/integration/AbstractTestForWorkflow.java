@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForWorkflow.java,v 1.7 2004/08/12 21:29:54 nw Exp $
+/*$Id: AbstractTestForWorkflow.java,v 1.8 2004/08/12 22:05:22 nw Exp $
  * Created on 30-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.workflow.integration;
 
 import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
+import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.integration.AbstractTestForIntegration;
@@ -31,6 +32,8 @@ import org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord;
 
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
+
+import java.io.StringReader;
 
 /** Abstract base class for all tests that fire workflows into jes.
  * @author Noel Winstanley nw@jb.man.ac.uk 30-Jun-2004
@@ -196,12 +199,36 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
         softAssertNotNull("expected a start time",rec.getStartTime());
         softAssertNull("didn't expect a finish time",rec.getFinishTime());
     }
+    
+    protected ResultListType getResultOfStep(Step step) throws Exception {
+        StepExecutionRecord rec = step.getStepExecutionRecord(0);
+        assertNotNull(rec);
+
+        MessageType result = (MessageType)rec.findXPathValue("message[source='CEA']"); //@todo this is flakey - need to demarcate the result message in a better way.
+        assertNotNull(result);
+        ResultListType resultList = ResultListType.unmarshalResultListType(new StringReader(result.getContent()));
+        assertNotNull(resultList);
+        return resultList;
+    }
+    
+    protected String getStdoutOfScript(Script sc2) throws Exception {
+        softAssertEquals("expected a single execution",1,sc2.getStepExecutionRecordCount());
+        StepExecutionRecord rec = sc2.getStepExecutionRecord(0);
+        softAssertEquals("expected to complete",ExecutionPhase.COMPLETED, rec.getStatus());
+        softAssertTrue("expected some messages",rec.getMessageCount() > 0);
+        MessageType stdout = (MessageType)rec.findXPathValue("message[source='stdout']");
+        softAssertNotNull("no stdout available",stdout);
+        return stdout.getContent();
+    }
         
 }
 
 
 /* 
 $Log: AbstractTestForWorkflow.java,v $
+Revision 1.8  2004/08/12 22:05:22  nw
+added more helper methods
+
 Revision 1.7  2004/08/12 21:29:54  nw
 added helper assertion methods
 
