@@ -1,0 +1,162 @@
+From pah@jb.man.ac.uk Wed Mar 17 11:03:17 2004
+Return-Path: <pah@jb.man.ac.uk>
+Received: from roadshow.systems.pipex.net (roadshow.systems.pipex.net [62.241.160.72])
+	by digdug (Cyrus v2.1.13) with LMTP; Wed, 17 Mar 2004 11:03:19 +0000
+X-Sieve: CMU Sieve 2.2
+X-Envelope-To: mchill@dial.pipex.com
+Received: from curlew.cs.man.ac.uk (curlew.cs.man.ac.uk [130.88.13.7])
+	by roadshow.systems.pipex.net (Postfix) with ESMTP id 941F21C00253
+	for <mchill@dial.pipex.com>; Wed, 17 Mar 2004 11:03:19 +0000 (GMT)
+Received: from star1.jb.man.ac.uk ([130.88.24.176])
+	by curlew.cs.man.ac.uk with esmtp (Exim 4.20)
+	id 1B3YpS-00030s-ES; Wed, 17 Mar 2004 11:03:18 +0000
+Received: from aten ([130.88.24.80] helo=jb.man.ac.uk)
+	by star1.jb.man.ac.uk with esmtp (Exim 3.03 #2)
+	id 1B3YpR-0002yN-00; Wed, 17 Mar 2004 11:03:17 +0000
+Message-ID: <40583075.4040601@jb.man.ac.uk>
+Date: Wed, 17 Mar 2004 11:03:17 +0000
+From: Paul Harrison <pah@jb.man.ac.uk>
+Organization: JBO
+User-Agent: Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.6) Gecko/20040113
+X-Accept-Language: en, en-us
+MIME-Version: 1.0
+To: Martin Hill <mchill@dial.pipex.com>
+Cc: Noel Winstanley <nw@jb.man.ac.uk>
+Subject: Re: CEA Interface
+References: <4051D755.2090102@dial.pipex.com> <4051E5D6.6000604@jb.man.ac.uk> <4051EC1A.2000706@dial.pipex.com> <40579DC4.5090804@dial.pipex.com>
+In-Reply-To: <40579DC4.5090804@dial.pipex.com>
+Content-Type: multipart/mixed;
+  boundary="------------090002000305030906090203"
+X-Scanner: exiscan for exim4 (http://duncanthrax.net/exiscan/) *1B3YpS-00030s-ES*RRs7UTA0cmo*
+X-UID: 28271
+
+This is a multi-part message in MIME format.
+--------------090002000305030906090203
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: 
+
+
+
+Martin Hill wrote:
+
+> Do you think CEA is stable enough now to use to publish datacenters?
+
+yes - well good enough for iteration5 as it is one of the things that we 
+should achieve.
+
+>
+> Maybe this is one for Noel; how do I go about including the CEA 
+> WSDL/WSDD (assuming you have it already) with the datacenter build?  
+> Or, more generally, I have a CeaDataService class that implements the 
+> CommonExecutionConnector - what else does the datacenter need?
+
+we do have the wsdl and the wsdd in the workflow-objects project - you 
+need to copy over the wsdd and make sure that you change the "className" 
+parameter to your implementation class - BTW where is this class.
+
+>
+> I've created & attached a parameter definition file using your 
+> examples below but can't find the "CmdLineParameterDefn" definition, 
+> or equivelent for things that aren't command line parameters!
+
+Ok I think that I told you the wrong schema before - I have attached an 
+edited file against the correct schema (you will have to edit the 
+xsi:location if you want to validate.)
+
+There are some issues with your file
+
+* Things were defined in terms of a commandLine ApplicationController 
+rather than a datacentre - I have recast this into the correct form.
+* The format parameter might be against the spirit of CEA typing of  
+parameters - there are types for VOTable references which means that the 
+JES can know something about the semantics of the parameters and make 
+appropriate decisions. The way of dealing with this probably would be to 
+have TargetVOTable and TargetCSV with appropriate types and then to 
+define two interfaces  - one returning the VOTable and the other 
+returning the csv - I have left it as it is, but we need to experiment 
+with this idea to discover what works best in a practical sense.
+* I have added a new IVORN type to the schema and set the Target to be 
+of that type - re the discussion on the forum - CEA will require the use 
+of a certain collection of components to function properly (at least in 
+the early days - we might be able to factor out some of this 
+functionality later into stand-alone plugins) The purpose of CEA is to 
+try to restrict the possibilities into a small enough set that jes can 
+understand the semantics of the various parameters - so the idea is to 
+start small and restricted so that we get something that works, and to 
+expand the possibilities little by little.
+* I have put Target as an output parameter in the interface
+* I have removed Queryid from the parameter list - you should return 
+this value as the executionId return parameter from the execute() call.
+
+There is the larger issue which I am not sure about, and it affects the 
+way that CEA might work. How do you specify the dataset that the ADQL 
+applies to - is there something in the ADQL, or is it implicit in the 
+datacentre that you choose to submit the query to? This is the 
+difference between datacentre being 1 "application" in CEA or many.
+
+>
+> Could you run your eye over it to see if it makes sense?  Also, I 
+> assume you incorporate this snippet into your applicationsDefinitions 
+> document - if not, where do I put it?
+
+
+The plan is that it should be part of your configuration information 
+which the CEA component self registers with the registry. I am writing 
+the code in the rest of this week to do this - it should be common 
+between the various CEA components, so I will put it in the common 
+project for now. Once it is there I will tell you and you can do the 
+registering on datacente startup.
+
+Cheers,
+    Paul.
+
+-- 
+Dr. Paul Harrison, Astrogrid Developer
+MERLIN/VLBI National Facility, University of Manchester,
+Jodrell Bank Observatory, Macclesfield, Cheshire SK11 9DL, U.K.
+tel +44 (0)1477 572681 (direct), 571321 (switch) - 07904025192 (mobile).
+
+
+--------------090002000305030906090203
+Content-Type: text/xml;
+ name="DataServerDefinitions.xml"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="DataServerDefinitions.xml"
+
+<!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
+<!-- Datacenter should define all Astrogrid datacenters, including warehouses  -->
+<DataCentreControllerConfig xmlns="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1
+\\pahlaptop\work\astrogrid\src\workflow-objects\schema\AGApplicationBase.xsd">
+	<DataCentre name="Datacentre">
+		<Parameters>
+			<DataCentreParameterDefn name="Query" type="ADQL">
+				<agpd:UI_Name>Query</agpd:UI_Name>
+				<agpd:UI_Description>Astronomy Data Query Language that defines the search criteria</agpd:UI_Description>
+			</DataCentreParameterDefn>
+			<DataCentreParameterDefn name="Format" type="string">
+				<agpd:UI_Name>Results Format</agpd:UI_Name>
+				<agpd:UI_Description>How the results are to be returned.  VOTABLE or CSV for now</agpd:UI_Description>
+			</DataCentreParameterDefn>
+			<DataCentreParameterDefn name="Target" type="IVORN">
+				<agpd:UI_Name>Results Target</agpd:UI_Name>
+				<agpd:UI_Description>Where the results will be sent to; use IVORN (eg IVO://community/individual#path)</agpd:UI_Description>
+			</DataCentreParameterDefn>
+		</Parameters>
+		<Interfaces>
+			<Interface name="Simple">
+				<input>
+					<pref ref="Query"/>
+					<pref ref="Format"/>
+				</input>
+				<output>
+					<pref ref="Target"/>
+				</output>
+			</Interface>
+		</Interfaces>
+	</DataCentre>
+</DataCentreControllerConfig>
+
+--------------090002000305030906090203--
+
