@@ -60,11 +60,17 @@
         <description>
         <![CDATA[
 	<p>
-		The registry is based around information or metadata.  A registry holds vast amounts of metadata for particular Resources.
-		A Resource can be a data sets, web services, services, information on other registries.  For the registry to be interoperable with
-		other registries in other varous Virtual observatories, the registry must conform to an international recognized schema.  The registry
-		currently conforms to the IVOA Resoruce metatadata schema.
-		See the <a href="http://www.ivoa.net/twiki/bin/view/IVOA/IVOARegWp03">IVOA website for the current schema</a>
+		The registry is based around metadata for virtual observatories based on IVOA standards <a href="http://www.ivoa.net">IVOA website</a>.
+		A registry holds vast amounts of metadata for particular Resources.
+		A Resource can be a data sets, web services, services, information on other registries.  
+		For the registry to be interoperable with
+		other registries in other varous virtual observatories, the registry must conform to an international recognized schema.  
+		The registry currently conforms to the IVOA Resoruce metatadata schema.
+		See the <a href="http://www.ivoa.net/twiki/bin/view/IVOA/IVOARegWp03">IVOA website for the current schema</a>.
+		Astrogrid is one of the first implementors of a VO trhough a grid, because of this Astrogrid is ahead of IVOA standards
+		causing some implementations or standards to be extended, recently the registry metadata has been extended to allow
+		for particular specefic applications metadata to be entered into the registry.
+		All schemas plus extension schemas can be found <a href="..">Astrogrid schemas</a>
 	</p>
 	<p>
 		The registry gathers its information from either user input by file, url, or through the portal.  Or more commonly most metadata is
@@ -76,6 +82,7 @@
 	<ul>
 	  <li>Client Area</li>
 	  <li>Server Area</li>
+  	  <li>Webapp Area</li>
 	</ul>
 	</p>
 	<section name="Registry known to Astrogrid">
