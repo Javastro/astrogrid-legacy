@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/Attic/build.xml,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/30 16:04:39 $</cvs:author>
-    | <cvs:version>$Revision: 1.26 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/30 16:17:23 $</cvs:author>
+    | <cvs:version>$Revision: 1.27 $</cvs:version>
     | <cvs:log>
     | $Log: build.xml,v $
+    | Revision 1.27  2003/06/30 16:17:23  dave
+    | Added project release task
+    |
     | Revision 1.26  2003/06/30 16:04:39  dave
     | First attempt at building cocoon war file
     |
@@ -2036,6 +2039,9 @@
 		<!-- Wait for Cocoon to startup -->
 		<antcall target="cocoon.wait"/>
 
+		<!-- Release our WebApp -->
+		<antcall target="project.RELEASE"/>
+
 		<echo message="Ok ... Astrogrid portal is running."/>
 	</target>
 
@@ -2219,6 +2225,28 @@
 			</fileset>
 		</jar>
 	</target>
+
+	<!-- Install our source tree as a web-app -->
+	<target name="project.webapp.install" depends="tomcat.tasks">
+		<!-- Copy our WEB-INF directory -->
+		<copy verbose="true" toDir="${basedir}">
+			<fileset dir="src/webapp">
+			</fileset>
+		</copy>
+		<!-- Wait for the Tomcat manager -->
+		<antcall target="tomcat.manager.wait"/>
+		<!-- Install our web-app -->
+		<echo message=""/>
+		<echo message="Installing project webapp ...."/>
+		<tomcat.install username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/source" war="file://${basedir}"/>
+	</target>
+
+	<!-- Release our project -->
+	<target name="project.RELEASE" depends="">
+		<antcall target="cocoon.release"/>
+		<antcall target="project.webapp.install"/>
+	</target>
+
 
 </project>
 
