@@ -23,9 +23,9 @@
    try {
      server.askAdqlSql(Account.ANONYMOUS, adqlSql, out);
    }
-   catch (Exception e) {
-      LogFactory.getLog(request.getContextPath()).error(e);
-      out.write(server.exceptionAsHtml("Asking ADQL/sql: "+adqlSql, e));
+   catch (Throwable th) {
+      LogFactory.getLog(request.getContextPath()).error(th);
+      out.write(server.exceptionAsHtml("Asking ADQL/sql: "+adqlSql, th));
    }
 
 %>

@@ -19,9 +19,9 @@
 
    try {
       out.write(server.searchCone(Account.ANONYMOUS, ra, dec, sr));
-   } catch (Exception e) {
-      LogFactory.getLog(request.getContextPath()).error(e);
-      out.write(server.exceptionAsHtml("Searching Cone (RA="+ra+", DEC="+dec+", SR="+sr, e));
+   } catch (Throwable th) {
+      LogFactory.getLog(request.getContextPath()).error(th);
+      out.write(server.exceptionAsHtml("Searching Cone (RA="+ra+", DEC="+dec+", SR="+sr, th));
    }
       
 

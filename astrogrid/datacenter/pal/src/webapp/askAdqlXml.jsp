@@ -24,9 +24,9 @@
    try {
      server.askAdql(Account.ANONYMOUS, ADQLUtils.unmarshalSelect(adqlDom), out);
    }
-   catch (Exception e) {
-      LogFactory.getLog(request.getContextPath()).error(e);
-      out.write(server.exceptionAsHtml("Asking ADQL/sql ", e, adqlXml));
+   catch (Throwable th) {
+      LogFactory.getLog(request.getContextPath()).error(th);
+      out.write(server.exceptionAsHtml("Asking ADQL/sql ", th, adqlXml));
    }
 
 %>
