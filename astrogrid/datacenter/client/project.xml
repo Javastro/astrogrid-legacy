@@ -50,6 +50,10 @@
 	<p />
 	The code generation is <b>not</b> performed automatically by the nightly build: after editing the wsdl or schema files the
 	<tt>generate-delegate</tt> goal must be run by hand; then the generated sources verified and checked back into CVS.
+	
+	<p><subsection name="Todo" /></p>
+	Need to sort out exception types in WSDL - current wsdl declares exceptions, but they aren't transported to the client correctly.
+	Could do with a test to exercise this too.
 	 	]]>
 	</description>
 

@@ -136,7 +136,6 @@ Requires:
 			<include name="*.java" />
 		</fileset>
 	  </replaceregexp>
-
   </goal>
 
  <goal name="munge-files" description="do all the search and replace work">
@@ -145,6 +144,12 @@ Requires:
 			<include name="*.java" />
 			<include name="*.wsdd" />
 	</replace>
+		<!-- fix axis-wsdl bug - sometimes introduces spurious &gt; at start of strings -->
+	<replaceregexp flags="sg" match='"&gt;([^"]+)"'	replace='"\1"' >
+		  <fileset dir="${generated.src}/org/astrogrid/datacenter/axisdataserver/">
+		  		<include name="*.java" />
+		  	</fileset>
+		</replaceregexp>
 	<attainGoal name="transform-wsdd" />
 	<attainGoal name="munge-stub" />
 	<attainGoal name="munge-test" />
@@ -229,20 +234,14 @@ Requires:
 			cachedDeserFactories.add(castordf);
 
 			"/>
-
-	<!-- fix axis-wsdl bug - sometimes introduces spurious &gt; at start of strings -->
-	<replaceregexp file="${stub.file}" flags="sg"
-		match='"&gt;([^"]+)"'
-		replace='"\1"' />
-	<!-- adjust class names -->
-
   </goal>
 
-	<!-- alter where the test class looks for a running server -->
+
 	<goal name="munge-test">
 		<property name="test.file"
 			location="${generated.src}/org/astrogrid/datacenter/axisdataserver/AxisDataServerServiceTestCase.java" />
 		<replace summary="true" file="${test.file}">
+				<!-- alter where the test class looks for a running server -->
 			<replacefilter
 				token="getAxisDataServer()"
 				value='getAxisDataServer(serviceURL)' />
