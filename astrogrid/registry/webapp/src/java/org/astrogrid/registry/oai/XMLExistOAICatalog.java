@@ -140,7 +140,7 @@ public class XMLExistOAICatalog extends AbstractCatalog {
 
          System.out.println("get the managedauths");
          HashMap manageAuths = RegistryServerHelper.getManagedAuthorities();
-         String xqlQuery = "//vr:Resource[";
+         
          Set keys = manageAuths.keySet();
          Iterator keyIter = keys.iterator();
          System.out.println("the keysset size = " + keys.size());
@@ -149,16 +149,16 @@ public class XMLExistOAICatalog extends AbstractCatalog {
          }
 
          String auth = (String)keyIter.next();
-         xqlQuery += "vr:Identifier/vr:AuthorityID = '" + auth + "'";
+         String xqlQuery = "for $x in //vr:Resource where $x/vr:Identifier/vr:AuthorityID = '" + auth + "'";
          while(keyIter.hasNext()) {
-            xqlQuery += " or vr:Identifier/vr:AuthorityID = '" + (String)keyIter.next() + "'";
+            xqlQuery += " or $x/vr:Identifier/vr:AuthorityID = '" + (String)keyIter.next() + "'";
          }
-         xqlQuery += "]";
+         xqlQuery += " return $x";
          System.out.println("the build xql = " + xqlQuery);
 
          QueryDBService qs = new QueryDBService();
          Document sourceFile = qs.runQuery(collectionName,xqlQuery);
-         System.out.println("the resulting sourceFile = " + DomHelper.DocumentToString(sourceFile));
+         //System.out.println("the resulting sourceFile = " + DomHelper.DocumentToString(sourceFile));
 
          /*
 
@@ -185,7 +185,7 @@ public class XMLExistOAICatalog extends AbstractCatalog {
          }
          Document oaiDoc = xsh.transformToOAI(resultDoc,returnVersionNumber);
 
-         System.out.println("the oai version = " + DomHelper.DocumentToString(oaiDoc));
+         //System.out.println("the oai version = " + DomHelper.DocumentToString(oaiDoc));
          String xmlDoc = DomHelper.DocumentToString(oaiDoc);
          ByteArrayInputStream bas = new ByteArrayInputStream(xmlDoc.getBytes());
          RecordStringHandler rsh = new RecordStringHandler();
@@ -533,6 +533,7 @@ public class XMLExistOAICatalog extends AbstractCatalog {
             if ((schemaURL = getCrosswalks().getSchemaURL(metadataPrefix)) == null)
                 throw new CannotDisseminateFormatException(metadataPrefix);
         }
+        System.out.println("calling create for metataDataPrefix = " + metadataPrefix);
         return ((XMLExistRecordFactory)getRecordFactory()).create(nativeRecord, schemaURL, metadataPrefix, setSpecs, abouts);
     }
 

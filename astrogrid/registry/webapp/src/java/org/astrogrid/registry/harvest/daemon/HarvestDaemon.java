@@ -7,6 +7,7 @@ import javax.servlet.http.*;
 
 import org.astrogrid.config.Config;
 import org.astrogrid.registry.server.harvest.RegistryHarvestService;
+import org.astrogrid.registry.RegistryException;
 //import org.apache.axis.AxisFault;
 
 
@@ -66,7 +67,7 @@ public class HarvestDaemon extends HttpServlet implements Runnable
          lastHarvestTime = new Date();
 
          //try {
-            rhs.harvestAll(false,true);
+            
             /*
 	     }
          
@@ -77,13 +78,16 @@ public class HarvestDaemon extends HttpServlet implements Runnable
          */
 
  		 try{
+            rhs.harvestAll(false,true);
 //            myThread.sleep(10000);
             myThread.sleep(harvestInterval*3600*1000);
 	     }
 	     catch(InterruptedException e)
 	     {
 			 e.printStackTrace();
-	     }
+	     }catch(RegistryException re) {
+	         re.printStackTrace();
+        }
          //System.out.println("Still looping in run() method! ...waiting 10 secs");
      }
    }
