@@ -107,6 +107,27 @@
         <war.bundle>true</war.bundle>
       </properties>
     </dependency>			
+  <!-- filestore -->
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-filestore-client</artifactId>
+            <version>${astrogrid.filestore.version}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+        </dependency>
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-filestore-common</artifactId>
+            <version>${astrogrid.filestore.version}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+        </dependency>	
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-jes-delegate</artifactId>
