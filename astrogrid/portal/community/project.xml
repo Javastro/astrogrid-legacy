@@ -14,38 +14,86 @@
 
   <dependencies>
     <!-- Common -->
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-common</artifactId>
+            <version>SNAPSHOT</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        
     <dependency>
-      <groupId>astrogrid-common</groupId>
-      <artifactId>astrogrid-common</artifactId>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-portal-common</artifactId>
+            <version>SNAPSHOT</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>        
+
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>astrogrid-registry-common</artifactId>
+            <version>${pom.currentVersion}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+                <jar.fileset>true</jar.fileset>
+            </properties>
+        </dependency>
+
+
+
+    <!--+
+    	| Community client jars
+    	+-->
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-community-client</artifactId>
       <version>SNAPSHOT</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
     </dependency>
 
-    <!--+
-    	| Community client jars
-    	+-->
     <dependency>
-      <groupId>astrogrid-community</groupId>
-      <artifactId>astrogrid-community-auth-client</artifactId>
-      <version>1.4.1</version>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-community-common</artifactId>
+      <version>SNAPSHOT</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
     </dependency>
 
     <dependency>
-      <groupId>astrogrid-community</groupId>
-      <artifactId>astrogrid-community-policy-client</artifactId>
-      <version>1.4.1</version>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-community-resolver</artifactId>
+      <version>SNAPSHOT</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
     </dependency>
     
-    <!-- DO NOT INCLUDE PARENT DEPENDENCIES IN WAR -->
-    &cocoon-deps;
+        <dependency >
+            <id>cocoon</id>
+            <version>2.1.2</version>
+        </dependency>
+        
+        <dependency >
+            <id>avalon-framework</id>
+            <version>20020627</version>
+        </dependency>
+        
+        <dependency >
+            <id>excalibur-pool</id>
+            <version>20020820</version>
+        </dependency>        
+    
   </dependencies>
   
   <build>
