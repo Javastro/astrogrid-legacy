@@ -1,14 +1,48 @@
 tomcat.manager.username=tomcat
 tomcat.manager.password=integration
+tomcat.host=twmbarlwm.star.le.ac.uk
 work.dir=/home/integration/working
 tomcat.location=/usr/local/tomcat
 tomcat.common.lib.dir=${tomcat.location}/common/lib
 tomcat.port=8888
-#replaced with already exist astrogrid.iteration
-#version=SNAPSHOT
+version=SNAPSHOT
 registry.authorityid=org.astrogrid.localhost
+
+astrogrid.common.version = 0.7.0
+astrogrid.workflowobjects.version = 0.7.0
+astrogrid.scripting.version = 0.8-b001s
+astrogrid.eXist.version = 0.8-b001e
+astrogrid.registry.version = 0.8-b001r
+astrogrid.community.version = 0.8-b001ct
+astrogrid.filestore.version = 0.8-b002fs
+astrogrid.filemanager.version = 0.8-b002fm
+astrogrid.mySpace.version = 0.8-b001m
+astrogrid.security.version = 0.8-b001st
+astrogrid.applications.version = 0.8-b001a
+astrogrid.jes.version = 0.8-b001j
+astrogrid.datacenter.version = 0.8-b001d
+astrogrid.workflow.version = 0.8-b001w
+astrogrid.deployment.version = 0.8-b001d
+astrogrid.ui.version = 0.7.0
+astrogrid.portal.version = 0.8-b002p
+astrogrid.aggregate.version=0.8-b003ag
+astrogrid.slinger.version=0.8-b001sl
+
+astrogrid.inttest.includes=**/integration/**/*Test.java
+astrogrid.inttest.excludes=**/portal/**
+#cougaar intrumenting
+#enable.cougaar.list=jes registry mySpace community
 
 #Required to copy site docs across to Uluru
 maven.scp.executable=scp
 maven.ssh.exectuable=ssh
 maven.username=maven
+maven.repo.list=astrogrid
+
+maven.repo.astrogrid=scp://cvs.astrogrid.org
+maven.repo.astrogrid.directory=/var/www/www/maven
+maven.repo.astrogrid.group=maven
+maven.repo.astrogrid.username=maven
+maven.repo.astrogrid.privatekey=/home/integration/.ssh/id_dsa
+maven.repo.astrogrid.passphrase=
+#maven.repo.astrogrid.mode=444
