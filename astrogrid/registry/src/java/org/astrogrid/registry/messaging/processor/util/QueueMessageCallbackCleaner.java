@@ -4,6 +4,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.rpc.ServiceException;
+
 import org.apache.log4j.Category;
 
 /**
@@ -11,7 +13,7 @@ import org.apache.log4j.Category;
  */
 public class QueueMessageCallbackCleaner implements Runnable {
   // Logger.
-  private Category logger = Category.getInstance(QueueMessageCallbackCleaner.class);
+  private Category logger = Category.getInstance(getClass());
   
   // True if we are running.
   private boolean running;
@@ -50,12 +52,28 @@ public class QueueMessageCallbackCleaner implements Runnable {
       keySet = soapProxyMap.keySet();
       keyIt = keySet.iterator();
       while(keyIt.hasNext()) {
+        // Sleep until cleanup time
+        try {
+          Thread.sleep(sleepTime);
+        }
+        catch(InterruptedException e) {
+          // continue processing
+        }
+
+        // Clean up old proxies.
         proxyId = (String) keyIt.next();
         proxy = (SoapProxy) soapProxyMap.get(proxyId);
         
         if(currentTime - proxy.getLastMessageTime() > proxyLifetime) {
-          proxy.shutdown();
-          soapProxyMap.remove(proxyId);
+          try {
+            logger.debug("[run] shutting down proxy: " + proxyId + " ...");
+            proxy.shutdown();
+            soapProxyMap.remove(proxyId);
+            logger.debug("[run] ... shut down proxy");
+          }
+          catch(ServiceException e) {
+            logger.error("[run] failed to shutdown proxy, id: " + proxyId, e);
+          }
         }
       }
     }
