@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/Attic/build.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/09/10 06:03:27 $</cvs:date>
-    | <cvs:version>$Revision: 1.24 $</cvs:version>
+    | <cvs:date>$Date: 2003/09/10 06:50:22 $</cvs:date>
+    | <cvs:version>$Revision: 1.25 $</cvs:version>
     | <cvs:log>
     |   $Log: build.xml,v $
+    |   Revision 1.25  2003/09/10 06:50:22  dave
+    |   Added remote test task
+    |
     |   Revision 1.24  2003/09/10 06:03:27  dave
     |   Added remote capability to Accounts
     |
@@ -1875,7 +1878,6 @@
 		</junit>
 	</target>
 
-
 	<!--+
 		| Run our remote client tests.
 		+-->
@@ -1898,7 +1900,6 @@
 			</batchtest>
 		</junit>
 	</target>
-
 
 	<!--+
 	    | Test our policy service.
