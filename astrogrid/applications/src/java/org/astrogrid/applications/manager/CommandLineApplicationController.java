@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationController.java,v 1.10 2003/12/07 01:09:48 pah Exp $
+ * $Id: CommandLineApplicationController.java,v 1.11 2003/12/08 15:00:47 pah Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 
 package org.astrogrid.applications.manager;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
@@ -21,6 +22,7 @@ import org.astrogrid.applications.commandline.CmdLineApplication;
 import org.astrogrid.applications.commandline.CmdLineApplicationCreator;
 import org.astrogrid.applications.commandline.exceptions.ApplicationExecutionException;
 import org.astrogrid.applications.commandline.exceptions.CannotCreateWorkingDirectoryException;
+import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
 import org.astrogrid.community.User;
 
 public class CommandLineApplicationController extends AbstractApplicationController  {
@@ -33,6 +35,7 @@ public class CommandLineApplicationController extends AbstractApplicationControl
     */
    public CommandLineApplicationController() {
       super();
+      runningApplications=new HashMap();
       
    }
 
@@ -82,29 +85,35 @@ public class CommandLineApplicationController extends AbstractApplicationControl
          
          // create the application object
          ApplicationFactory factory = CmdLineApplicationCreator.getInstance(applicationDescriptions);
-         CmdLineApplication cmdLineApplication = (CmdLineApplication)factory.createApplication(applicationID);
-      
-
-         
-      try {
-         // create the application environment
-           ApplicationEnvironment environment = new ApplicationEnvironment();
-           cmdLineApplication.setApplicationEnvironment(environment);
-           executionId = environment.getExecutionId();
-           
-        //TODO parse the parameter values and set up the parameter array
-        
-        // add this application to the execution map
-        runningApplications.put(new Integer(executionId), cmdLineApplication);
-        
-        
-      }
-      catch (CannotCreateWorkingDirectoryException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
-         
-      }
-       
+        try {
+             CmdLineApplication cmdLineApplication = (CmdLineApplication)factory.createApplication(applicationID);
+            
+            
+               
+            try {
+               // create the application environment
+                 ApplicationEnvironment environment = new ApplicationEnvironment();
+                 cmdLineApplication.setApplicationEnvironment(environment);
+                 executionId = environment.getExecutionId();
+                 
+              //TODO parse the parameter values and set up the parameter array
+            
+              // add this application to the execution map
+              runningApplications.put(new Integer(executionId), cmdLineApplication);
+            
+            
+            }
+            catch (CannotCreateWorkingDirectoryException e) {
+               // TODO Auto-generated catch block
+               e.printStackTrace();
+               
+            }
+            
+         }
+         catch (ApplicationDescriptionNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+         }     
        
        return executionId;
    }

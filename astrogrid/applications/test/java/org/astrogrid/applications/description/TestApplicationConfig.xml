@@ -36,7 +36,10 @@
 		<Interfaces>
 			<Interface name="I1">
 				<input>
-					<pref ref="P2" optional="false" repeatable="true"/>
+					<pref ref="P1" optional="false" repeatable="true"/>
+					<pref ref="P2" optional="false" repeatable="false"/>
+					<pref ref="P3" optional="false" repeatable="true"/>
+					<pref ref="P4" optional="false" repeatable="false"/>
 					<pref ref="P9" optional="true" repeatable="false"/>
 				</input>
 				<output>

@@ -1,7 +1,7 @@
 /*
- * $Id: ParameterValue.java,v 1.1 2003/10/30 14:12:25 pah Exp $
+ * $Id: FileReferenceParameter.java,v 1.1 2003/12/08 15:00:47 pah Exp $
  *
- * Created on 14 October 2003 by Paul Harrison
+ * Created on 08 December 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid
@@ -11,5 +11,7 @@
 
 package org.astrogrid.applications;
 
-abstract public class ParameterValue {
+import java.io.File;
+public class FileReferenceParameter extends Parameter {
+   private File realFile;
 }

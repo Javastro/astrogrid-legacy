@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractApplication.java,v 1.3 2003/12/07 01:09:48 pah Exp $
+ * $Id: AbstractApplication.java,v 1.4 2003/12/08 15:00:47 pah Exp $
  *
  * Created on 13 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -15,14 +15,15 @@ import java.util.Vector;
 
 import org.astrogrid.applications.commandline.exceptions.ApplicationExecutionException;
 import org.astrogrid.applications.description.ApplicationDescription;
+import org.astrogrid.applications.description.ApplicationInterface;
+import java.util.List;
 
 public class AbstractApplication implements Application {
    /**
     *@link aggregation
     *@associates org.astrogrid.applications.Parameter
     */
-   protected Vector parameters;
-   
+   protected List parameters;   
    protected ApplicationDescription applicationDescription;
    
    /* (non-Javadoc)
@@ -57,6 +58,12 @@ public class AbstractApplication implements Application {
       throw new UnsupportedOperationException("AbstractApplication.setParameter() not implemented");
    }
 
+   private ApplicationInterface applicationInterface;
+
+   public ApplicationInterface getApplicationInterface(){ return applicationInterface; }
+
+   public void setApplicationInterface(ApplicationInterface applicationInterface){ this.applicationInterface = applicationInterface; }
+
    /**
     * @return
     */
@@ -74,5 +81,4 @@ public class AbstractApplication implements Application {
    public String toString() {
       return applicationDescription.getName();
    }
-
 }

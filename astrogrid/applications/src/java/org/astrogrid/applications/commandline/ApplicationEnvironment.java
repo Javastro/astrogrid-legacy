@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationEnvironment.java,v 1.4 2003/12/07 01:09:48 pah Exp $
+ * $Id: ApplicationEnvironment.java,v 1.5 2003/12/08 15:00:47 pah Exp $
  *
  * Created on 24 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -14,10 +14,21 @@ package org.astrogrid.applications.commandline;
 import java.io.File;
 
 import org.astrogrid.applications.ApplicationFactory;
-import org.astrogrid.applications.commandline.exceptions.CannotCreateWorkingDirectoryException;
+import org
+   .astrogrid
+   .applications
+   .commandline
+   .exceptions
+   .CannotCreateWorkingDirectoryException;
 import org.astrogrid.applications.common.config.ApplicationControllerConfig;
 import org.astrogrid.applications.description.ApplicationDescriptions;
 import org.astrogrid.applications.manager.PersistenceEngine;
+/**
+ * Encapsulates all that is needed to run a command line application in its own workspace.
+ * @author Paul Harrison (pah@jb.man.ac.uk)
+ * @version $Name:  $
+ * @since iteration4
+ */
 public class ApplicationEnvironment {
    /**
     * Trivial class to create temporary files for use by the environment. Does this by creating files with numbers as their names.
@@ -27,13 +38,12 @@ public class ApplicationEnvironment {
     */
    private class TempFileFactory {
       private int filenum = 0;
-      
-      public File createFile()
-      {
+
+      public File createFile() {
          StringBuffer filename = new StringBuffer();
          filename.append(filenum++);
          filename.append(".tmpgen");
-         return new File(executionDirectory,filename.toString()); 
+         return new File(executionDirectory, filename.toString());
       }
 
    }
@@ -46,27 +56,39 @@ public class ApplicationEnvironment {
    private File executionDirectory;
    private ApplicationControllerConfig config;
    private TempFileFactory tempFileFactory;
-   
-   public ApplicationEnvironment() throws CannotCreateWorkingDirectoryException
-   {
-      
+
+   public ApplicationEnvironment()
+      throws CannotCreateWorkingDirectoryException {
+
       // set up the working directory
       config = ApplicationControllerConfig.getInstance();
-      
+
       executionId = PersistenceEngine.getInstance().getNewID();
-      executionDirectory = new File(config.getWorkingDirectory(),Integer.toString(executionId)+"/");
-      if(!executionDirectory.mkdir())
-      {
-         logger.error("cannot create working directory");
-         throw new CannotCreateWorkingDirectoryException(executionDirectory);
+      executionDirectory =
+         new File(
+            config.getWorkingDirectory(),
+            Integer.toString(executionId) + "/");
+      if (!executionDirectory.exists()) {
+
+         if (!executionDirectory.mkdir()) {
+            logger.error(
+               " cannot create working directory "
+                  + executionDirectory.getAbsolutePath());
+            throw new CannotCreateWorkingDirectoryException(executionDirectory);
+         }
+      }
+      else {
+         logger.warn(
+            "working directory "
+               + executionDirectory.getAbsolutePath()
+               + " already exists");
+         //TODO need to decide if this is a failure condition...
       }
       tempFileFactory = new TempFileFactory();
       errorLog = tempFileFactory.createFile();
       outputLog = tempFileFactory.createFile();
    }
-   
-   
-   
+
    /**
     * @return
     */

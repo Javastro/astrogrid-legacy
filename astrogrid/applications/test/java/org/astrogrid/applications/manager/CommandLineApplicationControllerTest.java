@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationControllerTest.java,v 1.4 2003/12/07 01:09:48 pah Exp $
+ * $Id: CommandLineApplicationControllerTest.java,v 1.5 2003/12/08 15:00:47 pah Exp $
  * 
  * Created on 01-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -98,7 +98,7 @@ public class CommandLineApplicationControllerTest extends BaseDBTestCase {
    final public void testInitializeApplication() {
       
       parameters.setMethodName(TestAppConst.MAIN_INTERFACE);
-      parameters.setParameterSpec("<input><parameter name='P2'>1</parameter><parameter name='P9'>2</parameter></input><output><parameter name='P3'>3</parameter></output>");
+      parameters.setParameterSpec("<input><parameter name='P1'>1</parameter><parameter name='P1'>2</parameter><parameter name='P2'>p2</parameter><parameter name='P3'>p3</parameter><parameter name='P4'>p4</parameter></input><output><parameter name='P3'>3</parameter></output>");
       executionId = controller.initializeApplication(applicationid, jobstepid, monitorURL, user, parameters);
    }
 

@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineParameter.java,v 1.1 2003/10/30 14:12:25 pah Exp $
+ * $Id: CommandLineParameter.java,v 1.2 2003/12/08 15:00:47 pah Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -12,10 +12,5 @@
 package org.astrogrid.applications;
 
 public class CommandLineParameter extends Parameter {
-   private String Description;
-   private String switchText;
    private int position;
-
-   /** @link aggregationByValue */
-   private ParameterValue value;
 }

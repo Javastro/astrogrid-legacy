@@ -1,5 +1,5 @@
 /*
- * $Id: Parameter.java,v 1.1 2003/10/30 14:12:25 pah Exp $
+ * $Id: Parameter.java,v 1.2 2003/12/08 15:00:47 pah Exp $
  *
  * Created on 13 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -11,9 +11,12 @@
 
 package org.astrogrid.applications;
 
+import org.astrogrid.applications.description.ParameterDescription;
 /**
  * @stereotype entity 
  */
 abstract public class Parameter {
    protected String name;
+   protected String rawValue;
+   protected ParameterDescription parameterDescription;
 }
