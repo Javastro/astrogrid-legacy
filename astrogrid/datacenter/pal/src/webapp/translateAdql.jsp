@@ -10,7 +10,6 @@
        org.astrogrid.io.*"
    isThreadSafe="false"
    session="false"
-   contentType="text/xml"
 %>
 <%
    String adqlSql = request.getParameter("AdqlSql");
@@ -31,27 +30,25 @@
    }
 %>
 <html>
+<header>
 <title>ADQL/sql Translator Form</title>
-</html>
+</header>
 <body>
-  <h1>"Translate ADQL/sql to ADQL/xml"</h1>
+  <h1>Translate ADQL/sql to ADQL/xml</h1>
+  <p>
+   <form action="translateAdql.jsp" method="GET">
     <p>
-      <form action="adqls-translator.jsp" method="GET">
-       <p>
-         ADQL/sql <input type="textarea" name="AdqlSql" rows='1' cols='100%' value='<%=adqlSql %>'/><br />
-       </p>
-       <p>
-          <input type="submit" value="Translate" />
-       </p>
-       <p>
-         ADQL/xml <input type="textarea" name="AdqlXml" rows='50' cols='100%' value='<%=adqlXml %>' />
-
-       <input type='submit' name='MakeAdql05' value='Make ADQL v0.5'>
-       <input type='submit' name='MakeAdql074' value='Make ADQL v0.7.4'>
-
-      </form>
+      ADQL/sql <textarea name="AdqlSql" rows='1' cols='100'><%=adqlSql %></textarea><br />
     </p>
-  </h1>
+    <p>
+       <input type='submit' name='MakeAdql05' value='Make ADQL v0.5' />
+       <input type='submit' name='MakeAdql074' value='Make ADQL v0.7.4' />
+    </p>
+    <p>
+      ADQL/xml <textarea name="AdqlXml" rows='50' cols='100'><%=adqlXml %></textarea><br/>
+    </p>
+   </form>
+  </p>
 </body>
 </html>
 
