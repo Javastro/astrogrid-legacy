@@ -1,4 +1,4 @@
-/*$Id: TestInstallation.java,v 1.5 2003/09/16 12:49:51 nw Exp $
+/*$Id: TestInstallation.java,v 1.6 2003/09/16 13:25:47 nw Exp $
  * Created on 08-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -240,7 +240,7 @@ public class TestInstallation extends TestCase {
         assertNotNull("VOQL document has no root element",input);
         Element result =null;
         try {
-            result = del.adqlQuery(input);
+            result = del.query(input);
         } catch (IOException e1) {           
             e1.printStackTrace();
             fail("Call to web service failed with exception: " + e1.getMessage());
@@ -258,6 +258,9 @@ public class TestInstallation extends TestCase {
 
 /* 
 $Log: TestInstallation.java,v $
+Revision 1.6  2003/09/16 13:25:47  nw
+fixed to use new delegate api
+
 Revision 1.5  2003/09/16 12:49:51  nw
 integration / installation testing
 
