@@ -1,4 +1,4 @@
-/*$Id: AbstractTestInstallation.java,v 1.5 2003/09/25 03:18:35 nw Exp $
+/*$Id: AbstractTestInstallation.java,v 1.6 2003/09/26 11:02:35 nw Exp $
  * Created on 19-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -91,6 +91,18 @@ public abstract class AbstractTestInstallation extends TestCase {
         } catch (IOException e) {
             e.printStackTrace();
             fail("Could not get registryMetaData: " + e.getMessage());
+        }
+    }
+    
+    public void testGetMetatdata() {
+        DatacenterDelegate del = createDelegate();
+        try {
+            Element result = del.getMetadata();
+            assertNotNull(result);
+            // not much else we can do here yet.
+        } catch (IOException e) {
+            e.printStackTrace();
+            fail("Could not get metadata:" + e.getMessage());
         }
     }
 
@@ -268,6 +280,9 @@ public abstract class AbstractTestInstallation extends TestCase {
 
 /* 
 $Log: AbstractTestInstallation.java,v $
+Revision 1.6  2003/09/26 11:02:35  nw
+added new method to test getting metadata
+
 Revision 1.5  2003/09/25 03:18:35  nw
 finished the integration / installation test.
 
