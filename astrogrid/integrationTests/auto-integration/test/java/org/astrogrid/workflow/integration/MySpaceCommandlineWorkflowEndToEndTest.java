@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceCommandlineWorkflowEndToEndTest.java,v 1.5 2004/05/11 12:17:39 pah Exp $
+ * $Id: MySpaceCommandlineWorkflowEndToEndTest.java,v 1.6 2004/05/17 17:42:13 nw Exp $
  * 
  * Created on 23-Apr-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -20,6 +20,11 @@ import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.store.VoSpaceClient;
 import org.astrogrid.workflow.beans.v1.Tool;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 
 /**
  * An end to end test that exercises a commandLine application with myspace interaction.
@@ -52,13 +57,7 @@ public class MySpaceCommandlineWorkflowEndToEndTest
       super.setUp();
       targetApplication = TESTAPP;
       targetIvorn = createIVORN("/MySpaceCommandlineWorkflowEndToEndTest-output");        
-      inputIvorn =  createIVORN("/MySpaceCommandlineWorkflowEndToEndTest-input"); 
-      
-    // write to myspace...
-    VoSpaceClient voSpaceClient = new VoSpaceClient(user);
-    byte[] bytes = TESTCONTENTS.getBytes();
-    voSpaceClient.putBytes(bytes, 0, bytes.length, inputIvorn, false);       
-    
+      inputIvorn =  createIVORN("/MySpaceCommandlineWorkflowEndToEndTest-input");        
    }
 
    /*
@@ -76,15 +75,33 @@ public class MySpaceCommandlineWorkflowEndToEndTest
       ParameterValue pval = (ParameterValue)tool.findXPathValue("input/parameter[name='P9']");
       pval.setValue(inputIvorn.toString());
       pval = (ParameterValue)tool.findXPathValue("output/parameter[name='P3']");
-      pval.setValue(targetIvorn.toString());
-
-     
-
+      pval.setValue(targetIvorn.toString());    
    }
+   
+   public void setupAndVerifyVOSpaceFiles()  throws Exception {
+      
+       // write to myspace...
+       VoSpaceClient voSpaceClient = new VoSpaceClient(user);
+       byte[] bytes = TESTCONTENTS.getBytes();
+       assertNotNull(bytes);       
+       //voSpaceClient.putBytes(bytes, 0, bytes.length, inputIvorn, false);   
+       OutputStream os = voSpaceClient.putStream(inputIvorn);
+       assertNotNull(os);
+       os.write(bytes);
+       os.close();
+       InputStream is = voSpaceClient.getStream(inputIvorn);
+       assertNotNull(is);
+       BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+       String content = reader.readLine();
+       assertNotNull(content);
+       is.close();
+   }
+   
    public static Test suite() {
         TestSuite suite = new TestSuite(MySpaceCommandlineWorkflowEndToEndTest.class.getName());        
 
         suite.addTest(new MySpaceCommandlineWorkflowEndToEndTest("verifyRequiredRegistryEntries"));
+        suite.addTest(new MySpaceCommandlineWorkflowEndToEndTest("setupAndVerifyVOSpaceFiles"));
         suite.addTest(new MySpaceCommandlineWorkflowEndToEndTest("testSubmitWorkflow"));
         suite.addTest(new MySpaceCommandlineWorkflowEndToEndTest("testExecutionProgress"));
         suite.addTest(new MySpaceCommandlineWorkflowEndToEndTest("testCheckExecutionResults"));
