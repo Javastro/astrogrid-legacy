@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="urn:UCDResolver" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="urn:UCDResolver" xmlns:intf="urn:UCDResolver" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <wsdl:message name="UCDResolverResponse">
+    <wsdl:part name="return" type="xsd:string"/>
+  </wsdl:message>
+  <wsdl:message name="UCDResolverRequest">
+    <wsdl:part name="name" type="xsd:string"/>
+  </wsdl:message>
+  <wsdl:portType name="UCDResolver">
+    <wsdl:operation name="UCDResolver" parameterOrder="name">
+      <wsdl:input message="impl:UCDResolverRequest" name="UCDResolverRequest"/>
+      <wsdl:output message="impl:UCDResolverResponse" name="UCDResolverResponse"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="UCDResolverSoapBinding" type="impl:UCDResolver">
+    <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="UCDResolver">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="UCDResolverRequest">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:UCDResolver" use="encoded"/>
+      </wsdl:input>
+      <wsdl:output name="UCDResolverResponse">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:UCDResolver" use="encoded"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="SesameService">
+    <wsdl:port binding="impl:UCDResolverSoapBinding" name="UCDResolver">
+      <wsdlsoap:address location="http://cdsws.u-strasbg.fr/axis/services/UCDResolver"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

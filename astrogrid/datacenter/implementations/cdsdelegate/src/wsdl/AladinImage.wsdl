@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="urn:AladinImage" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="urn:AladinImage" xmlns:intf="urn:AladinImage" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><wsdl:types><schema targetNamespace="urn:AladinImage" xmlns="http://www.w3.org/2001/XMLSchema"><import namespace="http://schemas.xmlsoap.org/soap/encoding/"/><complexType name="ObservingProgramDescription"><sequence><element name="beginningDate" nillable="true" type="xsd:string"/><element name="endDate" nillable="true" type="xsd:string"/><element name="name" nillable="true" type="xsd:string"/><element name="organisation" nillable="true" type="xsd:string"/><element name="spectralCoverageName" nillable="true" type="xsd:string"/></sequence></complexType><complexType name="ArrayOf_tns2_ObservingProgramDescription"><complexContent><restriction base="soapenc:Array"><attribute ref="soapenc:arrayType" wsdl:arrayType="impl:ObservingProgramDescription[]"/></restriction></complexContent></complexType><element name="ArrayOf_tns2_ObservingProgramDescription" nillable="true" type="impl:ArrayOf_tns2_ObservingProgramDescription"/><complexType name="ObservingProgram"><complexContent><extension base="impl:ObservingProgramDescription"><sequence><element name="observationGroups" nillable="true" type="impl:ArrayOf_tns2_ObservationGroup"/><element name="observationGroupsCount" type="xsd:int"/></sequence></extension></complexContent></complexType><complexType name="ObservationGroup"><sequence><element name="filters" nillable="true" type="impl:ArrayOf_tns2_Filter"/><element name="filtersCount" type="xsd:int"/><element name="observations" nillable="true" type="impl:ArrayOf_tns2_Observation"/><element name="observationsCount" type="xsd:int"/><element name="selectionCriterions" nillable="true" type="impl:ArrayOf_xsd_string"/><element name="selectionRanges" nillable="true" type="impl:ArrayOf_xsd_string"/></sequence></complexType><complexType name="Filter"><sequence><element name="effectiveWaveLength" type="xsd:float"/><element name="identifier" nillable="true" type="xsd:string"/><element name="maximalWaveLength" type="xsd:float"/><element name="minimalWaveLength" type="xsd:float"/><element name="name" nillable="true" type="xsd:string"/></sequence></complexType><complexType name="ArrayOf_tns2_Filter"><complexContent><restriction base="soapenc:Array"><attribute ref="soapenc:arrayType" wsdl:arrayType="impl:Filter[]"/></restriction></complexContent></complexType><complexType name="Observation"><sequence><element name="angularPixelSize" type="xsd:float"/><element name="availableCodings" nillable="true" type="xsd:string"/><element name="centralPointRA" type="xsd:float"/><element name="centralPountDEC" type="xsd:float"/><element name="dateAndTime" nillable="true" type="xsd:string"/><element name="name" nillable="true" type="xsd:string"/><element name="origin" nillable="true" type="xsd:string"/><element name="originalCoding" nillable="true" type="xsd:string"/><element name="positionAngle" type="xsd:float"/><element name="referenceNumber" nillable="true" type="xsd:string"/><element name="sizeAlpha" type="xsd:float"/><element name="sizeDelta" type="xsd:float"/><element name="storageMappings" nillable="true" type="impl:ArrayOf_tns2_StorageMapping"/><element name="storageMappingsCount" type="xsd:int"/><element name="storedImages" nillable="true" type="impl:ArrayOf_tns2_StoredImage"/><element name="storedImagesCount" type="xsd:int"/></sequence></complexType><complexType name="StorageMapping"><sequence><element name="maximumSize" type="xsd:int"/><element name="numberOfPatches" type="xsd:int"/><element name="organiation" nillable="true" type="xsd:string"/><element name="organisation" nillable="true" type="xsd:string"/></sequence></complexType><complexType name="ArrayOf_tns2_StorageMapping"><complexContent><restriction base="soapenc:Array"><attribute ref="soapenc:arrayType" wsdl:arrayType="impl:StorageMapping[]"/></restriction></complexContent></complexType><complexType name="StoredImage"><sequence><element name="location" nillable="true" type="xsd:string"/></sequence></complexType><complexType name="ArrayOf_tns2_StoredImage"><complexContent><restriction base="soapenc:Array"><attribute ref="soapenc:arrayType" wsdl:arrayType="impl:StoredImage[]"/></restriction></complexContent></complexType><complexType name="ArrayOf_tns2_Observation"><complexContent><restriction base="soapenc:Array"><attribute ref="soapenc:arrayType" wsdl:arrayType="impl:Observation[]"/></restriction></complexContent></complexType><complexType name="ArrayOf_xsd_string"><complexContent><restriction base="soapenc:Array"><attribute ref="soapenc:arrayType" wsdl:arrayType="xsd:string[]"/></restriction></complexContent></complexType><complexType name="ArrayOf_tns2_ObservationGroup"><complexContent><restriction base="soapenc:Array"><attribute ref="soapenc:arrayType" wsdl:arrayType="impl:ObservationGroup[]"/></restriction></complexContent></complexType><element name="ObservingProgram" nillable="true" type="impl:ObservingProgram"/><element name="ArrayOf_tns2_Filter" nillable="true" type="impl:ArrayOf_tns2_Filter"/><element name="ArrayOf_tns2_Observation" nillable="true" type="impl:ArrayOf_tns2_Observation"/></schema></wsdl:types>
+  <wsdl:message name="getObservingProgramsDescriptionRequest">
+    <wsdl:part name="position" type="xsd:string"/>
+    <wsdl:part name="radius" type="xsd:string"/>
+  </wsdl:message>
+  <wsdl:message name="getFiltersRequest">
+    <wsdl:part name="position" type="xsd:string"/>
+    <wsdl:part name="radius" type="xsd:string"/>
+    <wsdl:part name="program_name" type="xsd:string"/>
+  </wsdl:message>
+  <wsdl:message name="getObservingProgramRequest">
+    <wsdl:part name="position" type="xsd:string"/>
+    <wsdl:part name="radius" type="xsd:string"/>
+    <wsdl:part name="program_name" type="xsd:string"/>
+  </wsdl:message>
+  <wsdl:message name="getObservationsResponse">
+    <wsdl:part name="ArrayOf_tns2_Observation" type="impl:ArrayOf_tns2_Observation"/>
+  </wsdl:message>
+  <wsdl:message name="getObservingProgramsDescriptionResponse">
+    <wsdl:part name="ArrayOf_tns2_ObservingProgramDescription" type="impl:ArrayOf_tns2_ObservingProgramDescription"/>
+  </wsdl:message>
+  <wsdl:message name="getObservationsRequest">
+    <wsdl:part name="position" type="xsd:string"/>
+    <wsdl:part name="radius" type="xsd:string"/>
+    <wsdl:part name="program_name" type="xsd:string"/>
+  </wsdl:message>
+  <wsdl:message name="getObservingProgramResponse">
+    <wsdl:part name="ObservingProgram" type="impl:ObservingProgram"/>
+  </wsdl:message>
+  <wsdl:message name="getFiltersResponse">
+    <wsdl:part name="ArrayOf_tns2_Filter" type="impl:ArrayOf_tns2_Filter"/>
+  </wsdl:message>
+  <wsdl:portType name="AladinImage">
+    <wsdl:operation name="getObservingProgramsDescription" parameterOrder="position radius">
+      <wsdl:input message="impl:getObservingProgramsDescriptionRequest" name="getObservingProgramsDescriptionRequest"/>
+      <wsdl:output message="impl:getObservingProgramsDescriptionResponse" name="getObservingProgramsDescriptionResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="getObservingProgram" parameterOrder="position radius program_name">
+      <wsdl:input message="impl:getObservingProgramRequest" name="getObservingProgramRequest"/>
+      <wsdl:output message="impl:getObservingProgramResponse" name="getObservingProgramResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="getFilters" parameterOrder="position radius program_name">
+      <wsdl:input message="impl:getFiltersRequest" name="getFiltersRequest"/>
+      <wsdl:output message="impl:getFiltersResponse" name="getFiltersResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="getObservations" parameterOrder="position radius program_name">
+      <wsdl:input message="impl:getObservationsRequest" name="getObservationsRequest"/>
+      <wsdl:output message="impl:getObservationsResponse" name="getObservationsResponse"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="AladinImageSoapBinding" type="impl:AladinImage">
+    <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="getObservingProgramsDescription">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="getObservingProgramsDescriptionRequest">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:AladinImage" use="encoded"/>
+      </wsdl:input>
+      <wsdl:output name="getObservingProgramsDescriptionResponse">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:AladinImage" use="encoded"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getObservingProgram">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="getObservingProgramRequest">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:AladinImage" use="encoded"/>
+      </wsdl:input>
+      <wsdl:output name="getObservingProgramResponse">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:AladinImage" use="encoded"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getFilters">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="getFiltersRequest">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:AladinImage" use="encoded"/>
+      </wsdl:input>
+      <wsdl:output name="getFiltersResponse">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:AladinImage" use="encoded"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getObservations">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="getObservationsRequest">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:AladinImage" use="encoded"/>
+      </wsdl:input>
+      <wsdl:output name="getObservationsResponse">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:AladinImage" use="encoded"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="AladinService">
+    <wsdl:port binding="impl:AladinImageSoapBinding" name="AladinImage">
+      <wsdlsoap:address location="http://cdsws.u-strasbg.fr/axis/services/AladinImage"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

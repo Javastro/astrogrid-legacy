@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="urn:UCDList" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="urn:UCDList" xmlns:intf="urn:UCDList" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <wsdl:message name="UCDListRequest">
+  </wsdl:message>
+  <wsdl:message name="UCDListResponse">
+    <wsdl:part name="return" type="xsd:string"/>
+  </wsdl:message>
+  <wsdl:portType name="UCDList">
+    <wsdl:operation name="UCDList">
+      <wsdl:input message="impl:UCDListRequest" name="UCDListRequest"/>
+      <wsdl:output message="impl:UCDListResponse" name="UCDListResponse"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="UCDListSoapBinding" type="impl:UCDList">
+    <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="UCDList">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="UCDListRequest">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:UCDList" use="encoded"/>
+      </wsdl:input>
+      <wsdl:output name="UCDListResponse">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:UCDList" use="encoded"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="SesameService">
+    <wsdl:port binding="impl:UCDListSoapBinding" name="UCDList">
+      <wsdlsoap:address location="http://cdsws.u-strasbg.fr/axis/services/UCDList"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
