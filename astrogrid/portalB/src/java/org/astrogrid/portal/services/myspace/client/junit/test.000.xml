@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/java/org/astrogrid/portal/services/myspace/client/junit/Attic/test.000.xml,v $</cvs:source>
+    | <cvs:date>$Author: dave $</cvs:date>
+    | <cvs:author>$Date: 2003/06/18 23:28:23 $</cvs:author>
+    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:log>
+    | $Log: test.000.xml,v $
+    | Revision 1.1  2003/06/18 23:28:23  dave
+    | Added LookupResponseItem to LookupResponseParser
+    |
+    | </cvs:log>
+    |
+    +-->
+<results>
+	<status>
+		<status>SUCCESS</status>
+		<details></details>
+		<currentDate>6/17/03 12:36 PM</currentDate>
+	</status>
+	<dataItemRecords>
+		<dataItemRecord>
+			<dataItemName>/clq</dataItemName>
+			<dataItemID>1</dataItemID>
+			<ownerID>sysadmin</ownerID>
+			<creationDate>6/13/03 12:38 PM</creationDate>
+			<expiryDate>6/13/03 12:38 PM</expiryDate>
+			<size>0</size>
+			<type>1</type>
+			<permissionsMask>permissions</permissionsMask>
+			<dataHolderURI>{8}</dataHolderURI>
+		</dataItemRecord>
+		<dataItemRecord>
+			<dataItemName>/clq/serv1</dataItemName>
+			<dataItemID>2</dataItemID>
+			<ownerID>sysadmin</ownerID>
+			<creationDate>6/13/03 12:38 PM</creationDate>
+			<expiryDate>6/13/03 12:38 PM</expiryDate>
+			<size>0</size>
+			<type>1</type>
+			<permissionsMask>permissions</permissionsMask>
+			<dataHolderURI>{8}</dataHolderURI>
+		</dataItemRecord>
+		<dataItemRecord>
+			<dataItemName>/clq/serv1/table100</dataItemName>
+			<dataItemID>10</dataItemID>
+			<ownerID>clq</ownerID>
+			<creationDate>6/15/03 3:26 PM</creationDate>
+			<expiryDate>7/20/03 3:26 PM</expiryDate>
+			<size>1</size>
+			<type>2</type>
+			<permissionsMask>permissions</permissionsMask>
+			<dataHolderURI>{8}</dataHolderURI>
+		</dataItemRecord>
+		<dataItemRecord>
+			<dataItemName>/clq/serv2</dataItemName>
+			<dataItemID>3</dataItemID>
+			<ownerID>sysadmin</ownerID>
+			<creationDate>6/13/03 12:38 PM</creationDate>
+			<expiryDate>6/13/03 12:38 PM</expiryDate>
+			<size>0</size>
+			<type>1</type>
+			<permissionsMask>permissions</permissionsMask>
+			<dataHolderURI>{8}</dataHolderURI>
+		</dataItemRecord>
+		<dataItemRecord>
+			<dataItemName>/clq/serv2/table100</dataItemName>
+			<dataItemID>11</dataItemID>
+			<ownerID>clq</ownerID>
+			<creationDate>6/15/03 3:38 PM</creationDate>
+			<expiryDate>7/20/03 3:38 PM</expiryDate>
+			<size>1</size>
+			<type>2</type>
+			<permissionsMask>permissions</permissionsMask>
+			<dataHolderURI>{8}</dataHolderURI>
+		</dataItemRecord>
+		<dataItemRecord>
+			<dataItemName>/clq/serv2/table200</dataItemName>
+			<dataItemID>12</dataItemID>
+			<ownerID>clq</ownerID>
+			<creationDate>6/16/03 1:17 PM</creationDate>
+			<expiryDate>7/21/03 1:17 PM</expiryDate>
+			<size>1</size>
+			<type>2</type>
+			<permissionsMask>permissions</permissionsMask>
+			<dataHolderURI>{8}</dataHolderURI>
+		</dataItemRecord>
+		<dataItemRecord>
+			<dataItemName>/clq/serv2/table300</dataItemName>
+			<dataItemID>13</dataItemID>
+			<ownerID>clq</ownerID>
+			<creationDate>6/16/03 1:38 PM</creationDate>
+			<expiryDate>7/21/03 1:38 PM</expiryDate>
+			<size>1</size>
+			<type>2</type>
+			<permissionsMask>permissions</permissionsMask>
+			<dataHolderURI>{8}</dataHolderURI>
+		</dataItemRecord>
+		<dataItemRecord>
+			<dataItemName>/ktn</dataItemName>
+			<dataItemID>4</dataItemID>
+			<ownerID>sysadmin</ownerID>
+			<creationDate>6/13/03 12:38 PM</creationDate>
+			<expiryDate>6/13/03 12:38 PM</expiryDate>
+			<size>0</size>
+			<type>1</type>
+			<permissionsMask>permissions</permissionsMask>
+			<dataHolderURI>{8}</dataHolderURI>
+		</dataItemRecord>
+		<dataItemRecord>
+			<dataItemName>/ktn/serv1</dataItemName>
+			<dataItemID>5</dataItemID>
+			<ownerID>sysadmin</ownerID>
+			<creationDate>6/13/03 12:38 PM</creationDate>
+			<expiryDate>6/13/03 12:38 PM</expiryDate>
+			<size>0</size>
+			<type>1</type>
+			<permissionsMask>permissions</permissionsMask>
+			<dataHolderURI>{8}</dataHolderURI>
+		</dataItemRecord>
+		<dataItemRecord>
+			<dataItemName>/ktn/serv2</dataItemName>
+			<dataItemID>6</dataItemID>
+			<ownerID>sysadmin</ownerID>
+			<creationDate>6/13/03 12:38 PM</creationDate>
+			<expiryDate>6/13/03 12:38 PM</expiryDate>
+			<size>0</size>
+			<type>1</type>
+			<permissionsMask>permissions</permissionsMask>
+			<dataHolderURI>{8}</dataHolderURI>
+		</dataItemRecord>
+		<dataItemRecord>
+			<dataItemName>/zzz</dataItemName>
+			<dataItemID>7</dataItemID>
+			<ownerID>sysadmin</ownerID>
+			<creationDate>6/13/03 12:38 PM</creationDate>
+			<expiryDate>6/13/03 12:38 PM</expiryDate>
+			<size>0</size>
+			<type>1</type>
+			<permissionsMask>permissions</permissionsMask>
+			<dataHolderURI>{8}</dataHolderURI>
+		</dataItemRecord>
+		<dataItemRecord>
+			<dataItemName>/zzz/serv1</dataItemName>
+			<dataItemID>8</dataItemID>
+			<ownerID>sysadmin</ownerID>
+			<creationDate>6/13/03 12:38 PM</creationDate>
+			<expiryDate>6/13/03 12:38 PM</expiryDate>
+			<size>0</size>
+			<type>1</type>
+			<permissionsMask>permissions</permissionsMask>
+			<dataHolderURI>{8}</dataHolderURI>
+		</dataItemRecord>
+		<dataItemRecord>
+			<dataItemName>/zzz/serv2</dataItemName>
+			<dataItemID>9</dataItemID>
+			<ownerID>sysadmin</ownerID>
+			<creationDate>6/13/03 12:38 PM</creationDate>
+			<expiryDate>6/13/03 12:38 PM</expiryDate>
+			<size>0</size>
+			<type>1</type>
+			<permissionsMask>permissions</permissionsMask>
+			<dataHolderURI>{8}</dataHolderURI>
+		</dataItemRecord>
+	</dataItemRecords>
+</results>
+

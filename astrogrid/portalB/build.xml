@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/Attic/build.xml,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/18 13:08:39 $</cvs:author>
-    | <cvs:version>$Revision: 1.7 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/18 23:28:23 $</cvs:author>
+    | <cvs:version>$Revision: 1.8 $</cvs:version>
     | <cvs:log>
     | $Log: build.xml,v $
+    | Revision 1.8  2003/06/18 23:28:23  dave
+    | Added LookupResponseItem to LookupResponseParser
+    |
     | Revision 1.7  2003/06/18 13:08:39  dave
     | Changed MySpace service URL
     |
@@ -771,8 +774,8 @@
 		<!-- Copy the test data for the xml parser -->
 		<copy toDir="build/portal/classes">
 			<fileset dir="src/java">
-				<!-- Include the XML data only -->
-				<include name="**/xml/sax/junit/*.xml"/>
+				<!-- Include the XML test data -->
+				<include name="**/util/xml/sax/junit/*.xml"/>
 			</fileset>
 		</copy>
 
@@ -1166,6 +1169,15 @@
 	<target name="MYSPACE.client.junit" depends="MYSPACE.client.javac">
 		<!-- Wait for the Axis service -->
 		<antcall target="MYSPACE.wait"/>
+
+		<!-- Copy the test data for the xml parser -->
+		<copy verbose="true" toDir="build/myspace/live/client/classes">
+			<fileset dir="src/java">
+				<!-- Include the XML test data -->
+				<include name="**/myspace/client/junit/*.xml"/>
+			</fileset>
+		</copy>
+
 		<!-- Create the reports directory -->
 		<mkdir dir="build/myspace/live/client/junit"/>
 		<!-- Run the JUnit tests -->

@@ -2,11 +2,14 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/java/org/astrogrid/portal/services/myspace/client/Attic/LookupResponseParser.java,v $</cvs:source>
  * <cvs:date>$Author: dave $</cvs:date>
- * <cvs:author>$Date: 2003/06/18 12:05:43 $</cvs:author>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:author>$Date: 2003/06/18 23:28:23 $</cvs:author>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  * $Log: LookupResponseParser.java,v $
+ * Revision 1.3  2003/06/18 23:28:23  dave
+ * Added LookupResponseItem to LookupResponseParser
+ *
  * Revision 1.2  2003/06/18 12:05:43  dave
  * Added debug and response status
  *
@@ -20,11 +23,16 @@
 package org.astrogrid.portal.services.myspace.client ;
 
 import java.io.Reader ;
+import java.io.InputStream ;
 import java.io.StringReader ;
 import java.io.IOException ;
 
+import java.util.Map ;
 import java.util.Vector ;
+import java.util.Hashtable ;
 import java.util.Collection ;
+import java.util.StringTokenizer ;
+
 
 import org.xml.sax.SAXException ;
 import org.xml.sax.SAXParseException ;
@@ -78,11 +86,27 @@ public class LookupResponseParser
 		String header = "<?xml version=1.0 encoding=UTF-8?>" ;
 		response = response.substring(header.length()) ;
 		//
-		// Convert it into an InputStream.
+		// Wrap it in a character stream Reader.
 		Reader reader = new StringReader(response) ;
 		//
 		// Parse the response.
 		this.parse(reader) ;
+		}
+
+	/**
+	 * Parse a response stream.
+	 *
+	 */
+	public void parseResponse(InputStream response)
+		throws IOException, SAXException
+		{
+		if (DEBUG_FLAG)
+			{
+			System.out.println("LookupResponseParser.parseResponse(InputStream)") ;
+			}
+		//
+		// Parse the response stream.
+		this.parse(response) ;
 		}
 
 	/**
@@ -104,13 +128,13 @@ public class LookupResponseParser
 	 * Our DataItemRecords, not thread safe.
 	 *
 	 */
-	protected Collection results ;
+	protected LookupResponseItem results ;
 
 	/**
 	 * Access to our results.
 	 *
 	 */
-	public Collection getResults()
+	public LookupResponseItem getResults()
 		{
 		return results ;
 		}
@@ -135,7 +159,7 @@ public class LookupResponseParser
 					if (DEBUG_FLAG) System.out.println("Start of results") ;
 					//
 					// Initialise our results.
-					results = new Vector() ;
+					results = new LookupResponseItem("") ;
 					status  = new MySpaceResponseStatus() ;
 					}
 				//
@@ -248,7 +272,7 @@ public class LookupResponseParser
 											{
 											//
 											// Add the item to our results.
-											results.add(item) ;
+											addDataItem(item) ;
 											}
 										}
 									) ;
@@ -260,29 +284,77 @@ public class LookupResponseParser
 			) ;
 		}
 
-
-/*
- *
+	/**
+	 * Add a record to our tree.
+	 *
+	 */
+	protected void addDataItem(DataItemRecord item)
+		{
+		if (DEBUG_FLAG) System.out.println("----") ;
+		if (DEBUG_FLAG) System.out.println("addDataItem") ;
 		//
-		// Catch any IO exceptions.
-		catch (IOException ouch)
-			{
-//
-// FIXME ....
-//
-			if (DEBUG_FLAG) System.out.println("IOException while parsing lookupDataHoldersDetails") ;
-			if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
-			}
+		// Get the item path.
+		String path = item.getName() ;
+		if (DEBUG_FLAG) System.out.println("Path : " + path) ;
 		//
-		// Catch any SAX exceptions.
-		catch (SAXException ouch)
+		// Split the path into tokens.
+		StringTokenizer tokens = new StringTokenizer(path, "/") ;
+		//
+		// Start with the top node.
+		LookupResponseItem node = results ;
+		//
+		// Step down the path.
+		while (tokens.hasMoreTokens())
 			{
-//
-// FIXME ....
-//
-			if (DEBUG_FLAG) System.out.println("SAXException while parsing lookupDataHoldersDetails") ;
-			if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+			String step = tokens.nextToken() ;
+			if (DEBUG_FLAG) System.out.println("Step : " + step) ;
+			//
+			// Look for an existing item at this level.
+			LookupResponseItem child = node.getChild(step) ;
+			//
+			// If we didn't find a node.
+			if (null == child)
+				{
+				if (DEBUG_FLAG) System.out.println("No child found for " + step) ;
+				//
+				// If we have more steps in our path.
+				if (tokens.hasMoreTokens())
+					{
+					if (DEBUG_FLAG) System.out.println("Creating empty child for " + step) ;
+					//
+					// Create a new (empty) node.
+					child = new LookupResponseItem(step) ;
+					}
+				//
+				// If we don't have any more steps.
+				else {
+					if (DEBUG_FLAG) System.out.println("Creating item child for " + step) ;
+					//
+					// Create a new node for this item.
+					child = new LookupResponseItem(step, item) ;
+					}
+				//
+				// If we crated a new child
+				if (null != child)
+					{
+					if (DEBUG_FLAG) System.out.println("Adding child for " + step) ;
+					//
+					// Add the new child to our node.
+					node.addChild(step, child) ;
+					}
+				}
+			//
+			// If we did find a child.
+			else {
+				if (DEBUG_FLAG) System.out.println("Found child for " + step) ;
+				}
+			//
+			// Step down to the child node.
+			if (null != child)
+				{
+				node = child ;
+				}
 			}
- *
- */
+		if (DEBUG_FLAG) System.out.println("----") ;
+		}
 	}

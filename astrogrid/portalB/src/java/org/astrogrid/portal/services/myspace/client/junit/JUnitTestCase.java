@@ -2,11 +2,14 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/java/org/astrogrid/portal/services/myspace/client/junit/Attic/JUnitTestCase.java,v $</cvs:source>
  * <cvs:date>$Author: dave $</cvs:date>
- * <cvs:author>$Date: 2003/06/18 01:33:15 $</cvs:author>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:author>$Date: 2003/06/18 23:28:23 $</cvs:author>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  * $Log: JUnitTestCase.java,v $
+ * Revision 1.3  2003/06/18 23:28:23  dave
+ * Added LookupResponseItem to LookupResponseParser
+ *
  * Revision 1.2  2003/06/18 01:33:15  dave
  * Moved message parser into separate class and added service lookup to pages
  *
@@ -19,12 +22,16 @@
  */
 package org.astrogrid.portal.services.myspace.client.junit ;
 
+import java.util.Map ;
 import java.util.Iterator ;
 import java.util.Collection ;
+
+import java.io.InputStream ;
 
 import junit.framework.TestCase ;
 import org.astrogrid.portal.services.myspace.client.LookupResponseParser ;
 import org.astrogrid.portal.services.myspace.client.DataItemRecord ;
+import org.astrogrid.portal.services.myspace.client.LookupResponseItem ;
 
 //
 // Import the WSDL generated client stubs.
@@ -143,9 +150,6 @@ public class JUnitTestCase
 		if (DEBUG_FLAG) System.out.println("") ;
 		}
 
-
-
-
 	/**
 	 * Check that we can parse the results.
 	 *
@@ -195,31 +199,92 @@ public class JUnitTestCase
 		parser.parseResponse(response) ;
 		//
 		// Check we can get the results.
-		Collection results = parser.getResults() ;
+		LookupResponseItem results = parser.getResults() ;
 		assertNotNull("Null results", results) ;
 		//
 		// Print out our results.
 		if (DEBUG_FLAG)
 			{
-			Iterator iter = results.iterator() ;
-			while (iter.hasNext())
-				{
-				DataItemRecord item = (DataItemRecord) iter.next() ;
-				if (DEBUG_FLAG) System.out.println("----") ;
-				if (DEBUG_FLAG) System.out.println("DataItemRecord") ;
-				if (DEBUG_FLAG) System.out.println("Name    : " + item.getName()) ;
-				if (DEBUG_FLAG) System.out.println("Ident   : " + item.getIdent()) ;
-				if (DEBUG_FLAG) System.out.println("Size    : " + item.getSize()) ;
-				if (DEBUG_FLAG) System.out.println("Type    : " + item.getType()) ;
-				if (DEBUG_FLAG) System.out.println("Owner   : " + item.getOwner()) ;
-				if (DEBUG_FLAG) System.out.println("Created : " + item.getCreated()) ;
-				if (DEBUG_FLAG) System.out.println("Expires : " + item.getExpires()) ;
-				if (DEBUG_FLAG) System.out.println("----") ;
-				}
+			printTree(results, 0) ;
 			}
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("") ;
 		}
 
+
+	/**
+	 * Check that we can parse our test data.
+	 *
+	 */
+	public void testParseData000()
+		throws Exception
+		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("testParseTestData000") ;
+
+		//
+		// Check we can access our test data.
+		InputStream stream = this.getClass().getResourceAsStream("test.000.xml") ;
+		assertNotNull("Null data", stream) ;
+		//
+		// Check we can create a parser.
+		LookupResponseParser parser = new LookupResponseParser() ;
+		assertNotNull("Null parser", parser) ;
+		//
+		// Check we can parse the file.
+		parser.parseResponse(stream) ;
+		//
+		// Check we can get the results.
+		LookupResponseItem results = parser.getResults() ;
+		assertNotNull("Null results", results) ;
+		//
+		// Print out our results.
+		if (DEBUG_FLAG)
+			{
+			printTree(results, 0) ;
+			}
+
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("") ;
+		}
+
+
+	/**
+	 * Print out a results tree.
+	 *
+	 */
+	public void printTree(LookupResponseItem root, int level)
+		{
+		String indent = "" ;
+		for (int i = 0 ; i < level ; i++)
+			{
+			indent += "* " ;
+			}
+		//
+		// Print out our results.
+		if (DEBUG_FLAG)
+			{
+			Iterator iter = root.iterator() ;
+			while (iter.hasNext())
+				{
+				LookupResponseItem item = (LookupResponseItem) iter.next() ;
+				System.out.println(indent + "----") ;
+				System.out.println(indent + "LookupResponseItem") ;
+				System.out.println(indent + "Name    : " + item.getName()) ;
+
+				DataItemRecord data = item.getData() ;
+				if (null != data)
+					{
+					System.out.println(indent + "DataItemRecord") ;
+					System.out.println(indent + "Name    : " + data.getName()) ;
+					System.out.println(indent + "Ident   : " + data.getIdent()) ;
+					}
+				System.out.println(indent + "----") ;
+printTree(item, level + 1) ;
+
+				}
+			}
+		}
 	}
