@@ -130,6 +130,16 @@
             <url>http://jakarta.apache.org/commons/jelly/libs/xml/</url>
             <properties/>
         </dependency>
+        <!--+
+            | Filestore WebApp.
+            +-->
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-filestore</artifactId>
+            <version>SNAPSHOT</version>
+            <type>war</type>
+            <url>http://www.astrogrid.org/</url>
+        </dependency>
     </dependencies>
     <build/>
     <properties/>

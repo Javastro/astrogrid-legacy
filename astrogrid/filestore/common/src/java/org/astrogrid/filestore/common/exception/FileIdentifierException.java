@@ -1,10 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/common/src/java/org/astrogrid/filestore/common/exception/Attic/FileIdentifierException.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/07/14 13:50:29 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/07/19 23:42:07 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  * <cvs:log>
  *   $Log: FileIdentifierException.java,v $
+ *   Revision 1.3  2004/07/19 23:42:07  dave
+ *   Merged development branch, dave-dev-200407151443, into HEAD
+ *
+ *   Revision 1.2.4.1  2004/07/19 19:40:28  dave
+ *   Debugged and worked around Axis Exception handling
+ *
  *   Revision 1.2  2004/07/14 13:50:29  dave
  *   Merged development branch, dave-dev-200406301228, into HEAD
  *
@@ -27,27 +33,27 @@ public class FileIdentifierException
 	 * Invalid identifier message.
 	 *
 	 */
-	public static final String INVALID_IDENT_MESSAGE = "Invalid file identifier : " ;
+	public static final String INVALID_IDENT_MESSAGE = "Invalid identifier" ;
 
 	/**
 	 * Null identifier message.
 	 *
 	 */
-	public static final String NULL_IDENT_MESSAGE = "Null file identifier" ;
+	public static final String NULL_IDENT_MESSAGE = "Null identifier" ;
 
 	/**
-	 * Create an Exception message.
+	 * The identifier that caused the Exception.
 	 *
 	 */
-	public static String message(String ident)
+	private String ident ;
+
+	/**
+	 * Access to our ident.
+	 *
+	 */
+	public String getIdent()
 		{
-		if (null != ident)
-			{
-			return INVALID_IDENT_MESSAGE + ident ;
-			}
-		else {
-			return NULL_IDENT_MESSAGE ;
-			}
+		return this.ident ;
 		}
 
 	/**
@@ -61,13 +67,24 @@ public class FileIdentifierException
 
 	/**
 	 * Public constructor.
-	 * @param ident The file identifier that caused the problem.
+	 * @param message The exception message.
 	 *
 	 */
-	public FileIdentifierException(String ident)
+	public FileIdentifierException(String message)
 		{
-		super(
-			message(ident)
-			) ;
+		super(message) ;
 		}
+
+	/**
+	 * Public constructor.
+	 * @param message The exception message.
+	 * @param ident The identifier that caused the Exception.
+	 *
+	 */
+	public FileIdentifierException(String message, String ident)
+		{
+		this(message) ;
+		this.ident = ident ;
+		}
+
 	}

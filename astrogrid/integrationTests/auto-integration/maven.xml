@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.59 2004/07/19 10:20:56 nw Exp $ -->
+<!-- $Id: maven.xml,v 1.60 2004/07/19 23:42:07 dave Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -76,6 +76,8 @@
         <sleep seconds="2" />
         <attainGoal name="myspace-deploy" />
         <sleep seconds="2" />
+        <attainGoal name="filestore-deploy" />
+        <sleep seconds="2" />
         <attainGoal name="pal-deploy" />
         <sleep seconds="2" />
         <attainGoal name="community-deploy"/>
@@ -83,6 +85,8 @@
         <attainGoal name="portal-deploy" />
         <sleep seconds="4" />
         <attainGoal name="setup" />
+        <sleep seconds="2" />
+        <attainGoal name="filestore-deploy" />
 </goal>
 
 <goal name="undeploy-all" prereqs="init" description="undeploy all webapps">
@@ -95,6 +99,7 @@
         <attainGoal name="cea-http-undeploy" />
         <attainGoal name="reg-undeploy" />
         <attainGoal name="myspace-undeploy" />
+        <attainGoal name="filestore-undeploy" />
         <attainGoal name="pal-undeploy" />
         <attainGoal name="community-undeploy" />
         <attainGoal name="portal-undeploy" />
@@ -158,6 +163,7 @@
         <attainGoal name="setup-cea-commandline" />
         <attainGoal name="setup-cea-http" />
         <attainGoal name="setup-myspace" />
+        <attainGoal name="setup-filestore" />
 </goal>
 
 <goal name="setup-working-dir" description="create working dir, copy across templates">
@@ -197,6 +203,11 @@
 
 <goal name="setup-myspace" description="myspace setup">
         <echo>Configuring Myspace</echo>
+</goal>
+
+<goal name="setup-filestore" description="filestore setup">
+	<echo>Configuring Filestore</echo>
+    <mkdir dir="${work.dir}/filestore"/>
 </goal>
 
 <goal name="setup-community" description="Community setup">
@@ -256,7 +267,7 @@
         </propertyfile>
 </goal>
 
-        <!--+
+<!--+
     | Initialise our Community database.
     +-->
 <goal name="community-database">
@@ -519,6 +530,19 @@
   </j:catch>
 </goal>
 
+<goal name="filestore-deploy" >
+        <copy todir="${temporary.dir}/filestore" filtering="true">
+                <fileset dir="contexts/filestore"/>
+        </copy>
+        <war update="true" destfile="${temporary.dir}/astrogrid-filestore-SNAPSHOT.war">
+                <metainf dir="${temporary.dir}/filestore"/>
+        </war>
+  <j:catch>
+  <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
+          path="/astrogrid-filestore-SNAPSHOT" war="file:///${temporary.dir}/astrogrid-filestore-SNAPSHOT.war"/>
+  </j:catch>
+</goal>
+
 <goal name="pal-deploy" >
         <copy todir="${temporary.dir}/pal" filtering="true">
                 <fileset dir="contexts/pal" />
@@ -582,6 +606,13 @@
   <j:catch>
   <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
           path="/astrogrid-mySpace-SNAPSHOT" />
+  </j:catch>
+</goal>
+
+<goal name="filestore-undeploy" >
+  <j:catch>
+  <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
+          path="/astrogrid-filestore-SNAPSHOT" />
   </j:catch>
 </goal>
 

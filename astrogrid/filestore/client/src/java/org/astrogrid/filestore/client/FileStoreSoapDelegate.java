@@ -2,10 +2,16 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/client/src/java/org/astrogrid/filestore/client/FileStoreSoapDelegate.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/07/14 13:50:29 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/07/19 23:42:07 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreSoapDelegate.java,v $
+ *   Revision 1.3  2004/07/19 23:42:07  dave
+ *   Merged development branch, dave-dev-200407151443, into HEAD
+ *
+ *   Revision 1.2.4.1  2004/07/19 19:40:28  dave
+ *   Debugged and worked around Axis Exception handling
+ *
  *   Revision 1.2  2004/07/14 13:50:29  dave
  *   Merged development branch, dave-dev-200406301228, into HEAD
  *
@@ -87,6 +93,7 @@ public class FileStoreSoapDelegate
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("FileStoreSoapDelegate()") ;
+        if (DEBUG_FLAG) System.out.println("FROG") ;
         if (DEBUG_FLAG) System.out.println("  URL : " + endpoint) ;
         //
         // Check for null param.
@@ -100,7 +107,7 @@ public class FileStoreSoapDelegate
         // Set our endpoint address.
         this.endpoint = endpoint ;
         //
-        // Try getting our PolicyManager.
+        // Try locate our service instance.
         try {
             this.service = locator.getFileStore(
 	            this.endpoint

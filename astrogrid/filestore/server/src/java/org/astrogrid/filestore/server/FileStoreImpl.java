@@ -2,10 +2,16 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/server/src/java/org/astrogrid/filestore/server/FileStoreImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/07/14 13:50:29 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/07/19 23:42:07 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreImpl.java,v $
+ *   Revision 1.3  2004/07/19 23:42:07  dave
+ *   Merged development branch, dave-dev-200407151443, into HEAD
+ *
+ *   Revision 1.2.4.1  2004/07/19 19:40:28  dave
+ *   Debugged and worked around Axis Exception handling
+ *
  *   Revision 1.2  2004/07/14 13:50:29  dave
  *   Merged development branch, dave-dev-200406301228, into HEAD
  *
@@ -25,6 +31,9 @@ package org.astrogrid.filestore.server ;
 
 import java.util.Map ;
 import java.util.HashMap ;
+
+import java.rmi.RemoteException  ;
+import org.apache.axis.AxisFault ;
 
 import org.astrogrid.filestore.common.FileStore ;
 import org.astrogrid.filestore.common.file.FileProperty ;
@@ -130,6 +139,7 @@ public class FileStoreImpl
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("FileStoreImpl.importString()") ;
+		if (DEBUG_FLAG) System.out.println("TOAD") ;
 		//
 		// Check for null data.
 		if (null == data)
@@ -208,7 +218,7 @@ public class FileStoreImpl
 		if (null == ident)
 			{
 			throw new FileIdentifierException(
-				"Null identifier"
+				FileIdentifierException.NULL_IDENT_MESSAGE
 				) ;
 			}
 		//
@@ -249,7 +259,7 @@ public class FileStoreImpl
 		if (null == ident)
 			{
 			throw new FileIdentifierException(
-				"Null identifier"
+				FileIdentifierException.NULL_IDENT_MESSAGE
 				) ;
 			}
 		//
@@ -285,6 +295,9 @@ public class FileStoreImpl
 	public String exportString(String ident)
 		throws FileStoreServiceException, FileIdentifierException, FileStoreNotFoundException
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreImpl.exportString()") ;
 		return new String(
 			this.exportBytes(
 				ident
@@ -304,12 +317,15 @@ public class FileStoreImpl
 	public byte[] exportBytes(String ident)
 		throws FileStoreServiceException, FileIdentifierException, FileStoreNotFoundException
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreImpl.exportBytes()") ;
 		//
 		// Check for null ident.
 		if (null == ident)
 			{
 			throw new FileIdentifierException(
-				"Null identifier"
+				FileIdentifierException.NULL_IDENT_MESSAGE
 				) ;
 			}
 		return repository.load(ident).exportBytes() ;
@@ -333,7 +349,7 @@ public class FileStoreImpl
 		if (null == ident)
 			{
 			throw new FileIdentifierException(
-				"Null identifier"
+				FileIdentifierException.NULL_IDENT_MESSAGE
 				) ;
 			}
 		return repository.duplicate(ident).properties().toArray() ;
@@ -423,5 +439,20 @@ public class FileStoreImpl
 		{
 		return info ;
 		}
+
+	/**
+	 * Throw a FileIdentifierException, useful for debugging the transfer of Exceptions via SOAP.
+	 * @throws FileIdentifierException as requested.
+	 *
+	 */
+	public void throwIdentifierException()
+		throws FileIdentifierException
+		{
+		throw new FileIdentifierException(
+			"TEST FAULT",
+			"TEST IDENT"
+			) ;
+		}
+
 	}
 

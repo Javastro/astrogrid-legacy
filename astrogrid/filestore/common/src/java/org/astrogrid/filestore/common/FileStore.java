@@ -1,10 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/common/src/java/org/astrogrid/filestore/common/FileStore.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/07/14 13:50:29 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/07/19 23:42:07 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStore.java,v $
+ *   Revision 1.3  2004/07/19 23:42:07  dave
+ *   Merged development branch, dave-dev-200407151443, into HEAD
+ *
+ *   Revision 1.2.4.1  2004/07/19 19:40:28  dave
+ *   Debugged and worked around Axis Exception handling
+ *
  *   Revision 1.2  2004/07/14 13:50:29  dave
  *   Merged development branch, dave-dev-200406301228, into HEAD
  *
@@ -227,6 +233,17 @@ public interface FileStore
 	 */
 	public TransferInfo exportData(TransferInfo info)
 		throws RemoteException, FileStoreServiceException ;
+
+	/**
+	 * Throw a FileIdentifierException, useful for debugging the transfer of Exceptions via SOAP.
+	 * @throws FileIdentifierException as requested.
+	 * @throws FileStoreServiceException if the service was unable to handle the request.
+     * @throws RemoteException If the WebService call fails.
+	 *
+	 */
+	public void throwIdentifierException()
+		throws RemoteException, FileIdentifierException, FileStoreServiceException ;
+
 
 	}
 

@@ -1,10 +1,31 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/client/src/java/org/astrogrid/filestore/client/FileStoreCoreDelegate.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/07/14 13:50:29 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/07/19 23:42:07 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreCoreDelegate.java,v $
+ *   Revision 1.3  2004/07/19 23:42:07  dave
+ *   Merged development branch, dave-dev-200407151443, into HEAD
+ *
+ *   Revision 1.2.4.6  2004/07/19 19:40:28  dave
+ *   Debugged and worked around Axis Exception handling
+ *
+ *   Revision 1.2.4.5  2004/07/16 18:02:28  dave
+ *   Added debug to tests
+ *
+ *   Revision 1.2.4.4  2004/07/16 16:43:19  dave
+ *   Added debug
+ *
+ *   Revision 1.2.4.3  2004/07/16 16:40:21  dave
+ *   Added debug
+ *
+ *   Revision 1.2.4.2  2004/07/16 16:39:09  dave
+ *   Added debug
+ *
+ *   Revision 1.2.4.1  2004/07/16 16:37:45  dave
+ *   Added debug
+ *
  *   Revision 1.2  2004/07/14 13:50:29  dave
  *   Merged development branch, dave-dev-200406301228, into HEAD
  *
@@ -52,6 +73,11 @@ import org.astrogrid.filestore.common.exception.FileStoreServiceException ;
 public class FileStoreCoreDelegate
 	implements FileStore, FileStoreDelegate
 	{
+	/**
+	 * Switch for our debug statements.
+	 *
+	 */
+	protected static final boolean DEBUG_FLAG = true ;
 
 	/**
 	 * Reference to our FileStore service.
@@ -65,6 +91,9 @@ public class FileStoreCoreDelegate
 	 */
 	public FileStoreCoreDelegate()
 		{
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("FileStoreCoreDelegate()") ;
 		}
 
 	/**
@@ -113,6 +142,10 @@ public class FileStoreCoreDelegate
 	public FileProperty[] importString(FileProperty[] properties, String data)
 		throws FileStoreServiceException, FileStoreException
 		{
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("FileStoreCoreDelegate.importString()") ;
+        if (DEBUG_FLAG) System.out.println("  Data : " + data) ;
 		if (null != service)
 			{
 			try {
@@ -120,6 +153,13 @@ public class FileStoreCoreDelegate
 				}
 			catch (RemoteException ouch)
 				{
+
+				if (DEBUG_FLAG) System.out.println("  >>>>") ;
+				if (DEBUG_FLAG) System.out.println("  Exception : " + ouch) ;
+				if (DEBUG_FLAG) System.out.println("  Type      : " + ouch.getClass()) ;
+				if (DEBUG_FLAG) System.out.println("  Cause     : " + ouch.getCause()) ;
+				if (DEBUG_FLAG) System.out.println("  >>>>") ;
+
 				//
 				// Unpack the expected Exception(s).
 				serviceException(ouch) ;
@@ -273,6 +313,10 @@ public class FileStoreCoreDelegate
 	public String exportString(String ident)
 		throws FileStoreServiceException, FileIdentifierException, FileStoreNotFoundException
 		{
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("FileStoreCoreDelegate.exportString()") ;
+        if (DEBUG_FLAG) System.out.println("  Ident : " + ident) ;
 		if (null != service)
 			{
 			try {
@@ -280,6 +324,8 @@ public class FileStoreCoreDelegate
 				}
 			catch (RemoteException ouch)
 				{
+				if (DEBUG_FLAG) System.out.println("  ---- catch ----") ;
+				if (DEBUG_FLAG) System.out.println("  Exception : " + ouch.getClass()) ;
 				//
 				// Unpack the expected Exception(s).
 				serviceException(ouch) ;
@@ -605,13 +651,45 @@ public class FileStoreCoreDelegate
 	public void filestoreException(RemoteException ouch)
 		throws FileStoreException
 		{
+		if (DEBUG_FLAG) System.out.println("----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreCoreDelegate.filestoreException") ;
+		if (DEBUG_FLAG) System.out.println("  Exception : " + ouch) ;
+		if (DEBUG_FLAG) System.out.println("  Type      : " + ouch.getClass()) ;
+		if (DEBUG_FLAG) System.out.println("  Cause     : " + ouch.getCause()) ;
+		//
+		// If we have the original Exception.
 		if (ouch.getCause() != null)
 			{
+			if (DEBUG_FLAG) System.out.println("  Got cause") ;
 			if (ouch.getCause() instanceof FileStoreException)
 				{
 				throw (FileStoreException) ouch.getCause() ;
 				}
 			}
+		//
+		// If we don't have the original Exception.
+		else {
+			if (DEBUG_FLAG) System.out.println("  Null cause") ;
+			//
+			// If the message starts with our class name.
+			String message  = ouch.getMessage() ;
+			String template = FileStoreException.class.getName() + ": " ;
+			if (DEBUG_FLAG) System.out.println("  Message  : '" + message  + "'") ;
+			if (DEBUG_FLAG) System.out.println("  Template : '" + template + "'") ;
+			if (null != message)
+				{
+				if (message.startsWith(template))
+					{
+					if (DEBUG_FLAG) System.out.println("  Matches template") ;
+					throw new FileStoreException(
+						message.substring(
+							template.length()
+							)
+						) ;
+					}
+				}
+			}
+		if (DEBUG_FLAG) System.out.println("  Not handled") ;
 		}
 
 	/**
@@ -622,13 +700,45 @@ public class FileStoreCoreDelegate
 	public void notfoundException(RemoteException ouch)
 		throws FileStoreNotFoundException
 		{
+		if (DEBUG_FLAG) System.out.println("----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreCoreDelegate.notfoundException") ;
+		if (DEBUG_FLAG) System.out.println("  Exception : " + ouch) ;
+		if (DEBUG_FLAG) System.out.println("  Type      : " + ouch.getClass()) ;
+		if (DEBUG_FLAG) System.out.println("  Cause     : " + ouch.getCause()) ;
+		//
+		// If we have the original Exception.
 		if (ouch.getCause() != null)
 			{
+			if (DEBUG_FLAG) System.out.println("  Got cause") ;
 			if (ouch.getCause() instanceof FileStoreNotFoundException)
 				{
 				throw (FileStoreNotFoundException) ouch.getCause() ;
 				}
 			}
+		//
+		// If we don't have the original Exception.
+		else {
+			if (DEBUG_FLAG) System.out.println("  Null cause") ;
+			//
+			// If the message starts with our class name.
+			String message  = ouch.getMessage() ;
+			String template = FileStoreNotFoundException.class.getName() + ": " ;
+			if (DEBUG_FLAG) System.out.println("  Message  : '" + message  + "'") ;
+			if (DEBUG_FLAG) System.out.println("  Template : '" + template + "'") ;
+			if (null != message)
+				{
+				if (message.startsWith(template))
+					{
+					if (DEBUG_FLAG) System.out.println("  Matches template") ;
+					throw new FileStoreNotFoundException(
+						message.substring(
+							template.length()
+							)
+						) ;
+					}
+				}
+			}
+		if (DEBUG_FLAG) System.out.println("  Not handled") ;
 		}
 
 	/**
@@ -639,13 +749,45 @@ public class FileStoreCoreDelegate
 	public void identifierException(RemoteException ouch)
 		throws FileIdentifierException
 		{
+		if (DEBUG_FLAG) System.out.println("----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreCoreDelegate.identifierException") ;
+		if (DEBUG_FLAG) System.out.println("  Exception : " + ouch) ;
+		if (DEBUG_FLAG) System.out.println("  Type      : " + ouch.getClass()) ;
+		if (DEBUG_FLAG) System.out.println("  Cause     : " + ouch.getCause()) ;
+		//
+		// If we have the original Exception.
 		if (ouch.getCause() != null)
 			{
+			if (DEBUG_FLAG) System.out.println("  Got cause") ;
 			if (ouch.getCause() instanceof FileIdentifierException)
 				{
 				throw (FileIdentifierException) ouch.getCause() ;
 				}
 			}
+		//
+		// If we don't have the original Exception.
+		else {
+			if (DEBUG_FLAG) System.out.println("  Null cause") ;
+			//
+			// If the message starts with our class name.
+			String message  = ouch.getMessage() ;
+			String template = FileIdentifierException.class.getName() + ": " ;
+			if (DEBUG_FLAG) System.out.println("  Message  : '" + message  + "'") ;
+			if (DEBUG_FLAG) System.out.println("  Template : '" + template + "'") ;
+			if (null != message)
+				{
+				if (message.startsWith(template))
+					{
+					if (DEBUG_FLAG) System.out.println("  Matches template") ;
+					throw new FileIdentifierException(
+						message.substring(
+							template.length()
+							)
+						) ;
+					}
+				}
+			}
+		if (DEBUG_FLAG) System.out.println("  Not handled") ;
 		}
 
 	/**
@@ -656,12 +798,78 @@ public class FileStoreCoreDelegate
 	public void serviceException(RemoteException ouch)
 		throws FileStoreServiceException
 		{
+		if (DEBUG_FLAG) System.out.println("----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreCoreDelegate.serviceException") ;
+		if (DEBUG_FLAG) System.out.println("  Exception : " + ouch) ;
+		if (DEBUG_FLAG) System.out.println("  Type      : " + ouch.getClass()) ;
+		if (DEBUG_FLAG) System.out.println("  Cause     : " + ouch.getCause()) ;
+		//
+		// If we have the original Exception.
 		if (ouch.getCause() != null)
 			{
+			if (DEBUG_FLAG) System.out.println("  Got cause") ;
 			if (ouch.getCause() instanceof FileStoreServiceException)
 				{
 				throw (FileStoreServiceException) ouch.getCause() ;
 				}
+			}
+		//
+		// If we don't have the original Exception.
+		else {
+			if (DEBUG_FLAG) System.out.println("  Null cause") ;
+			//
+			// If the message starts with our class name.
+			String message  = ouch.getMessage() ;
+			String template = FileStoreServiceException.class.getName() + ": " ;
+			if (DEBUG_FLAG) System.out.println("  Message  : '" + message  + "'") ;
+			if (DEBUG_FLAG) System.out.println("  Template : '" + template + "'") ;
+			if (null != message)
+				{
+				if (message.startsWith(template))
+					{
+					if (DEBUG_FLAG) System.out.println("  Matches template") ;
+					throw new FileStoreServiceException(
+						message.substring(
+							template.length()
+							)
+						) ;
+					}
+				}
+			}
+		if (DEBUG_FLAG) System.out.println("  Not handled") ;
+		}
+
+	/**
+	 * Throw a FileIdentifierException, useful for debugging the transfer of Exceptions via SOAP.
+	 * @throws FileIdentifierException unpacking it from the RemoteException when invoked via a SOAP call.
+	 * @throws FileStoreServiceException if the service was unable to handle the request.
+	 *
+	 */
+	public void throwIdentifierException()
+		throws FileIdentifierException, FileStoreServiceException
+		{
+		if (null != service)
+			{
+			try {
+				service.throwIdentifierException() ;
+				}
+			catch (RemoteException ouch)
+				{
+				//
+				// Unpack the expected Exception(s).
+				identifierException(ouch) ;
+				//
+				// If we get this far, then we don't know what it is.
+				throw new FileStoreServiceException(
+					"WebService call failed - " + ouch,
+					ouch
+					) ;
+				}
+			}
+		else {
+			throw new FileStoreServiceException(
+				"Service not initialised"
+				) ;
 			}
 		}
 	}
