@@ -31,7 +31,7 @@ public class GridServiceDelegate {
   private   boolean    throwsExceptions = false;
   private   Exception  error            = null;
   private   boolean    simulating       = false;
-  private   Logger     logger           = Logger.getLogger("gdsLogger");
+  private   Logger     logger           = Logger.getLogger("gridServiceLogger");
 
   /**
    * Gives access to operations on the Factory port; a web-service stub.

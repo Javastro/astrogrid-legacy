@@ -1,5 +1,5 @@
 /*
- * $Id: GdsQueryDelegate.java,v 1.3 2003/12/11 13:22:29 kea Exp $
+ * $Id: GdsQueryDelegate.java,v 1.4 2003/12/11 16:17:54 eca Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -13,6 +13,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.NamedNodeMap;
+import org.apache.log4j.Logger;
 
 
 import org.apache.xerces.parsers.DOMParser;
@@ -29,26 +30,29 @@ import javax.xml.transform.dom.DOMResult;
 
 import java.io.IOException;
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.FileOutputStream;
 import java.io.StringReader;
-import java.io.FileReader;
-
-import java.net.URL;
-
-import org.xml.sax.SAXException;
-
+import java.util.Properties;
 import org.globus.ogsa.utils.AnyHelper;
 import org.globus.ogsa.GridServiceException;
 import org.gridforum.ogsi.ExtensibilityType;
-import org.gridforum.ogsi.HandleType;
-
 import org.apache.axis.AxisFault;
-import org.apache.axis.client.Stub;
+
+/**
+ * The following imports are declared but not used:
+ * import java.io.FileNotFoundException;
+ * import java.io.File;
+ * import java.io.FileWriter;
+ * import java.io.FileReader;
+ * import java.net.URL;
+ * import org.xml.sax.SAXException;
+ * import org.gridforum.ogsi.HandleType;
+ * import org.apache.axis.client.Stub;
+ */
+
+
 
 /**
  *
@@ -58,6 +62,14 @@ import org.apache.axis.client.Stub;
 public class GdsQueryDelegate 
 {
   /**
+   * Configuration properties for this service.
+   * These use the WarehouseQuerier.properties file to discover
+   * the location of the OGSA-DAI warehouse services, configure 
+   * OGSA-DAI input etc.
+   */
+  protected Properties serviceProperties = null;
+
+  /**
    * Default constructor, which loads run-time installation-specific
    * configuration properties (which must be supplied in the co-located
    * "WarehouseQuerier.properties" file).
@@ -66,16 +78,46 @@ public class GdsQueryDelegate
    * @throws IOException
    * @throws SAXException
    */
-  public GdsQueryDelegate() throws Exception, IOException, SAXException {
+  
+  static Logger logger = Logger.getLogger("GdsQueryLogger");
+  
+  public GdsQueryDelegate() 
+      throws Exception, IOException, SAXException {
     super();    //Can throw IOException and SAXException
+
+    try {
+      // Load installation-specific runtime properties
+      serviceProperties = new Properties();
+      InputStream s = GdsQueryDelegate.class.getResourceAsStream(
+            "GdsQueryDelegate.properties"); 
+      if (s == null) {
+        throw new Exception(
+          "Couldn't find properties file GdsQueryDelegate.properties");
+      }
+      serviceProperties.load(s);
+    }
+    catch (IOException e) {
+      logger.error(
+	  "Couldn't load properties from GdsQueryDelegate.properties: " + 
+	   e.getMessage());
+      throw new Exception(
+          "Couldn't load properties from GdsQueryDelegate.properties: " + 
+           e.getMessage());
+    }
   }
 
   /*
    * Use an OGSA-DAI Grid Data Service to perform the supplied SQL query.
    */
-  protected Document doRealQuery(String sql, String registryUrlString, 
-        OutputStream output, boolean invokedFromMain) throws Exception {
+  protected Document doRealQuery(String sql, OutputStream output, 
+        boolean invokedFromMain) throws Exception {
 
+    String registryURLString = 
+        serviceProperties.getProperty(
+            "HOST_STRING", DEFAULT_HOST_STRING) + 
+        serviceProperties.getProperty(
+            "REGISTRY_STRING", DEFAULT_REGISTRY_STRING);
+  
     int timeout = 300;  // TOFIX configurable?
 
     ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
@@ -85,22 +127,26 @@ public class GdsQueryDelegate
     try {
 
       // Look at the registry to get the factory URL
-      String factoryUrlString = 
-          GdsDelegate.getFactoryUrlFromRegistry(registryUrlString,timeout);
-      System.out.println("GDSF is " + factoryUrlString);
+      String factoryURLString = 
+          GdsDelegate.getFactoryUrlFromRegistry(registryURLString,timeout);
+      //System.out.println("GDSF is " + factoryURLString);
+      logger.info("GDSF is " + factoryURLString);
     
       // Create a grid-service delegate for the GDS.  This handles the
       // awkward semantics of the grid-service, including creating
       // the grid-service instance.
-      System.out.println("Creating the GDS delegate...");
+      //System.out.println("Creating the GDS delegate...");
+      logger.info("Creating the GDS delegate...");
       GdsDelegate gds = new GdsDelegate();
-      gds.setFactoryHandle(factoryUrlString);
-      System.out.println("Connecting to the GDS...");
+      gds.setFactoryHandle(factoryURLString);
+      //System.out.println("Connecting to the GDS...");
+      logger.info("Connecting to the GDS...");
       gds.connect();
 
       // Run the query in the GDS.  
       // Receive in return an OGSA-DAI "response" document.
-      System.out.println("Query is " + sql);
+      //System.out.println("Query is " + sql);
+      logger.info("Query is " + sql);
       ExtensibilityType result = gds.performSelect(sql);
 
       // Output the results as an XML rowset
@@ -108,19 +154,25 @@ public class GdsQueryDelegate
       xmlString = cdataNode.getNodeValue();
 
       // Print this to stdout just in case we're shipping results via stdout
-      System.out.println(WAREHOUSE_RESULT_START);
+      //System.out.println(WAREHOUSE_RESULT_START);
+      logger.info(WAREHOUSE_RESULT_START);
 
       //Print byte stream to output stream
       output.write(xmlString.getBytes());
 
       // Print this to stdout just in case we're shipping results via stdout
-      System.out.println(WAREHOUSE_RESULT_END);
+      //System.out.println(WAREHOUSE_RESULT_END);
+      logger.info(WAREHOUSE_RESULT_END);
     }
     catch (AxisFault e) {
+        logger.error(
+		"Problem with Axis: " + e.getMessage());
         throw new Exception(
           "Problem with Axis: " + e.getMessage());
     }
     catch (Exception e) {
+      logger.error(
+	  "Unspecified exception: " + e.getMessage());
       throw new Exception(
           "Unspecified exception: " + e.getMessage());
     }
@@ -136,10 +188,14 @@ public class GdsQueryDelegate
                new StringReader(xmlString)));
       }
       catch (SAXException e) {
+      	logger.error(
+		"Couldn't parse results XML Rowset: " + e.getMessage());
         throw new Exception(
             "Couldn't parse results XML Rowset: " + e.getMessage());
       }
       catch (IOException e) {
+      	logger.error(
+		"Couldn't parse results XML Rowset: " + e.getMessage());
         throw new Exception(
             "Couldn't parse results XML Rowset: " + e.getMessage());
       }
@@ -155,6 +211,9 @@ public class GdsQueryDelegate
       element = AnyHelper.getAsElement(results);
     }
     catch (GridServiceException e) {
+      logger.error(
+	  "Couldn't parse OGSA-DAI response document, giving up: " +
+	  e.getMessage());
       throw new Exception(
           "Couldn't parse OGSA-DAI response document, giving up: " +
           e.getMessage());
@@ -163,16 +222,22 @@ public class GdsQueryDelegate
     // Toplevel element should be gridDataServiceResponse
     Node node = (Node)element[0];
     if (node == null) {
+      logger.error(
+	  "Couldn't parse OGSA-DAI response document, giving up");
       throw new Exception(
           "Couldn't parse OGSA-DAI response document, giving up");
     }
     String nodeName = node.getNodeName();
     if ( !nodeName.equals("gridDataServiceResponse")) {
+      logger.error(
+	  "Couldn't parse OGSA-DAI response document, giving up");
       throw new Exception(
           "Couldn't parse OGSA-DAI response document, giving up");
     }
     NodeList children = node.getChildNodes();
     if (children == null) {
+      logger.error(
+	  "Couldn't parse OGSA-DAI response document, giving up");
       throw new Exception(
           "Couldn't parse OGSA-DAI response document, giving up");
     }
@@ -207,6 +272,8 @@ public class GdsQueryDelegate
         // Is it a complete statementOutput node?
         if (gotResult) {
           if (!resultComplete) {
+          	logger.error(
+			"Got incomplete results from OGSA-DAI, giving up");
             throw new Exception(
               "Got incomplete results from OGSA-DAI, giving up");
           }
@@ -218,12 +285,16 @@ public class GdsQueryDelegate
     } //end of for(int i=0...)
 
     if (dataNode == null) { //Didn't find statementOutput node
+      logger.error(
+	  "Got no RowSet results from OGSA-DAI, giving up");
       throw new Exception(
         "Got no RowSet results from OGSA-DAI, giving up");
     }
     // Now get CDATA node 
     children = dataNode.getChildNodes();
     if (children == null) {
+     logger.error(
+	 "Couldn't parse OGSA-DAI response document, giving up");
      throw new Exception(
          "Couldn't parse OGSA-DAI response document, giving up");
     }
@@ -239,6 +310,8 @@ public class GdsQueryDelegate
       }
     }
     //If we got here, we didn't find the CDATA node
+    logger.error(
+	"Got no CDATA RowSet results from OGSA-DAI, giving up");
     throw new Exception(
         "Got no CDATA RowSet results from OGSA-DAI, giving up");
   }
@@ -250,29 +323,31 @@ public class GdsQueryDelegate
     GdsQueryDelegate gdsQueryDelegate = new GdsQueryDelegate();
 
     String sql;
-    String registryUrlString;
     String outputFileName = null;
     try {
       int len = args.length;
       if (len == 0) {
-        throw new Exception("No SQL query supplied to GdsQueryDelegate");
+        //TOFIX 
+        logger.error(
+		"No SQL supplied for shelled-out query at command-line");
+        throw new Exception(
+            "No SQL supplied for shelled-out query at command-line");
       }
       sql = args[0];
-      if (sql == null) {
-        throw new Exception("No SQL query supplied to GdsQueryDelegate");
+      if (sql.equals(null)) {
+      	logger.error(
+		"No SQL supplied for shelled-out query at command-line");
+        throw new Exception(
+            "No SQL supplied for shelled-out query at command-line");
       }
-      if (len == 1) {
-        throw new Exception("No OGSA-DAI URL supplied to GdsQueryDelegate");
-      }
-      registryUrlString = args[1];
-      if (registryUrlString == null) {
-        throw new Exception("No OGSA-DAI URL supplied to GdsQueryDelegate");
-      }
-      if (len > 2) {
-        outputFileName = args[2];
+      if (len > 1) {
+        outputFileName = args[1];
       }
     }
-    catch (ArrayIndexOutOfBoundsException e) {  //Shouldn't get here
+    catch (ArrayIndexOutOfBoundsException e) {
+      logger.error(
+	  "Unexpected number of command-line arguments (" + 
+	 Integer.toString(args.length) + ")");
       throw new Exception(
           "Unexpected number of command-line arguments (" + 
          Integer.toString(args.length) + ")");
@@ -285,11 +360,18 @@ public class GdsQueryDelegate
       output = new FileOutputStream(outputFileName);
     }
     //Do real query in shelled-out mode
-    Document result = gdsQueryDelegate.doRealQuery(
-          sql, registryUrlString, output, false);
+    Document result = gdsQueryDelegate.doRealQuery(sql, output, false);
   }
 
   // ----------------------------------------------------------
+  // Fallback defaults for values that should be configured on a
+  // per-installation basis in the WarehouseServiceImpl.properties 
+
+  private final String DEFAULT_HOST_STRING = 
+        "http://astrogrid.ast.cam.ac.uk:4040";
+  private final String DEFAULT_REGISTRY_STRING = 
+        "/gdw/services/ogsadai/DAIServiceGroupRegistry";
+
   // Other utility strings
   private final String TEMP_RESULTS_FILENAME = "ws_output.xml";
   private final String WAREHOUSE_RESULT_START = "WAREHOUSE_RESULT_START";
@@ -299,12 +381,15 @@ public class GdsQueryDelegate
 }
 /*
 $Log: GdsQueryDelegate.java,v $
-Revision 1.3  2003/12/11 13:22:29  kea
-Removed GdsQueryDelegate.properties.
+Revision 1.4  2003/12/11 16:17:54  eca
+Logging comments for System.out.println and in conjunction with 
+thrown exceptions now in GdsDelegate, GdsQueryDelegate, and 
+GridServiceDelegate 
 
-Revision 1.2  2003/12/11 13:21:19  kea
-OGSA-DAI registry now passed in as command-line parameter.  Will remove
-GdsQueryDelegate.properties file shortly.
+Added setFactoryHandleFromRegistry method; factory handle 
+result returned as ExtensibilityType.
+
+Elizabeth Auden, 11 Dec 2003
 
 Revision 1.1  2003/12/02 13:56:51  kea
 Delegate for performing OGSA-DAI queries, in separate package space from
