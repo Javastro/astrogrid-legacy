@@ -1,4 +1,4 @@
-/*$Id: IterationSixAladinAdapter.java,v 1.3 2004/11/17 16:22:53 clq2 Exp $
+/*$Id: IterationSixAladinAdapter.java,v 1.4 2005/01/13 11:27:39 jdt Exp $
  * Created on 05-Nov-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,6 +28,7 @@ import org.apache.commons.logging.LogFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -267,6 +268,17 @@ public class IterationSixAladinAdapter implements AladinAdapter {
                     throw new AladinAdapterServiceException(e.getMessage(),e);
             }
         }
+
+        /**
+         * @see org.astrogrid.store.adapter.aladin.AladinAdapterFile#getURL()
+         */
+        public URL getURL() throws AladinAdapterServiceException {
+            try {
+                return  getStoreClient().getUrl(((IterationSixTreeClient.IterationSixNode)node).getPath());
+            } catch (IOException e) {
+                throw new AladinAdapterServiceException("getURL",e);
+            }
+        }
     }
     
 
@@ -275,6 +287,12 @@ public class IterationSixAladinAdapter implements AladinAdapter {
 
 /* 
 $Log: IterationSixAladinAdapter.java,v $
+Revision 1.4  2005/01/13 11:27:39  jdt
+Merges from myspace-nww-890
+
+Revision 1.3.8.1  2005/01/12 17:08:20  nw
+implemented getURL
+
 Revision 1.3  2004/11/17 16:22:53  clq2
 nww-itn07-704
 

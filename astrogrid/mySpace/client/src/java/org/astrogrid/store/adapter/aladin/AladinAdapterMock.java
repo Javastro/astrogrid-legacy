@@ -1,10 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/mySpace/client/src/java/org/astrogrid/store/adapter/aladin/AladinAdapterMock.java,v $</cvs:source>
- * <cvs:author>$Author: clq2 $</cvs:author>
- * <cvs:date>$Date: 2004/11/17 16:22:53 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2005/01/13 11:27:39 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  * <cvs:log>
  *   $Log: AladinAdapterMock.java,v $
+ *   Revision 1.5  2005/01/13 11:27:39  jdt
+ *   Merges from myspace-nww-890
+ *
+ *   Revision 1.4.8.1  2005/01/12 17:08:20  nw
+ *   implemented getURL
+ *
  *   Revision 1.4  2004/11/17 16:22:53  clq2
  *   nww-itn07-704
  *
@@ -64,6 +70,8 @@ import java.io.InputStream ;
 import java.io.OutputStream ;
 import java.io.ByteArrayOutputStream ;
 import java.io.ByteArrayInputStream ;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import org.apache.commons.collections.collection.UnmodifiableCollection ;
 
@@ -524,5 +532,17 @@ public class AladinAdapterMock
 				data
 				) ;
 			}
+
+        /**
+         * @see org.astrogrid.store.adapter.aladin.AladinAdapterFile#getURL()
+         */
+        public URL getURL() throws AladinAdapterServiceException {
+            
+            try {
+                return new URL("http://www.astrogrid.org");
+            } catch (MalformedURLException e) {
+                throw new AladinAdapterServiceException("malformed url",e);
+            }
+        }
 		}
 	}

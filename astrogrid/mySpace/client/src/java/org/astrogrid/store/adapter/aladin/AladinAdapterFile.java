@@ -1,10 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/mySpace/client/src/java/org/astrogrid/store/adapter/aladin/AladinAdapterFile.java,v $</cvs:source>
- * <cvs:author>$Author: clq2 $</cvs:author>
- * <cvs:date>$Date: 2004/11/17 16:22:53 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2005/01/13 11:27:39 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  * <cvs:log>
  *   $Log: AladinAdapterFile.java,v $
+ *   Revision 1.5  2005/01/13 11:27:39  jdt
+ *   Merges from myspace-nww-890
+ *
+ *   Revision 1.4.8.1  2005/01/12 17:07:44  nw
+ *   added getURL to interface
+ *
  *   Revision 1.4  2004/11/17 16:22:53  clq2
  *   nww-itn07-704
  *
@@ -49,6 +55,7 @@ package org.astrogrid.store.adapter.aladin ;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URL;
 
 /**
  * A wrapper for the AstroGrid StoreFile to make it easier to integrate into Aladin.
@@ -84,4 +91,12 @@ public interface AladinAdapterFile
 	public InputStream getInputStream()
 		throws AladinAdapterServiceException ;
 
-	}
+	
+
+/** access a URL from which the contents of this file can be read.
+ * @deprecated doubly - only possible with legacy myspace implementation.
+ * @return http / ftp url to file contents.
+ * @throws AladinAdapterServiceExcepiton
+ */
+    public URL getURL() throws AladinAdapterServiceException;
+}

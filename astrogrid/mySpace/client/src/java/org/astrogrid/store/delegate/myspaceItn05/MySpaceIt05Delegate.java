@@ -46,7 +46,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
     /**
      * Commons logger
      */
-    private static final Log log = LogFactory.getLog(MySpaceIt05Delegate.class);
+    private static final Log logger = LogFactory.getLog(MySpaceIt05Delegate.class);
 
    /** Axis-generated binding = inner delegate */
    private Manager     innerDelegate = null; // Inner delegate.
@@ -84,7 +84,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
       
       managerMsrl = new Msrl(givenEndPoint);
       
-      log.debug("the endpoint in myspaceitn05delegate = " + managerMsrl.getDelegateEndpoint());
+      logger.debug("the endpoint in myspaceitn05delegate = " + managerMsrl.getDelegateEndpoint());
       try
       {  ManagerService service = new ManagerServiceLocator();
          innerDelegate = service.getAstrogridMyspace(managerMsrl.getDelegateEndpoint());
@@ -172,11 +172,11 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
       {  for(int loop=0; loop<numMessages; loop++)
          {  StatusMessage message =
              (StatusMessage)statusList.get(loop);
-            log.debug(message.toString() );
+            logger.debug(message.toString() );
          }
       }
       else
-      {  log.debug("No messages returned.");
+      {  logger.debug("No messages returned.");
       }
    }
 
@@ -265,9 +265,12 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
     * Creates a MySpaceFile/Folder from the given entry result
     */
    public StoreFile makeStoreFile(MySpaceFolder parent, EntryResults result) {
-System.out.println("FROG : makeStoreFile()");
-System.out.println("  Name : " + result.getEntryName());
-System.out.println("  Size : " + result.getSize());
+logger
+        .info("makeStoreFile(MySpaceFolder, EntryResults) - FROG : makeStoreFile()");
+logger.info("makeStoreFile(MySpaceFolder, EntryResults) -   Name"
+        + result.getEntryName());
+logger.info("makeStoreFile(MySpaceFolder, EntryResults) -   Size"
+        + result.getSize());
 
       StoreFile file;
       if (result.getType() == EntryCodes.CON) {
@@ -289,7 +292,8 @@ System.out.println("  Size : " + result.getSize());
             file = new MySpaceFile(parent, result);
          }
       }
-System.out.println("  Size : " + file.getSize());
+logger.info("makeStoreFile(MySpaceFolder, EntryResults) -   Size"
+        + file.getSize());
       return file;
    }
 
@@ -403,8 +407,8 @@ System.out.println("  Size : " + file.getSize());
 
    public StoreFile getFile(String path) throws IOException
    {
-System.out.println("FROG : getFile()");
-System.out.println("  Path : " + path);
+logger.info("getFile(String) - FROG : getFile()");
+logger.info("getFile(String) -   Path" + path);
 
       if (!path.startsWith("/")) path = "/"+path;
       
@@ -651,9 +655,9 @@ System.out.println("  Path : " + path);
 
    public URL getUrl(String path) throws IOException
    {
-System.out.println("") ;
-System.out.println("MySPaceDeletage.getUrl") ;
-System.out.println("  Path : " + path) ;
+logger.info("getUrl(String)");
+logger.info("getUrl(String) - MySPaceDeletage.getUrl");
+logger.info("getUrl(String) -   Path" + path);
 
       if (!path.startsWith("/")) path = "/"+path;
       
@@ -670,7 +674,7 @@ System.out.println("  Path : " + path) ;
       
       //this seems to return a localhost
       URL url = new URL(entry.getEntryUri());
-System.out.println("  URL  : " + url.toString()) ;
+logger.info("getUrl(String) -   URL " + url.toString());
       
       // >>> HACK ALERT!
       // >>> @author peter.shillan
@@ -679,7 +683,7 @@ System.out.println("  URL  : " + url.toString()) ;
       // The problem only arises if the servers are co-located and the solution works
       // in these circumstances.
       String host = url.getHost();
-System.out.println("  Host : " + host) ;
+logger.info("getUrl(String) -   Host" + host);
 
 
       // If localhost is returned, try to work out the real host name.
@@ -698,7 +702,7 @@ System.out.println("  Host : " + host) ;
         }
       }
       // <<< HACK ALERT!
-System.out.println("  URL  : " + url.toString()) ;
+logger.info("getUrl(String) -   URL " + url.toString());
       
       return url;
    }
@@ -758,32 +762,32 @@ System.out.println("  URL  : " + url.toString()) ;
  *
  *
  */
-System.out.println("----");
-System.out.println("MySpaceIt05Delegate.copy");
-System.out.println("  Source path : '" + sourcePath + "'");
-System.out.println("  Target agsl : '" + target.toString() + "'");
+logger.info("copy(String, Agsl) - ----");
+logger.info("copy(String, Agsl) - MySpaceIt05Delegate.copy");
+logger.info("copy(String, Agsl) -   Source path : '" + sourcePath + "'");
+logger.info("copy(String, Agsl) -   Target agsl : '" + target.toString() + "'");
 
       URL url = getUrl(sourcePath) ;
 // BANG !!
-System.out.println("  Source URL  : '" + url.toString() + "'");
+logger.info("copy(String, Agsl) -   Source URL  : '" + url.toString() + "'");
 
-System.out.println("");
-System.out.println("Creating target delegate ....");
+logger.info("copy(String, Agsl)");
+logger.info("copy(String, Agsl) - Creating target delegate ....");
       StoreClient targetStore =
          StoreDelegateFactory.createDelegate(
             operator,
             target
             );
-System.out.println("Done");
+logger.info("copy(String, Agsl) - Done");
 
-System.out.println("");
-System.out.println("Calling target delegate ....");
+logger.info("copy(String, Agsl)");
+logger.info("copy(String, Agsl) - Calling target delegate ....");
       targetStore.putUrl(
          url,
          target.getPath(),
          false
          );
-System.out.println("Done");
+logger.info("copy(String, Agsl) - Done");
 
    }
 
@@ -1147,7 +1151,12 @@ System.out.println("Done");
  */
 
    private class MySpaceOutputStream extends OutputStream
-   {  private String targetPath = null;
+   {
+    /**
+     * Commons Logger for this class
+     */
+    private final Log logger = LogFactory.getLog(MySpaceOutputStream.class);
+  private String targetPath = null;
 
       private byte[] buffer = new byte[32000];
       private int cursor = 0;  //insert point
@@ -1213,6 +1222,10 @@ System.out.println("Done");
     * getParent, children, etc
     */
    private class MySpaceFile implements StoreFile {
+    /**
+     * Commons Logger for this class
+     */
+    private final Log logger = LogFactory.getLog(MySpaceFile.class);
       
       String name = null; //just file or folder name, not path
       String owner = null;
@@ -1251,7 +1264,7 @@ System.out.println("Done");
          }
          catch (MalformedURLException mue) {
             //log but don't crash
-            log.error("Server returned invalid URL "+bindingEntry.getEntryUri()+" for entry "+bindingEntry.getEntryName());
+            logger.error("Server returned invalid URL "+bindingEntry.getEntryUri()+" for entry "+bindingEntry.getEntryName());
          }
       }
       
@@ -1322,6 +1335,10 @@ System.out.println("Done");
     * @author mch
     */
    private class MySpaceFolder extends MySpaceFile  {
+    /**
+     * Commons Logger for this class
+     */
+    private final Log logger = LogFactory.getLog(MySpaceFolder.class);
       
       Hashtable children = new Hashtable();
    
@@ -1422,6 +1439,12 @@ System.out.println("Done");
 
 /*
 $Log: MySpaceIt05Delegate.java,v $
+Revision 1.12  2005/01/13 11:27:39  jdt
+Merges from myspace-nww-890
+
+Revision 1.11.18.1  2005/01/12 15:43:34  nw
+replaced System.out with logging.
+
 Revision 1.11  2004/11/07 22:19:57  mch
 added endpoint to exception
 

@@ -1,10 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/mySpace/client/src/java/org/astrogrid/store/adapter/aladin/AladinAdapterTest.java,v $</cvs:source>
- * <cvs:author>$Author: clq2 $</cvs:author>
- * <cvs:date>$Date: 2004/11/17 16:22:53 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2005/01/13 11:27:39 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  * <cvs:log>
  *   $Log: AladinAdapterTest.java,v $
+ *   Revision 1.5  2005/01/13 11:27:39  jdt
+ *   Merges from myspace-nww-890
+ *
+ *   Revision 1.4.8.1  2005/01/12 17:14:08  nw
+ *   extended test for aladin adapter.
+ *
  *   Revision 1.4  2004/11/17 16:22:53  clq2
  *   nww-itn07-704
  *
@@ -685,6 +691,27 @@ public class AladinAdapterTest
 			) ;
 		}
 
+    public void testGetURL() throws Exception {
+        adapter.login(account,password);
+        // Get the root node.
+        AladinAdapterContainer root = adapter.getRoot() ;
+        //
+        // Create our new container.
+        AladinAdapterContainer node = root.addContainer(
+            this.getContainerName()
+            ) ;
+        //
+        // Create our new file.
+        AladinAdapterFile file = node.addFile(
+            "results.txt"
+            ) ;
+        //
+        // Get url for this file.
+        assertNotNull(
+            file.getURL()
+            ) ;       
+    }
+    
 	/**
 	 * Check we can transfer some data from the stream.
 	 *

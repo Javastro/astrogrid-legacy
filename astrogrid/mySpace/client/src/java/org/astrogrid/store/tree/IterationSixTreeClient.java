@@ -1,4 +1,4 @@
-/*$Id: IterationSixTreeClient.java,v 1.2 2004/11/17 16:22:53 clq2 Exp $
+/*$Id: IterationSixTreeClient.java,v 1.3 2005/01/13 11:27:39 jdt Exp $
  * Created on 05-Nov-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -173,8 +173,11 @@ public class IterationSixTreeClient implements TreeClient {
      * Iteration-6 version of a  node.
      * @author Noel Winstanley nw@jb.man.ac.uk 05-Nov-2004
      *
+     *@modified noel #890 made this public, so AladinAdapter interface can cast and get to the path.
+         * once we drop aladinAdapter, can make this protected again.
+
      */
-    protected class IterationSixNode implements Node {
+    public class IterationSixNode implements Node {
         
         public IterationSixNode(StoreFile wrapped, String path) {
             this.wrapped = wrapped;
@@ -186,6 +189,7 @@ public class IterationSixTreeClient implements TreeClient {
         public IterationSixNode(StoreFile wrapped) {
             this(wrapped,"/" + dropTrailingSlash(wrapped.getPath()).trim());
         }
+
         protected final StoreFile wrapped;
         protected final String path;
 
@@ -200,8 +204,12 @@ public class IterationSixTreeClient implements TreeClient {
         public boolean isContainer() {
             return wrapped.isFolder();
         }
-        
-        protected String getPath() {
+        /**
+         *@modified noel #890 made this public, so AladinAdapter interface can cast and get to this.
+             * once we drop aladinAdapter, can make this protected again.
+
+          */        
+        public String getPath() {
             return path;
         }
         
@@ -382,6 +390,12 @@ public class IterationSixTreeClient implements TreeClient {
 
 /* 
 $Log: IterationSixTreeClient.java,v $
+Revision 1.3  2005/01/13 11:27:39  jdt
+Merges from myspace-nww-890
+
+Revision 1.2.8.1  2005/01/12 17:08:02  nw
+had to relax permissions to get at some internals required for getURL
+
 Revision 1.2  2004/11/17 16:22:53  clq2
 nww-itn07-704
 
