@@ -11,6 +11,7 @@
 <p>
 	Introduced the Common Execution Architecture
 </p>
+<p>See <a href="http://www.astrogrid.org/bugzilla/showdependencytree.cgi?id=253">Bugzilla overview</a> for a detailed list of changes</p>
 <ul>
 	<li>Delegate now known as applications-client</li>
 	<li></li>

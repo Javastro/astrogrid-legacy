@@ -6,7 +6,7 @@
 
     <menu name="Installation">
        <item name="Install" href="INSTALL.html"/>
-       <item name="Read me" href="README.html"/>
+       <item name="Release" href="RELEASE.html"/>
        <item name="Download" href="http://www.astrogrid.org/maven/org.astrogrid/wars/astrogrid-applications-SNAPSHOT.war"/>
         
     </menu>     
