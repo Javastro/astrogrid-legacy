@@ -24,8 +24,7 @@
        <login-input type="password" name="pass" size="60" caption="Password:">
            <xsp:attribute name="value"><xsp-request:get-parameter name="pass" default=""/></xsp:attribute>
        </login-input>  
-       <login-input type="submit" name="fred" value="Log On"/>
-       <login-input type="hidden" name="action" value="login"/> 
+       <login-input type="submit" name="action" value="login"/>
      </login-form>
 	 <!--TODO see if we can move this into a stylesheet or logic sheet too-->
 	 

@@ -21,7 +21,7 @@
        <login-input type="text" name="email" size="60" caption="Email:">
            <xsp:attribute name="value"><xsp-request:get-parameter name="email" default=""/></xsp:attribute>
        </login-input>
-       <login-input type="submit" name="fred" value="Register"/>
+       <login-input type="submit" name="action" value="Register"/>
      </login-form>
 	 <!--TODO see if we can move this into a stylesheet or logic sheet too-->
 	 <P>
