@@ -1,0 +1,18 @@
+<!-- Web Services Deployment Descriptor for the JobController service
+     1) Ensure Tomcat is running
+     2) Enter the following:
+              java org.apache.axis.client.AdminClient JobMonitor-deploy.wsdd -l http://localhost:8080/axis/services/AdminService 
+     3) The following message indicates service has been deployed successfully:
+        Processing file JobMonitor-deploy.wsdd
+        <Admin>Done processing<Admin>
+-->
+
+<deployment
+   xmlns="http://xml.apache.org/axis/wsdd/"
+   xmlns:java="http://xml.apache.org/axis/wsdd/providers/java"
+   xmlns:xsi="http://www.w3.org/2000/10/XMLSchema-instance">
+   <service name="DatasetAgent" provider="java:RPC">
+      <parameter name="className" value="org.astrogrid.jes.jobmonitor.JobMonitor"/>
+      <parameter name="allowedMethods" value="monitorJob"/>
+   </service>
+</deployment>
