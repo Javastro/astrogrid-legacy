@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierPlugin.java,v 1.8 2004/03/18 00:31:33 mch Exp $
+ * $Id: QuerierPlugin.java,v 1.9 2004/03/18 18:32:45 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -78,9 +78,10 @@ public abstract class QuerierPlugin  {
 
       TargetIndicator target = querier.getResultsTarget();
 
+      log.info(querier+", sending results to "+target);
+
       if (target.getEmail() != null) {
 
-         log.info(querier+", emailing results to "+target.getEmail());
          resultsStatus.setNote("emailing results to "+target.getEmail());
          
          emailResults(results, target.getEmail(), resultsStatus);
@@ -161,6 +162,9 @@ public abstract class QuerierPlugin  {
 }
 /*
  $Log: QuerierPlugin.java,v $
+ Revision 1.9  2004/03/18 18:32:45  mch
+ Added info
+
  Revision 1.8  2004/03/18 00:31:33  mch
  Added adql 7.3.1 tests and max row information to status
 
