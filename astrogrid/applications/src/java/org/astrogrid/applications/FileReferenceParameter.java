@@ -1,5 +1,5 @@
 /*
- * $Id: FileReferenceParameter.java,v 1.3 2003/12/31 00:56:17 pah Exp $
+ * $Id: FileReferenceParameter.java,v 1.4 2004/01/13 00:12:43 pah Exp $
  *
  * Created on 08 December 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -12,8 +12,14 @@
 package org.astrogrid.applications;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
+import org.astrogrid.applications.common.config.ApplicationControllerConfig;
 import org.astrogrid.applications.description.ParameterDescription;
+import org.astrogrid.community.User;
+import org.astrogrid.mySpace.delegate.MySpaceClient;
 public class FileReferenceParameter extends Parameter {
    private File realFile;
    /**
@@ -35,6 +41,37 @@ public class FileReferenceParameter extends Parameter {
     */
    public void setRealFile(File file) {
       realFile = file;
+   }
+
+   /* (non-Javadoc)
+    * @see org.astrogrid.applications.Parameter#writeBack()
+    */
+   public boolean writeBack() {
+      String importURL = null;
+      //TODO might want to do something different for VOTABLES later on
+      //TODO REFACTORME surely the myspace manager should come from the myspace reference string
+      try {
+         MySpaceClient mySpaceManager =
+            ApplicationControllerConfig.getInstance().getMySpaceManager();
+            
+         User user = application.getUser();
+         URL url = new URL("file","",realFile.getAbsolutePath());
+         importURL = url.toString();
+         mySpaceManager.saveDataHoldingURL(user.getUserId(), user.getCommunity(), user.getToken(), rawValue, importURL, "data"   , mySpaceManager.OVERWRITE);
+      }
+      catch (MalformedURLException e) {
+         // TODO Auto-generated catch block
+         logger.error("problem creating a url to pass to myspacemanager", e);
+        
+      }
+      catch (IOException e) {
+         logger.error(e);
+      }
+      catch (Exception e) {
+        logger.error(e);
+      }
+      return true;
+
    }
 
 }

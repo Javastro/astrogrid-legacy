@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractApplication.java,v 1.8 2004/01/04 14:51:22 pah Exp $
+ * $Id: AbstractApplication.java,v 1.9 2004/01/13 00:12:43 pah Exp $
  *
  * Created on 13 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -85,7 +85,7 @@ public abstract class AbstractApplication implements Application {
       return (Parameter[])parameters.toArray(new Parameter[0]);
    }
 
-   private ApplicationInterface applicationInterface;
+   protected ApplicationInterface applicationInterface;
 
    public ApplicationInterface getApplicationInterface(){ return applicationInterface; }
 

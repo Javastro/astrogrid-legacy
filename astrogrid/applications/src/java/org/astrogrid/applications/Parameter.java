@@ -1,5 +1,5 @@
 /*
- * $Id: Parameter.java,v 1.5 2003/12/31 00:56:17 pah Exp $
+ * $Id: Parameter.java,v 1.6 2004/01/13 00:12:43 pah Exp $
  *
  * Created on 13 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -24,7 +24,11 @@ import org.astrogrid.applications.description.ParameterDescription;
  * @stereotype entity 
  */
 abstract public class Parameter {
+   
+   static protected org.apache.commons.logging.Log logger =
+      org.apache.commons.logging.LogFactory.getLog(Parameter.class);
    protected AbstractApplication application;
+  
 
    protected String name;
    
@@ -87,7 +91,14 @@ abstract public class Parameter {
 
    }
    
-   
+   /**
+    * writes a parameter back to the invoking process. The default is to do nothing, most parameter types do not get written back
+    * @return
+    */
+   public boolean writeBack()
+   {
+      return true;
+   }
 
    /**
     * @return

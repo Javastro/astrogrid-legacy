@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationInterface.java,v 1.5 2003/12/31 00:56:17 pah Exp $
+ * $Id: ApplicationInterface.java,v 1.6 2004/01/13 00:12:43 pah Exp $
  *
  * Created on 26 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -13,6 +13,8 @@ package org.astrogrid.applications.description;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.axis.wsdl.symbolTable.Parameter;
 
 import org
    .astrogrid
@@ -123,15 +125,15 @@ public class ApplicationInterface {
       }
       return ad;
    }
-   int parameterType(String name)
+   public ParameterDirection parameterType(String name)
    {
-      int retval = 0;
+      ParameterDirection retval = ParameterDirection.NOTFOUND;
       if(inputs.contains(name))
       {
-         retval = 1;
+         retval = ParameterDirection.INPUT;
       }
       if (outputs.contains(name)) {
-         retval = -1;
+         retval = ParameterDirection.OUTPUT;
       }
       return retval;
    }
@@ -153,4 +155,28 @@ public class ApplicationInterface {
        }
        return ad;
     }
+    
+    public static class ParameterDirection
+    {
+       private final String direction;
+       private ParameterDirection(String dir)
+       {
+          direction = dir;
+         
+       }
+       
+       public static final ParameterDirection INPUT = new ParameterDirection("input");
+       public static final ParameterDirection OUTPUT = new ParameterDirection("output");
+       public static final ParameterDirection NOTFOUND = new ParameterDirection("not found");
+      /* (non-Javadoc)
+       * @see java.lang.Object#toString()
+       */
+      public String toString() {
+         return direction;
+
+      }
+
+    }
+    
+
 }

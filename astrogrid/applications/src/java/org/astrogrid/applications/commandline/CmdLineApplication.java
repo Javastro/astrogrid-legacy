@@ -1,5 +1,5 @@
 /*
- * $Id: CmdLineApplication.java,v 1.8 2004/01/10 00:37:40 pah Exp $
+ * $Id: CmdLineApplication.java,v 1.9 2004/01/13 00:12:43 pah Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -25,6 +25,7 @@ import org.astrogrid.applications.Result;
 import org.astrogrid.applications.Status;
 import org.astrogrid.applications.commandline.exceptions.ApplicationExecutionException;
 import org.astrogrid.applications.common.io.StreamPiper;
+import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.manager.AbstractApplicationController;
 import org.astrogrid.community.User;
 import org.astrogrid.jes.delegate.JesDelegateException;
@@ -46,7 +47,6 @@ public class CmdLineApplication extends AbstractApplication implements Runnable 
    private StreamPiper errPiper;
    static private org.apache.commons.logging.Log logger =
       org.apache.commons.logging.LogFactory.getLog(CmdLineApplication.class);
- 
 
    protected String[] args = null;
    protected List argvals = new ArrayList();
@@ -110,26 +110,35 @@ public class CmdLineApplication extends AbstractApplication implements Runnable 
       errPiper.terminate();
       outPiper.terminate();
       process = null;
- 
- //inform the job monitor that we have finished - only if there is an endpoint specified...     
-    if(jobMonitorURL != null && jobMonitorURL.length() > 0)
-    {
-    
-      JobMonitorDelegate 
-      delegate = JobMonitorDelegate.buildDelegate( jobMonitorURL );
-      
-      try {
-        delegate.monitorJob(jobStepID,delegate.STATUS_COMPLETED,"comment" );
+
+      // copy back any output parameters
+      for (Iterator iter = parameters.iterator(); iter.hasNext();) {
+         Parameter outparam = (Parameter)iter.next();
+         if (applicationInterface.parameterType(outparam.getName())
+            == ApplicationInterface.ParameterDirection.OUTPUT) {
+
+            outparam.writeBack();
+         }
+
       }
-      catch (NumberFormatException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
+
+      //inform the job monitor that we have finished - only if there is an endpoint specified...     
+      if (jobMonitorURL != null && jobMonitorURL.length() > 0) {
+
+         JobMonitorDelegate delegate = JobMonitorDelegate.buildDelegate(jobMonitorURL);
+
+         try {
+            delegate.monitorJob(jobStepID, delegate.STATUS_COMPLETED, "comment");
+         }
+         catch (NumberFormatException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+         }
+         catch (JesDelegateException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+         }
       }
-      catch (JesDelegateException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
-      }
-    }
 
    }
 
@@ -139,8 +148,6 @@ public class CmdLineApplication extends AbstractApplication implements Runnable 
    protected void waitForApplication() {
       appWaitThread = new Thread(this);
       appWaitThread.start();
-    
-  
 
    }
 
@@ -152,7 +159,7 @@ public class CmdLineApplication extends AbstractApplication implements Runnable 
       try {
          exitStatus = process.waitFor();
          logger.info(applicationDescription.getName() + "finished");
-    
+
          endApplication();
 
       }
@@ -214,8 +221,6 @@ public class CmdLineApplication extends AbstractApplication implements Runnable 
    public File createLocalTempFile() {
       return applicationEnvironment.getTempFile();
    }
-   
-   
 
    /* (non-Javadoc)
     * @see org.astrogrid.applications.Application#completionStatus()
