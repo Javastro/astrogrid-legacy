@@ -11,19 +11,22 @@
 package org.astrogrid.datacenter.impl;
 
 import java.io.PrintStream;
- 
+
 import org.apache.log4j.Logger;
+import org.astrogrid.datacenter.Util;
+import org.astrogrid.datacenter.config.ConfigurableImpl;
 import org.astrogrid.datacenter.myspace.Allocation;
+import org.astrogrid.datacenter.myspace.MySpaceFactory;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.votable.VOTable;
 import org.astrogrid.datacenter.votable.VOTableException;
 import org.astrogrid.datacenter.votable.VOTableFactory;
 import org.astrogrid.i18n.AstroGridMessage;
-import org.astrogrid.Configurator ;
 import org.objectwiz.votable.ResultSetConverter;
 import org.objectwiz.votable.ResultSetToSimpleVOTable;
 
-public class VOTableFactoryImpl implements VOTableFactory {
+/** implementation of the VOTableFactory */
+public class VOTableFactoryImpl extends ConfigurableImpl implements VOTableFactory {
 	
 	private static final boolean 
 		TRACE_ENABLED = true ;
@@ -32,7 +35,7 @@ public class VOTableFactoryImpl implements VOTableFactory {
 		logger = Logger.getLogger( VOTableFactoryImpl.class ) ;
         
     private final static String
-        SUBCOMPONENT_NAME = Configurator.getClassName( VOTableFactoryImpl.class ) ;
+        SUBCOMPONENT_NAME =  Util.getComponentName( VOTableFactoryImpl.class ) ;
      	
     //
     // JBL Note: For the moment do not know where these settings should be coming from...
@@ -54,7 +57,7 @@ public class VOTableFactoryImpl implements VOTableFactory {
     }
 
 
-    public void stream( Query query, Allocation allocation ) throws VOTableException { 
+    public void stream( Query query, Allocation allocation, MySpaceFactory fac ) throws VOTableException { 
 		if( TRACE_ENABLED ) logger.debug( "VOTableFactoryImpl.stream(): entry") ; 
 		  
 		ResultSetConverter 
@@ -85,7 +88,7 @@ public class VOTableFactoryImpl implements VOTableFactory {
 			if( out != null ) {  
 			    try {
 				   out.flush();
-				   Allocation.getFactory().close( allocation );
+				   fac.close( allocation );
 				   out.close();                                       
 			    }
 			    catch( Exception ex ) {

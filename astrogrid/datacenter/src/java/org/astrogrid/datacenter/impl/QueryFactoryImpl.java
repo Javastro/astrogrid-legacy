@@ -16,22 +16,23 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Hashtable;
- 
+
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
-import org.astrogrid.Configurator ;
-import org.astrogrid.datacenter.DTC;
+import org.astrogrid.datacenter.Util;
+import org.astrogrid.datacenter.config.ConfigurableImpl;
+import org.astrogrid.datacenter.config.ConfigurationKeys;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.query.QueryFactory;
 import org.astrogrid.i18n.AstroGridMessage;
 import org.w3c.dom.Element;
 
-
-public class QueryFactoryImpl implements QueryFactory {
+/** implementation of the query factory */
+public class QueryFactoryImpl extends ConfigurableImpl implements QueryFactory {
 	
 	private static final boolean 
 		TRACE_ENABLED = true ;
@@ -40,7 +41,7 @@ public class QueryFactoryImpl implements QueryFactory {
 		logger = Logger.getLogger( QueryFactoryImpl.class ) ;
         
     private final static String
-        SUBCOMPONENT_NAME = Configurator.getClassName( QueryFactoryImpl.class );
+        SUBCOMPONENT_NAME =  Util.getComponentName( QueryFactoryImpl.class );
 	
 	private static InitialContext 
 	    initialContext = null ;
@@ -82,7 +83,7 @@ public class QueryFactoryImpl implements QueryFactory {
 	} // end of getDataSources()
 	
 	
-	private static DataSource getDataSource( String catalogName ) throws QueryException {
+	private  DataSource getDataSource( String catalogName ) throws QueryException {
 		if( TRACE_ENABLED ) logger.debug( "getDataSource(): entry") ; 
 		
 		DataSource
@@ -230,16 +231,16 @@ public class QueryFactoryImpl implements QueryFactory {
 	} // end of getInitialContext()
 	
 	
-	private static String getDataSourceName ( String catalogName ) {
+	private String getDataSourceName ( String catalogName ) {
 		if( TRACE_ENABLED ) logger.debug( "getDataSourceName(): entry") ;  	
 			
 		String
-		    datasourceName = DTC.getProperty( catalogName.toUpperCase() + ".DATASOURCE" 
-                                            , DTC.CATALOG_CATEGORY ) ;
+		    datasourceName = getConfiguration().getProperty( catalogName.toUpperCase() + ".DATASOURCE" 
+                                            , ConfigurationKeys.CATALOG_CATEGORY ) ;
 		    
 		if( datasourceName == null ) { 
-			datasourceName = DTC.getProperty( DTC.CATALOG_DEFAULT_QUERYFACTORY
-                                            , DTC.CATALOG_CATEGORY ) ;
+			datasourceName = getConfiguration().getProperty( ConfigurationKeys.CATALOG_DEFAULT_QUERYFACTORY
+                                            , ConfigurationKeys.CATALOG_CATEGORY ) ;
 		}
 		
 		if( TRACE_ENABLED ) logger.debug( "getDataSourceName(): exit") ;  		

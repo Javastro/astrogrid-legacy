@@ -18,13 +18,11 @@ import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.util.Date;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
-
 import org.apache.log4j.Logger;
-import org.astrogrid.Configurator ;
-import org.astrogrid.datacenter.DTC;
+import org.astrogrid.datacenter.FactoryProvider;
+import org.astrogrid.datacenter.Util;
+import org.astrogrid.datacenter.config.ConfigurableImpl;
+import org.astrogrid.datacenter.config.ConfigurationKeys;
 import org.astrogrid.datacenter.job.Job;
 import org.astrogrid.datacenter.job.JobException;
 import org.astrogrid.datacenter.job.JobFactory;
@@ -51,7 +49,7 @@ import org.w3c.dom.Element;
  * @see     org.astrogrid.Job
  * @since   AstroGrid 1.2
  */
-public class JobFactoryImpl implements JobFactory {
+public class JobFactoryImpl  extends ConfigurableImpl implements JobFactory{
 	
 	/** Compile-time switch used to turn tracing on/off. */
 	private static final boolean 
@@ -61,13 +59,9 @@ public class JobFactoryImpl implements JobFactory {
 	private static Logger 
 		logger = Logger.getLogger( JobFactoryImpl.class ) ;
         
-    private final static String 
-        SUBCOMPONENT_NAME = Configurator.getClassName( JobFactoryImpl.class );
+    private final static String SUBCOMPONENT_NAME = Util.getComponentName( JobFactoryImpl.class );
         	
-	/**  The job database, or - in JDBC terms - its DataSource */ 	
-	private static DataSource
-		datasource = null ;
-	    
+
 	public static final String
 	    INSERT_TEMPLATE = "INSERT INTO {0} ( JOBURN, JOBNAME, RUNTIMESTAMP, USERID, COMMUNITY, STATUS, COMMENT ) " +
 	                      "VALUES ( ''{1}'', ''{2}'', ''{3}'', ''{4}'', ''{5}'', ''{6}'', ''{7}'' )" ,              
@@ -85,76 +79,12 @@ public class JobFactoryImpl implements JobFactory {
 	    COL_COMMENT = 7 ;
 	    
 	private static final String
-		ASTROGRIDERROR_COULD_NOT_CREATE_JOB_DATASOURCE            = "AGDTCE00150",
 		ASTROGRIDERROR_COULD_NOT_CREATE_JOB_CONNECTION            = "AGDTCE00160",
 	    ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT = "AGDTCE00170",
 	    ASTROGRIDERROR_UNABLE_TO_UPDATE_JOB                       = "AGDTCE00190",
 	    ASTROGRIDERROR_UNABLE_TO_FIND_JOB_GIVEN_JOBID             = "AGDTCE00192",
 	    ASTROGRIDERROR_UNABLE_TO_DELETE_JOB                       = "AGDTCE00194"  ;
 
-
-	/**
-	  *  
-	  * Returns the <code>DataSource</code> for the Job databasee.
-	  * <p>
-	  * This is a getter which constitutes a lazey initialization
-	  * routine for the Job DataSource. The DataSource is a static
-	  * object which is itself threadsafe, but the initialization routine
-	  * is synchronized and double locked to prevent problems
-	  * during initialization.
-	  * 
-	  * @return The Job DataSource
-	  * @throws org.astrogrid.JobException
-	  * 
-	  **/             
-	public static DataSource getDataSource() throws JobException {
-		if( TRACE_ENABLED ) logger.debug( "JobFactoryImpl.getDataSource(): entry") ; 
-	
-		String
-		   datasourceName = null ;
-					
-		try{
-			
-			// Note the double lock strategy			
-			if( datasource == null ){
-			   logger.debug("datasource is null") ;
-			   synchronized ( JobFactoryImpl.class ) {
-				   if( datasource == null ){
-				   	   logger.debug( "about to acquire InitialContext..." ) ;
-				   	   InitialContext
-					      initialContext = new InitialContext() ;
-					   logger.debug( "acquired InitialContext!" ) ;
-					   logger.debug( "about to acquire datasource name/location..." ) ;
-					   datasourceName = DTC.getProperty( DTC.JOB_DATASOURCE_LOCATION
-					                                   , DTC.JOB_CATEGORY ) ;
-					   logger.debug( "datasource name/location = " + datasourceName ) ;
-					   logger.debug( "about to do lookup..." ) ;
-					   datasource = (DataSource) initialContext.lookup( datasourceName ) ;
-					   logger.debug( "datasource acquired!" ) ;
-					   logger.debug( "datasource: " + datasource.toString() ) ;
-				   }
-			   } // end synchronized
-			}
-			else {
-				logger.debug("datasource is not null") ;
-			}
-			
-		}
-		catch( NamingException ne ) {
-			AstroGridMessage
-				message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_JOB_DATASOURCE
-                                              , SUBCOMPONENT_NAME 
-									          , (datasourceName != null ? datasourceName : "") ) ;			                     
-			logger.error( message.toString(), ne ) ;
-			throw new JobException( message, ne );
-		}
-		finally{
-			if( TRACE_ENABLED ) logger.debug( "JobFactoryImpl.getDataSource(): exit") ; 	
-		}
-		
-		return datasource ;	
-			
-	} // end of getDataSource()	
 
 
 	/**
@@ -173,7 +103,8 @@ public class JobFactoryImpl implements JobFactory {
      * @exception - org.astrogrid.JobException
 	 * 
 	 **/             
-    public Job create( Document jobDoc ) throws JobException  {
+    public Job create( Document jobDoc ,FactoryProvider facMan) throws JobException  {
+    
 		if( TRACE_ENABLED ) logger.debug( "JobFactoryImpl.createJob(): entry") ;  
 		 	
     	JobImpl
@@ -189,7 +120,8 @@ public class JobFactoryImpl implements JobFactory {
 			// chained off of the creation of Job. When this returns, all
 			// appropriate values have been set, ready for them to be inserted
 			// into the database...
-			job = new JobImpl( docElement ) ;
+			job = new JobImpl( docElement,facMan ) ;
+			job.setConfiguration(getConfiguration());
 			
 			// We need this for occasional fudging...
 			// See update()
@@ -197,7 +129,7 @@ public class JobFactoryImpl implements JobFactory {
 			
 			Object []
 			   inserts = new Object[8] ;
-			inserts[0] = DTC.getProperty( DTC.JOB_TABLENAME, DTC.JOB_CATEGORY ) ;
+			inserts[0] = getConfiguration().getProperty( ConfigurationKeys.JOB_TABLENAME, ConfigurationKeys.JOB_CATEGORY ) ;
 			inserts[1] = job.getId() ;
 			inserts[2] = job.getName() ;
 			inserts[3] = new Timestamp( job.getDate().getTime() ).toString(); //JBL Note: this may give us grief
@@ -310,7 +242,7 @@ public class JobFactoryImpl implements JobFactory {
 
 			Object []
 			   inserts = new Object[2] ;
-			inserts[0] = DTC.getProperty( DTC.JOB_TABLENAME, DTC.JOB_CATEGORY ) ;
+			inserts[0] = getConfiguration().getProperty( ConfigurationKeys.JOB_TABLENAME, ConfigurationKeys.JOB_CATEGORY ) ;
 			inserts[1] = job.getId() ;
 
 			String
@@ -381,7 +313,7 @@ public class JobFactoryImpl implements JobFactory {
 
 			Object []
 			   inserts = new Object[2] ;
-			inserts[0] = DTC.getProperty( DTC.JOB_TABLENAME, DTC.JOB_CATEGORY ) ;
+			inserts[0] = getConfiguration().getProperty( ConfigurationKeys.JOB_TABLENAME, ConfigurationKeys.JOB_CATEGORY ) ;
 			inserts[1] = job.getId() ;
 
 			String

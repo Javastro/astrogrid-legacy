@@ -20,15 +20,18 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import org.apache.log4j.Logger;
-import org.astrogrid.Configurator ;
-import org.astrogrid.datacenter.DTC;
+import org.astrogrid.datacenter.Util;
+import org.astrogrid.datacenter.config.ConfigurableImpl;
+import org.astrogrid.datacenter.config.ConfigurationKeys;
 import org.astrogrid.datacenter.myspace.Allocation;
 import org.astrogrid.datacenter.myspace.AllocationException;
 import org.astrogrid.datacenter.myspace.MySpaceFactory;
 import org.astrogrid.i18n.AstroGridMessage;
 
-
-public class MySpaceFactoryImpl implements MySpaceFactory {
+/** implementation of MySpaceFactory 
+ * 
+ */
+public class MySpaceFactoryImpl extends ConfigurableImpl implements MySpaceFactory {
 	
 	private static final boolean 
 		TRACE_ENABLED = true ;
@@ -37,7 +40,7 @@ public class MySpaceFactoryImpl implements MySpaceFactory {
 		logger = Logger.getLogger( MySpaceFactoryImpl.class ) ;
         
     private final static String
-        SUBCOMPONENT_NAME = Configurator.getClassName( MySpaceFactoryImpl.class ) ;
+        SUBCOMPONENT_NAME =  Util.getComponentName( MySpaceFactoryImpl.class ) ;
 		
 	private static String
 		ASTROGRIDERROR_COULD_NOT_CREATE_ALLOCATION = "AGDTCE00100", 
@@ -56,7 +59,7 @@ public class MySpaceFactoryImpl implements MySpaceFactory {
 
 		try {
             String
-                fileName = MySpaceFactoryImpl.produceFileName( jobID ) ;
+                fileName = produceFileName( jobID ) ;
 
             OutputStream
                 out = MySpaceFactoryImpl.createCompressedOutputStream( fileName, "uncompressed" ) ;	
@@ -101,15 +104,15 @@ public class MySpaceFactoryImpl implements MySpaceFactory {
 	}// end of close()
     
     
-    private static String produceFileName( String jobID ) {
+    private String produceFileName( String jobID ) {
     	
     	StringBuffer
     	    buffer = new StringBuffer( 64 ) ;
     	
 		buffer
 //JBL Note: .append( "file://" )  // JBL Note: this is a quick fix for AstroGrid iteration 2
-		    .append( DTC.getProperty( DTC.MYSPACE_CACHE_DIRECTORY
-                                    , DTC.MYSPACE_CATEGORY ) )  
+		    .append( getConfiguration().getProperty( ConfigurationKeys.MYSPACE_CACHE_DIRECTORY
+                                    , ConfigurationKeys.MYSPACE_CATEGORY ) )  
 		    .append( System.getProperty( "file.separator" ) )
 		    .append( jobID.replace( ':', '.' ) ) 
 			.append( ".xml" ) ;
