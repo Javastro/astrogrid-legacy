@@ -1,13 +1,68 @@
-            <map:match pattern="agregistry.xsp">
-               <map:generate type="serverpages" src="xsp/agregistry.xsp"/>
-               <map:transform src="xsl/agregistry.xsl"/> 
-               <map:serialize type="html"/>
-            </map:match>
-            <map:match pattern="agtemplate.xsl">
-               <map:redirect-to uri="xsl/agtemplate.xsl"/>
-            </map:match>
-            <map:match pattern="agregistry.xml">
-               <map:generate type="file" src="xml/agregistry.xml"/>
-               <map:transform src="xsl/agtemplate.xsl"/>
-               <map:serialize type="html"/>
-            </map:match>
+<?xml version="1.0"?>
+
+<map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
+
+   <map:components>
+      <map:generators default="file"/>
+      <map:transformers default="xslt"/>
+      <map:readers default="resource"/>
+      <map:serializers default="html"/>
+      <map:selectors default="browser"/>
+      <map:matchers default="wildcard"/>
+   </map:components>
+
+   <map:pipelines>
+      <map:pipeline>
+         <map:match pattern="">
+            <map:redirect-to uri="index.xml"/>
+         </map:match>
+
+         <!-- Registry Browser -->
+         <map:match pattern="*agregistrybrowse">
+            <map:generate type="serverpages" src="browse.xsp"/>
+            <map:transform src="../xsl/agtemplate.xsl"/> 
+            <map:serialize type="html"/>
+         </map:match>
+
+         <!-- Registry Update -->
+         <map:match pattern="*agregistryupdate">
+            <map:generate type="serverpages" src="update.xsp"/>
+            <map:transform src="../xsl/agtemplate.xsl"/> 
+            <map:serialize type="html"/>
+         </map:match>
+
+         <!-- Registry Action -->
+         <map:match pattern="agregistryaction">
+            <map:redirect-to uri="action.xsp"/>
+         </map:match>
+
+         <!-- HTML pages -->
+         <map:match pattern="*.html">
+            <map:read mime-type="text/html" src="{1}.html"/>
+         </map:match>
+
+         <!-- XML pages -->
+         <map:match pattern="*.xml">
+            <map:generate type="file" src="{1}.xml"/>
+            <map:transform src="../xsl/agtemplate.xsl"/> 
+            <map:serialize type="html"/>
+         </map:match>
+
+         <!-- Site XSP files -->
+         <map:match pattern="*.xsp">
+            <map:generate type="serverpages" src="{1}.xsp"/>
+            <map:transform src="{1}.xsl"/> 
+            <map:serialize type="html"/>
+         </map:match>
+
+         <!-- Site images -->
+         <map:match pattern="*.gif">
+            <map:read src="../images/{1}.gif" mime-type="images/gif"/>
+         </map:match>
+         <map:match pattern="*.png">
+            <map:read src="../images/{1}.png" mime-type="images/png"/>
+         </map:match>
+
+      </map:pipeline>
+   </map:pipelines>
+</map:sitemap>
