@@ -1,4 +1,4 @@
-/*$Id: TestInstallation.java,v 1.1 2003/09/10 13:05:05 nw Exp $
+/*$Id: TestInstallation.java,v 1.2 2003/09/11 11:05:33 nw Exp $
  * Created on 08-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,13 +23,17 @@ import junit.framework.TestSuite;
 import java.io.*; 
 import java.util.*;
 import java.net.*;
-/** junit test for validating an installation
+/** integration test for validating an installation
+ * <p>
+ * First checks that axis is running, then that the datacenter web application is present and installed.
+ * Then will run predefined queries through the datacenter.
+ * <p>
  * - deliberately not called *Test - as we dont want it automatically run via maven
  *  - just that junit is a nice way to present these installation tests 
  * @author Noel Winstanley nw@jb.man.ac.uk 08-Sep-2003
- *@todo just extends hsqlTestCase to get access to unitily functions. Could move these to a static helper class.
+
  */
-public class TestInstallation extends HsqlTestCase { 
+public class TestInstallation extends TestCase { 
 
     /**
      * Constructor for TestInstallation.
@@ -49,6 +53,9 @@ public class TestInstallation extends HsqlTestCase {
     /*
      * @see TestCase#setUp()
      */
+     /** set up connection properties. will use defaults defined as constants in this class,
+      * unless system properties are defined (under the corresponding keys).
+      */
     protected void setUp() throws Exception {
        baseURL = new URL (System.getProperty(BASE_URL_KEY,BASE_URL_DEFAULT)); // trailing / is important here.
        serviceName = System.getProperty(SERVICE_NAME_KEY,SERVICE_NAME_DEFAULT);
@@ -66,54 +73,75 @@ public class TestInstallation extends HsqlTestCase {
     
     
 
-    /*
-     * @see TestCase#tearDown() 
-     */
-    protected void tearDown() throws Exception {
-    }
-    
+    /** check that tomcat is running and the axis server is running */
     public void testAxisInstallation() throws Exception {
-        String frontPage = streamToString( baseURL.openConnection().getInputStream() );
+        String frontPage = HsqlTestCase.streamToString( baseURL.openConnection().getInputStream() );
         assertTrue(frontPage.trim().length() > 0);
         assertNotNull(frontPage);
         assertEquals(-1,frontPage.toLowerCase().indexOf("error"));
-        String checkPage = streamToString( (new URL(baseURL,"happyaxis.jsp")).openConnection().getInputStream() );
+        String checkPage = HsqlTestCase.streamToString( (new URL(baseURL,"happyaxis.jsp")).openConnection().getInputStream() );
         assertNotNull(checkPage);
         assertTrue(checkPage.trim().length() > 0);
         assertEquals(-1,checkPage.toLowerCase().indexOf("error"));       
     }
     
+    /** check the datacenter web service is installed, by attempting to get the wsdl for it. */
     public void testDatacenterInstallation() throws Exception {
-        // nothing here for now - later will add a self-test / reporting web service method to datacenter.
+        InputStream wsdlStream =  (new URL(baseURL,"services/" + serviceName + "?wsdl")).openConnection().getInputStream();
+        assertNotNull(wsdlStream);
+        Document wsdlDoc = XMLUtils.newDocument(wsdlStream);
+        assertNotNull(wsdlDoc);
+        assertEquals("definitions",wsdlDoc.getDocumentElement().getLocalName());
+        
     }
-    
+    /** run a series of sample queries through the service
+     *  <p>
+     *  examines value of {@link #QUERY_FILE_KEY}, searches for input files in following order
+     * <ol>
+     * <li>a directory named ${QUERY_FILE_KEY} - uses each *.xml file within it as an input
+     * <li>a file named ${QUERY_FILE_KEY} - uses this as the single input
+     * <li>a resource on classpath named ${QUERY_FILE_KEY} - uses this as the single input.
+     * @throws Exception
+     */
     public void testDoQuery() throws Exception {
         String serviceEndpoint = (new URL(baseURL,"services/" + serviceName)).toString();
         System.out.println("Accessing service at " + serviceEndpoint);
         DatacenterDelegate del = DatacenterDelegate.makeDelegate( serviceEndpoint) ;// pity it can't take a URL
         assertNotNull(del);
-        assertTrue("query file does not exist: " +queryFile.getAbsolutePath(),queryFile.exists());
-        if (queryFile.isFile()) {
-            doQuery(del,queryFile);
-        } else if (queryFile.isDirectory()) {
-            File[] inputs = queryFile.listFiles();
-            for (int i  = 0; i < inputs.length; i++) {
-                doQuery(del,inputs[i]);
+        if (queryFile.exists()) { // on local file system.
+            if (queryFile.isFile()) {
+                System.out.println ("Local file");
+                doQuery(del,new FileInputStream(queryFile));
+            } else if (queryFile.isDirectory()) {
+                System.out.println("Local directory");
+                File[] inputs = queryFile.listFiles(new FileFilter() {
+                    public boolean accept(File pathname) {                        
+                        return pathname.getName().toLowerCase().endsWith(".xml");
+                    }
+                });
+                for (int i  = 0; i < inputs.length; i++) {
+                    doQuery(del,new FileInputStream(inputs[i]));
+                }
             }
+        } else { // try loading from classpath.
+            System.out.println("Loading Resource");
+            InputStream is = this.getClass().getResourceAsStream(queryFile.getPath()); 
+            assertNotNull("input file :" + queryFile.getPath() + " not found on filesystem, or as resource",is);
+            doQuery(del,is);
         }
     }
     
-    protected void doQuery(DatacenterDelegate del,File f) throws Exception {
-        assertTrue(f.exists() && f.isFile());
-        Document doc = XMLUtils.newDocument(new FileInputStream(f));
+    protected void doQuery(DatacenterDelegate del,InputStream is) throws Exception {
+        Document doc = XMLUtils.newDocument(is);
         assertNotNull(doc);
         Element input = doc.getDocumentElement();
         assertNotNull(input);
         Element result =  del.adqlQuery(input);
         assertNotNull(result); 
-        assertEquals("VOTABLE",result.getLocalName());
+        assertEquals("ResultsResponse",result.getLocalName());
         assertEquals(1,result.getElementsByTagName("TR").getLength()); // should return a single row.
-        System.out.println(XMLUtils.ElementToString(result)); 
+        System.out.println(XMLUtils.ElementToString(result));
+
     }
     
 
@@ -122,6 +150,9 @@ public class TestInstallation extends HsqlTestCase {
 
 /* 
 $Log: TestInstallation.java,v $
+Revision 1.2  2003/09/11 11:05:33  nw
+fixed to work with changes to query input format
+
 Revision 1.1  2003/09/10 13:05:05  nw
 added integration -testing hierarchy
  
