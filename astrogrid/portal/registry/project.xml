@@ -12,6 +12,10 @@
         +-->
     <extend>../maven-base/project.xml</extend>
    
+    <!--+
+        | The current version of the Maven project descriptor.
+        +-->
+    <pomVersion>3</pomVersion>
 
     <!--+
         | The short name of the project.
@@ -156,6 +160,32 @@
             <version>2.1.2</version>
         </dependency>
         
+        <dependency>
+            <groupId>commons-discovery</groupId>
+            <artifactId>commons-discovery</artifactId>
+            <version>SNAPSHOT</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>false</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.8</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
         
         <!--+
             | The Registry components.

@@ -35,8 +35,6 @@ import org.astrogrid.registry.RegistryException;
 
 import org.astrogrid.config.Config;
 
-import org.astrogrid.registry.beans.resource.*;
-import org.astrogrid.registry.beans.resource.types.InvocationType;
 import org.astrogrid.util.DomHelper;
 import org.astrogrid.registry.common.WSDLBasicInformation;
 import org.astrogrid.store.Ivorn;
@@ -242,7 +240,7 @@ public class RegistryQueryAction extends AbstractAction
                if (DEBUG_FLAG) printDebug( method, "Service = " + rs);
 //               VODescription vo = rs.submitQueryString(query);
 //               if (DEBUG_FLAG) printDebug( method, "VO Description = " + vo);
-               Document doc = rs.submitQueryStringDOM( query );
+               Document doc = rs.submitQuery( query );
                if ( DEBUG_FLAG) printDebug( method, "doc = " + doc );
                 //                     XMLUtils.DocumentToString(doc) );
                //if ( doc == null )

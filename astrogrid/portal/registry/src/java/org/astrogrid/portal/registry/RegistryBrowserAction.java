@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import org.astrogrid.registry.client.admin.RegistryAdminDocumentHelper;
 import org.w3c.dom.Document;
+import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
@@ -36,13 +37,10 @@ import org.astrogrid.registry.RegistryException;
 
 import org.astrogrid.config.Config;
 
-import org.astrogrid.registry.beans.resource.*;
-import org.astrogrid.registry.beans.resource.types.InvocationType;
 import org.astrogrid.util.DomHelper;
 import org.astrogrid.registry.common.WSDLBasicInformation;
 import org.astrogrid.store.Ivorn;
 
-import org.exolab.castor.xml.*;
 import java.io.InputStream;
 import java.net.URL;
 
@@ -61,45 +59,45 @@ public class RegistryBrowserAction extends AbstractAction
    public static boolean DEBUG_FLAG = true;
    public static boolean STACK_TRACE = false;
    
-   private static final String PARAM_MAIN_ELEMENT = "mainelement";   
+   public static final String PARAM_MAIN_ELEMENT = "mainelement";   
    
    /**
     * Cocoon param for the user param in the session.
     *
     */
 /* First the Actions */
-   private static final String PARAM_ACTION = "action";
+   public static final String PARAM_ACTION = "action";
    
-   private static final String QUERY_ACTION = "queryregistry";
+   public static final String QUERY_ACTION = "queryregistry";
 
-   private static final String SELECT_ACTION = "selectentry";
+   public static final String SELECT_ACTION = "selectentry";
 
-   private static final String CONFIRM_ACTION = "Verify";
+   public static final String CONFIRM_ACTION = "Verify";
 
 /* Now the parameters passed back to Cocoon */
-   private static final String PARAM_SERVER = "Server";
+   public static final String PARAM_SERVER = "Server";
    
-   private static final String PARAM_ID = "identifier";
+   public static final String PARAM_ID = "identifier";
    
-   private static final String PARAM_TITLE = "title";
+   public static final String PARAM_TITLE = "title";
    
-   private static final String PARAM_AUTHORITY_ID = "authId";
+   public static final String PARAM_AUTHORITY_ID = "authId";
    
-   private static final String PARAM_RESOURCE_KEY = "resourceKey";
+   public static final String PARAM_RESOURCE_KEY = "resourceKey";
    
-   private static final String PARAM_COLUMN = "column";
+   public static final String PARAM_COLUMN = "column";
       
-   private static final String PARAM_RESULT_LIST = "resultlist";
+   public static final String PARAM_RESULT_LIST = "resultlist";
       
-   private static final String QUERY_RESULT = "queryresult";
+   public static final String QUERY_RESULT = "queryresult";
       
-   private static final String RESULT_IDENTIFIER = "resultidentifier";
+   public static final String RESULT_IDENTIFIER = "resultidentifier";
       
-   private static final String CATALOG_SEARCH = "Catalog";
+   public static final String CATALOG_SEARCH = "Catalog";
 
-   private static final String TOOL_SEARCH = "Tool";
+   public static final String TOOL_SEARCH = "Tool";
 
-   private static final String ERROR_MESSAGE = "errormessage";
+   public static final String ERROR_MESSAGE = "errormessage";
    
    public static Config conf = null;   
    
@@ -201,7 +199,8 @@ public class RegistryBrowserAction extends AbstractAction
             URL url = new URL( endpoint );               
             RegistryService rs = RegistryDelegateFactory.createQuery(url);
             printDebug( method, "Service = " + rs);
-            Document doc = rs.submitQueryStringDOM( query );
+            Document doc = rs.submitQuery( query );
+            //Document doc = rs.submitQueryStringDOM( query );
 
             //create the results and put it in the request.
             resultlist = createList( doc );
@@ -263,13 +262,26 @@ public class RegistryBrowserAction extends AbstractAction
     * @return ArrayList of relevant the String XML results.
     */
    private ArrayList createList( Document doc ) {
-      NodeList nl = doc.getDocumentElement().getChildNodes();
+      NodeList nodes = doc.getDocumentElement().getChildNodes();
+      return listNodes( nodes );
+   }
+   private ArrayList createList( Document doc, String Elem ) {
+      NodeList nodes = doc.getElementsByTagName(Elem);
+      return listNodes( nodes );
+   }
+
+   private ArrayList listNodes( NodeList nl ) {
       ArrayList al = new ArrayList();
       for(int i = 0; i < nl.getLength(); i++) {
-         String element = XMLUtils.ElementToString( (Element) nl.item(i) );
-         al.add( element ); 
-         if (DEBUG_FLAG && i == 1 )
-            printDebug( "CreateList", "First Result Line = " + element );
+         String element = null;
+         Node node = nl.item(i);
+         if( node instanceof org.w3c.dom.Element ) {
+            element = XMLUtils.ElementToString( (Element) node );
+            al.add( element );
+         } 
+         if (DEBUG_FLAG && i < 2 )
+            printDebug( "CreateList", "Result " + i + " ("
+                        + node.getNodeType() + ") = " + element);
       }
       return al;
    }
@@ -311,19 +323,6 @@ public class RegistryBrowserAction extends AbstractAction
      query += "\n</selectionSequence></query>";
 
      return query;
-   }
-
-   private ArrayList createList( Document doc, String Elem ) {
-      NodeList elems = doc.getElementsByTagName(Elem);
-      ArrayList al = new ArrayList();
-      for(int i = 0; i < elems.getLength();i++) {
-         Element elem = (Element) elems.item(i);
-         String element = XMLUtils.ElementToString(elem);
-         al.add( element ); 
-         if (DEBUG_FLAG && i == 1 )
-            printDebug( "CreateList","First Result Line = " + element );
-      }
-      return al;
    }
 
    private String getResultMessage(Document doc) {
