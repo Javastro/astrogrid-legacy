@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE TestWebServices SYSTEM "TestWebServices.dtd">
+<TestWebServices>
+	<WebServiceTest name="Registry" fullclassname="org.astrogrid.portal.generated.registry.client.RegistryInterfaceTestCase" threadstyle="sequential">
+		<Runnable type="junit">
+			<TestCase name="RegistryTest" loop="1"  threadstyle="sequential">
+				<Thread number="50"  loop="1" threadstyle="sequential" />
+			</TestCase>
+		</Runnable>
+	</WebServiceTest>
+</TestWebServices>

@@ -54,7 +54,9 @@ public class WSTester {
 		ArrayList webServices = cfr.getWebServices();
 		//System.out.println("The size of webservices = " + webServices.size());
 		int iActiveThreads = 0;
+		int normalThreadCount = 0;
 		Timer timer;
+		normalThreadCount = Thread.activeCount();
 
 		Calendar timerTime = Calendar.getInstance();
 		timerTime.add(Calendar.SECOND,5);
@@ -74,9 +76,9 @@ public class WSTester {
 								timer.schedule(new RunWebServiceTask(this.fileName,st.getName(),st.getFullClassName(),stc.getName(),stc.getLoop(),tct.getLoop(),tct.getConCurrentThreads()),timerTime.getTime());
 								//System.out.println("schedule number = " + m);
 						}//for
-						//System.out.println("The after activecount = " + Thread.activeCount());
+						System.out.println("The number of threads scheduled = " + (Thread.activeCount() - normalThreadCount));
 						if(tct.getThreadStyle().equals(SEQUENTIAL_STYLE)) {
-							while( (iActiveThreads = Thread.activeCount()) > 2) {
+							while( (iActiveThreads = Thread.activeCount()) > normalThreadCount) {
 								try {
 									//System.out.println("the active threadcount = " + iActiveThreads);
 									Thread.sleep(5000);
@@ -87,7 +89,7 @@ public class WSTester {
 						}//if
 					}//for
 					if(stc.getThreadStyle().equals(SEQUENTIAL_STYLE)) {
-						while( (iActiveThreads = Thread.activeCount()) > 2) {
+						while( (iActiveThreads = Thread.activeCount()) > normalThreadCount) {
 							try {
 								//System.out.println("the active threadcount = " + iActiveThreads);
 								Thread.sleep(5000);
@@ -99,7 +101,7 @@ public class WSTester {
 				}//for				
 			}//for
 			if(st.getThreadStyle().equals(SEQUENTIAL_STYLE)) {
-				while( (iActiveThreads = Thread.activeCount()) > 2) {
+				while( (iActiveThreads = Thread.activeCount()) > normalThreadCount) {
 					try {
 						//System.out.println("the active threadcount = " + iActiveThreads);
 						Thread.sleep(5000);

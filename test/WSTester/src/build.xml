@@ -33,6 +33,7 @@
 		<copy toDir="${project.build}/classes">
 			<fileset dir="java">
 				<include name="**/org/tools/wstool/xml/*.xml"/>
+					<include name="**/org/tools/wstool/xml/*.dtd"/>
 			</fileset>
 		</copy>
 		

@@ -66,7 +66,18 @@ of a Junit TestCase that tests other Junit tests.  If that is possible and all
 the code was nice and neat heck why not submit this to Junit themselves.
 
 Known Bugs:
-1.) Even though the method writing out to the text file is synchronized it still on occasions when their is high thread counts that it may write a line concatenated with another line.
+1.) Even though the method writing out to the text file is synchronized it 
+still on occasions when their is high thread counts that it may write a line
+concatenated with another line.
 
 Potential Bug:
-1.) Hmmm this seems to be okay, but you will notice in the code when you are running tests in "sequential" mode that it sleeps until all the threads are done with the exception of your own main thread.  It seems your own main thread is always 2 for me (Meaning when you run an Application the ThreadCount is 2).  Which I guess is because of the JVM and then the main application.  But if for some reason it is ever 3 then you will have an infinity loop.  Anybody want to explain this one to me.
+[Okay this has now been fixed, unless the main/normal ThreadCount 
+actually permantely changes.]
+1.) Hmmm this seems to be okay, but you will notice in the code 
+when you are running tests in "sequential" mode that it sleeps 
+until all the threads are done with the exception of your own 
+main thread.  It seems your own main thread is always 2 for me 
+(Meaning when you run an Application the ThreadCount is 2).  
+Which I guess is because of the JVM and then the main application.
+But if for some reason it is ever 3 then you will have an infinity loop.
+Anybody want to explain this one to me.
