@@ -1,5 +1,5 @@
 /*
- * $Id: Sql2Adql074Test.java,v 1.3 2004/08/27 09:31:16 mch Exp $
+ * $Id: Sql2Adql074Test.java,v 1.4 2004/09/08 21:24:14 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -91,21 +91,25 @@ public class Sql2Adql074Test extends TestCase   {
          "Select t.b, b.* from Tab as t, Bob as b Where Avg(b.dd) < 4.56"
       ));
    }
+   /* Not yet implemented
    public void testNvo6() throws IOException, ParserConfigurationException {
       assertValidXml(Sql2Adql074.translate(
          "Select sin(A.b), A.* From Tab as A where Circle(J2000, 1.2, 2.4, 0.2) And (log(A.d) < 1.24)"
       ));
    }
+    /**/
    public void testNvo7() throws IOException, ParserConfigurationException {
       assertValidXml(Sql2Adql074.translate(
          "Select a.* from Tab as a where Circle(Cartesian, 1.2, 2.4,3.6,0.2)"
       ));
    }
+   /* Not yet implemented
    public void testNvo8() throws IOException, ParserConfigurationException {
       assertValidXml(Sql2Adql074.translate(
          "Select (a.b - c.d), atwo.* From Tab as a, Bob as b, b.e as atwo"
       ));
    }
+    /**/
 
    public void testSsa() throws IOException, ParserConfigurationException {
       assertValidXml(Sql2Adql074.translate(
@@ -149,6 +153,9 @@ public class Sql2Adql074Test extends TestCase   {
 
 /*
  $Log: Sql2Adql074Test.java,v $
+ Revision 1.4  2004/09/08 21:24:14  mch
+ Commented out tests on things not yet implemented
+
  Revision 1.3  2004/08/27 09:31:16  mch
  Added limit, order by, some page tidying, etc
 
