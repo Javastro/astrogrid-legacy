@@ -1,9 +1,17 @@
 package org.astrogrid.scripting;
+
+import org.apache.log4j.Logger;
+
+import org.astrogrid.community.User;
 import org.astrogrid.config.Config;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
 import org.astrogrid.portal.workflow.intf.WorkflowManager;
 import org.astrogrid.portal.workflow.intf.WorkflowManagerFactory;
+import org.astrogrid.registry.client.RegistryDelegateFactory;
+import org.astrogrid.registry.client.query.RegistryService;
+import org.astrogrid.store.VoSpaceClient;
+import org.astrogrid.store.delegate.StoreClient;
 
 import org.xml.sax.SAXException;
 
@@ -19,13 +27,17 @@ import java.net.URL;
  * <h2>Features</h2>
  * <h3>Service Discovery</h3>
  * This class extends {@link Services}, which maintains lists of the different kinds of astrogrid services, and create delegates as needed.
+ * <h3>Configured Registry Delegate and Store Client</h3>
+ * This class provides simple access to the default registy and store services.
+ * <h3>Workflow Manager</h3>
+ * This class provides helper methods to build workflow documents, submit them to jes servers, and view results
  * <h3>XML Utilities</h3>
  * Provides helper methods to parse strings and inputStreams into {@link org.w3c.dom.Document}, and convert Documents and Elements back into
  * String.
  * <h3>Datacenter Query Utilities</h3>
- * Provides {@link #toQueryBody} methods to convert sql strings and ADQL queries into the correct format.
- * <h3>Ermmm</h3>
- * Need to add more stuff here - helpers for manipulating document formats sent to differnet services, etc.
+ * Provides methods to convert sql strings and ADQL queries into the correct format.
+ * <h3>Object creation utilties</h3>
+ * Provides helper methods to create some of the kinds of objects used in the astrogrid system.
  * 
  * @see Services
  * @see Service
@@ -33,6 +45,11 @@ import java.net.URL;
  *
  */
 public class Astrogrid extends Services {
+    /**
+     * Commons Logger for this class
+     */
+    private static final Logger logger = Logger.getLogger(Astrogrid.class);
+
    /** construct a new astrogrid object, using the default service document
     * <p>
     * Use {@link #getInstance()} instead if your scripting language supports this.
@@ -62,8 +79,7 @@ public class Astrogrid extends Services {
          try {
             theInstance = new Astrogrid();
          } catch (Exception e) {
-            System.err.println("Could not initialize Astrogrid object");
-            e.printStackTrace();
+            logger.error("Could not initialize Astrogrid object",e);
          }
       }
       return theInstance;
@@ -73,8 +89,7 @@ public class Astrogrid extends Services {
       try {
         theInstance = new Astrogrid(url);
       } catch (Exception e) {
-         System.err.println("Could not inizitalize Astrogrid object from url:" + url.toString());
-         e.printStackTrace();
+        logger.error("Could not inizitalize Astrogrid object from url:" + url.toString(),e);
       }
       return theInstance;
    }
@@ -83,35 +98,56 @@ public class Astrogrid extends Services {
       try {
         theInstance = new Astrogrid(url);
       } catch (Exception e) {
-         System.err.println("Could not inizitalize Astrogrid object from url:" + url.toString());
-         e.printStackTrace();
+         logger.error("Could not inizitalize Astrogrid object from url:" + url.toString(),e);
       }
       return theInstance;
    }
    
    private static Astrogrid theInstance;
     private final WorkflowManagerFactory factory = new WorkflowManagerFactory();
-    private final ObjectHelper oHelper = new ObjectHelper();
+    private final ObjectBuilder oHelper = new ObjectBuilder();
     private final XMLHelper xHelper = new XMLHelper();
       
-    /** access the workflow manager */
+    /** access the workflow manager 
+     * @return interface to system for building, saving, submitting and inspecting worflows.
+     * @throws WorkflowInterfaceException*/
     public WorkflowManager getWorkflowManager() throws WorkflowInterfaceException {
         return factory.getManager();
     }
     
-    public ObjectHelper getObjectHelper() {
+    /** access helper object for building objects 
+     * @return object that assists in building {@link User} objects, etc.*/
+    public ObjectBuilder getObjectBuilder() {
         return oHelper;
     }
     
+    /** access helper object for working with xml 
+     * @return object that assists with constructing and manipulatingn xml.*/
     public XMLHelper getXMLHelper() {
         return xHelper;
     }
     
-    /** accces the system configuration object */
+    /** accces the system configuration object 
+     * @return the system configuration object*/
     public Config getSystemConfig() {
         return SimpleConfig.getSingleton();
     }
+    
+    /** create client to access default registry 
+     * @returna registry client connected to the default registry location
+     * */
+    public RegistryService createRegistryClient() {
+        return RegistryDelegateFactory.createQuery();
+    }
 
+    /** create a client to access vospace 
+     * @param u object representing the user for whom to create the client for
+     * @return a vospace client which has the permissions of user <tt>u</tt>
+     * @see #getObjectBuilder() for how to build a <tt>User</tt> object*/
+    public VoSpaceClient createVoSpaceClient(User u) {
+        return new VoSpaceClient(u);
+    }
+    
    /* (non-Javadoc)
     * @see java.lang.Object#toString()
     */
