@@ -1,4 +1,4 @@
-/*$Id: EgsoQuerierTest.java,v 1.4 2004/08/27 14:32:35 KevinBenson Exp $
+/*$Id: EgsoQuerierTest.java,v 1.5 2004/09/02 12:44:35 mch Exp $
  * Created on 01-Dec-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,30 +11,20 @@
 package org.astrogrid.datacenter.sec.querier;
 
 import java.io.InputStream;
-
-import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.datacenter.ServerTestCase;
-import org.astrogrid.datacenter.queriers.Querier;
-import org.astrogrid.datacenter.queriers.QuerierManager;
-import org.astrogrid.datacenter.queriers.QueryResults;
-import org.astrogrid.datacenter.returns.TargetIndicator;
-import org.astrogrid.datacenter.query.AdqlQuery;
-import org.astrogrid.datacenter.query.RawSqlQuery;
-import org.astrogrid.community.Account;
-import java.io.StringWriter;
-import org.astrogrid.datacenter.adql.generated.Select;
 import java.io.InputStreamReader;
-
-
-//import org.astrogrid.datacenter.queriers.spi.Translator;
-//import org.astrogrid.datacenter.queriers.spi.TranslatorMap;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.astrogrid.util.DomHelper;
-
-import junit.framework.TestCase;
+import java.io.StringWriter;
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import org.astrogrid.community.Account;
+import org.astrogrid.datacenter.ServerTestCase;
+import org.astrogrid.datacenter.adql.generated.Select;
+import org.astrogrid.datacenter.queriers.Querier;
+import org.astrogrid.datacenter.queriers.QuerierManager;
+import org.astrogrid.datacenter.query.AdqlQuery;
+import org.astrogrid.datacenter.returns.ReturnTable;
+import org.astrogrid.datacenter.returns.TargetIndicator;
+import org.astrogrid.util.DomHelper;
+import org.w3c.dom.Document;
 
 
 /**
@@ -101,7 +91,7 @@ public class EgsoQuerierTest extends ServerTestCase {
       assertNotNull(select);
 
       StringWriter sw = new StringWriter();
-      Querier q = Querier.makeQuerier(Account.ANONYMOUS, new AdqlQuery(select), new TargetIndicator(sw), QueryResults.FORMAT_VOTABLE);
+      Querier q = Querier.makeQuerier(Account.ANONYMOUS, new AdqlQuery(select), new TargetIndicator(sw), ReturnTable.VOTABLE);
 
       manager.askQuerier(q);
       
@@ -116,6 +106,9 @@ public class EgsoQuerierTest extends ServerTestCase {
 
 /*
 $Log: EgsoQuerierTest.java,v $
+Revision 1.5  2004/09/02 12:44:35  mch
+Fixed FORMAT_VOTABLEs
+
 Revision 1.4  2004/08/27 14:32:35  KevinBenson
 class was placed at another package level, which caused a compile bug
 

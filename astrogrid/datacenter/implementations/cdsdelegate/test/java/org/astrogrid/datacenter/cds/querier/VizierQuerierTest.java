@@ -1,4 +1,4 @@
-/*$Id: VizierQuerierTest.java,v 1.5 2004/08/27 14:53:20 KevinBenson Exp $
+/*$Id: VizierQuerierTest.java,v 1.6 2004/09/02 12:44:35 mch Exp $
  * Created on 01-Dec-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,29 +10,21 @@
 **/
 package org.astrogrid.datacenter.cds.querier;
 
-import java.io.InputStream;
 import java.io.StringWriter;
-
-import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.community.Account;
-
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.ServerTestCase;
-import org.astrogrid.datacenter.query.ConeQuery;
-import org.astrogrid.datacenter.queriers.QueryResults;
-import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
-import org.astrogrid.datacenter.queriers.spi.Translator;
-import org.astrogrid.datacenter.queriers.spi.TranslatorMap;
-import org.astrogrid.datacenter.returns.TargetIndicator;
+import org.astrogrid.datacenter.cds.querier.VizierQuerierPlugin;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
-import org.astrogrid.datacenter.cds.querier.VizierQuerierPlugin;
+import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
+import org.astrogrid.datacenter.queriers.QueryResults;
+import org.astrogrid.datacenter.query.ConeQuery;
+import org.astrogrid.datacenter.returns.ReturnTable;
+import org.astrogrid.datacenter.returns.TargetIndicator;
+import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.astrogrid.util.DomHelper;
-
-
-import junit.framework.TestCase;
 
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 01-Dec-2003
@@ -78,7 +70,7 @@ public class VizierQuerierTest extends ServerTestCase {
     */
 
     public void testDoQuery() throws Exception
-    {  SimpleConfig.setProperty(QuerierPluginFactory.PLUGIN_KEY, 
+    {  SimpleConfig.setProperty(QuerierPluginFactory.PLUGIN_KEY,
           VizierQuerierPlugin.class.getName());
 
 //
@@ -109,10 +101,10 @@ public class VizierQuerierTest extends ServerTestCase {
 //    are in decimal degrees.  The search radius is equivalent to
 //    10 arcmin.
 
-       Querier q = Querier.makeQuerier(Account.ANONYMOUS, 
-         new ConeQuery(10.684620, 41.269278, 0.166667), 
-         new TargetIndicator(sw), 
-         QueryResults.FORMAT_VOTABLE);
+       Querier q = Querier.makeQuerier(Account.ANONYMOUS,
+         new ConeQuery(10.684620, 41.269278, 0.166667),
+         new TargetIndicator(sw),
+         ReturnTable.VOTABLE);
 
        manager.askQuerier(q);
 
@@ -123,8 +115,8 @@ public class VizierQuerierTest extends ServerTestCase {
 //
 //       assertIsVotable(results);
 //
-//    However, this does not work becuase Vizier returns a document 
-//    conforming to the VOtable _schema_ whereas the assertion uses 
+//    However, this does not work becuase Vizier returns a document
+//    conforming to the VOtable _schema_ whereas the assertion uses
 //    the VOtable DTD.  the following tests are used as a substitute.
 
        assertNotNull(results);
@@ -141,7 +133,7 @@ public class VizierQuerierTest extends ServerTestCase {
     */
 
     public void testDoMetaDataQuery() throws Exception
-    {  SimpleConfig.setProperty(QuerierPluginFactory.PLUGIN_KEY, 
+    {  SimpleConfig.setProperty(QuerierPluginFactory.PLUGIN_KEY,
           VizierQuerierPlugin.class.getName());
 
 //
@@ -172,10 +164,10 @@ public class VizierQuerierTest extends ServerTestCase {
 //    are in decimal degrees.  The search radius is equivalent to
 //    10 arcmin.
 
-       Querier q = Querier.makeQuerier(Account.ANONYMOUS, 
-         new ConeQuery(10.684620, 41.269278, 0.166667), 
-         new TargetIndicator(sw), 
-         QueryResults.FORMAT_VOTABLE);
+       Querier q = Querier.makeQuerier(Account.ANONYMOUS,
+         new ConeQuery(10.684620, 41.269278, 0.166667),
+         new TargetIndicator(sw),
+         ReturnTable.VOTABLE);
 
        manager.askQuerier(q);
 
@@ -186,8 +178,8 @@ public class VizierQuerierTest extends ServerTestCase {
 //
 //       assertIsVotable(results);
 //
-//    However, this does not work becuase Vizier returns a document 
-//    conforming to the VOtable _schema_ whereas the assertion uses 
+//    However, this does not work becuase Vizier returns a document
+//    conforming to the VOtable _schema_ whereas the assertion uses
 //    the VOtable DTD.  the following tests are used as a substitute.
 
        assertNotNull(results);
@@ -201,6 +193,9 @@ public class VizierQuerierTest extends ServerTestCase {
 
 /*
 $Log: VizierQuerierTest.java,v $
+Revision 1.6  2004/09/02 12:44:35  mch
+Fixed FORMAT_VOTABLEs
+
 Revision 1.5  2004/08/27 14:53:20  KevinBenson
 bug in compile not referencing the new location of TargetIndicator
 
