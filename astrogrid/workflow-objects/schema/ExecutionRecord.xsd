@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema 
+	targetNamespace="http://www.astrogrid.org/schema/ExecutionRecord/v1" 
+	xmlns:er="http://www.astrogrid.org/schema/ExecutionRecord/v1"
+	xmlns:ceat="http://www.astrogrid.org/schema/CEATypes/v1"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xsd:import namespace="http://www.astrogrid.org/schema/CEATypes/v1" schemaLocation="CEATypes.xsd"/>
+	
+		<xsd:element name="job-execution-record">
+			<xsd:annotation>
+				<xsd:documentation>A record of a single execution of a job</xsd:documentation>
+			</xsd:annotation>
+			<xsd:complexType>
+				<xsd:sequence>
+					<xsd:element ref="ceat:message" />
+				</xsd:sequence>				
+				<xsd:attribute name="jobID" type="ceat:job-identifier-type" />
+				<xsd:attributeGroup ref="er:record-attr"/>
+			</xsd:complexType>
+		</xsd:element>
+		
+		<xsd:element name="step-execution-record">
+				<xsd:annotation>
+					<xsd:documentation>A record of a single execution of a job step</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element ref="ceat:message" />
+					</xsd:sequence>
+					<xsd:attributeGroup ref="er:record-attr" />
+			</xsd:complexType>
+		</xsd:element>
+		
+
+
+<!-- types and groups -->
+		<xsd:attributeGroup name="record-attr">
+			<xsd:attribute name="startTime" type="xsd:dateTime" use="optional"/>
+			<xsd:attribute name="finishTime" type="xsd:dateTime" use="optional"/>
+			<xsd:attribute name="status" type="ceat:execution-phase" use="optional" default="UNKNOWN"/>				
+		</xsd:attributeGroup>
+		
+
+</xsd:schema>
