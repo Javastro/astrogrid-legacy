@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.5 2004/04/15 12:12:28 nw Exp $
+/*$Id: AllTests.java,v 1.6 2004/04/15 12:38:24 jdt Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,7 +22,7 @@ public class AllTests {
     public static Test suite() {
         TestSuite suite = new TestSuite("Workflow");
         //$JUnit-BEGIN$
-        suite.addTest(new TestSuite(ApplicationsInstallationTest.class));
+        suite.addTest(new TestSuite(ApplicationsIntegrationTest.class));
         suite.addTest(new TestSuite(DataCenterIntegrationTest.class));
         suite.addTest(new TestSuite(JesIntegrationTest.class));
         suite.addTest(new TestSuite(MySpaceIntegrationTest.class));
@@ -34,6 +34,9 @@ public class AllTests {
 }
 /* 
 $Log: AllTests.java,v $
+Revision 1.6  2004/04/15 12:38:24  jdt
+Think I've fixed a typo?
+
 Revision 1.5  2004/04/15 12:12:28  nw
 testing
 
