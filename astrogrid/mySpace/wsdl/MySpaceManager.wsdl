@@ -13,7 +13,9 @@
 
    <wsdl:message name="changeOwnerRequest">
 
-      <wsdl:part name="userID" type="xsd:string"/>
+      <wsdl:part name="userid" type="xsd:string"/>
+
+      <wsdl:part name="communityid" type="xsd:string"/>
 
       <wsdl:part name="dataHolderName" type="xsd:string"/>
 
@@ -125,7 +127,9 @@
 
    <wsdl:message name="createUserRequest">
 
-      <wsdl:part name="userID" type="xsd:string"/>
+      <wsdl:part name="userid" type="xsd:string"/>
+
+      <wsdl:part name="communityid" type="xsd:string"/>
 
       <wsdl:part name="subfolders" type="apachesoap:Vector"/>
 
@@ -157,7 +161,9 @@
 
    <wsdl:message name="deleteUserRequest">
 
-      <wsdl:part name="userID" type="xsd:string"/>
+      <wsdl:part name="userid" type="xsd:string"/>
+
+      <wsdl:part name="communityid" type="xsd:string"/>
 
    </wsdl:message>
 
@@ -267,7 +273,7 @@
 
       </wsdl:operation>
 
-      <wsdl:operation name="createUser" parameterOrder="userID subfolders">
+      <wsdl:operation name="createUser" parameterOrder="userid communityid subfolders">
 
          <wsdl:input name="createUserRequest" message="impl:createUserRequest"/>
 
@@ -275,7 +281,7 @@
 
       </wsdl:operation>
 
-      <wsdl:operation name="deleteUser" parameterOrder="userID">
+      <wsdl:operation name="deleteUser" parameterOrder="userid communityid">
 
          <wsdl:input name="deleteUserRequest" message="impl:deleteUserRequest"/>
 
@@ -283,7 +289,7 @@
 
       </wsdl:operation>
 
-      <wsdl:operation name="changeOwner" parameterOrder="userID dataHolderName newOwnerID">
+      <wsdl:operation name="changeOwner" parameterOrder="userid communityid dataHolderName newOwnerID">
 
          <wsdl:input name="changeOwnerRequest" message="impl:changeOwnerRequest"/>
 

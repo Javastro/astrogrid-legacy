@@ -41,7 +41,6 @@ public class MySpaceManagerDelegate {
 			String jobDetails = helper.buildListDataHoldings(userid, communityid, criteria);
 			String response = binding.lookupDataHoldersDetails(jobDetails);
 			vector = helper.getList(response);
-			//now build the Vector
 			
 		}catch(java.rmi.RemoteException re) {
 					re.printStackTrace();
@@ -204,7 +203,7 @@ public class MySpaceManagerDelegate {
 		return isSaved;
 	}
 	
-	/**
+	/** This is read/download
 	* getDataHolding(modified download which returns file content instead of boolean),this function will download workflow/query from MySpace system.
 	* @param: userid: userid
     * @param: communityid: communityid
@@ -335,7 +334,9 @@ public class MySpaceManagerDelegate {
 				jre.getLinkedCause().printStackTrace();
 		}
 		try{
-			value = binding.createUser(userID, servers);
+			String userid = userID.substring(0,userID.indexOf("@"));
+			String communityid = userID.substring(userID.indexOf("@")+1, userID.length());
+			value = binding.createUser(userid, communityid, servers);
 		}catch(java.rmi.RemoteException re) {
 				re.printStackTrace();
 			}
@@ -363,7 +364,9 @@ public class MySpaceManagerDelegate {
 		}
         
 		try{
-			value = binding.deleteUser(userID, servers);
+			String userid = userID.substring(0,userID.indexOf("@"));
+			String communityid = userID.substring(userID.indexOf("@")+1, userID.length());
+			value = binding.deleteUser(userid, communityid);
 		}catch(java.rmi.RemoteException re) {
 				re.printStackTrace();
 			}
@@ -388,8 +391,8 @@ public class MySpaceManagerDelegate {
 				jre.getLinkedCause().printStackTrace();
 		}
 		try{
-			//FixME to MSManager to match these set of argument!
-			value = binding.changeOwner(dataHolderName, newOwnerID);
+			//FixME to MSManager to match these set of argument!		
+			value = binding.changeOwner(userid, communityid, dataHolderName, newOwnerID);
 			//value = binding.changeOwner(userid,communityid, dataHolderName, newOwnerID);
 		}catch(java.rmi.RemoteException re) {
 		re.printStackTrace();
