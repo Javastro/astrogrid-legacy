@@ -2,7 +2,7 @@
 <services>
 <!-- configuration file for scripting - lists all known services. -->
 <service type="Application">
-        <endpoint>@TOMCATROOT@/astrogrid-applications-SNAPSHOT/services/ApplicationControllerService</endpoint>
+        <endpoint>@TOMCATROOT@/astrogrid-applications-SNAPSHOT/services/CommonExecutionConnectorService</endpoint>
         <description>An applications service</description>
 </service>
 <service type="jobcontrol">
@@ -33,8 +33,8 @@
 </service>
 
 <service type="Registry">
-	<endpoint>@TOMCATROOT@/astrogrid-registry-SNAPSHOT/services/Registry</endpoint>
-	<description>local registry query endpoint</description>
+        <endpoint>@TOMCATROOT@/astrogrid-registry-SNAPSHOT/services/Registry</endpoint>
+        <description>local registry query endpoint</description>
 </service>
 <!-- more to come here -->
 </services>
