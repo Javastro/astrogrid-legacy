@@ -81,6 +81,11 @@ public class JobController {
 	  * Set this to false to eliminate all trace statements within the byte code.*/	 	
 	private static final boolean 
 		TRACE_ENABLED = true ;
+		
+	/** Compile-time switch used to turn assertions on/off. 
+	  * Set this to false to eliminate all assertions statements within the byte code.*/	 	
+	private static final boolean 
+		ASSERTIONS_ENABLED = true ;
 			
 	private static final String 
 	/** Properties' file for this component. */  
@@ -144,6 +149,9 @@ public class JobController {
 	
 	static {
 		doConfigure();
+	}
+	
+	public static boolean isNull ( Object o ) { return ( o == null ? true : false ) ;
 	}
 
 
@@ -374,7 +382,7 @@ public class JobController {
 	        logger.error( generalMessage.toString() ) ;
 					
 	        // Format our error response here...
-			formatBadResponse( job, detailMessage ) ;
+			if( job != null ) formatBadResponse( job, detailMessage ) ;
 	        
         }
         finally {
@@ -382,9 +390,9 @@ public class JobController {
 				try{ factory.end ( false ) ; } catch( JesException jex ) {;}   // Rollback and cleanup
         	}
 			// Inform JobScheduler (within JES) that a job may require scheduling...
-			informJobScheduler( job ) ;
+			if( job != null ) informJobScheduler( job ) ;
 			// And finally, inform the AstroGrid message log of the submission details...
-			informAstroGridMessageLog( job ) ;
+			if( job != null ) informAstroGridMessageLog( job ) ;
 	        logger.debug( response.toString() );
 	        if( TRACE_ENABLED ) logger.debug( "submitJob() exit") ;
         }
@@ -659,15 +667,17 @@ public class JobController {
 			 
 			InputSource
 				requestSource = new InputSource( new StringReader( MessageFormat.format( requestString, inserts ) ) ) ;
-			bodyElement[0] = new SOAPBodyElement( XMLUtils.newDocument( requestSource ).getDocumentElement() ) ;
+				
+// JBL Note: the following is giving errors. Talk to Peter S' ...
+//			bodyElement[0] = new SOAPBodyElement( XMLUtils.newDocument( requestSource ).getDocumentElement() ) ;
     
-			logger.debug( "[call] url: " + JobController.getProperty( MESSAGE_LOG_URL ) ) ;
-			logger.debug( "[call] msg: " + bodyElement[0] ) ;
+//			logger.debug( "[call] url: " + JobController.getProperty( MESSAGE_LOG_URL ) ) ;
+//			logger.debug( "[call] msg: " + bodyElement[0] ) ;
        
-			Object 
-			   result = call.invoke(bodyElement);
+//			Object 
+//			   result = call.invoke(bodyElement);
 
-			logger.debug( "[call] res: " + result ) ;
+//			logger.debug( "[call] res: " + result ) ;
     
 		}
 		catch( Exception ex ) {
