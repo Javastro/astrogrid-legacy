@@ -1,0 +1,271 @@
+package id34fyrdi75kg3bdi79r3gm;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node1:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node45:oiref><oihard>
+@__modelType reference 
+*/
+class reference65 {
+}/**
+@__ref <oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node51:oiref><oihard>
+@__modelType reference 
+*/
+class reference68 {
+}/**
+@__ref <oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node56:oiref><oihard>
+@__modelType reference 
+*/
+class reference69 {
+}/**
+@__ref <oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node:oiref><oihard>
+@__modelType reference 
+*/
+class reference74 {
+}/**
+@__ref <oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node47:oiref><oihard>
+@__modelType reference 
+*/
+class reference75 {
+}/**
+@__ref <oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node49:oiref><oihard>
+@__modelType reference 
+*/
+class reference76 {
+}/**
+@__ref <oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node41:oiref><oihard>
+@__modelType reference 
+*/
+class reference51 {
+}}/**
+
+@__tags
+@shapeType ActivityDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions 
+
+<oigroup:<oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node.node164:oiref>=468,90,113,23,1:oigroup>
+<oigroup:<oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node56.node168:oiref>=240,330,148,40,0:oigroup>
+<oigroup:<oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node45.node41.link50:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node56.node163.link46:oiref>=368,101,468,101:oigroup>
+<oigroup:<oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node45:oiref>=640,10,190,760,0:oigroup>
+<oigroup:<oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node.node165:oiref>=450,150,158,40,0:oigroup>
+<oigroup:<oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node.node170:oiref>=440,410,169,23,1:oigroup>
+<oigroup:<oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node56.node36.link45:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node51:oiref>=1270,10,190,760,0:oigroup>
+<oigroup:<oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node56.node44.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node47:oiref>=850,10,190,760,0:oigroup>
+<oigroup:<oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node1.node56.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node1.node154:oiref>=40,90,134,23,1:oigroup>
+<oigroup:<oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node.node169.link:oiref>=516,363,516,410:oigroup>
+<oigroup:<oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node56.node168.link48:oiref>=388,351,460,351:oigroup>
+<oigroup:<oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node56.node38.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node1.node155.link47:oiref>=159,241,240,241:oigroup>
+<oigroup:<oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node45.node41.link49:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node1.node155:oiref>=50,230,109,23,1:oigroup>
+<oigroup:<oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node49.node.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node49:oiref>=1060,10,190,760,0:oigroup>
+<oigroup:<oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node.node169:oiref>=460,340,113,23,1:oigroup>
+<oigroup:<oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node49.node47.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node56.node43.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node41.link50:oiref>=690,320,562,410:oigroup>
+<oigroup:<oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node1.node154.link45:oiref>=174,101,250,101:oigroup>
+<oigroup:<oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node1:oiref>=10,10,190,760,0:oigroup>
+<oigroup:<oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node56:oiref>=220,10,190,760,0:oigroup>
+<oigroup:<oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node1.node.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node56.node.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node56.node163:oiref>=250,80,118,43,0:oigroup>
+<oigroup:<oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node1.node58.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node41:oiref>=620,240,140,80,0:oigroup>
+<oigroup:<oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node.node164.link:oiref>=524,113,524,150:oigroup>
+<oigroup:<oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node41.link49:oiref>=690,240,529,190:oigroup>
+<oigroup:<oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node:oiref>=430,10,190,760,0:oigroup>
+<oigroup:<oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node56.node42.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node56.node166:oiref>=240,230,148,40,0:oigroup>
+<oigroup:<oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node45.node47.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node56.node37.link51:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node1.node57.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node56.node166.link:oiref>=305,270,305,330:oigroup>
+
+
+*/
+class __positions {
+}/**
+@shapeType SwimLane
+@__modelType node
+@name User
+@backgroundColor 255,255,255
+*/
+class node1 {
+/**
+@shapeType Activity
+@__modelType node
+@name Administer Policy 
+*/
+class node154 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node56.node163:oiref><oihard> 
+*/
+class link45 {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Assign Policy 
+*/
+class node155 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node56.node166:oiref><oihard> 
+*/
+class link47 {
+}}}/**
+@shapeType SwimLane
+@__modelType node
+@name PortalSvr
+@backgroundColor 200,200,200 
+*/
+class node56 {
+/**
+@shapeType Activity
+@__modelType node
+@name Display Policy admin Page 
+*/
+class node163 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node.node164:oiref><oihard> 
+*/
+class link46 {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Display Policy assignment page 
+*/
+class node166 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node56.node168:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Identify User(s) and/or Group(s) 
+*/
+class node168 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node.node169:oiref><oihard> 
+*/
+class link48 {
+}}}/**
+@shapeType SwimLane
+@__modelType node
+@name Community
+@backgroundColor 200,200,200 
+*/
+class node {
+/**
+@shapeType Activity
+@__modelType node
+@name Assign policy to targets 
+*/
+class node170 {
+}/**
+@shapeType Activity
+@__modelType node
+@name Verify actions 
+*/
+class node169 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node.node170:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Add/Delete/Amend Policy details 
+*/
+class node165 {
+}/**
+@shapeType Activity
+@__modelType node
+@name Verify actions 
+*/
+class node164 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node.node165:oiref><oihard> 
+*/
+class link {
+}}}/**
+@shapeType SwimLane
+@__modelType node
+@name Registry
+@backgroundColor 200,200,200 
+*/
+class node45 {
+}/**
+@shapeType SwimLane
+@__modelType node
+@name JobControl
+@backgroundColor 200,200,200 
+*/
+class node47 {
+}/**
+@shapeType SwimLane
+@__modelType node
+@name MySpace
+@backgroundColor 200,200,200 
+*/
+class node49 {
+}/**
+@shapeType SwimLane
+@__modelType node
+@name DatasetAccess
+@backgroundColor 200,200,200 
+*/
+class node51 {
+}/**
+@shapeType Note
+@__modelType node
+@name Note1
+@text Policy to be implemented as separate web service 
+*/
+class node41 {
+/**
+@shapeType NoteLink
+@__modelType link
+@__ref <oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node.node165:oiref><oihard> 
+*/
+class link49 {
+}/**
+@shapeType NoteLink
+@__modelType link
+@__ref <oiref:design#Class#id34fyrdi75kg3bdi79r3gm.node.node170:oiref><oihard> 
+*/
+class link50 {
+}}

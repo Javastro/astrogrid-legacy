@@ -1,0 +1,532 @@
+package id7tlxzdi5y3s01di61kvo8;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node1:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node45:oiref><oihard>
+@__modelType reference 
+*/
+class reference65 {
+}/**
+@__ref <oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node51:oiref><oihard>
+@__modelType reference 
+*/
+class reference68 {
+}/**
+@__ref <oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node56:oiref><oihard>
+@__modelType reference 
+*/
+class reference69 {
+}/**
+@__ref <oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node:oiref><oihard>
+@__modelType reference 
+*/
+class reference74 {
+}/**
+@__ref <oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node49:oiref><oihard>
+@__modelType reference 
+*/
+class reference76 {
+}/**
+@__ref <oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node47:oiref><oihard>
+@__modelType reference 
+*/
+class reference126 {
+}}/**
+
+@__tags
+@shapeType ActivityDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions 
+
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node45:oiref>=640,10,190,990,0:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node45.node48.link122:oiref>=670,211,378,211:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node1.node56.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node1.node:oiref>=40,70,129,23,1:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node.node11.link120:oiref>=598,81,670,81:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node56.node44.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node45.node118.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node.node28:oiref>=470,850,90,23,1:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node56.node114.link:oiref>=314,510,330,510:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node51.node27:oiref>=1310,960,119,23,1:oigroup>
+<oigroup:Composite#constraint#<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node56.node113.link:oiref>=833,310,54,15,0:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node49.node:oiref>=1110,570,100,23,1:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node56.node112:oiref>=250,190,128,44,0:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node1.node23.link:oiref>=230,770,200,30,1:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node56.node114:oiref>=230,480,84,65,0:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node1.node108:oiref>=40,300,102,23,1:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node1.node23:oiref>=40,800,118,23,1:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node51.node13.link:oiref>=1370,703,1370,730:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node51.node13.link15:oiref>=1330,692,576,692:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node51.node25:oiref>=1330,850,80,23,1:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node49.node.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node56.node110:oiref>=330,500,60,20,1:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node1:oiref>=10,10,190,990,0:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node.node11:oiref>=450,60,148,53,0:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node56.node42.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node56.node36.link45:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node56.node117.link:oiref>=361,371,1090,371:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node51.node26.link:oiref>=1370,923,1370,960:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node1.node108.link:oiref>=142,311,250,311:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node1.node23.link:oiref>=158,810,170,810,1310,810:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node47.node:oiref>=880,430,148,33,0:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node56.node37.link51:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node51.node25.link29:oiref>=1330,860,560,860:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node1.node.link:oiref>=169,81,240,81:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node56.node110.link:oiref>=360,500,400,440,880,440:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node56.node110.link125:oiref>=360,520,400,580,1110,580:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node51.node129.link:oiref>=1310,740,90,740,90,710:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node1.node57.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node45.node47.link50:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node56.node113.link124:oiref>=310,335,310,360:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node56.node117:oiref>=260,360,101,23,1:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node1.node127.link:oiref>=90,660,90,630,1310,630:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node56.node.link:oiref>=388,82,450,82:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node51.node24.link:oiref>=1370,823,1370,850:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node45.node:oiref>=670,60,128,43,0:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node49.node47.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node1.node127:oiref>=30,660,128,50,0:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node51:oiref>=1270,10,190,990,0:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node56.node113.link:oiref>=378,310,630,310,1090,310:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node49.node30:oiref>=1110,960,93,23,1:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node1.node109:oiref>=40,499,100,23,1:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node45.node47.link123:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node49.node116:oiref>=1090,290,121,39,0:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node1.node127.link:oiref>=624,640,151,15,1:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node56.node43.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node51.node26:oiref>=1330,900,80,23,1:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node51.node.link:oiref>=1370,643,1370,680:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node56.node113:oiref>=250,290,128,45,0:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node51.node27.link:oiref>=1310,971,1203,971:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node51.node129:oiref>=1310,730,112,23,1:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node1.node109.link:oiref>=140,510,230,510:oigroup>
+<oigroup:Composite#constraint#<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node56.node117.link:oiref>=698,371,54,15,0:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node.node14:oiref>=486,681,90,23,1:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node1.node107:oiref>=40,200,98,23,1:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node:oiref>=430,10,190,990,0:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node56.node:oiref>=240,60,148,44,0:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node51.node:oiref>=1310,620,125,23,1:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node45.node48:oiref>=670,200,132,23,1:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node49:oiref>=1060,10,190,990,0:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node51.node24:oiref>=1310,800,113,23,1:oigroup>
+<oigroup:Composite#constraint#<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node56.node110.link:oiref>=581,440,118,15,0:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node51.node13:oiref>=1330,680,80,23,1:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node56.node38.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node49.node19:oiref>=1090,360,112,23,1:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node47:oiref>=850,10,190,990,0:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node51.node25.link:oiref>=1370,873,1370,900:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node1.node107.link:oiref>=138,211,250,211:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node56:oiref>=220,10,190,990,0:oigroup>
+<oigroup:Composite#constraint#<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node56.node110.link125:oiref>=728,580,54,15,0:oigroup>
+<oigroup:<oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node1.node58.link:oiref>=:oigroup>
+
+
+*/
+class __positions {
+}/**
+@shapeType SwimLane
+@__modelType node
+@name User
+@backgroundColor 255,255,255
+*/
+class node1 {
+/**
+@shapeType Activity
+@__modelType node
+@name Manage Queries 
+*/
+class node {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node56.node:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name New query 
+*/
+class node107 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node56.node112:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Load Query 
+*/
+class node108 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node56.node113:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Save Query 
+*/
+class node109 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node56.node114:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Monitor Query (not human) 
+*/
+class node127 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node51.node:oiref><oihard> 
+@event Monitor
+@eventArguments UserID, QueryID*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Process Query 
+*/
+class node23 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node51.node24:oiref><oihard>
+@event Process
+@eventArguments UserID, JobStepID, QueryPayload 
+*/
+class link {
+}}}/**
+@shapeType SwimLane
+@__modelType node
+@name PortalSvr
+@backgroundColor 200,200,200 
+*/
+class node56 {
+/**
+@shapeType Activity
+@__modelType node
+@name Display Query Manager Page 
+*/
+class node {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node.node11:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Display Query Builder Page 
+*/
+class node112 {
+}/**
+@shapeType Activity
+@__modelType node
+@name Display Saved Queries Page 
+*/
+class node113 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node49.node116:oiref><oihard> 
+@constraint Search
+*/
+class link {
+}/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node56.node117:oiref><oihard> 
+*/
+class link124 {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Send current query to... 
+*/
+class node114 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node56.node110:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Decision
+@__modelType node
+@name Decision1 
+*/
+class node110 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node47.node:oiref><oihard> 
+@constraint Enter Step Details
+*/
+class link {
+}/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node49.node:oiref><oihard> 
+@constraint Import
+*/
+class link125 {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Load query 
+*/
+class node117 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node49.node19:oiref><oihard>
+@constraint Export 
+*/
+class link {
+}}}/**
+@shapeType SwimLane
+@__modelType node
+@name Community
+@backgroundColor 200,200,200 
+*/
+class node {
+/**
+@shapeType Activity
+@__modelType node
+@name Authorise & return MySpace metadata for userID 
+*/
+class node11 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#idhatqidi5y3s01di5z2p71.node45.node:oiref><oihard> 
+*/
+class link {
+}/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id199zgdi5y3s01di5zsa0u.node45.node:oiref><oihard> 
+*/
+class link55 {
+}/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node45.node:oiref><oihard> 
+*/
+class link120 {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Authorise 
+*/
+class node14 {
+}/**
+@shapeType Activity
+@__modelType node
+@name Authorise 
+*/
+class node28 {
+}}/**
+@shapeType SwimLane
+@__modelType node
+@name Registry
+@backgroundColor 200,200,200 
+*/
+class node45 {
+/**
+@shapeType Activity
+@__modelType node
+@name Return MySpace Metadata 
+*/
+class node {
+}/**
+@shapeType Activity
+@__modelType node
+@name Return Metadata 
+*/
+class node48 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#idco8y8di4he8cjdi4im6jo.node56.node36:oiref><oihard> 
+*/
+class link {
+}/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node56.node112:oiref><oihard> 
+*/
+class link122 {
+}}}/**
+@shapeType SwimLane
+@__modelType node
+@name JobControl
+@backgroundColor 200,200,200 
+*/
+class node47 {
+/**
+@shapeType Activity
+@__modelType node
+@name Include in current workflow 
+*/
+class node {
+}}/**
+@shapeType SwimLane
+@__modelType node
+@name MySpace
+@backgroundColor 200,200,200 
+*/
+class node49 {
+/**
+@shapeType Activity
+@__modelType node
+@name Save Query
+*/
+class node {
+}/**
+@shapeType Activity
+@__modelType node
+@name Return saved queries list 
+*/
+class node116 {
+}/**
+@shapeType Activity
+@__modelType node
+@name Return Query 
+*/
+class node19 {
+}/**
+@shapeType Activity
+@__modelType node
+@name Save Data
+*/
+class node30 {
+}}/**
+@shapeType SwimLane
+@__modelType node
+@name DatasetAccess
+@backgroundColor 200,200,200 
+*/
+class node51 {
+/**
+@shapeType Activity
+@__modelType node
+@name Check Progress 
+*/
+class node {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node51.node13:oiref><oihard>
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Return Status 
+*/
+class node129 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node1.node127:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Check 
+*/
+class node13 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node51.node129:oiref><oihard> 
+*/
+class link {
+}/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node.node14:oiref><oihard> 
+*/
+class link15 {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Accept Query 
+*/
+class node24 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node51.node25:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Check 
+*/
+class node25 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node51.node26:oiref><oihard> 
+*/
+class link {
+}/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node.node28:oiref><oihard> 
+*/
+class link29 {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Run 
+*/
+class node26 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node51.node27:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Return Results 
+*/
+class node27 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id7tlxzdi5y3s01di61kvo8.node49.node30:oiref><oihard> 
+*/
+class link {
+}}}

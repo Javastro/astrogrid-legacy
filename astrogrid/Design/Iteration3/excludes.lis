@@ -1,0 +1,5 @@
+excludes.lis
+*.pdf
+*.sxi
+*.png
+Pictures
