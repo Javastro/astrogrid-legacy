@@ -1,4 +1,4 @@
-/*$Id: SimpleCommandlineWorkflowEndToEndTest.java,v 1.7 2004/04/26 12:17:17 nw Exp $
+/*$Id: SimpleCommandlineWorkflowEndToEndTest.java,v 1.8 2004/05/11 12:27:26 pah Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
 
+import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.integration.AbstractTestForIntegration;
@@ -161,6 +162,10 @@ public class SimpleCommandlineWorkflowEndToEndTest extends AbstractTestForIntegr
     public void testCheckExecutionResults() throws Exception {
         wf = jes.readJob(urn);
         assertNotNull("null workflow returned",wf);  
+        System.out.println("worklow completion message");
+        MessageType[] messages = wf.getJobExecutionRecord().getMessage();
+        MessageType lastMessage = messages[messages.length -1];
+        System.out.println(lastMessage.getContent());
        assertEquals("Workflow not completed",ExecutionPhase.COMPLETED,wf.getJobExecutionRecord().getStatus()); // i.e. its not in error              
     }
     
@@ -190,6 +195,9 @@ public class SimpleCommandlineWorkflowEndToEndTest extends AbstractTestForIntegr
 
 /* 
 $Log: SimpleCommandlineWorkflowEndToEndTest.java,v $
+Revision 1.8  2004/05/11 12:27:26  pah
+print the last message to stdout on completion...
+
 Revision 1.7  2004/04/26 12:17:17  nw
 improved reporting of urns
 
