@@ -1,5 +1,5 @@
 /**
- * $Id: PassbandSpecifierPanel.java,v 1.1 2003/08/25 18:36:06 mch Exp $
+ * $Id: PassbandSpecifierPanel.java,v 1.1.1.1 2003/08/25 18:36:06 mch Exp $
  *
  * @author M Hill
  */
@@ -417,8 +417,8 @@ public class PassbandSpecifierPanel extends JPanel implements ActionListener
 }
 /*
 $Log: PassbandSpecifierPanel.java,v $
-Revision 1.1  2003/08/25 18:36:06  mch
-*** empty log message ***
+Revision 1.1.1.1  2003/08/25 18:36:06  mch
+Reimported to fit It02 source structure
 
 Revision 1.4  2003/07/03 18:10:31  mch
 Obs freq now double for large values, and fix for not overwriting obs freq with blank values from file

@@ -1,5 +1,5 @@
 /*
-   $Id: ConfigElementLoader.java,v 1.1 2003/08/25 18:36:28 mch Exp $
+   $Id: ConfigElementLoader.java,v 1.1.1.1 2003/08/25 18:36:28 mch Exp $
 
    Date         Author      Changes
    17 Oct 2002  M Hill      Created

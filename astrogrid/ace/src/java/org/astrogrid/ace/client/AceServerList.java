@@ -1,5 +1,5 @@
 /*
-   $Id: AceServerList.java,v 1.1 2003/08/25 18:36:04 mch Exp $
+   $Id: AceServerList.java,v 1.1.1.1 2003/08/25 18:36:04 mch Exp $
 
    Date       Author      Changes
    $date$     M Hill      Created

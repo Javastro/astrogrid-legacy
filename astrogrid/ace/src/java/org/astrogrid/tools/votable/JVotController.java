@@ -1,5 +1,5 @@
 /*
- $Id: JVotController.java,v 1.1 2003/08/25 18:36:30 mch Exp $
+ $Id: JVotController.java,v 1.1.1.1 2003/08/25 18:36:30 mch Exp $
 
  Date       Author      Changes
  $date$     M Hill      Created

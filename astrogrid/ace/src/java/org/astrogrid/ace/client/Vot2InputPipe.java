@@ -1,5 +1,5 @@
 /**
- * $Id: Vot2InputPipe.java,v 1.1 2003/08/25 18:36:13 mch Exp $
+ * $Id: Vot2InputPipe.java,v 1.1.1.1 2003/08/25 18:36:13 mch Exp $
  *
  * @author M Hill
  */
@@ -69,8 +69,8 @@ public class Vot2InputPipe implements VotConsumer
 
 /*
 $Log: Vot2InputPipe.java,v $
-Revision 1.1  2003/08/25 18:36:13  mch
-*** empty log message ***
+Revision 1.1.1.1  2003/08/25 18:36:13  mch
+Reimported to fit It02 source structure
 
 Revision 1.2  2003/06/26 19:14:59  mch
 Passband stuff added

@@ -1,5 +1,5 @@
 /*
- $Id: ClientExtractorThread.java,v 1.1 2003/08/25 18:36:05 mch Exp $
+ $Id: ClientExtractorThread.java,v 1.1.1.1 2003/08/25 18:36:05 mch Exp $
  */
 
 package org.astrogrid.ace.client;
@@ -178,8 +178,8 @@ public class ClientExtractorThread extends Thread
 
 /*
 $Log: ClientExtractorThread.java,v $
-Revision 1.1  2003/08/25 18:36:05  mch
-*** empty log message ***
+Revision 1.1.1.1  2003/08/25 18:36:05  mch
+Reimported to fit It02 source structure
 
 Revision 1.4  2003/07/11 10:42:44  mch
 Thread now stops if user presses cancel

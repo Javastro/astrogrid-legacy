@@ -1,5 +1,5 @@
 /*
- $Id: UserOptions.java,v 1.1 2003/08/25 18:36:13 mch Exp $
+ $Id: UserOptions.java,v 1.1.1.1 2003/08/25 18:36:13 mch Exp $
 
  Date         Author      Changes
  8 Nov 2002   M Hill      Created

@@ -1,5 +1,5 @@
 /*
-   $Id: JSetFileButton.java,v 1.1 2003/08/25 18:36:35 mch Exp $
+   $Id: JSetFileButton.java,v 1.1.1.1 2003/08/25 18:36:35 mch Exp $
 
    (c) Copyright...
 */
@@ -195,8 +195,8 @@ public class JSetFileButton extends JButton implements ActionListener
 
 /**
 $Log: JSetFileButton.java,v $
-Revision 1.1  2003/08/25 18:36:35  mch
-*** empty log message ***
+Revision 1.1.1.1  2003/08/25 18:36:35  mch
+Reimported to fit It02 source structure
 
 Revision 1.6  2003/07/03 18:17:08  mch
 Fixed double-line-spacing

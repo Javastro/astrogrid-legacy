@@ -1,5 +1,5 @@
 /*
- $Id: StandaloneAce.java,v 1.1 2003/08/25 18:36:06 mch Exp $
+ $Id: StandaloneAce.java,v 1.1.1.1 2003/08/25 18:36:06 mch Exp $
 
  (c) Copyright...
  */
@@ -103,8 +103,8 @@ public class StandaloneAce implements VotConsumer
 
 /*
 $Log: StandaloneAce.java,v $
-Revision 1.1  2003/08/25 18:36:06  mch
-*** empty log message ***
+Revision 1.1.1.1  2003/08/25 18:36:06  mch
+Reimported to fit It02 source structure
 
 Revision 1.1  2003/06/18 16:01:41  mch
 Removing circular dependency on Aladin, tidying up threading

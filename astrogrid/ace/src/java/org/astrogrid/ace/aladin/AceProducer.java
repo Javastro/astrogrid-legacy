@@ -1,5 +1,5 @@
 /*
- $Id: AceProducer.java,v 1.1 2003/08/25 18:36:02 mch Exp $
+ $Id: AceProducer.java,v 1.1.1.1 2003/08/25 18:36:02 mch Exp $
 
  */
 
@@ -50,7 +50,7 @@ public class AceProducer
       }
 
       //outputs the version so we can doublecheck
-      Log.trace("Starting $Id: AceProducer.java,v 1.1 2003/08/25 18:36:02 mch Exp $...");
+      Log.trace("Starting $Id: AceProducer.java,v 1.1.1.1 2003/08/25 18:36:02 mch Exp $...");
 
       Log.trace("Creating dialog...");
 
@@ -143,8 +143,8 @@ public class AceProducer
 
 /*
  $Log: AceProducer.java,v $
- Revision 1.1  2003/08/25 18:36:02  mch
- *** empty log message ***
+ Revision 1.1.1.1  2003/08/25 18:36:02  mch
+ Reimported to fit It02 source structure
 
  Revision 1.5  2003/07/11 10:40:51  mch
  minor comment tidy up

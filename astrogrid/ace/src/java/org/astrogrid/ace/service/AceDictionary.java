@@ -1,5 +1,5 @@
 /*
- $Id: AceDictionary.java,v 1.1 2003/08/25 18:36:14 mch Exp $
+ $Id: AceDictionary.java,v 1.1.1.1 2003/08/25 18:36:14 mch Exp $
 
  Date       Author      Changes
  $date$     M Hill      Created

@@ -1,5 +1,5 @@
 /*
- $Id: Log.java,v 1.1 2003/08/25 18:36:28 mch Exp $
+ $Id: Log.java,v 1.1.1.1 2003/08/25 18:36:28 mch Exp $
  */
 
 package org.astrogrid.log;

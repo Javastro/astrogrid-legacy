@@ -1,5 +1,5 @@
 /*
-   $Id: LogOutputStream.java,v 1.1 2003/08/25 18:35:58 mch Exp $
+   $Id: LogOutputStream.java,v 1.1.1.1 2003/08/25 18:35:58 mch Exp $
 
    Date       Author      Changes
    13 Nov 02  M Hill      Created

@@ -1,5 +1,5 @@
 /*
- $Id: AceDialog.java,v 1.1 2003/08/25 18:36:04 mch Exp $
+ $Id: AceDialog.java,v 1.1.1.1 2003/08/25 18:36:04 mch Exp $
 
  Date         Author      Changes
  1 Nov 2002   M Hill      Created
@@ -642,8 +642,8 @@ public class AceDialog extends JDialog implements ActionListener, AceConsumer
 
 /*
  $Log: AceDialog.java,v $
- Revision 1.1  2003/08/25 18:36:04  mch
- *** empty log message ***
+ Revision 1.1.1.1  2003/08/25 18:36:04  mch
+ Reimported to fit It02 source structure
 
  Revision 1.20  2003/07/11 10:42:08  mch
  Better trapping & reporting of invalid XML webdoc

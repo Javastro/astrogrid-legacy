@@ -203,8 +203,8 @@ public class AladinPiper extends Vot2InputPipe
 
 /*
 $Log: AladinPiper.java,v $
-Revision 1.1  2003/08/25 18:36:02  mch
-*** empty log message ***
+Revision 1.1.1.1  2003/08/25 18:36:02  mch
+Reimported to fit It02 source structure
 
 Revision 1.2  2003/07/02 19:18:15  mch
 Fix to handle 'ignore' button

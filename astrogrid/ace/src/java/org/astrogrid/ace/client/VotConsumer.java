@@ -1,6 +1,6 @@
 
 /*
- $Id: VotConsumer.java,v 1.1 2003/08/25 18:36:13 mch Exp $
+ $Id: VotConsumer.java,v 1.1.1.1 2003/08/25 18:36:13 mch Exp $
 
  */
 
@@ -32,8 +32,8 @@ public interface VotConsumer
 
 /*
 $Log: VotConsumer.java,v $
-Revision 1.1  2003/08/25 18:36:13  mch
-*** empty log message ***
+Revision 1.1.1.1  2003/08/25 18:36:13  mch
+Reimported to fit It02 source structure
 
 Revision 1.3  2003/07/11 10:44:11  mch
 Better javadoc comment

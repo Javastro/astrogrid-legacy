@@ -4,12 +4,12 @@
 
  * ------------------------------------------------------------------------
 
- * $Revision: 1.1 $
+ * $Revision: 1.1.1.1 $
  * $Author: mch $
  * $Date: 2003/08/25 18:35:57 $
  * $Log: Log2TextStream.java,v $
- * Revision 1.1  2003/08/25 18:35:57  mch
- * *** empty log message ***
+ * Revision 1.1.1.1  2003/08/25 18:35:57  mch
+ * Reimported to fit It02 source structure
  *
  * Revision 1.1.1.1  2002/11/05 14:54:46  mch
  * Initial Checkin

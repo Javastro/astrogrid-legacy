@@ -1,5 +1,5 @@
 /*
- $Id: AceConsumer.java,v 1.1 2003/08/25 18:36:02 mch Exp $
+ $Id: AceConsumer.java,v 1.1.1.1 2003/08/25 18:36:02 mch Exp $
 
  (c) Copyright...
  */
@@ -37,8 +37,8 @@ public interface AceConsumer
 
 /*
 $Log: AceConsumer.java,v $
-Revision 1.1  2003/08/25 18:36:02  mch
-*** empty log message ***
+Revision 1.1.1.1  2003/08/25 18:36:02  mch
+Reimported to fit It02 source structure
 
 Revision 1.2  2003/07/11 10:41:22  mch
 Added javadoc explanation
