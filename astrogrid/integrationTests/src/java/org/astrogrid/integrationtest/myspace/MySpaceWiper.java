@@ -1,6 +1,10 @@
 /*
- * $Id: MySpaceWiper.java,v 1.3 2004/03/12 23:16:56 jdt Exp $ Created on Feb 16, 2004 by John Taylor jdt@roe.ac.uk .
- * Copyright (C) AstroGrid. All rights reserved. This software is published under the terms of the AstroGrid Software
+ * $Id: MySpaceWiper.java,v 1.4 2004/03/12 23:53:26 jdt Exp $ 
+ * 
+ * Created on Feb 16, 2004 by John Taylor jdt@roe.ac.uk .
+ * Copyright (C) AstroGrid. All rights reserved. 
+ * 
+ * This software is published under the terms of the AstroGrid Software
  * License version 1.2, a copy of which has been included with this distribution in the LICENSE.txt file.
  */
 package org.astrogrid.integrationtest.myspace;
