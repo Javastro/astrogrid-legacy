@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractApplicationController.java,v 1.12 2003/12/31 00:56:17 pah Exp $
+ * $Id: AbstractApplicationController.java,v 1.13 2004/03/02 16:48:58 pah Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -22,6 +22,12 @@ import org.astrogrid.applications.description.DescriptionLoader;
 import org.astrogrid.applications.description.SimpleApplicationDescription;
 import org.astrogrid.applications.description.SimpleDescriptionLoader;
 
+/**
+ * Provides a some generic applicationController methods.
+ * @author Paul Harrison (pah@jb.man.ac.uk)
+ * @version $Name:  $
+ * @since iteration4
+ */
 public abstract class AbstractApplicationController implements ApplicationController {
    /**
     * The place where the application controller stores local execution status. 

@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationController.java,v 1.16 2004/01/16 22:18:58 pah Exp $
+ * $Id: CommandLineApplicationController.java,v 1.17 2004/03/02 16:48:58 pah Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -28,6 +28,13 @@ import org.astrogrid.applications.description.exception.ApplicationDescriptionNo
 import org.astrogrid.applications.description.exception.InterfaceDescriptionNotFoundException;
 import org.astrogrid.community.User;
 
+/**
+ * This provides a mechanism to run command line tools.
+ * @author Paul Harrison (pah@jb.man.ac.uk)
+ * @version $Name:  $
+ * @since iteration4
+ * @TODO try inversion of control refactoring - plug in the actual environment setter callback mechanism etc...
+ */
 public class CommandLineApplicationController extends AbstractApplicationController  {
    
    
