@@ -25,7 +25,7 @@
          String selectQuery = "<query><selectionSequence>" +
          "<selection item='searchElements' itemOp='EQ' value='all'/>" +
          "<selectionOp op='$and$'/>" +
-         "<selection item='AuthorityID' itemOp='NE' value=''/>"+
+         "<selection item='*:Identifier/*:AuthorityID' itemOp='NE' value=''/>"+
          "</selectionSequence></query>";
 
    

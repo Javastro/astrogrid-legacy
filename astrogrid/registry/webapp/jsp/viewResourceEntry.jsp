@@ -27,7 +27,7 @@
          String selectQuery = "<query><selectionSequence>" +
            "<selection item='searchElements' itemOp='EQ' value='all'/>" +
            "<selectionOp op='$and$'/>" +
-           "<selection item='AuthorityID' itemOp='EQ' value='" + ivornKey + "'/>" +
+           "<selection item='*:Identifier/*:AuthorityID' itemOp='EQ' value='" + ivornKey + "'/>" +
          "</selectionSequence></query>";
    
    Document query = DomHelper.newDocument(selectQuery);
