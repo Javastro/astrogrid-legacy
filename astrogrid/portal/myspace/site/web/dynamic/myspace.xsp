@@ -38,6 +38,11 @@
               compare-field="myspace-end-point-select"
               value="http://localhost:8080/astrogrid-mySpace/services/MySpaceManager"
               label="LOCALHOST"/>
+      
+          <agp-utils:option
+              compare-field="myspace-end-point-select"
+              value="file://astrogrid-myspace-file"
+              label="FILESYSTEM"/>
         </select>
         
         <input

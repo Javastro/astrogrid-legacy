@@ -55,17 +55,4 @@
       </ant:fileset>
     </ant:move>
   </postGoal>
-  
-    <!--Copy myself into parent project to create uberwar-->
-  <postGoal name="war:war">
-        <j:set var="webapp.dir" value="${pom.getPluginContext('maven-war-plugin').getVariable('maven.war.webapp.dir')}"/>
-        <echo message="${webapp.dir}"/>
-        <copy todir="../target/astrogrid-portal" overwrite="yes">
-            <fileset dir="${webapp.dir}" />
-        </copy> 
-  </postGoal>
-  	<preGoal name="site">
-		<mkdir dir="target/classes"/>
-		<!--fix annoying jdepend bug-->
-	</preGoal>
 </project>

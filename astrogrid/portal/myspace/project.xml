@@ -47,6 +47,23 @@
       </properties>
     </dependency>
 
+    <!-- Servlet API -->
+    <dependency>
+      <groupId>servletapi</groupId>
+      <artifactId>servletapi</artifactId>
+      <version>2.2</version>
+    </dependency>
+
+    <!-- Mock Objects -->
+    <dependency>
+      <groupId>mmmockobjects</groupId>
+      <artifactId>mmmockobjects</artifactId>
+      <version>1.11.0</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+
     <!-- DO NOT INCLUDE PARENT DEPENDENCIES IN WAR -->
     &cocoon-deps;
   </dependencies>
@@ -54,5 +71,15 @@
   <build>
     <sourceDirectory>src/java</sourceDirectory>
     <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
+    
+    <unitTest>
+      <includes>
+        <include>**/*.java</include>
+      </includes>
+      <excludes>
+        <exclude>mock/**/*.java</exclude>
+        <exclude>org/astrogrid/portal/myspace/acting/framework/BaseHandlerTest.java</exclude>
+      </excludes>
+    </unitTest>
   </build>
 </project>

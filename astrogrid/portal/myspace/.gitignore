@@ -1,4 +1,6 @@
-target
-maven.log
 .classpath
 .project
+target
+maven.log
+mock
+velocity.log

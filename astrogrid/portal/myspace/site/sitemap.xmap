@@ -11,7 +11,7 @@
     | the accompanying documentation. The sitemaps which come with each
     | sample and each block will help to explain.
     |
-    | CVS $Id: sitemap.xmap,v 1.5 2004/04/16 10:47:24 pfo Exp $
+    | CVS $Id: sitemap.xmap,v 1.6 2004/04/20 11:05:04 gps Exp $
     +-->
 <map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
 
@@ -52,7 +52,10 @@
       <!--+
           | AstroGrid Generators.
           +-->
+<!--
       <map:generator name="myspace-holding-gen" src="org.astrogrid.portal.myspace.generation.MySpaceHoldingsGenerator"/>
+-->
+      <map:generator name="myspace-holding-gen" src="org.astrogrid.portal.myspace.generation.StorageFilesGenerator"/>
     </map:generators>
 
   <!--+
@@ -111,6 +114,8 @@
       | entirely and execution proceeds from the element right below the action.
       +-->
     <map:actions>
+      <map:action name="myspace-action" src="org.astrogrid.portal.myspace.acting.MySpaceControlAction"/>
+<!--
       <map:action name="myspace-change" src="org.astrogrid.portal.myspace.acting.ChangeAction"/>
       <map:action name="myspace-copy" src="org.astrogrid.portal.myspace.acting.CopyAction"/>
       <map:action name="myspace-delete" src="org.astrogrid.portal.myspace.acting.DeleteAction"/>
@@ -120,6 +125,7 @@
       <map:action name="myspace-chown" src="org.astrogrid.portal.myspace.acting.ChownAction"/>
       <map:action name="myspace-geturl" src="org.astrogrid.portal.myspace.acting.MySpaceURLAction"/>
       <map:action name="myspace-upload" src="org.astrogrid.portal.myspace.acting.URLUploadAction"/>
+-->
     </map:actions>
 
   <!--+
@@ -184,6 +190,14 @@
       | Hence I will explain what's inside below for pipelines.
       +-->
   <map:resources>
+    <map:resource name="myspace-action-submit">
+      <map:act type="myspace-action">
+        <map:parameter name="username" value="anonymous"/>
+        <map:parameter name="group" value="roe.ac.uk"/>
+        <map:parameter name="token" value="mytoken"/>
+      </map:act>
+    </map:resource>
+<!--
     <map:resource name="myspace-action-submit">
       <map:select type="request-parameter">
         <map:parameter name="parameter-name" value="myspace-action"/>
@@ -265,7 +279,7 @@
         </map:when>
         
         <map:when test="View">
-          <!-- *** HANDLED ELSEWHERE *** -->
+          !- *** HANDLED ELSEWHERE *** -
         </map:when>
         
         <map:when test="UploadURL">
@@ -295,6 +309,7 @@
         <map:parameter name="myspace-name" value="myspace-old-name"/>
       </map:act>
     </map:resource>
+-->
   </map:resources>
 
 <!-- ========================== Action sets ================================ -->
@@ -357,32 +372,34 @@
         <map:serialize type="xml"/>
       </map:match>
       
-      <map:match pattern="myspace-tree.xml">
+      <map:match pattern="myspace-micro">
 
-        <!-- Check for submitted action -->
-        <map:call resource="myspace-action-submit"/>
-        
-        <!-- Call MySpace list XML generator -->
         <map:generate type="myspace-holding-gen">
-          <map:parameter name="myspace-end-point" value="myspace-end-point"/>
-          <map:parameter name="username" value="user"/>
-          <map:parameter name="community-id" value="community_name"/>
-          <map:parameter name="credential" value="credential"/>
-<!--
-          <map:parameter name="myspace-query" value="/avodemo@test.astrogrid.org/*"/>
--->
+          <map:parameter name="username" value="anonymous"/>
+          <map:parameter name="group" value="roe.ac.uk"/>
+          <map:parameter name="token" value="mytoken"/>
         </map:generate>
         
-        <!-- Transform using custom MySpace transformer -->
-        <map:transform type="myspace-holding-trans"/>
+        <map:transform src="web/style/xsl/myspace-micro.xsl"/>
+        <map:serialize type="xml"/>
+      </map:match>
+
+      <map:match pattern="myspace-tree.xml">
+
+        <map:call resource="myspace-action-submit"/>
         
-        <!-- Transform into a tree structure -->
+        <map:generate type="myspace-holding-gen">
+          <map:parameter name="username" value="anonymous"/>
+          <map:parameter name="group" value="roe.ac.uk"/>
+          <map:parameter name="token" value="mytoken"/>
+        </map:generate>
+        
         <map:transform src="web/style/xsl/myspace-holdings.xsl"/>
-        
         <map:serialize type="xml"/>
       </map:match>
 
       <!-- xml -->
+<!--
       <map:match pattern="webstart/**.xml">
         <map:act type="myspace-geturl">
           <map:parameter name="myspace-end-point" value="myspace-end-point"/>
@@ -397,12 +414,10 @@
             <map:parameter name="myspace-url" value="{myspace-url}"/>
           </map:transform>
         
-          <map:serialize type="xml"/>
-	  <!--
           <map:serialize type="jnlp"/>
-	  -->
         </map:act>
       </map:match>
+-->
       
       <map:match pattern="*.xml">
         <map:generate type="file" src="web/static/{1}.xml"/>

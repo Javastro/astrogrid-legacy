@@ -1,0 +1,14 @@
+<myspace-tree>
+  <myspace-item
+      safe-name="folder-safe"
+      full-name="folder-full"
+      item-name="folder-item"
+      id="folder-safe"
+      type="folder">
+    <myspace-item
+        safe-name="item-safe"
+        full-name="item-full"
+        item-name="item-item"
+        id="item-full"/>
+  </myspace-item>
+</myspace-tree>

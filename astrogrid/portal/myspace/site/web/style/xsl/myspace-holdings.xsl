@@ -2,9 +2,14 @@
 
 <xsl:stylesheet
     version="1.0"
-    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<!--
     xmlns:agp-myspace="http://astrogrid.org/xsp/myspace/1.0">
-  <xsl:output method="html"/>
+-->
+
+  <xsl:output
+      method="xml"
+      omit-xml-declaration="yes"/>
 
   <xsl:template match="/">
     <ag-div>
@@ -14,19 +19,20 @@
       <ag-script type="text/javascript" src="/astrogrid-portal/mount/myspace/myspace.js"/>
       
       <div>
-        <form id="myspace-explorer-form" action=".">
+        <form id="myspace-explorer-form" action="." method="POST" enctype="multipart/form-data">
           <div id="myspace-tools">
             <div id="myspace-tools-header">
               MySpace Tools
             </div>
             
-            <input name="myspace-action" type="submit" value="Copy"><br/></input>
-            <input name="myspace-action" type="submit" value="Delete"><br/></input>
-            <input name="myspace-action" type="submit" value="Rename"><br/></input>
-            <input name="myspace-action" type="button" value="ExtendLease" onclick="myspace_extension_days();"><br/></input><input class="myspace-hidden" id="myspace-extension-days" name="myspace-extension-days" type="text"><span/></input>
-            <input name="myspace-action" type="submit" value="NewContainer"><br/></input>
-            <input name="myspace-action" type="submit" value="ChangeOwner" onclick="myspace_chown();"><br/></input><input class="myspace-hidden" id="myspace-chown" name="myspace-chown" type="text"><span/></input>
-            <input name="myspace-action" type="submit" value="UploadURL" onclick="myspace_upload_url();"><span/></input><input class="myspace-hidden" id="myspace-upload-url" name="myspace-upload-url" type="text"/><input class="myspace-hidden" id="myspace-upload-category" name="myspace-upload-category" type="text"><span/></input>
+            <input name="myspace-action" type="submit" value="myspace-change"><br/></input>
+            <input name="myspace-action" type="submit" value="myspace-copy"><br/></input>
+            <input name="myspace-action" type="submit" value="myspace-delete"><br/></input>
+            <input name="myspace-action" type="submit" value="myspace-find-url"><br/></input>
+            <input name="myspace-action" type="submit" value="myspace-move"><br/></input>
+            <input name="myspace-action" type="submit" value="myspace-new-container"><br/></input>
+            <input name="myspace-action" type="submit" value="myspace-upload"><br/></input>
+            <input name="myspace-action" type="submit" value="myspace-upload-url"><br/></input>
             <hr/>
             <input name="myspace-action" type="submit" value="TopCat" onclick="myspace_votable_topcat();"><br/></input>
             <input name="myspace-action" type="submit" value="Aladin" onclick="myspace_votable_aladin();"><br/></input>
@@ -36,11 +42,19 @@
             <table id="myspace-tree-header">
               <tr>
                 <td>Source:</td>
-                <td style="width:100%"><input name="myspace-old-name" id="myspace-old-name" type="text" readonly="true" style="width:100%;border-style:none;"/></td>
+                <td style="width:100%"><input name="myspace-src" id="myspace-src" type="text" readonly="true" style="width:100%;border-style:none;"/></td>
               </tr>
               <tr>
                 <td>Destination:</td>
-                <td style="width:100%"><input name="myspace-new-name" id="myspace-new-name" type="text" style="width:100%"/></td>
+                <td style="width:100%"><input name="myspace-dest" id="myspace-dest" type="text" style="width:100%"/></td>
+              </tr>
+              <tr>
+                <td>Upload File:</td>
+                <td style="width:100%"><input name="myspace-file" id="myspace-file" type="file" style="width:100%"/></td>
+              </tr>
+              <tr>
+                <td>Upload URL:</td>
+                <td style="width:100%"><input name="myspace-url" id="myspace-url" type="text" style="width:100%"/></td>
               </tr>
             </table>
   
@@ -55,21 +69,24 @@
     <xsl:apply-templates/>
   </xsl:template>
 
-  <xsl:template match="myspace-item[@type=1]">
-    <span style="cursor:pointer;cursor:hand;">
-      <xsl:attribute name="onclick">setNewMySpaceName('<xsl:value-of select="@full-name"/>');</xsl:attribute>
-      [dest]
-    </span>
-    
+  <xsl:template match="myspace-item[@type='folder']">
     <span class="trigger">
-      <xsl:attribute name="onclick">showBranch('<xsl:value-of select="@safe-name"/>');setOldMySpaceName('<xsl:value-of select="@full-name"/>');</xsl:attribute>
+      <xsl:attribute name="onclick">showBranch('<xsl:value-of select="@safe-name"/>');</xsl:attribute>
 
-      <img src="/astrogrid-portal/mount/myspace/closed.gif" alt="toggle">
+      <img src="/astrogrid-portal/icons/Folder.png" alt="toggle">
         <xsl:attribute name="id">I<xsl:value-of select="@safe-name"/></xsl:attribute>
       </img>
+    </span>
+    
+    <span style="cursor:pointer;cursor:hand;">
+      <xsl:attribute name="onclick">setNewMySpaceName('<xsl:value-of select="@full-name"/>');</xsl:attribute>
+      <img src="/astrogrid-portal/icons/FolderIn.png" alt="[dest]"/>
+    </span>
 
-      <xsl:value-of select="@item-name"/>
-      <br/>
+    &#160;
+    <span style="cursor:pointer;cursor:hand;">
+      <xsl:attribute name="onclick">setOldMySpaceName('<xsl:value-of select="@full-name"/>');</xsl:attribute>
+      <xsl:value-of select="@item-name"/><br/>
     </span>
 
     <span class="branch">
@@ -80,13 +97,14 @@
   </xsl:template>
 
   <xsl:template match="myspace-item">
+    <img src="/astrogrid-portal/icons/Document.png" alt="doc"/>
+
     <span style="cursor:pointer;cursor:hand;">
       <xsl:attribute name="onclick">setNewMySpaceName('<xsl:value-of select="@full-name"/>');</xsl:attribute>
-      [dest]
+      <img src="/astrogrid-portal/icons/DocumentIn.png" alt="[dest]"/>
     </span>
 
-    <img src="/astrogrid-portal/mount/myspace/doc.gif" alt="doc"/>
-
+    &#160;
     <span class="document">
       <xsl:attribute name="onclick">setOldMySpaceName('<xsl:value-of select="@full-name"/>')</xsl:attribute>
       <xsl:value-of select="@item-name"/>

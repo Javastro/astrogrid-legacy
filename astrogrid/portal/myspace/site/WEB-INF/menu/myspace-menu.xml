@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<agp:menu-def
+    name="myspace-menu"
+    xmlns:agp="http://www.astrogrid.org/portal">
+  <agp:menu
+      contents="MySpace"
+      contents-hover="MySpace"
+      uri=""
+      icon="/astrogrid-portal/icons/Folder.png"
+      target="_self"
+      status-text="MySpace...">
+    <agp:item
+        contents="Explorer"
+        contents-hover="Explorer"
+        uri="/astrogrid-portal/main/mount/myspace/myspace-explorer"
+        icon="/astrogrid-portal/icons/FolderIn.png"
+        target="_self"
+        status-text="AstroGrid MySpace Explorer"/>
+  </agp:menu>
+</agp:menu-def>

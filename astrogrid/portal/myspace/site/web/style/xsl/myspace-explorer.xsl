@@ -24,7 +24,7 @@
         <td>MySpace End Point:</td>
         <td><xsl:copy-of select="//select[@id = 'myspace-end-point-select']"/>
         <xsl:copy-of select="//input[@id = 'myspace-end-point']"/></td>
-        <td><input type="submit" value="Change"/></td>
+        <td><input name="myspace-action" type="submit" value="myspace-change"/></td>
       </tr>
     </table>
     <xsl:copy-of select="."/>
