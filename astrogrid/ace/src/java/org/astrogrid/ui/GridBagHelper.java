@@ -53,7 +53,7 @@ public class GridBagHelper
     */
    public static void setControlConstraints(GridBagConstraints constraints)
    {
-      constraints.anchor = constraints.CENTER;
+      constraints.anchor = constraints.WEST;
       constraints.fill = constraints.NONE;
       constraints.gridheight = 1;
       constraints.gridwidth = 1;
@@ -66,8 +66,11 @@ public class GridBagHelper
 
 /*
 $Log: GridBagHelper.java,v $
-Revision 1.1  2003/08/25 18:36:32  mch
-*** empty log message ***
+Revision 1.2  2004/02/15 23:25:30  mch
+Datacenter and MySpace desktop client GUIs
+
+Revision 1.1.1.1  2003/08/25 18:36:32  mch
+Reimported to fit It02 source structure
 
 Revision 1.1  2003/07/02 19:14:58  mch
 Constraint-setting methods

@@ -1,3 +1,13 @@
+/*
+ * $Id: IconFactory.java,v 1.2 2004/02/15 23:25:30 mch Exp $
+ *
+ * Copyright 2003 AstroGrid. All rights reserved.
+ *
+ * This software is published under the terms of the AstroGrid Software License,
+ * a copy of which has been included with this distribution in the LICENSE.txt file.
+ *
+ */
+
 package org.astrogrid.ui;
 
 import java.awt.Toolkit;
@@ -7,12 +17,13 @@ import java.util.*;
 import java.net.URL;
 
 /**
- * a cached factory of images stored off this directory, for things such as
+ * a cached factory of images stored off this package, for things such as
  * button icons etc
  *
  * @author Martin Hill
  *
  */
+
 
 public class IconFactory
 {
@@ -126,3 +137,9 @@ public class IconFactory
    }
 
 }
+/*
+$Log: IconFactory.java,v $
+Revision 1.2  2004/02/15 23:25:30  mch
+Datacenter and MySpace desktop client GUIs
+
+ */
