@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsMetaServer.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+ * $Id: SampleStarsMetaServer.java,v 1.2 2005/03/08 18:05:57 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -11,9 +11,8 @@ import java.net.URL;
 import org.astrogrid.config.Config;
 import org.astrogrid.config.ConfigException;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.dataservice.metadata.CeaResourceServer;
 import org.astrogrid.dataservice.metadata.FileResourcePlugin;
-import org.astrogrid.dataservice.metadata.VoResourcePlugin;
+import org.astrogrid.dataservice.metadata.VoDescriptionServer;
 import org.astrogrid.dataservice.queriers.QuerierPluginFactory;
 import org.astrogrid.dataservice.queriers.sql.TabularSkyServicePlugin;
 
@@ -60,10 +59,9 @@ public class SampleStarsMetaServer extends FileResourcePlugin
       //so getmetadata may fail if called beforehand
       
       //configure so it looks for itself
-      SimpleConfig.getSingleton().setProperties(VoResourcePlugin.RESOURCE_PLUGIN_KEY, new Object[] {
+      SimpleConfig.getSingleton().setProperties(VoDescriptionServer.RESOURCE_PLUGIN_KEY, new Object[] {
                SampleStarsMetaServer.class.getName(),
                TabularSkyServicePlugin.class.getName(),
-               CeaResourceServer.class.getName()
             });
 
       

@@ -1,5 +1,5 @@
 /*
- * $Id: TabularSkyServicePlugin.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+ * $Id: TabularSkyServicePlugin.java,v 1.2 2005/03/08 18:05:57 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -33,10 +33,10 @@ public class TabularSkyServicePlugin implements VoResourcePlugin  {
    
    /** Generates a voResource element about the database.
     *  */
-   public String[] getVoResources() throws IOException {
+   public String getVoResource() throws IOException {
 
       //return empty list for now
-      return new String[] {};
+      return "";
    }
 
 

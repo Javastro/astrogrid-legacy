@@ -211,6 +211,15 @@
 
 
 
+    <!-- HSQLDB for sample & temporary dbs -->
+    <dependency>
+      <id>hsqldb</id>
+      <version>1.7.1</version>
+      <properties>
+         <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+
     <!-- more standard deps -->
 
     <!-- servlet support (for compiling against - no need for deployment war as servlet container should have it) -->

@@ -1,5 +1,5 @@
 /*
- * $Id: VoDescriptionServer.java,v 1.1 2005/02/17 18:37:34 mch Exp $
+ * $Id: VoDescriptionServer.java,v 1.2 2005/03/08 18:05:57 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,35 +8,32 @@ package org.astrogrid.dataservice.metadata;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.config.PropertyNotFoundException;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.xml.DomHelper;
-import org.astrogrid.dataservice.metadata.queryable.ConeConfigQueryableResource;
 import org.astrogrid.dataservice.metadata.queryable.QueryableResourceReader;
+import org.astrogrid.dataservice.metadata.v0_10.VoResourceSupport;
 import org.astrogrid.dataservice.queriers.sql.RdbmsResourceGenerator;
 import org.astrogrid.dataservice.queriers.sql.RdbmsResourceInterpreter;
 import org.astrogrid.dataservice.queriers.test.SampleStarsPlugin;
-import org.astrogrid.dataservice.service.cone.ConeResourceServer;
+import org.astrogrid.dataservice.service.cea.CeaResources;
+import org.astrogrid.dataservice.service.cone.ConeResources;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.registry.client.admin.RegistryAdminService;
+import org.astrogrid.xml.DomHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- * Serves the service's VoDescrption.
- * <p>
- * This file includes a VODescrption element, but at the moment I am assuming that
- * the VODescription might be wrapped in other by combining the various Resources returned
- * by the configured MetataPlugins into a VODescription.
- *
- * <p>See package documentation.
+ * Assembles the various VoResource elements provided by the plugins, and
+ * serves them all up wrapped in a VoDescrption element for submitting to registries
+ * @see VoResourceSupport for how resource elements are generated
+ * @see package documentation
  * <p>
  * @author M Hill
  */
@@ -46,24 +43,19 @@ public class VoDescriptionServer {
    
    private static Document cache = null;
    
-   public static final String AUTHID_KEY = "datacenter.authorityId";
-   public static final String RESKEY_KEY = "datacenter.resourceKey";
-   
    public static final String QUERYABLE_PLUGIN = "datacenter.queryable.plugin";
+   public final static String RESOURCE_PLUGIN_KEY = "datacenter.resource.plugin";
    
    public final static String VODESCRIPTION_ELEMENT =
                "<VODescription  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' "+
                                "xmlns:cea='http://www.ivoa.net/xml/CEAService/v0.1' "+
                                "xmlns:ceapd='http://www.astrogrid.org/schema/AGParameterDefinition/v1' "+
                                "xmlns:ceab='http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1' "+
-                               "xmlns:vr='http://www.ivoa.net/xml/VOResource/v0.9' "+
-                               "xmlns='http://www.ivoa.net/xml/VOResource/v0.9' "+  //default namespace
+                               "xmlns:vr='http://www.ivoa.net/xml/VOResource/v0.10' "+
+                               "xmlns='http://www.ivoa.net/xml/VOResource/v0.10' "+  //default namespace
                     ">";
    public final static String VODESCRIPTION_ELEMENT_END ="</VODescription>";
 
-   /** used to format dates so that the registry can process them. eg 2005-11-04T15:34:22Z -
-    * the date must be GMT */
-   public final static SimpleDateFormat REGISTRY_DATEFORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
    /**
     * Returns the whole metadata file as a DOM document
@@ -107,7 +99,7 @@ public class VoDescriptionServer {
                throw new MetadataException("Resource "+i+" (xsi:type="+resource.getAttribute("xsi:type")+") has no Identifier");
             }
             
-            DomHelper.setElementValue(DomHelper.ensuredGetSingleChild(id, "AuthorityID"), SimpleConfig.getSingleton().getString(VoDescriptionServer.AUTHID_KEY));
+            DomHelper.setElementValue(DomHelper.ensuredGetSingleChild(id, "AuthorityID"), SimpleConfig.getSingleton().getString(VoResourceSupport.AUTHID_KEY));
             Element resKey = DomHelper.getSingleChildByTagName(id, "ResourceKey");
             if ((resKey == null) || (DomHelper.getValueOf(resKey).trim().length()==0)) {
                //no resource key
@@ -222,10 +214,10 @@ public class VoDescriptionServer {
       //get plugin list from config - need to add a default to the common method...
       Object[] plugins  = null;
       try {
-         plugins = SimpleConfig.getSingleton().getProperties(VoResourcePlugin.RESOURCE_PLUGIN_KEY);
+         plugins = SimpleConfig.getSingleton().getProperties(RESOURCE_PLUGIN_KEY);
       } catch (PropertyNotFoundException pnfe)
       {
-         log.warn("No config found for resource plugins, key="+VoResourcePlugin.RESOURCE_PLUGIN_KEY);
+         log.warn("No config found for resource plugins, key="+RESOURCE_PLUGIN_KEY);
          
          //for backwards compatibility, look for old datacenter.metadata.plugin
          String s = SimpleConfig.getSingleton().getString("datacenter.metadata.plugin",null);
@@ -246,15 +238,15 @@ public class VoDescriptionServer {
             //make plugin
             VoResourcePlugin plugin = createVoResourcePlugin(plugins[p].toString());
             //get resources from plugin
-            addResources(vod, plugin);
+            vod.append(plugin);
             
-            if (plugin instanceof CeaResourceServer) { ceaDone = true; }
+            if (plugin instanceof CeaResources) { ceaDone = true; }
          }
       }
 
       //add the standard ones - cea, cone etc
-      if (!ceaDone) { addResources(vod, new CeaResourceServer()); }
-      addResources(vod, new ConeResourceServer());
+      if (!ceaDone) { vod.append(new CeaResources()); }
+      vod.append( new ConeResources());
 //      addResources(vod, new SkyNodeResourceServer());
       
       //finish vod element
@@ -263,16 +255,6 @@ public class VoDescriptionServer {
       return vod.toString();
    }
 
-   /** Convenience routine for the above to load the resources from the given plugin
-    * to the given StringBuffer */
-   private static void addResources(StringBuffer b, VoResourcePlugin plugin) throws IOException {
-      String[] voResources = plugin.getVoResources();
-      //add to document
-      for (int r = 0; r < voResources.length; r++) {
-         b.append(voResources[r]);
-      }
-      return;
-   }
 
    /**
     * Returns the resource element of the given type eg 'AuthorityID'.

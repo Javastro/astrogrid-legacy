@@ -1,5 +1,5 @@
 /*
- * $Id: PalProxyPlugin.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+ * $Id: PalProxyPlugin.java,v 1.2 2005/03/08 18:05:57 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -17,6 +17,7 @@ import java.util.Date;
 import javax.xml.parsers.ParserConfigurationException;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.dataservice.metadata.VoResourcePlugin;
+import org.astrogrid.dataservice.metadata.v0_10.ProxyResourceSupport;
 import org.astrogrid.dataservice.queriers.DefaultPlugin;
 import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.queriers.VotableInResults;
@@ -146,28 +147,12 @@ public class PalProxyPlugin extends DefaultPlugin implements VoResourcePlugin {
     * @deprecated - use UrlResourcePlugin to get the rdbms resource, and CeaResourceServer to
     * build the righr CEA stuff for *this* service
     */
-   public String[] getVoResources() throws IOException {
+   public String getVoResource() throws IOException {
       URL targetPal = new URL(SimpleConfig.getSingleton().getUrl(PAL_TARGET)+"/GetMetadata");
       log.info("Proxying VoResources to: "+targetPal);
-      InputStream vodescIn = targetPal.openStream();
-      Document vodescription = null;
-      try {
-            vodescription = DomHelper.newDocument(vodescIn);
-      }
-      catch (ParserConfigurationException e) {
-         throw new RuntimeException("Server not configured correctly: "+e);
-      }
-      catch (SAXException e) {
-         throw new IOException(e+" reading VODescription from "+targetPal);
-      }
-      
-      Element[] resources = DomHelper.getChildrenByTagName(vodescription.getDocumentElement(), "Resource");
 
-      String[] s = new String[resources.length];
-      for (int i = 0; i < resources.length; i++) {
-         s[i] = DomHelper.ElementToString(resources[i]);
-      }
-      return s;
+      ProxyResourceSupport proxyer = new ProxyResourceSupport();
+      return proxyer.makeMine(targetPal.openStream());
    }
    
    /** Returns the formats that this plugin can provide.  Asks the results class; override in subclasse if nec */

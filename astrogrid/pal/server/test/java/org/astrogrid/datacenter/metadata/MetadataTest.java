@@ -1,4 +1,4 @@
-/*$Id: MetadataTest.java,v 1.3 2005/03/01 17:51:59 mch Exp $
+/*$Id: MetadataTest.java,v 1.4 2005/03/08 18:05:57 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,13 +17,14 @@ import java.util.Locale;
 import junit.framework.TestCase;
 import org.astrogrid.applications.component.CEAComponentManagerFactory;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.dataservice.metadata.CeaResourceServer;
 import org.astrogrid.dataservice.metadata.FileResourcePlugin;
 import org.astrogrid.dataservice.metadata.UrlResourcePlugin;
 import org.astrogrid.dataservice.metadata.VoDescriptionServer;
 import org.astrogrid.dataservice.metadata.VoResourcePlugin;
+import org.astrogrid.dataservice.metadata.v0_10.VoResourceSupport;
 import org.astrogrid.dataservice.queriers.sql.RdbmsResourceGenerator;
 import org.astrogrid.dataservice.queriers.test.SampleStarsPlugin;
+import org.astrogrid.dataservice.service.cea.CeaResources;
 import org.astrogrid.xml.DomHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -51,11 +52,11 @@ public class MetadataTest extends TestCase {
          for (int i = 0; i < ids.length; i++) {
             Element id = ids[i];
             String authId = DomHelper.getValueOf(id, "AuthorityID");
-            String idConfig = SimpleConfig.getSingleton().getString(VoDescriptionServer.AUTHID_KEY);
+            String idConfig = SimpleConfig.getSingleton().getString(VoResourceSupport.AUTHID_KEY);
             assertEquals("Authority ID incorrect in Resource type "+xsitype, idConfig, authId);
 
             String resKey = DomHelper.getValueOf(id, "ResourceKey");
-            String resConfig = SimpleConfig.getSingleton().getString(VoDescriptionServer.RESKEY_KEY);
+            String resConfig = SimpleConfig.getSingleton().getString(VoResourceSupport.RESKEY_KEY);
             if (!xsitype.equals("AuthorityType")) {
                assertTrue("Resource Key is "+resKey+", should start with "+resConfig+" in Resource type "+xsitype, resKey.startsWith(resConfig));
             }
@@ -100,7 +101,7 @@ public class MetadataTest extends TestCase {
 
     //checks we can get individual resources from the metadata
    public void testGetResouce() throws Exception {
-      SimpleConfig.setProperty(VoResourcePlugin.RESOURCE_PLUGIN_KEY, RdbmsResourceGenerator.class.getName());
+      SimpleConfig.setProperty(VoDescriptionServer.RESOURCE_PLUGIN_KEY, RdbmsResourceGenerator.class.getName());
       
 //not required      Element auth = VoDescriptionServer.getAuthorityResource();
 //      assertNotNull("No AuthorityType in VOdescription", auth);
@@ -118,7 +119,7 @@ public class MetadataTest extends TestCase {
    }
    
    public void testCeaResource() throws Throwable {
-      SimpleConfig.setProperty(VoResourcePlugin.RESOURCE_PLUGIN_KEY, CeaResourceServer.class.getName());
+      SimpleConfig.setProperty(VoDescriptionServer.RESOURCE_PLUGIN_KEY, CeaResources.class.getName());
       //generate metadata
       Document metaDoc = VoDescriptionServer.getVoDescription();
       
@@ -127,7 +128,7 @@ public class MetadataTest extends TestCase {
       
    public void testMetadataFileServer() throws Throwable{
       
-      SimpleConfig.setProperty(VoResourcePlugin.RESOURCE_PLUGIN_KEY, FileResourcePlugin.class.getName());
+      SimpleConfig.setProperty(VoDescriptionServer.RESOURCE_PLUGIN_KEY, FileResourcePlugin.class.getName());
       //get non-existent file
       SimpleConfig.setProperty(FileResourcePlugin.METADATA_FILE_LOC_KEY, "doesntexist");
       VoDescriptionServer.clearCache(); //force reload
@@ -146,7 +147,7 @@ public class MetadataTest extends TestCase {
    }
    
    public void testMetatdataUrlServer() throws Throwable{
-      SimpleConfig.setProperty(VoResourcePlugin.RESOURCE_PLUGIN_KEY, UrlResourcePlugin.class.getName());
+      SimpleConfig.setProperty(VoDescriptionServer.RESOURCE_PLUGIN_KEY, UrlResourcePlugin.class.getName());
 
       SimpleConfig.setProperty(FileResourcePlugin.METADATA_URL_LOC_KEY, this.getClass().getResource("metadata.xml").toString());
       Document metadata = VoDescriptionServer.getVoDescription();
@@ -169,6 +170,9 @@ public class MetadataTest extends TestCase {
 
 /*
  $Log: MetadataTest.java,v $
+ Revision 1.4  2005/03/08 18:05:57  mch
+ updating resources to v0.10
+
  Revision 1.3  2005/03/01 17:51:59  mch
  fixes to tests
 

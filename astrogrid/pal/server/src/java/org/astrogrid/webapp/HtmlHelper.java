@@ -1,5 +1,5 @@
 /*
- * $Id: HtmlHelper.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+ * $Id: HtmlHelper.java,v 1.2 2005/03/08 18:05:57 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -25,7 +25,9 @@ public class HtmlHelper
 {
 
    /**
-    * Gets the user details from the request */
+    * Gets the user details from the request
+    * @todo at the moment just returns anonymous
+    */
    public static Principal getUser(HttpServletRequest request)  {
       return LoginAccount.ANONYMOUS;
    }
@@ -39,28 +41,6 @@ public class HtmlHelper
                 "<META HTTP-EQUIV='Refresh' CONTENT='"+secs+";URL="+url+"'>");
    }
 
-   /** Returns the stylesheet filename to be used for the center's html pages in the form
-    * of a full URL including 'link' element.  Returns an empty string if none configured
-   public static String getCssLink() {
-      String cssName = SimpleConfig.getProperty("datacenter.stylesheet",  "default.css");
-      if (cssName.length() == 0) {
-         return "";
-      }
-      else {
-         return "<LINK href='"+cssName+"' rel='stylesheet' type='text/css'>";
-      }
-   }
-
-   /** Convenience routine that returns the complete <HEAD> element for the
-    * standard datacenter page *
-   public static String getHeadElement(String title) {
-      return "<HEAD>\n"+
-             "  <TITLE>"+title+" ("+DataServer.getDatacenterName()+")</TITLE>\n"+
-             "  "+getCssLink()+"\n"+
-             "</HEAD>\n";
-   }
-
-   
    /**
     * Returns an error as string suitable for display in a browser as an html
     * page

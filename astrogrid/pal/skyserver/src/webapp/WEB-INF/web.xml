@@ -14,7 +14,7 @@
    <!-- Class to listen out to container events (ie startup, shutdown) -->
    <!-- This doesn't work on tomcat 4.0...
    <listener>
-        <listener-class>org.astrogrid.datacenter.servlet.ContainerListener</listener-class>
+        <listener-class>org.astrogrid.dataservice.servlet.ContainerListener</listener-class>
     </listener>
     -->
 
@@ -37,49 +37,49 @@
   <servlet>
     <servlet-name>SubmitCone</servlet-name>
     <description>Servlet for submitting simple (NVO compatible) cone searches via POST or GET</description>
-    <servlet-class>org.astrogrid.datacenter.service.cone.SubmitCone</servlet-class>
+    <servlet-class>org.astrogrid.dataservice.service.cone.SubmitCone</servlet-class>
   </servlet>
 
   <servlet>
     <servlet-name>SubmitQuery</servlet-name>
     <description>Servlet for submitting (asynchronous) queries via POST or GET</description>
-    <servlet-class>org.astrogrid.datacenter.servlet.SubmitQuery</servlet-class>
+    <servlet-class>org.astrogrid.dataservice.servlet.SubmitQuery</servlet-class>
   </servlet>
 
   <servlet>
     <servlet-name>AskQuery</servlet-name>
     <description>Servlet for asking (synchronous) queries via POST or GET</description>
-    <servlet-class>org.astrogrid.datacenter.servlet.AskQuery</servlet-class>
+    <servlet-class>org.astrogrid.dataservice.servlet.AskQuery</servlet-class>
   </servlet>
 
   <servlet>
     <servlet-name>AskCount</servlet-name>
     <description>Servlet that just gets the number of rows, rather than the rows themselves, for a query</description>
-    <servlet-class>org.astrogrid.datacenter.servlet.AskCount</servlet-class>
+    <servlet-class>org.astrogrid.dataservice.servlet.AskCount</servlet-class>
   </servlet>
 
   <servlet>
     <servlet-name>BrowserAskQuery</servlet-name>
     <description>Servlet for asking (synchronous) queries via POST or GET suitable for browsers</description>
-    <servlet-class>org.astrogrid.datacenter.servlet.BrowserAskQuery</servlet-class>
+    <servlet-class>org.astrogrid.dataservice.servlet.BrowserAskQuery</servlet-class>
   </servlet>
 
   <servlet>
     <servlet-name>AttemptAbort</servlet-name>
     <description>Servlet for attempting to abort a query</description>
-    <servlet-class>org.astrogrid.datacenter.servlet.AttemptAbort</servlet-class>
+    <servlet-class>org.astrogrid.dataservice.servlet.AttemptAbort</servlet-class>
   </servlet>
 
   <servlet>
     <servlet-name>SimpleImageQuery</servlet-name>
     <description>serves using Simple Image Access Protocol</description>
-    <servlet-class>org.astrogrid.datacenter.service.siap.SimpleImageQuery</servlet-class>
+    <servlet-class>org.astrogrid.dataservice.service.siap.SimpleImageQuery</servlet-class>
   </servlet>
 
   <servlet>
     <servlet-name>SimpleSpectraQuery</servlet-name>
     <description>serves using Simple Spectra Access Protocol</description>
-    <servlet-class>org.astrogrid.datacenter.service.ssap.SimpleSpectraQuery</servlet-class>
+    <servlet-class>org.astrogrid.dataservice.service.ssap.SimpleSpectraQuery</servlet-class>
   </servlet>
 
 	<servlet>
@@ -106,39 +106,26 @@
   <servlet>
     <servlet-name>GetMetadata</servlet-name>
     <description>serves the datacenter's metadata</description>
-    <servlet-class>org.astrogrid.datacenter.servlet.GetMetadata</servlet-class>
+    <servlet-class>org.astrogrid.dataservice.servlet.GetMetadata</servlet-class>
   </servlet>
 
   <servlet>
     <servlet-name>Register</servlet-name>
     <description>(re)Registers the service (sends the metadata to the configured Registries)</description>
-    <servlet-class>org.astrogrid.datacenter.servlet.Register</servlet-class>
+    <servlet-class>org.astrogrid.dataservice.servlet.Register</servlet-class>
   </servlet>
 
   <servlet>
     <servlet-name>RdbmsResourceGenerator</servlet-name>
     <description>Generates the Metadata Resource(s) for a Relational Database</description>
-    <servlet-class>org.astrogrid.datacenter.queriers.sql.RdbmsResourceGenerator</servlet-class>
+    <servlet-class>org.astrogrid.dataservice.queriers.sql.RdbmsResourceGenerator</servlet-class>
   </servlet>
 
-
-  <!-- Store Browser/File Picker -->
-  <servlet>
-    <servlet-name>StoreFileChooser</servlet-name>
-    <description>HTML version of the store file browser, for exploring myspace etc</description>
-    <servlet-class>org.astrogrid.slinger.ui.servlet.PickerServlet</servlet-class>
-  </servlet>
 
   <servlet>
     <servlet-name>StoreFileResolver</servlet-name>
     <description>Resolves a store file reference to a stream</description>
     <servlet-class>org.astrogrid.slinger.ResolverServlet</servlet-class>
-  </servlet>
-
-  <servlet>
-    <servlet-name>StoreBrowser</servlet-name>
-    <description>For Browsing stores (including myspace) </description>
-    <servlet-class>org.astrogrid.slinger.ui.servlet.BrowserServlet</servlet-class>
   </servlet>
 
   <!-- CEA -->
@@ -249,20 +236,8 @@
 
   <!-- Store Browser -->
   <servlet-mapping>
-    <servlet-name>StoreFileChooser</servlet-name>
-    <url-pattern>/StoreFileChooser</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>StoreBrowser</servlet-name>
-    <url-pattern>/StoreBrowser</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
     <servlet-name>StoreFileResolver</servlet-name>
     <url-pattern>/ViewFile</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>StoreFileResolver</servlet-name>
-    <url-pattern>/StoreFile</url-pattern>
   </servlet-mapping>
 
   <!-- Axis -->
@@ -420,7 +395,7 @@
   <env-entry>
         <description>Class name of the CEA component manager implementation to use</description>
         <env-entry-name>cea.component.manager.class</env-entry-name>
-        <env-entry-value>org.astrogrid.datacenter.service.v06.DatacenterCEAComponentManager</env-entry-value>
+        <env-entry-value>org.astrogrid.dataservice.service.cea.DatacenterCEAComponentManager</env-entry-value>
         <env-entry-type>java.lang.String</env-entry-type>
   </env-entry>
 </web-app>

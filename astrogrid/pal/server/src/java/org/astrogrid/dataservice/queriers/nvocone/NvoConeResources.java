@@ -1,5 +1,5 @@
 /*
- * $Id: NvoConeResources.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+ * $Id: NvoConeResources.java,v 1.2 2005/03/08 18:05:57 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -10,6 +10,7 @@ import java.io.IOException;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.dataservice.metadata.VoDescriptionServer;
 import org.astrogrid.dataservice.metadata.VoResourcePlugin;
+import org.astrogrid.dataservice.metadata.v0_10.VoResourceSupport;
 import org.astrogrid.dataservice.service.ServletHelper;
 
 /**
@@ -24,21 +25,15 @@ import org.astrogrid.dataservice.service.ServletHelper;
  * @author M Hill
  */
 
-public class NvoConeResources implements VoResourcePlugin {
-   
-   private static String[] cache = null;
+public class NvoConeResources extends VoResourceSupport implements VoResourcePlugin {
    
    /**
     * Returns an array of VOResource elements of the metadata.  Returns a string (rather than
     * DOM element)
     * so that we can combine them easily; some DOMs do not mix well.
     */
-   public synchronized String[] getVoResources() throws IOException {
-      if (cache == null) {
-         cache = new String[] { getQueryable(), getRdbmsResource() };
-      }
-      
-      return cache;
+   public String getVoResource() throws IOException {
+      return getQueryable() + getRdbmsResource();
    }
    
    
@@ -49,8 +44,8 @@ public class NvoConeResources implements VoResourcePlugin {
          String resource =
          "<Resource xsi:type='Queryable'>\n"+
               "<Identifier>"+
-                  "<AuthorityID>"+SimpleConfig.getSingleton().getString(VoDescriptionServer.AUTHID_KEY)+"</AuthorityID>"+
-                  "<ResourceKey>"+SimpleConfig.getSingleton().getString(VoDescriptionServer.RESKEY_KEY)+"/queryable</ResourceKey>"+
+                  "<AuthorityID>"+SimpleConfig.getSingleton().getString(AUTHID_KEY)+"</AuthorityID>"+
+                  "<ResourceKey>"+SimpleConfig.getSingleton().getString(RESKEY_KEY)+"/queryable</ResourceKey>"+
               "</Identifier>\n"+
               "<Scope>";
 
@@ -99,8 +94,8 @@ public class NvoConeResources implements VoResourcePlugin {
          String resource =
             "<Resource xsi:type='RdbmsMetadata'>\n"+
               "<Identifier>"+
-                  "<AuthorityID>"+SimpleConfig.getSingleton().getString(VoDescriptionServer.AUTHID_KEY)+"</AuthorityID>"+
-                  "<ResourceKey>"+SimpleConfig.getSingleton().getString(VoDescriptionServer.RESKEY_KEY)+"/rdbms</ResourceKey>"+
+                  "<AuthorityID>"+SimpleConfig.getSingleton().getString(AUTHID_KEY)+"</AuthorityID>"+
+                  "<ResourceKey>"+SimpleConfig.getSingleton().getString(RESKEY_KEY)+"/rdbms</ResourceKey>"+
               "</Identifier>";
       
       //add scope - tables available
@@ -140,8 +135,11 @@ public class NvoConeResources implements VoResourcePlugin {
 
 /*
 $Log: NvoConeResources.java,v $
-Revision 1.1  2005/02/17 18:37:35  mch
-*** empty log message ***
+Revision 1.2  2005/03/08 18:05:57  mch
+updating resources to v0.10
+
+Revision 1.1.1.1  2005/02/17 18:37:35  mch
+Initial checkin
 
 Revision 1.1.1.1  2005/02/16 17:11:24  mch
 Initial checkin

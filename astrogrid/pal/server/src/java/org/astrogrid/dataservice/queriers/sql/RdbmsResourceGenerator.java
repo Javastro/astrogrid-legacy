@@ -1,5 +1,5 @@
 /*
- * $Id: RdbmsResourceGenerator.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+ * $Id: RdbmsResourceGenerator.java,v 1.2 2005/03/08 18:05:57 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -22,7 +22,7 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.dataservice.metadata.VoDescriptionServer;
 import org.astrogrid.dataservice.metadata.VoTypes;
-import org.astrogrid.dataservice.out.tables.VoTableWriter;
+import org.astrogrid.dataservice.metadata.v0_10.VoResourceSupport;
 import org.astrogrid.dataservice.queriers.DatabaseAccessException;
 import org.astrogrid.io.xml.XmlAsciiWriter;
 import org.astrogrid.io.xml.XmlPrinter;
@@ -150,8 +150,8 @@ public class RdbmsResourceGenerator extends DefaultServlet {
          XmlPrinter metaTag = xw.newTag("Resource", new String[] { "xsi:type='RdbmsMetadata'" });
 
          XmlPrinter identifier = metaTag.newTag("Identifier");
-         identifier.writeTag("AuthorityID", SimpleConfig.getSingleton().getString(VoDescriptionServer.AUTHID_KEY, "some.authority"));
-         identifier.writeTag("ResourceKey", SimpleConfig.getSingleton().getString(VoDescriptionServer.RESKEY_KEY+"/rdbms", "some_key/rdbms"));
+         identifier.writeTag("AuthorityID", SimpleConfig.getSingleton().getString(VoResourceSupport.AUTHID_KEY, "some.authority"));
+         identifier.writeTag("ResourceKey", SimpleConfig.getSingleton().getString(VoResourceSupport.RESKEY_KEY+"/rdbms", "some_key/rdbms"));
          
          /** Get general info */
          String name = metadata.getDatabaseProductName();

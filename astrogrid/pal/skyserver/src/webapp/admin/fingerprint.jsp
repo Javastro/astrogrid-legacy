@@ -209,12 +209,12 @@
 <hr />
 <h2>VoResource/Metadata Plugin Configuration</h2>
 <%
-   Object[] resourcePluginClasses =  SimpleConfig.getSingleton().getProperties(org.astrogrid.dataservice.metadata.VoResourcePlugin.RESOURCE_PLUGIN_KEY);
+   Object[] resourcePluginClasses =  SimpleConfig.getSingleton().getProperties(org.astrogrid.dataservice.metadata.VoDescriptionServer.RESOURCE_PLUGIN_KEY);
 
    for (int i = 0; i < resourcePluginClasses.length; i++) {
       out.println("Resource Plugin Class "+resourcePluginClasses[i].toString());
       if (resourcePluginClasses[i] == null) {
-         out.println(" - Missing Plugin, set key "+org.astrogrid.dataservice.metadata.VoResourcePlugin.RESOURCE_PLUGIN_KEY+"."+i);
+         out.println(" - Missing Plugin, set key "+org.astrogrid.dataservice.metadata.VoDescriptionServer.RESOURCE_PLUGIN_KEY+"."+i);
       }
       else {
         try {
