@@ -6,3 +6,4 @@ target
 .project
 velocity.log
 .checkstyle
+junit*.properties
