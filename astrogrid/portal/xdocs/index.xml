@@ -46,9 +46,6 @@
                                         <verbatim>
                         maven astrogrid-build-site
                     </verbatim>
-                    Note to Windows users: There is a bug in Maven which prevents the portal building
-                    under Windows - you'll simply get an UnknownHostException.  To build under Windows you'll
-                    first need to patch Maven - see <a href="http://forum.astrogrid.org/read.php?TID=681">http://forum.astrogrid.org/read.php?TID=681</a> .
                 </p>
             </subsection>
             
