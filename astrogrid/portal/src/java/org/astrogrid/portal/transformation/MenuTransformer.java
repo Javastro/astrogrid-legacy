@@ -2,21 +2,38 @@ package org.astrogrid.portal.transformation;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.apache.avalon.framework.parameters.Parameters;
+import org.apache.cocoon.ProcessingException;
+import org.apache.cocoon.environment.SourceResolver;
 import org.apache.cocoon.transformation.AbstractDOMTransformer;
 import org.apache.commons.jxpath.JXPathContext;
 import org.apache.commons.jxpath.xml.DocumentContainer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
 
 /**
  * Add the non-specified menus to the main menu.
  */
 public class MenuTransformer extends AbstractDOMTransformer {
+  private String menuDirectory = null;
+
+  /* (non-Javadoc)
+   * @see org.apache.cocoon.sitemap.SitemapModelComponent#setup(org.apache.cocoon.environment.SourceResolver, java.util.Map, java.lang.String, org.apache.avalon.framework.parameters.Parameters)
+   */
+  public void setup(SourceResolver resolver, Map objectModel, String src, Parameters params)
+      throws ProcessingException, SAXException, IOException {
+    super.setup(resolver, objectModel, src, params);
+    
+    menuDirectory = params.getParameter("menu-directory", "");
+  }
 
   /* (non-Javadoc)
    * @see org.apache.cocoon.transformation.AbstractDOMTransformer#transform(org.w3c.dom.Document)
@@ -48,8 +65,7 @@ public class MenuTransformer extends AbstractDOMTransformer {
 
     File menuFile = null;
     Element xIncludeEl = null;
-    File[] menuFiles =
-      listMenuFiles("/home/gps/projects/astrogrid/workspace/astrogrid-portal/build/webapp/WEB-INF/menu");
+    File[] menuFiles = listMenuFiles(menuDirectory);
     for (int fileIndex = 0; fileIndex < menuFiles.length; fileIndex++) {
       menuFile = menuFiles[fileIndex];
 
@@ -100,4 +116,5 @@ public class MenuTransformer extends AbstractDOMTransformer {
     
     return result;
   }
+  
 }
