@@ -25,7 +25,7 @@
   <h1>Submit an ADQL/xml Query to <%=DataServer.getDatacenterName() %></h1>
   <p>
   <b>Enter your ADQL/xml query here:</b>
-      <form action="submitAdqlXml.jsp" method="POST">
+      <form action="SubmitAdql" method="POST">
         <i>Note that some browsers will modify viewed XML, so check for DEFANGED, case changes, etc</i>
         <textarea name="AdqlXml" rows="20" cols="100%"><%= request.getParameter("AdqlXml") %></textarea>
         <p/>

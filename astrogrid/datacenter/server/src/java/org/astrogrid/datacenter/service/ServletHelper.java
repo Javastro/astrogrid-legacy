@@ -1,5 +1,5 @@
 /*
- * $Id: ServletHelper.java,v 1.1 2004/08/27 17:47:19 mch Exp $
+ * $Id: ServletHelper.java,v 1.2 2004/09/01 21:37:59 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,17 +8,14 @@ package org.astrogrid.datacenter.service;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.queriers.status.QuerierStatus;
-import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.returns.ReturnSpec;
 import org.astrogrid.datacenter.returns.ReturnTable;
 import org.astrogrid.datacenter.returns.TargetIndicator;
@@ -35,49 +32,10 @@ public class ServletHelper
    
    protected static Log log = LogFactory.getLog(ServletHelper.class);
 
-   /**
-    * Runs a (blocking) ADQL/XML/OM query, outputting the results as votable to the given stream
-    *
-   public void askQuery(Account user, Query query, Writer out, String requestedFormat) throws IOException {
-      
-      try {
-         server.askQuery(user, query, new TargetIndicator(out), requestedFormat);
-      }
-      catch (Throwable th) {
-         log.error(th);
-         out.write(exceptionAsHtmlPage("askQuery("+user+", "+query+", Writer)", th));
-      }
-   }
- 
-   /**
-    * Submits a (non-blocking) ADQL/XML/OM query, returning the query's external
-    * reference id.  Results will be output to given Agsl
-    *
-   public String submitQuery(Account user, Query query, TargetIndicator target, String requestedFormat) throws IOException {
-      
-      try {
-         return server.submitQuery(user, query, target, requestedFormat);
-      }
-      catch (Throwable th) {
-         log.error(th);
-         return exceptionAsHtmlPage("submitQuery("+user+", "+query+", "+target+")", th);
-      }
-   }
-
-
-   public QuerierStatus getQuerierStatus(Account user, String queryId) {
-      try {
-         return server.getQueryStatus(user, queryId);
-      }
-      catch (Throwable th) {
-         log.error(th);
-         return null;
-      }
-   }
 
    /**
     * Convenience routine for JSPs; decides where target should be from
-    * resultsTarget string */
+    * the parameters in the given request */
    public static ReturnSpec makeReturnSpec(HttpServletRequest request)  {
 
       TargetIndicator target = null;
@@ -117,98 +75,6 @@ public class ServletHelper
    }
 
    
-   
-   /**
-    * Returns status of a as html. NB the id given is the *datacenter's* id
-    * user getQuerierStatus
-   public String getQueryStatusHtml(Account user, String queryId)
-   {
-      try {
-         return queryStatusAsHtml(queryId, server.getQueryStatus(user, queryId));
-      }
-      catch (Throwable th) {
-         log.error(th);
-         return exceptionAsHtml("getQueryStatusAsHtml("+user+", "+queryId+")", th);
-      }
-   }
-
-   /**
-    * Request to stop a query.  This might not be successful - depends on the
-    * back end.  NB the id given is the *datacenters* id.
-    *
-   public String abortQuery(Account user, String queryId) {
-      try {
-         return queryStatusAsHtml(queryId, server.abortQuery(user, queryId));
-      }
-      catch (Throwable th) {
-         log.error(th);
-         return exceptionAsHtmlPage("abortQuery("+user+", "+queryId+")", th);
-      }
-   }
-
-   /**
-    * Returns a QuerierStatus in html form.
-    *
-   public static String queryStatusAsHtml(String queryId, QuerierStatus status) {
-
-      StringBuffer html = new StringBuffer(
-         "<h1>Status of Query "+makeSafeForHtml(queryId)+"</h1>\n");
-
-      if (status == null) {
-         return html.toString()+
-                  "<b>No Query found for that ID</b>\n";
-      }
-      
-      html.append("<h2>"+makeSafeForHtml(status.getState().toString())+"</h2>\n");
-
-      html.append("<p><b>"+makeSafeForHtml(status.getNote().replaceAll("\n","<br/>"))+"</b></p>\n");
-      
-      String[] details= status.getDetails();
-      
-      for (int i=0;i<details.length;i++) {
-         html.append("<p>"+makeSafeForHtml(details[i])+"</p>\n");
-      }
-      
-      return html.toString();
-
-   }
-
-   /**
-    * Returns a ServerStatus in html form.
-    */
-   public String serverStatusAsHtml() {
-
-      String[] running = DataServer.querierManager.getRunning();
-      
-      StringBuffer html = new StringBuffer(
-         "<h1>Datacenter Service Status at "+new Date()+"</h1>\n"+
-//         "<p>Started: "+DataServer.startTime+"</p>"+
-         "<h3>Memory</h3>"+
-         "<p>Free:"+Runtime.getRuntime().freeMemory()+"<br/>"+
-         "Max:"+Runtime.getRuntime().maxMemory()+"<br/>"+
-         "Total:"+Runtime.getRuntime().totalMemory()+"<br/></p>\n"+
-         "<h3>Load</h3>"+
-         "<p>Running Queries: "+running.length+"</p>");
-
-      for (int i=0;i<running.length;i++) {
-         html.append("<a href='queryStatus.jsp?ID="+running[i]+"'>"+running[i]+"</a><br/>\n");
-      }
-   
-      String[] done = DataServer.querierManager.getRan();
-
-      html.append(
-         "</p>"+
-         "<h3>History</h3>"+
-         "<p>Closed Queries: "+done.length+"</p>");
-
-      for (int i=0;i<done.length;i++) {
-         html.append("<a href='queryStatus.jsp?ID="+done[i]+"'>"+done[i]+"</a><br/>\n");
-      }
-
-      html.append("</p>");
-      
-      return html.toString();
-   }
 
    /** Convenience routine for returning the correct 'HTML' snippet that
     * refreshes the page given by the URL - which should point to the same page
@@ -239,6 +105,7 @@ public class ServletHelper
              "</HEAD>\n";
    }
 
+   
    /**
     * Returns an error as string suitable for display in a browser as an html
     * page

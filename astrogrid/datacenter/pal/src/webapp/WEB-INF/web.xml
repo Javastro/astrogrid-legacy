@@ -8,7 +8,7 @@
 
   <display-name>Astrogrid Datacenter server</display-name>
   <description>
-    SOAP service that published a data source in Astrogrid.
+    SOAP service that publishes a data set to AstroGrid.
   </description>
   <servlet>
     <servlet-name>AxisServlet</servlet-name>
@@ -26,7 +26,7 @@
 
   <servlet>
     <servlet-name>SubmitCone</servlet-name>
-    <description>Servlet for submitting simple cone searches via POST or GET</description>
+    <description>Servlet for submitting simple (NVO compatible) cone searches via POST or GET</description>
     <servlet-class>org.astrogrid.datacenter.servlet.SubmitCone</servlet-class>
   </servlet>
 
@@ -40,6 +40,24 @@
     <servlet-name>SubmitSql</servlet-name>
     <description>Servlet for submitting raw SQL queries</description>
     <servlet-class>org.astrogrid.datacenter.servlet.SubmitRawSql</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>AttemptAbort</servlet-name>
+    <description>Servlet for attempting to abort a query</description>
+    <servlet-class>org.astrogrid.datacenter.servlet.AttemptAbort</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>SimpleImageAccess</servlet-name>
+    <description>serves using Simple Image Access Protocol</description>
+    <servlet-class>org.astrogrid.datacenter.servlet.SimpleImageAccess</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>SimpleSpectraAccess</servlet-name>
+    <description>serves using Simple Spectra Access Protocol</description>
+    <servlet-class>org.astrogrid.datacenter.servlet.SimpleSpectraAccess</servlet-class>
   </servlet>
 
   <servlet>
@@ -70,6 +88,41 @@
   <servlet-mapping>
     <servlet-name>SubmitCone</servlet-name>
     <url-pattern>/SubmitCone</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>SubmitAdql</servlet-name>
+    <url-pattern>/SubmitAdql</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>AttemptAbort</servlet-name>
+    <url-pattern>/AttemptAbort</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>AttemptAbort</servlet-name>
+    <url-pattern>/Abort</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>SimpleImageAccess</servlet-name>
+    <url-pattern>/SIA</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>SimpleImageAccess</servlet-name>
+    <url-pattern>/SimpleImageAccess</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>SimpleSpectraAccess</servlet-name>
+    <url-pattern>/SimpleSpectraAccess</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>SimpleSpectraAccess</servlet-name>
+    <url-pattern>/SSA</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>

@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.34 2004/09/01 12:10:58 mch Exp $
+ * $Id: SqlResults.java,v 1.35 2004/09/01 21:37:59 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -122,20 +122,19 @@ public class SqlResults extends QueryResults
          
 //         sqlResults.beforeFirst();
          int row = 0;
-         int maxRow = getCount();
-         String ofMax = " of "+maxRow;
-         if (maxRow == -1) ofMax = "";
+         statusToUpdate.newProgress("Processing Row", getCount());
          while (sqlResults.next())
          {
             row++;
-            statusToUpdate.setNote(note+"\nProcessing Row "+row+ofMax);
+            statusToUpdate.setProgress(row);
 
-            printOut.println("               <TR>");
+            printOut.println("  <TR>");
+            printOut.print("     ");
             for (int i=1;i<=cols;i++)
             {
-               printOut.println("                  <TD>"+sqlResults.getString(i)+"</TD>");
+               printOut.print("<TD>"+sqlResults.getString(i)+"</TD>");
             }
-            printOut.println("               </TR>");
+            printOut.println("  </TR>");
             
             if ((maxAllowed!=-1) && (row>maxAllowed)) {
                statusToUpdate.addDetail("Results limited to "+maxAllowed+" rows by datacenter");
@@ -310,6 +309,9 @@ public class SqlResults extends QueryResults
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.35  2004/09/01 21:37:59  mch
+ Fixes for Servlets, more servlets and better and nicer status reports
+
  Revision 1.34  2004/09/01 12:10:58  mch
  added results.toHtml
 

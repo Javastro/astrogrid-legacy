@@ -23,6 +23,8 @@
 <body>
 <%@ include file="header.xml" %>
 <%@ include file="navigation.xml" %>
+<div id='bodyColumn'>
+
 <%
    String queryId = request.getParameter("ID");
    try {
@@ -37,7 +39,7 @@
 <h2> <%= ServletHelper.makeSafeForHtml(status.getState().toString()) %></h2>
 
 <p>
-<b>  <%= ServletHelper.makeSafeForHtml(status.getNote().replaceAll("\n","<br/>")) %></b>
+<b>  <%= ServletHelper.makeSafeForHtml(status.getNote()) %></b>
 </p>
       
 <%
@@ -46,6 +48,8 @@
       for (int i=0;i<details.length;i++) {
          out.write("<p>"+ServletHelper.makeSafeForHtml(details[i])+"</p>\n");
       }
+
+      out.write("<p>"+status.getProgressMsg()+"</p>");
       
       if (!(status instanceof QuerierClosed)) {
          //automatic refresh
@@ -58,6 +62,7 @@
    }
 
 %>
+</div>
 </body>
 </html>
 

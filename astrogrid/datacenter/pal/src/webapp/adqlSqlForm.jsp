@@ -38,7 +38,7 @@
         </p>
         <p>
           <%@ include file='resultsForm.xml' %>
-          <input type="submit" name='SubmitSql' value="Submit Query" onclick='formAction="submitAdqlSql.jsp";' />
+          <input type="submit" name='SubmitSql' value="Submit Query" onclick='formAction="SubmitAdqlSql";' />
           (If you get an invalid XML error, this is your browser being 'safe'.  Use the buttons below to
           translate the query then check the XML)
         </p>

@@ -1,5 +1,5 @@
 /*
- * $Id: SubmitAdqlXml.java,v 1.1 2004/09/01 12:09:59 mch Exp $
+ * $Id: SubmitAdqlXml.java,v 1.2 2004/09/01 21:37:59 mch Exp $
  */
 
 package org.astrogrid.datacenter.servlet;
@@ -25,7 +25,7 @@ import org.astrogrid.datacenter.service.ServletHelper;
  *
  * @author mch
  */
-public class SubmitAdqlXml extends HttpServlet {
+public class SubmitAdqlXml extends StdServlet {
    
    DataServer server = new DataServer();
  
@@ -68,21 +68,4 @@ public class SubmitAdqlXml extends HttpServlet {
       }
    }
 
-   /** Do same on POST requests as GET requests */
-   public void doPost(HttpServletRequest request,
-                     HttpServletResponse response) throws ServletException, IOException {
-      doGet(request, response);
-   }
-   
-   /** Need to do something better than this... */
-   private void doError(HttpServletResponse response, String msg, Throwable th) throws IOException {
-      try {
-         response.setContentType("text/plain");
-      }
-      catch (RuntimeException re) {
-         //ignore - some stuff might already have been written out.
-      }
-      response.getWriter().println(msg);
-      th.printStackTrace(response.getWriter());
-   }
 }

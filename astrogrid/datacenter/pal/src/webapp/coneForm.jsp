@@ -35,7 +35,7 @@
      <%= SimpleConfig.getSingleton().getString(SqlMaker.CONE_SEARCH_TABLE_KEY, "(ERROR: Not Configured") %>.
      <%= SimpleConfig.getSingleton().getString(SqlMaker.CONE_SEARCH_DEC_COL_KEY, "(ERROR: Not Configured") %>
 
-      <form action="submitCone.jsp" method="POST">
+      <form action="SubmitCone" method="POST">
        <p>
          Right Ascension in decimal degrees, J2000 <input type="text" name="RA"/><br />
          Decliniation in decimal degress, J2000 <input type="text" name="DEC" /><br />

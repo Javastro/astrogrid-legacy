@@ -1,5 +1,5 @@
 /*
- * $Id: SubmitCone.java,v 1.2 2004/09/01 12:09:59 mch Exp $
+ * $Id: SubmitCone.java,v 1.3 2004/09/01 21:37:59 mch Exp $
  */
 
 package org.astrogrid.datacenter.servlet;
@@ -26,7 +26,7 @@ import org.astrogrid.datacenter.service.ServletHelper;
  *
  * @author mch
  */
-public class SubmitCone extends HttpServlet {
+public class SubmitCone extends StdServlet {
    
    DataServer server = new DataServer();
  
@@ -39,6 +39,16 @@ public class SubmitCone extends HttpServlet {
       String param_dec = request.getParameter("DEC");
       String param_sr = request.getParameter("SR");
 
+      if (param_ra==null) {
+         doError(response, "RA missing from input parameters", null);
+      }
+      if (param_dec==null) {
+         doError(response, "DEC missing from input parameters", null);
+      }
+      if (param_sr==null) {
+         doError(response, "SR missing from input parameters", null);
+      }
+      
       try {
          double ra = Double.parseDouble(param_ra);
          double dec = Double.parseDouble(param_dec);
@@ -74,21 +84,5 @@ public class SubmitCone extends HttpServlet {
       }
    }
 
-   /** Do same on POST requests as GET requests */
-   public void doPost(HttpServletRequest request,
-                     HttpServletResponse response) throws ServletException, IOException {
-      doGet(request, response);
-   }
-   
-   /** Need to do something better than this... */
-   private void doError(HttpServletResponse response, String msg, Throwable th) throws IOException {
-      try {
-         response.setContentType("text/plain");
-      }
-      catch (RuntimeException re) {
-         //ignore - some stuff might already have been written out.
-      }
-      response.getWriter().println(msg);
-      th.printStackTrace(response.getWriter());
-   }
+
 }
