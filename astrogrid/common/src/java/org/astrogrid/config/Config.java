@@ -1,5 +1,5 @@
 /*
- * $Id: Config.java,v 1.5 2003/11/25 17:25:39 jdt Exp $
+ * $Id: Config.java,v 1.6 2003/12/16 11:29:16 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -25,43 +25,41 @@ import org.apache.commons.logging.LogFactory;
  * <p>
  */
 
-public abstract class Config
-{
+public abstract class Config {
    /** For debug purposes - a list of locations that the configuration file
     * has been loaded from @see getLocations() */
    private static String locations = null;
-
+   
    /** The logging instance */
    protected static Log log = LogFactory.getLog(SimpleConfig.class);
    
    /**
-    * loads the properties from the url specified in Jndi by the given Jndi name
+    * Indirect file lookup; pass in the fully pathed jndi key (eg java:comp/env/wibble/config.url)
+    * and this routine will find the filename given by that key, and load the properties from there
+    *
     * @return true if load succeeded
-    * @modified nw - improved jndi access.
     */
-   public boolean loadJndiUrl(String jndiName) throws IOException {
+   public boolean loadJndiUrl(String jndiKey) throws IOException {
       
       URL configUrl = null;
+      Object jndiValue = null;
       
       try {
-          Object o = null;
-          Context initCtx = new InitialContext();
-          o = initCtx.lookup(jndiName);
-          if (o == null || o instanceof Context) {
-              Context javaContext = (Context)initCtx.lookup("java:comp/env");
-              o = javaContext.lookup(jndiName);
-          }
-          
-          if (o instanceof URL) {                            
-                configUrl = (URL) o;             
-          } else if (o instanceof String) {
-              configUrl = new URL((String)o);
-          } else {
-              log.debug("Found resource in JNDI, but of incorrect type :" + o.getClass().getName());
-              return false;
-          }
-                    
-         addLocation("JNDI ("+jndiName+"->"+configUrl+")");
+         jndiValue = new InitialContext().lookup(jndiKey);
+         
+         if (jndiValue == null) {
+            return false;
+         }
+         
+         if (jndiValue instanceof URL) {
+            configUrl = (URL) jndiValue;
+         } else if (jndiValue instanceof String) {
+            configUrl = new URL((String) jndiValue);
+         } else {
+            throw new IOException("Unknown JndiValue type:" + jndiValue.getClass().getName());
+         }
+         
+         addLocation("JNDI ("+jndiKey+"->"+configUrl+")");
          loadUrl(configUrl);
          return true;
       }
@@ -72,13 +70,13 @@ public abstract class Config
       }
       catch (IOException ioe) {
          //rethrow with more info
-         IOException nioe = new IOException(ioe+": Load failed from jndi '"+jndiName+"' -> '"+configUrl+"'");
+         IOException nioe = new IOException(ioe+": Load failed from jndi '"+jndiKey+"' -> '"+jndiValue+"' -> '"+configUrl+"'");
          nioe.setStackTrace(ioe.getStackTrace());
          throw nioe;
       }
-
+      
    }
-
+   
    /**
     * loads the properties from the url specified in the system environment
     * variable of the given name
@@ -87,11 +85,10 @@ public abstract class Config
    public boolean loadSysEnvUrl(String sysEnv) throws IOException {
       
       URL configUrl = null;
-
+      
       String sysVar = System.getProperty(sysEnv);
       if ((sysVar != null) && (sysVar.length() > 0)) {
-         try
-         {
+         try {
             configUrl = new URL(sysVar);
             addLocation("System Environment ("+sysEnv+"->"+configUrl+")");
             loadUrl(configUrl);
@@ -110,65 +107,63 @@ public abstract class Config
       }
       return false;
    }
-      
+   
    /**
     * Loads the file at the given filepath as a properties file
     * @return true if load succeeded
     */
-   public boolean loadFile(String filepath) throws IOException
-   {
+   public boolean loadFile(String filepath) throws IOException {
       addLocation(filepath);
-
+      
       loadStream(new FileInputStream(filepath));
       
       return true;
    }
-
+   
    /**
     * Autoload looks for the properties file in jndi, then the environment variables,
     * then the classpath, then the local (working) directory.
     * @return true if load succeeded
     */
    public void autoLoad() throws IOException {
-
-         boolean loaded = loadJndiUrl(getJndiKey());
-         
-         if (!loaded) {
-            loaded = loadSysEnvUrl(getSysEnvKey());
+      
+      boolean loaded = loadJndiUrl(getJndiKey());
+      
+      if (!loaded) {
+         loaded = loadSysEnvUrl(getSysEnvKey());
+      }
+      
+      if (!loaded) {
+         try {
+            loaded = loadFile(getDefaultFilename());
          }
-
-         if (!loaded) {
-            try {
-               loaded = loadFile(getDefaultFilename());
-            }
-            catch (FileNotFoundException fnfe) {
-               //not a problem if the default file is not found
-               log.debug(fnfe);
-            }
+         catch (FileNotFoundException fnfe) {
+            //not a problem if the default file is not found
+            log.debug(fnfe);
          }
+      }
    }
-
+   
    /**
     * Loads the properties from the given url
     */
-   public void loadUrl(URL url) throws IOException
-   {
+   public void loadUrl(URL url) throws IOException {
       addLocation(url.toString());
-
+      
       loadStream(url.openStream());
    }
-
+   
    /**
     * Loads the properties at the given inputstream.
     */
    protected abstract void loadStream(InputStream in) throws IOException;
-
+   
    /** Returns the jndi key used to find the url of the configuration file */
    protected abstract String getJndiKey();
    
    /** Returns the System Environment variable used to find the url of the configuration file */
    protected abstract String getSysEnvKey();
-
+   
    /** Returns the default configuration filename  */
    protected abstract String getDefaultFilename();
    /**
@@ -176,33 +171,27 @@ public abstract class Config
     * errors that things can't be found or are incorrect, so the user really
     * knows they're looking in the right place
     */
-   public String getLocations()
-   {
-      if (locations == null)
-      {
+   public String getLocations() {
+      if (locations == null) {
          return "(no file loaded)";
       }
-      else
-      {
+      else {
          return locations;
       }
    }
-
+   
    /**
     * convenient way of adding locations to the string
     */
-   private void addLocation(String newLocation)
-   {
-      if (locations == null)
-      {
+   private void addLocation(String newLocation) {
+      if (locations == null) {
          locations = newLocation;
       }
-      else
-      {
+      else {
          locations = locations+", "+newLocation;
       }
    }
-
+   
 }
 
 

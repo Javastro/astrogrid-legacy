@@ -1,5 +1,5 @@
 /*
- * $Id: SimpleConfig.java,v 1.3 2003/10/08 14:38:56 maven Exp $
+ * $Id: SimpleConfig.java,v 1.4 2003/12/16 11:29:16 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -59,6 +59,13 @@ public abstract class SimpleConfig
       instance.loadUrl(url);
    }
    
+   /**
+    * Load config filename from jndi, then load properties from that
+    */
+   public static boolean loadJndiUrl(String jndiKey) throws IOException {
+      return instance.loadJndiUrl(jndiKey);
+   }
+
    /**
     * Static access to the instance method
     */
