@@ -1,16 +1,16 @@
 /*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/junit/org/astrogrid/community/resolver/ant/Attic/CommunityLoginTaskTestCase.java,v $</cvs:source>
+ * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/junit/org/astrogrid/community/resolver/ant/Attic/CommunityPasswordResolverTaskTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
+ * <cvs:date>$Date: 2004/03/30 04:44:01 $</cvs:date>
  * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
- *   $Log: CommunityLoginTaskTestCase.java,v $
- *   Revision 1.2  2004/03/30 01:40:03  dave
- *   Merged development branch, dave-dev-200403242058, into HEAD
+ *   $Log: CommunityPasswordResolverTaskTestCase.java,v $
+ *   Revision 1.2  2004/03/30 04:44:01  dave
+ *   Merged development branch, dave-dev-200403300258, into HEAD
  *
- *   Revision 1.1.2.1  2004/03/30 01:38:14  dave
- *   Refactored resolver and install toolkits.
+ *   Revision 1.1.2.1  2004/03/30 03:24:57  dave
+ *   Fixes to resolver tasks.
  *
  * </cvs:log>
  *
@@ -25,10 +25,10 @@ import org.astrogrid.common.ivorn.MockIvorn ;
 import org.astrogrid.community.common.ivorn.CommunityAccountIvornFactory ;
 
 /**
- * Test case for the CommunityLoginTask.
+ * Test case for the CommunityPasswordResolverTask.
  *
  */
-public class CommunityLoginTaskTestCase
+public class CommunityPasswordResolverTaskTestCase
     extends TestCase
     {
     /**
@@ -46,7 +46,7 @@ public class CommunityLoginTaskTestCase
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityLoginTaskTestCase.testResolveMock()") ;
+        if (DEBUG_FLAG) System.out.println("CommunityPasswordResolverTaskTestCase.testResolveMock()") ;
         //
         // Create our Account Ivorn.
         Ivorn ident = CommunityAccountIvornFactory.createMock(
@@ -56,7 +56,7 @@ public class CommunityLoginTaskTestCase
         if (DEBUG_FLAG) System.out.println("  Ident  : " + ident) ;
         //
         // Create our resolver.
-        CommunityLoginTask task = new CommunityLoginTask() ;
+        CommunityPasswordResolverTask task = new CommunityPasswordResolverTask() ;
         //
         // Set the account.
         task.setAccount(ident.toString()) ;

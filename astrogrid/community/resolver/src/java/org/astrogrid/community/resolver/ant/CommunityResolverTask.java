@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/ant/Attic/CommunityResolverTask.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/30 04:44:01 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityResolverTask.java,v $
+ *   Revision 1.3  2004/03/30 04:44:01  dave
+ *   Merged development branch, dave-dev-200403300258, into HEAD
+ *
+ *   Revision 1.2.2.1  2004/03/30 03:24:57  dave
+ *   Fixes to resolver tasks.
+ *
  *   Revision 1.2  2004/03/30 01:40:03  dave
  *   Merged development branch, dave-dev-200403242058, into HEAD
  *
@@ -77,7 +83,7 @@ public class CommunityResolverTask
         throws BuildException
         {
         if (DEBUG_FLAG) System.out.println("----\"----");
-        if (DEBUG_FLAG) System.out.println("CommunityInstallTask.init()");
+        if (DEBUG_FLAG) System.out.println("CommunityResolverTask.init()");
         if (DEBUG_FLAG) System.out.println("  Token : " + this.getToken());
         }
 
@@ -193,7 +199,7 @@ public class CommunityResolverTask
         throws BuildException
         {
         if (DEBUG_FLAG) System.out.println("----\"----");
-        if (DEBUG_FLAG) System.out.println("CommunityInstallTask.configure()");
+        if (DEBUG_FLAG) System.out.println("CommunityResolverTask.configure()");
         //
         // If our properties are set.
         if (null != this.properties)
@@ -250,8 +256,9 @@ public class CommunityResolverTask
         throws BuildException
         {
         if (DEBUG_FLAG) System.out.println("----\"----");
-        if (DEBUG_FLAG) System.out.println("CommunityInstallTask.execute()");
-        if (DEBUG_FLAG) System.out.println("  Properties  : " + this.properties);
+        if (DEBUG_FLAG) System.out.println("CommunityResolverTask.execute()");
+        if (DEBUG_FLAG) System.out.println("  Registry   : " + this.registry);
+        if (DEBUG_FLAG) System.out.println("  Properties : " + this.properties);
         //
         // Try loading our config properties.
 		this.configure() ;

@@ -3,10 +3,16 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/config/community/Attic/org.astrogrid.test.cam.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
-    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:date>$Date: 2004/03/30 04:44:01 $</cvs:date>
+    | <cvs:version>$Revision: 1.3 $</cvs:version>
     | <cvs:log>
     |   $Log: org.astrogrid.test.cam.xml,v $
+    |   Revision 1.3  2004/03/30 04:44:01  dave
+    |   Merged development branch, dave-dev-200403300258, into HEAD
+    |
+    |   Revision 1.2.2.1  2004/03/30 02:44:03  dave
+    |   Changed home space ivorns
+    |
     |   Revision 1.2  2004/03/30 01:40:03  dave
     |   Merged development branch, dave-dev-200403242058, into HEAD
     |
@@ -27,14 +33,26 @@
         <account ident="ivo://org.astrogrid.test.cam/dave">
             <display>Dave Morris</display>
             <description>Java developer</description>
-            <home>ivo://org.astrogrid.test.vm6/org.astrogrid.test.cam/dave</home>
+            <home>ivo://org.astrogrid.test.roe/org.astrogrid.test.cam/dave</home>
             <email>dave@mail.astrogrid.org</email>
         </account>
         <account ident="ivo://org.astrogrid.test.cam/guy">
             <display>Guy Rixon</display>
             <description>Java developer</description>
-            <home>ivo://org.astrogrid.test.vm6/org.astrogrid.test.cam/guy</home>
+            <home>ivo://org.astrogrid.test.roe/org.astrogrid.test.cam/guy</home>
             <email>guy@mail.astrogrid.org</email>
+        </account>
+        <account ident="ivo://org.astrogrid.test.cam/kevin">
+            <display>Kevin Benson</display>
+            <description>Java developer</description>
+            <home>ivo://org.astrogrid.test.roe/org.astrogrid.test.cam/kevin</home>
+            <email>kevin@mail.astrogrid.org</email>
+        </account>
+        <account ident="ivo://org.astrogrid.test.cam/martin">
+            <display>Martin Hill</display>
+            <description>Java developer</description>
+            <home>ivo://org.astrogrid.test.roe/org.astrogrid.test.cam/martin</home>
+            <email>martin@mail.astrogrid.org</email>
         </account>
     </accounts>
     <!--+
@@ -59,8 +77,10 @@
         | The community passwords.
         +-->
     <passwords>
-        <password account="ivo://org.astrogrid.test.cam/dave" password="qwerty"/>
-        <password account="ivo://org.astrogrid.test.cam/guy"  password="qwerty"/>
+        <password account="ivo://org.astrogrid.test.cam/dave"   password="qwerty"/>
+        <password account="ivo://org.astrogrid.test.cam/guy"    password="qwerty"/>
+        <password account="ivo://org.astrogrid.test.cam/kevin"  password="qwerty"/>
+        <password account="ivo://org.astrogrid.test.cam/martin" password="qwerty"/>
     </passwords>
 
 </community>

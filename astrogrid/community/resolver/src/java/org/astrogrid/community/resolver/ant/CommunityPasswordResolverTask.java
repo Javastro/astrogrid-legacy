@@ -1,16 +1,16 @@
 /*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/ant/Attic/CommunityLoginTask.java,v $</cvs:source>
+ * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/ant/Attic/CommunityPasswordResolverTask.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
+ * <cvs:date>$Date: 2004/03/30 04:44:01 $</cvs:date>
  * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
- *   $Log: CommunityLoginTask.java,v $
- *   Revision 1.2  2004/03/30 01:40:03  dave
- *   Merged development branch, dave-dev-200403242058, into HEAD
+ *   $Log: CommunityPasswordResolverTask.java,v $
+ *   Revision 1.2  2004/03/30 04:44:01  dave
+ *   Merged development branch, dave-dev-200403300258, into HEAD
  *
- *   Revision 1.1.2.1  2004/03/30 01:38:14  dave
- *   Refactored resolver and install toolkits.
+ *   Revision 1.1.2.1  2004/03/30 03:24:57  dave
+ *   Fixes to resolver tasks.
  *
  * </cvs:log>
  *
@@ -29,7 +29,7 @@ import org.astrogrid.community.resolver.CommunityPasswordResolver ;
  * An Ant task to login to a Community service.
  * 
  */
-public class CommunityLoginTask
+public class CommunityPasswordResolverTask
     extends CommunityResolverTask
     {
     /**
@@ -42,7 +42,7 @@ public class CommunityLoginTask
      * Public constructor.
      *
      */
-    public CommunityLoginTask()
+    public CommunityPasswordResolverTask()
         {
         //
         // Initialise our base class.
@@ -53,7 +53,7 @@ public class CommunityLoginTask
      * Public constructor.
      *
      */
-    public CommunityLoginTask(Task parent)
+    public CommunityPasswordResolverTask(Task parent)
         {
         //
         // Initialise our base class.
@@ -71,7 +71,7 @@ public class CommunityLoginTask
         throws BuildException
         {
         if (DEBUG_FLAG) System.out.println("----\"----");
-        if (DEBUG_FLAG) System.out.println("CommunityLoginTask.init()");
+        if (DEBUG_FLAG) System.out.println("CommunityPasswordResolverTask.init()");
         }
 
     /**
@@ -130,7 +130,7 @@ public class CommunityLoginTask
         throws BuildException
         {
         if (DEBUG_FLAG) System.out.println("----\"----");
-        if (DEBUG_FLAG) System.out.println("CommunityLoginTask.execute()");
+        if (DEBUG_FLAG) System.out.println("CommunityPasswordResolverTask.execute()");
         if (DEBUG_FLAG) System.out.println("  Account  : " + this.account);
         if (DEBUG_FLAG) System.out.println("  Password : " + this.password);
         //

@@ -4,10 +4,22 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/tomcat/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/03/30 01:40:04 $</cvs:date>
-    | <cvs:version>$Revision: 1.6 $</cvs:version>
+    | <cvs:date>$Date: 2004/03/30 04:44:01 $</cvs:date>
+    | <cvs:version>$Revision: 1.7 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.7  2004/03/30 04:44:01  dave
+    |   Merged development branch, dave-dev-200403300258, into HEAD
+    |
+    |   Revision 1.6.2.3  2004/03/30 04:42:31  dave
+    |   Added CommunityAccountSpaceResolverTask.
+    |
+    |   Revision 1.6.2.2  2004/03/30 03:58:31  dave
+    |   Added CommunityTokenResolverTask.
+    |
+    |   Revision 1.6.2.1  2004/03/30 03:24:57  dave
+    |   Fixes to resolver tasks.
+    |
     |   Revision 1.6  2004/03/30 01:40:04  dave
     |   Merged development branch, dave-dev-200403242058, into HEAD
     |
@@ -584,12 +596,86 @@
     </goal>
 
 
-    <!-- ================ Resolver goals ================ -->
+    <!-- ================ Local resolver goals ================ -->
 
     <!--+
-        | Login to our service.
+        | Login to our service, using the local registry config.
         +-->
-    <goal name="resolver.login">
+    <goal name="resolver.login.local">
+        <!--+
+            | Wait for Tomcat to start.
+            +-->
+        <attainGoal name="tomcat.wait"/>
+        <!--+
+            | Call the task in our resolver script.
+            +-->
+        <ant:ant
+            target="login.local"
+            dir="${maven.build.dir}/resolver"
+            antfile="${maven.build.dir}/resolver/resolver.xml"
+            />
+    </goal>
+
+    <!--+
+        | Validate a token, using the local registry config.
+        +-->
+    <goal name="resolver.token.local">
+        <!--+
+            | Wait for Tomcat to start.
+            +-->
+        <attainGoal name="tomcat.wait"/>
+        <!--+
+            | Call the task in our resolver script.
+            +-->
+        <ant:ant
+            target="token.local"
+            dir="${maven.build.dir}/resolver"
+            antfile="${maven.build.dir}/resolver/resolver.xml"
+            />
+    </goal>
+
+    <!--+
+        | Validate an Account, using the local registry config.
+        +-->
+    <goal name="resolver.account.local">
+        <!--+
+            | Wait for Tomcat to start.
+            +-->
+        <attainGoal name="tomcat.wait"/>
+        <!--+
+            | Call the task in our resolver script.
+            +-->
+        <ant:ant
+            target="account.local"
+            dir="${maven.build.dir}/resolver"
+            antfile="${maven.build.dir}/resolver/resolver.xml"
+            />
+    </goal>
+
+    <!--+
+        | Validate an Account home space, using the local registry config.
+        +-->
+    <goal name="resolver.account.home.local">
+        <!--+
+            | Wait for Tomcat to start.
+            +-->
+        <attainGoal name="tomcat.wait"/>
+        <!--+
+            | Call the task in our resolver script.
+            +-->
+        <ant:ant
+            target="account.home.local"
+            dir="${maven.build.dir}/resolver"
+            antfile="${maven.build.dir}/resolver/resolver.xml"
+            />
+    </goal>
+
+    <!-- ================ Live resolver goals ================ -->
+
+    <!--+
+        | Login to our service, using a live registry service.
+        +-->
+    <goal name="resolver.login.live">
         <!--+
             | Wait for Tomcat to start.
             +-->
@@ -605,9 +691,9 @@
     </goal>
 
     <!--+
-        | Validate a token.
+        | Validate a token, using a live registry service.
         +-->
-    <goal name="resolver.token">
+    <goal name="resolver.token.live">
         <!--+
             | Wait for Tomcat to start.
             +-->
@@ -617,6 +703,42 @@
             +-->
         <ant:ant
             target="token.live"
+            dir="${maven.build.dir}/resolver"
+            antfile="${maven.build.dir}/resolver/resolver.xml"
+            />
+    </goal>
+
+    <!--+
+        | Validate an Account, using a live registry service.
+        +-->
+    <goal name="resolver.account.live">
+        <!--+
+            | Wait for Tomcat to start.
+            +-->
+        <attainGoal name="tomcat.wait"/>
+        <!--+
+            | Call the task in our resolver script.
+            +-->
+        <ant:ant
+            target="account.live"
+            dir="${maven.build.dir}/resolver"
+            antfile="${maven.build.dir}/resolver/resolver.xml"
+            />
+    </goal>
+
+    <!--+
+        | Validate an Account home space, using a live registry service.
+        +-->
+    <goal name="resolver.account.home.live">
+        <!--+
+            | Wait for Tomcat to start.
+            +-->
+        <attainGoal name="tomcat.wait"/>
+        <!--+
+            | Call the task in our resolver script.
+            +-->
+        <ant:ant
+            target="account.home.live"
             dir="${maven.build.dir}/resolver"
             antfile="${maven.build.dir}/resolver/resolver.xml"
             />

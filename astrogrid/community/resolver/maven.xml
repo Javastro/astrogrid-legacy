@@ -4,10 +4,16 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
-    | <cvs:version>$Revision: 1.6 $</cvs:version>
+    | <cvs:date>$Date: 2004/03/30 04:44:01 $</cvs:date>
+    | <cvs:version>$Revision: 1.7 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.7  2004/03/30 04:44:01  dave
+    |   Merged development branch, dave-dev-200403300258, into HEAD
+    |
+    |   Revision 1.6.2.1  2004/03/30 03:24:57  dave
+    |   Fixes to resolver tasks.
+    |
     |   Revision 1.6  2004/03/30 01:40:03  dave
     |   Merged development branch, dave-dev-200403242058, into HEAD
     |
@@ -476,7 +482,6 @@
     </goal>
 
 <!-- =============== -->
-
 
     <!--+
         | Add our Community jars.
