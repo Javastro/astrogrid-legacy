@@ -1,4 +1,4 @@
-/*$Id: CompositeFitsVotableParsingSolarMovieWorkflowTest.java,v 1.4 2004/09/23 10:02:39 nw Exp $
+/*$Id: CompositeFitsVotableParsingSolarMovieWorkflowTest.java,v 1.5 2004/11/02 15:30:12 nw Exp $
  * Created on 12-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -77,7 +77,7 @@ public class CompositeFitsVotableParsingSolarMovieWorkflowTest extends SimpleFit
                 "concatStep = jes.getSteps().find {it.getName() == 'CallMakeMPEGFitsImages'}; // find next step in workflow\n" +
                 "inputs = concatStep.getTool().getInput(); // get to set of input parameters\n" +
                 "inputs.clearParameter(); // clear what's there already \n" +
-                "urls.each { p = jes.newParameter(); p.setName('src'); p.setIndirect(true); p.setValue(it); inputs.addParameter(p);} // add a new parameter for each url\n"                
+                "urls.each { p = jes.newParameter(); p.setName('InputFiles'); p.setIndirect(true); p.setValue(it); inputs.addParameter(p);} // add a new parameter for each url\n"                
         );
         wf.getSequence().addActivity(sc);
       
@@ -113,6 +113,9 @@ public class CompositeFitsVotableParsingSolarMovieWorkflowTest extends SimpleFit
 
 /* 
 $Log: CompositeFitsVotableParsingSolarMovieWorkflowTest.java,v $
+Revision 1.5  2004/11/02 15:30:12  nw
+fixed name of input parameter that script is writing to.
+
 Revision 1.4  2004/09/23 10:02:39  nw
 fixed script to refer to previously-renamed movie-maker step.
 removed call to return results back to workflow (going to be huge)
