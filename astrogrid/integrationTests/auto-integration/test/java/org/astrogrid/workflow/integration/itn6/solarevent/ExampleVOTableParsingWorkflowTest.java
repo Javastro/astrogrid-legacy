@@ -1,4 +1,4 @@
-/*$Id: ExampleVOTableParsingWorkflowTest.java,v 1.2 2004/08/09 08:35:52 nw Exp $
+/*$Id: ExampleVOTableParsingWorkflowTest.java,v 1.1 2004/08/12 13:33:34 nw Exp $
  * Created on 06-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,7 +8,7 @@
  * with this distribution in the LICENSE.txt file.  
  *
 **/
-package org.astrogrid.workflow.integration;
+package org.astrogrid.workflow.integration.itn6.solarevent;
 
 import org.astrogrid.portal.workflow.intf.ApplicationDescription;
 import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
@@ -16,6 +16,7 @@ import org.astrogrid.workflow.beans.v1.Script;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
+import org.astrogrid.workflow.integration.AbstractTestForWorkflow;
 
 import org.apache.axis.utils.XMLUtils;
 import org.exolab.castor.xml.Marshaller;
@@ -25,7 +26,7 @@ import org.w3c.dom.Document;
  * @author Noel Winstanley nw@jb.man.ac.uk 06-Aug-2004
  *
  */
-public class ExampleVOTableParsingWorkflowTest extends AbstractTestForWorkflow {
+public class ExampleVOTableParsingWorkflowTest extends AbstractTestForWorkflow implements SolarEventKeys{
 
     /** Construct a new ExampleVOTableParsingWorkflowTest
      * @param applications
@@ -35,8 +36,6 @@ public class ExampleVOTableParsingWorkflowTest extends AbstractTestForWorkflow {
         super(new String[]{}, arg0); //@todo add in real names.
     }
 
-    public static final String VOTABLE_SOURCE = "org.astrogrid.localhost/something"; //@todo
-    public static final String URL_LIST_SINK = "org.astrogrid.localhost/somethingelse";
     
     /**
      * @see org.astrogrid.workflow.integration.AbstractTestForWorkflow#buildWorkflow()
@@ -95,6 +94,9 @@ public class ExampleVOTableParsingWorkflowTest extends AbstractTestForWorkflow {
 
 /* 
 $Log: ExampleVOTableParsingWorkflowTest.java,v $
+Revision 1.1  2004/08/12 13:33:34  nw
+added framework of classes for testing the solar event science case.
+
 Revision 1.2  2004/08/09 08:35:52  nw
 no change
 
