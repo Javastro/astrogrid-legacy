@@ -1,4 +1,4 @@
-/*$Id: AdqlQueryTranslatorTest.java,v 1.5 2004/03/30 16:22:03 eca Exp $
+/*$Id: AdqlQueryTranslatorTest.java,v 1.6 2004/04/01 19:03:55 eca Exp $
  * Created on 29-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -44,15 +44,19 @@ public class AdqlQueryTranslatorTest extends TestCase {
 		processFile("sample2.xml");
     }
 
-
+	public void test2_fast() throws Exception {
+		processFile("sample2_fast.xml");
+	}
     public void test3() throws Exception {
         processFile("sample3.xml");
     }
-    
+	public void test3_fast() throws Exception {
+		processFile("sample3_fast.xml");
+	}
     public void test4() throws Exception {
         processFile("sample4.xml");
     }
-    
+
     
     public void test5() throws Exception {
         processFile("sample5.xml");
@@ -62,12 +66,14 @@ public class AdqlQueryTranslatorTest extends TestCase {
     public void test6() throws Exception {
         processFile("sample6.xml");
     }
-    
+	public void test6_fast() throws Exception {
+		processFile("sample6_fast.xml");
+	}    
 
     /* 
      * Test overlapping circles.
      */
-     
+    
 	public void test7() throws Exception {	
 		processFile("overlappingcircles.xml");
 	}
@@ -130,6 +136,15 @@ public class AdqlQueryTranslatorTest extends TestCase {
 
 /* 
 $Log: AdqlQueryTranslatorTest.java,v $
+Revision 1.6  2004/04/01 19:03:55  eca
+Updates sample ADQL queries and added some "fast" queries with
+no ORDER BY statements.
+
+Also added fast queries to AdqlQueryTranslatorTest - expect 13 test runs
+with 13 successes.
+
+01/04/04 ElizabethAuden
+
 Revision 1.5  2004/03/30 16:22:03  eca
 Updated ogsadai Postgres-optimized query translator test.
 

@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- XML equivalent
 SELECT DISTINCT x.ra, x.M1_FLUX, x.M1_FILTER FROM xmm1 AS x GROUP BY x.ra, x.M1_FLUX, x.M1_FILTER 
-HAVING NOT (-(MAX(x.M1_FLUX ) ) < 4.56 ) AND x.M1_FILTER LIKE 'Thic%' OR x.M1_FLUX BETWEEN 0.01 AND 500.0 
-ORDER BY x.M1_FLUX DESC;
-
-WARNING: THE "ORDER BY" STATEMENT MAKES THIS QUERY *VERY SLOW*.
-USE SELECT_AGGREGATE_HAVING_LIKE_FAST INSTEAD! 
+HAVING NOT (-(MAX(x.M1_FLUX ) ) < 4.56 ) AND x.M1_FILTER LIKE 'Thic%' OR x.M1_FLUX BETWEEN 0.01 AND 500.0;
 -->
 <Select xmlns="http://tempuri.org/adql" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tempuri.org/adql ADQLSchemav06.xsd">
     <OptionalAllOrDistinct>
@@ -63,34 +59,34 @@ USE SELECT_AGGREGATE_HAVING_LIKE_FAST INSTEAD!
         <HavingClause>
             <IntersectionSearch>
                 <FirstCondition xsi:type="InverseSearch">
-                    <Condition xsi:type="PredicateSearch">
-                        <ComparisonPred>
-                            <FirstExpr xsi:type="UnaryExpr">
-                                <Operator>-</Operator>
-                                <Expr xsi:type="FunctionExpr">
-                                    <ExpressionFunction>
-                                        <AggregateFunction>MAX</AggregateFunction>
-                                        <Expr xsi:type="ColumnExpr">
-                                            <SingleColumnReference>
-                                                <TableName>x</TableName>
-                                                <Name>M1_FLUX</Name>
-                                            </SingleColumnReference>
-                                        </Expr>
-                                    </ExpressionFunction>
-                                </Expr>
-                            </FirstExpr>
-                            <Compare>&lt;</Compare>
-                            <SecondExpr xsi:type="AtomExpr">
-                                <Value>
-                                    <NumberLiteral>
-                                        <ApproxNum>
-                                            <Value>4.56</Value>
-                                        </ApproxNum>
-                                    </NumberLiteral>
-                                </Value>
-                            </SecondExpr>
-                        </ComparisonPred>
-                    </Condition>
+                <Condition xsi:type="PredicateSearch">
+                    <ComparisonPred>
+                        <FirstExpr xsi:type="UnaryExpr">
+                            <Operator>-</Operator>
+                            <Expr xsi:type="FunctionExpr">
+                                <ExpressionFunction>
+                                    <AggregateFunction>MAX</AggregateFunction>
+                                    <Expr xsi:type="ColumnExpr">
+                                        <SingleColumnReference>
+                                            <TableName>x</TableName>
+                                            <Name>M1_FLUX</Name>
+                                        </SingleColumnReference>
+                                    </Expr>
+                                </ExpressionFunction>
+                            </Expr>
+                        </FirstExpr>
+                        <Compare>&lt;</Compare>
+                        <SecondExpr xsi:type="AtomExpr">
+                            <Value>
+                                <NumberLiteral>
+                                    <ApproxNum>
+                                        <Value>4.56</Value>
+                                    </ApproxNum>
+                                </NumberLiteral>
+                            </Value>
+                        </SecondExpr>
+                    </ComparisonPred>
+                </Condition>
                 </FirstCondition>
                 <SecondCondition xsi:type="UnionSearch">
                     <FirstCondition xsi:type="PredicateSearch">
@@ -144,19 +140,4 @@ USE SELECT_AGGREGATE_HAVING_LIKE_FAST INSTEAD!
             </IntersectionSearch>
         </HavingClause>
     </TableClause>
-    <OrderBy>
-        <OrderList>
-            <Order>
-                <Expr xsi:type="ColumnExpr">
-                    <SingleColumnReference>
-                        <TableName>x</TableName>
-                        <Name>M1_FLUX</Name>
-                    </SingleColumnReference>
-                </Expr>
-                <Option>
-                    <Direction>DESC</Direction>
-                </Option>
-            </Order>
-        </OrderList>
-    </OrderBy>
 </Select>

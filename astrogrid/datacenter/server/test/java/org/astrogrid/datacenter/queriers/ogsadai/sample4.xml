@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- SQL equivalent
-SELECT f.ra, x.decl FROM first AS f, xmm1 AS x HAVING f.ra && x.ra
+SELECT f.ra, x.decl FROM first AS f, xmm1 AS x HAVING f.errbox && x.errbox
 
 -->
 <Select xmlns="http://tempuri.org/adql" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tempuri.org/adql ADQLSchemav06.xsd">
@@ -41,14 +41,14 @@ SELECT f.ra, x.decl FROM first AS f, xmm1 AS x HAVING f.ra && x.ra
                     <FirstExpr xsi:type="ColumnExpr">
                         <SingleColumnReference>
                             <TableName>f</TableName>
-                            <Name>ra</Name>
+                            <Name>errbox</Name>
                         </SingleColumnReference>
                     </FirstExpr>
                     <Compare>&lt;&gt;</Compare>
                     <SecondExpr xsi:type="ColumnExpr">
                         <SingleColumnReference>
                             <TableName>x</TableName>
-                            <Name>ra</Name>
+                            <Name>errbox</Name>
                         </SingleColumnReference>
                     </SecondExpr>
                 </ComparisonPred>

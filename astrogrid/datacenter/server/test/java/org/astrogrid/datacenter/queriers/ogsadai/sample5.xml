@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- XML equiuvalent
-SELECT f.ra, x.* FROM first AS f, xmm1 AS x WHERE AVG(x.M1_FLUX ) < 4.56 ORDER BY x.M1_FLUX
-
+SELECT x.ra, x.decl FROM xmm1 AS x GROUP BY x.ra, x.decl HAVING AVG(x.M1_FLUX) < 4.56 LIMIT 100000;
 -->
 <Select xmlns="http://tempuri.org/adql" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 xsi:schemaLocation="http://tempuri.org/adql ADQLSchemav06.xsd">
@@ -9,16 +8,17 @@ xsi:schemaLocation="http://tempuri.org/adql ADQLSchemav06.xsd">
         <AliasSelectionItem>
             <ColumnExpr>
                 <SingleColumnReference>
-                    <TableName>f</TableName>
+                    <TableName>x</TableName>
                     <Name>ra</Name>
                 </SingleColumnReference>
             </ColumnExpr>
         </AliasSelectionItem>
         <AliasSelectionItem>
             <ColumnExpr>
-                <AllColumnReference>
+                <SingleColumnReference>
                     <TableName>x</TableName>
-                </AllColumnReference>
+                    <Name>decl</Name>
+                </SingleColumnReference>
             </ColumnExpr>
         </AliasSelectionItem>
     </Selection>
@@ -26,16 +26,22 @@ xsi:schemaLocation="http://tempuri.org/adql ADQLSchemav06.xsd">
         <FromClause>
             <TableReference>
                 <Table>
-                    <Name>first</Name>
-                    <AliasName>f</AliasName>
-                </Table>
-                <Table>
                     <Name>xmm1</Name>
                     <AliasName>x</AliasName>
                 </Table>
             </TableReference>
         </FromClause>
-        <WhereClause>
+        <GroupByClause>
+                        <SingleColumnReference>
+                    <TableName>x</TableName>
+                    <Name>ra</Name>
+                </SingleColumnReference>
+                                <SingleColumnReference>
+                    <TableName>x</TableName>
+                    <Name>decl</Name>
+                </SingleColumnReference>
+        </GroupByClause>
+        <HavingClause>
             <PredicateSearch>
                 <ComparisonPred>
                     <FirstExpr xsi:type="FunctionExpr">
@@ -61,7 +67,7 @@ xsi:schemaLocation="http://tempuri.org/adql ADQLSchemav06.xsd">
                     </SecondExpr>
                 </ComparisonPred>
             </PredicateSearch>
-        </WhereClause>
+        </HavingClause>
     </TableClause>
     <OrderBy>
         <OrderList>
