@@ -68,7 +68,7 @@
 
          ]]></description>
         <shortDescription>AstroGrid Scripting</shortDescription>
-        <siteDirectory>/var/www/www/maven/build/scripting</siteDirectory>
+        <siteDirectory>${maven.site.central.directory}/${astrogrid.iteration}/scripting</siteDirectory>
         <issueTrackingUrl>http://www.astrogrid.org/bugzilla/</issueTrackingUrl>
         <package>org.astrogrid</package>
         <logo>http://www.astrogrid.org/images/AGlogo</logo>
