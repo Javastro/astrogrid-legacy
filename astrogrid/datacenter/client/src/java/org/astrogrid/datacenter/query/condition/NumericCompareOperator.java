@@ -1,4 +1,4 @@
-package org.astrogrid.datacenter.query.criteria;
+package org.astrogrid.datacenter.query.condition;
 
 import org.astrogrid.util.TypeSafeEnumerator;
 
@@ -11,6 +11,7 @@ import org.astrogrid.util.TypeSafeEnumerator;
 public class NumericCompareOperator extends TypeSafeEnumerator
 {
    public final static NumericCompareOperator EQ = new NumericCompareOperator("=");
+   public final static NumericCompareOperator NE = new NumericCompareOperator("<>");
    public final static NumericCompareOperator LT = new NumericCompareOperator("<");
    public final static NumericCompareOperator GT = new NumericCompareOperator(">");
    public final static NumericCompareOperator LTE = new NumericCompareOperator("<=");

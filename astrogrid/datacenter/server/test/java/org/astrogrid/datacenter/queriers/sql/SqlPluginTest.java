@@ -1,4 +1,4 @@
-/*$Id: SqlPluginTest.java,v 1.11 2004/08/18 21:27:22 mch Exp $
+/*$Id: SqlPluginTest.java,v 1.12 2004/08/25 23:38:34 mch Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,7 +19,7 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.ServerTestCase;
-import org.astrogrid.datacenter.TargetIndicator;
+import org.astrogrid.datacenter.returns.TargetIndicator;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.QuerierPlugin;
@@ -209,6 +209,9 @@ public class SqlPluginTest extends ServerTestCase {
 
 /*
  $Log: SqlPluginTest.java,v $
+ Revision 1.12  2004/08/25 23:38:34  mch
+ (Days changes) moved many query- and results- related classes, renamed packages, added tests, added CIRCLE to sql/adql parsers
+
  Revision 1.11  2004/08/18 21:27:22  mch
  Fixed some tests; added faster results checking more logging
 

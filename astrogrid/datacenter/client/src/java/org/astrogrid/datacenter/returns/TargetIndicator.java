@@ -1,10 +1,10 @@
 /*
- * $Id: TargetIndicator.java,v 1.3 2004/08/19 08:35:54 mch Exp $
+ * $Id: TargetIndicator.java,v 1.1 2004/08/25 23:38:33 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
-package org.astrogrid.datacenter;
+package org.astrogrid.datacenter.returns;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -137,6 +137,9 @@ public class TargetIndicator  {
 }
 /*
  $Log: TargetIndicator.java,v $
+ Revision 1.1  2004/08/25 23:38:33  mch
+ (Days changes) moved many query- and results- related classes, renamed packages, added tests, added CIRCLE to sql/adql parsers
+
  Revision 1.3  2004/08/19 08:35:54  mch
  Fix to email constructor
 

@@ -1,4 +1,4 @@
-/*$Id: CEATargetIndicator.java,v 1.3 2004/08/17 20:19:36 mch Exp $
+/*$Id: CEATargetIndicator.java,v 1.4 2004/08/25 23:38:34 mch Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,7 @@
 **/
 package org.astrogrid.datacenter.service.v06;
 
-import org.astrogrid.datacenter.TargetIndicator;
+import org.astrogrid.datacenter.returns.TargetIndicator;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -51,6 +51,9 @@ public class CEATargetIndicator extends TargetIndicator {
 
 /* 
 $Log: CEATargetIndicator.java,v $
+Revision 1.4  2004/08/25 23:38:34  mch
+(Days changes) moved many query- and results- related classes, renamed packages, added tests, added CIRCLE to sql/adql parsers
+
 Revision 1.3  2004/08/17 20:19:36  mch
 Moved TargetIndicator to client
 

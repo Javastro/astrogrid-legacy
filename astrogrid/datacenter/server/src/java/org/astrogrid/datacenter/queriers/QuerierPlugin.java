@@ -1,11 +1,12 @@
 /*
- * $Id: QuerierPlugin.java,v 1.13 2004/08/17 20:19:36 mch Exp $
+ * $Id: QuerierPlugin.java,v 1.14 2004/08/25 23:38:34 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.queriers;
-import org.astrogrid.datacenter.*;
+
+import org.astrogrid.datacenter.returns.*;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -176,6 +177,9 @@ public abstract class QuerierPlugin  {
 }
 /*
  $Log: QuerierPlugin.java,v $
+ Revision 1.14  2004/08/25 23:38:34  mch
+ (Days changes) moved many query- and results- related classes, renamed packages, added tests, added CIRCLE to sql/adql parsers
+
  Revision 1.13  2004/08/17 20:19:36  mch
  Moved TargetIndicator to client
 

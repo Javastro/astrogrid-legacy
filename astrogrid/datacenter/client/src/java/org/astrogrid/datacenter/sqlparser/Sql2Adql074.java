@@ -1,5 +1,5 @@
 /*
- * $Id: Sql2Adql074.java,v 1.4 2004/08/18 16:27:15 mch Exp $
+ * $Id: Sql2Adql074.java,v 1.5 2004/08/25 23:38:34 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,9 +7,9 @@
 package org.astrogrid.datacenter.sqlparser;
 import java.io.IOException;
 import java.io.StringWriter;
-import org.astrogrid.datacenter.query.criteria.Condition;
-import org.astrogrid.datacenter.query.criteria.ColumnReference;
-import org.astrogrid.datacenter.query.results.TableResultsDefinition;
+import org.astrogrid.datacenter.query.condition.Condition;
+import org.astrogrid.datacenter.query.condition.ColumnReference;
+import org.astrogrid.datacenter.returns.ReturnTable;
 import org.astrogrid.io.xml.XmlPrinter;
 import org.astrogrid.io.xml.XmlTagPrinter;
 
@@ -62,6 +62,9 @@ public class Sql2Adql074  {
 
 /*
  $Log: Sql2Adql074.java,v $
+ Revision 1.5  2004/08/25 23:38:34  mch
+ (Days changes) moved many query- and results- related classes, renamed packages, added tests, added CIRCLE to sql/adql parsers
+
  Revision 1.4  2004/08/18 16:27:15  mch
  Combining ADQL generators from SQL parser and query builder
 

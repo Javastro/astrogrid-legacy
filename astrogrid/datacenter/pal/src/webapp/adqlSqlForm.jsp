@@ -34,6 +34,7 @@
       ">
         <p>
         <textarea name="AdqlSql" rows="4" cols="100%"></textarea>
+        <a href='http://wiki.astrogrid.org/bin/view/Support/HelpAdqlSql'>(Help)</a>
         </p>
         <p>
           <%@ include file='resultsForm.xml' %>

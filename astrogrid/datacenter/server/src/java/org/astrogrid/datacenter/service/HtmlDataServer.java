@@ -1,5 +1,5 @@
 /*
- * $Id: HtmlDataServer.java,v 1.19 2004/08/24 19:06:44 mch Exp $
+ * $Id: HtmlDataServer.java,v 1.20 2004/08/25 23:38:34 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -17,7 +17,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.TargetIndicator;
+import org.astrogrid.datacenter.returns.TargetIndicator;
 import org.astrogrid.datacenter.queriers.status.QuerierStatus;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.io.Piper;

@@ -1,5 +1,6 @@
 <%@ page language="java"
-    import="java.util.*, org.astrogrid.config.SimpleConfig, java.io.*, org.astrogrid.datacenter.sqlparser.*, org.astrogrid.datacenter.query.results.*, org.astrogrid.datacenter.query.criteria.*,
+    import="java.util.*, org.astrogrid.config.SimpleConfig, java.io.*, org.astrogrid.datacenter.sqlparser.*,
+    org.astrogrid.datacenter.returns.*, org.astrogrid.datacenter.query.condition.*,
     org.astrogrid.datacenter.metadata.*, org.astrogrid.datacenter.service.HtmlDataServer,
     org.astrogrid.datacenter.service.DataServer,
     org.w3c.dom.*, org.astrogrid.util.* " %>
@@ -86,12 +87,12 @@
          outColRefs.add(new ColumnReference(tableName, colName));
       }
    }
-   ResultsDefinition resultsDef = null;
+   ReturnSpec resultsDef = null;
    if (outColRefs.size() > 0) {
-      resultsDef = new TableResultsDefinition(null, (NumericExpression[]) outColRefs.toArray(new NumericExpression[] {}));
+      resultsDef = new ReturnTable(null, (NumericExpression[]) outColRefs.toArray(new NumericExpression[] {}));
    }
    else {
-      resultsDef = new TableResultsDefinition(null); //all columns
+      resultsDef = new ReturnTable(null); //all columns
    }
 
    //build up list of search tables

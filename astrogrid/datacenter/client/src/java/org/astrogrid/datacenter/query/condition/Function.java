@@ -1,10 +1,10 @@
 /*
- * $Id: Function.java,v 1.1 2004/08/18 22:56:18 mch Exp $
+ * $Id: Function.java,v 1.1 2004/08/25 23:38:33 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
-package org.astrogrid.datacenter.query.criteria;
+package org.astrogrid.datacenter.query.condition;
 
 
 /**
@@ -14,9 +14,9 @@ package org.astrogrid.datacenter.query.criteria;
 public class Function implements NumericExpression, Condition, StringExpression {
    
    String funcName = null;
-   NumericExpression[] funcArgs = null;
+   Expression[] funcArgs = null;
    
-   public Function(String name, NumericExpression[] args) {
+   public Function(String name, Expression[] args) {
       this.funcName = name;
       this.funcArgs = args;
    }
@@ -31,11 +31,16 @@ public class Function implements NumericExpression, Condition, StringExpression 
 
    public String getName() { return funcName; }
    
-   public NumericExpression[] getArgs()    { return funcArgs; }
+   public Expression[] getArgs()    { return funcArgs; }
+
+   public Expression getArg(int i)    { return funcArgs[i]; }
 }
 
 /*
 $Log: Function.java,v $
+Revision 1.1  2004/08/25 23:38:33  mch
+(Days changes) moved many query- and results- related classes, renamed packages, added tests, added CIRCLE to sql/adql parsers
+
 Revision 1.1  2004/08/18 22:56:18  mch
 Added Function parsing
 

@@ -1,22 +1,22 @@
 /*
- * $Id: Query.java,v 1.2 2004/08/18 18:43:01 mch Exp $
+ * $Id: Query.java,v 1.3 2004/08/25 23:38:33 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.sqlparser;
-import org.astrogrid.datacenter.query.criteria.*;
+import org.astrogrid.datacenter.query.condition.*;
 
 import java.util.StringTokenizer;
 import java.util.Vector;
-import org.astrogrid.datacenter.TargetIndicator;
-import org.astrogrid.datacenter.query.results.ResultsDefinition;
-import org.astrogrid.datacenter.query.results.TableResultsDefinition;
+import org.astrogrid.datacenter.returns.TargetIndicator;
+import org.astrogrid.datacenter.returns.ReturnSpec;
+import org.astrogrid.datacenter.returns.ReturnTable;
 
 
 /**
  * A full in-memory 'modelled' representation of a query.  Consists of a 'scope',
- * indicating what will be searched, a TargetIndicator indicating where the results
+ * indicating what will be searched, a description of where the results
  * will go, and a 'Condition' which describes the search criteria to be used.
  * <p>
  */
@@ -27,12 +27,12 @@ public class Query  {
    Condition criteria = null;
    
    /** Defines what the results will be and Where they are to be sent */
-   ResultsDefinition results = null;
+   ReturnSpec results = null;
    
    /** Not quite sure how this should be described properly */
    String[] scope;
    
-   public Query(String[] givenScope, Condition someCriteria, ResultsDefinition aResultsDef) {
+   public Query(String[] givenScope, Condition someCriteria, ReturnSpec aResultsDef) {
       this.scope = givenScope;
       this.criteria = someCriteria;
       this.results = aResultsDef;
@@ -44,7 +44,7 @@ public class Query  {
    
    public String[] getScope()          { return scope; }
 
-   public ResultsDefinition getResultsDef() { return results; }
+   public ReturnSpec getResultsDef() { return results; }
    
    /**
     * For humans/debuggign
@@ -68,6 +68,9 @@ public class Query  {
 
 /*
  $Log: Query.java,v $
+ Revision 1.3  2004/08/25 23:38:33  mch
+ (Days changes) moved many query- and results- related classes, renamed packages, added tests, added CIRCLE to sql/adql parsers
+
  Revision 1.2  2004/08/18 18:43:01  mch
  Better toString for Query
 

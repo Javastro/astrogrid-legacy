@@ -1,11 +1,12 @@
 /*
- * $Id: TargetIndicatorTest.java,v 1.2 2004/08/17 20:19:36 mch Exp $
+ * $Id: TargetIndicatorTest.java,v 1.3 2004/08/25 23:38:34 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.queriers;
-import org.astrogrid.datacenter.*;
+
+import org.astrogrid.datacenter.returns.*;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;

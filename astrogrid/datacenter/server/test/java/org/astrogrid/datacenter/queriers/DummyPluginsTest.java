@@ -1,11 +1,12 @@
 /*
- * $Id: DummyPluginsTest.java,v 1.8 2004/08/17 20:19:36 mch Exp $
+ * $Id: DummyPluginsTest.java,v 1.9 2004/08/25 23:38:34 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.queriers;
-import org.astrogrid.datacenter.*;
+
+import org.astrogrid.datacenter.returns.*;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.sql.Connection;

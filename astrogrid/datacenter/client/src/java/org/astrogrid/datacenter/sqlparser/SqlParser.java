@@ -1,17 +1,17 @@
 /*
- * $Id: SqlParser.java,v 1.5 2004/08/18 22:56:18 mch Exp $
+ * $Id: SqlParser.java,v 1.6 2004/08/25 23:38:34 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.sqlparser;
-import org.astrogrid.datacenter.query.criteria.*;
+import org.astrogrid.datacenter.query.condition.*;
 
 import java.util.Hashtable;
 import java.util.StringTokenizer;
 import java.util.Vector;
-import org.astrogrid.datacenter.query.results.ResultsDefinition;
-import org.astrogrid.datacenter.query.results.TableResultsDefinition;
+import org.astrogrid.datacenter.returns.ReturnSpec;
+import org.astrogrid.datacenter.returns.ReturnTable;
 
 
 /**
@@ -29,7 +29,7 @@ public class SqlParser  {
    
    Condition whereClause = null;
    
-   ResultsDefinition resultsDef = null;
+   ReturnSpec resultsDef = null;
    
    Vector scope = new Vector(); // the 'from' cluase - the list of tables to search
    
@@ -172,7 +172,8 @@ public class SqlParser  {
 
       BrokenExpression broken = breakExpression(expression.trim(), new String[] {" AND ", " OR " }  );
       if (broken.operand.length() == 0) {
-         broken = breakExpression(expression.trim(), new String[] { ">=", "<=", "=", "<", ">"} );
+         //the operands are searhced in order of finding the first character, so make sure the >=, <= etc are before the single chars
+         broken = breakExpression(expression.trim(), new String[] { ">=", "<=", "<>", "=", "<", ">"} );
       }
 
       //atomic, so might be a boolean function
@@ -250,6 +251,49 @@ public class SqlParser  {
    }
 
    /**
+    * Makes an attempt to guess whether an expression is a string or a number
+    * (or an expression of either) and returns the appropriate expression.
+    * Simple guess by seeing if the first token can be parsed by a Double, if it
+    * starts with a ' or " it's a string, if it's got a single '.' in it with one
+    * token it's a column, if it's none of these it's a string. This means that
+    * to get it to work properly, the first token must represent the type - ie
+    * do 4 + T.A rather than T.A + 4
+    *
+    * Note this doens't work in all situations - it should only be used in
+    * function arguments where the type of argument is unknown.
+    */
+   private Expression parseExpression(String expression) {
+      StringTokenizer tokenizer = new StringTokenizer(expression, " ");
+      String first = tokenizer.nextToken();
+      try {
+         Double.parseDouble(first);
+         return parseNumeric(expression);
+      }
+      catch (NumberFormatException nfe) {
+         if (first.startsWith("'") || first.startsWith("\"")) {
+            return parseString(expression);
+         }
+         if (first.indexOf(".")>-1) {
+            if (tokenizer.hasMoreTokens()) {
+               throw new UnsupportedOperationException("Thicky Parser: Can't tell type (numeric/string) from '"+first+"' of '"+expression+"'.  Please rearrange expression to start with a constant (or '' or 0)");
+            }
+            //single column
+            return parseColumnRef(first);
+         }
+         //probably a string
+         return parseString(expression);
+      }
+   }
+
+   /**
+    * Parses a string expression. Actually it doesn't, it just returns the
+    * expression for the moment...
+    */
+   private StringExpression parseString(String expression) {
+      return new LiteralString(expression);
+   }
+   
+   /**
     * Parses a function, ie a function name and a list of comma separated
     * arguments within following brackets
     */
@@ -260,15 +304,15 @@ public class SqlParser  {
       
       assert bracketed.endsWith(")") : "Closing brackets not at end of function '"+expression+"'";
 
-      StringTokenizer argList = new StringTokenizer(bracketed.substring(1,bracketed.length()-1), ",");
+      StringTokenizer argList = new StringTokenizer(bracketed.substring(0,bracketed.length()-1), ",");
       Vector args = new Vector();
       
       while (argList.hasMoreTokens()) {
-         NumericExpression arg = parseNumeric(argList.nextToken());
+         Expression arg = parseExpression(argList.nextToken());
          args.add(arg);
       }
       
-      return new Function(funcName, (NumericExpression[]) args.toArray(new NumericExpression[] {}));
+      return new Function(funcName, (Expression[]) args.toArray(new Expression[] {}));
       
    }
    
@@ -318,10 +362,10 @@ public class SqlParser  {
       
       //special case of select all
       if (select.trim().equals("*")) {
-         resultsDef = new TableResultsDefinition(null);
+         resultsDef = new ReturnTable(null);
       }
       else {
-         resultsDef = new TableResultsDefinition(null, parseSelectList(select));
+         resultsDef = new ReturnTable(null, parseSelectList(select));
       }
    }
    
@@ -501,6 +545,9 @@ public class SqlParser  {
 
 /*
  $Log: SqlParser.java,v $
+ Revision 1.6  2004/08/25 23:38:34  mch
+ (Days changes) moved many query- and results- related classes, renamed packages, added tests, added CIRCLE to sql/adql parsers
+
  Revision 1.5  2004/08/18 22:56:18  mch
  Added Function parsing
 

@@ -5,7 +5,7 @@
        org.astrogrid.store.Agsl,
        org.astrogrid.community.Account,
        org.astrogrid.datacenter.service.HtmlDataServer,
-       org.astrogrid.datacenter.TargetIndicator,
+       org.astrogrid.datacenter.returns.TargetIndicator,
        org.astrogrid.datacenter.query.AdqlQuery,
        org.astrogrid.io.*"
    isThreadSafe="false"

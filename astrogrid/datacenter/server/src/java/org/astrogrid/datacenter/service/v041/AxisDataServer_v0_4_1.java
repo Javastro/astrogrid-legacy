@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer_v0_4_1.java,v 1.11 2004/08/17 20:19:36 mch Exp $
+ * $Id: AxisDataServer_v0_4_1.java,v 1.12 2004/08/25 23:38:34 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -18,7 +18,7 @@ import org.astrogrid.datacenter.delegate.DatacenterException;
 import org.astrogrid.datacenter.delegate.QuerySearcher;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QueryResults;
-import org.astrogrid.datacenter.TargetIndicator;
+import org.astrogrid.datacenter.returns.TargetIndicator;
 import org.astrogrid.datacenter.query.AdqlQuery;
 import org.astrogrid.datacenter.service.AxisDataServer;
 import org.astrogrid.store.Agsl;
@@ -259,6 +259,9 @@ public class AxisDataServer_v0_4_1 extends AxisDataServer implements org.astrogr
 
 /*
 $Log: AxisDataServer_v0_4_1.java,v $
+Revision 1.12  2004/08/25 23:38:34  mch
+(Days changes) moved many query- and results- related classes, renamed packages, added tests, added CIRCLE to sql/adql parsers
+
 Revision 1.11  2004/08/17 20:19:36  mch
 Moved TargetIndicator to client
 

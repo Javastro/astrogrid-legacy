@@ -1,4 +1,4 @@
-/*$Id: InstallationSelfCheck.java,v 1.20 2004/03/14 04:13:16 mch Exp $
+/*$Id: InstallationSelfCheck.java,v 1.21 2004/08/25 23:38:34 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,7 @@
  *
  **/
 package org.astrogrid.datacenter;
+import org.astrogrid.datacenter.returns.*;
 
 import org.astrogrid.datacenter.queriers.*;
 
@@ -116,6 +117,9 @@ public class InstallationSelfCheck extends TestCase {
 
 /*
  $Log: InstallationSelfCheck.java,v $
+ Revision 1.21  2004/08/25 23:38:34  mch
+ (Days changes) moved many query- and results- related classes, renamed packages, added tests, added CIRCLE to sql/adql parsers
+
  Revision 1.20  2004/03/14 04:13:16  mch
  Wrapped output target in TargetIndicator
 

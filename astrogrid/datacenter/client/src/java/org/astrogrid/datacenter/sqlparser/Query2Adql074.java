@@ -1,18 +1,18 @@
 /*
- * $Id: Query2Adql074.java,v 1.4 2004/08/24 22:58:49 mch Exp $
+ * $Id: Query2Adql074.java,v 1.5 2004/08/25 23:38:33 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.sqlparser;
-import org.astrogrid.datacenter.query.criteria.*;
+import org.astrogrid.datacenter.query.condition.*;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import org.astrogrid.datacenter.returns.ReturnSpec;
+import org.astrogrid.datacenter.returns.ReturnTable;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.datacenter.query.results.ResultsDefinition;
-import org.astrogrid.datacenter.query.results.TableResultsDefinition;
 import org.astrogrid.io.xml.XmlPrinter;
 import org.astrogrid.io.xml.XmlTagPrinter;
 
@@ -25,12 +25,14 @@ public class Query2Adql074  {
    
    protected static Log log = LogFactory.getLog(Query2Adql074.class);
    
+   private static final String aggregateFuncs=" AVG MIN MAX SUM COUNT";
+   private static final String trigFuncs=" SIN COS TAN COT ASIN ACOS ATAN ATAN2 ";
+   private static final String mathFuncs=" ABS CEILING DEGREES EXP FLOOR LOG PI POWER RADIANS SQRT SQUARE LOG10 RAND ROUND TRUNCATE ";
+
    public static String makeAdql(Query query, String comment) throws IOException {
 
       log.debug("Making ADQL from "+query.toString());
       
-      ResultsDefinition resultsDef = query.getResultsDef();
-     
       StringWriter sw = new StringWriter();
       XmlPrinter xw = new XmlPrinter(sw);
       xw.writeComment("ADQL generated from: "+query);
@@ -45,12 +47,12 @@ public class Query2Adql074  {
 
       XmlTagPrinter selectListTag = selectTag.newTag("SelectionList");
       
-      if ( !(query.getResultsDef() instanceof TableResultsDefinition) ||
-             ( ((TableResultsDefinition) query.getResultsDef()).getColDefs()==null)  ) {
-         selectListTag.writeTag("Item", "xsi:type='allSelectionItemType'", "");
+      if ( !(query.getResultsDef() instanceof ReturnTable) ||
+             ( ((ReturnTable) query.getResultsDef()).getColDefs()==null)  ) {
+         selectListTag.writeTag("Item", "xsi:type'allSelectionItemType'");
       }
       else {
-         NumericExpression[] colDefs = ((TableResultsDefinition) query.getResultsDef()).getColDefs();
+         NumericExpression[] colDefs = ((ReturnTable) query.getResultsDef()).getColDefs();
 
          for (int i = 0; i < colDefs.length; i++) {
             if (colDefs[i] instanceof ColumnReference) {
@@ -76,7 +78,7 @@ public class Query2Adql074  {
       if (query.getCriteria() != null) {
          XmlTagPrinter whereTag = selectTag.newTag("Where");
       
-         translateWhere(whereTag, query.getCriteria());
+         writeCondition(whereTag, query.getCriteria());
          
       }
       //-- tidy up --
@@ -86,17 +88,17 @@ public class Query2Adql074  {
    }
    
 
-   private static void translateWhere(XmlTagPrinter tag, Condition expression) throws IOException {
+   private static void writeCondition(XmlTagPrinter tag, Condition expression) throws IOException {
       if (expression instanceof LogicalExpression) {
          if (((LogicalExpression) expression).getOperator().equals("AND")) {
             XmlTagPrinter intersectionTag = tag.newTag("Condition", "xsi:type='intersectionSearchType'");
-            translateWhere(intersectionTag, ((LogicalExpression) expression).getLHS());
-            translateWhere(intersectionTag, ((LogicalExpression) expression).getRHS());
+            writeCondition(intersectionTag, ((LogicalExpression) expression).getLHS());
+            writeCondition(intersectionTag, ((LogicalExpression) expression).getRHS());
             return;
          } else if (((LogicalExpression) expression).getOperator().equals("OR")) {
             XmlTagPrinter intersectionTag = tag.newTag("Condition", "xsi:type='unionSearchType'");
-            translateWhere(intersectionTag, ((LogicalExpression) expression).getLHS());
-            translateWhere(intersectionTag, ((LogicalExpression) expression).getRHS());
+            writeCondition(intersectionTag, ((LogicalExpression) expression).getLHS());
+            writeCondition(intersectionTag, ((LogicalExpression) expression).getRHS());
             return;
          } else {
             throw new UnsupportedOperationException("Unknown Logical Expression Operand: '"+
@@ -110,15 +112,24 @@ public class Query2Adql074  {
          if (operator.startsWith("<")) { operator = "&lt;"+operator.substring(1); }
          
          XmlTagPrinter comparisonTag = tag.newTag("Condition", "xsi:type='comparisonPredType' Comparison='"+operator+"'");
-         translateNumeric(comparisonTag, ((NumericComparison) expression).getLHS());
-         translateNumeric(comparisonTag, ((NumericComparison) expression).getRHS());
+         writeNumeric(comparisonTag, ((NumericComparison) expression).getLHS());
+         writeNumeric(comparisonTag, ((NumericComparison) expression).getRHS());
+      }
+      else if (expression instanceof Function) {
+         //can only be a circle.. I think...
+         if ( ((Function) expression).getName().toUpperCase().equals("CIRCLE")) {
+            writeCircle( tag, "Condition", (Function) expression);
+         }
+         else {
+            throw new UnsupportedOperationException("Unknown conditional function "+((Function) expression).getName());
+         }
       }
       else {
-         throw new UnsupportedOperationException("Unknown BooleanExpression type "+expression.getClass());
+         throw new UnsupportedOperationException("Unknown Condition type "+expression.getClass());
       }
    }
 
-   private static void translateNumeric(XmlTagPrinter tag, NumericExpression expression) throws IOException {
+   private static void writeNumeric(XmlTagPrinter tag, NumericExpression expression) throws IOException {
       if (expression instanceof LiteralNumber) {
          XmlTagPrinter argTag=tag.newTag("Arg", "xsi:type='atomType'");
          
@@ -134,29 +145,91 @@ public class Query2Adql074  {
          argTag.writeTag("Literal", "xsi:type='"+xsiType+"' Value='"+((LiteralNumber) expression).getValue()+"'", "");
       }
       else if (expression instanceof ColumnReference) {
-         
-         tag.writeTag("Arg", "xsi:type='columnReferenceType' "+
-                             "Table='"+((ColumnReference) expression).getTableName()+"' "+
-                             "Name='"+((ColumnReference) expression).getColName()+"'",
-                      "");
+   
+         writeColRef(tag, "Arg", (ColumnReference) expression);
       }
       else if (expression instanceof MathExpression) {
          
          XmlTagPrinter argTag = tag.newTag("Arg", "xsi:type='closedExprType'").newTag("Arg", "xsi:type='binaryExprType' Oper='"+((MathExpression) expression).getOperator().toString()+"'");
-         translateNumeric(argTag, ((MathExpression) expression).getLHS());
-         translateNumeric(argTag, ((MathExpression) expression).getRHS());
+         writeNumeric(argTag, ((MathExpression) expression).getLHS());
+         writeNumeric(argTag, ((MathExpression) expression).getRHS());
+      }
+      else if (expression instanceof Function) {
+         writeFunction(tag, "Arg", (Function) expression);
       }
       else {
-         throw new UnsupportedOperationException("Unknown expression type "+
+         throw new UnsupportedOperationException("Unknown Numeric Expression type "+
                                                      expression.getClass());
       }
    }
+
+   /** Writes out the adql for a circle/cone search */
+   public static void writeCircle(XmlTagPrinter parentTag, String elementName, Function circleFunc) throws IOException  {
+      XmlTagPrinter tTag = parentTag.newTag(elementName, "xsi:type='regionSearchType'");
+      XmlTagPrinter regionTag = tTag.newTag("Region", "xmlns:q1='urn:nvo-region' xsi:type='q1:circleType' coord_system_id=''");
+
+      XmlTagPrinter vectorTag = regionTag.newTag("q1:Center", "ID='' coord_system_id=''").newTag("Pos2Vector", "xmlns='urn:nvo-coords'");
+
+      //ho hum, shite XML
+      vectorTag.writeTag("Name", "Ra Dec");
+      XmlTagPrinter coordValueTag = vectorTag.newTag("CoordValue").newTag("Value");
+      try {
+         coordValueTag.writeTag("double", ((LiteralNumber) circleFunc.getArg(1)).getValue());
+         coordValueTag.writeTag("double", ((LiteralNumber) circleFunc.getArg(2)).getValue());
    
+         regionTag.writeTag("q1:Radius", ((LiteralNumber) circleFunc.getArg(3)).getValue());
+      }
+      catch (ClassCastException cce) {
+         //assume it's the circleFunc args
+         throw new UnsupportedOperationException("CIRCLE arguments must be LiteralNumbers ("+cce+")");
+      }
+   }
    
+   /** Writes out the adql for a general numeric function */
+   public static void writeFunction(XmlTagPrinter parentTag, String elementName, Function function) throws IOException {
+      String type = null;
+      if (aggregateFuncs.indexOf(" "+function.getName()+" ")>-1) {
+         type = "xsi:type='aggregateFunctionType'";
+      }
+      if (trigFuncs.indexOf(" "+function.getName()+" ")>-1) {
+         type = "xsi:type='trigonometricFunctionType'";
+      }
+      if (mathFuncs.indexOf(" "+function.getName()+" ")>-1) {
+         type = "xsi:type='mathFunctionType'";
+      }
+      if (type==null) {
+         throw new UnsupportedOperationException("Thicky writer: don't know what type of function '"+function.getName()+"' is");
+      }
+      
+      XmlTagPrinter funcTag = parentTag.newTag(elementName, type+" Name='"+function.getName()+"'");
+      
+      for (int i = 0; i < function.getArgs().length; i++) {
+         if (function.getArg(i) instanceof ColumnReference) {
+            writeColRef(funcTag, "Arg", (ColumnReference) function.getArg(i));
+         }
+         else {
+            throw new UnsupportedOperationException("Thicky writer: can't handle expression '"+function.getArg(i)+"' as parameter to "+function);
+         }
+      }
+   }
+   
+   /** Writes out the ADQL tag for the given column as a child of the given parentTag with
+    * the given elementName */
+   public static void writeColRef(XmlTagPrinter parent, String elementName, ColumnReference colRef) throws IOException {
+      parent.writeTag(elementName,
+                      "xsi:type='columnReferenceType' "+
+                        "Table='"+colRef.getTableName()+"' "+
+                        "Name='"+colRef.getColName()+"'",
+                      "");
+   
+   }
 }
 
 /*
  $Log: Query2Adql074.java,v $
+ Revision 1.5  2004/08/25 23:38:33  mch
+ (Days changes) moved many query- and results- related classes, renamed packages, added tests, added CIRCLE to sql/adql parsers
+
  Revision 1.4  2004/08/24 22:58:49  mch
  added debug line
 

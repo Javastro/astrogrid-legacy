@@ -1,4 +1,4 @@
-package org.astrogrid.datacenter.query.criteria;
+package org.astrogrid.datacenter.query.condition;
 
 import org.astrogrid.util.TypeSafeEnumerator;
 

@@ -1,5 +1,5 @@
 <%@ page language="java"
-    import="java.util.*, org.astrogrid.config.SimpleConfig, java.io.*, org.astrogrid.datacenter.sqlparser.*, org.astrogrid.datacenter.query.results.*, org.astrogrid.datacenter.query.criteria.*,
+    import="java.util.*, org.astrogrid.config.SimpleConfig, java.io.*, org.astrogrid.datacenter.sqlparser.*, org.astrogrid.datacenter.query.results.*, org.astrogrid.datacenter.query.condition.*,
     org.astrogrid.datacenter.metadata.*, org.astrogrid.datacenter.service.HtmlDataServer,
     org.astrogrid.datacenter.service.DataServer,
     org.w3c.dom.*, org.astrogrid.util.* " %>

@@ -1,4 +1,4 @@
-/*$Id: FitsResultsTest.java,v 1.2 2004/08/17 20:19:36 mch Exp $
+/*$Id: FitsResultsTest.java,v 1.3 2004/08/25 23:38:34 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -24,7 +24,7 @@ import org.astrogrid.datacenter.fits.FitsTest;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
 import org.astrogrid.datacenter.queriers.QueryResults;
-import org.astrogrid.datacenter.TargetIndicator;
+import org.astrogrid.datacenter.returns.TargetIndicator;
 import org.astrogrid.datacenter.query.ConeQuery;
 import org.astrogrid.datacenter.queriers.status.QuerierProcessingResults;
 
@@ -76,6 +76,9 @@ public class FitsResultsTest extends TestCase
 
 /*
  $Log: FitsResultsTest.java,v $
+ Revision 1.3  2004/08/25 23:38:34  mch
+ (Days changes) moved many query- and results- related classes, renamed packages, added tests, added CIRCLE to sql/adql parsers
+
  Revision 1.2  2004/08/17 20:19:36  mch
  Moved TargetIndicator to client
 

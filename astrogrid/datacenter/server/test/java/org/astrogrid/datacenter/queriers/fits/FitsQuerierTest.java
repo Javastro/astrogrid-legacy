@@ -1,4 +1,4 @@
-/*$Id: FitsQuerierTest.java,v 1.19 2004/08/19 08:32:48 mch Exp $
+/*$Id: FitsQuerierTest.java,v 1.20 2004/08/25 23:38:34 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -22,7 +22,7 @@ import org.astrogrid.datacenter.fits.FitsTest;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
 import org.astrogrid.datacenter.queriers.QueryResults;
-import org.astrogrid.datacenter.TargetIndicator;
+import org.astrogrid.datacenter.returns.TargetIndicator;
 import org.astrogrid.datacenter.query.ConeQuery;
 
 /** Test the Fits processing classes
@@ -83,6 +83,9 @@ public class FitsQuerierTest extends TestCase
 
 /*
  $Log: FitsQuerierTest.java,v $
+ Revision 1.20  2004/08/25 23:38:34  mch
+ (Days changes) moved many query- and results- related classes, renamed packages, added tests, added CIRCLE to sql/adql parsers
+
  Revision 1.19  2004/08/19 08:32:48  mch
  Fix to target indicator
 

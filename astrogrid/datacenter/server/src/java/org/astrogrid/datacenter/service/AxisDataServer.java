@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.44 2004/08/18 22:29:21 mch Exp $
+ * $Id: AxisDataServer.java,v 1.45 2004/08/25 23:38:34 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -15,7 +15,7 @@ import org.apache.axis.server.AxisServer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
-import org.astrogrid.datacenter.TargetIndicator;
+import org.astrogrid.datacenter.returns.TargetIndicator;
 import org.astrogrid.datacenter.metadata.MetadataServer;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierListener;
@@ -171,6 +171,9 @@ public abstract class AxisDataServer  {
 
 /*
 $Log: AxisDataServer.java,v $
+Revision 1.45  2004/08/25 23:38:34  mch
+(Days changes) moved many query- and results- related classes, renamed packages, added tests, added CIRCLE to sql/adql parsers
+
 Revision 1.44  2004/08/18 22:29:21  mch
 Take more general TargetIndicator rather than AGSL
 

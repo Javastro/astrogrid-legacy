@@ -1,13 +1,13 @@
 /*
- * $Id: TableResultsDefinition.java,v 1.3 2004/08/18 16:27:15 mch Exp $
+ * $Id: ReturnTable.java,v 1.1 2004/08/25 23:38:33 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
-package org.astrogrid.datacenter.query.results;
+package org.astrogrid.datacenter.returns;
 
-import org.astrogrid.datacenter.query.criteria.NumericExpression;
-import org.astrogrid.datacenter.TargetIndicator;
+import org.astrogrid.datacenter.query.condition.NumericExpression;
+import org.astrogrid.datacenter.returns.TargetIndicator;
 
 
 /**
@@ -17,7 +17,7 @@ import org.astrogrid.datacenter.TargetIndicator;
  * @author M Hill
  */
 
-public class TableResultsDefinition  extends ResultsDefinition {
+public class ReturnTable  extends ReturnSpec {
 
    boolean all = false; //special case similar to SELECT * (SQL)
 
@@ -25,20 +25,28 @@ public class TableResultsDefinition  extends ResultsDefinition {
 
    
    /** Creates a definitiont hat will return all columns */
-   public TableResultsDefinition(TargetIndicator aTarget) {
+   public ReturnTable(TargetIndicator aTarget) {
       this.target = aTarget;
       all = true;
    }
 
    /** Creates a definitiont hat will return all the given columns */
-   public TableResultsDefinition(TargetIndicator aTarget, NumericExpression[] someColDefs) {
+   public ReturnTable(TargetIndicator aTarget, NumericExpression[] someColDefs) {
       this.target = aTarget;
-      this.colDefs = someColDefs;
-      all = (colDefs == null);
+      if ((someColDefs.length == 1) && (someColDefs[0].toString().trim().equals("*"))) {
+         all = true;
+      }
+      else {
+         this.colDefs = someColDefs;
+         all = (colDefs == null);
+      }
    }
    
    public NumericExpression[] getColDefs() { return colDefs; }
-   
+
+   public boolean returnAll() {
+      return all;
+   }
    
    /** For debug & reference */
    public String toString() {
@@ -55,7 +63,10 @@ public class TableResultsDefinition  extends ResultsDefinition {
    }
 }
 /*
- $Log: TableResultsDefinition.java,v $
+ $Log: ReturnTable.java,v $
+ Revision 1.1  2004/08/25 23:38:33  mch
+ (Days changes) moved many query- and results- related classes, renamed packages, added tests, added CIRCLE to sql/adql parsers
+
  Revision 1.3  2004/08/18 16:27:15  mch
  Combining ADQL generators from SQL parser and query builder
 

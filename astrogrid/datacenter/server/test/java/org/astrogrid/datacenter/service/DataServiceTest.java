@@ -1,4 +1,4 @@
-/*$Id: DataServiceTest.java,v 1.8 2004/08/18 18:44:12 mch Exp $
+/*$Id: DataServiceTest.java,v 1.9 2004/08/25 23:38:34 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,7 +16,7 @@ import junit.framework.TestSuite;
 import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.ServerTestCase;
-import org.astrogrid.datacenter.TargetIndicator;
+import org.astrogrid.datacenter.returns.TargetIndicator;
 import org.astrogrid.datacenter.metadata.FileServer;
 import org.astrogrid.datacenter.metadata.MetadataPlugin;
 import org.astrogrid.datacenter.metadata.MetadataServer;
@@ -159,6 +159,9 @@ public class DataServiceTest extends ServerTestCase {
 
 /*
 $Log: DataServiceTest.java,v $
+Revision 1.9  2004/08/25 23:38:34  mch
+(Days changes) moved many query- and results- related classes, renamed packages, added tests, added CIRCLE to sql/adql parsers
+
 Revision 1.8  2004/08/18 18:44:12  mch
 Created metadata plugin service and added helper methods
 
