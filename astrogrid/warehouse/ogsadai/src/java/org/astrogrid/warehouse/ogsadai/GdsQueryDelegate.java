@@ -1,5 +1,5 @@
 /*
- * $Id: GdsQueryDelegate.java,v 1.6 2003/12/15 14:23:09 kea Exp $
+ * $Id: GdsQueryDelegate.java,v 1.7 2003/12/15 14:39:20 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -311,10 +311,10 @@ public class GdsQueryDelegate
       registryUrlString = args[1];
 
       // Get results filename if supplied (third parameter)
-      if (len == 2) {
+      if (len == 3) {
         outputFileName = args[2];
       }
-      if (len > 2) {
+      if (len > 3) {
 		    String errorMessage = 
            "Too many parameters (" + Integer.toString(len) + 
            ") supplied to GdsQueryDelegate";
@@ -359,6 +359,9 @@ public class GdsQueryDelegate
 }
 /*
 $Log: GdsQueryDelegate.java,v $
+Revision 1.7  2003/12/15 14:39:20  kea
+Fixed parameter count checks.
+
 Revision 1.6  2003/12/15 14:23:09  kea
 Restoring changes buggered up by CVS, bastard bastard bastard.
 No properties file for GdsQueryDelegate anymore, registry URL for
