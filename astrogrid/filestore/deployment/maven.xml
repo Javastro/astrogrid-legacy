@@ -34,10 +34,18 @@
         	<attainGoal name="jar:deploy-snapshot"/>
     </goal>
     
-    <!--temp fix to problem that can't download war from behind firewall-->
-    <preGoal name="jar:jar">
-    	<deploy:copy-deps todir="tmp" />
-    	<copy toDir="${maven.build.dest}" file="tmp/astrogrid-filestore-${pom.currentVersion}.war"/>
-    </preGoal>
+    <goal name="install" description="Use this goal to run the ant script" prereqs="override-input-task,jar">
+        <ant dir="${maven.build.dest}" target="install" >
+            <property name="custom.tasks.defined" value="yes"/>
+        </ant>
+    </goal>
+    <goal name="override-input-task">
+        <echo>The Input Task in Ant 1.5.3 hangs when a property has already been set...overriding with that from Ant 1.6</echo>
+        <taskdef name="input" classname="org.apache.tools.ant1point6.taskdefs.Input" classpathref="maven.dependency.classpath"/>
+        <taskdef name="tomcat-deploy" classname="org.apache.catalina.ant.DeployTask" classpathref="maven.dependency.classpath"/>
+        <!--taskdef name="get" classname="org.apache.tools.ant1point6.taskdefs.Get" classpathref="maven.dependency.classpath"/-->
+        <property name="input.test" value="foo"/>
+        <input addProperty="input.test">If this has worked, execution should continue at this point</input>
+    </goal>
  
 </project>

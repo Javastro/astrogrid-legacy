@@ -82,13 +82,12 @@
             <version>1.4</version>
             <properties/>
         </dependency>
-        <!--make sure the war gets built first, so we can copy it in-->
+        <!--required to use the Ant 1.6 input task instead of the Ant 1.5.3
+			one...this requirement will probably go away come Maven 1.1-->
         <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-filestore</artifactId>
-            <version>${pom.currentVersion}</version>
-            <type>war</type>
-            <properties/>        
-        </dependency>
+            <groupId>ant</groupId>
+            <artifactId>ant1.6tasks</artifactId>
+            <version>1.6</version>
+        </dependency> 
     </dependencies>
 </project>

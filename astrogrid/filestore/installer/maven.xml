@@ -39,10 +39,5 @@
         	<attainGoal name="javaapp:deploy-snapshot"/>
     </goal>
     
-    <!--temp fix to problem that can't download war from behind firewall-->
-    <preGoal name="javaapp:jar">
-    	<deploy:copy-deps todir="tmp" />
-    	<copy toDir="${maven.javaapp.app.dir}/antscript" file="tmp/astrogrid-filestore-deploy-script-${pom.currentVersion}.jar"/>
-    </preGoal>    
  
 </project>
