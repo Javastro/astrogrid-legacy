@@ -1,5 +1,5 @@
 /*
- * $Id: WarehouseServiceImpl.java,v 1.4 2003/10/24 20:11:34 kea Exp $
+ * $Id: WarehouseServiceImpl.java,v 1.5 2003/10/29 17:01:05 kea Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -11,7 +11,6 @@ import java.io.FileWriter;
 import java.rmi.RemoteException;
 
 import org.w3c.dom.Element;
-
 
 // Java Classes from OGSA-DAI
 
@@ -60,13 +59,22 @@ import uk.org.ogsadai.wsdl.gdsf.GridDataServiceFactoryPortType;
 import uk.org.ogsadai.wsdl.gdsf.GridDataServiceFactoryServiceLocator;
 
 /**
- * At the moment, basically a clone of the WarehouseDelegate interface.
- * Can add service-specific functionality in here later.
+ * In-progress web service front-end for OGSA-DAI-based data warehouse.
  *
  * @author K Andrews 
  */
 public class WarehouseServiceImpl
 {
+    /**
+     * If true, running as a webservice, if false, running from the 
+     * commandline.
+     * We can't run the OGSA-DAI client code from within a webservice 
+     * because of incompatibilities between vanilla and OGSA-DAI axis.
+     * The current workaround is for this class to invoke itself in
+     * a separate JVM (outside axis/tomcat) via a system call.
+     */ 
+    private boolean invokedViaAxis = true;
+
     // ----------------------------------------------------------
     // TOFIX: All these strings should be in a Properties file
     //
@@ -76,6 +84,13 @@ public class WarehouseServiceImpl
         "/ogsa/services/ogsadai/DAIServiceGroupRegistry";
     private final String FACTORY_STRING = 
         "/ogsa/services/ogsadai/GridDataServiceFactory";
+
+    private final String WAREHOUSE_JVM = 
+        "/data/cass123a/gtr/jdk-ogsa/bin/java";
+    private final String WAREHOUSE_CLASSPATH =
+        "/data/cass123a/kea/tomcat_cass111/webapps/axis/WEB-INF/classes";
+    private final String WAREHOUSE_SERVICE =
+        "org.astrogrid.warehouse.service.WarehouseServiceImpl";
 
     private final String PERFORM_HEAD = 
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + 
@@ -166,19 +181,43 @@ public class WarehouseServiceImpl
     }
     */
 
+    // Check if we're running in Axis or not - if so, shell out to
+    // a new JVM (vanilla axis and ogsa axis are incompatible, it seems).
+
+    if (invokedViaAxis) {
+
+      String[] cmdArgs = new String[5];
+      cmdArgs[0] = WAREHOUSE_JVM;
+      cmdArgs[1] = "-cp";
+      cmdArgs[2] = WAREHOUSE_CLASSPATH;
+      cmdArgs[3] = WAREHOUSE_SERVICE; 
+      cmdArgs[4] = "startQuery";
+
+      SystemTalker talker = new SystemTalker();
+      TalkResult result = talker.talk(cmdArgs, "");
+
+      if (result.getErrorCode() != 0) {
+        throw new RemoteException(
+          "External call failed: " + result.getStdout() + " " +
+          result.getStderr());
+      }
+      return; // Finished external call successfully
+    }
+
+    // Fallthrough case - not running in Axis, so do actual query!
+
     String registryURLString = HOST_STRING + REGISTRY_STRING;
     int timeout = 300;  // TOFIX configurable?
 
     //TOFIX Just a hardwired query for initial testing
     String query="SELECT * FROM catalogue WHERE POS_EQ_DEC > 89.9";
-    // 
 
     // All of the following lifted from package uk.org.ogsadai.client.Client.
     // I don't understand it yet :-)
     try {
       // Look at the registry to get the factory URL
       String factoryURLString = 
-          getFactoryUrlFromRegistry(registryURLString,timeout);
+         getFactoryUrlFromRegistry(registryURLString,timeout);
       //String factoryURLString = HOST_STRING + FACTORY_STRING;
 
       // Get the factory portType and the grid service portType for
@@ -233,6 +272,8 @@ public class WarehouseServiceImpl
       result = griddataservice.perform(document);
 
       // Output the results
+      // TOFIX: Temporary hack until we can get GridFTP transfers
+      // (a la MySpace) working.
       try {
         FileWriter writer = new FileWriter("/tmp/WS_OGSA_OUTPUT");
         writer.write(AnyHelper.getAsString(result));
@@ -240,7 +281,6 @@ public class WarehouseServiceImpl
       }
       catch (IOException e) {
         throw new RemoteException(
-//         "Couldn't open destination file " + destFile,e);
          "Couldn't open destination file /tmp/WS_OGSA_OUTPUT",e);
       }
 
@@ -379,33 +419,37 @@ public class WarehouseServiceImpl
   }
 
   /**
-   * Temporary test harness - easier than trying to test through
-   * tomcat! 
+   * Main function for invocation outside axis/tomcat (running at the
+   * command-line).  
+   * We can't run the OGSA-DAI client code from within a webservice 
+   * because of incompatibilities between vanilla and OGSA-DAI axis.
+   * The current workaround is for this class to invoke itself in
+   * a separate JVM (outside axis/tomcat) via a system call, using
+   * this main() function.
    */
   public static void main(String args[]) throws Exception {
 
     WarehouseServiceImpl service = new WarehouseServiceImpl();
-    try {
-      System.out.print("Making dummy query...  ");
-      String queryID = service.makeQuery(null,"dummy");
-      System.out.println("done: query ID is "+ queryID);
 
-      System.out.print("Setting destination...  ");
-      service.setResultsDestination(queryID,"OGSA_TEST_OUTPUT");
-      System.out.println("done...  ");
+    // We're not running in axis
+    service.invokedViaAxis = false;
 
-      System.out.print("Starting query...  ");
-      service.startQuery(queryID);
-      System.out.println("done...  ");
-    }
-    catch (RemoteException e) {
-      e.printStackTrace();
-      throw new Exception(e);
-    }
+    // TOFIX - it's only startQuery that needs to be invoked like
+    // this, so add check on commandline args.
+
+    // TOFIX - need to have proper job ID and destination URL
+    // from command-line
+    service.startQuery("123456");
   }
 }
 /*
 $Log: WarehouseServiceImpl.java,v $
+Revision 1.5  2003/10/29 17:01:05  kea
+Due to problems with axis/ogsa-axis incompatibilities, altered web
+service implementation to shell out to separate JVM outside tomcat
+to make call to OGSA-DAI grid service - hopefully just a temporary
+fix...
+
 Revision 1.4  2003/10/24 20:11:34  kea
 More work on webservice to call OGSA-DAI.  This was actually working
 as a webservice but suddenly stopped for no apparent reason;  the
