@@ -1,4 +1,4 @@
-/*$Id: VoSpaceTest.java,v 1.1 2004/04/15 14:55:38 mch Exp $
+/*$Id: VoSpaceTest.java,v 1.2 2004/04/15 15:12:35 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,9 +16,11 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.astrogrid.community.User;
+import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.store.VoSpaceClient;
 import org.astrogrid.store.delegate.StoreFile;
+import org.astrogrid.store.delegate.VoSpaceResolver;
 
 /** Tests the vospace client, which needs to talk to registry etc
  *
@@ -44,6 +46,14 @@ public class VoSpaceTest extends TestCase {
       
    }
    
+   public void testResolver() throws IOException
+   {
+      Agsl myspaceAgsl = VoSpaceResolver.resolveAgsl(MYSPACEIVO);
+
+      assertNotNull(myspaceAgsl);
+      
+   }
+
    public void testStoreAccess() throws IOException
    {
    }
@@ -152,9 +162,13 @@ public class VoSpaceTest extends TestCase {
 
 /*
 $Log: VoSpaceTest.java,v $
+Revision 1.2  2004/04/15 15:12:35  mch
+Added resolver test
+
 Revision 1.1  2004/04/15 14:55:38  mch
 New IVORN resolver tester
 
 
 */
+
 
