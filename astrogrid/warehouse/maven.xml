@@ -151,6 +151,7 @@
       </java>
    </target>
 
+  <!-- THIS PUTS ITS VOTABLE OUTPUT IN /tmp/QUERIER_OUTPUT_VOT -->
    <target name="querierTest">
      <path id="classpath">
        <pathelement location="target/classes"/>
@@ -159,7 +160,8 @@
       <java classname="org.astrogrid.warehouse.queriers.ogsadai.WarehouseQuerier"
             dir="target/classes" fork="yes" failonerror="true"
             classpathref="classpath">
-        <arg value= "SELECT * FROM catalogue WHERE POS_EQ_DEC > 89.9"/>
+        <arg value= "SELECT * FROM first WHERE POS_EQ_DEC > 59.9"/>
+        <arg value= "/tmp/QUERIER_OUTPUT_VOT"/>
       </java>
    </target>
 
