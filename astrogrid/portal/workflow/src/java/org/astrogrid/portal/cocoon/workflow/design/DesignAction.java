@@ -808,7 +808,7 @@ public class DesignAction extends AbstractAction {
 //					trace("input param: Documentation " + p.getDocumentation()) ;
 					trace("input param: Type " + p.getType()) ;
 //					trace("input param: Cardinality " + p.getCardinality()) ;
-					trace("input param: Content " + p.getContent()) ;
+					trace("input param: value " + p.getValue()) ;
 					
 				}
 				trace("-----------------------------------------") ;			                            	   	  

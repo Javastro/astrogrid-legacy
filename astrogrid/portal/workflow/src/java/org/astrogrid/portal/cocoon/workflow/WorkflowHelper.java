@@ -105,22 +105,22 @@ public class WorkflowHelper {
                     
                     if( (oldContents == null || oldContents.equals("") )
                         &&
-                        (p.getContent() == null || p.getContent().equals("") ) ) {
+                        (p.getValue() == null || p.getValue().equals("") ) ) {
                           
                         // OK, we've identified that we need to insert
                         // into an empty parameter...    
-                        p.setContent( newContents ) ;
+                        p.setValue( newContents ) ;
                         savedNewInsertTarget = p ;
                         retValue = true ;
                         break ;
                     }
                     else if( (oldContents != null)
                              &&
-                             (oldContents.equals( p.getContent() )) ) {
+                             (oldContents.equals( p.getValue() )) ) {
                         
                         // OK, we've identified that we wish to replace
                         // existing contents with new contents...         
-                        p.setContent( newContents ) ;
+                        p.setValue( newContents ) ;
                         retValue = true ;
                         break ;
                     }
@@ -139,7 +139,7 @@ public class WorkflowHelper {
                          p = (ParameterValue)iterator.nextElement() ;
                          if( (p.getName().equals( paramName )) 
                              &&
-                             (p.getContent() == null || p.getContent().equals("") ) ) {
+                             (p.getValue() == null || p.getValue().equals("") ) ) {
                             
                              countOfEmptyParams++ ;
                          }
@@ -294,13 +294,13 @@ public class WorkflowHelper {
                 if( p.getName().equals( paramName ) ) {
                     if( (content == null || content.equals("") )
                         &&
-                        (p.getContent() == null || p.getContent().equals("") ) ) {
+                        (p.getValue() == null || p.getValue().equals("") ) ) {
                         retValue = true ;
                         break ;
                     }
                     else if( (content != null)
                              &&
-                             (content.equals( p.getContent() )) ) {
+                             (content.equals( p.getValue() )) ) {
                         retValue = true ;
                         break ;
                     }
