@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+
+<document>
+  <properties>
+    <title>Portal Logon Pages</title>
+    <author email="jdt@roe.ac.uk">John Taylor</author>
+  </properties>
+
+  <body>
+    <section name="Introduction">
+        <p> This page gives a rough outline of how the login page works. </p>
+    </section>
+    <section name="Other portal components....">
+        <p> 
+        When a user logs in  number of objects are put into the session for you to
+use.
+These are:<BR/>
+The user's name in the form<BR/>
+ivo://community/fred<BR/>
+The user's credential (guest@community)<BR/>
+The user's account<BR/>
+The user's community name.<BR/>
+
+These are stored under keys that you can find in this class:
+<a href="http://www.astrogrid.org/viewcvs/astrogrid/portal/common/src/java/org/astrogrid/portal/login/common/SessionKeys.java?rev=1.2&amp;content-type=text/vnd.viewcvs-markup">org.astrogrid.portal.login.common.SessionKeys</a>
+in the portal common jar.     
+            
+        </p>
+    </section>
+    <section name="New pipeline model">
+      <P>
+        The sitemap.xmap in the base project intercepts requests to "" (ie. www.mysite.com/portal/) and redirects them to /main/mount/login/login-form
+        <BR/>
+        The /main/ bit gets intercepted in the base sitemap, and the standard header, menu and footer are added to the content. Meanwhile the content is obtained by going to the sitemap in login.
+        <BR/>
+        Here login-form gets intercepted and the following pipeline executed:
+        <BR/>
+        Cocoon's built in form validator gets called. Since this is the first time through and the form hasn't been displayed yet, the form validator returns a failure and we skip to the end of the pipeline.
+        <BR/>
+        Here an xsp server page logon.xsp is loaded. I've tried to make this "style free" in that I've created my own tags to represent a form, a text input box etc. This is then transformed by logon.xsl which takes my tags and turns them into xhtml tags with the correct formatting. Hence, if we don't like the L&amp;F of the forms it's easy to change them globally. The logon.xsp includes logic to ensure that should the page need to be redisplayed e.g. because a user entered a parameter incorrectly, then the other parameters are retained on the screen and don't need to be retyped. I imagine this is the sort of thing that Pat's XForms gives us rather more easily. When the user clicks the log on button, we redirect back to logon-form.
+        <BR/>
+        We go through the form validator again - this time there are values in the form to check. The validator is a built in cocoon action that uses the data in def/logon-def.xml to decide whether the form values are acceptable Should the validator find a problem (for this page, only a missing value is considered a problem), then we're back at the end of the pipeline loading up logon.xsp again. logon.xsp also contains logic to report the validation problem to the user. (Again, the style of how it's reported to the user is the responsibility of logon.xsl. Currently logon.xsl interprets logon.xsp's tags as "display the enclosed text in red at the bottom of the page".
+        <BR/>
+        Assuming that the form is valid, then instead of jumping to the end of the pipeline we execute the pipeline inside the validator's tags. We call our own action "astro-login" which checks that the username and password are OK and sets up the session appropriately. Should log in succeed then the xml file login-pass.xml is displayed, otherwise login-failed.xml is displayed. Both xml files are first transformed with info.xsl to determine how the information they contain should be displayed.
+        <BR/>
+        The other pages: register and forgotten password have similar piplines. (in fact there's scope for factoring them, but let's keep it simple for now). They use the same style sheets for forms, and for information pages as the logon page, so it's very easy to change them if we don't like them. The form validation also checks that email addresses are valid for these two forms. 
+       	</P>
+    </section>
+
+  </body>
+</document>
