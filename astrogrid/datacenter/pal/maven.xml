@@ -111,42 +111,59 @@
 -->
 <goal name="configure-webapp" description="set properties in web.xml, server-config.wsdd, etc">
    <echo message="pal: configure-webapp"/>
-   <!-- hack from mailing list to fix Maven XLST bug -->
-   ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
-
-   <!-- patch server-config with wsdd file contained in client.jar -->
+   <echo>Configuring the datacenter-only web interfaces</echo>
    <mkdir dir="${working.dir}" />
    <deploy:copy-deps todir="${working.dir}" />
+   <delete file="${basedir}/src/webapp/WEB-INF/server-config.xml" quiet="true"/>
+   <!-- construct classpath to run axis under.
+    necessary to do this, rather than just using 'maven.dependency.classpath' as there's 2 versioins of axis in the deps (arg).
+    the real one, and a duff one used within the warehouse that has ogsa extensions. we want to make shore we get the real one -->
+   <path id="axis.classpath">
+        <fileset dir="${working.dir}">
+                <exclude name="*ogsadai*" />
+        </fileset>
+   </path>
+     <java classname="org.apache.axis.utils.Admin" dir="${basedir}/src/webapp/WEB-INF"
+        classpathref="axis.classpath" fork="yes" failonerror="true">
+        <arg value="server"/>
+        <arg value="${basedir}/src/webapp/deploy.wsdd"/>
+    </java>
+    <echo>Configuring the cea web interface</echo>
+   <!-- setting which transformer to use -->
+   ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
+
+   <!-- extract various resources we need now, and some for later -->
    <unjar dest="${working.dir}" overwrite="true">
       <fileset dir="${working.dir}">
-         <include name="*client*.jar" />
+         <include name="astrogrid-*-client*.jar" />
+         <include name="astrogrid-workflow-objects-*.jar" />
       </fileset>
       <patternset>
-         <!-- include name="wsdd/**" /-->
+         <include name="wsdd/**" />
          <include name="xsd/**" />
          <include name="wsdl/**" />
       </patternset>
    </unjar>
+   <!-- apply stylesheet to CommonExecutionConnector-deploy.wsdd, to set the correct implementation class -->
+   <xslt in="${working.dir}/wsdd/CommonExecutionConnector-deploy.wsdd"
+         out="${working.dir}/wsdd/CommonExecutionConnector-pal-deploy.wsdd"
+         extension=".wsdd"
+         style="${basedir}/build/cec-config.xsl"
+   />
+   <!-- now run admin client over the processed wsdd file -->
+   <java classname="org.apache.axis.utils.Admin" dir="${basedir}/src/webapp/WEB-INF"
+        classpathref="axis.classpath" fork="yes" failonerror="true">
+        <arg value="server"/>
+        <arg value="${working.dir}/wsdd/CommonExecutionConnector-pal-deploy.wsdd" />
+    </java>
+   <!-- finally, clean up -->
    <delete>
       <fileset dir="${working.dir}">
          <include name="*.jar" />
+         <include name="wsdd/**" />
       </fileset>
    </delete>
-   -->
-   <!-- use auto-generated client wsdd to make server-config.wsdd
-   <xslt in="${working.dir}/wsdd/deploy.wsdd"
-         out="${webapp.root}/WEB-INF/server-config.wsdd"
-         extension=".wsdd"
-         style="${basedir}/build/server-config.xsl"
-   />
-   -->
 
-   <!-- Use handwritten deploy.wsdd in webapps to make server-config.wsdd -->
-   <xslt in="${basedir}/src/webapp/deploy.wsdd"
-         out="${webapp.root}/WEB-INF/server-config.wsdd"
-         extension=".wsdd"
-         style="${basedir}/build/server-config.xsl"
-   />
 </goal>
 
 <!-- tasks to help development -->
