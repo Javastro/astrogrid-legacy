@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierPlugin.java,v 1.9 2004/03/18 18:32:45 mch Exp $
+ * $Id: QuerierPlugin.java,v 1.10 2004/03/22 12:26:12 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -97,7 +97,11 @@ public abstract class QuerierPlugin  {
          }
 
          results.write(writer, resultsStatus, querier.getRequestedFormat());
-         writer.close();
+         
+         //we shouldn't actually close the writer, as for JSPs for example the
+         //page may still have writing to do
+         //@todo close targets when necessary
+         writer.flush();
       }
 
       String s = "Results sent to "+target;
@@ -162,6 +166,9 @@ public abstract class QuerierPlugin  {
 }
 /*
  $Log: QuerierPlugin.java,v $
+ Revision 1.10  2004/03/22 12:26:12  mch
+ Removed writer close
+
  Revision 1.9  2004/03/18 18:32:45  mch
  Added info
 
