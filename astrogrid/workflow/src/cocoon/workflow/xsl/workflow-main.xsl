@@ -61,7 +61,9 @@
             <xsl:call-template name="list_workflow"/>             
          </xsl:if>
          <xsl:if test="$action = 'save-workflow'">
-            <xsl:call-template name="list_workflow"/>             
+            <xsl:call-template name="list_workflow"/>
+            <xsl:call-template name="list_query" />
+            <xsl:call-template name="list_tools" />                         
          </xsl:if>
          <xsl:if test="$action = 'read-workflow'">
             <xsl:call-template name="view_workflow_details"/>             
@@ -69,10 +71,11 @@
          <xsl:if test="$action = 'create-workflow'">
             <xsl:call-template name="create_workflow"/>             
          </xsl:if>
-         <xsl:if test="$action = 'create-tool-for-step'">
-            <xsl:call-template name="insert_tool"/>             
-         </xsl:if>
          <xsl:if test="$action = 'insert-tool-into-step'">
+<!--             <xsl:call-template name="create_workflow"/> -->
+            <xsl:call-template name="insert_parameter"/> 
+         </xsl:if>
+         <xsl:if test="$action = 'insert-parameter-into-tool'">
             <xsl:call-template name="create_workflow"/>             
          </xsl:if>                                 
          <xsl:if test="$action = 'templates'">
@@ -160,7 +163,7 @@
                <td>Tools currently available for use:</td>
             </tr>
             <p />
-            <xsl:for-each select="//tool">
+            <xsl:for-each select="//toolsAvailable">
                <tr>
                   <xsl:if test="@tool-name != 'null'">
                      <td><xsl:value-of select="@tool-name"/></td>
@@ -206,32 +209,61 @@
       <!--+
           | Create workflow
           +-->          
-      <xsl:template name="create_workflow">
-         <form name="create_form" action="">               
-            <table cellpadding="0" cellspacing="0">                                                           
+      <xsl:template name="create_workflow">               
+         <table border="1" cellpadding="0" cellspacing="0">                                                           
+            <tr>
+               <td>Workflow Name:</td>
+               <td><xsl:value-of select="@workflow-name" /></td>                                    
+            </tr>
+            <tr>
+               <td>Workflow Description:</td>
+               <td><xsl:value-of select="@workflow-description" /></td>                  
+            </tr>
+            <tr>
+               <td>
+                  <xsl:if test="@template = 'OneStepJob'"><img src="OneStepJob.gif" alt="OneStepJob" /></xsl:if>
+                  <xsl:if test="@template = 'TwoSequentialJobsteps'"><img src="TwoStepSequence.gif" alt="TwoStepSequence" /></xsl:if>
+                  <xsl:if test="@template = 'TwoParallelJobsteps'"><img src="TwoStepFlow.gif" alt="TwoStepFlow" /></xsl:if>
+                  <xsl:if test="@template = 'TwoStepFlowAndMerge'"><img src="SequenceWithTwoStepFlow.gif" alt="SequenceWithTwoStepFlow" /></xsl:if>                
+               </td>               
+               <td>
+                  <xsl:for-each select="//step">
+                     <form method="get" name="ToolSelectForm">                          
+                        <input type="hidden" name="activity-key"><xsl:attribute name="value"><xsl:value-of select="@key"/></xsl:attribute></input>
+		                <input type="hidden" name="action" value="insert-tool-into-step" />		                     	                 		                 		                 
+                        Step: (<xsl:value-of select="@step-name" />)                           
+                        <xsl:for-each select="tool">
+                           <xsl:if test="@tool-name = 'null'">
+	   	                      <select name="tool-name">
+	                             <option value="none">-- Select tool --</option>
+                                 <xsl:for-each select="//toolsAvailable">
+                                    <xsl:element name="option">
+                                       <xsl:attribute name="value"><xsl:value-of select="@tool-name"/></xsl:attribute>
+				                       <xsl:value-of select="@tool-name"/>
+				                    </xsl:element>
+                                 </xsl:for-each>
+		                      </select>
+                           <input type="submit" value="Select" />		                         
+                           </xsl:if>
+                           <xsl:if test="@tool-name != 'null'">
+                              <xsl:value-of select="@tool-name" />
+                           </xsl:if>
+                        </xsl:for-each><!-- end of tool -->
+                     </form>
+                  </xsl:for-each><!-- end of step -->                                            
+               </td>
+            </tr>
+            <form name="create_form">
                <tr>
-                  <td>Job Name:</td>
-                  <td><xsl:value-of select="@workflow-name" /></td>                                    
+                  <td>
+                     <input type="hidden" name="action"  value="save-workflow" />
+                     <input type="submit" value="Save workflow" />
+                  </td>
                </tr>
-               <tr>
-                  <td>Job Description:</td>
-                  <td><xsl:value-of select="@workflow-description" /></td>                  
-               </tr>
-               <xsl:if test="@template = 'OneStepJob'">
-                  <xsl:call-template name="OneStepJob" />
-               </xsl:if>             
-               <xsl:if test="@template = 'TwoSequentialJobsteps'">
-                  <xsl:call-template name="TwoStepSequence" />
-               </xsl:if>
-               <xsl:if test="@template = 'TwoParallelJobsteps'">
-                  <xsl:call-template name="TwoStepFlow" />
-               </xsl:if>
-               <xsl:if test="@template = 'TwoStepFlowAndMerge'">
-                  <xsl:call-template name="SequenceWithTwoStepFlow" />
-               </xsl:if>                                                                                            
-            </table> 
-         </form>     
+            </form>                                                                                                                
+         </table> 
       </xsl:template>
+
 
       <!--+
           | View workflow details
@@ -254,63 +286,54 @@
                   <xsl:if test="@template = 'TwoStepFlowAndMerge'"><img src="SequenceWithTwoStepFlow.gif" alt="SequenceWithTwoStepFlow" /></xsl:if>                
                </td>
                <td>
-                  <xsl:for-each select="//step">
-                     <table border="1" cellpadding="0" cellspacing="0">
-                        <tr>
-                           <td>
-                              <table>
-                                 <tr>
-                                    <td align="center">Step:</td>
-                                 </tr>
-                                 <tr>
-                                    <td>Name: <xsl:value-of select="@step-name"/></td>
-                                 </tr>
-                                 <tr>
-                                    <td>Desc: <xsl:value-of select="@step-description"/></td>
-                                 </tr>
-                                 <tr>
-                                    <td>Tool: <xsl:value-of select="@tool"/></td>
-                                 </tr>
-                                 <tr>
-                                    <td>Join: <xsl:value-of select="@joinCondition"/> </td>
-                                 </tr>
+                  <table border="1" cellpadding="0" cellspacing="0">
+                     <tr>
+                        <td align="center">Step:</td>
+                        <td align="center">Tool:</td>
+                        <td align="center">Input parameters</td>   
+                        <td align="center">Output parameters</td>
+                     </tr>
+                     <xsl:for-each select="//step">
+                        <td><!--  start of step column -->
+                           <table>
+                              <tr><td><xsl:value-of select="@step-name"/></td></tr>
+                              <tr><td>Desc: <xsl:value-of select="@step-description"/></td></tr>
+                              <tr><td>Join: <xsl:value-of select="@joinCondition"/> </td></tr>
+                           </table>
+                        </td><!-- end of step column -->
+                        <td><!-- start of tool column -->
+                           <xsl:for-each select="tool">
+                              <table>                                 
+                                 <tr><td>Tool: <xsl:value-of select="@tool-name"/></td></tr>
+                                 <tr><td>Documentation: <xsl:value-of select="@tool-documentation"/></td></tr>
                               </table>
-                           </td>
-                           <td>
-                              <table>
-                                 <tr>
-                                    <td align="center" colspan="3">Input parameters:</td>
-                                 </tr>
-                                 <xsl:for-each select="//inputParam">
-                                    <tr> 
+                              <td><!-- start of input column -->
+                                 <xsl:for-each select="inputParam">
+                                    <table>
                                        <td>Name: <xsl:value-of select="@param-name"/></td>
                                        <td>Type: <xsl:value-of select="@param-type"/></td>
                                        <td>Location: <xsl:value-of select="@param-location"/></td>
-                                    </tr>
-                                 </xsl:for-each>  
-                              </table>
-                           </td>
-                           <td>
-                              <table>
-                                 <tr>
-                                    <td align="center" colspan="3">Output parameters:</td>
-                                 </tr>
-                                 <xsl:for-each select="//outputParam">
-                                    <tr>
+                                    </table>
+                                 </xsl:for-each>
+                              </td><!-- end of input column -->
+                              <td><!-- start of output column -->
+                                 <xsl:for-each select="outputParam">
+                                    <table>
                                        <td>Name: <xsl:value-of select="@param-name"/></td>
                                        <td>Type: <xsl:value-of select="@param-type"/></td>
                                        <td>Location: <xsl:value-of select="@param-location"/></td>
-                                    </tr>
-                                 </xsl:for-each>                                 
-                              </table>                                                      
-                           </td>
-                        </tr>
-                     </table>                  
-                  </xsl:for-each>    
+                                    </table>
+                                 </xsl:for-each>                                                                                     
+                               </td><!-- end of output column -->                                                               
+                           </xsl:for-each><!-- end of each tool -->
+                        </td><!-- end of tool column -->     
+                     </xsl:for-each><!-- end of each step -->
+                  </table>
                </td>
             </tr>
          </table> 
       </xsl:template>
+
 
     
       <!--+
@@ -377,82 +400,6 @@
             </tr>
          </table>
       </xsl:template>              
-
-      <!--+
-          | OneStepJob
-          +-->   
-      <xsl:template name="OneStepJob">
-         <tr>
-            <td>
-               <img src="OneStepJob.gif" alt="OneStepJob" />
-            </td>
-            <xsl:for-each select="//step">
-               <td>
-                  Step 1: <xsl:call-template name="ToolSelectTemplate" />
-               </td>
-            </xsl:for-each>
-         </tr>
-      </xsl:template>
-      
-      <!--+
-          | TwoStepSequence
-          +-->   
-      <xsl:template name="TwoStepSequence">
-         <tr>
-            <td>
-               <img src="TwoStepSequence.gif" alt="TwoStepSequence" />
-            </td>
-            <td>
-               <xsl:for-each select="//step">
-                  <tr>
-                     <td>
-                        Step: <xsl:call-template name="ToolSelectTemplate" />
-                     </td>
-                  </tr>
-               </xsl:for-each>
-            </td>            
-         </tr>
-      </xsl:template>
-      
-      <!--+
-          | TwoStepFlow
-          +-->   
-      <xsl:template name="TwoStepFlow">
-         <tr>
-            <td>
-               <img src="TwoStepFlow.gif" alt="TwoStepFlow" />
-            </td>
-            <td>
-               <xsl:for-each select="//step">
-                  <tr>
-                     <td>
-                        Step: <xsl:call-template name="ToolSelectTemplate" />
-                     </td>
-                  </tr>
-               </xsl:for-each>
-            </td>            
-         </tr>
-      </xsl:template>
-      
-      <!--+
-          | SequenceWithTwoStepFlow
-          +-->   
-      <xsl:template name="SequenceWithTwoStepFlow">
-         <tr>
-            <td> 
-               <img src="SequenceWithTwoStepFlow.gif" alt="SequenceWithTwoStepFlow" />
-            </td>
-            <td>
-               <xsl:for-each select="//step">
-                  <tr>
-                     <td>
-                        Step: <xsl:call-template name="ToolSelectTemplate" />
-                     </td>
-                  </tr>
-               </xsl:for-each>
-            </td>            
-         </tr>
-      </xsl:template>
       
       <!--+
           | Monitor jobs
@@ -477,63 +424,78 @@
             </xsl:for-each>
          </table>
       </xsl:template>
-      
-    <!--+
-	    | Tool selection template
-	    +-->	
-	<xsl:template name="ToolSelectTemplate">
-       <form method="get" name="ToolSelectForm"> 
-	   	  <select name="tool-name">
-	         <option value="none">-- Select tool --</option>
-             <xsl:for-each select="//tool">
-                <xsl:element name="option">
-                   <xsl:attribute name="value"><xsl:value-of select="@tool-name"/></xsl:attribute>
-				   <xsl:value-of select="@tool-name"/>
-				</xsl:element>
-             </xsl:for-each>
-		  </select>
-		  <input type="hidden" name="activity-key"><xsl:attribute name="value"><xsl:value-of select="@key"/></xsl:attribute></input>
-		  <input type="hidden" name="action" value="create-tool-for-step" />		                     	                 		                 		                 
-		  <input type="submit" value="Select" />
-	   </form>
-	</xsl:template>                              
+    
 
       <!--+
-          | Insert tool into a step
+          | Insert parameters into a tool
           +-->   
-      <xsl:template name="insert_tool">
-         <form method="get" name="ToolInsertForm">               
+      <xsl:template name="insert_parameter">
+         <form method="get" name="ParameterInsertForm">
             <table cellpadding="0" cellspacing="0">                                                           
                <tr>
-                  <td>Job Name:</td>
+                  <td>Workflow name:</td>
                   <td><xsl:value-of select="@workflow-name" /></td>                                    
                </tr>
                <tr>
-                  <td>Job Description:</td>
+                  <td>Workflow description:</td>
                   <td><xsl:value-of select="@workflow-description" /></td>                  
                </tr>
-               <tr>
-                  <td>
-                     Tool name:
-                     <td><xsl:value-of select="@toolObject-name" /></td>
-                  </td>
-               </tr>
-               <tr>
-                  <td>
-                     Tool documentation:
-                     <td><xsl:value-of select="@toolObject-documentation" /></td>
-                  </td>
-               </tr>                                     
-               <tr>
-                  <td>
-                     Get all the parameters
-                  </td>
-               </tr>          
+               <xsl:for-each select="//step">           
+                   <xsl:if test="$activity-key = @key">
+                  <xsl:for-each select="tool">                    
+                     <tr>
+                        <td>Tool name:</td>
+                        <td><xsl:value-of select="@tool-name" /></td>
+                     </tr>
+                     <tr>
+                        <td>Tool documentation:</td>
+                        <td><xsl:value-of select="@tool-documentation" /></td>
+                     </tr>
+                     <tr>
+                        <td>
+                           <table>
+                              <tr>
+                                 <td align="center" colspan="3">Input parameters:</td>
+                              </tr>
+                              <xsl:for-each select="inputParam">
+                                 <tr> 
+                                    <td>Name: <xsl:value-of select="@param-name" /></td>
+                                    <td>Type: <xsl:value-of select="@param-type" /></td>
+                                    <td>Location: <xsl:value-of select="@param-location" /></td>
+                                    <td>Cardinality (max): <xsl:value-of select="@param-cardinality-max" /></td>
+                                    <td>Cardinality (min): <xsl:value-of select="@param-cardinality-min" /></td>
+                                 </tr>
+                              </xsl:for-each><!-- end of inputParam -->  
+                           </table>
+                        </td>                  
+                     </tr>               
+                     <tr>
+                        <td>
+                           <table>
+                              <tr>
+                                 <td align="center" colspan="3"> Output parameters:</td>
+                              </tr>
+                              <xsl:for-each select="outputParam">  
+                                 <tr> 
+                                    <td>Name: <xsl:value-of select="@param-name" /></td>
+                                    <td>Type: <xsl:value-of select="@param-type" /></td>
+                                    <td>Location: <xsl:value-of select="@param-location" /></td>
+                                    <td>Cardinality (max): <xsl:value-of select="@param-cardinality-max" /></td>
+                                    <td>Cardinality (min): <xsl:value-of select="@param-cardinality-min" /></td>
+                                 </tr>
+                             </xsl:for-each><!-- end of outputParam -->  
+                          </table>
+                        </td>                  
+                     </tr>
+                  </xsl:for-each><!-- end of tool -->               
+               </xsl:if>
+               </xsl:for-each><!-- end of step -->                                        
 		    <input type="hidden" name="activity-key"><xsl:attribute name="value"><xsl:value-of select="$activity-key"/></xsl:attribute></input>
-		    <input type="hidden" name="action" value="insert-tool-into-step" />		                     	                 		                 		                 
-		    <input type="submit" value="Insert tool" />
+		    <input type="hidden" name="action" value="insert-parameter-into-tool" />
+		    <input type="text" name="location" />		                     	                 		                 		                 
+		    <input type="submit" value="Insert parameter" /> 
 		  </table>
-	   </form>          
+	   </form>
       </xsl:template>
     
      <!-- Default, copy all and apply templates -->
