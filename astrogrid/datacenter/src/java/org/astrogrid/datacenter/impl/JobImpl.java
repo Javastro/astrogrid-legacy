@@ -29,7 +29,7 @@ import org.apache.axis.encoding.XMLType;
 import org.apache.log4j.Logger;
 import org.astrogrid.datacenter.FactoryProvider;
 import org.astrogrid.datacenter.Util;
-import org.astrogrid.datacenter.config.ConfigurationKeys;
+import org.astrogrid.datacenter.config.*;
 import org.astrogrid.datacenter.job.Job;
 import org.astrogrid.datacenter.job.JobException;
 import org.astrogrid.datacenter.job.JobStep;
@@ -42,7 +42,7 @@ import org.w3c.dom.NodeList;
  *
  */
 
-public class JobImpl extends Job {
+public class JobImpl extends ConfigurableImpl implements Job {
 
 	private static final boolean 
 		TRACE_ENABLED = true ;
