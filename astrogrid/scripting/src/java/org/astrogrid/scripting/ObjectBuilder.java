@@ -1,4 +1,4 @@
-/*$Id: ObjectBuilder.java,v 1.1 2004/08/09 09:27:20 nw Exp $
+/*$Id: ObjectBuilder.java,v 1.2 2004/08/09 09:46:05 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.scripting;
 
+import org.astrogrid.community.User;
 import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.community.beans.v1.Credentials;
 import org.astrogrid.community.beans.v1.Group;
@@ -49,11 +50,24 @@ public class ObjectBuilder {
         return c;
     }
     
+    /** create the anonymous user */
+    public User createUser() {
+        return new User();
+    }
+    
+    /** create a user */
+    public User createUser(String userid,String community,String group,String token) {
+        return new User(userid,community,group,token);
+    }
+    
 }
 
 
 /* 
 $Log: ObjectBuilder.java,v $
+Revision 1.2  2004/08/09 09:46:05  nw
+added method to build user
+
 Revision 1.1  2004/08/09 09:27:20  nw
 changed name from objecthelper
 
