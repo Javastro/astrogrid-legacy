@@ -53,19 +53,17 @@
             <tr>
               <td>Var:</td>
               <td>
-                <xsl:choose>
-                  <xsl:when test="@for-get = 'null'">
-                    <textarea name="for_get" cols="130" rows="2">
-                      <xsl:attribute name="id">for_get<xsl:value-of select="@key"/></xsl:attribute>
-                      <xsl:attribute name="onclick">document.getElementById('for_get<xsl:value-of select="@key"/>').value='';</xsl:attribute>
-                      (the name of the loop variable...)
-                    </textarea>                                    
-                  </xsl:when>
-                  <xsl:otherwise>
-                    <textarea name="for_get" cols="130" rows="2"><xsl:value-of select="@for-get"/></textarea>                
-                  </xsl:otherwise>
-                </xsl:choose>
-              </td>
+                <input type="text" size="80" name="for_get">
+                  <xsl:choose>
+                    <xsl:when test="@for-get = 'null'">
+                      <xsl:attribute name="value"></xsl:attribute>
+                    </xsl:when>
+                    <xsl:otherwise>
+                      <xsl:attribute name="value"><xsl:value-of select="normalize-space(@for-get)"/></xsl:attribute>
+                    </xsl:otherwise>
+                  </xsl:choose>
+                </input>                                 
+              </td>              
             </tr>
             <tr>
               <td>
@@ -74,7 +72,7 @@
               <td>
                 <xsl:choose>
                   <xsl:when test="@for-item = 'null'">
-                    <textarea name="for_item" cols="130" rows="2">
+                    <textarea name="for_item" cols="130" rows="4">
                       <xsl:attribute name="id">for_item<xsl:value-of select="@key"/></xsl:attribute>
                       <xsl:attribute name="onclick">document.getElementById('for_item<xsl:value-of select="@key"/>').value='';</xsl:attribute>
                       (A sequence or iterator of items - the loop variable will be assigned to each in turn, and then loop body executed...)                       

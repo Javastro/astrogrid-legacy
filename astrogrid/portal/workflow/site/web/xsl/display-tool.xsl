@@ -71,21 +71,18 @@
             <tr>
               <td>Step name:</td>
               <td>
-                <xsl:choose>
-                  <xsl:when test="@step-name = 'null'">
-                    <textarea name="step_name" cols="50" rows="1">
-                      <xsl:attribute name="id">step_name<xsl:value-of select="@key"/></xsl:attribute>
-                      <xsl:attribute name="onclick">document.getElementById('step_name<xsl:value-of select="@key"/>').value='';</xsl:attribute>
-                        ...name of the step...
-                    </textarea>                                    
-                  </xsl:when>
-                  <xsl:otherwise>
-                    <input type="text" size="50" name="step_name">
-                      <xsl:attribute name="value"><xsl:value-of select="normalize-space(@step-name)"/></xsl:attribute>
-                    </input>
-                  </xsl:otherwise>
-                </xsl:choose>
-                </td>
+                <input type="text" size="50" name="step_name">
+                <xsl:attribute name="id">step_name<xsl:value-of select="@key"/></xsl:attribute>
+                <xsl:attribute name="value">
+                  <xsl:choose>
+                    <xsl:when test="@step-name = 'null'"></xsl:when>
+                    <xsl:otherwise>
+                      <xsl:value-of select="normalize-space(@step-name)"/>
+                    </xsl:otherwise>
+                  </xsl:choose>
+                </xsl:attribute>
+                </input>
+              </td>
               <td rowspan="2">Task name:</td>
               <td>
                 <input type="text" size="50" name="tool_name" readonly="true">
@@ -100,7 +97,7 @@
                     </xsl:otherwise>
                   </xsl:choose>
                 </xsl:attribute>
-                <xsl:value-of select="tool/@tool-title"/>
+                <xsl:value-of select="tool/@tool-title"/> : <xsl:value-of select="tool/@tool-interface"/>
                 </input>
               </td>                                      
             </tr>
@@ -113,7 +110,7 @@
                       <xsl:attribute name="value"></xsl:attribute>
                     </xsl:when>
                     <xsl:otherwise>
-                      <xsl:attribute name="value"><xsl:value-of select="normalize-space(@var-name)"/></xsl:attribute>
+                      <xsl:attribute name="value"><xsl:value-of select="normalize-space(@step-var)"/></xsl:attribute>
                     </xsl:otherwise>
                   </xsl:choose>
                 </input>                  
@@ -128,10 +125,10 @@
                     </xsl:attribute>
 	                <option value="none" selected="true">-- Select task --</option>
 	                <option value="browse">-- Browse registry --</option>
-                    <xsl:for-each select="//toolsAvailable">
+                    <xsl:for-each select="//interface">
                       <xsl:element name="option">
-                        <xsl:attribute name="value"><xsl:value-of select="@tool-name"/></xsl:attribute>
-				        <xsl:value-of select="@tool-name"/>: <xsl:value-of select="@tool-UIname"/>
+                        <xsl:attribute name="value"><xsl:value-of select="../@tool-name"/>#<xsl:value-of select="@int-name" /></xsl:attribute>
+				        <xsl:value-of select="../@tool-name"/> : <xsl:value-of select="@int-name" /> : <xsl:value-of select="../@tool-UIname"/>
 				      </xsl:element>
                     </xsl:for-each>
 		          </select>                                                                                                                                                
@@ -141,18 +138,7 @@
             <tr>
               <td>Description:</td>
               <td>
-                <xsl:choose>
-                  <xsl:when test="@step-description = 'null'">
-                    <textarea name="step_description" cols="40" rows="3">
-                      <xsl:attribute name="id">step_desc<xsl:value-of select="@key"/></xsl:attribute>
-                      <xsl:attribute name="onclick">document.getElementById('step_desc<xsl:value-of select="@key"/>').value='';</xsl:attribute>
-                      ( Optional step description... )
-                    </textarea>                                    
-                  </xsl:when>
-                  <xsl:otherwise>
-                    <textarea name="step_description" cols="40" rows="3"><xsl:value-of select="normalize-space(@step-description)"/></textarea>
-                  </xsl:otherwise>
-                </xsl:choose>                  
+                <textarea name="step_description" cols="40" rows="3"><xsl:value-of select="normalize-space(@step-description)"/></textarea>
               </td> 
               <td>Description:</td>
               <td>

@@ -295,6 +295,7 @@
     </xsl:if>
   </xsl:template>
 
+  <xsl:template match="interface"/>
   <xsl:template match="tool"/>
   <xsl:template match="toolsAvailable"/>
   <xsl:include href="display-parameters.xsl"/>

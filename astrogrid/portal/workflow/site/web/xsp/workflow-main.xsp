@@ -102,6 +102,7 @@
                <xsp:element name="tool">
                   <xsp:attribute name="tool-name"><xsp:expr>tool.getName()</xsp:expr></xsp:attribute>
                   <xsp:attribute name="tool-title"><xsp:expr>toolTitle</xsp:expr></xsp:attribute>
+                  <xsp:attribute name="tool-interface"><xsp:expr>tool.getInterface()</xsp:expr></xsp:attribute>
                   <xsp:attribute name="tool-documentation"><xsp:expr>toolDesc</xsp:expr></xsp:attribute>                                    
                   <xsp:logic>displayParamsList( tool );</xsp:logic>                                                                     
                </xsp:element>
@@ -196,7 +197,7 @@
 
          try { 
             for( int i=0; i &lt; tools.size(); i++ ) {          
-                displayTool( tools.get(i).toString() );
+                displayToolDetails( (ApplicationDescriptionSummary)tools.get(i) );
             }
 
          }
@@ -209,6 +210,56 @@
          }
       } // end of ToolList()      	
 
+
+      //====================================================================
+      private void displayToolDetails( ApplicationDescriptionSummary appDescSum ) throws SAXException {	
+         if( TRACE_ENABLED ) trace( "workflow-main-xsp.displayToolDetails() entry");
+         
+         AttributesImpl xspAttr = new AttributesImpl();
+
+		 try {
+		     String UIName = appDescSum.getUIName();
+            if (UIName.length() &gt; 35)
+            {
+              UIName.substring(0,32) ;
+              UIName += "..." ;
+            }		 
+              <xsp:element name="toolsAvailable">
+                 <xsp:attribute name="tool-name"><xsp:expr>appDescSum.getName()</xsp:expr></xsp:attribute>
+                 <xsp:attribute name="tool-UIname">(<xsp:expr> UIName </xsp:expr>)</xsp:attribute>
+                 <xsp:attribute name="tool-intCount"><xsp:expr>appDescSum.getInterfaceNames().length</xsp:expr></xsp:attribute>
+                 <xsp:logic>
+                 String[] intNames = appDescSum.getInterfaceNames() ;
+                 for( int i=0; i &lt; appDescSum.getInterfaceNames().length ; i++ ) 
+                 {         
+                     displayInterface( intNames[i] );
+                 }
+                 </xsp:logic>                 	                                  												
+              </xsp:element>
+         }
+         finally {
+            xspAttr = null;
+            if( TRACE_ENABLED ) trace( "workflow-main-xsp.displayToolDetails() exit");
+         }
+      } // end of displayToolDetails()
+
+      //====================================================================
+      private void displayInterface(String intName) throws SAXException {	
+         if( TRACE_ENABLED ) trace( "workflow-main-xsp.displayInterface() entry");
+         
+         AttributesImpl xspAttr = new AttributesImpl();
+
+		 try {
+              <xsp:element name="interface">
+                 <xsp:attribute name="int-name"><xsp:expr>intName</xsp:expr></xsp:attribute>
+              </xsp:element>
+         }
+         finally {
+            xspAttr = null;
+            if( TRACE_ENABLED ) trace( "workflow-main-xsp.displayInterface() exit");
+         }
+      } // end of displayInterface()    
+       
 
       //====================================================================
       private void displayTool( String tool ) throws SAXException {	
@@ -567,25 +618,53 @@
         	
             try {    
                
-               if (step.getTool() != null) {
-                  <xsp:element name="step">
-                     <xsp:attribute name="key"><xsp:expr>getXPathKey( step )</xsp:expr></xsp:attribute>
-                     <xsp:attribute name="step-name"><xsp:expr>step.getName()</xsp:expr></xsp:attribute>
-                     <xsp:attribute name="step-var"><xsp:expr>step.getResultVar()</xsp:expr></xsp:attribute>
-                     <xsp:attribute name="step-description"><xsp:expr>step.getDescription()</xsp:expr></xsp:attribute>
-                     <xsp:logic>displayTool( step.getTool() );</xsp:logic>                                         
-                  </xsp:element>                        
+               if (step.getTool() != null) 
+               {
+                 if (step.getResultVar() != null) 
+                 {
+                   <xsp:element name="step">
+                      <xsp:attribute name="key"><xsp:expr>getXPathKey( step )</xsp:expr></xsp:attribute>
+                      <xsp:attribute name="step-name"><xsp:expr>step.getName()</xsp:expr></xsp:attribute>
+                      <xsp:attribute name="step-var"><xsp:expr>step.getResultVar()</xsp:expr></xsp:attribute>
+                      <xsp:attribute name="step-description"><xsp:expr>step.getDescription()</xsp:expr></xsp:attribute>
+                      <xsp:logic>displayTool( step.getTool() );</xsp:logic>                                         
+                   </xsp:element>                        
+                 }
+                 else 
+                 {
+                   <xsp:element name="step">
+                      <xsp:attribute name="key"><xsp:expr>getXPathKey( step )</xsp:expr></xsp:attribute>
+                      <xsp:attribute name="step-name"><xsp:expr>step.getName()</xsp:expr></xsp:attribute>
+                      <xsp:attribute name="step-description"><xsp:expr>step.getDescription()</xsp:expr></xsp:attribute>
+                      <xsp:logic>displayTool( step.getTool() );</xsp:logic>                                         
+                   </xsp:element>                   
+                 }
                }
-               else {               
-                  <xsp:element name="step">
-                     <xsp:attribute name="key"><xsp:expr>getXPathKey( step )</xsp:expr></xsp:attribute>
-                     <xsp:attribute name="step-name"><xsp:expr>step.getName()</xsp:expr></xsp:attribute>
-                     <xsp:attribute name="step-var"><xsp:expr>step.getResultVar()</xsp:expr></xsp:attribute>
-                     <xsp:attribute name="step-description"><xsp:expr>step.getDescription()</xsp:expr></xsp:attribute>
-                     <xsp:element name="tool">
-                        <xsp:attribute name="tool-name">null</xsp:attribute>
-                     </xsp:element>                                         
-                  </xsp:element>               
+               else 
+               { 
+                 if (step.getResultVar() != null)
+                 {              
+                    <xsp:element name="step">
+                       <xsp:attribute name="key"><xsp:expr>getXPathKey( step )</xsp:expr></xsp:attribute>
+                       <xsp:attribute name="step-name"><xsp:expr>step.getName()</xsp:expr></xsp:attribute>
+                       <xsp:attribute name="step-var"><xsp:expr>step.getResultVar()</xsp:expr></xsp:attribute>
+                       <xsp:attribute name="step-description"><xsp:expr>step.getDescription()</xsp:expr></xsp:attribute>
+                       <xsp:element name="tool">
+                          <xsp:attribute name="tool-name">null</xsp:attribute>
+                       </xsp:element>                                         
+                    </xsp:element>
+                  }
+                  else
+                  {
+                    <xsp:element name="step">
+                       <xsp:attribute name="key"><xsp:expr>getXPathKey( step )</xsp:expr></xsp:attribute>
+                       <xsp:attribute name="step-name"><xsp:expr>step.getName()</xsp:expr></xsp:attribute>
+                       <xsp:attribute name="step-description"><xsp:expr>step.getDescription()</xsp:expr></xsp:attribute>
+                       <xsp:element name="tool">
+                          <xsp:attribute name="tool-name">null</xsp:attribute>
+                       </xsp:element>                                         
+                    </xsp:element>                  
+                  }               
                } 
             }
             catch(Exception e) {

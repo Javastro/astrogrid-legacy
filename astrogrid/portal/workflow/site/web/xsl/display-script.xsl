@@ -67,18 +67,16 @@
                 Description:
               </td>
               <td>
-                <xsl:choose>
-                  <xsl:when test="@script-desc = 'null'">
-                    <textarea name="script_description" cols="120" rows="1">
-                      <xsl:attribute name="id">script_desc<xsl:value-of select="@key"/></xsl:attribute>
-                      <xsl:attribute name="onclick">document.getElementById('script_desc<xsl:value-of select="@key"/>').value='';</xsl:attribute>
-                        ...optional description of this script...
-                    </textarea>                                    
-                  </xsl:when>
-                  <xsl:otherwise>
-                    <textarea name="script_description" cols="120" rows="2"><xsl:value-of select="normalize-space(@script-desc)"/></textarea>                
-                  </xsl:otherwise>
-                </xsl:choose>
+                <input type="text" size="80" name="script_description">
+                  <xsl:choose>
+                    <xsl:when test="@script-desc = 'null'">
+                      <xsl:attribute name="value"></xsl:attribute>
+                    </xsl:when>
+                    <xsl:otherwise>
+                      <xsl:attribute name="value"><xsl:value-of select="normalize-space(@script-desc)"/></xsl:attribute>
+                    </xsl:otherwise>
+                  </xsl:choose>
+                </input>                  
               </td>
             </tr>
             <tr>
@@ -88,7 +86,7 @@
               <td>
                 <xsl:choose>
                   <xsl:when test="@script-body = 'null'">
-                    <textarea name="script_body" cols="120" rows="4">
+                    <textarea name="script_body" cols="120" rows="5">
                       <xsl:attribute name="id">script_body<xsl:value-of select="@key"/></xsl:attribute>
                       <xsl:attribute name="onclick">document.getElementById('script_body<xsl:value-of select="@key"/>').value='';</xsl:attribute>
                       ( script statements to execute....)

@@ -152,7 +152,7 @@
       <script language="javascript">
         var ifr = document.getElementById("iframeHolder");        
         var url = '/astrogrid-portal/workflowBare/mount/workflow/workflowInnerFrame.html?activity_key='+ document.getElementById("activity_key").value;        
-        ifr.innerHTML = '<iframe name="workflow_iframe" id="workflow_iframe" src="'+url+'" border="0" frameborder="0" framespacing="10" height="400" width="95%" scrolling="auto" />'                
+        ifr.innerHTML = '<iframe name="workflow_iframe" id="workflow_iframe" src="'+url+'" border="0" frameborder="0" framespacing="5" height="385" width="95%" scrolling="auto" />'                
       </script>
     </xsl:template> 
        

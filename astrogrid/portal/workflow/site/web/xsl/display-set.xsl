@@ -44,18 +44,16 @@
                 Name:
               </td>
               <td>
-                <xsl:choose>
-                  <xsl:when test="@set-var = 'null'">
-                    <textarea name="set-var" cols="130" rows="1">
-                      <xsl:attribute name="id">set-var<xsl:value-of select="@key"/></xsl:attribute>
-                      <xsl:attribute name="onclick">document.getElementById('set-var<xsl:value-of select="@key"/>').value='';</xsl:attribute>
-                      ( the name of the variabe to set...)
-                    </textarea>                                    
-                  </xsl:when>
-                  <xsl:otherwise>
-                    <textarea name="set-var" cols="130" rows="1"><xsl:value-of select="@set-var"/></textarea>                
-                  </xsl:otherwise>
-                </xsl:choose>                  
+                <input type="text" size="80" name="set-var">
+                  <xsl:choose>
+                    <xsl:when test="@set-var = 'null'">
+                      <xsl:attribute name="value"></xsl:attribute>
+                    </xsl:when>
+                    <xsl:otherwise>
+                      <xsl:attribute name="value"><xsl:value-of select="normalize-space(@set-var)"/></xsl:attribute>
+                    </xsl:otherwise>
+                  </xsl:choose>
+                </input>                                 
               </td>
             </tr>
             <tr>

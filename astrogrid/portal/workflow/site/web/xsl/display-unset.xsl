@@ -43,18 +43,21 @@
                 Name:
               </td>
               <td>
-                <xsl:choose>
-                  <xsl:when test="@unset-var = 'null'">
-                    <textarea name="unset-var" cols="130" rows="6">
-                      <xsl:attribute name="id">unset-var<xsl:value-of select="@key"/></xsl:attribute>
-                      <xsl:attribute name="onclick">document.getElementById('unset-var<xsl:value-of select="@key"/>').value='';</xsl:attribute>
-                      ( the name of the variabe to unset...)
-                    </textarea>                                    
-                  </xsl:when>
-                  <xsl:otherwise>
-                    <textarea name="unset-var" cols="130" rows="6"><xsl:value-of select="@unset-var"/></textarea>                
-                  </xsl:otherwise>
-                </xsl:choose>                  
+                <input type="text" size="80" name="unset-var">
+                  <xsl:choose>
+                    <xsl:when test="@unset-var = 'null'">
+                      <xsl:attribute name="value"></xsl:attribute>
+                    </xsl:when>
+                    <xsl:otherwise>
+                      <xsl:attribute name="value"><xsl:value-of select="normalize-space(@unset-var)"/></xsl:attribute>
+                    </xsl:otherwise>
+                  </xsl:choose>
+                </input>                                 
+              </td>              
+            </tr>
+            <tr>
+              <td></td>
+              <td><textarea name="empty" cols="130" rows="3" readonly="true">...</textarea>
               </td>
             </tr>
             <tr>

@@ -37,6 +37,9 @@ import org.astrogrid.workflow.beans.v1.Unset;
 import org.astrogrid.workflow.beans.v1.While;
 import org.astrogrid.workflow.beans.v1.Workflow;
 
+import org.astrogrid.applications.beans.v1.Interface;
+import org.astrogrid.applications.beans.v1.InterfacesType;
+
 import org.astrogrid.community.beans.v1.Credentials;
 import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.community.beans.v1.Group;
@@ -710,18 +713,6 @@ public class DesignAction extends AbstractAction {
                 
             try {
 
-//               if( ivornName == null ) {
-//                  ; // some logging here
-//                  throw new ConsistencyException() ;
-//               }
-//               
-//               ivorn = (new CommunityIvornParser(ivornName)).getIvorn();
-//
-//			   if( workflow == null ) {
-//                  WorkflowStore wfStore = this.workflowManager.getWorkflowStore();
-//                  workflow = wfStore.readWorkflow( user, ivorn ) ;
-//			   }
-
                if( workflow == null ) {
                   ; // some logging here
                   throw new ConsistencyException() ; 
@@ -732,9 +723,7 @@ public class DesignAction extends AbstractAction {
                }
                           
             }
-//            catch( CommunityIdentifierException cix ) {
-//                cix.printStackTrace();
-//            }
+
             catch( WorkflowInterfaceException wix ) {
                 wix.printStackTrace(); // JBL note
 				submitWorkflowMessage =  "Unable to submit workflow: " + wix.getMessage() ;
@@ -765,35 +754,50 @@ public class DesignAction extends AbstractAction {
            
            Tool tool = null;
            
-		   try {
-                    
-			  if( toolName == null ) {
-			     throw new ConsistencyException() ;		   	
-			  }
-              
-//              ApplicationRegistry applRegistry = workflowManager.getToolRegistry();
-//              ApplicationDescription applDescription = applRegistry.getDescriptionFor( toolName );
-			  tool = this.locateDescription(toolName).createToolFromDefaultInterface();
+		   try
+		   {
+               if( toolName == null ) {
+			   throw new ConsistencyException() ;		   	
+		   }
+			
+			trace("Toolname: " + toolName) ;  
+			// createToolFromDefaultInterface() if no interface present
+			if (toolName.indexOf("#") == -1)
+			{
+				tool = this.locateDescription(toolName).createToolFromDefaultInterface();
+			}
+			else
+			{
+				boolean intFound = false ;
+				String interfaceName = toolName.substring(toolName.indexOf("#")+1).trim() ;
+				String toolNewName = toolName.substring(0 , toolName.indexOf("#")).trim() ;
+				
+				ApplicationDescription appDesc = this.locateDescription( toolNewName ) ;
+				InterfacesType intTypes = appDesc.getInterfaces() ;
+				Interface intf = null ;
+				for (int i=0 ; i < intTypes.get_interfaceCount() ; i++) 
+				{
+					if ( intTypes.get_interface(i).getName().equalsIgnoreCase(interfaceName)) 
+					{
+					    intf = intTypes.get_interface(i) ;
+						intFound = true ;
+					    break ;
+					}
+				}
+				if (intFound)
+				{
+					tool = appDesc.createToolFromInterface( intf );
+				}
+				else
+				{
+					// an interface should always be found - in case not use default interface
+					tool = appDesc.createToolFromDefaultInterface();
+				}
+			}              
 				                           
 			  this.request.setAttribute( HTTP_TOOL_TAG, tool ) ;
-				trace("-----------------------------------------") ;
-				trace("tool put into request object") ;
-				trace("Name:" + tool.getName() ) ;
-//				trace("Documentation: " + tool.getDocumentation() ) ;
-				trace("Input parameters:") ;
-                
-                Enumeration iterator = tool.getInput().enumerateParameter() ;
-				while(iterator.hasMoreElements()) {
-					ParameterValue p = (ParameterValue)iterator.nextElement() ;
-					trace("input param: Name " + p.getName()) ;
-//					trace("input param: Documentation " + p.getDocumentation()) ;
-//					trace("input param: Type " + p.getType()) ;
-//					trace("input param: Cardinality " + p.getCardinality()) ;
-					trace("input param: value " + p.getValue()) ;
-					
-				}
-				trace("-----------------------------------------") ;			                            	   	  
 		   }
+
            catch( WorkflowInterfaceException wix ) {
                wix.printStackTrace();
            }
@@ -816,17 +820,25 @@ public class DesignAction extends AbstractAction {
               
            try {
                          
-              if( tools.size() <= 0 ) {
+              if( tools.size() <= 0 ) 
+              {
                   ApplicationRegistry toolRegistry = workflowManager.getToolRegistry();
-                  String[] toolsArray = toolRegistry.listApplications();
-                  for (int i=0;i < toolsArray.length ;i++)
-                  {
-                  	tools.add(toolsArray[i].toString()) ;
-                  	if (i > 14)
-                  	break;
-                  }
+				  ApplicationDescriptionSummary[] appDescSum = toolRegistry.listUIApplications();
+				  				
+				  for (int i = 0 ; i < appDescSum.length ; i++)													
+				  {
+				      String UIName = appDescSum[i].getUIName() ;					
+					  String Name = appDescSum[i].getName() ;
+					  String[] intNames = appDescSum[i].getInterfaceNames() ;
+				  }
+				  for (int i=0;i < appDescSum.length ;i++)
+				  {
+				      tools.add(appDescSum[i]) ;							
+					  if (i > 14)
+					      break;
+				  }
  
-                  this.session.setAttribute( TOOL_LIST_PARAMETER, tools ) ;   
+                  this.session.setAttribute( TOOL_LIST_PARAMETER, tools ) ;                     
               }
               this.session.setAttribute( TOOL_LIST_PARAMETER, tools ) ; 
        
@@ -841,52 +853,75 @@ public class DesignAction extends AbstractAction {
            
         } // end of readQueryList()  
   
-        
-		private void updateUserToolList(String toolName) {
-			if( TRACE_ENABLED ) trace( "DesignActionImpl.updateUserToolList() entry" ) ;
+			private void updateUserToolList(String toolName) {
+				if( TRACE_ENABLED ) trace( "DesignActionImpl.updateUserToolList() entry" ) ;
            
-            LinkedList tools = new LinkedList();
-            boolean toolPresent = false;
-
-			try {
-			if (session.getAttribute(TOOL_LIST_PARAMETER) != null) {
-				tools = (LinkedList) session.getAttribute(TOOL_LIST_PARAMETER) ;				
-			}
-			else {
-				ApplicationRegistry toolRegistry = workflowManager.getToolRegistry();
-				String[] toolsArray = toolRegistry.listApplications();
-				for (int i=0; i < 15; i++) {
-					tools.add(toolsArray[i]) ;
-				}
-			}
+				LinkedList tools = new LinkedList();
+				boolean toolPresent = false;
+				
+				try 
+				{				    
+				    if (session.getAttribute(TOOL_LIST_PARAMETER) != null) 
+				    {
+					    tools = (LinkedList) session.getAttribute(TOOL_LIST_PARAMETER) ;				
+				    }
+				    else 
+				    {
+						ApplicationRegistry toolRegistry = workflowManager.getToolRegistry();
+						ApplicationDescriptionSummary[] appDescSum = toolRegistry.listUIApplications();
+					    for (int i=0;i < appDescSum.length ;i++)
+					    {
+						    tools.add(appDescSum[i]) ;							
+						    if (i > 14)
+						        break;
+					    }
+				    }
                           
-				for (int i=0; i < tools.size(); i++){
-					if (tools.get(i).toString().equalsIgnoreCase(toolName)){
-						toolPresent = true;
-						tools.remove(i);
-						tools.addFirst(toolName);
-						break;      
+					for (int i=0; i < tools.size(); i++)
+					{
+						if (toolName.indexOf("#") != -1)
+						{
+							toolName = toolName.substring(0 , toolName.indexOf("#")).trim() ;					
+						}
+						if ( ((ApplicationDescriptionSummary)tools.get(i)).getName().equalsIgnoreCase(toolName) )
+						{
+							toolPresent = true;
+							ApplicationDescriptionSummary a = (ApplicationDescriptionSummary)tools.get(i) ;
+							tools.remove(i);
+							tools.addFirst(a);
+							break;      
+						}
 					}
+					if (!toolPresent)
+					{
+						ApplicationRegistry toolRegistry = workflowManager.getToolRegistry();
+						ApplicationDescriptionSummary[] appDescSum = toolRegistry.listUIApplications();
+
+						for (int i=0 ; i < appDescSum.length ; i++ )
+						{
+							if(appDescSum[i].getName().equalsIgnoreCase(toolName))
+							{
+								tools.addFirst(appDescSum[i]) ;
+								break ;
+							}
+						}
+											
+						if (tools.size() > 15)
+							tools.removeLast() ;
+					}			    					
+
+					this.session.setAttribute( TOOL_LIST_PARAMETER, tools ) ;   												        									
 				}
-				if (!toolPresent){
-					tools.addFirst(toolName) ;
-					if (tools.size() > 14)
-					    tools.removeLast() ;
-				}			    					
-
-				this.session.setAttribute( TOOL_LIST_PARAMETER, tools ) ;   												        			
-						
-			}
-			catch( WorkflowInterfaceException wix ) {
-					 debug( "wix exception: " + wix.toString() );
-					 this.request.setAttribute( ERROR_MESSAGE_PARAMETER, wix.toString() ) ;
-			}          
-			finally {
-				if( TRACE_ENABLED ) trace( "DesignActionImpl.updateUserToolList() exit" ) ;
-			}
+				catch( WorkflowInterfaceException wix ) {
+						 debug( "wix exception: " + wix.toString() );
+						 this.request.setAttribute( ERROR_MESSAGE_PARAMETER, wix.toString() ) ;
+				}          
+				finally {
+					if( TRACE_ENABLED ) trace( "DesignActionImpl.updateUserToolList() exit" ) ;
+				}
            
-		} // end of updateUserToolList()                  
-
+			} // end of updateUserToolList()          
+        
 
 		private void readLists() {
 			if( TRACE_ENABLED ) trace( "DesignActionImpl.readLists() entry" ) ;
@@ -1160,6 +1195,7 @@ public class DesignAction extends AbstractAction {
               
            try {
            	  Step step = new Step() ;
+           	  step.setDescription("...") ;
               this.insertActivity( step ) ;
             }
             finally {
@@ -1728,7 +1764,7 @@ public class DesignAction extends AbstractAction {
 		        String xpathKey = request.getParameter( ACTIVITY_KEY_PARAMETER ) ;
 				String toolName = request.getParameter( TOOL_NAME_PARAMETER ) ;
 				String stepName = request.getParameter( STEP_NAME_PARAMETER ) ;
-				String stepVar = request.getParameter( STEP_VAR_PARAMETER ) ;
+				String stepVar = request.getParameter( STEP_VAR_PARAMETER ) ;				
 				String stepDescription = request.getParameter( STEP_DESCRIPTION_PARAMETER ) ;
                                 
 				if ( xpathKey == null) {
@@ -1736,8 +1772,9 @@ public class DesignAction extends AbstractAction {
 				}
 
 				step = locateStep( workflow, xpathKey ); 
-				step.setName( stepName );
-				step.setResultVar( stepVar ) ; 
+				step.setName( stepName );				
+				if (!(stepVar.length() <= 0 || stepVar == null)) // the resultVar must contain a valid string, it cannot be empty so do not set if no value present.
+				  step.setResultVar( stepVar ) ;
 				step.setDescription( stepDescription );
 				
 				tool = this.createTool( toolName ) ;

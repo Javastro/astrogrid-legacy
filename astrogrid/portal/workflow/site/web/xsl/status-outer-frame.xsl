@@ -77,7 +77,7 @@
 
       <script language="javascript">
         var ifr = document.getElementById("iframeStatus");
-        ifr.innerHTML = '<iframe name="workflow_iframe" id="workflow_iframe" src="/astrogrid-portal/bare/mount/workflow/statusInnerFrame.html" border="0" frameborder="0" framespacing="10" height="350" width="95%" scrolling="auto" />'        
+        ifr.innerHTML = '<iframe name="workflow_iframe" id="workflow_iframe" src="/astrogrid-portal/bare/mount/workflow/statusInnerFrame.html" border="0" frameborder="0" framespacing="5" height="385" width="95%" scrolling="auto" />'        
       </script>    
     </xsl:template>
 
