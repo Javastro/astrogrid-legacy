@@ -1,5 +1,5 @@
 /*
- * $Id: WorkFlowToApplicationTest.java,v 1.3 2004/03/04 11:45:03 pah Exp $
+ * $Id: WorkFlowToApplicationTest.java,v 1.4 2004/03/04 12:28:01 pah Exp $
  * 
  * Created on 07-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -36,14 +36,13 @@ import org.astrogrid.mySpace.delegate.MySpaceClient;
 import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
 import org.astrogrid.mySpace.delegate.helper.MySpaceHelper;
 import org.astrogrid.portal.workflow.WKF;
-import org.astrogrid.workflow.beans.v1.Activities;
 import org.astrogrid.workflow.beans.v1.Input;
 import org.astrogrid.workflow.beans.v1.Output;
 import org.astrogrid.workflow.beans.v1.Sequence;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
-import org.astrogrid.workflow.beans.v1.types.StepJoinConditionType;
+import org.astrogrid.workflow.beans.v1.types.JoinType;
 
 
 
@@ -145,15 +144,13 @@ public class WorkFlowToApplicationTest extends TestCase {
       workflow.setDescription(description);
 
       sequence = new Sequence();
-      Activities activities = new Activities();
-      activities.addActivity(sequence);
      
-      workflow.setActivities(activities);
+      workflow.setSequence(sequence);
      
       step = new Step();
       step.setName("One step sequence");
       step.setDescription("One step sequence containing test tool");
-      step.setJoinCondition(StepJoinConditionType.ANY);
+      step.setJoinCondition(JoinType.ANY);
       sequence.addActivity(step);
       
       // Setting sequence and step numbers shows a weakness in the current approach.
