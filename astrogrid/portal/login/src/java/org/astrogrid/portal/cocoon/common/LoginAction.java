@@ -1,9 +1,9 @@
 /**
- * <cvs:id>$Id: LoginAction.java,v 1.20 2004/03/24 18:31:33 jdt Exp $</cvs:id>
+ * <cvs:id>$Id: LoginAction.java,v 1.21 2004/03/25 15:18:13 jdt Exp $</cvs:id>
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/src/java/org/astrogrid/portal/cocoon/common/LoginAction.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/03/24 18:31:33 $</cvs:date>
- * <cvs:version>$Revision: 1.20 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/25 15:18:13 $</cvs:date>
+ * <cvs:version>$Revision: 1.21 $</cvs:version>
  */
 package org.astrogrid.portal.cocoon.common;
 import java.net.MalformedURLException;
@@ -27,6 +27,7 @@ import org.astrogrid.community.common.exception.CommunityIdentifierException;
 import org.astrogrid.community.common.exception.CommunitySecurityException;
 import org.astrogrid.community.common.exception.CommunityServiceException;
 import org.astrogrid.community.common.security.data.SecurityToken;
+import org.astrogrid.community.common.security.service.*; 
 import org.astrogrid.config.Config;
 import org.astrogrid.config.SimpleConfig;
 /**
@@ -86,6 +87,10 @@ public final class LoginAction extends AbstractAction {
      *  
      */
     private static final boolean debugToSystemOutOn = true;
+    /**
+     * Logger
+     */
+    private Logger log;
   
     /**
      * Our action method. Expects the "user", "community" and "pass" to be in
@@ -120,7 +125,7 @@ public final class LoginAction extends AbstractAction {
 
         // Ensure logger is set correctly
         checkLogger();
-        final Logger log = getLogger();
+        log = getLogger();
         //
         // Initialise our community config.
         init();
@@ -142,14 +147,13 @@ public final class LoginAction extends AbstractAction {
         // community as separate params, so needs to 
         // construct the unique id.  @TODO is this right?
         
-        final String name = user + "@" + community;
-        if (debugToSystemOutOn) {
-            System.out.println("LoginAction:login()");
-            System.out.println("  Name : " + name);
-            System.out.println("  Pass : " + pass);
-        }
-        log.debug(
-            "LoginAction: name=" + name + ", password null?" + (pass == null));
+        final String name = "ivo://"+community+"/"+user;
+        
+        log.debug("LoginAction:login()");
+        log.debug("  user : " + user);
+        log.debug("  community : " + community);
+        log.debug("  Name : " + name);
+        log.debug("  Pass : " + pass);
 
         //
         // Try creating a Community delegate.
@@ -158,21 +162,13 @@ public final class LoginAction extends AbstractAction {
             authenticator = getSecurityDelegate();
         } catch (MalformedURLException ex) {
           log.error("Unable to create SecurityDelegate", ex);
-          if (debugToSystemOutOn) {
-              ex.printStackTrace();
-          }
           throw new LoginException("Unable to create Security Delegate", ex);
         }
-        if (null == authenticator) {
-            if (debugToSystemOutOn) {
-                System.out.println("FAIL : Null AuthenticationDelegate");
-            }
-            log.error("Unable to get SecurityServiceDelegate");
-            throw new LoginException("Unable to get a SecurityServiceDelegate");
-        }
-        if (debugToSystemOutOn) {
-            System.out.println("PASS : Got AuthenticationDelegate");
-        }
+
+        assert authenticator!=null : "Security service delegate was null";
+
+        log.debug("PASS : Got AuthenticationDelegate");
+
         //
         // Try logging in to the Community.
         final SecurityToken token;
@@ -192,13 +188,10 @@ public final class LoginAction extends AbstractAction {
         
         assert token!=null : "Token should not be null" ;
 
-        if (debugToSystemOutOn) {
-            System.out.println("PASS : Got token");
-            System.out.println("  Token   : " + token);
-            System.out.println("  Token   : " + token.getToken());
-            System.out.println("  Account : " + token.getAccount());
-        }
-        log.debug("Logged in");
+        log.debug("PASS : Got token");
+        log.debug("  Token   : " + token);
+        log.debug("  Token   : " + token.getToken());
+        log.debug("  Account : " + token.getAccount());
 
         // We pass the tests so set the current account info in our session.
         session.setAttribute(USER_SESH, name);
@@ -216,11 +209,6 @@ public final class LoginAction extends AbstractAction {
         // Add our results.
         final Map results = new HashMap();
         results.put(ACCOUNT_PARAM, token.getAccount());
-        if (debugToSystemOutOn) {
-            System.out.println("LoginAction:act()");
-            System.out.println("exit");
-            System.out.println("results=null? " + (results == null));
-        }
         return results;
     }
     /**
@@ -250,18 +238,22 @@ public final class LoginAction extends AbstractAction {
     /**
      * Get the security delegate.  Looks for the
      * property org.astrogrid.portal.community.url
-     * if this property is "dummy" then a mock delegate is
-     * returned.
+     * if this property is not found (or is set to "dummy")
+     * then a mock delegate is
+     * returned.  This mock delegate will only accept the password "secret".
      * @return either a genuine or mock delegate
      * @throws MalformedURLException if the url is malformed
      * @TODO consider factoring this into a separate class
      */
     private SecurityServiceDelegate getSecurityDelegate() throws MalformedURLException {
         final Config config = SimpleConfig.getSingleton();
-        final String endpoint = config.getString(ORG_ASTROGRID_PORTAL_COMMUNITY_URL);
+        final String endpoint = config.getString(ORG_ASTROGRID_PORTAL_COMMUNITY_URL, "dummy");
         if ("dummy".equals(endpoint)) {
+            SecurityServiceMock.setPassword("secret");
+            log.debug("Using dummy delegate");
             return new SecurityServiceMockDelegate();
         } else {
+            log.debug("Using delegate at "+endpoint);
             return new SecurityServiceSoapDelegate(endpoint);
         }
     }
@@ -270,9 +262,8 @@ public final class LoginAction extends AbstractAction {
      *  
      */
     public void init() {
-        if (debugToSystemOutOn) {
-            System.out.println("LoginAction:init()");
-        }
+        log.debug("LoginAction:init()");
+
         //
         // Load our community config.
         CommunityConfig.loadConfig();
@@ -291,29 +282,13 @@ public final class LoginAction extends AbstractAction {
     }
 }
 /**
- * <cvs:log>$Log: LoginAction.java,v $
- * <cvs:log>Revision 1.20  2004/03/24 18:31:33  jdt
- * <cvs:log>Merge from PLGN_JDT_bz#201
  * <cvs:log>
- * <cvs:log>Revision 1.19.2.3  2004/03/24 18:10:13  jdt
- * <cvs:log>refactored the way the parameters are checked, and what happens
- * <cvs:log>following a logon failure.
- * <cvs:log>
- * <cvs:log>Revision 1.19.2.2  2004/03/23 16:47:01  jdt
- * <cvs:log>Substantial refactoring, especially in the way that logging
- * <cvs:log>is done and that messages are passed back.  Problems
- * <cvs:log>are now thrown as exceptions. Let's hope that there's a 
- * <cvs:log>graceful way of dealing with them!
- * <cvs:log> Revision 1.19.2.1 2004/03/19 17:46:41
- * jdt Added most of the meat to MessageToAdminAction. Refactored LoginAction
- * to agree with community Itn05 refactoring.
- * 
- * Revision 1.19 2004/03/19 13:02:25 jdt Pruned the log messages - they cause
- * conflicts on merge, best just to reduce them to the merge message.
- * 
- * Revision 1.18 2004/03/19 12:40:09 jdt Merge from PLGN_JDT_bz199b. Refactored
- * log in pages to use xsp and xsl style sheets. Added pages for requesting a
- * login, and requesting a password reminder.
+ * $Log: LoginAction.java,v $
+ * Revision 1.21  2004/03/25 15:18:13  jdt
+ * Some refactoring of the debugging and added unit tests.
+ *
+ * Revision 1.20  2004/03/24 18:31:33  jdt
+ * Merge from PLGN_JDT_bz#201
  * 
  * </cvs:log>
  */

@@ -1,5 +1,6 @@
-/*
- * $Id: MessageToAdminAction.java,v 1.4 2004/03/24 18:31:33 jdt Exp $
+/* <cvs:id> 
+ * $Id: MessageToAdminAction.java,v 1.5 2004/03/25 15:18:13 jdt Exp $
+ * </cvs:id>
  * Created on Mar 16, 2004 by jdt Copyright (C) AstroGrid. All rights reserved.
  * 
  * This software is published under the terms of the AstroGrid Software License
@@ -9,6 +10,7 @@
 package org.astrogrid.portal.cocoon.common;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.apache.avalon.framework.logger.ConsoleLogger;
 import org.apache.avalon.framework.logger.Logger;
 import org.apache.avalon.framework.parameters.ParameterException;
@@ -19,7 +21,6 @@ import org.apache.cocoon.environment.Redirector;
 import org.apache.cocoon.environment.Request;
 import org.apache.cocoon.environment.SourceResolver;
 import org.astrogrid.config.Config;
-import org.astrogrid.config.PropertyNotFoundException;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.portal.cocoon.messaging.EmailMessengerFactory;
 import org.astrogrid.portal.cocoon.messaging.Messenger;
@@ -100,7 +101,9 @@ public final class MessageToAdminAction extends AbstractAction {
     /**
      * Lazily return the Messenger. 
      * Has default access since used by unit tests
-     * 
+     * @TODO what to do about defaults?  If we remove the defaults then this
+     * method will fail with a PropertyNotFoundException if the props aren't set
+     * up.  THis is probably what we want, but leave defaults in for now for testing.
      * @return the cachedMessenger
      */
      Messenger getMessenger() {
@@ -108,25 +111,15 @@ public final class MessageToAdminAction extends AbstractAction {
              return cachedMessenger;
          }
         Config config = SimpleConfig.getSingleton();
-        //Dummy values in case of no config
-        String smtpServer = "127.0.0.1";
-        String smtpUser = "jdt";
-        String smtpPass = "";
-        String returnAddress = "jdt@roe.ac.uk";
-        String recipient = "jdt@roe.ac.uk";
-        try {
-            config = SimpleConfig.getSingleton();
-            smtpServer = (String) config.getProperty(EMAIL_SERVER);
-            smtpUser = (String) config.getProperty(EMAIL_USER);
-            smtpPass = (String) config.getProperty(EMAIL_PWD);
-            returnAddress = (String) config.getProperty(EMAIL_FROM);
-            //who should be notified of these messages?
-            recipient = (String) config.getProperty(EMAIL_TO);
-        } catch (PropertyNotFoundException pe) {
-            getLogger().error("Problem getting portal email configuration",pe);
-            //TODO leave defaults in for now but need to decide what to do
-            //do we need to catch this even?
-        }
+
+        
+        final String smtpServer =  config.getString(EMAIL_SERVER,"127.0.0.1");
+        final String smtpUser =  config.getString(EMAIL_USER,"jdt");
+        final String smtpPass =  config.getString(EMAIL_PWD,"");
+        final String returnAddress =  config.getString(EMAIL_FROM,"admin@astrogrid.org");
+        //who should be notified of these messages?
+        final String recipient =  config.getString(EMAIL_TO, "jdt@roe.ac.uk");
+
         final EmailMessengerFactory factory =
             new EmailMessengerFactory(
                 smtpServer,
@@ -232,31 +225,13 @@ public final class MessageToAdminAction extends AbstractAction {
         }
     }
 }
-/*
+/* <cvs:log>
  * $Log: MessageToAdminAction.java,v $
+ * Revision 1.5  2004/03/25 15:18:13  jdt
+ * Some refactoring of the debugging and added unit tests.
+ *
  * Revision 1.4  2004/03/24 18:31:33  jdt
  * Merge from PLGN_JDT_bz#201
- *
- * Revision 1.3.2.5  2004/03/24 18:13:40  jdt
- * Refactored, moved potentially failing stuff out of constructor
- *
- * Revision 1.3.2.4  2004/03/23 02:03:49  jdt
- * Changed to get subject and message from parameters
- * rather than request object
- * Revision 1.3.2.3 2004/03/23 01:42:00 jdt
- * rejigged sitemap for register and reminder pages
- * 
- * Revision 1.3.2.2 2004/03/23 00:49:17 jdt Lots of refactoring
- * 
- * Revision 1.3.2.1 2004/03/19 17:46:41 jdt Added most of the meat to
- * MessageToAdminAction. Refactored LoginAction to agree with community Itn05
- * refactoring.
- * 
- * Revision 1.3 2004/03/19 13:02:25 jdt Pruned the log messages - they cause
- * conflicts on merge, best just to reduce them to the merge message.
- * 
- * Revision 1.2 2004/03/19 12:40:09 jdt Merge from PLGN_JDT_bz199b. Refactored
- * log in pages to use xsp and xsl style sheets. Added pages for requesting a
- * login, and requesting a password reminder.
+ * </cvs:log>
  *  
  */
