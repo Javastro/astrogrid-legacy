@@ -1,6 +1,7 @@
 package org.astrogrid.portal.myspace.generation;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -219,6 +220,14 @@ public class StorageFilesGenerator extends AbstractGenerator {
       Agsl agsl = context.getStoreClient().getAgsl(filePath);
       
       try {
+        URL url = agsl.resolveURL();
+        
+        String protocol = url.getProtocol();
+        String host = url.getHost();
+        int port = url.getPort();
+        String path = url.getPath();
+        String file = url.getFile();
+        
 	      itemElement.setAttribute("url", agsl.resolveURL().toString());
 	      
 	      Ivorn ivorn = agsl.toIvorn(context.getUser());
