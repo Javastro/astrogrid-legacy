@@ -8,6 +8,10 @@
     	<item name="cvs location"  href="http://www.astrogrid.org/viewcvs/astrogrid/workflow-objects/schema/"/>
     		
     </menu>
+    <menu name="WSDL">
+    	<item name="cvs location"  href="http://www.astrogrid.org/viewcvs/astrogrid/workflow-objects/wsdl/"/>
+    		
+    </menu>
     <links>
        <item name="AstroGrid"  href="http://www.astrogrid.org"/>
        <item name="Projects"   href="http://www.astrogrid.org/maven/build/index.html"/>
