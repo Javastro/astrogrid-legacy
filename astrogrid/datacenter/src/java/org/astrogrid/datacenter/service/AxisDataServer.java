@@ -1,12 +1,16 @@
 /*
- * $Id: AxisDataServer.java,v 1.2 2003/08/27 22:42:52 mch Exp $
+ * $Id: AxisDataServer.java,v 1.3 2003/08/28 13:24:52 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.service;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.Hashtable;
+import org.astrogrid.datacenter.queriers.DatabaseAccessException;
+import org.astrogrid.datacenter.query.QueryException;
 import org.w3c.dom.Element;
 
 /**
@@ -39,26 +43,29 @@ public class AxisDataServer
 
    /**
     * Returns the metadata in the registry form (VOResource)
+    * @todo implement
     */
    public Element getVOResource()
    {
-      return null;
+      throw new UnsupportedOperationException();
    }
 
    /**
     * Returns the while metadata file
+    * @todo implement
     */
    public Element getMetadata()
    {
-      return null;
+      throw new UnsupportedOperationException();
    }
 
    /**
     * Returns the elements of the metadata corresponding to the given XPath
+    * @todo implement
     */
    public Element getMetadata(String xpath)
    {
-      return null;
+      throw new UnsupportedOperationException();
    }
 
    /**
@@ -70,7 +77,7 @@ public class AxisDataServer
     * how to return the results...
     *
     */
-   public Element runQuery(Element soapBody)
+   public Element runQuery(Element soapBody) throws QueryException, DatabaseAccessException, IOException
    {
       DataQueryService service = new DataQueryService();
 
@@ -80,9 +87,28 @@ public class AxisDataServer
 
    }
 
+   /** For non-blocking queries, you might want to get the query status
+    */
+   public String getServiceStatus(String serviceID)
+   {
+      return getService(serviceID).getStatus();
+
+   }
+
+   /**
+    * Returns the service corresponding to the given ID
+    */
    public DataQueryService getService(String serviceID)
    {
       return (DataQueryService) services.get(serviceID);
+   }
+
+   /**
+    * Registers a client as a listener - ie it will receive notifications
+    */
+   public void registerServiceListener(String serviceID, URL listenerUrl)
+   {
+      getService(serviceID).registerServiceListener(new ServiceListener(listenerUrl));
    }
 
 }
