@@ -1,5 +1,5 @@
 /*
- * $Id: Config.java,v 1.14 2004/03/02 01:28:39 mch Exp $
+ * $Id: Config.java,v 1.15 2004/03/02 01:29:48 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -96,7 +96,12 @@ public abstract class Config {
     * Convenience string of getProperty
     */
    public String getString(String key, String defaultValue) {
-      return ""+getProperty(key, defaultValue);  //doing toString() can cause problems if null is the default...
+      Object o = getProperty(key, defaultValue);  //doing toString() can cause problems if null is the default...
+      if (o == null) {
+         return null;
+      } else {
+         return o.toString();
+      }
    }
 
    /**
