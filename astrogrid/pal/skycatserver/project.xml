@@ -291,12 +291,12 @@
 
     <!-- For emailing results and Mime Attachments  -->
     <dependency>
-      <groupId>JavaMail</groupId>
-      <artifactId>JavaMail</artifactId>
+      <id>JavaMail</id>
       <version>UNKNOWN</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
+      <jar>JavaMail.jar</jar>
     </dependency>
 
     <!-- axis, and the jars it relies upon -->
