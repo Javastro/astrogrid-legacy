@@ -22,18 +22,19 @@ public class HarvestDaemon extends HttpServlet implements Runnable
    RegistryHarvestService rhs;
    boolean harvestOnLoad = false;
    boolean valuesSet = false;
-   
+   public static boolean harvestStarted;
    
    private ServletContext context = null;   
 
    public static final String INTERVAL_HOURS_PROPERTY =
        "org.astrogrid.registry.harvest.daemon.interval-hours";
    public static Config conf = null;
+   Timer timer;
 
    static {
       if(conf == null) {
          conf = org.astrogrid.config.SimpleConfig.getSingleton();
-        
+         harvestStarted = false;
       }
    }
    
@@ -56,36 +57,43 @@ public class HarvestDaemon extends HttpServlet implements Runnable
        System.out.println("in init of harvestDaemon and staring thread.");
        servletInitTime = new Date();
        rhs = new RegistryHarvestService();
-       Thread myThread = new Thread(this);
-       //myThread.setDaemon(true);
-       myThread.start();
+       timer = new Timer();
+       boolean harvestEnabled = conf.getBoolean("registry.harvest.enabled",false);
+       if(harvestEnabled) {
+          if(!valuesSet) {
+              System.out.println("harvest is enabled");
+              valuesSet = true;
+              harvestInterval = conf.getInt(INTERVAL_HOURS_PROPERTY);
+              //lets not start a harvest off the bat, wait till next cycle.
+              harvestOnLoad = false;
+              if(harvestInterval <= 0) {
+                  System.out.println("ERROR CANNOT HAVE A HARVESTINTERVAL LESS THAN 1; DEFAULTING TO 12");
+                  harvestInterval = 12;
+              }
+          }
+          Thread myThread = new Thread(this);
+          myThread.start();
+       }else {
+           System.out.println("harvest not enabled.");
+           //if harvest is not enabled then just leave.
+           return;
+       }       
       
-      
-/*      
-      boolean harvestEnabled = conf.getBoolean("registry.harvest.enabled",false);
-      harvestOnLoad = conf.getBoolean("registry.harvest.onload",false);
-      if(harvestEnabled) {
-    	   harvestInterval = conf.getInt(INTERVAL_HOURS_PROPERTY);
-         if(harvestInterval <= 0) {
-             System.out.println("ERROR CANNOT HAVE A HARVESTINTERVAL LESS THAN 1; DEFAULTING TO 1");
-             harvestInterval = 1;
-         }
-    	   System.out.println("Servlet starting - harvest interval = " + harvestInterval + "hours");
-    	   servletInitTime = new Date();
-    	   rhs = new RegistryHarvestService();
-    
-    	   Thread myThread = new Thread(this);
-    	   myThread.start();
-      }//if
-*/
-       
    }
 
    public void doGet(HttpServletRequest req, HttpServletResponse res)
                 throws IOException, ServletException
    {
 	  String nowParam = req.getParameter("HarvestNow");
-	  if( nowParam != null ) {
+      if(timer == null) {
+          timer = new Timer();
+      }
+     
+	  if( nowParam != null && !harvestStarted ) {
+        //start the harvest in 5 seconds
+        timer.schedule(new HarvestTimer("HarvestNow"),5000);
+        harvestStarted = true;
+        /*
 	     System.out.println("Immediate harvesting will be commenced!");
 	     try {
            
@@ -95,9 +103,14 @@ public class HarvestDaemon extends HttpServlet implements Runnable
 	     {
 		    e.printStackTrace();
         }
+        */
       }
-      String replicate = req.getParameter("ReplicateNow");
-      if( replicate != null ) {
+     String replicate = req.getParameter("ReplicateNow");
+      if( replicate != null && !harvestStarted ) {
+         //start a replication in 5 seconds
+         timer.schedule(new HarvestTimer("ReplicateNow"),5000);
+         harvestStarted = true;         
+         /*
          System.out.println("Immediate replicate is beginning!");
          try {
                       
@@ -107,7 +120,7 @@ public class HarvestDaemon extends HttpServlet implements Runnable
          {
             e.printStackTrace();
          }
-         
+         */
        }
       
       
@@ -125,13 +138,17 @@ public class HarvestDaemon extends HttpServlet implements Runnable
                   "<form method=\"get\"><input type=\"submit\" " +
                   " name=\"HarvestNow\" value=\"Harvest now!\">" +
                   "<br /><strong>Replication can be dangerous replicates all resources not by date</strong><br />" +
-                  "<input type=\"submit\" name=\"ReplicateNow\" value=\"Replicate Now\" /></form>" +
-                  "</h2></body></html>");
+                  "<input type=\"submit\" name=\"ReplicateNow\" value=\"Replicate Now\" /></form>");
+                  if(harvestStarted) {
+                      out.println("<br /><i>A Harvest/Replicate has began or still running.</i>");
+                  }
+                  out.println("</h2></body></html>");
    }
 
    public void run()
    {
        
+       /*
        boolean harvestEnabled = conf.getBoolean("registry.harvest.enabled",false);
        if(harvestEnabled) {
           if(!valuesSet) {
@@ -139,9 +156,7 @@ public class HarvestDaemon extends HttpServlet implements Runnable
               valuesSet = true;
               harvestInterval = conf.getInt(INTERVAL_HOURS_PROPERTY);
               harvestOnLoad = false;
-              /*
-              harvestOnLoad = conf.getBoolean("registry.harvest.onload",false);
-              */
+         
               if(harvestInterval <= 0) {
                   System.out.println("ERROR CANNOT HAVE A HARVESTINTERVAL LESS THAN 1; DEFAULTING TO 12");
                   harvestInterval = 12;
@@ -153,6 +168,7 @@ public class HarvestDaemon extends HttpServlet implements Runnable
            //if harvest is not enabled then just leave.
            return;
        }
+       */
             
 	  while(true) {
          
@@ -180,7 +196,44 @@ public class HarvestDaemon extends HttpServlet implements Runnable
          //System.out.println("Still looping in run() method! ...waiting 10 secs");
      }//while
    }
+   
+   
+   
+   class HarvestTimer extends TimerTask {
+       private String task = null;
+       
+       public HarvestTimer(String harvestTask) {
+           task = harvestTask;
+       }
+       
+       public void run() {
 
+           if("HarvestNow".equals(task)) {
+                 System.out.println("Immediate harvesting will be commenced!");
+                 try {
+                    rhs.harvestAll(true,true);
+                 }
+                 catch(RegistryException e)
+                 {
+                    e.printStackTrace();
+                }
+           }
+           if("ReplicateNow".equals(task)) {
+               System.out.println("Immediate replicate is beginning!");
+               try {
+                            
+                  rhs.harvestAll(true,false);
+               }
+               catch(RegistryException e)
+               {
+                  e.printStackTrace();
+               }
+           }//if
+           //turn off
+           HarvestDaemon.harvestStarted = false;
+       }//run       
+   }
+
+   
+   
 }
-
-
