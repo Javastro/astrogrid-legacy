@@ -475,6 +475,8 @@ public class DesignAction extends AbstractAction {
                 }
                 else {
                     Workflow.saveWorkflow( communitySnippet(), workflow ) ;
+                    session.setAttribute( HTTP_WORKFLOW_TAG, null) ;
+                    workflow = null ;
                 }            
             }
             finally {
