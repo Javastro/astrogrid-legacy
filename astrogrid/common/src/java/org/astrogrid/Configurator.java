@@ -10,6 +10,7 @@
  */
 package org.astrogrid;
 
+import java.io.File;
 import java.util.Hashtable;
 
 import javax.naming.Context;
@@ -23,6 +24,7 @@ import org.jconfig.ConfigurationManagerException;
 import org.jconfig.handler.ConfigurationHandler;
 import org.jconfig.handler.InputStreamHandler;
 import org.jconfig.handler.URLHandler;
+import org.jconfig.handler.XMLFileHandler;
 
 import org.astrogrid.i18n.AstroGridMessage;
 
@@ -165,8 +167,78 @@ public abstract class Configurator {
 
   } // end of getProperty()
 
-  abstract protected String getConfigFileName();
-  abstract protected String getSubsystemAcronym();
+  /**
+   * Set a property
+   * @param subsystemAcronym e.g. JES
+   * @param key key
+   * @param category category
+   * @param value value
+   */
+  public static void setProperty(
+    final String subsystemAcronym,
+    final String key,
+    final String category,
+    final String value) {
+      
+    Log.trace("setProperty() entry");
+    try {
+
+      Configuration config =
+        ConfigurationManager.getConfiguration(subsystemAcronym);
+
+        config.setProperty(key, value, category); 
+
+
+      if (key.startsWith(TEMPLATE)) {
+        //following the philosophy of if you don't need it now don't write it...
+        throw new UnsupportedOperationException("This method isn't supported for TEMPLATEs");
+      }
+
+    } finally {
+      Log.trace("setProperty() exit");
+    }
+  } 
+  
+  /**
+   * Save the configuration to a file
+   * @param subsystemAcronym e.g.JES
+   * @param configFileName where do you want it?
+   * @throws AstroGridException probably an IOException
+   * @TODO these new methods need unit tests
+   */
+  public static void save(
+    final String subsystemAcronym,
+    final String configFileName) throws AstroGridException {
+      
+    Log.trace("save() entry");
+
+    try {
+
+      Configuration config =
+        ConfigurationManager.getConfiguration(subsystemAcronym);
+      ConfigurationHandler handler = new XMLFileHandler(configFileName);
+      ConfigurationManager.getInstance().save(handler, config);
+         
+    } catch (ConfigurationManagerException e) {
+      Log.logError("Error saving configuration file ", e);
+      throw new AstroGridException(e);
+    } finally {
+      Log.trace("save() exit");
+    }
+  } 
+
+  /**
+   * Save the configuration to a file
+   * @throws AstroGridException probably an IOException
+   */
+  public final void save() throws AstroGridException {
+    assert getSubsystemAcronym() !=null;
+    assert getConfigFileName() !=null;
+    Configurator.save(getSubsystemAcronym(), getConfigFileName());
+  }
+
+  protected abstract  String getConfigFileName();
+  protected abstract  String getSubsystemAcronym();
   /**
    * Returns the JNDI name of the URL for locating the config file.
    * e.g. if you place
