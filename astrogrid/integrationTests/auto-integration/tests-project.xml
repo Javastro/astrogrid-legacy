@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: tests-project.xml,v 1.27 2004/08/18 19:00:01 dave Exp $ -->
+<!-- $Id: tests-project.xml,v 1.28 2004/08/27 13:17:10 nw Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
     <id>auto-integration-tests</id>
-	<currentVersion>${astrogrid.iteration}</currentVersion>
+        <currentVersion>${astrogrid.iteration}</currentVersion>
     <name>Tests for Automated Integration.</name>
     <description> This project document defines the tests to execute against
         the installed local astorgrid setup. In a separate project, so that the
@@ -270,6 +270,14 @@
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
+        <dependency>
+                <id>xmlunit</id>
+                <version>1.0</version>
+                <properties>
+                        <war.bundle>true</war.bundle>
+                </properties>
+        </dependency>
+
         <!-- needed within maven.xml -->
         <dependency>
             <groupId>commons-jelly</groupId>
