@@ -10,6 +10,9 @@ import java.io.StringReader;
 import javax.xml.parsers.*;
 import java.io.Reader;
 import java.io.File;
+import de.gmd.ipsi.xql.*;
+import de.gmd.ipsi.domutil.*;
+
 
 /**
  * The QueryParser3_0 class accepts an XML formatted query from the
@@ -75,9 +78,76 @@ public class QueryParser3_0
 		/**
 		* Input string "query" is the XML formatted query from either the parseQuery
 		* or parseFullNodeQuery method in this class. The prepareQuery method converts
-		* this XML string into an XQL query and sends it to the Registry3_0 class.   
+		* this XML string into an XQL query and sends it to the Registry3_0 class.  
+		* 
+		* This method also registers four user-defined comparisons: isgt, isge, islt, and
+		* isle.  The GMD-IPSI implementation of XQuery only predefines lexical comparisons
+		* for the basic logical operators, so these four user-defined comparisons implement numerical
+		* comparisons as well. 
 		* 
 		*/
+
+		/**
+		 * User-defined comparison to test whether a text element (Object l) is numerically
+		 * greater than the number value (Object r) supplied. If either the text element 'l' or
+		 * the supplied number value 'r' does not evaluate to a number, the test fails.
+		 */
+		XQL.addRelationship("$isgt$",
+		 new XQLRelationship() {
+		  public boolean holdsBetween(Object l, Object r) {
+			double element = XQL.number(l);
+			double value = XQL.number(r);
+			if (((new Double(element).isNaN())) || ((new Double(value).isNaN()))) return false;
+			return (element > value);
+		  }
+		 });
+		 
+		/**
+		 * User-defined comparison to test whether a text element (Object l) is numerically
+		 * greater than or equal to the number value (Object r) supplied. If either the 
+		 * text element 'l' or the supplied number value 'r' does not evaluate to a number, 
+		 * the test fails.
+		 */
+		 XQL.addRelationship("$isge$",
+		 new XQLRelationship() {
+		  public boolean holdsBetween(Object l, Object r) {
+			double element = XQL.number(l);
+			double value = XQL.number(r);
+			if (((new Double(element).isNaN())) || ((new Double(value).isNaN()))) return false;
+			return (element >= value);
+		  }
+		 });
+		 
+		/**
+		 * User-defined comparison to test whether a text element (Object l) is numerically
+		 * less than the number value (Object r) supplied. If either the text element 'l' or
+		 * the supplied number value 'r' does not evaluate to a number, the test fails.
+		 */
+		XQL.addRelationship("$islt$",
+		 new XQLRelationship() {
+		  public boolean holdsBetween(Object l, Object r) {
+			double element = XQL.number(l);
+			double value = XQL.number(r);
+			if (((new Double(element).isNaN())) || ((new Double(value).isNaN()))) return false;
+			return (element < value);
+		  }
+		 });
+		 
+		/**
+		 * User-defined comparison to test whether a text element (Object l) is numerically
+		 * less than or equal to the number value (Object r) supplied. If either the 
+		 * text element 'l' or the supplied number value 'r' does not evaluate to a number, 
+		 * the test fails.
+		 */
+		XQL.addRelationship("$isle$",
+		 new XQLRelationship() {
+		  public boolean holdsBetween(Object l, Object r) {
+			double element = XQL.number(l);
+			double value = XQL.number(r);
+			if (((new Double(element).isNaN())) || ((new Double(value).isNaN()))) return false;
+			return (element <= value);
+		  }
+		 });
 
 		/**
 		* First build a DOM tree out of the XML query.  
@@ -270,16 +340,16 @@ public class QueryParser3_0
 					itemOp = "!=";
 				}
 				else if (((Element) nlSS.item(z)).getAttribute("itemOp").equals("GE")){
-					itemOp = ">=";
+					itemOp = "$isge$";
 				}
 				else if (((Element) nlSS.item(z)).getAttribute("itemOp").equals("LE")){
-					itemOp = "<=";
+					itemOp = "$isle$";
 				}
 				else if (((Element) nlSS.item(z)).getAttribute("itemOp").equals("GT")){
-					itemOp = ">";
+					itemOp = "$isgt$";
 				}
 				else if (((Element) nlSS.item(z)).getAttribute("itemOp").equals("LT")){
-					itemOp = "<";
+					itemOp = "$islt$";
 				}
 				else itOp = false;
 				
