@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.107 2004/09/16 07:09:26 pah Exp $ -->
+<!-- $Id: maven.xml,v 1.108 2004/09/16 21:59:22 nw Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -22,14 +22,14 @@
         xmlns:util="jelly:util"
         xmlns:deploy="deploy"
         xmlns:http="jelly:http"
-		xmlns:define="jelly:define"
-		xmlns:ag="org.astrogrid.deploy" 
+                xmlns:define="jelly:define"
+                xmlns:ag="org.astrogrid.deploy"
     default="jar:jar">
 
 <property environment="env"/>
-	<!--use immutability in the next three lines...-->
-<!-- this will not work on windows	<property name="tomcat.host" value="${env.HOSTNAME}"/> unix 
-	<property name="tomcat.host" value="${env.COMPUTERNAME}"/>  windows -->
+        <!--use immutability in the next three lines...-->
+<!-- this will not work on windows      <property name="tomcat.host" value="${env.HOSTNAME}"/> unix
+        <property name="tomcat.host" value="${env.COMPUTERNAME}"/>  windows -->
     <property name="tomcat.host" value="localhost"/><!--default-->
 
 <property name="tomcat.port" value="8080"/>
@@ -79,9 +79,17 @@
 <!-- setup -->
 <goal name="init" prereqs="declare-tasks">
                 <echo>AuthorityID used: ${registry.authorityid}</echo>
-<!-- let the dependencies do this         <delete dir="${temporary.dir}" />-->
+       <delete dir="${temporary.dir}" />
         <mkdir dir="${temporary.dir}" />
         <deploy:copy-deps todir="${temporary.dir}" />
+<!-- important to do this before the original gets patched -->
+                <copy file="${temporary.dir}/pal-${pom.currentVersion}.war"
+                      tofile="${temporary.dir}/pal-fits-${pom.currentVersion}.war" />
+
+                <copy file="${temporary.dir}/pal-${pom.currentVersion}.war"
+                      tofile="${temporary.dir}/pal-sec-${pom.currentVersion}.war" />
+                <copy file="${temporary.dir}/pal-${pom.currentVersion}.war"
+                              tofile="${temporary.dir}/pal-cds-${pom.currentVersion}.war" />
 </goal>
 
 <!-- main goals //////////////////////////////////////////////////////////////////////////////////// -->
@@ -270,7 +278,7 @@
 
 <goal name="setup-exist" description="PUT documents in eXist">
          <echo>Configuring eXist entries</echo>
-		<delete dir="${temporary.dir}/exist-entries" />	
+                <delete dir="${temporary.dir}/exist-entries" />
         <copy todir="${temporary.dir}/exist-entries" filtering="true">
                 <fileset dir="exist-entries">
                         <include name="**/*.xml" />
@@ -308,7 +316,7 @@
 
 </goal>
 
-<goal name="setup-registry" description="populate the registry" prereqs="init">
+<goal name="setup-registry" description="populate the registry" >
         <echo>Configuring Registry</echo>
         <!-- expand tokens -->
         <copy todir="${temporary.dir}/registry-entries" filtering="true">
@@ -325,7 +333,7 @@
             <util:tokenize var="entryListr" delim=" ">${entriesr}</util:tokenize>
 
             <j:expr value="${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}"/>
-			<ag:register file="${temporary.dir}/registry-entries/ARegistry.xml" />
+                        <ag:register file="${temporary.dir}/registry-entries/ARegistry.xml" />
 
                 <waitfor maxwait="10" maxwaitunit="second" checkevery="500">
                 <http url="${tomcat.url}/exist/xmldb/db/?xpath=%2F%2F*%3AResource%5B*%3AIdentifier%2F*%3AResourceKey%2Ftext%28%29+%3D+%27org.astrogrid.registry.RegistryService%27%5D"/>
@@ -334,11 +342,11 @@
         <j:forEach var="entryr" items="${entryListr}">
 
             <j:expr value="${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}"/>
-			<ag:register file="${entryr}" />
+                        <ag:register file="${entryr}" />
 <!--            <ant target="register" antfile="register.xml" >
         `       <property name="registry.entry" value="${entryr}"/>
             </ant>
-			-->
+                        -->
 
         </j:forEach>
 </goal>
@@ -523,7 +531,7 @@
 </goal>
 
 <!-- hand assembled webapps ///////////////////////////////////////-->
-<goal name="configuration-deploy" description="create and install configuration webapp" prereqs="declare-tasks,init">
+<goal name="configuration-deploy" description="create and install configuration webapp" >
         <copy todir="${temporary.dir}/astrogrid-configuration" filtering="true">
                 <fileset dir="webapps/astrogrid-configuration" />
         </copy>
@@ -549,7 +557,7 @@
 
 </goal>
 
-<goal name="cea-server-deploy"  prereqs="declare-tasks,init" >
+<goal name="cea-server-deploy"   >
         <copy todir="${temporary.dir}/cea-server" filtering="true">
                 <fileset dir="contexts/cea-server" />
         </copy>
@@ -562,7 +570,7 @@
 
 </goal>
 
-<goal name="cea-commandline-deploy"  prereqs="declare-tasks,init" >
+<goal name="cea-commandline-deploy"   >
         <copy todir="${temporary.dir}/cea-commandline" filtering="true">
                 <fileset dir="contexts/cea-commandline" />
         </copy>
@@ -575,7 +583,7 @@
 
 </goal>
 
-<goal name="cea-http-deploy"  prereqs="declare-tasks,init" >
+<goal name="cea-http-deploy" >
         <copy todir="${temporary.dir}/cea-http" filtering="true">
                 <fileset dir="contexts/cea-http" />
         </copy>
@@ -590,24 +598,24 @@
 
 
 <goal name="reg-deploy" >
-		<!--
+                <!--
         <copy todir="${temporary.dir}/registry" filtering="true">
                 <fileset dir="contexts/registry" />
         </copy>
         <war update="true" destfile="${temporary.dir}/astrogrid-registry-${pom.currentVersion}.war">
                 <metainf dir="${temporary.dir}/registry"/>
         </war>
-  		-->
-	<copy todir="${temporary.dir}/registry" filtering="true" overwrite="true">
+                -->
+        <copy todir="${temporary.dir}/registry" filtering="true" overwrite="true">
             <fileset dir="webapps/astrogrid-configuration/registry">
-            	<include name="astro*.prop*"/>
+                <include name="astro*.prop*"/>
             </fileset>
     </copy>
 
     <war update="true" destfile="${temporary.dir}/astrogrid-registry-${pom.currentVersion}.war">
-		<classes dir="${temporary.dir}/registry"/>
+                <classes dir="${temporary.dir}/registry"/>
     </war>
-	
+
           <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
           path="/astrogrid-registry-${pom.currentVersion}" war="file:///${temporary.dir}/astrogrid-registry-${pom.currentVersion}.war"/>
 
@@ -674,7 +682,7 @@
         | Deploy the war file into Tomcat.
         +-->
     <tomcat-deploy
-    	update="true"
+        update="true"
         url="${tomcat.manager.url}"
         username="${tomcat.manager.username}"
         password="${tomcat.manager.password}"
@@ -712,8 +720,6 @@
 </goal>
 
 <goal name="pal-sec-deploy" >
-                <copy file="${temporary.dir}/pal-${pom.currentVersion}.war"
-                      tofile="${temporary.dir}/pal-sec-${pom.currentVersion}.war" />
         <copy todir="${temporary.dir}/pal_sec" filtering="true">
                 <fileset dir="contexts/pal_sec" />
         </copy>
@@ -727,8 +733,7 @@
 </goal>
 
         <goal name="pal-cds-deploy" >
-                <copy file="${temporary.dir}/pal-${pom.currentVersion}.war"
-                              tofile="${temporary.dir}/pal-cds-${pom.currentVersion}.war" />
+
                 <copy todir="${temporary.dir}/pal_cds" filtering="true">
                         <fileset dir="contexts/pal_cds" />
                 </copy>
@@ -764,7 +769,7 @@
         <metainf dir="${temporary.dir}/community/webapp"/>
     </war>
     <tomcat-deploy
-    	update="true"
+        update="true"
         url="${tomcat.manager.url}"
         username="${tomcat.manager.username}"
         password="${tomcat.manager.password}"
@@ -916,8 +921,8 @@
                         <include name="*"/>
            </fileset>
         </delete>
-		<!-- clean the temp dir here as well -->
-		<delete dir="${temporary.dir}" />
+                <!-- clean the temp dir here as well -->
+                <delete dir="${temporary.dir}" />
 </goal>
 
 
@@ -1106,121 +1111,121 @@
 </goal>
 
 <goal name="register" prereqs="declare-tasks">
-	   <echo>registering ${registry.entry} at ${registry.endpoint}</echo>
+           <echo>registering ${registry.entry} at ${registry.endpoint}</echo>
        <register-entry
             data="${registry.entry}"
             registry="${registry.endpoint}Update"
             />
  </goal>
- 
+
 <!--tag lib - better to put in an astrogrid plugin-->
-	<define:taglib uri="org.astrogrid.deploy">
-		<!-- need to decide how careful to be about property lookups - context stuff -->
-		<define:tag name="GetDeploy" ><!-- this is not using the normal dependencies yet - needs to -->
-			<j:set var="component.name" value="${name}"/>
-			<j:choose>
-				<j:when test="${!empty(version)}">
-					<j:set var="component.version" value="${version}"/>
-				</j:when>
-				<j:otherwise>
-					<j:set var="component.version" 
-						value="${context.getVariable('astrogrid.release')}"/>
-				</j:otherwise>
-			</j:choose>
-			<filter token="RELEASE" value="${component.version}"/> <!-- does this behave like a property? - this might not change once set initially -->
-			<j:set var="war.name" 
-				value="astrogrid-${component.name}-${component.version}" />
-			<get src="${astrogrid.repository}/wars/${war.name}.war" 
-				dest="${download.dir}/${war.name}.war" usetimestamp="true" verbose="true"/>
-			<copy todir="${temporary.dir}/${component.name}" filtering="true" overwrite="true">
-				<fileset dir="contexts/${component.name}" />
-			</copy>
-			<copy todir="${temporary.dir}/" filtering="false">
-				<fileset dir="${download.dir}" includes="${war.name}.war" />
-			</copy>
-			<war update="true" destfile="${temporary.dir}/${war.name}.war">
-				<metainf dir="${temporary.dir}/${component.name}"/>
-			</war>
-			<echo>
-			   installing ${war.name} to /astrogrid-${component.name}-${component.version}
-			</echo>
-			<j:choose >
-			<j:when test="${context.getVariable('name') eq 'portal'}">
-				<!-- unfortunately this is a hack because the portal must be called portal -->	
-				<j:catch>										
-					<tomcat-deploy url="${context.getVariable('tomcat.manager.url')}" 
-						username="${context.getVariable('tomcat.manager.username')}" 
-						password="${context.getVariable('tomcat.manager.password')}" 
-						update="true"
-						path="/astrogrid-portal"
-						war="file://${context.getVariable('temporary.dir')}/${war.name}.war"/>
-				</j:catch>
-			</j:when>
-			<j:otherwise>
-				<j:catch>
-					<tomcat-deploy url="${context.getVariable('tomcat.manager.url')}" 
-						username="${context.getVariable('tomcat.manager.username')}" 
-						password="${context.getVariable('tomcat.manager.password')}" 
-						update="true"
-						path="/${war.name}"
-						war="file://${context.getVariable('temporary.dir')}/${war.name}.war"/>
-				</j:catch>
-			</j:otherwise>
-			</j:choose>
-		</define:tag>
-		<define:tag name="UnDeploy">
-			<j:set var="component.name" value="${name}"/>
-			<j:choose>
-				<j:when test="${!empty(version)}">
-					<j:set var="component.version" value="${version}"/>
-				</j:when>
-				<j:otherwise>
-					<j:set var="component.version" 
-						value="${context.getVariable('astrogrid.release')}"/>
-				</j:otherwise>
-			</j:choose>
-			<j:catch>
-				<tomcat-remove url="${context.getVariable('tomcat.manager.url')}" 
-					username="${context.getVariable('tomcat.manager.username')}" 
-					password="${context.getVariable('tomcat.manager.password')}" 
-					path="/astrogrid-${component.name}-${component.version}" />
-			</j:catch>
-		</define:tag>
-		
-		<define:tag name="tomreload">
-			<j:set var="component.name" value="${name}"/>
-			<j:choose>
-				<j:when test="${!empty(version)}">
-					<j:set var="component.version" value="${version}"/>
-				</j:when>
-				<j:otherwise>
-					<j:set var="component.version" 
-						value="${context.getVariable('astrogrid.release')}"/>
-				</j:otherwise>
-			</j:choose>
-			<j:catch>
-				<tomcat-reload url="${context.getVariable('tomcat.manager.url')}" 
-					username="${context.getVariable('tomcat.manager.username')}" 
-					password="${context.getVariable('tomcat.manager.password')}" 
-					path="/astrogrid-${component.name}-${component.version}" />
-			</j:catch>
-			
-		</define:tag>
-		
-		<define:tag name="register">
-			<j:set var="registry.entry" value="${file}"/>
-				
-					
-				  <taskdef name="register-entry" classname="org.astrogrid.deployment.RegistryLoaderTask" classpathref="maven.dependency.classpath"/>
-				  
-				      <register-entry
+        <define:taglib uri="org.astrogrid.deploy">
+                <!-- need to decide how careful to be about property lookups - context stuff -->
+                <define:tag name="GetDeploy" ><!-- this is not using the normal dependencies yet - needs to -->
+                        <j:set var="component.name" value="${name}"/>
+                        <j:choose>
+                                <j:when test="${!empty(version)}">
+                                        <j:set var="component.version" value="${version}"/>
+                                </j:when>
+                                <j:otherwise>
+                                        <j:set var="component.version"
+                                                value="${context.getVariable('astrogrid.release')}"/>
+                                </j:otherwise>
+                        </j:choose>
+                        <filter token="RELEASE" value="${component.version}"/> <!-- does this behave like a property? - this might not change once set initially -->
+                        <j:set var="war.name"
+                                value="astrogrid-${component.name}-${component.version}" />
+                        <get src="${astrogrid.repository}/wars/${war.name}.war"
+                                dest="${download.dir}/${war.name}.war" usetimestamp="true" verbose="true"/>
+                        <copy todir="${temporary.dir}/${component.name}" filtering="true" overwrite="true">
+                                <fileset dir="contexts/${component.name}" />
+                        </copy>
+                        <copy todir="${temporary.dir}/" filtering="false">
+                                <fileset dir="${download.dir}" includes="${war.name}.war" />
+                        </copy>
+                        <war update="true" destfile="${temporary.dir}/${war.name}.war">
+                                <metainf dir="${temporary.dir}/${component.name}"/>
+                        </war>
+                        <echo>
+                           installing ${war.name} to /astrogrid-${component.name}-${component.version}
+                        </echo>
+                        <j:choose >
+                        <j:when test="${context.getVariable('name') eq 'portal'}">
+                                <!-- unfortunately this is a hack because the portal must be called portal -->
+                                <j:catch>
+                                        <tomcat-deploy url="${context.getVariable('tomcat.manager.url')}"
+                                                username="${context.getVariable('tomcat.manager.username')}"
+                                                password="${context.getVariable('tomcat.manager.password')}"
+                                                update="true"
+                                                path="/astrogrid-portal"
+                                                war="file://${context.getVariable('temporary.dir')}/${war.name}.war"/>
+                                </j:catch>
+                        </j:when>
+                        <j:otherwise>
+                                <j:catch>
+                                        <tomcat-deploy url="${context.getVariable('tomcat.manager.url')}"
+                                                username="${context.getVariable('tomcat.manager.username')}"
+                                                password="${context.getVariable('tomcat.manager.password')}"
+                                                update="true"
+                                                path="/${war.name}"
+                                                war="file://${context.getVariable('temporary.dir')}/${war.name}.war"/>
+                                </j:catch>
+                        </j:otherwise>
+                        </j:choose>
+                </define:tag>
+                <define:tag name="UnDeploy">
+                        <j:set var="component.name" value="${name}"/>
+                        <j:choose>
+                                <j:when test="${!empty(version)}">
+                                        <j:set var="component.version" value="${version}"/>
+                                </j:when>
+                                <j:otherwise>
+                                        <j:set var="component.version"
+                                                value="${context.getVariable('astrogrid.release')}"/>
+                                </j:otherwise>
+                        </j:choose>
+                        <j:catch>
+                                <tomcat-remove url="${context.getVariable('tomcat.manager.url')}"
+                                        username="${context.getVariable('tomcat.manager.username')}"
+                                        password="${context.getVariable('tomcat.manager.password')}"
+                                        path="/astrogrid-${component.name}-${component.version}" />
+                        </j:catch>
+                </define:tag>
+
+                <define:tag name="tomreload">
+                        <j:set var="component.name" value="${name}"/>
+                        <j:choose>
+                                <j:when test="${!empty(version)}">
+                                        <j:set var="component.version" value="${version}"/>
+                                </j:when>
+                                <j:otherwise>
+                                        <j:set var="component.version"
+                                                value="${context.getVariable('astrogrid.release')}"/>
+                                </j:otherwise>
+                        </j:choose>
+                        <j:catch>
+                                <tomcat-reload url="${context.getVariable('tomcat.manager.url')}"
+                                        username="${context.getVariable('tomcat.manager.username')}"
+                                        password="${context.getVariable('tomcat.manager.password')}"
+                                        path="/astrogrid-${component.name}-${component.version}" />
+                        </j:catch>
+
+                </define:tag>
+
+                <define:tag name="register">
+                        <j:set var="registry.entry" value="${file}"/>
+
+
+                                  <taskdef name="register-entry" classname="org.astrogrid.deployment.RegistryLoaderTask" classpathref="maven.dependency.classpath"/>
+
+                                      <register-entry
             data="${registry.entry}"
             registry="${registry.endpoint}Update"
             />
 
-				
-		</define:tag>
-	</define:taglib>
+
+                </define:tag>
+        </define:taglib>
 
     <goal name="frog">
 
