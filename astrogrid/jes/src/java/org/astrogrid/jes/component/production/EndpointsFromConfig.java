@@ -1,4 +1,4 @@
-/*$Id: EndpointsFromConfig.java,v 1.1 2004/07/01 21:15:00 nw Exp $
+/*$Id: EndpointsFromConfig.java,v 1.2 2004/07/05 18:34:13 nw Exp $
  * Created on 07-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -39,7 +39,7 @@ public class EndpointsFromConfig extends SimpleComponentDescriptor implements En
     
     /** absolute fallback endpoint - if no value specified in config, and we can't calculate value by querying axis message endpoint */
     public static final String MONITOR_DEFAULT_ENDPOINT ="http://localhost:8080/jes/services/JobMonitorService" ;
-    public static final String RESULTS_DEFAULT_ENDPOINT = "http://localhost:8080/jes/services/CEAResultsListenerService";
+    public static final String RESULTS_DEFAULT_ENDPOINT = "http://localhost:8080/jes/services/ResultListener";
     
     public EndpointsFromConfig(Config conf) throws MalformedURLException, URISyntaxException {
         URL monitorURL = new URL(MONITOR_DEFAULT_ENDPOINT);
@@ -90,6 +90,9 @@ public class EndpointsFromConfig extends SimpleComponentDescriptor implements En
 
 /* 
 $Log: EndpointsFromConfig.java,v $
+Revision 1.2  2004/07/05 18:34:13  nw
+tweaked default value to be sensible
+
 Revision 1.1  2004/07/01 21:15:00  nw
 added results-listener interface to jes
 
