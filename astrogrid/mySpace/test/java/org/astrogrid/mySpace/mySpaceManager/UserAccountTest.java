@@ -8,7 +8,8 @@ import org.astrogrid.mySpace.mySpaceManager.UserAccount;
  * Junit tests for the <code>UserAccount</code> class.
  *
  * @author A C Davenhall (Edinburgh)
- * @version Iteration 3.
+ * @since Iteration 3.
+ * @version Iteration 5.
  */
 
 public class UserAccountTest extends TestCase
@@ -28,7 +29,7 @@ public class UserAccountTest extends TestCase
 
    public void testGetUserAGrId()
    {  UserAccount user = new UserAccount("jb", "jbcommunity", "any");
-      Assert.assertEquals(user.getUserAGrId(), "jb@jbcommunity");
+      Assert.assertEquals(user.getUserAGrId(), "jb");
    }
 
 /**
@@ -37,12 +38,12 @@ public class UserAccountTest extends TestCase
 
    public void testGetBaseContainer()
    {  UserAccount user = new UserAccount("jb", "jbcommunity", "any");
-      Assert.assertEquals(user.getBaseContainer(), "/jb@jbcommunity");
+      Assert.assertEquals(user.getBaseContainer(), "/jb");
    }
 
 /**
  * Test the <code>checkAuthorisation</code> method.  Note that in
- * Iteration 3 this method is hard-coded to return `true', so the
+ * Iteration 5 this method is hard-coded to return `true', so the
  * test is unlikely to fail.
  */
 
@@ -63,7 +64,7 @@ public class UserAccountTest extends TestCase
 
 /**
  * Test the <code>checkCanModifyUsers</code> method.  Note that in
- * Iteration 3 this method is hard-coded to return `true', so the
+ * Iteration 5 this method is hard-coded to return `true', so the
  * test is unlikely to fail.
  */
 
@@ -79,7 +80,7 @@ public class UserAccountTest extends TestCase
    public void testToString()
    {  UserAccount user = new UserAccount("jb", "jbcommunity", "any",
         "J.Bloggs");
-      Assert.assertEquals(user.toString(), "jb@jbcommunity (J.Bloggs)");
+      Assert.assertEquals(user.toString(), "jb (J.Bloggs)");
    }
 
 /**

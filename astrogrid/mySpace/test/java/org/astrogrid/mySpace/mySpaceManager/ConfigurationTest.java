@@ -122,7 +122,7 @@ public class ConfigurationTest extends TestCase
 
    public static void main (String[] args)
    {
-//    junit.textui.TestRunner.run (ConfigurationTest.class);
-      junit.swingui.TestRunner.run (ConfigurationTest.class);
+    junit.textui.TestRunner.run (ConfigurationTest.class);
+//      junit.swingui.TestRunner.run (ConfigurationTest.class);
    }
 }

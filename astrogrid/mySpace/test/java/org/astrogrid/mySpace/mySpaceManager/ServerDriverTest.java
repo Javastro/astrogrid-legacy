@@ -2,6 +2,7 @@ package org.astrogrid.mySpace.mySpaceManager;
 
 import junit.framework.*;
 
+import org.astrogrid.mySpace.mySpaceStatus.Logger;
 import org.astrogrid.mySpace.mySpaceManager.ServerDriver;
 
 /**
@@ -12,7 +13,7 @@ import org.astrogrid.mySpace.mySpaceManager.ServerDriver;
  */
 
 public class ServerDriverTest extends TestCase
-{
+{  private static Logger logger = new Logger(false, false, false, "");
 
 /**
  * Standard constructor for JUnit test classes.
@@ -81,7 +82,7 @@ public class ServerDriverTest extends TestCase
 
    public static void main (String[] args)
    {
-//    junit.textui.TestRunner.run (ServerDriverTest.class);
-      junit.swingui.TestRunner.run (ServerDriverTest.class);
+    junit.textui.TestRunner.run (ServerDriverTest.class);
+//      junit.swingui.TestRunner.run (ServerDriverTest.class);
    }
 }
