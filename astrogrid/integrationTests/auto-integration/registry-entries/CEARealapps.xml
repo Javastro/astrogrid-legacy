@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <VODescription xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.1" xmlns="http://www.ivoa.net/xml/VOResource/v0.9">
-    <cea:CeaApplication xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaApplicationType">
         <Identifier>
             <AuthorityID>@REGAUTHORITY@</AuthorityID>
             <ResourceKey>SExtractor</ResourceKey>
@@ -86,8 +86,8 @@
                 </ns11:Interface>
             </cea:Interfaces>
         </cea:ApplicationDefinition>
-    </cea:CeaApplication>
-    <cea:CeaApplication xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    </Resource>
+    <Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaApplicationType">
         <Identifier>
             <AuthorityID>@REGAUTHORITY@</AuthorityID>
             <ResourceKey>HyperZ</ResourceKey>
@@ -153,8 +153,8 @@
                 </ns18:Interface>
             </cea:Interfaces>
         </cea:ApplicationDefinition>
-    </cea:CeaApplication>
-    <cea:CeaApplication xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    </Resource>
+    <Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaApplicationType">
         <Identifier>
             <AuthorityID>@REGAUTHORITY@</AuthorityID>
             <ResourceKey>CrossMatcher</ResourceKey>
@@ -248,8 +248,8 @@
                 </ns33:Interface>
             </cea:Interfaces>
         </cea:ApplicationDefinition>
-    </cea:CeaApplication>
-    <cea:CeaService xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    </Resource>
+    <Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaServiceType">
         <Identifier>
             <AuthorityID>@REGAUTHORITY@</AuthorityID>
             <ResourceKey>JBOApps</ResourceKey>
@@ -304,5 +304,5 @@
                 <ResourceKey>CrossMatcher</ResourceKey>
             </cea:ApplicationReference>
         </cea:ManagedApplications>
-    </cea:CeaService>
+    </Resource>
 </VODescription>

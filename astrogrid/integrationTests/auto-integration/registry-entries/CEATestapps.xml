@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <VODescription xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.1" xmlns="http://www.ivoa.net/xml/VOResource/v0.9">
-    <cea:CeaApplication status="active"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <Resource status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaApplicationType">
         <Identifier>
             <AuthorityID>@REGAUTHORITY@</AuthorityID>
             <ResourceKey>testapp</ResourceKey>
@@ -134,8 +134,8 @@
                 </ns31:Interface>
             </cea:Interfaces>
         </cea:ApplicationDefinition>
-    </cea:CeaApplication>
-    <cea:CeaApplication status="active"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    </Resource>
+    <Resource status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaApplicationType">
         <Identifier>
             <AuthorityID>@REGAUTHORITY@</AuthorityID>
             <ResourceKey>testap2</ResourceKey>
@@ -269,8 +269,8 @@
                 </ns62:Interface>
             </cea:Interfaces>
         </cea:ApplicationDefinition>
-    </cea:CeaApplication>
-    <cea:CeaApplication status="active"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    </Resource>
+    <Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaApplicationType" status="active">
         <Identifier>
             <AuthorityID>@REGAUTHORITY@</AuthorityID>
             <ResourceKey>testap3</ResourceKey>
@@ -330,8 +330,8 @@
                 </ns71:Interface>
             </cea:Interfaces>
         </cea:ApplicationDefinition>
-    </cea:CeaApplication>
-    <cea:CeaService status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    </Resource>
+    <Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaServiceType" status="active">
         <Identifier>
             <AuthorityID>@REGAUTHORITY@</AuthorityID>
             <ResourceKey>TestCEC</ResourceKey>
@@ -386,5 +386,5 @@
                 <ResourceKey>testap3</ResourceKey>
             </cea:ApplicationReference>
         </cea:ManagedApplications>
-    </cea:CeaService>
+    </Resource>
 </VODescription>

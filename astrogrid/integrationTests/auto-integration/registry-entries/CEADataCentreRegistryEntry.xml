@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<vr:VODescription xmlns="http://www.ivoa.net/xml/CEAService/v0.1" xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9" xmlns:vt="http://www.ivoa.net/xml/VOTable/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
->
-        <CeaApplication>
+<vr:VODescription xmlns="http://www.ivoa.net/xml/CEAService/v0.1" xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9" xmlns:vt="http://www.ivoa.net/xml/VOTable/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <vr:Resource xsi:type="CeaApplicationType">
                 <vr:Identifier>
                         <vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
                         <vr:ResourceKey>testdsa</vr:ResourceKey>
@@ -58,6 +57,5 @@
                                 </ceab:Interface>
                         </Interfaces>
                 </ApplicationDefinition>
-        </CeaApplication>
-
+        </vr:Resource>
 </vr:VODescription>
