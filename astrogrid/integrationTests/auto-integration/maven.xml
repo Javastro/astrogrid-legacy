@@ -73,6 +73,10 @@
         <maven:maven descriptor="${basedir}/tests-project.xml" goals="test" />
 </goal>
 
+<goal name="eclipse-int-test" description="Generate eclipse files for the tests">
+        <maven:maven descriptor="${basedir}/tests-project.xml" goals="eclipse" />
+</goal>
+
 <goal name="ui-int-test"  description="run integration tests in ui runner">
         <maven:maven descriptor="${basedir}/tests-project.xml" goals="test:ui" />
 </goal>
@@ -265,8 +269,8 @@
         target="register"
         antfile="register.xml"
         >
-        <property name="registry.entry" value="${temporary.dir}/community/config/service/policy.manager.xml"/>
-    </ant>
+        <property name="registry.entry" value="tmp/community/config/service/policy.manager.xml"/>
+	</ant>
 </goal>
 
 <!-- pregoals ///////////////////////////////////////////////////////////////////////////////////////////////// -->
