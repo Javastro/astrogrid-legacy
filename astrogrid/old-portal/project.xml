@@ -4,8 +4,8 @@
   xsi:noNamespaceSchemaLocation="maven-project.xsd">
 
   <pomVersion>3</pomVersion>
-  <id>project-id</id>
-  <name>project-name</name>
+  <id>astrogrid-portal</id>
+  <name>AstroGrid Portal</name>
 
   <currentVersion>HEAD</currentVersion>
   
@@ -27,24 +27,9 @@
   
   <developers>
     <developer>
-      <name>Peter Shillan</name>
-      <id>gps</id>
-      <email>gps@roe.ac.uk</email>
-    </developer>
-    <developer>
-      <name>Elizabeth Auden</name>
-      <id>eca</id>
-      <email>eca@mssl.ucl.ac.uk</email>
-    </developer>
-    <developer>
-      <name>Pedro Contreras</name>
-      <id>pc</id>
-      <email>P.Contreras@qub.ac.uk</email>
-    </developer>
-    <developer>
-      <name>Roy Platon</name>
-      <id>rtp</id>
-      <email>R.T.Platon@rl.ac.uk</email>
+      <name>Brian McIlwrath</name>
+      <id>bkm</id>
+      <email>bkm@star.rl.ac.uk</email>
     </developer>
   </developers>
   
@@ -52,21 +37,6 @@
     <dependency>
       <id>junit</id>
       <version>3.8</version>
-    </dependency>
-
-    <dependency>
-      <id>xmlBlaster</id>
-      <version>0.845</version>
-    </dependency>
-
-    <dependency>
-      <id>jms</id>
-      <version>1.0.2a</version>
-    </dependency>
-
-    <dependency>
-      <id>activation</id>
-      <version>1.0.2</version>
     </dependency>
   </dependencies>
   

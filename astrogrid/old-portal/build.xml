@@ -1,4 +1,4 @@
-<project name="project-name" basedir="." default="build">
+<project name="astrogrid-portal" basedir="." default="build">
 
   <target name="init">
     <property name="src.dir" value="${basedir}/src/java"/>
