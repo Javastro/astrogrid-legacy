@@ -18,6 +18,11 @@ public interface StdKeys
 
    public final static String PAL_QUERYSTATUS = SimpleConfig.getSingleton().getString("tomcat.root")+"/astrogrid-pal-SNAPSHOT/queryStatus.jsp?";
    public final static String MYSPACE = "myspace:"+SimpleConfig.getSingleton().getString("tomcat.root")+"/astrogrid-mySpace-SNAPSHOT/services/Manager";
+
+   public final static String PAL_STD_STEM = SimpleConfig.getSingleton().getString("tomcat.root")+"/astrogrid-pal-SNAPSHOT";
+   public final static String PAL_FITS_STEM = SimpleConfig.getSingleton().getString("tomcat.root")+"/astrogrid-pal-fits-SNAPSHOT";
+   public final static String PAL_SEC_STEM = SimpleConfig.getSingleton().getString("tomcat.root")+"/astrogrid-pal-sec-SNAPSHOT";
+   public final static String PAL_VIZIER_STEM = SimpleConfig.getSingleton().getString("tomcat.root")+"/astrogrid-pal-cds-SNAPSHOT";
 }
 
 

@@ -1,10 +1,11 @@
-/* $Id: AllTests.java,v 1.14 2004/09/09 11:18:45 mch Exp $
+/* $Id: AllTests.java,v 1.15 2004/10/08 15:52:18 mch Exp $
  * Created on Apr 15, 2004 by jdt@roe.ac.uk
  * The auto-integration project
  * Copyright (c) Astrigrid 2004.  All rights reserved.
  *
  */
 package org.astrogrid.datacenter.integration;
+import org.astrogrid.datacenter.integration.serverside.*;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -33,6 +34,9 @@ public class AllTests {
 }
 /*
  *  $Log: AllTests.java,v $
+ *  Revision 1.15  2004/10/08 15:52:18  mch
+ *  More tests for Registry push etc
+ *
  *  Revision 1.14  2004/09/09 11:18:45  mch
  *  Moved DeployedServicesTest to separate package
  *
