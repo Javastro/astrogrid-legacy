@@ -1,4 +1,4 @@
-/*$Id: PostgresSqlMaker.java,v 1.5 2004/03/24 15:57:31 kea Exp $
+/*$Id: PostgresSqlMaker.java,v 1.6 2004/03/30 16:21:24 eca Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,7 +18,7 @@ import org.astrogrid.datacenter.queriers.sql.StdSqlMaker;
 import org.astrogrid.datacenter.query.AdqlQuery;
 import org.astrogrid.datacenter.query.QueryException;
 import org.w3c.dom.Element;
-
+import org.astrogrid.datacenter.queriers.ogsadai.AdqlQueryTranslator;
 /**
  * Produced Postgres-specific SQL
  */
@@ -34,7 +34,7 @@ public class PostgresSqlMaker extends StdSqlMaker {
 
       try {
         Element queryBody = query.toDom().getDocumentElement();
-        Translator trans = new PostgresAdqlQueryTranslator();
+        Translator trans = new AdqlQueryTranslator();
         // do the translation
         Object intermediateRep = null;
         Class expectedType = null;
@@ -95,6 +95,12 @@ public class PostgresSqlMaker extends StdSqlMaker {
 
 /*
 $Log: PostgresSqlMaker.java,v $
+Revision 1.6  2004/03/30 16:21:24  eca
+Updated ogsadai Postgres-optimized query translator, updated class
+references in PostgresSqlMaker.
+
+30/03/04 ElizabethAuden
+
 Revision 1.5  2004/03/24 15:57:31  kea
 Updated Javadocs etc.
 

@@ -1,4 +1,4 @@
-/*$Id: AdqlQueryTranslator.java,v 1.3 2004/03/26 15:52:47 eca Exp $
+/*$Id: AdqlQueryTranslator.java,v 1.4 2004/03/30 16:21:24 eca Exp $
  * Created on 03-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -57,8 +57,9 @@ import org.astrogrid.datacenter.adql.generated.ogsadai.UnaryExpr;
 import org.astrogrid.datacenter.adql.generated.ogsadai.UnionSearch;
 import org.astrogrid.datacenter.adql.generated.ogsadai.Where;
 import org.astrogrid.datacenter.adql.generated.ogsadai.XMatch;
-import org.astrogrid.datacenter.queriers.QueryTranslator;
-import org.astrogrid.datacenter.queriers.TranslationFrame;
+import org.astrogrid.datacenter.queriers.sql.deprecated.QueryTranslator;
+import org.astrogrid.datacenter.queriers.sql.deprecated.TranslationFrame;
+
 
 /** ADQL to Postgres SQL translator.
  * Based on ADQL to Vanilla SQL translator.
@@ -686,6 +687,12 @@ public Class getResultType() {
 
 /*
  $Log: AdqlQueryTranslator.java,v $
+ Revision 1.4  2004/03/30 16:21:24  eca
+ Updated ogsadai Postgres-optimized query translator, updated class
+ references in PostgresSqlMaker.
+ 
+ 30/03/04 ElizabethAuden
+
  Revision 1.3  2004/03/26 15:52:47  eca
  datacenter.queriers.ogsadai.AdqlQueryTranslator now updated for
  1) optimized for Postgres
