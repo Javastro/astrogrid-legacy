@@ -2,10 +2,10 @@
 <project>
 
   <pomVersion>3</pomVersion>
-  <groupId>astrogrid-datacenter</groupId>
+  <groupId>org.astrogrid</groupId>
 
   <currentVersion>HEAD</currentVersion>
-  
+
   <organization>
     <name>AstroGrid</name>
     <url>http://www.astrogrid.org</url>
@@ -33,37 +33,37 @@
   <developers>
 
     <developer>
-    	<name>Martin Hill</name>
-    	<id>mch</id>
-    	<email>mch@roe.ac.uk</email>
-	<organization>ROE</organization>
-	<roles>
-		<role>Work group leader</role>
-	</roles>
+            <name>Martin Hill</name>
+            <id>mch</id>
+            <email>mch@roe.ac.uk</email>
+        <organization>ROE</organization>
+        <roles>
+                <role>Work group leader</role>
+        </roles>
     </developer>
 
     <developer>
-    	<name>Peter Shillan</name>
-    	<id>gps</id>
-    	<email>gps@roe.ac.uk</email>
-	<organization>ROE</organization>
+            <name>Peter Shillan</name>
+            <id>gps</id>
+            <email>gps@roe.ac.uk</email>
+        <organization>ROE</organization>
     </developer>
 
     <developer>
-    	<name>Noel Winstanley</name>
-    	<id>nw</id>
-    	<email>nw@jb.man.ac.uk</email>
-	<organization>JBO</organization>
+            <name>Noel Winstanley</name>
+            <id>nw</id>
+            <email>nw@jb.man.ac.uk</email>
+        <organization>JBO</organization>
     </developer>
   </developers>
 
-	<licenses>
-		<license>
-			<name>The AstroGrid Software License, Version 1.2</name>
-			<url>http://www.astrogrid.org</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
+        <licenses>
+                <license>
+                        <name>The AstroGrid Software License, Version 1.2</name>
+                        <url>http://www.astrogrid.org</url>
+                        <distribution>repo</distribution>
+                </license>
+        </licenses>
 
   <dependencies>
     <!-- astrogrid -specific deps -->
@@ -95,14 +95,14 @@
     </properties>
     </dependency>
 
-	<dependency>
-		<id>saaj</id>
-		<version>1.0</version>
-		<jar>saaj.jar</jar>
-		    <properties>
+        <dependency>
+                <id>saaj</id>
+                <version>1.0</version>
+                <jar>saaj.jar</jar>
+                    <properties>
       <war.bundle>true</war.bundle>
     </properties>
-	</dependency>
+        </dependency>
 
     <dependency>
       <id>commons-logging</id>
@@ -147,9 +147,9 @@
     </dependency>
 
     <dependency>
-	<id>xerces</id>
-	<version>2.4.0</version>
-	    <properties>
+        <id>xerces</id>
+        <version>2.4.0</version>
+            <properties>
       <war.bundle>true</war.bundle>
     </properties>
     </dependency>
@@ -163,11 +163,11 @@
     </dependency>
 
     <dependency>
-    	<id>xmlunit</id>
-	<version>1.0</version>
-	<properties>
-		<war.bundle>true</war.bundle>
-	</properties>
+            <id>xmlunit</id>
+        <version>1.0</version>
+        <properties>
+                <war.bundle>true</war.bundle>
+        </properties>
     </dependency>
     </dependencies>
 
@@ -183,32 +183,32 @@
       <resources>
         <resource>
           <directory>${basedir}/test/java</directory>
-	  <!--everything else but the sources -->
-	  <excludes>
-	  	<exclude>**/*.java</exclude>
-	  </excludes>
+          <!--everything else but the sources -->
+          <excludes>
+                  <exclude>**/*.java</exclude>
+          </excludes>
         </resource>
       </resources>
     </unitTest>
 
     <resources>
-    	<resource><!-- config files -->
-		<directory>${basedir}/src/java</directory>
-		<includes>
-			<include>**/*.xml</include>
-			<include>**/*.xsl</include>
-			<include>**/*.properties</include>
-		</includes>
-	</resource>
-	<resource> <!-- schemas  - may be needed for validation -->
-		<directory>${basedir}/src</directory>
-		<includes>
-			<include>xsd/**</include>
-			<include>xslt/**</include>
-			<include>wsdl/**</include>
-			<include>wsdd/**</include>
-		</includes>
-	</resource>
+            <resource><!-- config files -->
+                <directory>${basedir}/src/java</directory>
+                <includes>
+                        <include>**/*.xml</include>
+                        <include>**/*.xsl</include>
+                        <include>**/*.properties</include>
+                </includes>
+        </resource>
+        <resource> <!-- schemas  - may be needed for validation -->
+                <directory>${basedir}/src</directory>
+                <includes>
+                        <include>xsd/**</include>
+                        <include>xslt/**</include>
+                        <include>wsdl/**</include>
+                        <include>wsdd/**</include>
+                </includes>
+        </resource>
     </resources>
 
   </build>
@@ -235,11 +235,11 @@
     <report>
       maven-javadoc-plugin
     </report>
-	<!-- breaks the build. still
+        <!-- breaks the build. still
     <report>
       maven-jdepend-plugin
     </report>
-	-->
+        -->
     <report>
       maven-junit-report-plugin
     </report>

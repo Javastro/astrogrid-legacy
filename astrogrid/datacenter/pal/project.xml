@@ -89,7 +89,7 @@ tomcat.password=secret<br />
   <dependencies>
    <!-- astrogrid components -->
    <dependency>
-      <groupId>astrogrid-datacenter</groupId>
+      <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-datacenter-server</artifactId>
       <version>SNAPSHOT</version>
       <properties>
@@ -98,7 +98,7 @@ tomcat.password=secret<br />
    </dependency>
 
    <dependency>
-      <groupId>astrogrid-datacenter</groupId>
+      <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-datacenter-client</artifactId>
       <version>SNAPSHOT</version>
           <properties>
@@ -107,7 +107,7 @@ tomcat.password=secret<br />
    </dependency>
 
    <dependency>
-      <groupId>astrogrid-datacenter</groupId>
+      <groupId>org.astrogrid</groupId>
       <artifactId>cdsdelegate</artifactId>
       <version>SNAPSHOT</version>
       <properties>
@@ -122,7 +122,7 @@ tomcat.password=secret<br />
       <war.bundle>true</war.bundle>
     </properties>
     </dependency>
-    
+
     <dependency>
       <groupId>astrogrid-ogsadai</groupId>
       <type>jar</type>
@@ -157,7 +157,7 @@ tomcat.password=secret<br />
       <war.bundle>true</war.bundle>
     </properties>
     </dependency>
-    
+
     <!-- required for the CEA interface -->
     <dependency>
       <id>astrogrid-workflow-objects</id>
@@ -184,7 +184,7 @@ tomcat.password=secret<br />
          <war.bundle>true</war.bundle>
       </properties>
    </dependency>
-   
+
     <dependency><!-- hsqldb - for testing -->
         <id>hsqldb</id>
         <version>1.7.1</version>
@@ -192,7 +192,7 @@ tomcat.password=secret<br />
       <war.bundle>true</war.bundle>
     </properties>
     </dependency>
-    
+
     <dependency>
       <id>log4j</id>
    <version>1.2.8</version>
