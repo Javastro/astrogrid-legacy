@@ -1,0 +1,21 @@
+
+There are three files to add to Jetpeed as follows:
+
+   $JPORTAL/webapp/WEB-INF/templates/jsp/portlets/html/AstrogridRegistry.jsp
+   $JPORTAL/src/java/org/astrogrid/registry/actions/portlets/AstroGridRegistryAction.java
+   $JPORTAL/webapp/WEB-INF/conf/Astrogrid.xreg
+
+Where $JPORTAL is the Jportal Home directory.
+
+You will also need the following class libraries:
+
+   uk.ac.starlink.jscp  contained in 'jadamclasses.jar'
+   org.apache.axis  contained in 'axis.jar'
+   javax.xml contained in 'jaxrpc.jar'
+
+These jar files should be put in $CATALINA_HOME/webapps/jportal/WEB-INF/lib where $CATALINA_HOME is the
+Tomcat home directory.
+
+From $JPORTAL type 'ant deploy or ant hotdeploy' to compile the java files a put them
+into the production system.
+
