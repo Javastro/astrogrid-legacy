@@ -731,13 +731,13 @@ public class QueryRegistry implements RegistryService {
              identElem.appendChild(doc.createTextNode(ident));
              root.appendChild(identElem);
              doc.appendChild(root);
-             System.out.println("the DOC IN GETRESOURCEBYIDNET1 = " + DomHelper.ElementToString(doc.getDocumentElement()));
+             //System.out.println("the DOC IN GETRESOURCEBYIDNET1 = " + DomHelper.ElementToString(doc.getDocumentElement()));
           } catch (ParserConfigurationException pce) {
              throw new RegistryException(pce);
           }
           try {
               resultDoc =  callService(doc,"GetResourcesByIdentifier","GetResourcesByIdentifier");
-              System.out.println("resultDoc = " + DomHelper.DocumentToString(resultDoc));
+              //System.out.println("resultDoc = " + DomHelper.DocumentToString(resultDoc));
           } catch (RemoteException re) {
               QueryRegistry qr = new QueryRegistry(conf.getUrl(org.astrogrid.registry.client.RegistryDelegateFactory.ALTQUERY_URL_PROPERTY,null));
               try {
