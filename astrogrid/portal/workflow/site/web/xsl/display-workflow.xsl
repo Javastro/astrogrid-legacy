@@ -9,6 +9,11 @@
         <ag-link rel="stylesheet" type="text/css" href="/astrogrid-portal/mount/workflow/workflow.css"/>           
             <table border="1">
                 <tr>
+                  <td colspan="2">
+                    <ag-menu name="workflow-menu"/>
+                  </td>
+                </tr>
+                <tr>
                     <td width="30">Name:</td>
                     <td>                        
                         <xsl:element name="input">
@@ -16,21 +21,19 @@
                             <xsl:attribute name="size">40</xsl:attribute>
                             <xsl:attribute name="value"><xsl:value-of select="@workflow-name"/></xsl:attribute>
                         </xsl:element>           
-                    </td>             
+                    </td>                                
                 </tr>
                 <tr>
-                    <td width="30">Description:</td><td>
+                    <td width="30">Description:</td>
+                    <td>
                         <xsl:element name="input">
                             <xsl:attribute name="type">text</xsl:attribute>
                             <xsl:attribute name="size">40</xsl:attribute>
                             <xsl:attribute name="value"><xsl:value-of select="@workflow-description"/></xsl:attribute>
                         </xsl:element>                  
-                    </td>       
+                    </td>
                 </tr>                    
-            </table>
-            <ag-div>
-                <ag-menu name="main-menu"/>
-            </ag-div>            
+            </table>            
             <table border="0" cellpadding="0" cellspacing="0">  
                 <tr>
                     <xsl:apply-templates select="*"/>
