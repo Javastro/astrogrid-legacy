@@ -89,6 +89,12 @@
             <groupId>org.astrogrid</groupId>
             <version>SNAPSHOT</version>
         </dependency>
+        
+        <dependency>
+            <artifactId>astrogrid-workflow-objects</artifactId>
+            <groupId>org.astrogrid</groupId>
+            <version>SNAPSHOT</version>
+        </dependency>
 
         <dependency>
         	<artifactId>commons-jxpath</artifactId>
