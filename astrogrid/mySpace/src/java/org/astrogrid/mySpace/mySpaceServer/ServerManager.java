@@ -2,15 +2,27 @@
 
 package org.astrogrid.mySpace.mySpaceServer;
 
-import java.util.Vector;
+//astrogrid
 import org.astrogrid.mySpace.mySpaceRegistry.DataItemRecord;
 import org.astrogrid.mySpace.mySpaceRegistry.MySpaceManager;
 import org.astrogrid.mySpace.mySpaceRegistry.UserAccount;
+//java
+import java.util.Vector;
+import java.io.PrintWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.lang.Exception;
+import org.apache.log4j.Logger;
 
 /**
- * @WebService 
+ * @WebService
+ * 
+ * @author C L Qin
+ * @version Iteration 2.
  */
 public class ServerManager {
+	
+    private static Logger logger = Logger.getLogger(ServerManager.class);
 
     public String processRequest(){
 
@@ -20,6 +32,7 @@ public class ServerManager {
     /** userAcc = String usrID + String communityID
      * */
     public boolean deleteDataHolder(String dataHolderPath) {
+
 
       return true;
 }
@@ -34,19 +47,45 @@ public class ServerManager {
         return true;
     }
 
-    public boolean moveDataHolder(String dataHolderPath, String destinationDataHolderPath) {
+    public String moveDataHolder(String dataHolderPath, String destinationDataHolderPath) {
 
-        return true;
+		logger.debug("YYY moveDataHolder cotent = TEST........");
+		String s = "SUCCS "+dataHolderPath +destinationDataHolderPath;
+        return s;
     }
 
-    public boolean saveDataHolder(String dataHolderPath, String destinationDataHolderPath) {
+    public boolean saveDataHolder(String content, String dataHolderPath) 
+	        throws Exception{
+		PrintWriter printWriter = null;
+		try{
 
-        return true;
-    }
+			//logger.debug("YYY cotent = TEST saveDataHolder........");			
+			
+			File dataholder = new File(dataHolderPath);
+			//open file to write into
+			printWriter = new PrintWriter(new FileOutputStream(dataholder));    	    
+    	    
+			//write to file
+			printWriter.println(content);
+		    logger.debug("YYY content = "+content +"YYY path = " +dataHolderPath +" FilePath =" +dataholder.getAbsolutePath());
+			return true;		    
+				    
+		}catch (Exception e) {//catch unexpected Exception
+			//throw e;
+			logger.error("YYY FAULT!!! "+e);
+		}finally{
+			//close file
+			try{
+				if(printWriter != null) {
+					printWriter.close();
+				}
+			}catch(Exception e){
+				throw e;
+			}
+			return false;
+		}
 
-    public boolean createDirectory(String inputDirPath) {
-
-        return true;
+        //return true;
     }
 
     //need to be decided not implement in Iteration 2
