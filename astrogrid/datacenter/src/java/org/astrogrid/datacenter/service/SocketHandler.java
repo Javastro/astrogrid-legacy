@@ -1,5 +1,5 @@
 /*
- * $Id: SocketHandler.java,v 1.12 2003/09/16 16:00:15 mch Exp $
+ * $Id: SocketHandler.java,v 1.13 2003/09/16 17:36:46 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
+import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.common.QueryIdHelper;
 import org.astrogrid.datacenter.common.QueryStatus;
 import org.astrogrid.datacenter.common.ResponseHelper;
@@ -49,7 +50,7 @@ public class SocketHandler extends ServiceServer implements Runnable, QueryListe
       out = new SocketXmlOutputStream(socket.getOutputStream());
 
       TraceInputStream tin = new TraceInputStream(socket.getInputStream());
-//      tin.setState(true);
+      tin.setState(true);
       tin.copy2File(new File("incomingMsgs.log"));
       in = new SocketXmlInputStream(tin);
 
@@ -123,7 +124,7 @@ public class SocketHandler extends ServiceServer implements Runnable, QueryListe
             else if (docRequest.getElementsByTagName(SocketDelegate.START_QUERY_TAG).getLength() > 0)
             {
                Log.trace("SocketHandler: Starting a query");
-               DatabaseQuerier querier = DatabaseQuerier.getQuerier(QueryIdHelper.getQueryId(docRequest.getDocumentElement()));
+               DatabaseQuerier querier = getQuerierFromDoc(docRequest);
 
                Thread queryThread = new Thread(querier);
                queryThread.start();
@@ -133,7 +134,7 @@ public class SocketHandler extends ServiceServer implements Runnable, QueryListe
             else if (docRequest.getElementsByTagName(SocketDelegate.REGISTER_LISTENER_TAG).getLength() > 0)
             {
                Log.trace("SocketHandler: Registering listeners");
-               DatabaseQuerier querier = DatabaseQuerier.getQuerier(QueryIdHelper.getQueryId(docRequest.getDocumentElement()));
+               DatabaseQuerier querier = getQuerierFromDoc(docRequest);
                querier.registerWebListeners(docRequest.getDocumentElement());
                out.writeDoc(ResponseHelper.makeStatusResponse(querier));
             }
@@ -144,14 +145,14 @@ public class SocketHandler extends ServiceServer implements Runnable, QueryListe
             else if (docRequest.getElementsByTagName(SocketDelegate.REQ_RESULTS_TAG).getLength() > 0)
             {
                Log.trace("SocketHandler: Results Requested");
-               DatabaseQuerier querier = DatabaseQuerier.getQuerier(QueryIdHelper.getQueryId(docRequest.getDocumentElement()));
+               DatabaseQuerier querier = getQuerierFromDoc(docRequest);
                Document response = ResponseHelper.makeResultsResponse(querier, querier.getResults().toVotable().getDocumentElement());
                out.writeDoc(response);
             }
             else if (docRequest.getElementsByTagName(SocketDelegate.REQ_STATUS_TAG).getLength() > 0)
             {
                Log.trace("SocketHandler: Status Requested");
-               DatabaseQuerier querier = DatabaseQuerier.getQuerier(QueryIdHelper.getQueryId(docRequest.getDocumentElement()));
+               DatabaseQuerier querier = getQuerierFromDoc(docRequest);
                Document response = ResponseHelper.makeStatusResponse(querier);
                out.writeDoc(response);
             }
@@ -207,6 +208,17 @@ public class SocketHandler extends ServiceServer implements Runnable, QueryListe
       }
    }
 
+   private DatabaseQuerier getQuerierFromDoc(Document doc)
+   {
+      String queryId = QueryIdHelper.getQueryId(doc.getDocumentElement());
+      DatabaseQuerier querier = DatabaseQuerier.getQuerier(queryId);
+      if (querier == null)
+      {
+         throw new IllegalArgumentException("No querier found for id='"+queryId+"'"
+                                               +", source doc="+XMLUtils.DocumentToString(doc));
+      }
+      return querier;
+   }
 
    /**
     * Attempts to let client know of error
@@ -225,6 +237,9 @@ public class SocketHandler extends ServiceServer implements Runnable, QueryListe
 
 /*
 $Log: SocketHandler.java,v $
+Revision 1.13  2003/09/16 17:36:46  mch
+Added checks for null/missing query ids
+
 Revision 1.12  2003/09/16 16:00:15  mch
 Added more message handlers
 
