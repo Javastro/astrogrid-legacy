@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/site/web/xsp/login-pass.xsp,v $</cvs:source>
-    | <cvs:author>$Author: clq2 $</cvs:author>
-    | <cvs:date>$Date: 2005/03/11 17:58:22 $</cvs:date>
-    | <cvs:version>$Revision: 1.12 $</cvs:version>
+    | <cvs:author>$Author: jdt $</cvs:author>
+    | <cvs:date>$Date: 2005/03/29 12:52:34 $</cvs:date>
+    | <cvs:version>$Revision: 1.13 $</cvs:version>
     |
     +-->
 <xsp:page language="java"
@@ -167,6 +167,21 @@ function toggle(yo, was){
 <div class="boxedLayout">
   <h1>Webstart Applications</h1>
     <table border="0" cellpadding="3">
+    <tr>
+      <td valign="top"
+          title="Launch application">
+        <a href="http://software.astrogrid.org/jnlp/beta/astrogrid-desktop/astrogrid-desktop.jnlp"                  
+           class="strongLink">Workbench</a>
+      </td>
+      <td>
+        Integrates astrogrid into the desktop: 
+        allows astrogrid services to be easily called from user applications and scripts; 
+        <div style="cursor: help" 
+              title="will include Redshift maker, Solar movie maker..">
+          create parameterized workflows.
+        </div>        
+      </td>
+    </tr>    
       <tr>
         <td valign="top"
             title="Launch application">
@@ -189,33 +204,6 @@ function toggle(yo, was){
         <a onclick="javascript:window.open('http://www.star.bris.ac.uk/~mbt/topcat/');" class="strongLink">Topcat</a> - the Tool for OPerations on Catalogues And Tables, developed by 
         <a onclick="javascript:window.open('http://www.starlink.ac.uk');" class="strongLink">Starlink UK</a>, 
         bundled with a plugin to read and write files in VOSpace.
-      </td>
-    </tr>
-    <tr>
-      <td valign="top"
-          title="Launch application">
-        <a href="http://software.astrogrid.org/jnlp/treeview/mstv.jnlp" 
-           class="strongLink">Treeview</a>
-      </td>
-      <td>
-        <a onclick="javascript:window.open('http://www.star.bris.ac.uk/~mbt/treeview/');" class="strongLink">Treeview</a>, 
-        developed by <a onclick="javascript:window.open('http://www.starlink.ac.uk');" class="strongLink">Starlink UK</a>, 
-        bundled with a plugin to read and write files to VOSpace.
-      </td>
-    </tr>
-    <tr>
-      <td valign="top"
-          title="Launch application">
-        <a href="http://software.astrogrid.org/jnlp/astrogrid-desktop/astrogrid-desktop.jnlp" 
-           class="strongLink">Workbench</a>
-      </td>
-      <td>
-        Integrates astrogrid into the desktop: 
-        allows astrogrid services to be easily called from user applications and scripts; 
-        <div style="cursor: help" 
-              title="will include Redshift maker, Solar movie maker..">
-          create parameterized workflows.
-        </div>        
       </td>
     </tr>    
   </table>
@@ -477,6 +465,12 @@ Locate Spectral data
 <!--+
     | <cvs:log>
     |   $Log: login-pass.xsp,v $
+    |   Revision 1.13  2005/03/29 12:52:34  jdt
+    |   Merges from portalLogin_pjn_1040 and sneakily slipped in a dependency update on the installer.
+    |
+    |   Revision 1.12.10.1  2005/03/29 12:41:18  pjn3
+    |   link to new webstart dashboard included, treeview removed. #1040
+    |
     |   Revision 1.12  2005/03/11 17:58:22  clq2
     |   portalWEBSTART_pjn_838
     |
