@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SERVICE METADATA CONCEPT -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:include schemaLocation="http://www.astrogrid.org/schema/definitions.xsd"/>
+    <xs:element name="serviceInterfaceUrl">
+        <xs:simpleType>
+            <xs:restriction base="xs:anyURI">
+                <xs:minLength value="2"/>
+            </xs:restriction>
+        </xs:simpleType>
+    </xs:element>
+    <xs:element name="serviceBaseUrl">
+        <xs:simpleType>
+            <xs:restriction base="xs:anyURI">
+                <xs:minLength value="2"/>
+            </xs:restriction>
+        </xs:simpleType>
+    </xs:element>
+    <xs:element name="serviceHTTPResultType">
+        <xs:simpleType>
+            <!-- See http://www.iana.org/assignments/media-types/ for allowed MIME types -->
+            <xs:restriction base="xs:string">
+                <xs:minLength value="2"/>
+            </xs:restriction>
+        </xs:simpleType>
+    </xs:element>
+    <xs:element name="serviceHTTPResults">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="unbounded" ref="serviceHTTPResultType"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="interfaceMetadata">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="serviceInterfaceUrl"/>
+                <xs:element ref="serviceBaseUrl"/>
+                <xs:element ref="serviceHTTPResults"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="serviceStandardUri" type="xs:anyURI"/>
+    <xs:element name="serviceStandardUrl" type="xs:anyURI"/>
+    <xs:element name="serviceRestrictionSpatial">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="serviceMSR" type="myFloat180"/>
+                <xs:element name="serviceMaxImageSize" type="myFloat360"/>
+            </xs:sequence>
+            <xs:attribute ref="unitAngle" use="required"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="serviceRestriction">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="serviceRestrictionSpatial"/>
+                <xs:element name="serviceMaxNrows" type="myFloat"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="capabilitiesMetadata">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="serviceStandardUri"/>
+                <xs:element ref="serviceStandardUrl"/>
+                <xs:element ref="serviceRestriction"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="serviceMetadataConcept">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="interfaceMetadata"/>
+                <xs:element ref="capabilitiesMetadata"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

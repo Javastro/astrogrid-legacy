@@ -1,177 +1,193 @@
 package org.astrogrid.registry;
 
+import java.io.*;
+import java.net.*;
+
+import org.w3c.dom.*;
 import de.gmd.ipsi.domutil.*;
 import de.gmd.ipsi.pdom.*;
-import org.w3c.dom.*;
-import java.io.*;
-import java.io.IOException;
 
-
-
-/*
-*
-*
-*
-*/
-
+/**
+ *
+ * @author Pedro Contreras <mailto:p.contreras@qub.ac.uk><p>
+ * @see School of Computer Science   <br>
+ * The Queen's University of Belfast <br>
+ * {@link http://www.cs.qub.ac.uk}
+ * <p>
+ * ASTROGRID Project {@link http://www.astrogrid.org}<br>
+ * Registry Group
+ *
+ */
 
 
 public class RegAdminAction {
 
-
-   /*
-	*This Method delete any node contained in the variable "deleteNode" in the
-	*file "xmlFile"
-	*
+  static final String fileNamePDom = "doc.pdom";
+  /**
+   * This Method delete any node contained in the variable "deleteNode" in the file
+   *
+   * @param xmlInputFile URL in which the input XML file is store
+   * @param xmlOutputFile physical address and file name where the output file will be
+   * @param nodeToDelete name of the node to delete
+   * @throws DOMParseException
+   * @throws IOException
    */
+  public static void deleteNode(String xmlInputFile, String xmlOutputFile, String nodeToDelete) throws
+    DOMParseException, IOException {
 
-   public static void deleteNode(String xmlFile, String deleteNode) throws  IOException {
+    //clean up
+    File file = new File(fileNamePDom);
+    file.delete();
+    file = new File(fileNamePDom);
 
-	 PDocument doc;
-	 doc = new PDocument("mydoc.pdom");
-	 try {
-	   //Create a PDOM Document by parsing and XML input stream
-	   DOMUtil.parseXML(
-		   new FileInputStream(xmlFile),
-		   doc,
-		   false, // Parse mode: true = validating, false = non-validating
-		   DOMUtil.SKIP_IGNORABLE_WHITESPACE
-		   );
-	 }
-	 catch (DOMParseException e) {
-	   e.printStackTrace();
-	 }
-	 catch (FileNotFoundException e) {
-	   e.printStackTrace();
-	 }
-	 catch (IOException e) {
-	   e.printStackTrace();
-	 }
+    //PDOM declaration
+    PDocument doc = new PDocument(fileNamePDom);
 
-	 // delete all the element deleteNode in doc PDOM document
-	 deleteAllElements(doc,deleteNode);
+    try {
+      // URL xmlFileName variable stores XML file address to parse
+      URL xmlFileName = new URL(xmlInputFile);
+      InputStream xfl = xmlFileName.openStream();
 
-	 // ... and do the garbage collection
-	 PDOM.collectDOMFileGarbage( xmlFile );
+      //Create a PDOM Document by parsing and XML input stream
+      DOMUtil.parseXML(
+          xfl,
+          doc,
+          false, // Parse mode: true = validating, false = non-validating
+          DOMUtil.SKIP_IGNORABLE_WHITESPACE
+          );
+    }
+    catch (DOMParseException e) {
+      e.printStackTrace();
+    }
+    catch (FileNotFoundException e) {
+      e.printStackTrace();
+    }
+    catch (IOException e) {
+      e.printStackTrace();
+    }
+    // delete nodes in PDOM document
+    deleteElements(doc, nodeToDelete);
 
-   }
+    //defragmentation
+    doc.defragment();
 
+    //clear clache
+    PDOM.clearCache();
 
-   /*
-	*
-	*
-	*
-   */
+    //Full garbange collection
+    PDOM.collectDOMFileGarbage(fileNamePDom);
+    file = new File(fileNamePDom);
+    doc = new PDocument(fileNamePDom);
 
-   public void addNode(String xmlFile,  Node parentNode, String newNode, String textNewNode) throws  IOException {
-	 //PDOM document creation
-	 PDocument doc;
-	 doc = new PDocument("mydoc.pdom");
-	 try {
-	   //Create a PDOM Document by parsing and XML input stream
-	   DOMUtil.parseXML(
-		   new FileInputStream(xmlFile),
-		   doc,
-		   false, // Parse mode: true = validating, false = non-validating
-		   DOMUtil.SKIP_IGNORABLE_WHITESPACE
-		   );
-	 }
-	 catch (DOMParseException ex) {
-	   ex.printStackTrace();
-	 }
-	 catch (FileNotFoundException ex) {
-	   ex.printStackTrace();
-	 }
-	 catch (IOException ioe) {
-	   ioe.printStackTrace();
-	 }
-	 //Variable definition
+    // write the output in a file
+    try {
+      String os = xmlOutputFile;
+      FileOutputStream outputStream = new FileOutputStream(os);
+      XMLWriter out = new XMLWriter(outputStream);
+      out.formatOutput(true);
+      out.write(doc);
+      out.writeln();
+      out.flush();
+    }
+    catch (IOException e) {
+      e.printStackTrace();
+    }
+    //Close the document
+    doc.close();
+ }
 
-	 /*
-	  find out how to convert a String into a node element
-	  and insert here!!
-	  */
-	 Element e;
-	 Text t;
-	 Node n;
-
-	 // Get the Node containing parentNode and add a newNode with text "textNewNode"
-	 Node child = parentNode.getFirstChild();
-	  while (child != null) {
-			  if ( child instanceof Element && child.getNodeName() == textNewNode) {
-					  e = doc.createElement(newNode);
-					  t = doc.createTextNode(textNewNode);
-					  parentNode = e.appendChild(t);
-					  parentNode = child.appendChild(e);
-			  }
-		   child = child.getNextSibling();
-	}
-
-	// ... and do the garbage collection
-	 PDOM.collectDOMFileGarbage( xmlFile );
-   }
+ /**
+  * This method is called internally to delete a node
+  * @param root PDocument
+  * @param nodeToDelte node name to be deleted
+  */
+ static void deleteElements( Node root, String nodeToDelte ) {
+     Node child = root.getFirstChild();
+     while(child != null) {
+             if (child instanceof Element &&
+                     child.getNodeName() == nodeToDelte
+             ) {
+                     child = root.removeChild( child );
+             }
+             else {
+                     deleteElements( child, nodeToDelte );
+             }
+             child = child.getNextSibling();
+     }
+ }
 
 
-   /*
-	*
-	*
-	*
-   */
+ /**
+  * This method replace a comple XML file for another one
+  * @param oldFile file that will be replaced, is a physical address
+  * @param newFile is a URL address or physical
+  * @throws DOMParseException
+  * @throws IOException
+  */
+ static void replaceFile(String newFile, String oldFile) throws
+    DOMParseException, IOException {
 
+    //clean up
+    File file = new File(fileNamePDom);
+    file.delete();
+    file = new File(fileNamePDom);
 
-   public void update(String  xmlFile, String oldText, String newText ) throws  IOException {
-	  //Create a PDOM Document
-	 Document doc = DOMUtil.createDocument();
-	 try {
-	   DOMUtil.parseXML(
-		   new FileInputStream(xmlFile),
-		   doc,
-		   false, // Parse mode: true = validating, false = non-validating
-		   DOMUtil.SKIP_IGNORABLE_WHITESPACE
-		   );
-	 }
-	 catch (DOMParseException e) {
-	   e.printStackTrace();
-	 }
-	 catch (FileNotFoundException e) {
-	   e.printStackTrace();
-	 }
-	 catch (IOException ioe) {
-	   ioe.printStackTrace();
-	 }
-	 // Get the TextNode containing "Text" and update it
-	 Text t = (Text) doc.getFirstChild().getFirstChild();
-	 t.setData(newText);
+    //PDOM declaration
+    PDocument doc = new PDocument(fileNamePDom);
 
-   }
+    try {
+      // URL xmlFileName variable stores XML file address to parse
+      URL xmlFileName = new URL(newFile);
+      InputStream xfl = xmlFileName.openStream();
 
+      /**Create a PDOM Document by parsing and XML input stream
+       * the document is parsed to test if is well formed
+       */
+      DOMUtil.parseXML(
+          xfl,
+          doc,
+          false, // Parse mode: true = validating, false = non-validating
+          DOMUtil.SKIP_IGNORABLE_WHITESPACE
+          );
+    }
+    catch (DOMParseException e) {
+      e.printStackTrace();
+    }
+    catch (FileNotFoundException e) {
+      e.printStackTrace();
+    }
+    catch (IOException e) {
+      e.printStackTrace();
+    }
 
+    //defragmentation
+    doc.defragment();
 
-  static void deleteAllElements( Node root, String deleteNode ) {
+    //clear clache
+    PDOM.clearCache();
 
-	 Node child = root.getFirstChild();
-	 while(child != null) {
-			 if (child instanceof Element && child.getNodeName() == deleteNode) {
-			   child = root.removeChild( child );
-			 }
-			 else {
-			   deleteAllElements(child);
-			 }
-			 child = child.getNextSibling();
-	 }
-   }
-   static void deleteAllElements( Node root) {
-	 Node child = root.getFirstChild();
-	 while(child != null) {
-			 if (child instanceof Element && child.getNodeName() == "keyword") {
-			   child = root.removeChild( child );
-			 }
-			 else {
-			   deleteAllElements( child);
-			 }
-			 child = child.getNextSibling();
-	 }
-   }
+    //Full garbange collection
+    PDOM.collectDOMFileGarbage(fileNamePDom);
+    file = new File(fileNamePDom);
+    doc = new PDocument(fileNamePDom);
+
+    // write the output in a file
+    try {
+      String os = oldFile;
+      FileOutputStream outputStream = new FileOutputStream(os);
+      XMLWriter out = new XMLWriter(outputStream);
+      out.formatOutput(true);
+      out.write(doc);
+      out.writeln();
+      out.flush();
+    }
+    catch (IOException e) {
+      e.printStackTrace();
+    }
+    //Close the document
+    doc.close();
+ }
+
 
 
 }

@@ -124,7 +124,8 @@ public class Registry3_0 {
 		}
 	
 		if (response.indexOf("<?xml version=") > -1){
-			String editedResponse = response.replaceFirst("<?.*?>", "");
+                        String editedResponse = response.replaceFirst("<?.*?>", "");
+			//String editedResponse = response.substring(0, response.indexOf("?xml")) + response.substring(response.indexOf("<?xml version")+24, response.length());  
 			response = null;
 			response = editedResponse;
 		}

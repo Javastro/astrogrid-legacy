@@ -236,7 +236,7 @@ public class QueryParser3_0
 	}
 	
 	private static String returnRecordKeyPairs(String xqlResponse){
-		String xmlResponse = "";
+                String xmlResponse = "";
 		String nodeResponse = "";
 		
 		Reader reader2 = new StringReader(xqlResponse);
@@ -292,12 +292,12 @@ public class QueryParser3_0
 					}
 				}
 				catch (Exception e) {
-				  xmlResponse = "<recordKeyPair item='ERROR:' value='QUERY 4- " + e.toString() + "/>";
+				  xmlResponse = "<recordKeyPair item='ERROR:' value='QUERY 4- " + e.toString() + "'/>";
 				}
 			}
 		}
 		catch (Exception e) {
-		  xmlResponse = "<recordKeyPair item='ERROR:' value='QUERY 5- " + e.toString() + "/>";
+		  xmlResponse = "<recordKeyPair item='ERROR:' value='QUERY 5- " + e.toString() + "'/>";
 		}
 
 
