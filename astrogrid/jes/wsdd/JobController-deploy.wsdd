@@ -13,6 +13,6 @@
    xmlns:xsi="http://www.w3.org/2000/10/XMLSchema-instance">
    <service name="JobControllerService" provider="java:RPC">
       <parameter name="className" value="org.astrogrid.jes.jobcontroller.JobController"/>
-      <parameter name="allowedMethods" value="submitJob readJobList"/>
+      <parameter name="allowedMethods" value="submitJob jobList"/>
    </service>
 </deployment>
