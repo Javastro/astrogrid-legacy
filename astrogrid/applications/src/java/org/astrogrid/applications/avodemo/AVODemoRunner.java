@@ -1,5 +1,5 @@
 /*
- * $Id: AVODemoRunner.java,v 1.7 2004/03/23 12:51:26 pah Exp $
+ * $Id: AVODemoRunner.java,v 1.8 2004/03/29 12:33:31 pah Exp $
  * 
  * Created on 23-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -31,8 +31,8 @@ import org.astrogrid.applications.common.config.CeaControllerConfig;
 import org.astrogrid.applications.delegate.CEADelegateException;
 import org.astrogrid.applications.delegate.CommonExecutionConnectorClient;
 import org.astrogrid.applications.delegate.DelegateFactory;
-import org.astrogrid.applications.manager.MySpaceLocator;
 import org.astrogrid.applications.manager.externalservices.MySpaceFromConfig;
+import org.astrogrid.applications.manager.externalservices.MySpaceLocator;
 import org.astrogrid.community.beans.v1.Credentials;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.mySpace.delegate.MySpaceClient;
