@@ -1,5 +1,5 @@
 /*
- * $Id: DummyDelegate.java,v 1.2 2003/11/17 12:32:27 mch Exp $
+ * $Id: DummyDelegate.java,v 1.3 2003/11/17 12:46:15 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -14,10 +14,10 @@ import java.rmi.RemoteException;
 import javax.xml.parsers.ParserConfigurationException;
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
-import org.astrogrid.datacenter.common.DocHelper;
-import org.astrogrid.datacenter.common.QueryIdHelper;
+import org.astrogrid.datacenter.snippet.DocHelper;
+import org.astrogrid.datacenter.snippet.QueryIdHelper;
 import org.astrogrid.datacenter.query.QueryStatus;
-import org.astrogrid.datacenter.common.ResponseHelper;
+import org.astrogrid.datacenter.snippet.ResponseHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -342,6 +342,9 @@ public class DummyDelegate implements AdqlQuerier, ConeSearcher
 
 /*
 $Log: DummyDelegate.java,v $
+Revision 1.3  2003/11/17 12:46:15  mch
+Moving common to snippet
+
 Revision 1.2  2003/11/17 12:32:27  mch
 Moved QueryStatus to query pacakge
 

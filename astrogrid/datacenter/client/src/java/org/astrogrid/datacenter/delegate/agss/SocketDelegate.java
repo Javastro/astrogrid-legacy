@@ -1,11 +1,11 @@
 /*
- * $Id: SocketDelegate.java,v 1.2 2003/11/17 12:32:27 mch Exp $
+ * $Id: SocketDelegate.java,v 1.3 2003/11/17 12:46:15 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
 
 package org.astrogrid.datacenter.delegate.agss;
-import org.astrogrid.datacenter.common.*;
+import org.astrogrid.datacenter.snippet.*;
 import org.astrogrid.datacenter.query.*;
 import org.astrogrid.datacenter.delegate.*;
 
@@ -425,6 +425,9 @@ public class SocketDelegate implements AdqlQuerier
 
 /*
 $Log: SocketDelegate.java,v $
+Revision 1.3  2003/11/17 12:46:15  mch
+Moving common to snippet
+
 Revision 1.2  2003/11/17 12:32:27  mch
 Moved QueryStatus to query pacakge
 
