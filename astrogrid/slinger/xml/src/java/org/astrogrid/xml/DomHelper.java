@@ -1,5 +1,5 @@
 /*
-   $Id: DomHelper.java,v 1.2 2005/03/10 14:45:37 mch Exp $
+   $Id: DomHelper.java,v 1.3 2005/03/11 14:48:08 mch Exp $
 
    (c) Copyright...
 */
@@ -84,7 +84,7 @@ public class DomHelper
    /**
     * Convenience method returns Document from given URL
     */
-   public static Document newDocument(URL documentLocation) throws ParserConfigurationException, SAXException, IOException
+   public static Document newDocument(URL documentLocation) throws SAXException, IOException
    {
       return newDocument(new BufferedInputStream(documentLocation.openStream()));
    }
