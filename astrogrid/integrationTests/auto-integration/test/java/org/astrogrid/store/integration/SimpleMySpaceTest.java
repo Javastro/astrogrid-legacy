@@ -1,4 +1,4 @@
-/*$Id: SimpleMySpaceTest.java,v 1.12 2004/06/16 21:16:55 jdt Exp $
+/*$Id: SimpleMySpaceTest.java,v 1.13 2004/07/07 18:31:45 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -82,7 +82,7 @@ public final class SimpleMySpaceTest extends TestCase {
                 "org.astrogrid.myspace.endpoint");
         log.info("Running test against endpoint " + endPoint);
         final User operator = new User("someuser@somecommunity", "group", "token");
-        myspace = new MySpaceIt05Delegate(operator, new Msrl(endPoint).toString());
+        myspace = new MySpaceIt05Delegate(operator, new Msrl("myspace:"+endPoint).toString());
         //
         //      Configure the delegate to (i) not generate test responses and
         //      (ii) to throw exceptions if errors are returned.
@@ -338,6 +338,9 @@ public final class SimpleMySpaceTest extends TestCase {
 }
 /*
  $Log: SimpleMySpaceTest.java,v $
+ Revision 1.13  2004/07/07 18:31:45  mch
+ Fixed Msrl constructor in setup
+
  Revision 1.12  2004/06/16 21:16:55  jdt
  Merged from branch MySpace_JDT_BZ340
 
@@ -352,3 +355,4 @@ public final class SimpleMySpaceTest extends TestCase {
  to delete all his files...can just delete the user.   ahhh, much easier.
 
  */
+
