@@ -20,7 +20,7 @@
   <shortDescription>AstroGrid Warehouse OGSA-DAI Components</shortDescription>
 
   
-<siteDirectory>/var/www/www/maven/build/warehouse/ogsadai</siteDirectory>
+  <siteDirectory>/var/www/www/maven/build/warehouse/ogsadai</siteDirectory>
 
   <repository>
     <connection>
@@ -57,7 +57,16 @@
     </developer>
   </developers>
 
-  <dependencies> <!-- hope to be able to remove some of these soon. -->
+  <dependencies>
+  
+    <!-- This is used to build the executable JAR that is the final
+         product of this sub-project. -->
+    <dependency>
+      <groupId>maven</groupId>
+      <type>plugin</type>
+      <artifactId>maven-javaapp-plugin</artifactId>
+      <version>1.2</version>
+    </dependency>
 
     <dependency>
       <id>wsdl4j</id>
