@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE TestWebServices SYSTEM "TestWebServices.dtd">
+<TestWebServices>
+	<WebServiceTest name="CalculateDocument" fullclassname="calculate.CalculateTestCase" threadstyle="synchroneous">
+		<Runnable type="junit">
+			<TestCase name="testService" loop="1"  threadstyle="synchroneous">
+				<Thread number="5"  loop="1" threadstyle="synchroneous" />
+				<Thread number="10"  loop="1" threadstyle="synchroneous" />
+				<Thread number="100"  loop="1" threadstyle="synchroneous" />
+			</TestCase>
+			<TestCase name="testService" loop="1"  threadstyle="synchroneous">
+				<Thread number="2"  loop="1" threadstyle="synchroneous" />
+				<Thread number="4"  loop="1" threadstyle="synchroneous" />
+				<Thread number="6"  loop="1" threadstyle="synchroneous" />
+			</TestCase>
+		</Runnable>
+	</WebServiceTest>
+	<WebServiceTest name="CalculateRPCDocument" fullclassname="calculaterpc.CalculateRPCTestCase" threadstyle="synchroneous">
+		<Runnable type="junit">
+			<TestCase name="testService" loop="1"  threadstyle="synchroneous">
+				<Thread number="5"  loop="1" threadstyle="synchroneous" />
+				<Thread number="10"  loop="1" threadstyle="synchroneous" />
+				<Thread number="100"  loop="1" threadstyle="synchroneous" />
+			</TestCase>
+			<TestCase name="testService" loop="1"  threadstyle="synchroneous">
+				<Thread number="2"  loop="1" threadstyle="synchroneous" />
+				<Thread number="4"  loop="1" threadstyle="synchroneous" />
+				<Thread number="6"  loop="1" threadstyle="synchroneous" />
+			</TestCase>
+		</Runnable>
+	</WebServiceTest>
+</TestWebServices>
