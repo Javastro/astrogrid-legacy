@@ -1,5 +1,5 @@
 /*
- * $Id: WorkFlowCastorRoundTripTest.java,v 1.1 2004/03/23 16:34:16 pah Exp $
+ * $Id: WorkFlowCastorRoundTripTest.java,v 1.2 2004/05/04 11:30:06 pah Exp $
  * 
  * Created on 07-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -28,19 +28,10 @@ import org.xml.sax.InputSource;
 
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.beans.v1.parameters.types.ParameterTypes;
-import org.astrogrid.applications.common.config.ConfigLoader;
 import org.astrogrid.community.User;
 import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.community.beans.v1.Credentials;
 import org.astrogrid.community.beans.v1.Group;
-import org.astrogrid.jes.delegate.JesDelegateException;
-import org.astrogrid.jes.delegate.JesDelegateFactory;
-import org.astrogrid.jes.delegate.JobController;
-import org.astrogrid.mySpace.delegate.MySpaceClient;
-import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
-import org.astrogrid.mySpace.delegate.helper.MySpaceHelper;
-import org.astrogrid.portal.workflow.WKF;
-import org.astrogrid.registry.beans.resource.VODescription;
 import org.astrogrid.workflow.beans.v1.Input;
 import org.astrogrid.workflow.beans.v1.Output;
 import org.astrogrid.workflow.beans.v1.Sequence;
@@ -67,8 +58,6 @@ public class WorkFlowCastorRoundTripTest extends TestCase {
 
    private User user= new User();
 
-   private MySpaceClient mySpaceManager;
-
    static private org.apache.commons.logging.Log logger =
       org.apache.commons.logging.LogFactory.getLog(WorkFlowCastorRoundTripTest.class);
    private final Date runDate = new Date();
@@ -90,12 +79,10 @@ public class WorkFlowCastorRoundTripTest extends TestCase {
     */
    protected void setUp() throws Exception {
       super.setUp();
-      WKF.getInstance().checkPropertiesLoaded();
-      ConfigLoader.setConfigType(ConfigLoader.TEST_CONFIG); // set up the test config as early as possible
 
    }
 
-   public void testRun() throws JesDelegateException, IOException, MarshalException, ValidationException {
+   public void testRun() throws IOException, MarshalException, ValidationException {
       // need to put a file into mySpace
       Vector servers = new Vector();
       servers.add("serv1");
