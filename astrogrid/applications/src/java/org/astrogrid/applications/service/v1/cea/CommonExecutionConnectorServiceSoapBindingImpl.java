@@ -1,5 +1,5 @@
 /*
- * $Id: CommonExecutionConnectorServiceSoapBindingImpl.java,v 1.1 2004/03/26 00:56:53 pah Exp $
+ * $Id: CommonExecutionConnectorServiceSoapBindingImpl.java,v 1.2 2004/03/29 12:32:46 pah Exp $
  * 
  * Created on 25-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -15,13 +15,14 @@ package org.astrogrid.applications.service.v1.cea;
 
 import java.rmi.RemoteException;
 
+import org.apache.axis.description.ServiceDesc;
+
+
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.beans.v1.ApplicationList;
 import org.astrogrid.applications.beans.v1.axis.ceabase.ApplicationBase;
 import org.astrogrid.applications.beans.v1.axis.ceabase._ApplicationList;
 import org.astrogrid.applications.manager.CommandLineApplicationController;
-import org.astrogrid.applications.service.v1.cea.CeaFault;
-import org.astrogrid.applications.service.v1.cea.CommonExecutionConnector;
 import org.astrogrid.applications.service.v1.cea.impl._returnRegistryEntryResponse_returnRegistryEntryReturn;
 import org.astrogrid.common.bean.Axis2Castor;
 import org.astrogrid.common.bean.Castor2Axis;
@@ -50,7 +51,10 @@ public class CommonExecutionConnectorServiceSoapBindingImpl
     */
    public CommonExecutionConnectorServiceSoapBindingImpl() {
       //REFACTORME - need to use picocontainer to get full IoC - this constructor uses configuration based locators...
-      clec = new CommandLineApplicationController();
+      ServiceDesc servicedesc = org.apache.axis.MessageContext.getCurrentContext().getService().getServiceDescription();
+      //FIXME - need to pass thsi into the application controller
+      clec = new CommandLineApplicationController(servicedesc);
+      
    }
 
    /** 
