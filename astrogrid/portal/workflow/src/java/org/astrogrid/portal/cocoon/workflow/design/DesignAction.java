@@ -103,7 +103,8 @@ public class DesignAction extends AbstractAction {
         COMMUNITY_TOKEN_TAG = "token";
         
     public static final String
-        WORKFLOW_NAME_PARAMETER = "workflow-name",  
+        WORKFLOW_NAME_PARAMETER = "workflow-name",
+		WORKFLOW_NEW_NAME_PARAMETER = "workflow-new-name",  
 	    WORKFLOW_DESCRIPTION_PARAMETER = "workflow-description";
         
     public static final String
@@ -132,7 +133,9 @@ public class DesignAction extends AbstractAction {
         ACTION_DELETE_WORKFLOW = "delete-workflow",
         ACTION_CREATE_WORKFLOW_FROM_TEMPLATE = "create-workflow-from-template",
         ACTION_SUBMIT_WORKFLOW = "submit-workflow",
+	    ACTION_EDIT_WORKFLOW = "edit-workflow",
         ACTION_READ_WORKFLOW_LIST = "read-workflow-list",
+		ACTION_COPY_WORKFLOW = "copy-workflow",
         ACTION_CHOOSE_QUERY = "choose-query",
         ACTION_EDIT_JOINCONDITION = "edit-join-condition",
         ACTION_READ_QUERY = "read-query",
@@ -280,6 +283,9 @@ public class DesignAction extends AbstractAction {
                 else if( action.equals( ACTION_READ_WORKFLOW ) ) {
                     this.readWorkflow(); 
                 }
+				else if( action.equals( ACTION_EDIT_WORKFLOW ) ) {
+					this.readWorkflow(); 
+				}                
                 else if( action.equals( ACTION_DELETE_WORKFLOW ) ) {
                     this.deleteWorkflow(); 
                 }
@@ -330,7 +336,10 @@ public class DesignAction extends AbstractAction {
 				}
 				else if( action.equals( ACTION_REMOVE_WORKFLOW_FROM_SESSION )){
 					this.removeWorkflow();  
-				}
+				}				
+				else if( action.equals( ACTION_COPY_WORKFLOW ) ) {
+					this.copyWorkflow();                     								
+				}				                
                 else {
                     debug( "unsupported action"); 
                 }
@@ -379,7 +388,7 @@ public class DesignAction extends AbstractAction {
         
                 // JL Note: Iteration 3 way of doing things...
                 // PJN note: alterred slightly, also not sure if LoginAction intends to put security token into session?
-     
+
                 this.userid = (String)session.getAttribute( USER_TAG );  
                 trace( "userid: " + userid ) ;             
                 this.community = (String)session.getAttribute( COMMUNITY_NAME_TAG );
@@ -554,6 +563,36 @@ public class DesignAction extends AbstractAction {
             }
          
         }
+
+        private void copyWorkflow() throws ConsistencyException {
+            if( TRACE_ENABLED ) trace( "DesignActionImpl.copyWorkflow() entry" ) ;
+              
+            try {
+                
+				String
+                	name = request.getParameter( WORKFLOW_NAME_PARAMETER ) ;
+            	String
+                	newName = request.getParameter( WORKFLOW_NEW_NAME_PARAMETER ) ;
+                    
+            	if( name == null ) {
+                	trace( "DesignActionImpl.copyWorkflow(): WORKFLOW_NAME_PARAMETER was null" );
+                	throw new ConsistencyException() ;
+            	}
+            	else if( newName == null ) {
+					trace( "DesignActionImpl.copyWorkflow(): WORKFLOW_NEW_NAME_PARAMETER was null" );
+					throw new ConsistencyException() ;
+				}
+				else{
+					workflow = Workflow.readWorkflow( communitySnippet(), name ) ;
+					workflow.setName( newName ) ;
+					Workflow.saveWorkflow( communitySnippet(), workflow ) ;
+					workflow = null ;                
+				}
+            }
+			finally {
+				if( TRACE_ENABLED ) trace( "DesignActionImpl.copyWorkflow() exit" ) ;
+			}
+		}        
         
         
         private void deleteWorkflow() throws ConsistencyException {
