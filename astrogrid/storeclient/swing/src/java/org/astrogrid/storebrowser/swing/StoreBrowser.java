@@ -1,5 +1,5 @@
 /*
- * $Id: StoreBrowser.java,v 1.8 2005/04/01 01:54:56 mch Exp $
+ * $Id: StoreBrowser.java,v 1.9 2005/04/01 10:41:02 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -8,12 +8,14 @@
  */
 
 package org.astrogrid.storebrowser.swing;
-import java.io.*;
 import javax.swing.*;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -28,10 +30,8 @@ import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.file.FileNode;
 import org.astrogrid.file.LocalFile;
-import org.astrogrid.io.Piper;
 import org.astrogrid.io.piper.StreamPiper;
 import org.astrogrid.slinger.Slinger;
-import org.astrogrid.slinger.mime.MimeFileExts;
 import org.astrogrid.slinger.mime.MimeTypes;
 import org.astrogrid.slinger.sources.SourceIdentifier;
 import org.astrogrid.slinger.sources.SourceMaker;
@@ -39,6 +39,7 @@ import org.astrogrid.slinger.targets.TargetIdentifier;
 import org.astrogrid.slinger.targets.TargetMaker;
 import org.astrogrid.storebrowser.folderlist.DirectoryModel;
 import org.astrogrid.storebrowser.folderlist.DirectoryView;
+import org.astrogrid.storebrowser.textview.TextContentsView;
 import org.astrogrid.storebrowser.tree.StoreFileNode;
 import org.astrogrid.storebrowser.tree.StoreTreeView;
 import org.astrogrid.storebrowser.tree.StoresList;
@@ -71,6 +72,7 @@ public class StoreBrowser extends JDialog
    DirectoryView directoryView = new DirectoryView();
    
    //toolbar buttons
+   JButton addStoreBtn = null;
    JButton refreshBtn = null;
    JButton uploadBtn = null;
    JButton uploadUrlBtn = null;
@@ -108,6 +110,7 @@ public class StoreBrowser extends JDialog
       addressPicker.addItem(""); //empty one to start with
       
       //toolbar
+      addStoreBtn = IconButtonHelper.makeIconButton("AddStore", "AddStore", "Add store to the tree");
       refreshBtn = IconButtonHelper.makeIconButton("Refresh", "Refresh", "Reloads file list from server");
       newFolderBtn = IconButtonHelper.makeIconButton("New", "NewFolder", "Creates a new folder");
       uploadBtn = IconButtonHelper.makeIconButton("Put", "Up", "Upload file from local disk to MySpace");
@@ -119,6 +122,7 @@ public class StoreBrowser extends JDialog
       JPanel iconBtnPanel = new JPanel();
       BoxLayout btnLayout = new BoxLayout(iconBtnPanel, BoxLayout.X_AXIS);
       iconBtnPanel.setLayout(btnLayout);
+      iconBtnPanel.add(addStoreBtn);
       iconBtnPanel.add(refreshBtn);
       iconBtnPanel.add(newFolderBtn);
       iconBtnPanel.add(uploadBtn);
@@ -150,6 +154,14 @@ public class StoreBrowser extends JDialog
       splitter = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, LHS, RHS);
       getContentPane().add(splitter);
       splitter.setDividerLocation(0.35);
+      
+      addStoreBtn.addActionListener(
+         new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+               treeView.askNewStore();
+            }
+         }
+      );
       
       refreshBtn.addActionListener(
          new ActionListener() {
@@ -272,22 +284,9 @@ public class StoreBrowser extends JDialog
             }
             else {
                if ((f.getMimeType().equals(MimeTypes.PLAINTEXT)) || (f.getMimeType().equals(MimeTypes.VOTABLE)) || (f.getMimeType().equals(MimeTypes.WORKFLOW)) || (f.getMimeType().equals(MimeTypes.ADQL))) {
-                  JTextArea textDisplay = new JTextArea();
-                  contentPanel.getViewport().setView(textDisplay);
-                  try {
-                     //could really do with spawning this as a separate thread in case it's really long
-                     ByteArrayOutputStream out = new ByteArrayOutputStream();
-                     Piper.bufferedPipe(f.openInputStream(), out);
-                     textDisplay.setText(out.toString());
-                  }
-                  catch (IOException ioe) {
-                     log.error(ioe+" Reading contents of "+f,ioe);
-                     StringWriter sw = new StringWriter(0);
-                     sw.write("ERROR: "+ioe+" reading contents of "+f+"\n");
-                     ioe.printStackTrace(new PrintWriter(sw));
-                     textDisplay.setText(sw.toString());
-                  }
                   
+                  TextContentsView textDisplay = new TextContentsView(f);
+                  contentPanel.getViewport().setView(textDisplay);
                }
                else {
                   contentPanel.getViewport().setView(null);

@@ -1,5 +1,5 @@
 /*
- * $Id: StoresList.java,v 1.4 2005/03/31 19:25:39 mch Exp $
+ * $Id: StoresList.java,v 1.5 2005/04/01 10:41:02 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -13,13 +13,13 @@ package org.astrogrid.storebrowser.tree;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.Enumeration;
+import java.util.StringTokenizer;
 import java.util.Vector;
+import java.util.prefs.Preferences;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import org.apache.commons.logging.LogFactory;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.slinger.Slinger;
-import org.astrogrid.storeclient.srb.JargonFileAdaptor;
 
 /**
  * Special one-off root storenode for tree models, that represents the highest level node, containing
@@ -30,6 +30,8 @@ import org.astrogrid.storeclient.srb.JargonFileAdaptor;
 public class StoresList extends DefaultMutableTreeNode {
    
    public static final String PERMIT_LOCAL_ACCESS_KEY = Slinger.PERMIT_LOCAL_ACCESS_KEY;
+   
+   public static final String USER_STORELIST_KEY = "stores";
 
    Principal user = null;
    
@@ -51,6 +53,15 @@ public class StoresList extends DefaultMutableTreeNode {
       //add local filespace if appropriate
       if (ConfigFactory.getCommonConfig().getBoolean(PERMIT_LOCAL_ACCESS_KEY, false)) {
          addStore("LocalDisk", "file://");
+      }
+      
+      //add configured stores
+      Preferences prefs = Preferences.userNodeForPackage(StoresList.class);
+      String storeslist = prefs.get(USER_STORELIST_KEY, "");
+      StringTokenizer s = new StringTokenizer(storeslist, ",");
+      while (s.hasMoreTokens()) {
+         String storeUri = s.nextToken();
+         addStore(storeUri, storeUri);
       }
       
       /*

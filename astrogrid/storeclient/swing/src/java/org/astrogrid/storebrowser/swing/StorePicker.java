@@ -1,5 +1,5 @@
 /*
- * $Id: StorePicker.java,v 1.4 2005/03/31 19:25:39 mch Exp $
+ * $Id: StorePicker.java,v 1.5 2005/04/01 10:41:02 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -67,6 +67,7 @@ public class StorePicker extends JDialog
    boolean isCancelled = false;
 
    //toolbar buttons
+   JButton addStoreBtn = null;
    JButton refreshBtn = null;
    JButton deleteBtn = null;
    JButton newFolderBtn = null;
@@ -127,6 +128,7 @@ public class StorePicker extends JDialog
       addressPicker.addItem(""); //empty one to start with
       
       //toolbar
+      addStoreBtn = IconButtonHelper.makeIconButton("AddStore", "AddStore", "Add store to the tree");
       refreshBtn = IconButtonHelper.makeIconButton("Refresh", "Refresh", "Reloads selected file/folder from server");
       newFolderBtn = IconButtonHelper.makeIconButton("New", "NewFolder", "Creates a new folder");
       deleteBtn = IconButtonHelper.makeIconButton("Del","Delete", "Deletes selected item");
@@ -134,6 +136,7 @@ public class StorePicker extends JDialog
       JPanel iconBtnPanel = new JPanel();
       BoxLayout btnLayout = new BoxLayout(iconBtnPanel, BoxLayout.X_AXIS);
       iconBtnPanel.setLayout(btnLayout);
+      iconBtnPanel.add(addStoreBtn);
       iconBtnPanel.add(refreshBtn);
       iconBtnPanel.add(newFolderBtn);
       iconBtnPanel.add(deleteBtn);
@@ -180,6 +183,14 @@ public class StorePicker extends JDialog
       getContentPane().add(topPanel, BorderLayout.NORTH);
       getContentPane().add(treePanel, BorderLayout.CENTER);
       getContentPane().add(actionPanel, BorderLayout.SOUTH);
+      
+      addStoreBtn.addActionListener(
+         new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+               treeView.askNewStore();
+            }
+         }
+      );
       
       refreshBtn.addActionListener(
          new ActionListener() {
@@ -407,6 +418,9 @@ public class StorePicker extends JDialog
 
 /*
 $Log: StorePicker.java,v $
+Revision 1.5  2005/04/01 10:41:02  mch
+threading, preferences
+
 Revision 1.4  2005/03/31 19:25:39  mch
 semi fixed a few threading things, introduced sort order to tree
 

@@ -1,5 +1,5 @@
 /*
- * $Id: StoreTreeView.java,v 1.5 2005/03/31 19:25:39 mch Exp $
+ * $Id: StoreTreeView.java,v 1.6 2005/04/01 10:41:02 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -11,12 +11,15 @@ package org.astrogrid.storebrowser.tree;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.prefs.Preferences;
+import javax.swing.JOptionPane;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.file.FileNode;
+import java.util.prefs.BackingStoreException;
 
 /**
  * A Tree view compnonent for displaying and exploring store file trees
@@ -74,10 +77,46 @@ public class StoreTreeView extends JTree {
       }
    }
    
+   /** Ask user for a new store and include it in the preferences */
+   public void askNewStore() {
+      String newStore = JOptionPane.showInputDialog(this, "Enter Store URI");
+      
+      if ((newStore != null) && (newStore.trim().length()>0)) {
+         Preferences prefs = Preferences.userNodeForPackage(StoresList.class);
+         
+         StoresList stores  = (StoresList) getModel().getRoot();
+         
+         String existingStorePrefs = prefs.get(StoresList.USER_STORELIST_KEY, "");
+         if ((existingStorePrefs != null) && (existingStorePrefs.trim().length()>0)) {
+            existingStorePrefs = existingStorePrefs + ", ";
+         }
+         existingStorePrefs = existingStorePrefs + newStore;
+         
+         prefs.put(StoresList.USER_STORELIST_KEY, existingStorePrefs);
+         
+         try {
+            stores.addStore(newStore, newStore);
+         }
+         catch (IOException ioe) {
+            JOptionPane.showConfirmDialog(this, ioe+ " adding store "+newStore, "Adding Store", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
+         }
+
+         try {
+            prefs.flush();
+         }
+         catch (BackingStoreException e) {
+            JOptionPane.showConfirmDialog(this, e+ " saving preferences ", "Adding Store", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
+         }
+      }
+   }
+   
 }
 
 /*
  $Log: StoreTreeView.java,v $
+ Revision 1.6  2005/04/01 10:41:02  mch
+ threading, preferences
+
  Revision 1.5  2005/03/31 19:25:39  mch
  semi fixed a few threading things, introduced sort order to tree
 
