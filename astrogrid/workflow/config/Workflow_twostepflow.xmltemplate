@@ -5,7 +5,7 @@
 <workflow name = "TwoParallelJobsteps">
    <userid></userid>
    <community></community>
-   <description>description goes here</description>   
+   <description>This is a two step job executed in parallel</description>   
    <!--
       | Every workflow begins with a top level sequence
       -------------------------------------------------- -->

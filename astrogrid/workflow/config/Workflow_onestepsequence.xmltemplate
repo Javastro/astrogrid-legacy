@@ -5,6 +5,7 @@
 <workflow name = "OneStepJob">
    <userid></userid>
    <community></community>
+   <description>This is a one step job</description>   
    <!--
       | The top level structure within a workflow is
       | always a sequence...

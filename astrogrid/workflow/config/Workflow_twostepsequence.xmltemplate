@@ -5,6 +5,7 @@
 <workflow name = "TwoSequentialJobsteps">
    <userid></userid>
    <community></community>
+   <description>This is a two step job executed in sequence</description>
    <!--
       | These two steps are run in sequence because they are
       | enclosed within a sequence block
