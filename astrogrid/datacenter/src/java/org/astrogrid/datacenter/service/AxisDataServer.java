@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.1 2003/08/27 09:58:07 mch Exp $
+ * $Id: AxisDataServer.java,v 1.2 2003/08/27 22:42:52 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -63,7 +63,12 @@ public class AxisDataServer
 
    /**
     * Runs a blocking query - ie, starts the query, waits for it to finish
-    * and then returns the results
+    * and then returns the results.
+    * @todo: check how Axis handles
+    * threading... will each call block all other calls until this one is
+    * complete? if so we need to make DataQueryService a thread and work out
+    * how to return the results...
+    *
     */
    public Element runQuery(Element soapBody)
    {
@@ -73,6 +78,11 @@ public class AxisDataServer
 
       return service.runQuery(soapBody);
 
+   }
+
+   public DataQueryService getService(String serviceID)
+   {
+      return (DataQueryService) services.get(serviceID);
    }
 
 }
