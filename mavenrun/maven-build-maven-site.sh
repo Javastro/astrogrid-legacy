@@ -49,7 +49,7 @@ cd $BUILD_HOME >> $LOG_FILE 2>&1
 
 echo "[ag-build-$PROJECT_NAME] cvs checkout"
 #check out files only, not folders
-cvs -d -l $CVSROOT co -A astrogrid>> $LOG_FILE 2>&1
+cvs -l -d  $CVSROOT co -A astrogrid>> $LOG_FILE 2>&1
 #cvs -d $CVSROOT co -A astrogrid/$PROJECT_NAME >> $LOG_FILE 2>&1
 
 echo "[ag-build-$PROJECT_NAME] project home: $PROJECT_HOME"
