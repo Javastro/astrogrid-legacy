@@ -325,43 +325,46 @@ public class QueryRegistry  {
       //check for an AccessURL
       //if AccessURL is their and it is a web service then get the wsdl
       //into a DOM object and run an XSL on it to get the endpoint.
-      String returnVal = null;
+      String returnVal,invocation = null;
       Document doc = getResourceByIdentifier(ident);
-      NodeList nl = doc.getElementsByTagName("AccessURL");
-      if(nl.getLength() > 0) {
-         returnVal = nl.item(0).getFirstChild().getNodeValue();
+      try {
+         returnVal = DomHelper.getNodeTextValue(doc,"AccessURL","vr");
+         invocation = DomHelper.getNodeTextValue(doc,"Invocation","vr");
+      }catch(IOException ioe) {
+         throw new RegistryException("Could not parse xml to get AcessURL or Invocation");   
       }
-      if(returnVal != null && returnVal.indexOf("?wsdl") > 0) {      
-         try {
-            WSDLBasicInformation wsdlBasic = getBasicWSDLInformation(ident);
-            returnVal = (String)wsdlBasic.getEndPoint().values().iterator().next();
-         }catch(RegistryException re) {
-            if(DEBUG_FLAG) System.out.println("status message for getEndPointByIdentifier: RegistryException was thrown (probably not a WebService InvocationType try to return the AccessURL)");
-            //Log warning this was supposed to be a web service.
-         }catch(IOException ioe) {
-            throw new RegistryException(ioe);   
-         }finally {
-            if(DEBUG_FLAG) System.out.println("exiting getEndPointByIdentifier with ident = " + ident);
-         }
+      if(returnVal == null) {
+         throw new RegistryException("Found Resource Document, but had now AccessURL");
       }
+      System.out.println("The AccessURL = " + returnVal);
+      System.out.println("The Invocation = " + invocation);
+      if(returnVal != null && returnVal.indexOf("?wsdl") > 0 && "WebService".equals(invocation)) {
+         System.out.println("Get URL from WSDL");      
+         WSDLBasicInformation wsdlBasic = getBasicWSDLInformation(doc);
+         returnVal = (String)wsdlBasic.getEndPoint().values().iterator().next();
+      }
+      
       return returnVal;      
    }
 
-   public WSDLBasicInformation getBasicWSDLInformation(Ivorn ident) throws RegistryException, IOException {
-      return getBasicWSDLInformation(ident.getPath());   
+   public WSDLBasicInformation getBasicWSDLInformation(Ivorn ident) throws RegistryException {
+      return getBasicWSDLInformation(getResourceByIdentifier(ident));
    }
    
-   public WSDLBasicInformation getBasicWSDLInformation(String ident) throws RegistryException, IOException {
-      if(DEBUG_FLAG) System.out.println("entered getBasicWSDLInformation with ident = " + ident);
+   public WSDLBasicInformation getBasicWSDLInformation(Document voDoc) throws RegistryException {
+      //if(DEBUG_FLAG) System.out.println("entered getBasicWSDLInformation with ident = " + ident);
 
-      Document voDoc = getResourceByIdentifier(ident);
+      //Document voDoc = getResourceByIdentifier(ident);
       WSDLBasicInformation wsdlBasic = null;
-      String invocType = DomHelper.getNodeTextValue(voDoc,"Invocation","vr");
-      if(invocType == null) {
-         throw new RegistryException("cannot find invocation type");  
+      String invocType = null;
+      String accessURL = null;
+      try {
+         invocType = DomHelper.getNodeTextValue(voDoc,"Invocation","vr");
+         accessURL = DomHelper.getNodeTextValue(voDoc,"AccessURL","vr");
+      }catch(IOException ioe) {
+         throw new RegistryException("Could not parse xml to get AcessURL or Invocation");   
       }
       if("WebService".equals(invocType)) {
-         String accessURL = DomHelper.getNodeTextValue(voDoc,"AccessURL","vr");
          if(accessURL == null) {
             throw new RegistryException("Cound not find an AccessURL with a web service invocation type");
          }
@@ -403,7 +406,7 @@ public class QueryRegistry  {
             throw new RegistryException(wsdle);
          }         
       }else {
-         throw new RegistryException("Invalid Entry in Method: This method only accepts WEBSERVICE InvocationTypes");         
+         throw new RegistryException("Invalid Entry in Method: This method only accepts WebService InvocationTypes");         
       }
       if(DEBUG_FLAG) System.out.println("exiting getBasicWSDLInformation with ident");
       return wsdlBasic;     
