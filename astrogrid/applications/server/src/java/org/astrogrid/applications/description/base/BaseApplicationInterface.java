@@ -1,5 +1,5 @@
 /*
- * $Id: BaseApplicationInterface.java,v 1.4 2004/08/16 11:03:07 nw Exp $
+ * $Id: BaseApplicationInterface.java,v 1.5 2004/08/17 15:08:51 nw Exp $
  *
  * Created on 26 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -175,15 +175,16 @@ public class BaseApplicationInterface implements ApplicationInterface {
     public String toString() {
         StringBuffer buffer = new StringBuffer();
         buffer.append("[ApplicationInterface:");
-        buffer.append(" applicationDescription: ");
-        buffer.append(applicationDescription.getName());
         buffer.append(" name: ");
         buffer.append(name);
-        buffer.append(" inputs: ");
+        buffer.append("\n\t applicationDescription: ");
+        buffer.append(applicationDescription.getName());
+
+        buffer.append("\n\t inputs: ");
         buffer.append(inputs);
-        buffer.append(" outputs: ");
+        buffer.append("\n\t outputs: ");
         buffer.append(outputs);
-        buffer.append("]");
+        buffer.append("\n]");
         return buffer.toString();
     }
 }
