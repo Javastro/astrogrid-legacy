@@ -99,6 +99,74 @@ public class SchedulerImpl implements org.astrogrid.jes.jobscheduler.JobSchedule
 
          	 
     } // end of scheduleJob()
+
+
+    /** resume executioin of a job
+     * <p>
+     * records information returned by tool execution in the workflow document, and then attempts to execute further steps in the workflow.
+     * @see org.astrogrid.jes.jobscheduler.JobScheduler#resumeJob(org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType, org.astrogrid.jes.types.v1.cea.axis.MessageType)
+     */
+    public void resumeJob(JobIdentifierType id,org.astrogrid.jes.types.v1.cea.axis.MessageType info) {
+        Workflow job = null;  
+        JobFactory factory = null;  
+        try {
+             factory = facade.getJobFactory() ;
+             factory.begin() ;
+            org.astrogrid.workflow.beans.v1.execution.JobURN urn = null;          
+             try {
+                  urn = JesUtil.extractURN(id);
+                job = factory.findJob(urn ) ;
+             } catch (NotFoundException e) {
+                 logger.error("Could not find job for urn" + urn.getContent());
+                 return;
+             }        
+                  
+             String xpath = JesUtil.extractXPath(id);
+             Step jobStep = (Step)job.findXPathValue(xpath);
+             if (jobStep == null) {
+                 logger.error("Culd not find step " + xpath + " for urn " + urn.getContent());
+                 return;
+             }              
+             //add message into execution record for step.      
+             StepExecutionRecord er =JesUtil.getLatestOrNewRecord(jobStep);             
+             er.addMessage(JesUtil.axis2castor(info));
+             ExecutionPhase status = JesUtil.axis2castor(info.getPhase());
+             // only update status if executioin record hasn't already passed this status.
+             if (status.getType() > er.getStatus().getType()) {
+                er.setStatus(status);
+                if (status.getType() >= ExecutionPhase.COMPLETED_TYPE) { // finished or error
+                     er.setFinishTime(new Date()); 
+                }
+              }
+              factory.updateJob(job);
+                            
+             // now go try run some more steps.
+             scheduleSteps(job);  
+             updateJobStatus(job);
+             factory.updateJob( job ) ;             // Update any changed details to the database
+             factory.end( true ) ;   // Commit and cleanup
+        } catch (JesException e) {
+            // basically, somethings gone wrong with the job store, rather than with steps. its a fatal.
+            logger.fatal("System error",e);
+            // could try saving the error in the job itself.
+            if (job != null) {
+                MessageType mt = new MessageType();
+                mt.setPhase(ExecutionPhase.ERROR);
+                mt.setLevel(LogLevel.ERROR);
+                mt.setSource("Jes System");
+                mt.setTimestamp(new Date());               
+                mt.setContent("System Error " + e.getClass().getName() + " " + e.getMessage());
+                job.getJobExecutionRecord().addMessage(mt);
+                job.getJobExecutionRecord().setStatus(ExecutionPhase.ERROR);
+                try {
+                    factory.updateJob(job);
+                } catch (JesException jex) {
+                    logger.fatal("can't save error report into workflow",jex);
+                }
+            } 
+        }
+
+    }     
     
     /** create a new execution record, pre-populated */
     protected StepExecutionRecord newStepExecutionRecord() {
@@ -158,69 +226,6 @@ public class SchedulerImpl implements org.astrogrid.jes.jobscheduler.JobSchedule
         }      
     }
 
-    /** resume executioin of a job
-     * <p>
-     * records information returned by tool execution in the workflow document, and then attempts to execute further steps in the workflow.
-     * @see org.astrogrid.jes.jobscheduler.JobScheduler#resumeJob(org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType, org.astrogrid.jes.types.v1.cea.axis.MessageType)
-     */
-	public void resumeJob(JobIdentifierType id,org.astrogrid.jes.types.v1.cea.axis.MessageType info) {
-        Workflow job = null;  
-        JobFactory factory = null;  
-        try {
-             factory = facade.getJobFactory() ;
-             factory.begin() ;
-            org.astrogrid.workflow.beans.v1.execution.JobURN urn = null;          
-             try {
-                  urn = JesUtil.extractURN(id);
-                job = factory.findJob(urn ) ;
-             } catch (NotFoundException e) {
-                 logger.error("Could not find job for urn" + urn.getContent());
-                 return;
-             }        
-                  
-             String xpath = JesUtil.extractXPath(id);
-             Step jobStep = (Step)job.findXPathValue(xpath);
-             if (jobStep == null) {
-                 logger.error("Culd not find step " + xpath + " for urn " + urn.getContent());
-                 return;
-             }              
-             // update status of step.       
-             StepExecutionRecord er =JesUtil.getLatestOrNewRecord(jobStep);             
-             er.addMessage(JesUtil.axis2castor(info));
-             ExecutionPhase status = JesUtil.axis2castor(info.getPhase());
-             er.setStatus(status);
-             if (status.getType() >= ExecutionPhase.COMPLETED_TYPE) { // finished or error
-                 er.setFinishTime(new Date()); 
-             }
-              factory.updateJob(job);
-                            
-             // now go try run some more steps.
-             scheduleSteps(job);  
-             updateJobStatus(job);
-             factory.updateJob( job ) ;             // Update any changed details to the database
-             factory.end( true ) ;   // Commit and cleanup
-        } catch (JesException e) {
-            // basically, somethings gone wrong with the job store, rather than with steps. its a fatal.
-            logger.fatal("System error",e);
-            // could try saving the error in the job itself.
-            if (job != null) {
-                MessageType mt = new MessageType();
-                mt.setPhase(ExecutionPhase.ERROR);
-                mt.setLevel(LogLevel.ERROR);
-                mt.setSource("Jes System");
-                mt.setTimestamp(new Date());               
-                mt.setContent("System Error " + e.getClass().getName() + " " + e.getMessage());
-                job.getJobExecutionRecord().addMessage(mt);
-                job.getJobExecutionRecord().setStatus(ExecutionPhase.ERROR);
-                try {
-                    factory.updateJob(job);
-                } catch (JesException jex) {
-                    logger.fatal("can't save error report into workflow",jex);
-                }
-            } 
-        }
-
-    }     
           
     /**
      * Called when a job is completed, to notify some external observer
