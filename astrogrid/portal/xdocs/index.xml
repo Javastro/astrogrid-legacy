@@ -39,6 +39,8 @@
                         <li>emailserver.from=return address for reminder emails [astrogrid@star.le.ac.uk]</li> 
                         <li>astrogrid.portal.admin.email=email address of the administrator who should receive
                             reminder and registration emails from users[jdt@roe.ac.uk]</li>
+                        <li>workflow.jes.endpoint=end point of the Job Entry System's JobControllerService</li>
+                        <li>workflow.applist=registry (Instructs the portal to get the list of applications from the registry)</li>
                     </ul> 
                     If values are not given for these properties, the defaults in square brackets are used instead. </p>
             </subsection>
