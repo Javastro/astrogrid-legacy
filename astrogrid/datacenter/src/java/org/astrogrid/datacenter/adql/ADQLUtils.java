@@ -1,4 +1,4 @@
-/*$Id: ADQLUtils.java,v 1.1 2003/08/28 15:27:54 nw Exp $
+/*$Id: ADQLUtils.java,v 1.2 2003/09/02 14:44:31 nw Exp $
  * Created on 28-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,8 @@
 package org.astrogrid.datacenter.adql;
 import org.astrogrid.datacenter.adql.generated.*;
 import org.astrogrid.datacenter.adql.generated.types.*;
-import org.exolab.castor.xml.CastorException;
+import org.exolab.castor.xml.*;
+import org.w3c.dom.Node;
 
 import java.io.*;
 
@@ -41,11 +42,19 @@ public class ADQLUtils {
         // no order-by or table clauses required, according to schema.
         return s;
     }
+    
+    //add other marshalling mehtods ere -- e.g. to-from a dom.
+    public static Select unmarshalSelect(Node n) throws MarshalException, ValidationException{
+        return (Select)Unmarshaller.unmarshal(Select.class,n);
+    }
 }
 
 
 /* 
 $Log: ADQLUtils.java,v $
+Revision 1.2  2003/09/02 14:44:31  nw
+added method to unmarshall ADQL object model from xml Node
+
 Revision 1.1  2003/08/28 15:27:54  nw
 added ADQL object model.
  
