@@ -65,7 +65,7 @@ echo "[ag-build-$PROJECT_NAME] generate and deploy $TAGNAME"
 echo "Executing astrogrid-deploy-artifact" >> $LOG_FILE 2>&1 
 #Note that unit tests are (not) skipped at this stage, since they have already
 #been run for the site docs
-if maven -Dmaven.test.skip=false -Dastrogrid.iteration=$ASTROGRID_VERSION -Dmaven.site.central.directory=$DOC_HOME astrogrid-deploy-artifact >> $LOG_FILE 2>&1
+if maven -Dmaven.test.skip=false  -Dmaven.site.central.directory=$DOC_HOME astrogrid-deploy-artifact >> $LOG_FILE 2>&1
 then
    echo "*** SUCCESS ***" >> $LOG_FILE
 else
@@ -75,7 +75,7 @@ fi
 
 echo "[ag-build-$PROJECT_NAME] generate and deploy site"
 echo "Executing astrogrid-deploy-site" >> $LOG_FILE 2>&1 
-if maven -Dastrogrid.iteration=$ASTROGRID_VERSION -Dmaven.site.central.directory=$DOC_HOME astrogrid-deploy-site >> $LOG_FILE 2>&1 
+if maven  -Dmaven.site.central.directory=$DOC_HOME astrogrid-deploy-site >> $LOG_FILE 2>&1 
 then
    echo "*** SUCCESS ***\n" >> $LOG_FILE
 else
