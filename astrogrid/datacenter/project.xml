@@ -68,6 +68,16 @@
     </dependency>
 
     <dependency>
+      <id>commons-logging</id>
+      <version>1.0.3</version>
+    </dependency>
+
+    <dependency>
+      <id>commons-discovery</id>
+      <version>SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
       <id>jax-qname</id>
       <version>UNKNOWN</version>
       <jar>jax-qname.jar</jar>
@@ -126,6 +136,15 @@
       <includes>
         <include>**/*Test.java</include>
       </includes>
+
+      <resources>
+        <resource>
+          <directory>${basedir}/test/java</directory>
+          <includes>
+            <include>**/*.xml</include>
+          </includes>
+        </resource>
+      </resources>
     </unitTest>
   </build>
   

@@ -45,7 +45,8 @@ public class QueryParsingTest extends TestCase {
    public Element setUpQueryElement(String fileName) throws IOException, SAXException, ParserConfigurationException
    {
       //locate test query file
-      fileName = "."+File.separator+"inputs"+File.separator+fileName;
+      // fileName = "."+File.separator+"inputs"+File.separator+fileName;
+      fileName = "inputs"+File.separator+fileName;
       URL url = getClass().getResource(fileName);
 
       assertTrue("Cannot find file '"+fileName+"'", url != null);
