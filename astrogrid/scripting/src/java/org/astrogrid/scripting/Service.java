@@ -1,4 +1,4 @@
-/*$Id: Service.java,v 1.10 2004/07/01 11:36:25 nw Exp $
+/*$Id: Service.java,v 1.11 2004/08/09 09:10:38 nw Exp $
  * Created on 27-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,8 @@
  *
 **/
 package org.astrogrid.scripting;
+
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.net.URL;
@@ -27,16 +29,19 @@ import org.astrogrid.registry.client.RegistryDelegateFactory;
  *
  */ 
 public class Service {
+    /**
+     * Commons Logger for this class
+     */
+    private static final Logger logger = Logger.getLogger(Service.class);
+
    public static final String DATACENTER_SERVICE = "datacenter";
    public static final String REGISTRY_SERVICE = "registry";
    public static final String REGISTRYADMIN_SERVICE = "registryadmin";
-   public static final String APPLICATION_SERVICE = "application";
+   public static final String CEA_SERVICE = "cea";
    public static final String JOBCONTROL_SERVICE = "jobcontrol";
    public static final String JOBMONITOR_SERVICE = "jobmonitor";
    public static final String UNNKOWN_SERVICE = "unknown";
    
-   public Service() {
-   }
    
    protected String endpoint;
    protected String type;
@@ -46,40 +51,43 @@ public class Service {
     * 
     * @return a delegate object, depending on the {@ #type} atttibute of this service:
     * <ul>
-    * <li>datacenter - return a {@link org.astrogrid.datacenter.delegate.FullSearcher}
-    * <li>myspace - return a {@link org.astrogrid.mySpace.delegate.MySpaceClient}
-    * <li>registry - not implemented yet
-    * <li>application - return a {@link org.astrogrid.applications.delegate.ApplicationController}
-    * <li>jobcontrol - return a {@link org.astrogrid.jes.delegate.jobController.JobControllerDelegate}
+    * <li>datacenter - return a {@link org.astrogrid.datacenter.delegate.QuerySearcher}
+    * <li>registry - return a {@link org.astrogrid.registry.client.query.RegistryService}
+    * <li>registryadmin - return a {@link org.astrogrid.registry.client.admin.RegistryAdminService}
+    * <li>application - return a {@link org.astrogrid.applications.delegate.CommonExecutionConnectorClient}
+    * <li>jobcontrol - return a {@link org.astrogrid.jes.delegate.JobController}
+    * <li>jobmonitor - return a {@link org.astrogrid.jes.delegate.JobMonitor}
     * </ul>
     * @throws ServiceException
     * @throws IOException
     */
    public Object createDelegate() throws  ServiceException, IOException {
       if (DATACENTER_SERVICE.equals(type)) {
+          logger.info("Creating datacenter delegate");
          return DatacenterDelegateFactory.makeQuerySearcher(endpoint);
       } 
-      /*
-      if (MYSPACE_SERVICE.equals(type)) {
-         return MySpaceDelegateFactory.createDelegate(endpoint);
-      }
-      */
       if (REGISTRY_SERVICE.equals(type)) {
+          logger.info("Creating registry delegate");
           return RegistryDelegateFactory.createQuery(new URL(endpoint));
       }
-      if(APPLICATION_SERVICE.equals(type)) {
+      if (REGISTRYADMIN_SERVICE.equals(type)) {
+          logger.info("Creating registry admin delegate");
+          return RegistryDelegateFactory.createAdmin(new URL(endpoint));
+      }
+      if(CEA_SERVICE.equals(type)) {
+          logger.info("Creating cea delegate");
          return DelegateFactory.createDelegate(endpoint);
       }
       if (JOBCONTROL_SERVICE.equals(type)) {
+          logger.info("Creating job controller delegate");
          return JesDelegateFactory.createJobController(endpoint);
       }
       if (JOBMONITOR_SERVICE.equals(type)) {
+          logger.info("Creating job monitor delegate");
          return JesDelegateFactory.createJobMonitor(endpoint);
       }
-      if (REGISTRYADMIN_SERVICE.equals(type)) {
-          return RegistryDelegateFactory.createAdmin(new URL(endpoint));
-      }
-      throw new IllegalStateException("Unknown service type - cannot create delegate:" + this.endpoint);
+      logger.error("Unknown service type - cannot create delegate for " + this.toString());
+      throw new IllegalStateException("Unknown service type - cannot create for " + this.toString());
    }
    
    /** Get the dsescription of this service
@@ -125,17 +133,65 @@ public class Service {
       
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Object#toString()
-    */
-   public String toString() {
-      return "<Service " + this.type + " " + this.endpoint +  " >";
-   }
-
+    /**
+     * Override hashCode.
+     *
+     * @return the Objects hashcode.
+     */
+    public int hashCode() {
+        int hashCode = 1;
+        hashCode = 31 * hashCode + (endpoint == null ? 0 : endpoint.hashCode());
+        hashCode = 31 * hashCode + (type == null ? 0 : type.hashCode());
+        hashCode = 31
+            * hashCode
+            + (description == null ? 0 : description.hashCode());
+        return hashCode;
+    }
+    public String toString() {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("[Service:");
+        buffer.append(" endpoint: ");
+        buffer.append(endpoint);
+        buffer.append(" type: ");
+        buffer.append(type);
+        buffer.append(" description: ");
+        buffer.append(description);
+        buffer.append("]");
+        return buffer.toString();
+    }
+    /**
+     * Returns <code>true</code> if this <code>Service</code> is the same as the o argument.
+     *
+     * @return <code>true</code> if this <code>Service</code> is the same as the o argument.
+     */
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null) {
+            return false;
+        }
+        if (o.getClass() != getClass()) {
+            return false;
+        }
+        Service castedObj = (Service) o;
+        return ((this.endpoint == null
+            ? castedObj.endpoint == null
+            : this.endpoint.equals(castedObj.endpoint))
+            && (this.type == null ? castedObj.type == null : this.type
+                .equals(castedObj.type)) && (this.description == null
+            ? castedObj.description == null
+            : this.description.equals(castedObj.description)));
+    }
 }
 
 /* 
 $Log: Service.java,v $
+Revision 1.11  2004/08/09 09:10:38  nw
+updated list of service types (renamed applications to cea)
+improved toString()
+added logging
+
 Revision 1.10  2004/07/01 11:36:25  nw
 fixed for removal of myspace delegate
 
