@@ -39,7 +39,7 @@
 				<item name="Warehouse" href="log/maven-build-warehouse.log" />
 				<item name="Workflow" href="log/maven-build-workflow.log" />
 				<item name="Workflow Common Objects" 
-					href="log/maven-build-astrogrid-workflow-objects.log" />
+					href="log/maven-build-workflow-objects.log" />
 				<item name="Integration Tests" 
 					href="log/maven-build-integrationTests.log" />
 			</item>
