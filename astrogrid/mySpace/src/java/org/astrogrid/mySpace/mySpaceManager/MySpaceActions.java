@@ -106,6 +106,11 @@ public class MySpaceActions
          }
       }
 
+//
+//   Re-write the registry.
+
+      reg.finalize();
+
       return dataItem;
    }
 
@@ -157,9 +162,6 @@ public class MySpaceActions
          }
 
 //  -- end debug ----------------------------------------------
-
-
-
 
 //
 //      Assemble the UserAccount from the UserID and CommunityID.
@@ -232,6 +234,11 @@ public class MySpaceActions
             }
          }
       }
+
+//
+//   Re-write the registry.
+
+      reg.finalize();
 
       return dataItemVector;
    }
