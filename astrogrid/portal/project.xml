@@ -3,6 +3,7 @@
 <project
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
+	<!--extend>../maven-base/project.xml</extend-->
     <pomVersion>3</pomVersion>
     <id>astrogrid-portal</id>
     <groupId>org.astrogrid</groupId>
@@ -16,10 +17,12 @@
     <inceptionYear>2002</inceptionYear>
     <issueTrackingUrl>http://www.astrogrid.org/bugzilla/</issueTrackingUrl>
     <package>org.astrogrid</package>
-	<!--siteAddress>www.astrogrid.org</siteAddress-->
+	<siteAddress>www.astrogrid.org</siteAddress>
     <siteDirectory>${maven.site.central.directory}/${astrogrid.iteration}/${astrogrid.name}</siteDirectory>
     <logo>http://www.astrogrid.org/images/AGlogo</logo>
-    <url>http://www.astrogrid.org</url>
+    <!--url>http://www.astrogrid.org</url-->
+	<url>http://www.astrogrid.org/maven/docs/${astrogrid.iteration}/${astrogrid.name}/index.html</url>
+	
     <description>
     The AstroGrid Web Portal: access to AstroGrid via Cocoon.
     </description>
