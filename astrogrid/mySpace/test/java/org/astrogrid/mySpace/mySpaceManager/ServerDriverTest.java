@@ -41,8 +41,9 @@ public class ServerDriverTest extends TestCase
 //
 //   Test the <code>upLoadString</code> method.
 
-      boolean result = server.upLoadString(
-        "I wandered lonely as a cloud..", "./file1", false);
+      byte[] dummy = new byte[1];
+      boolean result = server.upLoadString(true,
+        "I wandered lonely as a cloud..", dummy, "./file1", false);
       Assert.assertTrue(result);
       System.out.println("Tested upLoadString...");
 

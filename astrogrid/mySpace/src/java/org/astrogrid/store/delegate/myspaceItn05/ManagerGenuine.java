@@ -20,11 +20,11 @@ import org.astrogrid.i18n.*;
 import org.astrogrid.mySpace.mySpaceManager.MMC;
 import org.astrogrid.mySpace.mySpaceManager.Configuration;
 import org.astrogrid.mySpace.mySpaceManager.DataItemRecord;
-import org.astrogrid.mySpace.mySpaceManager.MySpaceActions;
+import org.astrogrid.mySpace.mySpaceManager.Actions;
 import org.astrogrid.mySpace.mySpaceStatus.*;
 
 public class ManagerGenuine implements Manager
-{  private MySpaceActions actions = new MySpaceActions();
+{  private Actions actions = new Actions();
    private static MySpaceStatus status = new MySpaceStatus();
    private static Logger logger = new Logger();
 
@@ -182,9 +182,10 @@ public class ManagerGenuine implements Manager
 //
 //      Invoke the MySpaceActions object perform the appropriate tasks.
 
+         byte[] dummy = new byte[1];
          actions.setRegistryName(registryName);
-         boolean success = actions.putString(account, newFile, contents, 
-           category, dispatchExisting);
+         boolean success = actions.putContents(account, newFile, true,
+           contents, dummy, category, dispatchExisting);
 
 //
 //      Generate a success method if the method succeeded.
@@ -258,23 +259,11 @@ public class ManagerGenuine implements Manager
          logger.setAccount(account);
 
 //
-//      Convert the array of bytes to a String.
-//      The bytes are encoded as a series of space-separated numbers.
-//
-//      [TODO]: this is all something of a kludge.  Really the array
-//        of bytes should be saved as,... just an array of bytes.
-
-         StringBuffer toSave = new StringBuffer();
-         for (int loop = 0; loop<contents.length; loop++)
-         {  toSave.append(contents[loop] + " ");
-         }
-
-//
 //      Invoke the MySpaceActions object perform the appropriate tasks.
 
          actions.setRegistryName(registryName);
-         boolean success = actions.putString(account, newFile, 
-           toSave.toString(), category, dispatchExisting);
+         boolean success = actions.putContents(account, newFile, false,
+           "", contents, category, dispatchExisting);
 
 //
 //      Generate a success method if the method succeeded.
@@ -487,10 +476,80 @@ public class ManagerGenuine implements Manager
      throws java.rmi.RemoteException
    {  KernelResults results = new KernelResults();
 
+      setUp();
 
+      try
+      {
+//
+//      Write a message to the log file.
 
+         logger.setActionName("getString");
+         logger.appendMessage("Invoked getBytes...");
+
+//
+//      [TODO]: The following statement is a place-holder.  In due
+//      course obtain the account details from the SOAP header.  Also
+//      the account class will probably not be a String.
+
+         String account = null;
+         logger.setAccount(account);
+
+//
+//      Invoke the MySpaceActions object perform the appropriate tasks.
+
+         actions.setRegistryName(registryName);
+
+         byte[] contents = new byte[1];
+         Vector dataItems = actions.getEntriesList(account, fileName);
+         if (dataItems != null)
+         {  if (dataItems.size() > 0)
+            {  DataItemRecord itemRecord = 
+                 (DataItemRecord)dataItems.elementAt(0);
+
+               int dataItemId = itemRecord.getDataItemID();
+               contents = actions.getBytes(account, dataItemId);
+            }
+            else
+            {  status.addCode(MySpaceStatusCode.AGMMCE00201,
+                 MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
+                 this.getClassName() );
+            }
+         }
+         else
+         {  status.addCode(MySpaceStatusCode.AGMMCE00201,
+             MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
+             this.getClassName() );
+         }
+
+//
+//      Add the contents to the results objects.
+
+         results.setContentsBytes(contents);
+
+//
+//      Generate a success method if the method succeeded.
+
+         if (status.getSuccessStatus() )
+         {  status.addCode(MySpaceStatusCode.AGMMCI00001,
+              MySpaceStatusCode.INFO, MySpaceStatusCode.LOG,
+              this.getClassName() );
+         }
+
+//
+//      Copy any status messages to the results object.
+
+         ArrayList statusList = status.getStatusResults();
+         results.setStatusList(statusList.toArray() );
+         status.reset();
+      }
+      catch (Exception e)
+      {  logger.appendMessage("Exception in getBytes: " +
+           e.toString() );
+      }
+
+      logger.close();
       return results;
-    }
+   }
 
 
 // ----------------------------------------------------------------------

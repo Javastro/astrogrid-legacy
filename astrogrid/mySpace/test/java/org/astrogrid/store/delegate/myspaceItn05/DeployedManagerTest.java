@@ -1,6 +1,7 @@
 package org.astrogrid.store.delegate.myspaceItn05;
 
 import junit.framework.*;
+import java.io.*;
 import java.util.*;
 import java.net.URL;
 
@@ -120,10 +121,61 @@ public class DeployedManagerTest extends TestCase
          System.out.println("File exported...");
 
 //
+//      Import and export the file as an array of bytes rather than
+//      a String.
+
+         byte[] byteContents = contents.getBytes();
+         int lengthByteContents = Array.getLength(byteContents);
+
+         middle.putBytes(byteContents, 0, lengthByteContents,
+           "/testxyz/file4", false);
+         System.out.println("File imported as bytes...");
+
+         byte[] retrievedBytes = middle.getBytes("/testxyz/file4");
+         int lengthRetrievedBytes  = Array.getLength(retrievedBytes);
+         Assert.assertEquals(lengthByteContents, lengthRetrievedBytes);
+
+         String restoredContents = new String(retrievedBytes);
+         Assert.assertEquals(contents, restoredContents);
+         System.out.println("File exported as bytes...");
+
+//
+//      Import and export the file as an array of bytes using the
+//      streaming methods.
+
+         OutputStream outStream = middle.putStream("/testxyz/file5",
+           true);
+         outStream.write(byteContents);
+         outStream.close();
+         System.out.println("File imported as bytes using streaming...");
+
+         InputStream inStream = middle.getStream("/testxyz/file5");
+
+         int current;
+         int retrievedStreamSize = 0;
+         StringBuffer buffer = new StringBuffer();
+         byte[] byteBuffer = new byte[1];
+
+         while( (current = inStream.read())  !=  -1)
+         {  byteBuffer[0] = (byte)current;
+            String currentChar = new String(byteBuffer);
+            buffer.append(currentChar);
+            retrievedStreamSize = retrievedStreamSize + 1;
+         }
+
+         Assert.assertEquals(lengthByteContents, retrievedStreamSize);
+
+         String streamedContents = buffer.toString();
+         Assert.assertEquals(contents, streamedContents);
+         System.out.println("File exported as bytes using streaming...");
+
+//
 //      Delete the files.
 
          middle.delete("/testxyz/file2");
          middle.delete("/testxyz/file3");
+         middle.delete("/testxyz/file4");
+         middle.delete("/testxyz/file5");
          System.out.println("Files deleted...");
 
 //

@@ -4,9 +4,14 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.StringReader ;
 import java.io.PrintWriter;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+
+import java.lang.reflect.Array;
 
 import org.astrogrid.mySpace.mySpaceStatus.*;
 import org.astrogrid.mySpace.mySpaceManager.MMC;
@@ -24,6 +29,9 @@ public class MySpaceUtils
    private static boolean DEBUG = true;
    private static MySpaceStatus msstatus = new MySpaceStatus();
    private static String response = " ";
+
+
+// ---------------------------------------------------------------------
 
 /**
  * Read a file and return its contents as a String.
@@ -97,6 +105,8 @@ public class MySpaceUtils
    }
 
 
+// ---------------------------------------------------------------------
+
 /**
  * Save the contents of a String as a file.
  *
@@ -148,6 +158,77 @@ public class MySpaceUtils
       }
    }
 
+
+// ---------------------------------------------------------------------
+
+/**
+ * Read a file and return its contents as an array of bytes.
+ *
+ * @param file The name of the file.
+ * @return The file contents.
+ */
+
+   public static byte[] readFromBinaryFile(File file)
+   {  byte[] returnArray = null;
+
+      try
+      {  int fileSize = (int)file.length();
+
+         byte[] contents = new byte[fileSize];
+
+         DataInputStream in = new DataInputStream(
+           new FileInputStream(file) );
+
+         in.readFully(contents);
+         in.close();
+
+         returnArray = contents;
+      }
+      catch (Exception e)
+      {  logger.appendMessage("Failure reading file: " + file);
+         logger.appendMessage(e.toString() );
+      }
+
+      return returnArray;
+   }
+
+
+// ---------------------------------------------------------------------
+
+/**
+ * Save the contents of an array of bytes as a file.
+ *
+ * @param file Name of the file.
+ * @param contents The array of bytes to be saved.
+ * @param appendFlag If true the contents will be appended to the end
+ *   of an existing file; otherwise any existing file will be
+ *   overwritten.
+ */
+
+   public static boolean writeToBinaryFile(File file, byte[] contents,
+     boolean appendFlag)
+   {  boolean isOk = true;
+    
+      try
+      {  DataOutputStream out = new DataOutputStream(
+           new FileOutputStream(file, appendFlag) );
+
+         int contentsLength = Array.getLength(contents);
+         out.write(contents, 0, contentsLength);
+         out.close();
+      }
+      catch (Exception e)
+      {  logger.appendMessage("Failure writing file: " + file);
+         logger.appendMessage(e.toString() );
+
+         isOk = false;
+      }
+
+     return isOk;
+   }
+
+
+// ---------------------------------------------------------------------
 
    protected String getComponentName()
    { return Configurator.getClassName( MySpaceUtils.class);

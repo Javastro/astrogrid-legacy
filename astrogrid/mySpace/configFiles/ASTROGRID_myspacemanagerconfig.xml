@@ -55,7 +55,7 @@
         information.  -->
 
         <property name="REGISTRYCONF"
-           value="/home/astrogrid/myspacedata/astrogrid-mySpace" />
+           value="/home/acd/myspacedata/example" />
 
 
       <!-- MYSPACEMANAGERURL

@@ -14,7 +14,7 @@ import org.astrogrid.store.delegate.StoreClient;
 
 
 /**
- * Junit tests for the MySpace inner delegate.
+ * Junit tests for the MySpace middle delegate.
  *
  * @author A C Davenhall (Edinburgh)
  * @since Iteration 5.

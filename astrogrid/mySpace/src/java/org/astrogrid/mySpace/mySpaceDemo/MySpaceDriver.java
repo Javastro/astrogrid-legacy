@@ -411,12 +411,7 @@ public class MySpaceDriver
       fileMenu.add(menuItem);
 
 
-
-
-
-
-
-      menuItem = new JMenuItem("Retrieve file contents");
+      menuItem = new JMenuItem("Retrieve file contents as String");
       menuItem.addActionListener(new ActionListener()
          {  public void actionPerformed(ActionEvent e)
             {  BufferedReader console = new BufferedReader(
@@ -441,6 +436,59 @@ public class MySpaceDriver
                   System.out.println(contents);
 
                   System.out.println("\nMessages:-");
+                  middle.outputStatusList();
+                  middle.resetStatusList();
+               }
+               catch (Exception ex)
+               {  ex.printStackTrace();
+               }
+ 
+
+            }
+         }
+      );
+      fileMenu.add(menuItem);
+
+
+      menuItem = new JMenuItem("Retrieve file contents as byte array");
+      menuItem.addActionListener(new ActionListener()
+         {  public void actionPerformed(ActionEvent e)
+            {  BufferedReader console = new BufferedReader(
+                 new InputStreamReader(System.in));
+
+               String fileName;
+               System.out.println("Enter name of file:");
+               try
+               {  fileName = console.readLine();
+               }
+               catch (IOException ioerror)
+               {  System.out.println("Ooops");
+                  fileName = "";
+               }
+
+               try
+               {  middle.setTest(isTest);
+                  middle.setThrow(false);
+                  byte[] contents = middle.getBytes(fileName);
+
+                  System.out.println("\nFile content:-");
+
+                  int contentsLength = Array.getLength(contents);
+
+                  int numShow = contentsLength;
+                  if (numShow > 5)
+                  {  numShow = 5;
+                  }
+
+                  for (int loop=0; loop<numShow; loop++)
+                  {  System.out.print(" " + contents[loop]);
+                  }
+
+                  if (contentsLength > numShow)
+                  {  System.out.print("...");
+                  }
+
+                  System.out.println("\n\nMessages:-");
                   middle.outputStatusList();
                   middle.resetStatusList();
                }
@@ -717,7 +765,7 @@ public class MySpaceDriver
       menuItem = new JMenuItem("Quit");
       menuItem.addActionListener(new ActionListener()
          {  public void actionPerformed(ActionEvent e)
-            {  System.out.println("MySpace Driver. exiting normally.");
+            {  System.out.println("MySpace Driver exiting normally.");
                System.exit(0);
             }
          }

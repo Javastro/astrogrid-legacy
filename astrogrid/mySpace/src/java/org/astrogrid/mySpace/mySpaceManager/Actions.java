@@ -3,6 +3,8 @@ package org.astrogrid.mySpace.mySpaceManager;
 import java.io.*;
 import java.util.*;
 
+import java.lang.reflect.Array;
+
 import org.astrogrid.store.delegate.myspaceItn05.ManagerCodes;
 import org.astrogrid.store.delegate.myspaceItn05.EntryCodes;
 
@@ -11,11 +13,11 @@ import org.astrogrid.mySpace.mySpaceStatus.*;
 
 /**
  * @author A C Davenhall (Edinburgh)
- * @since Iteration 2.
+ * @since Iteration 2 (originally called MySpaceActions).
  * @version Iteration 5.
  */
 
-public class MySpaceActions
+public class Actions
 {  private static Logger logger = new Logger();
 
 
@@ -30,7 +32,7 @@ public class MySpaceActions
  * Default constructor.
  */
 
-   public MySpaceActions()
+   public Actions()
    {  super();
    }
 
@@ -38,7 +40,7 @@ public class MySpaceActions
 // Action methods.
 //
 // Each of the following methods implements one of the actions which
-// the MySpaceActions can perform.
+// the Actions can perform.
 
 // -----------------------------------------------------------------
 
@@ -96,14 +98,29 @@ public class MySpaceActions
 /**
  * Save (or put) the contents of an input String as a specified
  * DataHolder in the MySpace system.
+ *
+ * @param account Account performing the operation.
+ * @param newDataItemName MySpace name of the file to be created.
+ * @param fileType flag indicating the type of contents of the file:
+ *   true means the contents are Strin, false that they are an array
+ *   of bytes.
+ * @param stringContents The String containing the contents to be written
+ *  to the new file.
+ * @param byteContents A byte array containing the contents to be written
+ *  to the new file.
+ * @param contentsType Type of file to be created (VOTable etc).
+ * @return dispatchExisting Flag indicating action if a file of the
+ *  given MySpace name already exists.
  */
 
-   public boolean putString(String account, String newDataItemName, 
-     String contents, int contentsType, int dispatchExisting)
+   public boolean putContents(String account, String newDataItemName, 
+     boolean fileType, String stringContents, byte[] byteContents,
+     int contentsType, int dispatchExisting)
    {  boolean returnStatus = true;
 
       MySpaceStatus status = new MySpaceStatus();
-      logger.appendMessage("entered putString");
+      logger.appendMessage("entered putContents");
+      logger.appendMessage("newDataItemName: " + newDataItemName);
 
       try
       {
@@ -136,9 +153,6 @@ public class MySpaceActions
 //            Check whether the new contents are to be appended to an
 //            existing file.
 
-               dispatchExisting = ManagerCodes.LEAVE;
-
-
                if (dispatchExisting != ManagerCodes.APPEND)
                {
 //
@@ -166,7 +180,14 @@ public class MySpaceActions
                      String dataItemFileName = "";
 
                      int dataItemType = contentsType;
-                     int dataItemSize = contents.length();
+
+                     int dataItemSize = 0;
+                     if (fileType)
+                     {  dataItemSize = stringContents.length();
+                     }
+                     else
+                     {  dataItemSize = Array.getLength(byteContents);
+                     }
 
                      DataItemRecord newDataItem = new DataItemRecord
                        (newDataItemName, newdataItemID,
@@ -203,7 +224,8 @@ public class MySpaceActions
                         String copyTo = serverDirectory + dataItemFileName;
 
                         ServerDriver serverDriver = new ServerDriver();
-                        if(!serverDriver.upLoadString(contents, copyTo,
+                        if(!serverDriver.upLoadString(fileType,
+                          stringContents, byteContents, copyTo,
                           false) )
                         {
 
@@ -236,6 +258,7 @@ public class MySpaceActions
 //               The contents are to be appended to an existing file;
 //               check that it exits.
 
+                  logger.appendMessage("newDataItemName: " + newDataItemName);
                   Vector dataItems = 
                     this.internalLookupDataHoldersDetails(account, 
                       newDataItemName, reg);
@@ -259,7 +282,8 @@ public class MySpaceActions
                      String copyTo = serverDirectory + dataItemFileName;
 
                      ServerDriver serverDriver = new ServerDriver();
-                     if(!serverDriver.upLoadString(contents, copyTo, true) )
+                     if(!serverDriver.upLoadString(fileType,
+                          stringContents, byteContents, copyTo, true) )
                      {  status.addCode(MySpaceStatusCode.AGMMCE00207,
                           MySpaceStatusCode.ERROR,
                           MySpaceStatusCode.LOG, this.getClassName() );
@@ -491,8 +515,6 @@ public class MySpaceActions
    }
 
 
-
-
 // -----------------------------------------------------------------
 
 /**
@@ -577,6 +599,90 @@ public class MySpaceActions
            this.getClassName() );
 
          contents = "";
+      }
+
+      return contents;
+   }
+
+
+// -----------------------------------------------------------------
+
+/**
+ * Get (read) the contents of a file held on a MySpace Server and
+ * return them as an array of bytes.
+ */
+
+  public byte[] getBytes(String account, int dataItemID)
+  {  byte[] contents = null;
+
+      MySpaceStatus status = new MySpaceStatus();
+
+      try
+      {
+
+//
+//      Attempt to open the registry and proceed if ok.
+
+         RegistryManager reg = new RegistryManager(registryName);
+
+         if (status.getSuccessStatus())
+         {
+
+//
+//         Assemble the UserAccount from the UserID and CommunityID.
+
+            UserAccount userAcc = new UserAccount(account, "", "");
+
+//
+//         Check the user's system authorisation and proceed if ok.
+
+            if (userAcc.checkSystemAuthorisation(UserAccount.WRITE) )
+            {
+
+//
+//            Attempt to lookup the details of the DataHolder and proceed
+//            if ok.
+
+               DataItemRecord dataItem = 
+                 this.internalLookupDataHolderDetails(account,
+                   dataItemID, reg);
+               if (dataItem != null)
+               {
+
+//
+//               Obtain the name of the file.
+//
+//               [TODO]: do not hard-wire the server name.
+
+                   String serverName = "serv1";
+                   String serverDirectory =
+                          reg.getServerDirectory(serverName);
+
+                   String serverFile = serverDirectory +
+                          dataItem.getDataItemFile();
+
+                   System.out.println("serverFile: " + serverFile);
+                   ServerDriver serverDriver = new ServerDriver();
+                   contents = serverDriver.retrieveBytes(serverFile);
+                   System.out.println("contents" + contents);
+                   if (contents == null)
+                   {  status.addCode(MySpaceStatusCode.AGMMCE00201,
+                        MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
+                        this.getClassName() );
+                   }
+               }
+               else
+               {  status.addCode(MySpaceStatusCode.AGMMCE00201,
+                     MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
+                     this.getClassName() );
+               }
+            }
+         }
+      }
+      catch (Exception all)
+      {  status.addCode(MySpaceStatusCode.AGMMCE00100,
+           MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
+           this.getClassName() );
       }
 
       return contents;
@@ -1444,7 +1550,7 @@ public class MySpaceActions
  */
 
    public void setRegistryName(String registryName)
-   {  MySpaceActions.registryName = registryName;
+   {  Actions.registryName = registryName;
    }
 
 // -----------------------------------------------------------------

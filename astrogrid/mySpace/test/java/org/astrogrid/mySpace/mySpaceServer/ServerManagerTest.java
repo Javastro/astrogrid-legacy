@@ -3,6 +3,8 @@ package org.astrogrid.mySpace.mySpaceServer;
 import java.util.*;
 import junit.framework.*;
 
+import java.lang.reflect.Array;
+
 import org.astrogrid.mySpace.mySpaceServer.ServerManager;
 import org.astrogrid.mySpace.mySpaceStatus.Logger;
 
@@ -15,7 +17,7 @@ import org.astrogrid.mySpace.mySpaceStatus.Logger;
  */
 
 public class ServerManagerTest extends TestCase
-{
+{  private static Logger logger = new Logger(false, false, false, "");
 
 /**
  * Standard constructor for JUnit test classes.
@@ -37,25 +39,38 @@ public class ServerManagerTest extends TestCase
  *   <code>upLoadString</code>,
  *   <code>importDataHolder</code>,
  *   <code>copyDataHolder</code>,
+ *   <code>retrieveString</code>,
+ *   <code>retrieveBytes</code>,
  *   <code>deleteDataHolder</code>.
  */
 
    public void testAllMethods()
    {  String response;
 
-      Logger logger = new Logger(false, true, true, "./myspace.log");
-
       ServerManager server = new ServerManager();
 
 //
 //   Test up-loading a string.
 
-      response = server.upLoadString("Mary had a little lamb.",
+      String stringContents = "Mary had a little lamb.";
+      byte[] byteContents = new byte[] {1, 2, 3, 4, 5, 6};
+
+      response = server.upLoadString(true, stringContents, byteContents,
         "testfile1", false);
 
       System.out.println(" ");
-      System.out.println("Up-load: " + response);
-      Assert.assertEquals(response, "SUCCESS File up-loaded.");
+      System.out.println("Up-load String: " + response);
+      Assert.assertEquals(response, "SUCCESS Wrote file: testfile1");
+
+//
+//   Test up-loading an array of bytes.
+
+      response = server.upLoadString(false, stringContents, byteContents,
+        "testfile5", false);
+
+      System.out.println(" ");
+      System.out.println("Up-load byte array: " + response);
+      Assert.assertEquals(response, "SUCCESS Wrote file: testfile5");
 
 //
 //   Test importing a file from a remote URL.  Both local(ish) and
@@ -88,7 +103,29 @@ public class ServerManagerTest extends TestCase
       Assert.assertEquals(response, "SUCCESS File copied.");
 
 //
+//   Test retrieving a file as a String.
+
+      String stringReadback = server.retrieveString("testfile1");
+      Assert.assertEquals(stringContents, stringReadback);
+
+//
+//   Test retrieving a file as an array of bytes.
+
+      byte[] byteReadback = server.retrieveBytes("testfile5");
+
+      int contentsLength = Array.getLength(byteContents);
+      int readLength = Array.getLength(byteReadback);
+      Assert.assertEquals(readLength, contentsLength);
+
+      if (contentsLength == readLength)
+      {  for (int loop=0; loop<readLength; loop++)
+         {  Assert.assertEquals(byteReadback[loop], byteContents[loop]);
+         }
+      }
+
+//
 //   Test deleting a file; delete all the files which have been created.
+
 
       response = server.deleteDataHolder("testfile1");
       System.out.println("Delete: " + response);
@@ -103,6 +140,10 @@ public class ServerManagerTest extends TestCase
       Assert.assertEquals(response, "SUCCESS File deleted.");
 
       response = server.deleteDataHolder("testfile4");
+      System.out.println("Delete: " + response);
+      Assert.assertEquals(response, "SUCCESS File deleted.");
+
+      response = server.deleteDataHolder("testfile5");
       System.out.println("Delete: " + response);
       Assert.assertEquals(response, "SUCCESS File deleted.");
 

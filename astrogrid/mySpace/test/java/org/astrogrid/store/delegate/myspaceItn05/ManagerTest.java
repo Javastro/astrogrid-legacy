@@ -15,7 +15,7 @@ import java.lang.reflect.Array;
 
 public class ManagerTest extends TestCase
 {  private String mssUrl =
-     "http://grendel12.roe.ac.uk:8080/astrogrid-myspace/services/Manager";
+     "http://grendel12.roe.ac.uk:8080/astrogrid-mySpace/services/Manager";
 
 /**
  * Standard constructor for JUnit test classes.

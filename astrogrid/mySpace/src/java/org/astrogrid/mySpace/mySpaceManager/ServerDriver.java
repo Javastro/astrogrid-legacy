@@ -20,9 +20,16 @@ import org.astrogrid.mySpace.mySpaceServer.ServerManager;
  * is included in the methods of this class.
  * </p>
  *
+ * [TODO]: The options to invoke a Server as a separate Web service,
+ *   which occur in most of the methods of this class, are now
+ *   broken.  This functionality needs to be restored.  The best way to
+ *   do so is to re-do top-level Server Web service classes using
+ *   current practices.
+ * 
  * @author C L Qin
  * @author A C Davenhall (Edinburgh)
- * @version Iteration 4.
+ * @since Iteration 2.
+ * @version Iteration 5.
  */
 
 public class ServerDriver
@@ -40,13 +47,19 @@ public class ServerDriver
    {  super();
    }
 
+
 // -----------------------------------------------------------------
 
 /**
  * Write the contents of an input string as a new file a MySpace
  * server.
  *
- * @param contents The string containing the contents to be written
+ * @param contentsType flag indicating the type of contents of the file:
+ *   true means the contents are Strin, false that they are an array
+ *   of bytes.
+ * @param stringContents The String containing the contents to be written
+ *  to the new file.
+ * @param byteContents A byte array containing the contents to be written
  *  to the new file.
  * @param newDataHolderFileName  The name of the file on the server
  *  corresponding to the DataHolder to be copied to (ie. the
@@ -57,8 +70,8 @@ public class ServerDriver
  *   overwritten.
  */
 
-   public boolean upLoadString(String contents,
-     String newDataHolderFileName, boolean appendFlag)
+   public boolean upLoadString(boolean contentsType, String stringContents,
+     byte[] byteContents, String newDataHolderFileName, boolean appendFlag)
    {  boolean successStatus = true;
 
       Configuration config = new Configuration();
@@ -67,8 +80,8 @@ public class ServerDriver
       {  if (config.getSERVERDEPLOYMENT() == config.SEPARATESERVERS)
          {  
 //
-//         [TODO]: This method is now broken.  The appendFlag
-//           argument should be added.
+//         [TODO]: This method is now broken.  The method arguments have
+//            changed.
 
             call = createServerCall();
             call.setOperationName( "upLoadString" );		
@@ -77,7 +90,7 @@ public class ServerDriver
 		
             call.setReturnType( org.apache.axis.encoding.XMLType.XSD_STRING);
             String serverResponse = (String)call.invoke( new Object[]
-              {contents,newDataHolderFileName} );
+              {stringContents,newDataHolderFileName} );
 
             if (config.getDEBUG() )
             {  logger.appendMessage("GOT SERVERRESPONSE: " + serverResponse);
@@ -85,14 +98,14 @@ public class ServerDriver
          }
          else if (config.getSERVERDEPLOYMENT() == config.INTERNALSERVERS)
          {  ServerManager server = new ServerManager();
-            server.upLoadString(contents, newDataHolderFileName,
-              appendFlag);
+            server.upLoadString(contentsType, stringContents, byteContents,
+              newDataHolderFileName, appendFlag);
          }
          else if (config.getSERVERDEPLOYMENT() == config.MANAGERONLY)
          {  logger.appendMessage(
               "Attempt to upload a string to a dataHolder on a server:\n"
               + "  output server file name: " + newDataHolderFileName + "\n"
-              + "  contents: \n\n" + contents);
+              + "  contentsType: \n\n" + contentsType);
          }
          else
          {  throw new Exception("Invalid SERVERDEPLOYMENT.");
@@ -108,6 +121,7 @@ public class ServerDriver
 
       return successStatus;
    }
+
 
 // -----------------------------------------------------------------
 
@@ -179,17 +193,15 @@ public class ServerDriver
       return successStatus;
    }
 
+
 // -----------------------------------------------------------------
 
 /**
  * Read the contents of a file held on a MySpace server and return
  * them as a String.
  *
- * @param contents The string containing the contents to be written
- *  to the new file.
- *
  * @param newDataHolderFileName The name of the file on the server
- * which is to be read.
+ *   whose contents are to be retrieved.
  *
  * @return The contents of the file.
  */
@@ -231,6 +243,58 @@ public class ServerDriver
 
       return contents;
    }
+
+
+// -----------------------------------------------------------------
+
+/**
+ * Read the contents of a file held on a MySpace server and return
+ * them as an array of bytes.
+ *
+ * @param newDataHolderFileName The name of the file on the server
+ *   whose contents are to be retrieved.
+ *
+ * @return The contents of the file.
+ */
+
+   public byte[] retrieveBytes(String dataHolderFileName)
+   {  byte[] contents = null;
+
+      Configuration config = new Configuration();
+
+      try
+      {  if (config.getSERVERDEPLOYMENT() == config.SEPARATESERVERS)
+         {  
+//
+//         [TODO]: Add the retrieveString function when the Servers
+//         are deployed as separate Web Services.
+
+            logger.appendMessage("retrieveString no available in this mode.");
+         }
+         else if (config.getSERVERDEPLOYMENT() == config.INTERNALSERVERS)
+         {  ServerManager server = new ServerManager();
+            contents = server.retrieveBytes(dataHolderFileName);
+         }
+         else if (config.getSERVERDEPLOYMENT() == config.MANAGERONLY)
+         {  logger.appendMessage(
+              "Attempt to read a dataHolder from a server:\n"
+              + "  server file name: "+ dataHolderFileName);
+         }
+         else
+         {  throw new Exception("Invalid SERVERDEPLOYMENT.");
+         }
+      }
+      catch(Exception e)
+      {  contents = null;
+
+         if (config.getDEBUG() )
+         {  e.printStackTrace();
+         }
+      }
+
+      return contents;
+   }
+
 
 // -----------------------------------------------------------------
 
@@ -296,6 +360,7 @@ public class ServerDriver
       return successStatus;
    }
 
+
 // -----------------------------------------------------------------
 
 /**
@@ -349,6 +414,7 @@ public class ServerDriver
 
       return successStatus;
    }
+
 
 // -----------------------------------------------------------------
 
