@@ -1,4 +1,4 @@
-/*$Id: DefaultMetadataService.java,v 1.6 2004/09/07 13:29:46 pah Exp $
+/*$Id: DefaultMetadataService.java,v 1.7 2004/10/08 20:01:51 pah Exp $
  * Created on 21-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,7 +19,18 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.exolab.castor.xml.Marshaller;
 
+import java.io.InputStream;
+import java.io.StringReader;
 import java.io.StringWriter;
+
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Templates;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -30,6 +41,8 @@ import junit.framework.TestCase;
  */
 public class DefaultMetadataService implements MetadataService, ComponentDescriptor {
     private static final Log logger = LogFactory.getLog(DefaultMetadataService.class);
+    
+    private static final String FORMATTER_XSL = "registryFormatter.xsl";
        
     /** Construct a new StandardCEAMetaData
      * @param provider a component that provides a VODescription, on which this Metadata component works.
@@ -45,7 +58,9 @@ public class DefaultMetadataService implements MetadataService, ComponentDescrip
 
     public String returnRegistryEntry() throws CeaException {
  
-       StringWriter sw;
+       StringWriter sw = null, swt = null;
+       InputStream formatterXSL = null;
+       
        try {
           sw = new StringWriter();
           Marshaller mar = new Marshaller(sw);
@@ -58,11 +73,26 @@ public class DefaultMetadataService implements MetadataService, ComponentDescrip
           mar.setNamespaceMapping("ceab", Namespaces.CEAB);
           mar.setNamespaceMapping("vr", Namespaces.VORESOURCE);
           mar.marshal(provider.getVODescription());
-          sw.close();                
-          return sw.toString();
+          sw.close();           
+          
+          // now transform to make suitable for the registry entry
+          
+          TransformerFactory fac = TransformerFactory.newInstance();
+          String xslpath = this.getClass().getPackage()+FORMATTER_XSL;
+          formatterXSL = this.getClass().getResourceAsStream(FORMATTER_XSL);
+          Source formatter = new StreamSource(formatterXSL);
+          Templates template = fac.newTemplates(formatter);
+          
+          Transformer xformer = template.newTransformer();
+          Source source = new StreamSource(new StringReader(sw.toString()));
+          swt = new StringWriter();
+          Result result = new StreamResult(swt);
+          xformer.transform(source, result);
+          
+          return swt.toString();
          
        }
-       catch (Exception e) {
+      catch (Exception e) {
            logger.debug(e);
          throw new CeaException("problem returning registry entry", e);
        }
@@ -104,6 +134,9 @@ public class DefaultMetadataService implements MetadataService, ComponentDescrip
 
 /* 
 $Log: DefaultMetadataService.java,v $
+Revision 1.7  2004/10/08 20:01:51  pah
+make the registry entry more "registry ready" - make sure namespaces are ok
+
 Revision 1.6  2004/09/07 13:29:46  pah
 made sure that the vr namespace is declared
 
