@@ -1,5 +1,5 @@
 /*
-   $Id: XmlOutputStream.java,v 1.1 2002/11/27 16:58:47 mch Exp $
+   $Id: XmlOutputStream.java,v 1.2 2002/12/14 20:09:31 mch Exp $
 
    Date        Author      Changes
    8 Oct 2002  M Hill      Created
@@ -68,6 +68,7 @@ public class XmlOutputStream extends XmlOutput
    /**
     * writeString implementation - writes to the 'output stream' given in
     * the constructor, using the AsciiOutputStream as a filter.
+    * NB - all writing is eventually channelled through this.
     */
    public void writeString(String s) throws IOException
    {
@@ -99,7 +100,7 @@ public class XmlOutputStream extends XmlOutput
          indentSpaces = indentSpaces + indentSpaces;
       }
         
-      out.write(indentSpaces.substring(0, indent) + string + "\n");
+      writeString(indentSpaces.substring(0, indent) + string + "\n");
    }
 
    /**

@@ -1,5 +1,5 @@
 /*
-   $Id: XmlTag.java,v 1.1 2002/11/27 16:58:47 mch Exp $
+   $Id: XmlTag.java,v 1.2 2002/12/14 20:09:31 mch Exp $
 
    Date        Author      Changes
    8 Oct 2002  M Hill      Created
@@ -79,7 +79,7 @@ public class XmlTag extends XmlOutput
     */
    public String toString()
    {
-      return "<"+name.toUpperCase()+">";
+      return "<"+name+">";
    }
    
 }

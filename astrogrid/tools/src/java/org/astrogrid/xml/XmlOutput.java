@@ -1,5 +1,5 @@
 /*
-   $Id: XmlOutput.java,v 1.1 2002/11/27 16:58:47 mch Exp $
+   $Id: XmlOutput.java,v 1.2 2002/12/14 20:09:31 mch Exp $
 
    Date        Author      Changes
    8 Oct 2002  M Hill      Created
@@ -65,7 +65,7 @@ public abstract class XmlOutput extends OutputStream
     */
    public void writeTag(String tag, String value) throws IOException
    {
-      this.writeIndentedLine("<"+tag+">"+value+"</"+tag+">");
+      this.writeIndentedLine("<"+tag+">"+transformSpecials(value)+"</"+tag+">");
    }
 
    /**
@@ -73,9 +73,42 @@ public abstract class XmlOutput extends OutputStream
     */
    public void writeTag(String tag, String attr, String value) throws IOException
    {
-      this.writeIndentedLine("<"+tag+" "+attr+">"+value+"</"+tag+">");
+      this.writeIndentedLine("<"+tag+" "+attr+">"+transformSpecials(value)+"</"+tag+">");
    }
 
+   /**
+    * Transforms special characters to safe ones (eg & to &amp, < to &lt)
+    */
+   public static String transformSpecials(String s)
+   {
+      //java v1.4
+      /*
+      s = s.replaceAll("&", "&amp;");  //do first so we don't catch specials
+      s = s.replaceAll("<", "&lt;");
+      s = s.replaceAll(">", "&gt;");
+      return s;
+       /**/
+
+      /**/
+      //pre java 1.4
+      int pos =0;
+      while ((pos = s.indexOf('&',pos+1)) != -1)
+      {
+         s = s.substring(0,pos)+"&amp;"+s.substring(pos+1);
+      }
+      while ((pos = s.indexOf('<')) != -1)
+      {
+         s = s.substring(0,pos)+"&lt;"+s.substring(pos+1);
+      }
+      while ((pos = s.indexOf('>')) != -1)
+      {
+         s = s.substring(0,pos)+"&gt;"+s.substring(pos+1);
+      }
+      
+      return s;
+       /**/
+   }
+   
    /**
     * Called to make a new simple tag with a name and an attribute.
     */
