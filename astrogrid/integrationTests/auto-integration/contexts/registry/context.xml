@@ -1,7 +1,0 @@
-<Context path="/astrogrid-registry-SNAPSHOT">
-   <Environment name="org.astrogrid.config.url" override="false" type="java.lang.String"
-           value="@CONFIGPATH@/AstroGridConfig.properties"/>
-   <Environment name="org.astrogrid.registry.harvest.daemon.interval-hours" override="false" 
-           type="java.lang.String" value="1"/>
-</Context>
-
