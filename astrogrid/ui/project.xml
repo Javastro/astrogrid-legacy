@@ -22,6 +22,14 @@
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
+  		 <!-- required for logging -->
+   		<dependency>
+    	   <id>commons-logging</id>
+    	   <version>1.0.3</version>
+     	   <properties>
+           <war.bundle>true</war.bundle>
+        </properties>
+        </dependency>
         <dependency>
             <id>junit</id>
             <version>3.8</version>

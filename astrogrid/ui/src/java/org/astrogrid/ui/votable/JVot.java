@@ -1,5 +1,5 @@
 /*
- * $Id: JVot.java,v 1.1 2004/04/15 16:34:53 mch Exp $
+ * $Id: JVot.java,v 1.2 2004/12/07 01:33:05 jdt Exp $
  * Copyright 2003 AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid Software License,
@@ -8,19 +8,11 @@
 
 package org.astrogrid.ui.votable;
 
-import VOTableUtil.Resource;
-import VOTableUtil.Table;
-import VOTableUtil.Votable;
-import com.tbf.xml.XmlElement;
-import com.tbf.xml.XmlParser;
 import java.awt.BorderLayout;
-import java.awt.event.ActionListener;
-import java.io.*;
-import java.util.Vector;
-import javax.swing.*;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import org.astrogrid.log.Log;
-import org.astrogrid.ui.ExtensionFileFilter;
 
 /**
  * A panel for displaying a votable
@@ -105,6 +97,12 @@ public class JVot extends JTable
 }
 /*
 $Log: JVot.java,v $
+Revision 1.2  2004/12/07 01:33:05  jdt
+Merge from PAL_Itn07
+
+Revision 1.1.116.1  2004/11/30 01:16:54  mch
+switched to commons logging
+
 Revision 1.1  2004/04/15 16:34:53  mch
 Tidied up, introduced stuff from datacenter ui
 

@@ -1,5 +1,5 @@
 /*
- * $Id: JVotController.java,v 1.1 2004/04/15 16:34:53 mch Exp $
+ * $Id: JVotController.java,v 1.2 2004/12/07 01:33:05 jdt Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -17,7 +17,8 @@ import com.tbf.xml.XmlParser;
 import java.awt.event.ActionListener;
 import java.util.Vector;
 import javax.swing.JFileChooser;
-import org.astrogrid.log.Log;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.ui.ExtensionFileFilter;
 
 /**
@@ -37,6 +38,8 @@ public class JVotController implements ActionListener
    public static final ExtensionFileFilter votFileFilter = new ExtensionFileFilter(new String[] {"vot"},"VOTable");
    public static final ExtensionFileFilter xmlFileFilter = new ExtensionFileFilter(new String[] {"xml"},"XML");
 
+   Log log = LogFactory.getLog(JVotController.class);
+   
    public JVotController(JVot view)
    {
       this.votView = view;
@@ -112,7 +115,7 @@ public class JVotController implements ActionListener
             }
             catch (IOException ioe)
             {
-               Log.logError("Could not save VOTable to '"+chooser.getSelectedFile()+"'",ioe);
+               log.error("Could not save VOTable to '"+chooser.getSelectedFile()+"'",ioe);
             }
          }
       }
@@ -127,7 +130,7 @@ public class JVotController implements ActionListener
             }
             catch (IOException ioe)
             {
-               Log.logError("Could not load VOTable '"+chooser.getSelectedFile()+"'\n"+
+               log.error("Could not load VOTable '"+chooser.getSelectedFile()+"'\n"+
                             "Are you sure it is a valid VOTable?",
                             ioe);
             }
@@ -148,6 +151,12 @@ public class JVotController implements ActionListener
 
 /*
 $Log: JVotController.java,v $
+Revision 1.2  2004/12/07 01:33:05  jdt
+Merge from PAL_Itn07
+
+Revision 1.1.116.1  2004/11/30 01:16:54  mch
+switched to commons logging
+
 Revision 1.1  2004/04/15 16:34:53  mch
 Tidied up, introduced stuff from datacenter ui
 
