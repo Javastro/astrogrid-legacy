@@ -1,9 +1,9 @@
 /**
- * <cvs:id>$Id: LoginAction.java,v 1.24 2004/04/02 11:53:17 jdt Exp $</cvs:id>
+ * <cvs:id>$Id: LoginAction.java,v 1.25 2004/04/05 16:42:29 jdt Exp $</cvs:id>
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/src/java/org/astrogrid/portal/cocoon/common/LoginAction.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/04/02 11:53:17 $</cvs:date>
- * <cvs:version>$Revision: 1.24 $</cvs:version>
+ * <cvs:date>$Date: 2004/04/05 16:42:29 $</cvs:date>
+ * <cvs:version>$Revision: 1.25 $</cvs:version>
  */
 package org.astrogrid.portal.cocoon.common;
 import java.net.MalformedURLException;
@@ -126,7 +126,7 @@ public final class LoginAction extends AbstractAction {
         checkLogger();
         //
         // Initialise our community config.
-        // init(); @TODO jdt find out if we need to do this.
+         init(); //@TODO jdt this is still required when we set the credential.  Is this still necessary? 
         //
         // Get our current request and session.
         final Request request = ObjectModelHelper.getRequest(objectModel);
@@ -196,6 +196,9 @@ public final class LoginAction extends AbstractAction {
             log.debug("Account identifier invalid",e);
             return null; //failed to log in
         } catch (CommunityResolverException e) {
+            //It's possible this should return null (ie a failed login)
+            //rather than be treated as an error, because it probably indicates
+            //that the user mistyped their community
             log.error("CommunityResolverException from security delegate",e);
             throw new LoginException("CommunityResolverException from security delegate.  Please check that your community has been entered correctly and that your registry is properly configured.",e);
         } catch (RegistryException e) {
@@ -280,6 +283,9 @@ public final class LoginAction extends AbstractAction {
 /**
  * <cvs:log>
  * $Log: LoginAction.java,v $
+ * Revision 1.25  2004/04/05 16:42:29  jdt
+ * reinstated the init method till we decide whether it is really required.
+ *
  * Revision 1.24  2004/04/02 11:53:17  jdt
  * Merge from PLGN_JDT_bz#281a
  *
