@@ -34,11 +34,12 @@ public class MySpaceUtils {
     private static Logger logger = Logger.getLogger(MySpaceUtils.class);
     private static boolean DEBUG = true;
 	private static String catalinaHome = AxisProperties.getProperty("catalina.home");
-	private static String responseTemplate = catalinaHome+"/conf/astrogrid/mySpace/" +"MySpaceManagerResponse.properties";
-	private static String responseTemplate_header = catalinaHome+"/conf/astrogrid/mySpace/" +"MSResponseHeader.properties";
-	private static String responseTemplate_element = catalinaHome+"/conf/astrogrid/mySpace/" +"MSResponseElements.properties";
-	private static String responseTemplate_foot = catalinaHome+"/conf/astrogrid/mySpace/" +"MSResponseFooter.properties";
-	private static String requestTemplate = "catalinaHome"+"/conf/astrogrid/mySpace/"+"MySpaceManagerRequest.properties";
+	private static String requestResponseTemplate = catalinaHome+"/conf/astrogrid/mySpace/" +"MSManagerRequestResponse.properties";
+	//private static String responseTemplate = catalinaHome+"/conf/astrogrid/mySpace/" +"MySpaceManagerResponse.properties";
+	//private static String responseTemplate_header = catalinaHome+"/conf/astrogrid/mySpace/" +"MSResponseHeader.properties";
+	//private static String responseTemplate_element = catalinaHome+"/conf/astrogrid/mySpace/" +"MSResponseElements.properties";
+	//private static String responseTemplate_foot = catalinaHome+"/conf/astrogrid/mySpace/" +"MSResponseFooter.properties";
+	//private static String requestTemplate = "catalinaHome"+"/conf/astrogrid/mySpace/"+"MySpaceManagerRequest.properties";
     private static Properties conProperties = new Properties();
     private static final String RESPONSE = "MYSPACEMANAGER_RESPONSE";
     private static final String D_RESPONSE_HEAD ="MYSPACEMANAGER_D_RESPONSE_HEAD";
@@ -122,7 +123,7 @@ public class MySpaceUtils {
 		//conProperties = new Properties();
 		String response = "";
 		try {
-			FileInputStream istream = new FileInputStream( responseTemplate );
+			FileInputStream istream = new FileInputStream( requestResponseTemplate );
 			conProperties.load(istream);
 			istream.close();
 			if (DEBUG)  logger.debug( "buildMySpaceManagerResponse: " +conProperties.toString() ) ;
@@ -163,8 +164,8 @@ public class MySpaceUtils {
 		//conProperties = new Properties();
 		String response = "";
 		try {
-			MySpaceUtils.readFromFile(new File(responseTemplate_foot));
-			FileInputStream istream = new FileInputStream( responseTemplate_foot );
+			//MySpaceUtils.readFromFile(new File(responseTemplate_foot));
+			FileInputStream istream = new FileInputStream( requestResponseTemplate );
 			conProperties.load(istream);
 			istream.close();
 			if (DEBUG)  logger.debug( "buildMySpaceManagerResponse_Footer: " +conProperties.toString() ) ;
@@ -187,7 +188,7 @@ public class MySpaceUtils {
 		//conProperties = new Properties();
 		String response = "";
 		try {
-			FileInputStream istream = new FileInputStream( responseTemplate_header );
+			FileInputStream istream = new FileInputStream( requestResponseTemplate );
 			conProperties.load(istream);
 			istream.close();
 			if (DEBUG)  logger.debug( "buildMySpaceManagerResponse_Header: " +conProperties.toString() ) ;
@@ -216,7 +217,7 @@ public class MySpaceUtils {
 		//conProperties = new Properties();
 		String response = "";
 		try {
-			FileInputStream istream = new FileInputStream( responseTemplate_element );
+			FileInputStream istream = new FileInputStream( requestResponseTemplate );
 			conProperties.load(istream);
 			istream.close();
 			if (DEBUG)  logger.debug( "buildMySpaceManagerResponse_Element: " +conProperties.toString() ) ;
