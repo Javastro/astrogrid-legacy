@@ -14,12 +14,14 @@ import org.apache.cocoon.environment.Session;
 import org.apache.cocoon.environment.SourceResolver;
 import org.apache.cocoon.generation.AbstractGenerator;
 import org.apache.cocoon.xml.dom.DOMStreamer;
+import org.astrogrid.community.User;
 import org.astrogrid.portal.myspace.acting.framework.ContextWrapper;
 import org.astrogrid.portal.myspace.acting.framework.ContextWrapperFactory;
 import org.astrogrid.portal.utils.acting.ActionUtils;
 import org.astrogrid.portal.utils.acting.ActionUtilsFactory;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Ivorn;
+import org.astrogrid.store.delegate.StoreClient;
 import org.astrogrid.store.delegate.StoreFile;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -43,7 +45,7 @@ public class StorageFilesGenerator extends AbstractGenerator {
    * @see org.apache.cocoon.sitemap.SitemapModelComponent#setup(org.apache.cocoon.environment.SourceResolver, java.util.Map, java.lang.String, org.apache.avalon.framework.parameters.Parameters)
    */
   public void setup(SourceResolver resolver, Map objectModel, String src, Parameters params)
-  		throws ProcessingException, SAXException, IOException {
+  	  throws ProcessingException, SAXException, IOException {
     super.setup(resolver, objectModel, src, params);
     
     // Get environment.
@@ -74,15 +76,21 @@ public class StorageFilesGenerator extends AbstractGenerator {
       new ProcessingException("failed to create new document", e);
     }
     
-    // Get the root storage file.
-    StoreFile storeFile = context.getStoreClient().getFiles(StorageFilesGenerator.FILTER);
+    // Get the user's storage files.
+    StoreFile userFile = getUserFile();
     
-    // Create the root element.
+    // Create the root MySpace element (for the user).
     Element rootElement = document.createElement(StorageFilesGenerator.MYSPACE_TREE);
     document.appendChild(rootElement);
     
-    // Walk the storage file tree.
-    walkFile(storeFile, document, rootElement);
+    if(userFile != null) {
+      // Walk the storage file tree.
+      walkFile(userFile, document, rootElement);
+    }
+    else {
+      this.getLogger().error("cannot find files for user");
+      // throw new ProcessingException("cannot find files for user");
+    }
     
     // Stream the fully produced document.
     DOMStreamer streamer = new DOMStreamer();
@@ -92,6 +100,32 @@ public class StorageFilesGenerator extends AbstractGenerator {
   }
   
   /**
+   * @return
+   */
+  private StoreFile getUserFile() throws IOException {
+    // Make sure we have a valid user.
+    User user = context.getUser();
+    String userId = user.getUserId();
+    if(user == null || userId == null || userId.length() == 0) {
+      return null;
+    }
+    
+    // Get list of user files.
+    StoreFile root = context.getStoreClient().getFiles(StorageFilesGenerator.FILTER);
+    StoreFile[] allUsers = root.listFiles();
+    
+    // Find files for the user we want.
+    StoreFile userFiles = null;
+    for(int userIndex = 0; userIndex < allUsers.length && userFiles == null; userIndex++) {
+      if(userId.equals(allUsers[userIndex].getName())) {
+        userFiles = allUsers[userIndex];
+      }
+    }
+
+    return userFiles;
+  }
+
+  /**
    * Walk the store file tree adding containers and leaves to the document as
    * necessary.
    * 
@@ -100,7 +134,7 @@ public class StorageFilesGenerator extends AbstractGenerator {
    * @param parentElement element to add new ones to
    */
   private void walkFile(StoreFile storeFile, Document document, Element parentElement) 
-  		throws ProcessingException {
+  	  throws IOException, ProcessingException {
   	if(storeFile == null) {
   		return;
   	}
@@ -145,14 +179,14 @@ public class StorageFilesGenerator extends AbstractGenerator {
   }
   
   private Element addStorageItem(StoreFile storeFile, Document document, Element parentElement) 
-  		throws ProcessingException {
+  		throws IOException, ProcessingException {
     // Get file name and full path.
     String fileName = storeFile.getName();
     String filePath = storeFile.getPath();
     String safeName = getSafeName(filePath);
     
     // Get storage location.
-    Agsl agsl = storeFile.toAgsl();
+    Agsl agsl = context.getStoreClient().getAgsl(filePath);
     
     // Create new element.
     Element itemElement = document.createElement(StorageFilesGenerator.MYSPACE_ITEM);
