@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/sql/hsqldb/Attic/create.sql,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/04 23:33:05 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/06 20:10:07 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: create.sql,v $
+ *   Revision 1.4  2003/09/06 20:10:07  dave
+ *   Split PolicyManager into separate components.
+ *
  *   Revision 1.3  2003/09/04 23:33:05  dave
  *   Implemented the core account manager methods - needs data object to return results
  *
@@ -79,7 +82,8 @@ DROP TABLE communities IF EXISTS ;
 CREATE TABLE communities
     (
     ident       VARCHAR NOT NULL,
-    url         VARCHAR NOT NULL,
+    service     VARCHAR NULL,
+    manager     VARCHAR NULL,
     description VARCHAR NULL,
     PRIMARY KEY ( ident )
     ) ;

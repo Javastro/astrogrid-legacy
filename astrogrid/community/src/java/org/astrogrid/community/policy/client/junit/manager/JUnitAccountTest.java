@@ -1,47 +1,53 @@
 /*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/junit/manager/Attic/JUnitTestCase.java,v $</cvs:source>
+ * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/client/junit/manager/Attic/JUnitAccountTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/04 23:58:10 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/06 20:10:07 $</cvs:date>
+ * <cvs:version>$Revision: 1.1 $</cvs:version>
  *
  * <cvs:log>
- *   $Log: JUnitTestCase.java,v $
- *   Revision 1.2  2003/09/04 23:58:10  dave
+ *   $Log: JUnitAccountTest.java,v $
+ *   Revision 1.1  2003/09/06 20:10:07  dave
+ *   Split PolicyManager into separate components.
+ *
+ *   Revision 1.3  2003/09/04 23:58:10  dave
  *   Experimenting with using our own DataObjects rather than the Axis generated ones ... seems to work so far
  *
- *   Revision 1.1  2003/09/04 23:33:05  dave
+ *   Revision 1.2  2003/09/04 23:33:05  dave
  *   Implemented the core account manager methods - needs data object to return results
+ *
+ *   Revision 1.1  2003/09/03 15:23:33  dave
+ *   Split API into two services, PolicyService and PolicyManager
  *
  * </cvs:log>
  *
  */
-package org.astrogrid.community.policy.server.junit.manager ;
+package org.astrogrid.community.policy.client.junit.manager ;
 
 import junit.framework.TestCase ;
-
-import org.astrogrid.community.policy.data.ServiceData ;
-import org.astrogrid.community.policy.data.AccountData ;
-
-import org.astrogrid.community.policy.server.PolicyManager ;
-import org.astrogrid.community.policy.server.PolicyManagerImpl ;
 
 import java.util.Iterator ;
 import java.util.Collection ;
 
+import org.astrogrid.community.policy.data.AccountData ;
+import org.astrogrid.community.policy.data.ServiceData ;
+
+import org.astrogrid.community.policy.server.PolicyManager ;
+import org.astrogrid.community.policy.server.PolicyManagerService ;
+import org.astrogrid.community.policy.server.PolicyManagerServiceLocator ;
 
 /**
  *
- * JUnit test for the PolicyManager.
+ * JUnit test for the policy client components.
  *
  */
-public class JUnitTestCase
+public class JUnitAccountTest
 	extends TestCase
 	{
 	/**
 	 * The our test account ident.
 	 *
 	 */
-	private static final String TEST_ACCOUNT_IDENT = "server.manager@junit" ;
+	private static final String TEST_ACCOUNT_IDENT = "client.manager@junit" ;
 
 	/**
 	 * The our fake account ident.
@@ -68,10 +74,16 @@ public class JUnitTestCase
 	private static final boolean ASSERT_FLAG = false ;
 
 	/**
-	 * Our PolicyManager.
+	 * Our service locator.
 	 *
 	 */
-	private PolicyManager service = null ;
+	private PolicyManagerService locator ;
+
+	/**
+	 * Our service.
+	 *
+	 */
+	private PolicyManager service ;
 
 	/**
 	 * Setup our tests.
@@ -82,11 +94,16 @@ public class JUnitTestCase
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("setUp") ;
+		if (DEBUG_FLAG) System.out.println("setUp()") ;
 
 		//
-		// Create our PolicyManager.
-		service = new PolicyManagerImpl();
+		// Create our service locator.
+		locator = new PolicyManagerServiceLocator() ;
+		assertNotNull("Null service locator", locator) ;
+		//
+		// Create our service.
+		service = locator.getPolicyManager() ;
+		assertNotNull("Null service", service) ;
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("") ;
@@ -101,7 +118,7 @@ public class JUnitTestCase
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("testGetServiceStatus") ;
+		if (DEBUG_FLAG) System.out.println("testGetServiceStatus()") ;
 
 		//
 		// Try getting the service status.
@@ -125,11 +142,11 @@ public class JUnitTestCase
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("testAddAccount") ;
+		if (DEBUG_FLAG) System.out.println("testAddAccount()") ;
 
 		//
 		// Create our Account object.
-		AccountData account = new AccountData(TEST_ACCOUNT_IDENT, TEST_ACCOUNT_DESC) ;
+		AccountData account = new AccountData(TEST_ACCOUNT_IDENT) ;
 		//account.setIdent(TEST_ACCOUNT_IDENT) ;
 		//account.setDescription(TEST_ACCOUNT_DESC) ;
 		//
@@ -146,9 +163,7 @@ public class JUnitTestCase
 		// Try creating the same Account again.
 		account = service.addAccount(account);
 		assertNull("Created a duplicate account", account) ;
-//
-// Should use ident only to create ??
-//
+
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("") ;
 		}
@@ -162,7 +177,7 @@ public class JUnitTestCase
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("testGetAccount") ;
+		if (DEBUG_FLAG) System.out.println("testGetAccount()") ;
 
 		//
 		// Try getting the fake Account.
@@ -192,7 +207,7 @@ public class JUnitTestCase
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("testSetAccount") ;
+		if (DEBUG_FLAG) System.out.println("testSetAccount()") ;
 
 		//
 		// Try getting the real Account.
@@ -215,6 +230,40 @@ public class JUnitTestCase
 		if (DEBUG_FLAG) System.out.println("") ;
 		}
 
+
+	/**
+	 * Check we can get a list of Accounts.
+	 *
+	 */
+	public void testGetAccountList()
+		throws Exception
+		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("testGetAccountList()") ;
+
+		//
+		// Try getting the list of Accounts.
+		Object[] list ;
+		list = service.getAccountList();
+		assertNotNull("Failed to get the list of Accounts", list) ;
+
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("  ----") ;
+		if (DEBUG_FLAG) System.out.println("  List") ;
+		for (int i = 0 ; i < list.length ; i++)
+			{
+			AccountData account = (AccountData) list[i] ;
+			if (DEBUG_FLAG) System.out.println("    Account") ;
+			if (DEBUG_FLAG) System.out.println("      ident : " + account.getIdent()) ;
+			if (DEBUG_FLAG) System.out.println("      desc  : " + account.getDescription()) ;
+			}
+		if (DEBUG_FLAG) System.out.println("  ----") ;
+
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("") ;
+		}
+
 	/**
 	 * Check we can delete an Account object.
 	 *
@@ -224,16 +273,14 @@ public class JUnitTestCase
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("testDelAccount") ;
+		if (DEBUG_FLAG) System.out.println("testDelAccount()") ;
 
 		//
 		// Delete the real account (no return data).
 		service.delAccount(TEST_ACCOUNT_IDENT);
-
 		//
 		// Delete the real account again (no return data).
 		service.delAccount(TEST_ACCOUNT_IDENT);
-
 		//
 		// Delete the fake account (no return data).
 		service.delAccount(FAKE_ACCOUNT_IDENT);
@@ -241,6 +288,4 @@ public class JUnitTestCase
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("") ;
 		}
-
-
 	}

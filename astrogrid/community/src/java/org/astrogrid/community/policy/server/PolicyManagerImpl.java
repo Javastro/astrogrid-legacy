@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/PolicyManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/04 23:33:05 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/06 20:10:07 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManagerImpl.java,v $
+ *   Revision 1.4  2003/09/06 20:10:07  dave
+ *   Split PolicyManager into separate components.
+ *
  *   Revision 1.3  2003/09/04 23:33:05  dave
  *   Implemented the core account manager methods - needs data object to return results
  *
@@ -23,13 +26,11 @@
  */
 package org.astrogrid.community.policy.server ;
 
-import java.io.IOException ;
 import java.rmi.RemoteException ;
 
 import java.util.Vector ;
 import java.util.Collection ;
 
-import org.exolab.castor.jdo.JDO;
 import org.exolab.castor.jdo.Database;
 import org.exolab.castor.jdo.OQLQuery;
 import org.exolab.castor.jdo.QueryResults;
@@ -40,17 +41,10 @@ import org.exolab.castor.jdo.DuplicateIdentityException ;
 import org.exolab.castor.jdo.TransactionNotInProgressException ;
 import org.exolab.castor.jdo.ClassNotPersistenceCapableException ;
 
-import org.exolab.castor.util.Logger;
-
-import org.exolab.castor.mapping.Mapping;
-import org.exolab.castor.mapping.MappingException;
-
-import org.exolab.castor.persist.spi.Complex ;
-
+import org.astrogrid.community.policy.data.GroupData ;
 import org.astrogrid.community.policy.data.ServiceData ;
 import org.astrogrid.community.policy.data.AccountData ;
-import org.astrogrid.community.policy.data.PolicyPermission  ;
-import org.astrogrid.community.policy.data.PolicyCredentials ;
+import org.astrogrid.community.policy.data.CommunityData ;
 
 public class PolicyManagerImpl
 	implements PolicyManager
@@ -60,54 +54,6 @@ public class PolicyManagerImpl
 	 *
 	 */
 	protected static final boolean DEBUG_FLAG = true ;
-
-	/**
-	 * The name of our system property to read the location of our JDO mapping from.
-	 *
-	 */
-	private static final String MAPPING_CONFIG_PROPERTY = "org.astrogrid.policy.server.mapping" ;
-
-	/**
-	 * The name of the system property to read the location of our database config.
-	 *
-	 */
-	private static final String DATABASE_CONFIG_PROPERTY = "org.astrogrid.policy.server.database.config" ;
-
-	/**
-	 * The name of the system property to read our database name from.
-	 *
-	 */
-	private static final String DATABASE_NAME_PROPERTY = "org.astrogrid.policy.server.database.name" ;
-
-	/**
-	 * Our log writer.
-	 *
-	 */
-	private Logger logger = null ;
-
-	/**
-	 * Our config files path.
-	 *
-	 */
-	private String config = "" ;
-
-	/**
-	 * Our JDO and XML mapping.
-	 *
-	 */
-	private Mapping mapping = null ;
-
-	/**
-	 * Our JDO engine.
-	 *
-	 */
-	private JDO jdo = null ;
-
-	/**
-	 * Our database connection.
-	 *
-	 */
-	private Database database = null ;
 
 	/**
 	 * Public constructor.
@@ -126,64 +72,51 @@ public class PolicyManagerImpl
 		}
 
 	/**
+	 * Our DatabaseManager.
+	 *
+	 */
+	private DatabaseManager databaseManager ;
+
+	/**
+	 * Our AccountManager.
+	 *
+	 */
+	private AccountManager accountManager ;
+
+	/**
+	 * Our GroupManager.
+	 *
+	 */
+	private GroupManager groupManager ;
+
+	/**
+	 * Our CommunityManager.
+	 *
+	 */
+	private CommunityManager communityManager ;
+
+	/**
 	 * Initialise our service.
 	 *
 	 */
-	protected void init()
+	public void init()
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("PolicyManagerImpl.init()") ;
 
-		if (DEBUG_FLAG) System.out.println("    Mapping  : " + System.getProperty(MAPPING_CONFIG_PROPERTY)) ;
-		if (DEBUG_FLAG) System.out.println("    Database : " + System.getProperty(DATABASE_CONFIG_PROPERTY)) ;
-		if (DEBUG_FLAG) System.out.println("    Database : " + System.getProperty(DATABASE_NAME_PROPERTY)) ;
-
-		try {
-			//
-			// Create our log writer.
-			logger = new Logger(System.out).setPrefix("castor");
-			//
-			// Load our object mapping.
-			mapping = new Mapping(getClass().getClassLoader());
-			mapping.loadMapping(System.getProperty(MAPPING_CONFIG_PROPERTY));
-
-			//
-			// Create our JDO engine.
-			jdo = new JDO();
-			jdo.setLogWriter(logger);
-			jdo.setConfiguration(System.getProperty(DATABASE_CONFIG_PROPERTY));
-			jdo.setDatabaseName(System.getProperty(DATABASE_NAME_PROPERTY));
-			//
-			// Create our database connection.
-			database = jdo.getDatabase();
-			}
-// TODO
-// Need to do something with these ??
-//
-		catch(IOException ouch)
-			{
-			if (DEBUG_FLAG) System.out.println("IOException during initialisation.") ;
-			if (DEBUG_FLAG) System.out.println(ouch) ;
-			}
-
-		catch(DatabaseNotFoundException ouch)
-			{
-			if (DEBUG_FLAG) System.out.println("DatabaseNotFoundException during initialisation.") ;
-			if (DEBUG_FLAG) System.out.println(ouch) ;
-			}
-
-		catch(PersistenceException ouch)
-			{
-			if (DEBUG_FLAG) System.out.println("PersistenceException during initialisation.") ;
-			if (DEBUG_FLAG) System.out.println(ouch) ;
-			}
-
-		catch(MappingException ouch)
-			{
-			if (DEBUG_FLAG) System.out.println("MappingException during initialisation.") ;
-			if (DEBUG_FLAG) System.out.println(ouch) ;
-			}
+		//
+		// Initialise our DatabaseManager.
+		databaseManager = new DatabaseManagerImpl() ;
+		//
+		// Initialise our AccountManager.
+		accountManager = new AccountManagerImpl(databaseManager.getDatabase()) ;
+		//
+		// Initialise our GroupManager.
+		groupManager = new GroupManagerImpl(databaseManager.getDatabase()) ;
+		//
+		// Initialise our CommunityManager.
+		communityManager = new CommunityManagerImpl(databaseManager.getDatabase()) ;
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("") ;
@@ -215,90 +148,7 @@ public class PolicyManagerImpl
 	public AccountData addAccount(AccountData account)
 		throws RemoteException
 		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("PolicyManagerImpl.addAccount()") ;
-		if (DEBUG_FLAG) System.out.println("  ident : " + account.getIdent()) ;
-
-		//
-		// Check that the ident is valid.
-		//
-
-		//
-		// Try performing our transaction.
-		try {
-			//
-			// Begin a new database transaction.
-			database.begin();
-			//
-			// Try creating the account in the database.
-			database.create(account);
-			}
-		//
-		// If we already have an object with that ident.
-		catch (DuplicateIdentityException ouch)
-			{
-			if (DEBUG_FLAG) System.out.println("") ;
-			if (DEBUG_FLAG) System.out.println("  ----") ;
-			if (DEBUG_FLAG) System.out.println("DuplicateIdentityException in addAccount()") ;
-
-			//
-			// Set the response to null.
-			account = null ;
-
-			if (DEBUG_FLAG) System.out.println("  ----") ;
-			if (DEBUG_FLAG) System.out.println("") ;
-			}
-		//
-		// If anything else went bang.
-		catch (PersistenceException ouch)
-			{
-			if (DEBUG_FLAG) System.out.println("") ;
-			if (DEBUG_FLAG) System.out.println("  ----") ;
-			if (DEBUG_FLAG) System.out.println("PersistenceException in addAccount()") ;
-
-			//
-			// Set the response to null.
-			account = null ;
-
-			if (DEBUG_FLAG) System.out.println("  ----") ;
-			if (DEBUG_FLAG) System.out.println("") ;
-			}
-		//
-		// Commit the transaction.
-		finally
-			{
-			try {
-				if (null != account)
-					{
-					database.commit() ;
-					}
-				else {
-					database.rollback() ;
-					}
-				}
-			catch (PersistenceException ouch)
-				{
-				if (DEBUG_FLAG) System.out.println("") ;
-				if (DEBUG_FLAG) System.out.println("  ----") ;
-				if (DEBUG_FLAG) System.out.println("PersistenceException in addAccount() finally clause") ;
-
-				//
-				// Set the response to null.
-				account = null ;
-
-				if (DEBUG_FLAG) System.out.println("  ----") ;
-				if (DEBUG_FLAG) System.out.println("") ;
-				}
-			}
-
-		// TODO
-		// Need to return something to the client.
-		// Possible a new DataObject ... AccountResult ?
-		//
-
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		return account ;
+		return accountManager.addAccount(account) ;
 		}
 
 	/**
@@ -308,80 +158,7 @@ public class PolicyManagerImpl
 	public AccountData getAccount(String ident)
 		throws RemoteException
 		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("PolicyManagerImpl.getAccount()") ;
-		if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
-
-		AccountData account = null ;
-		try {
-			//
-			// Begin a new database transaction.
-			database.begin();
-			//
-			// Load the Account from the database.
-			account = (AccountData) database.load(AccountData.class, ident) ;
-			}
-		//
-		// If we couldn't find the object.
-		catch (ObjectNotFoundException ouch)
-			{
-			if (DEBUG_FLAG) System.out.println("") ;
-			if (DEBUG_FLAG) System.out.println("  ----") ;
-			if (DEBUG_FLAG) System.out.println("ObjectNotFoundException in getAccount()") ;
-
-			//
-			// Set the response to null.
-			account = null ;
-
-			if (DEBUG_FLAG) System.out.println("  ----") ;
-			if (DEBUG_FLAG) System.out.println("") ;
-			}
-		//
-		// If anything else went bang.
-		catch (PersistenceException ouch)
-			{
-			if (DEBUG_FLAG) System.out.println("") ;
-			if (DEBUG_FLAG) System.out.println("  ----") ;
-			if (DEBUG_FLAG) System.out.println("PersistenceException in getAccount()") ;
-
-			//
-			// Set the response to null.
-			account = null ;
-
-			if (DEBUG_FLAG) System.out.println("  ----") ;
-			if (DEBUG_FLAG) System.out.println("") ;
-			}
-		//
-		// Commit the transaction.
-		finally
-			{
-			try {
-				if (null != account)
-					{
-					database.commit() ;
-					}
-				else {
-					database.rollback() ;
-					}
-				}
-			catch (PersistenceException ouch)
-				{
-				if (DEBUG_FLAG) System.out.println("") ;
-				if (DEBUG_FLAG) System.out.println("  ----") ;
-				if (DEBUG_FLAG) System.out.println("PersistenceException in getAccount() finally clause") ;
-
-				//
-				// Set the response to null.
-				account = null ;
-
-				if (DEBUG_FLAG) System.out.println("  ----") ;
-				if (DEBUG_FLAG) System.out.println("") ;
-				}
-			}
-
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		return account ;
+		return accountManager.getAccount(ident) ;
 		}
 
 	/**
@@ -391,172 +168,17 @@ public class PolicyManagerImpl
 	public AccountData setAccount(AccountData account)
 		throws RemoteException
 		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("PolicyManagerImpl.setAccount()") ;
-		if (DEBUG_FLAG) System.out.println("  Account") ;
-		if (DEBUG_FLAG) System.out.println("    ident : " + account.getIdent()) ;
-		if (DEBUG_FLAG) System.out.println("    desc  : " + account.getDescription()) ;
-
-		//
-		// Try update the database.
-		try {
-			//
-			// Begin a new database transaction.
-			database.begin();
-			//
-			// Load the Account from the database.
-			AccountData data = (AccountData) database.load(AccountData.class, account.getIdent()) ;
-			//
-			// Update the account data.
-			data.setDescription(account.getDescription()) ;
-			}
-		//
-		// If we couldn't find the object.
-		catch (ObjectNotFoundException ouch)
-			{
-			if (DEBUG_FLAG) System.out.println("") ;
-			if (DEBUG_FLAG) System.out.println("  ----") ;
-			if (DEBUG_FLAG) System.out.println("ObjectNotFoundException in setAccount()") ;
-
-			//
-			// Set the response to null.
-			account = null ;
-
-			if (DEBUG_FLAG) System.out.println("  ----") ;
-			if (DEBUG_FLAG) System.out.println("") ;
-			}
-		//
-		// If anything else went bang.
-		catch (PersistenceException ouch)
-			{
-			if (DEBUG_FLAG) System.out.println("") ;
-			if (DEBUG_FLAG) System.out.println("  ----") ;
-			if (DEBUG_FLAG) System.out.println("PersistenceException in setAccount()") ;
-
-			//
-			// Set the response to null.
-			account = null ;
-			if (DEBUG_FLAG) System.out.println("  ----") ;
-			if (DEBUG_FLAG) System.out.println("") ;
-			}
-		//
-		// Commit the transaction.
-		finally
-			{
-			try {
-				if (null != account)
-					{
-					database.commit() ;
-					}
-				else {
-					database.rollback() ;
-					}
-				}
-			catch (PersistenceException ouch)
-				{
-				if (DEBUG_FLAG) System.out.println("") ;
-				if (DEBUG_FLAG) System.out.println("  ----") ;
-				if (DEBUG_FLAG) System.out.println("PersistenceException in setAccount() finally clause") ;
-
-				//
-				// Set the response to null.
-				account = null ;
-
-				if (DEBUG_FLAG) System.out.println("  ----") ;
-				if (DEBUG_FLAG) System.out.println("") ;
-				}
-			}
-
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		return account ;
+		return accountManager.setAccount(account) ;
 		}
 
 	/**
 	 * Delete an Account.
 	 *
 	 */
-	public void delAccount(String ident)
+	public boolean delAccount(String ident)
 		throws RemoteException
 		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("PolicyManagerImpl.delAccount()") ;
-		if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
-
-		//
-		// Try update the database.
-		AccountData account = null ;
-		try {
-			//
-			// Begin a new database transaction.
-			database.begin();
-			//
-			// Load the Account from the database.
-			account = (AccountData) database.load(AccountData.class, ident) ;
-			//
-			// Delete the account.
-			database.remove(account) ;
-			}
-		//
-		// If we couldn't find the object.
-		catch (ObjectNotFoundException ouch)
-			{
-			if (DEBUG_FLAG) System.out.println("") ;
-			if (DEBUG_FLAG) System.out.println("  ----") ;
-			if (DEBUG_FLAG) System.out.println("ObjectNotFoundException in delAccount()") ;
-
-			//
-			// Set the response to null.
-			account = null ;
-
-			if (DEBUG_FLAG) System.out.println("  ----") ;
-			if (DEBUG_FLAG) System.out.println("") ;
-			}
-		//
-		// If anything else went bang.
-		catch (PersistenceException ouch)
-			{
-			if (DEBUG_FLAG) System.out.println("") ;
-			if (DEBUG_FLAG) System.out.println("  ----") ;
-			if (DEBUG_FLAG) System.out.println("PersistenceException in delAccount()") ;
-
-			//
-			// Set the response to null.
-			account = null ;
-
-			if (DEBUG_FLAG) System.out.println("  ----") ;
-			if (DEBUG_FLAG) System.out.println("") ;
-			}
-		//
-		// Commit the transaction.
-		finally
-			{
-			try {
-				if (null != account)
-					{
-					database.commit() ;
-					}
-				else {
-					database.rollback() ;
-					}
-				}
-			catch (PersistenceException ouch)
-				{
-				if (DEBUG_FLAG) System.out.println("") ;
-				if (DEBUG_FLAG) System.out.println("  ----") ;
-				if (DEBUG_FLAG) System.out.println("PersistenceException in delAccount() finally clause") ;
-
-				//
-				// Set the response to null.
-				account = null ;
-
-				if (DEBUG_FLAG) System.out.println("  ----") ;
-				if (DEBUG_FLAG) System.out.println("") ;
-				}
-			}
-
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		return accountManager.delAccount(ident) ;
 		}
 
 	/**
@@ -566,35 +188,114 @@ public class PolicyManagerImpl
 	public Object[] getAccountList()
 		throws RemoteException
 		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("PolicyManagerImpl.getAccountList()") ;
+		return accountManager.getAccountList() ;
+		}
 
-		Collection collection = new Vector() ;
+	/**
+	 * Create a new Group.
+	 * TODO Change this to only accept the group name.
+	 *
+	 */
+	public GroupData addGroup(GroupData group)
+		throws RemoteException
+		{
+		return groupManager.addGroup(group) ;
+		}
 
-		AccountData frog = new AccountData() ;
-		frog.setIdent("frog@pond") ;
-		frog.setDescription("Frog in a pond") ;
+	/**
+	 * Request an Group details.
+	 *
+	 */
+	public GroupData getGroup(String ident)
+		throws RemoteException
+		{
+		return groupManager.getGroup(ident) ;
+		}
 
-		AccountData toad = new AccountData() ;
-		toad.setIdent("toad@pond") ;
-		toad.setDescription("Toad in a pond") ;
+	/**
+	 * Update an Group details.
+	 *
+	 */
+	public GroupData setGroup(GroupData group)
+		throws RemoteException
+		{
+		return groupManager.setGroup(group) ;
+		}
 
-		collection.add(frog) ;
-		collection.add(toad) ;
+	/**
+	 * Delete an Group.
+	 *
+	 */
+	public boolean delGroup(String ident)
+		throws RemoteException
+		{
+		return groupManager.delGroup(ident) ;
+		}
 
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		return collection.toArray() ;
+	/**
+	 * Request a list of Groups.
+	 *
+	 */
+	public Object[] getGroupList()
+		throws RemoteException
+		{
+		return groupManager.getGroupList() ;
+		}
+
+	/**
+	 * Create a new Community.
+	 * TODO Change this to only accept the community name.
+	 *
+	 */
+	public CommunityData addCommunity(CommunityData community)
+		throws RemoteException
+		{
+		return communityManager.addCommunity(community) ;
+		}
+
+	/**
+	 * Request an Community details.
+	 *
+	 */
+	public CommunityData getCommunity(String ident)
+		throws RemoteException
+		{
+		return communityManager.getCommunity(ident) ;
+		}
+
+	/**
+	 * Update an Community details.
+	 *
+	 */
+	public CommunityData setCommunity(CommunityData community)
+		throws RemoteException
+		{
+		return communityManager.setCommunity(community) ;
+		}
+
+	/**
+	 * Delete an Community.
+	 *
+	 */
+	public boolean delCommunity(String ident)
+		throws RemoteException
+		{
+		return communityManager.delCommunity(ident) ;
+		}
+
+	/**
+	 * Request a list of Communitys.
+	 *
+	 */
+	public Object[] getCommunityList()
+		throws RemoteException
+		{
+		return communityManager.getCommunityList() ;
 		}
 
 
 
-
-
-// ===========================
-
-
-
-
-
 	}
+
+
+

@@ -1,13 +1,13 @@
 /*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/junit/database/Attic/JUnitTestCase.java,v $</cvs:source>
+ * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/junit/database/Attic/JUnitAccountTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/04 23:33:05 $</cvs:date>
+ * <cvs:date>$Date: 2003/09/06 20:10:07 $</cvs:date>
  * <cvs:version>$Revision: 1.1 $</cvs:version>
  *
  * <cvs:log>
- *   $Log: JUnitTestCase.java,v $
- *   Revision 1.1  2003/09/04 23:33:05  dave
- *   Implemented the core account manager methods - needs data object to return results
+ *   $Log: JUnitAccountTest.java,v $
+ *   Revision 1.1  2003/09/06 20:10:07  dave
+ *   Split PolicyManager into separate components.
  *
  * </cvs:log>
  *
@@ -16,7 +16,9 @@ package org.astrogrid.community.policy.server.junit.database ;
 
 import junit.framework.TestCase ;
 
-import org.astrogrid.community.policy.data.ServiceData ;
+import org.astrogrid.community.policy.server.DatabaseManager ;
+import org.astrogrid.community.policy.server.DatabaseManagerImpl ;
+
 import org.astrogrid.community.policy.data.AccountData ;
 
 import org.exolab.castor.jdo.JDO;
@@ -36,10 +38,10 @@ import java.util.Collection ;
 
 /**
  *
- * JUnit test for the policy server components.
+ * JUnit test for accessing Account objects using Castor JDO.
  *
  */
-public class JUnitTestCase
+public class JUnitAccountTest
 	extends TestCase
 	{
 	/**
@@ -67,52 +69,16 @@ public class JUnitTestCase
 	private static final boolean ASSERT_FLAG = false ;
 
 	/**
-	 * The name of our system property to read the location of our JDO mapping from.
+	 * Our database manager.
 	 *
 	 */
-	private static final String MAPPING_CONFIG_PROPERTY = "org.astrogrid.policy.server.mapping" ;
-
-	/**
-	 * The name of the system property to read the location of our database config.
-	 *
-	 */
-	private static final String DATABASE_CONFIG_PROPERTY = "org.astrogrid.policy.server.database.config" ;
-
-	/**
-	 * The name of the system property to read our database name from.
-	 *
-	 */
-	private static final String DATABASE_NAME_PROPERTY = "org.astrogrid.policy.server.database.name" ;
-
-	/**
-	 * Our log writer.
-	 *
-	 */
-	private Logger logger = null ;
-
-	/**
-	 * Our config files path.
-	 *
-	 */
-	private String config = "" ;
-
-	/**
-	 * Our JDO and XML mapping.
-	 *
-	 */
-	private Mapping mapping = null ;
-
-	/**
-	 * Our JDO engine.
-	 *
-	 */
-	private JDO jdo = null ;
+	private DatabaseManager manager ;
 
 	/**
 	 * Our database connection.
 	 *
 	 */
-	private Database database = null ;
+	private Database database ;
 
 	/**
 	 * Setup our tests.
@@ -126,22 +92,11 @@ public class JUnitTestCase
 		if (DEBUG_FLAG) System.out.println("setUp()") ;
 
 		//
-		// Create our log writer.
-		logger = new Logger(System.out).setPrefix("castor");
+		// Initialise our DatabaseManager.
+		manager = new DatabaseManagerImpl() ;
 		//
-		// Load our object mapping.
-		mapping = new Mapping(getClass().getClassLoader());
-		mapping.loadMapping(System.getProperty(MAPPING_CONFIG_PROPERTY));
-
-		//
-		// Create our JDO engine.
-		jdo = new JDO();
-		jdo.setLogWriter(logger);
-		jdo.setConfiguration(System.getProperty(DATABASE_CONFIG_PROPERTY));
-		jdo.setDatabaseName(System.getProperty(DATABASE_NAME_PROPERTY));
-		//
-		// Create our database connection.
-		database = jdo.getDatabase();
+		// Initialise our database.
+		database = manager.getDatabase() ;
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("") ;
@@ -202,7 +157,6 @@ public class JUnitTestCase
 		// Commit our transaction.
 		database.commit() ;
 
-		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("  Account") ;
 		if (DEBUG_FLAG) System.out.println("    ident : " + account.getIdent()) ;
 		if (DEBUG_FLAG) System.out.println("    desc  : " + account.getDescription()) ;
@@ -227,18 +181,17 @@ public class JUnitTestCase
 		database.begin();
 		//
 		// Load the Account from the database.
-		AccountData data = (AccountData) database.load(AccountData.class, TEST_ACCOUNT_IDENT) ;
+		AccountData account = (AccountData) database.load(AccountData.class, TEST_ACCOUNT_IDENT) ;
 		//
 		// Update the account data.
-		data.setDescription("Modified description") ;
+		account.setDescription("Modified description") ;
 		//
 		// Commit our transaction.
 		database.commit() ;
 
-		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("  Account") ;
-		if (DEBUG_FLAG) System.out.println("    ident : " + data.getIdent()) ;
-		if (DEBUG_FLAG) System.out.println("    desc  : " + data.getDescription()) ;
+		if (DEBUG_FLAG) System.out.println("    ident : " + account.getIdent()) ;
+		if (DEBUG_FLAG) System.out.println("    desc  : " + account.getDescription()) ;
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("") ;

@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/data/Attic/PolicyCredentials.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/04 23:58:10 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/06 20:10:07 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyCredentials.java,v $
+ *   Revision 1.3  2003/09/06 20:10:07  dave
+ *   Split PolicyManager into separate components.
+ *
  *   Revision 1.2  2003/09/04 23:58:10  dave
  *   Experimenting with using our own DataObjects rather than the Axis generated ones ... seems to work so far
  *
@@ -75,9 +78,9 @@ public class PolicyCredentials
 	 * Access to our Account ident.
 	 *
 	 */
-	public void setAccount(String account)
+	public void setAccount(String value)
 		{
-		this.account = account ;
+		this.account = value ;
 		}
 
 	/**
@@ -99,9 +102,9 @@ public class PolicyCredentials
 	 * Access to our Group ident.
 	 *
 	 */
-	public void setGroup(String group)
+	public void setGroup(String value)
 		{
-		this.group = group ;
+		this.group = value ;
 		}
 
 	/**
@@ -123,9 +126,9 @@ public class PolicyCredentials
 	 * Access to the status.
 	 *
 	 */
-	public void setStatus(int status)
+	public void setStatus(int value)
 		{
-		this.status = status ;
+		this.status = value ;
 		}
 
 	/**
@@ -147,9 +150,9 @@ public class PolicyCredentials
 	 * Access to the reason.
 	 *
 	 */
-	public void setReason(String reason)
+	public void setReason(String value)
 		{
-		this.reason = reason ;
+		this.reason = value ;
 		}
 
 

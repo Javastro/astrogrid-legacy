@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/data/Attic/PolicyPermission.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/03 06:39:13 $</cvs:date>
- * <cvs:version>$Revision: 1.1 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/06 20:10:07 $</cvs:date>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyPermission.java,v $
+ *   Revision 1.2  2003/09/06 20:10:07  dave
+ *   Split PolicyManager into separate components.
+ *
  *   Revision 1.1  2003/09/03 06:39:13  dave
  *   Rationalised things into one set of SOAP stubs and one set of data objects for both client and server.
  *
@@ -80,9 +83,9 @@ public class PolicyPermission
 	 * Access to our Group ident.
 	 *
 	 */
-	public void setGroup(String group)
+	public void setGroup(String value)
 		{
-		this.group = group ;
+		this.group = value ;
 		}
 
 	/**
@@ -104,9 +107,9 @@ public class PolicyPermission
 	 * Access to our Resource ident.
 	 *
 	 */
-	public void setResource(String resource)
+	public void setResource(String value)
 		{
-		this.resource = resource ;
+		this.resource = value ;
 		}
 
 	/**
@@ -128,9 +131,9 @@ public class PolicyPermission
 	 * Access to the action.
 	 *
 	 */
-	public void setAction(String action)
+	public void setAction(String value)
 		{
-		this.action = action ;
+		this.action = value ;
 		}
 
 	/**
@@ -152,9 +155,9 @@ public class PolicyPermission
 	 * Access to the status.
 	 *
 	 */
-	public void setStatus(int status)
+	public void setStatus(int value)
 		{
-		this.status = status ;
+		this.status = value ;
 		}
 
 	/**
@@ -176,8 +179,8 @@ public class PolicyPermission
 	 * Access to the reason.
 	 *
 	 */
-	public void setReason(String reason)
+	public void setReason(String value)
 		{
-		this.reason = reason ;
+		this.reason = value ;
 		}
 	}

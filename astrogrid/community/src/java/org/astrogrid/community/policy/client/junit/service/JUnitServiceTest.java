@@ -1,11 +1,14 @@
 /*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/client/junit/service/Attic/JUnitTestCase.java,v $</cvs:source>
+ * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/client/junit/service/Attic/JUnitServiceTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/04 23:33:05 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/06 20:10:07 $</cvs:date>
+ * <cvs:version>$Revision: 1.1 $</cvs:version>
  *
  * <cvs:log>
- *   $Log: JUnitTestCase.java,v $
+ *   $Log: JUnitServiceTest.java,v $
+ *   Revision 1.1  2003/09/06 20:10:07  dave
+ *   Split PolicyManager into separate components.
+ *
  *   Revision 1.2  2003/09/04 23:33:05  dave
  *   Implemented the core account manager methods - needs data object to return results
  *
@@ -35,7 +38,7 @@ import org.astrogrid.community.policy.server.PolicyServiceServiceLocator ;
  * JUnit test for the policy client components.
  *
  */
-public class JUnitTestCase
+public class JUnitServiceTest
 	extends TestCase
 	{
 	/**
@@ -71,7 +74,7 @@ public class JUnitTestCase
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("setUp") ;
+		if (DEBUG_FLAG) System.out.println("setUp()") ;
 
 		//
 		// Create a ServiceLocator.
@@ -95,7 +98,7 @@ public class JUnitTestCase
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("testGetServiceStatus") ;
+		if (DEBUG_FLAG) System.out.println("testGetServiceStatus()") ;
 
 		//
 		// Call the ServiceStatus method.

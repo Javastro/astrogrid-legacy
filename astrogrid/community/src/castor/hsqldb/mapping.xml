@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/castor/hsqldb/Attic/mapping.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/09/04 23:33:05 $</cvs:date>
-    | <cvs:version>$Revision: 1.3 $</cvs:version>
+    | <cvs:date>$Date: 2003/09/06 20:10:06 $</cvs:date>
+    | <cvs:version>$Revision: 1.4 $</cvs:version>
     | <cvs:log>
     |   $Log: mapping.xml,v $
+    |   Revision 1.4  2003/09/06 20:10:06  dave
+    |   Split PolicyManager into separate components.
+    |
     |   Revision 1.3  2003/09/04 23:33:05  dave
     |   Implemented the core account manager methods - needs data object to return results
     |
@@ -21,23 +24,25 @@
 <mapping>
 
 	<!-- JDO and XML Mapping for Community -->
-<!--
-	<class name="org.astrogrid.community.policy.server.Community" identity="ident">
+	<class name="org.astrogrid.community.policy.data.CommunityData" identity="ident">
 		<map-to table="communities" xml="community"/>
 		<field name="ident" type="string">
 			<sql name="ident" type="char"/>
 			<bind-xml node="attribute"/>
 		</field>
+		<field name="serviceUrl" type="string">
+			<sql name="service" type="char"/>
+			<bind-xml node="element"/>
+		</field>
+		<field name="managerUrl" type="string">
+			<sql name="manager" type="char"/>
+			<bind-xml node="element"/>
+		</field>
 		<field name="description" type="string">
 			<sql name="description" type="char"/>
 			<bind-xml node="element"/>
 		</field>
-		<field name="service" type="string">
-			<sql name="service" type="char"/>
-			<bind-xml node="element"/>
-		</field>
 	</class>
--->
 
 	<!-- JDO and XML Mapping for Accounts -->
 	<class name="org.astrogrid.community.policy.data.AccountData" identity="ident">
@@ -53,8 +58,7 @@
 	</class>
 
 	<!-- JDO and XML Mapping for Groups -->
-<!--
-	<class name="org.astrogrid.community.policy.server.Group" identity="ident">
+	<class name="org.astrogrid.community.policy.data.GroupData" identity="ident">
 		<map-to table="groups" xml="group"/>
 		<field name="ident" type="string">
 			<sql name="ident" type="char"/>
@@ -65,7 +69,6 @@
 			<bind-xml node="element"/>
 		</field>
 	</class>
--->
 
 	<!-- JDO and XML Mapping for Permissions -->
 	<class name="org.astrogrid.community.policy.data.PolicyPermission" identity="resource group action">
