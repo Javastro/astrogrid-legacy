@@ -32,6 +32,7 @@ import java.text.SimpleDateFormat;
 
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.common.XSLHelper;
+import org.astrogrid.registry.common.InterfaceType;
 
 import org.astrogrid.util.DomHelper;
 
@@ -69,7 +70,7 @@ public class QueryRegistry implements RegistryService {
     private static final Log logger = LogFactory.getLog(QueryRegistry.class);
 
    /**
-    * target end point  is the location of the webservice. 
+    * target end point is the location of the webservice. 
     */
    private URL endPoint = null;
 
@@ -128,7 +129,7 @@ public class QueryRegistry implements RegistryService {
     */
    private Call getCall() throws ServiceException {
        
-        logger.info("getCall() - entered getCall()");
+      logger.info("getCall() - entered getCall()");
       Call _call = null;
       Service service = new Service();
       _call = (Call)service.createCall();
@@ -143,6 +144,7 @@ public class QueryRegistry implements RegistryService {
    /**
     * To perform a query with ADQL, using adqls.
     * @param adql string form of adqls
+    * @
     * @return XML DOM of Resources queried from the registry.
     * @todo throw registry exception until this method is implemented.
     * @throws RegistryException problem during the query servor or client side.
@@ -150,16 +152,17 @@ public class QueryRegistry implements RegistryService {
    public Document searchFromSADQL(String adql) throws RegistryException {
       //send to sadql->adql parser.
       //call return search(adql);
-      return null;
+      throw new RegistryException("No implementation for adqls.");
    }
 
    /**
     * To perform a query with ADQL, using adql string.
-    * @param adql string form of adqls
+    * @param adql string form of adql (xml)
     * @return XML DOM of Resources queried from the registry.
     * @throws RegistryException problem during the query servor or client side.
     */   
    public Document search(String xadql) throws RegistryException {
+      //search using adqlx. Catch any exceptions and throw them as RegistryExceptions
       try {
          return search(DomHelper.newDocument(xadql));
       } catch (ParserConfigurationException pce) {
@@ -168,26 +171,36 @@ public class QueryRegistry implements RegistryService {
          throw new RegistryException(ioe);
       } catch (SAXException sax) {
          throw new RegistryException(sax);
-      } 
+      }
    }
 
    /**
-    * To perform a query with ADQL, using adql.
+    * To perform a query on the Registry using a DOM conforming of ADQL.
+    * Uses a Axis-Message type style so wrap the DOM in the method name conforming
+    * to the WSDL.
     * @param adql string form of adqls
     * @return XML DOM of Resources queried from the registry.
     * @throws RegistryException problem during the query servor or client side.
     */   
    public Document search(Document adql) throws RegistryException {
+      //wrap a Search element around the dom.
       Element currentRoot = adql.getDocumentElement();
       Element newRoot = adql.createElementNS(NAMESPACE_URI, "Search");
       newRoot.appendChild(currentRoot);
       adql.appendChild(newRoot);
       try {
+         //get a call object
          Call call = getCall();
+         //create the soap body to be placed in the
+         //outgoing soap message.
          SOAPBodyElement sbeRequest =
             new SOAPBodyElement(adql.getDocumentElement());
+         //go ahead and set the name and namespace on the soap body
+         //not sure if this is that important.
          sbeRequest.setName("Search");
          sbeRequest.setNamespaceURI(NAMESPACE_URI);
+         //call the web service, on axis-message style it
+         //comes back as a vector of soabodyelements.
          Vector result = (Vector)call.invoke(new Object[] { sbeRequest });
          SOAPBodyElement sbe = null;
          if (result.size() > 0) {
@@ -201,7 +214,7 @@ public class QueryRegistry implements RegistryService {
       } catch (Exception e) {
          throw new RegistryException(e);
       }
-      return null;
+      throw new RegistryException("Server error must have occurred.");
    }
    
    /**
@@ -214,8 +227,7 @@ public class QueryRegistry implements RegistryService {
        Document resultDoc = null;
 
        try {
-           
-            logger.info("getRegistries() - creating full soap element.");
+          logger.info("getRegistries() - creating full soap element.");
           doc = DomHelper.newDocument();
           //@todo GetRegistries should be a constant.
           Element root = doc.createElementNS(NAMESPACE_URI, "GetRegistries");
@@ -230,12 +242,14 @@ public class QueryRegistry implements RegistryService {
              new SOAPBodyElement(doc.getDocumentElement());
           sbeRequest.setName("GetRegistries");
           sbeRequest.setNamespaceURI(NAMESPACE_URI);
+          //call the web service, on axis-message style it
+          //comes back as a vector of soabodyelements.          
           Vector result = (Vector)call.invoke(new Object[] { sbeRequest });
           SOAPBodyElement sbe = null;
           if (result.size() > 0) {
              sbe = (SOAPBodyElement)result.get(0);
              return sbe.getAsDocument();
-          }
+          }//if
        } catch (RemoteException re) {
           throw new RegistryException(re);
        } catch (ServiceException se) {
@@ -248,15 +262,15 @@ public class QueryRegistry implements RegistryService {
    }
    
    /**
-    * Identify - Queryies based on OAI-Identify. 
+    * Identify - Queryies based on OAI-Identify verb, identifying the repository.
+    * @return XML DOM of an OAI-PMH for the Identify. 
     */   
    public Document identify() throws RegistryException {
       Document doc = null;
       Document resultDoc = null;
 
       try {
-          
-            logger.info("identify() - creating full soap element.");
+         logger.info("identify() - creating full soap element.");
          doc = DomHelper.newDocument();
          Element root = doc.createElementNS(NAMESPACE_URI, "Identify");
          doc.appendChild(root);
@@ -289,21 +303,32 @@ public class QueryRegistry implements RegistryService {
    
 
    /**
-    * ListRecords - OAI ListRecords query. 
+    * ListRecords - OAI ListRecords query, the Registry server will default the
+    * metadataPrefix to ivo_vor. 
+    * @return XML DOM of an OAI-PMH for the ListRecords. 
     */
    public Document listRecords() throws RegistryException {
    	return listRecords(null,null,null);
    }
    
    /**
-    * ListRecords - OAI ListRecords query based on a fromDate.
+    * ListRecords - OAI ListRecords query based on a fromDate, the recods
+    * changed from that date The Registry server will default the
+    * metadataPrefix to ivo_vor
+    * @param fromDate - A from date for returning Resources from a date till now. 
+    * @return XML DOM of an OAI-PMH for the ListRecords. 
     */
    public Document listRecords(Date fromDate) throws RegistryException {
    	return listRecords(null,fromDate,null);    
    }
    
    /**
-    * ListRecords - OAI ListRecords query.
+    * ListRecords - OAI ListRecords query. This will be the most used OAI verb for harvesting.
+    * @param metadataPrefix - oai metadataPrefix string normally ivo_vor or oai_dc. 
+    * A null will let the Registry server default it to ivo_vor. 
+    * @param fromDate - A from date for returning Resources from a date till now. 
+    * @param untilDate - Returning resources from the beginning till a date. 
+    * @return XML DOM of an OAI-PMH for the ListRecords. 
     */
    public Document listRecords(String metadataPrefix, Date fromDate, Date untilDate) throws RegistryException {
       Document doc = null;
@@ -312,12 +337,13 @@ public class QueryRegistry implements RegistryService {
       try {
          SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
           
-            logger
-                    .info("listRecords(String, Date, Date) - creating full soap element.");
+         logger
+               .info("listRecords(String, Date, Date) - creating full soap element.");
          doc = DomHelper.newDocument();
          Element root = doc.createElementNS(NAMESPACE_URI, "ListRecords");
          doc.appendChild(root);
          Element temp = null;
+         //Create the other xml elements in the soap body if they are present
          if(metadataPrefix != null && metadataPrefix.trim().length() > 0) {
          	temp = doc.createElement("metadataPrefix");
             temp.appendChild(doc.createTextNode(metadataPrefix));
@@ -343,7 +369,7 @@ public class QueryRegistry implements RegistryService {
             new SOAPBodyElement(doc.getDocumentElement());
          sbeRequest.setName("ListRecords");
          sbeRequest.setNamespaceURI(NAMESPACE_URI);
-        logger
+         logger
                 .info("listRecords(String, Date, Date) - List Records Client-side = "
                         + DomHelper.DocumentToString(doc));
          Vector result = (Vector)call.invoke(new Object[] { sbeRequest });
@@ -364,7 +390,9 @@ public class QueryRegistry implements RegistryService {
    }
    
    /**
-    * ListMetadataFormats
+    * ListMetadataFormats - OAI ListMetadtaFormats verb call.  With an optional
+    * identifier string to list the metadata formats for a particular id.
+    * @return XML DOM of an OAI-PMH for the ListMetadataFormats. 
     */
    public Document listMetadataFormats(String identifier) throws RegistryException {
       Document doc = null;
@@ -372,17 +400,16 @@ public class QueryRegistry implements RegistryService {
 
       try {
           
-            logger
-                    .info("listMetadataFormats(String) - creating full soap element.");
+         logger
+              .info("listMetadataFormats(String) - creating full soap element.");
          doc = DomHelper.newDocument();
          Element root = doc.createElementNS(NAMESPACE_URI, "ListMetadataFormats");
          doc.appendChild(root);
-         Element temp = null;
-         if(identifier == null || identifier.trim().length() <= 0) 
-            throw new RegistryException("Error From Client: No identifier found for calling GetRecord");         
-         temp = doc.createElement("identifier");
-         temp.appendChild(doc.createTextNode(identifier));
-         root.appendChild(temp);    
+         if(identifier != null || identifier.trim().length() > 0) {          
+             Element temp = doc.createElement("identifier");
+             temp.appendChild(doc.createTextNode(identifier));
+             root.appendChild(temp);
+         }
       } catch (ParserConfigurationException pce) {
          throw new RegistryException(pce);
       }
@@ -411,7 +438,11 @@ public class QueryRegistry implements RegistryService {
    }
    
    /**
-    * OAI - Get a specific record.
+    * OAI - Get a specific record from OAI given an identifier. 
+    * Defaults the metadataPrefix to ivo_vor.
+    * @param identifier for a particular record ex: ivo_vor://astrogrid.org/Registry
+    * 
+    * @return XML DOM of an OAI-PMH for the GetRecord. 
     */
    public Document getRecord(String identifier) throws RegistryException {
    	return getRecord(identifier,null);
@@ -419,15 +450,17 @@ public class QueryRegistry implements RegistryService {
    
    /**
     * OAI - Get a specefic record for an identifier and metadataprefix
+    * @param identifier for a particular record ex: ivo_vor://astrogrid.org/Registry
+    * @param metadataPrefix is the oai prefix/id to be used, currently only ivo_vor and oai_dc. 
+    * @return XML DOM of an OAI-PMH for the GetRecord. 
     */
    public Document getRecord(String identifier, String metadataPrefix) throws RegistryException {
       Document doc = null;
       Document resultDoc = null;
 
       try {
-          
-            logger
-                    .info("getRecord(String, String) - creating full soap element.");
+         logger
+              .info("getRecord(String, String) - creating full soap element.");
          doc = DomHelper.newDocument();
          Element root = doc.createElementNS(NAMESPACE_URI, "GetRecord");
          doc.appendChild(root);
@@ -473,14 +506,24 @@ public class QueryRegistry implements RegistryService {
    }
    
    /**
-    * OAI - ListIdentifiers
+    * OAI - ListIdentifiers call, similiar to ListRecords but only returns
+    * the identifiers (unique ids) for the records. Defaults the metadataPrefix to
+    * ivo_vor.
+    * 
+    * @return XML DOM of an OAI-PMH for the ListIdentifiers. 
     */
    public Document listIdentifiers() throws RegistryException {
    	return listIdentifiers(null,null,null);
    }
    
    /**
-    * OAI - ListIdentifiers
+    * OAI - ListIdentifiers call, similiar to ListRecords but only returns
+    * the identifiers (unique ids) for the records. Defaults the metadataPrefix to
+    * ivo_vor.
+    * @param metadataPrefix the oai prefix; normally ivo_vor.  Also available is oai_dc.
+    * @param fromDate - A from date for returning Resources from a date till now. 
+    * @param untilDate - Returning resources from the beginning till a date.
+    * @return XML DOM of an OAI-PMH for the ListIdentifiers. 
     */
    public Document listIdentifiers(String metadataPrefix, Date fromDate, Date untilDate) throws RegistryException {
       Document doc = null;
@@ -489,8 +532,8 @@ public class QueryRegistry implements RegistryService {
       try {
          SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
           
-            logger
-                    .info("listIdentifiers(String, Date, Date) - creating full soap element.");
+         logger
+              .info("listIdentifiers(String, Date, Date) - creating full soap element.");
          doc = DomHelper.newDocument();
          Element root = doc.createElementNS(NAMESPACE_URI, "ListIdentifiers");
          doc.appendChild(root);
@@ -538,11 +581,15 @@ public class QueryRegistry implements RegistryService {
    }   
 
    /**
-    * Old style xml in string form to perform a query.
+    * Old style xml in string form to perform a query. To be deprecated soon, but currently
+    * other astrogrid components use this method.  Created before the standard of ADQL.
+    * @param the xml string version of the old style astrogrid query language
+    * for the registry..
+    * @return XML DOM of Resources queried from the registry. 
     */
    public Document submitQuery(String query) throws RegistryException {
        
-        logger.info("submitQuery(String) - entered submitQueryStringDOM()");
+      logger.info("submitQuery(String) - entered submitQueryStringDOM()");
       try {
          return submitQuery(DomHelper.newDocument(query));
       } catch (ParserConfigurationException pce) {
@@ -556,16 +603,17 @@ public class QueryRegistry implements RegistryService {
 
    /**
     * Old style form to perform a query.
+    * @param xml version of the old style astrogrid query language.
+    * @return XML DOM of Resources queried from the registry. 
     */
    public Document submitQuery(Document query) throws RegistryException {
        
-        logger.info("submitQuery(Document) - entered submitQueryDOM()");
+      logger.info("submitQuery(Document) - entered submitQueryDOM()");
       Document doc = null;
       Document resultDoc = null;
 
       try {
-          
-            logger.info("submitQuery(Document) - creating full soap element.");
+         logger.info("submitQuery(Document) - creating full soap element.");
          doc = DomHelper.newDocument();
          Element root = doc.createElementNS(NAMESPACE_URI, "submitQuery");
          doc.appendChild(root);
@@ -586,6 +634,8 @@ public class QueryRegistry implements RegistryService {
          if (result.size() > 0) {
             sbe = (SOAPBodyElement)result.get(0);
             return sbe.getAsDocument();
+         }else {
+             return DomHelper.newDocument();
          }
       } catch (RemoteException re) {
          throw new RegistryException(re);
@@ -594,11 +644,13 @@ public class QueryRegistry implements RegistryService {
       } catch (Exception e) {
          throw new RegistryException(e);
       }
-      return null;
    }
 
    /**
-    * Loads this registry type for the connected registry.
+    * Loads this registry type resource for the registry. Essentially querying
+    * for one resource that defines the Registry.
+    * 
+    * @return XML DOM of Resources queried from the registry. 
     */
    public Document loadRegistry() throws RegistryException {
        
@@ -636,16 +688,20 @@ public class QueryRegistry implements RegistryService {
       } catch (Exception e) {
          throw new RegistryException(e);
       }
-      return null;
+      throw new RegistryException("Error server returned nothing");
    }
 
    /**
-    * Queries for all the authorities managed by this registry.
+    * Queries for all the authorities managed by this registry. By loading this
+    * registries main registry resource type and looking for the ManagedAuthority
+    * elements, currently does not work with version 0.10.  But is slowly being
+    * factored out of use.
+    * 
     * @return a hashmap of all the managed authority id's.
     */
    public HashMap managedAuthorities() throws RegistryException {
        
-        logger.info("managedAuthorities() - entered managedAuthorities");
+      logger.info("managedAuthorities() - entered managedAuthorities");
       HashMap hm = null;
       Document doc = loadRegistry();
       if (doc != null) {
@@ -660,14 +716,18 @@ public class QueryRegistry implements RegistryService {
          //}catch(IOException ioe) {
          //   throw new RegistryException(ioe);   
          //}
-      }
-       
-        logger.info("managedAuthorities() - exiting managedAuthorities");
+      }       
+      logger.info("managedAuthorities() - exiting managedAuthorities");
       return hm;
    }
 
    /**
-    * Query for a specific resource.
+    * Query for a specific resource in the Registry based on its identifier element(s).
+    * Essentially creates a search query "old style astrogrid" for now.  Based on the identifier.
+    * 
+    * @param identifier IVORN object.
+    * @return XML DOM of Resource queried from the registry. 
+    * @see org.astrogrid.store.Ivorn
     */
    public Document getResourceByIdentifier(Ivorn ident)
       throws RegistryException {
@@ -678,14 +738,18 @@ public class QueryRegistry implements RegistryService {
    }
 
    /**
-    * Query for a specific resource.
+    * Query for a specific resource in the Registry based on its identifier element(s).
+    * Essentially creates a search query "old style astrogrid" for now.  Based on the identifier.
+    * 
+    * @param identifier string.
+    * @return XML DOM of Resource queried from the registry. 
     */
    public Document getResourceByIdentifier(String ident)
       throws RegistryException {
       Document doc = null;
        
-        logger
-                .info("getResourceByIdentifier(String) - entered getResourceByIdentifierDOM");
+      logger
+           .info("getResourceByIdentifier(String) - entered getResourceByIdentifierDOM");
       if (ident == null) {
          throw new RegistryException("Cannot call this method with a null identifier");
       }
@@ -700,12 +764,12 @@ public class QueryRegistry implements RegistryService {
             "<query><selectionSequence>"
                + "<selection item='searchElements' itemOp='EQ' value='all'/>"
                + "<selectionOp op='$and$'/>"
-               + "<selection item='*:Identifier/*:AuthorityID' itemOp='EQ' value='"
+               + "<selection item='vr:Identifier/vr:AuthorityID' itemOp='EQ' value='"
                + ident.substring(0, iTemp)
                + "'/>";
          if (iTemp < ident.length()) {
             selectQuery += "<selectionOp op='AND'/>"
-               + "<selection item='*:Identifier/*:ResourceKey' itemOp='EQ' value='"
+               + "<selection item='vr:Identifier/vr:ResourceKey' itemOp='EQ' value='"
                + ident.substring((iTemp + 1))
                + "'/>";
          }
@@ -725,20 +789,49 @@ public class QueryRegistry implements RegistryService {
          //}         
           
             logger
-                    .info("getResourceByIdentifier(String) - exiting getResourceByIdentifierDOM (did not use config cache)");
+                 .info("getResourceByIdentifier(String) - exiting getResourceByIdentifierDOM (did not use config cache)");
                
          return doc;
       } else {
           
             logger
-                    .info("getResourceByIdentifier(String) - exiting getResourceByIdentifierDOM (used config cache)");
+                 .info("getResourceByIdentifier(String) - exiting getResourceByIdentifierDOM (used config cache)");
          return conf.getDom(ident);
       }
    }
+   
+   public Document getResourcesByInterfaceType(InterfaceType interfaceType) throws RegistryException  {
+      Document doc = null;
+      if (interfaceType == null) {
+         throw new RegistryException("No interfaceType defined");
+      }
+      String type = interfaceType.getInterfaceType();
+      logger
+           .info("getResourcesByInterfaceType(InterfaceType) type - " + type);
+       
+      String selectQuery =
+            "<query><selectionSequence>"
+               + "<selection item='searchElements' itemOp='EQ' value='all'/>"
+               + "<selectionOp op='$and$'/>"
+               + "<selection item='vr:Interface/ag:InterfaceType' itemOp='EQ' value='"
+               + type
+               + "'/>";
+         selectQuery += "</selectionSequence></query>";
+         doc = submitQuery(selectQuery);          
+         logger
+             .info("getResourcesByInterfaceType(InterfaceType) - exiting getResourcesByInterfaceType");
+               
+         return doc;
+   }
 
    /**
-    * Query for a specific resources endpoint known from the AccessURL element.
+    * Query for a specific resource in the Registry based on its identifier element(s), Then extracts out
+    * the AccessURL element to find the endpoint. If the endpoint is a web service and has a "?wsdl" ending
+    * then attempts to parse the wsdl for the end point of the service.
     * 
+    * @param ivorn object.
+    * @see org.astrogrid.store.Ivorn 
+    * @return String of a url. 
     */
    public String getEndPointByIdentifier(Ivorn ident)
       throws RegistryException {
@@ -746,14 +839,19 @@ public class QueryRegistry implements RegistryService {
    }
 
    /**
-    * Query for a specific resources endpoint known from the AccessURL element. 
+    * Query for a specific resource in the Registry based on its identifier element(s), Then extracts out
+    * the AccessURL element to find the endpoint. If the endpoint is a web service and has a "?wsdl" ending
+    * then attempts to parse the wsdl for the end point of the service.
+    * 
+    * @param string identifer of the resource. 
+    * @return String of a url. 
     */
    public String getEndPointByIdentifier(String ident)
       throws RegistryException {
        
         logger
-                .info("getEndPointByIdentifier(String) - entered getEndPointByIdentifier with ident = "
-                        + ident);
+             .info("getEndPointByIdentifier(String) - entered getEndPointByIdentifier with ident = "
+                    + ident);
       //check for an AccessURL
       //if AccessURL is their and it is a web service then get the wsdl
       //into a DOM object and run an XSL on it to get the endpoint.
@@ -784,7 +882,14 @@ public class QueryRegistry implements RegistryService {
    }
 
    /**
-    * Get WSDL information for a Resources endpoint.
+    * Query for a specific resource in the Registry based on its identifier element(s), Then extracts out
+    * the AccessURL element to find the endpoint. If the endpoint is a web service and has a "?wsdl" ending
+    * then attempts to parse the wsdl to obtain certain information such as endpoints, and port names.
+    * 
+    * @param string identifer of the resource.
+    * @see org.astrogrid.store.Ivorn
+    * @see org.astrogrid.registry.common.WSDLBasicInformation
+    * @return String of a url. 
     */
    public WSDLBasicInformation getBasicWSDLInformation(Ivorn ident)
       throws RegistryException {
@@ -792,7 +897,14 @@ public class QueryRegistry implements RegistryService {
    }
 
    /**
-    * Get WSDL information for a Resources endpoint.
+    * Query for a specific resource in the Registry based on its identifier element(s), Then extracts out
+    * the AccessURL element to find the endpoint. If the endpoint is a web service and has a "?wsdl" ending
+    * then attempts to parse the wsdl to obtain certain information such as endpoints, and port names.
+    * 
+    * @param string identifer of the resource.
+    * @see org.astrogrid.store.Ivorn
+    * @see org.astrogrid.registry.common.WSDLBasicInformation
+    * @return String of a url. 
     */
    public WSDLBasicInformation getBasicWSDLInformation(Document voDoc)
       throws RegistryException {

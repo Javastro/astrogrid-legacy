@@ -36,6 +36,8 @@ import java.util.Iterator;
  * @see org.astrogrid.registry.common.RegistryInterface
  * @link http://www.ivoa.net/twiki/bin/view/IVOA/IVOARegWp03
  * @author Kevin Benson
+ * @deprecated Being deprecated, harvests should only be started automatically by the server or manually by 
+ * going through the server.
  */
 public class RegistryHarvestService {
     /**

@@ -30,6 +30,7 @@ import java.util.Iterator;
 import java.util.Date;
 
 import org.astrogrid.registry.RegistryException;
+import org.astrogrid.registry.common.InterfaceType;
 import org.astrogrid.registry.common.XSLHelper;
 
 import javax.xml.namespace.QName;
@@ -102,6 +103,8 @@ public interface RegistryService  {
    public Document getResourceByIdentifier(Ivorn ident) throws RegistryException;
    
    public Document getResourceByIdentifier(String ident) throws RegistryException;
+   
+   public Document getResourcesByInterfaceType(InterfaceType interfaceType) throws RegistryException;   
          
    public String getEndPointByIdentifier(Ivorn ident) throws RegistryException;
    

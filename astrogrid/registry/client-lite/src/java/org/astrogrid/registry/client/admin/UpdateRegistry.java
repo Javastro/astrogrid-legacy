@@ -170,10 +170,10 @@ public class UpdateRegistry implements RegistryAdminService {
       
       //Build up a SoapBodyElement to be sent in a Axis message style.
       //Go ahead and reset a name and namespace to this as well.
-    logger
+      logger
             .info("update(Document) - the endpoint = "
                     + this.endPoint);
-    logger.info("update(Document) - okay calling update service with doc = "
+      logger.info("update(Document) - okay calling update service with doc = "
             + DomHelper.DocumentToString(update));
       //SOAPBodyElement sbeRequest = new SOAPBodyElement(doc.getDocumentElement());      
       SOAPBodyElement sbeRequest = new SOAPBodyElement(update.getDocumentElement());
@@ -181,7 +181,6 @@ public class UpdateRegistry implements RegistryAdminService {
       sbeRequest.setNamespaceURI(NAMESPACE_URI);
       
       try {
-                     
          Vector result = (Vector) call.invoke (new Object[] {sbeRequest});
          if(result.size() > 0) {
             SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);

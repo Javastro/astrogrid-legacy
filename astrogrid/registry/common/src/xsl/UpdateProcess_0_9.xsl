@@ -80,63 +80,6 @@
             <xsl:apply-templates/>
         </xsl:element>
     </xsl:template>
-    
-    <xsl:template match="cs:ConeSearch">
-        <xsl:element name="vr:Capability">
-            <xsl:attribute name="xsi:type">
-                <xsl:text>ConeSearchType</xsl:text>
-            </xsl:attribute>
-         <xsl:apply-templates/>            
-        </xsl:element>
-    </xsl:template>
-
-    <xsl:template match="vs:ParamHTTP">
-        <xsl:element name="vr:Interface">
-            <xsl:attribute name="xsi:type">
-                <xsl:text>ParamHTTPType</xsl:text>
-            </xsl:attribute>
-         <xsl:apply-templates/>                        
-        </xsl:element>
-        <!-- Process the rest of the elements -->
-    </xsl:template>
-    
-    <xsl:template match="vs:AllSky">
-        <xsl:element name="vs:Region">
-            <xsl:attribute name="xsi:type">
-                <xsl:text>RegionType</xsl:text>
-            </xsl:attribute>
-         <xsl:apply-templates/>                        
-        </xsl:element>
-    </xsl:template>
-
-    <xsl:template match="vs:CoordRange">
-        <xsl:element name="vs:Region">
-            <xsl:attribute name="xsi:type">
-                <xsl:text>CoordRangeType</xsl:text>
-            </xsl:attribute>
-         <xsl:apply-templates/>                        
-        </xsl:element>
-    </xsl:template>
-
-    <xsl:template match="vs:CircleRegion">
-        <xsl:element name="vs:Region">
-            <xsl:attribute name="xsi:type">
-                <xsl:text>CircleRegionType</xsl:text>
-            </xsl:attribute>
-         <xsl:apply-templates/>                        
-        </xsl:element>
-    </xsl:template>    
-
-    <xsl:template match="sia:SimpleImageAccessType">
-        <xsl:element name="vr:Capability">
-            <xsl:attribute name="xsi:type">
-                <xsl:text>SimpleImageAccessType</xsl:text>
-            </xsl:attribute>
-         <xsl:apply-templates/>                        
-        </xsl:element>
-        <!-- Process the rest of the elements -->
-    </xsl:template>
-    
 
     <xsl:template match="vg:Authority">
         <xsl:element name="vr:Resource">
@@ -162,139 +105,69 @@
         </xsl:element>
         <!-- Process the rest of the elements -->
     </xsl:template>
-    
-    <xsl:template match="cea:CeaApplication">
-        <xsl:element name="vr:Resource">        
+
+
+<!--    
+    <xsl:template match="cs:ConeSearch">
+        <xsl:element name="vr:Capability">
             <xsl:attribute name="xsi:type">
-                <xsl:text>CeaApplicationType</xsl:text>
+                <xsl:text>ConeSearchType</xsl:text>
             </xsl:attribute>
-            <xsl:apply-templates select="@updated"/>
-            <xsl:apply-templates select="@created"/>
-            <xsl:apply-templates select="@status"/>
-            <xsl:apply-templates/>
-        </xsl:element>
-    </xsl:template>
-
-    <xsl:template match="cea:CeaService">
-        <xsl:element name="vr:Resource">        
-            <xsl:attribute name="xsi:type">
-                <xsl:text>CeaServiceType</xsl:text>
-            </xsl:attribute>
-            <xsl:apply-templates select="@updated"/>
-            <xsl:apply-templates select="@created"/>
-            <xsl:apply-templates select="@status"/>
-            <xsl:apply-templates/>
-        </xsl:element>
-        <!-- Process the rest of the elements -->        
-    </xsl:template>
-
-    <xsl:template match="ceab:CmdLineParameterDefn">
-        <xsl:element name="ceapd:Parameter" namespace="ceapd">
-         <xsl:apply-templates/>                        
-        </xsl:element>
-        <!-- Process the rest of the elements -->
-    </xsl:template>
-
-    <xsl:template match="ceab:DataCentreParameterDefn">
-        <xsl:element name="ceapd:Parameter" namespace="ceapd">
-            <xsl:attribute name="xsi:type">
-                <xsl:text>DataCenterParameterDefinition</xsl:text>
-            </xsl:attribute>        
-            <xsl:apply-templates/>
-        </xsl:element>
-        <!-- Process the rest of the elements -->
-    </xsl:template>
-
-    <xsl:template match="ceab:WebServiceParameterDefn">
-        <xsl:element name="ceapd:Parameter" namespace="ceapd">
-            <xsl:attribute name="xsi:type">
-                <xsl:text>WebServiceParameterDefinition</xsl:text>
-            </xsl:attribute>        
-            <xsl:apply-templates/>
-        </xsl:element>
-        <!-- Process the rest of the elements -->
-    </xsl:template>
-    
-    
-    <xsl:template match="vr:VODescription">
-        <xsl:element name="vr:VODescription">
          <xsl:apply-templates/>            
         </xsl:element>
-    </xsl:template>       
-   
-    <xsl:template match="vr:Resource">
-        <xsl:element name="vr:Resource">
-            <xsl:attribute name="xsi:type">
-                <xsl:value-of select="@xsi:type" />
-            </xsl:attribute>                    
-            <xsl:apply-templates select="@updated"/>
-            <xsl:apply-templates select="@created"/>
-            <xsl:apply-templates select="@status"/>
-            <xsl:apply-templates/>
-        </xsl:element>
-        <!-- Process the rest of the elements -->
-    </xsl:template>    
-
-    <xsl:template match="node()">
-        <xsl:choose>
-         <xsl:when test='namespace-uri() = "http://www.ivoa.net/xml/VOResource/v0.9"'>
-            <xsl:element name="{local-name()}">
-               <xsl:apply-templates select="@*|node()"/>
-            </xsl:element>
-         </xsl:when>
-         <xsl:when test='namespace-uri() = "http://www.ivoa.net/xml/VODataService/v0.4"'>
-            <xsl:element name="vs:{local-name()}">          
-               <xsl:apply-templates select="@*|node()"/>
-            </xsl:element>
-         </xsl:when>          
-         <xsl:when test='namespace-uri() = "http://www.ivoa.net/xml/VORegistry/v0.2"'>
-            <xsl:element name="vg:{local-name()}">
-               <xsl:apply-templates select="@*|node()"/>
-            </xsl:element>
-         </xsl:when>          
-         <xsl:when test='namespace-uri() = "http://www.ivoa.net/xml/VOCommunity/v0.2"'>
-            <xsl:element name="vc:{local-name()}">
-               <xsl:apply-templates select="@*|node()"/>
-            </xsl:element>
-         </xsl:when>          
-         <xsl:when test='namespace-uri() = "http://www.ivoa.net/xml/VOTable/v0.1"'>
-            <xsl:element name="vt:{local-name()}">
-               <xsl:apply-templates select="@*|node()"/>
-            </xsl:element>
-         </xsl:when>          
-         <xsl:when test='namespace-uri() = "http://www.ivoa.net/xml/ConeSearch/v0.2"'>
-            <xsl:element name="cs:{local-name()}">
-               <xsl:apply-templates select="@*|node()"/>
-            </xsl:element>
-         </xsl:when>          
-         <xsl:when test='namespace-uri() = "http://www.ivoa.net/xml/SIA/v0.6"'>
-            <xsl:element name="sia:{local-name()}">
-               <xsl:apply-templates select="@*|node()"/>
-            </xsl:element>
-         </xsl:when>          
-         <xsl:when test='namespace-uri() = "http://www.ivoa.net/xml/CEAService/v0.1"'>
-            <xsl:element name="cea:{local-name()}">
-               <xsl:apply-templates select="@*|node()"/>
-            </xsl:element>
-         </xsl:when>          
-         <xsl:when test='namespace-uri() = "http://www.astrogrid.org/schema/AGParameterDefinition/v1"'>
-            <xsl:element name="ceapd:{local-name()}">
-               <xsl:apply-templates select="@*|node()"/>
-            </xsl:element>
-         </xsl:when>          
-         <xsl:when test='namespace-uri() = "http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1"'>
-            <xsl:element name="ceab:{local-name()}">
-               <xsl:apply-templates select="@*|node()"/>
-            </xsl:element>
-         </xsl:when>
-         <xsl:otherwise>
-            <xsl:copy>
-                  <xsl:apply-templates select="@*|node()"/>
-            </xsl:copy>    
-         </xsl:otherwise>
-        </xsl:choose>
     </xsl:template>
-        
+-->
+<!--
+    <xsl:template match="vs:ParamHTTP">
+        <xsl:element name="vr:Interface">
+            <xsl:attribute name="xsi:type">
+                <xsl:text>ParamHTTPType</xsl:text>
+            </xsl:attribute>
+         <xsl:apply-templates/>                        
+        </xsl:element>
+    </xsl:template>
+-->
+<!--    
+    <xsl:template match="vs:AllSky">
+        <xsl:element name="vs:Region">
+            <xsl:attribute name="xsi:type">
+                <xsl:text>RegionType</xsl:text>
+            </xsl:attribute>
+         <xsl:apply-templates/>                        
+        </xsl:element>
+    </xsl:template>
+-->
+<!--
+    <xsl:template match="vs:CoordRange">
+        <xsl:element name="vs:Region">
+            <xsl:attribute name="xsi:type">
+                <xsl:text>CoordRangeType</xsl:text>
+            </xsl:attribute>
+         <xsl:apply-templates/>                        
+        </xsl:element>
+    </xsl:template>
+-->
+<!--
+    <xsl:template match="vs:CircleRegion">
+        <xsl:element name="vs:Region">
+            <xsl:attribute name="xsi:type">
+                <xsl:text>CircleRegionType</xsl:text>
+            </xsl:attribute>
+         <xsl:apply-templates/>                        
+        </xsl:element>
+    </xsl:template>    
+-->
+<!--
+    <xsl:template match="sia:SimpleImageAccessType">
+        <xsl:element name="vr:Capability">
+            <xsl:attribute name="xsi:type">
+                <xsl:text>SimpleImageAccessType</xsl:text>
+            </xsl:attribute>
+         <xsl:apply-templates/>                        
+        </xsl:element>
+    </xsl:template>
+-->
+    
     <xsl:template match="@*|node()">
         <xsl:copy>
             <xsl:apply-templates select="@*|node()"/>
