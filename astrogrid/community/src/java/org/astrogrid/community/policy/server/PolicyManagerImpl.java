@@ -1,11 +1,14 @@
 /*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/PolicyService.java,v $</cvs:source>
+ * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/PolicyManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/08/28 17:33:56 $</cvs:date>
+ * <cvs:date>$Date: 2003/09/03 06:39:13 $</cvs:date>
  * <cvs:version>$Revision: 1.1 $</cvs:version>
  *
  * <cvs:log>
- *   $Log: PolicyService.java,v $
+ *   $Log: PolicyManagerImpl.java,v $
+ *   Revision 1.1  2003/09/03 06:39:13  dave
+ *   Rationalised things into one set of SOAP stubs and one set of data objects for both client and server.
+ *
  *   Revision 1.1  2003/08/28 17:33:56  dave
  *   Initial policy prototype
  *
@@ -13,6 +16,12 @@
  *
  */
 package org.astrogrid.community.policy.server ;
+
+import java.io.IOException ;
+import java.rmi.RemoteException ;
+
+import java.util.Vector ;
+import java.util.Collection ;
 
 import org.exolab.castor.jdo.JDO;
 import org.exolab.castor.jdo.Database;
@@ -29,12 +38,13 @@ import org.exolab.castor.mapping.MappingException;
 
 import org.exolab.castor.persist.spi.Complex ;
 
-import java.util.Vector ;
-import java.util.Collection ;
+import org.astrogrid.community.policy.data.ServiceData ;
+import org.astrogrid.community.policy.data.AccountData ;
+import org.astrogrid.community.policy.data.PolicyPermission  ;
+import org.astrogrid.community.policy.data.PolicyCredentials ;
 
-import java.io.IOException ;
-
-public class PolicyService
+public class PolicyManagerImpl
+	implements PolicyManager
 	{
 	/**
 	 * Switch for our debug statements.
@@ -46,19 +56,19 @@ public class PolicyService
 	 * The name of our system property to read the location of our JDO mapping from.
 	 *
 	 */
-	private static final String MAPPING_CONFIG_PROPERTY = "astrogrid.policy.server.mapping" ;
+	private static final String MAPPING_CONFIG_PROPERTY = "org.astrogrid.policy.server.mapping" ;
 
 	/**
 	 * The name of the system property to read the location of our database config.
 	 *
 	 */
-	private static final String DATABASE_CONFIG_PROPERTY = "astrogrid.policy.server.database.config" ;
+	private static final String DATABASE_CONFIG_PROPERTY = "org.astrogrid.policy.server.database.config" ;
 
 	/**
 	 * The name of the system property to read our database name from.
 	 *
 	 */
-	private static final String DATABASE_NAME_PROPERTY = "astrogrid.policy.server.database.name" ;
+	private static final String DATABASE_NAME_PROPERTY = "org.astrogrid.policy.server.database.name" ;
 
 	/**
 	 * Our log writer.
@@ -94,11 +104,11 @@ public class PolicyService
 	 * Public constructor.
 	 *
 	 */
-	public PolicyService()
+	public PolicyManagerImpl()
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("PolicyService()") ;
+		if (DEBUG_FLAG) System.out.println("PolicyManagerImpl()") ;
 		//
 		// Initialise our service.
 		this.init() ;
@@ -168,16 +178,16 @@ public class PolicyService
 		if (DEBUG_FLAG) System.out.println("") ;
 		}
 
-
 	/**
 	 * Service health check.
 	 *
 	 */
 	public ServiceData getServiceStatus()
+		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("PolicyService.getServiceStatus()") ;
+		if (DEBUG_FLAG) System.out.println("PolicyManagerImpl.getServiceStatus()") ;
 
 		ServiceData result =  new ServiceData() ;
 		result.setIdent("service@localhost") ;
@@ -191,16 +201,19 @@ public class PolicyService
 	 *
 	 */
 	public AccountData getAccountData(String ident)
+		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("PolicyService.getAccountData()") ;
+		if (DEBUG_FLAG) System.out.println("PolicyManagerImpl.getAccountData()") ;
 		if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
 
-		AccountData result = new AccountData("frog@pond", "Frog in a pond") ;
+		AccountData account = new AccountData() ;
+		account.setIdent("frog@pond") ;
+		account.setDescription("Frog in a pond") ;
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		return result ;
+		return account ;
 		}
 
 	/**
@@ -208,10 +221,11 @@ public class PolicyService
 	 *
 	 */
 	public void setAccountData(AccountData account)
+		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("PolicyService.setAccountData()") ;
+		if (DEBUG_FLAG) System.out.println("PolicyManagerImpl.setAccountData()") ;
 		if (DEBUG_FLAG) System.out.println("  Account") ;
 		if (DEBUG_FLAG) System.out.println("    ident : " + account.getIdent()) ;
 		if (DEBUG_FLAG) System.out.println("    desc  : " + account.getDescription()) ;
@@ -223,23 +237,28 @@ public class PolicyService
 	 * Request a list of Accounts.
 	 *
 	 */
-	public Collection getAccountList()
+	public Object[] getAccountList()
+		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("PolicyService.getAccountList()") ;
+		if (DEBUG_FLAG) System.out.println("PolicyManagerImpl.getAccountList()") ;
 
 		Collection collection = new Vector() ;
 
-		collection.add(
-			new AccountData("frog@pond", "Frog in a pond")
-			) ;
-		collection.add(
-			new AccountData("toad@pond", "Toad in a pond")
-			) ;
+		AccountData frog = new AccountData() ;
+		frog.setIdent("frog@pond") ;
+		frog.setDescription("Frog in a pond") ;
+
+		AccountData toad = new AccountData() ;
+		toad.setIdent("toad@pond") ;
+		toad.setDescription("Toad in a pond") ;
+
+		collection.add(frog) ;
+		collection.add(toad) ;
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		return collection ;
+		return collection.toArray() ;
 		}
 
 	/**
@@ -247,10 +266,11 @@ public class PolicyService
 	 *
 	 */
 	public PolicyPermission checkPermissions(PolicyCredentials credentials, String resource, String action)
+		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("PolicyService.checkPermissions()") ;
+		if (DEBUG_FLAG) System.out.println("PolicyManagerImpl.checkPermissions()") ;
 
 		if (DEBUG_FLAG) System.out.println("  Credentials") ;
 		if (DEBUG_FLAG) System.out.println("    Group   : " + credentials.getGroup()) ;
@@ -258,9 +278,6 @@ public class PolicyService
 		if (DEBUG_FLAG) System.out.println("  Resource") ;
 		if (DEBUG_FLAG) System.out.println("    Name    : " + resource) ;
 		if (DEBUG_FLAG) System.out.println("    Action  : " + action) ;
-
-		//
-		// PolicyPermission result = new PolicyPermission(resource, credentials.getGroup(), action) ;
 
 		//
 		// Create the complex key.
@@ -273,14 +290,16 @@ public class PolicyService
 				}
 			) ;
 
-		PolicyPermission result = null ;
+		//
+		// Try loading the permission.
+		PolicyPermission permission = null ;
 		try {
 			//
 			// Begin a new database transaction.
 			database.begin();
 			//
 			// Try loading the target object.
-			result = (PolicyPermission) database.load(PolicyPermission.class, key);
+			permission = (PolicyPermission) database.load(PolicyPermission.class, key);
 			}
 		catch (Exception ouch)
 			{
@@ -289,7 +308,32 @@ public class PolicyService
 			}
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		return result ;
+		return permission ;
+
+		}
+
+	/**
+	 * Confirm group membership.
+	 *
+	 */
+	public PolicyCredentials checkMembership(PolicyCredentials credentials)
+		throws RemoteException
+		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("PolicyManagerImpl.checkMembership()") ;
+
+		if (DEBUG_FLAG) System.out.println("  Credentials") ;
+		if (DEBUG_FLAG) System.out.println("    Group   : " + credentials.getGroup()) ;
+		if (DEBUG_FLAG) System.out.println("    Account : " + credentials.getAccount()) ;
+
+		//
+		// Test code ... yes.
+		credentials.setStatus(0xFF) ;
+		credentials.setReason("Test check, always returns true") ;
+
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		return credentials ;
 
 		}
 

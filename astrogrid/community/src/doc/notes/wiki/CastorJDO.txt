@@ -1,0 +1,818 @@
+---++ Community policy prototype
+
+This set of pages describe the steps involved in implementing JavaDataObjects using the Castor JDO toolkit and the Hsqldb database server.
+The aim is to develop a vendor neutral implementation of the CommunityPolicy database, using the Castor JDO toolkit to handle all of the XML marshalling and SQL statements.
+
+   * Astrogrid.CommunityPolicyHsqldb - Using a Hsqldb database
+   * *This page* Astrogrid.CommunityPolicyCastorJDO - Using Castor JDO
+   * Astrogrid.CommunityPolicyCastorXML - Using Castor XML
+
+In theory, once we have a working implementation using the Java Hsqldb database server, we should be able to transfer the database into either Postgresql or MySql without modifying any of the Java code.
+
+---++ Castor JDO
+
+This section deals with how to install and use the Castor JDO toolkit.
+
+From the Castor website [[http://www.castor.org]] :
+
+   * _Castor is an open source data binding framework for Java[tm]. It's basically the  shortest path between Java objects, XML documents and SQL tables. Castor provides Java to XML binding, Java to SQL persistence, and then some more._
+
+At this stage, I am only intending to create a simple set of classes, just enough to test that we can access the database data as objects.
+
+Please note, this is the first time I have used the Castor JDO toolkit, so there may be better ways of doing this, I'm learning as I go.
+If anyone has suggestions for better ways to do things please let me know.
+
+---+++ Installing the Castor toolkit
+
+First stage is to download and install the Castor JDO toolkit.
+The toolkit is available to download from the Castor web site as a binary distribution, containing the compiled Java code and some documentation.
+
+The following Ant tasks download the binary distribution from the Castor web site and unpacks it into our project build directory :
+<verbatim>
+    <!--+
+        | Castor properties.
+        +-->
+    <property name="castor.base"    value="${basedir}/build/castor"/>
+    <property name="castor.version" value="0.9.5"/>
+    <property name="castor.dist"    value="ftp://ftp.exolab.org/pub/castor/castor_${castor.version}/castor-${castor.version}.zip"/>
+    <property name="castor.home"    value="${castor.base}/castor-${castor.version}"/>
+
+    <!--+
+        | Download the Castor binary.
+        +-->
+    <target name="castor.dist.fetch" depends="">
+        <mkdir dir="${castor.base}"/>
+        <get verbose="true" usetimestamp="true"
+            src="${castor.dist}"
+            dest="${castor.base}/castor-${castor.version}.zip"
+            />
+    </target>
+
+    <!--+
+        | Unzip the Castor binary.
+        +-->
+    <target name="castor.dist.unzip" depends="">
+        <unzip src="${castor.base}/castor-${castor.version}.zip" dest="${castor.base}"/>
+    </target>
+
+    <!--+
+        | Prepare the Castor toolkit.
+        +-->
+    <target name="castor.PREPARE" depends="">
+        <antcall target="castor.dist.fetch"/>
+        <antcall target="castor.dist.unzip"/>
+    </target>
+
+</verbatim>
+
+This results in the following files installed in our project directory, most important of which are the two binary jar files :
+<verbatim>
+   policy
+      +-- build.xml
+      \-- build
+            \-- castor
+                  +-- castor-0.9.5.zip
+                  \-- castor-0.9.5
+                        |
+                        +-- castor-0.9.5.jar
+                        +-- castor-0.9.5-xml.jar
+                        +-- doc
+                        +-- examples
+                        \-- schema
+</verbatim>
+
+With the Castor jar files in place, we can define an Ant path to reference them.
+We can use this later in other Ant tasks without having to explicitly add the full location of the Castor jars each time.
+<verbatim>
+    <!--+
+        | The Castor library classpath.
+        +-->
+    <path id="castor.classpath">
+        <pathelement location="${castor.home}/castor-${castor.version}.jar"/>
+        <pathelement location="${castor.home}/castor-${castor.version}-xml.jar"/>
+    </path>
+</verbatim>
+
+---+++ Installing the Xerces toolkit
+
+When I first started trying to use the Castor tools I kept getting problems with ==ClassNotFoundExceptions==.
+
+Whenever I ran my code it would complain that it couldn't find =org.apache.xml.serialize.XMLSerializer=.
+
+<verbatim>
+    java.lang.NoClassDefFoundError: org/apache/xml/serialize/XMLSerializer
+        at org.exolab.castor.xml.Unmarshaller.initConfig(Unmarshaller.java:253)
+        at org.exolab.castor.xml.Unmarshaller.&lt;init&gt;(Unmarshaller.java:209)
+        at org.exolab.castor.xml.Unmarshaller.&lt;init&gt;(Unmarshaller.java:196)
+        at org.exolab.castor.mapping.Mapping.loadMappingInternal(Mapping.java:508)
+        at org.exolab.castor.mapping.Mapping.loadMappingInternal(Mapping.java:468)
+        at org.exolab.castor.mapping.Mapping.loadMapping(Mapping.java:395)
+</verbatim>
+
+Digging around on the Castor site I found the following reference to the apache Xerces project.
+
+   * _Castor includes software, such as Xerces, Jakarta ORO, and Jakarta Regexp, developed by the Apache Software Foundation._
+
+Turns out that =org.apache.xml.serialize.XMLSerializer= is part of the Xerces toolkit.
+
+I tracked it down by following a hunch.
+I downloaded a recent distribution of the Xerces toolkit and had a look in the jar file, where I found =org.apache.xml.serialize.XMLSerializer=.
+
+If anyone knows how to run the Castor toolkit without adding the Xerces toolkit, then I'd be interested to find out how to do it.
+
+In the mean time, we need some Ant tasks to download and install the Xerces toolkit.
+<verbatim>
+    <!--+
+        | Xerces properties.
+        +-->
+    <property name="xerces.base"    value="${basedir}/build/xerces"/>
+    <property name="xerces.version" value="2.5.0"/>
+    <property name="xerces.name"    value="xerces-2_5_0"/>
+    <property name="xerces.dist"    value="http://xml.apache.org/dist/xerces-j/Xerces-J-bin.${xerces.version}.zip"/>
+    <property name="xerces.home"    value="${xerces.base}/${xerces.name}"/>
+
+    <!--+
+        | Download the Xerces binary.
+        +-->
+    <target name="xerces.dist.fetch" depends="">
+        <mkdir dir="${xerces.base}"/>
+        <get verbose="true" usetimestamp="true"
+            src="${xerces.dist}"
+            dest="${xerces.base}/xerces-${xerces.version}.zip"
+            />
+    </target>
+
+    <!--+
+        | Unzip the Xerces binary.
+        +-->
+    <target name="xerces.dist.unzip" depends="">
+        <unzip src="${xerces.base}/xerces-${xerces.version}.zip" dest="${xerces.base}"/>
+    </target>
+
+    <!--+
+        | Prepare the Xerces toolkit.
+        +-->
+    <target name="xerces.PREPARE" depends="">
+        <antcall target="xerces.dist.fetch"/>
+        <antcall target="xerces.dist.unzip"/>
+    </target>
+
+</verbatim>
+
+This results in the following files installed in our project directory, most important of which are the two binary jar files :
+<verbatim>
+   policy
+      +-- build.xml
+      \-- build
+            \-- xerces
+                  +-- xerces-2.5.0.zip
+                  \-- xerces-2_5_0
+                        |
+                        +-- xercesImpl.jar
+                        +-- xml-apis.jar
+                        +-- data
+                        +-- docs
+                        \-- samples
+</verbatim>
+
+Again, we can define an Ant path to include the Xerces jar files making it easier to refer to them in other tasks later on.
+<verbatim>
+    <!--+
+        | The Xerces library classpath.
+        +-->
+    <path id="xerces.classpath">
+        <pathelement location="${xerces.home}/xml-apis.jar"/>
+        <pathelement location="${xerces.home}/xercesImpl.jar"/>
+    </path>
+</verbatim>
+
+By the way, if anyone knows why the Xerces team decided to use xerces-2.5.0 for the zip file, but called the directory inside it xerces-2_5_0, please let me know.
+Replacing the .'s with _'s just makes it that bit more tricky to automate all of this stuff.
+
+---+++ Java packages
+
+The Java files for this project are split into three main packages, the client and server side classes, plus a common set of interfaces.
+
+   * All of the interfaces are packaged together in the ==community.policy.common== package.
+
+This means that we can have one common interface for all __Account__ objects, and two separate implementations for the client side and server side components.
+The client and server side implementsations would contain the functionality required to manipulate __Account__ data from their respective locations.
+
+   * The client side implementation, in the ==community.policy.client== package, would contain the functionality required to access __Account__ data via the CommunityPolicy WebService.
+   * The server side implementation, in the ==community.policy.server== package, would contain the functionality required to access __Account__ data in the database.
+
+For now, we are not implementing the WebService layer of the CommunityPolicy system, so all we need to create is the common __Account__ interface and a server side implementation __AccountImpl__.
+
+---+++ Account interface
+
+The first Java code we need to write is the public interface for __Account__ objects.
+For this prototype, all we need is a simple API with get and set methods for the __Account__ properties.
+<verbatim>
+    package org.astrogrid.community.policy.common ;
+
+    /**
+     * A common interface for Account objects.
+     */
+    public interface Account
+        {
+        /**
+         * Access to our Account name.
+         */
+        public String getName() ;
+
+        /**
+         * Access to our Account name.
+         */
+        public void setName(String name) ;
+
+        /**
+         * Access to our Community name.
+         */
+        public String getCommunity() ;
+
+        /**
+         * Access to our Community name.
+         */
+        public void setCommunity(String community) ;
+
+        /**
+         * Access to our description.
+         */
+        public String getDescription() ;
+
+        /**
+         * Access to our description.
+         */
+        public void setDescription(String description) ;
+
+        }
+</verbatim>
+
+---+++ Server side implementation
+
+Next we need a server side implementation of the __Account__ interface.
+Again, this just defines a simple Bean like object with get and set methods for the properties.
+<verbatim>
+    package org.astrogrid.community.policy.server ;
+    import org.astrogrid.community.policy.common.Account ;
+
+    /**
+     * A server side implementation of the Account interface.
+     */
+    public class AccountImpl
+        implements Account
+        {
+
+        /**
+         * Our Account name.
+         */
+        private String name ;
+
+        /**
+         * Access to our Account name.
+         */
+        public String getName()
+            {
+            return name ;
+            }
+
+        /**
+         * Access to our Account name.
+         */
+        public void setName(String name)
+            {
+            this.name = name ;
+            }
+
+        /**
+         * Our Community name.
+         */
+        private String community ;
+
+        /**
+         * Access to our Community name.
+         */
+        public String getCommunity()
+            {
+            return this.community ;
+            }
+
+        /**
+         * Access to our Community name.
+         */
+        public void setCommunity(String community)
+            {
+            this.community = community ;
+            }
+
+        /**
+         * Our description.
+         */
+        private String description ;
+
+        /**
+         * Access to our description.
+         */
+        public String getDescription()
+            {
+            return this.description ;
+            }
+
+        /**
+         * Access to our description.
+         */
+        public void setDescription(String description)
+            {
+            this.description = description ;
+            }
+        }
+</verbatim>
+
+---+++ Javac compile task
+
+Next, we need to add an Ant task to our Ant script to compile our classes.
+<verbatim>
+    <!--+
+        | Compile our common classes.
+        +-->
+    <target name="policy.common.javac" depends="">
+        <!-- Create our build directory -->
+        <mkdir dir="build/policy/common/classes"/>
+        <!-- Compile the common classes -->
+        <javac srcdir="src/java"
+               destdir="build/policy/common/classes"
+               debug="on"
+               deprecation="on"
+               optimize="on"
+               >
+            <!-- Compile our common classes -->
+            <include name="**/policy/common/**"/>
+            <classpath>
+                <!-- Include the Castor libraries -->
+                <path refid="castor.classpath"/>
+            </classpath>
+        </javac>
+    </target>
+
+    <!--+
+        | Compile our server classes.
+        +-->
+    <target name="policy.server.javac" depends="policy.common.javac">
+        <!-- Create our build directory -->
+        <mkdir dir="build/policy/server/classes"/>
+        <!-- Compile the server classes -->
+        <javac srcdir="src/java"
+               destdir="build/policy/server/classes"
+               debug="on"
+               deprecation="on"
+               optimize="on"
+               >
+            <!-- Compile our server classes -->
+            <include name="**/policy/server/**"/>
+            <classpath>
+                <!-- Include our common classes -->
+                <path location="build/policy/common/classes"/>
+                <!-- Include the Castor libraries -->
+                <path refid="castor.classpath"/>
+            </classpath>
+        </javac>
+    </target>
+</verbatim>
+
+The compile tasks use the Ant regular expression matching tools to select which Java source files to include in the build.
+   * The first task compiles the Java source for our common interfaces in ==src/java== and places the compiled classes in ==build/policy/common/classes==.
+<verbatim>
+            <!-- Compile our common classes -->
+            <include name="**/policy/common/**"/>
+</verbatim>
+
+   * The second task compiles the Java source for our server side classes in ==src/java== and places the compiled classes in ==build/policy/server/classes==.
+<verbatim>
+            <!-- Compile our server classes -->
+            <include name="**/policy/server/**"/>
+</verbatim>
+
+Splitting the compilation into two tasks means that we can keep the common and server side classes separate.
+
+---+++ Policy server classpath
+
+Once we have compiled our classes, we can create an Ant path to reference all of the classes and libraries needed to run our examples.
+<verbatim>
+    <!--+
+        | The Policy server classpath.
+        +-->
+    <path id="policy.server.classpath">
+        <!-- The Castor libraries -->
+        <path refid="castor.classpath"/>
+        <!-- The Xerces libraries -->
+        <path refid="xerces.classpath"/>
+        <!-- The Hsqldb libraries -->
+        <path refid="hsqldb.classpath"/>
+        <!-- Our common classes -->
+        <pathelement path="build/policy/common/classes"/>
+        <!-- Our server classes -->
+        <pathelement path="build/policy/server/classes"/>
+    </path>
+</verbatim>
+
+This defines one path element which contains the Castor, Xerces and Hsqldb libraries.
+<verbatim>
+    <!--+
+        | The Policy server classpath.
+        +-->
+    <path id="policy.server.classpath">
+        <!-- The Castor libraries -->
+        <path refid="castor.classpath"/>
+        <!-- The Xerces libraries -->
+        <path refid="xerces.classpath"/>
+        <!-- The Hsqldb libraries -->
+        <path refid="hsqldb.classpath"/>
+        ....
+    </path>
+</verbatim>
+
+Plus all of our classes from ==build/policy/common/classes== and ==build/policy/server/classes==.
+<verbatim>
+    <!--+
+        | The Policy server classpath.
+        +-->
+    <path id="policy.server.classpath">
+        ....
+        <!-- Our common classes -->
+        <pathelement path="build/policy/common/classes"/>
+        <!-- Our server classes -->
+        <pathelement path="build/policy/server/classes"/>
+    </path>
+</verbatim>
+
+We can now use ==policy.server.classpath== to refer to all these classes and libraries as one set, making it easier to use them in other tasks.
+
+---+++ JUnit test cases
+
+The easiest way to build some examples is to use the JUnit framework to run them as tests from within an Ant task.
+
+There are a couple of quirks with installing the JUnit toolkit, which I'll cover in another Wiki page.
+For now, let's assume that we have the JUnit toolkit installed in our main classpath.
+
+If we start by defining a class that extends JUnit test case.
+<verbatim>
+    package org.astrogrid.community.policy.server.junit ;
+
+    import junit.framework.TestCase ;
+    import org.astrogrid.community.policy.common.Account ;
+    import org.astrogrid.community.policy.server.AccountImpl ;
+
+    /**
+     * JUnit test for accessing Account objects from our database using the Castor tools.
+     */
+    public class JUnitTestCase
+        extends TestCase
+        {
+        ....
+        }
+</verbatim>
+
+---+++ JUnit classpath
+
+Before we can compile and run our JUnit tests, we need to add the JUnit libraries to our Java compile task.
+<verbatim>
+    <!--+
+        | The JUnit library classpath.
+        +-->
+    <path id="junit.classpath">
+        <pathelement location="${junit.home}/junit.jar"/>
+    </path>
+
+    <!--+
+        | Compile our server classes.
+        +-->
+    <target name="policy.server.javac" depends="policy.common.javac">
+        ....
+        <!-- Compile the server classes -->
+        <javac ....>
+            ....
+            <classpath>
+                ....
+                <!-- Include the JUnit libraries -->
+                <path refid="junit.classpath"/>
+            </classpath>
+        </javac>
+    </target>
+</verbatim>
+
+---+++ Ant JUnit task
+
+We can now add an Ant task to run our JUnitTestCases.
+<verbatim>
+    <!--+
+        | Run our JUnit tests.
+        +-->
+    <target name="policy.server.junit" depends="policy.server.javac, policy.server.config">
+        <!-- Create our log directory -->
+        <mkdir dir="build/policy/server/junit"/>
+        <!-- Run our JUnitTestCase tests -->
+        <junit printsummary="yes" haltonfailure="yes" showoutput="yes" fork="true">
+            <classpath>
+                <!-- The Policy classes -->
+                <path refid="policy.server.classpath"/>
+            </classpath>
+            <!-- Generate an XML log file -->
+            <formatter type="xml"/>
+            <!-- Run our JUnitTestCase tests -->
+            <batchtest todir="build/policy/server/junit">
+                <fileset dir="build/policy/server/classes">
+                    <include name="**/junit/**/JUnitTestCase.class"/>
+                </fileset>
+            </batchtest>
+        </junit>
+    </target>
+</verbatim>
+
+This task uses the Ant regular expression matching to select and run all of the JUnitTestCase classes in the ==build/policy/server/classes== directory.
+<verbatim>
+            <!-- Run our JUnitTestCase tests -->
+            <batchtest todir="build/policy/server/junit">
+                <fileset dir="build/policy/server/classes">
+                    <include name="**/junit/**/JUnitTestCase.class"/>
+                </fileset>
+            </batchtest>
+</verbatim>
+
+---+++ JUnit test setUp
+
+All of our tests are going to need to connect to the database and initialise the object mapping, so the best place to put the code to do this in the test __setUp__ method.
+The __setUp__ method is called by the JUnit framework before each of the test methods is called. 
+<verbatim>
+    public class JUnitTestCase
+        extends TestCase
+        {
+        /**
+         * Setup our tests.
+         */
+        protected void setUp()
+            throws Exception
+            {
+            //
+            // Called by the JUnit framework before each of our tests ...
+            //
+            }
+        }
+</verbatim>
+
+---+++ JDO mapping
+
+In order to generate the JDBC and SQL code to load and save our __Account__ objects from the database, the Castor toolkit needs to know how to map the __Account__ properties to the fields in the database table.
+
+This is defined in an XML mapping file.
+<verbatim>
+    <?xml version="1.0"?>
+    <mapping>
+        <!-- JDO Mapping for AccountImpl objects -->
+        <class name="org.astrogrid.community.policy.server.AccountImpl" identity="name community">
+            <map-to table="accounts"/>
+            <field name="name" type="string">
+                <sql name="name" type="char"/>
+            </field>
+            <field name="community" type="string">
+                <sql name="community" type="char"/>
+            </field>
+            <field name="description" type="string">
+                <sql name="description" type="char"/>
+            </field>
+        </class>
+    </mapping>
+</verbatim>
+
+This XML file defines the name and type of each of the __AccountImpl__ object properties, and the corresponding field name and type in the SQL database.
+In this example, we just map each of the Java Strings to the corresponding SQL char fields in the database table.
+
+The identity attribute on the class element corresponds to the two fields, name and community, we defined as the primary key in the database table.
+Again, this probably isn't the best way to do this, but I've included it here to see if Castor can cope with multiple value primary keys.
+
+---+++ JDO database config
+
+We also need to tell the Castor toolkit where to find our database and how to connect to it.
+
+Again, this is defined in an XML file which is loaded at runtime.
+<verbatim>
+    <?xml version="1.0"?>
+    <!DOCTYPE databases PUBLIC
+        "-//EXOLAB/Castor JDO Configuration DTD Version 1.0//EN"
+        "http://castor.exolab.org/jdo-conf.dtd">
+
+    <database name="policy" engine="hsql">
+        <driver class-name="org.hsqldb.jdbcDriver"
+            url="jdbc:hsqldb:hsql://localhost:9001">
+            <param name="user"     value="sa"/>
+            <param name="password" value="veritas"/>
+        </driver>
+        <mapping href="mapping.xml"/>
+    </database>
+</verbatim>
+
+This contains all the configuration information the Castor tools need to connect to our database, including a reference to our JDO mapping.
+In our current implementation, the database.xml configuration and mapping.xml are located in the samedirectory, so we can refer to the JDO mapping directly by name.
+<verbatim>
+        ....
+        <mapping href="mapping.xml"/>
+        ....
+</verbatim>
+
+---+++ Loading the JDO config
+
+Before we can create a database connection we need to create an instance of the Castor JDO engine and tell it how to connect to our database.
+
+<verbatim>
+    public class JUnitTestCase
+        extends TestCase
+        {
+        /**
+         * Our JDO engine.
+         */
+        private JDO jdo = null ;
+
+        /**
+         * Setup our tests.
+         */
+        protected void setUp()
+            throws Exception
+            {
+            ....
+            //
+            // Create our JDO engine.
+            jdo = new JDO();
+            jdo.setConfiguration("database.xml");
+            jdo.setDatabaseName("policy");
+            ....
+            }
+        }
+</verbatim>
+
+---+++ Creating the database connection
+
+The Castor JDO engine acts as a factory for database connections, using the information in our database configuration file to create a connection to our SQL database.
+
+<verbatim>
+    public class JUnitTestCase
+        extends TestCase
+        {
+        /**
+         * Our JDO engine.
+         */
+        private JDO jdo ;
+
+        /**
+         * Our database connection.
+         */
+        private Database database ;
+
+        /**
+         * Setup our tests.
+         */
+        protected void setUp()
+            throws Exception
+            {
+            ....
+            //
+            // Create our JDO engine.
+            jdo = new JDO();
+            jdo.setConfiguration("database.xml");
+            jdo.setDatabaseName("policy");
+            ....
+            //
+            // Create our database connection.
+            database = jdo.getDatabase();
+            }
+        }
+</verbatim>
+
+---+++ Reading Account objects
+
+Now that we have a database connection, we can now try to see if we can read some __Account__ objects.
+
+The simplest test is to ask for all the available objects in the database.
+We can add a test method to our JUnitTestCase to request all of the __AccountImpl__ objects from the database and print out their properties.
+<verbatim>
+    /**
+     * Check that we can read Account objects.
+     * Assumes that the database has been loaded with test data.
+     */
+    public void testSelectAllAccounts()
+        throws Exception
+        {
+        ....
+        }
+</verbatim>
+
+First, we need to start a database transaction.
+<verbatim>
+        //
+        // Begin a new database transaction.
+        database.begin();
+</verbatim>
+
+Next, we need to create an __ObjectQueryLanguage__ query to request all of the __AccountImpl__ objects from our database.
+<verbatim>
+        //
+        // Create our OQL query.
+        OQLQuery query = database.getOQLQuery(
+            "SELECT account FROM org.astrogrid.community.policy.server.AccountImpl account"
+            );
+</verbatim>
+
+Executing the query returns a __QueryResults__ object, which is an __Enumeration__ of __AccountImpl__ objects.
+<verbatim>
+        //
+        // Execute our query.
+        QueryResults results = query.execute();
+</verbatim>
+
+We can then use the __Enumeration__ to iterate through the elements in our __QueryResults__ as __Account__ objects.
+<verbatim>
+        //
+        // Iterate through our results.
+        while(results.hasMore())
+            {
+            //
+            // Get the next Account object.
+            Account account = (Account) results.next();
+            ....
+            }
+        }
+</verbatim>
+
+Putting all of this together, we can build our test method to request all of the __AccountImpl__ objects from our database.
+<verbatim>
+    /**
+     * Check that we can read Account objects.
+     * Assumes that the database has been loaded with test data.
+     */
+    public void testSelectAllAccounts()
+        throws Exception
+        {
+        //
+        // Begin a new database transaction.
+        database.begin();
+        //
+        // Create our OQL query.
+        OQLQuery query = database.getOQLQuery(
+            "SELECT account FROM org.astrogrid.community.policy.server.AccountImpl account"
+            );
+        //
+        // Execute our query.
+        QueryResults results = query.execute();
+        //
+        // Iterate through our results.
+        while(results.hasMore())
+            {
+            //
+            // Get the next Account object.
+            Account account = (Account) results.next();
+            //
+            // Print out the Account properties.
+            System.out.println("----") ;
+            System.out.println("Account :") ;
+            System.out.println("  Name        : " + account.getName()) ;
+            System.out.println("  Community   : " + account.getCommunity()) ;
+            System.out.println("  Description : " + account.getDescription()) ;
+            System.out.println("----") ;
+            }
+        }
+</verbatim>
+
+---+++ Selecting specific objects
+
+We can select specific objects from the database by adding WHERE clauses to the OQL query.
+
+To select Accounts by name, we can modify our OQL query to add a WHERE clause spcifying the __Account__ name.
+<verbatim>
+        //
+        // Create our OQL query.
+        OQLQuery query = database.getOQLQuery(
+            "SELECT account FROM org.astrogrid.community.policy.server.AccountImpl account WHERE account.name = $1"
+            );
+        //
+        // Bind our query param.
+        query.bind("dave") ;
+        //
+        // Execute our query.
+        QueryResults results = query.execute();
+</verbatim>
+
+To select a specific __Account__, we can modify our OQL query to specify both name and community. 
+<verbatim>
+        //
+        // Create our OQL query.
+        OQLQuery query = database.getOQLQuery(
+            "SELECT account FROM org.astrogrid.community.policy.server.AccountImpl account WHERE account.name = $1 AND account.community = $2"
+            );
+        //
+        // Bind our query params.
+        query.bind("dave") ;
+        query.bind("cambridge") ;
+        //
+        // Execute our query.
+        QueryResults results = query.execute();
+</verbatim>
+
+-- Main.DaveMorris - 17 Aug 2003

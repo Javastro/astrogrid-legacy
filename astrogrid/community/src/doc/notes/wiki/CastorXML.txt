@@ -1,0 +1,435 @@
+---++ Community policy prototype
+
+This set of pages describe the steps involved in implementing JavaDataObjects using the Castor JDO toolkit and the Hsqldb database server.
+The aim is to develop a vendor neutral implementation of the CommunityPolicy database, using the Castor JDO toolkit to handle all of the XML marshalling and SQL statements.
+
+   * Astrogrid.CommunityPolicyHsqldb - Using a Hsqldb database
+   * Astrogrid.CommunityPolicyCastorJDO - Using Castor JDO
+   * *This page* Astrogrid.CommunityPolicyCastorXML - Using Castor XML
+
+In theory, once we have a working implementation using the Java Hsqldb database server, we should be able to transfer the database into either Postgresql or MySql without modifying any of the Java code.
+
+---++ Castor XML (continued)
+
+Before we start working with the XML marshalling tools, I would like to finish the notes from previous page, Astrogrid.CommunityPolicyCastorJDO, about using Castor JDO.
+There are still a couple of bits left to do with creating and deleting __Account__ records in the database.
+
+I have had to add these here because it looks like I exceeded the size limit that this Wiki will accept for the length of a page.
+
+---+++ Creating new Account records
+
+To add a new __Account__ to the database, all we need to do is create a new __AccountImpl__ object, and then use the JDO database engine to create the corresponding record in the database.
+<verbatim>
+        //
+        // Create our new Account.
+        Account account = new AccountImpl() ;
+        //
+        // Set the name and community.
+        account.setName("frog") ;
+        account.setCommunity("pond") ;
+        //
+        // Create the account in the database.
+        database.create(account);
+</verbatim>
+
+This creates a new record in the database, with the name set to _frog_ and the community set to _pond_.
+The Castor toolkit handles the database specific SQL statement and JDBC connection, all we have to deal with in our Java code are __AccountImpl__ objects.
+
+---+++ Deleting Account records
+
+To delete a record from the database, first we need to create an OQL query to locate the relevant __AccountImpl__ object.
+<verbatim>
+        //
+        // Create an OQL query to locate our account.
+        OQLQuery query = database.getOQLQuery(
+            "SELECT account FROM org.astrogrid.community.policy.server.AccountImpl account WHERE account.name = $1 AND account.community = $2"
+            );
+        //
+        // Bind our query params.
+        query.bind("frog") ;
+        query.bind("pond") ;
+        //
+        // Execute our query.
+        QueryResults results query.execute();
+</verbatim>
+
+Once we have located our __Account__ object, we can use our JDO database engine to remove the record from the database.
+<verbatim>
+        //
+        // If we found our Account
+        if (results.hasMore()) 
+            {
+            //
+            // Create our Account from the results.
+            Account account = (Account) results.next();
+            //
+            // Remove the account from the database.
+            database.remove(account);
+            }
+        //
+        // Commit our transaction.
+        database.commit() ;
+</verbatim>
+
+Again, Castor handles all of the database specific SQL to delete the record from the database.
+
+----
+---++ Castor XML
+
+This section deals with how to use the Castor XML toolkit to marshall data between XML documents and Java objects.
+
+At this stage, I am only intending to extend the initial set of tools to enable us to load and save __Account__ data to and from XML.
+
+Please note, this is the first time I have used the Castor JDO toolkit, so there may be better ways of doing this, I'm learning as I go.
+If anyone has suggestions for better ways to do things please let me know.
+
+---+++ Defining the XML mapping
+
+To use the XML marshalling tools in Castor, we need to go back to our object mapping, and add some elements to tell Castor how to represent our __AccountImpl__ objects in XML.
+
+The following XML shows the elements required to enable the Castor tools to convert our __AccountImpl__ objects to and from XML.
+<verbatim>
+    <?xml version="1.0"?>
+    <mapping>
+        <!-- XML Mapping for AccountImpl objects -->
+        <class name="org.astrogrid.community.policy.server.AccountImpl" identity="name community">
+            <map-to xml="account"/>
+            <field name="name" type="string">
+                <bind-xml node="attribute"/>
+            </field>
+            <field name="community" type="string">
+                <bind-xml node="attribute"/>
+            </field>
+            <field name="description" type="string">
+                <bind-xml node="element"/>
+            </field>
+        </class>
+    </mapping>
+</verbatim>
+
+The first piece of XML mapping information in the mapping is the _xml_ attribute of the _map-to_ element.
+This tells the Castor toolkit what XML element name to use for __AccountImpl__ objects.
+<verbatim>
+        <!-- XML Mapping for AccountImpl objects -->
+        <class name="org.astrogrid.community.policy.server.AccountImpl" identity="name community">
+            <map-to xml="account"/>
+            ....
+        </class>
+</verbatim>
+
+Then each of the __AccountImpl__ has a _bind-xml_ element describing how to whether to represent the property as an attribute, a separate element or as text.
+<verbatim>
+            ....
+            <field name="name" type="string">
+                <bind-xml node="attribute"/>
+            </field>
+            <field name="community" type="string">
+                <bind-xml node="attribute"/>
+            </field>
+            <field name="description" type="string">
+                <bind-xml node="element"/>
+            </field>
+            ....
+</verbatim>
+
+This XML mapping maps an __AccountImpl__ object properties to the following XML :
+<verbatim>
+    <account name="frog" community="pond">
+        <description>Description goes here</description>
+    </account>
+</verbatim>
+
+Changing the XML mapping for the _description_ property to a text node would represent the account description as a text in the account element rather than as a separate element of its own.
+<verbatim>
+    <account name="frog" community="pond">
+        Description goes here
+    </account>
+</verbatim>
+
+In fact, by default the Castor tools do not _pretty print_ the XML with indentation, so an __Account__ would generate the following XML :
+<verbatim>
+    <account name="frog" community="pond">Description goes here</account>
+</verbatim>
+
+---+++ Combining the XML and JDO mapping
+
+This XML mapping is very similar to the JDO mapping we used to tell the Castor tools how to load and save __AccountImpl__ objects in our database.
+<verbatim>
+    <?xml version="1.0"?>
+    <mapping>
+        <!-- JDO Mapping for AccountImpl objects -->
+        <class name="org.astrogrid.community.policy.server.AccountImpl" identity="name community">
+            <map-to table="accounts"/>
+            <field name="name" type="string">
+                <sql name="name" type="char"/>
+            </field>
+            <field name="community" type="string">
+                <sql name="community" type="char"/>
+            </field>
+            <field name="description" type="string">
+                <sql name="description" type="char"/>
+            </field>
+        </class>
+    </mapping>
+</verbatim>
+
+In fact, the two sets of information can be descibed in a single file, combining both the SQL and XML mapping details.
+<verbatim>
+    <?xml version="1.0"?>
+    <mapping>
+        <!-- JDO and XML Mapping for AccountImpl objects -->
+        <class name="org.astrogrid.community.policy.server.AccountImpl" identity="name community">
+            <map-to table="accounts" xml="account"/>
+            <field name="name" type="string">
+                <sql name="name" type="char"/>
+                <bind-xml node="attribute"/>
+            </field>
+            <field name="community" type="string">
+                <sql name="community" type="char"/>
+                <bind-xml node="attribute"/>
+            </field>
+            <field name="description" type="string">
+                <sql name="description" type="char"/>
+                <bind-xml node="element"/>
+            </field>
+        </class>
+    </mapping>
+</verbatim>
+
+---+++ Marshalling Account objects into XML
+
+Once we have defined the mapping between __AccountImpl__ properties and XML elements, we can use the Castor marshalling tools to convert our __AccountImpl__ objects into XML.
+All we need to do is load our XML mapping and create an XML Marshaller to handle the __AccountImpl__ to XML marshalling.
+
+Again, the easiest place to load the XML mapping configuration is in the JUnit test __setUp__ method.
+<verbatim>
+    /**
+     * JUnit test for accessing Account objects using the Castor tools.
+     */
+    public class JUnitTestCase
+        extends TestCase
+        {
+        ....
+        /**
+         * Our JDO and XML mapping.
+         */
+        private Mapping mapping ;
+        ....
+        /**
+         * Setup our tests.
+         */
+        protected void setUp()
+            throws Exception
+            {
+            ....
+            //
+            // Load our object mapping.
+            mapping = new Mapping(getClass().getClassLoader());
+            mapping.loadMapping(System.getProperty(MAPPING_CONFIG_PROPERTY));
+            ....
+            }
+        }
+</verbatim>
+
+Once we have loaded the XML mapping, we can use this to initialise our XML Marshaller.
+To create our Marshaller, we need to tell it where to send the generated XML.
+A Marshaller can send the XML to either an XML DOM or SAX handler, or as text to an output Writer.
+The easiest for us to use at this point is to send the XML to a text file using a FileWriter.
+<verbatim>
+    /**
+     * Check that we can convert an Account into XML.
+     */
+    public void testAccountToXML()
+        throws Exception
+        {
+        //
+        // Create a FileWriter.
+        BufferedWriter writer = new BufferedWriter(new FileWriter("frog.xml")) ;
+        //
+        // Create our XML Marshaller.
+        Marshaller marshaller = new Marshaller(writer) ;
+        //
+        // Set the XML mapping to use.
+        marshaller.setMapping(mapping);
+        ....
+        }
+</verbatim>
+
+We can now use our Marshaller to generate an XML representation of our __AccountImpl__ objects.
+All we need to do is create an __AccountImpl__ object, and pass it to our Marshaller.
+
+<verbatim>
+    /**
+     * Check that we can convert an Account into XML.
+     */
+    public void testAccountToXML()
+        throws Exception
+        {
+        ....
+        //
+        // Create our new Account.
+        AccountImpl account = new AccountImpl() ;
+        //
+        // Set the name and community.
+        account.setName("frog") ;
+        account.setCommunity("pond") ;
+        account.setDescription("Green Frog in Pond") ;
+        //
+        // Convert our Account into XML.
+        marshaller.marshal(account);
+        }
+</verbatim>
+
+Putting the two bits together, the code to convert an __AccountImpl__ object into XML becomes :
+<verbatim>
+    /**
+     * Check that we can convert an Account into XML.
+     */
+    public void testAccountToXML()
+        throws Exception
+        {
+        //
+        // Create our FileWriter.
+        BufferedWriter writer = new BufferedWriter(new FileWriter("frog.xml")) ;
+        //
+        // Create our XML Marshaller.
+        Marshaller marshaller = new Marshaller(writer) ;
+        //
+        // Set the XML mapping to use.
+        marshaller.setMapping(mapping);
+        //
+        // Create our new Account.
+        AccountImpl account = new AccountImpl() ;
+        //
+        // Set the name and community.
+        account.setName("frog") ;
+        account.setCommunity("pond") ;
+        account.setDescription("Green Frog in Pond") ;
+        //
+        // Convert our Account into XML.
+        marshaller.marshal(account);
+        }
+</verbatim>
+
+This saves the following XML into the text file _frog.xml_.
+<verbatim>
+    <?xml version="1.0" encoding="UTF-8"?>
+    <account>
+        <community>pond</community>
+        <name>frog</name>
+        <description>Green Frog in Pond</description>
+    </account>
+</verbatim>
+
+---+++ Creating Account objects from XML
+
+To create an Account object from our XML representation, we use an Unmarshaller to convert the XML back into a Java object.
+
+First, we need to create an Unmarshaller and tell it what XML mapping to use.
+<verbatim>
+    /**
+     * Check that we can create an Account from XML.
+     */
+    public void testAccountFromXML()
+        throws Exception
+        {
+        //
+        // Create our XML Unmarshaller.
+        Unmarshaller unmarshaller = new Unmarshaller() ;
+        //
+        // Set the XML mapping to use.
+        unmarshaller.setMapping(mapping);
+        ....
+        }
+</verbatim>
+
+Then, we need to create an XML source from our file.
+The Castor Unmarshaller can accept XML data from a DOM node, a SAX event source, or from an input Reader.
+The easiest for us to use at the moment is to just create a FileReader from our XML file.
+
+<verbatim>
+    /**
+     * Check that we can create an Account from XML.
+     */
+    public void testAccountFromXML()
+        throws Exception
+        {
+        ....
+        //
+        // Create our FileReader.
+        BufferedReader reader = new BufferedReader(new FileReader("frog.xml")) ;
+        ....
+        }
+</verbatim>
+
+Once we have our Unmarshaller and Reader for our XML file, we can use the Unmarshaller to create an __Account__ object from our XML data.
+<verbatim>
+    /**
+     * Check that we can create an Account from XML.
+     */
+    public void testAccountFromXML()
+        throws Exception
+        {
+        ....
+        //
+        // Create our Account from the XML.
+        Account account = (Account) unmarshaller.unmarshal(reader);
+        ....
+        }
+</verbatim>
+
+Put all the bits together, and the code to create an __Account__ object from our XML file becomes :
+<verbatim>
+    /**
+     * Check that we can create an Account from XML.
+     */
+    public void testAccountFromXML()
+        throws Exception
+        {
+        //
+        // Create our XML Unmarshaller.
+        Unmarshaller unmarshaller = new Unmarshaller() ;
+        //
+        // Set the XML mapping to use.
+        unmarshaller.setMapping(mapping);
+        //
+        // Create our FileReader.
+        BufferedReader reader = new BufferedReader(new FileReader("frog.xml")) ;
+        //
+        // Create our Account from the XML.
+        Account account = (Account) unmarshaller.unmarshal(reader);
+        //
+        // Print out the Account details.
+        if (null != account)
+            {
+            System.out.println("----") ;
+            System.out.println("Account") ;
+            System.out.println("  Name        : " + account.getName()) ;
+            System.out.println("  Community   : " + account.getCommunity()) ;
+            System.out.println("  Description : " + account.getDescription()) ;
+            System.out.println("----") ;
+            }
+        }
+</verbatim>
+
+This creates an __AccountImpl__ object from the XML data in _frog.xml_.
+<verbatim>
+    <?xml version="1.0" encoding="UTF-8"?>
+    <account>
+        <community>pond</community>
+        <name>frog</name>
+        <description>Green Frog in Pond</description>
+    </account>
+</verbatim>
+
+-- Main.DaveMorris - 17 Aug 2003
+
+So far we can load and save individual __Account__ objects as XML.
+
+What we would like to do is load and save the whole database.
+
+In order to do this, we need to create a Java object to represent the whole PolicyDatabase state.
+
+<verbatim>
+</verbatim>
+

@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/Attic/build.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/08/28 17:33:56 $</cvs:date>
-    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:date>$Date: 2003/09/03 06:39:13 $</cvs:date>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
     | <cvs:log>
     |   $Log: build.xml,v $
+    |   Revision 1.2  2003/09/03 06:39:13  dave
+    |   Rationalised things into one set of SOAP stubs and one set of data objects for both client and server.
+    |
     |   Revision 1.1  2003/08/28 17:33:56  dave
     |   Initial policy prototype
     |
@@ -285,10 +288,10 @@
 			<sysproperty key="catalina.home"      path="${tomcat.home}"/>
 			<sysproperty key="java.io.tmpdir"     path="${tomcat.home}/temp"/>
 
-			<!-- Setup our test params -->
-			<sysproperty key="astrogrid.policy.server.mapping"          value="file://${policy.server.base}/config/mapping.xml"/>
-			<sysproperty key="astrogrid.policy.server.database.config"  value="file://${policy.server.base}/config/database.xml"/>
-			<sysproperty key="astrogrid.policy.server.database.name"    value="${hsqldb.database}"/>
+			<!-- Setup our server config -->
+			<sysproperty key="org.astrogrid.policy.server.mapping"          value="file://${policy.server.base}/config/mapping.xml"/>
+			<sysproperty key="org.astrogrid.policy.server.database.config"  value="file://${policy.server.base}/config/database.xml"/>
+			<sysproperty key="org.astrogrid.policy.server.database.name"    value="${hsqldb.database}"/>
 
 			<!-- Select the server JVM (fails on Linux JDK 1.4.0) -->
 			<!-- <jvmarg value="-server"/> -->
@@ -344,7 +347,7 @@
 	<!--+
 		| Delete the Tomcat working files.
 		+-->
-	<target name="tomcat.work.clean" depends="">
+	<target name="tomcat.clean.work" depends="">
 		<echo message=""/>
 		<echo message="Cleaning Tomcat temp files ...."/>
 		<delete includeEmptyDirs="true" failonerror="false">
@@ -359,7 +362,7 @@
 	<!--+
 		| Delete the Tomcat endorsed libraries
 		+-->
-	<target name="tomcat.endorsed.clean">
+	<target name="tomcat.clean.endorsed">
 		<echo message="Cleaning Tomcat endorsed libraries ...."/>
 		<delete verbose="false" failonerror="false">
 			<fileset dir="${tomcat.home}/common/endorsed">
@@ -373,8 +376,14 @@
 		| Prepare Tomcat.
 		+-->
 	<target name="tomcat.PREPARE" depends="">
-		<antcall target="tomcat.work.clean"/>
-		<antcall target="tomcat.endorsed.clean"/>
+	</target>
+
+	<!--+
+		| Reset Tomcat.
+		+-->
+	<target name="tomcat.RESET" depends="">
+		<antcall target="tomcat.clean.work"/>
+		<antcall target="tomcat.clean.endorsed"/>
 	</target>
 
 	<!-- ================ Castor tasks ================ -->
@@ -588,6 +597,12 @@
 		| Prepare Hsqldb.
 		+-->
 	<target name="hsqldb.PREPARE" depends="">
+	</target>
+
+	<!--+
+		| Reset Hsqldb.
+		+-->
+	<target name="hsqldb.RESET" depends="">
 		<antcall target="hsqldb.data.delete"/>
 	</target>
 
@@ -678,6 +693,23 @@
 	</target>
 
 	<!--+
+		| Create our database tables.
+		+-->
+	<target name="hsqldb.database.create" depends="">
+		<echo message=""/>
+		<echo message="Creating Hqsldb tables ...."/>
+		<sql driver="org.hsqldb.jdbcDriver"
+		     url="${hsqldb.url}"
+		     classpathref="hsqldb.classpath"
+		     userid="${hsqldb.user}"
+		     password="${hsqldb.pass}"
+		     print="true"
+			>
+			<transaction src="src/sql/hsqldb/create.sql"/>
+		</sql>
+	</target>
+
+	<!--+
 		| Delete our Hsqldb data.
 		+-->
 	<target name="hsqldb.data.delete" depends="">
@@ -708,22 +740,6 @@
 	</target>
 
 	<!-- ================ Database tasks ================ -->
-	<!--+
-		| Create our policy database tables.
-		+-->
-	<target name="hsqldb.database.create" depends="">
-		<echo message=""/>
-		<echo message="Creating Hqsldb tables ...."/>
-		<sql driver="org.hsqldb.jdbcDriver"
-		     url="${hsqldb.url}"
-		     classpathref="hsqldb.classpath"
-		     userid="${hsqldb.user}"
-		     password="${hsqldb.pass}"
-		     print="true"
-			>
-			<transaction src="src/sql/hsqldb/create.sql"/>
-		</sql>
-	</target>
 
 	<!--+
 		| Select all rows from our database tables.
@@ -933,10 +949,10 @@
 	</target>
 
 	<!--+
-	    | Wait for Axis to respond.
-	    | This just check that calling happyaxis.jsp responds, not the content.
-	    | It would be nice to use something like HttpUnit to check that Axis really is happy.
-	    +-->
+		| Wait for Axis to respond.
+		| This just check that calling happyaxis.jsp responds, not the content.
+		| It would be nice to use something like HttpUnit to check that Axis really is happy.
+		+-->
 	<target name="axis.wait" depends="">
 		<echo message=""/>
 		<echo message="Waiting for Axis webapp ...."/>
@@ -947,8 +963,8 @@
 	</target>
 
 	<!--+
-	    | Define the Axis manager tasks.
-	    +-->
+		| Define the Axis manager tasks.
+		+-->
 	<target name="axis.tasks" depends="">
 		<taskdef name="axis.admin" classname="org.apache.axis.tools.ant.axis.AdminClientTask">
 			<classpath>
@@ -981,6 +997,34 @@
 	</target>
 
 	<!--+
+		| Reset Axis.
+		+-->
+	<target name="axis.RESET" depends="">
+		<!-- Delete any additional libraries -->
+		<delete verbose="true" failonerror="false" includeEmptyDirs="true">
+			<fileset dir="${axis.webapp}/WEB-INF/lib">
+				<!-- Exclude the Axis libraries -->
+				<exclude name="axis-ant.jar"/>
+				<exclude name="axis.jar"/>
+				<exclude name="commons-discovery.jar"/>
+				<exclude name="commons-logging.jar"/>
+				<exclude name="jaxrpc.jar"/>
+				<exclude name="jta1.0.1.jar"/>
+				<exclude name="log4j-1.2.8.jar"/>
+				<exclude name="saaj.jar"/>
+				<exclude name="wsdl4j.jar"/>
+			</fileset>
+		</delete>
+		<!-- Delete any additional classes -->
+		<delete verbose="true" failonerror="false" includeEmptyDirs="true">
+			<fileset dir="${axis.webapp}/WEB-INF/classes">
+				<!-- Exclude the Axis samples -->
+				<exclude name="samples/**"/>
+			</fileset>
+		</delete>
+	</target>
+
+	<!--+
 		| Install the Axis docs as a webapp.
 		+-->
 	<target name="axis.docs.install" depends="tomcat.tasks">
@@ -996,9 +1040,14 @@
 
 	<!-- ================ Policy tasks ================ -->
 
-	<property name="policy.common.base" value="${basedir}/build/policy/common"/>
-	<property name="policy.server.base" value="${basedir}/build/policy/server"/>
-	<property name="policy.client.base" value="${basedir}/build/policy/client"/>
+	<property name="policy.base" value="${basedir}/build/policy"/>
+
+	<property name="policy.manager.base" value="${policy.base}/manager"/>
+	<property name="policy.server.base"  value="${policy.base}/server"/>
+	<property name="policy.client.base"  value="${policy.base}/client"/>
+
+	<property name="policy.server.jar"  value="policy-server-${project.version}.jar"/>
+	<property name="policy.client.jar"  value="policy-client-${project.version}.jar"/>
 
 	<!--+
 		| The Policy server classpath.
@@ -1010,10 +1059,8 @@
 		<path refid="xerces.classpath"/>
 		<!-- The Hsqldb libraries -->
 		<path refid="hsqldb.classpath"/>
-		<!-- Our common classes -->
-		<pathelement path="${policy.common.base}/classes"/>
-		<!-- Our server classes -->
-		<pathelement path="${policy.server.base}/classes"/>
+		<!-- Our server jar -->
+		<pathelement path="${policy.base}/jar/${policy.server.jar}"/>
 	</path>
 
 	<!--+
@@ -1023,7 +1070,7 @@
 		<!-- The Axis libraries -->
 		<path refid="axis.classpath"/>
 		<!-- Our client classes -->
-		<pathelement path="${policy.client.base}/classes"/>
+		<pathelement path="${policy.base}/jar/${policy.client.jar}"/>
 	</path>
 
 	<!--+
@@ -1034,71 +1081,284 @@
 	</target>
 
 	<!--+
-		| Compile our common classes.
+		| Compile our PolicyManager interface classes.
+		| These are the Java classes for the service interface, used to generate the service WSDL.
 		+-->
-	<target name="policy.common.javac" depends="">
+	<target name="policy.manager.javac" depends="">
 		<!-- Create our build directory -->
-		<mkdir dir="${policy.common.base}/classes"/>
-		<!-- Compile the common classes -->
+		<mkdir dir="${policy.manager.base}/classes"/>
+		<!-- Compile the service classes -->
 		<javac srcdir="src/java"
-		       destdir="${policy.common.base}/classes"
+		       destdir="${policy.manager.base}/classes"
 		       debug="on"
 		       deprecation="on"
 		       optimize="on"
 		       >
-			<include name="org/astrogrid/community/policy/common/**"/>
+			<include name="org/astrogrid/community/policy/data/*.java"/>
+			<include name="org/astrogrid/community/policy/server/PolicyManager.java"/>
 			<classpath>
-				<!-- Include the JUnit libraries -->
-				<path refid="junit.classpath"/>
 			</classpath>
 		</javac>
+	</target>
+
+	<!--+
+		| Generate the PolicyManager WSDL description from our Java class.
+		| This generates the service WSDL based on the Java interface classes.
+		+-->
+	<target name="policy.manager.java2wsdl" depends="axis.tasks">
+		<echo message=""/>
+		<echo message="Creating PolicyManager WSDL from Java ...."/>
+		<!-- Create our wsdl directory -->
+		<mkdir dir="${policy.manager.base}/wsdl/java2wsdl"/>
+		<!-- Generate our WSDL description -->
+		<axis.java2wsdl
+			output="${policy.manager.base}/wsdl/java2wsdl/PolicyManager.wsdl"
+			classname="org.astrogrid.community.policy.server.PolicyManager"
+			location="${axis.url}/services/PolicyManager"
+			methods="getServiceStatus, getAccountData, setAccountData, getAccountList, checkPermissions, checkMembership"
+			namespace="urn:server.policy.community.astrogrid.org"
+			namespaceimpl="urn:impl.server.policy.community.astrogrid.org"
+			style="RPC"
+			>
+			<!-- The classpath to find the PolicyManager classes -->
+			<classpath>
+				<path location="${policy.manager.base}/classes"/>
+			</classpath>
+		</axis.java2wsdl>
+	</target>
+
+	<!--+
+		| Generate the PolicyManager code from our WSDL description.
+		| This generates the Axis stubs and templates from the WSDL description.
+		+-->
+	<target name="policy.manager.wsdl2java" depends="axis.tasks">
+		<echo message=""/>
+		<echo message="Creating PolicyManager code from WSDL ...."/>
+		<!-- Create our java directory -->
+		<mkdir dir="${policy.manager.base}/java"/>
+		<!-- Generate the Java code -->
+		<axis.wsdl2java
+			verbose="false"
+			serverside="true"
+			skeletondeploy="false"
+			output="${policy.manager.base}/java"
+			url="file://${policy.manager.base}/wsdl/java2wsdl/PolicyManager.wsdl"
+			>
+			<mapping namespace="urn:server.policy.community.astrogrid.org" package="org.astrogrid.community.policy.server"/>
+			<mapping namespace="urn:data.policy.community.astrogrid.org"   package="org.astrogrid.community.policy.data"/>
+		</axis.wsdl2java>
+	</target>
+
+	<!--+
+		| Modify the PolicyManager WSDD deployment descriptor.
+		| This modifies the deployment descriptor to use our own implementation classes rather than the template generated from the WSDL.
+		+-->
+	<target name="policy.manager.wsdd" depends="">
+		<!-- Create our wsdd directory -->
+		<mkdir dir="${policy.manager.base}/wsdd"/>
+		<!-- Transform the deploy wsdd -->
+		<xslt style="src/xsl/build/policy/wsdd.xsl"
+		      in="${policy.manager.base}/java/org/astrogrid/community/policy/server/deploy.wsdd"
+		      out="${policy.manager.base}/wsdd/deploy.wsdd">
+			<outputproperty name="method" value="xml"/>
+			<outputproperty name="indent" value="yes"/>
+			<!-- Set the XSL params -->
+			<param name="impl"    expression="org.astrogrid.community.policy.server.PolicyManagerImpl"/>
+			<param name="service" expression="PolicyManager"/>
+		</xslt>
+		<!-- Copy the undeploy wsdd -->
+		<copy verbose="false"
+		      toDir="${policy.manager.base}/wsdd"
+		      file="${policy.manager.base}/java/org/astrogrid/community/policy/server/undeploy.wsdd"
+		      />
+	</target>
+
+	<!--+
+		| Prepare the server code.
+		| This combines our own Java source with the code generated from the service WSDL.
+		+-->
+	<target name="policy.server.prepare" depends="">
+		<!-- Copy the Java source code -->
+		<copy verbose="false" todir="${policy.server.base}/java">
+			<!-- Copy the wsdl2java generated source -->
+			<fileset dir="${policy.manager.base}/java">
+				<!-- Include the generated PolicyManager service and locator -->
+				<include name="org/astrogrid/community/policy/server/PolicyManagerService.java"/>
+				<include name="org/astrogrid/community/policy/server/PolicyManagerServiceLocator.java"/>
+				<include name="org/astrogrid/community/policy/server/PolicyManagerSoapBindingStub.java"/>
+				<!-- Include the generated data objects -->
+				<include name="org/astrogrid/community/policy/data/*.java"/>
+			</fileset>
+			<!-- Copy our own Java source -->
+			<fileset dir="src/java">
+				<!-- Include our PolicyManager interface and implementation -->
+				<include name="org/astrogrid/community/policy/server/PolicyManager.java"/>
+				<include name="org/astrogrid/community/policy/server/PolicyManagerImpl.java"/>
+				<!-- Include our JUnit classes -->
+				<include name="org/astrogrid/community/policy/server/junit/**"/>
+			</fileset>
+		</copy>
+	</target>
+
+	<!--+
+		| Prepare the client code.
+		| This combines our own Java source with the code generated from the service WSDL.
+		+-->
+	<target name="policy.client.prepare" depends="">
+		<!-- Copy the Java source code -->
+		<copy verbose="false" todir="${policy.client.base}/java">
+			<!-- Copy the wsdl2java generated source -->
+			<fileset dir="${policy.manager.base}/java">
+				<!-- Include the generated PolicyManager service and locator -->
+				<include name="org/astrogrid/community/policy/server/PolicyManagerService.java"/>
+				<include name="org/astrogrid/community/policy/server/PolicyManagerServiceLocator.java"/>
+				<include name="org/astrogrid/community/policy/server/PolicyManagerSoapBindingStub.java"/>
+				<!-- Include the generated data objects -->
+				<include name="org/astrogrid/community/policy/data/*.java"/>
+			</fileset>
+			<!-- Copy our own Java source -->
+			<fileset dir="src/java">
+				<!-- Include our PolicyManager interface -->
+				<include name="org/astrogrid/community/policy/server/PolicyManager.java"/>
+				<!-- Include our client classes -->
+				<include name="org/astrogrid/community/policy/client/**"/>
+			</fileset>
+		</copy>
 	</target>
 
 	<!--+
 		| Compile our server classes.
 		+-->
-	<target name="policy.server.javac" depends="policy.common.javac">
+	<target name="policy.server.javac" depends="">
 		<!-- Create our build directory -->
 		<mkdir dir="${policy.server.base}/classes"/>
 		<!-- Compile the server classes -->
-		<javac srcdir="src/java"
+		<javac srcdir="${policy.server.base}/java"
 		       destdir="${policy.server.base}/classes"
 		       debug="on"
 		       deprecation="on"
 		       optimize="on"
 		       >
+			<include name="org/astrogrid/community/policy/data/**"/>
 			<include name="org/astrogrid/community/policy/server/**"/>
 			<classpath>
-				<!-- Include the common classes -->
-				<path location="${policy.common.base}/classes"/>
 				<!-- Include the JUnit libraries -->
 				<path refid="junit.classpath"/>
 				<!-- Include the Castor libraries -->
 				<path refid="castor.classpath"/>
+				<!-- Include the Axis libraries -->
+				<path refid="axis.classpath"/>
 			</classpath>
 		</javac>
 	</target>
 
 	<!--+
-		| Deploy our Axis service.
+		| Compile our client classes.
 		+-->
-	<target name="policy.service.deploy" depends="axis.tasks">
-		<!-- Copy our classes into the Axis WEB-INF/classes directory -->
-		<copy verbose="false" todir="${axis.webapp}/WEB-INF/classes">
-			<fileset dir="${policy.common.base}/classes">
-				<include name="**/*.class"/>
-			</fileset>
+	<target name="policy.client.javac" depends="">
+		<!-- Create our build directory -->
+		<mkdir dir="${policy.client.base}/classes"/>
+		<!-- Compile the client classes -->
+		<javac srcdir="${policy.client.base}/java"
+		       destdir="${policy.client.base}/classes"
+		       debug="on"
+		       deprecation="on"
+		       optimize="on"
+		       >
+			<include name="org/astrogrid/community/policy/data/**"/>
+			<include name="org/astrogrid/community/policy/server/**"/>
+			<include name="org/astrogrid/community/policy/client/**"/>
+			<classpath>
+				<!-- Include the JUnit libraries -->
+				<path refid="junit.classpath"/>
+				<!-- Include the Axis libraries -->
+				<path refid="axis.classpath"/>
+			</classpath>
+		</javac>
+	</target>
+
+	<!--+
+		| Jar our server classes.
+		+-->
+	<target name="policy.server.jar" depends="">
+		<!-- Create our build directory -->
+		<mkdir dir="${policy.base}/jar"/>
+		<!-- Create our jar file -->
+		<jar destfile="${policy.base}/jar/${policy.server.jar}">
+			<!-- Copy our own Java source -->
 			<fileset dir="${policy.server.base}/classes">
-				<include name="**/*.class"/>
+				<include name="org/astrogrid/community/policy/data/**"/>
+				<include name="org/astrogrid/community/policy/server/**"/>
+			</fileset>
+		</jar>
+	</target>
+
+	<!--+
+		| Jar our client classes.
+		+-->
+	<target name="policy.client.jar" depends="">
+		<!-- Create our build directory -->
+		<mkdir dir="${policy.base}/jar"/>
+		<!-- Create our jar file -->
+		<jar destfile="${policy.base}/jar/${policy.client.jar}">
+			<!-- Copy our own Java source -->
+			<fileset dir="${policy.client.base}/classes">
+				<include name="org/astrogrid/community/policy/data/**"/>
+				<include name="org/astrogrid/community/policy/server/**"/>
+				<include name="org/astrogrid/community/policy/client/**"/>
+			</fileset>
+		</jar>
+	</target>
+
+	<!--+
+		| Build our server config files.
+		| Not sure of the best place to put these at the moment.
+		| The mapping file should not change, so probably should be in the jar.
+		| The database file should be user configurable, so should NOT be in the jar.
+		+-->
+	<target name="policy.server.config" depends="">
+		<!-- Create our config directory -->
+		<mkdir dir="${policy.server.base}/config"/>
+		<!-- Copy our database mapping files -->
+		<copy verbose="false" overwrite="true" toDir="${policy.server.base}/config">
+			<fileset dir="src/castor/hsqldb">
+				<include name="database.xml"/>
+				<include name="mapping.xml"/>
 			</fileset>
 		</copy>
+	</target>
 
+	<!--+
+	    | Build our policy service.
+	    +-->
+	<target name="policy.BUILD" depends="">
+		<antcall target="policy.delete"/>
+
+		<antcall target="policy.manager.javac"/>
+		<antcall target="policy.manager.java2wsdl"/>
+		<antcall target="policy.manager.wsdl2java"/>
+		<antcall target="policy.manager.wsdd"/>
+
+		<antcall target="policy.server.prepare"/>
+		<antcall target="policy.server.javac"/>
+		<antcall target="policy.server.config"/>
+		<antcall target="policy.server.jar"/>
+
+		<antcall target="policy.client.prepare"/>
+		<antcall target="policy.client.javac"/>
+		<antcall target="policy.client.jar"/>
+	</target>
+
+	<!--+
+		| Install our service jars.
+		+-->
+	<target name="policy.server.install" depends="">
 		<!-- Copy the 3rd party libraries into our Axis WEB-INF/lib directory -->
-		<copy verbose="false" todir="${axis.webapp}/WEB-INF/lib">
+		<copy verbose="true" todir="${axis.webapp}/WEB-INF/lib">
 			<fileset dir="${castor.home}">
+				<include name="jta1.0.1.jar"/>
 				<include name="castor-${castor.version}.jar"/>
 				<include name="castor-${castor.version}-xml.jar"/>
-				<include name="jta1.0.1.jar"/>
 			</fileset>
 			<fileset dir="${xerces.home}">
 				<include name="xml-apis.jar"/>
@@ -1108,7 +1368,30 @@
 				<include name="hsqldb.jar"/>
 			</fileset>
 		</copy>
+		<!-- Copy our jar into the Axis WEB-INF/lib directory -->
+		<copy verbose="true" todir="${axis.webapp}/WEB-INF/lib">
+			<fileset dir="${policy.base}/jar">
+				<include name="${policy.server.jar}"/>
+			</fileset>
+		</copy>
+	</target>
 
+	<!--+
+		| Remove our Axis service files.
+		+-->
+	<target name="policy.server.remove" depends="axis.tasks">
+		<!-- Remove our jar from the Axis WEB-INF/lib directory -->
+		<delete verbose="true" failonerror="false">
+			<fileset dir="${axis.webapp}/WEB-INF/lib">
+				<include name="policy-server*"/>
+			</fileset>
+		</delete>
+	</target>
+
+	<!--+
+		| Deploy our Axis service.
+		+-->
+	<target name="policy.server.deploy" depends="axis.tasks">
 		<!-- Wait for the Axis service -->
 		<antcall target="axis.wait"/>
 		<!-- Deploy our service -->
@@ -1117,14 +1400,14 @@
 			hostname="${axis.host}"
 			servletpath="/${axis.servlet}/services/AdminService"
 			debug="true"
-			xmlfile="src/axis/wsdd/policy/deploy.wsdd"
+			xmlfile="${policy.manager.base}/wsdd/deploy.wsdd"
 			/>
 	</target>
 
 	<!--+
-		| Remove our Axis service files.
+		| Undeploy our Axis service.
 		+-->
-	<target name="policy.service.remove" depends="axis.tasks">
+	<target name="policy.server.undeploy" depends="axis.tasks">
 		<!-- Wait for the Axis service -->
 		<antcall target="axis.wait"/>
 		<!-- Remove our WebService -->
@@ -1135,92 +1418,63 @@
 			debug="true"
 			xmlfile="src/axis/wsdd/policy/undeploy.wsdd"
 			/>
-		<!-- Remove our classes from the Axis WEB-INF/classes directory -->
-		<delete verbose="true" failonerror="false" dir="${axis.webapp}/WEB-INF/classes/org/astrogrid"/>
-		<!-- Remove the Castor libraries from our Axis WEB-INF/lib directory -->
-		<delete verbose="true" failonerror="false">
-			<fileset dir="${axis.webapp}/WEB-INF/lib">
-				<include name="castor-${castor.version}.jar"/>
-				<include name="castor-${castor.version}-xml.jar"/>
-			</fileset>
-		</delete>
 	</target>
 
 	<!--+
-	    | Generate the WSDL description for our service.
+	    | Request the WSDL description from our PolicyManager service.
+	    | Used as an initial check that our service has been deployed.
 	    +-->
-	<target name="policy.server.java2wsdl" depends="axis.tasks">
+	<target name="policy.manager.axis2wsdl" depends="">
 		<echo message=""/>
-		<echo message="Creating WSDL from service ...."/>
+		<echo message="Requesting WSDL from Axis ...."/>
 		<!-- Create our wsdl directory -->
-		<mkdir dir="${policy.client.base}/wsdl"/>
-		<!-- Generate our WSDL description -->
-<!-- Not working yet ...
-		<axis.java2wsdl
-			output="${policy.client.base}/wsdl/policy.wsdl"
-			classname="org.astrogrid.community.policy.server.PolicyServiceImpl"
-			location="${axis.url}/services/policy"
-			methods="getServiceStatus, getAccountData"
-			namespace="policy"
-			>
-			<mapping namespace="${axis.url}/services/policy" package="org.astrogrid.community.policy.client"/>
-			<mapping namespace="${axis.url}/services/policy" package="org.astrogrid.community.policy.server"/>
-		</axis.java2wsdl>
--->
+		<mkdir dir="${policy.manager.base}/wsdl/axis2wsdl"/>
+		<!-- Request our WSDL description -->
+		<get verbose="true" usetimestamp="true"
+			src="${axis.url}/services/PolicyManager?wsdl"
+			dest="${policy.manager.base}/wsdl/axis2wsdl/PolicyManager.wsdl"
+			/>
 	</target>
 
 	<!--+
-	    | Generate the client stubs from our (live) service.
-	    | Once I get the java2wsdl running, then this can use the generated WSDL.
+	    | Deploy our policy service.
+	    | If we were just copying our classes into the Axis/WEB-INF/classes directory, then no need to re-load Axis.
+	    | Because we are installing our classes as a jar file into the Axis/WEB-INF/lib directory, we need to re-load Axis before we can deploy the service.
 	    +-->
-	<target name="policy.client.wsdl2java" depends="axis.tasks">
-		<echo message=""/>
-		<echo message="Creating client stubs from WSDL ...."/>
-		<echo message="URL : ${axis.url}/services/policy"/>
-		<!-- Create our client directory -->
-		<mkdir dir="${policy.client.base}/java"/>
-		<!-- Wait for the Axis service -->
-		<antcall target="axis.wait"/>
-		<!-- Generate our client stubs -->
-		<axis.wsdl2java
-			verbose="true"
-			output="${policy.client.base}/java"
-			url="${axis.url}/services/PolicyService?wsdl"
-			>
-			<mapping namespace="${axis.url}/services/PolicyService"                                   package="org.astrogrid.community.policy.client"/>
-			<mapping namespace="http://methionine.codon.demon.co.uk:8080/axis/services/PolicyService" package="org.astrogrid.community.policy.client"/>
-			<mapping namespace="http://server.policy.community.astrogrid.org"                         package="org.astrogrid.community.policy.client"/>
-		</axis.wsdl2java>
+	<target name="policy.DEPLOY" depends="">
+		<!-- Install our jar file -->
+		<antcall target="policy.server.install"/>
+		<!-- Reload Axis -->
+		<antcall target="axis.webapp.reload"/>
+		<!-- Deploy our service -->
+		<antcall target="policy.server.deploy"/>
+		<!-- Check we can read our PolicyManager WSDL -->
+		<antcall target="policy.manager.axis2wsdl"/>
 	</target>
 
 	<!--+
-		| Compile our client classes.
-		+-->
-	<target name="policy.client.javac" depends="">
-		<!-- Create our build directory -->
-		<mkdir dir="${policy.client.base}/classes"/>
-		<!-- Compile the client classes -->
-		<javac destdir="${policy.client.base}/classes"
-		       debug="on"
-		       deprecation="on"
-		       optimize="on"
-		       >
-			<src path="src/java"/>
-			<src path="${policy.client.base}/java"/>
-			<include name="org/astrogrid/community/policy/client/**"/>
-			<classpath>
-				<!-- Include the Axis libraries -->
-				<path refid="axis.classpath"/>
-				<!-- Include the JUnit libraries -->
-				<path refid="junit.classpath"/>
-			</classpath>
-		</javac>
+	    | Remove our policy service.
+	    +-->
+	<target name="policy.REMOVE" depends="">
+		<!-- Remove our service -->
+		<antcall target="policy.server.undeploy"/>
+		<antcall target="policy.server.remove"/>
+	</target>
+
+	<!--+
+	    | Reload our policy service.
+	    +-->
+	<target name="policy.RELOAD" depends="">
+		<!-- Remove our service -->
+		<antcall target="policy.REMOVE"/>
+		<!-- Deploy our service -->
+		<antcall target="policy.DEPLOY"/>
 	</target>
 
 	<!--+
 		| Run our client JUnit tests.
 		+-->
-	<target name="policy.client.junit" depends="policy.client.javac">
+	<target name="policy.client.junit" depends="">
 		<!-- Create our reports directory -->
 		<mkdir dir="${policy.client.base}/junit"/>
 		<!-- Run our JUnitTestCase tests -->
@@ -1234,27 +1488,24 @@
 			<!-- Run the target JUnitTestCase tests -->
 			<batchtest todir="${policy.client.base}/junit">
 				<fileset dir="${policy.client.base}/classes">
-					<include name="org/astrogrid/community/policy/client/**/JUnitTestCase.class"/>
+					<include name="org/astrogrid/community/policy/client/junit/**/JUnitTestCase.class"/>
 				</fileset>
 			</batchtest>
 		</junit>
 	</target>
 
 	<!--+
-		| Copy our database config.
-		+-->
-	<target name="policy.server.config" depends="">
-		<!-- Create our config directory -->
-		<mkdir dir="${policy.server.base}/config"/>
-		<!-- Copy our database mapping files -->
-		<copy verbose="false" overwrite="true" toDir="${policy.server.base}/config">
-			<fileset dir="src/castor/hsqldb">
-				<include name="database.xml"/>
-				<include name="mapping.xml"/>
-				<include name="content.xml"/>
-			</fileset>
-		</copy>
+	    | Test our policy service.
+	    +-->
+	<target name="policy.TEST" depends="">
+		<!-- Run our client side tests -->
+		<antcall target="policy.client.junit"/>
 	</target>
+
+<!-- ===================== -->
+
+
+
 
 	<!--+
 		| Run our server JUnit tests.
@@ -1338,17 +1589,33 @@
 	</target>
 
 	<!--+
+	    | Reset our 3rd party components.
+	    +-->
+	<target name="project.RESET" depends="init">
+		<echo message=""/>
+		<echo message="Resetting project components ...."/>
+		<antcall target="axis.RESET"/>
+		<antcall target="hsqldb.RESET"/>
+		<antcall target="tomcat.RESET"/>
+		<echo message=""/>
+		<echo message="Ok, project components reset."/>
+	</target>
+
+	<!--+
 	    | Prepare our 3rd party components.
 	    +-->
 	<target name="project.PREPARE" depends="init">
-		<antcall target="tomcat.PREPARE"/>
+		<echo message=""/>
+		<echo message="Preparing project components ...."/>
 		<antcall target="jaf.PREPARE"/>
+		<antcall target="axis.PREPARE"/>
 		<antcall target="junit.PREPARE"/>
 		<antcall target="castor.PREPARE"/>
 		<antcall target="xerces.PREPARE"/>
 		<antcall target="hsqldb.PREPARE"/>
-		<antcall target="axis.PREPARE"/>
-
+		<antcall target="tomcat.PREPARE"/>
+		<echo message=""/>
+		<echo message="Ok, project components prepared."/>
 	</target>
 
 	<!--+
@@ -1356,89 +1623,139 @@
 	    | Needs Tomcat already running.
 	    +-->
 	<target name="project.WEBAPPS" depends="init">
+		<echo message=""/>
+		<echo message="Installing project WebApps ...."/>
 		<!-- Install our Axis webapp -->
 		<antcall target="axis.webapp.install"/>
 		<!-- Install our documentation webapps -->
-<!--
 		<antcall target="axis.docs.install"/>
 		<antcall target="junit.docs.install"/>
 		<antcall target="castor.docs.install"/>
 		<antcall target="xerces.docs.install"/>
 		<antcall target="hsqldb.docs.install"/>
--->
+		<echo message=""/>
+		<echo message="Ok, project WebApps installed."/>
+	</target>
+
+	<!--+
+		| Start Tomcat and install our Webapps.
+		+-->
+	<target name="tomcat.START" depends="">
+		<parallel>
+			<!-- Start tomcat in a separate JVM -->
+			<sequential>
+				<antcall target="tomcat.start"/>
+			</sequential>
+			<!-- Install our Webapps -->
+			<sequential>
+				<antcall target="project.WEBAPPS"/>
+			</sequential>
+		</parallel>
+	</target>
+
+	<!--+
+		| Start Hsqldb and initialise our database.
+		+-->
+	<target name="hsqldb.START" depends="">
+		<parallel>
+			<!-- Start hsqldb in a separate JVM -->
+			<sequential>
+				<antcall target="hsqldb.start"/>
+			</sequential>
+			<!-- Initialise our database -->
+			<sequential>
+				<antcall target="hsqldb.BUILD"/>
+			</sequential>
+		</parallel>
+	</target>
+
+	<!--+
+		| Start both the Tomcat and Hsqldb servers.
+		+-->
+	<target name="project.START" depends="init">
+		<!-- Reset all of the components -->
+		<antcall target="project.RESET"/>
+		<!-- Prepare all of the components -->
+		<antcall target="project.PREPARE"/>
+		<parallel>
+			<!-- Start tomcat in a separate JVM -->
+			<sequential>
+				<antcall target="tomcat.START"/>
+			</sequential>
+			<!-- Start hsqldb in a separate JVM -->
+			<sequential>
+				<antcall target="hsqldb.START"/>
+			</sequential>
+		</parallel>
 	</target>
 
 	<!--+
 	    | Build our project components.
 	    +-->
 	<target name="project.BUILD" depends="init">
-		<!-- Delete our policy build directory -->
-		<antcall target="policy.delete"/>
-		<!-- Build our common classes -->
-		<antcall target="policy.common.javac"/>
-		<!-- Build our server classes -->
-		<antcall target="policy.server.javac"/>
-		<!-- Test our server classes -->
-		<antcall target="policy.server.junit"/>
-
-
-		<!-- Configure our service -->
-		<antcall target="policy.server.config"/>
-		<!-- Depoly our service -->
-		<antcall target="policy.service.deploy"/>
-		<!-- Generate our client stubs -->
-		<antcall target="policy.client.wsdl2java"/>
-		<!-- Build our client classes -->
-		<antcall target="policy.client.javac"/>
-		<!-- Test our client classes -->
-		<antcall target="policy.client.junit"/>
-
-
+		<antcall target="policy.BUILD"/>
 	</target>
 
-
+	<!--+
+	    | Deploy our project components.
+	    +-->
+	<target name="project.DEPLOY" depends="init">
+		<antcall target="policy.DEPLOY"/>
+	</target>
 
 	<!--+
+	    | Test our project components.
 	    +-->
-	<target name="project.RUN" depends="init">
-		<parallel>
-			<!-- Start hsqldb in a separate JVM -->
-			<sequential>
-			</sequential>
-			<!-- Start tomcat in a separate JVM -->
-			<sequential>
-			</sequential>
-			<!-- Install our project services -->
-			<sequential>
-			</sequential>
-		</parallel>
+	<target name="project.TEST" depends="init">
+		<antcall target="policy.TEST"/>
+	</target>
+
+	<!--+
+	    | Build and test our project components.
+	    +-->
+	<target name="project.RETEST" depends="init">
+		<antcall target="project.BUILD"/>
+		<antcall target="project.DEPLOY"/>
+		<antcall target="project.TEST"/>
 	</target>
 
 	<!--+
 	    | Re-build everything from clean.
 	    +-->
-	<target name="project.REBUILD" depends="init">
+	<target name="project.EVERYTHING" depends="init">
 		<!-- Delete everything -->
 		<delete dir="build" failonerror="false"/>
+		<!-- Install everything -->
+		<antcall target="project.INSTALL"/>
+		<parallel>
+			<!-- Start the servers -->
+			<sequential>
+				<antcall target="project.START"/>
+			</sequential>
+			<!-- Build and deploy our services -->
+			<sequential>
+				<antcall target="project.BUILD"/>
+				<antcall target="project.DEPLOY"/>
+			</sequential>
+		</parallel>
 	</target>
 
 	<!-- Build a release -->
 	<target name="project.RELEASE" depends="">
+		<!-- TBD -->
 	</target>
 
 	<!--+
 		|
-./build.sh project.PREPARE
-./build.sh tomcat.start
-
-./build.sh hsqldb.start
-
-./build.sh hsqldb.BUILD
-./build.sh project.WEBAPPS
-./build.sh project.BUILD
-
-
-
+To run from command line.
+	project.INSTALL
+	project.START
+Then, in separate command line.
+	project.BUILD
+	project.DEPLOY
+	project.TEST
+To repeat
+	project.RETEST
 		|
 		+-->
 

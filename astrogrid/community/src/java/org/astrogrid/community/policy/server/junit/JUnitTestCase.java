@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/junit/Attic/JUnitTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/08/28 17:33:56 $</cvs:date>
- * <cvs:version>$Revision: 1.1 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/03 06:39:13 $</cvs:date>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: JUnitTestCase.java,v $
+ *   Revision 1.2  2003/09/03 06:39:13  dave
+ *   Rationalised things into one set of SOAP stubs and one set of data objects for both client and server.
+ *
  *   Revision 1.1  2003/08/28 17:33:56  dave
  *   Initial policy prototype
  *
@@ -14,7 +17,10 @@
  */
 package org.astrogrid.community.policy.server.junit ;
 
-import org.astrogrid.community.policy.server.PolicyPermission ;
+import org.astrogrid.community.policy.data.ServiceData ;
+import org.astrogrid.community.policy.data.AccountData ;
+import org.astrogrid.community.policy.data.PolicyPermission  ;
+import org.astrogrid.community.policy.data.PolicyCredentials ;
 
 import junit.framework.TestCase ;
 
@@ -60,19 +66,19 @@ public class JUnitTestCase
 	 * The name of our system property to read the location of our JDO mapping from.
 	 *
 	 */
-	private static final String MAPPING_CONFIG_PROPERTY = "astrogrid.policy.server.mapping" ;
+	private static final String MAPPING_CONFIG_PROPERTY = "org.astrogrid.policy.server.mapping" ;
 
 	/**
 	 * The name of the system property to read the location of our database config.
 	 *
 	 */
-	private static final String DATABASE_CONFIG_PROPERTY = "astrogrid.policy.server.database.config" ;
+	private static final String DATABASE_CONFIG_PROPERTY = "org.astrogrid.policy.server.database.config" ;
 
 	/**
 	 * The name of the system property to read our database name from.
 	 *
 	 */
-	private static final String DATABASE_NAME_PROPERTY = "astrogrid.policy.server.database.name" ;
+	private static final String DATABASE_NAME_PROPERTY = "org.astrogrid.policy.server.database.name" ;
 
 	/**
 	 * Our log writer.
@@ -177,7 +183,6 @@ public class JUnitTestCase
 
 		}
 
-
 	/**
 	 * Check we can load a permissions object.
 	 *
@@ -232,11 +237,10 @@ public class JUnitTestCase
 		database.begin();
 		//
 		// Create the Permission object.
-		PolicyPermission permission = new PolicyPermission(
-			"joderell:database/table/field",
-			"solar@mssl",
-			"UPDATE"
-			) ;
+		PolicyPermission permission = new PolicyPermission() ;
+		permission.setResource("joderell:database/table/field") ;
+		permission.setGroup("solar@mssl") ;
+		permission.setAction("UPDATE") ;
 		//
 		// Try creating the permission in the database.
 		database.create(permission);
@@ -274,7 +278,7 @@ public class JUnitTestCase
 			) ;
 		//
 		// Try loading the target object.
-		PolicyPermission result = (PolicyPermission) database.load(PolicyPermission.class, key);
+		PolicyPermission permission = (PolicyPermission) database.load(PolicyPermission.class, key);
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("") ;

@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/castor/hsqldb/Attic/mapping.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/08/28 17:33:56 $</cvs:date>
-    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:date>$Date: 2003/09/03 06:39:13 $</cvs:date>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
     | <cvs:log>
     |   $Log: mapping.xml,v $
+    |   Revision 1.2  2003/09/03 06:39:13  dave
+    |   Rationalised things into one set of SOAP stubs and one set of data objects for both client and server.
+    |
     |   Revision 1.1  2003/08/28 17:33:56  dave
     |   Initial policy prototype
     |
@@ -64,7 +67,7 @@
 -->
 
 	<!-- JDO and XML Mapping for Permissions -->
-	<class name="org.astrogrid.community.policy.server.PolicyPermission" identity="resource group action">
+	<class name="org.astrogrid.community.policy.data.PolicyPermission" identity="resource group action">
 		<map-to table="permissions" xml="permission"/>
 		<field name="resource" type="string">
 			<sql name="resourceid" type="char"/>
@@ -78,8 +81,8 @@
 			<sql name="action" type="char"/>
 			<bind-xml node="attribute"/>
 		</field>
-		<field name="valid" type="boolean">
-			<sql name="valid" type="boolean"/>
+		<field name="status" type="integer">
+			<sql name="status" type="integer"/>
 			<bind-xml node="attribute"/>
 		</field>
 		<field name="reason" type="string">

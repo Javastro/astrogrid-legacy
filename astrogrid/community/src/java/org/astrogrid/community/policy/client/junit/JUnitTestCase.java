@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/client/junit/Attic/JUnitTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/08/28 17:33:56 $</cvs:date>
- * <cvs:version>$Revision: 1.1 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/03 06:39:13 $</cvs:date>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: JUnitTestCase.java,v $
+ *   Revision 1.2  2003/09/03 06:39:13  dave
+ *   Rationalised things into one set of SOAP stubs and one set of data objects for both client and server.
+ *
  *   Revision 1.1  2003/08/28 17:33:56  dave
  *   Initial policy prototype
  *
@@ -21,13 +24,14 @@ import java.util.Collection ;
 
 //
 // Import the WSDL generated client stubs.
-import org.astrogrid.community.policy.client.AccountData ;
-import org.astrogrid.community.policy.client.ServiceData ;
-import org.astrogrid.community.policy.client.PolicyService ;
-import org.astrogrid.community.policy.client.PolicyPermission ;
-import org.astrogrid.community.policy.client.PolicyCredentials ;
-import org.astrogrid.community.policy.client.PolicyServiceService ;
-import org.astrogrid.community.policy.client.PolicyServiceServiceLocator ;
+import org.astrogrid.community.policy.data.AccountData ;
+import org.astrogrid.community.policy.data.ServiceData ;
+import org.astrogrid.community.policy.data.PolicyPermission ;
+import org.astrogrid.community.policy.data.PolicyCredentials ;
+
+import org.astrogrid.community.policy.server.PolicyManager ;
+import org.astrogrid.community.policy.server.PolicyManagerService ;
+import org.astrogrid.community.policy.server.PolicyManagerServiceLocator ;
 
 /**
  *
@@ -77,7 +81,7 @@ public class JUnitTestCase
 
 		//
 		// Create a ServiceLocator.
-		PolicyServiceService locator = new PolicyServiceServiceLocator() ;
+		PolicyManagerService locator = new PolicyManagerServiceLocator() ;
 		assertNotNull("Null service locator", locator) ;
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -97,11 +101,11 @@ public class JUnitTestCase
 
 		//
 		// Create a ServiceLocator.
-		PolicyServiceService locator = new PolicyServiceServiceLocator() ;
+		PolicyManagerService locator = new PolicyManagerServiceLocator() ;
 		assertNotNull("Null service locator", locator) ;
 		//
 		// Locate a reference to our service.
-		PolicyService service = locator.getPolicyService() ;
+		PolicyManager service = locator.getPolicyManager() ;
 		assertNotNull("Null service", service) ;
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -121,11 +125,11 @@ public class JUnitTestCase
 
 		//
 		// Create a ServiceLocator.
-		PolicyServiceService locator = new PolicyServiceServiceLocator() ;
+		PolicyManagerService locator = new PolicyManagerServiceLocator() ;
 		assertNotNull("Null service locator", locator) ;
 		//
 		// Locate a reference to our service.
-		PolicyService service = locator.getPolicyService() ;
+		PolicyManager service = locator.getPolicyManager() ;
 		assertNotNull("Null service", service) ;
 		//
 		// Call the ServiceStatus method.
@@ -153,11 +157,11 @@ public class JUnitTestCase
 
 		//
 		// Create a ServiceLocator.
-		PolicyServiceService locator = new PolicyServiceServiceLocator() ;
+		PolicyManagerService locator = new PolicyManagerServiceLocator() ;
 		assertNotNull("Null service locator", locator) ;
 		//
 		// Locate a reference to our service.
-		PolicyService service = locator.getPolicyService() ;
+		PolicyManager service = locator.getPolicyManager() ;
 		assertNotNull("Null service", service) ;
 		//
 		// Call the getAccountData method.
@@ -185,11 +189,11 @@ public class JUnitTestCase
 
 		//
 		// Create a ServiceLocator.
-		PolicyServiceService locator = new PolicyServiceServiceLocator() ;
+		PolicyManagerService locator = new PolicyManagerServiceLocator() ;
 		assertNotNull("Null service locator", locator) ;
 		//
 		// Locate a reference to our service.
-		PolicyService service = locator.getPolicyService() ;
+		PolicyManager service = locator.getPolicyManager() ;
 		assertNotNull("Null service", service) ;
 		//
 		// Create our data.
@@ -217,11 +221,11 @@ public class JUnitTestCase
 
 		//
 		// Create a ServiceLocator.
-		PolicyServiceService locator = new PolicyServiceServiceLocator() ;
+		PolicyManagerService locator = new PolicyManagerServiceLocator() ;
 		assertNotNull("Null service locator", locator) ;
 		//
 		// Locate a reference to our service.
-		PolicyService service = locator.getPolicyService() ;
+		PolicyManager service = locator.getPolicyManager() ;
 		assertNotNull("Null service", service) ;
 		//
 		// Call the getAccountList method.
@@ -254,11 +258,11 @@ public class JUnitTestCase
 
 		//
 		// Create a ServiceLocator.
-		PolicyServiceService locator = new PolicyServiceServiceLocator() ;
+		PolicyManagerService locator = new PolicyManagerServiceLocator() ;
 		assertNotNull("Null service locator", locator) ;
 		//
 		// Locate a reference to our service.
-		PolicyService service = locator.getPolicyService() ;
+		PolicyManager service = locator.getPolicyManager() ;
 		assertNotNull("Null service", service) ;
 		//
 		// Create our credentials.
@@ -280,14 +284,12 @@ public class JUnitTestCase
 		if (DEBUG_FLAG) System.out.println("  Group    : " + result.getGroup()) ;
 		if (DEBUG_FLAG) System.out.println("  Resource : " + result.getResource()) ;
 		if (DEBUG_FLAG) System.out.println("  Action   : " + result.getAction()) ;
-		if (DEBUG_FLAG) System.out.println("  Valid    : " + result.isValid()) ;
+		if (DEBUG_FLAG) System.out.println("  Status   : " + result.getStatus()) ;
 		if (DEBUG_FLAG) System.out.println("  Reason   : " + result.getReason()) ;
 		if (DEBUG_FLAG) System.out.println("") ;
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("") ;
 		}
-
-
 
 	}

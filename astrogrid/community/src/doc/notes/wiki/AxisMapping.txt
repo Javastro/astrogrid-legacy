@@ -1,0 +1,393 @@
+---+ Axis type mapping
+In order to make the CommunityPolicy WebService easier to use, I would like to try to pass in and return Java objects from the service methods.
+
+This means that rather than a method that takes three strings and returns a boolean.
+<verbatim>
+	public boolean checkPermissions(String one, String two, String resource, String Action) ;
+</verbatim>
+
+I would like to be able to encapsulate the three parameters into a single object.
+<verbatim>
+	public boolean checkPermissions(PolicyCredentials credentials, String resource, String Action) ;
+</verbatim>
+
+In addition, rather than just return a simple boolean, I would like to be able to return a composite object.
+<verbatim>
+	public PolicyPermission checkPermissions(PolicyCredentials credentials, String resource, String Action) ;
+</verbatim>
+
+The reason for wanting to pass in a PolicyCredentials rather than two or three separate Strings is that it hides at least some of the the implmentation details of the service from the client application.
+Rather than having to know about and handle all of the required strings, the client application just needs to create a PolicyCredentials and fill in the details.
+In addition, once they have created the PolicyCredentials object they can re-use the object for multiple calls to the PolicyManager WebService.
+
+The reason for wanting to return a composite object rather than just a boolean is that it allows us to return additional information from the service call.
+For example, if permission to perform the action is denied, then the PolicyPermission object can contain a message String informing the user why permission was denied.
+
+---++ Data objects
+The server side code contains definitions of the two Bean like data objects, PolicyCredentials and PolicyPermission.
+<verbatim>
+	public class PolicyCredentials
+		{
+		private String account ;
+
+		public String getAccount() {
+			return this.account ;
+			}
+
+		public void setAccount(String account) {
+			this.account = account ;
+			}
+
+		private String group ;
+
+		public String getGroup() {
+			return this.group ;
+			}
+
+		public void setGroup(String group) {
+			this.group = group ;
+			}
+
+		....
+		}
+</verbatim>
+
+and
+
+<verbatim>
+	public class PolicyPermission
+		{
+		private boolean valid ;
+
+		public boolean isValid() {
+			return this.valid ;
+			}
+
+		public void setValid(boolean valid) {
+			this.valid = valid ;
+			}
+
+		private String reason ;
+
+		public String getReason() {
+			return this.reason ;
+			}
+
+		public void setReason(String reason) {
+			this.reason = reason ;
+			}
+
+		....
+		}
+</verbatim>
+
+---++ Service deployment
+---+++ Simple RPC
+To start with, I'll try to deploy the service as a standrad RPC service and look at the service WSDL to see what we get.
+
+---++ Generating the WSDL
+There are two ways to generate the WSDL for our service, live from the service or and offline from the Java class.
+
+---+++ Requesting WSDL from our service
+This involves deploying our WebService into Axis, and then requesting the WSDL from the live server.
+
+To depoly our RPC service, we need to create a depolyment description for our service, declaring it as a RPC service.
+<verbatim>
+	<deployment name="test"
+		xmlns="http://xml.apache.org/axis/wsdd/" 
+		xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+		<service name="PolicyManager" style="java:RPC">
+			<parameter name="className"      value="org.astrogrid.community.policy.server.PolicyManager"/>
+			<parameter name="allowedMethods" value="getServiceStatus, getAccountData, setAccountData, getAccountList, checkPermissions"/>
+			....
+		</service>
+	</deployment>
+</verbatim>
+
+We can deploy our WebService using the axis-admin Ant task.
+<verbatim>
+	<!--+
+		| Deploy our Axis service.
+		+-->
+	<target name="policy.service.deploy" depends="axis.tasks">
+		....
+		<!-- Deploy our service -->
+		<axis.admin
+			port="${axis.port}"
+			hostname="${axis.host}"
+			servletpath="/${axis.servlet}/services/AdminService"
+			debug="true"
+			xmlfile="src/axis/wsdd/policy/deploy.wsdd"
+			/>
+	</target>
+</verbatim>
+
+However, in order for this to work Axis needs to have access to our compiled classes.
+So, we need to copy our compiled classes into the Axis WEB-INF/classes directory before we depoly our service.
+<verbatim>
+	<!--+
+		| Deploy our Axis service.
+		+-->
+	<target name="policy.service.deploy" depends="axis.tasks">
+		....
+		<!-- Copy our classes into the Axis WEB-INF/classes directory -->
+		<copy verbose="false" todir="${axis.webapp}/WEB-INF/classes">
+			<fileset dir="${policy.server.base}/classes">
+				<include name="**/*.class"/>
+			</fileset>
+		</copy>
+		<!-- Deploy our service -->
+		<axis.admin
+			port="${axis.port}"
+			hostname="${axis.host}"
+			servletpath="/${axis.servlet}/services/AdminService"
+			debug="true"
+			xmlfile="src/axis/wsdd/policy/deploy.wsdd"
+			/>
+	</target>
+</verbatim>
+
+In addition, if our WebService depends on any 3rd party libraries, for example Castor or Hsqldb, then these libraries need to be copied into the Axis WEB-INF/lib direstory as well.
+<verbatim>
+	<!--+
+		| Deploy our Axis service.
+		+-->
+	<target name="policy.service.deploy" depends="axis.tasks">
+		<!-- Copy our 3rd party libraries into our Axis WEB-INF/lib directory -->
+		<copy verbose="false" todir="${axis.webapp}/WEB-INF/lib">
+			<fileset dir="${castor.home}">
+				<include name="castor-${castor.version}.jar"/>
+				<include name="castor-${castor.version}-xml.jar"/>
+				<include name="jta1.0.1.jar"/>
+			</fileset>
+			<fileset dir="${xerces.home}">
+				<include name="xml-apis.jar"/>
+				<include name="xercesImpl.jar"/>
+			</fileset>
+			<fileset dir="${hsqldb.home}/lib">
+				<include name="hsqldb.jar"/>
+			</fileset>
+		</copy>
+		<!-- Copy our classes into the Axis WEB-INF/classes directory -->
+		<copy verbose="false" todir="${axis.webapp}/WEB-INF/classes">
+			<fileset dir="${policy.server.base}/classes">
+				<include name="**/*.class"/>
+			</fileset>
+		</copy>
+		<!-- Deploy our service -->
+		<axis.admin
+			port="${axis.port}"
+			hostname="${axis.host}"
+			servletpath="/${axis.servlet}/services/AdminService"
+			debug="true"
+			xmlfile="src/axis/wsdd/policy/deploy.wsdd"
+			/>
+	</target>
+</verbatim>
+
+Having depolyed our WebService, we can ask Axis to generate the service WSDL by adding ?wsdl to the end of the service URL.
+<verbatim>
+http://localhost:8080/axis/services/PolicyManager?wsdl
+</verbatim>
+
+If we want to save the gererated WSDL description, we can use an Ant task to request the WSDL from our service and store it in a local file.
+<verbatim>
+	<!--+
+	    | Request the WSDL description from our Axis service.
+	    +-->
+	<target name="policy.server.axis2wsdl" depends="">
+		<echo message=""/>
+		<echo message="Requesting WSDL from Axis ...."/>
+		<!-- Create our wsdl directory -->
+		<mkdir dir="${policy.server.base}/wsdl/axis2wsdl"/>
+		<!-- Request our WSDL description -->
+		<get src="${axis.url}/services/PolicyManager?wsdl"
+			 dest="${policy.server.base}/wsdl/axis2wsdl/PolicyManager.wsdl"
+			/>
+	</target>
+</verbatim>
+
+---+++ Generating WSDL from our Java class
+This involves calling the Axis Java2Wsdl toolkit on our compiled WebService class, outside of the Axis service.
+
+We can use an Ant task to call the Java2Wsdl toolkit, specifying the classpath to locate our service class, and any 3rd party libraries needed to load it.
+<verbatim>
+	<!--+
+	    | Generate the WSDL description for our service.
+	    +-->
+	<target name="policy.server.java2wsdl" depends="axis.tasks">
+		<echo message=""/>
+		<echo message="Creating WSDL from service ...."/>
+		<!-- Create our wsdl directory -->
+		<mkdir dir="${policy.server.base}/wsdl"/>
+		<!-- Generate our WSDL description -->
+		<axis.java2wsdl
+			output="${policy.server.base}/wsdl/PolicyManager.wsdl"
+			classname="org.astrogrid.community.policy.server.PolicyManager"
+			location="${axis.url}/services/policy"
+			methods="getServiceStatus, getAccountData, setAccountData, getAccountList, checkPermissions"
+			namespace="PolicyManager"
+			style="RPC"
+			>
+			<!-- The classpath to find the service classes -->
+			<classpath>
+				<!-- Include the common classes -->
+				<path location="${policy.server.base}/classes"/>
+				<!-- Include the Castor libraries -->
+				<path refid="castor.classpath"/>
+			</classpath>
+		</axis.java2wsdl>
+	</target>
+</verbatim>
+
+---++ Generated WSDL description
+Apart from a couple of namespaces, the two WSDL files are the same.
+Both contain schema definitions for the PolicyCredentials and PolicyPermission objects.
+<verbatim>
+	<wsdl:types>
+		<schema
+			xmlns="http://www.w3.org/2001/XMLSchema"
+			targetNamespace="http://server.policy.community.astrogrid.org">
+			....
+			<complexType name="PolicyCredentials">
+				<sequence>
+					<element name="account" nillable="true" type="xsd:string"/>
+					<element name="group" nillable="true" type="xsd:string"/>
+				</sequence>
+			</complexType>
+			<complexType name="PolicyPermission">
+				<sequence>
+					<element name="action" nillable="true" type="xsd:string"/>
+					<element name="group" nillable="true" type="xsd:string"/>
+					<element name="reason" nillable="true" type="xsd:string"/>
+					<element name="resource" nillable="true" type="xsd:string"/>
+					<element name="valid" type="xsd:boolean"/>
+				</sequence>
+			</complexType>
+		</schema>
+	</wsdl:types>
+</verbatim>
+
+---++ Generating the client Java
+We should now be able to generate the Java client classes from the WSDL service definitions.
+Again, we can use an Ant task to invoke the Axis Wsdl2Java toolkit to generate the client classes.
+<verbatim>
+	<!--+
+	    | Generate the client stubs from our WSDL description.
+	    +-->
+	<target name="policy.client.wsdl2java" depends="axis.tasks">
+		<echo message=""/>
+		<echo message="Creating client stubs from WSDL ...."/>
+		<!-- Create our client directory -->
+		<mkdir dir="${policy.client.base}/java"/>
+		<!-- Generate our client stubs -->
+		<axis.wsdl2java
+			verbose="true"
+			output="${policy.client.base}/java"
+			url="file://${policy.server.base}/wsdl/java2wsdl/PolicyManager.wsdl"
+			>
+			<mapping namespace="${axis.url}/services/PolicyManager"           package="org.astrogrid.community.policy.client"/>
+			<mapping namespace="http://server.policy.community.astrogrid.org" package="org.astrogrid.community.policy.client"/>
+		</axis.wsdl2java>
+	</target>
+</verbatim>
+
+This generates the client stubs for using the WebService.
+<verbatim>
+	org/astrogrid/community/policy/client/PolicyManager.java
+	org/astrogrid/community/policy/client/PolicyManagerSoapBindingStub.java
+	org/astrogrid/community/policy/client/PolicyManagerService.java
+	org/astrogrid/community/policy/client/PolicyManagerServiceLocator.java
+</verbatim>
+
+It also generates the client side implementations for our data objects.
+<verbatim>
+	org/astrogrid/community/policy/client/PolicyPermission.java
+	org/astrogrid/community/policy/client/PolicyCredentials.java
+</verbatim>
+
+The generated client side objects enable the client code to handle the input parameters and return values from the WebService methods.
+<verbatim>
+	....
+	//
+	// Create a ServiceLocator.
+	PolicyManagerService locator = new PolicyManagerServiceLocator() ;
+	//
+	// Locate a reference to our service.
+	PolicyManager service = locator.getPolicyManager() ;
+	//
+	// Create our credentials.
+	PolicyCredentials credentials = new PolicyCredentials() ;
+	credentials.setGroup("solar@mssl") ;
+	credentials.setAccount("dave@cambridge") ;
+	//
+	// Setup our resource name and action.
+	String resource = "joderell:database/table/field" ;
+	String action   = "UPDATE" ;
+	//
+	// Call the checkPermissions service method.
+	PolicyPermission result = service.checkPermissions(credentials, resource, action) ;
+	//
+	// Process our results ....
+	....
+</verbatim>
+
+---++ Generating the server-side Java
+We can also use the WSDL service description to generate the server side implementation of our service classes.
+Again, we can use an Ant task to invoke the Axis Wsdl2Java toolkit, all we need to do is add serverside="true" to the wsdl2java task.
+<verbatim>
+	<!--+
+	    | Generate the server side code from our WSDL description.
+	    +-->
+	<target name="policy.server.wsdl2java" depends="axis.tasks">
+		....
+		<!-- Generate the Java code -->
+		<axis.wsdl2java
+			verbose="true"
+			serverside="true"
+			skeletondeploy="true"
+			output="${policy.server.base}/java"
+			url="file://${policy.server.base}/wsdl/java2wsdl/PolicyManager.wsdl"
+			>
+			<mapping namespace="${axis.url}/services/PolicyManager"           package="org.astrogrid.community.policy.C"/>
+			<mapping namespace="http://server.policy.community.astrogrid.org" package="org.astrogrid.community.policy.D"/>
+		</axis.wsdl2java>
+	</target>
+</verbatim>
+
+
+
+
+
+
+
+
+
+
+
+
+
+---------------------
+
+In WEB-INF/server-config.wsdd
+<verbatim>
+	<service name="AdminService" provider="java:MSG">
+		<parameter name="allowedMethods" value="AdminService"/>
+		<parameter name="enableRemoteAdmin" value="false"/>
+		<parameter name="className" value="org.apache.axis.utils.Admin"/>
+		<namespace>http://xml.apache.org/axis/wsdd/</namespace>
+		<namespace>http://xml.apache.org/axis/wsdd/</namespace>
+	</service>
+</verbatim>
+
+In WEB-INF/web.xml
+<verbatim>
+	<servlet-mapping>
+		<servlet-name>AdminServlet</servlet-name>
+		<url-pattern>/servlet/AdminServlet</url-pattern>
+	</servlet-mapping>
+</verbatim>
+
+
+
+

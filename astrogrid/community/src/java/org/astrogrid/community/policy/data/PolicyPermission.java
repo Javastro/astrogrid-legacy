@@ -1,21 +1,39 @@
 /*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/PolicyPermission.java,v $</cvs:source>
+ * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/data/Attic/PolicyPermission.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/08/28 17:33:56 $</cvs:date>
+ * <cvs:date>$Date: 2003/09/03 06:39:13 $</cvs:date>
  * <cvs:version>$Revision: 1.1 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyPermission.java,v $
- *   Revision 1.1  2003/08/28 17:33:56  dave
- *   Initial policy prototype
+ *   Revision 1.1  2003/09/03 06:39:13  dave
+ *   Rationalised things into one set of SOAP stubs and one set of data objects for both client and server.
  *
  * </cvs:log>
  *
  */
-package org.astrogrid.community.policy.server ;
+package org.astrogrid.community.policy.data ;
 
 public class PolicyPermission
 	{
+	/**
+	 * Status code for permission granted.
+	 *
+	 */
+	public static final int STATUS_PERMISSION_GRANTED = 0xFF ;
+
+	/**
+	 * Status code for no permission.
+	 *
+	 */
+	public static final int STATUS_PERMISSION_UNKNOWN = 0x00 ;
+
+	/**
+	 * Status code for permission revoked.
+	 *
+	 */
+	public static final int STATUS_PERMISSION_REVOKED = 0x01 ;
+
 	/**
 	 * The default reason, no permission set.
 	 *
@@ -33,7 +51,6 @@ public class PolicyPermission
 	/**
 	 * Public constructor.
 	 *
-	 */
 	public PolicyPermission(String resource, String group, String action)
 		{
 		this.group    = group    ;
@@ -42,6 +59,7 @@ public class PolicyPermission
 		this.valid    = false    ;
 		this.reason   = DEFAULT_REASON ;
 		}
+	 */
 
 	/**
 	 * Our Group ident.
@@ -115,33 +133,32 @@ public class PolicyPermission
 		this.action = action ;
 		}
 
-
 	/**
 	 * The permission status.
 	 *
 	 */
-	private boolean valid ;
+	private int status ;
 
 	/**
 	 * Access to the status.
 	 *
 	 */
-	public boolean isValid()
+	public int getStatus()
 		{
-		return this.valid ;
+		return this.status ;
 		}
 
 	/**
 	 * Access to the status.
 	 *
 	 */
-	public void setValid(boolean valid)
+	public void setStatus(int status)
 		{
-		this.valid = valid ;
+		this.status = status ;
 		}
 
 	/**
-	 * The status reason.
+	 * The status reason, explains status.
 	 *
 	 */
 	private String reason ;

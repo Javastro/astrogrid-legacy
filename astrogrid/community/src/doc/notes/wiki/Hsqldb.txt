@@ -1,0 +1,428 @@
+---++ Community policy prototype
+
+This set of pages describe the steps involved in implementing JavaDataObjects using the Castor JDO toolkit and the Hsqldb database server.
+The aim is to develop a vendor neutral implementation of the CommunityPolicy database, using the Castor JDO toolkit to handle all of the XML marshalling and SQL statements.
+
+   * Astrogrid.CommunityPolicyHsqldb - Using a Hsqldb database
+   * Astrogrid.CommunityPolicyCastorJDO - Using Castor JDO
+   * Astrogrid.CommunityPolicyCastorXML - Using Castor XML
+
+In theory, once we have a working implementation using the Java Hsqldb database server, we should be able to transfer the database into either Postgresql or MySql without modifying any of the Java code.
+
+---++ Hsql database
+
+This section deals with how to install and create the Hsqldb database.
+
+From the Hsqldb website (hsqldb.sourceforge.net)
+
+   * _Hsqldb is a relational database engine written in Java, with a JDBC driver, supporting a rich subset of ANSI-92 SQL (BNF tree format). It offers a small (less than 160k), fast database engine which offers both in memory and disk based tables._
+
+At this stage, I am looking at getting the tools in place to install and administer the database server, rather than develop a fully functional policy database.
+As such, the examples only create a simple database table rather than the whole database schema required to implement the CommunityPolicy.
+
+Please note, this is the first time I have used the Hsqldb database server, so there may be better ways of doing this, I'm learning as I go.
+If anyone has suggestions for better ways to do things, please let me know.
+
+---+++ Installing the database server
+
+First stage is to download and install the Hsqldb database server.
+The database server is available to download from the project website as a binary distribution, containing the compiled Java code and some documentation.
+
+The following Ant task downloads the binary distribution from their web server and places it in our project _build_ directory :
+<verbatim>
+    <property name="hsqldb.base"     value="${basedir}/build/hsqldb"/>
+    <property name="hsqldb.version"  value="1_7_1"/>
+    <property name="hsqldb.dist"     value="http://belnet.dl.sourceforge.net/sourceforge/hsqldb/hsqldb_${hsqldb.version}.zip"/>
+
+    <!--+
+        | Download the Hsqldb binary.
+        +-->
+    <target name="hsqldb.dist.fetch" depends="">
+        <mkdir dir="${hsqldb.base}"/>
+        <get verbose="true" usetimestamp="true"
+            src="${hsqldb.dist}"
+            dest="${hsqldb.base}/hsqldb-${hsqldb.version}.zip"
+            />
+    </target>
+</verbatim>
+
+This results in the Hsqldb distribution downloaded to our project directory :
+<verbatim>
+  policy
+     +-- build.xml
+     \-- build
+          \-- hsqldb
+               \-- *hsqldb-1_7_1.zip*
+</verbatim>
+
+The binary distribution is packed as a standard zip file, containing the compiled Java code and some documentation.
+
+The following Ant task unpacks the zip into our project build directory :
+<verbatim>
+    <property name="hsqldb.base"     value="${basedir}/build/hsqldb"/>
+    <property name="hsqldb.version"  value="1_7_1"/>
+
+    <!--+
+        | Unzip the Hsqldb binary.
+        +-->
+    <target name="hsqldb.dist.unzip" depends="">
+        <unzip src="${hsqldb.base}/hsqldb-${hsqldb.version}.zip" 
+        dest="${hsqldb.base}"
+        />
+    </target>
+</verbatim>
+
+This results in the following files installed in our project directory, most important of which is the binary jar file in the _lib_ directory :
+<verbatim>
+   policy
+      +-- build.xml
+      \-- build
+            \-- hsqldb
+                  +-- hsqldb-1_7_1.zip
+                  \-- hsqldb
+                        |
+                        +-- bin
+                        +-- build
+                        +-- demo
+                        +-- doc
+                        +-- src
+                        +-- lib
+                            \-- hsqldb.jar
+</verbatim>
+
+With the Hsqldb jar file in place, we can define an Ant path to reference the jar file.
+We can use this later in other Ant tasks without having to explicitly add the full location of the Hsqldb jar each time.
+<verbatim>
+	<!--+
+		| The Hsqldb library classpath.
+		+-->
+	<path id="hsqldb.classpath">
+		<pathelement location="${hsqldb.home}/lib/hsqldb.jar"/>
+	</path>
+</verbatim>
+
+---+++ Starting and stopping the database
+
+The next step is to create Ant scripts to start and stop the database server.
+
+The following Ant task starts the Hsqldb database server in a separate Java VM.
+<verbatim>
+	<property name="hsqldb.data"     value="${basedir}/build/hsqldb/data"/>
+	<property name="hsqldb.host"     value="localhost"/>
+	<property name="hsqldb.port"     value="9001"/>
+	<property name="hsqldb.database" value="policy"/>
+
+	<!--+
+		| Start the Hsqldb database server.
+		+-->
+	<target name="hsqldb.start" depends="">
+		<!-- Create the data directory -->
+		<mkdir dir="${hsqldb.data}"/>
+		<!-- Start the database server -->
+		<echo message=""/>
+		<echo message="Starting Hqsldb ...."/>
+		<java taskname="hsqldb" classname="org.hsqldb.Server" fork="true" dir="${hsqldb.data}">
+			<!-- Use the Hsqldb classpath -->
+			<classpath refid="hsqldb.classpath"/>
+			<!-- Args for the Hsqldb server -->
+			<arg value="-database"/>
+			<arg value="${hsqldb.database}"/>
+			<arg value="-port"/>
+			<arg value="${hsqldb.port}"/>
+		</java>
+	</target>
+</verbatim>
+
+This is equivalent to typing the following command line in Linux.
+<verbatim>
+	mkdir build/hsqldb/data
+
+	cd build/hsqldb/data
+
+	java -classpath build/hsqldb/hsqldb/lib/hsqldb.jar org.hsqldb.Server -database policy -port 9001
+</verbatim>
+
+Once we have started our database server, we need to be able to shut it down.
+If the database server has been started from the command line, then typing ==ctrl^C== should shutdown the server.
+However, it would be useful to be able to shut it down automatically, using the same tools we used to start it.
+
+The following Ant task connects to a Hsqldb server on local host and asks it to shutdown.
+<verbatim>
+	<property name="hsqldb.host"     value="localhost"/>
+	<property name="hsqldb.port"     value="9001"/>
+	<property name="hsqldb.database" value="policy"/>
+	<property name="hsqldb.user"     value="sa"/>
+	<property name="hsqldb.pass"     value="veritas"/>
+	<property name="hsqldb.url"      value="jdbc:hsqldb:hsql://${hsqldb.host}:${hsqldb.port}"/>
+
+	<!--+
+		| Stop the Hsqldb database server.
+		+-->
+	<target name="hsqldb.stop" depends="">
+		<echo message=""/>
+		<echo message="Stopping Hqsldb ...."/>
+		<java taskname="hsqldb" classname="org.hsqldb.util.ShutdownServer" fork="true" dir="${hsqldb.data}">
+			<!-- Use the Hsqldb classpath -->
+			<classpath refid="hsqldb.classpath"/>
+			<!-- Args for the Hsqldb server -->
+			<arg value="-url"/>
+			<arg value="${hsqldb.url}"/>
+			<arg value="-user"/>
+			<arg value="${hsqldb.user}"/>
+			<arg value="-password"/>
+			<arg value="${hsqldb.pass}"/>
+		</java>
+	</target>
+</verbatim>
+
+This is equivalent to typing the following command line in Linux.
+<verbatim>
+	cd build/hsqldb/data
+
+	java -classpath build/hsqldb/hsqldb/lib/hsqldb.jar org.hsqldb.Server -url  jdbc:hsqldb:hsql://localhost:9001 -user sa -password veritas
+</verbatim>
+
+---+++ Setting the admin password
+
+When a Hsqldb database server is created for the first time, the database admin user defaults to user name 'sa' and no password.
+
+In order to secure a newly created database, we need to connect to the database and set the admin password.
+
+The following Ant task connects to our database and sets the admin password.
+This is equivalent to connecting to the database using a command line tool, and typing the set password command manually.
+<verbatim>
+	<property name="hsqldb.host"     value="localhost"/>
+	<property name="hsqldb.port"     value="9001"/>
+	<property name="hsqldb.database" value="policy"/>
+	<property name="hsqldb.user"     value="sa"/>
+	<property name="hsqldb.pass"     value="veritas"/>
+	<property name="hsqldb.url"      value="jdbc:hsqldb:hsql://${hsqldb.host}:${hsqldb.port}"/>
+
+	<!--+
+		| Initialise the Hsqldb database.
+		| This only needs to run once, when a new database is created.
+		+-->
+	<target name="hsqldb.init" depends="">
+		<echo message=""/>
+		<echo message="Initialising Hqsldb ...."/>
+		<sql driver="org.hsqldb.jdbcDriver"
+		     url="${hsqldb.url}"
+		     classpathref="hsqldb.classpath"
+		     userid="sa"
+		     password=""
+		     print="true"
+			>
+			<![CDATA[
+				set password "${hsqldb.pass}" ;
+			]]>
+		</sql>
+	</target>
+</verbatim>
+
+---+++ Creating the database tables
+
+Now that we have started the database server, the next step is to create our tables.
+To start with, we will only create a simple table containing user account details.
+We will use the following SQL fragment to create the database tables.
+<verbatim>
+	--
+	-- Drop the Accounts table
+	DROP TABLE accounts IF EXISTS ;
+
+	--
+	-- Create the Accounts table
+	CREATE TABLE accounts
+	    (
+	    name        VARCHAR NOT NULL,
+	    community   VARCHAR NOT NULL,
+	    description VARCHAR NULL,
+	    PRIMARY KEY ( name, community )
+	    ) ;
+</verbatim>
+
+Database experts will probably question the use of two text fields as the primary key in the accounts table.
+I know this is definitely not the best way of indexing a table.
+However, this fits with some of our current thoughts on how we want to refer to accounts in the CommunityPolicy service.
+Using the account name and community together in a similar way to email addresses, =name[at]community=, as the unique identifier for an account.
+
+At this stage, I've left this in to see if it is possible to handle multi-value primary keys in the Castor JDO toolkit.
+In practice, when it comes to implementing the real CommunityPolicy database we will probably use an integer primary key internally within the database.
+
+The following Ant task connects to our database and runs the script to create the database table.
+<verbatim>
+	<!--+
+		| Create the Hsqldb database tables.
+		+-->
+	<target name="hsqldb.create" depends="">
+		<echo message=""/>
+		<echo message="Creating Hqsldb tables ...."/>
+		<sql driver="org.hsqldb.jdbcDriver"
+		     url="${hsqldb.url}"
+		     classpathref="hsqldb.classpath"
+		     userid="${hsqldb.user}"
+		     password="${hsqldb.pass}"
+		     print="true"
+			>
+			<transaction src="src/sql/hsqldb/create.sql"/>
+		</sql>
+	</target>
+</verbatim>
+
+---+++ Populating the database tables
+
+As a quick test to check that we can access the database, we can use an Ant task to insert some data into our table.
+The following Ant tasks insert a set of rows into the database table, displays all of the rows, and deletes all of the rows.
+<verbatim>
+	<!--+
+		| Insert some rows into the accounts table.
+		+-->
+	<target name="hsqldb.accounts.insert" depends="">
+		<sql driver="org.hsqldb.jdbcDriver"
+		     url="${hsqldb.url}"
+		     classpathref="hsqldb.classpath"
+		     userid="${hsqldb.user}"
+		     password="${hsqldb.pass}"
+		     print="true"
+			>
+			<![CDATA[
+				INSERT INTO accounts (name, community, description) VALUES ('guy',       'cambridge',  'Guy Rixon') ;
+				INSERT INTO accounts (name, community, description) VALUES ('dave',      'cambridge',  'Dave Morris') ;
+				INSERT INTO accounts (name, community, description) VALUES ('richard',   'cambridge',  'Richard McMahon') ;
+				INSERT INTO accounts (name, community, description) VALUES ('nicholas',  'cambridge',  'Nicholas Walton') ;
+				INSERT INTO accounts (name, community, description) VALUES ('brian',     'rutherford', 'Brian McIlwrath') ;
+				INSERT INTO accounts (name, community, description) VALUES ('kevin',     'mullard',    'Kevin Benson') ;
+				INSERT INTO accounts (name, community, description) VALUES ('paul',      'joderell',   'Paul Harrison') ;
+			]]>
+		</sql>
+	</target>
+
+	<!--+
+		| Select all rows from the accounts table.
+		+-->
+	<target name="hsqldb.accounts.select" depends="">
+		<sql driver="org.hsqldb.jdbcDriver"
+		     url="${hsqldb.url}"
+		     classpathref="hsqldb.classpath"
+		     userid="${hsqldb.user}"
+		     password="${hsqldb.pass}"
+		     print="true"
+			>
+			<![CDATA[
+				SELECT * FROM accounts ;
+			]]>
+		</sql>
+	</target>
+
+	<!--+
+		| Delete all rows from the accounts table.
+		+-->
+	<target name="hsqldb.accounts.delete" depends="">
+		<sql driver="org.hsqldb.jdbcDriver"
+		     url="${hsqldb.url}"
+		     classpathref="hsqldb.classpath"
+		     userid="${hsqldb.user}"
+		     password="${hsqldb.pass}"
+		     print="true"
+			>
+			<![CDATA[
+				DELETE FROM accounts ;
+			]]>
+		</sql>
+	</target>
+</verbatim>
+
+---+++ Additional Ant tasks
+
+Before we complete this section, there are a couple of useful Ant tasks we can add.
+
+First, a task to delete the Hsqldb data directory.
+This removes all of the database configuration, allowing us to re-build the database from clean.
+<verbatim>
+	<!--+
+		| Delete the Hsqldb data files.
+		+-->
+	<target name="hsqldb.data.delete" depends="">
+		<delete dir="${hsqldb.data}" failonerror="false"/>
+	</target>
+</verbatim>
+
+Next, a task to wait for the database server to respond.
+
+This uses the waitfor Ant task to try to open a socket connection to the database server.
+   * If it manages to open the connection, then the task will complete normally.
+   * If it does not manage to open a connection within the time limit of 60 seconds, the task will fail.
+<verbatim>
+	<property name="hsqldb.host"     value="methionine.codon.demon.co.uk"/>
+	<property name="hsqldb.port"     value="9001"/>
+	<property name="hsqldb.timeout"  value="60"/>
+
+	<!--+
+		| Wait for the Hsqldb database to start.
+		+-->
+	<target name="hsqldb.wait" depends="">
+		<echo message=""/>
+		<echo message="Waiting for Hqsldb ...."/>
+		<waitfor maxwait="${hsqldb.timeout}" maxwaitunit="second" checkevery="500">
+			<socket server="${hsqldb.host}" port="${hsqldb.port}"/>
+		</waitfor>
+	</target>
+</verbatim>
+
+We can now begin to group the individual Ant tasks together into more useable components.
+
+First, a task to download and install the Hsqldb distribution.
+<verbatim>
+	<!--+
+		| Prepare the Hsqldb toolkit.
+		+-->
+	<target name="hsqldb.PREPARE" depends="">
+		<antcall target="hsqldb.dist.fetch"/>
+		<antcall target="hsqldb.dist.unzip"/>
+	</target>
+</verbatim>
+
+Next, a task to build the database tables.
+
+This waits for the server to respond, initialises the admin password, creates the accounts table and adds the initial test data into it.
+<verbatim>
+	<!--+
+		| Build our Hsqldb database.
+		+-->
+	<target name="hsqldb.BUILD" depends="">
+		<antcall target="hsqldb.wait"/>
+		<antcall target="hsqldb.init"/>
+		<antcall target="hsqldb.create"/>
+		<antcall target="hsqldb.accounts.insert"/>
+		<antcall target="hsqldb.accounts.select"/>
+	</target>
+</verbatim>
+
+And finally, we can create a top level task to start the database server and build the database tables.
+
+This task starts by deleting any existing data files, and then runs two threads in parallel; one to start the database server, and the second to build the database tables once the server is running.
+The second starts with the __hsqldb.wait__ step, which means that the second thread will wait until the database server is up and running before trying to create the database tables.
+<verbatim>
+	<!--+
+		| Rebuild our Hsqldb database.
+		+-->
+	<target name="hsqldb.REBUILD" depends="">
+		<antcall target="hsqldb.data.delete"/>
+		<parallel>
+			<sequential>
+				<antcall target="hsqldb.start"/>
+			</sequential>
+			<sequential>
+				<antcall target="hsqldb.BUILD"/>
+			</sequential>
+		</parallel>
+	</target>
+</verbatim>
+
+So, with this in place, all we need to do is run the __hsqldb.PREPARE__ task once to download and install the Hsqldb libraries.
+
+We can then run the __hsqldb.REBUILD__ task as often as required, re-building the entire database from scratch each time.
+
+This gives a repeatable and testable platform to use while developing the Castor JDO components.
+
+-- Main.DaveMorris - 17 Aug 2003
+
