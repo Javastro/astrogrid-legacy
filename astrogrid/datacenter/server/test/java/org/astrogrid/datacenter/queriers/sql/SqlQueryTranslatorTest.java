@@ -1,4 +1,4 @@
-/*$Id: SqlQueryTranslatorTest.java,v 1.18 2004/08/18 22:30:04 mch Exp $
+/*$Id: SqlQueryTranslatorTest.java,v 1.19 2004/09/01 13:19:54 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,7 +14,6 @@ import java.io.InputStream;
 import java.util.Properties;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.ServerTestCase;
-import org.astrogrid.datacenter.queriers.test.DummySqlPlugin;
 import org.astrogrid.datacenter.query.AdqlQuery;
 import org.astrogrid.datacenter.query.ConeQuery;
 import org.astrogrid.util.DomHelper;
@@ -35,7 +34,6 @@ public class SqlQueryTranslatorTest extends ServerTestCase {
 
     protected void setUp() throws Exception {
        
-       DummySqlPlugin.initConfig(); //so we have a valid config to build the SQL against
        SimpleConfig.getSingleton().setProperty(SqlMaker.CONE_SEARCH_TABLE_KEY, "o");
 
        //read in sample sql out checks
@@ -102,6 +100,9 @@ public class SqlQueryTranslatorTest extends ServerTestCase {
 
 /*
 $Log: SqlQueryTranslatorTest.java,v $
+Revision 1.19  2004/09/01 13:19:54  mch
+Added sample stars metadata
+
 Revision 1.18  2004/08/18 22:30:04  mch
 Improved some tests
 

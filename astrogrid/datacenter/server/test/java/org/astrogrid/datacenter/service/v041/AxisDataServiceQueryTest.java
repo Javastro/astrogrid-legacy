@@ -1,4 +1,4 @@
-/*$Id: AxisDataServiceQueryTest.java,v 1.4 2004/08/18 18:44:12 mch Exp $
+/*$Id: AxisDataServiceQueryTest.java,v 1.5 2004/09/01 13:19:54 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,7 +23,6 @@ import org.astrogrid.datacenter.metadata.FileServer;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierListener;
 import org.astrogrid.datacenter.queriers.sql.SqlPluginTest;
-import org.astrogrid.datacenter.queriers.test.DummySqlPlugin;
 import org.astrogrid.datacenter.query.QueryState;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
@@ -45,9 +44,6 @@ public class AxisDataServiceQueryTest extends ServerTestCase {
     protected void setUp() throws Exception {
        super.setUp();
 
-       DummySqlPlugin.initConfig();
-       DummySqlPlugin.populateDb();
-       
        server = new AxisDataServer_v0_4_1();
        
        query1 = new Query();
@@ -172,6 +168,9 @@ public class AxisDataServiceQueryTest extends ServerTestCase {
 
 /*
 $Log: AxisDataServiceQueryTest.java,v $
+Revision 1.5  2004/09/01 13:19:54  mch
+Added sample stars metadata
+
 Revision 1.4  2004/08/18 18:44:12  mch
 Created metadata plugin service and added helper methods
 

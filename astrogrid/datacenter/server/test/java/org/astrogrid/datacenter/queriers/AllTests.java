@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.7 2004/07/07 19:33:59 mch Exp $
+/*$Id: AllTests.java,v 1.8 2004/09/01 13:19:54 mch Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,7 +27,7 @@ public class AllTests {
         TestSuite suite =
             new TestSuite("Test for org.astrogrid.datacenter.queriers");
         //$JUnit-BEGIN$
-        suite.addTest(DummyPluginsTest.suite());
+        suite.addTest(SampleStarsPluginTest.suite());
         suite.addTest(QuerierTest.suite());
         suite.addTest(new TestSuite(SqlQueryTranslatorTest.class));
         suite.addTest(SqlPluginTest.suite());
@@ -50,6 +50,9 @@ public class AllTests {
 
 /*
 $Log: AllTests.java,v $
+Revision 1.8  2004/09/01 13:19:54  mch
+Added sample stars metadata
+
 Revision 1.7  2004/07/07 19:33:59  mch
 Fixes to get Dummy db working and xslt sheets working both for unit tests and deployed
 

@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcPlugin.java,v 1.23 2004/09/01 11:19:23 mch Exp $
+ * $Id: JdbcPlugin.java,v 1.24 2004/09/01 13:19:54 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -205,6 +205,7 @@ public class JdbcPlugin extends QuerierPlugin  {
    public Document getMetadata() throws IOException {
 
       Connection connection = null;
+      StringWriter sw = new StringWriter();
       try {
          connection = getJdbcConnection();
          
@@ -212,7 +213,6 @@ public class JdbcPlugin extends QuerierPlugin  {
          
          
          /** Alternative XmlWriter form */
-         StringWriter sw = new StringWriter();
          XmlPrinter xw = new XmlPrinter(sw, true);
 
          XmlTagPrinter metaTag = xw.newTag("RdbmsMetadata");
@@ -295,24 +295,23 @@ public class JdbcPlugin extends QuerierPlugin  {
             }
          }
          metaTag.close();
+         xw.close();
          
-         return DomHelper.newDocument(sw.toString());
-         
+         connection.close();
       }
       catch (SQLException e) {
          throw new DatabaseAccessException("Could not get metadata: "+e,e);
+      }
+
+      //parse results and return them
+      try {
+         return DomHelper.newDocument(sw.toString());
       }
       catch (ParserConfigurationException e) {
          throw new DatabaseAccessException("Server not configured correctly (no parser): "+e,e);
       }
       catch (SAXException e) {
          throw new DatabaseAccessException("Server not configured correctly (produces illegal XML) ",e);
-      }
-      finally {
-         //try to tidy up now
-         try {
-            if (connection != null) { connection.close(); }
-         } catch (SQLException e) { } //ignore
       }
    }
    

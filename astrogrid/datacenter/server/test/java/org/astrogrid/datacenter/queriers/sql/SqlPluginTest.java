@@ -1,4 +1,4 @@
-/*$Id: SqlPluginTest.java,v 1.13 2004/09/01 12:10:58 mch Exp $
+/*$Id: SqlPluginTest.java,v 1.14 2004/09/01 13:19:54 mch Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,7 +22,6 @@ import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.QuerierPlugin;
-import org.astrogrid.datacenter.queriers.test.DummySqlPlugin;
 import org.astrogrid.datacenter.query.AdqlQuery;
 import org.astrogrid.datacenter.query.ConeQuery;
 import org.astrogrid.datacenter.query.RawSqlQuery;
@@ -53,8 +52,6 @@ public class SqlPluginTest extends ServerTestCase {
    protected void setUp() throws Exception {
       super.setUp();
 
-      DummySqlPlugin.initConfig(); //this is set up in the default config for normal runtime
-      
       //set max returns to something reasonably small as some of the results processing is a bit CPU intensive
       SimpleConfig.getSingleton().setProperty(SqlResults.MAX_RETURN_ROWS_KEY, "300");
     
@@ -99,23 +96,18 @@ public class SqlPluginTest extends ServerTestCase {
 
    public void testAdql1() throws Exception {
       
-      DummySqlPlugin.initConfig(); //make sure the configuration is correct for the plugin
-      
       askAdqlFromFile("dummydb-test-1.xml");
    }
    
    public void testAdql2() throws Exception {
-      DummySqlPlugin.initConfig(); //make sure the configuration is correct for the plugin
       askAdqlFromFile("dummydb-test-2.xml");
    }
 
    public void testAdql3() throws Exception {
-      DummySqlPlugin.initConfig(); //make sure the configuration is correct for the plugin
       askAdqlFromFile("dummydb-test-3.xml");
    }
 
    public void testAdql4() throws Exception {
-      DummySqlPlugin.initConfig(); //make sure the configuration is correct for the plugin
       askAdqlFromFile("dummy-pleidies-adql.xml");
    }
    
@@ -142,8 +134,6 @@ public class SqlPluginTest extends ServerTestCase {
    
    
    public void testSQLPassthru() throws Exception {
-
-      DummySqlPlugin.initConfig(); //make sure the configuration is correct for the plugin
       
       //should fail - default should be off
       try {
@@ -208,6 +198,9 @@ public class SqlPluginTest extends ServerTestCase {
 
 /*
  $Log: SqlPluginTest.java,v $
+ Revision 1.14  2004/09/01 13:19:54  mch
+ Added sample stars metadata
+
  Revision 1.13  2004/09/01 12:10:58  mch
  added results.toHtml
 

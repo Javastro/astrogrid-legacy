@@ -1,4 +1,4 @@
-/*$Id: QuerierManagerTest.java,v 1.10 2004/09/01 12:10:58 mch Exp $
+/*$Id: QuerierManagerTest.java,v 1.11 2004/09/01 13:19:54 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,6 @@
 package org.astrogrid.datacenter.queriers;
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.ServerTestCase;
-import org.astrogrid.datacenter.queriers.test.DummySqlPlugin;
 import org.astrogrid.datacenter.query.ConeQuery;
 import org.astrogrid.datacenter.returns.ReturnTable;
 
@@ -35,7 +34,6 @@ public class QuerierManagerTest extends ServerTestCase {
    
    protected void setUp() throws Exception {
       super.setUp();
-      DummySqlPlugin.initConfig();
    }
    
    protected void tearDown() throws Exception {
@@ -65,6 +63,9 @@ public class QuerierManagerTest extends ServerTestCase {
 
 /*
  $Log: QuerierManagerTest.java,v $
+ Revision 1.11  2004/09/01 13:19:54  mch
+ Added sample stars metadata
+
  Revision 1.10  2004/09/01 12:10:58  mch
  added results.toHtml
 

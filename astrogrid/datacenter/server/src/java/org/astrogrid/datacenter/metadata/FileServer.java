@@ -1,5 +1,5 @@
 /*
- * $Id: FileServer.java,v 1.1 2004/08/18 18:44:12 mch Exp $
+ * $Id: FileServer.java,v 1.2 2004/09/01 13:19:54 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -45,7 +45,7 @@ public class FileServer implements MetadataPlugin
    /** Default metadata filename */
    public static final String METADATA_DEFAULT_FILENAME = "datacenter.metadata.xml";
    
-   /** Returns a stream to the metadata file */
+   /** Returns the URL to the metadata file given by the configuration properties */
    public URL getMetadataUrl() throws IOException {
 
       String filename = SimpleConfig.getSingleton().getString(METADATA_FILE_LOC_KEY, null);

@@ -1,4 +1,4 @@
-/*$Id: DataServiceTest.java,v 1.10 2004/08/27 17:47:19 mch Exp $
+/*$Id: DataServiceTest.java,v 1.11 2004/09/01 13:19:54 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,7 +20,6 @@ import org.astrogrid.datacenter.metadata.FileServer;
 import org.astrogrid.datacenter.metadata.MetadataPlugin;
 import org.astrogrid.datacenter.metadata.MetadataServer;
 import org.astrogrid.datacenter.queriers.sql.SqlPluginTest;
-import org.astrogrid.datacenter.queriers.test.DummySqlPlugin;
 import org.astrogrid.datacenter.query.AdqlQuery;
 import org.astrogrid.datacenter.query.ConeQuery;
 import org.astrogrid.datacenter.returns.ReturnTable;
@@ -48,9 +47,6 @@ public class DataServiceTest extends ServerTestCase {
     protected void setUp() throws Exception {
        super.setUp();
 
-       DummySqlPlugin.initConfig();
-       DummySqlPlugin.populateDb();
-       
        server = new DataServer();
        
        query1 = new AdqlQuery(SqlPluginTest.class.getResourceAsStream("sample-adql0.5-1.xml"));
@@ -160,6 +156,9 @@ public class DataServiceTest extends ServerTestCase {
 
 /*
 $Log: DataServiceTest.java,v $
+Revision 1.11  2004/09/01 13:19:54  mch
+Added sample stars metadata
+
 Revision 1.10  2004/08/27 17:47:19  mch
 Added first servlet; started making more use of ReturnSpec
 

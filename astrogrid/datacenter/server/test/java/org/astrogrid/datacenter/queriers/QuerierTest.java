@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierTest.java,v 1.10 2004/09/01 12:10:58 mch Exp $
+ * $Id: QuerierTest.java,v 1.11 2004/09/01 13:19:54 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -19,7 +19,6 @@ import org.astrogrid.datacenter.queriers.status.QuerierComplete;
 import org.astrogrid.datacenter.queriers.status.QuerierError;
 import org.astrogrid.datacenter.queriers.status.QuerierProcessingResults;
 import org.astrogrid.datacenter.queriers.status.QuerierQuerying;
-import org.astrogrid.datacenter.queriers.test.DummySqlPlugin;
 import org.astrogrid.datacenter.query.QueryState;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
@@ -42,9 +41,6 @@ public class QuerierTest extends ServerTestCase {
    
    protected void setUp() throws Exception{
       super.setUp();
-      
-      DummySqlPlugin.initConfig();
-      DummySqlPlugin.populateDb();
       
       sw = new StringWriter();
       querier = Querier.makeQuerier(Account.ANONYMOUS, new ConeQuery(30,30,6), new TargetIndicator(sw), ReturnTable.VOTABLE);
