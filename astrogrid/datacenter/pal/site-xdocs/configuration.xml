@@ -1,21 +1,21 @@
 <?xml version="1.0" ?>
 <document>
 <properties>
-	<author email="nw@jb.man.ac.uk">Noel Winstanley</author>
-	<title>Datacenter Configuration</title>
+   <author email="nw@jb.man.ac.uk">Noel Winstanley</author>
+   <title>Datacenter Configuration</title>
 </properties>
 
 <body>
 <section name="tempoerary">
 <p>need to restart server after changes to config file</p>
-<subsection name="AstroGridConfig.properties"><p>
+<subsection name="astrogrid.properties"><p>
 
 Configuration parameters for the datacenter server are set in a properties
 file in the <tt>${CATALINA_HOME}/webapps/axis/WEB-INF/classes</tt> directory.
 This file consists of <i>key</i>=<i>value</i> lines. Any line starting with <tt>#</tt> are comments and are ignored by the application.
 Set the <tt>JNDI_SRC</tt> property as follows
 </p><source>
-	JNDI_SRC=jdbc/dataset-connection
+   JNDI_SRC=jdbc/dataset-connection
 </source><p>
 </p><div class="nw">
 sort this
@@ -23,7 +23,7 @@ sort this
 Finally, copy the JAR file containing the JDBC driver for the target RDBMS into the
 <tt>${CATALINA_HOME}/common/lib</tt> directory.
 
-then edit AstroGridConfig.properties.
+then edit the properties.
 
 </p></subsection>
 <subsection name="Configure the ADQL translator"><p>
