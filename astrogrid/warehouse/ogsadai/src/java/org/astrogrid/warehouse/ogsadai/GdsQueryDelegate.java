@@ -1,5 +1,5 @@
 /*
- * $Id: GdsQueryDelegate.java,v 1.8 2003/12/15 15:36:09 kea Exp $
+ * $Id: GdsQueryDelegate.java,v 1.9 2004/03/03 12:14:26 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -195,8 +195,9 @@ public class GdsQueryDelegate
                   (attrVal.equals("statementOutput"))) {
             gotResult = true;
           }
-          else if ((attrName.equals("status")) && 
-                  (attrVal.equals("COMPLETE"))) {
+          else if ( attrName.equals("status") &&
+              ( attrVal.equals("COMPLETED") ||
+                  attrVal.equals("COMPLETE")) ) {
             resultComplete = true;
           }
         }//end of for(int j=0...)
@@ -327,6 +328,10 @@ public class GdsQueryDelegate
 }
 /*
 $Log: GdsQueryDelegate.java,v $
+Revision 1.9  2004/03/03 12:14:26  kea
+Minor fix to match OGSA-DAI 3.1.  Decreased timeout to help with unit
+testing in nightly build.
+
 Revision 1.8  2003/12/15 15:36:09  kea
 Tidying up GdsQueryDelegate to remove some old cruft.
 
