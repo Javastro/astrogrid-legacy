@@ -1,5 +1,5 @@
 /*
- * $Id: Ivorn.java,v 1.6 2004/06/17 17:34:08 jdt Exp $
+ * $Id: Ivorn.java,v 1.7 2004/07/06 19:20:28 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -13,13 +13,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 /**
- * International Virtual Observatory Resource Name.  A URI used to name specific IVO resources.
- * I think there's some plugin mechanism to register this wuth URIs but not sure
- * what it is... and anyway in the meantime we want to pass around things that
- * are definitely IVORNs not any other URI.
+ * International Virtual Observatory Resource Name.  Used to name specific IVO resources.
  * <p>
  * They act as keys to VO Registries; give the registry an IVORN and it will
- * return some value (that might be another IVORN...)
+ * return the associated VOResource document
  * <p>
  * Ivorns are of the form:
  * <pre>
@@ -27,34 +24,13 @@ import java.net.URISyntaxException;
  * </pre>
  * For example:
  * <pre>
- * ivo://roe.ac.uk#mch
+ * ivo://roe.ac.uk/storee#path/to/file.ext
  * </pre>
- * might resolve to an Community web service endpoint, that takes 'mch' to return
- * an account, which <i>might</i> be of the form:
- * <pre>
- * ivo://roe.ac.uk/mch/
- * </pre>
- * Or:
- * <pre>
- * ivo://roe.ac.uk#mch/myspace
- * </pre>
- * might resolve to a Community web service as above, that takes 'mch/myspace' to
- * return that accounts myspace, probably as another ivo identifier:
- * <pre>
- * ivo://roe.ac.uk/myspace
- * </pre>
- * that resolves to a myspace delegate endpoint through the registry.
- * <p>
- * So from the above:
- * <pre>
- * ivo://roe.ac.uk/myspace#roe.ac.uk/mch/famousData/BestResults.vot
- * </pre>
- * would resolve to a myspace delegate endpoint and a path to give it - ie
- * it refers to a file in myspace
+ * <i>might</i> resolve to an FTP server, on which the path 'path/to/file.ext'
+ * would locate a document.
  * <p>
  * Ivorns are immutable - ie once created, they cannot be changed.  You can
  * make new ones out of old ones.
- * <p>
  *
  * @author MCH, KMB, KTN, DM, ACD
  */
@@ -63,7 +39,9 @@ import java.net.URISyntaxException;
 public class Ivorn
 {
    public final static String SCHEME = "ivo";
-   private String path;
+   
+   private String key;
+   private String authority;
    private String fragment;
    
    /** Construct from given string */
@@ -71,23 +49,34 @@ public class Ivorn
    {
       assert Ivorn.startsWith(SCHEME+":") : "Scheme should be "+SCHEME+":";
 
-      URI uri = new URI(Ivorn);
+      //separate authority, key & fragment
+      URI uri = new URI(Ivorn); //make use of URI parsing
       
-      path = uri.getAuthority()+uri.getPath();
+      authority = uri.getAuthority();
+      key = uri.getPath();
       fragment = uri.getFragment();
    }
    
-   public Ivorn(String aPath, String aFragment)
+   public Ivorn(String anAuthority, String aKey, String aFragment)
    {
-      this.path = aPath;
-      this.fragment =aFragment;
+      this.key = aKey;
+      this.authority = anAuthority;
+      this.fragment = aFragment;
    }
    
    /** Returns identifier scheme */
    public String getScheme() {      return SCHEME;  }
 
-   /** Returns ivo id */
-   public String getPath() {  return path;   }
+   /** Returns ivo id without the scheme.
+    * eg 'ivo://roe.ac.uk/mch/myspace' returns 'roe.ac.uk/mch/myspace'
+    */
+   public String getPath() {
+      if (key == null) {
+         return authority;
+      } else {
+         return authority+key;
+      }
+   }
 
    /** Returns specific-to-service - ie fragment */
    public String getFragment() {  return fragment;   }
@@ -95,22 +84,25 @@ public class Ivorn
    /** String representation */
    public String toString() {
       if (fragment == null) {
-         return SCHEME+"://"+path;
+         return SCHEME+"://"+getPath();
       } else {
-         return SCHEME+"://"+path+"#"+fragment;
+         return SCHEME+"://"+getPath()+"#"+fragment;
       }
    }
 
    /** Representation to be used when submitting the IVORN to a registry
     * to be resolved */
    public String toRegistryString() {
-      return SCHEME+"://"+path;
+      return SCHEME+"://"+getPath();
    }
    
 }
 
 /*
 $Log: Ivorn.java,v $
+Revision 1.7  2004/07/06 19:20:28  mch
+Doc updates and split between authority & key
+
 Revision 1.6  2004/06/17 17:34:08  jdt
 Miscellaneous coding standards issues.
 
