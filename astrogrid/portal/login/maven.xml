@@ -21,12 +21,29 @@
     <property name="webapp.home" value="${tomcat.home}/webapps/${portal.name}"/>
 
 	<!--+
+		| Deploy our 3rd party jars.
+		+-->
+	<goal name="deploy.depends">
+		<ant:copy verbose="true" todir="${webapp.home}/WEB-INF/lib" file="${pom.getDependencyPath('jconfig:jconfig')}"/>
+	</goal>
+
+	<!--+
 		| Deploy our class files.
 		+-->
 	<goal name="deploy.classes">
-		<ant:copy todir="${webapp.home}/WEB-INF/classes">
-			<ant:fileset dir="${maven.build.dir}/classes">
-				<ant:include name="*"/>
+		<ant:copy verbose="true" todir="${webapp.home}/WEB-INF/classes">
+			<ant:fileset dir="${maven.build.dir}/classes"/>
+		</ant:copy>
+	</goal>
+
+	<!--+
+		| Deploy our site files.
+		+-->
+	<goal name="deploy.site">
+		<ant:mkdir dir="${webapp.home}/mount/login"/>
+		<ant:copy verbose="true" todir="${webapp.home}/mount/login">
+			<ant:fileset dir="site">
+				<ant:exclude name="//CVS//"/>
 			</ant:fileset>
 		</ant:copy>
 	</goal>
