@@ -2,11 +2,14 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/java/org/astrogrid/portal/services/myspace/client/data/Attic/DataNode.java,v $</cvs:source>
  * <cvs:date>$Author: dave $</cvs:date>
- * <cvs:author>$Date: 2003/06/22 04:03:41 $</cvs:author>
- * <cvs:version>$Revision: 1.1 $</cvs:version>
+ * <cvs:author>$Date: 2003/06/26 14:15:10 $</cvs:author>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
  * $Log: DataNode.java,v $
+ * Revision 1.2  2003/06/26 14:15:10  dave
+ * Added explorer pages and actions to Cocoon
+ *
  * Revision 1.1  2003/06/22 04:03:41  dave
  * Added actions and parsers for MySpace messages
  *
@@ -21,7 +24,7 @@ import java.util.TreeMap ;
 import java.util.Iterator ;
 
 /**
- * Class to encapsulate a node in the data tree.
+ * Class to encapsulate a node in the tree.
  *
  */
 public class DataNode

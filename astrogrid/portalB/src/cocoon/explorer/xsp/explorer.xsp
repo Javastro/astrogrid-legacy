@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--+
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/cocoon/explorer/xsp/Attic/explorer.xsp,v $</cvs:source>
+    | <cvs:date>$Author: dave $</cvs:date>
+    | <cvs:author>$Date: 2003/06/26 14:15:10 $</cvs:author>
+    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:log>
+    | $Log: explorer.xsp,v $
+    | Revision 1.1  2003/06/26 14:15:10  dave
+    | Added explorer pages and actions to Cocoon
+    |
+    | </cvs:log>
+    | 
+    +-->
+<xsp:page language="java"
+		create-session="true"
+		xmlns:xsp="http://apache.org/xsp"
+		xmlns:xsp-session="http://apache.org/xsp/session/2.0"
+		xmlns:xsp-request="http://apache.org/xsp/request/2.0"
+		>
+
+	<!--+
+	    | Import any java classes here.
+	    +-->
+	<xsp:structure>
+		<xsp:include>java.io.IOException</xsp:include>
+		<xsp:include>java.util.Iterator</xsp:include>
+		<xsp:include>org.astrogrid.portal.session.AstPortalSession</xsp:include>
+		<xsp:include>org.astrogrid.portal.cocoon.explorer.ExplorerView</xsp:include>
+		<xsp:include>org.astrogrid.portal.services.myspace.client.data.DataNode</xsp:include>
+		<xsp:include>org.astrogrid.portal.services.myspace.client.data.DataNodeWalker</xsp:include>
+	</xsp:structure>
+
+	<!--+
+	    | Class level Java code goes here.
+	    +-->
+	<xsp:logic>
+		<![CDATA[
+		//
+		// Display a tree node.
+		// The 'level' param is the depth in the tree.
+		// The 'more' param indicates if this node has more siblings.
+		// Easier to do these tests here than in the xsl stylesheet.
+		public void tree(ExplorerView view, DataNode node, int level, boolean more)
+			throws SAXException
+			{
+			AttributesImpl xspAttr = new AttributesImpl();
+			]]>
+			<xsp:element name="node">
+				<xsp:attribute name="ident"><xsp:expr>node.getIdent()</xsp:expr></xsp:attribute>
+				<xsp:attribute name="name"><xsp:expr>node.getName()</xsp:expr></xsp:attribute>
+				<xsp:attribute name="href-name"><xsp:expr>view.encode(node.getName())</xsp:expr></xsp:attribute>
+				<xsp:attribute name="type"><xsp:expr>node.getType()</xsp:expr></xsp:attribute>
+				<xsp:attribute name="path"><xsp:expr>node.getPath()</xsp:expr></xsp:attribute>
+				<xsp:attribute name="href-path"><xsp:expr>view.encode(node.getPath())</xsp:expr></xsp:attribute>
+				<xsp:attribute name="level"><xsp:expr>level</xsp:expr></xsp:attribute>
+				<xsp:attribute name="more"><xsp:expr>more</xsp:expr></xsp:attribute>
+				<xsp:logic>
+					<![CDATA[
+					//
+					// Step through each of the child nodes.
+					Iterator iter = node.iterator() ;
+					for (int i = 0 ; iter.hasNext() ; i++)
+						{
+						//
+						// Step down the next node in the tree.
+						DataNode next = (DataNode) iter.next() ;
+						tree(view, next, (level + 1), iter.hasNext()) ;
+						}
+					]]>
+				</xsp:logic>
+			</xsp:element>
+			<![CDATA[
+			}
+		]]>
+	</xsp:logic>
+
+	<!--+
+	    | The XSP page needs one non-xsp tag.
+	    | Anything in here gets added inside the Generator generate() method.
+	    +-->
+	<page>
+
+		<!--+
+		    | Any code wrapped in xsp-logic tags will get added to the Generator generate() method.
+		    | Enclosing the code in a CDATA block means that you don't have to escape < and > symbols.
+		    +-->
+		<xsp:logic>
+			<![CDATA[
+			//
+			// Our current portal session.
+			AstPortalSession portal = null ;
+			//
+			// Our current explorer view.
+			ExplorerView view = null ;
+			//
+			// Get our AstSession from our Cocoon request.
+			portal = (AstPortalSession) request.getAttribute(AstPortalSession.HTTP_REQUEST_TAG) ;
+			//
+			// Get our ExplorerView from our Cocoon request.
+			view = (ExplorerView) request.getAttribute(ExplorerView.HTTP_REQUEST_TAG) ;
+			]]>
+		</xsp:logic>
+		<!-- Page options -->
+		<options>
+			<!-- Static list of available paths -->
+			<paths>
+				<path path="/"          name="root"/>
+				<path path="/clq"       name="clq"/>
+				<path path="/clq/serv1" name="clq/serv1"/>
+				<path path="/clq/serv2" name="clq/serv2"/>
+			</paths>
+			<!-- Static list of available services -->
+			<services>
+				<xsp:element name="service">
+					<xsp:attribute name="name">Local host</xsp:attribute>
+					<xsp:attribute name="url">http://localhost:8080/axis/services/MySpaceManager</xsp:attribute>
+				</xsp:element>
+				<xsp:element name="service">
+					<xsp:attribute name="name">Cambridge (dave)</xsp:attribute>
+					<xsp:attribute name="url">http://capc49.ast.cam.ac.uk:8080/axis/services/MySpaceManager</xsp:attribute>
+				</xsp:element>
+				<xsp:element name="service">
+					<xsp:attribute name="name">Leicester (hydra)</xsp:attribute>
+					<xsp:attribute name="url">http://143.210.36.120:8080/axis/services/MySpaceManager</xsp:attribute>
+				</xsp:element>
+				<xsp:element name="service">
+					<xsp:attribute name="name">Leicester (qin)</xsp:attribute>
+					<xsp:attribute name="url">http://143.210.36.131:8080/axis/services/MySpaceManager</xsp:attribute>
+				</xsp:element>
+			</services>
+		</options>
+		<xsp:logic>
+			<![CDATA[
+			if (null != portal)
+				{
+				]]>
+				<xsp:element name="session">
+					<xsp:attribute name="ident"><xsp:expr>portal.getIdent()</xsp:expr></xsp:attribute>
+					<views>
+						<xsp:logic>
+							<![CDATA[
+							Iterator iter = portal.getExplorerViews() ;
+							while (iter.hasNext())
+								{
+								ExplorerView next = (ExplorerView) iter.next() ;
+								]]>
+								<xsp:element name="view">
+									<xsp:attribute name="ident"><xsp:expr>next.getIdent()</xsp:expr></xsp:attribute>
+									<xsp:attribute name="path"><xsp:expr>next.getExplorerPath()</xsp:expr></xsp:attribute>
+								</xsp:element>
+								<![CDATA[
+								}
+							]]>
+						</xsp:logic>
+					</views>
+				</xsp:element>
+				<![CDATA[
+				}
+			]]>
+		</xsp:logic>
+		<xsp:logic>
+			<![CDATA[
+			if (null != view)
+				{
+				]]>
+				<view>
+					<xsp:attribute name="ident"><xsp:expr>view.getIdent()</xsp:expr></xsp:attribute>
+					<xsp:attribute name="path"><xsp:expr>view.getExplorerPath()</xsp:expr></xsp:attribute>
+					<xsp:attribute name="service"><xsp:expr>view.getMySpaceLocation()</xsp:expr></xsp:attribute>
+					<current>
+						<xsp:attribute name="name"><xsp:expr>view.getCurrentName()</xsp:expr></xsp:attribute>
+						<xsp:attribute name="path"><xsp:expr>view.getCurrentPath()</xsp:expr></xsp:attribute>
+						<xsp:attribute name="href-path"><xsp:expr>view.getCurrentPathEncoded()</xsp:expr></xsp:attribute>
+					</current>
+					<selected>
+						<xsp:attribute name="name"><xsp:expr>view.getSelectedName()</xsp:expr></xsp:attribute>
+						<xsp:attribute name="path"><xsp:expr>view.getSelectedPath()</xsp:expr></xsp:attribute>
+						<xsp:attribute name="href-path"><xsp:expr>view.getSelectedPathEncoded()</xsp:expr></xsp:attribute>
+						<xsp:attribute name="action"><xsp:expr>view.getSelectedAction()</xsp:expr></xsp:attribute>
+					</selected>
+					<tree>
+						<xsp:logic>
+							<![CDATA[
+								//
+								// Display the view tree.
+								tree(view, view.getTree(), 0, false) ;
+							]]>
+						</xsp:logic>
+					</tree>
+				</view>
+				<![CDATA[
+				}
+			]]>
+		</xsp:logic>
+	</page>
+</xsp:page>
