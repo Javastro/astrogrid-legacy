@@ -1,0 +1,453 @@
+package id13r63dui3ad7idui4i238;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id13r63dui3ad7idui4i238.node:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:design#Class#id13r63dui3ad7idui4i238.node1:oiref><oihard>
+@__modelType reference 
+*/
+class reference2 {
+}/**
+@__ref <oiref:design#Class#id13r63dui3ad7idui4i238.node3:oiref><oihard>
+@__modelType reference 
+*/
+class reference4 {
+}/**
+@__ref <oiref:design#Class#id13r63dui3ad7idui4i238.node5:oiref><oihard>
+@__modelType reference 
+*/
+class reference6 {
+}/**
+@__ref <oiref:design#Class#id13r63dui3ad7idui4i238.node32:oiref><oihard>
+@__modelType reference 
+*/
+class reference33 {
+}/**
+@__ref <oiref:design#Class#id13r63dui3ad7idui4i238.node34:oiref><oihard>
+@__modelType reference 
+*/
+class reference35 {
+}/**
+@__ref <oiref:design#Class#id13r63dui3ad7idui4i238.node36:oiref><oihard>
+@__modelType reference 
+*/
+class reference37 {
+}/**
+@__ref <oiref:design#Class#id13r63dui3ad7idui4i238.node38:oiref><oihard>
+@__modelType reference 
+*/
+class reference39 {
+}/**
+@__ref <oiref:design#Class#id13r63dui3ad7idui4i238.node41:oiref><oihard>
+@__modelType reference 
+*/
+class reference42 {
+}/**
+@__ref <oiref:design#Class#id13r63dui3ad7idui4i238.node43:oiref><oihard>
+@__modelType reference 
+*/
+class reference45 {
+}}/**
+
+@__tags
+@shapeType ActivityDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions 
+<oigroup:<oiref:design#Class#id13r63dui3ad7idui4i238.node36:oiref>=920,150,230,240,0:oigroup>
+<oigroup:<oiref:design#Class#id13r63dui3ad7idui4i238.node1.node15.link:oiref>=410,501,410,560:oigroup>
+<oigroup:<oiref:design#Class#id13r63dui3ad7idui4i238.node41:oiref>=-130,510,380,120,0:oigroup>
+<oigroup:<oiref:design#Class#id13r63dui3ad7idui4i238.node.node20:oiref>=140,440,15,15,1:oigroup>
+<oigroup:<oiref:design#Class#id13r63dui3ad7idui4i238.node.node9.link:oiref>=198,121,350,121:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id13r63dui3ad7idui4i238.node1.node14.link28:oiref>=190,310,200,36,1:oigroup>
+<oigroup:<oiref:design#Class#id13r63dui3ad7idui4i238.node32.link:oiref>=920,105,895,105:oigroup>
+<oigroup:<oiref:design#Class#id13r63dui3ad7idui4i238.node38:oiref>=930,400,240,280,0:oigroup>
+<oigroup:<oiref:design#Class#id13r63dui3ad7idui4i238.node5.node:oiref>=760,370,85,23,1:oigroup>
+<oigroup:<oiref:design#Class#id13r63dui3ad7idui4i238.node1.node27.link:oiref>=408,441,408,478:oigroup>
+<oigroup:<oiref:design#Class#id13r63dui3ad7idui4i238.node41.link:oiref>=148,510,148,455:oigroup>
+<oigroup:<oiref:design#Class#id13r63dui3ad7idui4i238.node43:oiref>=650,530,258,100,0:oigroup>
+<oigroup:<oiref:design#Class#id13r63dui3ad7idui4i238.node1.node19:oiref>=360,168,100,20,0:oigroup>
+<oigroup:<oiref:design#Class#id13r63dui3ad7idui4i238.node.node18:oiref>=100,260,98,23,1:oigroup>
+<oigroup:<oiref:design#Class#id13r63dui3ad7idui4i238.node1.node29.link31:oiref>=430,350,570,358,570,430:oigroup>
+<oigroup:<oiref:design#Class#id13r63dui3ad7idui4i238.node.node23:oiref>=80,380,137,23,1:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id13r63dui3ad7idui4i238.node3.node.link:oiref>=600,120,102,18,1:oigroup>
+<oigroup:<oiref:design#Class#id13r63dui3ad7idui4i238.node38.link:oiref>=930,427,898,427:oigroup>
+<oigroup:<oiref:design#Class#id13r63dui3ad7idui4i238.node1.node25:oiref>=350,560,120,6,0:oigroup>
+<oigroup:<oiref:design#Class#id13r63dui3ad7idui4i238.node1.node14.link:oiref>=432,234,432,290:oigroup>
+<oigroup:<oiref:design#Class#id13r63dui3ad7idui4i238.node1.node30:oiref>=562,430,15,15,1:oigroup>
+<oigroup:<oiref:design#Class#id13r63dui3ad7idui4i238.node1.node14.link28:oiref>=400,234,250,270,250,430,155,448:oigroup>
+<oigroup:<oiref:design#Class#id13r63dui3ad7idui4i238.node1.node:oiref>=350,78,115,64,0:oigroup>
+<oigroup:<oiref:design#Class#id13r63dui3ad7idui4i238.node.node18.link:oiref>=149,283,149,380:oigroup>
+<oigroup:<oiref:design#Class#id13r63dui3ad7idui4i238.node1:oiref>=310,50,290,568,0:oigroup>
+<oigroup:<oiref:design#Class#id13r63dui3ad7idui4i238.node1.node27:oiref>=330,418,156,23,1:oigroup>
+<oigroup:<oiref:design#Class#id13r63dui3ad7idui4i238.node5.node.link:oiref>=810,370,810,170,810,123:oigroup>
+<oigroup:<oiref:design#Class#id13r63dui3ad7idui4i238.node34.link:oiref>=10,226,50,226:oigroup>
+<oigroup:<oiref:design#Class#id13r63dui3ad7idui4i238.node43.link:oiref>=650,570,430,566:oigroup>
+<oigroup:<oiref:design#Class#id13r63dui3ad7idui4i238.node3:oiref>=710,50,185,137,0:oigroup>
+<oigroup:<oiref:design#Class#id13r63dui3ad7idui4i238.node1.node29.link:oiref>=440,370,440,418:oigroup>
+<oigroup:<oiref:design#Class#id13r63dui3ad7idui4i238.node.node23.link:oiref>=150,403,150,440:oigroup>
+<oigroup:<oiref:design#Class#id13r63dui3ad7idui4i238.node.node10:oiref>=139,80,12,12,1:oigroup>
+<oigroup:<oiref:design#Class#id13r63dui3ad7idui4i238.node1.node29:oiref>=410,350,60,20,1:oigroup>
+<oigroup:<oiref:design#Class#id13r63dui3ad7idui4i238.node3.node.link:oiref>=786,123,530,160,530,228:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id13r63dui3ad7idui4i238.node1.node19.link22:oiref>=380,200,102,18,1:oigroup>
+<oigroup:<oiref:design#Class#id13r63dui3ad7idui4i238.node32:oiref>=920,30,230,110,0:oigroup>
+<oigroup:<oiref:design#Class#id13r63dui3ad7idui4i238.node5:oiref>=710,290,188,191,0:oigroup>
+<oigroup:<oiref:design#Class#id13r63dui3ad7idui4i238.node1.node16.link:oiref>=435,313,435,350:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id13r63dui3ad7idui4i238.node1.node29.link:oiref>=450,385,90,18,1:oigroup>
+<oigroup:<oiref:design#Class#id13r63dui3ad7idui4i238.node1.node25.link:oiref>=390,566,390,590,620,590,620,450,817,393:oigroup>
+<oigroup:<oiref:design#Class#id13r63dui3ad7idui4i238.node1.node.link26:oiref>=410,142,410,168:oigroup>
+<oigroup:<oiref:design#Class#id13r63dui3ad7idui4i238.node.node10.link:oiref>=145,92,145,110:oigroup>
+<oigroup:<oiref:design#Class#id13r63dui3ad7idui4i238.node38.link40:oiref>=930,489,513,489:oigroup>
+<oigroup:<oiref:design#Class#id13r63dui3ad7idui4i238.node3.node:oiref>=760,100,106,23,1:oigroup>
+<oigroup:<oiref:design#Class#id13r63dui3ad7idui4i238.node1.node14:oiref>=340,228,220,6,0:oigroup>
+<oigroup:<oiref:design#Class#id13r63dui3ad7idui4i238.node1.node19.link:oiref>=360,178,150,180,150,260:oigroup>
+<oigroup:<oiref:design#Class#id13r63dui3ad7idui4i238.node34:oiref>=-240,50,250,350,0:oigroup>
+<oigroup:<oiref:design#Class#id13r63dui3ad7idui4i238.node.node9:oiref>=100,110,98,23,1:oigroup>
+<oigroup:<oiref:design#Class#id13r63dui3ad7idui4i238.node:oiref>=50,52,189,428,0:oigroup>
+<oigroup:<oiref:design#Class#id13r63dui3ad7idui4i238.node1.node15:oiref>=312,478,201,23,1:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id13r63dui3ad7idui4i238.node1.node.link26:oiref>=420,146,44,18,1:oigroup>
+<oigroup:<oiref:design#Class#id13r63dui3ad7idui4i238.node36.link:oiref>=920,270,600,270:oigroup>
+<oigroup:<oiref:design#Class#id13r63dui3ad7idui4i238.node1.node19.link22:oiref>=393,188,393,228:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id13r63dui3ad7idui4i238.node1.node19.link:oiref>=220,160,99,18,1:oigroup>
+<oigroup:<oiref:design#Class#id13r63dui3ad7idui4i238.node1.node16:oiref>=330,290,195,23,1:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id13r63dui3ad7idui4i238.node1.node29.link31:oiref>=480,330,103,18,1:oigroup>
+
+*/
+class __positions {
+}/**
+@shapeType SwimLane
+@__modelType node
+@name JobController
+@backgroundColor 200,200,200 
+*/
+class node {
+/**
+@shapeType Activity
+@__modelType node
+@name create job 
+*/
+class node9 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id13r63dui3ad7idui4i238.node1.node:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType StartState
+@__modelType node
+@name StartState1 
+*/
+class node10 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id13r63dui3ad7idui4i238.node.node9:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name delete job 
+*/
+class node18 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id13r63dui3ad7idui4i238.node.node23:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType EndState
+@__modelType node
+@name EndState1 
+*/
+class node20 {
+}/**
+@shapeType Activity
+@__modelType node
+@name format message 
+*/
+class node23 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id13r63dui3ad7idui4i238.node.node20:oiref><oihard> 
+*/
+class link {
+}}}/**
+@shapeType SwimLane
+@__modelType node
+@name JobScheduler
+@backgroundColor 200,200,200 
+*/
+class node1 {
+/**
+@shapeType Activity
+@__modelType node
+@name update execution details 
+*/
+class node {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id13r63dui3ad7idui4i238.node1.node19:oiref><oihard> 
+@event error?
+*/
+class link26 {
+}}/**
+@shapeType SyncBar
+@__modelType node
+@name SyncBar1 
+*/
+class node14 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id13r63dui3ad7idui4i238.node1.node16:oiref><oihard> 
+*/
+class link {
+}/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id13r63dui3ad7idui4i238.node.node20:oiref><oihard>
+@event normal return on job submission 
+*/
+class link28 {
+}}/**
+@shapeType Activity
+@__modelType node
+@name call Registry to locate tool 
+*/
+class node15 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id13r63dui3ad7idui4i238.node1.node25:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name identify candidate step(s) 
+*/
+class node16 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id13r63dui3ad7idui4i238.node1.node29:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType SyncBar
+@__modelType node
+@name SyncBar2 
+*/
+class node25 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id13r63dui3ad7idui4i238.node5.node:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Decision
+@__modelType node
+@name Errors? 
+*/
+class node19 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id13r63dui3ad7idui4i238.node.node18:oiref><oihard>
+@event errors occured 
+*/
+class link {
+}/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id13r63dui3ad7idui4i238.node1.node14:oiref><oihard>
+@event schedule steps 
+*/
+class link22 {
+}}/**
+@shapeType Activity
+@__modelType node
+@name update step details 
+*/
+class node27 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id13r63dui3ad7idui4i238.node1.node15:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Decision
+@__modelType node
+@name Decision1 
+*/
+class node29 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id13r63dui3ad7idui4i238.node1.node27:oiref><oihard> 
+@event for each step
+*/
+class link {
+}/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id13r63dui3ad7idui4i238.node1.node30:oiref><oihard>
+@event job completion 
+*/
+class link31 {
+}}/**
+@shapeType EndState
+@__modelType node
+@name EndState2 
+*/
+class node30 {
+}}/**
+@shapeType SwimLane
+@__modelType node
+@name JobMonitor
+@backgroundColor 200,200,200 
+*/
+class node3 {
+/**
+@shapeType Activity
+@__modelType node
+@name resume job 
+*/
+class node {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id13r63dui3ad7idui4i238.node1.node14:oiref><oihard>
+@event schedule steps 
+*/
+class link {
+}}}/**
+@shapeType SwimLane
+@__modelType node
+@name CEC
+@backgroundColor 200,200,200 
+*/
+class node5 {
+/**
+@shapeType Activity
+@__modelType node
+@name execute 
+*/
+class node {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id13r63dui3ad7idui4i238.node3.node:oiref><oihard> 
+*/
+class link {
+}}}/**
+@shapeType Note
+@__modelType node
+@name Note1
+@text JobMonitor is a webservice that is invoked when a CEC implementing step has completed. It is a thin wrapper into JES 
+*/
+class node32 {
+/**
+@shapeType NoteLink
+@__modelType link
+@__ref <oiref:design#Class#id13r63dui3ad7idui4i238.node3:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Note
+@__modelType node
+@name Note2
+@text The JobController is the webservice that acts as the public face into the Job Execution System (JES). But see also the JobMonitor. It is the only way of submitting jobs (shown here as the start point), and provides all the functionality required by a user to interact with JES.  The principal guts of JES, however, are hidden within the JobScheduler.
+NB: The following levels of functionality are not shown on the current diagram.
+(1) cancel job 
+(2) delete job
+(3) read job list
+(4) read job 
+*/
+class node34 {
+/**
+@shapeType NoteLink
+@__modelType link
+@__ref <oiref:design#Class#id13r63dui3ad7idui4i238.node:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Note
+@__modelType node
+@name Note3
+@text The JobScheduler is the major part of JES (the Job Execution System). However, it is an internal component with no exernal webservice interface. It is invoked by the JobController and the JobMonitor. The details shown here are barely a thumbnail sketch. However, the only webservices invoked are currently to the Registry and to implementors of the CEC interface. 
+*/
+class node36 {
+/**
+@shapeType NoteLink
+@__modelType link
+@__ref <oiref:design#Class#id13r63dui3ad7idui4i238.node1:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Note
+@__modelType node
+@name Note4
+@text The Common Execution  Controller (CEC) is in fact an interface that must be supported by whatever desires to run as a subservient step within a workflow (eg: a datacenter query or a tool wrapper). The implementor must also ensure a  mechanism exists to make a suitable entry of meta and location data into the Astrogrid Registry for each concrete (ie: deployed) instance. 
+(Note: requires a diagram of its own). 
+*/
+class node38 {
+/**
+@shapeType NoteLink
+@__modelType link
+@__ref <oiref:design#Class#id13r63dui3ad7idui4i238.node5:oiref><oihard> 
+*/
+class link {
+}/**
+@shapeType NoteLink
+@__modelType link
+@__ref <oiref:design#Class#id13r63dui3ad7idui4i238.node1.node15:oiref><oihard> 
+*/
+class link40 {
+}}/**
+@shapeType Note
+@__modelType node
+@name Note5
+@text The normal return on job submission  is almost impossible to display with clarity on an activity diagram. This is because the job steps are invoked on an asynchronous basis. In reality, this endpoint is pertinent only to first scheduling. The other endpoint is for job completion (which see). 
+*/
+class node41 {
+/**
+@shapeType NoteLink
+@__modelType link
+@__ref <oiref:design#Class#id13r63dui3ad7idui4i238.node.node20:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Note
+@__modelType node
+@name Note6
+@text All dispatching of steps currently takes place on an asynchronous basis, with the JobMonitor service acting as a callback when a step finishes. 
+*/
+class node43 {
+/**
+@shapeType NoteLink
+@__modelType link
+@__ref <oiref:design#Class#id13r63dui3ad7idui4i238.node1.node25:oiref><oihard> 
+*/
+class link {
+}}
