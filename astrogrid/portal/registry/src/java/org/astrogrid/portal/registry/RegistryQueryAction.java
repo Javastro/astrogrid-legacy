@@ -81,7 +81,7 @@ public class RegistryQueryAction extends AbstractAction
    public static Config conf = null;   
    
    private static final String RESOURCE_XML_URL_TEMPLATE_PROPERTY =
-                                               "QueryResourceTemplate.xml";   
+                                               "QueryXMLPaths.xml";   
   
    static {
       if(conf == null) {
@@ -126,25 +126,26 @@ public class RegistryQueryAction extends AbstractAction
          //Create the Document object and throw it to createMap
          try {
            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-           dbf.setNamespaceAware(true);
+           //dbf.setNamespaceAware(true);
+           
            DocumentBuilder regBuilder = dbf.newDocumentBuilder();
-           registryDocument = getDocumentTemplate();
-           printDebug(method, "the xml from getDocumentTemplate = " +
-               XMLUtils.DocumentToString(registryDocument).substring(0,200) );
+           registryDocument = getDocumentTemplate();           
          } catch (ParserConfigurationException e) {
            e.printStackTrace();
          }
          // now get the unique last text nodes of the map.
          // should be able to do an indexOf and see if their is an "attr"
-         // which you put in "@" in front of the string.      
-         Map mp = RegistryAdminDocumentHelper.createMap(registryDocument);
+         // which you put in "@" in front of the string.
+         RegistryAdminDocumentHelper rad = new RegistryAdminDocumentHelper();
+         Map mp = rad.createMap(registryDocument);
          Set st = mp.keySet();
          Iterator iter = st.iterator();
-         TreeMap selectItems = new TreeMap();
+         //TreeMap selectItems = new TreeMap();
          //Go through the Map and put it in a TreeMap which is
          //an alphabetical list.
          //And cut off everything but the last node which is the text or
          //attribute node.
+         /*
          while(iter.hasNext()) {
             String key = (String)iter.next();
             String []split = key.split("\\/");
@@ -163,10 +164,13 @@ public class RegistryQueryAction extends AbstractAction
                selectItems.put(key,null);
             }//else
          }//while
-         request.setAttribute("selectitems",selectItems);
+         */
+         //request.setAttribute("selectitems",selectItems);
+         request.setAttribute("selectitems",mp);
+         
          
          if(DEBUG_FLAG) {
-            printDebug(method, "selectitems size = " + selectItems.size());
+            printDebug(method, "selectitems size = " + mp.size());
          }            
    
          
@@ -218,7 +222,7 @@ public class RegistryQueryAction extends AbstractAction
             selItemOperation = request.getParameter("selectitemop0");
             selItemValue = request.getParameter("selectitemvalue0");
                
-            query += "<selection item='.//*:" + selItem + "' itemOp='" +
+            query += "<selection item='" + selItem + "' itemOp='" +
                        selItemOperation + "' value='" + selItemValue + "'/>";
             for(int i = 1;i < crit_number;i++) {
                selJoinType = request.getParameter(("selectjointype" + i));
@@ -228,7 +232,7 @@ public class RegistryQueryAction extends AbstractAction
                selItemOperation = request.getParameter("selectitemop" + i);
                selItemValue = request.getParameter("selectitemvalue" + i);
                
-               query += "<selection item='.//*:" + selItem + "' itemOp='" +
+               query += "<selection item='" + selItem + "' itemOp='" +
                           selItemOperation + "' value='" + selItemValue + "'/>";
             }
             query += "</selectionSequence></query>";
@@ -256,11 +260,15 @@ public class RegistryQueryAction extends AbstractAction
                   for(int i = 0;i < nl.getLength();i++) {
                       resultNodes.add(nl.item(i));
                   }
-                  request.setAttribute("resultNodes",resultNodes);      
+                  request.setAttribute("resultNodes",resultNodes);
+                  if(nl.getLength() <= 0) {
+                      errorMessage = "Your query produced no results";
+                  }
                   
                   //Here are the managed authorities.
                   //Which determine which AuthorityID
                   //the registry owns and hence can do an update for.
+                  /*
                   if(resultXML.size() > 0) {
                      HashMap hm = (HashMap)session.getAttribute(
                                       "ManageAuthorities" );
@@ -269,6 +277,7 @@ public class RegistryQueryAction extends AbstractAction
                         session.setAttribute("ManageAuthorities",hm);
                      }//if              
                   }//if
+                  */
             }catch(NoResourcesFoundException nrfe) {
                //nrfe.printStackTrace();
                errorMessage = "Your query produced no results";

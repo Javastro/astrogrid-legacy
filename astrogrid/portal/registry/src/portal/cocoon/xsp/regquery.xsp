@@ -86,16 +86,24 @@
 				System.out.println("in xsp size of selectlist = " + selectList.size());
 				iter = st.iterator();
 				while (iter.hasNext()) {
-					key = (String)iter.next();					
-					val = (String)selectList.get(key);
+					key = (String)iter.next();
+					//val = (String)selectList.get(key);
+					if(key.indexOf("vr:Resource") != -1) {
+						key = key.substring((key.indexOf("vr:Resource")+ 12));
+						
+						if(key.trim().length() > 0) {
+							if(key.charAt((key.length()-1)) == '/') 
+							   key = key.substring(0,(key.length()-1));
 			]]>
 					<xsp:element name="selectitem">
 						<xsp:attribute name="name"><xsp:expr>key</xsp:expr></xsp:attribute>
-						<xsp:attribute name="val"><xsp:expr>val</xsp:expr></xsp:attribute>
+						<xsp:attribute name="val"><xsp:expr>key</xsp:expr></xsp:attribute>
 					</xsp:element>
 			<![CDATA[
-				}
-					}
+					   }//if
+					}//if
+				}//while
+			    }//if
 			]]>
 			</xsp:logic>
 		</selectitems>

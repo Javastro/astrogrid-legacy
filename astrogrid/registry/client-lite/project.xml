@@ -285,14 +285,18 @@
             <includes>
                 <include>**/*Junit.java</include>
             </includes>
-            <!--+
-                | The resources for our tests.
-
             <resources>
                 <resource>
+                    <directory>${basedir}/src/junit</directory>
+                    <includes>
+                        <include>**/*.xml</include>
+                        <include>**/*.xmltemplate</include>
+                        <include>**/*.properties</include>
+                        <include>**/*.sql</include>
+                        <include>**/*.ddl</include>
+                    </includes>
                 </resource>
             </resources>
-                                +-->
         </unitTest>
     </build>
 
