@@ -4,15 +4,17 @@
 
 
   <!--+
-          | Display tool details
-          |
-          | Display table containing details of step and the tool that step contains.
-          | Details of parameters etc are displayed elsewhere. 
-          | If step contains no tool then tool can be inserted into step from here.
-          | Join condition can be alterred from here.
-          | Step name/description can be set from here.
-          |
-          +-->
+       | Display tool details
+       |
+       | Display table containing details of step and the tool that step contains.
+       | Details of parameters etc are displayed elsewhere. 
+       | If step contains no tool then tool can be inserted into step from here.
+       | Join condition can be alterred from here.
+       | Step name/description can be set from here.
+       |
+       | Also includes container_insert_form which simply holds value of selected id and index
+       | that is used when user attempts to insert a sequence/flow/step
+       +-->
     <xsl:template name="tool-details">
     <p />
     <div style="visibility: hidden" id="step_tool_details">
@@ -81,7 +83,19 @@
                         </tr>
                     </table>                    
                 </form>
+<!--                <form name="container_insert_form">
+                   <input type="hidden" name="action"/>
+                   <input type="hidden" name="id"/>
+                   <input type="hidden" name="index"/>
+                </form>
+-->                
             </div>
+                <form name="container_insert_form">
+                   <input type="hidden" name="action"/>
+                   <input type="hidden" name="activity_key"/>
+                   <input type="hidden" name="activity_index_key"/>
+                   <input type="submit" value="XXXXXXX"/>
+                </form>            
         </xsl:template>
         
 </xsl:stylesheet>

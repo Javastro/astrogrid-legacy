@@ -6,14 +6,14 @@
         if (image_selected==false) 
         {
             image_selected=true;
-            document.getElementById(id).src="/astrogrid-portal/mount/test/"+node_type+"_selected.gif";
+            document.getElementById(id).src="/astrogrid-portal/mount/workflow/"+node_type+"_selected.gif";
 		    previously_selected=id;
 		    previously_selected_node = node_type;
         }
         else
         {		
-		    document.getElementById(previously_selected).src="/astrogrid-portal/mount/test/"+previously_selected_node+".gif";		       
-            document.getElementById(id).src="/astrogrid-portal/mount/test/"+node_type+"_selected.gif";
+		    document.getElementById(previously_selected).src="/astrogrid-portal/workflow/test/"+previously_selected_node+".gif";		       
+            document.getElementById(id).src="/astrogrid-portal/mount/workflow/"+node_type+"_selected.gif";
 		    previously_selected=id;		  
 		    previously_selected_node = node_type;		  
         }
@@ -45,6 +45,21 @@
         document.properties_form.tool_name.value = tool_name;
         document.properties_form.tool_documentation.value = tool_documentation;                    
     }
+ 
+ 
+    function populate_container_insert_form(index, id, action)
+    {
+       document.container_insert_form.activity_index_key.value = index;
+       document.container_insert_form.activity_key.value = id;           
+       document.container_insert_form.action.value = action;
+    } 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
                
                
     function show_select(object)

@@ -12,7 +12,7 @@ package org.astrogrid.portal.cocoon.workflow.jes;
 
 import org.apache.log4j.Logger;
 
-import org.astrogrid.portal.workflow.*;
+//import org.astrogrid.portal.workflow.*; 
 import org.astrogrid.portal.workflow.intf.*;
 import org.astrogrid.community.beans.v1.Credentials;
 import org.astrogrid.community.beans.v1.Account;
@@ -20,12 +20,23 @@ import org.astrogrid.community.beans.v1.Group;
 import org.astrogrid.jes.delegate.JobSummary;
 import org.astrogrid.workflow.beans.v1.Workflow;
 
-//import org.astrogrid.community.delegate.policy.PolicyServiceDelegate;
-//import org.astrogrid.community.policy.data.PolicyPermission;
-//import org.astrogrid.community.service.authentication.data.SecurityToken;
+import org.astrogrid.config.Config;
+import org.astrogrid.config.SimpleConfig;
+
+import org.astrogrid.community.client.policy.service.PolicyServiceDelegate;
+import org.astrogrid.community.client.policy.service.PolicyServiceMockDelegate;
+import org.astrogrid.community.client.policy.service.PolicyServiceSoapDelegate;
+
+import org.astrogrid.community.common.policy.data.PolicyPermission  ;
+import org.astrogrid.community.common.policy.data.PolicyCredentials ;
+
+import org.astrogrid.community.common.exception.CommunityIdentifierException;
+import org.astrogrid.community.common.exception.CommunityServiceException;
+import org.astrogrid.community.common.exception.CommunityPolicyException;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.net.MalformedURLException;
 
 import org.apache.avalon.framework.parameters.Parameters;
 import org.apache.cocoon.acting.AbstractAction;
@@ -53,6 +64,12 @@ public class JesAction extends AbstractAction {
     private static final boolean DEBUG_ENABLED = true;
         
     private static Logger logger = Logger.getLogger( JesAction.class ); 
+        
+    /**
+     * Name of JNDI property holding security delegate endpoint URL
+     */
+    public static final String ORG_ASTROGRID_PORTAL_COMMUNITY_URL = "org.astrogrid.portal.community.url";        
+        
         
     private static final String
         ASTROGRIDERROR_JOB_PERMISSION_DENIED = "AGWKFE00060",
@@ -114,10 +131,6 @@ public class JesAction extends AbstractAction {
         Map retMap = null;
         
         try { 
-            debug( "About to check properties loaded");
-            // Load the workflow config file and messages...
-//            WKF.getInstance().checkPropertiesLoaded();
-//            debug( "Properties loaded OK");
             
             myAction = new JesActionImpl( redirector,
                                           resolver,
@@ -128,9 +141,9 @@ public class JesAction extends AbstractAction {
             retMap = myAction.act();    
                                           
         }
-//        catch ( AstroGridException agex ) {
-//            debug( agex.toString() );
-//        }
+        catch ( Exception ex ) {
+            ex.printStackTrace();
+        }
         finally {
             if( TRACE_ENABLED ) trace( "JesAction.act() exit" );  
         }
@@ -270,12 +283,13 @@ public class JesAction extends AbstractAction {
                 account.setName( userid );
                 account.setCommunity( community );
                 Group group = new Group();
+                group.setName( this.group );
                 group.setCommunity( community );
                         
                 this.credentials = new Credentials();
                 credentials.setAccount( account );
                 credentials.setGroup( group );
-                credentials.setSecurityToken( "1234" );
+                credentials.setSecurityToken( "dummy" );
 
             }
             finally {
@@ -285,6 +299,27 @@ public class JesAction extends AbstractAction {
                 
         } // end of retrieveUserDetails()
         
+       
+        /**
+         * Get the policy delegate.  
+         * Looks for the property org.astrogrid.portal.community.url
+         * if this property is not found (or is set to "dummy")
+         * then a mock delegate is returned.  
+         * @return either a genuine or mock delegate
+         * @throws MalformedURLException if the url is malformed
+         */
+        private PolicyServiceDelegate getPolicyDelegate() throws MalformedURLException {
+            final Config config = SimpleConfig.getSingleton();
+            final String endpoint = config.getString(ORG_ASTROGRID_PORTAL_COMMUNITY_URL, "dummy");
+            if ("dummy".equals(endpoint)) {
+                debug("Using dummy delegate");
+                return new PolicyServiceMockDelegate();
+            } else {
+                debug("Using delegate at "+endpoint);
+                return new PolicyServiceSoapDelegate(endpoint);
+            }
+        }       
+       
         
         private void consistencyCheck() throws ConsistencyException {
 			if( TRACE_ENABLED ) trace( "consistencyCheck() entry" );
@@ -292,9 +327,7 @@ public class JesAction extends AbstractAction {
 			debug( "community: " + community );
 			debug( "name: "  ); 
 			debug( "description: "  ); 
-            
-            
-            
+                       
             if( userid == null ) {
                ; // redirection required 
                 throw new ConsistencyException();
@@ -315,8 +348,8 @@ public class JesAction extends AbstractAction {
             try {
                 // For the moment this is where we have placed the door.
                 // If users cannot see a list, then they cannot do anything...
-                this.checkPermissions( AUTHORIZATION_RESOURCE_JOB
-                                     , AUTHORIZATION_ACTION_EDIT );
+//                this.checkPermissions( AUTHORIZATION_RESOURCE_JOB
+//                                     , AUTHORIZATION_ACTION_EDIT );
                 
                 JobExecutionService jes = workflowManager.getJobExecutionService();
                 JobSummary[] jobSummaries = jes.readJobList( credentials.getAccount() ) ;
@@ -332,10 +365,9 @@ public class JesAction extends AbstractAction {
             catch( WorkflowInterfaceException wix ) {
                  this.request.setAttribute( ERROR_MESSAGE_PARAMETER, wix.toString() ) ;
             }
-            catch( WorkflowException wfex ) {
+            catch( Exception ex ) {
                 
-                this.request.setAttribute(
-                   ERROR_MESSAGE_PARAMETER, wfex.toString() );
+                this.request.setAttribute(  ERROR_MESSAGE_PARAMETER, "permission denied" );
                 
             }
             finally {
@@ -346,70 +378,33 @@ public class JesAction extends AbstractAction {
         } // end of readJobList()   
            
   
-        private void checkPermissions ( String someResource, String anAction )
-                                                      throws WorkflowException {
-            if( TRACE_ENABLED )
-               trace( "JesActionImpl.checkPermission() entry" );
-/*                        
+        private void checkPermissions ( String someResource, String anAction ) 
+                                 throws CommunityServiceException, 
+                                        CommunityPolicyException, 
+                                        CommunityIdentifierException {
+            if( TRACE_ENABLED ) trace( "JesActionImpl.checkPermission() entry" ) ;
+                       
             PolicyServiceDelegate ps = null;
-            String communityAccount = null,
-                   credential = null;
-            
-            try {
-                
-                ps = new PolicyServiceDelegate();
-                communityAccount =
-                   (String) session.getAttribute( COMMUNITY_ACCOUNT_TAG );
-                credential =
-                   (String) session.getAttribute( CREDENTIAL_TAG );
-                boolean authorized = ps.checkPermissions( communityAccount,
-                                                          credential,
-                                                          someResource,
-                                                          anAction );
-                if( !authorized ) {
-                    
-                    PolicyPermission pp = ps.getPolicyPermission();
-                    
-                    String reason = pp.getReason();
-                        
-                    AstroGridMessage message = new AstroGridMessage(
-                            ASTROGRIDERROR_PASSTHRU, "Community", reason );
-                     
-                    throw new WorkflowException( message );
-                        
-                }
+            PolicyCredentials pCredentials = null;
+            PolicyPermission pPermission = null;
+            this.credentials = new Credentials();
+
+            try {               
+                ps = getPolicyDelegate () ;
+                pCredentials = new PolicyCredentials();
+                pCredentials.setAccount( this.credentials.getAccount().getName() );
+                pCredentials.setGroup( this.credentials.getGroup().getName() );
+                pPermission = ps.checkPermissions( pCredentials, someResource, anAction ) ;             
                
             }
-            catch( WorkflowException wfex ) {
-                
-                AstroGridMessage message = new AstroGridMessage(
-                           ASTROGRIDERROR_JOB_PERMISSION_DENIED,
-                           WKF.getClassName( this.getClass() ),
-                           wfex.getAstroGridMessage().toString() );
-                     
-                throw new WorkflowException( message, (Exception)wfex );
-                
-            }
-            catch( Exception ex ) {
-                
-                if( DEBUG_ENABLED) ex.printStackTrace();  
-               
-                String localizedMessage = ex.getLocalizedMessage();    
-               
-                AstroGridMessage message =new AstroGridMessage(
-                         ASTROGRIDERROR_JOB_PERMISSION_DENIED,
-                         WKF.getClassName( this.getClass() ),
-                         (localizedMessage == null) ? "" : localizedMessage );
-                     
-               throw new WorkflowException( message, ex );
-               
+            catch( MalformedURLException muex ) {
+                muex.printStackTrace();
             }
             finally {
-                if( TRACE_ENABLED )
-                   trace( "JesActionImpl.checkPermission() exit" );  
+                if( TRACE_ENABLED ) trace( "JesActionImpl.checkPermission() exit" ) ;  
             }
-*/           
-        } // end of checkPermission() 
+                        
+        } // end of checkPermission()
         
    
     } // end of inner class JesActionImpl

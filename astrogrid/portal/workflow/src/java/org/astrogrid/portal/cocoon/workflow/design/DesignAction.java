@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 //import org.astrogrid.i18n.*;
 //import org.astrogrid.AstroGridException;
 //import org.astrogrid.portal.workflow.WKF;
-import org.astrogrid.portal.workflow.WorkflowException;
+//import org.astrogrid.portal.workflow.WorkflowException;
 import org.astrogrid.portal.workflow.intf.*;
 import org.astrogrid.portal.cocoon.workflow.WorkflowHelper;
 
@@ -34,12 +34,24 @@ import org.astrogrid.community.beans.v1.Credentials;
 import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.community.beans.v1.Group;
 
-//import org.astrogrid.config.Config;
-//import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.config.Config;
+import org.astrogrid.config.SimpleConfig;
+
+import org.astrogrid.community.client.policy.service.PolicyServiceDelegate;
+import org.astrogrid.community.client.policy.service.PolicyServiceMockDelegate;
+import org.astrogrid.community.client.policy.service.PolicyServiceSoapDelegate;
+
+import org.astrogrid.community.common.policy.data.PolicyPermission  ;
+import org.astrogrid.community.common.policy.data.PolicyCredentials ;
+
+import org.astrogrid.community.common.exception.CommunityIdentifierException;
+import org.astrogrid.community.common.exception.CommunityServiceException;
+import org.astrogrid.community.common.exception.CommunityPolicyException;
 
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Enumeration;
+import java.net.MalformedURLException;
 
 import org.apache.avalon.framework.parameters.Parameters;
 import org.apache.cocoon.acting.AbstractAction;
@@ -69,6 +81,11 @@ public class DesignAction extends AbstractAction {
 	private static final String ASTROGRIDERROR_WORKFLOW_PERMISSION_DENIED =
 		"AGWKFE00050",
 		ASTROGRIDERROR_PASSTHRU = "AGWKFE00100";  
+        
+    /**
+     * Name of JNDI property holding security delegate endpoint URL
+     */
+    public static final String ORG_ASTROGRID_PORTAL_COMMUNITY_URL = "org.astrogrid.portal.community.url";        
         
 	/**
 	 * Cocoon param for the user param in the session.
@@ -153,6 +170,9 @@ public class DesignAction extends AbstractAction {
         ACTION_READ_QUERY_LIST = "read-query-list",
 	    ACTION_CREATE_TOOL = "create-tool-for-step",
         ACTION_INSERT_TOOL_INTO_STEP = "insert-tool-into-step",
+        ACTION_INSERT_STEP = "insert-step",
+        ACTION_INSERT_SEQUENCE = "insert-sequence", 
+        ACTION_INSERT_FLOW = "insert-flow",                 
 	    ACTION_INSERT_INPUT_PARAMETER_INTO_TOOL = "insert-input-parameter-into-tool",
 	    ACTION_INSERT_OUTPUT_PARAMETER_INTO_TOOL = "insert-output-parameter-into-tool",
 	    ACTION_INSERT_INPUT_PARAMETER = "insert-input-value",
@@ -182,14 +202,8 @@ public class DesignAction extends AbstractAction {
             myAction = null ;
         Map
             retMap = null ;
-            
-        trace( "It got this far!" ) ;
         
         try { 
-//            debug( "About to check properties loaded") ;
-            // Load the workflow config file and messages...
-//            WKF.getInstance().checkPropertiesLoaded() ;
-//            debug( "Properties loaded OK") ;
             
             myAction = new DesignActionImpl( redirector
                                            , resolver
@@ -200,9 +214,9 @@ public class DesignAction extends AbstractAction {
             retMap = myAction.act() ;    
                                           
         }
-//        catch ( AstroGridException agex ) {
-//            debug( agex.toString() ) ;
-//        }
+        catch ( Exception ex ) {
+            ex.printStackTrace();
+        }
         finally {
             if( TRACE_ENABLED ) trace( "DesignAction.act() exit" ) ;  
         }
@@ -210,7 +224,6 @@ public class DesignAction extends AbstractAction {
         return retMap ; 
  
     } // end of act() 
-
 
     private class DesignActionImpl {
         
@@ -381,8 +394,18 @@ public class DesignAction extends AbstractAction {
 				}				
 				else if( action.equals( ACTION_COPY_WORKFLOW ) ) {
 					this.copyWorkflow();                     								
-				}				                
+				}	
+                else if( action.equals( ACTION_INSERT_FLOW ) ) {
+                    this.insertFlow();                                                    
+                }   
+                else if( action.equals( ACTION_INSERT_SEQUENCE ) ) {
+                    this.insertSequence();                                                    
+                } 
+                else if( action.equals( ACTION_INSERT_STEP ) ) {
+                    this.insertStep();                                                    
+                }      			                
                 else {
+                    results = null;
                     debug( "unsupported action"); 
                 }
                 
@@ -396,15 +419,18 @@ public class DesignAction extends AbstractAction {
 				this.readLists() ; // Ensure request object contains latest Workflow/Query
             }
             catch( ConsistencyException cex ) {
+                results = null;
                 debug( "ConsistencyException occurred");
             }
             //JBL Note: these should only be here during testing...
             catch( Exception ex) {
+                results = null;
                 debug( "Exception: ex" );
                 ex.printStackTrace();
             }
             //JBL Note: these should only be here during testing...
             catch( Throwable th ) {
+                results = null;
                 debug( "Throwable th" );
                 th.printStackTrace();
             }
@@ -441,12 +467,13 @@ public class DesignAction extends AbstractAction {
                 account.setName( userid );
                 account.setCommunity( community );
                 Group group = new Group();
+                group.setName( this.group );
                 group.setCommunity( community );
                         
                 this.credentials = new Credentials();
                 credentials.setAccount( account );
                 credentials.setGroup( group );
-                credentials.setSecurityToken( "1234" );
+                credentials.setSecurityToken( "dummy" );
                      
             }
             finally {
@@ -486,8 +513,7 @@ public class DesignAction extends AbstractAction {
 					description = request.getParameter( WORKFLOW_DESCRIPTION_PARAMETER ) ;                    
                     
                 if( name == null ) {
-                    ; // some logging here
-                    throw new ConsistencyException() ;
+                    name = "new workflow";
                 }
                 
 				if( description == null ) {
@@ -506,7 +532,7 @@ public class DesignAction extends AbstractAction {
         
             }
             catch( WorkflowInterfaceException wix ) {
-                ;
+                wix.printStackTrace();
             }
             finally {
                 if( TRACE_ENABLED ) trace( "DesignActionImpl.createWorkflow() exit" ) ;
@@ -527,18 +553,19 @@ public class DesignAction extends AbstractAction {
                 else {
                     WorkflowStore wfStore = this.workflowManager.getWorkflowStore();
                     wfStore.saveWorkflow( credentials.getAccount(), workflow ) ;
-					session.setAttribute( HTTP_WORKFLOW_TAG, null) ;
+//					session.setAttribute( HTTP_WORKFLOW_TAG, null) ;
+                    session.removeAttribute( HTTP_WORKFLOW_TAG );
 					workflow = null ;
                 }            
             }
             catch( WorkflowInterfaceException wix ) {
-                ;
+                wix.printStackTrace();
             }
             finally {
                 if( TRACE_ENABLED ) trace( "DesignActionImpl.saveWorkflow() exit" ) ;
             }
          
-        } // end of createWorkflow()
+        } // end of saveWorkflow()
         
    
         private void removeWorkflow() throws ConsistencyException {
@@ -580,7 +607,7 @@ public class DesignAction extends AbstractAction {
                     
             }
             catch( WorkflowInterfaceException wix ) {
-                ; //JBL note
+                wix.printStackTrace(); //JBL note
             }
             finally {
                 if( TRACE_ENABLED ) trace( "DesignActionImpl.readWorkflow() exit" ) ;
@@ -617,7 +644,7 @@ public class DesignAction extends AbstractAction {
 				}
             }
             catch( WorkflowInterfaceException wix ) {
-                ; //JBL note
+                wix.printStackTrace(); //JBL note
             }
 			finally {
 				if( TRACE_ENABLED ) trace( "DesignActionImpl.copyWorkflow() exit" ) ;
@@ -644,7 +671,7 @@ public class DesignAction extends AbstractAction {
                 }                    
             }
             catch( WorkflowInterfaceException wix ) {
-                ; // JBL note
+                wix.printStackTrace(); // JBL note
             }
             finally {
                 if( TRACE_ENABLED ) trace( "DesignActionImpl.deleteWorkflow() exit" ) ;
@@ -687,7 +714,7 @@ public class DesignAction extends AbstractAction {
                          
             }
             catch( WorkflowInterfaceException wix ) {
-                 ; // JBL note
+                wix.printStackTrace(); // JBL note
             }            
             finally {
                 if( TRACE_ENABLED ) trace( "DesignActionImpl.submitWorkflow() exit" ) ;
@@ -820,7 +847,7 @@ public class DesignAction extends AbstractAction {
 				trace("-----------------------------------------") ;			                            	   	  
 		   }
            catch( WorkflowInterfaceException wix ) {
-               ;
+               wix.printStackTrace();
            }
 	       finally {
 		      if( TRACE_ENABLED ) trace( "DesignActionImpl.createTool(toolName) exit" ) ;
@@ -840,8 +867,8 @@ public class DesignAction extends AbstractAction {
                     
                 // For the moment this is where we have placed the door.
                 // If users cannot see a list, then they cannot do anything...
-                this.checkPermissions( AUTHORIZATION_RESOURCE_WORKFLOW
-                                     , AUTHORIZATION_ACTION_EDIT ) ;
+//                this.checkPermissions( AUTHORIZATION_RESOURCE_WORKFLOW
+//                                     , AUTHORIZATION_ACTION_EDIT ) ;
                                
                 //NB: The filter argument is ignored at present (Sept 2003).
                 WorkflowStore wfStore = workflowManager.getWorkflowStore();
@@ -851,8 +878,8 @@ public class DesignAction extends AbstractAction {
             catch( WorkflowInterfaceException wix ) {
                 this.request.setAttribute( ERROR_MESSAGE_PARAMETER, wix.toString() ) ;
             }
-            catch( WorkflowException wfex ) {               
-                this.request.setAttribute( ERROR_MESSAGE_PARAMETER, wfex.toString() ) ;
+            catch( Exception ex ) { 
+                this.request.setAttribute( ERROR_MESSAGE_PARAMETER, "permission denied" ) ;
             }
             finally {
                 if( TRACE_ENABLED ) trace( "DesignActionImpl.readWorkflowList() exit" ) ;
@@ -889,9 +916,10 @@ public class DesignAction extends AbstractAction {
            try {
               ApplicationRegistry toolRegistry = workflowManager.getToolRegistry();
               tools = toolRegistry.listApplications();
-              this.request.setAttribute( TOOL_LIST_PARAMETER, tools ) ;               
+              this.request.setAttribute( TOOL_LIST_PARAMETER, tools ) ;              
            }
            catch( WorkflowInterfaceException wix ) {
+                debug( "wix exception: " + wix.toString() );
                 this.request.setAttribute( ERROR_MESSAGE_PARAMETER, wix.toString() ) ;
            }           
            finally {
@@ -908,16 +936,16 @@ public class DesignAction extends AbstractAction {
                     
 					// For the moment this is where we have placed the door.
 					// If users cannot see a list, then they cannot do anything...
-					this.checkPermissions( AUTHORIZATION_RESOURCE_WORKFLOW
-									     , AUTHORIZATION_ACTION_EDIT ) ;
+//					this.checkPermissions( AUTHORIZATION_RESOURCE_WORKFLOW
+//									     , AUTHORIZATION_ACTION_EDIT ) ;
                      
                     this.readWorkflowList();          
                     this.readQueryList();
                     this.readToolList();
 
 				}
-				catch( WorkflowException wfex ) {              
-					this.request.setAttribute( ERROR_MESSAGE_PARAMETER, wfex.toString() ) ;
+				catch( Exception ex ) {              
+					this.request.setAttribute( ERROR_MESSAGE_PARAMETER, "permission denied" ) ;
 				}
 				finally {
 					if( TRACE_ENABLED ) trace( "DesignActionImpl.readLists() exit" ) ;
@@ -1008,7 +1036,7 @@ public class DesignAction extends AbstractAction {
 				
 		  }
             catch( WorkflowInterfaceException wix ) {
-                ;
+                wix.printStackTrace();
             }
 		  finally {
 				if( TRACE_ENABLED ) trace( "DesignActionImpl.insertInputValue() exit" ) ;
@@ -1054,7 +1082,7 @@ public class DesignAction extends AbstractAction {
 				
 		   }
            catch( WorkflowInterfaceException wix ) {
-               ;
+               wix.printStackTrace();
            }
 		   finally {
 			  if( TRACE_ENABLED ) trace( "DesignActionImpl.insertOutputValue() exit" ) ;
@@ -1103,7 +1131,7 @@ public class DesignAction extends AbstractAction {
 				
        }
        catch( WorkflowInterfaceException wix ) {
-           ;
+           wix.printStackTrace();
        }
 	   finally {
           if( TRACE_ENABLED ) trace( "DesignActionImpl.resetParameter() exit" ) ;
@@ -1372,77 +1400,55 @@ public class DesignAction extends AbstractAction {
 
 
         
-        private void checkPermissions ( String someResource, String anAction ) throws WorkflowException {
+        private void checkPermissions ( String someResource, String anAction ) 
+                                 throws CommunityServiceException, 
+                                        CommunityPolicyException, 
+                                        CommunityIdentifierException {
             if( TRACE_ENABLED ) trace( "DesignActionImpl.checkPermission() entry" ) ;
-/*                        
-            PolicyServiceDelegate 
-                ps = null ;
-            String
-                communityAccount = null,
-                credential = null ;
-            
-            try {
-                
-                ps = new PolicyServiceDelegate() ;
-                communityAccount =  (String) session.getAttribute( COMMUNITY_ACCOUNT_TAG ) ;
-                credential = (String) session.getAttribute( CREDENTIAL_TAG ) ;
-                boolean 
-                    authorized = ps.checkPermissions( communityAccount
-                                                    , credential
-                                                    , someResource
-                                                    , anAction ) ;             
-               
-                if( !authorized ) {
-                    
-                    PolicyPermission pp = ps.getPolicyPermission();
-                    
-                    String
-                        reason = pp.getReason() ;
-                        
-                    AstroGridMessage
-                        message = new AstroGridMessage( ASTROGRIDERROR_PASSTHRU
-                                                      , "Community"
-                                                      , reason ) ;
-                     
-                    throw new WorkflowException( message ) ;
-                        
-                }
+                       
+            PolicyServiceDelegate ps = null;
+            PolicyCredentials pCredentials = null;
+            PolicyPermission pPermission = null;
+            this.credentials = new Credentials();
+
+            try {               
+                ps = getPolicyDelegate () ;
+                pCredentials = new PolicyCredentials();
+                pCredentials.setAccount( this.credentials.getAccount().getName() );
+                pCredentials.setGroup( this.credentials.getGroup().getName() );
+                pPermission = ps.checkPermissions( pCredentials, someResource, anAction ) ;             
                
             }
-            catch( WorkflowException wfex ) {
-                
-                AstroGridMessage 
-                    message = new AstroGridMessage( ASTROGRIDERROR_WORKFLOW_PERMISSION_DENIED
-                                                  , WKF.getClassName( this.getClass() )
-                                                  , wfex.getAstroGridMessage().toString() ) ;
-                     
-                throw new WorkflowException( message, (Exception)wfex ) ;
-                
-            }
-            catch( Exception ex ) {
-                
-                if( DEBUG_ENABLED) ex.printStackTrace();  
-               
-                String
-                    localizedMessage = ex.getLocalizedMessage() ;    
-               
-               AstroGridMessage
-                   message = new AstroGridMessage( ASTROGRIDERROR_WORKFLOW_PERMISSION_DENIED
-                                                 , WKF.getClassName( this.getClass() )
-                                                 , (localizedMessage == null) ? "" : localizedMessage ) ;
-                     
-               throw new WorkflowException( message, ex ) ;
-               
+            catch( MalformedURLException muex ) {
+                muex.printStackTrace();
             }
             finally {
                 if( TRACE_ENABLED ) trace( "DesignActionImpl.checkPermission() exit" ) ;  
             }
-            
-*/
-             
+                        
         } // end of checkPermission()
-  		
-
+        
+               
+        /**
+         * Get the policy delegate.  
+         * Looks for the property org.astrogrid.portal.community.url
+         * if this property is not found (or is set to "dummy")
+         * then a mock delegate is returned.  
+         * @return either a genuine or mock delegate
+         * @throws MalformedURLException if the url is malformed
+         */
+        private PolicyServiceDelegate getPolicyDelegate() throws MalformedURLException {
+            final Config config = SimpleConfig.getSingleton();
+            final String endpoint = config.getString(ORG_ASTROGRID_PORTAL_COMMUNITY_URL, "dummy");
+            if ("dummy".equals(endpoint)) {
+                debug("Using dummy delegate");
+                return new PolicyServiceMockDelegate();
+            } else {
+                debug("Using delegate at "+endpoint);
+                return new PolicyServiceSoapDelegate(endpoint);
+            }
+        }
+        
         private Step locateStep( Workflow workflow, String xpathKey ) throws ConsistencyException {
         
             Object obj = workflow.findXPathValue( xpathKey );
@@ -1485,8 +1491,5 @@ public class DesignAction extends AbstractAction {
         // logger.debug( logString ) ;
         System.out.println( logString ) ;
     }
-    
-
-             
-            
+          
 } // end of class DesignAction 
