@@ -28,7 +28,7 @@
 
 <h1>Datacenter Service Status at <%= new Date() %></h1>
 
-<% SelfMonitorBody.writeHtmlStatus(out, server.getStatus()); %>
+<% SelfMonitorBody.writeHtmlStatus(out, server.getStatus().getServiceStatus()); %>
 
 <%= ServletHelper.makeRefreshSnippet(10,
          new URL ("http",request.getServerName(),request.getServerPort(), request.getContextPath()+"/serverStatus.jsp").toString()

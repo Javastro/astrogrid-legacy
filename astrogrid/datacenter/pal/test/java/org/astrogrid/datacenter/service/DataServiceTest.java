@@ -1,4 +1,4 @@
-/*$Id: DataServiceTest.java,v 1.5 2004/10/07 10:34:44 mch Exp $
+/*$Id: DataServiceTest.java,v 1.6 2004/10/08 15:21:42 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -98,7 +98,7 @@ public class DataServiceTest extends ServerTestCase {
       TaskStatus[] tasks = status.getTasks();
       assertTrue(tasks.length>1);
       
-      SelfMonitorBody.writeHtmlStatus(new StringWriter(), status);
+      SelfMonitorBody.writeHtmlStatus(new StringWriter(), status.getServiceStatus());
    }
     
     public void testAbort() throws Exception {
@@ -137,6 +137,9 @@ public class DataServiceTest extends ServerTestCase {
 
 /*
 $Log: DataServiceTest.java,v $
+Revision 1.6  2004/10/08 15:21:42  mch
+updates for status
+
 Revision 1.5  2004/10/07 10:34:44  mch
 Fixes to Cone maker functions and reading/writing String comparisons from Query
 
