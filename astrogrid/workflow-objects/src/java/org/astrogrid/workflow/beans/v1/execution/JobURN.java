@@ -2,10 +2,10 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: DataCentreApplication.java,v 1.5 2004/03/03 01:16:54 nw Exp $
+ * $Id: JobURN.java,v 1.1 2004/03/03 01:16:54 nw Exp $
  */
 
-package org.astrogrid.applications.beans.v1;
+package org.astrogrid.workflow.beans.v1.execution;
 
   //---------------------------------/
  //- Imported classes and packages -/
@@ -22,27 +22,48 @@ import org.exolab.castor.xml.ValidationException;
 import org.xml.sax.ContentHandler;
 
 /**
- * Class DataCentreApplication.
+ * Class JobURN.
  * 
- * @version $Revision: 1.5 $ $Date: 2004/03/03 01:16:54 $
+ * @version $Revision: 1.1 $ $Date: 2004/03/03 01:16:54 $
  */
-public class DataCentreApplication extends org.astrogrid.applications.beans.v1.Application 
+public class JobURN extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
 {
+
+
+      //--------------------------/
+     //- Class/Member Variables -/
+    //--------------------------/
+
+    /**
+     * internal content storage
+     */
+    private java.lang.String _content;
 
 
       //----------------/
      //- Constructors -/
     //----------------/
 
-    public DataCentreApplication() {
+    public JobURN() {
         super();
-    } //-- org.astrogrid.applications.beans.v1.DataCentreApplication()
+    } //-- org.astrogrid.workflow.beans.v1.execution.JobURN()
 
 
       //-----------/
      //- Methods -/
     //-----------/
+
+    /**
+     * Returns the value of field 'content'. The field 'content'
+     * has the following description: internal content storage
+     * 
+     * @return the value of field 'content'.
+     */
+    public java.lang.String getContent()
+    {
+        return this._content;
+    } //-- java.lang.String getContent() 
 
     /**
      * Method isValid
@@ -83,15 +104,26 @@ implements java.io.Serializable
     } //-- void marshal(org.xml.sax.ContentHandler) 
 
     /**
-     * Method unmarshalDataCentreApplication
+     * Sets the value of field 'content'. The field 'content' has
+     * the following description: internal content storage
+     * 
+     * @param content the value of field 'content'.
+     */
+    public void setContent(java.lang.String content)
+    {
+        this._content = content;
+    } //-- void setContent(java.lang.String) 
+
+    /**
+     * Method unmarshalJobURN
      * 
      * @param reader
      */
-    public static org.astrogrid.applications.beans.v1.DataCentreApplication unmarshalDataCentreApplication(java.io.Reader reader)
+    public static org.astrogrid.workflow.beans.v1.execution.JobURN unmarshalJobURN(java.io.Reader reader)
         throws org.exolab.castor.xml.MarshalException, org.exolab.castor.xml.ValidationException
     {
-        return (org.astrogrid.applications.beans.v1.DataCentreApplication) Unmarshaller.unmarshal(org.astrogrid.applications.beans.v1.DataCentreApplication.class, reader);
-    } //-- org.astrogrid.applications.beans.v1.DataCentreApplication unmarshalDataCentreApplication(java.io.Reader) 
+        return (org.astrogrid.workflow.beans.v1.execution.JobURN) Unmarshaller.unmarshal(org.astrogrid.workflow.beans.v1.execution.JobURN.class, reader);
+    } //-- org.astrogrid.workflow.beans.v1.execution.JobURN unmarshalJobURN(java.io.Reader) 
 
     /**
      * Method validate

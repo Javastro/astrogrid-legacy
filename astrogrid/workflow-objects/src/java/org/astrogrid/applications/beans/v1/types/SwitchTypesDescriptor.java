@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: SwitchTypesDescriptor.java,v 1.4 2004/03/02 16:57:20 nw Exp $
+ * $Id: SwitchTypesDescriptor.java,v 1.5 2004/03/03 01:16:54 nw Exp $
  */
 
 package org.astrogrid.applications.beans.v1.types;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class SwitchTypesDescriptor.
  * 
- * @version $Revision: 1.4 $ $Date: 2004/03/02 16:57:20 $
+ * @version $Revision: 1.5 $ $Date: 2004/03/03 01:16:54 $
  */
 public class SwitchTypesDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 

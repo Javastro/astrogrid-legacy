@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: JobExecutionRecordDescriptor.java,v 1.2 2004/03/02 16:57:19 nw Exp $
+ * $Id: JobExecutionRecordDescriptor.java,v 1.3 2004/03/03 01:16:54 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1.execution;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class JobExecutionRecordDescriptor.
  * 
- * @version $Revision: 1.2 $ $Date: 2004/03/02 16:57:19 $
+ * @version $Revision: 1.3 $ $Date: 2004/03/03 01:16:54 $
  */
 public class JobExecutionRecordDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 
@@ -65,42 +65,6 @@ public class JobExecutionRecordDescriptor extends org.exolab.castor.xml.util.XML
         org.exolab.castor.xml.FieldValidator               fieldValidator = null;
         //-- initialize attribute descriptors
         
-        //-- _jobID
-        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.lang.String.class, "_jobID", "jobID", org.exolab.castor.xml.NodeType.Attribute);
-        desc.setImmutable(true);
-        handler = (new org.exolab.castor.xml.XMLFieldHandler() {
-            public java.lang.Object getValue( java.lang.Object object ) 
-                throws IllegalStateException
-            {
-                JobExecutionRecord target = (JobExecutionRecord) object;
-                return target.getJobID();
-            }
-            public void setValue( java.lang.Object object, java.lang.Object value) 
-                throws IllegalStateException, IllegalArgumentException
-            {
-                try {
-                    JobExecutionRecord target = (JobExecutionRecord) object;
-                    target.setJobID( (java.lang.String) value);
-                }
-                catch (java.lang.Exception ex) {
-                    throw new IllegalStateException(ex.toString());
-                }
-            }
-            public java.lang.Object newInstance( java.lang.Object parent ) {
-                return null;
-            }
-        } );
-        desc.setHandler(handler);
-        addFieldDescriptor(desc);
-        
-        //-- validation code for: _jobID
-        fieldValidator = new org.exolab.castor.xml.FieldValidator();
-        { //-- local scope
-            StringValidator typeValidator = new StringValidator();
-            typeValidator.setWhiteSpace("preserve");
-            fieldValidator.setValidator(typeValidator);
-        }
-        desc.setValidator(fieldValidator);
         //-- _startTime
         desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.util.Date.class, "_startTime", "startTime", org.exolab.castor.xml.NodeType.Attribute);
         handler = (new org.exolab.castor.xml.XMLFieldHandler() {
@@ -202,6 +166,42 @@ public class JobExecutionRecordDescriptor extends org.exolab.castor.xml.util.XML
         desc.setValidator(fieldValidator);
         //-- initialize element descriptors
         
+        //-- _jobId
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.astrogrid.workflow.beans.v1.execution.JobURN.class, "_jobId", "jobId", org.exolab.castor.xml.NodeType.Element);
+        handler = (new org.exolab.castor.xml.XMLFieldHandler() {
+            public java.lang.Object getValue( java.lang.Object object ) 
+                throws IllegalStateException
+            {
+                JobExecutionRecord target = (JobExecutionRecord) object;
+                return target.getJobId();
+            }
+            public void setValue( java.lang.Object object, java.lang.Object value) 
+                throws IllegalStateException, IllegalArgumentException
+            {
+                try {
+                    JobExecutionRecord target = (JobExecutionRecord) object;
+                    target.setJobId( (org.astrogrid.workflow.beans.v1.execution.JobURN) value);
+                }
+                catch (java.lang.Exception ex) {
+                    throw new IllegalStateException(ex.toString());
+                }
+            }
+            public java.lang.Object newInstance( java.lang.Object parent ) {
+                return new org.astrogrid.workflow.beans.v1.execution.JobURN();
+            }
+        } );
+        desc.setHandler(handler);
+        desc.setNameSpaceURI("http://www.astrogrid.org/schema/ExecutionRecord/v1");
+        desc.setRequired(true);
+        desc.setMultivalued(false);
+        addFieldDescriptor(desc);
+        
+        //-- validation code for: _jobId
+        fieldValidator = new org.exolab.castor.xml.FieldValidator();
+        fieldValidator.setMinOccurs(1);
+        { //-- local scope
+        }
+        desc.setValidator(fieldValidator);
         //-- _messageList
         desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.astrogrid.applications.beans.v1.cea.castor.MessageType.class, "_messageList", "message", org.exolab.castor.xml.NodeType.Element);
         handler = (new org.exolab.castor.xml.XMLFieldHandler() {

@@ -62,12 +62,26 @@ public class JobSchedulerServiceSoapBindingStub extends org.apache.axis.client.S
             java.lang.Class arraydf = org.apache.axis.encoding.ser.ArrayDeserializerFactory.class;
             java.lang.Class simplesf = org.apache.axis.encoding.ser.SimpleSerializerFactory.class;
             java.lang.Class simpledf = org.apache.axis.encoding.ser.SimpleDeserializerFactory.class;
+            qName = new javax.xml.namespace.QName("urn:jes/types/v1", "jobURN");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.jes.types.v1.JobURN.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(simplesf);
+            cachedDeserFactories.add(simpledf);
+
             qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "message-type");
             cachedSerQNames.add(qName);
             cls = org.astrogrid.jes.types.v1.cea.axis.MessageType.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(simplesf);
             cachedDeserFactories.add(simpledf);
+
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "log-level");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.jes.types.v1.cea.axis.LogLevel.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(enumsf);
+            cachedDeserFactories.add(enumdf);
 
             qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "job-identifier-type");
             cachedSerQNames.add(qName);
@@ -79,20 +93,6 @@ public class JobSchedulerServiceSoapBindingStub extends org.apache.axis.client.S
             qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "execution-phase");
             cachedSerQNames.add(qName);
             cls = org.astrogrid.jes.types.v1.cea.axis.ExecutionPhase.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(enumsf);
-            cachedDeserFactories.add(enumdf);
-
-            qName = new javax.xml.namespace.QName("urn:jes/types/v1", "jobURN");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.jes.types.v1.JobURN.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(simplesf);
-            cachedDeserFactories.add(simpledf);
-
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "log-level");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.jes.types.v1.cea.axis.LogLevel.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(enumsf);
             cachedDeserFactories.add(enumdf);

@@ -2,10 +2,10 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: DataCentreControllerConfigDescriptor.java,v 1.5 2004/03/03 01:16:54 nw Exp $
+ * $Id: JobURNDescriptor.java,v 1.1 2004/03/03 01:16:54 nw Exp $
  */
 
-package org.astrogrid.applications.beans.v1;
+package org.astrogrid.workflow.beans.v1.execution;
 
   //---------------------------------/
  //- Imported classes and packages -/
@@ -17,11 +17,11 @@ import org.exolab.castor.xml.XMLFieldDescriptor;
 import org.exolab.castor.xml.validators.*;
 
 /**
- * Class DataCentreControllerConfigDescriptor.
+ * Class JobURNDescriptor.
  * 
- * @version $Revision: 1.5 $ $Date: 2004/03/03 01:16:54 $
+ * @version $Revision: 1.1 $ $Date: 2004/03/03 01:16:54 $
  */
-public class DataCentreControllerConfigDescriptor extends org.astrogrid.applications.beans.v1.CommonExecutionConnectorConfigTypeDescriptor {
+public class JobURNDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 
 
       //--------------------------/
@@ -53,58 +53,50 @@ public class DataCentreControllerConfigDescriptor extends org.astrogrid.applicat
      //- Constructors -/
     //----------------/
 
-    public DataCentreControllerConfigDescriptor() {
+    public JobURNDescriptor() {
         super();
-        setExtendsWithoutFlatten(new org.astrogrid.applications.beans.v1.CommonExecutionConnectorConfigTypeDescriptor());
-        nsURI = "http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1";
-        xmlName = "DataCentreControllerConfig";
-        
-        //-- set grouping compositor
-        setCompositorAsSequence();
+        nsURI = "http://www.astrogrid.org/schema/ExecutionRecord/v1";
+        xmlName = "jobURN";
         org.exolab.castor.xml.util.XMLFieldDescriptorImpl  desc           = null;
         org.exolab.castor.xml.XMLFieldHandler              handler        = null;
         org.exolab.castor.xml.FieldValidator               fieldValidator = null;
-        //-- initialize attribute descriptors
-        
-        //-- initialize element descriptors
-        
-        //-- _dataCentreList
-        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.astrogrid.applications.beans.v1.DataCentreApplication.class, "_dataCentreList", "DataCentre", org.exolab.castor.xml.NodeType.Element);
+        //-- _content
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.lang.String.class, "_content", "PCDATA", org.exolab.castor.xml.NodeType.Text);
         handler = (new org.exolab.castor.xml.XMLFieldHandler() {
             public java.lang.Object getValue( java.lang.Object object ) 
                 throws IllegalStateException
             {
-                DataCentreControllerConfig target = (DataCentreControllerConfig) object;
-                return target.getDataCentre();
+                JobURN target = (JobURN) object;
+                return target.getContent();
             }
             public void setValue( java.lang.Object object, java.lang.Object value) 
                 throws IllegalStateException, IllegalArgumentException
             {
                 try {
-                    DataCentreControllerConfig target = (DataCentreControllerConfig) object;
-                    target.addDataCentre( (org.astrogrid.applications.beans.v1.DataCentreApplication) value);
+                    JobURN target = (JobURN) object;
+                    target.setContent( (java.lang.String) value);
                 }
                 catch (java.lang.Exception ex) {
                     throw new IllegalStateException(ex.toString());
                 }
             }
             public java.lang.Object newInstance( java.lang.Object parent ) {
-                return new org.astrogrid.applications.beans.v1.DataCentreApplication();
+                return new java.lang.String();
             }
         } );
         desc.setHandler(handler);
-        desc.setNameSpaceURI("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1");
-        desc.setRequired(true);
-        desc.setMultivalued(true);
         addFieldDescriptor(desc);
         
-        //-- validation code for: _dataCentreList
+        //-- validation code for: _content
         fieldValidator = new org.exolab.castor.xml.FieldValidator();
-        fieldValidator.setMinOccurs(1);
         { //-- local scope
         }
         desc.setValidator(fieldValidator);
-    } //-- org.astrogrid.applications.beans.v1.DataCentreControllerConfigDescriptor()
+        //-- initialize attribute descriptors
+        
+        //-- initialize element descriptors
+        
+    } //-- org.astrogrid.workflow.beans.v1.execution.JobURNDescriptor()
 
 
       //-----------/
@@ -124,7 +116,7 @@ public class DataCentreControllerConfigDescriptor extends org.astrogrid.applicat
      */
     public org.exolab.castor.mapping.ClassDescriptor getExtends()
     {
-        return super.getExtends();
+        return null;
     } //-- org.exolab.castor.mapping.ClassDescriptor getExtends() 
 
     /**
@@ -132,8 +124,6 @@ public class DataCentreControllerConfigDescriptor extends org.astrogrid.applicat
      */
     public org.exolab.castor.mapping.FieldDescriptor getIdentity()
     {
-        if (identity == null)
-            return super.getIdentity();
         return identity;
     } //-- org.exolab.castor.mapping.FieldDescriptor getIdentity() 
 
@@ -142,7 +132,7 @@ public class DataCentreControllerConfigDescriptor extends org.astrogrid.applicat
      */
     public java.lang.Class getJavaClass()
     {
-        return org.astrogrid.applications.beans.v1.DataCentreControllerConfig.class;
+        return org.astrogrid.workflow.beans.v1.execution.JobURN.class;
     } //-- java.lang.Class getJavaClass() 
 
     /**

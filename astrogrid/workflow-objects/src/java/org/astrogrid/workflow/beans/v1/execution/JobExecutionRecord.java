@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: JobExecutionRecord.java,v 1.2 2004/03/02 16:57:19 nw Exp $
+ * $Id: JobExecutionRecord.java,v 1.3 2004/03/03 01:16:54 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1.execution;
@@ -29,7 +29,7 @@ import org.xml.sax.ContentHandler;
 /**
  * A record of a single execution of a job
  * 
- * @version $Revision: 1.2 $ $Date: 2004/03/02 16:57:19 $
+ * @version $Revision: 1.3 $ $Date: 2004/03/03 01:16:54 $
  */
 public class JobExecutionRecord extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
@@ -39,11 +39,6 @@ implements java.io.Serializable
       //--------------------------/
      //- Class/Member Variables -/
     //--------------------------/
-
-    /**
-     * Field _jobID
-     */
-    private java.lang.String _jobID;
 
     /**
      * Field _startTime
@@ -59,6 +54,11 @@ implements java.io.Serializable
      * Field _status
      */
     private org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase _status = org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase.valueOf("UNKNOWN");
+
+    /**
+     * Field _jobId
+     */
+    private org.astrogrid.workflow.beans.v1.execution.JobURN _jobId;
 
     /**
      * Field _messageList
@@ -131,14 +131,14 @@ implements java.io.Serializable
     } //-- java.util.Date getFinishTime() 
 
     /**
-     * Returns the value of field 'jobID'.
+     * Returns the value of field 'jobId'.
      * 
-     * @return the value of field 'jobID'.
+     * @return the value of field 'jobId'.
      */
-    public java.lang.String getJobID()
+    public org.astrogrid.workflow.beans.v1.execution.JobURN getJobId()
     {
-        return this._jobID;
-    } //-- java.lang.String getJobID() 
+        return this._jobId;
+    } //-- org.astrogrid.workflow.beans.v1.execution.JobURN getJobId() 
 
     /**
      * Method getMessage
@@ -257,14 +257,14 @@ implements java.io.Serializable
     } //-- void setFinishTime(java.util.Date) 
 
     /**
-     * Sets the value of field 'jobID'.
+     * Sets the value of field 'jobId'.
      * 
-     * @param jobID the value of field 'jobID'.
+     * @param jobId the value of field 'jobId'.
      */
-    public void setJobID(java.lang.String jobID)
+    public void setJobId(org.astrogrid.workflow.beans.v1.execution.JobURN jobId)
     {
-        this._jobID = jobID;
-    } //-- void setJobID(java.lang.String) 
+        this._jobId = jobId;
+    } //-- void setJobId(org.astrogrid.workflow.beans.v1.execution.JobURN) 
 
     /**
      * Method setMessage
