@@ -10,8 +10,8 @@
             <body>
                 <table width="100%" align="center" border="0">
                     <tr>
-                        <td>
-                            <xsl:value-of select="name()"/>
+                        <td>Name:
+                            <b><xsl:value-of select="name()"/></b>
                         </td>
                     </tr>
                 </table>
@@ -104,7 +104,19 @@
     <!--+
           | Match the description element.
           +-->
-    <xsl:template match="description"/>
+    <xsl:template match="description">
+        <tr>
+            <td>Description:
+                <b><xsl:value-of select="."/></b>
+            </td>
+        </tr>    
+        <tr>
+            <td>
+                <p/>
+            </td>
+        </tr>        
+    </xsl:template>
+    
     <!--+
           | Match the parameter element.
           +-->
