@@ -18,6 +18,7 @@ public class ResourcePolicyServiceDelegate extends DocWebServiceDelegate {
 	
 	//Userid.
 	private String userID = null;
+	private static final String operationName = "authenticate";
 	
 	private boolean canAccess = false;
 	private boolean canRead = false;
@@ -31,6 +32,8 @@ public class ResourcePolicyServiceDelegate extends DocWebServiceDelegate {
 	
 	public ResourcePolicyServiceDelegate(String userID,String resourceName,String subSystemCode,String resourceType) {
 		super();
+		super.setTargetEndPoint(targetEndPoint);
+		super.setOperationName(operationName);
 		this.setUserID(userID);
 		this.setResourceName(resourceName);
 		this.setSubSystemCode(subSystemCode);
@@ -42,7 +45,7 @@ public class ResourcePolicyServiceDelegate extends DocWebServiceDelegate {
 	}
 	
 	public boolean canWrite() {
-		return this.canWrite
+		return this.canWrite;
 	}
 	
 	public boolean canExecute() {
@@ -85,7 +88,8 @@ public class ResourcePolicyServiceDelegate extends DocWebServiceDelegate {
 		return this.resourceName;
 	}
 	
-	public Object invoke(Object []param) throws Exception {
+	public boolean authenticate() throws Exception {
+		Object []param = {this.userID,this.resourceName};
 		String response = (String)super.invoke(param);
 		String val = null;
 		Boolean blnAccess = null;
@@ -98,7 +102,7 @@ public class ResourcePolicyServiceDelegate extends DocWebServiceDelegate {
 		if(isValidString(val)) {
 			this.canAccess = (blnAccess = new Boolean(val)).booleanValue();
 		}
-		return blnAccess;
+		return this.canAccess;
 	}
 	
 	private String getValue(Node nd) {
