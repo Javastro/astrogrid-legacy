@@ -1,12 +1,7 @@
 /*
- * $Id: SimpleMySpaceTest.java,v 1.4 2004/03/12 23:14:08 jdt Exp $ Created on
- * 28-Dec-2003 by John Taylor jdt@roe.ac.uk .
- * 
- * Copyright (C) AstroGrid. All rights reserved.
- * 
- * This software is published under the terms of the AstroGrid Software License
- * version 1.2, a copy of which has been included with this distribution in the
- * LICENSE.txt file.
+ * $Id: SimpleMySpaceTest.java,v 1.5 2004/03/12 23:15:40 jdt Exp $ Created on 28-Dec-2003 by John Taylor jdt@roe.ac.uk .
+ * Copyright (C) AstroGrid. All rights reserved. This software is published under the terms of the AstroGrid Software
+ * License version 1.2, a copy of which has been included with this distribution in the LICENSE.txt file.
  */
 package org.astrogrid.integrationtest.myspace;
 import java.io.BufferedReader;
@@ -22,8 +17,7 @@ import org.astrogrid.integrationtest.common.ConfManager;
 import org.astrogrid.mySpace.delegate.MySpaceClient;
 import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
 /**
- * Not really an integration test this - just an attempt to see if we can call
- * a few webservices remotely.
+ * Not really an integration test this - just an attempt to see if we can call a few webservices remotely.
  * 
  * @author john taylor
  */
@@ -31,8 +25,7 @@ public final class SimpleMySpaceTest extends TestCase {
     /**
      * Constructor for SimpleMySpaceTest.
      * 
-     * @param arg0
-     *            test name
+     * @param arg0 test name
      */
     public SimpleMySpaceTest(final String arg0) {
         super(arg0);
@@ -40,8 +33,7 @@ public final class SimpleMySpaceTest extends TestCase {
     /**
      * fire up the test ui
      * 
-     * @param args
-     *            ignored
+     * @param args ignored
      */
     public static void main(final String[] args) {
         junit.textui.TestRunner.run(SimpleMySpaceTest.class);
@@ -73,9 +65,7 @@ public final class SimpleMySpaceTest extends TestCase {
     /**
      * Called before each test. Sets up a default user
      * 
-     * @throws Exception
-     *             on failure to load the config file, or a problem accessing
-     *             the web service
+     * @throws Exception on failure to load the config file, or a problem accessing the web service
      */
     public void setUp() throws Exception {
         log.debug("\n\n\n\nSetting up...");
@@ -89,9 +79,7 @@ public final class SimpleMySpaceTest extends TestCase {
     /**
      * Tidy up following test. Deletes the default user
      * 
-     * @throws Exception
-     *             on failure to load the config file, or a problem accessing
-     *             the web service
+     * @throws Exception on failure to load the config file, or a problem accessing the web service
      */
     public void tearDown() throws Exception {
         log.debug("Tearing down...");
@@ -103,12 +91,9 @@ public final class SimpleMySpaceTest extends TestCase {
     /**
      * Delete the user with the given params
      * 
-     * @param userID
-     *            userId
-     * @param communityID
-     *            communityID
-     * @param endPoint
-     *            end point of myspace server
+     * @param userID userId
+     * @param communityID communityID
+     * @param endPoint end point of myspace server
      * @return returns false if there was an exception thrown by the mySpace
      */
     private boolean deleteUser(
@@ -131,16 +116,11 @@ public final class SimpleMySpaceTest extends TestCase {
     /**
      * create a user with the given params
      * 
-     * @param userID
-     *            userId
-     * @param communityID
-     *            communityId
-     * @param endPoint
-     *            myspace webservice end point
-     * @throws Exception
-     *             if the mySpace delegate chucks one
-     * @return the value from the delegate method. Bad mix of exceptions and
-     *         return codes.
+     * @param userID userId
+     * @param communityID communityId
+     * @param endPoint myspace webservice end point
+     * @throws Exception if the mySpace delegate chucks one
+     * @return the value from the delegate method. Bad mix of exceptions and return codes.
      */
     private boolean createUser(
         final String userID,
@@ -168,11 +148,9 @@ public final class SimpleMySpaceTest extends TestCase {
         return ok;
     }
     /**
-     * @param endPoint
-     *            myspace service endpoint
+     * @param endPoint myspace service endpoint
      * @return a mySpace delegate
-     * @throws IOException
-     *             on failure to obtain delegate
+     * @throws IOException on failure to obtain delegate
      */
     private MySpaceClient getDelegate(final String endPoint)
         throws IOException {
@@ -191,8 +169,7 @@ public final class SimpleMySpaceTest extends TestCase {
     /**
      * Let's start with something trivial - can we save and return text?
      * 
-     * @throws Exception
-     *             no idea
+     * @throws Exception no idea
      */
     public void testImportExportDeleteSimpleText() throws Exception {
         for (int i = 0; i < 10; ++i) {
@@ -210,8 +187,7 @@ public final class SimpleMySpaceTest extends TestCase {
     /**
      * Now a bit harder - can we save and return xml?
      * 
-     * @throws Exception
-     *             no idea
+     * @throws Exception no idea
      */
     public void testImportExportDeleteXMLTextAgain() throws Exception {
         final String name = "bar" + Long.toString(System.currentTimeMillis());
@@ -224,8 +200,7 @@ public final class SimpleMySpaceTest extends TestCase {
     /**
      * Again, with single quotes
      * 
-     * @throws Exception
-     *             no idea
+     * @throws Exception no idea
      */
     public void testImportExportDeleteXMLText() throws Exception {
         final String name = "foo" + Long.toString(System.currentTimeMillis());
@@ -236,12 +211,10 @@ public final class SimpleMySpaceTest extends TestCase {
             xml);
     }
     /**
-     * Now lets really go mad - multiline text. Note this has just been done by
-     * the addition of a few \n chars....maybe need to think about this a bit
-     * more
+     * Now lets really go mad - multiline text. Note this has just been done by the addition of a few \n chars....maybe
+     * need to think about this a bit more
      * 
-     * @throws Exception
-     *             nfi
+     * @throws Exception nfi
      */
     public void testImportExportDeleteMultilineText() throws Exception {
         final String name = "foo" + Long.toString(System.currentTimeMillis());
@@ -255,12 +228,9 @@ public final class SimpleMySpaceTest extends TestCase {
     /**
      * Construct the full path name of a myspace artifact
      * 
-     * @param user
-     *            user
-     * @param community
-     *            community
-     * @param file
-     *            filename
+     * @param user user
+     * @param community community
+     * @param file filename
      * @return full path
      */
     private String getFullPath(
@@ -272,31 +242,22 @@ public final class SimpleMySpaceTest extends TestCase {
     /**
      * Utility method extracting the commonality of the saveDataHolding tests
      * 
-     * @param name
-     *            full path name to save into myspace
-     * @param text
-     *            the text to store
-     * @throws Exception
-     *             who knows
-     *  
+     * @param name full path name to save into myspace
+     * @param text the text to store
+     * @throws Exception who knows
      */
     private void importExportDelete(final String name, final String text)
         throws Exception {
         importExportDeleteDelayed(name, text, 0);
     }
     /**
-     * Just as importExportDelete, except a random delay is inserted between
-     * the calls to import/export/delete
+     * Just as importExportDelete, except a random delay is inserted between the calls to import/export/delete
      * 
      * @see importExportDelete(String, String)
-     * @param name
-     *            full myspace path name
-     * @param text
-     *            text to insert
-     * @param maxDelay
-     *            maximum delay in milliseconds between calls
-     * @throws Exception
-     *             who knows
+     * @param name full myspace path name
+     * @param text text to insert
+     * @param maxDelay maximum delay in milliseconds between calls
+     * @throws Exception who knows
      */
     private void importExportDeleteDelayed(
         final String name,
@@ -363,12 +324,9 @@ public final class SimpleMySpaceTest extends TestCase {
     /**
      * Utility method extracting the commonality of the saveDataHolding tests
      * 
-     * @param name
-     *            under which you wish to save the text
-     * @param urlString
-     *            the url of the data you wish to save
-     * @throws Exception
-     *             who knows
+     * @param name under which you wish to save the text
+     * @param urlString the url of the data you wish to save
+     * @throws Exception who knows
      */
     private void importURLExportDelete(
         final String name,
@@ -421,8 +379,7 @@ public final class SimpleMySpaceTest extends TestCase {
     /**
      * test reading from url
      * 
-     * @throws Exception
-     *             no idea
+     * @throws Exception no idea
      */
     public void testImportExportDeleteURL() throws Exception {
         String name = "foo" + Long.toString(System.currentTimeMillis());

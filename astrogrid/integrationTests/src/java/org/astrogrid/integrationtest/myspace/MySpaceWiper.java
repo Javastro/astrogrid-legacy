@@ -1,12 +1,7 @@
 /*
- * $Id: MySpaceWiper.java,v 1.2 2004/03/12 22:59:33 jdt Exp $ Created on Feb
- * 16, 2004 by John Taylor jdt@roe.ac.uk .
- * 
- * Copyright (C) AstroGrid. All rights reserved.
- * 
- * This software is published under the terms of the AstroGrid Software License
- * version 1.2, a copy of which has been included with this distribution in the
- * LICENSE.txt file.
+ * $Id: MySpaceWiper.java,v 1.3 2004/03/12 23:16:56 jdt Exp $ Created on Feb 16, 2004 by John Taylor jdt@roe.ac.uk .
+ * Copyright (C) AstroGrid. All rights reserved. This software is published under the terms of the AstroGrid Software
+ * License version 1.2, a copy of which has been included with this distribution in the LICENSE.txt file.
  */
 package org.astrogrid.integrationtest.myspace;
 import java.io.IOException;
@@ -20,10 +15,9 @@ import org.astrogrid.mySpace.delegate.MySpaceClient;
 import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
 import org.astrogrid.mySpace.delegate.helper.Assist;
 /**
- * Little utility for clearing out mySpaces @TODO we probably want this to be
- * in the mySpace component since it uses classes from the mySpace jar that
- * won't be in the delegate jar ideally the integration tests would just depend
- * on the delegate?
+ * Little utility for clearing out mySpaces @TODO we probably want this to be in the mySpace component since it uses
+ * classes from the mySpace jar that won't be in the delegate jar ideally the integration tests would just depend on
+ * the delegate?
  * 
  * @author jdt
  */
@@ -37,18 +31,14 @@ public final class MySpaceWiper {
      */
     private MySpaceClient mySpace;
     /**
-     * Credential used with mySpace. Hardwired to "any" for now. @TODO find out
-     * what this should really be.
-     *  
+     * Credential used with mySpace. Hardwired to "any" for now. @TODO find out what this should really be.
      */
     private final String credential = "any";
     /**
      * Constructor
      * 
-     * @param endPoint
-     *            end point of mySpace service
-     * @throws IOException
-     *             apparently
+     * @param endPoint end point of mySpace service
+     * @throws IOException apparently
      */
     public MySpaceWiper(final String endPoint) throws IOException {
         assert endPoint != null;
@@ -66,12 +56,9 @@ public final class MySpaceWiper {
     /**
      * Just wipe this user
      * 
-     * @param user
-     *            user
-     * @param community
-     *            community
-     * @throws MySpaceDelegateException
-     *             if something baaad happens
+     * @param user user
+     * @param community community
+     * @throws MySpaceDelegateException if something baaad happens
      */
     public void clear(String user, String community)
         throws MySpaceDelegateException {
@@ -81,12 +68,9 @@ public final class MySpaceWiper {
     /**
      * Delete this user - must have no holdings or this will fail
      * 
-     * @param user
-     *            user
-     * @param community
-     *            community
-     * @throws MySpaceDelegateException
-     *             if something baaad happens
+     * @param user user
+     * @param community community
+     * @throws MySpaceDelegateException if something baaad happens
      */
     private void deleteUser(final String user, final String community)
         throws MySpaceDelegateException {
@@ -106,12 +90,9 @@ public final class MySpaceWiper {
     /**
      * Yes, you can run this from the command-line
      * 
-     * @param args
-     *            <endpoint><user><community>
-     * @throws MySpaceDelegateException
-     *             bad news
-     * @throws IOException
-     *             more bad news
+     * @param args <endpoint><user><community>
+     * @throws MySpaceDelegateException bad news
+     * @throws IOException more bad news
      */
     public static void main(String[] args)
         throws MySpaceDelegateException, IOException {
@@ -128,12 +109,9 @@ public final class MySpaceWiper {
     /**
      * Construct the full path name of a myspace artifact
      * 
-     * @param user
-     *            user
-     * @param community
-     *            community
-     * @param file
-     *            filename
+     * @param user user
+     * @param community community
+     * @param file filename
      * @return full path
      */
     private static String getFullPath(
@@ -145,12 +123,9 @@ public final class MySpaceWiper {
     /**
      * Just wipe this user's holdings
      * 
-     * @param user
-     *            user
-     * @param community
-     *            community
-     * @throws MySpaceDelegateException
-     *             problem with delegate
+     * @param user user
+     * @param community community
+     * @throws MySpaceDelegateException problem with delegate
      */
     public void clearHoldings(final String user, final String community)
         throws MySpaceDelegateException {
@@ -164,14 +139,10 @@ public final class MySpaceWiper {
     /**
      * Delete a given holding
      * 
-     * @param user
-     *            user
-     * @param community
-     *            community
-     * @param holding
-     *            holding
-     * @throws MySpaceDelegateException
-     *             problem with delegate
+     * @param user user
+     * @param community community
+     * @param holding holding
+     * @throws MySpaceDelegateException problem with delegate
      */
     private void deleteHolding(
         final String user,
@@ -202,13 +173,10 @@ public final class MySpaceWiper {
     /**
      * get the holding saved in this mySpace
      * 
-     * @param user
-     *            user
-     * @param community
-     *            community
+     * @param user user
+     * @param community community
      * @return list of holdings
-     * @throws MySpaceDelegateException
-     *             delegate problems
+     * @throws MySpaceDelegateException delegate problems
      */
     public List getDataHoldings(final String user, final String community)
         throws MySpaceDelegateException {
@@ -239,11 +207,9 @@ public final class MySpaceWiper {
         return holdingsList;
     }
     /**
-     * Process the xml from listDataHoldingsGen and remove all the non-file
-     * entries
+     * Process the xml from listDataHoldingsGen and remove all the non-file entries
      * 
-     * @param serversHoldings
-     *            the xml snippet
+     * @param serversHoldings the xml snippet
      * @return a nice list of files
      */
     private List processReturnedXML(Vector serversHoldings) {
@@ -282,10 +248,8 @@ public final class MySpaceWiper {
     }
 }
 /**
- * @author jdt
- * 
- * Any exception from the mySpace client gets wrapped in this. No good just
- * chucking generic exceptions all over the place.
+ * @author jdt Any exception from the mySpace client gets wrapped in this. No good just chucking generic exceptions all
+ *         over the place.
  */
 class MySpaceDelegateException extends Exception {
     /**
@@ -297,8 +261,7 @@ class MySpaceDelegateException extends Exception {
     /**
      * ctor
      * 
-     * @param message
-     *            message
+     * @param message message
      */
     public MySpaceDelegateException(String message) {
         super(message);
@@ -306,10 +269,8 @@ class MySpaceDelegateException extends Exception {
     /**
      * ctor
      * 
-     * @param message
-     *            message
-     * @param cause
-     *            cause
+     * @param message message
+     * @param cause cause
      */
     public MySpaceDelegateException(String message, Throwable cause) {
         super(message, cause);
@@ -317,8 +278,7 @@ class MySpaceDelegateException extends Exception {
     /**
      * ctor
      * 
-     * @param cause
-     *            cause
+     * @param cause cause
      */
     public MySpaceDelegateException(Throwable cause) {
         super(cause);
