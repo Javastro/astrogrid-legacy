@@ -1,11 +1,13 @@
 /*
- $Id: Log.java,v 1.1 2003/09/06 17:11:33 mch Exp $
+ $Id: Log.java,v 1.2 2003/09/06 17:31:49 mch Exp $
  */
 
 package org.astrogrid.log;
 
-import net.mchill.log.LogEvent;
-import net.mchill.log.Severity;
+import java.io.IOException;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A covenience singleton, providing easy to use access to logging facilities,
@@ -62,17 +64,19 @@ import net.mchill.log.Severity;
  * should refer to the implementation using <code>getImplementation()</code>
  *
  * <p>
- * This implementation <b>uses the <code>net.mchill.log</code></b> package
- * which provides console, file, and tcp/ip logging, as
- * well as user messaging to status lines and userMessage boxes.
+ * This implementation <b>uses the log4j package from apache
  *
- * @Created          : Oct 2002
+ * @Created          : Sep 2003
  * @author           : M Hill
  */
 
 public class Log
 {
    public static boolean traceOn = true;
+
+   private static Logger
+      logger = Logger.getLogger( "Application wide" ) ;
+
 
    /**
     * A simple static method implementing an assertion check.  Renamed to
@@ -82,95 +86,98 @@ public class Log
     */
    public static void affirm(boolean assertion, String errorMessage)
    {
-      net.mchill.log.Log.affirm(assertion, errorMessage);
+      if (!assertion)
+      {
+         throw new AssertionError(errorMessage);
+      }
    }
 
    /** Convenience method for logging alarms */
    public static void logAlarm( String userMessage )
    {
-      net.mchill.log.Log.logEvent(new LogEvent(Severity.ALARM, userMessage));
+      logger.log(Level.SEVERE, userMessage);
    }
 
    /** Convenience method for logging alarms */
    public static void logAlarm(String userMessage, String detailMessage )
    {
-      net.mchill.log.Log.logEvent(new LogEvent(null, Severity.ALARM, userMessage, detailMessage, null));
+      logger.log(Level.SEVERE, userMessage+"\n"+detailMessage);
    }
 
    /** Convenience method for logging warnings */
    public static void logWarning( String userMessage )
    {
-      net.mchill.log.Log.logEvent(new LogEvent(Severity.WARNING, userMessage));
+      logger.log(Level.WARNING, userMessage);
    }
 
    /** Convenience method for logging warnings */
    public static void logWarning(Object aSource, String userMessage, Throwable th )
    {
-      net.mchill.log.Log.logEvent(new LogEvent(aSource, Severity.WARNING, userMessage, "", th));
+      Logger.getLogger(aSource.getClass().getName()).log(Level.WARNING, userMessage, th);
    }
 
    /** Convenience method for logging warnings */
    public static void logWarning(Object aSource, String userMessage, String moreInfo )
    {
-      net.mchill.log.Log.logEvent(new LogEvent(aSource, Severity.WARNING, userMessage, moreInfo, null));
+      Logger.getLogger(aSource.getClass().getName()).log(Level.WARNING, userMessage+"\n"+moreInfo);
    }
 
    /** Convenience method for logging warnings */
    public static void logWarning(Object aSource, String userMessage, String moreInfo, Throwable th )
    {
-      net.mchill.log.Log.logEvent(new LogEvent(aSource, Severity.WARNING, userMessage, moreInfo, th));
+      Logger.getLogger(aSource.getClass().getName()).log(Level.WARNING, userMessage+"\n"+moreInfo,th);
    }
 
    /** Convenience method for logging info messages */
    public static void logInfo( String userMessage )
    {
-      net.mchill.log.Log.logEvent(new LogEvent(Severity.INFO, userMessage));
+      logger.log(Level.INFO, userMessage);
    }
 
    /** Convenience method for logging info messages */
    public static void logInfo(Object aSource, String userMessage )
    {
-      net.mchill.log.Log.logEvent(new LogEvent(aSource, Severity.INFO, userMessage, "", null));
+      Logger.getLogger(aSource.getClass().getName()).log(Level.INFO, userMessage);
    }
 
    /** Convenience method for logging info messages */
    public static void logInfo(String userMessage, String usefulInfo )
    {
-      net.mchill.log.Log.logEvent(new LogEvent(null, Severity.INFO, userMessage, usefulInfo, null));
+      logger.log(Level.INFO, userMessage+"\n"+usefulInfo);
    }
 
    /** Convenience method for logging program errors */
    public static void logError( String userMessage )
    {
-      net.mchill.log.Log.logEvent(new LogEvent(Severity.ERROR, userMessage));
+      logger.log(Level.SEVERE, userMessage);
    }
 
    /** Convenience method for logging program errors */
    public static void logError( String userMessage, Throwable th )
    {
-      net.mchill.log.Log.logEvent(new LogEvent(null,Severity.ERROR, userMessage, "", th));
+      logger.log(Level.SEVERE, userMessage, th);
    }
 
    /** Convenience method for logging program errors */
-   public static void logError( String userMessage, String moreInfo, Throwable th )
+   public static void logError( String userMessage, String usefulInfo, Throwable th )
    {
-      net.mchill.log.Log.logEvent(new LogEvent(null,Severity.ERROR, userMessage, moreInfo, th));
+      logger.log(Level.SEVERE, userMessage+"\n"+usefulInfo, th);
    }
 
    /** Convenience method for logging program errors */
-   public static void logError(Object trap, String userMessage, Throwable th )
+   public static void logError(Object aSource, String userMessage, Throwable th )
    {
-      net.mchill.log.Log.logEvent(new LogEvent(trap, Severity.ERROR, userMessage, "", th));
+      Logger.getLogger(aSource.getClass().getName()).log(Level.SEVERE, userMessage, th);
    }
 
    /** Convenience method for logging program errors */
-   public static void logError(Object trap, String userMessage, String moreInfo, Throwable th )
+   public static void logError(Object aSource, String userMessage, String moreInfo, Throwable th )
    {
-      net.mchill.log.Log.logEvent(new LogEvent(trap, Severity.ERROR, userMessage, moreInfo, th));
+      Logger.getLogger(aSource.getClass().getName()).log(Level.SEVERE, userMessage+"\n"+moreInfo, th);
    }
 
-   /** Convenience method for logging program error messages that
-    * will be reported with some other severity (eg warning) */
+   /** Convenience method for logging *program error* messages that
+    * will be reported with some other severity (eg warning)
    public static void logError(Severity severity, String userMessage, String moreInfo, Throwable th )
    {
       net.mchill.log.Log.logEvent(new LogEvent(null,severity, userMessage, moreInfo, th));
@@ -189,7 +196,7 @@ public class Log
     * information.*/
    public static void logDebug( String userMessage, Throwable th )
    {
-      net.mchill.log.Log.logDebug(userMessage, th);
+      logger.log(Level.FINE, userMessage, th);
    }
 
    /** Convenience method for adding trace code that can be distributed like
@@ -198,7 +205,7 @@ public class Log
    {
       if (traceOn)
       {
-         net.mchill.log.Log.trace(userMessage);
+         logger.finest(userMessage);
       }
    }
 
@@ -210,14 +217,13 @@ public class Log
 
    /** Output goes to given file as well as console
     */
-   public static void logToFile(String filename)
+   public static void logToFile(String filename) throws IOException
    {
       //the net.mchill.log implementation assumes that if you're logging to file
       //before you call any log statements, and you haven't explicitly specified
       //logging to console, then it will log to file instead of console.  So here
       //we specify console explicitly
-      net.mchill.log.Log.addHandler(new net.mchill.log.Log2Console());
-      net.mchill.log.Log.addHandler(new net.mchill.log.Log2File(filename));
+      logger.addHandler(new FileHandler(filename));
    }
 
    /**
@@ -236,8 +242,12 @@ public class Log
 }
 /*
 $Log: Log.java,v $
+Revision 1.2  2003/09/06 17:31:49  mch
+Logger Wrapper for JDK1.4 built-in logging
+
 Revision 1.1  2003/09/06 17:11:33  mch
 Initial Logger Wrapper (for net.mchill.log.*)
 
  */
+
 
