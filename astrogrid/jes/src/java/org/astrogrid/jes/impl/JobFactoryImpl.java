@@ -29,14 +29,11 @@ import java.sql.ResultSet ;
 import java.sql.SQLException ;
 import java.sql.Timestamp ;
 import java.text.MessageFormat ;
-// import java.util.Date ;
 import java.util.ArrayList;
 import java.util.HashSet ;
 import java.util.Iterator ;
 import java.util.ListIterator ;
-// import java.lang.Math ;
 
-import org.apache.axis.utils.XMLUtils ;
 import org.astrogrid.community.common.util.CommunityMessage;
 import org.astrogrid.community.delegate.policy.PolicyServiceDelegate;
 import org.astrogrid.community.policy.data.PolicyPermission;;

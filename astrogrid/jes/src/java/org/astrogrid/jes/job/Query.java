@@ -20,8 +20,6 @@ import java.util.Set ;
 import java.util.HashSet ;
 import java.util.Iterator ;
 
-import org.apache.axis.utils.XMLUtils ;
-
 public class Query {
 	
 	private static final boolean 

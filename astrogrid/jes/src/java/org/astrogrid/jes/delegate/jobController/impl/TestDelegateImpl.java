@@ -5,13 +5,7 @@ import java.net.URL ;
 import java.net.MalformedURLException ;
 import java.rmi.RemoteException ;
 
-import java.util.ListIterator ;
 import java.text.MessageFormat ;
-
-import org.xml.sax.* ;
-import java.io.StringReader ;
-import org.apache.axis.utils.XMLUtils ;
-import org.w3c.dom.* ;
 
 
 import org.astrogrid.jes.delegate.JesDelegateException ;

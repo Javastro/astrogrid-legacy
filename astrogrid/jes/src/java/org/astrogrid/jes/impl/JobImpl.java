@@ -21,12 +21,9 @@ import org.apache.log4j.Logger;
 
 import org.w3c.dom.* ;
 import java.util.Date ;
-import java.util.Set;
-import java.util.HashSet ;
 import java.util.Iterator ;
 
 import java.util.ArrayList ;
-import java.util.ListIterator;
 
 import java.sql.Connection ;
 import java.sql.PreparedStatement ;
