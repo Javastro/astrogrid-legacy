@@ -1,0 +1,111 @@
+<?xml version="1.0"?>
+
+<xsp:page language="java" 
+		  create-session="true"
+		  xmlns:xsp="http://apache.org/xsp"
+		  xmlns:xsp-session="http://apache.org/xsp/session/2.0"
+  		  xmlns:xsp-request="http://apache.org/xsp/request/2.0"
+		>
+
+<xsp:structure>
+	<xsp:include>org.astrogrid.portal.cocoon.workflow.jes.JesAction</xsp:include>
+	<xsp:include>org.astrogrid.portal.workflow.jes.*</xsp:include>
+	<xsp:include>java.util.Iterator</xsp:include>
+</xsp:structure>
+
+
+<xsp:logic>
+		<![CDATA[
+		
+		private static final boolean 
+        	TRACE_ENABLED = true ;
+        	
+		public void list ( Iterator iterator ) throws SAXException {
+        	if( TRACE_ENABLED ) trace( "job-list-xsp.list() entry") ; 
+        	
+        	AttributesImpl xspAttr = new AttributesImpl() ;
+        
+        	try {
+        	
+        		Job job;
+        	
+				while( iterator.hasNext() ) {
+					job = (Job)iterator.next() ;			
+				}
+       
+        	}
+        	finally {
+        		if( TRACE_ENABLED ) trace( "job-list-xsp.list() exit") ;
+        	}
+          
+		} // end of list() 
+		
+		
+		private void outputJob( Job job, AttributesImpl xspAttr ) throws SAXException {  	
+			if( TRACE_ENABLED ) trace( "job-list-xsp.outputJob() entry") ;
+		        	
+		    try { 
+		     	
+		]]>
+	
+			<content>	
+				<xsp:element name="sequence">
+					<xsp:attribute name="key"><xsp:expr>aSequence.getKey()</xsp:expr></xsp:attribute>
+					
+					<xsp:logic>activityContainer( aSequence, xspAttr ) ;</xsp:logic>
+					
+				</xsp:element>
+			</content>
+		
+
+		<![CDATA[
+		
+		       	}
+        	finally {
+        		if( TRACE_ENABLED ) trace( "job-list-xsp.outputJob() exit") ;
+        	}
+		
+		} // end of outputJob()()
+		
+		
+		private static void trace( String traceString ) {
+			System.out.println( traceString ) ;
+		}
+		
+		private static void debug( String traceString ) {
+			System.out.println( traceString ) ;
+		}
+		
+	]]>
+	
+</xsp:logic>
+
+
+<joblist>
+
+	<xsp:logic>
+		
+	
+		<![CDATA[
+		//================================================================================
+		Iterator
+			iterator = (Iterator)request.getAttribute( JesAction. HTTP_JOBLIST_TAG ) ;
+		
+		//================================================================================
+		]]>
+		
+		<xsp:logic>
+			<![CDATA[
+			//========================================================================
+			
+			list( iterator ) ;
+		
+			//========================================================================
+			]]>
+		</xsp:logic>
+				
+	</xsp:logic>
+
+</joblist>
+
+</xsp:page>
