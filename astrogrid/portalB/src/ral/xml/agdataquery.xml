@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+
+<page>
+   <title>DataQuery redirect</title>
+   <redirect url="/DataQuery/servlets/DataQuery.jsp"/>
+</page>
