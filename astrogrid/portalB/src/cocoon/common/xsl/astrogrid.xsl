@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/cocoon/common/xsl/Attic/astrogrid.xsl,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/07/03 13:30:38 $</cvs:author>
-    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:author>$Date: 2003/07/03 16:43:45 $</cvs:author>
+    | <cvs:version>$Revision: 1.3 $</cvs:version>
     | <cvs:log>
     | $Log: astrogrid.xsl,v $
+    | Revision 1.3  2003/07/03 16:43:45  dave
+    | Fixed styles in page navigation
+    |
     | Revision 1.2  2003/07/03 13:30:38  dave
     | Fixed http link on ivoa logo
     |
@@ -59,14 +62,14 @@
 				</title>
 				<style>
 					<xsl:text>
-						table.menu      { background-color: rgb(204,204,204); color: rgb(51,51,255); font-size:10pt; font-style:normal; font-weight:normal; font-family:arial, serif}
-						tr.menu         { background-color: rgb(204,204,204); color: rgb(51,51,255); font-size:10pt; font-style:normal; font-weight:normal; font-family:arial, serif}
-						td.menu         { background-color: rgb(204,204,204); color: rgb(51,51,255); font-size:10pt; font-style:normal; font-weight:normal; font-family:arial, serif}
+						table.menu      { background-color: rgb(204,204,204); color: rgb(51,51,255); font-style:normal; font-weight:normal; font-family:arial, serif}
+						tr.menu         { background-color: rgb(204,204,204); color: rgb(51,51,255); font-style:normal; font-weight:normal; font-family:arial, serif}
+						td.menu         { background-color: rgb(204,204,204); color: rgb(51,51,255); font-style:normal; font-weight:normal; font-family:arial, serif}
 
-						a.menu:link     { background-color: rgb(204,204,204); color: rgb(51,51,255); font-size:10pt; font-style:normal; font-weight:normal; font-family:arial, serif}
-						a.menu:active   { background-color: rgb(204,204,204); color: rgb(51,51,255); font-size:10pt; font-style:normal; font-weight:normal; font-family:arial, serif}
-						a.menu:visited  { background-color: rgb(204,204,204); color: rgb(51,51,255); font-size:10pt; font-style:normal; font-weight:normal; font-family:arial, serif}
-						a.menu:hover    { background-color: rgb(204,204,204); color: rgb(51,51,255); font-size:10pt; font-style:normal; font-weight:normal; font-family:arial, serif}
+						a.menu:link     { background-color: rgb(204,204,204); color: rgb(51,51,255); font-style:normal; font-weight:bold; font-family:arial, serif}
+						a.menu:active   { background-color: rgb(204,204,204); color: rgb(51,51,255); font-style:normal; font-weight:bold; font-family:arial, serif}
+						a.menu:visited  { background-color: rgb(204,204,204); color: rgb(51,51,255); font-style:normal; font-weight:bold; font-family:arial, serif}
+						a.menu:hover    { background-color: rgb(204,204,204); color: rgb(51,51,255); font-style:normal; font-weight:bold; font-family:arial, serif}
 
 						table.info      { background:#FFFFFF; color:black; font-size:10pt; font-style:normal; font-weight:normal; font-family:arial, serif}
 						tr.info         { background:#FFFFFF; color:black; font-size:10pt; font-style:normal; font-weight:normal; font-family:arial, serif}
@@ -135,7 +138,7 @@
 									<xsl:attribute name="href">
 										<xsl:value-of select="$home-page"/>
 									</xsl:attribute>
-									<b>Home</b>
+									Home
 								</a>
 								<br/>
 								<br/>
@@ -143,7 +146,7 @@
 									<xsl:attribute name="href">
 										<xsl:value-of select="$registry-page"/>
 									</xsl:attribute>
-									<b>Browse Registry</b>
+									Browse Registry
 								</a>
 								<br/>
 								<br/>
@@ -151,7 +154,7 @@
 									<xsl:attribute name="href">
 										<xsl:value-of select="$query-page"/>
 									</xsl:attribute>
-									<b>Data Query</b>
+									Data Query
 								</a>
 								<br/>
 								<br/>
@@ -163,7 +166,7 @@
 									<xsl:attribute name="href">
 										<xsl:value-of select="$monitor-page"/>
 									</xsl:attribute>
-									<b>Job Monitor</b>
+									Job Monitor
 								</a>
 								<br/>
 								<br/>
@@ -171,7 +174,7 @@
 									<xsl:attribute name="href">
 										<xsl:value-of select="$tools-page"/>
 									</xsl:attribute>
-									<b>Tools</b>
+									Tools
 								</a>
 								<br/>
 								<br/>
@@ -179,7 +182,7 @@
 									<xsl:attribute name="href">
 										<xsl:value-of select="$logout-page"/>
 									</xsl:attribute>
-									<b>Logout</b>
+									Logout
 								</a>
 								<br/>
 								<br/>
