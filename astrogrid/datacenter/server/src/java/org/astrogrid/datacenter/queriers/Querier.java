@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.30 2004/03/09 19:08:54 mch Exp $
+ * $Id: Querier.java,v 1.31 2004/03/09 21:04:30 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -246,7 +246,7 @@ public abstract class Querier implements Runnable {
       if (resultsDestination == null) {
          log.error(
                "No default myspace given in config file (key "+QuerierManager.DEFAULT_MYSPACE+"), "+
-               "and results destination specified");
+               "or results destination specified");
          throw new IllegalStateException("no results destination");
       }
       
@@ -459,6 +459,9 @@ public abstract class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.31  2004/03/09 21:04:30  mch
+ minor doc change
+
  Revision 1.30  2004/03/09 19:08:54  mch
  Added debug to results destination
 
@@ -596,5 +599,6 @@ public abstract class Querier implements Runnable {
  Introducing SOAPy Beans
 
  */
+
 
 
