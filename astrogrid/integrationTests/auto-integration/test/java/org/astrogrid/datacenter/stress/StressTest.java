@@ -1,4 +1,4 @@
-/*$Id: StressTest.java,v 1.4 2004/10/28 18:22:12 mch Exp $
+/*$Id: StressTest.java,v 1.5 2004/11/03 00:31:03 mch Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,7 +25,7 @@ import org.astrogrid.datacenter.integration.clientside.RdbmsTest;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.slinger.NullTarget;
-import org.astrogrid.slinger.TargetIndicator;
+import org.astrogrid.slinger.TargetMaker;
 import org.xml.sax.SAXException;
 
 /**
@@ -48,7 +48,7 @@ public class StressTest extends DatacenterTestCase implements StdKeys {
       String[] queryIds = new String[100];
       for (int i = 0; i < 100; i++) {
    
-         query.getResultsDef().setTarget(TargetIndicator.makeIndicator(NullTarget.NULL_TARGET_URI));
+         query.getResultsDef().setTarget(TargetMaker.makeIndicator(NullTarget.NULL_TARGET_URI));
          query.getResultsDef().setFormat("VOTABLE");
          queryIds[i] = delegate.submitQuery(query);
          assertNotNull(queryIds[i]);
@@ -70,6 +70,9 @@ public class StressTest extends DatacenterTestCase implements StdKeys {
 
 /*
 $Log: StressTest.java,v $
+Revision 1.5  2004/11/03 00:31:03  mch
+PAL_MCH Candidate 2 merge
+
 Revision 1.4  2004/10/28 18:22:12  mch
 Fix - pass in null target instead of file which breaks
 

@@ -1,4 +1,4 @@
-/*$Id: Query2MySpaceTest.java,v 1.1 2004/10/12 23:05:16 mch Exp $
+/*$Id: Query2MySpaceTest.java,v 1.2 2004/11/03 00:31:03 mch Exp $
  * Created on 22-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,6 +27,7 @@ import org.astrogrid.datacenter.query.AdqlQueryMaker;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.query.QueryState;
 import org.astrogrid.slinger.TargetIndicator;
+import org.astrogrid.slinger.TargetMaker;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.store.Msrl;
@@ -114,7 +115,7 @@ public class Query2MySpaceTest extends TestCase implements StdKeys {
       InputStream in = this.getClass().getResourceAsStream("SimpleStarQuery-adql074.xml");
       assertNotNull("Could not find test query", in);
 
-      Query query = AdqlQueryMaker.makeQuery(in, TargetIndicator.makeIndicator(resultsTarget), QuerySearcher.VOTABLE);
+      Query query = AdqlQueryMaker.makeQuery(in, TargetMaker.makeIndicator(resultsTarget), QuerySearcher.VOTABLE);
       
       String queryId = delegate.submitQuery(query);
          
@@ -150,7 +151,7 @@ public class Query2MySpaceTest extends TestCase implements StdKeys {
       InputStream in = this.getClass().getResourceAsStream("SimpleStarQuery-adql074.xml");
       assertNotNull("Could not find test query", in);
       
-      Query query = AdqlQueryMaker.makeQuery(in, TargetIndicator.makeIndicator(VoSpaceResolver.resolveAgsl(resultsTarget)), QuerySearcher.VOTABLE);
+      Query query = AdqlQueryMaker.makeQuery(in, TargetMaker.makeIndicator(VoSpaceResolver.resolveAgsl(resultsTarget)), QuerySearcher.VOTABLE);
 
       String queryId = delegate.submitQuery(query);
          
@@ -205,6 +206,9 @@ public class Query2MySpaceTest extends TestCase implements StdKeys {
 
 /*
 $Log: Query2MySpaceTest.java,v $
+Revision 1.2  2004/11/03 00:31:03  mch
+PAL_MCH Candidate 2 merge
+
 Revision 1.1  2004/10/12 23:05:16  mch
 Seperated tests properly
 

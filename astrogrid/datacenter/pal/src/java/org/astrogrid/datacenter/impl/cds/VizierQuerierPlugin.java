@@ -1,4 +1,4 @@
-/*$Id: VizierQuerierPlugin.java,v 1.4 2004/11/03 00:17:56 mch Exp $
+/*$Id: VizierQuerierPlugin.java,v 1.5 2004/11/03 00:31:17 mch Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -54,7 +54,7 @@ public class VizierQuerierPlugin extends DefaultPlugin  {
       try {
          delegate = new VizierDelegate();
 
-       public java.lang.String cataloguesData(java.lang.String target, double radius, java.lang.String unit, java.lang.String text, java.lang.String wavelength) throws java.rmi.RemoteException {
+       //public java.lang.String cataloguesData(java.lang.String target, double radius, java.lang.String unit, java.lang.String text, java.lang.String wavelength) throws java.rmi.RemoteException {
 
          VizierQueryMaker translator = new VizierQueryMaker();
          VizierQuery vquery = translator.getVizierQuery(query);
@@ -111,6 +111,9 @@ public class VizierQuerierPlugin extends DefaultPlugin  {
 
 /*
  $Log: VizierQuerierPlugin.java,v $
+ Revision 1.5  2004/11/03 00:31:17  mch
+ PAL_MCH Candidate 2 merge
+
  Revision 1.4  2004/11/03 00:17:56  mch
  PAL_MCH Candidate 2 merge
 
@@ -169,3 +172,4 @@ public class VizierQuerierPlugin extends DefaultPlugin  {
  mavenized cds delegate
  
  */
+

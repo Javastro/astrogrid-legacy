@@ -12,7 +12,7 @@
  <Environment name="datacenter.cea.app.name" override="false" type="java.lang.String" value="@REGAUTHORITY@/cds_dsa" />
  
   <!-- Configure to use Vizier Proxy -->
-  <Environment name="datacenter.querier.plugin" override="false" type="java.lang.String" value="org.astrogrid.datacenter.impl.cds.VizierQuerierPlugin" />
+  <Environment name="datacenter.querier.plugin" override="false" type="java.lang.String" value="org.astrogrid.datacenter.cds.querier.VizierQuerierPlugin" />
   <Environment name="datacenter.querier.catalogueName" override="false" type="java.lang.String" value="Dixon" />
   <Environment name="datacenter.querier.metadata" override="false" type="java.lang.String" value="FALSE" />
 

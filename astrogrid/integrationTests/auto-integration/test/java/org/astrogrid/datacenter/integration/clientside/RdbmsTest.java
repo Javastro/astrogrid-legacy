@@ -1,4 +1,4 @@
-/*$Id: RdbmsTest.java,v 1.2 2004/10/16 14:36:07 mch Exp $
+/*$Id: RdbmsTest.java,v 1.3 2004/11/03 00:31:03 mch Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,8 @@
 package org.astrogrid.datacenter.integration.clientside;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.rpc.ServiceException;
 import javax.xml.transform.TransformerException;
@@ -24,11 +26,8 @@ import org.astrogrid.datacenter.integration.StdKeys;
 import org.astrogrid.datacenter.queriers.test.SampleStarsPlugin;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.slinger.NullTarget;
-import org.astrogrid.slinger.TargetIndicator;
-import org.astrogrid.store.Agsl;
+import org.astrogrid.slinger.TargetMaker;
 import org.xml.sax.SAXException;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 
 /**
  * Test querying using ADQL against std PAL
@@ -64,7 +63,7 @@ public class RdbmsTest extends DatacenterTestCase implements StdKeys {
 
       Query query = loadSampleQuery(RdbmsTest.class, "SimpleStarQuery-adql074.xml");
       query.getResultsDef().setFormat(QuerySearcher.VOTABLE);
-      query.getResultsDef().setTarget(TargetIndicator.makeIndicator(NullTarget.NULL_TARGET_URI));
+      query.getResultsDef().setTarget(TargetMaker.makeIndicator(NullTarget.NULL_TARGET_URI));
       
       QuerySearcher delegate = DatacenterDelegateFactory.makeQuerySearcher(Account.ANONYMOUS,PAL_v05_ENDPOINT,DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
       assertNotNull("delegate was null",delegate);
@@ -115,6 +114,9 @@ public class RdbmsTest extends DatacenterTestCase implements StdKeys {
 
 /*
 $Log: RdbmsTest.java,v $
+Revision 1.3  2004/11/03 00:31:03  mch
+PAL_MCH Candidate 2 merge
+
 Revision 1.2  2004/10/16 14:36:07  mch
 Forwardable null targets
 
