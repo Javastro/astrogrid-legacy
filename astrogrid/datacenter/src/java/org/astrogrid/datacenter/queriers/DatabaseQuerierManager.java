@@ -1,4 +1,4 @@
-/*$Id: DatabaseQuerierManager.java,v 1.1 2003/09/24 21:02:45 nw Exp $
+/*$Id: DatabaseQuerierManager.java,v 1.2 2003/09/25 01:23:28 nw Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -173,7 +173,7 @@ public class DatabaseQuerierManager {
       * see which was the last run). Later we could add service/user information
       * if available
       */
-    private static String generateHandle() {
+    static String generateHandle() {
         Date todayNow = new Date();
 
         return todayNow.getYear()
@@ -197,6 +197,9 @@ public class DatabaseQuerierManager {
 
 /* 
 $Log: DatabaseQuerierManager.java,v $
+Revision 1.2  2003/09/25 01:23:28  nw
+altered visibility on generateHandle() so it can be used within DummyQuerier
+
 Revision 1.1  2003/09/24 21:02:45  nw
 Factored creation and management of database queriers
 into separate class. Simplifies DatabaseQuerier.
