@@ -1,10 +1,9 @@
 package org.astrogrid.config;
 
 
-import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -53,7 +52,6 @@ public class SimpleTest extends TestCase
    /**
     * Tests auto load.  Not entirely sure what this 'should' do - all depends
     * on the environment
-    * @TODO MCH to check JDT's mod
     */
    public void testAutoload() throws IOException
    {

@@ -22,6 +22,7 @@ public class FactoryTest extends TestCase {
     * Tests property creation
     */
    public void testPropertyMaker() throws IOException {
+   	  log.trace("enter:testPropertyMaker");
       PropertyConfig configA = ConfigFactory.getPropertyConfig("Arthur");
       log.debug("Got Arthur "+configA);
       assertNotNull(configA);
@@ -44,12 +45,12 @@ public class FactoryTest extends TestCase {
       try {
          XmlConfig configXml = ConfigFactory.getXmlConfig("Arthur");
 		 assertNotSame(configA, configXml);
-      }
-      catch(RuntimeException elloelloello) { //yes, i know, i know, but I need to debug this remotely, so every bit of logging helps
+      } catch(RuntimeException elloelloello) { //yes, i know, i know, but I need to debug this remotely, so every bit of logging helps
       	log.error("Exception from ConfigFactory.getXmlConfig ", elloelloello);
       	throw elloelloello;
+      } finally {
+      	log.trace("exit: testPropertyMaker");
       }
-      
    };
 
    /**
@@ -58,7 +59,7 @@ public class FactoryTest extends TestCase {
    public void testXmlMaker() throws IOException
    {
     try {
-          log.trace("testXmlMaker");
+          log.trace("enter:testXmlMaker");
           XmlConfig configA = ConfigFactory.getXmlConfig("Arthur");
           log.debug("Arthur "+configA);
           assertNotNull(configA);
@@ -81,7 +82,9 @@ public class FactoryTest extends TestCase {
     } catch (RuntimeException e) {
         log.error("Exception caught in testXmlMaker", e);
         throw e;
-	}       
+	} finally {
+		log.trace("exit:testXmlMaker");
+	}
    }
 
     /**
