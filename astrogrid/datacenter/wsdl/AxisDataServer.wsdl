@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://localhost:8080/axis/services/AxisDataServer" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://localhost:8080/axis/services/AxisDataServer" xmlns:intf="http://localhost:8080/axis/services/AxisDataServer" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns3="http://query.datacenter.astrogrid.org" xmlns:tns4="http://astrogrid.org" xmlns:tns6="http://sax.xml.org" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+ <wsdl:types>
+  <schema targetNamespace="http://astrogrid.org" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="AstroGridException">
+    <sequence>
+     <element name="astroGridMessage" nillable="true" type="xsd:anyType"/>
+    </sequence>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://query.datacenter.astrogrid.org" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="QueryException">
+    <complexContent>
+     <extension base="tns4:AstroGridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://sax.xml.org" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="SAXException">
+    <sequence>
+     <element name="exception" nillable="true" type="xsd:anyType"/>
+     <element name="message" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="doQueryRequest">
+
+      <wsdl:part name="soapBody" type="apachesoap:Element"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getMetadataResponse">
+
+      <wsdl:part name="getMetadataReturn" type="xsd:anyType"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="DatabaseAccessException">
+
+      <wsdl:part name="fault" type="xsd:anyType"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="abortQueryRequest">
+
+      <wsdl:part name="soapBody" type="apachesoap:Element"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="QueryException">
+
+      <wsdl:part name="fault" type="tns3:QueryException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getMetadataResponse1">
+
+      <wsdl:part name="getMetadataReturn" type="xsd:anyType"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getVoRegistryMetadataResponse">
+
+      <wsdl:part name="getVoRegistryMetadataReturn" type="apachesoap:Element"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getVoRegistryMetadataRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="doQueryResponse">
+
+      <wsdl:part name="doQueryReturn" type="apachesoap:Element"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getResultsAndCloseResponse">
+
+      <wsdl:part name="getResultsAndCloseReturn" type="apachesoap:Element"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getResultsAndCloseRequest">
+
+      <wsdl:part name="soapBody" type="apachesoap:Element"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getMetadataRequest1">
+
+      <wsdl:part name="xpathExpression" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getMetadataRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="startQueryResponse">
+
+      <wsdl:part name="startQueryReturn" type="apachesoap:Element"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="startQueryRequest">
+
+      <wsdl:part name="soapBody" type="apachesoap:Element"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="abortQueryResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="SAXException">
+
+      <wsdl:part name="fault" type="tns6:SAXException"/>
+
+   </wsdl:message>
+
+   <wsdl:portType name="AxisDataServer">
+
+      <wsdl:operation name="getMetadata">
+
+         <wsdl:input message="impl:getMetadataRequest" name="getMetadataRequest"/>
+
+         <wsdl:output message="impl:getMetadataResponse" name="getMetadataResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getMetadata" parameterOrder="xpathExpression">
+
+         <wsdl:input message="impl:getMetadataRequest1" name="getMetadataRequest1"/>
+
+         <wsdl:output message="impl:getMetadataResponse1" name="getMetadataResponse1"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getVoRegistryMetadata">
+
+         <wsdl:input message="impl:getVoRegistryMetadataRequest" name="getVoRegistryMetadataRequest"/>
+
+         <wsdl:output message="impl:getVoRegistryMetadataResponse" name="getVoRegistryMetadataResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="doQuery" parameterOrder="soapBody">
+
+         <wsdl:input message="impl:doQueryRequest" name="doQueryRequest"/>
+
+         <wsdl:output message="impl:doQueryResponse" name="doQueryResponse"/>
+
+         <wsdl:fault message="impl:QueryException" name="QueryException"/>
+
+         <wsdl:fault message="impl:DatabaseAccessException" name="DatabaseAccessException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="startQuery" parameterOrder="soapBody">
+
+         <wsdl:input message="impl:startQueryRequest" name="startQueryRequest"/>
+
+         <wsdl:output message="impl:startQueryResponse" name="startQueryResponse"/>
+
+         <wsdl:fault message="impl:QueryException" name="QueryException"/>
+
+         <wsdl:fault message="impl:SAXException" name="SAXException"/>
+
+         <wsdl:fault message="impl:DatabaseAccessException" name="DatabaseAccessException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getResultsAndClose" parameterOrder="soapBody">
+
+         <wsdl:input message="impl:getResultsAndCloseRequest" name="getResultsAndCloseRequest"/>
+
+         <wsdl:output message="impl:getResultsAndCloseResponse" name="getResultsAndCloseResponse"/>
+
+         <wsdl:fault message="impl:SAXException" name="SAXException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="abortQuery" parameterOrder="soapBody">
+
+         <wsdl:input message="impl:abortQueryRequest" name="abortQueryRequest"/>
+
+         <wsdl:output message="impl:abortQueryResponse" name="abortQueryResponse"/>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="AxisDataServerSoapBinding" type="impl:AxisDataServer">
+
+      <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="getMetadata">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getMetadataRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/services/AxisDataServer" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getMetadataResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/services/AxisDataServer" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getMetadata">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getMetadataRequest1">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/services/AxisDataServer" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getMetadataResponse1">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/services/AxisDataServer" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getVoRegistryMetadata">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getVoRegistryMetadataRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/services/AxisDataServer" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getVoRegistryMetadataResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/services/AxisDataServer" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="doQuery">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="doQueryRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/services/AxisDataServer" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="doQueryResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/services/AxisDataServer" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="QueryException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/services/AxisDataServer" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="DatabaseAccessException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/services/AxisDataServer" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="startQuery">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="startQueryRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/services/AxisDataServer" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="startQueryResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/services/AxisDataServer" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="QueryException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/services/AxisDataServer" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="SAXException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/services/AxisDataServer" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="DatabaseAccessException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/services/AxisDataServer" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getResultsAndClose">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getResultsAndCloseRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/services/AxisDataServer" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getResultsAndCloseResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/services/AxisDataServer" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="SAXException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/services/AxisDataServer" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="abortQuery">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="abortQueryRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/services/AxisDataServer" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="abortQueryResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/services/AxisDataServer" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="AxisDataServerService">
+
+      <wsdl:port binding="impl:AxisDataServerSoapBinding" name="AxisDataServer">
+
+         <wsdlsoap:address location="http://localhost:8080/axis/services/AxisDataServer"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>
