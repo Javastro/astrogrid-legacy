@@ -1,5 +1,5 @@
 /*
- * $Id: DummyQuerier.java,v 1.2 2003/11/21 17:37:56 nw Exp $
+ * $Id: DummyQuerier.java,v 1.3 2003/11/25 14:21:49 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -17,12 +17,12 @@ import org.astrogrid.datacenter.axisdataserver.types.Query;
  * @author M Hill
  */
 
-public class DummyQuerier extends DatabaseQuerier
+public class DummyQuerier extends Querier
 {
    public DummyQuerier() throws IOException
    {
       super();
-      this.setHandle(DatabaseQuerierManager.generateHandle());
+      this.setHandle(QuerierManager.generateHandle());
    }
 
    public QueryResults queryDatabase(Query query ) throws DatabaseAccessException

@@ -1,4 +1,4 @@
-/*$Id: DataQueryServiceTest.java,v 1.5 2003/11/21 17:37:56 nw Exp $
+/*$Id: DataQueryServiceTest.java,v 1.6 2003/11/25 14:21:49 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,8 +26,8 @@ import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
-import org.astrogrid.datacenter.queriers.DatabaseQuerier;
-import org.astrogrid.datacenter.queriers.DatabaseQuerierManager;
+import org.astrogrid.datacenter.queriers.Querier;
+import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.DummyQuerier;
 import org.astrogrid.datacenter.queriers.QuerierListener;
 import org.astrogrid.datacenter.queriers.sql.HsqlTestCase;
@@ -57,7 +57,7 @@ public class DataQueryServiceTest extends ServerTestCase {
         super.setUp();
         //wsTest.setUp(); //sets up workspace
         HsqlTestCase.initializeConfiguration();
-        SimpleConfig.setProperty(DatabaseQuerierManager.RESULTS_TARGET_KEY,DatabaseQuerier.TEMPORARY_DUMMY);
+        SimpleConfig.setProperty(QuerierManager.RESULTS_TARGET_KEY,Querier.TEMPORARY_DUMMY);
         DataSource ds = new HsqlTestCase.HsqlDataSource();
         //File tmpDir = WorkspaceTest.setUpWorkspace(); // dunno if we need to hang onto this for any reason..
         conn = ds.getConnection();
@@ -82,10 +82,10 @@ public class DataQueryServiceTest extends ServerTestCase {
     }
 
     public void testHandleUniqueness() throws IOException {
-        SimpleConfig.setProperty(DatabaseQuerierManager.DATABASE_QUERIER_KEY,DummyQuerier.class.getName());
-         DatabaseQuerier s1 = DatabaseQuerierManager.createQuerier((Query)null);
+        SimpleConfig.setProperty(QuerierManager.DATABASE_QUERIER_KEY,DummyQuerier.class.getName());
+         Querier s1 = QuerierManager.createQuerier((Query)null);
          assertNotNull(s1);
-         DatabaseQuerier s2 = DatabaseQuerierManager.createQuerier((Query)null);
+         Querier s2 = QuerierManager.createQuerier((Query)null);
          assertNotNull(s2);
          assertNotSame(s1,s2);
          assertTrue(! s1.getHandle().trim().equals(s2.getHandle().trim()));
@@ -100,7 +100,7 @@ public class DataQueryServiceTest extends ServerTestCase {
         assertNotNull(queryIn);
         Query query = Query.unmarshalQuery(new InputStreamReader(queryIn));
         
-        DatabaseQuerier querier =  DatabaseQuerierManager.createQuerier(query);
+        Querier querier =  QuerierManager.createQuerier(query);
         assertNotNull(querier);
         assertEquals(QueryStatus.CONSTRUCTED,querier.getStatus());
         assertEquals(-1.0,querier.getQueryTimeTaken(),0.001);
@@ -135,7 +135,7 @@ public class DataQueryServiceTest extends ServerTestCase {
          * @see org.astrogrid.datacenter.service.ServiceListener#serviceStatusChanged(java.lang.String)
          */
 
-        public void queryStatusChanged(DatabaseQuerier querier) {
+        public void queryStatusChanged(Querier querier) {
             statusList.add(querier.getStatus());
         }
 
@@ -158,6 +158,9 @@ public class DataQueryServiceTest extends ServerTestCase {
 
 /*
 $Log: DataQueryServiceTest.java,v $
+Revision 1.6  2003/11/25 14:21:49  mch
+Extracted Querier from DatabaseQuerier in prep for FITS querying
+
 Revision 1.5  2003/11/21 17:37:56  nw
 made a start tidying up the server.
 reduced the number of failing tests

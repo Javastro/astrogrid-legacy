@@ -1,4 +1,4 @@
-/*$Id: HsqlTestCase.java,v 1.3 2003/11/21 17:37:56 nw Exp $
+/*$Id: HsqlTestCase.java,v 1.4 2003/11/25 14:21:49 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,7 +23,7 @@ import junit.framework.TestCase;
 
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
-import org.astrogrid.datacenter.queriers.DatabaseQuerierManager;
+import org.astrogrid.datacenter.queriers.QuerierManager;
 
 /** abstract test case for testing against an in-memory Hsql database.
  * @author Noel Winstanley nw@jb.man.ac.uk 05-Sep-2003
@@ -65,7 +65,7 @@ public abstract class HsqlTestCase extends TestCase {
        //register HSQLDB driver with driver key in configration file
        //put driver into config file
        SimpleConfig.setProperty(SqlQuerier.JDBC_DRIVERS_KEY, JDBC_DRIVER );
-       SimpleConfig.setProperty(DatabaseQuerierManager.DATABASE_QUERIER_KEY,"org.astrogrid.datacenter.queriers.hsql.HsqlQuerier");
+       SimpleConfig.setProperty(QuerierManager.DATABASE_QUERIER_KEY,"org.astrogrid.datacenter.queriers.hsql.HsqlQuerier");
         
        //register where to find database
        SimpleConfig.setProperty(SqlQuerier.JDBC_URL_KEY, JDBC_URL );
@@ -139,6 +139,9 @@ public abstract class HsqlTestCase extends TestCase {
 
 /*
 $Log: HsqlTestCase.java,v $
+Revision 1.4  2003/11/25 14:21:49  mch
+Extracted Querier from DatabaseQuerier in prep for FITS querying
+
 Revision 1.3  2003/11/21 17:37:56  nw
 made a start tidying up the server.
 reduced the number of failing tests

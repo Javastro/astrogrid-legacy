@@ -28,7 +28,7 @@ import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.delegate.AdqlQuerier;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
-import org.astrogrid.datacenter.queriers.DatabaseQuerierManager;
+import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.query.QueryException;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -49,7 +49,7 @@ public class ServerTest extends ServerTestCase
    {
       //make sure database querier to be used is the dummy one - only available
       //in the test suite
-      SimpleConfig.setProperty(DatabaseQuerierManager.DATABASE_QUERIER_KEY, "org.astrogrid.datacenter.queriers.DummyQuerier");
+      SimpleConfig.setProperty(QuerierManager.DATABASE_QUERIER_KEY, "org.astrogrid.datacenter.queriers.DummyQuerier");
 
       //create the server
       AxisDataServer server = new AxisDataServer();
@@ -103,6 +103,9 @@ public class ServerTest extends ServerTestCase
 
 /*
 $Log: ServerTest.java,v $
+Revision 1.3  2003/11/25 14:21:49  mch
+Extracted Querier from DatabaseQuerier in prep for FITS querying
+
 Revision 1.2  2003/11/21 17:37:56  nw
 made a start tidying up the server.
 reduced the number of failing tests

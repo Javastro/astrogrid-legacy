@@ -5,7 +5,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.astrogrid.datacenter.ServerTestCase;
-import org.astrogrid.datacenter.queriers.DatabaseQuerier;
+import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.DummyQuerier;
 import org.astrogrid.datacenter.queriers.DummyQueryResults;
 import org.w3c.dom.Document;
@@ -28,7 +28,7 @@ public class ResponseHelperTest extends ServerTestCase
       return new TestSuite(ResponseHelperTest.class);
    }
 
-    protected DatabaseQuerier querier;
+    protected Querier querier;
 
    /**
     * Make normal documents 
