@@ -1,5 +1,5 @@
 /*
- * $Id: DataQueryService.java,v 1.3 2003/08/28 17:28:10 mch Exp $
+ * $Id: DataQueryService.java,v 1.4 2003/09/02 14:47:26 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -78,11 +78,11 @@ public class DataQueryService implements ServiceStatus
    public Element runQuery(Element domContainingQuery) throws QueryException, DatabaseAccessException, IOException
    {
       fireStatusChanged(STARTING);
-      Query query = new Query(domContainingQuery);
+      //Query query = new Query(domContainingQuery);
 
-      DatabaseQuerier querier = DatabaseQuerier.createQuerier(query);
+      DatabaseQuerier querier = DatabaseQuerier.createQuerier();
 
-      QueryResults results = querier.queryDatabase(query);
+      QueryResults results = querier.queryDatabase(domContainingQuery);
 
       return results.toVotable().getDocumentElement();
    }

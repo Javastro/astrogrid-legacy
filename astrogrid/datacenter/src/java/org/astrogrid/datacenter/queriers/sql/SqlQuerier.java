@@ -1,5 +1,5 @@
 /*
- * $Id: SqlQuerier.java,v 1.2 2003/08/28 13:23:57 mch Exp $
+ * $Id: SqlQuerier.java,v 1.3 2003/09/02 14:47:26 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,6 +9,7 @@ package org.astrogrid.datacenter.queriers.sql;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.query.Query;
+import org.w3c.dom.Node;
 
 /**
  * A general purpose SQL Querier that will (hopefully) produce bog standard
@@ -19,9 +20,8 @@ import org.astrogrid.datacenter.query.Query;
 
 public class SqlQuerier extends DatabaseQuerier
 {
-   public QueryResults queryDatabase(Query query)
+   public QueryResults queryDatabase(Node n)
    {
-      query.toSQLString();
       return null;
    }
 

@@ -1,5 +1,5 @@
 /*
- * $Id: MySqlQuerierTest.java,v 1.1 2003/08/29 15:24:23 mch Exp $
+ * $Id: MySqlQuerierTest.java,v 1.2 2003/09/02 14:47:55 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -43,13 +43,13 @@ public class MySqlQuerierTest extends TestCase
       assertNotNull(queryElement);
 
       //convert to query
-      Query query = new Query(queryElement);
+     // Query query = new Query(queryElement);
 
       //make connection to database
       MySqlQuerier querier = new MySqlQuerier();
 
       //send query
-      querier.queryDatabase(query);
+      querier.queryDatabase(queryElement);
 
    }
 

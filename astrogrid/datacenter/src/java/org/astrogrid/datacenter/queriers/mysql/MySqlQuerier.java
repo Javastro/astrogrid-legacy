@@ -1,5 +1,5 @@
 /*
- * $Id: MySqlQuerier.java,v 1.4 2003/08/28 13:23:45 mch Exp $
+ * $Id: MySqlQuerier.java,v 1.5 2003/09/02 14:47:26 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -11,11 +11,13 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import org.astrogrid.datacenter.queriers.DatabaseAccessException;
-import org.astrogrid.datacenter.queriers.DatabaseQuerier;
-import org.astrogrid.datacenter.queriers.QueryResults;
+
+import org.astrogrid.datacenter.adql.*;
+import org.astrogrid.datacenter.queriers.*;
 import org.astrogrid.datacenter.queriers.sql.SqlResults;
 import org.astrogrid.datacenter.query.Query;
+import org.exolab.castor.xml.MarshalException;
+import org.w3c.dom.Node;
 
 /**
  * A querier that works with the MySQL database.
@@ -78,21 +80,26 @@ public class MySqlQuerier extends DatabaseQuerier
     * in sql form and returning the results as an SqlResults wrapper around
     * the SQL ResultSet.
     */
-   public QueryResults queryDatabase(Query query) throws DatabaseAccessException
+   public QueryResults queryDatabase(Node n) throws DatabaseAccessException
    {
       String sql = null;
       try
       {
          Statement statement = jdbcConnection.createStatement();
-         sql = query.toSQLString(); //store this so we can use it in case of exceptions
+         QOM qom = ADQLUtils.unmarshalSelect(n);
+         //sql = query.toSQLString(); //store this so we can use it in case of exceptions
+         QueryTranslator trans = new MySqlQueryTranslator();
+         sql = trans.translate(qom);
          statement.execute(sql);
          ResultSet results = statement.getResultSet();
 
          return new SqlResults(results);
-      }
-      catch (SQLException e)
-      {
+      }      catch (SQLException e) {
          throw new DatabaseAccessException(e, "Could not query database using '" + sql + "'");
+      } catch (MarshalException e) {
+          throw new DatabaseAccessException(e,"Could not construct qom" );
+      } catch (Exception e) {
+          throw new DatabaseAccessException(e,"an error occurred");
       }
    }
 
