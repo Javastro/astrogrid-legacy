@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- -->
 <!DOCTYPE project [
-  <!ENTITY cocoon-deps SYSTEM "../cocoon-dependencies-nowar.xml">
+  <!ENTITY cocoon-deps SYSTEM "../cocoon-dependencies.xml">
 ]>
 <!-- -->
 <project
