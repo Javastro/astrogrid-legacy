@@ -104,6 +104,7 @@ public class From {
         			buffer.append(catalog[i].getName());
         			buffer.append("..");
         			buffer.append(catalog[i].getName());
+        			buffer.append(", ");
         		}
         	
         		else {
@@ -113,14 +114,12 @@ public class From {
 					    buffer.append(catalog[i].getName());
 				    	buffer.append("..");
 				        buffer.append(table[j].getName());				
-				        buffer.append(",");
+				        buffer.append(", ");
 			           		
-					} // end of for (int j=0; j < table.length; j++)
-					
-					buffer.deleteCharAt(buffer.length()-1); // remove final ","
+					} // end of for (int j=0; j < table.length; j++)		
         		}
     		} // end of for (int i=0; i < catalog.length; i++)
-    	   
+			buffer.deleteCharAt(buffer.length()-2); // remove final ", "
 			
     	}
 		catch( Exception ex) {
