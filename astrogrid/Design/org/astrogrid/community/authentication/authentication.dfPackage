@@ -1,0 +1,44 @@
+package id3iyo8dkzgej2xdkzj2hfd;
+
+/**
+@version 2.0
+@physicalPackage
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id22410dkzgej2xdkzj2hg4.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.community.authentication.server:oiref> 
+*/
+class reference {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.community.authentication.TokenAuthenticationServer:oiref><oihard>
+@__modelType reference 
+*/
+class reference77 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.community.authentication.TokenAuthenticator:oiref><oihard>
+@__modelType reference 
+*/
+class reference78 {
+}/**
+@__ref <oiref:design#Class#id3jd1bdkzgej2xdkzj2hfq.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.community.authentication.data:oiref> 
+*/
+class reference79 {
+}}/**
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions 
+*/
+class __positions {
+}

@@ -1,0 +1,63 @@
+package id3n1iidkzgej2xdkzhxlrd;
+
+/**
+@version 2.0
+@physicalPackage
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id1t3ygdkzgej2xdkzhxlu0.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.mySpace.mySpaceServer:oiref> 
+*/
+class reference {
+}/**
+@__ref <oiref:design#Class#id4oip9dkzgej2xdkzhxlrq.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.mySpace.delegate:oiref> 
+*/
+class reference9 {
+}/**
+@__ref <oiref:design#Class#id25oyndkzgej2xdkzhxlt7.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.mySpace.mySpaceDemo:oiref> 
+*/
+class reference10 {
+}/**
+@__ref <oiref:design#Class#id3j32adkzgej2xdkzhxlti.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.mySpace.mySpaceManager:oiref> 
+*/
+class reference11 {
+}/**
+@__ref <oiref:design#Class#idxoqadkzgej2xdkzhxlub.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.mySpace.mySpaceStatus:oiref> 
+*/
+class reference12 {
+}/**
+@__ref <oiref:design#Class#id154dndkzgej2xdkzhxluq.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.mySpace.mySpaceUtil:oiref> 
+*/
+class reference13 {
+}}/**
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:design#Class#idxoqadkzgej2xdkzhxlub.diagram:oiref>=368,10,149,164,1:oigroup>
+<oigroup:<oiref:design#Class#id25oyndkzgej2xdkzhxlt7.diagram:oiref>=168,10,175,210,1:oigroup>
+<oigroup:<oiref:design#Class#id1t3ygdkzgej2xdkzhxlu0.diagram:oiref>=10,150,124,164,1:oigroup>
+<oigroup:<oiref:design#Class#id4oip9dkzgej2xdkzhxlrq.diagram:oiref>=10,10,135,141,1:oigroup>
+<oigroup:<oiref:design#Class#id154dndkzgej2xdkzhxluq.diagram:oiref>=540,10,160,210,1:oigroup>
+<oigroup:<oiref:design#Class#id3j32adkzgej2xdkzhxlti.diagram:oiref>=720,20,197,279,1:oigroup>
+*/
+class __positions {
+}

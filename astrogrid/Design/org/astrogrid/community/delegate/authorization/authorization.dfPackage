@@ -1,0 +1,52 @@
+package id3wr66dkzgej2xdkzj2hix;
+
+/**
+@version 2.0
+@physicalPackage
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:java#Class#org.astrogrid.community.delegate.authorization.Authorization:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.community.delegate.authorization.AuthorizationSoapBindingStub:oiref><oihard>
+@__modelType reference 
+*/
+class reference90 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.community.delegate.authorization.AuthorizationServiceLocator:oiref><oihard>
+@__modelType reference 
+*/
+class reference91 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.community.delegate.authorization.AuthorizationDelegate:oiref><oihard>
+@__modelType reference 
+*/
+class reference92 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.community.delegate.authorization.AuthorizationService:oiref><oihard>
+@__modelType reference 
+*/
+class reference93 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.community.delegate.authorization.AuthorizationServiceTestCase:oiref><oihard>
+@__modelType reference 
+*/
+class reference94 {
+}}/**
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions 
+*/
+class __positions {
+}

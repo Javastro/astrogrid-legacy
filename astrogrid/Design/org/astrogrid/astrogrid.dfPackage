@@ -1,0 +1,85 @@
+package id1myxddkzgej2xdkzhxlqh;
+
+/**
+@version 2.0
+@physicalPackage
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:java#Class#org.astrogrid.TemplateManager:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.ConfigurationHandler:oiref><oihard>
+@__modelType reference 
+*/
+class reference3 {
+}/**
+@__ref <oiref:design#Class#id3n1iidkzgej2xdkzhxlrd.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.mySpace:oiref> 
+*/
+class reference4 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.Configurator:oiref><oihard>
+@__modelType reference 
+*/
+class reference5 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.AstroGridException:oiref><oihard>
+@__modelType reference 
+*/
+class reference6 {
+}/**
+@__ref <oiref:design#Class#id3tjbjdkzgej2xdkzhxlr1.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.i18n:oiref> 
+*/
+class reference7 {
+}/**
+@__ref <oiref:design#Class#id1aqjqdkzgej2xdkzhzhgy.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.jes:oiref> 
+*/
+class reference8 {
+}/**
+@__ref <oiref:design#Class#id1w1zidl2gi8vsdl2gins5.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.devtools:oiref> 
+*/
+class reference9 {
+}/**
+@__ref <oiref:design#Class#id2zfrbdl8218r7dl86c569.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.common:oiref> 
+*/
+class reference2 {
+}/**
+@__ref <oiref:design#Class#id1xdjxdlid04undlid0thh.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.applications:oiref> 
+*/
+class reference1 {
+}}/**
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:design#Class#id3n1iidkzgej2xdkzhxlrd.diagram:oiref>=477,10,138,193,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.TemplateManager:oiref>=10,10,200,227,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.AstroGridException:oiref>=230,330,200,183,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.TemplateManager#singletonTemplateManager:oiref>=170,237,170,287,260,287,260,197,210,197:oigroup>
+<oigroup:<oiref:design#Class#id1aqjqdkzgej2xdkzhzhgy.diagram:oiref>=450,370,107,226,1:oigroup>
+<oigroup:<oiref:design#Class#id3tjbjdkzgej2xdkzhxlr1.diagram:oiref>=450,250,139,77,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.Configurator:oiref>=10,330,200,385,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.ConfigurationHandler:oiref>=300,10,157,107,1:oigroup> 
+*/
+class __positions {
+}

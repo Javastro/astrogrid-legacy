@@ -1,0 +1,137 @@
+package id4mox5dkzgej2xdkzjcbq1;
+
+/**
+@version 2.0
+@physicalPackage
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:java#Class#org.astrogrid.ui.ExtensionFileFilter:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.ui.NumberDocument:oiref><oihard>
+@__modelType reference 
+*/
+class reference42 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.ui.TextEditor:oiref><oihard>
+@__modelType reference 
+*/
+class reference43 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.ui.Splash:oiref><oihard>
+@__modelType reference 
+*/
+class reference44 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.ui.JDoubleField:oiref><oihard>
+@__modelType reference 
+*/
+class reference45 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.ui.NumberChecker:oiref><oihard>
+@__modelType reference 
+*/
+class reference46 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.ui.JPasteButton:oiref><oihard>
+@__modelType reference 
+*/
+class reference47 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.ui.JMutableList:oiref><oihard>
+@__modelType reference 
+*/
+class reference48 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.ui.StandardDialog:oiref><oihard>
+@__modelType reference 
+*/
+class reference49 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.ui.JCommaIntegerField:oiref><oihard>
+@__modelType reference 
+*/
+class reference50 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.ui.JSetFileButton:oiref><oihard>
+@__modelType reference 
+*/
+class reference51 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.ui.EscEnterListener:oiref><oihard>
+@__modelType reference 
+*/
+class reference52 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.ui.JIntegerField:oiref><oihard>
+@__modelType reference 
+*/
+class reference53 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.ui.DoubleNumberDocument:oiref><oihard>
+@__modelType reference 
+*/
+class reference54 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.ui.JCommaDoubleField:oiref><oihard>
+@__modelType reference 
+*/
+class reference55 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.ui.IconFactory:oiref><oihard>
+@__modelType reference 
+*/
+class reference56 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.ui.ToggleButtonControllerListener:oiref><oihard>
+@__modelType reference 
+*/
+class reference57 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.ui.FlexiGridLayout:oiref><oihard>
+@__modelType reference 
+*/
+class reference58 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.ui.GridLayout2:oiref><oihard>
+@__modelType reference 
+*/
+class reference59 {
+}}/**
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:java#Class#org.astrogrid.ui.TextEditor:oiref>=18,583,178,476,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.ui.JPasteButton:oiref>=442,390,158,184,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.ui.JIntegerField:oiref>=815,370,153,200,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.ui.EscEnterListener:oiref>=290,10,147,269,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.ui.NumberDocument:oiref>=260,290,138,122,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.ui.JCommaDoubleField:oiref>=659,750,171,207,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.ui.JDoubleField:oiref>=608,10,197,200,1:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.ui.TextEditor#org.astrogrid.ui.StandardDialog:oiref>=107,583,107,578:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.ui.Splash:oiref>=459,10,130,306,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.ui.JSetFileButton:oiref>=824,10,192,361,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.ui.IconFactory:oiref>=1038,10,178,322,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.ui.DoubleNumberDocument:oiref>=659,590,188,122,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.ui.ExtensionFileFilter:oiref>=222,570,200,453,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.ui.NumberChecker:oiref>=608,230,188,122,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.ui.FlexiGridLayout:oiref>=986,550,200,338,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.ui.StandardDialog#eelistener:oiref>=210,131,290,131:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.ui.GridLayout2:oiref>=10,1050,200,237,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.ui.JCommaIntegerField:oiref>=442,790,172,207,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.ui.StandardDialog:oiref>=10,10,200,568,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.ui.JMutableList:oiref>=442,590,199,161,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.ui.ToggleButtonControllerListener:oiref>=986,370,200,161,1:oigroup>
+*/
+class __positions {
+}

@@ -1,0 +1,63 @@
+package id179ygdkzgej2xdkzj2hdk;
+
+/**
+@version 2.0
+@physicalPackage
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id2264kdkzgej2xdkzj2hvu.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.community.service:oiref> 
+*/
+class reference {
+}/**
+@__ref <oiref:design#Class#id1cuvddkzgej2xdkzj2hi6.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.community.delegate:oiref> 
+*/
+class reference60 {
+}/**
+@__ref <oiref:design#Class#id4cftldkzgej2xdkzj2he0.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.community.auth:oiref> 
+*/
+class reference61 {
+}/**
+@__ref <oiref:design#Class#id2yfo1dkzgej2xdkzj2hgh.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.community.common:oiref> 
+*/
+class reference62 {
+}/**
+@__ref <oiref:design#Class#id3iyo8dkzgej2xdkzj2hfd.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.community.authentication:oiref> 
+*/
+class reference63 {
+}/**
+@__ref <oiref:design#Class#idlbludkzgej2xdkzj2hk9.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.community.policy:oiref> 
+*/
+class reference64 {
+}}/**
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:design#Class#id3iyo8dkzgej2xdkzj2hfd.diagram:oiref>=830,140,194,180,1:oigroup>
+<oigroup:<oiref:design#Class#id4cftldkzgej2xdkzj2he0.diagram:oiref>=10,10,83,141,1:oigroup>
+<oigroup:<oiref:design#Class#id1cuvddkzgej2xdkzj2hi6.diagram:oiref>=91,10,118,164,1:oigroup>
+<oigroup:<oiref:design#Class#id2264kdkzgej2xdkzj2hvu.diagram:oiref>=440,30,118,141,1:oigroup>
+<oigroup:<oiref:design#Class#idlbludkzgej2xdkzj2hk9.diagram:oiref>=590,120,83,187,1:oigroup>
+<oigroup:<oiref:design#Class#id2yfo1dkzgej2xdkzj2hgh.diagram:oiref>=226,10,189,318,1:oigroup>
+*/
+class __positions {
+}

@@ -1,0 +1,82 @@
+package id16eq8dl2gi8vsdl2ginpm;
+
+/**
+@version 2.0
+@physicalPackage
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id2h38kdl2gi8vsdl2ginqj.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.community.policy.loader.junit:oiref> 
+*/
+class reference {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.community.policy.loader.PermissionDataParser:oiref><oihard>
+@__modelType reference 
+*/
+class reference14 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.community.policy.loader.GroupDataParser:oiref><oihard>
+@__modelType reference 
+*/
+class reference15 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.community.policy.loader.PolicyDataParser:oiref><oihard>
+@__modelType reference 
+*/
+class reference16 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.community.policy.loader.ResourceDataParser:oiref><oihard>
+@__modelType reference 
+*/
+class reference17 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.community.policy.loader.CommunityDataParser:oiref><oihard>
+@__modelType reference 
+*/
+class reference18 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.community.policy.loader.PolicyLoader:oiref><oihard>
+@__modelType reference 
+*/
+class reference19 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.community.policy.loader.GroupMemberParser:oiref><oihard>
+@__modelType reference 
+*/
+class reference20 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.community.policy.loader.AccountDataParser:oiref><oihard>
+@__modelType reference 
+*/
+class reference21 {
+}}/**
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:java#Class#org.astrogrid.community.policy.loader.AccountDataParser:oiref>=212,10,182,361,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.community.policy.loader.PermissionDataParser#parent:oiref>=339,542,419,542:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.community.policy.loader.AccountDataParser#parent:oiref>=303,371,478,431:oigroup>
+<oigroup:<oiref:design#Class#id2h38kdl2gi8vsdl2ginqj.diagram:oiref>=655,430,123,118,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.community.policy.loader.ResourceDataParser:oiref>=10,10,182,338,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.community.policy.loader.CommunityDataParser#parent:oiref>=716,371,539,431:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.community.policy.loader.PolicyDataParser:oiref>=419,431,182,223,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.community.policy.loader.PolicyLoader:oiref>=798,430,200,230,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.community.policy.loader.GroupDataParser:oiref>=836,10,182,361,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.community.policy.loader.GroupMemberParser#parent:oiref>=508,348,508,431:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.community.policy.loader.GroupDataParser#parent:oiref>=927,371,570,431:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.community.policy.loader.PermissionDataParser:oiref>=139,431,200,430,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.community.policy.loader.GroupMemberParser:oiref>=414,10,182,338,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.community.policy.loader.ResourceDataParser#parent:oiref>=101,348,101,362,448,431:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.community.policy.loader.CommunityDataParser:oiref>=616,10,200,361,1:oigroup> 
+*/
+class __positions {
+}

@@ -1,0 +1,27 @@
+package id2h38kdl2gi8vsdl2ginqj;
+
+/**
+@version 2.0
+@physicalPackage
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:java#Class#org.astrogrid.community.policy.loader.junit.JUnitLoaderTest:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}}/**
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:java#Class#org.astrogrid.community.policy.loader.junit.JUnitLoaderTest:oiref>=10,10,200,368,1:oigroup> 
+*/
+class __positions {
+}

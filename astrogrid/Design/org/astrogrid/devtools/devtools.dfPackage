@@ -1,0 +1,27 @@
+package id1w1zidl2gi8vsdl2gins5;
+
+/**
+@version 2.0
+@physicalPackage
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:java#Class#org.astrogrid.devtools.JarFinder:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}}/**
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:java#Class#org.astrogrid.devtools.JarFinder:oiref>=10,10,164,145,1:oigroup> 
+*/
+class __positions {
+}

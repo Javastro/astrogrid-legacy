@@ -1,0 +1,47 @@
+package id4qsgfdl2gi8vsdl2ginnc;
+
+/**
+@version 2.0
+@physicalPackage
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:java#Class#org.astrogrid.community.common.util.xml.sax.SAXElementHandler:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.community.common.util.xml.sax.SAXDocumentHandler:oiref><oihard>
+@__modelType reference 
+*/
+class reference22 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.community.common.util.xml.sax.SAXCharacterHandler:oiref><oihard>
+@__modelType reference 
+*/
+class reference23 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.community.common.util.xml.sax.SAXAttributeHandler:oiref><oihard>
+@__modelType reference 
+*/
+class reference24 {
+}}/**
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:java#Class#org.astrogrid.community.common.util.xml.sax.SAXDocumentHandler:oiref>=27,832,165,161,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.community.common.util.xml.sax.SAXCharacterHandler:oiref>=290,10,177,246,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.community.common.util.xml.sax.SAXElementHandler:oiref>=10,10,200,752,1:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.community.common.util.xml.sax.SAXDocumentHandler#org.astrogrid.community.common.util.xml.sax.SAXElementHandler:oiref>=109,832,109,762:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.community.common.util.xml.sax.SAXElementHandler#charHandler:oiref>=210,133,290,133:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.community.common.util.xml.sax.SAXAttributeHandler:oiref>=260,290,175,200,1:oigroup> 
+*/
+class __positions {
+}

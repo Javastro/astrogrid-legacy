@@ -1,0 +1,67 @@
+package id1c8e9dkzgej2xdkzj2hik;
+
+/**
+@version 2.0
+@physicalPackage
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:java#Class#org.astrogrid.community.delegate.authentication.AuthenticatonServiceLocator:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.community.delegate.authentication.TokenAuthenticator:oiref><oihard>
+@__modelType reference 
+*/
+class reference82 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.community.delegate.authentication.AuthenticationDelegate:oiref><oihard>
+@__modelType reference 
+*/
+class reference83 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.community.delegate.authentication.Authenticaton:oiref><oihard>
+@__modelType reference 
+*/
+class reference84 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.community.delegate.authentication.AuthenticationServiceSoapBindingStub:oiref><oihard>
+@__modelType reference 
+*/
+class reference85 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.community.delegate.authentication.AuthenticationSoapBindingStub:oiref><oihard>
+@__modelType reference 
+*/
+class reference86 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.community.delegate.authentication.TokenAuthenticatorService:oiref><oihard>
+@__modelType reference 
+*/
+class reference87 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.community.delegate.authentication.TokenAuthenticatorServiceLocator:oiref><oihard>
+@__modelType reference 
+*/
+class reference88 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.community.delegate.authentication.AuthenticatonService:oiref><oihard>
+@__modelType reference 
+*/
+class reference89 {
+}}/**
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions 
+*/
+class __positions {
+}

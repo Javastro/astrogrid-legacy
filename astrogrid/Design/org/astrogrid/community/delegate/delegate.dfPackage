@@ -1,0 +1,40 @@
+package id1cuvddkzgej2xdkzj2hi6;
+
+/**
+@version 2.0
+@physicalPackage
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id1c8e9dkzgej2xdkzj2hik.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.community.delegate.authentication:oiref> 
+*/
+class reference {
+}/**
+@__ref <oiref:design#Class#id3jwi6dkzgej2xdkzj2hja.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.community.delegate.policy:oiref> 
+*/
+class reference66 {
+}/**
+@__ref <oiref:design#Class#id3wr66dkzgej2xdkzj2hix.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.community.delegate.authorization:oiref> 
+*/
+class reference67 {
+}}/**
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions 
+*/
+class __positions {
+}

@@ -6,7 +6,19 @@ package idi4an4di75kg3bdi7i2vbr;
 @__modelType diagram 
 */
 class diagram {
+/**
+@__ref <oiref:design#Class#idaobg0dia1a4v2dia1auir.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#Iteration3.Pictures.FullSize:oiref> 
+*/
+class reference10 {
 }/**
+@__ref <oiref:design#Class#idjx21edia1a4v2dia1aum0.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#Iteration3.Pictures.Web:oiref> 
+*/
+class reference11 {
+}}/**
 @__tags
 @shapeType ClassDiagram 
 */
@@ -16,7 +28,8 @@ class __tags {
 */
 class __options {
 }/**
-@__positions 
+@__positions <oigroup:<oiref:design#Class#idjx21edia1a4v2dia1aum0.diagram:oiref>=10,150,83,102,1:oigroup>
+<oigroup:<oiref:design#Class#idaobg0dia1a4v2dia1auir.diagram:oiref>=113,10,83,102,1:oigroup> 
 */
 class __positions {
 }

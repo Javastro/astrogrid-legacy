@@ -1,0 +1,60 @@
+package id478y8dkzgej2xdkzhxj27;
+
+/**
+@version 2.0
+@physicalPackage
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#idd42zzdi0bz8ckdi0c1iv5.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#Iteration3:oiref> 
+*/
+class reference {
+}/**
+@__ref <oiref:design#Class#id2t2c8dkzgej2xdkzhxlq4.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org:oiref> 
+*/
+class reference1 {
+}/**
+@__ref <oiref:java#Class#MySpaceManagerClient:oiref><oihard>
+@__modelType reference 
+*/
+class reference2 {
+}/**
+@__ref <oiref:design#Class#id2vv9tdkzgej2xdkzjcbqu.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#mock:oiref> 
+*/
+class reference12 {
+}/**
+@__ref <oiref:design#Class#id39zxgdl2gi8vsdl2hb0s1.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#Iteration4:oiref> 
+*/
+class reference25 {
+}/**
+@__ref <oiref:design#Class#id1nb2fdlgdunu2dlgjthew.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#:oiref> 
+*/
+class reference3 {
+}}/**
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:design#Class#idd42zzdi0bz8ckdi0c1iv5.diagram:oiref>=10,10,90,118,1:oigroup>
+<oigroup:<oiref:design#Class#id2t2c8dkzgej2xdkzhxlq4.diagram:oiref>=336,10,83,118,1:oigroup>
+<oigroup:<oiref:java#Class#MySpaceManagerClient:oiref>=116,10,200,368,1:oigroup>
+<oigroup:<oiref:design#Class#id2vv9tdkzgej2xdkzjcbqu.diagram:oiref>=9,139,83,141,1:oigroup>
+*/
+class __positions {
+}

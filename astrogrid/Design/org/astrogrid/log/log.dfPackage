@@ -1,0 +1,33 @@
+package id1iemldkzgej2xdkziunss;
+
+/**
+@version 2.0
+@physicalPackage
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:java#Class#org.astrogrid.log.Log:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.log.ConsoleFormatter:oiref><oihard>
+@__modelType reference 
+*/
+class reference4 {
+}}/**
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:java#Class#org.astrogrid.log.Log:oiref>=10,10,180,752,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.log.ConsoleFormatter:oiref>=210,10,139,122,1:oigroup> 
+*/
+class __positions {
+}
