@@ -10,15 +10,10 @@
  */
 package org.astrogrid.datacenter.query;
 
-import java.io.PrintStream;
 import org.apache.log4j.Logger;
-import org.astrogrid.datacenter.FactoryProvider;
 import org.astrogrid.datacenter.Util;
 //import org.astrogrid.datacenter.impl.QueryFactoryImpl;
 import org.astrogrid.i18n.AstroGridMessage;
-import org.objectwiz.votable.ResultSetConverter;
-import org.objectwiz.votable.ResultSetToSimpleVOTable;
-import org.objectwiz.votable.VOTable;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -57,10 +52,21 @@ public class Query {
    private GroupBy
        groupByObject ;
 
-    public Query( Element queryElement, QueryFactory factory ) throws QueryException {
+    public Query( Element elementIncQuery) throws QueryException {
       if( TRACE_ENABLED ) logger.debug( "Query(Element,QueryFactory): entry") ;
 
-//      this.factory = factory ;
+      Element queryElement = null;
+
+      //extract query element from DOM
+      if (elementIncQuery.getTagName().equalsIgnoreCase(AdqlTags.QUERY_ELEMENT))
+      {
+         queryElement = elementIncQuery;
+      }
+      else
+      {
+         NodeList queryNodes = elementIncQuery.getElementsByTagName(AdqlTags.QUERY_ELEMENT);
+         queryElement = (Element) queryNodes.item(0); //should only be 1
+      }
 
       try {
 
@@ -70,8 +76,6 @@ public class Query {
             element ;
          Catalog
              catalog = null;
-         OrderBy
-             orderBy;
 
          // JBL Note: the following piece of code is fragile...
          // If the FROM element is not the first, the constructors for
