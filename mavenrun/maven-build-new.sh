@@ -4,16 +4,18 @@ OLDDIR=$PWD
 PROJECT_NAME=$1
 
 DATE=`date`
+BUILD_HOME=/home/maven/build
+SCRIPTHOME=/home/maven/mavenrun
+PROJECT_HOME=$BUILD_HOME/astrogrid/$PROJECT_NAME
+LOG_FILE=$BUILD_HOME/maven-build-$PROJECT_NAME.log
+ADMIN_EMAIL=jdt@roe.ac.uk
 
 echo
 echo "[ag-build] building $PROJECT_NAME"
 echo "[ag-build] build log: maven-build-$PROJECT_NAME.log"
 echo
 
-BUILD_HOME=/home/maven/build
-SCRIPTHOME=/home/maven/mavenrun
-PROJECT_HOME=$BUILD_HOME/astrogrid/$PROJECT_NAME
-LOG_FILE=$BUILD_HOME/maven-build-$PROJECT_NAME.log
+
 
 
 
@@ -57,11 +59,27 @@ cd $PROJECT_HOME >> $LOG_FILE 2>&1
 
 echo "[ag-build-$PROJECT_NAME] generate and deploy site" 
 echo "Executing astrogrid-deploy-site" >> $LOG_FILE 2>&1 
-maven astrogrid-deploy-site >> $LOG_FILE 2>&1 
+if maven astrogrid-deploy-site >> $LOG_FILE 2>&1 
+then
+#OK
+else
+#Something wrong...
+   echo "astrogrid-deploy-site failed for $PROJECT_NAME" | mail -s "Build Failure" $ADMIN_EMAIL 
+fi
+
+
 echo "[ag-build-$PROJECT_NAME] generate and deploy SNAPSHOT"
 echo "Executing astrogrid-deploy-snapshot" >> $LOG_FILE 2>&1 
-maven astrogrid-deploy-snapshot >> $LOG_FILE 2>&1
+if maven astrogrid-deploy-snapshot >> $LOG_FILE 2>&1
+then
+#OK
+else
+#Something wrong....
 echo "[ag-build-$PROJECT_NAME] deploy build log"
+   echo "astrogrid-deploy-snapshot failed for $PROJECT_NAME" | mail -s "Build Failure" $ADMIN_EMAIL 
+fi
+
+
 cp $LOG_FILE /var/www/www/maven/build/log
 
 echo "[ag-build-$PROJECT_NAME] back to start dir: $OLDDIR"
