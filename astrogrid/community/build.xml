@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/Attic/build.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/12/16 12:46:43 $</cvs:date>
-    | <cvs:version>$Revision: 1.49 $</cvs:version>
+    | <cvs:date>$Date: 2003/12/16 15:08:06 $</cvs:date>
+    | <cvs:version>$Revision: 1.50 $</cvs:version>
     | <cvs:log>
     |   $Log: build.xml,v $
+    |   Revision 1.50  2003/12/16 15:08:06  dave
+    |   Updated the release jars
+    |
     |   Revision 1.49  2003/12/16 12:46:43  dave
     |   Fixed the web.xml dtd
     |
@@ -3202,14 +3205,34 @@ To repeat
 
         <!-- Copy our ant deploy script -->
         <copy verbose="false" overwrite="true"
-            file="src/ant/deploy.xml"
-            toFile="release/webapp/deploy.xml"/>
+            file="src/ant/build.xml"
+            toFile="release/webapp/build.xml"/>
 
         <!-- Copy our webapp jndi transform -->
         <copy verbose="false" overwrite="true"
             file="src/xsl/build/config/webapp.xsl"
             toFile="release/webapp/config/webapp.xsl"/>
 
+        <!-- Copy our config xsl transform -->
+        <copy verbose="false" overwrite="true"
+            file="src/xsl/build/config/config.xsl"
+            toFile="release/webapp/config/config.xsl"/>
+        <!-- Copy our database xsl transform -->
+        <copy verbose="false" overwrite="true"
+            file="src/xsl/build/config/database.xsl"
+            toFile="release/webapp/config/database.xsl"/>
+        <!-- Copy our database table definitions -->
+        <copy verbose="false" overwrite="true"
+            file="src/sql/hsqldb/create.sql"
+            toFile="release/webapp/config/create.sql"/>
+        <!-- Copy the hsqldb jar -->
+        <copy verbose="false" overwrite="true"
+            file="${jar.cache.local}/hsqldb/jars/hsqldb-${hsqldb.version}.jar"
+            toDir="release/webapp/config/jars"/>
+        <!-- Copy our server jar -->
+        <copy verbose="false" overwrite="true"
+            file="${policy.base}/jar/${policy.server.jar}"
+            toDir="release/webapp/config/jars/"/>
     </target>
 
 

@@ -2,12 +2,12 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/release/webapp/config/Attic/database.xsl,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/12/16 15:06:03 $</cvs:date>
-    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:date>$Date: 2003/12/16 15:08:06 $</cvs:date>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
     | <cvs:log>
     |   $Log: database.xsl,v $
-    |   Revision 1.1  2003/12/16 15:06:03  dave
-    |   Now installs in process database
+    |   Revision 1.2  2003/12/16 15:08:06  dave
+    |   Updated the release jars
     |
     | </cvs:log>
     |

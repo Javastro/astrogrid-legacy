@@ -1,11 +1,14 @@
 <?xml version="1.0"?>
 <!--+
-    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/ant/Attic/deploy.xml,v $</cvs:source>
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/ant/Attic/build.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/12/16 12:46:35 $</cvs:date>
-    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:date>$Date: 2003/12/16 15:08:07 $</cvs:date>
+    | <cvs:version>$Revision: 1.1 $</cvs:version>
     | <cvs:log>
-    |   $Log: deploy.xml,v $
+    |   $Log: build.xml,v $
+    |   Revision 1.1  2003/12/16 15:08:07  dave
+    |   Updated the release jars
+    |
     |   Revision 1.2  2003/12/16 12:46:35  dave
     |   Fixed the web.xml dtd
     |
@@ -41,6 +44,32 @@
     <property name="config.home"        value="/etc/astrogrid/community"/>
     <property name="client.config.home" value="/etc/astrogrid/community/client"/>
     <property name="server.config.home" value="/etc/astrogrid/community/server"/>
+
+    <!--+
+        | Hsqldb properties.
+        +-->
+    <property name="hsqldb.version"  value="1.7.1"/>
+    <property name="hsqldb.name"     value="policy"/>
+    <property name="hsqldb.location" value="/var/astrogrid/community"/>
+    <property name="hsqldb.url"      value="jdbc:hsqldb:${hsqldb.location}"/>
+    <property name="hsqldb.user"     value="sa"/>
+    <property name="hsqldb.pass"     value=""/>
+
+    <!--+
+        | The Hsqldb library classpath.
+        +-->
+    <path id="hsqldb.classpath">
+        <pathelement location="${project.home}/config/jars/hsqldb-${hsqldb.version}.jar"/>
+    </path>
+
+    <!--+
+        | The config library classpath.
+        +-->
+    <path id="config.classpath">
+        <fileset dir="${project.home}/config/jars/">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
 
     <!-- ================ Tomcat tasks ================ -->
     <!--+
@@ -158,7 +187,7 @@
     <!--+
         | Deploy our webapp into Tomcat (offline).
         +-->
-    <target name="webapp.deploy.offline" depends="">
+    <target name="deploy.webapp" depends="">
         <!-- Delete any existing war file -->
         <delete verbose="true" failonerror="false" file="${tomcat.home}/webapps/${project.name}.war"/>
         <!-- Delete any existing webapp -->
@@ -170,7 +199,7 @@
     <!--+
         | Deploy our config files.
         +-->
-    <target name="webapp.deploy.config" depends="">
+    <target name="deploy.config" depends="">
         <mkdir dir="${server.config.home}"/>
         <copy verbose="true" file="${project.home}/config/${project.name}-config-${project.version}.xml"   toFile="${server.config.home}/${project.name}-config.xml"/>
         <copy verbose="true" file="${project.home}/config/${project.name}-database-${project.version}.xml" toFile="${server.config.home}/${project.name}-database.xml"/>
@@ -180,7 +209,7 @@
     <!--+
         | Edit the webapp JNDI property.
         +-->
-    <target name="webapp.update.config" depends="">
+    <target name="config.jndi" depends="">
         <!-- Copy the existing web.xml to a backup file -->
         <copy file="${webapp.home}/WEB-INF/web.xml" tofile="${webapp.home}/WEB-INF/web.xml.old" overwrite="true" failonerror="false"/>
         <!-- Patch the web.xml to fix the DTD -->
@@ -199,6 +228,132 @@
         <move file="${webapp.home}/WEB-INF/web.xml.new" tofile="${webapp.home}/WEB-INF/web.xml" overwrite="true" failonerror="false"/>
     </target>
 
+    <!--+
+        | Transform our config file, setting a named property.
+        +-->
+    <target name="config.xslt" depends="">
+        <echo message=""/>
+        <echo message="Updating community config ...."/>
+        <echo message="  Config file    : ${config.file}"/>
+        <echo message="  Property name  : ${property.name}"/>
+        <echo message="  Property value : ${property.value}"/>
+        <!-- Transform our config file, filling in the specified value -->
+        <xslt style="${project.home}/config/config.xsl"
+              in="${config.file}"
+              out="${config.file}.new">
+            <outputproperty name="method" value="xml"/>
+            <outputproperty name="indent" value="yes"/>
+            <!-- Set the XSL params -->
+            <param name="category"         expression="org.astrogrid.community"/>
+            <param name="property.name"    expression="${property.name}"/>
+            <param name="property.value"   expression="${property.value}"/>
+        </xslt>
+        <!-- Replace our existing config.xml with the new one -->
+        <move file="${config.file}.new" tofile="${config.file}" overwrite="true" failonerror="false"/>
+    </target>
+
+    <!--+
+        | Configure our database params.
+        +-->
+    <target name="config.database" depends="">
+        <echo message="  Database url  : ${hsqldb.url}"/>
+        <echo message="  Database user : ${hsqldb.user}"/>
+        <echo message="  Database pass : ${hsqldb.pass}"/>
+        <!-- Create our database data directory -->
+        <mkdir dir="${hsqldb.location}"/>
+        <!-- Transform our config files, filling in the correct values -->
+        <antcall target="config.xslt">
+            <param name="config.file"    value="${server.config.home}/${project.name}-config.xml"/>
+            <param name="property.name"  value="database.name"/>
+            <param name="property.value" value="${hsqldb.name}"/>
+        </antcall>
+        <antcall target="config.xslt">
+            <param name="config.file"    value="${server.config.home}/${project.name}-config.xml"/>
+            <param name="property.name"  value="database.config"/>
+            <param name="property.value" value="${server.config.home}/${project.name}-database.xml"/>
+        </antcall>
+        <antcall target="config.xslt">
+            <param name="config.file"    value="${server.config.home}/${project.name}-config.xml"/>
+            <param name="property.name"  value="database.mapping"/>
+            <param name="property.value" value="${server.config.home}/${project.name}-mapping.xml"/>
+        </antcall>
+        <!-- Copy the existing config to a backup file -->
+        <copy file="${server.config.home}/${project.name}-database.xml" tofile="${server.config.home}/${project.name}-database.xml.old" overwrite="true" failonerror="false"/>
+        <!-- Transform the database config -->
+        <xslt style="${project.home}/config/database.xsl"
+              in="${server.config.home}/${project.name}-database.xml"
+              out="${server.config.home}/${project.name}-database.xml.new">
+            <outputproperty name="method" value="xml"/>
+            <outputproperty name="indent" value="yes"/>
+            <!-- Set the XSL params -->
+            <param name="url"  expression="${hsqldb.url}"/>
+            <param name="user" expression="${hsqldb.user}"/>
+            <param name="pass" expression="${hsqldb.pass}"/>
+        </xslt>
+        <!-- Replace the existing config with the new one -->
+        <move file="${server.config.home}/${project.name}-database.xml.new" tofile="${server.config.home}/${project.name}-database.xml" overwrite="true" failonerror="false"/>
+    </target>
+
+    <!--+
+        | Create our database tables.
+        +-->
+    <target name="init.database" depends="">
+        <echo message=""/>
+        <echo message="Creating Hqsldb tables ...."/>
+        <sql driver="org.hsqldb.jdbcDriver"
+             url="${hsqldb.url}"
+             classpathref="hsqldb.classpath"
+             userid="${hsqldb.user}"
+             password="${hsqldb.pass}"
+             print="true"
+            >
+            <transaction src="${project.home}/config/create.sql"/>
+        </sql>
+    </target>
+
+    <!--+
+        | Select all rows from our database tables.
+        +-->
+    <target name="database.select" depends="">
+        <sql driver="org.hsqldb.jdbcDriver"
+             url="${hsqldb.url}"
+             classpathref="hsqldb.classpath"
+             userid="${hsqldb.user}"
+             password="${hsqldb.pass}"
+             print="true"
+            >
+            <![CDATA[
+                SELECT * FROM communities ;
+                SELECT * FROM accounts    ;
+                SELECT * FROM groups      ;
+                SELECT * FROM resources   ;
+                SELECT * FROM members     ;
+                SELECT * FROM permissions ;
+            ]]>
+        </sql>
+    </target>
+
+    <!--+
+        | Delete all rows from our database tables.
+        +-->
+    <target name="database.delete" depends="">
+        <sql driver="org.hsqldb.jdbcDriver"
+             url="${hsqldb.url}"
+             classpathref="hsqldb.classpath"
+             userid="${hsqldb.user}"
+             password="${hsqldb.pass}"
+             print="true"
+            >
+            <![CDATA[
+                DELETE FROM groups      ;
+                DELETE FROM members     ;
+                DELETE FROM accounts    ;
+                DELETE FROM resources   ;
+                DELETE FROM communities ;
+                DELETE FROM permissions ;
+            ]]>
+        </sql>
+    </target>
 
 </project>
 
