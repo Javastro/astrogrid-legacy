@@ -1,5 +1,5 @@
 /*
- * $Id: BaseDBTest.java,v 1.1 2003/12/01 22:24:59 pah Exp $
+ * $Id: BaseDBTest.java,v 1.2 2003/12/02 18:13:31 pah Exp $
  * 
  * Created on 01-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -14,6 +14,8 @@
 package org.astrogrid.applications.manager.db;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -67,6 +69,7 @@ public class BaseDBTest extends TestCase {
       ConfigLoader.setConfigType(ConfigLoader.TEST_CONFIG); // set up the test config as early as possible
       Config config = ConfigLoader.LoadConfig("not used in tests");
       assertNotNull("cannot load config", config);
+      String createScriptname = config.getProperty("DBCreationScript");
       
       try {
          DRIVER = config.getProperty(ApplicationsConstants.DATABASE_DRIVER_KEY);
@@ -77,19 +80,17 @@ public class BaseDBTest extends TestCase {
          assertNotNull("Cannot load the database password", DatabasePassword);
          DatabaseUser = config.getProperty(ApplicationsConstants.DATABASE_USER_KEY);
          
-         conn = DriverManager.getConnection(JDBC_URL, DatabaseUser, DatabasePassword);
+         ds = new TestDataSource();
+         conn = ds.getConnection(DatabaseUser, DatabasePassword);
          
          //create the tables
-         Class thisBaseClass = Class.forName("org.astrogrid.community.common.db.HsqlDBInMemTestCase");
-         InputStream stream = thisBaseClass.getResourceAsStream("create.sql");
-         assertNotNull("cannot find the database create.sql - did you run the pre-tests ant task to copy the config files to the test area", stream);
+         Class thisBaseClass = this.getClass();//Class.forName("org.astrogrid.community.common.db.HsqlDBInMemTestCase");
+         InputStream stream = new FileInputStream(createScriptname);
+         assertNotNull("cannot find the database create script = "+createScriptname+"- did you run the pre-tests ant task to copy the config files to the test area", stream);
          String script = streamToString(stream);
          runSQLScript(script, conn);
          UnitTestData.load(conn);
 
-      }
-      catch (ClassNotFoundException cnfe) {
-         fail("could not load the db driver" + cnfe.getMessage());
       }
       catch (SQLException sqle) {
          fail("error in datbase setup - " + sqle.getMessage());

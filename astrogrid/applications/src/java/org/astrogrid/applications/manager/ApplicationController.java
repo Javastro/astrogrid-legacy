@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationController.java,v 1.9 2003/12/01 22:24:59 pah Exp $
+ * $Id: ApplicationController.java,v 1.10 2003/12/02 18:13:31 pah Exp $
  *
  * Created on 03 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -17,7 +17,7 @@ import org.astrogrid.community.User;
 /**
  * Describes the operations that are required of an application Controller. This includes listing the applications managed by the controller, including the detailed description of each application.
  * 
- * In addition the application controller is responsible for initializing the application with its parameters and then running the application, as well as returning the application
+ * In addition the application controller is responsible for initializing the application with its parameters and then running the application, as well as returning the application metadata for use by the registry and the 
  * @author pah 
  * @since Iteration 4
  * @version $Name:  $
@@ -25,12 +25,15 @@ import org.astrogrid.community.User;
  */
 public interface ApplicationController {
    /**
-    * Returns a list of the application ids of the applications that the controller manages. 
+    * list the application ids of the applications that the controller manages. 
+    * @return the array of application IDs
     */
    String[] listApplications();
 
    /**
     * returns a full application description (including parameter descriptions) for a particular application.
+    * @param applicationID the application identifier as returned by a call to {@link #listApplications} .
+    * @return This is a simple bean wrapper for the xml application description.
     * @stereotype query 
     */
    SimpleApplicationDescription getApplicationDescription(String applicationID);
@@ -55,13 +58,13 @@ public interface ApplicationController {
    /**
     * Query the status of a particular application execution.
     * @param executionId The executionId returned by {@link #initializeApplication} .
-    * @return
+    * @return A String describing the current status of the application.
     */
    String queryApplicationExecutionStatus(int executionId);
 
    /**
     * Returns an xml string describing the application service controller and the applications that it controls. This string would be suitable for putting in the registry.
-    * @return
+    * @return A VOResource fragment suiltable for inclusion in the registry.
     */
    String returnRegistryEntry();
 

@@ -1,2 +1,197 @@
-<project>
+<project name="applications-integration" default="hsqldb.database.create" >
+<description >This file contains some admistrative tasks to help installing/running the project</description>
+
+   <!-- ================ Hsqldb tasks ================ -->
+    <!--+
+        | Hsqldb properties.
+        +-->
+    <property name="hsqldb.version"  value="1.7.1"/>
+    <property name="hsqldb.home"     value="${basedir}/build/db"/>
+    <property name="hsqldb.host"     value="localhost"/>
+    <property name="hsqldb.port"     value="9001"/>
+    <property name="hsqldb.name"     value="TestDB"/>
+    <property name="hsqldb.user"     value="sa"/>
+    <property name="hsqldb.pass"     value="veritas"/>
+    <property name="hsqldb.timeout"  value="60"/>
+
+    <property name="hsqldb.url"      value="jdbc:hsqldb:hsql://${hsqldb.host}:${hsqldb.port}"/>
+
+    <!--+
+        | The Hsqldb library classpath.
+        +-->
+    <path id="hsqldb.classpath">
+       <!-- <pathelement location="${jar.cache.local}/hsqldb/jars/hsqldb-${hsqldb.version}.jar"/> -->
+       <pathelement location="${hsqldb.jar.path}"/>
+    </path>
+
+    <!--+
+        | Create the Hsqldb server properties.
+        | Can be overriden by command line args in hsqldb.start.
+        +-->
+    <target name="hsqldb.properties" depends="">
+        <echo message=""/>
+        <echo message="Creating Hsqldb properties ...."/>
+        <mkdir dir="${hsqldb.home}"/>
+        <!-- Create the properties file -->
+        <propertyfile file="${hsqldb.home}/server.properties" comment="Hqsldb server config">
+            <entry key="server.port"           value="${hsqldb.port}"/>
+            <entry key="server.database"       value="${hsqldb.name}"/>
+            <entry key="server.no_system_exit" value="true"/>
+        </propertyfile>
+    </target>
+
+    <!--+
+        | Start the Hsqldb database server.
+        +-->
+    <target name="hsqldb.start" depends="">
+        <echo message=""/>
+        <echo message="Starting Hqsldb ...."/>
+        <mkdir dir="${hsqldb.home}"/>
+        <java taskname="hsqldb" classname="org.hsqldb.Server" fork="true" dir="${hsqldb.home}">
+            <!-- Use the Hsqldb classpath -->
+            <classpath refid="hsqldb.classpath"/>
+            <!-- Args for the Hsqldb server -->
+            <arg value="-database"/>
+            <arg value="${hsqldb.name}"/>
+            <arg value="-port"/>
+            <arg value="${hsqldb.port}"/>
+        </java>
+    </target>
+
+    <!--+
+        | Stop the Hsqldb database server.
+        +-->
+    <target name="hsqldb.stop" depends="">
+        <echo message=""/>
+        <echo message="Stopping Hqsldb ...."/>
+        <java taskname="hsqldb" classname="org.hsqldb.util.ShutdownServer" fork="true" dir="${hsqldb.home}">
+            <!-- Use the Hsqldb classpath -->
+            <classpath refid="hsqldb.classpath"/>
+            <!-- Args for the Hsqldb server -->
+            <arg value="-url"/>
+            <arg value="${hsqldb.url}"/>
+            <arg value="-user"/>
+            <arg value="${hsqldb.user}"/>
+            <arg value="-password"/>
+            <arg value="${hsqldb.pass}"/>
+            <arg value="-shutdownarg"/>
+            <arg value=""/>
+        </java>
+    </target>
+
+    <!--+
+        | Wait for the Hsqldb database to start.
+        +-->
+    <target name="hsqldb.wait" depends="">
+        <echo message=""/>
+        <echo message="Waiting for Hqsldb ...."/>
+        <waitfor maxwait="${hsqldb.timeout}" maxwaitunit="second" checkevery="500">
+            <socket server="${hsqldb.host}" port="${hsqldb.port}"/>
+        </waitfor>
+    </target>
+
+    <!--+
+        | Initialise the Hsqldb database.
+        | This only needs to run once, when a new database is created.
+        +-->
+    <target name="hsqldb.init" depends="">
+        <echo message=""/>
+        <echo message="Initialising Hqsldb ...."/>
+        <sql driver="org.hsqldb.jdbcDriver"
+             url="${hsqldb.url}"
+             classpathref="hsqldb.classpath"
+             userid="sa"
+             password=""
+             print="true"
+            >
+            <![CDATA[
+                set password "${hsqldb.pass}" ;
+            ]]>
+        </sql>
+    </target>
+
+    <!--+
+        | Delete our Hsqldb data.
+        +-->
+    <target name="hsqldb.delete" depends="">
+        <delete dir="${hsqldb.home}" failonerror="false"/>
+    </target>
+
+    <!--+
+        | Build our Hsqldb database.
+        +-->
+    <target name="hsqldb.BUILD" depends="">
+        <antcall target="hsqldb.wait"/>
+        <antcall target="hsqldb.init"/>
+        <antcall target="hsqldb.database.create"/>
+    </target>
+
+
+    <!-- ================ Database tasks ================ -->
+
+    <!--+
+        | Create our database tables.
+        +-->
+    <target name="hsqldb.database.create" depends="">
+        <echo message=""/>
+        <echo message="Creating Hqsldb tables ...."/>
+        <sql driver="org.hsqldb.jdbcDriver"
+             url="${hsqldb.url}"
+             classpathref="hsqldb.classpath"
+             userid="${hsqldb.user}"
+             password="${hsqldb.pass}"
+             print="true"
+            >
+            <transaction src="src/sql/createcontroldb.sql"/>
+        </sql>
+    </target>
+
+    <!--+
+        | Select all rows from our database tables.
+        +-->
+    <target name="hsqldb.database.select" depends="">
+        <sql driver="org.hsqldb.jdbcDriver"
+             url="${hsqldb.url}"
+             classpathref="hsqldb.classpath"
+             userid="${hsqldb.user}"
+             password="${hsqldb.pass}"
+             print="true"
+            >
+            <![CDATA[
+                SELECT * FROM communities ;
+                SELECT * FROM accounts    ;
+                SELECT * FROM groups      ;
+                SELECT * FROM resources   ;
+                SELECT * FROM members     ;
+                SELECT * FROM permissions ;
+            ]]>
+        </sql>
+    </target>
+
+    <!--+
+        | Delete all rows from our database tables.
+        +-->
+    <target name="hsqldb.database.delete" depends="">
+        <sql driver="org.hsqldb.jdbcDriver"
+             url="${hsqldb.url}"
+             classpathref="hsqldb.classpath"
+             userid="${hsqldb.user}"
+             password="${hsqldb.pass}"
+             print="true"
+            >
+            <![CDATA[
+                DELETE FROM groups      ;
+                DELETE FROM members     ;
+                DELETE FROM accounts    ;
+                DELETE FROM resources   ;
+                DELETE FROM communities ;
+                DELETE FROM permissions ;
+            ]]>
+        </sql>
+    </target>
+    
+    <target name="testsetup">
+    </target>
+
+ 
 </project>

@@ -53,8 +53,12 @@
   </preGoal>
 
 <!-- set up the test environment -->
-<preGoal name="test">
+<preGoal name="test:test">
    <mkdir dir="${basedir}/build/workdir"/>
+   <mkdir dir="${basedir}/build/db"/>
+   
+   
+   
    <!-- need to generate the test file really -->
 </preGoal>
 
@@ -253,6 +257,14 @@
    	prereqs="axis-declare-tasks">
   	<axis-admin xmlfile="wsdd/AxisDataServer-undeploy.wsdd" />
   </goal>
+    <preGoal name="test:test">
+    <j:thread>
+      <attainGoal name="start_test_server"/>
+    </j:thread>
+    <sleep seconds="10"/>
+  </preGoal>
+
+  
 -->
   <goal name="axis-declare-tasks">
      <taskdef resource="axis-tasks.properties"  classpathref="maven.dependency.classpath" />

@@ -1,5 +1,5 @@
 /*
- * $Id: UnitTestData.java,v 1.1 2003/12/01 22:24:59 pah Exp $
+ * $Id: UnitTestData.java,v 1.2 2003/12/02 18:13:31 pah Exp $
  * 
  * Created on 19-Sep-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -18,7 +18,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 /**
- * Encapsulates test data within a class. The Class
+ * Encapsulates test data within a class. Implemented as a series of sql commands - perhaps it would be better to do real jdbc.
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @version $Name:  $
  * @since iteration4
@@ -26,9 +26,7 @@ import java.sql.Statement;
    final class UnitTestData {
    
    private static String[] sqlcmds = {
-   "insert into accounts  values ('test@login','password','This is a testuser');",
-   "insert into accounts  values ('test@create','password2','This is another testuser');",
-   "insert into accounts  values ('test@authenticate','password3','This is another testuser')"
+   "insert into execution  values (1,'jobstep1','testapp','2001-01-01 10:00', '2001-01-01 12:00');",
    };
    
    static void load(Connection conn) throws SQLException
