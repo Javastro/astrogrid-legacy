@@ -41,8 +41,9 @@
         <attainGoal name="reg-deploy" />
         <attainGoal name="myspace-deploy" />
         <attainGoal name="pal-deploy" />
-        <attainGoal name="community-deploy" />
         <attainGoal name="portal-deploy" />
+        <attainGoal name="community-deploy"/>
+        <attainGoal name="community-install"/>
 </goal>
 
 <goal name="undeploy-all" prereqs="init" description="undeploy all webapps">
@@ -94,6 +95,7 @@
         <attainGoal name="setup-myspace" />
         <attainGoal name="setup-workflow" />
         <attainGoal name="setup-jes" />
+        <attainGoal name="setup-community" />
 
         <!-- make everything world-accessible - necessary as tomcat may be running as different user to
         whoever is executing this script -->
@@ -136,6 +138,10 @@
 </goal>
 <goal name="setup-jes" description="jes setup">
 </goal>
+
+<goal name="setup-community" description="Community setup">
+</goal>
+
 <!-- probably more to come here .. -->
 
 <!-- pregoals ///////////////////////////////////////////////////////////////////////////////////////////////// -->
@@ -168,7 +174,8 @@
 <!-- deployment //////////////////////////////////////////////////////////////////////// -->
 
 <goal name="common-libs-deploy" description="copy db drivers, etc into shared directory">
-        <copy todir="${tomcat.common.lib.dir}">
+		<echo message="Tomcat common : ${tomcat.common.lib.dir}"/>
+        <copy verbose="true" todir="${tomcat.common.lib.dir}">
                 <fileset dir="${temporary.dir}">
                         <include name="hsql*.jar" />
                         <!-- may need to add more here later -->
@@ -269,21 +276,118 @@
 </goal>
 
 <!--+
+    | Test out community.
+    +-->
+<goal name="community-cycle" prereqs="init" description="Test the community install">
+        <attainGoal name="community-undeploy"/>
+
+        <attainGoal name="setup-working-dir"/>
+
+        <attainGoal name="common-libs-deploy"/>
+        <attainGoal name="community-deploy"/>
+        <attainGoal name="community-install"/>
+<!--
+        <attainGoal name="community-undeploy"/>
+-->
+</goal>
+
+<!--+
     | Deploy community.
     +-->
 <goal name="community-deploy">
-        <!--+
-            |
-        <copy todir="${temporary.dir}/jes" filtering="true">
-                <fileset dir="contexts/jes" />
+        <copy todir="${temporary.dir}/community" filtering="true">
+                <fileset dir="contexts/community" />
         </copy>
-        <war update="true" destfile="${temporary.dir}/astrogrid-jes-SNAPSHOT.war">
-                <metainf dir="${temporary.dir}/jes"/>
+        <war update="true" destfile="${temporary.dir}/astrogrid-community-webapp-SNAPSHOT.war">
+                <metainf dir="${temporary.dir}/community"/>
         </war>
-  <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/astrogrid-jes-SNAPSHOT" war="file://${temporary.dir}/astrogrid-jes-SNAPSHOT.war"/>
+        <!--+
+            | Deploy our service.
             +-->
+        <tomcat-deploy
+            url="${tomcat.manager.url}"
+            username="${tomcat.manager.username}"
+            password="${tomcat.manager.password}"
+            path="/astrogrid-community" war="file://${temporary.dir}/astrogrid-community-webapp-SNAPSHOT.war"/>
+        <!--+
+            | Wait for our service to respond.
+            +-->
+        <attainGoal name="community-wait"/>
 </goal>
+
+<!--+
+    | Configure community.
+    +-->
+<goal name="community-install">
+        <!--+
+            | Unpack our toolkit.
+            +-->
+        <unzip src="${temporary.dir}/astrogrid-community-install-SNAPSHOT.zip" dest="${temporary.dir}/community"/>
+        <!--+
+            | Set the community ident.
+            +-->
+        <propertyfile
+            file="${temporary.dir}/community/install.properties">
+            <entry key="org.astrogrid.community.ident"
+                value="org.astrogrid.localhost"/>
+        </propertyfile>
+        <!--+
+            | Set the registry endpoint.
+            +-->
+        <propertyfile
+            file="${temporary.dir}/community/install.properties">
+            <entry key="org.astrogrid.registry.url"
+                value="${tomcat.url}/astrogrid-registry-webapp/services/Registry"/>
+        </propertyfile>
+        <!--+
+            | Set the registry admin endpoint.
+            +-->
+        <propertyfile
+            file="${temporary.dir}/community/install.properties">
+            <entry key="org.astrogrid.registry.admin"
+                value="${tomcat.url}/astrogrid-registry-webapp/services/RegistryAdmin"/>
+        </propertyfile>
+        <!--+
+            | Set the local hostname.
+            +-->
+        <propertyfile
+            file="${temporary.dir}/community/install.properties">
+            <entry key="service.host"
+                value="localhost"/>
+        </propertyfile>
+        <!--+
+            | Wait for our service to respond.
+            +-->
+        <attainGoal name="community-wait"/>
+        <!--+
+            | Reset our database tables.
+            +-->
+        <ant
+            target="database.reset"
+            dir="${temporary.dir}/community"
+            antfile="${temporary.dir}/community/install.xml"
+            />
+        <!--+
+            | Load our database tables.
+            +-->
+        <ant
+            target="database.load"
+            dir="${temporary.dir}/community"
+            antfile="${temporary.dir}/community/install.xml"
+            />
+</goal>
+
+<!--+
+    | Wait for the Community service to respond.
+    +-->
+<goal name="community-wait">
+	<echo message="Waiting for Community webapp .."/>
+	<echo message="  URL : ${tomcat.url}/astrogrid-community/happyaxis.jsp"/>
+    <waitfor maxwait="10" maxwaitunit="second" checkevery="500">
+        <http url="${tomcat.url}/astrogrid-community/happyaxis.jsp"/>
+    </waitfor>
+</goal>
+
 
 <!-- undeploy ///////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <goal name="reg-undeploy" >
@@ -334,10 +438,17 @@
     +-->
 <goal name="community-undeploy" >
     <!--+
-        |
-        <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-                path="/myspace-store" />
+        | Wait for our service to respond.
         +-->
+    <attainGoal name="community-wait"/>
+    <!--+
+        | Un-depoly our service.
+        +-->
+    <tomcat-remove
+        url="${tomcat.manager.url}"
+        username="${tomcat.manager.username}"
+        password="${tomcat.manager.password}"
+        path="/astrogrid-community" />
 </goal>
 
 <!-- boilerplate below here /////////////////////////////////////////////////////////////////////////////////////////////-->

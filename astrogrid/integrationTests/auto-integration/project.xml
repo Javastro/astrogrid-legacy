@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.5 2004/04/06 13:41:22 nw Exp $ -->
+<!-- $Id: project.xml,v 1.6 2004/04/06 14:08:10 dave Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
 <!--    <extend>../../maven-base/project.xml</extend> -->
@@ -77,6 +77,27 @@
             </properties>
         </dependency>
 
+        <!--+
+            | Community WebApp.
+            +-->
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-community-webapp</artifactId>
+            <version>SNAPSHOT</version>
+            <type>war</type>
+            <url>http://www.astrogrid.org/</url>
+        </dependency>
+
+        <!--+
+            | Community install tools.
+            +-->
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-community-install</artifactId>
+            <version>SNAPSHOT</version>
+            <type>zip</type>
+            <url>http://www.astrogrid.org/</url>
+        </dependency>
 
     </dependencies>
 </project>

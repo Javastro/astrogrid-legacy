@@ -1,0 +1,42 @@
+<Context path="/astrogrid-community">
+	<Environment
+		name="org.astrogrid.config.url"
+		override="false" type="java.lang.String"
+		value="@CONFIGPATH@/AstroGridConfig.properties"/>
+
+	<Environment
+		description="Community identifier"
+		name="org.astrogrid.community.ident"
+		override="false" type="java.lang.String"
+		value="org.astrogrid.localhost"/>
+
+	<Resource
+		name="jdbc/org.astrogrid.community.database"
+		type="javax.sql.DataSource"
+		/>
+
+	<ResourceParams
+		name="jdbc/org.astrogrid.community.database">
+		<parameter>
+			<name>url</name>
+			<value>jdbc:hsqldb:@WORKDIR@/org.astrogrid.community</value>
+		</parameter>
+		<parameter>
+			<name>driverName</name>
+			<value>jdbc:hsqldb:@WORKDIR@/org.astrogrid.community</value>
+		</parameter>
+		<parameter>
+			<name>driverClassName</name>
+			<value>org.hsqldb.jdbcDriver</value>
+		</parameter>
+		<parameter>
+			<name>username</name>
+			<value>sa</value>
+		</parameter>
+		<parameter>
+			<name>password</name>
+			<value/>
+		</parameter>
+	</ResourceParams>
+
+</Context>
