@@ -1,4 +1,4 @@
-/*$Id: Service.java,v 1.4 2004/02/27 00:51:01 nw Exp $
+/*$Id: Service.java,v 1.5 2004/03/05 16:27:28 nw Exp $
  * Created on 27-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,7 +33,6 @@ public class Service {
    public static final String APPLICATION_SERVICE = "application";
    public static final String JOBCONTROL_SERVICE = "jobcontrol";
    public static final String JOBMONITOR_SERVICE = "jobmonitor";
-   public static final String JOBSCHEDULER_SERVICE = "jobscheduler";
    public static final String UNNKOWN_SERVICE = "unknown";
    
    public Service() {
@@ -74,9 +73,6 @@ public class Service {
       }
       if (JOBMONITOR_SERVICE.equals(type)) {
          return JesDelegateFactory.createJobMonitor(endpoint);
-      }
-      if (JOBSCHEDULER_SERVICE.equals(type)){
-         return JesDelegateFactory.createJobScheduler(endpoint);
       }
       throw new IllegalStateException("Unknown service type - cannot create delegate:" + this.endpoint);
    }
@@ -135,6 +131,9 @@ public class Service {
 
 /* 
 $Log: Service.java,v $
+Revision 1.5  2004/03/05 16:27:28  nw
+updated to new jes delegates
+
 Revision 1.4  2004/02/27 00:51:01  nw
 updated to use new jes delegates
 

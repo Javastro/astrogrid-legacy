@@ -1,4 +1,4 @@
-/*$Id: Services.java,v 1.6 2004/02/27 00:51:32 nw Exp $
+/*$Id: Services.java,v 1.7 2004/03/05 16:27:28 nw Exp $
  * Created on 27-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -109,8 +109,7 @@ public class Services {
       } else if (Service.DATACENTER_SERVICE.equals(s.getType())) {
          datacenters.add(s);
       } else if (Service.JOBCONTROL_SERVICE.equals(s.getType()) 
-            || Service.JOBMONITOR_SERVICE.equals(s.getType())
-            || Service.JOBSCHEDULER_SERVICE.equals(s.getType()) ) {
+            || Service.JOBMONITOR_SERVICE.equals(s.getType())){
          jes.add(s);
       } else if (Service.MYSPACE_SERVICE.equals(s.getType())) {
          myspaces.add(s);
@@ -188,6 +187,9 @@ public class Services {
 
 /* 
 $Log: Services.java,v $
+Revision 1.7  2004/03/05 16:27:28  nw
+updated to new jes delegates
+
 Revision 1.6  2004/02/27 00:51:32  nw
 improved loading
 
