@@ -1,5 +1,5 @@
 /*
- * $Id: VoSpaceResolver.java,v 1.15 2004/04/20 15:26:46 mch Exp $
+ * $Id: VoSpaceResolver.java,v 1.16 2004/04/21 08:54:29 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -53,9 +53,6 @@ public class VoSpaceResolver {
     */
    public static Agsl resolveAgsl(Ivorn ivorn) throws IOException {
 
-      //the fragment bit is not relevent to the service lookup - preserve it
-      //String fragment = ivorn.getFragment();
-
       //used for debug/user info - says somethign about where the ivorn has been looked for
       String lookedIn = "";
       
@@ -69,18 +66,26 @@ public class VoSpaceResolver {
          
       }
 
+      //if not found, see if it's an account identifier, and if so get that account's homespace (eg that community's myspace)
       if (agsl == null) {
          ivorn = getCommunityMySpace(ivorn);
          lookedIn += ", Community "+community+ "(->"+ivorn+")";
       }
-
-
+      
+      //if not found, see if the registry can resolve it
       if (agsl == null) {
          agsl = resolveUsingRegistry(ivorn);
          lookedIn += ", Registry "+registry;
       }
       
-
+      //if not found, use hardcoded entries for auto-integration tests
+      if (agsl == null) {
+         if (ivorn.getPath().toString().trim().toLowerCase().equals("org.astrogrid.localhost/myspace")) {
+            agsl = new Agsl("astrogrid:store:myspace:http://localhost:8080/astrogrid-mySpace-SNAPSHOT/services/Manager");
+         }
+      }
+      
+      //if not found, throw an exception
       if (agsl == null) {
          throw new FileNotFoundException("Cannot resolve "+ivorn+" from "+lookedIn);
       }else {
@@ -331,6 +336,9 @@ public class VoSpaceResolver {
 
 /*
 $Log: VoSpaceResolver.java,v $
+Revision 1.16  2004/04/21 08:54:29  mch
+Added special hardcoded resolving for auto-integration tests
+
 Revision 1.15  2004/04/20 15:26:46  mch
 More complete error reporting and simplified resolving (not as featureful ? as before)
 
