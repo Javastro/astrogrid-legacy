@@ -8,7 +8,7 @@
       <action dev="nw" type="add"  >
         New Aggregate project.
       </action>
-      <action dev="dm" type="add"  >
+      <action dev="dave" type="add"  >
         New FileManager project.
       </action>
       <action dev="mch" type="add"  >
