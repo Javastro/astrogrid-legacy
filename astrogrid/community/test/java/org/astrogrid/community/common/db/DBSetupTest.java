@@ -1,5 +1,5 @@
 /*
- * $Id: DBSetupTest.java,v 1.1 2003/09/15 10:13:58 pah Exp $
+ * $Id: DBSetupTest.java,v 1.2 2003/09/19 21:49:56 pah Exp $
  * 
  * Created on 07-Sep-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -56,11 +56,11 @@ public class DBSetupTest extends HsqlDBInMemTestCase {
       Statement stmt; 
       try {
          stmt = conn.createStatement();
-         if(stmt.execute("SELECT accounts.ident,accounts.password,accounts.description FROM accounts WHERE accounts.ident = 'test@nowhere'"))
+         if(stmt.execute("SELECT accounts.ident,accounts.password,accounts.description FROM accounts WHERE accounts.ident = 'test@login'"))
          {
             ResultSet rs = stmt.getResultSet();
             if (rs.next()) {
-               assertEquals("test@nowhere", rs.getString("ident"));
+               assertEquals("test@login", rs.getString("ident"));
                assertEquals("password", rs.getString("password"));
                assertEquals("This is a testuser", rs.getString("description"));
             }

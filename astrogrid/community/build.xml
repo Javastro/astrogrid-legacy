@@ -1,11 +1,14 @@
 <?xml version="1.0"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/Attic/build.xml,v $</cvs:source>
-    | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/09/18 15:50:03 $</cvs:date>
-    | <cvs:version>$Revision: 1.39 $</cvs:version>
+    | <cvs:author>$Author: pah $</cvs:author>
+    | <cvs:date>$Date: 2003/09/19 21:49:56 $</cvs:date>
+    | <cvs:version>$Revision: 1.40 $</cvs:version>
     | <cvs:log>
     |   $Log: build.xml,v $
+    |   Revision 1.40  2003/09/19 21:49:56  pah
+    |   server junit tests now running of in-memory database
+    |
     |   Revision 1.39  2003/09/18 15:50:03  dave
     |   Fixing bugs in configuration
     |
@@ -3011,6 +3014,7 @@ Start of Authentication "auth" tasks
 	</path>
 	<path id="authentication.server.classpath">
 	<path refid="axis.classpath"></path>
+	<path refid="castor.classpath"></path>
 	<pathelement path="${authentication.build}/install/${authentication.server.jar}"/>
 	</path>
 	
@@ -3021,7 +3025,7 @@ Start of Authentication "auth" tasks
 	    </antcall>
 	</target>
 	
-	<target name="authentication.junitSetup" description="sets up test file for the ant junit tests">
+	<target name="authentication.testSetupJunit" description="sets up test file for the ant junit tests">
 	    <antcall target="authentication.genTestSetup">
 	    <param name="testbase" value="${authentication.build}/testclasses"/>
 	    </antcall>
@@ -3030,13 +3034,16 @@ Start of Authentication "auth" tasks
 	
 	
 	<target name="authentication.genTestSetup">
-	    <copy file="${basedir}/src/sql/hsqldb/create.sql" todir="${testbase}/org/astrogrid/community/common/db/"></copy>
+	    <copy file="${basedir}/src/sql/hsqldb/create.sql" todir="${testbase}/org/astrogrid/community/common/db/">
+	    </copy>
 	    <copy file="${basedir}/src/castor/hsqldb/mapping.xml" todir="${testdir}/config/"></copy>
 	    <echo file="${testbase}/org/astrogrid/community/common/Test.properties" append="false">
 database.mapping=file://${testdir}/config/mapping.xml
-database.config=file://${testdir}/config/databaseonlocalhost.xml
+database.config=file://${testdir}/config/databaseinmemory.xml
 database.name=${hsqldb.database}
-database.url=jdbc:hsqldb:hsql:${hsqldb.data}
+database.url=jdbc:hsqldb:test/data/policy
+database.password=
+database.user=sa
 			</echo>
 	
 	</target>
@@ -3401,7 +3408,7 @@ database.url=jdbc:hsqldb:hsql:${hsqldb.data}
 	<!--+
 		| Run our server side JUnit tests.
 		+-->
-	<target name="authentication.server.junit" depends="authentication.test.javac,authentication.junitSetup">
+	<target name="authentication.server.junit" depends="authentication.test.javac,authentication.testSetupJunit,hsqldb.data.delete">
 		<!-- Create our reports directory -->
 		<mkdir dir="${authentication.build}/junit"/>
 		<!-- Run our JUnitTestCase tests -->
@@ -3418,6 +3425,8 @@ database.url=jdbc:hsqldb:hsql:${hsqldb.data}
 			<batchtest todir="${authentication.build}/junit">
 				<fileset dir="${authentication.build}/testclasses">
 				   <exclude name="**/delegate/**"/>
+				   <exclude name="**/HsqlDBInMemTestCase.class"/>
+				   <exclude name="**/UnitTestData.class"/>
 				</fileset>
 			</batchtest>
 		</junit>

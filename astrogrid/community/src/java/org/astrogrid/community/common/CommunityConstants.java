@@ -1,5 +1,5 @@
 /*
- * $Id: CommunityConstants.java,v 1.3 2003/09/17 19:47:21 dave Exp $
+ * $Id: CommunityConstants.java,v 1.4 2003/09/19 21:49:56 pah Exp $
  * 
  * Created on 12-Sep-2003 by pah
  *
@@ -42,5 +42,21 @@ public final class CommunityConstants {
    * The property key used to retrieve the castor database name.
    */
   public static final String DATABASE_NAME_KEY = "database.name" ;
+  
+  /**
+   * The property key used to retrieve the database connection url.
+   */
+  public static final String DATABASE_JDBC_URL_KEY = "database.url";
+  
+  
+  /**
+   * The property key used to retrieve the database password.
+   */
+  public static final String DATABASE_PASSWORD_KEY = "database.password";
+  
+  /**
+   * The property key used to retrieve the database user.
+   */
+  public static final String DATABASE_USER_KEY = "database.user";
  
 }
