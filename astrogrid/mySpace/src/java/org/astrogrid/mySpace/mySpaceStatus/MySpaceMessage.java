@@ -9,40 +9,20 @@ import java.lang.StringBuffer;
 import org.apache.log4j.Logger;
 
 /**
- * The <code>MySpaceMessage</code> class holds messages from the MySpace
- * system which are intended for eventual delivery to the User.
+ * The <code>MySpaceMessage</code> class translates a MySpace status
+ * code into a human-readable text string.
  * 
- * <p>
- * The <code>MySpaceMessage</code> class is intended for use with the
- * <code>MySpaceStatus</code> class, which stores and returns
- * <code>MySpaceMessage</code> objects.  Each <code>MySpaceMessage</code>
- * object comprises two components: a message and a type.  The message
- * is a human-readable string set by the MySpace system and ultimately
- * intended for delivery to the User.  The type indicates the type of
- * event to which the message refers, coded as follows:
- * </p>
- * <ul>
- *   <li><code>"i"</code> - information (that is, nothing is amiss),</li>
- *   <li><code>"w"</code> - warning,</li>
- *   <li><code>"e"</code> - error.</li>
- * </ul>
- * <p>
- * The class has a single constructor to which the message and type are
- * passed as arguments.  There are get methods for both the message and
- * type and a <code>toString</code> method to produce a reasonable
- * representation.
- * 
- * @author A C Davenhall (Edinburgh)
- * @edited C L QIN
+ * @author C L Qin (leicester)
+ * @edited A C Davenhall (Edinburgh
  * @version Iteration 2.
  */
 
 public class MySpaceMessage{
-	
-	private static Logger logger = Logger.getLogger(MySpaceMessage.class);
-	private boolean DEBUG = true;
-	private String key;     // Message key.
-    private String type;        // Type of message: "i", "w" or "e".
+
+    private static Logger logger = Logger.getLogger(MySpaceMessage.class);
+    private boolean DEBUG = true;
+    private String key;     // Message key.
+
     private String message;     // Message.
     //This is returning null
     //private String catalinaHome = System.getProperty("CATALINA_HOME");
@@ -62,9 +42,8 @@ public class MySpaceMessage{
  * Create a <code>MySpaceMessage</code>, setting the message and type.
  */
 
-   public MySpaceMessage (String key,  String type){
+   public MySpaceMessage (String key){
    	this.key = key;
-    this.type = type;
    }
 
 //
@@ -107,13 +86,6 @@ public class MySpaceMessage{
    	}
    	return p;
    }
-/**
- * Return the type associated with the <code>MySpaceMessage</code>.
- */
-
-   public String getType()
-   {  return type;
-   }
 
 //
 // Other methods.
@@ -123,20 +95,7 @@ public class MySpaceMessage{
  */
 
    public String toString(){
-   	String returnString = "";
-
-      if (type.equals("i"))
-      {  returnString = "!Info: " + key;
-      }
-      else if (type.equals("w"))
-      {  returnString = "!Warning: " + key;
-      }
-      else if (type.equals("e")) 
-      {  returnString = "!Error: " + key;
-      }
-      else
-      {  returnString = "!Unknown: " + key;
-      }
+      String returnString = "!status code: " + key;
 
       return returnString;
    }

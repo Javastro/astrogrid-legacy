@@ -165,9 +165,8 @@ public class RegistryManager
          oos.close();
       }
       catch (IOException e)
-      {  MySpaceStatus stat1  = new MySpaceStatus(
-           "Failure writing registry file " + registryFileName + ".",
-           MySpaceMessage.ERROR);
+      {  MySpaceStatus stat1  = new MySpaceStatus("MS-E-REGDWRT",
+           MySpaceStatusCode.ERROR);
       }
    }
 
@@ -214,9 +213,8 @@ public class RegistryManager
             }
             catch (ClassNotFoundException cnfe)
             {  more = false;
-               MySpaceStatus stat1  = new MySpaceStatus(
-                 "Registry file " + registryFileName + " is corrupt.",
-                 MySpaceMessage.ERROR);
+               MySpaceStatus stat1  = new MySpaceStatus("MS-E-REGDCPT",
+                 MySpaceStatusCode.ERROR);
             }
          }
 
@@ -228,9 +226,8 @@ public class RegistryManager
          ois.close();
       }
       catch (IOException e)
-      {  MySpaceStatus stat1  = new MySpaceStatus(
-           "Failure reading registry file " + registryFileName + ".",
-           MySpaceMessage.ERROR);
+      {  MySpaceStatus stat1  = new MySpaceStatus("MS-E-REGDRED",
+           MySpaceStatusCode.ERROR);
       }
    }
 

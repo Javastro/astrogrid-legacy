@@ -6,15 +6,48 @@ import java.util.*;
 import org.astrogrid.mySpace.mySpaceStatus.*;
 
 /**
- * @author A C Davenhall (Edinburgh)
+ * <p>
+ * The mySpaceInterface class is the external interface to the
+ * MySpace system.  It handles all interaction between a MySpace
+ * manager and external components.  In particular it provides
+ * methods to:
+ * </p>
+ * <ul>
+ *   <li> implement all the actions which the MySpace system
+ *    can perform,
+ *   <li> perform operations on the MySpace server.
+ * </ul>
+ * <p>
+ * The following actions are currently supported:
+ * </p>
+ * <ul>
+ *   <li> lookup DataHolders details,
+ *   <li> lookup DataHolder details,
+ *   <li> copy DataHolder,
+ *   <li> move DataHolder,
+ *   <li> export DataHolder,
+ *   <li> create container,
+ *   <li> delete DataHolder or container.
+ * </ul>
+ * <p>
+ * Each action is implemented as a separate method and this
+ * method is a wrap-around for, and has the same name as, a
+ * method in the MySpaceManager class.
+ * </p>
+ * <p>
+ * The following operations on a MySpace server are currently
+ * supported:
+ * </p>
+ * <ul>
+ *   <li> TBD.
+ * </ul>
+ * 
+ * @author A C Davenhall
  * @version Iteration 2.
  */
 
-public class MySpaceManager
-{  private static String registryName;
-   private RegistryManager reg = new RegistryManager();
-                                    // MySpace registry for this mySpace.
-
+public class MySpaceInterface
+{  private static MySpaceStatus status = new MySpaceStatus();
 //
 // Constructor.
 
@@ -22,15 +55,17 @@ public class MySpaceManager
  * Default constructor.
  */
 
-   public MySpaceManager()
+   public MySpaceInterface()
    {  super();
    }
+
+// =================================================================
 
 //
 // Action methods.
 //
 // Each of the following methods implements one of the actions which
-// the MySpaceManager can perform.
+// the MySpace system can perform.
 
 // -----------------------------------------------------------------
 
@@ -38,77 +73,46 @@ public class MySpaceManager
   * Lookup the details of a single DataHolder.
   */
 
-   public DataItemRecord lookupDataHolderDetails(String userID,
-     String communityID, String jobID, int dataItemID)
-   {  DataItemRecord dataItem = new DataItemRecord();
-      dataItem = null;
+   public String lookupDataHolderDetails(String jobDetails)
+   {
 
 //
-//   Attempt to open the registry and proceed if ok.
+//   Decompose the userID, communityID, jobID and other details from
+//   the jobDetails.
 
-      reg = new RegistryManager(registryName);
-      MySpaceStatus status = new MySpaceStatus();
-      if (status.getSuccessStatus())
-      {
+      String userID = "";
+      String communityID = "";
+      String jobID = "";
 
-//
-//      Assemble the UserAccount from the UserID and CommunityID.
-
-         UserAccount userAcc = new UserAccount(userID, communityID);
+      int dataItemID = 0;
 
 //
-//      Check the user's authentication and proceed if ok.
+//   Create an instance of the MySpace manager and invoke the method
+//   corresponding to this action.
 
-         if (userAcc.checkAuthentication() )
-         {
+      MySpaceManager myspace = new MySpaceManager();
 
-//
-//         Attempt to lookup up the details of the DataHolder in the
-//         mySpace registry.
-//
-//         Note that in the following clause two conditions are
-//         checked for: the item not being in the registry and
-//         the user not having the privilege to access it.  The
-//         error messages set in these two cases are deliberately
-//         identical.
-
-            DataItemRecord dataItemFound =
-              reg.lookupDataItemRecord(dataItemID);
-            if (dataItemFound != null)
-            {
+      DataItemRecord dataItem = myspace.lookupDataHolderDetails(
+        userID, communityID, jobID, dataItemID);
 
 //
-//            Check whether the user has the privileges to access the
-//            DataHolder.
+//   Get other stuff which can usefully be returned.
+//   (Note that the current date needs to be returned to facilitate
+//   comparisons with the expiry date; the MySpace system might be in
+//   a different time-zone to the Explorer or portal.)
 
-               String permissions;
-               permissions = dataItemFound.getPermissionsMask();
-               String ownerID;
-               ownerID = dataItemFound.getOwnerID();
+      boolean successStatus = status.getSuccessStatus();
+      boolean warningStatus = status.getWarningStatus();
 
-               if (userAcc.checkAuthorisation(UserAccount.READ,
-                 ownerID, permissions))
-               {
+      Date currentMySpaceDate = new Date();
 
 //
-//               All is ok; copy the DataItemRecord to the return
-//               argument.
+//   Format and return the results as XML.
 
-                  dataItem = dataItemFound;
-               }
-               else
-               {  status.addMessage(
-                    "Requested DataHolder not found.", MySpaceMessage.ERROR);
-               }
-            }
-            else
-            {  status.addMessage(
-                 "Requested DataHolder not found.", MySpaceMessage.ERROR);
-            }
-         }
-      }
+//   ................
 
-      return dataItem;
+      String xmlString = "";
+      return xmlString;
    }
 
 // -----------------------------------------------------------------
@@ -117,94 +121,47 @@ public class MySpaceManager
   * Lookup the details of a named set of DataHolders.
   */
 
-   public Vector lookupDataHoldersDetails(String userID, 
-     String communityID, String jobID, String query)
-   {  Vector dataItemVector = new Vector();
-      dataItemVector = null;
+   public String lookupDataHoldersDetails(String jobDetails)
+   {
 
 //
-//   Attempt to open the registry and proceed if ok.
+//   Decompose the userID, communityID, jobID and other details from
+//   the jobDetails.
 
-      reg = new RegistryManager(registryName);
-      MySpaceStatus status = new MySpaceStatus();
-      if (status.getSuccessStatus())
-      {
+      String userID = "";
+      String communityID = "";
+      String jobID = "";
 
-//
-//      Assemble the UserAccount from the UserID and CommunityID.
-
-         UserAccount userAcc = new UserAccount(userID, communityID);
+      String query = "";
 
 //
-//      Check the user's authentication and proceed if ok.
+//   Create an instance of the MySpace manager and invoke the method
+//   corresponding to this action.
 
-         if (userAcc.checkAuthentication() )
-         {
+      MySpaceManager myspace = new MySpaceManager();
 
-//
-//         Attempt lookup in the registry the entries for the DataHolders
-//         which match the query string.
-//
-//         Note that in the following clauses items which the user
-//         does not have the privilege to access are treated as though
-//         they do not exist.
-
-            Vector dataItemFoundVector =
-              reg.lookupDataItemRecords(query);
-            if (status.getSuccessStatus())
-            {
+      Vector itemRecVector = new Vector();
+      itemRecVector = myspace.lookupDataHoldersDetails(
+        userID, communityID, jobID, query);
 
 //
-//            Check whether any DataHolders were found (it is perfectly
-//            possible that no entries will match the query string).
+//   Get other stuff which can usefully be returned.
+//   (Note that the current date needs to be returned to facilitate
+//   comparisons with the expiry date; the MySpace system might be in
+//   a different time-zone to the Explorer or portal.)
 
-               if (dataItemFoundVector.size() > 0)
-               {
+      boolean successStatus = status.getSuccessStatus();
+      boolean warningStatus = status.getWarningStatus();
 
-//
-//               Examine every entry and check that the user has the
-//               privilege to access it.  If not remove it from the list.
-
-                  for (int loop = 0; loop < dataItemFoundVector.size();
-                                                                   loop++)
-                  {  DataItemRecord currentItem = 
-                       (DataItemRecord)dataItemFoundVector.get(loop);
-
-                     String permissions;
-                     permissions = currentItem.getPermissionsMask();
-                     String ownerID;
-                     ownerID = currentItem.getOwnerID();
-
-                     if (!userAcc.checkAuthorisation(UserAccount.READ,
-                       ownerID, permissions))
-                     {  dataItemFoundVector.remove(loop);
-                     }
-                  }
+      Date currentMySpaceDate = new Date();
 
 //
-//               If any DataItemRecords remain in the Vector then copy
-//               the Vector to the return vector.  If no items are left
-//               then issue an informational message.
+//   Format and return the results as XML.
 
-                  if (dataItemFoundVector.size() > 0)
-                  {  dataItemVector = dataItemFoundVector;
-                  }
-                  else
-                  {  status.addMessage(
-                      "No DataHolders matched string: " + query,
-                      MySpaceMessage.INFO);
-                  }
-               }
-               else
-               {  status.addMessage(
-                    "No DataHolders matched string: " + query,
-                    MySpaceMessage.INFO);
-               }
-            }
-         }
-      }
+//   ................
 
-      return dataItemVector;
+      String xmlString = "";
+      return xmlString;
    }
 
 // -----------------------------------------------------------------
@@ -214,138 +171,48 @@ public class MySpaceManager
   * location on the same server.
   */
 
-   public DataItemRecord copyDataHolder(String userID, String communityID,
-     String jobID, int oldDataItemID, String newDataItemName)
-   {  DataItemRecord returnedDataItem = new DataItemRecord();
-      returnedDataItem = null;
+   public String copyDataHolder(String jobDetails)
+   {
 
 //
-//   Attempt to open the registry and proceed if ok.
+//   Decompose the userID, communityID, jobID and other details from
+//   the jobDetails.
 
-      reg = new RegistryManager(registryName);
-      MySpaceStatus status = new MySpaceStatus();
-      if (status.getSuccessStatus())
-      {
+      String userID = "";
+      String communityID = "";
+      String jobID = "";
 
-//
-//      Assemble the UserAccount from the UserID and CommunityID.
-
-         UserAccount userAcc = new UserAccount(userID, communityID);
+      int oldDataItemID = 0;
+      String newDataItemName = "";
 
 //
-//      Check the user's authentication and proceed if ok.
+//   Create an instance of the MySpace manager and invoke the method
+//   corresponding to this action.
 
-         if (userAcc.checkAuthentication() )
-         {
+      MySpaceManager myspace = new MySpaceManager();
 
-//
-//         Attempt to lookup the details of the original DataHolder
-//         and proceed if ok.
-
-            DataItemRecord oldDataItem = 
-              this.lookupDataHolderDetails(userID, communityID, jobID,
-                oldDataItemID);
-            if (status.getSuccessStatus())
-            {
+      DataItemRecord dataitem = myspace.copyDataHolder(
+        userID, communityID, jobID, oldDataItemID,
+        newDataItemName);
 
 //
-//            Check that the original item is a DataHolder rather
-//            than a container.
+//   Get other stuff which can usefully be returned.
+//   (Note that the current date needs to be returned to facilitate
+//   comparisons with the expiry date; the MySpace system might be in
+//   a different time-zone to the Explorer or portal.)
 
-               if (oldDataItem.getType() != DataItemRecord.CON)
-               {
+      boolean successStatus = status.getSuccessStatus();
+      boolean warningStatus = status.getWarningStatus();
 
-//
-//               Check that the specified output container can be
-//               created.
-
-                  if(this.checkCanBeCreated(newDataItemName, userAcc, jobID)
-                    == true)
-                  { 
+      Date currentMySpaceDate = new Date();
 
 //
-//                  Create a DataItemRecord for the new DataHolder.
+//   Format and return the results as XML.
 
-                     Date creation = new Date();
+//   ................
 
-                     Calendar cal = Calendar.getInstance();
-                     cal.setTime(creation);
-                     cal.add(Calendar.DATE, reg.getExpiryPeriod() );
-                     Date expiry = cal.getTime();
-
-                     int newdataItemID = reg.getNextDataItemID();
-                     String dataItemFileName = "f" + newdataItemID;
-
-                     int dataItemType = oldDataItem.getType();
-
-                     DataItemRecord newDataItem = new DataItemRecord
-                       (newDataItemName, newdataItemID,
-                       dataItemFileName, userID, creation, expiry,
-                       99999, dataItemType, "permissions");
-
-//
-//                  Attempt to add this entry to the registry.
-
-                     if (reg.addDataItemRecord(newDataItem) )
-                     {
-
-//
-//                     Attempt to copy the DataHolder.
-
-//                     ADD CODE TO INVOKE A WEB SERVICE TO INDUCE THE
-//                     MYSPACE SERVER TO COPY THE DataHolder.  THEN
-//                     PERFORM A TEST THAT ALL IS WELL (THE FAKE TEST
-//                     INSERTED BELOW SHOULD BE REMOVED).
-
-                        if (status.getSuccessStatus() )
-                        {
-
-//
-//                        The copy succeeded.  Copy the DataItemRecord
-//                        for the new DataHolder to the return object.
-
-                           returnedDataItem = newDataItem;
-                        }
-                        else
-                        {
-
-//
-//                        The actual copy of the DataHolder failed.
-//                        Delete its entry from the registry, to bring
-//                        the registry back into line with reality and
-//                        report an error.
-
-                           reg.deleteDataItemRecord(newdataItemID);
-                           status.addMessage(
-                             "Failed to create DataHolder "
-                             + newDataItemName + ".",
-                             MySpaceMessage.ERROR);
-                        }
-                     }
-                     else
-                     {  status.addMessage(
-                          "Failed to create DataHolder "
-                          + newDataItemName
-                          + " (registry update failure).",
-                          MySpaceMessage.ERROR);
-                     }
-                  }
-               }
-               else
-               {  status.addMessage(
-                    "Attempt to copy a DataHolder rather than a "
-                     + "container.", MySpaceMessage.ERROR);
-               }
-            }
-         }
-      }
-
-//
-//   Re-write the registry.
-
-      reg.finalize();
-
-      return returnedDataItem;
+      String xmlString = "";
+      return xmlString;
    }
 
 // -----------------------------------------------------------------
@@ -359,111 +226,50 @@ public class MySpaceManager
   * touched.
   */
 
-   public DataItemRecord moveDataHolder(String userID, String communityID,
-     String jobID, int oldDataItemID, String newDataItemName)
-   {  DataItemRecord returnedDataItem = new DataItemRecord();
-      returnedDataItem = null;
+   public String moveDataHolder(String jobDetails)
+   {
 
 //
-//   Attempt to open the registry and proceed if ok.
+//   Decompose the userID, communityID, jobID and other details from
+//   the jobDetails.
 
-      reg = new RegistryManager(registryName);
-      MySpaceStatus status = new MySpaceStatus();
-      if (status.getSuccessStatus())
-      {
+      String userID = "";
+      String communityID = "";
+      String jobID = "";
 
-//
-//      Assemble the UserAccount from the UserID and CommunityID.
-
-         UserAccount userAcc = new UserAccount(userID, communityID);
+      int oldDataItemID = 0;
+      String newDataItemName = "";
 
 //
-//      Check the user's authentication and proceed if ok.
+//   Create an instance of the MySpace manager and invoke the method
+//   corresponding to this action.
 
-         if (userAcc.checkAuthentication() )
-         {
+      MySpaceManager myspace = new MySpaceManager();
 
-//
-//         Attempt to lookup the details of the original DataHolder
-//         and proceed if ok.
-
-            DataItemRecord oldDataItem = 
-              this.lookupDataHolderDetails(userID, communityID, jobID,
-                oldDataItemID);
-            if (status.getSuccessStatus())
-            {
+      DataItemRecord dataitem = myspace.moveDataHolder(
+        userID, communityID, jobID, oldDataItemID,
+        newDataItemName);
 
 //
-//            Check that the original item is a DataHolder rather
-//            than a container.
+//   Get other stuff which can usefully be returned.
+//   (Note that the current date needs to be returned to facilitate
+//   comparisons with the expiry date; the MySpace system might be in
+//   a different time-zone to the Explorer or portal.)
 
-               if (oldDataItem.getType() != DataItemRecord.CON)
-               {
+      boolean successStatus = status.getSuccessStatus();
+      boolean warningStatus = status.getWarningStatus();
 
-//
-//               Check that the specified output container can be
-//               created.
-
-                  if(this.checkCanBeCreated(newDataItemName, userAcc, jobID)
-                    == true)
-                  { 
+      Date currentMySpaceDate = new Date();
 
 //
-//                  Create a DataItemRecord for the new DataHolder.
+//   Format and return the results as XML.
 
-                     Date creation = new Date();
+//   ................
 
-                     Calendar cal = Calendar.getInstance();
-                     cal.setTime(creation);
-                     cal.add(Calendar.DATE, reg.getExpiryPeriod() );
-                     Date expiry = cal.getTime();
-
-                     int newdataItemID = reg.getNextDataItemID();
-                     String dataItemFileName = 
-                       oldDataItem.getDataItemFile();
-                     int dataItemType = oldDataItem.getType();
-
-                     DataItemRecord newDataItem = new DataItemRecord
-                       (newDataItemName, newdataItemID,
-                       dataItemFileName, userID, creation, expiry,
-                       99999, dataItemType, "permissions");
-
-//
-//                  Attempt to add this entry to the registry.
-
-                     if (reg.addDataItemRecord(newDataItem) )
-                     {
-
-//
-//                     Delete the original entry from the registry.
-
-                        reg.deleteDataItemRecord(oldDataItemID);
-                     }
-                     else
-                     {  status.addMessage(
-                          "Failed to move DataHolder to "
-                          + newDataItemName
-                          + " (registry update failure).",
-                          MySpaceMessage.ERROR);
-                     }
-                  }
-               }
-               else
-               {  status.addMessage(
-                    "Attempt to move a DataHolder rather than a "
-                     + "container.", MySpaceMessage.ERROR);
-               }
-            }
-         }
-      }
-
-//
-//   Re-write the registry.
-
-      reg.finalize();
-
-      return returnedDataItem;
+      String xmlString = "";
+      return xmlString;
    }
+
 
 // -----------------------------------------------------------------
 
@@ -473,91 +279,46 @@ public class MySpaceManager
   * can be retrieved.
   */
 
-   public String exportDataHolder(String userID, String communityID,
-     String jobID, int dataItemID)
-   {  String dataHolderURI = null;
+   public String exportDataHolder(String jobDetails)
+   {
 
 //
-//   Attempt to open the registry and proceed if ok.
+//   Decompose the userID, communityID, jobID and other details from
+//   the jobDetails.
 
-      reg = new RegistryManager(registryName);
-      MySpaceStatus status = new MySpaceStatus();
-      if (status.getSuccessStatus())
-      {
+      String userID = "";
+      String communityID = "";
+      String jobID = "";
 
-//
-//      Assemble the UserAccount from the UserID and CommunityID.
-
-         UserAccount userAcc = new UserAccount(userID, communityID);
+      int dataItemID = 0;
 
 //
-//      Check the user's authentication and proceed if ok.
+//   Create an instance of the MySpace manager and invoke the method
+//   corresponding to this action.
 
-         if (userAcc.checkAuthentication() )
-         {
+      MySpaceManager myspace = new MySpaceManager();
 
-//
-//         Attempt to lookup the details of the DataHolder and proceed
-//         if ok.
-
-            DataItemRecord dataItem = 
-              this.lookupDataHolderDetails(userID, communityID, jobID,
-                dataItemID);
-            if (status.getSuccessStatus())
-            {
+      String dataItemURI = myspace.exportDataHolder(
+        userID, communityID, jobID, dataItemID);
 
 //
-//            Check that the original item is a DataHolder rather
-//            than a container.
+//   Get other stuff which can usefully be returned.
+//   (Note that the current date needs to be returned to facilitate
+//   comparisons with the expiry date; the MySpace system might be in
+//   a different time-zone to the Explorer or portal.)
 
-               if (dataItem.getType() != DataItemRecord.CON)
-               {
+      boolean successStatus = status.getSuccessStatus();
+      boolean warningStatus = status.getWarningStatus();
 
-//
-//               Check that the user is allowed to access the DataHolder.
-
-                  String permissions;
-                  permissions = dataItem.getPermissionsMask();
-                  String ownerID;
-                  ownerID = dataItem.getOwnerID();
-
-                  if (userAcc.checkAuthorisation(UserAccount.READ,
-                    ownerID, permissions))
-                  {
+      Date currentMySpaceDate = new Date();
 
 //
-//                  Assemble the URI for the DataHolder from the
-//                  server URI and the file name of the DataHolder.
+//   Format and return the results as XML.
 
-                     dataHolderURI =
-                       reg.getServerURI() + dataItem.getDataItemFile();
-                  }
-                  else
-                  {  status.addMessage(
-                       "Cannot access the DataHolder.",
-                       MySpaceMessage.ERROR);
-                  }
-               }
-               else
-               {  status.addMessage(
-                    "The item is a container not a DataHolder.",
-                    MySpaceMessage.ERROR);
-               }
-            }
-            else
-            {  status.addMessage(
-                 "Unable to find DataHolder with identifier"
-                 + dataItemID + ".", MySpaceMessage.ERROR);
-            }
-         }
-      }
+//   ................
 
-//
-//   Re-write the registry.
-
-      reg.finalize();
-
-      return dataHolderURI;
+      String xmlString = "";
+      return xmlString;
    }
 
 // -----------------------------------------------------------------
@@ -568,77 +329,48 @@ public class MySpaceManager
   * touched.
   */
 
-   public DataItemRecord createContainer(String userID, String communityID,
-     String jobID, String newContainerName)
-   {  DataItemRecord newContainer = new DataItemRecord();
-      newContainer = null;
+   public String createContainer(String jobDetails)
+   {
 
 //
-//   Attempt to open the registry and proceed if ok.
+//   Decompose the userID, communityID, jobID and other details from
+//   the jobDetails.
 
-      reg = new RegistryManager(registryName);
-      MySpaceStatus status = new MySpaceStatus();
-      if (status.getSuccessStatus())
-      {
+      String userID = "";
+      String communityID = "";
+      String jobID = "";
 
-//
-//      Assemble the UserAccount from the UserID and CommunityID.
-
-         UserAccount userAcc = new UserAccount(userID, communityID);
+      String newContainerName = "";
 
 //
-//      Check the user's authentication and proceed if ok.
+//   Create an instance of the MySpace manager and invoke the method
+//   corresponding to this action.
 
-         if (userAcc.checkAuthentication() )
-         {
+      MySpaceManager myspace = new MySpaceManager();
 
-//
-//         Check that the specified container can be created.
-
-            if(this.checkCanBeCreated(newContainerName, userAcc, jobID)
-              == true)
-            {
+      DataItemRecord dataItem = myspace.createContainer(
+        userID, communityID, jobID, newContainerName);
 
 //
-//            Create a DataItemRecord for the container.
+//   Get other stuff which can usefully be returned.
+//   (Note that the current date needs to be returned to facilitate
+//   comparisons with the expiry date; the MySpace system might be in
+//   a different time-zone to the Explorer or portal.)
 
-               Date creation = new Date();
+      boolean successStatus = status.getSuccessStatus();
+      boolean warningStatus = status.getWarningStatus();
 
-               Calendar cal = Calendar.getInstance();
-               cal.setTime(creation);
-               cal.add(Calendar.DATE, reg.getExpiryPeriod() );
-               Date expiry = cal.getTime();
-
-               int newdataItemID = reg.getNextDataItemID();
-               String dataItemFileName = "f" + newdataItemID;
-               int dataItemType = DataItemRecord.CON;
-
-               DataItemRecord newDataItem = new DataItemRecord
-                 (newContainerName, newdataItemID, dataItemFileName,
-                 userID, creation, expiry, 99999, dataItemType,
-                 "permissions");
+      Date currentMySpaceDate = new Date();
 
 //
-//            Attempt to add this entry to the registry.
+//   Format and return the results as XML.
 
-               if (reg.addDataItemRecord(newDataItem) )
-               {  newContainer = newDataItem;
-               }
-               else
-               {  status.addMessage("Failed to create container "
-                    + newContainerName + ".", MySpaceMessage.ERROR);
-               }
-            }
-         }
-      }
+//   ................
 
-//
-//   Re-write the registry.
-
-      reg.finalize();
-
-      return newContainer;
+      String xmlString = "";
+      return xmlString;
    }
+
 
 // -----------------------------------------------------------------
 
@@ -646,225 +378,56 @@ public class MySpaceManager
   * Delete a DataHolder or container from a MySpace server.
   */
 
-   public boolean deleteDataHolder(String userID, String communityID,
-     String jobID, int dataItemID)
-   {  boolean returnStatus = false;
+   public String deleteDataHolder(String jobDetails)
+   {
 
 //
-//   Attempt to open the registry and proceed if ok.
+//   Decompose the userID, communityID, jobID and other details from
+//   the jobDetails.
 
-      reg = new RegistryManager(registryName);
-      MySpaceStatus status = new MySpaceStatus();
-      if (status.getSuccessStatus())
-      {
+      String userID = "";
+      String communityID = "";
+      String jobID = "";
 
-//
-//      Assemble the UserAccount from the UserID and CommunityID.
-
-         UserAccount userAcc = new UserAccount(userID, communityID);
+      int dataItemID = 0;
 
 //
-//      Check the user's authentication and proceed if ok.
+//   Create an instance of the MySpace manager and invoke the method
+//   corresponding to this action.
 
-         if (userAcc.checkAuthentication() )
-         {
+      MySpaceManager myspace = new MySpaceManager();
 
-//
-//         Attempt to lookup the details of the DataHolder and proceed
-//         if ok.
-
-            DataItemRecord dataItem = 
-              this.lookupDataHolderDetails(userID, communityID, jobID,
-                dataItemID);
-            if (dataItem != null)
-            {
+      boolean deletedOk = myspace.deleteDataHolder(
+        userID, communityID, jobID, dataItemID);
 
 //
-//            If the DataHolder is a container then check that it is
-//            empty.  Containers which are not empty cannot be deleted.
+//   Get other stuff which can usefully be returned.
+//   (Note that the current date needs to be returned to facilitate
+//   comparisons with the expiry date; the MySpace system might be in
+//   a different time-zone to the Explorer or portal.)
 
-               boolean proceedToDelete = true;
+      boolean successStatus = status.getSuccessStatus();
+      boolean warningStatus = status.getWarningStatus();
 
-               if (dataItem.getType() == DataItemRecord.CON)
-               {  String query = dataItem.getDataItemName() + "/*";
-
-                  Vector childrenDataItemVector = 
-                    this.lookupDataHoldersDetails(userID, communityID,
-                    jobID, query);
-
-                  if (childrenDataItemVector != null)
-                  {  proceedToDelete = false;
-
-                     status.addMessage(
-                       "Container " + dataItem.getDataItemName()
-                       + " is not empty.", MySpaceMessage.ERROR);
-                     status.addMessage(
-                       "Only empty containers can be deleted.",
-                       MySpaceMessage.ERROR);
-                  }
-               }
-
-               if (proceedToDelete)
-               {
+      Date currentMySpaceDate = new Date();
 
 //
-//               Check that the user is permitted to delete the DataHolder:
+//   Format and return the results as XML.
 
-                  String permissions;
-                  permissions = dataItem.getPermissionsMask();
-                  String ownerID;
-                  ownerID = dataItem.getOwnerID();
+//   ................
 
-                  if (userAcc.checkAuthorisation(UserAccount.READ,
-                    ownerID, permissions))
-                  {
-
-//
-//                  Attempt to delete the DataHolder.
-
-//                  ADD CODE TO INVOKE A WEB SERVICE TO INDUCE THE MYSPACE
-//                  SERVER TO DELETE THE DataHolder.  THEN PERFORM A TEST
-//                  THAT ALL IS WELL (THE FAKE TEST INSERTED BELOW SHOULD
-//                  BE REMOVED).
-
-                     if (status.getSuccessStatus() )
-                     {
-
-//
-//                     Delete the entry for the DataHolder in the registry,
-//                     to bring the registry into line with reality.
-
-                        reg.deleteDataItemRecord(dataItemID);
-//
-//                     Set the return status to success.
-
-                       returnStatus = true;
-                     }
-                     else
-                     {  status.addMessage(
-                          "Failed to delete DataHolder "
-                          + dataItem.getDataItemName() + ".",
-                          MySpaceMessage.ERROR);
-                     }
-                  }
-                  else
-                  {  status.addMessage(
-                       "The user is not permitted to delete "
-                       + dataItem.getDataItemName() + ".",
-                       MySpaceMessage.ERROR);
-                  }
-               }
-            }
-            else
-            {  status.addMessage(
-                 "Unable to find DataHolder with identifier"
-                 + dataItemID + ".", MySpaceMessage.ERROR);
-            }
-         }
-      }
-
-//
-//   Re-write the registry.
-
-      reg.finalize();
-
-      return returnStatus;
+      String xmlString = "";
+      return xmlString;
    }
 
-
-// -----------------------------------------------------------------
-
-/**
- * Set the registry name.
- */
-
-   public void setRegistryName(String registryName)
-   {  this.registryName = registryName;
-   }
-
-/**
- * <p>
- * An internal convenience method to check whether the user can create
- * a specifed DataHolder or container.  The checks performed include
- * the following:
- * </p>
- * <ul>
- *  <li> that the DataHolder or container does not already exist,
- *  <li> that the parent container exists,
- *  <li> that the user is allowed to write to the parent.
- * </ul>
- * <p>
- * The method returns true if all is ok and the DataHolder or container
- * can be created and false otherwise.
- * </p>
- */
-
-   private boolean checkCanBeCreated(String newDataItemName,
-     UserAccount userAcc, String jobID)
-   {  boolean canBeCreated = false;
-      MySpaceStatus status = new MySpaceStatus();
+// =================================================================
 
 //
-//   Check that the output DataHolder does not already exist.
-
-      String userID = userAcc.getUserID();
-      String communityID = userAcc.getCommunityID();
-
-      Vector checkOutputContainter = 
-        this.lookupDataHoldersDetails(userID, communityID, jobID,
-        newDataItemName);
-      if (status.getSuccessStatus())
-      {  status.reset();
-      }
-      if (checkOutputContainter == null)
-      {
-
+// Server methods.
 //
-//      Check that the user is permitted to create the output
-//      DataHolder:
-//        obtain the name of its parent container,
-//        check that this container exists,
-//        check that the user is allowed to write to this container.
+// The followng methods are provided to access a MySpace server.
 
-         String parentContainer = newDataItemName.substring
-             (0, newDataItemName.lastIndexOf("/") );
-         Vector parentDataItemVector = 
-           this.lookupDataHoldersDetails(userID, communityID,
-           jobID, parentContainer);
-
-         if (parentDataItemVector != null)
-         {  DataItemRecord parentDataItem =
-              (DataItemRecord)parentDataItemVector.firstElement();
-
-            String permissions;
-            permissions = parentDataItem.getPermissionsMask();
-            String ownerID;
-            ownerID = parentDataItem.getOwnerID();
-
-            if (userAcc.checkAuthorisation(UserAccount.WRITE, ownerID,
-              permissions))
-            {  canBeCreated = true;
-            }
-            else
-            {  status.addMessage(
-                  "The user is not authorised to write to container "
-                  + parentContainer + ".", MySpaceMessage.ERROR);
-            }
-         }
-         else
-         {  status.addMessage("The parent container "
-              + parentContainer
-              + " does not exist.", MySpaceMessage.ERROR);
-         }
-      }
-      else
-      {  status.addMessage("Output DataHolder or container " +
-           newDataItemName + " already exists.",
-           MySpaceMessage.ERROR);
-      }
-
-      return canBeCreated;
-   }
+// TBD.
 }
 
 

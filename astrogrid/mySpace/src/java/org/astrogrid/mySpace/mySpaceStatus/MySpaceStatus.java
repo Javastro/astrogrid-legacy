@@ -17,42 +17,44 @@ import java.util.*;
  * </p>
  * <p>
  * The <code>MySpaceStatus</code> class is used to track whether errors
- * or warnings have occurred and to accumulate a Vector of
- * human-readable error, warning and informational messages.
- * (Informational messages are purely to supply information to the User;
- * they do not imply any misadventure.)  To accumulate a message and
- * set the status, simply create a <code>MySpaceStatus</code> and
- * invoke its <code>addMessage</code> method:
+ * or warnings have occurred and to accumulate a Vector of codes, each
+ * of which corresponds to a specific error, warning or informational 
+ * event.  (Informational messages are purely to supply information to
+ * the User; they do not imply any misadventure.)  To accumulate a code
+ * and set the status, simply create a <code>MySpaceStatus</code> object
+ * and invoke its <code>addCode</code> method:
  * </p>
  * <p>
  * <code>MySpaceStatus msStatus = new MySpaceStatus();</code>
  * </p>
  * <p>
- * <code>msStatus.addMessage("message text", "e");</code>
+ * <code>msStatus.addCode("code", MySpaceMessage.ERROR);</code>
  * </p>
  * <p>
  * or more conveniently these details can be passed using a constructor:
  * </p>
  * <p>
- * <code>MySpaceStatus msStatus = new MySpaceStatus("message text", "e");</code>
+ * <code>MySpaceStatus msStatus = new MySpaceStatus("code",
+ *    MySpaceMessage.ERROR);</code>
  * </p>
  * <p>
- * In both cases the first argument is the message text, and the second is
- * the type of event being described, coded as follows:
+ * In both cases the first argument is the code, and the second is the
+ * type of event being described, coded as an <code>int</code> as follows:
  * </p>
  * <ul>
- *   <li><code>"i"</code> - information (that is, nothing is amiss),</li>
- *   <li><code>"w"</code> - warning,</li>
- *   <li><code>"e"</code> - error.</li>
+ *   <li><code>MySpaceMessage.INFO</code> - information (that is, nothing
+ *     is amiss),</li>
+ *   <li><code>MySpaceMessage.WARN</code> - warning,</li>
+ *   <li><code>MySpaceMessage.ERROR</code> - error.</li>
  * </ul>
  * <p>
  * In addition to setting error and warnings there are also methods to
  * get back the error (or rather success) and warnings flags and to 
- * retrieve the stack of messages (each represented as a
- * <code>MySpaceMessage</code>).  Note that warnings are not considered
+ * retrieve the stack of codes (each represented as a
+ * <code>MySpaceStatusCode</code>).  Note that warnings are not considered
  * errors and <code>MySpaceStatus</code> will report success if warnings
  * but no errors have been set.  There is also a convenience method to
- * report the messages to standard output.
+ * report the codes to standard output.
  * 
  * @author A C Davenhall (Edinburgh)
  * @version Iteration 2.
@@ -62,8 +64,10 @@ public class MySpaceStatus
 {  private static boolean successStatus = true;   // Running success status.
    private static boolean warningStatus = false;; // Running warning status.
 
-   private static Vector messages = new Vector();
-                   // Log of MySpace info, warning and error messages.
+   private static String jobID = ""; // Job identifier.
+
+   private static Vector codes = new Vector();
+                   // Log of MySpace info, warning and error codes.
 
 //
 // Constructors.
@@ -77,13 +81,21 @@ public class MySpaceStatus
    }
 
 /**
- * Create a <code>MySpaceStatus</code> object and accumulate a message
- * and its associated type (<code>"i"</code>, <code>"w"</code> or
- * <code>"e"</code>, see above).
+ * Create a <code>MySpaceStatus</code> object and set the Job identifier.
  */
 
-   public MySpaceStatus (String message, String type)
-   {  this.addMessage(message, type);
+   public MySpaceStatus (String jobID)
+   {  this.jobID = jobID;
+   }
+
+
+/**
+ * Create a <code>MySpaceStatus</code> object and accumulate a code
+ * and its associated type (information, warning or error, see above).
+ */
+
+   public MySpaceStatus (String code, int type)
+   {  this.addCode(code, type);
    }
 
 //
@@ -108,58 +120,71 @@ public class MySpaceStatus
    }
 
 /**
+ * Return the job identifier.
+ */
+
+   public String getJobID()
+   {  return jobID;
+   }
+
+/**
  * Return a Vector of <code>MySpaceMessage</code>s containing any messages
  * that have been set.
  */
 
-   public Vector getMessages()
-   {  return messages;
+   public Vector getCodes()
+   {  return codes;
    }
 
 //
 // Other methods.
 
 /**
- * Accumulate a new message in the <code>MySpaceStatus</code>.
+ * Accumulate a new code in the <code>MySpaceStatus</code>.
  */
 
-   public void addMessage(String message,  String type)
-   {  MySpaceMessage newMessage = new MySpaceMessage(message, type);
+   public void addCode(String code,  int type)
+   {  MySpaceStatusCode newCode = new MySpaceStatusCode(code, type);
 
-      messages.add(newMessage);
-      if (type.equals("e"))
+      codes.add(newCode);
+
+      if (type == MySpaceStatusCode.ERROR)
       {  successStatus = false;
       }
-      else if (type.equals("w"))
+      else if (type == MySpaceStatusCode.WARN)
       {  warningStatus = true;
       }
    }
 
 /**
- * Output any accumulated messages to standard output.
+ * Output any accumulated codes to standard output.
  */
 
-   public void outputMessages()
-   {  int numMessages = messages.size();
+   public void outputCodes()
+   {  int numCodes = codes.size();
 
-      for (int loop=0; loop<numMessages; loop++)
-      {  MySpaceMessage currentMessage =
-           (MySpaceMessage)messages.elementAt(loop);
+      for (int loop=0; loop<numCodes; loop++)
+      {  MySpaceStatusCode currentCode =
+           (MySpaceStatusCode)codes.elementAt(loop);
 
-         String message = currentMessage.getMessage();
-         String type = currentMessage.getType();
+         String code = currentCode.getCode();
+         int type = currentCode.getType();
 
-         if (type.equals("i"))
-         {  System.out.println("!(" + loop + ") Info:    " + message);
+         if (type == MySpaceStatusCode.INFO)
+         {  System.out.println(
+              "!(" + loop + ") Info:    code = " + code);
          }
-         else if (type.equals("w"))
-         {  System.out.println("!(" + loop + ") Warning: " + message);
+         else if (type == MySpaceStatusCode.WARN)
+         {  System.out.println(
+              "!(" + loop + ") Warning: code = " + code);
          }
-         else if (type.equals("e")) 
-         {  System.out.println("!(" + loop + ") Error:   " + message);
+         else if (type == MySpaceStatusCode.ERROR)
+         {  System.out.println(
+              "!(" + loop + ") Error:   code = " + code);
          }
          else
-         {  System.out.println("!(" + loop + ") Unknown: " + message);
+         {  System.out.println(
+              "!(" + loop + ") Unknown: code = " + code);
          }
       }
    }
@@ -167,13 +192,13 @@ public class MySpaceStatus
 /**
  * Reset the <code>MySpaceStatus</code>.  The error and warning statuses
  * are reset (to success and no warnings, respectively) and any
- * accumulated messages are lost.
+ * accumulated codes are lost.
  */
 
    public void reset()
    {  successStatus = true;
       warningStatus = false;
 
-      messages = new Vector();
+      codes = new Vector();
    }
 }

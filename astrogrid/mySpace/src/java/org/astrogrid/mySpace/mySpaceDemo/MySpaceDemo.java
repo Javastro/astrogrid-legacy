@@ -19,7 +19,7 @@ import org.astrogrid.mySpace.mySpaceManager.*;
 
 
 public class MySpaceDemo
-{  private static MySpaceManager myspace = new MySpaceManager();
+{  private static MySpaceActions myspace = new MySpaceActions();
    private static MySpaceStatus status = new MySpaceStatus();
 
    public Component createDemoComponents()
@@ -90,7 +90,7 @@ public class MySpaceDemo
                if (!status.getSuccessStatus())
                {  System.out.println("Operation failed.");
                }
-               status.outputMessages();
+               status.outputCodes();
                status.reset();
                System.out.println("");
             }
@@ -152,7 +152,7 @@ public class MySpaceDemo
                if (!status.getSuccessStatus())
                {  System.out.println("Operation failed.");
                }
-               status.outputMessages();
+               status.outputCodes();
                status.reset();
                System.out.println("");
             }
@@ -195,7 +195,7 @@ public class MySpaceDemo
                if (!status.getSuccessStatus())
                {  System.out.println("Operation failed.");
                }
-               status.outputMessages();
+               status.outputCodes();
                status.reset();
                System.out.println("");
             }
@@ -263,7 +263,7 @@ public class MySpaceDemo
                if (!status.getSuccessStatus())
                {  System.out.println("Operation failed.");
                }
-               status.outputMessages();
+               status.outputCodes();
                status.reset();
                System.out.println("");
             }
@@ -331,7 +331,7 @@ public class MySpaceDemo
                if (!status.getSuccessStatus())
                {  System.out.println("Operation failed.");
                }
-               status.outputMessages();
+               status.outputCodes();
                status.reset();
                System.out.println("");
             }
@@ -386,7 +386,7 @@ public class MySpaceDemo
                if (!status.getSuccessStatus())
                {  System.out.println("Operation failed.");
                }
-               status.outputMessages();
+               status.outputCodes();
                status.reset();
                System.out.println("");
             }
@@ -446,7 +446,7 @@ public class MySpaceDemo
                if (!status.getSuccessStatus())
                {  System.out.println("Operation failed.");
                }
-               status.outputMessages();
+               status.outputCodes();
                status.reset();
                System.out.println("");
             }
