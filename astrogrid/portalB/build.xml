@@ -1,11 +1,14 @@
 <?xml version="1.0"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/Attic/build.xml,v $</cvs:source>
-    | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/08/12 10:45:43 $</cvs:author>
-    | <cvs:version>$Revision: 1.39 $</cvs:version>
+    | <cvs:date>$Author: KevinBenson $</cvs:date>
+    | <cvs:author>$Date: 2003/09/08 14:10:54 $</cvs:author>
+    | <cvs:version>$Revision: 1.40 $</cvs:version>
     | <cvs:log>
     | $Log: build.xml,v $
+    | Revision 1.40  2003/09/08 14:10:54  KevinBenson
+    | *** empty log message ***
+    |
     | Revision 1.39  2003/08/12 10:45:43  dave
     | Fixed JUnit classpath in javac tasks
     |
@@ -166,6 +169,9 @@
 	<property name="junit.build"  value="build/junit"/>
 	<property name="junit.home"   value="build/junit"/>
 
+	<!-- plugins location -->
+	<property name="plugin.topcat.jar" value="depends/plugins/topcat-astrogrid.jar" />
+	<property name="plugin.home" value="depends/plugins/" />
 	<!-- Axis properties -->
 <!--
 	<property name="axis.tar"     value="depends/axis/axis-1_1rc2.tar.gz"/>
@@ -249,6 +255,13 @@
 		<echo message="build.date   : ${build.date}"/>
 		<echo message="build.time   : ${build.time}"/>
 	</target>
+
+	<!-- ================ Plugin tasks ================ -->
+	<!-- The Plugin libraries -->
+	<path id="plugins.classpath">
+		<pathelement location="${plugin.topcat.jar}"/>
+	</path>
+
 
 	<!-- ================ Ant tasks ================ -->
 	<!-- The Ant libraries -->
@@ -1112,6 +1125,8 @@
 				<path refid="axis.classpath"/>
 				<!-- Our Cocoon libraries -->
 				<path refid="cocoon.classpath"/>
+				
+				<path refid="plugins.classpath"/>
 				<!-- Tomcat servlet libraries (required for Axis 1.0) -->
 				<path refid="tomcat.servlet.classpath"/>
 				<!-- The JUnit libraries -->
@@ -2189,6 +2204,7 @@
 		<path id="cocoon.classpath">
 			<pathelement location="${cocoon.webapp}/WEB-INF/lib/cocoon-2.0.4.jar"/>
 			<pathelement location="${cocoon.webapp}/WEB-INF/lib/avalon-framework-20020627.jar"/>
+			<pathelement location="${cocoon.webapp}/WEB-INF/lib/excalibur-pool-20020820.jar"/>
 		</path>
 	</target>
 
@@ -2269,6 +2285,13 @@
 				<include name="**/*.jar"/>
 			</fileset>
 		</copy>
+		<!-- Copy our plugin jar -->
+		<copy verbose="false" toDir="build/release/cocoon/webapp/WEB-INF/lib">
+			<fileset dir="${plugin.home}">
+				<include name="**/*.jar"/>
+			</fileset>
+		</copy>
+		
 		<!-- Copy the Axis client jars -->
 		<copy verbose="false" toDir="build/release/cocoon/webapp/WEB-INF/lib">
 			<fileset dir="${axis.webapp}/WEB-INF/lib">
