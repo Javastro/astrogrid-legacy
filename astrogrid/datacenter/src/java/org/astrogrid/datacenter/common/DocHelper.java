@@ -1,5 +1,5 @@
 /*
- * $Id: DocHelper.java,v 1.8 2003/09/22 16:51:24 mch Exp $
+ * $Id: DocHelper.java,v 1.9 2003/09/22 17:58:04 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -62,6 +62,11 @@ public class DocHelper
     */
    public static String getTagValue(Element dom, String tagName)
    {
+      if (dom == null)
+      {
+         return null;
+      }
+
       //assigns handle
       NodeList nodes = dom.getElementsByTagName(tagName);
 
