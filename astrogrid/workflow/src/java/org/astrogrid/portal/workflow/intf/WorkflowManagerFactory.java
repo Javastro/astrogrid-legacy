@@ -1,4 +1,4 @@
-/*$Id: WorkflowManagerFactory.java,v 1.10 2004/04/14 13:48:26 nw Exp $
+/*$Id: WorkflowManagerFactory.java,v 1.11 2004/06/30 13:34:42 jl99 Exp $
  * Created on 24-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,23 +10,18 @@
 **/
 package org.astrogrid.portal.workflow.intf;
 
+import java.net.URL;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.config.Config;
 import org.astrogrid.config.PropertyNotFoundException;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.portal.workflow.impl.BasicWorkflowBuilder;
 import org.astrogrid.portal.workflow.impl.FileApplicationRegistry;
-import org.astrogrid.portal.workflow.impl.FileWorkflowStore;
 import org.astrogrid.portal.workflow.impl.JesJobExecutionService;
-import org.astrogrid.portal.workflow.impl.MySpaceWorkflowStore;
 import org.astrogrid.portal.workflow.impl.RegistryApplicationRegistry;
 import org.astrogrid.portal.workflow.impl.VoSpaceClientWorkflowStore;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
 
 /** Factory that creates a new workflow manager
  * <p>
@@ -171,6 +166,9 @@ public class WorkflowManagerFactory {
 
 /* 
 $Log: WorkflowManagerFactory.java,v $
+Revision 1.11  2004/06/30 13:34:42  jl99
+Reorg of import statements to cover removal of unused MySpace delegate classes
+
 Revision 1.10  2004/04/14 13:48:26  nw
 updated docs
 
