@@ -1,5 +1,5 @@
 /*
- * $Id: DatacenterDelegate.java,v 1.18 2003/09/15 22:38:42 mch Exp $
+ * $Id: DatacenterDelegate.java,v 1.19 2003/09/16 12:48:56 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -9,6 +9,7 @@ package org.astrogrid.datacenter.delegate;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.rmi.RemoteException;
 import java.util.Vector;
 import javax.xml.rpc.ServiceException;
 import org.astrogrid.datacenter.common.QueryStatus;
@@ -127,7 +128,7 @@ public abstract class DatacenterDelegate
    /**
     * Polls the service and asks for the current status
     */
-   public abstract QueryStatus getQueryStatus(String queryId);
+   public abstract QueryStatus getQueryStatus(String queryId) throws RemoteException;
 
 
    /**
@@ -155,12 +156,15 @@ public abstract class DatacenterDelegate
    /**
     * Register listener with *service*
     */
-   public abstract void registerListener(String queryId, DatacenterStatusListener listener);
+   public abstract void registerListener(String queryId, DatacenterStatusListener listener) throws RemoteException;
 
 }
 
 /*
 $Log: DatacenterDelegate.java,v $
+Revision 1.19  2003/09/16 12:48:56  nw
+adjusted to fix most mismatches
+
 Revision 1.18  2003/09/15 22:38:42  mch
 Split spawnQuery into make and start, so we can add listeners in between
 

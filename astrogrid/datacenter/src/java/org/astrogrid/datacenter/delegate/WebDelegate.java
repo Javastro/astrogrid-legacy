@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegate.java,v 1.8 2003/09/15 23:04:13 mch Exp $
+ * $Id: WebDelegate.java,v 1.9 2003/09/16 12:48:56 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -126,7 +126,7 @@ public class WebDelegate extends DatacenterDelegate
    public Element startQuery(String queryId) throws RemoteException
    {
       try
-      {
+      {         
          return binding.startQuery(queryId);
       }
       catch (Exception e)
@@ -158,9 +158,9 @@ public class WebDelegate extends DatacenterDelegate
    /**
     * Polls the service and asks for the current status
     */
-   public QueryStatus getQueryStatus(String id)
+   public QueryStatus getQueryStatus(String id) throws RemoteException
    {
-      return binding.getStatus(id);
+      return QueryStatus.getFor(binding.getStatus(id));
    }
 
    /**
@@ -168,7 +168,7 @@ public class WebDelegate extends DatacenterDelegate
     * WebNotify Listeners will work - as this delegate has
     * no session contact with the server.
     */
-   public void registerListener(String queryId, DatacenterStatusListener listener)
+   public void registerListener(String queryId, DatacenterStatusListener listener) throws RemoteException
    {
       if (listener instanceof WebNotifyServiceListener)
       {
@@ -186,6 +186,9 @@ public class WebDelegate extends DatacenterDelegate
 
 /*
 $Log: WebDelegate.java,v $
+Revision 1.9  2003/09/16 12:48:56  nw
+adjusted to fix most mismatches
+
 Revision 1.8  2003/09/15 23:04:13  mch
 Fix to registerListener (removed return)
 
