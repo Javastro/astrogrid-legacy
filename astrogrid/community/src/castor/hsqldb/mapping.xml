@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/castor/hsqldb/Attic/mapping.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/09/03 06:39:13 $</cvs:date>
-    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:date>$Date: 2003/09/04 23:33:05 $</cvs:date>
+    | <cvs:version>$Revision: 1.3 $</cvs:version>
     | <cvs:log>
     |   $Log: mapping.xml,v $
+    |   Revision 1.3  2003/09/04 23:33:05  dave
+    |   Implemented the core account manager methods - needs data object to return results
+    |
     |   Revision 1.2  2003/09/03 06:39:13  dave
     |   Rationalised things into one set of SOAP stubs and one set of data objects for both client and server.
     |
@@ -37,8 +40,7 @@
 -->
 
 	<!-- JDO and XML Mapping for Accounts -->
-<!--
-	<class name="org.astrogrid.community.policy.server.Account" identity="ident">
+	<class name="org.astrogrid.community.policy.data.AccountData" identity="ident">
 		<map-to table="accounts" xml="account"/>
 		<field name="ident" type="string">
 			<sql name="ident" type="char"/>
@@ -49,7 +51,6 @@
 			<bind-xml node="element"/>
 		</field>
 	</class>
--->
 
 	<!-- JDO and XML Mapping for Groups -->
 <!--

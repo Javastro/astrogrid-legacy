@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/sql/hsqldb/Attic/create.sql,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/03 06:39:13 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/04 23:33:05 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: create.sql,v $
+ *   Revision 1.3  2003/09/04 23:33:05  dave
+ *   Implemented the core account manager methods - needs data object to return results
+ *
  *   Revision 1.2  2003/09/03 06:39:13  dave
  *   Rationalised things into one set of SOAP stubs and one set of data objects for both client and server.
  *
@@ -76,6 +79,7 @@ DROP TABLE communities IF EXISTS ;
 CREATE TABLE communities
     (
     ident       VARCHAR NOT NULL,
+    url         VARCHAR NOT NULL,
     description VARCHAR NULL,
     PRIMARY KEY ( ident )
     ) ;

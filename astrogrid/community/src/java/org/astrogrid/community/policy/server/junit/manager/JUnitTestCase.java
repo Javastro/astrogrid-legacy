@@ -1,37 +1,34 @@
 /*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/client/junit/manager/Attic/JUnitTestCase.java,v $</cvs:source>
+ * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/junit/manager/Attic/JUnitTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
  * <cvs:date>$Date: 2003/09/04 23:33:05 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:version>$Revision: 1.1 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: JUnitTestCase.java,v $
- *   Revision 1.2  2003/09/04 23:33:05  dave
+ *   Revision 1.1  2003/09/04 23:33:05  dave
  *   Implemented the core account manager methods - needs data object to return results
- *
- *   Revision 1.1  2003/09/03 15:23:33  dave
- *   Split API into two services, PolicyService and PolicyManager
  *
  * </cvs:log>
  *
  */
-package org.astrogrid.community.policy.client.junit.manager ;
+package org.astrogrid.community.policy.server.junit.manager ;
 
 import junit.framework.TestCase ;
+
+import org.astrogrid.community.policy.data.ServiceData ;
+import org.astrogrid.community.policy.data.AccountData ;
+
+import org.astrogrid.community.policy.server.PolicyManager ;
+import org.astrogrid.community.policy.server.PolicyManagerImpl ;
 
 import java.util.Iterator ;
 import java.util.Collection ;
 
-import org.astrogrid.community.policy.data.AccountData ;
-import org.astrogrid.community.policy.data.ServiceData ;
-
-import org.astrogrid.community.policy.server.PolicyManager ;
-import org.astrogrid.community.policy.server.PolicyManagerService ;
-import org.astrogrid.community.policy.server.PolicyManagerServiceLocator ;
 
 /**
  *
- * JUnit test for the policy client components.
+ * JUnit test for the PolicyManager.
  *
  */
 public class JUnitTestCase
@@ -41,7 +38,7 @@ public class JUnitTestCase
 	 * The our test account ident.
 	 *
 	 */
-	private static final String TEST_ACCOUNT_IDENT = "client.manager@junit" ;
+	private static final String TEST_ACCOUNT_IDENT = "server.manager@junit" ;
 
 	/**
 	 * The our fake account ident.
@@ -68,16 +65,10 @@ public class JUnitTestCase
 	private static final boolean ASSERT_FLAG = false ;
 
 	/**
-	 * Our service locator.
+	 * Our PolicyManager.
 	 *
 	 */
-	private PolicyManagerService locator ;
-
-	/**
-	 * Our service.
-	 *
-	 */
-	private PolicyManager service ;
+	private PolicyManager service = null ;
 
 	/**
 	 * Setup our tests.
@@ -91,13 +82,8 @@ public class JUnitTestCase
 		if (DEBUG_FLAG) System.out.println("setUp") ;
 
 		//
-		// Create our service locator.
-		locator = new PolicyManagerServiceLocator() ;
-		assertNotNull("Null service locator", locator) ;
-		//
-		// Create our service.
-		service = locator.getPolicyManager() ;
-		assertNotNull("Null service", service) ;
+		// Create our PolicyManager.
+		service = new PolicyManagerImpl();
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("") ;
@@ -157,7 +143,9 @@ public class JUnitTestCase
 		// Try creating the same Account again.
 		account = service.addAccount(account);
 		assertNull("Created a duplicate account", account) ;
-
+//
+// Should use ident only to create ??
+//
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("") ;
 		}
@@ -251,81 +239,5 @@ public class JUnitTestCase
 		if (DEBUG_FLAG) System.out.println("") ;
 		}
 
-	/**
-	 * Check that we can call the getAccountData() method.
-	 *
-	public void testGetAccountData()
-		throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("testGetAccountData") ;
-
-		//
-		// Call the getAccountData method.
-		AccountData account = service.getAccountData("toad@pond") ;
-		assertNotNull("Null account", account) ;
-
-		if (DEBUG_FLAG) System.out.println("Account") ;
-		if (DEBUG_FLAG) System.out.println("  ident : " + account.getIdent()) ;
-		if (DEBUG_FLAG) System.out.println("  desc  : " + account.getDescription()) ;
-
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("") ;
-		}
-	 */
-
-	/**
-	 * Check that we can call the setAccountData() method.
-	 *
-	public void testSetAccountData()
-		throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("testSetAccountData") ;
-
-		//
-		// Create our data.
-		AccountData account = new AccountData() ;
-		account.setIdent("toad@pond") ;
-		account.setDescription("Toad in a pond") ;
-		//
-		// Call the getAccountData method.
-		service.setAccountData(account) ;
-
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("") ;
-		}
-	 */
-
-	/**
-	 * Check that we can call the getAccountList() method.
-	 *
-	public void testGetAccountList()
-		throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("testGetAccountList") ;
-
-		//
-		// Call the getAccountList method.
-		Object[] list = service.getAccountList() ;
-		assertNotNull("Null list", list) ;
-		//
-		// Check our list.
-		for (int i = 0 ; i < list.length ; i++)
-			{
-			AccountData account = (AccountData) list[i] ;
-			if (DEBUG_FLAG) System.out.println("  Account") ;
-			if (DEBUG_FLAG) System.out.println("    ident : " + account.getIdent()) ;
-			if (DEBUG_FLAG) System.out.println("    desc  : " + account.getDescription()) ;
-			}
-
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("") ;
-		}
-	 */
 
 	}

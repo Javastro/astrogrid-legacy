@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/client/junit/service/Attic/JUnitTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/03 15:23:33 $</cvs:date>
- * <cvs:version>$Revision: 1.1 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/04 23:33:05 $</cvs:date>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: JUnitTestCase.java,v $
+ *   Revision 1.2  2003/09/04 23:33:05  dave
+ *   Implemented the core account manager methods - needs data object to return results
+ *
  *   Revision 1.1  2003/09/03 15:23:33  dave
  *   Split API into two services, PolicyService and PolicyManager
  *
@@ -48,6 +51,18 @@ public class JUnitTestCase
 	private static final boolean ASSERT_FLAG = false ;
 
 	/**
+	 * Our service locator.
+	 *
+	 */
+	private PolicyServiceService locator ;
+
+	/**
+	 * Our service.
+	 *
+	 */
+	private PolicyService service ;
+
+	/**
 	 * Setup our tests.
 	 *
 	 */
@@ -58,48 +73,13 @@ public class JUnitTestCase
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("setUp") ;
 
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("") ;
-		}
-
-	/**
-	 * Check that we can create a ServiceLocator.
-	 *
-	 */
-	public void testCreateServiceLocator()
-		throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("testCreateServiceLocator") ;
-
 		//
 		// Create a ServiceLocator.
-		PolicyServiceService locator = new PolicyServiceServiceLocator() ;
-		assertNotNull("Null service locator", locator) ;
-
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("") ;
-		}
-
-	/**
-	 * Check that we can create a Service.
-	 *
-	 */
-	public void testCreateService()
-		throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("testCreateService") ;
-
-		//
-		// Create a ServiceLocator.
-		PolicyServiceService locator = new PolicyServiceServiceLocator() ;
+		locator = new PolicyServiceServiceLocator() ;
 		assertNotNull("Null service locator", locator) ;
 		//
-		// Locate a reference to our service.
-		PolicyService service = locator.getPolicyService() ;
+		// Locate a our service.
+		service = locator.getPolicyService() ;
 		assertNotNull("Null service", service) ;
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -118,21 +98,12 @@ public class JUnitTestCase
 		if (DEBUG_FLAG) System.out.println("testGetServiceStatus") ;
 
 		//
-		// Create a ServiceLocator.
-		PolicyServiceService locator = new PolicyServiceServiceLocator() ;
-		assertNotNull("Null service locator", locator) ;
-		//
-		// Locate a reference to our service.
-		PolicyService service = locator.getPolicyService() ;
-		assertNotNull("Null service", service) ;
-		//
 		// Call the ServiceStatus method.
 		ServiceData status = service.getServiceStatus() ;
 		assertNotNull("Null status", status) ;
 
 		if (DEBUG_FLAG) System.out.println("Status") ;
 		if (DEBUG_FLAG) System.out.println("  ident : " + status.getIdent()) ;
-
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("") ;
@@ -141,7 +112,6 @@ public class JUnitTestCase
 	/**
 	 * Check that we can call the checkPermissions() method.
 	 *
-	 */
 	public void testCheckPermissions()
 		throws Exception
 		{
@@ -149,14 +119,6 @@ public class JUnitTestCase
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("testCheckPermissions") ;
 
-		//
-		// Create a ServiceLocator.
-		PolicyServiceService locator = new PolicyServiceServiceLocator() ;
-		assertNotNull("Null service locator", locator) ;
-		//
-		// Locate a reference to our service.
-		PolicyService service = locator.getPolicyService() ;
-		assertNotNull("Null service", service) ;
 		//
 		// Create our credentials.
 		PolicyCredentials credentials = new PolicyCredentials() ;
@@ -184,5 +146,6 @@ public class JUnitTestCase
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("") ;
 		}
+	 */
 
 	}

@@ -1,28 +1,23 @@
 /*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/junit/Attic/JUnitTestCase.java,v $</cvs:source>
+ * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/junit/database/Attic/JUnitTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/03 06:39:13 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/04 23:33:05 $</cvs:date>
+ * <cvs:version>$Revision: 1.1 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: JUnitTestCase.java,v $
- *   Revision 1.2  2003/09/03 06:39:13  dave
- *   Rationalised things into one set of SOAP stubs and one set of data objects for both client and server.
- *
- *   Revision 1.1  2003/08/28 17:33:56  dave
- *   Initial policy prototype
+ *   Revision 1.1  2003/09/04 23:33:05  dave
+ *   Implemented the core account manager methods - needs data object to return results
  *
  * </cvs:log>
  *
  */
-package org.astrogrid.community.policy.server.junit ;
+package org.astrogrid.community.policy.server.junit.database ;
+
+import junit.framework.TestCase ;
 
 import org.astrogrid.community.policy.data.ServiceData ;
 import org.astrogrid.community.policy.data.AccountData ;
-import org.astrogrid.community.policy.data.PolicyPermission  ;
-import org.astrogrid.community.policy.data.PolicyCredentials ;
-
-import junit.framework.TestCase ;
 
 import org.exolab.castor.jdo.JDO;
 import org.exolab.castor.jdo.Database;
@@ -30,12 +25,9 @@ import org.exolab.castor.jdo.OQLQuery;
 import org.exolab.castor.jdo.QueryResults;
 import org.exolab.castor.jdo.ObjectNotFoundException ;
 
-import org.exolab.castor.persist.spi.Complex ;
-
-
-import org.exolab.castor.mapping.Mapping;
-
 import org.exolab.castor.util.Logger;
+import org.exolab.castor.persist.spi.Complex ;
+import org.exolab.castor.mapping.Mapping;
 
 import java.io.PrintWriter;
 
@@ -50,6 +42,18 @@ import java.util.Collection ;
 public class JUnitTestCase
 	extends TestCase
 	{
+	/**
+	 * Our test account ident.
+	 *
+	 */
+	private static final String TEST_ACCOUNT_IDENT = "server.database@junit" ;
+
+	/**
+	 * Our test account description.
+	 *
+	 */
+	private static final String TEST_ACCOUNT_DESC = "JUnit test account" ;
+
 	/**
 	 * Switch for our debug statements.
 	 *
@@ -119,7 +123,7 @@ public class JUnitTestCase
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("setUp") ;
+		if (DEBUG_FLAG) System.out.println("setUp()") ;
 
 		//
 		// Create our log writer.
@@ -143,11 +147,139 @@ public class JUnitTestCase
 		if (DEBUG_FLAG) System.out.println("") ;
 		}
 
+	/**
+	 * Check we can create an Account object.
+	 *
+	 */
+	public void testCreateAccount()
+		throws Exception
+		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("testCreateAccount()") ;
+
+		//
+		// Create the Account object.
+		AccountData account = new AccountData() ;
+		account.setIdent(TEST_ACCOUNT_IDENT) ;
+		account.setDescription(TEST_ACCOUNT_DESC) ;
+
+		//
+		// Begin a new database transaction.
+		database.begin();
+
+		//
+		// Try creating the Account in the database.
+		database.create(account);
+
+		//
+		// Commit our transaction.
+		database.commit() ;
+
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("") ;
+		}
+
+	/**
+	 * Check we can load an Account object.
+	 *
+	 */
+	public void testLoadAccount()
+		throws Exception
+		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("testLoadAccount()") ;
+
+		//
+		// Begin a new database transaction.
+		database.begin();
+		//
+		// Load the Account from the database.
+		AccountData account = (AccountData) database.load(AccountData.class, TEST_ACCOUNT_IDENT) ;
+		assertNotNull("Null account data", account) ;
+		//
+		// Commit our transaction.
+		database.commit() ;
+
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("  Account") ;
+		if (DEBUG_FLAG) System.out.println("    ident : " + account.getIdent()) ;
+		if (DEBUG_FLAG) System.out.println("    desc  : " + account.getDescription()) ;
+
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("") ;
+		}
+
+	/**
+	 * Check we can modify an Account object.
+	 *
+	 */
+	public void testModifyAccount()
+		throws Exception
+		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("testModifyAccount()") ;
+
+		//
+		// Begin a new database transaction.
+		database.begin();
+		//
+		// Load the Account from the database.
+		AccountData data = (AccountData) database.load(AccountData.class, TEST_ACCOUNT_IDENT) ;
+		//
+		// Update the account data.
+		data.setDescription("Modified description") ;
+		//
+		// Commit our transaction.
+		database.commit() ;
+
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("  Account") ;
+		if (DEBUG_FLAG) System.out.println("    ident : " + data.getIdent()) ;
+		if (DEBUG_FLAG) System.out.println("    desc  : " + data.getDescription()) ;
+
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("") ;
+		}
+
+	/**
+	 * Check we can delete an Account object.
+	 *
+	 */
+	public void testDeleteAccount()
+		throws Exception
+		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("testDeleteAccount()") ;
+
+		//
+		// Begin a new database transaction.
+		database.begin();
+		//
+		// Load the Account from the database.
+		AccountData account = (AccountData) database.load(AccountData.class, TEST_ACCOUNT_IDENT) ;
+		//
+		// Delete the account.
+		database.remove(account) ;
+		//
+		// Commit our transaction.
+		database.commit() ;
+
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("") ;
+		}
+
+
+
+
+
 
 	/**
 	 * Check we can find a permissions object.
 	 *
-	 */
 	public void testFindPermission()
 		throws Exception
 		{
@@ -182,11 +314,11 @@ public class JUnitTestCase
 		if (DEBUG_FLAG) System.out.println("") ;
 
 		}
+	 */
 
 	/**
 	 * Check we can load a permissions object.
 	 *
-	 */
 	public void testLoadPermissionFail()
 		throws Exception
 		{
@@ -220,11 +352,11 @@ public class JUnitTestCase
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("") ;
 		}
+	 */
 
 	/**
 	 * Check we can create a permissions object.
 	 *
-	 */
 	public void testCreatePermission()
 		throws Exception
 		{
@@ -251,11 +383,11 @@ public class JUnitTestCase
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("") ;
 		}
+	 */
 
 	/**
 	 * Check we can load a permissions object.
 	 *
-	 */
 	public void testLoadPermissionPass()
 		throws Exception
 		{
@@ -283,4 +415,7 @@ public class JUnitTestCase
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("") ;
 		}
+	 */
+
+
 	}

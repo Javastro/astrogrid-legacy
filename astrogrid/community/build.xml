@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/Attic/build.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/09/03 16:12:05 $</cvs:date>
-    | <cvs:version>$Revision: 1.7 $</cvs:version>
+    | <cvs:date>$Date: 2003/09/04 23:33:05 $</cvs:date>
+    | <cvs:version>$Revision: 1.8 $</cvs:version>
     | <cvs:log>
     |   $Log: build.xml,v $
+    |   Revision 1.8  2003/09/04 23:33:05  dave
+    |   Implemented the core account manager methods - needs data object to return results
+    |
     |   Revision 1.7  2003/09/03 16:12:05  dave
     |   Fixed hard coded database address in build.xml
     |
@@ -202,7 +205,7 @@
 		<!-- Create our reports directory -->
 		<mkdir dir="${junit.target}/junit"/>
 		<!-- Run our JUnitTestCase tests -->
-		<junit printsummary="yes" haltonfailure="yes" showoutput="yes" fork="false">
+		<junit printsummary="yes" haltonfailure="yes" haltonerror="yes" showoutput="yes" fork="false">
 			<!-- Generate an XML log file -->
 			<formatter type="xml"/>
 			<!-- Run all the target JUnitTestCase tests -->
@@ -622,13 +625,6 @@
 	</target>
 
 	<!--+
-		| Reset Hsqldb.
-		+-->
-	<target name="hsqldb.RESET" depends="">
-		<antcall target="hsqldb.data.delete"/>
-	</target>
-
-	<!--+
 		| Create the Hsqldb server properties.
 		| Can be overriden by command line args in hsqldb.start.
 		+-->
@@ -748,6 +744,13 @@
 	</target>
 
 	<!--+
+		| Reset our Hsqldb database.
+		+-->
+	<target name="hsqldb.RESET" depends="">
+		<antcall target="hsqldb.data.delete"/>
+	</target>
+
+	<!--+
 		| Install the Hsqldb docs as a webapp.
 		+-->
 	<target name="hsqldb.docs.install" depends="tomcat.tasks">
@@ -775,11 +778,11 @@
 		     print="true"
 			>
 			<![CDATA[
-				SELECT * FROM groups      ;
-				SELECT * FROM members     ;
-				SELECT * FROM accounts    ;
-				SELECT * FROM resources   ;
 				SELECT * FROM communities ;
+				SELECT * FROM accounts    ;
+				SELECT * FROM groups      ;
+				SELECT * FROM resources   ;
+				SELECT * FROM members     ;
 				SELECT * FROM permissions ;
 			]]>
 		</sql>
@@ -1078,6 +1081,8 @@
 		| The Policy server classpath.
 		+-->
 	<path id="policy.server.classpath">
+		<!-- The Axis libraries -->
+		<path refid="axis.classpath"/>
 		<!-- The Castor libraries -->
 		<path refid="castor.classpath"/>
 		<!-- The Xerces libraries -->
@@ -1187,7 +1192,7 @@
 			output="${policy.manager.base}/wsdl/java2wsdl/PolicyManager.wsdl"
 			classname="org.astrogrid.community.policy.server.PolicyManager"
 			location="${axis.url}/services/PolicyManager"
-			methods="getServiceStatus, getAccountData, setAccountData, getAccountList"
+			methods="getServiceStatus, addAccount, getAccount, setAccount, delAccount, getAccountList"
 			namespace="urn:server.policy.community.astrogrid.org"
 			namespaceimpl="urn:impl.server.policy.community.astrogrid.org"
 			style="RPC"
@@ -1696,13 +1701,42 @@
 	</target>
 
 	<!--+
+		| Run our server side JUnit tests.
+		+-->
+	<target name="policy.server.junit" depends="">
+		<!-- Create our reports directory -->
+		<mkdir dir="${policy.base}/junit"/>
+		<!-- Run our JUnitTestCase tests -->
+		<junit printsummary="yes" haltonfailure="true" haltonerror="true" showoutput="true" fork="true">
+			<classpath>
+				<!-- The Policy classes -->
+				<path refid="policy.server.classpath"/>
+			</classpath>
+			<!-- Generate an XML log file -->
+			<formatter type="xml"/>
+
+			<!-- Pass in the server config properties -->
+			<sysproperty key="org.astrogrid.policy.server.mapping"          value="file://${policy.server.base}/config/mapping.xml"/>
+			<sysproperty key="org.astrogrid.policy.server.database.config"  value="file://${policy.server.base}/config/database.xml"/>
+			<sysproperty key="org.astrogrid.policy.server.database.name"    value="${hsqldb.database}"/>
+
+			<!-- Run the target JUnitTestCase tests -->
+			<batchtest todir="${policy.base}/junit">
+				<fileset dir="${policy.server.base}/classes">
+					<include name="org/astrogrid/community/policy/server/junit/**/JUnitTestCase.class"/>
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+
+	<!--+
 		| Run our client JUnit tests.
 		+-->
 	<target name="policy.client.junit" depends="">
 		<!-- Create our reports directory -->
-		<mkdir dir="${policy.client.base}/junit"/>
+		<mkdir dir="${policy.base}/junit"/>
 		<!-- Run our JUnitTestCase tests -->
-		<junit printsummary="yes" haltonfailure="yes" showoutput="yes" fork="true">
+		<junit printsummary="yes" haltonfailure="true" haltonerror="true" showoutput="true" fork="true">
 			<classpath>
 				<!-- The Policy classes -->
 				<path refid="policy.client.classpath"/>
@@ -1710,7 +1744,7 @@
 			<!-- Generate an XML log file -->
 			<formatter type="xml"/>
 			<!-- Run the target JUnitTestCase tests -->
-			<batchtest todir="${policy.client.base}/junit">
+			<batchtest todir="${policy.base}/junit">
 				<fileset dir="${policy.client.base}/classes">
 					<include name="org/astrogrid/community/policy/client/junit/**/JUnitTestCase.class"/>
 				</fileset>
@@ -1722,8 +1756,14 @@
 	    | Test our policy service.
 	    +-->
 	<target name="policy.TEST" depends="">
+		<!-- Reset our database -->
+		<antcall target="hsqldb.database.delete"/>
+		<!-- Run our server side tests -->
+		<antcall target="policy.server.junit"/>
 		<!-- Run our client side tests -->
 		<antcall target="policy.client.junit"/>
+		<!-- Display our database -->
+		<antcall target="hsqldb.database.select"/>
 	</target>
 
 <!--+
@@ -1734,11 +1774,11 @@
 	<!--+
 		| Run our server JUnit tests.
 		+-->
-	<target name="policy.server.junit" depends="policy.server.javac, policy.server.config">
+	<target name="policy.server.junit.old" depends="policy.server.javac, policy.server.config">
 		<!-- Create our reports directory -->
 		<mkdir dir="${policy.server.base}/junit"/>
 		<!-- Run our JUnitTestCase tests -->
-		<junit printsummary="yes" haltonfailure="yes" showoutput="yes" fork="true">
+		<junit printsummary="yes" haltonfailure="yes" haltonerror="yes" showoutput="yes" fork="true">
 			<classpath>
 				<!-- The Policy classes -->
 				<path refid="policy.server.classpath"/>
@@ -1761,7 +1801,7 @@
 	<!--+
 		| Run our database load JUnit tests.
 		+-->
-	<target name="policy.database.junit.load" depends="policy.server.javac, policy.server.config">
+	<target name="policy.database.junit.load.old" depends="policy.server.javac, policy.server.config">
 
 		<!-- Empty our database -->
 		<antcall target="hsqldb.database.delete"/>
@@ -1772,7 +1812,7 @@
 		<!-- Create our reports directory -->
 		<mkdir dir="${policy.server.base}/junit"/>
 		<!-- Run our JUnitTestCase tests -->
-		<junit printsummary="yes" haltonfailure="yes" showoutput="yes" fork="true">
+		<junit printsummary="yes" haltonfailure="yes" haltonerror="yes" showoutput="yes" fork="true">
 			<classpath>
 				<!-- The Policy classes -->
 				<path refid="policy.server.classpath"/>
