@@ -1,0 +1,20 @@
+<!-- ADQL generated from: {Query: In scope Tab,Bob,look for where ([ColRef Tab.b]) <> ([ColRef Bob.b]),  returning [Results: target=null, cols=[ColRef Tab.b], [ColRef Bob.d], ]} -->
+<!-- ADQL generated from SQL: SELECT t.b, b.d FROM Tab AS t, Bob AS b WHERE t.b <> b.b
+ -->
+<Select xmlns='http://www.ivoa.net/xml/ADQL/v0.7.4'  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'  xmlns:xsd='http://www.w3.org/2001/XMLSchema' >
+   <SelectionList>
+      <Item xsi:type='columnReferenceType' Table='Tab' Name='b' ></Item>
+      <Item xsi:type='columnReferenceType' Table='Bob' Name='d' ></Item>
+   </SelectionList>
+   <From>
+      <Table xsi:type='tableType' Name='Tab' Alias='Tab' ></Table>
+      <Table xsi:type='tableType' Name='Bob' Alias='Bob' ></Table>
+   </From>
+   <Where>
+      <Condition xsi:type='comparisonPredType' Comparison='&lt;>' >
+         <Arg xsi:type='columnReferenceType'  Table='Tab'  Name='b' ></Arg>
+         <Arg xsi:type='columnReferenceType'  Table='Bob'  Name='b' ></Arg>
+      </Condition>
+   </Where>
+</Select>
+

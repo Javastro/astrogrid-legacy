@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SQL equivalent: CROSS MATCH
+SELECT f.*, x.* FROM first AS f, xmm1 AS x WHERE f.errbox && x.errbox AND DEGREES(7200 * ASIN( SQRT(POW(SIN(RADIANS((f.decl-x.decl)/2)), 2) + COS(RADIANS(f.decl)) * COS(RADIANS(x.decl)) * POW(SIN(RADIANS((f.ra-x.ra)/2),2)))) <3.0
+-->
+<Select xmlns="http://tempuri.org/adql" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tempuri.org/adql ADQLSchemav06.xsd">
+    <Selection>
+        <AliasSelectionItem>
+            <ColumnExpr>
+                <AllColumnReference>
+                    <TableName>f</TableName>
+                </AllColumnReference>
+            </ColumnExpr>
+        </AliasSelectionItem>
+        <AliasSelectionItem>
+            <ColumnExpr>
+                <AllColumnReference>
+                    <TableName>x</TableName>
+                </AllColumnReference>
+            </ColumnExpr>
+        </AliasSelectionItem>
+    </Selection>
+    <TableClause>
+        <FromClause>
+            <TableReference>
+                <Table>
+                    <Name>first</Name>
+                    <AliasName>f</AliasName>
+                </Table>
+                <Table>
+                    <Name>xmm1</Name>
+                    <AliasName>x</AliasName>
+                </Table>
+            </TableReference>
+        </FromClause>
+        <WhereClause>
+            <IntersectionSearch>
+                <FirstCondition xsi:type="PredicateSearch">
+                    <ComparisonPred>
+                        <FirstExpr xsi:type="ColumnExpr">
+                            <SingleColumnReference>
+                                <TableName>f</TableName>
+                                <Name>errbox</Name>
+                            </SingleColumnReference>
+                        </FirstExpr>
+                        <Compare>&lt;&gt;</Compare>
+                        <SecondExpr xsi:type="ColumnExpr">
+                            <SingleColumnReference>
+                                <TableName>x</TableName>
+                                <Name>errbox</Name>
+                            </SingleColumnReference>
+                        </SecondExpr>
+                    </ComparisonPred>
+                </FirstCondition>
+                <SecondCondition xsi:type="XMatch">
+                    <Args>
+                        <Alias>
+                            <Negate>true</Negate>
+                            <Name>f.ra</Name>
+                        </Alias>
+                        <Alias>
+                            <Negate>true</Negate>
+                            <Name>f.decl</Name>
+                        </Alias>
+                        <Alias>
+                            <Negate>true</Negate>
+                            <Name>x.ra</Name>
+                        </Alias>
+                        <Alias>
+                            <Negate>true</Negate>
+                            <Name>x.decl</Name>
+                        </Alias>
+                    </Args>
+                    <Compare>&lt;</Compare>
+                    <IntNum>
+                        <Value>3</Value>
+                    </IntNum>
+                </SecondCondition>
+            </IntersectionSearch>
+        </WhereClause>
+    </TableClause>
+</Select>
