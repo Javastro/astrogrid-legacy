@@ -15,6 +15,10 @@ import org.astrogrid.datacenter.datasetagent.*;
 import org.astrogrid.datacenter.i18n.*;
 import org.w3c.dom.* ;
 
+import java.util.ArrayList ;
+import java.util.List ;
+import java.util.Iterator ;
+
 /**
  * The <code>From</code> class represents ...
  * <p>
@@ -42,8 +46,8 @@ public class From {
 		ASTROGRIDERROR_COULD_NOT_CREATE_FROM_FROM_ELEMENT = "AGDTCE00200",
 	    ASTROGRIDERROR_COULD_NOT_CREATE_SQL_FOR_FROM = "AGDTCE00210" ;
 	    		
-	private Catalog []
-	   catalogs ;
+	private List
+	   catalogs = new ArrayList() ;
 	   
 	public From( Element fromElement ) throws QueryException {
 		if( TRACE_ENABLED ) logger.debug( "From(Element): entry") ;
@@ -54,15 +58,13 @@ public class From {
 			   nodeList = fromElement.getChildNodes() ;
 			Element
 			    catalogElement ;
-
-			setCatalogs(new Catalog[ nodeList.getLength() ]);
 						   
 			for( int i=0 ; i < nodeList.getLength() ; i++ ) {	
 				if( nodeList.item(i).getNodeType() != Node.ELEMENT_NODE )
 					continue ;							
 				catalogElement = (Element) nodeList.item(i) ;				
 				if( catalogElement.getTagName().equals( RunJobRequestDD.CATALOG_ELEMENT ) ) {
-					getCatalogs() [i]= new Catalog( catalogElement ) ;
+					this.addCatalog( new Catalog( catalogElement ) ) ;
 				}
 				else  {
                     ; // JBL Note: What do I do here?
@@ -97,33 +99,45 @@ public class From {
 			buffer = new StringBuffer(64) ;
 		
     	try {
-            Catalog 
-                catalog[] = this.catalogs;
+//            Catalog 
+//                catalog[] = this.catalogs;
+            Iterator
+                iterator = this.getCatalogs() ;
         
-        	for (int i=0; i < catalog.length; i++) {		    
-        	
+        	//for (int i=0; i < catalogs.size(); i++) {		    
+        	while( iterator.hasNext() ) {
+        		
+        		Catalog
+        		    catalog = (Catalog)iterator.next() ;
+        		
         		Table 
-        	        table[] = catalog[i].getTables();
+        	        table = null ;
         	
-        		if (table.length <= 0) {  // no table specified assume owner and table name are same
-        			buffer.append(catalog[i].getName());
-        			buffer.append("..");
-        			buffer.append(catalog[i].getName());
-        			buffer.append(", ");
+        		if ( catalog.getNumberTables() <= 0 ) {  // no table specified assume owner and table name are same
+        			buffer.append( catalog.getName() );
+        			buffer.append( ".." );
+        			buffer.append( catalog.getName() );
+        			buffer.append( ", " );
         		}
         	
         		else {
+        			
+        			Iterator
+        			    iterator2 = catalog.getTables() ;
         		
-			    	for (int j=0; j < table.length; j++) {
+			    	while( iterator2.hasNext() ) {
 			    		
-					    buffer.append(catalog[i].getName());
-				    	buffer.append("..");
-				        buffer.append(table[j].getName());				
-				        buffer.append(", ");
+			    		table = (Table)iterator2.next() ;
+			    		
+					    buffer.append( catalog.getName() );
+				    	buffer.append( ".." );
+				        buffer.append( table.getName() );				
+				        buffer.append( ", " );
 			           		
-					} // end of for (int j=0; j < table.length; j++)		
+					} // end of inner while		
         		}
-    		} // end of for (int i=0; i < catalog.length; i++)
+    		} // end of outer while
+    		
 			buffer.deleteCharAt(buffer.length()-2); // remove final ", "
 			
     	}
@@ -139,14 +153,11 @@ public class From {
 		return buffer.toString() ;
     	
 	} // end of toSQLString()
-	
-
-	public void setCatalogs(Catalog[] catalogs) {
-		this.catalogs = catalogs;
-	}
-
-	public Catalog[] getCatalogs() {
-		return catalogs;
-	}		   
+		
+    public Iterator getCatalogs() { return this.catalogs.iterator() ; }
+    public boolean addCatalog( Catalog catalog ) { return catalogs.add( catalog ); }
+    public Catalog removeCatalog( int index ) { return (Catalog)catalogs.remove( index ) ; }
+	public Catalog getCatalog( int index ) { return (Catalog)this.catalogs.get( index ) ; }
+			   
 
 } // end of class From 

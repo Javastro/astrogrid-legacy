@@ -15,6 +15,11 @@ import org.astrogrid.datacenter.datasetagent.*;
 import org.astrogrid.datacenter.i18n.*;
 import org.w3c.dom.* ;
 
+import java.util.ArrayList ;
+import java.util.List ;
+import java.util.Iterator ;
+
+
 /**
  * The <code>Catalog</code> class represents operations within an 
  * SQL query string.
@@ -44,11 +49,11 @@ public class Catalog {
     private String
         name ;
 		
-	private Table []
-	    tables ;
+	private List
+	    tables = new ArrayList() ;
 	    
-	private Service []
-	    services ;
+	private List
+	    services = new ArrayList() ;
 	    
 	public Catalog( Element catalogElement ) throws QueryException {
 		if( TRACE_ENABLED ) logger.debug( "Operation(Element): entry") ;
@@ -64,12 +69,10 @@ public class Catalog {
 				tableElement,
 				serviceElement ;
 				
-			setTables(new Table[ nodeList.getLength() ]);
-			   
 			for( int i=0 ; i < nodeList.getLength() ; i++ ) {				
 				tableElement = (Element) nodeList.item(i) ;
 				if( tableElement.getTagName().equals( RunJobRequestDD.TABLE_ELEMENT ) ) {
-					getTables()[i] = new Table( tableElement ) ;
+					this.addTable( new Table( tableElement ) ) ;
 				}
 				else  {
 					; // JBL Note: What do I do here?
@@ -78,12 +81,11 @@ public class Catalog {
 			} // end for		
 			
 			nodeList = catalogElement.getElementsByTagName( RunJobRequestDD.SERVICE_ELEMENT ) ;
-			setServices(new Service[ nodeList.getLength() ]);
 			   
 			for( int i=0 ; i < nodeList.getLength() ; i++ ) {				
 				serviceElement = (Element) nodeList.item(i) ;
 				if( serviceElement.getTagName().equals( RunJobRequestDD.SERVICE_ELEMENT ) ) {
-					getServices()[i] = new Service( serviceElement ) ;
+					this.addService( new Service( serviceElement ) ) ;
 				}
 				else  {
 					; // JBL Note: What do I do here?
@@ -104,30 +106,20 @@ public class Catalog {
 		
 	} // end of Catalog( Element )
 
+	public Iterator getTables() { return this.tables.iterator() ; }
+	public boolean addTable( Table table ) { return tables.add( table ); }
+	public Table removeTable( int index ) { return (Table)tables.remove( index ) ; }
+	public Table getTable( int index ) { return (Table)this.tables.get( index ) ; }
+	public int getNumberTables() { return this.tables.size() ; }
 
-	public void setTables(Table[] tables) {
-		this.tables = tables;
-	}
+	public Iterator getServices() { return this.services.iterator() ; }
+	public boolean addService( Service Service ) { return services.add( Service ); }
+	public Service removeService( int index ) { return (Service)services.remove( index ) ; }
+	public Service getService( int index ) { return (Service)this.services.get( index ) ; }
+	public int getNumberServices() { return  this.services.size() ; }
 
-	public Table[] getTables() {
-		return tables;
-	}
-
-	public void setServices(Service[] services) {
-		this.services = services;
-	}
-
-	public Service[] getServices() {
-		return services;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getName() {
-		return name;
-	}	
+	public void setName(String name) { this.name = name; }
+	public String getName() { return name; }	
 
 	
 } // end of class Catalog

@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 import org.astrogrid.datacenter.datasetagent.*;
 import org.astrogrid.datacenter.i18n.*;
 import org.w3c.dom.* ;
+import java.util.Iterator ;
 
 import java.text.MessageFormat;
 
@@ -47,8 +48,7 @@ public class Criteria {
 	
 	private Operation 
 	   operation ;
-	private Table[]
-	    tables;
+
 	private Catalog 
 	    catalog;
 	   
@@ -328,8 +328,9 @@ public class Criteria {
 		StringBuffer
 			buffer = new StringBuffer(64) ; 
 		try {	
-			tables = catalog.getTables();  
-			if (tables.length <= 0) {  // if no tables assosciated with catalog assume table name same as catalog
+
+//			if no tables assosciated with catalog assume table name same as catalog... 
+			if ( catalog.getNumberTables() <= 0) {  
 				buffer
 				    .append(catalog.getName())
 				    .append(".")
@@ -338,20 +339,31 @@ public class Criteria {
 				    .append(UCD);
 				logger.debug("Criteria: getColumnHeading(): key: "+buffer.toString().toUpperCase() );
 				columnHeading = DatasetAgent.getProperty( buffer.toString().toUpperCase() ) ;					
-			} // end of if
-			for (int i=0 ; i < tables.length ; i++) { 
-				buffer
-				    .append(catalog.getName())
-				    .append(".")
-				    .append(tables[i].getName().toUpperCase())
-				    .append(".")
-				    .append(UCD);					
-				logger.debug("Criteria: getColumnHeading(): key: "+buffer.toString().toUpperCase() );
-				columnHeading = DatasetAgent.getProperty( buffer.toString().toUpperCase() ) ;				
-				if (columnHeading.length() > 0) // break as soon as column heading found
-				    break; 
-				buffer.delete(0,buffer.length());
-			} // end of for
+			} 
+			else {
+				
+				Table
+				    table = null ;			    
+				Iterator
+				    it = catalog.getTables() ;
+			
+			    while( it.hasNext() ) { 
+			    	table = (Table)it.next() ;
+				    buffer
+				       .append(catalog.getName())
+				       .append(".")
+				       .append(table.getName().toUpperCase())
+				       .append(".")
+				       .append(UCD);					
+				    logger.debug("Criteria: getColumnHeading(): key: "+buffer.toString().toUpperCase() );
+				    columnHeading = DatasetAgent.getProperty( buffer.toString().toUpperCase() ) ;				
+				    if (columnHeading.length() > 0) // break as soon as column heading found
+				       break; 
+				    buffer.delete(0,buffer.length());
+			    } // end of while
+			
+			} // end else
+			
 		} 
 		catch (Exception ex) {
 			Message

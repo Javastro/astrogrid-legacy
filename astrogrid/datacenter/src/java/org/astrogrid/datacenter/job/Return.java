@@ -15,6 +15,10 @@ import org.astrogrid.datacenter.datasetagent.*;
 import org.astrogrid.datacenter.i18n.*;
 import org.w3c.dom.* ;
 
+import java.util.ArrayList ;
+import java.util.List ;
+import java.util.Iterator ;
+
 /**
  * The <code>Return</code> class represents... 
  * <p>
@@ -43,11 +47,8 @@ public class Return {
 	    ASTROGRIDERROR_COULD_NOT_CREATE_SQL_FOR_RETURN = "AGDTCE00250", 
 		ASTROGRIDERROR_UNABLE_TO_MAP_CATALOG_UCD_TO_COLUMN_HEADING = "AGDTCE00250";
 		
-    private Field []
-        fields ;
-        
-    private Table []
-        tables ;
+    private List
+        fields = new ArrayList() ;
         
     private Catalog
         catalog ;
@@ -63,13 +64,12 @@ public class Return {
 			Element
 				fieldElement ;
 				
-			fields = new Field[ nodeList.getLength() ];
 			this.catalog = catalog;
 			   
 			for( int i=0 ; i < nodeList.getLength() ; i++ ) {				
 				fieldElement = (Element) nodeList.item(i) ;
 				if( fieldElement.getTagName().equals( RunJobRequestDD.FIELD_ELEMENT ) ) {
-					fields[i] = new Field( fieldElement, catalog ) ;
+					fields.add( new Field( fieldElement, catalog ) ) ;
 				} // end of if
 				else  {
 					; // JBL Note: What do I do here?
@@ -103,17 +103,25 @@ public class Return {
 		try {
 			
 		    Field 
-		        field[] = this.fields;
+		        field = null ;
 		    buffer.append(" ");
-		    for (int i = 0; i < field.length; i++){
-		    	if (field[i].getType().equals(RunJobRequestDD.FIELD_TYPE_UCD)) {
-					buffer.append(getColumnHeading( catalog, field[i].getName()) );
+		    
+            Iterator
+                iterator = this.getFields() ;
+		    
+		    while ( iterator.hasNext() ){
+		    	
+		    	field = (Field)iterator.next() ;
+		    	
+		    	if ( field.getType().equals(RunJobRequestDD.FIELD_TYPE_UCD)) {
+					buffer.append(getColumnHeading( catalog, field.getName()) );
 		    	}
-		    	else if (field[i].getType().equals(RunJobRequestDD.FIELD_TYPE_COLUMN)) {
-		    		buffer.append(getColumnHeading( catalog, field[i].getName()) );
+		    	else if (field.getType().equals(RunJobRequestDD.FIELD_TYPE_COLUMN)) {
+		    		buffer.append(getColumnHeading( catalog, field.getName()) );
 		    	}
-		        buffer.append(", ");			  
-		    } // end of for
+		        buffer.append(", ");	
+		        		  
+		    } // end of while
 		
 		    buffer.delete(buffer.length()-2,buffer.length());
 		}
@@ -149,9 +157,13 @@ public class Return {
 			columnHeading = "";
 		StringBuffer
 			buffer = new StringBuffer(64) ; 
-		try {	
-			tables = catalog.getTables();  
-			if (tables.length <= 0) {  // if no tables assosciated with catalog assume table name same as catalog
+		try {
+				
+//			Table
+//			   tables[] = catalog.getTables();  
+			 
+            // If no tables assosciated with catalog assume table name same as catalog... 
+			if ( catalog.getNumberTables() <= 0) {  
 				buffer.append(catalog.getName());
 				buffer.append(".");
 				buffer.append(catalog.getName());
@@ -159,19 +171,30 @@ public class Return {
 				buffer.append(UCD);
 				logger.debug("Return: getColumnHeading(): key: "+buffer.toString());				
 				columnHeading = DatasetAgent.getProperty( buffer.toString() ) ;					
-			} // end of if
-			for (int i=0 ; i < tables.length ; i++) { 
-				buffer.append(catalog.getName());
-				buffer.append(".");
-				buffer.append(tables[i].getName().toUpperCase());
-				buffer.append(".");
-				buffer.append(UCD);	
-				logger.debug("Return: getColumnHeading(): key: "+buffer.toString());
-				columnHeading = DatasetAgent.getProperty( buffer.toString() ) ;
-				if (columnHeading.length() > 0) // break as soon as column heading found
-				    break; 
-				buffer.delete(0,buffer.length());
-			} // end of for
+			}
+			else {
+				
+				Iterator
+				   iterator = catalog.getTables() ;
+				Table
+				   table = null ;
+			
+			    while( iterator.hasNext() ) { 
+			       table = (Table)iterator.next() ;
+				   buffer.append(catalog.getName());
+				   buffer.append(".");
+				   buffer.append(table.getName().toUpperCase());
+				   buffer.append(".");
+				   buffer.append(UCD);	
+				   logger.debug("Return: getColumnHeading(): key: "+buffer.toString());
+				   columnHeading = DatasetAgent.getProperty( buffer.toString() ) ;
+				   if (columnHeading.length() > 0) // break as soon as column heading found
+				      break; 
+				   buffer.delete(0,buffer.length());
+			    } // end of while
+			
+			} // end else
+			
 		} 
 		catch (Exception ex) {
 			Message
@@ -183,5 +206,10 @@ public class Return {
 		}
 		return (columnHeading=="")?UCD:columnHeading;
 	} // end of getColumnHeading()
+	
+	public Iterator getFields() { return this.fields.iterator() ; }
+	public boolean addField( Field field ) { return fields.add( field ); }
+	public Field removeField( int index ) { return (Field)fields.remove( index ) ; }
+	public Field getField( int index ) { return (Field)this.fields.get( index ) ; }
 
 } // end of Class

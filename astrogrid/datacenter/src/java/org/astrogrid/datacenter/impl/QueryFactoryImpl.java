@@ -145,7 +145,7 @@ public class QueryFactoryImpl implements QueryFactory {
 		try {
 		    String
 		       selectString = query.toSQLString(),
-		       catalogName = query.getFrom().getCatalogs()[0].getName() ;
+		       catalogName = query.getFrom().getCatalog( 0 ).getName() ;
 		    statement = getConnection( catalogName ).createStatement() ;
 		    resultSet = statement.executeQuery( selectString );
 		} catch (SQLException e) {
