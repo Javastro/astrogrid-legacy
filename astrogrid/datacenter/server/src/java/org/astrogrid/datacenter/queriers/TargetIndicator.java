@@ -1,5 +1,5 @@
 /*
- * $Id: TargetIndicator.java,v 1.2 2004/03/14 16:55:48 mch Exp $
+ * $Id: TargetIndicator.java,v 1.3 2004/03/15 17:08:11 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -26,6 +26,15 @@ public class TargetIndicator  {
    protected Agsl agsl = null;
    protected Ivorn ivorn = null;
    protected Writer out = null;
+   
+   protected String compression = NONE;
+   public final static String NONE = "NONE";
+   public final static String ZIP  = "ZIP";
+   
+   protected String format = VOTABLE;
+   public final static String VOTABLE = "VOTABLE";
+   public final static String CSV  = "CSV";
+   
 
    public TargetIndicator(String targetEmail) {
       this.email = targetEmail;
@@ -98,6 +107,9 @@ public class TargetIndicator  {
 }
 /*
  $Log: TargetIndicator.java,v $
+ Revision 1.3  2004/03/15 17:08:11  mch
+ Added compression adn format placeholders
+
  Revision 1.2  2004/03/14 16:55:48  mch
  Added XSLT ADQL->SQL support
 
