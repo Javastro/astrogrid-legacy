@@ -1,22 +1,23 @@
 /*
- * $Id: DatabaseQuerier.java,v 1.8 2003/09/05 13:20:28 nw Exp $
+ * $Id: DatabaseQuerier.java,v 1.9 2003/09/07 18:55:20 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.queriers;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Properties;
-
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
-
+import java.util.Collection;
+import java.util.Date;
+import java.util.Hashtable;
+import java.util.Vector;
 import org.astrogrid.datacenter.config.Configuration;
-import org.w3c.dom.Node;
+import org.astrogrid.datacenter.query.QueryException;
+import org.astrogrid.datacenter.service.ServiceListener;
+import org.astrogrid.datacenter.service.Workspace;
+import org.astrogrid.datacenter.servicestatus.ServiceStatus;
+import org.astrogrid.log.Log;
+import org.w3c.dom.Element;
 
 /**
  * The abstract class including factory, that all database queriers must implement
@@ -24,76 +25,121 @@ import org.w3c.dom.Node;
  * @author M Hill
  */
 
-public abstract class DatabaseQuerier
+public abstract class DatabaseQuerier implements Runnable
 {
    /** Key to configuration files' entry that tells us what database querier
-    * to use with this service
-    */
-   public static final String DATABASE_QUERIER = "Database Querier Class";
-   /** configuration file key, that gives us the name of a datasource in JNDI to use for this database querier */
-   public static final String JNDI_DATASOURCE = "Database Querier JNDI Datasource";
-   /** configuration file key, stores a JDBC connection URL for tis database querier */
-   public static final String JDBC_URL = "Database Querier JDBC URL";
-   /** configuration file key, stores a set of properties for the connection */
-   public static final String CONNECTION_PROPERTIES = "Database Querier Connection Properties";
+    * to use with this service   */
+   public static final String DATABASE_QUERIER_KEY = "Database Querier Class";
+
+   /** List of serviceListeners who will be updated when the status changes */
+   private Vector serviceListeners = new Vector();
+
+   /** status of call */
+   private ServiceStatus status = ServiceStatus.UNKNOWN;
+
+   /** If an error is thrown in the spawned thread, this holds the exception */
+   private Throwable error = null;
+
+   /** Temporary workspace for working files, and somewhere to put the results
+    * for non-blocking calls */
+   private Workspace workspace = null;
+
+   /** A handle is used to identify a particular service.  It is also used as the
+    * basis for any temporary storage. */
+   String handle = null;
+
+   /** temporary used for generating unique handles - see generateHandle() */
+   private static java.util.Random random = new java.util.Random();
+
+   /** lookup table of all the current queriers indexed by their handle*/
+   private static Hashtable queriers = new Hashtable();
+
+   /** The document containing the query */
+   protected Element domContainingQuery = null;
+
+   /** Handle to the results from the query */
+   protected QueryResults results = null;
 
    /**
-    * Applies the given adql to the database, returning an abstract handle
-    * to whatever the results are
+    * Constructor - creates a handle to identify this instance
     */
-   public abstract QueryResults queryDatabase(Node n) throws DatabaseAccessException;
-
-
-/** close the connection to the database - release resources
- * 
- */
-   public abstract void close() throws DatabaseAccessException;
-   /**
-    * Returns a Querier implementation based on the settings in the configuration file.
-    * <p>
-    * Behaviour.
-    * <ol>
-    * <li>Loads class specified by {@link #DATABASE_QUERIER} in configuration, which must be a subclass of this class
-    * <li>Checks JNDI for a datasource under {@link #JNDI_DATASOURCE}. If present, use this to initialize the querier
-    * <li>Otherwise, checks for a database url in configuration under {@link #JDBC_URL}, and 
-    * optional connection properties under {@link #CONNECTION_PROPERTIES}. If url is present, this is used to initialize the querier
-    * <li>Otherwise, attempt to instantiate the querier using a default no-arg constructor
-    * </ul>
-  @throws DatabaseAccessException on error (contains core exception)
-
-  *  */
-   public static DatabaseQuerier createQuerier() throws DatabaseAccessException
+   public DatabaseQuerier()
    {
-      String querierClass = Configuration.getProperty(DATABASE_QUERIER);
+      handle = generateHandle();
+      queriers.put(handle, this);
+      workspace = new Workspace(handle);
+      setStatus(ServiceStatus.CONSTRUCTED);
+   }
+
+   public void setQuery(Element givenDOM)
+   {
+      domContainingQuery = givenDOM;
+   }
+
+   /**
+    * Returns this instances handle
+    */
+   public String getHandle()
+   {
+      return handle;
+   }
+
+   /**
+    * Generates a handle for use by a particular instance; uses the current
+    * time to help us debug (ie we can look at the temporary directories and
+    * see which was the last run). Later we could add service/user information
+    * if available
+    */
+   private static String generateHandle()
+   {
+      Date todayNow = new Date();
+
+      return todayNow.getYear()+"-"+todayNow.getMonth()+"-"+todayNow.getDate()+"_"+
+               todayNow.getHours()+"."+todayNow.getMinutes()+"."+todayNow.getSeconds()+
+               "_"+(random.nextInt(8999999) + 1000000); //plus botched bit... not really unique
+
+   }
+
+   /** Class method that returns the querier instance with the given handle
+    */
+   public static DatabaseQuerier getQuerier(String handle)
+   {
+      return (DatabaseQuerier) queriers.get(handle);
+   }
+
+   /** Class method that returns a list of all the currently running queriers
+    */
+   public static Collection getQueriers()
+   {
+      return queriers.values();
+   }
+
+   /**
+    * A factory method that Returns a Querier implementation based on the
+    * settings in the configuration file.
+    * @throws DatabaseAccessException on error (contains cause exception)
+    *
+    */
+   public static DatabaseQuerier createQuerier(Element domContainingQuery) throws DatabaseAccessException
+   {
+      String querierClass = Configuration.getProperty(DATABASE_QUERIER_KEY);
 //       "org.astrogrid.datacenter.queriers.sql.SqlQuerier"    //default to general SQL querier
 
       if (querierClass == null)
       {
-         throw new DatabaseAccessException("Database Querier key ["+DATABASE_QUERIER+"] cannot be found in the configuration file(s) '"+Configuration.getLocations()+"'" );
+         throw new DatabaseAccessException("Database Querier key ["+DATABASE_QUERIER_KEY+"] cannot be found in the configuration file(s) '"+Configuration.getLocations()+"'" );
       }
-        
+
+      //create querier implementation
       try
       {
          Class qClass =  Class.forName(querierClass);
-         // now look for jndi link to datasource, 
-         String jndiDataSourceName = null;
-         if ( (jndiDataSourceName = Configuration.getProperty(JNDI_DATASOURCE)) != null) {
-             // retrieve data source,
-             DataSource ds = (DataSource)new InitialContext().lookup(jndiDataSourceName);
-             return (DatabaseQuerier)qClass.getConstructor(new Class[]{DataSource.class}).newInstance(new Object[]{ds});
-         }
-         // failing that, look for a URL in configuration
-         String jdbcURL = null;
-         if ( (jdbcURL = Configuration.getProperty(JDBC_URL)) != null) {
-             Properties p = new Properties();
-             String props = Configuration.getProperty(CONNECTION_PROPERTIES,"");
-             p.load(new ByteArrayInputStream(props.getBytes()));
-             return (DatabaseQuerier)qClass.getConstructor(new Class[]{String.class,Properties.class}).newInstance(new Object[]{jdbcURL,p});
-         }
-         // try for a default constructor then, and hope for the best.
-         return (DatabaseQuerier)qClass.newInstance();
-                 
-         
+
+         DatabaseQuerier querier = (DatabaseQuerier)qClass.newInstance();
+
+         querier.setQuery(domContainingQuery);
+
+         return querier;
       }
       catch (ClassNotFoundException e)
       {
@@ -107,14 +153,209 @@ public abstract class DatabaseQuerier
       {
          throw new DatabaseAccessException(e,"Could not load DatabaseQuerier '"+querierClass+"'");
       }
-      catch (NoSuchMethodException e) {
-          throw new DatabaseAccessException(e,"Could not load DatabaseQuerier '" + querierClass + "'");
-      } catch (InvocationTargetException e) {
-          throw new DatabaseAccessException(e,"Could not load DatabaseQuerier '" + querierClass + "'");
-      } catch (IOException e) {
-          throw new DatabaseAccessException(e,"Could not load connection properties for Database Querier '" + querierClass + "'");
-      } catch (NamingException e) {
-          throw new DatabaseAccessException(e,"Could not load DataSource for Database Querier '" + querierClass + "'");
+   }
+
+   /**
+    * Convenience class method - runs a blocking query.  NB the given DOM document may include other tags, so we need
+    * to extract the right elements
+    */
+   public static Element doQueryGetVotable(Element domContainingQuery) throws QueryException, DatabaseAccessException, IOException
+   {
+      DatabaseQuerier querier = DatabaseQuerier.createQuerier(domContainingQuery);
+
+      querier.doQuery();
+
+      querier.setStatus(ServiceStatus.RUNNING_RESULTS);
+
+      return querier.getResults().toVotable(querier.getWorkspace()).getDocumentElement();
+   }
+
+   /**
+    * Spawns a query in a separate thread.  It's a good idea to listen to the
+    * status changes so you can see when the query has completed...
+    *
+    * @see doBlockingQuery
+    */
+   public static DatabaseQuerier spawnQuery(Element domContainingQuery) throws QueryException, DatabaseAccessException
+   {
+      DatabaseQuerier querier = DatabaseQuerier.createQuerier(domContainingQuery);
+
+      Thread thread = new Thread(querier);
+
+      thread.start();
+
+      return querier;
+   }
+
+   /**
+    * Runnable implementation - this method is called when the thread to run
+    * this asynchronously is started.  @see spawnQuery
+    */
+   public void run()
+   {
+      try
+      {
+         doQuery();
+      }
+      catch (QueryException e)
+      {
+         Log.logError("Could not construct query in spawned thread ",e);
+         setErrorStatus(e);
+      }
+      catch (DatabaseAccessException e)
+      {
+         Log.logError("Could not access database in spawned thread ",e);
+         setErrorStatus(e);
+      }
+   }
+
+
+   /** Updates the status and does the query (by calling the abstract
+    * queryDatabase() overridden by subclasses) and stores the results locally
+    */
+   public void doQuery() throws QueryException, DatabaseAccessException
+   {
+      setStatus(ServiceStatus.RUNNING_QUERY);
+
+      results = queryDatabase(domContainingQuery);
+
+      setStatus(ServiceStatus.QUERY_COMPLETE);
+
+   }
+
+   /** Returns the results - returns null if the results have not yet
+    * been returned
+    */
+   public QueryResults getResults()
+   {
+      return results;
+   }
+
+   /**
+    * Returns the workspace
+    */
+   public Workspace getWorkspace()
+   {
+      return workspace;
+   }
+
+   /**
+    * Applies the DOM element which includes the given query, to the database,
+    * returning the results wrapped in QueryResults.
+    */
+   public abstract QueryResults queryDatabase(Element containsQuery) throws DatabaseAccessException;
+
+
+   /**
+    * Abort - stops query (if poss) and tidies up
+    */
+   public void abort()
+   {
+      try
+      {
+         close();
+      }
+      catch (IOException e)
+      {
+         Log.logError("Aborting querier "+this,e);
+      }
+   }
+
+   /**
+    * For debugging/display
+    */
+   public String toString()
+   {
+      return "["+getHandle()+"] "+this.getClass();
+   }
+
+   /** close the querier - removes itself from the list and so will eventually
+    * be garbaged collected.  Subclasses should override to release eg database
+    * connection resources
+    *
+    */
+   public void close() throws IOException
+   {
+      //remove from list
+      queriers.remove(getHandle());
+
+      //clean up workspace
+      workspace.close();
+   }
+
+
+   /**
+    * Sets the status.  NB if the new status is ordered before the existing one,
+    * throws an exception (as each querier should only handle one query).
+    * Synchronised as the queriers may be running under a different thread
+    */
+   protected synchronized void setStatus(ServiceStatus newStatus)
+   {
+      Log.affirm(status != ServiceStatus.ERROR,
+                 "Trying to start a step '"+newStatus+"' when the status is '"
+                    +status+"'");
+
+      Log.affirm(!newStatus.isBefore(status),
+                 "Trying to start a step '"+newStatus
+                    +"' that has already been completed:"
+                    +" status '"+status);
+
+      status = newStatus;
+
+      fireStatusChanged(status);
+   }
+
+
+   /**
+    * Special error status - takes exception so this can be accessed by
+    * the client
+    */
+   protected void setErrorStatus(Throwable th)
+   {
+      setStatus(ServiceStatus.ERROR);
+
+      error = th;
+   }
+
+   /**
+    * Returns the exception if an error has occured
+    */
+   public Throwable getError()
+   {
+      Log.affirm(status == ServiceStatus.ERROR,
+                 "Trying to get exception but there is no error, status='"+status+"'");
+
+      return error;
+   }
+
+   /**
+    * Returns the current status
+    */
+   public ServiceStatus getStatus()
+   {
+      return status;
+   }
+
+   /**
+    * Register a status listener.  This will be informed of changes in status
+    * to the service - IF the service supports such info.  Otherwise it will
+    * just get 'starting', 'working' and 'completed' messages based around the
+    * basic http exchange.
+    */
+   public void registerServiceListener(ServiceListener aListener)
+   {
+      serviceListeners.add(aListener);
+   }
+
+   /** informs all listeners of the new status change. Not threadsafe...
+    */
+   protected void fireStatusChanged(ServiceStatus newStatus)
+   {
+      status = newStatus;
+
+      for (int i=0;i<serviceListeners.size();i++)
+      {
+         ((ServiceListener) serviceListeners.get(i)).serviceStatusChanged(newStatus);
       }
    }
 
