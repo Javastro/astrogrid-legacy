@@ -1,5 +1,5 @@
 /*
- * $Id: LocalFileStore.java,v 1.6 2004/03/22 10:25:42 mch Exp $
+ * $Id: LocalFileStore.java,v 1.7 2004/04/06 15:40:46 mch Exp $
  *
  */
 
@@ -198,7 +198,7 @@ public class LocalFileStore extends StoreDelegate implements StoreAdminClient {
 
    /**
     * Returns the full path, within the context of this server, to the given
-    * file
+    * file, including the filename
     */
    public String getServerPath(File file) throws StoreException
    {
@@ -357,6 +357,9 @@ public class LocalFileStore extends StoreDelegate implements StoreAdminClient {
 
 /*
 $Log: LocalFileStore.java,v $
+Revision 1.7  2004/04/06 15:40:46  mch
+Minor change to javadoc
+
 Revision 1.6  2004/03/22 10:25:42  mch
 Added VoSpaceClient, StoreDelegate, some minor changes to StoreClient interface
 
