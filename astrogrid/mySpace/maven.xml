@@ -27,7 +27,7 @@
 				<include name="INSTALL"/>
 			</fileset>
 			<fileset dir="${maven.conf.dir}">
-			  <include name="ASTROGRID_myspacemanagerconfig.xml" /> <!-- do not overwrite anything that might be there...-->
+			  <include name="ASTROGRID_myspacemanagerconfig.xml" />
 			</fileset>
 		</copy>
 		<!--Temporary measure - we need to find a better way to set up the database, and a better place to store the config files-->
