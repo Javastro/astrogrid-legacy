@@ -500,8 +500,8 @@ public class AdministrationAction extends AbstractAction
          
          SecurityToken st = null;
          try {
-           // String ivo_account = (String)session.getAttribute("community_authority") + "/" + (String)session.getAttribute("community_user"); 
-            String ivo_account = (String)session.getAttribute("community_user");
+            //String ivo_account = (String)session.getAttribute("community_authority") + "/" + (String)session.getAttribute(SessionKeys.USER); 
+            String ivo_account = (String)session.getAttribute(SessionKeys.USER);
             SecurityServiceDelegate ssd = ssr.resolve(userIvo = new Ivorn(ivo_account,null));
             smd = smr.resolve(userIvo);
             
