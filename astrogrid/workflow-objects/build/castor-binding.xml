@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<!-- castor binding file : configures the process of generating java classes from xml schema
+<!-- $Id: castor-binding.xml,v 1.2 2004/03/02 14:09:49 pah Exp $
+castor binding file : configures the process of generating java classes from xml schema
 
 
 at present, just defined package - namespace mappings
@@ -7,11 +8,19 @@ at present, just defined package - namespace mappings
 
 <binding defaultBindingType="type" xmlns="http://www.castor.org/SourceGenerator/Binding">
   <package>
+    <name>org.astrogrid.community.beans.v1</name>
+    <namespace>http://www.astrogrid.org/schema/Credentials/v1</namespace>
+  </package> 
+  <package>
     <name>org.astrogrid.applications.beans.v1</name>
-    <namespace>http://www.astrogrid.org/schema/AGParameterDefinition/</namespace><!-- should put versions on these namespaces -->
+    <namespace>http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1</namespace><!-- should this map to the same pagage as below? -->
+  </package> 
+  <package>
+    <name>org.astrogrid.applications.beans.v1.parameters</name>
+    <namespace>http://www.astrogrid.org/schema/AGParameterDefinition/v1</namespace><!-- should put versions on these namespaces -->
   </package>
   <package>
-    <name>org.astrogrid.workflow.beans.v1</name>
-    <namespace>http://www.astrogrid.org/schema/AGWorkflow/</namespace>
+  	    <name>org.astrogrid.workflow.beans.v1</name>
+    <namespace>http://www.astrogrid.org/schema/AGWorkflow/v1</namespace>
   </package>
 </binding>

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: CommandLineParameterDefinition.java,v 1.1 2004/02/20 18:36:39 nw Exp $
+ * $Id: CommandLineParameterDefinition.java,v 1.2 2004/03/02 14:09:49 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1;
@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Serializable;
 import java.io.Writer;
+import org.astrogrid.applications.beans.v1.types.SwitchTypes;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
@@ -25,9 +26,9 @@ import org.xml.sax.ContentHandler;
  * Defines what it is to be a command line parameter - needs more
  * thought with experience
  * 
- * @version $Revision: 1.1 $ $Date: 2004/02/20 18:36:39 $
+ * @version $Revision: 1.2 $ $Date: 2004/03/02 14:09:49 $
  */
-public class CommandLineParameterDefinition extends org.astrogrid.applications.beans.v1.BaseParameterDefinition 
+public class CommandLineParameterDefinition extends org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition 
 implements java.io.Serializable
 {
 
@@ -61,6 +62,11 @@ implements java.io.Serializable
      */
     private boolean _has_stdio;
 
+    /**
+     * Field _switchType
+     */
+    private org.astrogrid.applications.beans.v1.types.SwitchTypes _switchType = org.astrogrid.applications.beans.v1.types.SwitchTypes.valueOf("normal");
+
 
       //----------------/
      //- Constructors -/
@@ -68,6 +74,7 @@ implements java.io.Serializable
 
     public CommandLineParameterDefinition() {
         super();
+        setSwitchType(org.astrogrid.applications.beans.v1.types.SwitchTypes.valueOf("normal"));
     } //-- org.astrogrid.applications.beans.v1.CommandLineParameterDefinition()
 
 
@@ -120,6 +127,16 @@ implements java.io.Serializable
     {
         return this._stdio;
     } //-- boolean getStdio() 
+
+    /**
+     * Returns the value of field 'switchType'.
+     * 
+     * @return the value of field 'switchType'.
+     */
+    public org.astrogrid.applications.beans.v1.types.SwitchTypes getSwitchType()
+    {
+        return this._switchType;
+    } //-- org.astrogrid.applications.beans.v1.types.SwitchTypes getSwitchType() 
 
     /**
      * Method hasCommandPosition
@@ -206,6 +223,16 @@ implements java.io.Serializable
         this._stdio = stdio;
         this._has_stdio = true;
     } //-- void setStdio(boolean) 
+
+    /**
+     * Sets the value of field 'switchType'.
+     * 
+     * @param switchType the value of field 'switchType'.
+     */
+    public void setSwitchType(org.astrogrid.applications.beans.v1.types.SwitchTypes switchType)
+    {
+        this._switchType = switchType;
+    } //-- void setSwitchType(org.astrogrid.applications.beans.v1.types.SwitchTypes) 
 
     /**
      * Method unmarshalCommandLineParameterDefinition

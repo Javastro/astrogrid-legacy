@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ApplicationDescriptor.java,v 1.1 2004/02/20 18:36:39 nw Exp $
+ * $Id: ApplicationDescriptor.java,v 1.2 2004/03/02 14:09:49 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class ApplicationDescriptor.
  * 
- * @version $Revision: 1.1 $ $Date: 2004/02/20 18:36:39 $
+ * @version $Revision: 1.2 $ $Date: 2004/03/02 14:09:49 $
  */
 public class ApplicationDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 
@@ -55,7 +55,7 @@ public class ApplicationDescriptor extends org.exolab.castor.xml.util.XMLClassDe
 
     public ApplicationDescriptor() {
         super();
-        nsURI = "http://www.astrogrid.org/schema/AGParameterDefinition/";
+        nsURI = "http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1";
         xmlName = "Application";
         
         //-- set grouping compositor
@@ -101,7 +101,8 @@ public class ApplicationDescriptor extends org.exolab.castor.xml.util.XMLClassDe
         }
         desc.setValidator(fieldValidator);
         //-- _instanceClass
-        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(JavaClass.class, "_instanceClass", "instanceClass", org.exolab.castor.xml.NodeType.Attribute);
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.lang.String.class, "_instanceClass", "instanceClass", org.exolab.castor.xml.NodeType.Attribute);
+        desc.setImmutable(true);
         handler = (new org.exolab.castor.xml.XMLFieldHandler() {
             public java.lang.Object getValue( java.lang.Object object ) 
                 throws IllegalStateException
@@ -114,42 +115,7 @@ public class ApplicationDescriptor extends org.exolab.castor.xml.util.XMLClassDe
             {
                 try {
                     Application target = (Application) object;
-                    target.setInstanceClass( (JavaClass) value);
-                }
-                catch (java.lang.Exception ex) {
-                    throw new IllegalStateException(ex.toString());
-                }
-            }
-            public java.lang.Object newInstance( java.lang.Object parent ) {
-                return new JavaClass();
-            }
-        } );
-        desc.setHandler(handler);
-        addFieldDescriptor(desc);
-        
-        //-- validation code for: _instanceClass
-        fieldValidator = new org.exolab.castor.xml.FieldValidator();
-        { //-- local scope
-        }
-        desc.setValidator(fieldValidator);
-        //-- initialize element descriptors
-        
-        //-- _executionPath
-        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.lang.String.class, "_executionPath", "ExecutionPath", org.exolab.castor.xml.NodeType.Element);
-        desc.setImmutable(true);
-        handler = (new org.exolab.castor.xml.XMLFieldHandler() {
-            public java.lang.Object getValue( java.lang.Object object ) 
-                throws IllegalStateException
-            {
-                Application target = (Application) object;
-                return target.getExecutionPath();
-            }
-            public void setValue( java.lang.Object object, java.lang.Object value) 
-                throws IllegalStateException, IllegalArgumentException
-            {
-                try {
-                    Application target = (Application) object;
-                    target.setExecutionPath( (java.lang.String) value);
+                    target.setInstanceClass( (java.lang.String) value);
                 }
                 catch (java.lang.Exception ex) {
                     throw new IllegalStateException(ex.toString());
@@ -160,20 +126,18 @@ public class ApplicationDescriptor extends org.exolab.castor.xml.util.XMLClassDe
             }
         } );
         desc.setHandler(handler);
-        desc.setNameSpaceURI("http://www.astrogrid.org/schema/AGParameterDefinition/");
-        desc.setRequired(true);
-        desc.setMultivalued(false);
         addFieldDescriptor(desc);
         
-        //-- validation code for: _executionPath
+        //-- validation code for: _instanceClass
         fieldValidator = new org.exolab.castor.xml.FieldValidator();
-        fieldValidator.setMinOccurs(1);
         { //-- local scope
             StringValidator typeValidator = new StringValidator();
             typeValidator.setWhiteSpace("preserve");
             fieldValidator.setValidator(typeValidator);
         }
         desc.setValidator(fieldValidator);
+        //-- initialize element descriptors
+        
         //-- _parameters
         desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.astrogrid.applications.beans.v1.Parameters.class, "_parameters", "Parameters", org.exolab.castor.xml.NodeType.Element);
         handler = (new org.exolab.castor.xml.XMLFieldHandler() {
@@ -199,7 +163,7 @@ public class ApplicationDescriptor extends org.exolab.castor.xml.util.XMLClassDe
             }
         } );
         desc.setHandler(handler);
-        desc.setNameSpaceURI("http://www.astrogrid.org/schema/AGParameterDefinition/");
+        desc.setNameSpaceURI("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1");
         desc.setRequired(true);
         desc.setMultivalued(false);
         addFieldDescriptor(desc);
@@ -211,7 +175,7 @@ public class ApplicationDescriptor extends org.exolab.castor.xml.util.XMLClassDe
         }
         desc.setValidator(fieldValidator);
         //-- _interfaces
-        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.astrogrid.applications.beans.v1.Interfaces.class, "_interfaces", "Interfaces", org.exolab.castor.xml.NodeType.Element);
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.astrogrid.applications.beans.v1.InterfacesType.class, "_interfaces", "Interfaces", org.exolab.castor.xml.NodeType.Element);
         handler = (new org.exolab.castor.xml.XMLFieldHandler() {
             public java.lang.Object getValue( java.lang.Object object ) 
                 throws IllegalStateException
@@ -224,18 +188,18 @@ public class ApplicationDescriptor extends org.exolab.castor.xml.util.XMLClassDe
             {
                 try {
                     Application target = (Application) object;
-                    target.setInterfaces( (org.astrogrid.applications.beans.v1.Interfaces) value);
+                    target.setInterfaces( (org.astrogrid.applications.beans.v1.InterfacesType) value);
                 }
                 catch (java.lang.Exception ex) {
                     throw new IllegalStateException(ex.toString());
                 }
             }
             public java.lang.Object newInstance( java.lang.Object parent ) {
-                return new org.astrogrid.applications.beans.v1.Interfaces();
+                return new org.astrogrid.applications.beans.v1.InterfacesType();
             }
         } );
         desc.setHandler(handler);
-        desc.setNameSpaceURI("http://www.astrogrid.org/schema/AGParameterDefinition/");
+        desc.setNameSpaceURI("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1");
         desc.setRequired(true);
         desc.setMultivalued(false);
         addFieldDescriptor(desc);

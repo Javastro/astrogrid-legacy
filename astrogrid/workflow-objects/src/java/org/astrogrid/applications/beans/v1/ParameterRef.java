@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ParameterRef.java,v 1.1 2004/02/20 18:36:39 nw Exp $
+ * $Id: ParameterRef.java,v 1.2 2004/03/02 14:09:49 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1;
@@ -24,7 +24,7 @@ import org.xml.sax.ContentHandler;
 /**
  * reference to an existing parameter
  * 
- * @version $Revision: 1.1 $ $Date: 2004/02/20 18:36:39 $
+ * @version $Revision: 1.2 $ $Date: 2004/03/02 14:09:49 $
  */
 public class ParameterRef extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
@@ -38,7 +38,7 @@ implements java.io.Serializable
     /**
      * Field _ref
      */
-    private java.lang.Object _ref;
+    private java.lang.String _ref;
 
     /**
      * Field _repeatable
@@ -105,10 +105,10 @@ implements java.io.Serializable
      * 
      * @return the value of field 'ref'.
      */
-    public java.lang.Object getRef()
+    public java.lang.String getRef()
     {
         return this._ref;
-    } //-- java.lang.Object getRef() 
+    } //-- java.lang.String getRef() 
 
     /**
      * Returns the value of field 'repeatable'.
@@ -190,10 +190,10 @@ implements java.io.Serializable
      * 
      * @param ref the value of field 'ref'.
      */
-    public void setRef(java.lang.Object ref)
+    public void setRef(java.lang.String ref)
     {
         this._ref = ref;
-    } //-- void setRef(java.lang.Object) 
+    } //-- void setRef(java.lang.String) 
 
     /**
      * Sets the value of field 'repeatable'.

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: StepDescriptor.java,v 1.1 2004/02/20 18:36:39 nw Exp $
+ * $Id: StepDescriptor.java,v 1.2 2004/03/02 14:09:49 pah Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class StepDescriptor.
  * 
- * @version $Revision: 1.1 $ $Date: 2004/02/20 18:36:39 $
+ * @version $Revision: 1.2 $ $Date: 2004/03/02 14:09:49 $
  */
 public class StepDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 
@@ -55,7 +55,7 @@ public class StepDescriptor extends org.exolab.castor.xml.util.XMLClassDescripto
 
     public StepDescriptor() {
         super();
-        nsURI = "http://www.astrogrid.org/schema/AGWorkflow/";
+        nsURI = "http://www.astrogrid.org/schema/AGWorkflow/v1";
         xmlName = "step";
         
         //-- set grouping compositor
@@ -344,7 +344,7 @@ public class StepDescriptor extends org.exolab.castor.xml.util.XMLClassDescripto
             }
         } );
         desc.setHandler(handler);
-        desc.setNameSpaceURI("http://www.astrogrid.org/schema/AGWorkflow/");
+        desc.setNameSpaceURI("http://www.astrogrid.org/schema/AGWorkflow/v1");
         desc.setRequired(true);
         desc.setMultivalued(false);
         addFieldDescriptor(desc);
@@ -381,7 +381,7 @@ public class StepDescriptor extends org.exolab.castor.xml.util.XMLClassDescripto
             }
         } );
         desc.setHandler(handler);
-        desc.setNameSpaceURI("http://www.astrogrid.org/schema/AGWorkflow/");
+        desc.setNameSpaceURI("http://www.astrogrid.org/schema/AGWorkflow/v1");
         desc.setMultivalued(false);
         addFieldDescriptor(desc);
         
@@ -419,7 +419,7 @@ public class StepDescriptor extends org.exolab.castor.xml.util.XMLClassDescripto
             }
         } );
         desc.setHandler(handler);
-        desc.setNameSpaceURI("http://www.astrogrid.org/schema/AGWorkflow/");
+        desc.setNameSpaceURI("http://www.astrogrid.org/schema/AGWorkflow/v1");
         desc.setMultivalued(false);
         addFieldDescriptor(desc);
         

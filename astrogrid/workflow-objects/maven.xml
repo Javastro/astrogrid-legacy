@@ -31,12 +31,13 @@
                 <fileset dir="${generated.src}">
                         <include name="org/astrogrid/workflow/beans/v1/**/*.java" />
                         <include name="org/astrogrid/applications/beans/v1/**/*.java" />
+                        <include name="org/astrogrid/community/beans/v1/**/*.java" />
                 </fileset>
         </delete>
   </goal>
 
   <goal name="castor-generate">
-          <java fork="yes" classname="org.exolab.castor.builder.SourceGenerator" classpathref="maven.dependency.classpath">
+         <java fork="yes" classname="org.exolab.castor.builder.SourceGenerator" classpathref="maven.dependency.classpath">
                 <classpath>
                         <pathelement location="${basedir}/build" />
                         <path refid="maven.dependency.classpath" />
@@ -48,9 +49,41 @@
                     <arg value="-dest" />
                     <arg file="${generated.src}" />
                 <arg value="-verbose" />
-                <arg value="-typesj2"/>
+                <arg value="-types"/>
+                <arg value="arraylist"/>
         </java>
-
+         <java fork="yes" classname="org.exolab.castor.builder.SourceGenerator" classpathref="maven.dependency.classpath">
+                <classpath>
+                        <pathelement location="${basedir}/build" />
+                        <path refid="maven.dependency.classpath" />
+                </classpath>
+                    <arg value="-i"/>
+                    <arg file="${basedir}/schema/Credentials.xsd" />
+                <arg value="-binding-file" />
+                <arg file="${basedir}/build/castor-binding.xml" />
+                    <arg value="-dest" />
+                    <arg file="${generated.src}" />
+                <arg value="-verbose" />
+                <arg value="-types"/>
+                <arg value="arraylist"/>
+        </java>
+        
+          <java fork="yes" classname="org.exolab.castor.builder.SourceGenerator" classpathref="maven.dependency.classpath">
+                <classpath>
+                        <pathelement location="${basedir}/build" />
+                        <path refid="maven.dependency.classpath" />
+                </classpath>
+                    <arg value="-i"/>
+                    <arg file="${basedir}/schema/AGApplicationBase.xsd" />
+                <arg value="-binding-file" />
+                <arg file="${basedir}/build/castor-binding.xml" />
+                    <arg value="-dest" />
+                    <arg file="${generated.src}" />
+                <arg value="-verbose" />
+                <arg value="-types"/>
+                <arg value="arraylist"/>
+        </java>
+ 
         <java fork="yes" classname="org.exolab.castor.builder.SourceGenerator" classpathref="maven.dependency.classpath">
                 <classpath>
                         <pathelement location="${basedir}/build" />
@@ -63,7 +96,8 @@
                     <arg value="-dest" />
                     <arg file="${generated.src}" />
                 <arg value="-verbose" />
-                <arg value="-typesj2" />
+                <arg value="-types" />
+                <arg value="j2" />
         </java>
   </goal>
 

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Workflow.java,v 1.1 2004/02/20 18:36:39 nw Exp $
+ * $Id: Workflow.java,v 1.2 2004/03/02 14:09:49 pah Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -16,6 +16,7 @@ import java.io.Reader;
 import java.io.Serializable;
 import java.io.Writer;
 import java.util.Date;
+import org.astrogrid.community.beans.v1.Credentials;
 import org.astrogrid.workflow.beans.v1.types.Status;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
@@ -26,7 +27,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Class Workflow.
  * 
- * @version $Revision: 1.1 $ $Date: 2004/02/20 18:36:39 $
+ * @version $Revision: 1.2 $ $Date: 2004/03/02 14:09:49 $
  */
 public class Workflow extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
@@ -63,11 +64,6 @@ implements java.io.Serializable
     private org.astrogrid.workflow.beans.v1.types.Status _status = org.astrogrid.workflow.beans.v1.types.Status.valueOf("INITIALIZED");
 
     /**
-     * Field _community
-     */
-    private org.astrogrid.workflow.beans.v1.Community _community;
-
-    /**
      * Field _sequence
      */
     private org.astrogrid.workflow.beans.v1.Sequence _sequence;
@@ -81,6 +77,11 @@ implements java.io.Serializable
      * Field _comment
      */
     private java.lang.String _comment;
+
+    /**
+     * Field _credentials
+     */
+    private org.astrogrid.community.beans.v1.Credentials _credentials;
 
 
       //----------------/
@@ -108,16 +109,6 @@ implements java.io.Serializable
     } //-- java.lang.String getComment() 
 
     /**
-     * Returns the value of field 'community'.
-     * 
-     * @return the value of field 'community'.
-     */
-    public org.astrogrid.workflow.beans.v1.Community getCommunity()
-    {
-        return this._community;
-    } //-- org.astrogrid.workflow.beans.v1.Community getCommunity() 
-
-    /**
      * Returns the value of field 'completeDate'.
      * 
      * @return the value of field 'completeDate'.
@@ -126,6 +117,16 @@ implements java.io.Serializable
     {
         return this._completeDate;
     } //-- java.util.Date getCompleteDate() 
+
+    /**
+     * Returns the value of field 'credentials'.
+     * 
+     * @return the value of field 'credentials'.
+     */
+    public org.astrogrid.community.beans.v1.Credentials getCredentials()
+    {
+        return this._credentials;
+    } //-- org.astrogrid.community.beans.v1.Credentials getCredentials() 
 
     /**
      * Returns the value of field 'description'.
@@ -236,16 +237,6 @@ implements java.io.Serializable
     } //-- void setComment(java.lang.String) 
 
     /**
-     * Sets the value of field 'community'.
-     * 
-     * @param community the value of field 'community'.
-     */
-    public void setCommunity(org.astrogrid.workflow.beans.v1.Community community)
-    {
-        this._community = community;
-    } //-- void setCommunity(org.astrogrid.workflow.beans.v1.Community) 
-
-    /**
      * Sets the value of field 'completeDate'.
      * 
      * @param completeDate the value of field 'completeDate'.
@@ -254,6 +245,16 @@ implements java.io.Serializable
     {
         this._completeDate = completeDate;
     } //-- void setCompleteDate(java.util.Date) 
+
+    /**
+     * Sets the value of field 'credentials'.
+     * 
+     * @param credentials the value of field 'credentials'.
+     */
+    public void setCredentials(org.astrogrid.community.beans.v1.Credentials credentials)
+    {
+        this._credentials = credentials;
+    } //-- void setCredentials(org.astrogrid.community.beans.v1.Credentials) 
 
     /**
      * Sets the value of field 'description'.

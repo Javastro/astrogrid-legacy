@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Parameter.java,v 1.1 2004/02/20 18:36:39 nw Exp $
+ * $Id: Parameter.java,v 1.2 2004/03/02 14:09:49 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1;
@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Serializable;
 import java.io.Writer;
-import org.astrogrid.applications.beans.v1.types.SwitchTypes;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
@@ -23,23 +22,13 @@ import org.exolab.castor.xml.ValidationException;
 import org.xml.sax.ContentHandler;
 
 /**
- * Class Parameter.
+ * A generalised parameter - this is a substitution point
  * 
- * @version $Revision: 1.1 $ $Date: 2004/02/20 18:36:39 $
+ * @version $Revision: 1.2 $ $Date: 2004/03/02 14:09:49 $
  */
-public class Parameter extends org.astrogrid.applications.beans.v1.CommandLineParameterDefinition 
+public class Parameter extends org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition 
 implements java.io.Serializable
 {
-
-
-      //--------------------------/
-     //- Class/Member Variables -/
-    //--------------------------/
-
-    /**
-     * Field _switchType
-     */
-    private org.astrogrid.applications.beans.v1.types.SwitchTypes _switchType = org.astrogrid.applications.beans.v1.types.SwitchTypes.valueOf("normal");
 
 
       //----------------/
@@ -48,23 +37,12 @@ implements java.io.Serializable
 
     public Parameter() {
         super();
-        setSwitchType(org.astrogrid.applications.beans.v1.types.SwitchTypes.valueOf("normal"));
     } //-- org.astrogrid.applications.beans.v1.Parameter()
 
 
       //-----------/
      //- Methods -/
     //-----------/
-
-    /**
-     * Returns the value of field 'switchType'.
-     * 
-     * @return the value of field 'switchType'.
-     */
-    public org.astrogrid.applications.beans.v1.types.SwitchTypes getSwitchType()
-    {
-        return this._switchType;
-    } //-- org.astrogrid.applications.beans.v1.types.SwitchTypes getSwitchType() 
 
     /**
      * Method isValid
@@ -103,16 +81,6 @@ implements java.io.Serializable
         
         Marshaller.marshal(this, handler);
     } //-- void marshal(org.xml.sax.ContentHandler) 
-
-    /**
-     * Sets the value of field 'switchType'.
-     * 
-     * @param switchType the value of field 'switchType'.
-     */
-    public void setSwitchType(org.astrogrid.applications.beans.v1.types.SwitchTypes switchType)
-    {
-        this._switchType = switchType;
-    } //-- void setSwitchType(org.astrogrid.applications.beans.v1.types.SwitchTypes) 
 
     /**
      * Method unmarshalParameter

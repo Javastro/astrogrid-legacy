@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: PrefDescriptor.java,v 1.1 2004/02/20 18:36:39 nw Exp $
+ * $Id: PrefDescriptor.java,v 1.2 2004/03/02 14:09:49 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class PrefDescriptor.
  * 
- * @version $Revision: 1.1 $ $Date: 2004/02/20 18:36:39 $
+ * @version $Revision: 1.2 $ $Date: 2004/03/02 14:09:49 $
  */
 public class PrefDescriptor extends org.astrogrid.applications.beans.v1.ParameterRefDescriptor {
 
@@ -56,7 +56,7 @@ public class PrefDescriptor extends org.astrogrid.applications.beans.v1.Paramete
     public PrefDescriptor() {
         super();
         setExtendsWithoutFlatten(new org.astrogrid.applications.beans.v1.ParameterRefDescriptor());
-        nsURI = "http://www.astrogrid.org/schema/AGParameterDefinition/";
+        nsURI = "http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1";
         xmlName = "pref";
         org.exolab.castor.xml.util.XMLFieldDescriptorImpl  desc           = null;
         org.exolab.castor.xml.XMLFieldHandler              handler        = null;
@@ -68,6 +68,9 @@ public class PrefDescriptor extends org.astrogrid.applications.beans.v1.Paramete
         fieldValidator = new org.exolab.castor.xml.FieldValidator();
         fieldValidator.setMinOccurs(1);
         { //-- local scope
+            StringValidator typeValidator = new StringValidator();
+            typeValidator.setWhiteSpace("preserve");
+            fieldValidator.setValidator(typeValidator);
         }
         desc.setValidator(fieldValidator);
         //-- initialize element descriptors

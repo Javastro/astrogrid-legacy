@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ParameterDescriptor.java,v 1.1 2004/02/20 18:36:39 nw Exp $
+ * $Id: ParameterDescriptor.java,v 1.2 2004/03/02 14:09:49 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1;
@@ -19,9 +19,9 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class ParameterDescriptor.
  * 
- * @version $Revision: 1.1 $ $Date: 2004/02/20 18:36:39 $
+ * @version $Revision: 1.2 $ $Date: 2004/03/02 14:09:49 $
  */
-public class ParameterDescriptor extends org.astrogrid.applications.beans.v1.CommandLineParameterDefinitionDescriptor {
+public class ParameterDescriptor extends org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinitionDescriptor {
 
 
       //--------------------------/
@@ -55,49 +55,9 @@ public class ParameterDescriptor extends org.astrogrid.applications.beans.v1.Com
 
     public ParameterDescriptor() {
         super();
-        setExtendsWithoutFlatten(new org.astrogrid.applications.beans.v1.CommandLineParameterDefinitionDescriptor());
-        nsURI = "http://www.astrogrid.org/schema/AGParameterDefinition/";
+        setExtendsWithoutFlatten(new org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinitionDescriptor());
+        nsURI = "http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1";
         xmlName = "Parameter";
-        org.exolab.castor.xml.util.XMLFieldDescriptorImpl  desc           = null;
-        org.exolab.castor.xml.XMLFieldHandler              handler        = null;
-        org.exolab.castor.xml.FieldValidator               fieldValidator = null;
-        //-- initialize attribute descriptors
-        
-        //-- _switchType
-        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.astrogrid.applications.beans.v1.types.SwitchTypes.class, "_switchType", "switchType", org.exolab.castor.xml.NodeType.Attribute);
-        handler = (new org.exolab.castor.xml.XMLFieldHandler() {
-            public java.lang.Object getValue( java.lang.Object object ) 
-                throws IllegalStateException
-            {
-                Parameter target = (Parameter) object;
-                return target.getSwitchType();
-            }
-            public void setValue( java.lang.Object object, java.lang.Object value) 
-                throws IllegalStateException, IllegalArgumentException
-            {
-                try {
-                    Parameter target = (Parameter) object;
-                    target.setSwitchType( (org.astrogrid.applications.beans.v1.types.SwitchTypes) value);
-                }
-                catch (java.lang.Exception ex) {
-                    throw new IllegalStateException(ex.toString());
-                }
-            }
-            public java.lang.Object newInstance( java.lang.Object parent ) {
-                return null;
-            }
-        } );
-        desc.setHandler( new org.exolab.castor.xml.handlers.EnumFieldHandler(org.astrogrid.applications.beans.v1.types.SwitchTypes.class, handler));
-        desc.setImmutable(true);
-        addFieldDescriptor(desc);
-        
-        //-- validation code for: _switchType
-        fieldValidator = new org.exolab.castor.xml.FieldValidator();
-        { //-- local scope
-        }
-        desc.setValidator(fieldValidator);
-        //-- initialize element descriptors
-        
     } //-- org.astrogrid.applications.beans.v1.ParameterDescriptor()
 
 

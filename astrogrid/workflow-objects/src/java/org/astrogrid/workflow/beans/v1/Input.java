@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Input.java,v 1.1 2004/02/20 18:36:39 nw Exp $
+ * $Id: Input.java,v 1.2 2004/03/02 14:09:49 pah Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -17,7 +17,7 @@ import java.io.Serializable;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import org.astrogrid.applications.beans.v1.ParameterValue;
+import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
@@ -27,7 +27,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Class Input.
  * 
- * @version $Revision: 1.1 $ $Date: 2004/02/20 18:36:39 $
+ * @version $Revision: 1.2 $ $Date: 2004/03/02 14:09:49 $
  */
 public class Input extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
@@ -63,11 +63,11 @@ implements java.io.Serializable
      * 
      * @param vParameter
      */
-    public void addParameter(org.astrogrid.applications.beans.v1.ParameterValue vParameter)
+    public void addParameter(org.astrogrid.applications.beans.v1.parameters.ParameterValue vParameter)
         throws java.lang.IndexOutOfBoundsException
     {
         _parameterList.add(vParameter);
-    } //-- void addParameter(org.astrogrid.applications.beans.v1.ParameterValue) 
+    } //-- void addParameter(org.astrogrid.applications.beans.v1.parameters.ParameterValue) 
 
     /**
      * Method addParameter
@@ -75,11 +75,11 @@ implements java.io.Serializable
      * @param index
      * @param vParameter
      */
-    public void addParameter(int index, org.astrogrid.applications.beans.v1.ParameterValue vParameter)
+    public void addParameter(int index, org.astrogrid.applications.beans.v1.parameters.ParameterValue vParameter)
         throws java.lang.IndexOutOfBoundsException
     {
         _parameterList.add(index, vParameter);
-    } //-- void addParameter(int, org.astrogrid.applications.beans.v1.ParameterValue) 
+    } //-- void addParameter(int, org.astrogrid.applications.beans.v1.parameters.ParameterValue) 
 
     /**
      * Method clearParameter
@@ -102,7 +102,7 @@ implements java.io.Serializable
      * 
      * @param index
      */
-    public org.astrogrid.applications.beans.v1.ParameterValue getParameter(int index)
+    public org.astrogrid.applications.beans.v1.parameters.ParameterValue getParameter(int index)
         throws java.lang.IndexOutOfBoundsException
     {
         //-- check bounds for index
@@ -110,21 +110,21 @@ implements java.io.Serializable
             throw new IndexOutOfBoundsException();
         }
         
-        return (org.astrogrid.applications.beans.v1.ParameterValue) _parameterList.get(index);
-    } //-- org.astrogrid.applications.beans.v1.ParameterValue getParameter(int) 
+        return (org.astrogrid.applications.beans.v1.parameters.ParameterValue) _parameterList.get(index);
+    } //-- org.astrogrid.applications.beans.v1.parameters.ParameterValue getParameter(int) 
 
     /**
      * Method getParameter
      */
-    public org.astrogrid.applications.beans.v1.ParameterValue[] getParameter()
+    public org.astrogrid.applications.beans.v1.parameters.ParameterValue[] getParameter()
     {
         int size = _parameterList.size();
-        org.astrogrid.applications.beans.v1.ParameterValue[] mArray = new org.astrogrid.applications.beans.v1.ParameterValue[size];
+        org.astrogrid.applications.beans.v1.parameters.ParameterValue[] mArray = new org.astrogrid.applications.beans.v1.parameters.ParameterValue[size];
         for (int index = 0; index < size; index++) {
-            mArray[index] = (org.astrogrid.applications.beans.v1.ParameterValue) _parameterList.get(index);
+            mArray[index] = (org.astrogrid.applications.beans.v1.parameters.ParameterValue) _parameterList.get(index);
         }
         return mArray;
-    } //-- org.astrogrid.applications.beans.v1.ParameterValue[] getParameter() 
+    } //-- org.astrogrid.applications.beans.v1.parameters.ParameterValue[] getParameter() 
 
     /**
      * Method getParameterCount
@@ -177,11 +177,11 @@ implements java.io.Serializable
      * 
      * @param vParameter
      */
-    public boolean removeParameter(org.astrogrid.applications.beans.v1.ParameterValue vParameter)
+    public boolean removeParameter(org.astrogrid.applications.beans.v1.parameters.ParameterValue vParameter)
     {
         boolean removed = _parameterList.remove(vParameter);
         return removed;
-    } //-- boolean removeParameter(org.astrogrid.applications.beans.v1.ParameterValue) 
+    } //-- boolean removeParameter(org.astrogrid.applications.beans.v1.parameters.ParameterValue) 
 
     /**
      * Method setParameter
@@ -189,7 +189,7 @@ implements java.io.Serializable
      * @param index
      * @param vParameter
      */
-    public void setParameter(int index, org.astrogrid.applications.beans.v1.ParameterValue vParameter)
+    public void setParameter(int index, org.astrogrid.applications.beans.v1.parameters.ParameterValue vParameter)
         throws java.lang.IndexOutOfBoundsException
     {
         //-- check bounds for index
@@ -197,21 +197,21 @@ implements java.io.Serializable
             throw new IndexOutOfBoundsException();
         }
         _parameterList.set(index, vParameter);
-    } //-- void setParameter(int, org.astrogrid.applications.beans.v1.ParameterValue) 
+    } //-- void setParameter(int, org.astrogrid.applications.beans.v1.parameters.ParameterValue) 
 
     /**
      * Method setParameter
      * 
      * @param parameterArray
      */
-    public void setParameter(org.astrogrid.applications.beans.v1.ParameterValue[] parameterArray)
+    public void setParameter(org.astrogrid.applications.beans.v1.parameters.ParameterValue[] parameterArray)
     {
         //-- copy array
         _parameterList.clear();
         for (int i = 0; i < parameterArray.length; i++) {
             _parameterList.add(parameterArray[i]);
         }
-    } //-- void setParameter(org.astrogrid.applications.beans.v1.ParameterValue) 
+    } //-- void setParameter(org.astrogrid.applications.beans.v1.parameters.ParameterValue) 
 
     /**
      * Method unmarshalInput

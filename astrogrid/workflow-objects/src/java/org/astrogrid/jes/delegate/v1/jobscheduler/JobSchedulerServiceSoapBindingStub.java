@@ -68,19 +68,19 @@ public class JobSchedulerServiceSoapBindingStub extends org.apache.axis.client.S
             cachedSerFactories.add(enumsf);
             cachedDeserFactories.add(enumdf);
 
-            qName = new javax.xml.namespace.QName("urn:jes/types/v1", "jobURN");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.jes.types.v1.JobURN.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(simplesf);
-            cachedDeserFactories.add(simpledf);
-
             qName = new javax.xml.namespace.QName("urn:jes/types/v1", "JobInfo");
             cachedSerQNames.add(qName);
             cls = org.astrogrid.jes.types.v1.JobInfo.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
+
+            qName = new javax.xml.namespace.QName("urn:jes/types/v1", "jobURN");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.jes.types.v1.JobURN.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(simplesf);
+            cachedDeserFactories.add(simpledf);
 
     }
 

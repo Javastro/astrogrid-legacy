@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ParametersDescriptor.java,v 1.1 2004/02/20 18:36:39 nw Exp $
+ * $Id: ParametersDescriptor.java,v 1.2 2004/03/02 14:09:49 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class ParametersDescriptor.
  * 
- * @version $Revision: 1.1 $ $Date: 2004/02/20 18:36:39 $
+ * @version $Revision: 1.2 $ $Date: 2004/03/02 14:09:49 $
  */
 public class ParametersDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 
@@ -55,7 +55,7 @@ public class ParametersDescriptor extends org.exolab.castor.xml.util.XMLClassDes
 
     public ParametersDescriptor() {
         super();
-        nsURI = "http://www.astrogrid.org/schema/AGParameterDefinition/";
+        nsURI = "http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1";
         xmlName = "Parameters";
         
         //-- set grouping compositor
@@ -92,7 +92,7 @@ public class ParametersDescriptor extends org.exolab.castor.xml.util.XMLClassDes
             }
         } );
         desc.setHandler(handler);
-        desc.setNameSpaceURI("http://www.astrogrid.org/schema/AGParameterDefinition/");
+        desc.setNameSpaceURI("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1");
         desc.setRequired(true);
         desc.setMultivalued(true);
         addFieldDescriptor(desc);

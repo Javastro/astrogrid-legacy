@@ -76,7 +76,7 @@
         <dependency>
         	<artifactId>castor</artifactId>
         	<groupId>castor</groupId>
-        	<version>0.9.5-xml</version>
+        	<version>0.9.5</version>
         	<properties>
         		<war.bundle>true</war.bundle>
         	</properties>

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Application.java,v 1.1 2004/02/20 18:36:39 nw Exp $
+ * $Id: Application.java,v 1.2 2004/03/02 14:09:49 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1;
@@ -22,9 +22,9 @@ import org.exolab.castor.xml.ValidationException;
 import org.xml.sax.ContentHandler;
 
 /**
- * Application definition
+ * Base Application definition
  * 
- * @version $Revision: 1.1 $ $Date: 2004/02/20 18:36:39 $
+ * @version $Revision: 1.2 $ $Date: 2004/03/02 14:09:49 $
  */
 public class Application extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
@@ -43,12 +43,7 @@ implements java.io.Serializable
     /**
      * Field _instanceClass
      */
-    private JavaClass _instanceClass;
-
-    /**
-     * Field _executionPath
-     */
-    private java.lang.String _executionPath;
+    private java.lang.String _instanceClass;
 
     /**
      * Field _parameters
@@ -58,7 +53,7 @@ implements java.io.Serializable
     /**
      * Field _interfaces
      */
-    private org.astrogrid.applications.beans.v1.Interfaces _interfaces;
+    private org.astrogrid.applications.beans.v1.InterfacesType _interfaces;
 
 
       //----------------/
@@ -75,34 +70,24 @@ implements java.io.Serializable
     //-----------/
 
     /**
-     * Returns the value of field 'executionPath'.
-     * 
-     * @return the value of field 'executionPath'.
-     */
-    public java.lang.String getExecutionPath()
-    {
-        return this._executionPath;
-    } //-- java.lang.String getExecutionPath() 
-
-    /**
      * Returns the value of field 'instanceClass'.
      * 
      * @return the value of field 'instanceClass'.
      */
-    public JavaClass getInstanceClass()
+    public java.lang.String getInstanceClass()
     {
         return this._instanceClass;
-    } //-- JavaClass getInstanceClass() 
+    } //-- java.lang.String getInstanceClass() 
 
     /**
      * Returns the value of field 'interfaces'.
      * 
      * @return the value of field 'interfaces'.
      */
-    public org.astrogrid.applications.beans.v1.Interfaces getInterfaces()
+    public org.astrogrid.applications.beans.v1.InterfacesType getInterfaces()
     {
         return this._interfaces;
-    } //-- org.astrogrid.applications.beans.v1.Interfaces getInterfaces() 
+    } //-- org.astrogrid.applications.beans.v1.InterfacesType getInterfaces() 
 
     /**
      * Returns the value of field 'name'.
@@ -163,34 +148,24 @@ implements java.io.Serializable
     } //-- void marshal(org.xml.sax.ContentHandler) 
 
     /**
-     * Sets the value of field 'executionPath'.
-     * 
-     * @param executionPath the value of field 'executionPath'.
-     */
-    public void setExecutionPath(java.lang.String executionPath)
-    {
-        this._executionPath = executionPath;
-    } //-- void setExecutionPath(java.lang.String) 
-
-    /**
      * Sets the value of field 'instanceClass'.
      * 
      * @param instanceClass the value of field 'instanceClass'.
      */
-    public void setInstanceClass(JavaClass instanceClass)
+    public void setInstanceClass(java.lang.String instanceClass)
     {
         this._instanceClass = instanceClass;
-    } //-- void setInstanceClass(JavaClass) 
+    } //-- void setInstanceClass(java.lang.String) 
 
     /**
      * Sets the value of field 'interfaces'.
      * 
      * @param interfaces the value of field 'interfaces'.
      */
-    public void setInterfaces(org.astrogrid.applications.beans.v1.Interfaces interfaces)
+    public void setInterfaces(org.astrogrid.applications.beans.v1.InterfacesType interfaces)
     {
         this._interfaces = interfaces;
-    } //-- void setInterfaces(org.astrogrid.applications.beans.v1.Interfaces) 
+    } //-- void setInterfaces(org.astrogrid.applications.beans.v1.InterfacesType) 
 
     /**
      * Sets the value of field 'name'.

@@ -65,6 +65,13 @@ public class JobControllerServiceSoapBindingStub extends org.apache.axis.client.
             java.lang.Class arraydf = org.apache.axis.encoding.ser.ArrayDeserializerFactory.class;
             java.lang.Class simplesf = org.apache.axis.encoding.ser.SimpleSerializerFactory.class;
             java.lang.Class simpledf = org.apache.axis.encoding.ser.SimpleDeserializerFactory.class;
+            qName = new javax.xml.namespace.QName("urn:jes/types/v1", "ListCriteria");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.jes.types.v1.ListCriteria.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(beansf);
+            cachedDeserFactories.add(beandf);
+
             qName = new javax.xml.namespace.QName("urn:jes/types/v1", "WorkflowList");
             cachedSerQNames.add(qName);
             cls = org.astrogrid.jes.types.v1.WorkflowList.class;
@@ -72,9 +79,9 @@ public class JobControllerServiceSoapBindingStub extends org.apache.axis.client.
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
-            qName = new javax.xml.namespace.QName("urn:jes/types/v1", "ListCriteria");
+            qName = new javax.xml.namespace.QName("urn:jes/types/v1", "SubmissionResponse");
             cachedSerQNames.add(qName);
-            cls = org.astrogrid.jes.types.v1.ListCriteria.class;
+            cls = org.astrogrid.jes.types.v1.SubmissionResponse.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
@@ -85,13 +92,6 @@ public class JobControllerServiceSoapBindingStub extends org.apache.axis.client.
             cachedSerClasses.add(cls);
             cachedSerFactories.add(simplesf);
             cachedDeserFactories.add(simpledf);
-
-            qName = new javax.xml.namespace.QName("urn:jes/types/v1", "SubmissionResponse");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.jes.types.v1.SubmissionResponse.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
 
     }
 

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: CommandLineParameterDefinitionDescriptor.java,v 1.1 2004/02/20 18:36:39 nw Exp $
+ * $Id: CommandLineParameterDefinitionDescriptor.java,v 1.2 2004/03/02 14:09:49 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1;
@@ -19,9 +19,9 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class CommandLineParameterDefinitionDescriptor.
  * 
- * @version $Revision: 1.1 $ $Date: 2004/02/20 18:36:39 $
+ * @version $Revision: 1.2 $ $Date: 2004/03/02 14:09:49 $
  */
-public class CommandLineParameterDefinitionDescriptor extends org.astrogrid.applications.beans.v1.BaseParameterDefinitionDescriptor {
+public class CommandLineParameterDefinitionDescriptor extends org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinitionDescriptor {
 
 
       //--------------------------/
@@ -55,8 +55,8 @@ public class CommandLineParameterDefinitionDescriptor extends org.astrogrid.appl
 
     public CommandLineParameterDefinitionDescriptor() {
         super();
-        setExtendsWithoutFlatten(new org.astrogrid.applications.beans.v1.BaseParameterDefinitionDescriptor());
-        nsURI = "http://www.astrogrid.org/schema/AGParameterDefinition/";
+        setExtendsWithoutFlatten(new org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinitionDescriptor());
+        nsURI = "http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1";
         xmlName = "CommandLineParameterDefinition";
         org.exolab.castor.xml.util.XMLFieldDescriptorImpl  desc           = null;
         org.exolab.castor.xml.XMLFieldHandler              handler        = null;
@@ -179,6 +179,39 @@ public class CommandLineParameterDefinitionDescriptor extends org.astrogrid.appl
         { //-- local scope
             BooleanValidator typeValidator = new BooleanValidator();
             fieldValidator.setValidator(typeValidator);
+        }
+        desc.setValidator(fieldValidator);
+        //-- _switchType
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.astrogrid.applications.beans.v1.types.SwitchTypes.class, "_switchType", "switchType", org.exolab.castor.xml.NodeType.Attribute);
+        handler = (new org.exolab.castor.xml.XMLFieldHandler() {
+            public java.lang.Object getValue( java.lang.Object object ) 
+                throws IllegalStateException
+            {
+                CommandLineParameterDefinition target = (CommandLineParameterDefinition) object;
+                return target.getSwitchType();
+            }
+            public void setValue( java.lang.Object object, java.lang.Object value) 
+                throws IllegalStateException, IllegalArgumentException
+            {
+                try {
+                    CommandLineParameterDefinition target = (CommandLineParameterDefinition) object;
+                    target.setSwitchType( (org.astrogrid.applications.beans.v1.types.SwitchTypes) value);
+                }
+                catch (java.lang.Exception ex) {
+                    throw new IllegalStateException(ex.toString());
+                }
+            }
+            public java.lang.Object newInstance( java.lang.Object parent ) {
+                return null;
+            }
+        } );
+        desc.setHandler( new org.exolab.castor.xml.handlers.EnumFieldHandler(org.astrogrid.applications.beans.v1.types.SwitchTypes.class, handler));
+        desc.setImmutable(true);
+        addFieldDescriptor(desc);
+        
+        //-- validation code for: _switchType
+        fieldValidator = new org.exolab.castor.xml.FieldValidator();
+        { //-- local scope
         }
         desc.setValidator(fieldValidator);
         //-- initialize element descriptors

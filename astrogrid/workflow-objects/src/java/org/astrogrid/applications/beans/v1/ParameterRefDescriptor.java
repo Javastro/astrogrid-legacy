@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ParameterRefDescriptor.java,v 1.1 2004/02/20 18:36:39 nw Exp $
+ * $Id: ParameterRefDescriptor.java,v 1.2 2004/03/02 14:09:49 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class ParameterRefDescriptor.
  * 
- * @version $Revision: 1.1 $ $Date: 2004/02/20 18:36:39 $
+ * @version $Revision: 1.2 $ $Date: 2004/03/02 14:09:49 $
  */
 public class ParameterRefDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 
@@ -55,7 +55,7 @@ public class ParameterRefDescriptor extends org.exolab.castor.xml.util.XMLClassD
 
     public ParameterRefDescriptor() {
         super();
-        nsURI = "http://www.astrogrid.org/schema/AGParameterDefinition/";
+        nsURI = "http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1";
         xmlName = "parameterRef";
         org.exolab.castor.xml.util.XMLFieldDescriptorImpl  desc           = null;
         org.exolab.castor.xml.XMLFieldHandler              handler        = null;
@@ -63,8 +63,8 @@ public class ParameterRefDescriptor extends org.exolab.castor.xml.util.XMLClassD
         //-- initialize attribute descriptors
         
         //-- _ref
-        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.lang.Object.class, "_ref", "ref", org.exolab.castor.xml.NodeType.Attribute);
-        desc.setReference(true);
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.lang.String.class, "_ref", "ref", org.exolab.castor.xml.NodeType.Attribute);
+        desc.setImmutable(true);
         handler = (new org.exolab.castor.xml.XMLFieldHandler() {
             public java.lang.Object getValue( java.lang.Object object ) 
                 throws IllegalStateException
@@ -77,24 +77,25 @@ public class ParameterRefDescriptor extends org.exolab.castor.xml.util.XMLClassD
             {
                 try {
                     ParameterRef target = (ParameterRef) object;
-                    target.setRef( (java.lang.Object) value);
+                    target.setRef( (java.lang.String) value);
                 }
                 catch (java.lang.Exception ex) {
                     throw new IllegalStateException(ex.toString());
                 }
             }
             public java.lang.Object newInstance( java.lang.Object parent ) {
-                return new java.lang.Object();
+                return null;
             }
         } );
         desc.setHandler(handler);
-        desc.setRequired(true);
         addFieldDescriptor(desc);
         
         //-- validation code for: _ref
         fieldValidator = new org.exolab.castor.xml.FieldValidator();
-        fieldValidator.setMinOccurs(1);
         { //-- local scope
+            StringValidator typeValidator = new StringValidator();
+            typeValidator.setWhiteSpace("preserve");
+            fieldValidator.setValidator(typeValidator);
         }
         desc.setValidator(fieldValidator);
         //-- _repeatable
