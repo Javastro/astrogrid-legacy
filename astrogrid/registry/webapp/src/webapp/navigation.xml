@@ -19,7 +19,7 @@
    <div id='menuRegister'>
       <h5>Register</h5>
       <ul>
-         <li><a href="admin/entryForm.html">Enter Resource Document</a>
+         <li><a href="admin/editEntry.jsp">Enter Resource Document</a>
          <li><a href="admin/enterUrlForm.jsp">Register using URL</a>
       </ul>
    </div>

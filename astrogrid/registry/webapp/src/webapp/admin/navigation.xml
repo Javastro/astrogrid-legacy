@@ -5,6 +5,7 @@
       <h5>Server</h5>
       <ul>
          <li><a href="../" >Home</a>
+         <li><a href='../browse.jsp'>Browse</a>
          <li><a href='/manager/reload?path=<%= request.getContextPath() %>'>Restart</a>
       </ul>
    </div>

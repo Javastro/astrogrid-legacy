@@ -102,17 +102,30 @@ Find IVORNs including <input name="IvornPart" type="text" />
    else {
 
       out.write("<table border=1>");
-      out.write("<tr><td>Type</td><td>AuthorityID</td><td>ResourceKey</td><td>Actions</td></tr>");
+      out.write("<tr><th>Title</th><th>Type</th><th>AuthorityID</th><th>ResourceKey</th><th>Updated</th><th>Actions</th></tr>");
       
       NodeList resources = entries.getElementsByTagNameNS("*","Resource");
       
       for (int n=0;n<resources.getLength();n++) {
-         out.write("<tr>\n");
-         
          Element resourceElement = (Element) resources.item(n);
 
+         boolean deleted = resourceElement.getAttribute("status").toLowerCase().equals("deleted");
+         
+         String bgColour = "#FFFFFF";
+         String fgColour = "#000000";
+         if (deleted) {
+            bgColour = "#FFFFFF";
+            fgColour = "#AAAAAA";
+         }
+         String setFG = "<font color='"+fgColour+"'>";
+         String endFG = "</font>";
+         
+         out.write("<tr bgcolor='"+bgColour+"'>\n");
+         
+         out.write("<td>"+setFG+DomHelper.getValue(resourceElement, "Title")+endFG+"</td>");
+         
          //type
-         out.write("<td>"+resourceElement.getAttribute("xsi:type")+"</td>");
+         out.write("<td>"+setFG+resourceElement.getAttribute("xsi:type")+endFG+"</td>");
 
          NodeList identifiers = resourceElement.getElementsByTagNameNS("*", "Identifier");
          if (identifiers.getLength() == 0) {
@@ -129,7 +142,7 @@ Find IVORNs including <input name="IvornPart" type="text" />
                out.write("<td>null?!</td>");
             } else {
                String t = DomHelper.getValue(authority);
-               out.write("<td>"+t+"</td>\n");
+               out.write("<td><a href='browse.jsp?IvornPart="+t+"'>"+t+"</a></td>\n");
                ivoStr = t;
             }
    
@@ -137,23 +150,29 @@ Find IVORNs including <input name="IvornPart" type="text" />
                out.write("<td>null?!</td>");
             } else {
                String t = DomHelper.getValue(resource);
-               out.write("<td>"+t+"</td>\n");
+               out.write("<td>"+setFG+t+endFG+"</td>\n");
                ivoStr = ivoStr+"/"+t;
             }
    
+            //last update date
+            out.write("<td>"+setFG+resourceElement.getAttribute("updated")+endFG+"</td>");
+            
             out.write("<td>");
+
             //links to do stuff
             out.write("<a href=viewResourceEntry.jsp?IVORN="+ivoStr+">View</a>, ");
    
             out.write("<a href=viewEntryXml.jsp?IVORN="+ivoStr+">XML</a>,  ");
 
-            out.write("<a href=admin/deleteResource.jsp?IVORN="+ivoStr+">Delete</a>,  ");
-            
-            out.write("<a href=admin/editEntry.jsp?IVORN="+ivoStr+">Edit</a>");
+            out.write("<a href=admin/editEntry.jsp?IVORN="+ivoStr+">Edit</a>, ");
+
+            if (!deleted) {
+               out.write("<a href=admin/deleteResource.jsp?IVORN="+ivoStr+">Delete</a>,  ");
+            }
             
             out.write("</td>");
          }
-         out.write("</tr>\n");
+         out.write("</font></tr>\n");
          
       }
       

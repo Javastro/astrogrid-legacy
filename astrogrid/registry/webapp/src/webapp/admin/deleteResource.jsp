@@ -1,5 +1,6 @@
 <%@ page import="org.astrogrid.registry.server.admin.*,
-                 org.w3c.dom.Document,
+                 org.w3c.dom.*,
+                 org.astrogrid.registry.server.JspHelper,
                  org.astrogrid.util.DomHelper,
                  java.io.*"
     session="false" %>
@@ -24,24 +25,26 @@
 <p>Deleting Resource identified by '<%= ivorn %>'
 <p>
 <%
-   String forwardTo = request.getParameter("forwardTo");
-
    if ((ivorn == null) || (ivorn.trim().length() == 0)) {
       out.write("No IVORN given to delete (Parameter 'IVORN' empty)");
    }
    else {
-      out.write("<b>Server Response:</b><p><pre>");
-//      RegistryAdminService server = new RegistryAdminService();
-      out.write("Not implemented yet");
-      out.write("</pre>");
-
-      //forward if everything has gone OK (?)
-      if ((forwardTo != null) && (forwardTo.trim().length() != 0) ) {
-         out.write("<p>Forwarding to "+forwardTo);
-         out.flush();
-         request.getRequestDispatcher(forwardTo).forward(request, response);
+      Document resourceDoc = JspHelper.getResource(ivorn);
+      if (resourceDoc == null) {
+         out.write("Resource not found");
       }
-   
+      else {
+         Element resource = (Element) resourceDoc.getDocumentElement().getElementsByTagNameNS("*","Resource").item(0);
+         resource.setAttribute("status", "deleted");
+         
+         RegistryAdminService server = new RegistryAdminService();
+         Document serverResponse = server.updateResource(resourceDoc);
+         out.write("<b>Server Response:</b><p><pre>");
+         if (serverResponse != null) {
+            out.write(DomHelper.DocumentToString(serverResponse).replaceAll("<","&lt;").replaceAll(">","&gt;"));
+         }
+         out.write("</pre>");
+      }
    }
    
 %>
