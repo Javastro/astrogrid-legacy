@@ -1,4 +1,4 @@
-/*$Id: VizierQuerierPlugin.java,v 1.6 2004/11/03 05:14:33 mch Exp $
+/*$Id: VizierQuerierPlugin.java,v 1.7 2004/11/07 14:10:14 mch Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -97,6 +97,10 @@ public class VizierQuerierPlugin extends DefaultPlugin  {
          throw new IllegalArgumentException("Don't specify both TARGET and RA + DEC in query");
       }
       if (target == null) {
+         if (!dec.startsWith("-") && !dec.startsWith("+")) {
+            dec = "+"+dec; //add sign
+         }
+         
          target = ra+" "+dec;
       }
       
@@ -160,6 +164,9 @@ public class VizierQuerierPlugin extends DefaultPlugin  {
 
 /*
  $Log: VizierQuerierPlugin.java,v $
+ Revision 1.7  2004/11/07 14:10:14  mch
+ add pos sign to dec if not signed
+
  Revision 1.6  2004/11/03 05:14:33  mch
  Bringing Vizier back online
 
