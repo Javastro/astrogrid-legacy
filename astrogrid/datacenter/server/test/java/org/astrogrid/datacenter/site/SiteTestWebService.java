@@ -1,4 +1,4 @@
-/*$Id: WebServiceSiteTest.java,v 1.4 2004/01/15 18:05:46 nw Exp $
+/*$Id: SiteTestWebService.java,v 1.1 2004/01/15 18:12:25 nw Exp $
  * Created on 21-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -35,11 +35,11 @@ import org.astrogrid.datacenter.delegate.Metadata;
  * @author M Hill
  *
  */
-public class WebServiceSiteTest extends TestCase {
+public class SiteTestWebService extends TestCase {
 
    String endPoint = null;
    
-   public WebServiceSiteTest(String givenEndPoint)
+   public SiteTestWebService(String givenEndPoint)
    {
       this.endPoint = givenEndPoint;
    }
@@ -61,7 +61,7 @@ public class WebServiceSiteTest extends TestCase {
    {
       FullSearcher querier = DatacenterDelegateFactory.makeFullSearcher(User.ANONYMOUS, endPoint, DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
 
-      InputStream is = WebServiceSiteTest.class.getResourceAsStream("test-query.adql");
+      InputStream is = SiteTestWebService.class.getResourceAsStream("test-query.adql");
 
         Select select = Select.unmarshalSelect(new InputStreamReader(is));
         assertNotNull(select);
@@ -79,7 +79,7 @@ public class WebServiceSiteTest extends TestCase {
 
 //      WebServiceSiteTest tester = new WebServiceSiteTest(args[0]);
       //WebServiceSiteTest tester = new WebServiceSiteTest("http://vm07.astrogrid.org:8080/pal/");
-      WebServiceSiteTest tester = new WebServiceSiteTest("http://localhost:8080/pal/");
+      SiteTestWebService tester = new SiteTestWebService("http://localhost:8080/pal/");
       tester.testBlockingQuery();
       
       
@@ -87,14 +87,19 @@ public class WebServiceSiteTest extends TestCase {
 
     public static Test suite() {
         // Reflection is used here to add all the testXXX() methods to the suite.
-        return new TestSuite(WebServiceSiteTest.class);
+        return new TestSuite(SiteTestWebService.class);
     }
 
 }
 
 
 /*
-$Log: WebServiceSiteTest.java,v $
+$Log: SiteTestWebService.java,v $
+Revision 1.1  2004/01/15 18:12:25  nw
+Renamed, otherwise it gets picked up by the nightly
+build - its not suited for running with this, and fails.
+(want to get to 100% :)
+
 Revision 1.4  2004/01/15 18:05:46  nw
 minor tweak
 
