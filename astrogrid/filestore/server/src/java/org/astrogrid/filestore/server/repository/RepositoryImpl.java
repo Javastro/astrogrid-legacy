@@ -1,11 +1,23 @@
 /*
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/server/src/java/org/astrogrid/filestore/server/repository/RepositoryImpl.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/17 16:46:14 $</cvs:date>
- * <cvs:version>$Revision: 1.11 $</cvs:version>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2004/11/25 00:19:27 $</cvs:date>
+ * <cvs:version>$Revision: 1.12 $</cvs:version>
  * <cvs:log>
  *   $Log: RepositoryImpl.java,v $
+ *   Revision 1.12  2004/11/25 00:19:27  jdt
+ *   Merge from dave-dev-200410061224-200411221626
+ *
+ *   Revision 1.11.10.2  2004/11/09 17:41:36  dave
+ *   Added file:// URL handling to allow server URLs to be tested.
+ *   Added importInit and exportInit to server implementation.
+ *   Moved remaining tests out of extended test abd removed it.
+ *
+ *   Revision 1.11.10.1  2004/10/19 14:56:16  dave
+ *   Refactored config and resolver to enable multiple instances of mock implementation.
+ *   Required to implement handling of multiple FileStore(s) in FileManager.
+ *
  *   Revision 1.11  2004/09/17 16:46:14  dave
  *   Fixed servlet deployment in FileStore ...
  *   Changed tabs to spaces in source code ...
@@ -128,6 +140,9 @@ import org.astrogrid.filestore.common.exception.FileStoreIdentifierException ;
 import org.astrogrid.filestore.common.exception.FileStoreServiceException ;
 import org.astrogrid.filestore.common.exception.FileStoreTransferException ;
 
+import org.astrogrid.filestore.common.FileStoreConfig ;
+import org.astrogrid.filestore.server.FileStoreConfigImpl ;
+
 /**
  * A factory class for creating and storing file containers.
  *
@@ -151,7 +166,7 @@ public class RepositoryImpl
      * Public constructor.
      *
      */
-    public RepositoryImpl(RepositoryConfig config)
+    public RepositoryImpl(FileStoreConfig config)
         {
         if (null == config)
             {
@@ -166,7 +181,7 @@ public class RepositoryImpl
      * Reference to our repository config.
      *
      */
-    protected RepositoryConfig config ;
+    protected FileStoreConfig config ;
 
     /**
      * Factory method to create a new container.
@@ -400,36 +415,23 @@ public class RepositoryImpl
                 {
                 this.properties = new FileProperties() ;
                 }
-            //
-            // Set the resource ident.
-            this.properties.setProperty(
-                FileProperties.STORE_RESOURCE_IDENT,
-                ident.toString()
-                ) ;
-            //
-            // Set the resource size.
-            this.properties.setProperty(
-                FileProperties.CONTENT_SIZE_PROPERTY,
-                String.valueOf(
-                    this.getDataFileSize()
-                    )
-                ) ;
-            //
-            // Try setting the config properties.
+			//
+			// Set the resource properties.
             try {
-                //
-                // Set the service ivorn.
-                this.properties.setProperty(
-                    FileProperties.STORE_SERVICE_IVORN,
-                    config.getServiceIvorn().toString()
-                    ) ;
+	            //
+	            // Set the resource size.
+	            this.properties.setProperty(
+	                FileProperties.CONTENT_SIZE_PROPERTY,
+	                String.valueOf(
+	                    this.getDataFileSize()
+	                    )
+	                ) ;
                 //
                 // Set the resource ivorn.
-                this.properties.setProperty(
-                    FileProperties.STORE_RESOURCE_IVORN,
+                this.properties.setStoreResourceIvorn(
                     config.getResourceIvorn(
                         ident.toString()
-                        ).toString()
+                        )
                     ) ;
                 //
                 // Set the resource URL.

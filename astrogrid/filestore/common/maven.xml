@@ -2,11 +2,18 @@
 <!--+
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/common/maven.xml,v $</cvs:source>
-    | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/08/18 19:00:01 $</cvs:date>
-    | <cvs:version>$Revision: 1.4 $</cvs:version>
+    | <cvs:author>$Author: jdt $</cvs:author>
+    | <cvs:date>$Date: 2004/11/25 00:19:27 $</cvs:date>
+    | <cvs:version>$Revision: 1.5 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.5  2004/11/25 00:19:27  jdt
+    |   Merge from dave-dev-200410061224-200411221626
+    |
+    |   Revision 1.4.46.1  2004/10/21 21:00:13  dave
+    |   Added mock://xyz URL handler to enable testing of transfer.
+    |   Implemented importInit to the mock service and created transfer tests.
+    |
     |   Revision 1.4  2004/08/18 19:00:01  dave
     |   Myspace manager modified to use remote filestore.
     |   Tested before checkin - integration tests at 91%.
@@ -168,6 +175,20 @@
     </goal>
 
     <!-- ================ Component goals ================ -->
+
+    <!--+
+        | Prepare for the java:compile task.
+        | Unpack the Axis webapp and add the classes to our path(s).
+        +-->
+    <preGoal name="java:compile">
+        <ant:echo message=""/>
+        <ant:echo message="Artifact : ${pom.artifactId}"/>
+        <ant:echo message="Preparing for java:compile ...."/>
+        <!--+
+            | Initialise our Axis tools
+            +-->
+        <attainGoal name="init.tools"/>
+    </preGoal>
 
     <!--+
         | Setup our JUnit tests.

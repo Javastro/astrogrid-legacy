@@ -1,10 +1,20 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/client/src/java/org/astrogrid/filestore/client/FileStoreCoreDelegate.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/17 06:57:10 $</cvs:date>
- * <cvs:version>$Revision: 1.7 $</cvs:version>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2004/11/25 00:19:20 $</cvs:date>
+ * <cvs:version>$Revision: 1.8 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreCoreDelegate.java,v $
+ *   Revision 1.8  2004/11/25 00:19:20  jdt
+ *   Merge from dave-dev-200410061224-200411221626
+ *
+ *   Revision 1.7.14.2  2004/10/29 20:57:11  dave
+ *   Updated delegate API to match exportInit.
+ *
+ *   Revision 1.7.14.1  2004/10/21 21:00:13  dave
+ *   Added mock://xyz URL handler to enable testing of transfer.
+ *   Implemented importInit to the mock service and created transfer tests.
+ *
  *   Revision 1.7  2004/09/17 06:57:10  dave
  *   Added commons logging to FileStore.
  *   Updated logging properties in Community.
@@ -540,11 +550,12 @@ public class FileStoreCoreDelegate
 	 * Prepare to receive a file from a remote source.
 	 * @param transfer A TransferProperties object describing the transfer.
 	 * @return A new TransferProperties describing the transfer.
+	 * @throws FileStoreTransferException If the transfer properties are not valid.
 	 * @throws FileStoreServiceException if unable handle the request.
 	 *
 	 */
 	public TransferProperties importInit(TransferProperties transfer)
-		throws FileStoreServiceException
+		throws FileStoreServiceException, FileStoreTransferException
 		{
 		if (null != service)
 			{
@@ -555,7 +566,8 @@ public class FileStoreCoreDelegate
 				{
 				//
 				// Unpack the expected Exception(s).
-				serviceException(ouch) ;
+				serviceException(ouch);
+				transferException(ouch);
 				//
 				// If we get this far, then we don't know what it is.
 				throw new FileStoreServiceException(
@@ -612,11 +624,13 @@ public class FileStoreCoreDelegate
 	 * Prepare to send a file to a remote destination.
 	 * @param transfer A TransferProperties object describing the transfer.
 	 * @return A new TransferProperties describing the transfer.
+	 * @throws FileStoreTransferException if the transfer properties are null.
+	 * @throws FileStoreNotFoundException If unable to locate the target object.
 	 * @throws FileStoreServiceException if unable handle the request.
 	 *
 	 */
 	public TransferProperties exportInit(TransferProperties transfer)
-		throws FileStoreServiceException
+		throws FileStoreNotFoundException, FileStoreTransferException, FileStoreServiceException
 		{
 		if (null != service)
 			{
@@ -628,6 +642,8 @@ public class FileStoreCoreDelegate
 				//
 				// Unpack the expected Exception(s).
 				serviceException(ouch) ;
+				transferException(ouch) ;
+				notfoundException(ouch) ;
 				//
 				// If we get this far, then we don't know what it is.
 				throw new FileStoreServiceException(

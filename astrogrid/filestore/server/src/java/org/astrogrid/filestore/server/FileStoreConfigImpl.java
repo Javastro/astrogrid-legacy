@@ -1,11 +1,21 @@
 /*
  *
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/server/src/java/org/astrogrid/filestore/server/repository/Attic/RepositoryConfigImpl.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/08/18 19:00:01 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/server/src/java/org/astrogrid/filestore/server/FileStoreConfigImpl.java,v $</cvs:source>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2004/11/25 00:19:27 $</cvs:date>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  * <cvs:log>
- *   $Log: RepositoryConfigImpl.java,v $
+ *   $Log: FileStoreConfigImpl.java,v $
+ *   Revision 1.2  2004/11/25 00:19:27  jdt
+ *   Merge from dave-dev-200410061224-200411221626
+ *
+ *   Revision 1.1.2.2  2004/11/17 19:06:30  dave
+ *   Updated server configuration ...
+ *
+ *   Revision 1.1.2.1  2004/10/19 14:56:16  dave
+ *   Refactored config and resolver to enable multiple instances of mock implementation.
+ *   Required to implement handling of multiple FileStore(s) in FileManager.
+ *
  *   Revision 1.3  2004/08/18 19:00:01  dave
  *   Myspace manager modified to use remote filestore.
  *   Tested before checkin - integration tests at 91%.
@@ -28,13 +38,16 @@
  * </cvs:log>
  *
  */
-package org.astrogrid.filestore.server.repository ;
+package org.astrogrid.filestore.server ;
 
 import java.io.File ;
 
 import java.net.URL ;
 import java.net.URLConnection ;
 import java.net.MalformedURLException ;
+
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 import org.astrogrid.store.Ivorn ;
 
@@ -43,34 +56,28 @@ import org.astrogrid.config.SimpleConfig ;
 import org.astrogrid.config.PropertyNotFoundException ;
 
 import org.astrogrid.filestore.common.ivorn.FileStoreIvornFactory ;
-
 import org.astrogrid.filestore.common.exception.FileStoreServiceException ;
+
+import org.astrogrid.filestore.common.FileStoreConfig ;
 
 /**
  * Configuration implementation using the AstroGrid Config.
  *
  */
-public class RepositoryConfigImpl
-	implements RepositoryConfig
+public class FileStoreConfigImpl
+	implements FileStoreConfig
 	{
-	/**
-	 * The config property key for our service identifier.
-	 *
-	 */
-	public static final String STORE_SERVICE_IVORN = "org.astrogrid.filestore.service.ivorn" ;
+    /**
+     * Our debug logger.
+     *
+     */
+    private static Log log = LogFactory.getLog(FileStoreConfigImpl.class);
 
 	/**
-	 * The config property key for our filestore URL.
+	 * The config property key for our service name.
 	 *
 	 */
-	public static final String STORE_FILESTORE_URL = "org.astrogrid.filestore.service.url" ;
-
-	/**
-	 * The config property key for our file root.
-	 * @todo Refactor to use a container
-	 *
-	 */
-	public static final String STORE_SERVICE_ROOT = "org.astrogrid.filestore.repository" ;
+	public static final String SERVICE_NAME = "org.astrogrid.filestore.service.name" ;
 
 	/**
 	 * Reference to our AstroGrid config.
@@ -82,7 +89,7 @@ public class RepositoryConfigImpl
 	 * Public constructor, using the default AstroGrid config.
 	 *
 	 */
-	public RepositoryConfigImpl()
+	public FileStoreConfigImpl()
 		{
 		this(
 			SimpleConfig.getSingleton()
@@ -94,9 +101,40 @@ public class RepositoryConfigImpl
 	 * @param config Reference to the config to use.
 	 *
 	 */
-	public RepositoryConfigImpl(Config config)
+	public FileStoreConfigImpl(Config config)
 		{
 		this.config = config ;
+		}
+
+	/**
+	 * Access to the local service name.
+	 *
+	 */
+	public String getServiceName()
+		{
+		String name = (String) config.getProperty(
+			SERVICE_NAME
+			) ;
+		return name ;
+		}
+
+	/**
+	 * Access to a config property, using the service name prefix.
+	 * @param name The property name (this is combined with the service name to make the full property key).
+	 *
+	 */
+	public String getServiceProperty(String name)
+		{
+		log.debug("");
+		log.debug("FileStoreConfigImpl.getServiceProperty()");
+		log.debug("  Name  : " + name);
+		String index = getServiceName() + "." + name ;
+		log.debug("  Index : " + index);
+		String value = (String) config.getProperty(
+			index
+			) ;
+		log.debug("  Value : " + value);
+		return value ;
 		}
 
 	/**
@@ -107,10 +145,12 @@ public class RepositoryConfigImpl
 	public Ivorn getServiceIvorn()
 		throws FileStoreServiceException
 		{
+		log.debug("");
+		log.debug("FileStoreConfigImpl.getServiceIvorn()");
 		try {
 			return new Ivorn(
-				(String) config.getProperty(
-					STORE_SERVICE_IVORN
+				getServiceProperty(
+					"service.ivorn"
 					)
 				) ;
 			}
@@ -131,10 +171,12 @@ public class RepositoryConfigImpl
 	public URL getServiceUrl()
 		throws FileStoreServiceException
 		{
+		log.debug("");
+		log.debug("FileStoreConfigImpl.getServiceUrl()");
 		try {
 			return new URL(
-				(String) config.getProperty(
-					STORE_FILESTORE_URL
+				getServiceProperty(
+					"service.url"
 					)
 				) ;
 			}
@@ -156,10 +198,13 @@ public class RepositoryConfigImpl
 	public Ivorn getResourceIvorn(String ident)
 		throws FileStoreServiceException
 		{
+		log.debug("");
+		log.debug("FileStoreConfigImpl.getResourceIvorn()");
+		log.debug("  Ident : " + ident);
 		try {
 			return FileStoreIvornFactory.createIvorn(
-				(String) config.getProperty(
-					STORE_SERVICE_IVORN
+				getServiceProperty(
+					"service.ivorn"
 					),
 				ident
 				) ;
@@ -182,10 +227,13 @@ public class RepositoryConfigImpl
 	public URL getResourceUrl(String ident)
 		throws FileStoreServiceException
 		{
+		log.debug("");
+		log.debug("FileStoreConfigImpl.getResourceUrl()");
+		log.debug("  Ident : " + ident);
 		try {
 			return new URL(
-				(String) config.getProperty(
-					STORE_FILESTORE_URL
+				getServiceProperty(
+					"service.url"
 					)
 				+ "/" + ident
 				) ;
@@ -207,10 +255,12 @@ public class RepositoryConfigImpl
 	public File getDataDirectory()
 		throws FileStoreServiceException
 		{
+		log.debug("");
+		log.debug("FileStoreConfigImpl.getDataDirectory()");
 		try {
 			return new File(
-				(String) config.getProperty(
-					STORE_SERVICE_ROOT
+				getServiceProperty(
+					"repository"
 					)
 				) ;
 			}
@@ -231,10 +281,12 @@ public class RepositoryConfigImpl
 	public File getInfoDirectory()
 		throws FileStoreServiceException
 		{
+		log.debug("");
+		log.debug("FileStoreConfigImpl.getInfoDirectory()");
 		try {
 			return new File(
-				(String) config.getProperty(
-					STORE_SERVICE_ROOT
+				getServiceProperty(
+					"repository"
 					)
 				) ;
 			}

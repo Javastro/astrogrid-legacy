@@ -1,11 +1,24 @@
 /*
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/server/src/java/org/astrogrid/filestore/server/servlet/FileStoreServlet.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/17 16:46:14 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2004/11/25 00:19:19 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreServlet.java,v $
+ *   Revision 1.5  2004/11/25 00:19:19  jdt
+ *   Merge from dave-dev-200410061224-200411221626
+ *
+ *   Revision 1.4.10.3  2004/10/27 11:59:43  dave
+ *   Added sevlet debug ...
+ *
+ *   Revision 1.4.10.2  2004/10/27 10:56:31  dave
+ *   Changed inport init to save the details, and simplified tests for debug
+ *
+ *   Revision 1.4.10.1  2004/10/19 14:56:16  dave
+ *   Refactored config and resolver to enable multiple instances of mock implementation.
+ *   Required to implement handling of multiple FileStore(s) in FileManager.
+ *
  *   Revision 1.4  2004/09/17 16:46:14  dave
  *   Fixed servlet deployment in FileStore ...
  *   Changed tabs to spaces in source code ...
@@ -73,11 +86,12 @@ import org.astrogrid.filestore.common.file.FileIdentifier ;
 
 import org.astrogrid.filestore.common.exception.FileStoreException ;
 
+import org.astrogrid.filestore.common.FileStoreConfig ;
+import org.astrogrid.filestore.server.FileStoreConfigImpl ;
+
 import org.astrogrid.filestore.server.repository.Repository ;
 import org.astrogrid.filestore.server.repository.RepositoryImpl ;
-import org.astrogrid.filestore.server.repository.RepositoryConfig ;
 import org.astrogrid.filestore.server.repository.RepositoryContainer ;
-import org.astrogrid.filestore.server.repository.RepositoryConfigImpl ;
 
 /**
  * A file server servlet to handle HTTP GET requests.
@@ -90,7 +104,8 @@ public class FileStoreServlet
      * Our debug logger.
      *
      */
-    private static Log log = LogFactory.getLog(FileStoreServlet.class);
+//    private static Log log = LogFactory.getLog(FileStoreServlet.class);
+    private static Log log ;
 
     /**
      * The default content type (used if the type was not set when the file was stored).
@@ -102,7 +117,7 @@ public class FileStoreServlet
      * Reference to our repository config.
      *
      */
-    protected RepositoryConfig config ;
+    protected FileStoreConfig config ;
 
     /**
      * Reference to our local repository.
@@ -117,9 +132,16 @@ public class FileStoreServlet
     public void init()
         throws ServletException
         {
+//
+// Initialise our logger.
+log = LogFactory.getLog(FileStoreServlet.class);
+        log.debug("") ;
+        log.debug("SERVLET INIT") ;
+        log.debug("FileStoreServlet.init()") ;
+
         //
         // Initialise our config.
-        config = new RepositoryConfigImpl() ;
+        config = new FileStoreConfigImpl() ;
         //
         // Initialise our repository.
         repository = new RepositoryImpl(
@@ -134,16 +156,17 @@ public class FileStoreServlet
     public void doGet(HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException
         {
+        log.debug("") ;
+        log.debug("SERVLET GET") ;
+        log.debug("FileStoreServlet.doGet()") ;
         //
         // Get the request path.
         String path = request.getPathInfo() ;
+        log.debug("  Path : " + path) ;
         //
         // If the path is valid.
         if (null != path)
             {
-            log.debug("") ;
-            log.debug("FileStoreServlet.doGet()") ;
-            log.debug("  Path : " + path) ;
             //
             // Try locating the container.
             try {
@@ -197,13 +220,68 @@ public class FileStoreServlet
         }
 
     /**
-     * Handle a POST request.
+     * Handle a PUT request.
      *
      */
-    public void doPost(HttpServletRequest request, HttpServletResponse response)
+    public void doPut(HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException
         {
-        doGet(request, response);
+        log.debug("") ;
+        log.debug("SERVLET PUT") ;
+        log.debug("FileStoreServlet.doPut()") ;
+        //
+        // Get the request path.
+        String path = request.getPathInfo() ;
+        log.debug("  Path : " + path) ;
+        //
+        // If the path is valid.
+        if (null != path)
+            {
+            //
+            // Try locating our container.
+            try {
+//
+// ** Currently assumes new file, append later.
+//
+                //
+                // Strip off the leading '/' and convert to an identifier.
+                // This relies on the FileIdentifier to check that the identifier is valid (which it don't at the moment).
+                FileIdentifier ident = new FileIdentifier(
+                    path.substring(1)
+                    ) ;
+                log.debug("  Ident : " + ident.toString()) ;
+                //
+                // Locate the container.
+                RepositoryContainer container = repository.load(
+                    ident.toString()
+                    ) ;
+                log.debug("PASS : Got container ....") ;
+                //
+                // Transfer the data in our response.
+	            container.importData(
+					request.getInputStream()
+	                ) ;
+                log.debug("PASS : Transfer completed ....") ;
+
+log.debug("") ;
+log.debug("NOTIFY MANAGER ....") ;
+log.debug("") ;
+
+                }
+            catch (FileStoreException ouch)
+                {
+                log.warn("----") ;
+                log.warn("Exception transferring data into repository") ;
+                log.warn(ouch.toString()) ;
+                log.warn("----") ;
+                response.sendError(
+                    HttpServletResponse.SC_NOT_FOUND,
+                    ouch.getMessage()
+                    ) ;
+                }
+
+
+            }
         }
     }
 

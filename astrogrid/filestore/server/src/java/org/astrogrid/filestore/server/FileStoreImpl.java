@@ -1,11 +1,35 @@
 /*
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/server/src/java/org/astrogrid/filestore/server/FileStoreImpl.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/17 06:57:10 $</cvs:date>
- * <cvs:version>$Revision: 1.9 $</cvs:version>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2004/11/25 00:19:27 $</cvs:date>
+ * <cvs:version>$Revision: 1.10 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreImpl.java,v $
+ *   Revision 1.10  2004/11/25 00:19:27  jdt
+ *   Merge from dave-dev-200410061224-200411221626
+ *
+ *   Revision 1.9.14.6  2004/11/09 17:41:36  dave
+ *   Added file:// URL handling to allow server URLs to be tested.
+ *   Added importInit and exportInit to server implementation.
+ *   Moved remaining tests out of extended test abd removed it.
+ *
+ *   Revision 1.9.14.5  2004/10/27 10:56:30  dave
+ *   Changed inport init to save the details, and simplified tests for debug
+ *
+ *   Revision 1.9.14.4  2004/10/26 16:11:31  dave
+ *   Fixed debug ..
+ *
+ *   Revision 1.9.14.3  2004/10/26 15:07:12  dave
+ *   Added initial code for import init ...
+ *
+ *   Revision 1.9.14.2  2004/10/26 11:13:11  dave
+ *   Changed transfer properties 'source' to 'location', makes more sense for PUT transfers.
+ *
+ *   Revision 1.9.14.1  2004/10/19 14:56:16  dave
+ *   Refactored config and resolver to enable multiple instances of mock implementation.
+ *   Required to implement handling of multiple FileStore(s) in FileManager.
+ *
  *   Revision 1.9  2004/09/17 06:57:10  dave
  *   Added commons logging to FileStore.
  *   Updated logging properties in Community.
@@ -96,12 +120,13 @@ import org.astrogrid.filestore.common.exception.FileStoreTransferException ;
 
 import org.astrogrid.filestore.server.repository.Repository ;
 import org.astrogrid.filestore.server.repository.RepositoryImpl ;
-import org.astrogrid.filestore.server.repository.RepositoryConfig ;
-import org.astrogrid.filestore.server.repository.RepositoryConfigImpl ;
 import org.astrogrid.filestore.server.repository.RepositoryContainer ;
 
 import org.astrogrid.filestore.server.streamer.StreamTicket;
 import org.astrogrid.filestore.server.streamer.StreamTicketList;
+
+import org.astrogrid.filestore.common.FileStoreConfig ;
+import org.astrogrid.filestore.server.FileStoreConfigImpl ;
 
 /**
  * The main server implementation of the store service.
@@ -123,7 +148,7 @@ public class FileStoreImpl
     public FileStoreImpl()
         {
         this(
-            new RepositoryConfigImpl()
+            new FileStoreConfigImpl()
             ) ;
         }
 
@@ -132,7 +157,7 @@ public class FileStoreImpl
      * @param config The local repository configuration.
      *
      */
-    public FileStoreImpl(RepositoryConfig config)
+    public FileStoreImpl(FileStoreConfig config)
         {
         this(
             config,
@@ -148,7 +173,7 @@ public class FileStoreImpl
      * @param repository A local file repository.
      *
      */
-    public FileStoreImpl(RepositoryConfig config, Repository repository)
+    public FileStoreImpl(FileStoreConfig config, Repository repository)
         {
         this.config = config ;
         this.repository = repository ;
@@ -158,7 +183,7 @@ public class FileStoreImpl
      * Reference to our configuration.
      *
      */
-    private RepositoryConfig config ;
+    private FileStoreConfig config ;
 
     /**
      * Reference to our repository.
@@ -454,10 +479,48 @@ public class FileStoreImpl
      * Prepare to receive a data object from a remote source.
      * @param transfer A TransferProperties describing the transfer.
      * @return A new TransferProperties describing the transfer.
+     * @throws FileStoreTransferException if there is an error in the transfer properties.
      *
      */
     public TransferProperties importInit(TransferProperties transfer)
+        throws FileStoreServiceException, FileStoreTransferException
         {
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("FileStoreImpl.importInit()") ;
+        //
+        // Check for null transfer properties.
+        if (null == transfer)
+            {
+            throw new FileStoreTransferException(
+                "Null transfer properties"
+                ) ;
+            }
+        //
+        // Create a new container.
+        RepositoryContainer container = repository.create(
+            new FileProperties(
+                transfer.getFileProperties()
+                )
+            ) ;
+		//
+		// Set the transfer import URL.
+		transfer.setLocation(
+			config.getResourceUrl(
+				container.ident().toString()
+				).toString()
+			) ;
+        log.debug("  URL : " + transfer.getLocation()) ;
+		//
+		// Update and save the container.
+		container.update() ;
+        //
+        // Add the updated file properties.
+        transfer.setFileProperties(
+            container.properties().toArray()
+            ) ;
+        //
+        // Return the transfer properties.
         return transfer ;
         }
 
@@ -485,7 +548,7 @@ public class FileStoreImpl
             }
         //
         // Check for null URL.
-        if (null == transfer.getSource())
+        if (null == transfer.getLocation())
             {
             throw new FileStoreTransferException(
                 "Null transfer source"
@@ -503,7 +566,7 @@ public class FileStoreImpl
         try {
             container.importData(
                 new URL(
-                    transfer.getSource()
+                    transfer.getLocation()
                     )
                 ) ;
             }
@@ -525,13 +588,80 @@ public class FileStoreImpl
 
     /**
      * Prepare to send a data object to a remote destination.
+     * Essentially, this returns a vaild URL to access data in the TransferProperties location.
      * @param transfer A TransferProperties describing the transfer.
+	 * @throws FileStoreTransferException if the transfer properties are null.
+	 * @throws FileStoreNotFoundException If unable to locate the target object.
+	 * @throws FileStoreServiceException if unable handle the request.
      * @return A new TransferProperties describing the transfer.
      *
      */
     public TransferProperties exportInit(TransferProperties transfer)
+		throws FileStoreTransferException, FileStoreServiceException, FileStoreNotFoundException
         {
-        return transfer ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("FileStoreImpl.importInit()") ;
+        //
+        // Check for null transfer properties.
+        if (null == transfer)
+            {
+            throw new FileStoreTransferException(
+                "Null transfer properties"
+                ) ;
+            }
+		//
+		// Get the transfer file properties.
+		FileProperties properties = new FileProperties(
+			transfer.getFileProperties()
+			) ;
+		//
+		// Get the file identifier.
+		String ident = null ;
+		try {
+			ident = properties.getStoreResourceIdent();
+			}
+		catch (FileStoreIdentifierException ouch)
+			{
+			throw new FileStoreNotFoundException(
+				"Unable to parse resource identifier"
+				) ;
+			}
+		//
+		// If we have a valid identifier.
+		if (null != ident)
+			{
+	        //
+	        // Try to locate the container.
+			try {
+				RepositoryContainer container = repository.load(ident) ;
+//
+// Update the transfer properties.
+//
+				//
+				// Set the transfer import URL.
+				transfer.setLocation(
+					config.getResourceUrl(
+						container.ident().toString()
+						).toString()
+					) ;
+		        log.debug("  URL : " + transfer.getLocation()) ;
+				return transfer ;
+				}
+			catch (FileStoreIdentifierException ouch)
+				{
+				throw new FileStoreNotFoundException(
+					"Unable to load resource properties"
+					) ;
+				}
+			}
+		//
+		// If we don't have a valid identifier.
+		else {
+			throw new FileStoreNotFoundException(
+				"Null target file identifier"
+				);
+			}
         }
 
     /**

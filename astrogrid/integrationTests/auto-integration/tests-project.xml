@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: tests-project.xml,v 1.40 2004/11/24 23:38:29 jdt Exp $ -->
+<!-- $Id: tests-project.xml,v 1.41 2004/11/25 00:18:28 jdt Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
     <extend>${basedir}/../../maven-base/project.xml</extend>
@@ -201,6 +201,17 @@
 			<groupId>org.astrogrid</groupId>
 			<artifactId>astrogrid-filestore-client</artifactId>
 			<version>${astrogrid.filestore.version}</version>
+		</dependency>
+		<!-- filemanager -->
+		<dependency>
+			<groupId>org.astrogrid</groupId>
+			<artifactId>astrogrid-filemanager-common</artifactId>
+			<version>${astrogrid.filemanager.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.astrogrid</groupId>
+			<artifactId>astrogrid-filemanager-client</artifactId>
+			<version>${astrogrid.filemanager.version}</version>
 		</dependency>
 		<!-- Third party dependencies -->
 		<dependency>

@@ -1,10 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/client/src/junit/org/astrogrid/filestore/resolver/FileStoreEndpointResolverTestCase.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/08/18 19:00:01 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2004/11/25 00:19:27 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreEndpointResolverTestCase.java,v $
+ *   Revision 1.5  2004/11/25 00:19:27  jdt
+ *   Merge from dave-dev-200410061224-200411221626
+ *
+ *   Revision 1.4.46.1  2004/10/19 14:56:15  dave
+ *   Refactored config and resolver to enable multiple instances of mock implementation.
+ *   Required to implement handling of multiple FileStore(s) in FileManager.
+ *
  *   Revision 1.4  2004/08/18 19:00:01  dave
  *   Myspace manager modified to use remote filestore.
  *   Tested before checkin - integration tests at 91%.
@@ -87,7 +94,7 @@ public class FileStoreEndpointResolverTestCase
 		throws Exception
 		{
 		try {
-			new FileStoreEndpointResolver(
+			new FileStoreEndpointResolverImpl(
 				(RegistryService) null
 				) ;
 			}
@@ -107,7 +114,7 @@ public class FileStoreEndpointResolverTestCase
 		{
 		assertNotNull(
 			"Failed to create resolver",
-			new FileStoreEndpointResolver()
+			new FileStoreEndpointResolverImpl()
 			) ;
 		}
 
@@ -119,7 +126,7 @@ public class FileStoreEndpointResolverTestCase
 		throws Exception
 		{
 		try {
-			FileStoreEndpointResolver resolver = new FileStoreEndpointResolver() ;
+			FileStoreEndpointResolver resolver = new FileStoreEndpointResolverImpl() ;
 			resolver.resolve((Ivorn)null) ;
 			}
 		catch (FileStoreIdentifierException ouch)
@@ -137,7 +144,7 @@ public class FileStoreEndpointResolverTestCase
 		throws Exception
 		{
 		try {
-			FileStoreEndpointResolver resolver = new FileStoreEndpointResolver() ;
+			FileStoreEndpointResolver resolver = new FileStoreEndpointResolverImpl() ;
 			resolver.resolve(
 				new Ivorn("ivo://unknown")
 				) ;
@@ -156,7 +163,7 @@ public class FileStoreEndpointResolverTestCase
 	public void testResolveValid()
 		throws Exception
 		{
-		FileStoreEndpointResolver resolver = new FileStoreEndpointResolver() ;
+		FileStoreEndpointResolver resolver = new FileStoreEndpointResolverImpl() ;
 		assertEquals(
 			"Wrong endpoint",
 			new URL(

@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/common/src/java/org/astrogrid/filestore/common/identifier/UniqueIdentifier.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/08/18 19:00:01 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2004/11/25 00:19:27 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: UniqueIdentifier.java,v $
+ *   Revision 1.4  2004/11/25 00:19:27  jdt
+ *   Merge from dave-dev-200410061224-200411221626
+ *
+ *   Revision 1.3.46.1  2004/10/21 21:00:13  dave
+ *   Added mock://xyz URL handler to enable testing of transfer.
+ *   Implemented importInit to the mock service and created transfer tests.
+ *
  *   Revision 1.3  2004/08/18 19:00:01  dave
  *   Myspace manager modified to use remote filestore.
  *   Tested before checkin - integration tests at 91%.
@@ -103,6 +110,15 @@ public class UniqueIdentifier
         {
         return this.string ;
         }
+
+	/**
+	 * Generate a new identifier.
+	 *
+	 */
+	public static UniqueIdentifier next()
+		{
+		return new UniqueIdentifier() ;
+		}
 
     }
 

@@ -1,40 +1,22 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/client/src/java/org/astrogrid/filestore/resolver/FileStoreDelegateResolver.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/17 06:57:10 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2004/11/25 00:19:21 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: FileStoreDelegateResolver.java,v $
- *   Revision 1.4  2004/09/17 06:57:10  dave
- *   Added commons logging to FileStore.
- *   Updated logging properties in Community.
- *   Fixed bug in AGINAB deployment.
- *   Removed MySpace tests with hard coded grendel address.
+ *   Revision 1.5  2004/11/25 00:19:21  jdt
+ *   Merge from dave-dev-200410061224-200411221626
  *
- *   Revision 1.3.32.1  2004/09/17 01:08:36  dave
- *   Updated debug to use commons logging API ....
- *
- *   Revision 1.3  2004/08/18 19:00:01  dave
- *   Myspace manager modified to use remote filestore.
- *   Tested before checkin - integration tests at 91%.
- *
- *   Revision 1.2.8.1  2004/07/28 03:00:17  dave
- *   Refactored resolver constructors and added mock ivorn
- *
- *   Revision 1.2  2004/07/23 15:17:30  dave
- *   Merged development branch, dave-dev-200407231013, into HEAD
- *
- *   Revision 1.1.2.1  2004/07/23 15:04:46  dave
- *   Added delegate resolver and tests
+ *   Revision 1.4.14.1  2004/10/19 14:56:15  dave
+ *   Refactored config and resolver to enable multiple instances of mock implementation.
+ *   Required to implement handling of multiple FileStore(s) in FileManager.
  *
  * </cvs:log>
  *
  */
 package org.astrogrid.filestore.resolver ;
-
-import org.apache.commons.logging.Log ;
-import org.apache.commons.logging.LogFactory ;
 
 import java.net.URL ;
 
@@ -50,51 +32,11 @@ import org.astrogrid.filestore.client.FileStoreMockDelegate ;
 import org.astrogrid.filestore.common.exception.FileStoreIdentifierException ;
 
 /**
- * A helper class to resolve an Ivron into a service delegate.
+ * Public interface for a helper class to resolve an Ivron into a service delegate.
  *
  */
-public class FileStoreDelegateResolver
+public interface FileStoreDelegateResolver
     {
-    /**
-     * Our debug logger.
-     *
-     */
-    private static Log log = LogFactory.getLog(FileStoreDelegateResolver.class);
-
-    /**
-     * Public constructor, using the default registry service.
-     *
-     */
-    public FileStoreDelegateResolver()
-        {
-		this.resolver = new FileStoreEndpointResolver() ;
-        }
-
-    /**
-     * Public constructor, using a specific registry service.
-     * @param registry The endpoint address for our RegistryDelegate.
-     *
-     */
-    public FileStoreDelegateResolver(URL registry)
-        {
-		this.resolver = new FileStoreEndpointResolver(registry) ;
-        }
-
-    /**
-     * Public constructor, using a specific registry delegate.
-     * @param registry The registry delegate.
-     *
-     */
-    public FileStoreDelegateResolver(RegistryService registry)
-        {
-		this.resolver = new FileStoreEndpointResolver(registry) ;
-		}
-
-	/**
-	 * Our endpoint resolver.
-	 *
-	 */
-	private FileStoreEndpointResolver resolver ;
 
     /**
      * Resolve an Ivorn into a delegate.
@@ -105,33 +47,6 @@ public class FileStoreDelegateResolver
      *
      */
     public FileStoreDelegate resolve(Ivorn ivorn)
-        throws FileStoreIdentifierException, FileStoreResolverException
-        {
-        log.debug("") ;
-        log.debug("----\"----") ;
-        log.debug("FileStoreDelegateResolver.resolve()") ;
-        log.debug("  Ivorn : " + ivorn) ;
-		//
-		// Create a parser to check the ivorn.
-		FileStoreIvornParser parser =
-			new FileStoreIvornParser(
-				ivorn
-				) ;
-		//
-		// If this is a mock ivorn.
-		if (parser.isMock())
-			{
-			return new FileStoreMockDelegate() ;
-			}
-		//
-		// Resolve the endpoint and return a new soap delegate.
-		else {
-			return new FileStoreSoapDelegate(
-				resolver.resolve(
-					ivorn
-					)
-				) ;
-			}
-        }
+        throws FileStoreIdentifierException, FileStoreResolverException ;
     }
 

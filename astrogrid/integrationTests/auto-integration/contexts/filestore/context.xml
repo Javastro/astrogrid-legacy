@@ -2,5 +2,9 @@
     <Environment
         name="org.astrogrid.config.url"
         override="false" type="java.lang.String"
-        value="@CONFIGPATH@/@FILESTORE_NAME@.properties"/>
+        value="@CONFIGPATH@/AstroGridConfig.properties"/>
+    <Environment
+        name="org.astrogrid.filestore.service.name"
+        override="false" type="java.lang.String"
+        value="@FILESTORE_NAME@"/>
 </Context>

@@ -1,10 +1,22 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/common/src/java/org/astrogrid/filestore/common/FileStore.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/08/27 22:43:15 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2004/11/25 00:19:19 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStore.java,v $
+ *   Revision 1.7  2004/11/25 00:19:19  jdt
+ *   Merge from dave-dev-200410061224-200411221626
+ *
+ *   Revision 1.6.34.2  2004/10/29 15:54:50  dave
+ *   Added exportInit to mock implementation ...
+ *   Added UrlGetRequest to pass into exportInit ...
+ *   Added test for exportInit and UrlGetRequest ...
+ *
+ *   Revision 1.6.34.1  2004/10/21 21:00:13  dave
+ *   Added mock://xyz URL handler to enable testing of transfer.
+ *   Implemented importInit to the mock service and created transfer tests.
+ *
  *   Revision 1.6  2004/08/27 22:43:15  dave
  *   Updated filestore and myspace to report file size correctly.
  *
@@ -214,12 +226,13 @@ public interface FileStore
 	 * Prepare to receive a file from a remote source.
 	 * @param transfer A TransferProperties object describing the transfer.
 	 * @return A new TransferProperties describing the transfer.
+	 * @throws FileStoreTransferException If the input transfer properties are not valid.
 	 * @throws FileStoreServiceException if unable handle the request.
      * @throws RemoteException If the WebService call fails.
 	 *
 	 */
 	public TransferProperties importInit(TransferProperties transfer)
-		throws RemoteException, FileStoreServiceException ;
+		throws RemoteException, FileStoreServiceException, FileStoreTransferException ;
 
 	/**
 	 * Import a file from a remote source.
@@ -237,12 +250,14 @@ public interface FileStore
 	 * Prepare to send a file to a remote destination.
 	 * @param transfer A TransferProperties object describing the transfer.
 	 * @return A new TransferProperties describing the transfer.
+	 * @throws FileStoreTransferException if the transfer properties are null.
+	 * @throws FileStoreNotFoundException If unable to locate the target object.
 	 * @throws FileStoreServiceException if unable handle the request.
      * @throws RemoteException If the WebService call fails.
 	 *
 	 */
 	public TransferProperties exportInit(TransferProperties transfer)
-		throws RemoteException, FileStoreServiceException ;
+		throws RemoteException, FileStoreNotFoundException, FileStoreTransferException, FileStoreServiceException ;
 
 	/**
 	 * Export a file to a remote destination.

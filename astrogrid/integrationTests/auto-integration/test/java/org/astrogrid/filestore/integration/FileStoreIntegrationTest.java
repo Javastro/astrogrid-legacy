@@ -1,10 +1,19 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/integrationTests/auto-integration/test/java/org/astrogrid/filestore/integration/FileStoreIntegrationTest.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/08/23 16:14:55 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2004/11/25 00:18:28 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreIntegrationTest.java,v $
+ *   Revision 1.7  2004/11/25 00:18:28  jdt
+ *   Merge from dave-dev-200410061224-200411221626
+ *
+ *   Revision 1.6.38.2  2004/11/17 19:03:21  dave
+ *   Updated FileStore configuration ...
+ *
+ *   Revision 1.6.38.1  2004/10/26 13:17:25  dave
+ *   Updated resolver impl
+ *
  *   Revision 1.6  2004/08/23 16:14:55  dave
  *   Changed integration test configuration to run two filestores.
  *
@@ -54,9 +63,11 @@ import org.astrogrid.config.Config ;
 import org.astrogrid.config.SimpleConfig ;
 
 import org.astrogrid.filestore.common.FileStoreTest ;
+
 import org.astrogrid.filestore.client.FileStoreSoapDelegate ;
 import org.astrogrid.filestore.client.FileStoreCoreDelegate ;
 import org.astrogrid.filestore.resolver.FileStoreDelegateResolver ;
+import org.astrogrid.filestore.resolver.FileStoreDelegateResolverImpl ;
 
 /**
  * A JUnit test case for the store service.
@@ -78,7 +89,7 @@ public class FileStoreIntegrationTest
 		config = SimpleConfig.getSingleton();
         //
         // Create our test targets.
-		FileStoreDelegateResolver resolver = new FileStoreDelegateResolver() ;
+		FileStoreDelegateResolver resolver = new FileStoreDelegateResolverImpl() ;
 		this.target = 
 			(FileStoreCoreDelegate)
 			resolver.resolve(

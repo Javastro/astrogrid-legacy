@@ -223,12 +223,22 @@
             <properties/>
         </dependency>
         <!--+
-            | Filestore WebApp.
+            | FileStore WebApp.
             +-->
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-filestore</artifactId>
             <version>${astrogrid.filestore.version}</version>
+            <type>war</type>
+            <url>http://www.astrogrid.org/</url>
+        </dependency>
+        <!--+
+            | FileManager WebApp.
+            +-->
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-filemanager</artifactId>
+            <version>${astrogrid.filemanager.version}</version>
             <type>war</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>

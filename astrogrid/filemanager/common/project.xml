@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+    |
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/common/Attic/project.xml,v $</cvs:source>
+    | <cvs:author>$Author: jdt $</cvs:author>
+    | <cvs:date>$Date: 2004/11/25 00:20:29 $</cvs:date>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:log>
+    |   $Log: project.xml,v $
+    |   Revision 1.2  2004/11/25 00:20:29  jdt
+    |   Merge from dave-dev-200410061224-200411221626
+    |
+    |   Revision 1.1.2.5  2004/11/13 01:39:03  dave
+    |   Modifications to support the new client API ...
+    |
+    |   Revision 1.1.2.4  2004/11/11 16:36:19  dave
+    |   Changed getChildren to retunr array of names ...
+    |
+    |   Revision 1.1.2.3  2004/10/19 14:52:36  dave
+    |   Refactored container and file into just node.
+    |
+    |   Revision 1.1.2.2  2004/10/07 16:04:38  dave
+    |   Added exception to addAccount
+    |
+    |   Revision 1.1.2.1  2004/10/07 14:29:08  dave
+    |   Added initial interface and implementations ....
+    |
+    | </cvs:log>
+    |
+    +-->
+<project
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="maven-project.xsd">
+    <!--+
+        | Extend the common project descriptor.
+        +-->
+    <extend>${basedir}/../maven/project.xml</extend>
+
+    <!--+
+        | The short name of the project.
+        +-->
+    <id>astrogrid-filemanager-common</id>
+
+    <!--+
+        | The full name of the project.
+        +-->
+    <name>FileManager common</name>
+
+    <!--+
+        | The Java package name of the project.
+        +-->
+    <package>org.astrogrid.filemanager.common</package>
+
+    <!--+
+        | A detailed description of the project.
+        +-->
+    <description>
+        <![CDATA[
+            Long description of the project, including <i>HTML</i> tags ....
+        ]]>
+    </description>
+
+    <!--+
+        | A short description of the project.
+        +-->
+    <shortDescription>Short description of the project ....</shortDescription>
+
+    <!--+
+        | Our cvs repository location.
+        +-->
+    <repository>
+        <connection>
+            scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/filemanager/common
+        </connection>
+        <developerConnection>
+            scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/filemanager/common
+        </developerConnection>
+    </repository>
+
+    <!--+
+        | The external dependencies required to build and test the project.
+        +-->
+    <dependencies>
+        <!--+
+            | The AstroGrid common classes.
+            +-->
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>astrogrid-common</artifactId>
+            <version>${astrogrid.common.version}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+        </dependency>
+        <!--+
+            | The AstroGrid community classes.
+            +-->
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>astrogrid-community-common</artifactId>
+            <version>${astrogrid.community.version}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+        </dependency>
+        <!--+
+            | The AstroGrid filestore classes.
+            +-->
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>astrogrid-filestore-common</artifactId>
+            <version>${astrogrid.filestore.version}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>astrogrid-filestore-client</artifactId>
+            <version>${astrogrid.filestore.version}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+        </dependency>
+
+    </dependencies>
+
+    <!--+
+        | The build properties for our project.
+        +-->
+    <build>
+        <!--+
+            | The location of our Java source code.
+            +-->
+        <sourceDirectory>src/java</sourceDirectory>
+        <!--+
+            | The location of our JUnit source code.
+            +-->
+        <unitTestSourceDirectory>src/test</unitTestSourceDirectory>
+        <!--+
+            | Our JUnit test classes.
+            +-->
+        <unitTest>
+            <!--+
+                | Which tests to include.
+                +-->
+            <includes>
+                <include>**/*TestCase.java</include>
+            </includes>
+        </unitTest>
+    </build>
+
+</project>

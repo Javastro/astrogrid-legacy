@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+    |
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/maven/maven.xml,v $</cvs:source>
+    | <cvs:author>$Author: jdt $</cvs:author>
+    | <cvs:date>$Date: 2004/11/25 00:20:29 $</cvs:date>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:log>
+    |   $Log: maven.xml,v $
+    |   Revision 1.2  2004/11/25 00:20:29  jdt
+    |   Merge from dave-dev-200410061224-200411221626
+    |
+    |   Revision 1.1.2.3  2004/11/18 16:06:11  dave
+    |   Added delegate resolver and tests ....
+    |
+    |   Revision 1.1.2.2  2004/11/18 14:39:32  dave
+    |   Added SOAP delegate, RemoteException decoding and test case.
+    |
+    |   Revision 1.1.2.1  2004/10/07 14:29:08  dave
+    |   Added initial interface and implementations ....
+    |
+    | </cvs:log>
+    |
+    +-->
+<project
+    xmlns:core="jelly:core"
+    xmlns:maven="jelly:maven"
+    xmlns:ant="jelly:ant"
+    xmlns:util="jelly:util"
+    xmlns:log="jelly:log"
+    xmlns:define="jelly:define"
+    xmlns:filemanager="org.astrogrid.filemanager"
+    >
+
+    <!--+
+        | Determine what the top-level project root is
+        +-->
+    <core:set var="project.base.root" value="${pom.parentBasedir().getParentFile().getCanonicalFile()}"/>
+    <ant:echo message=""/>
+    <ant:echo message="Project root   : ${project.base.root}"/>
+    <!--+
+        | Load the maven properties.
+        | Note, if we use ant:properties, then the values are not passed to the Maven plugins.
+        | eg. jar:deploy-snapshot tries to deploy to ibiblio.org !
+        +-->
+    <ant:echo message="Loading maven properties : ${project.base.root}/maven/maven.properties"/>
+    <util:properties file="${project.base.root}/maven/maven.properties"/>
+    <!--+
+        | Load the axis properties.
+        | Note, if we use util:properties, then the references to other properties are not resolved.
+        +-->
+    <ant:echo message="Loading axis properties  : ${project.base.root}/maven/axis.properties"/>
+    <ant:property file="${project.base.root}/maven/axis.properties"/>
+    <!--+
+        | Fix the Maven JAXP properties.
+        +-->
+    <ant:echo message="Fixing JAXP properties ...."/>
+    <core:expr value="${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}"/>
+    <ant:echo message=""/>
+
+    <!--+
+        | Debug info ....
+        +-->
+    <goal name="info">
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+    </goal>
+
+    <!-- ================ Axis goals ================ -->
+
+    <!--+
+        | Initialise the Axis tools.
+        +-->
+    <goal name="init.tools">
+        <ant:echo message=""/>
+        <ant:echo message="Initialising Axis tools ...."/>
+        <!--+
+            | Check if we have already done this.
+            +-->
+        <core:if test="${!axisInitToolsDone}">
+            <ant:echo message="...."/>
+            <core:set var="axisInitToolsDone" value="true"/>
+            <!--+
+                | Initialise our classpath.
+                +-->
+            <attainGoal name="init.classpath"/>
+            <!--+
+                | Initialise our tools.
+                +-->
+            <ant:taskdef name="axis.admin"     classpathref="astro.axis.classpath" classname="org.apache.axis.tools.ant.axis.AdminClientTask"/>
+            <ant:taskdef name="axis.wsdl2java" classpathref="astro.axis.classpath" classname="org.apache.axis.tools.ant.wsdl.Wsdl2javaAntTask"/>
+            <ant:taskdef name="axis.java2wsdl" classpathref="astro.axis.classpath" classname="org.apache.axis.tools.ant.wsdl.Java2WsdlAntTask"/>
+        </core:if>
+    </goal>
+
+    <!--+
+        | Initialise the Axis classpath.
+        | Adds the Axis jars to our build classpath.
+        +-->
+    <goal name="init.classpath">
+        <ant:echo message=""/>
+        <ant:echo message="Initialising Axis classpath ...."/>
+        <!--+
+            | Check if we have already done this.
+            +-->
+        <core:if test="${!axisClassPathDone}">
+            <ant:echo message="...."/>
+            <core:set var="axisClassPathDone" value="true"/>
+            <!--+
+                | Initialise our paths.
+                +-->
+            <attainGoal name="init.paths"/>
+            <!--+
+                | Check if the Axis webapp has been unpacked.
+                +-->
+            <ant:echo message="Checking for Axis webapp"/>
+            <core:set var="axisLibExists" value="false" />
+            <util:available file="${axisDir}/WEB-INF/lib">
+                <core:set var="axisLibExists" value="true" />
+                <ant:echo message="Found Axis webapp at ${axisDir}"/>
+            </util:available>
+            <!--+
+                | If the Axis webapp has not been unpacked then unpack it.
+                +-->
+            <core:if test="${!axisLibExists}">
+                <attainGoal name="init.axis"/>
+            </core:if>
+            <!--+
+                | Create an Ant classpath from the jars inside our webapp.
+                +-->
+            <ant:path id="astro.axis.classpath">
+                <ant:fileset dir="${axisDir}/WEB-INF/lib">
+                    <include name="*.jar"/>
+                </ant:fileset>
+            </ant:path>
+            <!--+
+                | Add this to the global maven.dependency.classpath.
+                +-->
+            <maven:addPath id="maven.dependency.classpath" refid="astro.axis.classpath"/>
+        </core:if>
+    </goal>
+
+    <!--+
+        | Initialise our Axis libraries
+        +-->
+    <goal name="init.axis">
+        <ant:echo message=""/>
+        <ant:echo message="Initialising Axis libraries ...."/>
+        <!--+
+            | Check if we have already done this.
+            +-->
+        <core:if test="${!axisUnpackDone}">
+            <ant:echo message="...."/>
+            <core:set var="axisUnpackDone" value="true"/>
+            <!--+
+                | Initialise our paths.
+                +-->
+            <attainGoal name="init.paths"/>
+            <!--+
+                | Project.getDependencyPath() only works for jar and ejb files.
+                | See : http://maven.apache.org/xref/org/apache/maven/DependencyClasspathBuilder.html#100
+                | Means we have to do this the long way round .... by iterating through our list of artifacts.
+                +-->
+            <core:forEach var="artifact" items="${pom.getArtifacts()}">
+                <!--+
+                    | If the artifact matches our criteria.
+                    +-->
+                <core:if test="${artifact.getDependency().getType().equals('war') and artifact.getDependency().getId().equals('axis:axis')}">
+                    <ant:echo message="Found Axis war file"/>
+                    <ant:echo message="  Ident    : ${artifact.getDependency().getId()}"/>
+                    <ant:echo message="  Version  : ${artifact.getDependency().getVersion()}"/>
+                    <ant:echo message="  Type     : ${artifact.getDependency().getType()}"/>
+                    <ant:echo message="  Name     : ${artifact.getName()}"/>
+                    <ant:echo message="  Path     : ${artifact.getPath()}"/>
+                    <!--+
+                        | Unpack the Axis war file.
+                        +-->
+                    <ant:echo message="Unpacking Axis war file"/>
+                    <ant:unjar src="${artifact.getPath()}" dest="${axisDir}"/>
+                </core:if>
+            </core:forEach>
+        </core:if>
+    </goal>
+
+    <!--+
+        | Initialise our path locations.
+        +-->
+    <goal name="init.paths">
+        <ant:echo message=""/>
+        <ant:echo message="Initialising Axis paths ..."/>
+        <!--+
+            | Check if we have already done this.
+            +-->
+        <core:if test="${!astroInitPathsDone}">
+            <ant:echo message="...."/>
+            <core:set var="astroInitPathsDone" value="true"/>
+            <!--+
+                | Set the local paths.
+                +-->
+            <core:set var="axisUrl" value="http://${astro.axis.host}:${astro.axis.port}/astrogrid-filemanager"/>
+            <core:set var="axisDir" value="${astro.axis.webapp.dir}"/>
+            <core:set var="tempDir" value="${astro.axis.generated.temp.dir}"/>
+            <core:set var="javaDir" value="${astro.axis.generated.java.dir}"/>
+            <core:set var="wsdlDir" value="${astro.axis.generated.wsdl.dir}"/>
+            <core:set var="wsddDir" value="${astro.axis.generated.wsdd.dir}"/>
+
+            <ant:echo message="axisUrl : ${axisUrl}"/>
+            <ant:echo message="axisDir : ${axisDir}"/>
+            <ant:echo message="tempDir : ${tempDir}"/>
+            <ant:echo message="javaDir : ${javaDir}"/>
+            <ant:echo message="wsdlDir : ${wsdlDir}"/>
+            <ant:echo message="wsddDir : ${wsddDir}"/>
+
+        </core:if>
+    </goal>
+
+    <!-- ================ Install goals ================ -->
+
+    <!--+
+        | Deploy our site.
+        +-->
+    <goal name="deploy-local-site">
+        <ant:echo message=""/>
+        <ant:echo message="Deploying project site."/>
+        <!--+
+            | Set the target name and directory.
+            +-->
+        <core:set var="targetPath" value="${maven.site.central.directory}/${pom.currentVersion}/${astrogrid.name}"/>
+        <ant:echo message="  Source location  : ${maven.docs.dest}"/>
+        <ant:echo message="  Default location : ${targetPath}"/>
+        <ant:echo message="  Custom location  : ${astrogrid.filemanager.deploy.site}"/>
+        <core:set var="customPath" value="${astrogrid.filemanager.deploy.site}"/>
+        <core:if test="${customPath.length() > 0}">
+            <core:set var="targetPath" value="${customPath}"/>
+        </core:if>
+        <!--+
+            | Copy our files across.
+            +-->
+        <ant:copy overwrite="true" todir="${targetPath}">
+            <fileset dir="${maven.docs.dest}">
+                <include name="**"/>
+            </fileset>
+        </ant:copy>
+    </goal>
+
+    <!-- ================ Custom tag library ================ -->
+
+    <!--+
+        | Define our local tag library.
+        +-->
+    <define:taglib uri="org.astrogrid.filemanager">
+        <!--+
+            | Test tag, debug only.
+            | Attrib : message - The debug message to print.
+            |
+            +-->
+        <define:tag name="debug.tag">
+            <ant:echo message="Message ${message}"/>
+        </define:tag>
+
+        <!--+
+            | Generate the WSDL and stubs for a WebService.
+            | Attrib : service.name      eg. SecurityManager
+            | Attrib : service.wsdd      eg. org/astrogrid/community/common/security/manager/deploy.wsdd
+            | Attrib : service.class     eg. org.astrogrid.community.server.security.manager.SecurityManagerImpl
+            | Attrib : service.interface eg. org.astrogrid.community.common.security.manager.SecurityManager
+            | Attrib : service.namespace eg. urn:manager.security.common.community.astrogrid.org
+            |
+            +-->
+        <define:tag name="service.generate">
+            <!--+
+                | Generate our WSDL.
+                +-->
+            <ant:echo message=""/>
+            <ant:echo message="Generating WSDL for ${service.name}"/>
+            <ant:axis.java2wsdl
+                output="${wsdlDir}/${service.name}.wsdl"
+                classname="${service.interface}"
+                location="${axisUrl}/services/${service.name}"
+                namespace="${service.namespace}"
+                style="RPC"
+                >
+                <classpath>
+                    <ant:path refid="maven.dependency.classpath"/>
+                    <ant:pathelement path="${maven.build.dest}"/>
+                </classpath>
+            </ant:axis.java2wsdl>
+            <!--+
+                | Generate our stubs.
+                +-->
+            <ant:echo message=""/>
+            <ant:echo message="Generating Java stubs for ${service.name}"/>
+            <ant:axis.wsdl2java
+                verbose="false"
+                serverside="true"
+                skeletondeploy="false"
+                output="${tempDir}"
+                url="file:///${wsdlDir}/${service.name}.wsdl"
+                >
+            </ant:axis.wsdl2java>
+            <!--+
+                | Modify the WSDD to use our implementation classes.
+                +-->
+            <ant:echo message=""/>
+            <ant:echo message="Updating WSDD implementaion class for ${service.name}"/>
+            <ant:xslt style="${project.base.root}/maven/src/xsl/wsdd-impl.xsl"
+                in="${tempDir}/${service.wsdd}"
+                out="${wsddDir}/${service.name}.wsdd">
+                <outputproperty name="method" value="xml"/>
+                <outputproperty name="indent" value="yes"/>
+                <param name="service"   expression="${service.name}"/>
+                <param name="classname" expression="${service.class}"/>
+            </ant:xslt>
+            <!--+
+                | Modify the WSDD deployment scope
+                +-->
+            <ant:echo message=""/>
+            <ant:echo message="Updating WSDD service scope for ${service.name}"/>
+            <ant:xslt style="${project.base.root}/maven/src/xsl/wsdd-scope.xsl"
+                in="${wsddDir}/${service.name}.wsdd"
+                out="${wsddDir}/${service.name}.wsdd.tmp">
+                <outputproperty name="method" value="xml"/>
+                <outputproperty name="indent" value="yes"/>
+                <param name="service" expression="${service.name}"/>
+                <param name="scope"   expression="Application"/>
+            </ant:xslt>
+            <ant:move
+                verbose="true"
+                file="${wsddDir}/${service.name}.wsdd.tmp"
+                toFile="${wsddDir}/${service.name}.wsdd"
+                />
+            <!--+
+                | Copy the generated Java files we want to use.
+                +-->
+            <ant:echo message=""/>
+            <ant:echo message="Copying generated Java for ${service.name}"/>
+            <ant:copy verbose="false" toDir="${javaDir}">
+                <fileset dir="${tempDir}">
+                    <include name="**/${service.name}Service.java"/>
+                    <include name="**/${service.name}ServiceLocator.java"/>
+                    <include name="**/${service.name}SoapBindingStub.java"/>
+                </fileset>
+            </ant:copy>
+        </define:tag>
+
+        <!--+
+            | Deploy a WebService into the local Axis config.
+            | Attrib : service.name eg. SecurityManager
+            +-->
+        <define:tag name="service.deploy">
+            <ant:echo message=""/>
+            <ant:echo message="Deploying ${service.name}"/>
+            <ant:echo message="  WSDD : ${wsddDir}/${service.name}.wsdd"/>
+            <ant:java classname="org.apache.axis.utils.Admin"
+                dir="${axisDir}/WEB-INF"
+                classpathref="maven.dependency.classpath"
+                fork="true"
+                >
+                <arg value="server"/>
+                <arg value="${wsddDir}/${service.name}.wsdd"/>
+            </ant:java>
+        </define:tag>
+    </define:taglib>
+</project>

@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.130 2004/11/23 18:40:50 jdt Exp $ -->
+<!-- $Id: maven.xml,v 1.131 2004/11/25 00:18:28 jdt Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -146,6 +146,8 @@
         <sleep seconds="2" />
         <attainGoal name="filestore-deploy" />
         <sleep seconds="2" />
+        <attainGoal name="filemanager-deploy" />
+        <sleep seconds="2" />
         <attainGoal name="pal-deploy" />
         <sleep seconds="4" />
         <attainGoal name="pal-fits-deploy" />
@@ -181,6 +183,8 @@
         <attainGoal name="myspace-deploy" />
         <sleep seconds="2" />
         <attainGoal name="filestore-deploy" />
+        <sleep seconds="2" />
+        <attainGoal name="filemanager-deploy" />
         <sleep seconds="2" />
         <attainGoal name="pal-deploy" />
         <sleep seconds="4" />
@@ -295,6 +299,7 @@
         <attainGoal name="setup-cea-http" />
         <attainGoal name="setup-myspace" />
         <attainGoal name="setup-filestore" />
+        <attainGoal name="setup-filemanager" />
         <attainGoal name="copy-test-resources" />
 </goal>
 
@@ -353,6 +358,10 @@
     <copy todir="${work.dir}/filestore-two/data">
         <fileset dir="work/filestore/data"/>
     </copy>
+</goal>
+
+<goal name="setup-filemanager" description="filestore setup">
+    <echo>Configuring filemanager ....</echo>
 </goal>
 
 <goal name="setup-community" description="Community setup">
@@ -560,8 +569,9 @@
     <echo message=""/>
     <!--+
         | Wait for our service to respond.
+        -->
     <attainGoal name="community-wait"/>
-        +-->    
+            
     <!--+
         | Register our service(s).
         +-->
@@ -787,7 +797,7 @@
         | Setup the params.
         +-->
     <j:set var="filestore.webapp"    value="astrogrid-${filestore.name}-${pom.currentVersion}"/>
-    <filter token="FILESTORE_NAME"   value="${filestore.name}"/>
+    <filter token="FILESTORE_NAME"   value="org.astrogrid.${filestore.name}"/>
     <filter token="FILESTORE_WEBAPP" value="${filestore.webapp}"/>
     <!--+
         | Make a copy of the war file.
@@ -819,6 +829,62 @@
         password="${tomcat.manager.password}"
         path="/${filestore.webapp}"
         war="file:///${temporary.dir}/${filestore.webapp}.war"
+        />
+</goal>
+
+<goal name="filemanager-deploy">
+    <!--+
+        | Deploy FileManager one.
+        +-->
+    <j:set var="filemanager.name" value="filemanager-one"/>
+    <attainGoal name="filemanager-deploy-sub"/>
+    <!--+
+        | Deploy FileManager two.
+        +-->
+    <j:set var="filemanager.name" value="filemanager-two"/>
+    <attainGoal name="filemanager-deploy-sub"/>
+</goal>
+
+<goal name="filemanager-deploy-sub">
+    <echo>Deploying ${filemanager.name} ....</echo>
+    <!--+
+        | Setup the params.
+        +-->
+    <j:set var="filemanager.webapp"    value="astrogrid-${filemanager.name}-${pom.currentVersion}"/>
+    <filter token="FILEMANAGER_NAME"   value="org.astrogrid.${filemanager.name}"/>
+    <filter token="FILEMANAGER_WEBAPP" value="${filemanager.webapp}"/>
+    <!--+
+        | Make a copy of the war file.
+        +-->
+    <copy filtering="false"
+        file="${temporary.dir}/astrogrid-filemanager-${astrogrid.filemanager.version}.war"
+        toFile="${temporary.dir}/${filemanager.webapp}.war"
+        />
+    <!--+
+        | Copy the context file.
+        +-->
+    <copy todir="${temporary.dir}/${filemanager.name}" filtering="true">
+        <fileset dir="contexts/filemanager"/>
+    </copy>
+<!--+
+    <ag:maybe-enable-cougaar webapp="${filemanager.name}" />
+    +-->
+    <!--+
+        | Update the war file.
+        +-->
+    <war update="true" destfile="${temporary.dir}/${filemanager.webapp}.war">
+        <metainf dir="${temporary.dir}/${filemanager.name}"/>
+    </war>
+    <!--+
+        | Deploy the war file into Tomcat.
+        +-->
+    <tomcat-deploy
+        update="true"
+        url="${tomcat.manager.url}"
+        username="${tomcat.manager.username}"
+        password="${tomcat.manager.password}"
+        path="/${filemanager.webapp}"
+        war="file:///${temporary.dir}/${filemanager.webapp}.war"
         />
 </goal>
 
@@ -1290,8 +1356,9 @@
         <attainGoal name="common-libs-deploy"/>
         <attainGoal name="configuration-deploy"/>
         <attainGoal name="reg-deploy"/>
-        <attainGoal name="myspace-deploy"/>
         <attainGoal name="filestore-deploy"/>
+        <attainGoal name="filemanager-deploy"/>
+        <attainGoal name="myspace-deploy"/>
         <attainGoal name="community-deploy"/>
         <!--+
             | Configure our components.
@@ -1300,6 +1367,7 @@
         <attainGoal name="setup-working-dir"/>
         <attainGoal name="setup-registry"/>
         <attainGoal name="setup-filestore"/>
+        <attainGoal name="setup-filemanager"/>
         <attainGoal name="setup-myspace"/>
         <attainGoal name="community-database"/>
         <attainGoal name="community-register"/>
@@ -1327,7 +1395,7 @@
             | Run the integration tests.
         <attainGoal name="int-test"/>
         <attainGoal name="astrogrid-build-site"/>
-            +-->
         <attainGoal name="astrogrid-build-site"/>
+            +-->
     </goal>
 </project>

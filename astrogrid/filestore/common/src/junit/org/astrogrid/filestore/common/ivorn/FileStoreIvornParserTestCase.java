@@ -1,10 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/common/src/junit/org/astrogrid/filestore/common/ivorn/FileStoreIvornParserTestCase.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/07/23 09:11:16 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2004/11/25 00:19:20 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreIvornParserTestCase.java,v $
+ *   Revision 1.3  2004/11/25 00:19:20  jdt
+ *   Merge from dave-dev-200410061224-200411221626
+ *
+ *   Revision 1.2.72.1  2004/11/06 12:17:36  dave
+ *   Modified getServiceIdent() to return full ivorn string.
+ *
  *   Revision 1.2  2004/07/23 09:11:16  dave
  *   Merged development branch, dave-dev-200407221513, into HEAD
  *
@@ -89,7 +95,7 @@ public class FileStoreIvornParserTestCase
 				"ivo://one.two/three#four"
 				) ;
 		assertEquals(
-			"one.two/three",
+			"ivo://one.two/three",
 			parser.getServiceIdent()
 			) ;
 		}
@@ -140,7 +146,7 @@ public class FileStoreIvornParserTestCase
 				"ivo://one.two#four"
 				) ;
 		assertEquals(
-			"one.two",
+			"ivo://one.two",
 			parser.getServiceIdent()
 			) ;
 		assertEquals(
@@ -161,7 +167,7 @@ public class FileStoreIvornParserTestCase
 				"ivo://one.two/#four"
 				) ;
 		assertEquals(
-			"one.two",
+			"ivo://one.two",
 			parser.getServiceIdent()
 			) ;
 		assertEquals(

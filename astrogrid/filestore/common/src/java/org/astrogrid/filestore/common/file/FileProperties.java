@@ -1,10 +1,34 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/common/src/java/org/astrogrid/filestore/common/file/FileProperties.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/09 01:19:50 $</cvs:date>
- * <cvs:version>$Revision: 1.7 $</cvs:version>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2004/11/25 00:19:27 $</cvs:date>
+ * <cvs:version>$Revision: 1.8 $</cvs:version>
  * <cvs:log>
  *   $Log: FileProperties.java,v $
+ *   Revision 1.8  2004/11/25 00:19:27  jdt
+ *   Merge from dave-dev-200410061224-200411221626
+ *
+ *   Revision 1.7.24.7  2004/11/17 19:06:30  dave
+ *   Updated server configuration ...
+ *
+ *   Revision 1.7.24.6  2004/11/06 20:02:39  dave
+ *   Allowed for null value ...
+ *
+ *   Revision 1.7.24.5  2004/11/06 19:12:18  dave
+ *   Refactored identifier properties ...
+ *
+ *   Revision 1.7.24.4  2004/11/05 05:23:03  dave
+ *   Added property method for filemanager ...
+ *
+ *   Revision 1.7.24.3  2004/11/04 02:33:03  dave
+ *   Refactored mock delegate and config to make it easier to test filemanager with multiple filstores.
+ *
+ *   Revision 1.7.24.2  2004/11/02 23:20:12  dave
+ *   Added property filter and changed method names to make them FileStore specific.
+ *
+ *   Revision 1.7.24.1  2004/10/15 03:53:04  dave
+ *   Changed WSDD deployment to 'Application' to allow multiple mock instances.
+ *
  *   Revision 1.7  2004/09/09 01:19:50  dave
  *   Updated MIME type handling in MySpace.
  *   Extended test coverage for MIME types in FileStore and MySpace.
@@ -82,6 +106,7 @@ import java.util.Enumeration ;
 
 import org.astrogrid.store.Ivorn ;
 
+import org.astrogrid.filestore.common.ivorn.FileStoreIvornParser ;
 import org.astrogrid.filestore.common.ivorn.FileStoreIvornFactory ;
 import org.astrogrid.filestore.common.exception.FileStoreIdentifierException ;
 
@@ -91,24 +116,6 @@ import org.astrogrid.filestore.common.exception.FileStoreIdentifierException ;
  */
 public class FileProperties
 	{
-	/**
-	 * The property key for the service identifier.
-	 *
-	 */
-	public static final String STORE_SERVICE_IDENT  = "org.astrogrid.filestore.service.ident" ;
-
-	/**
-	 * The property key for the service ivorn.
-	 *
-	 */
-	public static final String STORE_SERVICE_IVORN  = "org.astrogrid.filestore.service.ivorn" ;
-
-	/**
-	 * The property key for the resource identifier.
-	 *
-	 */
-	public static final String STORE_RESOURCE_IDENT  = "org.astrogrid.filestore.resource.ident" ;
-
 	/**
 	 * The property key for the resource ivorn.
 	 *
@@ -151,7 +158,7 @@ public class FileProperties
 	 */
 	public static final String MIME_TYPE_TEXT     = "text/raw"  ;
 	public static final String MIME_TYPE_XML      = "text/xml"  ;
-	public static final String MIME_TYPE_HTML     = "t"  ;
+	public static final String MIME_TYPE_HTML     = "text/html"  ;
 
 	public static final String MIME_TYPE_VOLIST   = "text/xml +org.astrogrid.mime.volist"  ;
 	public static final String MIME_TYPE_VOTABLE  = "text/xml +org.astrogrid.mime.votable" ;
@@ -195,7 +202,9 @@ public class FileProperties
 	 */
 	public FileProperties(FileProperties that)
 		{
-		this.merge(that) ;
+		this(
+			that.toArray()
+			) ;
 		}
 
 	/**
@@ -223,7 +232,7 @@ public class FileProperties
 		}
 
 	/**
-	 * Set a named property.
+	 * Set a property.
 	 * @param key The property key (name).
 	 * @param value The property value.
 	 *
@@ -240,10 +249,26 @@ public class FileProperties
 		}
 
 	/**
-	 * Merge the properties from another.
+	 * Set a property.
+	 * @param property The property to set.
 	 *
 	 */
-	public void merge(FileProperties that)
+	public void setProperty(FileProperty property)
+		{
+		if (null != property)
+			{
+			this.setProperty(
+				property.getName(),
+				property.getValue()
+				) ;
+			}
+		}
+
+	/**
+	 * Merge the properties from another map.
+	 *
+	 */
+	public void merge(FileProperties that, PropertyFilter filter)
 		{
 		if (null != that)
 			{
@@ -251,77 +276,42 @@ public class FileProperties
 			while (iter.hasNext())
 				{
 				Entry entry = (Entry) iter.next() ;
-				//
-				// Skip the reserved keys.
-				// These should be set by the local system, when the data is saved.
-				if (STORE_SERVICE_IDENT.equals(entry.getKey()))
-					{
-					continue ;
-					}
-				if (STORE_SERVICE_IVORN.equals(entry.getKey()))
-					{
-					continue ;
-					}
-				if (STORE_RESOURCE_IDENT.equals(entry.getKey()))
-					{
-					continue ;
-					}
-				if (STORE_RESOURCE_IVORN.equals(entry.getKey()))
-					{
-					continue ;
-					}
-				if (STORE_RESOURCE_URL.equals(entry.getKey()))
-					{
-					continue ;
-					}
-				//
-				// Copy the rest of the keys.
-				this.setProperty(
-					(String) entry.getKey(),
-					(String) entry.getValue()
+				FileProperty property = filter.filter(
+					new FileProperty(
+						(String) entry.getKey(),
+						(String) entry.getValue()
+						)
 					) ;
+				if (null != property)
+					{
+					this.setProperty(
+						property
+						) ;
+					}
 				}
 			}
 		}
 
 	/**
 	 * Merge the properties from an array.
+	 * @todo Need to refactor the skip as a filter.
 	 *
 	 */
-	public void merge(FileProperty[] array)
+	public void merge(FileProperty[] array, PropertyFilter filter)
 		{
 		if (null != array)
 			{
 			for (int i = 0 ; i < array.length ; i++)
 				{
-				//
-				// Skip the reserved keys.
-				if (STORE_SERVICE_IDENT.equals(array[i].getName()))
-					{
-					continue ;
-					}
-				if (STORE_SERVICE_IVORN.equals(array[i].getName()))
-					{
-					continue ;
-					}
-				if (STORE_RESOURCE_IDENT.equals(array[i].getName()))
-					{
-					continue ;
-					}
-				if (STORE_RESOURCE_IVORN.equals(array[i].getName()))
-					{
-					continue ;
-					}
-				if (STORE_RESOURCE_URL.equals(array[i].getName()))
-					{
-					continue ;
-					}
-				//
-				// Copy the rest of the keys.
-				this.setProperty(
-					array[i].getName(),
-					array[i].getValue()
+				FileProperty property = filter.filter(
+					array[i]
 					) ;
+				if (null != property)
+					{
+					this.setProperty(
+						property
+						) ;
+					}
 				}
 			}
 		}
@@ -373,25 +363,98 @@ public class FileProperties
 		}
 
 	/**
-	 * Get the service identifier.
+	 * Get the resource ivorn.
+	 * @throws FileStoreIdentifierException if the service or resource identifiers are invalid.
 	 *
 	 */
-	public String getServiceIdent()
+	public Ivorn getStoreResourceIvorn()
+		throws FileStoreIdentifierException
 		{
-		return getProperty(
-			STORE_SERVICE_IDENT
+		String ivorn = this.getProperty(
+			STORE_RESOURCE_IVORN
 			) ;
+		if (null != ivorn)
+			{
+			try {
+				return new Ivorn(
+					ivorn
+					) ;
+				}
+			catch (Exception ouch)
+				{
+				throw new FileStoreIdentifierException(
+					ivorn
+					);
+				}
+			}
+		else {
+			return null ;
+			}
 		}
 
 	/**
-	 * Get the (internal) resource identifier.
+	 * Set the resource ivorn.
+	 * @throws FileStoreIdentifierException if the service or resource identifiers are invalid.
 	 *
 	 */
-	public String getResourceIdent()
+	public void setStoreResourceIvorn(Ivorn ivorn)
 		{
-		return getProperty(
-			STORE_RESOURCE_IDENT
+		if (null != ivorn)
+			{
+			this.setProperty(
+				STORE_RESOURCE_IVORN,
+				ivorn.toString()
+				) ;
+			}
+		else {
+			this.setProperty(
+				STORE_RESOURCE_IVORN,
+				null
+				) ;
+			}
+		}
+
+	/**
+	 * Get the service ivorn.
+	 * @throws FileStoreIdentifierException if the service identifier is invalid.
+	 *
+	 */
+	public Ivorn getStoreServiceIvorn()
+		throws FileStoreIdentifierException
+		{
+		String ivorn = this.getProperty(
+			STORE_RESOURCE_IVORN
 			) ;
+		if (null != ivorn)
+			{
+			return new FileStoreIvornParser(
+				ivorn
+				).getServiceIvorn() ;
+			}
+		else {
+			return null ;
+			}
+		}
+
+	/**
+	 * Get the resource identifier.
+	 *
+	 */
+	public String getStoreResourceIdent()
+		throws FileStoreIdentifierException
+		{
+		String ivorn = this.getProperty(
+			STORE_RESOURCE_IVORN
+			) ;
+		if (null != ivorn)
+			{
+			return new FileStoreIvornParser(
+				ivorn
+				).getResourceIdent() ;
+			}
+		else {
+			return null ;
+			}
 		}
 
 	/**
@@ -430,31 +493,12 @@ public class FileProperties
 		}
 
 	/**
-	 * Get the (external) resource ivorn.
-	 * @throws FileStoreIdentifierException if the service or resource identifiers are invalid.
-	 *
-	 */
-	public Ivorn getResourceIvorn()
-		{
-		try {
-			return new Ivorn(
-				this.getProperty(
-					STORE_RESOURCE_IVORN
-					)
-				) ;
-			}
-		catch (Exception ouch)
-			{
-			return null ;
-			}
-		}
-
-	/**
 	 * Get the (external) resource URL.
 	 * @throws FileStoreIdentifierException if the service or resource identifiers are invalid.
+	 * @deprecated Use exportInit on the parent service to get a transfer URL.
 	 *
 	 */
-	public URL getResourceUrl()
+	public URL getStoreResourceUrl()
 		{
 		try {
 			return new URL(

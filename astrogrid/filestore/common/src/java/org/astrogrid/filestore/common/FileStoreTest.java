@@ -1,10 +1,31 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/common/src/java/org/astrogrid/filestore/common/FileStoreTest.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/17 06:57:10 $</cvs:date>
- * <cvs:version>$Revision: 1.10 $</cvs:version>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2004/11/25 00:19:19 $</cvs:date>
+ * <cvs:version>$Revision: 1.11 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreTest.java,v $
+ *   Revision 1.11  2004/11/25 00:19:19  jdt
+ *   Merge from dave-dev-200410061224-200411221626
+ *
+ *   Revision 1.10.14.5  2004/11/09 17:41:36  dave
+ *   Added file:// URL handling to allow server URLs to be tested.
+ *   Added importInit and exportInit to server implementation.
+ *   Moved remaining tests out of extended test abd removed it.
+ *
+ *   Revision 1.10.14.4  2004/11/06 19:12:18  dave
+ *   Refactored identifier properties ...
+ *
+ *   Revision 1.10.14.3  2004/10/27 18:58:48  dave
+ *   Uncommented the rest of the tests ...
+ *
+ *   Revision 1.10.14.2  2004/10/27 10:56:30  dave
+ *   Changed inport init to save the details, and simplified tests for debug
+ *
+ *   Revision 1.10.14.1  2004/10/21 21:00:13  dave
+ *   Added mock://xyz URL handler to enable testing of transfer.
+ *   Implemented importInit to the mock service and created transfer tests.
+ *
  *   Revision 1.10  2004/09/17 06:57:10  dave
  *   Added commons logging to FileStore.
  *   Updated logging properties in Community.
@@ -103,6 +124,12 @@ import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
 
 import java.net.URL ;
+import java.net.URLConnection ;
+import java.net.HttpURLConnection ;
+
+import java.io.OutputStream ;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 
 import junit.framework.TestCase ;
 
@@ -115,7 +142,11 @@ import org.astrogrid.filestore.common.exception.FileStoreNotFoundException ;
 import org.astrogrid.filestore.common.exception.FileStoreIdentifierException ;
 import org.astrogrid.filestore.common.exception.FileStoreTransferException ;
 
+import org.astrogrid.filestore.common.transfer.TransferUtil ;
+import org.astrogrid.filestore.common.transfer.UrlGetRequest ;
 import org.astrogrid.filestore.common.transfer.UrlGetTransfer ;
+import org.astrogrid.filestore.common.transfer.UrlPutTransfer ;
+import org.astrogrid.filestore.common.transfer.TransferProperties ;
 
 /**
  * A JUnit test case for the store service.
@@ -237,14 +268,14 @@ public class FileStoreTest
 	 */
 	public static void printBytes(byte[] data)
 		{
-		System.out.println("--------") ;
+		log.debug("--------") ;
 		for (int i = 0 ; i < data.length ; i++)
 			{
-			System.out.println(
+			log.debug(
 				"[" + i + "] '" + Integer.toHexString(data[i]) + "'"
 				) ;
 			}
-		System.out.println("--------") ;
+		log.debug("--------") ;
 		}
 
 	/**
@@ -253,7 +284,7 @@ public class FileStoreTest
 	 */
 	public static void assertEquals(byte[] left, byte[] right)
 		{
-		System.out.println("--------") ;
+		log.debug("--------") ;
 		assertEquals(
 			"Different array length",
 			left.length,
@@ -261,7 +292,7 @@ public class FileStoreTest
 			) ;
 		for (int i = 0 ; i < left.length ; i++)
 			{
-			System.out.println(
+			log.debug(
 				"[" + i + "] " + Integer.toHexString(left[i]) + ":" + Integer.toHexString(right[i])
 				) ;
 			assertEquals(
@@ -270,7 +301,7 @@ public class FileStoreTest
 				right[i]
 				) ;
 			}
-		System.out.println("--------") ;
+		log.debug("--------") ;
 		}
 
 	/**
@@ -313,10 +344,6 @@ public class FileStoreTest
 			) ;
 		}
 
-//
-// Property tests.
-//
-
 	/**
 	 * Check the identifier properties.
 	 *
@@ -349,30 +376,22 @@ public class FileStoreTest
 		assertEquals(
 			"Wrong service ivorn in FileProperties",
 			target.identifier(),
-			properties.getProperty(
-				FileProperties.STORE_SERVICE_IVORN
-				)
+			properties.getStoreServiceIvorn().toString()
 			) ;
 		//
 		// Check the resource ident is not null.
 		assertNotNull(
 			"Null resource ident in properties",
-			properties.getProperty(
-				FileProperties.STORE_RESOURCE_IDENT
-				)
+			properties.getStoreResourceIdent()
 			) ;
 		//
 		// Check the resource ivorn is correct.
 		assertEquals(
 			"Wrong resource ident in properties",
-			properties.getProperty(
-				FileProperties.STORE_RESOURCE_IVORN
-				),
+			properties.getStoreResourceIvorn().toString(),
 			FileStoreIvornFactory.createIdent(
 				target.identifier(),
-				properties.getProperty(
-					FileProperties.STORE_RESOURCE_IDENT
-					)
+				properties.getStoreResourceIdent()
 				)
 			) ;
 		//
@@ -640,9 +659,7 @@ public class FileStoreTest
 			"Wrong string returned",
 			TEST_STRING,
 			target.exportString(
-				imported.getProperty(
-					FileProperties.STORE_RESOURCE_IDENT
-					)
+				imported.getStoreResourceIdent()
 				)
 			) ;
 		}
@@ -677,9 +694,7 @@ public class FileStoreTest
 			TEST_STRING,
 			new String(
 				target.exportBytes(
-					imported.getProperty(
-						FileProperties.STORE_RESOURCE_IDENT
-						)
+					imported.getStoreResourceIdent()
 					)
 				)
 			) ;
@@ -867,9 +882,7 @@ public class FileStoreTest
 		assertEquals(
 			TEST_BYTES,
 			target.exportBytes(
-				imported.getProperty(
-					FileProperties.STORE_RESOURCE_IDENT
-					)
+				imported.getStoreResourceIdent()
 				)
 			) ;
 		}
@@ -905,9 +918,7 @@ public class FileStoreTest
 				TEST_BYTES
 				),
 			target.exportString(
-				imported.getProperty(
-					FileProperties.STORE_RESOURCE_IDENT
-					)
+				imported.getStoreResourceIdent()
 				)
 			) ;
 		}
@@ -978,21 +989,15 @@ public class FileStoreTest
 		// Check that we can find it.
 		FileProperties requested = new FileProperties(
 			target.properties(
-				imported.getProperty(
-					FileProperties.STORE_RESOURCE_IDENT
-					)
+				imported.getStoreResourceIdent()
 				)
 			) ;
 		//
 		// Check the identifiers are the same.
 		assertEquals(
 			"Requested ident not the same as imported",
-			imported.getProperty(
-				FileProperties.STORE_RESOURCE_IDENT
-				),
-			requested.getProperty(
-				FileProperties.STORE_RESOURCE_IDENT
-				)
+			imported.getStoreResourceIdent(),
+			requested.getStoreResourceIdent()
 			) ;
 		}
 
@@ -1018,21 +1023,15 @@ public class FileStoreTest
 		// Check that we can find it.
 		FileProperties requested = new FileProperties(
 			target.properties(
-				imported.getProperty(
-					FileProperties.STORE_RESOURCE_IDENT
-					)
+				imported.getStoreResourceIdent()
 				)
 			) ;
 		//
 		// Check the identifiers are the same.
 		assertEquals(
 			"Requested ident not the same as imported",
-			imported.getProperty(
-				FileProperties.STORE_RESOURCE_IDENT
-				),
-			requested.getProperty(
-				FileProperties.STORE_RESOURCE_IDENT
-				)
+			imported.getStoreResourceIdent(),
+			requested.getStoreResourceIdent()
 			) ;
 		}
 
@@ -1102,21 +1101,15 @@ public class FileStoreTest
 		// Check that we can delete it.
 		FileProperties deleted = new FileProperties(
 			target.delete(
-				imported.getProperty(
-					FileProperties.STORE_RESOURCE_IDENT
-					)
+				imported.getStoreResourceIdent()
 				)
 			) ;
 		//
 		// Check the properties are the same.
 		assertEquals(
 			"Deleted properties not the same as imported",
-			imported.getProperty(
-				FileProperties.STORE_RESOURCE_IDENT
-				),
-			deleted.getProperty(
-				FileProperties.STORE_RESOURCE_IDENT
-				)
+			imported.getStoreResourceIdent(),
+			deleted.getStoreResourceIdent()
 			) ;
 		}
 
@@ -1142,21 +1135,15 @@ public class FileStoreTest
 		// Check that we can delete it.
 		FileProperties deleted = new FileProperties(
 			target.delete(
-				imported.getProperty(
-					FileProperties.STORE_RESOURCE_IDENT
-					)
+				imported.getStoreResourceIdent()
 				)
 			) ;
 		//
 		// Check the properties are the same.
 		assertEquals(
 			"Deleted properties not the same as imported",
-			imported.getProperty(
-				FileProperties.STORE_RESOURCE_IDENT
-				),
-			deleted.getProperty(
-				FileProperties.STORE_RESOURCE_IDENT
-				)
+			imported.getStoreResourceIdent(),
+			deleted.getStoreResourceIdent()
 			) ;
 		}
 
@@ -1182,18 +1169,14 @@ public class FileStoreTest
 		// Check that we can delete it.
 		FileProperties deleted = new FileProperties(
 			target.delete(
-				imported.getProperty(
-					FileProperties.STORE_RESOURCE_IDENT
-					)
+				imported.getStoreResourceIdent()
 				)
 			) ;
 		//
 		// Check that we can't find it.
 		try {
 			target.properties(
-				imported.getProperty(
-					FileProperties.STORE_RESOURCE_IDENT
-					)
+				imported.getStoreResourceIdent()
 				) ;
 			}
 		catch (FileStoreNotFoundException ouch)
@@ -1225,18 +1208,14 @@ public class FileStoreTest
 		// Check that we can delete it.
 		FileProperties deleted = new FileProperties(
 			target.delete(
-				imported.getProperty(
-					FileProperties.STORE_RESOURCE_IDENT
-					)
+				imported.getStoreResourceIdent()
 				)
 			) ;
 		//
 		// Check that we can't export it.
 		try {
 			target.exportString(
-				imported.getProperty(
-					FileProperties.STORE_RESOURCE_IDENT
-					)
+				imported.getStoreResourceIdent()
 				) ;
 			}
 		catch (FileStoreNotFoundException ouch)
@@ -1337,9 +1316,7 @@ public class FileStoreTest
 		// Append the extra string.
 		FileProperties modified = new FileProperties(
 			target.appendString(
-				imported.getProperty(
-					FileProperties.STORE_RESOURCE_IDENT
-					),
+				imported.getStoreResourceIdent(),
 				EXTRA_STRING
 				)
 			) ;
@@ -1349,9 +1326,7 @@ public class FileStoreTest
 			"Wrong string returned",
 			(TEST_STRING + EXTRA_STRING),
 			target.exportString(
-				modified.getProperty(
-					FileProperties.STORE_RESOURCE_IDENT
-					)
+				modified.getStoreResourceIdent()
 				)
 			) ;
 		}
@@ -1378,9 +1353,7 @@ public class FileStoreTest
 		// Append the extra string.
 		FileProperties modified = new FileProperties(
 			target.appendBytes(
-				imported.getProperty(
-					FileProperties.STORE_RESOURCE_IDENT
-					),
+				imported.getStoreResourceIdent(),
 				EXTRA_BYTES
 				)
 			) ;
@@ -1390,9 +1363,7 @@ public class FileStoreTest
 			"Wrong string returned",
 			(TEST_STRING + new String(EXTRA_BYTES)),
 			target.exportString(
-				modified.getProperty(
-					FileProperties.STORE_RESOURCE_IDENT
-					)
+				modified.getStoreResourceIdent()
 				)
 			) ;
 		}
@@ -1465,9 +1436,7 @@ public class FileStoreTest
 		// Create a duplicate
 		FileProperties duplicate = new FileProperties(
 			target.duplicate(
-				imported.getProperty(
-					FileProperties.STORE_RESOURCE_IDENT
-					),
+				imported.getStoreResourceIdent(),
 				null
 				)
 			) ;
@@ -1475,13 +1444,9 @@ public class FileStoreTest
 		// Check the identifiers are different.
 		assertFalse(
 			"Duplicate identifiers",
-			imported.getProperty(
-				FileProperties.STORE_RESOURCE_IDENT
-				).equals(
-					duplicate.getProperty(
-						FileProperties.STORE_RESOURCE_IDENT
-						)
-					)
+			imported.getStoreResourceIdent().equals(
+				duplicate.getStoreResourceIdent()
+				)
 			) ;
 		}
 
@@ -1507,9 +1472,7 @@ public class FileStoreTest
 		// Create a duplicate
 		FileProperties duplicate = new FileProperties(
 			target.duplicate(
-				imported.getProperty(
-					FileProperties.STORE_RESOURCE_IDENT
-					),
+				imported.getStoreResourceIdent(),
 				null
 				)
 			) ;
@@ -1519,9 +1482,7 @@ public class FileStoreTest
 			"Wrong string returned",
 			TEST_STRING,
 			target.exportString(
-				duplicate.getProperty(
-					FileProperties.STORE_RESOURCE_IDENT
-					)
+				duplicate.getStoreResourceIdent()
 				)
 			) ;
 		}
@@ -1563,9 +1524,7 @@ public class FileStoreTest
 		// Create a duplicate
 		FileProperties duplicate = new FileProperties(
 			target.duplicate(
-				imported.getProperty(
-					FileProperties.STORE_RESOURCE_IDENT
-					),
+				imported.getStoreResourceIdent(),
 				null
 				)
 			) ;
@@ -1610,9 +1569,7 @@ public class FileStoreTest
 		// Create a duplicate.
 		FileProperties duplicate = new FileProperties(
 			target.duplicate(
-				imported.getProperty(
-					FileProperties.STORE_RESOURCE_IDENT
-					),
+				imported.getStoreResourceIdent(),
 				null
 				)
 			) ;
@@ -1620,9 +1577,7 @@ public class FileStoreTest
 		// Modify the duplicate.
 		FileProperties modified = new FileProperties(
 			target.appendString(
-				duplicate.getProperty(
-					FileProperties.STORE_RESOURCE_IDENT
-					),
+				duplicate.getStoreResourceIdent(),
 				EXTRA_STRING
 				)
 			) ;
@@ -1632,9 +1587,7 @@ public class FileStoreTest
 			"Wrong string returned",
 			TEST_STRING,
 			target.exportString(
-				imported.getProperty(
-					FileProperties.STORE_RESOURCE_IDENT
-					)
+				imported.getStoreResourceIdent()
 				)
 			) ;
 		//
@@ -1643,9 +1596,7 @@ public class FileStoreTest
 			"Wrong string returned",
 			(TEST_STRING + EXTRA_STRING),
 			target.exportString(
-				modified.getProperty(
-					FileProperties.STORE_RESOURCE_IDENT
-					)
+				modified.getStoreResourceIdent()
 				)
 			) ;
 		}
@@ -1682,13 +1633,13 @@ public class FileStoreTest
 		log.debug("") ;
 		log.debug("----\"----") ;
 		log.debug("FileStoreTest.testCreateUrlGetTransfer()") ;
-		System.out.println("--------") ;
-		System.out.println(
+		log.debug("--------") ;
+		log.debug(
 			getTestProperty(
 				"data.file.text"
 				)
 			) ;
-		System.out.println("--------") ;
+		log.debug("--------") ;
 		assertNotNull(
 			"Null transfer info",
 			new UrlGetTransfer(
@@ -1877,9 +1828,7 @@ public class FileStoreTest
 			"Wrong content from URL import",
 			TEST_STRING,
 			target.exportString(
-				imported.getProperty(
-					FileProperties.STORE_RESOURCE_IDENT
-					)
+				imported.getStoreResourceIdent()
 				)
 			) ;
 		}
@@ -2068,9 +2017,7 @@ public class FileStoreTest
 		// Append some bytes.
 		FileProperties modified = new FileProperties(
 			target.appendBytes(
-				imported.getProperty(
-					FileProperties.STORE_RESOURCE_IDENT
-					),
+				imported.getStoreResourceIdent(),
 				EXTRA_BYTES
 				)
 			) ;
@@ -2189,9 +2136,7 @@ public class FileStoreTest
 		// Get the file properties.
 		FileProperties requested = new FileProperties(
 			target.properties(
-				imported.getProperty(
-					FileProperties.STORE_RESOURCE_IDENT
-					)
+				imported.getStoreResourceIdent()
 				)
 			) ;
 		//
@@ -2235,9 +2180,7 @@ public class FileStoreTest
 		// Append the extra string.
 		FileProperties modified = new FileProperties(
 			target.appendString(
-				imported.getProperty(
-					FileProperties.STORE_RESOURCE_IDENT
-					),
+				imported.getStoreResourceIdent(),
 				EXTRA_STRING
 				)
 			) ;
@@ -2245,9 +2188,7 @@ public class FileStoreTest
 		// Get the file properties.
 		FileProperties requested = new FileProperties(
 			target.properties(
-				imported.getProperty(
-					FileProperties.STORE_RESOURCE_IDENT
-					)
+				imported.getStoreResourceIdent()
 				)
 			) ;
 		//
@@ -2305,5 +2246,390 @@ public class FileStoreTest
 				FileProperties.MIME_TYPE_PROPERTY
 				)
 			) ;
+		}
+
+/*
+ * Gradually moving tests from ExtendedTestCase into here ...
+ *
+ */
+
+	/**
+	 * Check we can send a null transfer properties.
+	 *
+	 */
+	public void testImportInitNullTransfer()
+		throws Exception
+		{
+		log.debug("") ;
+		log.debug("----\"----") ;
+		log.debug("FileStoreTest.testImportInitNullTransfer()") ;
+		try {
+			target.importInit(
+				null
+				) ;
+			}
+		catch (FileStoreTransferException ouch)
+			{
+			return ;
+			}
+		fail("Expected FileStoreTransferException") ;
+		}
+
+	/**
+	 * Check we can initiate an import.
+	 *
+	 */
+	public void testImportInit()
+		throws Exception
+		{
+		log.debug("") ;
+		log.debug("----\"----") ;
+		log.debug("FileStoreTest.testImportInit()") ;
+		TransferProperties transfer = new UrlPutTransfer() ;
+		assertNotNull(
+			target.importInit(
+				transfer
+				)
+			);
+		}
+
+	/**
+	 * Check that the transfer properties contains a URL.
+	 *
+	 */
+	public void testImportInitURL()
+		throws Exception
+		{
+		log.debug("") ;
+		log.debug("----\"----") ;
+		log.debug("FileStoreTest.testImportInitURL()") ;
+		TransferProperties transfer = new UrlPutTransfer() ;
+		transfer = target.importInit(
+			transfer
+			) ;
+		assertNotNull(
+			transfer.getLocation()
+			);
+		}
+
+	/**
+	 * Check that we can open the import URL.
+	 *
+	 */
+	public void testImportInitURLConnection()
+		throws Exception
+		{
+		log.debug("") ;
+		log.debug("----\"----") ;
+		log.debug("FileStoreTest.testImportInitURLConnection()") ;
+		TransferProperties transfer = new UrlPutTransfer() ;
+		transfer = target.importInit(
+			transfer
+			) ;
+		URL url = new URL(
+			transfer.getLocation()
+			) ;
+		assertNotNull(
+			url.openConnection()
+			);
+		}
+
+	/**
+	 * Check that we get valid file properties for an import.
+	 *
+	 */
+	public void testImportInitProperties()
+		throws Exception
+		{
+		log.debug("") ;
+		log.debug("----\"----") ;
+		log.debug("FileStoreTest.testImportInitProperties()") ;
+		TransferProperties transfer = new UrlPutTransfer() ;
+		transfer = target.importInit(
+			transfer
+			) ;
+		assertNotNull(
+			transfer.getFileProperties()
+			);
+		}
+
+	/**
+	 * Check that we can transfer some data.
+	 *
+	 */
+	public void testImportInitWrite()
+		throws Exception
+		{
+		log.debug("") ;
+		log.debug("----\"----") ;
+		log.debug("FileStoreTest.testImportInitWrite()") ;
+		//
+		// Initiate our transfer.
+		TransferProperties transfer = target.importInit(
+			new UrlPutTransfer()
+			) ;
+		//
+		// Transfer our data.
+		FileStoreOutputStream stream = new FileStoreOutputStream(
+			transfer.getLocation()
+			) ;
+		stream.open() ;
+		stream.write(
+			TEST_BYTES
+			) ;
+		stream.close() ;
+		}
+
+//
+// .............
+//
+
+	/**
+	 * Check we get the right Exception for a null transfer properties.
+	 *
+	 */
+	public void testExportInitNullTransfer()
+		throws Exception
+		{
+		log.debug("") ;
+		log.debug("----\"----") ;
+		log.debug("FileStoreTest.testExportInitNullTransfer()") ;
+		try {
+			target.exportInit(
+				null
+				) ;
+			}
+		catch (FileStoreTransferException ouch)
+			{
+			return ;
+			}
+		fail("Expected FileStoreTransferException") ;
+		}
+
+	/**
+	 * Check we get the right Exception for an unknown file.
+	 *
+	 */
+	public void testExportInitNullProperties()
+		throws Exception
+		{
+		log.debug("") ;
+		log.debug("----\"----") ;
+		log.debug("FileStoreTest.testExportInitNullProperties()") ;
+		TransferProperties transfer = new UrlGetRequest() ;
+		try {
+			target.exportInit(
+				transfer
+				) ;
+			}
+		catch (FileStoreNotFoundException ouch)
+			{
+			return ;
+			}
+		fail("Expected FileStoreNotFoundException") ;
+		}
+
+	/**
+	 * Check that we get a transfer properties for an export.
+	 *
+	 */
+	public void testExportInitTransfer()
+		throws Exception
+		{
+		log.debug("") ;
+		log.debug("----\"----") ;
+		log.debug("FileStoreTest.testExportInitTransfer()") ;
+		//
+		// Initiate our import transfer.
+		TransferProperties importTransfer = target.importInit(
+			new UrlPutTransfer()
+			) ;
+		//
+		// Open an output stream.
+		FileStoreOutputStream importStream = new FileStoreOutputStream(
+			importTransfer.getLocation()
+			) ;
+		//
+		// Open our stream.
+		importStream.open() ;
+		//
+		// Transfer our data.
+		importStream.write(
+			TEST_BYTES
+			) ;
+		//
+		// Close our stream.
+		importStream.close() ;
+		//
+		// Get the file properties.
+		FileProperties properties = new FileProperties(
+			importTransfer.getFileProperties()
+			) ;
+		//
+		// Initiate our export transfer.
+		TransferProperties exportTransfer = target.exportInit(
+			new UrlGetRequest(
+				properties
+				)
+			) ;
+		assertNotNull(
+			exportTransfer
+			);
+		}
+
+	/**
+	 * Check that we get the right Exception for a null file identifier.
+	 *
+	 */
+	public void testExportInitEmptyProperties()
+		throws Exception
+		{
+		log.debug("") ;
+		log.debug("----\"----") ;
+		log.debug("FileStoreTest.testExportInitEmptyProperties()") ;
+		//
+		// Create our file properties.
+		FileProperties properties = new FileProperties() ;
+		//
+		// Create our transfer request.
+		TransferProperties transfer = new UrlGetRequest(
+			properties
+			) ;
+		try {
+			target.exportInit(
+				transfer
+				) ;
+			}
+		catch (FileStoreNotFoundException ouch)
+			{
+			return ;
+			}
+		fail("Expected FileStoreNotFoundException") ;
+		}
+
+	/**
+	 * Check that we get the right Exception for an unknown file identifier.
+	 *
+	 */
+// ....
+
+	/**
+	 * Check that the transfer properties contains a location URL.
+	 *
+	 */
+	public void testExportInitTransferLocation()
+		throws Exception
+		{
+		log.debug("") ;
+		log.debug("----\"----") ;
+		log.debug("FileStoreTest.testExportInitTransferLocation()") ;
+		//
+		// Initiate our import transfer.
+		TransferProperties importTransfer = target.importInit(
+			new UrlPutTransfer()
+			) ;
+		//
+		// Open an output stream.
+		FileStoreOutputStream importStream = new FileStoreOutputStream(
+			importTransfer.getLocation()
+			) ;
+		//
+		// Open our stream.
+		importStream.open() ;
+		//
+		// Transfer our data.
+		importStream.write(
+			TEST_BYTES
+			) ;
+		//
+		// Close our stream.
+		importStream.close() ;
+		//
+		// Get the file properties.
+		FileProperties properties = new FileProperties(
+			importTransfer.getFileProperties()
+			) ;
+		//
+		// Initiate our export transfer.
+		TransferProperties exportTransfer = target.exportInit(
+			new UrlGetRequest(
+				properties
+				)
+			) ;
+		assertNotNull(
+			exportTransfer.getLocation()
+			);
+		}
+
+	/**
+	 * Check that we read data from an export stream.
+	 *
+	 */
+	public void testExportInitRead()
+		throws Exception
+		{
+		log.debug("") ;
+		log.debug("----\"----") ;
+		log.debug("FileStoreTest.testExportInitRead()") ;
+		//
+		// Initiate our import transfer.
+		TransferProperties importTransfer = target.importInit(
+			new UrlPutTransfer()
+			) ;
+		//
+		// Open an output stream.
+		FileStoreOutputStream importStream = new FileStoreOutputStream(
+			importTransfer.getLocation()
+			) ;
+		//
+		// Open our stream.
+		importStream.open() ;
+		//
+		// Transfer our data.
+		importStream.write(
+			TEST_BYTES
+			) ;
+		//
+		// Close our stream.
+		importStream.close() ;
+		//
+		// Get the file properties.
+		FileProperties properties = new FileProperties(
+			importTransfer.getFileProperties()
+			) ;
+		//
+		// Initiate our export transfer.
+		TransferProperties exportTransfer = target.exportInit(
+			new UrlGetRequest(
+				properties
+				)
+			) ;
+		//
+		// Get an input stream to the file.
+		FileStoreInputStream exportStream = new FileStoreInputStream(
+			exportTransfer.getLocation()
+			);
+		//
+		// Open our input stream.
+		exportStream.open() ;
+		//
+		// Create our buffer stream.
+		ByteArrayOutputStream buffer = new ByteArrayOutputStream() ;
+		//
+		// Read our test bytes.
+		TransferUtil util = new TransferUtil(
+			exportStream,
+			buffer
+			);
+		util.transfer();
+		//
+		// Close our input stream.
+		exportStream.close() ;
+		//
+		// Check we got the right data back.
+		assertEquals(
+			TEST_BYTES,
+			buffer.toByteArray()
+			);
 		}
 	}

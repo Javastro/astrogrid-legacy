@@ -1,10 +1,20 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/common/src/java/org/astrogrid/filestore/common/transfer/UrlGetTransfer.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/02 10:25:41 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2004/11/25 00:19:21 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  * <cvs:log>
  *   $Log: UrlGetTransfer.java,v $
+ *   Revision 1.4  2004/11/25 00:19:21  jdt
+ *   Merge from dave-dev-200410061224-200411221626
+ *
+ *   Revision 1.3.30.2  2004/10/26 11:13:11  dave
+ *   Changed transfer properties 'source' to 'location', makes more sense for PUT transfers.
+ *
+ *   Revision 1.3.30.1  2004/10/21 21:00:13  dave
+ *   Added mock://xyz URL handler to enable testing of transfer.
+ *   Implemented importInit to the mock service and created transfer tests.
+ *
  *   Revision 1.3  2004/09/02 10:25:41  dave
  *   Updated FileStore and MySpace to handle mime type and file size.
  *   Updated Community deployment script.
@@ -85,7 +95,7 @@ public class UrlGetTransfer
 		//
 		// Initialise our base class.
 		super(
-			new UniqueIdentifier(),
+			UniqueIdentifier.next().toString(),
 			properties
 			) ;
 		//
@@ -98,7 +108,7 @@ public class UrlGetTransfer
 			}
 		//
 		// Set our transfer properties.
-		this.setSource(url.toString()) ;
+		this.setLocation(url.toString()) ;
 		this.setMethod(TRANSFER_METHOD) ;
 		this.setProtocol(url.getProtocol()) ;
 		}

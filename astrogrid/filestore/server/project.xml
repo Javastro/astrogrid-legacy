@@ -3,10 +3,13 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/server/project.xml,v $</cvs:source>
     | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2004/11/23 18:40:50 $</cvs:date>
-    | <cvs:version>$Revision: 1.6 $</cvs:version>
+    | <cvs:date>$Date: 2004/11/25 00:19:19 $</cvs:date>
+    | <cvs:version>$Revision: 1.7 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.7  2004/11/25 00:19:19  jdt
+    |   Merge from dave-dev-200410061224-200411221626
+    |
     |   Revision 1.6  2004/11/23 18:40:50  jdt
     |   Merges from  BLD_JDT_648.  The long awaited move to versioned jars and wars.  Fingers crossed.  See:
     |   http://software.astrogrid.org/developerdocs/developmentprocess.html
@@ -62,11 +65,6 @@
     <name>FileStore server</name>
 
     <!--+
-        | The Java package name of the project.
-        +-->
-    <package>org.astrogrid.filestore.server</package>
-
-    <!--+
         | A short description of the project.
         | The short description should be limited to a single line.
         +-->
@@ -116,7 +114,7 @@
         <dependency>
             <groupId>${pom.groupId}</groupId>
             <artifactId>astrogrid-filestore-common</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>${astrogrid.filestore.version}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>

@@ -1,11 +1,20 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/common/src/java/org/astrogrid/filestore/common/ivorn/FileStoreIvornParser.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/17 06:57:10 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2004/11/25 00:19:20 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: FileStoreIvornParser.java,v $
+ *   Revision 1.5  2004/11/25 00:19:20  jdt
+ *   Merge from dave-dev-200410061224-200411221626
+ *
+ *   Revision 1.4.14.2  2004/11/06 19:12:18  dave
+ *   Refactored identifier properties ...
+ *
+ *   Revision 1.4.14.1  2004/11/06 12:17:35  dave
+ *   Modified getServiceIdent() to return full ivorn string.
+ *
  *   Revision 1.4  2004/09/17 06:57:10  dave
  *   Added commons logging to FileStore.
  *   Updated logging properties in Community.
@@ -80,7 +89,7 @@ public class FileStoreIvornParser
 	 * Used to create mock ivorns in JUnit tests.
 	 *
 	 */
-	public static String MOCK_SERVICE_IDENT = "org.astrogrid.mock" ;
+	public static String MOCK_SERVICE_IDENT = "ivo://org.astrogrid.mock" ;
 
     /**
      * Our AstroGrid configuration.
@@ -242,6 +251,9 @@ public class FileStoreIvornParser
 			String path = uri.getPath() ;
 			log.debug("  Auth     : " + auth) ;
 			log.debug("  Path     : " + path) ;
+			StringBuffer buffer = new StringBuffer() ;
+			buffer.append(Ivorn.SCHEME) ;
+			buffer.append("://") ;
 			//
 			// If the URI has an authority ident.
 			if (null != auth)
@@ -252,19 +264,14 @@ public class FileStoreIvornParser
 					{
 					//
 					// Start with the URI authority.
-					this.service = auth ;
+					buffer.append(auth) ;
 					//
 					// If we have a path.
 					if (null != path)
 						{
 						if (path.length() > 1)
 							{
-							StringBuffer buffer =
-								new StringBuffer(
-									auth
-									) ;
 							buffer.append(path) ;
-							this.service = buffer.toString() ;
 							}
 						}
 					}
@@ -285,6 +292,7 @@ public class FileStoreIvornParser
 					uri.toString()
 					) ;
 				}
+			this.service = buffer.toString() ;
 			}
 		log.debug("  Service  : " + this.service) ;
 		}
@@ -326,12 +334,8 @@ public class FileStoreIvornParser
 		throws FileStoreIdentifierException
         {
         try {
-        	StringBuffer buffer = new StringBuffer() ;
-			buffer.append(Ivorn.SCHEME) ;
-			buffer.append("://") ;
-			buffer.append(this.service) ;
         	return new Ivorn(
-        		buffer.toString()
+        		this.service
         		) ;
 			}
 		catch (URISyntaxException ouch)

@@ -3,10 +3,19 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/maven/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2004/07/27 11:46:27 $</cvs:date>
-    | <cvs:version>$Revision: 1.4 $</cvs:version>
+    | <cvs:date>$Date: 2004/11/25 00:19:20 $</cvs:date>
+    | <cvs:version>$Revision: 1.5 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.5  2004/11/25 00:19:20  jdt
+    |   Merge from dave-dev-200410061224-200411221626
+    |
+    |   Revision 1.4.64.2  2004/11/18 14:40:20  dave
+    |   Removed redundant static
+    |
+    |   Revision 1.4.64.1  2004/10/15 03:53:04  dave
+    |   Changed WSDD deployment to 'Application' to allow multiple mock instances.
+    |
     |   Revision 1.4  2004/07/27 11:46:27  jdt
     |   Projects MUST extend maven-base and not override <currentVersion>
     |
@@ -469,6 +478,24 @@
                 <param name="service"   expression="${service.name}"/>
                 <param name="classname" expression="${service.class}"/>
             </ant:xslt>
+            <!--+
+                | Modify the WSDD deployment scope
+                +-->
+            <ant:echo message=""/>
+            <ant:echo message="Updating WSDD for ${service.name}"/>
+            <ant:xslt style="${project.base.root}/maven/src/xsl/wsdd-scope.xsl"
+                in="${wsddDir}/${service.name}.wsdd"
+                out="${wsddDir}/${service.name}.wsdd.tmp">
+                <outputproperty name="method" value="xml"/>
+                <outputproperty name="indent" value="yes"/>
+                <param name="service" expression="${service.name}"/>
+                <param name="scope"   expression="Application"/>
+            </ant:xslt>
+            <ant:move
+                verbose="true"
+                file="${wsddDir}/${service.name}.wsdd.tmp"
+                toFile="${wsddDir}/${service.name}.wsdd"
+                />
             <!--+
                 | Copy the generated Java files we want to use.
                 +-->

@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+    |
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/maven.xml,v $</cvs:source>
+    | <cvs:author>$Author: jdt $</cvs:author>
+    | <cvs:date>$Date: 2004/11/25 00:20:29 $</cvs:date>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:log>
+    |   $Log: maven.xml,v $
+    |   Revision 1.2  2004/11/25 00:20:29  jdt
+    |   Merge from dave-dev-200410061224-200411221626
+    |
+    |   Revision 1.1.2.1  2004/10/07 14:29:08  dave
+    |   Added initial interface and implementations ....
+    |
+    | </cvs:log>
+    |
+    +-->
+<project
+    xmlns:core="jelly:core"
+    xmlns:maven="jelly:maven"
+    xmlns:ant="jelly:ant"
+    xmlns:util="jelly:util"
+    xmlns:log="jelly:log"
+    xmlns:define="jelly:define"
+    default="astrogrid-rebuild-snapshot"
+    >
+
+    <!-- ================ Astrogrid goals ================ -->
+
+    <!--+
+        | Current build script goals.
+        | These are hooks to catch the goals called by the automatic build script.
+        +-->
+
+    <!--+
+        | These are just handlers for the top level AstroGrid goals.
+        +-->
+    <goal name="astrogrid-clean">
+        <attainGoal name="clean"/>
+    </goal>
+
+    <goal name="astrogrid-build-snapshot">
+        <attainGoal name="astrogrid-install-snapshot"/>
+    </goal>
+
+    <!--+
+        | Clean, build and install our snapshot jar.
+        +-->
+    <goal name="astrogrid-rebuild-snapshot">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <attainGoal name="clean"/>
+        <attainGoal name="astrogrid-install-snapshot"/>
+    </goal>
+
+    <!-- ================ Reactor goals ================ -->
+
+    <!--+
+        | Debug info ....
+        +-->
+    <goal name="info">
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+    </goal>
+
+    <!--+
+        | Clean out all of the build targets.
+        +-->
+    <goal name="clean">
+        <!--+
+            | Clean our sub-projects.
+            +-->
+        <maven:reactor
+            basedir="${basedir}"
+            postProcessing="false"
+            includes="common/project.xml,client/project.xml,server/project.xml,webapp/project.xml"
+            goals="clean"
+            banner="Cleaning build targets : "
+            ignoreFailures="false"
+            />
+        <!--+
+            | Clean this project target.
+            +-->
+        <attainGoal name="clean:clean"/>
+    </goal>
+
+    <!--+
+        | Build and install our components.
+        +-->
+    <goal name="astrogrid-install-artifact">
+        <maven:reactor
+            basedir="${basedir}"
+            postProcessing="false"
+            includes="common/project.xml,client/project.xml,server/project.xml,webapp/project.xml"
+            goals="astrogrid-install-artifact"
+            banner="Building component artifact : "
+            ignoreFailures="false"
+            />
+    </goal>
+
+    <!--+
+        | Build and install our snapshots.
+        +-->
+    <goal name="astrogrid-install-snapshot">
+        <maven:reactor
+            basedir="${basedir}"
+            postProcessing="false"
+            includes="common/project.xml,client/project.xml,server/project.xml,webapp/project.xml"
+            goals="astrogrid-install-snapshot"
+            banner="Building snapshot artifact : "
+            ignoreFailures="false"
+            />
+    </goal>
+
+    <!--+
+        | Build and deploy our components.
+        +-->
+    <goal name="astrogrid-deploy-artifact">
+        <maven:reactor
+            basedir="${basedir}"
+            postProcessing="false"
+            includes="common/project.xml,client/project.xml,server/project.xml,webapp/project.xml"
+            goals="astrogrid-deploy-artifact"
+            banner="Deploying snapshot artifact : "
+            ignoreFailures="false"
+            />
+    </goal>
+
+    <!--+
+        | Build and deploy our snapshots.
+        +-->
+    <goal name="astrogrid-deploy-snapshot">
+        <maven:reactor
+            basedir="${basedir}"
+            postProcessing="false"
+            includes="common/project.xml,client/project.xml,server/project.xml,webapp/project.xml"
+            goals="astrogrid-deploy-snapshot"
+            banner="Deploying snapshot artifact : "
+            ignoreFailures="false"
+            />
+    </goal>
+
+    <!--+
+        | Build our project website.
+        +-->
+    <goal name="astrogrid-build-site">
+        <!--+
+            | Generate our project site(s).
+            +-->
+        <attainGoal name="multiproject:site"/>
+    </goal>
+
+    <!--+
+        | Build and deploy our project website.
+        +-->
+    <goal name="astrogrid-deploy-site">
+        <!--+
+            | Generate our project site(s).
+            +-->
+        <attainGoal name="multiproject:site"/>
+        <!--+
+            | Deploy our project site.
+            +-->
+        <echo message="About to do local site deploy"/>
+        <attainGoal name="deploy-local-site"/>
+        <echo message="Finished local site deploy"/>
+        <attainGoal name="site:sshdeploy"/>
+        <echo message="Finished   site deploy"/>
+    </goal>
+
+</project>

@@ -3,10 +3,13 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/maven/project.xml,v $</cvs:source>
     | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2004/11/23 18:40:50 $</cvs:date>
-    | <cvs:version>$Revision: 1.7 $</cvs:version>
+    | <cvs:date>$Date: 2004/11/25 00:19:20 $</cvs:date>
+    | <cvs:version>$Revision: 1.8 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.8  2004/11/25 00:19:20  jdt
+    |   Merge from dave-dev-200410061224-200411221626
+    |
     |   Revision 1.7  2004/11/23 18:40:50  jdt
     |   Merges from  BLD_JDT_648.  The long awaited move to versioned jars and wars.  Fingers crossed.  See:
     |   http://software.astrogrid.org/developerdocs/developmentprocess.html
@@ -54,6 +57,11 @@
         +-->
     <extend>../../maven-base/project.xml</extend>
     <currentVersion>${astrogrid.filestore.version}</currentVersion>
+
+    <!--+
+        | The Java package name of the project.
+        +-->
+    <package>org.astrogrid.filestore</package>
 
     <!--+
         | The project developers.

@@ -2,11 +2,17 @@
 <!--+
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/server/maven.xml,v $</cvs:source>
-    | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/07/15 13:24:28 $</cvs:date>
-    | <cvs:version>$Revision: 1.3 $</cvs:version>
+    | <cvs:author>$Author: jdt $</cvs:author>
+    | <cvs:date>$Date: 2004/11/25 00:19:19 $</cvs:date>
+    | <cvs:version>$Revision: 1.4 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.4  2004/11/25 00:19:19  jdt
+    |   Merge from dave-dev-200410061224-200411221626
+    |
+    |   Revision 1.3.82.1  2004/11/17 19:06:30  dave
+    |   Updated server configuration ...
+    |
     |   Revision 1.3  2004/07/15 13:24:28  dave
     |   Merged development branch, dave-dev-200407141515, into HEAD
     |
@@ -272,7 +278,7 @@
         <!--+
             | Create our test repository.
             +-->
-		<ant:mkdir dir="${org.astrogrid.filestore.repository}"/>
+		<ant:mkdir dir="${org.astrogrid.filestore.test.repository}"/>
     </preGoal>
 
     <!--+

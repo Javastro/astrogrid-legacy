@@ -1,10 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/client/src/java/org/astrogrid/filestore/client/FileStoreMockDelegate.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/17 06:57:10 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2004/11/25 00:19:20 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreMockDelegate.java,v $
+ *   Revision 1.4  2004/11/25 00:19:20  jdt
+ *   Merge from dave-dev-200410061224-200411221626
+ *
+ *   Revision 1.3.14.1  2004/11/04 02:33:03  dave
+ *   Refactored mock delegate and config to make it easier to test filemanager with multiple filstores.
+ *
  *   Revision 1.3  2004/09/17 06:57:10  dave
  *   Added commons logging to FileStore.
  *   Updated logging properties in Community.
@@ -31,7 +37,12 @@ package org.astrogrid.filestore.client ;
 import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
 
+import org.astrogrid.store.Ivorn ;
+
+import org.astrogrid.filestore.common.FileStoreConfigMock;
+
 import org.astrogrid.filestore.common.FileStore ;
+import org.astrogrid.filestore.common.FileStoreConfig ;
 import org.astrogrid.filestore.common.FileStoreMock ;
 
 /**
@@ -48,12 +59,48 @@ public class FileStoreMockDelegate
     private static Log log = LogFactory.getLog(FileStoreMockDelegate.class);
 
 	/**
-	 * Public constructor (creates a new FileStoreMock service).
+	 * Public constructor (creates a new FileStoreMock service with default config).
 	 *
 	 */
 	public FileStoreMockDelegate()
 		{
 		this.service = new FileStoreMock() ;
 		}
+
+	/**
+	 * Public constructor using a specific config.
+	 *
+	 */
+	public FileStoreMockDelegate(FileStoreConfig config)
+		{
+		this.service = new FileStoreMock(config) ;
+		}
+
+	/**
+	 * Public constructor using a specific ivorn.
+	 *
+	 */
+	public FileStoreMockDelegate(Ivorn ivorn)
+		{
+		this(
+			new FileStoreConfigMock(
+				ivorn
+				)
+			) ;
+		}
+
+	/**
+	 * Public constructor using a specific ivorn.
+	 *
+	 */
+	public FileStoreMockDelegate(String ivorn)
+		{
+		this(
+			new FileStoreConfigMock(
+				ivorn
+				)
+			) ;
+		}
+
 	}
 

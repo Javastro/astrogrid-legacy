@@ -1,11 +1,18 @@
 /*
  *
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/server/src/java/org/astrogrid/filestore/server/repository/Attic/RepositoryConfig.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/08/18 19:00:01 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/common/src/java/org/astrogrid/filestore/common/FileStoreConfig.java,v $</cvs:source>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2004/11/25 00:19:19 $</cvs:date>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  * <cvs:log>
- *   $Log: RepositoryConfig.java,v $
+ *   $Log: FileStoreConfig.java,v $
+ *   Revision 1.2  2004/11/25 00:19:19  jdt
+ *   Merge from dave-dev-200410061224-200411221626
+ *
+ *   Revision 1.1.2.1  2004/10/19 14:56:15  dave
+ *   Refactored config and resolver to enable multiple instances of mock implementation.
+ *   Required to implement handling of multiple FileStore(s) in FileManager.
+ *
  *   Revision 1.3  2004/08/18 19:00:01  dave
  *   Myspace manager modified to use remote filestore.
  *   Tested before checkin - integration tests at 91%.
@@ -28,7 +35,7 @@
  * </cvs:log>
  *
  */
-package org.astrogrid.filestore.server.repository ;
+package org.astrogrid.filestore.common ;
 
 import java.net.URL ;
 import java.io.File ;
@@ -37,10 +44,10 @@ import org.astrogrid.store.Ivorn ;
 import org.astrogrid.filestore.common.exception.FileStoreServiceException ;
 
 /**
- * Configuration interface for a repository.
+ * Public interface for a FileStore configuration.
  *
  */
-public interface RepositoryConfig
+public interface FileStoreConfig
 	{
 	/**
 	 * The local service ivorn.
