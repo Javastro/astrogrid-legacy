@@ -62,7 +62,7 @@ public class Parameter {
     }
     
     public Parameter( Element element ) {
-        if( TRACE_ENABLED ) trace( "Parameter(Element) exit") ; 
+        if( TRACE_ENABLED ) trace( "Parameter(Element) entry") ; 
              
         try {
             
