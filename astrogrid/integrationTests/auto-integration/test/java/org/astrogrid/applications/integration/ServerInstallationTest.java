@@ -1,4 +1,4 @@
-/*$Id: ServerInstallationTest.java,v 1.1 2004/07/01 11:43:33 nw Exp $
+/*$Id: ServerInstallationTest.java,v 1.2 2004/08/13 14:05:05 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -69,9 +69,14 @@ public class ServerInstallationTest extends AbstractTestForCEA {
     
     
     public void testReturnRegistryEntry() throws Exception {
+        try {
         String entry = delegate.returnRegistryEntry();
         assertNotNull(entry);
-        // I guess its xml or something. need to add further testing here
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+        //@todo I guess its xml or something. need to add further testing here
     }
 
     
@@ -80,6 +85,9 @@ public class ServerInstallationTest extends AbstractTestForCEA {
 
 /* 
 $Log: ServerInstallationTest.java,v $
+Revision 1.2  2004/08/13 14:05:05  nw
+tried to improve reporting on error
+
 Revision 1.1  2004/07/01 11:43:33  nw
 cea refactor
 
