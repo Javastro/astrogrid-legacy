@@ -13,6 +13,7 @@ package org.astrogrid.jes.jobcontroller;
 import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.jes.JesException;
 import org.astrogrid.jes.comm.SchedulerNotifier;
+import org.astrogrid.jes.component.ComponentDescriptor;
 import org.astrogrid.jes.job.BeanFacade;
 import org.astrogrid.jes.job.JobException;
 import org.astrogrid.jes.job.JobFactory;
@@ -27,6 +28,8 @@ import org.apache.commons.logging.LogFactory;
 
 import java.rmi.RemoteException;
 import java.util.Iterator;
+
+import junit.framework.Test;
 
 
 
@@ -66,7 +69,7 @@ import java.util.Iterator;
  * @since   AstroGrid 1.2
  * Bug#12   Jeff Lusted - 30-June-2003   NullPointerException under error conditions.
  */
-public class JobController implements org.astrogrid.jes.delegate.v1.jobcontroller.JobController{
+public class JobController implements org.astrogrid.jes.delegate.v1.jobcontroller.JobController, ComponentDescriptor{
     
     public JobController(BeanFacade facade,SchedulerNotifier nudger) {
         this.facade = facade;
@@ -168,6 +171,27 @@ public class JobController implements org.astrogrid.jes.delegate.v1.jobcontrolle
         }        
 
             
+    }
+
+    /**
+     * @see org.astrogrid.jes.component.ComponentDescriptor#getName()
+     */
+    public String getName() {
+        return "Standard Job Controller";
+    }
+
+    /**
+     * @see org.astrogrid.jes.component.ComponentDescriptor#getDescription()
+     */
+    public String getDescription() {
+        return "Bog standard implementation";
+    }
+
+    /**
+     * @see org.astrogrid.jes.component.ComponentDescriptor#getInstallationTest()
+     */
+    public Test getInstallationTest() {
+        return null;
     } // end of jobList()
        
 

@@ -1,4 +1,4 @@
-/*$Id: InMemoryJobFactoryImpl.java,v 1.4 2004/03/04 01:57:35 nw Exp $
+/*$Id: InMemoryJobFactoryImpl.java,v 1.5 2004/03/07 21:04:38 nw Exp $
  * Created on 11-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.jes.impl.workflow;
 
 import org.astrogrid.community.beans.v1.Account;
+import org.astrogrid.jes.component.ComponentDescriptor;
 import org.astrogrid.jes.job.JobException;
 import org.astrogrid.jes.job.NotFoundException;
 import org.astrogrid.jes.job.SubmitJobRequest;
@@ -23,11 +24,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import junit.framework.Test;
+
 /** Noddy implementation of job factory that keeps all job records in memory only.
  * @author Noel Winstanley nw@jb.man.ac.uk 11-Feb-2004
  *
  */
-public class InMemoryJobFactoryImpl extends AbstractJobFactoryImpl {
+public class InMemoryJobFactoryImpl extends AbstractJobFactoryImpl implements ComponentDescriptor {
     /** Construct a new InMemoryJobFactoryImpl
      * 
      */
@@ -96,11 +99,44 @@ public class InMemoryJobFactoryImpl extends AbstractJobFactoryImpl {
         }
         log.info("Using in-memory store - updateJob is a no-op");
     }
+
+
+
+    /**
+     * @see org.astrogrid.jes.component.ComponentDescriptor#getName()
+     */
+    public String getName() {
+        return "Memory-only job store";
+    }
+
+
+
+    /**
+     * @see org.astrogrid.jes.component.ComponentDescriptor#getDescription()
+     */
+    public String getDescription() {
+        return "Jobs stored only in volatile hashmap. no jobs will persist after life of component.\n testing only";
+    }
+
+
+
+    /**
+     * @see org.astrogrid.jes.component.ComponentDescriptor#getInstallationTest()
+     */
+    public Test getInstallationTest() {
+        return null;
+    }
 }
 
 
 /* 
 $Log: InMemoryJobFactoryImpl.java,v $
+Revision 1.5  2004/03/07 21:04:38  nw
+merged in nww-itn05-pico - adds picocontainer
+
+Revision 1.4.4.1  2004/03/07 20:41:59  nw
+altered to look in component manager factory for implementations
+
 Revision 1.4  2004/03/04 01:57:35  nw
 major refactor.
 upgraded to latest workflow object model.

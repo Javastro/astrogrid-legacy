@@ -1,4 +1,4 @@
-/*$Id: CastorBeanFacade.java,v 1.4 2004/03/04 01:57:35 nw Exp $
+/*$Id: CastorBeanFacade.java,v 1.5 2004/03/07 21:04:38 nw Exp $
  * Created on 11-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,7 @@ package org.astrogrid.jes.impl.workflow;
 
 import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.jes.JesException;
+import org.astrogrid.jes.component.ComponentDescriptor;
 import org.astrogrid.jes.job.BeanFacade;
 import org.astrogrid.jes.job.JobFactory;
 import org.astrogrid.jes.job.SubmitJobRequest;
@@ -27,11 +28,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import junit.framework.Test;
+
 /** Bean facade that hides implementation of object model (castor in this case) from the service code.
  * @author Noel Winstanley nw@jb.man.ac.uk 11-Feb-2004
  *
  */
-public class CastorBeanFacade implements BeanFacade {
+public class CastorBeanFacade implements BeanFacade, ComponentDescriptor {
     public CastorBeanFacade(AbstractJobFactoryImpl jobFactory) {
         this.jobFactory = jobFactory;
     }
@@ -120,6 +123,27 @@ public class CastorBeanFacade implements BeanFacade {
         return sr;
     }
 
+    /**
+     * @see org.astrogrid.jes.component.ComponentDescriptor#getName()
+     */
+    public String getName() {
+        return "CastorBeanFacade";
+    }
+
+    /**
+     * @see org.astrogrid.jes.component.ComponentDescriptor#getDescription()
+     */
+    public String getDescription() {
+        return "Standard Bean Facade";
+    }
+
+    /**
+     * @see org.astrogrid.jes.component.ComponentDescriptor#getInstallationTest()
+     */
+    public Test getInstallationTest() {
+        return null;
+    }
+
     
     
 }
@@ -127,6 +151,12 @@ public class CastorBeanFacade implements BeanFacade {
 
 /* 
 $Log: CastorBeanFacade.java,v $
+Revision 1.5  2004/03/07 21:04:38  nw
+merged in nww-itn05-pico - adds picocontainer
+
+Revision 1.4.4.1  2004/03/07 20:41:59  nw
+altered to look in component manager factory for implementations
+
 Revision 1.4  2004/03/04 01:57:35  nw
 major refactor.
 upgraded to latest workflow object model.

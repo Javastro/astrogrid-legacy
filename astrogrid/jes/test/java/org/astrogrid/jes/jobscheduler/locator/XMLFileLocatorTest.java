@@ -1,4 +1,4 @@
-/*$Id: XMLFileLocatorTest.java,v 1.3 2004/03/05 16:16:55 nw Exp $
+/*$Id: XMLFileLocatorTest.java,v 1.4 2004/03/07 21:04:39 nw Exp $
  * Created on 25-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.jes.jobscheduler.locator;
 
 import java.io.InputStream;
+import java.net.URL;
 import java.util.Map;
 
 import junit.framework.TestCase;
@@ -44,7 +45,13 @@ public class XMLFileLocatorTest extends TestCase {
     public void testLoad() throws Exception{
         InputStream is = this.getClass().getResourceAsStream("unit-test-tools.xml");
         assertNotNull(is);
-        XMLFileLocator loc = new XMLFileLocator(this.getClass().getResource("unit-test-tools.xml"));
+        XMLFileLocator.ToolList list = new XMLFileLocator.ToolList() {
+
+            public URL getURL() {
+                return this.getClass().getResource("unit-test-tools.xml");
+            }
+        };
+        XMLFileLocator loc = new XMLFileLocator(list);
         assertNotNull(loc);
         Map m  = loc.m; // as in same package.
         assertTrue(m.containsKey("testapp"));
@@ -61,6 +68,12 @@ public class XMLFileLocatorTest extends TestCase {
 
 /* 
 $Log: XMLFileLocatorTest.java,v $
+Revision 1.4  2004/03/07 21:04:39  nw
+merged in nww-itn05-pico - adds picocontainer
+
+Revision 1.3.4.1  2004/03/07 20:42:31  nw
+updated tests to work with picocontainer
+
 Revision 1.3  2004/03/05 16:16:55  nw
 worked now object model through jes.
 implemented basic scheduling policy

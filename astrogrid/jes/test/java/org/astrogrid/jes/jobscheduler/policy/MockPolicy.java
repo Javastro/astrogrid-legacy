@@ -1,4 +1,4 @@
-/*$Id: MockPolicy.java,v 1.5 2004/03/05 16:16:55 nw Exp $
+/*$Id: MockPolicy.java,v 1.6 2004/03/07 21:04:38 nw Exp $
  * Created on 18-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,15 +11,18 @@
 package org.astrogrid.jes.jobscheduler.policy;
 
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
+import org.astrogrid.jes.component.ComponentDescriptor;
 import org.astrogrid.jes.jobscheduler.Policy;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Workflow;
+
+import junit.framework.Test;
 
 /** Mock policy - will retun all jobs that aren;'t marked as completed.
  * @author Noel Winstanley nw@jb.man.ac.uk 18-Feb-2004
  *
  */
-public class MockPolicy extends AbstractPolicy implements Policy {
+public class MockPolicy extends AbstractPolicy implements Policy, ComponentDescriptor {
     /** Construct a new MockPolicy
      * 
      */
@@ -41,11 +44,38 @@ public class MockPolicy extends AbstractPolicy implements Policy {
         registerFunctions(job);
         return (Step)job.findXPathValue("//*[jes:isStep() and jes:latestStatus() = '" + ExecutionPhase.PENDING + "']");
     }
+
+    /**
+     * @see org.astrogrid.jes.component.ComponentDescriptor#getName()
+     */
+    public String getName() {
+        return "MockPolicy";
+    }
+
+    /**
+     * @see org.astrogrid.jes.component.ComponentDescriptor#getDescription()
+     */
+    public String getDescription() {
+        return "Always returns a running job status, finds all pending job steps";
+    }
+
+    /**
+     * @see org.astrogrid.jes.component.ComponentDescriptor#getInstallationTest()
+     */
+    public Test getInstallationTest() {
+        return null;
+    }
 }
 
 
 /* 
 $Log: MockPolicy.java,v $
+Revision 1.6  2004/03/07 21:04:38  nw
+merged in nww-itn05-pico - adds picocontainer
+
+Revision 1.5.4.1  2004/03/07 20:42:31  nw
+updated tests to work with picocontainer
+
 Revision 1.5  2004/03/05 16:16:55  nw
 worked now object model through jes.
 implemented basic scheduling policy

@@ -1,4 +1,4 @@
-/*$Id: DBJobFactoryImpl.java,v 1.4 2004/03/04 01:57:35 nw Exp $
+/*$Id: DBJobFactoryImpl.java,v 1.5 2004/03/07 21:04:38 nw Exp $
  * Created on 12-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.jes.impl.workflow;
 
 import org.astrogrid.community.beans.v1.Account;
+import org.astrogrid.jes.component.ComponentDescriptor;
 import org.astrogrid.jes.job.JobException;
 import org.astrogrid.jes.job.NotFoundException;
 import org.astrogrid.jes.job.SubmitJobRequest;
@@ -31,11 +32,15 @@ import java.util.Iterator;
 
 import javax.sql.DataSource;
 
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
 /** Implememntation of JobFacotry, where jobs are stored in a database.
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Feb-2004
  *
  */
-public class DBJobFactoryImpl extends AbstractJobFactoryImpl {
+public class DBJobFactoryImpl extends AbstractJobFactoryImpl implements ComponentDescriptor{
 
     
 
@@ -54,11 +59,6 @@ public class DBJobFactoryImpl extends AbstractJobFactoryImpl {
     }
     
 
-    
-    /** constructor that uses default sql commands */
-    public DBJobFactoryImpl(DataSource ds) {
-        this(ds,new DefaultSqlCommands());
-    }
     
     protected final DataSource datasource;
     protected final SqlCommands sql;
@@ -221,11 +221,72 @@ public class DBJobFactoryImpl extends AbstractJobFactoryImpl {
             }
         }
     }
+    /**
+     * @see org.astrogrid.jes.component.ComponentDescriptor#getName()
+     */
+    public String getName() {
+        return "database-backed job factory";
+    }
+
+
+
+    /**
+     * @see org.astrogrid.jes.component.ComponentDescriptor#getDescription()
+     */
+    public String getDescription() {
+        return "persists job records in a database table";
+    }
+
+
+
+    /**
+     * @see org.astrogrid.jes.component.ComponentDescriptor#getInstallationTest()
+     */
+    public Test getInstallationTest() {        
+        TestSuite suite  = new TestSuite("Tests for DB Job Factory");
+        suite.addTestSuite(InstallationTest.class);
+        return suite;    
+    }
+    /** verify that we can see database trhough datasource */
+    private class InstallationTest extends TestCase {
+        
+        public InstallationTest(String s) {
+            super(s);
+        }
+        
+        public void testDatasource() throws Exception {
+            Connection conn = datasource.getConnection();
+            assertNotNull(conn);
+            conn.close();
+        }
+        
+        public void testSQL() throws Exception {
+            Connection conn = datasource.getConnection();
+            PreparedStatement stmnt = conn.prepareStatement(sql.getDeleteSQL());
+            stmnt.close();
+            stmnt = conn.prepareStatement(sql.getInsertSQL());
+            stmnt.close();
+             stmnt = conn.prepareStatement(sql.getListSQL());
+            stmnt.close();
+             stmnt = conn.prepareStatement(sql.getRetrieveSQL());
+            stmnt.close();                                    
+            stmnt = conn.prepareStatement(sql.getUpdateSQL());
+            stmnt.close();
+        }
+        
+             
+    }
 }
 
 
 /* 
 $Log: DBJobFactoryImpl.java,v $
+Revision 1.5  2004/03/07 21:04:38  nw
+merged in nww-itn05-pico - adds picocontainer
+
+Revision 1.4.4.1  2004/03/07 20:41:59  nw
+altered to look in component manager factory for implementations
+
 Revision 1.4  2004/03/04 01:57:35  nw
 major refactor.
 upgraded to latest workflow object model.

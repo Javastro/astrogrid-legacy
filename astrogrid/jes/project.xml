@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.50 2004/03/03 11:49:49 nw Exp $ -->
+<!-- $Id: project.xml,v 1.51 2004/03/07 21:04:39 nw Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
     <extend>../maven-base/project.xml</extend>
@@ -167,15 +167,15 @@
         </properties>
     </dependency>
 
-                <!-- days are numbered.. -->
+        <!-- pico container -->
         <dependency>
-            <artifactId>jconfig</artifactId>
-            <groupId>jconfig</groupId>
-            <version>2.1</version>
-            <properties>
-                <war.bundle>true</war.bundle>
-            </properties>
+        	<id>picocontainer</id>
+        	<version>1.0-beta-5-SNAPSHOT</version>
+        	<properties>
+        		<war.bundle>true</war.bundle>
+        	</properties>
         </dependency>
+        
         <!-- concurrency lib - for thread pools, factories, queues, etc. -->
         <dependency>
                 <id>concurrent</id>

@@ -1,4 +1,4 @@
-/*$Id: MemoryQueueSchedulerNotifier.java,v 1.4 2004/03/05 16:16:23 nw Exp $
+/*$Id: MemoryQueueSchedulerNotifier.java,v 1.5 2004/03/07 21:04:39 nw Exp $
  * Created on 18-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.jes.comm;
 
+import org.astrogrid.jes.component.ComponentDescriptor;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.jes.types.v1.cea.axis.MessageType;
 import org.astrogrid.jes.util.JesUtil;
@@ -20,12 +21,13 @@ import org.apache.commons.logging.LogFactory;
 
 import EDU.oswego.cs.dl.util.concurrent.Executor;
 import EDU.oswego.cs.dl.util.concurrent.QueuedExecutor;
+import junit.framework.Test;
 
 /** Notifier that maintains a queue, adds notifications to it, where they are consumed by a scheduler running in a different thread.
  * @author Noel Winstanley nw@jb.man.ac.uk 18-Feb-2004
  *
  */
-public class MemoryQueueSchedulerNotifier implements SchedulerNotifier {
+public class MemoryQueueSchedulerNotifier implements SchedulerNotifier , ComponentDescriptor{
     /**
      *  Construct a new MemoryQueueSchedulerNotifier
      * @param exec executor to use to service each of the tasks
@@ -102,12 +104,38 @@ public class MemoryQueueSchedulerNotifier implements SchedulerNotifier {
         }
     }
 
+    /**
+     * @see org.astrogrid.jes.component.ComponentDescriptor#getName()
+     */
+    public String getName() {
+        return "MemoryQueueSchedulerNotifier";
+    }
+    /**
+     * @see org.astrogrid.jes.component.ComponentDescriptor#getDescription()
+     */
+    public String getDescription() {
+        return "Notifier that interacts with in-process scheduler,running in a separate thread." +            "Notifications passed onto task queue for this thread";  
+    }
+    /**
+     * @see org.astrogrid.jes.component.ComponentDescriptor#getInstallationTest()
+     */
+    public Test getInstallationTest() {
+        return null;
+    }
+
     }
 
 
 
 /* 
 $Log: MemoryQueueSchedulerNotifier.java,v $
+Revision 1.5  2004/03/07 21:04:39  nw
+merged in nww-itn05-pico - adds picocontainer
+
+Revision 1.4.4.1  2004/03/07 20:38:52  nw
+added componet descriptor interface impl,
+refactored any primitive types passed into constructor
+
 Revision 1.4  2004/03/05 16:16:23  nw
 worked now object model through jes.
 implemented basic scheduling policy

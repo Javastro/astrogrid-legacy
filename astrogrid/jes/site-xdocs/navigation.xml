@@ -11,10 +11,9 @@
 
     <menu name="Installation Checks">
             <item name="Axis Check" href="happyaxis.jsp" />
-        <item name="Fingerprint" href="fingerprint.jsp" />
-        <item name="View web services" href="servlet/AxisServlet" />
-        <item name="Jes Check" href="happyJes.jsp" />
-        <item name="Configuration" href="configuration.jsp" />
+            <item name="Installation Tests" href="TestServlet?suite=org.astrogrid.jes.component.ComponentManagerFactory" />
+        	<item name="Fingerprint" href="fingerprint.jsp" />
+        	<item name="View web services" href="servlet/AxisServlet" />
     </menu>
     <links>
        <item name="AstroGrid"       href="http://www.astrogrid.org"/>

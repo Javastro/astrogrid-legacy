@@ -1,4 +1,4 @@
-/*$Id: ApplicationControllerDispatcher.java,v 1.4 2004/03/05 16:16:23 nw Exp $
+/*$Id: ApplicationControllerDispatcher.java,v 1.5 2004/03/07 21:04:39 nw Exp $
  * Created on 25-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,6 +15,9 @@ import org.astrogrid.applications.delegate.DelegateFactory;
 import org.astrogrid.applications.delegate.beans.ParameterValues;
 import org.astrogrid.applications.delegate.beans.User;
 import org.astrogrid.jes.JesException;
+import org.astrogrid.jes.component.ComponentDescriptor;
+import org.astrogrid.jes.delegate.JesDelegateFactory;
+import org.astrogrid.jes.delegate.JobMonitor;
 import org.astrogrid.jes.jobscheduler.Dispatcher;
 import org.astrogrid.jes.jobscheduler.Locator;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
@@ -24,20 +27,33 @@ import org.astrogrid.workflow.beans.v1.Workflow;
 
 import java.io.StringWriter;
 import java.net.URL;
+import java.net.URLConnection;
 import java.rmi.RemoteException;
+
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 /** Reimplementation of rough dispatcher.
  * @author Noel Winstanley nw@jb.man.ac.uk 25-Feb-2004
  * step number should be stepID - don't want to imply that steps are sequentially numbered.
  *
  */
-public class ApplicationControllerDispatcher implements Dispatcher {
+public class ApplicationControllerDispatcher implements Dispatcher , ComponentDescriptor{
+    /** Configuration component for Application Controller Dispatcher
+     * @author Noel Winstanley nw@jb.man.ac.uk 07-Mar-2004
+     *
+     */
+    public interface MonitorEndpoint {
+        URL getURL();
+    }    
     /** Construct a new ApplicationControllerDispatcher
      * 
      */
-    public ApplicationControllerDispatcher(Locator locator, URL monitorURL) {
+    public ApplicationControllerDispatcher(Locator locator, MonitorEndpoint endpoint)  {
         this.locator = locator;
-        this.monitorURL = monitorURL;
+        this.monitorURL = endpoint.getURL();
+        assert monitorURL != null;
     }
     protected final Locator locator;
     protected final URL monitorURL;
@@ -93,11 +109,64 @@ public class ApplicationControllerDispatcher implements Dispatcher {
             throw new JesException("cold not serialize to xml",e);
         }
     }
+
+    /**
+     * @see org.astrogrid.jes.component.ComponentDescriptor#getName()
+     */
+    public String getName() {
+        return "ApplicationController Dispatcher";
+    }
+
+    /**
+     * @see org.astrogrid.jes.component.ComponentDescriptor#getDescription()
+     */
+    public String getDescription() {
+        return "Dispatcher that executes job steps by calling application controllers"
+            +" Configured to tell application controllers to call back to:\n" + monitorURL.toString();
+    }
+
+    /**
+     * @see org.astrogrid.jes.component.ComponentDescriptor#getInstallationTest()
+     */
+    public Test getInstallationTest() {        
+        TestSuite suite  = new TestSuite("Tests for ApplicationControllerDispatcher");
+        suite.addTest(new InstallationTest("testCanConnectMonitorURL"));
+        suite.addTest(new InstallationTest("testCanCallMonitorURL"));
+        return suite;    
+    }
+
+
+    
+    protected class InstallationTest extends TestCase {
+        public InstallationTest(String s) {
+            super(s);
+        }
+        public void testCanConnectMonitorURL() throws Exception {
+            URLConnection conn = monitorURL.openConnection();
+            assertNotNull(conn);
+            conn.connect();
+           
+        }
+        public void testCanCallMonitorURL() throws Exception{
+            JobMonitor mon = JesDelegateFactory.createJobMonitor(monitorURL.toString());
+            assertNotNull(mon);
+            // call, with null parameters. will be ignored by other end - if it gets there. we're checking it gets there..
+            mon.monitorJob(null,null);
+        }
+    }
+
 }
 
 
 /* 
 $Log: ApplicationControllerDispatcher.java,v $
+Revision 1.5  2004/03/07 21:04:39  nw
+merged in nww-itn05-pico - adds picocontainer
+
+Revision 1.4.4.1  2004/03/07 20:41:06  nw
+added component descriptor interface impl,
+refactored any primitive types passed into constructor
+
 Revision 1.4  2004/03/05 16:16:23  nw
 worked now object model through jes.
 implemented basic scheduling policy

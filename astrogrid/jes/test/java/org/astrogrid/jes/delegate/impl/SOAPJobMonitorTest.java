@@ -1,4 +1,4 @@
-/*$Id: SOAPJobMonitorTest.java,v 1.1 2004/03/05 16:16:55 nw Exp $
+/*$Id: SOAPJobMonitorTest.java,v 1.2 2004/03/07 21:04:38 nw Exp $
  * Created on 05-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,8 @@
 **/
 package org.astrogrid.jes.delegate.impl;
 
+import org.astrogrid.jes.comm.MockSchedulerNotifier;
+import org.astrogrid.jes.component.ComponentManagerFactory;
 import org.astrogrid.jes.delegate.JesDelegateFactory;
 import org.astrogrid.jes.delegate.JobMonitor;
 import org.astrogrid.jes.testutils.io.FileResourceLoader;
@@ -67,8 +69,9 @@ public class SOAPJobMonitorTest extends AbstractTestForSOAPService {
         
     public void testEmptyData() throws Exception {
         delegate.monitorJob(id,info);
-        assertTrue("notification times out",notifier.barrier.attempt(Sync.ONE_SECOND * 10));
-        assertEquals(1,notifier.getCallCount());
+        assertTrue("notification times out",barrier.attempt(Sync.ONE_SECOND * 10));
+        MockSchedulerNotifier noti = (MockSchedulerNotifier)ComponentManagerFactory.getInstance().getNotifier();
+        assertEquals(1,noti.getCallCount());
     }
     
     /*
@@ -99,6 +102,12 @@ public class SOAPJobMonitorTest extends AbstractTestForSOAPService {
 
 /* 
 $Log: SOAPJobMonitorTest.java,v $
+Revision 1.2  2004/03/07 21:04:38  nw
+merged in nww-itn05-pico - adds picocontainer
+
+Revision 1.1.4.1  2004/03/07 20:42:31  nw
+updated tests to work with picocontainer
+
 Revision 1.1  2004/03/05 16:16:55  nw
 worked now object model through jes.
 implemented basic scheduling policy

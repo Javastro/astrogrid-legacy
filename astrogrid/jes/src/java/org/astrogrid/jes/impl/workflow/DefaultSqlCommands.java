@@ -1,4 +1,4 @@
-/*$Id: DefaultSqlCommands.java,v 1.2 2004/02/27 00:46:03 nw Exp $
+/*$Id: DefaultSqlCommands.java,v 1.3 2004/03/07 21:04:38 nw Exp $
  * Created on 12-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,11 +10,15 @@
 **/
 package org.astrogrid.jes.impl.workflow;
 
+import org.astrogrid.jes.component.ComponentDescriptor;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 import javax.sql.DataSource;
+
+import junit.framework.Test;
 
 /** Implementation of SqlCommands that provides default vanilla-sql command strings;
  * <p />
@@ -22,7 +26,7 @@ import javax.sql.DataSource;
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Feb-2004
  *
  */
-public class DefaultSqlCommands implements SqlCommands {
+public class DefaultSqlCommands implements SqlCommands , ComponentDescriptor{
     /** Construct a new DefaultSqlCommands
      * 
      */
@@ -112,11 +116,43 @@ public class DefaultSqlCommands implements SqlCommands {
     public String getUpdateSQL() {
         return updateSQL;
     }
+
+    /**
+     * @see org.astrogrid.jes.component.ComponentDescriptor#getName()
+     */
+    public String getName() {
+        return "DefaultSQLCommands";
+    }
+
+    /**
+     * @see org.astrogrid.jes.component.ComponentDescriptor#getDescription()
+     */
+    public String getDescription() {
+        return "Container for set of sql commands to use for db-backed job factory\n"
+        + "listSQL: " + getListSQL() + "\n"
+        + "deleteSQL: " + getDeleteSQL() + "\n"
+        + "insertSQL: " + getInsertSQL() + "\n"
+        + "retreiveSQL: " + getRetrieveSQL() + "\n"
+        + "updateSQL: " + getUpdateSQL() ;
+    }
+
+    /**
+     * @see org.astrogrid.jes.component.ComponentDescriptor#getInstallationTest()
+     */
+    public Test getInstallationTest() {
+        return null;
+    }
 }
 
 
 /* 
 $Log: DefaultSqlCommands.java,v $
+Revision 1.3  2004/03/07 21:04:38  nw
+merged in nww-itn05-pico - adds picocontainer
+
+Revision 1.2.4.1  2004/03/07 20:41:59  nw
+altered to look in component manager factory for implementations
+
 Revision 1.2  2004/02/27 00:46:03  nw
 merged branch nww-itn05-bz#91
 

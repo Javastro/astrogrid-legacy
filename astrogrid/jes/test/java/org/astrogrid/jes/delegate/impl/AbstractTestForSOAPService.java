@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForSOAPService.java,v 1.1 2004/03/05 16:16:55 nw Exp $
+/*$Id: AbstractTestForSOAPService.java,v 1.2 2004/03/07 21:04:38 nw Exp $
  * Created on 05-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,15 +10,17 @@
 **/
 package org.astrogrid.jes.delegate.impl;
 
-import org.astrogrid.jes.comm.JobScheduler;
 import org.astrogrid.jes.comm.MockSchedulerNotifier;
 import org.astrogrid.jes.comm.SchedulerNotifier;
+import org.astrogrid.jes.component.BasicComponentManager;
 import org.astrogrid.jes.component.ComponentManager;
+import org.astrogrid.jes.component.ComponentManagerFactory;
 import org.astrogrid.jes.jobscheduler.Dispatcher;
-import org.astrogrid.jes.jobscheduler.Locator;
 import org.astrogrid.jes.jobscheduler.dispatcher.MockDispatcher;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.jes.types.v1.cea.axis.MessageType;
+
+import org.picocontainer.MutablePicoContainer;
 
 import EDU.oswego.cs.dl.util.concurrent.Mutex;
 import EDU.oswego.cs.dl.util.concurrent.Sync;
@@ -39,37 +41,40 @@ public class AbstractTestForSOAPService extends TestCase {
     }
     
     protected void setUp() throws Exception {        
-        notifier = new MySchedulerNotifier();
-        ComponentManager cm = new TestComponentManager(notifier);        
-        ComponentManager._setInstance(cm);
-       // sanity check
-        // check we are getting the right kind of notifier.
-        assertSame(notifier,ComponentManager.getInstance().getNotifier() );  
+        barrier = new Mutex();
+        ComponentManager cm = new TestComponentManager();        
+        ComponentManagerFactory._setInstance(cm);
+        assertTrue(ComponentManagerFactory.getInstance().getNotifier() instanceof MySchedulerNotifier);
     }
-
-    protected MySchedulerNotifier notifier;
+    protected Sync barrier;  
     
     /** subclass of componenent manager to configure local service to use a mock.. */
-    protected class TestComponentManager extends ComponentManager {
-        TestComponentManager(SchedulerNotifier notifier) {
-            this.notifier = notifier;
-        }
-        private SchedulerNotifier notifier; 
-        /** build a scheduler notifier, possibly using  the previously-constructed scheduler */     
-      protected SchedulerNotifier buildNotifier(JobScheduler scheduler) {
-             return notifier;
-     }
+    protected class TestComponentManager extends BasicComponentManager {
+        public TestComponentManager() {
+            super();    
+            MutablePicoContainer pico = super.getContainer();
+            // need to remove existing registrations.
+            
+            // just mock the dispatcher.
+            pico.unregisterComponent(Dispatcher.class);
+            pico.registerComponentImplementation(Dispatcher.class,MockDispatcher.class);
+            
+            // scheduler that notifies of completion by releasing a barrier
+            pico.unregisterComponent(SchedulerNotifier.class);
+            pico.registerComponentImplementation(SchedulerNotifier.class,MySchedulerNotifier.class);
+            pico.registerComponentInstance(barrier);                  
+        }           
 
-     protected Dispatcher buildDispatcher(Locator locator) {
-         return new MockDispatcher();
-     }     
+    
     }
-    protected class MySchedulerNotifier extends MockSchedulerNotifier {
-        public MySchedulerNotifier() throws InterruptedException {
-            barrier = new Mutex(); 
+    /** scheduler notifier that releases barrier when finished */
+    protected static class MySchedulerNotifier extends MockSchedulerNotifier {
+        public MySchedulerNotifier(Sync barrier) throws InterruptedException {
+            this.barrier = barrier;
             barrier.acquire();
         }
-        public Sync barrier;       
+        protected final Sync barrier;
+     
         public void resumeJob(JobIdentifierType id, MessageType mt) throws Exception {
             try {
                 assertNotNull(id);
@@ -85,6 +90,12 @@ public class AbstractTestForSOAPService extends TestCase {
 
 /* 
 $Log: AbstractTestForSOAPService.java,v $
+Revision 1.2  2004/03/07 21:04:38  nw
+merged in nww-itn05-pico - adds picocontainer
+
+Revision 1.1.4.1  2004/03/07 20:42:31  nw
+updated tests to work with picocontainer
+
 Revision 1.1  2004/03/05 16:16:55  nw
 worked now object model through jes.
 implemented basic scheduling policy

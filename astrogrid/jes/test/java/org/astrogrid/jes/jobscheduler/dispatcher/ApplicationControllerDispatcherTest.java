@@ -1,4 +1,4 @@
-/*$Id: ApplicationControllerDispatcherTest.java,v 1.4 2004/03/05 16:16:55 nw Exp $
+/*$Id: ApplicationControllerDispatcherTest.java,v 1.5 2004/03/07 21:04:39 nw Exp $
  * Created on 25-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -39,8 +39,14 @@ public class ApplicationControllerDispatcherTest extends AbstractTestWorkflowInp
     
     protected void setUp() throws Exception {
         Locator locator = new MockLocator();
-        URL monitorURL = new URL("http://www.nowhere.org");
-        disp = new ApplicationControllerDispatcher(locator,monitorURL);
+        final URL monitorURL =  new URL("http://www.nowhere.org");
+        ApplicationControllerDispatcher.MonitorEndpoint monitor = new ApplicationControllerDispatcher.MonitorEndpoint() {
+
+            public URL getURL() {
+                return monitorURL;
+            }
+        };
+        disp = new ApplicationControllerDispatcher(locator,monitor);
     }
     protected ApplicationControllerDispatcher disp;
     
@@ -76,6 +82,12 @@ public class ApplicationControllerDispatcherTest extends AbstractTestWorkflowInp
 
 /* 
 $Log: ApplicationControllerDispatcherTest.java,v $
+Revision 1.5  2004/03/07 21:04:39  nw
+merged in nww-itn05-pico - adds picocontainer
+
+Revision 1.4.4.1  2004/03/07 20:42:31  nw
+updated tests to work with picocontainer
+
 Revision 1.4  2004/03/05 16:16:55  nw
 worked now object model through jes.
 implemented basic scheduling policy

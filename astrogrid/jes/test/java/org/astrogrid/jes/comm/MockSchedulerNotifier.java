@@ -1,4 +1,4 @@
-/*$Id: MockSchedulerNotifier.java,v 1.3 2004/03/03 01:13:42 nw Exp $
+/*$Id: MockSchedulerNotifier.java,v 1.4 2004/03/07 21:04:39 nw Exp $
  * Created on 12-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,9 +10,12 @@
 **/
 package org.astrogrid.jes.comm;
 
+import org.astrogrid.jes.component.ComponentDescriptor;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.jes.types.v1.cea.axis.MessageType;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
+
+import junit.framework.Test;
 
 /** Mock implementation of a scheduler notifier. doesn't communicate. 
  * <p />
@@ -20,7 +23,7 @@ import org.astrogrid.workflow.beans.v1.execution.JobURN;
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Feb-2004
  *
  */
-public class MockSchedulerNotifier implements SchedulerNotifier {
+public class MockSchedulerNotifier implements SchedulerNotifier, ComponentDescriptor {
     /** Construct a new MockSchedulerNotifier
      * 
      */
@@ -60,11 +63,39 @@ public class MockSchedulerNotifier implements SchedulerNotifier {
             throw new Exception("you wanted me to fail");
         }        
     }
+
+    /**
+     * @see org.astrogrid.jes.component.ComponentDescriptor#getName()
+     */
+    public String getName() {
+        return "Mock Scheduler Notifier";
+    }
+
+    /**
+     * @see org.astrogrid.jes.component.ComponentDescriptor#getDescription()
+     */
+    public String getDescription() {
+        return "Mock, just counts number of method calls\n"
+            + (willSucceed ? "configured to succeed on method call" : "configured to fail on method call, throwing an exception");
+    }
+
+    /**
+     * @see org.astrogrid.jes.component.ComponentDescriptor#getInstallationTest()
+     */
+    public Test getInstallationTest() {
+        return null;
+    }
 }
 
 
 /* 
 $Log: MockSchedulerNotifier.java,v $
+Revision 1.4  2004/03/07 21:04:39  nw
+merged in nww-itn05-pico - adds picocontainer
+
+Revision 1.3.4.1  2004/03/07 20:42:31  nw
+updated tests to work with picocontainer
+
 Revision 1.3  2004/03/03 01:13:42  nw
 updated jes to work with regenerated workflow object model
 

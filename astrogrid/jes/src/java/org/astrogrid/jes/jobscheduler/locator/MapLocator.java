@@ -1,4 +1,4 @@
-/*$Id: MapLocator.java,v 1.3 2004/03/04 01:57:35 nw Exp $
+/*$Id: MapLocator.java,v 1.4 2004/03/07 21:04:38 nw Exp $
  * Created on 19-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,29 +11,37 @@
 package org.astrogrid.jes.jobscheduler.locator;
 
 import org.astrogrid.jes.JesException;
+import org.astrogrid.jes.component.ComponentDescriptor;
 import org.astrogrid.jes.job.NotFoundException;
 import org.astrogrid.jes.jobscheduler.Locator;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Tool;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 /**Tool locator that accepts a map of tool information.
  * Interim solution - eventually will find this information from the registry. 
  * @author Noel Winstanley nw@jb.man.ac.uk 19-Feb-2004
  *
  */
-public class MapLocator implements Locator {
+public class MapLocator implements Locator, ComponentDescriptor {
     /** Construct a new MapToolLocator
      * 
      */
     public MapLocator() {
-        this(new HashMap());
+        m = new HashMap();
     }
-    public MapLocator(Map m) {
-        this.m = m;
-    }
+
     protected final Map m;
 
     /** add a tool to the map */
@@ -103,12 +111,78 @@ public class MapLocator implements Locator {
             name = string;
         }
 
+    public String toString() {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("[ToolInfo:");
+        buffer.append(" location: ");
+        buffer.append(location);
+        buffer.append(" interfaceName: ");
+        buffer.append(interfaceName);
+        buffer.append(" name: ");
+        buffer.append(name);
+        buffer.append("]");
+        return buffer.toString();
     }
+    }
+    /**
+     * @see org.astrogrid.jes.component.ComponentDescriptor#getName()
+     */
+    public String getName() {
+        return "MapToolLocator";
+    }
+    /**
+     * @see org.astrogrid.jes.component.ComponentDescriptor#getDescription()
+     */
+    public String getDescription() {
+        return "Empty map of tool locations, that can be extended prorammatically\n" + 
+        "current contents:\n" + m.toString();
+    }
+    /**
+     * @see org.astrogrid.jes.component.ComponentDescriptor#getInstallationTest()
+     */
+    public Test getInstallationTest() {        
+        TestSuite suite  = new TestSuite("Tests for Map Locator");
+        suite.addTest(new InstallationTest("testCanResolveToolEndpoints"));
+        return suite;    
+    }
+
+    
+    protected class InstallationTest extends TestCase {
+        public InstallationTest(String s) {
+            super(s);
+        }
+        /** @todo more checking of url endpoint here.. */
+        public void testCanResolveToolEndpoints() {
+            Iterator i = m.values().iterator();
+            while (i.hasNext()) {
+                ToolInfo nfo = (ToolInfo)i.next();
+                assertNotNull(nfo);
+                try {                 
+                    URL url = new URL(nfo.getLocation());
+                    URLConnection conn = url.openConnection();
+                    assertNotNull(conn);
+                    conn.connect();
+                } catch (MalformedURLException e) {
+                    fail(nfo.getName() + " " + e.getMessage());
+                } catch(IOException e) {
+                    fail("could not connect to " + nfo.getName() + ": " + e.getMessage());
+                }
+            }
+        }
+    }
+
 }
 
 
 /* 
 $Log: MapLocator.java,v $
+Revision 1.4  2004/03/07 21:04:38  nw
+merged in nww-itn05-pico - adds picocontainer
+
+Revision 1.3.4.1  2004/03/07 20:41:06  nw
+added component descriptor interface impl,
+refactored any primitive types passed into constructor
+
 Revision 1.3  2004/03/04 01:57:35  nw
 major refactor.
 upgraded to latest workflow object model.

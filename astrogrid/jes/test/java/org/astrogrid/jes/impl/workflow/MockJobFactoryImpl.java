@@ -1,4 +1,4 @@
-/*$Id: MockJobFactoryImpl.java,v 1.4 2004/03/04 01:57:35 nw Exp $
+/*$Id: MockJobFactoryImpl.java,v 1.5 2004/03/07 21:04:38 nw Exp $
  * Created on 12-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.jes.impl.workflow;
 
 import org.astrogrid.community.beans.v1.Account;
+import org.astrogrid.jes.component.ComponentDescriptor;
 import org.astrogrid.jes.job.JobException;
 import org.astrogrid.jes.job.NotFoundException;
 import org.astrogrid.jes.job.SubmitJobRequest;
@@ -19,13 +20,15 @@ import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
 import java.util.Iterator;
 
+import junit.framework.Test;
+
 /** Mock, makes AbstractJobFactoryImpl non-abstract. 
  * <p />
  * Can also be configured to fail on jobCreation / update / delete..
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Feb-2004
  *
  */
-public class MockJobFactoryImpl extends AbstractJobFactoryImpl {
+public class MockJobFactoryImpl extends AbstractJobFactoryImpl implements ComponentDescriptor {
     /** Construct a new MockJobFactoryImpl
      * 
      */
@@ -95,11 +98,36 @@ public class MockJobFactoryImpl extends AbstractJobFactoryImpl {
             throw new NotFoundException("You wanted me to fail");
         }
     }
+    /**
+     * @see org.astrogrid.jes.component.ComponentDescriptor#getName()
+     */
+    public String getName() {
+        return "Mock Job Factory";
+    }
+    /**
+     * @see org.astrogrid.jes.component.ComponentDescriptor#getDescription()
+     */
+    public String getDescription() {
+        return "Mock, just counts number of method calls\n"
+            + (willSucceed ? "configured to succeed on method call" : "configured to fail on method call, throwing an exception");
+    }
+    /**
+     * @see org.astrogrid.jes.component.ComponentDescriptor#getInstallationTest()
+     */
+    public Test getInstallationTest() {
+        return null;
+    }
 }
 
 
 /* 
 $Log: MockJobFactoryImpl.java,v $
+Revision 1.5  2004/03/07 21:04:38  nw
+merged in nww-itn05-pico - adds picocontainer
+
+Revision 1.4.4.1  2004/03/07 20:42:31  nw
+updated tests to work with picocontainer
+
 Revision 1.4  2004/03/04 01:57:35  nw
 major refactor.
 upgraded to latest workflow object model.

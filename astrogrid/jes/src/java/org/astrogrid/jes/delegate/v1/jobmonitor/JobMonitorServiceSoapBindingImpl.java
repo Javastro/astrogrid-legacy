@@ -9,8 +9,7 @@
 
 package org.astrogrid.jes.delegate.v1.jobmonitor;
 
-import org.astrogrid.jes.comm.SchedulerNotifier;
-import org.astrogrid.jes.component.ComponentManager;
+import org.astrogrid.jes.component.ComponentManagerFactory;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.jes.types.v1.cea.axis.MessageType;
 
@@ -18,10 +17,11 @@ import java.rmi.RemoteException;
 
 public class JobMonitorServiceSoapBindingImpl implements org.astrogrid.jes.delegate.v1.jobmonitor.JobMonitor{
     public JobMonitorServiceSoapBindingImpl() {
-        SchedulerNotifier notifier = ComponentManager.getInstance().getNotifier();
-        monitor = new org.astrogrid.jes.jobmonitor.JobMonitor(notifier);
+        //SchedulerNotifier notifier = ComponentManager.getInstance().getNotifier();
+       // monitor = new org.astrogrid.jes.jobmonitor.JobMonitor(notifier);
+       monitor = ComponentManagerFactory.getInstance().getMonitor();
     }
-    protected final org.astrogrid.jes.jobmonitor.JobMonitor monitor;
+    protected final JobMonitor monitor;
 
     /**
      * @see org.astrogrid.jes.delegate.v1.jobmonitor.JobMonitor#monitorJob(org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType, org.astrogrid.jes.types.v1.cea.axis.MessageType)

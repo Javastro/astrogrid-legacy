@@ -1,4 +1,4 @@
-/*$Id: FileJobFactoryImplTest.java,v 1.2 2004/02/27 00:46:03 nw Exp $
+/*$Id: FileJobFactoryImplTest.java,v 1.3 2004/03/07 21:04:38 nw Exp $
  * Created on 11-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -59,7 +59,13 @@ public class FileJobFactoryImplTest extends InMemoryJobFactoryImplTest {
                 assertNotNull(baseDir);
                 assertTrue(baseDir.exists());
                 baseDir.delete();
-                jf = new FileJobFactoryImpl(baseDir);
+                FileJobFactoryImpl.BaseDirectory finder = new FileJobFactoryImpl.BaseDirectory() {
+
+                    public File getDir() {
+                        return baseDir;
+                    }
+                };
+                jf = new FileJobFactoryImpl(finder);
             }
         };
     }
@@ -69,6 +75,12 @@ public class FileJobFactoryImplTest extends InMemoryJobFactoryImplTest {
 
 /* 
 $Log: FileJobFactoryImplTest.java,v $
+Revision 1.3  2004/03/07 21:04:38  nw
+merged in nww-itn05-pico - adds picocontainer
+
+Revision 1.2.4.1  2004/03/07 20:42:31  nw
+updated tests to work with picocontainer
+
 Revision 1.2  2004/02/27 00:46:03  nw
 merged branch nww-itn05-bz#91
 

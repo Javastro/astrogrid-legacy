@@ -1,4 +1,4 @@
-/*$Id: InMemorySystemTest.java,v 1.5 2004/03/05 16:16:55 nw Exp $
+/*$Id: InMemorySystemTest.java,v 1.6 2004/03/07 21:04:39 nw Exp $
  * Created on 19-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,15 +12,14 @@ package org.astrogrid.jes;
 
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.jes.comm.JobScheduler;
+import org.astrogrid.jes.component.BasicComponentManager;
 import org.astrogrid.jes.component.ComponentManager;
+import org.astrogrid.jes.component.ComponentManagerFactory;
 import org.astrogrid.jes.delegate.v1.jobcontroller.JobController;
-import org.astrogrid.jes.delegate.v1.jobmonitor.JobMonitor;
-import org.astrogrid.jes.impl.workflow.AbstractJobFactoryImpl;
 import org.astrogrid.jes.job.BeanFacade;
 import org.astrogrid.jes.jobscheduler.Dispatcher;
-import org.astrogrid.jes.jobscheduler.Locator;
 import org.astrogrid.jes.jobscheduler.Policy;
-import org.astrogrid.jes.jobscheduler.dispatcher.MockDispatcher;
+import org.astrogrid.jes.jobscheduler.dispatcher.ShortCircuitDispatcher;
 import org.astrogrid.jes.testutils.io.FileResourceLoader;
 import org.astrogrid.jes.types.v1.SubmissionResponse;
 import org.astrogrid.jes.util.JesUtil;
@@ -30,9 +29,13 @@ import org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord;
 
 import org.apache.axis.utils.XMLUtils;
 import org.exolab.castor.xml.Marshaller;
+import org.picocontainer.MutablePicoContainer;
+import org.picocontainer.defaults.CachingComponentAdapter;
+import org.picocontainer.defaults.ConstructorComponentAdapter;
+import org.picocontainer.defaults.ImplementationHidingComponentAdapter;
 import org.w3c.dom.Document;
 
-import EDU.oswego.cs.dl.util.concurrent.Mutex;
+import EDU.oswego.cs.dl.util.concurrent.CyclicBarrier;
 import EDU.oswego.cs.dl.util.concurrent.Sync;
 
 import java.io.FileOutputStream;
@@ -49,12 +52,7 @@ import java.util.Iterator;
  *
  */
 public class InMemorySystemTest extends AbstractTestWorkflowInputs {
-    protected JobController jc;
-
-    protected AbstractJobFactoryImpl factory;
-    protected BeanFacade facade;
-    protected Sync barrier = new Mutex();
-    protected MockDispatcher disp;
+    protected CyclicBarrier barrier = new CyclicBarrier(2);
 
     /** Construct a new InMemorySystemTest
      * @param arg
@@ -63,37 +61,47 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
         super(arg);
     }
     
-    private class TestComponentManager extends ComponentManager {
+    protected class TestComponentManager extends BasicComponentManager {
         public TestComponentManager() {
-            super();            
-        }        
-
-        /** build a job scheduler */
-            protected JobScheduler buildScheduler() {
-                    Locator locator = buildLocator();  
-                     Policy policy = buildPolicy();
-                     disp = new MockDispatcher();
-                     return  new ObservableJobScheduler(facade,disp,policy,barrier);       
-            }        
-
+            super();    
+            MutablePicoContainer pico = super.getContainer();
+            // need to remove existing registrations.
+            
+            // disptcher that short-circuits back to a monitor.                     
+            pico.unregisterComponent(Dispatcher.class);
+            pico.registerComponentImplementation(Dispatcher.class,ShortCircuitDispatcher.class);
+                       
+            // scheduler that notifies of completion by releasing a barrier
+            pico.unregisterComponent(JobScheduler.class);
+            pico.registerComponent(
+                new ImplementationHidingComponentAdapter(
+                    new CachingComponentAdapter(
+                        new ConstructorComponentAdapter(JobScheduler.class,ObservableJobScheduler.class)
+                    )
+                  )
+                );
+            
+            pico.registerComponentInstance(barrier);
+                             
+        }            
     }
     
     protected void setUp() throws Exception {
         super.setUp();
-        // create store
         ComponentManager cm = new TestComponentManager();        
-        ComponentManager._setInstance(cm);
-
-        facade = cm.getFacade();
-        factory = (AbstractJobFactoryImpl)facade.getJobFactory();
-
-        JobMonitor jm = new org.astrogrid.jes.jobmonitor.JobMonitor(cm.getNotifier());
-        jc = new org.astrogrid.jes.jobcontroller.JobController(facade,cm.getNotifier());
-        // close the loop, pass the monitor to the dispatcher
-        disp.setMonitor(jm);
+        ComponentManagerFactory._setInstance(cm);
+        System.out.println(cm.information());
+        // force creation of scheduler.
+        cm.getScheduler();
+    }
+        
+    protected static int WAIT_SECONDS = 5;
+    
+    protected JobController getController() throws Exception{
+        return ComponentManagerFactory.getInstance().getController();
     }
     
-    protected static int WAIT_SECONDS = 5;
+
     
     /**
      * @see org.astrogrid.jes.AbstractTestWorkflowInputs#testIt(java.io.InputStream, int)
@@ -102,14 +110,14 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
         // parse the document, feed it into the system.
         String docString = FileResourceLoader.streamToString(is);
         assertNotNull(docString);
-        SubmissionResponse resp = jc.submitJob(docString);
+        SubmissionResponse resp = getController().submitJob(docString);
         assertNotNull(resp);
         assertTrue(resp.isSubmissionSuccessful());
         // now wait for notification that the system has finished processing.
-        boolean didSynchronize = barrier.attempt(Sync.ONE_SECOND * WAIT_SECONDS);
-        assertTrue("timed out waiting for the scheduler to complete",didSynchronize); // if this is false, meanst that we timed out - need to increase the duration?
-
-        Workflow job = factory.findJob(JesUtil.axis2castor(resp.getJobURN()));
+        barrier.attemptBarrier(Sync.ONE_SECOND * WAIT_SECONDS);
+        assertFalse("timed out waiting for the scheduler to complete",barrier.broken()); // if this is false, meanst that we timed out - need to increase the duration?
+ 
+        Workflow job =  ComponentManagerFactory.getInstance().getFacade().getJobFactory().findJob(JesUtil.axis2castor(resp.getJobURN()));
         assertNotNull(job);
         
         Document doc = XMLUtils.newDocument();
@@ -130,7 +138,7 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
          
     }
     /** extended job scheduler that will notify us when tasks are complete. 
-     * does this by holding on to a synch object, only releasing when job is done.*/
+     *does this by entering barrier when done - which releases other (presumbably blocked) thread.*/
     public static class ObservableJobScheduler extends org.astrogrid.jes.jobscheduler.JobScheduler {
 
         /** Construct a new ObservableJobScheduler
@@ -138,22 +146,22 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
          * @param dispatcher
          * @param policy
          */
-        public ObservableJobScheduler(BeanFacade facade, Dispatcher dispatcher, Policy policy,Sync barrier){
+        public ObservableJobScheduler(BeanFacade facade, Dispatcher dispatcher, Policy policy,CyclicBarrier barrier){
             super(facade, dispatcher, policy);
             this.barrier = barrier;
-            try {
-            barrier.acquire();
-            } catch (InterruptedException e) {
-                // oh well. everythings broken then.
-                throw new RuntimeException("Can't acquire lock",e);
-            }
+
         }
-        protected Sync barrier;
+        protected CyclicBarrier barrier;
         /**
          * @see org.astrogrid.jes.jobscheduler.JobScheduler#notifyJobFinished(org.astrogrid.jes.job.Job)
          */
-        public void notifyJobFinished(Workflow job) {            
-            barrier.release();
+        public void notifyJobFinished(Workflow job) {   
+            System.out.println("finished");         
+            try {
+                barrier.barrier();
+            } catch (InterruptedException e) {
+                throw new RuntimeException("Barrier broken");
+            }
         }
 
 
@@ -163,6 +171,12 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
 
 /* 
 $Log: InMemorySystemTest.java,v $
+Revision 1.6  2004/03/07 21:04:39  nw
+merged in nww-itn05-pico - adds picocontainer
+
+Revision 1.5.4.1  2004/03/07 20:42:31  nw
+updated tests to work with picocontainer
+
 Revision 1.5  2004/03/05 16:16:55  nw
 worked now object model through jes.
 implemented basic scheduling policy

@@ -14,6 +14,7 @@ import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel;
 import org.astrogrid.jes.JesException;
+import org.astrogrid.jes.component.ComponentDescriptor;
 import org.astrogrid.jes.job.BeanFacade;
 import org.astrogrid.jes.job.JobFactory;
 import org.astrogrid.jes.job.NotFoundException;
@@ -30,10 +31,12 @@ import org.apache.commons.logging.LogFactory;
 
 import java.util.Date;
 
+import junit.framework.Test;
+
 /**Scheduling framework. Composes together a set of different objects - this means that different behaviours can be gained by 
  * composing a scheduler using different objects.
  */
-public class JobScheduler implements org.astrogrid.jes.comm.JobScheduler {
+public class JobScheduler implements org.astrogrid.jes.comm.JobScheduler, ComponentDescriptor {
 	
     /** Construct a scheduler
      *  Construct a new JobScheduler
@@ -199,6 +202,27 @@ public class JobScheduler implements org.astrogrid.jes.comm.JobScheduler {
     public void notifyJobFinished(Workflow job) {
         JobExecutionRecord er = job.getJobExecutionRecord();
         logger.info("Job " + er.getJobId().getContent() + " finished with status " + er.getStatus());
+    }
+
+    /**
+     * @see org.astrogrid.jes.component.ComponentDescriptor#getName()
+     */
+    public String getName() {
+        return "Standard Job Scheduler";
+    }
+
+    /**
+     * @see org.astrogrid.jes.component.ComponentDescriptor#getDescription()
+     */
+    public String getDescription() {
+        return "Standard Implementation";
+    }
+
+    /**
+     * @see org.astrogrid.jes.component.ComponentDescriptor#getInstallationTest()
+     */
+    public Test getInstallationTest() {
+        return null;
     }
 
 

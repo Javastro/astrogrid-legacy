@@ -1,4 +1,4 @@
-/*$Id: FileJobFactoryImpl.java,v 1.4 2004/03/04 01:57:35 nw Exp $
+/*$Id: FileJobFactoryImpl.java,v 1.5 2004/03/07 21:04:38 nw Exp $
  * Created on 11-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.jes.impl.workflow;
 
 import org.astrogrid.community.beans.v1.Account;
+import org.astrogrid.jes.component.ComponentDescriptor;
 import org.astrogrid.jes.job.JobException;
 import org.astrogrid.jes.job.NotFoundException;
 import org.astrogrid.jes.job.SubmitJobRequest;
@@ -29,21 +30,31 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import junit.framework.Test;
+
 /** Implementation of JobFactory that stores xml documents on a filesystem.
  * @author Noel Winstanley nw@jb.man.ac.uk 11-Feb-2004
  *
  */
-public class FileJobFactoryImpl extends AbstractJobFactoryImpl {
+public class FileJobFactoryImpl extends AbstractJobFactoryImpl implements ComponentDescriptor{
+    /** Configuration component for FileJobFactory Impl
+     * @author Noel Winstanley nw@jb.man.ac.uk 07-Mar-2004
+     *
+     */
+    public static  interface BaseDirectory {
+        File getDir();
+    }
     private static final String WORKFLOW_SUFFIX = "-workflow.xml";
     /** Construct a new FileJobFactoryImpl
      *  Construct a new FileJobFactoryImpl
      * @param baseDir directory to store workflow documents in
      * @throws IOException if basedir inaccessible.
      */
-    public FileJobFactoryImpl(File baseDir) throws IOException{
+    public FileJobFactoryImpl(BaseDirectory bd) throws IOException{
         super();
         log.info("File Store Job Factory");
-        this.baseDir = baseDir;
+        this.baseDir = bd.getDir();
+        assert baseDir != null;
         log.info("Base directory of file store:" + baseDir.getAbsolutePath());
         initStore();       
     }
@@ -166,11 +177,39 @@ public class FileJobFactoryImpl extends AbstractJobFactoryImpl {
             throw new JobException("Problem with store",e);
         }
     }
+
+    /**
+     * @see org.astrogrid.jes.component.ComponentDescriptor#getName()
+     */
+    public String getName() {
+        return "Filestore-backed job factory";
+    }
+
+    /**
+     * @see org.astrogrid.jes.component.ComponentDescriptor#getDescription()
+     */
+    public String getDescription() {
+        return "Stores jobs on disk as workflow xml document files\n"
+        + "store directory: " + baseDir.getAbsolutePath();
+    }
+
+    /**
+     * @see org.astrogrid.jes.component.ComponentDescriptor#getInstallationTest()
+     */
+    public Test getInstallationTest() {
+        return null;
+    }
 }
 
 
 /* 
 $Log: FileJobFactoryImpl.java,v $
+Revision 1.5  2004/03/07 21:04:38  nw
+merged in nww-itn05-pico - adds picocontainer
+
+Revision 1.4.4.1  2004/03/07 20:41:59  nw
+altered to look in component manager factory for implementations
+
 Revision 1.4  2004/03/04 01:57:35  nw
 major refactor.
 upgraded to latest workflow object model.

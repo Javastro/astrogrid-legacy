@@ -2,7 +2,7 @@
 				 java.net.*,
                  java.util.*,
 				 org.astrogrid.config.*,
-				 org.astrogrid.jes.component.*"
+				 org.astrogrid.jes.component.ComponentManagerFactory"
     session="false" %>
 <html>
 <head>
@@ -176,17 +176,17 @@
 <h1>System Fingerprint</h1>
 
 <hr />
+
+<h2>Jes Components</h2>
+
+<%= ComponentManagerFactory.getInstance().informationHTML() %>
+
 <h2>Jes Configuration</h2>
 
 Jes configuration loaded from:
    <%= SimpleConfig.loadedFrom() %>
 <p />
 
-
-<hr />
-<h2>Settings</h2>
-
-<%= ComponentManager.produceConfigurationInformation() %>
 <hr />
 <h2>System Properties</h2>
 

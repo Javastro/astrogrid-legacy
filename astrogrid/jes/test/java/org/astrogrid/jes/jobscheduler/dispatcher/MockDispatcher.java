@@ -1,4 +1,4 @@
-/*$Id: MockDispatcher.java,v 1.5 2004/03/05 16:16:55 nw Exp $
+/*$Id: MockDispatcher.java,v 1.6 2004/03/07 21:04:39 nw Exp $
  * Created on 13-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,18 +11,12 @@
 package org.astrogrid.jes.jobscheduler.dispatcher;
 
 import org.astrogrid.jes.JesException;
-import org.astrogrid.jes.delegate.v1.jobmonitor.JobMonitor;
+import org.astrogrid.jes.component.ComponentDescriptor;
 import org.astrogrid.jes.jobscheduler.Dispatcher;
-import org.astrogrid.jes.types.v1.cea.axis.ExecutionPhase;
-import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
-import org.astrogrid.jes.types.v1.cea.axis.LogLevel;
-import org.astrogrid.jes.types.v1.cea.axis.MessageType;
-import org.astrogrid.jes.util.JesUtil;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Workflow;
 
-import java.rmi.RemoteException;
-import java.util.Calendar;
+import junit.framework.Test;
 
 
 /** Mock implementation of a dispatcher.
@@ -31,7 +25,7 @@ import java.util.Calendar;
  * @author Noel Winstanley nw@jb.man.ac.uk 13-Feb-2004
  *
  */
-public class MockDispatcher implements Dispatcher {
+public class MockDispatcher implements Dispatcher, ComponentDescriptor {
     /** Construct a new MockDispatcher
      * 
      */
@@ -43,19 +37,10 @@ public class MockDispatcher implements Dispatcher {
         this.willSucceed = willSucceed;
     }
     
-    /** construct a mock that will send confirmations back through this job monitor */
-    public MockDispatcher(JobMonitor jm, boolean willSucceed) {
-        this(willSucceed);
-        this.monitor = jm;
-    }
-    protected JobMonitor monitor;   
+
     protected final boolean willSucceed;
     protected int callCount;
-    
-    public void setMonitor(JobMonitor jm) {
-        this.monitor = jm;
-    }
-    
+
     public int getCallCount() {
         return callCount;
     }
@@ -66,39 +51,42 @@ public class MockDispatcher implements Dispatcher {
     public void dispatchStep(Workflow job, Step js) throws JesException {
         
         callCount ++;
-        if (monitor == null) {
             if (!willSucceed) {
                 throw new JesException("You wanted me to barf");
             }
-        } else {
-            // we've got a monitor, lets talk / barf through that.
-            MessageType info = new MessageType();
-            String xpath = job.getXPathFor(js) ;
-            JobIdentifierType id = JesUtil.createJobId(job.getJobExecutionRecord().getJobId(),xpath);
+    }
 
-            info.setSource("application");
-            info.setTimestamp(Calendar.getInstance());            
-            if (willSucceed) {
-                info.setContent("OK");
-                info.setPhase(ExecutionPhase.COMPLETED);
-                info.setLevel(LogLevel.info);
-            } else {
-                info.setContent("You wanted me to fail");
-                info.setPhase(ExecutionPhase.ERROR);
-                info.setLevel(LogLevel.error);
-            }
-            try {
-                monitor.monitorJob(id,info);
-            } catch (RemoteException e) {
-                throw new JesException("Mock Dispatcher had problems talking to job monitor",e);
-            }
-        }
+    /**
+     * @see org.astrogrid.jes.component.ComponentDescriptor#getName()
+     */
+    public String getName() {
+        return "Mock Step Dispatcher";
+    }
+
+    /**
+     * @see org.astrogrid.jes.component.ComponentDescriptor#getDescription()
+     */
+    public String getDescription() {
+        return "Mock, just counts number of method calls\n"
+            + (willSucceed ? "configured to succeed on method call" : "configured to fail on method call, throwing an exception");
+    }
+    /**
+     * @see org.astrogrid.jes.component.ComponentDescriptor#getInstallationTest()
+     */
+    public Test getInstallationTest() {
+        return null;
     }
 }
 
 
 /* 
 $Log: MockDispatcher.java,v $
+Revision 1.6  2004/03/07 21:04:39  nw
+merged in nww-itn05-pico - adds picocontainer
+
+Revision 1.5.4.1  2004/03/07 20:42:31  nw
+updated tests to work with picocontainer
+
 Revision 1.5  2004/03/05 16:16:55  nw
 worked now object model through jes.
 implemented basic scheduling policy

@@ -1,4 +1,4 @@
-/*$Id: LocalSOAPSystemTest.java,v 1.2 2004/03/05 16:16:55 nw Exp $
+/*$Id: LocalSOAPSystemTest.java,v 1.3 2004/03/07 21:04:39 nw Exp $
  * Created on 01-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,18 +10,20 @@
 **/
 package org.astrogrid.jes;
 
-import org.astrogrid.jes.comm.JobScheduler;
 import org.astrogrid.jes.component.ComponentManager;
+import org.astrogrid.jes.component.ComponentManagerFactory;
 import org.astrogrid.jes.delegate.impl.SOAPJobControllerTest;
 import org.astrogrid.jes.delegate.impl.SOAPJobMonitorTest;
+import org.astrogrid.jes.delegate.v1.jobcontroller.JobController;
 import org.astrogrid.jes.delegate.v1.jobcontroller.JobControllerServiceLocator;
 import org.astrogrid.jes.delegate.v1.jobmonitor.JobMonitor;
 import org.astrogrid.jes.delegate.v1.jobmonitor.JobMonitorServiceLocator;
-import org.astrogrid.jes.impl.workflow.AbstractJobFactoryImpl;
-import org.astrogrid.jes.job.BeanFacade;
-import org.astrogrid.jes.jobscheduler.Locator;
-import org.astrogrid.jes.jobscheduler.Policy;
-import org.astrogrid.jes.jobscheduler.dispatcher.MockDispatcher;
+import org.astrogrid.jes.jobscheduler.Dispatcher;
+import org.astrogrid.jes.jobscheduler.dispatcher.ShortCircuitDispatcher;
+
+import org.picocontainer.MutablePicoContainer;
+import org.picocontainer.Parameter;
+import org.picocontainer.defaults.ConstantParameter;
 
 import java.net.URL;
 
@@ -38,41 +40,37 @@ public class LocalSOAPSystemTest extends InMemorySystemTest {
         super(arg);
     }
 
-    private class TestComponentManager extends ComponentManager {
-        public TestComponentManager() {
-            super();            
-        }        
-
-        /** build a job scheduler */
-            protected JobScheduler buildScheduler() {
-                    Locator locator = buildLocator();  
-                     Policy policy = buildPolicy();
-                     disp = new MockDispatcher();
-                     return  new ObservableJobScheduler(facade,disp,policy,barrier);       
-            }        
-
+    protected class SOAPTestComponentManager extends TestComponentManager {
+        public SOAPTestComponentManager() throws Exception {
+            super();    
+            JobMonitor monitorDelegate = 
+                (new JobMonitorServiceLocator()).getJobMonitorService(new URL(SOAPJobMonitorTest.MONITOR_ENDPOINT));
+            MutablePicoContainer pico = super.getContainer();
+            // disptcher that short-circuits back to a monitor - set to call soap monitor delegate
+            pico.unregisterComponent(Dispatcher.class);
+            pico.registerComponentImplementation(Dispatcher.class,ShortCircuitDispatcher.class,
+                new Parameter[] {
+                    new ConstantParameter(monitorDelegate)
+                }
+            );
+        }     
+    
+    }
+    
+    protected JobController getController() throws Exception {
+        return  (new JobControllerServiceLocator()).getJobControllerService(new URL(SOAPJobControllerTest.CONTROLLER_ENDPOINT));
     }
     
     protected void setUp() throws Exception {
-        // create store
-        ComponentManager cm = new TestComponentManager();        
-        ComponentManager._setInstance(cm);
-
-        BeanFacade facade = cm.getFacade();
-        factory = (AbstractJobFactoryImpl)facade.getJobFactory();
-
         // this creates job monitor and job controller services..
         SOAPJobControllerTest.deployLocalController();
         SOAPJobMonitorTest.deployLocalMonitor();
         
-        JobMonitor jm = (new JobMonitorServiceLocator()).getJobMonitorService(new URL(SOAPJobMonitorTest.MONITOR_ENDPOINT));
-        jc = (new JobControllerServiceLocator()).getJobControllerService(new URL(SOAPJobControllerTest.CONTROLLER_ENDPOINT));
-
-        // close the loop, pass the monitor to the dispatcher
-        disp.setMonitor(jm); // this time, the job monitor is a delegate that communicates via local soap.
-        // as we're going by soap, set up a longer time to block.
+        // create store
+        ComponentManager cm = new SOAPTestComponentManager();        
+        ComponentManagerFactory._setInstance(cm);
+        
         WAIT_SECONDS = 20;
-
     }
 
     
@@ -84,6 +82,12 @@ public class LocalSOAPSystemTest extends InMemorySystemTest {
 
 /* 
 $Log: LocalSOAPSystemTest.java,v $
+Revision 1.3  2004/03/07 21:04:39  nw
+merged in nww-itn05-pico - adds picocontainer
+
+Revision 1.2.4.1  2004/03/07 20:42:31  nw
+updated tests to work with picocontainer
+
 Revision 1.2  2004/03/05 16:16:55  nw
 worked now object model through jes.
 implemented basic scheduling policy

@@ -11,11 +11,14 @@
 package org.astrogrid.jes.jobmonitor; 
 
 import org.astrogrid.jes.comm.SchedulerNotifier;
+import org.astrogrid.jes.component.ComponentDescriptor;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.jes.types.v1.cea.axis.MessageType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import junit.framework.Test;
 
 
 /**
@@ -25,7 +28,7 @@ import org.apache.commons.logging.LogFactory;
  * @version 1.0 28-May-2003
  * @since   AstroGrid 1.2
  */
-public class JobMonitor implements org.astrogrid.jes.delegate.v1.jobmonitor.JobMonitor{
+public class JobMonitor implements org.astrogrid.jes.delegate.v1.jobmonitor.JobMonitor, ComponentDescriptor{
 
 	private static Log
 		logger = LogFactory.getLog( JobMonitor.class ) ;
@@ -59,6 +62,30 @@ public class JobMonitor implements org.astrogrid.jes.delegate.v1.jobmonitor.JobM
             logger.error("Could not pass on notification",e);
 
         }
+    }
+
+
+    /**
+     * @see org.astrogrid.jes.component.ComponentDescriptor#getName()
+     */
+    public String getName() {
+        return "Job Monitor";
+    }
+
+
+    /**
+     * @see org.astrogrid.jes.component.ComponentDescriptor#getDescription()
+     */
+    public String getDescription() {
+        return "Standard Job Monitor";
+    }
+
+
+    /**
+     * @see org.astrogrid.jes.component.ComponentDescriptor#getInstallationTest()
+     */
+    public Test getInstallationTest() {
+        return null;
     }
         
    
