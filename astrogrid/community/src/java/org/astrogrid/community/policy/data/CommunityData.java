@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/data/Attic/CommunityData.java,v $</cvs:source>
- * <cvs:author>$Author: KevinBenson $</cvs:author>
- * <cvs:date>$Date: 2003/09/08 11:01:35 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:author>$Author: dave $</cvs:author>
+ * <cvs:date>$Date: 2003/09/08 20:28:50 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityData.java,v $
+ *   Revision 1.3  2003/09/08 20:28:50  dave
+ *   Added CommunityIdent, with isLocal() and isValid()
+ *
  *   Revision 1.2  2003/09/08 11:01:35  KevinBenson
  *   A check in of the Authentication authenticateToken roughdraft and some changes to the groudata and community data
  *   along with an AdministrationDelegate
@@ -26,7 +29,10 @@ public class CommunityData
 	 */
 	public CommunityData()
 		{
-		this(null, null) ;
+		this.ident = null ;
+		this.service = null ;
+		this.manager = null ;
+		this.description = null ;
 		}
 
 	/**
@@ -45,6 +51,8 @@ public class CommunityData
 	public CommunityData(String ident, String description)
 		{
 		this.ident = ident ;
+		this.service = null ;
+		this.manager = null ;
 		this.description = description ;
 		}
 

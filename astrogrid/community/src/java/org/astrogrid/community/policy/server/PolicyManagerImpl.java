@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/PolicyManagerImpl.java,v $</cvs:source>
- * <cvs:author>$Author: KevinBenson $</cvs:author>
- * <cvs:date>$Date: 2003/09/08 11:01:35 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:author>$Author: dave $</cvs:author>
+ * <cvs:date>$Date: 2003/09/08 20:28:50 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManagerImpl.java,v $
+ *   Revision 1.6  2003/09/08 20:28:50  dave
+ *   Added CommunityIdent, with isLocal() and isValid()
+ *
  *   Revision 1.5  2003/09/08 11:01:35  KevinBenson
  *   A check in of the Authentication authenticateToken roughdraft and some changes to the groudata and community data
  *   along with an AdministrationDelegate
@@ -49,6 +52,7 @@ import org.astrogrid.community.policy.data.GroupData ;
 import org.astrogrid.community.policy.data.ServiceData ;
 import org.astrogrid.community.policy.data.AccountData ;
 import org.astrogrid.community.policy.data.CommunityData ;
+import org.astrogrid.community.policy.data.CommunityConfig ;
 
 public class PolicyManagerImpl
 	implements PolicyManager
@@ -65,39 +69,32 @@ public class PolicyManagerImpl
 	 */
 	public PolicyManagerImpl()
 		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("PolicyManagerImpl()") ;
-		//
-		// Initialise our service.
 		this.init() ;
-
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		}
 
 	/**
 	 * Our DatabaseManager.
 	 *
 	 */
-	private DatabaseManager databaseManager ;
+	private DatabaseManagerImpl databaseManager ;
 
 	/**
 	 * Our AccountManager.
 	 *
 	 */
-	private AccountManager accountManager ;
+	private AccountManagerImpl accountManager ;
 
 	/**
 	 * Our GroupManager.
 	 *
 	 */
-	private GroupManager groupManager ;
+	private GroupManagerImpl groupManager ;
 
 	/**
 	 * Our CommunityManager.
 	 *
 	 */
-	private CommunityManager communityManager ;
+	private CommunityManagerImpl communityManager ;
 
 	/**
 	 * Initialise our service.
@@ -105,25 +102,24 @@ public class PolicyManagerImpl
 	 */
 	public void init()
 		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("PolicyManagerImpl.init()") ;
-
+		//
+		// Initialise our configuration.
+		CommunityConfig.setConfig(new CommunityConfigImpl()) ;
 		//
 		// Initialise our DatabaseManager.
 		databaseManager = new DatabaseManagerImpl() ;
 		//
 		// Initialise our AccountManager.
-		accountManager = new AccountManagerImpl(databaseManager.getDatabase()) ;
+		accountManager = new AccountManagerImpl() ;
+		accountManager.init(databaseManager) ;
 		//
 		// Initialise our GroupManager.
-		groupManager = new GroupManagerImpl(databaseManager.getDatabase()) ;
+		groupManager = new GroupManagerImpl() ;
+		groupManager.init(databaseManager) ;
 		//
 		// Initialise our CommunityManager.
-		communityManager = new CommunityManagerImpl(databaseManager.getDatabase()) ;
-
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("") ;
+		communityManager = new CommunityManagerImpl() ;
+		communityManager.init(databaseManager) ;
 		}
 
 	/**
@@ -138,7 +134,7 @@ public class PolicyManagerImpl
 		if (DEBUG_FLAG) System.out.println("PolicyManagerImpl.getServiceStatus()") ;
 
 		ServiceData result =  new ServiceData() ;
-		result.setIdent("localhost") ;
+		result.setIdent(CommunityConfig.getConfig().getCommunityName()) ;
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		return result ;
@@ -146,13 +142,12 @@ public class PolicyManagerImpl
 
 	/**
 	 * Create a new Account.
-	 * TODO Change this to only accept the account name.
 	 *
 	 */
-	public AccountData addAccount(AccountData account)
+	public AccountData addAccount(String ident)
 		throws RemoteException
 		{
-		return accountManager.addAccount(account) ;
+		return accountManager.addAccount(ident) ;
 		}
 
 	/**
@@ -197,13 +192,12 @@ public class PolicyManagerImpl
 
 	/**
 	 * Create a new Group.
-	 * TODO Change this to only accept the group name.
 	 *
 	 */
-	public GroupData addGroup(GroupData group)
+	public GroupData addGroup(String ident)
 		throws RemoteException
 		{
-		return groupManager.addGroup(group) ;
+		return groupManager.addGroup(ident) ;
 		}
 
 	/**
@@ -259,13 +253,12 @@ public class PolicyManagerImpl
 
 	/**
 	 * Create a new Community.
-	 * TODO Change this to only accept the community name.
 	 *
 	 */
-	public CommunityData addCommunity(CommunityData community)
+	public CommunityData addCommunity(String ident)
 		throws RemoteException
 		{
-		return communityManager.addCommunity(community) ;
+		return communityManager.addCommunity(ident) ;
 		}
 
 	/**

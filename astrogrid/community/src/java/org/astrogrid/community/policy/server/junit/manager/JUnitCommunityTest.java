@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/junit/manager/Attic/JUnitCommunityTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/06 20:10:07 $</cvs:date>
- * <cvs:version>$Revision: 1.1 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/08 20:28:50 $</cvs:date>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: JUnitCommunityTest.java,v $
+ *   Revision 1.2  2003/09/08 20:28:50  dave
+ *   Added CommunityIdent, with isLocal() and isValid()
+ *
  *   Revision 1.1  2003/09/06 20:10:07  dave
  *   Split PolicyManager into separate components.
  *
@@ -38,19 +41,19 @@ public class JUnitCommunityTest
 	 * The our test Community ident.
 	 *
 	 */
-	private static final String TEST_COMMUNITY_IDENT = "server.manager" ;
+	private static final String TEST_COMMUNITY_IDENT = "server.manager.server" ;
 
 	/**
 	 * Our test community service url.
 	 *
 	 */
-	private static final String TEST_COMMUNITY_SERVICE_URL = "http://localhost:8080/axis/services/PolicyService" ;
+//	private static final String TEST_COMMUNITY_SERVICE_URL = "http://localhost:8080/axis/services/PolicyService" ;
 
 	/**
 	 * Our test community manager url.
 	 *
 	 */
-	private static final String TEST_COMMUNITY_MANAGER_URL = "http://localhost:8080/axis/services/PolicyManager" ;
+//	private static final String TEST_COMMUNITY_MANAGER_URL = "http://localhost:8080/axis/services/PolicyManager" ;
 
 	/**
 	 * The our fake Community ident.
@@ -137,13 +140,9 @@ public class JUnitCommunityTest
 		if (DEBUG_FLAG) System.out.println("testAddCommunity()") ;
 
 		//
-		// Create our Community object.
-		CommunityData community = new CommunityData(TEST_COMMUNITY_IDENT, TEST_COMMUNITY_DESC) ;
-		community.setServiceUrl(TEST_COMMUNITY_SERVICE_URL) ;
-		community.setManagerUrl(TEST_COMMUNITY_MANAGER_URL) ;
-		//
 		// Try creating the Community.
-		community = service.addCommunity(community);
+		CommunityData community ;
+		community = service.addCommunity(TEST_COMMUNITY_IDENT);
 		assertNotNull("Failed to create community", community) ;
 
 		if (DEBUG_FLAG) System.out.println("") ;
@@ -155,7 +154,7 @@ public class JUnitCommunityTest
 
 		//
 		// Try creating the same Community again.
-		community = service.addCommunity(community);
+		community = service.addCommunity(TEST_COMMUNITY_IDENT);
 		assertNull("Created a duplicate community", community) ;
 //
 // Should use ident only to create ??

@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/junit/database/Attic/JUnitCommunityTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/06 20:10:07 $</cvs:date>
- * <cvs:version>$Revision: 1.1 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/08 20:28:50 $</cvs:date>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: JUnitCommunityTest.java,v $
+ *   Revision 1.2  2003/09/08 20:28:50  dave
+ *   Added CommunityIdent, with isLocal() and isValid()
+ *
  *   Revision 1.1  2003/09/06 20:10:07  dave
  *   Split PolicyManager into separate components.
  *
@@ -18,8 +21,10 @@ import junit.framework.TestCase ;
 
 import org.astrogrid.community.policy.server.DatabaseManager ;
 import org.astrogrid.community.policy.server.DatabaseManagerImpl ;
+import org.astrogrid.community.policy.server.CommunityConfigImpl ;
 
 import org.astrogrid.community.policy.data.CommunityData ;
+import org.astrogrid.community.policy.data.CommunityConfig ;
 
 import org.exolab.castor.jdo.JDO;
 import org.exolab.castor.jdo.Database;
@@ -104,6 +109,9 @@ public class JUnitCommunityTest
 		if (DEBUG_FLAG) System.out.println("setUp()") ;
 
 		//
+		// Initialise our configuration.
+		CommunityConfig.setConfig(new CommunityConfigImpl()) ;
+		//
 		// Initialise our DatabaseManager.
 		manager = new DatabaseManagerImpl() ;
 		//
@@ -127,9 +135,7 @@ public class JUnitCommunityTest
 
 		//
 		// Create the Community object.
-		CommunityData community = new CommunityData() ;
-		community.setIdent(TEST_COMMUNITY_IDENT) ;
-		community.setDescription(TEST_COMMUNITY_DESC) ;
+		CommunityData community = new CommunityData(TEST_COMMUNITY_IDENT, TEST_COMMUNITY_DESC) ;
 		community.setServiceUrl(TEST_COMMUNITY_SERVICE_URL) ;
 		community.setManagerUrl(TEST_COMMUNITY_MANAGER_URL) ;
 

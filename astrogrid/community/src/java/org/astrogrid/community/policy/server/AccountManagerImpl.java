@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/AccountManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/06 20:10:07 $</cvs:date>
- * <cvs:version>$Revision: 1.1 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/08 20:28:50 $</cvs:date>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManagerImpl.java,v $
+ *   Revision 1.2  2003/09/08 20:28:50  dave
+ *   Added CommunityIdent, with isLocal() and isValid()
+ *
  *   Revision 1.1  2003/09/06 20:10:07  dave
  *   Split PolicyManager into separate components.
  *
@@ -31,6 +34,8 @@ import org.exolab.castor.jdo.ClassNotPersistenceCapableException ;
 
 import org.astrogrid.community.policy.data.ServiceData ;
 import org.astrogrid.community.policy.data.AccountData ;
+import org.astrogrid.community.policy.data.CommunityIdent ;
+import org.astrogrid.community.policy.data.CommunityConfig ;
 
 public class AccountManagerImpl
 	implements AccountManager
@@ -42,6 +47,12 @@ public class AccountManagerImpl
 	protected static final boolean DEBUG_FLAG = true ;
 
 	/**
+	 * Our database manager.
+	 *
+	 */
+	private DatabaseManager databaseManager ;
+
+	/**
 	 * Our database connection.
 	 *
 	 */
@@ -51,118 +62,132 @@ public class AccountManagerImpl
 	 * Public constructor.
 	 *
 	 */
-	public AccountManagerImpl(Database database)
+	public AccountManagerImpl()
 		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("AccountManagerImpl()") ;
-
-		//
-		// Initialise our database.
-		this.init(database) ;
-
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		}
 
 	/**
 	 * Initialise our manager.
 	 *
 	 */
-	public void init(Database database)
+	public void init(DatabaseManager databaseManager)
 		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("AccountManagerImpl.init()") ;
-
-		this.database = database ;
-
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("") ;
+		//
+		// Keep a reference to our database connection.
+		this.databaseManager = databaseManager ;
+		this.database = databaseManager.getDatabase() ;
 		}
 
 	/**
 	 * Create a new Account.
-	 * TODO Change this to only accept the account name.
 	 *
 	 */
-	public AccountData addAccount(AccountData account)
+	public AccountData addAccount(String name)
 		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("AccountManagerImpl.addAccount()") ;
-		if (DEBUG_FLAG) System.out.println("  ident : " + account.getIdent()) ;
+		if (DEBUG_FLAG) System.out.println("  name  : " + name) ;
 
+		AccountData account = null ;
 		//
-		// Check that the ident is valid.
+		// Create a CommunityIdent for our Account.
+		CommunityIdent ident = new CommunityIdent(name) ;
+		if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
 		//
-
-		//
-		// Try performing our transaction.
-		try {
-			//
-			// Begin a new database transaction.
-			database.begin();
-			//
-			// Try creating the account in the database.
-			database.create(account);
-			}
-		//
-		// If we already have an object with that ident.
-		catch (DuplicateIdentityException ouch)
+		// If the ident is valid.
+		if (ident.isValid())
 			{
-			if (DEBUG_FLAG) System.out.println("") ;
-			if (DEBUG_FLAG) System.out.println("  ----") ;
-			if (DEBUG_FLAG) System.out.println("DuplicateIdentityException in addAccount()") ;
-
 			//
-			// Set the response to null.
-			account = null ;
-
-			if (DEBUG_FLAG) System.out.println("  ----") ;
-			if (DEBUG_FLAG) System.out.println("") ;
-			}
-		//
-		// If anything else went bang.
-		catch (PersistenceException ouch)
-			{
-			if (DEBUG_FLAG) System.out.println("") ;
-			if (DEBUG_FLAG) System.out.println("  ----") ;
-			if (DEBUG_FLAG) System.out.println("PersistenceException in addAccount()") ;
-
-			//
-			// Set the response to null.
-			account = null ;
-
-			if (DEBUG_FLAG) System.out.println("  ----") ;
-			if (DEBUG_FLAG) System.out.println("") ;
-			}
-		//
-		// Commit the transaction.
-		finally
-			{
-			try {
-				if (null != account)
-					{
-					database.commit() ;
+			// If the ident is local.
+			if (ident.isLocal())
+				{
+				//
+				// Create our new Account object.
+				account = new AccountData(ident.toString()) ;
+				//
+				// Try performing our transaction.
+				try {
+					//
+					// Begin a new database transaction.
+					database.begin();
+					//
+					// Try creating the account in the database.
+					database.create(account);
 					}
-				else {
-					database.rollback() ;
+				//
+				// If we already have an object with that ident.
+				catch (DuplicateIdentityException ouch)
+					{
+					if (DEBUG_FLAG) System.out.println("") ;
+					if (DEBUG_FLAG) System.out.println("  ----") ;
+					if (DEBUG_FLAG) System.out.println("DuplicateIdentityException in addAccount()") ;
+
+					//
+					// Set the response to null.
+					account = null ;
+
+					if (DEBUG_FLAG) System.out.println("  ----") ;
+					if (DEBUG_FLAG) System.out.println("") ;
+					}
+				//
+				// If anything else went bang.
+				catch (Exception ouch)
+					{
+					if (DEBUG_FLAG) System.out.println("") ;
+					if (DEBUG_FLAG) System.out.println("  ----") ;
+					if (DEBUG_FLAG) System.out.println("Exception in addAccount()") ;
+
+					//
+					// Set the response to null.
+					account = null ;
+
+					if (DEBUG_FLAG) System.out.println("  ----") ;
+					if (DEBUG_FLAG) System.out.println("") ;
+					}
+				//
+				// Commit the transaction.
+				finally
+					{
+					try {
+						if (null != account)
+							{
+							database.commit() ;
+							}
+						else {
+							database.rollback() ;
+							}
+						}
+					catch (Exception ouch)
+						{
+						if (DEBUG_FLAG) System.out.println("") ;
+						if (DEBUG_FLAG) System.out.println("  ----") ;
+						if (DEBUG_FLAG) System.out.println("Exception in addAccount() finally clause") ;
+
+						//
+						// Set the response to null.
+						account = null ;
+
+						if (DEBUG_FLAG) System.out.println("  ----") ;
+						if (DEBUG_FLAG) System.out.println("") ;
+						}
 					}
 				}
-			catch (PersistenceException ouch)
-				{
-				if (DEBUG_FLAG) System.out.println("") ;
-				if (DEBUG_FLAG) System.out.println("  ----") ;
-				if (DEBUG_FLAG) System.out.println("PersistenceException in addAccount() finally clause") ;
-
+			//
+			// If the ident is not local.
+			else {
 				//
 				// Set the response to null.
 				account = null ;
-
-				if (DEBUG_FLAG) System.out.println("  ----") ;
-				if (DEBUG_FLAG) System.out.println("") ;
 				}
+			}
+			//
+			// If the ident is not valid.
+		else {
+			//
+			// Set the response to null.
+			account = null ;
 			}
 
 		// TODO
@@ -178,79 +203,107 @@ public class AccountManagerImpl
 	 * Request an Account details.
 	 *
 	 */
-	public AccountData getAccount(String ident)
+	public AccountData getAccount(String name)
 		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("AccountManagerImpl.getAccount()") ;
-		if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
+		if (DEBUG_FLAG) System.out.println("  name  : " + name) ;
 
 		AccountData account = null ;
-		try {
-			//
-			// Begin a new database transaction.
-			database.begin();
-			//
-			// Load the Account from the database.
-			account = (AccountData) database.load(AccountData.class, ident) ;
-			}
 		//
-		// If we couldn't find the object.
-		catch (ObjectNotFoundException ouch)
-			{
-			if (DEBUG_FLAG) System.out.println("") ;
-			if (DEBUG_FLAG) System.out.println("  ----") ;
-			if (DEBUG_FLAG) System.out.println("ObjectNotFoundException in getAccount()") ;
-
-			//
-			// Set the response to null.
-			account = null ;
-
-			if (DEBUG_FLAG) System.out.println("  ----") ;
-			if (DEBUG_FLAG) System.out.println("") ;
-			}
+		// Create a CommunityIdent for our Account.
+		CommunityIdent ident = new CommunityIdent(name) ;
+		if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
 		//
-		// If anything else went bang.
-		catch (PersistenceException ouch)
+		// If the ident is valid.
+		if (ident.isValid())
 			{
-			if (DEBUG_FLAG) System.out.println("") ;
-			if (DEBUG_FLAG) System.out.println("  ----") ;
-			if (DEBUG_FLAG) System.out.println("PersistenceException in getAccount()") ;
-
 			//
-			// Set the response to null.
-			account = null ;
-
-			if (DEBUG_FLAG) System.out.println("  ----") ;
-			if (DEBUG_FLAG) System.out.println("") ;
-			}
-		//
-		// Commit the transaction.
-		finally
-			{
-			try {
-				if (null != account)
-					{
-					database.commit() ;
+			// If the ident is local.
+			if (ident.isLocal())
+				{
+				try {
+					//
+					// Begin a new database transaction.
+					database.begin();
+					//
+					// Load the Account from the database.
+					account = (AccountData) database.load(AccountData.class, ident.toString()) ;
 					}
-				else {
-					database.rollback() ;
+				//
+				// If we couldn't find the object.
+				catch (ObjectNotFoundException ouch)
+					{
+					if (DEBUG_FLAG) System.out.println("") ;
+					if (DEBUG_FLAG) System.out.println("  ----") ;
+					if (DEBUG_FLAG) System.out.println("ObjectNotFoundException in getAccount()") ;
+
+					//
+					// Set the response to null.
+					account = null ;
+
+					if (DEBUG_FLAG) System.out.println("  ----") ;
+					if (DEBUG_FLAG) System.out.println("") ;
+					}
+				//
+				// If anything else went bang.
+				catch (Exception ouch)
+					{
+					if (DEBUG_FLAG) System.out.println("") ;
+					if (DEBUG_FLAG) System.out.println("  ----") ;
+					if (DEBUG_FLAG) System.out.println("Exception in getAccount()") ;
+
+					//
+					// Set the response to null.
+					account = null ;
+
+					if (DEBUG_FLAG) System.out.println("  ----") ;
+					if (DEBUG_FLAG) System.out.println("") ;
+					}
+				//
+				// Commit the transaction.
+				finally
+					{
+					try {
+						if (null != account)
+							{
+							database.commit() ;
+							}
+						else {
+							database.rollback() ;
+							}
+						}
+					catch (Exception ouch)
+						{
+						if (DEBUG_FLAG) System.out.println("") ;
+						if (DEBUG_FLAG) System.out.println("  ----") ;
+						if (DEBUG_FLAG) System.out.println("Exception in getAccount() finally clause") ;
+
+						//
+						// Set the response to null.
+						account = null ;
+
+						if (DEBUG_FLAG) System.out.println("  ----") ;
+						if (DEBUG_FLAG) System.out.println("") ;
+						}
 					}
 				}
-			catch (PersistenceException ouch)
-				{
-				if (DEBUG_FLAG) System.out.println("") ;
-				if (DEBUG_FLAG) System.out.println("  ----") ;
-				if (DEBUG_FLAG) System.out.println("PersistenceException in getAccount() finally clause") ;
-
+			//
+			// If the ident is not local.
+			else {
 				//
 				// Set the response to null.
 				account = null ;
-
-				if (DEBUG_FLAG) System.out.println("  ----") ;
-				if (DEBUG_FLAG) System.out.println("") ;
 				}
+			}
+			//
+			// If the ident is not valid.
+		else {
+			//
+			// Set the response to null.
+			account = null ;
 			}
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -272,73 +325,101 @@ public class AccountManagerImpl
 		if (DEBUG_FLAG) System.out.println("    desc  : " + account.getDescription()) ;
 
 		//
-		// Try update the database.
-		try {
-			//
-			// Begin a new database transaction.
-			database.begin();
-			//
-			// Load the Account from the database.
-			AccountData data = (AccountData) database.load(AccountData.class, account.getIdent()) ;
-			//
-			// Update the account data.
-			data.setDescription(account.getDescription()) ;
-			}
+		// Get the account ident.
+		CommunityIdent ident = new CommunityIdent(account.getIdent()) ;
 		//
-		// If we couldn't find the object.
-		catch (ObjectNotFoundException ouch)
+		// If the ident is valid.
+		if (ident.isValid())
 			{
-			if (DEBUG_FLAG) System.out.println("") ;
-			if (DEBUG_FLAG) System.out.println("  ----") ;
-			if (DEBUG_FLAG) System.out.println("ObjectNotFoundException in setAccount()") ;
-
 			//
-			// Set the response to null.
-			account = null ;
-
-			if (DEBUG_FLAG) System.out.println("  ----") ;
-			if (DEBUG_FLAG) System.out.println("") ;
-			}
-		//
-		// If anything else went bang.
-		catch (PersistenceException ouch)
-			{
-			if (DEBUG_FLAG) System.out.println("") ;
-			if (DEBUG_FLAG) System.out.println("  ----") ;
-			if (DEBUG_FLAG) System.out.println("PersistenceException in setAccount()") ;
-
-			//
-			// Set the response to null.
-			account = null ;
-			if (DEBUG_FLAG) System.out.println("  ----") ;
-			if (DEBUG_FLAG) System.out.println("") ;
-			}
-		//
-		// Commit the transaction.
-		finally
-			{
-			try {
-				if (null != account)
-					{
-					database.commit() ;
+			// If the ident is local.
+			if (ident.isLocal())
+				{
+				//
+				// Try update the database.
+				try {
+					//
+					// Begin a new database transaction.
+					database.begin();
+					//
+					// Load the Account from the database.
+					AccountData data = (AccountData) database.load(AccountData.class, account.getIdent()) ;
+					//
+					// Update the account data.
+					data.setDescription(account.getDescription()) ;
 					}
-				else {
-					database.rollback() ;
+				//
+				// If we couldn't find the object.
+				catch (ObjectNotFoundException ouch)
+					{
+					if (DEBUG_FLAG) System.out.println("") ;
+					if (DEBUG_FLAG) System.out.println("  ----") ;
+					if (DEBUG_FLAG) System.out.println("ObjectNotFoundException in setAccount()") ;
+
+					//
+					// Set the response to null.
+					account = null ;
+
+					if (DEBUG_FLAG) System.out.println("  ----") ;
+					if (DEBUG_FLAG) System.out.println("") ;
+					}
+				//
+				// If anything else went bang.
+				catch (Exception ouch)
+					{
+					if (DEBUG_FLAG) System.out.println("") ;
+					if (DEBUG_FLAG) System.out.println("  ----") ;
+					if (DEBUG_FLAG) System.out.println("Exception in setAccount()") ;
+
+					//
+					// Set the response to null.
+					account = null ;
+
+					if (DEBUG_FLAG) System.out.println("  ----") ;
+					if (DEBUG_FLAG) System.out.println("") ;
+					}
+				//
+				// Commit the transaction.
+				finally
+					{
+					try {
+						if (null != account)
+							{
+							database.commit() ;
+							}
+						else {
+							database.rollback() ;
+							}
+						}
+					catch (Exception ouch)
+						{
+						if (DEBUG_FLAG) System.out.println("") ;
+						if (DEBUG_FLAG) System.out.println("  ----") ;
+						if (DEBUG_FLAG) System.out.println("Exception in setAccount() finally clause") ;
+
+						//
+						// Set the response to null.
+						account = null ;
+
+						if (DEBUG_FLAG) System.out.println("  ----") ;
+						if (DEBUG_FLAG) System.out.println("") ;
+						}
 					}
 				}
-			catch (PersistenceException ouch)
-				{
-				if (DEBUG_FLAG) System.out.println("") ;
-				if (DEBUG_FLAG) System.out.println("  ----") ;
-				if (DEBUG_FLAG) System.out.println("PersistenceException in setAccount() finally clause") ;
-
+			//
+			// If the ident is not local.
+			else {
 				//
 				// Set the response to null.
 				account = null ;
-
-				if (DEBUG_FLAG) System.out.println("  ----") ;
-				if (DEBUG_FLAG) System.out.println("") ;
 				}
+			}
+			//
+			// If the ident is not valid.
+		else {
+			//
+			// Set the response to null.
+			account = null ;
 			}
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -357,7 +438,7 @@ public class AccountManagerImpl
 		if (DEBUG_FLAG) System.out.println("AccountManagerImpl.getAccountList()") ;
 
 		//
-		// Try QUERY the database.
+		// Try to query the database.
 		Object[] array = null ;
 		try {
 			//
@@ -384,11 +465,11 @@ public class AccountManagerImpl
 			}
 		//
 		// If anything went bang.
-		catch (PersistenceException ouch)
+		catch (Exception ouch)
 			{
 			if (DEBUG_FLAG) System.out.println("") ;
 			if (DEBUG_FLAG) System.out.println("  ----") ;
-			if (DEBUG_FLAG) System.out.println("PersistenceException in getAccountList()") ;
+			if (DEBUG_FLAG) System.out.println("Exception in getAccountList()") ;
 
 			//
 			// Set the response to null.
@@ -410,11 +491,11 @@ public class AccountManagerImpl
 					database.rollback() ;
 					}
 				}
-			catch (PersistenceException ouch)
+			catch (Exception ouch)
 				{
 				if (DEBUG_FLAG) System.out.println("") ;
 				if (DEBUG_FLAG) System.out.println("  ----") ;
-				if (DEBUG_FLAG) System.out.println("PersistenceException in getAccountList() finally clause") ;
+				if (DEBUG_FLAG) System.out.println("Exception in getAccountList() finally clause") ;
 
 				//
 				// Set the response to null.
@@ -433,84 +514,112 @@ public class AccountManagerImpl
 	 * Delete an Account.
 	 *
 	 */
-	public boolean delAccount(String ident)
+	public boolean delAccount(String name)
 		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("AccountManagerImpl.delAccount()") ;
+		if (DEBUG_FLAG) System.out.println("  name  : " + name) ;
+
+		//
+		// Create a CommunityIdent for our Account.
+		CommunityIdent ident = new CommunityIdent(name) ;
 		if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
-
 		//
-		// Try update the database.
-		AccountData account = null ;
-		try {
-			//
-			// Begin a new database transaction.
-			database.begin();
-			//
-			// Load the Account from the database.
-			account = (AccountData) database.load(AccountData.class, ident) ;
-			//
-			// Delete the account.
-			database.remove(account) ;
-			}
-		//
-		// If we couldn't find the object.
-		catch (ObjectNotFoundException ouch)
+		// If the ident is valid.
+		if (ident.isValid())
 			{
-			if (DEBUG_FLAG) System.out.println("") ;
-			if (DEBUG_FLAG) System.out.println("  ----") ;
-			if (DEBUG_FLAG) System.out.println("ObjectNotFoundException in delAccount()") ;
-
 			//
-			// Set the response to null.
-			account = null ;
-
-			if (DEBUG_FLAG) System.out.println("  ----") ;
-			if (DEBUG_FLAG) System.out.println("") ;
-			}
-		//
-		// If anything else went bang.
-		catch (PersistenceException ouch)
-			{
-			if (DEBUG_FLAG) System.out.println("") ;
-			if (DEBUG_FLAG) System.out.println("  ----") ;
-			if (DEBUG_FLAG) System.out.println("PersistenceException in delAccount()") ;
-
-			//
-			// Set the response to null.
-			account = null ;
-
-			if (DEBUG_FLAG) System.out.println("  ----") ;
-			if (DEBUG_FLAG) System.out.println("") ;
-			}
-		//
-		// Commit the transaction.
-		finally
-			{
-			try {
-				if (null != account)
-					{
-					database.commit() ;
+			// If the ident is local.
+			if (ident.isLocal())
+				{
+				//
+				// Try update the database.
+				AccountData account = null ;
+				try {
+					//
+					// Begin a new database transaction.
+					database.begin();
+					//
+					// Load the Account from the database.
+					account = (AccountData) database.load(AccountData.class, ident.toString()) ;
+					//
+					// Delete the account.
+					database.remove(account) ;
 					}
-				else {
-					database.rollback() ;
+				//
+				// If we couldn't find the object.
+				catch (ObjectNotFoundException ouch)
+					{
+					if (DEBUG_FLAG) System.out.println("") ;
+					if (DEBUG_FLAG) System.out.println("  ----") ;
+					if (DEBUG_FLAG) System.out.println("ObjectNotFoundException in delAccount()") ;
+
+					//
+					// Set the response to null.
+					account = null ;
+
+					if (DEBUG_FLAG) System.out.println("  ----") ;
+					if (DEBUG_FLAG) System.out.println("") ;
+					}
+				//
+				// If anything else went bang.
+				catch (Exception ouch)
+					{
+					if (DEBUG_FLAG) System.out.println("") ;
+					if (DEBUG_FLAG) System.out.println("  ----") ;
+					if (DEBUG_FLAG) System.out.println("Exception in delAccount()") ;
+
+					//
+					// Set the response to null.
+					account = null ;
+
+					if (DEBUG_FLAG) System.out.println("  ----") ;
+					if (DEBUG_FLAG) System.out.println("") ;
+					}
+				//
+				// Commit the transaction.
+				finally
+					{
+					try {
+						if (null != account)
+							{
+							database.commit() ;
+							}
+						else {
+							database.rollback() ;
+							}
+						}
+					catch (Exception ouch)
+						{
+						if (DEBUG_FLAG) System.out.println("") ;
+						if (DEBUG_FLAG) System.out.println("  ----") ;
+						if (DEBUG_FLAG) System.out.println("Exception in delAccount() finally clause") ;
+
+						//
+						// Set the response to null.
+						account = null ;
+
+						if (DEBUG_FLAG) System.out.println("  ----") ;
+						if (DEBUG_FLAG) System.out.println("") ;
+						}
 					}
 				}
-			catch (PersistenceException ouch)
-				{
-				if (DEBUG_FLAG) System.out.println("") ;
-				if (DEBUG_FLAG) System.out.println("  ----") ;
-				if (DEBUG_FLAG) System.out.println("PersistenceException in delAccount() finally clause") ;
-
+			//
+			// If the ident is not local.
+			else {
 				//
 				// Set the response to null.
-				account = null ;
-
-				if (DEBUG_FLAG) System.out.println("  ----") ;
-				if (DEBUG_FLAG) System.out.println("") ;
+				//
 				}
+			}
+			//
+			// If the ident is not valid.
+		else {
+			//
+			// Set the response to null.
+			//
 			}
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;

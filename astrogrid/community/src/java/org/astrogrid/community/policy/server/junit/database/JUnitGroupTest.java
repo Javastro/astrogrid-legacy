@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/junit/database/Attic/JUnitGroupTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/06 20:10:07 $</cvs:date>
- * <cvs:version>$Revision: 1.1 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/08 20:28:50 $</cvs:date>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: JUnitGroupTest.java,v $
+ *   Revision 1.2  2003/09/08 20:28:50  dave
+ *   Added CommunityIdent, with isLocal() and isValid()
+ *
  *   Revision 1.1  2003/09/06 20:10:07  dave
  *   Split PolicyManager into separate components.
  *
@@ -18,8 +21,10 @@ import junit.framework.TestCase ;
 
 import org.astrogrid.community.policy.server.DatabaseManager ;
 import org.astrogrid.community.policy.server.DatabaseManagerImpl ;
+import org.astrogrid.community.policy.server.CommunityConfigImpl ;
 
 import org.astrogrid.community.policy.data.GroupData ;
+import org.astrogrid.community.policy.data.CommunityConfig ;
 
 import org.exolab.castor.jdo.JDO;
 import org.exolab.castor.jdo.Database;
@@ -48,7 +53,7 @@ public class JUnitGroupTest
 	 * Our test group ident.
 	 *
 	 */
-	private static final String TEST_GROUP_IDENT = "server.database@junit" ;
+	private static final String TEST_GROUP_IDENT = "server.database.junit" ;
 
 	/**
 	 * Our test group description.
@@ -91,6 +96,9 @@ public class JUnitGroupTest
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("setUp()") ;
 
+		//
+		// Initialise our configuration.
+		CommunityConfig.setConfig(new CommunityConfigImpl()) ;
 		//
 		// Initialise our DatabaseManager.
 		manager = new DatabaseManagerImpl() ;

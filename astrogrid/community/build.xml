@@ -1,11 +1,14 @@
 <?xml version="1.0"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/Attic/build.xml,v $</cvs:source>
-    | <cvs:author>$Author: KevinBenson $</cvs:author>
-    | <cvs:date>$Date: 2003/09/08 16:02:47 $</cvs:date>
-    | <cvs:version>$Revision: 1.13 $</cvs:version>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2003/09/08 20:28:50 $</cvs:date>
+    | <cvs:version>$Revision: 1.14 $</cvs:version>
     | <cvs:log>
     |   $Log: build.xml,v $
+    |   Revision 1.14  2003/09/08 20:28:50  dave
+    |   Added CommunityIdent, with isLocal() and isValid()
+    |
     |   Revision 1.13  2003/09/08 16:02:47  KevinBenson
     |   finally an authentication piece that is building.
     |
@@ -1363,6 +1366,8 @@
 				<!-- Include our CommunityManager interface and implementation -->
 				<include name="org/astrogrid/community/policy/server/CommunityManager.java"/>
 				<include name="org/astrogrid/community/policy/server/CommunityManagerImpl.java"/>
+				<!-- Include our Configuration implementation -->
+				<include name="org/astrogrid/community/policy/server/CommunityConfigImpl.java"/>
 
 				<!-- Include our data objects -->
 				<include name="org/astrogrid/community/policy/data/*.java"/>
@@ -1771,7 +1776,9 @@
 			<!-- Run the target JUnitTestCase tests -->
 			<batchtest todir="${policy.base}/junit">
 				<fileset dir="${policy.server.base}/classes">
-					<include name="org/astrogrid/community/policy/server/junit/**/JUnit*.class"/>
+					<include name="org/astrogrid/community/policy/server/junit/**/JUnitCommunity*.class"/>
+					<include name="org/astrogrid/community/policy/server/junit/**/JUnitAccount*.class"/>
+					<include name="org/astrogrid/community/policy/server/junit/**/JUnitGroup*.class"/>
 				</fileset>
 			</batchtest>
 		</junit>
@@ -1794,7 +1801,9 @@
 			<!-- Run the target JUnitTestCase tests -->
 			<batchtest todir="${policy.base}/junit">
 				<fileset dir="${policy.client.base}/classes">
-					<include name="org/astrogrid/community/policy/client/junit/**/JUnit*.class"/>
+					<include name="org/astrogrid/community/policy/client/junit/**/JUnitCommunity*.class"/>
+					<include name="org/astrogrid/community/policy/client/junit/**/JUnitAccount*.class"/>
+					<include name="org/astrogrid/community/policy/client/junit/**/JUnitGroup*.class"/>
 				</fileset>
 			</batchtest>
 		</junit>
@@ -1805,7 +1814,9 @@
 	    +-->
 	<target name="policy.TEST" depends="">
 		<!-- Reset our database -->
+		<!--
 		<antcall target="hsqldb.database.delete"/>
+		-->
 		<!-- Run our server side tests -->
 		<antcall target="policy.server.junit"/>
 		<!-- Run our client side tests -->
@@ -1813,77 +1824,6 @@
 		<!-- Display our database -->
 		<antcall target="hsqldb.database.select"/>
 	</target>
-
-<!--+
-	| Deprecated tests ..... code has changed since these were written ....
-	| Start
-	+-->
-
-	<!--+
-		| Run our server JUnit tests.
-		+-->
-	<target name="policy.server.junit.old" depends="policy.server.javac, policy.server.config">
-		<!-- Create our reports directory -->
-		<mkdir dir="${policy.server.base}/junit"/>
-		<!-- Run our JUnitTestCase tests -->
-		<junit printsummary="yes" haltonfailure="yes" haltonerror="yes" showoutput="yes" fork="true">
-			<classpath>
-				<!-- The Policy classes -->
-				<path refid="policy.server.classpath"/>
-			</classpath>
-			<!-- Generate an XML log file -->
-			<formatter type="xml"/>
-			<!-- Pass in the location of our config files and database name -->
-			<sysproperty key="astrogrid.policy.server.mapping"          value="file://${policy.server.base}/config/mapping.xml"/>
-			<sysproperty key="astrogrid.policy.server.database.config"  value="file://${policy.server.base}/config/database.xml"/>
-			<sysproperty key="astrogrid.policy.server.database.name"    value="${hsqldb.database}"/>
-			<!-- Run the target JUnitTestCase tests -->
-			<batchtest todir="${policy.server.base}/junit">
-				<fileset dir="${policy.server.base}/classes">
-					<include name="org/astrogrid/community/policy/server/**/JUnitTestCase.class"/>
-				</fileset>
-			</batchtest>
-		</junit>
-	</target>
-
-	<!--+
-		| Run our database load JUnit tests.
-		+-->
-	<target name="policy.database.junit.load.old" depends="policy.server.javac, policy.server.config">
-
-		<!-- Empty our database -->
-		<antcall target="hsqldb.database.delete"/>
-
-		<!-- Create our XML data directory -->
-		<mkdir dir="${policy.server.base}/xml"/>
-		<mkdir dir="${policy.server.base}/xml/temp"/>
-		<!-- Create our reports directory -->
-		<mkdir dir="${policy.server.base}/junit"/>
-		<!-- Run our JUnitTestCase tests -->
-		<junit printsummary="yes" haltonfailure="yes" haltonerror="yes" showoutput="yes" fork="true">
-			<classpath>
-				<!-- The Policy classes -->
-				<path refid="policy.server.classpath"/>
-			</classpath>
-			<!-- Generate an XML log file -->
-			<formatter type="xml"/>
-			<!-- Pass in the location of our config files and database name -->
-			<sysproperty key="astrogrid.policy.server.mapping"          value="file://${policy.server.base}/config/mapping.xml"/>
-			<sysproperty key="astrogrid.policy.server.database.config"  value="file://${policy.server.base}/config/database.xml"/>
-			<sysproperty key="astrogrid.policy.server.database.content" value="${policy.server.base}/config/content.xml"/>
-			<sysproperty key="astrogrid.policy.server.database.name"    value="${hsqldb.database}"/>
-			<sysproperty key="astrogrid.policy.server.test.xml.path"    value="${policy.server.base}/xml/temp"/>
-			<!-- Pass in the Castor settings -->
-			<sysproperty key="org.exolab.castor.indent" value="true"/>
-			<!-- Run the target JUnitTestCase tests -->
-			<batchtest todir="${policy.server.base}/junit">
-				<fileset dir="${policy.server.base}/classes">
-					<include name="**/data/junit/load/JUnitTestCase.class"/>
-				</fileset>
-			</batchtest>
-		</junit>
-	</target>
-
 
 <!--
 Start of Authentication "auth" tasks
@@ -2488,84 +2428,9 @@ Start of Authentication "auth" tasks
 		<antcall target="hsqldb.database.select"/>
 	</target>
 
-<!--+
-	| Deprecated tests ..... code has changed since these were written ....
-	| Start
-	+-->
-
-	<!--+
-		| Run our server JUnit tests.
-		+-->
-	<target name="auth.server.junit.old" depends="auth.server.javac, auth.server.config">
-		<!-- Create our reports directory -->
-		<mkdir dir="${auth.server.base}/junit"/>
-		<!-- Run our JUnitTestCase tests -->
-		<junit printsummary="yes" haltonfailure="yes" haltonerror="yes" showoutput="yes" fork="true">
-			<classpath>
-				<!-- The auth classes -->
-				<path refid="auth.server.classpath"/>
-			</classpath>
-			<!-- Generate an XML log file -->
-			<formatter type="xml"/>
-			<!-- Pass in the location of our config files and database name -->
-			<sysproperty key="astrogrid.auth.server.mapping"          value="file://${auth.server.base}/config/mapping.xml"/>
-			<sysproperty key="astrogrid.auth.server.database.config"  value="file://${auth.server.base}/config/database.xml"/>
-			<sysproperty key="astrogrid.auth.server.database.name"    value="${hsqldb.database}"/>
-			<!-- Run the target JUnitTestCase tests -->
-			<batchtest todir="${auth.server.base}/junit">
-				<fileset dir="${auth.server.base}/classes">
-					<include name="org/astrogrid/community/auth/server/**/JUnitTestCase.class"/>
-				</fileset>
-			</batchtest>
-		</junit>
-	</target>
-
-	<!--+
-		| Run our database load JUnit tests.
-		+-->
-	<target name="auth.database.junit.load.old" depends="auth.server.javac, auth.server.config">
-
-		<!-- Empty our database -->
-		<antcall target="hsqldb.database.delete"/>
-
-		<!-- Create our XML data directory -->
-		<mkdir dir="${auth.server.base}/xml"/>
-		<mkdir dir="${auth.server.base}/xml/temp"/>
-		<!-- Create our reports directory -->
-		<mkdir dir="${auth.server.base}/junit"/>
-		<!-- Run our JUnitTestCase tests -->
-		<junit printsummary="yes" haltonfailure="yes" haltonerror="yes" showoutput="yes" fork="true">
-			<classpath>
-				<!-- The auth classes -->
-				<path refid="auth.server.classpath"/>
-			</classpath>
-			<!-- Generate an XML log file -->
-			<formatter type="xml"/>
-			<!-- Pass in the location of our config files and database name -->
-			<sysproperty key="astrogrid.auth.server.mapping"          value="file://${auth.server.base}/config/mapping.xml"/>
-			<sysproperty key="astrogrid.auth.server.database.config"  value="file://${auth.server.base}/config/database.xml"/>
-			<sysproperty key="astrogrid.auth.server.database.content" value="${auth.server.base}/config/content.xml"/>
-			<sysproperty key="astrogrid.auth.server.database.name"    value="${hsqldb.database}"/>
-			<sysproperty key="astrogrid.auth.server.test.xml.path"    value="${auth.server.base}/xml/temp"/>
-			<!-- Pass in the Castor settings -->
-			<sysproperty key="org.exolab.castor.indent" value="true"/>
-			<!-- Run the target JUnitTestCase tests -->
-			<batchtest todir="${auth.server.base}/junit">
-				<fileset dir="${auth.server.base}/classes">
-					<include name="**/data/junit/load/JUnitTestCase.class"/>
-				</fileset>
-			</batchtest>
-		</junit>
-	</target>
-
 <!-- 
 	End of Authentication tasks
 -->
-
-<!--+
-	| End
-	| Deprecated tests ..... code has changed since these were written ....
-	+-->
 
 	<!-- ================ Project tasks ================ -->
 	<!--+

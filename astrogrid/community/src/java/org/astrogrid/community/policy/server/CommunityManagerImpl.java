@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/CommunityManagerImpl.java,v $</cvs:source>
- * <cvs:author>$Author: KevinBenson $</cvs:author>
- * <cvs:date>$Date: 2003/09/08 11:01:35 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:author>$Author: dave $</cvs:author>
+ * <cvs:date>$Date: 2003/09/08 20:28:50 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityManagerImpl.java,v $
+ *   Revision 1.3  2003/09/08 20:28:50  dave
+ *   Added CommunityIdent, with isLocal() and isValid()
+ *
  *   Revision 1.2  2003/09/08 11:01:35  KevinBenson
  *   A check in of the Authentication authenticateToken roughdraft and some changes to the groudata and community data
  *   along with an AdministrationDelegate
@@ -36,6 +39,7 @@ import org.exolab.castor.jdo.ClassNotPersistenceCapableException ;
 import java.util.ArrayList;
 import org.astrogrid.community.policy.data.ServiceData ;
 import org.astrogrid.community.policy.data.CommunityData ;
+import org.astrogrid.community.policy.data.CommunityConfig ;
 
 public class CommunityManagerImpl
 	implements CommunityManager
@@ -47,6 +51,12 @@ public class CommunityManagerImpl
 	protected static final boolean DEBUG_FLAG = true ;
 
 	/**
+	 * Our database manager.
+	 *
+	 */
+	private DatabaseManager databaseManager ;
+
+	/**
 	 * Our database connection.
 	 *
 	 */
@@ -56,52 +66,45 @@ public class CommunityManagerImpl
 	 * Public constructor.
 	 *
 	 */
-	public CommunityManagerImpl(Database database)
+	public CommunityManagerImpl()
 		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("CommunityManagerImpl()") ;
-
-		//
-		// Initialise our database.
-		this.init(database) ;
-
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		}
 
 	/**
 	 * Initialise our manager.
 	 *
 	 */
-	public void init(Database database)
+	public void init(DatabaseManager databaseManager)
 		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("CommunityManagerImpl.init()") ;
-
-		this.database = database ;
-
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("") ;
+		//
+		// Keep a reference to our database connection.
+		this.databaseManager = databaseManager ;
+		this.database = databaseManager.getDatabase() ;
 		}
 
 	/**
 	 * Create a new Community.
-	 * TODO Change this to only accept the community name.
 	 *
 	 */
-	public CommunityData addCommunity(CommunityData community)
+	public CommunityData addCommunity(String name)
 		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("CommunityManagerImpl.addCommunity()") ;
-		if (DEBUG_FLAG) System.out.println("  ident : " + community.getIdent()) ;
+		if (DEBUG_FLAG) System.out.println("  name : " + name) ;
 
 		//
-		// Check that the ident is valid.
+		// Check that the name is valid.
 		//
 
+		//
+		// Create the new community.
+		CommunityData community = new CommunityData(name) ;
+		//
+		// Set the default endpoint urls.
+		community.setServiceUrl("htpp://" + community.getIdent() + ":8080/axis/PolicyService") ;
+		community.setManagerUrl("htpp://" + community.getIdent() + ":8080/axis/PolicyManager") ;
 		//
 		// Try performing our transaction.
 		try {
@@ -129,11 +132,11 @@ public class CommunityManagerImpl
 			}
 		//
 		// If anything else went bang.
-		catch (PersistenceException ouch)
+		catch (Exception ouch)
 			{
 			if (DEBUG_FLAG) System.out.println("") ;
 			if (DEBUG_FLAG) System.out.println("  ----") ;
-			if (DEBUG_FLAG) System.out.println("PersistenceException in addCommunity()") ;
+			if (DEBUG_FLAG) System.out.println("Exception in addCommunity()") ;
 
 			//
 			// Set the response to null.
@@ -155,11 +158,11 @@ public class CommunityManagerImpl
 					database.rollback() ;
 					}
 				}
-			catch (PersistenceException ouch)
+			catch (Exception ouch)
 				{
 				if (DEBUG_FLAG) System.out.println("") ;
 				if (DEBUG_FLAG) System.out.println("  ----") ;
-				if (DEBUG_FLAG) System.out.println("PersistenceException in addCommunity() finally clause") ;
+				if (DEBUG_FLAG) System.out.println("Exception in addCommunity() finally clause") ;
 
 				//
 				// Set the response to null.
@@ -217,11 +220,11 @@ public class CommunityManagerImpl
 			}
 		//
 		// If anything else went bang.
-		catch (PersistenceException ouch)
+		catch (Exception ouch)
 			{
 			if (DEBUG_FLAG) System.out.println("") ;
 			if (DEBUG_FLAG) System.out.println("  ----") ;
-			if (DEBUG_FLAG) System.out.println("PersistenceException in getCommunity()") ;
+			if (DEBUG_FLAG) System.out.println("Exception in getCommunity()") ;
 
 			//
 			// Set the response to null.
@@ -243,11 +246,11 @@ public class CommunityManagerImpl
 					database.rollback() ;
 					}
 				}
-			catch (PersistenceException ouch)
+			catch (Exception ouch)
 				{
 				if (DEBUG_FLAG) System.out.println("") ;
 				if (DEBUG_FLAG) System.out.println("  ----") ;
-				if (DEBUG_FLAG) System.out.println("PersistenceException in getCommunity() finally clause") ;
+				if (DEBUG_FLAG) System.out.println("Exception in getCommunity() finally clause") ;
 
 				//
 				// Set the response to null.
@@ -310,11 +313,11 @@ public class CommunityManagerImpl
 			}
 		//
 		// If anything else went bang.
-		catch (PersistenceException ouch)
+		catch (Exception ouch)
 			{
 			if (DEBUG_FLAG) System.out.println("") ;
 			if (DEBUG_FLAG) System.out.println("  ----") ;
-			if (DEBUG_FLAG) System.out.println("PersistenceException in setCommunity()") ;
+			if (DEBUG_FLAG) System.out.println("Exception in setCommunity()") ;
 
 			//
 			// Set the response to null.
@@ -335,11 +338,11 @@ public class CommunityManagerImpl
 					database.rollback() ;
 					}
 				}
-			catch (PersistenceException ouch)
+			catch (Exception ouch)
 				{
 				if (DEBUG_FLAG) System.out.println("") ;
 				if (DEBUG_FLAG) System.out.println("  ----") ;
-				if (DEBUG_FLAG) System.out.println("PersistenceException in setCommunity() finally clause") ;
+				if (DEBUG_FLAG) System.out.println("Exception in setCommunity() finally clause") ;
 
 				//
 				// Set the response to null.
@@ -365,9 +368,9 @@ public class CommunityManagerImpl
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("CommunityManagerImpl.getCommunityList()") ;
 
-      //
-      // Try QUERY the database.
-      Object[] array = null ;
+		//
+		// Try QUERY the database.
+		Object[] array = null ;
 		try {
 			//
 			// Begin a new database transaction.
@@ -381,24 +384,24 @@ public class CommunityManagerImpl
 			// Execute our query.
 			QueryResults results = query.execute();
 
-         //
-         // Transfer our results to a vector.
-         Collection collection = new Vector() ;
-         while (results.hasMore())
-         {
-            collection.add(results.next()) ;
-         }
-         // 
-         // Convert it into an array.
-         array = collection.toArray() ;
-		
+			//
+			// Transfer our results to a vector.
+			Collection collection = new Vector() ;
+			while (results.hasMore())
+				{
+				collection.add(results.next()) ;
+				}
+			// 
+			// Convert it into an array.
+			array = collection.toArray() ;
+			}
 		//
 		// If anything went bang.
-      }catch (PersistenceException ouch)
+		catch (Exception ouch)
 			{
 			if (DEBUG_FLAG) System.out.println("") ;
 			if (DEBUG_FLAG) System.out.println("  ----") ;
-			if (DEBUG_FLAG) System.out.println("PersistenceException in getCommunityList()") ;
+			if (DEBUG_FLAG) System.out.println("Exception in getCommunityList()") ;
 
 			//
 			// Set the response to null.
@@ -420,11 +423,11 @@ public class CommunityManagerImpl
 					database.rollback() ;
 					}
 				}
-			catch (PersistenceException ouch)
+			catch (Exception ouch)
 				{
 				if (DEBUG_FLAG) System.out.println("") ;
 				if (DEBUG_FLAG) System.out.println("  ----") ;
-				if (DEBUG_FLAG) System.out.println("PersistenceException in getCommunityList() finally clause") ;
+				if (DEBUG_FLAG) System.out.println("Exception in getCommunityList() finally clause") ;
 
 				//
 				// Set the response to null.
@@ -482,11 +485,11 @@ public class CommunityManagerImpl
 			}
 		//
 		// If anything else went bang.
-		catch (PersistenceException ouch)
+		catch (Exception ouch)
 			{
 			if (DEBUG_FLAG) System.out.println("") ;
 			if (DEBUG_FLAG) System.out.println("  ----") ;
-			if (DEBUG_FLAG) System.out.println("PersistenceException in delCommunity()") ;
+			if (DEBUG_FLAG) System.out.println("Exception in delCommunity()") ;
 
 			//
 			// Set the response to null.
@@ -508,11 +511,11 @@ public class CommunityManagerImpl
 					database.rollback() ;
 					}
 				}
-			catch (PersistenceException ouch)
+			catch (Exception ouch)
 				{
 				if (DEBUG_FLAG) System.out.println("") ;
 				if (DEBUG_FLAG) System.out.println("  ----") ;
-				if (DEBUG_FLAG) System.out.println("PersistenceException in delCommunity() finally clause") ;
+				if (DEBUG_FLAG) System.out.println("Exception in delCommunity() finally clause") ;
 
 				//
 				// Set the response to null.

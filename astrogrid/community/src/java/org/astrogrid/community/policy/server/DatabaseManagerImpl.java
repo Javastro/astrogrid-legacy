@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/DatabaseManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/06 20:10:07 $</cvs:date>
- * <cvs:version>$Revision: 1.1 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/08 20:28:50 $</cvs:date>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: DatabaseManagerImpl.java,v $
+ *   Revision 1.2  2003/09/08 20:28:50  dave
+ *   Added CommunityIdent, with isLocal() and isValid()
+ *
  *   Revision 1.1  2003/09/06 20:10:07  dave
  *   Split PolicyManager into separate components.
  *
@@ -21,17 +24,14 @@ import org.exolab.castor.jdo.Database;
 import org.exolab.castor.jdo.OQLQuery;
 import org.exolab.castor.jdo.QueryResults;
 import org.exolab.castor.jdo.PersistenceException ;
-//import org.exolab.castor.jdo.ObjectNotFoundException ;
 import org.exolab.castor.jdo.DatabaseNotFoundException ;
-//import org.exolab.castor.jdo.DuplicateIdentityException ;
-//import org.exolab.castor.jdo.TransactionNotInProgressException ;
-//import org.exolab.castor.jdo.ClassNotPersistenceCapableException ;
 
 import org.exolab.castor.util.Logger;
 
 import org.exolab.castor.mapping.Mapping;
 import org.exolab.castor.mapping.MappingException;
 
+import org.astrogrid.community.policy.data.CommunityConfig ;
 
 public class DatabaseManagerImpl
 	implements DatabaseManager
@@ -49,46 +49,28 @@ public class DatabaseManagerImpl
 	private static final String MAPPING_CONFIG_PROPERTY = "org.astrogrid.policy.server.mapping" ;
 
 	/**
-	 * The name of the system property to read the location of our database config.
-	 *
-	 */
-	private static final String DATABASE_CONFIG_PROPERTY = "org.astrogrid.policy.server.database.config" ;
-
-	/**
-	 * The name of the system property to read our database name from.
-	 *
-	 */
-	private static final String DATABASE_NAME_PROPERTY = "org.astrogrid.policy.server.database.name" ;
-
-	/**
 	 * Our log writer.
 	 *
 	 */
-	private Logger logger = null ;
-
-	/**
-	 * Our config files path.
-	 *
-	 */
-	private String config = "" ;
+	private Logger logger ;
 
 	/**
 	 * Our JDO and XML mapping.
 	 *
 	 */
-	private Mapping mapping = null ;
+	private Mapping mapping ;
 
 	/**
 	 * Our JDO engine.
 	 *
 	 */
-	private JDO jdo = null ;
+	private JDO jdo ;
 
 	/**
 	 * Our database connection.
 	 *
 	 */
-	private Database database = null ;
+	private Database database ;
 
 	/**
 	 * Access to our database.
@@ -105,14 +87,9 @@ public class DatabaseManagerImpl
 	 */
 	public DatabaseManagerImpl()
 		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("DatabaseManagerImpl()") ;
 		//
 		// Initialise our database.
 		this.init() ;
-
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		}
 
 	/**
@@ -125,9 +102,13 @@ public class DatabaseManagerImpl
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("DatabaseManagerImpl.init()") ;
 
+		//
+		// Get the local configuration instance.
+		CommunityConfig config = CommunityConfig.getConfig() ;
+
 		if (DEBUG_FLAG) System.out.println("    Mapping  : " + System.getProperty(MAPPING_CONFIG_PROPERTY)) ;
-		if (DEBUG_FLAG) System.out.println("    Database : " + System.getProperty(DATABASE_CONFIG_PROPERTY)) ;
-		if (DEBUG_FLAG) System.out.println("    Database : " + System.getProperty(DATABASE_NAME_PROPERTY)) ;
+		if (DEBUG_FLAG) System.out.println("    Database : " + config.getDatabaseName())   ;
+		if (DEBUG_FLAG) System.out.println("    Database : " + config.getDatabaseConfig()) ;
 
 		try {
 			//
@@ -142,8 +123,8 @@ public class DatabaseManagerImpl
 			// Create our JDO engine.
 			jdo = new JDO();
 			jdo.setLogWriter(logger);
-			jdo.setConfiguration(System.getProperty(DATABASE_CONFIG_PROPERTY));
-			jdo.setDatabaseName(System.getProperty(DATABASE_NAME_PROPERTY));
+			jdo.setConfiguration(config.getDatabaseConfig());
+			jdo.setDatabaseName(config.getDatabaseName());
 			//
 			// Create our database connection.
 			database = jdo.getDatabase();
@@ -178,4 +159,96 @@ public class DatabaseManagerImpl
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("") ;
 		}
+
+	/**
+	 * Create an object in the database.
+	 *
+	public void create(Object object)
+		throws PersistenceException
+		{
+		//
+		// Try performing our transaction.
+		try {
+			//
+			// Begin a new database transaction.
+			database.begin();
+			//
+			// Try creating the object in the database.
+			database.create(object);
+			//
+			// Try comitting the transaction.
+			database.commit() ;
+			}
+		//
+		// If anything else bang.
+		catch (PersistenceException ouch)
+			{
+			//
+			// Roll back the transaction.
+			database.rollback() ;
+			//
+			// Re-throw the exception.
+			throw ouch ;
+			}
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("") ;
+		}
+	 */
+
+	/**
+	 * Select an object from the database.
+	 *
+	public Object select(Class type, Object ident)
+		throws PersistenceException
+		{
+		Object result = null ;
+		//
+		// Try performing our transaction.
+		try {
+			//
+			// Begin a new database transaction.
+			database.begin();
+			//
+			// Try loading the object from the database.
+			result = database.load(type, object);
+			//
+			// Try comitting the transaction.
+			database.commit() ;
+			}
+		//
+		// If anything went bang.
+		catch (PersistenceException ouch)
+			{
+			//
+			// Roll back the transaction.
+			database.rollback() ;
+			//
+			// Set the result to null.
+			result = null ;
+			//
+			// Re-throw the exception.
+			throw ouch ;
+			}
+		return result ;
+		}
+	 */
+
+	/**
+	 * Update an object in the database.
+	 *
+	public void update(Class type, Object ident)
+		throws PersistenceException
+		{
+		}
+	 */
+
+	/**
+	 * Delete an object in the database.
+	 *
+	public void delete(Class type, Object ident)
+		throws PersistenceException
+		{
+		}
+	 */
+
 	}

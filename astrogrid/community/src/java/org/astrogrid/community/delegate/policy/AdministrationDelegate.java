@@ -62,8 +62,8 @@ public class AdministrationDelegate {
       return service.delGroup(ident);
    }
    
-   public GroupData addGroup(GroupData groupData) throws Exception  {
-      return service.addGroup(groupData);
+   public GroupData addGroup(String ident) throws Exception  {
+      return service.addGroup(ident);
    }
    
    public GroupData getGroup(String ident) throws Exception  {
@@ -74,8 +74,8 @@ public class AdministrationDelegate {
       return service.setGroup(groupData);
    }
    
-   public CommunityData addCommunity(CommunityData commData) throws Exception  {
-      return service.addCommunity(commData);
+   public CommunityData addCommunity(String ident) throws Exception  {
+      return service.addCommunity(ident);
    }
 
    public CommunityData getCommunity(String ident) throws Exception  {

@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/client/junit/manager/Attic/JUnitGroupTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/06 20:10:07 $</cvs:date>
- * <cvs:version>$Revision: 1.1 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/08 20:28:50 $</cvs:date>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: JUnitGroupTest.java,v $
+ *   Revision 1.2  2003/09/08 20:28:50  dave
+ *   Added CommunityIdent, with isLocal() and isValid()
+ *
  *   Revision 1.1  2003/09/06 20:10:07  dave
  *   Split PolicyManager into separate components.
  *
@@ -35,19 +38,25 @@ public class JUnitGroupTest
 	extends TestCase
 	{
 	/**
-	 * The our test group ident.
+	 * Our test group ident.
 	 *
 	 */
-	private static final String TEST_GROUP_IDENT = "client.manager@junit" ;
+	private static final String TEST_GROUP_IDENT = "client.manager.junit" ;
 
 	/**
-	 * The our fake group ident.
+	 * Our fake ident.
 	 *
 	 */
-	private static final String FAKE_GROUP_IDENT = "unknown@unknown" ;
+	private static final String FAKE_GROUP_IDENT = "unknown" ;
 
 	/**
-	 * The our test group description.
+	 * Our fake ident and domain.
+	 *
+	 */
+	private static final String FAKE_GROUP_DOMAIN = "unknown@unknown" ;
+
+	/**
+	 * Our test description.
 	 *
 	 */
 	private static final String TEST_GROUP_DESC = "JUnit test group" ;
@@ -136,13 +145,9 @@ public class JUnitGroupTest
 		if (DEBUG_FLAG) System.out.println("testAddGroup()") ;
 
 		//
-		// Create our Group object.
-		GroupData group = new GroupData(TEST_GROUP_IDENT) ;
-		//group.setIdent(TEST_GROUP_IDENT) ;
-		//group.setDescription(TEST_GROUP_DESC) ;
-		//
 		// Try creating the Group.
-		group = service.addGroup(group);
+		GroupData group ;
+		group = service.addGroup(TEST_GROUP_IDENT);
 		assertNotNull("Failed to create group", group) ;
 
 		if (DEBUG_FLAG) System.out.println("") ;
@@ -152,8 +157,13 @@ public class JUnitGroupTest
 
 		//
 		// Try creating the same Group again.
-		group = service.addGroup(group);
+		group = service.addGroup(TEST_GROUP_IDENT);
 		assertNull("Created a duplicate group", group) ;
+
+		//
+		// Try creating group in a fake community.
+		group = service.addGroup(FAKE_GROUP_DOMAIN);
+		assertNull("Created a group in fake domain", group) ;
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("") ;
