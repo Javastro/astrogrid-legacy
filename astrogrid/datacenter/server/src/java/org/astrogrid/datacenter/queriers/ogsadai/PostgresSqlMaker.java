@@ -1,4 +1,4 @@
-/*$Id: PostgresSqlMaker.java,v 1.6 2004/03/30 16:21:24 eca Exp $
+/*$Id: PostgresSqlMaker.java,v 1.6 2004/03/30 16:21:24 eca and mch
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,13 +12,13 @@ package org.astrogrid.datacenter.queriers.ogsadai;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.datacenter.queriers.DatabaseAccessException;
-import org.astrogrid.datacenter.queriers.spi.Translator;
 import org.astrogrid.datacenter.queriers.sql.StdSqlMaker;
 import org.astrogrid.datacenter.query.AdqlQuery;
-import org.astrogrid.datacenter.query.QueryException;
 import org.w3c.dom.Element;
-import org.astrogrid.datacenter.queriers.ogsadai.AdqlQueryTranslator;
+import org.astrogrid.datacenter.adql.generated.ogsadai.Select; 
+import org.w3c.dom.Node;
+import org.exolab.castor.xml.Unmarshaller;
+
 /**
  * Produced Postgres-specific SQL
  */
@@ -31,70 +31,40 @@ public class PostgresSqlMaker extends StdSqlMaker {
     */
    public String fromAdql(AdqlQuery query) {
       //should use appropriate xslt, but use deprecated stuff for now
-
+	
       try {
         Element queryBody = query.toDom().getDocumentElement();
-        Translator trans = new AdqlQueryTranslator();
-        // do the translation
-        Object intermediateRep = null;
-        Class expectedType = null;
-        try { // don't trust it.
-            intermediateRep = trans.translate(queryBody);
-            expectedType = trans.getResultType();
-            if (! expectedType.isInstance(intermediateRep)) { // checks result is non-null and the right type.
-                throw new DatabaseAccessException("Translation result " + intermediateRep.getClass().getName() + " not of expected type " + expectedType.getName());
-            }
-        } catch (Throwable t) {
-            throw new RuntimeException("Translation phase failed:" + t.getMessage());
-        }
-        return convertDecToDecl((String) intermediateRep);
-     }
-     catch (QueryException se) {
-        throw new IllegalArgumentException("Bad ADQL/XML"+se);
-     }
+        Node node = queryBody.getFirstChild(); 
+        
+		String rootName = queryBody.getNodeName(); 
+		Select selectQuery = (Select)Unmarshaller.unmarshal(Select.class, queryBody); 
+		
 
+		try {  
+		AdqlQueryTranslator visitor = new AdqlQueryTranslator();
+		String sql = visitor.translate(selectQuery);
+		 return sql;
+		}catch (Exception e) { 
+			e.printStackTrace(); 
+			return "PSM ERROR: Caught Exception " + e.getMessage(); 
+		} 
+	
+	  } catch (Exception e) { 
+		return "PSM ERROR: Caught Exception" + e.getMessage(); 
+	  }
    }
-
-  /**
-   * Adjust SQL query (temporary kludge): datacenter default ADQL->SQL
-   * translator produces DEC as column name where we need DECL.
-   * @return  String holding adjusted SQL query
-    * MCH: this was caused by hardcoding the cone translator. This should now be
-    * set in config using the SqlQueryMaker.CONE_SEARCH_* keys.
-   */
-  protected String convertDecToDecl(String inString) {
-    String sqlString = inString;
-    while (true) {
-      String newString;
-      int index = sqlString.indexOf("t.DEC");
-      int index2 = sqlString.indexOf("t.DECL");
-      if (index != -1) {
-        if (index != index2) {  //DEC - change to decl
-          newString =
-             sqlString.substring(0,index) +
-             "t.decl" +
-             sqlString.substring(index+5);
-        }
-        else {  //DECL - change to decl
-          newString =
-             sqlString.substring(0,index) +
-             "t.decl" +
-             sqlString.substring(index+6);
-        }
-      }
-      else {
-        break;  //No more occurrences of t.DEC
-      }
-      sqlString = newString;
-    }
-    return sqlString;
-  }
-   
 }
 
 
 /*
 $Log: PostgresSqlMaker.java,v $
+Revision 1.7  2004/04/02 03:12:12  eca
+PostgresSqlMaker now unmarshalls the adql query as a node, using
+ADQLUtils.Unmarshall rather than org.astrogrid.datacenter.adql.generated.Select Unmarshall.
+
+Also, removed function to convert DEC to DECL - now obsolete as 
+ogsadai.AdqlQueryTranslator should do all necessary conversions.
+
 Revision 1.6  2004/03/30 16:21:24  eca
 Updated ogsadai Postgres-optimized query translator, updated class
 references in PostgresSqlMaker.
