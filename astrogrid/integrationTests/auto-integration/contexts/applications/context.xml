@@ -3,6 +3,8 @@
          <Environment description="properties file" name="AstrogridApplicationsConfigURL" override="true"
          type="java.lang.String" value="@CONFIGPATH@/AstroGridConfig.properties"/>
           <Resource name="jdbc/AstrogridACDatasource" scope="Shareable" type="javax.sql.DataSource"/>
+          <Resource name="mail/AGMailSession" scope="Shareable" type="javax.mail.Session"/>
+          
           <ResourceParams name="jdbc/AstrogridACDatasource">
        <parameter>
         <name>factory</name>
@@ -35,6 +37,12 @@
             <parameter>
               <name>username</name>
               <value>sa</value>
+            </parameter>
+          </ResourceParams>
+         <ResourceParams name="mail/AGMailSession">
+            <parameter>
+              <name>mail.smtp.host</name>
+              <value>localhost</value>
             </parameter>
           </ResourceParams>
 </Context>
