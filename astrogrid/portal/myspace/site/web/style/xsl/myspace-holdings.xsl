@@ -31,7 +31,9 @@
             method="POST"
             enctype="multipart/form-data">
           <input id="myspace-action" name="myspace-action" type="hidden"/>
-          <input id="myspace-clipboard" name="myspace-clipboard" type="hidden"/>          <input id="myspace-clipboard-url" name="myspace-clipboard-url" type="hidden"/>
+          <input id="myspace-clipboard" name="myspace-clipboard" type="hidden"/>
+          <input id="myspace-clipboard-url" name="myspace-clipboard-url" type="hidden"/>
+          <input id="myspace-clipboard-copy" name="myspace-clipboard-copy" type="hidden"/>
 <!--
           <div id="myspace-tools">
             <div id="myspace-tools-header">
@@ -104,7 +106,7 @@
     </span>
 
     &#160;
-    <span style="cursor:pointer;cursor:hand;">
+    <span class="folder" style="cursor:pointer;cursor:hand;">
       <xsl:attribute name="onclick">setOldMySpaceName('<xsl:value-of select="@full-name"/>');</xsl:attribute>
       <xsl:value-of select="@item-name"/><br/>
     </span>
@@ -126,7 +128,8 @@
 
     &#160;
     <span class="document">
-      <xsl:attribute name="onclick">setOldMySpaceNameUrl('<xsl:value-of select="@full-name"/>', '<xsl:value-of select="@url"/>')</xsl:attribute>
+      <xsl:attribute name="id"><xsl:value-of select="@safe-name"/></xsl:attribute>
+      <xsl:attribute name="onclick">setOldMySpaceNameUrl('<xsl:value-of select="@full-name"/>', '<xsl:value-of select="@url"/>');  setHighlight('<xsl:value-of select="@safe-name"/>', 'document-highlight');</xsl:attribute>
       <xsl:value-of select="@item-name"/>
     </span>
 

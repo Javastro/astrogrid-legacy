@@ -39,4 +39,32 @@
         target="_self"
         status-text="Show the properties of a MySpace item"/>
   </agp:menu>
+
+  <agp:menu
+      contents="Edit"
+      contents-hover="Edit"
+      uri=""
+      target="_self"
+      status-text="Edit...">
+    <agp:item
+        contents="Copy"
+        contents-hover="Copy"
+        uri='javascript:void(myspace_clipboard_copy("myspace-clipboard", "myspace-clipboard-copy"));'
+        target="_self"
+        status-text="Store MySpace item in the clipboard"/>
+
+    <agp:item
+        contents="Paste"
+        contents-hover="Paste"
+        uri='javascript:void(myspace_clipboard_paste("myspace-src", "myspace-clipboard-copy", "myspace-dest"));'
+        target="_self"
+        status-text="Paste stored MySpace item into a new location"/>
+
+    <agp:item
+        contents="Move"
+        contents-hover="Move"
+        uri='javascript:void(myspace_clipboard_move("myspace-src", "myspace-clipboard-copy", "myspace-dest"));'
+        target="_self"
+        status-text="Move stored MySpace item into a new location"/>
+    </agp:menu>
 </agp:menu-def>

@@ -100,3 +100,57 @@ function myspace_properties(fileId) {
     alert('invalid file element: ' + fileId);
   }
 }
+
+function myspace_clipboard_copy(srcId, clipId) {
+  srcEl = document.getElementById(srcId);
+  if(!srcEl) {
+    alert('no source element: ' + srcId);
+    return;
+  }
+  
+  clipEl = document.getElementById(clipId);
+  if(!clipEl) {
+    alert('no clipboard element: ' + clipId);
+    return;
+  }
+  
+  clipEl.value = srcEl.value;
+}
+
+function myspace_clipboard_paste(srcId, clipId, agslId) {
+  clipEl = document.getElementById(clipId);
+  if(!clipEl) {
+    alert('no clipboard element: ' + clipId);
+    return;
+  }
+  
+//  alert(clipEl.value);
+
+  agslEl = document.getElementById(agslId);
+  if(!agslEl) {
+    alert('no AGSL element: ' + agslId);
+    return;
+  }
+  myspace_micro_browser("", agslId, "myspace-explorer-form", "/astrogrid-portal/main/mount/myspace/myspace-explorer", "myspace-action", "myspace-copy");
+}
+
+function myspace_clipboard_move(srcId, clipId, agslId) {
+  clipEl = document.getElementById(clipId);
+  if(!clipEl) {
+    alert('no clipboard element: ' + clipId);
+    return;
+  }
+  
+//  alert(clipEl.value);
+
+  agslEl = document.getElementById(agslId);
+  if(!agslEl) {
+    alert('no AGSL element: ' + agslId);
+    return;
+  }
+  myspace_micro_browser("", agslId, "myspace-explorer-form", "/astrogrid-portal/main/mount/myspace/myspace-explorer", "myspace-action", "myspace-move");
+}
+
+function myspace_micro_browser(ivornId, agslId, formName, formAction, fieldName, fieldValue) {
+  window.open("/astrogrid-portal/mount/myspace/myspace-micro?ivorn=" + ivornId + "&agsl=" + agslId + "&form_name=" + formName + "&form_action=" + formAction + "&field_name=" + fieldName + "&field_value=" + fieldValue, "mySpaceMicro", "toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=yes, scrollbars=yes, width=300, height=200");
+}

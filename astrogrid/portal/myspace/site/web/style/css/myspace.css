@@ -76,3 +76,27 @@ hr.agbar
   width:                          100%;
 }
 
+span.document
+{
+  background-color:               white;
+  color:                          blue;
+}
+
+span.document-highlight
+{
+  background-color:               yellow;
+  color:                          blue;
+}
+
+span.folder
+{
+  background-color:               white;
+  color:                          blue;
+}
+
+span.folder-highlight
+{
+  background-color:               lightblue;
+  color:                          blue;
+}
+

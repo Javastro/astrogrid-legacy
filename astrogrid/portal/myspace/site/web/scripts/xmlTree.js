@@ -3,6 +3,9 @@ openImg.src = "/astrogrid-portal/icons/Folder.png";
 var closedImg = new Image();
 closedImg.src = "/astrogrid-portal/icons/Open.png";
 
+var oldField = "";
+var oldFieldClassName = "";
+
 function showBranch(branch){
   var objBranch = 
      document.getElementById(branch).style;
@@ -26,6 +29,8 @@ function setOldMySpaceName(oldMySpaceName){
   myspace_old_name.value = oldMySpaceName;
   myspace_clipboard = document.getElementById('myspace-clipboard');
   myspace_clipboard.value = oldMySpaceName;
+  
+  setHighlight('', '');
 }
 
 function setOldMySpaceNameUrl(oldMySpaceName, oldMySpaceUrl){
@@ -136,12 +141,16 @@ function setParentHiddenField(field_name, field_value) {
 }
 
 function submitParentForm(form_name, action) {
+//  alert(form_name);
   parentDoc = window.opener.document;
+//  alert(parentDoc);
   parent_form = parentDoc.getElementById(form_name); 
+//  alert(parent_form);
   if(parent_form) {
     if(action && action.length > 0) {
       parent_form.action = action;
     }
+//    alert("submitting");
     parent_form.submit();
   }
   
@@ -248,4 +257,19 @@ function setAgslParts(path, file) {
 
   myspace_agsl.value = path;
   myspace_item.value = file;
+}
+
+function setHighlight(fieldId, newClass) {
+//  alert("setHighlight");
+  oldFieldEl = document.getElementById(oldField);
+  if(oldFieldEl) {
+    oldFieldEl.className = oldFieldClassName;
+  }
+  
+  fieldEl = document.getElementById(fieldId);
+  if(fieldEl) {
+    oldField = fieldId;
+    oldFieldClassName = fieldEl.className;
+    fieldEl.className = newClass;
+  }
 }
