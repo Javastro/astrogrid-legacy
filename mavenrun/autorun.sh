@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: autorun.sh,v 1.12 2004/07/02 11:22:13 jdt Exp $ 
+# $Id: autorun.sh,v 1.13 2004/07/04 21:11:58 jdt Exp $ 
 OLDDIR=$PWD
 
 #setup paths etc
@@ -24,9 +24,7 @@ echo "Shutting down Tomcat" >> $LOGFILE
 $CATALINA_HOME/bin/shutdown.sh >> $LOGFILE 2>&1
 echo "Waiting for tomcat to shutdown...." >> $LOGFILE
 sleep 15
-maven CLEANTOMCAT >> $LOGFILE 2>&1
-echo "Starting Tomcat" >> $LOGFILE
-$CATALINA_HOME/bin/startup.sh >> $LOGFILE 2>&1
+
 
 #update from cvs 
 cd $CHECKOUTHOME/astrogrid/integrationTests >> $LOGFILE 2>&1
@@ -36,6 +34,12 @@ cvs checkout -P astrogrid/integrationTests/auto-integration  >> $LOGFILE 2>&1
 #run maven goals
 cd $BUILDHOME >> $LOGFILE 2>&1
 echo $BUILDHOME >> $LOGFILE
+maven CLEANTOMCAT >> $LOGFILE 2>&1
+
+echo "Starting Tomcat" >> $LOGFILE
+$CATALINA_HOME/bin/startup.sh >> $LOGFILE 2>&1
+
+
 
 if maven undeploy-all >> $LOGFILE 2>&1
 then
