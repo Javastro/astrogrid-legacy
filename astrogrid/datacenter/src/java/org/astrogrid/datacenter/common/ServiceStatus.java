@@ -1,5 +1,5 @@
 /*
- * $Id: ServiceStatus.java,v 1.2 2003/09/15 14:33:27 mch Exp $
+ * $Id: ServiceStatus.java,v 1.3 2003/09/15 18:24:55 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -11,7 +11,6 @@ import org.astrogrid.util.TypeSafeEnumerator;
 /**
  * Defines the service status' possible results.
  *
- * @todo probably need a proper typesafe enumeration of the states.
  *
  * @author M Hill
  */
@@ -71,6 +70,9 @@ public class ServiceStatus extends TypeSafeEnumerator
 
 /*
 $Log: ServiceStatus.java,v $
+Revision 1.3  2003/09/15 18:24:55  mch
+Removed done todo
+
 Revision 1.2  2003/09/15 14:33:27  mch
 Fixes to reading status id and service id
 
