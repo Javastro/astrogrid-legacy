@@ -29,6 +29,6 @@ public interface Tool {
     
     public String toXMLString() ;
     
-    public String getName() ; 
+    public String getToolName() ; 
 
 }

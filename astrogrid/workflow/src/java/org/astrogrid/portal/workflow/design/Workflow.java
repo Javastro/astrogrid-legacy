@@ -116,7 +116,7 @@ public class Workflow extends Sequence {
             workflow.setUserid( userid) ;
             workflow.setCommunity( community ) ;
             workflow.setName( name ) ;
-            workflow.setDescription( "some description of a query" ) ; 
+            workflow.setDescription( "Description goes here" ) ; 
         }
         finally {
             if( TRACE_ENABLED ) trace( "Workflow.createWorkflow() exit") ; 
@@ -195,12 +195,11 @@ public class Workflow extends Sequence {
          retValue = true ;
          
      try {
-/*        
+        
          //JBL serialize the Workflow to a suiteable XML file to be picked
          // up by MySpace. This is where we make use of the toXML() method
          // to pull the whole tree together...
-        
-        
+            
          MySpaceManagerDelegate
              mySpace = new MySpaceManagerDelegate( Workflow.locateMySpace( workflow.getUserid()
                                                                          , workflow.getCommunity() ) ) ;
@@ -212,7 +211,9 @@ public class Workflow extends Sequence {
              responseXML = mySpace.upLoad( "" ) ;
                 
          //JBL decode the response here...
-  */      
+        
+     }
+     catch( Exception ex ) {
      }
      finally {
          if( TRACE_ENABLED ) trace( "Workflow.saveWorkflow() exit") ; 
@@ -220,7 +221,7 @@ public class Workflow extends Sequence {
         
      return retValue ;
 
-    }
+    } // end of saveWorkflow()
     
     
     //JBL Note: Is this a misnomer on my part? Should we be attempting this? Is it required?  

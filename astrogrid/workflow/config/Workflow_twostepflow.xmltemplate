@@ -1,0 +1,29 @@
+<?xml version = "1.0" encoding = "UTF8"?>
+<!-- 
+   | Workflow Template contains a flow of two steps 
+   ----------------------------------------------------- -->
+<workflow name = "TwoParallelJobsteps">
+   <userid></userid>
+   <community></community>
+   <!--
+      | Every workflow begins with a top level sequence
+      -------------------------------------------------- -->
+   <sequence>
+      <flow>
+      <!--
+         | These two steps will be dispatched in this order
+         | but they will execute in parallel
+         ----------------------------------------------- -->
+         <step name="StepOne" >
+            <tool>      
+               <nulltool/>
+            </tool>
+         </step>
+         <step name="StepTwo" >
+            <tool>
+               <nulltool/>
+            </tool>
+         </step>
+      </flow>
+   </sequence>
+</workflow>

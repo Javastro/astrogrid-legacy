@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!-- Template for making SOAP requests to the MySpaceManager --> 
+<request> 
+    <elements> 
+        <userID>{0}</userID> 
+        <communityID>{1}</communityID> 
+        <jobID>{2}</jobID> 
+        <serverFileName>{3}</serverFileName> 
+    </elements> 
+</request>

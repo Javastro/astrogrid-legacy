@@ -1,0 +1,10 @@
+<?xml version = "1.0" encoding = "UTF8"?>
+<!-- 
+   | Workflow Template contains an empty sequence 
+   ------------------------------------------ -->
+<workflow name = "EmptySequence">
+   <userid></userid>
+   <community></community>
+   <sequence>
+   </sequence>
+</workflow>

@@ -1,0 +1,28 @@
+<?xml version = "1.0" encoding = "UTF8"?>
+<!-- 
+   | Workflow Template contains a sequence of two steps 
+   ----------------------------------------------------- -->
+<workflow name = "TwoSequentialJobsteps">
+   <userid></userid>
+   <community></community>
+   <!--
+      | These two steps are run in sequence because they are
+      | enclosed within a sequence block
+      -------------------------------------------------- -->
+   <sequence>
+      <step name="StepOne" >
+         <tool>      
+            <nulltool/>
+         </tool>
+      </step>
+      <!--
+         | This step will only execute if the previous step
+         | executed with a return code of true
+         ----------------------------------------------- -->
+      <step name="StepTwo" joinCondition="true" >
+         <tool>
+            <nulltool/>
+         </tool>
+      </step>
+   </sequence>
+</workflow>
