@@ -19,7 +19,7 @@ import  org.astrogrid.mySpace.mySpaceServer.ServerManager;
  */
 
 public class ServerDriver
-{  private static final boolean INVOKESERVER = true;
+{  private static final boolean INVOKESERVER = false;
 
 //
 // Constructor.
@@ -51,7 +51,8 @@ public class ServerDriver
      String newDataHolderFileName)
    {  boolean successStatus = true;
 
-      System.out.println("Attempt to a string to a dataHolder on a server:\n"
+      System.out.println(
+        "Attempt to upload a string to a dataHolder on a server:\n"
         + "  output server file name: " + newDataHolderFileName + "\n"
         + "  contents: \n\n" + contents);
 
