@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- $Id: project.xml,v 1.7 2005/03/28 01:48:09 mch Exp $ -->
+<!-- $Id: project.xml,v 1.8 2005/03/29 15:15:39 jdt Exp $ -->
 
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 
@@ -162,6 +162,9 @@
        <dependency>
           <id>servletapi</id>
           <version>2.3</version>
+          <properties>
+            <uberjar.bundle>false</uberjar.bundle>
+          </properties>
        </dependency>
 
     </dependencies>
