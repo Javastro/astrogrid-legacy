@@ -3,9 +3,8 @@ package org.astrogrid.mySpace.mySpaceManager;
 import java.io.*;
 import java.util.*;
 
-import org.apache.log4j.Logger;
-
-import org.astrogrid.mySpace.mySpaceStatus.*;
+import org.astrogrid.mySpace.mySpaceStatus.MySpaceStatus;
+import org.astrogrid.mySpace.mySpaceStatus.MySpaceStatusCode;
 
 /**
  * The <code>RegistryManager</code> class is used to access entries in
@@ -39,8 +38,7 @@ import org.astrogrid.mySpace.mySpaceStatus.*;
  * conventionally set to <code>"new"</code>.
  * </p>
  * <p>
- * A finalizer is provided to re-write the registry file when the registry
- * manager is no longer required.
+ * A method is provided to re-write the registry file when the as required.
  * 
  * @author A C Davenhall (Edinburgh)
  * @version Iteration 2.
@@ -48,11 +46,11 @@ import org.astrogrid.mySpace.mySpaceStatus.*;
 
 public class RegistryManager
 {  
-   private static Logger logger = Logger.getLogger(RegistryManager.class);
+//   private static Logger logger = Logger.getLogger(RegistryManager.class);
    
    private static boolean DEBUG = true;
 	
-   private Map dataItemRecordHashMap = new HashMap ();
+   private Map dataItemRecordHashMap = new HashMap (1100);
                            // Hash map holding the MySpace system registry.
    private String registryName;
                            // Name of the registry.
@@ -74,7 +72,7 @@ public class RegistryManager
           // Base directories of the servers known to this MySpace registry.
 
 //
-// Constructors.
+// -- Constructors ---------------------------------------------------
 
 /**
  * Constructor to create a <code>RegistryManager</code> object by reading
@@ -102,6 +100,8 @@ public class RegistryManager
       registryFileName = registryName + ".reg";
       this.readRegistryFile(registryFileName);
    }
+
+// -------------------------------------------------------------------
 
 /**
  * Constructor to create a <code>RegistryManager</code> object for a new,
@@ -132,6 +132,8 @@ public class RegistryManager
       dataItemIDSeqNo = 0;
    }
 
+// -------------------------------------------------------------------
+
 /**
  * Dummy constructor with no arguments.
  */
@@ -144,14 +146,13 @@ public class RegistryManager
    }
 
 //
-// Finaliser.
+// -- Methods --------------------------------------------------------
 
 /**
- * The finalizer writes out the registry file when the
- * <code>RegistryManager</code> is no longer required.
+ * The rewrite the registry file when required.
  */
 
-   public void finalize()
+   public void rewriteRegistryFile()
    {
 
 //
@@ -160,7 +161,7 @@ public class RegistryManager
 
       try
       {  
-      	 if (DEBUG) logger.debug("ENTERING finalize in RegistryManager..registryFileName = "+registryFileName);
+//      	 if (DEBUG) logger.debug("ENTERING finalize in RegistryManager..registryFileName = "+registryFileName);
       	 File registryFile = new File(registryFileName);
          FileOutputStream ros = new FileOutputStream(registryFile);
          ObjectOutputStream oos = new ObjectOutputStream(ros);
@@ -173,7 +174,7 @@ public class RegistryManager
 
          for (Iterator keyIter = keys.iterator(); keyIter.hasNext(); )
          {  String key =  (String)keyIter.next();
-			if (DEBUG) logger.debug("KEY="+key);
+//			if (DEBUG) logger.debug("KEY="+key);
             DataItemRecord itemRec =
               (DataItemRecord)dataItemRecordHashMap.get(key);
             oos.writeObject(itemRec);
@@ -189,6 +190,8 @@ public class RegistryManager
            MySpaceStatusCode.ERROR);
       }
    }
+
+// -------------------------------------------------------------------
 
 /**
   * Read an existing Registry file.
@@ -256,6 +259,8 @@ public class RegistryManager
            MySpaceStatusCode.ERROR);
       }
    }
+
+// -------------------------------------------------------------------
 
 /**
   * Read the Registry configuration file.
@@ -423,6 +428,8 @@ public class RegistryManager
       }
    }
 
+// -------------------------------------------------------------------
+
 /**
  * Return the expiry period of the registry (in days).
  */
@@ -431,6 +438,8 @@ public class RegistryManager
    {  return expiryPeriod;
    }
 
+// -------------------------------------------------------------------
+
 /**
  * Return the Vector of server names.
  */
@@ -438,6 +447,8 @@ public class RegistryManager
    public Vector getServerNames()
    {  return serverNames;
    }
+
+// -------------------------------------------------------------------
 
 /**
  * Check whether a given name is the name of a server.  A value of
@@ -459,6 +470,8 @@ public class RegistryManager
       return isName;
    }
 
+// -------------------------------------------------------------------
+
 /**
  * Return the base URI for a given server.
  */
@@ -477,6 +490,8 @@ public class RegistryManager
 
       return serverURI;
    }
+
+// -------------------------------------------------------------------
 
 /**
  * Return the base directory for a given server.
@@ -497,6 +512,8 @@ public class RegistryManager
       return serverDirectory;
    }
 
+// -------------------------------------------------------------------
+
 /**
   * Return the sequence number to be used for a new DataItemRecord.
   */
@@ -506,6 +523,7 @@ public class RegistryManager
       return dataItemIDSeqNo;
    }
 
+// -------------------------------------------------------------------
 
 /**
  * Add a <code>DataItemRecord</code> to the registry.
@@ -539,6 +557,8 @@ public class RegistryManager
 
       return status;
    }
+
+// -------------------------------------------------------------------
 
 /**
  * Delete a <code>DataItemRecord</code> from the registry.  The
@@ -574,6 +594,8 @@ public class RegistryManager
       return  status;
    }
 
+// -------------------------------------------------------------------
+
 /**
  * Lookup a <code>DataItemRecord</code> in the registry.  The
  * <code>DataItemRecord</code> to be deleted is specified by its
@@ -606,6 +628,8 @@ public class RegistryManager
       
       return itemRecord;
    }
+
+// -------------------------------------------------------------------
 
 /**
  * Lookup the <code>DataItemRecord</code>s in the registry which match a
@@ -643,12 +667,12 @@ public class RegistryManager
 
          boolean wildCard;
          String comparisonString;
-		 logger.debug("inside RegistryManager.lookupDataRecords."+dataHolderNameExpr);
+//		 logger.debug("inside RegistryManager.lookupDataRecords."+dataHolderNameExpr);
          if (dataHolderNameExpr.endsWith("*") == true)
          {  
          	wildCard = true;
             comparisonString = dataHolderNameExpr.substring(0, len-1);
-            logger.debug("wildcad is true:"+comparisonString);
+//            logger.debug("wildcad is true:"+comparisonString);
          }
          else
          {  wildCard = false;
@@ -673,8 +697,8 @@ public class RegistryManager
 
             String dataItemName = itemRec.getDataItemName();
                  
-            logger.debug("registryManager.lookupdatarecords.dataitemname    = " +dataItemName);
-            logger.debug("registryManager.lookupdatarecords.comparisonString= " +comparisonString);
+//            logger.debug("registryManager.lookupdatarecords.dataitemname    = " +dataItemName);
+//            logger.debug("registryManager.lookupdatarecords.comparisonString= " +comparisonString);
 //
 //         Check the name against the comparison string.  If it matches
 //         then add the current DataItemRecord to the (alphabetically
@@ -686,10 +710,10 @@ public class RegistryManager
                }
             }
             else
-            {  logger.debug("wildcard is true..");
+            {  // logger.debug("wildcard is true..");
             	if (dataItemName.startsWith(comparisonString))
                {  itemRecords.add(itemRec);
-               	  logger.debug("added 1");
+//               	  logger.debug("added 1");
                }
             }
          }

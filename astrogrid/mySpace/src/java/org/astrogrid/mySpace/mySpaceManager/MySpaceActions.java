@@ -3,15 +3,8 @@ package org.astrogrid.mySpace.mySpaceManager;
 import java.io.*;
 import java.util.*;
 
-import org.apache.axis.client.Call;
-import org.apache.axis.client.Service;
-import javax.xml.rpc.ParameterMode;
-import javax.xml.rpc.encoding.XMLType;
-
-import org.apache.axis.AxisProperties;
-import org.astrogrid.mySpace.mySpaceStatus.*;
-
-import org.apache.log4j.Logger;
+import org.astrogrid.mySpace.mySpaceStatus.MySpaceStatus;
+import org.astrogrid.mySpace.mySpaceStatus.MySpaceStatusCode;
 
 /**
  * @author A C Davenhall (Edinburgh)
@@ -19,11 +12,7 @@ import org.apache.log4j.Logger;
  */
 
 public class MySpaceActions
-{  
-	private static Logger logger = Logger.getLogger(MySpaceActions.class);
-	private static boolean DEBUG = true;	
-	private static String registryName;
-	Call call = null;
+{  private static String registryName;
 
 //
 // Constructor.
@@ -50,80 +39,10 @@ public class MySpaceActions
 
    public DataItemRecord lookupDataHolderDetails(String userID,
      String communityID, String jobID, int dataItemID)
-   {  
-   	  DataItemRecord dataItem = new DataItemRecord();
-      dataItem = null;
+   {  RegistryManager reg = new RegistryManager(registryName);
 
-//
-//   Attempt to open the registry and proceed if ok.
-
-      RegistryManager reg = new RegistryManager(registryName);
-      MySpaceStatus status = new MySpaceStatus();
-      if (status.getSuccessStatus())
-      {
-
-//
-//      Assemble the UserAccount from the UserID and CommunityID.
-
-         UserAccount userAcc = new UserAccount(userID, communityID);
-
-//
-//      Check the user's authentication and proceed if ok.
-
-         if (userAcc.checkAuthentication() )
-         {
-
-//
-//         Attempt to lookup up the details of the DataHolder in the
-//         mySpace registry.
-//
-//         Note that in the following clause two conditions are
-//         checked for: the item not being in the registry and
-//         the user not having the privilege to access it.  The
-//         error messages set in these two cases are deliberately
-//         identical.
-
-            DataItemRecord dataItemFound =
-              reg.lookupDataItemRecord(dataItemID);
-            if (dataItemFound != null)
-            {
-
-//
-//            Check whether the user has the privileges to access the
-//            DataHolder.
-
-               String permissions;
-               permissions = dataItemFound.getPermissionsMask();
-               String ownerID;
-               ownerID = dataItemFound.getOwnerID();
-
-               if (userAcc.checkAuthorisation(UserAccount.READ,
-                 ownerID, permissions))
-               {
-
-//
-//               All is ok; copy the DataItemRecord to the return
-//               argument.
-
-                  dataItem = dataItemFound;
-               }
-               else
-               {    logger.debug("NOTFOUND DATAITEM HOW WIRED!!!");
-               	    status.addCode("MS-E-DHNTFND",
-                    MySpaceStatusCode.ERROR);
-               }
-            }
-            else
-            {  status.addCode("MS-E-DHNTFND",
-                 MySpaceStatusCode.ERROR);
-            }
-         }
-      }
-
-//
-//   Re-write the registry.
-
-      reg.finalize();
+      DataItemRecord dataItem = this.internalLookupDataHolderDetails(
+        userID, communityID, jobID, dataItemID, reg);
 
       return dataItem;
    }
@@ -136,126 +55,10 @@ public class MySpaceActions
 
    public Vector lookupDataHoldersDetails(String userID, 
      String communityID, String jobID, String query)
-   {  Vector dataItemVector = new Vector();
-      dataItemVector = null;
+   {  RegistryManager reg = new RegistryManager(registryName);
 
-//
-//   Attempt to open the registry and proceed if ok.
-      if (DEBUG) logger.debug("IN MYSPACEACTIONS REGISTRYNAME = "+registryName);
-      RegistryManager reg = new RegistryManager(registryName);
-      MySpaceStatus status = new MySpaceStatus();
-      if (status.getSuccessStatus())
-      {
-
-//
-//  -- debug --------------------------------------------------
-//
-//      print out details of registry config. file.
-
-//         int expiryPeriod = reg.getExpiryPeriod();
-//         System.out.println("Expiry period (days): " + expiryPeriod);
-
-//         Vector serverNames = reg.getServerNames();
-
-//         if (serverNames != null)
-//         {  int numServers = serverNames.size();
-
-//            String serverName;
-//            String serverURI;
-//            String serverDirectory;
-
-//            for (int loop=0; loop < numServers; loop++)
-//            {  serverName = (String)serverNames.get(loop);
-//               serverURI = reg.getServerURI(serverName);
-//               serverDirectory = reg.getServerDirectory(serverName);
-
-//               System.out.println("Server " + loop + " is called "
-//                 + serverName + " at " + serverURI + " and "
-//                 + serverDirectory);
-//            }
-//         }
-//         else
-//         {  System.out.println("No servers specified.");
-//         }
-
-//  -- end debug ----------------------------------------------
-
-//
-//      Assemble the UserAccount from the UserID and CommunityID.
-
-         UserAccount userAcc = new UserAccount(userID, communityID);
-
-//
-//      Check the user's authentication and proceed if ok.
-
-         if (userAcc.checkAuthentication() )
-         {
-
-//
-//         Attempt lookup in the registry the entries for the DataHolders
-//         which match the query string.
-//
-//         Note that in the following clauses items which the user
-//         does not have the privilege to access are treated as though
-//         they do not exist.
-
-            Vector dataItemFoundVector =
-              reg.lookupDataItemRecords(query);
-            if (status.getSuccessStatus())
-            {
-
-//
-//            Check whether any DataHolders were found (it is perfectly
-//            possible that no entries will match the query string).
-
-               if (dataItemFoundVector.size() > 0)
-               {
-
-//
-//               Examine every entry and check that the user has the
-//               privilege to access it.  If not remove it from the list.
-
-                  for (int loop = 0; loop < dataItemFoundVector.size();
-                                                                   loop++)
-                  {  DataItemRecord currentItem = 
-                       (DataItemRecord)dataItemFoundVector.get(loop);
-
-                     String permissions;
-                     permissions = currentItem.getPermissionsMask();
-                     String ownerID;
-                     ownerID = currentItem.getOwnerID();
-
-                     if (!userAcc.checkAuthorisation(UserAccount.READ,
-                       ownerID, permissions))
-                     {  dataItemFoundVector.remove(loop);
-                     }
-                  }
-
-//
-//               If any DataItemRecords remain in the Vector then copy
-//               the Vector to the return vector.  If no items are left
-//               then issue an informational message.
-
-                  if (dataItemFoundVector.size() > 0)
-                  {  dataItemVector = dataItemFoundVector;
-                  }
-                  else
-                  {  status.addCode("MS-I-NDHMTCH",
-                      MySpaceStatusCode.INFO);
-                  }
-               }
-               else
-               {  status.addCode("MS-I-NDHMTCH",
-                    MySpaceStatusCode.INFO);
-               }
-            }
-         }
-      }
-
-//
-//   Re-write the registry.
-
-      reg.finalize();
+      Vector dataItemVector = this.internalLookupDataHoldersDetails(
+        userID,  communityID, jobID, query, reg);
 
       return dataItemVector;
    }
@@ -271,11 +74,11 @@ public class MySpaceActions
      String jobID, int oldDataItemID, String newDataItemName)
    {  DataItemRecord returnedDataItem = new DataItemRecord();
       returnedDataItem = null;
-    try{
+
 //
 //   Attempt to open the registry and proceed if ok.
 
-//      reg = new RegistryManager(registryName);
+      RegistryManager reg = new RegistryManager(registryName);
       MySpaceStatus status = new MySpaceStatus();
       if (status.getSuccessStatus())
       {
@@ -296,8 +99,8 @@ public class MySpaceActions
 //         and proceed if ok.
 
             DataItemRecord oldDataItem = 
-              this.lookupDataHolderDetails(userID, communityID, jobID,
-                oldDataItemID);
+              this.internalLookupDataHolderDetails(userID, communityID,
+                jobID, oldDataItemID, reg);
             if (status.getSuccessStatus())
             {
 
@@ -311,12 +114,10 @@ public class MySpaceActions
 //
 //               Check that the specified output container can be
 //               created.
-                  if ( DEBUG ) logger.debug("CHECKCANBECREATED: "+newDataItemName);
-                  if(this.checkCanBeCreated(newDataItemName, userAcc, jobID)
-                    == true)
-                  {
 
-                     RegistryManager reg = new RegistryManager(registryName);
+                  if(this.checkCanBeCreated(newDataItemName, userAcc,
+                    jobID, reg) == true)
+                  {
 
 //
 //                  Create a DataItemRecord for the new DataHolder.
@@ -337,60 +138,47 @@ public class MySpaceActions
                        (newDataItemName, newdataItemID,
                        dataItemFileName, userID, creation, expiry,
                        99999, dataItemType, "permissions");
-                     if (newDataItem!=null){
-                     	if ( DEBUG ) logger.debug("NEWDATAITEMID: "+newDataItem.getDataItemID());
-                     }else{
-                     	if ( DEBUG ) logger.debug("NEWDATAITEM IS NULL!!");
-                     }
 
 //
 //                  Attempt to add this entry to the registry.
 
                      if (reg.addDataItemRecord(newDataItem) )
                      {
-                     	if ( DEBUG )logger.debug("ATTEMPT ADDING TO REGISTRY...");
+
 //
 //                     Attempt to copy the DataHolder.
 
-//                     ADD CODE TO INVOKE A WEB SERVICE TO INDUCE THE
-//                     MYSPACE SERVER TO COPY THE DataHolder.  THEN
-//                     PERFORM A TEST THAT ALL IS WELL (THE FAKE TEST
-//                     INSERTED BELOW SHOULD BE REMOVED).
-
-    					int containSepPos1 = newDataItemName.indexOf("/");
-						int containSepPos2 = newDataItemName.indexOf("/", containSepPos1+1);
-						int containSepPos3 = newDataItemName.indexOf("/", containSepPos2+1);
+                        int containSepPos1 = newDataItemName.indexOf("/");
+                        int containSepPos2 =
+                          newDataItemName.indexOf("/", containSepPos1+1);
+                        int containSepPos3 =
+                          newDataItemName.indexOf("/", containSepPos2+1);
 
                         String serverName;
-						if (containSepPos3 > 0)
-						{
+
+                        if (containSepPos3 > 0)
+                        {
 
 //
-//						  Check that the server name is valid.
+//                        Check that the server name is valid.
 
-						   serverName = 
-							 newDataItemName.substring(containSepPos2+1, containSepPos3);
-						}
-						else
-						{  serverName = "";
-						}
+                           serverName = 
+                             newDataItemName.substring(containSepPos2+1,
+                               containSepPos3);
+                        }
+                        else
+                        {  serverName = "";
+                        }
 
-                        String serverDirectory = reg.getServerDirectory(serverName);
+                        String serverDirectory =
+                          reg.getServerDirectory(serverName);
 
-                        String a = serverDirectory + oldDataItem.getDataItemFile();
-                        String b = serverDirectory + dataItemFileName;
-                        if ( DEBUG ) logger.debug("COPYDATAHOLDER CALLING SERVERMANAGER: a = "+ a + ", b =" +b);
-//							 System.out.println("serverName: " + serverName);
-					   call = createServerCall();
-					   call.setOperationName( "copyDataHolder" );			
-					   call.addParameter("arg0", XMLType.XSD_STRING, ParameterMode.IN);
-					   call.addParameter("arg1", XMLType.XSD_STRING, ParameterMode.IN);
-		
-					   call.setReturnType( org.apache.axis.encoding.XMLType.XSD_STRING);
-					   String serverResponse = (String)call.invoke( new Object[] {a,b} );
-					   if ( DEBUG )  logger.debug("GOT SERVERRESPONSE: "+serverResponse);
+                        String copyFrom = serverDirectory +
+                          oldDataItem.getDataItemFile();
+                        String copyTo = serverDirectory + dataItemFileName;
 
-                        if (status.getSuccessStatus() )
+                        ServerDriver serverDriver = new ServerDriver();
+                        if(serverDriver.copyDataHolder(copyFrom, copyTo) )
                         {
 
 //
@@ -417,7 +205,6 @@ public class MySpaceActions
                      {  status.addCode("MS-E-FCRTDHR",
                           MySpaceStatusCode.ERROR);
                      }
-                     reg.finalize();
                   }
                }
                else
@@ -429,12 +216,10 @@ public class MySpaceActions
       }
 
 //
-//   Re-write the registry.
+//   Re-write the registry file.
 
-//      reg.finalize();
-    }catch(Exception e){
-     //...
-    }
+      reg.rewriteRegistryFile();
+
       return returnedDataItem;
    }
 
@@ -457,7 +242,7 @@ public class MySpaceActions
 //
 //   Attempt to open the registry and proceed if ok.
 
-//      reg = new RegistryManager(registryName);
+      RegistryManager reg = new RegistryManager(registryName);
       MySpaceStatus status = new MySpaceStatus();
       if (status.getSuccessStatus())
       {
@@ -478,8 +263,8 @@ public class MySpaceActions
 //         and proceed if ok.
 
             DataItemRecord oldDataItem = 
-              this.lookupDataHolderDetails(userID, communityID, jobID,
-                oldDataItemID);
+              this.internalLookupDataHolderDetails(userID, communityID,
+                jobID, oldDataItemID, reg);
             if (status.getSuccessStatus())
             {
 
@@ -494,11 +279,9 @@ public class MySpaceActions
 //               Check that the specified output container can be
 //               created.
 
-                  if(this.checkCanBeCreated(newDataItemName, userAcc, jobID)
-                    == true)
+                  if(this.checkCanBeCreated(newDataItemName, userAcc,
+                    jobID, reg) == true)
                   { 
-
-                     RegistryManager reg = new RegistryManager(registryName);
 
 //
 //                  Create a DataItemRecord for the new DataHolder.
@@ -535,7 +318,6 @@ public class MySpaceActions
                      {  status.addCode("MS-E-FLMOVDH",
                           MySpaceStatusCode.ERROR);
                      }
-                     reg.finalize();
                   }
                }
                else
@@ -547,9 +329,9 @@ public class MySpaceActions
       }
 
 //
-//   Re-write the registry.
+//   Re-write the registry file.
 
-//      reg.finalize();
+      reg.rewriteRegistryFile();
 
       return returnedDataItem;
    }
@@ -557,7 +339,7 @@ public class MySpaceActions
 // -----------------------------------------------------------------
 
 /**
-  * Import a new container.  In Iteration 2 this action is something of
+  * Import a new dataHolder.  In Iteration 2 this action is something of
   * kludge.  The corresponding file is assumed to have already been
   * placed in the server.  The action merely creates an entry for it in
   * the MySpace registry.  The MySpace server is not touched.
@@ -574,7 +356,7 @@ public class MySpaceActions
 //
 //   Attempt to open the registry and proceed if ok.
 
-//      reg = new RegistryManager(registryName);
+      RegistryManager reg = new RegistryManager(registryName);
       MySpaceStatus status = new MySpaceStatus();
       if (status.getSuccessStatus())
       {
@@ -591,13 +373,12 @@ public class MySpaceActions
          {
 
 //
-//         Check that the specified container can be created.
+//         Check that the specified dataHolder can be created.
 
-            if(this.checkCanBeCreated(newDataHolderName, userAcc, jobID)
-              == true)
+            if(this.checkCanBeCreated(newDataHolderName, userAcc,
+              jobID, reg) == true)
             {
 
-               RegistryManager reg = new RegistryManager(registryName);
 //
 //            Create a DataItemRecord for the container.
 
@@ -627,15 +408,14 @@ public class MySpaceActions
                {  status.addCode("MS-E-FCRTDHR",
                     MySpaceStatusCode.ERROR);
                }
-               reg.finalize();
             }
          }
       }
 
 //
-//   Re-write the registry.
+//   Re-write the registry file.
 
-//      reg.finalize();
+      reg.rewriteRegistryFile();
 
       return newDataHolder;
    }
@@ -655,7 +435,7 @@ public class MySpaceActions
 //
 //   Attempt to open the registry and proceed if ok.
 
-//      reg = new RegistryManager(registryName);
+      RegistryManager reg = new RegistryManager(registryName);
       MySpaceStatus status = new MySpaceStatus();
       if (status.getSuccessStatus())
       {
@@ -676,8 +456,8 @@ public class MySpaceActions
 //         if ok.
 
             DataItemRecord dataItem = 
-              this.lookupDataHolderDetails(userID, communityID, jobID,
-                dataItemID);
+              this.internalLookupDataHolderDetails(userID, communityID,
+                jobID, dataItemID, reg);
             if (status.getSuccessStatus())
             {
 
@@ -718,11 +498,7 @@ public class MySpaceActions
                      {  String serverName =
                           dataItemName.substring
                             (containSepPos2+1, containSepPos3);
-
-                        RegistryManager reg =
-                          new RegistryManager(registryName);
                         serverURI = reg.getServerURI(serverName);
-                        reg.finalize();
                      }
                      else
                      {  serverURI = "bad_URI/";
@@ -749,9 +525,9 @@ public class MySpaceActions
       }
 
 //
-//   Re-write the registry.
-
-//      reg.finalize();
+//   Do not re-write the registry; unlike most of the other Action
+//   methods, this method does not need to re-write the registry at
+//   this point because it has not modified it.
 
       return dataHolderURI;
    }
@@ -772,7 +548,7 @@ public class MySpaceActions
 //
 //   Attempt to open the registry and proceed if ok.
 
-//      reg = new RegistryManager(registryName);
+      RegistryManager reg = new RegistryManager(registryName);
       MySpaceStatus status = new MySpaceStatus();
       if (status.getSuccessStatus())
       {
@@ -791,11 +567,10 @@ public class MySpaceActions
 //
 //         Check that the specified container can be created.
 
-            if(this.checkCanBeCreated(newContainerName, userAcc, jobID)
-              == true)
+            if(this.checkCanBeCreated(newContainerName, userAcc,
+              jobID, reg) == true)
             {
 
-               RegistryManager reg = new RegistryManager(registryName);
 //
 //            Create a DataItemRecord for the container.
 
@@ -812,7 +587,7 @@ public class MySpaceActions
 
                DataItemRecord newDataItem = new DataItemRecord
                  (newContainerName, newdataItemID, dataItemFileName,
-                 userID, creation, expiry, 99999, dataItemType,
+                 userID, creation, expiry, 0, dataItemType,
                  "permissions");
 
 //
@@ -825,15 +600,14 @@ public class MySpaceActions
                {  status.addCode("MS-E-FLCRTCN",
                     MySpaceStatusCode.ERROR);
                }
-               reg.finalize();
             }
          }
       }
 
 //
-//   Re-write the registry.
+//   Re-write the registry file.
 
-//      reg.finalize();
+      reg.rewriteRegistryFile();
 
       return newContainer;
    }
@@ -847,11 +621,11 @@ public class MySpaceActions
    public boolean deleteDataHolder(String userID, String communityID,
      String jobID, int dataItemID)
    {  boolean returnStatus = false;
-    try{
+
 //
 //   Attempt to open the registry and proceed if ok.
 
-//      reg = new RegistryManager(registryName);
+      RegistryManager reg = new RegistryManager(registryName);
       MySpaceStatus status = new MySpaceStatus();
       if (status.getSuccessStatus())
       {
@@ -872,8 +646,8 @@ public class MySpaceActions
 //         if ok.
 
             DataItemRecord dataItem = 
-              this.lookupDataHolderDetails(userID, communityID, jobID,
-                dataItemID);
+              this.internalLookupDataHolderDetails(userID, communityID,
+                jobID, dataItemID, reg);
             if (dataItem != null)
             {
 
@@ -887,8 +661,11 @@ public class MySpaceActions
                {  String query = dataItem.getDataItemName() + "/*";
 
                   Vector childrenDataItemVector = 
-                    this.lookupDataHoldersDetails(userID, communityID,
-                    jobID, query);
+                    this.internalLookupDataHoldersDetails(userID,
+                      communityID, jobID, query, reg);
+                  if (status.getSuccessStatus())
+                  {  status.reset();
+                  }
 
                   if (childrenDataItemVector != null)
                   {  proceedToDelete = false;
@@ -916,62 +693,43 @@ public class MySpaceActions
 //
 //                  Attempt to delete the DataHolder.
 
-//                  ADD CODE TO INVOKE A WEB SERVICE TO INDUCE THE MYSPACE
-//                  SERVER TO DELETE THE DataHolder.  THEN PERFORM A TEST
-//                  THAT ALL IS WELL (THE FAKE TEST INSERTED BELOW SHOULD
-//                  BE REMOVED).
+                     String dataItemName = dataItem.getDataItemName();
 
-                    String dataItemName = dataItem.getDataItemName();
-                    if(DEBUG) logger.debug("DATAITMENAME in ACTION IS: " +dataItemName);
-                    
-					int containSepPos1 = dataItemName.indexOf("/");
-					int containSepPos2 = dataItemName.indexOf("/", containSepPos1+1);
-					int containSepPos3 = dataItemName.indexOf("/", containSepPos2+1);
+                     int containSepPos1 = dataItemName.indexOf("/");
+                     int containSepPos2 =
+                       dataItemName.indexOf("/", containSepPos1+1);
+                     int containSepPos3 =
+                       dataItemName.indexOf("/", containSepPos2+1);
 
-					String serverName;
-					if (containSepPos3 > 0)
-					{
+                     String serverName;
+                     if (containSepPos3 > 0)
+                     {
 
 //
-//					  Check that the server name is valid.
+//                     Check that the server name is valid.
 
-					   serverName = 
-						 dataItemName.substring(containSepPos2+1, containSepPos3);
-						if(DEBUG) logger.debug("SERVERNAME in ACTION IS: " +serverName);
-					}
-					else
-					{  serverName = "";
-					}
-					
-					RegistryManager reg2 =
-					  new RegistryManager(registryName);
-					String serverDirectory = reg2.getServerDirectory(serverName);
-					reg2.finalize();
+                        serverName = 
+                          dataItemName.substring(containSepPos2+1,
+                            containSepPos3);
+                     }
+                     else
+                     {  serverName = "";
+                     }
 
-					String a = serverDirectory + dataItem.getDataItemFile();
-					if(DEBUG) logger.debug("a in ACTION IS: " +a);
-                        
-//						 System.out.println("serverName: " + serverName);
-				   call = createServerCall();
-				   call.setOperationName( "deleteDataHolder" );			
-				   call.addParameter("arg0", XMLType.XSD_STRING, ParameterMode.IN);
-		
-				   call.setReturnType( org.apache.axis.encoding.XMLType.XSD_STRING);
-				   String serverResponse = (String)call.invoke( new Object[] {a} );
-				   if ( DEBUG )  logger.debug("GOT SERVERRESPONSE: "+serverResponse);
+                     String serverDirectory =
+                       reg.getServerDirectory(serverName);
 
+                     String a = serverDirectory + dataItem.getDataItemFile();
 
-                     if (status.getSuccessStatus() )
+                     ServerDriver serverDriver = new ServerDriver();
+                     if (serverDriver.deleteDataHolder(a) )
                      {
 
 //
 //                     Delete the entry for the DataHolder in the registry,
 //                     to bring the registry into line with reality.
 
-                        RegistryManager reg =
-                          new RegistryManager(registryName);
                         reg.deleteDataItemRecord(dataItemID);
-                        reg.finalize();
 
 //
 //                     Set the return status to success.
@@ -997,17 +755,20 @@ public class MySpaceActions
       }
 
 //
-//   Re-write the registry.
+//   Re-write the registry file.
 
-//      reg.finalize();
-    }catch(Exception e){
-     //...
-    }
+      reg.rewriteRegistryFile();
+
       return returnStatus;
    }
 
 
 // -----------------------------------------------------------------
+
+//
+// The following methods are not `action methods', that is they
+// do not correspond to high-level functions of the MySpace system.
+// Most of them are private.
 
 /**
  * Set the registry name.
@@ -1016,6 +777,211 @@ public class MySpaceActions
    public void setRegistryName(String registryName)
    {  this.registryName = registryName;
    }
+
+// -----------------------------------------------------------------
+
+/**
+  * Internal method to lookup the details of a single DataHolder.
+  *
+  * Apart from being private, rather than public,
+  * internalLookupDataHolderDetails differs from lookupDataHolderDetails
+  * in that an existing RegistryManager manager object is passed as
+  * an argument.
+  */
+
+   private DataItemRecord internalLookupDataHolderDetails(String userID,
+     String communityID, String jobID, int dataItemID,
+     RegistryManager reg)
+   {  DataItemRecord dataItem = new DataItemRecord();
+      dataItem = null;
+
+      MySpaceStatus status = new MySpaceStatus();
+
+//
+//   Assemble the UserAccount from the UserID and CommunityID.
+
+      UserAccount userAcc = new UserAccount(userID, communityID);
+
+//
+//   Check the user's authentication and proceed if ok.
+
+      if (userAcc.checkAuthentication() )
+      {
+
+//
+//      Attempt to lookup up the details of the DataHolder in the
+//      mySpace registry.
+//
+//      Note that in the following clause two conditions are
+//      checked for: the item not being in the registry and
+//      the user not having the privilege to access it.  The
+//      error messages set in these two cases are deliberately
+//      identical.
+
+         DataItemRecord dataItemFound =
+           reg.lookupDataItemRecord(dataItemID);
+         if (dataItemFound != null)
+         {
+
+//
+//         Check whether the user has the privileges to access the
+//         DataHolder.
+
+            String permissions;
+            permissions = dataItemFound.getPermissionsMask();
+            String ownerID;
+            ownerID = dataItemFound.getOwnerID();
+
+            if (userAcc.checkAuthorisation(UserAccount.READ,
+              ownerID, permissions))
+            {
+
+//
+//            All is ok; copy the DataItemRecord to the return argument.
+
+               dataItem = dataItemFound;
+            }
+            else
+            {  status.addCode("MS-E-DHNTFND",
+               MySpaceStatusCode.ERROR);
+            }
+         }
+         else
+         {  status.addCode("MS-E-DHNTFND",
+              MySpaceStatusCode.ERROR);
+         }
+      }
+
+      return dataItem;
+   }
+
+// -----------------------------------------------------------------
+
+/**
+  * Internal method to lookup the details of a named set of DataHolders.
+  *
+  * Apart from being private, rather than public,
+  * internalLookupDataHoldersDetails differs from LookupDataHoldersDetails
+  * in that an existing RegistryManager manager object is passed as
+  * an argument.
+  */
+
+   public Vector internalLookupDataHoldersDetails(String userID, 
+     String communityID, String jobID, String query,
+     RegistryManager reg)
+   {  Vector dataItemVector = new Vector();
+      dataItemVector = null;
+
+      MySpaceStatus status = new MySpaceStatus();
+
+//
+//  -- debug --------------------------------------------------
+//
+//      print out details of registry config. file.
+
+//         int expiryPeriod = reg.getExpiryPeriod();
+//         System.out.println("Expiry period (days): " + expiryPeriod);
+
+//         Vector serverNames = reg.getServerNames();
+
+//         if (serverNames != null)
+//         {  int numServers = serverNames.size();
+
+//            String serverName;
+//            String serverURI;
+//            String serverDirectory;
+
+//            for (int loop=0; loop < numServers; loop++)
+//            {  serverName = (String)serverNames.get(loop);
+//               serverURI = reg.getServerURI(serverName);
+//               serverDirectory = reg.getServerDirectory(serverName);
+
+//               System.out.println("Server " + loop + " is called "
+//                 + serverName + " at " + serverURI + " and "
+//                 + serverDirectory);
+//            }
+//         }
+//         else
+//         {  System.out.println("No servers specified.");
+//         }
+
+//  -- end debug ----------------------------------------------
+
+//
+//   Assemble the UserAccount from the UserID and CommunityID.
+
+      UserAccount userAcc = new UserAccount(userID, communityID);
+
+//
+//   Check the user's authentication and proceed if ok.
+
+      if (userAcc.checkAuthentication() )
+      {
+
+//
+//      Attempt lookup in the registry the entries for the DataHolders
+//      which match the query string.
+//
+//      Note that in the following clauses items which the user
+//      does not have the privilege to access are treated as though
+//      they do not exist.
+
+         Vector dataItemFoundVector =
+           reg.lookupDataItemRecords(query);
+         if (status.getSuccessStatus())
+         {
+
+//
+//         Check whether any DataHolders were found (it is perfectly
+//         possible that no entries will match the query string).
+
+            if (dataItemFoundVector.size() > 0)
+            {
+
+//
+//            Examine every entry and check that the user has the
+//            privilege to access it.  If not remove it from the list.
+
+               for (int loop = 0; loop < dataItemFoundVector.size();
+                                                                   loop++)
+               {  DataItemRecord currentItem = 
+                    (DataItemRecord)dataItemFoundVector.get(loop);
+
+                  String permissions;
+                  permissions = currentItem.getPermissionsMask();
+                  String ownerID;
+                  ownerID = currentItem.getOwnerID();
+
+                  if (!userAcc.checkAuthorisation(UserAccount.READ,
+                    ownerID, permissions))
+                  {  dataItemFoundVector.remove(loop);
+                  }
+               }
+
+//
+//            If any DataItemRecords remain in the Vector then copy
+//            the Vector to the return vector.  If no items are left
+//            then issue an informational message.
+
+               if (dataItemFoundVector.size() > 0)
+               {  dataItemVector = dataItemFoundVector;
+               }
+               else
+               {  status.addCode("MS-I-NDHMTCH",
+                    MySpaceStatusCode.INFO);
+               }
+            }
+            else
+            {  status.addCode("MS-I-NDHMTCH",
+                    MySpaceStatusCode.INFO);
+            }
+         }
+      }
+
+      return dataItemVector;
+   }
+
+// -----------------------------------------------------------------
 
 /**
  * <p>
@@ -1038,7 +1004,7 @@ public class MySpaceActions
  */
 
    private boolean checkCanBeCreated(String newDataItemName,
-     UserAccount userAcc, String jobID)
+     UserAccount userAcc, String jobID, RegistryManager reg)
    {  boolean canBeCreated = false;
       MySpaceStatus status = new MySpaceStatus();
 
@@ -1049,8 +1015,8 @@ public class MySpaceActions
       String communityID = userAcc.getCommunityID();
 
       Vector checkOutputContainter = 
-        this.lookupDataHoldersDetails(userID, communityID, jobID,
-        newDataItemName);
+        this.internalLookupDataHoldersDetails(userID, communityID,
+          jobID, newDataItemName, reg);
       if (status.getSuccessStatus())
       {  status.reset();
       }
@@ -1076,9 +1042,7 @@ public class MySpaceActions
               newDataItemName.substring(containSepPos2+1, containSepPos3);
 
 //            System.out.println("serverName: " + serverName);
-			if ( DEBUG )  logger.debug("MYSPACEACTIONS SERVERNAME: "+serverName);	
-            RegistryManager reg = new RegistryManager(registryName);
-			if ( DEBUG )  logger.debug("MYSPACEACTIONS REG: "+reg.isServerName(serverName));
+
             if(reg.isServerName(serverName))
             {
 //
@@ -1091,8 +1055,11 @@ public class MySpaceActions
                String parentContainer = newDataItemName.substring
                  (0, newDataItemName.lastIndexOf("/") );
                Vector parentDataItemVector = 
-                 this.lookupDataHoldersDetails(userID, communityID,
-                 jobID, parentContainer);
+                 this.internalLookupDataHoldersDetails(userID,
+                   communityID, jobID, parentContainer, reg);
+               if (status.getSuccessStatus())
+               {  status.reset();
+               }
 
                if (parentDataItemVector != null)
                {  DataItemRecord parentDataItem =
@@ -1121,7 +1088,6 @@ public class MySpaceActions
             {  status.addCode("MS-E-SRVINVN",
                  MySpaceStatusCode.ERROR);
             }
-            reg.finalize();
          }
          else
          {  status.addCode("MS-E-ILLSRCN",
@@ -1134,27 +1100,4 @@ public class MySpaceActions
 
       return canBeCreated;
    }
-   
-   private Call createServerCall(){
-	   Call call = null;
-	   try{
-		   String endpoint  = "http://localhost:8080/axis/services/ServerManager";
-		   Service service = new Service();
-		   call = (Call)service.createCall();
-		   call.setTargetEndpointAddress( new java.net.URL(endpoint) );
-		
-		   /*
-		   call.setOperationName( "moveDataHolder" );			
-		   call.addParameter("arg0", XMLType.XSD_STRING, ParameterMode.IN);
-		   call.addParameter("arg1", XMLType.XSD_STRING, ParameterMode.IN);
-		
-		   call.setReturnType( org.apache.axis.encoding.XMLType.XSD_STRING);
-		   String serverResponse = call.invoke( new Object[] {content,path} );
-		   */
-	   }catch(Exception e){
-		   MySpaceMessage message = new MySpaceMessage("ERROR_CALL_SERVER_MANAGER");
-		   message.getMessage(e.toString());
-	   }	
-	   return call;
-   }   
 }
