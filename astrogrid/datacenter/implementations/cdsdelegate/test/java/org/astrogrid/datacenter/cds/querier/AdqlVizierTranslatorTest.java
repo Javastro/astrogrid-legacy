@@ -1,11 +1,11 @@
-/*$Id: AdqlVizierTranslatorTest.java,v 1.1 2003/12/01 16:51:04 nw Exp $
+/*$Id: AdqlVizierTranslatorTest.java,v 1.2 2004/03/16 01:32:34 mch Exp $
  * Created on 01-Dec-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
 **/
 package org.astrogrid.datacenter.cds.querier;
@@ -56,14 +56,14 @@ public class AdqlVizierTranslatorTest extends ServerTestCase {
     }
     
     public void testMetaAll() throws Exception {
-        VizierCone vc = buildCone("meta-all.xml");
+        VizierQuery vc = buildCone("meta-all.xml");
         assertTrue(vc.metaData);
         assertNull(vc.target);
         assertNull(vc.unit);
     }
     
     public void testNamedTarget() throws Exception {
-        VizierCone vc = buildCone("named-target.xml");
+        VizierQuery vc = buildCone("named-target.xml");
         assertFalse(vc.metaData);
         assertNotNull(vc.target);
         assertTrue(vc.target instanceof NamedTarget);
@@ -73,7 +73,7 @@ public class AdqlVizierTranslatorTest extends ServerTestCase {
     }
     
     public void testCircleTarget() throws Exception {
-        VizierCone vc = buildCone("circle-target.xml");
+        VizierQuery vc = buildCone("circle-target.xml");
         assertTrue(vc.metaData);
         assertNotNull(vc.target);
         assertTrue(vc.target instanceof DecimalDegreesTarget);
@@ -86,23 +86,26 @@ public class AdqlVizierTranslatorTest extends ServerTestCase {
     
     
     
-    protected VizierCone buildCone(String resource) throws Exception {
+    protected VizierQuery buildCone(String resource) throws Exception {
         InputStream is = this.getClass().getResourceAsStream(resource);
         assertNotNull(is);
         Document doc = XMLUtils.newDocument(is);
         assertNotNull(doc);
         Translator trans = new AdqlVizierTranslator();
         Object o = trans.translate(doc.getDocumentElement());
-        assertTrue(o instanceof VizierCone);
-        return (VizierCone)o;
+        assertTrue(o instanceof VizierQuery);
+        return (VizierQuery)o;
         
     }
 
 }
 
 
-/* 
+/*
 $Log: AdqlVizierTranslatorTest.java,v $
+Revision 1.2  2004/03/16 01:32:34  mch
+Fixed for cahnges to code to work with new plugins
+
 Revision 1.1  2003/12/01 16:51:04  nw
 added tests for cds spi
  
