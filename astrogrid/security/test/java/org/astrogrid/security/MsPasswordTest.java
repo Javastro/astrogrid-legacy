@@ -8,8 +8,9 @@ import java.util.Iterator;
 import java.util.List;
 import junit.framework.TestCase;
 import javax.xml.namespace.QName;
-import org.apache.axis.client.Call;
-import org.apache.axis.client.Service;
+import javax.xml.rpc.Call;
+import javax.xml.rpc.Service;
+import javax.xml.rpc.ServiceFactory;
 
 /**
  * Test client-side security handling by authenticating
@@ -42,7 +43,8 @@ public class MsPasswordTest extends TestCase {
   /**
    * URL for invoking the service.
    */
-  protected URL serviceUrl;
+  protected String serviceUrl
+      = "http://ws.microsoft.com/mscomservice/mscom.asmx";
 
   /**
    * URL providing WSDL for the service.
@@ -79,8 +81,6 @@ public class MsPasswordTest extends TestCase {
    * be set statically because their constructors may throw Exceptions.
    */
   public MsPasswordTest () throws Exception {
-    this.serviceUrl
-        = new URL("http://ws.microsoft.com/mscomservice/mscom.asmx");
     this.wsdlUrl
         = new URL("http://ws.microsoft.com/mscomservice/mscom.asmx?WSDL");
     this.serviceName
@@ -104,15 +104,16 @@ public class MsPasswordTest extends TestCase {
     sg.setPassword(this.password);
 
     // Create a service proxy and associate with it the credentials.
-    Service service = new Service(this.wsdlUrl, this.serviceName);
+    ServiceFactory factory = ServiceFactory.newInstance();
+    Service service = factory.createService(this.wsdlUrl, this.serviceName);
     sg.mountGuard(service, this.portName);
 
     // Create a SOAP call to MS' version service.
     Call call = (Call)service.createCall();
     call.setTargetEndpointAddress(this.serviceUrl);
-    call.setPortName(portName);
+    call.setPortTypeName(this.portName);
     call.setOperationName(this.operationName);
-    call.setSOAPActionURI(this.soapActionUri);
+    call.setProperty(Call.SOAPACTION_URI_PROPERTY, this.soapActionUri);
 
     // Invoke the action and print a result.
     System.out.print((String)call.invoke(new Object[] {}));
