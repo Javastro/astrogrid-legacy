@@ -16,7 +16,7 @@ public class ClientSecurityGuardTest extends TestCase {
    */
   public void testSignOn () throws Exception {
     String accountName = "ivo://org.astrogrid.mock/Fred";
-    ClientSecurityGuard sg = new ClientSecurityGuard();
+    ClientSecurityGuard sg = ClientSecurityGuard.getInstance();
     sg.setUsername(accountName);
     sg.setPassword(new Password("secret", false));
     System.out.println("Username before sign-on: " + sg.getUsername());

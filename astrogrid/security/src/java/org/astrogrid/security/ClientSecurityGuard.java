@@ -58,6 +58,32 @@ import org.astrogrid.store.Ivorn;
 public class ClientSecurityGuard extends SecurityGuard {
 
   /**
+   * Creates a ClientSecurityGuard. This may instantiate
+   * a subclass of ClientSecurityGuard based on the
+   * system configuration (Abstract Factory pattern).
+   * The guard may be initialized with some properties from
+   * the configuration.
+   *
+   * @return the new guard
+   * @throws Exception if anything goes wrong
+   */
+  public static final ClientSecurityGuard getInstance () throws Exception {
+    // Currently, we have one default implementation,
+    // so can instantiate that without configuration.
+    return new ClientSecurityGuard();
+  }
+
+  /**
+   * Creates a ClientSecurityGuard. This method is protected
+   * to force applications to use the abstract factory method
+   * {@link getInstance}.
+   */
+  public ClientSecurityGuard () {
+    super();
+  }
+
+
+  /**
    * Sets a guard on a web-service endpoint.
    * After this method completes, all messages to that
    * endpoint carry security credentials.
