@@ -1,0 +1,188 @@
+/*$Id: StoreClientTest.java,v 1.1 2004/03/01 23:44:10 mch Exp $
+ * Created on 05-Sep-2003
+ *
+ * Copyright (C) AstroGrid. All rights reserved.
+ *
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
+ *
+**/
+package org.astrogrid.store.delegate;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+import org.astrogrid.store.Agsl;
+
+/** Provides a load of tests for doing things to StoreClients.  Subclasses/
+ * implementations are written against particular store clients.  See LocalFileStoreClient
+ * for example
+ *
+ * @author M Hill
+ *
+ */
+public abstract class StoreClientTest extends TestCase {
+
+   protected static final String SOURCE_TEST = "TestOpsFile.txt";
+   protected static final String COPY_TEST = "copiedFile.txt";
+   protected static final String MOVE_TEST = "movedFile.txt";
+   
+   /** Provide three instances of StoreClient, the first two referring to teh
+    * same service.  Will check that same files can be read from the first two
+    * but not the third
+    */
+   public void assertStoreAccess(StoreClient aStore, StoreClient sameStore, StoreClient differentStore) throws IOException
+   {
+      
+      //create file in one
+      aStore.putString("This is just a test file for "+this.getClass(), SOURCE_TEST, false);
+
+      //see if you can get it
+      assertFileExists(aStore, SOURCE_TEST);
+
+      //in both
+      assertFileExists(sameStore, SOURCE_TEST);
+
+      assertEquals(aStore.getUrl(SOURCE_TEST), sameStore.getUrl(SOURCE_TEST));
+
+      //get rid of it if it's already there
+      StoreFile f = differentStore.getFile(SOURCE_TEST);
+      if (f != null) {
+         differentStore.delete(SOURCE_TEST);
+      }
+      assertNull(differentStore.getFile(SOURCE_TEST));  //check it;s not there
+      
+      //create file in different one
+      differentStore.putString("This is just a test file for "+this.getClass(), SOURCE_TEST, false);
+
+      //see if you can get it
+      assertFileExists(differentStore, SOURCE_TEST);
+      
+      //check it's not the same url as the other stores
+      assertNotSame(aStore.getUrl(SOURCE_TEST), differentStore.getUrl(SOURCE_TEST));
+   }
+
+   /** Tests getFile etc - if these are failing the rest of the tests might
+    * not make much sense.  This is a bit of a combined one anyway... */
+   public void assertGetFileWorks(StoreClient store) throws IOException
+   {
+      //create file
+      store.putString("This is just a test file for "+this.getClass(), SOURCE_TEST, false);
+
+      StoreFile f = store.getFile(SOURCE_TEST);
+      assertNotNull(f);
+      assertEquals(SOURCE_TEST, f.getName());
+
+      store.delete(SOURCE_TEST);
+      
+      assertNull(store.getFile(SOURCE_TEST));
+   }
+
+   /** Tests making folders and paths and stuff.  A bit
+    */
+   public void assertFoldersWork(StoreClient store) throws IOException {
+      
+      store.newFolder("NewFolder");
+
+      //create file in new folder
+      store.putString("This is just a test file for "+this.getClass(), "NewFolder/NewFile.txt", false);
+      
+      StoreFile f = store.getFile("NewFolder/NewFile.txt");
+      assertNotNull(f);
+      assertEquals("NewFile.txt", f.getName());
+      assertEquals("NewFolder", f.getParent().getName());
+      assertNull(f.getParent().getParent());
+      assertEquals("NewFolder/NewFile.txt", f.getPath());
+      
+      store.delete("NewFolder/NewFile.txt");
+      
+      assertNull(store.getFile("NewFolder/NewFile.txt"));
+      
+   }
+   
+   
+   /** Sets up for each operation test */
+   //not quite happy with this...
+   private void prepareForOp(StoreClient store) throws IOException
+   {
+      //see if it's already there
+      StoreFile f = store.getFile(SOURCE_TEST);
+      if (f == null) {
+         //test normal save
+         store.putString("Test file for copying, etc - should have been deleted", SOURCE_TEST,false);
+         //check it's there now
+         assertFileExists(store, SOURCE_TEST);
+      }
+   }
+   
+   /** Checks that a file exists in the given store at the given path.  Will
+    * actually throw a FileNotFoundException rather than an assertion error if
+    * it can be URLd but not found */
+   private void assertFileExists(StoreClient store, String path) throws IOException {
+      URL url = store.getUrl(path);
+      assertNotNull(url);
+      InputStream in = url.openStream();
+      assertNotNull(in);
+      in.close();
+   }
+   
+   public void assertMove(StoreClient store, Agsl target) throws IOException
+   {
+      prepareForOp(store);
+      //test move
+      /* broken? */
+      store.move(SOURCE_TEST, target);
+
+      //make sure old one is dead
+      StoreFile f = store.getFile(SOURCE_TEST);
+      assertNull(f);
+
+      //make sure new one exists
+      assertFileExists(store, target.getFilename());
+   }
+
+   public void assertCopy(StoreClient store, Agsl target) throws IOException
+   {
+      prepareForOp(store);
+      //do copy
+      store.copy(SOURCE_TEST, target);
+
+      //make sure new one exists
+      assertFileExists(store, SOURCE_TEST);
+
+      //make sure new one exists
+      assertFileExists(store, target.getFilename());
+   }
+   
+   
+   public void assertDelete(StoreClient store) throws IOException {
+      prepareForOp(store);
+
+      //test normal save
+      store.putString("Test file for copying, etc - should have been deleted", SOURCE_TEST,false);
+      StoreFile f = store.getFile(SOURCE_TEST);
+      assertNotNull(f);
+      
+      //do delete
+      store.delete(SOURCE_TEST);
+      
+      //make sure it's gone
+      f = store.getFile(SOURCE_TEST);
+      assertNull(f);
+   }
+   
+}
+
+
+/*
+$Log: StoreClientTest.java,v $
+Revision 1.1  2004/03/01 23:44:10  mch
+Factored out common myspace tests
+
+
+*/
+
