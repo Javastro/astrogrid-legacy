@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegate.java,v 1.15 2004/01/08 12:55:15 mch Exp $
+ * $Id: WebDelegate.java,v 1.16 2004/01/08 15:48:17 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -30,10 +30,12 @@ import org.astrogrid.datacenter.axisdataserver.AxisDataServerServiceLocator;
 import org.astrogrid.datacenter.axisdataserver.AxisDataServerSoapBindingStub;
 import org.astrogrid.datacenter.axisdataserver.types._query;
 import org.astrogrid.datacenter.query.QueryException;
+import org.astrogrid.mySpace.delegate.MySpaceClient;
+import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
@@ -189,7 +191,7 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier, Appli
       //construct adql query
       String adqlString =
          "<?xml version='1.0' ?>\n"+
-         "<query type='adql'>\n"+
+//         "<query type='adql'>\n"+
          "<Select xmlns:xsd='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>\n"+
          "   <SelectionAll />\n"+
          "   <TableClause>\n"+
@@ -209,8 +211,8 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier, Appli
          "          </Circle>\n"+
          "    </WhereClause>\n"+
          "   </TableClause>\n"+
-         "</Select>\n"+
-         "</query>\n";
+         "</Select>\n";
+//         "</query>\n";
       
       try {
          Select adql = ADQLUtils.unmarshalSelect(XMLUtils.newDocument(new StringBufferInputStream(adqlString)));
@@ -284,76 +286,96 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier, Appli
     * to access the query... */
    private static Hashtable queries = new Hashtable();
    
-    /**
-      * ApplicationController implemenation: Initialises a query, returning the query id.
-      * Parameter Values should include the
-      *
-      */
-    public String initializeApplication(String applicationID, String jobstepID, String jobMonitorURL, User user, ParameterValues parameters) {
-       
-       Document doc = null;
-       
-       //extract query, results etc
-       try {
-          doc = XMLUtils.newDocument(new StringBufferInputStream(parameters.getParameterSpec()));
-       }
-       catch (SAXException e) { throw new IllegalArgumentException("Parameters not valid xml: "+e); }
-       catch (ParserConfigurationException e) { throw new RuntimeException(e); }
-       catch (IOException e) { throw new RuntimeException(e); }
-       
-       
-       NodeList elements = doc.getElementsByTagName("Parameter");
-       
-       String queryUrl = null;
-       String resultsDestinationUrl = null;
-       
-       //look through parameters
-       for (int i=0;i<elements.getLength();i++) {
-          Node n = elements.item(i);
-          String name = n.getAttributes().getNamedItem("name").getNodeValue();
-          
-          if (name.toLowerCase().equals("queryUrl")) {
-             queryUrl = n.getNodeValue();
-          }
-          else if (name.toLowerCase().equals("resultsUrl")) {
-             resultsDestinationUrl = n.getNodeValue();
-          }
-          else {
-             throw new IllegalArgumentException("Unknown parameter '"+name+"' not queryUrl or ResultsUrl");
-          }
-       }
-       
-       assert queryUrl != null : "QueryUrl not given in parameters";
-       assert resultsDestinationUrl != null : "ResultsUrl not given in parameters";
-       
-       //Transform to the right types
-       Select adql = null;
-       try {
-          //load query
-          Document adqlDoc = XMLUtils.newDocument(queryUrl);
-          
-          adql = ADQLUtils.unmarshalSelect(adqlDoc);
-       }
-       catch (SAXException e) { throw new IllegalArgumentException("Query at '"+queryUrl+"' not valid xml: "+e); }
-       catch (ADQLException e) { throw new IllegalArgumentException("Query at '"+queryUrl+"' not valid adql: "+e); }
-       catch (ParserConfigurationException e) { throw new RuntimeException(e); }
-       catch (IOException e) { throw new RuntimeException("Could not get query at '"+queryUrl+"'",e); }
-       
-       try {
-          WebQueryDelegate query = (WebQueryDelegate) makeQuery(adql, jobstepID);
-          
-          queries.put(query.getId(), query);
-          
-          query.registerJobMonitor(new URL(jobMonitorURL));
-          query.setResultsDestination(new URL(resultsDestinationUrl));
-          
-          return query.getId();
-       }
-       catch (IOException e) {
-          throw new RuntimeException("Error creating query",e);
-       }
-       
-    }
+   /**
+    * ApplicationController implemenation: Initialises a query, returning the query id.
+    * Parameter Values should include the
+    *
+    */
+   public String initializeApplication(String applicationID, String jobstepID, String jobMonitorURL, User user, ParameterValues parameters) {
+      
+      try {
+         Document doc = null;
+         
+         //extract query, results etc
+         try {
+            doc = XMLUtils.newDocument(new StringBufferInputStream(parameters.getParameterSpec()));
+         }
+         catch (SAXException e) { throw new IllegalArgumentException("Parameters not valid xml: "+e); }
+         catch (ParserConfigurationException e) { throw new RuntimeException(e); }
+         
+         
+         NodeList elements = doc.getElementsByTagName("Parameter");
+         
+         String queryUrl = null;
+         String resultsDestinationUrl = null;
+         MySpaceClient myspace = null;
+         String myspaceFile = null;
+         
+         
+         //look through parameters
+         for (int i=0;i<elements.getLength();i++) {
+            Node n = elements.item(i);
+            String name = n.getAttributes().getNamedItem("name").getNodeValue();
+            
+            if (name.toLowerCase().equals("querymyspacefile")) {
+               myspaceFile = n.getFirstChild().getNodeValue();
+            }
+            if (name.toLowerCase().equals("querymyspaceserver")) {
+               String myspaceUrl = n.getFirstChild().getNodeValue();
+               myspace = MySpaceDelegateFactory.createDelegate(myspaceUrl);
+            }
+            if (name.toLowerCase().equals("queryurl")) {
+               queryUrl = n.getFirstChild().getNodeValue();
+            }
+            else if (name.toLowerCase().equals("resultsurl")) {
+               resultsDestinationUrl = n.getFirstChild().getNodeValue();
+            }
+            else {
+               throw new IllegalArgumentException("Unknown parameter '"+name+"' not QueryUrl or ResultsUrl");
+            }
+         }
+         
+         if ((myspaceFile != null) && (myspace != null))
+         {
+            try
+            {
+               queryUrl = myspace.getDataHoldingUrl(User.ANONYMOUS.getAccount(), User.ANONYMOUS.getGroup(), User.ANONYMOUS.getToken(), myspaceFile);
+            } catch (Exception e)
+            {
+               throw new RuntimeException("Failed to get url for file '"+myspaceFile+"' from server '"+myspace);
+            }
+         }
+         
+         
+         assert queryUrl != null : "QueryUrl - or QueryMySpaceFile AND QueryMySpaceServer - not given in parameters";
+         assert resultsDestinationUrl != null : "ResultsUrl not given in parameters";
+         
+         //Transform to the right types
+         Select adql = null;
+         try {
+            //load query
+            Document adqlDoc = XMLUtils.newDocument(queryUrl);
+            
+            adql = ADQLUtils.unmarshalSelect(adqlDoc);
+         }
+         catch (SAXException e) { throw new IllegalArgumentException("Query at '"+queryUrl+"' not valid xml: "+e); }
+         catch (ADQLException e) { throw new IllegalArgumentException("Query at '"+queryUrl+"' not valid adql: "+e); }
+         catch (ParserConfigurationException e) { throw new RuntimeException(e); }
+         
+         WebQueryDelegate query = (WebQueryDelegate) makeQuery(adql, jobstepID);
+         
+         queries.put(query.getId(), query);
+         
+         query.registerJobMonitor(new URL(jobMonitorURL));
+         query.setResultsDestination(new URL(resultsDestinationUrl));
+         
+         return query.getId();
+      }
+      catch (IOException e) {
+         throw new RuntimeException("Error creating query",e);
+      }
+      
+   }
 
    /**
     * ApplicationController implemenation: Returns the status of a running query
@@ -424,6 +446,9 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier, Appli
 
 /*
  $Log: WebDelegate.java,v $
+ Revision 1.16  2004/01/08 15:48:17  mch
+ Allow myspace references to be given
+
  Revision 1.15  2004/01/08 12:55:15  mch
  Finished implementing ApplicationController interface
 
@@ -486,4 +511,5 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier, Appli
 
 
  */
+
 
