@@ -20,7 +20,7 @@ import java.util.Properties;
 import java.util.ResourceBundle ;
 import java.util.Locale ;
 import java.io.InputStream;
-import java.io.IOException;
+// import java.io.IOException;
 import java.io.StringReader ; 
 import java.text.MessageFormat ;
 import java.util.Date ;
@@ -35,7 +35,7 @@ import org.apache.axis.client.Call;
 import org.apache.axis.encoding.XMLType;
 import javax.xml.rpc.ParameterMode;
 import org.apache.axis.message.SOAPBodyElement ;
-import org.apache.axis.utils.XMLUtils ;
+// import org.apache.axis.utils.XMLUtils ;
 
 import java.net.URL;
 
@@ -149,9 +149,6 @@ public class JobController {
 	
 	static {
 		doConfigure();
-	}
-	
-	public static boolean isNull ( Object o ) { return ( o == null ? true : false ) ;
 	}
 
 
