@@ -5,6 +5,9 @@
   </properties>
   <body>
   <release version="HEAD">
+        <action dev="jdt" type="fix" issue="858">
+            Build problem in eXist for maven 1.0.1+
+        </action>
         <action dev="kmb" type="add" issue="605">
             registry entries should be validated by a schema
         </action>
