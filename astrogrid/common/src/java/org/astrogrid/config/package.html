@@ -41,14 +41,15 @@ ConfigFactory.getPropertyConfig("REGISTRY");
 </pre></code>
 
 <h3>Loading</h3>
-You can request a load from urls, files, and the autoload will look in JNDI and
+You can request a load from urls or files.  The autoload() method will look in JNDI and
 the system environment for urls, and the local directory for a default filename.
 You can load from as many files as you like for the PropertyConfig; only the latest
 will work at the moment for the XML version.
 
 <h3>Accessing XML</h3>
 XPath doesn't seem to have settled yet, so be prepared for this one to break
-occasionally.
+occasionally.  In the meantime, it takes the name of an element and does a search
+for all nodes matching that element name.
 
 </body>
 </html>
