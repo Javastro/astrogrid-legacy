@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/src/java/org/astrogrid/portal/cocoon/common/LoginAction.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/01/09 11:07:32 $</cvs:date>
- * <cvs:version>$Revision: 1.13 $</cvs:version>
+ * <cvs:date>$Date: 2004/01/09 11:12:16 $</cvs:date>
+ * <cvs:version>$Revision: 1.14 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: LoginAction.java,v $
+ *   Revision 1.14  2004/01/09 11:12:16  dave
+ *   Changes flag to healthy not pass - already used that.
+ *
  *   Revision 1.13  2004/01/09 11:07:32  dave
  *   Added an early fail test to the login action
  *
@@ -114,7 +117,7 @@ public class LoginAction extends AbstractAction
 		Map results = null ;
 		//
 		// Setup our error flag.
-		boolean pass = true ;
+		boolean healthy = true ;
 
 		//
 		// If the request action is login.
@@ -132,45 +135,44 @@ public class LoginAction extends AbstractAction
 			if (DEBUG_FLAG) System.out.println("  Name : " + name) ;
 			if (DEBUG_FLAG) System.out.println("  Pass : " + pass) ;
 
-			if (pass)
+			if (healthy)
 				{
 				//
 				// Check for a null or blank name.
 				if(null == name)
 					{
-					pass = false ;
 					message = EMPTY_NAME_MESSAGE ;
 					}
 				else {
 					name = name.trim() ;
 					if(name.length() <= 0)
 						{
-						pass = false ;
+						healthy = false ;
 						message = EMPTY_NAME_MESSAGE ;
 						}
 					}
 				}
 
-			if (pass)
+			if (healthy)
 				{
 				//
 				// Check for a null or blank password.
 				if(null == pass)
 					{
-					pass = false ;
+					healthy = false ;
 					message = EMPTY_PASS_MESSAGE ;
 					}
 				else {
 					pass = pass.trim() ;
 					if(pass.length() <= 0)
 						{
-						pass = false ;
+						healthy = false ;
 						message = EMPTY_PASS_MESSAGE ;
 						}
 					}
 				}
 
-			if (pass)
+			if (healthy)
 				{
 				//
 				// Try creating a Community delegate.
@@ -178,7 +180,7 @@ public class LoginAction extends AbstractAction
 				if (null == authenticator)
 					{
 					if (DEBUG_FLAG) System.out.println("FAIL : Null AuthenticationDelegate") ;
-					pass = false ;
+					healthy = false ;
 					message = SYSTEM_ERROR_MESSAGE ;
 					}
 				//
@@ -192,7 +194,7 @@ public class LoginAction extends AbstractAction
 						if (null == token)
 							{
 							if (DEBUG_FLAG) System.out.println("FAIL : Null token") ;
-							pass = false ;
+							healthy = false ;
 							message = LOGIN_FAIL_MESSAGE ;
 							}
 						else {
@@ -209,14 +211,14 @@ public class LoginAction extends AbstractAction
 						}
 					catch(Exception ouch)
 						{
-						pass = false ;
+						healthy = false ;
 						message = SYSTEM_ERROR_MESSAGE ;
 						ouch.printStackTrace();
 						}
 					}
 				}
 
-			if (pass)
+			if (healthy)
 				{
 				//
 				// Try creating a policy delegate.
@@ -224,7 +226,7 @@ public class LoginAction extends AbstractAction
 				if (null == delegate)
 					{
 					if (DEBUG_FLAG) System.out.println("FAIL : Null PolicyServiceDelegate") ;
-					pass = false ;
+					healthy = false ;
 					message = SYSTEM_ERROR_MESSAGE ;
 					}
 				//
@@ -242,13 +244,13 @@ public class LoginAction extends AbstractAction
 							}
 						else {
 							if (DEBUG_FLAG) System.out.println("FAIL : Permission check failed") ;
-							pass = false ;
+							healthy = false ;
 							message = POLICY_FAIL_MESSAGE ;
 							}
 						}
 					catch(Exception ouch)
 						{
-						pass = false ;
+						healthy = false ;
 						message = SYSTEM_ERROR_MESSAGE ;
 						ouch.printStackTrace();
 						}
@@ -257,7 +259,7 @@ public class LoginAction extends AbstractAction
 
 			//
 			// If we pass the tests.
-			if ((pass) && (null != token) && (authorized))
+			if ((healthy) && (null != token) && (authorized))
 				{
 				//
 				// Set the current account info in our session.
