@@ -31,20 +31,30 @@ function setNewMySpaceName(newMySpaceName){
   myspace_new_name.value = newMySpaceName;
 }
 
-function setIVORN(newIvorn){
+function setIVORNAgsl(newIvorn, newAgsl){
   myspace_ivorn = document.getElementById('myspace-ivorn');
   myspace_ivorn.value = newIvorn;
+
+  myspace_agsl = document.getElementById('myspace-agsl');
+  myspace_agsl.value = newAgsl;
 }
 
-function setParentIVORN(newIvorn){
-  parentDoc = window.parent.document;
-  
-  alert('Parent Doc: <' + parentDoc + '>');
+function setParentIVORNAgsl(){
+  parentDoc = window.opener.document;
   
   parent_ivorn = parentDoc.getElementById('myspace-ivorn');
-  myspace_ivorn = document.getElementById('myspace-ivorn');
+  parent_agsl = parentDoc.getElementById('myspace-agsl');
   
-  parent_ivorn.value = myspace_ivorn.value;
+  if(parent_ivorn && parent_agsl) {
+    myspace_ivorn = document.getElementById('myspace-ivorn');
+    parent_ivorn.value = myspace_ivorn.value;
+    
+    myspace_agsl = document.getElementById('myspace-agsl');
+    parent_agsl.value = myspace_agsl.value;
+  }
+  else {
+    alert('No parent IVORN/Agsl to set');
+  }
   
   window.close();
 }

@@ -9,27 +9,42 @@
       omit-xml-declaration="yes"/>
 
   <xsl:template match="/">
-    <ag-div>
-      <ag-link rel="stylesheet" type="text/css" href="/astrogrid-portal/mount/myspace/xmlTree.css"/>
-      <ag-link rel="stylesheet" type="text/css" href="/astrogrid-portal/mount/myspace/myspace.css"/>
-      <ag-script type="text/javascript" src="/astrogrid-portal/mount/myspace/xmlTree.js"/>
-      <ag-script type="text/javascript" src="/astrogrid-portal/mount/myspace/myspace.js"/>
+    <html>
+      <head>
+        <link rel="stylesheet" type="text/css" href="/astrogrid-portal/mount/myspace/xmlTree.css"/>
+        <link rel="stylesheet" type="text/css" href="/astrogrid-portal/mount/myspace/myspace.css"/>
+        <script type="text/javascript" src="/astrogrid-portal/mount/myspace/xmlTree.js">
+          null;
+        </script>
+        <script type="text/javascript" src="/astrogrid-portal/mount/myspace/myspace.js">
+          null;
+        </script>
+      </head>
       
-      <div>
+      <body>
+        <script type="text/javascript">
+          window.document.title = "MySpace MicroBrowser";
+        </script>
+        
         <form id="myspace-explorer-form" action=".">
           <table id="myspace-tree-header">
             <tr>
               <td>IVORN:</td>
               <td style="width:100%"><input name="myspace-ivorn" id="myspace-ivorn" type="text" readonly="true" style="width:100%;border-style:none;"/></td>
             </tr>
+            <tr>
+              <td>AGSL:</td>
+              <td style="width:100%"><input name="myspace-agsl" id="myspace-agsl" type="text" readonly="true" style="width:100%;border-style:none;"/></td>
+            </tr>
           </table>
           
-          <input type="button" value="OK" onclick="setParentIVORN();"/>
+          <input type="button" value="OK" onclick="setParentIVORNAgsl();"/>
+          <input type="button" value="Cancel" onclick="window.close();"/>
         </form>
-      </div>
-      
-      <xsl:apply-templates/>
-    </ag-div>
+        
+        <xsl:apply-templates/>
+      </body>
+    </html>
   </xsl:template>
 
   <xsl:template match="myspace-tree">
@@ -47,7 +62,7 @@
     
     &#160;
     <span style="cursor:pointer;cursor:hand;">
-      <xsl:attribute name="onclick">setIVORN('<xsl:value-of select="@ivorn"/>');</xsl:attribute>
+      <xsl:attribute name="onclick">setIVORNAgsl('<xsl:value-of select="@ivorn"/>', '<xsl:value-of select="@full-name"/>');</xsl:attribute>
       <xsl:value-of select="@item-name"/><br/>
     </span>
 
@@ -63,7 +78,7 @@
 
     &#160;
     <span class="document">
-      <xsl:attribute name="onclick">setIVORN('<xsl:value-of select="@ivorn"/>');</xsl:attribute>
+      <xsl:attribute name="onclick">setIVORNAgsl('<xsl:value-of select="@ivorn"/>', '<xsl:value-of select="@full-name"/>');</xsl:attribute>
       <xsl:value-of select="@item-name"/>
     </span>
     <br/>
