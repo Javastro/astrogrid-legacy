@@ -1,5 +1,5 @@
 /*
- * $Id: MySqlQuerierTest.java,v 1.3 2003/09/07 18:58:58 mch Exp $
+ * $Id: MySqlQuerierTest.java,v 1.4 2003/09/08 16:36:38 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -35,8 +35,6 @@ public class MySqlQuerierTest extends TestCase
     */
    public void testLocal() throws Exception
    {
-      Workspace workspace = new Workspace("Test");
-
       //load test query file
       URL url = getClass().getResource("testQuery.xml");
       Document fileDoc = XMLUtils.newDocument(url.openConnection().getInputStream());
@@ -57,7 +55,7 @@ public class MySqlQuerierTest extends TestCase
       QueryResults results = querier.queryDatabase(queryElement);
 
       //convert results to VOTable
-      Document votable = results.toVotable(workspace);
+      Document votable = results.toVotable();
 
       //check results
       //er somehow
