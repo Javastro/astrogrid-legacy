@@ -164,13 +164,15 @@
 </goal>
 
 <goal name="setup-community" description="Community setup">
-        <echo>Configuring Community</echo>
+        <echo message=""/>
+        <echo message="Setup Community ...."/>
         <attainGoal name="community-register"/>
         <attainGoal name="community-install"/>
 </goal>
 
 <goal name="setup-registry" description="populate the registry">
-        <echo>Configuring Registry</echo>
+        <echo message=""/>
+        <echo message="Setup Registry ...."/>
         <!-- expand tokens -->
         <copy todir="${temporary.dir}/registry-entries" filtering="true">
                 <fileset dir="registry-entries">
@@ -197,6 +199,8 @@
     | Configure Community.
     +-->
 <goal name="community-install">
+        <echo message=""/>
+        <echo message="Installing community database ...."/>
         <!--+
             | Unpack our toolkit.
             +-->
@@ -239,7 +243,8 @@
     | Register the Community.
     +-->
 <goal name="community-register">
-
+        <echo message=""/>
+        <echo message="Registering community service ...."/>
         <!--+
             | Fix the Maven JAXP properties.
             +-->
