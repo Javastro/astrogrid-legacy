@@ -1,11 +1,14 @@
 <?xml version="1.0"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/Attic/build.xml,v $</cvs:source>
-    | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/09/06 20:10:06 $</cvs:date>
-    | <cvs:version>$Revision: 1.10 $</cvs:version>
+    | <cvs:author>$Author: pah $</cvs:author>
+    | <cvs:date>$Date: 2003/09/07 11:29:41 $</cvs:date>
+    | <cvs:version>$Revision: 1.11 $</cvs:version>
     | <cvs:log>
     |   $Log: build.xml,v $
+    |   Revision 1.11  2003/09/07 11:29:41  pah
+    |   added some initial authentication targets
+    |
     |   Revision 1.10  2003/09/06 20:10:06  dave
     |   Split PolicyManager into separate components.
     |
@@ -45,6 +48,7 @@
 	<property name="project.home"    value="${basedir}"/>
 	<property name="project.name"    value="ast-policy"/>
 	<property name="project.version" value="1.0"/>
+	<property name="testdir" value="${basedir}/test"></property>
 
 	<!--+
 		| User preferences.
@@ -2044,6 +2048,16 @@
 	<target name="project.RELEASE" depends="">
 		<!-- TBD -->
 	</target>
+	
+	<!-- Authentication tasks -->
+	
+	<target name="authentication.TEST" depends="authentication.testSetup">
+	</target>
+	<target name="authentication.testSetup" description="moves various config files from the main tree into the test tree prior to testing">
+	    <copy file="${basedir}/src/sql/hsqldb/create.sql" todir="${testdir}/java/org/astrogrid/community/common/util/db/"></copy>
+	</target>
+	
+	<!-- End Authentication tasks -->
 
 	<!--+
 		|
