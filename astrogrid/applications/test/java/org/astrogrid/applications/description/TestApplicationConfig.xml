@@ -29,11 +29,21 @@
 			<Parameter name="P6" type="agpd:RA"/>
 			<Parameter name="P7" type="agpd:Dec"/>
 			<Parameter name="P8" type="agpd:ADQL"/>
+			<Parameter name="P9" type="agpd:MySpace_FileReference"/>
 		</Parameters>
 		<Interfaces>
 			<Interface name="I1">
 				<input>
 					<pref ref="P2"/>
+					<pref ref="P9"/>
+				</input>
+				<output>
+					<pref ref="P3"/>
+				</output>
+			</Interface>
+			<Interface name="I2">
+				<input>
+					<pref ref="P9"/>
 				</input>
 				<output>
 					<pref ref="P3"/>

@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationDescription.java,v 1.2 2003/11/29 00:50:14 pah Exp $
+ * $Id: ApplicationDescription.java,v 1.3 2003/12/01 15:46:46 pah Exp $
  * 
  * Created on 14-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.astrogrid.applications.description.exception.InterfaceDescriptionNotFoundException;
 import org.astrogrid.applications.description.exception.ParameterDescriptionNotFoundException;
 /**
  * This class represents the description of the application. This will be in an extension of wsdl.
@@ -125,4 +126,21 @@ public class ApplicationDescription {
       else
       return (ParameterDescription)parameterMap.get(name);
    }
+   
+   /**
+    * Gets the named interface.
+    * @param name
+    * @return
+    * @throws InterfaceDescriptionNotFoundException
+    */
+   public ApplicationInterface getInterface(String name) throws InterfaceDescriptionNotFoundException
+   {
+      if(interfaces.containsKey(name)){
+         return (ApplicationInterface)interfaces.get(name);
+      }
+      else
+        throw new InterfaceDescriptionNotFoundException();
+   }
 }
+
+

@@ -2,3 +2,4 @@ bin
 maven.log
 build
 target
+tests.log

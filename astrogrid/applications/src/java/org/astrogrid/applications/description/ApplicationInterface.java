@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationInterface.java,v 1.2 2003/11/27 12:40:48 pah Exp $
+ * $Id: ApplicationInterface.java,v 1.3 2003/12/01 15:46:46 pah Exp $
  *
  * Created on 26 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -11,25 +11,134 @@
 
 package org.astrogrid.applications.description;
 
+import java.util.ArrayList;
 import java.util.List;
-public class ApplicationInterface {
-   public String getName(){ return name; }
 
-   public void setName(String name){ this.name = name; }
+import org
+   .astrogrid
+   .applications
+   .description
+   .exception
+   .ParameterDescriptionNotFoundException;
+import org
+   .astrogrid
+   .applications
+   .description
+   .exception
+   .ParameterNotInInterfaceException;
+/**
+ * Describes a named interface to the application. The inferface describes the list of input and output parameters that make up a particular
+ * operation for that application. This object actually stores lists of parameter names for the {@link ParameterDescription} objects that are stored in the parent {@link ApplicationDescription} object. 
+ * 
+
+ * @author Paul Harrison (pah@jb.man.ac.uk)
+ * @version $Name:  $
+ * @since iteration4
+ */
+public class ApplicationInterface {
+   static private org.apache.commons.logging.Log logger =
+      org.apache.commons.logging.LogFactory.getLog(ApplicationInterface.class);
+   public String getName() {
+      return name;
+   }
+
+   public void setName(String name) {
+      this.name = name;
+   }
+
+   private ApplicationDescription application = null;
 
    private String name;
 
    /**
-    * list of references to the {@link ParameterDescription} objects that make up the inputs for this interface.
+    * list of the {@link ParameterDescription} objects that make up the inputs for this interface.
     *@link aggregation
     *      @associates org.astrogrid.applications.description.ParameterDescription
     */
    private List inputs;
 
    /**
-    * list of references to the {@link ParameterDescription} objects that make up the outputs for this interface.
+    * list of the  {@link ParameterDescription} objects that make up the outputs for this interface.
     *@link aggregation
     *      @associates org.astrogrid.applications.description.ParameterDescription
     */
    private List outputs;
+
+   public ApplicationInterface() {
+      inputs = new ArrayList();
+      outputs = new ArrayList();
+   }
+
+   /**
+    * @return
+    */
+   public ApplicationDescription getApplication() {
+      return application;
+   }
+
+   /**
+    * @param description
+    */
+   public void setApplication(ApplicationDescription description) {
+      application = description;
+   }
+
+   public void addInputParameter(String name)
+      throws ParameterDescriptionNotFoundException {
+      ParameterDescription pd = application.getParameter(name);
+      inputs.add(name);
+
+   }
+
+   public void addOutputParameter(String name)
+      throws ParameterDescriptionNotFoundException {
+      // check that the parameter exists
+      ParameterDescription pd = application.getParameter(name);
+      // add the name
+      outputs.add(name);
+
+   }
+   public String[] getArrayofInputs() {
+      return (String[])inputs.toArray(new String[0]);
+   }
+   public String[] getArrayofOutputs() {
+      return (String[])outputs.toArray(new String[0]);
+   }
+
+   public ParameterDescription getInputParameter(String name)
+      throws ParameterNotInInterfaceException {
+      ParameterDescription ad = null;
+      if (inputs.contains(name)) {
+         try {
+            ad = application.getParameter(name);
+         }
+         catch (ParameterDescriptionNotFoundException e) {
+            logger.error(
+               "this should not happen - the checks on the original storage of the parameters should prevent it - internal program error",
+               e);
+         }
+      }
+      else {
+         throw new ParameterNotInInterfaceException();
+      }
+      return ad;
+   }
+   public ParameterDescription getOutputParameter(String name)
+       throws ParameterNotInInterfaceException {
+       ParameterDescription ad = null;
+       if (outputs.contains(name)) {
+          try {
+             ad = application.getParameter(name);
+          }
+          catch (ParameterDescriptionNotFoundException e) {
+             logger.error(
+                "this should not happen - the checks on the original storage of the parameters should prevent it - internal program error",
+                e);
+          }
+       }
+       else {
+          throw new ParameterNotInInterfaceException();
+       }
+       return ad;
+    }
 }

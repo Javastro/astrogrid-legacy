@@ -1,5 +1,5 @@
 /*
- * $Id: DescriptionLoader.java,v 1.3 2003/11/29 00:50:14 pah Exp $
+ * $Id: DescriptionLoader.java,v 1.4 2003/12/01 15:46:46 pah Exp $
  *
  * Created on 26 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -23,6 +23,7 @@ import org.apache.commons.digester.BeanPropertySetterRule;
 import org.apache.commons.digester.Digester;
 import org.apache.commons.digester.ExtendedBaseRules;
 import org.apache.commons.digester.NodeCreateRule;
+import org.apache.commons.digester.SetTopRule;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -34,10 +35,11 @@ import org.astrogrid.applications.manager.AbstractApplicationController;
 
 /**
  * Loads the application descriptions from the description file into a set of {@link ApplicationDescription} objects. It uses the {@link org.apache.commons.digester.Digester} to parse the XML file. 
- * The schema for these definitions is located at 
+ * The schema for these definitions is located at <a href="http://www.astrogrid.org/viewcvs/*checkout*\/astrogrid/applications/schema/AGParameterDefinition.xsd?rev=HEAD&content-type=text/plain">schema</a>
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @version $Name:  $
  * @since iteration4
+ * @TODO make namespace aware
  */
 public class DescriptionLoader {
    private AbstractApplicationController appController;
@@ -55,7 +57,9 @@ public class DescriptionLoader {
    private static final String UCD_ELEMENT = PARAMETER_ELEMENT + "/UCD";
    private static final String DEFVAL_ELEMENT = PARAMETER_ELEMENT + "/DefaultValue";
    private static final String UNITSL_ELEMENT = PARAMETER_ELEMENT + "/Units";
-
+   private static final String INTERFACE_ELEMENT= APPLICATION_ELEMENT + "/Interfaces/Interface";
+   private static final String INPUT_PREFS = INTERFACE_ELEMENT + "/input/pref";
+   private static final String OUTPUT_PREFS = INTERFACE_ELEMENT + "/output/pref";
    public DescriptionLoader(AbstractApplicationController ac) {
       appController = ac;
       try {
@@ -108,7 +112,6 @@ public class DescriptionLoader {
 
       // add the appropriate paramter element and set its properties
       digester.addFactoryCreate(PARAMETER_ELEMENT, new ParameterCreationFactory());
-//      digester.addObjectCreate(PARAMETER_ELEMENT, IntParameterDescription.class);
       digester.addSetProperties(PARAMETER_ELEMENT);
       
       //set some extra property values from the body elements of children
@@ -117,13 +120,61 @@ public class DescriptionLoader {
       digester.addRule(UI_DESC_ELEMENT, new AllBodyIncElementsRule("displayDescription"));
       // add the parameter to the list of paramters      
       digester.addSetNext(PARAMETER_ELEMENT, "addParameter");
+      
+      //deal with the interface defintions
+      digester.addObjectCreate(INTERFACE_ELEMENT, ApplicationInterface.class);
+      digester.addSetProperties(INTERFACE_ELEMENT);
+      digester.addRule(INTERFACE_ELEMENT, new SetTopRuleAtStart("setApplication","org.astrogrid.applications.description.ApplicationDescription"));
+      
+      //input and output parameter references
+      digester.addCallMethod(INPUT_PREFS, "addInputParameter",1);
+      digester.addCallParam(INPUT_PREFS, 0, "ref");
+      
+      //input and output parameter references
+      digester.addCallMethod(OUTPUT_PREFS, "addOutputParameter",1);
+      digester.addCallParam(OUTPUT_PREFS, 0, "ref");
+      
+      
+      
+      digester.addSetNext(INTERFACE_ELEMENT, "addInterface");
 
       // finally add the application description to the list
       digester.addSetNext(APPLICATION_ELEMENT, "addDescription");
-
+      
+ 
      
    }
    
-   
+
+   /**
+    * This is the same as a {@link org.apache.commons.digester.SetTopRule} except that it does the call in the {@link #begin()} phase.
+    * @author Paul Harrison (pah@jb.man.ac.uk)
+    * @version $Name:  $
+    * @since iteration4
+    */
+   private static class SetTopRuleAtStart extends SetTopRule
+   {
+
+       public SetTopRuleAtStart(String methodName, String argType) {
+         super(methodName, argType);
+      }
+      
+      /* (non-Javadoc)
+       * @see org.apache.commons.digester.Rule#end()
+       */
+      public void end() throws Exception {
+         // do nothing
+      }
+
+      /* (non-Javadoc)
+       * @see org.apache.commons.digester.Rule#begin(java.lang.String, java.lang.String, org.xml.sax.Attributes)
+       */
+      public void begin(String arg0, String arg1, Attributes arg2) throws Exception{
+        // do what normally is done at the end
+        
+        super.end();
+      }
+
+   }
 
 }

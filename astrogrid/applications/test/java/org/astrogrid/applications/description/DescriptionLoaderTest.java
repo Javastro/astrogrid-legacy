@@ -1,5 +1,5 @@
 /*
- * $Id: DescriptionLoaderTest.java,v 1.2 2003/11/29 00:50:14 pah Exp $
+ * $Id: DescriptionLoaderTest.java,v 1.3 2003/12/01 15:46:46 pah Exp $
  * 
  * Created on 26-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -25,7 +25,24 @@ import org
    .description
    .exception
    .ApplicationDescriptionNotFoundException;
-import org.astrogrid.applications.description.exception.ParameterDescriptionNotFoundException;
+import org
+   .astrogrid
+   .applications
+   .description
+   .exception
+   .InterfaceDescriptionNotFoundException;
+import org
+   .astrogrid
+   .applications
+   .description
+   .exception
+   .ParameterDescriptionNotFoundException;
+import org
+   .astrogrid
+   .applications
+   .description
+   .exception
+   .ParameterNotInInterfaceException;
 import org.astrogrid.applications.manager.CommandLineApplicationController;
 
 import junit.framework.AssertionFailedError;
@@ -82,46 +99,72 @@ public class DescriptionLoaderTest extends TestCase {
 
    final public void testLoadDescription() {
       boolean success = dl.loadDescription(inputFile);
-      
-       assertTrue("The load failed", success);
+
+      assertTrue("The load failed", success);
       try {
          ApplicationDescription ad =
             ac.getApplicationDescriptions().getDescription("testapp");
-            ParameterDescription [] params = ad.getParameters();
-            assertNotNull("no parameters returned", params);
-            assertEquals("there should be 8 parameters ", params.length, 8);
-            //now look at the parameters in detail
-            ParameterDescription p1 = params[0];
-            
-            
-            try {
-               ParameterDescription p2 = ad.getParameter(params[0].getName());
-               assertSame("parameters should be same via two different retrieval methods", p1, p2);
-               p1 = ad.getParameter("P1"); // get p1 ready for later
-            }
-            catch (ParameterDescriptionNotFoundException e1) {
-               fail("did not find a parameter that it should");
-            }
-            // try getting a parameter that should not be there
-            try {
-               ParameterDescription p3 = ad.getParameter("silly");
-               fail("getting non existant parameter should throw exception");
-            }
-            catch (ParameterDescriptionNotFoundException e2) {
-               // do nothing this should get here
-            }
-            
-            
-            // lets look at a some of the properties
-            System.out.println("name:"+ p1.getName());
-            System.out.println("desc:"+p1.getDisplayDescription());
-            
-            
+         ParameterDescription[] params = ad.getParameters();
+         assertNotNull("no parameters returned", params);
+         assertEquals("there should be 9 parameters ", params.length, 9);
+         //now look at the parameters in detail
+         ParameterDescription p1 = params[0];
+
+         try {
+            ParameterDescription p2 = ad.getParameter(params[0].getName());
+            assertSame(
+               "parameters should be same via two different retrieval methods",
+               p1,
+               p2);
+            p1 = ad.getParameter("P1"); // get p1 ready for later
+         }
+         catch (ParameterDescriptionNotFoundException e1) {
+            fail("did not find a parameter that it should");
+         }
+         // try getting a parameter that should not be there
+         try {
+            ParameterDescription p3 = ad.getParameter("silly");
+            fail("getting non existant parameter should throw exception");
+         }
+         catch (ParameterDescriptionNotFoundException e2) {
+            // do nothing this should get here
+         }
+
+         // lets look at a some of the properties
+         System.out.println("name:" + p1.getName());
+         System.out.println("desc:" + p1.getDisplayDescription());
+         ApplicationInterface intf = null;
+         try {
+            intf = ad.getInterface("I1");
+         }
+         catch (InterfaceDescriptionNotFoundException e3) {
+            fail("could not find the I1 interface");
+         }
+         assertNotNull("the inferface object is null", intf);
+
+         String[] pds = intf.getArrayofInputs();
+         assertEquals("wrong number of input parametes", 2,pds.length);
+         assertEquals("input parameter name", "P2", pds[0]);
+         try {
+            ParameterDescription inp1 = intf.getInputParameter("P2");
+         }
+         catch (ParameterNotInInterfaceException e4) {
+            fail("paramter not found");
+         }
+         String[] pd2s = intf.getArrayofOutputs();
+          assertEquals("wrong number of output parametes",1, pd2s.length);
+          assertEquals("output parameter name", "P3", pd2s[0]);
+          try {
+             ParameterDescription inp1 = intf.getOutputParameter("P3");
+          }
+          catch (ParameterNotInInterfaceException e4) {
+             fail("paramter not found");
+          }
+
       }
       catch (ApplicationDescriptionNotFoundException e) {
          fail("expected application testapp not found");
       }
    }
 
- 
 }
