@@ -1,5 +1,5 @@
 /*
- * $Id: StoreDelegateFactory.java,v 1.11 2004/04/06 09:00:46 KevinBenson Exp $
+ * $Id: StoreDelegateFactory.java,v 1.12 2004/04/06 15:40:22 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -58,16 +58,19 @@ public class StoreDelegateFactory
       if (location.getScheme().startsWith(Agsl.SCHEME+":"+Msrl.SCHEME) && location.getEndpoint().endsWith("/Manager")) {
          //System.out.println("the endpoint location = " + location.getEndpoint().toString());
          return new MySpaceIt05Delegate(operator, location.getEndpoint().toString());
-      }      
+      }
       if (location.getScheme().startsWith(Agsl.SCHEME+":file")) {
          return new org.astrogrid.store.delegate.local.LocalFileStore(location);
-      }      
-      throw new IllegalArgumentException("Don't know how to create delegate for AGSL '"+location+"'");
+      }
+      throw new IllegalArgumentException("Don't know how to create administration delegate for AGSL '"+location+"'");
    }
 }
 
 /*
 $Log: StoreDelegateFactory.java,v $
+Revision 1.12  2004/04/06 15:40:22  mch
+Minor change to error text
+
 Revision 1.11  2004/04/06 09:00:46  KevinBenson
 changed it around so that it calls community first then registry to figvure out endpoints
 
