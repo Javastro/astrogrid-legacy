@@ -174,13 +174,14 @@ public class JobScheduler {
             iterator = steps.listIterator() ;
             
             InputSource
-               jobSource = new InputSource( new StringReader( job.getDocumentXML() ) );
+               jobSource = null ;
             
             Document
                doc = null ; 
             
             while( iterator.hasNext() ) {
                 step = (JobStep)iterator.next() ;
+                jobSource = new InputSource( new StringReader( job.getDocumentXML() ) );
                 doc = XMLUtils.newDocument( jobSource ) ;
                 this.dispatchOneStep( step, doc ) ;
                 step.getParent().setStatus( Job.STATUS_RUNNING ) ;
