@@ -1,4 +1,4 @@
-/*$Id: QueryRegistry2Stress.java,v 1.1 2004/09/16 11:18:15 KevinBenson Exp $
+/*$Id: QueryRegistry2Stress.java,v 1.2 2004/09/16 12:46:16 pah Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,9 +8,10 @@
  * with this distribution in the LICENSE.txt file.  
  *
 **/
-package org.astrogrid.registry.integration;
+package org.astrogrid.registry.stress;
 
 import org.astrogrid.registry.RegistryException;
+import org.astrogrid.registry.integration.RegistryBaseTest;
 
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
