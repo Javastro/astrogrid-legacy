@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ParameterValue.java,v 1.9 2004/03/04 02:11:54 nw Exp $
+ * $Id: ParameterValue.java,v 1.10 2004/03/05 15:56:00 nw Exp $
  */
 
 package org.astrogrid.applications.beans.v1.parameters;
@@ -26,7 +26,7 @@ import org.xml.sax.ContentHandler;
  * Defines what a parameterValue can contain - for the instance
  * document
  * 
- * @version $Revision: 1.9 $ $Date: 2004/03/04 02:11:54 $
+ * @version $Revision: 1.10 $ $Date: 2004/03/05 15:56:00 $
  */
 public class ParameterValue extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable

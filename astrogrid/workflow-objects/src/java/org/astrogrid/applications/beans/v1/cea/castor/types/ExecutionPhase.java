@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ExecutionPhase.java,v 1.7 2004/03/04 02:11:55 nw Exp $
+ * $Id: ExecutionPhase.java,v 1.8 2004/03/05 15:56:00 nw Exp $
  */
 
 package org.astrogrid.applications.beans.v1.cea.castor.types;
@@ -20,7 +20,7 @@ import org.exolab.castor.xml.Unmarshaller;
 /**
  * Enumeration of possible phases of job execution
  * 
- * @version $Revision: 1.7 $ $Date: 2004/03/04 02:11:55 $
+ * @version $Revision: 1.8 $ $Date: 2004/03/05 15:56:00 $
  */
 public class ExecutionPhase implements java.io.Serializable {
 
@@ -30,14 +30,14 @@ public class ExecutionPhase implements java.io.Serializable {
     //--------------------------/
 
     /**
-     * The UNKNOWN type
+     * The PENDING type
      */
-    public static final int UNKNOWN_TYPE = 0;
+    public static final int PENDING_TYPE = 0;
 
     /**
-     * The instance of the UNKNOWN type
+     * The instance of the PENDING type
      */
-    public static final ExecutionPhase UNKNOWN = new ExecutionPhase(UNKNOWN_TYPE, "UNKNOWN");
+    public static final ExecutionPhase PENDING = new ExecutionPhase(PENDING_TYPE, "PENDING");
 
     /**
      * The INITIALIZING type
@@ -78,6 +78,16 @@ public class ExecutionPhase implements java.io.Serializable {
      * The instance of the ERROR type
      */
     public static final ExecutionPhase ERROR = new ExecutionPhase(ERROR_TYPE, "ERROR");
+
+    /**
+     * The UNKNOWN type
+     */
+    public static final int UNKNOWN_TYPE = 5;
+
+    /**
+     * The instance of the UNKNOWN type
+     */
+    public static final ExecutionPhase UNKNOWN = new ExecutionPhase(UNKNOWN_TYPE, "UNKNOWN");
 
     /**
      * Field _memberTable
@@ -133,11 +143,12 @@ public class ExecutionPhase implements java.io.Serializable {
     private static java.util.Hashtable init()
     {
         Hashtable members = new Hashtable();
-        members.put("UNKNOWN", UNKNOWN);
+        members.put("PENDING", PENDING);
         members.put("INITIALIZING", INITIALIZING);
         members.put("RUNNING", RUNNING);
         members.put("COMPLETED", COMPLETED);
         members.put("ERROR", ERROR);
+        members.put("UNKNOWN", UNKNOWN);
         return members;
     } //-- java.util.Hashtable init() 
 

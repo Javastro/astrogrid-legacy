@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: MessageTypeDescriptor.java,v 1.7 2004/03/04 02:11:55 nw Exp $
+ * $Id: MessageTypeDescriptor.java,v 1.8 2004/03/05 15:56:00 nw Exp $
  */
 
 package org.astrogrid.applications.beans.v1.cea.castor;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class MessageTypeDescriptor.
  * 
- * @version $Revision: 1.7 $ $Date: 2004/03/04 02:11:55 $
+ * @version $Revision: 1.8 $ $Date: 2004/03/05 15:56:00 $
  */
 public class MessageTypeDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 
@@ -60,8 +60,12 @@ public class MessageTypeDescriptor extends org.exolab.castor.xml.util.XMLClassDe
         org.exolab.castor.xml.util.XMLFieldDescriptorImpl  desc           = null;
         org.exolab.castor.xml.XMLFieldHandler              handler        = null;
         org.exolab.castor.xml.FieldValidator               fieldValidator = null;
+        //-- initialize attribute descriptors
+        
+        //-- initialize element descriptors
+        
         //-- _content
-        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.lang.String.class, "_content", "PCDATA", org.exolab.castor.xml.NodeType.Text);
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.lang.String.class, "_content", "content", org.exolab.castor.xml.NodeType.Element);
         desc.setImmutable(true);
         handler = (new org.exolab.castor.xml.XMLFieldHandler() {
             public java.lang.Object getValue( java.lang.Object object ) 
@@ -86,6 +90,8 @@ public class MessageTypeDescriptor extends org.exolab.castor.xml.util.XMLClassDe
             }
         } );
         desc.setHandler(handler);
+        desc.setNameSpaceURI("http://www.astrogrid.org/schema/CEATypes/v1");
+        desc.setMultivalued(false);
         addFieldDescriptor(desc);
         
         //-- validation code for: _content
@@ -96,10 +102,8 @@ public class MessageTypeDescriptor extends org.exolab.castor.xml.util.XMLClassDe
             fieldValidator.setValidator(typeValidator);
         }
         desc.setValidator(fieldValidator);
-        //-- initialize attribute descriptors
-        
         //-- _source
-        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.lang.String.class, "_source", "source", org.exolab.castor.xml.NodeType.Attribute);
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.lang.String.class, "_source", "source", org.exolab.castor.xml.NodeType.Element);
         desc.setImmutable(true);
         handler = (new org.exolab.castor.xml.XMLFieldHandler() {
             public java.lang.Object getValue( java.lang.Object object ) 
@@ -124,6 +128,8 @@ public class MessageTypeDescriptor extends org.exolab.castor.xml.util.XMLClassDe
             }
         } );
         desc.setHandler(handler);
+        desc.setNameSpaceURI("http://www.astrogrid.org/schema/CEATypes/v1");
+        desc.setMultivalued(false);
         addFieldDescriptor(desc);
         
         //-- validation code for: _source
@@ -135,7 +141,7 @@ public class MessageTypeDescriptor extends org.exolab.castor.xml.util.XMLClassDe
         }
         desc.setValidator(fieldValidator);
         //-- _timestamp
-        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.util.Date.class, "_timestamp", "timestamp", org.exolab.castor.xml.NodeType.Attribute);
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.util.Date.class, "_timestamp", "timestamp", org.exolab.castor.xml.NodeType.Element);
         handler = (new org.exolab.castor.xml.XMLFieldHandler() {
             public java.lang.Object getValue( java.lang.Object object ) 
                 throws IllegalStateException
@@ -160,6 +166,8 @@ public class MessageTypeDescriptor extends org.exolab.castor.xml.util.XMLClassDe
         } );
         desc.setHandler( new org.exolab.castor.xml.handlers.DateFieldHandler(handler));
         desc.setImmutable(true);
+        desc.setNameSpaceURI("http://www.astrogrid.org/schema/CEATypes/v1");
+        desc.setMultivalued(false);
         addFieldDescriptor(desc);
         
         //-- validation code for: _timestamp
@@ -168,7 +176,7 @@ public class MessageTypeDescriptor extends org.exolab.castor.xml.util.XMLClassDe
         }
         desc.setValidator(fieldValidator);
         //-- _level
-        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel.class, "_level", "level", org.exolab.castor.xml.NodeType.Attribute);
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel.class, "_level", "level", org.exolab.castor.xml.NodeType.Element);
         handler = (new org.exolab.castor.xml.XMLFieldHandler() {
             public java.lang.Object getValue( java.lang.Object object ) 
                 throws IllegalStateException
@@ -193,6 +201,8 @@ public class MessageTypeDescriptor extends org.exolab.castor.xml.util.XMLClassDe
         } );
         desc.setHandler( new org.exolab.castor.xml.handlers.EnumFieldHandler(org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel.class, handler));
         desc.setImmutable(true);
+        desc.setNameSpaceURI("http://www.astrogrid.org/schema/CEATypes/v1");
+        desc.setMultivalued(false);
         addFieldDescriptor(desc);
         
         //-- validation code for: _level
@@ -201,7 +211,7 @@ public class MessageTypeDescriptor extends org.exolab.castor.xml.util.XMLClassDe
         }
         desc.setValidator(fieldValidator);
         //-- _phase
-        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase.class, "_phase", "phase", org.exolab.castor.xml.NodeType.Attribute);
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase.class, "_phase", "phase", org.exolab.castor.xml.NodeType.Element);
         handler = (new org.exolab.castor.xml.XMLFieldHandler() {
             public java.lang.Object getValue( java.lang.Object object ) 
                 throws IllegalStateException
@@ -226,6 +236,8 @@ public class MessageTypeDescriptor extends org.exolab.castor.xml.util.XMLClassDe
         } );
         desc.setHandler( new org.exolab.castor.xml.handlers.EnumFieldHandler(org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase.class, handler));
         desc.setImmutable(true);
+        desc.setNameSpaceURI("http://www.astrogrid.org/schema/CEATypes/v1");
+        desc.setMultivalued(false);
         addFieldDescriptor(desc);
         
         //-- validation code for: _phase
@@ -233,8 +245,6 @@ public class MessageTypeDescriptor extends org.exolab.castor.xml.util.XMLClassDe
         { //-- local scope
         }
         desc.setValidator(fieldValidator);
-        //-- initialize element descriptors
-        
     } //-- org.astrogrid.applications.beans.v1.cea.castor.MessageTypeDescriptor()
 
 

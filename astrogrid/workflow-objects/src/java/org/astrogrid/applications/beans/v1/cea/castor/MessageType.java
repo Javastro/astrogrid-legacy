@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: MessageType.java,v 1.7 2004/03/04 02:11:55 nw Exp $
+ * $Id: MessageType.java,v 1.8 2004/03/05 15:56:00 nw Exp $
  */
 
 package org.astrogrid.applications.beans.v1.cea.castor;
@@ -27,7 +27,7 @@ import org.xml.sax.ContentHandler;
 /**
  * A log entry recorded during execution
  * 
- * @version $Revision: 1.7 $ $Date: 2004/03/04 02:11:55 $
+ * @version $Revision: 1.8 $ $Date: 2004/03/05 15:56:00 $
  */
 public class MessageType extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
@@ -39,9 +39,9 @@ implements java.io.Serializable
     //--------------------------/
 
     /**
-     * internal content storage
+     * Field _content
      */
-    private java.lang.String _content = "";
+    private java.lang.String _content;
 
     /**
      * Field _source
@@ -70,7 +70,6 @@ implements java.io.Serializable
 
     public MessageType() {
         super();
-        setContent("");
     } //-- org.astrogrid.applications.beans.v1.cea.castor.MessageType()
 
 
@@ -135,8 +134,7 @@ implements java.io.Serializable
     } //-- boolean equals(java.lang.Object) 
 
     /**
-     * Returns the value of field 'content'. The field 'content'
-     * has the following description: internal content storage
+     * Returns the value of field 'content'.
      * 
      * @return the value of field 'content'.
      */
@@ -224,8 +222,7 @@ implements java.io.Serializable
     } //-- void marshal(org.xml.sax.ContentHandler) 
 
     /**
-     * Sets the value of field 'content'. The field 'content' has
-     * the following description: internal content storage
+     * Sets the value of field 'content'.
      * 
      * @param content the value of field 'content'.
      */

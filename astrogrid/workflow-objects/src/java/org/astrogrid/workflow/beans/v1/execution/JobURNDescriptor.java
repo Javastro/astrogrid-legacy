@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: JobURNDescriptor.java,v 1.5 2004/03/04 02:11:54 nw Exp $
+ * $Id: JobURNDescriptor.java,v 1.6 2004/03/05 15:56:00 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1.execution;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class JobURNDescriptor.
  * 
- * @version $Revision: 1.5 $ $Date: 2004/03/04 02:11:54 $
+ * @version $Revision: 1.6 $ $Date: 2004/03/05 15:56:00 $
  */
 public class JobURNDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 

@@ -20,10 +20,10 @@ public class JobMonitorServiceSoapBindingStub extends org.apache.axis.client.Stu
         org.apache.axis.description.OperationDesc oper;
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("monitorJob");
-        oper.addParameter(new javax.xml.namespace.QName("", "id"), new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "job-identifier-type"), org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType.class, org.apache.axis.description.ParameterDesc.IN, false, false);
-        oper.addParameter(new javax.xml.namespace.QName("", "feedback"), new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "message-type"), org.astrogrid.jes.types.v1.cea.axis.MessageType.class, org.apache.axis.description.ParameterDesc.IN, false, false);
+        oper.addParameter(new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "job-identifier"), new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "job-identifier-type"), org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType.class, org.apache.axis.description.ParameterDesc.IN, false, false);
+        oper.addParameter(new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "message"), new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "message-type"), org.astrogrid.jes.types.v1.cea.axis.MessageType.class, org.apache.axis.description.ParameterDesc.IN, false, false);
         oper.setReturnType(org.apache.axis.encoding.XMLType.AXIS_VOID);
-        oper.setStyle(org.apache.axis.enum.Style.DOCUMENT);
+        oper.setStyle(org.apache.axis.enum.Style.WRAPPED);
         oper.setUse(org.apache.axis.enum.Use.LITERAL);
         _operations[0] = oper;
 
@@ -54,9 +54,16 @@ public class JobMonitorServiceSoapBindingStub extends org.apache.axis.client.Stu
             java.lang.Class arraydf = org.apache.axis.encoding.ser.ArrayDeserializerFactory.class;
             java.lang.Class simplesf = org.apache.axis.encoding.ser.SimpleSerializerFactory.class;
             java.lang.Class simpledf = org.apache.axis.encoding.ser.SimpleDeserializerFactory.class;
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "execution-phase");
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "message-type");
             cachedSerQNames.add(qName);
-            cls = org.astrogrid.jes.types.v1.cea.axis.ExecutionPhase.class;
+            cls = org.astrogrid.jes.types.v1.cea.axis.MessageType.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(beansf);
+            cachedDeserFactories.add(beandf);
+
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "log-level");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.jes.types.v1.cea.axis.LogLevel.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(enumsf);
             cachedDeserFactories.add(enumdf);
@@ -68,16 +75,9 @@ public class JobMonitorServiceSoapBindingStub extends org.apache.axis.client.Stu
             cachedSerFactories.add(simplesf);
             cachedDeserFactories.add(simpledf);
 
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "message-type");
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "execution-phase");
             cachedSerQNames.add(qName);
-            cls = org.astrogrid.jes.types.v1.cea.axis.MessageType.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(simplesf);
-            cachedDeserFactories.add(simpledf);
-
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "log-level");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.jes.types.v1.cea.axis.LogLevel.class;
+            cls = org.astrogrid.jes.types.v1.cea.axis.ExecutionPhase.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(enumsf);
             cachedDeserFactories.add(enumdf);
@@ -139,7 +139,7 @@ public class JobMonitorServiceSoapBindingStub extends org.apache.axis.client.Stu
         }
     }
 
-    public void monitorJob(org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType id, org.astrogrid.jes.types.v1.cea.axis.MessageType feedback) throws java.rmi.RemoteException {
+    public void monitorJob(org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType jobIdentifier, org.astrogrid.jes.types.v1.cea.axis.MessageType message) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -151,11 +151,11 @@ public class JobMonitorServiceSoapBindingStub extends org.apache.axis.client.Stu
         _call.setProperty(org.apache.axis.client.Call.SEND_TYPE_ATTR, Boolean.FALSE);
         _call.setProperty(org.apache.axis.AxisEngine.PROP_DOMULTIREFS, Boolean.FALSE);
         _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
-        _call.setOperationName(new javax.xml.namespace.QName("", "monitorJob"));
+        _call.setOperationName(new javax.xml.namespace.QName("urn:jes/types/v1", "monitorJob"));
 
         setRequestHeaders(_call);
         setAttachments(_call);
-        _call.invokeOneWay(new java.lang.Object[] {id, feedback});
+        _call.invokeOneWay(new java.lang.Object[] {jobIdentifier, message});
 
     }
 

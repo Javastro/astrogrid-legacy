@@ -17,16 +17,18 @@ public class ExecutionPhase implements java.io.Serializable {
         _table_.put(_value_,this);
     }
 
-    public static final java.lang.String _UNKNOWN = "UNKNOWN";
+    public static final java.lang.String _PENDING = "PENDING";
     public static final java.lang.String _INITIALIZING = "INITIALIZING";
     public static final java.lang.String _RUNNING = "RUNNING";
     public static final java.lang.String _COMPLETED = "COMPLETED";
     public static final java.lang.String _ERROR = "ERROR";
-    public static final ExecutionPhase UNKNOWN = new ExecutionPhase(_UNKNOWN);
+    public static final java.lang.String _UNKNOWN = "UNKNOWN";
+    public static final ExecutionPhase PENDING = new ExecutionPhase(_PENDING);
     public static final ExecutionPhase INITIALIZING = new ExecutionPhase(_INITIALIZING);
     public static final ExecutionPhase RUNNING = new ExecutionPhase(_RUNNING);
     public static final ExecutionPhase COMPLETED = new ExecutionPhase(_COMPLETED);
     public static final ExecutionPhase ERROR = new ExecutionPhase(_ERROR);
+    public static final ExecutionPhase UNKNOWN = new ExecutionPhase(_UNKNOWN);
     public java.lang.String getValue() { return _value_;}
     public static ExecutionPhase fromValue(java.lang.String value)
           throws java.lang.IllegalStateException {
