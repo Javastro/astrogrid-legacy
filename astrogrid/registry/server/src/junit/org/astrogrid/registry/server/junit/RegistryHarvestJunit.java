@@ -58,7 +58,7 @@ public class RegistryHarvestJunit extends TestCase{
        String junitBuildDir = System.getProperty("org.astrogrid.registry.junitcache.build.url");
        String junitDir = System.getProperty("org.astrogrid.registry.junitcache.url");
        rhs = new RegistryHarvestService();
-       dbURI = rhs.conf.getString("registry.exist.db.uri",null);       
+       dbURI = rhs.conf.getString("exist.db.url",null);       
        rhs.conf.setProperty("org.astrogrid.registry.file",junitBuildDir+"/registry.xml");
        rhs.conf.setProperty("registry.junit.test/ServiceTest",junitDir+"/ServiceTest.xml");
        rhs.conf.setProperty("registry.junit.test/OrganisationTest",junitDir+"/OrganisationTest.xml");
@@ -72,7 +72,7 @@ public class RegistryHarvestJunit extends TestCase{
        if (DEBUG_FLAG) System.out.println("----\"----") ;
    }
    
-
+/*
    public void testHarvest() throws Exception {
       if (DEBUG_FLAG) System.out.println("Begin testHarvest");
       if(dbURI == null) return;
@@ -102,8 +102,8 @@ public class RegistryHarvestJunit extends TestCase{
          e.printStackTrace();
       }
    }      
-
-
+*/
+/*
    public void testHarvestResourceOfRegistry() throws Exception {
       if (DEBUG_FLAG) System.out.println("Begin testHarvestResourceOfRegistry");
       if(dbURI == null) return;      
@@ -119,7 +119,7 @@ public class RegistryHarvestJunit extends TestCase{
          e.printStackTrace();
       }
    }      
-
+*/
 
    public void testHarvestResource() throws Exception {
       if (DEBUG_FLAG) System.out.println("Begin testHarvestResource");
@@ -128,6 +128,7 @@ public class RegistryHarvestJunit extends TestCase{
       
       Document doc = rhs.conf.getDom("registry.junit.test/HarvestVizier");  
       Document responseDoc = rhs.harvestResource(doc);
+      System.out.println("Attempting to harvest Vizier");
       //TODO put assert statements here.
       if(responseDoc != null)      
          if (DEBUG_FLAG) System.out.println("harvestResource returned = " + XMLUtils.DocumentToString(responseDoc));

@@ -2,9 +2,9 @@
 #sample registry.xml file.
 org.astrogrid.registry.authorityid=astrogrid
 
-#Normally you just need to change the url piece.
-#exist.db.url=xmldb:exist://localhost:8080/exist/xmlrpc
 exist.db.url=http://localhost:8080/exist
+exist.query.returncount=25
+
 
 #current version of this registry.
 org.astrogrid.registry.version=0_9
@@ -32,11 +32,6 @@ registry.namespaces=http://www.ivoa.net/xml/VOResource/v0.9;
 
 #next line at the moment is not used.
 org.astrogrid.registry.writefile.timedelay.minutes=10
-
-#this is the sample registry xml file currently needed, but will be factored out as the eXist XMLDB comes online with
-#the registry component.  You can find this sample registry xml file located in the config/junitcache directory.
-org.astrogrid.registry.file=file:///C:/Development/temp/registry/registry.xml
-
 
 #next line is currently not needed.
 org.astrogrid.registry.debug=true

@@ -192,20 +192,21 @@ public class RegistryHarvestService implements
     * @author Kevin Benson 
     */  
    public Document harvestResource(Document resources){
-
+      System.out.println("update harvestResource");
+      //System.out.println("THE RESOURCES IN HARVESTRESOURCE = " +  DomHelper.DocumentToString(resources));
       //NodeList voList = resources.getElementsByTagNameNS("http://www.ivoa.net/xml/VOResource/v0.9","VODescription");
-      NodeList voList = RegistryFileHelper.findNodeListFromXML("VoDescription",resources.getDocumentElement());
+      //NodeList voList = RegistryFileHelper.findNodeListFromXML("VoDescription",resources.getDocumentElement());
       //This next statement will go away with Castor.
-      ArrayList al = new ArrayList();
+      //ArrayList al = new ArrayList();
       RegistryAdminService ras = new RegistryAdminService();
 
       XSLHelper xs = new XSLHelper();
       Document resourceChange = xs.transformDatabaseProcess((Node)resources.getDocumentElement());
+      Node harvestCopy = resourceChange.cloneNode(true);
       ras.updateNoCheck(resourceChange);
-      
-      for(int i = 0;i < al.size();i++) {
-         beginHarvest(null,resourceChange);
-      }
+      System.out.println("THE RESOURCECHANGE IN HARVESTRESOURCE1 = " +  DomHelper.DocumentToString((Document)harvestCopy));
+      beginHarvest(null,(Document)harvestCopy);
+      System.out.println("exiting harvestResource");
       return null;
    }
    
@@ -266,15 +267,18 @@ private class HarvestThread extends Thread {
 }
       
    public void beginHarvest(Date dt, Document resources) {
+      System.out.println("entered beginharvest");
       String accessURL = null;
       String invocationType = null;
       Document doc = null;
-      RegistryAdminService ras = new RegistryAdminService();      
-      NodeList resourceList = RegistryFileHelper.findNodeListFromXML("Resource",resources.getDocumentElement());
-      
+      RegistryAdminService ras = new RegistryAdminService();
+      //System.out.println("THE FULL RESOURCES IN BEGINHARVEST = " + DomHelper.DocumentToString(resources));
+      NodeList resourceList = RegistryFileHelper.findNodeListFromXML("vr","Resource",resources.getDocumentElement());
+      //System.out.println("the getLength = " + resourceList.getLength());
       for(int i = 0; i < resourceList.getLength();i++) {
          accessURL = RegistryFileHelper.findValueFromXML("AccessURL",(Element)resourceList.item(i));
-         invocationType = RegistryFileHelper.findValueFromXML("InvocationType",(Element)resourceList.item(i));
+         invocationType = RegistryFileHelper.findValueFromXML("Invocation",(Element)resourceList.item(i));
+         System.out.println("The access URL = " + accessURL + " invocationType = " + invocationType);
          if("WEBSERVICE".equals(invocationType)) {
             //call the service
             //remeber to look at the date
@@ -323,7 +327,7 @@ private class HarvestThread extends Thread {
             try {
                String ending = "";
                //might need to put some oai date stuff on the end.  This is unknown.
-               System.out.println("inside the web broser");
+               //System.out.println("inside the web broser");
             
                if(accessURL.indexOf("?") == -1) {
                   ending = "?verb=ListRecords"; //&from=" + date;   
@@ -336,27 +340,23 @@ private class HarvestThread extends Thread {
                   */
                }
             
-            
+               System.out.println("Grabbing Document from this url = " + accessURL + ending);           
                doc = DomHelper.newDocument(new URL(accessURL + ending));
-               System.out.println("Okay got this far to reading the url doc = " + DomHelper.DocumentToString(doc));
+               //System.out.println("Okay got this far to reading the url doc = " + DomHelper.DocumentToString(doc));
+               
                (new HarvestThread(ras,doc)).start();
-               //ras.updateNoCheck(doc);
-               //RegistryFileHelper.updateResources(doc,true,false);
-               //RegistryFileHelper.writeRegistryFile();
-            
                NodeList moreTokens = null;
+               //System.out.println("resumptionToken length = " + doc.getElementsByTagName("resumptionToken").getLength());
                while( (moreTokens = doc.getElementsByTagName("resumptionToken")).getLength() > 0) {
                   Node nd = moreTokens.item(0);
                   if(accessURL.indexOf("?") != -1) {
                      accessURL = accessURL.substring(0,accessURL.indexOf("?"));
                   }
                   ending = "?verb=ListRecords&resumptionToken=" + nd.getFirstChild().getNodeValue();
-                  System.out.println("the harvestcallregistry's accessurl for resumptionToken = " + accessURL + ending);
+                  System.out.println("the harvestcallregistry's accessurl inside the token calls = " + accessURL + ending);
                   doc = DomHelper.newDocument(new URL(accessURL + ending));
+                  System.out.println("INSIDE THE MORETOKENS = " + DomHelper.DocumentToString(doc) + " resumption token length = " + doc.getElementsByTagName("resumptionToken").getLength() );
                   (new HarvestThread(ras,doc)).start();
-                  //System.out.println("in harvestcallregistry the harvestDoc2 = " + XMLUtils.DocumentToString(harvestDoc));
-                  //ras.updateNoCheck(doc);
-                  //RegistryFileHelper.updateResources(doc,true,false);
                }//while
             }catch(ParserConfigurationException pce) {
                pce.printStackTrace();
@@ -367,6 +367,7 @@ private class HarvestThread extends Thread {
             }
          }//elseif
       }//for
+      System.out.println("exiting beghinHarvest");
    }//beginHarvest
 
    /**

@@ -128,7 +128,7 @@ public class RegistryFileHelper {
    }
    
    private static String getValueFromXMLByPrefix(String prefix, String elemName, Element lookDoc) {
-      NodeList nl = getNodeListFromXMLByPrefix(prefix, elemName, lookDoc);
+      NodeList nl = getNodeListFromXML(prefix, elemName, lookDoc);
       if(nl.getLength() > 0) {
          return nl.item(0).getFirstChild().getNodeValue();   
       }
@@ -148,11 +148,14 @@ public class RegistryFileHelper {
       return lookDoc.getElementsByTagName(elemName);
    }
    
-   private static NodeList getNodeListFromXMLByPrefix(String prefix, String elemName,  Element lookDoc) {
-      NodeList nl = lookDoc.getElementsByTagNameNS(prefix,elemName);
+   private static NodeList getNodeListFromXML(String extra, String elemName,  Element lookDoc) {
+      NodeList nl = lookDoc.getElementsByTagNameNS(extra,elemName);
       if(nl.getLength() == 0) {
-         nl = lookDoc.getElementsByTagName(prefix + elemName);
+         nl = lookDoc.getElementsByTagName(extra + ":" + elemName);
       }
+      if(nl.getLength() == 0) {
+         nl = lookDoc.getElementsByTagName(elemName);
+      }      
       return nl;
    }
    
@@ -166,6 +169,10 @@ public class RegistryFileHelper {
 
    public static NodeList findNodeListFromXML(String elemName, Element lookDoc) {
       return getNodeListFromXML(elemName, lookDoc);
+   }   
+
+   public static NodeList findNodeListFromXML(String extra, String elemName, Element lookDoc) {
+      return getNodeListFromXML(extra, elemName, lookDoc);
    }   
    
    
