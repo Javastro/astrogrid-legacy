@@ -1,7 +1,7 @@
 <%@ page import="org.astrogrid.store.delegate.*,
                  org.astrogrid.store.*,
                  org.astrogrid.community.User,
-                 org.astrogrid.store.delegate.myspaceItn05.EntryRecord,
+                 org.astrogrid.store.delegate.myspaceItn05.*,
                  java.net.*,
                  java.util.*,
                  java.io.*"
@@ -12,6 +12,10 @@
 </head>
 
 <body>
+
+<FORM>
+<INPUT TYPE="button" onClick="history.go(0)" VALUE="Refresh">
+</FORM>
 <a href="listFiles.jsp" target="files">Refresh</a>
 
 <%
@@ -21,6 +25,7 @@
                                  request.getServerPort(),
                                  request.getContextPath() + "/services/Manager");
 %>
+
 <table>
 <tr>
   <td>Filename</td>
@@ -29,20 +34,26 @@
   <td>Actions</td>
 </tr>
 <%
-  StoreClient client = StoreDelegateFactory.createDelegate(user, new Agsl("myspace:"+serviceURL));
+   ManagerGenuine manager = new ManagerGenuine();
 
-  StoreFile[] files = client.listFiles("*");
+   KernelResults results = manager.getEntriesList("*", false);
 
-  int resultsSize = files.length;
+   int resultsSize = results.getEntries().length;
+// StoreClient client = StoreDelegateFactory.createDelegate(user, new Agsl("myspace:"+serviceURL));
 
+//  StoreFile[] files = client.listFiles("*");
+
+//  int resultsSize = files.length;
+
+   
   if (resultsSize > 0)
   {
      for (int i=0; i<resultsSize; i++)
      {
-         EntryRecord msnode = (EntryRecord) files[i];
+         EntryRecord msnode = new EntryRecord ( (EntryResults) results.getEntries()[i]);
          
          out.println("<tr>");
-         if (files[i].isFolder()) {
+         if (msnode.isFolder()) {
             out.println("<td>"+msnode.getName()+"</td>");
          }
          else {
