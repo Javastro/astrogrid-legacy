@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.44 2004/02/12 15:50:11 nw Exp $ -->
+<!-- $Id: project.xml,v 1.45 2004/02/13 18:31:02 jdt Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
     <extend>../maven-base/project.xml</extend>
@@ -35,6 +35,14 @@
     <!-- end of overrides -->
     <build>
         <sourceDirectory>src/java</sourceDirectory>
+        <resources>
+	        <resource>
+		        <directory>${basedir}/src/java</directory>
+	            <includes>
+	                <include>**/*.properties</include>
+	            </includes>
+	        </resource>
+	    </resources>
         <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
         <unitTest>
             <includes>
