@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.39 2004/03/15 17:12:28 mch Exp $
+ * $Id: AxisDataServer.java,v 1.40 2004/03/17 00:27:21 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -111,7 +111,7 @@ public abstract class AxisDataServer  {
    public String submitQuery(Account user, Query query, Agsl resultsTarget, String requestedFormat, QuerierListener listener) throws AxisFault {
       try  {
          Querier querier = Querier.makeQuerier(user, query, new TargetIndicator(resultsTarget), requestedFormat);
-         querier.addListener(listener);
+         if (listener != null) { querier.addListener(listener); }
          server.querierManager.submitQuerier(querier);
          return querier.getId();
       }
@@ -164,6 +164,9 @@ public abstract class AxisDataServer  {
 
 /*
 $Log: AxisDataServer.java,v $
+Revision 1.40  2004/03/17 00:27:21  mch
+Added v05 AxisDataServer
+
 Revision 1.39  2004/03/15 17:12:28  mch
 Added memory to status info
 
