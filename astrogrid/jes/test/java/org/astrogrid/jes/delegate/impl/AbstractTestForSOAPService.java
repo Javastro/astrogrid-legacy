@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForSOAPService.java,v 1.2 2004/03/07 21:04:38 nw Exp $
+/*$Id: AbstractTestForSOAPService.java,v 1.3 2004/03/09 14:23:36 nw Exp $
  * Created on 05-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -40,24 +40,17 @@ public class AbstractTestForSOAPService extends TestCase {
         super(arg0);
     }
     
-    protected void setUp() throws Exception {        
-        barrier = new Mutex();
-        ComponentManager cm = new TestComponentManager();        
-        ComponentManagerFactory._setInstance(cm);
-        assertTrue(ComponentManagerFactory.getInstance().getNotifier() instanceof MySchedulerNotifier);
-    }
-    protected Sync barrier;  
     
     /** subclass of componenent manager to configure local service to use a mock.. */
-    protected class TestComponentManager extends BasicComponentManager {
-        public TestComponentManager() {
+    protected static  class TestComponentManager extends BasicComponentManager {
+        public TestComponentManager(Sync barrier) {
             super();    
             MutablePicoContainer pico = super.getContainer();
             // need to remove existing registrations.
             
             // just mock the dispatcher.
             pico.unregisterComponent(Dispatcher.class);
-            pico.registerComponentImplementation(Dispatcher.class,MockDispatcher.class);
+            pico.registerComponentImplementation(Dispatcher.class,MockDispatcher.class);                       
             
             // scheduler that notifies of completion by releasing a barrier
             pico.unregisterComponent(SchedulerNotifier.class);
@@ -90,6 +83,9 @@ public class AbstractTestForSOAPService extends TestCase {
 
 /* 
 $Log: AbstractTestForSOAPService.java,v $
+Revision 1.3  2004/03/09 14:23:36  nw
+tests that exercise the soap transport
+
 Revision 1.2  2004/03/07 21:04:38  nw
 merged in nww-itn05-pico - adds picocontainer
 

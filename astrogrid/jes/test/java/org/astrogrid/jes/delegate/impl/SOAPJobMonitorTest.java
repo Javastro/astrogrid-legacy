@@ -1,4 +1,4 @@
-/*$Id: SOAPJobMonitorTest.java,v 1.2 2004/03/07 21:04:38 nw Exp $
+/*$Id: SOAPJobMonitorTest.java,v 1.3 2004/03/09 14:23:36 nw Exp $
  * Created on 05-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.jes.delegate.impl;
 
 import org.astrogrid.jes.comm.MockSchedulerNotifier;
+import org.astrogrid.jes.component.ComponentManager;
 import org.astrogrid.jes.component.ComponentManagerFactory;
 import org.astrogrid.jes.delegate.JesDelegateFactory;
 import org.astrogrid.jes.delegate.JobMonitor;
@@ -22,6 +23,7 @@ import org.astrogrid.jes.types.v1.cea.axis.MessageType;
 
 import org.apache.axis.client.AdminClient;
 
+import EDU.oswego.cs.dl.util.concurrent.Mutex;
 import EDU.oswego.cs.dl.util.concurrent.Sync;
 
 import java.io.FileWriter;
@@ -42,14 +44,15 @@ public class SOAPJobMonitorTest extends AbstractTestForSOAPService {
     public SOAPJobMonitorTest(String arg0) {
         super(arg0);
     }
-
+    protected Sync barrier;  
     /*
      * @see TestCase#setUp()
      */
     protected void setUp() throws Exception {
-        super.setUp();
-
-        
+        barrier = new Mutex();
+        ComponentManager cm = new TestComponentManager(barrier);        
+        ComponentManagerFactory._setInstance(cm);
+        assertTrue(ComponentManagerFactory.getInstance().getNotifier() instanceof MySchedulerNotifier);
        deployLocalMonitor();
        delegate = JesDelegateFactory.createJobMonitor(MONITOR_ENDPOINT);
        assertNotNull(delegate);
@@ -102,6 +105,9 @@ public class SOAPJobMonitorTest extends AbstractTestForSOAPService {
 
 /* 
 $Log: SOAPJobMonitorTest.java,v $
+Revision 1.3  2004/03/09 14:23:36  nw
+tests that exercise the soap transport
+
 Revision 1.2  2004/03/07 21:04:38  nw
 merged in nww-itn05-pico - adds picocontainer
 
