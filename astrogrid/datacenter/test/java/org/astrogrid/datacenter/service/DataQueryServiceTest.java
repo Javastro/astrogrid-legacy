@@ -1,4 +1,4 @@
-/*$Id: DataQueryServiceTest.java,v 1.14 2003/09/24 21:11:14 nw Exp $
+/*$Id: DataQueryServiceTest.java,v 1.15 2003/10/13 14:08:10 nw Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,7 +27,7 @@ import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.astrogrid.datacenter.queriers.DatabaseQuerierManager;
 import org.astrogrid.datacenter.queriers.DummyQuerier;
-import org.astrogrid.datacenter.queriers.QueryListener;
+import org.astrogrid.datacenter.queriers.QuerierListener;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.queriers.sql.HsqlTestCase;
 import org.astrogrid.datacenter.query.QueryException;
@@ -128,13 +128,13 @@ public class DataQueryServiceTest extends TestCase {
 
 
 
-    static class TestListener implements QueryListener {
+    static class TestListener implements QuerierListener {
         public List statusList = new ArrayList();
         /* (non-Javadoc)
          * @see org.astrogrid.datacenter.service.ServiceListener#serviceStatusChanged(java.lang.String)
          */
 
-        public void serviceStatusChanged(DatabaseQuerier querier) {
+        public void queryStatusChanged(DatabaseQuerier querier) {
             statusList.add(querier.getStatus());
         }
 
@@ -148,6 +148,9 @@ public class DataQueryServiceTest extends TestCase {
 
 /*
 $Log: DataQueryServiceTest.java,v $
+Revision 1.15  2003/10/13 14:08:10  nw
+little fix to changed class name.
+
 Revision 1.14  2003/09/24 21:11:14  nw
 altered to fit with new configuration and behaviour
 
