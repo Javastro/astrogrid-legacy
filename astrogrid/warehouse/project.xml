@@ -62,6 +62,18 @@
       <id>astrogrid-common</id>
       <version>SNAPSHOT</version>
     </dependency>
+  
+  <dependency>
+    <groupId>astrogrid-datacenter</groupId>
+    <artifactId>astrogrid-datacenter-server</artifactId>
+    <version>SNAPSHOT</version>
+  </dependency>
+
+  <dependency>
+    <groupId>astrogrid-datacenter</groupId>
+      <artifactId>astrogrid-datacenter-client</artifactId>
+      <version>SNAPSHOT</version>
+  </dependency>
 
     <!-- This is needed for runtime tests because the datacentre stuff
     needs it. -->
@@ -69,27 +81,6 @@
       <id>astrogrid-mySpace</id>
       <version>SNAPSHOT</version>
     </dependency>
-
-<!--
-    <dependency>
-      <id>astrogrid-datacenter-server</id>
-      <version>SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <id>astrogrid-datacenter-client</id>
-      <version>SNAPSHOT</version>
-    </dependency>
--->
-<!-- THIS IS A TEMPORARY HACK UNTIL THE NIGHTLY SNAPSHOT IS AVAILABLE -->
-    <dependency>
-      <id>astrogrid-datacenter-server</id>
-      <version>TEMP</version>
-    </dependency>
-    <dependency>
-      <id>astrogrid-datacenter-client</id>
-      <version>TEMP</version>
-    </dependency>
-
 
     <!-- more standard deps -->
       <!-- axis, and the jars it relies upon -->
