@@ -34,8 +34,8 @@
     <!-- needed for compilation only -->
     <dependency>
     	<groupId>org.astrogrid</groupId>
-    	<artifactId>astrogrid-cdk-scripting</artifactId>
-    	<version>${astrogrid.aggregate.version}</version>
+    	<artifactId>astrogrid-scripting</artifactId>
+    	<version>${astrogrid.scripting.version}</version>
     </dependency>
 
 
