@@ -1,4 +1,4 @@
-/*$Id: BaseBean.java,v 1.2 2004/03/01 01:26:12 nw Exp $
+/*$Id: BaseBean.java,v 1.3 2004/03/05 11:05:08 nw Exp $
  * Created on 10-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,8 @@ package org.astrogrid.common.bean;
 
 import org.apache.commons.jxpath.ClassFunctions;
 import org.apache.commons.jxpath.ExpressionContext;
+import org.apache.commons.jxpath.FunctionLibrary;
+import org.apache.commons.jxpath.Functions;
 import org.apache.commons.jxpath.JXPathContext;
 import org.apache.commons.jxpath.Pointer;
 
@@ -37,12 +39,17 @@ public abstract class BaseBean {
     public final synchronized JXPathContext accessJXPathContext() {
         if (cxt == null) {
                     this.cxt = JXPathContext.newContext(this);
-                    this.cxt.setLenient(true);              
-                    this.cxt.setFunctions(new ClassFunctions(BaseBean.Functions.class,"functions"));              
+                    this.cxt.setLenient(true);
+                    FunctionLibrary lib = new FunctionLibrary();
+                    this.cxt.setFunctions(lib);                    
+                    lib.addFunctions(new ClassFunctions(BaseBean.Fns.class,"fn"));         
         }
         return cxt;
     } 
-    
+    /** add a new funciton library to the xpath interpreter */
+    public final void addFunctions(Functions fn) {
+        ((FunctionLibrary)accessJXPathContext().getFunctions()).addFunctions(fn);
+    }
     /** execute an xpath query, using thiis object as the root of an object graph
      * 
      * @param xpath query to execute
@@ -64,20 +71,22 @@ public abstract class BaseBean {
      * 
      * @param target object to return xpath for. must be in object tree (or a similar object equivalent under equals())
      * @return xpath for that object, or null
+     *
      */
     public final String getXPathFor(Object target) {
         // add variable we're looking for.
         JXPathContext cxt = this.accessJXPathContext();
         cxt.getVariables().declareVariable("target",target);
-        Pointer p  = cxt.getPointer("//*[functions:matchTarget()]");
+        Pointer p  = cxt.getPointer("//*[fn:matchTarget()]");
         // tidyup  
         cxt.getVariables().undeclareVariable("target");
         // sanity check..
         return p != null && p.getNode() != null ? p.asPath() : null;        
     }
 
-    /** class of functions added to jxpath context */
-    public static class Functions {
+    /** class of functions added to jxpath context
+     * <p>has to be public, else lib is not callable from jxpath */
+    public static class Fns {
         /** returns true if context node is equal to variable target.
          * i.e. $target.equals(.)
          * @param ctxt
@@ -88,6 +97,22 @@ public abstract class BaseBean {
             Object target = ctxt.getJXPathContext().getVariables().getVariable("target");
             return target.equals(candidate);
         }
+        
+        /** access the name of the class of the context node - useful for finding nodes by class 
+         * e.g. //*[functions:type() = 'org.astrogrid.Blob'] 
+         *  */
+        public static String type(ExpressionContext ctxt) {
+            Pointer ptr = ctxt.getContextNodePointer();
+            if (ptr == null) {
+                return "null";
+            }
+            Object candidate = ctxt.getContextNodePointer().getValue();
+            if (candidate == null) {
+                return "null";
+            }
+            return candidate.getClass().getName();
+        }
+
     }    
 
     
@@ -96,6 +121,9 @@ public abstract class BaseBean {
 
 /* 
 $Log: BaseBean.java,v $
+Revision 1.3  2004/03/05 11:05:08  nw
+added ability to plug in new xpath function sets
+
 Revision 1.2  2004/03/01 01:26:12  nw
 added method to find xpath for a given object in the tree
 - can be used to implement activity keys

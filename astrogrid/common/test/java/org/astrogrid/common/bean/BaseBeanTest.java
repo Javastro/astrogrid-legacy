@@ -1,4 +1,4 @@
-/*$Id: BaseBeanTest.java,v 1.2 2004/03/01 01:26:33 nw Exp $
+/*$Id: BaseBeanTest.java,v 1.3 2004/03/05 11:05:32 nw Exp $
  * Created on 10-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -149,6 +149,16 @@ public class BaseBeanTest extends TestCase {
         String path = car.getXPathFor(d);
         assertNull(path);
     }
+    
+    /** tests 'type' extension function */
+    public void testTypeExFn() {
+        Object o = car.findXPathValue("//*[fn:type() = 'org.astrogrid.common.bean.BaseBeanTest$Door']");
+        assertNotNull(o);
+        assertTrue(o instanceof Door);
+        System.out.println(o);
+                   
+    }
+    
     
 
     
@@ -313,6 +323,9 @@ public class BaseBeanTest extends TestCase {
 
 /* 
 $Log: BaseBeanTest.java,v $
+Revision 1.3  2004/03/05 11:05:32  nw
+added ability to plug in new xpath function sets
+
 Revision 1.2  2004/03/01 01:26:33  nw
 test of activity key method
 
