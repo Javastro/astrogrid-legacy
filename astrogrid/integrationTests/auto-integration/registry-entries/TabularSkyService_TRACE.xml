@@ -32,7 +32,7 @@
       </Description>
       <ReferenceURL>http://radiosun.ts.astro.it/sec/sec_ui.php</ReferenceURL>
     </Summary>
-    <Type>Archive</Type>
+    <Type>Catalog</Type>
     <Curation>
       <Publisher>
 	      <Title>MSSL/UCL Mullard Space Science Laboratory</Title>
@@ -64,6 +64,7 @@
       </vs:Spectral>
     </vs:Coverage>
     <Table role="out" xmlns="http://www.ivoa.net/xml/VODataService/v0.4">
+       <Table>sgas_event</Table>
        <Column>
           <vr:Name>time_start</vr:Name>
           <vr:Description>Start time of the solar event.</vr:Description>

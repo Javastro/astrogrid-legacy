@@ -33,7 +33,7 @@
       </Description>
       <ReferenceURL>http://adil.ncsa.uiuc.edu/</ReferenceURL>
     </Summary>
-    <Type>Archive</Type>
+    <Type>Catalog</Type>
     <RelatedResource>
        <Relationship>service-for</Relationship>
        <RelatedTo>
@@ -85,7 +85,7 @@
       <Param>
         <vr:Name>RA</vr:Name>
         <vr:Description>The right ascension of the search cone center</vr:Description>
-   <DataType>float</DataType>
+   <DatatType>float</DataType>
         <Unit>degrees</Unit>
    <UCD>POS_EQ_RA_MAIN</UCD>
       </Param>
@@ -118,6 +118,7 @@
       </vs:Spectral>
     </vs:Coverage>
     <Table role="out" xmlns="http://www.ivoa.net/xml/VODataService/v0.4">
+       <Table>Image_vocone</Table>
        <Column>
           <vr:Name>Codename</vr:Name>
           <vr:Description>ADIL Image Identifier</vr:Description>
@@ -183,7 +184,7 @@
       </Description>
       <ReferenceURL>http://adil.ncsa.uiuc.edu/</ReferenceURL>
     </Summary>
-    <Type>Archive</Type>
+    <Type>Catalog</Type>
     <RelatedResource>
        <Relationship>service-for</Relationship>
        <RelatedTo>
@@ -292,6 +293,7 @@
       </vs:Spectral>
     </vs:Coverage>
     <Table xmlns="http://www.ivoa.net/xml/VODataService/v0.4">
+       <Table>Image_sia</Table>
        <Column>
           <vr:Name>Codename</vr:Name>
           <vr:Description>ADIL Image Identifier - Unique identifier for image, as assigned by the ADIL</vr:Description>
