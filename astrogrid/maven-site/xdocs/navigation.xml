@@ -9,6 +9,7 @@
        <item name="Projects" href="http://www.astrogrid.org/maven/build/index.html"/>
     </links>
     <menu name="Projects">
+      <item name="Common"         href="http://www.astrogrid.org/maven/build/common/index.html"/>
       <item name="Registry"       href="http://www.astrogrid.org/maven/build/registry/index.html"/>
       <item name="UI"             href="http://www.astrogrid.org/maven/build/ui/index.html"/>
       <item name="Job Management" href="http://www.astrogrid.org/maven/build/jes/index.html"/>
@@ -17,6 +18,7 @@
       <item name="PortalB"        href="http://www.astrogrid.org/maven/build/portalB/index.html"/>
     </menu>
     <menu name="Maven Build Logs">
+      <item name="Common"         href="http://www.astrogrid.org/maven/build/log/maven-build-common.log"/>
       <item name="Registry"       href="http://www.astrogrid.org/maven/build/log/maven-build-registry.log"/>
       <item name="UI"             href="http://www.astrogrid.org/maven/build/log/maven-build-ui.log"/>
       <item name="Job Management" href="http://www.astrogrid.org/maven/build/log/maven-build-jes.log"/>
