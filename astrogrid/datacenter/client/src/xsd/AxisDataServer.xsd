@@ -65,10 +65,12 @@
 		</xsd:complexType>
 	</xsd:element>
 
-	<xsd:element name="QueryId">
+	<xsd:element name="QueryId" type="xsd:string">
+		<!--
 		<xsd:complexType>
 			<xsd:attribute name="id" type="xsd:string" />
 		</xsd:complexType>
+		-->
 	</xsd:element>
 
             <xsd:element name="doQuery">

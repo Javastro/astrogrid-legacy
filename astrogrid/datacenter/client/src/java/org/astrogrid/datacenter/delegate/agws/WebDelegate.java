@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegate.java,v 1.9 2003/11/26 16:31:46 nw Exp $
+ * $Id: WebDelegate.java,v 1.10 2003/12/01 16:53:16 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -22,7 +22,6 @@ import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.axisdataserver.AxisDataServerServiceLocator;
 import org.astrogrid.datacenter.axisdataserver.AxisDataServerSoapBindingStub;
-import org.astrogrid.datacenter.axisdataserver.types._QueryId;
 import org.astrogrid.datacenter.axisdataserver.types._query;
 import org.astrogrid.datacenter.delegate.AdqlQuerier;
 import org.astrogrid.datacenter.delegate.Certification;
@@ -64,9 +63,9 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier
     */
    private class WebQueryDelegate implements DatacenterQuery
    {
-      _QueryId queryId = null;
+     String queryId = null;
       
-      public WebQueryDelegate(_QueryId id)
+      public WebQueryDelegate(String id)
       {
          this.queryId = id;
       }
@@ -113,7 +112,7 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier
       */
       public String getId()
       {
-         return queryId.getId();
+         return queryId;
       }
       
       /**
@@ -384,6 +383,9 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier
 
 /*
 $Log: WebDelegate.java,v $
+Revision 1.10  2003/12/01 16:53:16  nw
+dropped _QueryId, back to string
+
 Revision 1.9  2003/11/26 16:31:46  nw
 altered transport to accept any query format.
 moved back to axis from castor
