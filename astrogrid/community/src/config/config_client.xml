@@ -1,0 +1,33 @@
+<?xml version="1.0" ?>
+<!--+
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/config/Attic/config_client.xml,v $</cvs:source>
+    | <cvs:author>$Author: KevinBenson $</cvs:author>
+    | <cvs:date>$Date: 2003/09/14 21:19:43 $</cvs:date>
+    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:log>
+    |   $Log: config_client.xml,v $
+    |   Revision 1.1  2003/09/14 21:19:43  KevinBenson
+    |   *** empty log message ***
+    |
+    |   Revision 1.1  2003/09/13 02:18:52  dave
+    |   Extended the jConfig configuration code.
+    |
+    | </cvs:log>
+    |
+    +-->
+<properties>
+   <!--+
+       | Configuration properties for the community portal.
+       | These values are for illustration only.
+       | The actual values are filled in by the Ant build script.
+       |
+       +-->
+   <category name="org.astrogrid.community">
+       <property name="community.name" value="localhost" />
+       <property name="portal.security" value="on" />
+       <property name="portal.secure.port" value="8443" />
+       <property name="portal.nonsecure.port" value="8080" />       
+       <property name="astrogrid.admin" value="Kevin Benson" />
+       <property name="astrogrid.adminEmail" value="kmb@mssl.ucl.ac.uk" />
+   </category>
+</properties>

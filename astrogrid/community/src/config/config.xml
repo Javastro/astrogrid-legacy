@@ -1,11 +1,14 @@
 <?xml version="1.0" ?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/config/Attic/config.xml,v $</cvs:source>
-    | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/09/13 02:18:52 $</cvs:date>
-    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:author>$Author: KevinBenson $</cvs:author>
+    | <cvs:date>$Date: 2003/09/14 21:19:43 $</cvs:date>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
     | <cvs:log>
     |   $Log: config.xml,v $
+    |   Revision 1.2  2003/09/14 21:19:43  KevinBenson
+    |   *** empty log message ***
+    |
     |   Revision 1.1  2003/09/13 02:18:52  dave
     |   Extended the jConfig configuration code.
     |
@@ -19,9 +22,9 @@
 	    | The actual values are filled in by the Ant build script.
 	    |
 	    +-->
-	<category name="org.astrogrid.community">
+	<category neame="org.astrogrid.community">
 		<property name="database.name"    value="policy"/>
-		<property name="database.config"  value="config/database.xml"/>
-		<property name="database.mapping" value="config/mapping.xml"/>
+		<property name="database.config"  value="c:\\database.xml"/>
+		<property name="database.mapping" value="c:\\mapping.xml"/>
 	</category> 
 </properties>
