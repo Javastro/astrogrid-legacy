@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationsConstants.java,v 1.10 2004/03/29 12:33:45 pah Exp $
+ * $Id: ApplicationsConstants.java,v 1.11 2004/04/14 16:08:30 pah Exp $
  * 
  * Created on 17-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -17,6 +17,7 @@ package org.astrogrid.applications.common;
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @version $Name:  $
  * @since iteration4
+ * @TODO put a namespace prefix in front of property look up keys
  */
 public final class ApplicationsConstants {
 

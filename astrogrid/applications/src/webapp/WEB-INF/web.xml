@@ -35,12 +35,19 @@
     </init-param>
     <load-on-startup>100</load-on-startup>
   </servlet>
+  <!-- a small servlet that will invoke the CommonExecutionController to make sure that it registers itself on statup -->
+  <servlet>
+      <servlet-name>CommonExecutionControllerInitializer</servlet-name>
+      <servlet-class>org.astrogrid.applications.manager.InitServlet</servlet-class>
+      <load-on-startup>200</load-on-startup>
+  	
+  </servlet>
 
   <servlet-mapping>
     <servlet-name>AxisServlet</servlet-name>
     <url-pattern>/servlet/AxisServlet</url-pattern>
   </servlet-mapping>
-
+  
   <servlet-mapping>
     <servlet-name>AxisServlet</servlet-name>
     <url-pattern>*.jws</url-pattern>
