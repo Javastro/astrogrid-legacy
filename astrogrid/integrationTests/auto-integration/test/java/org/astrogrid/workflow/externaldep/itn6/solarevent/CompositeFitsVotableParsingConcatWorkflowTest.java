@@ -1,4 +1,4 @@
-/*$Id: CompositeFitsVotableParsingConcatWorkflowTest.java,v 1.5 2004/09/07 12:57:23 nw Exp $
+/*$Id: CompositeFitsVotableParsingConcatWorkflowTest.java,v 1.6 2004/09/08 12:15:52 nw Exp $
  * Created on 12-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -45,6 +45,7 @@ public class CompositeFitsVotableParsingConcatWorkflowTest extends SimpleFitsWor
      */
     public CompositeFitsVotableParsingConcatWorkflowTest(String arg0) {
         super(new String[]{FITS_APP,MPEG_APP}, arg0);
+        WAIT_TIME = 20 * 60 * 1000; // 20 minutes timeout for this one.
     }
 
     protected void setUp() throws Exception {
@@ -115,6 +116,9 @@ public class CompositeFitsVotableParsingConcatWorkflowTest extends SimpleFitsWor
 
 /* 
 $Log: CompositeFitsVotableParsingConcatWorkflowTest.java,v $
+Revision 1.6  2004/09/08 12:15:52  nw
+upped the timeout for this test.
+
 Revision 1.5  2004/09/07 12:57:23  nw
 fixed little bug in embedded script - need to clear existing parameters first.
 
