@@ -1,4 +1,4 @@
-/*$Id: SimpleCommandlineWorkflowEndToEndTest.java,v 1.3 2004/04/23 22:40:54 pah Exp $
+/*$Id: SimpleCommandlineWorkflowEndToEndTest.java,v 1.4 2004/04/25 20:54:22 pah Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -36,6 +36,7 @@ import junit.framework.TestSuite;
  * <p>
  * Test for a workflow that has a single step that calls the testapp
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Mar-2004
+ * @author Paul Harrison pah@jb.man.ac.uk 23-Apr-2004
  *
  */
 public class SimpleCommandlineWorkflowEndToEndTest extends AbstractTestForIntegration {
@@ -189,6 +190,9 @@ public class SimpleCommandlineWorkflowEndToEndTest extends AbstractTestForIntegr
 
 /* 
 $Log: SimpleCommandlineWorkflowEndToEndTest.java,v $
+Revision 1.4  2004/04/25 20:54:22  pah
+make use the local file store rather than myspace
+
 Revision 1.3  2004/04/23 22:40:54  pah
 more tweaks
 
