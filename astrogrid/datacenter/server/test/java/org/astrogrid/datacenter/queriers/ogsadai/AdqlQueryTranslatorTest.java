@@ -1,4 +1,4 @@
-/*$Id: AdqlQueryTranslatorTest.java,v 1.1 2004/02/25 00:22:10 eca Exp $
+/*$Id: AdqlQueryTranslatorTest.java,v 1.2 2004/02/25 00:33:25 eca Exp $
  * Created on 29-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,7 +8,7 @@
  * with this distribution in the LICENSE.txt file.  
  *
 **/
-package org.astrogrid.datacenter.queriers.sql;
+package org.astrogrid.datacenter.queriers.ogsadai;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -91,6 +91,9 @@ public class AdqlQueryTranslatorTest extends TestCase {
 
 /* 
 $Log: AdqlQueryTranslatorTest.java,v $
+Revision 1.2  2004/02/25 00:33:25  eca
+*** empty log message ***
+
 Revision 1.1  2004/02/25 00:22:10  eca
 Made ogsadai directory and copied AdqlQueryTranslator from /sql/ to /ogsadai/.
 
