@@ -12,7 +12,10 @@ import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.io.File;
-import org.astrogrid.registry.RegistryConfig;
+
+import org.astrogrid.config.Config;
+
+
 
 /**
  * Main Options component to let the user determine the next course of action which are Query, Add, or Harvest new
@@ -31,6 +34,8 @@ public class RegistryOptionAction extends AbstractAction
    private static final String PARAM_CONE_SEARCH = "conesearch";
    private static final String PARAM_SIA = "sia";
    private static final String PARAM_HTTP = "paramhttp";
+   
+   public static Config conf = null;   
    
    /**
     * Cocoon param for the user param in the session.
@@ -60,6 +65,22 @@ public class RegistryOptionAction extends AbstractAction
    public static final String SKYSERVICE_OPTION = "SkyService";
    public static final String TABULARSKYSERVICE_OPTION = "TabularSkyService";
    public static final String DATACOLLECTION_OPTION = "DataCollection";
+   
+   private static final String ORGANISATION_XML_URL_TEMPLATE_PROPERTY = "org.astrogrid.registry.organisation.template.url";
+   private static final String RESOURCE_XML_URL_TEMPLATE_PROPERTY = "org.astrogrid.registry.resource.template.url";
+   private static final String SERVICE_XML_URL_TEMPLATE_PROPERTY = "org.astrogrid.registry.service.template.url";
+   private static final String AUTHORITY_XML_URL_TEMPLATE_PROPERTY = "org.astrogrid.registry.authority.template.url";
+   private static final String REGISTRY_XML_URL_TEMPLATE_PROPERTY = "org.astrogrid.registry.registry.template.url";
+   private static final String SKYSERVICE_XML_URL_TEMPLATE_PROPERTY = "org.astrogrid.registry.skyservice.template.url";
+   private static final String TABULARSKYSERVICE_XML_URL_TEMPLATE_PROPERTY = "org.astrogrid.registry.tabularskyservice.template.url";
+   private static final String DATACOLLECTION_XML_URL_TEMPLATE_PROPERTY = "org.astrogrid.registry.datacollection.template.url";   
+   
+   static {
+      if(conf == null) {
+         conf = org.astrogrid.config.SimpleConfig.getSingleton();
+      }      
+   }
+   
 
    /**
     * Our action method.
@@ -104,29 +125,29 @@ public class RegistryOptionAction extends AbstractAction
     * @param request
     * @return
     */
-   public static File getTemplate(Request request) {
+   public static String getTemplate(Request request) {
 
-      File fi = null;
       String mainElem = request.getParameter(PARAM_MAIN_ELEMENT);
 
+      String templateURL = null;
       if(RegistryOptionAction.ORGANISATION_OPTION.equals(mainElem)) {         
-         fi = RegistryConfig.getRegistryOrganisationTemplate();
+         templateURL = conf.getString(ORGANISATION_XML_URL_TEMPLATE_PROPERTY);
       }else if(RegistryOptionAction.RESOURCE_OPTION.equals(mainElem)) {
-         fi = RegistryConfig.getResourceTemplate();
+         templateURL = conf.getString(RESOURCE_XML_URL_TEMPLATE_PROPERTY);
       } else if(RegistryOptionAction.AUTHORITY_OPTION.equals(mainElem)) {
-         fi = RegistryConfig.getRegistryAuthorityTemplate();
+         templateURL = conf.getString(AUTHORITY_XML_URL_TEMPLATE_PROPERTY);
       }else if(RegistryOptionAction.REGISTRY_OPTION.equals(mainElem)) {
-         fi = RegistryConfig.getRegistryTemplate();
+         templateURL = conf.getString(REGISTRY_XML_URL_TEMPLATE_PROPERTY);
       }else if(RegistryOptionAction.SKYSERVICE_OPTION.equals(mainElem)) {
-         fi = RegistryConfig.getSkyServiceTemplate();
+         templateURL = conf.getString(SKYSERVICE_XML_URL_TEMPLATE_PROPERTY);
       }else if(RegistryOptionAction.TABULARSKYSERVICE_OPTION.equals(mainElem)) {
-         fi = RegistryConfig.getTabularSkyServiceTemplate();
+         templateURL = conf.getString(TABULARSKYSERVICE_XML_URL_TEMPLATE_PROPERTY);
       }else if(RegistryOptionAction.DATACOLLECTION_OPTION.equals(mainElem)) {
-         fi = RegistryConfig.getDataCollectionTemplate();         
+         templateURL = conf.getString(DATACOLLECTION_XML_URL_TEMPLATE_PROPERTY);         
       }else if(RegistryOptionAction.SERVICE_OPTION.equals(mainElem)) {
-         fi = RegistryConfig.getServiceTemplate();         
+         templateURL = conf.getString(SERVICE_XML_URL_TEMPLATE_PROPERTY);         
       }
-      return fi;
+      return templateURL;
    }
      
 }

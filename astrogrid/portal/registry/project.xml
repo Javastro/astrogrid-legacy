@@ -1,82 +1,183 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- -->
-<!DOCTYPE project [
-  <!ENTITY cocoon-deps SYSTEM "../cocoon-dependencies-nowar.xml">
-]>
-<!-- -->
+<!--+
+    | Maven project description for the AstroGrid registry portal client webapp.
+    |
+    +-->
 <project
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="../maven-project.xsd">
-  <extend>../project.xml</extend>
-  
-  <id>astrogrid-portal-registry</id>
-  <name>AstroGrid Portal Registry</name>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="maven-project.xsd">
 
-  <dependencies>
-    <!-- Common -->
-    <dependency>
-      <groupId>astrogrid-common</groupId>
-      <artifactId>astrogrid-common</artifactId>
-      <version>SNAPSHOT</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
+    <!--+
+        | Extend the common project descriptor.
+     
+    <extend>../maven/project.xml</extend>
+   +-->
+    <!--+
+        | The current version of the Maven project descriptor.
+        +-->
+    <pomVersion>3</pomVersion>
 
+    <!--+
+        | The short name of the project.
+        | This is used when naming jars and distribution files.
+        +-->
+    <id>astrogrid-registry-portal</id>
 
-    <!-- Registry client -->
-    <dependency>
-      <groupId>astrogrid-registry</groupId>
-      <artifactId>astrogrid-registry-server</artifactId>
-      <version>SNAPSHOT</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
+    <!--+
+        | The full name of the project.
+        | This is used when generating JavaDoc titles.
+        +-->
+    <name>AstroGrid registry portal client webapp</name>
 
-    <dependency>
-      <groupId>astrogrid-registry</groupId>
-      <artifactId>astrogrid-registry-client</artifactId>
-      <version>SNAPSHOT</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-    
-    <dependency>
-      <groupId>astrogrid-registry</groupId>
-      <artifactId>astrogrid-registry-common</artifactId>
-      <version>SNAPSHOT</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
+    <!--+
+        | A short description of the project.
+        | The short description should be limited to a single line.
+        +-->
+    <shortDescription>
+        Astrogrid Registry .jar files bundled ready to deploy in the portal
+    </shortDescription>
 
-    <dependency>
-      <groupId>jconfig</groupId>
-      <artifactId>jconfig</artifactId>
-      <version>2.1</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-    
-    <dependency>
-      <groupId>axis</groupId>
-      <artifactId>axis</artifactId>
-      <version>1.1</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-    
-    
-    <!-- DO NOT INCLUDE PARENT DEPENDENCIES IN WAR -->
-    &cocoon-deps;
-  </dependencies>
-  
-  <build>
-    <sourceDirectory>src/java</sourceDirectory>
-    <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
-  </build>
+    <!--+
+        | A detailed description of the project.
+        | This is used to generate the front page of the projects web site. 
+        +-->
+    <description>
+        <![CDATA[
+	<p>
+		The Portal area is the visual look given to the user about the Registry and allowing them to perform all 
+		necessary web service calls with the delegate in the Registry client.
+		<br />
+	</p>
+	<section name="Builds">
+		<p>
+			The registry allows you to build at the top level or at it's sub-project level.  
+			Here are the maven goals for building the registry.
+			<ul>
+				<li>clean - cleans out and removes all previous builds.</li>
+				<li>install-snapshot - Builds all the necessry jar and war files.</li>
+				<li>astrogrid-deploy-snapshot - Builds and deploys the snapshot onto the repository.</li>
+				<li>astrogrid-deploy-site - Generates reports and documents to be deployed on the site repository.</li>
+			</ul>
+		</p>
+	</section>
+		]]>
+    </description>
+
+    <!--+
+        | Our cvs repository location.
+        +-->
+    <repository>
+        <connection>
+            scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/registry/portal
+        </connection>
+        <developerConnection>
+            scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/registry/portal
+        </developerConnection>
+    </repository>
+
+    <!--+
+        | The external libraries required to build our component.
+        +-->
+    <dependencies>
+        <!--+
+            | The Registry common components.
+            +-->
+        <dependency>
+            <groupId>astrogrid-registry</groupId>
+            <artifactId>astrogrid-registry-common</artifactId>
+            <version>SNAPSHOT</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        
+        <dependency>
+            <groupId>astrogrid-common</groupId>
+            <artifactId>astrogrid-common</artifactId>
+            <version>SNAPSHOT</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>            
+        </dependency>
+        
+        <dependency>
+            <artifactId>castor</artifactId>
+            <groupId>castor</groupId>
+            <version>0.9.5</version>
+            <jar>castor-0.9.5-xml.jar</jar>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>            
+        </dependency>
+        
+        
+        
+        <!--+
+            | The Registry components.
+            +-->
+        <dependency>
+            <groupId>astrogrid-registry</groupId>
+            <artifactId>astrogrid-registry-client</artifactId>
+            <version>SNAPSHOT</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency >
+            <id>axis</id>
+            <version>1.1</version>
+        </dependency>
+        <dependency >
+            <id>cocoon</id>
+            <version>2.0.4</version>
+        </dependency>
+        <dependency >
+            <id>avalon-framework</id>
+            <version>20020627</version>
+        </dependency>
+        <dependency >
+            <id>excalibur-pool</id>
+            <version>20020820</version>
+        </dependency>
+    </dependencies>
+
+    <!--+
+        | The build properties for our project.
+        +-->
+    <build>
+        <!--+
+            | The location of our Java source code.
+            +-->
+        <sourceDirectory>src/java</sourceDirectory>
+        <!--+
+            | The location of our JUnit source code.
+            +-->
+        <unitTestSourceDirectory>src/junit</unitTestSourceDirectory>
+        <!--+
+            | Our JUnit test classes.
+            +-->
+        <unitTest>
+            <!--+
+                | Which tests to include.
+                +-->
+            <includes>
+                <include>**/*Test.java</include>
+            </includes>
+
+            <!--+
+                | The resources for our tests.
+            <resources>
+                <resource>
+                </resource>
+            </resources>
+                +-->
+        </unitTest>
+    </build>
+
 </project>

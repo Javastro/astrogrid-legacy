@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.io.File;
 import org.astrogrid.registry.client.admin.RegistryAdminService;
-import org.astrogrid.registry.RegistryConfig;
+import org.astrogrid.registry.client.RegistryDelegateFactory;
 
 /**
  * Main Options component to let the user determine the next course of action which are Query, Add, or Harvest new
@@ -54,10 +54,7 @@ public class RegistryStatusAction extends AbstractAction
       Request request = ObjectModelHelper.getRequest(objectModel);
       Session session = request.getSession();
 
-      //put the main templates into an arraylsit to for displaying.
-      RegistryConfig.loadConfig();
-      String url = url = RegistryConfig.getProperty("publish.registry.update.url");
-      RegistryAdminService ras = new RegistryAdminService(url);
+      RegistryAdminService ras = RegistryDelegateFactory.createAdmin();
       String status = ras.getStatus();
       request.setAttribute(PARAM_STATUS,status);
 

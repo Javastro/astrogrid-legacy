@@ -1,51 +1,210 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+    | Maven build tasks for the AstroGrid registry portal client webapp.
+    |
+    +-->
 <project
-    xmlns:j="jelly:core"
+    xmlns:core="jelly:core"
     xmlns:maven="jelly:maven"
     xmlns:ant="jelly:ant"
-    xmlns:deploy="deploy"
     xmlns:util="jelly:util"
-    xmlns:doc="doc"
-    default="jar:jar">
-    
-  <!--
-    Move the web source into the subcomponent directory.
-    -->
-  <postGoal name="war:webapp">
-    <j:set var="webapp.dir" value="${pom.getPluginContext('maven-war-plugin').getVariable('maven.war.webapp.dir')}"/>
-    
-    <j:set var="webapp.dir.mount" value="${webapp.dir}/mount"/>
-    <j:set var="webapp.dir.mount.component" value="${webapp.dir.mount}/registry"/>
-    <j:set var="webapp.dir.mount.component.web" value="${webapp.dir.mount.component}/web"/>
+    xmlns:log="jelly:log"
+    xmlns:define="jelly:define"
+    xmlns:deploy="deploy"
+    >
 
-    <ant:mkdir dir="${webapp.dir.mount}"/>
-    <ant:mkdir dir="${webapp.dir.mount.component}"/>
-    <ant:mkdir dir="${webapp.dir.mount.component.web}"/>
-    
-    <ant:move todir="${webapp.dir.mount.component.web}">
-      <ant:fileset dir="${webapp.dir}/web"/>
-    </ant:move>
+    <!--+
+        | Primary goals are :
+        |     clean
+        |     install-artifact
+        |     install-snapshot
+        |     site
+        +-->
 
-    <ant:move todir="${webapp.dir.mount.component}">
-      <ant:fileset dir="${webapp.dir}">
-        <ant:filename name="sitemap.xconf"/>
-      </ant:fileset>
-    </ant:move>
+    <!--+
+        | Debug info ....
+        +-->
+    <goal name="info">
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+    </goal>
 
-    <ant:echo>
-      <![CDATA[<ant:move todir="${webapp.dir.mount.component}">
-        <ant:fileset dir="${webapp.dir}">
-          <ant:filename name="sitemap.xmap"/>
-          <ant:filename name="maven.log"/>
-        </ant:fileset>
-      </ant:move>]]>
-    </ant:echo>
+    <!--+
+        | Import our plugin goals from our parent project.
+        | Looks like this gets included anyway ...
+        | Possibly because our project inherits from ../maven.project.xml ?
+        | Maven : Any more unexpected suprises !?
+    <core:import inherit="true" file="${maven.build.dir}/../../maven/maven.xml"/>
+        +-->
 
-    <ant:move todir="${webapp.dir.mount.component}">
-      <ant:fileset dir="${webapp.dir}">
-        <ant:include name="sitemap.xmap"/>
-        <ant:include name="maven.log"/>
-      </ant:fileset>
-    </ant:move>
-  </postGoal>
+    <!--+
+        | Reactor goals.
+        | These are just placeholder targets for the reactor to call.
+        +-->
+
+    <!--+
+        | Clean our build target.
+        | (required as a target goal for the reactor)
+        +-->
+    <goal name="clean">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <ant:echo message="Cleaning build target ...."/>
+        <attainGoal name="clean:clean"/>
+    </goal>
+
+    <!--+
+        | Build and install our component war.
+        | (required as a target goal for the reactor)
+        +-->
+    <goal name="install-artifact">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <ant:echo message="Building component artifact ...."/>
+        <attainGoal name="war:install"/>
+    </goal>
+
+    <!--+
+        | Build and install our snapshot war.
+        | (required as a target goal for the reactor)
+        +-->
+    <goal name="install-snapshot">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <ant:echo message="Building snapshot artifact ...."/>
+        <attainGoal name="war:install-snapshot"/>
+		-->
+		<!--+
+			| Create the war file.
+		<attainGoal name="war:war"/>
+			+-->
+		<!--+
+			| The rest is basically copy-paste from jar:deploy-snapshot.
+		<maven:snapshot project="${pom}"/>
+		<core:set var="artifactFile" value="${pom.artifactId}.war"/>
+		<core:set var="snapshotFile" value="${pom.artifactId}-${snapshotVersion}.war"/>
+		<ant:move file="${maven.build.dir}/${artifactFile}" toFile="${maven.build.dir}/${snapshotFile}"/>
+		<ant:property name="jardir__" value="${maven.repo.local}/${pom.artifactDirectory}/jars"/>
+		<ant:mkdir dir="${jardir__}"/>
+		<ant:copy
+			file="${maven.build.dir}/${artifactFile}"
+			tofile="${jardir__}/${pom.artifactId}-SNAPSHOT.jar"
+			overwrite="true"
+			/>
+		<ant:copy
+			file="${maven.build.dir}/${artifactFile}"
+			tofile="${jardir__}/${maven.final.name}.jar"
+			/>
+			+-->
+    </goal>
+
+    <!--+
+        | Deploy our snapshot war.
+        | (required as a target goal for the reactor)
+        | Contains copy-paste code from jar:deploy-snapshot with jar crossed out and war written in in crayon.
+        +-->
+    <goal name="deploy-snapshot">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <ant:echo message="Deploying snapshot artifact ...."/>
+		<!--+
+			| Create the war file.
+			+-->
+		<attainGoal name="war:war"/>
+		<!--+
+			| The rest is basically copy-paste from jar:deploy-snapshot.
+			+-->
+		<maven:snapshot project="${pom}"/>
+		<core:set var="artifactFile" value="${pom.artifactId}.war"/>
+		<core:set var="snapshotFile" value="${pom.artifactId}-${snapshotVersion}.war"/>
+		<ant:move file="${maven.build.dir}/${artifactFile}" toFile="${maven.build.dir}/${snapshotFile}"/>
+		<!--
+		<core:set var="maven.final.name" value="${snapshotSignature}"/>
+        <core:set var="maven.war.final.name" value="${pom.groupId}.war"/>
+		-->
+		<maven:user-check user="${maven.username}"/>
+		<ant:property name="maven.war.to.deploy" value="${snapshotFile}"/>
+		<ant:property name="dir" value="${maven.repo.central.directory}/${pom.artifactDirectory}/wars"/>
+		<util:replace var="warToDeploy" oldChar="\" newChar="/">${maven.build.dir}/${maven.war.to.deploy}</util:replace>
+		<util:replace var="forwardSlashBaseDir" oldChar="\" newChar="/" value="${basedir}"/>
+		<core:if test="${!forwardSlashBaseDir.endsWith('/')}">
+			<core:set var="base" value="${forwardSlashBaseDir}/" />
+		</core:if>
+		<core:set var="relativePath">${warToDeploy.substring(base.length())}</core:set>
+		<deploy:artifact
+			artifact="${relativePath}"
+			type="wars"
+			assureDirectoryCommand="mkdir -p"
+			siteCommand="cd @deployDirectory@; chmod g+w ${maven.war.to.deploy}; chgrp ${maven.remote.group} ${maven.war.to.deploy}; ln -sf ${maven.war.to.deploy} ${pom.groupId}-SNAPSHOT.war; echo ${snapshotVersion} > ${pom.groupId}-snapshot-version"
+		/>
+    </goal>
+
+    <!--+
+        | Build our project website.
+        | (required as a target goal for the reactor)
+        +-->
+    <goal name="site">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <ant:echo message="Building project site ...."/>
+        <attainGoal name="site:generate"/>
+    </goal>
+
+    <!--+
+        | Generate a clover report for our project.
+        | (required as a target goal for the reactor)
+        +-->
+    <goal name="clover-report">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <ant:echo message="Generating clover report ...."/>
+        <attainGoal name="maven-clover-plugin:report"/>
+    </goal>
+
+    <!--+
+        | Project goals.
+        | These are the main project goals.
+        +-->
+    <postGoal name="war:webapp">
+        <ant:echo message=""/>
+        <ant:echo message="Creating the mount tree....."/>
+        <core:set var="webapp.dir" value="${pom.getPluginContext('maven-war-plugin').getVariable('maven.war.webapp.dir')}"/>
+        <ant:mkdir dir="${webapp.dir}/mount"/>
+        <ant:mkdir dir="${webapp.dir}/mount/registry"/>
+        <ant:mkdir dir="${webapp.dir}/mount/registry/web"/>
+        <ant:mkdir dir="${webapp.dir}/mount/registry/web/static"/>
+        <ant:mkdir dir="${webapp.dir}/mount/registry/web/style"/>
+        <ant:mkdir dir="${webapp.dir}/mount/registry/web/style/xsl"/>
+        <ant:mkdir dir="${webapp.dir}/mount/registry/web/style/xsp"/>
+        <ant:mkdir dir="${webapp.dir}/WEB-INF/menu"/>
+        <ant:copy verbose="false"
+            todir="${webapp.dir}/mount/registry/web/style/xsp">
+            <ant:fileset dir="${maven.src.dir}/portal/cocoon/xsp">
+                <include name="*.xsp"/>
+            </ant:fileset>
+        </ant:copy>
+        <ant:copy verbose="false"
+            todir="${webapp.dir}/mount/registry/web/style/xsl">
+            <ant:fileset dir="${maven.src.dir}/portal/cocoon/xsl">
+                <include name="*.xsl"/>
+            </ant:fileset>
+        </ant:copy>
+        <ant:copy verbose="false"
+            file="${maven.src.dir}/portal/cocoon/xml/registry-help.xml"
+            todir="${webapp.dir}/mount/registry/web/static/"/>
+        <ant:copy verbose="false"
+            file="${maven.src.dir}/portal/registry/sitemap.xmap"
+            todir="${webapp.dir}/mount/registry"/>
+        <ant:copy verbose="false"
+            file="${maven.src.dir}/portal/cocoon/menu/registry-menu.xml"
+            todir="${webapp.dir}/WEB-INF/menu"/>
+    </postGoal>
+     
 </project>
