@@ -18,6 +18,7 @@ echo >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build.sh maven-base >> $BUILD_DIR/$LOG_FILE 2>&1
 #Now the "real" projects.
 $SCRIPTHOME/maven-build.sh common >> $BUILD_DIR/$LOG_FILE 2>&1
+$SCRIPTHOME/maven-build-new.sh workflow-objects >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build.sh applications >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build.sh community >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build.sh datacenter >> $BUILD_DIR/$LOG_FILE 2>&1
