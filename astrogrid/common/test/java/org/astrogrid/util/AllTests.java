@@ -25,6 +25,7 @@ public class AllTests {
         //$JUnit-BEGIN$
         suite.addTest(DomLoaderTest.suite());
         suite.addTest(WorkspaceTest.suite());
+        suite.addTest(EnumeratorTest.suite());
         //$JUnit-END$
         return suite;
     }
