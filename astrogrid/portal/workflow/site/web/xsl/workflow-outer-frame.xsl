@@ -142,7 +142,7 @@
         <xsl:choose>
         <xsl:when test="@workflow-submit-message = 'Workflow successfully submitted to JES;'">                                                   
             <span style="color:green">
-           Workflow successfully submitted to JES; you can view it's status in the <a href="/astrogrid-portal/main/mount/workflow/agjobmanager-jes.html?action=read-job-list">job monitor</a> page.      
+           Workflow successfully submitted to JES; you can view its status in the <a href="/astrogrid-portal/main/mount/workflow/agjobmanager-jes.html?action=read-job-list">job monitor</a> page.      
            </span>
         </xsl:when>
         <xsl:otherwise>
