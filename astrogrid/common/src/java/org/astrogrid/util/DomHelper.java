@@ -1,5 +1,5 @@
 /*
-   $Id: DomHelper.java,v 1.10 2004/08/16 07:15:40 KevinBenson Exp $
+   $Id: DomHelper.java,v 1.11 2004/08/19 09:04:41 mch Exp $
 
    (c) Copyright...
 */
@@ -65,8 +65,11 @@ public class DomHelper
        if (element.getNodeValue() != null) {
           return element.getNodeValue();
        }
-       return element.getChildNodes().item(0).getNodeValue();
-    }    
+       if (element.getChildNodes().getLength() >0) {
+          return element.getChildNodes().item(0).getNodeValue();
+       }
+       return "";
+    }
     
    /**
     * Convenience class returns Document from given URL
@@ -194,7 +197,7 @@ public class DomHelper
    public static String getNodeTextValue(Node nd,String tagName) throws IOException {
       NodeList nl = getNodeListTags(nd,tagName);
       if(nl.getLength() > 0 && nl.item(0).getFirstChild() != null) {
-         return nl.item(0).getFirstChild().getNodeValue();   
+         return nl.item(0).getFirstChild().getNodeValue();
       }
       return null;
    }
@@ -203,7 +206,7 @@ public class DomHelper
    public static String getNodeTextValue(Node nd,String tagName, String namespacePrefix)  throws IOException {
       NodeList nl = getNodeListTags(nd,tagName,namespacePrefix);
       if(nl.getLength() > 0 && nl.item(0).getFirstChild() != null) {
-         return nl.item(0).getFirstChild().getNodeValue();   
+         return nl.item(0).getFirstChild().getNodeValue();
       }
       return null;
    }
@@ -247,7 +250,7 @@ public class DomHelper
       if(nl.getLength() == 0 && namespacePref != null) {
          nl = doc.getElementsByTagName(namespacePref + ":" + tagName );
       }
-      return nl;      
+      return nl;
    }
    
    private static NodeList getNodeListTags(Element elem, String tagName, String namespacePref) {
@@ -259,7 +262,7 @@ public class DomHelper
       if(nl.getLength() == 0 && namespacePref != null) {
          nl = elem.getElementsByTagName(namespacePref + ":" + tagName );
       }
-      return nl;      
+      return nl;
    }
 
    
