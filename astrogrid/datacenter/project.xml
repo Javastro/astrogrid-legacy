@@ -58,16 +58,20 @@
     </developer>
   </developers>
 
-  <dependencies> <!-- hope to be able to remove some of these soon. -->
+  <dependencies>
     <!-- astrogrid -specific deps -->
     <dependency>
       <id>astrogrid-common</id>
       <version>SNAPSHOT</version>
     </dependency>
-
-    <!-- we need the myspace client to compile. fix this later when mySpace packaging is better. -->
     <dependency>
     	<id>astrogrid-mySpace</id>
+	<version>SNAPSHOT</version>
+    </dependency>
+    
+    <dependency>
+    	<groupId>astrogrid-datacenter</groupId>
+    	<artifactId>astrogrid-datacenter-common</artifactId>
 	<version>SNAPSHOT</version>
     </dependency>
 
@@ -144,13 +148,6 @@
 	<version>2.4.0</version>
     </dependency>
 
-    <!-- interfact between castor and axis -->
-    <dependency>
-    	<groupId>axis</groupId>
-	<artifactId>axis-castor</artifactId>
-	<version>1.1</version>
-    </dependency>
-
 	<!-- logging and testing -->
     <dependency>
       <id>junit</id>
@@ -174,16 +171,6 @@
 		<id>catalina-ant</id>
 		<version>4.1.24</version>
 	</dependency>
-
- 	<dependency>
-		<groupId>ant</groupId>
-		<artifactId>ant-optional</artifactId>
-		<version>1.5.2</version>
- 	</dependency>
- 	<dependency>
- 		<id>oro</id>
-  		<version>2.0.7</version>
- 	</dependency>
 
     <!-- database drivers -->
     <dependency>
