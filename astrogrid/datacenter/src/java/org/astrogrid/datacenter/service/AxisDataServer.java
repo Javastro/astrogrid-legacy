@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.5 2003/09/05 13:22:31 nw Exp $
+ * $Id: AxisDataServer.java,v 1.6 2003/09/07 18:42:51 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,11 +7,12 @@
 package org.astrogrid.datacenter.service;
 
 import java.io.IOException;
-import java.net.URL;
-import java.util.Hashtable;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
+import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.astrogrid.datacenter.query.QueryException;
+import org.astrogrid.datacenter.servicestatus.ServiceStatus;
 import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 /**
  * This class is the public web interface, called by Axis
@@ -30,13 +31,8 @@ import org.w3c.dom.Element;
  * @author M Hill
  */
 
-public class AxisDataServer
+public class AxisDataServer extends ServiceServer
 {
-   /** List of service instances, keyed by their handle, so we can access them
-    * for non-blocking calls
-    */
-   private Hashtable services = new Hashtable();
-
    /**
     * Empty constructor
     */
@@ -45,74 +41,55 @@ public class AxisDataServer
    }
 
    /**
-    * Returns the metadata in the registry form (VOResource)
-    * @todo implement
+    * Starts an asynchronous query, returns a document including the id.
+    * if the querier has an error (status = errro) throws the exception
+    * (dont liek this too general)
     */
-   public Element getVOResource()
+   public Element startQuery(Element soapBody) throws QueryException, DatabaseAccessException, IOException, SAXException, Throwable
    {
-      throw new UnsupportedOperationException();
+      DatabaseQuerier querier = DatabaseQuerier.spawnQuery(soapBody);
+
+      //construct reply with id in it...
+      return ResultsHelper.makeStartQueryResponse(querier);
    }
 
    /**
-    * Returns the while metadata file
-    * @todo implement
+    * Returns the results and stops the service
+    * if the querier has an error (status = errro) throws the exception
+    * (dont liek this too general)
     */
-   public Element getMetadata()
+   public Element getResultsAndClose(Element soapBody) throws IOException, SAXException, Throwable
    {
-      throw new UnsupportedOperationException();
+      String serviceID = soapBody.getElementsByTagName(ResultsHelper.SERVICEID_TAG).item(0).getNodeValue();
+
+      DatabaseQuerier querier = DatabaseQuerier.getQuerier(serviceID);
+
+      //has querier finished?
+      if (querier.getStatus().isBefore(ServiceStatus.FINISHED))
+      {
+         //not finished - return status
+         return getServiceStatus(serviceID);
+      }
+      else
+      {
+         return ResultsHelper.makeResultsResponse(
+            querier,
+            querier.getResults().toVotable(querier.getWorkspace()).getDocumentElement()
+         );
+
+      }
    }
 
    /**
-    * Returns the elements of the metadata corresponding to the given XPath
-    * @todo implement
+    * Aborts the current query
     */
-   public Element getMetadata(String xpath)
+   public void abortQuery(Element soapBody)
    {
-      throw new UnsupportedOperationException();
+      String serviceID = soapBody.getElementsByTagName(ResultsHelper.SERVICEID_TAG).item(0).getNodeValue();
+
+      DatabaseQuerier querier = DatabaseQuerier.getQuerier(serviceID);
+
+      querier.abort();
    }
-
-   /**
-    * Runs a blocking query - ie, starts the query, waits for it to finish
-    * and then returns the results.
-    * @todo: check how Axis handles
-    * threading... will each call block all other calls until this one is
-    * complete? if so we need to make DataQueryService a thread and work out
-    * how to return the results...
-    *
-    */
-   public Element runQuery(Element soapBody) throws QueryException, DatabaseAccessException, IOException
-   {
-      DataQueryService service = new DataQueryService();
-
-      //services.put(service.getHandle(), service); no need to do this on a blocking query - and raises threadsafety issues
-
-      return service.runQuery(soapBody);
-
-   }
-
-   /** For non-blocking queries, you might want to get the query status
-    */
-   public String getServiceStatus(String serviceID)
-   {
-      return getService(serviceID).getStatus();
-
-   }
-
-   /**
-    * Returns the service corresponding to the given ID
-    */
-   public DataQueryService getService(String serviceID)
-   {
-      return (DataQueryService) services.get(serviceID);
-   }
-
-   /**
-    * Registers a client as a listener - ie it will receive notifications
-    */
-   public void registerServiceListener(String serviceID, URL listenerUrl)
-   {
-      getService(serviceID).registerServiceListener(new ProxyServiceListener(listenerUrl));
-   }
-
 }
 
