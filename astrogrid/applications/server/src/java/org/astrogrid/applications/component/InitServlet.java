@@ -1,5 +1,5 @@
 /*
- * $Id: InitServlet.java,v 1.6 2004/08/17 15:07:55 nw Exp $
+ * $Id: InitServlet.java,v 1.7 2004/08/18 16:37:52 pah Exp $
  * 
  * Created on 14-Apr-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -31,6 +31,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.astrogrid.applications.CeaException;
+import org.astrogrid.applications.beans.v1.cea.castor.ExecutionSummaryType;
+
 /**
  * A simple servlet that starts cea service, by instantiating the pico container
  * on destroy, calls back into container, giving things a chance to clean themselves up if needed.
@@ -49,6 +52,8 @@ public class InitServlet extends HttpServlet {
     * @see #init(ServletConfig)
     * */
     public static final String BOOT_CEA_KEY = "boot.cea";
+    
+    private static boolean storedEndpoint = false;
     /**
      * just gets the component manager instance from the factory. 
      * as part of this, the picocontainer is started.
@@ -58,23 +63,18 @@ public class InitServlet extends HttpServlet {
     public void init(ServletConfig arg0) throws ServletException {
         super.init(arg0);
         try {
-            URL endpointURL = arg0.getServletContext().getResource("/services/CommonExecutionConnectorService");
+            URL endpointURL = arg0.getServletContext().getResource("/");//try this to see if it needs to actually exist....
             logger.info("Setting service endpoint to " + endpointURL);
             // don't do this - it forces the whole config system to startup - which is a pain if the config file isn't available yet 
             //SimpleConfig.getSingleton().setProperty(EmptyCEAComponentManager.SERVICE_ENDPOINT_URL,endpointURL);
             // whack it in JNDI instead,
             if (endpointURL != null) {
-                Context root = new InitialContext();          
-                String urlStr = endpointURL.toString();
-            root.rebind("java:comp/env/" + EmptyCEAComponentManager.SERVICE_ENDPOINT_URL,urlStr);   
-                root.close();
+                writeEndpointToJNDI(endpointURL);
             } else {
                 logger.warn("Could not determine service endpoint");
             } 
         } catch (MalformedURLException e) {
             logger.error("Could not set service endpoint url",e);            
-        } catch (NamingException e) {
-            logger.error("Could not set service endpoint url - JNDI problem",e);
         }   
         if ("true".equalsIgnoreCase(getInitParameter(BOOT_CEA_KEY))) {   
             logger.info("Booting CEA Server");             
@@ -83,6 +83,7 @@ public class InitServlet extends HttpServlet {
         logger.info("InitServlet: completed init");
     }
 
+ 
     /**
      * @see javax.servlet.Servlet#destroy()
      */
@@ -95,6 +96,10 @@ public class InitServlet extends HttpServlet {
      * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        if (! storedEndpoint) {
+            URL url = makeEndPointURL(req);
+            writeEndpointToJNDI(url);
+        }
         // expect a 'method' parameter.
         PrintWriter writer = resp.getWriter();
         String method = req.getParameter("method");
@@ -103,12 +108,22 @@ public class InitServlet extends HttpServlet {
         } else if (method.trim().toLowerCase().equals("returnregistryentry")){
             resp.setContentType("text/xml");            
             returnRegistryEntry(writer);
-        } else if (method.trim().toLowerCase().equals("getexecutionsummary")){
+        }
+        else if (method.trim().toLowerCase().equals("getexecutionsummary")) {
             resp.setContentType("text/xml");
             String execId = req.getParameter("id");
-            getExecutionSummary(writer,execId);       
-         } else {
-             usage(writer);
+            getExecutionSummary(writer, execId);
+
+        }
+        else if (method.trim().toLowerCase().equals("startup")) {
+            logger.info("Starting CEA server");
+            CEAComponentManagerFactory.getInstance();
+            resp.setContentType("text/html");
+            writer.println("<html><head></head><body><p>Common Execution Controller Started..</p></body></html>");
+        }
+
+        else {
+            usage(writer);
         }
     }
     
@@ -135,10 +150,48 @@ public class InitServlet extends HttpServlet {
        pw.println("<html><body>");
        pw.println("<h1>Usage</h1>");
        pw.println("<ul>");
+       pw.println("<ul><tt>?method=startup</tt> - start the CommonExecutionController");
        pw.println("<li><tt>?method=returnRegistryEntry</tt> - display the VODescription for this service</li>");
        pw.println("<li><tt>?method=getExecutionSummary&amp;id=<i>executionId</i></tt> - display execution summary for <i>executionId</i>");
        pw.println("</ul>");
        pw.println("</body></html>");
    }  
+   
+   private URL makeEndPointURL(HttpServletRequest request) {
+        URL url = null;
+        try {
+            url = new URL(request.getProtocol(), request.getServerName(),
+                    request.getServerPort(), request.getContextPath()
+                            + "/services/CommonExecutionConnectorService");
+        }
+        catch (MalformedURLException e) {
+            logger.warn("could not create the context path from request data",
+                    e);
+        }
+        return url;
+
+    }
+
+    /**
+     * Writes the endpoint url to JNDI. The endpoint can then be picked up from
+     * the config system.
+     * 
+     * @param endpointURL
+     * @throws NamingException
+     */
+    private void writeEndpointToJNDI(URL endpointURL) {
+        try {
+            Context root = new InitialContext();
+            String urlStr = endpointURL.toString();
+            root.rebind("java:comp/env/"
+                    + EmptyCEAComponentManager.SERVICE_ENDPOINT_URL, urlStr);
+            root.close();
+        }
+        catch (NamingException e) {
+            logger
+                    .error("Could not set service endpoint url - JNDI problem",
+                            e);
+        }
+    }
 
 }
