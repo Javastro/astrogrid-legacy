@@ -1,6 +1,6 @@
 package org.astrogrid.common.creator;
 
-
+///CLOVER:OFF 
 /**
  * @author peter.shillan <mailto:gps@roe.ac.uk />
  */

@@ -1,12 +1,12 @@
 /*
- * $Id: ConfigException.java,v 1.2 2004/03/01 13:34:18 mch Exp $
+ * $Id: ConfigException.java,v 1.3 2004/06/26 14:58:43 jdt Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid Software License,
  * a copy of which has been included with this distribution in the LICENSE.txt file.
  */
-
+///CLOVER:OFF 
 package org.astrogrid.config;
 
 /**
@@ -32,6 +32,9 @@ public class ConfigException extends RuntimeException {
 
 /*
 $Log: ConfigException.java,v $
+Revision 1.3  2004/06/26 14:58:43  jdt
+disable clover for these classes
+
 Revision 1.2  2004/03/01 13:34:18  mch
 Added message-only constructor
 
