@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<!-- extension maven script -->
+<project xmlns:j="jelly:core"  xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="jar:jar">
+
+
+<!-- hooks into existing goals -->
+  <preGoal name="java:compile"><!-- generate classes from schema and wsdl first -->
+     <mkdir dir="${basedir}/target/classes" />     <!-- JDepend fails if this dir is not present.  Hack to fix it. -->
+  </preGoal>
+
+
+
+</project>
