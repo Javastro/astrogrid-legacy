@@ -9,8 +9,9 @@
        <item name="Projects" href="http://www.astrogrid.org/maven/build/index.html"/>
     </links>
     <menu name="Projects">
-      <item name="Registry"  href="http://www.astrogrid.org/maven/build/registry/index.html"/>
-      <item name="UI"        href="http://www.astrogrid.org/maven/build/ui/index.html"/>
+      <item name="Registry"       href="http://www.astrogrid.org/maven/build/registry/index.html"/>
+      <item name="UI"             href="http://www.astrogrid.org/maven/build/ui/index.html"/>
+      <item name="Job Management" href="http://www.astrogrid.org/maven/build/jes/index.html"/>
     </menu>
   </body>
 </project>
