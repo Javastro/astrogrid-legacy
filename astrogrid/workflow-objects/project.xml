@@ -71,6 +71,7 @@
                                 <directory>${basedir}</directory>
                                 <includes>
                                         <include>schema/*.xsd</include>
+                                        <include>schema/**/*.xsd</include> <!-- include external schema too - so we can validate against them easily -->
                                         <include>wsdl/*.wsdl</include>
                                         <include>wsdd/*.wsdd</include>
                                 </includes>
