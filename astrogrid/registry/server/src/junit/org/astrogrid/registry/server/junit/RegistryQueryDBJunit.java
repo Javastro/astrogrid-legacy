@@ -88,8 +88,11 @@ public class RegistryQueryDBJunit extends TestCase{
             XMLResource res = (XMLResource)col.getResource("registry.xml");
             //Node nd = (Node)res.getContentAsDOM();
             //res.
-            System.out.println("the res to string = " + res.toString());
-            System.out.println("res content = " + res.getContent());
+            if(res != null) {
+            
+               System.out.println("the res to string = " + res.toString());
+               System.out.println("res content = " + res.getContent());
+            }
          }
       }catch(XMLDBException xmdb) {
          xmdb.printStackTrace();
