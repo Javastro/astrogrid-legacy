@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/Attic/build.xml,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/30 15:57:55 $</cvs:author>
-    | <cvs:version>$Revision: 1.25 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/30 16:04:39 $</cvs:author>
+    | <cvs:version>$Revision: 1.26 $</cvs:version>
     | <cvs:log>
     | $Log: build.xml,v $
+    | Revision 1.26  2003/06/30 16:04:39  dave
+    | First attempt at building cocoon war file
+    |
     | Revision 1.25  2003/06/30 15:57:55  dave
     | Fixed user attribute name
     |
@@ -2183,6 +2186,8 @@
 				<exclude name="blocks.properties"/>
 				<exclude name="sitemap.xslt"/>
 				<exclude name="sitemap.xmap"/>
+				<exclude name="html/**"/>
+				<exclude name="images/**"/>
 			</fileset>
 		</copy>
 		<!-- Copy our portal jar -->
