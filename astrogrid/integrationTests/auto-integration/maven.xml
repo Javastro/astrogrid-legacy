@@ -375,7 +375,7 @@
                 <metainf dir="${temporary.dir}/portal" />
         </war>
         <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-                path="/astrogrid-portal-SNAPSHOT" war="file:///${temporary.dir}/astrogrid-portal-SNAPSHOT.war" />
+                path="/astrogrid-portal" war="file:///${temporary.dir}/astrogrid-portal-SNAPSHOT.war" />
 </goal>
 
 
