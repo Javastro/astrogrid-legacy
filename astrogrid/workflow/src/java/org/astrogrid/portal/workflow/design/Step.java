@@ -17,17 +17,33 @@ import java.text.MessageFormat ;
 import org.w3c.dom.* ;
 
 /**
- * The <code>Step</code> class represents... 
+ * The <code>Step</code> class represents an individual job step with
+ * an executable tool.
  * <p>
- *
+ * It is the basic unit of currency for a <code>Workflow</code>, since a <code>Workflow</code>, when
+ * it is actually run as a job, must execute at least one <code>Step</code> in order to
+ * achieve anything. In these terms the <code>Step</code> is the bottom leaf in a <code>Workflow</code> 
+ * tree.
  * <p>
- * The class... 
+ * <code>Step</code> must contain a <code>Tool</code> in order to be viable as an executable unit
+ * and must itself be contained in an <code>ActivityContainer</code> such as a <code>Sequence</code> 
+ * or a <code>Flow</code> which are themselves attached to a Workflow. However, this state of 
+ * consistency is an outcome of the Workflow design process which is facilitated by the overall 
+ * Workflow object model. An isolated instance of a <code>Step</code> can be in an inconsistent
+ * state until this process of Workflow design has completed.
+ * <p><pre><blockquote>
+ * A step has some predictable attributes: 
+ * . name
+ * . description
+ * . joinCondition
+ * . stepNumber
+ * . sequenceNumber
+ * </blockquote></pre><p>
+ * As described above, it's role in life is to contain a <code>Tool</code>.
  * 
- *
  * @author  Jeff Lusted
  * @version 1.0 25-Aug-2003
- * @see     
- * @see     
+ * @see     org.astrogrid.portal.workflow.design.JoinCondition
  * @since   AstroGrid 1.3
  */
 public class Step extends Activity {
@@ -51,19 +67,36 @@ public class Step extends Activity {
     private Tool
         tool ;
 
-  
+
+    /**
+      * Creates an empty <code>Step</code> for a given parent <code>Activity</code>
+      * <p> 
+      * The parent should be a <code>Flow</code> or <code>Sequence</code>, which is
+      * a good reason for developing other constructors in the future to make this 
+      * typt safe.
+      * <p>
+      * The default join condition is JoinCondition.ANY
+      * 
+      **/       
     public Step( Activity parent ) {
         super( parent ) ;
-        if( TRACE_ENABLED ) trace( "Step() entry/exit") ;
+        if( TRACE_ENABLED ) trace( " entry: Step(parent)") ;
         joinCondition = JoinCondition.ANY ; 
+        if( TRACE_ENABLED ) trace( " exit: Step(parent)") ;
     }
     
- 
+      
+    /**
+      * Creates a <code>Step</code> for a given parent <code>Activity</code>
+      * and fills out the step with details as held in the xml <code>Element</code>
+      * <p> 
+      * 
+      **/       
     public Step( String communitySnippet
                , Element element
                , Activity parent  ) {
         super( parent ) ;
-        if( TRACE_ENABLED ) trace( "Step(Element) entry") ; 
+        if( TRACE_ENABLED ) trace( "entry: Step(communitySnippet,element,parent)") ; 
         
         try {
             
@@ -77,18 +110,19 @@ public class Step extends Activity {
             }
             else {
                 condition.trim() ;
+                
+                if( condition.equalsIgnoreCase("true") ) {
+                    this.joinCondition = JoinCondition.TRUE ;
+                }
+                else if( condition.equalsIgnoreCase("false") ) {
+                    this.joinCondition = JoinCondition.FALSE ;
+                }
+                else {
+                    this.joinCondition = JoinCondition.ANY ; 
+                }
+                
             }
-            
-            if( condition.equalsIgnoreCase("true") ) {
-                this.joinCondition = JoinCondition.TRUE ;
-            }
-            else if( condition.equalsIgnoreCase("false") ) {
-                this.joinCondition = JoinCondition.FALSE ;
-            }
-            else {
-                this.joinCondition = JoinCondition.ANY ; 
-            }
-            
+                      
             this.stepNumber = new Integer( element.getAttribute( WorkflowDD.STEP_STEPNUMBER_ATTR ).trim() ).intValue() ;
             this.sequenceNumber = new Integer( element.getAttribute( WorkflowDD.STEP_SEQUENCENUMBER_ATTR ).trim() ).intValue() ;  
                      
@@ -111,10 +145,10 @@ public class Step extends Activity {
            
         }
         finally {
-            if( TRACE_ENABLED ) trace( "Step(Element) exit") ;
+            if( TRACE_ENABLED ) trace( "exit: Step(communitySnippet,element,parent)") ;
         }
         
-    } 
+    } // end of Step(communitySnippet,element,parent)
       
     
 	public void setName(String name) {
