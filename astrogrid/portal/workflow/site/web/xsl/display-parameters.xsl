@@ -29,7 +29,7 @@
 	    }
 	    
         function showHelp(id)
-        {	  	  
+        {	       	  
 		  document.getElementById(id).style.display = "";
 	    }	            
       </script>                    
@@ -76,7 +76,7 @@
 
               <xsl:if test="./tool/outputParam" >  <!-- Email tool has no output params, so don't display -->      
                 <tr><td colspan="4">
-                  <div style="color: blue; background-color: lightblue; text-align: center;">( output parameters for this taskk: )</div>
+                  <div style="color: blue; background-color: lightblue; text-align: center;">( output parameters for this task: )</div>
                 </td></tr>                
                 <xsl:for-each select="./tool/outputParam">  
                   <xsl:call-template name="parameter">
@@ -86,7 +86,8 @@
               </xsl:if>
               <tr>
                 <td colspan="5">
-                  <div id="multiParamDiv" style="display: none; color: blue;">
+                  <div style="display: none; color: blue;">
+                    <xsl:attribute name="id">multiParamDiv<xsl:value-of select="@key"/></xsl:attribute> 
                     * task may contain more than one occurence of this parameter. <br />
                       Please enter each value separated by ++.
                   </div>
@@ -164,7 +165,7 @@
             <xsl:if test="@param-cardinality-max='0'">
               <b> *</b>
               <ag-onload>             
-                <xsl:attribute name="function">showHelp('multiParamDiv');</xsl:attribute>                 	
+                <xsl:attribute name="function">showHelp('multiParamDiv<xsl:value-of select="./../../@key"/>');</xsl:attribute>                 	
               </ag-onload>                
             </xsl:if>                                                    
           </td>
