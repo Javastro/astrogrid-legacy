@@ -5,8 +5,8 @@
             <AuthorityID>@REGAUTHORITY@</AuthorityID>
             <ResourceKey>SExtractor</ResourceKey>
         </Identifier>
-        <Title>TemplateEntry</Title>
-        <ShortName>TemplateEntry</ShortName>
+        <Title>SExtractor</Title>
+        <ShortName>SExtractor</ShortName>
         <Summary>
             <Description>This is part of the astrogrid CEA.</Description>
             <ReferenceURL>http://www.astrogrid.org/maven/docs/snapshot/applications/</ReferenceURL>
@@ -92,8 +92,8 @@
             <AuthorityID>@REGAUTHORITY@</AuthorityID>
             <ResourceKey>HyperZ</ResourceKey>
         </Identifier>
-        <Title>TemplateEntry</Title>
-        <ShortName>TemplateEntry</ShortName>
+        <Title>HyperZ</Title>
+        <ShortName>HyperZ</ShortName>
         <Summary>
             <Description>This is part of the astrogrid CEA.</Description>
             <ReferenceURL>http://www.astrogrid.org/maven/docs/snapshot/applications/</ReferenceURL>
@@ -159,8 +159,8 @@
             <AuthorityID>@REGAUTHORITY@</AuthorityID>
             <ResourceKey>CrossMatcher</ResourceKey>
         </Identifier>
-        <Title>TemplateEntry</Title>
-        <ShortName>TemplateEntry</ShortName>
+        <Title>CrossMatcher</Title>
+        <ShortName>CrossMatcher</ShortName>
         <Summary>
             <Description>This is part of the astrogrid CEA.</Description>
             <ReferenceURL>http://www.astrogrid.org/maven/docs/snapshot/applications/</ReferenceURL>
