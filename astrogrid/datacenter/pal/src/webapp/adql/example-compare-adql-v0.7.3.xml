@@ -1,5 +1,5 @@
 <!-- Select t.a, g.d from Tab a, Tab d where a.d < d.e and a.f < d.f order by t.f, g.b -->
-<Select>
+<Select  xmlns="http://adql.ivoa.net/v0.73">
    <SelectionList>
       <Column Table="t" Name="a"/>
       <Column Table="g" Name="d"/>
@@ -10,11 +10,11 @@
    </From>
    <Where>
       <And>
-         <Compare Comparison="<">
+         <Compare Comparison="&lt;">
             <Column Table="a" Name="d"/>
             <Column Table="d" Name="e"/>
          </Compare>
-         <Compare Comparison="<">
+         <Compare Comparison="&lt;">
             <Column Table="a" Name="f"/>
             <Column Table="d" Name="f"/>
          </Compare>
@@ -29,3 +29,4 @@
       </Item>
    </OrderBy>
 </Select>
+

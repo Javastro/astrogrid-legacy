@@ -1,19 +1,17 @@
 <!-- XML equiuvalent
 SELECT t.b, b.* FROM Tab t, Bob b WHERE AVG(b.dd) < 4.56 ORDER BY b.dd
 -->
-<Select xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns="http://tempuri.org/adql"
->
+<Select xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns="http://tempuri.org/adql">
   <SelectionList>
     <ColumnExpr>
       <SingleColumnReference>
-        <TableName>t</TableName>
-        <Name>b</Name>
+        <TableName>s</TableName>
+        <Name>RA</Name>
       </SingleColumnReference>
     </ColumnExpr>
     <ColumnExpr>
       <AllColumnReference>
-        <TableName>b</TableName>
+        <TableName>g</TableName>
       </AllColumnReference>
     </ColumnExpr>
   </SelectionList>
@@ -21,12 +19,12 @@ SELECT t.b, b.* FROM Tab t, Bob b WHERE AVG(b.dd) < 4.56 ORDER BY b.dd
     <FromClause>
       <TableReference>
         <Table>
-          <Name>Tab</Name>
-          <AliasName>t</AliasName>
+          <Name>SampleStars</Name>
+          <AliasName>s</AliasName>
         </Table>
         <Table>
-          <Name>Bob</Name>
-          <AliasName>b</AliasName>
+          <Name>SampleGalaxies</Name>
+          <AliasName>g</AliasName>
         </Table>
       </TableReference>
     </FromClause>
@@ -38,8 +36,8 @@ SELECT t.b, b.* FROM Tab t, Bob b WHERE AVG(b.dd) < 4.56 ORDER BY b.dd
               <FunctionReference>AVG</FunctionReference>
               <Expr xsi:type="ColumnExpr">
                 <SingleColumnReference>
-                  <TableName>b</TableName>
-                  <Name>dd</Name>
+                  <TableName>s</TableName>
+                  <Name>RA</Name>
                 </SingleColumnReference>
               </Expr>
             </ExpressionFunction>
@@ -63,8 +61,8 @@ SELECT t.b, b.* FROM Tab t, Bob b WHERE AVG(b.dd) < 4.56 ORDER BY b.dd
       <Order>
         <Expr xsi:type="ColumnExpr">
           <SingleColumnReference>
-            <TableName>b</TableName>
-            <Name>dd</Name>
+            <TableName>g</TableName>
+            <Name>SHAPE</Name>
           </SingleColumnReference>
         </Expr>
       </Order>

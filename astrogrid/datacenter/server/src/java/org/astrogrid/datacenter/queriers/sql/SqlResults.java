@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.16 2004/03/14 02:17:07 mch Exp $
+ * $Id: SqlResults.java,v 1.17 2004/03/14 16:55:48 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -65,6 +65,7 @@ public class SqlResults extends QueryResults
     */
    public void toVotable(Writer out, QuerierProcessingResults statusToUpdate) throws IOException
    {
+      assert (out != null);
       try
       {
          PrintWriter printOut = new PrintWriter(new BufferedWriter(out));
@@ -220,6 +221,9 @@ public class SqlResults extends QueryResults
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.17  2004/03/14 16:55:48  mch
+ Added XSLT ADQL->SQL support
+
  Revision 1.16  2004/03/14 02:17:07  mch
  Added CVS format and emailer
 

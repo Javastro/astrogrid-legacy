@@ -1,4 +1,3 @@
-<?xml version="1.0"?>
 <xsl:stylesheet xmlns="http://adql.ivoa.net/v0.73" xmlns:ad="http://adql.ivoa.net/v0.73" xmlns:q1="urn:nvo-region" xmlns:q2="urn:nvo-coords" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.0">
    <!--
    - Stylesheet to convert ADQL version 0.7.3 to an SQL String
@@ -6,13 +5,12 @@
    - Ramon Williamson, National Center for SuperComputing Applications
    - March 5, 2004
    - Based on the schema: http://www.ivoa.net/internal/IVOA/IvoaVOQL/ADQL-0.7.3.xsd
+   - mods Martin Hill, ROE
    -->
-   <xsl:output method="text"/>
-   <xsl:template match="/">
-      <xsl:apply-templates select="/*"/>
-   </xsl:template>
-   <xsl:template match="/*">
-      <xsl:text>SELECT </xsl:text>
+   
+   <!-- Define order of output -->
+   <xsl:template match="ad:Select" >
+      <xsl:text>  SELECT </xsl:text>
       <xsl:apply-templates select="ad:Allow"/>
       <xsl:apply-templates select="ad:Restrict"/>
       <xsl:apply-templates select="ad:SelectionList"/>

@@ -1,34 +1,34 @@
 <!-- XML equiuvalent
 SELECT DISTINCT t.b, b.* FROM Tab AS t, Bob AS b WHERE NOT (-(MAX(b.dd ) ) < 4.56 ) GROUP BY t.b HAVING b.x LIKE 'wibble%' OR b.z BETWEEN 4 AND 5 ORDER BY b.dd DESC
 -->
-<Select xmlns="http://tempuri.org/adql" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-> 
+<Select xmlns="http://tempuri.org/adql" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+>
     <OptionalAllOrDistinct>
        <Option>DISTINCT</Option>
     </OptionalAllOrDistinct>
     <SelectionList>
         <ColumnExpr>
             <SingleColumnReference>
-                <TableName>t</TableName>
-                <Name>b</Name>
+                <TableName>s</TableName>
+                <Name>MAG</Name>
             </SingleColumnReference>
         </ColumnExpr>
         <ColumnExpr>
             <AllColumnReference>
-                <TableName>b</TableName>
+                <TableName>g</TableName>
             </AllColumnReference>
         </ColumnExpr>
     </SelectionList>
     <TableClause>
-        <FromClause>          
-            <TableReference>            
-                <Table>                
-                    <Name>Tab</Name>
-                    <AliasName>t</AliasName>
+        <FromClause>
+            <TableReference>
+                <Table>
+                    <Name>SampleStars</Name>
+                    <AliasName>s</AliasName>
                 </Table>
                 <Table>
-                    <Name>Bob</Name>
-                    <AliasName>b</AliasName>
+                    <Name>SampleGalaxies</Name>
+                    <AliasName>g</AliasName>
                 </Table>
             </TableReference>
         </FromClause>
@@ -40,11 +40,11 @@ SELECT DISTINCT t.b, b.* FROM Tab AS t, Bob AS b WHERE NOT (-(MAX(b.dd ) ) < 4.5
                        <Operator>-</Operator>
                        <Expr xsi:type="FunctionExpr">
                         <ExpressionFunction>
-                            <FunctionReference>MAX</FunctionReference>                            
+                            <FunctionReference>MAX</FunctionReference>
                             <Expr xsi:type="ColumnExpr">
                                 <SingleColumnReference>
-                                    <TableName>b</TableName>
-                                    <Name>dd</Name>
+                                    <TableName>s</TableName>
+                                    <Name>MAG</Name>
                                 </SingleColumnReference>
                             </Expr>
                         </ExpressionFunction>
@@ -66,8 +66,8 @@ SELECT DISTINCT t.b, b.* FROM Tab AS t, Bob AS b WHERE NOT (-(MAX(b.dd ) ) < 4.5
         </WhereClause>
         <GroupByClause>
             <SingleColumnReference>
-                <TableName>t</TableName>
-                <Name>b</Name>
+                <TableName>g</TableName>
+                <Name>SHAPE</Name>
             </SingleColumnReference>
         </GroupByClause>
         <HavingClause>
@@ -76,15 +76,15 @@ SELECT DISTINCT t.b, b.* FROM Tab AS t, Bob AS b WHERE NOT (-(MAX(b.dd ) ) < 4.5
                     <LikePred>
                         <Expr xsi:type="ColumnExpr">
                             <SingleColumnReference>
-                                <TableName>b</TableName>
-                                <Name>x</Name>
+                                <TableName>g</TableName>
+                                <Name>SHAPE</Name>
                             </SingleColumnReference>
                         </Expr>
                         <Negate>false</Negate>
                         <Value>
                             <StringLiteral>
                                 <Value>
-                                    <string>wibble%</string>
+                                    <string>Elliptical</string>
                                 </Value>
                             </StringLiteral>
                         </Value>
@@ -94,8 +94,8 @@ SELECT DISTINCT t.b, b.* FROM Tab AS t, Bob AS b WHERE NOT (-(MAX(b.dd ) ) < 4.5
                     <BetweenPred>
                         <Expr xsi:type="ColumnExpr">
                             <SingleColumnReference>
-                                <TableName>b</TableName>
-                                <Name>z</Name>
+                                <TableName>g</TableName>
+                                <Name>RA</Name>
                             </SingleColumnReference>
                         </Expr>
                         <Negate>false</Negate>
@@ -127,8 +127,8 @@ SELECT DISTINCT t.b, b.* FROM Tab AS t, Bob AS b WHERE NOT (-(MAX(b.dd ) ) < 4.5
             <Order>
                 <Expr xsi:type="ColumnExpr">
                     <SingleColumnReference>
-                        <TableName>b</TableName>
-                        <Name>dd</Name>
+                        <TableName>s</TableName>
+                        <Name>MAG</Name>
                     </SingleColumnReference>
                 </Expr>
                 <Option>

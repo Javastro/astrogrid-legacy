@@ -1,20 +1,19 @@
 <!-- SQL equivalent
-SELECT t.b, b.d FROM Tab t, Bob b HAVING  t.b <> b.b
+SELECT s.ID, s.MAG FROM SampleStars s, SampleGalaxies g HAVING  s.RA <> g.DEC
 -->
-<Select xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns="http://tempuri.org/adql"
+<Select xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns="http://tempuri.org/adql"
 >
   <SelectionList>
     <ColumnExpr>
       <SingleColumnReference>
-        <TableName>t</TableName>
-        <Name>b</Name>
+        <TableName>s</TableName>
+        <Name>ID</Name>
       </SingleColumnReference>
     </ColumnExpr>
     <ColumnExpr>
       <SingleColumnReference>
-        <TableName>b</TableName>
-        <Name>d</Name>
+        <TableName>s</TableName>
+        <Name>MAG</Name>
       </SingleColumnReference>
     </ColumnExpr>
   </SelectionList>
@@ -22,12 +21,12 @@ SELECT t.b, b.d FROM Tab t, Bob b HAVING  t.b <> b.b
     <FromClause>
       <TableReference>
         <Table>
-          <Name>Tab</Name>
-          <AliasName>t</AliasName>
+          <Name>SampleStars</Name>
+          <AliasName>s</AliasName>
         </Table>
         <Table>
-          <Name>Bob</Name>
-          <AliasName>b</AliasName>
+          <Name>SampleGalaxies</Name>
+          <AliasName>g</AliasName>
         </Table>
       </TableReference>
     </FromClause>
@@ -36,15 +35,15 @@ SELECT t.b, b.d FROM Tab t, Bob b HAVING  t.b <> b.b
         <ComparisonPred>
           <FirstExpr xsi:type="ColumnExpr">
             <SingleColumnReference>
-              <TableName>t</TableName>
-              <Name>b</Name>
+              <TableName>s</TableName>
+              <Name>RA</Name>
             </SingleColumnReference>
           </FirstExpr>
           <Compare>&lt;&gt;</Compare>
           <SecondExpr xsi:type="ColumnExpr">
             <SingleColumnReference>
-              <TableName>b</TableName>
-              <Name>b</Name>
+              <TableName>g</TableName>
+              <Name>RA</Name>
             </SingleColumnReference>
           </SecondExpr>
         </ComparisonPred>

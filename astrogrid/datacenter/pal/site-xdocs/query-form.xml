@@ -11,8 +11,8 @@
     <p>
     Format
     <select name='Format'>
-       <option selected value='VOTABLE'>VOTable</option>
-       <option value='CSV'>CSV</option>
+       <option selected value='VOTABLE'>VOTable
+       <option value='CSV'>CSV
     </select>
     Send them to
     <input type="text" name="Target"/>

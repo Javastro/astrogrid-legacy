@@ -1,0 +1,50 @@
+<ADQ xmlns="http://astrogrid.org/sadql/v1.1">
+   <From>
+      <Path>
+         <Alias>Elipticity</Alias>
+         <XPath>thingy/thingy/thingy/etc</XPath>
+      </Path>
+      <Column>
+         <Alias>RA</Alias>
+         <Table>Wobble</Table>
+         <Column>RA_OBJ</Column>
+      </Column>
+      <Path>
+         <Alias>Magnitude</Alias>
+         <XPath>thangy/thangy/thangy/etc</XPath>
+      </Path>
+      <Column>
+         <Alias>DEC</Alias>
+         <Table>Wobble</Table>
+         <Column>DECL_OBJ</Column>
+      </Column>
+   </From>
+   <Return>
+      <Set>
+         <All/>
+      </Set>
+      <OrderedBy>
+         <Key direction="descending"><Alias>DEC</Alias></Key>
+         <Key direction="ascending"><Alias>RA</Alias></Key>
+         <Key direction="ascending"><Alias>Magnitude</Alias></Key>
+         <Key direction="descending"><Alias>Elipticity</Alias></Key>
+      </OrderedBy>
+      <GroupedBy>
+         <Key><SIN><Alias>RA</Alias></SIN></Key>
+      </GroupedBy>
+   </Return>
+   <Where>
+      <AND>
+         <CircleMatch>
+            <RA>12</RA>
+            <DEC>13</DEC>
+            <Radius>3</Radius>
+         </CircleMatch>
+         <Compare>
+            <Concatinate><Base><String>Banana</String></Base><Append><String>Republic</String></Append></Concatinate>
+            <LESSTHANOREQUALS/>
+            <Alias>Elipticity</Alias>
+         </Compare>
+      </AND>
+   </Where>
+</ADQ>

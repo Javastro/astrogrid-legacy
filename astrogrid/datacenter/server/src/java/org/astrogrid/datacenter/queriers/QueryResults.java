@@ -1,5 +1,5 @@
 /*
- * $Id: QueryResults.java,v 1.8 2004/03/14 02:17:07 mch Exp $
+ * $Id: QueryResults.java,v 1.9 2004/03/14 16:55:48 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -44,6 +44,13 @@ public abstract class QueryResults
    
    /** Looks at given format and decides which output method to use */
    public void write(Writer out, QuerierProcessingResults statusToUpdate, String format) throws IOException {
+      
+      assert (out != null);
+      
+      if (format == null) {
+         format = FORMAT_VOTABLE; //default to votable
+      }
+      
       if (format.toUpperCase().equals(FORMAT_VOTABLE)) {
          toVotable(out, statusToUpdate);
       }

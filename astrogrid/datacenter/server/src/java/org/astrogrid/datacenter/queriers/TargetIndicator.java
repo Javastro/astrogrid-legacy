@@ -1,5 +1,5 @@
 /*
- * $Id: TargetIndicator.java,v 1.1 2004/03/14 04:13:04 mch Exp $
+ * $Id: TargetIndicator.java,v 1.2 2004/03/14 16:55:48 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -64,6 +64,10 @@ public class TargetIndicator  {
    }
 
    public Writer resolveWriter(Account user) throws IOException {
+      if (out != null) {
+         return out;
+      }
+      
       Agsl target = resolveAgsl();
       if (target != null) {
          return new OutputStreamWriter(target.openOutputStream(user.toUser()));
@@ -94,6 +98,9 @@ public class TargetIndicator  {
 }
 /*
  $Log: TargetIndicator.java,v $
+ Revision 1.2  2004/03/14 16:55:48  mch
+ Added XSLT ADQL->SQL support
+
  Revision 1.1  2004/03/14 04:13:04  mch
  Wrapped output target in TargetIndicator
 

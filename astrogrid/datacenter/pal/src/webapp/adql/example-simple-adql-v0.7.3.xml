@@ -1,10 +1,9 @@
-<!-- SELECT * FROM Tab t -->
-<?xml version="1.0" encoding="utf-8"?>
-<Select xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://adql.ivoa.net/v0.73">
+<!-- SELECT * FROM SampleStars s -->
+<Select xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://adql.ivoa.net/v0.73">
    <SelectionList>
       <All />
    </SelectionList>
    <From>
-      <Table Name="Tab" Alias="t" />
+      <Table Name="SampleStars" Alias="s" />
    </From>
 </Select>

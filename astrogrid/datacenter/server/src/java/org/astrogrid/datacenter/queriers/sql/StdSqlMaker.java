@@ -1,4 +1,4 @@
-/*$Id: StdSqlMaker.java,v 1.2 2004/03/12 20:04:57 mch Exp $
+/*$Id: StdSqlMaker.java,v 1.3 2004/03/14 16:55:48 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,20 @@
 **/
 package org.astrogrid.datacenter.queriers.sql;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.net.URL;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.config.Config;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.spi.Translator;
 import org.astrogrid.datacenter.queriers.sql.deprecated.SqlQuerierSPI;
 import org.astrogrid.datacenter.query.AdqlQuery;
@@ -58,8 +68,8 @@ public class StdSqlMaker  extends SqlMaker {
       return "SELECT * FROM "+table+" as "+alias+
          " WHERE "+
          //square - for quicker searches
-         "(("+decCol+"<"+(dec+radius)+" AND "+decCol+">"+(dec-radius)+") AND"+
-         " ("+ raCol+"<"+(ra +radius)+" AND "+ raCol+">"+(ra -radius)+"))"+
+         "("+decCol+"<"+(dec+radius)+" AND "+decCol+">"+(dec-radius)+" AND"+
+         " "+ raCol+"<"+(ra +radius)+" AND "+ raCol+">"+(ra -radius)+")"+
          " AND "+
          //circle
          "((2 * ASIN( SQRT("+
@@ -91,32 +101,106 @@ public class StdSqlMaker  extends SqlMaker {
             DomHelper.PrettyElementToStream(queryBody,System.out);
             throw new IllegalArgumentException("Query body has no namespace - cannot determine language");
         }
+        
         SqlQuerierSPI spi = new SqlQuerierSPI();
         Translator trans = spi.getTranslatorMap().lookup(namespaceURI);
-        if (trans == null) {
-            throw new RuntimeException("No ADQL translator available for namespace: '" + namespaceURI+"'");
+        if (trans != null) {
+           String sql = useSpi(queryBody, trans);
+           log.info("Used SPI "+trans+") to translate ADQL ("+namespaceURI+") to '"+sql+"'");
+           return sql;
         }
+        
+        return useXslt(queryBody, namespaceURI);
+
+     }
+     
+     /** Uses the SPI plugin to do the translations */
+     public String useSpi(Element queryBody, Translator trans) throws QueryException {
         // do the translation
         Object intermediateRep = null;
         Class expectedType = null;
         try { // don't trust it.
             intermediateRep = trans.translate(queryBody);
-            expectedType = trans.getResultType();
-            if (! expectedType.isInstance(intermediateRep)) { // checks result is non-null and the right type.
-                throw new DatabaseAccessException("Translation result " + intermediateRep.getClass().getName() + " not of expected type " + expectedType.getName());
-            }
-        } catch (Throwable t) {
-            throw new RuntimeException("Translation phase failed:" + t.getMessage());
+        } catch (Exception t) {
+            throw new QueryException("Translation phase failed:" + t.getMessage(),t);
         }
+        //check return type
+        expectedType = trans.getResultType();
+        if (! expectedType.isInstance(intermediateRep)) { // checks result is non-null and the right type.
+            throw new QueryException("Translation result " + intermediateRep.getClass().getName() + " not of expected type " + expectedType.getName());
+        }
+        
         return (String) intermediateRep;
 
    }
    
+     /** Uses Xslt to do the translations */
+   public String useXslt(Element queryBody, String namespaceURI) throws QueryException {
+
+      String xsltDoc = null;
+      //work out which translator sheet to use - default
+      if (namespaceURI.equals("http://adql.ivoa.net/v0.73")) {
+         xsltDoc = "adql073-2-sql.xsl";
+      }
+      if (namespaceURI.equals("http://astrogrid.org/sadql/v1.1")) {
+         xsltDoc = "sadql1.1-2-sql.xsl";
+      }
+      
+      String key = "datacenter.sqlmaker.xslt."+namespaceURI;
+      xsltDoc = SimpleConfig.getSingleton().getString(key, xsltDoc);
+      
+      if (xsltDoc == null) {
+         throw new RuntimeException("No XSLT sheet given for ADQL; set configuration key '" + key+"'");
+      }
+
+      URL xsltUrl = null;
+      Transformer transformer = null;
+      try {
+         //find specified sheet
+         xsltUrl = Config.resolveFilename(xsltDoc);
+      
+         TransformerFactory tFactory = TransformerFactory.newInstance();
+         transformer = tFactory.newTransformer(new StreamSource(xsltUrl.openStream()));
+         
+         StringWriter sw = new StringWriter();
+         transformer.transform(new DOMSource(queryBody), new StreamResult(sw));
+         String sql = sw.toString();
+        
+         //tidy it up - remove new lines and double spaces
+         sql = sql.replaceAll("\n","");
+         sql = sql.replaceAll("\r","");
+         while (sql.indexOf("  ")>-1) { sql = sql.replaceAll("  ", " "); }
+         
+         //botch botch botch - for some reason transformers sometimes add <?xml tag to beginning
+         if (sql.startsWith("<?")) {
+            sql = sql.substring(sql.indexOf("?>")+2);
+         }
+         //botch botch botch - something funny with ADQL 0.7.3 schema to do with comparisons
+         sql = sql.replaceAll("&gt;", ">").replaceAll("&lt;", "<");
+         
+         log.info("Used "+xsltDoc+"(="+xsltUrl+" from "+key+") to translate ADQL ("+namespaceURI+") to '"+sql+"'");
+         
+         return sql;
+      }
+      catch (IOException ioe) {
+         throw new QueryException("Could not find/create ADQL->SQL tansformer from "+xsltDoc+"(="+xsltUrl+", from key "+key+")",ioe);
+      }
+      catch (TransformerConfigurationException tce) {
+         throw new QueryException("Server not setup correctly",tce);
+      }
+      catch (TransformerException te) {
+         throw new QueryException("Error translating ADQL->SQL using "+xsltDoc+"(="+xsltUrl+", from key "+key+")",te);
+      }
+
+   }
 }
 
 
 /*
 $Log: StdSqlMaker.java,v $
+Revision 1.3  2004/03/14 16:55:48  mch
+Added XSLT ADQL->SQL support
+
 Revision 1.2  2004/03/12 20:04:57  mch
 It05 Refactor (Client)
 

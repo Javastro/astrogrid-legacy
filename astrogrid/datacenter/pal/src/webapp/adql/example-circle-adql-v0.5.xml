@@ -7,12 +7,12 @@ SELECT t.*, b.* FROM Tab t, Bob b WHERE t.g <> b.g AND CIRCLE(12.5, 23, 5) ORDER
   <SelectionList>
     <ColumnExpr>
       <AllColumnReference>
-        <TableName>t</TableName>
+        <TableName>s</TableName>
       </AllColumnReference>
     </ColumnExpr>
     <ColumnExpr>
       <AllColumnReference>
-        <TableName>b</TableName>
+        <TableName>g</TableName>
       </AllColumnReference>
     </ColumnExpr>
   </SelectionList>
@@ -20,12 +20,12 @@ SELECT t.*, b.* FROM Tab t, Bob b WHERE t.g <> b.g AND CIRCLE(12.5, 23, 5) ORDER
     <FromClause>
       <TableReference>
         <Table>
-          <Name>Tab</Name>
-          <AliasName>t</AliasName>
+          <Name>SampleStars</Name>
+          <AliasName>s</AliasName>
         </Table>
         <Table>
-          <Name>Bob</Name>
-          <AliasName>b</AliasName>
+          <Name>SampleGalaxies</Name>
+          <AliasName>g</AliasName>
         </Table>
       </TableReference>
     </FromClause>
@@ -35,15 +35,15 @@ SELECT t.*, b.* FROM Tab t, Bob b WHERE t.g <> b.g AND CIRCLE(12.5, 23, 5) ORDER
           <ComparisonPred>
             <FirstExpr xsi:type="ColumnExpr">
               <SingleColumnReference>
-                <TableName>t</TableName>
-                <Name>g</Name>
+                <TableName>s</TableName>
+                <Name>RA</Name>
               </SingleColumnReference>
             </FirstExpr>
             <Compare>&lt;&gt;</Compare>
             <SecondExpr xsi:type="ColumnExpr">
               <SingleColumnReference>
-                <TableName>b</TableName>
-                <Name>g</Name>
+                <TableName>g</TableName>
+                <Name>RA</Name>
               </SingleColumnReference>
             </SecondExpr>
           </ComparisonPred>
@@ -68,15 +68,15 @@ SELECT t.*, b.* FROM Tab t, Bob b WHERE t.g <> b.g AND CIRCLE(12.5, 23, 5) ORDER
         <Expr xsi:type="BinaryExpr">
           <FirstExpr xsi:type="ColumnExpr">
             <SingleColumnReference>
-              <TableName>t</TableName>
-              <Name>g</Name>
+              <TableName>s</TableName>
+              <Name>DEC</Name>
             </SingleColumnReference>
           </FirstExpr>
           <Operator>-</Operator>
           <SecondExpr xsi:type="ColumnExpr">
             <SingleColumnReference>
-              <TableName>b</TableName>
-              <Name>g</Name>
+              <TableName>g</TableName>
+              <Name>DEC</Name>
             </SingleColumnReference>
           </SecondExpr>
         </Expr>
@@ -84,8 +84,8 @@ SELECT t.*, b.* FROM Tab t, Bob b WHERE t.g <> b.g AND CIRCLE(12.5, 23, 5) ORDER
       <Order>
         <Expr xsi:type="ColumnExpr">
           <SingleColumnReference>
-            <TableName>b</TableName>
-            <Name>h</Name>
+            <TableName>g</TableName>
+            <Name>SHAPE</Name>
           </SingleColumnReference>
         </Expr>
       </Order>

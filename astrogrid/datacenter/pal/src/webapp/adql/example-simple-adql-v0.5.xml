@@ -1,16 +1,12 @@
-<!-- SQL equivalent
-SELECT * FROM Tab t
--->
-<Select xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns="http://tempuri.org/adql"
->
+<!-- SQL equivalent: SELECT * FROM SampleStars s -->
+<Select xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns="http://tempuri.org/adql">
   <SelectionAll />
   <TableClause>
     <FromClause>
       <TableReference>
         <Table>
-          <Name>Tab</Name>
-          <AliasName>t</AliasName>
+          <Name>SampleStars</Name>
+          <AliasName>s</AliasName>
         </Table>
       </TableReference>
     </FromClause>

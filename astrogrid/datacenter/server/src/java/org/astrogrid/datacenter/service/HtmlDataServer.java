@@ -1,5 +1,5 @@
 /*
- * $Id: HtmlDataServer.java,v 1.2 2004/03/14 04:13:04 mch Exp $
+ * $Id: HtmlDataServer.java,v 1.3 2004/03/14 16:55:48 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -153,28 +153,30 @@ public class HtmlDataServer
       StringWriter sw = new StringWriter();
       th.printStackTrace(new PrintWriter(sw));
       String stack = sw.toString();
-      
-      //deal with special chars
-      stack = stack.replaceAll(">", "&gt;");
-      stack = stack.replaceAll("<", "&lt;");
-      
+
       return
          "<html>\n"+
          "<head><title>ERROR: "+title+"</title></head>\n"+
          "<body>\n"+
          "<h1>ERROR REPORT</h1>\n"+
          "<b>"+title+"</b>\n"+
-         "<p><b>"+th+"</b></p>\n"+
+         "<p><b>"+makeSafeForHtml(th.toString())+"</b></p>\n"+
          "<p>\n"+
-         "<pre>"+stack+"</pre>\n"+
+         "<pre>"+makeSafeForHtml(stack)+"</pre>\n"+
          "</p>\n"+
          "<p>\n"+
-         "<pre>"+details+"</pre>\n"+
+         "<pre>"+makeSafeForHtml(details)+"</pre>\n"+
          "</p>\n"+
          "</body>\n"+
          "</html>\n";
    }
 
+   /**
+    * Deals with special characters */
+   public static String makeSafeForHtml(String s) {
+      return s.replaceAll(">", "&gt;").replaceAll("<", "&lt;");
+   }
+   
    /** Convenience routine for exceptionAsHtml(String, Exception, String)   */
    public static String exceptionAsHtml(String title, Throwable th) {
       return exceptionAsHtml(title, th, "");

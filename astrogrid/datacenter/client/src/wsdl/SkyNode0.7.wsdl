@@ -1,222 +1,225 @@
 <?xml version="1.0" encoding="utf-8"?>
-<definitions xmlns:s1="http://skyservice.pha.jhu.edu" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:s0="http://voql.ivoa.net/" xmlns:s2="http://www.ivoa.net/xml/prop/VOResource" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" targetNamespace="http://voql.ivoa.net/" xmlns="http://schemas.xmlsoap.org/wsdl/">
+<definitions xmlns:sky="http://skyservice.pha.jhu.edu" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+               xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:voql="http://voql.ivoa.net/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+               xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" targetNamespace="http://voql.ivoa.net/" xmlns="http://schemas.xmlsoap.org/wsdl/">
   <types>
-    <s:schema elementFormDefault="qualified" targetNamespace="http://voql.ivoa.net/">
-      <s:import namespace="http://skyservice.pha.jhu.edu" />
-      <s:import namespace="http://www.ivoa.net/xml/prop/VOResource" />
-      <s:element name="ucd">
-        <s:complexType>
-          <s:sequence>
-            <s:element minOccurs="0" maxOccurs="1" name="tableName" type="s:string" />
-            <s:element minOccurs="0" maxOccurs="1" name="columnName" type="s:string" />
-          </s:sequence>
-        </s:complexType>
-      </s:element>
-      <s:element name="ucdResponse">
-        <s:complexType>
-          <s:sequence>
-            <s:element minOccurs="0" maxOccurs="1" name="ucdResult" type="s:string" />
-          </s:sequence>
-        </s:complexType>
-      </s:element>
-      <s:element name="performQuery">
-        <s:complexType>
-          <s:sequence>
-            <s:element minOccurs="1" maxOccurs="1" name="Select" nillable="true" type="s0:Select" />
-          </s:sequence>
-        </s:complexType>
-      </s:element>
-      <s:element name="performQueryResponse">
-        <s:complexType>
-          <s:sequence>
-            <s:element minOccurs="0" maxOccurs="1" name="performQueryResult" type="s1:VOTABLE" />
-          </s:sequence>
-        </s:complexType>
-      </s:element>
-      <s:element name="columns">
-        <s:complexType>
-          <s:sequence>
-            <s:element minOccurs="0" maxOccurs="1" name="tableName" type="s:string" />
-          </s:sequence>
-        </s:complexType>
-      </s:element>
-      <s:element name="columnsResponse">
-        <s:complexType>
-          <s:sequence>
-            <s:element minOccurs="0" maxOccurs="1" name="columnsResult" type="s0:ArrayOfString" />
-          </s:sequence>
-        </s:complexType>
-      </s:element>
-      <s:element name="tables">
-        <s:complexType />
-      </s:element>
-      <s:element name="tablesResponse">
-        <s:complexType>
-          <s:sequence>
-            <s:element minOccurs="0" maxOccurs="1" name="tablesResult" type="s0:ArrayOfString" />
-          </s:sequence>
-        </s:complexType>
-      </s:element>
-      <s:element name="metaData">
-        <s:complexType />
-      </s:element>
-      <s:element name="metaDataResponse">
-        <s:complexType>
-          <s:sequence>
-            <s:element minOccurs="0" maxOccurs="1" name="metaDataResult" type="s2:ArrayOfGenericResource" />
-          </s:sequence>
-        </s:complexType>
-      </s:element>
-      <s:element name="genericResource" nillable="true" type="s2:genericResource" />
-      <s:element name="string" nillable="true" type="s:string" />
-      <s:element name="ArrayOfString" nillable="true" type="s0:ArrayOfString" />
-      <s:element name="ArrayOfGenericResource" nillable="true" type="s2:ArrayOfGenericResource" />
-    </s:schema>
+    <xs:schema elementFormDefault="qualified" targetNamespace="http://voql.ivoa.net/">
+      <xs:import namespace="http://skyservice.pha.jhu.edu" />
+      <xs:import namespace="http://voql.ivoa.net/" />
+      <!--s:import namespace="http://www.ivoa.net/xml/prop/VOResource" /-->
+      <xs:element name="ucd">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="1" name="tableName" type="xs:string" />
+            <xs:element minOccurs="0" maxOccurs="1" name="columnName" type="xs:string" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="ucdResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="1" name="ucdResult" type="xs:string" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="performQuery">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="1" maxOccurs="1" name="Select" nillable="true" type="voql:Select" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="performQueryResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="1" name="performQueryResult" type="sky:VOTABLE" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="columns">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="1" name="tableName" type="xs:string" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="columnsResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="1" name="columnsResult" type="voql:ArrayOfString" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="tables">
+        <xs:complexType />
+      </xs:element>
+      <xs:element name="tablesResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="1" name="tablesResult" type="voql:ArrayOfString" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="metaData">
+        <xs:complexType />
+      </xs:element>
+      <xs:element name="metaDataResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="1" name="metaDataResult" type="s2:ArrayOfGenericResource" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="genericResource" nillable="true" type="s2:genericResource" />
+      <xs:element name="string" nillable="true" type="xs:string" />
+      <xs:element name="ArrayOfString" nillable="true" type="voql:ArrayOfString" />
+      <xs:element name="ArrayOfGenericResource" nillable="true" type="s2:ArrayOfGenericResource" />
+    </xs:schema>
   </types>
   <message name="ucdSoapIn">
-    <part name="parameters" element="s0:ucd" />
+    <part name="parameters" element="voql:ucd" />
   </message>
   <message name="ucdSoapOut">
-    <part name="parameters" element="s0:ucdResponse" />
+    <part name="parameters" element="voql:ucdResponse" />
   </message>
   <message name="performQuerySoapIn">
-    <part name="parameters" element="s0:performQuery" />
+    <part name="parameters" element="voql:performQuery" />
   </message>
   <message name="performQuerySoapOut">
-    <part name="parameters" element="s0:performQueryResponse" />
+    <part name="parameters" element="voql:performQueryResponse" />
   </message>
   <message name="columnsSoapIn">
-    <part name="parameters" element="s0:columns" />
+    <part name="parameters" element="voql:columns" />
   </message>
   <message name="columnsSoapOut">
-    <part name="parameters" element="s0:columnsResponse" />
+    <part name="parameters" element="voql:columnsResponse" />
   </message>
   <message name="tablesSoapIn">
-    <part name="parameters" element="s0:tables" />
+    <part name="parameters" element="voql:tables" />
   </message>
   <message name="tablesSoapOut">
-    <part name="parameters" element="s0:tablesResponse" />
+    <part name="parameters" element="voql:tablesResponse" />
   </message>
   <message name="metaDataSoapIn">
-    <part name="parameters" element="s0:metaData" />
+    <part name="parameters" element="voql:metaData" />
   </message>
   <message name="metaDataSoapOut">
-    <part name="parameters" element="s0:metaDataResponse" />
+    <part name="parameters" element="voql:metaDataResponse" />
   </message>
   <message name="ucdHttpGetIn">
-    <part name="tableName" type="s:string" />
-    <part name="columnName" type="s:string" />
+    <part name="tableName" type="xs:string" />
+    <part name="columnName" type="xs:string" />
   </message>
   <message name="ucdHttpGetOut">
-    <part name="Body" element="s0:string" />
+    <part name="Body" element="voql:string" />
   </message>
   <message name="columnsHttpGetIn">
-    <part name="tableName" type="s:string" />
+    <part name="tableName" type="xs:string" />
   </message>
   <message name="columnsHttpGetOut">
-    <part name="Body" element="s0:ArrayOfString" />
+    <part name="Body" element="voql:ArrayOfString" />
   </message>
   <message name="tablesHttpGetIn" />
   <message name="tablesHttpGetOut">
-    <part name="Body" element="s0:ArrayOfString" />
+    <part name="Body" element="voql:ArrayOfString" />
   </message>
   <message name="metaDataHttpGetIn" />
   <message name="metaDataHttpGetOut">
-    <part name="Body" element="s0:ArrayOfGenericResource" />
+    <part name="Body" element="voql:ArrayOfGenericResource" />
   </message>
   <message name="ucdHttpPostIn">
-    <part name="tableName" type="s:string" />
-    <part name="columnName" type="s:string" />
+    <part name="tableName" type="xs:string" />
+    <part name="columnName" type="xs:string" />
   </message>
   <message name="ucdHttpPostOut">
-    <part name="Body" element="s0:string" />
+    <part name="Body" element="voql:string" />
   </message>
   <message name="columnsHttpPostIn">
-    <part name="tableName" type="s:string" />
+    <part name="tableName" type="xs:string" />
   </message>
   <message name="columnsHttpPostOut">
-    <part name="Body" element="s0:ArrayOfString" />
+    <part name="Body" element="voql:ArrayOfString" />
   </message>
   <message name="tablesHttpPostIn" />
   <message name="tablesHttpPostOut">
-    <part name="Body" element="s0:ArrayOfString" />
+    <part name="Body" element="voql:ArrayOfString" />
   </message>
   <message name="metaDataHttpPostIn" />
   <message name="metaDataHttpPostOut">
-    <part name="Body" element="s0:ArrayOfGenericResource" />
+    <part name="Body" element="voql:ArrayOfGenericResource" />
   </message>
   <portType name="ArchiveServiceSoap">
     <operation name="ucd">
       <documentation>Find the unique content descriptor for a particular table column</documentation>
-      <input message="s0:ucdSoapIn" />
-      <output message="s0:ucdSoapOut" />
+      <input message="voql:ucdSoapIn" />
+      <output message="voql:ucdSoapOut" />
     </operation>
     <operation name="performQuery">
       <documentation>Perfrom an ADQL query on an archive and get the result as a VOTABLE</documentation>
-      <input message="s0:performQuerySoapIn" />
-      <output message="s0:performQuerySoapOut" />
+      <input message="voql:performQuerySoapIn" />
+      <output message="voql:performQuerySoapOut" />
     </operation>
     <operation name="columns">
       <documentation>Find the different columns in a table</documentation>
-      <input message="s0:columnsSoapIn" />
-      <output message="s0:columnsSoapOut" />
+      <input message="voql:columnsSoapIn" />
+      <output message="voql:columnsSoapOut" />
     </operation>
     <operation name="tables">
       <documentation>Find the different tables in an archive</documentation>
-      <input message="s0:tablesSoapIn" />
-      <output message="s0:tablesSoapOut" />
+      <input message="voql:tablesSoapIn" />
+      <output message="voql:tablesSoapOut" />
     </operation>
     <operation name="metaData">
       <documentation>Get the Metadata of the archive as a VODescription</documentation>
-      <input message="s0:metaDataSoapIn" />
-      <output message="s0:metaDataSoapOut" />
+      <input message="voql:metaDataSoapIn" />
+      <output message="voql:metaDataSoapOut" />
     </operation>
   </portType>
   <portType name="ArchiveServiceHttpGet">
     <operation name="ucd">
       <documentation>Find the unique content descriptor for a particular table column</documentation>
-      <input message="s0:ucdHttpGetIn" />
-      <output message="s0:ucdHttpGetOut" />
+      <input message="voql:ucdHttpGetIn" />
+      <output message="voql:ucdHttpGetOut" />
     </operation>
     <operation name="columns">
       <documentation>Find the different columns in a table</documentation>
-      <input message="s0:columnsHttpGetIn" />
-      <output message="s0:columnsHttpGetOut" />
+      <input message="voql:columnsHttpGetIn" />
+      <output message="voql:columnsHttpGetOut" />
     </operation>
     <operation name="tables">
       <documentation>Find the different tables in an archive</documentation>
-      <input message="s0:tablesHttpGetIn" />
-      <output message="s0:tablesHttpGetOut" />
+      <input message="voql:tablesHttpGetIn" />
+      <output message="voql:tablesHttpGetOut" />
     </operation>
     <operation name="metaData">
       <documentation>Get the Metadata of the archive as a VODescription</documentation>
-      <input message="s0:metaDataHttpGetIn" />
-      <output message="s0:metaDataHttpGetOut" />
+      <input message="voql:metaDataHttpGetIn" />
+      <output message="voql:metaDataHttpGetOut" />
     </operation>
   </portType>
   <portType name="ArchiveServiceHttpPost">
     <operation name="ucd">
       <documentation>Find the unique content descriptor for a particular table column</documentation>
-      <input message="s0:ucdHttpPostIn" />
-      <output message="s0:ucdHttpPostOut" />
+      <input message="voql:ucdHttpPostIn" />
+      <output message="voql:ucdHttpPostOut" />
     </operation>
     <operation name="columns">
       <documentation>Find the different columns in a table</documentation>
-      <input message="s0:columnsHttpPostIn" />
-      <output message="s0:columnsHttpPostOut" />
+      <input message="voql:columnsHttpPostIn" />
+      <output message="voql:columnsHttpPostOut" />
     </operation>
     <operation name="tables">
       <documentation>Find the different tables in an archive</documentation>
-      <input message="s0:tablesHttpPostIn" />
-      <output message="s0:tablesHttpPostOut" />
+      <input message="voql:tablesHttpPostIn" />
+      <output message="voql:tablesHttpPostOut" />
     </operation>
     <operation name="metaData">
       <documentation>Get the Metadata of the archive as a VODescription</documentation>
-      <input message="s0:metaDataHttpPostIn" />
-      <output message="s0:metaDataHttpPostOut" />
+      <input message="voql:metaDataHttpPostIn" />
+      <output message="voql:metaDataHttpPostOut" />
     </operation>
   </portType>
-  <binding name="ArchiveServiceSoap" type="s0:ArchiveServiceSoap">
+  <binding name="ArchiveServiceSoap" type="voql:ArchiveServiceSoap">
     <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document" />
     <operation name="ucd">
       <soap:operation soapAction="http://voql.ivoa.net/ucd" style="document" />
@@ -264,7 +267,7 @@
       </output>
     </operation>
   </binding>
-  <binding name="ArchiveServiceHttpGet" type="s0:ArchiveServiceHttpGet">
+  <binding name="ArchiveServiceHttpGet" type="voql:ArchiveServiceHttpGet">
     <http:binding verb="GET" />
     <operation name="ucd">
       <http:operation location="/ucd" />
@@ -303,7 +306,7 @@
       </output>
     </operation>
   </binding>
-  <binding name="ArchiveServiceHttpPost" type="s0:ArchiveServiceHttpPost">
+  <binding name="ArchiveServiceHttpPost" type="voql:ArchiveServiceHttpPost">
     <http:binding verb="POST" />
     <operation name="ucd">
       <http:operation location="/ucd" />
@@ -343,13 +346,13 @@
     </operation>
   </binding>
   <service name="ArchiveService">
-    <port name="ArchiveServiceSoap" binding="s0:ArchiveServiceSoap">
+    <port name="ArchiveServiceSoap" binding="voql:ArchiveServiceSoap">
       <soap:address location="http://skyservice.pha.jhu.edu/devel/AdqlArchive/ArchiveService.asmx" />
     </port>
-    <port name="ArchiveServiceHttpGet" binding="s0:ArchiveServiceHttpGet">
+    <port name="ArchiveServiceHttpGet" binding="voql:ArchiveServiceHttpGet">
       <http:address location="http://skyservice.pha.jhu.edu/devel/AdqlArchive/ArchiveService.asmx" />
     </port>
-    <port name="ArchiveServiceHttpPost" binding="s0:ArchiveServiceHttpPost">
+    <port name="ArchiveServiceHttpPost" binding="voql:ArchiveServiceHttpPost">
       <http:address location="http://skyservice.pha.jhu.edu/devel/AdqlArchive/ArchiveService.asmx" />
     </port>
   </service>

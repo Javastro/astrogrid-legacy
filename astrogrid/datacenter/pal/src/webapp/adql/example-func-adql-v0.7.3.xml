@@ -1,23 +1,24 @@
 <!-- Select t.a, g.d from Tab a, Tab d where a.d < d.e and a.f < d.f order by t.f, g.b -->
-<Select>
+<Select  xmlns="http://adql.ivoa.net/v0.73">
    <SelectionList>
       <Alias As="MM">
          <Function>
             <Trignometric>SIN</Trignometric>
-            <Column Table="A" Name="b"/>
+            <Column Table="SampleStars" Name="Mag"/>
          </Function>
       </Alias>
       <All/>
    </SelectionList>
    <From>
-      <Table Name="Tab" Alias="A"/>
+      <Table Name="SampleGalaxies" Alias="g"/>
+      <Table Name="SampleStars" Alias="s"/>
    </From>
    <Where>
       <Closed>
-         <Compare Comparison="<">
+         <Compare Comparison="&lt;">
             <Function>
                <Math>LOG</Math>
-               <Column Table="A" Name="d"/>
+               <Column Table="g" Name="DEC"/>
             </Function>
             <Atom>
                <Real>1.24</Real>

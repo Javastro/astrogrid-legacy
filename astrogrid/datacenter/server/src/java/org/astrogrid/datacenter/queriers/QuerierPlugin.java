@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierPlugin.java,v 1.3 2004/03/14 04:13:04 mch Exp $
+ * $Id: QuerierPlugin.java,v 1.4 2004/03/14 16:55:48 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -84,6 +84,10 @@ public abstract class QuerierPlugin  {
       }
 
       Writer writer = target.resolveWriter(querier.getUser());
+      
+      if (writer == null) {
+         throw new IOException("Could not resolve writer from "+target);
+      }
 
       results.write(writer, resultsStatus, querier.getRequestedFormat());
       writer.close();
@@ -136,6 +140,9 @@ public abstract class QuerierPlugin  {
 }
 /*
  $Log: QuerierPlugin.java,v $
+ Revision 1.4  2004/03/14 16:55:48  mch
+ Added XSLT ADQL->SQL support
+
  Revision 1.3  2004/03/14 04:13:04  mch
  Wrapped output target in TargetIndicator
 
