@@ -1,10 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/common/src/java/org/astrogrid/filestore/common/FileStoreTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/07/21 18:11:55 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/07/22 13:40:26 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreTest.java,v $
+ *   Revision 1.5  2004/07/22 13:40:26  dave
+ *   Merged development branch, dave-dev-200407211922, into HEAD
+ *
+ *   Revision 1.4.2.1  2004/07/22 13:10:37  dave
+ *   Updated integration test config
+ *
  *   Revision 1.4  2004/07/21 18:11:55  dave
  *   Merged development branch, dave-dev-200407201059, into HEAD
  *
@@ -149,6 +155,21 @@ public class FileStoreTest
 		0x2e,
 		0x2e
 		} ;
+
+	/**
+	 * Test properties prefix.
+	 *
+	 */
+	public static final String TEST_PROPERTY_PREFIX = "org.astrogrid.filestore.test" ;
+
+	/**
+	 * Helper method to get a local property.
+	 *
+	 */
+	public String getTestProperty(String name)
+		{
+		return System.getProperty(TEST_PROPERTY_PREFIX + "." + name) ;
+		}
 
 	/**
 	 * Debug utility to print an array of bytes.
@@ -1487,21 +1508,6 @@ public class FileStoreTest
 					)
 				)
 			) ;
-		}
-
-	/**
-	 * Test properties prefix.
-	 *
-	 */
-	public static final String TEST_PROPERTY_PREFIX = "org.astrogrid.filestore.test" ;
-
-	/**
-	 * Helper method to get a local property.
-	 *
-	 */
-	public String getTestProperty(String name)
-		{
-		return System.getProperty(TEST_PROPERTY_PREFIX + "." + name) ;
 		}
 
 	/**
