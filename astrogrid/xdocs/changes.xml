@@ -10,8 +10,15 @@
       </action>              
     </release>
     <release version="0.6.0" date="14/11/04" description="Iteration 6 Release">
-      <action dev="jdt" type="update" >
-        What's new in Iteration 6? - To be completed.
+      <action dev="jdt" type="add" >
+        The iteration 6 release offers a large number of enhancements and fixes over iteration 5, including:
+        <ul>
+            <li>A graphical query builder</li>
+            <li>SIAP services</li>
+            <li>An enhanced mySpace Explorer</li>
+            <li>Real datasets in AGINAB</li>
+            <li>more.....</li>
+        </ul>
       </action>                   
     </release>
   </body>
