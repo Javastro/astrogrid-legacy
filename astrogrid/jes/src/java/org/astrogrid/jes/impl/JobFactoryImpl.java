@@ -21,7 +21,7 @@ import javax.sql.DataSource ;
 import javax.naming.*; 
 import java.sql.Connection ;
 import java.sql.Statement ;
-// import java.sql.PreparedStatement ;
+import java.sql.PreparedStatement ;
 import java.sql.ResultSet ;
 import java.sql.SQLException ;
 import java.sql.Timestamp ;
@@ -51,8 +51,8 @@ public class JobFactoryImpl implements JobFactory {
 	    JES_ID = "JES.ID" ;
 		
 	public static final String
-	    JOB_INSERT_TEMPLATE = "INSERT INTO {0} ( JOBURN, JOBNAME, STATUS, SUBMITTIMESTAMP, USERID, COMMUNITY, JOBXML ) " +
-	                          "VALUES ( ''{1}'', ''{2}'', ''{3}'', ''{4}'', ''{5}'', ''{6}'', ''{7}'' )" ,
+		JOB_INSERT_TEMPLATE = "INSERT INTO {0} ( JOBURN, JOBNAME, STATUS, SUBMITTIMESTAMP, USERID, COMMUNITY, JOBXML ) " +
+												"VALUES ( ?, ?, ?, ?, ?, ?, ? )" ,	                          
 	    JOB_UPDATE_TEMPLATE = "UPDATE {0} SET STATUS = {1} WHERE JOBURN = {2}" ,
 	    JOB_SELECT_TEMPLATE = "SELECT * FROM {0} WHERE JOBURN = {1}" ,
 	    JOB_GENERAL_SELECT_TEMPLATE = "SELECT * FROM {0} WHERE {1}" ,	    
@@ -237,23 +237,21 @@ public class JobFactoryImpl implements JobFactory {
 		    job.setFactoryImpl( this ) ;
 			job.setId( generateUniqueJobURN( job ) ) ;
 			job.setStatus( Job.STATUS_INITIALIZED ) ;
-			
-			Object []
-			   inserts = new Object[8] ;
-			inserts[0] = JobController.getProperty( JOB_TABLENAME ) ;
-			inserts[1] = job.getId() ;
-			inserts[2] = job.getName() ;
-			inserts[3] = job.getStatus() ;
-			inserts[4] = new Timestamp( job.getDate().getTime() ).toString(); //JBL Note: this may give us grief
-			inserts[5] = job.getUserId() ;
-			inserts[6] = job.getCommunity() ;
-			inserts[7] = job.getDocumentXML() ;
 
-			String
-			   updateString = MessageFormat.format( JOB_INSERT_TEMPLATE, inserts ) ; 
-			logger.debug( "Create Job: " + updateString ) ;			
+
+			PreparedStatement
+				pStatement = ((JobImpl)job.getImplementation()).getPreparedStatement() ;
+			
+			pStatement.setString( 1, job.getId() ) ; 
+			pStatement.setString( 2, job.getName() ) ; 
+			pStatement.setString( 3, job.getStatus() ) ;
+			pStatement.setString( 4, new Timestamp( job.getDate().getTime() ).toString() ) ; 
+			pStatement.setString( 5, job.getUserId() ) ; 
+			pStatement.setString( 6, job.getCommunity() ) ;
+			pStatement.setString( 7, job.getDocumentXML() ) ;
+			
 			statement = getConnection().createStatement() ;
-			statement.executeUpdate( updateString );
+			pStatement.execute();
 			job.setDirty( false ) ;
 			createJobSteps( job ) ;
     	}

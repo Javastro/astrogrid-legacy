@@ -13,7 +13,8 @@ package org.astrogrid.jes.impl;
 import org.astrogrid.jes.job.Job ;
 import org.astrogrid.jes.job.JobStep ;
 import org.astrogrid.jes.job.JobException ;
-import org.astrogrid.jes.jobcontroller.SubmissionRequestDD;
+import org.astrogrid.jes.jobcontroller.JobController ;
+import org.astrogrid.jes.jobcontroller.SubmissionRequestDD ;
 import org.astrogrid.jes.i18n.*;
 import org.apache.log4j.Logger;
 
@@ -22,6 +23,13 @@ import java.util.Date ;
 import java.util.Set;
 import java.util.HashSet ;
 import java.util.Iterator ;
+
+import java.sql.Connection ;
+import java.sql.PreparedStatement ;
+import java.sql.SQLException ;
+import java.text.MessageFormat ;
+
+import javax.sql.DataSource ;
 
 
 public class JobImpl extends Job {
@@ -33,6 +41,7 @@ public class JobImpl extends Job {
 		logger = Logger.getLogger( JobImpl.class ) ;
 		
 	private static String
+		ASTROGRIDERROR_COULD_NOT_CREATE_JOB_CONNECTION            = "AGDTCE00160" ,
 	    ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT = "AGJESE00180" ;
 	  
 	private JobFactoryImpl
@@ -54,8 +63,13 @@ public class JobImpl extends Job {
 	   
 	private Set
 	   jobSteps = new HashSet() ;
+	   
+	private Connection
+		connection = null ;	   
+	   
+	private PreparedStatement 
+		preparedStatement = null ;	   
 
-	  
 	public JobImpl() {}
 	 
 	   
@@ -70,35 +84,35 @@ public class JobImpl extends Job {
 			Element
 			   element = null ;			   
 			NodeList
-			   nodeList = submitDoc.getChildNodes() ;  
-			   
-			for( int i=0 ; i < nodeList.getLength() ; i++ ) {
-				
+			   nodeList = submitDoc.getDocumentElement().getChildNodes() ;  		   
+			for( int i=0 ; i < nodeList.getLength() ; i++ ) {			
 				if( nodeList.item(i).getNodeType() == Node.ELEMENT_NODE ) {
 					
-					element = (Element) nodeList.item(i) ;
-					
-					if ( element.getTagName().equals( SubmissionRequestDD.JOB_ELEMENT ) ) {
-						name = element.getAttribute( SubmissionRequestDD.JOB_NAME_ATTR ).trim() ;
+					element = (Element) nodeList.item(i) ;					
+					if ( element.getTagName().equals( SubmissionRequestDD.JOBSTEP_ELEMENT ) ) {
+						name = element.getAttribute( SubmissionRequestDD.JOBSTEP_NAME_ATTR ).trim() ;
+					}					
+					else if (element.getTagName().equals( SubmissionRequestDD.USERID_ELEMENT) ) {					 	
+						userId = element.getFirstChild().getNodeValue().trim();
 					}
+					else if (element.getTagName().equals( SubmissionRequestDD.COMMUNITY_ELEMENT) ) {					 	
+					    community = element.getFirstChild().getNodeValue().trim();
+				 	}
 					
 				} // end if
 								
 			} // end for		
 
-			nodeList = element.getChildNodes() ;  			
-			   
+			nodeList = element.getChildNodes() ;  					   
 			for( int i=0 ; i < nodeList.getLength() ; i++ ) {
 							
-				if( nodeList.item(i).getNodeType() == Node.ELEMENT_NODE ) {
-					
-					element = (Element) nodeList.item(i) ;
-					
-				    if( element.getTagName().equals( SubmissionRequestDD.USERID_ELEMENT ) ) {
-					    userId = element.getNodeValue().trim() ;
+				if( nodeList.item(i).getNodeType() == Node.ELEMENT_NODE ) {				
+					element = (Element) nodeList.item(i) ;					
+				    if( element.getTagName().equals( SubmissionRequestDD.USERID_ELEMENT ) ) {				    	
+					    userId = element.getNodeValue().trim() ;					    
 				    }
 				    else if( element.getTagName().equals( SubmissionRequestDD.COMMUNITY_ELEMENT ) ) {
-					    community = element.getNodeValue().trim() ;
+					    community = element.getNodeValue().trim() ;					    
 				    }
 				    else if( element.getTagName().equals( SubmissionRequestDD.JOBSTEP_ELEMENT ) ) {
 				        jobSteps.add( new JobStep( this, element ) ) ;   
@@ -123,7 +137,63 @@ public class JobImpl extends Job {
 		}
 		
 	} // end of JobImpl()
+	
+	public PreparedStatement getPreparedStatement() throws JobException, SQLException {
+		if( TRACE_ENABLED ) logger.debug( "getPreparedStatement(): entry") ; 
+		
+		try { 			   
+		
+			if( preparedStatement == null ) {
+				Object[]
+					inserts = new Object[1] ;
+			 	inserts[0] = JobController.getProperty( JobFactoryImpl.JOB_TABLENAME ) ;
+				String
+				     updateString = MessageFormat.format( JobFactoryImpl.JOB_INSERT_TEMPLATE, inserts ) ; 									     			
+				preparedStatement = getConnection().prepareStatement( updateString ) ;		
+			}
+		    
+		}
+		finally {
+			if( TRACE_ENABLED ) logger.debug( "getPreparedStatement(): exit") ; 	
+		}
+		
+		return preparedStatement ;
+		
+	}// end of getPreparedStatement()	
 
+	public Connection getConnection() throws JobException {
+		if( TRACE_ENABLED ) logger.debug( "getConnection(): entry") ; 
+		
+		try{
+			if( connection == null ) {
+				logger.debug( "connection is null" ) ;
+				DataSource
+					 dataSource ;
+				logger.debug( "about to acquire datasource..." ) ;
+				dataSource = JobFactoryImpl.getDataSource() ;
+				logger.debug( "datasource acquired!" ) ;
+				logger.debug( "about to acquire connection..." ) ;
+				connection = dataSource.getConnection() ;
+				logger.debug( "connection acquired!" ) ;
+				logger.debug( "connection: " + connection.toString() ) ;
+			}
+			else {
+				logger.debug( "connection is not null" ) ;
+			}
+		}
+		catch( SQLException e ) {
+			Message
+				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_JOB_CONNECTION ) ;
+			logger.error( message.toString(), e ) ;
+			throw new JobException( message, e );
+		}
+		finally{
+			if( TRACE_ENABLED ) logger.debug( "getConnection(): exit") ; 		
+		}
+		    
+		return connection ;  
+
+	} // end of getConnection()
 
 	public String getId() {	return jobURN ;	}
 	public void setId( String jobURN ) { this.jobURN = jobURN ;}
