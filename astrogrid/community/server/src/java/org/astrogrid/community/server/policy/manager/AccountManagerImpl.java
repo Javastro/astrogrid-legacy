@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/manager/AccountManagerImpl.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/04/23 16:58:13 $</cvs:date>
- * <cvs:version>$Revision: 1.16 $</cvs:version>
+ * <cvs:author>$Author: KevinBenson $</cvs:author>
+ * <cvs:date>$Date: 2004/05/19 21:33:23 $</cvs:date>
+ * <cvs:version>$Revision: 1.17 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManagerImpl.java,v $
+ *   Revision 1.17  2004/05/19 21:33:23  KevinBenson
+ *   needed to move the committing of the transaction to a different place so it got committed ot the database.
+ *
  *   Revision 1.16  2004/04/23 16:58:13  dave
  *   Added demo accounts
  *
@@ -245,6 +248,10 @@ account.setIdent(string) ;
                 //
                 // Try adding the account to the groups.
                 database.create(groupmember);
+                
+               // Commit the transaction.
+               database.commit() ;
+                
 // TODO BUG
 // Not sure why this one fails the tests.
 // Something about invalid primary key.
@@ -264,9 +271,6 @@ account.setIdent(string) ;
                         "AccountManagerImpl.addAccount.allocateSpace()"
                         ) ;
                     }
-                //
-                // Commit the transaction.
-                database.commit() ;
                 }
             //
             // If we already have an object with that ident.
