@@ -3,10 +3,19 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/client/project.xml,v $</cvs:source>
     | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2004/11/23 18:40:50 $</cvs:date>
-    | <cvs:version>$Revision: 1.13 $</cvs:version>
+    | <cvs:date>$Date: 2005/01/07 14:14:25 $</cvs:date>
+    | <cvs:version>$Revision: 1.14 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.14  2005/01/07 14:14:25  jdt
+    |   merged from Reg_KMB_787
+    |
+    |   Revision 1.13.2.2  2005/01/05 11:23:46  KevinBenson
+    |   small change on the project.xml
+    |
+    |   Revision 1.13.2.1  2005/01/05 10:47:46  KevinBenson
+    |   added xdoc descriptions for the community
+    |
     |   Revision 1.13  2004/11/23 18:40:50  jdt
     |   Merges from  BLD_JDT_648.  The long awaited move to versioned jars and wars.  Fingers crossed.  See:
     |   http://software.astrogrid.org/developerdocs/developmentprocess.html
@@ -54,7 +63,7 @@
         | The short description should be limited to a single line.
         +-->
     <shortDescription>
-        Short description of the project ....
+        Community Client for interaction with the Community Web Services
     </shortDescription>
 
     <!--+
@@ -63,7 +72,101 @@
         +-->
     <description>
         <![CDATA[
-            Long description of the project, including <i>HTML</i> tags ....
+    		<p>
+            The Community Client area is for setting creating a variety of Delegates for other components to call web service
+    	methods on a community server interface.  These delegates are helper classes for other components to more easily communicate
+    	with the web service on the server, with stubbs already generated and setup. Look into the Resolver area for classes that need to deal
+    	with interaction with the Registry or using Community Acocunt identifiers to perform tasks with the delegates, this Resolver area is what will normally be used for obtaining
+    	delegates.<br />
+    	</p>    	
+    	<section name="Obtaining Delegates">
+    	  <p>
+    	   A component or client may instantiate a Soap type delegate manually if they know the url to the endpoint of a community service, but normally 
+    	   it is best to look at the Resolver area.  The Resolver classes allows a client to get a delegate via the Registry by using a identifier for a 
+    	   community, or even a community identifier for an account or group.
+    	  </p>
+    	</section>
+    	<section name="Setting up a Client">
+    		<p>
+    		In the Administratin manager you need to setup a Environment variable or JNDI property for "org.astrogrid.registry.query.endpoint" setting it to a
+    	    known registry that will have communities (normally a full registry). Or you may place it in a file called
+    	    astrogrid.properties on your classpath.
+    		Jars needed for community as a client:
+    		<ul>
+    		  <li>astrogrid-community-client.jar</li>
+			  <li>astrogrid-community-common.jar</li>
+			  <li>astrogrid-community-resolver.jar</li>
+			  <li>astrogrid-community-resolver.jar</li>
+    		  <li>astrogrid-common.jar</li>    	
+			  <li>astrogrid-registry-cleint-lite.jar</li>    	
+			  <li>astrogrid-registry-common.jar</li>    	
+			  <li>astrogrid-registry-cleint-lite.jar</li>    	
+			  <li>commons-logging.jar</li>    	
+			  <li>log4j.jar</li> 
+    	      <li>axis.jar (jars related for axis calls and client)</li>
+    		</ul>
+    		</p>
+    	</section>
+    	<section name="Types of Delegates/Interfaces">    	  
+    	  <p>
+    	  <p>
+    	  Here is a brief discussion of the main SOAP delegates on the client (normally for other testing and quicker setup Mock delegates are also supplied):<br />
+    		<i>
+    		 First a statement that normally delegates are interface classes and normally one SOAP type delegate is used for these interfaces.
+    	    </i>
+    	  </p>
+    	  <p>
+    		
+    	  <strong>policy.manager -- The most commonly used package</strong><br />
+    	  <i>
+    		PolicyManagerSoapDelegate implements the PolicyManagerDelegate interface in the policy.manager package; hence all a component/user
+    	  	needs is the interface to the PolicyManagerDelegate to use the others such as Accounts, Groups, etc...
+    	  </i>
+    	  <br />
+    	  Interfaces:<br />
+
+    	  <ul>
+    		<li><strong>PolicyManagerDelegate -- MAIN INTERFACE THAT CAN REACH ALL OTHER DELEGATES.</strong></li>
+    		<li>AccountManagerDelegate -- manages accounts</li>
+    		<li>CommunityManagerDelegate -- not really in use anymore</li>
+    		<li>GroupManagerDelegate -- manages groups</li>
+    		<li>GroupMemberManagerDelegate -- manages members of groups.</li>
+    		<li>ResourceManagerDelegate -- manages resources.</li>
+    		<li>PermissionManagerDelegate -- manages permissions for groups/accounts for a resources</li>    		
+    	  </ul>
+ 		  </p>
+    	  <p>
+    	  <strong>policy.service</strong><br />
+    	  <i>
+    	     PolicyServiceSoapDelegate implements the PolicyServiceDelegate.
+    	  </i>
+    	  <br />
+    	  Interfaces: <br />
+    		<ul>
+    		  <li><strong>PolicyServiceDelegate -- checks Permissions are valid and Memberships to groups are valid.</strong></li>
+    		</ul>
+    	  <strong>security.manager</strong><br />
+	  	  <i>
+  		     SecurityManagerSoapDelegate implements the SecurityManagerDelegate.
+	  	  </i>
+  		  <br />
+	  	  Interfaces: <br />
+  			<ul>
+  			  <li><strong>SecurityManagerDelegate -- a seperate interface for setting passwords.</strong></li>
+	  		</ul>
+		</p><p>
+	  	  <strong>security.service</strong><br />
+	  	  <i>
+		     SecurityServiceSoapDelegate implements the SecurityServiceDelegate.
+	  	  </i>
+		  <br />
+	  	  Interfaces: <br />
+			<ul>
+			  <li><strong>SecurityServiceDelegate -- main security interface, checks tokens, splits tokens, and checks passwords.</strong></li>
+	  		</ul>    	
+    		</p>
+    	  </p>
+    	</section>    	
         ]]>
     </description>
 

@@ -7,6 +7,7 @@ import org.w3c.dom.Document;
  * harvesting other registries.  A client may call this webservice, but typically it will 
  * automatically harvest from registries.
  * 
+ * @deprecated No longer in use I think, delete later.
  * @author Kevin Benson
  *
  */

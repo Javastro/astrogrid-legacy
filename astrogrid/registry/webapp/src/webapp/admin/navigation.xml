@@ -19,9 +19,12 @@
       </ul>
    </div>
    <div id='menuRegister'>
-      <h5>Register</h5>
+      <h5>Admin</h5>
       <ul>
-         <li><a href="../editEntry.jsp">Enter/Edit Document</a>
+         <li><a href="clear_cache.jsp">Clear Cache</a>
+         <li><a href="editEntry_backdoor.jsp">Enter Resource (Back Door)</a>
+         <li><a href="harvestResource.jsp">Harvest</a>
+         <li><a href="backup.jsp">Backup</a>
       </ul>
    </div>
 

@@ -19,8 +19,8 @@
   boolean update = false;
   String errorTemp = "";
   boolean isMultipart = FileUpload.isMultipartContent(request);
-  //System.out.println("the ismultipart = " + isMultipart + " doc url = " + request.getParameter("docurl") + " and addFromURL = " + request.getParameter("addFromURL"));
-  //System.out.println("validate = " + request.getParameter("validate"));
+//System.out.println("the ismultipart = " + isMultipart + " doc url = " + request.getParameter("docurl") + " and addFromURL = " + request.getParameter("addFromURL"));
+//System.out.println("validate = " + request.getParameter("validate"));
  if(isMultipart) {
    DiskFileUpload upload = new DiskFileUpload();  
    List /* FileItem */ items = upload.parseRequest(request);
@@ -29,6 +29,7 @@
       FileItem item = (FileItem) iter.next();
        if (!item.isFormField()) {
          doc = DomHelper.newDocument(item.getInputStream());
+         update = true;
        }else {
          //System.out.println("FIELd name = " + item.getFieldName());
          if("validate".equals(item.getFieldName())) {

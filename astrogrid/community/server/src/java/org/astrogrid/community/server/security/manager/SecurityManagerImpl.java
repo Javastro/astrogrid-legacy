@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/security/manager/Attic/SecurityManagerImpl.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
- * <cvs:version>$Revision: 1.8 $</cvs:version>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2005/01/07 14:14:25 $</cvs:date>
+ * <cvs:version>$Revision: 1.9 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityManagerImpl.java,v $
+ *   Revision 1.9  2005/01/07 14:14:25  jdt
+ *   merged from Reg_KMB_787
+ *
+ *   Revision 1.8.34.1  2004/12/16 11:38:23  KevinBenson
+ *   fixed a small bug on the jsp on editing passwords
+ *
  *   Revision 1.8  2004/09/16 23:18:08  dave
  *   Replaced debug logging in Community.
  *   Added stream close() to FileStore.
@@ -144,8 +150,8 @@ public class SecurityManagerImpl
             //
             // Try loading the Account from the database.
 // Do we need this ?
-            AccountData check = (AccountData) database.load(AccountData.class, ident.getAccountIdent()) ;
-            log.debug("  PASS : found account") ;
+            //AccountData check = (AccountData) database.load(AccountData.class, ident.getAccountIdent()) ;
+            //log.debug("  PASS : found account") ;
             //
             // Try loading the PasswordData.
             PasswordData data = null ;

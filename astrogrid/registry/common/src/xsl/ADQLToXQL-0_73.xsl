@@ -12,9 +12,13 @@
    - Based on the schema: http://www.ivoa.net/internal/IVOA/IvoaVOQL/ADQL-0.7.3.xsd
    - mods Martin Hill, ROE
    -->
+
+   <xsl:param name="resource_elem"/>
+   <xsl:param name="declare_elems"/>
    
    <!-- Define order of output -->
    <xsl:template match="ad:Select" >
+      <!--
       <xsl:text>
          declare namespace vr = "http://www.ivoa.net/xml/VOResource/v0.9";
          declare namespace vc = "http://www.ivoa.net/xml/VOCommunity/v0.2";
@@ -26,8 +30,6 @@
          declare namespace ag = "http://www.astrogrid.org/schema/AstrogridDataService/v0.1";
        for $x in //vr:Resource
       </xsl:text>
-   
-      <!--
       <xsl:text>  SELECT </xsl:text>
       <xsl:apply-templates select="ad:Allow"/>
       <xsl:apply-templates select="ad:Restrict"/>
@@ -35,12 +37,17 @@
       <xsl:text> FROM </xsl:text>      
       <xsl:apply-templates select="ad:From"/>
       -->
+      
       <xsl:apply-templates select="ad:Where"/>
+      
       <!--
+      
       <xsl:apply-templates select="ad:GroupBy"/>
       <xsl:apply-templates select="ad:Having"/>
       <xsl:apply-templates select="ad:OrderBy"/>
+      
       -->
+
    </xsl:template>
    
    <!--
@@ -244,7 +251,12 @@
    
    <!-- Where Template -->
    <xsl:template match="ad:Where">
-      <xsl:text> where </xsl:text>
+<xsl:value-of select="$declare_elems"/>
+	  <xsl:text>
+         for $x in //</xsl:text><xsl:value-of select="$resource_elem"/>
+      <xsl:text>
+       where 
+      </xsl:text>      
       <xsl:apply-templates select="*"/>
       <xsl:text> return $x</xsl:text>
    </xsl:template>
@@ -266,6 +278,7 @@
 
       <xsl:variable name="colName" select="@Name" />
       <xsl:text>$x/</xsl:text>
+      <!--
       <xsl:choose>
          <xsl:when test="starts-with($colName,'Resource')">
             <xsl:value-of select="substring($colName, 10, string-length($colName))"/>
@@ -277,6 +290,8 @@
             <xsl:value-of select="$colName" />
          </xsl:otherwise>
       </xsl:choose>
+      -->
+     <xsl:value-of select="$colName" />
    </xsl:template>
    <!--
    - Alias

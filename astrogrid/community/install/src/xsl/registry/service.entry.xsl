@@ -1,11 +1,17 @@
 <?xml version="1.0"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/xsl/registry/service.entry.xsl,v $</cvs:source>
-    | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
-    | <cvs:version>$Revision: 1.4 $</cvs:version>
+    | <cvs:author>$Author: jdt $</cvs:author>
+    | <cvs:date>$Date: 2005/01/07 14:14:24 $</cvs:date>
+    | <cvs:version>$Revision: 1.5 $</cvs:version>
     | <cvs:log>
     |   $Log: service.entry.xsl,v $
+    |   Revision 1.5  2005/01/07 14:14:24  jdt
+    |   merged from Reg_KMB_787
+    |
+    |   Revision 1.4.116.1  2005/01/05 10:47:46  KevinBenson
+    |   added xdoc descriptions for the community
+    |
     |   Revision 1.4  2004/06/18 13:45:20  dave
     |   Merged development branch, dave-dev-200406081614, into HEAD
     |
@@ -21,7 +27,7 @@
     version="1.0" 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9"
-    >
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <!--+
         | Params from the Ant build
         +-->

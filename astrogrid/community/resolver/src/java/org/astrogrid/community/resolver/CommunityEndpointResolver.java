@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/CommunityEndpointResolver.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/11/04 18:00:02 $</cvs:date>
- * <cvs:version>$Revision: 1.12 $</cvs:version>
+ * <cvs:date>$Date: 2005/01/07 14:14:25 $</cvs:date>
+ * <cvs:version>$Revision: 1.13 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityEndpointResolver.java,v $
+ *   Revision 1.13  2005/01/07 14:14:25  jdt
+ *   merged from Reg_KMB_787
+ *
+ *   Revision 1.12.12.1  2004/12/11 11:53:16  KevinBenson
+ *   modifications to the jsps, also merged in several pieces of the validtion stuff
+ *
  *   Revision 1.12  2004/11/04 18:00:02  jdt
  *   Restored following fixes to auto-integration
  *   Merged in Reg_KMB_546 and Reg_KMB_603 and Comm_KMB_583
@@ -159,6 +165,33 @@ public class CommunityEndpointResolver
             type
             ) ;
         }
+    
+    public Ivorn getIvornForService(Ivorn ivorn, Class type) throws CommunityIdentifierException {
+        CommunityIvornParser cip = new CommunityIvornParser(ivorn);
+        //
+        // Check for null type.
+        if (null == type)
+            {
+            throw new CommunityIdentifierException(
+                "Null service type"
+                ) ;
+            }
+        //
+        // Check for null community.
+        if (null == cip.getCommunityIdent())
+            {
+            throw new CommunityIdentifierException(
+                "Null community identifier"
+                ) ;
+            }
+        //
+        // Create our service Ivorn.
+        Ivorn returnIvorn  = CommunityServiceIvornFactory.createIvorn(
+            cip.getCommunityIdent(),
+            type
+            ) ;
+        return returnIvorn;
+    }
 
     /**
      * Resolve data from a CommunityIvornParser.

@@ -40,14 +40,24 @@ if(resources != null)
 %>
 
 <html>
-	<head>
+<head>
 		<title>Resource Administration</title>
-	</head>
-	<body>
+<style type="text/css" media="all">
+          @import url("../style/astrogrid.css");
+</style>
+</head>
+
+<body>
+<%@ include file="header.xml" %>
+<%@ include file="navigation.xml" %>
+
+<div id='bodyColumn'>
+
+
 		<p>
 			<strong><font color="blue"><%=info%></font></strong><br />
 			Resource administration page, here you can add, edit, or delete accounts.
-		<br />
+
 		<table>
 			<tr>
 				<td>

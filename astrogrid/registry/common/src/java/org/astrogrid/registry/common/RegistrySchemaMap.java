@@ -1,4 +1,4 @@
-/*$Id: RegistrySchemaMap.java,v 1.2 2004/12/18 18:30:16 jdt Exp $
+/*$Id: RegistrySchemaMap.java,v 1.3 2005/01/07 14:14:25 jdt Exp $
  * Created on 01-Sep-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -71,7 +71,9 @@ public class RegistrySchemaMap {
         ALL.put("http://www.ivoa.net/xml/VOTable/v1.0",RegistrySchemaMap.class.getResource("/schema/registry/VOTable.xsd"));
         ALL.put("http://www.astrogrid.org/xml/AstrogridDataService/v0.1",RegistrySchemaMap.class.getResource("/schema/registry/AstrogridDataService-0.1.xsd"));
         ALL.put("http://www.astrogrid.org/xml/AstrogridDataService/v0.2",RegistrySchemaMap.class.getResource("/schema/registry/AstrogridDataService-0.2.xsd"));
-        // isn't there a more recent version of votable now too?
+        
+        ALL.put("http://www.ivoa.net/xml/OpenSkyNode/v0.1",RegistrySchemaMap.class.getResource("/schema/registry/OpenSkyNode-v0.1.xsd"));
+        
                                                                                             
     }
     
@@ -81,14 +83,11 @@ public class RegistrySchemaMap {
 
 /* 
 $Log: RegistrySchemaMap.java,v $
-Revision 1.2  2004/12/18 18:30:16  jdt
-KMB's merges:
-		Reg_KMB_728 astrogrid/registry
-          o Reg_KMB_728 astrogrid/workflow
-          o Reg_KMB_728 astrogrid/community
+Revision 1.3  2005/01/07 14:14:25  jdt
+merged from Reg_KMB_787
 
-          o Exist_KMB_613 astrogrid/exist
-          o Reg_KMB_605 astrogrid/auto-integration -- only r
+Revision 1.1.4.2.2.1  2005/01/05 10:54:15  KevinBenson
+added javadoc to it
 
 Revision 1.1.4.2  2004/11/26 21:57:05  KevinBenson
 adding more checks on validation for version 10

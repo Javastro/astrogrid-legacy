@@ -48,13 +48,43 @@ public class ValidatorTest extends TestCase {
         RegistryValidator.isValid(queryDoc);
     }
     
+    public void testValidCEAEntriesv10() throws Exception {
+        Document queryDoc = askQueryFromFile("CEAEntriesv10.xml");
+        RegistryValidator.isValid(queryDoc);
+    }
+    
     public void testValidCEAHTTPEntries() throws Exception {
         Document queryDoc = askQueryFromFile("CEAHttpapps.xml");
         RegistryValidator.isValid(queryDoc);
     }    
     
+    public void testValidCEAHTTPEntriesv10() throws Exception {
+        Document queryDoc = askQueryFromFile("CEAHttpappsv10.xml");
+        RegistryValidator.isValid(queryDoc);
+    }
+
+    public void testValidCEAHTTPEntriesLive() throws Exception {
+        Document queryDoc = askQueryFromFile("HTTPAppsLive.xml");
+        RegistryValidator.isValid(queryDoc);
+    }
+    
+    public void testValidCEAHTTPEntriesLivev10() throws Exception {
+        Document queryDoc = askQueryFromFile("HTTPAppsLivev10.xml");
+        RegistryValidator.isValid(queryDoc);
+    }   
+    
     public void testValidExternalEntries() throws Exception {
         Document queryDoc = askQueryFromFile("ExternalCEAEntries.xml");
+        RegistryValidator.isValid(queryDoc);
+    }    
+
+    public void testValidCambridge() throws Exception {
+        Document queryDoc = askQueryFromFile("Cambridge0_9.xml");
+        RegistryValidator.isValid(queryDoc);
+    }    
+
+    public void testValidCambridgev10() throws Exception {
+        Document queryDoc = askQueryFromFile("Cambridge0_10.xml");
         RegistryValidator.isValid(queryDoc);
     }    
         
@@ -139,6 +169,11 @@ public class ValidatorTest extends TestCase {
         Document queryDoc = askQueryFromFile("Community.xml");
         RegistryValidator.isValid(queryDoc);
     }
+    
+    public void testValidCommunityv10() throws Exception {
+        Document queryDoc = askQueryFromFile("Communityv10.xml");
+        RegistryValidator.isValid(queryDoc);
+    }    
 
     public void testValidCommunityAuthority() throws Exception {
         Document queryDoc = askQueryFromFile("CommunityAuthority.xml");

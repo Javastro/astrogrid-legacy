@@ -6,7 +6,13 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.registry.common.versionNS.IRegistryInfo;
 
 import org.astrogrid.config.Config;
-/** @todo javadoc */
+/**
+ * Older class, believe it is no longer in use.  Deprecating now and delete later.  
+ * Main use was for portal to get a RegistryInfo class to get the XML.  Thinking this might have been before client
+ * delegates.
+ * @deprecated - No longer in use, I think.  Delete later. 
+ * @author Kevin Benson
+ */
 public class RegistryHelper {
     /**
      * Commons Logger for this class

@@ -21,6 +21,31 @@
                     schemaLocation="ADQL-0.7.4.xsd" />
          <xs:import namespace="http://www.ivoa.net/xml/RegistryInterface/v0.1"
                     schemaLocation="RegistryInterface-v0.1.xsd"/>
+                    
+      <xs:element name="Search">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="1" ref="adql:Select" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+   
+      <xs:element name="SearchResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="1" maxOccurs="1" ref="ri:VOResources" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      
+      <xs:element name="KeywordSearch">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="1" maxOccurs="1" name="keywords" type="xs:string" />
+            <xs:element minOccurs="1" maxOccurs="1" name="orValue" type="xs:boolean" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>      
          
       </xs:schema>
    </types>
@@ -28,23 +53,16 @@
    <message name="empty"/>
 
    <message name="SearchReq">
-        <part name="adql" element="adql:Select" />
+        <part name="Search" element="tns:Search" />
    </message>
-
-   <message name="KeywordSearchReq">
-      <part name="keywords" type="xs:string" />
-      <part name="orValue" type="xs:boolean" />
-   </message>
-
+   
    <message name="SearchResp">
-      <part name="voresources" element="ri:VOResources" />
+      <part name="VoResources" element="tns:SearchResponse" />
    </message>
    
-   <message name="GetRegistriesReq">
-
+   <message name="KeywordSearchReq">
+      <part name="KeywordSearch" element="tns:KeywordSearch" />
    </message>
-   
-   
    
    <portType name="RegistrySearchPortType">
 
@@ -56,12 +74,7 @@
       <operation name="KeywordSearch">
          <input message="tns:KeywordSearchReq" />
          <output message="tns:SearchResp" />
-      </operation>
-      
-      <operation name="GetRegistries">
-         <input message="tns:GetRegistriesReq" />     
-         <output message="tns:SearchResp" />
-      </operation>
+      </operation>      
 
    </portType>
    
@@ -81,16 +94,6 @@
       
       <operation name="KeywordSearch">
          <soap:operation style="document" soapAction="KeywordSearch" />
-         <input>
-            <soap:body use="literal" />
-         </input>
-         <output>
-            <soap:body use="literal" />
-         </output>
-      </operation>  
-
-      <operation name="GetRegistries">
-         <soap:operation style="document" soapAction="GetRegistries" />
          <input>
             <soap:body use="literal" />
          </input>

@@ -105,7 +105,7 @@ public class RegistryServerHelper {
       
       if(authNodeList.getLength() == 0) {
           val = nl.item(0).getFirstChild().getNodeValue();
-          int index = val.lastIndexOf("/");
+          int index = val.indexOf("/",7);
           if( index != -1 && index > 6) 
               return val.substring(6,index);
           else
@@ -133,7 +133,7 @@ public class RegistryServerHelper {
        String val = null;
        if(resNodeList.getLength() == 0) {
            val = nl.item(0).getFirstChild().getNodeValue();
-           int index = val.lastIndexOf("/");
+           int index = val.indexOf("/",7);
            if(index != -1 && index > 6 &&  val.length() > (index+1)) 
                return val.substring(index+1);
        }else {
@@ -153,7 +153,6 @@ public class RegistryServerHelper {
    }
    
    /**
-    * @deprecated use in QueryHelper now.
     * @param versionNumber
     * @return
     */
@@ -282,6 +281,9 @@ public class RegistryServerHelper {
            otherManagedAuths = new HashMap();
        if(manageAuthorities == null)
            manageAuthorities = new HashMap();
+       
+       otherManagedAuths.clear();
+       manageAuthorities.clear();
        QueryDBService qdb = new QueryDBService();       
        String xqlQuery = QueryHelper.queryForRegistries(regVersion);
        Document registries = qdb.runQuery(collectionName,xqlQuery);

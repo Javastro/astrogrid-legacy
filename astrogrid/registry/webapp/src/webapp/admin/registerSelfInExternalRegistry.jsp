@@ -9,6 +9,10 @@
                   org.apache.axis.utils.XMLUtils,                 
                  java.io.*"
     session="false" %>
+<%
+      RegistryQueryService server = new RegistryQueryService();
+      ArrayList al = server.getAstrogridVersions();
+%>
 
 <html>
 <head>
@@ -31,6 +35,11 @@ copies that registration into a specific registry: that on AstroGrid's
 machine <span style="font-style: italic;">hydra</span>.<br>
 </p>
 <input type="hidden" name="postrequest" value="true" />
+<select name="version">
+   <% for(int k = (al.size()-1);k >= 0;k--) { %>
+      <option value="<%=al.get(k)%>"><%out.print(((String)al.get(k)).replaceAll("_","."));%></option>  
+   <%}%>
+</select>
 <p><input name="postregsubmit" value="Set up harvesting by hydra" type="submit"></p>
 </form>
 
@@ -43,9 +52,10 @@ machine <span style="font-style: italic;">hydra</span>.<br>
 	  String postregsubmit = request.getParameter("postregsubmit");
 	  String getregsubmit= request.getParameter("getregsubmit");
 	  String getregs = request.getParameter("getregs");
+	  String version = request.getParameter("version");
 	  String fullRegistryAddURL = "http://hydra.star.le.ac.uk:8080/astrogrid-registry/addResourceEntry.jsp";
 	  String regBas = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
-	  regBas += "getRegistriesXML.jsp";
+	  regBas += "getRegistriesXML.jsp?version=" + version ;
 %>
 
 <h1>Adding Entry</h1>

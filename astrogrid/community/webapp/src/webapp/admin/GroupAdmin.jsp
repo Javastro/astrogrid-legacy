@@ -59,16 +59,23 @@ Object[] groups = gmi.getLocalGroups();
 if(groups != null)
 	System.out.println("the size of groups = " + groups.length);
 %>
-
 <html>
-	<head>
+<head>
 		<title>Group Administration</title>
-	</head>
-	<body>
+<style type="text/css" media="all">
+          @import url("../style/astrogrid.css");
+</style>
+</head>
+
+<body>
+<%@ include file="header.xml" %>
+<%@ include file="navigation.xml" %>
+
+<div id='bodyColumn'>
+
 		<p>
 			<strong><font color="blue"><%=info%></font></strong><br />
 			Group administration page, here you can add, edit, or delete groups.
-		<br />
 		<table>
 			<tr>
 				<td>

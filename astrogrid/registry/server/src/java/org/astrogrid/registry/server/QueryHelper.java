@@ -11,19 +11,40 @@ public class QueryHelper {
      */      
     public static Config conf = null;
     
+    private static String findResourceWithoutAuthority = 
+        " for $x in //<rootnode> where vr:identifier = '<id>' return $x";
+    
+    private static String findResourceQueryByAuthority = 
+        " for $x in //<rootnode> where vr:identifier &= '*<id>*' return $x";
 
+    private static String findAllResourceWithoutAuthority = 
+        " for $x in //<rootnode> where vr:identifier &= '*<id>*' return $x";
+
+    
+    private static String findResourceWithAuthority = 
+        " for $x in //<rootnode> where vr:Identifier/vr:AuthorityID = '<id>' return $x";
+
+    private static String findResourceWithAuthorityAndResourceKey = 
+        " for $x in //<rootnode> where vr:Identifier/vr:AuthorityID = '<id>' and vr:Identifier/vr:ResourceKey = '<reskey>' return $x";
+
+    private static String findResourcesWithAuthorityAndResourceKey = 
+        " for $x in //<rootnode> where vr:Identifier/vr:AuthorityID &= '*<id>*' or vr:Identifier/vr:ResourceKey &= '*<reskey>*' return $x";    
     
     private static String findRegistryQuery = 
         " for $x in //<rootnode> where @xsi:type &= '*Registry*' return $x";
     
     private static String findRegistryQueryWithOutAuthority = 
-        " for $x in //<rootnode> where @xsi:type = 'vg:RegistryType' and vr:identifier &= '*<id>*' return $x";
+        " for $x in //<rootnode> where @xsi:type = 'vg:Registry' and vr:identifier &= '*<id>*' return $x";
 
     private static String findRegistryQueryWithAuthority = 
         " for $x in //<rootnode> where  @xsi:type='vg:RegistryType' and vr:Identifier/vr:AuthorityID = '<id>' return $x";
     
     private static String findAllRegistryQuery =
         " //*[@xsi:type &= '*Registry*']";
+    
+    private static String findAll =
+        " for $x in //<rootnode> return $x";
+
 
     
     private static String startQuery  = 
@@ -56,9 +77,78 @@ public class QueryHelper {
                RegistryServerHelper.getRootNodeName(versionNumber));
     }
     
+    public static String queryForResource(String identifier, String versionNumber) {
+        boolean hasAuthorityID = conf.getBoolean(
+                "identifier.path.hasauthorityid." + versionNumber,false);
+        String mainQuery = null;        
+        
+        if(hasAuthorityID) {
+            int index = identifier.indexOf("/");
+            if(index != -1 && index < (identifier.trim().length()-1)) {
+                mainQuery = findResourceWithAuthorityAndResourceKey
+                            .replaceAll("<id>",identifier.substring(0,index));
+                mainQuery = mainQuery
+                            .replaceAll("<reskey>",identifier.substring((index+1)));
+            } else {
+                mainQuery = findResourceWithAuthority
+                .replaceAll("<id>",identifier);
+            }
+        } else {
+            mainQuery = findResourceWithoutAuthority.replaceAll("<id>","ivo://"+identifier);
+        }
+        return getXQLDeclarations(versionNumber) + 
+        mainQuery.replaceAll("<rootnode>",
+        RegistryServerHelper.getRootNodeName(versionNumber));
+    }
+    
+    public static String queryForAllResource(String identifier, String versionNumber) {
+        boolean hasAuthorityID = conf.getBoolean(
+                "identifier.path.hasauthorityid." + versionNumber,false);
+        String mainQuery = null;        
+        
+        if(hasAuthorityID) {
+            int index = identifier.indexOf("/");
+                mainQuery = findResourcesWithAuthorityAndResourceKey
+                            .replaceAll("<id>",identifier);
+                mainQuery = mainQuery
+                            .replaceAll("<reskey>",identifier);
+        } else {
+            mainQuery = findAllResourceWithoutAuthority.replaceAll("<id>",identifier);
+        }
+        return getXQLDeclarations(versionNumber) + 
+        mainQuery.replaceAll("<rootnode>",
+        RegistryServerHelper.getRootNodeName(versionNumber));
+    }
+
+    
+    public static String queryForResourceByAuthority(String identifier, String versionNumber) {
+        boolean hasAuthorityID = conf.getBoolean(
+                "identifier.path.hasauthorityid." + versionNumber,false);
+        String mainQuery = null;        
+        
+        if(hasAuthorityID) {
+            int index = identifier.indexOf("/");
+            if(index != -1 && index < (identifier.trim().length()-1)) {
+                mainQuery = findResourceWithAuthorityAndResourceKey
+                            .replaceAll("<id>",identifier.substring(0,index));
+                mainQuery = mainQuery
+                            .replaceAll("<reskey>",identifier.substring((index+1)));
+            } else {
+                mainQuery = findResourceWithAuthority
+                .replaceAll("<id>",identifier);
+            }
+        } else {
+            mainQuery = findResourceQueryByAuthority.replaceAll("<id>","ivo://"+identifier);
+        }
+        return getXQLDeclarations(versionNumber) + 
+        mainQuery.replaceAll("<rootnode>",
+        RegistryServerHelper.getRootNodeName(versionNumber));
+    }
+    
+    
     public static String queryForMainRegistry(String versionNumber) {
         boolean hasAuthorityID = conf.getBoolean(
-                "identifier.path.hasauthorityid." + versionNumber,true);
+                "identifier.path.hasauthorityid." + versionNumber,false);
         String mainQuery = null;
         String authorityID = conf.getString(AUTHORITYID_PROPERTY);
         if(hasAuthorityID) {
@@ -78,10 +168,14 @@ public class QueryHelper {
                RegistryServerHelper.getRootNodeName(versionNumber));
     }
     
+    public static String getAllQuery(String versionNumber) {
+        return getXQLDeclarations(versionNumber) + 
+        findAll.replaceAll("<rootnode>",
+        RegistryServerHelper.getRootNodeName(versionNumber));        
+    }
+    
     public static String getAllRegistryQuery() {
         return findAllRegistryQuery; 
     }
-
-    
     
 }

@@ -1,4 +1,5 @@
 <%@ page import="org.astrogrid.registry.server.query.*,
+				 org.astrogrid.registry.server.*,
                  org.astrogrid.store.Ivorn,
                  org.w3c.dom.Document,
                  org.astrogrid.io.Piper,
@@ -59,24 +60,7 @@
 <input type="submit" name="button" value="Submit"/>
 </p>
 </form>
-
-<p>
-Here are a few sample adql queries:
-</p>
-<dl>
-<dt>A basic string query for 0.7.3 adql:</dt>
-<dd><a href="xqlsample1--adql-v0.7.3.xml">Query for a String</a></dd>
-<dt>A basic string query for a LIKE in 0.7.3 adql:</dt>
-<dd><a href="xqlsample2--adql-v0.7.3.xml">Query for a String</a></dd>
-<dt>A basic string query with an "AND" for 0.7.3 adql:</dt>
-<dd><a href="xqlsample3--adql-v0.7.3.xml">Query for a String</a></dd>
-<dt>A basic great-than query on SIA long for 0.7.3:</dt>
-<dd><a href="xqlsample4--adql-v0.7.3.xml">Greater-Than Query</a></dd>
-<dt>A basic string query with an "AND" for 0.7.4 adql:</dt>
-<dd><a href="xqlsample1--adql-v0.7.4.xml">Query for a String</a></dd>
-</dl>
-
-
+See <a href="reg_xml_samples/queries">For example queries</a>
 <%
   if(request.getParameter("performquery") != null && request.getParameter("performquery").trim().equals("true")) {
   Document adql = null;
@@ -111,39 +95,42 @@ Here are a few sample adql queries:
         out.write("<p>No entry returned</p>");
       }
       else {
+      String version = null;
+      if(entry.getDocumentElement().hasChildNodes()) {
+          version = RegistryServerHelper.getRegistryVersionFromNode(entry.getDocumentElement().getFirstChild());
+      }else {
+          version = RegistryServerHelper.getRegistryVersionFromNode(entry.getDocumentElement());
+      }
+      
       
       out.write("<table border=1>");
       out.write("<tr><td>AuthorityID</td><td>ResourceKey</td><td>View XML</td></tr>");
-      NodeList identifiers = entry.getElementsByTagNameNS("*","Identifier");
+      NodeList resources = entry.getElementsByTagNameNS("*","Resource");
          
-      for (int n=0; n < identifiers.getLength();n++) {
+      for (int n=0; n < resources.getLength();n++) {
          out.write("<tr>\n");
          
-         Element resource = (Element) ((Element) identifiers.item(n)).getElementsByTagNameNS("*","ResourceKey").item(0);
-         Element authority = (Element) ((Element) identifiers.item(n)).getElementsByTagNameNS("*","AuthorityID").item(0);
+//         Element resource = (Element) ((Element) identifiers.item(n)).getElementsByTagNameNS("*","ResourceKey").item(0);
+//         Element authority = (Element) ((Element) identifiers.item(n)).getElementsByTagNameNS("*","AuthorityID").item(0);
+		String authority = RegistryServerHelper.getAuthorityID((Element)resources.item(n));
+		String resource = RegistryServerHelper.getResourceKey((Element)resources.item(n));
 
          String ivoStr = null;
-         if (authority == null) {
+         if (authority == null || authority.trim().length() <= 0) {
             out.write("<td>null?!</td>");
          } else {
-            if(authority.getFirstChild() != null) {
-               out.write("<td>"+authority.getFirstChild().getNodeValue()+"</td>\n");
-               ivoStr = authority.getFirstChild().getNodeValue();
-           }//if
+               out.write("<td>"+authority+"</td>\n");
+               ivoStr = authority;
          }//else
 
-         if (resource == null) {
+         if (resource == null || resource.trim().length() <= 0) {
             out.write("<td>null?!</td>");
          } else {
-            if(resource.getFirstChild() != null) {
-               out.write("<td>"+resource.getFirstChild().getNodeValue()+"</td>\n");
-               ivoStr += "/" + resource.getFirstChild().getNodeValue();
-           }else {
-              out.write("<td>null!</td>");
-           }
+               out.write("<td>"+resource+"</td>\n");
+               ivoStr += "/" + resource;
          }//if
 
-         out.write("<td><a href=viewEntryXml.jsp?IVORN="+ivoStr+">View</a></td>\n");
+         out.write("<td><a href=viewResourceEntry.jsp?version="+version+"&IVORN="+ivoStr+">View</a></td>\n");
          
          out.write("</tr>\n");
          

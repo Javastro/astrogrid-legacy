@@ -3,10 +3,22 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/webapp/project.xml,v $</cvs:source>
     | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2004/11/23 18:40:50 $</cvs:date>
-    | <cvs:version>$Revision: 1.24 $</cvs:version>
+    | <cvs:date>$Date: 2005/01/07 14:14:25 $</cvs:date>
+    | <cvs:version>$Revision: 1.25 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.25  2005/01/07 14:14:25  jdt
+    |   merged from Reg_KMB_787
+    |
+    |   Revision 1.24.2.3  2005/01/05 11:24:50  KevinBenson
+    |   smal change in the description
+    |
+    |   Revision 1.24.2.2  2005/01/05 10:47:46  KevinBenson
+    |   added xdoc descriptions for the community
+    |
+    |   Revision 1.24.2.1  2004/12/12 21:22:50  KevinBenson
+    |   new dependencies for registry to validate the xml if necessary
+    |
     |   Revision 1.24  2004/11/23 18:40:50  jdt
     |   Merges from  BLD_JDT_648.  The long awaited move to versioned jars and wars.  Fingers crossed.  See:
     |   http://software.astrogrid.org/developerdocs/developmentprocess.html
@@ -76,7 +88,7 @@
         | The short description should be limited to a single line.
         +-->
     <shortDescription>
-        Short description of the project ....
+        Community webapp Area
     </shortDescription>
 
     <!--+
@@ -85,7 +97,49 @@
         +-->
     <description>
         <![CDATA[
-            Long description of the project, including <i>HTML</i> tags ....
+            This is where the community war file that can be deployed on a j2ee or servlet container.  
+    		Below describes what is needed to install and setup of the community.  The install and setup below is an
+    	    example with a HSQLDB database.<br />
+	    	<section name="Install">
+    			<ul>
+    				<li> 1.) First download a comunity war file. Here is the <a href="http://www.astrogrid.org/maven/org.astrogrid/wars/astrogrid-community-SNAPSHOT.war">Latest Community</a> or
+    	                     look into the wars directory for other versions of the war file. </li>
+    				<li> 2.) Deploy the war into your servlet container, giveit the context path that you desire. </li>
+    				<li> 3.) Find the hsqldb database driver. You can download from here: 
+			      	<a href="http://www.astrogrid.org/maven/hsqldb/jars/hsqldb-1.7.1.jar">HSQLDB 1.7.1</a> </li>
+    				<li> 4.) Place the hsqldb jar into a place that can be located by the servlet container, ex: for tomcat is the common/lib directory.</li>
+    	            <li> 5.) The installation is complete, now for the  setup.</li>
+    			</ul>
+    		</section>
+    		<section name="Setup">
+    			<ul>
+    				<li> 1.) Go to the Administration gui for the servlet container.</li>
+    				<li> 2.) Go to the Environment Entries for your context.  In Tomcat this is Service->Host(LocalHost)->{context name}->Resources->Environment entries. </li>
+    				<li> 3.) Change all the environment entries, to have the community id, and the endpoints to the registry, also define the registry identifier for a vospace/myspace used for accounts. (Hit Save after each of your changes)</li>
+					<li> 4.) After Environment Entries are changed go to the "DataSources" (same area as Environment Entries). </li>
+    				<li> 5.) Change the URL to not have "@WORKDIR@" but to a appropriate directory that will keep your database data and information. (Hit Save)</li>
+    				<li> 6.) In Tomcat hit "Commit Changes" at the top.</li>
+    				<li> 7.) Open up a web browser and go to your new community ex: http://localhost:8080/{context} </li>
+    				<li> 8.) Go to the Admin pages, there it will report if your database is healthy or not, if this is the first time then it should NOT be healthy.</li>
+    				<li> 9.) If not healthy go to "Reset DB" this essentially deletes everything from the db and recreates all tables and a small amount of test data to check if it is healthy.</li>
+    				<li> 10.) Reset the db and verify it is healthy, a message should say if it is healthy or not.</li>
+    				<li> 11.) Now click on "Register Metadata" Fill in the Form details and the version of the type of Registry you wish to publish/register to. (hit Submit).</li>
+    				<li> 12.) Verify the XML looks correct and hit (Register). </li>
+    				<li> 13.) Your Setup is now complete you may begin adding accounts, groups, and others. </li>
+    			</ul>
+    		</section>
+    		<section name="Customize">
+    		<p>
+    			It has been untested on other databases, but presumbly you may setup community to work with any database.  See the "/WEB-INF/classes" directory
+    	        for configuration files if you need to change the sql used to create tables, or possibly even the JDO mapping.  
+    			There are 3 files.
+    			<ul>
+    				<li> astrogrid-community-database.sql -- SQL used to create table data. </li>
+    				<li> astrogrid-community-database.xml -- no real need to change it points to the mapping file in the same directory. </li>
+					<li> astrogrid-community-mapping.xml -- JDO mapping for Castor.  See <a href="http://castor.exolab.org/">Castor</a> for more information on the mapping.</li>
+    			</ul>
+    		</p>
+    		</section>
         ]]>
     </description>
 
@@ -197,6 +251,24 @@
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
+    	
+        <dependency>
+        	<id>junit</id>
+            <version>3.8</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+    	
+        <dependency>
+	        <id>xmlunit</id>
+            <version>1.0</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+    	
+    	
         <!--+
             | The MySpace delegate.
             +-->

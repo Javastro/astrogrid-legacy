@@ -35,9 +35,12 @@ import ORG.oclc.oai.server.verb.CannotDisseminateFormatException;
  * involves pulling out the one that is requested.
  */
 public class XML2ivo_vrCrosswalk extends Crosswalk {
-    private static final String elementName = "vr:Resource";
-    private static final String elementStart = "<" + elementName;
-    private static final String elementEnd = elementName + ">";
+    private static String elementName = "Resource";
+    private static final String prefix_09 = "vr:";
+    private static final String prefix_10 = "vor:";
+
+    //private static final String elementStart = "<" + elementName;
+    //private static final String elementEnd = elementName + ">";
 
     /**
      * The constructor assigns the schemaLocation associated with this crosswalk. Since
@@ -46,7 +49,7 @@ public class XML2ivo_vrCrosswalk extends Crosswalk {
      * @param properties properties that are needed to configure the crosswalk.
      */
     public XML2ivo_vrCrosswalk(Properties properties) {
-     super("http://www.ivoa.net/xml/VOResource/v0.9 http://www.ivoa.net/xml/VOResource/VOResource-v0.9.xsd");
+     super("http://www.ivoa.net/xml/VOResource/v0.9 http://www.ivoa.net/xml/VOResource/VOResource-v0.9.xsd ");
     }
 
     /**
@@ -56,7 +59,8 @@ public class XML2ivo_vrCrosswalk extends Crosswalk {
      */
     public boolean isAvailableFor(Object nativeItem) {
    String fullItem = (String)nativeItem;
-   if ((fullItem.indexOf(elementStart)) >= 0)
+   if ((fullItem.indexOf(("<" + prefix_09 + elementName)) >= 0) || 
+       (fullItem.indexOf(("<" + prefix_10 + elementName)) >= 0))
        return true;
    return false;
     }
@@ -74,8 +78,12 @@ public class XML2ivo_vrCrosswalk extends Crosswalk {
     public String createMetadata(Object nativeItem)
    throws CannotDisseminateFormatException {
    String fullItem = (String)nativeItem;
-
-   int startOffset = fullItem.indexOf(elementStart);
+   String elementEnd = prefix_09 + elementName + ">";
+   int startOffset = fullItem.indexOf(("<" + prefix_09 + elementName));
+   if(startOffset == -1) {
+       startOffset = fullItem.indexOf(("<" + prefix_10 + elementName));
+       elementEnd = prefix_10 + elementName + ">";
+   }
    if (startOffset == -1) {
        throw new CannotDisseminateFormatException(getSchemaLocation());
    }

@@ -3,10 +3,16 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/Attic/project.xml,v $</cvs:source>
     | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2004/11/23 18:40:50 $</cvs:date>
-    | <cvs:version>$Revision: 1.19 $</cvs:version>
+    | <cvs:date>$Date: 2005/01/07 14:14:25 $</cvs:date>
+    | <cvs:version>$Revision: 1.20 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.20  2005/01/07 14:14:25  jdt
+    |   merged from Reg_KMB_787
+    |
+    |   Revision 1.19.2.1  2005/01/05 10:47:46  KevinBenson
+    |   added xdoc descriptions for the community
+    |
     |   Revision 1.19  2004/11/23 18:40:50  jdt
     |   Merges from  BLD_JDT_648.  The long awaited move to versioned jars and wars.  Fingers crossed.  See:
     |   http://software.astrogrid.org/developerdocs/developmentprocess.html
@@ -69,7 +75,7 @@
         | The short description should be limited to a single line.
         +-->
     <shortDescription>
-        Short description of the project ....
+        Community Server Area
     </shortDescription>
 
     <!--+
@@ -78,7 +84,12 @@
         +-->
     <description>
         <![CDATA[
-            Long description of the project, including <i>HTML</i> tags ....
+            Server side of the Community and implemenation of the various Web Service methods.  See the Webapp portion though
+    	    on the deployment and setup of the community.
+    	    Currently the Community classes use Castor (a JDO type library) allowing the connection to most any kind of database,
+            but currently all tests have been using HSQLDB as the database of choice for the community.  In the Webapp section is
+    	    the explanation of the configuration of the community web service that describes about configuration files in case you
+    	    wish to change over databases or make other small changes to the mappings.    	
         ]]>
     </description>
 

@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/manager/AccountManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/11/22 13:03:04 $</cvs:date>
- * <cvs:version>$Revision: 1.21 $</cvs:version>
+ * <cvs:date>$Date: 2005/01/07 14:14:25 $</cvs:date>
+ * <cvs:version>$Revision: 1.22 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManagerImpl.java,v $
+ *   Revision 1.22  2005/01/07 14:14:25  jdt
+ *   merged from Reg_KMB_787
+ *
+ *   Revision 1.21.4.1  2004/12/13 21:25:03  KevinBenson
+ *   added a small default null for default vospace
+ *
  *   Revision 1.21  2004/11/22 13:03:04  jdt
  *   Merges from Comm_KMB_585
  *
@@ -981,7 +987,7 @@ public class AccountManagerImpl
         // Get the default identifier from our config.
         String string = null ;
         try {
-            string = (String) config.getProperty(DEFAULT_VOSPACE_PROPERTY) ;
+            string = (String) config.getProperty(DEFAULT_VOSPACE_PROPERTY,null) ;
             }
         catch (PropertyNotFoundException ouch)
             {

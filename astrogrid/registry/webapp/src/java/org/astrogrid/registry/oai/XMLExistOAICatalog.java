@@ -87,6 +87,7 @@ import org.astrogrid.xmldb.eXist.server.QueryDBService;
 import org.astrogrid.config.Config;
 import org.astrogrid.util.DomHelper;
 import org.astrogrid.registry.server.RegistryServerHelper;
+import org.astrogrid.registry.server.QueryHelper;
 import org.astrogrid.registry.common.XSLHelper;
 import java.util.HashMap;
 import java.util.Set;
@@ -109,6 +110,7 @@ public class XMLExistOAICatalog extends AbstractCatalog {
    private boolean schemaLocationIndexed = false;
    private static String returnVersionNumber = null;
    public static Config conf = null;
+   private Properties props = null;
 
    static {
       if(conf == null) {
@@ -119,120 +121,108 @@ public class XMLExistOAICatalog extends AbstractCatalog {
    public XMLExistOAICatalog(Properties properties) throws IOException {
 
          System.out.println("I am in the constructor");
-      try {
-         String versionNumber = properties.getProperty("registry_version",null);
-         if(versionNumber == null)
-             versionNumber = conf.getString("org.astrogrid.registry.version");
-         
-         versionNumber = versionNumber.replace('.','_');
-         String collectionName = "astrogridv" + versionNumber;
-         String temp;
-         debug = false;
-            //temp=properties.getProperty("XMLFileOAICatalog.schemaLocationIndexed");
-            //if ("true".equals(temp)) schemaLocationIndexed = true;
-
-         //temp=properties.getProperty("XMLFileOAICatalog.maxListSize");
-            //if (temp==null)
-            //    throw new IllegalArgumentException("XMLFileOAICatalog."+
-            //                                       "maxListSize is missing from the properties file");
-         maxListSize = conf.getInt("XMLFileOAICatalog.maxListSize",8000);
-         if(debug)
-            System.out.println("in XMLFileOAICatalog(): maxListSize=" + maxListSize);
-
-         System.out.println("get the managedauths");
-         HashMap manageAuths = RegistryServerHelper.getManagedAuthorities(collectionName, versionNumber);
-         
-         Set keys = manageAuths.keySet();
-         Iterator keyIter = keys.iterator();
-         System.out.println("the keysset size = " + keys.size());
-         if(keys.size() == 0) {
-            throw new IOException("Could not find any authorites managed");
-         }
-         boolean hasAuthorityElement = conf.getBoolean("identifier.path.hasauthorityid." + versionNumber,false);
-         String identWhere = "$x/vr:Identifier/vr:AuthorityID = '";
-         if(!hasAuthorityElement) {
-             identWhere = "$x/vr:identifier |= '";
-         }
-             
-
-         String auth = (String)keyIter.next();
-         String xqlQuery = RegistryServerHelper.getXQLDeclarations(versionNumber) + 
-               " for $x in //vr:Resource where " + identWhere + auth + "'";
-         while(keyIter.hasNext()) {
-            xqlQuery += " or " + identWhere + (String)keyIter.next() + "'";
-         }
-         xqlQuery += " return $x";
-         System.out.println("the build xql = " + xqlQuery);
-
-         QueryDBService qs = new QueryDBService();
-         Document sourceFile = qs.runQuery(collectionName,xqlQuery);
-         //System.out.println("the resulting sourceFile = " + DomHelper.DocumentToString(sourceFile));
-
-         /*
-
-         String getMetadataXSLTName = properties.getProperty("XMLFileOAICatalog.getMetadataXSLTName");
-         if (getMetadataXSLTName != null) {
-                try {
-                    StreamSource xslSource = new StreamSource(new FileInputStream(getMetadataXSLTName));
-                    TransformerFactory tFactory = TransformerFactory.newInstance();
-                    getMetadataTransformer = tFactory.newTransformer(xslSource);
-                } catch (TransformerConfigurationException e) {
-                    e.printStackTrace();
-                    throw new IOException(e.getMessage());
-                }
-            }
-         */
-
-         Document resultDoc = null;
-         System.out.println("the verisonNumber = " + versionNumber);
-         XSLHelper xsh = new XSLHelper();
-         resultDoc = sourceFile;
-         /*
-         if(!versionNumber.equals(returnVersionNumber)) {
-            resultDoc = xsh.transformResultVersions(sourceFile,versionNumber,returnVersionNumber);
-         }else {
-            resultDoc = sourceFile;
-         }
-         */
-         Document oaiDoc = xsh.transformToOAI(resultDoc,versionNumber);
-
-         //System.out.println("the oai version = " + DomHelper.DocumentToString(oaiDoc));
-         String xmlDoc = DomHelper.DocumentToString(oaiDoc);
-         ByteArrayInputStream bas = new ByteArrayInputStream(xmlDoc.getBytes());
-         RecordStringHandler rsh = new RecordStringHandler();
-         SAXParserFactory factory = SAXParserFactory.newInstance();
-         factory.setNamespaceAware(true);
-         factory.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
-         SAXParser saxParser = factory.newSAXParser();
-         //saxParser.parse(new File(sourceFile), rsh);
-         saxParser.parse(bas, rsh);
-         nativeMap = rsh.getNativeRecords();
-
-        } catch (SAXException e) {
-            e.printStackTrace();
-            throw new IOException(e.getMessage());
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-            throw new IOException(e.getMessage());
-        }catch(MalformedURLException e) {
-            e.printStackTrace();
-            throw new IOException(e.getMessage());
-        }
-
+         this.props = properties;         
       sets = getSets(properties);
+   }
+   
+   
+   private void populateNativeMap() throws OAIInternalServerError {
+       try {
+           String versionNumber = props.getProperty("registry_version",null);
+           if(versionNumber == null)
+               versionNumber = conf.getString("org.astrogrid.registry.version");
+           
+           versionNumber = versionNumber.replace('.','_');
+           String collectionName = "astrogridv" + versionNumber;
+           String temp;
+           debug = false;
+
+           maxListSize = conf.getInt("XMLFileOAICatalog.maxListSize",8000);
+           if(debug)
+              System.out.println("in XMLFileOAICatalog(): maxListSize=" + maxListSize);
+
+           System.out.println("get the managedauths");
+           HashMap manageAuths = RegistryServerHelper.getManagedAuthorities(collectionName, versionNumber);
+           
+           Set keys = manageAuths.keySet();
+           Iterator keyIter = keys.iterator();
+           System.out.println("the keysset size = " + keys.size());
+           if(keys.size() == 0) {
+              throw new OAIInternalServerError("Could not find any authorites managed");
+           }
+           boolean hasAuthorityElement = conf.getBoolean("identifier.path.hasauthorityid." + versionNumber,false);
+           String identWhere = "vr:Identifier/vr:AuthorityID = '";
+           String wildCard = "";
+           if(!hasAuthorityElement) {
+               identWhere = "vr:identifier &= '*";
+               wildCard = "*";
+           }
+               
+
+           String auth = (String)keyIter.next();
+           String xqlQuery = QueryHelper.getStartQuery(versionNumber); 
+           xqlQuery +=  identWhere + wildCard + auth + wildCard + "'";
+           while(keyIter.hasNext()) {
+              xqlQuery += " or " + identWhere + wildCard + (String)keyIter.next() + wildCard + "'";
+           }
+           xqlQuery += " return $x";
+           System.out.println("the build xql = " + xqlQuery);
+
+           QueryDBService qs = new QueryDBService();
+           Document sourceFile = qs.runQuery(collectionName,xqlQuery);
+           //Document resultDoc = null;
+           System.out.println("the verisonNumber = " + versionNumber);
+           XSLHelper xsh = new XSLHelper();
+           //resultDoc = sourceFile;
+           /*
+           if(!versionNumber.equals(returnVersionNumber)) {
+              resultDoc = xsh.transformResultVersions(sourceFile,versionNumber,returnVersionNumber);
+           }else {
+              resultDoc = sourceFile;
+           }
+           */
+           //Document oaiDoc = xsh.transformToOAI(resultDoc,versionNumber);
+           Document oaiDoc = xsh.transformToOAI(sourceFile,versionNumber);
+
+           //System.out.println("the oai version = " + DomHelper.DocumentToString(oaiDoc));
+           String xmlDoc = DomHelper.DocumentToString(oaiDoc);
+           ByteArrayInputStream bas = new ByteArrayInputStream(xmlDoc.getBytes());
+           RecordStringHandler rsh = new RecordStringHandler();
+           SAXParserFactory factory = SAXParserFactory.newInstance();
+           factory.setNamespaceAware(true);
+           factory.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
+           SAXParser saxParser = factory.newSAXParser();
+           //saxParser.parse(new File(sourceFile), rsh);
+           saxParser.parse(bas, rsh);
+           nativeMap = rsh.getNativeRecords();
+
+          } catch (SAXException e) {
+              e.printStackTrace();
+              throw new OAIInternalServerError(e.getMessage());
+          } catch (ParserConfigurationException e) {
+              e.printStackTrace();
+              throw new OAIInternalServerError(e.getMessage());
+          }catch(MalformedURLException e) {
+              e.printStackTrace();
+              throw new OAIInternalServerError(e.getMessage());
+          } catch(IOException ioe) {
+              ioe.printStackTrace();
+              throw new OAIInternalServerError(ioe.getMessage());
+              
+          }
    }
 
     private static ArrayList getSets(Properties properties) {
         TreeMap treeMap = new TreeMap();
-   String propertyPrefix = "Sets.";
-   Enumeration propNames = properties.propertyNames();
-   while (propNames.hasMoreElements()) {
-       String propertyName = (String)propNames.nextElement();
-       if (propertyName.startsWith(propertyPrefix)) {
+        String propertyPrefix = "Sets.";
+        Enumeration propNames = properties.propertyNames();
+        while (propNames.hasMoreElements()) {
+            String propertyName = (String)propNames.nextElement();
+            if (propertyName.startsWith(propertyPrefix)) {
                 treeMap.put(propertyName, properties.get(propertyName));
-       }
-   }
-   return new ArrayList(treeMap.values());
+            }
+        }
+        return new ArrayList(treeMap.values());
     }
 
    /**
@@ -251,6 +241,7 @@ public class XMLExistOAICatalog extends AbstractCatalog {
    public String getRecord(String oaiIdentifier, String metadataPrefix)
        throws IdDoesNotExistException, CannotDisseminateFormatException,
               OAIInternalServerError {
+       populateNativeMap();
        String localIdentifier
            = ((XMLExistRecordFactory)getRecordFactory()).fromOAIIdentifier(oaiIdentifier);
        String recordid = localIdentifier;
@@ -271,6 +262,7 @@ public class XMLExistOAICatalog extends AbstractCatalog {
    public String getMetadata(String oaiIdentifier, String metadataPrefix)
        throws IdDoesNotExistException, IdDoesNotExistException, CannotDisseminateFormatException,
          OAIInternalServerError {
+       populateNativeMap();
        String localIdentifier
            = ((XMLExistRecordFactory)getRecordFactory()).fromOAIIdentifier(oaiIdentifier);
        String recordid = localIdentifier;
@@ -366,6 +358,7 @@ public class XMLExistOAICatalog extends AbstractCatalog {
     public Map listIdentifiers(String from, String until, String set, String metadataPrefix)
         throws BadArgumentException, CannotDisseminateFormatException, OAIInternalServerError,
                NoItemsMatchException {
+        populateNativeMap();
         purge(); // clean out old resumptionTokens
         Map listIdentifiersMap = new HashMap();
         ArrayList headers = new ArrayList();
@@ -596,6 +589,7 @@ public class XMLExistOAICatalog extends AbstractCatalog {
                                     String metadataPrefix)
       throws BadArgumentException, CannotDisseminateFormatException,
       OAIInternalServerError, NoItemsMatchException {
+        populateNativeMap();
         String requestedSchemaLocation = getCrosswalks().getSchemaLocation(metadataPrefix);
         purge(); // clean out old resumptionTokens
         Map listRecordsMap = new HashMap();

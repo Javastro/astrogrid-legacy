@@ -60,16 +60,22 @@ ServiceData[] communityServices = pmr.resolve();
 
 
 %>
-
 <html>
-   <head>
+<head>
       <title>Group Administration</title>
-   </head>
-   <body>
+<style type="text/css" media="all">
+          @import url("../style/astrogrid.css");
+</style>
+</head>
+
+<body>
+<%@ include file="header.xml" %>
+<%@ include file="navigation.xml" %>
+
+<div id='bodyColumn'>
       <p>
          <strong><font color="blue"><%=info%></font></strong><br />
          Group Member administration page, here you can add, edit, or delete accounts to groups.
-      <br />
          <form method="get" />      
             <input type="hidden" name="AddGroupMember" value="true" />
             <strong>Group:</strong>

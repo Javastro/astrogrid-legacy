@@ -1,6 +1,7 @@
 <%@ page import="org.astrogrid.community.common.policy.data.AccountData,
                  org.astrogrid.community.common.ivorn.CommunityIvornParser,
                  org.astrogrid.store.Ivorn,                 
+                 org.astrogrid.config.SimpleConfig,
                  org.astrogrid.community.server.security.manager.SecurityManagerImpl,
                  org.astrogrid.community.server.policy.manager.PolicyManagerImpl,                 
                  org.astrogrid.community.server.policy.manager.AccountManagerImpl"
@@ -10,7 +11,7 @@
 
 //put add account link at the top
 //get a list of accounts and put a edit and remove beside them.
-System.out.println("Creating new AccountManagerImpl");
+//System.out.println("Creating new AccountManagerImpl");
 //AccountManagerImpl ami = new AccountManagerImpl();
 PolicyManagerImpl ami = new PolicyManagerImpl();
 SecurityManagerImpl smi = new SecurityManagerImpl();
@@ -20,9 +21,12 @@ String removeAccount = request.getParameter("RemoveAccount");
 String addAccount = request.getParameter("AddAccount");
 String editAccount = request.getParameter("EditAccount");
 String currentCommunity = Ivorn.SCHEME + "://" + CommunityIvornParser.getLocalIdent();
+//String defaultMyspaceIVO = SimpleConfig.getSingleton().getString("org.astrogrid.community.default.vospace","");
 String info = "";
 String ident = null;
 AccountData changeAccount = null;
+boolean passwordSet = false;
+String passwordTemp = null;
 if(removeAccount != null && removeAccount.trim().length() > 0) {
    ident = request.getParameter("ident");
    ident = ident.trim();      
@@ -30,22 +34,26 @@ if(removeAccount != null && removeAccount.trim().length() > 0) {
    info = "Account was deleted for id = " + ident; 
 }else if(addAccount != null && addAccount.trim().length() > 0) {
    ident = request.getParameter("ident");
+   passwordTemp = request.getParameter("password");
    if(ident == null || ident.trim().length() <= 0 ||
        request.getParameter("displayName") == null || 
        request.getParameter("displayName").trim().length() <= 0 ||
-       request.getParameter("displayName") == null ||
-       request.getParameter("displayName").trim().length() <= 0) {   
+       passwordTemp == null || passwordTemp.trim().length() <= 0) {   
       info = "Could not add an account no username, password or display name was provided.";
    }else {
       ident = ident.trim();
+      String homespace = request.getParameter("homespace");
+      if(homespace != null && homespace.trim().length() <= 0) {
+      	homespace = null;
+      }
       changeAccount = new AccountData(currentCommunity + "/" + ident);
       changeAccount.setEmailAddress(request.getParameter("email"));     
       changeAccount.setDisplayName(request.getParameter("displayName"));
       changeAccount.setDescription(request.getParameter("description"));
-      changeAccount.setHomeSpace(request.getParameter("homespace"));    
+      changeAccount.setHomeSpace(homespace);    
       ami.addAccount(changeAccount);
       info = "Account was added for id = " + ident;
-      boolean passwordSet = smi.setPassword(currentCommunity + "/" + ident,request.getParameter("password").trim());
+      passwordSet = smi.setPassword(currentCommunity + "/" + ident,passwordTemp.trim());
       if(passwordSet) {
          info += " And password set. ";
       }else {
@@ -62,6 +70,15 @@ if(removeAccount != null && removeAccount.trim().length() > 0) {
    changeAccount.setHomeSpace(request.getParameter("homespace"));    
    ami.setAccount(changeAccount);   
    info = "Account was updated for id = " + ident;
+   passwordTemp = request.getParameter("password");
+   if(passwordTemp != null && passwordTemp.trim().length() > 0) {
+      passwordSet = smi.setPassword(ident,passwordTemp.trim());
+      if(passwordSet) {
+         info += " And password set. ";
+      }else {
+         info += " Error on setting password. ";
+      }
+   }//if
 }
 System.out.println("grabbing all local acocounts");
 Object[] accounts = ami.getLocalAccounts();
@@ -72,14 +89,23 @@ else
 %>
 
 <html>
-   <head>
-      <title>Account Administration</title>
-   </head>
-   <body>
-      <p>
+<head>
+     <title>Account Administration</title>
+<style type="text/css" media="all">
+          @import url("../style/astrogrid.css");
+</style>
+</head>
+
+<body>
+<%@ include file="header.xml" %>
+<%@ include file="navigation.xml" %>
+
+<div id='bodyColumn'>
+	<p>
          <strong><font color="blue"><%=info%></font></strong><br />
-         Account administration page, here you can add, edit, or delete accounts.
-      <br />
+         Account administration page, here you can add, edit, or delete accounts.<br />
+         On Add Accounts: Leave Homespace blank, to have your account added to Myspace, otherwise it is assumed you already
+         have an account on myspace and it does not need to add your new account to the Myspace service.
       <table>
          <tr>
             <td>

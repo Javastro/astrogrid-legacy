@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/policy/manager/PolicyManagerResolver.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/11/04 18:00:02 $</cvs:date>
- * <cvs:version>$Revision: 1.10 $</cvs:version>
+ * <cvs:date>$Date: 2005/01/07 14:14:25 $</cvs:date>
+ * <cvs:version>$Revision: 1.11 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManagerResolver.java,v $
+ *   Revision 1.11  2005/01/07 14:14:25  jdt
+ *   merged from Reg_KMB_787
+ *
+ *   Revision 1.10.12.1  2004/12/11 11:53:16  KevinBenson
+ *   modifications to the jsps, also merged in several pieces of the validtion stuff
+ *
  *   Revision 1.10  2004/11/04 18:00:02  jdt
  *   Restored following fixes to auto-integration
  *   Merged in Reg_KMB_546 and Reg_KMB_603 and Comm_KMB_583
@@ -134,6 +140,10 @@ public class PolicyManagerResolver
             ) ;
         }
     
+    public Ivorn getIvornForService(Ivorn ivorn) throws CommunityIdentifierException {
+        return resolver.getIvornForService(ivorn,PolicyManager.class);
+    }
+    
     /*
     public URL[] resolve()
        throws RegistryException, CommunityIdentifierException, CommunityResolverException {
@@ -145,7 +155,8 @@ public class PolicyManagerResolver
         //
         // Lookup the endpoint in the registry.
         URL endpoints[] = resolver.resolve() ;
-        PolicyManagerDelegate []pmd = new PolicyManagerDelegate[endpoints.length];
+        PolicyManagerD
+        elegate []pmd = new PolicyManagerDelegate[endpoints.length];
         
         log.debug("PASS : Got endpoint urls number = " + endpoints.length) ;
         for(int i = 0;i < endpoints.length; i++) {
@@ -158,6 +169,7 @@ public class PolicyManagerResolver
         return pmd;
     }
     */
+    
     
     public ServiceData[] resolve()
     throws RegistryException, CommunityIdentifierException, CommunityResolverException {

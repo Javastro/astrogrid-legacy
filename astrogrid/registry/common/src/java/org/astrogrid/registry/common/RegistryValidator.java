@@ -7,13 +7,20 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 
+/**
+ * A Small helper class to validate XML from the Registry primarily updates to the Registry.
+ * @author Kevin Benson
+ *
+ */
 public class RegistryValidator {
     
 
     /**
-     * @param doc
-     * @param rootElement
-     * @return
+     * Method: isValid
+     * Description: Performs a validation on the XML from xerces to see if it is a valid XML for the Registry.
+     * @param doc XML document to be validated
+     * @param rootElement - rootElement of the XML
+     * @return true if it is valid otherwise an Exception is thrown up.
      */
     public static boolean isValid(Document doc, String rootElement) {
         //System.out.println("calling assertSchemaValid with Resource String = " + DomHelper.DocumentToString(doc));
@@ -25,6 +32,13 @@ public class RegistryValidator {
         return true;
     }
     
+    /**
+     * Method: isValid
+     * Description: Grabs the rootElement of the XML from the Local or Node Name of the given XML document then
+     * validates the XML.
+     * @param doc XML document to be validated.
+     * @return true if it is valid otherwise an Exception is thrown up.
+     */
     public static boolean isValid(Document doc) {
         //System.out.println("okay in isvalid now call it with root element = " + doc.getDocumentElement().getLocalName() + " and nodename = " + doc.getDocumentElement().getNodeName());
         String rootElement = doc.getDocumentElement().getLocalName();

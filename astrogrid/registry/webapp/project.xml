@@ -88,17 +88,18 @@
      	<p>
     		Registry uses an eXist xml database for storing and querying the resources of the Registry. 
     	    You can download eXist from <a href="http://exist.sourceforge.net">eXist website</a>. You can
-    	    also download it from <a href="http://www.astrogrid.org/maven/exist/wars/exist.war">eXist from Astrogrid</a>. 
-    	    The deployment steps below uses the exist war file from Astrogrid because it has a few settings already configured for you.
+    	    also download it from <a href="http://www.astrogrid.org/maven/exist">eXist from Astrogrid</a>. 
+    		You may install either a war version or server side version, but it is more advisable to use a different port, inside the
+    	    'zips' directory in Astrogrid you will see a pre-configured one for 9080 and 1080 ports.
      	    For security purposes,
     	    it is better to install the eXist as a server installation on another port
     	    that is not accessible to outside computers, but still accessible to 
     	    the registry installation.  This is completely optional though, and for ease of installation 
     	    throughout astrogrid it is normally installed as a war file.<br />
     	    Changes to be made once eXist is installed:<br />
-    	    See <a href="http://exist.sourceforge.net/configuration.html">Config for eXist</a>.  Change
-    	    the cacheSize to something bigger if this is going to be a full Registry. 
-    	    Finally set the match-tagging-elements and match-tagging-attributes to "no".  In Astrogrid
+    	    See <a href="http://exist.sourceforge.net/configuration.html">Config for eXist</a>.
+    	    Finally set the match-tagging-elements and match-tagging-attributes to "no". Also the cacheSize attribute could be a 
+    	    benefit to increase on the performance of queries, but it is not required. In Astrogrid
     	    these changes are already in place, but change the cacheSize to something more appropriate. Changing the
     	    match-tagging atributes should shortly be factored out and the Registry can turn off (set to "no") on the
     	    queries to the database.
@@ -138,12 +139,12 @@
     	   	<ul>
     			<li>1.) Download the latest copy of astrogrid-registry from <a href="http://www.astrogrid.org/maven/org.astrogrid/wars/">Astrogrid repository</a>
     	            You may grab the latest copy as: <a href="http://www.astrogrid.org/maven/org.astrogrid/wars/astrogrid-registry-SNAPSHOT.war">Latest Registry</a></li>
-    	        <li>2.) Also download the exist war <a href="http://www.astrogrid.org/maven/exist/wars/exist.war">here</a>
+    	        <li>2.) Also download the exist war <a href="http://www.astrogrid.org/maven/exist">here</a>
     	            <i>See exist section above for more available options</i></li>
     	        <li>3.) You may rename the registry war file to anything you like, it is advisable to keep the exist one as exist to use
     	            the cocoon features of browsing, but this is not required.</li>
-    	        <li>4.) Deploy these 2 war files into your servlet container normally by dropping them into the webapps directory or through
-    	            some type of manager interface.</li>
+    	        <li>4.) Deploy the registry war file into your servlet container normally by dropping them into the webapps directory or through
+    	            some type of manager interface. Same goes for eXist war file if you want to run eXist in webapp mode.</li>
     	        <li>5.) Finally go to the registry deployed area and go to its /WEB-INF/classes and edit the astrogrid.properties  The properties
                     files should be well commented to guide you, the main registry properties are below.</li>
     	        <li>6.) In general the installation of the registry is complete, but read below for the setup.  
@@ -151,7 +152,7 @@
     	   	</ul>
     	    Steps involved for Setup of Registry:
     	    <ul>
-    			<li>1.) Go to the registry jsp page of "/admin/index.html" and do the first registration process to register
+    			<li>1.) Go to the registry jsp page of "/admin/index.jsp" and do the first registration process to register
     	        this registry.
     			</li>
 		        <li>If you are setting up a local Registry and do not need a Full Registry and DO NOT WANT TO BE HARVESTED BY OTHER REGISTRIES then stop here, all your
@@ -160,29 +161,20 @@
     	            resources.
     			</li>
 		        <li>Now it is time to register your new Registry to the rest of the world.</li>
-      			<li>2.) Do the Second link on "/admin/index.html" for registering your registry to a full registry.
+      			<li>2.) Do the Second link on "/admin/index.jsp" for registering your registry to a full registry.
     			</li>
         		<li>Now if your not planning on being a Full Registry then stop here.
     			</li>
-        		<li>3.)Finally do the Third link on "/admin/index.html" to become a full registry by grabbing all the
+        		<li>3.)Finally do the Third link on "/admin/index.jsp" to become a full registry by grabbing all the
     	               registry types of a full registry.
     			</li>
         		<li>4.) Now the next time your harvest cycle happens it will begin harvesting these Registries, the first time
-        			it will harvest with no Date, and then after that it will harvest by date.  Optionally you may go to your
-        			RegistryHarvest servlet and kick off a harvest manually or even a Replicate if needed.
+        			it will harvest with no Date, and then after that it will harvest by date.  Optionally there is a "/admin/harvestResource.jsp" to perform
+    	            harvests on individual Registries; or optionally kick-off a full harvest at "/RegistryHarvest" servlet.
     			</li>
-        		<li>Your done.</li>
-    			<li>If your a full registry and really wanting to populate your Registry now and not wait for the next harvest
-    	            cycle.  Then your installed registry has a "RegistryHarvest" servlet, to do replications and start manual harvests.
-    				PLEASE READ THE FINAL NOTE BELOW, BEFORE DOING THIS. It is quite recommended to increase memorry size before the full replication
-    	            of registries.
-    			</li>
+        		<li>You're done.</li>    			
     	    </ul>
 			<br />
-			Final Note:  If this is a Full Registry I would suggest setting your memorry in your servlet container to be higher and the
-        	cacheSize in the exist db to be higher (see exist section above).  For your servlet container such as tomcat setting the 
-	        variable CATALINA_OPTS to "-Xmx200M" or higher is recommended.
-   	
 
     	    See the properties below, you may point to another OAI web based instance if you like.
     		<i>Below are the properties and examples from the registry-server documentation plus some additions for the servlets, 

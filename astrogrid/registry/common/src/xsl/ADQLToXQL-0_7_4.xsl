@@ -8,8 +8,16 @@
    - Based on the schema: http://www.ivoa.net/internal/IVOA/IvoaVOQL/ADQL-0.7.4.xsd
    - Mods by MCH, ROE in order to get SELECT, FROM and AS to appear; not sure why they didn't already...
    -->
+   
+   
+   <xsl:param name="resource_elem"/>
+   <xsl:param name="declare_elems"/>
+
+   
    <!-- Define order of output -->
    <xsl:template match="ad:Select" >
+   
+    <!--
       <xsl:text>
          declare namespace vr = "http://www.ivoa.net/xml/VOResource/v0.9";
          declare namespace vc = "http://www.ivoa.net/xml/VOCommunity/v0.2";
@@ -18,12 +26,12 @@
          declare namespace vt = "http://www.ivoa.net/xml/VOTable/v0.1";
          declare namespace cs = "http://www.ivoa.net/xml/ConeSearch/v0.2";
          declare namespace sia = "http://www.ivoa.net/xml/SIA/v0.6";
-		 declare namespace cea="http://www.ivoa.net/xml/CEAService/v0.1"; 
+         declare namespace cea="http://www.ivoa.net/xml/CEAService/v0.1"; 
          declare namespace ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1";
 
        for $x in //vr:Resource
       </xsl:text>
-      <!--   
+   
       <xsl:text>  SELECT </xsl:text>
       <xsl:apply-templates select="ad:Allow"/>
       <xsl:apply-templates select="ad:Restrict"/>
@@ -31,13 +39,17 @@
       <xsl:text> FROM </xsl:text>
       <xsl:apply-templates select="ad:From"/>
       -->
+   
       <xsl:apply-templates select="ad:Where"/>
+      
       <!--
       <xsl:apply-templates select="ad:GroupBy"/>
       <xsl:apply-templates select="ad:Having"/>
       <xsl:apply-templates select="ad:OrderBy"/>
       -->
+   
    </xsl:template>
+   
    <!--
      -  Allow Template
      -->
@@ -105,7 +117,6 @@
      -->   
    <!--
      -  From Template
-
    <xsl:template match="ad:From">
       <xsl:variable name="string">
          <xsl:for-each select="ad:Table">
@@ -124,6 +135,7 @@
       <xsl:value-of select="substring($string, 1, string-length($string) - 2)"/>
    </xsl:template>
      -->   
+     
    <!-- Search Types -->
    <!--
      -  Intersection Search:  a AND b
@@ -263,8 +275,15 @@
       <!--
       <xsl:text> WHERE </xsl:text>
       <xsl:apply-templates select="ad:Condition"/>
+      for $x in //vr:Resource where
       -->
-      <xsl:text> where </xsl:text>
+      
+   <xsl:value-of select="$declare_elems"/>
+   <xsl:text>
+         for $x in //</xsl:text><xsl:value-of select="$resource_elem"/>
+      <xsl:text>
+       where 
+      </xsl:text>      
       <xsl:apply-templates select="ad:Condition"/>
       <xsl:text> return $x</xsl:text>
    </xsl:template>
@@ -297,17 +316,22 @@
       -->
       <xsl:variable name="colName" select="@Name" />
       <xsl:text>$x/</xsl:text>
+      <!--
       <xsl:choose>
+      
          <xsl:when test="starts-with($colName,'Resource')">
             <xsl:value-of select="substring(@Name, 10, string-length(@Name))"/>
          </xsl:when>
          <xsl:when test="starts-with($colName,'vr:Resource')">
             <xsl:value-of select="substring(@Name, 12, string-length(@Name))"/>
          </xsl:when>
+      
          <xsl:otherwise>
             <xsl:value-of select="$colName" />
          </xsl:otherwise>
       </xsl:choose>
+      -->
+            <xsl:value-of select="$colName" />
    </xsl:template>
    <!--
      -  Unary Operation
