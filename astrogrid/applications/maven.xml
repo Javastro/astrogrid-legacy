@@ -15,13 +15,13 @@ middle to commandline tests - no jar produced, no error messages. so written all
      ignoreFailures="true" />
      -->
      <maven:maven descriptor="${basedir}/client/project.xml"
-        goals="astrogrid-deploy-snapshot" ignoreFailures="true" />
+        goals="astrogrid-deploy-snapshot" ignoreFailures="false" />
      <maven:maven descriptor="${basedir}/server/project.xml"
-        goals="astrogrid-deploy-snapshot" ignoreFailures="true" />
+        goals="astrogrid-deploy-snapshot" ignoreFailures="false" />
      <maven:maven descriptor="${basedir}/commandline/project.xml"
-        goals="astrogrid-deploy-snapshot" ignoreFailures="true" />
+        goals="astrogrid-deploy-snapshot" ignoreFailures="false" />
      <maven:maven descriptor="${basedir}/http/project.xml"
-        goals="astrogrid-deploy-snapshot" ignoreFailures="true" />
+        goals="astrogrid-deploy-snapshot" ignoreFailures="false" />
 </goal>
 <goal name="astrogrid-install-snapshot">
    <echo message="Master Project: astrogrid-install-snapshot"/>
@@ -35,13 +35,13 @@ middle to commandline tests - no jar produced, no error messages. so written all
      ignoreFailures="true" />
      -->
      <maven:maven descriptor="${basedir}/client/project.xml"
-        goals="astrogrid-install-snapshot" ignoreFailures="true" />
+        goals="astrogrid-install-snapshot" ignoreFailures="false" />
      <maven:maven descriptor="${basedir}/server/project.xml"
-        goals="astrogrid-install-snapshot" ignoreFailures="true" />
+        goals="astrogrid-install-snapshot" ignoreFailures="false" />
      <maven:maven descriptor="${basedir}/commandline/project.xml"
-        goals="astrogrid-install-snapshot" ignoreFailures="true" />
+        goals="astrogrid-install-snapshot" ignoreFailures="false" />
      <maven:maven descriptor="${basedir}/http/project.xml"
-        goals="astrogrid-install-snapshot" ignoreFailures="true" />
+        goals="astrogrid-install-snapshot" ignoreFailures="false" />
 </goal>
 
 <goal name="astrogrid-build-snapshot">
@@ -56,13 +56,13 @@ middle to commandline tests - no jar produced, no error messages. so written all
      ignoreFailures="true" />
      -->
      <maven:maven descriptor="${basedir}/client/project.xml"
-        goals="astrogrid-build-snapshot" ignoreFailures="true" />
+        goals="astrogrid-build-snapshot" ignoreFailures="false" />
      <maven:maven descriptor="${basedir}/server/project.xml"
-        goals="astrogrid-build-snapshot" ignoreFailures="true" />
+        goals="astrogrid-build-snapshot" ignoreFailures="false" />
      <maven:maven descriptor="${basedir}/commandline/project.xml"
-        goals="astrogrid-build-snapshot" ignoreFailures="true" />
+        goals="astrogrid-build-snapshot" ignoreFailures="false" />
      <maven:maven descriptor="${basedir}/http/project.xml"
-        goals="astrogrid-build-snapshot" ignoreFailures="true" />
+        goals="astrogrid-build-snapshot" ignoreFailures="false" />
 </goal>
 
 <!-- artifact -->
@@ -78,13 +78,13 @@ middle to commandline tests - no jar produced, no error messages. so written all
      ignoreFailures="true" />
      -->
      <maven:maven descriptor="${basedir}/client/project.xml"
-        goals="astrogrid-deploy-artifact" ignoreFailures="true" />
+        goals="astrogrid-deploy-artifact" ignoreFailures="false" />
      <maven:maven descriptor="${basedir}/server/project.xml"
-        goals="astrogrid-deploy-artifact" ignoreFailures="true" />
+        goals="astrogrid-deploy-artifact" ignoreFailures="false" />
      <maven:maven descriptor="${basedir}/commandline/project.xml"
-        goals="astrogrid-deploy-artifact" ignoreFailures="true" />
+        goals="astrogrid-deploy-artifact" ignoreFailures="false" />
      <maven:maven descriptor="${basedir}/http/project.xml"
-        goals="astrogrid-deploy-artifact" ignoreFailures="true" />
+        goals="astrogrid-deploy-artifact" ignoreFailures="false" />
 </goal>
 <goal name="astrogrid-install-artifact">
    <echo message="Master Project: astrogrid-install-artifact"/>
@@ -98,13 +98,13 @@ middle to commandline tests - no jar produced, no error messages. so written all
      ignoreFailures="true" />
      -->
      <maven:maven descriptor="${basedir}/client/project.xml"
-        goals="astrogrid-install-artifact" ignoreFailures="true" />
+        goals="astrogrid-install-artifact" ignoreFailures="false" />
      <maven:maven descriptor="${basedir}/server/project.xml"
-        goals="astrogrid-install-artifact" ignoreFailures="true" />
+        goals="astrogrid-install-artifact" ignoreFailures="false" />
      <maven:maven descriptor="${basedir}/commandline/project.xml"
-        goals="astrogrid-install-artifact" ignoreFailures="true" />
+        goals="astrogrid-install-artifact" ignoreFailures="false" />
      <maven:maven descriptor="${basedir}/http/project.xml"
-        goals="astrogrid-install-artifact" ignoreFailures="true" />
+        goals="astrogrid-install-artifact" ignoreFailures="false" />
 
 </goal>
 
@@ -120,13 +120,13 @@ middle to commandline tests - no jar produced, no error messages. so written all
      ignoreFailures="true" />
      -->
      <maven:maven descriptor="${basedir}/client/project.xml"
-        goals="astrogrid-build-artifact" ignoreFailures="true" />
+        goals="astrogrid-build-artifact" ignoreFailures="false" />
      <maven:maven descriptor="${basedir}/server/project.xml"
-        goals="astrogrid-build-artifact" ignoreFailures="true" />
+        goals="astrogrid-build-artifact" ignoreFailures="false" />
      <maven:maven descriptor="${basedir}/commandline/project.xml"
-        goals="astrogrid-build-artifact" ignoreFailures="true" />
+        goals="astrogrid-build-artifact" ignoreFailures="false" />
      <maven:maven descriptor="${basedir}/http/project.xml"
-        goals="astrogrid-build-artifact" ignoreFailures="true" />
+        goals="astrogrid-build-artifact" ignoreFailures="false" />
 </goal>
 
 
