@@ -1,4 +1,4 @@
-/*$Id: VisitorTest.java,v 1.2 2003/09/17 14:53:02 nw Exp $
+/*$Id: VisitorTest.java,v 1.3 2003/09/26 11:02:07 nw Exp $
  * Created on 28-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -50,6 +50,11 @@ public class VisitorTest extends ExamplesTest{
         query.acceptTopDown(visitor);
         visitor.check();
         
+        TestVisitor visitor1 = new TestVisitor();
+        query.acceptBottomUp(visitor1);
+        visitor1.check();
+        
+        assertEquals(visitor,visitor1); // i.e. we've seen the same number of nodes in both directions.
 
     }
     
@@ -75,6 +80,15 @@ public class VisitorTest extends ExamplesTest{
             count++;
             
         }
+        
+        /* (non-Javadoc)
+         * @see java.lang.Object#equals(java.lang.Object)
+         */
+        public boolean equals(Object obj) {
+            TestVisitor other = (TestVisitor)obj;
+            return this.selectSeen == other.selectSeen && this.count == other.count;
+        }
+
     }
 
 }
@@ -82,6 +96,9 @@ public class VisitorTest extends ExamplesTest{
 
 /* 
 $Log: VisitorTest.java,v $
+Revision 1.3  2003/09/26 11:02:07  nw
+tests bottom-up traversal now as well as top-down traversal.
+
 Revision 1.2  2003/09/17 14:53:02  nw
 tidied imports
 
