@@ -9,6 +9,7 @@ import org.xml.sax.InputSource;
 import java.io.StringReader;
 import javax.xml.parsers.*;
 import java.io.Reader;
+import java.io.File;
 
 /**
  * The QueryParser3_0 class accepts an XML formatted query from the
@@ -558,9 +559,17 @@ public class QueryParser3_0
  private static String getRegistrySource(){
 
     /**
-     * The getRegistrySource method reads a URL containing an XML file that specifies whether
+     * The getRegistrySource method reads an XML file that specifies whether
      * the registry is stored as a database or an XML file.  
      */
+    
+
+	String registryPathName = (System.getProperty("user.dir"));
+	File f = new File(registryPathName);
+	registryPathName = f.getAbsolutePath();
+	String qpParametersFileName = registryPathName + "/../webapps/org/astrogrid/registry/qpParameters.xml";
+	File qpParametersFile = new File(qpParametersFileName);
+	
 	Document parameterDoc = null;
 	DocumentBuilderFactory parameterFactory = DocumentBuilderFactory.newInstance();
 	DocumentBuilder parameterBuilder = null;
@@ -576,7 +585,7 @@ public class QueryParser3_0
  	 */
 	try {
 		parameterBuilder = parameterFactory.newDocumentBuilder();
-		parameterDoc = parameterBuilder.parse("http://msslxy.mssl.ucl.ac.uk:8080/org/astrogrid/registry/qpParameters.xml");
+		parameterDoc = parameterBuilder.parse(qpParametersFile);
 	}
 	catch (ParserConfigurationException e) {
 		registrySource = "REGISTRY SOURCE - " + e.toString();
