@@ -454,8 +454,8 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
 /**
  * Put the given string into the given location
  */
-   public void putString(String contents, String targetPath,
-     boolean append) throws IOException
+   public void putString(String contents, String targetPath, boolean append)
+      throws IOException
    {
 
       if (!targetPath.startsWith("/")) targetPath = "/"+targetPath;
@@ -956,7 +956,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
  * @param newOwner Account of the new owner.
  */
 
-   private void changeOwner(String path, User newOwner)
+   public void changeOwner(String path, User newOwner)
      throws IOException
    {  String owner = newOwner.getAccount();
       KernelResults results = innerDelegate.changeOwner(
@@ -1201,7 +1201,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
     *
     * @author mch
     */
-   public class MySpaceFolder extends MySpaceFile  {
+   private class MySpaceFolder extends MySpaceFile  {
       
       Hashtable children = new Hashtable();
    
@@ -1287,6 +1287,9 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
 
 /*
 $Log: MySpaceIt05Delegate.java,v $
+Revision 1.22  2004/05/03 13:39:40  mch
+Removed dependencies on EntryRecord and EntryNode
+
 Revision 1.21  2004/05/03 08:55:53  mch
 Fixes to getFiles(), introduced getSize(), getOwner() etc to StoreFile
 

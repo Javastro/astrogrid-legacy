@@ -1,28 +1,24 @@
 package org.astrogrid.mySpace.mySpaceDemo;
 
-import javax.swing.*;          //This is the final package name.
-//import com.sun.java.swing.*; //Used by JDK 1.2 Beta 4 and all
-                               //Swing releases before Swing 1.1 Beta 3.
-import java.awt.*;
-import java.awt.event.*;
+import javax.swing.*;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
-import java.util.ArrayList;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.lang.reflect.Array;
-
-import org.astrogrid.mySpace.mySpaceStatus.*;
-import org.astrogrid.mySpace.mySpaceManager.*;
-
-import org.astrogrid.store.Agsl;
-import org.astrogrid.store.delegate.StoreFile;
-import org.astrogrid.store.delegate.StoreClient;
+import java.net.URL;
 import org.astrogrid.community.User;
-
+import org.astrogrid.store.Agsl;
+import org.astrogrid.store.delegate.StoreDelegate;
+import org.astrogrid.store.delegate.StoreFile;
 import org.astrogrid.store.delegate.myspaceItn05.MySpaceIt05Delegate;
-import org.astrogrid.store.delegate.myspaceItn05.EntryRecord;
-import org.astrogrid.store.delegate.myspaceItn05.EntryNode;
 
 //
 // Example end point:
@@ -67,10 +63,9 @@ public class MySpaceDriver
       JMenu fileMenu = new JMenu("Options");
       menuBar.add(fileMenu);
 
-//
-//   Create the Options menu items.
 
-      JMenuItem menuItem = new JMenuItem("Enter query (output as list)");
+
+      JMenuItem menuItem = new JMenuItem("Enter query (output as tree)");
       menuItem.addActionListener(new ActionListener()
          {  public void actionPerformed(ActionEvent e)
             {  BufferedReader console = new BufferedReader(
@@ -89,60 +84,10 @@ public class MySpaceDriver
                try
                {  middle.setTest(isTest);
                   middle.setThrow(false);
-                  StoreFile[] files = middle.listFiles(query);
+                  StoreFile fileRoot = middle.getFiles(query);
 
                   System.out.println("\nMatching files:-");
-
-                  int numFiles = Array.getLength(files);
-
-                  if (numFiles > 0)
-                  {  EntryRecord file = new EntryRecord();
-
-                     for(int loop=0; loop<numFiles; loop++)
-                     {  file = (EntryRecord)files[loop];
-                        System.out.println(loop + ": " + file.toString() );
-                     }
-                  }
-                  else
-                  {  System.out.println("No files satisfied query.");
-                  }
-
-                  System.out.println("\nMessages:-");
-                  middle.outputStatusList();
-                  middle.resetStatusList();
-               }
-               catch (Exception ex)
-               {  ex.printStackTrace();
-               }
-            }
-         }
-      );
-      fileMenu.add(menuItem);
-
-
-      menuItem = new JMenuItem("Enter query (output as tree)");
-      menuItem.addActionListener(new ActionListener()
-         {  public void actionPerformed(ActionEvent e)
-            {  BufferedReader console = new BufferedReader(
-                 new InputStreamReader(System.in));
-
-               System.out.println("Enter query (eg. '*'):");
-               String query = null;
-               try
-               {  query = console.readLine();
-               }
-               catch (IOException ioerror)
-               {  System.out.println("Ooops");
-                  query ="*";
-               }
-
-               try
-               {  middle.setTest(isTest);
-                  middle.setThrow(false);
-                  EntryNode fileRoot = (EntryNode)middle.getFiles(query);
-
-                  System.out.println("\nMatching files:-");
-                  System.out.println(fileRoot.toString() );
+                  StoreDelegate.printTree(fileRoot, new OutputStreamWriter(System.out));
 
                   System.out.println("\nMessages:-");
                   middle.outputStatusList();
@@ -177,12 +122,11 @@ public class MySpaceDriver
                {  middle.setTest(isTest);
                   middle.setThrow(false);
 
-                  EntryRecord file = 
-                    (EntryRecord)middle.getFile(fileName);
+                  StoreFile file = middle.getFile(fileName);
 
                   System.out.println("\nFile details:-");
                   System.out.println("  " + file.toString() );
-                  System.out.println("  URL: " + file.getEntryUri() );
+//                  System.out.println("  URL: " + middle.getEntryUri() );
 
                   middle.outputStatusList();
                   middle.resetStatusList();

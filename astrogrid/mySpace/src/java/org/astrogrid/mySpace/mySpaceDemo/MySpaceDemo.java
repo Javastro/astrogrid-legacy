@@ -1,27 +1,22 @@
 package org.astrogrid.mySpace.mySpaceDemo;
 
-import javax.swing.*;          //This is the final package name.
-//import com.sun.java.swing.*; //Used by JDK 1.2 Beta 4 and all
-                               //Swing releases before Swing 1.1 Beta 3.
-import java.awt.*;
-import java.awt.event.*;
+import javax.swing.*;
+import org.astrogrid.store.delegate.myspaceItn05.*;
 
-import java.io.*;
-import java.util.*;
-import java.util.ArrayList;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.Array;
-
-import org.astrogrid.mySpace.mySpaceStatus.*;
-import org.astrogrid.mySpace.mySpaceManager.*;
-
-import org.astrogrid.store.delegate.myspaceItn05.ManagerGenuine;
-import org.astrogrid.store.delegate.myspaceItn05.KernelResults;
-import org.astrogrid.store.delegate.myspaceItn05.StatusResults;
-import org.astrogrid.store.delegate.myspaceItn05.StatusMessage;
-import org.astrogrid.store.delegate.myspaceItn05.EntryResults;
-import org.astrogrid.store.delegate.myspaceItn05.EntryRecord;
-import org.astrogrid.store.delegate.myspaceItn05.EntryCodes;
-import org.astrogrid.store.delegate.myspaceItn05.ManagerCodes;
+import org.astrogrid.mySpace.mySpaceManager.Configuration;
+import org.astrogrid.mySpace.mySpaceStatus.Logger;
+import org.astrogrid.mySpace.mySpaceStatus.MySpaceStatus;
+import org.astrogrid.store.delegate.StoreFile;
 
 /**
  * Simple demonstration program for the MySpace registry.
@@ -103,9 +98,8 @@ public class MySpaceDemo
                   if (numEntries > 0)
                   {  for(int loop=0; loop<numEntries; loop++)
                      {  EntryResults entry = (EntryResults)entries[loop];
-                        EntryRecord file = new EntryRecord(entry);
 
-                        System.out.println(loop + ": " + file.toString() ); 
+                        System.out.println(loop + ": " + entry.getEntryName());
                      }
                   }
                   else
@@ -528,7 +522,7 @@ public class MySpaceDemo
    {  System.setProperty("java.util.prefs.syncInterval","2000000");
 
       if (argv.length == 0)
-      {  
+      {
 //
 //      Set the look and feel.
 

@@ -105,7 +105,7 @@ public class MySpaceIt05DelegateTest extends TestCase
          middle.setTest(true);
          middle.setThrow(true);
 
-         StoreFile[] files = middle.listFiles("/acd/con1/file*");
+         StoreFile[] files = middle.getFiles("/acd/con1/file*").listFiles();
 
          ArrayList statusList = middle.getStatusList();
          int numStatus = statusList.size();
@@ -128,10 +128,7 @@ public class MySpaceIt05DelegateTest extends TestCase
          int numFiles = Array.getLength(files);
          Assert.assertEquals(numFiles, 1);
 
-         EntryRecord file = new EntryRecord();
-         file = (EntryRecord)files[0];
-
-         String entryName = file.getName();
+         String entryName = files[0].getPath();
          Assert.assertEquals(entryName, "/acd/con1/filexyz");
       }
       catch(Exception e)
@@ -147,7 +144,7 @@ public class MySpaceIt05DelegateTest extends TestCase
          middle.setTest(true);
          middle.setThrow(true);
 
-         EntryRecord file = (EntryRecord)middle.getFile("/acd/con1/fileabc");
+         StoreFile file = middle.getFile("/acd/con1/fileabc");
 
          ArrayList statusList = middle.getStatusList();
          int numStatus = statusList.size();

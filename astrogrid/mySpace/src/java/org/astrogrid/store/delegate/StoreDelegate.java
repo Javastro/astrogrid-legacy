@@ -1,5 +1,5 @@
 /*
- $Id: StoreDelegate.java,v 1.4 2004/05/03 08:55:53 mch Exp $
+ $Id: StoreDelegate.java,v 1.5 2004/05/03 13:39:40 mch Exp $
 
  (c) Copyright...
  */
@@ -9,6 +9,7 @@ package org.astrogrid.store.delegate;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Writer;
 import java.net.URL;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -129,5 +130,18 @@ public abstract class StoreDelegate implements StoreClient {
       return new Agsl(getEndpoint()+"#"+sourcePath);
    }
 
-   
+   /**
+     * Prints the given tree to the given stream for display
+    */
+   public static void printTree(StoreFile root, Writer writer) throws IOException {
+      writer.write(root.getPath()+",  "+root.getMimeType()+",  "+root.getSize()+", "+root.getModified()+"\n");
+      
+      StoreFile[] children = root.listFiles();
+      
+      if ((children != null) && (children.length>0)) {
+         for (int i=0;i<children.length;i++) {
+            printTree(root, writer);
+         }
+      }
+   }
 }

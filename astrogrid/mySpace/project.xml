@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.40 2004/04/15 17:39:42 mch Exp $ -->
+<!-- $Id: project.xml,v 1.41 2004/05/03 13:39:40 mch Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
     <extend>../maven-base/project.xml</extend>
@@ -196,6 +196,16 @@
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
+    </dependency>
+
+    <!-- JavaMail for TargetIndicators -->
+    <dependency>
+      <id>JavaMail</id>
+      <version>UNKNOWN</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+      <jar>JavaMail.jar</jar>
     </dependency>
 
 
