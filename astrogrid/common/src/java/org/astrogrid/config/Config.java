@@ -1,5 +1,5 @@
 /*
- * $Id: Config.java,v 1.24 2004/04/24 11:43:05 mch Exp $
+ * $Id: Config.java,v 1.25 2004/08/05 09:41:46 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -271,13 +271,18 @@ public abstract class Config {
       //resolve included environment variables
       filename = resolveEnvironmentVariables(filename);
 
+      //for error messages
+      String msg = givenFilename;
+      if (!givenFilename.equals(filename)) {
+         msg = msg + " (resolves to "+filename+")";
+      }
+      
       File f = new File(filename);
-      String workingDir = new File("relative").getParent();
       if (f.isAbsolute()) {
          if (f.exists() && f.isFile()) {
             return f.toURL();
          }
-         throw new FileNotFoundException("filename "+givenFilename+" resolves to "+filename+" but not found");
+         throw new FileNotFoundException(msg);
       }
       else
       {
@@ -293,7 +298,7 @@ public abstract class Config {
                return f.toURL();
             }
          }
-         throw new FileNotFoundException("filename "+givenFilename+" resolves to "+filename+" but not found in classpath or working directory "+workingDir);
+         throw new FileNotFoundException(msg+" not found in classpath or working directory");
       }
    }
 
