@@ -83,12 +83,12 @@ job data if the DROP command is run.
 Get your system administrator or database administrator to advise you on this. The example shown
 here is not secure. With admin privileges, issue the following from the mysql command line after
 making sensible alterations...
-GRANT ALL PRIVILEGES ON *.* TO ag1-userid@localhost IDENTIFIED BY 'ag1-password' WITH GRANT OPTION ;
-GRANT ALL PRIVILEGES ON *.* TO ag1-userid@"%" IDENTIFIED BY 'ag1-password' WITH GRANT OPTION ;
+GRANT ALL PRIVILEGES ON *.* TO ag1userid@localhost IDENTIFIED BY 'ag1password' WITH GRANT OPTION ;
+GRANT ALL PRIVILEGES ON *.* TO ag1userid@"%" IDENTIFIED BY 'ag1password' WITH GRANT OPTION ;
 
 localhost should be changed to reflect the dns name of the relevant host
-ag1-userid can be changed to any sensible userid
-ag1-password can be changed to a sensible password.
+ag1userid can be changed to any sensible userid
+ag1password can be changed to a sensible password.
 Note the two lines above, as the values are required in the following section...
 
 
@@ -132,11 +132,11 @@ by JNDI (eg. driverClassName, URL, User, Password):
              </parameter>
              <parameter>
                <name>username</name>
-               <value>ag1-userid</value>
+               <value>ag1userid</value>
              </parameter>
              <parameter>
                <name>password</name>
-               <value>ag1-password</value>
+               <value>ag1password</value>
               </parameter>
             </ResourceParams>
      </DefaultContext>
