@@ -1,3 +1,6 @@
+/*
+ * $Id: QueryDBService.java,v 1.6 2004/11/03 00:05:00 mch Exp $
+ */
 package org.astrogrid.xmldb.eXist.server;
 
 import org.astrogrid.config.Config;
@@ -90,13 +93,7 @@ public class QueryDBService {
                      IOException, UnsupportedEncodingException, SAXException {
       log.debug("start runQuery");
       Document queryDoc = null;
-      String numberOfResourcesReturned = conf.getString(
-                                             "exist.query.returncount");
-      if(numberOfResourcesReturned == null ||
-         numberOfResourcesReturned.trim().length() <= 0)
-      {
-         numberOfResourcesReturned = "25";
-      }//if
+      int numberOfResourcesReturned = conf.getInt("exist.query.returncount", 25);
       log.info("max number of resources to be returned = " + numberOfResourcesReturned);
 
       String query = "<query xmlns=\"http://exist.sourceforge.net/NS/exist\"" +
@@ -127,3 +124,11 @@ public class QueryDBService {
       return resultDoc;
    }
 }
+
+/*
+$Log: QueryDBService.java,v $
+Revision 1.6  2004/11/03 00:05:00  mch
+Fix for returncount default
+
+ */
+
