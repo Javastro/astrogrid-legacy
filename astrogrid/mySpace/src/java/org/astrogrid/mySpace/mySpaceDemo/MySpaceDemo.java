@@ -24,6 +24,13 @@ public class MySpaceDemo
 {  private static MySpaceActions myspace = new MySpaceActions();
    private static MySpaceStatus status = new MySpaceStatus();
 
+//
+//      Set up for logging.
+
+    private static Logger demoLog = new
+      Logger(false, true, true, "./myspace.log");
+
+
    public Component createDemoComponents()
    {
 
@@ -868,7 +875,8 @@ public class MySpaceDemo
       menuItem = new JMenuItem("Quit");
       menuItem.addActionListener(new ActionListener()
          {  public void actionPerformed(ActionEvent e)
-            {  System.out.println("MySpace Demo. exiting normally.");
+            {  demoLog.close();
+               System.out.println("MySpace Demo. exiting normally.");
                System.exit(0);
             }
          }

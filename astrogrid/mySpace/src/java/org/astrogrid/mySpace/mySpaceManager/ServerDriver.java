@@ -8,7 +8,7 @@ import javax.xml.rpc.encoding.XMLType;
 import org.astrogrid.mySpace.mySpaceStatus.*;
 import org.astrogrid.mySpace.mySpaceServer.ServerManager;
 
-import org.apache.log4j.Logger;
+// import org.apache.log4j.Logger;
 
 /**
  * <p>
@@ -26,8 +26,7 @@ import org.apache.log4j.Logger;
  */
 
 public class ServerDriver
-{  
-   private static Logger logger = Logger.getLogger(MySpaceActions.class);
+{  private static Logger logger = new Logger();
    Call call = null;
 
 //
@@ -63,7 +62,7 @@ public class ServerDriver
       Configuration config = new Configuration();
 
       try
-      {  if (!config.getINTERNALSERVER() )
+      {  if (config.getSERVERDEPLOYMENT() == config.SEPARATESERVERS)
          {  call = createServerCall();
             call.setOperationName( "upLoadString" );		
             call.addParameter("arg0", XMLType.XSD_STRING, ParameterMode.IN);
@@ -74,12 +73,21 @@ public class ServerDriver
               {contents,newDataHolderFileName} );
 
             if (config.getDEBUG() )
-            {  logger.debug("GOT SERVERRESPONSE: " + serverResponse);
+            {  logger.appendMessage("GOT SERVERRESPONSE: " + serverResponse);
             }
          }
-         else
+         else if (config.getSERVERDEPLOYMENT() == config.INTERNALSERVERS)
          {  ServerManager server = new ServerManager();
             server.upLoadString(contents, newDataHolderFileName);
+         }
+         else if (config.getSERVERDEPLOYMENT() == config.MANAGERONLY)
+         {  logger.appendMessage(
+              "Attempt to upload a string to a dataHolder on a server:\n"
+              + "  output server file name: " + newDataHolderFileName + "\n"
+              + "  contents: \n\n" + contents);
+         }
+         else
+         {  throw new Exception("Invalid SERVERDEPLOYMENT.");
          }
       }
       catch(Exception e)
@@ -116,7 +124,7 @@ public class ServerDriver
       Configuration config = new Configuration();
 
       try
-      {  if (!config.getINTERNALSERVER() )
+      {  if (config.getSERVERDEPLOYMENT() == config.SEPARATESERVERS)
          {  call = createServerCall();
             call.setOperationName( "importDataHolder" );
             call.addParameter("arg0", XMLType.XSD_STRING, ParameterMode.IN);
@@ -127,12 +135,21 @@ public class ServerDriver
               {importURI,newDataHolderFileName} );
 
             if (config.getDEBUG() )
-            {  logger.debug("GOT SERVERRESPONSE: " + serverResponse);
+            {  logger.appendMessage("GOT SERVERRESPONSE: " + serverResponse);
             }
          }
-         else
+         else if (config.getSERVERDEPLOYMENT() == config.INTERNALSERVERS)
          {  ServerManager server = new ServerManager();
             server.importDataHolder(importURI, newDataHolderFileName);
+         }
+         else if (config.getSERVERDEPLOYMENT() == config.MANAGERONLY)
+         {  logger.appendMessage(
+              "Attempt to import a dataHolder on a server:\n"
+              + "  input URI: "+ importURI + "\n"
+              + "  output server file name: " + newDataHolderFileName);
+         }
+         else
+         {  throw new Exception("Invalid SERVERDEPLOYMENT.");
          }
       }
       catch(Exception e)
@@ -169,7 +186,7 @@ public class ServerDriver
       Configuration config = new Configuration();
 
       try
-      {  if (!config.getINTERNALSERVER() )
+      {  if (config.getSERVERDEPLOYMENT() == config.SEPARATESERVERS)
          {  call = createServerCall();
             call.setOperationName( "copyDataHolder" );		
             call.addParameter("arg0", XMLType.XSD_STRING, ParameterMode.IN);
@@ -180,13 +197,23 @@ public class ServerDriver
               {oldDataHolderFileName,newDataHolderFileName} );
 
             if (config.getDEBUG() )
-            {  logger.debug("GOT SERVERRESPONSE: " + serverResponse);
+            {  logger.appendMessage("GOT SERVERRESPONSE: " + serverResponse);
             }
          }
-         else
+         else if (config.getSERVERDEPLOYMENT() == config.INTERNALSERVERS)
          {  ServerManager server = new ServerManager();
             server.copyDataHolder(oldDataHolderFileName,
               newDataHolderFileName);
+         }
+         else if (config.getSERVERDEPLOYMENT() == config.MANAGERONLY)
+         {  logger.appendMessage(
+              "Attempt to copy a dataHolder on a server:\n"
+              + "  input server file name: "+ oldDataHolderFileName + "\n"
+              + "  output server file name: " + newDataHolderFileName);
+
+         }
+         else
+         {  throw new Exception("Invalid SERVERDEPLOYMENT.");
          }
       }
       catch(Exception e)
@@ -217,7 +244,7 @@ public class ServerDriver
       Configuration config = new Configuration();
 
       try
-      {  if (!config.getINTERNALSERVER() )
+      {  if (config.getSERVERDEPLOYMENT() == config.SEPARATESERVERS)
          {  call = createServerCall();
             call.setOperationName( "deleteDataHolder" );
             call.addParameter("arg0", XMLType.XSD_STRING, ParameterMode.IN);
@@ -227,12 +254,20 @@ public class ServerDriver
               {dataHolderFileName} );
 
             if (config.getDEBUG() )
-            {  logger.debug("GOT SERVERRESPONSE: "+serverResponse);
+            {  logger.appendMessage("GOT SERVERRESPONSE: "+serverResponse);
             }
          }
-         else
+         else if (config.getSERVERDEPLOYMENT() == config.INTERNALSERVERS)
          {  ServerManager server = new ServerManager();
             server.deleteDataHolder(dataHolderFileName);
+         }
+         else if (config.getSERVERDEPLOYMENT() == config.MANAGERONLY)
+         {  logger.appendMessage(
+              "Attempt to delete a dataHolder on a server:\n"
+              + "  server file name: "+ dataHolderFileName);
+         }
+         else
+         {  throw new Exception("Invalid SERVERDEPLOYMENT.");
          }
       }
       catch(Exception e)
@@ -268,9 +303,10 @@ public class ServerDriver
          */
       }
       catch(Exception e)
-      {  MySpaceMessage message =
-           new MySpaceMessage("ERROR_CALL_SERVER_MANAGER");
-           message.getMessage(e.toString());
+      {  logger.appendMessage("ERROR_CALL_SERVER_MANAGER");
+         logger.appendMessage(
+           "  Exception thrown in ServerDriver.createServerCall.");
+         logger.appendMessage("  " + e.toString() );
       }	
       return call;
    }   

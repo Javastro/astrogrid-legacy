@@ -13,7 +13,6 @@ import org.astrogrid.i18n.*;
 import org.astrogrid.mySpace.mySpaceStatus.*;
 import org.astrogrid.mySpace.mySpaceUtil.*;
 
-import org.apache.log4j.Logger;
 
 
 /**
@@ -60,7 +59,8 @@ import org.apache.log4j.Logger;
  */
 
 public class MySpaceManager {
-	private static Logger logger = Logger.getLogger(MySpaceUtils.class);
+	private static Logger logger = new Logger (true, true, true,
+	  "./myspace.log");
 	private static boolean DEBUG = true;
 	private static MySpaceStatus status = new MySpaceStatus();
 	
@@ -120,14 +120,14 @@ public class MySpaceManager {
 	 * Upload/save dataholder.
 	 */
 	public String upLoad(String jobDetails){
-		if ( DEBUG )  logger.debug("MySpaceManager.upLoad");
+		if ( DEBUG )  logger.appendMessage("MySpaceManager.upLoad");
 		DataItemRecord dataitem = null;
 		Call call = null;
 		
 			try{
 				response = getValues(jobDetails);
 	
-				if ( DEBUG ) logger.debug("About to invoke myspaceaction.importdataholder");  
+				if ( DEBUG ) logger.appendMessage("About to invoke myspaceaction.importdataholder");  
 				msA.setRegistryName(registryName);
 
 				//this need to be considered when to invoke import when to invoke upload.
@@ -136,7 +136,7 @@ public class MySpaceManager {
 					userID, communityID, credential, newDataHolderName,
 					fileContent, contentsType );
 	
-				if( DEBUG ) logger.debug("UploaderroCode is:" +errCode);
+				if( DEBUG ) logger.appendMessage("UploaderroCode is:" +errCode);
 				if ( errCode!="" )    
 				  errCode = errCode +"," +checkStatus("UPLOADStatusCode");
 				else 
@@ -169,9 +169,9 @@ public class MySpaceManager {
 					  response = util.buildMySpaceManagerResponse(null,MMC.FAULT,errCode+","+generalMessage.toString(),"");  
 					return response;
 				}
-				if( DEBUG ) logger.debug("RESPONSE: "+response); 
+				if( DEBUG ) logger.appendMessage("RESPONSE: "+response); 
 			}catch(Exception e){
-				logger.error("ERROR UPLOADING MYSPACEMANAGER" +e.toString());
+				logger.appendMessage("ERROR UPLOADING MYSPACEMANAGER" +e.toString());
 				status.addCode(MySpaceStatusCode.AGMMCE00216,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
 				AstroGridMessage generalMessage = new AstroGridMessage( "AGMMCE00216", this.getComponentName()) ;
 				if(errCode=="")
@@ -187,14 +187,14 @@ public class MySpaceManager {
 	 * Upload/save dataholder.
 	 */
 	public String upLoadURL(String jobDetails){
-		if ( DEBUG )  logger.debug("MySpaceManager.upLoad");
+		if ( DEBUG )  logger.appendMessage("MySpaceManager.upLoad");
 		DataItemRecord dataitem = null;
 		Call call = null;
 		
 			try{
 				response = getValues(jobDetails);
 	
-				if ( DEBUG ) logger.debug("About to invoke myspaceaction.importdataholder");  
+				if ( DEBUG ) logger.appendMessage("About to invoke myspaceaction.importdataholder");  
 				msA.setRegistryName(registryName);
 	
 				//this need to be considered when to invoke import when to invoke upload.
@@ -229,9 +229,9 @@ public class MySpaceManager {
 					  response = util.buildMySpaceManagerResponse(null,MMC.FAULT,errCode+","+generalMessage.toString(),"");  
 					return response;
 				}
-				if( DEBUG ) logger.debug("RESPONSE: "+response); 
+				if( DEBUG ) logger.appendMessage("RESPONSE: "+response); 
 			}catch(Exception e){
-				logger.error("ERROR UPLOADING MYSPACEMANAGER" +e.toString());
+				logger.appendMessage("ERROR UPLOADING MYSPACEMANAGER" +e.toString());
 				status.addCode(MySpaceStatusCode.AGMMCE00216,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
 				AstroGridMessage generalMessage = new AstroGridMessage( "AGMMCE00216", this.getComponentName()) ;
 				if(errCode=="")
@@ -249,7 +249,7 @@ public class MySpaceManager {
   */
 
    public String lookupDataHolderDetails(String jobDetails){
-	if ( DEBUG )  logger.debug("MySpaceManager.lookupDataHolderDetails");
+	if ( DEBUG )  logger.appendMessage("MySpaceManager.lookupDataHolderDetails");
 	DataItemRecord dataitem = null;
 
 		try{
@@ -266,9 +266,9 @@ public class MySpaceManager {
 			if (dataItemRecords != null)
 			{  DataItemRecord dataItem = (DataItemRecord)dataItemRecords.elementAt(0);
 				dataItemID = dataItem.getDataItemID();
-			   logger.debug("LOOKUPDATAHOLDERDETAILS TRING TO GET DATAITEMID: " +dataItemID);
+			   logger.appendMessage("LOOKUPDATAHOLDERDETAILS TRING TO GET DATAITEMID: " +dataItemID);
 			}else{
-				logger.debug("LOOKUPDATAHOLDERDETAILS DATAITEMRCORDS = NULL!");
+				logger.appendMessage("LOOKUPDATAHOLDERDETAILS DATAITEMRCORDS = NULL!");
 			}
   
 			//create a instance of DataItemRecord
@@ -305,10 +305,10 @@ public class MySpaceManager {
 			return response;
 		}
 			
-			if( DEBUG ) logger.debug("RESPONSE: "+response); 
+			if( DEBUG ) logger.appendMessage("RESPONSE: "+response); 
 			return response;
 		}catch(Exception e){
-			logger.error("ERROR UPLOADING MYSPACEMANAGER" +e.toString());
+			logger.appendMessage("ERROR UPLOADING MYSPACEMANAGER" +e.toString());
 			status.addCode(MySpaceStatusCode.AGMMCE00218,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
 			AstroGridMessage generalMessage = new AstroGridMessage( "AGMMCE00218", this.getComponentName()) ;
 			if (errCode=="") 
@@ -326,7 +326,7 @@ public class MySpaceManager {
   */
 
    public String lookupDataHoldersDetails(String jobDetails){
-	if ( DEBUG )  logger.debug("MySpaceManager.lookupDataHolderSDetails CATHERINE"+jobDetails);
+	if ( DEBUG )  logger.appendMessage("MySpaceManager.lookupDataHolderSDetails CATHERINE"+jobDetails);
 	DataItemRecord dataitem = null;
 	Vector itemRecVector = new Vector();
 
@@ -343,10 +343,10 @@ public class MySpaceManager {
 			for (int i =0;i<err.size();i++){
 				MySpaceStatusCode code = (MySpaceStatusCode)err.elementAt(i);
 				String codeS = code.getCode();
-				if (DEBUG)logger.debug("STATUS CODE IN LOOKUPDATAHOLERSDETAILS IS: " +codeS);
+				if (DEBUG)logger.appendMessage("STATUS CODE IN LOOKUPDATAHOLERSDETAILS IS: " +codeS);
 			}
-			if(DEBUG) logger.debug("SATAUES is :" +successStat);
-			if(DEBUG) logger.debug("LOOKUPDATAHOLDERSDETAILS CHECKING ATTRIBUTES FOR CREATING DATAITEM:"
+			if(DEBUG) logger.appendMessage("SATAUES is :" +successStat);
+			if(DEBUG) logger.appendMessage("LOOKUPDATAHOLDERSDETAILS CHECKING ATTRIBUTES FOR CREATING DATAITEM:"
 				+ userID +"   "+communityID +"   "+jobID +"   "+newDataHolderName +"   "
 				  +serverFileName +"   "+fileSize +"   " +"   registryName:"+registryName);
 	
@@ -363,14 +363,14 @@ public class MySpaceManager {
 			if(itemRecVector!=null){
 				header = util.buildMySpaceManagerResponseHeader( MMC.SUCCESS, "");
 				footer = util.buildMySpaceManagerResponseFooter();
-				logger.debug("DATAITEMRECORD VEC SIZE: "+itemRecVector.size());
+				logger.appendMessage("DATAITEMRECORD VEC SIZE: "+itemRecVector.size());
 				for(int i =0; i<itemRecVector.size();i++){
 					if(itemRecVector.elementAt(i)!=null){
-						logger.debug("STATUS: "+successStatus +"   "+warningStatus);
+						logger.appendMessage("STATUS: "+successStatus +"   "+warningStatus);
 						if (successStatus){
-							logger.debug("i = "+i);
+							logger.appendMessage("i = "+i);
 							element = element+util.buildMySpaceManagerResponseElement((DataItemRecord)itemRecVector.elementAt(i), MMC.SUCCESS, "");
-							logger.debug("GETTING MULTI RESPONSE FOR ELEMENTS: "+response);	    	
+							logger.appendMessage("GETTING MULTI RESPONSE FOR ELEMENTS: "+response);	    	
 						}else {
 							response = getErrorCode();
 							return response;								    	
@@ -389,10 +389,10 @@ public class MySpaceManager {
 				element = util.buildMySpaceManagerResponse(null,"WARNING","NO DATAITEMRECORD RETURND FOR YOUR QUERY","");
 			}
 			response = header+element+footer;
-			if( DEBUG ) logger.debug("LOOKUPDATAHOLDERSDETAILS: RESPONSE: "+response); 
+			if( DEBUG ) logger.appendMessage("LOOKUPDATAHOLDERSDETAILS: RESPONSE: "+response); 
 			return response;
 		}catch(Exception e){
-			logger.error("ERROR UPLOADING MYSPACEMANAGER" +e.toString());
+			logger.appendMessage("ERROR UPLOADING MYSPACEMANAGER" +e.toString());
 			status.addCode(MySpaceStatusCode.AGMMCE00217,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
 			AstroGridMessage generalMessage = new AstroGridMessage( "AGMMCE00217", this.getComponentName()) ;
 			if (errCode=="")
@@ -412,7 +412,7 @@ public class MySpaceManager {
   */
 
    public String copyDataHolder(String jobDetails){
-	if ( DEBUG )  logger.debug("MySpaceManager.copyDataHolder "+jobDetails);
+	if ( DEBUG )  logger.appendMessage("MySpaceManager.copyDataHolder "+jobDetails);
 	DataItemRecord dataitem = null;
 
 		try{
@@ -428,9 +428,9 @@ public class MySpaceManager {
 			if (dataItemRecords != null)
 			{  DataItemRecord dataItem = (DataItemRecord)dataItemRecords.elementAt(0);
 			   oldDataItemID = dataItem.getDataItemID();
-			   logger.debug("TRING TO GET OLDDATAITEMID: " +oldDataItemID);
+			   logger.appendMessage("TRING TO GET OLDDATAITEMID: " +oldDataItemID);
 			}else{
-				logger.debug("DATAITEMRCORDS = NULL!");
+				logger.appendMessage("DATAITEMRCORDS = NULL!");
 			}
 				  
 			//create a instance of DataItemRecord
@@ -474,10 +474,10 @@ public class MySpaceManager {
 			return response;
 		}
 
-			if( DEBUG ) logger.debug("RESPONSE: "+response); 
+			if( DEBUG ) logger.appendMessage("RESPONSE: "+response); 
 			return response;
 		}catch(Exception e){
-			logger.error("ERROR ERR_COPY_DATA_HOLDER MYSPACEMANAGER" +e.toString());
+			logger.appendMessage("ERROR ERR_COPY_DATA_HOLDER MYSPACEMANAGER" +e.toString());
 			status.addCode(MySpaceStatusCode.AGMSCE01043,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
 			AstroGridMessage generalMessage = new AstroGridMessage( "AGMSCE01043", this.getComponentName()) ;
 			if (errCode=="")
@@ -501,7 +501,7 @@ public class MySpaceManager {
   */
 
    public String moveDataHolder(String jobDetails){ 
-	if ( DEBUG )  logger.debug("MySpaceManager.moveDataHolder");
+	if ( DEBUG )  logger.appendMessage("MySpaceManager.moveDataHolder");
 	DataItemRecord dataitem = null;
 
 		try{
@@ -517,9 +517,9 @@ public class MySpaceManager {
 			if (dataItemRecords != null){
 				DataItemRecord dataItem = (DataItemRecord)dataItemRecords.elementAt(0);
 				oldDataItemID = dataItem.getDataItemID();
-				logger.debug("TRING TO GET OLDDATAITEMID: " +oldDataItemID);
+				logger.appendMessage("TRING TO GET OLDDATAITEMID: " +oldDataItemID);
 			}else{
-				logger.debug("DATAITEMRCORDS = NULL!");
+				logger.appendMessage("DATAITEMRCORDS = NULL!");
 			}
 				  
 			//create a instance of DataItemRecord
@@ -534,7 +534,7 @@ public class MySpaceManager {
 			boolean warningStatus = status.getWarningStatus();
 	
 			Date currentMySpaceDate = new Date();
-			if( DEBUG ) logger.debug("SUCCESSSTATUS = "+successStatus);
+			if( DEBUG ) logger.appendMessage("SUCCESSSTATUS = "+successStatus);
 		//   Format and return the results as XML.
 			if (successStatus){
 				if (errCode=="")
@@ -545,10 +545,10 @@ public class MySpaceManager {
 				response = getErrorCode();
 						    	
 			}				
-			if( DEBUG ) logger.debug("RESPONSE: "+response); 
+			if( DEBUG ) logger.appendMessage("RESPONSE: "+response); 
 			return response;
 		}catch(Exception e){
-			logger.error("ERROR MOVING MYSPACEMANAGER" +e.toString());
+			logger.appendMessage("ERROR MOVING MYSPACEMANAGER" +e.toString());
 			status.addCode(MySpaceStatusCode.AGMMCE00205,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
 			AstroGridMessage generalMessage = new AstroGridMessage( "AGMMCE00205", this.getComponentName()) ;
 			if (errCode=="") 
@@ -571,7 +571,7 @@ public class MySpaceManager {
 
 
    public String exportDataHolder(String jobDetails){
-	if ( DEBUG )  logger.debug("MySpaceManager.exportDataHolder");
+	if ( DEBUG )  logger.appendMessage("MySpaceManager.exportDataHolder");
 	DataItemRecord dataitem = null;
 	String dataHolderURI = "";
 
@@ -589,9 +589,9 @@ public class MySpaceManager {
 			if (dataItemRecords != null)
 			{  DataItemRecord dataItem = (DataItemRecord)dataItemRecords.elementAt(0);
 				dataItemID = dataItem.getDataItemID();
-			   logger.debug("EXPORTDATAHOLDER TRING TO GET DATAITEMID: " +dataItemID);
+			   logger.appendMessage("EXPORTDATAHOLDER TRING TO GET DATAITEMID: " +dataItemID);
 			}else{
-				logger.debug("EXPORTDATAHOLDER DATAITEMRCORDS = NULL!");
+				logger.appendMessage("EXPORTDATAHOLDER DATAITEMRCORDS = NULL!");
 			}
 				  
 			//create a instance of DataItemRecord
@@ -602,7 +602,7 @@ public class MySpaceManager {
 			  errCode = errCode +"," +checkStatus("EXPORTDATAHOLDER STATUS AFTERCALLING MSA.LOOKUPDATAHOLDERSDETAILS ");
 			else
 			  errCode = checkStatus("EXPORTDATAHOLDER STATUS AFTERCALLING MSA.LOOKUPDATAHOLDERSDETAILS ");
-			if ( DEBUG ) logger.debug("EXPORT: DATAHOLDERURI = "+dataHolderURI);	
+			if ( DEBUG ) logger.appendMessage("EXPORT: DATAHOLDERURI = "+dataHolderURI);	
 			boolean successStatus = status.getSuccessStatus();
 			boolean warningStatus = status.getWarningStatus();
 	
@@ -619,10 +619,10 @@ public class MySpaceManager {
 						    	
 			}	
 
-			if( DEBUG ) logger.debug("RESPONSE: "+response); 
+			if( DEBUG ) logger.appendMessage("RESPONSE: "+response); 
 			return response;
 		}catch(Exception e){
-			logger.error("ERROR EXPORT MYSPACEMANAGER" +e.toString());
+			logger.appendMessage("ERROR EXPORT MYSPACEMANAGER" +e.toString());
 			status.addCode(MySpaceStatusCode.AGMMCE00219,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
 			AstroGridMessage generalMessage = new AstroGridMessage( "AGMMCE00219", this.getComponentName()) ;
 			if (errCode=="")  
@@ -642,7 +642,7 @@ public class MySpaceManager {
   */
 
    public String createContainer(String jobDetails){
-	if ( DEBUG )  logger.debug("MySpaceManager.createContainer");
+	if ( DEBUG )  logger.appendMessage("MySpaceManager.createContainer");
 	DataItemRecord dataitem = null;
 
 		try{
@@ -678,10 +678,10 @@ public class MySpaceManager {
 			response = util.buildMySpaceManagerResponse(null,MMC.FAULT,generalMessage.toString(),"");
 			return response;
 		}
-			if( DEBUG ) logger.debug("RESPONSE: "+response); 
+			if( DEBUG ) logger.appendMessage("RESPONSE: "+response); 
 			return response;
 		}catch(Exception e){
-			logger.error("ERROR UPLOADING MYSPACEMANAGER" +e.toString());
+			logger.appendMessage("ERROR UPLOADING MYSPACEMANAGER" +e.toString());
 			status.addCode(MySpaceStatusCode.AGMMCE00205,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
 			AstroGridMessage generalMessage = new AstroGridMessage( "AGMMCE00205", this.getComponentName()) ;
 			if (errCode=="")
@@ -700,7 +700,7 @@ public class MySpaceManager {
   */
 
    public String deleteDataHolder(String jobDetails){
-	if ( DEBUG )  logger.debug("MySpaceManager.deleteDataHolder");
+	if ( DEBUG )  logger.appendMessage("MySpaceManager.deleteDataHolder");
 	boolean isDeleted = false;
 	DataItemRecord dataitem = null;	
 		try{
@@ -712,9 +712,9 @@ public class MySpaceManager {
 			if (dataItemRecords != null){
 				DataItemRecord dataItem = (DataItemRecord)dataItemRecords.elementAt(0);
 				dataItemID = dataItem.getDataItemID();
-			   logger.debug("TRING TO GET dATAITEMID: " +dataItemID);
+			   logger.appendMessage("TRING TO GET dATAITEMID: " +dataItemID);
 			}else{
-				logger.debug("DATAITEMRCORDS = NULL!");
+				logger.appendMessage("DATAITEMRCORDS = NULL!");
 			}				
 			isDeleted = msA.deleteDataHolder( userID, communityID,
 			credential, dataItemID);	
@@ -734,7 +734,7 @@ public class MySpaceManager {
 			Date currentMySpaceDate = new Date();
 	
 		//   Format and return the results as XML.
-		if ( DEBUG )  logger.debug("SUCCESSSTATUS = "+successStatus +"ISDELETED IS: " +isDeleted);
+		if ( DEBUG )  logger.appendMessage("SUCCESSSTATUS = "+successStatus +"ISDELETED IS: " +isDeleted);
 		if(isDeleted){		
 			if (successStatus){
 				if (errCode=="")
@@ -755,10 +755,10 @@ public class MySpaceManager {
 			 
 			return response;
 		} 
-			if( DEBUG ) logger.debug("RESPONSE: "+response); 
+			if( DEBUG ) logger.appendMessage("RESPONSE: "+response); 
 			return response;
 		}catch(Exception e){
-			logger.error("ERROR UPLOADING MYSPACEMANAGER" +e.toString());
+			logger.appendMessage("ERROR UPLOADING MYSPACEMANAGER" +e.toString());
 			status.addCode(MySpaceStatusCode.AGMSCE01046,MySpaceStatusCode.ERROR,  MySpaceStatusCode.NOLOG, this.getComponentName());
 			AstroGridMessage generalMessage = new AstroGridMessage( "AGMSCE01046", this.getComponentName()) ;
 			if (errCode=="")    
@@ -783,7 +783,7 @@ public class MySpaceManager {
 		Call call = null;
 		try{
 			String endpoint  = servermanagerloc;
-			if ( DEBUG ) logger.debug("servermanagerloc = "+servermanagerloc);
+			if ( DEBUG ) logger.appendMessage("servermanagerloc = "+servermanagerloc);
 			Service service = new Service();
 			call = (Call)service.createCall();
 			call.setTargetEndpointAddress( new java.net.URL(endpoint) );
@@ -798,7 +798,7 @@ public class MySpaceManager {
 		MySpaceStatus stat1 = new MySpaceStatus();
 		boolean successStat = stat1.getSuccessStatus();
 		String errCodes = "";
-		if ( DEBUG ) logger.debug("inside checkStatus, successStat = " +successStat);
+		if ( DEBUG ) logger.appendMessage("inside checkStatus, successStat = " +successStat);
 		if (!successStat){
 			errCodes = getErrorCode(stat1, message);
 		}
@@ -812,11 +812,11 @@ public class MySpaceManager {
 			MySpaceStatusCode code = (MySpaceStatusCode)err.elementAt(i);
 			if ( codeS==""){
 				codeS = code.getCode();
-				logger.debug("codeS:" +codeS +":codeS");
+				logger.appendMessage("codeS:" +codeS +":codeS");
 			}else{
 				codeS = codeS +"," +code.getCode();
 				}
-			if (DEBUG)logger.debug("STATUS CODE IS: " +message +"  "+codeS);
+			if (DEBUG)logger.appendMessage("STATUS CODE IS: " +message +"  "+codeS);
 		}    	
 		return codeS;
 	}
@@ -826,9 +826,9 @@ public class MySpaceManager {
 			v = status.getCodes();
 			for(int i=0;i<=v.size();i++){
 				MySpaceStatusCode currCode = (MySpaceStatusCode)v.elementAt(i); 
-				if (DEBUG) logger.debug("expirementing jConfig: "+currCode.getCode());
+				if (DEBUG) logger.appendMessage("expirementing jConfig: "+currCode.getCode());
 				AstroGridMessage generalMessage = new AstroGridMessage( currCode.getCode(), this.getComponentName()) ;
-				if (DEBUG) logger.debug("expirementing jConfig get code: "+ generalMessage.toString());
+				if (DEBUG) logger.appendMessage("expirementing jConfig get code: "+ generalMessage.toString());
 				errCode=errCode+","+currCode.getCode();
 				response = util.buildMySpaceManagerResponse(null,MMC.FAULT,errCode,"");					
 			}	
@@ -840,7 +840,7 @@ public class MySpaceManager {
 		//load jConfig file.
 		setUp();
 
-		if ( DEBUG )logger.debug("registryName = "+registryName);
+		if ( DEBUG )logger.appendMessage("registryName = "+registryName);
 		request = util.getRequestAttributes(jobDetails);
 		try{
 			if(request.get("userID")!=null) userID = request.get("userID").toString();
@@ -866,8 +866,8 @@ public class MySpaceManager {
 				AstroGridMessage generalMessage = new AstroGridMessage( "AGMSCE01004", this.getComponentName()) ;
 				status.addCode(MySpaceStatusCode.AGMSCE01004,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
 				response = util.buildMySpaceManagerResponse(null,MMC.FAULT,generalMessage.toString(),"");
-				if ( DEBUG )  logger.debug("generalMessage.toString: "+generalMessage.toString());
-				if ( DEBUG )  logger.debug("response in upload = "+response);
+				if ( DEBUG )  logger.appendMessage("generalMessage.toString: "+generalMessage.toString());
+				if ( DEBUG )  logger.appendMessage("response in upload = "+response);
 				return response;
 			}
 
@@ -879,28 +879,28 @@ public class MySpaceManager {
 		} 
 		   	
 		if ( DEBUG ){
-			logger.debug("serverFileName Existans is "+request.containsKey("serverFileName") +"SIZE of request keys: "+request.size());
+			logger.appendMessage("serverFileName Existans is "+request.containsKey("serverFileName") +"SIZE of request keys: "+request.size());
 			Object o[] = request.keySet().toArray();
 			for(int i=0;i<o.length;i++){
-				logger.debug("NameSetOfRequest: "+o[i] +request.get(o[i]).toString());
+				logger.appendMessage("NameSetOfRequest: "+o[i] +request.get(o[i]).toString());
 				}
 		}
         		
 		if ( request.containsKey("newDataHolderName")){
 			if (request.get("newDataHolderName").toString().trim().length()>0){
-				logger.debug("MySpaceManager.getValue newDataHolderName:"+newDataHolderName);
-				if ( DEBUG ) logger.debug("newdatraholdernema:"+newDataHolderName+"done");
+				logger.appendMessage("MySpaceManager.getValue newDataHolderName:"+newDataHolderName);
+				if ( DEBUG ) logger.appendMessage("newdatraholdernema:"+newDataHolderName+"done");
 				newDataHolderName = request.get("newDataHolderName").toString();
 				
 			}else{
-				logger.debug("MySpaceManager.getValue serverFileName length:"+serverFileName.length()+", name: "+serverFileName.toString());
-				logger.debug("MySpaceManager.getValue"+serverFileName.lastIndexOf("/"));
+				logger.appendMessage("MySpaceManager.getValue serverFileName length:"+serverFileName.length()+", name: "+serverFileName.toString());
+				logger.appendMessage("MySpaceManager.getValue"+serverFileName.lastIndexOf("/"));
 				newDataHolderName = "/" +userID +"/serv1" +serverFileName.substring(serverFileName.lastIndexOf("/"),serverFileName.length());
-				if ( DEBUG ) logger.debug("newdataholdername:"+newDataHolderName+"done2");
+				if ( DEBUG ) logger.appendMessage("newdataholdername:"+newDataHolderName+"done2");
 			}		
 		}
 		
-		if ( DEBUG ) logger.debug(" userid:" +userID+" comID:"+communityID +
+		if ( DEBUG ) logger.appendMessage(" userid:" +userID+" comID:"+communityID +
 								  " jobID:"+jobID+" newdataholdername:"+newDataHolderName+
 								  " filesize:"+fileSize+
 								  " serverFileName == "+serverFileName+
@@ -918,20 +918,20 @@ public class MySpaceManager {
 								  " fileSize: "+fileSize+
 								  " extentionPeriod: "+extentionPeriod);
 								  
-		if ( DEBUG ) logger.debug("getValue msManager response :"+response);                              
+		if ( DEBUG ) logger.appendMessage("getValue msManager response :"+response);                              
 		return response;
 	}
     
     
 	public String extendLease(String jobDetails){
-		if ( DEBUG )  logger.debug("MySpaceManager.extendLease");
+		if ( DEBUG )  logger.appendMessage("MySpaceManager.extendLease");
 		DataItemRecord dataitem = null;
 		Call call = null;
 	
 			try{
 				response = getValues(jobDetails);
 
-				if ( DEBUG ) logger.debug("About to invoke myspaceaction.advanceExpiryDataHolder");  
+				if ( DEBUG ) logger.appendMessage("About to invoke myspaceaction.advanceExpiryDataHolder");  
 				msA.setRegistryName(registryName);
 
 				Vector dataItemRecords = msA.lookupDataHoldersDetails(
@@ -940,14 +940,14 @@ public class MySpaceManager {
 				if (dataItemRecords != null)
 				{  DataItemRecord dataItem = (DataItemRecord)dataItemRecords.elementAt(0);
 					dataItemID = dataItem.getDataItemID();
-				   logger.debug("EXTENDLEASE TRING TO GET DATAITEMID: " +dataItemID);
+				   logger.appendMessage("EXTENDLEASE TRING TO GET DATAITEMID: " +dataItemID);
 				}else{
-					logger.debug("EXTENDLEASE DATAITEMRCORDS = NULL!");
+					logger.appendMessage("EXTENDLEASE DATAITEMRCORDS = NULL!");
 				}
 				
 				dataitem = msA.advanceExpiryDataHolder(userID, communityID, credential, dataItemID, extentionPeriod );
 				
-				if ( DEBUG ) logger.debug("userid:"+userID+"comID"+communityID+"jobid"+jobID+"dataItemID"+dataItemID
+				if ( DEBUG ) logger.appendMessage("userid:"+userID+"comID"+communityID+"jobid"+jobID+"dataItemID"+dataItemID
 									   +"extentionPeriod"+extentionPeriod);
 				if ( errCode!="" )
 				  errCode = errCode +"," +checkStatus("EXTENDLEASE STATUS EXTENDLEASE");
@@ -980,9 +980,9 @@ public class MySpaceManager {
 					  response = util.buildMySpaceManagerResponse(null,MMC.FAULT,errCode+","+generalMessage.toString(),"");  
 					return response;
 				}
-				if( DEBUG ) logger.debug("RESPONSE: "+response); 
+				if( DEBUG ) logger.appendMessage("RESPONSE: "+response); 
 			}catch(Exception e){
-				logger.error("ERROR EXTEND LEASE MYSPACEMANAGER" +e.toString());
+				logger.appendMessage("ERROR EXTEND LEASE MYSPACEMANAGER" +e.toString());
 				status.addCode(MySpaceStatusCode.AGMMCE00216,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
 				AstroGridMessage generalMessage = new AstroGridMessage( "AGMMCE00216", this.getComponentName()) ;
 				if(errCode=="")
@@ -1001,19 +1001,17 @@ public class MySpaceManager {
 		
 	public boolean createUser(String userid, String communityid, Vector servers){
 		if ( DEBUG ) { 
-			logger.debug("MySpaceManager.createUser"); 
+			logger.appendMessage("MySpaceManager.createUser"); 
 			for (int i=0;i<servers.size();i++){
-				logger.debug("MySpaceManager.createUser servers: " +servers.elementAt(i));
+				logger.appendMessage("MySpaceManager.createUser servers: " +servers.elementAt(i));
 			}
 		}  
 		boolean isUserCreated = false;
 			try{			
-				setUp();
-				logger.debug("registry name in MySpaceManager:createUser is "+ registryName);
-				msA.setRegistryName(registryName);		
+				setUp();		
 				isUserCreated = msA.createUser(userid, communityid, credential, servers);
 			}catch(Exception e){
-				logger.error("ERROR CREATEUSER MYSPACEMANAGER" +e.toString());
+				logger.appendMessage("ERROR CREATEUSER MYSPACEMANAGER" +e.toString());
 				status.addCode(MySpaceStatusCode.AGMMCE00216,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
 				AstroGridMessage generalMessage = new AstroGridMessage( "AGMMCE00216", this.getComponentName()) ;
 				if(errCode=="")
@@ -1026,13 +1024,13 @@ public class MySpaceManager {
 		}		
 		
 	public boolean deleteUser(String userid, String communityid){
-		if ( DEBUG )  logger.debug("MySpaceManager.deleteUser");  
+		if ( DEBUG )  logger.appendMessage("MySpaceManager.deleteUser");  
 		boolean isUserDeleted = false;
 			try{			
 				setUp();		
 				isUserDeleted = msA.deleteUser(userid,communityid, credential);
 			}catch(Exception e){
-				logger.error("ERROR DELETEUSER MYSPACEMANAGER" +e.toString());
+				logger.appendMessage("ERROR DELETEUSER MYSPACEMANAGER" +e.toString());
 				status.addCode(MySpaceStatusCode.AGMMCE00216,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
 				AstroGridMessage generalMessage = new AstroGridMessage( "AGMMCE00216", this.getComponentName()) ;
 				if(errCode=="")
@@ -1044,7 +1042,7 @@ public class MySpaceManager {
 		}		
 		
 	public String changeOwner(String userid, String communityid, String dataHolderName, String newOwnerID){
-		if ( DEBUG )  logger.debug("MySpaceManager.changeOwner");
+		if ( DEBUG )  logger.appendMessage("MySpaceManager.changeOwner");
 		DataItemRecord dataitem = null;	     
 			try{
 				//response = getValues(jobDetails);
@@ -1057,14 +1055,14 @@ public class MySpaceManager {
 				if (dataItemRecords != null)
 				{  DataItemRecord dataItem = (DataItemRecord)dataItemRecords.elementAt(0);
 					dataItemID = dataItem.getDataItemID();
-				   logger.debug("CHANGEOWNER TRING TO GET DATAITEMID: " +dataItemID);
+				   logger.appendMessage("CHANGEOWNER TRING TO GET DATAITEMID: " +dataItemID);
 				}else{
-					logger.debug("CHANGEOWNER DATAITEMRCORDS = NULL!");
+					logger.appendMessage("CHANGEOWNER DATAITEMRCORDS = NULL!");
 				}
 				
 				dataitem = msA.changeOwnerDataHolder(userid, communityid, credential, dataItemID, newOwnerID);
 				
-				if ( DEBUG ) logger.debug("userid:"+userID+"comID"+communityID+"dataItemID"+dataItemID
+				if ( DEBUG ) logger.appendMessage("userid:"+userID+"comID"+communityID+"dataItemID"+dataItemID
 									   +"newOwnerID"+newOwnerID);				
 	
 				boolean successStatus = status.getSuccessStatus();
@@ -1091,9 +1089,9 @@ public class MySpaceManager {
 					  response = util.buildMySpaceManagerResponse(null,MMC.FAULT,errCode+","+generalMessage.toString(),"");  
 					return response;
 				}
-				if( DEBUG ) logger.debug("RESPONSE: "+response); 
+				if( DEBUG ) logger.appendMessage("RESPONSE: "+response); 
 			}catch(Exception e){
-				logger.error("ERROR CHANGEOWNER MYSPACEMANAGER" +e.toString());
+				logger.appendMessage("ERROR CHANGEOWNER MYSPACEMANAGER" +e.toString());
 				status.addCode(MySpaceStatusCode.AGMMCE00216,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
 				AstroGridMessage generalMessage = new AstroGridMessage( "AGMMCE00216", this.getComponentName()) ;
 				if(errCode=="")
@@ -1113,32 +1111,32 @@ public class MySpaceManager {
 		
 		private void setUp()throws Exception{
 			MMC.getInstance().checkPropertiesLoaded();
-			registryName = MMC.getProperty(MMC.REGISTRYCONF, MMC.CATLOG);
-			msA.setRegistryName(registryName);
+			registryName = MMC.getProperty(MMC.REGISTRYCONF, MMC.CATLOG);	
 		}
 		
 		public Vector getServerURLs() throws Exception{
-			if(DEBUG)logger.debug("entering getServerURLs:...."); 
+			if(DEBUG)logger.appendMessage("entering getServerURLs:...."); 
 			Vector v = new Vector();
 			try{
 				setUp();
 				StringBuffer URLs = new StringBuffer(MMC.getProperty(MMC.MYSPACEMANAGERURLs, MMC.CATLOG));
-				if(DEBUG) logger.debug("MySpaceManager.getServerURLs: "+URLs);
+				if(DEBUG) logger.appendMessage("MySpaceManager.getServerURLs: "+URLs);
 				while ((URLs.length())!=0){
 					String url = URLs.substring(0,URLs.indexOf(","));
 					v.addElement(url);
 					URLs = URLs.delete(0,URLs.indexOf(",")+1);
-					if(DEBUG) logger.debug("getServerURLs individial: "+URLs);
+					if(DEBUG) logger.appendMessage("getServerURLs individial: "+URLs);
 				}
-				if(DEBUG)logger.debug("SIZE URLS"+v.size());
+				if(DEBUG)logger.appendMessage("SIZE URLS"+v.size());
 			}catch(Exception e){
-				logger.error("ERROR GETTING SERVERURLS: "+e.toString());
+				logger.appendMessage("ERROR GETTING SERVERURLS: "+e.toString());
 			}
-			if(DEBUG)logger.debug("SIZE URLSddddd"+v.size());
+			if(DEBUG)logger.appendMessage("SIZE URLSddddd"+v.size());
 			return v;
 		}
 	protected String getComponentName() { return Configurator.getClassName( MySpaceManager.class) ; }    
 
 }
+
 
 

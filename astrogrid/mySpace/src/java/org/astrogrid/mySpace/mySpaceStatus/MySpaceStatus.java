@@ -71,18 +71,18 @@ import java.util.*;
  * report the codes to standard output.
  * 
  * @author A C Davenhall (Edinburgh)
- * @version Iteration 2.
+ * @version Iteration 4.
  */
 
 public class MySpaceStatus
 {  private static boolean successStatus = true;   // Running success status.
    private static boolean warningStatus = false;; // Running warning status.
 
-   private static String jobID = ""; // Job identifier.
-
    private static Vector codes = new Vector();
                    // Log of MySpace info, warning and error codes.
 
+//
+// ----------------------------------------------------------------------
 //
 // Constructors.
 
@@ -92,14 +92,6 @@ public class MySpaceStatus
 
    public MySpaceStatus ()
    {
-   }
-
-/**
- * Create a <code>MySpaceStatus</code> object and set the Job identifier.
- */
-
-   public MySpaceStatus (String jobID)
-   {  this.jobID = jobID;
    }
 
 
@@ -113,6 +105,8 @@ public class MySpaceStatus
    {  this.addCode(code, type, logFlag, invokingClass);
    }
 
+//
+// ----------------------------------------------------------------------
 //
 // Get methods.
 
@@ -135,14 +129,6 @@ public class MySpaceStatus
    }
 
 /**
- * Return the job identifier.
- */
-
-   public String getJobID()
-   {  return jobID;
-   }
-
-/**
  * Return a Vector of <code>MySpaceStatusCode</code>s containing any messages
  * that have been set.
  */
@@ -151,6 +137,8 @@ public class MySpaceStatus
    {  return codes;
    }
 
+//
+// ----------------------------------------------------------------------
 //
 // Other methods.
 
@@ -176,7 +164,7 @@ public class MySpaceStatus
 //   Log the error if required.
 
       if (logFlag == MySpaceStatusCode.LOG)
-      {
+      {  Logger log = new Logger(newCode.toString() );
       }
    }
 

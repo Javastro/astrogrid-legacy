@@ -3,10 +3,8 @@ package org.astrogrid.mySpace.mySpaceManager;
 import java.io.*;
 import java.util.*;
 
-import org.astrogrid.mySpace.mySpaceStatus.MySpaceStatus;
-import org.astrogrid.mySpace.mySpaceStatus.MySpaceStatusCode;
+import org.astrogrid.mySpace.mySpaceStatus.*;
 
-import org.apache.log4j.Logger;
 
 /**
  * @author A C Davenhall (Edinburgh)
@@ -15,7 +13,8 @@ import org.apache.log4j.Logger;
  */
 
 public class MySpaceActions
-{  private static Logger logger = Logger.getLogger(MySpaceActions.class);
+{  private static Logger logger = new Logger(true, true, true,
+     "./myspace.log");
    private static boolean DEBUG = true;
 
    private static String registryName;

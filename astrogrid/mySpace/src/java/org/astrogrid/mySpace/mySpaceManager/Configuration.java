@@ -16,6 +16,13 @@ package org.astrogrid.mySpace.mySpaceManager;
 public class Configuration
 {
 //
+//Public constants defining the permitted codes for the SERVERDEPLOYMENT.
+
+   public static final int SEPARATESERVERS = 1;
+   public static final int INTERNALSERVERS = 2;
+   public static final int MANAGERONLY = 3;
+
+//
 // Specify whether de-bugging output is to be produced.
 
 //   private static boolean DEBUG = false;
@@ -29,13 +36,21 @@ public class Configuration
    private static boolean CHECKPERMISSIONS = false;
 
 //
-// Specify whether the manager is run as a full MySpace system (with 
-// the manager and one or more servers as separate Web Services) or a
-// `mini-MySpace system' in which the manager has a single server
-// included within it in a single Java application.  In this latter case
-// the manager and its internal server run as a single Web Service.
+// Specify how the MySpace system is to be configured.  The options are
+// as follows:
+//
+// SEPARATESERVERS
+//   The Servers are run as separate Web services (a full deplyment).
+//
+// INTERNALSERVERS
+//   The servers are incorporated within the Java program program
+//   constituting the Manager.
+//
+// MANAGERONLY
+//   The Manager is run without servers.  This mode is useful for
+//   debugging only.  
 
-   private static boolean INTERNALSERVER = true;
+   private static int SERVERDEPLOYMENT = INTERNALSERVERS;
 
 //
 // ----------------------------------------------------------------------
@@ -58,7 +73,7 @@ public class Configuration
    public Configuration (String dummy)
    {  this.DEBUG = false;
       this.CHECKPERMISSIONS = false;
-      this.INTERNALSERVER = true;
+      this.SERVERDEPLOYMENT = INTERNALSERVERS;
    }
 
 //
@@ -83,10 +98,10 @@ public class Configuration
    }
 
 /**
- * Return the INTERNALSERVER success flag.
+ * Return the SERVERDEPLOYMENT success flag.
  */
 
-   public boolean getINTERNALSERVER()
-   {  return INTERNALSERVER;
+   public int getSERVERDEPLOYMENT()
+   {  return SERVERDEPLOYMENT;
    }
 }
