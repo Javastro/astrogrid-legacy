@@ -250,7 +250,151 @@ public class WorkflowTestSuite extends TestCase {
 
 
 
-    public void t5estSaveWorkflow() {
+    public void testCreateComplexWorkflow_Sequence_Flow_SevenSteps() {
+        logger.info( "---------------------------------------------------------------------------------" ); 
+        logger.info( "enter: WorkflowTestSuite.testCreateComplexWorkflow_Sequence_Flow_SevenSteps()" ); 
+        
+        final String 
+            workflowName = "testCreateComplexWorkflow_Sequence_Flow_SevenSteps" + this.runDate.getTime(),
+            description = "An overall sequence composed of one flow containing 5 parallel SExtractor steps," +                " followed by one step for DataFederation and one step for HyperZ." +                " Does this without the use of a template." ; 
+                
+        final String
+            imageLocation[] = { Workflow.formatMySpaceURL( communitySnippet(), "SExtractor/images", "image01" )
+                              , Workflow.formatMySpaceURL( communitySnippet(), "SExtractor/images", "image02" )
+                              , Workflow.formatMySpaceURL( communitySnippet(), "SExtractor/images", "image03" )
+                              , Workflow.formatMySpaceURL( communitySnippet(), "SExtractor/images", "image04" )
+                              , Workflow.formatMySpaceURL( communitySnippet(), "SExtractor/images", "image05" ) } ;
+                              
+                              
+        final String
+            catalogLocation[] = { Workflow.formatMySpaceURL( communitySnippet(), "SExtractor/catalogs", "catalog01" )
+                                , Workflow.formatMySpaceURL( communitySnippet(), "SExtractor/catalogs", "catalog02" )
+                                , Workflow.formatMySpaceURL( communitySnippet(), "SExtractor/catalogs", "catalog03" )
+                                , Workflow.formatMySpaceURL( communitySnippet(), "SExtractor/catalogs", "catalog04" )
+                                , Workflow.formatMySpaceURL( communitySnippet(), "SExtractor/catalogs", "catalog05" ) } ;                              
+                              
+                              
+        final String
+            configFileLocation = Workflow.formatMySpaceURL( communitySnippet(), "SExtractor", "config_file") ;
+            
+            
+        final String
+            parametersLocation = Workflow.formatMySpaceURL( communitySnippet(), "SExtractor", "parameter_names") ;            
+      
+        final String
+            votOutputLocation = Workflow.formatMySpaceURL( communitySnippet(), "votables", "outputXS6wf01.xml") ;
+            
+        final String
+            hyperzConfigFileLocation = Workflow.formatMySpaceURL( communitySnippet(), "hyperz", "config_file") ;            
+
+        final String
+             hyperzOutputLocation = Workflow.formatMySpaceURL( communitySnippet(), "hyperz", "hse8eklw") ;
+          
+        Workflow workflow = null ;
+        Sequence sequence = null ;
+        Flow flow = null ;
+        Step step = null ;
+        int i = 0 ; // The workflow step number
+        String wfXML = null ;            
+                       
+        try{
+            // First, create the bare workflow...
+            workflow = Workflow.createWorkflow( communitySnippet()
+                                              , workflowName
+                                              , description ) ;
+              
+            // The top level contains a sequence...                                
+            sequence = new Sequence( workflow ) ;
+            workflow.setChild( sequence ) ;
+            
+            // The sequence will contain a flow with parallel SExtractor steps...
+            flow = sequence.createFlow( 0 ) ; 
+            
+            // Set up each of the SExtractor steps...
+            for( i=0; i<imageLocation.length; i++ ) {   
+                step = flow.createStep( i ) ;
+                step.setName( "SExtractor job step") ;
+                step.setDescription( "++++++++++++++++ SExtractor against image number " + i + "+++++++++++++" ) ;  
+                step.setJoinCondition( JoinCondition.ANY ) ; 
+                // Setting sequence and step numbers shows a weakness in the current approach.
+                // These should be auto-generated in some fashion...
+                step.setSequenceNumber( 1 ) ;
+                step.setStepNumber( i+1 ) ; 
+                // File details dealt with by this helper method... 
+                this.setUpSExtractorStep( step
+                                        , imageLocation[i] 
+                                        , configFileLocation
+                                        , parametersLocation
+                                        , catalogLocation[i] ) ; 
+            }
+            
+            
+            // The flow will be followed by a DataFederation step...
+            step = sequence.createStep( 1 ) ; 
+            step.setName( "DataFederation job step") ;
+            step.setDescription( "+++++++++++++++ DataFederation against the output from the SExtractor steps +++++++++++++++" ) ;  
+            step.setJoinCondition( JoinCondition.TRUE ) ; 
+            // Setting sequence and step numbers shows a weakness in the current approach.
+            // These should be auto-generated in some fashion...
+            step.setSequenceNumber( 2 ) ;
+            step.setStepNumber( i+1 ) ;  
+            this.setUpDataFederationStep( step
+                                        , catalogLocation
+                                        , true
+                                        , "some sort of show string here"
+                                        , "some sort of target string here"
+                                        , "some sort of what2show string here"
+                                        , "some sort of require string here" 
+                                        , "some sort of output string here"
+                                        , 5
+                                        , votOutputLocation ) ;
+
+            // The workflow finishes up on a HyperZ step...
+            step = sequence.createStep( 2 ) ;  
+            step.setName( "HyperZ job step" ) ;
+            step.setDescription( "++++++++++++++ HyperZ ++++++++++++++" ) ;  
+            step.setJoinCondition( JoinCondition.TRUE ) ; 
+            // Setting sequence and step numbers shows a weakness in the current approach.
+            // These should be auto-generated in some fashion...
+            step.setSequenceNumber( 3 ) ;
+            step.setStepNumber( i+2 ) ; 
+            this.setUpHyperZStep( step
+                                , hyperzConfigFileLocation
+                                , votOutputLocation
+                                , hyperzOutputLocation ) ; 
+            
+            wfXML = workflow.constructWorkflowXML( communitySnippet() ) ;
+            logger.info( "---------------------------------------------------------------------------------" ); 
+            prettyPrint( "Workflow xml:", wfXML ) ;
+            logger.info( "---------------------------------------------------------------------------------" );            
+            prettyPrint( "JES xml:", workflow.constructJESXML( communitySnippet() ) ) ;
+            logger.info( "---------------------------------------------------------------------------------" ); 
+            
+            //JBL Note: Need to hold correct results in a file for comparison purposes...
+            
+//            if( jesXML.indexOf( "name=\"??????????????\"" ) == -1 ) {
+//                assertTrue( true ) ;
+//            }
+//            else {
+//                assertTrue( false ) ;
+//            }
+              
+            assertTrue( true ) ;
+              
+        }
+        catch( Exception ex ) {
+            ex.printStackTrace() ;
+            assertTrue( false ) ;
+        }
+        finally {
+            logger.info( "exit: WorkflowTestSuite.testCreateComplexWorkflow_Sequence_Flow_SevenSteps()" );  
+        }
+        
+    } // end of testCreateComplexWorkflow_Sequence_Flow_SevenSteps()
+
+
+
+    public void testSaveWorkflow() {
         logger.info( "-------------------------------------------" ); 
         logger.info( "enter: WorkflowTestSuite.testSaveWorkflow()" ); 
          
@@ -292,7 +436,7 @@ public class WorkflowTestSuite extends TestCase {
 
 
 
-    public void t5estReadWorkflowList() {
+    public void testReadWorkflowList() {
          logger.info( "-----------------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testReadWorkflowList()" ); 
         
@@ -322,7 +466,7 @@ public class WorkflowTestSuite extends TestCase {
  
  
  
-    public void t5estReadWorkflow() {
+    public void testReadWorkflow() {
          logger.info( "-------------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testReadWorkflow()" ); 
         
@@ -348,7 +492,7 @@ public class WorkflowTestSuite extends TestCase {
     
     
 
-    public void t5estDeleteWorkflow() {
+    public void testDeleteWorkflow() {
          logger.info( "---------------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testDeleteWorkflow()" ); 
         
@@ -378,7 +522,7 @@ public class WorkflowTestSuite extends TestCase {
 
 
 
-    public void t5estReadQueryList() {
+    public void testReadQueryList() {
          logger.info( "--------------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testReadQueryList()" ); 
         
@@ -412,7 +556,7 @@ public class WorkflowTestSuite extends TestCase {
     
     
     
-    public void t5estReadQuery() {
+    public void testReadQuery() {
          logger.info( "----------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testReadQuery()" ); 
         
@@ -523,7 +667,7 @@ public class WorkflowTestSuite extends TestCase {
    
    
    
-    public void t5estSubmitWorkflow() {
+    public void testSubmitWorkflow() {
         logger.info( "---------------------------------------------" ); 
         logger.info( "enter: WorkflowTestSuite.testSubmitWorkflow()" ); 
         
@@ -616,7 +760,7 @@ public class WorkflowTestSuite extends TestCase {
 
 
 
-    public void t5estCreateQueryAndSubmitWorkflow() {
+    public void testCreateQueryAndSubmitWorkflow() {
          logger.info( "-----------------------------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testCreateQueryAndSubmitWorkflow()" ); 
         
@@ -1065,6 +1209,133 @@ public class WorkflowTestSuite extends TestCase {
     private String communitySnippet(){
         return CommunityMessage.getMessage( "1234", "jl99@star.le.ac.uk", "xray@star.le.ac.uk" ) ;
     }
+
+
+    // 
+    private Step setUpHyperZStep( Step targetStep
+                                , String config_file
+                                , String input_catalog
+                                , String output_catalog ) {
+        logger.info( "enter: WorkflowTestSuite.setUpHyperZStep()" );
+       
+        ListIterator iterator ;
+        
+        try {
+            
+            Tool tool = Workflow.createTool( communitySnippet(), "HyperZ" ) ;
+            Parameter p ;
+            String pName ;
+            
+            iterator = tool.getInputParameters() ;            
+            while( iterator.hasNext() ) {
+                
+                p = (Parameter)iterator.next() ;
+                pName = p.getName() ;
+                
+                if( pName.equals("config_file") ) {
+                    p.setValue( config_file ) ;
+                }
+                else if( pName.equals( "input_catalog") ) {
+                    p.setValue( input_catalog ) ;
+                }
+
+            }
+            
+            iterator = tool.getOutputParameters() ;            
+            while( iterator.hasNext() ) {
+                p = (Parameter)iterator.next() ;
+                if( p.getName().equals("output_catalog") )
+                   p.setValue( output_catalog ) ;
+                   break ;
+            }  
+            
+            targetStep.setTool( tool ) ;                                        
+                                                                
+        }
+        finally {
+            logger.info( "exit: WorkflowTestSuite.setUpHyperZStep()" );  
+        }
+        
+        return targetStep ;
+        
+    } // end of setUpHyperZStep()
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // 
+    private Step setUpSExtractorStep( Step targetStep
+                                    , String detectionImage
+                                    , String config_file
+                                    , String parameters_name
+                                    , String catalog_name ) {
+        logger.info( "enter: WorkflowTestSuite.setUpSExtractorStep()" );
+       
+        ListIterator iterator ;
+        
+        try {
+            
+            Tool tool = Workflow.createTool( communitySnippet(), "SExtractor" ) ;
+            Parameter p ;
+            String pName ;
+            
+            iterator = tool.getInputParameters() ;            
+            while( iterator.hasNext() ) {
+                
+                p = (Parameter)iterator.next() ;
+                pName = p.getName() ;
+                
+                if( pName.equals("DetectionImage") ) {
+                    p.setValue( detectionImage ) ;
+                }
+                else if( pName.equals( "config_file") ) {
+                    p.setValue( config_file ) ;
+                }
+                else if( pName.equals( "PARAMETERS_NAME" ) ) {
+                    p.setValue( parameters_name ) ;
+                }
+
+            }
+            
+            iterator = tool.getOutputParameters() ;            
+            while( iterator.hasNext() ) {
+                p = (Parameter)iterator.next() ;
+                if( p.getName().equals("CATALOG_NAME") )
+                   p.setValue( catalog_name ) ;
+                   break ;
+            }  
+            
+            targetStep.setTool( tool ) ;                                        
+                                                                
+        }
+        finally {
+            logger.info( "exit: WorkflowTestSuite.setUpSExtractorStep()" );  
+        }
+        
+        return targetStep ;
+        
+    } // end of setUpSExtractorStep()
+    
+    
+
+
+
+
+
 
 
     // 
