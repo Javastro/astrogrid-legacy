@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: tests-project.xml,v 1.21 2004/07/26 15:45:08 KevinBenson Exp $ -->
+<!-- $Id: tests-project.xml,v 1.22 2004/07/27 12:09:48 clq2 Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
     <id>auto-integration-tests</id>
@@ -16,7 +16,7 @@
     </organization>
     <siteAddress>cvs.astrogrid.org</siteAddress>
     <siteDirectory> 
-        /var/www/www/maven/docs/SNAPSHOT/integrationTests</siteDirectory>
+        /var/www/www/maven/docs/${pom.currentVersion}/integrationTests</siteDirectory>
     <repository>
         <connection> 
             scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/integrationTests/auto-integration 
@@ -58,7 +58,7 @@
         </dependency>
         <dependency>
             <artifactId>astrogrid-scripting</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
             <groupId>org.astrogrid</groupId>
         </dependency>
         <!-- used within scripting interface -->
@@ -78,29 +78,29 @@
         <!-- interface to workflow system -->
         <dependency>
             <artifactId>astrogrid-workflow</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
             <groupId>org.astrogrid</groupId>
         </dependency>
         <dependency>
             <artifactId>astrogrid-common</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
             <groupId>org.astrogrid</groupId>
         </dependency>
         <!-- registry -->
         <dependency>
             <artifactId>astrogrid-registry-client</artifactId>
             <groupId>org.astrogrid</groupId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
         </dependency>
         <dependency>
             <artifactId>astrogrid-registry-common</artifactId>
             <groupId>org.astrogrid</groupId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
         </dependency>
         <!-- myspace -->
         <dependency>
             <artifactId>astrogrid-store-client</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
             <groupId>org.astrogrid</groupId>
             <type>jar</type>
         </dependency>
@@ -108,51 +108,51 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-jes-delegate</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
         </dependency>
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-workflow-objects</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
         </dependency>
         <!-- datacenter -->
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-datacenter-client</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
         </dependency>
         <!-- applications -->
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-cea-client</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
         </dependency>
         <!-- community -->
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-common</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
         </dependency>
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-client</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
         </dependency>
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-resolver</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
         </dependency>
         <!-- filestore -->
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-filestore-common</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
         </dependency>
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-filestore-client</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
         </dependency>
         <!-- Third party dependencies -->
         <!-- axis libs -->
