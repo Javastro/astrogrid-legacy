@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- $Id: index.xml,v 1.1 2004/03/04 02:26:21 jdt Exp $ -->
+<!-- $Id: index.xml,v 1.2 2004/04/28 16:56:05 jdt Exp $ -->
 <document>
 	<properties>
 		<title>Maven</title>
@@ -10,6 +10,9 @@
 			<P> Follow the links to the left for the documentation for the 
 				current releases. This documentation in turn has links to the 
 				binaries and source code. </P>
+			<subsection name="Itn06 Snapshot">
+				<P> Coming Soon....</P>
+			</subsection>				
 			<subsection name="Itn05 Snapshot">
 				<P> The latest build is Itn05. This code is undergoing 
 					development and is built several times daily. </P>
