@@ -1,5 +1,5 @@
 /*
- * $Id: DatasetAgent.java,v 1.17 2003/08/25 21:42:59 mch Exp $
+ * $Id: DatasetAgent.java,v 1.18 2003/08/26 16:50:49 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -21,11 +21,15 @@ import org.astrogrid.datacenter.config.ConfigurationDefaultImpl;
 import org.astrogrid.datacenter.config.ConfigurationKeys;
 import org.astrogrid.datacenter.impl.QueryFactoryImpl;
 import org.astrogrid.datacenter.job.Job;
-import org.astrogrid.datacenter.query.Query;
+import org.astrogrid.datacenter.query.QueryFactory;
+import org.astrogrid.datacenter.job.RunJobRequestDD;
 import org.astrogrid.i18n.AstroGridMessage;
 import org.objectwiz.votable.ResultSetConverter;
 import org.objectwiz.votable.ResultSetToSimpleVOTable;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -170,7 +174,7 @@ public class DatasetAgent {
 
       String response = null ;
       Job job = null ;
-//      Allocation allocation = null ;
+      QueryFactory queryFactory = null;
 
       try
       {
@@ -184,10 +188,11 @@ public class DatasetAgent {
          // Execute the Query...
          job.setStatus( Job.STATUS_RUNNING ) ;
          fac.getJobFactory().update( job );
-         job.getJobStep().getQuery().execute() ;
+         queryFactory = fac.getQueryFactory(getCatalogueName(  queryDoc.getDocumentElement()));
+         queryFactory.execute(job.getJobStep().getQuery());
 
          // convert results to VOTable
-         convertResultsToVotable(job.getJobStep().getQuery(), "tempResults.vot");
+         convertResultsToVotable(queryFactory, "tempResults.vot");
          Document voResults = parseXML( new FileReader("tempResults.vot"));
 
          job.setStatus( Job.STATUS_COMPLETED ) ;
@@ -215,17 +220,50 @@ public class DatasetAgent {
       finally {
          // Inform JobMonitor within JES of jobstep completion...
          job.informJobMonitor() ;
-         job.getJobStep().getQuery().close();
+         if (queryFactory != null) queryFactory.end();
          if( TRACE_ENABLED ) logger.debug( "runQuery() exit") ;
       }
 
    } // end runQuery()
 
+   /**
+    * Temporarily here until we sort out what to do with plugging in database accessors
+    */
+   public String getCatalogueName( Element adql)
+   {
+           NodeList  nodeList = adql.getChildNodes() ;
+           Element   queryChild = null;
+           Element catalogChild = null ;
+
+           for( int i=0 ; i < nodeList.getLength() ; i++ ) {
+               if( nodeList.item(i).getNodeType() != Node.ELEMENT_NODE )
+                   continue ;
+               queryChild = (Element) nodeList.item(i) ;
+               if( queryChild.getTagName().equals( RunJobRequestDD.QUERY_ELEMENT ) )
+                   break ;
+           }
+
+           nodeList = queryChild.getElementsByTagName( RunJobRequestDD.CATALOG_ELEMENT ) ;
+
+           for( int i=0 ; i < nodeList.getLength() ; i++ ) {
+               if( nodeList.item(i).getNodeType() != Node.ELEMENT_NODE )
+                   continue ;
+               catalogChild = (Element) nodeList.item(i) ;
+               if( catalogChild.getTagName().equals( RunJobRequestDD.CATALOG_ELEMENT ) )
+                   break ;
+           }
+
+           String  keyToFactory = catalogChild.getAttribute( RunJobRequestDD.CATALOG_NAME_ATTR );
+
+           return keyToFactory;
+
+   }
+
 
    /**
     * Temporarily here until we sort out what to do with results conversions etc
     */
-   public void convertResultsToVotable( Query query, String filePath) throws AstroGridException
+   public void convertResultsToVotable( QueryFactory queryFactory, String filePath) throws AstroGridException
    {
     //
     // JBL Note: For the moment do not know where these settings should be coming from...
@@ -250,13 +288,9 @@ public class DatasetAgent {
       PrintStream
          out = null ;
 
-      // JBL Note: When I can get rid of this, I'll be happy...
-      QueryFactoryImpl
-          queryFactoryImpl = (QueryFactoryImpl)query.getFactory().getImplementation() ;
-
       try{
          out = new PrintStream( new FileOutputStream(filePath) );
-         converter.serialize( queryFactoryImpl.getResultSet(), out ) ;
+         converter.serialize( ((QueryFactoryImpl) queryFactory.getImplementation()).getResultSet(), out ) ;
       }
       catch( Exception ex ) {
          AstroGridMessage

@@ -14,7 +14,7 @@ import java.io.PrintStream;
 import org.apache.log4j.Logger;
 import org.astrogrid.datacenter.FactoryProvider;
 import org.astrogrid.datacenter.Util;
-import org.astrogrid.datacenter.impl.QueryFactoryImpl;
+//import org.astrogrid.datacenter.impl.QueryFactoryImpl;
 import org.astrogrid.i18n.AstroGridMessage;
 import org.objectwiz.votable.ResultSetConverter;
 import org.objectwiz.votable.ResultSetToSimpleVOTable;
@@ -40,7 +40,7 @@ public class Query {
     public static final String
       QUERYFACTORY_KEY_SUFFIX = ".QUERYFACTORY" ;
 
-    private QueryFactory        factory ;
+//    private QueryFactory        factory ;
 
     private Criteria
         criteria ;
@@ -60,7 +60,7 @@ public class Query {
     public Query( Element queryElement, QueryFactory factory ) throws QueryException {
       if( TRACE_ENABLED ) logger.debug( "Query(Element,QueryFactory): entry") ;
 
-      this.factory = factory ;
+//      this.factory = factory ;
 
       try {
 
@@ -83,7 +83,7 @@ public class Query {
                continue ;
             element = (Element) nodeList.item(i) ;
 
-            if( element.getTagName().equals( RunJobRequestDD.FROM_ELEMENT ) ) {
+            if( element.getTagName().equals( AdqlTags.FROM_ELEMENT ) ) {
 
                setFrom(new From( element )) ;
 
@@ -97,24 +97,24 @@ public class Query {
                      if (nodeList2.item(k).getNodeType() != Node.ELEMENT_NODE)
                         continue;
                      element = (Element) nodeList2.item(k) ;
-                     if (element.getTagName().equals(RunJobRequestDD.CATALOG_ELEMENT))
+                     if (element.getTagName().equals(AdqlTags.CATALOG_ELEMENT))
                         catalog = new Catalog( element );
                         break middle_for; // OK! We've got the Catalog. Abandon search.
                   } // end of k
 
                } // end of for j
 
-            } // end of if( element.getTagName().equals( RunJobRequestDD.FROM_ELEMENT ) ) {
-            else if( element.getTagName().equals( RunJobRequestDD.CRITERIA_ELEMENT ) ) {
+            } // end of if( element.getTagName().equals( AdqlTags.FROM_ELEMENT ) ) {
+            else if( element.getTagName().equals( AdqlTags.CRITERIA_ELEMENT ) ) {
                setCriteria(new Criteria( element, catalog )) ;
             }
-            else if( element.getTagName().equals( RunJobRequestDD.RETURN_ELEMENT ) ) {
+            else if( element.getTagName().equals( AdqlTags.RETURN_ELEMENT ) ) {
                 setReturn(new Return( element, catalog )) ;
             }
-            else if( element.getTagName().equals( RunJobRequestDD.ORDER_ELEMENT ) ) {
+            else if( element.getTagName().equals( AdqlTags.ORDER_ELEMENT ) ) {
                setOrderBy(new OrderBy( element, catalog )) ;
             }
-            else if( element.getTagName().equals( RunJobRequestDD.GROUP_ELEMENT ) ) {
+            else if( element.getTagName().equals( AdqlTags.GROUP_ELEMENT ) ) {
                setGroupBy(new GroupBy( element, catalog )) ;
             }
          } // end for
@@ -133,7 +133,7 @@ public class Query {
 
     } // end of Query()
 
-
+    /*
     public QueryFactory getFactory() {
       return factory ;
     }
@@ -153,7 +153,7 @@ public class Query {
     public void close() {
       factory.end() ;
     }
-
+     */
 
     public String toSQLString() {
       if( TRACE_ENABLED ) logger.debug( "Query.toSQLString(): entry") ;

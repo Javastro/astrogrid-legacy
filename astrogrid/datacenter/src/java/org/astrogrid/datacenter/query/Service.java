@@ -3,9 +3,9 @@
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
  */
 package org.astrogrid.datacenter.query;
@@ -20,7 +20,7 @@ import org.w3c.dom.Element;
  * <p>
  * Introductory text.... For example:
  * <p><blockquote><pre>
- *     
+ *
  * </pre></blockquote>
  * <p>
  *
@@ -31,58 +31,58 @@ import org.w3c.dom.Element;
  * @since   AstroGrid 1.2
  */
 public class Service {
-	
-	private static final boolean 
-		TRACE_ENABLED = true ;
-        
+
+   private static final boolean
+      TRACE_ENABLED = true ;
+
     private static final String
         SUBCOMPONENT_NAME = Util.getComponentName( Service.class ) ;
-	
-	private static Logger 
-		logger = Logger.getLogger( Service.class ) ;
-		
-	private static final String
-		ASTROGRIDERROR_COULD_NOT_CREATE_SERVICE = "AGDTCE00450" ;
-	
-	private String 
-	   name,
-	   url ;
-	   
-	public Service( Element serviceElement ) throws QueryException {
-		if( TRACE_ENABLED ) logger.debug( "Service(Element): entry") ;  
-		 		
-		try {
-			setName(serviceElement.getAttribute( RunJobRequestDD.SERVICE_NAME_ATTR )) ;
-			setUrl(serviceElement.getAttribute( RunJobRequestDD.SERVICE_URL_ATTR )) ;			
-		}
-		catch( Exception ex ) {
-			AstroGridMessage
-				message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_SERVICE
+
+   private static Logger
+      logger = Logger.getLogger( Service.class ) ;
+
+   private static final String
+      ASTROGRIDERROR_COULD_NOT_CREATE_SERVICE = "AGDTCE00450" ;
+
+   private String
+      name,
+      url ;
+
+   public Service( Element serviceElement ) throws QueryException {
+      if( TRACE_ENABLED ) logger.debug( "Service(Element): entry") ;
+
+      try {
+         setName(serviceElement.getAttribute( AdqlTags.SERVICE_NAME_ATTR )) ;
+         setUrl(serviceElement.getAttribute( AdqlTags.SERVICE_URL_ATTR )) ;
+      }
+      catch( Exception ex ) {
+         AstroGridMessage
+            message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_SERVICE
                                               , SUBCOMPONENT_NAME ) ;
-			logger.error( message.toString(), ex ) ;
-			throw new QueryException( message, ex );    		
-		}
-		finally {
-			if( TRACE_ENABLED ) logger.debug( "Service(Element): exit") ;   	
-		}
-		   
-	} // end of Service( Element )
+         logger.error( message.toString(), ex ) ;
+         throw new QueryException( message, ex );
+      }
+      finally {
+         if( TRACE_ENABLED ) logger.debug( "Service(Element): exit") ;
+      }
+
+   } // end of Service( Element )
 
 
-	public void setName(String name) {
-		this.name = name;
-	}
+   public void setName(String name) {
+      this.name = name;
+   }
 
-	public String getName() {
-		return name;
-	}
+   public String getName() {
+      return name;
+   }
 
-	public void setUrl(String url) {
-		this.url = url;
-	}
+   public void setUrl(String url) {
+      this.url = url;
+   }
 
-	public String getUrl() {
-		return url;
-	}	   
+   public String getUrl() {
+      return url;
+   }
 
-} // end of class Service 
+} // end of class Service
