@@ -1,5 +1,5 @@
 /*
- * $Id: DatacenterDelegate.java,v 1.22 2003/09/18 13:12:27 nw Exp $
+ * $Id: DatacenterDelegate.java,v 1.23 2003/09/19 12:00:23 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -58,7 +58,9 @@ public abstract class DatacenterDelegate
          {
             return new SocketDelegate(givenEndPoint);
          }
-         else if (givenEndPoint.toLowerCase().startsWith("http"))
+         else if (givenEndPoint.toLowerCase().startsWith("http") 
+                || givenEndPoint.toLowerCase().startsWith("local:")
+                || givenEndPoint.toLowerCase().startsWith("java:"))
          {
             return new WebDelegate(new URL(givenEndPoint));
          }
@@ -206,6 +208,9 @@ public abstract class DatacenterDelegate
 
 /*
 $Log: DatacenterDelegate.java,v $
+Revision 1.23  2003/09/19 12:00:23  nw
+delegate returns web delegate for any protocol axis supports, not just http:
+
 Revision 1.22  2003/09/18 13:12:27  nw
 renamed delegate methods to match those in web service
 
