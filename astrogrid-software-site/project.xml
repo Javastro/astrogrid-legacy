@@ -56,6 +56,8 @@
     </dependencies>
     <reports>
         <report>maven-license-plugin</report>
+        <!-- because life is short enough already...
         <report>maven-linkcheck-plugin </report>
+        -->
     </reports>
 </project>
