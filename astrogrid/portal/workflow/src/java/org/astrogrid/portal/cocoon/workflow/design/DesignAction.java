@@ -1115,7 +1115,9 @@ public class DesignAction extends AbstractAction {
 			     parameterIndirect = true;
 		       
 		       // Bug # 1047 - if param is indirect we need to manually add the ivo://
-		       if (parameterIndirect) {
+		       // DO NOT add ivo if ivorn contains http
+		       // DO NOT add ivo if ivo already in place
+		       if (parameterIndirect && ((ivornValue != null && ivornValue.length() > 0 ) && ((ivornValue.indexOf("http://") == -1) || (ivornValue.indexOf("ivo://") == -1)) )) {
 		       	  ivornValue = "ivo://" + ivornValue ;
 		       }
 
@@ -1269,10 +1271,13 @@ public class DesignAction extends AbstractAction {
 			if (request.getParameter( PARAM_INDIRECT+"#output#"+paramCount ).equalsIgnoreCase("on") )
 				parameterIndirect = true;
 			
-		       // Bug # 1047 - if param is indirect we need to manually add the ivo://
-		       if (parameterIndirect) {
-		       	  ivornValue = "ivo://" + ivornValue ;
-		       }			
+		    // Bug # 1047 - if param is indirect we need to manually add the ivo://
+		    // DO NOT add ivo if ivorn contains http
+            // DO NOT add ivo if ivo already in place
+			if (parameterIndirect && ((ivornValue != null && ivornValue.length() > 0 ) && ((ivornValue.indexOf("http://") == -1) || (ivornValue.indexOf("ivo://") == -1))) ) {
+		       ivornValue = "ivo://" + ivornValue ;
+		    }
+			
 
 				debug( "multi: ivornValue: " + i + ": " + ivornValue );
 				debug( "multi: parameterName:" + i + ": " + parameterName ) ;
