@@ -3,27 +3,12 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="maven-project.xsd">
   <extend>../maven-base/project.xml</extend>
-  <pomVersion>3</pomVersion>
   <id>astrogrid-ui</id>
   <name>AstroGrid UI</name>
 
-  <currentVersion>HEAD</currentVersion>
   
-  <organization>
-    <name>AstroGrid</name>
-    <url>http://www.astrogrid.org</url>
-    <logo>http://www.astrogrid.org/images/AGlogo</logo>
-  </organization>
-
-  <inceptionYear>2002</inceptionYear>
-  <package>org.astrogrid</package>
-  <logo>http://www.astrogrid.org/images/AGlogo</logo>
-
   <shortDescription>AstroGrid User Interface</shortDescription>
 
-  <siteDirectory>/var/www/www/maven/build/ui</siteDirectory>
-  
-  
   <developers>
     <developer>
       <name>Martin Hill</name>
@@ -33,13 +18,19 @@
   </developers>
   
   <dependencies>
+              <dependency>
+            <artifactId>astrogrid-common</artifactId>
+            <groupId>astrogrid-common</groupId>
+            <version>SNAPSHOT</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
     <dependency>
       <id>junit</id>
       <version>3.8</version>
     </dependency>
-  </dependencies>
-
-    <!-- votable parsers/etc for JVotBox -->
+        <!-- votable parsers/etc for JVotBox -->
     <dependency>
       <id>breezetk</id>
       <version>UNKNOWN</version>
@@ -55,57 +46,8 @@
       <artifactId>axis-ant</artifactId>
       <version>1.1</version>
    </dependency>
+  </dependencies>
 
-  <build>
-    <sourceDirectory>src/java</sourceDirectory>
-    <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
-    
-    <unitTest>
-      <includes>
-        <include>**/*Test.java</include>
-      </includes>
-    </unitTest>
-  </build>
-  
-  <reports>
-    <report>
-      maven-changelog-plugin
-    </report>
-    <report>
-      maven-changes-plugin
-    </report>
-    <report>
-      maven-checkstyle-plugin
-    </report>
-    <report>
-      maven-developer-activity-plugin
-    </report>
-    <report>
-      maven-file-activity-plugin
-    </report>
-    <report>
-      maven-javadoc-plugin
-    </report>
-    <report>
-      maven-jdepend-plugin
-    </report>
-    <report>
-      maven-junit-report-plugin
-    </report>
-    <report>
-      maven-jxr-plugin
-    </report>
-    <report>
-      maven-license-plugin
-    </report>
-    <report>
-      maven-linkcheck-plugin
-    </report>
-    <report>
-      maven-pmd-plugin
-    </report>
-    <report>
-      maven-tasklist-plugin
-    </report>
-  </reports>
+
+
 </project>
