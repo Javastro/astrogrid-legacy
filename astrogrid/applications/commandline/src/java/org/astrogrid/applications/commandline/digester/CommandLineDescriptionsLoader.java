@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineDescriptionsLoader.java,v 1.4 2004/08/27 15:40:00 pah Exp $
+ * $Id: CommandLineDescriptionsLoader.java,v 1.5 2004/08/27 19:39:54 pah Exp $
  *
  * Created on 26 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -17,11 +17,15 @@ import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.base.BaseApplicationInterface;
 import org.astrogrid.applications.description.exception.ApplicationDescriptionNotLoadedException;
+import org.astrogrid.common.bean.v1.Namespaces;
 
 import org.apache.commons.digester.AbstractObjectCreationFactory;
 import org.apache.commons.digester.Digester;
 import org.apache.commons.digester.ExtendedBaseRules;
 import org.apache.commons.digester.NodeCreateRule;
+import org.apache.commons.digester.RegexMatcher;
+import org.apache.commons.digester.RegexRules;
+import org.apache.commons.digester.SimpleRegexMatcher;
 import org.w3c.dom.Node;
 import org.xml.sax.Attributes;
 
@@ -35,7 +39,10 @@ import javax.xml.parsers.ParserConfigurationException;
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @version $Name:  $
  * @since iteration4
- * @TODO make namespace aware and validate the input xml
+ * @TODO make namespace aware - this is a bit of a hack with namespaces at the moment.... 
+ * @TODO validate the input xml
+ * @TODO really better to use castor
+ * @TODO perhaps better to refactor the schema into the commandline project.
  */
 public class CommandLineDescriptionsLoader extends BaseApplicationDescriptionLibrary {
    static private org.apache.commons.logging.Log logger =
@@ -78,7 +85,8 @@ public class CommandLineDescriptionsLoader extends BaseApplicationDescriptionLib
 
       Digester digester = new Digester();
       digester.setValidating(false); //TODO would be better to make this validate...
-      digester.setRules(new ExtendedBaseRules()); // to allow matches on any children....
+      digester.setNamespaceAware(false);
+      digester.setRules(new RegexRules(new SimpleRegexMatcher())); // to allow matches on any children....
 
     digester.push(this);
       //digester.addObjectCreate(ApplicationDescriptionConstants.APPLICATION_ELEMENT, CommandLineApplicationDescription.class);
@@ -95,6 +103,10 @@ public class CommandLineDescriptionsLoader extends BaseApplicationDescriptionLib
       digester.addCallMethod(CommandLineApplicationDescriptionsConstants.UI_NAME_ELEMENT, "setDisplayName", 0);
       digester.addRule(CommandLineApplicationDescriptionsConstants.UI_DESC_ELEMENT, new NodeCreateRule(Node.ELEMENT_NODE));
       digester.addRule(CommandLineApplicationDescriptionsConstants.UI_DESC_ELEMENT, new AllBodyIncElementsRule("displayDescription", true));
+      digester.addCallMethod(CommandLineApplicationDescriptionsConstants.UCD_ELEMENT, "setUcd", 0);
+      digester.addCallMethod(CommandLineApplicationDescriptionsConstants.DEFVAL_ELEMENT, "setDefaultValue", 0);
+      digester.addCallMethod(CommandLineApplicationDescriptionsConstants.UNITSL_ELEMENT, "setUnits", 0);
+           
       // add the parameter to the list of paramters      
       digester.addSetNext(CommandLineApplicationDescriptionsConstants.PARAMETER_ELEMENT, "addParameterDescription");
      

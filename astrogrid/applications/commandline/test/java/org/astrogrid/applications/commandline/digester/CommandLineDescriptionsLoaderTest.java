@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineDescriptionsLoaderTest.java,v 1.4 2004/08/27 15:40:29 pah Exp $
+ * $Id: CommandLineDescriptionsLoaderTest.java,v 1.5 2004/08/27 19:40:37 pah Exp $
  * 
  * Created on 26-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -38,144 +38,162 @@ import java.io.File;
 import java.net.URL;
 
 /**
- * Tests the description loader. Expects to find a a file TestApplicationConfig.xml in the Classpath
+ * Tests the description loader. Expects to find a a file
+ * TestApplicationConfig.xml in the Classpath
+ * 
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @version $Name:  $
  * @since iteration4
  */
 public class CommandLineDescriptionsLoaderTest extends DescriptionBaseTestCase {
 
-   protected CommandLineDescriptionsLoader dl;
+    protected CommandLineDescriptionsLoader dl;
 
-   /**
-    * Constructor for DescriptionLoaderTest.
-    * @param arg0
-    */
-   public CommandLineDescriptionsLoaderTest(String arg0) {
-      super(arg0);
-   }
+    /**
+     * Constructor for DescriptionLoaderTest.
+     * 
+     * @param arg0
+     */
+    public CommandLineDescriptionsLoaderTest(String arg0) {
+        super(arg0);
+    }
 
-   public static void main(String[] args) {
-      junit.textui.TestRunner.run(CommandLineDescriptionsLoaderTest.class);
-   }
+    public static void main(String[] args) {
+        junit.textui.TestRunner.run(CommandLineDescriptionsLoaderTest.class);
+    }
 
+    protected void setUp() throws Exception {
+        super.setUp();
+        final File workingDir = File.createTempFile("DescriptionLoaderTest",
+                null);
+        workingDir.delete();
+        workingDir.mkdir();
+        assertTrue(workingDir.exists());
+        workingDir.deleteOnExit();
+        DefaultPicoContainer container = new DefaultPicoContainer();
+        container.registerComponent(new ConstructorInjectionComponentAdapter(
+                CommandLineApplicationDescription.class,
+                CommandLineApplicationDescription.class));
+        container.registerComponentImplementation(InMemoryIdGen.class);
+        container.registerComponentImplementation(DefaultProtocolLibrary.class);
+        container
+                .registerComponentImplementation(ApplicationDescriptionEnvironment.class);
 
-   protected void setUp() throws Exception {
-      super.setUp();
-      final File workingDir = File.createTempFile("DescriptionLoaderTest",null);
-      workingDir.delete();
-      workingDir.mkdir();
-      assertTrue(workingDir.exists());
-      workingDir.deleteOnExit();
-      DefaultPicoContainer container = new DefaultPicoContainer();
-      container.registerComponent(
-        new ConstructorInjectionComponentAdapter(CommandLineApplicationDescription.class,CommandLineApplicationDescription.class)
-      );
-      container.registerComponentImplementation(InMemoryIdGen.class);
-      container.registerComponentImplementation(DefaultProtocolLibrary.class);
-      container.registerComponentImplementation(ApplicationDescriptionEnvironment.class);
-                        
-      try {
-          container.verify();
-      } catch (PicoException t) {
-          t.printStackTrace();
-          fail("Container misconfigured");
-      }
-      dl = new CommandLineDescriptionsLoader(new CommandLineDescriptionsLoader.DescriptionURL() {
-    
-        public URL getURL() {
-            return inputFile;
+        try {
+            container.verify();
         }
-      },new CommandLineApplicationDescriptionFactory(container));
-      assertNotNull("cannot create the DescriptionLoader", dl); 
+        catch (PicoException t) {
+            t.printStackTrace();
+            fail("Container misconfigured");
+        }
+        dl = new CommandLineDescriptionsLoader(
+                new CommandLineDescriptionsLoader.DescriptionURL() {
 
-   }
+                    public URL getURL() {
+                        return inputFile;
+                    }
+                }, new CommandLineApplicationDescriptionFactory(container));
+        assertNotNull("cannot create the DescriptionLoader", dl);
 
-   final public void testLoadDescription() throws ApplicationDescriptionNotLoadedException, ParameterNotInInterfaceException {
+    }
 
-      try {
-         assertEquals("there should be 3 apps defined",3,dl.getApplicationNames().length);
-         ApplicationDescription x =
-            dl.getDescription(TESTAPPNAME);
-        assertTrue(x instanceof CommandLineApplicationDescription);
-        CommandLineApplicationDescription ad = (CommandLineApplicationDescription)x;
-            assertEquals("instance class",ad.getInstanceClass(),null);
-            
-            assertTrue("execution path", ad.getExecutionPath().endsWith( "testapp.sh")); //this is dependent on the actual location
-         ParameterDescription[] params = ad.getParameterDescriptions();
-         assertNotNull("no parameters returned", params);
-         assertEquals("there should be 14 parameters ", 13,params.length);
-         //now look at the parameters in detail
-         ParameterDescription p1 = params[0];
+    final public void testLoadDescription()
+            throws ApplicationDescriptionNotLoadedException,
+            ParameterNotInInterfaceException {
 
-         try {
-            ParameterDescription p2 = ad.getParameterDescription(params[0].getName());
-            assertSame(
-               "parameters should be same via two different retrieval methods",
-               p1,
-               p2);
-            p1 = ad.getParameterDescription("P1"); // get p1 ready for later
-         }
-         catch (ParameterDescriptionNotFoundException e1) {
-            fail("did not find a parameter that it should");
-         }
-         // try getting a parameter that should not be there
-         try {
-            ParameterDescription p3 = ad.getParameterDescription("silly");
-            fail("getting non existant parameter should throw exception");
-         }
-         catch (ParameterDescriptionNotFoundException e2) {
-            // do nothing this should get here
-         }
-         assertTrue(p1 instanceof CommandLineParameterDescription);
-        
-         // lets look at a some of the properties
-         assertEquals("commandposition", 1, ((CommandLineParameterDescription)p1).getCommandPosition());
-         System.out.println("name:" + p1.getName());
-         System.out.println("desc:" + p1.getDisplayDescription());
-         ApplicationInterface intf = null;
-         try {
-            intf = ad.getInterface("I1");
-         }
-         catch (InterfaceDescriptionNotFoundException e3) {
-            fail("could not find the I1 interface");
-         }
-         assertNotNull("the inferface object is null", intf);
+        try {
+            assertEquals("there should be 3 apps defined", 3, dl
+                    .getApplicationNames().length);
+            ApplicationDescription x = dl.getDescription(TESTAPPNAME);
+            assertTrue(x instanceof CommandLineApplicationDescription);
+            CommandLineApplicationDescription ad = (CommandLineApplicationDescription)x;
+            assertEquals("instance class", ad.getInstanceClass(), null);
 
-         String[] pds = intf.getArrayofInputs();
-         assertEquals("interfaace -wrong number of input parametes", 4, pds.length);
-         assertEquals("input parameter name", "P1", pds[0]);
-         try {
-            CommandLineParameterDescription inp1 = (CommandLineParameterDescription)intf.getInputParameter("P4");
-            assertEquals("P4 should be KEYWORD", SwitchTypes.KEYWORD, inp1.getSwitchTypeType());
-            
-         }
-         catch (ParameterNotInInterfaceException e4) {
-            fail("paramter not found");
-         }
-         String[] pd2s = intf.getArrayofOutputs();
-          assertEquals("wrong number of output parametes",2, pd2s.length);
-          try {
-             ParameterDescription inp1 = intf.getOutputParameter("P3");
-             assertTrue(inp1 instanceof CommandLineParameterDescription);
-             assertTrue(((CommandLineParameterDescription)inp1).isFileRef());
-          }
-          catch (ParameterNotInInterfaceException e4) {
-             fail("paramter not found");
-          }
-        ParameterDescription p6 = intf.getInputParameter("P6");
-        Cardinality c6 = intf.getParameterCardinality("P6");
-        assertTrue("P6 should be optional",c6.getMinOccurs()==0);
-        assertTrue("P6 should have maxoccurs 1", c6.getMaxOccurs()==1);
-        Cardinality c1 = intf.getParameterCardinality("P1");
-        assertTrue("P1 should be mandatory", c1.getMinOccurs()==1);
-        assertTrue("p1 should occur only once", c1.getMaxOccurs()==1);
-      }
-      catch (ApplicationDescriptionNotFoundException e) {
-         fail("expected test application "+TESTAPPNAME+"not found");
-      }
-   }
+            assertTrue("execution path", ad.getExecutionPath().endsWith(
+                    "testapp.sh")); //this is dependent on the actual location
+            ParameterDescription[] params = ad.getParameterDescriptions();
+            assertNotNull("no parameters returned", params);
+            assertEquals("there should be 14 parameters ", 13, params.length);
+            //now look at the parameters in detail
+            ParameterDescription p1 = params[0];
 
+            try {
+                ParameterDescription p2 = ad.getParameterDescription(params[0]
+                        .getName());
+                assertSame(
+                        "parameters should be same via two different retrieval methods",
+                        p1, p2);
+                p1 = ad.getParameterDescription("P1"); // get p1 ready for later
+            }
+            catch (ParameterDescriptionNotFoundException e1) {
+                fail("did not find a parameter that it should");
+            }
+            // try getting a parameter that should not be there
+            try {
+                ParameterDescription p3 = ad.getParameterDescription("silly");
+                fail("getting non existant parameter should throw exception");
+            }
+            catch (ParameterDescriptionNotFoundException e2) {
+                // do nothing this should get here
+            }
+            assertTrue(p1 instanceof CommandLineParameterDescription);
+            CommandLineParameterDescription clpd = (CommandLineParameterDescription)p1;
 
+            // lets look at a some of the properties
+            assertEquals("P1 commandposition", 1, clpd.getCommandPosition());
+            assertEquals("P1 ui name unexpected", "Pause Time", clpd
+                    .getDisplayName());
+            assertTrue("P1 description missing", clpd.getDisplayDescription()
+                    .length() > 0);
+            assertEquals("ucd", "UCD", clpd.getUcd());
+            assertEquals("default value", "Default",clpd.getDefaultValue());
+            assertEquals("UNITS value", "UNITS",clpd.getUnits());
+            System.out.println("name:" + p1.getName());
+            System.out.println("desc:" + p1.getDisplayDescription());
+            ApplicationInterface intf = null;
+            try {
+                intf = ad.getInterface("I1");
+            }
+            catch (InterfaceDescriptionNotFoundException e3) {
+                fail("could not find the I1 interface");
+            }
+            assertNotNull("the inferface object is null", intf);
+
+            String[] pds = intf.getArrayofInputs();
+            assertEquals("interfaace -wrong number of input parametes", 4,
+                    pds.length);
+            assertEquals("input parameter name", "P1", pds[0]);
+            try {
+                CommandLineParameterDescription inp1 = (CommandLineParameterDescription)intf
+                        .getInputParameter("P4");
+                assertEquals("P4 should be KEYWORD", SwitchTypes.KEYWORD, inp1
+                        .getSwitchTypeType());
+
+            }
+            catch (ParameterNotInInterfaceException e4) {
+                fail("paramter not found");
+            }
+            String[] pd2s = intf.getArrayofOutputs();
+            assertEquals("wrong number of output parametes", 2, pd2s.length);
+            try {
+                ParameterDescription inp1 = intf.getOutputParameter("P3");
+                assertTrue(inp1 instanceof CommandLineParameterDescription);
+                assertTrue(((CommandLineParameterDescription)inp1).isFileRef());
+            }
+            catch (ParameterNotInInterfaceException e4) {
+                fail("paramter not found");
+            }
+            ParameterDescription p6 = intf.getInputParameter("P6");
+            Cardinality c6 = intf.getParameterCardinality("P6");
+            assertTrue("P6 should be optional", c6.getMinOccurs() == 0);
+            assertTrue("P6 should have maxoccurs 1", c6.getMaxOccurs() == 1);
+            Cardinality c1 = intf.getParameterCardinality("P1");
+            assertTrue("P1 should be mandatory", c1.getMinOccurs() == 1);
+            assertTrue("p1 should occur only once", c1.getMaxOccurs() == 1);
+        }
+        catch (ApplicationDescriptionNotFoundException e) {
+            fail("expected test application " + TESTAPPNAME + "not found");
+        }
+    }
 
 }
