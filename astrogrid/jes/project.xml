@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.45 2004/02/13 18:31:02 jdt Exp $ -->
+<!-- $Id: project.xml,v 1.46 2004/02/19 01:15:08 jdt Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
     <extend>../maven-base/project.xml</extend>
@@ -20,7 +20,6 @@
         trigger subsequent steps.</description>
     <shortDescription>AstroGrid Job Management Components</shortDescription>
     <!-- Temporary Overrides till we get consistent artifactIds-->
-    <groupId>astrogrid-jes</groupId>
     <siteDirectory>/var/www/www/maven/build/jes</siteDirectory>
     <repository>
         <connection> 
