@@ -17,7 +17,7 @@
     <agp:item
         contents="MicroBrowser"
         contents-hover="MicroBrowser"
-        uri='javascript:void(window.open("/astrogrid-portal/mount/myspace/myspace-micro?ivorn=myivorn&amp;agsl=myagsl", "mySpaceMicro", "toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=yes, scrollbars=yes, width=300, height=200"))'
+        uri='javascript:void(window.open("/astrogrid-portal/lean/mount/myspace/myspace-micro?ivorn=myivorn&amp;agsl=myagsl", "mySpaceMicro", "toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=yes, scrollbars=yes, width=300, height=200"))'
         target="_self"
         status-text="AstroGrid MySpace MicroBrowser"/>
   </agp:menu>
