@@ -33,7 +33,8 @@ public class Return {
 		logger = Logger.getLogger( Return.class ) ;
 		
 	private static final String
-		ASTROGRIDERROR_COULD_NOT_dosomething = "AGDTCE00???" ;	
+		ASTROGRIDERROR_COULD_NOT_CREATE_RETURN_FROM_ELEMENT = "AGDTCE00240",
+	    ASTROGRIDERROR_COULD_NOT_CREATE_SQL_FOR_RETURN = "AGDTCE00250" ;
 		
     private Field []
         fields ;
@@ -65,7 +66,7 @@ public class Return {
 		}
 		catch( Exception ex ) {
 			Message
-				message = new Message( ASTROGRIDERROR_COULD_NOT_dosomething ) ;
+				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_RETURN_FROM_ELEMENT ) ;
 			logger.error( message.toString(), ex ) ;
 			throw new QueryException( message, ex );    		
 		}
@@ -74,7 +75,12 @@ public class Return {
 		}   	
     }  // end of Return(Element)
      
-	
+
+/**
+ * Returns the Return part of the SQL query
+ * 
+ * @return String
+ */	
 	public String toSQLString() {
 		
         StringBuffer
@@ -96,7 +102,7 @@ public class Return {
 		
 		catch( Exception ex) {
 			Message
-				message = new Message( ASTROGRIDERROR_COULD_NOT_dosomething ) ;
+				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_SQL_FOR_RETURN ) ;
 			logger.error( message.toString(), ex ) ;   		
 		}
 		finally {
