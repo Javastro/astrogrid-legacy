@@ -28,11 +28,13 @@
   
   <repository>
     <connection>
-      scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel/astrogrid:portal
+      scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/portal
     </connection>
     <developerConnection>
-      scm:cvs:ext:${maven.user}@cvs.astrogrid.org:/devel/astrogrid:portal
+      scm:cvs:ext:${maven.user}@cvs.astrogrid.org:/devel:astrogrid/portal
     </developerConnection>
+    <url> http://www.astrogrid.org/viewcvs/astrogrid/portal/ 
+    </url>   
   </repository>
   
   <developers>
