@@ -1,0 +1,37 @@
+Installation Instructions
+=========================
+
+Install PostgreSQL
+------------------
+
+Please see http://www.postgresql.org for a *full* installation guide including the creation of databases and users.
+
+Install XMLBlaster
+------------------
+
+Please see http://www.xmlblaster.org for a *full* installation guide.
+
+Extract the XMLBlaster files to a suitable location ($XMLBLASTER_HOME).  A PostgreSQL database and user called xmlblaster is required.  The first time XMLBlaster is run, it will create the database for itself as long as the JDBC connection properties have been setup via it's properties file ($XMLBLASTER_HOME/xmlBlaster.properties).  A full example of an xmlBlaster.properties file is included in this document.  The PostgreSQL JDBC driver should be placed in the $XMLBLASTER_HOME/lib directory.
+
+
+Install OpenJMS
+---------------
+
+Please see http://openjms.sourceforge.net for a *full* installation guide.
+
+Extract the OpenJMS files to a suitable location ($OPENJMS_HOME).  A PostgreSQL database user called openjms is required. Connect to new database openjms via the psql client and run:
+
+- $OPENJMS_HOME/config contains a script called create_postgresql.sql
+
+to create the database.  The JDBC connection details must then be setup via the configuration file ($OPENJMS_HOME/config/openjms.xml).  A full example of an OpenJMS configuration file is included in this document.
+
+Install WebApp
+--------------
+
+Place the release WAR in the $TOMCAT_HOME/webapps directory.  Restart Tomcat.
+
+It should then be a case of starting postmaster, starting XMLBlaster, starting OpenJMS and starting Tomcat.  We can then test it using the SOAP Messaging Client (see readme.txt).  XMLBlaster needs to be started on a non-standard port as it uses Tomcat's preferred 8080.  This is done as follows (from $XMLBLASTER_HOME):
+
+java -classpath lib/xmlBlaster.jar:lib/pg73b1jdbc3.jar org.xmlBlaster.Main -xmlrpc.port <NNNN>
+
+<NNNN> is a port number that XMLBlaster requires to be free for its own use.  It can be any port number that the user starting the process has permission to open.
