@@ -1,5 +1,5 @@
 /*
- * $Id: SocketDelegate.java,v 1.5 2003/11/26 16:31:46 nw Exp $
+ * $Id: SocketDelegate.java,v 1.6 2003/12/02 19:49:44 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -20,8 +20,8 @@ import org.astrogrid.datacenter.delegate.DatacenterQuery;
 import org.astrogrid.datacenter.delegate.DatacenterResults;
 import org.astrogrid.datacenter.delegate.DelegateQueryListener;
 import org.astrogrid.datacenter.delegate.Metadata;
-import org.astrogrid.datacenter.io.SocketXmlInputStream;
-import org.astrogrid.datacenter.io.SocketXmlOutputStream;
+import org.astrogrid.datacenter.snippet.io.XmlDocInputStream;
+import org.astrogrid.datacenter.snippet.io.XmlDocOutputStream;
 import org.astrogrid.datacenter.query.QueryStatus;
 import org.astrogrid.datacenter.snippet.DocHelper;
 import org.astrogrid.datacenter.snippet.DocMessageHelper;
@@ -55,9 +55,9 @@ public class SocketDelegate implements AdqlQuerier
    private Socket socket = null;
 
    /** Output stream to the socket connection */
-   private SocketXmlOutputStream out = null;
+   private XmlDocOutputStream out = null;
    /** Input stream from the socket connection */
-   private SocketXmlInputStream in = null;
+   private XmlDocInputStream in = null;
 
    /** listeners to query status changes, keyed by queryId */
    //private Hashtable listeners = new Hashtable();
@@ -122,13 +122,13 @@ public class SocketDelegate implements AdqlQuerier
       Log.trace("Connecting to "+aSocket);
 
       socket = aSocket;
-      out = new SocketXmlOutputStream(socket.getOutputStream());
+      out = new XmlDocOutputStream(socket.getOutputStream());
 
 //      TraceInputStream tin = new TraceInputStream(socket.getInputStream());
 //      tin.setState(true);
 //      tin.copy2File(new File("incomingMsgs.log"));
 //      in = new SocketXmlInputStream(tin);
-      in = new SocketXmlInputStream(socket.getInputStream());
+      in = new XmlDocInputStream(socket.getInputStream());
    }
 
    /**
@@ -433,6 +433,9 @@ public class SocketDelegate implements AdqlQuerier
 
 /*
 $Log: SocketDelegate.java,v $
+Revision 1.6  2003/12/02 19:49:44  mch
+Moved snippet and socket-processing stuff into their own packages
+
 Revision 1.5  2003/11/26 16:31:46  nw
 altered transport to accept any query format.
 moved back to axis from castor

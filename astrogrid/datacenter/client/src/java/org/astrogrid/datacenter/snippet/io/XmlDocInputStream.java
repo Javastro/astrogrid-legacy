@@ -1,10 +1,11 @@
 /*
- * $Id: SocketXmlInputStream.java,v 1.1 2003/11/14 00:36:40 mch Exp $
+ * $Id: XmlDocInputStream.java,v 1.1 2003/12/02 19:49:44 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
-package org.astrogrid.datacenter.io;
+package org.astrogrid.datacenter.snippet.io;
+import org.astrogrid.datacenter.io.*;
 
 import java.io.FilterInputStream;
 import java.io.IOException;
@@ -19,19 +20,23 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 /**
- * Adds some convenience routines for socket streams writing XML documents
+ * For some reason it is difficult to read and write XML documents through the
+ * streams, as there is no end of file marker and the parsers don't seem to feel like
+ * finishing when they reach the closing XML tag.  This stream has a readDoc
+ * method that mirrors the XmlDocOutputStream writeDoc - and expects a document written using
+ * that method.
  *
  * @author M Hill
  */
 
-public class SocketXmlInputStream extends FilterInputStream implements AsciiCodes
+public class XmlDocInputStream extends FilterInputStream implements AsciiCodes
 {
    /** End of document marker */
    public static final char EOD = EOF;
 
    /** Constructor like a FilterInputStream - construct as a wrapper around the
     * stream to read from */
-   public SocketXmlInputStream(InputStream in)
+   public XmlDocInputStream(InputStream in)
    {
       super(in);
    }

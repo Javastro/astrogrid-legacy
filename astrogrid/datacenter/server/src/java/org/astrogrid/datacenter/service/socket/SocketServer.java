@@ -1,10 +1,11 @@
 /*
- * $Id: SocketServer.java,v 1.2 2003/11/21 17:37:56 nw Exp $
+ * $Id: SocketServer.java,v 1.1 2003/12/02 19:50:56 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
-package org.astrogrid.datacenter.service;
+package org.astrogrid.datacenter.service.socket;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;

@@ -1,10 +1,11 @@
 /*
- * $Id: SocketHandler.java,v 1.13 2003/12/01 20:57:39 mch Exp $
+ * $Id: SocketHandler.java,v 1.1 2003/12/02 19:50:56 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
 
-package org.astrogrid.datacenter.service;
+package org.astrogrid.datacenter.service.socket;
+import org.astrogrid.datacenter.service.*;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
@@ -12,8 +13,8 @@ import java.net.URL;
 
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.delegate.agss.SocketDelegate;
-import org.astrogrid.datacenter.io.SocketXmlInputStream;
-import org.astrogrid.datacenter.io.SocketXmlOutputStream;
+import org.astrogrid.datacenter.snippet.io.XmlDocInputStream;
+import org.astrogrid.datacenter.snippet.io.XmlDocOutputStream;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierListener;
 import org.astrogrid.datacenter.queriers.QuerierManager;
@@ -39,9 +40,9 @@ public class SocketHandler extends ServiceServer implements Runnable, QuerierLis
    /** Socket connection */
    private Socket socket = null;
    /** XML helper stream wrapped around socket output stream */
-   private SocketXmlOutputStream out = null;
+   private XmlDocOutputStream out = null;
    /** XML helper stream wrapped around socket input stream */
-   private SocketXmlInputStream in = null;
+   private XmlDocInputStream in = null;
 
    /** Constructor sets up streams and starts thread to run this
     * handler
@@ -49,13 +50,13 @@ public class SocketHandler extends ServiceServer implements Runnable, QuerierLis
    public SocketHandler(Socket givenSocket) throws IOException
    {
       this.socket = givenSocket;
-      out = new SocketXmlOutputStream(socket.getOutputStream());
+      out = new XmlDocOutputStream(socket.getOutputStream());
 
 //      TraceInputStream tin = new TraceInputStream(socket.getInputStream());
 //      tin.setState(true);
 //      tin.copy2File(new File("incomingMsgs.log"));
 //      in = new SocketXmlInputStream(tin);
-      in = new SocketXmlInputStream(socket.getInputStream());
+      in = new XmlDocInputStream(socket.getInputStream());
 
 
       //create a thread running this isntance and start it
@@ -252,6 +253,9 @@ public class SocketHandler extends ServiceServer implements Runnable, QuerierLis
 
 /*
 $Log: SocketHandler.java,v $
+Revision 1.1  2003/12/02 19:50:56  mch
+Moved snippet and socket-processing stuff into their own packages
+
 Revision 1.13  2003/12/01 20:57:39  mch
 Abstracting coarse-grained plugin
 
