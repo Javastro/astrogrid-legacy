@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="AstroGrid">
 
-  <title>AstroGrid Aggregation Project</title>
+  <title>AstroGrid Core CDK</title>
 
   <body>
-    <menu name="Packages">
-        <item name="List of Packages" href="projects-overview.html" />
-    </menu>
+
     <links>
        <item name="AstroGrid"       href="http://www.astrogrid.org"/>
 	   <item name="Software Site" href="http://software.astrogrid.org" />
-	   <item name="Packages"   href="projects-overview.html" />
+	   <item name="Packaging Project"   href="../../index.html" />
     </links>
   </body>
 </project>

@@ -18,8 +18,8 @@
     It contains the necessary delegate jars, plus their dependencies, and example configuration.
     </p>
 	<p>
-	For documentation on the Astrogrid Workflow system, see the usergude: <a href="http://www.astrogrid.org/maven/docs/HEAD/jes/userguide.html">html</a>, 
-	<a href="http://www.astrogrid.org/maven/docs/HEAD/jes/astrogrid-jes-userguide.pdf">pdf</a>
+	For documentation on the Astrogrid Workflow system, see the userguide: <a href="http://www.astrogrid.org/maven/docs/HEAD/jes/">html</a>, 
+	<a href="http://www.astrogrid.org/maven/docs/HEAD/jes/astrogrid-workflow-userguide.pdf">pdf</a>
 	</p>
 
     <section name="Workflow Builder"><p>

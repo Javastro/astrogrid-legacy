@@ -64,7 +64,7 @@ this with signing with proper astrogrid certificates
                 goals="astrogrid-install-snapshot" ignoreFailures="false" />-->
         <maven:reactor
                 basedir="${basedir}"
-                goals="astrogrid-build-artifact"
+                goals="astrogrid-install-artifact"
                 ignoreFailures="false"
                 includes="${maven.multiproject.includes}"
         />
@@ -76,7 +76,7 @@ this with signing with proper astrogrid certificates
                 goals="astrogrid-install-artifact" ignoreFailures="false" />-->
         <maven:reactor
                 basedir="${basedir}"
-                goals="astrogrid-build-artifact"
+                goals="astrogrid-install-artifact"
                 ignoreFailures="false"
                 includes="${maven.multiproject.includes}"
         />
@@ -88,7 +88,7 @@ this with signing with proper astrogrid certificates
                 goals="astrogrid-deploy-snapshot" ignoreFailures="false" />-->
         <maven:reactor
                 basedir="${basedir}"
-                goals="astrogrid-build-artifact"
+                goals="astrogrid-deploy-artifact"
                 ignoreFailures="false"
                 includes="${maven.multiproject.includes}"
         />
@@ -99,7 +99,7 @@ this with signing with proper astrogrid certificates
                 goals="astrogrid-deploy-artifact" ignoreFailures="false" />-->
         <maven:reactor
                 basedir="${basedir}"
-                goals="astrogrid-build-artifact"
+                goals="astrogrid-deploy-artifact"
                 ignoreFailures="false"
                 includes="${maven.multiproject.includes}"
         />
