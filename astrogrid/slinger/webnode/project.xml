@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- $Id: project.xml,v 1.9 2005/03/22 16:50:55 mch Exp $ -->
+<!-- $Id: project.xml,v 1.10 2005/03/22 17:13:57 mch Exp $ -->
 
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 
@@ -74,6 +74,15 @@
             <artifactId>commons-logging</artifactId>
             <groupId>commons-logging</groupId>
             <version>1.0.3</version>
+            <properties>
+               <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
+        <dependency>
+            <artifactId>commons-discovery</artifactId>
+            <groupId>commons-discovery</groupId>
+            <version>20030211.213356</version>
             <properties>
                <war.bundle>true</war.bundle>
             </properties>
