@@ -1,5 +1,5 @@
 /*
- * $Id: FailbackConfig.java,v 1.15 2004/03/06 22:22:08 mch Exp $
+ * $Id: FailbackConfig.java,v 1.16 2004/03/09 16:32:27 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -168,13 +168,14 @@ public class FailbackConfig extends Config {
 
          URL fileUrl = null;
          
+         String urlValue = null; //so we can use in reporting exception
+         String filenameValue = null;
+
          //if jndi server is running, look up url in that
          if (jndiContext != null) {
             String jndiUrlKey = jndiPrefix+propertyUrlKey;
             String jndiFileKey = jndiPrefix+propertyKey;
             String keyUsed = jndiUrlKey;
-            String urlValue = null; //so we can use in reporting exception
-            String filename = null;
             
             try {
                try {
@@ -183,22 +184,22 @@ public class FailbackConfig extends Config {
                } catch (NameNotFoundException nnfe) { } //ignore carry on
                log.debug("Config: JNDI key "+jndiUrlKey+" => "+fileUrl);
                try {
-                  filename = jndiContext.lookup(jndiFileKey).toString();
+                  filenameValue = jndiContext.lookup(jndiFileKey).toString();
                } catch (NameNotFoundException nnfe) { } //ignore carry on
-               log.debug("Config: JNDI key "+jndiFileKey+" => "+filename);
+               log.debug("Config: JNDI key "+jndiFileKey+" => "+filenameValue);
                
                //if they are both defined, throw an exception - sysadmin should only
                //define one, then we know where we are
-               if ((fileUrl != null) && (filename != null)) {
+               if ((fileUrl != null) && (filenameValue != null)) {
                   throw new ConfigException("Both "+jndiUrlKey+" and "+jndiFileKey+" defined in JNDI; specify only one");
                }
 
                //if filename given, locate
-               if (filename != null) {
-                  File propertyFile = new File(filename);
+               if (filenameValue != null) {
+                  File propertyFile = new File(filenameValue);
                   //if it's relative, locate from the classpath/working directory
                   if (!propertyFile.isAbsolute()) {
-                     if (lookForFile(filename) == true)
+                     if (lookForConfigFile(filenameValue) == true)
                      {
                         //success!
                         return;
@@ -222,7 +223,7 @@ public class FailbackConfig extends Config {
                throw new ConfigException("Configuration file url ("+urlValue+") given in JNDI (key="+jndiUrlKey+") is malformed",mue);
             }
             catch (FileNotFoundException fnfe) {
-               throw new ConfigException("Configuration file ("+filename+") given in JNDI (key="+jndiFileKey+") cannot be found",fnfe);
+               throw new ConfigException("Configuration file ("+filenameValue+") given in JNDI (key="+jndiFileKey+") cannot be found",fnfe);
             }
             catch (NamingException ne) {
                throw new ConfigException("Using key '"+jndiUrlKey+"' or '"+jndiFileKey+"' in JNDI gave: ", ne);
@@ -233,37 +234,39 @@ public class FailbackConfig extends Config {
             }
          }
 
-         //look up url in system environment
-         String sysEnvKey = propertyUrlKey;
-         String sysEnvUrl = System.getProperty(sysEnvKey);
-         log.debug("Config: Sys Env key "+sysEnvKey+" => "+sysEnvUrl);
-         if (sysEnvUrl != null) {
-            try {
-               fileUrl = new URL(sysEnvUrl);
-
-               loadFromUrl(fileUrl);
-               
-               log.debug("Configuration file loaded from '"+fileUrl.toString()+"' (from SYS ENV="+sysEnvKey+")");
-               
-               return;
-            }
-            catch (MalformedURLException mue) {
-               throw new ConfigException("Configuration file url given in system environment variable '"+
-                                            sysEnvKey+"' is malformed",mue);
-            }
-            catch (IOException ioe) {
-               throw new ConfigException(ioe+" loading property file at '"+fileUrl+
-                                            "' (returned by system environment variable '"+sysEnvKey+"')", ioe);
+         //look up url in system environment if nothing given in JNDI
+         if ((filenameValue == null) && (urlValue == null)) {
+            String sysEnvKey = propertyUrlKey;
+            String sysEnvUrl = System.getProperty(sysEnvKey);
+            log.debug("Config: Sys Env key "+sysEnvKey+" => "+sysEnvUrl);
+            if (sysEnvUrl != null) {
+               try {
+                  fileUrl = new URL(sysEnvUrl);
+   
+                  loadFromUrl(fileUrl);
+                  
+                  log.debug("Configuration file loaded from '"+fileUrl.toString()+"' (from SYS ENV="+sysEnvKey+")");
+                  
+                  return;
+               }
+               catch (MalformedURLException mue) {
+                  throw new ConfigException("Configuration file url given in system environment variable '"+
+                                               sysEnvKey+"' is malformed",mue);
+               }
+               catch (IOException ioe) {
+                  throw new ConfigException(ioe+" loading property file at '"+fileUrl+
+                                               "' (returned by system environment variable '"+sysEnvKey+"')", ioe);
+               }
             }
          }
 
          //Nothing in JNDI, nothing in sys env, so look in class path for general properties file
-         if (lookForFile(configFilename)) {
+         if (lookForConfigFile(configFilename)) {
             return;
          }
 
          //last resort - look for default.properties that might be part of the distribution
-         if (lookForFile(defaultFilename)) {
+         if (lookForConfigFile(defaultFilename)) {
             return;
          }
          
@@ -271,18 +274,21 @@ public class FailbackConfig extends Config {
          //well we haven't found one anywhere - this may not be an error (as none may be desired) but
          //it should be reported...
          log.warn("No configuration file found; if you need one, "+
-                     "make sure "+configFilename+" is in your classpath, "+
+                     "make sure "+configFilename+" or "+defaultFilename+" is in your classpath, "+
                      "or set the JNDI key "+propertyUrlKey+" to it's URL, "+
                      "or set the JNDI key "+propertyKey+" to it's file location");
       }
    }
 
    /**
-    * Looks for given filename absolutely or in classpath and working directory, and loads
+    * Looks for given config filename absolutely or in classpath and working directory, and loads
     * it if found.  Returns false if not found.
     * This could probably make use of Config.resolveFile()
     */
-   private boolean lookForFile(String filename)  {
+   private boolean lookForConfigFile(String filename)  {
+
+      //replace ${stuff} with sys.env values for stuff
+      filename = resolveEnvironmentVariables(filename);
       
       //if it's absolute, look absolutely
       File f = new File(filename);
@@ -296,8 +302,10 @@ public class FailbackConfig extends Config {
       
       //look for file in classpath.
       //see http://www.javaworld.com/javaworld/javaqa/2003-08/01-qa-0808-property.html
+      //NB this works via URL as we don't expect to get config files from inside jars
       log.debug("Looking for '"+filename+"' on classpath");
-      URL configUrl = ClassLoader.getSystemResource(filename);
+//      URL configUrl = ClassLoader.getSystemResource(filename);
+      URL configUrl = this.getClass().getClassLoader().getResource(filename);
       if (configUrl != null) {
          try {
             loadFromUrl(configUrl);
@@ -325,11 +333,11 @@ public class FailbackConfig extends Config {
    private void loadFromFile(File f) {
       try {
          loadFromUrl(f.toURL());
-         log.info("Configuration file loaded from working directory '"+f.getAbsolutePath()+"'");
+         log.info("Configuration file loaded from '"+f.getAbsoluteFile()+"'");
          return;
       }
       catch (IOException ioe) {
-         throw new ConfigException(ioe+" loading property file at '"+f.getAbsolutePath()+"' (ie in working directory)", ioe);
+         throw new ConfigException(ioe+" loading property file at '"+f.getAbsoluteFile(), ioe);
       }
    }
    
@@ -539,6 +547,9 @@ public class FailbackConfig extends Config {
 }
 /*
 $Log: FailbackConfig.java,v $
+Revision 1.16  2004/03/09 16:32:27  mch
+Added sysenv resolver
+
 Revision 1.15  2004/03/06 22:22:08  mch
 Added resolveFile
 

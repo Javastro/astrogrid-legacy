@@ -1,5 +1,5 @@
 /*
- * $Id: Config.java,v 1.19 2004/03/06 22:23:23 mch Exp $
+ * $Id: Config.java,v 1.20 2004/03/09 16:32:49 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -10,13 +10,14 @@ package org.astrogrid.config;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
 import javax.xml.parsers.ParserConfigurationException;
-import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -211,7 +212,7 @@ public abstract class Config {
     * can report which key was being used */
    private Document readDom(String key, URL source) {
       try {
-         return XMLUtils.newDocument(source.openStream());
+         return DomHelper.newDocument(source.openStream());
       }
       catch (IOException ioe) {
          throw new ConfigException("Could not read from '"+source+"' given by Config Key '"+key+"'" , ioe);
@@ -237,23 +238,15 @@ public abstract class Config {
     * the places looked.  If the path is found, a url to it is returned.
     *
     * Hmm not sure if this is really a Configuration thing....
+    *
+    * NB this resolves to a URL so it won't find files in jar files
     */
    public static URL resolveFilename(String givenFilename) throws IOException {
       
       String filename = givenFilename; //so we preserve the original
-      
-      while (filename.indexOf("${")>-1) {
-         int s = filename.indexOf("${");
-         int e = filename.indexOf("}");
-         if (e==-1) throw new IllegalArgumentException("filename "+givenFilename+" has mismatched brackets");
-         
-         String sysEnvKey = filename.substring(s+2,e);
-         String sysEnvValue = System.getProperty(sysEnvKey);
-         if (sysEnvValue == null) throw new ConfigException("Sys Env '"+sysEnvKey+"' not found for filename "+givenFilename);
-         
-         filename = filename.substring(0, s)+ sysEnvValue + filename.substring(e+1);
-         //resolve system environment value
-      }
+
+      //resolve included environment variables
+      filename = resolveEnvironmentVariables(filename);
 
       File f = new File(filename);
       String workingDir = new File("relative").getParent();
@@ -266,7 +259,7 @@ public abstract class Config {
       else
       {
          //not absolute so look in classpath
-         URL url = ClassLoader.getSystemResource(filename);
+         URL url = Config.class.getClassLoader().getResource(filename);
    
          if (url != null) {
             return url;
@@ -280,7 +273,30 @@ public abstract class Config {
          throw new FileNotFoundException("filename "+givenFilename+" resolves to "+filename+" but not found in classpath or working directory "+workingDir);
       }
    }
-   
+
+
+   /**
+    * Resolves environment variables.  Looks for ${xxxx} strings and replace
+    * with whatever xxxx is set to in the system environment properties
+    */
+   public static String resolveEnvironmentVariables(String givenSource) {
+      
+      String source = givenSource; //preserve given for error messages
+      
+      while (source.indexOf("${")>-1) {
+         int s = source.indexOf("${");
+         int e = source.indexOf("}");
+         if (e==-1) throw new IllegalArgumentException("String "+givenSource+" has mismatched brackets");
+         
+         String sysEnvKey = source.substring(s+2,e);
+         String sysEnvValue = System.getProperty(sysEnvKey);
+         if (sysEnvValue == null) throw new ConfigException("Sys Env '"+sysEnvKey+"' not found for filename "+givenSource);
+         
+         source = source.substring(0, s)+ sysEnvValue + source.substring(e+1);
+      }
+      
+      return source;
+   }
    
 }
 
