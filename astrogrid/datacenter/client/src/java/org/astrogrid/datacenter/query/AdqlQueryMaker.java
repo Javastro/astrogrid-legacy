@@ -1,5 +1,5 @@
 /*
- * $Id: AdqlQueryMaker.java,v 1.2 2004/10/07 10:34:44 mch Exp $
+ * $Id: AdqlQueryMaker.java,v 1.3 2004/10/08 09:40:52 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -28,6 +28,16 @@ import org.xml.sax.SAXException;
 
 public class AdqlQueryMaker  {
 
+   /** Constructs a Query from the given ADQL (0.7.4) OM which is generated from the
+    * SkyNode (0.7.4) WSDL
+    */
+   public static Query makeQuery(net.ivoa.www.xml.ADQL.v0_7_4.SelectType adql) {
+      
+      Adql074Parser maker = new Adql074Parser();
+      return maker.makeQuery(adql);
+   }
+
+   
    /** Constructs a Query from the given ADQL DOM.  Nasty horrible thing converts
     * to SQL and parses it... */
    public static Query makeQuery(Element adql) throws QueryException {
@@ -78,6 +88,9 @@ public class AdqlQueryMaker  {
 }
 /*
  $Log: AdqlQueryMaker.java,v $
+ Revision 1.3  2004/10/08 09:40:52  mch
+ Started proper ADQL parsing
+
  Revision 1.2  2004/10/07 10:34:44  mch
  Fixes to Cone maker functions and reading/writing String comparisons from Query
 

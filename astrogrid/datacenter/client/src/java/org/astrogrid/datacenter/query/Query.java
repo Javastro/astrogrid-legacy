@@ -1,5 +1,5 @@
 /*
- * $Id: Query.java,v 1.2 2004/10/06 21:12:16 mch Exp $
+ * $Id: Query.java,v 1.3 2004/10/08 09:40:52 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -31,6 +31,10 @@ public class Query  {
    
    /** Not quite sure how this should be described properly */
    String[] scope = null;
+
+   /** maximum number of results. -1 = unlimited */
+   long limit = -1;
+
    
    public Query(String[] givenScope, Condition someCriteria, ReturnSpec aResultsDef) {
       this.scope = givenScope;
@@ -42,6 +46,13 @@ public class Query  {
       this.criteria = someCriteria;
       this.results = aResultsDef;
    }
+   
+   /** Sets maximum number of results   */
+   public void setLimit(long limit) {     this.limit = limit;  }
+   
+   /**
+    * Returns maximum number of results */
+   public long getLimit() {      return limit; }
    
    public Condition getCriteria()      { return criteria; }
 
@@ -80,6 +91,9 @@ public class Query  {
 
 /*
  $Log: Query.java,v $
+ Revision 1.3  2004/10/08 09:40:52  mch
+ Started proper ADQL parsing
+
  Revision 1.2  2004/10/06 21:12:16  mch
  Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
 

@@ -1,5 +1,5 @@
 /*
- * $Id: Query2Adql074.java,v 1.2 2004/10/07 10:34:44 mch Exp $
+ * $Id: Query2Adql074.java,v 1.3 2004/10/08 09:40:52 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -58,7 +58,7 @@ public class Query2Adql074  {
          selectListTag.writeTag("Item", new String[] { "xsi:type='allSelectionItemType'" },"");
       }
       else {
-         NumericExpression[] colDefs = ((ReturnTable) query.getResultsDef()).getColDefs();
+         Expression[] colDefs = ((ReturnTable) query.getResultsDef()).getColDefs();
 
          for (int i = 0; i < colDefs.length; i++) {
             if (colDefs[i] instanceof ColumnReference) {
@@ -274,6 +274,9 @@ public class Query2Adql074  {
 
 /*
  $Log: Query2Adql074.java,v $
+ Revision 1.3  2004/10/08 09:40:52  mch
+ Started proper ADQL parsing
+
  Revision 1.2  2004/10/07 10:34:44  mch
  Fixes to Cone maker functions and reading/writing String comparisons from Query
 

@@ -1,5 +1,5 @@
 /*
- * $Id: Intersection.java,v 1.1 2004/10/06 21:12:16 mch Exp $
+ * $Id: Intersection.java,v 1.2 2004/10/08 09:40:52 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -16,13 +16,13 @@ public class Intersection implements BooleanExpression {
 
    private Vector conditions = new Vector();
    
-   /** Create a union from a left hand side AND right hand side */
+   /** Create from a left hand side AND right hand side */
    public Intersection( Condition givenLHS, Condition givenRHS) {
       conditions.add(givenLHS);
       conditions.add(givenRHS);
    }
 
-   /** Start a union with an initial condition */
+   /** Start with an initial condition - if nothing added, works as a bracket around the given condition */
    public Intersection( Condition initial) {
       conditions.add(initial);
    }
@@ -50,6 +50,9 @@ public class Intersection implements BooleanExpression {
 
 /*
 $Log: Intersection.java,v $
+Revision 1.2  2004/10/08 09:40:52  mch
+Started proper ADQL parsing
+
 Revision 1.1  2004/10/06 21:12:16  mch
 Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
 

@@ -1,5 +1,5 @@
 /*
- * $Id: LiteralNumber.java,v 1.1 2004/08/25 23:38:33 mch Exp $
+ * $Id: LiteralNumber.java,v 1.2 2004/10/08 09:40:52 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -33,6 +33,16 @@ public class LiteralNumber implements NumericExpression {
       }
       
    }
+
+   public LiteralNumber(double givenValue) {
+      this.value = ""+givenValue;
+      type = REAL;
+   }
+
+   public LiteralNumber(long givenValue) {
+      this.value = ""+givenValue;
+      type = INTEGER;
+   }
    
    public String toString() {
       switch (type) {
@@ -50,6 +60,9 @@ public class LiteralNumber implements NumericExpression {
 
 /*
 $Log: LiteralNumber.java,v $
+Revision 1.2  2004/10/08 09:40:52  mch
+Started proper ADQL parsing
+
 Revision 1.1  2004/08/25 23:38:33  mch
 (Days changes) moved many query- and results- related classes, renamed packages, added tests, added CIRCLE to sql/adql parsers
 

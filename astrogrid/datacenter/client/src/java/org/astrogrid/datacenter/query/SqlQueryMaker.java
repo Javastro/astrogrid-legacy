@@ -1,5 +1,5 @@
 /*
- * $Id: SqlQueryMaker.java,v 1.2 2004/10/07 10:34:44 mch Exp $
+ * $Id: SqlQueryMaker.java,v 1.3 2004/10/08 09:40:52 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -332,7 +332,7 @@ public class SqlQueryMaker  {
     * Parses a function, ie a function name and a list of comma separated
     * arguments within following brackets
     */
-   private Function parseFunction(String expression) {
+   public Function parseFunction(String expression) {
       String funcName = expression.substring(0,expression.indexOf('(')).trim();
 
       String bracketed = expression.substring(expression.indexOf('(')+1).trim();
@@ -636,6 +636,9 @@ public class SqlQueryMaker  {
 
 /*
  $Log: SqlQueryMaker.java,v $
+ Revision 1.3  2004/10/08 09:40:52  mch
+ Started proper ADQL parsing
+
  Revision 1.2  2004/10/07 10:34:44  mch
  Fixes to Cone maker functions and reading/writing String comparisons from Query
 
