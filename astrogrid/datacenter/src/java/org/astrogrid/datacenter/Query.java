@@ -20,8 +20,8 @@ public class Query {
 		logger = Logger.getLogger( Query.class ) ;
 		
     private static final String
-	    ASTROGRIDERROR_COULD_NOT_CREATE_QUERYFACTORY_IMPL = "AGDTCE00050", 
-	    ASTROGRIDERROR_COULD_NOT_dosomething = "AGDTCE00???" ;
+	    ASTROGRIDERROR_COULD_NOT_CREATE_QUERYFACTORY_IMPL = "AGDTCE00050" , 
+	    ASTROGRIDERROR_COULD_NOT_CREATE_QUERY_FROM_ELEMENTS = "AGDTCE00055" ;
         
     public static final String
 		QUERYFACTORY_KEY_SUFFIX = ".QUERYFACTORY" ;
@@ -51,7 +51,9 @@ public class Query {
 			Element
 				element ;
 						   
-			for( int i=0 ; i < nodeList.getLength() ; i++ ) {				
+			for( int i=0 ; i < nodeList.getLength() ; i++ ) {	
+				if( nodeList.item(i).getNodeType() != Node.ELEMENT_NODE )
+					continue ;				
 				element = (Element) nodeList.item(i) ;
 				
 				if( element.getTagName().equals( JobDocDescriptor.CRITERIA_ELEMENT ) ) {
@@ -72,7 +74,7 @@ public class Query {
 		}
 		catch( Exception ex ) {
 			Message
-				message = new Message( ASTROGRIDERROR_COULD_NOT_dosomething ) ;
+				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_QUERY_FROM_ELEMENTS ) ;
 			logger.error( message.toString(), ex ) ;
 			throw new QueryException( message, ex );    		
 		}

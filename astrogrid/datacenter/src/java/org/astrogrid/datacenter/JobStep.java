@@ -43,7 +43,9 @@ public class JobStep {
 		      queryChild = null,
 		      catalogChild = null ;
 			   
-		   for( int i=0 ; i < nodeList.getLength() ; i++ ) {				
+		   for( int i=0 ; i < nodeList.getLength() ; i++ ) {
+		   	   if( nodeList.item(i).getNodeType() != Node.ELEMENT_NODE )
+		   	       continue ;				
 			   queryChild = (Element) nodeList.item(i) ;
 			   if( queryChild.getTagName().equals( JobDocDescriptor.QUERY_ELEMENT ) ) 
 			       break ;
@@ -51,7 +53,9 @@ public class JobStep {
 		
 		   nodeList = queryChild.getElementsByTagName( JobDocDescriptor.CATALOG_ELEMENT ) ;
 		
-		   for( int i=0 ; i < nodeList.getLength() ; i++ ) {				
+		   for( int i=0 ; i < nodeList.getLength() ; i++ ) {
+			   if( nodeList.item(i).getNodeType() != Node.ELEMENT_NODE )
+			       continue ;								
 			   catalogChild = (Element) nodeList.item(i) ;
 			   if( catalogChild.getTagName().equals( JobDocDescriptor.CATALOG_ELEMENT ) ) 
 				   break ;

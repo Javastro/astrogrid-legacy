@@ -13,13 +13,13 @@ import org.astrogrid.datacenter.JobException ;
 import org.astrogrid.datacenter.DatasetAgent ;
 import org.astrogrid.datacenter.i18n.*;
 import org.apache.log4j.Logger;
+import org.astrogrid.datacenter.i18n.*;
 import org.w3c.dom.* ;
 import java.util.Date ;
 import java.sql.Connection ;
 import java.sql.PreparedStatement ;
 import java.sql.ResultSet ;
 import java.sql.SQLException ;
-import java.sql.Timestamp ;
 import java.text.MessageFormat ;
 
 public class JobImpl extends Job {
@@ -164,10 +164,8 @@ public class JobImpl extends Job {
 				  inserts = new Object[1] ;
 			   inserts[0] = DatasetAgent.getProperty( JobFactoryImpl.JOB_TABLENAME ) ;
 			   String
-				  updateString = MessageFormat.format( JobFactoryImpl.UPDATE_TEMPLATE, inserts ) ;
-
-// Commented out as no DB for Eclipse to use
-//			   preparedStatement = getConnection().prepareStatement( updateString ) ;		
+				  updateString = MessageFormat.format( JobFactoryImpl.UPDATE_TEMPLATE, inserts ) ; 
+			   preparedStatement = getConnection().prepareStatement( updateString ) ;		
 			}
 		    
 		}

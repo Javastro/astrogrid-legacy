@@ -49,6 +49,7 @@ public abstract class Job {
 		catch( Exception ex ) {
 			Message
 				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_JOBFACTORY_IMPL, implementationFactoryName ) ;
+		    System.out.println( message.toString() ) ;
 			logger.error( message.toString(), ex ) ;
 			throw new JobException( message, ex );
 		}

@@ -34,8 +34,9 @@ public class From {
 		logger = Logger.getLogger( From.class ) ;
 		
 	private static final String
-		ASTROGRIDERROR_COULD_NOT_dosomething = "AGDTCE00???" ;
-	
+		ASTROGRIDERROR_COULD_NOT_CREATE_FROM_FROM_ELEMENT = "AGDTCE00200",
+	    ASTROGRIDERROR_COULD_NOT_CREATE_SQL_FOR_FROM = "AGDTC00210" ;
+	    		
 	private Catalog []
 	   catalogs ;
 	   
@@ -51,7 +52,9 @@ public class From {
 
 			setCatalogs(new Catalog[ nodeList.getLength() ]);
 						   
-			for( int i=0 ; i < nodeList.getLength() ; i++ ) {				
+			for( int i=0 ; i < nodeList.getLength() ; i++ ) {	
+				if( nodeList.item(i).getNodeType() != Node.ELEMENT_NODE )
+					continue ;							
 				catalogElement = (Element) nodeList.item(i) ;				
 				if( catalogElement.getTagName().equals( JobDocDescriptor.CATALOG_ELEMENT ) ) {
 					getCatalogs() [i]= new Catalog( catalogElement ) ;
@@ -65,7 +68,7 @@ public class From {
 		}
 		catch( Exception ex ) {
 			Message
-				message = new Message( ASTROGRIDERROR_COULD_NOT_dosomething ) ;
+				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_FROM_FROM_ELEMENT ) ;
 			logger.error( message.toString(), ex ) ;
 			throw new QueryException( message, ex );    		
 		}
@@ -122,7 +125,7 @@ public class From {
     	}
 		catch( Exception ex) {
 			Message
-				message = new Message( ASTROGRIDERROR_COULD_NOT_dosomething ) ;
+				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_SQL_FOR_FROM ) ;
 			logger.error( message.toString(), ex ) ;   		
 		}
 		finally {

@@ -21,6 +21,7 @@ import javax.xml.parsers.*;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource ;
 
+
 /**
  * The <code>DatasetAgent</code> class is the top level AstroGrid 
  * component in a data center.It contains the workflow for executing a job,
@@ -103,6 +104,7 @@ public class DatasetAgent {
 			configureMessages() ;
 		}
 		catch ( IOException ex ) {
+			System.out.println( "Could not read configuration file" ) ;
 			Message
 				message = new Message( ASTROGRIDERROR_COULD_NOT_READ_CONFIGFILE, CONFIG_FILENAME ) ;
 			logger.error( message.toString(), ex ) ;

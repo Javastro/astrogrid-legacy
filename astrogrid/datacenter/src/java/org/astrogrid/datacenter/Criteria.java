@@ -61,12 +61,14 @@ public class Criteria {
 		try {
 
 			NodeList
-			   nodeList = criteriaElement.getChildNodes() ;			   
+			   nodeList = criteriaElement.getChildNodes() ;
 			Element
 			    operationElement ;
 			   
-			for( int i=0 ; i < nodeList.getLength() ; i++ ) {				
-				operationElement = (Element) nodeList.item(i) ;				
+			for( int i=0 ; i < nodeList.getLength() ; i++ ) {
+				if( nodeList.item(i).getNodeType() != Node.ELEMENT_NODE )
+					continue ;							
+				operationElement = (Element) nodeList.item(i) ;
 				if( operationElement.getTagName().equals( JobDocDescriptor.OP_ELEMENT ) ) {
 					setOperation(new Operation( operationElement )) ;
 				}
