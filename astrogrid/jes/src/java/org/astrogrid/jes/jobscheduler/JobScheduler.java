@@ -408,7 +408,7 @@ public class JobScheduler {
             element = delegate.makeQuery( requestDoc.getDocumentElement() ) ; 
             logger.debug( "delegate.makeQuery() returned..."  ) ;
             logger.debug( XMLUtils.ElementToString( element ) ) ;
-            queryID = this.extractJobURN( requestDoc ) ;
+            queryID = this.extractAssignID( element ) ;
             logger.debug( "queryid set to: [" + queryID + "]"   ) ;
             delegate.startQuery( queryID ) ;   
 
@@ -433,7 +433,7 @@ public class JobScheduler {
         String
             request = null,
             extendedJobURN ; // Includes step number (suitable only for iteration 3)
-        
+               
         try {
                
             Element
@@ -451,7 +451,7 @@ public class JobScheduler {
             // set the URL for the JobMonitor so that it can be contacted by the datacenter... 
             jobElement.setAttribute( SubmissionRequestDD.JOB_MONITOR_URL_ATTR
                                    , JES.getProperty( JES.MONITOR_URL, JES.MONITOR_CATEGORY ) ) ; 
-              
+                         
             NodeList
                nodeList = jobElement.getChildNodes() ; 
             ArrayList
@@ -464,17 +464,21 @@ public class JobScheduler {
                            
                 if( nodeList.item(i).getNodeType() == Node.ELEMENT_NODE ) {
                    
-                    element = (Element) nodeList.item(i) ;                  
+                    element = (Element) nodeList.item(i) ;  
+                    
+                    logger.debug( "element.getTagName(): " + element.getTagName() );                
 
                     if( element.getTagName().equals( SubmissionRequestDD.JOBSTEP_ELEMENT ) ) {                      
                        
                         stepNumber = new Integer( element.getAttribute( SubmissionRequestDD.JOBSTEP_STEPNUMBER_ATTR).trim() ) ;
 
                         if( !stepNumber.equals( step.getStepNumber() ) ) {
-                       	
                             stepsToBeEliminated.add( element ) ;
                         }
                         
+                    }
+                    else if( element.getTagName().equals( "AssignID" ) ) {
+                        element.getFirstChild().setNodeValue( extendedJobURN ) ;
                     }
                 
                 } // end if
@@ -549,8 +553,36 @@ public class JobScheduler {
 	private String extractJobURN( Document jobDoc ) { 
 		return jobDoc.getDocumentElement().getAttribute( ScheduleRequestDD.JOB_URN_ATTR ).trim() ;	
 	} 
-	
     
+    private String extractAssignID( Element retQueryID ) { 
+        
+        String
+           queryId = null ;
+        Element
+           element = null ;
+        NodeList
+           nodeList = retQueryID.getChildNodes() ; 
+               
+        for( int i=0 ; i < nodeList.getLength() ; i++ ) {
+                           
+            if( nodeList.item(i).getNodeType() == Node.ELEMENT_NODE ) {
+                   
+                element = (Element) nodeList.item(i) ;                  
+
+                if( element.getTagName().equals( "QueryId" ) ) {                                           
+                    queryId = element.getFirstChild().getNodeValue() ;
+                    break ;   
+                }
+                
+            } // end if
+                
+        } // end for  
+        
+        return queryId ; 
+           
+    } // end of extractAssignID()
+	 
+     
 	private String enquireOfRegistry( JobStep step ) throws JesException { 
 		if( TRACE_ENABLED ) logger.debug( "enquireOfRegistry() entry") ;
 		
