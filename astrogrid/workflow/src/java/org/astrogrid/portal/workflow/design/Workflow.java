@@ -1557,6 +1557,11 @@ public class Workflow extends Activity {
       * the old value to null or the empty string.
       * 
       * This is by far the easiest way of setting parameter values!
+      * 
+      * Note. If the value to be inserted is a parameter with no upper cardinality  
+      * and it is not a replacement for an old value (ie: it is a new insert), then
+      * as a convenience to the gui, we examine how many empty ones are still
+      * left, and insert a new empty parameter if none are found.
       *  
       * @param tool - The tool to be executed
       * @param paramName - the name of the parameter
@@ -1576,11 +1581,14 @@ public class Workflow extends Activity {
                                               , String newValue
                                               , String direction ) {
     
-        if( TRACE_ENABLED ) trace( "Workflow.insertParameterValue(tool,paramName,oldValue,newValue,direction) entry") ; 
+        if( TRACE_ENABLED ) trace( "entry: Workflow.insertParameterValue(tool,paramName,oldValue,newValue,direction)") ; 
         
             boolean retValue = false ;
             ListIterator iterator = null ;
-            Parameter p ;
+            Parameter 
+                p = null,
+                savedNewInsertTarget = null ;
+            int countOfEmptyParams = 0 ;
      
         try {
             
@@ -1591,39 +1599,67 @@ public class Workflow extends Activity {
                 iterator = tool.getOutputParameters() ;
             }
             else {
-                return retValue ;
+                return retValue ; // Return with error!
             }
             
             while( iterator.hasNext() ) {
                 p = (Parameter)iterator.next() ;
                 if( p.getName().equals( paramName ) ) {
+                    // OK, we've identified the parameter...
+                    
                     if( (oldValue == null || oldValue.equals("") )
                         &&
                         (p.getValue() == null || p.getValue().equals("") ) ) {
-                            
+                          
+                        // OK, we've identified that we need to insert
+                        // into an empty parameter...    
                         p.setValue( newValue ) ;
-                        if(p.getCardinality().getMaximum() <= -1) {
-                            tool.newInputParameter( "VOTfiles" ) ;
-                        }
+                        savedNewInsertTarget = p ;
                         retValue = true ;
                         break ;
                     }
                     else if( (oldValue != null)
                              &&
                              (oldValue.equals( p.getValue() )) ) {
-                                 
+                        
+                        // OK, we've identified that we wish to replace
+                        // an existing value with a new value...         
                         p.setValue( newValue ) ;
-						if(p.getCardinality().getMaximum() <= -1) {
-						    tool.newInputParameter( "VOTfiles" ) ;
-						}
                         retValue = true ;
                         break ;
                     }
                 } // end if
-            } // end while 
+            } // end while
+            
+            // If we have inserted a brand new value and the cardinality is unbounded
+            if( (savedNewInsertTarget != null) 
+                &&
+                (savedNewInsertTarget.getCardinality().getMaximum() <= -1) ) {
+                  
+                // First, count up the empty parameters of this type still left...
+                while( iterator.hasNext() ) {
+                    p = (Parameter)iterator.next() ;
+                    if( (p.getName().equals( paramName )) 
+                        &&
+                        (p.getValue() == null || p.getValue().equals("") ) ) {
+                            
+                        countOfEmptyParams++ ;
+                    }
+                    
+                } // endwhile
+                 
+                // If the count of empty parameters (of this type )is now zero
+                // then for the convenience of the gui we create a further empty 
+                // parameter... 
+                if( countOfEmptyParams == 0 ) { 
+                    tool.newInputParameter( paramName ) ;
+                }
+                                 
+            } // endif
+             
         }
         finally {
-            if( TRACE_ENABLED ) trace( "Workflow.insertParameterValue(tool,paramName,oldValue,newValue,direction) exit") ; 
+            if( TRACE_ENABLED ) trace( "exit: Workflow.insertParameterValue(tool,paramName,oldValue,newValue,direction)") ; 
         }
         
         return retValue ;
