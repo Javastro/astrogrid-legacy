@@ -1,4 +1,4 @@
-/*$Id: DatacenterCommander.java,v 1.4 2004/03/12 20:00:11 mch Exp $
+/*$Id: DatacenterCommander.java,v 1.5 2004/03/13 16:19:38 mch Exp $
  * Created on 24-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -137,24 +137,6 @@ public class DatacenterCommander {
       Piper.bufferedPipe(in, out);
    }
    
-   /**
-    * convert a sql string object to an Element that can be used as the query body in a
-     * {@link org.astrogrid.datacenter.delegate.FullSearcher}
-    * @param sql
-    * @return
-    */
-   public static Element sqlToQueryBody(String sql) throws IOException {
-      try {
-         Document doc = DomHelper.newDocument();
-         Element root = doc.createElementNS("urn:sql","sql:sql");
-         doc.appendChild(root);
-         Text text = doc.createTextNode(sql);
-         root.appendChild(text);
-         return root;
-      } catch (ParserConfigurationException pe) {
-         throw new IOException("Parser Configuration failed:" + pe.getMessage());
-      }
-   }
             
 
    
@@ -162,8 +144,6 @@ public class DatacenterCommander {
       
       System.out.println("Connecting to server...");
       QuerySearcher del = DatacenterDelegateFactory.makeFullSearcher(endpoint.toString());
-      System.out.println("Reading query...");
-      Element queryBody = sqlToQueryBody(sql);
       System.out.println("Asking query...");
       InputStream results = del.askQuery(new RawSqlQuery(sql), QuerySearcher.VOTABLE);
       System.out.println("Results:");
@@ -175,6 +155,9 @@ public class DatacenterCommander {
 
 /*
  $Log: DatacenterCommander.java,v $
+ Revision 1.5  2004/03/13 16:19:38  mch
+ Tidying up after refactor
+
  Revision 1.4  2004/03/12 20:00:11  mch
  It05 Refactor (Client)
 

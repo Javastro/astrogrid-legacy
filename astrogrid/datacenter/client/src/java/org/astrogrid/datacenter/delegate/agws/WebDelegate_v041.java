@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegate_v041.java,v 1.1 2004/03/12 20:00:11 mch Exp $
+ * $Id: WebDelegate_v041.java,v 1.2 2004/03/13 16:19:38 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -116,7 +116,7 @@ public class WebDelegate_v041 implements QuerySearcher, ConeSearcher {
     * implementation of interface org.astrogrid.datacenter.query.Query
     */
    private org.astrogrid.datacenter.axisdataserver.types.Query makev41Query(org.astrogrid.datacenter.query.Query query) throws IOException {
-      if (!(query instanceof AdqlQuery)) {
+      if ((query instanceof AdqlQuery)) {
          //create the old wrapper query
          org.astrogrid.datacenter.axisdataserver.types.Query q = new org.astrogrid.datacenter.axisdataserver.types.Query();
          //convert from new to old
@@ -124,7 +124,7 @@ public class WebDelegate_v041 implements QuerySearcher, ConeSearcher {
 
          return q;
       }
-      else if (!(query instanceof RawSqlQuery)) {
+      else if ((query instanceof RawSqlQuery)) {
          //create the old wrapper query
          org.astrogrid.datacenter.axisdataserver.types.Query q = new org.astrogrid.datacenter.axisdataserver.types.Query();
          //convert from new to old
@@ -259,6 +259,9 @@ public class WebDelegate_v041 implements QuerySearcher, ConeSearcher {
 
 /*
  $Log: WebDelegate_v041.java,v $
+ Revision 1.2  2004/03/13 16:19:38  mch
+ Tidying up after refactor
+
  Revision 1.1  2004/03/12 20:00:11  mch
  It05 Refactor (Client)
 
@@ -301,6 +304,9 @@ public class WebDelegate_v041 implements QuerySearcher, ConeSearcher {
  Revision 1.16  2004/01/08 15:48:17  mch
  Allow myspace references to be given
 $Log: WebDelegate_v041.java,v $
+Revision 1.2  2004/03/13 16:19:38  mch
+Tidying up after refactor
+
 Revision 1.1  2004/03/12 20:00:11  mch
 It05 Refactor (Client)
 
