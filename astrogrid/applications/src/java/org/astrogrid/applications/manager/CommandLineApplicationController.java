@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationController.java,v 1.24 2004/04/02 20:48:15 pah Exp $
+ * $Id: CommandLineApplicationController.java,v 1.25 2004/04/15 18:15:59 pah Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -14,6 +14,10 @@ package org.astrogrid.applications.manager;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
+
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 import org.apache.axis.description.ServiceDesc;
 import org.exolab.castor.xml.MarshalException;
@@ -68,7 +72,7 @@ import org.astrogrid.workflow.beans.v1.Tool;
 public class CommandLineApplicationController extends AbstractApplicationController {
 
    /**
-    * This is a bit of a cheat to get at the instance of the applicationController - should be done elsewhere
+    * FIXME This is a bit of a cheat to get at the instance of the applicationController - should be done elsewhere
     */
    private static CommandLineApplicationController instance = null;
    /**
@@ -252,4 +256,45 @@ public class CommandLineApplicationController extends AbstractApplicationControl
       throw new UnsupportedOperationException("CommandLineApplicationController.queryExecutionStatus() not implemented");
    }
 
+   /**
+    * @return
+    * @deprecated should really do this with a container and IoC
+    */
+   public static CommandLineApplicationController getInstance() {
+      return instance;
+   }
+   
+   public Test getInstallationTests()
+   {
+      TestSuite suite = new TestSuite("Command Line Application Controller");
+      suite.addTestSuite(InstallTest.class);
+      return suite;
+   }
+   
+   protected class InstallationTest extends TestCase {
+      /**
+       * 
+       */
+      public InstallationTest() {
+         super();
+      }
+
+        public InstallationTest(String s) {
+           super(s);
+        }
+        public void testCanWriteToWorkingDir() throws Exception {
+           fail("no test yet");
+        }
+        public void testCanGetNewExecutionId() throws Exception {
+           fail("no test yet");
+        }
+        public void testHasAtLeastOneApplicationConfigured() throws Exception {
+           fail("no test yet");
+        }
+        public void testApplicationsProperlyRegistered() throws Exception {
+           fail("no test yet");
+        }
+     }
+
+   
 }

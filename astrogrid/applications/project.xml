@@ -49,6 +49,30 @@ This functionality is provided with the ApplicationController service, of which 
     </url>
   </repository>
 
+        <packageGroups>
+                <packageGroup>
+                        <title>Web Service Delegate - Public Interface</title>
+                        <packages>org.astrogrid.applications.delegate</packages>
+                </packageGroup>
+                <packageGroup>
+                        <title>Web Service Delegate - Implementation</title>
+                        <packages>org.astrogrid.applications.delegate.impl</packages>
+                </packageGroup>
+                <packageGroup>
+                        <title>Common Execution Controller</title>
+                        <packages>org.astrogrid.applications.manager*:org.astrogrid.applications.service*</packages>
+                </packageGroup>
+                <packageGroup>
+                        <title>Command Line Execution Controller and Application Specializations</title>
+                        <packages>org.astrogrid.applications.commandline</packages>
+                </packageGroup>
+                <packageGroup>
+                        <title>Application Description</title>
+                        <packages>org.astrogrid.applications.description.*</packages>
+                </packageGroup>
+        </packageGroups>
+
+
   <developers>
   <developer>
      <name>Paul Harrison</name>
@@ -246,6 +270,9 @@ This functionality is provided with the ApplicationController service, of which 
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>3.8</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
         </dependency>
         <dependency>
             <artifactId>junitee</artifactId>

@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryEntryBuilderTest.java,v 1.5 2004/04/02 11:55:36 pah Exp $
+ * $Id: RegistryEntryBuilderTest.java,v 1.6 2004/04/15 18:16:48 pah Exp $
  * 
  * Created on 24-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -78,7 +78,7 @@ public class RegistryEntryBuilderTest extends RegEntryBaseTestCase {
      Unmarshaller um = new Unmarshaller(VODescription.class);
      
      //TODO Castor bug -will not round trip....
-     VODescription reentry = (VODescription)um.unmarshal(new FileReader(testfile));
+//     VODescription reentry = (VODescription)um.unmarshal(new FileReader(testfile));
      
      
      //TODO - should make more extensive tests....

@@ -11,6 +11,7 @@
 <p>Once the test application has been configured you can do some testing to</p>
 
 <ul>
+  <li><a href="../TestServlet?suite=org.astrogrid.applications.manager.InstallTest" >Run automated unit tests</a></li>
   <li>view the applications configured</li>
   <li>look at a particular application configuration in detail.</li>
   <li>look at the system parameters</li>

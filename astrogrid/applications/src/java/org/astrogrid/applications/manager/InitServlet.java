@@ -1,5 +1,5 @@
 /*
- * $Id: InitServlet.java,v 1.2 2004/04/15 08:45:51 pah Exp $
+ * $Id: InitServlet.java,v 1.3 2004/04/15 18:15:59 pah Exp $
  * 
  * Created on 14-Apr-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -45,6 +45,8 @@ public class InitServlet extends HttpServlet {
    public void init(ServletConfig conf) throws ServletException {
       // build the service endpoint & then call the service
       
+      //FIXME - this is not the servlet context that we need
+    
       String endpoint = conf.getServletContext().getRealPath("services/CommonExecutionConnectorService");
       logger.info("initializing service at endpoint="+endpoint);
       

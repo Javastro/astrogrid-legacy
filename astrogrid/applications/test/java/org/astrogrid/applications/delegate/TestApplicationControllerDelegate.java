@@ -1,5 +1,5 @@
 /*
- * $Id: TestApplicationControllerDelegate.java,v 1.8 2004/04/15 08:45:51 pah Exp $
+ * $Id: TestApplicationControllerDelegate.java,v 1.9 2004/04/15 18:16:48 pah Exp $
  * 
  * Created on 08-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -37,11 +37,10 @@ public class TestApplicationControllerDelegate extends AbstractDelegateTestCase 
    }
 
    public static void main(String[] args) {
-      //TODO set the endpoint from here?
-      junit.textui.TestRunner.run(TestApplicationControllerDelegate.class);
       if (args.length > 0) {
          localendpoint = args[0];
       }
+      junit.textui.TestRunner.run(TestApplicationControllerDelegate.class);
 
    }
 }

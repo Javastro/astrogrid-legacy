@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-<!-- $Id: index.html,v 1.7 2004/03/29 12:35:29 pah Exp $ --><!-- this is a bit of a hack - it should be generated during the site build so
+<!-- $Id: index.html,v 1.8 2004/04/15 18:16:15 pah Exp $ --><!-- this is a bit of a hack - it should be generated during the site build so
 that the styles are correct -->
   <title>AstroGrid Project - AstroGrid Applications Integration</title>
   <style type="text/css">
@@ -83,11 +83,11 @@ before trying to invoke the service. <br/>
           </a>the application in the <a
  href="/manager/html">tomcat manager</a>.<br/>
         </li>
-        <li>You can then check your <a href="check_config.jsp">configuration</a></li>
+        <li>You can then check your <a href="check_config.jsp">configuration</a> and some simple <a href="TestServlet?suite=org.astrogrid.applications.manager.InstallTest" >automated unit tests</a></li>
         <li>There is a test application in the <a href="test">test
 folder</a> that can be quickly configured
 to allow the installation to be&nbsp;<a href="maven/Troubleshooting.html">tested</a></li>
-      </ul>
+     </ul>
       <h5>Application Configuration</h5>
       <p>It does take some work work to <a
  href="ApplicationConfiguration.html">configure&nbsp; a new application</a>
@@ -97,8 +97,8 @@ that the command line application controller can run, however. <br/>
  href="maven/index.html">Maven
 documentation</a> for this ApplicationController service. </p>
 <h4>Using the Service</h4>
-<p>It is possible to call the service directly, with a knowledge of the <a href="/astrogrid-applications/services/ApplicationControllerService?wsdl">wsdl</a>, but if you are programming in java, then you might find it easier to use the delegate contained in the <a href="ApplicationControllerDelegate.jar">this jar</a>. 
-	The main calling interface is described by the <a href="/astrogrid-applications/maven/apidocs/org/astrogrid/applications/manager/ApplicationController.html">ApplicationController</a> </p>
+<p>It is possible to call the service directly, with a knowledge of the <a href="./services/CommonExecutionConnectorService?wsdl">wsdl</a>, but if you are programming in java, then you might find it easier to use the delegate contained in the <a href="CommonExecutionConnectorDelegate.jar">this jar</a>. 
+	The main calling interface is described by the <a href="/astrogrid-applications/maven/apidocs/org/astrogrid/applications/delegate/CommonExecutionConnectorClient.html">CommonExecutionConnectorClient</a> </p>
 	
 <h4>Getting the Latest Version</h4>
 <p>You can find the latest version of this web application from <a href="http://www.astrogrid.org/maven/docs/snapshot/applications/index.html">http://www.astrogrid.org/maven/docs/snapshot/applications/index.html</a></p>	
