@@ -218,7 +218,7 @@ public class RegistryQueryAction extends AbstractAction
             selItemOperation = request.getParameter("selectitemop0");
             selItemValue = request.getParameter("selectitemvalue0");
                
-            query += "<selection item='" + selItem + "' itemOp='" +
+            query += "<selection item='.//*:" + selItem + "' itemOp='" +
                        selItemOperation + "' value='" + selItemValue + "'/>";
             for(int i = 1;i < crit_number;i++) {
                selJoinType = request.getParameter(("selectjointype" + i));
@@ -228,7 +228,7 @@ public class RegistryQueryAction extends AbstractAction
                selItemOperation = request.getParameter("selectitemop" + i);
                selItemValue = request.getParameter("selectitemvalue" + i);
                
-               query += "<selection item='" + selItem + "' itemOp='" +
+               query += "<selection item='.//*:" + selItem + "' itemOp='" +
                           selItemOperation + "' value='" + selItemValue + "'/>";
             }
             query += "</selectionSequence></query>";
