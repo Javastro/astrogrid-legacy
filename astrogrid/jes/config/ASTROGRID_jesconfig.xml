@@ -36,7 +36,7 @@
   
   <!-- JES CATEGORY =========================================================== -->  
   <category name="JES">
-    <property name="ID" value="jes@astrogrid1.jb.ac.uk" />
+    <property name="ID" value="jes@astrogrid1.jb.man.ac.uk" />
   </category>
  
  
@@ -44,7 +44,7 @@
   <category name="MONITOR">
     <property name="PARSER.VALIDATION" value="false" />  
     <!-- Location of our JobMonitor -->
-    <property name="URL" value="http://astrogrid1.jb.ac.uk:8080/axis/services/JobMonitorService" />
+    <property name="URL" value="http://astrogrid1.jb.man.ac.uk:8080/jes-SNAPSHOT/services/JobMonitorService" />
   </category>
   
   
@@ -52,7 +52,7 @@
   <category name="CONTROLLER">
     <property name="PARSER.VALIDATION" value="false" />
     <property name="TEMPLATE.RESPONSE" value="JobController.xmltemplate" />  
-    <property name="URL" value="http://astrogrid1.jb.ac.uk:8080/axis/services/JobControllerService" />
+    <property name="URL" value="http://astrogrid1.jb.man.ac.uk:8080/jes-SNAPSHOT/services/JobControllerService" />
   </category>  
 -->
   
@@ -60,7 +60,7 @@
   <category name="SCHEDULER">
     <property name="PARSER.VALIDATION" value="false" />
     <!-- Location of our JobScheduler -->
-    <property name="URL" value="http://astrogrid1.jb.ac.uk:8080/axis/services/JobSchedulerService" />
+    <property name="URL" value="http://astrogrid1.jb.man.ac.uk:8080/jes-SNAPSHOT/services/JobSchedulerService" />
     <!-- Schedule Job Request Template -->
     <property name="TEMPLATE.SCHEDULE_JOB_REQUEST" value="JobSchedulerRequest.xmltemplate" />
   </category>  
