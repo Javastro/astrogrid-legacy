@@ -9,7 +9,7 @@
 
 package org.astrogrid.community.service.authentication;
 
-public class AuthenticationService implements org.astrogrid.community.services.authentication.SimpleAuthenticaton{
+public class AuthenticationService {
    
 	public java.lang.String authenticateLogin(java.lang.String userName, java.lang.String password) throws java.rmi.RemoteException {
     	return ("testtoken" + userName + password);
