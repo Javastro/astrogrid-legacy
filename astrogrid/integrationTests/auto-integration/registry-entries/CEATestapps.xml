@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <VODescription xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.1" xmlns="http://www.ivoa.net/xml/VOResource/v0.9">
-    <Resource status="active" xsi:type="cea:CeaApplicationType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <cea:CeaApplication>
         <Identifier>
             <AuthorityID>org.astrogrid.localhost</AuthorityID>
             <ResourceKey>testapp</ResourceKey>
@@ -134,8 +134,8 @@
                 </ns31:Interface>
             </cea:Interfaces>
         </cea:ApplicationDefinition>
-    </Resource>
-    <Resource status="active" xsi:type="cea:CeaApplicationType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    </cea:CeaApplication>
+    <cea:CeaApplication>
         <Identifier>
             <AuthorityID>org.astrogrid.localhost</AuthorityID>
             <ResourceKey>testap2</ResourceKey>
@@ -195,11 +195,11 @@
                 </ns40:Interface>
             </cea:Interfaces>
         </cea:ApplicationDefinition>
-    </Resource>
-    <Resource status="active" xsi:type="cea:CeaServiceType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    </cea:CeaApplication>
+    <cea:CeaService>
         <Identifier>
             <AuthorityID>org.astrogrid.localhost</AuthorityID>
-            <ResourceKey>TemplateEntry</ResourceKey>
+            <ResourceKey>TestCEC</ResourceKey>
         </Identifier>
         <Title>TemplateEntry</Title>
         <ShortName>TemplateEntry</ShortName>
@@ -247,5 +247,5 @@
                 <ResourceKey>testap2</ResourceKey>
             </cea:ApplicationReference>
         </cea:ManagedApplications>
-    </Resource>
+    </cea:CeaService>
 </VODescription>
