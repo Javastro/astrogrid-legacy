@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
 import java.lang.StringBuffer;
+import java.io.InputStream;
 import java.io.FileInputStream;
 import java.text.MessageFormat;
 import java.io.StringReader ;
@@ -12,6 +13,7 @@ import java.util.HashMap;
 import java.util.Calendar;
 import java.io.PrintWriter;
 import java.io.FileOutputStream;
+import java.lang.ClassLoader;
 
 import javax.xml.parsers.*;
 import org.w3c.dom.*;
@@ -35,11 +37,6 @@ public class MySpaceUtils {
     private static boolean DEBUG = true;
 	private static String catalinaHome = AxisProperties.getProperty("catalina.home");
 	private static String requestResponseTemplate = catalinaHome+"/conf/astrogrid/mySpace/" +"MSManagerRequestResponse.properties";
-	//private static String responseTemplate = catalinaHome+"/conf/astrogrid/mySpace/" +"MySpaceManagerResponse.properties";
-	//private static String responseTemplate_header = catalinaHome+"/conf/astrogrid/mySpace/" +"MSResponseHeader.properties";
-	//private static String responseTemplate_element = catalinaHome+"/conf/astrogrid/mySpace/" +"MSResponseElements.properties";
-	//private static String responseTemplate_foot = catalinaHome+"/conf/astrogrid/mySpace/" +"MSResponseFooter.properties";
-	//private static String requestTemplate = "catalinaHome"+"/conf/astrogrid/mySpace/"+"MySpaceManagerRequest.properties";
     private static Properties conProperties = new Properties();
     private static final String RESPONSE = "MYSPACEMANAGER_RESPONSE";
     private static final String D_RESPONSE_HEAD ="MYSPACEMANAGER_D_RESPONSE_HEAD";
@@ -123,9 +120,13 @@ public class MySpaceUtils {
 		//conProperties = new Properties();
 		String response = "";
 		try {
+			conProperties = loadProperties(requestResponseTemplate);
+			/*
+			//InputStream istream = ClassLoader.getSystemResourceAsStream( requestResponseTemplate );
 			FileInputStream istream = new FileInputStream( requestResponseTemplate );
 			conProperties.load(istream);
 			istream.close();
+			*/
 			if (DEBUG)  logger.debug( "buildMySpaceManagerResponse: " +conProperties.toString() ) ;
 			String template = conProperties.getProperty( RESPONSE );
 			if (DEBUG)  logger.debug("buildMySpaceManagerResponse = "+template);
@@ -150,11 +151,11 @@ public class MySpaceUtils {
 			response = MessageFormat.format( template, inserts ) ;
 			return response;
 		}
-		catch ( IOException ex ) {
-			if (DEBUG)  logger.error("MYSPACEUTILS IO EXCEPTION :" +ex.getMessage());
-			MySpaceMessage msMessage = new MySpaceMessage("ERR_IO_BUILD_RESPONS",ex.toString());
-			msstatus.addCode(MySpaceStatusCode.ERR_IO_BUILD_RESPONS,MySpaceStatusCode.ERROR);
-			response = FAULT+MySpaceStatusCode.ERR_IO_BUILD_RESPONS;
+		catch ( Exception ex ) {
+			if (DEBUG)  logger.error("MYSPACEUTILS ERROR_READING_FILE :" +ex.getMessage());
+			MySpaceMessage msMessage = new MySpaceMessage("ERROR_READING_FILE",ex.toString());
+			msstatus.addCode(MySpaceStatusCode.ERROR_READING_FILE,MySpaceStatusCode.ERROR);
+			response = FAULT+MySpaceStatusCode.ERROR_READING_FILE;
 			return response;
 		}
 		
@@ -164,21 +165,25 @@ public class MySpaceUtils {
 		//conProperties = new Properties();
 		String response = "";
 		try {
+			/*
 			//MySpaceUtils.readFromFile(new File(responseTemplate_foot));
+			//InputStream istream = ClassLoader.getSystemResourceAsStream( requestResponseTemplate );
 			FileInputStream istream = new FileInputStream( requestResponseTemplate );
 			conProperties.load(istream);
 			istream.close();
+			*/
+			conProperties = loadProperties(requestResponseTemplate);
 			if (DEBUG)  logger.debug( "buildMySpaceManagerResponse_Footer: " +conProperties.toString() ) ;
 			response = conProperties.getProperty( D_RESPONSE_FOOT );
 			if (DEBUG)  logger.debug("buildMySpaceManagerResponse_Footer = "+response);
 	
 			return response;
 		}
-		catch ( IOException ex ) {
-			if (DEBUG)  logger.error("MYSPACEUTILS IO EXCEPTION :" +ex.getMessage());
-			MySpaceMessage msMessage = new MySpaceMessage("ERR_IO_BUILD_RESPONS",ex.toString());
-			msstatus.addCode(MySpaceStatusCode.ERR_IO_BUILD_RESPONS,MySpaceStatusCode.ERROR);
-			response = FAULT+MySpaceStatusCode.ERR_IO_BUILD_RESPONS;
+		catch ( Exception ex ) {
+			if (DEBUG)  logger.error("MYSPACEUTILS ERROR_READING_FILE :" +ex.getMessage());
+			MySpaceMessage msMessage = new MySpaceMessage("ERROR_READING_FILE",ex.toString());
+			msstatus.addCode(MySpaceStatusCode.ERROR_READING_FILE,MySpaceStatusCode.ERROR);
+			response = FAULT+MySpaceStatusCode.ERROR_READING_FILE;
 			return response;
 		}
 		
@@ -188,9 +193,13 @@ public class MySpaceUtils {
 		//conProperties = new Properties();
 		String response = "";
 		try {
+			/*
+			//InputStream istream = ClassLoader.getSystemResourceAsStream( requestResponseTemplate );
 			FileInputStream istream = new FileInputStream( requestResponseTemplate );
 			conProperties.load(istream);
 			istream.close();
+			*/
+			conProperties = loadProperties(requestResponseTemplate);
 			if (DEBUG)  logger.debug( "buildMySpaceManagerResponse_Header: " +conProperties.toString() ) ;
 			String template = conProperties.getProperty( D_RESPONSE_HEAD );
 			if (DEBUG)  logger.debug("buildMySpaceManagerResponse_Header = "+template);
@@ -203,11 +212,11 @@ public class MySpaceUtils {
 			response = MessageFormat.format( template, inserts ) ;
 			return response;
 		}
-		catch ( IOException ex ) {
-			if (DEBUG)  logger.error("MYSPACEUTILS IO EXCEPTION :" +ex.getMessage());
-			MySpaceMessage msMessage = new MySpaceMessage("ERR_IO_BUILD_RESPONS",ex.toString());
-			msstatus.addCode(MySpaceStatusCode.ERR_IO_BUILD_RESPONS,MySpaceStatusCode.ERROR);
-			response = FAULT+MySpaceStatusCode.ERR_IO_BUILD_RESPONS;
+		catch ( Exception ex ) {
+			if (DEBUG)  logger.error("MYSPACEUTILS ERROR_READING_FILE :" +ex.getMessage());
+			MySpaceMessage msMessage = new MySpaceMessage("ERROR_READING_FILE",ex.toString());
+			msstatus.addCode(MySpaceStatusCode.ERROR_READING_FILE,MySpaceStatusCode.ERROR);
+			response = FAULT+MySpaceStatusCode.ERROR_READING_FILE;
 			return response;
 		}
 		
@@ -217,9 +226,13 @@ public class MySpaceUtils {
 		//conProperties = new Properties();
 		String response = "";
 		try {
+			/*
+			//InputStream istream = ClassLoader.getSystemResourceAsStream( requestResponseTemplate );
 			FileInputStream istream = new FileInputStream( requestResponseTemplate );
 			conProperties.load(istream);
 			istream.close();
+			*/
+			conProperties = loadProperties(requestResponseTemplate);
 			if (DEBUG)  logger.debug( "buildMySpaceManagerResponse_Element: " +conProperties.toString() ) ;
 			String template = conProperties.getProperty( D_RESPONSE_ELEMENT );
 			if (DEBUG)  logger.debug("buildMySpaceManagerResponse_Element = "+template);
@@ -240,11 +253,11 @@ public class MySpaceUtils {
 			response = MessageFormat.format( template, inserts ) ;
 			return response;
 		}
-		catch ( IOException ex ) {
-			if (DEBUG)  logger.error("MYSPACEUTILS IO EXCEPTION :" +ex.getMessage());
-			MySpaceMessage msMessage = new MySpaceMessage("ERR_IO_BUILD_RESPONS",ex.toString());
-			msstatus.addCode(MySpaceStatusCode.ERR_IO_BUILD_RESPONS,MySpaceStatusCode.ERROR);
-			response = FAULT+MySpaceStatusCode.ERR_IO_BUILD_RESPONS;
+		catch ( Exception ex ) {
+			if (DEBUG)  logger.error("MYSPACEUTILS ERROR_READING_FILE :" +ex.getMessage());
+			MySpaceMessage msMessage = new MySpaceMessage("ERROR_READING_FILE",ex.toString());
+			msstatus.addCode(MySpaceStatusCode.ERROR_READING_FILE,MySpaceStatusCode.ERROR);
+			response = FAULT+MySpaceStatusCode.ERROR_READING_FILE;
 			return response;
 		}
 		
@@ -259,21 +272,21 @@ public class MySpaceUtils {
 			boolean ascending = false;
 			int level = 1;
 			while (true) {
-				logger.debug("Now trying to walk the dom tree..");
+				if(DEBUG)  logger.debug("Now trying to walk the dom tree..");
 					
 					if (checker!=null && (checker.hasChildNodes()) && (!ascending)) {
 						checker = checker.getFirstChild();
-						logger.debug("GOING DOWN"+checker.getNodeName() +"NODETYPE="+checker.getNodeType());
+						if(DEBUG)  logger.debug("GOING DOWN"+checker.getNodeName() +"NODETYPE="+checker.getNodeType());
 						if(checker.getNodeType()==1){
 							String text = "";
 							if(checker.getFirstChild()!=null){
 								if(checker.getFirstChild().getNodeType()==Node.TEXT_NODE) {
 									text = checker.getFirstChild().getNodeValue();
-									logger.debug("BEFORE.PUT.DOWN" +checker.getNodeName()+" TEXT " +text);
+									if(DEBUG)  logger.debug("BEFORE.PUT.DOWN" +checker.getNodeName()+" TEXT " +text);
 									
 									request.put(checker.getNodeName(), text);
 									
-									logger.debug("NODENAME: "+checker.getNodeName() +",  TEXTVALUE: "+text);
+									if(DEBUG)  logger.debug("NODENAME: "+checker.getNodeName() +",  TEXTVALUE: "+text);
 								}
 							}
 						}
@@ -283,19 +296,19 @@ public class MySpaceUtils {
 						else if (checker!=null && checker.getNextSibling() != null) {
 							checker= checker.getNextSibling();
 							String text = "";
-							logger.debug(	"SIBBLING...");
+							if(DEBUG)  logger.debug(	"SIBBLING...");
 							if(checker.getFirstChild()!=null){
 								if(checker.getFirstChild().getNodeType()==Node.TEXT_NODE) {
 									text = checker.getFirstChild().getNodeValue();
-									logger.debug("BEFORE.PUT.SIBLING");
+									if(DEBUG)  logger.debug("BEFORE.PUT.SIBLING");
 									
 									request.put(checker.getNodeName(), text);
 									
-									logger.debug("NODENAME: "+checker.getNodeName() +",  TEXTVALUE: "+text);
+									if(DEBUG)  logger.debug("NODENAME: "+checker.getNodeName() +",  TEXTVALUE: "+text);
 								}
 							}
 							ascending = false;
-							logger.debug("GOING RIGHT");
+							if(DEBUG)  logger.debug("GOING RIGHT");
 							}
 						else if (checker !=null && checker.getParentNode() != null) {
 							checker= checker.getParentNode();
@@ -303,24 +316,24 @@ public class MySpaceUtils {
 							if(checker.getFirstChild()!=null){
 								if(checker.getFirstChild().getNodeType()==Node.TEXT_NODE) {
 									text = checker.getFirstChild().getNodeValue();
-									logger.debug("BEFORE.PUT.UP");
+									if(DEBUG)  logger.debug("BEFORE.PUT.UP");
 									
 									request.put(checker.getNodeName(), text);
 									
-									logger.debug("NODENAME: "+checker.getNodeName() +",  TEXTVALUE: "+text);
+									if(DEBUG)  logger.debug("NODENAME: "+checker.getNodeName() +",  TEXTVALUE: "+text);
 								}
 							}
 							ascending = true;
 							level--;
-							logger.debug("GOING UP");
+							if(DEBUG)  logger.debug("GOING UP");
 							}
 							else {
-								logger.debug("BREAK!");
+								if(DEBUG)  logger.debug("BREAK!");
 								break;
 								}
 			}
 		}catch(Exception e){
-			logger.debug("ERROR Walking DOM TREE: "+e.toString());
+			logger.error("ERROR Walking DOM TREE: "+e.toString());
 			//MySpaceMessage msMessage = new MySpaceMessage("FILE_NOT_EXIST");
 			//status.addCode(MySpaceStatusCode.FILE_NOT_EXIST,MySpaceStatusCode.ERROR);
 			//response = FAULT+MySpaceStatusCode.FILE_NOT_EXIST;
@@ -351,6 +364,21 @@ public class MySpaceUtils {
 		return doc ;	
 	}
 	
+	public Properties loadProperties(String propertiesTempl){
+
+		try{
+			FileInputStream istream = new FileInputStream( propertiesTempl );
+			conProperties.load(istream);
+			istream.close();
+			
+		}catch(IOException ioe){
+			if (DEBUG)  logger.error("MYSPACEUTILS IO EXCEPTION :" +ioe.getMessage());
+			MySpaceMessage msMessage = new MySpaceMessage("ERR_IO_BUILD_RESPONS",ioe.toString());
+			msstatus.addCode(MySpaceStatusCode.ERR_IO_BUILD_RESPONS,MySpaceStatusCode.ERROR);
+			response = FAULT+MySpaceStatusCode.ERR_IO_BUILD_RESPONS;
+		}
+		return conProperties;
+	}
 	
 	public static void main( String [] args ) {
 	   }

@@ -189,8 +189,10 @@ public String upLoad(String jobDetails){
 			    +"serverFileName"+serverFileName +"filesize"+fileSize 
 			    +"mySpaceFileName"+mySpaceFileName+"registryName:"+registryName);
 			
-			content = MySpaceUtils.readFromFile(new File(serverFileName));
-
+			//commented out for testing transfer large files
+			//content = MySpaceUtils.readFromFile(new File(serverFileName));
+            String contentPath = serverFileName;
+            if (DEBUG)  logger.debug("ServerFileName = " +serverFileName);
 			call = createServerManagerCall();
 			call.setOperationName( "saveDataHolder" );			
 			call.addParameter("arg0", XMLType.XSD_STRING, ParameterMode.IN);
@@ -198,7 +200,7 @@ public String upLoad(String jobDetails){
 		
 			call.setReturnType( org.apache.axis.encoding.XMLType.XSD_STRING);
 			path = path+mySpaceFileName;
-			String serverResponse = (String)call.invoke( new Object[] {content,path} );
+			String serverResponse = (String)call.invoke( new Object[] {contentPath,path} );
 			if ( DEBUG )  logger.debug("GOT SERVERRESPONSE: "+serverResponse);
 			
 			//use serverResponse to build returnStatus and details for datacentre/portal
