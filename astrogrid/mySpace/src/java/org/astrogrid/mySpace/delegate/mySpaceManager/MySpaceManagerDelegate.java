@@ -136,7 +136,14 @@ public class MySpaceManagerDelegate {
         }
         
         try{
+        	System.out.println("before call getServerURLs");
            allMssUrls  = binding.getServerURLs();
+           
+		   System.out.println("after call getServerURLs  "+allMssUrls.size());
+		   for (int i=0;i<allMssUrls.size(); i++)
+		   {
+		   	System.out.println("after... "+allMssUrls.elementAt(i));
+		   }
         }catch(java.rmi.RemoteException re) {
            re.printStackTrace();
         }
@@ -228,13 +235,18 @@ public class MySpaceManagerDelegate {
 
     public Vector listDataHoldingsGen(String userId, String communityId, 
       String query)throws Exception {
+      	System.out.println("xxxxxxxxxxxxxxxxx");
         Vector returnList = new Vector();
-
+        this.setQueryMssUrl(this.getAllMssUrl());
+        //query = "/" +userId+"@"+communityId+"/"+"*";
         try {
             for (int loop = 0; loop<queryMssUrl.size(); loop++) {
+            	
+				System.out.println("before call internalDataHoldings "+ userId +"  :"+communityId +"  query: "+query);
                 String currentResponse = this.internalDataHoldings(
                   userId, communityId, query,
                   (String)queryMssUrl.elementAt(loop) );
+                  System.out.println("yyyyyyyy"+(String)queryMssUrl.elementAt(loop) );
 
                 returnList.add(currentResponse);
             }
@@ -244,7 +256,12 @@ public class MySpaceManagerDelegate {
         }
 
         return returnList;
-    }        
+    }    
+    
+    public String lookupDataHoldersDetails(String jobDetails){
+    	
+    	return "";    
+    }
 
 //
 // --------------------------------------------------------------------------

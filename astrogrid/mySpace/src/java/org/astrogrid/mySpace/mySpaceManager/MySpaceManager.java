@@ -152,7 +152,8 @@ public String upLoad(String jobDetails){
 			String contentPath = serverFileName;
 			if (DEBUG)  logger.debug("ServerFileName = " +serverFileName);
 			call = createServerManagerCall();
-			call.setOperationName( "saveDataHolder" );			
+			//call.setOperationName( "saveDataHolder" );			
+			call.setOperationName("upLoadString");
 			call.addParameter("arg0", XMLType.XSD_STRING, ParameterMode.IN);
 			call.addParameter("arg1", XMLType.XSD_STRING, ParameterMode.IN);
 			call.setReturnType( org.apache.axis.encoding.XMLType.XSD_STRING);
@@ -1170,17 +1171,23 @@ public String upLoadURL(String jobDetails){
 		}
 		
 		public Vector getServerURLs() throws Exception{
+			if(DEBUG)logger.debug("entering getServerURLs:...."); 
 			Vector v = new Vector();
 			try{
 				setUp();
 				StringBuffer URLs = new StringBuffer(MMC.getProperty(MMC.MYSPACEMANAGERURLs, MMC.CATLOG));
+				if(DEBUG) logger.debug("MySpaceManager.getServerURLs: "+URLs);
 				while ((URLs.length())!=0){
-					v.addElement(URLs.substring(0,URLs.indexOf(",")-1));
-					URLs = URLs.delete(0,URLs.indexOf(","));
+					String url = URLs.substring(0,URLs.indexOf(","));
+					v.addElement(url);
+					URLs = URLs.delete(0,URLs.indexOf(",")+1);
+					if(DEBUG) logger.debug("getServerURLs individial: "+URLs);
 				}
+				if(DEBUG)logger.debug("SIZE URLS"+v.size());
 			}catch(Exception e){
 				logger.error("ERROR GETTING SERVERURLS: "+e.toString());
 			}
+			if(DEBUG)logger.debug("SIZE URLSddddd"+v.size());
 			return v;
 		}
 	protected String getComponentName() { return Configurator.getClassName( MySpaceManager.class) ; }    

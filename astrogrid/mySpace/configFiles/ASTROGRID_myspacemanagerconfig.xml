@@ -44,7 +44,7 @@
     <property name="MYSPACEMANAGERURL" value="http://localholst:8080/axis/services/MySpaceManager" /> 
     
     <!-- URL MYSPACE MANAGER including remote MySpace Systems -->
-    <property name="MYSPACEMANAGERURLs" value="http://localholst:8080/axis/services/MySpaceManager~http://hydra.star.le.ac.uk:8080/axis/services/MySpaceManager" /> 
+    <property name="MYSPACEMANAGERURLs" value="http://localhost:8080/axis/services/MySpaceManager,http://hydra.star.le.ac.uk:8080/axis/services/MySpaceManager,http://bbc.co.uk/news," /> 
     
      <!-- URL SERVERMANAGER
         This is the URL for the MySpace Server facility for the installed 
