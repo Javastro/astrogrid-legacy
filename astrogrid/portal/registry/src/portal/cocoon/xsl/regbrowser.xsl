@@ -3,7 +3,9 @@
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   
   <xsl:param name="mainelement" />
-  <xsl:param name="authId" select="authid"/>
+  <xsl:param name="parent_authId" select="parent_authId"/>
+  <xsl:param name="parent_resourceKey"/> 
+  <xsl:param name="authId" select="authid"/>   
   <xsl:param name="resourceKey" select="resourcekey"/>
   <xsl:param name="action" select="action"  />
   <xsl:param name="errormessage" />
@@ -91,7 +93,10 @@
                        select="$mainelement"/></xsl:attribute>
       </input>      
       <br/>
-
+              <input type="hidden" name="parent_authId">
+                <xsl:attribute name="value"><xsl:value-of
+                               select="$parent_authId"/></xsl:attribute>
+              </input>
       <label>Select a <xsl:value-of select="$mainelement"/>
              with the ANY or NONE of the following criteria:
       </label>
@@ -221,9 +226,9 @@
             <form method="post" action="registrybrowser.html"
                   name="RegistryBrowser">
               <input type="hidden" name="action" value="selectentry" />
-              <input type="hidden" name="authId">
+              <input type="hidden" name="parent_authId">
                 <xsl:attribute name="value"><xsl:value-of
-                               select="$authId"/></xsl:attribute>
+                               select="$parent_authId"/></xsl:attribute>
               </input>
               <input type="hidden" name="resourceKey">
                  <xsl:attribute name="value">
@@ -250,8 +255,8 @@
                 </xsl:for-each>
               <input class="agActionButton" type="button" value="Select">
                 <xsl:attribute name="onClick">
-                   getSelectionId('<xsl:value-of select="$authId"/>',
-                                  '<xsl:value-of select="$resourceKey"/>');
+                   getSelectionId('<xsl:value-of select="$parent_authId"/>',
+                                  '<xsl:value-of select="$parent_resourceKey"/>');
                 </xsl:attribute>                              
               </input>                                             
               <xsl:text>          </xsl:text>

@@ -118,6 +118,8 @@
                                  value="{identifier}" />
                   <map:parameter name="authId"
                                  value="{authId}" />
+                  <map:parameter name="parent_authId"
+                                 value="{parent_authId}" />                                 
                   <map:parameter name="resourceKey"
                                  value="{resourceKey}" />
               </map:transform>
