@@ -11,7 +11,7 @@
     | the accompanying documentation. The sitemaps which come with each
     | sample and each block will help to explain.
     |
-    | CVS $Id: sitemap.xmap,v 1.12 2004/06/30 09:07:26 gps Exp $
+    | CVS $Id: sitemap.xmap,v 1.13 2004/06/30 14:31:48 gps Exp $
     +-->
 <map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
 
@@ -56,6 +56,8 @@
       <map:generator name="myspace-holding-gen" src="org.astrogrid.portal.myspace.generation.MySpaceHoldingsGenerator"/>
 -->
       <map:generator name="myspace-holding-gen" src="org.astrogrid.portal.myspace.generation.StorageFilesGenerator"/>
+
+      <map:generator name="storefile-properties-gen" src="org.astrogrid.portal.myspace.generation.StoreFilePropertiesGenerator"/>
     </map:generators>
 
   <!--+
@@ -370,6 +372,18 @@
         <map:transform src="web/style/xsl/myspace-explorer.xsl"/>
 
         <map:serialize type="xml"/>
+      </map:match>
+      
+      <map:match pattern="storefile-properties">
+        <map:generate type="storefile-properties-gen">
+          <map:parameter name="user" value="ivo://org.astrogrid.mock/frog"/>
+          <map:parameter name="community_account" value="org.astrogrid.mock"/>
+          <map:parameter name="token" value="secret"/>
+        </map:generate>
+
+        <map:transform src="web/style/xsl/storefile-properties.xsl"/>
+
+        <map:serialize type="xhtml"/>
       </map:match>
       
       <map:match pattern="myspace-micro">

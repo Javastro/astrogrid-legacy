@@ -29,13 +29,13 @@
     <agp:item
         contents="Download"
         contents-hover="Download"
-        uri=""
+        uri='javascript:void(myspace_download("myspace-clipboard-url"));'
         target="_self"
         status-text="Download a MySpace Item"/>
     <agp:item
         contents="Properties"
         contents-hover="Properties"
-        uri=""
+        uri='javascript:void(myspace_properties("myspace-clipboard"));'
         target="_self"
         status-text="Show the properties of a MySpace item"/>
   </agp:menu>

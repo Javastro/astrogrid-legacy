@@ -80,3 +80,23 @@ function myspace_submit_form(formId, actionId, actionValue) {
     alert('Cannot submit form: <' + formId + '>');
   }
 }
+
+function myspace_download(urlId) {
+  urlEl = document.getElementById(urlId);
+  if(urlEl) {
+    window.open(urlEl.value);
+  }
+  else {
+    alert('invalid url element: ' + urlId);
+  }
+}
+
+function myspace_properties(fileId) {
+  fileEl = document.getElementById(fileId);
+  if(fileEl) {
+    window.open("/astrogrid-portal/mount/myspace/storefile-properties?myspace-src=" + fileEl.value, "storefileProperties", "toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=yes, scrollbars=yes, width=500, height=400");
+  }
+  else {
+    alert('invalid file element: ' + fileId);
+  }
+}

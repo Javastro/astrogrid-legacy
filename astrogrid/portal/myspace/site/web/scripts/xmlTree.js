@@ -28,6 +28,12 @@ function setOldMySpaceName(oldMySpaceName){
   myspace_clipboard.value = oldMySpaceName;
 }
 
+function setOldMySpaceNameUrl(oldMySpaceName, oldMySpaceUrl){
+  setOldMySpaceName(oldMySpaceName);
+  myspace_clipboard_url = document.getElementById('myspace-clipboard-url');
+  myspace_clipboard_url.value = oldMySpaceUrl;
+}
+
 function setNewMySpaceName(newMySpaceName){
   myspace_new_name = document.getElementById('myspace-dest');
   myspace_new_name.value = newMySpaceName;

@@ -26,7 +26,7 @@
         <td>MySpace End Point:</td>
         <td><xsl:copy-of select="/explorer/select/select"/>
         <xsl:copy-of select="//input[@id = 'myspace-end-point']"/></td>
-        <td><input name="myspace-action" type="submit" value="myspace-change"/></td>
+        <td><input name="myspace-change" type="button" value="Change" onclick="javascript:void(myspace_submit_form('myspace-explorer-form', 'myspace-action', 'myspace-change'));"/></td>
       </tr>
     </table>
     <xsl:copy-of select="."/>

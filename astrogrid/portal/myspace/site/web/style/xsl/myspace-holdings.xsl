@@ -15,6 +15,9 @@
     <ag-div>
       <agComponentTitle>MySpace Explorer</agComponentTitle>
       
+<!--
+      <ag-onload function="nofooter();"/>
+-->
       <ag-link rel="stylesheet" type="text/css" href="/astrogrid-portal/mount/myspace/xmlTree.css"/>
       <ag-link rel="stylesheet" type="text/css" href="/astrogrid-portal/mount/myspace/myspace.css"/>
       <ag-script type="text/javascript" src="/astrogrid-portal/mount/myspace/xmlTree.js"/>
@@ -28,7 +31,7 @@
             method="POST"
             enctype="multipart/form-data">
           <input id="myspace-action" name="myspace-action" type="hidden"/>
-          <input id="myspace-clipboard" name="myspace-clipboard" type="hidden"/>
+          <input id="myspace-clipboard" name="myspace-clipboard" type="hidden"/>          <input id="myspace-clipboard-url" name="myspace-clipboard-url" type="hidden"/>
 <!--
           <div id="myspace-tools">
             <div id="myspace-tools-header">
@@ -123,15 +126,10 @@
 
     &#160;
     <span class="document">
-      <xsl:attribute name="onclick">setOldMySpaceName('<xsl:value-of select="@full-name"/>')</xsl:attribute>
+      <xsl:attribute name="onclick">setOldMySpaceNameUrl('<xsl:value-of select="@full-name"/>', '<xsl:value-of select="@url"/>')</xsl:attribute>
       <xsl:value-of select="@item-name"/>
     </span>
-    
-    &#160;
-    <img src="/astrogrid-portal/icons/Save.png" alt="[save]">
-      <xsl:attribute name="onclick">javascript:window.open('<xsl:value-of select="@url"/>')</xsl:attribute>
-    </img>
-    
+
     <br/>
   </xsl:template>
    
