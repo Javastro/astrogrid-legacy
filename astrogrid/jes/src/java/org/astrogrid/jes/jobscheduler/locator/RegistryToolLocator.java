@@ -1,4 +1,4 @@
-/*$Id: RegistryToolLocator.java,v 1.9 2004/08/25 11:42:12 KevinBenson Exp $
+/*$Id: RegistryToolLocator.java,v 1.10 2004/09/16 21:48:28 nw Exp $
  * Created on 08-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -140,21 +140,31 @@ public class RegistryToolLocator implements Locator, ComponentDescriptor {
     /**
      * @param toolId
      */
-    private String buildQueryString(IdentifierType toolId) {
     
-        return "<query><selectionSequence>" +
-                    "<selection item='searchElements' itemOp='EQ' value='Resource'/>" +
-                    "<selectionOp op='$and$'/>" +
-                    "<selection item='@*:type' itemOp='EQ' value='CeaServiceType'/>"  +
-                    "<selectionOp op='AND'/>" +
-                    "<selection item='*:ManagedApplications/*:ApplicationReference/*:AuthorityID' itemOp='EQ' value='" + toolId.getAuthorityID() + "'/>"  +
-                    "<selectionOp op='AND'/>" +
-                    "<selection item='*:ManagedApplications/*:ApplicationReference/*:ResourceKey' itemOp='EQ' value='" + toolId.getResourceKey() + "'/>"  +                                           
-                    /* don't think that we need these....
-                    "<selectionOp op='OR'/>" +
-                    "<selection item='@*:type' itemOp='EQ' value='CeaServiceType'/>"  +
-                    */
-                "</selectionSequence></query>";    
+    private final static String PRE_QUERY= "<query><selectionSequence>" +
+        "<selection item='searchElements' itemOp='EQ' value='Resource'/>" +
+        "<selectionOp op='$and$'/>" +
+        "<selection item='@*:type' itemOp='EQ' value='CeaServiceType'/>"  +
+        "<selectionOp op='AND'/>" +
+        "<selection item='*:ManagedApplications/*:ApplicationReference/*:AuthorityID' itemOp='EQ' value='" ;
+    private final static String MID_QUERY = "'/>"  +
+        "<selectionOp op='AND'/>" +
+        "<selection item='*:ManagedApplications/*:ApplicationReference/*:ResourceKey' itemOp='EQ' value='" ;
+    private final static String END_QUERY =  "'/>"  +                                           
+        /* don't think that we need these....
+         "<selectionOp op='OR'/>" +
+         "<selection item='@*:type' itemOp='EQ' value='CeaServiceType'/>"  +
+         */
+        "</selectionSequence></query>";   
+    
+    private String buildQueryString(IdentifierType toolId) {
+        StringBuffer sb = new StringBuffer(PRE_QUERY);
+        sb.append( toolId.getAuthorityID());
+        sb.append(MID_QUERY);
+        sb.append(toolId.getResourceKey());
+        sb.append(END_QUERY);
+        return sb.toString();
+ 
     }
 
     /**
@@ -199,6 +209,9 @@ public class RegistryToolLocator implements Locator, ComponentDescriptor {
 
 /* 
 $Log: RegistryToolLocator.java,v $
+Revision 1.10  2004/09/16 21:48:28  nw
+tried to optimize query bulding
+
 Revision 1.9  2004/08/25 11:42:12  KevinBenson
 changed to use prefixes
 
