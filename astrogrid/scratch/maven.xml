@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!-- extension maven script -->
+<project default="astrogrid-build-site" xmlns:j="jelly:core">
+
+	<goal name="doit" prereqs="multiproject:clean">
+        <echo message="==Master POM=="/>
+        <echo message="Master: ${astrogrid.master}"/>
+        <echo message="Base: ${astrogrid.base}"/>
+        <echo message="Sub: ${astrogrid.sub}"/>
+    </goal>
+
+	
+</project>
