@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcPlugin.java,v 1.5 2004/10/06 21:12:17 mch Exp $
+ * $Id: JdbcPlugin.java,v 1.6 2004/10/13 01:28:06 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -102,7 +102,7 @@ public class JdbcPlugin extends QuerierPlugin {
       catch (SQLException e) {
          querier.setStatus(new QuerierError(querier.getStatus(), "JDBC Query Failed",e));
          //we don't really need to store stack info for the SQL exception, which saves logging...
-         throw new DatabaseAccessException("Could not query database using '" + sql + "': "+e);
+         throw new DatabaseAccessException(e+" using '" + sql + "': ",e);
       }
       finally {
          //try to tidy up now
