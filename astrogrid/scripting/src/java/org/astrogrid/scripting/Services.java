@@ -1,4 +1,4 @@
-/*$Id: Services.java,v 1.2 2004/01/29 10:41:40 nw Exp $
+/*$Id: Services.java,v 1.3 2004/02/01 00:38:24 nw Exp $
  * Created on 27-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,6 +22,7 @@ import org.xml.sax.SAXException;
  * The list of services is loaded from an xml file. This can either loaded from the default location on the classpath,
  * or by specifying a URL.
  * @author Noel Winstanley nw@jb.man.ac.uk 27-Jan-2004
+ * @todo add community delegates - tricky - don't have an endpoint specified.
  *
  */
 public class Services {
@@ -73,7 +74,7 @@ public class Services {
    protected List datacenters = new ArrayList();
    protected List applications = new ArrayList();
    protected List registries = new ArrayList();
-   protected List jobcontrollers = new ArrayList();
+   protected List jes = new ArrayList();
    protected List unknownServices = new ArrayList();
    
    /** add a service to the list */
@@ -82,8 +83,10 @@ public class Services {
          applications.add(s);
       } else if (Service.DATACENTER_SERVICE.equals(s.getType())) {
          datacenters.add(s);
-      } else if (Service.JOBCONTROL_SERVICE.equals(s.getType())) {
-         jobcontrollers.add(s);
+      } else if (Service.JOBCONTROL_SERVICE.equals(s.getType()) 
+            || Service.JOBMONITOR_SERVICE.equals(s.getType())
+            || Service.JOBSCHEDULER_SERVICE.equals(s.getType()) ) {
+         jes.add(s);
       } else if (Service.MYSPACE_SERVICE.equals(s.getType())) {
          myspaces.add(s);
       } else if (Service.REGISTRY_SERVICE.equals(s.getType())) {
@@ -101,7 +104,7 @@ public class Services {
       allServices.addAll(datacenters);
       allServices.addAll(applications);
       allServices.addAll(registries);
-      allServices.addAll(jobcontrollers);
+      allServices.addAll(jes);
       allServices.addAll(unknownServices);
       return allServices;
    }
@@ -120,11 +123,11 @@ public class Services {
       return datacenters;
    }
 
-   /** access list of all jobcontroller services
+   /** access list of all jes services - job controllers, job monitors, job schedulers
     * @return
     */
-   public List getJobcontrollers() {
-      return jobcontrollers;
+   public List getJes() {
+      return jes;
    }
 
    /** access lilst of all myspace services
@@ -160,6 +163,9 @@ public class Services {
 
 /* 
 $Log: Services.java,v $
+Revision 1.3  2004/02/01 00:38:24  nw
+added two other kinds of job delegate
+
 Revision 1.2  2004/01/29 10:41:40  nw
 extended scripting model with helper functions,
 imporove javadoc

@@ -1,4 +1,4 @@
-/*$Id: Service.java,v 1.2 2004/01/29 10:41:40 nw Exp $
+/*$Id: Service.java,v 1.3 2004/02/01 00:38:24 nw Exp $
  * Created on 27-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,12 +17,15 @@ import javax.xml.rpc.ServiceException;
 import org.astrogrid.applications.delegate.DelegateFactory;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.jes.delegate.jobController.JobControllerDelegate;
+import org.astrogrid.jes.delegate.jobMonitor.JobMonitorDelegate;
+import org.astrogrid.jes.delegate.jobScheduler.JobSchedulerDelegate;
 import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
 
 
 /**
  * Data object representing a service 
  * @author Noel Winstanley nw@jb.man.ac.uk 27-Jan-2004
+ * @todo add registry delegate
  *
  */ 
 public class Service {
@@ -31,6 +34,8 @@ public class Service {
    public static final String REGISTRY_SERVICE = "registry";
    public static final String APPLICATION_SERVICE = "application";
    public static final String JOBCONTROL_SERVICE = "jobcontrol";
+   public static final String JOBMONITOR_SERVICE = "jobmonitor";
+   public static final String JOBSCHEDULER_SERVICE = "jobscheduler";
    public static final String UNNKOWN_SERVICE = "unknown";
    
    public Service() {
@@ -61,13 +66,19 @@ public class Service {
          return MySpaceDelegateFactory.createDelegate(endpoint);
       }
       if (REGISTRY_SERVICE.equals(type)) {
-         throw new UnsupportedOperationException("Don't think the registry has a delegate yet.");
+         throw new UnsupportedOperationException("Registry currently not building - can't compile against delegate");
       }
       if(APPLICATION_SERVICE.equals(type)) {
          return DelegateFactory.createDelegate(endpoint);
       }
       if (JOBCONTROL_SERVICE.equals(type)) {
          return JobControllerDelegate.buildDelegate(endpoint);
+      }
+      if (JOBMONITOR_SERVICE.equals(type)) {
+         return JobMonitorDelegate.buildDelegate(endpoint);
+      }
+      if (JOBSCHEDULER_SERVICE.equals(type)){
+         return new JobSchedulerDelegate(endpoint);
       }
       throw new IllegalStateException("Unknown service type - cannot create delegate:" + this.endpoint);
    }
@@ -126,6 +137,9 @@ public class Service {
 
 /* 
 $Log: Service.java,v $
+Revision 1.3  2004/02/01 00:38:24  nw
+added two other kinds of job delegate
+
 Revision 1.2  2004/01/29 10:41:40  nw
 extended scripting model with helper functions,
 imporove javadoc
