@@ -45,7 +45,7 @@
                 <ManagedApplications>
                         <ApplicationReference>
                                 <vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
-                                <vr:ResourceKey>testdsa</vr:ResourceKey>
+                                <vr:ResourceKey>pal-sample/ceaApplication</vr:ResourceKey>
                         </ApplicationReference>
                 </ManagedApplications>
         </vr:Resource>
