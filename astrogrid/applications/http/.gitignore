@@ -3,3 +3,5 @@ target
 .project
 tests.log
 bin
+junit*.properties
+velocity.log

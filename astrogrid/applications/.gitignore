@@ -5,3 +5,4 @@ target
 server-config.wsdd
 bin
 .metadata
+.settings
