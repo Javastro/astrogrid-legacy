@@ -37,7 +37,7 @@
 		<echo message="copying across installation tests from ${maven.test.dest} to ${classes.dir}"/>
 		<copy todir="${classes.dir}" overwrite="yes">
 			<fileset dir="${maven.test.dest}">
-				<include name="org/astrogrid/mySpace/webapp/*"/>
+				<include name="org/astrogrid/mySpace/webapp/*.class"/>
 			</fileset>
 		</copy>
 	</postGoal>
