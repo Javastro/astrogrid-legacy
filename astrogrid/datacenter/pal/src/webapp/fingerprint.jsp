@@ -1,7 +1,7 @@
 <%@ page import="java.io.*,
-				 java.net.*,
-                 java.util.*,
-				 org.astrogrid.config.*"
+             java.net.*,
+             java.util.*,
+             org.astrogrid.config.*"
     session="false" %>
 <html>
 <head>
@@ -89,10 +89,10 @@
 
     private static final File[] NO_FILES=new File[0];
 
-    /** scan a directory for jars */    
-    public File[] scanDir(String dir) throws IOException 
-        { 
-        return scanDir(new File(dir)); 
+    /** scan a directory for jars */
+    public File[] scanDir(String dir) throws IOException
+        {
+        return scanDir(new File(dir));
         }
         
     public File[] scanDir(File dir) throws IOException {
@@ -102,7 +102,7 @@
         return scanFiles(dir.listFiles());
     }
 
-    /** scan a classpath for jars */    
+    /** scan a classpath for jars */
     public File[] scanClasspath(String path) throws IOException {
         if (path==null) {
             return NO_FILES;
@@ -110,9 +110,9 @@
         return scanFiles(splitClasspath(path));
     }
 
-    /** 
+    /**
      * scan a 'dirpath' (like the java.ext.dirs system property) for jars
-     */   
+     */
     public File[] scanDirpath(String path) throws IOException {
         if (path==null) {
             return NO_FILES;
@@ -176,30 +176,18 @@
 
 <hr />
 <h2>Datacenter Configuration</h2>
+<pre>
 <%
    try {
-   SimpleConfig.autoLoad();
+      //force load
+      SimpleConfig.getProperty("Dummy",null);
    } catch (Throwable t) {
      out.println(t.getMessage());
    }
+   
+   ((FailbackConfig) SimpleConfig.getSingleton()).dumpConfig(out);
 %>
-Datacenter configuration loaded from:
-   <%= SimpleConfig.getLocations() %>
-<p />
-
-<%
-    java.util.Enumeration confs = SimpleConfig.keys();
-    if(confs!=null) {
-        out.write("<pre>");
-        for (;confs.hasMoreElements();) {
-            String key = (String) confs.nextElement();
-            out.write(key + "=" + SimpleConfig.getProperty(key)+"\n");
-        }
-        out.write("</pre><p>");
-    } else {
-        out.write("System properties are not accessible<p>");
-    }
-%>
+</pre>
 
 <hr />
 <h2>Plugin Configuration</h2>
@@ -213,7 +201,7 @@ Plugin Class <%= pluginClass %>
 if (pluginClass != null) {
   try {
     Class plugin = Class.forName(pluginClass);
-	out.println(" - found on classpath");
+   out.println(" - found on classpath");
 
   } catch (Throwable t) {
     out.println(" - Could not load plugin class");
@@ -227,10 +215,10 @@ SPI Class <%= spiClass %>
 if (spiClass != null) {
   try {
     Class spi = Class.forName(spiClass);
-	out.println(" - found on classpath");
+   out.println(" - found on classpath");
   } catch (Throwable t) {
     out.println(" - Could not load plugin class");
-	out.println(t.getMessage());
+   out.println(t.getMessage());
   }
 }
 %>
@@ -344,7 +332,7 @@ if (container.startsWith("Tomcat Web Server/3.2")) {
                       home+File.separator
                       +"lib",
                       null);
-    }    
+    }
 } else if (System.getProperty("weblogic.httpd.servlet.classpath")!=null) {
     listClasspathProperty("Weblogic Servlet Jars", out,
                   "weblogic.httpd.servlet.classpath",
