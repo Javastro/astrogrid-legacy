@@ -129,7 +129,7 @@
     	       <li>7.) Run "maven reg-deploy" then "maven setup-registry".</li>
     	       <li>8.) Change the astrogrid.properties and optionally the oaicat.properties in your new installed registry located in the "regdeployedarea"/WEB-INF/classes.
     	               See the properties section a the bottom of this section for a guide or look at the comments in the properties file themselves.</li>
-    	       <li>9.) Your main part of the registry is complete. Skip to number 6 in the "Setup Steps" below for being a full registry or registering yourself with another registry.</li>
+    	       <li>9.) Your main part of the registry is complete. Skip to number 3 in the "Setup Steps" below for being a full registry or registering yourself with another registry.</li>
     	    </ul>
     	    <br /> 
     	    Now for the Standard Installation:
@@ -141,51 +141,51 @@
     	            <i>See exist section above for more available options</i></li>
     	        <li>3.) You may rename the registry war file to anything you like, it is advisable to keep the exist one as exist to use
     	            the cocoon features of browsing, but this is not required.</li>
-    	        <li>4.) Deploy these 2 war files into your servlet containger normally by dropping them into the webapps directory or through
-    	            some time of manager interface.</li>
+    	        <li>4.) Deploy these 2 war files into your servlet container normally by dropping them into the webapps directory or through
+    	            some type of manager interface.</li>
     	        <li>5.) Finally go to the registry deployed area and go to "regdeployedarea"/WEB-INF/classes and edit the astrogrid.properties and
                     optionally if you are using the astrogrid oai facilities then the oaicat.properties.  The properties
-                    files should be well commented to guide you, the main registry properties are below</li>
-    	        <li>6.) In general the installation of the registry is complete, but read below for the setup.  If you tried to use registry before editing the properties file then a restart of your
-    	            servlet containger will be required.</li>
+                    files should be well commented to guide you, the main registry properties are below.  As for the oaicat.properties only a few identification properties such as
+                    repository name and admin e-mail is advisable to change.</li>
+    	        <li>6.) In general the installation of the registry is complete, but read below for the setup.  
+    				It is advisable to restart your servlet container, to be certain the properties files are picked up..</li>
     	   	</ul>
     	    Now the easy part of the installation is complete.  The current iteration is a slightly more difficult on the setup, but will try
     	    to guide you in the steps of setting up your Registry. <br />
     	    Steps involved for Setup of Registry:
     	    <ul>
     			<li>1.) Every Registry needs to define itself before it can be harvested or known to the outside world
-                    currently you have an empty Registry so the first step in the setup is to define yourself. First download
-                    a template <a href="http://www.astrogrid.org/viewcvs/astrogrid/registry/webapp/template/RegistryTypev0_9.xml">Registry Template Browser</a></li>
-    	        <li>2.) Look at the Registry template and modify it to describe your registry.  Your AuthorityID element and ManagedAuthority element must match
-                    exactly to the one placed in your properties file.</li>
-    			<li>3.) Go to your entryForm page of your installed registry ex: http://server.com:8080/astrogrid-registry-SNAPSHOT/entryForm.html</li>
-    	        <li>4.) Copy and paste your modified RegistryType entry, the main thing is the Resource element all the other elements are ignored
-    	            during an update.</li>
-        		<li>5.) Submit your Registry type entry.</li>
-				<li>Now your registry is setup to receive Resources for that AuthorityID.</li>
-        		<li>6.) Now look at: <a href="http://www.astrogrid.org/viewcvs/astrogrid/registry/webapp/template/AuthorityTypeTypev0_9.xml">Authority Template</a>, To add other
-			        AuthorityIDs to be managed by this Registry fill out an AuthorityType and submit it with the entryform.html.  The entry form can
-			        take multiple Resources.  And it is not required, but advisable that you should fill out an AuthorityType that you used defining the
-			        original RegistryType above.</li>
+                    currently you have an empty Registry so the first step in the setup is to define yourself. 
+    				Go to your entryForm.html under your installed webapp.
+    			</li>
+    	        <li>2.) There you will find steps at the bottom along with templates for you to change and add into the registry.
+                        Be sure to do your RegistryType first maching the authorityid that you set in your properties.
+    					Use the entryForm page for adding your resources.
+    			</li>
 		        <li>If you are setting up a local Registry and do not need a Full Registry and DO NOT WANT TO BE HARVESTED BY OTHER REGISTRIES then stop here, all your
 			        entries are complete and other client apps may submit Resources to this registry as long as it is a AuthorityID
-			        managed by this Registry.</li>
-		        <li>If this is tended to be a full Registry then a few more steps are required (remember as well no harvesting will occur if harvest.enabled property is set to false).  
-        			First I should state that
-			        a few additional jsp pages will be added to make this process of registering with other
-    				Registries easier.</li>
-      			<li>7.) First making your Registry known to the world.  For now the easist thing to do is take the RegistryType entry you modified above
-        			and go to the entryForm for a Full Registry and submit it.  Now your Registry will shortly be known to the world the next harvest cycle
-        			will pick up your entries.</li>
-        		<li>Now if your not planning on being a Full Registry then stop here.</li>
-        		<li>8.)Go to the full Registry you know of and get all there Registries.  By going to
-	            	http://fullregistry.com:8080/astrogrid-registry-SNAPSHOT/services/RegistryQuery?method=GetRegistries
-            		Save this xml entry or just copy it.</li>
-        		<li>9.) Now finally as usual go to your entryForm and put these xml entries in there.</li>
-        		<li>10.) Now the next time your harvest cycle happens it will begin harvesting these Registries, the first time
+			        managed by this Registry.
+    			</li>
+		        <li>Now it is time to register your new Registry to the rest of the world.</li>
+      			<li>3.) On the entryForm.html page again there is another form that will do this automatically registering this registry to a full
+    	                registry, hence when the full registry does it's next harvest it will obtain your entries.
+    			</li>
+        		<li>Now if your not planning on being a Full Registry then stop here.
+    			</li>
+        		<li>4.)Go to the full Registry you know of and get all there Registries and place them into your registry.
+    				On the same entryForm.html page you should see another form that will automatically do this for you, and grab all the registry
+    	            entries and add them to your registry.
+    			</li>
+        		<li>6.) Now the next time your harvest cycle happens it will begin harvesting these Registries, the first time
         			it will harvest with no Date, and then after that it will harvest by date.  Optionally you may go to your
-        			RegistryHarvest servlet and kick off a harvest manually or even a Replicate if needed.</li>
+        			RegistryHarvest servlet and kick off a harvest manually or even a Replicate if needed.
+    			</li>
         		<li>Your done.</li>
+    			<li>If your a full registry and really wanting to populate your Registry now and not wait for the next harvest
+    	            cycle.  Then your installed registry has a "RegistryHarvest" servlet, to do replications and start manual harvests.
+    				PLEASE READ THE FINAL NOTE BELOW, BEFORE DOING THIS. It is quite recommended to increase memorry size before the full replication
+    	            of registries.
+    			</li>
     	    </ul>
 			<br />
 			Final Note:  If this is a Full Registry I would suggest setting your memorry in your servlet container to be higher and the
