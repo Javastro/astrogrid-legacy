@@ -30,19 +30,8 @@ public class DatacenterException extends RemoteException
 
 /*
 $Log: DatacenterException.java,v $
-Revision 1.1  2005/02/17 18:37:34  mch
-*** empty log message ***
+Revision 1.2  2005/02/28 19:36:39  mch
+Fixes to tests
 
-Revision 1.1.1.1  2005/02/16 17:11:23  mch
-Initial checkin
-
-Revision 1.1  2003/11/14 00:36:40  mch
-Code restructure
-
-Revision 1.2  2003/11/13 16:11:32  mch
-minor import change testing CVS in Eclipse
-
-Revision 1.1  2003/10/06 18:55:21  mch
-Naughtily large set of changes converting to SOAPy bean/interface-based delegates
 
 */

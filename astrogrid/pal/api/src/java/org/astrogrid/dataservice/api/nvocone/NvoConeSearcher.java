@@ -1,5 +1,5 @@
 /*
- * $Id: NvoConeSearcher.java,v 1.1 2005/02/18 18:14:26 mch Exp $
+ * $Id: NvoConeSearcher.java,v 1.2 2005/02/28 19:36:39 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -92,40 +92,8 @@ public class NvoConeSearcher
 
 /*
 $Log: NvoConeSearcher.java,v $
-Revision 1.1  2005/02/18 18:14:26  mch
-Renamed
-
-Revision 1.1.1.1  2005/02/17 18:37:34  mch
-Initial checkin
-
-Revision 1.1.1.1  2005/02/16 17:11:23  mch
-Initial checkin
-
-Revision 1.7  2004/04/05 10:09:18  mch
-Added setTimeout
-
-Revision 1.6  2004/03/12 20:00:11  mch
-It05 Refactor (Client)
-
-Revision 1.5  2003/11/26 16:31:46  nw
-altered transport to accept any query format.
-moved back to axis from castor
-
-Revision 1.4  2003/11/18 00:34:37  mch
-New Adql-compliant cone search
-
-Revision 1.3  2003/11/17 16:59:12  mch
-ConeSearcher.coneSearch now returns stream not parsed element, throws IOException
-
-Revision 1.2  2003/11/17 12:32:27  mch
-Moved QueryStatus to query pacakge
-
-Revision 1.1  2003/11/14 00:36:40  mch
-Code restructure
-
-Revision 1.1  2003/10/06 18:55:21  mch
-Naughtily large set of changes converting to SOAPy bean/interface-based delegates
-
+Revision 1.2  2005/02/28 19:36:39  mch
+Fixes to tests
 
 
 */

@@ -1,4 +1,4 @@
-/*$Id: FitsQuerierTest.java,v 1.2 2005/02/28 18:47:05 mch Exp $
+/*$Id: FitsQuerierTest.java,v 1.3 2005/02/28 19:36:39 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -19,7 +19,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.astrogrid.account.LoginAccount;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.fits.FitsTest;
+import org.astrogrid.datacenter.fits.FitsTestSupport;
 import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.queriers.QuerierPluginFactory;
 import org.astrogrid.dataservice.queriers.fits.FitsQuerierPlugin;
@@ -45,7 +45,7 @@ public class FitsQuerierTest extends TestCase
          generator.raAxis = 1;
          generator.decAxis = 2;
          FileWriter out = new FileWriter(indexFile);
-         generator.generateIndex(FitsTest.getTestFits(), out);
+         generator.generateIndex(FitsTestSupport.getTestFits(), out);
          out.close();
       }
       
@@ -92,6 +92,9 @@ public class FitsQuerierTest extends TestCase
 
 /*
  $Log: FitsQuerierTest.java,v $
+ Revision 1.3  2005/02/28 19:36:39  mch
+ Fixes to tests
+
  Revision 1.2  2005/02/28 18:47:05  mch
  More compile fixes
 

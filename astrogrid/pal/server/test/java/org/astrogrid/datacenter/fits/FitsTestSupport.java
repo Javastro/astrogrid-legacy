@@ -1,4 +1,4 @@
-/*$Id: FitsTest.java,v 1.2 2005/02/28 18:47:05 mch Exp $
+/*$Id: FitsTestSupport.java,v 1.1 2005/02/28 19:36:39 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -17,7 +17,7 @@ import org.astrogrid.test.OptionalTestCase;
 
 /** Test the Fits processing classes
  */
-public class FitsTest extends OptionalTestCase
+public class FitsTestSupport extends OptionalTestCase
 {
 
 
@@ -28,19 +28,19 @@ public class FitsTest extends OptionalTestCase
    public static URL[] getTestFits()
    {
       return new URL[] {
-            FitsTest.class.getResource("examples/sample1.fits"),
-            FitsTest.class.getResource("examples/sample2.fits"),
-            FitsTest.class.getResource("examples/sample3.fits"),
-            FitsTest.class.getResource("examples/sample4.fits"),
-            FitsTest.class.getResource("examples/sample5.fits"),
-            FitsTest.class.getResource("examples/sample6.fits")
+            FitsTestSupport.class.getResource("examples/sample1.fits"),
+            FitsTestSupport.class.getResource("examples/sample2.fits"),
+            FitsTestSupport.class.getResource("examples/sample3.fits"),
+            FitsTestSupport.class.getResource("examples/sample4.fits"),
+            FitsTestSupport.class.getResource("examples/sample5.fits"),
+            FitsTestSupport.class.getResource("examples/sample6.fits")
       };
    }
    
    public static Test suite()
    {
       // Reflection is used here to add all the testXXX() methods to the suite.
-      return new TestSuite(FitsTest.class);
+      return new TestSuite(FitsTestSupport.class);
    }
    
    
@@ -56,7 +56,10 @@ public class FitsTest extends OptionalTestCase
 
 
 /*
- $Log: FitsTest.java,v $
+ $Log: FitsTestSupport.java,v $
+ Revision 1.1  2005/02/28 19:36:39  mch
+ Fixes to tests
+
  Revision 1.2  2005/02/28 18:47:05  mch
  More compile fixes
 

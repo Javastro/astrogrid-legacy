@@ -1,4 +1,4 @@
-/*$Id: IndexGeneratorTest.java,v 1.2 2005/02/28 18:47:05 mch Exp $
+/*$Id: IndexGeneratorTest.java,v 1.3 2005/02/28 19:36:39 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -17,7 +17,7 @@ import java.net.URL;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.astrogrid.datacenter.fits.FitsTest;
+import org.astrogrid.datacenter.fits.FitsTestSupport;
 import org.astrogrid.dataservice.queriers.fits.IndexGenerator;
 import org.astrogrid.util.DomHelper;
 import org.xml.sax.SAXException;
@@ -33,7 +33,7 @@ public class IndexGeneratorTest extends TestCase
       IndexGenerator generator = new IndexGenerator();
       generator.raAxis = 1;
       generator.decAxis = 2;
-      String index = generator.generateIndex(FitsTest.getTestFits());
+      String index = generator.generateIndex(FitsTestSupport.getTestFits());
       assertNotNull(index);
       try {
          DomHelper.newDocument(index);  //check its' a valid XML doc
@@ -47,7 +47,7 @@ public class IndexGeneratorTest extends TestCase
    public void testToStream() throws Exception
    {
       DataOutputStream out = new DataOutputStream(new FileOutputStream("IndexGeneratorTestList.urls"));
-      URL[] urls = FitsTest.getTestFits();
+      URL[] urls = FitsTestSupport.getTestFits();
       for (int i = 0; i < urls.length; i++) {
          out.writeChars(urls[i].toString()+"\n");
       }
@@ -89,6 +89,9 @@ public class IndexGeneratorTest extends TestCase
 
 /*
  $Log: IndexGeneratorTest.java,v $
+ Revision 1.3  2005/02/28 19:36:39  mch
+ Fixes to tests
+
  Revision 1.2  2005/02/28 18:47:05  mch
  More compile fixes
 

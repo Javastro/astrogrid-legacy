@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://grendel12.roe.ac.uk:8080/pal-6df/services/AxisDataService06" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://grendel12.roe.ac.uk:8080/pal-6df/services/AxisDataService06" xmlns:intf="http://grendel12.roe.ac.uk:8080/pal-6df/services/AxisDataService06" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns1="http://v06.service.datacenter.astrogrid.org" xmlns:tns2="http://v05.axisdataserver.datacenter.astrogrid.org" xmlns:tns3="http://status.astrogrid.org" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><wsdl:types><schema targetNamespace="http://v06.service.datacenter.astrogrid.org" xmlns="http://www.w3.org/2001/XMLSchema"><element name="askCount"><complexType><sequence><element name="adql" type="apachesoap:Element"/></sequence></complexType></element><element name="askCountResponse"><complexType><sequence><element name="askCountReturn" type="xsd:long"/></sequence></complexType></element><element name="getQueryStatus"><complexType><sequence><element name="queryId" type="xsd:string"/></sequence></complexType></element><element name="getQueryStatusResponse"><complexType><sequence><element name="getQueryStatusReturn" type="tns2:QueryStatusSoapyBean"/></sequence></complexType></element><element name="abortQuery"><complexType><sequence><element name="queryId" type="xsd:string"/></sequence></complexType></element><element name="abortQueryResponse"><complexType/></element><element name="getMetadata"><complexType/></element><element name="getMetadataResponse"><complexType><sequence><element name="getMetadataReturn" type="apachesoap:Element"/></sequence></complexType></element><element name="getServiceStatus"><complexType/></element><element name="getServiceStatusResponse"><complexType><sequence><element name="getServiceStatusReturn" type="tns3:ServiceStatus"/></sequence></complexType></element><element name="throwFault"><complexType/></element><element name="throwFaultResponse"><complexType/></element><element name="askAdql"><complexType><sequence><element name="adql" type="apachesoap:Element"/><element name="requestedFormat" type="xsd:string"/></sequence></complexType></element><element name="askAdqlResponse"><complexType><sequence><element name="askAdqlReturn" type="xsd:string"/></sequence></complexType></element><element name="askAdql"><complexType><sequence><element name="adql" type="apachesoap:Element"/><element name="requestedFormat" type="xsd:string"/><element name="target" type="xsd:string"/></sequence></complexType></element><element name="askAdqlResponse"><complexType><sequence><element name="askAdqlReturn" type="xsd:string"/></sequence></complexType></element><element name="adqlSql2xml"><complexType><sequence><element name="sql" type="xsd:string"/></sequence></complexType></element><element name="adqlSql2xmlResponse"><complexType><sequence><element name="adqlSql2xmlReturn" type="apachesoap:Element"/></sequence></complexType></element><element name="submitAdql"><complexType><sequence><element name="adql" type="apachesoap:Element"/><element name="requestedFormat" type="xsd:string"/><element name="resultsTarget" type="xsd:string"/></sequence></complexType></element><element name="submitAdqlResponse"><complexType><sequence><element name="submitAdqlReturn" type="xsd:string"/></sequence></complexType></element><element name="getTaskStatus"><complexType><sequence><element name="queryId" type="xsd:string"/></sequence></complexType></element><element name="getTaskStatusResponse"><complexType><sequence><element name="getTaskStatusReturn" type="tns3:DefaultTaskStatus"/></sequence></complexType></element><element name="getSimpleServiceStatus"><complexType/></element><element name="getSimpleServiceStatusResponse"><complexType><sequence><element name="getSimpleServiceStatusReturn" type="xsd:string"/></sequence></complexType></element><element name="getRegistration"><complexType/></element><element name="getRegistrationResponse"><complexType><sequence><element name="getRegistrationReturn" type="xsd:string"/></sequence></complexType></element></schema><schema targetNamespace="http://v05.axisdataserver.datacenter.astrogrid.org" xmlns="http://www.w3.org/2001/XMLSchema"><complexType name="QueryStatusSoapyBean"><sequence><element name="QueryID" nillable="true" type="xsd:string"/><element name="State" nillable="true" type="xsd:string"/><element name="Note" nillable="true" type="xsd:string"/></sequence></complexType></schema><schema targetNamespace="http://status.astrogrid.org" xmlns="http://www.w3.org/2001/XMLSchema"><complexType name="ServiceStatusSnapshot"><sequence><element name="freeMemory" type="xsd:long"/><element name="maxMemory" type="xsd:long"/><element name="numClosedTasks" type="xsd:long"/><element name="numTasks" type="xsd:long"/><element name="previous" nillable="true" type="tns3:ServiceStatusSnapshot"/><element name="timestamp" nillable="true" type="xsd:dateTime"/><element name="totalMemory" type="xsd:long"/></sequence></complexType><complexType name="ServiceStatus"><complexContent><extension base="tns3:ServiceStatusSnapshot"><sequence><element name="started" nillable="true" type="xsd:dateTime"/><element name="tasks" nillable="true" type="impl:ArrayOf_tns3_TaskStatus"/></sequence></extension></complexContent></complexType><complexType name="DefaultTaskStatus"><sequence><element name="details" nillable="true" type="impl:ArrayOf_xsd_string"/><element name="finished" type="xsd:boolean"/><element name="first" nillable="true" type="tns3:TaskStatus"/><element name="id" nillable="true" type="xsd:string"/><element name="message" nillable="true" type="xsd:string"/><element name="owner" nillable="true" type="xsd:anyType"/><element name="previous" nillable="true" type="tns3:TaskStatus"/><element name="progress" type="xsd:long"/><element name="progressMax" type="xsd:long"/><element name="progressMsg" nillable="true" type="xsd:string"/><element name="progressText" nillable="true" type="xsd:string"/><element name="source" nillable="true" type="xsd:string"/><element name="stage" nillable="true" type="xsd:string"/><element name="startTime" nillable="true" type="xsd:dateTime"/><element name="timestamp" nillable="true" type="xsd:dateTime"/></sequence></complexType></schema><schema targetNamespace="http://grendel12.roe.ac.uk:8080/pal-6df/services/AxisDataService06" xmlns="http://www.w3.org/2001/XMLSchema"><complexType name="ArrayOf_tns3_TaskStatus"><complexContent><restriction base="soapenc:Array"><attribute ref="soapenc:arrayType" wsdl:arrayType="tns3:TaskStatus[]"/></restriction></complexContent></complexType><complexType name="ArrayOf_xsd_string"><complexContent><restriction base="soapenc:Array"><attribute ref="soapenc:arrayType" wsdl:arrayType="xsd:string[]"/></restriction></complexContent></complexType></schema></wsdl:types>
+  <wsdl:message name="getMetadataResponse">
+    <wsdl:part element="tns1:getMetadataResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getQueryStatusResponse">
+    <wsdl:part element="tns1:getQueryStatusResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getMetadataRequest">
+    <wsdl:part element="tns1:getMetadata" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getQueryStatusRequest">
+    <wsdl:part element="tns1:getQueryStatus" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="adqlSql2xmlRequest">
+    <wsdl:part element="tns1:adqlSql2xml" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="submitAdqlRequest">
+    <wsdl:part element="tns1:submitAdql" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="askAdqlRequest1">
+    <wsdl:part element="tns1:askAdql" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="askAdqlResponse">
+    <wsdl:part element="tns1:askAdqlResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="abortQueryResponse">
+    <wsdl:part element="tns1:abortQueryResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="adqlSql2xmlResponse">
+    <wsdl:part element="tns1:adqlSql2xmlResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getServiceStatusResponse">
+    <wsdl:part element="tns1:getServiceStatusResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getSimpleServiceStatusResponse">
+    <wsdl:part element="tns1:getSimpleServiceStatusResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="askAdqlRequest">
+    <wsdl:part element="tns1:askAdql" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getRegistrationResponse">
+    <wsdl:part element="tns1:getRegistrationResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="askCountResponse">
+    <wsdl:part element="tns1:askCountResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="throwFaultRequest">
+    <wsdl:part element="tns1:throwFault" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getServiceStatusRequest">
+    <wsdl:part element="tns1:getServiceStatus" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="askCountRequest">
+    <wsdl:part element="tns1:askCount" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getRegistrationRequest">
+    <wsdl:part element="tns1:getRegistration" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getTaskStatusRequest">
+    <wsdl:part element="tns1:getTaskStatus" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="askAdqlResponse1">
+    <wsdl:part element="tns1:askAdqlResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="throwFaultResponse">
+    <wsdl:part element="tns1:throwFaultResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="submitAdqlResponse">
+    <wsdl:part element="tns1:submitAdqlResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getSimpleServiceStatusRequest">
+    <wsdl:part element="tns1:getSimpleServiceStatus" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getTaskStatusResponse">
+    <wsdl:part element="tns1:getTaskStatusResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="abortQueryRequest">
+    <wsdl:part element="tns1:abortQuery" name="parameters"/>
+  </wsdl:message>
+  <wsdl:portType name="AxisDataService_v06">
+    <wsdl:operation name="askCount" parameterOrder="">
+      <wsdl:input message="impl:askCountRequest" name="askCountRequest"/>
+      <wsdl:output message="impl:askCountResponse" name="askCountResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="getQueryStatus" parameterOrder="">
+      <wsdl:input message="impl:getQueryStatusRequest" name="getQueryStatusRequest"/>
+      <wsdl:output message="impl:getQueryStatusResponse" name="getQueryStatusResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="abortQuery" parameterOrder="">
+      <wsdl:input message="impl:abortQueryRequest" name="abortQueryRequest"/>
+      <wsdl:output message="impl:abortQueryResponse" name="abortQueryResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="getMetadata">
+      <wsdl:input message="impl:getMetadataRequest" name="getMetadataRequest"/>
+      <wsdl:output message="impl:getMetadataResponse" name="getMetadataResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="getServiceStatus">
+      <wsdl:input message="impl:getServiceStatusRequest" name="getServiceStatusRequest"/>
+      <wsdl:output message="impl:getServiceStatusResponse" name="getServiceStatusResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="throwFault">
+      <wsdl:input message="impl:throwFaultRequest" name="throwFaultRequest"/>
+      <wsdl:output message="impl:throwFaultResponse" name="throwFaultResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="askAdql" parameterOrder="">
+      <wsdl:input message="impl:askAdqlRequest" name="askAdqlRequest"/>
+      <wsdl:output message="impl:askAdqlResponse" name="askAdqlResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="askAdql" parameterOrder="">
+      <wsdl:input message="impl:askAdqlRequest1" name="askAdqlRequest1"/>
+      <wsdl:output message="impl:askAdqlResponse1" name="askAdqlResponse1"/>
+    </wsdl:operation>
+    <wsdl:operation name="adqlSql2xml" parameterOrder="">
+      <wsdl:input message="impl:adqlSql2xmlRequest" name="adqlSql2xmlRequest"/>
+      <wsdl:output message="impl:adqlSql2xmlResponse" name="adqlSql2xmlResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="submitAdql" parameterOrder="">
+      <wsdl:input message="impl:submitAdqlRequest" name="submitAdqlRequest"/>
+      <wsdl:output message="impl:submitAdqlResponse" name="submitAdqlResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="getTaskStatus" parameterOrder="">
+      <wsdl:input message="impl:getTaskStatusRequest" name="getTaskStatusRequest"/>
+      <wsdl:output message="impl:getTaskStatusResponse" name="getTaskStatusResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="getSimpleServiceStatus">
+      <wsdl:input message="impl:getSimpleServiceStatusRequest" name="getSimpleServiceStatusRequest"/>
+      <wsdl:output message="impl:getSimpleServiceStatusResponse" name="getSimpleServiceStatusResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="getRegistration">
+      <wsdl:input message="impl:getRegistrationRequest" name="getRegistrationRequest"/>
+      <wsdl:output message="impl:getRegistrationResponse" name="getRegistrationResponse"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="AxisDataService06SoapBinding" type="impl:AxisDataService_v06">
+    <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="askCount">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="askCountRequest">
+        <wsdlsoap:body namespace="http://v06.service.datacenter.astrogrid.org" use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="askCountResponse">
+        <wsdlsoap:body namespace="http://grendel12.roe.ac.uk:8080/pal-6df/services/AxisDataService06" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getQueryStatus">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="getQueryStatusRequest">
+        <wsdlsoap:body namespace="http://v06.service.datacenter.astrogrid.org" use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getQueryStatusResponse">
+        <wsdlsoap:body namespace="http://grendel12.roe.ac.uk:8080/pal-6df/services/AxisDataService06" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="abortQuery">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="abortQueryRequest">
+        <wsdlsoap:body namespace="http://v06.service.datacenter.astrogrid.org" use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="abortQueryResponse">
+        <wsdlsoap:body namespace="http://grendel12.roe.ac.uk:8080/pal-6df/services/AxisDataService06" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getMetadata">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="getMetadataRequest">
+        <wsdlsoap:body namespace="http://v06.service.datacenter.astrogrid.org" use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getMetadataResponse">
+        <wsdlsoap:body namespace="http://grendel12.roe.ac.uk:8080/pal-6df/services/AxisDataService06" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getServiceStatus">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="getServiceStatusRequest">
+        <wsdlsoap:body namespace="http://v06.service.datacenter.astrogrid.org" use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getServiceStatusResponse">
+        <wsdlsoap:body namespace="http://grendel12.roe.ac.uk:8080/pal-6df/services/AxisDataService06" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="throwFault">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="throwFaultRequest">
+        <wsdlsoap:body namespace="http://v06.service.datacenter.astrogrid.org" use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="throwFaultResponse">
+        <wsdlsoap:body namespace="http://grendel12.roe.ac.uk:8080/pal-6df/services/AxisDataService06" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="askAdql">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="askAdqlRequest">
+        <wsdlsoap:body namespace="http://v06.service.datacenter.astrogrid.org" use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="askAdqlResponse">
+        <wsdlsoap:body namespace="http://grendel12.roe.ac.uk:8080/pal-6df/services/AxisDataService06" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="askAdql">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="askAdqlRequest1">
+        <wsdlsoap:body namespace="http://v06.service.datacenter.astrogrid.org" use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="askAdqlResponse1">
+        <wsdlsoap:body namespace="http://grendel12.roe.ac.uk:8080/pal-6df/services/AxisDataService06" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="adqlSql2xml">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="adqlSql2xmlRequest">
+        <wsdlsoap:body namespace="http://v06.service.datacenter.astrogrid.org" use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="adqlSql2xmlResponse">
+        <wsdlsoap:body namespace="http://grendel12.roe.ac.uk:8080/pal-6df/services/AxisDataService06" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="submitAdql">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="submitAdqlRequest">
+        <wsdlsoap:body namespace="http://v06.service.datacenter.astrogrid.org" use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="submitAdqlResponse">
+        <wsdlsoap:body namespace="http://grendel12.roe.ac.uk:8080/pal-6df/services/AxisDataService06" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getTaskStatus">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="getTaskStatusRequest">
+        <wsdlsoap:body namespace="http://v06.service.datacenter.astrogrid.org" use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getTaskStatusResponse">
+        <wsdlsoap:body namespace="http://grendel12.roe.ac.uk:8080/pal-6df/services/AxisDataService06" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getSimpleServiceStatus">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="getSimpleServiceStatusRequest">
+        <wsdlsoap:body namespace="http://v06.service.datacenter.astrogrid.org" use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getSimpleServiceStatusResponse">
+        <wsdlsoap:body namespace="http://grendel12.roe.ac.uk:8080/pal-6df/services/AxisDataService06" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getRegistration">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="getRegistrationRequest">
+        <wsdlsoap:body namespace="http://v06.service.datacenter.astrogrid.org" use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getRegistrationResponse">
+        <wsdlsoap:body namespace="http://grendel12.roe.ac.uk:8080/pal-6df/services/AxisDataService06" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="AxisDataService_v06Service">
+    <wsdl:port binding="impl:AxisDataService06SoapBinding" name="AxisDataService06">
+      <wsdlsoap:address location="http://grendel12.roe.ac.uk:8080/pal-6df/services/AxisDataService06"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

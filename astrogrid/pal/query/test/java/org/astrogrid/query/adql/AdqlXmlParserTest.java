@@ -1,10 +1,10 @@
 /*
- * $Id: AdqlXmlParserTest.java,v 1.1 2005/02/17 18:37:34 mch Exp $
+ * $Id: AdqlXmlParserTest.java,v 1.1 2005/02/28 19:36:39 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
-package org.astrogrid.query;
+package org.astrogrid.query.adql;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -51,8 +51,11 @@ public class AdqlXmlParserTest extends TestCase   {
 
 /*
  $Log: AdqlXmlParserTest.java,v $
- Revision 1.1  2005/02/17 18:37:34  mch
- *** empty log message ***
+ Revision 1.1  2005/02/28 19:36:39  mch
+ Fixes to tests
+
+ Revision 1.1.1.1  2005/02/17 18:37:34  mch
+ Initial checkin
 
  Revision 1.2  2005/02/17 18:18:59  mch
  Moved in from datacenter project

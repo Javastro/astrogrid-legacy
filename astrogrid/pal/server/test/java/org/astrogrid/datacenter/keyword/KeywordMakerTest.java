@@ -1,4 +1,4 @@
-/*$Id: KeywordMakerTest.java,v 1.2 2005/02/28 18:47:05 mch Exp $
+/*$Id: KeywordMakerTest.java,v 1.3 2005/02/28 19:36:39 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -17,6 +17,7 @@ import org.astrogrid.query.Query;
 import org.astrogrid.query.SimpleQueryMaker;
 import org.astrogrid.query.keyword.KeywordMaker;
 import org.astrogrid.query.sql.SqlParser;
+import org.astrogrid.sky.Angle;
 import org.astrogrid.test.OptionalTestCase;
 
 /** Test the Keyword maker from various queries
@@ -29,9 +30,9 @@ public class KeywordMakerTest extends OptionalTestCase
       Query query = SimpleQueryMaker.makeConeQuery(12, 20, 3);
       KeywordMaker maker = new KeywordMaker(query);
       
-      assertTrue("RA not set correctly", maker.getValue(KeywordMaker.RA_KEYWORD).equals("12.0"));
-      assertTrue("DEC not set correctly", maker.getValue(KeywordMaker.DEC_KEYWORD).equals("20.0"));
-      assertTrue("Radius not set correctly", maker.getValue(KeywordMaker.RADIUS_KEYWORD).equals("3.0"));
+      assertEquals(12.0, Angle.parseAngle(maker.getValue(KeywordMaker.RA_KEYWORD)).asDegrees(), 0.000001); //equal within 0.0..1 to allow for rounding errors
+      assertEquals(20.0, Angle.parseAngle(maker.getValue(KeywordMaker.DEC_KEYWORD)).asDegrees(), 0.000001);
+      assertEquals(3.0, Angle.parseAngle(maker.getValue(KeywordMaker.RADIUS_KEYWORD)).asDegrees(), 0.000001);
    }
       
    public void testJustKeyword() throws IOException
@@ -43,9 +44,9 @@ public class KeywordMakerTest extends OptionalTestCase
       Query query = new Query(SimpleQueryMaker.makeKeywordCondition(testKeys), null);
       KeywordMaker maker = new KeywordMaker(query);
       
-      assertTrue(maker.getValue("NAME").equals("Arthur"));
-      assertTrue(maker.getValue("CATALOGUE").equals("SSA"));
-      assertTrue(maker.getValue("WAVELENGTH").equals("optical"));
+      assertEquals("Arthur", maker.getValue("NAME"));
+      assertEquals("SSA", maker.getValue("CATALOGUE"));
+      assertEquals("optical", maker.getValue("WAVELENGTH"));
    }
 
    public void testSql1() throws IOException
@@ -53,9 +54,9 @@ public class KeywordMakerTest extends OptionalTestCase
       Query query = SqlParser.makeQuery("SELECT * FROM ANYWHERE WHERE Name='Arthur' AND Catalogue='SSA' AND Wavelength=12");
       KeywordMaker maker = new KeywordMaker(query);
       
-      assertTrue(maker.getValue("NAME").equals("Arthur"));
-      assertTrue(maker.getValue("CATALOGUE").equals("SSA"));
-      assertTrue(maker.getValue("WAVELENGTH").equals("12"));
+      assertEquals("Arthur", maker.getValue("NAME"));
+      assertEquals("SSA", maker.getValue("CATALOGUE"));
+      assertEquals(12.0, Double.parseDouble(maker.getValue("WAVELENGTH")), 0.0000001);
    }
    
    /** Check that ORs fail */
@@ -92,6 +93,9 @@ public class KeywordMakerTest extends OptionalTestCase
 
 /*
  $Log: KeywordMakerTest.java,v $
+ Revision 1.3  2005/02/28 19:36:39  mch
+ Fixes to tests
+
  Revision 1.2  2005/02/28 18:47:05  mch
  More compile fixes
 

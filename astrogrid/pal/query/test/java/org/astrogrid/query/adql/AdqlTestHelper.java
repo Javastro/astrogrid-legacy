@@ -1,10 +1,10 @@
 /*
- * $Id: AdqlTestHelper.java,v 1.1 2005/02/17 18:37:34 mch Exp $
+ * $Id: AdqlTestHelper.java,v 1.1 2005/02/28 19:36:39 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
-package org.astrogrid.query;
+package org.astrogrid.query.adql;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -84,33 +84,36 @@ public class AdqlTestHelper    {
     generated on the page
    at http://openskyquery.net/AdqlTranslator/Convertor.aspx */
    public Element getNvo1() throws IOException, SAXException, ParserConfigurationException {
-      return getTestAdql("nvoexample-1-adql0.7.4.xml");
+      return getTestAdql("v074/nvoexample-1-adql0.7.4.xml");
    }
 
    public Element getNvo2() throws IOException, SAXException, ParserConfigurationException {
-      return getTestAdql("nvoexample-2-adql0.7.4.xml");
+      return getTestAdql("v074/nvoexample-2-adql0.7.4.xml");
    }
    
    public Element getNvo3() throws IOException, SAXException, ParserConfigurationException {
-      return getTestAdql("nvoexample-3-adql0.7.4.xml");
+      return getTestAdql("v074/nvoexample-3-adql0.7.4.xml");
    }
    
    public Element getNvo4() throws IOException, SAXException, ParserConfigurationException {
-      return getTestAdql("nvoexample-4-adql0.7.4.xml");
+      return getTestAdql("v074/nvoexample-4-adql0.7.4.xml");
    }
 
    /** Returns the 'current' adql verison of some tests that can be run against the
     * sample stars database */
    public Element getSampleDbPleidies() throws IOException, SAXException, ParserConfigurationException {
-      return getTestAdql("SampleStars-pleidies-adql.xml");
+      return getTestAdql("v074/SampleStars-pleidies-adql.xml");
    }
    
 }
 
 /*
  $Log: AdqlTestHelper.java,v $
- Revision 1.1  2005/02/17 18:37:34  mch
- *** empty log message ***
+ Revision 1.1  2005/02/28 19:36:39  mch
+ Fixes to tests
+
+ Revision 1.1.1.1  2005/02/17 18:37:34  mch
+ Initial checkin
 
  Revision 1.1  2005/02/17 18:18:59  mch
  Moved in from datacenter project
