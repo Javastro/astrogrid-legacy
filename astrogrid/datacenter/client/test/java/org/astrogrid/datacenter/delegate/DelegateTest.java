@@ -1,5 +1,5 @@
 /*
- * $Id: DelegateTest.java,v 1.7 2004/01/13 00:32:47 nw Exp $
+ * $Id: DelegateTest.java,v 1.8 2004/02/15 23:22:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -30,7 +30,6 @@ import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.adql.ADQLException;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
-import org.astrogrid.datacenter.delegate.agss.SocketDelegate;
 import org.astrogrid.datacenter.delegate.agws.WebDelegate;
 import org.astrogrid.datacenter.delegate.dummy.DummyDelegate;
 import org.astrogrid.datacenter.query.QueryException;
@@ -50,24 +49,13 @@ public class DelegateTest extends TestCase implements DelegateQueryListener
       DummyDelegate dummy = (DummyDelegate) DatacenterDelegateFactory.makeFullSearcher(null);
       dummy.setTimeout(200);
 
-      //these will throw exceptions, but will at least test creation code
-      try
-      {
-         SocketDelegate socket = (SocketDelegate) DatacenterDelegateFactory.makeFullSearcher("socket://wibble:20");
-      }
-      catch (UnknownHostException se)   {  } //expect to not connect
-
       try
       {
          WebDelegate web = (WebDelegate) DatacenterDelegateFactory.makeFullSearcher("http://wibble");
       }
       catch (IOException se)     { } // expect to not connect
       
-
-      
    }
-
-
    
    /**
     * Creates a delegate, passes it a query and checks the return values
@@ -186,6 +174,9 @@ public class DelegateTest extends TestCase implements DelegateQueryListener
 
 /*
  * $Log: DelegateTest.java,v $
+ * Revision 1.8  2004/02/15 23:22:55  mch
+ * Removed socket-based services
+ *
  * Revision 1.7  2004/01/13 00:32:47  nw
  * Merged in branch providing
  * * sql pass-through
