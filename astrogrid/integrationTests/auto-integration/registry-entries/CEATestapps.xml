@@ -334,9 +334,9 @@
     <cea:CeaService status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         <Identifier>
             <AuthorityID>org.astrogrid.localhost</AuthorityID>
-            <ResourceKey>TemplateEntry</ResourceKey>
+            <ResourceKey>TestCEC</ResourceKey>
         </Identifier>
-        <Title>TemplateEntry</Title>
+        <Title>TestCEC</Title>
         <ShortName>TemplateEntry</ShortName>
         <Summary>
             <Description>This is part of the astrogrid CEA.</Description>
