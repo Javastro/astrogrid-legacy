@@ -16,6 +16,19 @@
  type="text/css"/>
   <link rel="stylesheet" href="http://www.ivoa.net/misc/ivoa_wg.css"
  type="text/css"/>
+  <style type="text/css">
+<!--
+.inline {
+	height: 20em;
+	width: 100%;
+	background-color: #CCCCFF;
+}
+.element {
+	font-style: italic;
+	text-decoration: underline;
+}
+-->
+  </style>
 </head>
 <body>
 <div class="head">
@@ -68,23 +81,36 @@ http://www.ivoa.net/Documents/.</em> </p>
 <ul class="toc">
   <li><a href="#sec1">1. Introduction</a></li>
   <ul class="toc">
-    <li><a href="#sec11">1.1 Example</a></li>
-    <li><a href="#sec12">1.2 ..</a></li>
+    <li><a href="#sec1_1">1.1 Motivation</a></li>
+    <li><a href="#sec1_2">1.2 Origins</a></li>
   </ul>
   <br />
-  <li><a href="#sec2">2. Second Section</a></li>
+  <li><a href="#sec2">2. Formal Definition</a></li>
   <ul class="toc">
-    <li><a href="#sec21">2.1 TwoPointOne ...</a></li>
-    <li><a href="#sec22">2.2 ..</a></li>
-    <li><a href="#sec23">2.3 ..</a></li>
+    <li><a href="#sec21">2.1 Components</a></li>
+    <li><a href="#sec22">2.2 Interactions</a></li>
+    <li><a href="#sec23">2.3 Interfaces</a></li>
+	<li>2.4 Objects</li>
+	
+    <li>2.5 Schema</li>
+    </ul>
   </ul>
-  <br />
-  <li><a href="#appA">Appendix A: ...</a></li>
-  <li><a href="#appB">Appendix B: ...</a></li>
-  <li><a href="#appC">Appendix C: ...</a></li>
-  <br />
-  <li><a href="#references">References</a></li>
+</div>
+<ul>
+  <li>
+    <div class="head">3 Deployment</div>
+  </li>
+  <li>4 Future Directions</li>
 </ul>
+<div class="head">
+  <ul class="toc">
+    <br />
+    <li><a href="#appA">Appendix A: WSDL for CommonExecutionConnector</a></li>
+    <li><a href="#appB">Appendix B: WSDL For Job Monitor</a></li>
+    <li><a href="#appC">Appendix C: ...</a></li>
+    <br />
+    <li><a href="#references">References</a></li>
+  </ul>
 </div>
 <hr />
 <br />
@@ -172,7 +198,9 @@ the interface is constant.&nbsp; CEA works by transporting meta
 information about the application interface within this constant WSDL
 interface.
 </p>
-<h3><a name="sect1_3" id="sect1_3">1.3 Components</a></h3>
+<h2><a name="sec2" id="sec2">2. Formal Definition</a></h2>
+<h3></h3>
+<h3><a name="sect1_3" id="sect1_3">2.1 Components</a></h3>
 <ul>
 <li> Application - This is the process that is to
 be executed. It is
@@ -204,8 +232,7 @@ e.g.
   </li>
 </ul>
 <br />
-<h2><a name="sec2" id="sec2">2. Formal Definition</a></h2>
-<h3>Interactions</h3>
+<h3>2.2 Interactions</h3>
 <a
  href="http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/applications/design/CEACallSequence.gif?rev=HEAD&amp;content-type=image/gif" target="umldiagram"><img
  style="border: 0px solid ; height: 720px; width: 900px;"
@@ -216,13 +243,32 @@ the CEA system interact when an application is executed.&nbsp; The
 steps are</p>
 <ol>
   <li>The invoking process calls the execute method of the CommonExecutionConnector
-    interface. This will cause asynchronous exectution of the applicaiton and
-    will return immediately with an executionID which is the identifier for this
+    interface, which is implemented by the component known as the CommonExectionController.
+    This will cause asynchronous execution of the application and will return
+    immediately
+    with
+    an executionID
+    which
+    is
+    the
+    identifier by which the<em> CommonExecutionController keeps track</em> of 
+    this
     particular execution instance. The parameters to this call are
     <ul>
-      <li>A Tool object - This is described in more detail</li>
+      <li>A Tool object - This is described in more <a href="#Tool">detail below</a>.</li>
+      <li>JobIdtentifier - this is the identifier by which the <em>invoking process
+        uses to keep track </em>of this particular execution instance.</li>
+      <li>Monitor endpoint URL - this is the endpoint of the service that implements
+        the Job Monitor interface that the CommonExecutionController can call
+        to inform the monitoring process of the status of the execution instance.</li>
     </ul>
   </li>
+  <li>The CommonExecutionConfroller will then start the application.</li>
+  <li>The application can then optionally return status information to the CommonExecutionController
+    which will then pass this on to the Monitor Service.</li>
+  <li>When the application completes it will inform the CommonExecutionController
+    which will then pass the results on to the storage service and inform the
+    monitor service that the application has finished.</li>
 </ol>
 <p>Some point of note;</p>
 <ul>
@@ -239,19 +285,24 @@ implicit in the specification of the output parameters, and it is the
 responsibility of the CommonExecutionController to ensure that they get
 there.</li>
 </ul>
-<h3>Interfaces</h3>
+<h3>2.3 Interfaces</h3>
 <h5>CommonExecutionConnector</h5>
 <p>This is the main interface that is used to communicate with the
-application. The main methods of are (please note that there are some
+application. The main methods (ports) are (please note that there are some
 extra methods defined in the WSDL that are defined for experimental
-purposes)</p>
+purposes in the interaction with the registry - This interaction will be finalised
+  in the )</p>
+<ol>
+  <li>execute</li>
+  <li>abort (This can be used to abort the execution of an application)</li>
+</ol>
 <p>The WSDL definition of this interface is stored in cvs at <a
  href="http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/workflow-objects/wsdl/CommonExecutionConnnector.wsdl?rev=HEAD">http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/workflow-objects/wsdl/CommonExecutionConnnector.wsdl?rev=HEAD</a></p>
 
 <h5>JobMonitorService</h5>
 <p>The WSDL definition of this interface is stored in cvs at <a
  href="http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/workflow-objects/wsdl/JobMonitor.wsdl?rev=HEAD">http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/workflow-objects/wsdl/JobMonitor.wsdl?rev=HEAD</a></p>
-<h3>Objects</h3>
+<h3><a name="objects" id="objects"></a>2.4 Objects</h3>
 <p>The objects that participate in CEA can be split into two groups</p>
 <ol>
   <li>Those used to describe the application in the registry
@@ -270,7 +321,7 @@ purposes)</p>
   </li>
 </ol>
 <p>These are described in more detail in the following sections.</p>
-<h5>Application</h5>
+<h4>2.4.1 Application</h4>
 <p>uml model</p>
 <img
  src="http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/applications/design/ceaApplication.gif?rev=HEAD&amp;content-type=image/gif" />
@@ -280,8 +331,15 @@ input parameters and 0 or more output parameters.</p>
 <p>The schema representation is shown below, and is essentially a
 representation of the UML model that has been coded to recognise that
 the same parameter can occur in several interfaces.</p>
-<img src="ApplicationBase.png" />
-<h5>Parameter</h5>
+<p><img src="ApplicationBase.png" />
+</p>
+<p>This diagram also shows a number of specialized elements all within the substitution
+  group which has <span class="element">Parameter</span> as the head. These are
+  implementation details where extra information is needed to specify how to
+  use the parameters - for example in the case of a command line parameter it
+  is necessary to know the command line switch or position that the parameter
+  appears at.</p>
+<h4>2.4.2 Parameter</h4>
 <p>The description of the parameters and the parameter values are
 probably the heart of the CEA. It is the model for the parameters that
 allow us to add semantic meaning, and to give the flexibility in how
@@ -291,12 +349,16 @@ to encompass any data models that the VO produces.</p>
 <p>The basic parameter definition from the schema is shown below</p>
 <p><img src="BaseParameterDefintion.png" />
 </p>
-<p>Tool</p>
-<p>ParameterValue</p>
+<h4><a name="Tool" id="Tool"></a>2.4.3 Tool</h4>
+<p>The <a href="http://www.astrogrid.org/maven/docs/snapshot/astrogrid-workflow-objects/schema/AGParameterDefinition.html#element_tool">tool</a> represents
+  the full collection of parameters that are passed to a particular interface
+  of an application and the results that are returned.</p>
+<img height="227" src="Tool.png" width="721" />
+<h4>2.4.4 ParameterValue</h4>
 <p>The <a
  href="http://www.astrogrid.org/maven/docs/snapshot/astrogrid-workflow-objects/schema/AGParameterDefinition.html#type_parameterValue">parameterValue</a>
-model is simple but powerful the parameterValue element has 3
-  attributes</p>
+model is simple but powerful representation of the parameters that are passed
+  to an application. The parameterValue element has 3 attributes</p>
 <ul>
   <li><b>Name</b></li>
   <li><b>Type</b> this describes the data type of the parameter. It can
@@ -321,9 +383,9 @@ include
 </ul>
 <p>Note that the current implementation has the type and transport
 attributes combined as one - so that there can be a type of
-MySpace_VOTableReference for instance - the full implemnentation will
+MySpace_VOTableReference for instance - the full implementation will
 have them separated as described above for more flexibility.</p>
-<h3>Schema</h3>
+<h3><a name="schema" id="schema"></a>2.5 Schema</h3>
 <p>The schema associated with the CEA fall into two categories</p>
 <ol>
   <li>The schema used to define the messages within the
@@ -393,8 +455,36 @@ into its own CEA specific schema in future.</td>
     </tr>
   </tbody>
 </table>
-<h2>Deployment</h2>
-<h3>Typical Scenario</h3>
+<h4>2.5.1 Discussion of the VOResource Extension </h4>
+<p>It is a valid question to ask whether there needed to be a specific VOResource
+  extension to accomodate the CEA. The standard <span class="element">Service
+  </span>element exepects the interface to the service to be described in WSDL,
+  so given that CEA has <em>constant</em> WSDL definitions for <em>different</em> applications
+  therre needs to be a way of expressing the fact that a particular <span class="element">CeaService</span>  can
+  run a particular set of applications. The method that was chosen was to extend
+  <span class="element">Service</span> with an element that is just an aggregation
+  of pointers to the actual application defintions defined in <span class="element">CeaApplication</span>  which
+  is an extension of the standard <span class="element">ResourceType</span>.
+  These relationships are illustrated in the UML below.</p>
+<p><img height="331" src="RegistryDomain.gif" width="641" /></p>
+<p>For a particular application there should  be only one CeaApplication entry
+  in the registry. This entry will define everything that is necessary to run
+  the application excepf for the endpoint of the service. This implies that to
+  find a particular instance of a particular application is a two stage registry
+  query. </p>
+<ol>
+  <li>Query the registry to find the application of interest - note the parameter
+    data and the IVOA identifier for the application.</li>
+  <li>Query a second time to find the CeaService(s) that can run the application
+    with that IVOA identifier.</li>
+</ol>
+<p>The diagram illustrates
+    the point that one <span class="element">CeaService</span> may
+    run several <span class="element">CeaApplication</span>s
+    and that a particular <span class="element">CeaApplication</span> can be
+    run by serveral <span class="element">CeaService</span>s.</p>
+<h2><a name="Deployment" id="Deployment"></a>3 Deployment</h2>
+<h3>3.1 Typical Scenario</h3>
 <a href="http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/applications/design/CEADeployment.gif?rev=HEAD&content-type=image/gif" target="umldiagram"><img alt="UML Deployment" border="0" height="459"
  src="http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/applications/design/CEADeployment.gif?rev=HEAD&amp;content-type=image/gif" width="834" /></a>
 <p>This deployment shows some of the features of using the CEA</p>
@@ -410,48 +500,80 @@ with a web service so that the results returned by the webservice can
 be stored locally thus minimising network traffic</li>
 </ul>
 <br />
-<h3> What it means for an application to be CEA compliant</h3>
-<p>Astrogrid Implemetation</p>
+<h3> 3.2 What it means for an Application to be CEA compliant</h3>
+<ul>
+  <li>Implement the CommonExecutionConnector interfaces.</li>
+  <li>Be prepared to make a call back to the Job Monitor interface with intermediate
+    and final execution status.</li>
+  <li>Understand how to interpret all the parameter types.</li>
+  <li>Be able to support all the transport mechanisms for output parameters.</li>
+</ul>
+<h3>3.3 <a href="http://www.astrogrid.org/">Astrogrid</a> Implementation</h3>
+<p>The CEA is implemented in the following astrogrid components</p>
+<ul>
+  <li>Applications Integration (<a href="http://www.astrogrid.org/maven/docs/snapshot/applications/index.html">maven
+  documentation</a>). This currently implements a specialized CommonExecutionController
+  that can execute unix command line applications. In iteration 6 of Astrogrid,
+  there are plans to create a CommonExecutionController that can execute arbitrary
+  web services.</li>
+  <li>Workflow Common Objects (<a href="http://www.astrogrid.org/maven/docs/snapshot/astrogrid-workflow-objects/index.html">maven
+  documentation</a>). This project holds all of the schema and WSDL definitions
+  that are used by CEA based services in Astrogrid. Additionally it contains
+  <a href="http://www.castor.org/">Castor</a> generated object bindings for the schema and the <a href="http://ws.apache.org/axis/">Axis</a> generated web
+  services stubs for the service.</li>
+  <li>Job Execution System (maven documentation). This is the engine of the Astrogrid
+    workflow</li>
+</ul>
 <br />
-<h2>Future Directions</h2>
-<h3>What needs to be done to make this suitable for adoption by the IVOA</h3>
+<h2><a name="Future" id="Future"></a>4 Future Directions</h2>
+<h3>4.1 What needs to be done to make this suitable for adoption by the IVOA</h3>
 <ul>
   <li>Refactor the schema to remove some of the astrogrid specific
 parts - particulary the tool element needs to be removed from workflow
 and placed in AGApplicationBase.xsd schema.</li>
   <li>The status callback can be defined in the same WSDL as the main
 interface.</li>
-  <li>Renaming of components/files to not include astrogrid references.<br />
+  <li>Renaming of components/files to not include astrogrid references.</li>
+  <li>Bring into line with the new VOResource<br />
   </li>
 </ul>
-<h3>Extensions</h3>
+<h3>4.2 Extensions</h3>
 <ul>
   <li>Add an explicit method of returning results</li>
-  <li>WFResource<a
+  <li><a
  href="http://www.ivoa.net/twiki/bin/view/IVOA/AsynchronousActivityProposal">
-AsynchronousActivityProposal</a></li>
-  <li>Including work from the DM workgroup on basic parameter types</li>
-  <li>Think about Capability/ontology stuff</li>
+  AsynchronousActivityProposal</a></li>
+  <li>Including work from the DM workgroup on basic parameter types - perhaps
+    extend the number of types that CEA &quot;understands&quot;.</li>
+  <li>Think about Capability/ontology. </li>
 </ul>
 <h2><a name="appendix" id="appendix">Appendices</a></h2>
 <h2><a name="appA" id="appA">Appendix A: WSDL for the Common Execution Connector<br />
 </a></h2>
-<iframe
- src="http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/workflow-objects/wsdl/CommonExecutionConnnector.wsdl?rev=HEAD&amp;content-type=text/plain"
- width="100%" height="400">the contents of 
-http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/workflow-objects/wsdl/CommonExecutionConnnector.wsdl?rev=HEAD&amp;content-type=text/plain
-</iframe>
+  <iframe
+ src="http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/workflow-objects/wsdl/CommonExecutionConnnector.wsdl?rev=HEAD&amp;content-type=text/xml"
+class="inline" >This has been written in document style &quot;wrapped&quot; in order to
+  provide as much 'out-of-the-box' interoperability between Java and .Net web
+  services.</iframe>
+</p>
 <h2><a name="appB" id="appB">Appendix B:WSDL for the Job Monitor Service<br />
 </a></h2>
 <iframe
- src="http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/workflow-objects/wsdl/JobMonitor.wsdl?rev=HEAD&amp;content-type=text/plain"
- width="100%" height="400">the contents of 
-http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/workflow-objects/wsdl/JobMonitor.wsdl?rev=HEAD&amp;content-type=text/plain
+ src="http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/workflow-objects/wsdl/JobMonitor.wsdl?rev=HEAD&amp;content-type=text/xml"
+ class="inline">the contents of 
+http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/workflow-objects/wsdl/JobMonitor.wsdl?rev=HEAD&amp;content-type=text/xml
 </iframe>
 
 
-<h2><a name="appC" id="appC">Appendix C:??...</a></h2>
-<p>Appendix C text</p>
+<h2><a name="appC" id="appC">Appendix C: Example Registry Entries</a></h2>
+<p><em>Note </em>The <span class="element">AuthorityID</span> in this example is set to an illegal value of
+  @REGAUTHORITY@ which is a token that is replaced by the astrogrid installation
+  system.</p>
+<iframe
+ src="http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/integrationTests/auto-integration/registry-entries/CEARealapps.xml?rev=HEAD&amp;content-type=text/xml"
+ width="100%" height="400">the contents of 
+http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/integrationTests/auto-integration/registry-entries/CEARealapps.xml?rev=HEAD&amp;content-type=text/xml
+</iframe>
 <br />
 <h2><a name="references" id="references">References</a></h2>
 <p>These are all in-line links at the moment.</p>
