@@ -1,5 +1,5 @@
 /*
- * $Id: WarehouseQuerier.java,v 1.7 2004/03/17 13:53:29 mch Exp $
+ * $Id: WarehouseQuerier.java,v 1.8 2004/03/17 15:48:33 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -139,7 +139,7 @@ public class WarehouseQuerier extends QuerierPlugin {
    * @return Document containing VOTable-ised query results
    * @throws DatabaseAccessException
    */
-  protected Document doShelledOutQuery(String sql, File tempFile)
+  protected void doShelledOutQuery(String sql, File tempFile)
       throws DatabaseAccessException {
 
     if (sql == null) {
@@ -187,8 +187,6 @@ public class WarehouseQuerier extends QuerierPlugin {
     }
     // Finished external call successfully
     log.info("Shelled-out query succeeded");
-    
-    return null; //mch botch
   }
 
   /**
@@ -357,6 +355,9 @@ public class WarehouseQuerier extends QuerierPlugin {
 }
 /*
 $Log: WarehouseQuerier.java,v $
+Revision 1.8  2004/03/17 15:48:33  kea
+Tidying method sigs.
+
 Revision 1.7  2004/03/17 13:53:29  mch
 MCH botch to compile
 

@@ -55,8 +55,7 @@ public class WarehouseQuerierClient
     SimpleConfig.load(propertiesFile);
 
     // Do actual query
-    Document result = querier.doShelledOutQuery(sql, null);
-    printNode(result);
+    querier.doShelledOutQuery(sql, null);
   }
 
   // TOFIX Borrowed this from google
