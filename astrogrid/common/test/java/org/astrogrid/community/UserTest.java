@@ -1,4 +1,4 @@
-/* $Id: UserTest.java,v 1.6 2004/03/05 13:12:25 pah Exp $
+/* $Id: UserTest.java,v 1.7 2004/05/11 08:33:37 pah Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -76,6 +76,17 @@ public class UserTest extends TestCase
       
       assertFalse(me.equals(meToo));
    }
+   
+   public void testaAccountFormat()
+   {
+      try {
+         User auser = new User("account","group","token"); 
+         fail("The constructor should have failed with a java language assertion error because the account part should be of the form account@community");
+ 
+      }
+      catch (AssertionError e) {
+      }
+   }
 
 
     /**
@@ -98,6 +109,9 @@ public class UserTest extends TestCase
 
 /*
 $Log: UserTest.java,v $
+Revision 1.7  2004/05/11 08:33:37  pah
+test the form of the account argument in constuctor
+
 Revision 1.6  2004/03/05 13:12:25  pah
 updated so that the unit test worked - the unit test had an incorrect assertion - but the way tha tthe user object was made from a snippet was wrong as well
 
