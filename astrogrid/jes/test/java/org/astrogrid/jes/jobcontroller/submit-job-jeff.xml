@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<job name="usnobJob2" >   
+<userid>ktn</userid>   
+<jes_community>star.le.ac.uk</jes_community>   
+<description>usnobJob2</description>   
+<AssignID>dummy</AssignID>
+   
+<community>
+   <token>null</token>
+   <credentials>
+      <account>ktn@star.le.ac.uk</account>
+      <group>null</group>
+   </credentials>
+</community>   
+
+<jobstep name="StepOne"       
+         joinCondition="any"
+         stepNumber="1"
+         sequenceNumber="1">   
+<query target="http://uml03.astrogrid.org:8080/usnob/services/AxisDataServer" type="adql">
+<!--
+select ID from usnob where B2MAG < 17 and R2MAG > 19 and ID < 1000000
+-->
+<Select xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <SelectionList>
+    <ColumnExpr>
+      <SingleColumnReference>
+        <Name>ID</Name>
+        <TableName>u</TableName>
+      </SingleColumnReference>
+    </ColumnExpr>
+    <ColumnExpr>
+      <SingleColumnReference>
+        <Name>R2MAG</Name>
+        <TableName>u</TableName>
+      </SingleColumnReference>
+    </ColumnExpr>
+  </SelectionList>
+  <TableClause>
+    <FromClause>
+      <TableReference>
+        <Table>
+          <Name>usnob</Name>
+          <AliasName>u</AliasName>
+        </Table>
+      </TableReference>
+    </FromClause>
+    <WhereClause>
+      <IntersectionSearch>
+        <FirstCondition xsi:type="PredicateSearch">
+          <ComparisonPred>
+            <FirstExpr xsi:type="ColumnExpr">
+              <SingleColumnReference>
+                <TableName>u</TableName>
+                <Name>B2MAG</Name>
+              </SingleColumnReference>
+            </FirstExpr>
+            <Compare>&lt;</Compare>
+            <SecondExpr xsi:type="AtomExpr">
+              <Value>
+                <NumberLiteral>
+                  <IntNum>
+                    <Value>17</Value>
+                  </IntNum>
+                </NumberLiteral>
+              </Value>
+            </SecondExpr>
+          </ComparisonPred>
+        </FirstCondition>
+        <SecondCondition xsi:type="IntersectionSearch">
+                <FirstCondition xsi:type="PredicateSearch">
+                        <ComparisonPred>
+                               <FirstExpr xsi:type="ColumnExpr">
+                                <SingleColumnReference>
+                                        <TableName>u</TableName>
+                                        <Name>R2MAG</Name>
+                                </SingleColumnReference>
+                                </FirstExpr>
+                                <Compare>&gt;</Compare>
+                                <SecondExpr xsi:type="AtomExpr">
+                                <Value>
+                                        <NumberLiteral>
+                                        <IntNum>
+                                        <Value>19</Value>
+                                        </IntNum>
+                                        </NumberLiteral>
+                                </Value>
+                                </SecondExpr>
+                        </ComparisonPred>
+                </FirstCondition>
+                <SecondCondition xsi:type="PredicateSearch">
+                        <ComparisonPred>
+                                <FirstExpr xsi:type="ColumnExpr">
+                                <SingleColumnReference>
+                                        <TableName>u</TableName>
+                                        <Name>ID</Name>
+                                </SingleColumnReference>
+                                </FirstExpr>
+                                <Compare>&lt;</Compare>
+                                <SecondExpr xsi:type="AtomExpr">
+                                <Value>
+                                        <NumberLiteral>
+                                        <IntNum>
+                                        <Value>1000000</Value>
+                                        </IntNum>
+                                        </NumberLiteral>
+                                </Value>
+                                </SecondExpr>
+                        </ComparisonPred>
+                </SecondCondition>
+        </SecondCondition>
+      </IntersectionSearch>
+    </WhereClause>
+  </TableClause>
+</Select>
+</query>
+</jobstep>
+</job>

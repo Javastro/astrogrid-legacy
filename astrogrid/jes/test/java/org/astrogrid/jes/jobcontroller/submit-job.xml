@@ -10,7 +10,7 @@
             ...
          </query>
       </jobstep>
-
+<frodo></frodo>
       <jobstep name="StepTwo" condition="true" >
          <query>
             ...
