@@ -301,14 +301,18 @@ public class JobController {
 	  * @see the appropriate properties' file.
 	  **/         
 	private String formatResponse( Job job, String aMessage ) {
-		if( TRACE_ENABLED ) logger.debug( "formatResponse() entry") ;
+		if( TRACE_ENABLED ) logger.debug( "JobController.formatResponse() entry") ;
 		
-		String 
-		   response = JES.getProperty( JES.CONTROLLER_SUBMIT_JOB_RESPONSE_TEMPLATE
-		                             , JES.CONTROLLER_CATEGORY ) ;
-		
+        String 
+            response = null ;
+              
 		try {
-			
+            
+            response = JES.getProperty( JES.CONTROLLER_SUBMIT_JOB_RESPONSE_TEMPLATE
+                                      , JES.CONTROLLER_CATEGORY ) ;
+        
+            logger.debug( "response template: " + response ) ;
+			 
 			Object []
 			   inserts = new Object[5] ;
 			inserts[0] = job.getUserId() ;
@@ -316,7 +320,13 @@ public class JobController {
 			inserts[2] = job.getDate() ;
 			inserts[3] = job.getId() ;
 			inserts[4] = aMessage ;
-			
+            
+            logger.debug( "inserts[0]: " + inserts[0] ) ;
+            logger.debug( "inserts[1]: " + inserts[1] ) ;
+            logger.debug( "inserts[2]: " + inserts[2] ) ;
+            logger.debug( "inserts[3]: " + inserts[3] ) ;
+            logger.debug( "inserts[4]: " + inserts[4] ) ;
+            
 			response = MessageFormat.format( response, inserts ) ;
 
 		}
@@ -327,7 +337,7 @@ public class JobController {
 			logger.error( message.toString(), ex ) ;
 		} 
 		finally {
-			if( TRACE_ENABLED ) logger.debug( "formatResponse() exit") ;	
+			if( TRACE_ENABLED ) logger.debug( "JobController.formatResponse() exit") ;	
 		}		
 		
 		return response ;

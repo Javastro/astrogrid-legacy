@@ -99,7 +99,7 @@ public class JobStep {
            }
            attribute = element.getAttribute( SubmissionRequestDD.JOBSTEP_JOINCONDITION_ATTR ) ;
            logger.debug( "join condition: " + attribute ) ;
-           if( attribute != null ) {
+           if( attribute != null && attribute.trim() != "" ) {
                setJoinCondition( attribute.trim() ) ;
            }
            else {

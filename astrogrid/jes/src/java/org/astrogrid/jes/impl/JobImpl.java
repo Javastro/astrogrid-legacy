@@ -45,7 +45,7 @@ public class JobImpl extends Job {
         SUBCOMPONENT_NAME = Configurator.getClassName( JobFactoryImpl.class );                
 		
 	private static String
-		ASTROGRIDERROR_COULD_NOT_CREATE_JOB_CONNECTION            = "AGDTCE00160" ,
+		ASTROGRIDERROR_COULD_NOT_CREATE_JOB_CONNECTION            = "AGJESE00160" ,
 	    ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT = "AGJESE00170" ;
 	  
 	private JobFactoryImpl
@@ -160,7 +160,8 @@ public class JobImpl extends Job {
 			 	inserts[0] = JES.getProperty( JES.JOB_TABLENAME_JOB
                                             , JES.JOB_CATEGORY ) ;
 				String
-				     updateString = MessageFormat.format( JobFactoryImpl.JOB_INSERT_TEMPLATE, inserts ) ; 									     			
+				     updateString = MessageFormat.format( JobFactoryImpl.JOB_INSERT_TEMPLATE, inserts ) ; 
+                logger.debug( "updateString: " + updateString ) ;									     			
 				preparedStatement = getConnection().prepareStatement( updateString ) ;		
 			}
 		    

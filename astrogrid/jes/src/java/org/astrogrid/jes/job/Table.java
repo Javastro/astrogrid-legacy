@@ -45,7 +45,7 @@ public class Table {
 		ASTROGRIDERROR_COULD_NOT_CREATE_TABLE = "AGJESE00620" ;
 	
     public static final String
-        TABLE_FOR_ADQL_BASED_DATACENTER = "TableForADQLBasedDatacenter_Iteration3" ;
+        TABLE_FOR_ADQL_BASED_DATACENTER = "TableForADQLBasedDatacenterIt3" ;
     
 	private String 
 	   name ;

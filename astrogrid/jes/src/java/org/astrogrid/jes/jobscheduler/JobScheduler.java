@@ -215,8 +215,7 @@ public class JobScheduler {
             service = null ;
         
         try {
-       
-            requestXML = this.formatRunRequest( step, doc ) ;
+            
             service = this.findService( step ) ;
             if( service == null ) {
                 // location = enquireOfRegistry( step ) ;                
@@ -226,12 +225,16 @@ public class JobScheduler {
                 logger.error( message.toString() ) ;
                 throw new JesException( message ) ;
             }
+            location = service.getUrl() ;
             
             if( service.getName().equals( org.astrogrid.jes.job.Service.SERVICE_FOR_ADQL_BASED_DATACENTER ) ){
-                dispatchToIterationThreeDatacenter( doc, location ) ;
+                requestXML = this.formatRunRequest( step, doc, true ) ;
+                dispatchToIterationThreeDatacenter( requestXML, location ) ;
+                
             }
             else {
-                dispatchToIterationTwoDatacenter( requestXML, location ) ;
+                requestXML = this.formatRunRequest( step, doc, false ) ;
+                dispatchToIterationTwoDatacenter( requestXML, location ) ;          
             }
    
         }
@@ -378,7 +381,7 @@ public class JobScheduler {
     } // end dispatchToIterationTwoDatacenter()
 	
     
-    private void dispatchToIterationThreeDatacenter( Document requestDoc
+    private void dispatchToIterationThreeDatacenter( String requestXML
                                                    , String datacenterLocation ) 
                                       throws JesException { 
         if( TRACE_ENABLED ) logger.debug( "dispatchToIterationThreeDatacenter() entry") ;
@@ -389,9 +392,18 @@ public class JobScheduler {
             element = null ;
         String
             queryID = null ;
+        InputSource
+            requestSource = null ;
+        Document
+            requestDoc = null ; 
 
         try {
+                 
+            requestSource = new InputSource( new StringReader( requestXML ) );
+            requestDoc = XMLUtils.newDocument( requestSource ) ;
             
+            logger.debug( "requestXML: " + requestXML ) ;
+            logger.debug( "datacenterLocation: " + datacenterLocation ) ;
             delegate = DatacenterDelegate.makeDelegate( datacenterLocation ) ;
             element = delegate.makeQuery( requestDoc.getDocumentElement() ) ; 
             logger.debug( "delegate.makeQuery() returned..."  ) ;
@@ -415,7 +427,7 @@ public class JobScheduler {
     } // end dispatchToIterationThreeDatacenter()
     
     
-    private String formatRunRequest( JobStep step, Document doc ) throws JesException {
+    private String formatRunRequest( JobStep step, Document doc, boolean bAdqlType ) throws JesException {
         if( TRACE_ENABLED ) logger.debug( "formatRunRequest() entry") ;
         
         String
@@ -477,7 +489,7 @@ public class JobScheduler {
                 jobElement.removeChild( element ) ;
             }
                      
-            request = this.runRequestToString( doc ) ;
+            request = this.runRequestToString( doc, bAdqlType ) ;
               
         }
         catch ( Exception ex ) {
@@ -496,7 +508,7 @@ public class JobScheduler {
     } // end of formatRunRequest()
     
     
-    private String runRequestToString( Document doc ){
+    private String runRequestToString( Document doc, boolean bAdqlType ){
         if( TRACE_ENABLED ) logger.debug( "runRequestToString() entry") ;
         
         String
@@ -507,22 +519,15 @@ public class JobScheduler {
             queryType = null ;
         
         try {
+            
             docString = XMLUtils.DocumentToString( doc ) ;
-            
-            Node
-                node = XMLUtils.findNode( doc.getFirstChild()
-                                        , new QName( SubmissionRequestDD.QUERY_ELEMENT ) );
-            
-            if( node.getNodeType() == Node.ELEMENT_NODE ) {
-                element = (Element) node ;
-                queryType = element.getAttribute( SubmissionRequestDD.QUERY_TYPE_ATTR ) ;
-            }
                 
-            if( SubmissionRequestDD.QUERY_TYPE_ADQL.equals( queryType ) ) {
+            if( bAdqlType == true ) {
                 logger.debug( "This is an ADQL query") ;
                 docString =
                     docString.replaceAll( SubmissionRequestDD.JOB_URN_ATTR
                                         , SubmissionRequestDD.JOB_ASSIGNID_ATTR ) ;
+                logger.debug( "docString: " + docString ) ;                                        
             }
             else {
                 logger.debug( "This is an Iteration 2 query") ;

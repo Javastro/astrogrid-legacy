@@ -57,7 +57,7 @@ public class Query {
                 type = queryElement.getAttribute( SubmissionRequestDD.QUERY_TYPE_ATTR ),
                 target = queryElement.getAttribute( SubmissionRequestDD.QUERY_TARGET_ATTR ) ; 
                 
-            if( type == SubmissionRequestDD.QUERY_TYPE_ADQL) {
+            if( SubmissionRequestDD.QUERY_TYPE_ADQL.equalsIgnoreCase( type ) ) {
                 fixupCatalogsForADQL( target ) ;
                 return ;
             }

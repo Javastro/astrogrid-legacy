@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+    <classpathentry kind="src" path="src/java"/>
+    <classpathentry kind="lib" path="lib/astrogrid/astrogrid-common.jar"/>
+    <classpathentry kind="lib" path="lib/astrogrid/policy-client-1.0.jar"/>
+    <classpathentry kind="lib" path="lib/axis/axis.jar"/>
+    <classpathentry kind="lib" path="lib/jconfig/jconfig.jar"/>
+    <classpathentry kind="lib" path="lib/junit/junit.jar"/>
+    <classpathentry kind="lib" path="lib/sybase/jconn2.jar"/>
+    <classpathentry kind="lib" path="lib/tomcat/jaxrpc.jar"/>
+    <classpathentry kind="lib" path="lib/tomcat/log4j-1.2.4.jar"/>
+    <classpathentry kind="lib" path="lib/tomcat/saaj.jar"/>
+    <classpathentry kind="lib" path="lib/tomcat/servlet.jar"/>
+    <classpathentry kind="lib" path="lib/tomcat/wsdl4j.jar"/>
+    <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+    <classpathentry kind="lib" path="lib/astrogrid/datacenterdelegates.jar"/>
+    <classpathentry kind="lib" path="lib/astrogrid/authentication-client-1.0_JLbugfix.jar"/>
+    <classpathentry kind="output" path="bin"/>
+</classpath>

@@ -28,6 +28,8 @@ import java.sql.PreparedStatement ;
 import java.sql.ResultSet ;
 import java.sql.SQLException ;
 import java.sql.Timestamp ;
+import java.util.Date ;
+import java.text.*;
 import java.text.MessageFormat ;
 import java.util.ArrayList;
 import java.util.HashSet ;
@@ -350,6 +352,12 @@ public class JobFactoryImpl implements JobFactory {
 		   statement = null ;
 		ResultSet
 		   rs = null ;
+        SimpleDateFormat
+           dateFormat = new SimpleDateFormat( "yyyy-MM-dd hh:mm:ss:SSS" ) ;
+        String
+           stringDate = null ;
+        Date
+           submissionDate = null ;           
     	   
 		try {
 
@@ -378,7 +386,22 @@ public class JobFactoryImpl implements JobFactory {
 				
 				job.setId( rs.getString( COL_JOBURN ) ) ;
 				job.setName( rs.getString( COL_JOBNAME ) ) ;
-				job.setDate( rs.getTimestamp( COL_SUBMITTIMESTAMP ) ) ;
+
+                stringDate = rs.getString( COL_SUBMITTIMESTAMP ) ;
+                if( stringDate != null ) {
+                    try { 
+                        submissionDate = dateFormat.parse( stringDate ); }
+                    catch( ParseException pex ) { 
+                        submissionDate = new Date(); 
+                        logger.error( "Malformed submission date" ) ;
+                    }   
+                }
+                else {
+                    submissionDate = new Date() ;
+                    logger.error( "Missing submission date" ) ;
+                }
+                job.setDate( submissionDate ) ;
+                
 				job.setUserId( rs.getString( COL_USERID ) ) ;
 				job.setCommunity( rs.getString( COL_COMMUNITY ) ) ;
 				job.setDocumentXML( rs.getString( COL_JOBXML ) ) ;

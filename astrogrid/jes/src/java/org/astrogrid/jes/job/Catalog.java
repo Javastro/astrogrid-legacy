@@ -49,7 +49,7 @@ public class Catalog {
 		ASTROGRIDERROR_COULD_NOT_CREATE_CRITERIA = "AGJESE00600" ;
 		
     public static final String
-        CATALOG_FOR_ADQL_BASED_DATACENTER = "CatalogForADQLBasedDatacenter_Iteration3" ;
+        CATALOG_FOR_ADQL_BASED_DATACENTER = "CatalogForADQLBasedDatacenterIt3" ;
         
     private String
         name ;
