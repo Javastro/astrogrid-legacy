@@ -126,6 +126,14 @@ public class MySpaceDummyDelegate extends MySpaceManagerDelegate
    }
 
    /**
+    * Returns the path to access the given file for the given user, etc
+    */
+   private String getPath(String userid, String communityid)
+   {
+      return ""; //dir.getPath()+File.separator;
+   }
+
+   /**
     * Returns the full xml description of the given file
     * @param userid
     * @param communityid
@@ -134,7 +142,7 @@ public class MySpaceDummyDelegate extends MySpaceManagerDelegate
     */
    public String listDataHolding(String userid, String communityid, String serverFileName)  {
 
-      File file = new File(serverFileName);
+      File file = new File(getPath(userid, communityid)+serverFileName);
 
       Log.affirm(file.exists(), "File "+serverFileName+" not found");
 
@@ -150,10 +158,11 @@ public class MySpaceDummyDelegate extends MySpaceManagerDelegate
     * @param destFileName: full file name copy to
     * @return
     */
-   public String copyDataHolding(String userid, String communityid, String sourceFileName, String destFileName) throws FileNotFoundException, IOException {
+   public String copyDataHolding(String userid, String communityid, String sourceFileName, String destFileName)
+      throws IOException {
 
-      File source = new File(sourceFileName);
-      File dest = new File(destFileName);
+      File source = new File(getPath(userid, communityid)+sourceFileName);
+      File dest = new File(getPath(userid, communityid)+destFileName);
 
       Log.affirm(source.exists(), "File "+sourceFileName+" not found");
 
@@ -178,6 +187,9 @@ public class MySpaceDummyDelegate extends MySpaceManagerDelegate
    /**
     * Renames a file on a server
     *
+    * @todo broken at the moment - possibly because the rename shouldn't
+    * have the path specified.
+    *
     * @param userid
     * @param communityid
     * @param oldFileName: ole file full name
@@ -185,15 +197,20 @@ public class MySpaceDummyDelegate extends MySpaceManagerDelegate
     * @return
     */
 
-   public String renameDataHolding(String userid, String communityid, String oldFileName, String newFileName)  {
+   public String renameDataHolding(String userid, String communityid, String oldFileName, String newFileName)  throws IOException {
 
-      File file = new File(oldFileName);
-      File dest = new File(newFileName);
+      File file = new File(getPath(userid, communityid)+oldFileName);
+      File dest = new File(getPath(userid, communityid)+newFileName);
 
       Log.affirm(file.exists(), "File "+oldFileName+" not found");
-      Log.affirm(dest.exists(), "File "+newFileName+" exists! Cannot rename "+oldFileName);
+      Log.affirm(!dest.exists(), "File "+newFileName+" exists! Cannot rename "+oldFileName);
 
-      file.renameTo(dest);
+      boolean success = file.renameTo(dest);
+
+      if (!success)
+      {
+         throw new IOException("Failed to rename "+file+" to "+dest+" (don't know why)");
+      }
 
       return "done";
    }
@@ -207,13 +224,17 @@ public class MySpaceDummyDelegate extends MySpaceManagerDelegate
     * @return
     * @throws Exception
     */
-   public String deleteDataHolding(String userid, String communityid, String serverFileName)  {
+   public String deleteDataHolding(String userid, String communityid, String serverFileName)  throws IOException {
 
-      File file = new File(serverFileName);
+      File file = new File(getPath(userid, communityid)+serverFileName);
 
       Log.affirm(file.exists(), "File "+serverFileName+" not found");
 
-      file.delete();
+      boolean success = file.delete();
+
+      if (!success) {
+         throw new IOException("Could not delete file '"+file+"' (don't know why)");
+      }
 
       return "done";
    }
@@ -232,21 +253,21 @@ public class MySpaceDummyDelegate extends MySpaceManagerDelegate
    */
 
    public boolean saveDataHolding(String userid, String communityid, String fileName, String fileContent,
-                                  String category, String action) throws FileNotFoundException, IOException
+                                  String category, String action) throws IOException
    {
       boolean append = false;
 
-      if (action.toLowerCase().equals(OVERWRITE)) {
+      if (action.equals(OVERWRITE)) {
          append = false;
       }
-      else if (action.toLowerCase().equals(APPEND)) {
+      else if (action.equals(APPEND)) {
          append = true;
       }
       else {
          throw new IllegalArgumentException("Illegal Action '"+action+"'");
       }
 
-      File dest = new File(fileName);
+      File dest = new File(getPath(userid, communityid)+fileName);
       OutputStream out = new FileOutputStream(dest, append);
       out.write(fileContent.getBytes());
       out.close();
@@ -268,7 +289,7 @@ public class MySpaceDummyDelegate extends MySpaceManagerDelegate
     */
 
    public boolean saveDataHoldingURL(String userid, String communityid, String fileName, String importURL,
-                           String category, String action) throws MalformedURLException, FileNotFoundException, IOException {
+                           String category, String action) throws  IOException {
 
       boolean append = false;
 
@@ -283,7 +304,7 @@ public class MySpaceDummyDelegate extends MySpaceManagerDelegate
       }
 
       URL source = new URL(importURL);
-      File dest = new File(fileName);
+      File dest = new File(getPath(userid, communityid)+fileName);
 
       InputStream in = new BufferedInputStream(source.openStream());
       OutputStream out = new BufferedOutputStream(new FileOutputStream(dest, append));
@@ -313,7 +334,7 @@ public class MySpaceDummyDelegate extends MySpaceManagerDelegate
    */
    public URL getDataHoldingUrl(String userid, String communityid, String fullFileName) throws IOException {
 
-      File file = new File(fullFileName);
+      File file = new File(getPath(userid, communityid)+fullFileName);
 
       Log.affirm(file.exists(), "File '"+fullFileName+"' not found");
 
