@@ -74,6 +74,8 @@ import java.net.URL;
  * @author  Jeff Lusted
  * @version 1.0 28-May-2003
  * @since   AstroGrid 1.2
+ * 
+ * Bug#12   Jeff Lusted - 30-June-2003   NullPointerException under error conditions.
  */
 public class JobController {
 
@@ -338,6 +340,8 @@ public class JobController {
 	  * 
 	  * @see SubmitJobRequest.xsd in CVS
 	  * @see SubmitJobResponse.xsd in CVS
+	  * 
+	  * Bug#12   Jeff Lusted - 30-June-2003
 	  **/     
     public String submitJob( String jobXML ) {
 		if( TRACE_ENABLED ) logger.debug( "submitJob() entry") ;
@@ -379,8 +383,9 @@ public class JobController {
 	        logger.error( detailMessage.toString(), jex ) ;
 	        logger.error( generalMessage.toString() ) ;
 					
-	        // Format our error response here...
-			if( job != null ) formatBadResponse( job, detailMessage ) ;
+	        // Format our error response here (partly Bug#12:  generate <<<some>>> response)...
+			if( job != null ) 
+			    response = formatBadResponse( job, detailMessage ) ;
 	        
         }
         finally {
@@ -391,7 +396,10 @@ public class JobController {
 			if( job != null ) informJobScheduler( job ) ;
 			// And finally, inform the AstroGrid message log of the submission details...
 			if( job != null ) informAstroGridMessageLog( job ) ;
-	        logger.debug( response.toString() );
+			
+			// (partly Bug#12) Log some response, even when response is null...
+	        logger.debug(  (response != null)  ?  response.toString()  :  "reponse is null" );
+	        
 	        if( TRACE_ENABLED ) logger.debug( "submitJob() exit") ;
         }
     	
