@@ -46,7 +46,8 @@ public class EntryNodeTest extends TestCase
         owner, creation, expiry, size, type, permissions);
 
       Assert.assertEquals(entry.getName(), entryName);
-      Assert.assertEquals(entry.getPath(), "/acd/con1/");
+      Assert.assertEquals(entry.getPath(), entryName);
+      Assert.assertEquals(entry.getContainerPath(), "/acd/con1/");
       Assert.assertEquals(entry.getEntryId(), entryId);
       Assert.assertEquals(entry.getEntryUri(), entryUri );
       Assert.assertEquals(entry.getOwnerId(), owner);

@@ -21,6 +21,12 @@ import org.astrogrid.store.Agsl;
 
 public class DeployedManagerTest extends TestCase
 {  
+//
+//      [TODO]: The Manager end-point should be obtained from a properties
+//      file rather than hard-wired.
+
+   private static String endPoint =
+   "http://grendel12.roe.ac.uk:8080/astrogrid-mySpace/services/Manager";
 
 /**
  * Standard constructor for JUnit test classes.
@@ -62,12 +68,6 @@ public class DeployedManagerTest extends TestCase
 
 //
 //      Create a delegate to access the remote Manager.
-//
-//      [TODO]: The Manager end-point should be obtained from a properties
-//      file rather than hard-wired.
-
-         String endPoint =
-   "http://grendel12.roe.ac.uk:8080/astrogrid-mySpace/services/Manager";
 
          User operator = new User("someuser", "group", "token");
 
@@ -214,7 +214,9 @@ public class DeployedManagerTest extends TestCase
  */
 
    public static void main (String[] args)
-   {
+   {  if (args.length > 0)
+      {  endPoint = args[0];
+      }
 
 //
 // Note: for some reason this test will only run with the text test
