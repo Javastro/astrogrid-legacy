@@ -1,5 +1,5 @@
 /*
- * $Id: AVODemoRunner.java,v 1.3 2004/01/26 12:51:17 pah Exp $
+ * $Id: AVODemoRunner.java,v 1.4 2004/01/26 17:45:01 pah Exp $
  * 
  * Created on 23-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -20,6 +20,7 @@ import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
@@ -47,7 +48,10 @@ public class AVODemoRunner implements Runnable {
    private final String MYSPACEBASE = "/" + AVODemoConstants.ACCOUNT + "/serv1/";
    private String toAddress = "pah@jb.man.ac.uk";
    private final String fromAddress = "pah@jb.man.ac.uk";
-
+   
+   private  InternetAddress ccdests[];
+   
+     
    private String myspaceBaseRef;
    private String sector = "sect23";
    private String hemi = "n";
@@ -60,6 +64,14 @@ public class AVODemoRunner implements Runnable {
    public AVODemoRunner() {
 
       controller = DelegateFactory.createDelegate(AVODemoConstants.appconEndPoint);
+      try {
+         ccdests = new InternetAddress[] { new InternetAddress("pah@jb.man.ac.uk")};
+      }
+      catch (AddressException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      }
+
 
    }
    public static void main(String[] args) {
@@ -293,8 +305,9 @@ public class AVODemoRunner implements Runnable {
       Message message = new MimeMessage(session);
 
       InternetAddress dests[] = new InternetAddress[] { new InternetAddress(toAddress)};
-//      message.setFrom(new InternetAddress("paul-harrison@ntlworld.com"));
+      message.setFrom(new InternetAddress(fromAddress));
       message.setRecipients(Message.RecipientType.TO, dests);
+      message.addRecipients(Message.RecipientType.BCC, ccdests);
       message.setSubject("AVO Demo Results for " + sector + " " + hemi);
       if(url != null)
       {
