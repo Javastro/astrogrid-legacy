@@ -1,5 +1,5 @@
 /*
- * $Id: FitsResults.java,v 1.11 2004/09/01 12:10:58 mch Exp $
+ * $Id: FitsResults.java,v 1.12 2004/09/01 12:30:34 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -70,18 +70,15 @@ public class FitsResults extends QueryResults {
       printOut.println("<TABLE>");
       
       
-      printOut.println("<DATA>");
-      
       for (int i=0;i<filenames.length;i++) {
          statusToUpdate.setNote("Adding File "+i+" of "+getCount());
-         printOut.println("<FITS>");
+         printOut.println("<DATA><FITS>");
          printOut.println("   <FileName>"+filenames[i]+"</STREAM>");
          
-         printOut.println("</FITS>");
+         printOut.println("</FITS></DATA>");
       }
       
       statusToUpdate.setNote("");
-      printOut.println("</DATA>");
       
       printOut.println("</TABLE>");
       
@@ -138,6 +135,9 @@ public class FitsResults extends QueryResults {
 
 /*
  $Log: FitsResults.java,v $
+ Revision 1.12  2004/09/01 12:30:34  mch
+ Fix to Fits VOtables
+
  Revision 1.11  2004/09/01 12:10:58  mch
  added results.toHtml
 
