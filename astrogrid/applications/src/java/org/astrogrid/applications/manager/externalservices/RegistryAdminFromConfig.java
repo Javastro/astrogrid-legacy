@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryFromConfig.java,v 1.3 2004/03/29 12:32:11 pah Exp $
+ * $Id: RegistryAdminFromConfig.java,v 1.1 2004/03/29 12:32:11 pah Exp $
  * 
  * Created on 19-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -18,6 +18,7 @@ import java.net.URL;
 
 import org.astrogrid.applications.common.config.CeaControllerConfig;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
+import org.astrogrid.registry.client.admin.RegistryAdminService;
 import org.astrogrid.registry.client.query.RegistryService;
 
 /**
@@ -25,24 +26,24 @@ import org.astrogrid.registry.client.query.RegistryService;
  * @version $Name:  $
  * @since iteration5
  */
-public class RegistryFromConfig implements RegistryQueryLocator {
+public class RegistryAdminFromConfig implements RegistryAdminLocator {
 
 
    static private org.apache.commons.logging.Log logger =
-      org.apache.commons.logging.LogFactory.getLog(RegistryFromConfig.class);
+      org.apache.commons.logging.LogFactory.getLog(RegistryAdminFromConfig.class);
    private CeaControllerConfig config;
-   public RegistryFromConfig(CeaControllerConfig config)
+   public RegistryAdminFromConfig(CeaControllerConfig config)
    {
       this.config = config;
    }
    /** 
     * @see org.astrogrid.applications.manager.RegistryQueryLocator#getClient()
     */
-   public RegistryService getClient() throws ServiceNotFoundException {
-      RegistryService delegate = null;
+   public RegistryAdminService  getClient() throws ServiceNotFoundException {
+      RegistryAdminService delegate = null;
       
       try {
-         delegate = RegistryDelegateFactory.createQuery(new URL(config.getRegistryEndpoint()));
+         delegate = RegistryDelegateFactory.createAdmin(new URL(config.getRegistryAdminEndpoint()));
       }
       catch (MalformedURLException e) {
          logger.error("endpoint for registry is bad", e);

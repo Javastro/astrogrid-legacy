@@ -1,5 +1,5 @@
 /*
- * $Id: WebServiceApplicationController.java,v 1.3 2004/03/23 12:51:26 pah Exp $
+ * $Id: WebServiceApplicationController.java,v 1.4 2004/03/29 12:32:11 pah Exp $
  *
  * Created on 09 February 2004 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -13,9 +13,12 @@ package org.astrogrid.applications.manager;
 
 import java.rmi.RemoteException;
 
+import org.apache.axis.description.ServiceDesc;
+
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.ParameterValues;
 import org.astrogrid.applications.common.config.CeaControllerConfig;
+import org.astrogrid.applications.manager.externalservices.*;
 import org.astrogrid.applications.service.v1.cea.CeaFault;
 import org.astrogrid.community.User;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
@@ -30,9 +33,9 @@ public class WebServiceApplicationController extends AbstractApplicationControll
     * @param mySpaceLocator
     */
    public WebServiceApplicationController(CeaControllerConfig conf,
-      RegistryQueryLocator registryQueryLocator,
+      RegistryQueryLocator registryQueryLocator, RegistryAdminLocator adminLocator,
       MySpaceLocator mySpaceLocator) {
-      super(conf, registryQueryLocator, mySpaceLocator);
+      super(conf, registryQueryLocator, adminLocator, mySpaceLocator, new ServiceDesc());
       // TODO Auto-generated constructor stub
    }
 

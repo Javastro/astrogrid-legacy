@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryQueryLocator.java,v 1.2 2004/03/23 12:51:26 pah Exp $
+ * $Id: RegistryQueryLocator.java,v 1.1 2004/03/29 12:32:11 pah Exp $
  * 
  * Created on 22-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -11,9 +11,8 @@
  *
  */ 
 
-package org.astrogrid.applications.manager;
+package org.astrogrid.applications.manager.externalservices;
 
-import org.astrogrid.applications.manager.externalservices.ServiceNotFoundException;
 import org.astrogrid.registry.client.query.RegistryService;
 
 

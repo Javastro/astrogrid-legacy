@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceFromConfig.java,v 1.2 2004/03/23 12:51:26 pah Exp $
+ * $Id: MySpaceFromConfig.java,v 1.3 2004/03/29 12:32:11 pah Exp $
  * 
  * Created on 19-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -16,7 +16,6 @@ package org.astrogrid.applications.manager.externalservices;
 import java.io.IOException;
 
 import org.astrogrid.applications.common.config.CeaControllerConfig;
-import org.astrogrid.applications.manager.MySpaceLocator;
 import org.astrogrid.mySpace.delegate.MySpaceClient;
 import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
 

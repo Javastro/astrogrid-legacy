@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationController.java,v 1.19 2004/03/26 00:56:53 pah Exp $
+ * $Id: CommandLineApplicationController.java,v 1.20 2004/03/29 12:32:11 pah Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -15,6 +15,7 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.axis.description.ServiceDesc;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
 
@@ -32,6 +33,7 @@ import org.astrogrid.applications.common.config.CeaControllerConfig;
 import org.astrogrid.applications.description.ParameterLoader;
 import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
 import org.astrogrid.applications.description.exception.InterfaceDescriptionNotFoundException;
+import org.astrogrid.applications.manager.externalservices.*;
 import org.astrogrid.applications.manager.externalservices.MySpaceFromConfig;
 import org.astrogrid.applications.manager.externalservices.RegistryFromConfig;
 import org.astrogrid.applications.service.v1.cea.CeaFault;
@@ -65,22 +67,32 @@ public class CommandLineApplicationController extends AbstractApplicationControl
    public CommandLineApplicationController() {
 
       this(
-         ThisConfig.getInstance(),
-         new RegistryFromConfig(ThisConfig.getInstance()),
-         new MySpaceFromConfig(ThisConfig.getInstance()));
+         new ServiceDesc()); // make a dummy service description...
 
+   }
+   
+   public CommandLineApplicationController(ServiceDesc desc)
+   {
+      this(ThisConfig.getInstance(),
+      new RegistryFromConfig(ThisConfig.getInstance()),
+      new RegistryAdminFromConfig(ThisConfig.getInstance()),
+      new MySpaceFromConfig(ThisConfig.getInstance()),
+      desc);
+     
    }
 
    /**
     * @param config
     * @param registryQueryLocator
     * @param mySpaceLocator
+    * @param desc
     */
    public CommandLineApplicationController(
       CeaControllerConfig config,
       RegistryQueryLocator registryQueryLocator,
-      MySpaceLocator mySpaceLocator) {
-      super(config, registryQueryLocator, mySpaceLocator);
+      RegistryAdminLocator registryAdminLocator,
+      MySpaceLocator mySpaceLocator, ServiceDesc desc) {
+      super(config, registryQueryLocator,registryAdminLocator, mySpaceLocator, desc);
 
       runningApplications = new HashMap();
       //REFACTORME this should be part of the scheduler
