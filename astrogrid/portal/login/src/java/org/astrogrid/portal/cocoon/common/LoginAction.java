@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/src/java/org/astrogrid/portal/cocoon/common/LoginAction.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/01/12 21:01:45 $</cvs:date>
- * <cvs:version>$Revision: 1.16 $</cvs:version>
+ * <cvs:date>$Date: 2004/01/16 12:14:20 $</cvs:date>
+ * <cvs:version>$Revision: 1.17 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: LoginAction.java,v $
+ *   Revision 1.17  2004/01/16 12:14:20  dave
+ *   Tidied up LoginAction code (removed tabs)
+ *
  *   Revision 1.16  2004/01/12 21:01:45  dave
  *   Added community_name session attribute and menu file
  *
@@ -271,6 +274,7 @@ public class LoginAction extends AbstractAction
                 //
                 // Set the current account info in our session.
                 session.setAttribute("user", name) ;
+                session.setAttribute("credential","guest@" + CommunityConfig.getCommunityName());
                 session.setAttribute("community_account", token.getAccount()) ;
                 session.setAttribute("community_name", CommunityConfig.getCommunityName()) ;
                 //
