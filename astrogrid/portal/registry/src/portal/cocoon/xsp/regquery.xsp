@@ -126,7 +126,6 @@
       <xmlresults>
          <xsp:logic>
          <![CDATA[
-            ArrayList xmlresult = (ArrayList)request.getAttribute("resultxml");
 			ArrayList xmlresultNodes = (ArrayList)request.getAttribute("resultNodes");
 			if(xmlresultNodes != null && xmlresultNodes.size() > 0 ) {
 				iter = xmlresultNodes.iterator();	

@@ -248,8 +248,6 @@ public class RegistryQueryAction extends AbstractAction
                    //throw new NoResourcesFoundException("Null Query");
 //               errorMessage = getResultMessage(doc);
                   //create the results and put it in the request.
-                  resultXML = createFormResults(doc,mainElem);
-                  request.setAttribute("resultxml",resultXML);
                   if (DEBUG_FLAG)
                      printDebug(method, "the Elementtostring in queryaction = " +
                            XMLUtils.ElementToString(doc.getDocumentElement()) );
@@ -299,52 +297,6 @@ public class RegistryQueryAction extends AbstractAction
       }
       return results;
       
-   }
-   
-   /**
-    * This method will be deleted later or used with an XSL sheet to make
-    * a pretty response for the html.
-    * Currently only displays the raw XML form coming back from
-    * the query web service response.
-    * @param docResults Query results in a DOM tree format.
-    * @param mainElem The main element we queried.
-    * @return ArrayList of all the String XML results.
-    */
-   private ArrayList createFormResults(Document docResults,String mainElem) {
-      String lookup = null;
-      String endLookup = null;
-      if(RegistryOptionAction.ORGANISATION_OPTION.equals(mainElem)) {         
-         lookup = "<vc:" + mainElem;
-         endLookup = "</vc:" + mainElem + ">";
-      }else if(RegistryOptionAction.AUTHORITY_OPTION.equals(mainElem)) {
-         lookup = "<vg:" + mainElem;
-         endLookup = "</vg:" + mainElem + ">";
-      }else if(RegistryOptionAction.REGISTRY_OPTION.equals(mainElem)) {
-         lookup = "<vg:" + mainElem;
-         endLookup = "</vg:" + mainElem + ">";         
-      }else if(RegistryOptionAction.SKYSERVICE_OPTION.equals(mainElem)) {
-         lookup = "<vs:" + mainElem;
-         endLookup = "</vs:" + mainElem + ">";         
-      }else if(RegistryOptionAction.TABULARSKYSERVICE_OPTION.equals(mainElem)) {
-         lookup = "<vs:" + mainElem;
-         endLookup = "</vs:" + mainElem + ">";         
-      }else if(RegistryOptionAction.DATACOLLECTION_OPTION.equals(mainElem)) {
-         lookup = "<vs:" + mainElem;
-         endLookup = "</vs:" + mainElem + ">";
-      }else if(RegistryOptionAction.SERVICE_OPTION.equals(mainElem)) {
-         lookup = "<vr:" + mainElem;
-         endLookup = "</vr:" + mainElem + ">";
-      }
-      NodeList nl = docResults.getDocumentElement().getChildNodes();
-      ArrayList al = new ArrayList();
-      for(int i = 0;i < nl.getLength();i++) {
-         if(nl.item(i) instanceof org.w3c.dom.Element ) {
-            Element elem = (Element)nl.item(i);
-            al.add("<vodescription>" + XMLUtils.ElementToString(elem) +
-                   "</vodescription>"); 
-         }
-      }      
-      return al;
    }
    
    private String getResultMessage(Document doc) {
