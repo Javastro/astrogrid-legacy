@@ -118,7 +118,7 @@
       </vs:Spectral>
     </vs:Coverage>
     <Table role="out" xmlns="http://www.ivoa.net/xml/VODataService/v0.4">
-       <Table>Image_vocone</Table>
+       <vr:Name>Image_vocone</vr:Name>
        <Column>
           <vr:Name>Codename</vr:Name>
           <vr:Description>ADIL Image Identifier</vr:Description>
@@ -293,7 +293,7 @@
       </vs:Spectral>
     </vs:Coverage>
     <Table xmlns="http://www.ivoa.net/xml/VODataService/v0.4">
-       <Table>Image_sia</Table>
+       <vr:Name>Image_sia</vr:Name>
        <Column>
           <vr:Name>Codename</vr:Name>
           <vr:Description>ADIL Image Identifier - Unique identifier for image, as assigned by the ADIL</vr:Description>
