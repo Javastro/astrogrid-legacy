@@ -15,7 +15,8 @@
             <item name="Installation Tests" href="TestServlet?suite=org.astrogrid.jes.component.ComponentManagerFactory" />
                 <item name="Fingerprint" href="fingerprint.jsp" />
                 <item name="View web services" href="servlet/AxisServlet" />
-    </menu>
+                <item name="HTML Jes Interface" href="query-form.html" />
+                    </menu>
 
     <menu name="Resources">
             <item name="Schema" href="schema" />

@@ -1,0 +1,50 @@
+<?xml version="1.0" ?>
+<document>
+<properties>
+   <author email="nw@jb.man.ac.uk">Noel Winstanley</author>
+   <title>Jes Control Form</title>
+</properties>
+
+<body>
+  <section name="Submit a Workflow">
+   <p>Submit a workflow document to this Job Execution Server   </p>
+    <p>
+      <form action="html-driver" method="POST">
+       <p>
+         Workflow: <textarea name="workflow" rows='20' cols='100%'/><br />
+       </p>
+       <p>
+          <input type="submit" value="Submit Workflow" />
+       </p>
+
+      </form>
+    </p>
+  </section>
+
+  <section name="List Workflows">
+   <p>List workflows held in this Job Exection Server for a user</p>
+   <p>
+           <form action="html-driver" method="GET">
+        Username: <input type="text" name="username" /><br />
+        Community: <input type="text" name="community" /><br />
+                <input type="hidden" name="action" value="list" />
+                <input type="submit" value="List Workflows" />
+        </form>
+   </p>
+  </section>
+
+  <section name="Inspect a Workflow">
+   <p>Inspect a workflow held in this Job Execution Server</p>
+   <p>
+           <form action="html-driver" method="GET">
+                Job URN: <input type="text" name="urn" /><br />
+                <input type="hidden" name="action" value="inspect" />
+                <input type="submit" value="Show Workflow" />
+        </form>
+   </p>
+  </section>
+
+
+
+</body>
+</document>

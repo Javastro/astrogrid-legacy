@@ -8,7 +8,7 @@
 
   <display-name>Astrogrid JES</display-name>
   <description>
-    SOAP service (what is JES for?)
+    Astrogrid Job Execution Service
   </description>
   <servlet>
     <servlet-name>AxisServlet</servlet-name>
@@ -23,11 +23,18 @@
     <description>JUnitEE test runner</description>
     <servlet-class>org.junitee.servlet.JUnitEEServlet</servlet-class>
   </servlet>
+
+  <servlet>
+          <servlet-name>html-driver</servlet-name>
+        <description>HTML interface to the jes system</description>
+        <servlet-class>org.astrogrid.jes.servlet.HTMLDriver</servlet-class>
+  </servlet>
+
  <servlet-mapping>
     <servlet-name>JUnitEETestServlet</servlet-name>
     <url-pattern>/TestServlet/*</url-pattern>
  </servlet-mapping>
-  
+
   <servlet-mapping>
     <servlet-name>AxisServlet</servlet-name>
     <url-pattern>/servlet/AxisServlet</url-pattern>
@@ -38,8 +45,12 @@
     <url-pattern>/services/*</url-pattern>
   </servlet-mapping>
 
+  <servlet-mapping>
+          <servlet-name>html-driver</servlet-name>
+        <url-pattern>/html-driver</url-pattern>
+  </servlet-mapping>
 
-  
+
     <!-- currently the W3C havent settled on a media type for WSDL;
     http://www.w3.org/TR/2003/WD-wsdl12-20030303/#ietf-draft
     for now we go with the basic 'it's XML' response -->
@@ -58,7 +69,7 @@
     <welcome-file>index.jsp</welcome-file>
   </welcome-file-list>
 
-  
+
   <resource-ref>
     <description>Datasource to use to access the database</description>
     <res-ref-name>jdbc/jes-datasource</res-ref-name>
