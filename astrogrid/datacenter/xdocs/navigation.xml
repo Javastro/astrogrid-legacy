@@ -13,7 +13,7 @@
     	<item name="Client Delegate" href="multiproject/astrogrid-datacenter-client/index.html" />
 	<item name="Server Engine" href="multiproject/astrogrid-datacenter-server/index.html" />
 	<item name="Implementations" href="multiproject/astrogrid-datacenter-implementations/index.html" />
-	<item name="PAL" href="multiproject/astrogrid-datacenter-pal/index.html" />
+	<item name="PAL" href="multiproject/pal/index.html" />
     </menu>
     <links>
        <item name="AstroGrid"  href="http://www.astrogrid.org"/>
