@@ -1,4 +1,4 @@
-/*$Id: AstrogridAssert.java,v 1.4 2004/09/02 09:55:53 nw Exp $
+/*$Id: AstrogridAssert.java,v 1.5 2004/09/02 10:14:00 nw Exp $
  * Created on 27-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -41,7 +41,7 @@ import junit.framework.Assert;
 
 /** class of static JUnit assertion methods, for asserting things relevant to astrogrid.
  * extends XMLAssert - which makes assertions about xml documents - 
- * this class builds upon this to check properties of votables, etc.
+ * this class builds upon this to check properties of votables, and assertions to validate against DTD and schema.
  * @author Noel Winstanley nw@jb.man.ac.uk 27-Aug-2004
  *
  */
@@ -65,22 +65,26 @@ public class AstrogridAssert extends XMLAssert{
     
     // assertions for votable.
     /** assert is a votable document 
-     * @asserts doctype, and dtd validates */
+     * @param s string containing xml.
+     * 
+     */
     public static void assertVotable(String s)  {
         assertDTDValid(s,VOTABLE_DOCTYPE,VOTABLE_SYSTEM_ID);
     }
     /** assert is a votable document 
-     * @asserts doctype, and dtd validates */
+     * @param is input stream containing xml. */
     public static void assertVotable(InputStream is) {
         assertDTDValid(is,VOTABLE_DOCTYPE,VOTABLE_SYSTEM_ID);
     }
 
     /** assert is a votable document 
+     * @param d suspected votable.
      * @asserts doctype, and dtd validates */
     public static void assertVotable(Document d) {
         assertDTDValid(d,VOTABLE_DOCTYPE,VOTABLE_SYSTEM_ID);
     }
     /** assert is a votable document 
+     * @param e suspected votable.
      * @asserts doctype, and dtd validates */    
     public static void assertVotable(Element e) {
         assertDTDValid(e,VOTABLE_DOCTYPE,VOTABLE_SYSTEM_ID);
@@ -88,6 +92,12 @@ public class AstrogridAssert extends XMLAssert{
     
     // the xml unit validation methods are a bit loosly typed - and poorly named if there's schema validation available too. 
     // these are some wrapper methods with better typing.
+    /** assert xml is DTD-valid.
+     * @param xml string containing xml
+     * @param doctype the DOCTYPE the xml should have (i.e. root element).
+     * @param dtdResource url of dtd file.
+     * 
+     */
     public static void assertDTDValid(String xml,String doctype, URL dtdResource)  {
         try {
             assertXMLValid(xml,dtdResource.toString(),doctype);
@@ -98,6 +108,11 @@ public class AstrogridAssert extends XMLAssert{
         }                
     }
     
+    /** assert xml is DTD-valid
+     * @param d document to validate
+     * @param doctype the DOCTYPE that the xml should have (i.e. the root element).
+     * @param dtdResource url of dtd file.
+     */
     public static void assertDTDValid(Document d,String doctype, URL dtdResource) {
         try {
             assertXMLValid(new Validator(d,dtdResource.toString(),doctype));
@@ -108,6 +123,11 @@ public class AstrogridAssert extends XMLAssert{
         }         
     }
     
+    /** assert xml is DTD valid.
+     * @param xmlStream stream of xml to validate
+     * @param doctype the DOCTYPE that the xml should have (ie. the expected root element)
+     * @param dtdResource url to dtd file.
+     */
     public static void assertDTDValid(InputStream xmlStream, String doctype, URL dtdResource)  {
         try {
             assertXMLValid(new Validator(DomHelper.newDocument(xmlStream),dtdResource.toString(),doctype));
@@ -120,6 +140,11 @@ public class AstrogridAssert extends XMLAssert{
         }
     }
     
+    /** assert xml is DTD valid
+     * @param e xml to validate
+     * @param doctype the DOCTYPE that the xml should have (ie. the expected root element)
+     * @param dtdResource url to dtd file.
+     */
     public static void assertDTDValid(Element e,String doctype,URL dtdResource)  {
         try {
             assertXMLValid(DomHelper.ElementToString(e),dtdResource.toString(),doctype);
@@ -130,7 +155,15 @@ public class AstrogridAssert extends XMLAssert{
         }         
     }
     
-    // assert a document is schema-valid. need to pass in a map defining namespace - schema location mappings.
+    /** assert xml is schema valid.
+     * @param xml string containing xml to validate.
+     * @param rootElementName expected localname of the root element of the document 
+     * @param schemaLocations map of namespace - schema location associations.<br>
+     *  keys of map expected to be namespace (will be converted to java.lang.String via <tt>toString()</tt>), <br>
+     * values of map expected to be url locations of schema document (will be converted to java.lang.String via <tt>toString()</tt>)
+     * 
+     * @see org.astrogrid.test.schema.SchemaMap  in workflow-objects project
+     */
     public static void assertSchemaValid(String xml,String rootElementName,Map schemaLocations) {
         try {
             assertXpathEvaluatesTo(rootElementName,"local-name(/node())",xml);
@@ -146,10 +179,26 @@ public class AstrogridAssert extends XMLAssert{
         }
     }
     
+    /**assert xml is schema valid.
+     * @param d document to validate
+     * @param rootElementName expected localname of the root element of the document
+     * @param schemaLocations map of namespace - schema location associations.<br>
+     *  keys of map expected to be namespace (will be converted to java.lang.String via <tt>toString()</tt>), <br>
+     * values of map expected to be url locations of schema document (will be converted to java.lang.String via <tt>toString()</tt>)
+     * @see org.astrogrid.test.schema.SchemaMap  in workflow-objects project     * 
+     */
     public static void assertSchemaValid(Document d,String rootElementName,Map schemaLocations) {
         assertSchemaValid(DomHelper.DocumentToString(d),rootElementName,schemaLocations);       
     }
     
+    /**assert xml is schema valid.
+     * @param is stream of xml to validate
+     * @param rootElementName expected localname of the root element of the document
+     * @param schemaLocations map of namespace - schema location associations.<br>
+     *  keys of map expected to be namespace (will be converted to java.lang.String via <tt>toString()</tt>), <br>
+     * values of map expected to be url locations of schema document (will be converted to java.lang.String via <tt>toString()</tt>)
+     *     * @see org.astrogrid.test.schema.SchemaMap  in workflow-objects project 
+     */
     public static void assertSchemaValid(InputStream is,String rootElementName,Map schemaLocations){ 
        
         try {
@@ -160,6 +209,14 @@ public class AstrogridAssert extends XMLAssert{
     }
     
 
+    /**assert xml is schema valid.
+     * @param e element to validate
+     * @param rootElementName expected localname of the root element of the document
+     * @param schemaLocations map of namespace - schema location associations.<br>
+     *  keys of map expected to be namespace (will be converted to java.lang.String via <tt>toString()</tt>), <br>
+     * values of map expected to be url locations of schema document (will be converted to java.lang.String via <tt>toString()</tt>)
+     * @see org.astrogrid.test.schema.SchemaMap  in workflow-objects project     * 
+     */
     public static void assertSchemaValid(Element e,String rootElementName,Map schemaLocations) {
         assertSchemaValid(DomHelper.ElementToString(e),rootElementName,schemaLocations);
     }
@@ -199,6 +256,7 @@ public class AstrogridAssert extends XMLAssert{
     
     // the basics -assert something is xml.
     /** assert that input is well formed xml
+     * @param xmlDocument document to check for wellformedness.
      * 
      */
     public static void assertWellFormedXML(String xmlDocument) {
@@ -213,8 +271,7 @@ public class AstrogridAssert extends XMLAssert{
         }
     }
     /** assert that input is well formed xml
-     * 
-     * @param is stream of content to check.
+     * @param xmlStream stream of content to check.
      */
     public static void assertWellFormedXML(InputStream xmlStream) {
         try {
@@ -258,6 +315,9 @@ public class AstrogridAssert extends XMLAssert{
 
 /* 
 $Log: AstrogridAssert.java,v $
+Revision 1.5  2004/09/02 10:14:00  nw
+improved documentation
+
 Revision 1.4  2004/09/02 09:55:53  nw
 fixed bug.
 
