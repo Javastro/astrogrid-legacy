@@ -27,36 +27,8 @@
   </properties>
 </dependency>
 <dependency>
-  <id>apache-garbage</id>
-  <version>0.0</version>
-  <properties>
-    <war.bundle>false</war.bundle>
-  </properties>
-</dependency>
-<dependency>
   <id>avalon-framework</id>
   <version>4.1.4</version>
-  <properties>
-    <war.bundle>false</war.bundle>
-  </properties>
-</dependency>
-<dependency>
-  <id>axis</id>
-  <version>1.1</version>
-  <properties>
-    <war.bundle>false</war.bundle>
-  </properties>
-</dependency>
-<dependency>
-  <id>axis-jaxrpc</id>
-  <version>1.1</version>
-  <properties>
-    <war.bundle>false</war.bundle>
-  </properties>
-</dependency>
-<dependency>
-  <id>axis-saaj</id>
-  <version>1.1</version>
   <properties>
     <war.bundle>false</war.bundle>
   </properties>
@@ -104,28 +76,7 @@
   </properties>
 </dependency>
 <dependency>
-  <id>cocoon-apples-block</id>
-  <version>2.1.2</version>
-  <properties>
-    <war.bundle>false</war.bundle>
-  </properties>
-</dependency>
-<dependency>
-  <id>cocoon-asciiart-block</id>
-  <version>2.1.2</version>
-  <properties>
-    <war.bundle>false</war.bundle>
-  </properties>
-</dependency>
-<dependency>
   <id>cocoon-authentication-fw-block</id>
-  <version>2.1.2</version>
-  <properties>
-    <war.bundle>false</war.bundle>
-  </properties>
-</dependency>
-<dependency>
-  <id>cocoon-axis-block</id>
   <version>2.1.2</version>
   <properties>
     <war.bundle>false</war.bundle>
@@ -153,13 +104,6 @@
   </properties>
 </dependency>
 <dependency>
-  <id>cocoon-cron-block</id>
-  <version>2.1.2</version>
-  <properties>
-    <war.bundle>false</war.bundle>
-  </properties>
-</dependency>
-<dependency>
   <id>cocoon-databases-block</id>
   <version>2.1.2</version>
   <properties>
@@ -167,28 +111,7 @@
   </properties>
 </dependency>
 <dependency>
-  <id>cocoon-deli-block</id>
-  <version>2.1.2</version>
-  <properties>
-    <war.bundle>false</war.bundle>
-  </properties>
-</dependency>
-<dependency>
-  <id>cocoon-eventcache-block</id>
-  <version>2.1.2</version>
-  <properties>
-    <war.bundle>false</war.bundle>
-  </properties>
-</dependency>
-<dependency>
   <id>cocoon-fop-block</id>
-  <version>2.1.2</version>
-  <properties>
-    <war.bundle>false</war.bundle>
-  </properties>
-</dependency>
-<dependency>
-  <id>cocoon-hsqldb-block</id>
   <version>2.1.2</version>
   <properties>
     <war.bundle>false</war.bundle>
@@ -237,13 +160,6 @@
   </properties>
 </dependency>
 <dependency>
-  <id>cocoon-linotype-block</id>
-  <version>2.1.2</version>
-  <properties>
-    <war.bundle>false</war.bundle>
-  </properties>
-</dependency>
-<dependency>
   <id>cocoon-lucene-block</id>
   <version>2.1.2</version>
   <properties>
@@ -251,28 +167,7 @@
   </properties>
 </dependency>
 <dependency>
-  <id>cocoon-mail-block</id>
-  <version>2.1.2</version>
-  <properties>
-    <war.bundle>false</war.bundle>
-  </properties>
-</dependency>
-<dependency>
-  <id>cocoon-midi-block</id>
-  <version>2.1.2</version>
-  <properties>
-    <war.bundle>false</war.bundle>
-  </properties>
-</dependency>
-<dependency>
   <id>cocoon-naming-block</id>
-  <version>2.1.2</version>
-  <properties>
-    <war.bundle>false</war.bundle>
-  </properties>
-</dependency>
-<dependency>
-  <id>cocoon-petstore-block</id>
   <version>2.1.2</version>
   <properties>
     <war.bundle>false</war.bundle>
@@ -293,21 +188,7 @@
   </properties>
 </dependency>
 <dependency>
-  <id>cocoon-portal-block</id>
-  <version>2.1.2</version>
-  <properties>
-    <war.bundle>false</war.bundle>
-  </properties>
-</dependency>
-<dependency>
   <id>cocoon-portal-fw-block</id>
-  <version>2.1.2</version>
-  <properties>
-    <war.bundle>false</war.bundle>
-  </properties>
-</dependency>
-<dependency>
-  <id>cocoon-precept-block</id>
   <version>2.1.2</version>
   <properties>
     <war.bundle>false</war.bundle>
@@ -321,28 +202,7 @@
   </properties>
 </dependency>
 <dependency>
-  <id>cocoon-proxy-block</id>
-  <version>2.1.2</version>
-  <properties>
-    <war.bundle>false</war.bundle>
-  </properties>
-</dependency>
-<dependency>
   <id>cocoon-python-block</id>
-  <version>2.1.2</version>
-  <properties>
-    <war.bundle>false</war.bundle>
-  </properties>
-</dependency>
-<dependency>
-  <id>cocoon-qdox-block</id>
-  <version>2.1.2</version>
-  <properties>
-    <war.bundle>false</war.bundle>
-  </properties>
-</dependency>
-<dependency>
-  <id>cocoon-scratchpad-block</id>
   <version>2.1.2</version>
   <properties>
     <war.bundle>false</war.bundle>
@@ -363,28 +223,7 @@
   </properties>
 </dependency>
 <dependency>
-  <id>cocoon-slop-block</id>
-  <version>2.1.2</version>
-  <properties>
-    <war.bundle>false</war.bundle>
-  </properties>
-</dependency>
-<dependency>
-  <id>cocoon-stx-block</id>
-  <version>2.1.2</version>
-  <properties>
-    <war.bundle>false</war.bundle>
-  </properties>
-</dependency>
-<dependency>
   <id>cocoon-swf-block</id>
-  <version>2.1.2</version>
-  <properties>
-    <war.bundle>false</war.bundle>
-  </properties>
-</dependency>
-<dependency>
-  <id>cocoon-taglib-block</id>
   <version>2.1.2</version>
   <properties>
     <war.bundle>false</war.bundle>
@@ -405,43 +244,8 @@
   </properties>
 </dependency>
 <dependency>
-  <id>cocoon-webdav-block</id>
-  <version>2.1.2</version>
-  <properties>
-    <war.bundle>false</war.bundle>
-  </properties>
-</dependency>
-<dependency>
-  <id>cocoon-woody-block</id>
-  <version>2.1.2</version>
-  <properties>
-    <war.bundle>false</war.bundle>
-  </properties>
-</dependency>
-<dependency>
   <id>cocoon-xmldb-block</id>
   <version>2.1.2</version>
-  <properties>
-    <war.bundle>false</war.bundle>
-  </properties>
-</dependency>
-<dependency>
-  <id>cocoon-xmlform-block</id>
-  <version>2.1.2</version>
-  <properties>
-    <war.bundle>false</war.bundle>
-  </properties>
-</dependency>
-<dependency>
-  <id>commons-beanutils</id>
-  <version>1.5</version>
-  <properties>
-    <war.bundle>false</war.bundle>
-  </properties>
-</dependency>
-<dependency>
-  <id>commons-betwixt</id>
-  <version>20030910</version>
   <properties>
     <war.bundle>false</war.bundle>
   </properties>
@@ -456,20 +260,6 @@
 <dependency>
   <id>commons-collections</id>
   <version>2.1</version>
-  <properties>
-    <war.bundle>false</war.bundle>
-  </properties>
-</dependency>
-<dependency>
-  <id>commons-digester</id>
-  <version>1.3</version>
-  <properties>
-    <war.bundle>false</war.bundle>
-  </properties>
-</dependency>
-<dependency>
-  <id>commons-discovery</id>
-  <version>0.2</version>
   <properties>
     <war.bundle>false</war.bundle>
   </properties>
@@ -505,13 +295,6 @@
 <dependency>
   <id>commons-logging</id>
   <version>1.0.3</version>
-  <properties>
-    <war.bundle>false</war.bundle>
-  </properties>
-</dependency>
-<dependency>
-  <id>deli</id>
-  <version>0.9.8</version>
   <properties>
     <war.bundle>false</war.bundle>
   </properties>
@@ -615,13 +398,6 @@
   </properties>
 </dependency>
 <dependency>
-  <id>excalibur-util</id>
-  <version>1.0</version>
-  <properties>
-    <war.bundle>false</war.bundle>
-  </properties>
-</dependency>
-<dependency>
   <id>excalibur-xmlutil</id>
   <version>20030520</version>
   <properties>
@@ -636,20 +412,6 @@
   </properties>
 </dependency>
 <dependency>
-  <id>hsqldb</id>
-  <version>1.7.1</version>
-  <properties>
-    <war.bundle>false</war.bundle>
-  </properties>
-</dependency>
-<dependency>
-  <id>icu4j</id>
-  <version>cocoon-2.1.2</version>
-  <properties>
-    <war.bundle>false</war.bundle>
-  </properties>
-</dependency>
-<dependency>
   <id>itext</id>
   <version>1.00</version>
   <properties>
@@ -659,13 +421,6 @@
 <dependency>
   <id>itext-xml</id>
   <version>1.00</version>
-  <properties>
-    <war.bundle>false</war.bundle>
-  </properties>
-</dependency>
-<dependency>
-  <id>jakarta-oro</id>
-  <version>2.0.7</version>
   <properties>
     <war.bundle>false</war.bundle>
   </properties>
@@ -699,13 +454,6 @@
   </properties>
 </dependency>
 <dependency>
-  <id>jena</id>
-  <version>2.0.0</version>
-  <properties>
-    <war.bundle>false</war.bundle>
-  </properties>
-</dependency>
-<dependency>
   <id>jfor</id>
   <version>0.7.1</version>
   <properties>
@@ -720,13 +468,6 @@
   </properties>
 </dependency>
 <dependency>
-  <id>joost</id>
-  <version>20030914</version>
-  <properties>
-    <war.bundle>false</war.bundle>
-  </properties>
-</dependency>
-<dependency>
   <id>jstyle</id>
   <version>cocoon-2.1.2</version>
   <properties>
@@ -736,13 +477,6 @@
 <dependency>
   <id>jtidy-04aug2000r7</id>
   <version>dev</version>
-  <properties>
-    <war.bundle>false</war.bundle>
-  </properties>
-</dependency>
-<dependency>
-  <id>log4j</id>
-  <version>1.2.7</version>
   <properties>
     <war.bundle>false</war.bundle>
   </properties>
@@ -771,20 +505,6 @@
 <dependency>
   <id>pizza</id>
   <version>1.1</version>
-  <properties>
-    <war.bundle>false</war.bundle>
-  </properties>
-</dependency>
-<dependency>
-  <id>qdox</id>
-  <version>1.2</version>
-  <properties>
-    <war.bundle>false</war.bundle>
-  </properties>
-</dependency>
-<dependency>
-  <id>quartz</id>
-  <version>1.2.3</version>
   <properties>
     <war.bundle>false</war.bundle>
   </properties>
@@ -825,13 +545,6 @@
   </properties>
 </dependency>
 <dependency>
-  <id>slide-webdavlib</id>
-  <version>20030711</version>
-  <properties>
-    <war.bundle>false</war.bundle>
-  </properties>
-</dependency>
-<dependency>
   <id>slide-webdavservlet</id>
   <version>20030322</version>
   <properties>
@@ -860,13 +573,6 @@
   </properties>
 </dependency>
 <dependency>
-  <id>wsdl4j</id>
-  <version>1.4</version>
-  <properties>
-    <war.bundle>false</war.bundle>
-  </properties>
-</dependency>
-<dependency>
   <id>xalan</id>
   <version>2.5.1</version>
   <properties>
@@ -890,13 +596,6 @@
 <dependency>
   <id>xmldb-api</id>
   <version>20011111</version>
-  <properties>
-    <war.bundle>false</war.bundle>
-  </properties>
-</dependency>
-<dependency>
-  <id>xreporter-expression</id>
-  <version>20030725</version>
   <properties>
     <war.bundle>false</war.bundle>
   </properties>
