@@ -41,9 +41,9 @@
 	</preGoal>
 	<postGoal name="war:webapp">
 	    <attainGoal name="delegatejar" />
-		<echo message="copying cvs webap to axis src -${maven.war.src}"/>
+		<echo message="copying cvs webapp stuff on top"/>
   <!-- make sure that the cvs maven stuff is put into the webapp - because the axis dir is regarded as source for the war goal-->
-        <copy todir="${axis.webapp.srcdir}" overwrite="yes">
+        <copy todir="${maven.war.webapp.dir}" overwrite="yes">
         <fileset dir="${basedir}/src/webapp"></fileset>
         </copy>
 		<echo message="Copying generated site ${maven.docs.dest} across to webapp ${maven.war.webapp.dir}/maven"/>
@@ -71,8 +71,12 @@
 		
 		<copy todir="${maven.war.webapp.dir}/config" overwrite="yes">
 			<fileset dir="${basedir}/src/sql">
-				
 			</fileset>
+		    <fileset dir="${basedir}/config" />	
+		    <fileset dir="${basedir}/generated/">
+		    <include name="wsdd/**" />
+		    </fileset>	
+			
 			<fileset dir="${basedir}"> <include name="antutils.xml"/></fileset>
 		</copy>
 		
@@ -88,6 +92,28 @@
 		       <include name="Test.properties" />
 		    </fileset>
 		</copy>
+	
+	<!--quick hack to add the services deployment would be better to run -->
+	 <path id="fullapppath">
+	        <fileset dir="${maven.war.webapp.dir}/WEB-INF/lib/" includes="*.jar"/>
+	        <dirset dir="${maven.war.webapp.dir}/WEB-INF/classes/"/>
+	    
+	 </path>
+	 <java classname="org.apache.axis.utils.Admin"
+            dir="${maven.war.webapp.dir}/WEB-INF"
+            classpathref="fullapppath" fork="yes" failonerror="true">
+        <arg value="server"/>
+        <arg value="${generated.dir}/wsdd/ApplicationControllerService/deploy.wsdd"/>
+	</java>
+		
+	<!-- hack from mailing list to fix Maven XLST bug -->
+	${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
+	<!-- <xslt in="${generated.dir}/wsdd/ApplicationControllerService/deploy.wsdd"
+	      out="${maven.war.webapp.dir}/WEB-INF/server-config.wsdd"
+	      extension=".wsdd"
+	      style="${basedir}/src/xslt/server-config.xsl"
+	/> -->
+		
 		<!-- TODO - need to add links to the actual applications -->
 	</postGoal>
 
@@ -130,13 +156,10 @@ ApplicationConfigFile=${basedir}/test/config/TestApplicationConfig.xml
 <!-- hook to get my own stuff run before xdocs binds the site together-->
   <preGoal name="xdoc">
  <!-- 	
-        <attainGoal name="ant" />
-  	<attainGoal  name="pal-zip" />
-	<copy file="${maven.build.dir}/pal.zip" tofile="${maven.build.dir}/docs/pal.zip" />
-	 --> 
+ 	 --> 
   </preGoal>
 
-<!-- new goals -->
+<!-- new goals -mainly for wsdl and stub generation-->
 
   <goal name="generate-wsdl" description="generate the wsdl from the classes" prereqs="axis-declare-tasks, java-compile-for-wsdl">
     <maven:addPath id="maven.dependency.classpath" refid="axis.classpath"/>
@@ -285,11 +308,7 @@ ApplicationConfigFile=${basedir}/test/config/TestApplicationConfig.xml
                         <exclude name="**/samples/**"/>
            </fileset>
          </move>
-            <!--  <java classname="org.apache.axis.utils.Admin"
-            dir="${tomcat.home}/webapps/ogsa/WEB-INF"
-            classpathref="classpath" fork="yes" failonerror="true">
-        <arg value="server"/>
-        <arg value="${basedir}/build/server-deploy.wsdd"/>
+            <!-- 
         -->
         
     </goal>

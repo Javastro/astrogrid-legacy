@@ -5,6 +5,7 @@
     <!--+
         | Hsqldb properties.
         +-->
+    <property file="${user.home}/build.properties"  ></property>
     <property name="hsqldb.version"  value="1.7.1"/>
     <property name="hsqldb.home"     value="${basedir}/build/db"/>
     <property name="hsqldb.host"     value="localhost"/>
@@ -14,10 +15,18 @@
     <property name="hsqldb.pass"     value="veritas"/>
     <property name="hsqldb.timeout"  value="60"/>
     <property name="tomcat.home" location="/usr/local/tomcat"></property>
+    <property name="webapp.home" value="${tomcat.home}/webapps/astrogrid-applications"></property>
 
     <property name="hsqldb.url"      value="jdbc:hsqldb:hsql://${hsqldb.host}:${hsqldb.port}"/>
     
-    <property file="build.properties"  ></property>
+    <target name="show" depends="axis.tasks">
+    <property name="testprop" refid="testpath"></property>
+    <echo >
+    tomcat home =${tomcat.home}
+    hsqldb home =${hsqldb.home}
+    path = ${testprop}
+    </echo>
+    </target>
 
     <!--+
         | The Hsqldb library classpath.
@@ -145,7 +154,7 @@
              password="${hsqldb.pass}"
              print="true"
             >
-            <transaction src="${tomcat.home}/webapps/astrogrid-applications/config/createcontroldb.sql"/>
+            <transaction src="${webapp.home}/config/createcontroldb.sql"/>
         </sql>
     </target>
 
@@ -190,14 +199,40 @@
     <path id="testpath">
     <fileset dir="${tomcat.home}/common/lib" includes="*.jar"/>
     <fileset dir="${tomcat.home}/common/endorsed" includes="*.jar"/>
-    <fileset dir="${basedir}" includes="*.jar"></fileset>
+    <fileset dir="${webapp.home}/WEB-INF/lib/" includes="*.jar"/>
+    <fileset dir="${basedir}" includes="*.jar"/>
     </path>
+    
     <target name="quicktest">
     <java classname="org.astrogrid.applications.delegate.TestApplicationControllerDelegate" >
 
        <classpath refid="testpath"></classpath>
     </java>
     </target>
-
+    
+    
+    <target name="service.deploy" depends="axis.tasks">
+        <!-- Deploy our authenticationService service -->
+        <axis.admin
+            port="8080"
+            hostname="localhost"
+            servletpath="/astrogrid-applications/services/AdminService"
+            debug="true"
+            xmlfile="${webapp.home}/config/wsdd/ApplicationControllerService/deploy.wsdd"
+            />
+    </target>
+    
+    <target name="axis.tasks" depends="">
+        <taskdef name="axis.admin" classname="org.apache.axis.tools.ant.axis.AdminClientTask">
+            <classpath>
+                <!-- Our Axis libraries -->
+                <path refid="testpath"/>
+            </classpath>
+        </taskdef>
+        <taskdef name="axis.wsdl2java" classpathref="testpath" classname="org.apache.axis.tools.ant.wsdl.Wsdl2javaAntTask"/>
+        <taskdef name="axis.java2wsdl" classpathref="testpath" classname="org.apache.axis.tools.ant.wsdl.Java2WsdlAntTask"/>
+    </target>
+    
+    
  
 </project>
