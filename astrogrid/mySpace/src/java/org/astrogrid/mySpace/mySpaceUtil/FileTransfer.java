@@ -20,20 +20,27 @@ import org.ietf.jgss.GSSCredential;
 /**
  * A manager for the download of a single data-set from a URL.
  *
- * Each FileTransfer operates a single download from a fixed
- * source URL to a fixed, local distination-file, the source
- * and destination being set when the FileTransfer is constructed.
- * There is no way to reuse a FileTransfer to download from a
- * different URL.
+ * The client should create a fresh FileTransfer for each transfer.
+ * There is no valid way to reuse one of these object for a second
+ * transfer.  The source and destination of the data are set when
+ * the FileTransfer is created.
  *
- * The client is expected to construct a new FileTransfer for each
- * download.  The intended usage is: construction; transfer;
- * check results using accessors.
+ * The data source may be either a single URL or an array of URLs
+ * that are mirrors of the same data-set.  In the latter case,
+ * the FileTransfer will start6 with the URL in element zero of
+ * the array and try URLs in turn until a successful transfer is
+ * achieved or until there are no more URLs.  The data destination
+ * is always a file on the local file-system.
  *
- * Exceptions while transferring are caught.  On catching an
- * exception for a given URL, the class discards the exception
+ * Exceptions while downloading are caught.  On catching an
+ * exception for a given URL, the class stores the exception
  * and goes on to the next URL in the input set.  If there are
  * no more URLs to try, then a FileTransferException is thrown.
+ * After the {@link transfer} completes or fails, the client may
+ * retrieve the exceptions stored for the individual download
+ * attempts by calling {@link getErrors}.  The URL, in the set of
+ * mirrors, that actually supplied the data may be retrieved by
+ * calling {@link getChosenUrl}.
  *
  * A FileTransfer is not MT-safe.
  *
