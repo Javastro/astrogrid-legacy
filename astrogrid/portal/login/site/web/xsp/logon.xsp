@@ -14,7 +14,8 @@
     <agPageMessage>Log On</agPageMessage>
 -->
     <content>
-     <login-form action="login-form" method="post" message="Please enter your username, community and password." title="Welcome to the AVO Demonstration">
+     <login-form action="login-form" method="post" message="Please enter
+     your username, community and password." title="Welcome to AstroGrid">
        <login-input type="text" name="user" size="20" caption="Username:">
            <xsp:attribute name="value"><xsp-request:get-parameter name="user" default=""/></xsp:attribute>
        </login-input> 
