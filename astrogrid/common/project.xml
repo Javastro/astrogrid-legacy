@@ -34,6 +34,9 @@
     <developerConnection>
       scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/common
     </developerConnection>
+    <url>
+    	http://www.astrogrid.org/viewcvs/astrogrid/common/
+    </url>
   </repository>
   
   <developers>
