@@ -1,4 +1,4 @@
-/*$Id: CeaTest.java,v 1.2 2004/03/22 18:07:00 mch Exp $
+/*$Id: CeaTest.java,v 1.3 2004/04/19 17:36:57 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,8 +26,8 @@ import org.astrogrid.workflow.beans.v1.Tool;
 
 public class CeaTest  {
 
-   public static final String STD_PAL = "http://vm07.astrogrid.org:8080/pal/services/CeaDataService";
-   public static final String GRENDEL_PAL = "http://grendel12.roe.ac.uk:8080/pal-SNAPSHOT/services/CeaDataService";
+   public static final String STD_PAL = "http://localhost:8080/astrogrid-pal-SNAPSHOT/services/CeaDataService";
+//   public static final String GRENDEL_PAL = "http://grendel12.roe.ac.uk:8080/pal-SNAPSHOT/services/CeaDataService";
    
    public void testStdPal() throws Exception {
 
@@ -90,6 +90,9 @@ public class CeaTest  {
 
 /*
 $Log: CeaTest.java,v $
+Revision 1.3  2004/04/19 17:36:57  mch
+adjusted PAL endpoints
+
 Revision 1.2  2004/03/22 18:07:00  mch
 Added parameter construction
 
