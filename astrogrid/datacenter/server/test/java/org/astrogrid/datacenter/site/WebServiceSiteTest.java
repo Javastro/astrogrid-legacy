@@ -1,4 +1,4 @@
-/*$Id: WebServiceSiteTest.java,v 1.2 2004/01/13 00:33:14 nw Exp $
+/*$Id: WebServiceSiteTest.java,v 1.3 2004/01/15 18:05:17 nw Exp $
  * Created on 21-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -65,10 +65,8 @@ public class WebServiceSiteTest extends TestCase {
 
         Select select = Select.unmarshalSelect(new InputStreamReader(is));
         assertNotNull(select);
-        Query q = new Query();
-        q.setQueryBody(ADQLUtils.marshallSelect(select).getDocumentElement());
 
-      DatacenterResults results = querier.doQuery(querier.VOTABLE, ADQLUtils.toQueryBody(select));
+      DatacenterResults results = querier.doQuery(FullSearcher.VOTABLE, ADQLUtils.toQueryBody(select));
       
       assertNotNull(results);
    }
@@ -83,7 +81,6 @@ public class WebServiceSiteTest extends TestCase {
       //WebServiceSiteTest tester = new WebServiceSiteTest("http://vm07.astrogrid.org:8080/pal/");
       WebServiceSiteTest tester = new WebServiceSiteTest("http://localhost:8080/pal/");
 
-      tester.testBlockingQuery();
       
       
     }
@@ -98,6 +95,9 @@ public class WebServiceSiteTest extends TestCase {
 
 /*
 $Log: WebServiceSiteTest.java,v $
+Revision 1.3  2004/01/15 18:05:17  nw
+minor tweak
+
 Revision 1.2  2004/01/13 00:33:14  nw
 Merged in branch providing
 * sql pass-through
