@@ -1,5 +1,5 @@
 /*
- * $Id: VoSpaceResolver.java,v 1.4 2004/03/15 18:01:39 mch Exp $
+ * $Id: VoSpaceResolver.java,v 1.5 2004/03/19 12:39:37 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -13,7 +13,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.User;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.registry.client.query.RegistryService;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.store.delegate.StoreDelegateFactory;
@@ -27,12 +26,15 @@ import org.astrogrid.store.delegate.StoreDelegateFactory;
  * As such it is really a factory, making appropriate delegates/etc as required
  *
  * It makes use of the registry and commnunity to look up IVORNs
+ * --------------------------------------------------------------------
+ * DEPRECATED @deprecated - use the ivor source representation
+ * -------------------------------------------------------------------
  *
  */
 
 public class VoSpaceResolver {
    
-   private static RegistryService registry = null;
+//   private static RegistryService registry = null;
    //private static CommunityDelegate community = null;
 
    private static Log log = LogFactory.getLog(VoSpaceResolver.class);
@@ -90,7 +92,8 @@ public class VoSpaceResolver {
    /** Resolve using Registry
     */
    public Agsl registryResolve(Ivorn ivorn) throws IOException {
-
+      /** This is the deprecated nyspace one; use the one in ivor if you want
+       * real registry resolving *
       //lazy load registry delegate - also more robust in case it doesn't instantiate
       if (registry == null) {
          try {
@@ -110,12 +113,14 @@ public class VoSpaceResolver {
             throw new ResolverException("Registry failed resolving "+ivorn,e);
          }
       }
+       */
       return null;
+      
    }
    
    /**
     * Lazy registry delegate load
-    */
+    *
    public synchronized void makeRegistryDelegate() throws IOException {
       if (registry == null) {
          registry = new RegistryService();
@@ -157,6 +162,9 @@ public class VoSpaceResolver {
 
 /*
 $Log: VoSpaceResolver.java,v $
+Revision 1.5  2004/03/19 12:39:37  mch
+Added StoreAdminClient implementation to LocalFileStore
+
 Revision 1.4  2004/03/15 18:01:39  mch
 Removed build dependency on castor
 

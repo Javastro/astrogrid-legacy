@@ -1,5 +1,5 @@
 /*
- * $Id: StoreAdminClient.java,v 1.1 2004/03/01 22:38:46 mch Exp $
+ * $Id: StoreAdminClient.java,v 1.2 2004/03/19 12:39:37 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -30,18 +30,21 @@ public interface StoreAdminClient {
    /**
     * Create a new user
     */
-   public void createUser(User newUser);
+   public void createUser(User newUser) throws IOException;
 
    /**
     * Delete a user
     */
-   public void deleteUser(User delUser);
+   public void deleteUser(User delUser) throws IOException;
    
    
 }
 
 /*
 $Log: StoreAdminClient.java,v $
+Revision 1.2  2004/03/19 12:39:37  mch
+Added StoreAdminClient implementation to LocalFileStore
+
 Revision 1.1  2004/03/01 22:38:46  mch
 Part II of copy from It4.1 datacenter + updates from myspace meetings + test fixes
 

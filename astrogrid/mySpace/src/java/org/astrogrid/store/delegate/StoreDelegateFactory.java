@@ -1,5 +1,5 @@
 /*
- * $Id: StoreDelegateFactory.java,v 1.7 2004/03/05 19:24:43 mch Exp $
+ * $Id: StoreDelegateFactory.java,v 1.8 2004/03/19 12:39:37 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -26,10 +26,8 @@ public class StoreDelegateFactory
 {
    
    /**
-    * Creates the correct delegate for the given url.  The url is either the DUMMY
-    * constant from MySpaceDummyDelegate, or an http:// url to access a 'real'
-    * myspace.  We could also add a FTP and GridFTP delegates for services
-    * without accounts on MySpace servers.
+    * Creates the correct delegate for the given Agsl and operator, for general
+    * file handling - moving, copying, uploading, etc.
     */
    public static StoreClient createDelegate(User operator, Agsl location) throws IOException
    {
@@ -46,10 +44,23 @@ public class StoreDelegateFactory
       throw new IllegalArgumentException("Don't know how to create delegate for AGSL '"+location+"'");
    }
 
+   /**
+    * Creates the correct delegate for administering the store client at the
+    * given Agsl.  Ignores the path of the Agsl.
+    */
+   public static StoreAdminClient createAdminDelegate(User operator, Agsl location) throws IOException {
+      if (location.getScheme().startsWith(Agsl.SCHEME+":file")) {
+         return new org.astrogrid.store.delegate.local.LocalFileStore(location);
+      }
+      throw new IllegalArgumentException("Don't know how to create delegate for AGSL '"+location+"'");
+   }
 }
 
 /*
 $Log: StoreDelegateFactory.java,v $
+Revision 1.8  2004/03/19 12:39:37  mch
+Added StoreAdminClient implementation to LocalFileStore
+
 Revision 1.7  2004/03/05 19:24:43  mch
 Store delegates were moved
 

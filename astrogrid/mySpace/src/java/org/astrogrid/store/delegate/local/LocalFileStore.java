@@ -1,5 +1,5 @@
 /*
- * $Id: LocalFileStore.java,v 1.4 2004/03/17 15:17:29 mch Exp $
+ * $Id: LocalFileStore.java,v 1.5 2004/03/19 12:39:37 mch Exp $
  *
  */
 
@@ -27,8 +27,8 @@ import org.astrogrid.store.Agsl;
  * @author: M Hill
  */
 
-public class LocalFileStore implements StoreClient
-{
+public class LocalFileStore implements StoreClient, StoreAdminClient {
+   
    /** The root directory for this file store instance */
    private File rootDir = null;
 
@@ -348,10 +348,29 @@ public class LocalFileStore implements StoreClient
       return "LocalFileStore ["+rootDir.getName()+"]";
    }
    
+   /**
+    * Delete a user - this does nothing on a local file store at the moment,
+    * as I'm a bit iffy about deleting directory structures that might have
+    * valuable data in it for now.
+    */
+   public void deleteUser(User delUser) {
+      log.warn("User "+delUser+" filespace not deleted");
+   }
+   
+   /**
+    * Create a new user - creates a directory 'individual@community'
+    */
+   public void createUser(User newUser) throws IOException {
+      newFolder(newUser.getUserId()+"@"+newUser.getCommunity());
+   }
+   
 }
 
 /*
 $Log: LocalFileStore.java,v $
+Revision 1.5  2004/03/19 12:39:37  mch
+Added StoreAdminClient implementation to LocalFileStore
+
 Revision 1.4  2004/03/17 15:17:29  mch
 Added putBytes
 
