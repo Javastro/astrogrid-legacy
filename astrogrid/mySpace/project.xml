@@ -4,7 +4,7 @@
 	<pomVersion>3</pomVersion>
 	<id>astrogrid-mySpace</id>
 	<name>AstroGrid MySpace</name>
-	<currentVersion>Itn04_CodeFreeze</currentVersion>
+	<currentVersion>$Name:  $</currentVersion>
 	<organization>
 		<name>AstroGrid</name>
 		<url>http://www.astrogrid.org</url>

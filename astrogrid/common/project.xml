@@ -7,7 +7,7 @@
 	<pomVersion>3</pomVersion>
 	<id>astrogrid-common</id>
 	<name>AstroGrid Common</name>
-	<currentVersion>HEAD</currentVersion>
+	<currentVersion>$Name:  $</currentVersion>
 	<organization>
 		<name>AstroGrid</name>
 		<url>http://www.astrogrid.org</url>

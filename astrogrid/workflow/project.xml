@@ -4,7 +4,7 @@
 	<pomVersion>3</pomVersion>
 	<id>astrogrid-workflow</id>
 	<name>AstroGrid Workflow</name>
-	<currentVersion>SNAPSHOT</currentVersion>
+	<currentVersion>$Name:  $</currentVersion>
 	<organization>
 		<name>AstroGrid</name>
 		<url>http://www.astrogrid.org</url>
