@@ -92,12 +92,12 @@
                                 <xsl:choose>
                                     <xsl:when test="@param-type = 'FileReference'">
                                         <input name="myspace-name" type="button" value="Browse...">
-<!--                              <xsl:attribute name="onclick">javascript:void(window.open('/astrogrid-portal/mount/myspace/myspace-micro?ivorn=<xsl:value-of select="$ivorn=id"/>&amp;agsl=<xsl:value-of select="$agsl-id"/>', 'mySpaceMicro', 'toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=yes, scrollbars=yes, width=300, height=200'))"></xsl:attribute> -->
+                                            <xsl:attribute name="onclick">javascript:void(window.open('/astrogrid-portal/mount/myspace/myspace-micro?ivorn=<xsl:value-of select="$ivorn-id"/>&amp;agsl=<xsl:value-of select="$agsl-id"/>', 'mySpaceMicro', 'toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=yes, scrollbars=yes, width=300, height=200'));</xsl:attribute>
                                         </input>
                                     </xsl:when>
                                     <xsl:when test="@param-type = 'MySpace_FileReference'">
                                         <input name="myspace-name" type="button" value="Browse...">
-<!--                              <xsl:attribute name="onclick">javascript:void(window.open('/astrogrid-portal/mount/myspace/myspace-micro?ivorn=<xsl:value-of select="$ivorn=id"/>&amp;agsl=<xsl:value-of select="$agsl-id"/>', 'mySpaceMicro', 'toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=yes, scrollbars=yes, width=300, height=200'))"></xsl:attribute> -->
+                                            <xsl:attribute name="onclick">javascript:void(window.open('/astrogrid-portal/mount/myspace/myspace-micro?ivorn=<xsl:value-of select="$ivorn-id"/>&amp;agsl=<xsl:value-of select="$agsl-id"/>', 'mySpaceMicro', 'toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=yes, scrollbars=yes, width=300, height=200'));</xsl:attribute> 
                                         </input>
                                     </xsl:when>
                                     <xsl:otherwise>
