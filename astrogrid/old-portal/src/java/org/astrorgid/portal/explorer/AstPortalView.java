@@ -2,11 +2,14 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/src/java/org/astrorgid/portal/explorer/Attic/AstPortalView.java,v $</cvs:source>
  * <cvs:date>$Author: dave $</cvs:date>
- * <cvs:author>$Date: 2003/06/05 09:05:56 $</cvs:author>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:author>$Date: 2003/06/09 10:20:50 $</cvs:author>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  * $Log: AstPortalView.java,v $
+ * Revision 1.3  2003/06/09 10:20:50  dave
+ * Added Axis integration tests
+ *
  * Revision 1.2  2003/06/05 09:05:56  dave
  * Added JWS and RPC WebService tests.
  *
@@ -28,7 +31,7 @@
  * Revision 1.1  2003/05/25 11:04:19  Dumbledore
  * First import into local CVS.
  *
- * <cvs:log>
+ * </cvs:log>
  *
  *
  */
@@ -97,6 +100,5 @@ public class AstPortalView
 		{
 		this.path = path ;
 		}
-
 
 	}

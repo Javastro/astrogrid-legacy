@@ -1,12 +1,15 @@
 /*
  *
- * <cvs:source>$Source:</cvs:source>
- * <cvs:date>$Author:</cvs:date>
- * <cvs:author>$Date: 2003/06/05 09:05:56 $</cvs:author>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/src/java/org/astrorgid/portal/base/junit/Attic/JUnitTestCase.java,v $</cvs:source>
+ * <cvs:date>$Author: dave $</cvs:date>
+ * <cvs:author>$Date: 2003/06/09 10:20:50 $</cvs:author>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
- * $Log:
+ * $Log: JUnitTestCase.java,v $
+ * Revision 1.3  2003/06/09 10:20:50  dave
+ * Added Axis integration tests
+ *
  * </cvs:log>
  *
  */

@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!--
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/src/java/org/astrorgid/portal/mock/myspace/service/Attic/deploy.wsdd,v $</cvs:source>
+    | <cvs:date>$Author: dave $</cvs:date>
+    | <cvs:author>$Date: 2003/06/09 10:20:50 $</cvs:author>
+    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:log>
+    | $Log: deploy.wsdd,v $
+    | Revision 1.1  2003/06/09 10:20:50  dave
+    | Added Axis integration tests
+    |
+    | </cvs:log>
+    |
+    |
+    +-->
+
+<deployment name="test"
+	xmlns="http://xml.apache.org/axis/wsdd/" 
+	xmlns:java="http://xml.apache.org/axis/wsdd/providers/java"
+	>
+	<service name="myspace" style="java:RPC">
+		<parameter name="className"      value="org.astrogrid.portal.mock.myspace.service.MySpaceService"/>
+		<parameter name="allowedMethods" value="doNothing, getItem, findItems"/>
+	</service>
+</deployment>

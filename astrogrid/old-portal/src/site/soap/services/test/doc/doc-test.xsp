@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--+
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/src/site/soap/services/test/doc/Attic/doc-test.xsp,v $</cvs:source>
+    | <cvs:date>$Author: dave $</cvs:date>
+    | <cvs:author>$Date: 2003/06/09 10:20:50 $</cvs:author>
+    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:log>
+    | $Log: doc-test.xsp,v $
+    | Revision 1.1  2003/06/09 10:20:50  dave
+    | Added Axis integration tests
+    |
+    | </cvs:log>
+    | 
+    | XSP page to call our TestDocService.
+    | 
+    +-->
+<xsp:page language="java"
+	xmlns:xsp="http://apache.org/xsp"
+	xmlns:xscript="http://apache.org/xsp/xscript/1.0"
+	xmlns:soap="http://apache.org/xsp/soap/3.0"
+	xmlns:ci="http://apache.org/cocoon/include/1.0"
+	>
+
+	<!-- Initialisation code here -->
+	<xsp:structure>
+	</xsp:structure>
+	<!-- Class level code here -->
+	<xsp:logic>
+		<![CDATA[
+		]]>
+	</xsp:logic>
+	<page>
+		<!-- Request level code here -->
+		<xsp:logic>
+			<![CDATA[
+			]]>
+		</xsp:logic>
+		<!-- Test SOAP calls ... -->
+		<test>
+			<xsp:comment>Test SOAP call to our DOC service (doNothing)</xsp:comment>
+			<soap:call url="http://localhost:8080/axis/services/doc">
+				<doNothing/>
+			</soap:call>
+			<xsp:comment>Test SOAP call to our DOC service (getDateAsLong)</xsp:comment>
+			<soap:call url="http://localhost:8080/axis/services/doc">
+				<getDateAsLong/>
+			</soap:call>
+			<xsp:comment>Test SOAP call to our DOC service (getDateAsDate)</xsp:comment>
+			<soap:call url="http://localhost:8080/axis/services/doc">
+				<getDateAsDate/>
+			</soap:call>
+			<xsp:comment>Test SOAP call to our DOC service (getIntSquared)</xsp:comment>
+			<soap:call url="http://localhost:8080/axis/services/doc">
+				<getIntSquared><param>7</param></getIntSquared>
+			</soap:call>
+			<xsp:comment>Test SOAP call to our DOC service (getIntSquared)</xsp:comment>
+			<xsp:comment>Using different name, frog, for param tag</xsp:comment>
+			<soap:call url="http://localhost:8080/axis/services/doc">
+				<getIntSquared>
+					<frog type="xsd:int">7</frog>
+				</getIntSquared>
+			</soap:call>
+			<xsp:comment>Test SOAP call to our DOC service (getIntSquared)</xsp:comment>
+			<xsp:comment>Sending two params, frog and toad</xsp:comment>
+			<xsp:comment>Returns a SOAP fault 'No such operation'</xsp:comment>
+			<soap:call url="http://localhost:8080/axis/services/doc">
+				<getIntSquared>
+					<frog type="xsd:int">7</frog>
+					<toad type="xsd:int">8</toad>
+				</getIntSquared>
+			</soap:call>
+		</test>
+		<wsdl>
+			<xsp:comment>WSDL for our DOC service</xsp:comment>
+			<ci:includexml>
+				<ci:src>http://localhost:8080/axis/services/doc?wsdl</ci:src>
+			</ci:includexml>
+		</wsdl>
+	</page>
+</xsp:page>

@@ -1,13 +1,16 @@
 <!--
 <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/src/site/home/Attic/hello.xml,v $</cvs:source>
 <cvs:date>$Author: dave $</cvs:date>
-<cvs:author>$Date: 2003/06/05 09:25:16 $</cvs:author>
-<cvs:version>$Revision: 1.3 $</cvs:version>
+<cvs:author>$Date: 2003/06/09 10:20:50 $</cvs:author>
+<cvs:version>$Revision: 1.4 $</cvs:version>
 <cvs:log>
 	$Log: hello.xml,v $
+	Revision 1.4  2003/06/09 10:20:50  dave
+	Added Axis integration tests
+
 	Revision 1.3  2003/06/05 09:25:16  dave
 	Added link to Axis docs
-
+	
 	Revision 1.2  2003/06/05 09:05:56  dave
 	Added JWS and RPC WebService tests.
 	
@@ -72,6 +75,8 @@
 		<br/>
 		<a href="soap/test/rpc">SOAP RPC service test page</a>
 		<br/>
+		<a href="soap/test/doc">SOAP DOC service test page</a>
+		<br/>
 
 		<br/>
 		<a href="soap/test/echo">SOAP echo test page</a>
@@ -79,9 +84,14 @@
 		<a href="soap/test/calc">SOAP CalculatorService test page</a>
 		<br/>
 		<a href="soap/test/message">SOAP MessageService test page</a>
+		<br/>
+		<a href="soap/test/version">SOAP Axis Version test page</a>
 
 		<br/>
 		<br/>
 		<a href="/axis-docs">Axis documentation</a>
+		<br/>
+		<a href="http://ant.apache.org/manual/index.html">Ant manual (external)</a>
+
 	</content>
 </page>

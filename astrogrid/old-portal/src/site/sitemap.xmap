@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/src/site/Attic/sitemap.xmap,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/05 09:05:56 $</cvs:author>
-    | <cvs:version>$Revision: 1.5 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/09 10:20:50 $</cvs:author>
+    | <cvs:version>$Revision: 1.6 $</cvs:version>
     | <cvs:log>
     | $Log: sitemap.xmap,v $
+    | Revision 1.6  2003/06/09 10:20:50  dave
+    | Added Axis integration tests
+    |
     | Revision 1.5  2003/06/05 09:05:56  dave
     | Added JWS and RPC WebService tests.
     |
@@ -130,6 +133,18 @@
 			<!-- SOAP message test -->
 			<map:match pattern="soap/test/message">
 				<map:generate  src="soap/services/message/message-test.xsp" type="serverpages"/>
+				<!-- Include the wsdl for the axis service -->
+				<map:transform type="cinclude"/>
+				<!-- Serialize as HTML -->
+				<map:transform src="util/html/xml-html.xsl"/>
+				<map:serialize type="html"/>
+			</map:match>
+
+			<!-- SOAP version test -->
+			<map:match pattern="soap/test/version">
+				<map:generate  src="soap/services/version/version-test.xsp" type="serverpages"/>
+				<!-- Include the wsdl for the axis service -->
+				<map:transform type="cinclude"/>
 				<!-- Serialize as HTML -->
 				<map:transform src="util/html/xml-html.xsl"/>
 				<map:serialize type="html"/>
@@ -145,7 +160,7 @@
 				<map:serialize type="html"/>
 			</map:match>
 
-			<!-- SOAP JWS test -->
+			<!-- SOAP JWS test (person) -->
 			<map:match pattern="soap/test/jws-person">
 				<map:generate  src="soap/services/test/jws/jws-person-test.xsp" type="serverpages"/>
 				<!-- Include the wsdl for the axis service -->
@@ -165,6 +180,15 @@
 				<map:serialize type="html"/>
 			</map:match>
 
+			<!-- SOAP DOC test -->
+			<map:match pattern="soap/test/doc">
+				<map:generate  src="soap/services/test/doc/doc-test.xsp" type="serverpages"/>
+				<!-- Include the wsdl for the axis service -->
+				<map:transform type="cinclude"/>
+				<!-- Serialize as HTML -->
+				<map:transform src="util/html/xml-html.xsl"/>
+				<map:serialize type="html"/>
+			</map:match>
 
 
 

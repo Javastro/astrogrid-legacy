@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--+
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/src/site/soap/services/version/Attic/version-test.xsp,v $</cvs:source>
+    | <cvs:date>$Author: dave $</cvs:date>
+    | <cvs:author>$Date: 2003/06/09 10:20:50 $</cvs:author>
+    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:log>
+    | $Log: version-test.xsp,v $
+    | Revision 1.1  2003/06/09 10:20:50  dave
+    | Added Axis integration tests
+    |
+    | </cvs:log>
+    | 
+    | XSP page to call the Axis Version service.
+    | 
+    +-->
+<xsp:page language="java"
+	xmlns:xsp="http://apache.org/xsp"
+	xmlns:xscript="http://apache.org/xsp/xscript/1.0"
+	xmlns:soap="http://apache.org/xsp/soap/3.0"
+	xmlns:ci="http://apache.org/cocoon/include/1.0"
+	>
+
+	<!-- Initialisation code here -->
+	<xsp:structure>
+	</xsp:structure>
+	<!-- Class level code here -->
+	<xsp:logic>
+		<![CDATA[
+		]]>
+	</xsp:logic>
+	<page>
+		<!-- Request level code here -->
+		<xsp:logic>
+			<![CDATA[
+			]]>
+		</xsp:logic>
+		<!-- Test the calculator services ... -->
+		<test>
+			<xsp:comment>Test SOAP call to Axis service</xsp:comment>
+			<soap:call url="http://localhost:8080/axis/services/Version">
+				<getVersion/>
+			</soap:call>
+		</test>
+		<wsdl>
+			<xsp:comment>WSDL for the Version service</xsp:comment>
+			<ci:includexml>
+				<ci:src>http://localhost:8080/axis/services/Version?wsdl</ci:src>
+			</ci:includexml>
+		</wsdl>
+	</page>
+</xsp:page>

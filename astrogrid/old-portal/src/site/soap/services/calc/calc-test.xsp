@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/src/site/soap/services/calc/Attic/calc-test.xsp,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/05 09:05:56 $</cvs:author>
-    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/09 10:20:50 $</cvs:author>
+    | <cvs:version>$Revision: 1.3 $</cvs:version>
     | <cvs:log>
     | $Log: calc-test.xsp,v $
+    | Revision 1.3  2003/06/09 10:20:50  dave
+    | Added Axis integration tests
+    |
     | Revision 1.2  2003/06/05 09:05:56  dave
     | Added JWS and RPC WebService tests.
     |
@@ -75,13 +78,11 @@
 				</calc:add>
 			</soap:call>
 		</test>
-
 		<wsdl>
 			<xsp:comment>WSDL for the Axis service</xsp:comment>
 			<ci:includexml>
 				<ci:src>http://localhost:8080/axis/Calculator.jws?wsdl</ci:src>
 			</ci:includexml>
 		</wsdl>
-
 	</page>
 </xsp:page>

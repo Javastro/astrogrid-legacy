@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/src/site/soap/services/message/Attic/message-test.xsp,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/04 11:59:22 $</cvs:author>
-    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/09 10:20:50 $</cvs:author>
+    | <cvs:version>$Revision: 1.3 $</cvs:version>
     | <cvs:log>
     | $Log: message-test.xsp,v $
+    | Revision 1.3  2003/06/09 10:20:50  dave
+    | Added Axis integration tests
+    |
     | Revision 1.2  2003/06/04 11:59:22  dave
     | Updated site directory structure
     |
@@ -36,10 +39,11 @@
     | 
     +-->
 <xsp:page language="java"
-		xmlns:xsp="http://apache.org/xsp"
-		xmlns:xscript="http://apache.org/xsp/xscript/1.0"
-		xmlns:soap="http://apache.org/xsp/soap/3.0">
-		>
+	xmlns:xsp="http://apache.org/xsp"
+	xmlns:xscript="http://apache.org/xsp/xscript/1.0"
+	xmlns:soap="http://apache.org/xsp/soap/3.0"
+	xmlns:ci="http://apache.org/cocoon/include/1.0"
+	>
 
 	<!-- Initialisation code here -->
 	<xsp:structure>
@@ -84,5 +88,11 @@
 				</test:message>
 			</soap:call>
 		</test>
+		<wsdl>
+			<xsp:comment>WSDL for the Axis service</xsp:comment>
+			<ci:includexml>
+				<ci:src>http://localhost:8080/axis/services/MessageService?wsdl</ci:src>
+			</ci:includexml>
+		</wsdl>
 	</page>
 </xsp:page>

@@ -2,10 +2,13 @@
 <!--
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/Attic/build.xml,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/05 09:05:55 $</cvs:author>
-    | <cvs:version>$Revision: 1.7 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/09 10:20:50 $</cvs:author>
+    | <cvs:version>$Revision: 1.8 $</cvs:version>
     | <cvs:log>
     | $Log: build.xml,v $
+    | Revision 1.8  2003/06/09 10:20:50  dave
+    | Added Axis integration tests
+    |
     | Revision 1.7  2003/06/05 09:05:55  dave
     | Added JWS and RPC WebService tests.
     |
@@ -409,17 +412,19 @@
 
 	<!-- ================ Axis tasks ================ -->
 
-	<!-- Define the Tomcat manager tasks -->
+	<!-- Define the Axis manager tasks -->
 	<target name="axis.tasks" depends="">
-		<path id="axis.client.classpath">
+		<path id="axis.tasks.classpath">
 			<pathelement location="${axis.home}/lib/axis.jar"/>
 			<pathelement location="${axis.home}/lib/axis-ant.jar"/>
-			<pathelement location="${axis.home}/lib/jaxrpc.jar"/>
-			<pathelement location="${axis.home}/lib/commons-logging.jar"/>
 			<pathelement location="${axis.home}/lib/commons-discovery.jar"/>
+			<pathelement location="${axis.home}/lib/commons-logging.jar"/>
+			<pathelement location="${axis.home}/lib/jaxrpc.jar"/>
 			<pathelement location="${axis.home}/lib/saaj.jar"/>
+			<pathelement location="${axis.home}/lib/wsdl4j.jar"/>
 		</path>
-		<taskdef name="axis.admin" classpathref="axis.client.classpath" classname="org.apache.axis.tools.ant.axis.AdminClientTask"/>
+		<taskdef name="axis.admin"     classpathref="axis.tasks.classpath" classname="org.apache.axis.tools.ant.axis.AdminClientTask"/>
+		<taskdef name="axis.wsdl2java" classpathref="axis.tasks.classpath" classname="org.apache.axis.tools.ant.wsdl.Wsdl2javaAntTask"/>
 	</target>
 
 	<!-- Delete the Axis build -->
@@ -551,7 +556,7 @@
 		<!-- Copy the classes into the Axis WEB-INF/classes directory -->
 		<copy verbose="true" todir="${axis.webapp}/WEB-INF/classes">
 			<fileset dir="build/classes">
-				<include name="**/test/axis/rpc/TestRpc*.class"/>
+				<include name="**/test/axis/rpc/*.class"/>
 			</fileset>
 		</copy>
 		<!-- Deploy our WebService -->
@@ -577,7 +582,43 @@
 		<!-- Tidy up any class files -->
 		<delete failonerror="false">
 			<fileset dir="${axis.webapp}/WEB-INF/classes">
-				<include name="**/test/axis/rpc/TestRpc*.class"/>
+				<include name="**/test/axis/rpc/*.class"/>
+			</fileset>
+		</delete>
+	</target>
+
+	<!-- Deploy our DOC test services --> 
+	<target name="axis.service.install.test.doc" depends="java.compile, axis.tasks">
+		<!-- Copy the classes into the Axis WEB-INF/classes directory -->
+		<copy verbose="true" todir="${axis.webapp}/WEB-INF/classes">
+			<fileset dir="build/classes">
+				<include name="**/test/axis/doc/*.class"/>
+			</fileset>
+		</copy>
+		<!-- Deploy our WebService -->
+		<axis.admin
+			port="${axis.port}"
+			hostname="${axis.host}"
+			servletpath="${axis.base}/services/AdminService"
+			debug="true"
+			xmlfile="src/java/org/astrorgid/portal/test/axis/doc/deploy.wsdd"
+			/>
+	</target>
+
+	<!-- Remove our RCP test services --> 
+	<target name="axis.service.remove.test.doc" depends="axis.tasks">
+		<!-- Remove the WebService -->
+		<axis.admin
+			port="${axis.port}"
+			hostname="${axis.host}"
+			servletpath="${axis.base}/services/AdminService"
+			debug="true"
+			xmlfile="src/java/org/astrorgid/portal/test/axis/doc/undeploy.wsdd"
+			/>
+		<!-- Tidy up any class files -->
+		<delete failonerror="false">
+			<fileset dir="${axis.webapp}/WEB-INF/classes">
+				<include name="**/test/axis/doc/*.class"/>
 			</fileset>
 		</delete>
 	</target>
@@ -588,6 +629,7 @@
 		<antcall target="axis.service.install.examples.message"/>
 		<antcall target="axis.service.install.test.jws"/>
 		<antcall target="axis.service.install.test.rpc"/>
+		<antcall target="axis.service.install.test.doc"/>
 	</target>
 
 	<!-- ================ Site tasks ================ -->
@@ -816,6 +858,113 @@
 		</parallel>
 	</target>
 
+	<!-- ================ MySpace tasks ================ -->
+	<!-- Build the server side Java for the mock MySpace service -->
+	<target name="myspace.service.java.compile" depends="init" description="Compile our MySpace service">
+		<!-- Create our build directories -->
+		<mkdir dir="build/myspace/service/java"/>
+		<mkdir dir="build/myspace/service/classes"/>
+		<!-- Copy the server side source code -->
+		<copy verbose="false" todir="build/myspace/service/java">
+			<fileset dir="src/java">
+				<include name="**/myspace/service/**/*.java"/>
+			</fileset>
+		</copy>
+		<!-- Compile the server side components -->
+		<javac srcdir="build/myspace/service/java"
+		       destdir="build/myspace/service/classes"
+		       debug="on"
+		       deprecation="on"
+		       optimize="on"
+		       >
+		</javac>
+	</target>
+
+	<!-- Test the server side Java for the mock MySpace service -->
+	<target name="myspace.service.local.junit" depends="init, myspace.service.java.compile" description="Run our MySpace JUnit tests">
+		<!-- Create the reports directory -->
+		<mkdir dir="build/myspace/service/log"/>
+		<!-- Run the JUnit tests -->
+		<junit printsummary="yes" haltonfailure="yes" showoutput="yes" fork="true">
+			<!-- Use our local classes -->
+			<classpath>
+				<!-- Our own classes -->
+				<pathelement path="build/myspace/service/classes"/>
+				<!-- The JUnit libraries -->
+				<pathelement path="${junit.classpath}"/>
+				<!-- FIXME (required since JDK 1.4.2) -->
+				<pathelement path="${ant.home}/lib/ant.jar"/>
+				<pathelement path="${ant.home}/lib/optional.jar"/>
+			</classpath>
+			<!-- Generate an XML log file -->
+			<formatter type="xml"/>
+			<!-- Run our JUnit tests -->
+			<batchtest todir="build/myspace/log">
+				<fileset dir="build/myspace/service/classes">
+					<include name="**/junit/**/JUnit*.class" />
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+
+	<!-- Deploy the server side components for our mock MySpace service -->
+	<target name="myspace.service.install" depends="myspace.service.java.compile, axis.tasks">
+		<!-- Create our wsdd directory -->
+		<mkdir dir="build/myspace/service/wsdd"/>
+		<!-- Copy our deployment descriptors -->
+		<copy verbose="false" todir="build/myspace/service/wsdd">
+			<fileset dir="src/java/org/astrorgid/portal/mock/myspace/service">
+				<include name="*.wsdd" />
+			</fileset>
+		</copy>
+		<!-- Copy our classes into the Axis WEB-INF/classes directory -->
+		<copy verbose="false" todir="${axis.webapp}/WEB-INF/classes">
+			<fileset dir="build/myspace/service/classes">
+				<include name="**/*.class"/>
+			</fileset>
+		</copy>
+		<!-- Deploy our WebService -->
+		<axis.admin
+			port="${axis.port}"
+			hostname="${axis.host}"
+			servletpath="${axis.base}/services/AdminService"
+			debug="true"
+			xmlfile="build/myspace/service/wsdd/deploy.wsdd"
+			/>
+	</target>
+
+	<!-- Remove our RCP test services --> 
+	<target name="myspace.service.remove" depends="axis.tasks">
+		<!-- Remove our WebService -->
+		<axis.admin
+			port="${axis.port}"
+			hostname="${axis.host}"
+			servletpath="${axis.base}/services/AdminService"
+			debug="true"
+			xmlfile="build/myspace/service/wsdd/undeploy.wsdd"
+			/>
+		<!-- Tidy up any class files -->
+		<delete failonerror="false">
+			<fileset dir="${axis.webapp}/WEB-INF/classes">
+				<include name="**/mock/myspace/*.*"/>
+			</fileset>
+		</delete>
+	</target>
+
+	<!-- Generate the client stubs for the mock MySpace service -->
+	<target name="myspace.service.wsdl2java" depends="axis.tasks">
+		<!-- Create our stubs directory -->
+		<mkdir dir="build/myspace/client/stubs"/>
+		<!-- Generate the client stubs -->
+		<axis.wsdl2java
+			verbose="true"
+			output="build/myspace/client/stubs"
+			url="http://localhost:8080/axis/services/myspace?wsdl"
+			>
+		</axis.wsdl2java>
+	</target>
+
+	<!-- Build the client side Java for the mock MySpace service -->
 
 
 </project>

@@ -1,17 +1,17 @@
 <?xml version="1.0"?>
 <!--
-    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/src/java/org/astrorgid/portal/test/axis/rpc/Attic/deploy.wsdd,v $</cvs:source>
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/src/java/org/astrorgid/portal/test/axis/doc/Attic/deploy.wsdd,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
     | <cvs:author>$Date: 2003/06/09 10:20:50 $</cvs:author>
-    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:version>$Revision: 1.1 $</cvs:version>
     | <cvs:log>
     | $Log: deploy.wsdd,v $
-    | Revision 1.2  2003/06/09 10:20:50  dave
+    | Revision 1.1  2003/06/09 10:20:50  dave
     | Added Axis integration tests
     |
     | Revision 1.1  2003/06/05 09:05:56  dave
     | Added JWS and RPC WebService tests.
-    | </cvs:log>
+    |
     |
     +-->
 
@@ -20,7 +20,7 @@
 	xmlns:java="http://xml.apache.org/axis/wsdd/providers/java"
 	>
 
-	<service name="rpc" style="RPC">
+	<service name="doc" style="document">
 		<parameter name="className"      value="org.astrogrid.portal.test.axis.rpc.TestRpcService"/>
 		<parameter name="allowedMethods" value="doNothing, getDateAsLong, getDateAsDate, getIntSquared"/>
 
