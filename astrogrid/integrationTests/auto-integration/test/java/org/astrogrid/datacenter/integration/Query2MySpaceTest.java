@@ -1,4 +1,4 @@
-/*$Id: Query2MySpaceTest.java,v 1.8 2004/05/24 11:56:06 jdt Exp $
+/*$Id: Query2MySpaceTest.java,v 1.9 2004/05/24 12:00:49 jdt Exp $
  * Created on 22-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -54,6 +54,7 @@ public class Query2MySpaceTest extends TestCase {
     * retreive from myspace, check they're what we expect
     */
    public void testSubmit() throws Exception {
+       fail("This is causing the integration tests to freeze");
 /* @TODO disabled by JDT
       Agsl resultsTarget = new Agsl(new Msrl(StdKeys.MYSPACE), resultsPath);
 
@@ -100,6 +101,10 @@ public class Query2MySpaceTest extends TestCase {
 
 /*
 $Log: Query2MySpaceTest.java,v $
+Revision 1.9  2004/05/24 12:00:49  jdt
+Disabled this test because it seems to be causing the whole suite
+to seize up.
+
 Revision 1.8  2004/05/24 11:56:06  jdt
 Disabled this test because it seems to be causing the whole suite
 to seize up.
