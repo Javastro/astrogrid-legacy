@@ -10,34 +10,34 @@
  */
 package org.astrogrid.jes.jobcontroller ;
 
-import org.astrogrid.jes.*;
-import org.astrogrid.i18n.* ;
-import org.astrogrid.AstroGridException ;
-import org.astrogrid.jes.job.Job ;
-import org.astrogrid.jes.job.JobFactory ;
-import org.astrogrid.jes.JES ;
+import org.astrogrid.AstroGridException;
+import org.astrogrid.community.common.util.CommunityMessage;
+import org.astrogrid.i18n.AstroGridMessage;
+import org.astrogrid.jes.JES;
+import org.astrogrid.jes.JesException;
+import org.astrogrid.jes.job.Job;
+import org.astrogrid.jes.job.JobFactory;
 
-import org.apache.log4j.Logger;
- 
-import java.io.StringReader ; 
-import java.text.MessageFormat ;
-import java.util.Date ;
-import java.sql.Timestamp ;
+import org.apache.axis.client.Call;
+import org.apache.axis.client.Service;
+import org.apache.axis.encoding.XMLType;
+import org.apache.axis.message.SOAPBodyElement;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.InputSource;
+
+import java.io.StringReader;
+import java.net.URL;
+import java.sql.Timestamp;
+import java.text.MessageFormat;
+import java.util.Date;
 import java.util.ListIterator;
 
-import javax.xml.parsers.*;
-import org.w3c.dom.*;
-import org.xml.sax.InputSource ;
-
-import org.apache.axis.client.Service;
-import org.apache.axis.client.Call;
-import org.apache.axis.encoding.XMLType;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.rpc.ParameterMode;
-import org.apache.axis.message.SOAPBodyElement ;
-// import org.apache.axis.utils.XMLUtils ;
-import org.astrogrid.community.common.util.CommunityMessage;
-
-import java.net.URL;
 
 
 /**
@@ -101,8 +101,8 @@ public class JobController {
         ASTROGRIDERROR_ULTIMATE_LISTFAILURE         = "AGJESE00830" ; ;
 		
 	/** Log4J logger for this class. */    			    			
-	private static Logger 
-		logger = Logger.getLogger( JobController.class ) ;
+	private static Log
+		logger = LogFactory.getLog( JobController.class ) ;
         
 
     public JobController(){

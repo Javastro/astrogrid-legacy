@@ -9,13 +9,20 @@
  *
  */
 
-package org.astrogrid.jes.delegate.jobMonitor.impl;
+package org.astrogrid.jes.delegate.impl;
 
-import org.astrogrid.jes.delegate.jobMonitor.* ;
-import java.net.URL ;
-import java.net.MalformedURLException ;
-import java.rmi.RemoteException ;
-import org.astrogrid.jes.delegate.JesDelegateException ;
+import org.astrogrid.jes.beans.v1.Job;
+import org.astrogrid.jes.delegate.JesDelegateException;
+import org.astrogrid.jes.delegate.jobMonitor.JobMonitorDelegate;
+import org.astrogrid.jes.delegate.jobMonitor.JobMonitorServiceLocator;
+import org.astrogrid.jes.delegate.jobMonitor.JobMonitorServiceSoapBindingStub;
+
+import org.exolab.castor.xml.CastorException;
+
+import java.io.IOException;
+import java.io.StringWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * The <code>JobMonitorDelegateImpl</code> class represents... 
@@ -35,34 +42,32 @@ import org.astrogrid.jes.delegate.JesDelegateException ;
 public class JobMonitorDelegateImpl extends JobMonitorDelegate {
     
     public JobMonitorDelegateImpl( String targetEndPoint ) {
-      super( targetEndPoint ) ;
+      this.targetEndPoint = targetEndPoint;
     }
     
-    public JobMonitorDelegateImpl( String targetEndPoint, int timeout ) {
-      super( targetEndPoint, timeout ) ;
+    public JobMonitorDelegateImpl( String targetEndPoint, int timeout ) { 
+      this.targetEndPoint = targetEndPoint;
+      this.timeout = timeout;
     }
     
-    
+    /* @deprecated - use oo alternatives
+     * 
+    temporarily commented out - don't think its used anywhere - not visible..     
     public void monitorJob( String jobURN
                           , Status status ) throws JesDelegateException {  
         this.monitorJob( jobURN, status, "" ) ;
     }  
+    */
     
-    
-    public void monitorJob( String jobURN
-                          , Status status
-                          , String comment ) throws JesDelegateException {
-        if(TRACE_ENABLED) trace( "JobMonitorDelegate.monitorJob() entry" ) ;
-               
-        JobMonitorServiceSoapBindingStub 
-            binding = null ;
-        String 
-            request = JobMonitorDelegate.formatMonitorRequest( jobURN
-                                                             , status
-                                                             , comment ) ;           
+    public void monitorJob( Job job ) throws JesDelegateException {
+         
             
         try {
-            binding = (JobMonitorServiceSoapBindingStub)
+            StringWriter writer = new StringWriter();
+            job.marshal(writer);
+            writer.close();
+            String request = writer.toString();
+            JobMonitorServiceSoapBindingStub binding = (JobMonitorServiceSoapBindingStub)
                           new JobMonitorServiceLocator().getJobMonitorService( new URL( this.getTargetEndPoint() ) );                        
             binding.setTimeout( this.getTimeout() ) ;    
             binding.monitorJob(request);
@@ -70,29 +75,16 @@ public class JobMonitorDelegateImpl extends JobMonitorDelegate {
         catch( MalformedURLException mex ) {
             throw new JesDelegateException( mex ) ;
         }
-        catch( RemoteException rex) {
+        catch( IOException  rex) {
             throw new JesDelegateException( rex ) ;            
         }
         catch( javax.xml.rpc.ServiceException sex ) {
             throw new JesDelegateException( sex ) ;    
         }
-        finally {
-            if(TRACE_ENABLED) trace( "JobMonitorDelegate.monitorJob() exit" ) ;   
+        catch (CastorException e) {
+            throw new JesDelegateException(e);
         }
-              
-        return ;
   
     } // end of monitorJob()    
     
-
-    private static void trace( String traceString ) {
-        System.out.println( traceString ) ;
-        // logger.debug( traceString ) ;
-    }
-    
-    private static void debug( String logString ){
-        System.out.println( logString ) ;
-        // logger.debug( logString ) ;
-    }
-
 }

@@ -10,22 +10,6 @@
  */
 package org.astrogrid.jes.jobscheduler;
 
-import java.io.StringReader;
-import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.apache.log4j.Logger;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-
 import org.astrogrid.AstroGridException;
 import org.astrogrid.applications.delegate.ApplicationController;
 import org.astrogrid.applications.delegate.DelegateFactory;
@@ -39,6 +23,22 @@ import org.astrogrid.jes.job.Job;
 import org.astrogrid.jes.job.JobFactory;
 import org.astrogrid.jes.job.JobStep;
 import org.astrogrid.jes.jobcontroller.SubmissionRequestDD;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 /**
  * The <code>JobScheduler</code> class represents ...
@@ -66,8 +66,8 @@ public class JobScheduler {
 	    ASTROGRIDERROR_FAILED_TO_LOCATE_TOOL        = "AGJESE00520",
         ASTROGRIDERROR_FAILED_WHEN_CONTACTING_APPLICATION_CONTROLLER   = "AGJESE00525"  ;
 	    			
-	private static Logger 
-		logger = Logger.getLogger( JobScheduler.class ) ;
+	private static Log
+		logger = LogFactory.getLog( JobScheduler.class ) ;
 
 	
 	private Document parseRequest( String jobXML ) throws JobSchedulerException {  	

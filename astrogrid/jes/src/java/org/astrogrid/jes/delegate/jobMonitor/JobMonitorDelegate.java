@@ -1,20 +1,30 @@
 package org.astrogrid.jes.delegate.jobMonitor;
 
-import org.astrogrid.jes.delegate.JesDelegateException ;
-import org.astrogrid.jes.delegate.jobMonitor.impl.* ;
-import java.text.MessageFormat ;
-import java.sql.Timestamp ;
-import java.util.Date ;
+import org.astrogrid.jes.beans.v1.Job;
+import org.astrogrid.jes.delegate.JesDelegateException;
+import org.astrogrid.jes.delegate.JobMonitor;
+import org.astrogrid.jes.delegate.impl.AbstractDelegate;
+import org.astrogrid.jes.delegate.impl.JobMonitorDelegateImpl;
+import org.astrogrid.jes.delegate.impl.TestJobControllerDelegateImpl;
+import org.astrogrid.jes.delegate.impl.TestJobMonitorDelegateImpl;
+
+import org.exolab.castor.xml.CastorException;
+
+import java.io.StringReader;
+import java.sql.Timestamp;
+import java.text.MessageFormat;
+import java.util.Date;
 
 /**
  * The <code>JobMonitorDelegate</code> class. 
  *
+ * @deprecated use {@link org.astrogrid.jes.delegate.JesDelegateFactory} instead
  * @author  Jeff Lusted
  * @version 1.0 19-Dec-2003
  * @version 1.1 05-Jan-2004 - removed dependency on step number
  * @since   AstroGrid 1.4
  */
-public abstract class JobMonitorDelegate {
+public abstract class JobMonitorDelegate  extends AbstractDelegate implements org.astrogrid.jes.delegate.JobMonitor{
     
     public class Status {
             
@@ -42,13 +52,7 @@ public abstract class JobMonitorDelegate {
         STATUS_RUNNING = new Status( "RUNNING" ) ,         // Currently executing
         STATUS_COMPLETED = new Status( "COMPLETED" ) ,     // Completed OK
         STATUS_IN_ERROR = new Status( "ERROR" ) ;          // Something bad happened
-      
-    public static final boolean
-        TRACE_ENABLED = true ;
-    
-    private static final int
-        DEFAULT_TIMEOUT = 60000 ;
-        
+
     protected static final String
         JOBMONITOR_TEMPLATE =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
@@ -61,50 +65,42 @@ public abstract class JobMonitorDelegate {
         return JobMonitorDelegate.buildDelegate( targetEndPoint, DEFAULT_TIMEOUT ) ;
     }
     
-    
+    /**
+
+     * @param targetEndPoint
+     * @param timeout
+     * @return
+     */
     public static JobMonitorDelegate buildDelegate( String targetEndPoint
                                                   , int timeout ) { 
-        if(TRACE_ENABLED) trace( "JobMonitorDelegate.buildDelegate() entry" ) ;
-                                                               
-        JobMonitorDelegate
-            delegate = null ;
-         
-        try {  
-            if( targetEndPoint != null && !targetEndPoint.trim().equals("") ) {
-                delegate = new JobMonitorDelegateImpl(targetEndPoint, timeout ) ;
-            }
-            else {
-                delegate = new TestDelegateImpl( targetEndPoint, timeout ) ;
-            }
-        }
-        finally {
-            if(TRACE_ENABLED) trace( "JobMonitorDelegate.buildDelegate() exit" ) ;
-        }
-
-        return delegate ;
+            if( AbstractDelegate.isTestDelegateRequired(targetEndPoint) ) {
+                 return new TestJobMonitorDelegateImpl();
+            } else {
+                return new JobMonitorDelegateImpl(targetEndPoint, timeout ) ;
+            }   
     }       
-
-    private String 
-         targetEndPoint = null ;
-                
-    private int
-        timeout = 60000 ;
-        
-    public JobMonitorDelegate( String targetEndPoint ) {
-      this.targetEndPoint = targetEndPoint;
+    
+    public abstract void monitorJob(Job jobToMonitor) throws JesDelegateException;
+    
+    /** @deprecated - use oo-based calls instead */
+    public final void monitorJob( String jobURN , Status status, String comment ) throws JesDelegateException {
+        // create job, pass to new call.
+        String str = formatMonitorRequest(jobURN,status,comment);
+        try {
+            Job job = Job.unmarshal(new StringReader(str));
+            monitorJob(job);
+        } catch (CastorException e) {
+            throw new JesDelegateException("Could not marshall old request into new object model",e);      
+    }
     }
     
-    public JobMonitorDelegate( String targetEndPoint, int timeout ) {
-      this.targetEndPoint = targetEndPoint ;
-      this.timeout = timeout ;
-    }
-    
-    
-    public abstract void monitorJob( String jobURN
-                                   , Status status
-                                   , String comment ) throws JesDelegateException ;
-    
-    
+    /**
+     * @deprecated will go real soon now. use oo-based calls instead
+     * @param jobURN
+     * @param status
+     * @param comment
+     * @return
+     */
     public static String formatMonitorRequest( String jobURN
                                              , Status status
                                              , String comment ) {
@@ -124,39 +120,11 @@ public abstract class JobMonitorDelegate {
        inserts[7] = status ;    // step status
        inserts[8] = comment ;   // any optional comment
        
-       retValue = MessageFormat.format( JOBMONITOR_TEMPLATE, inserts ) ;
-        
-       debug( "Monitor request: " + retValue ) ;
-        
-       return retValue  ;
-                                            
+       return MessageFormat.format( JOBMONITOR_TEMPLATE, inserts ) ;
+                                          
     } // end of formatMonitorRequest()
     
     
-    public void setTargetEndPoint(String targetEndPoint) {
-        this.targetEndPoint = targetEndPoint;
-    }
-
-    public String getTargetEndPoint() {
-        return targetEndPoint;
-    }
-
-    public void setTimeout(int timeout) {
-        this.timeout = timeout;
-    }
-
-    public int getTimeout() {
-        return timeout;
-    }    
     
-    private static void trace( String traceString ) {
-        System.out.println( traceString ) ;
-        // logger.debug( traceString ) ;
-    }
-    
-    private static void debug( String logString ){
-        System.out.println( logString ) ;
-        // logger.debug( logString ) ;
-    }
 
 } // end of class JobMonitorDelegate

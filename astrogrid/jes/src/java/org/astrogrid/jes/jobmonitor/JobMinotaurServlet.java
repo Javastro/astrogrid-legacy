@@ -10,18 +10,19 @@
  */
 package org.astrogrid.jes.jobmonitor;
 
+import org.astrogrid.AstroGridException;
+import org.astrogrid.i18n.AstroGridMessage;
+import org.astrogrid.jes.JES;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.io.IOException;
 
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-
-import org.astrogrid.jes.*;
-import org.astrogrid.i18n.* ;
-import org.astrogrid.AstroGridException;
-
-import org.apache.log4j.Logger;
 
 
 /**
@@ -42,9 +43,9 @@ public class JobMinotaurServlet extends GenericServlet {
     private static final String
         ASTROGRIDWARNING_MINOTAUR_DAEMON_USING_DEFAULT_SLEEPTIME = "AGJESW01000" ; 
                     
-    private static Logger 
-        logger = Logger.getLogger( JobMinotaurServlet.class ),
-        daemonLogger = Logger.getLogger( MinotaurDaemon.class ) ;   
+    private static Log
+        logger = LogFactory.getLog( JobMinotaurServlet.class ),
+        daemonLogger = LogFactory.getLog( MinotaurDaemon.class ) ;   
         
     private static final long
         DEFAULT_SLEEP_TIME = 300000 ;

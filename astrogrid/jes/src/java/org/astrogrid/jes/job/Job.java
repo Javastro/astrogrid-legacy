@@ -10,12 +10,15 @@
  */
 package org.astrogrid.jes.job;
 
+import org.astrogrid.Configurator;
+import org.astrogrid.i18n.AstroGridMessage;
+import org.astrogrid.jes.JES;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import java.util.Date;
 import java.util.Iterator;
-import org.apache.log4j.Logger;
-import org.astrogrid.i18n.*;
-import org.astrogrid.Configurator ;
-import org.astrogrid.jes.JES ;
-import java.util.Date ;
 
 
 public abstract class Job {
@@ -23,8 +26,8 @@ public abstract class Job {
 	private static final boolean 
 		TRACE_ENABLED = true ;
 	
-	private static Logger 
-		logger = Logger.getLogger( Job.class ) ;
+	private static Log
+		logger = LogFactory.getLog( Job.class ) ;
         
     private final static String 
         SUBCOMPONENT_NAME = Configurator.getClassName( Job.class );                  

@@ -1,4 +1,4 @@
-/* $Id: ServicesLocatedTest.java,v 1.1 2004/01/21 17:51:34 jdt Exp $
+/* $Id: ServicesLocatedTest.java,v 1.2 2004/02/09 11:41:44 nw Exp $
  * Created on 21-Jan-2004 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,16 +9,16 @@
  */
 package org.astrogrid.jes.installationTests;
 
+import org.astrogrid.jes.JES;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
 import junit.framework.TestCase;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import org.astrogrid.jes.JES;
 
 /**
  * @author jdt
@@ -118,6 +118,14 @@ public class ServicesLocatedTest extends TestCase {
 
 /*
 *$Log: ServicesLocatedTest.java,v $
+*Revision 1.2  2004/02/09 11:41:44  nw
+*merged in branch nww-it05-bz#85
+*
+*Revision 1.1.6.1  2004/02/06 13:48:23  nw
+*added test for jobMonitorDelegate
+*cleaned up imports
+*replaced use of log4j with commons.logging
+*
 *Revision 1.1  2004/01/21 17:51:34  jdt
 *Some installation tests, and some bug fixes of configuration.jsp and some broken links
 *

@@ -10,37 +10,40 @@
  */
 package org.astrogrid.jes.impl;
 
-import org.astrogrid.jes.job.Job ;
-import org.astrogrid.jes.job.JobStep ;
-import org.astrogrid.jes.job.JobException ;
-import org.astrogrid.jes.JES ;
-import org.astrogrid.jes.jobcontroller.SubmissionRequestDD ;
-import org.astrogrid.i18n.*;
-import org.astrogrid.Configurator ;
+import org.astrogrid.Configurator;
 import org.astrogrid.community.common.util.CommunityMessage;
-import org.apache.log4j.Logger;
+import org.astrogrid.i18n.AstroGridMessage;
+import org.astrogrid.jes.JES;
+import org.astrogrid.jes.job.Job;
+import org.astrogrid.jes.job.JobException;
+import org.astrogrid.jes.job.JobStep;
+import org.astrogrid.jes.jobcontroller.SubmissionRequestDD;
 
-import org.w3c.dom.* ;
-import java.util.Date ;
-import java.util.Iterator ;
-
-import java.util.ArrayList ;
-
-import java.sql.Connection ;
-import java.sql.PreparedStatement ;
-import java.sql.SQLException ;
-import java.text.MessageFormat ;
-
-import javax.sql.DataSource ;
 import org.apache.axis.utils.XMLUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+
+import javax.sql.DataSource;
 
 public class JobImpl extends Job {
 
 	private static final boolean 
 		TRACE_ENABLED = true ;
 	
-	private static Logger 
-		logger = Logger.getLogger( JobImpl.class ) ;
+	private static Log 
+		logger = LogFactory.getLog( JobImpl.class ) ;
         
     private final static String 
         SUBCOMPONENT_NAME = Configurator.getClassName( JobFactoryImpl.class );                

@@ -10,7 +10,7 @@
  */
 package org.astrogrid.jes.job;
 
-import org.astrogrid.i18n.* ;
+import org.astrogrid.i18n.AstroGridMessage;
 
 /**
  * The <code>JobNotFoundException</code> class represents 

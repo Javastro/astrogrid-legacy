@@ -1,7 +1,7 @@
 package org.astrogrid.jes.job;
 
-import org.astrogrid.jes.*;
-import org.astrogrid.i18n.*;
+import org.astrogrid.i18n.AstroGridMessage;
+import org.astrogrid.jes.JesException;
 
 public class JobException extends JesException {
 

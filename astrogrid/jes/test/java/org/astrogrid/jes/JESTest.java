@@ -1,4 +1,4 @@
-/* $Id: JESTest.java,v 1.7 2004/01/29 15:44:00 jdt Exp $
+/* $Id: JESTest.java,v 1.8 2004/02/09 11:41:44 nw Exp $
  * Created on 27-Oct-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,12 +9,13 @@
  */
 package org.astrogrid.jes;
 
-import junit.framework.TestCase;
+import org.astrogrid.AstroGridException;
+import org.astrogrid.Configurator;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.astrogrid.AstroGridException;
-import org.astrogrid.Configurator;
+import junit.framework.TestCase;
 
 /**
  * Test that JES loads up the properties correctly
@@ -206,6 +207,14 @@ public class JESTest extends TestCase {
 
 /*
 *$Log: JESTest.java,v $
+*Revision 1.8  2004/02/09 11:41:44  nw
+*merged in branch nww-it05-bz#85
+*
+*Revision 1.7.6.1  2004/02/06 13:48:23  nw
+*added test for jobMonitorDelegate
+*cleaned up imports
+*replaced use of log4j with commons.logging
+*
 *Revision 1.7  2004/01/29 15:44:00  jdt
 *removed logging statement that was causing chaos by outputting all sorts of crap.
 *

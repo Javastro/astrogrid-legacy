@@ -1,24 +1,24 @@
 package org.astrogrid.jes.delegate.jobController;
 
-import org.astrogrid.jes.delegate.jobController.impl.* ;
+import org.astrogrid.jes.beans.v1.Job;
+import org.astrogrid.jes.delegate.*;
+import org.astrogrid.jes.delegate.JesDelegateException;
+import org.astrogrid.jes.delegate.impl.*;
 
-import java.text.MessageFormat ;
+import org.exolab.castor.xml.CastorException;
 
-
-import org.astrogrid.jes.delegate.JesDelegateException ;
+import java.io.StringReader;
+import java.text.MessageFormat;
 
 /**
  * The <code>JobControllerDelegate</code> class. 
- *
+ * @deprecated use {@link org.astrogrid.jes.delegate.JesDelegateFactory} instead
  * @author  Jeff Lusted
  * @version 1.0 02-Aug-2003
  * @since   AstroGrid 1.2
  */
-public abstract class JobControllerDelegate {
-    
-    public static final boolean
-        TRACE_ENABLED = true ;
-    
+public abstract class JobControllerDelegate extends AbstractDelegate implements org.astrogrid.jes.delegate.JobController {
+
     protected static final String
         JOBLIST_TEMPLATE =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
@@ -26,10 +26,7 @@ public abstract class JobControllerDelegate {
         "   <filter>{2}</filter>" +         "   {3}" +      // community snippet goes here
         "</joblist>" ;  
         
-    private static final int
-        DEFAULT_TIMEOUT = 60000 ;
-        
-        
+
     public static JobControllerDelegate buildDelegate( String targetEndPoint ){
         return JobControllerDelegate.buildDelegate( targetEndPoint, DEFAULT_TIMEOUT ) ;
     }
@@ -37,50 +34,33 @@ public abstract class JobControllerDelegate {
     
     public static JobControllerDelegate buildDelegate( String targetEndPoint
                                                      , int timeout ) { 
-        if(TRACE_ENABLED) trace( "JobControllerDelegate.buildDelegate() entry" ) ;
-                                                               
-        JobControllerDelegate
-            delegate = null ;
-         
-        try {  
-            if( targetEndPoint != null && !targetEndPoint.trim().equals("")) {
-                delegate = new JobControllerDelegateImpl(targetEndPoint, timeout ) ;
-            }
-            else {
-                delegate = new TestDelegateImpl( targetEndPoint, timeout ) ;
-            }
-        }
-        finally {
-            if(TRACE_ENABLED) trace( "JobControllerDelegate.buildDelegate() exit" ) ;
-        }
 
-        return delegate ;
+            if( AbstractDelegate.isTestDelegateRequired(targetEndPoint)){
+                return new TestJobControllerDelegateImpl( ) ;
+            } else {
+                return new JobControllerDelegateImpl(targetEndPoint, timeout ) ;                
+            }
     }
-    
-    
-    private String 
-        targetEndPoint = null ;
-    private int
-        timeout = 60000 ;
         
-    public JobControllerDelegate( String targetEndPoint ) {
-      this.targetEndPoint = targetEndPoint;
+        /** @deprecated - use oo-based methods instead */
+    public  void submitJob(String req) throws JesDelegateException {
+        try {
+        Job j = Job.unmarshal(new StringReader(req));
+        this.submitJob(j);
+        } catch (CastorException e) {
+            throw new JesDelegateException("Could not marshall legacy document into new object model",e);
+        }
     }
     
-    public JobControllerDelegate( String targetEndPoint, int timeout ) {
-      this.targetEndPoint = targetEndPoint ;
-      this.timeout = timeout ;
-    }
+    public abstract void submitJob(Job j) throws JesDelegateException;
     
-    public abstract void submitJob(String req) throws JesDelegateException ;
-    
-    
+    /** @deprecated - use oo-based methods instead */
     public abstract String readJobList( String userid
                                       , String community
                                       , String communitySnippet
                                       , String filter ) throws JesDelegateException ;
      
-     
+     /** @deprecated use oo-based methods instead */
      public static String formatListRequest( String userid
                                            , String community
                                            , String communitySnippet
@@ -95,39 +75,13 @@ public abstract class JobControllerDelegate {
         inserts[1] = community ;
         inserts[2] = filter ;
         inserts[3] = communitySnippet ;
-        retValue = MessageFormat.format( JOBLIST_TEMPLATE, inserts ) ;
-        
-        debug( "List request: " + retValue ) ;
-        
-        return retValue  ;
+        return MessageFormat.format( JOBLIST_TEMPLATE, inserts ) ;
+
                                             
      } // end of formatListRequest()
+     /*
+     public abstract JobList readJobList(Criteria crit) throws JesDelegateException;
+*/
 
-
-	public void setTargetEndPoint(String targetEndPoint) {
-		this.targetEndPoint = targetEndPoint;
-	}
-
-	public String getTargetEndPoint() {
-		return targetEndPoint;
-	}
-
-	public void setTimeout(int timeout) {
-		this.timeout = timeout;
-	}
-
-	public int getTimeout() {
-		return timeout;
-	}    
-    
-    private static void trace( String traceString ) {
-        System.out.println( traceString ) ;
-        // logger.debug( traceString ) ;
-    }
-    
-    private static void debug( String logString ){
-        System.out.println( logString ) ;
-        // logger.debug( logString ) ;
-    }
 
 } // end of class JobControllerDelegate

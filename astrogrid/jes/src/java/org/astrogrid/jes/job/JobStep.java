@@ -10,11 +10,14 @@
  */
 package org.astrogrid.jes.job;
 
-import org.w3c.dom.* ;
-import org.apache.log4j.Logger;
-import org.astrogrid.jes.jobcontroller.*;
-// import org.astrogrid.jes.JES ;
-import org.astrogrid.Configurator ;
+import org.astrogrid.Configurator;
+import org.astrogrid.jes.jobcontroller.SubmissionRequestDD;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 // import org.astrogrid.jes.i18n.*;
 
 
@@ -23,8 +26,8 @@ public class JobStep {
 	private static final boolean 
 		TRACE_ENABLED = true ;
 	
-	private static Logger 
-		logger = Logger.getLogger( JobStep.class ) ;
+	private static Log
+		logger = LogFactory.getLog( JobStep.class ) ;
         
     private final static String 
         SUBCOMPONENT_NAME = Configurator.getClassName( Job.class );                          

@@ -1,10 +1,18 @@
-package org.astrogrid.jes.delegate.jobController.impl;
+package org.astrogrid.jes.delegate.impl;
 
-import org.astrogrid.jes.delegate.jobController.* ;
-import java.net.URL ;
-import java.net.MalformedURLException ;
-import java.rmi.RemoteException ;
-import org.astrogrid.jes.delegate.JesDelegateException ;
+import org.astrogrid.jes.beans.v1.Job;
+import org.astrogrid.jes.delegate.JesDelegateException;
+import org.astrogrid.jes.delegate.jobController.JobControllerDelegate;
+import org.astrogrid.jes.delegate.jobController.JobControllerServiceLocator;
+import org.astrogrid.jes.delegate.jobController.JobControllerServiceSoapBindingStub;
+
+import org.exolab.castor.xml.CastorException;
+
+import java.io.IOException;
+import java.io.StringWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.rmi.RemoteException;
 
 
 /**
@@ -21,28 +29,27 @@ public class JobControllerDelegateImpl extends JobControllerDelegate {
         NO_RESPONSE_MESSAGE_RECEIVED = "No response message received from JobController" ;
         
     public JobControllerDelegateImpl( String targetEndPoint ) {
-      super( targetEndPoint ) ;
+      this.targetEndPoint = targetEndPoint;
     }
     
     public JobControllerDelegateImpl( String targetEndPoint, int timeout ) {
-      super( targetEndPoint, timeout ) ;
+      this.targetEndPoint = targetEndPoint;
+      this.timeout = timeout;
     }
     
-    public void submitJob(String req) throws JesDelegateException {
-        
-        String 
-            response = null ,
-            message = null ;
-               
-        JobControllerServiceSoapBindingStub 
-            binding = null ;
+    public void submitJob(Job j) throws JesDelegateException {
+ 
             
         try {
-            binding = (JobControllerServiceSoapBindingStub)
+            StringWriter sw = new StringWriter();
+            j.marshal(sw);
+            sw.close();
+            String req = sw.toString();
+            JobControllerServiceSoapBindingStub binding = (JobControllerServiceSoapBindingStub)
                 new JobControllerServiceLocator().getJobControllerService( new URL( this.getTargetEndPoint() ) );                        
             binding.setTimeout( this.getTimeout() ) ;    
-            response = binding.submitJob(req);
-            message = this.extractMessageFromSubmissionResponse( response ) ;
+            String response = binding.submitJob(req);
+            String message = this.extractMessageFromSubmissionResponse( response ) ;
             if( message.indexOf( SUBMISSION_SUCCESS ) == -1) {
                 throw new JesDelegateException( message ) ;
             }
@@ -50,16 +57,17 @@ public class JobControllerDelegateImpl extends JobControllerDelegate {
         catch( MalformedURLException mex ) {
             throw new JesDelegateException( mex ) ;
         }
-        catch( RemoteException rex) {
+        catch( IOException rex) {
             rex.printStackTrace() ;
             throw new JesDelegateException( rex ) ;            
         }
         catch( javax.xml.rpc.ServiceException sex ) {
             throw new JesDelegateException( sex ) ;    
         }
-              
-        return ;
-  
+        catch (CastorException e) {
+            throw new JesDelegateException(e);
+        }
+
     } // end of submitJob()
     
     

@@ -1,4 +1,4 @@
-/* $Id: JobFactoryImplTest.java,v 1.4 2003/11/12 12:49:42 jdt Exp $
+/* $Id: JobFactoryImplTest.java,v 1.5 2004/02/09 11:41:44 nw Exp $
  * Created on 31-Oct-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,16 +8,19 @@
  * with this distribution in the LICENSE.txt file. 
  */
 package org.astrogrid.jes.impl;
+import org.astrogrid.jes.JES;
+import org.astrogrid.jes.job.JobException;
+import org.astrogrid.jes.testutils.naming.SimpleContextFactoryBuilder;
+
+import org.hsqldb.jdbcDataSource;
+
 import java.lang.reflect.InvocationTargetException;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.naming.spi.NamingManager;
 import javax.sql.DataSource;
-import org.hsqldb.jdbcDataSource;
-import org.astrogrid.jes.JES;
-import org.astrogrid.jes.job.JobException;
-import org.astrogrid.jes.testutils.naming.SimpleContextFactoryBuilder;
+
 import junit.framework.TestCase;
 import junit.runner.TestCaseClassLoader;
 /**
@@ -128,6 +131,14 @@ public final class JobFactoryImplTest extends TestCase {
 }
 /*
 *$Log: JobFactoryImplTest.java,v $
+*Revision 1.5  2004/02/09 11:41:44  nw
+*merged in branch nww-it05-bz#85
+*
+*Revision 1.4.6.1  2004/02/06 13:48:23  nw
+*added test for jobMonitorDelegate
+*cleaned up imports
+*replaced use of log4j with commons.logging
+*
 *Revision 1.4  2003/11/12 12:49:42  jdt
 *Fixed the new test - now tests for a clean exit if there's no datasource available.
 *

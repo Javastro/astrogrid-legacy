@@ -56,7 +56,7 @@ public class JobMonitorServiceLocator extends org.apache.axis.client.Service imp
      */
     public java.rmi.Remote getPort(Class serviceEndpointInterface) throws javax.xml.rpc.ServiceException {
         try {
-            if (org.astrogrid.jes.delegate.jobMonitor.JobMonitor.class.isAssignableFrom(serviceEndpointInterface)) {
+            if (org.astrogrid.jes.delegate.JobMonitor.class.isAssignableFrom(serviceEndpointInterface)) {
                 org.astrogrid.jes.delegate.jobMonitor.JobMonitorServiceSoapBindingStub _stub = new org.astrogrid.jes.delegate.jobMonitor.JobMonitorServiceSoapBindingStub(new java.net.URL(JobMonitorService_address), this);
                 _stub.setPortName(getJobMonitorServiceWSDDServiceName());
                 return _stub;

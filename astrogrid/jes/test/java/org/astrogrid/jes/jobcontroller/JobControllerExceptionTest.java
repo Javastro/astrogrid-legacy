@@ -1,4 +1,4 @@
-/* $Id: JobControllerExceptionTest.java,v 1.3 2003/11/10 18:46:45 jdt Exp $
+/* $Id: JobControllerExceptionTest.java,v 1.4 2004/02/09 11:41:43 nw Exp $
  * Created on 08-Nov-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,9 +8,10 @@
  * with this distribution in the LICENSE.txt file. 
  */
 package org.astrogrid.jes.jobcontroller;
-import junit.framework.TestCase;
 import org.astrogrid.i18n.AstroGridMessage;
 import org.astrogrid.jes.JesException;
+
+import junit.framework.TestCase;
 /**
  * Trivial tests to mave the Clover coverage numbers look good!
  * @author john
@@ -56,11 +57,19 @@ public final class JobControllerExceptionTest extends TestCase {
 }
 /*
  * $Log: JobControllerExceptionTest.java,v $
+ * Revision 1.4  2004/02/09 11:41:43  nw
+ * merged in branch nww-it05-bz#85
+ *
+ * Revision 1.3.6.1  2004/02/06 13:48:23  nw
+ * added test for jobMonitorDelegate
+ * cleaned up imports
+ * replaced use of log4j with commons.logging
+ *
  * Revision 1.3  2003/11/10 18:46:45  jdt
  * Minor bits and pieces to satisfy the coding standards
  *
  * Revision 1.2  2003/11/08 22:00:51  anoncvs
- * Annoying $Id: JobControllerExceptionTest.java,v 1.3 2003/11/10 18:46:45 jdt Exp $ tag fixed
+ * Annoying $Id: JobControllerExceptionTest.java,v 1.4 2004/02/09 11:41:43 nw Exp $ tag fixed
  *
  * Revision 1.1  2003/11/08 21:59:38  anoncvs
  * Initial commit

@@ -56,7 +56,7 @@ public class JobSchedulerServiceLocator extends org.apache.axis.client.Service i
      */
     public java.rmi.Remote getPort(Class serviceEndpointInterface) throws javax.xml.rpc.ServiceException {
         try {
-            if (org.astrogrid.jes.delegate.jobScheduler.JobScheduler.class.isAssignableFrom(serviceEndpointInterface)) {
+            if (org.astrogrid.jes.delegate.JobScheduler.class.isAssignableFrom(serviceEndpointInterface)) {
                 org.astrogrid.jes.delegate.jobScheduler.JobSchedulerServiceSoapBindingStub _stub = new org.astrogrid.jes.delegate.jobScheduler.JobSchedulerServiceSoapBindingStub(new java.net.URL(JobSchedulerService_address), this);
                 _stub.setPortName(getJobSchedulerServiceWSDDServiceName());
                 return _stub;

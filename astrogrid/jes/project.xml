@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.41 2004/02/04 15:43:20 jdt Exp $ -->
+<!-- $Id: project.xml,v 1.42 2004/02/09 11:41:44 nw Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
     <extend>../maven-base/project.xml</extend>
     <id>astrogrid-jes</id>
     <name>AstroGrid Job Management</name>
-    <description> This work package provides AstroGrid with the facility to 
+    <description>
+	This work package provides AstroGrid with the facility to
         submit jobs. Jobs will initially consist of a query to be run 
         asynchronously against one or more catalogues held at a particular data 
         centre. Hence the package is closely associated with the 
@@ -60,6 +61,7 @@
             <version>1.1</version>
             <type>zip</type>
         </dependency>
+		<!-- astrogrid components -->
         <dependency>
             <artifactId>astrogrid-common</artifactId>
             <groupId>astrogrid-common</groupId>
@@ -100,22 +102,48 @@
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
+        <!-- required by castor -->
+        <dependency>
+        	<artifactId>castor</artifactId>
+        	<groupId>castor</groupId>
+        	<version>0.9.5</version>
+        	<properties>
+        		<war.bundle>true</war.bundle>
+        	</properties>
+        </dependency>
+   		<dependency>
+			<id>xerces</id>
+			<version>2.4.0</version>
+	    	<properties>
+      			<war.bundle>true</war.bundle>
+    		</properties>
+    	</dependency>
+    	<dependency>
+      	<id>xml-apis</id>
+      	<version>1.0.b2</version>
+          <properties>
+      		<war.bundle>true</war.bundle>
+    	 </properties>
+    	</dependency>
+        <!-- axis stuff -->
         <dependency>
             <artifactId>axis</artifactId>
             <groupId>axis</groupId>
-            <version>1.1<!--1.2.8 now available--> </version>
+            <version>1.1</version>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
+		<!-- don't want to have this around.
         <dependency>
             <artifactId>log4j</artifactId>
             <groupId>log4j</groupId>
-            <version>1.2.4<!--version 2.3 now available--> </version>
+            <version>1.2.4 </version>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
+		-->
         <dependency>
             <artifactId>servletapi</artifactId>
             <groupId>servletapi</groupId>
@@ -140,6 +168,7 @@
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
+		<!-- days are numbered.. -->
         <dependency>
             <artifactId>jconfig</artifactId>
             <groupId>jconfig</groupId>
@@ -148,33 +177,31 @@
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
+
         <dependency>
-            <artifactId>jaxrpc</artifactId>
-            <groupId>jaxrpc</groupId>
-            <version>UNKNOWN</version>
+            <id>jaxrpc-api</id>
+            <version>1.0.3</version>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
-            <jar>jaxrpc.jar</jar>
         </dependency>
-        <dependency>
-            <artifactId>saaj</artifactId>
-            <groupId>saaj</groupId>
-            <version>UNKNOWN</version>
-            <properties>
-                <war.bundle>true</war.bundle>
-            </properties>
-            <jar>saaj.jar</jar>
-        </dependency>
-        <dependency>
-            <artifactId>wsdl4j</artifactId>
-            <groupId>wsdl4j</groupId>
-            <version>UNKNOWN</version>
-            <properties>
-                <war.bundle>true</war.bundle>
-            </properties>
-            <jar>wsdl4j.jar</jar>
-        </dependency>
+	<dependency>
+		<id>saaj</id>
+		<version>1.0</version>
+		<jar>saaj.jar</jar>
+		    <properties>
+      <war.bundle>true</war.bundle>
+    </properties>
+	</dependency>
+
+    <dependency>
+      <id>wsdl4j</id>
+      <version>1.0</version>
+          <properties>
+      <war.bundle>true</war.bundle>
+    </properties>
+    </dependency>
+
         <dependency>
             <artifactId>catalina-ant</artifactId>
             <groupId>catalina-ant</groupId>
@@ -216,6 +243,7 @@
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
+        <!-- keep out for now - this is a pain with maven/eclpse
         <dependency>
             <artifactId>taglibs-input-tld</artifactId>
             <groupId>jakarta-taglibs</groupId>
@@ -225,6 +253,7 @@
             </properties>
             <type>tld</type>
         </dependency>
+        -->
         <!--This is for testing only and can be removed from the released build.
      **WARNING** For reasons best known to themselves, the HSQLDB people have omitted to
        package their jdbcDataSource class in this jar.  Hence I've added it explicitly to the

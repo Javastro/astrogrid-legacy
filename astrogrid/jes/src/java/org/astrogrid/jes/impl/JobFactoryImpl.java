@@ -10,35 +10,45 @@
  */
 package org.astrogrid.jes.impl;
 
-import org.astrogrid.jes.jobcontroller.SubmissionRequestDD ;
-
-import org.apache.log4j.Logger; 
-import org.astrogrid.i18n.*;
-import org.astrogrid.jes.job.* ;
-import org.astrogrid.jes.JES ;
-import org.astrogrid.Configurator ;
-
-import org.w3c.dom.* ;
-
-import javax.sql.DataSource ;
-import javax.naming.*; 
-import java.sql.Connection ;
-import java.sql.Statement ;
-import java.sql.PreparedStatement ;
-import java.sql.ResultSet ;
-import java.sql.SQLException ;
-import java.sql.Timestamp ;
-import java.util.Date ;
-import java.text.*;
-import java.text.MessageFormat ;
-import java.util.ArrayList;
-import java.util.HashSet ;
-import java.util.Iterator ;
-import java.util.ListIterator ;
-
+import org.astrogrid.Configurator;
 import org.astrogrid.community.common.util.CommunityMessage;
 import org.astrogrid.community.delegate.policy.PolicyServiceDelegate;
-import org.astrogrid.community.policy.data.PolicyPermission;;
+import org.astrogrid.community.policy.data.PolicyPermission;
+import org.astrogrid.i18n.AstroGridMessage;
+import org.astrogrid.jes.JES;
+import org.astrogrid.jes.job.DuplicateFoundException;
+import org.astrogrid.jes.job.Job;
+import org.astrogrid.jes.job.JobException;
+import org.astrogrid.jes.job.JobFactory;
+import org.astrogrid.jes.job.JobStep;
+import org.astrogrid.jes.job.NotFoundException;
+import org.astrogrid.jes.job.Parameter;
+import org.astrogrid.jes.job.Tool;
+import org.astrogrid.jes.jobcontroller.SubmissionRequestDD;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.w3c.dom.Document;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
+import java.text.MessageFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.ListIterator;
+
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+;
 
 
 public class JobFactoryImpl implements JobFactory {
@@ -46,8 +56,8 @@ public class JobFactoryImpl implements JobFactory {
 	private static final boolean 
 		TRACE_ENABLED = true ;
 	
-	private static Logger 
-		logger = Logger.getLogger( JobFactoryImpl.class ) ;
+	private static final Log
+		logger = LogFactory.getLog( JobFactoryImpl.class ) ;
         
     private final static String 
         SUBCOMPONENT_NAME = Configurator.getClassName( JobFactoryImpl.class );        

@@ -1,14 +1,10 @@
-package org.astrogrid.jes.delegate.jobController.impl;
+package org.astrogrid.jes.delegate.impl;
 
-import org.astrogrid.jes.delegate.jobController.* ;
-import java.net.URL ;
-import java.net.MalformedURLException ;
-import java.rmi.RemoteException ;
+import org.astrogrid.jes.beans.v1.Job;
+import org.astrogrid.jes.delegate.JesDelegateException;
+import org.astrogrid.jes.delegate.jobController.JobControllerDelegate;
 
-import java.text.MessageFormat ;
-
-
-import org.astrogrid.jes.delegate.JesDelegateException ;
+import java.text.MessageFormat;
 
 /**
  * The <code>TestDelegateImpl</code> class. 
@@ -17,11 +13,8 @@ import org.astrogrid.jes.delegate.JesDelegateException ;
  * @version 1.0 02-Aug-2003
  * @since   AstroGrid 1.3
  */
-public class TestDelegateImpl extends JobControllerDelegate {
-    
-    private static final boolean 
-        TRACE_ENABLED = true ;
-        
+public class TestJobControllerDelegateImpl extends JobControllerDelegate {
+
     public static final String
         RESPONSE_TEMPLATE = 
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
@@ -41,26 +34,12 @@ public class TestDelegateImpl extends JobControllerDelegate {
             "   <jobid>{4}</jobid>" +
             "</job>" ;        
         
-    public TestDelegateImpl( String targetEndPoint ) {
-      super( targetEndPoint ) ;
+    public TestJobControllerDelegateImpl( ){
     }
+
     
-    public TestDelegateImpl( String targetEndPoint, int timeout ) {
-      super( targetEndPoint, timeout ) ;
-    }
-    
-    
-    public void submitJob(String req) throws JesDelegateException {
-        if( TRACE_ENABLED ) trace( "TestDelegateImpl.submitJob() entry") ; 
-         
-        try {
-            if( TRACE_ENABLED ) trace( "Pretend the job submitted correctly.") ; 
-        }
-        finally {
-            if( TRACE_ENABLED ) trace( "TestDelegateImpl.submitJob() exit") ;      
-        }
-              
-        return ;
+    public void submitJob(Job j) throws JesDelegateException {
+        log.info("Test Job Controller: submitting " + j.toString());
   
     } // end of submitJob()
     
@@ -70,7 +49,6 @@ public class TestDelegateImpl extends JobControllerDelegate {
                              , String communitySnippet
                              , String filter ) throws JesDelegateException {
         
-         if( TRACE_ENABLED ) trace( "TestDelegateImpl.readJobList() entry") ;    
            
          String 
             request = JobControllerDelegate.formatListRequest( userid
@@ -87,8 +65,7 @@ public class TestDelegateImpl extends JobControllerDelegate {
             
          String
             status ;
-                    
-         try {
+
              // Format the list itself ...
             for ( int i=0; i < 10; i++ ) {
                 
@@ -130,28 +107,14 @@ public class TestDelegateImpl extends JobControllerDelegate {
               inserts[2] = community ;
               inserts[3] = rBuffer.toString() ;
              
-              response = MessageFormat.format( RESPONSE_TEMPLATE, inserts ) ;
+              return MessageFormat.format( RESPONSE_TEMPLATE, inserts ) ;
               
-         }
-         finally {
-             if( TRACE_ENABLED ) trace( "TestDelegateImpl.readJobList() exit") ;  
-             if( TRACE_ENABLED ) trace( "response: " + response ) ;     
-         }
-              
-         return response ;
+
+
+
   
      } // end of readJobList()
      
-     
-    private static void trace( String traceString ) {
-        System.out.println( traceString ) ;
-        // logger.debug( traceString ) ;
-    }
-    
-    private static void debug( String logString ){
-        System.out.println( logString ) ;
-        // logger.debug( logString ) ;
-    }
-     
+
 
 } // end of class TestDelegateImpl

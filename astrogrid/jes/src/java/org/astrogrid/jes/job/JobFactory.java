@@ -1,7 +1,8 @@
 
 package org.astrogrid.jes.job;
 
-import org.w3c.dom.*;
+import org.w3c.dom.Document;
+
 import java.util.Iterator;
 import java.util.ListIterator;
 

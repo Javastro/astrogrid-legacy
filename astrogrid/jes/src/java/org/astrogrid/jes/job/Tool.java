@@ -11,16 +11,19 @@
 
 package org.astrogrid.jes.job ;
 
-import org.astrogrid.jes.jobcontroller.*;
-import org.astrogrid.jes.jobscheduler.*;
+import org.astrogrid.jes.jobcontroller.SubmissionRequestDD;
+import org.astrogrid.jes.jobscheduler.ScheduleRequestDD;
 
-import java.util.List ;
-import java.util.ListIterator ;
-import java.util.ArrayList ;
-//import java.util.Collections ;
-import org.apache.log4j.Logger ;
-import org.w3c.dom.* ;
-import java.text.MessageFormat ;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ListIterator;
 
 /**
  * The <code>Tool</code> class represents... 
@@ -43,8 +46,8 @@ public class Tool {
     private static final boolean 
         TRACE_ENABLED = true ;
         
-    private static Logger 
-        logger = Logger.getLogger( Tool.class ) ; 
+    private static Log
+        logger = LogFactory.getLog( Tool.class ) ; 
              
     private List createParameters( Element element ){
         if( TRACE_ENABLED ) trace( "Tool.createParameters() entry") ;

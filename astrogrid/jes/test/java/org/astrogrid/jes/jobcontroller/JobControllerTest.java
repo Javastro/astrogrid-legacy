@@ -1,4 +1,4 @@
-/* $Id: JobControllerTest.java,v 1.4 2003/11/14 19:11:54 jdt Exp $
+/* $Id: JobControllerTest.java,v 1.5 2004/02/09 11:41:43 nw Exp $
  * Created on 29-Oct-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,6 +8,14 @@
  * with this distribution in the LICENSE.txt file. 
  */
 package org.astrogrid.jes.jobcontroller;
+
+import org.astrogrid.jes.JES;
+import org.astrogrid.jes.testutils.io.FileResourceLoader;
+import org.astrogrid.jes.testutils.naming.SimpleContextFactoryBuilder;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.hsqldb.jdbcDataSource;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -19,14 +27,6 @@ import javax.naming.spi.NamingManager;
 import javax.sql.DataSource;
 
 import junit.framework.TestCase;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.hsqldb.jdbcDataSource;
-
-import org.astrogrid.jes.JES;
-import org.astrogrid.jes.testutils.io.FileResourceLoader;
-import org.astrogrid.jes.testutils.naming.SimpleContextFactoryBuilder;
 
 /**
  * Test class for the JobController
@@ -164,6 +164,14 @@ public class JobControllerTest extends TestCase {
 
 /*
 *$Log: JobControllerTest.java,v $
+*Revision 1.5  2004/02/09 11:41:43  nw
+*merged in branch nww-it05-bz#85
+*
+*Revision 1.4.6.1  2004/02/06 13:48:23  nw
+*added test for jobMonitorDelegate
+*cleaned up imports
+*replaced use of log4j with commons.logging
+*
 *Revision 1.4  2003/11/14 19:11:54  jdt
 *Minor changes to satisfy coding stds.
 *

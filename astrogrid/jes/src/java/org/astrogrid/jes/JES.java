@@ -10,7 +10,7 @@
  */
 package org.astrogrid.jes ;
 
-import org.astrogrid.Configurator ;
+import org.astrogrid.Configurator;
 
 /**
  * The <code>JES</code> class represents 

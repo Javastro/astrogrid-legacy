@@ -1,4 +1,4 @@
-/* $Id: HSQLTest.java,v 1.5 2003/11/12 18:13:35 jdt Exp $
+/* $Id: HSQLTest.java,v 1.6 2004/02/09 11:41:43 nw Exp $
  * Created on 28-Oct-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,6 +8,10 @@
  * with this distribution in the LICENSE.txt file. 
  */
 package org.astrogrid.jes.hsqltryout;
+import org.astrogrid.jes.testutils.io.FileResourceLoader;
+
+import org.hsqldb.jdbcDataSource;
+
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -16,9 +20,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+
 import junit.framework.TestCase;
-import org.astrogrid.jes.testutils.io.FileResourceLoader;
-import org.hsqldb.jdbcDataSource;
 /**
  *  Going to use HSQL database for testing purposes as suggested on
  *  http://wiki.astrogrid.org/bin/view/Astrogrid/JUnitTesting
@@ -143,6 +146,14 @@ public class HSQLTest extends TestCase {
 }
 /*
 *$Log: HSQLTest.java,v $
+*Revision 1.6  2004/02/09 11:41:43  nw
+*merged in branch nww-it05-bz#85
+*
+*Revision 1.5.6.1  2004/02/06 13:48:23  nw
+*added test for jobMonitorDelegate
+*cleaned up imports
+*replaced use of log4j with commons.logging
+*
 *Revision 1.5  2003/11/12 18:13:35  jdt
 *Minor bits and pieces to satisfy the coding conventions.
 *

@@ -11,13 +11,15 @@
 
 package org.astrogrid.jes.job;
 
-import org.astrogrid.jes.jobcontroller.*;
-import org.astrogrid.jes.jobscheduler.*;
-// import java.net.*; 
-import org.w3c.dom.* ;
-import org.apache.log4j.Logger ;
-import java.text.MessageFormat ;
-import org.apache.axis.utils.XMLUtils ;
+import org.astrogrid.jes.jobcontroller.SubmissionRequestDD;
+import org.astrogrid.jes.jobscheduler.ScheduleRequestDD;
+
+import org.apache.axis.utils.XMLUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.w3c.dom.Element;
+
+import java.text.MessageFormat;
 
 /**
  * The <code>Parameter</code> class represents... 
@@ -40,8 +42,8 @@ public class Parameter {
     private static final boolean 
         TRACE_ENABLED = true ;
         
-    private static Logger 
-        logger = Logger.getLogger( Parameter.class ) ;    
+    private static Log
+        logger = LogFactory.getLog( Parameter.class ) ;    
     
     private Tool
         parent ;
