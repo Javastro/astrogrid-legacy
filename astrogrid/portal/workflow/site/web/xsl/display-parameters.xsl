@@ -60,7 +60,10 @@
           </td>
         </tr>
         <xsl:choose>
-          <xsl:when test="./tool/@tool-name != 'null'"> 
+          <xsl:when test="./tool/@tool-name != 'null'">           
+            <tr><td colspan="4">
+              <div style="color: blue; background-color: lightblue; text-align: center;">( input parameters for this task: )</div>
+            </td></tr>                          
             <form name="parameter_form" id="parameter_form" action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" target="workflowOuterFrame">                                      
               <xsl:for-each select="./tool/inputParam">
                 <xsl:sort select="@param-name" type="text" order="descending" /> 
@@ -70,6 +73,9 @@
               </xsl:for-each>
 
               <xsl:if test="./tool/outputParam" >              
+                <tr><td colspan="4">
+                  <div style="color: blue; background-color: lightblue; text-align: center;">( location to place ouput from this task: )</div>
+                </td></tr>                
                 <xsl:for-each select="./tool/outputParam">  <!-- Email tool has no output params, so don't display -->
                   <xsl:call-template name="parameter">
                     <xsl:with-param name="direction">output</xsl:with-param>
@@ -135,18 +141,18 @@
             <td>
               <xsl:attribute name="style">cursor: help</xsl:attribute>                                    
               <xsl:attribute name="href">javascript:void(0);</xsl:attribute>
-              <xsl:attribute name="onMouseOver">this.T_TITLE='Parameter: <xsl:value-of select="@param-UI-name" /> '; this.T_WIDTH=250; this.T_DELAY=500; this.T_STICKY=true; return escape('' +
+              <xsl:attribute name="onMouseOver">this.T_TITLE='Parameter: <xsl:value-of select="@param-name" /> '; this.T_WIDTH=250; this.T_DELAY=500; this.T_STICKY=true; return escape('' +
                                  ' &lt;b&gt;Description: &lt;/b&gt; <xsl:value-of select="@param-UI-description" /> ' +
                                  ' &lt;br/&gt; &lt;b&gt;Type:&lt;/b&gt; <xsl:value-of select="@param-type" /> ' +
                                  ' &lt;br/&gt; &lt;b&gt;Subtype:&lt;/b&gt; <xsl:value-of select="@param-subtype"/> ' +
                                  ' &lt;br/&gt; &lt;b&gt;Units:&lt;/b&gt; <xsl:value-of select="@param-units"/> ' +
                                  ' &lt;br/&gt; &lt;b&gt;UCD:&lt;/b&gt; <xsl:value-of select="@param-ucd"/> ' +
-                                 ' &lt;br/&gt; &lt;b&gt;Default:&lt;/b&gt; <xsl:value-of select="@param-defaultValue"/> ' +
-<!--       ' &lt;br/&gt; &lt;b&gt;Indirect?:&lt;/b&gt; <xsl:value-of select="@param-indirect"/> ' +   -->
+                                 ' &lt;br/&gt; &lt;b&gt;Default:&lt;/b&gt; <xsl:value-of select="@param-defaultValue"/> ') ;
+<!--       ' &lt;br/&gt; &lt;b&gt;Indirect?:&lt;/b&gt; <xsl:value-of select="@param-indirect"/> ' +   
                                  ' &lt;br/&gt; Cardinality max: <xsl:value-of select="@param-cardinality-max"/> ' +
-                                 ' &lt;br/&gt; Cardinality min: <xsl:value-of select="@param-cardinality-min"/> ' ) ;
+                                 ' &lt;br/&gt; Cardinality min: <xsl:value-of select="@param-cardinality-min"/> ' ) -->
               </xsl:attribute>            
-            <xsl:value-of select="@param-name"/> 
+            <xsl:value-of select="@param-UI-name"/> 
             <xsl:if test="@param-cardinality-max='0'">
               <b> *</b>
               <ag-onload>             

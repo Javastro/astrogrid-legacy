@@ -85,7 +85,7 @@
               </td>
               <td rowspan="2">Task name:</td>
               <td>
-                <input type="text" size="50" name="tool_name" readonly="true">
+                <input type="text" size="50" name="tool_name">
                 <xsl:attribute name="id">tool_name<xsl:value-of select="@key"/></xsl:attribute>
                 <xsl:attribute name="value">
                   <xsl:choose>

@@ -2153,6 +2153,7 @@ public class DesignAction extends AbstractAction {
            
            ApplicationDescription description = null;
            String toolCacheKey = TOOLS_CACHE + toolName;
+           String WorkflowMessage = null ;
            
            try {
                
@@ -2165,7 +2166,11 @@ public class DesignAction extends AbstractAction {
               }
                                                         
            }
+           catch(WorkflowInterfaceException wiex) {
+				WorkflowMessage =  "Unable to locate tool named: "+toolName ;
+           }
            finally {
+			  this.session.setAttribute( WORKFLOW_SUBMIT_MESSAGE, WorkflowMessage ) ;
               if( TRACE_ENABLED ) trace( "DesignActionImpl.locateDescription(toolName) exit" ) ;
            }        
            
