@@ -243,5 +243,7 @@
             ignoreFailures="false"
             />
     </goal>
+    
+    <goal name="astrogrid-install-snapshot" prereqs="multiproject:install-snapshot"/>
 
 </project>
