@@ -1,4 +1,4 @@
-/*$Id: PostgresSqlMaker.java,v 1.9 2004/04/16 16:42:37 eca Exp $
+/*$Id: PostgresSqlMaker.java,v 1.10 2004/04/16 16:45:23 eca Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,7 +25,7 @@ import org.w3c.dom.Element;
  */
 public class PostgresSqlMaker extends StdSqlMaker {
 
-   private static final Log log = LogFactory.getLog(PostgresSqlMaker2.class);
+   private static final Log log = LogFactory.getLog(PostgresSqlMaker.class);
 
    /**
     * Constructs an SQL statement for the given ADQL
@@ -61,6 +61,9 @@ public class PostgresSqlMaker extends StdSqlMaker {
 
 /*
 $Log: PostgresSqlMaker.java,v $
+Revision 1.10  2004/04/16 16:45:23  eca
+*** empty log message ***
+
 Revision 1.9  2004/04/16 16:42:37  eca
 Updated to call ADQLv06Utils - a class specific to ADQL v06. This will only 
 be called by the Postgres-specific query translator.
