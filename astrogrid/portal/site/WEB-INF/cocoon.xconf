@@ -1022,30 +1022,6 @@
 <!--..... Start configuration from 'datasources' -->
 
   <datasources>
-    <jdbc logger="core.datasources.personnel" name="personnel">
-      <!--
-          If you have an Oracle database, and are using the the
-      pool-controller below, you should add the attribute
-      "oradb" and set it to true.
-
-      <pool-controller min="5" max="10" oradb="true"/>
-
-      That way the test to see if the server has disconnected
-      the JdbcConnection will function properly.
-      -->
-      <pool-controller max="10" min="5"/>
-      <!--
-          If you need to ensure an autocommit is set to true or
-      false, then create the "auto-commit" element below.
-
-      <auto-commit>false</auto-commit>
-
-      The default is true.
-      -->
-      <dburl>jdbc:hsqldb:hsql://localhost:9002</dburl>
-      <user>sa</user>
-      <password/>
-    </jdbc>
   </datasources>
 <!--..... End configuration from 'datasources' -->
 <!--..... Start configuration from 'db-modules' -->
@@ -1067,23 +1043,7 @@
 -->
    </autoincrement-modules>
 <!--..... End configuration from 'db-modules' -->
-<!--..... Start configuration from 'hsqldb' -->
 
-
-  <!--+
-      | HSQLDB Server for samples:
-      |
-      |  port   : number      port where the server is listening
-      |  silent : true/false  display all queries
-      |  trace  : true/false  display JDBC trace messages
-      +-->
-  <hsqldb-server class="org.apache.cocoon.components.hsqldb.ServerImpl" logger="core.hsqldb-server" pool-max="1" pool-min="1">
-     <parameter name="port" value="9002"/>
-     <parameter name="silent" value="true"/>
-     <parameter name="trace" value="false"/>
-  </hsqldb-server>
-
-<!--..... End configuration from 'hsqldb' -->
 <!--..... Start configuration from 'precept' -->
 
 
