@@ -64,7 +64,7 @@ then
    echo "*** SUCCESS ***\n" >> $LOG_FILE
 else
    echo "*** FAILURE ***\n" >> $LOG_FILE
-   echo "astrogrid-deploy-site failed for $PROJECT_NAME" | mail -s "Build Failure" $ADMIN_EMAIL 
+   cat $LOG_FILE | mail -s "astrogrid-deploy-site Failure for $PROJECT_NAME" $ADMIN_EMAIL 
 fi
 
 
@@ -75,7 +75,7 @@ then
    echo "*** SUCCESS ***" >> $LOG_FILE
 else
    echo "*** FAILURE ***" >> $LOG_FILE
-   echo "astrogrid-deploy-snapshot failed for $PROJECT_NAME" | mail -s "Build Failure" $ADMIN_EMAIL 
+   cat $LOG_FILE | mail -s "astrogrid-deploy-snapshot Failure for $PROJECT_NAME" $ADMIN_EMAIL  
 fi
 
 echo "[ag-build-$PROJECT_NAME] deploy build log"
