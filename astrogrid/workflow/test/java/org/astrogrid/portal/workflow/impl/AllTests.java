@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.3 2004/04/14 13:46:06 nw Exp $
+/*$Id: AllTests.java,v 1.4 2004/11/11 00:54:18 clq2 Exp $
  * Created on 10-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,13 +25,19 @@ public class AllTests {
         suite.addTest(new TestSuite(BasicWorkflowBuilderTest.class));
         suite.addTest(new TestSuite(FileApplicationRegistryTest.class));
         suite.addTest(new TestSuite(FileWorkflowStoreTest.class));
-        suite.addTest(new TestSuite(RegistryApplicationRegistryTest.class));
         //$JUnit-END$
         return suite;
     }
 }
 /* 
 $Log: AllTests.java,v $
+Revision 1.4  2004/11/11 00:54:18  clq2
+nww's bug590
+
+Revision 1.3.116.1  2004/11/10 13:34:10  nw
+Removed RegistryApplicationRegitryTest - not possible to unit-test this.
+replicated in code in integration tests.
+
 Revision 1.3  2004/04/14 13:46:06  nw
 implemented cut down workflow store interface over Ivo Delegate
 

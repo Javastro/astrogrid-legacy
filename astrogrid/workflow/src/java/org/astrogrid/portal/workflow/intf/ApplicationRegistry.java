@@ -1,4 +1,4 @@
-/*$Id: ApplicationRegistry.java,v 1.2 2004/03/11 13:53:36 nw Exp $
+/*$Id: ApplicationRegistry.java,v 1.3 2004/11/11 00:54:18 clq2 Exp $
  * Created on 01-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,12 +13,11 @@ package org.astrogrid.portal.workflow.intf;
 
 /** A component that queries a registry for information about applications.
  * @author Noel Winstanley nw@jb.man.ac.uk 01-Mar-2004
- *
+ * @modofied - added richer application list.
  */
 public interface ApplicationRegistry {
 
-    /** list names of known tools 
-     * @todo - do we want to return a little more here - a summary of info for each tool maybe*/
+    /** list names of known tools */
     String[] listApplications() throws WorkflowInterfaceException;
 
     /** query registry for description of a named application
@@ -29,7 +28,8 @@ public interface ApplicationRegistry {
      */
     ApplicationDescription getDescriptionFor(String applicationName) throws WorkflowInterfaceException;
 
-    
+    /** list system names and user-friendly names of applications. */
+    ApplicationDescriptionSummary[] listUIApplications() throws WorkflowInterfaceException;
     
       
       
@@ -41,6 +41,12 @@ public interface ApplicationRegistry {
 
 /* 
 $Log: ApplicationRegistry.java,v $
+Revision 1.3  2004/11/11 00:54:18  clq2
+nww's bug590
+
+Revision 1.2.116.1  2004/11/10 13:33:32  nw
+added new method to ApplicationRegistry - listUIApplications
+
 Revision 1.2  2004/03/11 13:53:36  nw
 merged in branch bz#236 - implementation of interfaces
 

@@ -1,4 +1,4 @@
-/*$Id: FileApplicationRegistry.java,v 1.2 2004/03/11 13:53:36 nw Exp $
+/*$Id: FileApplicationRegistry.java,v 1.3 2004/11/11 00:52:28 clq2 Exp $
  * Created on 09-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,9 @@ package org.astrogrid.portal.workflow.impl;
 
 import org.astrogrid.applications.beans.v1.ApplicationBase;
 import org.astrogrid.applications.beans.v1.ApplicationList;
+import org.astrogrid.applications.beans.v1.Interface;
 import org.astrogrid.portal.workflow.intf.ApplicationDescription;
+import org.astrogrid.portal.workflow.intf.ApplicationDescriptionSummary;
 import org.astrogrid.portal.workflow.intf.ApplicationRegistry;
 import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
 
@@ -74,11 +76,36 @@ public class FileApplicationRegistry implements ApplicationRegistry {
         }
         return new ApplicationDescription(result);
     }
+    /**
+     * @see org.astrogrid.portal.workflow.intf.ApplicationRegistry#listUIApplications()
+     */
+    public ApplicationDescriptionSummary[] listUIApplications() throws WorkflowInterfaceException {
+        int size = map.keySet().size();
+        ApplicationDescriptionSummary[]  result = new ApplicationDescriptionSummary[size];
+        Iterator i = map.entrySet().iterator();
+        for (int ix = 0; i.hasNext(); ix++) {
+            Map.Entry e = (Map.Entry)i.next();
+            ApplicationBase b = (ApplicationBase)e.getValue();
+            Interface[] intfs = b.getInterfaces().get_interface();
+            String[] interfaces = new String[intfs.length];
+            for (int j = 0; j < intfs.length; j++) {
+                interfaces[j] =intfs[j].getName();
+            }
+            result[ix] = new ApplicationDescriptionSummary((String)e.getKey(),(String)e.getKey(),interfaces);
+        }
+        return result;
+    }
 }
 
 
 /* 
 $Log: FileApplicationRegistry.java,v $
+Revision 1.3  2004/11/11 00:52:28  clq2
+nww's bug590
+
+Revision 1.2.116.1  2004/11/10 13:33:32  nw
+added new method to ApplicationRegistry - listUIApplications
+
 Revision 1.2  2004/03/11 13:53:36  nw
 merged in branch bz#236 - implementation of interfaces
 

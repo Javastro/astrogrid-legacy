@@ -1,4 +1,4 @@
-/*$Id: RegistryApplicationRegistry.java,v 1.8 2004/11/08 18:05:15 jdt Exp $
+/*$Id: RegistryApplicationRegistry.java,v 1.9 2004/11/11 00:54:18 clq2 Exp $
  * Created on 09-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,6 +15,7 @@ import org.astrogrid.applications.beans.v1.InterfacesType;
 import org.astrogrid.applications.beans.v1.Parameters;
 import org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition;
 import org.astrogrid.portal.workflow.intf.ApplicationDescription;
+import org.astrogrid.portal.workflow.intf.ApplicationDescriptionSummary;
 import org.astrogrid.portal.workflow.intf.ApplicationRegistry;
 import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
 import org.astrogrid.registry.RegistryException;
@@ -99,6 +100,45 @@ public class RegistryApplicationRegistry implements ApplicationRegistry {
             throw new WorkflowInterfaceException(e);
         }
     }
+
+    /**
+     * @see org.astrogrid.portal.workflow.intf.ApplicationRegistry#listUIApplications()
+     */
+    public ApplicationDescriptionSummary[] listUIApplications() throws WorkflowInterfaceException {
+        try {
+        Document doc = service.submitQuery(LIST_QUERY_STRING);
+        assert doc != null;
+        NodeList nl = doc.getElementsByTagNameNS("*","Resource");
+
+        ApplicationDescriptionSummary[] descs = new ApplicationDescriptionSummary[nl.getLength()];
+        for (int i = 0; i < nl.getLength(); i++) {
+            Element resource = (Element)nl.item(i);
+            String authId =  resource.getElementsByTagNameNS("*","AuthorityID").item(0).getFirstChild().getNodeValue();
+            String resourceKey = resource.getElementsByTagNameNS("*","ResourceKey").item(0).getFirstChild().getNodeValue();
+            
+            NodeList uiElement = resource.getElementsByTagNameNS("*","UI_Name");
+            String uiName = "unavailable";
+            if(uiElement.getLength() > 0) {
+                Node n = uiElement.item(0).getFirstChild();
+                if (n != null) {
+                    uiName = n.getNodeValue();
+                }
+            }
+            
+            NodeList interfaces = resource.getElementsByTagNameNS("*","Interface");
+            String[] interfaceNames = new String[interfaces.getLength()];
+            for (int j = 0; j < interfaces.getLength(); j++) {
+                interfaceNames[j] = ((Element)interfaces.item(j)).getAttribute("name");
+            }
+            descs[i] = new ApplicationDescriptionSummary(authId + "/" + resourceKey,uiName,interfaceNames);
+            
+        }
+        return descs;
+        } catch (RegistryException e){
+            logger.error("listUIApplications failed with exception from registry",e);
+            throw new WorkflowInterfaceException(e);
+        }
+    }
     
     /**
      * @see org.astrogrid.portal.workflow.intf.ApplicationRegistry#getDescriptionFor(java.lang.String)
@@ -142,12 +182,20 @@ public class RegistryApplicationRegistry implements ApplicationRegistry {
             throw new WorkflowInterfaceException(e);
         }
     }
+
+
     
 }
 
 
 /* 
 $Log: RegistryApplicationRegistry.java,v $
+Revision 1.9  2004/11/11 00:54:18  clq2
+nww's bug590
+
+Revision 1.8.4.1  2004/11/10 13:33:32  nw
+added new method to ApplicationRegistry - listUIApplications
+
 Revision 1.8  2004/11/08 18:05:15  jdt
 Merges from branch nww-bz#590
 

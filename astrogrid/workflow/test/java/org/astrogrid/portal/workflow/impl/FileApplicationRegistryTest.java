@@ -1,4 +1,4 @@
-/*$Id: FileApplicationRegistryTest.java,v 1.3 2004/11/08 18:05:15 jdt Exp $
+/*$Id: FileApplicationRegistryTest.java,v 1.4 2004/11/11 00:54:18 clq2 Exp $
  * Created on 10-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.portal.workflow.impl;
 
 import org.astrogrid.portal.workflow.intf.ApplicationDescription;
+import org.astrogrid.portal.workflow.intf.ApplicationDescriptionSummary;
 
 import java.net.URL;
 
@@ -52,11 +53,23 @@ public class FileApplicationRegistryTest extends TestCase {
             assertNull(descr.getOriginalVODescription()); // expect this to be null, as hasn't come rom the registry.
         }
     }
+    
+    public void testListUIApplications() throws Exception {
+        ApplicationDescriptionSummary[] results = reg.listUIApplications();
+        assertNotNull(results);
+        assertTrue(results.length > 0);
+    }
 }
 
 
 /* 
 $Log: FileApplicationRegistryTest.java,v $
+Revision 1.4  2004/11/11 00:54:18  clq2
+nww's bug590
+
+Revision 1.3.4.1  2004/11/10 13:33:45  nw
+added new method to ApplicationRegistry - listUIApplications
+
 Revision 1.3  2004/11/08 18:05:15  jdt
 Merges from branch nww-bz#590
 
