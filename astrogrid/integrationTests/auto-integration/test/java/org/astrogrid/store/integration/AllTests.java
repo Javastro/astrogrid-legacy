@@ -1,4 +1,4 @@
-/* $Id: AllTests.java,v 1.7 2004/07/01 11:45:30 nw Exp $
+/* $Id: AllTests.java,v 1.8 2004/11/11 17:54:18 clq2 Exp $
  * Created on Apr 15, 2004 by jdt@roe.ac.uk
  * The auto-integration project
  * Copyright (c) Astrigrid 2004.  All rights reserved.
@@ -24,6 +24,7 @@ public class AllTests {
         suite.addTest(MySpaceTest.suite());
         suite.addTest(VoSpaceTest.suite());
         suite.addTest(new TestSuite(SimpleMySpaceTest.class));
+        suite.addTest(org.astrogrid.store.adapter.aladin.integration.AllTests.suite());
         
         //$JUnit-END$
         return suite;
@@ -31,6 +32,12 @@ public class AllTests {
 }
 /*
  *  $Log: AllTests.java,v $
+ *  Revision 1.8  2004/11/11 17:54:18  clq2
+ *  nww-660
+ *
+ *  Revision 1.7.102.1  2004/11/11 13:10:05  nw
+ *  tests for aladin adapter
+ *
  *  Revision 1.7  2004/07/01 11:45:30  nw
  *  removed store integration test - uses the myspace delegate,
  *  though the scripting library. this isn't supported any more.
