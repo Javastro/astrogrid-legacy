@@ -15,9 +15,11 @@
     * Runs ADQL query from given ADQL string
     */
    String adqlXml = request.getParameter("AdqlXml");
+   String resultsFormat = request.getParameter("Format");
+   String resultsTarget = request.getParameter("Target");
    
    try {
-     server.askQuery(Account.ANONYMOUS, new AdqlQuery(adqlXml), out, "VOTABLE");
+     server.askQuery(Account.ANONYMOUS, new AdqlQuery(adqlXml), out, resultsFormat);
    }
    catch (Throwable th) {
       LogFactory.getLog(request.getContextPath()).error(th);

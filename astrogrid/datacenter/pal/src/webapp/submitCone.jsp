@@ -24,6 +24,8 @@
    String param_ra = request.getParameter("RA");
    String param_dec = request.getParameter("DEC");
    String param_sr = request.getParameter("SR");
+   String resultsFormat = request.getParameter("Format");
+   String resultsTarget = request.getParameter("Target");
    
    try {
       double ra = Double.parseDouble(param_ra);
@@ -32,7 +34,7 @@
 
       Agsl agsl = new Agsl(param_sendTo);
 
-      String id = server.submitQuery(Account.ANONYMOUS, new ConeQuery(ra, dec, sr), agsl, "VOTABLE");
+      String id = server.submitQuery(Account.ANONYMOUS, new ConeQuery(ra, dec, sr), agsl, resultsFormat);
       
       URL statusUrl = new URL ("http",request.getServerName(),request.getServerPort(), request.getContextPath()+"/queryStatus.jsp");
       //redirect to status

@@ -17,9 +17,11 @@
    double ra = Double.parseDouble(request.getParameter("RA"));
    double dec = Double.parseDouble(request.getParameter("DEC"));
    double sr = Double.parseDouble(request.getParameter("SR"));
+   String resultsFormat = request.getParameter("Format");
+   String resultsTarget = request.getParameter("Target");
 
    try {
-      server.askQuery(Account.ANONYMOUS, new ConeQuery(ra, dec, sr), out, "VOTABLE");
+      server.askQuery(Account.ANONYMOUS, new ConeQuery(ra, dec, sr), out, resultsFormat);
    } catch (Throwable th) {
       LogFactory.getLog(request.getContextPath()).error(th);
       out.write(server.exceptionAsHtml("Searching Cone (RA="+ra+", DEC="+dec+", SR="+sr, th));
