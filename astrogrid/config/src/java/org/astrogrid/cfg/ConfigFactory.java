@@ -1,11 +1,12 @@
 /*
- * $Id: ConfigFactory.java,v 1.1 2005/03/21 14:05:47 mch Exp $
+ * $Id: ConfigFactory.java,v 1.2 2005/03/28 01:24:42 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.cfg;
 
+import java.io.IOException;
 import java.util.Hashtable;
 
 /**
@@ -54,7 +55,7 @@ public class ConfigFactory
    }
    
    
-   /** Returns the same instance every time so that all packages have easy access to the *same*
+/** Returns the same instance every time so that all packages have easy access to the *same*
  * configuration set in one runtime environment, although this may be loaded
  * from several files.  So although this configuration is a common access point, it can be used to
  * access several configuration files.  Any application can call the 'load'
@@ -67,6 +68,14 @@ public class ConfigFactory
  */
    public static ConfigReader getCommonConfig() {
       return common;
+   }
+
+   /** Returns the configuration for the current user that the application is
+    * running under. This is useful for things like user options. The given
+    * context is for seperating out different option files; eg 'storebrowser'
+    * options, or 'Look And Feel' options */
+   public static ConfigReader getUserOptions(String context) throws IOException {
+      return new UserOptions(context);
    }
    
 }

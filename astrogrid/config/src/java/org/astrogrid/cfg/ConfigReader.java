@@ -1,5 +1,5 @@
 /*
- * $Id: ConfigReader.java,v 1.2 2005/03/22 11:07:42 mch Exp $
+ * $Id: ConfigReader.java,v 1.3 2005/03/28 01:24:42 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -46,8 +46,7 @@ public abstract class ConfigReader {
     * is not found, throws a PropertyNotFoundException */
    public abstract Object getProperty(String key) throws PropertyNotFoundException;
 
-   /** Set property.  Stores in cache so it overrides all other properties
-    * with the same key.   */
+   /** Set property.    */
    public abstract void setProperty(String key, Object value);
    
    /** Returns the list of properties identified by the given key.  If no matching properties
@@ -109,6 +108,20 @@ public abstract class ConfigReader {
       return getProperty(key).toString();
    }
    
+   /**
+    * Convenience routine for dumpConfig. Formats a key/value pair for printing.
+    * Does noddy
+    * check for 'password' in the key string and hides value if present
+    */
+   protected String formKeyValue(Object key, Object value) {
+      if (key.toString().toLowerCase().indexOf("password") > -1) {
+         return "  "+key+" = <hidden>";
+      } else {
+         return "  "+key+" = "+value;
+      }
+   }
+   
+
    /**
     * Convenience string of getProperty
     */

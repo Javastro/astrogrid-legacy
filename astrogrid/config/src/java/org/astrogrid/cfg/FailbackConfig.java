@@ -1,5 +1,5 @@
 /*
- * $Id: FailbackConfig.java,v 1.1 2005/03/21 14:05:47 mch Exp $
+ * $Id: FailbackConfig.java,v 1.2 2005/03/28 01:24:42 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -361,6 +361,7 @@ public class FailbackConfig extends ConfigReader {
       return false;
    }
    
+   /** Convenience routine - loads properties from given file */
    private void loadFromFile(File f) {
       try {
          loadFromUrl(f.toURL());
@@ -734,18 +735,6 @@ public class FailbackConfig extends ConfigReader {
    }
    
    /**
-    * Formats a key/value pair for printing.  Used by dumpConfig.  Does noddy
-    * check for 'password' in the key string and hides value if present
-    */
-   public String formKeyValue(Object key, Object value) {
-      if (key.toString().toLowerCase().indexOf("password") > -1) {
-         return "  "+key+" = <hidden>";
-      } else {
-         return "  "+key+" = "+value;
-      }
-   }
-   
-   /**
     * Main method dumps config contents to console - useful for debugging
     */
    public static void main(String[] args) {
@@ -759,6 +748,9 @@ public class FailbackConfig extends ConfigReader {
 }
 /*
 $Log: FailbackConfig.java,v $
+Revision 1.2  2005/03/28 01:24:42  mch
+Added UserOptions
+
 Revision 1.1  2005/03/21 14:05:47  mch
 Initial checkin
 
