@@ -1,4 +1,4 @@
-/* $Id: FactoryManager.java,v 1.3 2003/08/25 20:51:16 mch Exp $
+/* $Id: FactoryManager.java,v 1.4 2003/08/25 21:42:45 mch Exp $
  * Created on 19-Aug-2003
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -18,7 +18,6 @@ import org.astrogrid.datacenter.FactoryProvider;
 import org.astrogrid.datacenter.job.JobFactory;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.query.QueryFactory;
-import org.astrogrid.datacenter.votable.VOTableFactory;
 import org.astrogrid.i18n.AstroGridMessage;
 
 /** class to manage a set of factory objects - an implementation of {@link org.astrogrid.datacenter.FactoryProvider}
@@ -35,7 +34,6 @@ public class FactoryManager implements FactoryProvider {
    private JobFactory jobFactory;
    private Map queryFactoryMap = new HashMap();
    private QueryFactory defaultQueryFactory;
-   private VOTableFactory voTableFactory;
    protected final Configuration conf;
    /**
      * Construct a new factory manager
@@ -54,10 +52,6 @@ public class FactoryManager implements FactoryProvider {
       return (qf != null ? qf : defaultQueryFactory);
    }
 
-   public VOTableFactory getVOTableFactory() {
-      return voTableFactory;
-   }
-
     public QueryFactory getDefaultQueryFactory() {
         return defaultQueryFactory;
     }
@@ -70,7 +64,7 @@ public class FactoryManager implements FactoryProvider {
      * @throws DatacenterException if any factory field is set to null
      */
     public void verify() throws DatacenterException {
-       if (jobFactory == null /*|| mySpaceFactory == null */||  voTableFactory == null || defaultQueryFactory == null){
+       if (jobFactory == null || defaultQueryFactory == null){
             throw new DatacenterException(new AstroGridMessage("some.factories.null"));
         }
     }
@@ -87,14 +81,6 @@ public class FactoryManager implements FactoryProvider {
       queryFactoryMap.put(catalogName,factory);
    }
 
-   /** set the votable factory
-    * @param factory
-    */
-   public void setVOTableFactory(VOTableFactory factory) throws IllegalArgumentException{
-        if (factory == null) throw new IllegalArgumentException("Factory cannot be null");
-      factory.setConfiguration(conf);
-      voTableFactory = factory;
-   }
     /**
      * set the job factory
      * @param factory
@@ -128,7 +114,6 @@ public class FactoryManager implements FactoryProvider {
         }
       return this.getClass().getName()
          + "\njobFactory " + getFactoryInfo(jobFactory)
-         + "\nvoTableFactory " + getFactoryInfo(voTableFactory)
          + "\nDefaultQueryFactory" + getFactoryInfo(defaultQueryFactory)
       + "\nqueryFactories " + qFactories;
 
@@ -141,6 +126,9 @@ public class FactoryManager implements FactoryProvider {
 }
 /*
  * $Log: FactoryManager.java,v $
+ * Revision 1.4  2003/08/25 21:42:45  mch
+ * Removed VOTable-middleman classes (to replace with more general ResultSet)
+ *
  * Revision 1.3  2003/08/25 20:51:16  mch
  * Removed dummy MySpace-related classes
  *
