@@ -1,0 +1,181 @@
+<?xml version="1.0" ?>
+<!-- extension maven script -->
+<project xmlns:j="jelly:core"  xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="jar:jar">
+
+<!-- location of generated source tree -->
+<property name="generated.src" location="${basedir}/generated/java" />
+
+<!-- hook to add in generated sources -->
+<preGoal name="java:compile">
+	<mkdir dir="${generated.src}" />
+	<path id="generated.src.path" location="${generated.src}" />
+	<maven:addPath id="maven.compile.src.set" refid="generated.src.path" />
+</preGoal>
+
+<!--
+new goals
+-->
+
+  <goal name="generate-delegate" description="generate classes from wsdl" prereqs="axis-declare-tasks">
+  	<description><![CDATA[
+generate java classes for delegate and server from a hand-written wsdl file.
+Uses method described in http://www-106.ibm.com/developerworks/webservices/library/ws-castor/?Open&ca=daw-ws-news
+to use castor xml serializers within Axis.
+Outline:
+* remove all sources in the generated/java src hierarchy
+* generate classes from wsdl using axis-wsdl2java - subgoal wsdl2java
+* generate classes from schema using castor - subgoal generate-adql
+* transform deployment descriptor to refer to castor serialization mechanism (via xslt) - subgoal transform-wsdd
+* munge axis-generated client stub to refer to castor classes (via search'n'replace, regexps) - subgoal munge-stub
+Result: rebuild generated/java src hierachy, wsdd/deploy.wsdd and wsdd/undeploy.wsdd
+Requires:
+* src/wsdl/AxisDataCenter.wsdl - web service descriptor
+* src/xsd/AxisDataCenter.xsd - schema that defines types used in web service descriptor
+* src/xsd/ADQLschema.xsd - schema for ADQL
+* src/xslt/generate-wsdd.xsl - transformation for wsdd.
+	]]></description>
+  	<delete><!-- clean out to start with -->
+		<fileset dir="${generated.src}" >
+			<include name="**/*.java" />
+			<include name="**/*.class" />
+			<include name="**/*.wsdd" />
+		</fileset>
+	</delete>
+	<attainGoal name="wsdl2java" />
+	<!-- now call castor to generate ADQL object model -->
+	<attainGoal name="generate-adql" />
+	<!-- transform the generated wsdd -->
+	<attainGoal name="transform-wsdd" />
+	<!-- mangle the stub source -->
+	<attainGoal name="munge-stub" />
+   </goal>
+
+   <goal name="wsdl2java" prereqs="axis-declare-tasks">
+  	<axis-wsdl2java output="${generated.src}" verbose="true"
+		url="${basedir}/src/wsdl/AxisDataServer.wsdl">
+		<mapping
+			namespace="http://www.astrogrid.org/datacenter/It04/dataserver/v1"
+			package="org.astrogrid.datacenter.delegate.axisdataserver" />
+		<mapping
+			namespace="http://www.astrogrid.org/datacenter/It04/dataserver/v1/types"
+			package="org.astrogrid.datacenter.delegate.axisdataserver.types" />
+		<mapping
+	       		namespace="http://tempuri.org/adql"
+	       		package="org.astrogrid.datacenter.adql.generated" />
+	</axis-wsdl2java>
+	<!-- now generate stuff for server side - into a different package.-->
+	<axis-wsdl2java output="${generated.src}" verbose="true" url="${basedir}/src/wsdl/AxisDataServer.wsdl"
+		deployscope="Application" serverside="true" skeletondeploy="false">
+		<mapping
+			namespace="http://www.astrogrid.org/datacenter/It04/dataserver/v1"
+			package="org.astrogrid.datacenter.server.axisdataserver" />
+		<mapping
+			namespace="http://www.astrogrid.org/datacenter/It04/dataserver/v1/types"
+			package="org.astrogrid.datacenter.server.axisdataserver.types" />
+		<mapping
+	       		namespace="http://tempuri.org/adql"
+	       		package="org.astrogrid.datacenter.adql.generated" />
+	</axis-wsdl2java>
+	<delete>	<!-- this generates too much - now have overlapping classes. delete the culprits -->
+		<fileset dir="${generated.src}">
+		   <!-- don't want any of the server-side java classes -->
+		   <include name="org/astrogrid/datacenter/server/**/*.java" />
+		   <!-- stuff that is already defined -->
+		    <include name="org/xml/sax/**" />
+		    <include name="java/**" />
+		    <include name="**/AstroGridException.java" />
+		    <include name="**/QueryException.java" />
+		    <!-- want to use castor for these classes -->
+		    <include name="org/astrogrid/datacenter/adql/generated/*.java" />
+		</fileset>
+	</delete>
+   </goal>
+
+  <goal name="generate-adql"  description="regenerate the ADQL object model">
+	<!-- set up the classpath for the source generator tool -->
+ 	 <path id="castor.class.path"><!-- needed to override the default configuration file - ikky Castor.. -->
+		<pathelement location="${basedir}/config" />
+  		<path refid="maven.dependency.classpath" />
+  	</path>
+    	<delete quiet="true">
+   		<fileset dir="${basedir}/src/java/org/astrogrid/datacenter/adql/generated">
+  	 		<include name="**/*.java" />
+   			<include name="**/*.class" />
+   		</fileset>
+   	</delete>
+  	<java fork="yes" classname="org.exolab.castor.builder.SourceGenerator" classpathref="castor.class.path">
+  	  	<arg value="-i"/>
+  	  	<arg file="${basedir}/src/xsd/ADQLschema.xsd" />
+  	  	<arg value="-package" />
+  	  	<arg value="org.astrogrid.datacenter.adql.generated" />
+  	  	<arg value="-dest" />
+  	  	<arg file="${generated.src}" />
+  	  	<!--<arg value="-verbose" />-->
+ 	  </java>
+ 	  <!-- now do some patching of the output - hope to do away with this in time. -->
+ 	  <patch patchfile="${basedir}/src/patch/groupByChoiceItem.patch" originalfile="${generated.src}/org/astrogrid/datacenter/adql/generated/GroupByChoiceItem.java"/>
+ 	  <patch patchfile="${basedir}/src/patch/selectionListChoiceItem.patch" originalfile="${generated.src}/org/astrogrid/datacenter/adql/generated/SelectionListChoiceItem.java"/>
+  </goal>
+
+   <goal name="transform-wsdd">
+   	<!-- hack from mailing list to fix Maven XLST bug -->
+	${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
+	<xslt basedir="${generated.src}/org/astrogrid/datacenter/server/axisdataserver"
+	      includes="*.wsdd" style="${basedir}/src/xslt/generate-wsdd.xsl"
+	      destdir="${basedir}/src/wsdd" extension=".wsdd" />
+   </goal>
+
+   <goal name="munge-stub">
+	<!-- now need to do some work on the stub file. -->
+	<!-- first castor places some classes in the 'types' package. do a search and replace on the stub file, update referecnes -->
+ 	<property name="stub.file"
+		location="${generated.src}/org/astrogrid/datacenter/delegate/axisdataserver/AxisDataServerSoapBindingStub.java" />
+	<replace summary="true" file="${stub.file}">
+		<replacefilter
+			token="org.astrogrid.datacenter.adql.generated.Comparison.class"
+			value="org.astrogrid.datacenter.adql.generated.types.Comparison.class" />
+		<replacefilter
+			token="org.astrogrid.datacenter.adql.generated.OrderDirection.class"
+			value="org.astrogrid.datacenter.adql.generated.types.OrderDirection.class" />
+		<replacefilter
+			token="org.astrogrid.datacenter.adql.generated.AggregateFunction.class"
+			value="org.astrogrid.datacenter.adql.generated.types.AggregateFunction.class" />
+		<replacefilter
+			token="org.astrogrid.datacenter.adql.generated.BinaryOperator.class"
+			value="org.astrogrid.datacenter.adql.generated.types.BinaryOperator.class" />
+		<replacefilter
+			token="org.astrogrid.datacenter.adql.generated.UnaryOperator.class"
+			value="org.astrogrid.datacenter.adql.generated.types.UnaryOperator.class" />
+		<replacefilter
+			token="org.astrogrid.datacenter.adql.generated.AllOrDistinct.class"
+			value="org.astrogrid.datacenter.adql.generated.types.AllOrDistinct.class" />
+		<replacefilter
+			token="javax.xml.namespace.QName qName;"
+			value="javax.xml.namespace.QName qName;
+			        java.lang.Class castorsf = org.apache.axis.encoding.ser.castor.CastorSerializerFactory.class;
+       				java.lang.Class castordf = org.apache.axis.encoding.ser.castor.CastorDeserializerFactory.class;" />
+	</replace>
+	<!-- for declaration of castor classes, replace 2 lines with our own definitions.
+	relies on axis-generated code following certain pattern. -->
+	<replaceregexp 	file="${stub.file}" flags="sg"
+		match="(cls = org\.astrogrid\.datacenter\.adql\.generated\.[^\n]+\n)([^\n]+\n)([^\n]+\n)([^\n]+\n)"
+		replace="\1\2
+			cachedSerFactories.add(castorsf);
+			cachedDeserFactories.add(castordf);
+
+			"/>
+	<!-- fix axis-wsdl bug - sometimes introduces spurious &gt; at start of strings -->
+	<replaceregexp file="${stub.file}" flags="sg"
+		match='"&gt;([^"]+)"'
+		replace='"\1"' />
+  </goal>
+
+
+<!--
+boilerplate below here
+-->
+  <goal name="axis-declare-tasks">
+      <taskdef resource="axis-tasks.properties"  classpathref="maven.dependency.classpath" />
+  </goal>
+
+</project>
