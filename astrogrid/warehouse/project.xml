@@ -103,6 +103,17 @@
       <id>xml-apis</id>
       <version>1.0.b2</version>
     </dependency>
+    
+    <dependency>
+      <id>MockMaker</id>
+      <version>1.11.0</version>
+    </dependency>
+    
+    <dependency>
+      <id>mmmockobjects</id>
+      <version>1.11.0</version>
+    </dependency>
+    
   </dependencies>
 
   <build>
