@@ -1,0 +1,14 @@
+<project>
+    <extend>${basedir}/../maven-base/project.xml</extend>
+    <artifactId>multiproject-client</artifactId>
+    <name>Multiproject Example Client</name>
+    <shortDescription>An example client subproject</shortDescription>
+	<description>see xdocs</description>
+	
+    <dependencies>
+    	<dependency>
+    		<groupId>org.astrogrid</groupId>
+    		<artifactId>multiproject-common</artifactId>
+    	</dependency>
+    </dependencies>
+</project>

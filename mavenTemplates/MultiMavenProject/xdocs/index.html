@@ -1,0 +1,117 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=windows-1252">
+	<TITLE></TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 1.1.1  (Win32)">
+	<META NAME="CREATED" CONTENT="20040716;17054949">
+	<META NAME="CHANGEDBY" CONTENT="John Taylor">
+	<META NAME="CHANGED" CONTENT="20040716;18041778">
+</HEAD>
+<BODY LANG="en-GB" DIR="LTR">
+<H1>Introduction</H1>
+<P>The purpose of this project is to demonstrate how to use Maven to
+build a component that consists of several artifacts, for example, a
+common library jar, a client/delegate jar and a server war. 
+</P>
+<P>The newcomer to <A HREF="http://www.maven.org/">Maven</A> should
+first be familiar with how to build a simple, single-artifact
+project. An example of this sort of project is given <A HREF="http://www.astrogrid.org/maven/docs/SNAPSHOT/SimpleMavenProject/">here</A>
+and this document only describes the differences. 
+</P>
+<H1>How to set up the project</H1>
+<H2>Project Structure</H2>
+<P>The project consists of a root directory containing a Master
+project.xml (POM), project.properties and maven.xml. Sub projects are
+placed in subdirectories off this root directory, each with their own
+POMs, project.properties and maven.xml containing the build
+information specific to each subcomponent. 
+</P>
+<P>The master POM controls the site's root documentation (this page),
+and the building of the sub projects. 
+</P>
+<P>An additional directory, maven-base, contains a parent POM used to
+factor out any commonality between the POMs, but does not actually
+get built. The sub projects <I>could</I> inherit shared properties
+from the master POM, but it is preferable to separate the
+responsibility for shared settings (maven-base) from the
+responsibility for controlling the overall build (master). 
+</P>
+<P>The project structure is:</P>
+<PRE>---common/-----+-project.xml 
+               +-maven.xml 
+               +-project.properties 
+               +-src/                ] source code 
+               +-test/               ] test code 
+               +-xdoc/               ] docs specific to common 
+
+---client/-----+-project.xml 
+               +-etc...as common 
+
+---server/-----+-project.xml 
+               +-etc...as common
+
+---maven-base/-+-project.xml         ]
+               +-maven.xml           ] Stuff common to all subprojects
+               +-project.properties  ]
+
+---project.xml           ]  Master POM, controls build of subprojects
+---maven.xml             ]  
+---project.properties    ]
+---xdocs/                ]  Site's root documentation</PRE><H2>
+Controlling the build</H2>
+<P STYLE="margin-bottom: 0cm">The easiest way of controlling the
+build is to make use of Maven's <A HREF="http://maven.apache.org/reference/plugins/multiproject/">multiproject</A>
+plugin which uses Maven's Reactor. The Reactor examines a list of
+projects and works out the correct build order by examining their
+dependencies. For example, the server subproject depends on the
+client subproject and the common subproject, while the client
+subproject in turn depends on the common subproject. Hence, the
+reactor will build the common, followed by the client, followed by
+the server.</P>
+<P>The Multiproject plug-in adds to this some intelligence about what
+it is trying to build. For example, to build the site documentation
+for this project, execute 
+</P>
+<PRE STYLE="margin-bottom: 0.5cm">maven multiproject:site</PRE><P>
+This examines the Master project's project.properties for a list of
+subprojects to build, builds the documentation for the subprojects,
+then copies that in to the site documentation for this Master
+project, automatically generating links to the subproject documents.</P>
+<P>To build the jars and wars for the subproject execute 
+</P>
+<PRE STYLE="margin-bottom: 0.5cm">maven multiproject:artifact</PRE><P>
+Again, the Master project's project.properties provides the list of
+subprojects, the correct build order is determined, and for each
+subproject maven jar or maven war is executed as appropriate. Whether
+a subproject produces a war or a jar is set by a property in the
+subproject's project.properties.</P>
+<P>The Multiproject plugin only provides the most commonly used
+goals. If you have a special goal that you wish to run on all of the
+subprojects then you can use the reactor directly. For example, you
+might place this in your master project's maven.xml: 
+</P>
+<PRE STYLE="margin-bottom: 0.5cm">code here</PRE><H2>
+POM inheritance</H2>
+<P STYLE="margin-bottom: 0cm">POM settings, project.properties and
+maven.xml code can all be inherited and overridden. Examine the code
+for this project to see some of the possibilities.</P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<H1>Producing this documentation</H1>
+<P>Documentation placed in the xdocs folder is automatically
+processed by Maven during the site documentation generation. This
+documentation can be written as xml files in the xdoc format --- see
+for example: <A HREF="http://www.astrogrid.org/viewcvs/mavenTemplates/SimpleMavenProject/xdocs/index.xml?rev=HEAD&amp;content-type=text/vnd.viewcvs-markup">SimpleMavenProject/xdocs/index.xml.</A>
+Alternatively, write it in html using your favourite WYSIWYG editor,
+place it in xdocs, and add the following hook to your maven.xml file:</P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Courier New"><FONT SIZE=2><FONT COLOR="#000080">&lt;preGoal</FONT><FONT COLOR="#000000">
+</FONT><FONT COLOR="#000080">name=</FONT><FONT COLOR="#008000">&quot;xdoc:jelly-transform&quot;</FONT><FONT COLOR="#000080">&gt;</FONT></FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Courier New"><FONT SIZE=2><FONT COLOR="#000080">&lt;attainGoal</FONT><FONT COLOR="#000000">
+</FONT><FONT COLOR="#000080">name=</FONT><FONT COLOR="#008000">&quot;html2xdoc&quot;</FONT><FONT COLOR="#000080">/&gt;</FONT></FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><FONT COLOR="#000080"><FONT FACE="Courier New"><FONT SIZE=2>&lt;/preGoal&gt;</FONT></FONT></FONT></P>
+<P>This takes your <I>simple</I> html, and converts it xdoc format
+during the site generation process. This xdoc is then transformed
+back into html with the correct style sheets etc. Easy!</P>
+</BODY>
+</HTML>

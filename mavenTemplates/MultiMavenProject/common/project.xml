@@ -1,0 +1,7 @@
+<project>
+    <extend>${basedir}/../maven-base/project.xml</extend>
+    <artifactId>multiproject-client</artifactId>
+    <name>Multiproject Example Common</name>
+    <shortDescription>This is the common library used by other subprojects</shortDescription>
+	<description>see xdocs</description>
+</project>

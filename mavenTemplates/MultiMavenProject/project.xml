@@ -1,0 +1,12 @@
+<project>
+    <extend>${basedir}/../maven-base/project.xml</extend>
+    <pomVersion>3</pomVersion>
+    <artifactId>multimavenproject</artifactId>
+    <name>MultiMavenProject</name>
+    <groupId>multimavenproject</groupId>
+    <organization/>
+    <shortDescription>A simple example of a multiproject.  This POM is the "master POM"</shortDescription>
+
+    <build/>
+    <properties/>
+</project>

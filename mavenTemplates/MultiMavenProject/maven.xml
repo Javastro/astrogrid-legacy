@@ -1,0 +1,10 @@
+<project>
+	<!--+
+	    | This pregoal takes any simple html docs in the xdocs folder and turns them into xdoc xml,
+	    | before they are turned back into maven-style html docs.  Why?  html is easier to write in
+	    | a WYSIWIG editor than xdoc xml
+	    +-->
+	<preGoal name="xdoc:jelly-transform">
+	    <attainGoal name="html2xdoc"/>
+	</preGoal>
+</project>

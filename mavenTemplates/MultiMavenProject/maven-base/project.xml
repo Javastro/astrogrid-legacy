@@ -1,0 +1,25 @@
+<project>
+    <extend>${basedir}/../../maven-base/project.xml</extend>
+    <name>Multiproject Example Base</name>
+    <description>This POM is purely to provide a base for common settings between the MultiMavenProject subprojects.  It is
+not used to build a subproject of its own.</description>
+    <shortDescription>An example base POM</shortDescription>
+    <!--we have this common structure for all subprojects-->
+    <build>
+        <sourceDirectory>src/java</sourceDirectory>
+        <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
+        <unitTest>
+            <includes>
+                <include>**/*Test.java</include>
+            </includes>
+        </unitTest>
+    </build>
+    <!--Dependencies common to *all* subcomponents-->
+    <dependencies>
+    	<dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.0.3</version>
+        </dependency>
+    </dependencies>
+</project>
