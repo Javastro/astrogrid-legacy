@@ -541,8 +541,8 @@ this.readToolList(); // temp PJN
                     workflow = workflowBuilder.createWorkflow( credentials, name, description ) ;
                 }
                 else {
-                    debug( "Create ignored - bConfirm == false: however at the minute I am ignoring bConfirm and creating workflow regardless!" ) ;
-					workflow = workflowBuilder.createWorkflow( credentials, name, description ) ;
+                    debug( "Use workflow that already exists in session" ) ;
+					// workflow = workflowBuilder.createWorkflow( credentials, name, description ) ;
                 }
         
             }
@@ -941,6 +941,7 @@ this.readToolList(); // temp PJN
 			String activityKey = request.getParameter( ACTIVITY_KEY_PARAMETER ) ;
 			debug( "parameterName:" + parameterName ) ;
 			debug( "parameterValue: " + parameterValue ) ;
+			debug( "oldParameterValue: " + oldParameterValue ) ;
 			debug( "activityKey: " + activityKey ) ;    
                             
 			if ( parameterName == null) {
