@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: publish-component.sh,v 1.6 2004/12/11 17:57:47 jdt Exp $ 
+# $Id: publish-component.sh,v 1.7 2005/01/23 23:21:21 jdt Exp $ 
 ####################################################################
 # Build a component into the local repository.
 # First argument (required) cvs name of component _under_ astrogrid
@@ -60,6 +60,15 @@ then
 else
     echo "publish-component: build failure" 
     cat $LOGFILE | mail -s "Publish Component" $LOGFILE
+    cd $OLDDIR
+fi
+echo "Documenting artifacts" 
+if maven $MY_MAVEN_OPTS astrogrid-deploy-site 
+then
+    echo "OK" 
+else
+    echo "publish-component: document failure" 
+    cat $LOGFILE | mail -s "Document Component" $LOGFILE
     cd $OLDDIR
 fi
 scp $LOGFILE $DOCMACHINE:$DOCLOCATION/log/maven-build-$COMPONENT_NAME.log 
