@@ -1,5 +1,5 @@
 /*
- * $Id: LocalFileStore.java,v 1.2 2004/03/13 22:58:43 mch Exp $
+ * $Id: LocalFileStore.java,v 1.3 2004/03/14 13:30:08 mch Exp $
  *
  */
 
@@ -79,9 +79,11 @@ public class LocalFileStore implements StoreClient
          //the created file above as a directory name, but that means that two
          //created file stores would not overlap.
          rootDir = new File(rootDir.getParentFile(), "LocalFileStore");
-         if (!rootDir.isDirectory()) {
+         if (rootDir.exists() && (!rootDir.isDirectory())) {
             boolean success = rootDir.delete();
-            if (!success) throw new IOException("LocalFileStore directory ["+rootDir+"] is not a directory and cannot be deleted");
+            if (!success) {
+               throw new IOException("LocalFileStore ["+rootDir+"] is not a directory and yet cannot be deleted to make room for the local store");
+            }
          }
          
          if (!rootDir.exists()) {
@@ -337,6 +339,9 @@ public class LocalFileStore implements StoreClient
 
 /*
 $Log: LocalFileStore.java,v $
+Revision 1.3  2004/03/14 13:30:08  mch
+Fix for unix rootDir not created and so not being deleted
+
 Revision 1.2  2004/03/13 22:58:43  mch
 Fixed nul pointer exception when path is empty
 
