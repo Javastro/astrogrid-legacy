@@ -50,19 +50,19 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
         oper.addFault(new org.apache.axis.description.FaultDesc(
                       new javax.xml.namespace.QName("", "fault"),
                       "java.io.IOException",
-                      new javax.xml.namespace.QName("http://io.java", "IOException"), 
+                      new javax.xml.namespace.QName("http://io.java", "IOException"),
                       true
                      ));
         oper.addFault(new org.apache.axis.description.FaultDesc(
                       new javax.xml.namespace.QName("", "fault"),
                       "org.astrogrid.datacenter.query.QueryException",
-                      new javax.xml.namespace.QName("http://query.datacenter.astrogrid.org", "QueryException"), 
+                      new javax.xml.namespace.QName("http://query.datacenter.astrogrid.org", "QueryException"),
                       true
                      ));
         oper.addFault(new org.apache.axis.description.FaultDesc(
                       new javax.xml.namespace.QName("", "fault"),
                       "org.xml.sax.SAXException",
-                      new javax.xml.namespace.QName("http://sax.xml.org", "SAXException"), 
+                      new javax.xml.namespace.QName("http://sax.xml.org", "SAXException"),
                       true
                      ));
         _operations[2] = oper;
@@ -78,19 +78,19 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
         oper.addFault(new org.apache.axis.description.FaultDesc(
                       new javax.xml.namespace.QName("", "fault"),
                       "java.io.IOException",
-                      new javax.xml.namespace.QName("http://io.java", "IOException"), 
+                      new javax.xml.namespace.QName("http://io.java", "IOException"),
                       true
                      ));
         oper.addFault(new org.apache.axis.description.FaultDesc(
                       new javax.xml.namespace.QName("", "fault"),
                       "org.astrogrid.datacenter.query.QueryException",
-                      new javax.xml.namespace.QName("http://query.datacenter.astrogrid.org", "QueryException"), 
+                      new javax.xml.namespace.QName("http://query.datacenter.astrogrid.org", "QueryException"),
                       true
                      ));
         oper.addFault(new org.apache.axis.description.FaultDesc(
                       new javax.xml.namespace.QName("", "fault"),
                       "org.xml.sax.SAXException",
-                      new javax.xml.namespace.QName("http://sax.xml.org", "SAXException"), 
+                      new javax.xml.namespace.QName("http://sax.xml.org", "SAXException"),
                       true
                      ));
         _operations[3] = oper;
@@ -107,19 +107,19 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
         oper.addFault(new org.apache.axis.description.FaultDesc(
                       new javax.xml.namespace.QName("", "fault"),
                       "java.io.IOException",
-                      new javax.xml.namespace.QName("http://io.java", "IOException"), 
+                      new javax.xml.namespace.QName("http://io.java", "IOException"),
                       true
                      ));
         oper.addFault(new org.apache.axis.description.FaultDesc(
                       new javax.xml.namespace.QName("", "fault"),
                       "org.astrogrid.datacenter.query.QueryException",
-                      new javax.xml.namespace.QName("http://query.datacenter.astrogrid.org", "QueryException"), 
+                      new javax.xml.namespace.QName("http://query.datacenter.astrogrid.org", "QueryException"),
                       true
                      ));
         oper.addFault(new org.apache.axis.description.FaultDesc(
                       new javax.xml.namespace.QName("", "fault"),
                       "org.xml.sax.SAXException",
-                      new javax.xml.namespace.QName("http://sax.xml.org", "SAXException"), 
+                      new javax.xml.namespace.QName("http://sax.xml.org", "SAXException"),
                       true
                      ));
         _operations[4] = oper;
@@ -265,7 +265,7 @@ public class AxisDataServerSoapBindingStub extends org.apache.axis.client.Stub i
 
             qName = new javax.xml.namespace.QName("http://community.astrogrid.org", "User");
             cachedSerQNames.add(qName);
-            cls = org.astrogrid.community.Account.class;
+            cls = org.astrogrid.community.User.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);

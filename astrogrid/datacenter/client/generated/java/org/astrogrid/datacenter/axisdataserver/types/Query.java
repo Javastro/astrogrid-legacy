@@ -8,17 +8,17 @@
 package org.astrogrid.datacenter.axisdataserver.types;
 
 public class Query  implements java.io.Serializable {
-    private org.astrogrid.community.Account user;
+    private org.astrogrid.community.User user;
     private org.w3c.dom.Element queryBody;
 
     public Query() {
     }
 
-    public org.astrogrid.community.Account getUser() {
+    public org.astrogrid.community.User getUser() {
         return user;
     }
 
-    public void setUser(org.astrogrid.community.Account user) {
+    public void setUser(org.astrogrid.community.User user) {
         this.user = user;
     }
 
@@ -41,11 +41,11 @@ public class Query  implements java.io.Serializable {
         }
         __equalsCalc = obj;
         boolean _equals;
-        _equals = true && 
-            ((this.user==null && other.getUser()==null) || 
+        _equals = true &&
+            ((this.user==null && other.getUser()==null) ||
              (this.user!=null &&
               this.user.equals(other.getUser()))) &&
-            ((this.queryBody==null && other.getQueryBody()==null) || 
+            ((this.queryBody==null && other.getQueryBody()==null) ||
              (this.queryBody!=null &&
               this.queryBody.equals(other.getQueryBody())));
         __equalsCalc = null;
@@ -98,10 +98,10 @@ public class Query  implements java.io.Serializable {
      * Get Custom Serializer
      */
     public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
+           java.lang.String mechType,
+           java.lang.Class _javaType,
            javax.xml.namespace.QName _xmlType) {
-        return 
+        return
           new  org.apache.axis.encoding.ser.BeanSerializer(
             _javaType, _xmlType, typeDesc);
     }
@@ -110,10 +110,10 @@ public class Query  implements java.io.Serializable {
      * Get Custom Deserializer
      */
     public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
+           java.lang.String mechType,
+           java.lang.Class _javaType,
            javax.xml.namespace.QName _xmlType) {
-        return 
+        return
           new  org.apache.axis.encoding.ser.BeanDeserializer(
             _javaType, _xmlType, typeDesc);
     }
