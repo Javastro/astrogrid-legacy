@@ -64,11 +64,13 @@
       <version>SNAPSHOT</version>
     </dependency>
   
+    <!-- TOFIX CURRENTLY BUGGERED
     <dependency>
       <groupId>astrogrid-datacenter</groupId>
       <artifactId>astrogrid-datacenter-server</artifactId>
       <version>SNAPSHOT</version>
     </dependency>
+      -->
 
     <dependency>
       <groupId>astrogrid-datacenter</groupId>
@@ -81,6 +83,11 @@
     <dependency>
       <id>astrogrid-mySpace</id>
       <version>SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <id>astrogrid-datacenter-server</id>
+      <version>TEMP</version>
     </dependency>
 
     <!-- more standard deps -->
