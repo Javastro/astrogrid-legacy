@@ -8,8 +8,9 @@ div.agMenu_menuBar {
 div.agMenu_subMenuBar {
     border: 1px solid;
     border-color: black;
-    background-color: lightgray;
+    background-color: lightgrey;
 }
+
 div.agMenu_menuElement, div.agMenu_subMenuElement {
     border: 0;
     color: blue;
