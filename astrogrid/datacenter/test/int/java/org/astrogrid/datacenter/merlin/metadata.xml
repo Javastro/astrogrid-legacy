@@ -1,0 +1,206 @@
+<?xml version="1.0"?>
+<DataCenterMetadata version="0.1">
+<!-- describe the columns of each published table as follows:
+<column table="_table_name_" name="_column_name_">
+   <ucd>_UCD_</ucd>
+   <units>_String_</units>
+   <description>_Textual_Description_</description>
+</column>
+-->
+<table name="merlinCatalog">
+<description>
+  This database contains a log of MERLIN archive data since 1992 which have been
+  partially reduced and are electronically available.  It is managed and updated
+  by the MERLIN staff. All data are taken using a single IF and correlated using
+  2-bit digitisation.
+  See also:
+  http://www.merlin.ac.uk/archive/ : for more information and for the full list of
+  sources observed but not yet electronically archived.
+</description>
+<column name="RAh">
+  <description>Pointing position R.A. J2000 (hr)</description>
+  <units>h</units>
+</column>
+
+<column name="RAm">
+  <description>Pointing position R.A. J2000 (min)</description>
+  <units>min</units>
+</column>
+
+<column name="RAs">
+  <description>Pointing position R.A. J2000 (sec)</description>
+  <units>s</units>
+</column>
+
+<column name="DEsign">
+  <description>Pointing position Dec. J2000 (sign)</description>
+  <units></units>
+</column>
+
+<column name="DEd">
+  <description>Pointing position Dec. J2000 (degrees)</description>
+  <units>deg</units>
+</column>
+
+<column name="DEm">
+  <description>Pointing position Dec. J2000 (arcmin)</description>
+  <units>arcmin</units>
+</column>
+
+<column name="DEs">
+  <description>Pointing position Dec. J2000 (arcsec)</description>
+  <units>arcsec</units>
+</column>
+
+<column name="Name">
+  <description>Source name</description>
+  <units></units>
+</column>
+
+<column name="Observ">
+  <description>Observatory Name</description>
+  <units></units>
+</column>
+
+<column name="Station">
+  <description>Antennas potentially present (1)</description>
+  <units></units>
+</column>
+
+<column name="DataID">
+  <description>Data processing block ID</description>
+  <units></units>
+</column>
+
+<column name="begDateY">
+  <description>Block start date (year) (2)</description>
+  <units>yr</units>
+</column>
+
+<column name="begDateM">
+  <description>Block start date (month) (2)</description>
+  <units>"month"</units>
+</column>
+
+<column name="begDateD">
+  <description>Block start date (day) (2)</description>
+  <units>d</units>
+</column>
+
+<column name="endDateY">
+  <description>Block end date (year) (2)</description>
+  <units>yr</units>
+</column>
+
+<column name="endDateM">
+  <description>Block end date (month) (2)</description>
+  <units>"month"</units>
+</column>
+
+<column name="endDateD">
+  <description>Block end date (day) (2)</description>
+  <units>d</units>
+</column>
+
+<column name="Freq">
+  <description>Frequency in central channel (3)</description>
+  <units>MHz</units>
+</column>
+
+<column name="Channelwidth">
+  <description>Channel width in raw data</description>
+  <units>MHz</units>
+</column>
+
+<column name="Bandwidth">
+  <description>Bandwidth of raw data</description>
+  <units>MHz</units>
+</column>
+
+<column name="Stokes">
+  <description>Polarisation products potentially available</description>
+  <units></units>
+</column>
+
+<column name="pixRA">
+  <description>Pixel size in R.A. direction (4)</description>
+  <units>mas</units>
+</column>
+
+<column name="pixDE">
+  <description>Pixel size in Dec. direction (4)</description>
+  <units>mas</units>
+</column>
+
+<column name="Visibilities">
+  <description>Number of visibilities on source</description>
+  <units></units>
+</column>
+
+<column name="Type">
+  <description>Source type (5)</description>
+  <units></units>
+</column>
+
+<column name="Assoc">
+  <description>Associated source(5)</description>
+  <units></units>
+</column>
+
+<column name="AssocType">
+  <description>Associated source type (5)</description>
+  <units></units>
+</column>
+
+<column name="AMPCAL">
+  <description>Amplitude calibration source</description>
+  <units></units>
+</column>
+
+<column name="AmpFlux">
+  <description>Flux density assigned to AMPCAL (6)</description>
+  <units>Jy</units>
+</column>
+
+<column name="PropID">
+  <description>Proposal code</description>
+  <units></units>
+</column>
+
+<column name="PIname">
+  <description>Principle Investigator</description>
+  <units></units>
+</column>
+
+<column name="Comments">
+  <description>Factors affecting data quality</description>
+  <units></units>
+</column>
+
+<column name="DataNo">
+  <description>Link to MERLIN Archive web page for more details.</description>
+  <units></units>
+</column>
+<notes>
+Note (1): Two-letter codes for antennas present for all or part of the block.
+
+Note (2): Each source was observed for one or more periods during this block.
+
+Note (3): If the LSR correction is applied FREQ is in the source rest-frame.
+
+Note (4): The pixel size is chosen during mapping and can be changed.
+           Resolution is determined by the beam size and signal-to-noise ratio.
+
+Note (5): Source type can be
+           TARGET,
+           PHICAL (phase calibration source),
+           TARX (non-phase-referenced target),
+           AMPCAL (amplitude calibration source),
+           POLCAL (polarisation calibration source) or
+           PACAL (polarisation angle calibration source).
+
+Note (6): The AMPCAL flux on MERLIN scales is derived wrt 3C286 (Baars 1977).
+</notes>
+</table><!-- end table merlinCatalog -->
+
+</DataCenterMetadata>
