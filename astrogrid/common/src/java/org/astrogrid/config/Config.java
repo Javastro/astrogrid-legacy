@@ -1,5 +1,5 @@
 /*
- * $Id: Config.java,v 1.4 2003/11/24 21:01:17 nw Exp $
+ * $Id: Config.java,v 1.5 2003/11/25 17:25:39 jdt Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -12,7 +12,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 
 import javax.naming.Context;
@@ -52,7 +51,7 @@ public abstract class Config
               Context javaContext = (Context)initCtx.lookup("java:comp/env");
               o = javaContext.lookup(jndiName);
           }
-          configUrl = 
+          
           if (o instanceof URL) {                            
                 configUrl = (URL) o;             
           } else if (o instanceof String) {
