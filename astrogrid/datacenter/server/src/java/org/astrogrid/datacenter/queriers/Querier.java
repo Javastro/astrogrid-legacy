@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.23 2004/02/24 16:13:23 mch Exp $
+ * $Id: Querier.java,v 1.24 2004/02/24 19:12:39 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -180,21 +180,21 @@ public abstract class Querier implements Runnable {
     * specified in the input document.
     */
    public void run() {
+      log.info("Starting Query ["+id+"] asynchronously...");
+      
       try {
-      setStatus(QueryStatus.CONSTRUCTED);
-
-      //test the destination is OK for this user, etc, before doing query
+         //test the destination is OK for this user, etc, before doing query
          testResultsDestination();
          
-      QueryResults results = doQuery();
+         QueryResults results = doQuery();
          
-      setStatus(QueryStatus.RUNNING_RESULTS);
+         setStatus(QueryStatus.RUNNING_RESULTS);
          
-      //send the results to the desstinateion
+         //send the results to the desstinateion
          sendResults(results);
-        
-      setStatus(QueryStatus.FINISHED);
-      
+         
+         setStatus(QueryStatus.FINISHED);
+         
       }
       catch (QueryException e) {
          log.error("Could not construct query in spawned thread ",e);
@@ -204,14 +204,12 @@ public abstract class Querier implements Runnable {
          log.error("Could not access database in spawned thread ",e);
          setErrorStatus(e);
       }
-      catch (IOException e) {
-         log.error("Could not create file on myspace",e);
-         setErrorStatus(e);
-      }
       catch (Exception e) {
-         log.error("Myspace raised an undescriptive exception",e);
+         log.error("Exception",e);
          setErrorStatus(e);
       }
+      log.info("...Ending asynchronous Query ["+id+"]");
+      
    }
 
    /** Subclasses override this method to carry out the query.
@@ -261,6 +259,9 @@ public abstract class Querier implements Runnable {
          log.error("No results to send");
          throw new IllegalStateException("No results to send");
       }
+
+      log.info("Query ["+id+"] for "+user+", sending results to "+resultsDestination);
+      
       
       StoreClient myspace = StoreDelegateFactory.createDelegate(user, resultsDestination.getDelegateEndpoint().toString());
   
@@ -353,6 +354,9 @@ public abstract class Querier implements Runnable {
     * Synchronised as the queriers may be running under a different thread
     */
    public synchronized void setStatus(QueryStatus newStatus) {
+
+      log.info("Query ["+id+"] for "+user+", now "+newStatus);
+      
       if (status == QueryStatus.ERROR) {
          log.error(
             "Trying to start a step '"+newStatus+"' when the status is '"
@@ -439,6 +443,9 @@ public abstract class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.24  2004/02/24 19:12:39  mch
+ Added logging info trace
+
  Revision 1.23  2004/02/24 16:13:23  mch
  fix to allow no DefaultMySpace
 
