@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.2 2004/03/18 10:56:47 nw Exp $
+/*$Id: AllTests.java,v 1.3 2004/04/21 16:40:21 nw Exp $
  * Created on 04-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,15 +22,19 @@ public class AllTests {
     public static Test suite() {
         TestSuite suite = new TestSuite("Test for org.astrogrid.jes.jobscheduler.policy");
         //$JUnit-BEGIN$
-        suite.addTest(new TestSuite(LinearPolicyTest.class));
         suite.addTest(new TestSuite(FlowPolicyTest.class));
         suite.addTest(new TestSuite(JoinPolicyTest.class));
+        suite.addTest(new TestSuite(LinearPolicyTest.class));
+        suite.addTest(new TestSuite(FullPolicyTest.class));
         //$JUnit-END$
         return suite;
     }
 }
 /* 
 $Log: AllTests.java,v $
+Revision 1.3  2004/04/21 16:40:21  nw
+updated tests to exercise new policy implementations
+
 Revision 1.2  2004/03/18 10:56:47  nw
 added tests for other policy implementations
 
