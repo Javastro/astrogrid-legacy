@@ -1,5 +1,5 @@
 /*
- * $Id: DummySqlPlugin.java,v 1.5 2004/07/07 19:33:59 mch Exp $
+ * $Id: DummySqlPlugin.java,v 1.6 2004/07/12 23:26:51 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -49,14 +49,17 @@ public class DummySqlPlugin extends JdbcPlugin
       SimpleConfig.setProperty(SqlMaker.CONE_SEARCH_DEC_COL_KEY,"DEC");
       SimpleConfig.setProperty(SqlMaker.CONE_SEARCH_TABLE_KEY,  "SampleStars");
       
+      SimpleConfig.setProperty(SqlMaker.DB_TRIGFUNCS_IN_RADIANS, "True");
+
+      SimpleConfig.setProperty(SqlMaker.DB_COLS_IN_RADIANS, "False");
+      
       //set up properties so we connect to the db
       SimpleConfig.setProperty(JdbcConnections.JDBC_DRIVERS_KEY, "org.hsqldb.jdbcDriver");
 //      SimpleConfig.setProperty(JdbcConnections.JDBC_URL_KEY, "jdbc:hsqldb:."); //in memory db - doesn't seem to persist between calls...
       SimpleConfig.setProperty(JdbcConnections.JDBC_URL_KEY, "jdbc:hsqldb:dummydb"); //db on disk
       SimpleConfig.setProperty(JdbcConnections.JDBC_USER_KEY, "sa");
       SimpleConfig.setProperty(JdbcConnections.JDBC_PASSWORD_KEY, "");
-      
-   }
+    }
    
 
    /** Creates & populates the in-memory database.
@@ -93,16 +96,34 @@ public class DummySqlPlugin extends JdbcPlugin
       try {
          //create table
          connection.createStatement().execute(
-            "CREATE TABLE SampleStars (Id INTEGER IDENTITY,  Ra DOUBLE,  Dec DOUBLE,  Mag DOUBLE)  "
+            "CREATE TABLE SampleStars (Id INTEGER IDENTITY,  Name VARCHAR(30), Ra DOUBLE,  Dec DOUBLE,  Mag DOUBLE)  "
          );
          
          //add stars
          for (int i=0;i<20;i++) {
             connection.createStatement().execute(
-               "INSERT INTO SampleStars VALUES ("+i+", "+(30+i*2)+", "+(30-i*2)+", "+i+")"
+               "INSERT INTO SampleStars VALUES ("+i+", 'A star', "+(30+i*2)+", "+(30-i*2)+", "+i+")"
             );
          }
-      
+
+         //add false pleidies.  These are stars grouped < 0.3 degree across on ra=56.75, dec=23.867
+         int id=21;
+         connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Pleidies LE', 56.6, 23.65, 10)"); id++;
+         connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Pleidies RE', 56.9, 23.65, 10)"); id++;
+         connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Pleidies Nose', 56.75, 23.87, 8)"); id++;
+         connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Pleidies Grin', 56.5, 23.9, 12)"); id++;
+         connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Pleidies Grin', 56.7, 24.0, 12)"); id++;
+         connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Pleidies Grin', 56.8, 24.0, 12)"); id++;
+         connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Pleidies Grin', 57.0, 23.9, 12)"); id++;
+
+         //add stars that are outside the above group but nearby
+         connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Not Pleidies', 56.6, 23.6, 10)"); id++;
+         connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Not Pleidies', 56, 23, 5)"); id++;
+         connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Not Pleidies', 58, 24.5, 5)"); id++;
+         connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Not Pleidies', 56, 24.5, 5)"); id++;
+         connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Not Pleidies', 58, 23, 5)"); id++;
+         
+         
          //populate galaxies
          //create table
          connection.createStatement().execute(
@@ -161,6 +182,9 @@ public class DummySqlPlugin extends JdbcPlugin
 }
    /*
    $Log: DummySqlPlugin.java,v $
+   Revision 1.6  2004/07/12 23:26:51  mch
+   Fixed (somewhat) SQL for cone searches, added tests to Dummy DB
+
    Revision 1.5  2004/07/07 19:33:59  mch
    Fixes to get Dummy db working and xslt sheets working both for unit tests and deployed
 

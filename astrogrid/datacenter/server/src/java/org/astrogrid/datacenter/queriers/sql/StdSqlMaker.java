@@ -1,4 +1,4 @@
-/*$Id: StdSqlMaker.java,v 1.10 2004/07/12 14:12:04 mch Exp $
+/*$Id: StdSqlMaker.java,v 1.11 2004/07/12 23:26:51 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,6 @@
 package org.astrogrid.datacenter.queriers.sql;
 
 import java.io.BufferedInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.StringTokenizer;
@@ -30,6 +29,7 @@ import org.astrogrid.datacenter.queriers.sql.deprecated.SqlQuerierSPI;
 import org.astrogrid.datacenter.query.AdqlQuery;
 import org.astrogrid.datacenter.query.ConeQuery;
 import org.astrogrid.datacenter.query.QueryException;
+import org.astrogrid.datacenter.sky.Angle;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Element;
 
@@ -62,24 +62,115 @@ public class StdSqlMaker  extends SqlMaker {
       String raCol  = alias+"."+SimpleConfig.getSingleton().getString(CONE_SEARCH_RA_COL_KEY);
       String decCol = alias+"."+SimpleConfig.getSingleton().getString(CONE_SEARCH_DEC_COL_KEY);
       
-      double ra  = query.getRa();
-      double dec = query.getDec();
-      double radius = query.getRadius();
+      Angle ra  = Angle.fromDegrees(query.getRa());
+      Angle dec = Angle.fromDegrees(query.getDec());
+      Angle radius = Angle.fromDegrees(query.getRadius());
       
       return "SELECT * FROM "+table+" as "+alias+
          " WHERE "+
-         //square - for quicker searches
-         "("+decCol+"<"+(dec+radius)+" AND "+decCol+">"+(dec-radius)+" AND"+
-         " "+ raCol+"<"+(ra +radius)+" AND "+ raCol+">"+(ra -radius)+")"+
-         " AND "+
          //circle
-         "((2 * ASIN( SQRT("+
-         "SIN(("+dec+"-"+decCol+")/2) * SIN(("+dec+"-"+decCol+")/2) +"+    //some sqls won't handle powers so multiply by self
-         "COS("+dec+") * COS("+decCol+") * "+
-         "SIN(("+ra+"-"+raCol+")/2) * SIN(("+ra+"-"+raCol+")/2)  "+ //some sqls won't handle powers so multiply by self
-      "))) < "+radius+")";
+         makeSqlCircleCondition(raCol, decCol, ra, dec, radius);
    }
       
+      
+   /** Returns the SQL condition expression for a circle.  This circle is
+    * 'flat' on the sphere, when vieweing the sphere from the center.  ie, the
+    * radius is a declination angle from the given RA & DEC point.  This means
+    * the circle is distorted in coordinate space
+    */
+   public String makeSqlCircleCondition(String raCol, String decCol, Angle ra, Angle dec, Angle radius) {
+      //Some db functions take radians, some degrees.  Fail if the config is not
+      //specified, so we force people to get it right...
+      boolean funcsInRads = SimpleConfig.getSingleton().getBoolean(DB_TRIGFUNCS_IN_RADIANS);
+
+      boolean colsInRads = SimpleConfig.getSingleton().getBoolean(DB_COLS_IN_RADIANS);
+      
+      String raColDeg = raCol;
+      String decColDeg = decCol;
+      String raColRad = raCol;
+      String decColRad = decCol;
+
+      if (colsInRads) {
+         raColDeg = "DEGREES("+raCol+")";
+         decColDeg = "DEGREES("+decCol+")";
+      } else {
+         raColRad = "RADIANS("+raCol+")";
+         decColRad = "RADIANS("+decCol+")";
+      }
+      
+      //start with a square - for quicker searches
+      String sql = makeSqlBoundsCondition(raCol, decCol, ra, dec, radius) + " AND ";
+
+      //if we are 'some distance' from the poles we can just pythagoros
+      if (radius.asDegrees()<1) {
+         return sql+
+            "( "+
+            "(POWER("+decCol+" - "+dec.asDegrees()+", 2)"+
+            "+"+
+            "POWER("+raCol+" - "+ra.asDegrees()+", 2))"+
+            " < "+
+            "POWER("+radius.asDegrees()+", 2) "+
+            ")";
+      }
+
+      if (funcsInRads) {
+         return sql+"("+
+            "ACOS(SIN("+decColRad+") * SIN("+dec.asRadians()+") + COS("+decColRad+") * COS("+dec.asRadians()+") * COS("+raColRad+" - "+ra.asRadians()+"))"+
+            " < "+radius.asRadians()+
+            ")";
+      }
+      else {
+         return sql+"("+
+            "ACOS(SIN("+decColDeg+") * SIN("+dec.asDegrees()+") + COS("+decColDeg+") * COS("+dec.asDegrees()+") * COS("+raColDeg+" - "+ra.asDegrees()+"))"+
+            " < "+radius.asDegrees()+
+            ")";
+      }
+   }
+      
+   /** Returns the SQL condition expression for a rectangle <i>in coordinate space</i>.
+    * Use this when doing polygon/circle searches on reasonably small areas, to provide
+    * some easy-to-check bounds for the db before it has to get on to the trig.
+    * @param raCol, decCol - the column names that contain the RA & DEC values of the objects
+    */
+   public String makeSqlBoundsCondition(String raCol, String decCol, Angle ra, Angle dec, Angle radius) {
+
+      boolean colsInRadians = SimpleConfig.getSingleton().getBoolean(DB_COLS_IN_RADIANS);
+   
+      
+      if (dec.asDegrees() - radius.asDegrees() < 0) {
+         //circle includes north pole.  Add bounds as just a dec limit.
+         if (colsInRadians) {
+            return "("+decCol+"<"+(dec.asRadians()+radius.asRadians())+")";
+         } else {
+            return "("+decCol+"<"+(dec.asDegrees()+radius.asDegrees())+")";
+         }
+      }
+
+      if (dec.asDegrees() + radius.asDegrees() > 180) {
+         //circle includes south pole. Add bounds as just a dec limit
+         if (colsInRadians) {
+            return "("+decCol+">"+(dec.asRadians()-radius.asRadians())+")";
+         } else {
+            return "("+decCol+">"+(dec.asDegrees()-radius.asDegrees())+")";
+         }
+      }
+
+      //work out ra angle on sky at center point.
+      Angle raWidth = new Angle( radius.asDegrees() / Math.cos(dec.asRadians()));
+
+      if (colsInRadians) {
+         return "("+decCol+"<"+(dec.asRadians()+radius.asRadians())+" AND "+decCol+">"+(dec.asRadians()-radius.asRadians())+" AND"+
+                  " "+ raCol+"<"+(ra.asRadians()+raWidth.asRadians())+" AND "+ raCol+">"+(ra.asRadians() -raWidth.asRadians())+")";
+      } else {
+         return "("+decCol+"<"+(dec.asDegrees()+radius.asDegrees())+" AND "+decCol+">"+(dec.asDegrees()-radius.asDegrees())+" AND"+
+                  " "+ raCol+"<"+(ra.asDegrees()+raWidth.asDegrees())+" AND "+ raCol+">"+(ra.asDegrees() -raWidth.asDegrees())+")";
+      }
+      
+      
+   }
+      
+   
+   
    /** Returns the SQL suitable for doing a cone query on HTM-indexed catalogue */
    public String getHtmSql(ConeQuery query) {
       throw new UnsupportedOperationException();
@@ -173,7 +264,7 @@ public class StdSqlMaker  extends SqlMaker {
       xsltDoc = SimpleConfig.getSingleton().getString(key, xsltDoc);
       
       if (xsltDoc == null) {
-         throw new RuntimeException("No XSLT sheet given for ADQL; set configuration key '" + key+"'");
+         throw new RuntimeException("No XSLT sheet given for ADQL (namespace '"+namespaceURI+"'); set configuration key '" + key+"'");
       }
 
       Transformer transformer = null;
@@ -217,10 +308,10 @@ public class StdSqlMaker  extends SqlMaker {
          return sql;
       }
       catch (TransformerConfigurationException tce) {
-         throw new QueryException("Server not setup correctly, could not find/use xslt sheet "+xsltDoc,tce);
+         throw new QueryException(tce+" (using xslt sheet "+xsltDoc+")",tce);
       }
       catch (TransformerException te) {
-         throw new QueryException("Error translating ADQL->SQL using "+xsltDoc,te);
+         throw new QueryException(te+" translating ADQL->SQL using "+xsltDoc,te);
       }
 
    }
@@ -278,6 +369,9 @@ public class StdSqlMaker  extends SqlMaker {
 
 /*
 $Log: StdSqlMaker.java,v $
+Revision 1.11  2004/07/12 23:26:51  mch
+Fixed (somewhat) SQL for cone searches, added tests to Dummy DB
+
 Revision 1.10  2004/07/12 14:12:04  mch
 Fixed ADQL 0.7.4 xslt
 
