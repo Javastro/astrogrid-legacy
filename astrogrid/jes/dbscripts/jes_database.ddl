@@ -30,7 +30,8 @@ create table job (
 	SUBMITTIMESTAMP                 char(32)                         not null  ,
 	USERID                          char(32)                         not null  ,
 	COMMUNITY                       char(32)                         not null  ,
-	JOBXML                          text		                     not null   
+	JOBXML                          text		                     not null  ,
+	DESCRIPTION						varchar(128)					 	 null 
 )
 lock allpages
 with exp_row_size = 1 on 'default'
@@ -57,7 +58,9 @@ create table jobstep (
 	STEPNUMBER                      char(16)                         not null  ,
 	STEPNAME                        char(32)                             null  ,
 	STATUS                          char(32)                         not null  ,
-	COMMENT                         varchar(128)                         null   
+	COMMENT                         varchar(128)                         null  ,
+	SEQUENCENUMBER					char(32)						 not null  ,
+	JOINCONDITION					char(16)						 not null 
 )
 lock allpages
  on 'default'
