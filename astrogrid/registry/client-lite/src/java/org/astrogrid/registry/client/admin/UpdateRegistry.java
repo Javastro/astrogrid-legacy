@@ -156,26 +156,6 @@ public class UpdateRegistry implements RegistryAdminService {
           root.appendChild(update.getDocumentElement());
           update.appendChild(root);
        
-      
-      /*
-      try {
-         registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-         doc = registryBuilder.newDocument();
-         //Element root = doc.createElementNS(NAMESPACE_URI,"update");
-         Element root = doc.createElementNS(NAMESPACE_URI,"Update");
-         doc.appendChild(root);
-         Node nd = doc.importNode(update.getDocumentElement(),true);
-         root.appendChild(nd);
-      }catch(ParserConfigurationException pce){
-         doc = null;
-         pce.printStackTrace();
-      }
-      
-      if(doc == null) {
-         System.out.println("doc was null for some reason in update");
-         return null;   
-      }
-      */
       //Get the CAll.  
       Call call = getCall(); 
       
@@ -197,13 +177,12 @@ public class UpdateRegistry implements RegistryAdminService {
          }
       }catch(RemoteException re) {
          resultDoc = null;
-         re.printStackTrace();
+         throws RegistryException(re);
       }catch (Exception e) {
          resultDoc = null;
-         e.printStackTrace();
-      }finally {
-         return resultDoc;
+         throws RegistryException(e);
       }
+      return resultDoc;
    }
    
    public Document updateFromFile(File fi) throws RegistryException {
