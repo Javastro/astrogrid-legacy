@@ -1,4 +1,4 @@
-/*$Id: MySpaceTest.java,v 1.1 2004/03/04 19:06:04 jdt Exp $
+/*$Id: MySpaceTest.java,v 1.2 2004/03/12 23:55:04 jdt Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -7,82 +7,24 @@
  * Software License version 1.2, a copy of which has been included
  * with this distribution in the LICENSE.txt file.
  *
-**/
+ */
 package org.astrogrid.integrationtest.store;
 
-import org.astrogrid.store.delegate.*;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import junit.framework.Test;
-import junit.framework.TestSuite;
-import org.astrogrid.community.User;
-import org.astrogrid.store.Agsl;
+import junit.framework.TestCase;
 
 /** Tests the automatically deployed myspace on VM07
  *
  * @author mch
  */
 
-public class MySpaceTest extends StoreClientTest {
-
-   private static final String USER = "Me";
-   private static final String COMMUNITY ="Us";
-   private static final String CERTIFIED = "Loony";
-
-   public static final String MYSPACE = "http://vm05.astrogrid.org:8080/astrogrid-mySpace/services/MySpaceManager";
-
-   public void testStoreAccess() throws IOException
-   {
-      assertStoreAccess(new MySpaceIt04Delegate(User.ANONYMOUS, MYSPACE), new MySpaceIt04Delegate(User.ANONYMOUS, MYSPACE), new LocalFileStore());
-   }
-
-   /** Tests getFile etc - if these are failing the rest of the tests might
-    * not make much sense.  This is a bit of a combined one anyway... */
-   public void testGetFile() throws IOException
-   {
-      assertGetFileWorks(new MySpaceIt04Delegate(User.ANONYMOUS, MYSPACE));
-   }
-
-   /** Tests making folders and paths and stuff.  A bit
-    */
-   public void testFolders() throws IOException {
-      assertFoldersWork(new MySpaceIt04Delegate(User.ANONYMOUS, MYSPACE));
-      
-   }
-   
-   public void testMove() throws IOException
-   {
-      assertMove(new MySpaceIt04Delegate(User.ANONYMOUS, MYSPACE), new Agsl(MYSPACE, path+COPY_TEST ));
-   }
-
-   public void testCopy() throws IOException
-   {
-      assertCopy(new MySpaceIt04Delegate(User.ANONYMOUS, MYSPACE), new Agsl(MYSPACE, path+COPY_TEST));
-   }
-   
-   public void testDelete() throws IOException {
-      assertDelete(new MySpaceIt04Delegate(User.ANONYMOUS, MYSPACE));
-   }
-   
-    /**
-     * Assembles and returns a test suite made up of all the testXxxx() methods
-      * of this class.
+public final class MySpaceTest extends TestCase {
+    /** 
+     * reminder to jdt and mch to reinstate this
+     * @TODO reinstate this test
+     *
      */
-    public static Test suite() {
-        // Reflection is used here to add all the testXXX() methods to the suite.
-        return new TestSuite(MySpaceTest.class);
-    }
-
-    /**
-     * Runs the test case.
-     */
-    public static void main(String args[])
-    {
-       path = "avodemo@test.astrogrid.org/serv1/mch/";
-       
-       junit.textui.TestRunner.run(suite());
+    public void testIFail(){
+        fail();
     }
 
 }
@@ -90,6 +32,9 @@ public class MySpaceTest extends StoreClientTest {
 
 /*
 $Log: MySpaceTest.java,v $
+Revision 1.2  2004/03/12 23:55:04  jdt
+temp changes to get the project building
+
 Revision 1.1  2004/03/04 19:06:04  jdt
 Package name changed to lower case to satisfy coding standards.  mea culpa - didn't read the Book.  Tx Martin.
 

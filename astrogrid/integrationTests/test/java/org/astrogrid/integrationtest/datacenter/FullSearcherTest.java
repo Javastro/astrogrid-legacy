@@ -1,4 +1,4 @@
-/*$Id: FullSearcherTest.java,v 1.1 2004/03/04 19:06:04 jdt Exp $
+/*$Id: FullSearcherTest.java,v 1.2 2004/03/12 23:55:04 jdt Exp $
  * Created on 22-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,8 +24,7 @@ import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.delegate.DatacenterQuery;
 import org.astrogrid.datacenter.delegate.DatacenterResults;
 import org.astrogrid.datacenter.delegate.FullSearcher;
-import org.astrogrid.datacenter.delegate.Metadata;
-import org.astrogrid.datacenter.query.QueryStatus;
+import org.astrogrid.datacenter.query.QueryState;
 import org.astrogrid.integrationtest.common.ConfManager;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -65,14 +64,19 @@ public class FullSearcherTest extends TestCase {
    protected Element queryElement;
    protected URL myspaceEndpoint;
    
-   /** test we can get the metadata from the server. not much we can test here */
+   /** 
+    * test we can get the metadata from the server. not much we can test here 
+    * @TODO fix me
+    */
    public void testGetMetadata() throws Exception {
-      Metadata m = delegate.getMetadata();
+  /*    Document m = delegate.getMetadata();
       assertNotNull("metadata was null",m);
       Document doc = m.getDocument();
       assertNotNull("document in metadata was null",doc);
       Element voreg = m.getVoRegistryMetadata();
       assertNotNull("no voregistry element in metadata",voreg); // check merlin dataserver has a voregistry entry.
+      */
+       fail("fix me");
    }
    
    /** test the count query method. expect this to fail at the moment - don't think the server implements this yet*/
@@ -116,14 +120,14 @@ public class FullSearcherTest extends TestCase {
       assertEquals(QueryStatus.CONSTRUCTED,stat);
       */
       q.start();
-      QueryStatus stat = q.getStatus();
-      assertTrue("Status is" + stat.getText(),! stat.isBefore(QueryStatus.CONSTRUCTED));
+      QueryState stat = q.getStatus();
+      assertTrue("Status is" + stat.getText(),! stat.isBefore(QueryState.CONSTRUCTED));
       DatacenterResults results = null;
       do {         
          stat = q.getStatus();
          results = q.getResultsAndClose();
          if (results == null) {
-            assertTrue("Status is" + stat.getText(),stat.isBefore(QueryStatus.FINISHED));
+            assertTrue("Status is" + stat.getText(),stat.isBefore(QueryState.FINISHED));
          }
       } while (results == null /* need some extra timout here too */);
       assertNotNull("query timed out",results);
@@ -149,6 +153,9 @@ public class FullSearcherTest extends TestCase {
 
 /* 
 $Log: FullSearcherTest.java,v $
+Revision 1.2  2004/03/12 23:55:04  jdt
+temp changes to get the project building
+
 Revision 1.1  2004/03/04 19:06:04  jdt
 Package name changed to lower case to satisfy coding standards.  mea culpa - didn't read the Book.  Tx Martin.
 

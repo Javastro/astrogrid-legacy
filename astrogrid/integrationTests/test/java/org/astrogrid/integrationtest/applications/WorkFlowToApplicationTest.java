@@ -1,5 +1,5 @@
 /*
- * $Id: WorkFlowToApplicationTest.java,v 1.1 2004/03/04 19:06:04 jdt Exp $
+ * $Id: WorkFlowToApplicationTest.java,v 1.2 2004/03/12 23:55:04 jdt Exp $
  * 
  * Created on 07-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -222,8 +222,8 @@ public class WorkFlowToApplicationTest extends TestCase {
       //submit the job....
          
       JobController jobcon = JesDelegateFactory.createJobController(ConfManager.getInstance().getJobControllerEndPoint());  
-      
-      jobcon.submitJob(workflow);      
+      //@TODO reinstate this - breaks build
+      //jobcon.submitJob(workflow);      
  
    }
 
@@ -232,6 +232,14 @@ public class WorkFlowToApplicationTest extends TestCase {
     */
    private String communitySnippet() {
       return user.toSnippet();
+   }
+   
+   /**
+    * Remind us to deal with this
+    * @TODO fix me
+    */
+   public void testIFail() {
+       fail("This test class needs bringing up to date");
    }
 
 }

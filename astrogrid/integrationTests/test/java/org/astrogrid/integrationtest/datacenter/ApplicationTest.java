@@ -1,4 +1,4 @@
-/*$Id: ApplicationTest.java,v 1.1 2004/03/04 19:06:04 jdt Exp $
+/*$Id: ApplicationTest.java,v 1.2 2004/03/12 23:55:04 jdt Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,21 +12,30 @@ package org.astrogrid.integrationtest.datacenter;
 
 import java.util.Date;
 import junit.framework.Test;
+import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.astrogrid.applications.delegate.ApplicationController;
 import org.astrogrid.applications.delegate.beans.ParameterValues;
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.integrationtest.store.MySpaceTest;
-import org.astrogrid.store.delegate.StoreClientTest;
-
+//import org.astrogrid.store.delegate.StoreClientTest;
+ 
 /** Tests the ApplicationController interface to a datacenter
- *
+ * //@TODO reinstate this
  * @author mch
  */
 
-public class ApplicationTest extends StoreClientTest {
+public class ApplicationTest extends TestCase {//extends StoreClientTest {
 
+    /**
+     * Reminder to self
+     * @TODO fix this test
+     */
+    public void testIFail() {
+        fail("fix me");
+    }
+    
    public static final String VM07_PAL = "http://vm07.astrogrid.org:8080/pal/services/AxisDataServer";
    
    public void testVm07() throws Exception {
@@ -70,7 +79,7 @@ public class ApplicationTest extends StoreClientTest {
      */
     public static void main(String args[])
     {
-       path = "avodemo@test.astrogrid.org/serv1/mch/";
+//       path = "avodemo@test.astrogrid.org/serv1/mch/";
        
        junit.textui.TestRunner.run(suite());
     }
@@ -80,6 +89,9 @@ public class ApplicationTest extends StoreClientTest {
 
 /*
 $Log: ApplicationTest.java,v $
+Revision 1.2  2004/03/12 23:55:04  jdt
+temp changes to get the project building
+
 Revision 1.1  2004/03/04 19:06:04  jdt
 Package name changed to lower case to satisfy coding standards.  mea culpa - didn't read the Book.  Tx Martin.
 
