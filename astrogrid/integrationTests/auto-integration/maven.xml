@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.111 2004/09/20 14:59:10 pah Exp $ -->
+<!-- $Id: maven.xml,v 1.112 2004/09/21 09:40:47 pah Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -432,7 +432,10 @@
         target="database.load"
         dir="${temporary.dir}/community/toolkit"
         antfile="${temporary.dir}/community/toolkit/install.xml"
-        />
+        >
+		<!-- load the community from a file local to the autointegration rather than out of the community install kit -->
+		<property name="community.xmlfile" value="file:///${work.dir}/community/demoaccounts.xml"/>
+		</ant>
 </goal>
 
 <!--+
