@@ -1,4 +1,6 @@
 <VODescription xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+<!-- Note that this is in TWO places - in the classes directory for deployment, and
+also the package with SampleStarsMetaServer in, for unit tests -->
 <Resource xsi:type="RdbmsMetadata">
    <ProductName>HSQL Database Engine</ProductName>
    <Version>1.7.1</Version>
