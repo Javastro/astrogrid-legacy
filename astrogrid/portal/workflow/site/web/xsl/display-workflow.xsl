@@ -34,13 +34,14 @@
                             <xsl:attribute name="size">40</xsl:attribute>
                             <xsl:attribute name="value"><xsl:value-of select="@workflow-name"/></xsl:attribute>
                             <xsl:attribute name="name">workflow-name</xsl:attribute>
-                            <xsl:attribute name="id">open-workflow-agsl</xsl:attribute>
                         </xsl:element>           
                     </td>
-                    <td rowspan="2">
+                    <td rowspan="2">                        
                         <input type="submit" name="action" value="add-name-description" />
                     </td>
                     <td>
+                        ivorn:<input type="text" name="workflow-ivorn" id="open-workflow-ivorn"/>
+                        agsl:<input type="text" name="save-workflow-agsl" id="save-workflow-agsl"/>                        
                         <input type="submit" name="action" value="read-workflow" />                        
                     </td>                                
                 </tr>
@@ -55,8 +56,8 @@
                         </xsl:element>                  
                     </td>
                     <td>
-                        <input type="hidden" name="workflow-ivorn" id="workflow-ivorn"/>
-                        <input type="hidden" name="save-workflow-agsl" id="save-workflow-agsl"/>
+                        ivorn:<input type="text" name="workflow-ivorn" id="save-workflow-ivorn"/>
+                        agsl:<input type="text" name="save-workflow-agsl" id="save-workflow-agsl"/>
                         <input type="submit" name="action" value="save-workflow"/>                                                                       
                     </td>
                 </tr>
