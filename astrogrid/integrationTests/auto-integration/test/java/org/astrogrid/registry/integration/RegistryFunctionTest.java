@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryFunctionTest.java,v 1.10 2004/08/17 13:27:25 KevinBenson Exp $
+ * $Id: RegistryFunctionTest.java,v 1.11 2004/08/18 15:22:52 pah Exp $
  * 
  * Created on 07-May-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -77,8 +77,8 @@ public class RegistryFunctionTest extends RegistryBaseTest {
       Document doc = delegate.getResourceByIdentifier(new Ivorn("ivo://"+AUTHORITY_ID+"/"+"SExtractor"));
       assertNotNull("failed to retrieve a known registry entry",doc);
       XMLUtils.DocumentToStream(doc,System.out);
-      //NodeList nodelst = doc.getDocumentElement().getChildNodes();
-      //assertEquals("There should only be one entry returned for getResourceByIdentifierDOM",1, nodelst.getLength());
+      NodeList nodelst = doc.getElementsByTagNameNS( "http://www.ivoa.net/xml/VOResource/v0.9", "Resource");
+      assertEquals("There should be exactly one entry returned for getResourceByIdentifierDOM",1, nodelst.getLength());
    }
    //TODO need tests for the other types of
 
