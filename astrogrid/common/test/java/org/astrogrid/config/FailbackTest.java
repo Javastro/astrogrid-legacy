@@ -1,5 +1,5 @@
 /*
- * $Id: FailbackTest.java,v 1.4 2004/03/06 22:22:17 mch Exp $
+ * $Id: FailbackTest.java,v 1.5 2004/03/31 11:00:07 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -15,6 +15,7 @@ package org.astrogrid.config;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Set;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -58,7 +59,7 @@ public class FailbackTest extends TestCase
     * Some keys are valid, some are not - this tests that the assertions for
     * invalid keys are working
     */
-   public void testPropertyKeys()
+   public void testPropertyKeysValid()
    {
       FailbackConfig config = new FailbackConfig(FailbackTest.class);
          
@@ -80,6 +81,15 @@ public class FailbackTest extends TestCase
       }
       catch (AssertionError ae) {}
          
+   }
+
+   /**
+    * Gets all the keys
+    */
+   public void testKeySet() {
+      FailbackConfig config = new FailbackConfig(FailbackTest.class);
+      
+      Set keys = config.keySet();
    }
    
    /**
@@ -235,6 +245,9 @@ public class FailbackTest extends TestCase
 
 /*
  $Log: FailbackTest.java,v $
+ Revision 1.5  2004/03/31 11:00:07  mch
+ Added keySet()
+
  Revision 1.4  2004/03/06 22:22:17  mch
  Added resolveFile
 

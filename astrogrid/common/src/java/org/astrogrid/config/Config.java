@@ -1,5 +1,5 @@
 /*
- * $Id: Config.java,v 1.22 2004/03/10 02:15:34 mch Exp $
+ * $Id: Config.java,v 1.23 2004/03/31 11:00:14 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -10,10 +10,10 @@ package org.astrogrid.config;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Set;
 import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -57,6 +57,9 @@ public abstract class Config {
    /** Writes out the configuration keys and values to the given Writer. Used
     * for site debugging.  Remember that passwords should be hidden... */
    public abstract void dumpConfig(Writer out);
+   
+   /** Returns a list of the keys */
+   public abstract Set keySet();
    
    /**
     * Adds the given string to the list of places the values are being found

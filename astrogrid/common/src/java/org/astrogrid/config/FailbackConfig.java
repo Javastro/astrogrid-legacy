@@ -1,5 +1,5 @@
 /*
- * $Id: FailbackConfig.java,v 1.18 2004/03/12 13:22:34 mch Exp $
+ * $Id: FailbackConfig.java,v 1.19 2004/03/31 11:00:14 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -9,6 +9,8 @@
 
 package org.astrogrid.config;
 
+import java.util.*;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -16,9 +18,6 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Properties;
 import javax.naming.InitialContext;
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
@@ -450,6 +449,43 @@ public class FailbackConfig extends Config {
    }
 
    /**
+    * Returns a list of keys.  This list is made up of the values in the
+    * cache, JNDI, properties file and system environment keys; note that duplicate
+    * keys will be hidden.
+    */
+   public Set keySet() {
+
+      if (!jndiInitialised) { initialiseJndi(); }
+      if (!fileInitialised) { initialiseFile(); }
+      
+      Set allKeys = new HashSet();
+      
+      //cache
+      allKeys.addAll(cache.keySet());
+
+      //jndi
+      if (jndiContext != null) {
+         try {
+            Hashtable jndi = jndiContext.getEnvironment();
+            allKeys.addAll(jndi.keySet());
+         }
+         catch (NamingException ne) {
+            throw new ConfigException("Getting Environment from "+jndiContext,ne);
+         }
+      }
+      
+      //property files
+      if (properties != null) {
+         allKeys.addAll(properties.keySet());
+      }
+
+      //sys env
+      allKeys.addAll(System.getProperties().keySet());
+
+      return allKeys;
+   }
+   
+   /**
     * Dumps config contents
     */
    public void dumpConfig(Writer writer)  {
@@ -559,6 +595,9 @@ public class FailbackConfig extends Config {
 }
 /*
 $Log: FailbackConfig.java,v $
+Revision 1.19  2004/03/31 11:00:14  mch
+Added keySet()
+
 Revision 1.18  2004/03/12 13:22:34  mch
 Fix for null setProperty value
 
