@@ -7,9 +7,10 @@
 
 <xsp:page language="java"
 	  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-          xmlns:xsp="http://apache.org/xsp"
+      xmlns:xsp="http://apache.org/xsp"
 	  xmlns:util="http://apache.org/xsp/util/2.0"
-          xmlns:jpath="http://apache.org/xsp/jpath/1.0"
+      xmlns:jpath="http://apache.org/xsp/jpath/1.0"
+      xmlns:xsp-session="http://apache.org/xsp/session/2.0"
 	  xmlns:xsp-request="http://apache.org/xsp/request/2.0">
   
   <AstroGrid>
