@@ -1,5 +1,5 @@
 /*
- $Id: EscEnterListener.java,v 1.3 2004/04/15 16:34:53 mch Exp $
+ $Id: EscEnterListener.java,v 1.4 2005/03/29 16:26:45 mch Exp $
  */
 
 package org.astrogrid.ui;
@@ -86,7 +86,7 @@ public class EscEnterListener extends KeyAdapter
             }
          );
 
-      if (disposeOnCancel)
+      if ((disposeOnCancel) && (cancelBtn != null))
       {
          //add standard dispose-window to cancel button
          cancelBtn.addActionListener(
@@ -163,6 +163,9 @@ public class EscEnterListener extends KeyAdapter
 
 /**
  $Log: EscEnterListener.java,v $
+ Revision 1.4  2005/03/29 16:26:45  mch
+ Fix in case of null cancel button
+
  Revision 1.3  2004/04/15 16:34:53  mch
  Tidied up, introduced stuff from datacenter ui
 
