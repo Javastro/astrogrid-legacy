@@ -1,5 +1,5 @@
 /*
-   $Id: JPasteButton.java,v 1.1 2004/02/17 16:04:06 mch Exp $
+   $Id: JPasteButton.java,v 1.1 2004/03/03 17:40:58 mch Exp $
 
 */
 
@@ -81,6 +81,9 @@ public class JPasteButton extends JButton implements ActionListener
 
 /*
 $Log: JPasteButton.java,v $
+Revision 1.1  2004/03/03 17:40:58  mch
+Moved ui package
+
 Revision 1.1  2004/02/17 16:04:06  mch
 New Desktop GUI
 

@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceCommander.java,v 1.3 2004/03/02 01:33:24 mch Exp $
+ * $Id: MySpaceCommander.java,v 1.1 2004/03/03 17:40:58 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -163,6 +163,9 @@ public class MySpaceCommander
 
 /*
 $Log: MySpaceCommander.java,v $
+Revision 1.1  2004/03/03 17:40:58  mch
+Moved ui package
+
 Revision 1.3  2004/03/02 01:33:24  mch
 Updates from chagnes to StoreClient and Agsls
 

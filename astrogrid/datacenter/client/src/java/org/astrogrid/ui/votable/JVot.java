@@ -1,5 +1,5 @@
 /*
- * $Id: JVot.java,v 1.1 2004/02/17 16:04:06 mch Exp $
+ * $Id: JVot.java,v 1.1 2004/03/03 17:40:58 mch Exp $
  * Copyright 2003 AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid Software License,
@@ -105,6 +105,9 @@ public class JVot extends JTable
 }
 /*
 $Log: JVot.java,v $
+Revision 1.1  2004/03/03 17:40:58  mch
+Moved ui package
+
 Revision 1.1  2004/02/17 16:04:06  mch
 New Desktop GUI
 

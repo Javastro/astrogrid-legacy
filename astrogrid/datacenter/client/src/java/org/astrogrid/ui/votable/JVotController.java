@@ -1,5 +1,5 @@
 /*
- * $Id: JVotController.java,v 1.1 2004/02/17 16:04:06 mch Exp $
+ * $Id: JVotController.java,v 1.1 2004/03/03 17:40:58 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -148,6 +148,9 @@ public class JVotController implements ActionListener
 
 /*
 $Log: JVotController.java,v $
+Revision 1.1  2004/03/03 17:40:58  mch
+Moved ui package
+
 Revision 1.1  2004/02/17 16:04:06  mch
 New Desktop GUI
 
