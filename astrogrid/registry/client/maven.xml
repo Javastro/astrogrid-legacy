@@ -155,5 +155,14 @@
             </ant:fileset>
         </ant:copy>
     </preGoal>
+    
+	<postGoal name="test:compile">
+		<!--
+			Come back to this later
+    	<set var="org.astrogrid.config.filename" value="file:///c:/config.prop"/>
+    	<set var="maven.junit.sysproperties">org.astrogrid.config.filename</set>
+    	-->
+	</postGoal>    
+     
 
 </project>

@@ -17,9 +17,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import java.io.File;
 import org.xml.sax.InputSource;
-import org.astrogrid.registry.common.RegistryConfig;
 import org.astrogrid.registry.server.RegistryFileHelper;
 import org.astrogrid.registry.server.QueryParser3_0;
 import org.astrogrid.registry.server.query.RegistryService;
@@ -28,6 +26,9 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.Date;
+
+import org.astrogrid.config.Config;
+
 
 
 /**
@@ -44,6 +45,16 @@ import java.util.Date;
  */
 public class RegistryHarvestService implements
                       org.astrogrid.registry.common.RegistryHarvestInterface {
+  
+   private static final String HARVEST_TEMPLATE_URL_PROPERTY = "org.astrogrid.registry.harvest.template.url";
+  
+   public static Config conf = null;
+   
+   static {
+      if(conf == null) {
+         conf = org.astrogrid.config.SimpleConfig.getSingleton();
+      }      
+   }
   
   /**
     * Queries it's own registry for all the Registry entries and performs a harvest on those registries.
@@ -93,40 +104,45 @@ public class RegistryHarvestService implements
     * @return XML docuemnt object representing the result of the query. Used internally.
     * @author Kevin Benson 
     */  
-  public Document harvestFrom(Document query) {
-   //query the registry for all registries.
-   RegistryConfig.loadConfig();
-   File harvestQueryFile = RegistryConfig.getHarvestQueryTemplate();
-   DocumentBuilder registryBuilder = null;
-   DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-   Document queryResponseDoc = null;
-   try {
-      registryBuilder = dbf.newDocumentBuilder();
-      Document doc = registryBuilder.parse(harvestQueryFile);
-      queryResponseDoc = QueryParser3_0.parseFullNodeQuery(doc);
-   }catch(Exception e1) {
-      e1.printStackTrace();
-   }
-   
-   if(queryResponseDoc.hasChildNodes()) {
-      NodeList nl = queryResponseDoc.getChildNodes();
-      for(int i = 0;i < nl.getLength();i++) {
-         //DocumentFragment df = queryResponseDoc.createDocumentFragment();
-         //df.appendChild(nl.item(i));
-         try {
+   public Document harvestFrom(Document query) {
+      try {
+         NodeList nl = query.getElementsByTagName("date_since");
+         if(nl.getLength() == 0) {
+            return harvest(query);   
+         }
+         String updateVal = nl.item(0).getFirstChild().getNodeValue();
          
-         Document harvestedDoc = harvestCallableRegistry(nl.item(i));   
-         if(harvestedDoc != null) {
-            RegistryFileHelper.updateDocument(harvestedDoc,true, false);
+         //Probably should parse this with a date  and validat it is a date.
+                 
+         RegistryService rs = new RegistryService();         
+         Document registryDoc = rs.loadRegistry(null);
+        
+         NodeList regNL = registryDoc.getElementsByTagNameNS("http://www.ivoa.net/xml/VOResource/v0.9","ManagedAuthority");
+         String selectQuery = "<query><selectionSequence>" +
+             "<selection item='searchElements' itemOp='EQ' value='all'/>" +
+             "<selectionOp op='AND'/>" + 
+             "<selection item='@updated' itemOp='AFTER' value='" + updateVal + "'/>";;
+         if(regNL.getLength() > 0) {
+            selectQuery +=  
+            "<selection item='AuthorityID' itemOp='EQ' value='" + regNL.item(0).getFirstChild().getNodeValue() + "'/>";
          }
-         }catch(Exception e) {
-            e.printStackTrace();               
+         for(int i = 1;i < regNL.getLength();i++) {
+            selectQuery += "<selectionOp op='OR'/>" +
+            "<selection item='AuthorityID' itemOp='EQ' value='" + regNL.item(i).getFirstChild().getNodeValue() + "'/>";
          }
-      }            
-   }
-   //go through each registry caling harvestRegistry below.
-   return null;
-  }  
+         selectQuery += "</selectionSequence></query>";      
+         Reader reader2 = new StringReader(selectQuery);
+         InputSource inputSource = new InputSource(reader2);
+         DocumentBuilder registryBuilder = null;
+         registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+         Document doc = registryBuilder.parse(inputSource);
+         Document responseDoc = QueryParser3_0.parseFullNodeQuery(doc);
+         return responseDoc;
+      }catch(Exception e) {
+        e.printStackTrace();
+      }   
+      return null;
+   }  
   
   /**
     * Grabs Registry entries from a DOM object and performs harvests on those registries. Normally the DOM
@@ -150,8 +166,7 @@ public class RegistryHarvestService implements
        * Get a modification date from the db for this resource entry if it is in our db.
        * Call beginHarvest(date,resource entry)
        *        
-       * 
-       
+       *       
        */      
        
       for(int i = 0;i < nl.getLength();i++) {

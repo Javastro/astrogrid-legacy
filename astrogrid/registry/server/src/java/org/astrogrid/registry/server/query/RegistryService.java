@@ -13,7 +13,12 @@ import java.io.StringReader;
 import org.xml.sax.InputSource;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
-import org.astrogrid.registry.common.RegistryConfig;
+import javax.xml.parsers.ParserConfigurationException;
+import org.xml.sax.SAXException;
+import java.io.IOException;
+
+import org.astrogrid.config.Config;
+
 
 /**
  * 
@@ -30,6 +35,18 @@ import org.astrogrid.registry.common.RegistryConfig;
 public class RegistryService implements
                              org.astrogrid.registry.common.RegistryInterface {
 
+
+   public static Config conf = null;
+   
+   private static final String AUTHORITYID_PROPERTY = "org.astrogrid.registry.authorityid";
+   
+   static {
+      if(conf == null) {
+         conf = org.astrogrid.config.SimpleConfig.getSingleton();
+      }      
+   }
+
+
    /**
    * submitQuery queries the registry with the same XML document used as fullNodeQuery, but
    * the response comes back in a different record key pair XML formatted document object.
@@ -41,7 +58,7 @@ public class RegistryService implements
    * @deprecated Being deprecated this method now only returns the full XML document.
    * @author Kevin Benson 
    */
-   public Document submitQuery(Document query) throws Exception {
+   public Document submitQuery(Document query) {
       Document registryDoc = null;
       System.out.println("received = " + XMLUtils.DocumentToString(query));    
       try {
@@ -53,7 +70,8 @@ public class RegistryService implements
    	}
       return registryDoc;
    }
-  
+
+/*  
    public Document harvestQuery(Document query) throws Exception {
       System.out.println("received = " + XMLUtils.DocumentToString(query));
       NodeList nl = query.getElementsByTagName("date_since");
@@ -91,30 +109,41 @@ public class RegistryService implements
       //System.out.println("the responsedoc in harvestQuery = " + XMLUtils.DocumentToString(responseDoc));
       return responseDoc;
    }
+  */
    
-   public Document loadRegistry(Document query) throws Exception {
+   public Document loadRegistry(Document query) {
       //System.out.println("received = " + XMLUtils.DocumentToString(query));
-      RegistryConfig.loadConfig();
-      String authorityID = RegistryConfig.getAuthorityID();
-      
+      String authorityID = conf.getString(AUTHORITYID_PROPERTY);
+      Document doc = null;
+      Document responseDoc = null;
       String selectQuery = "<query><selectionSequence>" +
       "<selection item='searchElements' itemOp='EQ' value='Registry'/>" +
       "<selectionOp op='$and$'/>" +
       "<selection item='AuthorityID' itemOp='CONTAINS' value='" + authorityID + "'/>" +
       "</selectionSequence></query>";
       
+      try {      
+         Reader reader2 = new StringReader(selectQuery);
+         InputSource inputSource = new InputSource(reader2);
+         DocumentBuilder registryBuilder = null;
+         registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+         doc = registryBuilder.parse(inputSource);
+      }catch(ParserConfigurationException pce) {
+         pce.printStackTrace();
+      }catch(IOException ioe) {
+         ioe.printStackTrace();
+      }catch(SAXException sax) {
+         sax.printStackTrace();
+      }
       
-      Reader reader2 = new StringReader(selectQuery);
-      InputSource inputSource = new InputSource(reader2);
-      DocumentBuilder registryBuilder = null;
-      registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-      Document doc = registryBuilder.parse(inputSource);
-      System.out.println("the select/harvest query = " + XMLUtils.DocumentToString(doc));
-      
-      Document responseDoc = QueryParser3_0.parseFullNodeQuery(doc);
-      System.out.println("the responsedoc in loadregistry = " + XMLUtils.DocumentToString(responseDoc));
+      if(doc != null) {
+         try {
+            responseDoc = QueryParser3_0.parseFullNodeQuery(doc);
+         }catch(ClassNotFoundException cfe) {
+            responseDoc = null;
+            cfe.printStackTrace();
+         }
+      }
       return responseDoc;
    }
-   
-  
 }

@@ -20,7 +20,6 @@ import java.util.Set;
 import java.util.LinkedList;
 import java.util.LinkedHashMap;
 import java.util.ArrayList;
-import org.astrogrid.registry.common.RegistryConfig;
 import org.astrogrid.registry.server.query.RegistryService;
 import org.astrogrid.registry.common.versionNS.IRegistryInfo;
 
@@ -28,6 +27,9 @@ import java.text.SimpleDateFormat;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import org.astrogrid.registry.common.RegistryHelper;
+
+import org.astrogrid.config.Config;
 
 
 
@@ -43,6 +45,13 @@ import java.util.Date;
  */
 public class RegistryFileHelper {
 
+
+   private static final String REGISTRY_VERSION_PROPERTY = "org.astrogrid.registry.version";
+   
+   private static final String REGISTRY_FILE_DOM_PROPERTY = "org.astrogrid.registry.file";   
+   
+   private static final String WRITEFILE_TIME_DELAY_MINUTES_PROPERTY = "org.astrogrid.registry.writefile.timedelay.minutes";
+
    /**
     * The main Registry Document.
     */   
@@ -57,11 +66,19 @@ public class RegistryFileHelper {
    private static HashMap manageAuthorities = null;
    
    private static Calendar nextWriteTime = null;
+   
+   public static Config conf = null;
+   
+   static {
+      if(conf == null) {
+         conf = org.astrogrid.config.SimpleConfig.getSingleton();
+      }      
+   }
+   
          
-   public static void initStatusMessage() {
-      RegistryConfig.loadConfig();
+   public static void initStatusMessage() {      
       statusMessage = "Current Registry Version = ";
-      statusMessage += String.valueOf(RegistryConfig.loadRegistryInfo().getVersionNumber()) + "\r\n";
+      statusMessage += conf.getString(REGISTRY_VERSION_PROPERTY) + "\r\n";
       statusMessage += "Current Registry Size = " + loadRegistryTable().size() + "\r\n";
       
       RegistryService rs = new RegistryService();
@@ -89,10 +106,8 @@ public class RegistryFileHelper {
    
    private static void checkAndWriteFile() {
       Calendar current = Calendar.getInstance();
-      RegistryConfig.loadConfig();
       if(nextWriteTime == null) {
-         String tm = RegistryConfig.getProperty("writefile.timedelay.minutes");
-         int val = Integer.parseInt(tm);
+         int val = conf.getInt(WRITEFILE_TIME_DELAY_MINUTES_PROPERTY);
          nextWriteTime = Calendar.getInstance();
          if(val <= 1) {
             val = 20;
@@ -203,23 +218,8 @@ public class RegistryFileHelper {
          return registryDocument;  
       }
       //Don't have it so find the registry file from our configuration.
-      RegistryConfig.loadConfig();
-      File registryFile = RegistryConfig.getRegistryFile();
-
-      //Now create a DOM model from the registry file in the config.
-      try {
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        dbf.setNamespaceAware(true);
-        DocumentBuilder regBuilder = dbf.newDocumentBuilder();
-        registryDocument = regBuilder.parse(registryFile);
-        doManageAuthorities();
-      } catch (ParserConfigurationException e) {
-        e.printStackTrace();
-      } catch (IOException ioe) {
-         ioe.printStackTrace();
-      } catch (SAXException sax) {
-         sax.printStackTrace();
-      }
+      registryDocument = conf.getDom(REGISTRY_FILE_DOM_PROPERTY);
+      doManageAuthorities();
       return registryDocument;
    }
    
@@ -302,13 +302,12 @@ public class RegistryFileHelper {
    */
    
    private static synchronized Document createDocument(Object []keys) {
-      RegistryConfig.loadConfig();
       IRegistryInfo iri = null;
       Map regHash = loadRegistryTable();
       if(regHash == null) {
          return registryDocument;
       }
-      iri = RegistryConfig.loadRegistryInfo();
+      iri = RegistryHelper.loadRegistryInfo();
       Document doc = iri.getDocument();
       
       NodeList nl = registryDocument.getDocumentElement().getChildNodes();
@@ -333,8 +332,7 @@ public class RegistryFileHelper {
     */
    public static synchronized void writeRegistryFile() {
       //Don't have it so find the registry file from our configuration.
-      RegistryConfig.loadConfig();
-      File registryFile = RegistryConfig.getRegistryFile();
+      File registryFile = new File(conf.getString(REGISTRY_FILE_DOM_PROPERTY));
       try {
          FileOutputStream fos = new FileOutputStream(registryFile,false);
          XMLUtils.DocumentToStream(loadRegistryFile(),fos);                  

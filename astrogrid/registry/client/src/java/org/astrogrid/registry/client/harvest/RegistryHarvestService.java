@@ -6,7 +6,6 @@ import java.util.Vector;
 import javax.xml.parsers.DocumentBuilder; 
 import javax.xml.parsers.DocumentBuilderFactory; 
 import javax.xml.parsers.ParserConfigurationException;
-import java.net.MalformedURLException;
 import javax.xml.rpc.ServiceException;
 import java.rmi.RemoteException; 
 import org.apache.axis.client.Call; 
@@ -14,17 +13,11 @@ import org.apache.axis.client.Service;
 import org.apache.axis.message.SOAPBodyElement; 
 import org.apache.axis.utils.XMLUtils; 
 import org.w3c.dom.Document; 
-import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
-import java.io.Reader;
-import java.io.StringReader;
-import org.xml.sax.InputSource;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.text.ParseException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Calendar;
 import java.util.Set;
 import java.util.Iterator;
@@ -47,7 +40,9 @@ public class RegistryHarvestService implements
    /**
     * target end point  is the location of the webservice. 
     */
-   private String endPoint = null;
+   private URL endPoint = null;
+   
+   private static final String NAMESPACE_URI =  "http://harvest.server.registry.astrogrid.org";   
    
      
 
@@ -56,7 +51,7 @@ public class RegistryHarvestService implements
     * @author Kevin Benson
     */
    public RegistryHarvestService() {
-      this("http://localhost:8080/axis/services/Registry");
+      this(null);
    }
     
    /**
@@ -64,7 +59,7 @@ public class RegistryHarvestService implements
     * @param endPoint location to the web service.
     * @author Kevin Benson
     */     
-   public RegistryHarvestService(String endPoint) {
+   public RegistryHarvestService(URL endPoint) {
       this.endPoint = endPoint;
    }
     
@@ -80,7 +75,7 @@ public class RegistryHarvestService implements
       try {
          Service  service = new Service();
          _call = (Call) service.createCall();
-         _call.setTargetEndpointAddress(new URL(endPoint));
+         _call.setTargetEndpointAddress(endPoint);
          _call.setSOAPActionURI("");
          _call.setOperationStyle(org.apache.axis.enum.Style.MESSAGE);
          _call.setOperationUse(org.apache.axis.enum.Use.LITERAL);        
@@ -88,9 +83,6 @@ public class RegistryHarvestService implements
       }catch(ServiceException se) {
          se.printStackTrace();
          _call = null;            
-      }catch(MalformedURLException mue) {
-         mue.printStackTrace();
-         _call = null;   
       }finally {
          return _call;   
       }       
@@ -104,11 +96,11 @@ public class RegistryHarvestService implements
          DocumentBuilder registryBuilder = null;
          registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
          Document doc = registryBuilder.newDocument();
-         Element root = doc.createElementNS("http://harvest.server.registry.astrogrid.org","harvest");
+         Element root = doc.createElementNS(NAMESPACE_URI,"harvest");
          doc.appendChild(root);
          SOAPBodyElement sbeRequest = new SOAPBodyElement(doc.getDocumentElement());      
          sbeRequest.setName("harvest");
-         sbeRequest.setNamespaceURI("http://harvest.server.registry.astrogrid.org");
+         sbeRequest.setNamespaceURI(NAMESPACE_URI);
          Vector result = (Vector) call.invoke (new Object[] {sbeRequest});
          SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
          return sbe.getAsDocument();
@@ -133,14 +125,14 @@ public class RegistryHarvestService implements
          DocumentBuilder registryBuilder = null;
          registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
          Document doc = registryBuilder.newDocument();
-         Element root = doc.createElementNS("http://harvest.server.registry.astrogrid.org","harvestFrom");
+         Element root = doc.createElementNS(NAMESPACE_URI,"harvestFrom");
          doc.appendChild(root);
          Node nd = doc.importNode(query.getDocumentElement(),true);
          root.appendChild(nd);
 
          SOAPBodyElement sbeRequest = new SOAPBodyElement(doc.getDocumentElement());      
          sbeRequest.setName("harvestFrom");
-         sbeRequest.setNamespaceURI("http://harvest.server.registry.astrogrid.org");
+         sbeRequest.setNamespaceURI(NAMESPACE_URI);
          Vector result = (Vector) call.invoke (new Object[] {sbeRequest});
          SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
 
@@ -165,7 +157,7 @@ public class RegistryHarvestService implements
          DocumentBuilder registryBuilder = null;
          registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
          Document doc = registryBuilder.newDocument();
-         Element root = doc.createElementNS("http://harvest.server.registry.astrogrid.org","harvestAll");
+         Element root = doc.createElementNS(NAMESPACE_URI,"harvestAll");
          doc.appendChild(root);
          if(query != null) { 
             Node nd = doc.importNode(query.getDocumentElement(),true);
@@ -174,7 +166,7 @@ public class RegistryHarvestService implements
 
          SOAPBodyElement sbeRequest = new SOAPBodyElement(doc.getDocumentElement());      
          sbeRequest.setName("harvestAll");
-         sbeRequest.setNamespaceURI("http://harvest.server.registry.astrogrid.org");
+         sbeRequest.setNamespaceURI(NAMESPACE_URI);
          Vector result = (Vector) call.invoke (new Object[] {sbeRequest});
          SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
 
@@ -201,14 +193,14 @@ public class RegistryHarvestService implements
          DocumentBuilder registryBuilder = null;
          registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
          Document doc = registryBuilder.newDocument();
-         Element root = doc.createElementNS("http://harvest.server.registry.astrogrid.org","harvestResource");
+         Element root = doc.createElementNS(NAMESPACE_URI,"harvestResource");
          doc.appendChild(root);
          Node nd = doc.importNode(query.getDocumentElement(),true);
          root.appendChild(nd);
 
          SOAPBodyElement sbeRequest = new SOAPBodyElement(doc.getDocumentElement());      
          sbeRequest.setName("harvestResource");
-         sbeRequest.setNamespaceURI("http://harvest.server.registry.astrogrid.org");
+         sbeRequest.setNamespaceURI(NAMESPACE_URI);
          Vector result = (Vector) call.invoke (new Object[] {sbeRequest});
          SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
 
@@ -233,14 +225,14 @@ public class RegistryHarvestService implements
          DocumentBuilder registryBuilder = null;
          registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
          Document doc = registryBuilder.newDocument();
-         Element root = doc.createElementNS("http://harvest.server.registry.astrogrid.org","harvestFromResource");
+         Element root = doc.createElementNS(NAMESPACE_URI,"harvestFromResource");
          doc.appendChild(root);
          Node nd = doc.importNode(query.getDocumentElement(),true);
          root.appendChild(nd);
 
          SOAPBodyElement sbeRequest = new SOAPBodyElement(doc.getDocumentElement());      
          sbeRequest.setName("harvestFromResource");
-         sbeRequest.setNamespaceURI("http://harvest.server.registry.astrogrid.org");
+         sbeRequest.setNamespaceURI(NAMESPACE_URI);
          Vector result = (Vector) call.invoke (new Object[] {sbeRequest});
          SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
 

@@ -19,18 +19,8 @@ public interface RegistryInterface{
     * @return
     * @throws Exception
     */
-   public Document submitQuery(Document query) throws Exception;
-   
-   /**
-    * Queries for all the information changed since a particular date.  The DOM model passed in has only one main
-    * element a date_since element with an appropriate xsd:datetime.  The result is all the elements returned since that
-    * date located in the registry.
-    * @param query
-    * @return
-    * @throws Exception
-    */
-   public Document harvestQuery(Document query) throws Exception;
-   
+   public Document submitQuery(Document query);
+      
    /**
     * Loads only the current registry entry. The query parameter passed in is ignored, but is required in use of the
     * axis message style. 
@@ -38,6 +28,6 @@ public interface RegistryInterface{
     * @return A document object conforming of only this registry entry.
     * @throws Exception
     */
-   public Document loadRegistry(Document query) throws Exception;
+   public Document loadRegistry(Document query);
    
 }

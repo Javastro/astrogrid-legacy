@@ -1,30 +1,35 @@
 package org.astrogrid.registry.client.query;
 
-
 import java.net.URL; 
 import java.util.Vector; 
 import javax.xml.parsers.DocumentBuilder; 
 import javax.xml.parsers.DocumentBuilderFactory; 
-import javax.xml.parsers.ParserConfigurationException; 
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException; 
 import org.apache.axis.client.Call; 
 import org.apache.axis.client.Service; 
 import org.apache.axis.message.SOAPBodyElement; 
 import org.apache.axis.utils.XMLUtils; 
 import org.w3c.dom.Document; 
 import org.w3c.dom.NodeList;
+import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 import java.io.Reader;
 import java.io.StringReader;
 import org.xml.sax.InputSource;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Calendar;
 import java.util.Set;
 import java.util.Iterator;
-import org.astrogrid.registry.common.RegistryConfig;
+
+import javax.xml.rpc.ServiceException;
+import org.xml.sax.SAXException;
+import java.rmi.RemoteException;
+
+import org.astrogrid.config.Config;
+
 
 /**
  * 
@@ -44,14 +49,26 @@ public class RegistryService implements
    /**
     * target end point  is the location of the webservice. 
     */
-   private String endPoint = null;
+   private URL endPoint = null;
    
    private boolean dummyMode = false;
    
    private boolean useCache = false;
    
+   private static final String NAMESPACE_URI =  "http://query.server.registry.astrogrid.org";
+   
+   private static final String DUMMY_MODE_PROPERTY = "org.astrogrid.registry.dummy.mode.on";
+   
+   private static final String DUMMY_XML_URL_PROPERTY = "org.astrogrid.registry.dummy.xml.url";
+   
+   public static Config conf = null;
+   
+   static {
+      if(conf == null) {
+         conf = org.astrogrid.config.SimpleConfig.getSingleton();
+      }      
+   }
      
-
    /**
     * Empty constructor that defaults the end point to local host.
     * @author Kevin Benson
@@ -60,19 +77,20 @@ public class RegistryService implements
       this(null);
    }
     
+   
    /**
     * Main constructor to allocate the endPoint variable.
     * @param endPoint location to the web service.
     * @author Kevin Benson
     */     
-   public RegistryService(String endPoint) {
+   public RegistryService(URL endPoint) {
       this.endPoint = endPoint;
-      RegistryConfig.loadConfig();
-      dummyMode = Boolean.valueOf(RegistryConfig.getProperty("dummy.mode.on","false")).booleanValue();
+      dummyMode = Boolean.valueOf(conf.getString(DUMMY_MODE_PROPERTY,"false")).booleanValue();
       if(this.endPoint == null) {
          useCache = true;
       }
    }
+   
     
 
    /**
@@ -81,21 +99,37 @@ public class RegistryService implements
     * @throws Exception
     * @author Kevin Benson
     */     
-   private Call getCall() throws Exception {
-      Service  service = new Service();
-      Call _call = (Call) service.createCall();
-      _call.setTargetEndpointAddress(new URL(endPoint));
-      _call.setSOAPActionURI("");
-      _call.setOperationStyle(org.apache.axis.enum.Style.MESSAGE);
-      _call.setOperationUse(org.apache.axis.enum.Use.LITERAL);        
-      _call.setEncodingStyle(null);
-      return _call;       
+   private Call getCall() {
+      Call _call = null;
+      try {
+         Service  service = new Service();      
+         _call = (Call) service.createCall();
+         _call.setTargetEndpointAddress(this.endPoint);
+         _call.setSOAPActionURI("");
+         _call.setOperationStyle(org.apache.axis.enum.Style.MESSAGE);
+         _call.setOperationUse(org.apache.axis.enum.Use.LITERAL);        
+         _call.setEncodingStyle(null);
+      } catch(ServiceException se) {
+         se.printStackTrace();
+         _call = null;            
+      }finally {
+         return _call;   
+      }       
    }
    
-   private Document getDummyDocument() throws Exception {
+   private Document getDummyDocument() {
       DocumentBuilder registryBuilder = null;
-      registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-      return registryBuilder.parse(RegistryConfig.getDummyTemplate());     
+      try { 
+         registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+         return registryBuilder.parse(conf.getString(DUMMY_XML_URL_PROPERTY));
+      }catch(ParserConfigurationException pce) {
+         pce.printStackTrace();   
+      }catch(IOException ioe) {
+         ioe.printStackTrace();
+      }catch(SAXException sax) {
+         sax.printStackTrace();
+      }      
+      return null;     
    }
    
    /**
@@ -106,17 +140,25 @@ public class RegistryService implements
       * @return XML docuemnt object representing the result of the query.
       * @author Kevin Benson 
       */   
-   public Document submitQueryString(String query) throws Exception {
+   public Document submitQueryString(String query) throws IllegalAccessException, SAXException {
       if(dummyMode) return getDummyDocument();
       if(useCache) {
          throw new IllegalAccessException("This method cannot be accessed when no registry location is defined.");   
       }
-      Reader reader2 = new StringReader(query);
-      InputSource inputSource = new InputSource(reader2);
-      DocumentBuilder registryBuilder = null;
-      registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-      Document doc = registryBuilder.parse(inputSource);
-      return submitQuery(doc);         
+      try {
+         Reader reader2 = new StringReader(query);
+         InputSource inputSource = new InputSource(reader2);
+         DocumentBuilder registryBuilder = null;
+         registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+         Document doc = registryBuilder.parse(inputSource);
+         return submitQuery(doc);
+      }catch(ParserConfigurationException pce) {
+         pce.printStackTrace();
+      }catch(IOException ioe) {
+         ioe.printStackTrace();   
+      }
+      
+      return null;         
    }
     
    /**
@@ -129,105 +171,48 @@ public class RegistryService implements
    * @return XML docuemnt object representing the result of the query.
    * @author Kevin Benson 
    */        
-   public Document submitQuery(Document query) throws Exception {
+   public Document submitQuery(Document query) {
       if(dummyMode) return getDummyDocument();
-      if(useCache) {
-         throw new IllegalAccessException("This method cannot be accessed when no registry location is defined.");   
-      }
-      String requestQuery =   XMLUtils.ElementToString(query.getDocumentElement());
-      requestQuery = "<submitQuery xmlns='http://query.server.registry.astrogrid.org'>" + requestQuery + "</submitQuery>";
-      
-      Reader reader2 = new StringReader(requestQuery);
-      InputSource inputSource = new InputSource(reader2);
-        
-      Call call = getCall();
-
       DocumentBuilder registryBuilder = null;
-      registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-      Document doc = registryBuilder.parse(inputSource);
+      Document doc = null;
+      Document resultDoc = null;
+      try {
+         registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+         doc = registryBuilder.newDocument();
+         Element root = doc.createElementNS(NAMESPACE_URI,"submitQuery");
+         doc.appendChild(root);
+         Node nd = doc.importNode(query.getDocumentElement(),true);
+         root.appendChild(nd);
+      }catch(ParserConfigurationException pce){
+         doc = null;
+         pce.printStackTrace();
+      }
       
+      if(doc == null) {
+         return null;   
+      }
+              
+      Call call = getCall();
       SOAPBodyElement sbeRequest = new SOAPBodyElement(doc.getDocumentElement());      
       sbeRequest.setName("submitQuery");
-      sbeRequest.setNamespaceURI("http://query.server.registry.astrogrid.org");
-      System.out.println("sending " + XMLUtils.DocumentToString(doc));
-            
-      Vector result = (Vector) call.invoke (new Object[] {sbeRequest});
-      SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
-
-      System.out.println("received " + XMLUtils.DocumentToString(sbe.getAsDocument()));
-      return sbe.getAsDocument();       
-   }
-
-   public Document harvestQuery(String dateSince) throws Exception {
-      if(dummyMode) return getDummyDocument();
-      if(useCache) {
-         throw new IllegalAccessException("This method cannot be accessed when no registry location is defined.");   
-      }      
-      SimpleDateFormat sdf = null;
-      Date dat = null;
-      if(dateSince.indexOf("T") == -1) {
-         sdf = new SimpleDateFormat("yyyy-MM-dd");
-         dat = sdf.parse(dateSince);
-         dateSince = dateSince.trim();
-         dateSince += "T00:00:00";   
+      sbeRequest.setNamespaceURI(NAMESPACE_URI);
+      try {            
+         Vector result = (Vector) call.invoke (new Object[] {sbeRequest});
+         SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
+         resultDoc = sbe.getAsDocument();
+      }catch(RemoteException re) {
+         resultDoc = null;
+         re.printStackTrace();
+      }catch (Exception e) {
+         resultDoc = null;
+         e.printStackTrace();
+      }finally {
+         return resultDoc;
       }
-      sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-      dat = sdf.parse(dateSince);
-      return harvestQuery(dat);
    }
+
    
-   public Document harvestQuery(Date dateSince) throws Exception {
-      if(dummyMode) return getDummyDocument();
-      if(useCache) {
-         throw new IllegalAccessException("This method cannot be accessed when no registry location is defined.");   
-      }      
-      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-      DocumentBuilder registryBuilder = null;
-      registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-      Document doc = registryBuilder.newDocument();
-      
-      Element elemDate = doc.createElement("date_since");
-      elemDate.appendChild(doc.createTextNode(sdf.format(dateSince)));
-      
-            
-      doc.appendChild(elemDate);
-      
-      
-      return harvestQuery(doc);         
-
-   }
-   
-   public Document harvestQuery(Document query) throws Exception {
-      if(dummyMode) return getDummyDocument();
-      if(useCache) {
-         throw new IllegalAccessException("This method cannot be accessed when no registry location is defined.");   
-      }      
-      String requestQuery =   XMLUtils.ElementToString(query.getDocumentElement());
-      requestQuery = "<harvestQuery xmlns='http://query.server.registry.astrogrid.org'>" + requestQuery + "</harvestQuery>";
-
-      Reader reader2 = new StringReader(requestQuery);
-      InputSource inputSource = new InputSource(reader2);
-
-      //get a call object operation to the web service.
-      Call call = getCall();
-      
-      DocumentBuilder registryBuilder = null;
-      registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-      Document doc = registryBuilder.parse(inputSource);
-      
-      SOAPBodyElement sbeRequest = new SOAPBodyElement(doc.getDocumentElement());
-      sbeRequest.setName("harvestQuery");
-      sbeRequest.setNamespaceURI("http://query.server.registry.astrogrid.org");
-      
-      System.out.println("sending " + XMLUtils.DocumentToString(doc));
-      Vector result = (Vector) call.invoke (new Object[] {sbeRequest});
-
-      SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
-      System.out.println("received " + XMLUtils.DocumentToString(sbe.getAsDocument()));
-      return sbe.getAsDocument();         
-   }
-   
-   public Document loadRegistry(Document query) throws Exception {
+   public Document loadRegistry(Document query) {
       if(dummyMode) return getDummyDocument();
       /*
        * Actually take these next few lines out
@@ -236,36 +221,53 @@ public class RegistryService implements
        * 
        */
        //TODO redo this area.
-      if(useCache) {
-         throw new IllegalAccessException("This method cannot be accessed when no registry location is defined.");   
+      Document doc = null;
+      Document resultDoc = null;
+      try {
+         
+         DocumentBuilder registryBuilder = null;
+         registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+         doc = registryBuilder.newDocument();
+         Element root = doc.createElementNS(NAMESPACE_URI,"loadRegistry");
+         doc.appendChild(root);
+      }catch(ParserConfigurationException pce){
+         doc = null;
+         pce.printStackTrace();
       }
-      Call call = getCall();
-      DocumentBuilder registryBuilder = null;
-      registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-      Document doc = registryBuilder.newDocument();
-      Element root = doc.createElementNS("http://query.server.registry.astrogrid.org","loadRegistry");
-      doc.appendChild(root);
+      
+      if(doc == null) {
+         return null;   
+      }
 
+      Call call = getCall();
       SOAPBodyElement sbeRequest = new SOAPBodyElement(doc.getDocumentElement());
       sbeRequest.setName("loadRegistry");
-      sbeRequest.setNamespaceURI("http://query.server.registry.astrogrid.org");
-      
-      System.out.println("sending " + XMLUtils.DocumentToString(doc));
-      Vector result = (Vector) call.invoke (new Object[] {sbeRequest});
-
-      SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
-      System.out.println("received " + XMLUtils.DocumentToString(sbe.getAsDocument()));
-      return sbe.getAsDocument();         
+      sbeRequest.setNamespaceURI(NAMESPACE_URI);
+      try {            
+         Vector result = (Vector) call.invoke (new Object[] {sbeRequest});
+         SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
+         resultDoc = sbe.getAsDocument();
+      }catch(RemoteException re) {
+         resultDoc = null;
+         re.printStackTrace();
+      }catch (Exception e) {
+         resultDoc = null;
+         e.printStackTrace();
+      }finally {
+         return resultDoc;
+      }  
    }
    
-   public HashMap ManagedAuthorities() throws Exception {
-      Document doc = loadRegistry(null);
-      NodeList nl = doc.getElementsByTagName("ManagedAuthority");
-      HashMap hm = new HashMap();
-      for(int i = 0;i < nl.getLength();i++) {
-         hm.put(nl.item(i).getFirstChild().getNodeValue(),null);   
+   public HashMap managedAuthorities() {
+      HashMap hm = null;
+      Document doc = loadRegistry(null);      
+      if(doc != null) {
+         NodeList nl = doc.getElementsByTagName("ManagedAuthority");
+         hm = new HashMap();
+         for(int i = 0;i < nl.getLength();i++) {
+            hm.put(nl.item(i).getFirstChild().getNodeValue(),null);   
+         }
       }
-//      System.out.println("Size of mgauthority = " + hm.size());
       return hm;      
    }
    
@@ -273,6 +275,7 @@ public class RegistryService implements
       if(dummyMode) return null;
       String returnVal = null;
       boolean checkConfig = true;
+      Document doc = null;
       if(!useCache) {
          int iTemp = 0;
          iTemp = ident.indexOf("/");
@@ -286,12 +289,12 @@ public class RegistryService implements
             "<selection item='ResourceKey' itemOp='EQ' value='" + ident.substring((iTemp+1)) + "'/>";
          }
          selectQuery += "</selectionSequence></query>";
-         Document doc = submitQueryString(selectQuery);
-         return doc;
+         doc = submitQueryString(selectQuery);
+         
       }else {
-         //okay look up this ident in the config file.
+         return conf.getDom(ident);
       }
-      return null;
+      return doc;
    }
    
    public String getEndPointByIdentifier(String ident) throws Exception {
@@ -299,7 +302,11 @@ public class RegistryService implements
       //check for an AccessURL
       //if AccessURL is their and it is a web service then get the wsdl
       //into a DOM object and run an XSL on it to get the endpoint.
-      return XMLUtils.DocumentToString(doc);   
+      NodeList nl = doc.getElementsByTagName("AccessURL");
+      if(nl.getLength() > 0) {
+         return nl.item(0).getFirstChild().getNodeValue();
+      }
+      return null;   
    }
       
    public static Document buildOAIDocument(Document responseDoc,String accessURL, String dateStamp,Map requestVars) {

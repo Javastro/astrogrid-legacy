@@ -30,7 +30,10 @@ import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.registry.client.admin.RegistryAdminDocumentHelper;
 import org.astrogrid.registry.client.admin.RegistryAdminService;
 import org.astrogrid.registry.client.query.RegistryService;
-import org.astrogrid.registry.common.RegistryConfig;
+import org.astrogrid.registry.client.RegistryDelegateFactory;
+
+import org.astrogrid.config.Config;
+
 
 
 /**
@@ -72,6 +75,15 @@ public class RegistryAdminAction extends AbstractAction
    private static final String UPDATE_XML_PARAM = "updatexml";   
    
 
+   public static Config conf = null;
+   
+   static {
+      if(conf == null) {
+         conf = org.astrogrid.config.SimpleConfig.getSingleton();
+      }      
+   }
+
+
    /**
     * Our action method.
     *
@@ -91,9 +103,6 @@ public class RegistryAdminAction extends AbstractAction
       Session session = request.getSession();
       String message = null;
       Map mp = null;
-      
-      //load the config.
-      RegistryConfig.loadConfig();
       
       //Get the action if any.
       String action = (String)request.getParameter(PARAM_ACTION);
@@ -148,16 +157,11 @@ public class RegistryAdminAction extends AbstractAction
             }
          
          }else {
-            //were doing an add so load the appropriate template.
-            File fi = RegistryOptionAction.getTemplate(request);
-            if(fi == null) {
-               message = "Cannot load client template file for displaying the page.";
-            }
             try {
               dbf = DocumentBuilderFactory.newInstance();
               dbf.setNamespaceAware(true);
               regBuilder = dbf.newDocumentBuilder();
-              registryDocument = regBuilder.parse(fi);
+              registryDocument = regBuilder.parse(RegistryOptionAction.getTemplate(request));
               nl = registryDocument.getElementsByTagName("AuthorityID");
               if(nl.getLength() > 0) {
                  nl.item(0).getFirstChild().setNodeValue("enter authority id");
@@ -180,15 +184,14 @@ public class RegistryAdminAction extends AbstractAction
         // printMap(mp);         
       }
 
-      String url = null;      
       //Go ahead and load the ManagedAuthorities (Authorities this registry owns and is
       //allowed to update and add)
       HashMap hm = (HashMap)session.getAttribute("ManageAuthorities");
+      RegistryService rs = null;
       if(hm == null || hm.size() <= 0) {
-         url = RegistryConfig.getProperty("publish.registry.query.url");
-         RegistryService rs = new RegistryService(url);
+         rs = RegistryDelegateFactory.createQuery();
          try {
-            hm = rs.ManagedAuthorities();
+            hm = rs.managedAuthorities();
          }catch(Exception e) {
             e.printStackTrace();
             hm = null;
@@ -237,23 +240,19 @@ public class RegistryAdminAction extends AbstractAction
          Document finalDoc = RegistryAdminDocumentHelper.createDocument(mp);
          System.out.println("the finalDoc to be sending = " + XMLUtils.DocumentToString(finalDoc));
             if(validateUpdateDocument(finalDoc)) {
-               url = RegistryConfig.getProperty("publish.registry.update.url");
                
                //Now lets create a Mapping.
                //TODO this is not right need to create a mapping from the update service call below.
                
-               //mp = RegistryAdminDocumentHelper.createMap(finalDoc);
-               
                   try {
                      //System.out.println("okay the url = " + url);
-                     RegistryAdminService ras = new RegistryAdminService(url);
+                     RegistryAdminService ras = RegistryDelegateFactory.createAdmin();
                      
                      if("add".equals(action)) {
                         returnDocument = ras.add(finalDoc);
                         if(finalDoc.getElementsByTagNameNS("http://www.ivoa.net/xml/VORegistry/v0.2","Authority").getLength() > 0) {
-                           url = RegistryConfig.getProperty("publish.registry.query.url");
-                           RegistryService rs2 = new RegistryService(url);
-                           hm = rs2.ManagedAuthorities();
+                           RegistryService rs2 = RegistryDelegateFactory.createQuery();
+                           hm = rs2.managedAuthorities();
                            session.setAttribute("ManageAuthorities",hm);
                         }
                      }else {
@@ -272,9 +271,8 @@ public class RegistryAdminAction extends AbstractAction
             message = "This does not seem to be a AuthorityID managed by this Registry.  Please add an Authority or change your AuthorityID";
          }
        //call the client service update method  
-      }else if(REMOVE_ACTION.equals(action)) {
-//       call the client service remove method
       }
+      
       if(mp != null && mp.size() > 0) {
          session.setAttribute(REGISTRY_ITEMS_PARAM,mp);
       }//if

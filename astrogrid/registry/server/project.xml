@@ -77,10 +77,33 @@
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>
+        
+        <dependency>
+            <groupId>astrogrid-common</groupId>
+            <artifactId>astrogrid-common</artifactId>
+            <version>SNAPSHOT</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+        </dependency>
+        
+       <dependency>
+            <artifactId>commons-logging</artifactId>
+            <groupId>commons-logging</groupId>
+            <version>1.0.3</version>
+        </dependency>
+        
+        <dependency>
+            <artifactId>commons-discovery</artifactId>
+            <groupId>commons-discovery</groupId>
+            <version>20030211.213356</version>
+        </dependency>        
+        
+        
         <dependency >
             <id>axis</id>
             <version>1.1</version>
         </dependency>
+        
         <dependency>
             <id>ipsi</id>
             <version>1.0.2</version>

@@ -16,7 +16,6 @@ import java.util.Set;
 import java.util.Iterator;
 import java.io.File;
 import java.io.IOException;
-import org.astrogrid.registry.common.RegistryConfig;
 import org.astrogrid.registry.client.admin.RegistryAdminDocumentHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -26,8 +25,12 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.SAXException;
-import org.astrogrid.registry.client.query.RegistryService;
 import org.apache.axis.utils.XMLUtils;
+import org.astrogrid.registry.client.RegistryDelegateFactory;
+import org.astrogrid.registry.client.query.RegistryService;
+
+import org.astrogrid.config.Config;
+
 
 /**
  *
@@ -63,6 +66,14 @@ public class RegistryQueryAction extends AbstractAction
    
    private static final String ERROR_MESSAGE = "errormessage";
    
+   public static Config conf = null;   
+  
+   static {
+      if(conf == null) {
+         conf = org.astrogrid.config.SimpleConfig.getSingleton();
+      }      
+   }
+ 
 
    /**
     * Action page to do a query.
@@ -87,10 +98,7 @@ public class RegistryQueryAction extends AbstractAction
       ArrayList joinTypes = new ArrayList();
       ArrayList resultXML = null;      
       String result = null;
-      String searchRegName = null;
-      String publishRegName = null;
-
-      RegistryConfig.loadConfig();            
+            
       String action = (String)request.getParameter(PARAM_ACTION);
       String mainElem = request.getParameter(PARAM_MAIN_ELEMENT);
       
@@ -101,18 +109,13 @@ public class RegistryQueryAction extends AbstractAction
 
       
       //Load the template.
-      File fi = RegistryOptionAction.getTemplate(request);
-      if(fi == null) {
-         errorMessage = "Cannot find the file Template for loading drop down boxes.";
-         //TODO do some type of error logging and exit here.
-         //darn some errror is happening.
-      }else {
+
          //Create the Document object and throw it to createMap
          try {
            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
            dbf.setNamespaceAware(true);
            DocumentBuilder regBuilder = dbf.newDocumentBuilder();
-           registryDocument = regBuilder.parse(fi);
+           registryDocument = regBuilder.parse(RegistryOptionAction.getTemplate(request));
           // System.out.println("the big xml registry = " + XMLUtils.DocumentToString(registryDocument));
          } catch (ParserConfigurationException e) {
            e.printStackTrace();
@@ -180,10 +183,7 @@ public class RegistryQueryAction extends AbstractAction
          if(crit_number_str != null && crit_number_str.length() > 0) {
             crit_number = Integer.parseInt(crit_number_str);
          }      
-         
-         searchRegName = RegistryConfig.getProperty("search.registry.name");
-         publishRegName = RegistryConfig.getProperty("publish.registry.name");
-   
+            
          if(crit_number <= 0) {
             crit_number = 1;      
          }
@@ -218,10 +218,8 @@ public class RegistryQueryAction extends AbstractAction
             query += "</selectionSequence></query>";
             try {
                //Now lets query.
-               String url = null;
-               url = RegistryConfig.getProperty("search.registry.query.url");
-               
-               RegistryService rs = new RegistryService(url);
+               String url = null;               
+               RegistryService rs = RegistryDelegateFactory.createQuery();
                Document doc = rs.submitQueryString(query);
                errorMessage = getResultMessage(doc);
                if(errorMessage == null) {
@@ -243,9 +241,7 @@ public class RegistryQueryAction extends AbstractAction
                   if(resultXML.size() > 0) {
                      HashMap hm = (HashMap)session.getAttribute("ManageAuthorities");
                      if(hm == null || hm.size() <= 0) {
-                        url = RegistryConfig.getProperty("publish.registry.query.url");
-                        rs = new RegistryService(url);
-                        hm = rs.ManagedAuthorities();
+                        hm = rs.managedAuthorities();
                         session.setAttribute("ManageAuthorities",hm);
                      }//if              
                   }//if
@@ -254,8 +250,7 @@ public class RegistryQueryAction extends AbstractAction
                e.printStackTrace();
             }
          }//else doing a query
-         request.setAttribute(PARAM_CRITERIA_NUMBER,String.valueOf(crit_number));
-      }//else         
+         request.setAttribute(PARAM_CRITERIA_NUMBER,String.valueOf(crit_number));         
       
       //
       //Create a new HashMap for our results.  Will be used to
@@ -263,8 +258,8 @@ public class RegistryQueryAction extends AbstractAction
       Map results = new HashMap() ;
       results.put(PARAM_MAIN_ELEMENT,mainElem);
       results.put(PARAM_CRITERIA_NUMBER,String.valueOf(crit_number));
-      results.put(SEARCH_REGISTRY_NAME,searchRegName);
-      results.put(PUBLISH_REGISTRY_NAME,publishRegName);
+      //results.put(SEARCH_REGISTRY_NAME,searchRegName);
+      //results.put(PUBLISH_REGISTRY_NAME,publishRegName);
       results.put(ERROR_MESSAGE,errorMessage);
       if(result != null && result.length() > 0) {
          results.put("queryresult",result);

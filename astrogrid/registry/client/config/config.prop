@@ -1,0 +1,13 @@
+#This config file is more dedicated to using the config as a cache. And not the registry server.
+
+#This next line about dummy mode will go away soon, but is needed at the moment.
+org.astrogrid.registry.dummy.mode.on=false
+
+#org.astrogrid.registry.admin.endpoint=http://localhost:8080/axis/services/RegistryAdmin
+#org.astrogrid.registry.harvest.endpoint=http://localhost:8080/axis/services/RegistryHarvest
+#org.astrogrid.registry.query.endpoint=http://localhost:8080/axis/services/Registry
+
+#dont worry about this next line it will also go away.
+org.astrogrid.registry.dummy.xml.url=C:\Development\eclipse\workspace\RegistryProj\astrogrid\registry\src\templates\client\DummyResourceTemplate.xml
+org.astrogrid.registry.version=0_9
+vm05.astrogrid.org/MyspaceManager=file:///C:/Development/temp/registry/cache/Myspace.xml

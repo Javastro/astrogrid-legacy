@@ -34,9 +34,8 @@ import de.gmd.ipsi.xql.XQL;
 //import java.io.Reader;
 //import java.io.StringReader;
 //import org.xml.sax.InputSource;
-
-import org.astrogrid.registry.common.RegistryConfig;
 import org.astrogrid.registry.common.versionNS.IRegistryInfo;
+import org.astrogrid.registry.common.RegistryHelper;
 
 
 /**
@@ -60,9 +59,7 @@ public class Registry3_0 {
 		 */
 
       String errorMessage = null;
-      
-      RegistryConfig.loadConfig();
-      IRegistryInfo iri = RegistryConfig.loadRegistryInfo();
+      IRegistryInfo iri = RegistryHelper.loadRegistryInfo();
       Document resultDoc = iri.getDocument();
 
       Document doc = null;

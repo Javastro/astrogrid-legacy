@@ -17,7 +17,13 @@ import org.w3c.dom.Node;
 import java.io.Reader;
 import java.io.StringReader;
 import org.xml.sax.InputSource;
-import org.astrogrid.registry.common.RegistryConfig;
+
+import javax.xml.rpc.ServiceException;
+import org.xml.sax.SAXException;
+import java.rmi.RemoteException;
+
+import org.astrogrid.config.Config;
+
 
 /**
  * Class Name: RegistryAdminService
@@ -33,18 +39,33 @@ import org.astrogrid.registry.common.RegistryConfig;
  */
 public class RegistryAdminService implements
                           org.astrogrid.registry.common.RegistryAdminInterface { 
+
+
+   private static final String NAMESPACE_URI =  "http://admin.server.registry.astrogrid.org";
+   
+   private static final String DUMMY_MODE_PROPERTY = "org.astrogrid.registry.dummy.mode.on";   
+
     /**
     * target end point  is the location of the webservice. 
     */
-    private String endPoint = null; 
-    private boolean dummyMode = false;
+   private URL endPoint = null; 
+   private boolean dummyMode = false;
+   
+   public static Config conf = null;
+   
+   static {
+      if(conf == null) {
+         conf = org.astrogrid.config.SimpleConfig.getSingleton();
+      }      
+   }
+   
     
     /**
      * Empty constructor that defaults the end point to local host.
      * @author Kevin Benson
      */
    public RegistryAdminService() {
-       this("http://localhost:8080/axis/services/RegistryAdmin");
+       this(null);
    }
    
    /**
@@ -52,10 +73,9 @@ public class RegistryAdminService implements
     * @param endPoint location to the web service.
     * @author Kevin Benson
     */ 
-   public RegistryAdminService(String endPoint) {
+   public RegistryAdminService(URL endPoint) {
       this.endPoint = endPoint;
-      RegistryConfig.loadConfig();
-      dummyMode = Boolean.valueOf(RegistryConfig.getProperty("dummy.mode.on","false")).booleanValue();
+      dummyMode = Boolean.valueOf(conf.getString(DUMMY_MODE_PROPERTY,"false")).booleanValue();
    }
     
    /**
@@ -64,19 +84,22 @@ public class RegistryAdminService implements
     * @throws Exception
     * @author Kevin Benson
     */     
-   private Call getCall() throws Exception {
-      Service  service = new Service();
-      Call _call = (Call) service.createCall();
-      //set the locatin of the web service
-      _call.setTargetEndpointAddress(new URL(endPoint));      
-      _call.setSOAPActionURI("");
-      //tell it this is a axis message style and make sure to use literal.
-      _call.setOperationStyle(org.apache.axis.enum.Style.MESSAGE);
-      _call.setOperationUse(org.apache.axis.enum.Use.LITERAL);
-      //make sure their is no encoding style set it should be direct
-      //soap messages going across.        
-      _call.setEncodingStyle(null);
-      return _call;       
+   private Call getCall() {
+      Call _call = null;
+      try {
+         Service  service = new Service();      
+         _call = (Call) service.createCall();
+         _call.setTargetEndpointAddress(this.endPoint);
+         _call.setSOAPActionURI("");
+         _call.setOperationStyle(org.apache.axis.enum.Style.MESSAGE);
+         _call.setOperationUse(org.apache.axis.enum.Use.LITERAL);        
+         _call.setEncodingStyle(null);
+      } catch(ServiceException se) {
+         se.printStackTrace();
+         _call = null;            
+      }finally {
+         return _call;   
+      }       
     }
 
    /**
@@ -88,46 +111,51 @@ public class RegistryAdminService implements
     * @author Kevin Benson
     * 
     */   
-   public Document update(Document query) throws Exception {
+   public Document update(Document query) {
+
+      DocumentBuilder registryBuilder = null;
+      Document doc = null;
+      Document resultDoc = null;
+      try {
+         registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+         doc = registryBuilder.newDocument();
+         Element root = doc.createElementNS(NAMESPACE_URI,"update");
+         doc.appendChild(root);
+         Node nd = doc.importNode(query.getDocumentElement(),true);
+         root.appendChild(nd);
+      }catch(ParserConfigurationException pce){
+         doc = null;
+         pce.printStackTrace();
+      }
       
-      //The next three or four lines is to build up the update method call
-      //for the server side.  Otherwise Axis will not know which method to give it to
-      //on the server side.  Possibly could have used importNode from the dom structure
-      //instead of strings, but importNode seemed to have problems when trying to wrap
-      //a root element to the Document dom structure.
-      String requestQuery =   XMLUtils.ElementToString(query.getDocumentElement());
-      requestQuery = "<update xmlns='http://admin.server.registry.astrogrid.org'>" + requestQuery + "</update>";
-      
-      Reader reader2 = new StringReader(requestQuery);
-      InputSource inputSource = new InputSource(reader2);
+      if(doc == null) {
+         return null;   
+      }
       
       //Get the CAll.  
       Call call = getCall(); 
-      //SOAPBodyElement sbeRequest = new SOAPBodyElement(query.getDocumentElement());
-      //parse everything back into a Document dom object.
-      DocumentBuilder registryBuilder = null;
-      registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-      Document doc = registryBuilder.parse(inputSource);
       
       //Build up a SoapBodyElement to be sent in a Axis message style.
       //Go ahead and reset a name and namespace to this as well.
       SOAPBodyElement sbeRequest = new SOAPBodyElement(doc.getDocumentElement());      
       sbeRequest.setName("update");
-      sbeRequest.setNamespaceURI("http://admin.server.registry.astrogrid.org");
-      System.out.println("sending " + XMLUtils.DocumentToString(doc));
+      sbeRequest.setNamespaceURI(NAMESPACE_URI);
       
-      //Axis doesn't let you do things easily for some reason you must use SoapBodyElement's
-      //in your request.  And must bring it back as a Vector of soap body elements.
-      Document returnDocument = null;
-
-      Vector result = (Vector) call.invoke (new Object[] {sbeRequest});
-      if(result.size() > 0) {
-         SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
-         System.out.println("received " + XMLUtils.DocumentToString(sbe.getAsDocument()));
-         //return the SoapBodyElement's document.
-         returnDocument =  sbe.getAsDocument();
+      try {            
+         Vector result = (Vector) call.invoke (new Object[] {sbeRequest});
+         if(result.size() > 0) {
+            SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
+            resultDoc =  sbe.getAsDocument();
+         }
+      }catch(RemoteException re) {
+         resultDoc = null;
+         re.printStackTrace();
+      }catch (Exception e) {
+         resultDoc = null;
+         e.printStackTrace();
+      }finally {
+         return resultDoc;
       }
-      return returnDocument;         
    }
    
    /**
@@ -139,124 +167,57 @@ public class RegistryAdminService implements
     * @author Kevin Benson
     * 
     */   
-   public Document add(Document query) throws Exception {
+   public Document add(Document query) {
       
-      //The next three or four lines is to build up the update method call
-      //for the server side.  Otherwise Axis will not know which method to give it to
-      //on the server side.  Possibly could have used importNode from the dom structure
-      //instead of strings, but importNode seemed to have problems when trying to wrap
-      //a root element to the Document dom structure.
-      String requestQuery =   XMLUtils.ElementToString(query.getDocumentElement());
-      requestQuery = "<add xmlns='http://admin.server.registry.astrogrid.org'>" + requestQuery + "</add>";
+      DocumentBuilder registryBuilder = null;
+      Document doc = null;
+      Document resultDoc = null;
+      try {
+         registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+         doc = registryBuilder.newDocument();
+         Element root = doc.createElementNS(NAMESPACE_URI,"add");
+         doc.appendChild(root);
+         Node nd = doc.importNode(query.getDocumentElement(),true);
+         root.appendChild(nd);
+      }catch(ParserConfigurationException pce){
+         doc = null;
+         pce.printStackTrace();
+      }
       
-      Reader reader2 = new StringReader(requestQuery);
-      InputSource inputSource = new InputSource(reader2);
+      if(doc == null) {
+         return null;   
+      }
       
       //Get the CAll.  
       Call call = getCall(); 
-      //SOAPBodyElement sbeRequest = new SOAPBodyElement(query.getDocumentElement());
-      //parse everything back into a Document dom object.
-      DocumentBuilder registryBuilder = null;
-      registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-      Document doc = registryBuilder.parse(inputSource);
       
       //Build up a SoapBodyElement to be sent in a Axis message style.
       //Go ahead and reset a name and namespace to this as well.
       SOAPBodyElement sbeRequest = new SOAPBodyElement(doc.getDocumentElement());      
       sbeRequest.setName("add");
-      sbeRequest.setNamespaceURI("http://admin.server.registry.astrogrid.org");
-      System.out.println("sending " + XMLUtils.DocumentToString(doc));
-      
-      //Axis doesn't let you do things easily for some reason you must use SoapBodyElement's
-      //in your request.  And must bring it back as a Vector of soap body elements.
-      Vector result = (Vector) call.invoke (new Object[] {sbeRequest});
-      Document returnDocument = null;
-      if(result.size() > 0) {
-         SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
-         System.out.println("received " + XMLUtils.DocumentToString(sbe.getAsDocument()));
-         //return the SoapBodyElement's document.
-         returnDocument =  sbe.getAsDocument();
+      sbeRequest.setNamespaceURI(NAMESPACE_URI);
+      try {            
+         Vector result = (Vector) call.invoke (new Object[] {sbeRequest});
+         if(result.size() > 0) {
+            SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
+            resultDoc =  sbe.getAsDocument();
+         }
+      }catch(RemoteException re) {
+         resultDoc = null;
+         re.printStackTrace();
+      }catch (Exception e) {
+         resultDoc = null;
+         e.printStackTrace();
+      }finally {
+         return resultDoc;
       }
-      return returnDocument;         
    }
-   
-   
-   
-   /**
-    * remove method will call the server side remove method in an attempt to remove a paricular XML
-    * piece from the registry.
-    * @param query XML document dom object of the xml to be removed.
-    * @return the document that was removed from the registry.
-    * @author Kevin Benson
-    */
-   public Document remove(Document query) throws Exception {
-      String requestQuery =   XMLUtils.ElementToString(query.getDocumentElement());
-      requestQuery = "<remove xmlns='http://admin.server.registry.astrogrid.org'>" + requestQuery + "</remove>";
-      
-      Reader reader2 = new StringReader(requestQuery);
-      InputSource inputSource = new InputSource(reader2);  
-      Call call = getCall(); 
-      //SOAPBodyElement sbeRequest = new SOAPBodyElement(query.getDocumentElement());
-      DocumentBuilder registryBuilder = null;
-      registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-      Document doc = registryBuilder.parse(inputSource);
-      
-      SOAPBodyElement sbeRequest = new SOAPBodyElement(doc.getDocumentElement());      
-      sbeRequest.setName("remove");
-      sbeRequest.setNamespaceURI("http://admin.server.registry.astrogrid.org");
-      System.out.println("sending " + XMLUtils.DocumentToString(doc));
-      
-      Vector result = (Vector) call.invoke (new Object[] {sbeRequest});
-
-      SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
-      System.out.println("received " + XMLUtils.DocumentToString(sbe.getAsDocument()));
-      return sbe.getAsDocument();         
-   }
-   
-   /**
-    * Takes an XML Document and will either update and insert the data in the registry.  If a client is
-    * intending for an insert, but the primarykey (AuthorityID and ResourceKey) are already in the registry
-    * an automatic update will occur.  This method will only update main pieces of data/elements
-    * conforming to the IVOA schema.
-    * 
-    * Main Pieces: Organisation, Authority, Registry, Resource, Service, SkyService, TabularSkyService, 
-    * DataCollection 
-    * 
-    * @param query Document a XML document dom object to be updated on the registry.
-    * @return the document updated on the registry is returned.
-    * @author Kevin Benson
-    * 
-    */   
-   public Document addRegistryEntries(Document query) throws Exception {
-      String requestQuery =   XMLUtils.ElementToString(query.getDocumentElement());
-      requestQuery = "<addRegistryEntries xmlns='http://admin.server.registry.astrogrid.org'>" + requestQuery + "</addRegistryEntries>";
-      
-      Reader reader2 = new StringReader(requestQuery);
-      InputSource inputSource = new InputSource(reader2);  
-      Call call = getCall(); 
-      //SOAPBodyElement sbeRequest = new SOAPBodyElement(query.getDocumentElement());
-      DocumentBuilder registryBuilder = null;
-      registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-      Document doc = registryBuilder.parse(inputSource);
-      
-      SOAPBodyElement sbeRequest = new SOAPBodyElement(doc.getDocumentElement());      
-      sbeRequest.setName("addRegistryEntries");
-      sbeRequest.setNamespaceURI("http://admin.server.registry.astrogrid.org");
-      System.out.println("sending " + XMLUtils.DocumentToString(doc));
-      
-      Vector result = (Vector) call.invoke (new Object[] {sbeRequest});
-
-      SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
-      System.out.println("received " + XMLUtils.DocumentToString(sbe.getAsDocument()));
-      return sbe.getAsDocument();
-   }   
    
    public String getStatus() {
       String status = "";
       try {
          Document doc = getStatus(null);
          NodeList nl = doc.getElementsByTagName("status");
-         
          for(int i = 0;i < nl.getLength();i++) {
             Node nd = nl.item(i);
             if(nd.hasChildNodes()) {
@@ -269,23 +230,41 @@ public class RegistryAdminService implements
       return status;
    }
    
-   public Document getStatus(Document query) throws Exception {
-      Call call = getCall();
-      DocumentBuilder registryBuilder = null;
-      registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-      Document doc = registryBuilder.newDocument();
-      Element root = doc.createElementNS("http://admin.server.registry.astrogrid.org","getStatus");
-      doc.appendChild(root);
+   public Document getStatus(Document query) {
+      Document doc = null;
+      Document resultDoc = null;
+      try {
+         
+         DocumentBuilder registryBuilder = null;
+         registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+         doc = registryBuilder.newDocument();
+         Element root = doc.createElementNS(NAMESPACE_URI,"getStatus");
+         doc.appendChild(root);
+      }catch(ParserConfigurationException pce){
+         doc = null;
+         pce.printStackTrace();
+      }
+      
+      if(doc == null) {
+         return null;   
+      }
 
+      Call call = getCall();
       SOAPBodyElement sbeRequest = new SOAPBodyElement(doc.getDocumentElement());
       sbeRequest.setName("getStatus");
-      sbeRequest.setNamespaceURI("http://admin.server.registry.astrogrid.org");
-      
-      System.out.println("sending " + XMLUtils.DocumentToString(doc));
-      Vector result = (Vector) call.invoke (new Object[] {sbeRequest});
-
-      SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
-      System.out.println("received " + XMLUtils.DocumentToString(sbe.getAsDocument()));
-      return sbe.getAsDocument();         
+      sbeRequest.setNamespaceURI(NAMESPACE_URI);
+      try {            
+         Vector result = (Vector) call.invoke (new Object[] {sbeRequest});
+         SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
+         resultDoc = sbe.getAsDocument();
+      }catch(RemoteException re) {
+         resultDoc = null;
+         re.printStackTrace();
+      }catch (Exception e) {
+         resultDoc = null;
+         e.printStackTrace();
+      }finally {
+         return resultDoc;
+      }
    }
 } 

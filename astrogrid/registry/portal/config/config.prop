@@ -1,0 +1,15 @@
+org.astrogrid.registry.dummy.mode.on=true
+org.astrogrid.registry.admin.endpoint=http://localhost:8080/axis/services/RegistryAdmin
+org.astrogrid.registry.harvest.endpoint=http://localhost:8080/axis/services/RegistryHarvest
+org.astrogrid.registry.query.endpoint=http://localhost:8080/axis/services/Registry
+org.astrogrid.registry.dummy.xml.url=C:\Development\eclipse\workspace\RegistryProj\astrogrid\registry\src\templates\client\DummyResourceTemplate.xml
+org.astrogrid.registry.version=0_9
+org.astrogrid.registry.organisation.template.url=C:\Development\eclipse\workspace\RegistryProj\astrogrid\registry\src\templates\client\OrganisationTemplate.xml
+org.astrogrid.registry.authority.template.url=C:\Development\eclipse\workspace\RegistryProj\astrogrid\registry\src\templates\client\AuthorityTemplate.xml
+org.astrogrid.registry.service.template.url=C:\Development\eclipse\workspace\RegistryProj\astrogrid\registry\src\templates\client\ServiceTemplate.xml
+org.astrogrid.registry.skyservice.template.url=C:\Development\eclipse\workspace\RegistryProj\astrogrid\registry\src\templates\client\SkyServiceTemplate.xml
+org.astrogrid.registry.tabularskyservice.template.url=C:\Development\eclipse\workspace\RegistryProj\astrogrid\registry\src\templates\client\TabularSkyServiceTemplate.xml
+org.astrogrid.registry.datacollection.template.url=C:\Development\eclipse\workspace\RegistryProj\astrogrid\registry\src\templates\client\DataCollectionTemplate.xml
+org.astrogrid.registry.registry.template.url=C:\Development\eclipse\workspace\RegistryProj\astrogrid\registry\src\templates\client\RegistryTemplate.xml
+org.astrogrid.registry.resource.template.url=C:\Development\eclipse\workspace\RegistryProj\astrogrid\registry\src\templates\client\ResourceTemplate.xml
+org.astrogrid.registry.version=0_9

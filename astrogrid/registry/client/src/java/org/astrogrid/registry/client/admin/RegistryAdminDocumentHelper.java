@@ -18,8 +18,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 
 import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.registry.common.RegistryConfig;
 import org.astrogrid.registry.common.versionNS.IRegistryInfo;
+import org.astrogrid.registry.common.RegistryHelper;
 
 /**
  * Class Name: RegistryAdminDocumentHelper
@@ -422,8 +422,7 @@ class SchemaBuilder {
     * @throws Exception
     */
    public Document generateDocument() throws Exception {
-      RegistryConfig.loadConfig();
-      IRegistryInfo iri = RegistryConfig.loadRegistryInfo();
+      IRegistryInfo iri = RegistryHelper.loadRegistryInfo();
       Document registryDoc = iri.getDocument();
       if(childElements.size() > 0) {
          for(int i = 0; i < childElements.size();i++) {

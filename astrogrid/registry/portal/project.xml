@@ -74,6 +74,16 @@
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
+        
+        <dependency>
+            <groupId>astrogrid-common</groupId>
+            <artifactId>astrogrid-common</artifactId>
+            <version>SNAPSHOT</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+        </dependency>
+        
+        
         <!--+
             | The Registry components.
             +-->

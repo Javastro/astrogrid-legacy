@@ -19,10 +19,10 @@ import org.xml.sax.InputSource;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.text.ParseException;
-import org.astrogrid.registry.common.RegistryConfig;
 import org.astrogrid.registry.common.versionNS.IRegistryInfo;
-import org.astrogrid.registry.client.admin.RegistryAdminService;
-import org.astrogrid.registry.client.harvest.RegistryHarvestService;
+import org.astrogrid.registry.client.RegistryDelegateFactory;
+import org.astrogrid.registry.common.RegistryAdminInterface;
+import org.astrogrid.registry.common.RegistryHarvestInterface;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import org.apache.axis.utils.XMLUtils;
@@ -87,15 +87,10 @@ public class RegistryHarvestAction extends AbstractAction
       String message = null;
       //Was this coming from the query page with a huge xml string
       //containing how to call the registry.
-      
-      RegistryConfig.loadConfig();
-      String url = null;
-       
       Document harvestDoc = null;
       String harvestResult = "";
-      url = RegistryConfig.getProperty("registry.harvest.url");
       Document resultDoc = null;
-      RegistryAdminService ras = null;
+      RegistryAdminInterface ras = null;
       try {
          //get where you putting the harvest results to.
             
@@ -111,9 +106,8 @@ public class RegistryHarvestAction extends AbstractAction
                      errorMessage = "A URL was not given for harvesting.";
                   }
                   if(errorMessage == null) {
-                     url = RegistryConfig.getProperty("publish.registry.update.url");
                      //instantiate the delegate.
-                     ras = new RegistryAdminService(url);
+                     ras = RegistryDelegateFactory.createAdmin();
                      
                      harvestDoc = registryBuilder.parse(accessURL);
                      
@@ -127,8 +121,7 @@ public class RegistryHarvestAction extends AbstractAction
                } else if(request.getParameter("addmetadatafromfile") != null) {
                   FilePart filePart = (FilePart) request.get("metadata_file");
                   File file = ((FilePartFile)filePart).getFile();
-                  url = RegistryConfig.getProperty("publish.registry.update.url");
-                  ras = new RegistryAdminService(url);
+                  ras = RegistryDelegateFactory.createAdmin();
                   harvestDoc = registryBuilder.parse(file);
                   resultDoc = ras.update(harvestDoc);
                } else if(request.getParameter("registryXML") != null) {
@@ -160,8 +153,7 @@ public class RegistryHarvestAction extends AbstractAction
                   InputSource inputSource = new InputSource(reader2);
                   harvestDoc = registryBuilder.parse(inputSource);
                   if(errorMessage == null) {
-                     url = RegistryConfig.getProperty("registry.harvest.url");
-                     RegistryHarvestService rhs = new RegistryHarvestService(url);
+                     RegistryHarvestInterface rhs = RegistryDelegateFactory.createHarvest();
                      if(dat == null) {
                         rhs.harvestResource(harvestDoc);
                      }else {
