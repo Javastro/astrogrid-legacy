@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Arnold Rots (Smithsonian Astrophysical Observatory) -->
 <!-- edited with XML Spy v4.4 U (http://www.xmlspy.com) by Arnold Rots (Smithsonian Astrophysical Observatory) -->
-<!-- $Id: stc.xsd,v 1.2 2004/12/18 18:30:08 jdt Exp $ -->
+<!-- $Id: stc.xsd,v 1.3 2004/12/20 16:12:36 jdt Exp $ -->
 <!-- Schema definition for the SpaceTimeCoords -->
 <!--Change Log:
 $Log: stc.xsd,v $
+Revision 1.3  2004/12/20 16:12:36  jdt
+whoopsie...don't allow dashes to creep into comments!
+
 Revision 1.2  2004/12/18 18:30:08  jdt
 KMB's merges:
 		Reg_KMB_728 astrogrid/registry
@@ -12,7 +15,7 @@ KMB's merges:
           o Reg_KMB_728 astrogrid/community
 
           o Exist_KMB_613 astrogrid/exist
-          o Reg_KMB_605 astrogrid/auto-integration -- only r
+          o Reg_KMB_605 astrogrid/auto-integration only r
 
 Revision 1.1.4.1  2004/11/19 10:51:26  KevinBenson
 okay this is the result of a comparison wiht eclipse with brach Reg_KMB_605
