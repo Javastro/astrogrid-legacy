@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: deploy-cea.xml,v 1.1 2004/09/16 07:09:26 pah Exp $ -->
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="maven-project.xsd">
+    <extend>./deploy-project.xml</extend>
+    <id>astrogrid-deploy-cea</id>
+    <name>Deploy myspace</name>
+    <build />
+    <dependencies>
+       <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-cea-commandline</artifactId>
+            <version>${astrogrid.release}</version>
+            <type>war</type>
+            <url>http://www.astrogrid.org/</url>
+        </dependency>
+		
+   </dependencies>
+</project>
