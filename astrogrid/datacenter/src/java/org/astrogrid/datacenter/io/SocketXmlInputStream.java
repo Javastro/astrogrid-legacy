@@ -1,12 +1,11 @@
 /*
- * $Id: SocketXmlInputStream.java,v 1.2 2003/09/15 11:16:19 mch Exp $
+ * $Id: SocketXmlInputStream.java,v 1.3 2003/09/15 16:19:12 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.io;
 
-import java.io.File;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,8 +24,11 @@ import org.xml.sax.SAXException;
 
 public class SocketXmlInputStream extends FilterInputStream implements AsciiCodes
 {
-   public final static char EOD = EOF; //end of document
+   /** End of document marker */
+   public static final char EOD = EOF;
 
+   /** Constructor like a FilterInputStream - construct as a wrapper around the
+    * stream to read from */
    public SocketXmlInputStream(InputStream in)
    {
       super(in);

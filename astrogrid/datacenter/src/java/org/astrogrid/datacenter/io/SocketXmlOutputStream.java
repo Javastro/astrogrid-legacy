@@ -1,5 +1,5 @@
 /*
- * $Id: SocketXmlOutputStream.java,v 1.3 2003/09/14 22:31:50 mch Exp $
+ * $Id: SocketXmlOutputStream.java,v 1.4 2003/09/15 16:19:12 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -20,6 +20,8 @@ import org.w3c.dom.Element;
 
 public class SocketXmlOutputStream extends FilterOutputStream implements AsciiCodes
 {
+   /** Construct like a FilterOutputStream - wrap around the stream to forward
+    * all writes to */
    public SocketXmlOutputStream(OutputStream out)
    {
       super(out);
