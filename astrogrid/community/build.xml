@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/Attic/build.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/09/03 16:06:01 $</cvs:date>
-    | <cvs:version>$Revision: 1.6 $</cvs:version>
+    | <cvs:date>$Date: 2003/09/03 16:12:05 $</cvs:date>
+    | <cvs:version>$Revision: 1.7 $</cvs:version>
     | <cvs:log>
     |   $Log: build.xml,v $
+    |   Revision 1.7  2003/09/03 16:12:05  dave
+    |   Fixed hard coded database address in build.xml
+    |
     |   Revision 1.6  2003/09/03 16:06:01  dave
     |   Fixed axis wait in build.xml
     |
@@ -563,7 +566,7 @@
 	<property name="hsqldb.dist"     value="http://belnet.dl.sourceforge.net/sourceforge/hsqldb/hsqldb_${hsqldb.version}.zip"/>
 	<property name="hsqldb.home"     value="${hsqldb.base}/${hsqldb.name}"/>
 	<property name="hsqldb.data"     value="${hsqldb.base}/data"/>
-	<property name="hsqldb.host"     value="methionine.codon.demon.co.uk"/>
+	<property name="hsqldb.host"     value="localhost"/>
 	<property name="hsqldb.port"     value="9001"/>
 	<property name="hsqldb.database" value="policy"/>
 	<property name="hsqldb.user"     value="sa"/>
