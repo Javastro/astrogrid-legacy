@@ -1,0 +1,62 @@
+#myspace-tools
+{
+  /*
+    Alignment.
+    */
+  text-align:                     center;
+  
+  /*
+    Borders.
+    */
+  border-style:                   solid;
+  border-width:                   2px;
+  
+  /*
+    Colors.
+    */
+  background-color:               lightblue;
+  
+  /*
+    Dimensions.
+    */
+  width:                          20%;
+  
+  /*
+    Margins and Padding.
+    */
+/*
+  padding-left:                   10px;
+*/
+  
+  /*
+    Positioning.
+    */
+  float:                          right;
+}
+
+#myspace-tools-header
+{
+  /*
+    Colors.
+    */
+  background-color:               blue;
+  color:                          lightblue;
+
+  /*
+    Dimensions.
+    */
+  width:                          100%;
+}
+
+.myspace-hidden
+{
+  /*
+    Dimensions.
+    */
+  width:                          0;
+
+  /*
+    Visibility.
+    */
+  visibility:                     hidden;
+}

@@ -18,9 +18,6 @@
       <groupId>astrogrid-common</groupId>
       <artifactId>astrogrid-common</artifactId>
       <version>SNAPSHOT</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
     </dependency>
     
     <!-- Portal Common -->
@@ -40,6 +37,7 @@
       </properties>
     </dependency>
 
+    <!-- SOAP for Java -->
     <dependency>
       <groupId>saaj-api</groupId>
       <artifactId>saaj-api</artifactId>

@@ -20,3 +20,14 @@ function swapFolder(img){
   else
      objImg.src = closedImg.src;
 }
+
+function setOldMySpaceName(oldMySpaceName){
+  myspace_old_name = document.getElementById('myspace-old-name');
+  myspace_old_name.value = oldMySpaceName;
+}
+
+function setNewMySpaceName(newMySpaceName){
+  myspace_new_name = document.getElementById('myspace-new-name');
+  myspace_new_name.value = newMySpaceName;
+}
+

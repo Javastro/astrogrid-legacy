@@ -17,13 +17,20 @@
     <j:set var="webapp.dir.mount" value="${webapp.dir}/mount"/>
     <j:set var="webapp.dir.mount.component" value="${webapp.dir.mount}/myspace"/>
     <j:set var="webapp.dir.mount.component.web" value="${webapp.dir.mount.component}/web"/>
+    <j:set var="webapp.dir.mount.component.webstart" value="${webapp.dir.mount.component}/webstart"/>
 
     <ant:mkdir dir="${webapp.dir.mount}"/>
     <ant:mkdir dir="${webapp.dir.mount.component}"/>
     <ant:mkdir dir="${webapp.dir.mount.component.web}"/>
+    <ant:mkdir dir="${webapp.dir.mount.component.webstart}"/>
     
     <ant:move todir="${webapp.dir.mount.component.web}">
       <ant:fileset dir="${webapp.dir}/web"/>
+    </ant:move>
+
+    <ant:move todir="${webapp.dir.mount.component.webstart}">
+      <ant:fileset dir="${webapp.dir}/webstart"/>
+      <ant:echo message="moved ${webapp.dir}/webstart to ${webapp.dir.mount.component.webstart}"/>
     </ant:move>
 
     <ant:move todir="${webapp.dir.mount.component}">
