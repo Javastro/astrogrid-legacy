@@ -1,4 +1,4 @@
-/* $Id: AccountTest.java,v 1.3 2004/02/18 21:50:14 jdt Exp $
+/* $Id: AccountTest.java,v 1.4 2004/02/19 11:23:36 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -55,9 +55,9 @@ public class AccountTest extends TestCase
    }
 
    /**
-    * Tests user representation
+    * Tests user representation from snippet
     */
-   public void testAccount()
+   public void testAccountSnippet()
    {
       //make user from snippet
       String snippet = CommunityMessage.getMessage("SomeToken","me@community","agroup");
@@ -66,7 +66,6 @@ public class AccountTest extends TestCase
       
       assertEquals("me", me.getIndividual());
       assertEquals("community", me.getCommunity());
-//@TODO mch - have you checked in Account?      assertEquals("agroup", me.getGroup());
       assertEquals("SomeToken", me.getToken());
       assertEquals("me@community", me.getAstrogridId());
       
@@ -77,6 +76,20 @@ public class AccountTest extends TestCase
       assertTrue(me.equals(meToo));
    }
 
+   /**
+	* Tests user representation
+	*/
+   public void testAccount()
+   {
+	  Account me = new Account("me","community", "SomeToken");
+      
+	  assertEquals("me", me.getIndividual());
+	  assertEquals("community", me.getCommunity());
+	  assertEquals("SomeToken", me.getToken());
+	  assertEquals("me@community", me.getAstrogridId());
+      
+	  assertTrue(me.equals(meToo));
+   }
 
     /**
      * Assembles and returns a test suite made up of all the testXxxx() methods
@@ -98,6 +111,9 @@ public class AccountTest extends TestCase
 
 /*
 $Log: AccountTest.java,v $
+Revision 1.4  2004/02/19 11:23:36  mch
+Removed Group property from Account.  Added tests
+
 Revision 1.3  2004/02/18 21:50:14  jdt
 temp build fix - mch to complete (bug 127)
 
