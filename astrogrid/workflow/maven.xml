@@ -1,0 +1,56 @@
+<?xml version="1.0" ?>
+<!-- extension maven script -->
+<project xmlns:j="jelly:core"  xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="jar:jar">
+
+<property name="webapp.root" location="${basedir}/target/astrogrid-jes" />
+<property name="webapp.docs" location="${basedir}/target/webapp-docs" />
+<property name="working.dir" location="${basedir}/target/tmp" />
+<goal name="jes" prereqs="clean,site,webapp-site,war:war" />
+
+<!-- astrogrid standard goals -->
+
+<goal name="astrogrid-clean" prereqs="clean"/>
+
+<goal name="astrogrid-build-site">
+        <attainGoal name="site" />
+</goal>
+
+<goal name="astrogrid-build-artifact">
+        <attainGoal name="jar" />
+</goal>
+
+<goal name="astrogrid-build-snapshot">
+        <attainGoal name="jar:snapshot" />
+</goal>
+
+<goal name="astrogrid-install-site" prereqs="astrogrid-build-site" />
+
+<goal name="astrogrid-install-artifact">
+        <attainGoal name="jar:install" />
+</goal>
+
+<goal name="astrogrid-install-snapshot">
+        <attainGoal name="jar:install-snapshot" />
+</goal>
+
+<goal name="astrogrid-deploy-site" prereqs="astrogrid-build-site">
+        <attainGoal name="site:fsdeploy" />
+</goal>
+
+<goal name="astrogrid-deploy-snapshot">
+        <attainGoal name="jar:deploy-snapshot" />
+</goal>
+
+<goal name="astrogrid-deploy-artifact">
+        <attainGoal name="jar:deploy" />
+</goal>
+
+
+<!-- end astrogrid standard goals -->
+
+  <preGoal name="java:compile">
+     <mkdir dir="${basedir}/target/classes" />     <!-- Clover fails if this dir is not present -->
+  </preGoal>
+
+
+</project>
