@@ -20,9 +20,9 @@
         </xsl:if>
                 
         <table border="1">
-            <form action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" name="workflow_form">
+            <form action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" name="workflow_form" id="workflow_form">
                 <tr>
-                    <td colspan="4">
+                    <td colspan="3">
                         <ag-menu name="workflow-menu"/>
                     </td>
                 </tr>
@@ -39,11 +39,8 @@
                     <td rowspan="2">                        
                         <input type="submit" name="action" value="add-name-description" />
                     </td>
-                    <td>
-                        ivorn:<input type="text" name="open-workflow-ivorn" id="open-workflow-ivorn"/>
-                        agsl:<input type="text" name="open-workflow-agsl" id="open-workflow-agsl"/>                        
-                        <input type="submit" name="action" value="read-workflow" />                        
-                    </td>                                
+                <input type="hidden" name="open-workflow-ivorn" id="open-workflow-ivorn"/>
+                <input type="hidden" name="open-workflow-agsl" id="open-workflow-agsl"/>                        
                 </tr>
                 <tr>
                     <td width="30">Description:</td>
@@ -54,12 +51,10 @@
                             <xsl:attribute name="value"><xsl:value-of select="@workflow-description"/></xsl:attribute>
                             <xsl:attribute name="name">workflow-description</xsl:attribute>
                         </xsl:element>                  
-                    </td>
-                    <td>
-                        ivorn:<input type="text" name="save-workflow-ivorn" id="save-workflow-ivorn"/>
-                        agsl:<input type="text" name="save-workflow-agsl" id="save-workflow-agsl"/>
-                        <input type="submit" name="action" value="save-workflow"/>                                                                       
-                    </td>
+                    </td>                
+                <input type="hidden" name="save-workflow-ivorn" id="save-workflow-ivorn"/>
+                <input type="hidden" name="save-workflow-agsl" id="save-workflow-agsl"/>
+                <input type="hidden" name="action" id="workflow_action"/>                        
                 </tr>
             </form>                    
         </table>                     
