@@ -12,14 +12,14 @@ import org.astrogrid.mySpace.mySpaceStatus.MySpaceStatusCode;
  * @version Iteration 3.
  */
 
-public class TestMySpaceStatus extends TestCase
+public class MySpaceStatusTest extends TestCase
 {
 
 /**
  * Standard constructor for JUnit test classes.
  */
 
-   public TestMySpaceStatus (String name)
+   public MySpaceStatusTest (String name)
    {  super(name);
    }
 
@@ -101,12 +101,28 @@ public class TestMySpaceStatus extends TestCase
    }
 
 /**
+ * Test the <code>translateCode</code> method.  A code is translated
+ * and compared with the expected String representation.
+ */
+
+   public void testTranslateCode()
+   {   MySpaceStatus msStatus = new MySpaceStatus();
+       String code = msStatus.translateCode(MySpaceStatusCode.AGMMCE00031);
+       Assert.assertEquals(code, "AGMMCE00031");
+   }
+
+/**
  * Obtain the name of the current Java class.
  */
 
    protected String getClassName()
    { Class currentClass = this.getClass();
      String name =  currentClass.getName();
+     int dotPos = name.lastIndexOf(".");
+     if (dotPos > -1)
+     {  name = name.substring(dotPos+1, name.length() );
+     }
+
      return name;
    }    
 
@@ -116,7 +132,7 @@ public class TestMySpaceStatus extends TestCase
 
    public static void main (String[] args)
    {
-//    junit.textui.TestRunner.run (TestMySpaceStatus.class);
-      junit.swingui.TestRunner.run (TestMySpaceStatus.class);
+//    junit.textui.TestRunner.run (MySpaceStatusTest.class);
+      junit.swingui.TestRunner.run (MySpaceStatusTest.class);
    }
 }

@@ -1,13 +1,17 @@
 package org.astrogrid.mySpace.mySpaceManager;
 
+import  org.astrogrid.mySpace.mySpaceServer.ServerManager;
+
 /**
  * <p>
  * The ServerDriver class is a utility class of methods to invoke
  * the functions of a MySpace server.
  * </p>
  * <p>
- * Fake version for testing the registry.
- * </p>
+ * Fake version for testing.  Depending on the value of INVOKESERVER
+ * a server either is or is not invoked as a local method.  The purpose
+ * of using the routine without a registry is primarily for testing the
+ * registry.
  *
  * @author C L Qin
  * @author A C Davenhall (Edinburgh)
@@ -15,7 +19,7 @@ package org.astrogrid.mySpace.mySpaceManager;
  */
 
 public class ServerDriver
-{  
+{  private static final boolean INVOKESERVER = true;
 
 //
 // Constructor.
@@ -51,6 +55,18 @@ public class ServerDriver
         + "  output server file name: " + newDataHolderFileName + "\n"
         + "  contents: \n\n" + contents);
 
+      if (INVOKESERVER)
+      {  ServerManager serveMan = new ServerManager();
+         String response = serveMan.upLoadString(contents,
+           newDataHolderFileName);
+
+         int pos = response.indexOf("SUCCESS");
+         if (pos < 0)
+         {  System.out.println("Error: " + response);
+            successStatus = false;
+         }
+      }
+
       return successStatus;
    }
 
@@ -78,6 +94,18 @@ public class ServerDriver
       System.out.println("Attempt to import a dataHolder on a server:\n"
         + "  input URI: "+ importURI + "\n"
         + "  output server file name: " + newDataHolderFileName);
+
+      if (INVOKESERVER)
+      {  ServerManager serveMan = new ServerManager();
+         String response = serveMan.importDataHolder(importURI,
+           newDataHolderFileName);
+
+         int pos = response.indexOf("SUCCESS");
+         if (pos < 0)
+         {  System.out.println("Error: " + response);
+            successStatus = false;
+         }
+      }
 
       return successStatus;
    }
@@ -107,6 +135,17 @@ public class ServerDriver
         + "  input server file name: "+ oldDataHolderFileName + "\n"
         + "  output server file name: " + newDataHolderFileName);
 
+      if (INVOKESERVER)
+      {  ServerManager serveMan = new ServerManager();
+         String response = serveMan.copyDataHolder(oldDataHolderFileName,
+           newDataHolderFileName);
+
+         int pos = response.indexOf("SUCCESS");
+         if (pos < 0)
+         {  System.out.println("Error: " + response);
+            successStatus = false;
+         }
+      }
       return successStatus;
    }
 
@@ -126,6 +165,17 @@ public class ServerDriver
 
       System.out.println("Attempt to delete a dataHolder on a server:\n"
         + "  server file name: "+ dataHolderFileName);
+
+      if (INVOKESERVER)
+      {  ServerManager serveMan = new ServerManager();
+         String response = serveMan.deleteDataHolder(dataHolderFileName);
+ 
+         int pos = response.indexOf("SUCCESS");
+         if (pos < 0)
+         {  System.out.println("Error: " + response);
+            successStatus = false;
+         }
+      }
 
       return successStatus;
    }
