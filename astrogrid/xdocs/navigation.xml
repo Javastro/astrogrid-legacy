@@ -6,17 +6,17 @@
             <item name="AstroGrid" href="http://www.astrogrid.org"/>
             <item name="Projects" href="index.html"/>
         </links>
-        <menu name="Astrogrid Maven Repository">
+        <menu name="Downloads">
 			<!--+
 				| The following links use pattern matching, 
 				| and rely on deploying to Apache 2.x 
 				+ --> 
             <item name="jars" 
-                href="http://www.astrogrid.org/maven/org.astrogrid/jar/?P=*SNAPSHOT*"/>
+                href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=*SNAPSHOT*"/>
             <item name="wars" 
-                href="http://www.astrogrid.org/maven/org.astrogrid/war/?P=*SNAPSHOT*"/>
+                href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=*SNAPSHOT*"/>
             <item name="zips" 
-                href="http://www.astrogrid.org/maven/org.astrogrid/zip/?P=*SNAPSHOT*"/>
+                href="http://www.astrogrid.org/maven/org.astrogrid/zips/?P=*SNAPSHOT*"/>
         </menu>
         <menu name="Astrogrid Components">
             <item name="Applications Integration" 
