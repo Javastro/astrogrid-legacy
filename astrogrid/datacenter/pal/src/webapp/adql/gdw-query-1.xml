@@ -15,7 +15,7 @@
           <FirstExpr xsi:type="ColumnExpr">
                 <SingleColumnReference>
                   <TableName>f</TableName>
-                  <Name>POS_ED_DEC</Name>
+                  <Name>DECL</Name>
                 </SingleColumnReference>
           </FirstExpr>
           <Compare>&gt;</Compare>
