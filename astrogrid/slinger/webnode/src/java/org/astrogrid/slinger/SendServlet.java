@@ -1,8 +1,6 @@
 
 package org.astrogrid.slinger;
 import java.io.IOException;
-import java.io.StringReader;
-import java.io.Writer;
 import java.net.URISyntaxException;
 import java.security.Principal;
 import javax.servlet.ServletException;
@@ -10,8 +8,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.astrogrid.account.LoginAccount;
-import org.astrogrid.io.Piper;
+import org.astrogrid.slinger.Slinger;
 import org.astrogrid.slinger.mime.MimeTypes;
+import org.astrogrid.slinger.sources.StringSource;
 import org.astrogrid.slinger.targets.TargetIdentifier;
 import org.astrogrid.slinger.targets.TargetMaker;
 
@@ -58,14 +57,9 @@ public class SendServlet extends HttpServlet
       
       try {
          TargetIdentifier target = TargetMaker.makeTarget(targetUri);
-               
-         StringReader reader = new StringReader(text);
-         Writer writer = target.resolveWriter(user);
-         
-         Piper.bufferedPipe(reader, writer);
-         
-         reader.close();
-         writer.close();
+
+         StringSource source = new StringSource(text);
+         Slinger.sling(source, target, getUser(request));
    
          response.getWriter().write("\nDone");
          response.getWriter().flush();

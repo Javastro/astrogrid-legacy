@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- $Id: project.xml,v 1.10 2005/03/22 17:13:57 mch Exp $ -->
+<!-- $Id: project.xml,v 1.11 2005/03/23 15:29:42 mch Exp $ -->
 
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 
@@ -23,199 +23,13 @@
     <dependencies>
 
         <dependency>
-            <artifactId>astrogrid-config</artifactId>
-            <groupId>org.astrogrid</groupId>
-            <version>${astrogrid.config.stable}</version>
-            <properties>
-               <war.bundle>true</war.bundle>
-            </properties>
-        </dependency>
-
-        <dependency>
-            <artifactId>astrogrid-slinger-api</artifactId>
+            <artifactId>astrogrid-slinger</artifactId>
             <groupId>org.astrogrid</groupId>
             <version>${astrogrid.slinger.version}</version>
             <properties>
                <war.bundle>true</war.bundle>
             </properties>
         </dependency>
-
-        <dependency>
-            <artifactId>astrogrid-xml</artifactId>
-            <groupId>org.astrogrid</groupId>
-            <version>${astrogrid.xml.stable}</version>
-            <properties>
-               <war.bundle>true</war.bundle>
-            </properties>
-        </dependency>
-
-        <!-- for other astrogrid components -->
-        <dependency>
-            <artifactId>astrogrid-common</artifactId>
-            <groupId>org.astrogrid</groupId>
-            <version>${astrogrid.common.version}</version>
-            <properties>
-               <war.bundle>true</war.bundle>
-            </properties>
-        </dependency>
-
-
-         <!-- for logging -->
-        <dependency>
-            <artifactId>log4j</artifactId>
-            <groupId>log4j</groupId>
-            <version>1.2.4</version>
-            <properties>
-               <war.bundle>true</war.bundle>
-            </properties>
-        </dependency>
-
-        <dependency>
-            <artifactId>commons-logging</artifactId>
-            <groupId>commons-logging</groupId>
-            <version>1.0.3</version>
-            <properties>
-               <war.bundle>true</war.bundle>
-            </properties>
-        </dependency>
-
-        <dependency>
-            <artifactId>commons-discovery</artifactId>
-            <groupId>commons-discovery</groupId>
-            <version>20030211.213356</version>
-            <properties>
-               <war.bundle>true</war.bundle>
-            </properties>
-        </dependency>
-
-      <!-- for connecting to filemanager myspace -->
-       <dependency>
-            <artifactId>astrogrid-filemanager-client</artifactId>
-            <groupId>org.astrogrid</groupId>
-            <version>${astrogrid.filemanager.version}</version>
-            <properties>
-               <war.bundle>true</war.bundle>
-            </properties>
-       </dependency>
-      
-       <dependency>
-           <artifactId>astrogrid-filemanager-contract</artifactId>
-           <groupId>org.astrogrid</groupId>
-           <version>${astrogrid.filemanager.version}</version>
-           <properties>
-              <war.bundle>true</war.bundle>
-           </properties>
-       </dependency>
-
-       <!-- JavaMail for Mail targets -->
-       <dependency>
-         <id>JavaMail</id>
-         <version>UNKNOWN</version>
-         <jar>JavaMail.jar</jar>
-            <properties>
-               <war.bundle>true</war.bundle>
-            </properties>
-       </dependency>
-
-    <!-- accessing myspace services -->
-    <dependency>
-      <groupId>org.astrogrid</groupId>
-      <artifactId>astrogrid-store-client</artifactId>
-      <version>${astrogrid.mySpace.version}</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-
-    <!-- FTP access -->
-    <dependency>
-      <groupId>commons-net</groupId>
-      <artifactId>commons-net</artifactId>
-      <version>1.1.0</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-
-       <!-- axis, for myspace client -->
-       <dependency>
-         <id>axis</id>
-         <version>1.1</version>
-            <properties>
-               <war.bundle>true</war.bundle>
-            </properties>
-       </dependency>
-       <dependency>
-         <id>jaxrpc-api</id>
-         <version>1.0.3</version>
-            <properties>
-               <war.bundle>true</war.bundle>
-            </properties>
-       </dependency>
-       <dependency>
-         <id>jax-qname</id>
-         <version>UNKNOWN</version>
-         <jar>jax-qname.jar</jar>
-            <properties>
-               <war.bundle>true</war.bundle>
-            </properties>
-       </dependency>
-
-
-       <!-- for VoSpaceResolver -->
-       <dependency>
-          <artifactId>astrogrid-registry-client-lite</artifactId>
-          <groupId>org.astrogrid</groupId>
-          <version>${astrogrid.registry.version}</version>
-            <properties>
-               <war.bundle>true</war.bundle>
-            </properties>
-       </dependency>
-
-       <dependency>
-         <artifactId>astrogrid-registry-common</artifactId>
-         <groupId>org.astrogrid</groupId>
-         <version>${astrogrid.registry.version}</version>
-            <properties>
-               <war.bundle>true</war.bundle>
-            </properties>
-       </dependency>
-    
-
-        <!-- Community resolving components.-->
-        <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-community-common</artifactId>
-            <version>${astrogrid.community.version}</version>
-            <type>jar</type>
-            <url>http://www.astrogrid.org/</url>
-            <properties>
-               <war.bundle>true</war.bundle>
-            </properties>
-        </dependency>
-
-        <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-community-client</artifactId>
-             <version>${astrogrid.community.version}</version>
-            <type>jar</type>
-            <url>http://www.astrogrid.org/</url>
-            <properties>
-               <war.bundle>true</war.bundle>
-            </properties>
-        </dependency>
-
-        <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-community-resolver</artifactId>
-           <version>${astrogrid.community.version}</version>
-            <type>jar</type>
-            <url>http://www.astrogrid.org/</url>
-            <properties>
-               <war.bundle>true</war.bundle>
-            </properties>
-        </dependency>
-
  
 
        <!-- servlet support (for compiling against - no need for deployment war as servlet container should have it) -->

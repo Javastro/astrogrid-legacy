@@ -1,7 +1,5 @@
 
 package org.astrogrid.slinger;
-import org.astrogrid.account.*;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
@@ -10,9 +8,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.astrogrid.account.LoginAccount;
 import org.astrogrid.io.Piper;
+import org.astrogrid.slinger.Slinger;
 import org.astrogrid.slinger.sources.SourceIdentifier;
 import org.astrogrid.slinger.sources.SourceMaker;
+import org.astrogrid.slinger.targets.HttpResponseTarget;
 
 /**
  * A servlet that takes a URI and attempts to resolve it to a stream,
@@ -41,15 +42,11 @@ public class ResolverServlet extends HttpServlet
       
       String sourceUri = request.getParameter("SourceUri");
       if (sourceUri != null) {
-         try
-         {
+         try {
             SourceIdentifier source = SourceMaker.makeSource(sourceUri);
-            
-            response.setContentType(source.getMimeType(getUser(request)));
-            InputStream in = source.resolveInputStream(getUser(request));
-            Piper.bufferedPipe(in, response.getOutputStream());
-            in.close();
-            response.getOutputStream().flush();
+            HttpResponseTarget target = new HttpResponseTarget(response);
+         
+            Slinger.sling(source, target, getUser(request));
             
          }
          catch (URISyntaxException e) {

@@ -1,5 +1,5 @@
 /*
- * $Id: ReaderSource.java,v 1.2 2005/03/23 15:29:42 mch Exp $
+ * $Id: StringSource.java,v 1.1 2005/03/23 15:29:42 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,40 +7,37 @@
 package org.astrogrid.slinger.sources;
 
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.Reader;
+import java.io.StringReader;
 import java.security.Principal;
 
 /**
- * Where the source is a Reader (eg an http request in)
+ * Where the source is a string; defaults to PLAINTEXT
  *
  */
 
-public class ReaderSource implements SourceIdentifier {
+public class StringSource implements SourceIdentifier {
    
-   protected Reader in = null;
+   protected String s = null;
    
-   public ReaderSource(Reader sourceIn) {
-      this.in = sourceIn;
-   }
-
-   public Reader getReader() {
-      return in;
+   public StringSource(String sourceString) {
+      this.s = sourceString;
    }
 
    public Reader resolveReader(Principal user)  {
-      return in;
+      return new StringReader(s);
    }
 
-   
    /** All targets must be able to resolve to a stream.  The user is required
     * for permissioning. */
    public InputStream resolveInputStream(Principal user) {
-      throw new UnsupportedOperationException("todo");
+      return new ByteArrayInputStream(s.getBytes());
    }
    
    public String toString() {
-      return in.getClass()+" Source";
+      return " String Source";
    }
    
    /** Cannot be forwarded to remote services */
@@ -53,8 +50,8 @@ public class ReaderSource implements SourceIdentifier {
    
 }
 /*
- $Log: ReaderSource.java,v $
- Revision 1.2  2005/03/23 15:29:42  mch
+ $Log: StringSource.java,v $
+ Revision 1.1  2005/03/23 15:29:42  mch
  added command-line Slinger, rationalised copy, send, get etc
 
  Revision 1.1  2005/02/14 20:47:38  mch
