@@ -6,12 +6,15 @@ import java.sql.Timestamp;
 
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/authentication/data/Attic/SecurityToken.java,v $</cvs:source>
- * <cvs:author>$Author: KevinBenson $</cvs:author>
- * <cvs:date>$Date: 2003/09/08 11:01:35 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:author>$Author: pah $</cvs:author>
+ * <cvs:date>$Date: 2003/09/10 20:48:17 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityToken.java,v $
+ *   Revision 1.4  2003/09/10 20:48:17  pah
+ *   Authentication Service without database backend
+ *
  *   Revision 1.3  2003/09/08 11:01:35  KevinBenson
  *   A check in of the Authentication authenticateToken roughdraft and some changes to the groudata and community data
  *   along with an AdministrationDelegate
@@ -58,7 +61,7 @@ public class SecurityToken {
        * Our Account ident.
        *
        */
-      private Timestamp expirationDate;
+      private Date expirationDate;
       
       /**
        * Our Account ident.
@@ -76,7 +79,7 @@ public class SecurityToken {
        * Our Account ident.
        *
        */
-      private Timestamp todaysDate;
+      private Date todaysDate;
       
       private static final int INCREMENT_HOUR = 8;
       
@@ -183,7 +186,7 @@ public class SecurityToken {
     * Access to our Token.
     *
    */
-   public Timestamp getExpirationDate(){
+   public Date getExpirationDate(){
       return this.expirationDate;
    }
 
@@ -191,7 +194,7 @@ public class SecurityToken {
     * Access to our Token.
     *
    */
-   public void setExpirationDate(Timestamp expirationDate) {
+   public void setExpirationDate(Date expirationDate) {
       this.expirationDate = expirationDate;
    }
 
@@ -199,7 +202,7 @@ public class SecurityToken {
     * Access to our Token.
     *
    */
-   public Timestamp getTodaysDate(){
+   public Date getTodaysDate(){
       return this.todaysDate;
    }
 
@@ -207,7 +210,7 @@ public class SecurityToken {
     * Access to our Token.
     *
    */
-   public void setTodaysDate(Timestamp todaysDate) {
+   public void setTodaysDate(Date todaysDate) {
       this.todaysDate = todaysDate;
    }
    
@@ -231,5 +234,4 @@ public class SecurityToken {
      String val = "Token=" + this.token + ", Target=" + target;
      return val;
    }
-
 }
