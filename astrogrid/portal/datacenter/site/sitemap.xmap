@@ -11,7 +11,7 @@
     | the accompanying documentation. The sitemaps which come with each
     | sample and each block will help to explain.
     |
-    | CVS $Id: sitemap.xmap,v 1.6 2004/01/13 10:54:51 gps Exp $
+    | CVS $Id: sitemap.xmap,v 1.7 2004/02/15 18:22:18 jdt Exp $
     +-->
 <map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
 
@@ -201,16 +201,7 @@
       <map:serialize type="xml"/>
     </map:resource>
 
-    <map:resource name="load-results">
-      <map:generate type="file" src="{results-display}"/>
-      
-      <map:transform src="cocoon:/load-adql.xsl">
-        <map:parameter name="adql-document" value="{adql-document}"/>
-        <map:parameter name="adql-document-errors" value="{adql-document-errors}"/>
-      </map:transform>
-  
-      <map:serialize type="xml"/>
-    </map:resource>
+
   </map:resources>
 
 <!-- ========================== Action sets ================================ -->
@@ -247,18 +238,19 @@
      |
      | You may have as many pipelines in your sitemap as you like.
      +-->
-  <map:pipelines>
-    <map:component-configurations>
-      <global-variables>
-       <!--+
+	<map:pipelines>
+		<map:component-configurations>
+			<global-variables>
+				<!--+
            | Define global parameters here:
            |   <skin>my_skin</skin>
            |   ...
            | You can access them by {global:*name*}, e.g. {global:skin}.
            | These values are inherited into sub-sitemaps and can
            | be extended there.
-           +--></global-variables>
-    </map:component-configurations>
+           +-->
+			</global-variables>
+		</map:component-configurations>
 
   <!-- main pipeline -->
     <map:pipeline>
@@ -267,19 +259,20 @@
         <map:select type="request-parameter">
           <map:parameter name="parameter-name" value="action"/>
           
-          <map:when test="Load">
-            <map:act type="load-adql">
-              <map:parameter name="myspace-end-point" value="http://Dummy.address/"/>
-              <map:parameter name="username" value="Anon"/>
-              <map:parameter name="community-id" value="gps@star.le.ac.uk"/>
-              <map:parameter name="password" value="None"/>
-              <map:parameter name="myspace-name" value="myspace-name"/>
-            </map:act>
-            
-            <map:call resource="load-results">
-              <map:parameter name="results-display" value="web/static/data-query.xml"/>
-            </map:call>
-          </map:when>
+			<map:when test="Load">
+				<map:act type="load-adql">
+					<map:parameter name="myspace-end-point" 						value="http://Dummy.address/"/>
+					<map:parameter name="username" value="Anon"/>
+					<map:parameter name="community-id" value="gps@star.le.ac.uk"/>
+					<map:parameter name="password" value="None"/>
+					<map:parameter name="myspace-name" value="myspace-name"/>
+					<map:generate type="file" src="web/static/data-query.xml"/>
+					<map:transform src="cocoon:/load-adql.xsl">
+							<map:parameter name="adql-document" value="{adql-document}"/>
+					</map:transform>
+					<map:serialize type="xml"/>
+				</map:act>
+			</map:when>
           
           <map:when test="Save">
             <map:act type="save-adql">
