@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForWorkflow.java,v 1.16 2004/09/03 13:10:43 nw Exp $
+/*$Id: AbstractTestForWorkflow.java,v 1.17 2004/09/08 13:10:13 nw Exp $
  * Created on 30-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -66,8 +66,8 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
     protected ApplicationRegistry reg;
     
     protected abstract void buildWorkflow() throws  Exception;
-
-   public static final long WAIT_TIME = 10 * 60 * 1000; // timout is ten minutes for each test.
+    /** timout is ten minutes for each test. can be overridden in subclasses. */
+   public  long WAIT_TIME = 10 * 60 * 1000; 
 /** override this to do fuller tests */
     public void checkExecutionResults(Workflow result) throws Exception{
         assertWorkflowCompleted(result);
@@ -270,6 +270,9 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
 
 /* 
 $Log: AbstractTestForWorkflow.java,v $
+Revision 1.17  2004/09/08 13:10:13  nw
+made it possible to override timeout
+
 Revision 1.16  2004/09/03 13:10:43  nw
 saves workflows before and after execution into myspace
 
