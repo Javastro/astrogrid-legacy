@@ -419,7 +419,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
     * Returns the Agsl for the given source path
     */
    public Agsl getAgsl(String sourcePath) throws IOException {
-      return new Agsl(Msrl.SCHEME+":"+getEndpoint(), sourcePath);
+      return new Agsl(getEndpoint().toString(), sourcePath);
    }
    
    
@@ -1334,6 +1334,9 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
 
 /*
 $Log: MySpaceIt05Delegate.java,v $
+Revision 1.27  2004/05/14 09:39:55  mch
+Fixed prepended myspace to endpoint msrl
+
 Revision 1.26  2004/05/12 14:48:01  mch
 Fixed endpoint AGSL error
 
