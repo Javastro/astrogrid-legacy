@@ -167,7 +167,7 @@ public class GdsDelegate extends GridServiceDelegate {
    * @return The URL of the factory
    * @throws Exception
    */
-    public String getFactoryUrlFromRegistry( 
+    static public String getFactoryUrlFromRegistry( 
         String registryUrl, 
         int timeoutValue ) throws Exception
     {
