@@ -5,20 +5,21 @@ A:visited {text-decoration: underline; color: darkmagenta;}
 #f0 { font-family: "Helvetica"; font-size: 10pt;  }
 #f1 { font-family: "SansSerif"; font-size: 12pt; font-weight: bold;  }
 #f2 { font-family: "SansSerif"; font-size: 12pt; font-style: italic;  }
-#f3 { font-family: "SansSerif"; font-size: 9pt;  }
-#f4 { font-family: "SansSerif"; font-size: 10pt; font-style: italic; font-weight: bold;  }
-#f5 { font-family: "SansSerif"; font-size: 10pt; font-style: italic;  }
-#f6 { font-family: "SansSerif"; font-size: 8pt;  }
-#f7 { font-family: "SansSerif"; font-size: 9pt; font-style: italic; color: #800080;  }
-#f8 { font-family: "SansSerif"; font-size: 9pt; color: #800080;  }
+#f3 { font-family: "SansSerif"; font-size: 10pt;  }
+#f4 { font-family: "SansSerif"; font-size: 9pt;  }
+#f5 { font-family: "SansSerif"; font-size: 10pt; font-style: italic; font-weight: bold;  }
+#f6 { font-family: "SansSerif"; font-size: 10pt; font-style: italic;  }
+#f7 { font-family: "SansSerif"; font-size: 8pt;  }
+#f8 { font-family: "SansSerif"; font-size: 9pt; font-style: italic; color: #800080;  }
+#f9 { font-family: "SansSerif"; font-size: 9pt; color: #800080;  }
 </STYLE>
 <BODY BGCOLOR="white">
 <BASEFONT ID="f0">
 <DIV><TABLE BORDER="1" CELLSPACING="0" CELLPADDING="2" BORDERCOLOR="black" WIDTH="96%"><TR BGCOLOR="#FFFFC8"><TD>
 <DIV><FONT ID="f1">Package</FONT> <FONT ID="f2"><U>org.astrogrid.datacenter.fits</U></FONT></DIV>
 </TD></TR></TABLE></DIV>
-<DIV STYLE="margin-top:10pt;margin-left:1pt;"><TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="96%"><TR BGCOLOR="#DCDCDC"><TD><FONT ID="f4">Class diagrams</FONT></TD></TR></TABLE></DIV>
-<DIV STYLE="margin-top:6pt;margin-left:1pt;"><FONT ID="f5"><A HREF="fits.html">fits</A></FONT></DIV>
+<DIV STYLE="margin-top:10pt;margin-left:1pt;"><TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="96%"><TR BGCOLOR="#DCDCDC"><TD><FONT ID="f5">Class diagrams</FONT></TD></TR></TABLE></DIV>
+<DIV STYLE="margin-top:6pt;margin-left:1pt;"><FONT ID="f6"><A HREF="fits.html">fits</A></FONT></DIV>
 <DIV STYLE="margin-top:17pt;">
 <TABLE BORDER="1" CELLSPACING="0" CELLPADDING="2" WIDTH="96%">
 <COLGROUP>
@@ -26,11 +27,11 @@ A:visited {text-decoration: underline; color: darkmagenta;}
 <COL WIDTH="67%">
 </COLGROUP>
 <TR>
-<TH COLSPAN="2" BGCOLOR="#DCDCDC" ALIGN="left" VALIGN="center"><FONT ID="f4">Interface Summary</FONT></TH>
+<TH COLSPAN="2" BGCOLOR="#DCDCDC" ALIGN="left" VALIGN="center"><FONT ID="f5">Interface Summary</FONT></TH>
 </TR>
 <TR>
-<TD ALIGN="left" VALIGN="top"><FONT ID="f7">FitsReader</FONT></TD>
-<TD ALIGN="left" VALIGN="top"><FONT ID="f6">An interface so that appilcations that want to read FITS files can do so
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">FitsReader</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f7">An interface so that appilcations that want to read FITS files can do so
 no matter where they are.</FONT></TD>
 </TR>
 </TABLE>
@@ -42,44 +43,44 @@ no matter where they are.</FONT></TD>
 <COL WIDTH="67%">
 </COLGROUP>
 <TR>
-<TH COLSPAN="2" BGCOLOR="#DCDCDC" ALIGN="left" VALIGN="center"><FONT ID="f4">Class Summary</FONT></TH>
+<TH COLSPAN="2" BGCOLOR="#DCDCDC" ALIGN="left" VALIGN="center"><FONT ID="f5">Class Summary</FONT></TH>
 </TR>
 <TR>
-<TD ALIGN="left" VALIGN="top"><FONT ID="f8">FitsData</FONT></TD>
-<TD ALIGN="left" VALIGN="top"><FONT ID="f6">Abstract class representing the data part of the HDU (Header Data Unit).</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f9">FitsData</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f7">Abstract class representing the data part of the HDU (Header Data Unit).</FONT></TD>
 </TR>
 <TR>
-<TD ALIGN="left" VALIGN="top"><FONT ID="f8">FitsFormatException</FONT></TD>
-<TD ALIGN="left" VALIGN="top"><FONT ID="f6">An exception for generation by fits file readers
+<TD ALIGN="left" VALIGN="top"><FONT ID="f9">FitsFormatException</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f7">An exception for generation by fits file readers
 <p>
 The original exception should wherever possible be preserved as the cause</FONT></TD>
 </TR>
 <TR>
-<TD ALIGN="left" VALIGN="top"><FONT ID="f8">FitsHdu</FONT></TD>
-<TD ALIGN="left" VALIGN="top"><FONT ID="f6">Represents a 'header/data unit' which may be the original 'primary' hdu
+<TD ALIGN="left" VALIGN="top"><FONT ID="f9">FitsHdu</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f7">Represents a 'header/data unit' which may be the original 'primary' hdu
 at the beginning of a fits file, or an extension that also consists of a
 header/data pairing.</FONT></TD>
 </TR>
 <TR>
-<TD ALIGN="left" VALIGN="top"><FONT ID="f8">FitsHeader</FONT></TD>
-<TD ALIGN="left" VALIGN="top"><FONT ID="f6">A Fits header is the ascii 80-bytes keyword/value pair lines of the primary hdu (header/data unit)
+<TD ALIGN="left" VALIGN="top"><FONT ID="f9">FitsHeader</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f7">A Fits header is the ascii 80-bytes keyword/value pair lines of the primary hdu (header/data unit)
 or extension unit.</FONT></TD>
 </TR>
 <TR>
-<TD ALIGN="left" VALIGN="top"><FONT ID="f8">FitsKeyword</FONT></TD>
-<TD ALIGN="left" VALIGN="top"><FONT ID="f6">Represents a keyword/value pair in the header data unit (hdu) of a fits
+<TD ALIGN="left" VALIGN="top"><FONT ID="f9">FitsKeyword</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f7">Represents a keyword/value pair in the header data unit (hdu) of a fits
 file.</FONT></TD>
 </TR>
 <TR>
-<TD ALIGN="left" VALIGN="top"><FONT ID="f8">FitsStreamReader</FONT></TD>
-<TD ALIGN="left" VALIGN="top"><FONT ID="f6">A set of routines for reading a fits image
+<TD ALIGN="left" VALIGN="top"><FONT ID="f9">FitsStreamReader</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f7">A set of routines for reading a fits image
 <p>
 FITS images are binary representations of tables or pixel images, and are
 well known in the astronomical community (in 2003!).</FONT></TD>
 </TR>
 <TR>
-<TD ALIGN="left" VALIGN="top"><FONT ID="f8">FitsWCS</FONT></TD>
-<TD ALIGN="left" VALIGN="top"><FONT ID="f6">Calculates World COordinates from the given FITS header.</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f9">FitsWCS</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f7">Calculates World COordinates from the given FITS header.</FONT></TD>
 </TR>
 </TABLE>
 </DIV>
