@@ -1,4 +1,4 @@
-/*$Id: ApplicationDescription.java,v 1.3 2004/03/12 14:53:09 nw Exp $
+/*$Id: ApplicationDescription.java,v 1.4 2004/03/17 00:31:51 nw Exp $
  * Created on 09-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -134,6 +134,7 @@ public class ApplicationDescription  {
      * 
      * @param defn definition of the parameter
      * @return a parameter value with name, type initialized. if <tt>defn</tt> provides a defaultValue, this is set as <tt>content</tt>
+     * @todo check this still works.
      */
     public ParameterValue createValueFromDefinition(BaseParameterDefinition defn) {
         ParameterValue paramVal = new ParameterValue();
@@ -143,10 +144,12 @@ public class ApplicationDescription  {
         if (o != null) { // work around here.. - extension schema, so there's a hole, where an anynode appears. orsomething.
             if (o instanceof AnyNode) {
                 AnyNode any = (AnyNode)o;
-                paramVal.setContent(any.getStringValue());
+                paramVal.setValue(any.getStringValue());
             } else {
-               paramVal.setContent(o.toString());
+               paramVal.setValue(o.toString());
             }
+        } else {
+            paramVal.setValue(""); // necessary - as value field must be present for document to be schema-valid.
         }
         return paramVal;
     }
@@ -272,6 +275,10 @@ public class ApplicationDescription  {
 
 /* 
 $Log: ApplicationDescription.java,v $
+Revision 1.4  2004/03/17 00:31:51  nw
+updated to always populate 'value' field of 'parameter' -
+necessary to make the object model schema-valid
+
 Revision 1.3  2004/03/12 14:53:09  nw
 bugfix for default parameters
 
