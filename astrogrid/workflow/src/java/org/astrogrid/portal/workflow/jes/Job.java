@@ -72,7 +72,7 @@ public class Job {
             xmlString = null ;
          
         try {
-      
+//          jobController.readJob( request ) ; 
         }
         catch ( Exception ex ) {
             ex.printStackTrace() ;
@@ -93,7 +93,7 @@ public class Job {
             retValue = true ;
          
         try {         
-
+//          jobController.deleteJob( request ) ; 
         }
         catch( Exception ex ) {
             ex.printStackTrace() ;
@@ -122,7 +122,7 @@ public class Job {
             jesLocation = WKF.getProperty( WKF.JES_URL, WKF.JES_CATEGORY ) ;
 
             jobController = new JobControllerDelegate( jesLocation ) ;
-//            jobController.submitJob( request ) ;            
+//            jobController.cancelJob( request ) ;            
         }
         catch( Exception ex ) {
             ex.printStackTrace() ;

@@ -22,6 +22,8 @@ import org.astrogrid.AstroGridException ;
 import org.astrogrid.portal.workflow.*;
 import org.astrogrid.portal.workflow.jes.*;
 
+import org.astrogrid.community.delegate.policy.PolicyServiceDelegate;
+import org.astrogrid.community.policy.data.PolicyPermission ;
 
 import java.io.File;
 
@@ -51,12 +53,17 @@ public class JesAction extends AbstractAction {
     private static final boolean 
         TRACE_ENABLED = true ;
         
+    /** Compile-time switch used to turn certain debugging statements on/off. 
+      * Set this to false to eliminate these debugging statements within the byte code.*/         
+    private static final boolean 
+        DEBUG_ENABLED = true ;
+        
     private static Logger 
         logger = Logger.getLogger( JesAction.class ) ; 
         
     private static final String
-        ASTROGRIDERROR_SOMEMESSAGE = "AGWKFE00050" ; // none so far 
-
+        ASTROGRIDERROR_JOB_PERMISSION_DENIED = "AGWKFE00060",
+        ASTROGRIDERROR_PASSTHRU = "AGWKFE00100" ;  
 
 	/**
 	 * Cocoon param for the user param in the session.
@@ -83,13 +90,22 @@ public class JesAction extends AbstractAction {
 	public static final String CONFIRM_PARAM_TAG = "confirm" ;
     
     public static final String
-        HTTP_WORKFLOW_TAG = "workflow-tag" ;
-        
+        HTTP_JOBLIST_TAG = "job-list-tag" ,
+        COMMUNITY_ACCOUNT_TAG = "community_account" ,
+        CREDENTIAL_TAG = "credential" ;
+    
     public static final String
-        JOB_LIST_PARAMETER = "job-list" ;
+        ERROR_MESSAGE_PARAMETER = "ErrorMessage";
     
     public static final String 
         ACTION_READ_JOB_LIST = "read-job-list" ;
+        
+    public static final String
+        AUTHORIZATION_RESOURCE_WORKFLOW = "workflow" ,
+        AUTHORIZATION_ACTION_EDIT = "edit" ;
+
+        
+        
 
     /**
     * Our action method.
@@ -210,7 +226,7 @@ public class JesAction extends AbstractAction {
                 }  
                     
                 if( action.equals( ACTION_READ_JOB_LIST ) ) {
-                    this.readWorkflowList() ; 
+                    this.readJobList() ; 
                 }
                 else {
                     debug( "unsupported action") ; 
@@ -284,21 +300,101 @@ public class JesAction extends AbstractAction {
         }
         
         
-        private void readWorkflowList() {
-            if( TRACE_ENABLED ) trace( "JesActionImpl.readWorkflowList() entry" ) ;
+        private void readJobList() {
+            if( TRACE_ENABLED ) trace( "JesActionImpl.readJobList() entry" ) ;
               
             try {
+                // For the moment this is where we have placed the door.
+                // If users cannot see a list, then they cannot do anything...
+                this.checkPermissions( AUTHORIZATION_RESOURCE_WORKFLOW
+                                     , AUTHORIZATION_ACTION_EDIT ) ;
+                
+                
                 //NB: The filter argument is ignored at present (Sept 2003).
                 Iterator
                     iterator =  Job.readJobList( userid, community, "*" ) ;
-                this.request.setAttribute( JOB_LIST_PARAMETER, iterator ) ;               
+                this.request.setAttribute( HTTP_JOBLIST_TAG, iterator ) ;               
+            }
+            catch( WorkflowException wfex ) {
+                
+                this.request.setAttribute( ERROR_MESSAGE_PARAMETER, wfex.toString() ) ;
+                
             }
             finally {
-                if( TRACE_ENABLED ) trace( "JesActionImpl.readWorkflowList() exit" ) ;
+                if( TRACE_ENABLED ) trace( "JesActionImpl.readJobList() exit" ) ;
             }
                     
-        } // end of readWorkflowList()   
+        } // end of readJobList()   
            
+  
+        private void checkPermissions ( String someResource, String anAction ) throws WorkflowException {
+            if( TRACE_ENABLED ) trace( "JesActionImpl.checkPermission() entry" ) ;
+                        
+            PolicyServiceDelegate 
+                ps = null ;
+            String
+                communityAccount = null,
+                credential = null ;
+            
+            try {
+                
+                ps = new PolicyServiceDelegate() ;
+                communityAccount =  (String) session.getAttribute( COMMUNITY_ACCOUNT_TAG ) ;
+                credential = (String) session.getAttribute( CREDENTIAL_TAG ) ;
+                boolean 
+                    authorized = ps.checkPermissions( communityAccount
+                                                    , credential
+                                                    , someResource
+                                                    , anAction ) ;             
+               
+                if( !authorized ) {
+                    
+                    PolicyPermission pp = ps.getPolicyPermission();
+                    
+                    String
+                        reason = pp.getReason() ;
+                        
+                    AstroGridMessage
+                        message = new AstroGridMessage( ASTROGRIDERROR_PASSTHRU
+                                                      , "Community"
+                                                      , reason ) ;
+                     
+                    throw new WorkflowException( message ) ;
+                        
+                }
+               
+            }
+            catch( WorkflowException wfex ) {
+                
+                AstroGridMessage 
+                    message = new AstroGridMessage( ASTROGRIDERROR_JOB_PERMISSION_DENIED
+                                                  , WKF.getClassName( this.getClass() )
+                                                  , wfex.getAstroGridMessage().toString() ) ;
+                     
+                throw new WorkflowException( message, (Exception)wfex ) ;
+                
+            }
+            catch( Exception ex ) {
+                
+                if( DEBUG_ENABLED) ex.printStackTrace();  
+               
+                String
+                    localizedMessage = ex.getLocalizedMessage() ;    
+               
+               AstroGridMessage
+                   message = new AstroGridMessage( ASTROGRIDERROR_JOB_PERMISSION_DENIED
+                                                 , WKF.getClassName( this.getClass() )
+                                                 , (localizedMessage == null) ? "" : localizedMessage ) ;
+                     
+               throw new WorkflowException( message, ex ) ;
+               
+            }
+            finally {
+                if( TRACE_ENABLED ) trace( "JesActionImpl.checkPermission() exit" ) ;  
+            }
+             
+        } // end of checkPermission() 
+   
    
     } // end of inner class JesActionImpl
         

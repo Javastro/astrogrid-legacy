@@ -19,11 +19,15 @@ import org.astrogrid.i18n.*;
 
 import org.astrogrid.AstroGridException ;
 
+import org.astrogrid.community.delegate.policy.PolicyServiceDelegate;
+import org.astrogrid.community.policy.data.PolicyPermission ;
+
 // import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerDelegate;
 import org.astrogrid.portal.workflow.*;
 import org.astrogrid.portal.workflow.design.*;
 import org.astrogrid.portal.workflow.design.activity.*;
 
+import org.astrogrid.community.common.util.CommunityMessage;
 
 import java.io.File;
 
@@ -52,14 +56,19 @@ public class DesignAction extends AbstractAction {
       * Set this to false to eliminate all trace statements within the byte code.*/         
     private static final boolean 
         TRACE_ENABLED = true ;
-        
+
+    /** Compile-time switch used to turn certain debugging statements on/off. 
+      * Set this to false to eliminate these debugging statements within the byte code.*/         
+    private static final boolean 
+        DEBUG_ENABLED = true ;
+
     private static Logger 
         logger = Logger.getLogger( DesignAction.class ) ; 
         
     private static final String
-        ASTROGRIDERROR_SOMEMESSAGE = "AGWKFE00050" ; // none so far 
-
-
+        ASTROGRIDERROR_WORKFLOW_PERMISSION_DENIED = "AGWKFE00050",
+        ASTROGRIDERROR_PASSTHRU = "AGWKFE00100" ;  
+        
 	/**
 	 * Cocoon param for the user param in the session.
 	 *
@@ -82,18 +91,21 @@ public class DesignAction extends AbstractAction {
 	 * Http request param to confirm an action.
 	 *
 	 */
-	public static final String CONFIRM_PARAM_TAG = "confirm" ;
+	public static final String 
+        CONFIRM_PARAM_TAG = "confirm" ;
 	
-	/**
-	 * Http request param for the action.
-	 *
-	 */
+    public static final String 
+        USERID_COMMUNITY_SEPARATOR = "@" ;
+
 	public static final String 
 	    TEMPLATE_PARAM_TAG = "template", 
 	    EMPTY_TEMPLATE = "none_selected" ;	
     
     public static final String
-        HTTP_WORKFLOW_TAG = "workflow-tag" ;
+        HTTP_WORKFLOW_TAG = "workflow-tag" ,
+        COMMUNITY_ACCOUNT_TAG = "community-account" ,
+        CREDENTIAL_TAG = "credential",
+        COMMUNITY_TOKEN_TAG = "community-token" ;
         
     public static final String
         WORKFLOW_NAME_PARAMETER = "workflow-name",  
@@ -104,11 +116,12 @@ public class DesignAction extends AbstractAction {
         ACTIVITY_KEY_PARAMETER = "activity-key",
         WORKFLOW_LIST_PARAMETER = "workflow-list",
         QUERY_LIST_PARAMETER = "query-list",
-		STEP_KEY_PARAMETER = "step-key";
+		STEP_KEY_PARAMETER = "step-key",
+        ERROR_MESSAGE_PARAMETER = "ErrorMessage";
         
     public static final String
-    QUERY_NAME_PARAMETER = "query-name",
-    QUERY_DESCRIPTION_PARAMETER = "query-description" ;
+        QUERY_NAME_PARAMETER = "query-name",
+        QUERY_DESCRIPTION_PARAMETER = "query-description" ;
     
     public static final String 
         ACTION_CREATE_WORKFLOW = "create-workflow" ,
@@ -123,6 +136,10 @@ public class DesignAction extends AbstractAction {
         ACTION_READ_QUERY = "read-query",
         ACTION_READ_QUERY_LIST = "read-query-list",
         ACTION_INSERT_QUERY_INTO_STEP = "insert-query-into-step" ;
+        
+    public static final String
+        AUTHORIZATION_RESOURCE_WORKFLOW = "workflow" ,
+        AUTHORIZATION_ACTION_EDIT = "edit" ;
 
     /**
     * Our action method.
@@ -322,16 +339,32 @@ public class DesignAction extends AbstractAction {
             if( TRACE_ENABLED ) trace( "DesignActionImpl.retrieveUserDetails() entry" ) ;   
                      
             String 
-                tag  = null ;
+                tag  = null,
+                useridCommunity = null ;
+            int
+                ampersandIndex ;
 
             try {
+                
+                // JL Note: Iteration 3 way of doing things...
+                useridCommunity = (String)session.getAttribute( COMMUNITY_ACCOUNT_TAG ) ;
+                ampersandIndex = useridCommunity.indexOf( USERID_COMMUNITY_SEPARATOR ) ;
+                this.userid = useridCommunity.substring(  0, ampersandIndex ) ;
+                this.community = useridCommunity.substring( ampersandIndex + 1 );   
+ 
+/*          
+                JL Note: This is PortalB Iteration 2 way of doing things,...
+                    
                 tag = params.getParameter( USER_PARAM_NAME ) ;
                 this.userid = (String) session.getAttribute( tag ) ;
 				tag = params.getParameter( COMMUNITY_PARAM_TAG ) ;
 				this.community = (String) session.getAttribute( tag ) ;
+                         
             }
             catch( ParameterException pex ) {
                 ; // some logging here
+            
+*/
             }
             finally {
                 if( TRACE_ENABLED ) trace( "DesignActionImpl.retrieveUserDetails() exit" ) ;  
@@ -658,10 +691,21 @@ public class DesignAction extends AbstractAction {
             if( TRACE_ENABLED ) trace( "DesignActionImpl.readWorkflowList() entry" ) ;
               
             try {
+                    
+                // For the moment this is where we have placed the door.
+                // If users cannot see a list, then they cannot do anything...
+                this.checkPermissions( AUTHORIZATION_RESOURCE_WORKFLOW
+                                     , AUTHORIZATION_ACTION_EDIT ) ;
+                               
                 //NB: The filter argument is ignored at present (Sept 2003).
                 Iterator
                     iterator =  Workflow.readWorkflowList( userid, community, "*" ) ;
                 this.request.setAttribute( WORKFLOW_LIST_PARAMETER, iterator ) ;               
+            }
+            catch( WorkflowException wfex ) {
+                
+                this.request.setAttribute( ERROR_MESSAGE_PARAMETER, wfex.toString() ) ;
+                
             }
             finally {
                 if( TRACE_ENABLED ) trace( "DesignActionImpl.readWorkflowList() exit" ) ;
@@ -718,7 +762,77 @@ public class DesignAction extends AbstractAction {
 				if( TRACE_ENABLED ) trace( "DesignActionImpl.insertQueryIntoStep() exit" ) ;
 			}
                     
-		} // end of insertQueryIntoStep()   
+		} // end of insertQueryIntoStep() 
+        
+        
+        
+        private void checkPermissions ( String someResource, String anAction ) throws WorkflowException {
+            if( TRACE_ENABLED ) trace( "DesignActionImpl.checkPermission() entry" ) ;
+                        
+            PolicyServiceDelegate 
+                ps = null ;
+            String
+                communityAccount = null,
+                credential = null ;
+            
+            try {
+                
+                ps = new PolicyServiceDelegate() ;
+                communityAccount =  (String) session.getAttribute( COMMUNITY_ACCOUNT_TAG ) ;
+                credential = (String) session.getAttribute( CREDENTIAL_TAG ) ;
+                boolean 
+                    authorized = ps.checkPermissions( communityAccount
+                                                    , credential
+                                                    , someResource
+                                                    , anAction ) ;             
+               
+                if( !authorized ) {
+                    
+                    PolicyPermission pp = ps.getPolicyPermission();
+                    
+                    String
+                        reason = pp.getReason() ;
+                        
+                    AstroGridMessage
+                        message = new AstroGridMessage( ASTROGRIDERROR_PASSTHRU
+                                                      , "Community"
+                                                      , reason ) ;
+                     
+                    throw new WorkflowException( message ) ;
+                        
+                }
+               
+            }
+            catch( WorkflowException wfex ) {
+                
+                AstroGridMessage 
+                    message = new AstroGridMessage( ASTROGRIDERROR_WORKFLOW_PERMISSION_DENIED
+                                                  , WKF.getClassName( this.getClass() )
+                                                  , wfex.getAstroGridMessage().toString() ) ;
+                     
+                throw new WorkflowException( message, (Exception)wfex ) ;
+                
+            }
+            catch( Exception ex ) {
+                
+                if( DEBUG_ENABLED) ex.printStackTrace();  
+               
+                String
+                    localizedMessage = ex.getLocalizedMessage() ;    
+               
+               AstroGridMessage
+                   message = new AstroGridMessage( ASTROGRIDERROR_WORKFLOW_PERMISSION_DENIED
+                                                 , WKF.getClassName( this.getClass() )
+                                                 , (localizedMessage == null) ? "" : localizedMessage ) ;
+                     
+               throw new WorkflowException( message, ex ) ;
+               
+            }
+            finally {
+                if( TRACE_ENABLED ) trace( "DesignActionImpl.checkPermission() exit" ) ;  
+            }
+             
+        } // end of checkPermission()
   		
                       
     } // end of inner class DesignActionImpl
