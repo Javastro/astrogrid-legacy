@@ -186,7 +186,7 @@ public class Step extends Activity {
             inserts[1] = this.getJoinCondition() ;
             inserts[2] = new Integer( this.getStepNumber() ) ;
             inserts[3] = new Integer( this.getSequenceNumber() ) ;
-            inserts[4] = this.getTool().toXMLString() ;
+            inserts[4] = ( this.getTool() == null ) ? " " :  this.getTool().toXMLString() ;
             inserts[5] = ( (this.resources == null)  ?  " "  :  this.resources.toXMLString() ) ;
             
             response = MessageFormat.format( WorkflowDD.STEP_TEMPLATE, inserts ) ;
