@@ -44,6 +44,20 @@
     </developerConnection>
   </repository>
 
+	<packageGroups>
+		<packageGroup>
+			<title>Service Implementation</title>
+			<packages>org.astrogrid.datacenter.service*</packages>
+		</packageGroup>
+		<packageGroup>
+			<title>Back-End Plugin SPI</title>
+			<packages>org.astrogrid.datacenter.queriers:org.astrogrid.datacenter.queriers.spi</packages>
+		</packageGroup>
+		<packageGroup>
+			<title>Plugin Implementations</title>
+			<packages>org.astrogrid.datacenter.queriers.*</packages>
+		</packageGroup>
+	</packageGroups>
 
 
   <!-- jar files the project is dependent on -->

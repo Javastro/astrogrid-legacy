@@ -1,4 +1,4 @@
-/*$Id: QueryTranslator.java,v 1.4 2004/01/14 17:57:32 nw Exp $
+/*$Id: QueryTranslator.java,v 1.5 2004/01/15 14:49:47 nw Exp $
  * Created on 02-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -95,7 +95,7 @@ public abstract  class QueryTranslator implements DynamicVisitor, Translator {
      * check wheter this node type requires a new frame
      * @param q the class of node
      * @return true if this node type, or a supertype of this node type, has previously been declared to require a
-     * stack frame via {@link #requiresFrame)
+     * stack frame via {@link #requiresFrame}
      */
     protected boolean isInternalProcessingNode(Class q) {
         do {
@@ -119,6 +119,9 @@ public abstract  class QueryTranslator implements DynamicVisitor, Translator {
 
 /*
 $Log: QueryTranslator.java,v $
+Revision 1.5  2004/01/15 14:49:47  nw
+improved documentation
+
 Revision 1.4  2004/01/14 17:57:32  nw
 improved documentation
 

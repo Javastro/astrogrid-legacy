@@ -1,4 +1,4 @@
-/*$Id: MsSqlServerQuerier.java,v 1.4 2003/11/28 16:10:30 nw Exp $
+/*$Id: MsSqlServerQuerier.java,v 1.5 2004/01/15 14:49:47 nw Exp $
  * Created on 03-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,13 +12,16 @@ package org.astrogrid.datacenter.queriers.mssqlserver;
 
 import java.io.IOException;
 
+import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.sql.SqlQuerierSPI;
 import org.xml.sax.SAXException;
 
-/** Database Querier implementation for Microsoft SQL Server
+/** Specialization of SqlQuerierSPI for Microsoft SQL Server
+ * <p>
+ * At present, just registers a custom query translator for ADQL - {@link MsSqlServerQueryTranslator}
+ * 
  * @author Noel Winstanley nw@jb.man.ac.uk 03-Sep-2003
- * @todo fill in.
  */
 public class MsSqlServerQuerier extends SqlQuerierSPI {
 
@@ -28,7 +31,7 @@ public class MsSqlServerQuerier extends SqlQuerierSPI {
       super();
    }
    static {
-       map.add("http://tempuri.org/adql",new MsSqlServerQueryTranslator());
+       map.add(ADQLUtils.ADQL_XMLNS,new MsSqlServerQueryTranslator());
    }
 
 }
@@ -36,6 +39,9 @@ public class MsSqlServerQuerier extends SqlQuerierSPI {
 
 /*
 $Log: MsSqlServerQuerier.java,v $
+Revision 1.5  2004/01/15 14:49:47  nw
+improved documentation
+
 Revision 1.4  2003/11/28 16:10:30  nw
 finished plugin-rewrite.
 added tests to cover plugin system.

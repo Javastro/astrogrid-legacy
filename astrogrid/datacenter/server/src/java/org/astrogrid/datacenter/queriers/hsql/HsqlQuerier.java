@@ -1,4 +1,4 @@
-/*$Id: HsqlQuerier.java,v 1.4 2003/11/28 16:10:30 nw Exp $
+/*$Id: HsqlQuerier.java,v 1.5 2004/01/15 14:49:47 nw Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,7 +17,9 @@ import org.astrogrid.datacenter.queriers.sql.SqlQuerierSPI;
 import org.xml.sax.SAXException;
 
 /**
- * Hypersonic SQL interface.
+ * Backend Plugin for HSQLDB databases
+ * <p>
+ * Straight extension of <tt>SqlQuerierSPI</tt>. No additional code here - maybe this entire package isn't needed?
  *
  * @author Noel Winstanley nw@jb.man.ac.uk 05-Sep-2003
  * @author M Hill
@@ -36,6 +38,9 @@ public class HsqlQuerier extends SqlQuerierSPI {
 
 /*
 $Log: HsqlQuerier.java,v $
+Revision 1.5  2004/01/15 14:49:47  nw
+improved documentation
+
 Revision 1.4  2003/11/28 16:10:30  nw
 finished plugin-rewrite.
 added tests to cover plugin system.

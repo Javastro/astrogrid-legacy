@@ -1,9 +1,9 @@
 <html>
 <body>
-<h2>Vanilla SQL Querying</h2>
-<h3>Introduction & Purpose</h3>
+<h2>Backend Plugin for  Vanilla SQL databases.</h2>
+
 This package provides a 'standard' SQL implementation of a JDBC/SQL querier,
-ADQL-&gtSQL translator, and SQL ResultSet -&gt VOtable converter.
+ADQL-&gt; SQL translator, SQL passthru, and SQL ResultSet -&gt; VOtable converter.
 <p>
 While it is likely that some databases will need different query translators,
 the querier and result set converter should be standard enough to cope with
@@ -16,30 +16,6 @@ for the code to load.  See the user documentation...
 <p>
 However this should mean that this is flexible enough to cope with most
 JDBC/SQL implementations.
-
-<!--
-<p>
-The base translator class is extended by {@link org.astrogrid.datacenter.queriers.sql.SqlQueryTranslator} which provides the standard
-rules for translating elements of ADQL to the corresponding fragments of SQL. This class is practically declarative
-- it simple contains a rule for each language construct.
-<p>
-This standard ruleset can be extended further, if needed, with specific rules for
- each dialect of SQL you're
-translating - look at {@link org.astrogrid.datacenter.queriers.sybase.SybaseQueryTranslator} for example.
- This makes it easy to override
-the few rules that differ between different SQL dialects.
-<p>
-The result of the execution of each rule (a <tt>visit</tt> method) is stored in the current translator frame.
-Later rules can retrieve these results by key. This makes the translation
-process much more independent of changes to the underlying structure of the
-object model, and also handles the (very common) case of some nodes not being
-present - no need to check for null, the translatorFrame just returns an
-empty string in these cases.
-<p>
-Because of the reflection, this design is less efficient than a hand-coded
-approach. But I figure that can be provided once the schema is settled upon if needed -
-until then, these rule-based translators are more declarative and hence much easier to keep up-to-date.
--->
 
 </body>
 </html>

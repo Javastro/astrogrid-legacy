@@ -1,4 +1,4 @@
-/*$Id: AdqlQueryTranslator.java,v 1.1 2003/11/27 00:52:58 nw Exp $
+/*$Id: AdqlQueryTranslator.java,v 1.2 2004/01/15 14:49:47 nw Exp $
  * Created on 03-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -47,8 +47,31 @@ import org.astrogrid.datacenter.adql.generated.Where;
 import org.astrogrid.datacenter.queriers.QueryTranslator;
 import org.astrogrid.datacenter.queriers.TranslationFrame;
 
-/** Translator that maps ADQL to 'Standard' SQL.
- * used as a base-class for db-specific translations.
+/** ADQL to Vanilla SQL translator.
+ * <p>
+ * Use as a base-class for db-specific translations.
+ * <p>
+This class provides the standard
+rules for translating elements of ADQL to the corresponding fragments of SQL. This class is practically declarative
+- it simple contains a rule for each language construct.
+<p>
+This standard ruleset can be extended further, if needed, with specific rules for
+ each dialect of SQL you're
+translating - look at {@link org.astrogrid.datacenter.queriers.sybase.SybaseQueryTranslator} for example.
+It is easy to override the few rules that differ between different SQL dialects.
+<p>
+The result of the execution of each rule (a <tt>visit</tt> method) is stored in the current translator frame.
+Later rules can retrieve these results by key. This makes the translation
+process much more independent of changes to the underlying structure of the
+object model, and also handles the (very common) case of some nodes not being
+present - no need to check for null, the translatorFrame just returns an
+empty string in these cases.
+<p>
+Due to this, a single ADQL translator may be able to accept different versions of ADQL.
+<p>
+Because of the reflection, this design is less efficient than a hand-coded
+approach. But I figure that can be provided once the schema is settled upon if needed -
+until then, these rule-based translators are more declarative and hence much easier to keep up-to-date.
  * @author Noel Winstanley nw@jb.man.ac.uk 03-Sep-2003
 
  */
@@ -369,6 +392,9 @@ public Class getResultType() {
 
 /*
  $Log: AdqlQueryTranslator.java,v $
+ Revision 1.2  2004/01/15 14:49:47  nw
+ improved documentation
+
  Revision 1.1  2003/11/27 00:52:58  nw
  refactored to introduce plugin-back end and translator maps.
  interfaces in place. still broken code in places.

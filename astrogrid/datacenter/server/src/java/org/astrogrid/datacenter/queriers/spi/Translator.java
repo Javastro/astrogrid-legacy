@@ -1,4 +1,4 @@
-/*$Id: Translator.java,v 1.2 2004/01/15 11:58:36 nw Exp $
+/*$Id: Translator.java,v 1.3 2004/01/15 14:49:47 nw Exp $
  * Created on 26-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,9 +13,18 @@ package org.astrogrid.datacenter.queriers.spi;
 import org.w3c.dom.Element;
 
 /** Interface describing a query language translator 
- * 
  * <p>
  * Maps from a query document to some intermediate form.
+ * <p>
+ * This interface defines two methods - {@link #translate} which performs the conversion between query document and intermediate form -
+ *  and {@link #getResultType}. which is used to sanity-check the plugin. This method
+return the {@link java.lang.Class} of the intermediate representation objects that are produced by the <tt>translate</tt> method.
+ i.e. the following must be true
+<code><pre><tt>
+  Translator trans;
+  Element e;
+  trans.getResultType().equals(trans.translate(e));
+</tt></pre></code>
  * @author Noel Winstanley nw@jb.man.ac.uk 26-Nov-2003
  *
  */
@@ -27,7 +36,7 @@ public interface Translator {
      */
     public Object translate(Element e) throws Exception ;
     
-    /** used to assert the type returned by the translator */
+    /** used to assert the type returned by the {@link #translate} method */
     public Class getResultType();
     
     
@@ -37,6 +46,9 @@ public interface Translator {
 
 /* 
 $Log: Translator.java,v $
+Revision 1.3  2004/01/15 14:49:47  nw
+improved documentation
+
 Revision 1.2  2004/01/15 11:58:36  nw
 improved documentation
 

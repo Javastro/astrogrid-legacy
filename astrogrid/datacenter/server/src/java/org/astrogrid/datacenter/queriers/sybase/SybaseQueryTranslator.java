@@ -1,4 +1,4 @@
-/*$Id: SybaseQueryTranslator.java,v 1.4 2004/01/13 00:33:14 nw Exp $
+/*$Id: SybaseQueryTranslator.java,v 1.5 2004/01/15 14:49:47 nw Exp $
  * Created on 03-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,7 +15,6 @@ import org.astrogrid.datacenter.queriers.sql.AdqlQueryTranslator;
 
 /** ADQL translator to Sybase SQL.
  * @author Noel Winstanley nw@jb.man.ac.uk 03-Sep-2003
- * @todo fill this in - reverse engineer rules from old Query implementation.
  */
 public class SybaseQueryTranslator extends AdqlQueryTranslator {
     /** template for this expression
@@ -53,6 +52,9 @@ public class SybaseQueryTranslator extends AdqlQueryTranslator {
 
 /*
 $Log: SybaseQueryTranslator.java,v $
+Revision 1.5  2004/01/15 14:49:47  nw
+improved documentation
+
 Revision 1.4  2004/01/13 00:33:14  nw
 Merged in branch providing
 * sql pass-through

@@ -1,4 +1,4 @@
-/*$Id: SybaseQuerier.java,v 1.4 2003/11/28 16:10:30 nw Exp $
+/*$Id: SybaseQuerier.java,v 1.5 2004/01/15 14:49:47 nw Exp $
  * Created on 03-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,11 +12,15 @@ package org.astrogrid.datacenter.queriers.sybase;
 
 import java.io.IOException;
 
+import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.sql.SqlQuerierSPI;
 import org.xml.sax.SAXException;
 
-/** DatabaseQuerier implementation for Sybase.
+/**  * Specialization of SqlQuerierSPI for MySQL Databases.
+ * <p>
+ * At present, just registers a custom query translator for ADQL - {@link SybaseQueryTranslator}
+ * 
  * @author Noel Winstanley nw@jb.man.ac.uk 03-Sep-2003
  * @todo fill tis in.
  */
@@ -32,7 +36,7 @@ public class SybaseQuerier extends SqlQuerierSPI
    }
 
    static {
-       map.add("http://tempuri.org/adql",new SybaseQueryTranslator());
+       map.add(ADQLUtils.ADQL_XMLNS,new SybaseQueryTranslator());
    }
 
 }
@@ -40,6 +44,9 @@ public class SybaseQuerier extends SqlQuerierSPI
 
 /*
 $Log: SybaseQuerier.java,v $
+Revision 1.5  2004/01/15 14:49:47  nw
+improved documentation
+
 Revision 1.4  2003/11/28 16:10:30  nw
 finished plugin-rewrite.
 added tests to cover plugin system.

@@ -117,6 +117,7 @@ public abstract class Querier implements Runnable {
    /**
     * Convenience routine for getting the querying element
     */
+   
    protected Element getQueryingElement()
    {
       return getQuery().getQueryBody();
@@ -430,6 +431,9 @@ public abstract class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.15  2004/01/15 14:49:47  nw
+ improved documentation
+
  Revision 1.14  2004/01/14 17:57:32  nw
  improved documentation
 

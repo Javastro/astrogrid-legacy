@@ -1,101 +1,104 @@
 <html>
 <body>
 
-<h1>Back-end plugin interface</h1>
-This package makes up the interface to the pluggable back end.
+<h1>A structured back-end plugin system</h1>
+This package contains a SPI (service provider interface) for backend plugin implementations.
+Although it is possible to implement a backend plugin by extending {@link org.astrogrid.datacenter.queriers.Querier} directly,
+this has several disadvantages
+<ul>
+	<li><tt>Querier</tt> is a large class, and it is not clear which methods / fields are available for use by the plugin implementor</li>
+	<li><tt>Querier</tt> is integral to the implementation of the server engine, libable to change, and so does not provide a clear separation between 
+		engine and backend-plugin</li>
+	<li>Querier is an abstract class, not an interface: this prevents plugin implementations to extend another base class.</li>
+</ul>
 
-<h2>Overview</h2>
+In response to this, this package defines an interface {@link org.astrogrid.datacenter.queriers.spi.QuerierSPI} that plugins must implement,
+and an <a href="http://c2.com/cgi/wiki?AdapterPattern">adapter</a> class {@link org.astrogrid.datacenter.queriers.spi.PluginQuerier} that loads and manages a plugin, and wraps it so that 
+it appears as a <tt>Querier</tt>.
 
+<h2>Multiple Query Languages</h2>
 
-Dataservers have to handle more than one possible input query language. Back end Plugins provide
-<i>translators</i> for the set of languages they want to accept. The server engine applies
-the appropriate translator for each query. This translation generates an <i>intermediate representation</i>
-of the query to be performed. The intermediate representation is then passed into the plugin, which performs the
-query operation.
+Datacenters may choose to support more than one possible input query language. The SPI system architecture supports this by including a 
+separate language-translation phase before the query is executed. In this phase an appropriate language translator is 
+selected and used to convert the query document to a suitable intermediate form. This intermediate form is then passed to 
+the code that performs the query itself.
+
 <p>
-This architecture splits the translation and querying phases of the plugin, hopefully making
-it easier to reuse parts when writing new plugins. The details of selecting which language to use are
-left to the server engine, simplifying the plugin implementation.
+Hopefully splitting the translation and execution phases of performing a query will result in plugins that are more modular,
+and easier to extend and reuse. 
 <p>
 
-<h2>Interfaces</h2>
-<h3>QuerierSPI</h3>
+<h2>Lifecycle of a {@link org.astrogrid.datacenter.queriers.spi.QuerierSPI} plugin</h2>
 
-Back end Plugin implementations should implement the {@link
+Backend Plugin implementations should implement the {@link
 org.astrogrid.datacenter.queriers.spi.QuerierSPI} interface. This interface defines a set of methods that will be called by
 the engine in a fixed order. The plugin lifecycle is as follows:-
 <ol>
-<li>Instantiate the Plugin object instantiated
+<li>The server engine instantiates a new Plugin object.
 <li>Configure the Plugin object<p>
-  The {@link org.astrogrid.datacenter.queriers.spi.QuerierSPI#receiveWorkspace}
-  and {@link org.astrogrid.datacenter.queriers.spi.QuerierSPI#receiveConfig} methods are called. This gives the plugin access
-  to a configuration object (to look up system parameters), and a workspace (for storing temporary files)
-<li>Choose a Translator<p>
-  The {@link org.astrogrid.datacenter.queriers.spi.QuerierSPI#getTranslatorMap} method is called. This returns a map of the
-  query language translators this plugin provides. A translator from the map is chosen, and used to convert the
-  input query language into an intermediate object. The class of the intermediate object is down to the plugin implementor
+  The server engine calls the {@link org.astrogrid.datacenter.queriers.spi.QuerierSPI#setWorkspace} method. This gives the plugin access
+  to a  workspace for storing temporary files.
+<li>Translation Phase<p>
+  The server engine calls the {@link org.astrogrid.datacenter.queriers.spi.QuerierSPI#getTranslatorMap} method. This returns a map of the
+  query language translators this plugin provides. The server engine chooses a translator from this map, and uses it to convert the
+  input query language into an intermediate object. The type of this intermediate object is down to the plugin implementor
   to decide.
-<li>Do the query<p>
-  The translated query is passed to the {@link org.astrogrid.datacenter.queriers.spi.QuerierSPI#doQuery} method of the plugin.
-  The plugin performs the query, and returns results.
+<li>Execution Phase<p>
+  The server enginer passes the intermediate form of the query to the {@link org.astrogrid.datacenter.queriers.spi.QuerierSPI#doQuery} method of the plugin.
+  This performs the query, and returns a {@link org.astrogrid.datacenter.queriers.QueryResults} object.
+  <li>Access the Results</li>
+  The server engine constructs the response to be sent to the user, by accessing the data in the <tt>QueryResults</tt> object returned by the previous phase.
 <li>Close the plugin<p>
-  The engine calls the {@link org.astrogrid.datacenter.queriers.spi.QuerierSPI#close} method of the plugin when it has
-  finished with the results object returned from the previous step. This is the signal for the plugin to
-  close database connections and free any other resources. THe plugin object is now dead and won't be used again.
+  The server engine calls the {@link org.astrogrid.datacenter.queriers.spi.QuerierSPI#close} method of the plugin. This is the signal for the plugin to
+  close database connections and free any other resources. The plugin object, and the <tt>queryResults</tt> object are now dead and won't be used again.
 </ol>
-There's also a {@link org.astrogrid.datacenter.queriers.spi.QuerierSPI#getPluginInfo} method, which should return a string
-describing the plugin.
 
-<h3>Translator</h3>
-
-A {@link org.astrogrid.datacenter.queriers.spi.Translator} converts between an xml query language and another representation.
-The type of this representation is the choice of the plugin developer. A plugin wrapping a database could translate
-to a simple SQL string. Other plugin implementations may translate to an data structure that is used to
-configure the query engine - like the <i>Command Pattern</i>.
+<h2>Translation Phase</h2>
+A plugin must provide a collection of query language translator objects. These are maintained in a {@link org.astrogrid.datacenter.queriers.spi.TranslatorMap}
+which is accessed via the  {@link org.astrogrid.datacenter.queriers.spi.QuerierSPI#getTranslatorMap} method of the plugin.
 <p>
-The plugin's <tt>doQuery()</tt> method accepts an {@link java.lang.Object} parameter. However as the set of
-possible translators is defined by the plugin, it has knowledge of what class the intermediate representation
-will be. So the first thing the <tt>doQuery()</tt> method will do is cast its parameter from an object to its
+Individual translator objects can be accessed from this map by unique key. 
+The keys used in the map are the XML namespaces for the supported input query languages.
+ Many query languages (XPath,XQuery,XSLT) already  define a namspace; for those that do not,
+ we have defined constants :
+ <ul>
+ 	<li>ADQL - {@link org.astrogrid.datacenter.adql.ADQLUtils#ADQL_XMLNS}, (for the version used in astrogrid)</li>
+ 	<li>SQL - {@link org.astrogrid.datacenter.sql.SQLUtils#SQL_XMLNS} </li>
+ </ul>
+New namespace constants will be defined as new languages / versions are adopted by Astrogrid, unless they already define one.
+<p>
+All input queries are expected to have a namespace (<tt>xmlns</tt>) attribute - this is used to select a suitable translator from the map.
+To submit an input query that does not specify its namespace is an error.
+
+<h3>{@link org.astrogrid.datacenter.queriers.spi.Translator}</h3>
+The plugin provides a map of <tt>Translator</tt> objects. A <tt>Translator</tt>converts an input query in some xml-based language 
+into another representation. The type of this representation is the choice of the plugin developer. 
+For example, a backend plugin wrapping a relational database could provide <tt>Translator</tt>
+objects that converted various input query languages to simple SQL strings. 
+<p>
+Plugins for other kinds of datastore may translate to other string-based languages (/bin/sh?,perl?) or to data structure that is then interpreted by the
+query execution phase - as in the <a href="http://c2.com/cgi/wiki?CommandObject">Command Pattern</a>.
+
+<h2>Execution Phase</h2>
+After translating the query, the server engine passes the resulting intermediate representation to the plugin's 
+{@link org.astrogrid.datacenter.queriers.spi.QuerierSPI#doQuery} method. This method takes a {@link java.lang.Object} as a parameter. 
+However as the set of available translators is defined by the plugin, it has knowledge of what class the intermediate representation
+will be. So the first thing the <tt>doQuery()</tt> method will do is cast its parameter from <tt>Object</tt> to the 
 expected type.
 <p>
-Its probably a good idea to have all translators used by a plugin return the same
-intermediate type, but this isn't necessary.
+	<i>
+Its probably a good idea for all translators provided by a plugin to return the same
+intermediate type. However, this isn't necessary.
+</i>
 <p>
-The {@link org.astrogrid.datacenter.queriers.spi.Translator} defines two methods - <tt>translate()</tt>, which
-is described above, and <tt>getResultType</tt>. This method is used to sanity-check the plugin - it should
-return the Class of the intermediate representation objects it produces. i.e. the following must be true
-<code><pre><tt>
-  Translator trans;
-  Element e;
-  trans.getResultType().equals(trans.translate(e);
-</tt></pre></code>
-
-<h3>TranslatorMap</h3>
-The translator map holds a set of translators, keyed by input language type. The key for a language is
-the namespace URNs defined by its schema. Many query languages (XPAth,XQuery,XSLT) already  define a namspace.
-
-<p>
-For query languages that lack a namespace we can invent
-an id and stick to it. Different language versions should have
-different schema, different namespaces too, and so different entries in the translator map.
-<p>
-We currenly use the following (made up) namespaces
-<ul>
-<li> http://tempuri.org/adql - our current version of ADQL.
-<li> urn:sql - vanilla SQL wrapped in &lt;..&gt; tags.
-</ul>
 
 
-<h3>QueryResults</h3>
-Interface around the results produced. Methods of this interface will be called to access the results before the
-plugin's <tt>close()</tt> method is called. Once the plugin is closed, the QueryResults object is dead.
-
-<h2>Classes</h2>
+<h2>Supporting Classes</h2>
 
 <h3>BaseQuerierSPI</h3>
 Starter implementation of QuerierSPI. Implements the configuration methods, storing the results in protected
-member variables. Plugin writer just needs to implement <tt>doQuery()</tt>, <tt>close()</tt> if needed,
- and populate the translator map.
+member variables. Plugin writers should implement <tt>doQuery()</tt>, <tt>close()</tt> if needed,
+ and populate the provided simple translator map.
 
 <h3>IdTranslator</h3>
 Dummy translator that returns its {@link org.w3c.dom.Element} parameter unchanged. Useful when no separate translation
@@ -103,29 +106,31 @@ stage is needed.
 
 <h3>SimpleTranslatorMap</h3>
 Simple implementation of a translator map. should be sufficient for most requirements.
-Provides two methods to add bindings to the map.
-
+Provides methods to add bindings to the map.
 
 <h2>Configuration</h2>
-To set which back-end to use, set the
-<tt>QuerierSPI</tt> property in the <tt>AstroGridConfig</tt> file to the
-classname of the plugin class - which must implement the {@link
-org.astrogrid.datacenter.queriers.spi.QuerierSPI} interface.
+To select the backend plugin used by a datacenter, the following properties must be set:
+<ul>
+<li>{@link org.astrogrid.datacenter.queriers.QuerierManager#DATABASE_QUERIER_KEY} must be set to <tt></tt>org.astrogrid.datacenter.queriers.spi.PluginQuerier</tt></li>
+<li>{@link org.astrogrid.datacenter.queriers.spi.PluginQuerier#QUERIER_SPI_KEY} must be set to the class name of the class that implements {@link org.astrogrid.datacenter.queriers.spi.QuerierSPI}</li>
+</ul>
+
 
 <h2>Examples</h2>
 The {@link org.astrogrid.datacenter.queriers.sql} package contains a back-end
-plugin that performs queries over a JDBC database.
+plugin that performs queries over a JDBC database. It provides translators that: convert ADQL to SQL; and pass SQL through unchanged.
 <p>
 The separate <a
 href="http://www.astrogrid.org/maven/build/datacenter/multiproject/cdsdelegate/i
 ndex.html">CDS Delegate project</a> is a plugin that performs queries by calling
-the CDS vizier web services.
+the CDS vizier web services. In this case the plugin translators convert input queries into objects of a class 
+that represents the options and parameters the vizier web service accepts. 
 
-<h2>Ideas</h2>
+<h2>Design Notes.</h2>
 
  There needs to be a method to access the translator map, rather than a static member
 variable, to give the possibility that map can be constructed dynamically if 
-needed. FOr example the set of supported languages could change depending on the 
+needed. For example the set of supported languages could change depending on the 
 circumstances of installation.<p>
 
 

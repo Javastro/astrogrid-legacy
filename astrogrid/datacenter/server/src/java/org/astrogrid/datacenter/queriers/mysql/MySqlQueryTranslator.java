@@ -1,4 +1,4 @@
-/*$Id: MySqlQueryTranslator.java,v 1.3 2003/11/28 16:10:30 nw Exp $
+/*$Id: MySqlQueryTranslator.java,v 1.4 2004/01/15 14:49:47 nw Exp $
  * Created on 29-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,6 +13,8 @@ package org.astrogrid.datacenter.queriers.mysql;
 import org.astrogrid.datacenter.adql.generated.Circle;
 import org.astrogrid.datacenter.queriers.sql.AdqlQueryTranslator;
 /** ADQL Translator for MySQL dialect SQL
+ * <p>
+ * At present, nothing additional here.
  * @author Noel Winstanley nw@jb.man.ac.uk 29-Aug-2003
  */
 public class MySqlQueryTranslator extends AdqlQueryTranslator {
@@ -33,6 +35,9 @@ public class MySqlQueryTranslator extends AdqlQueryTranslator {
 
 /* 
 $Log: MySqlQueryTranslator.java,v $
+Revision 1.4  2004/01/15 14:49:47  nw
+improved documentation
+
 Revision 1.3  2003/11/28 16:10:30  nw
 finished plugin-rewrite.
 added tests to cover plugin system.

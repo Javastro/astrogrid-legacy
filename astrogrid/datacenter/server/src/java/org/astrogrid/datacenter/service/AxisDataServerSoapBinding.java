@@ -1,4 +1,4 @@
-/*$Id: AxisDataServerSoapBinding.java,v 1.3 2004/01/13 00:33:14 nw Exp $
+/*$Id: AxisDataServerSoapBinding.java,v 1.4 2004/01/15 14:49:47 nw Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,7 +14,8 @@ import java.io.IOException;
 
 import org.astrogrid.datacenter.axisdataserver.AxisDataServerSoapBindingSkeleton;
 
-/** Soap binding stub that wraps our implementation class
+/** Axis server-stub that wraps our service implementation
+ * @see AxisDataServer
  * @author Noel Winstanley nw@jb.man.ac.uk 27-Nov-2003
  *
  */
@@ -41,6 +42,9 @@ public class AxisDataServerSoapBinding
 
 /*
 $Log: AxisDataServerSoapBinding.java,v $
+Revision 1.4  2004/01/15 14:49:47  nw
+improved documentation
+
 Revision 1.3  2004/01/13 00:33:14  nw
 Merged in branch providing
 * sql pass-through

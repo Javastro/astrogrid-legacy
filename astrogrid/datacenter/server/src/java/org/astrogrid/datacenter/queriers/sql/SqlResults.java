@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.4 2003/11/27 00:52:58 nw Exp $
+ * $Id: SqlResults.java,v 1.5 2004/01/15 14:49:47 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -30,7 +30,9 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 /**
- * Basically a wrapper around a ResultSet.  Can be used (I believe) for any
+ * Implementation of <tt>QueryResults</tt> as a wrapper around a <tt>ResultSet</tt>
+ * 
+ * <p>Can be used (I believe) for any
  * SQL/JDBC query results.
  *
  * @author M Hill
@@ -198,6 +200,9 @@ public class SqlResults implements QueryResults
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.5  2004/01/15 14:49:47  nw
+ improved documentation
+
  Revision 1.4  2003/11/27 00:52:58  nw
  refactored to introduce plugin-back end and translator maps.
  interfaces in place. still broken code in places.

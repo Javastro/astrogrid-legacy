@@ -1,4 +1,4 @@
-/*$Id: SqlQueryTranslator.java,v 1.5 2004/01/13 00:33:14 nw Exp $
+/*$Id: SqlQueryTranslator.java,v 1.6 2004/01/15 14:49:47 nw Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,12 +16,19 @@ import org.w3c.dom.NodeList;
 import org.apache.commons.logging.*;
 import org.astrogrid.config.SimpleConfig;
 
-/** Simple translator that expects following documents in following format
+/** Pass-through SQL translator.
+ * <p>
+ * Expects following documents in following format
  * &lt;sql xmlns="urn:sql" &gt;
  *   select * from ...
  * &lt;/sql &gt;
+ * <p>
+ * This translator must be explicitly enabled by setting
+ * {@link #SQL_PASSTHRU_ENABLED_KEY} = "true" in the configuration. Otherwise
+ * any SQL queries will be aborted with a {@link java.lang.SecurityException}
+ * <p>
+ * Override  {@link #inspectSQL(String)} to perform validation checks of the SQL before execution. 
  * @author Noel Winstanley nw@jb.man.ac.uk 27-Nov-2003
- * @todo write unit test.
  */
 public class SqlQueryTranslator implements Translator {
    /** set this key to 'true' to the config file to enable SQL passthru*/
@@ -81,6 +88,9 @@ public class SqlQueryTranslator implements Translator {
 
 /* 
 $Log: SqlQueryTranslator.java,v $
+Revision 1.6  2004/01/15 14:49:47  nw
+improved documentation
+
 Revision 1.5  2004/01/13 00:33:14  nw
 Merged in branch providing
 * sql pass-through
