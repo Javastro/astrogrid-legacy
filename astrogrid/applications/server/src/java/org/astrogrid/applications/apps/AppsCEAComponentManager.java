@@ -1,4 +1,4 @@
-/*$Id: AppsCEAComponentManager.java,v 1.2 2004/08/16 11:03:46 nw Exp $
+/*$Id: AppsCEAComponentManager.java,v 1.3 2004/08/17 15:07:25 nw Exp $
  * Created on 11-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,8 +24,8 @@ public class AppsCEAComponentManager extends JavaClassCEAComponentManager {
      */
     public AppsCEAComponentManager() {
         super();
-        pico.registerComponentImplementation(ApplicationDescription.class,SendMailApplicationDescription.class);
-        pico.registerComponentImplementation(ApplicationDescription.class,CatApplicationDescription.class);
+        pico.registerComponentImplementation(SendMailApplicationDescription.class);
+        pico.registerComponentImplementation(CatApplicationDescription.class);
     }
 
 }
@@ -33,6 +33,9 @@ public class AppsCEAComponentManager extends JavaClassCEAComponentManager {
 
 /* 
 $Log: AppsCEAComponentManager.java,v $
+Revision 1.3  2004/08/17 15:07:25  nw
+added concat application
+
 Revision 1.2  2004/08/16 11:03:46  nw
 first stab at a cat application
 
