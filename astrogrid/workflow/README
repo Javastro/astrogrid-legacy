@@ -1,0 +1,107 @@
+#=============================================================================#
+#                    AstroGrid Workflow README.                     
+#=============================================================================#
+
+1.0 SOFTWARE PREREQUISITES:
+*****************************
+
+1.1 Externals.
+----------------
+These are the environments under which Workflow was developed:
+. RedHat Linux 8
+. Java sdk j2sdk1.4.1_02
+. Tomcat 4.1.24
+. Axis-1_1RC2
+
+
+1.2 Internals.
+----------------
+Two important software prerequisites are the workflow's two properties files:
+
+(1) The configuration file ASTROGRID_workflowconfig.properties. A great deal
+of setup-configurable data is held here. The file is well commented and bears
+reading... <<<MUST>>> be read!
+
+(2) The workflow messages file ASTROGRID_workflowmessages.properties.
+All messages issued by workflow are detailed here.
+
+The workflow package will not work without these files being available. 
+
+Other prerequisites are included with the distribution. 
+See section 4.0 Install below.
+
+
+2.0 PORTAL:
+****************
+
+2.1 Overview of PORTAL.         
+----------------------------
+The portal has been designed as a framework into which components, such as workflow, can be deployed. 
+
+**** IMPORTANT ****
+
+Prior to installing workflow the astrogid-portal.war must have been successfully installed.
+
+
+3.0 LIMITATIONS:
+******************
+
+Each workflow is created using 1 of 4 available templates. These templates:
+. oneStepSequenceTemplate
+. twoStepSequenceTemplate
+. twoStepFlowTemplate
+. twoStepFlowAndMergeTemplate
+
+are currently held within Workflow.java, it is intended to move these to configuration files, to enable
+new workflow templates to be created and included.
+
+
+4.0 INSTALL:
+**************
+
+4.1 Unjar the astrogrid-portal-workflow.war archive.
+-------------------------------------
+Unjar to the webapps directory of your $CATALINA install. The archive contains the following:
+
+. This README, so presumably you have already got this far!
+. ASTROGRID_workflowconfig.xml
+. ASTROGRID_workflowmessages.properties
+
+4.2 Make sure the external prerequisites are fullfilled.
+----------------------------------------------------------
+See section 1.1
+
+
+4.3 Copy config files into appropriate classpath location for Tomcat.
+----------------------------------------------------------------------
+Suggest the best location is the $CATALINA_HOME/common/classes directory, but any 
+convenient place where they can be picked up as part of a classpath should be OK.
+
+
+4.4 READ THE WORKFLOW CONFIGURATION PROPERTIES FILE.
+-------------------------------------------------------
+Look in the config directory.
+
+Note: Tools available for use within workflow are configured in ASTROGRID_workflowconfig.xml.
+At present these include:
+.QueryTool
+.DataFederation
+.SExtractor
+.HyperZ
+
+Any additional tools you wish to add should be configured here.
+ASTROGRID_workflowconfig.xml also contains the URLs for both the MySpace and JES systems.
+
+4.5 Alter the workflow configuration file.
+----------------------------------------------
+
+
+4.6 Ensure Tomcat is running.
+---------------------------------------------------
+You may have to restart Tomcat after step 4.3
+Login in to the portal as usual (http://localhost:8080/cocoon/astrogrid-portal/),
+a worklow menu option should now be visible.
+
+
+4.7 You are ready to go!
+-------------------------
