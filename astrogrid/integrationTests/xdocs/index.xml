@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+
+<document>
+  <properties>
+    <title>Integration Tests</title>
+    <author email="jdt@roe.ac.uk">John Taylor</author>
+  </properties>
+
+  <body>
+    <section name="Astrogrid Integration Testing">
+      <p>
+         The integration tests are executed as a maven project which is processed
+         after all of of the component maven projects.  The integration tests consist of a 
+         number of JUnit tests which may be viewed using the menu on the left.
+      </p>
+    </section>
+    <section name="What's next?">
+      <p>
+         Automatic deployment of war files following maven builds.  This might mean that 
+         the integration tests are best executed from a separate cron job rather than
+         the maven script....
+       </p>
+    </section>
+  </body>
+</document>
