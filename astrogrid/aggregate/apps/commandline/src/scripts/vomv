@@ -1,0 +1,94 @@
+#!/usr/bin/env groovy
+
+/** move a resource in myspace
+
+*/
+import org.apache.axis.utils.XMLUtils
+import org.apache.commons.cli.*
+
+import org.astrogrid.ui.script.*;
+class Vomv {
+// setup commandline options
+Options o = new Options()
+Vomv() {
+o.addOption("u","user",true,"username (optional)")
+ .addOption("p","password",true,"password (optional)")
+ .addOption("c","community",true,"community (optional)")
+}
+
+astrogrid;
+user;
+account;
+homeIvorn;
+userIvorn;
+static void main(String[] args){
+        new Vomv().run(args)
+}
+void run(args) {
+parser = new PosixParser()
+try {// catch all exceptio handler.
+
+line = parser.parse(o,args)
+login(line)
+client = astrogrid.createVoSpaceClient(user)
+src =  mkFull(line.getArgs()[0])
+dest =  mkFull(line.getArgs()[1])
+client.move(src,dest)
+
+} catch (Exception e) { // catch all, for better reporting.
+        println("An Error occurred :" + e.class.name)
+        println(e.message)
+        displayHelp()
+        System.exit(-1)
+}
+}
+void displayHelp() {
+        (new HelpFormatter()).printHelp(
+<<<DOC
+vomv <options> src dest
+  move a myspace resource to a new location in myspace.
+
+DOC
+,o)
+}
+String mkFull(s) { // make this the full form of whatever it is.
+   u = null;
+   if (s.startsWith "ivo://") {
+        return s;
+   }
+   tok = new java.util.StringTokenizer(s,"/");
+   if (s.startsWith "#/") {
+        tok.nextToken() // skip junk
+        u = tok.nextToken()
+        return astrogrid.objectBuilder.newIvorn(account.community,u,s.substring(1)).toString()
+   } else  if (s.startsWith("#")) { // error tolerant, of not qute correct syntax
+        u = tok.nextToken().substring(1)
+        return astrogrid.objectBuilder.newIvorn(accouont.community,u,"/" + s.substring(1)).toString()
+   } else { // assume to be something else, and pass thru
+     return s
+   }
+}
+void login(line) {
+u=null
+if (line.hasOption "u") {
+        u = line.getOptionValue "user"
+}
+
+p=null
+if (line.hasOption "p") {
+        p = line.getOptionValue "password"
+}
+comm=null
+if (line.hasOption "c") {
+        comm = line.getOptionValue "community"
+}
+  env = LoginFactory.login(u,comm,p);
+  astrogrid = env.astrogrid;
+  user = env.user
+  account = env.account
+  homeIvorn = env.homeIvorn
+  userIvorn = env.userIvorn
+
+}
+
+}

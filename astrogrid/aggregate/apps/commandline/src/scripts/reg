@@ -4,33 +4,52 @@
 */
 import org.apache.axis.utils.XMLUtils
 import org.apache.commons.cli.*
+import org.astrogrid.ui.script.*;
 
+class Reg {
 // setup commandline options
 Options o = new Options()
+Reg() {
 o.addOption("r","resolve",true,"Resolve identifier to endpoint")
 o.addOption("l","list",false,"List identifiers of records in registry")
 o.addOption("i","identfier",true,"Ask registry about an identifier")
 o.addOption("x","registry",false,"Ask about the registry itself")
 o.addOption("q","query",true,"Run a quey against the registry")
 
+
+  .addOption("u","user",true,"username (optional)")
+ .addOption("p","password",true,"password (optional)")
+ .addOption("c","community",true,"community (optional)")
+
 // lots more that could be added here, but dunno what it all means really.
 
 og = new OptionGroup()
 ['r','l','i','x',"q"].each{og.addOption(o.getOption it)}
 o.addOptionGroup og
+}
 
+astrogrid;
+user;
+account;
+homeIvorn;
+userIvorn;
+
+
+static void main(String[] args) {
+        (new Reg()).run(args);
+}
+void run(args) {
 try {
 parser = new PosixParser()
-line = parser.parse(o,this.args)
-
-astrogrid = new org.astrogrid.scripting.Toolbox()
+line = parser.parse(o,args)
+login line
 r = astrogrid.createRegistryClient()
 
 
 
 if (line.hasOption "r") {
         idname = line.getOptionValue "r"
-        println(r.getEndPointByIdentifier(idname))
+        println(r.getEndPointByIdentifier idname)
 }
 
 else if (line.hasOption "l") {
@@ -39,7 +58,7 @@ else if (line.hasOption "l") {
 }
 
 else if (line.hasOption "i") {
-        doc = r.getResourceByIdentifier(line.getOptionValue("i"))
+        doc = r.getResourceByIdentifier(line.getOptionValue "i")
         XMLUtils.PrettyDocumentToStream(doc,System.out)
 }
 
@@ -50,7 +69,7 @@ else if (line.hasOption "x") {
 
 
 else if (line.hasOption "q") {
-        input = line.getOptionValue("s") == "-" ? System.in : new java.io.File(line.getOptionValue("q"))
+        input = line.getOptionValue("s") == "-" ? System.in : new java.io.File(line.getOptionValue "q" )
         doc = r.search(r.text)
         XMLUtils.PrettyDocumentToStream(doc,System.out)
 }
@@ -63,12 +82,38 @@ else {
         displayHelp()
         System.exit(-1)
 }
-
-def displayHelp() {
+}
+void displayHelp() {
         (new HelpFormatter()).printHelp(
 <<<DOC
 reg <options>
 query the registry
 DOC,
 o)
+}
+
+void login(line) {
+u=null
+if (line.hasOption "u") {
+        u = line.getOptionValue "user"
+}
+
+p=null
+if (line.hasOption "p") {
+        p = line.getOptionValue "password"
+}
+comm=null
+if (line.hasOption "c") {
+        comm = line.getOptionValue "community"
+}
+  env = LoginFactory.login(u,comm,p);
+  astrogrid = env.astrogrid;
+  user = env.user
+  account = env.account
+  homeIvorn = env.homeIvorn
+  userIvorn = env.userIvorn
+
+}
+
+
 }

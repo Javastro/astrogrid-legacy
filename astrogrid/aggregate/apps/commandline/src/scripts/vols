@@ -1,12 +1,16 @@
 #!/usr/bin/env groovy
 import org.apache.axis.utils.XMLUtils
 import org.apache.commons.cli.*
+import org.astrogrid.ui.script.*;
 
-import org.astrogrid.community.resolver.CommunityPasswordResolver
+
 /**inefficient implementation at the moment - hamstrung by current myspace implementation
  */
 // setup commandline options
+class Vols {
 Options o = new Options()
+
+Vols() {
 o.addOption("l","long",false,"long format")
 o.addOption("1","one-per-line",false,"list one file per line")
 o.addOption("d","directory",false,"list directory instead of contents")
@@ -21,41 +25,29 @@ o.addOption("R","recursive",false,"list subdirectories recursively")
 og = new OptionGroup()
 ['F','Q'].each{og.addOption(o.getOption(it))}
 o.addOptionGroup(og)
+}
 
+astrogrid;
+user;
+account;
+homeIvorn;
+userIvorn;
+password;
 
-astrogrid = new org.astrogrid.scripting.Toolbox()
+static void main(String[] args) {
+        new Vols().run(args)
+}
+void run(args) {
 parser = new PosixParser()
 try {// catch all exceptio handler.
 
-line = parser.parse(o,this.args)
-
-u=null
-if (line.hasOption("u")) {
-        u = line.getOptionValue("user")
-} else {
-        u = astrogrid.systemConfig.getProperty("username")
-}
-
-p=null
-if (line.hasOption("p")) {
-        p = line.getOptionValue("password")
-        // not that we do anything with this yet..
-} else {
-        p = astrogrid.systemConfig.getProperty("password")
-}
-
-comm=null
-if (line.hasOption("c")) {
-        comm = line.getOptionValue("community")
-} else {
-        comm = astrogrid.systemConfig.getProperty("org.astrogrid.community.ident")
-}
-
-location = mkClient(u,comm,p).root
+line = parser.parse(o,args)
+login(line)
+location = astrogrid.createTreeClient(userIvorn,password).root
 //now need to iterate down fragments of the ivorn..
 
-ivorn =  mkFull(line.getArgs()[0])
-if (ivorn.path != (comm + "/" + u)) {
+ivorn =  mkFull(line.args[0])
+if (ivorn.path != homeIvorn.path) {
         throw new IllegalArgumentException("Cannot ls another user's directory")
 }
 path = new java.util.StringTokenizer(ivorn.fragment,"/")
@@ -67,7 +59,7 @@ while (path.hasMoreTokens()) {
 
 formatter = mkFormatter()
 
-if (line.hasOption("R") && location.isContainer()) {
+if (line.hasOption "R" && location.isContainer()) {
         recurse(location,formatter)
 } else {
         display(location,formatter)
@@ -77,11 +69,10 @@ if (line.hasOption("R") && location.isContainer()) {
         println("An Error occurred :" + e.class.name)
         println(e.message)
         displayHelp()
-        e.printStackTrace()
         System.exit(-1)
 }
-
-def displayHelp() {
+}
+void displayHelp() {
         (new HelpFormatter()).printHelp(
 <<<DOC
 vols <options> resource
@@ -91,47 +82,67 @@ DOC
 ,o)
 }
 
-def mkFull(s) { // make this the full form of whatever it is.
-   user = null;
-   if (s.startsWith("ivo://")) {
+Object mkFull(s) { // make this the full form of whatever it is.
+   u = null;
+   if (s.startsWith "ivo://") {
         return astrogrid.objectBuilder.newIvorn(s)
    }
    tok = new java.util.StringTokenizer(s,"/");
-   if (s.startsWith("#/")) {
+   if (s.startsWith "#/") {
         tok.nextToken() // skip junk
-        user = tok.nextToken()
-        return astrogrid.objectBuilder.newIvorn(comm,user,s.substring(1))
-   } else  if (s.startsWith("#")) { // error tolerant, of not qute correct syntax
-        user = tok.nextToken().substring(1)
-        return astrogrid.objectBuilder.newIvorn(comm,user,"/" + s.substring(1))
+        u = tok.nextToken()
+        return astrogrid.objectBuilder.newIvorn(account.community,u,s.substring 1)
+   } else  if (s.startsWith "#") { // error tolerant, of not qute correct syntax
+        user = tok.nextToken().substring 1
+        return astrogrid.objectBuilder.newIvorn(account.community,u,"/" + s.substring(1))
    } else { // assume to be something else, and pass thru
      return s
    }
 }
 
-def mkClient(u,comm,p) {
-        acc = astrogrid.objectBuilder.newUserIvorn(comm,u)
-        return astrogrid.createTreeClient(acc,p)
+void login(line) {
+u=null
+if (line.hasOption "u") {
+        u = line.getOptionValue "user"
 }
 
-def mkFormatter() {
+p=null
+if (line.hasOption "p") {
+        p = line.getOptionValue "password"
+}
+comm=null
+if (line.hasOption "c") {
+        comm = line.getOptionValue "community"
+}
+  env = LoginFactory.login(u,comm,p);
+  astrogrid = env.astrogrid;
+  user = env.user
+  account = env.account
+  homeIvorn = env.homeIvorn
+  userIvorn = env.userIvorn
+  password = env.password
+}
+
+
+
+Object mkFormatter() {
   formatter = {file | file.name}
-  if (line.hasOption("F")) {
+  if (line.hasOption "F") {
         formatter = {file | file.name + (file.isContainer()?"/":"")}
   }
-  if (line.hasOption("Q")) {
+  if (line.hasOption "Q") {
         formatter = {file | '"' + file.name + '"'}
   }
 
 
-  if (line.hasOption("l")) {
+  if (line.hasOption "l") {
         return {file | "${(file.isContainer()? '<dir>' : file.mimeType).padRight(40)}\t${formatter(file)}" }
   } else {
         return formatter
   }
 }
 
-def display(location,formatter) {
+void display(location,formatter) {
         if (location.isContainer() && !line.hasOption("d")) {
                 if (!line.hasOption("1")) {
                         int count = 0;
@@ -140,20 +151,22 @@ def display(location,formatter) {
                                         println(formatter(it).padRight(25) + " ")
                                 } else {
                                         print(formatter(it).padRight(25) + " ")
-                                        print("\t")
+                                        print "\t"
                                 }
                         }
-                        print("\n")
+                        print "\n"
                 } else {
                         location.childNodes.each {println(formatter(it))}
                 }
         } else {
-        println(formatter(location))
+        println formatter(location)
         }
 }
 
-def recurse(location,formatter) {
+void recurse(location,formatter) {
         println(location.name + ":")
         display(location,formatter)
         location.childNodes.findAll{it.isContainer()}.each{recurse(it,formatter)}
+}
+
 }

@@ -5,23 +5,42 @@
 import org.apache.axis.utils.XMLUtils
 import org.apache.commons.cli.*
 
+import org.astrogrid.ui.script.*;
+
+class Apps {
 // setup commandline options
 Options o = new Options()
+Apps() {
 o.addOption("l","list",false,"List names of registered applications")
  .addOption("L","fullList",false,"List info of each registered application")
  .addOption("Q","reg",true,"Return full registry entry for an application")
  .addOption("q","query",true,"Return information for an application")
  .addOption("h","help",false,"Display this help.")
 
+  .addOption("u","user",true,"username (optional)")
+ .addOption("p","password",true,"password (optional)")
+ .addOption("c","community",true,"community (optional)")
+
 og = new OptionGroup()
 ['l','L','q','Q','h'].each{og.addOption(o.getOption it)}
 o.addOptionGroup og
+}
 
+astrogrid;
+user;
+account;
+homeIvorn;
+userIvorn;
+
+
+static void main(String[] args) {
+        (new Apps()).run(args);
+}
+void run(args) {
 try {
 parser = new PosixParser()
-line = parser.parse(o,this.args)
-
-astrogrid = new org.astrogrid.scripting.Toolbox()
+line = parser.parse(o,args)
+login line
 reg = astrogrid.workflowManager.toolRegistry
 
 
@@ -49,26 +68,26 @@ else if (line.hasOption "q") {
 */
 
         vr = "http://www.ivoa.net/xml/VOResource/v0.9"
-        println("Application: ${descr.name}")
-        println(descr.originalVODescription.getElementsByTagNameNS(vr,"Description").item(0).firstChild.nodeValue)
+        println "Application: ${descr.name}"
+        println( descr.originalVODescription.getElementsByTagNameNS(vr,"Description").item(0).firstChild.nodeValue)
         descr.parameters.parameter.each { param |
-           println("Parameter: ${param.UI_Name}")
-           println(param.UI_Description.content)
+           println "Parameter: ${param.UI_Name}"
+           println param.UI_Description.content
            ["name","type","subType","units","acceptEncodings","defaultValue","UCD","optionList"].each{ prop |
                 if (param[prop] != null) {
-                println("\t ${prop} : ${param[prop]}")
+                println "\t ${prop} : ${param[prop]}"
                 }
            }
        }
        descr.interfaces.get_interface().each { iface |
-        println("Interface: ${iface.name}")
-        println("Inputs")
+        println "Interface: ${iface.name}"
+        println "Inputs"
         iface.input.pref.each { p |
-          println("\t ${p.ref} max: ${p.maxoccurs}, min: ${p.minoccurs}")
+          println "\t ${p.ref} max: ${p.maxoccurs}, min: ${p.minoccurs}"
         }
-        println("Outputs")
+        println "Outputs"
         iface.output.pref.each { p |
-          println("\t ${p.ref} max: ${p.maxoccurs}, min: ${p.minoccurs}")
+          println "\t ${p.ref} max: ${p.maxoccurs}, min: ${p.minoccurs}"
         }
        }
 }
@@ -82,14 +101,39 @@ else {
         displayHelp()
         System.exit(-1)
 }
-
-def displayHelp() {
+}
+void displayHelp() {
         (new HelpFormatter()).printHelp(
 <<<DOC
 apps <options>
 query list of registered applications
 DOC,
 o)
+}
+
+void login(line) {
+u=null
+if (line.hasOption "u") {
+        u = line.getOptionValue "user"
+}
+
+p=null
+if (line.hasOption "p") {
+        p = line.getOptionValue "password"
+}
+comm=null
+if (line.hasOption "c") {
+        comm = line.getOptionValue "community"
+}
+  env = LoginFactory.login(u,comm,p);
+  astrogrid = env.astrogrid;
+  user = env.user
+  account = env.account
+  homeIvorn = env.homeIvorn
+  userIvorn = env.userIvorn
+
+}
+
 }
 
 

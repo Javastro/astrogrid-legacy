@@ -9,16 +9,16 @@ import org.apache.axis.utils.XMLUtils
 import org.exolab.castor.xml.Marshaller
 import org.apache.commons.cli.*
 
+import org.astrogrid.ui.script.*;
 
-import org.astrogrid.community.resolver.CommunityPasswordResolver
 
 
 class Jes {
 
 JobURN mkJobURN(string) {
   urn = new JobURN()
-  urn.setContent(string)
-  return urn;
+  urn.content=string
+  return urn
 }
 
 // setup commandline options
@@ -45,11 +45,13 @@ og = new OptionGroup()
 o.addOptionGroup(og)
 }
 
+astrogrid;
+user;
+account;
+homeIvorn;
+userIvorn;
 
-astrogrid = new org.astrogrid.scripting.Toolbox()
-jm = astrogrid.workflowManager.jobExecutionService
 
-parser = new PosixParser()
 
 static void main(String[] args) {
     (new Jes()).run(args)
@@ -58,72 +60,53 @@ static void main(String[] args) {
 void run(args){
 try {// catch all exceptio handler.
 
+parser = new PosixParser()
 line = parser.parse(o,args)
+login line
+jm = astrogrid.workflowManager.jobExecutionService
 
-u=null
-if (line.hasOption("u")) {
-        u = line.getOptionValue("user")
-} else {
-        u = astrogrid.systemConfig.getProperty("username")
-}
-
-p=null
-if (line.hasOption("p")) {
-        p = line.getOptionValue("password")
-} else {
-        p = astrogrid.systemConfig.getProperty("password")
-}
-comm=null
-if (line.hasOption("c")) {
-        comm = line.getOptionValue("community")
-} else {
-        comm = astrogrid.systemConfig.getProperty("org.astrogrid.community.ident")
-}
-login(u,comm,p)
-acc = astrogrid.objectBuilder.newAccount(u,comm)
-
-if (line.hasOption("l")) {
-        jm.listJobs(acc).each{
-                println(it.jobId.content)
+if (line.hasOption "l") {
+        jm.listJobs(account).each{
+                println it.jobId.content
         }
 }
 
-else if (line.hasOption("L")) {//inefficient work-around, as full summary list isn't working.
-        for (j in jm.listJobs(acc)) { // for some reason, internal iterators break here..
-                wf = jm.readJob(j.jobId)
+else if (line.hasOption "L") {//inefficient work-around, as full summary list isn't working.
+        for (j in jm.listJobs(account)) { // for some reason, internal iterators break here..
+                wf = jm.readJob j.jobId
                 er = wf.jobExecutionRecord
                 println(wf.name + "\t" + er.status + "\t" + er.startTime + "\t" + er.finishTime + "\t" + j.jobId.content )
         }
 }
 
-else if (line.hasOption("j")) {
+else if (line.hasOption "j" ) {
         // inefficient work-around. later will extract this info from summary list.
-        wf = jm.readJob(mkJobURN(line.getOptionValue("j")))
+        wf = jm.readJob(mkJobURN(line.getOptionValue "j"))
                 er = wf.jobExecutionRecord
                 println(wf.name + "\t" + er.status + "\t" + er.startTime + "\t" + er.finishTime + "\t" + er.jobId.content )
 }
 
 
-else if (line.hasOption("J")) {
-        wf = jm.readJob(mkJobURN(line.getOptionValue("J")))
+else if (line.hasOption "J") {
+        wf = jm.readJob(mkJobURN(line.getOptionValue "J"))
         doc = XMLUtils.newDocument()
         Marshaller.marshal(wf,doc)
         XMLUtils.PrettyDocumentToStream(doc,System.out)
 }
 
-else if (line.hasOption("C")) {
-        jm.cancelJob(mkJobURN(line.getOptionValue("C")))
+else if (line.hasOption "C") {
+        jm.cancelJob(mkJobURN(line.getOptionValue "C"))
 }
 
-else if (line.hasOption("d")) {
-        jm.deleteJob(mkJobURN(line.getOptionValue("d")))
+else if (line.hasOption "d") {
+        jm.deleteJob(mkJobURN(line.getOptionValue "d" ))
 }
 
-else if (line.hasOption("s")) {
-        input = line.getOptionValue("s") == "-" ? System.in : new java.io.File(line.getOptionValue("s"))
-        wf = Workflow.unmarshalWorkflow(input.newReader())
-        result = jm.submitWorkflow(wf)
-        println(result.content)
+else if (line.hasOption "s") {
+        input = line.getOptionValue("s") == "-" ? System.in : new java.io.File(line.getOptionValue "s" )
+        wf = Workflow.unmarshalWorkflow input.newReader()
+        result = jm.submitWorkflow wf
+        println result.content
 }
 
 else {
@@ -131,8 +114,8 @@ else {
 }
 
 } catch (Throwable e) { // catch all, for better reporting.
-        println("An Error occurred :" + e.getClass().getName())
-        println(e.getMessage())
+        println("An Error occurred :" + e.class.name)
+        println e.message
         displayHelp()
         System.exit(-1)
 }
@@ -147,10 +130,27 @@ DOC
 ,o)
 }
 
-void login(u,comm,p) {
 
-  security = new CommunityPasswordResolver();
-  token = security.checkPassword("ivo://" + comm + "/" + u,p)
-  // not that we do anything with the token afterwards at the moment..
+void login(line) {
+u=null
+if (line.hasOption "u") {
+        u = line.getOptionValue "user"
+}
+
+p=null
+if (line.hasOption "p") {
+        p = line.getOptionValue "password"
+}
+comm=null
+if (line.hasOption "c") {
+        comm = line.getOptionValue "community"
+}
+  env = LoginFactory.login(u,comm,p);
+  astrogrid = env.astrogrid;
+  user = env.user
+  account = env.account
+  homeIvorn = env.homeIvorn
+  userIvorn = env.userIvorn
+
 }
 }
