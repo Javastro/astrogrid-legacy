@@ -1,12 +1,16 @@
 /*
- * $Id: DocHelper.java,v 1.1 2003/09/10 17:57:31 mch Exp $
+ * $Id: DocHelper.java,v 1.2 2003/09/11 11:23:41 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.common;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringBufferInputStream;
+
 import javax.xml.parsers.ParserConfigurationException;
 import org.apache.axis.utils.XMLUtils;
 import org.w3c.dom.Element;
@@ -32,11 +36,8 @@ public class DocHelper
    {
       try
       {
-         String doc =
-            "<?xml version='1.0' encoding='UTF8'?> "+
-            xmlSnippet;
-
-         return XMLUtils.newDocument(doc);
+        InputStream is = new ByteArrayInputStream(xmlSnippet.getBytes());
+         return XMLUtils.newDocument(is);
       }
       catch (java.io.IOException e)
       {
