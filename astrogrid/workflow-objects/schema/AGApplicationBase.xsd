@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: AGApplicationBase.xsd,v 1.8 2004/03/25 16:47:01 pah Exp $ -->
+<!-- $Id: AGApplicationBase.xsd,v 1.9 2004/08/23 09:51:12 pah Exp $ -->
 <!-- This is refactored from the AGParameterDefinition.xsd -->
 <!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
-<xs:schema targetNamespace="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:agab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<xs:schema targetNamespace="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:agab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:import namespace="http://www.astrogrid.org/schema/AGParameterDefinition/v1" schemaLocation="AGParameterDefinition.xsd"/>
 	<xs:annotation>
 		<xs:documentation>this file captures some of the ideas used in the WSDL-like parameter definition files, but as yet is not used for validation</xs:documentation>
@@ -44,6 +44,15 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="WebHttpApplication">
+		<xs:complexContent>
+			<xs:extension base="agab:ApplicationBase">
+				<xs:sequence>
+					<xs:element name="URL" type="xs:string"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="WebServiceApplication">
 		<xs:annotation>
 			<xs:documentation>Description of a web service application</xs:documentation>
@@ -66,7 +75,6 @@
 			<xs:documentation>description of an interface</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
-		<!-- from a castor point of view it would be nicer to change these to be inputdefn,outputdefn -->
 			<xs:element name="input">
 				<xs:complexType>
 					<xs:sequence>
@@ -81,6 +89,7 @@
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
+			<!-- from a castor point of view it would be nicer to change these to be inputdefn,outputdefn -->
 		</xs:sequence>
 		<xs:attribute name="name" type="xs:string" use="required"/>
 	</xs:complexType>
@@ -114,6 +123,7 @@
 				<xs:attribute name="commandPosition" type="xs:int" use="optional"/>
 				<xs:attribute name="stdio" type="xs:boolean" use="optional" default="false"/>
 				<xs:attribute name="switchType" type="agab:switchTypes" use="optional" default="normal"/>
+				<xs:attribute name="fileRef" type="xs:boolean" use="optional" default="false"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
