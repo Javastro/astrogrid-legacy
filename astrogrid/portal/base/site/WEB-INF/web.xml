@@ -374,5 +374,18 @@
     <mime-type>text/plain</mime-type>
   </mime-mapping>
 
+  <env-entry>
+    <!--JNDI property for registry config-->
+    <env-entry-name>org.astrogrid.registry.config</env-entry-name>
+    <env-entry-value>/usr/local/tomcat/registry-config.xml</env-entry-value>
+    <env-entry-type>java.lang.String</env-entry-type>
+  </env-entry>
+
+  <env-entry>
+    <!--JNDI property for community config-->
+    <env-entry-name>org.astrogrid.community.config</env-entry-name>
+    <env-entry-value>/etc/astrogrid/community/astrogrid-community-config.xml</env-entry-value>
+    <env-entry-type>java.lang.String</env-entry-type>
+  </env-entry>
 </web-app>
 
