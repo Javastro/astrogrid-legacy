@@ -3,24 +3,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.lang.reflect.Array;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Vector;
-import junit.framework.Assert;
 import junit.framework.TestCase;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.User;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.mySpace.delegate.MySpaceClient;
-import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
-import org.astrogrid.store.Agsl;
 import org.astrogrid.store.delegate.StoreFile;
 import org.astrogrid.store.delegate.myspaceItn05.MySpaceIt05Delegate;
-import org.astrogrid.store.delegate.myspaceItn05.StatusCodes;
-import org.astrogrid.store.delegate.myspaceItn05.StatusMessage;
 /**
  * Junit tests for a deployed MySpace Manager.
  * 
@@ -36,30 +24,29 @@ public final class SimpleMySpaceTest extends TestCase {
         org.apache.commons.logging.LogFactory.getLog(SimpleMySpaceTest.class);
     /**
      * Standard constructor for JUnit test classes.
+     * 
      * @param name test name
      */
     public SimpleMySpaceTest(final String name) {
         super(name);
     }
-
     /**
      * Fire up the text UI
+     * 
      * @param args ignored
      */
     public static void main(final String[] args) {
         junit.textui.TestRunner.run(SimpleMySpaceTest.class);
     }
-
     /**
      * most tests will require a user
      */
-    private String defaultUser ;
+    private String defaultUser;
     /**
      * mosts tests will also require a community
      */
-    private String defaultCommunity = "pentonville"; //@TODO - this doesn't seem to be used??
-
-
+    private String defaultCommunity = "pentonville";
+    //@TODO - this doesn't seem to be used??
     /**
      * Delegate for the myspace that we're testing
      */
@@ -69,9 +56,8 @@ public final class SimpleMySpaceTest extends TestCase {
      */
     private MySpaceWiper mySpaceWiper;
     /**
-     * Called before each test. Connects to a myspace,
-     * sets up a default user and
-     * creates it
+     * Called before each test. Connects to a myspace, sets up a default user
+     * and creates it
      * 
      * @throws IOException a problem accessing the web service
      */
@@ -88,10 +74,9 @@ public final class SimpleMySpaceTest extends TestCase {
         //      (ii) to throw exceptions if errors are returned.
         myspace.setTest(false);
         myspace.setThrow(true);
-        
         mySpaceWiper = new MySpaceWiper(myspace);
-        
-        defaultUser = "NeilHamilton"+Long.toString(System.currentTimeMillis());
+        defaultUser =
+            "NeilHamilton" + Long.toString(System.currentTimeMillis());
         createUser(defaultUser, defaultCommunity);
     }
     /**
@@ -100,7 +85,7 @@ public final class SimpleMySpaceTest extends TestCase {
      * @throws Exception on failure to load the config file, or a problem
      *             accessing the web service
      */
-    public void tearDown()  {
+    public void tearDown() {
         log.info("Tearing down...");
         try {
             deleteUser(defaultUser, defaultCommunity);
@@ -117,7 +102,7 @@ public final class SimpleMySpaceTest extends TestCase {
     private void deleteUser(final String userID, final String communityID)
         throws IOException {
         // @TODO - change this, it's deprecated
-        log.info("Deleting User "+userID);
+        log.info("Deleting User " + userID);
         User testAccount = new User(userID, communityID, "", "");
         mySpaceWiper.wipe(testAccount);
     }
@@ -149,7 +134,7 @@ public final class SimpleMySpaceTest extends TestCase {
      * 
      * @throws IOException no idea
      */
-    public void testImportExportDeleteSimpleText() throws IOException  {
+    public void testImportExportDeleteSimpleText() throws IOException {
         for (int i = 0; i < 10; ++i) {
             final String name =
                 "foo_"
@@ -167,7 +152,7 @@ public final class SimpleMySpaceTest extends TestCase {
      * 
      * @throws IOException no idea
      */
-    public void testImportExportDeleteXMLTextAgain() throws IOException  {
+    public void testImportExportDeleteXMLTextAgain() throws IOException {
         final String name = "bar" + Long.toString(System.currentTimeMillis());
         final String xml =
             "<?xml version=\"1.0\"?><title>Integration Tests</title>";
@@ -210,14 +195,13 @@ public final class SimpleMySpaceTest extends TestCase {
      * @param user user
      * @param community community
      * @param file filename
-     * @return full path
-     * @TODO a bit weird that community isn't used?
+     * @return full path @TODO a bit weird that community isn't used?
      */
     private String getFullPath(
         final String user,
         final String community,
         final String file) {
-        return "/" + user +  "/" + file;
+        return "/" + user + "/" + file;
     }
     /**
      * Utility method extracting the commonality of the saveDataHolding tests
@@ -226,21 +210,17 @@ public final class SimpleMySpaceTest extends TestCase {
      * @param text the text to store
      * @throws IOException who knows
      */
-    private void importExportDelete(final String name, final String text) throws IOException
-         {
-
+    private void importExportDelete(final String name, final String text)
+        throws IOException {
         myspace.putString(text, name, false);
-
         final String result = myspace.getString(name);
         assertNotNull("Returned result from getDataHolding was null", result);
         log.info("Attempted to save '" + text + "' under name " + name);
         log.info("Received back '" + result + "'");
-
         assertEquals(
             "data returned from myspace not same as saved",
             result,
             text);
-
         log.info("deleting...");
         myspace.delete(name);
     }
@@ -281,7 +261,7 @@ public final class SimpleMySpaceTest extends TestCase {
      * 
      * @throws Exception no idea
      */
-    public void testImportExportDeleteURL() throws Exception  {
+    public void testImportExportDeleteURL() throws Exception {
         final String name = "foo" + Long.toString(System.currentTimeMillis());
         final String url =
             "http://wiki.astrogrid.org/pub/Main/JohnTaylor/urlTestConfig.xml";
@@ -289,31 +269,26 @@ public final class SimpleMySpaceTest extends TestCase {
             getFullPath(defaultUser, defaultCommunity, name),
             url);
     }
-    
     /**
      * Let's start with something trivial - can we save and return text?
      * 
      * @throws IOException no idea
      */
-    public void testImportExportDeleteSomethingHuge() throws IOException  {
-        final String sentence="<foo>bar this is bad xml<";
+    public void testImportExportDeleteSomethingHuge() throws IOException {
+        final String sentence = "<foo>bar this is bad xml<";
         final StringBuffer buff = new StringBuffer();
         for (int i = 0; i < 10000; ++i) {
             buff.append(sentence);
         }
-            
-            
-            final String name =
-                "this_is_a_biggie";
-            importExportDelete(
-                    getFullPath(defaultUser, defaultCommunity, name),
-                    buff.toString());
-        
+        final String name = "this_is_a_biggie";
+        importExportDelete(
+            getFullPath(defaultUser, defaultCommunity, name),
+            buff.toString());
     }
-    
     /**
-     * For mucking out the myspace following a test.
-     * Will get a list of all a user's holdings and delete the lot. 
+     * For mucking out the myspace following a test. Will get a list of all a
+     * user's holdings and delete the lot.
+     * 
      * @author jdt
      */
     private static class MySpaceWiper {
@@ -329,31 +304,32 @@ public final class SimpleMySpaceTest extends TestCase {
         /**
          * 
          * Constructor
+         * 
          * @param myspace The MySpace to wipe
          */
         public MySpaceWiper(final MySpaceIt05Delegate myspace) {
-            this.myspace=myspace;
+            this.myspace = myspace;
         }
         /**
          * Wipe the account's holding, then delete the account
+         * 
          * @param account User's holdings to wipe
          * @throws IOException if something bad happens
          */
         private void wipe(final User account) throws IOException {
-            final StoreFile[] files = myspace.listFiles("/"+account.getUserId()+"/*");
-            if (files==null) {
+            final StoreFile[] files =
+                myspace.listFiles("/" + account.getUserId() + "/*");
+            if (files == null) {
                 log.debug("Found no files");
             } else {
-                log.info("Found "+files.length+" files");
-                for (int i =0;i<files.length;++i) {
+                log.info("Found " + files.length + " files");
+                for (int i = 0; i < files.length; ++i) {
                     StoreFile file = files[i];
-                        log.info("found file " + files[i].getName());
-                        myspace.delete(file.getName());
+                    log.info("found file " + files[i].getName());
+                    myspace.delete(file.getName());
                 }
             }
-            
             myspace.deleteUser(account);
         }
-        
     }
 }
