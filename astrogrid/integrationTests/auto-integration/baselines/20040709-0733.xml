@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
 	<baseline-summary>
-		<baseline-name>20040708-0728</baseline-name>
+		<baseline-name>20040709-0733</baseline-name>
 		<baseline-description>88.49% pass rate</baseline-description>
 		<when>Fri Jul 09 07:33:08 BST 2004</when>
 		<where>twmbarlwm.star.le.ac.uk/127.0.0.1</where>
