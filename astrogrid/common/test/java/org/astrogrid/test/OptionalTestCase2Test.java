@@ -1,4 +1,4 @@
-/* $Id: OptionalTestCase2Test.java,v 1.1 2004/01/26 17:37:04 jdt Exp $
+/* $Id: OptionalTestCase2Test.java,v 1.2 2004/01/26 17:47:06 jdt Exp $
  * Created on 26-Jan-2004 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -87,6 +87,47 @@ public class OptionalTestCase2Test extends TestCase {
     assertEquals(0, tr.errorCount());
     assertEquals(1, tr.failureCount());
   }
+  
+  /**
+   *  Can we disable the test programmatically?
+   *
+   */
+  public final void testDisabledProgrammatically() {
+    log.trace("testDisabledProgrammatically");
+    TestResult tr = new TestResult();
+    OptionalTestCase test = new MyDisabledTest();
+    test.setDisabled(true);
+    assertTrue(test.isDisabled());
+    test.run(tr);
+    assertEquals(0, tr.errorCount());
+    assertEquals(0, tr.failureCount());
+  
+    TestResult tr2 = new TestResult();
+    test.setDisabled(false);
+    assertFalse(test.isDisabled());
+    test.run(tr2);
+    assertEquals(0, tr2.errorCount());
+    assertEquals(1, tr2.failureCount());
+  
+  }
+  
+  /**
+   *  And what about resetting it?
+   *
+   */
+  public final void testReset() {
+    log.trace("testReset");
+    TestResult tr = new TestResult();
+    OptionalTestCase test = new MyDisabledTest();
+    test.setDisabled(true);
+    assertTrue(test.isDisabled());
+    OptionalTestCase.reset();
+    assertFalse(test.isDisabled());
+    test.run(tr);
+    assertEquals(0, tr.errorCount());
+    assertEquals(1, tr.failureCount());
+  }
+  
   /** 
    * A member test class which should never get run
    * @author jdt
@@ -118,17 +159,32 @@ public class OptionalTestCase2Test extends TestCase {
   }
 
   /**
-   * Just the same as MyDisabledTest.  Two identical classes required because once
+   * Just the same as MyDisabledTest.  Identical classes required because once
    * I've disabled this test "by system properties", I can't remove the property from
    * system.
    * @author jdt
-   *
-   * To change the template for this generated type comment go to
-   * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
    */
   public static class MyDisabledTest2 extends MyDisabledTest {
-
   }
+
+  /**
+   * Just the same as MyDisabledTest.  Identical classes required because once
+   * I've disabled this test "by system properties", I can't remove the property from
+   * system.
+   * @author jdt
+   */
+  public static class MyDisabledTest3 extends MyDisabledTest {
+  }
+  
+  /**
+   * Just the same as MyDisabledTest.  Identical classes required because once
+   * I've disabled this test "by system properties", I can't remove the property from
+   * system.
+   * @author jdt
+   */
+  public static class MyDisabledTest4 extends MyDisabledTest {
+  }  
+
 
   /** standard junit set up
    * @throws Exception from the superclass
@@ -144,6 +200,9 @@ public class OptionalTestCase2Test extends TestCase {
 
 /*
 *$Log: OptionalTestCase2Test.java,v $
+*Revision 1.2  2004/01/26 17:47:06  jdt
+*and a few more to try to hit 100%
+*
 *Revision 1.1  2004/01/26 17:37:04  jdt
 *New tests
 *
