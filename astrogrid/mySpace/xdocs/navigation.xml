@@ -5,7 +5,7 @@
 
   <body>
     <menu name="Install">
-    <item name="Install" href="INSTALL"/>
+    <item name="Install" href="INSTALL.html"/>
     <item name="Download" href="http://www.astrogrid.org/maven/astrogrid-mySpace/wars/astrogrid-mySpace-SNAPSHOT.war"/>
 	<item name="createregistry_v02.lis" href="createregistry_v02.lis" />
 	
