@@ -67,7 +67,7 @@
       <deployment xmlns="http://xml.apache.org/axis/wsdd/"
          xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
         <!-- define the logging handler configuration -->
-        <handler name="security" type="java:org.astrogrid.security.ServiceSecurityHandler"/>
+        <handler name="security" type="java:org.astrogrid.security.ServiceCredentialHandler"/>
         <!-- define the service, using the security handler we just defined -->
         <service name="..." provider="java:RPC">
           <requestFlow>
