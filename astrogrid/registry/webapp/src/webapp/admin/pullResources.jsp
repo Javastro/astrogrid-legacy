@@ -7,9 +7,17 @@
 
 <html>
 <head><title>Pull Resource Entry</title>
+<style type="text/css" media="all">
+          @import url("../style/astrogrid.css");
+</style>
+
 </head>
 
 <body>
+<%@ include file="../header.xml" %>
+<%@ include file="navigation.xml" %>
+
+<div id='bodyColumn'>
 
 <%
   URL resourceUrl = new URL(request.getParameter("ResourceUrl"));
