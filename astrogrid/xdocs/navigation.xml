@@ -7,6 +7,12 @@
             <item name="Projects" href="index.html"/>
         </links>
 	    <menu name="Overview">
+		  <item name="Downloading and installing Astrogrid" 
+                href="install.html"/>
+		  <item name="Information for Developers" 
+                href="developers.html"/>
+		  <item name="Latest news" 
+                href="http://news.astrogrid.org/"/>				
           <item name="About this documentation" 
                 href="about.html"/>
         </menu>
