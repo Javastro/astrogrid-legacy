@@ -58,24 +58,10 @@
     <welcome-file>index.jsp</welcome-file>
   </welcome-file-list>
 
-  <resource-ref>
-    <description>Datasource to use to access the database</description>
-    <res-ref-name>jdbc/jes-datasource</res-ref-name>
-    <res-type>java.sql.DataSource</res-type>
-    <res-auth>Container</res-auth>
-  </resource-ref>
-
-  <env-entry>
+  <!--env-entry>
     <description>Does this make a blind bit of difference</description>
   	<env-entry-name>mmcConfigFileURL</env-entry-name>
   	<env-entry-type>java.lang.String</env-entry-type>
-  </env-entry>
-  <!--
-  <resource-ref>
-  	<res-ref-name>org.astrogrid.config.url</res-ref-name>
-	<res-type>java.lang.String</res-type>
-	<res-auth>Container</res-auth>
-  </resource-ref>
--->
+  </env-entry-->
 
 </web-app>
