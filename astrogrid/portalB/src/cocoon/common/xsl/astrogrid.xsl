@@ -2,10 +2,15 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/cocoon/common/xsl/Attic/astrogrid.xsl,v $</cvs:source>
     | <cvs:date>$Author: KevinBenson $</cvs:date>
-    | <cvs:author>$Date: 2003/08/26 10:43:18 $</cvs:author>
-    | <cvs:version>$Revision: 1.5 $</cvs:version>
+    | <cvs:author>$Date: 2003/09/05 08:21:44 $</cvs:author>
+    | <cvs:version>$Revision: 1.6 $</cvs:version>
     | <cvs:log>
     | $Log: astrogrid.xsl,v $
+    | Revision 1.6  2003/09/05 08:21:44  KevinBenson
+    | Okay did a few things here.  First the topcat plug in had a small xsp mistake causing the select boxes to have some unneeded data in it.
+    | Also made a common QueryAction.java file that will just set the current session Credential in the Hashmap so it can be displayed on all pages.
+    | Modified the sitemap.xmap to verify the credential is working. I still need to go back and correct some things in it.
+    |
     | Revision 1.5  2003/08/26 10:43:18  KevinBenson
     | small things to have the community prototype going
     |
@@ -57,6 +62,8 @@
 	    +-->
 	<xsl:param name="home-page">index.html</xsl:param>
 	<xsl:param name="current-page">test.html</xsl:param>
+	<xsl:param name="credential">credential</xsl:param>
+	<xsl:param name="credential-page">agcredentials.html</xsl:param>
 	<xsl:param name="myspace-page">agmyspace.html</xsl:param>
 	<xsl:param name="help-page">agmyspacehelp.html</xsl:param>
 	<xsl:param name="registry-page">agregistry.html</xsl:param>
@@ -244,6 +251,28 @@
 											<td rowspan="1" colspan="3">
 												<!-- Add the MySpace explorer content -->
 												<xsl:apply-templates select="content"/>
+											</td>
+										</tr>
+										<tr align="left" valign="bottom">
+											<td>
+												Current Credential: <xsl:value-of select="$credential"/>
+												<br />
+												<a style="color: blue; ">
+													<xsl:attribute name="href">
+														<xsl:value-of select="$credential-page"/>
+													</xsl:attribute>
+													Credentials
+												</a>
+												<xsl:attribute name="href">
+													
+												</xsl:attribute>
+												
+											</td>
+											<td>
+												
+											</td>
+											<td>
+
 											</td>
 										</tr>
 									</tbody>

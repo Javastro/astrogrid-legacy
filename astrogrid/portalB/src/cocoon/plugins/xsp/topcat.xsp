@@ -163,6 +163,7 @@
 									<xsp:attribute name="val">
 										<xsp:expr>cinfo.getName()</xsp:expr>
 									</xsp:attribute>
+									<xsp:logic>
 				<![CDATA[
 									if(cinfo.getName().trim().equals(xaxis)) {
 				]]>
@@ -175,6 +176,7 @@
 				<![CDATA[
 									}
 				]]>								
+								</xsp:logic>
 								</xsp:element>
 				<![CDATA[
 						   }//if

@@ -26,6 +26,7 @@
       <map:selectors default="browser"/>
       <map:matchers default="wildcard"/>
       <map:actions>
+   	     <map:action name="astrogrid" src="org.astrogrid.portal.cocoon.common.AstrogridAction"/>
          <map:action name="astrogrid-explorer"
          	src="org.astrogrid.portal.cocoon.explorer.ExplorerAction"/>
          <map:action name="astrogrid-query" 
@@ -166,18 +167,21 @@
                   </map:transform>
                </map:act>
                <!-- Wrap the page in our HTML template -->
-               <map:transform src="common/xsl/astrogrid.xsl" label="003">
-                  <!-- Add the rest of the page names -->
-                  <map:parameter name="current-page"  value="agdataquery.html"/>
-                  <map:parameter name="query-page"    value="agdataquery.html"/>
-                  <map:parameter name="myspace-page"  value="agmyspace.html"/>
-                  <map:parameter name="home-page"     value="agindex.html"/>
-                  <map:parameter name="help-page"     value="agdataqueryhelp.html"/>
-                  <map:parameter name="registry-page" value="agregistry.html"/>
-                  <map:parameter name="monitor-page"  value="agjobmonitor.html"/>
-                  <map:parameter name="tools-page"    value="agtools.html"/>
-                  <map:parameter name="logout-page"   value="aglogout.html"/>
-               </map:transform>
+               <map:act type="astrogrid">
+		           <map:transform src="common/xsl/astrogrid.xsl" label="003">
+		              <!-- Add the rest of the page names -->
+		              <map:parameter name="credential" value="{credential}" />
+		              <map:parameter name="current-page"  value="agdataquery.html"/>
+		              <map:parameter name="query-page"    value="agdataquery.html"/>
+		              <map:parameter name="myspace-page"  value="agmyspace.html"/>
+		              <map:parameter name="home-page"     value="agindex.html"/>
+		              <map:parameter name="help-page"     value="agdataqueryhelp.html"/>
+		              <map:parameter name="registry-page" value="agregistry.html"/>
+		              <map:parameter name="monitor-page"  value="agjobmonitor.html"/>
+		              <map:parameter name="tools-page"    value="agtools.html"/>
+		              <map:parameter name="logout-page"   value="aglogout.html"/>
+		           </map:transform>
+		       </map:act>
                <!-- Serialize as HTML -->
                <map:serialize type="html"/>
             </map:match>
@@ -238,7 +242,11 @@
                   </map:transform>
                </map:act>
                <!-- Wrap the page in our HTML template -->
-               <map:transform src="common/xsl/astrogrid.xsl" label="003">
+               <map:act type="astrogrid">
+		           <map:transform src="common/xsl/astrogrid.xsl" label="003">
+		              <!-- Add the rest of the page names -->
+		              <map:parameter name="credential" value="{credential}" />
+		              <map:parameter name="credential-page" value="agcredentials.html" />
                   <!-- Add the current page name -->
                   <map:parameter name="current-page" value="agmyspace.html"/>
                   <!-- Add the explorer page names -->
@@ -253,6 +261,7 @@
                   <map:parameter name="tools-page"    value="agtools.html"/>
                   <map:parameter name="logout-page"   value="aglogout.html"/>
                </map:transform>
+               </map:act>
                <!-- Serialize as HTML -->
                <map:serialize type="html"/>
             </map:match>

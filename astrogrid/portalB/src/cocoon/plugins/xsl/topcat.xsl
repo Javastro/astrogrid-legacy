@@ -73,7 +73,7 @@
 					<xsl:element name="option">
 						<xsl:attribute name="value"><xsl:value-of select="@val"/></xsl:attribute>
 						<xsl:if test="@defaultx">
-							<xsl:attribute name="selected"><xsl:value-of select="true" /></xsl:attribute>
+							<xsl:attribute name="selected"><xsl:text>true</xsl:text></xsl:attribute>
 						</xsl:if>
 						<xsl:value-of select="@val"/>
 					</xsl:element>
@@ -86,7 +86,7 @@
 					<xsl:element name="option">
 						<xsl:attribute name="value"><xsl:value-of select="@val"/></xsl:attribute>
 						<xsl:if test="@defaulty">
-							<xsl:attribute name="selected"><xsl:value-of select="true" /></xsl:attribute>
+							<xsl:attribute name="selected"><xsl:text>true</xsl:text></xsl:attribute>
 						</xsl:if>
 						<xsl:value-of select="@val"/>
 					</xsl:element>
