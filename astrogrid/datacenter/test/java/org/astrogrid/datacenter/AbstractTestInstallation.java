@@ -1,4 +1,4 @@
-/*$Id: AbstractTestInstallation.java,v 1.1 2003/09/19 12:02:37 nw Exp $
+/*$Id: AbstractTestInstallation.java,v 1.2 2003/09/19 15:13:27 nw Exp $
  * Created on 19-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,7 +21,11 @@ import javax.xml.rpc.ServiceException;
 
 import org.apache.axis.client.Call;
 import org.apache.axis.utils.XMLUtils;
+import org.astrogrid.datacenter.common.QueryStatus;
 import org.astrogrid.datacenter.delegate.DatacenterDelegate;
+import org.astrogrid.datacenter.delegate.DatacenterStatusListener;
+import org.astrogrid.datacenter.delegate.WebNotifyServiceListener;
+
 import java.io.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -178,27 +182,31 @@ public abstract class AbstractTestInstallation extends TestCase {
         assertNotNull("Query response document has not ID",queryIdEl);
         String queryId = queryIdEl.getChildNodes().item(0).getNodeValue(); 
         assertNotNull("query ID is null",queryId);
-        System.out.println(queryId);
-        /* leave this for now - barfs
-        QueryStatus stat = del.getQueryStatus(queryId);
+        System.out.println("QueryID:" + queryId);
+        /*
+        QueryStatus stat = del.getStatus(queryId);
         assertNotNull("status is null",stat);
         assertEquals("status code is not as expected",QueryStatus.CONSTRUCTED,stat);
         */
-        /*
-        DatacenterStatusListener list = null;
+        
+        /* don't work - not transportable, as contains URL
+        URL notifyURL = new URL("local:///SomethingService");
+        DatacenterStatusListener list = new WebNotifyServiceListener(notifyURL);
         assertNotNull("listener is null",list);
         del.registerListener(queryId,list);
         */
-        Element whatIsThis = del.startQuery(queryId);
-        assertNotNull("start query response is null",whatIsThis);
-        // should be seeing some things happen now with the listener.
-        // wait till completed.
+        
+        Element startResp = del.startQuery(queryId);
+        assertNotNull("start query response is null",startResp);
+        assertEquals("start query response not in expected format","QueryStarted",startResp.getLocalName());
+
         
         Element result = del.getResultsAndClose(queryId);
         assertNotNull("result of query is null",result);
-        assertEquals("Result of query not in expected format","DatacenterResults",result.getLocalName());
         System.out.println("Results for query");
         System.out.println(XMLUtils.ElementToString(result));
+        // doesn't seem to return the document anymore. argh.
+        assertEquals("Result of query not in expected format","DatacenterResults",result.getLocalName());
         } 
         catch (IOException e) {
             e.printStackTrace();
@@ -264,6 +272,10 @@ public abstract class AbstractTestInstallation extends TestCase {
 
 /* 
 $Log: AbstractTestInstallation.java,v $
+Revision 1.2  2003/09/19 15:13:27  nw
+got non-blocking query test working a bit more.
+not finished.
+
 Revision 1.1  2003/09/19 12:02:37  nw
 Added top level test - runs integration tests against an inprocess db and inprocess axis.
  
