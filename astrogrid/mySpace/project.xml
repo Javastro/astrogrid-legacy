@@ -1,181 +1,199 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:noNamespaceSchemaLocation="maven-project.xsd">
-  <pomVersion>3</pomVersion>
-  <id>astrogrid-mySpace</id>
-  <name>AstroGrid MySpace</name>
-
-  <currentVersion>Itn03_end</currentVersion>
-  
-  <organization>
-    <name>AstroGrid</name>
-    <url>http://www.astrogrid.org</url>
-    <logo>http://www.astrogrid.org/images/AGlogo</logo>
-  </organization>
-
-  <inceptionYear>2002</inceptionYear>
-  <package>org.astrogrid</package>
-  <logo>http://www.astrogrid.org/images/AGlogo</logo>
-
-  <shortDescription>AstroGrid MySpace Components</shortDescription>
-  <issueTrackingUrl>http://www.astrogrid.org/bugzilla/</issueTrackingUrl>
-
-  <siteDirectory>/var/www/www/maven/build/mySpace</siteDirectory>
-  
-  <repository>
-    <connection>
+<!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by John Taylor (ROE) -->
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="maven-project.xsd">
+	<pomVersion>3</pomVersion>
+	<id>astrogrid-mySpace</id>
+	<name>AstroGrid MySpace</name>
+	<currentVersion>Itn03_end</currentVersion>
+	<organization>
+		<name>AstroGrid</name>
+		<url>http://www.astrogrid.org</url>
+		<logo>http://www.astrogrid.org/images/AGlogo</logo>
+	</organization>
+	<inceptionYear>2002</inceptionYear>
+	<package>org.astrogrid</package>
+	<logo>http://www.astrogrid.org/images/AGlogo</logo>
+	<shortDescription>AstroGrid MySpace Components</shortDescription>
+	<issueTrackingUrl>http://www.astrogrid.org/bugzilla/</issueTrackingUrl>
+	<siteDirectory>/var/www/www/maven/build/mySpace</siteDirectory>
+	<repository>
+		<connection>
       scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/myspace
     </connection>
-    <developerConnection>
+		<developerConnection>
       scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/mySpace
     </developerConnection>
-    <url>http://www.astrogrid.org/viewcvs/astrogrid/mySpace/</url>
-  </repository>
-  
-  <developers>
-    <developer>
-      <name>Keith Noddle</name>
-      <id>ktn</id>
-      <email>ktn@star.le.ac.uk</email>
-    </developer>
-    <developer>
-      <name>Clive Davenhall</name>
-      <id>acd</id>
-      <email>acd@roe.ac.uk</email>
-    </developer>
-    <developer>
-      <name>Catherine Ling Qin</name>
-      <id>clq2</id>
-      <email>clq2@star.le.ac.uk</email>
-    </developer>
-    <developer>
-      <name>Guy Rixon</name>
-      <id>gtr</id>
-      <email>gtr@ast.cam.ac.uk</email>
-    </developer>
-    
-  </developers>
-  
-  <dependencies>
-    <dependency>
-      <id>astrogrid-common</id>
-      <version>SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <artifactId>astrogrid-datacenter-client</artifactId>
-      <groupId>astrogrid-datacenter</groupId>      
-      <version>SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <id>cog-jglobus</id>
-      <version>OGSA3.0</version>
-    </dependency>
-
-    <dependency>
-      <id>axis</id>
-      <version>1.1</version>
-    </dependency>
-
-    <dependency>
-      <id>jax-qname</id>
-      <version>UNKNOWN</version>
-      <jar>jax-qname.jar</jar>
-    </dependency>
-
-    <dependency>
-      <id>jaxrpc-api</id>
-      <version>1.0.3</version>
-    </dependency>
-
-    <dependency>
-      <id>jconfig</id>
-      <version>2.1</version>
-    </dependency>
-
-    <dependency>
-      <id>junit</id>
-      <version>3.8</version>
-    </dependency>
-
-    <dependency>
-      <id>log4j</id>
-      <version>1.2.4</version>
-    </dependency>
-
-    <dependency>
-      <id>saaj-api</id>
-      <version>1.1.1</version>
-    </dependency>
-  
-    <dependency>
-      <id>wsdl4j</id>
-      <jar>wsdl4j.jar</jar>
-    </dependency>
-    
-    <dependency>
-    	<id>hsqldb</id>
-    	<version>1.7.1</version>
-    </dependency>
-  </dependencies>
-  
-  <build>
-    <sourceDirectory>src/java</sourceDirectory>
-    <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
-    
-    <unitTest>
-      <includes>
-        <include>**/*Test.java</include>
-      </includes>
-    </unitTest>
-  </build>
-  
-  <reports>
-   <report>
+		<url>http://www.astrogrid.org/viewcvs/astrogrid/mySpace/</url>
+	</repository>
+	<developers>
+		<developer>
+			<name>Keith Noddle</name>
+			<id>ktn</id>
+			<email>ktn@star.le.ac.uk</email>
+		</developer>
+		<developer>
+			<name>Clive Davenhall</name>
+			<id>acd</id>
+			<email>acd@roe.ac.uk</email>
+		</developer>
+		<developer>
+			<name>Catherine Ling Qin</name>
+			<id>clq2</id>
+			<email>clq2@star.le.ac.uk</email>
+		</developer>
+		<developer>
+			<name>Guy Rixon</name>
+			<id>gtr</id>
+			<email>gtr@ast.cam.ac.uk</email>
+		</developer>
+		<developer>
+			<name>Jeff Lusted</name>
+			<id>jl99</id>
+			<email>jl99@star.le.ac.uk</email>
+		</developer>
+		<developer>
+			<name>John D Taylor</name>
+			<id>jdt</id>
+			<email>jdt@roe.ac.uk</email>
+			<roles>
+				<role>Applications Integration Developer</role>
+			</roles>
+		</developer>
+		<developer>
+			<name>Paul Harrison</name>
+			<id>pah</id>
+			<email>pah@jb.man.ac.uk</email>
+			<roles>
+				<role>Applications Integration WGL</role>
+			</roles>
+		</developer>
+		<developer>
+			<name>Martin Hill</name>
+			<id>mch</id>
+			<email>mch@roe.ac.uk</email>
+			<organization>ROE</organization>
+			<roles>
+				<role>Data Center WGL</role>
+			</roles>
+		</developer>
+	</developers>
+	<dependencies>
+		<dependency>
+			<artifactId>astrogrid-common</artifactId>
+			<groupId>astrogrid-common</groupId>
+			<version>SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<artifactId>astrogrid-datacenter-client</artifactId>
+			<groupId>astrogrid-datacenter</groupId>
+			<version>SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<artifactId>cog-jglobus</artifactId>
+			<groupId>cog-jglobus</groupId>
+			<version>OGSA3.0</version>
+		</dependency>
+		<dependency>
+			<artifactId>axis</artifactId>
+			<groupId>axis</groupId>
+			<version>1.1</version>
+		</dependency>
+		<dependency>
+			<artifactId>jax-qname</artifactId>
+			<groupId>jax-qname</groupId>
+			<version>UNKNOWN</version>
+			<jar>jax-qname.jar</jar>
+		</dependency>
+		<dependency>
+			<artifactId>jaxrpc-api</artifactId>
+			<groupId>jaxrpc-api</groupId>
+			<version>1.0.3</version>
+		</dependency>
+		<dependency>
+			<artifactId>jconfig</artifactId>
+			<groupId>jconfig</groupId>
+			<version>2.1</version>
+		</dependency>
+		<dependency>
+			<artifactId>junit</artifactId>
+			<groupId>junit</groupId>
+			<version>3.8</version>
+		</dependency>
+		<dependency>
+			<artifactId>log4j</artifactId>
+			<groupId>log4j</groupId>
+			<version>1.2.4</version>
+		</dependency>
+		<dependency>
+			<artifactId>saaj-api</artifactId>
+			<groupId>saaj-api</groupId>
+			<version>1.1.1</version>
+		</dependency>
+		<dependency>
+			<artifactId>wsdl4j</artifactId>
+			<groupId>wsdl4j</groupId>
+			<jar>wsdl4j.jar</jar>
+		</dependency>
+		<dependency>
+			<artifactId>hsqldb</artifactId>
+			<groupId>hsqldb</groupId>
+			<version>1.7.1</version>
+		</dependency>
+	</dependencies>
+	<build>
+		<sourceDirectory>src/java</sourceDirectory>
+		<unitTestSourceDirectory>test/java</unitTestSourceDirectory>
+		<unitTest>
+			<includes>
+				<include>**/*Test.java</include>
+			</includes>
+		</unitTest>
+	</build>
+	<reports>
+		<report>
       maven-changelog-plugin
     </report>
-    <report>
+		<report>
       maven-changes-plugin
     </report>
-    <report>
+		<report>
       maven-checkstyle-plugin
     </report>
-    <report>
+		<report>
       maven-clover-plugin
     </report>
-    <report>
+		<report>
       maven-developer-activity-plugin
     </report>
-    <report>
+		<report>
       maven-file-activity-plugin
     </report>
-    <report>
+		<report>
       maven-javadoc-plugin
     </report>
-    <report>
+		<report>
       maven-jdepend-plugin
     </report>
-    <report>
+		<report>
       maven-junit-report-plugin
     </report>
-    <report>
+		<report>
       maven-jxr-plugin
     </report>
-    <report>
+		<report>
       maven-license-plugin
     </report>
-    <report>
+		<report>
       maven-linkcheck-plugin
     </report>
-    <report>
+		<report>
       maven-pmd-plugin
     </report>
-    <report>
+		<report>
       maven-tasklist-plugin
     </report>
-    <report>
+		<report>
       maven-simian-plugin
     </report>
-  </reports>
+	</reports>
 </project>
