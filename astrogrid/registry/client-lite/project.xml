@@ -232,6 +232,16 @@
           		<war.bundle>true</war.bundle>
           	</properties>
         </dependency>
+    	
+            <dependency>
+                <groupId>org.astrogrid</groupId>
+                <artifactId>astrogrid-datacenter-client</artifactId>
+                <version>${astrogrid.datacenter.version}</version>
+                <type>jar</type>
+                <properties>
+                    <war.bundle>true</war.bundle>
+                </properties>
+            </dependency>    	
         
         <dependency>
             <artifactId>commons-discovery</artifactId>
