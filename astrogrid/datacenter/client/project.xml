@@ -10,38 +10,38 @@
 
   <currentVersion>HEAD</currentVersion>
 
-	<description><![CDATA[
-	 This project contains the delegate interface to the datacenter.
-	 <p />
-	 The name of the jar produced by this project is <tt>astrogrid-datacenter-client</tt>
-	 To add a dependency on this project to your own project, add the following to your <tt>project.xml</tt>
-	 <source>
-	   &lt;dependencies&gt;
-	   ...
-	  	&lt;dependency&gt;
-		&lt;groupId&gt;astrogrid-datacenter&lt;/groupId&gt;
-		&lt;artifactId&gt;astrogrid-datacenter-client&lt;/artifactId&gt;
-		&lt;version&gt;SNAPSHOT&lt;/version&gt;
-		&lt;/dependency&gt;
-	   ...
-	   &lt;dependencies&gt;
-	 </source>
+   <description><![CDATA[
+    This project contains the delegate interface to the datacenter.
+    <p />
+    The name of the jar produced by this project is <tt>astrogrid-datacenter-client</tt>
+    To add a dependency on this project to your own project, add the following to your <tt>project.xml</tt>
+    <source>
+      &lt;dependencies&gt;
+      ...
+      &lt;dependency&gt;
+      &lt;groupId&gt;astrogrid-datacenter&lt;/groupId&gt;
+      &lt;artifactId&gt;astrogrid-datacenter-client&lt;/artifactId&gt;
+      &lt;version&gt;SNAPSHOT&lt;/version&gt;
+      &lt;/dependency&gt;
+      ...
+      &lt;dependencies&gt;
+    </source>
 
 
-	 <p><subsection name="Build" /></p>
-	 This project generates a large amount of source code automatically from XML schema and WSDL files in
-	 <tt>src/xsd</tt> and <tt>src/wsdl</tt>. This source is placed in a separate tree called <tt>generated/java</tt>.
-	<p />
-	 This maven project has an additional goal - <tt>generate-delegate</tt>
-	 that performs this code generation.
-	 Castor and the wsdl2java tool from Axis are used as part of this.
-	 The goal is defined in the <tt>maven.xml</tt> file, where is is documented in more detail.
-	<p />
-	The code generation is <b>not</b> performed automatically by the nightly build: after editing the wsdl or schema files the
-	<tt>generate-delegate</tt> goal must be run by hand; then the generated sources verified and checked back into CVS.
+    <p><subsection name="Build" /></p>
+    This project generates a large amount of source code automatically from XML schema and WSDL files in
+    <tt>src/xsd</tt> and <tt>src/wsdl</tt>. This source is placed in a separate tree called <tt>generated/java</tt>.
+   <p />
+    This maven project has an additional goal - <tt>generate-delegate</tt>
+    that performs this code generation.
+    Castor and the wsdl2java tool from Axis are used as part of this.
+    The goal is defined in the <tt>maven.xml</tt> file, where is is documented in more detail.
+   <p />
+   The code generation is <b>not</b> performed automatically by the nightly build: after editing the wsdl or schema files the
+   <tt>generate-delegate</tt> goal must be run by hand; then the generated sources verified and checked back into CVS.
 
-	 	]]>
-	</description>
+      ]]>
+   </description>
 
   <shortDescription>Client-side delegate and supporting libraries</shortDescription>
 
@@ -59,11 +59,11 @@
 
   <!-- jar files the project is dependent on -->
   <dependencies>
-	<!-- required for the NVO cone search delegate -->
-	    <dependency>
+   <!-- required for the NVO cone search delegate -->
+       <dependency>
         <id>astrogrid-mySpace</id>
         <version>SNAPSHOT</version>
-	    <properties>
+       <properties>
       <war.bundle>true</war.bundle>
     </properties>
     </dependency>
@@ -72,15 +72,6 @@
       <id>breezetk</id>
       <version>UNKNOWN</version>
       <jar>breezetk.jar</jar>
-          <properties>
-      <war.bundle>true</war.bundle>
-    </properties>
-    </dependency>
-
-    <dependency>
-      <id>objectwiz-votable</id>
-      <version>UNKNOWN</version>
-      <jar>objectwiz-votable.jar</jar>
           <properties>
       <war.bundle>true</war.bundle>
     </properties>
@@ -96,41 +87,41 @@
     </dependency>
 
 
-	<!-- used as part of build - no need to deploy with final app.-->
+   <!-- used as part of build - no need to deploy with final app.-->
 
-	<dependency>
-		<groupId>axis</groupId>
-		<artifactId>axis-ant</artifactId>
-		<version>1.1</version>
-	</dependency>
+   <dependency>
+      <groupId>axis</groupId>
+      <artifactId>axis-ant</artifactId>
+      <version>1.1</version>
+   </dependency>
 
 
   </dependencies>
 
-	<build>
-		<resources>
-			<resource>
-				<directory>${basedir}/generated</directory>
-				<includes>
-					<include>wsdd/**</include>
-				</includes>
-			</resource>
-			<resource>
-				<directory>${basedir}/src</directory>
-				<includes>
-					<include>wsdl/**</include>
-					<include>xsd/**</include>
-				</includes>
-			</resource>
-			<resource>
-				<directory>${basedir}/src/java</directory>
-				<includes>
-					<include>**/*.properties</include>
-					<include>**/*.xml</include>
-				</includes>
-			</resource>
-		</resources>
-	</build>
+   <build>
+      <resources>
+         <resource>
+            <directory>${basedir}/generated</directory>
+            <includes>
+               <include>wsdd/**</include>
+            </includes>
+         </resource>
+         <resource>
+            <directory>${basedir}/src</directory>
+            <includes>
+               <include>wsdl/**</include>
+               <include>xsd/**</include>
+            </includes>
+         </resource>
+         <resource>
+            <directory>${basedir}/src/java</directory>
+            <includes>
+               <include>**/*.properties</include>
+               <include>**/*.xml</include>
+            </includes>
+         </resource>
+      </resources>
+   </build>
 
 </project>
 

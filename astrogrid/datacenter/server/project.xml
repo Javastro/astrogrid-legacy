@@ -10,25 +10,25 @@
   <name>AstroGrid DataCenter Server</name>
   <currentVersion>HEAD</currentVersion>
 
-	<description><![CDATA[
-	 This project contains the datacenter server framework.
-	 For specific server implementations, see the <tt>implementations</tt> project.
-	 <p />
-	 The name of the jar produced by this project is <tt>astrogrid-datacenter-server</tt>
-	 To add a dependency on this project to your own project, add the following to your <tt>project.xml</tt>
-	 <source>
-	   &lt;dependencies&gt;
-	   ...
-	  	&lt;dependency&gt;
-		&lt;groupId&gt;astrogrid-datacenter&lt;/groupId&gt;
-		&lt;artifactId&gt;astrogrid-datacenter-server&lt;/artifactId&gt;
-		&lt;version&gt;SNAPSHOT&lt;/version&gt;
-		&lt;/dependency&gt;
-	   ...
-	   &lt;dependencies&gt;
-	 </source>
-	 	]]>
-	</description>
+   <description><![CDATA[
+    This project contains the datacenter server framework.
+    For specific server implementations, see the <tt>implementations</tt> project.
+    <p />
+    The name of the jar produced by this project is <tt>astrogrid-datacenter-server</tt>
+    To add a dependency on this project to your own project, add the following to your <tt>project.xml</tt>
+    <source>
+      &lt;dependencies&gt;
+      ...
+      &lt;dependency&gt;
+      &lt;groupId&gt;astrogrid-datacenter&lt;/groupId&gt;
+      &lt;artifactId&gt;astrogrid-datacenter-server&lt;/artifactId&gt;
+      &lt;version&gt;SNAPSHOT&lt;/version&gt;
+      &lt;/dependency&gt;
+      ...
+      &lt;dependencies&gt;
+    </source>
+      ]]>
+   </description>
 
   <!-- must be on a single line -->
   <shortDescription>Datacenter server framework</shortDescription>
@@ -49,18 +49,18 @@
   <!-- jar files the project is dependent on -->
   <dependencies>
 
-	<dependency>
-		<groupId>astrogrid-datacenter</groupId>
-		<artifactId>astrogrid-datacenter-client</artifactId>
-		<version>SNAPSHOT</version>
-		    <properties>
+   <dependency>
+      <groupId>astrogrid-datacenter</groupId>
+      <artifactId>astrogrid-datacenter-client</artifactId>
+      <version>SNAPSHOT</version>
+          <properties>
       <war.bundle>true</war.bundle>
     </properties>
-	</dependency>
-	    <dependency>
+   </dependency>
+       <dependency>
         <id>astrogrid-mySpace</id>
         <version>SNAPSHOT</version>
-	    <properties>
+       <properties>
       <war.bundle>true</war.bundle>
     </properties>
     </dependency>
@@ -69,15 +69,6 @@
       <id>breezetk</id>
       <version>UNKNOWN</version>
       <jar>breezetk.jar</jar>
-          <properties>
-      <war.bundle>true</war.bundle>
-    </properties>
-    </dependency>
-
-    <dependency>
-      <id>objectwiz-votable</id>
-      <version>UNKNOWN</version>
-      <jar>objectwiz-votable.jar</jar>
           <properties>
       <war.bundle>true</war.bundle>
     </properties>
@@ -95,7 +86,7 @@
     <dependency><!-- hsqldb - for testing -->
         <id>hsqldb</id>
         <version>1.7.1</version>
-	    <properties>
+       <properties>
       <war.bundle>true</war.bundle>
     </properties>
     </dependency>
