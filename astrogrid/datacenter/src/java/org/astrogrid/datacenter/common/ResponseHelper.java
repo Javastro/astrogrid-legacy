@@ -1,5 +1,5 @@
 /*
- * $Id: ResponseHelper.java,v 1.1 2003/09/10 17:57:31 mch Exp $
+ * $Id: ResponseHelper.java,v 1.2 2003/09/11 11:33:06 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -90,7 +90,7 @@ public class ResponseHelper
       
       String doc =
           ServiceIdHelper.makeTagWithServiceIdAttr(DATACENTER_RESULTS_TAG, querier.getHandle())+"\n"
-         +"   <TIME>"+querier.getQueryTimeTaken()+"<TIME>\n"
+         +"   <TIME>"+querier.getQueryTimeTaken()+"</TIME>\n"
          +"   <Results type='votable'>\n"
          +XMLUtils.ElementToString(results)
          +"   </Results>\n"
