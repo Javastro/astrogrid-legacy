@@ -73,11 +73,7 @@
       <version>SNAPSHOT</version>
     </dependency>
 
-    <!-- we need the myspace client to compile. fix this later when mySpace packaging is better. -->
-    <dependency>
-    	<id>astrogrid-mySpace</id>
-	<version>SNAPSHOT</version>
-    </dependency>
+
     <!-- more standard deps -->
     <dependency>
       <id>commons-logging</id>
@@ -96,6 +92,58 @@
       <id>cocoon</id>
       <version>2.0.4</version>
     </dependency>
+    <dependency>
+      <artifactId>axis</artifactId>
+      <groupId>axis</groupId>
+      <version>1.1</version>
+    </dependency>
+    <!-- Don't know where this one comes from!-->
+    <!-- who builds this and where does it go? -->
+    <dependency>
+	   	<artifactId>policy-client</artifactId>  
+	   	<groupId>policy-client</groupId>  
+     	<version>1.0</version>
+    </dependency>
+     <!-- Don't know where this one comes from!-doesn't exist on repo -->
+    <dependency>
+    	<artifactId>authentication-client</artifactId>
+    	<groupId>authentication-client</groupId>
+    	<version>1.0</version>
+    </dependency>          
+  
+    <!--not entirely sure this is pointing to the right version (is 4.1.4 in original non-maven build)-->   
+    <dependency>
+	   	<artifactId>avalon-framework</artifactId>  
+	   	<groupId>avalon-framework</groupId>  
+     	<version>20020627</version>
+    </dependency> 
+    <!--this was jesdelegates-1.0.jar in the non-maven build-->
+     <dependency>
+	   	<artifactId>astrogrid-jes</artifactId>  
+	   	<groupId>astrogrid-jes</groupId>  
+     	<version>SNAPSHOT</version>
+    </dependency>     
+        <dependency>
+    	<artifactId>jconfig</artifactId>
+    	<groupId>jconfig</groupId>
+    	<version>2.1</version>
+    </dependency>  
+    <dependency>
+    	<artifactId>logkit</artifactId>
+    	<groupId>logkit</groupId>
+    	<version>1.2</version><!--1.2.2 available-->
+    </dependency>     
+    
+    <!-- we need the myspace client to compile. fix this later when mySpace packaging is better. -->
+    <!--IMPORTANT!  This dependency must go after authentication-client for now since
+        it contains a duff version of CommunityMessage.  Otherwise the build errors generated
+        by Maven will drive you nuts!  Temporary fix this - don't think we can rely 
+        on this ordering.-->
+    <dependency>
+    	<id>astrogrid-mySpace</id>
+	<version>SNAPSHOT</version>
+    </dependency>
+           
   </dependencies>
 
   <build>
@@ -104,7 +152,7 @@
 
     <unitTest>
       <includes>
-        <include>**/*Test.java</include>
+        <include>**/*Test*.java</include>
       </includes>
 
       <resources>
