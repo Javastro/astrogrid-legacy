@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataService_v05.java,v 1.5 2004/10/07 10:34:44 mch Exp $
+ * $Id: AxisDataService_v05.java,v 1.6 2004/10/12 21:34:04 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -77,7 +77,7 @@ public class AxisDataService_v05 implements AxisDataServer_v05_Port, ServiceLife
          return sw.toString();
       }
       catch (Throwable e) {
-         throw server.makeFault(server.SERVERFAULT, "Error asking Query("+adql+", "+requestedFormat+")", e);
+         throw server.makeFault(server.SERVERFAULT, e+", asking Query("+adql+", "+requestedFormat+")", e);
       }
    }
 
@@ -98,7 +98,7 @@ public class AxisDataService_v05 implements AxisDataServer_v05_Port, ServiceLife
          return sw.toString();
       }
       catch (Throwable e) {
-         throw server.makeFault(server.SERVERFAULT, "Error asking Query("+sql+", "+requestedFormat+")", e);
+         throw server.makeFault(server.SERVERFAULT, e+", asking Sql("+sql+", "+requestedFormat+")", e);
       }
    }
 
@@ -112,7 +112,7 @@ public class AxisDataService_v05 implements AxisDataServer_v05_Port, ServiceLife
          return sw.toString();
       }
       catch (Throwable e) {
-         throw server.makeFault(server.SERVERFAULT, "Error asking Query("+ra+", "+dec+", "+radius+", "+requestedFormat+")", e);
+         throw server.makeFault(server.SERVERFAULT, e+", asking cone("+ra+", "+dec+", "+radius+", "+requestedFormat+")", e);
       }
    }
    
@@ -134,7 +134,7 @@ public class AxisDataService_v05 implements AxisDataServer_v05_Port, ServiceLife
          throw server.makeFault(server.CLIENTFAULT, "malformed resultsTarget", use);
       }
       catch (Throwable th) {
-         throw server.makeFault(server.SERVERFAULT, "Error submitting Adql Query", th);
+         throw server.makeFault(server.SERVERFAULT, th+", submitting Adql Query", th);
       }
    }
    
@@ -148,7 +148,7 @@ public class AxisDataService_v05 implements AxisDataServer_v05_Port, ServiceLife
          server.abortQuery(getUser(), queryId);
       }
       catch (IOException ioe) {
-         throw server.makeFault(server.SERVERFAULT, "Error aborting query "+queryId, ioe);
+         throw server.makeFault(server.SERVERFAULT, ioe+", aborting query "+queryId, ioe);
       }
    }
    
@@ -165,7 +165,7 @@ public class AxisDataService_v05 implements AxisDataServer_v05_Port, ServiceLife
          return soapyStatus;
       }
       catch (IOException ioe) {
-         throw server.makeFault(server.SERVERFAULT, "Error getting status of query "+queryId, ioe);
+         throw server.makeFault(server.SERVERFAULT, ioe+", getting status of query "+queryId, ioe);
       }
    }
    
@@ -181,7 +181,7 @@ public class AxisDataService_v05 implements AxisDataServer_v05_Port, ServiceLife
          return server.getMetadata();
       }
       catch (IOException ioe) {
-         throw server.makeFault(server.SERVERFAULT, "Error getting metadata", ioe);
+         throw server.makeFault(server.SERVERFAULT, ioe+", getting metadata", ioe);
       }
    }
    
@@ -199,6 +199,9 @@ public class AxisDataService_v05 implements AxisDataServer_v05_Port, ServiceLife
 
 /*
 $Log: AxisDataService_v05.java,v $
+Revision 1.6  2004/10/12 21:34:04  mch
+Slight change to error messages
+
 Revision 1.5  2004/10/07 10:34:44  mch
 Fixes to Cone maker functions and reading/writing String comparisons from Query
 

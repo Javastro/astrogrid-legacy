@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataService_v06.java,v 1.5 2004/10/08 15:16:04 mch Exp $
+ * $Id: AxisDataService_v06.java,v 1.6 2004/10/12 21:33:57 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -62,7 +62,7 @@ public class AxisDataService_v06 implements ServiceLifecycle {
          return sw.toString();
       }
       catch (Throwable e) {
-         throw server.makeFault(server.SERVERFAULT, "Error asking Query("+adql+", "+requestedFormat+")", e);
+         throw server.makeFault(server.SERVERFAULT, e+", asking Query("+adql+", "+requestedFormat+")", e);
       }
    }
 
@@ -78,7 +78,7 @@ public class AxisDataService_v06 implements ServiceLifecycle {
          return target.toString();
       }
       catch (Throwable e) {
-         throw server.makeFault(server.SERVERFAULT, "Error asking Query("+adql+", "+requestedFormat+")", e);
+         throw server.makeFault(server.SERVERFAULT, e+", asking Query("+adql+", "+requestedFormat+", ->"+target+")", e);
       }
    }
 
@@ -90,7 +90,7 @@ public class AxisDataService_v06 implements ServiceLifecycle {
          return Query2Adql074.makeAdql(SqlQueryMaker.makeQuery(sql));
       }
       catch (Throwable e) {
-         throw server.makeFault(server.SERVERFAULT, "Error converting SQL "+sql, e);
+         throw server.makeFault(server.SERVERFAULT, e+", converting SQL "+sql, e);
       }
    }
 
@@ -130,7 +130,7 @@ public class AxisDataService_v06 implements ServiceLifecycle {
          throw server.makeFault(server.CLIENTFAULT, "malformed resultsTarget", mue);
       }
       catch (Throwable th) {
-         throw server.makeFault(server.SERVERFAULT, "Error submitting Adql Query", th);
+         throw server.makeFault(server.SERVERFAULT, th+", submitting Adql Query", th);
       }
    }
    
@@ -144,7 +144,7 @@ public class AxisDataService_v06 implements ServiceLifecycle {
          server.abortQuery(getUser(), queryId);
       }
       catch (IOException ioe) {
-         throw server.makeFault(server.SERVERFAULT, "Error aborting query "+queryId, ioe);
+         throw server.makeFault(server.SERVERFAULT, ioe+", aborting query "+queryId, ioe);
       }
    }
    
@@ -161,7 +161,7 @@ public class AxisDataService_v06 implements ServiceLifecycle {
          return soapyStatus;
       }
       catch (IOException ioe) {
-         throw server.makeFault(server.SERVERFAULT, "Error getting status of query "+queryId, ioe);
+         throw server.makeFault(server.SERVERFAULT, ioe+", getting status of query "+queryId, ioe);
       }
    }
    
@@ -192,7 +192,7 @@ public class AxisDataService_v06 implements ServiceLifecycle {
          return server.getMetadata();
       }
       catch (IOException ioe) {
-         throw server.makeFault(server.SERVERFAULT, "Error getting metadata", ioe);
+         throw server.makeFault(server.SERVERFAULT, ioe+", getting metadata", ioe);
       }
    }
    
@@ -202,7 +202,7 @@ public class AxisDataService_v06 implements ServiceLifecycle {
          return server.getMetadata();
       }
       catch (IOException ioe) {
-         throw server.makeFault(server.SERVERFAULT, "Error getting metadata", ioe);
+         throw server.makeFault(server.SERVERFAULT, ioe+", getting metadata", ioe);
       }
    }
    
@@ -220,6 +220,9 @@ public class AxisDataService_v06 implements ServiceLifecycle {
 
 /*
 $Log: AxisDataService_v06.java,v $
+Revision 1.6  2004/10/12 21:33:57  mch
+Slight change to error messages
+
 Revision 1.5  2004/10/08 15:16:04  mch
 More on providing status
 
