@@ -1,11 +1,14 @@
 <?xml version="1.0"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/castor/hsqldb/Attic/mapping.xml,v $</cvs:source>
-    | <cvs:author>$Author: KevinBenson $</cvs:author>
-    | <cvs:date>$Date: 2003/09/09 19:20:20 $</cvs:date>
-    | <cvs:version>$Revision: 1.11 $</cvs:version>
+    | <cvs:author>$Author: pah $</cvs:author>
+    | <cvs:date>$Date: 2003/09/15 14:04:32 $</cvs:date>
+    | <cvs:version>$Revision: 1.12 $</cvs:version>
     | <cvs:log>
     |   $Log: mapping.xml,v $
+    |   Revision 1.12  2003/09/15 14:04:32  pah
+    |   using ident as the primary key in the securitytokens table
+    |
     |   Revision 1.11  2003/09/09 19:20:20  KevinBenson
     |   added resources to the mapping file
     |
@@ -158,19 +161,20 @@
 
 <!--+
 	| JDO and XML Mapping for SecurityToken.
-	| Commented out for now to get build to work .... Dave.
-	<class name="org.astrogrid.community.authentication.data.SecurityToken" identity="ident">
+	+-->
+	<class name="org.astrogrid.community.authentication.data.SecurityToken" identity="ident" key-generator="IDENTITY">
 		<map-to table="securitytokens" xml="token"/>
 		<field name="ident" type="integer">
 			<sql name="ident" type="integer"/>
 			<bind-xml node="attribute"/>
 		</field>
+		
 		<field name="token" type="string">
 			<sql name="token" type="char"/>
 			<bind-xml node="element"/>
 		</field>
 		<field name="target" type="string">
-			<sql name="token" type="char"/>
+			<sql name="target" type="char"/>
 			<bind-xml node="element"/>
 		</field>
 		<field name="account" type="string">
@@ -190,6 +194,4 @@
 			<bind-xml node="element"/>
 		</field>
 	</class>
-	|
-	+-->
 </mapping>

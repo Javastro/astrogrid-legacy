@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/sql/hsqldb/Attic/create.sql,v $</cvs:source>
- * <cvs:author>$Author: KevinBenson $</cvs:author>
- * <cvs:date>$Date: 2003/09/09 16:42:25 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:author>$Author: pah $</cvs:author>
+ * <cvs:date>$Date: 2003/09/15 14:04:32 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: create.sql,v $
+ *   Revision 1.7  2003/09/15 14:04:32  pah
+ *   using ident as the primary key in the securitytokens table
+ *
  *   Revision 1.6  2003/09/09 16:42:25  KevinBenson
  *   added password field to accounts and type field to group
  *
@@ -37,7 +40,7 @@ DROP TABLE accounts IF EXISTS ;
 CREATE TABLE accounts
     (
     ident       VARCHAR NOT NULL,
-    password  VARCHAR NULL,
+    password  VARCHAR NOT  NULL,
     description VARCHAR NULL,
     PRIMARY KEY ( ident )
     ) ;
@@ -114,6 +117,7 @@ CREATE TABLE permissions
     PRIMARY KEY (resourceid, groupid, action)
     ) ;
 
+DROP TABLE securitytokens IF EXISTS ;
 CREATE TABLE securitytokens
     (
     ident       INTEGER IDENTITY,
