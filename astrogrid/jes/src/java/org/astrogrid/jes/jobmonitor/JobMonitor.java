@@ -403,11 +403,35 @@ public class JobMonitor {
 	
 	
 	private String extractJobURN( Document jobDoc ) { 
-		if( TRACE_ENABLED ) logger.debug( "extractJobURN(): entry") ;	
-		String
-		   retval = jobDoc.getDocumentElement().getAttribute( MonitorRequestDD.JOB_URN_ATTR ) ;
-		if( TRACE_ENABLED ) logger.debug( "extractJobURN(): exit") ;	
-		return retval ;
+	   if( TRACE_ENABLED ) logger.debug( "extractJobURN(): entry") ;	
+       
+       // JBL Note: Altered in Iteration 3 to accommodate the fact that the job URN
+       // sent to the datacenter contains the step id also!!! This was to accommodate
+       // the chance that multiple jobsteps might be submitted to the same datacenter.
+       // As at present (iterations 2 and 3, and later?) a single resource (VOTable)
+       // is created for each job step tagged with the job URN, without this there
+       // would  be a clash of resource names.
+       //
+       // This will be inadequate where multiple resources are created by the same
+       // job step. But would probably do no harm, although another mechanism for
+       // resource identification will be required.
+       //
+	   String
+		  jobURN = null ;
+          
+       try {
+          jobURN = jobDoc.getDocumentElement().getAttribute( MonitorRequestDD.JOB_URN_ATTR ).trim() ;
+          int
+            iLastColon = jobURN.lastIndexOf(':') ;
+          jobURN = jobURN.substring( 0, iLastColon ) ;
+    
+       }
+       finally {
+           if( TRACE_ENABLED ) logger.debug( "extractJobURN(): exit") ; 
+       }
+          
+	   return jobURN ;
+       
 	} // end of extractJobURN()
 	
 	

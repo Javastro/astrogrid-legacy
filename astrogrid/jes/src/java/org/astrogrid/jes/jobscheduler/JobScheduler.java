@@ -209,7 +209,7 @@ public class JobScheduler {
             location = null ;
         
         try {
-            
+       
             requestXML = this.formatRunRequest( step, doc ) ;
             location = this.findService( step ) ;
             dispatch( requestXML, location ) ;
@@ -350,7 +350,8 @@ public class JobScheduler {
         if( TRACE_ENABLED ) logger.debug( "formatRunRequest() entry") ;
         
         String
-            request = null ;
+            request = null,
+            extendedJobURN ; // Includes step number (suitable only for iteration 3)
         
         try {
                
@@ -359,7 +360,12 @@ public class JobScheduler {
                jobElement = doc.getDocumentElement() ;   // This should pick up the "job" element
               
             // set the Job id (i.e. its job URN)...
-            jobElement.setAttribute( SubmissionRequestDD.JOB_URN_ATTR, step.getParent().getId() ) ;
+            // JBL: stepNumber added to make a single resource (VOTable in this instance)
+            //      unique. This is in case multiple jobsteps for the same job get 
+            //      submitted to the same datacenter. This will be inadequate when
+            //      a single jobstep generates multiple resources... 
+            extendedJobURN = step.getParent().getId() + ":" + step.getStepNumber() ;
+            jobElement.setAttribute( SubmissionRequestDD.JOB_URN_ATTR, extendedJobURN ) ;
          
             // set the URL for the JobMonitor so that it can be contacted by the datacenter... 
             jobElement.setAttribute( SubmissionRequestDD.JOB_MONITOR_URL_ATTR
