@@ -1,3 +1,4 @@
 target
 *.log
 server-config.wsdd
+.classpath
