@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.3 2003/11/21 17:37:56 nw Exp $
+/*$Id: AllTests.java,v 1.4 2003/11/21 18:18:30 mch Exp $
  * Created on 21-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,8 +32,9 @@ public class AllTests {
         TestSuite suite = new TestSuite("Test for Datacenter Server");
         //$JUnit-BEGIN$
         //suite.addTest(QueryTestSuite.suite());
-        //$JUnit-END$ 
+        //$JUnit-END$
         // and add other suites too.
+         suite.addTest(org.astrogrid.datacenter.ClientTests.suite());
         suite.addTest(org.astrogrid.datacenter.queriers.AllTests.suite());
         suite.addTest(org.astrogrid.datacenter.service.AllTests.suite());
         suite.addTest(org.astrogrid.datacenter.queriers.sql.AllTests.suite());
@@ -45,6 +46,9 @@ public class AllTests {
 
 /*
 $Log: AllTests.java,v $
+Revision 1.4  2003/11/21 18:18:30  mch
+Added client tests to server to get complete tests for server
+
 Revision 1.3  2003/11/21 17:37:56  nw
 made a start tidying up the server.
 reduced the number of failing tests
