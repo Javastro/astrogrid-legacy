@@ -110,6 +110,12 @@
       <xsl:attribute name="onclick">setOldMySpaceName('<xsl:value-of select="@full-name"/>')</xsl:attribute>
       <xsl:value-of select="@item-name"/>
     </span>
+    
+    &#160;
+    <img src="/astrogrid-portal/icons/Save.png" alt="[save]">
+      <xsl:attribute name="onclick">javascript:window.open('<xsl:value-of select="@url"/>')</xsl:attribute>
+    </img>
+    
     <br/>
   </xsl:template>
    
