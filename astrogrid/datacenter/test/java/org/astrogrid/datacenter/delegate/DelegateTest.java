@@ -1,5 +1,5 @@
 /*
- * $Id: DelegateTest.java,v 1.5 2003/09/15 17:00:12 mch Exp $
+ * $Id: DelegateTest.java,v 1.6 2003/09/15 17:06:54 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -43,6 +43,7 @@ public class DelegateTest extends TestCase implements DatacenterStatusListener
    public void testDelegateTypes() throws MalformedURLException, IOException, ServiceException
    {
       DummyDelegate dummy = (DummyDelegate) DatacenterDelegate.makeDelegate(null);
+      dummy.setTimeout(200);
 
       //these will throw exceptions, but will at least test creation code
       try
@@ -77,6 +78,14 @@ public class DelegateTest extends TestCase implements DatacenterStatusListener
       //submit query for votable results
       Element results = delegate.adqlQuery(adqlQuery);
 
+      checkResults(results);
+   }
+
+   /**
+    * Private method used to check that the results document is valid
+    */
+   private void checkResults(Element results)
+   {
       //check results look ok
       assertEquals(ResponseHelper.DATACENTER_RESULTS_TAG, results.getNodeName());
       assertEquals(DummyDelegate.SERVICE_ID, ServiceIdHelper.getServiceId(results));
@@ -111,11 +120,11 @@ public class DelegateTest extends TestCase implements DatacenterStatusListener
       //check status
       String id = ServiceIdHelper.getServiceId(response);
       assertNotNull(id);
+      ServiceStatus status = delegate.getServiceStatus(id);
 
+      //get results
       response = delegate.getResults(id);
-
-
-
+      checkResults(response);
    }
 
    /**
