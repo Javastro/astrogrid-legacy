@@ -1,5 +1,5 @@
 /*
- * $Id: CommonExecutionConnectorDelegateImpl.java,v 1.3 2004/09/01 15:42:26 jdt Exp $
+ * $Id: CommonExecutionConnectorDelegateImpl.java,v 1.4 2004/09/06 15:21:58 nw Exp $
  * 
  * Created on 11-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -15,8 +15,6 @@ package org.astrogrid.applications.delegate.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-
 
 import org.astrogrid.applications.beans.v1.ApplicationList;
 import org.astrogrid.applications.beans.v1.cea.castor.ExecutionSummaryType;
@@ -46,10 +44,10 @@ import java.rmi.RemoteException;
 public class CommonExecutionConnectorDelegateImpl
    extends CommonExecutionConnectorDelegate {
     /**
-     * Logger for this class
+     * Commons Logger for this class
      */
-    private static final Log log = LogFactory.getLog(CommonExecutionConnectorDelegateImpl.class);
-
+    private static final Log logger = LogFactory
+            .getLog(CommonExecutionConnectorDelegateImpl.class);
 
    public CommonExecutionConnectorDelegateImpl(String targetEndPoint) {
       this.targetEndPoint = targetEndPoint;
@@ -80,11 +78,6 @@ public class CommonExecutionConnectorDelegateImpl
     */
    public String init(Tool tool, JobIdentifierType jobstepID)
       throws CEADelegateException {
-        if (log.isTraceEnabled()) {
-            log.trace("init(Tool tool = " + tool + ", JobIdentifierType jobstepID = " + jobstepID + ") - start");
-        }
-
-
       String result;
       CommonExecutionConnector cec = getBinding();
       try {
@@ -94,8 +87,8 @@ public class CommonExecutionConnectorDelegateImpl
          result = cec.init(atool, jobstepID);
       }
       catch (RemoteException e) {
-         log.error("init(Tool, JobIdentifierType)", e);
-         throw new CEADelegateException("execution problem", e);
+         logger.error(e);
+         throw new CEADelegateException("failed to 'init' cea application" + jobstepID, e);
       }
 
 
@@ -115,7 +108,8 @@ public class CommonExecutionConnectorDelegateImpl
          result = cec.abort(executionId);
       }
       catch (RemoteException e) {
-         throw new CEADelegateException("problem when tying to abort", e);
+          logger.error(e);
+         throw new CEADelegateException("failed to 'abort' cea application " + executionId, e);
       }
       return result;
 
@@ -135,7 +129,8 @@ public class CommonExecutionConnectorDelegateImpl
             result = Axis2Castor.convert(message);
       }
       catch (RemoteException e) {
-         throw new CEADelegateException("problem getting status", e);
+          logger.error(e);
+         throw new CEADelegateException("failed to query execution status for " + executionId, e);
       }
       return result;
    }
@@ -150,7 +145,8 @@ public class CommonExecutionConnectorDelegateImpl
        result = cec.returnRegistryEntry();
       }
       catch (RemoteException e) {
-         throw new CEADelegateException("problem getting registry entry", e);
+          logger.error(e);
+         throw new CEADelegateException("failed to query cea for template registry entry", e);
       }
       return result;
      
@@ -165,7 +161,8 @@ public void registerProgressListener(String executionId, URI listenerEndpoint) t
         org.apache.axis.types.URI uri = new org.apache.axis.types.URI(listenerEndpoint.toString());
         cec.registerProgressListener(executionId,uri);   
     } catch (RemoteException e) {
-        throw new CEADelegateException("problem registering progress listener",e);
+        logger.error(e);
+        throw new CEADelegateException("problem registering progress listener" + listenerEndpoint + " for app " + executionId,e);
     } catch (MalformedURIException e) {
         // very unlikely to happen.
         throw new CEADelegateException("mismatch between java.net.URI and axis URI",e);
@@ -181,7 +178,8 @@ public void registerResultsListener(String executionId, URI listenerEndpoint) th
          org.apache.axis.types.URI uri = new org.apache.axis.types.URI(listenerEndpoint.toString());
          cec.registerResultsListener(executionId,uri);   
      } catch (RemoteException e) {
-         throw new CEADelegateException("problem registering progress listener",e);
+         logger.error(e);
+         throw new CEADelegateException("problem registering results listener " + listenerEndpoint + " for app " + executionId,e);
      } catch (MalformedURIException e) {
          // very unlikely to happen.
          throw new CEADelegateException("mismatch between java.net.URI and axis URI",e);
@@ -197,7 +195,8 @@ public boolean execute(String executionId) throws CEADelegateException {
        return cec.execute(executionId);
     }
     catch (RemoteException e) {
-       throw new CEADelegateException("problem when trying to execute", e);
+        logger.error(e);
+       throw new CEADelegateException("failed to execute application: " + executionId, e);
     }
     
 }
@@ -211,7 +210,8 @@ public ResultListType getResults(String executionId) throws CEADelegateException
        org.astrogrid.jes.types.v1.cea.axis.ResultListType axisList =  cec.getResults(executionId);
        return Axis2Castor.convert(axisList);
     }  catch (RemoteException e) {
-       throw new CEADelegateException("problem when trying to get results", e);
+        logger.error(e);
+       throw new CEADelegateException("failed to get results for application " + executionId, e);
     }
 }
 
