@@ -1,9 +1,3 @@
-/*
- * Created on 25-Apr-2003
- *
- * To change this generated comment go to 
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 package org.astrogrid.registry.server.query;
 
 import org.astrogrid.registry.server.QueryParser3_0;
@@ -17,7 +11,8 @@ import org.w3c.dom.Element;
 import java.io.Reader;
 import java.io.StringReader;
 import org.xml.sax.InputSource;
-
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Node;
 
 /**
  * 
@@ -45,8 +40,8 @@ public class RegistryService implements org.astrogrid.registry.RegistryInterface
    * @author Kevin Benson 
    */
    public Document submitQuery(Document query) throws Exception {
-    String queryResponse = new String();
     Document registryDoc = null;
+    System.out.println("received = " + XMLUtils.DocumentToString(query));    
     try {
 		registryDoc = QueryParser3_0.parseQuery(query);
       System.out.println("the registryDoc = " + XMLUtils.DocumentToString(registryDoc));
@@ -68,9 +63,8 @@ public class RegistryService implements org.astrogrid.registry.RegistryInterface
     * @author Kevin Benson 
     */  
   public Document fullNodeQuery(Document query) throws Exception {
-	String queryResponse = new String();
    Document registryDoc = null;
-
+   System.out.println("received = " + XMLUtils.DocumentToString(query));
 	try {
       //Go query the registry.
 		registryDoc = QueryParser3_0.parseFullNodeQuery(query);
@@ -81,7 +75,33 @@ public class RegistryService implements org.astrogrid.registry.RegistryInterface
    }
    //return the response
    return registryDoc;
-
   }
+  
+   public Document harvestQuery(Document query) throws Exception {
+      System.out.println("received = " + XMLUtils.DocumentToString(query));
+      NodeList nl = query.getElementsByTagName("date_since");
+      if(nl.getLength() > 1) {
+         //throw an error trying to do more dates than expected.
+      }
+      Node nd = nl.item(0);
+      String updateVal = nd.getFirstChild().getNodeValue();
+      String selectQuery = "<query><selectionSequence>" +
+      "<selection item='searchElements' itemOp='EQ' value='all'/>" +
+      "<selectionOp op='$and$'/>" +
+      "<selection item='@updated' itemOp='AFTER' value='" + updateVal + "'/>" +
+      "</selectionSequence></query>";
+      
+      
+      Reader reader2 = new StringReader(selectQuery);
+      InputSource inputSource = new InputSource(reader2);
+      DocumentBuilder registryBuilder = null;
+      registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+      Document doc = registryBuilder.parse(inputSource);
+      System.out.println("the select/harvest query = " + XMLUtils.DocumentToString(doc));
+      
+      Document responseDoc = QueryParser3_0.parseFullNodeQuery(doc);
+      System.out.println("the responsedoc in harvestQuery = " + XMLUtils.DocumentToString(responseDoc));
+      return responseDoc;
+   }
   
 }

@@ -22,7 +22,7 @@
 
   <!-- First, an organization resource for RAI, representing the top of the 
        management hierarchy for the ADIL -->
-  <vc:Organisation>
+  <vc:Organisation created="2001-12-17T09:30:47-05:00" updated="2001-12-17T09:30:47-05:00" status="active">
     <Identifier>
       <AuthorityID>rai.ncsa.uiuc.edu</AuthorityID>
       <ResourceKey>RAI</ResourceKey>
@@ -61,7 +61,7 @@
   </vc:Organisation>
 
   <!-- Now, define some authority IDs we will use -->
-  <vg:Authority>
+  <vg:Authority created="2002-12-17T09:30:47-05:00" updated="2002-12-17T09:30:47-05:00" status="active">
     <Identifier>
       <AuthorityID>rai.ncsa.uiuc.edu</AuthorityID>
       <ResourceKey xsi:nil="true"/>
@@ -614,4 +614,43 @@
        </Column>
     </Table>
   </vs:TabularSkyService>
+  <vc:Organisation created="2004-12-17T09:30:47-05:00" updated="2001-12-17T09:30:47-05:00" status="active">
+    <Identifier>
+      <AuthorityID>rdsfgdsai.ncsa.uiuc.edu</AuthorityID>
+      <ResourceKey>RAI</ResourceKey>
+    </Identifier>
+    <Title>NCSA Radio Astronomy sdgfdsImaging</Title>
+    <ShortName>NCSA-RAI</ShortName>
+    <Summary>
+      <Description>
+        The Radio Astronomy Imaging Group is focused on applying
+        high-performance computing to astronomical research.  Our
+        projects include the NCSA Astronomy Digital Image Library, 
+        the BIMA Data Archive, the BIMA Image Pipeline, and AIPS++.  
+      </Description>
+      <ReferenceURL>http://rai.ncsa.uiuc.edu/</ReferenceURL>
+    </Summary>
+    <Type>Organisation</Type>
+    <Curation>
+      <Publisher>
+         <Title>NCSA Radio Astronomy Imaging</Title>
+      </Publisher>
+      <Contact>
+        <Name>Dr. Raymond Plante</Name>
+	<Email>rplante@ncsa.uiuc.edu</Email>
+      </Contact>
+      <Date>1993-01-01</Date>
+      <Creator>
+        <Name>Dr. Raymond Plante</Name>
+        <Logo>http://rai.ncsa.uiuc.edu/rai.jpg</Logo>
+      </Creator>
+    </Curation>
+    <Subject>radio astronomy</Subject>
+    <Subject>data repositories</Subject>
+    <Subject>digital libraries</Subject>
+    <Subject>grid-based processing</Subject>
+    <ContentLevel>Research</ContentLevel>
+  </vc:Organisation>
+  
+  
 </VODescription>

@@ -11,9 +11,14 @@ import org.apache.axis.client.Service;
 import org.apache.axis.message.SOAPBodyElement; 
 import org.apache.axis.utils.XMLUtils; 
 import org.w3c.dom.Document; 
+import org.w3c.dom.Element;
 import java.io.Reader;
 import java.io.StringReader;
 import org.xml.sax.InputSource;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.text.ParseException;
+
 
 /**
  * 
@@ -68,6 +73,15 @@ public class RegistryService implements org.astrogrid.registry.RegistryInterface
       _call.setEncodingStyle(null);
       return _call;       
    }
+   
+   public Document submitQueryString(String query) throws Exception {
+      Reader reader2 = new StringReader(query);
+      InputSource inputSource = new InputSource(reader2);
+      DocumentBuilder registryBuilder = null;
+      registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+      Document doc = registryBuilder.parse(inputSource);
+      return submitQuery(doc);         
+   }
     
    /**
    * submitQuery queries the registry with the same XML document used as fullNodeQuery, but
@@ -104,6 +118,15 @@ public class RegistryService implements org.astrogrid.registry.RegistryInterface
       System.out.println("received " + XMLUtils.DocumentToString(sbe.getAsDocument()));
       return sbe.getAsDocument();       
    }
+
+   public Document fullNodeQuery(String query) throws Exception {
+      Reader reader2 = new StringReader(query);
+      InputSource inputSource = new InputSource(reader2);
+      DocumentBuilder registryBuilder = null;
+      registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+      Document doc = registryBuilder.parse(inputSource);
+      return fullNodeQuery(doc);         
+   }
    
 
    /**
@@ -112,7 +135,6 @@ public class RegistryService implements org.astrogrid.registry.RegistryInterface
      * 
      * @param query XML document object representing the query language used on the registry.
      * @return XML docuemnt object representing the result of the query.
-     * @deprecated Being deprecated this method now only returns the full XML document.
      * @author Kevin Benson 
      */   
    public Document fullNodeQuery(Document query) throws Exception {
@@ -141,6 +163,52 @@ public class RegistryService implements org.astrogrid.registry.RegistryInterface
       System.out.println("received " + XMLUtils.DocumentToString(sbe.getAsDocument()));
       return sbe.getAsDocument();         
    }
+   
+   public Document harvestQuery(String dateSince) throws Exception {
+      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+      Date dat = sdf.parse(dateSince);
+      return harvestQuery(dat);
+   }
+   
+   public Document harvestQuery(Date dateSince) throws Exception {
+      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+      DocumentBuilder registryBuilder = null;
+      registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+      Document doc = registryBuilder.newDocument();
+      Element root = doc.createElement("date_since");
+      //root.setAttribute()
+      root.appendChild(doc.createTextNode(sdf.format(dateSince)));
+      doc.appendChild(root);
+      return harvestQuery(doc);         
+
+   }
+   
+   public Document harvestQuery(Document query) throws Exception {
+      String requestQuery =   XMLUtils.ElementToString(query.getDocumentElement());
+      requestQuery = "<harvestQuery xmlns='http://query.server.registry.astrogrid.org'>" + requestQuery + "</harvestQuery>";
+
+      Reader reader2 = new StringReader(requestQuery);
+      InputSource inputSource = new InputSource(reader2);
+
+      //get a call object operation to the web service.
+      Call call = getCall();
+      
+      DocumentBuilder registryBuilder = null;
+      registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+      Document doc = registryBuilder.parse(inputSource);
+      
+      SOAPBodyElement sbeRequest = new SOAPBodyElement(doc.getDocumentElement());
+      sbeRequest.setName("harvestQuery");
+      sbeRequest.setNamespaceURI("http://query.server.registry.astrogrid.org");
+      
+      System.out.println("sending " + XMLUtils.DocumentToString(doc));
+      Vector result = (Vector) call.invoke (new Object[] {sbeRequest});
+
+      SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
+      System.out.println("received " + XMLUtils.DocumentToString(sbe.getAsDocument()));
+      return sbe.getAsDocument();         
+   }
+   
 } 
 
 

@@ -10,6 +10,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.NodeList;
 
@@ -55,6 +56,7 @@ public class Registry3_0 {
 		 * of the registry file is determined, and the XQL query is executed
 		 * against the registry XML file.
 		 */
+      //System.out.println("the fileDoc in regi3_0" + XMLUtils.DocumentToString(fileDocument));
 
         /**
          * First, determine location of the registry XML file.  It is assumed 
@@ -98,8 +100,7 @@ public class Registry3_0 {
       }
       
       
-      DocumentFragment df  = resultDoc.createDocumentFragment();
-      System.out.println("the resultDoc before exec = " + XMLUtils.DocumentToString(resultDoc));                        
+      DocumentFragment df  = resultDoc.createDocumentFragment();                        
       //Document resultDoc = DOMUtil.createDocument();
 		//Element root = resultDoc.createElement("queryResponse");
 		//resultDoc.appendChild(root);
@@ -113,10 +114,12 @@ public class Registry3_0 {
 	  	  //XQL.execute(query, fileDocument, root);
         XQL.execute(query, fileDocument, df);
         if(df.hasChildNodes() && df.getFirstChild().hasChildNodes()) {
-           //System.out.println("df has childnodes");
-           resultDoc.getDocumentElement().appendChild(df.getFirstChild().getFirstChild());
+           Node firstRoot = df.getFirstChild();
+           NodeList nl = firstRoot.getChildNodes();
+           while(nl.getLength() > 0) {           
+              resultDoc.getDocumentElement().appendChild(nl.item(0));
+           }           
         }
-        System.out.println("teh resultDoc after exec = " + XMLUtils.DocumentToString(resultDoc));
 		}catch (Exception e){
          e.printStackTrace();
 			response = "<error>Malformed XQL statement.</error>";

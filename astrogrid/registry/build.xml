@@ -2,12 +2,26 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/registry/build.xml,v $</cvs:source>
     | <cvs:author>$Author: KevinBenson $</cvs:author>
-    | <cvs:date>$Date: 2003/11/24 13:53:18 $</cvs:date>
-    | <cvs:version>$Revision: 1.5 $</cvs:version>
+    | <cvs:date>$Date: 2003/12/01 10:38:20 $</cvs:date>
+    | <cvs:version>$Revision: 1.6 $</cvs:version>
     | <cvs:log>
     |   $Log: build.xml,v $
-    |   Revision 1.5  2003/11/24 13:53:18  KevinBenson
-    |   A commit of the merging of the registry branch with the HEAD branch version.
+    |   Revision 1.6  2003/12/01 10:38:20  KevinBenson
+    |   This should be the results from the merger of Itn04-2003-28-11_HB (Head branch)
+    |   merged with or should say replaced by Itn04-2003-01-12_RB
+    |
+    |   Revision 1.3.2.10  2003/12/01 10:25:51  KevinBenson
+    |   Added more templates for the client.  So it can do the TabularSky service and 
+    |   other varoius services.  Also javadoc commented several of the java files,
+    |   so it is a little more understandable.
+    |
+    |   Revision 1.3.2.9  2003/11/28 11:50:48  KevinBenson
+    |   *** empty log message ***
+    |
+    |   Revision 1.3.2.8  2003/11/26 11:32:46  KevinBenson
+    |   Some new code changes.  Still has some bugs that need to be worked out, but 
+    |   getting their.  On my next commit I will explain in more detail what was changed.
+    |   Mainly just want to commit
     |
     |   Revision 1.3.2.7  2003/11/20 14:33:24  KevinBenson
     |   Added more junit information to get things from an xml file for sending for administration
@@ -60,7 +74,7 @@
     <property name="project.home"     value="${basedir}"/>
     <property name="project.base"     value="${basedir}"/>
     <property name="project.name"     value="registry"/>
-    <property name="project.version"  value="4.0"/>
+    <property name="project.version"  value="4_0"/>
     <property name="project.build"    value="${project.home}/build/project"/>
     <property name="registry.java"    value="${project.home}/src/java"/>
     <property name="registry.classes" value="${project.build}/registry/classes"/>
@@ -146,17 +160,24 @@
 		<pathelement location="${project.home}/lib/jaxrpc.jar"/>
 		<pathelement location="${project.home}/lib/commons-logging.jar"/>
 		<pathelement location="${project.home}/lib/commons-discovery.jar"/>
+		<pathelement location="${project.home}/lib/jconfig.jar"/>
 	</path>
     
   	<path id="junit.classpath">
 	  	<pathelement location="${registry.classes}"/>
 		<pathelement location="${project.home}/lib/junit.jar"/>
+		<pathelement location="${project.home}/lib/jconfig.jar"/>		
+		<pathelement location="${project.home}/lib/axis.jar"/>	
+		<pathelement location="${project.home}/lib/jaxrpc.jar"/>	
   	</path>
   	
   	<path id="junit.run.classpath">
 	  	<pathelement location="${registry.classes}"/>
+		<pathelement location="${project.home}/lib/axis.jar"/>
 		<pathelement location="${project.home}/lib/junit.jar"/>
+		<pathelement location="${project.home}/lib/jconfig.jar"/>		
 		<pathelement location="${registry.junit.classes}"/>
+		<pathelement location="${project.home}/lib/jaxrpc.jar"/>		
   	</path>  	
     
     
@@ -206,10 +227,22 @@
         </javac>
     </target>
     
+	<property name="config.base" value="${basedir}/src/config"></property>
+	<property name="config.file" value="${config.base}/config.xml"></property>
+    
+    
 	<!--+
 		| Run our server side JUnit tests.
 		+-->
 	<target name="registry.junit.run" depends="">
+		<antcall target="registry.junit.query.run"/>
+		<antcall target="registry.junit.admin.run"/>
+	</target>
+	
+	<!--+
+		| Run our server side JUnit tests.
+		+-->
+	<target name="registry.junit.query.run" depends="">
 		<!-- Create our reports directory -->
         <mkdir dir="${registry.junit.reports}"/>
 		<!-- Run our JUnitTestCase tests -->
@@ -220,18 +253,42 @@
 			</classpath>
 			<!-- Generate an XML log file -->
 			<formatter type="xml"/>
+			<sysproperty key="org.astrogrid.registry.config" path="${config.file}"/>
 			<sysproperty key="junit.xml.dir" path="${junit.xml.dir}"/>
 			<!-- Run the target JUnitTestCase tests -->
 			<batchtest todir="${registry.junit.reports}">
 				<fileset dir="${registry.junit.classes}">
-					<include name="*.class"/>
+					<include name="*Query*.class"/>
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+	
+	<!--+
+		| Run our server side JUnit tests.
+		+-->
+	<target name="registry.junit.admin.run" depends="">
+		<!-- Create our reports directory -->
+        <mkdir dir="${registry.junit.reports}"/>
+		<!-- Run our JUnitTestCase tests -->
+		<junit printsummary="yes" haltonfailure="true" haltonerror="true" showoutput="true" fork="true">
+			<classpath>
+				<path refid="registry.classpath"/>
+				<path refid="junit.run.classpath"/>
+			</classpath>
+			<!-- Generate an XML log file -->
+			<formatter type="xml"/>
+			<sysproperty key="org.astrogrid.registry.config" path="${config.file}"/>
+			<sysproperty key="junit.xml.dir" path="${junit.xml.dir}"/>
+			<!-- Run the target JUnitTestCase tests -->
+			<batchtest todir="${registry.junit.reports}">
+				<fileset dir="${registry.junit.classes}">
+					<include name="*Admin*.class"/>
 				</fileset>
 			</batchtest>
 		</junit>
 	</target>
     
-    
-
 	<property name="registry.server.jar"  value="registry-server-${project.version}.jar"/>
 	<property name="registry.client.jar"  value="registry-client-${project.version}.jar"/>
     

@@ -19,10 +19,10 @@
                       http://www.ivoa.net/xml/ConeSearch/ConeSearch-v0.2.xsd
                       http://www.ivoa.net/xml/SIA/v0.6
                       http://www.ivoa.net/xml/SIA/SIA-v0.6.xsd">
-  <vc:Organisation created="2001-12-17T09:30:47-05:00" updated="2001-12-17T09:30:47-05:00" status="active">
+  <vc:Organisation>
     <Identifier>
-      <AuthorityID>rai.ncsa.uiuc.edu</AuthorityID>
-      <ResourceKey>RAITest</ResourceKey>
+      <AuthorityID>rai.ncsa.uiuc.template</AuthorityID>
+      <ResourceKey>RAI</ResourceKey>
     </Identifier>
     <Title>NCSA Radio Astronomy Imaging Testing</Title>
     <ShortName>NCSA-RAITesting</ShortName>

@@ -10,6 +10,9 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.Reader;
+import java.util.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import de.gmd.ipsi.xql.XQL;
 import de.gmd.ipsi.xql.XQLRelationship;
 import org.astrogrid.registry.server.RegistryFileHelper;
@@ -91,6 +94,8 @@ public class QueryParser3_0
 	}
    
    private static void addXQLRelationShips() {
+      
+
       /**
        * User-defined comparison to test whether a text element (Object l) is numerically
        * greater than the number value (Object r) supplied. If either the text element 'l' or
@@ -121,6 +126,39 @@ public class QueryParser3_0
          return (element >= value);
         }
        });
+       
+      /**
+       * User-defined comparison to test whether a text element (Object l) is numerically
+       * greater than or equal to the number value (Object r) supplied. If either the 
+       * text element 'l' or the supplied number value 'r' does not evaluate to a number, 
+       * the test fails.
+       */
+      
+       XQL.addRelationship("$after$",
+       new XQLRelationship() {
+        public boolean holdsBetween(Object l, Object r) {
+          SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+          String lValue = XQL.text(l);
+          String rValue = XQL.text(r);
+          Date lDate = null;
+          Date rDate = null;
+          try {
+             lDate = sdf.parse(lValue);
+             rDate = sdf.parse(rValue);
+          }catch(java.text.ParseException pe) {
+            pe.printStackTrace();
+            lDate = null;
+            rDate = null;  
+          }
+         if(lDate != null && rDate != null) {
+            return rDate.after(lDate);
+         }else {
+            System.out.println("problem supposed to be a date and it is not.");
+            return false;
+         }
+        }
+       });
+       
        
       /**
        * User-defined comparison to test whether a text element (Object l) is numerically
@@ -156,7 +194,9 @@ public class QueryParser3_0
       XQL.addRelationship("$contains$",
        new XQLRelationship() {
         public boolean holdsBetween(Object l, Object r) {
-          return XQL.text(l).indexOf(XQL.text(r)) >= 0;
+           String lValue = XQL.text(l).toLowerCase();
+           String rValue = XQL.text(r).toLowerCase();
+          return lValue.indexOf(rValue) >= 0;
         }
        });       
        
@@ -192,7 +232,7 @@ public class QueryParser3_0
      String msg = null;
 
      String xml_to_xql = null;
-
+      System.out.println("entered prepareQuery");
       /**
 		 * The registry query that requires conversion to XQL will be contained 
 			* inside an element called "selectionSequence".  If the selectionSequence 
@@ -201,8 +241,9 @@ public class QueryParser3_0
 			* http://wiki.astrogrid.org/bin/view/Astrogrid/RegistryQuerySchema. 
 			*/
 			try{
-				Element docElement = (Element)doc.getDocumentElement().getFirstChild();
+				Element docElement = (Element)doc.getDocumentElement();//.getFirstChild();
 				NodeList ssList = docElement.getElementsByTagName("selectionSequence");
+            System.out.println("lenght ofsslist = " + ssList.getLength());
 				if (ssList.getLength() != 0){
 					/**
 					* If the query is well formatted, proceed to convert query to XQL
@@ -237,22 +278,23 @@ public class QueryParser3_0
             if (searchElements.equals("") || searchElements.equals("all") || searchElements.equals("*")){
                xml_to_xql = "//VODescription/* [" + xml_to_xql + "]";  
             } else if (searchElements.equals("Organisation")){
-               xml_to_xql = "//VODescription/*:Organisation [" + xml_to_xql + "]";   
+               xml_to_xql = "//VODescription/vc:Organisation [" + xml_to_xql + "]";   
             } else if (searchElements.equals("Authority")){
-               xml_to_xql = "//VODescription/*:Authority [" + xml_to_xql + "]";   
+               xml_to_xql = "//VODescription/vg:Authority [" + xml_to_xql + "]";   
             } else if (searchElements.equals("DataCollection")){
-               xml_to_xql = "//VODescription/*:DataCollection [" + xml_to_xql + "]";   
+               xml_to_xql = "//VODescription/vs:DataCollection [" + xml_to_xql + "]";   
             } else if (searchElements.equals("Service")){
                xml_to_xql = "//VODescription/Service [" + xml_to_xql + "]";   
             } else if (searchElements.equals("Service")){
                xml_to_xql = "//VODescription/Service [" + xml_to_xql + "]";   
             } else if (searchElements.equals("SkyService")){
-               xml_to_xql = "//VODescription/*:SkyService [" + xml_to_xql + "]";   
+               xml_to_xql = "//VODescription/vs:SkyService [" + xml_to_xql + "]";   
             } else if (searchElements.equals("TabularSkyService")){
-               xml_to_xql = "//VODescription/*:TabularSkyService [" + xml_to_xql + "]";   
+               xml_to_xql = "//VODescription/vs:TabularSkyService [" + xml_to_xql + "]";   
             } else if (searchElements.equals("Registry")){
-               xml_to_xql = "//VODescription/*:Regsistry [" + xml_to_xql + "]";   
+               xml_to_xql = "//VODescription/vg:Regsistry [" + xml_to_xql + "]";   
             }  
+           
 
             /*
 				if (searchElements.equals("") || searchElements.equals("all") || searchElements.equals("*")){
@@ -271,7 +313,7 @@ public class QueryParser3_0
                xml_to_xql = "//service[" + xml_to_xql + "]/identity | //service[" + xml_to_xql + "]/serviceMetadataConcept";	
 				}
             */
-				//System.out.println("the query = " + xml_to_xql);
+				System.out.println("the query = " + xml_to_xql);
 				/**
 				* When the XQL query has been constructed, send it to the registry instance
 				* by calling reg.xmlQuery.  Send the registry response from this method, along with
@@ -354,6 +396,12 @@ public class QueryParser3_0
 				else if (((Element) nlSS.item(z)).getAttribute("itemOp").equals("GT")){
 					itemOp = "$isgt$";
 				}
+            else if (((Element) nlSS.item(z)).getAttribute("itemOp").equals("AFTER")){
+               itemOp = "$after$";
+            }
+            else if (((Element) nlSS.item(z)).getAttribute("itemOp").equals("CONTAINS")){
+               itemOp = "$contains$";
+            }            
 				else if (((Element) nlSS.item(z)).getAttribute("itemOp").equals("LT")){
 					itemOp = "$islt$";
 				}

@@ -11,7 +11,8 @@ import org.w3c.dom.Document;
  *
  */
 public interface RegistryHarvestInterface{
-   
+
+   public Document harvestRegistry(Document query) throws Exception;   
    public Document harvest(Document query) throws Exception;
    
 }

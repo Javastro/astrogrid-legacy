@@ -15,5 +15,6 @@ public interface RegistryInterface{
    
    public Document submitQuery(Document query) throws Exception;
    public Document fullNodeQuery(Document query) throws Exception;
+   public Document harvestQuery(Document query) throws Exception;
    
 }

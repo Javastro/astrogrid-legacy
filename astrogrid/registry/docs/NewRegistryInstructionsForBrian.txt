@@ -1,0 +1,130 @@
+Hey Brian thanks for doing this.  Right now to get this prototype going it might be a little difficult I am not sure.  I will put it down as detailed as I can and factor in 2 different ways you might build the portal.
+Okay I hope this works.  Thanks again.  Hope you can copy some of the stuff I have down below easily.
+I have to get going now.  Here is my mobile 07881781455 give me a call for anything or any problem with my instructions.  My home number is 02089482479
+
+
+First serverside axis registry.
+1.)  First sync up all the registry. astrogrid/registry.  Their should be a new update as of just now and I just tagged registry with todays date as well.
+2.) Now go to the registry/Release directory and you will find a server/registry-server-4_0.jar
+	(you could make the jars this way if you don't want to get them out of the Release directory)
+	2.) Now run "ant registry.javac" from registry directory.
+	3.) Now run "ant registry.server.jar"
+	4.) Now run "ant registry.client.jar"
+3.) Place this jar file in your axis/WEB-INF/lib directory
+4.) Now in the registry/lib directory you will see several jar files.  To my knowledge only the xqlpdom_1_0_2.jar file needs to be placed in your axis/WEB-INF/lib directory the other jar files I think you will get obtained through other lib directories (I hope) :)
+5.) Now you will see a registry/src/config directory (not the registry/config directory) place it in a directory where you like (this is just like community.
+6.) edit the config file to what you would like to see.  Such as the urls to the stargrid machine.  Appropriate names.  (it is okay if your publish and search registries are on the same machine.)  Also change the file directories that you see in the config file.  maybe to some common directory on the machine.  Right now they all go to a directory on cvs.  You should be able to follow the directory structure and put the files in the right places.
+7.) Just like community you need an entry in your axis/WEB-INF/web.xml file
+<env-entry>
+<!--JNDI property for registry config-->
+<env-entry-name>org.astrogrid.registry.config</env-entry-name>
+<env-entry-value>C:\astro_registry_server.xml</env-entry-value>
+<env-entry-type>java.lang.String</env-entry-type>
+</env-entry>
+8.) Start tomcat.  And do a deploy on the wsdd files which you will fine in registry/src/wsdd
+java org.apache.axis.client.AdminClient querydeploy.wsdd
+java org.apache.axis.client.AdminClient adminquerydeploy.wsdd
+
+Now client side.
+
+1.)Okay sync up the portal, but I would honestly only sync up the src/cocoon/registry & src/java/cocoon/registry
+2.)Now try to compile it as usual, if you can.
+3.)If you don't want to mess up your current portal that is on tomcat then copy the ast*portal.jar file from build/portal/lib directory and the registry-client jar from from portalB/depends/registry (or registry/Release/client) into the cocoon/WEB-INF/lib
+4.) Now make that exact same env-entry into the cocoon/WEB-INF/web.xml file.
+5.) Finally the sitemap.
+I did not check this in because I thought I would break things.  It needs this defined as Action objects
+       <map:action name="astrogrid-registry-admin" src="org.astrogrid.portal.cocoon.registry.RegistryAdminAction"/>
+       <map:action name="astrogrid-registry-query" src="org.astrogrid.portal.cocoon.registry.RegistryQueryAction"/>
+       <map:action name="astrogrid-registry-options" src="org.astrogrid.portal.cocoon.registry.RegistryOptionAction"/>     
+
+Now delete all match patterns dealing with registry (normally at the top of the sitemap) Also delete the entry that tells it to go look at the sub/registry/sitemap.xml file
+And put what I have below at the top right before the "match patern="aglogin.html" (this is so you can go to the registry pages without logging in.)
+
+         <map:match pattern="agregistry.html">
+            <map:act type="astrogrid-registry-options">
+               <map:generate src="registry/xsp/regoptions.xsp" type="serverpages" label="000, 001"/>           
+              <map:transform src="registry/xsl/regoptions.xsl" label="002">
+                  <map:parameter name="errormessage" value="{errormessage}"/>
+              </map:transform>
+             </map:act>
+             <map:transform src="common/xsl/astrogrid.xsl" label="003">
+              <map:parameter name="current-page"  value="agdataquery.html"/>
+               <!-- Add the rest of the page names -->
+               <map:parameter name="current-page"  value="agregistry.html"/>
+               <map:parameter name="query-page"    value="agdataquery.html"/>
+               <map:parameter name="myspace-page"  value="agmyspace.html"/>
+               <map:parameter name="home-page"     value="agindex.html"/>
+               <map:parameter name="help-page"     value="agdataqueryhelp.html"/>
+               <map:parameter name="registry-page" value="agregistry.html"/>
+               <map:parameter name="regadmin-page" value="agregadmin.html"/>
+               <map:parameter name="monitor-page"  value="agjobmonitor.html"/>
+               <map:parameter name="tools-page"    value="agtools.html"/>
+               <map:parameter name="title-name"  value="Login"/>               
+               <map:parameter name="admin-page"    value="agadministration.html"/>
+               <map:parameter name="logout-page"   value="aglogout.html"/>
+            </map:transform>
+            <map:serialize type="html"/>
+         </map:match>
+         
+         <map:match pattern="registryquery.html">
+            <map:act type="astrogrid-registry-query">
+               <map:generate src="registry/xsp/regquery.xsp" type="serverpages" label="000, 001"/>           
+              <map:transform src="registry/xsl/regquery.xsl" label="002">
+                  <map:parameter name="errormessage" value="{errormessage}"/>
+                  <map:parameter name="criteria_number" value="{criteria_number}" />
+                  <map:parameter name="mainelement" value="{mainelement}" />
+                  <map:parameter name="publishregistryname" value="{publishregistryname}" />
+                  <map:parameter name="searchregistryname" value="{searchregistryname}" />
+                  <map:parameter name="queryresult" value="{queryresult}" />
+              </map:transform>
+             </map:act>
+             <map:transform src="common/xsl/astrogrid.xsl" label="003">
+              <map:parameter name="current-page"  value="agdataquery.html"/>
+               <!-- Add the rest of the page names -->
+               <map:parameter name="current-page"  value="agregistry.html"/>
+               <map:parameter name="query-page"    value="agdataquery.html"/>
+               <map:parameter name="myspace-page"  value="agmyspace.html"/>
+               <map:parameter name="home-page"     value="agindex.html"/>
+               <map:parameter name="help-page"     value="agdataqueryhelp.html"/>
+               <map:parameter name="registry-page" value="agregistry.html"/>
+               <map:parameter name="regadmin-page" value="agregadmin.html"/>
+               <map:parameter name="monitor-page"  value="agjobmonitor.html"/>
+               <map:parameter name="tools-page"    value="agtools.html"/>
+               <map:parameter name="title-name"  value="Login"/>               
+               <map:parameter name="admin-page"    value="agadministration.html"/>
+               <map:parameter name="logout-page"   value="aglogout.html"/>
+            </map:transform>
+            <map:serialize type="html"/>
+         </map:match>
+         
+         <map:match pattern="registryupdate.html">
+            <map:act type="astrogrid-registry-admin">
+               <map:generate src="registry/xsp/regadmin.xsp" type="serverpages" label="000, 001"/>           
+              <map:transform src="registry/xsl/regadmin.xsl" label="002">
+                  <map:parameter name="errormessage" value="{errormessage}"/>
+                  <map:parameter name="mainelement" value="{mainelement}" />                    
+                  <map:parameter name="action" value="{action}" />
+                  <map:parameter name="message" value="{message}" />
+              </map:transform>
+             </map:act>
+             <map:transform src="common/xsl/astrogrid.xsl" label="003">
+              <map:parameter name="current-page"  value="agdataquery.html"/>
+               <!-- Add the rest of the page names -->
+               <map:parameter name="current-page"  value="agregistry.html"/>
+               <map:parameter name="query-page"    value="agdataquery.html"/>
+               <map:parameter name="myspace-page"  value="agmyspace.html"/>
+               <map:parameter name="home-page"     value="agindex.html"/>
+               <map:parameter name="help-page"     value="agdataqueryhelp.html"/>
+               <map:parameter name="registry-page" value="agregistry.html"/>
+               <map:parameter name="regadmin-page" value="agregadmin.html"/>
+               <map:parameter name="monitor-page"  value="agjobmonitor.html"/>
+               <map:parameter name="tools-page"    value="agtools.html"/>
+               <map:parameter name="title-name"  value="Login"/>               
+               <map:parameter name="admin-page"    value="agadministration.html"/>
+               <map:parameter name="logout-page"   value="aglogout.html"/>
+            </map:transform>
+            <map:serialize type="html"/>
+         </map:match>
+         
+
+

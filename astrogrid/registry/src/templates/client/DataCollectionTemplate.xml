@@ -19,35 +19,41 @@
                       http://www.ivoa.net/xml/ConeSearch/ConeSearch-v0.2.xsd
                       http://www.ivoa.net/xml/SIA/v0.6
                       http://www.ivoa.net/xml/SIA/SIA-v0.6.xsd">
-  <vc:Organisation created="2001-12-17T09:30:47-05:00" updated="2001-12-17T09:30:47-05:00" status="active">
+
+<vs:DataCollection>
     <Identifier>
-      <AuthorityID>rai.ncsa.uiuc.edu</AuthorityID>
-      <ResourceKey>RAITest</ResourceKey>
+      <AuthorityID>adil.ncsa.uiuc.edu</AuthorityID>
+      <ResourceKey>ADIL</ResourceKey>
     </Identifier>
-    <Title>NCSA Radio Astronomy Imaging Testing</Title>
-    <ShortName>NCSA-RAITesting</ShortName>
+    <Title>NCSA Astronomy Digital Image Library</Title>
+    <ShortName>ADIL</ShortName>
     <Summary>
       <Description>
-        A test The Radio Astronomy Imaging Group is focused on applying
-        high-performance computing to astronomical research.  Our
-        projects include the NCSA Astronomy Digital Image Library, 
-        the BIMA Data Archive, the BIMA Image Pipeline, and AIPS++.  
+        The ADIL is a public repository for fully processed astronomical 
+        images in FITS format that have been documented in the
+        professional literature.  The Library contains images from
+        research observatories from all over the world and taken at
+        all wavebands.
       </Description>
-      <ReferenceURL>http://rai.ncsa.uiuc.edu/</ReferenceURL>
+      <ReferenceURL>http://adil.ncsa.uiuc.edu/</ReferenceURL>
     </Summary>
-    <Type>Organisation</Type>
+    <Type>Archive</Type>
     <Curation>
       <Publisher>
+    	 <Identifier>
+    	   <AuthorityID>rai.ncsa.uiuc.edu</AuthorityID>
+	   		<ResourceKey>RAI</ResourceKey>
+    	 </Identifier>
          <Title>NCSA Radio Astronomy Imaging</Title>
       </Publisher>
       <Contact>
         <Name>Dr. Raymond Plante</Name>
 	<Email>rplante@ncsa.uiuc.edu</Email>
       </Contact>
-      <Date>1993-01-01</Date>
+      <Date>1994-09-01</Date>
       <Creator>
         <Name>Dr. Raymond Plante</Name>
-        <Logo>http://rai.ncsa.uiuc.edu/rai.jpg</Logo>
+        <Logo>http://adil.ncsa.uiuc.edu/gifs/adilfooter.gif</Logo>
       </Creator>
     </Curation>
     <Subject>radio astronomy</Subject>
@@ -55,5 +61,13 @@
     <Subject>digital libraries</Subject>
     <Subject>grid-based processing</Subject>
     <ContentLevel>Research</ContentLevel>
-  </vc:Organisation>
-</VODescription>
+    <ContentLevel>University</ContentLevel>
+    <ContentLevel>Community College</ContentLevel>
+    <vs:Access>
+      <vs:Format>image/fits</vs:Format>
+      <vs:Format>image/gif</vs:Format>
+      <vs:Format>text/html</vs:Format>
+      <vs:Rights>public</vs:Rights>
+    </vs:Access>
+  </vs:DataCollection>
+  </VODescription>

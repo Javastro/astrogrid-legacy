@@ -19,23 +19,22 @@
                       http://www.ivoa.net/xml/ConeSearch/ConeSearch-v0.2.xsd
                       http://www.ivoa.net/xml/SIA/v0.6
                       http://www.ivoa.net/xml/SIA/SIA-v0.6.xsd">
-  <vc:Organisation created="2001-12-17T09:30:47-05:00" updated="2001-12-17T09:30:47-05:00" status="active">
+
+  <vg:Authority>
     <Identifier>
       <AuthorityID>rai.ncsa.uiuc.edu</AuthorityID>
-      <ResourceKey>RAITest</ResourceKey>
+      <ResourceKey xsi:nil="true"/>
     </Identifier>
-    <Title>NCSA Radio Astronomy Imaging Testing</Title>
-    <ShortName>NCSA-RAITesting</ShortName>
+    <Title>NCSA Radio Astronomy Imaging Naming Authority</Title>
+    <ShortName>NCSA-RAI</ShortName>
     <Summary>
       <Description>
-        A test The Radio Astronomy Imaging Group is focused on applying
-        high-performance computing to astronomical research.  Our
-        projects include the NCSA Astronomy Digital Image Library, 
-        the BIMA Data Archive, the BIMA Image Pipeline, and AIPS++.  
+        This authority ID will be used to identify generic resources 
+	related to the NCSA Radio Astronomy Imaging Group at the 
+	National Center for Supercomputing Applications (NCSA)
       </Description>
       <ReferenceURL>http://rai.ncsa.uiuc.edu/</ReferenceURL>
     </Summary>
-    <Type>Organisation</Type>
     <Curation>
       <Publisher>
          <Title>NCSA Radio Astronomy Imaging</Title>
@@ -44,16 +43,32 @@
         <Name>Dr. Raymond Plante</Name>
 	<Email>rplante@ncsa.uiuc.edu</Email>
       </Contact>
-      <Date>1993-01-01</Date>
-      <Creator>
-        <Name>Dr. Raymond Plante</Name>
-        <Logo>http://rai.ncsa.uiuc.edu/rai.jpg</Logo>
-      </Creator>
+      <Date>2003-08-30</Date>
     </Curation>
-    <Subject>radio astronomy</Subject>
-    <Subject>data repositories</Subject>
-    <Subject>digital libraries</Subject>
-    <Subject>grid-based processing</Subject>
-    <ContentLevel>Research</ContentLevel>
-  </vc:Organisation>
+  </vg:Authority>
+  <vg:Authority>
+    <Identifier>
+      <AuthorityID>adil.ncsa.uiuc.edu</AuthorityID>
+      <ResourceKey xsi:nil="true"/>
+    </Identifier>
+    <Title>NCSA Astronomy Digital Image Library Naming Authority</Title>
+    <ShortName>ADIL</ShortName>
+    <Summary>
+      <Description>
+        This authority ID will be used to identify resources 
+	associated with the NCSA Astronomy Digital Image Library.
+      </Description>
+      <ReferenceURL>http://adil.ncsa.uiuc.edu/</ReferenceURL>
+    </Summary>
+    <Curation>
+      <Publisher>
+         <Title>NCSA Radio Astronomy Imaging</Title>
+      </Publisher>
+      <Contact>
+        <Name>Dr. Raymond Plante</Name>
+	<Email>rplante@ncsa.uiuc.edu</Email>
+      </Contact>
+      <Date>2003-08-30</Date>
+    </Curation>
+  </vg:Authority>
 </VODescription>
