@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project>
+<document>
   <properties>
     <author email="Noel.Winstanley@manchester.ac.uk">Noel Winstanley</author>
 
@@ -95,5 +95,5 @@
     </p></section>
     
   </body>
-</project>
+</document>
 

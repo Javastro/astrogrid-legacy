@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project>
+<document>
   <properties>
     <author email="Noel.Winstanley@manchester.ac.uk">Noel Winstanley</author>
 
@@ -7,18 +7,17 @@
   </properties>
 
   <body>
-	
+	<section name="Astrogrid Scripting Client Developer Kit">
     <p>
     This project assembles a Client Developer Kit (CDK) for developers that wish to
 	interact with the Astrogrid Scripting Interface. This combines the delegates for accessing the Astrogrid workflow 
 	services (JES, CEA) and the core Astrogrid services (Myspace / VoSpace, Registry, Community) with some scripting objects and helper
 	libraries.
 	</p><p>
-	The workflow delegates, and the core delegates are also available separately in the smaller 
-	<a href="">Workflow CDK</a> and 
-	<a href="">Core CDK</a>.
+	The workflow delegates, and the core delegates are also available separately in the smaller Workflow CDK and Core CDK.
 
     </p>
+	</section>
 	<section name="Documentation">
 	<p>
     The scripting environment provided by astrogrid is documented in the Workflow userguide: <a href="http://www.astrogrid.org/maven/docs/HEAD/jes/">html</a>, 
@@ -59,5 +58,5 @@
     </p></section>
     
   </body>
-</project>
+</document>
 
