@@ -110,7 +110,7 @@
 
          try {
 
-            for( int i=0; i<tools.length; i++ ) {
+            for( int i=0; i &lt; tools.length; i++ ) {
                 displayTool( tools[i], xspAttr );
             }
 
@@ -253,7 +253,7 @@
                AbstractActivity[]
                   activityArray = activityContainer.getActivity() ;
                   
-               for( int i=0; i<activityArray.length; i++ ){
+               for( int i=0; i &lt; activityArray.length; i++ ){
                    activityTree( activityArray[i] ) ;
                }
 					
