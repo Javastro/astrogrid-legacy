@@ -1,5 +1,5 @@
 /*
- * $Id: VoSpaceResolver.java,v 1.12 2004/04/15 17:55:58 dave Exp $
+ * $Id: VoSpaceResolver.java,v 1.13 2004/04/16 08:15:38 KevinBenson Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -152,11 +152,10 @@ public class VoSpaceResolver {
                }
             }
 
-String ident = ci.getCommunityName() ;
-if (null != ci.getAccountName())
-	{
-	ident = ident + "/" + ci.getAccountName() ;
-	}
+            String ident = ci.getCommunityName() ;
+            if (null != ci.getAccountName())	{
+	           ident = ident + "/" + ci.getAccountName() ;
+	         }
 
             System.out.println("Lookfor endpoint with ident = " + ident);
             String vospaceEndPoint = registry.getEndPointByIdentifier(ident);
@@ -179,6 +178,57 @@ if (null != ci.getAccountName())
       return null;
       
    }
+   
+   /** Resolve using Registry
+    */
+   public static Agsl registryMyspaceResolve(Ivorn ivorn) throws IOException {
+      /** This is the deprecated nyspace one; use the one in ivor if you want
+       * real registry resolving *
+       */
+      //lazy load registry delegate - also more robust in case it doesn't instantiate
+      System.out.println("entered registry resolve specefic for Myspace");
+      if (registry == null) {
+         try {
+            makeRegistryDelegate();
+         }
+         catch (Exception e) {
+            log.error("Could not create Registry Delegate: ",e);
+         }
+      }
+      
+      if (registry != null) {
+         try {
+            //look in registry
+            CommunityIvornParser ci = new CommunityIvornParser(ivorn);
+            System.out.println("the commname = " + ci.getCommunityName());
+            System.out.println("the account name = " + ci.getAccountName());
+            System.out.println("the remainder = " + ci.getRemainder());
+            String remainder = "";
+            if(ci.getRemainder() != null && ci.getRemainder().trim().length() > 0) {
+               remainder = ci.getRemainder();
+               if(remainder.startsWith("#")) {
+                  //cut off the first character the agsl will put it back in later.
+                  remainder = remainder.substring(1);
+               }
+            }
+
+            String ident = ci.getCommunityName();
+            if (ci.getAccountName() == null || !VOSPACE_CLASS_RESOURCE_KEY_LOOKUP.equals(ci.getAccountName()) ) {
+               ident = ident + "/" + VOSPACE_CLASS_RESOURCE_KEY_LOOKUP;
+            }
+            System.out.println("Look for endpoint with ident = " + ident);
+            String vospaceEndPoint = registry.getEndPointByIdentifier(ident);
+            System.out.println("Quick debug: Registry found = " + vospaceEndPoint + " with remainder = " + remainder);
+            return new Agsl(Msrl.SCHEME + ":" + vospaceEndPoint,remainder);
+         }
+         catch (Exception e) {
+            throw new ResolverException("Registry failed resolving "+ivorn,e);
+         }
+      }
+      return null;
+      
+   }
+   
    
    /**
     * Lazy registry delegate load
@@ -217,17 +267,16 @@ if (null != ci.getAccountName())
             System.out.println("the remainder = " + ci.getRemainder());
 
             String remainder = "" ;
-            if (null != ci.getAccountName())
-                {
+            if (null != ci.getAccountName()) {
                 remainder += "/" + ci.getAccountName();
-                }
+            }
 
             if(ci.getRemainder() != null && ci.getRemainder().trim().length() > 0) {
                remainder += ci.getRemainder();
             }                        
             
             Ivorn regIvo = new Ivorn(Ivorn.SCHEME + "://" + ci.getCommunityName() + "/" + VOSPACE_CLASS_RESOURCE_KEY_LOOKUP + remainder);                        
-            return registryResolve(regIvo);
+            return registryMyspaceResolve(regIvo);
          }catch(ResolverException re) {
             //okay the community found an ivo, but it was not in the registry
             throw new ResolverException("Community seems to resolve, but not registry " + ivorn + " commIvo = " + commIvo,re);
@@ -254,6 +303,9 @@ if (null != ci.getAccountName())
 
 /*
 $Log: VoSpaceResolver.java,v $
+Revision 1.13  2004/04/16 08:15:38  KevinBenson
+small change to split out the reolving of a "myspace" resourcekey.
+
 Revision 1.12  2004/04/15 17:55:58  dave
 Fixed ivorn handling
 

@@ -1,5 +1,5 @@
 /*
- * $Id: VoSpaceClient.java,v 1.4 2004/04/15 16:41:41 KevinBenson Exp $
+ * $Id: VoSpaceClient.java,v 1.5 2004/04/16 08:15:38 KevinBenson Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -17,6 +17,7 @@ import org.astrogrid.store.delegate.StoreAdminClient;
 import org.astrogrid.store.delegate.StoreDelegateFactory;
 import org.astrogrid.store.delegate.StoreFile;
 import org.astrogrid.store.delegate.VoSpaceResolver;
+import org.astrogrid.store.delegate.ResolverException;
 import java.net.URISyntaxException;
 import org.astrogrid.community.common.ivorn.CommunityIvornParser;
 
@@ -144,14 +145,15 @@ public class VoSpaceClient {
    }
    
    public void deleteUser(Ivorn target, Ivorn user) throws IOException, URISyntaxException {
-      Agsl vospaceTarget = VoSpaceResolver.resolveAgsl(target);
+      //Agsl vospaceTarget = VoSpaceResolver.resolveAgsl(target);
+      Agsl vospaceTarget = VoSpaceResolver.registryMyspaceResolve(target);
       StoreAdminClient client = StoreDelegateFactory.createAdminDelegate(operator, vospaceTarget);
       CommunityIvornParser ci = null;
       try {
          ci = new CommunityIvornParser(user);
       }catch(Exception e) {
          e.printStackTrace();
-         throw new IOException("Could not parse ivorn user ");
+         throw new ResolverException("Could not parse ivorn user ",e);
       }
       client.deleteUser(new User(ci.getAccountName(),ci.getCommunityName(),"Anonymous","None"));
    }
@@ -160,6 +162,9 @@ public class VoSpaceClient {
 
 /*
 $Log: VoSpaceClient.java,v $
+Revision 1.5  2004/04/16 08:15:38  KevinBenson
+small change to split out the reolving of a "myspace" resourcekey.
+
 Revision 1.4  2004/04/15 16:41:41  KevinBenson
 new way of using the user object for createUser.
 
