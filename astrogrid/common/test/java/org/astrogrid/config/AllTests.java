@@ -25,7 +25,8 @@ public class AllTests {
         //$JUnit-BEGIN$
         suite.addTest(FactoryTest.suite());
         suite.addTest(SimpleTest.suite());
-        suite.addTest(AttomTest.suite());
+        suite.addTest(XmlTest.suite());
+        suite.addTest(FailbackTest.suite());
         //$JUnit-END$
         return suite;
     }

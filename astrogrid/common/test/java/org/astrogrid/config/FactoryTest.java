@@ -16,13 +16,49 @@ import junit.framework.TestSuite;
  */
 
 public class FactoryTest extends TestCase {
-//@TODO restore me - temporary delete
-	/**
+
+   /** Logger */
+   private static Log log = LogFactory.getLog(FactoryTest.class);
+
+   /**
+    * Tests property creation
+    */
+   public void testPropertyMaker() throws IOException {
+        log.trace("enter:testPropertyMaker");
+      Config configA = ConfigFactory.getConfig("Arthur");
+      log.debug("Got Arthur "+configA);
+      assertNotNull(configA);
+      
+      Config configB = ConfigFactory.getConfig("Bernard");
+      log.debug("Got Bernard "+ configB);
+      assertNotNull(configB);
+      assertNotSame(configA, configB);
+
+      configA.setProperty("Fruit", "Banana");
+      configB.setProperty("Fruit", "Apple");
+      assertNotSame(configA.getProperty("Fruit"), configB.getProperty("Fruit"));
+      
+      Config configC = ConfigFactory.getConfig("Arthur");
+      log.debug("Got Charlie "+configC);
+      assertNotNull(configC);
+      assertEquals(configA, configC);
+   }
+
+
+    /**
      * Assembles and returns a test suite made up of all the testXxxx() methods
       * of this class.
      */
     public static Test suite() {
         // Reflection is used here to add all the testXXX() methods to the suite.
         return new TestSuite(FactoryTest.class);
+    }
+
+    /**
+     * Runs the test case.
+     */
+    public static void main(String args[])
+    {
+       junit.textui.TestRunner.run(suite());
     }
 }
