@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.18 2003/12/03 19:37:03 mch Exp $
+ * $Id: AxisDataServer.java,v 1.19 2003/12/16 11:09:59 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -20,6 +20,7 @@ import org.apache.axis.types.URI;
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.config.Config;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.axisdataserver.types._language;
 import org.astrogrid.datacenter.axisdataserver.types._query;
@@ -58,24 +59,20 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
    
    public static Log log = LogFactory.getLog(AxisDataServer.class);
    
+   public static String CONFIG_URL = "java:comp/env/org.astrogrid.config.url";
+   
    /**
     * Initialises the configuration.
     * @todo NW this is a quick hack to get config from JNDI, as code in SImpleConfig doesn't want to work.
     * later find out why the library code isn't doing the job.
+    * @todo MCH another hack to see if the SimpleConfig.loadJndi is now OK
     */
-   public AxisDataServer()  {
-       try {
-      try {
-         String s = (String)new InitialContext().lookup("java:comp/env/org.astrogrid.config.url");
-         System.out.println("Context value " + s);
-         SimpleConfig.load(s);
-      } catch (NamingException e) {
-         log.warn("JNDI lookup failed");
-         SimpleConfig.autoLoad();
+   public AxisDataServer()  throws IOException {
+      boolean loadedconfig = SimpleConfig.loadJndiUrl(CONFIG_URL);
+      
+      if (!loadedconfig) {
+         throw new IOException("Config file url key '"+CONFIG_URL+" not found in JNDI");
       }
-       } catch(IOException e) {
-           log.error("Could not load configuration",e);
-       }
    }
    
    /**
@@ -127,7 +124,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
    public String doQuery(String resultsFormat,  _query q) throws IOException {
       
       if (resultsFormat == null || resultsFormat.length() == 0)  {
-          log.error("Empty parameter for results format");
+         log.error("Empty parameter for results format");
          throw new IllegalArgumentException("Empty parameter for results format");
       }
       if (!resultsFormat.toLowerCase().equals(AdqlQuerier.VOTABLE.toLowerCase()))  {
@@ -154,7 +151,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
       }
    }
    
-  
+   
    /**
     * Creates an asynchronous query, returns the query id
     * Does not start the query running - may want to register listeners with
@@ -165,7 +162,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
    public String  makeQuery(_query q) throws IOException {
       
       Querier querier = QuerierManager.createQuerier(q);
-        return querier.getQueryId();
+      return querier.getQueryId();
    }
    
    /**
@@ -181,7 +178,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
       if (assignedId == null || assignedId.length() == 0)  {
          throw new IllegalArgumentException("Empty assigned id");
       }
-
+      
       Querier querier = QuerierManager.createQuerier(q, assignedId);
       return querier.getQueryId();
    }
@@ -196,7 +193,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
       }
       Querier querier = getQuerier(queryId);
       if (querier == null) {
-          throw new IllegalArgumentException("Unknown qid: " + queryId);
+         throw new IllegalArgumentException("Unknown qid: " + queryId);
       }
       querier.setResultsDestination(resultsDestination.toString());
    }
@@ -211,7 +208,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
    public String getResultsAndClose(String queryId) {
       Querier querier =getQuerier(queryId);
       if (querier == null) {
-          throw new IllegalArgumentException("Unknown qid:" + queryId);
+         throw new IllegalArgumentException("Unknown qid:" + queryId);
       }
       //has querier finished?
       if (!querier.getStatus().isBefore(QueryStatus.FINISHED)) {
@@ -219,7 +216,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
          try {
             QuerierManager.closeQuerier(querier);
          } catch (IOException e){
-             log.warn("Exception closing querier");
+            log.warn("Exception closing querier");
          }
          return results;
       }
@@ -241,11 +238,11 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
          querier.abort();
       }
    }
-
+   
    /**
     * Starts an existing query running
     * @soap
-   */
+    */
    public void startQuery(String id) {
       Querier querier = getQuerier(id);
       startQuery(querier);
@@ -259,7 +256,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
    public String getStatus(String queryId) {
       Querier querier = getQuerier(queryId);
       if (querier == null) {
-          throw new IllegalArgumentException("Unknown qid:" + queryId);
+         throw new IllegalArgumentException("Unknown qid:" + queryId);
       }
       return querier.getStatus().toString();
    }
@@ -275,9 +272,9 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
          URL u = new URL(uri.toString());
          Querier querier = getQuerier(queryId);
          if (querier == null) {
-             throw new IllegalArgumentException("Unknown qid" + queryId);
+            throw new IllegalArgumentException("Unknown qid" + queryId);
          }
-
+         
          
          querier.registerListener(new WebNotifyServiceListener(u));
       }
@@ -297,7 +294,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
          URL u = new URL(uri.toString());
          Querier querier = getQuerier(queryId);
          if (querier == null) {
-             throw new IllegalArgumentException("Unknown qid" + queryId);
+            throw new IllegalArgumentException("Unknown qid" + queryId);
          }
          
          querier.registerListener(new WebNotifyServiceListener(u));
@@ -306,18 +303,18 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
          throw new RemoteException("Malformed URL",e);
       }
    }
-
-/* (non-Javadoc)
- * @see org.astrogrid.datacenter.axisdataserver.AxisDataServer#getLanguageInfo(java.lang.Object)
- */
-public _language[] getLanguageInfo(Object arg0) throws RemoteException {
-    
-        try {
-            return PluginQuerier.instantiateQuerierSPI().getTranslatorMap().list();
-        } catch (DatabaseAccessException e) {
-            throw new RemoteException("Could not instantiate querier SPI",e);
-        }
-}
+   
+   /* (non-Javadoc)
+    * @see org.astrogrid.datacenter.axisdataserver.AxisDataServer#getLanguageInfo(java.lang.Object)
+    */
+   public _language[] getLanguageInfo(Object arg0) throws RemoteException {
+      
+      try {
+         return PluginQuerier.instantiateQuerierSPI().getTranslatorMap().list();
+      } catch (DatabaseAccessException e) {
+         throw new RemoteException("Could not instantiate querier SPI",e);
+      }
+   }
    
 }
 
