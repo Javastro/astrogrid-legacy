@@ -1,4 +1,4 @@
-/* $Id: TrivialTest.java,v 1.6 2003/11/14 19:08:17 jdt Exp $ 
+/* $Id: TrivialTest.java,v 1.7 2003/12/07 18:03:09 jdt Exp $ 
  * Created on 20/10/03 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -47,8 +47,11 @@ public class TrivialTest extends TestCase {
 }
 /*
  * $Log: TrivialTest.java,v $
+ * Revision 1.7  2003/12/07 18:03:09  jdt
+ * removed annoying todo
+ *
  * Revision 1.6  2003/11/14 19:08:17  jdt
- * Got rid of the superfluous TODOs
+ * Got rid of the superfluous T O D Os
  *
  * Revision 1.5  2003/11/12 22:25:23  anoncvs
  * Added some todo tags to see what happens when Maven runs tonight.
