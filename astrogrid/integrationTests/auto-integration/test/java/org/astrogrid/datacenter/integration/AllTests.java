@@ -1,4 +1,4 @@
-/* $Id: AllTests.java,v 1.6 2004/07/01 11:44:13 nw Exp $
+/* $Id: AllTests.java,v 1.7 2004/07/20 02:00:34 nw Exp $
  * Created on Apr 15, 2004 by jdt@roe.ac.uk
  * The auto-integration project
  * Copyright (c) Astrigrid 2004.  All rights reserved.
@@ -21,7 +21,6 @@ public class AllTests  {
     public static Test suite() {
         TestSuite suite = new TestSuite("Datacenter");
         //$JUnit-BEGIN$
-        suite.addTest(CeaTest.suite());
         suite.addTest(ConeTest.suite());
         suite.addTest(IvoQuery2MySpaceTest.suite());
         suite.addTest(Jes2QueryTest.suite());
@@ -33,6 +32,9 @@ public class AllTests  {
 }
 /*
  *  $Log: AllTests.java,v $
+ *  Revision 1.7  2004/07/20 02:00:34  nw
+ *  removed CeaTest - redundant - covered by more thorough tests in org.astrogrid.applications.integration.datacenter
+ *
  *  Revision 1.6  2004/07/01 11:44:13  nw
  *  added CeaTest - as was missing before
  *
