@@ -30,11 +30,19 @@ Note that some datacenters might provide more than one connection type, but this
 information you can find in the registry.
 <p>
 <h4>Doing a Query</h4>
-Call <code>delegate.adqlQuery(Element query)</code> to carry out a blocking query
+Call <code>delegate.doQuery(Element query)</code> to carry out a blocking query
 on the service. Actually this will take any query; make sure the type is specified
 in the surrounding <code>Query</code> tag, eg <code>&lt;Query type='adql'&gt;</code>
  or <code>&lt;Query type='astrogrid'&gt;</code>
-
+<p>
+To start an asynchronous query, you first call <code>makeQuery()</code> which returns
+a status code and an assigned query id (if it was not provided in the given document).
+You can then registerListeners, etc, and when you are ready, start the query using
+<code>startQuery()</code>.  Your listeners will be notified when the query is complete,
+and you can then call getResultsAndClose() which returns a url of where to find the
+results.  NB once this call is made you may not be able to access information on
+that query ID 'session' again.
+<p>
 <h4>Doing other things</h4>
 Refer to the DatacenterDelegate methods.
 
@@ -57,21 +65,22 @@ and the following 3rd party ones:
 <p>
 <h3>A matter of state</h3>
 
-In principle a delegate has 'state', in that it represents the clients view on a single server 
-for as long as it exists.  However, the WebDelegate uses http to communicate with the server, and 
+In principle a delegate has 'state', in that it represents the clients view on a single server
+for as long as it exists.  However, the WebDelegate uses http to communicate with the server, and
 http has no concept of state.
 <p>
 (Having said this, what we're actually doing is using rpc over http, and there is a 'session'
 concept available, but not sure if this works for non-java clients.  To be investigated).
 <p>
-Most service calls anyway are atomic - a request for information with a response containing that 
-information or an error.  It is up to the delegate to make sure the response ties in with the 
-request - to make sure that the delegate is threadsafe (so that if one thread calls a request, and 
+Most service calls anyway are atomic - a request for information with a response containing that
+information or an error.  It is up to the delegate to make sure the response ties in with the
+request - to make sure that the delegate is threadsafe (so that if one thread calls a request, and
 another does so too before the response returns, the appropriate response is directed to the
-appropriate request). 
+appropriate request).  This is done by routing all send/receive pairs through one synchronised
+private method.
 <p>
-What we <i>do</i> have is a query state - it is possible to start a database query, and then request 
-the status of that query.  
+What we <i>do</i> have is a query state - it is possible to start a database query, and then request
+the status of that query.
 <p>
 <h3>How they work</h3>
 
@@ -85,8 +94,8 @@ You don't really want to know do you?  Oh alright I'll put stuff in here sometim
 <h4>Grid Delegates</h4>
 Nobody knows, not been implemented yet.
 
-
-
+<h4>Direct Delegates</h4>
+For colocated services; not been implemented yet.
 
 </body>
 </html>
