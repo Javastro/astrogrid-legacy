@@ -21,7 +21,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.datacenter.adql.generated.Circle;
 import org.astrogrid.datacenter.adql.generated.Select;
-import org.astrogrid.datacenter.io.Piper;
+import org.astrogrid.io.Piper;
 import org.astrogrid.datacenter.query.QueryStatus;
 import org.astrogrid.datacenter.webnotify.JobMonitorNotifier;
 import org.astrogrid.datacenter.webnotify.WebNotifier;
@@ -391,6 +391,9 @@ public class AdqlNvoConeDelegate extends NvoConeSearchDelegate implements AdqlQu
 
 /*
 $Log: AdqlNvoConeDelegate.java,v $
+Revision 1.7  2003/12/09 13:02:06  mch
+Moved Piper to common
+
 Revision 1.6  2003/12/03 19:37:03  mch
 Introduced DirectDelegate, fixed DummyQuerier
 

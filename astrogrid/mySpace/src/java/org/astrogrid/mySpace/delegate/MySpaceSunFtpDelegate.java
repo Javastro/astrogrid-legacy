@@ -1,5 +1,5 @@
 /*
- $Id: MySpaceSunFtpDelegate.java,v 1.2 2003/12/04 15:36:59 acd Exp $
+ $Id: MySpaceSunFtpDelegate.java,v 1.3 2003/12/09 13:01:51 mch Exp $
 
  (c) Copyright...
  */
@@ -12,7 +12,7 @@ import java.io.*;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.Vector;
-import org.astrogrid.datacenter.io.Piper;
+import org.astrogrid.io.Piper;
 import org.astrogrid.mySpace.delegate.MySpaceManagerDelegate;
 import sun.net.ftp.FtpClient;
 import sun.net.ftp.FtpProtocolException;
