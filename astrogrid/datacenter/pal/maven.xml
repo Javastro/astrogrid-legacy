@@ -122,5 +122,46 @@
 	      style="${basedir}/build/server-config.xsl"
 	/>
 </goal>
+<!-- other stuff -->
+<!-- still to get working -->
+<goal name="pal-publish" description="compile and deploy to webserver, restart webapp, redeploy webservice."
+	prereqs="jar:jar,tomcat-declare-tasks,datacenter-server-zip">
+	<!-- assumes vanilla tomcat & axis installation, and configured tomcat manager app. -->
+	<copy todir="${axis.webapp.location}/WEB-INF/lib">
+		<fileset dir="packaging/datacenter-server/WEB-INF/lib">
+			<include name="*.jar" />
+		</fileset>
+	</copy>
+	<!-- restart webapp -->
+	<tomcat-reload url="http://localhost:8080/manager"
+		username="${tomcat.manager.username}" password="${tomcat.manager.password}" path="/axis" />
+	<!-- remove and reinstall dataservice with axis -->
+	<attainGoal name="dataserver-undeploy" />
+	<attainGoal name="dataserver-deploy"/>
+</goal>
+
+
+<!--
+boilerplate below here
+-->
+  <goal name="axis-declare-tasks">
+      <taskdef resource="axis-tasks.properties"  classpathref="maven.dependency.classpath" />
+  </goal>
+
+<goal name="tomcat-declare-tasks">
+   <!-- Configure the custom Ant tasks for the Manager application -->
+  <taskdef name="tomcat-deploy"    classname="org.apache.catalina.ant.DeployTask" classpathref="maven.dependency.classpath"/>
+  <taskdef name="tomcat-install"   classname="org.apache.catalina.ant.InstallTask" classpathref="maven.dependency.classpath"/>
+  <taskdef name="tomcat-list"      classname="org.apache.catalina.ant.ListTask" classpathref="maven.dependency.classpath"/>
+  <taskdef name="tomcat-reload"    classname="org.apache.catalina.ant.ReloadTask" classpathref="maven.dependency.classpath"/>
+  <taskdef name="tomcat-remove"    classname="org.apache.catalina.ant.RemoveTask" classpathref="maven.dependency.classpath"/>
+  <taskdef name="tomcat-resources" classname="org.apache.catalina.ant.ResourcesTask" classpathref="maven.dependency.classpath"/>
+  <taskdef name="tomcat-roles"     classname="org.apache.catalina.ant.RolesTask" classpathref="maven.dependency.classpath"/>
+  <taskdef name="tomcat-start"     classname="org.apache.catalina.ant.StartTask" classpathref="maven.dependency.classpath"/>
+  <taskdef name="tomcat-stop"      classname="org.apache.catalina.ant.StopTask" classpathref="maven.dependency.classpath"/>
+  <taskdef name="tomcat-undeploy"  classname="org.apache.catalina.ant.UndeployTask" classpathref="maven.dependency.classpath"/>
+</goal>
+
+
 
 </project>

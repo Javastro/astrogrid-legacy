@@ -25,8 +25,7 @@ your classpath. Clean up your classpath by eliminating extraneous parsers.
 </section>
 <section name="Test PAL">
 <p>
-<b>Add in tests here to check PAL-specific stuff - can find properties file, metadata.xml, database querier, JNDI datasource
-if needed
+Run the PAL installation tests <a href="TestServlet?suite=org.astrogrid.datacenter.snippet.ResponseHelperTest">here</a>.
 </b>
 </p>
 </section>
