@@ -1,4 +1,4 @@
-/*$Id: LoginScriptEnvironment.java,v 1.1 2004/12/20 15:59:03 nw Exp $
+/*$Id: LoginScriptEnvironment.java,v 1.2 2004/12/22 18:57:01 nw Exp $
  * Created on 20-Dec-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -38,7 +38,7 @@ final class LoginScriptEnvironment implements ScriptEnvironment {
      * 
      */
     LoginScriptEnvironment(String name,String community,String password) throws CommunityResolverException, CommunityServiceException, CommunitySecurityException, CommunityIdentifierException, RegistryException {
-        this.password = password;
+
         ag = new Toolbox();
         // handle nulls.
         if (name == null) {
@@ -50,6 +50,7 @@ final class LoginScriptEnvironment implements ScriptEnvironment {
         if (password == null) {
             password = ag.getSystemConfig().getString("password");
         }
+        this.password = password;        
         CommunityPasswordResolver security = new CommunityPasswordResolver();
         Account acc = new Account();
         Group group = new Group();
@@ -121,6 +122,9 @@ final class LoginScriptEnvironment implements ScriptEnvironment {
 
 /* 
 $Log: LoginScriptEnvironment.java,v $
+Revision 1.2  2004/12/22 18:57:01  nw
+fixed bug in pasword storage.
+
 Revision 1.1  2004/12/20 15:59:03  nw
 added factory class to simplfy creation of scripting env. forces login.
  
