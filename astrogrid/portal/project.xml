@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- -->
+<!DOCTYPE project [
+  <!ENTITY cocoon-deps SYSTEM "cocoon-dependencies.xml">
+]>
+<!-- -->
 <project
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
@@ -61,12 +66,33 @@
   </developers>
   
   <dependencies>
+    <!--
+      AstroGrid dependencies.
+      -->
     <dependency>
       <id>astrogrid-datacenter</id>
       <version>SNAPSHOT</version>
       <jar>astrogrid-datacenter-client-SNAPSHOT.jar</jar>
     </dependency>
 
+    <!--
+      Utilities.
+      -->
+    <dependency>
+      <id>junit</id>
+      <version>3.8.1</version>
+    </dependency>
+
+    <dependency>
+      <id>log4j</id>
+      <version>1.2.8</version>
+    </dependency>
+
+    <!--
+      Cocoon.
+      -->
+      &cocoon-deps;
+<!--
     <dependency>
       <id>avalon-framework</id>
       <version>4.1.4</version>
@@ -91,16 +117,7 @@
       <id>excalibur-sourceresolve</id>
       <version>20030715</version>
     </dependency>
-
-    <dependency>
-      <id>junit</id>
-      <version>3.8.1</version>
-    </dependency>
-
-    <dependency>
-      <id>log4j</id>
-      <version>1.2.8</version>
-    </dependency>
+-->
   </dependencies>
   
   <build>
