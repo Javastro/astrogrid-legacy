@@ -11,7 +11,9 @@
     <p>
       <form action="html-driver" method="POST">
        <p>
-         Workflow: <textarea name="workflow" rows='20' cols='100%'/><br />
+         Workflow:
+<textarea name="workflow" rows='20' cols='100%'/>
+         <br />
        </p>
        <p>
           <input type="submit" value="Submit Workflow" />
