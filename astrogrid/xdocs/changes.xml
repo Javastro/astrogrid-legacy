@@ -4,6 +4,14 @@
     <author email="jdt@roe.ac.uk">John Taylor</author>
   </properties>
   <body>
+    <release  date="23/11/04" description="New projects">
+      <action dev="nw" type="add"  >
+        New Aggregate project.
+      </action>
+      <action dev="dm" type="add"  >
+        New FileManager project.
+      </action>                 
+    </release>    
     <release version="astrogrid-portal-SNAPSHOT" date="16/11/04" description="head rebuild">
       <action dev="rtp" type="fix" issue="683" >
         Browsing for Tools picks up Extraneous Material
