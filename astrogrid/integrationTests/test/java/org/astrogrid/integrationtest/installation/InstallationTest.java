@@ -1,4 +1,4 @@
-/* $Id: InstallationTest.java,v 1.3 2004/03/30 00:17:31 jdt Exp $
+/* $Id: InstallationTest.java,v 1.4 2004/03/30 16:52:23 jdt Exp $
  * Created on Mar 29, 2004 by jdt
  * Copyright (C) AstroGrid. All rights reserved.
  * This software is published under the terms of the AstroGrid
@@ -62,10 +62,13 @@ public final class InstallationTest extends TestCase {
      */
     private Collection getURLKeys() {
         final Collection keys = new ArrayList();
+        keys.add("registry.registry.endpoint");
+        keys.add("registry.admin.endpoint");
+        keys.add("registry.harvest.endpoint");
+                  
         keys.add("appController.endPoint");
         keys.add("community.endPoint");
         keys.add("mySpaceEndPoint");
-        keys.add("merlinDatacenterEndPoint");
         keys.add("portalWebSite");
         keys.add("jobControlerEndPoint");
         keys.add("stdDatacenterEndPoint");
@@ -118,6 +121,9 @@ public final class InstallationTest extends TestCase {
 
 /*
  *  $Log: InstallationTest.java,v $
+ *  Revision 1.4  2004/03/30 16:52:23  jdt
+ *  added registry endpoints
+ *
  *  Revision 1.3  2004/03/30 00:17:31  jdt
  *  added a couple more urls to test.
  *
