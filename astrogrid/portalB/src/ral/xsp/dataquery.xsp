@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+
+<xsp:page language="java"
+ xmlns:xsp="http://apache.org/xsp"
+>
+<xsp:comment>
+
+XSP page to process the Astrogrid DataQuery redirect.
+
+Brian McIlwrath, Astrogrid, RAL>
+
+3rd July 2003
+</xsp:comment>
+
+<xsp:structure>
+   <xsp:include>org.apache.cocoon.environment.Session</xsp:include>
+</xsp:structure>
+
+<page>
+   <title>DataQuery page</title>
+
+<xsp:logic>
+    Session session = null;
+    String user = null;
+    String community = null;
+    String redirect = "/DataQuery/servlets/DataQuery.jsp";
+    session = request.getSession(false);
+    if(session != null) {
+       user = (String) session.getAttribute("user");
+       community = (String) session.getAttribute("community");
+       community = community.toLowerCase();
+    }
+    if( user != null &amp;&amp; community != null){
+       redirect =redirect+"?username="+user+"&amp;community="+community;
+    }
+   xspAttr.clear();
+
+   xspAttr.addAttribute(
+                        "",
+                        "url",
+                        "url",
+                        "CDATA",
+                        redirect
+                        );
+   this.contentHandler.startElement(
+                                    "",
+                                    "redirect",
+                                    "redirect",
+                                    xspAttr
+                                    );
+
+   xspAttr.clear();
+   this.contentHandler.endElement(
+                                  "",
+                                  "redirect",
+                                  "redirect"
+                                  );
+</xsp:logic>
+
+</page>
+
+</xsp:page>
