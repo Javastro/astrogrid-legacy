@@ -10,7 +10,8 @@
     <xsl:include href="display-parameters.xsl"/>
      
     <xsl:template match="workflow">
-    <ag-div>       
+    <ag-div>   
+        
 
     <script language="javascript">
         
@@ -108,7 +109,7 @@
     }
     
             
-    </script>                         
+    </script>                             
       <table border="0" cellpadding="0" cellspacing="0">  
         <xsl:apply-templates select="*" mode="job-status"/>
       </table>          
@@ -130,7 +131,7 @@
           </xsl:element>
           <xsl:choose>                                      
                                                                                                           
-            <xsl:when test="name() = 'step'">  <!-- STEP -->                                     
+            <xsl:when test="name() = 'step'"> <!-- STEP -->                                     
               <xsl:attribute name="background">  <!-- prevent gaps appearing in 'trunk' when parameters are viewed - not req'd with step -->
               </xsl:attribute>                    
                 <img width="70" height="25" border="0" alt="step">
@@ -139,7 +140,7 @@
                   <xsl:attribute name="index"><xsl:value-of select="count(preceding-sibling::*)"/></xsl:attribute>
                   <xsl:attribute name="onMouseOver">
                                  change_image('<xsl:value-of select="@key"/>','<xsl:value-of select="name()"/>');                                                                                  
-                                 show_table('<xsl:value-of select="@key"/>','<xsl:if test="count(child::*[(name()='executionRecord')]) &lt; 2">true</xsl:if>');
+                                 show_table('<xsl:value-of select="@key"/>','<xsl:if test="count(descendant::*[(name()='executionRecord')]) &lt; 2">true</xsl:if>');
                   </xsl:attribute>
                   <xsl:attribute name="onClick">toggle('parameters:<xsl:value-of select="@key"/>');</xsl:attribute>
                 </img>
@@ -166,14 +167,14 @@
                   </td>              
             </xsl:when>
             
-            <xsl:when test="name() = 'script'">  <!-- SCRIPT -->                                                         
+            <xsl:when test="name() = 'script'"> <!-- SCRIPT -->                                                         
               <img width="70" height="25" border="0" alt="script">
                 <xsl:attribute name="src"><xsl:value-of select="$image_path"/><xsl:value-of select="name()"/>.gif</xsl:attribute>
                 <xsl:attribute name="id"><xsl:value-of select="@key"/></xsl:attribute>
                 <xsl:attribute name="index"><xsl:value-of select="count(preceding-sibling::*)"/></xsl:attribute>                  
                 <xsl:attribute name="onMouseOver">
                                change_image('<xsl:value-of select="@key"/>','<xsl:value-of select="name()"/>');                                                                                  
-                               show_table('<xsl:value-of select="@key"/>','<xsl:if test="count(child::*[(name()='executionRecord')]) &lt; 2">true</xsl:if>');
+                               show_table('<xsl:value-of select="@key"/>','<xsl:if test="count(descendant::*[(name()='executionRecord')]) &lt; 2">true</xsl:if>');
                 </xsl:attribute>
               </img>  
               <td colspan="30" valign="middle" style="color: blue;">
@@ -181,7 +182,7 @@
               </td>
             </xsl:when>            
                     
-            <xsl:otherwise>  <!--  All OTHER ACTIVIIES -->            
+            <xsl:otherwise> <!--  All OTHER ACTIVIIES -->            
               <img width="70" height="25" border="0">
                 <xsl:attribute name="src"><xsl:value-of select="$image_path"/><xsl:value-of select="name()"/>.gif</xsl:attribute>
                 <xsl:attribute name="id"><xsl:value-of select="@key"/></xsl:attribute>
@@ -189,7 +190,7 @@
                 <xsl:attribute name="alt"><xsl:value-of select="name()"/></xsl:attribute>
                 <xsl:attribute name="onMouseOver">
                                change_image('<xsl:value-of select="@key"/>','<xsl:value-of select="name()"/>');                                                                                  
-                               show_table('<xsl:value-of select="@key"/>','<xsl:if test="count(child::*[(name()='executionRecord')]) &lt; 2">true</xsl:if>');
+                               show_table('<xsl:value-of select="@key"/>','<xsl:if test="count(descendant::*[(name()='executionRecord')]) &lt; 2">true</xsl:if>');
                 </xsl:attribute>                               
               </img>                                        
             </xsl:otherwise>                                                                                                                    
@@ -252,7 +253,8 @@
   <xsl:template match="tool" mode="job-status"/>  
   <xsl:template match="inputParam" mode="job-status"/>  
   <xsl:template match="outputParam" mode="job-status"/>  
-  <xsl:template match="executionRecord" mode="job-status"/>  
+  <xsl:template match="executionRecord" mode="job-status"/>
+  <xsl:template match="workflowExecutionRecord" mode="job-status"/>  
   <xsl:template match="message" mode="job-status"/>      
 
     <!-- Default, copy all and apply templates -->
