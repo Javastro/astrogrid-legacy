@@ -85,8 +85,8 @@
 		<!--+
 			| The rest is basically copy-paste from jar:deploy-snapshot.
 		<maven:snapshot project="${pom}"/>
-		<core:set var="artifactFile" value="${pom.groupId}.war"/>
-		<core:set var="snapshotFile" value="${pom.groupId}-${snapshotVersion}.war"/>
+		<core:set var="artifactFile" value="${pom.artifactId}.war"/>
+		<core:set var="snapshotFile" value="${pom.artifactId}-${snapshotVersion}.war"/>
 		<ant:move file="${maven.build.dir}/${artifactFile}" toFile="${maven.build.dir}/${snapshotFile}"/>
 		<ant:property name="jardir__" value="${maven.repo.local}/${pom.artifactDirectory}/jars"/>
 		<ant:mkdir dir="${jardir__}"/>
@@ -120,8 +120,8 @@
 			| The rest is basically copy-paste from jar:deploy-snapshot.
 			+-->
 		<maven:snapshot project="${pom}"/>
-		<core:set var="artifactFile" value="${pom.groupId}.war"/>
-		<core:set var="snapshotFile" value="${pom.groupId}-${snapshotVersion}.war"/>
+		<core:set var="artifactFile" value="${pom.artifactId}.war"/>
+		<core:set var="snapshotFile" value="${pom.artifactId}-${snapshotVersion}.war"/>
 		<ant:move file="${maven.build.dir}/${artifactFile}" toFile="${maven.build.dir}/${snapshotFile}"/>
 		<!--
 		<core:set var="maven.final.name" value="${snapshotSignature}"/>
