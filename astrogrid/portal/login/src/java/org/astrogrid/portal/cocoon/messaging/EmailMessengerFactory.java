@@ -1,4 +1,4 @@
-/* $Id: EmailMessengerFactory.java,v 1.3 2004/03/19 13:02:25 jdt Exp $
+/* $Id: EmailMessengerFactory.java,v 1.4 2004/03/24 18:31:33 jdt Exp $
  * Created on Mar 14, 2004 by jdt
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -36,36 +36,32 @@ public final class EmailMessengerFactory  {
         props.setProperty("mail.password", password);
         props.setProperty("mail.from", returnAddress);
         session = Session.getInstance(props,null);
-
-    }
+   }
 
     /**
      * Create a messenger that can be used to message these recipients
      * @param recipients comma separated list of recipients
      * @return an EmailMessenger
      */
-    public EmailMessenger getEmailMessenger(final String recipients) {
+    public Messenger getEmailMessenger(final String recipients) {
             return new EmailMessenger(session, recipients);
     }
     
-    /** 
-     * Quick test
-     * 
-     * @param args server, user, password, return address, destinationAddress
-     * @throws MessengerException but hopefully not
+    /**
+     * Create a messenger that can be used to message these recipients
+     * @param recipients comma separated list of recipients
+     * @param mock return a mock messenger if true
+     * @return an EmailMessenger
      */
-    public static void main(final String[] args) throws MessengerException {
-        if (args.length!=5) {
-            System.out.println("Usage: server user password returnAddress destination");
-            return;
+    public Messenger getEmailMessenger(final String recipients,final boolean mock) {
+        if (mock) {
+            return new MockEmailMessenger(session, recipients);
+        } else {
+            return getEmailMessenger(recipients);
         }
-        final EmailMessengerFactory factory = new EmailMessengerFactory(args[0],args[1],args[2],args[3]);
-        final EmailMessenger messenger = factory.getEmailMessenger(args[4]);
-        messenger.sendMessage("Test message 1", "Hello!");
-        messenger.sendMessage("Test message 2", "Hello again!");
-        final EmailMessenger messenger2 = factory.getEmailMessenger(args[4]);
-        messenger2.sendMessage("Test message 3", "Goodbye!");
     }
+    
+
     
 }
 
@@ -74,6 +70,12 @@ public final class EmailMessengerFactory  {
 
 /*
  *  $Log: EmailMessengerFactory.java,v $
+ *  Revision 1.4  2004/03/24 18:31:33  jdt
+ *  Merge from PLGN_JDT_bz#201
+ *
+ *  Revision 1.3.2.1  2004/03/23 00:47:39  jdt
+ *  added facility to return a mock mailer for testing
+ *
  *  Revision 1.3  2004/03/19 13:02:25  jdt
  *  Pruned the log messages - they cause conflicts on merge, 
  *  best just to reduce them to the merge message.

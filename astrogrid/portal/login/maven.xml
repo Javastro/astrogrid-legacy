@@ -1,11 +1,17 @@
 <?xml version="1.0" ?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/maven.xml,v $</cvs:source>
-    | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/01/09 16:05:42 $</cvs:date>
-    | <cvs:version>$Revision: 1.6 $</cvs:version>
+    | <cvs:author>$Author: jdt $</cvs:author>
+    | <cvs:date>$Date: 2004/03/24 18:31:33 $</cvs:date>
+    | <cvs:version>$Revision: 1.7 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.7  2004/03/24 18:31:33  jdt
+    |   Merge from PLGN_JDT_bz#201
+    |
+    |   Revision 1.6.16.1  2004/03/24 18:17:16  jdt
+    |   Copies itsself to the parent project to allow the building of an uberwar.
+    |
     |   Revision 1.6  2004/01/09 16:05:42  dave
     |   Tried adding menu items
     |
@@ -138,6 +144,12 @@
 				<ant:include name="maven.log"/>
 			</ant:fileset>
 		</ant:move>
-	</postGoal>
+		
+	    <echo message="${webapp.dir}"/>
+        <copy todir="../target/astrogrid-portal" overwrite="yes">
+            <fileset dir="${webapp.dir}" />
+        </copy> 
+    </postGoal>
+
 
 </project>

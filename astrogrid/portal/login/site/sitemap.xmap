@@ -2,8 +2,8 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/site/sitemap.xmap,v $</cvs:source>
     | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2004/03/19 14:13:00 $</cvs:date>
-    | <cvs:version>$Revision: 1.12 $</cvs:version>
+    | <cvs:date>$Date: 2004/03/24 18:31:33 $</cvs:date>
+    | <cvs:version>$Revision: 1.13 $</cvs:version>
     +-->
 <map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
 <!-- ======================== Components ================================ -->
@@ -23,7 +23,8 @@
       <map:matchers default="wildcard" />
 
       <map:actions>
-         <map:action name="astro-login" src="org.astrogrid.portal.cocoon.common.LoginAction" />
+         <map:action name="astro-login" src="org.astrogrid.portal.cocoon.common.LoginAction" logger="astrogrid.action.astro-login"/>
+         <map:action name="astro-message-admin" src="org.astrogrid.portal.cocoon.common.MessageToAdminAction" logger="astrogrid.action.astro-message-admin"/>
       </map:actions>
    </map:components>
 
@@ -83,7 +84,8 @@
                <!--validation succeeded-->
                <map:act type="astro-login">
                   <!--login successful-->
-                  <map:generate type="file" src="xml/login-pass.xml" />
+                  <map:generate type="serverpages" src="xsp/login-pass.xsp" />
+                  <map:transform type="xslt" src="style/info.xsl" />
                   <map:serialize type="xml" />
                </map:act>
                <!-- login unsuccessful -->
@@ -113,10 +115,16 @@
                <map:parameter name="descriptor" value="cocoon:/defs/logon-def.xml" />
                <map:parameter name="validate-set" value="register" />
                <!--validation succeeded-->
-               <!--map:act put action here
-							 -->
-               <!-- Registration successful -->
-               <map:generate type="file" src="xml/registered.xml" />
+               <map:act type="astro-message-admin">
+                  <map:parameter name="subject" value="Registration Request" />
+                  <map:parameter name="message" value="A new user has requested registration.  Details below." />
+                  <!--Registration successful-->
+                   <map:generate type="file" src="xml/registered.xml" />
+                   <map:transform type="xslt" src="style/info.xsl" />
+                   <map:serialize type="xml" />
+               </map:act>
+               <!-- Registration unsuccessful -->
+               <map:generate type="file" src="xml/failed.xml" />
                <map:transform type="xslt" src="style/info.xsl" />
                <map:serialize type="xml" />
             </map:act>
@@ -135,13 +143,20 @@
                <map:parameter name="descriptor" value="cocoon:/defs/logon-def.xml" />
                <map:parameter name="validate" value="email" />
                <!--validation succeeded-->
-               <!--map:act put action here
-							 -->
-               <!-- Registration successful -->
-               <map:generate type="file" src="xml/reminderrequested.xml" />
+               <map:act type="astro-message-admin">
+                  <map:parameter name="subject" value="Reminder Request" />
+                  <map:parameter name="message" value="A user has requested password reminder.  Details below." />
+ 
+                  <!--Reminder successful-->
+                   <map:generate type="file" src="xml/reminderrequested.xml" />
+                   <map:transform type="xslt" src="style/info.xsl" />
+                   <map:serialize type="xml" />
+               </map:act>
+               <!-- Reminder unsuccessful -->
+               <map:generate type="file" src="xml/failed.xml" />
                <map:transform type="xslt" src="style/info.xsl" />
                <map:serialize type="xml" />
-            </map:act>
+              </map:act>
             <!--if the validation fails (or it's first time thru) -->
             <map:generate type="serverpages" src="xsp/reminder.xsp"/>
             <map:transform type="xslt" src="style/logon.xsl" />
@@ -170,6 +185,13 @@
 <!--+
     | <cvs:log>
     |   $Log: sitemap.xmap,v $
+    |   Revision 1.13  2004/03/24 18:31:33  jdt
+    |   Merge from PLGN_JDT_bz#201
+    |
+    |   Revision 1.12.2.3  2004/03/24 18:15:44  jdt
+    |   XSP now used when user logs in so that they can be greeted 
+    |   by name.
+    |
     |   Revision 1.12  2004/03/19 14:13:00  jdt
     |   Merge from PLGN_JDT_bz199b.
     |   Added log out page.

@@ -2,5 +2,4 @@
 target
 .checkstyle
 .classpath
-maven.log
-
+*.log

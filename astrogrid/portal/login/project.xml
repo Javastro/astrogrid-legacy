@@ -13,32 +13,29 @@
 			| Astrogrid Common
 			+-->
 		<dependency>
-			<groupId>astrogrid-common</groupId>
+			<groupId>org.astrogrid</groupId>
 			<artifactId>astrogrid-common</artifactId>
 			<version>SNAPSHOT</version>
 			<properties>
 				<war.bundle>true</war.bundle>
 			</properties>
 		</dependency>
-
-
-
 		<!--+
 			| Community client jars
 			+-->
 		<dependency>
-			<groupId>astrogrid-community</groupId>
-			<artifactId>astrogrid-community-auth-client</artifactId>
-			<version>1.4.1</version>
+			<groupId>org.astrogrid</groupId>
+			<artifactId>astrogrid-community-client</artifactId>
+			<version>SNAPSHOT</version>
 			<properties>
 				<war.bundle>true</war.bundle>
 			</properties>
 		</dependency>
 
 		<dependency>
-			<groupId>astrogrid-community</groupId>
-			<artifactId>astrogrid-community-policy-client</artifactId>
-			<version>1.4.1</version>
+			<groupId>org.astrogrid</groupId>
+			<artifactId>astrogrid-community-common</artifactId>
+			<version>SNAPSHOT</version>
 			<properties>
 				<war.bundle>true</war.bundle>
 			</properties>
@@ -77,6 +74,19 @@
 				<war.bundle>true</war.bundle>
 			</properties>
 		</dependency>
+		
+		<!--+
+		    | Mock maker needed only for testing
+		    +-->
+		 <dependency>
+			<artifactId>mmmockobjects</artifactId>
+			<groupId>mmmockobjects</groupId>
+			<version>1.11.0</version>
+			<properties>
+				<war.bundle>false</war.bundle>
+			</properties>
+		</dependency>
+		    
 
 		<!-- DO NOT INCLUDE PARENT DEPENDENCIES IN WAR -->
 		<!--************RESTORE THIS SECTION TO HEAD VALUE ON MERGE**************-->

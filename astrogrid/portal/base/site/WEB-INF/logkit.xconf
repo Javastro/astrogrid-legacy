@@ -110,6 +110,15 @@
       </format>
       <append>false</append>
     </cocoon>
+    
+    <!-- The logger for Astrogrid components -->
+    <cocoon id="astrogrid-log">
+      <filename>${context-root}/WEB-INF/logs/astrogrid.log</filename>
+      <format type="cocoon">
+        %7.7{priority} %{time}   [%{category}] (%{uri}) %{thread}/%{class:short}: %{message}\n%{throwable}
+      </format>
+      <append>false</append>
+    </cocoon>
 </targets>
 
   <categories>
@@ -197,6 +206,11 @@
 
     <category log-level="DEBUG" name="xslt">
       <log-target id-ref="xslt"/>
+      <log-target id-ref="sitemap"/>
+    </category>
+
+   <category log-level="DEBUG" name="sitemap.astrogrid">
+      <log-target id-ref="astrogrid-log"/>
       <log-target id-ref="sitemap"/>
     </category>
 </categories>
