@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.81 2004/08/20 14:35:24 nw Exp $ -->
+<!-- $Id: maven.xml,v 1.82 2004/08/20 15:18:30 dave Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -999,23 +999,53 @@
   <taskdef name="tomcat-undeploy"  classname="org.apache.catalina.ant.UndeployTask" classpathref="maven.dependency.classpath"/>
 </goal>
 
-        <goal name="toad">
-                <!--+
-                        | Clean out the target directory.
-                        +-->
-                <attainGoal name="clean:clean"/>
-                <!--+
-                        | Initialise the integration env.
-                        +-->
-                <attainGoal name="init"/>
-                <!--+
-                        | Deploy our components.
-                        +-->
-                <attainGoal name="deploy-all"/>
-                <!--+
-                        | Run the integration tests.
-                <attainGoal name="int-test"/>
-                        +-->
-                <attainGoal name="astrogrid-build-site"/>
-        </goal>
+
+    <goal name="frog">
+        <!--+
+            | Clean out the target directory.
+            +-->
+        <attainGoal name="clean:clean"/>
+        <!--+
+            | Initialise the integration env.
+            +-->
+        <attainGoal name="init"/>
+        <!--+
+            | Deploy our components.
+            +-->
+        <attainGoal name="common-libs-deploy"/>
+        <attainGoal name="configuration-deploy"/>
+        <attainGoal name="reg-deploy"/>
+        <attainGoal name="myspace-deploy"/>
+        <attainGoal name="filestore-deploy"/>
+        <attainGoal name="community-toolkit"/>
+        <attainGoal name="setup-working-dir"/>
+        <attainGoal name="setup-registry"/>
+        <attainGoal name="setup-filestore"/>
+        <attainGoal name="setup-myspace"/>
+        <!--+
+            | Run the integration tests.
+            +-->
+        <attainGoal name="int-test"/>
+    </goal>
+
+    <goal name="toad">
+        <!--+
+            | Clean out the target directory.
+            +-->
+        <attainGoal name="clean:clean"/>
+        <!--+
+            | Initialise the integration env.
+            +-->
+        <attainGoal name="init"/>
+        <!--+
+            | Deploy our components.
+            +-->
+        <attainGoal name="deploy-all"/>
+        <!--+
+            | Run the integration tests.
+        <attainGoal name="int-test"/>
+        <attainGoal name="astrogrid-build-site"/>
+            +-->
+        <attainGoal name="int-test"/>
+    </goal>
 </project>

@@ -19,9 +19,13 @@
         label="FILESYSTEM"/>
 -->
 
+    <!--+
+        | This is a temp fix, to point the myspace explorer at localhost:8080.
+        | Eventually, this should be loaded from a config file, registry search or the current account ident.
+        +-->
     <agp-utils:option
         compare-field="myspace-end-point"
-        value="astrogrid:store:myspace:http://twmbarlwm.star.le.ac.uk:8080/astrogrid-mySpace-SNAPSHOT/services/Manager"
+        value="astrogrid:store:myspace:http://localhost:8080/astrogrid-mySpace-SNAPSHOT/services/Manager"
         label="LOCALHOST"/>
     </select>
 </xsp:page>
