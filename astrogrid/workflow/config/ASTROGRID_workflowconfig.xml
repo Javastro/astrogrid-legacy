@@ -74,7 +74,7 @@
     <property name="NAME.1" value="QueryTool" />  
     <property name="NAME.2" value="DataFederation" /> 
     <property name="NAME.3" value="SExtractor" /> 
-    <property name="NAME.5" value="HyperZ" />     
+    <property name="NAME.4" value="HyperZ" />     
   </category>
   
   <!-- QueryTool CATEGORY ========================================================== -->
