@@ -1,5 +1,5 @@
 /*
- * $Id: SkyPoint.java,v 1.1 2004/03/12 04:45:26 mch Exp $
+ * $Id: SkyPoint.java,v 1.2 2004/07/06 16:02:03 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -26,9 +26,19 @@ public interface SkyPoint {
    /** Returns the point as a HTM  */
    public HtmPoint toHtm();
    
+   /** Returns true if the point is the same as the given point (ie RA/DECs match
+    * or HTM values are equal, or RA/DEC match HTM within resolution) */
+   public boolean equals(SkyPoint givenPoint);
+
+   /** Returns true if the point is the same as the given point within the error
+    * circles of each */
+   public boolean equalsWithError(SkyPoint givenPoint);
 }
 /*
  $Log: SkyPoint.java,v $
+ Revision 1.2  2004/07/06 16:02:03  mch
+ Minor tidying up etc
+
  Revision 1.1  2004/03/12 04:45:26  mch
  It05 MCH Refactor
 

@@ -1,5 +1,5 @@
 /*
- * $Id: SkyQuad.java,v 1.1 2004/03/12 04:45:26 mch Exp $
+ * $Id: SkyQuad.java,v 1.2 2004/07/06 16:02:03 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -18,14 +18,34 @@ import java.awt.Dimension;
  */
 
 public class SkyQuad implements SkyRegion {
-
+   
    private SkyPoint minCorner;
    private SkyPoint maxCorner;
    
    public SkyQuad(SkyPoint cornerA, SkyPoint cornerB) {
-      //@todo work out real min vs max
-      this.minCorner = cornerA;
-      this.maxCorner = cornerB;
+
+      minCorner = new RaDecPoint(
+         Math.min(
+            cornerA.toRaDec().getRa().asDegrees(),
+            cornerB.toRaDec().getRa().asDegrees()
+         ),
+         Math.min(
+            cornerA.toRaDec().getDec().asDegrees(),
+            cornerB.toRaDec().getDec().asDegrees()
+         )
+      );
+         
+      maxCorner = new RaDecPoint(
+         Math.max(
+            cornerA.toRaDec().getRa().asDegrees(),
+            cornerB.toRaDec().getRa().asDegrees()
+         ),
+         Math.max(
+            cornerA.toRaDec().getDec().asDegrees(),
+            cornerB.toRaDec().getDec().asDegrees()
+         )
+      );
+         
    }
    
    /** Returns the overall bounds - ie min RA/DEC, max RA/DEC or opposite corner HTMs.
@@ -37,9 +57,43 @@ public class SkyQuad implements SkyRegion {
 
    /** Returns a corner as a point */
    public SkyPoint getMax()   {     return maxCorner; }
+
+   /** Returns true if the given point is inside this region */
+   public boolean contains(SkyPoint givenPoint) {
+      return
+         ((givenPoint.toRaDec().getDec().asDegrees() > minCorner.toRaDec().getDec().asDegrees()) &&
+          (givenPoint.toRaDec().getDec().asDegrees() < maxCorner.toRaDec().getDec().asDegrees()) &&
+          (givenPoint.toRaDec().getRa().asDegrees() > minCorner.toRaDec().getRa().asDegrees()) &&
+          (givenPoint.toRaDec().getRa().asDegrees() < maxCorner.toRaDec().getRa().asDegrees()));
+   }
+   
+   /** Returns true if the given region intersects with this one
+    */
+   public boolean intersects(SkyRegion givenRegion) {
+      
+      if (givenRegion instanceof SkyQuad) {
+         SkyQuad givenQuad = (SkyQuad) givenRegion;
+
+         return (givenQuad.getMax().toRaDec().getRa().asDegrees() > this.getMin().toRaDec().getRa().asDegrees()) &&
+            (givenQuad.getMax().toRaDec().getDec().asDegrees() > this.getMin().toRaDec().getDec().asDegrees()) &&
+            (givenQuad.getMin().toRaDec().getDec().asDegrees() < this.getMax().toRaDec().getDec().asDegrees()) &&
+            (givenQuad.getMin().toRaDec().getRa().asDegrees() < this.getMax().toRaDec().getRa().asDegrees());
+      }
+      else {
+         //if someone's invented a new shape, it might know how to deal with
+         //the intersection, so we can ask it.
+         //danger of looping now?
+         return givenRegion.intersects(this);
+      }
+   
+   }
+
 }
 /*
  $Log: SkyQuad.java,v $
+ Revision 1.2  2004/07/06 16:02:03  mch
+ Minor tidying up etc
+
  Revision 1.1  2004/03/12 04:45:26  mch
  It05 MCH Refactor
 

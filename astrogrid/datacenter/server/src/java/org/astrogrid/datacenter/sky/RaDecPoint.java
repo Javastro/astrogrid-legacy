@@ -1,5 +1,5 @@
 /*
- * $Id: RaDecPoint.java,v 1.1 2004/03/12 04:45:26 mch Exp $
+ * $Id: RaDecPoint.java,v 1.2 2004/07/06 16:02:03 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -19,6 +19,9 @@ public class RaDecPoint implements SkyPoint {
    private Angle ra;
    private Angle dec;
 
+   /** resolution in arc seconds */
+   private int resolution;
+   
    private HtmPoint htm = null;
    
    /** Constructs a Sky Point from the given Angles */
@@ -33,15 +36,14 @@ public class RaDecPoint implements SkyPoint {
    }
    
    /** Returns the RA of the point  */
-   public Angle getRa() {
-      return ra;
-   }
+   public Angle getRa() {      return ra;   }
    
-   /** Returns the DEC of the point in decimal degrees  */
-   public Angle getDecDeg() {
-      return dec;
-   }
+   /** Returns the DEC of the point */
+   public Angle getDec() {      return dec;   }
    
+   /** Returns itself - for SkyPoint implementation */
+   public RaDecPoint toRaDec() {      return this;   }
+
    /** Returns the point as an HTM.  Normally this will return the
     * same instance but do not assume this */
    public HtmPoint toHtm() {
@@ -53,13 +55,28 @@ public class RaDecPoint implements SkyPoint {
       return htm;
    }
 
-   /** Returns itself - for SkyPoint implementation */
-   public RaDecPoint toRaDec() {
-      return this;
+   /** Returns true if the point is the same as the given point (ie HTMs match
+    * at lowest resolution) */
+   public boolean equals(SkyPoint givenPoint) {
+      // TODO
+      throw new UnsupportedOperationException();
    }
+   
+   /** Returns true if the point is the same as the given point within the error
+    * circles of each */
+   public boolean equalsWithError(SkyPoint givenPoint) {
+      // TODO
+      throw new UnsupportedOperationException();
+   }
+   
+
+
 }
 /*
  $Log: RaDecPoint.java,v $
+ Revision 1.2  2004/07/06 16:02:03  mch
+ Minor tidying up etc
+
  Revision 1.1  2004/03/12 04:45:26  mch
  It05 MCH Refactor
 
