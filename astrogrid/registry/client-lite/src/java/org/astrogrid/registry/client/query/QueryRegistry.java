@@ -198,7 +198,12 @@ public class QueryRegistry implements RegistryService {
       //Element currentRoot = adql.getDocumentElement();
       Document resultDoc = null;
       Element newRoot = adql.createElementNS(NAMESPACE_URI, "Search");
-      String value = "http://www.ivoa.net/xml/VOResource/v" + reg_default_version;
+      String versionNumber = null;
+      versionNumber = RegistryServerHelper.getRegistryVersionFromNode(adql.getDocumentElement());
+      if(versionNumber == null) {
+          versionNumber =  reg_default_version;
+      }
+      String value = "http://www.ivoa.net/xml/VOResource/v" + versionNumber;
       newRoot.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:vr",value);
       NodeList nl = adql.getElementsByTagNameNS("*","Where");
       
