@@ -1,5 +1,5 @@
 /*
- * $Id: JobNotifyServiceListener.java,v 1.4 2003/11/17 20:48:44 mch Exp $
+ * $Id: JobNotifyServiceListener.java,v 1.5 2003/11/17 21:41:30 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -17,6 +17,7 @@ import org.apache.axis.encoding.XMLType;
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.astrogrid.datacenter.snippet.DocHelper;
+import org.astrogrid.datacenter.webnotify.JobMonitorNotifier;
 import org.astrogrid.log.Log;
 import org.w3c.dom.Document;
 
@@ -30,7 +31,8 @@ import org.w3c.dom.Document;
 
 public class JobNotifyServiceListener extends WebNotifyServiceListener
 {
-
+   JobMonitorNotifier notifier = null;
+   
    /**
     * Create a listener which will send service updates to the given URL
     *
@@ -39,6 +41,7 @@ public class JobNotifyServiceListener extends WebNotifyServiceListener
    public JobNotifyServiceListener(URL aClientListener)
    {
       super(aClientListener);
+      notifier = new JobMonitorNotifier(aClientListener);
    }
 
    /** Called by the service when it has a
@@ -49,48 +52,17 @@ public class JobNotifyServiceListener extends WebNotifyServiceListener
    {
       Log.trace("JobNotifyServiceListener.serviceStatusChanged("+querier.getStatus()+")") ;
 
-      try {
-//         String
-//            requestTemplate = Configuration.getProperty( MONITOR_REQUEST_TEMPLATE) ;
-
-         //make list of method parameters
-//       Object [] parms = new Object[]
-//       {
-//          MessageFormat.format(requestTemplate,
-//                               new Object[] { newStatus.getText(), queryId }
-//                               )
-//       } ;
-         Document statusDoc = DocHelper.wrap(ServiceStatusHelper.makeJobNotificationTag(querier));
-
-         Object[] parms = new Object[]
-         {
-            XMLUtils.DocumentToString(statusDoc.getOwnerDocument())
-         };
-
-         Call call = (Call) new Service().createCall() ;
-
-         call.setTargetEndpointAddress( clientListener ) ;
-         call.setOperationName( "monitorJob" ) ;  // Set method to invoke
-         call.addParameter("monitorJobXML", XMLType.XSD_STRING,ParameterMode.IN);
-         call.setReturnType(XMLType.XSD_STRING);
-
-         call.invokeOneWay( parms ) ;
-
-
-      }
-      catch (ServiceException e)
-      {
-         Log.logError("Could not connect to client "+clientListener+" to send status update", e);
-      }
+      notifier.tellServer(querier.getHandle(), querier.getStatus());
 
       Log.trace("exit JobNotifyServiceListener.serviceStatusChanged("+querier.getStatus()+")") ;
-
-
    }
 }
 
 /*
 $Log: JobNotifyServiceListener.java,v $
+Revision 1.5  2003/11/17 21:41:30  mch
+Moved notification stuff to client
+
 Revision 1.4  2003/11/17 20:48:44  mch
 Adding Adql-like access to Nvo cone searches
 

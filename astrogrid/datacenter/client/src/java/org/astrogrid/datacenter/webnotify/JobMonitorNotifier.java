@@ -5,32 +5,35 @@
 
 package org.astrogrid.datacenter.webnotify;
 
+import java.net.URL;
+import java.util.Date;
 import javax.xml.rpc.ParameterMode;
 import javax.xml.rpc.ServiceException;
 import org.apache.axis.client.Call;
 import org.apache.axis.client.Service;
 import org.apache.axis.encoding.XMLType;
 import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.datacenter.service.ServiceStatusHelper;
+import org.astrogrid.datacenter.query.QueryStatus;
 import org.astrogrid.datacenter.snippet.DocHelper;
 import org.astrogrid.log.Log;
 import org.w3c.dom.Document;
 
 /**
+ * Class to notify JES job monitor server
  *
  * @author M Hill
  */
 
 public class JobMonitorNotifier
 {
-   private String endPoint = null;
+   private URL endPoint = null;
    
-   public JobMonitorNotifier(String givenEndPoint)
+   public JobMonitorNotifier(URL givenEndPoint)
    {
       this.endPoint = givenEndPoint;
    }
    
-   public void notifyServer()
+   public void tellServer(String queryId, QueryStatus status)
    {
       try {
 //         String
@@ -43,7 +46,7 @@ public class JobMonitorNotifier
 //                               new Object[] { newStatus.getText(), queryId }
 //                               )
 //       } ;
-         Document statusDoc = DocHelper.wrap(ServiceStatusHelper.makeJobNotificationTag(querier));
+         Document statusDoc = DocHelper.wrap(makeJobNotificationTag(queryId, status));
 
          Object[] parms = new Object[]
          {
@@ -67,11 +70,37 @@ public class JobMonitorNotifier
       }
 
    }
+
+    /**
+      * Returns an Iteration 02 job notification tag with status included.  The
+      * It02 template was this:
+      * <pre>
+  <?xml version="1.0" encoding="UTF8"?>
+  <!-- Template for making SOAP requests to the JobMonitor -->
+  <job name="{0}"
+       userid="{1}"
+       community="{2}"
+       jobURN="{3}"
+       time="{4}" >
+     <jobstep name="{5}" stepNumber="{6}" status="{7}"/>
+  </job>
+     </pre>
+      */
+     public static String makeJobNotificationTag(String queryId, QueryStatus status)
+     {
+        return
+              "<job name='"+queryId+"'  time="+new Date()+"' >"+
+                 "<jobstep name='"+queryId+"' status='"+status+"'/>"+
+              "</job>";
+     }
    
 }
 
 /*
 $Log: JobMonitorNotifier.java,v $
+Revision 1.2  2003/11/17 21:41:16  mch
+Moved notification stuff to client
+
 Revision 1.1  2003/11/17 20:47:57  mch
 Adding Adql-like access to Nvo cone searches
 
