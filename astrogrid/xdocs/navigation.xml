@@ -63,6 +63,9 @@
                     href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-workflow-objects-0.?-b*.jar" />
                 <item name="Xmldb" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-xmldb-0.?-b*.jar"/>    
             </item>
+            <item name="Deployment Scripts" href="/installers.html" collapse="true">
+                <item name="All" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-*-deploy*-b*.jar"/>
+            </item>            
             <!--item name="Distributions" href="/downloaddocs/distributions.html" collapse="true">
 				<item name="Community - complete me" href=""/>
 			</item-->
