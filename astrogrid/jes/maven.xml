@@ -36,7 +36,7 @@
   <echo message="Copying xml templates and properties across to src directory"/>
 	<copy todir="${maven.build.dest}" overwrite="yes">
 		<fileset dir="${maven.conf.dir}"> 
-			<exclude name = "ASTROGRID_jesconfig.xml"/> <!-- exclude this because we don't want to overwrite an edited one-->
+			<!--<exclude name = "ASTROGRID_jesconfig.xml"/>--><!--temporary, don't exclude this , needs to sit on classpath, so file will get wiped following any redeployment anyway--><!-- exclude this because we don't want to overwrite an edited one-->
 		</fileset>
 	</copy>
 	<echo message="Copying generated site ${maven.docs.dest} across to webapp ${maven.war.webapp.dir}/maven"/>

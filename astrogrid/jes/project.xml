@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by John Taylor (ROE) -->
-<!-- $Id: project.xml,v 1.28 2003/12/08 10:44:54 jdt Exp $ -->
+<!-- $Id: project.xml,v 1.29 2003/12/09 16:48:01 jdt Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="maven-project.xsd">
 	<pomVersion>3</pomVersion>
 	<id>astrogrid-jes</id>
@@ -224,6 +224,9 @@
 			<directory>${basedir}</directory>
 			<includes>
 				<include>src/webapp/WEB-INF/server-config.wsdd</include>
+				<include>${maven.build.dest}/*.xmltemplate</include>
+				<include>${maven.build.dest}/*.xml</include>
+				<include>${maven.build.dest}/*.properties</include>
 			</includes>
 		</resource>
 	</resources>
