@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.2 2004/04/06 12:08:30 nw Exp $
+/*$Id: AllTests.java,v 1.3 2004/04/08 14:50:54 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,13 +28,16 @@ public class AllTests {
         suite.addTest(new TestSuite(JesIntegrationTest.class));
         suite.addTest(new TestSuite(MySpaceIntegrationTest.class));
         suite.addTest(new TestSuite(RegistryIntegrationTest.class));
-        suite.addTest(new TestSuite(WorkflowManagerIntegrationTest.class));
+        suite.addTest(new TestSuite(WorkflowEndToEndTest.class));
         //$JUnit-END$
         return suite;
     }
 }
 /* 
 $Log: AllTests.java,v $
+Revision 1.3  2004/04/08 14:50:54  nw
+polished up the workflow integratioin tests
+
 Revision 1.2  2004/04/06 12:08:30  nw
 fixes
 

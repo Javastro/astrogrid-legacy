@@ -1,4 +1,4 @@
-/*$Id: JesIntegrationTest.java,v 1.1 2004/03/16 17:48:34 nw Exp $
+/*$Id: JesIntegrationTest.java,v 1.2 2004/04/08 14:50:54 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,14 +10,16 @@
 **/
 package org.astrogrid.workflow.integration;
 
-import org.astrogrid.community.beans.v1.Account;
+import org.astrogrid.jes.delegate.JesDelegateException;
 import org.astrogrid.jes.delegate.JobController;
 import org.astrogrid.jes.delegate.JobSummary;
 import org.astrogrid.scripting.Service;
+import org.astrogrid.workflow.beans.v1.Workflow;
+import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
 import java.util.List;
 
-/**
+/** Test jes service is happy.
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Mar-2004
  *
  */
@@ -39,14 +41,41 @@ public class JesIntegrationTest extends AbstractTestForIntegration {
     }
     protected Service serv;
     protected JobController delegate;
+
     
-    public void testReadJobList() throws Exception{
-        Account acc = ag.getObjectHelper().createAccount("noel","jodrell");
+    public void testSubmitListReadDeleteJob() throws Exception {
+        // wf is an empty workflow - no steps. jes should be able to handle these.
+        JobURN urn = delegate.submitWorkflow(wf);
+        assertNotNull("null urn returned by submission",urn);        
+
+        //list
         JobSummary[] arr = delegate.readJobList(acc);
-        assertNotNull(arr);
+        assertNotNull("null job list returned",arr);
+        assertTrue("empty job list returned",arr.length > 0);
+        
+        boolean found = false;
         for (int i = 0; i < arr.length; i++) {
-            System.out.println(arr[i].getName());
-        }
+            if (arr[i].getJobURN().getContent().equals(urn.getContent())) {
+                found = true;
+            }
+        }        
+        assertTrue("newly submitted job not in list",found);
+        
+        //read
+        Workflow wf1 = delegate.readJob(urn);
+        assertNotNull("read workflow is null",wf1);
+        assertEquals("read workflow does not have expected urn",urn.getContent(),wf1.getJobExecutionRecord().getJobId().getContent());
+    
+
+       delegate.deleteJob(urn);
+       Thread.sleep(2000); // wait for the request to be processed
+       try {
+            Workflow wf = delegate.readJob(urn);
+            assertNull(wf);
+            fail("Expected to barf, when reading a deleted job");
+       } catch (JesDelegateException e) {
+                // ok
+            }
     }
     
 
@@ -55,6 +84,9 @@ public class JesIntegrationTest extends AbstractTestForIntegration {
 
 /* 
 $Log: JesIntegrationTest.java,v $
+Revision 1.2  2004/04/08 14:50:54  nw
+polished up the workflow integratioin tests
+
 Revision 1.1  2004/03/16 17:48:34  nw
 first stab at an auto-integration project
  

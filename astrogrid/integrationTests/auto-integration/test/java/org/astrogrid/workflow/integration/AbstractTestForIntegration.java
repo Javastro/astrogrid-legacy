@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForIntegration.java,v 1.1 2004/03/16 17:48:34 nw Exp $
+/*$Id: AbstractTestForIntegration.java,v 1.2 2004/04/08 14:50:54 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,11 @@
 **/
 package org.astrogrid.workflow.integration;
 
+import org.astrogrid.community.beans.v1.Account;
+import org.astrogrid.community.beans.v1.Credentials;
+import org.astrogrid.community.beans.v1.Group;
 import org.astrogrid.scripting.Astrogrid;
+import org.astrogrid.workflow.beans.v1.Workflow;
 
 import junit.framework.TestCase;
 
@@ -32,14 +36,26 @@ public class AbstractTestForIntegration extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         ag = Astrogrid.getInstance();
+        acc = ag.getObjectHelper().createAccount("noel","jodrell"); // will want to change this to a standard user later.
+        group = ag.getObjectHelper().createGroup("devel","jodell");
+        creds = ag.getObjectHelper().createCredendtials(acc,group);
+
+        wf = ag.getWorkflowManager().getWorkflowBuilder().createWorkflow(creds,"test workflow","a description");    
     }
     
     protected Astrogrid ag;
+    protected Account acc;
+    protected Group group;   
+    protected Credentials creds;
+    protected Workflow wf;
 }
 
 
 /* 
 $Log: AbstractTestForIntegration.java,v $
+Revision 1.2  2004/04/08 14:50:54  nw
+polished up the workflow integratioin tests
+
 Revision 1.1  2004/03/16 17:48:34  nw
 first stab at an auto-integration project
  

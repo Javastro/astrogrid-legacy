@@ -1,4 +1,4 @@
-/*$Id: DataCenterIntegrationTest.java,v 1.1 2004/03/16 17:48:34 nw Exp $
+/*$Id: DataCenterIntegrationTest.java,v 1.2 2004/04/08 14:50:54 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,7 @@
 **/
 package org.astrogrid.workflow.integration;
 
-/**
+/** Test integration between workflow and datacenter.
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Mar-2004
  *
  */
@@ -27,6 +27,9 @@ public class DataCenterIntegrationTest extends AbstractTestForIntegration {
 
 /* 
 $Log: DataCenterIntegrationTest.java,v $
+Revision 1.2  2004/04/08 14:50:54  nw
+polished up the workflow integratioin tests
+
 Revision 1.1  2004/03/16 17:48:34  nw
 first stab at an auto-integration project
  
