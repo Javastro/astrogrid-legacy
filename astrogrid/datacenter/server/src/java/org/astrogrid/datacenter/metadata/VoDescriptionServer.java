@@ -1,5 +1,5 @@
 /*
- * $Id: VoDescriptionServer.java,v 1.2 2004/09/06 20:46:11 mch Exp $
+ * $Id: VoDescriptionServer.java,v 1.3 2004/09/06 21:03:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -113,8 +113,8 @@ public class VoDescriptionServer {
          vod.append(authorityPlugin.getVoResource());
       }
       
-      //lookup secondary/main plugin
-      pluginClassName = SimpleConfig.getSingleton().getString("datacenter.metadata.plugin");
+      //lookup secondary/main plugin - default to FileResourcePlugin
+      pluginClassName = SimpleConfig.getSingleton().getString("datacenter.metadata.plugin", FileResourcePlugin.class.getName());
       VoResourcePlugin plugin = createPlugin(pluginClassName);
       vod.append(plugin.getVoResource());
 
@@ -123,7 +123,9 @@ public class VoDescriptionServer {
          //I've wrapped this in a separate try/catch so that problems with CEA
          //don't stop the initialiser from working.. which is naughty
          String ceaResource = CEAComponentManagerFactory.getInstance().getMetadataService().returnRegistryEntry();
-         vod.append(ceaResource);
+         //we convert to Document and back again to Element so that we remove any processing instructions, etc
+         Document ceaDoc = DomHelper.newDocument(ceaResource);
+         vod.append(DomHelper.ElementToString(ceaDoc.getDocumentElement()));
       } catch (Throwable th) {
         log.error(th);
       }
@@ -234,6 +236,7 @@ public class VoDescriptionServer {
     /**/
    
 }
+
 
 
 
