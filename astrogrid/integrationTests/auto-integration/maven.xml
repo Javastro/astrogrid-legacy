@@ -77,6 +77,14 @@
         <maven:maven descriptor="${basedir}/tests-project.xml" goals="eclipse" />
 </goal>
 
+<goal name="astrogrid-build-site" description="Build the site docs for the test project">
+        <maven:maven descriptor="${basedir}/tests-project.xml" goals="site" />
+</goal>
+
+<goal name="astrogrid-deploy-site" description="Deploy the site docs for the test project" prereqs="astrogrid-build-site">
+        <echo message="Haven't worked out how to deploy the site docs remotely yet....can't use fsdeploy" />
+</goal>
+
 <goal name="ui-int-test"  description="run integration tests in ui runner">
         <maven:maven descriptor="${basedir}/tests-project.xml" goals="test:ui" />
 </goal>
