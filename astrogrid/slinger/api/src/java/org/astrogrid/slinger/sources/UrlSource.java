@@ -1,5 +1,5 @@
 /*
- * $Id: UrlSource.java,v 1.2 2005/03/21 16:10:43 mch Exp $
+ * $Id: UrlSource.java,v 1.3 2005/03/24 17:53:44 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,7 +14,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.security.Principal;
-import org.astrogrid.cfg.ConfigFactory;
+import org.astrogrid.slinger.Slinger;
 import org.astrogrid.slinger.StoreException;
 
 /**
@@ -38,7 +38,7 @@ public class UrlSource extends UriSource {
          URL url = new URL(uri.toString());
 
          //for safety, refuse to serve files unless specifically configured to allow it
-         if (url.getProtocol().toLowerCase().startsWith("file") && !ConfigFactory.getCommonConfig().getBoolean("servefiles")) {
+         if (url.getProtocol().toLowerCase().startsWith("file") && !Slinger.allowLocalAccess()) {
             throw new StoreException("This service is not configured to serve files");
          }
          
@@ -72,6 +72,9 @@ public class UrlSource extends UriSource {
 }
 /*
  $Log: UrlSource.java,v $
+ Revision 1.3  2005/03/24 17:53:44  mch
+ Added checks for preventing local disk access
+
  Revision 1.2  2005/03/21 16:10:43  mch
  Fixes to compile (including removing refs to FileManager clients)
 

@@ -1,5 +1,5 @@
 /*
- * $Id: Slinger.java,v 1.2 2005/03/23 15:29:42 mch Exp $
+ * $Id: Slinger.java,v 1.3 2005/03/24 17:53:44 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -13,6 +13,7 @@ import java.io.Writer;
 import java.net.URISyntaxException;
 import java.security.Principal;
 import org.astrogrid.account.LoginAccount;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.io.Piper;
 import org.astrogrid.slinger.sources.SourceIdentifier;
 import org.astrogrid.slinger.sources.SourceMaker;
@@ -32,6 +33,9 @@ import org.astrogrid.slinger.vospace.IVORN;
 
 public class Slinger  {
 
+   /** Configuration setting to allow access to local files */
+   public static final String PERMIT_LOCAL_ACCESS_KEY = "AllowLocalFileAccess";
+   
    /**
     * Tests the destination exists and a file can be created on it.  This ensures
     * that the given server url is correct, that the server is running and that
@@ -88,6 +92,12 @@ public class Slinger  {
       in.close();
       out.close();
    }
+
+   /** Convenience routine returns true if this application is configured to serve local
+    * files */
+   public static boolean allowLocalAccess() {
+      return ConfigFactory.getCommonConfig().getBoolean(PERMIT_LOCAL_ACCESS_KEY, false);
+   }
    
    
    public static void printHelp() {
@@ -132,6 +142,9 @@ public class Slinger  {
 
 /*
  $Log: Slinger.java,v $
+ Revision 1.3  2005/03/24 17:53:44  mch
+ Added checks for preventing local disk access
+
  Revision 1.2  2005/03/23 15:29:42  mch
  added command-line Slinger, rationalised copy, send, get etc
 
