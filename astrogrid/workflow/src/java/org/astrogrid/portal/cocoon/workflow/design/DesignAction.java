@@ -189,7 +189,10 @@ public class DesignAction extends AbstractAction {
             try {
                 
                 this.consistencyCheck() ;
-                       
+                    
+                if( action == null ){
+                    ; 
+                }      
                 if( action.equals( ACTION_CREATE_WORKFLOW ) ) {
                     this.createWorkflow() ;
                 }
@@ -459,11 +462,13 @@ public class DesignAction extends AbstractAction {
     
     
     private void trace( String traceString ) {
-        logger.debug( traceString ) ;
+        // logger.debug( traceString ) ;
+        System.out.println( traceString ) ;
     }
     
     private void debug( String logString ){
-        logger.debug( logString ) ;
+        // logger.debug( logString ) ;
+        System.out.println( logString ) ;
     }
              
             

@@ -8,10 +8,117 @@
 		>
 
 <xsp:structure>
-	<xsp:include>org.astrogrid.portal.workflow.design.Workflow</xsp:include>
 	<xsp:include>org.astrogrid.portal.cocoon.workflow.design.DesignAction</xsp:include>
+	<xsp:include>org.astrogrid.portal.workflow.design.*</xsp:include>
+	<xsp:include>org.astrogrid.portal.workflow.design.activity.*</xsp:include>
 </xsp:structure>
 
+
+<xsp:logic>
+		<![CDATA[
+		
+		private static final boolean 
+        	TRACE_ENABLED = true ;
+        	
+		public void activityTree ( Activity activity ) throws SAXException {
+        	if( TRACE_ENABLED ) trace( "workflow-details.xsp activityTree() entry") ; 
+        	
+        	AttributesImpl xspAttr = new AttributesImpl() ;
+        
+        	try {
+        	
+        		 if( activity instanceof Sequence ) {
+        		 	sequence( (Sequence)activity, xspAttr ) ;
+        		 }
+        		 else if( activity instanceof Flow ) {
+        		 	flow( (Flow)activity, xspAttr ) ;
+        		 }
+        		 else if( activity instanceof Step ) {
+        		 	step( (Step)activity, xspAttr ) ;
+        		 }
+        		 else {
+        		 	debug( "unsupported Activity" ) ;
+        		 } 
+       
+        	}
+        	finally {
+        		if( TRACE_ENABLED ) trace( "workflow-details.xsp activityTree() exit") ;
+        	}
+          
+		} // end of activityTree() 
+		
+		
+		private void sequence( Sequence aSequence, AttributesImpl xspAttr ) throws SAXException {  	
+			if( TRACE_ENABLED ) trace( "workflow-details_xsp.sequence() entry") ;
+		        	
+		    try { 
+		     	
+		]]>
+	
+			<content>	
+				<xsp:element name="sequence">
+					<xsp:attribute name="key"><xsp:expr>aSequence.getKey()</xsp:expr></xsp:attribute>
+					
+					<xsp:logic>activityContainer( aSequence, xspAttr ) ;</xsp:logic>
+					
+				</xsp:element>
+			</content>
+		
+
+		<![CDATA[
+		
+		       	}
+        	finally {
+        		if( TRACE_ENABLED ) trace( "workflow-details_xsp.sequence() exit") ;
+        	}
+		
+		} // end of sequence()
+		
+		
+		private void flow( Flow flow, AttributesImpl xspAttr ) {
+        	if( TRACE_ENABLED ) trace( "workflow-details.xsp flow() entry") ; 
+        	
+        	try {
+        	
+        	
+        	
+        	}
+        	finally {
+        		if( TRACE_ENABLED ) trace( "workflow-details.xsp flow() exit") ;
+        	}
+        			
+		} // end of flow()
+		
+		
+		private void step( Step step, AttributesImpl xspAttr ) {
+        	if( TRACE_ENABLED ) trace( "workflow-details.xsp step() entry") ; 
+        	
+        	try {
+        	
+        	
+        	
+        	}
+        	finally {
+        		if( TRACE_ENABLED ) trace( "workflow-details.xsp step() exit") ;
+        	}
+        			
+		} // end of step()
+		
+				
+		private static void activityContainer( ActivityContainer activityContainer, AttributesImpl xspAttr ) {
+		}
+		
+		private static void trace( String traceString ) {
+			System.out.println( traceString ) ;
+		}
+		
+		private static void debug( String traceString ) {
+			System.out.println( traceString ) ;
+		}
+		
+	]]>
+	
+</xsp:logic>
 
 
 <workflow>
@@ -35,18 +142,17 @@
 		<xsp:element name="workflow-description">
 			<xsp:expr>workflow.getDescription()</xsp:expr>
 		</xsp:element> 
-		<xsp:element name="sequence">
-			<xsp:attribute name="key"><xsp:expr>workflow.getKey()</xsp:expr></xsp:attribute>
-			<xsp:element name="step">
-				<xsp:attribute name="key">12346</xsp:attribute>
-				<xsp:element name="step-name">Query</xsp:element> 
-				<xsp:element name="step-description">some description here</xsp:element>
-				<xsp:element name="tool">QueryTool</xsp:element>  
-				<xsp:element name="joinCondition">
-					<xsp:attribute name="value">true</xsp:attribute>
-				</xsp:element>  				
-			</xsp:element> 
-		</xsp:element> 		
+		
+		<xsp:logic>
+			<![CDATA[
+			//========================================================================
+			
+			activityTree( workflow ) ;
+		
+			//========================================================================
+			]]>
+		</xsp:logic>
+				
 	</xsp:logic>
 
 </workflow>
