@@ -57,9 +57,9 @@
                                         <div style="color: blue; background-color: lightblue; text-align: center;">Tool</div>
                                         <td width="30%">Name:</td>
                                         <td width="70%">
-                                            <input type="text" width="40" name="tool_name"></input>
+                                            <input type="text" width="40" name="tool_name" id="tool_name"></input>
                                             <a>
-                                                <input type="submit" name="action" value="insert-tool-into-step"/>
+                                                <input type="submit" name="action" value="insert-tool-into-step" />
                                             </a>
                                         </td>
                                     </tr>                                                                      
@@ -67,8 +67,9 @@
                                         <td></td>
                                         <td>
                                             <div id="tool_select_dropdown">                                                
-                                                <select name="tool_list" size="1" id="select_list" onClick=" document.properties_form.tool_name.value = document.properties_form.select_list.value;">
-	                                                <option value="none">-- Select tool --</option>
+                                                <select name="tool_list" size="1" id="select_list" onClick="if(document.properties_form.select_list.value=='browse') javascript:void(window.open('/astrogrid-portal/mount/registry/registrybrowser.html?mainelement=Tool&amp;authId=authorityId&amp;resourceKey=tool_name', 'RegistryMicro', 'toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=yes, scrollbars=yes, width=300, height=200'));  document.properties_form.tool_name.value = document.properties_form.select_list.value;">
+	                                                <option value="none" selected="true">-- Select tool --</option>
+	                                                <option value="browse">-- Browse registry --</option>
                                                     <xsl:for-each select="toolsAvailable">
                                                         <xsl:element name="option">
                                                             <xsl:attribute name="value"><xsl:value-of select="@tool-name"/></xsl:attribute>
@@ -81,13 +82,15 @@
                                     </tr>
                                     <tr>
                                         <td>Description:</td>
-                                        <td><textarea name="tool_documentation" cols="45" rows="5">Choose relevant step...</textarea></td>
+                                        <td><textarea name="tool_documentation" cols="45" rows="5" readonly="true">Choose relevant step...</textarea></td>
                                     </tr>
                                 </table>
                             </td>
                         </tr>
                     </table>
-                    <input type="hidden" name="display_tool_values"><xsl:attribute name="value">true</xsl:attribute></input>                    
+                    <input type="hidden" name="display_tool_values"><xsl:attribute name="value">true</xsl:attribute></input>
+                    <input type="hidden" name="action" id="authorityId"/>
+                    <input type="hidden" name="action" id="workflow_action"/>                    
                 </form>                
             </div> 
 <!-- This is not right, and temporary! -->                
