@@ -1,4 +1,4 @@
-<DatacenterResults serviceid="DummyId">
+<DatacenterResults serviceid="DummyId" queryid="DummyId">
 <Status>Finished</Status>
 <VOTABLE version="1.0">
    <DESCRIPTION>Output from the messier catalog at VirtualSky.org</DESCRIPTION>
