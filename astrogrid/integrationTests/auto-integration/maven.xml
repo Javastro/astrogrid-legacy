@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.91 2004/09/03 10:39:26 clq2 Exp $ -->
+<!-- $Id: maven.xml,v 1.92 2004/09/06 12:50:12 dave Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -1118,5 +1118,6 @@
         <attainGoal name="int-test"/>
         <attainGoal name="astrogrid-build-site"/>
             +-->
+        <attainGoal name="int-test"/>
     </goal>
 </project>
