@@ -1,11 +1,12 @@
 /*
- * $Id: QueryIdHelper.java,v 1.1 2003/09/15 22:05:34 mch Exp $
+ * $Id: QueryIdHelper.java,v 1.2 2003/09/16 16:25:06 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.common;
 
+import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.log.Log;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -20,10 +21,10 @@ import org.w3c.dom.NodeList;
 public class QueryIdHelper
 {
    /** The service id name when used as a tag tag name */
-   public static final String QUERY_ID_TAG = "ServiceId";
+   public static final String QUERY_ID_TAG = "QueryId";
 
    /** The service id name when using as an attribute */
-   public static final String QUERY_ID_ATT = "serviceid";
+   public static final String QUERY_ID_ATT = "queryid";
 
    /** Makes a service tag with the given id as the tag value */
    public static String makeQueryIdTag(String id)
@@ -51,6 +52,13 @@ public class QueryIdHelper
 
       if (nodeValue == null) //look at first non-whitespace child
       {
+         //bug trace
+         if (idNodes.item(0).getFirstChild() == null)
+         {
+            Log.trace(XMLUtils.ElementToString( (Element) idNodes.item(0)));
+         }
+
+
          nodeValue = idNodes.item(0).getFirstChild().getNodeValue();
       }
 
