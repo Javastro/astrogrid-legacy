@@ -1,4 +1,4 @@
-/*$Id: SqlPluginTest.java,v 1.6 2004/07/07 19:33:59 mch Exp $
+/*$Id: SqlPluginTest.java,v 1.7 2004/07/07 19:42:17 mch Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -73,14 +73,24 @@ public class SqlPluginTest extends ServerTestCase {
       
       DummySqlPlugin.initConfig(); //make sure the configuration is correct for the plugin
       
-      askAdqlFromFile("sample-adql0.7.3-1.xml");
+      askAdqlFromFile("dummydb-test-1.xml");
    }
    
    public void testAdql2() throws Exception {
       DummySqlPlugin.initConfig(); //make sure the configuration is correct for the plugin
-      askAdqlFromFile("dummy-pleidies-adql-v0.7.3.xml");
+      askAdqlFromFile("dummydb-test-2.xml");
    }
 
+   public void testAdql3() throws Exception {
+      DummySqlPlugin.initConfig(); //make sure the configuration is correct for the plugin
+      askAdqlFromFile("dummydb-test-3.xml");
+   }
+
+   public void testAdql4() throws Exception {
+      DummySqlPlugin.initConfig(); //make sure the configuration is correct for the plugin
+      askAdqlFromFile("dummy-pleidies-adql-v0.7.3.xml");
+   }
+   
    /** Read ADQL input document, run query on dummy SQL plugin, and return VOTable document
     *
     * @param queryFile resource file of query
@@ -163,6 +173,9 @@ public class SqlPluginTest extends ServerTestCase {
 
 /*
  $Log: SqlPluginTest.java,v $
+ Revision 1.7  2004/07/07 19:42:17  mch
+ Tidied up translator tests
+
  Revision 1.6  2004/07/07 19:33:59  mch
  Fixes to get Dummy db working and xslt sheets working both for unit tests and deployed
 
