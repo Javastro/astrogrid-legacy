@@ -43,7 +43,7 @@ your classpath. Clean up your classpath by eliminating extraneous parsers.
 <p>
 <ul>
 
-<li><a href="TestServlet?suite=org.astrogrid.datacenter.test.InstallationSelfCheck">Run</a> the PAL installation
+<li><a href="TestServlet?suite=org.astrogrid.datacenter.service.InstallationSelfCheck">Run</a> the PAL installation
 self-tests</li>
 <li>Take a <a href="fingerprint.jsp">fingerprint</a> of the datacenter installation</li>
 </ul>

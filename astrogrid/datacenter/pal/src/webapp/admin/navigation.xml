@@ -11,6 +11,7 @@
    <div id='menuMetadata'>
       <h5>Metadata</h5>
       <ul>
+         <li><a href="../GetMetadata">XML</a>
          <li><a href="../viewMetadata.jsp">View</a>
          <li><a href="editMetadata.jsp">Edit</a>
          <li><a href="pushMetadata.jsp">Register</a>
