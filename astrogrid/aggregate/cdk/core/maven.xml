@@ -34,20 +34,9 @@
 
 <!-- now adjust war goal, so that it creates a jnlp thingie -->
         <preGoal name="jnlp:init">
-                <echo>in pregoal jnlp</echo>
                 <!-- set jnlp to run into same dir as is later used for war -->
                 <j:set var="maven.jnlp.dir" value="${maven.build.dir}/${pom.artifactId}" />
         </preGoal>
-
-        <!-- maven task to sign jars doesn't seem to work -so will do by hand -->
-        <postGoal name="jnlp">
-           <echo>in postgoal jnlp</echo>
-          <signjar alias="astrogrid" storepass="qwertyuiop">
-                <fileset dir="${maven.jnlp.dir}">
-                        <include name="*.jar" />
-                </fileset>
-          </signjar>
-        </postGoal>
 
         <postGoal name="war:webapp">
                 <attainGoal name="jnlp:generate-jnlp" />
@@ -57,6 +46,12 @@
                                 <include name="${pom.artifactId}*.jar" />
                         </fileset>
                 </delete>
+                <!-- sign jars by hand - as maven jnlp task is flakey -->
+                <signjar alias="astrogrid" storepass="qwertyuiop">
+                        <fileset dir="${maven.build.dir}/${pom.artifactId}">
+                                <include name="*.jar" />
+                        </fileset>
+                </signjar>
                 <attainGoal name="patch-jnlp" />
         </postGoal>
 
