@@ -1,4 +1,4 @@
-/* $Id: AccountTest.java,v 1.1 2004/02/16 22:44:08 mch Exp $
+/* $Id: AccountTest.java,v 1.2 2004/02/17 12:31:42 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -39,10 +39,10 @@ public class AccountTest extends TestCase
       assertEquals("SomeToken", CommunityMessage.getToken(snippet));
 
       //check that message maker barfs if bad vo reference given
-      try {
-         snippet = CommunityMessage.getMessage("SomeToken","agroup","mecommunist");
-         fail("Should have complained that vo reference didn't contain '@'");
-      } catch (AssertionError ae) {} //ignore - should happen
+//      try {
+//         snippet = CommunityMessage.getMessage("SomeToken","agroup","mecommunist");
+//         fail("Should have complained that vo reference didn't contain '@'");
+//      } catch (AssertionError ae) {} //ignore - should happen
          
       //check that parser barfs if bad vo reference given
       snippet = CommunityMessage.getMessage("SomeToken","me@community","agroup");
@@ -98,6 +98,9 @@ public class AccountTest extends TestCase
 
 /*
 $Log: AccountTest.java,v $
+Revision 1.2  2004/02/17 12:31:42  mch
+Fixes for removed snippet assertions
+
 Revision 1.1  2004/02/16 22:44:08  mch
 Tests for (datacenter) account/user representation
 
