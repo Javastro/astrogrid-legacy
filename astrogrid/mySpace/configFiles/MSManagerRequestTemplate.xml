@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?> \
+<request> \
+    <elements> \
+        <userID>{0}</userID> \
+        <communityID>{1}</communityID> \
+        <jobID>{2}</jobID> \
+        <mySpaceAction>{3}</mySpaceAction> \
+        <dataItemID>{4}</dataItemID> \
+        <oldDataItemID>{5}</oldDataItemID> \
+        <newDataItemName>{6}</newDataItemName> \
+        <newContainerName>{7}</newContainerName> \
+        <query>{8}</query> \
+        <newDataHolderName>{9}</newDataHolderName>\
+        <serverFileName>{10}</serverFileName> \
+        <fileSize>{11}</fileSize> \
+    </elements> \
+</request> \

@@ -1,0 +1,11 @@
+     <dataItemRecord> \
+        <dataItemName>{0}</dataItemName> \
+        <dataItemID>{1}</dataItemID> \
+        <ownerID>{2}</ownerID> \
+        <creationDate>{3}</creationDate> \
+        <expiryDate>{4}</expiryDate> \
+        <size>{5}</size> \
+        <type>{6}</type> \
+        <permissionsMask>{7}</permissionsMask> \
+        <dataHolderURI>{8}</dataHolderURI> \
+      </dataItemRecord> \

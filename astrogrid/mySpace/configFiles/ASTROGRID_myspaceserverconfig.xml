@@ -1,0 +1,56 @@
+<?xml version="1.0" ?>
+
+<!--   Each mySpaceServer is configured by setting properties within this file    -->
+
+<properties>
+
+  <!-- GENERAL CATEGORY ===================================================== -->  
+  <category name="GENERAL">
+    <property name="VERSION" value="1.2" />
+  </category>
+
+  <!-- MESSAGES CATEGORY =========================================================
+   Following are the base name, language code and country code for 
+   the properties file that contains all messages for a datacenter 
+   Example. 
+   Given these values:
+   INSTALLATION.BASENAME=ASTROGRID_myspaceservermessages
+   INSTALLATION.LANGUAGECODE=en
+   INSTALLATION.COUNTRYCODE=US
+
+   suiteable file names would be:
+   ASTROGRID_myspaceservermessages.properties        // installation default messages
+   ASTROGRID_myspaceservermessages_en.properties     // English language default messages
+   ASTROGRID_myspaceservermessages_en_US.properties  // US specific English language messages
+  -->
+  <category name="MESSAGES">
+    <property name="INSTALLATION.BASENAME" value="ASTROGRID_myspaceservermessages" />
+    <property name="INSTALLATION.LANGUAGECODE" value="" />
+    <property name="INSTALLATION.COUNTRYCODE" value="" />    
+  </category>
+  
+  
+  <!-- MYSPACEMANAGER CATEGORY ===================================================== -->  
+  <category name="MYSPACESERVER">
+    <property name="PARSER.VALIDATION" value="false" />
+ 
+    <!-- URL
+        This is the URL for the MySpace Server facility for the installed 
+        instance of MySpaceServer -->
+    <property name="MYSPACESERVERURL" value="http://hydra.star.le.ac.uk:8080/axis/services/ServerManager" /> 
+
+    <!-- Where the dataholders are stored. Please remember to add a "/" at the end of the path -->
+    <property name="DATAHOLDERFOLDER" value="/usr/local/jakarta-tomcat-4.1.24/webapps/mySpace/dataholders/" />  
+
+    <!-- COPY COMMAND
+        This is the copy command performed by the opration system where MySpaceServer is installed
+        eg: if it is Unix the command would be cp -->
+    <property name="COPY_COMMAND" value="cp" /> 
+    
+    <!-- file size
+        File size greater then the value of this variable, ServerManager will start a 
+        new process to proceed the system copy command defined in COPY_COMMAND -->
+    <property name="SIZELIMIT" value="1000000" />   
+  </category> 
+
+</properties>
