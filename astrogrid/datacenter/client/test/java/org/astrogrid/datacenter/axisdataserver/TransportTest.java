@@ -1,4 +1,4 @@
-/*$Id: TransportTest.java,v 1.1 2003/11/17 12:12:28 nw Exp $
+/*$Id: TransportTest.java,v 1.2 2003/11/18 14:27:39 nw Exp $
  * Created on 16-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -44,8 +44,8 @@ public class TransportTest extends AxisDataServerServiceTestCase {
     protected void setUp() throws Exception {
         super.setUp();
         Call.initialize(); // bit of magic - registers the 'local:' URL protocol
-      //  this.serviceURL = new URL("local:///AxisDataServer");
-       this.serviceURL = new URL("http://localhost:8060/axis/services/AxisDataServer");
+       this.serviceURL = new URL("local:///AxisDataServer");
+      // this.serviceURL = new URL("http://localhost:8060/axis/services/AxisDataServer");
       Marshaller.enableDebug = true;
      // set up the axis server
         String[] args = {"-l",
@@ -66,6 +66,9 @@ public class TransportTest extends AxisDataServerServiceTestCase {
 
 /* 
 $Log: TransportTest.java,v $
+Revision 1.2  2003/11/18 14:27:39  nw
+code to test the serialization and deserialization mechanism
+
 Revision 1.1  2003/11/17 12:12:28  nw
 first stab at mavenizing the subprojects.
  
