@@ -6,10 +6,23 @@
          xmlns:ant="jelly:ant" 
          default="jar:jar">
 
+  <!-- Clean the sub-project when the parent project is cleaned. -->
+  <preGoal name="clean:clean">
+    <attainGoal name="multiproject:clean"/>
+  </preGoal>
+
+  <!-- This causes the executable jar to be built in the
+       ogsadai sub-project.  The "multiproject:artifact" goal
+       activates the goal in each subproject that builds that
+       sub-project's principal artifact (as defined by the
+       maven.multiproject,type property in the sub-project). -->
   <preGoal name="war:init">
-    <maven:maven descriptor="ogsadai/project.xml" 
-                 goals="javaapp"
-                 basedir="ogsadai"/>
+    <attainGoal name="multiproject:artifact"/>
+  </preGoal>
+  
+  <!-- Build the web apges for the sub-project when the main site is built. -->
+  <preGoal name="site:generate">
+    <attainGoal name="multiproject:site"/>
   </preGoal>
 
   <!-- This file is for local adjustments.  -->
