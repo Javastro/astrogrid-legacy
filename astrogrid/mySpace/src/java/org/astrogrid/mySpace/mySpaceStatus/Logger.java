@@ -3,8 +3,8 @@ package org.astrogrid.mySpace.mySpaceStatus;
 import java.io.*;
 import java.util.*;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+// import org.apache.commons.logging.Log;
+// import org.apache.commons.logging.LogFactory;
 
 /**
  * The <code>Logger</code> class is the MySpace class for logging
@@ -40,7 +40,7 @@ public class Logger
 //
 //Logger for the Jakata commons logging.
 
-   private static Log commonsLog = LogFactory.getLog(Logger.class); 
+//   private static Log commonsLog = LogFactory.getLog(Logger.class); 
 
 //
 // ------------------------------------------------------------------------
@@ -92,7 +92,7 @@ public class Logger
       {  try
          {  FileOutputStream fos = new FileOutputStream(
               mySpaceLogFileName, true);
-//             "/home/avo/myspacedata/myspace.log", true);
+//              "/home/avo/myspacedata/myspace.log", true);
             mySpaceLogWriter = new PrintWriter(fos);
 
             Date startDate = new Date();
@@ -181,7 +181,8 @@ public class Logger
 
       if (astroGridLog)
       {  try
-         {  commonsLog.info(completeMessage);
+         {
+//         {  commonsLog.info(completeMessage);
          }
          catch (Exception all)
          {  all.printStackTrace();

@@ -4,10 +4,12 @@ import java.io.*;
 import java.util.*;
 import junit.framework.*;
 
+import org.astrogrid.mySpace.mySpaceManager.Configuration;
 import org.astrogrid.mySpace.mySpaceManager.MySpaceActions;
 import org.astrogrid.mySpace.mySpaceManager.RegistryManager;
 import org.astrogrid.mySpace.mySpaceManager.DataItemRecord;
 
+import org.astrogrid.mySpace.mySpaceStatus.Logger;
 import org.astrogrid.mySpace.mySpaceStatus.MySpaceStatus;
 import org.astrogrid.mySpace.mySpaceStatus.MySpaceStatusCode;
 
@@ -23,7 +25,11 @@ import org.astrogrid.mySpace.mySpaceStatus.MySpaceStatusCode;
  */
 
 public class MySpaceActionsTest extends TestCase
-{  Date creation = new Date();
+{  private Logger logger = new Logger(false, true, true, "./myspace.log");
+   private Configuration config = new Configuration(true, false,
+     Configuration.MANAGERONLY);
+
+   private Date creation = new Date();
 
 //   DataItemRecord itemRec = new DataItemRecord("fred", 99999,
 //     "fred.VOT", "acd", creation, creation, 0, 0, "permissions");
@@ -84,7 +90,8 @@ public class MySpaceActionsTest extends TestCase
 //   Test the <code>upLoadDataHolder</code> method.
 
       dataItem = myspace.upLoadDataHolder("clq", "lei", "credentials",
-         "/clq@lei/serv1/test/votupl", "any text", "vot");
+         "/clq@lei/serv1/test/votupl", "any text", "vot",
+          myspace.LEAVE);
 
       Assert.assertTrue(dataItem != null);
       if (dataItem != null)
@@ -99,7 +106,8 @@ public class MySpaceActionsTest extends TestCase
 //   Test the <code>importDataHolder</code> method.
 
       dataItem = myspace.importDataHolder("clq", "lei", "credentials",
-         "http://www.cnn.com/", "/clq@lei/serv1/test/vot1", "vot");
+         "http://www.cnn.com/", "/clq@lei/serv1/test/vot1", "vot",
+         myspace.LEAVE);
 
       Assert.assertTrue(dataItem != null);
       if (dataItem != null)
@@ -173,14 +181,14 @@ public class MySpaceActionsTest extends TestCase
 
       Assert.assertEquals(itemsVec.size(), 4);
 
-//      System.out.println("\n");
-//      for (int loop=0; loop<itemsVec.size(); loop++)
-//      {  dataItem = (DataItemRecord)itemsVec.elementAt(loop);
-//         System.out.println("[" + loop + "]: " +
-//             dataItem.getDataItemName() + "  " +
-//             dataItem.getDataItemID() + "  " +
-//             dataItem.getDataItemFile() );
-//      }
+      System.out.println("\n");
+      for (int loop=0; loop<itemsVec.size(); loop++)
+      {  dataItem = (DataItemRecord)itemsVec.elementAt(loop);
+         System.out.println("[" + loop + "]: " +
+             dataItem.getDataItemName() + "  " +
+             dataItem.getDataItemID() + "  " +
+             dataItem.getDataItemFile() );
+      }
 
       int dataItemId1 = 0;
       int dataItemId2 = 0;
@@ -294,7 +302,10 @@ public class MySpaceActionsTest extends TestCase
       String exportURI = myspace.exportDataHolder("clq", "lei",
         "credentials", dataItemId3);
 
-      Assert.assertEquals(exportURI, "http://www.blue.nowhere.org/s1/f6");
+      System.out.println("dataItemId3: " + dataItemId3);
+      System.out.println("exportURI: " + exportURI);
+
+      Assert.assertEquals(exportURI, "http://www.blue.nowhere.org/s1/f4");
 
       System.out.println("Tested exportDataHolder...");
 

@@ -66,14 +66,46 @@ public class Configuration
    }
 
 /**
- * Create a <code>Configuration</code> object and reset the member
- * variables.  A single dummy argument is passed.
+ * Create a <code>Configuration</code> object and reset the configuration
+ * options.  A single dummy argument is passed.
  */
 
    public Configuration (String dummy)
    {  this.DEBUG = false;
       this.CHECKPERMISSIONS = false;
       this.SERVERDEPLOYMENT = INTERNALSERVERS;
+   }
+
+/**
+ * Create a <code>Configuration</code> object and set the configuration
+ * options.
+ *
+ * @param debug Flag indicating whether de-bugging output is to be
+ *   produced.
+ * @param checkPermissions Flag indicating whether the MySpaceManger is
+ *   to make checks against an external AstroGrid permissions server to
+ *   determine whether each requested operation is permitted.  If
+ *   checkPermissions is set to false all operations are permitted and
+ *   no checks are made.  This mode is primarily useful during software
+ *   development.
+ * @param serverDeployment Flag indicating how the servers are to be
+ *   deployed.  The permitted values are: Configuration.SEPARATESERVERS,
+ *   Configuration.INTERNALSERVERS and Configuration.MANAGERONLY
+ */
+
+   public Configuration (boolean debug, boolean checkPermissions,
+     int serverDeployment)
+   {  this.DEBUG = debug;
+      this.CHECKPERMISSIONS = checkPermissions;
+
+      if ((serverDeployment == SEPARATESERVERS) ||
+          (serverDeployment == INTERNALSERVERS) ||
+          (serverDeployment == MANAGERONLY))
+      {  this.SERVERDEPLOYMENT = serverDeployment;
+      }
+      else
+      {  this.SERVERDEPLOYMENT = INTERNALSERVERS;
+      }
    }
 
 //

@@ -21,7 +21,11 @@ import org.astrogrid.mySpace.mySpaceManager.*;
 
 
 public class MySpaceDemo
-{  private static MySpaceActions myspace = new MySpaceActions();
+{  private Logger logger = new Logger(false, true, true, "./myspace.log");
+   private Configuration config = new Configuration(true, false,
+     Configuration.INTERNALSERVERS);
+
+   private static MySpaceActions myspace = new MySpaceActions();
    private static MySpaceStatus status = new MySpaceStatus();
 
 //
@@ -482,9 +486,30 @@ public class MySpaceDemo
                   remoteURI = "";
                }
 
+               String overwrite;
+               System.out.println(
+                 "Overwrite any existing DataHolder of the same name (y/n)?");
+               try
+               {  overwrite = console.readLine();
+               }
+               catch (IOException ioerror)
+               {  System.out.println("Ooops");
+                  overwrite = "";
+               }
+
+               int dispatchExisting = myspace.LEAVE;
+
+               overwrite = overwrite.toLowerCase();
+               int overwritePos = overwrite.indexOf('y');
+               if (overwritePos > -1)
+               {  dispatchExisting = myspace.OVERWRITE;
+               }
+
+               System.out.println("dispatchExisting: " + dispatchExisting);
+
                DataItemRecord newDataHolder = myspace.importDataHolder(
                  "acd", "roe", "job27", remoteURI, newDataHolderName,
-                 "quERY");
+                 "quERY", dispatchExisting);
 
                Vector itemRecVector = new Vector();
                itemRecVector = myspace.lookupDataHoldersDetails(
@@ -547,9 +572,30 @@ public class MySpaceDemo
                   contents = "";
                }
 
+               String overwrite;
+               System.out.println(
+                 "Overwrite any existing DataHolder of the same name (y/n)?");
+               try
+               {  overwrite = console.readLine();
+               }
+               catch (IOException ioerror)
+               {  System.out.println("Ooops");
+                  overwrite = "";
+               }
+
+               int dispatchExisting = myspace.LEAVE;
+
+               overwrite = overwrite.toLowerCase();
+               int overwritePos = overwrite.indexOf('y');
+               if (overwritePos > -1)
+               {  dispatchExisting = myspace.OVERWRITE;
+               }
+
+               System.out.println("dispatchExisting: " + dispatchExisting);
+
                DataItemRecord newDataHolder = myspace.upLoadDataHolder(
                  "acd", "roe", "job27", newDataHolderName, contents,
-                 "wF");
+                 "wF", dispatchExisting);
 
                Vector itemRecVector = new Vector();
                itemRecVector = myspace.lookupDataHoldersDetails(

@@ -13,8 +13,18 @@ import org.astrogrid.mySpace.mySpaceStatus.*;
  */
 
 public class MySpaceActions
-{  private static Logger logger = new Logger(true, true, true,
-     "./myspace.log");
+{  
+//
+//If the importDataHolder or upLoadDataHolder attempt to import a
+//file using a dataHolder name that already exists, the following flags
+//indicate how the existing file is to be dispatched.
+
+   public static final int LEAVE = 1;     // Leave untouched and report error.
+   public static final int OVERWRITE = 2; // Overwrite with the new dataHolder.
+   public static final int APPEND = 3;    // Append the new dataHolder.
+
+   private static Configuration config = new Configuration();
+   private static Logger logger = new Logger();
    private static boolean DEBUG = true;
 
    private static String registryName;
@@ -496,9 +506,16 @@ public class MySpaceActions
 
    public DataItemRecord importDataHolder(String userID, String communityID,
      String credentials, String importURI, String newDataItemName,
-     String contentsType)
-   {  DataItemRecord returnedDataItem = new DataItemRecord();
+     String contentsType, int dispatchExisting)
+   {  if (config.getDEBUG() ) logger.appendMessage(
+        "*** invoked MySpaceActions.importDataHolder.");
+
+      DataItemRecord returnedDataItem = new DataItemRecord();
       returnedDataItem = null;
+
+      logger.appendMessage("  inside importDataHolder");
+      logger.appendMessage("  importURI: " + importURI);
+      logger.appendMessage("  newDataItemName: " + newDataItemName);
 
       MySpaceStatus status = new MySpaceStatus();
 
@@ -522,6 +539,15 @@ public class MySpaceActions
 
             if (userAcc.checkSystemAuthorisation(UserAccount.WRITE) )
             {
+//
+//            If the OVERWRITE option has been specified then delete
+//            any existing dataHolder of the specified name.
+
+               if (dispatchExisting == OVERWRITE)
+               {  boolean deleteOk = this.deleteExistingDataHolder(
+                    userID, communityID, credentials, newDataItemName,
+                    reg);
+               }
 
 //
 //            Check that the specified dataHolder can be created.
@@ -529,6 +555,8 @@ public class MySpaceActions
                if(this.checkCanBeCreated(newDataItemName, userAcc,
                  credentials, reg) == true)
                {
+
+                  logger.appendMessage("  ok to create dataholder.");
 
 //
 //               Create a DataItemRecord for the new DataHolder.
@@ -553,6 +581,7 @@ public class MySpaceActions
 //
 //               Attempt to add this entry to the registry.
 
+                  logger.appendMessage("  about to add to registry.");
                   newDataItem = reg.addDataItemRecord(newDataItem);
                   if (newDataItem != null )
                   {  newdataItemID = newDataItem.getDataItemID();
@@ -566,6 +595,10 @@ public class MySpaceActions
                        reg.getServerDirectory(serverName);
 
                      String copyTo = serverDirectory + dataItemFileName;
+
+                     logger.appendMessage("  about to invoke  serverDriver.");
+                     logger.appendMessage("  importURI: " + importURI);
+                     logger.appendMessage("  copyTo: " + copyTo);
 
                      ServerDriver serverDriver = new ServerDriver();
                      if(serverDriver.importDataHolder(importURI, copyTo) )
@@ -624,8 +657,11 @@ public class MySpaceActions
 
    public DataItemRecord upLoadDataHolder(String userID, String communityID,
      String credentials, String newDataItemName, String contents,
-     String contentsType)
-   {  DataItemRecord returnedDataItem = new DataItemRecord();
+     String contentsType, int dispatchExisting)
+   {  if (config.getDEBUG() ) logger.appendMessage(
+        "*** invoked MySpaceActions.upLoadDataHolder.");
+
+      DataItemRecord returnedDataItem = new DataItemRecord();
       returnedDataItem = null;
 
       MySpaceStatus status = new MySpaceStatus();
@@ -650,6 +686,15 @@ public class MySpaceActions
 
             if (userAcc.checkSystemAuthorisation(UserAccount.WRITE) )
             {
+//
+//            If the OVERWRITE option has been specified then delete
+//            any existing dataHolder of the specified name.
+
+               if (dispatchExisting == OVERWRITE)
+               {  boolean deleteOk = this.deleteExistingDataHolder(
+                    userID, communityID, credentials, newDataItemName,
+                    reg);
+               }
 
 //
 //            Check that the specified dataHolder can be created.
@@ -1919,6 +1964,40 @@ public class MySpaceActions
       }
 
       return canBeCreated;
+   }
+
+// -----------------------------------------------------------------
+
+/**
+ * Internal convenience method to check if a dataHolder exists, and
+ * if so then delete it.
+ */
+
+   private boolean deleteExistingDataHolder(String userID,
+     String communityID, String credentials, String dataItemName,
+     RegistryManager reg)
+   {  boolean deleteOk = false;
+
+      MySpaceStatus status = new MySpaceStatus();
+
+      Vector existingDataItemVector = 
+        this.internalLookupDataHoldersDetails(userID, communityID,
+          credentials, dataItemName, reg);
+      if (status.getSuccessStatus())
+      {  status.reset();
+      }
+
+      if (existingDataItemVector != null)
+      {  DataItemRecord existingDataItem =
+           (DataItemRecord)existingDataItemVector.firstElement();
+
+         int existingId = existingDataItem.getDataItemID();
+
+         deleteOk = this.deleteDataHolder(userID, communityID,
+           credentials, existingId);
+      }
+
+      return deleteOk;
    }
 
 // -----------------------------------------------------------------

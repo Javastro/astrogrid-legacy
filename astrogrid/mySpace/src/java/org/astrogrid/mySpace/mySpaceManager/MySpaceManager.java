@@ -121,7 +121,7 @@ public class MySpaceManager {
 // -----------------------------------------------------------------
 
 	/**
-	 * Upload/save dataholder.
+	 * Upload/save dataholder.  Input content from a passed string.
 	 */
 	public String upLoad(String jobDetails){
 	        setUp();
@@ -132,14 +132,24 @@ public class MySpaceManager {
 			try{
 				response = getValues(jobDetails);
 	
-				if ( DEBUG ) logger.appendMessage("About to invoke myspaceaction.importdataholder");  
+				if ( DEBUG ) logger.appendMessage("About to invoke myspaceaction.upLoadDataHolder");  
 				msA.setRegistryName(registryName);
+
+				int dispatchExisting = msA.LEAVE;
+
+				if (action.equalsIgnoreCase("overwrite"))
+				{  dispatchExisting = msA.OVERWRITE;
+				}
+
+				if ( DEBUG ) logger.appendMessage(
+				  "action, dispatchExisting: " + action
+				   + "  " +   dispatchExisting);
 
 				//this need to be considered when to invoke import when to invoke upload.
 
 				dataitem = msA.upLoadDataHolder(
 					userID, communityID, credential, newDataHolderName,
-					fileContent, contentsType );
+					fileContent, contentsType, dispatchExisting);
 	
 				if( DEBUG ) logger.appendMessage("UploaderroCode is:" +errCode);
 				if ( errCode!="" )    
@@ -189,12 +199,11 @@ public class MySpaceManager {
 	}
 	
 	/**
-    * @TODO - needs to pass on the overwrite action - does not...
-	 * Upload/save dataholder.
+	 * Import/save dataholder.  Content retrieved from a passed URL.
 	 */
 	public String upLoadURL(String jobDetails){
 	        setUp();
-		if ( DEBUG )  logger.appendMessage("MySpaceManager.upLoad");
+		if ( DEBUG )  logger.appendMessage("MySpaceManager.upLoadURL");
 		DataItemRecord dataitem = null;
 		Call call = null;
 		
@@ -203,12 +212,28 @@ public class MySpaceManager {
 	
 				if ( DEBUG ) logger.appendMessage("About to invoke myspaceaction.importdataholder");  
 				msA.setRegistryName(registryName);
-	
+				int dispatchExisting = msA.LEAVE;
+
+				if (action.equalsIgnoreCase("overwrite"))
+				{  dispatchExisting = msA.OVERWRITE;
+				}
+
+				if ( DEBUG ) logger.appendMessage(
+				  "action, dispatchExisting: " + action
+				   + "  " +   dispatchExisting);
+
 				//this need to be considered when to invoke import when to invoke upload.
 
+				if ( DEBUG )
+				{  logger.appendMessage("importURI: " +
+				     importURI);
+				   logger.appendMessage("newDataHolderName:" +
+				         newDataHolderName);
+                                }
 				dataitem = msA.importDataHolder(
 					userID, communityID, credential, importURI,
-					newDataHolderName, contentsType );
+					newDataHolderName, contentsType,
+					dispatchExisting );
 	
 				boolean successStatus = status.getSuccessStatus();
 				boolean warningStatus = status.getWarningStatus();
