@@ -1,4 +1,4 @@
-/*$Id: InstallationSelfCheck.java,v 1.2 2004/09/28 18:23:29 mch Exp $
+/*$Id: InstallationSelfCheck.java,v 1.3 2004/09/29 17:29:21 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,11 +23,11 @@ import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.QuerierPlugin;
 import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
-import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.query.ConeQuery;
 import org.astrogrid.datacenter.returns.ReturnTable;
 import org.astrogrid.datacenter.returns.TargetIndicator;
 import org.astrogrid.datacenter.service.DataServer;
+import org.astrogrid.datacenter.service.v05.AxisDataService_v05;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Msrl;
 import org.astrogrid.store.delegate.StoreClient;
@@ -58,7 +58,7 @@ public class InstallationSelfCheck extends TestCase {
    
    /** Checks we can create the various interfaces */
    public void testInstantiateServer() throws IOException {
-      //new AxisDataServer_v0_4_1();
+      new AxisDataService_v05();
       //new SkyNode();
    }
    
@@ -87,18 +87,18 @@ public class InstallationSelfCheck extends TestCase {
                       new ReturnTable(new TargetIndicator(sw), ReturnTable.VOTABLE));
    }
 
-   /** Submits a 100 cone searches */
-   public void testSoak() throws Throwable
+   /** Submits a number of cone searches */
+   public void testMiniSoak() throws Throwable
    {
       DataServer server = new DataServer();
 
       for (int i=0;i<100;i++) {
-         //@todo really want to make this a submit...
          server.submitQuery(Account.ANONYMOUS, new ConeQuery(30, 30, 6+i),
                             new ReturnTable(new TargetIndicator(new StringWriter()), ReturnTable.CSV));
       }
    }
 
+   /* not used
    public void testCanCreateWorkspace() throws IOException {
          Workspace ws = new Workspace("test-workspace");
          assertNotNull("Could not create test workspace - returned null", ws);
@@ -107,6 +107,7 @@ public class InstallationSelfCheck extends TestCase {
    
    /** Checks that the default myspace is accessible, if given
     */
+   /* not used
    public void testCanSeeMySpace() throws IOException, Exception {
 
       URL defaultMyspace = SimpleConfig.getSingleton().getUrl(QuerierManager.DEFAULT_MYSPACE, null);
@@ -119,7 +120,7 @@ public class InstallationSelfCheck extends TestCase {
       
       myspace.getFiles("*");
    }
-   
+    */
    
    /**
     * Checks metadata is OK
@@ -133,6 +134,9 @@ public class InstallationSelfCheck extends TestCase {
 
 /*
  $Log: InstallationSelfCheck.java,v $
+ Revision 1.3  2004/09/29 17:29:21  mch
+ Removed unused tests
+
  Revision 1.2  2004/09/28 18:23:29  mch
  Fixed package name
 
