@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryDelegateFactory.java,v 1.10 2004/09/14 00:52:21 nw Exp $
+ * $Id: RegistryDelegateFactory.java,v 1.11 2005/01/13 17:26:46 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -37,6 +37,7 @@ public class RegistryDelegateFactory {
    public static Config conf = null;
    
    public static final String QUERY_URL_PROPERTY = "org.astrogrid.registry.query.endpoint";
+   public static final String ALTQUERY_URL_PROPERTY = "org.astrogrid.registry.query.altendpoint";
    public static final String ADMIN_URL_PROPERTY = "org.astrogrid.registry.admin.endpoint";
    public static final String HARVEST_URL_PROPERTY = "org.astrogrid.registry.harvest.endpoint";   
    /**

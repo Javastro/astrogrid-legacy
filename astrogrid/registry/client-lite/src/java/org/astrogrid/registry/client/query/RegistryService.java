@@ -54,66 +54,147 @@ import org.astrogrid.util.DomHelper;
 
 /**
  * 
- * The RegistryService class is a delegate to a web service that submits an XML formatted
- * registry query to the to the server side web service also named the same RegistryService.
- * This delegate helps the user browse the registry.  Queries should be formatted according to
- * the schema at IVOA schema version 0.9.  This class also uses the common RegistryInterface for
- * knowing the web service methods to call on the server side.
+ * Class: RegistryService
+ * Type: Interface
+ * Description: A interface used to be given to clients from the Delegate Factory for querying the registry.
+ * Essentially this is the interface to the delegate. See QueryRegistry for the implemented class of this
+ * interface.
  * 
- * @see org.astrogrid.registry.common.RegistryInterface
+ * @see org.astrogrid.registry.client.query.QueryRegistry
  * 
  * @link http://www.ivoa.net/twiki/bin/view/IVOA/IVOARegWp03
  * @author Kevin Benson
  */
 public interface RegistryService  {
 
-
+   /**
+    * Method: getRegistries
+    * Description: client inteface method to call web service method for obtaining all the registr types.
+    * @return XML Document of all the Registry type Resources known.
+    * @throws RegistryException
+    */
    public Document getRegistries() throws RegistryException;
-    
-	public Document identify() throws RegistryException;
-    
-   public Document listRecords() throws RegistryException;
+ 
+  /**
+    * Method: search
+    * Description: client inteface method to call web service method search(Document).
+    * @param xadql XML string of ADQL to be parsed into a Document object.
+    * @return XML Document of all the Resources in the registry constrained by the adql query.
+    * @throws RegistryException
+    */   
+   public Document search(String xadql) throws RegistryException;   
    
-   public Document listRecords(Date fromDate) throws RegistryException;
-   
-   public Document listRecords(String metadataPrefix, Date fromDate, Date untilDate) throws RegistryException;
-   
-   public Document listMetadataFormats(String identifier) throws RegistryException;
-   
-   public Document getRecord(String identifier) throws RegistryException;
-   
-   public Document getRecord(String identifier, String metadataPrefix) throws RegistryException;
-   
-   public Document listIdentifiers() throws RegistryException;
-   
-   public Document listIdentifiers(String metadataPrefix, Date fromDate, Date untilDate) throws RegistryException;   
-    
-   public Document search(String xadql) throws RegistryException;
-   
+   /**
+    * Method: search
+    * Description: client inteface method to call web service method for querying the registry in ADQL.
+    * @param adql the adql:where is passed to the web service call.  It can be any form of adql.
+    * @return XML Document of all the Resources in the registry constrained by the adql query.
+    * @throws RegistryException
+    */
    public Document search(Document adql) throws RegistryException;   
-      
-   public Document submitQuery(String query) throws RegistryException;
+
+   /**
+    * Method: searchFromSADQL
+    * Description: client inteface method to call web service method search(Document).
+    * @param xadql SQL type string to be parsed into the current ADQL XML DOM.
+    * @return XML Document of all the Resources in the registry constrained by the adql query.
+    * @throws RegistryException
+    */      
+   public Document searchFromSADQL(String sadql) throws RegistryException;
    
+   /**
+    * Method: submitQuery
+    * Description: client inteface method to call web service method submitQuery(Document). This is an old style xml
+    * query language that Astrogrid had.  Soon to be deprecated and no longer used.
+    * @param query Old style xml string to be converted to XML Document object.
+    * @return XML Document of all the Resources in the registry constrained by the query.
+    * @throws RegistryException
+    */
+   public Document submitQuery(String query) throws RegistryException;
+
+   /**
+    * Method: submitQuery
+    * Description: client inteface method to call web service method. This is an old style xml
+    * query language that Astrogrid had.  Soon to be deprecated and no longer used.
+    * @param query XML Document object in an old style query xml language from astrogrid.
+    * @return XML Document of all the Resources in the registry constrained by the query.
+    * @throws RegistryException
+    */
    public Document submitQuery(Document query) throws RegistryException;
    
    public Document loadRegistry()  throws RegistryException;
       
    public HashMap managedAuthorities() throws RegistryException;
    
+   /**
+    * Method: getResourceByIdentifier
+    * Description: client inteface method to call web service method getResourceByIdentifier(String). 
+    * Grabs Resource(s)
+    * (normally 1 Resource), from a particular identifier (the primary key in a sense). Identifier is
+    * made up of a authroityID+ResourceKey. Normally most clients pass both of these in returning only 1
+    * XML Resource hence name is getResoruce.  Recently you may pass in just a AuthorityID allowing you to
+    * get multiple Resources back. 
+    * @param ident Ivorn object which is a ivo://authorityid+ResourceKey.
+    * @return XML Document of all the Resources in the registry constrained by the query.
+    * @throws RegistryException
+    */
    public Document getResourceByIdentifier(Ivorn ident) throws RegistryException;
-   
+
+   /**
+    * Method: getResourceByIdentifier
+    * Description: client inteface method to call web service method getResourceByIdentifier(Document). 
+    * Grabs Resource(s)
+    * (normally 1 Resource), from a particular identifier (the primary key in a sense). Identifier is
+    * made up of a authroityID+ResourceKey. Normally most clients pass both of these in returning only 1
+    * XML Resource hence name is getResoruce.  Recently you may pass in just a AuthorityID allowing you to
+    * get multiple Resources back. 
+    * @param ident String object which is a ivo://authorityid+ResourceKey.
+    * @return XML Document of all the Resources in the registry constrained by the query.
+    * @throws RegistryException
+    */
    public Document getResourceByIdentifier(String ident) throws RegistryException;
    
    public ServiceData[] getResourcesByInterfaceType(InterfaceType interfaceType) throws RegistryException;   
-         
+
+   /**
+    * Method: getEndPointByIdentifier
+    * Description: client inteface method to call web service method getResourceByIdentifier(String). 
+    * Grabs a URL from the Interface XML element. 
+    * @param ident Ivorn object which is a ivo://authorityid+ResourceKey.
+    * @return String version of a URL from the Interface Element in a XML Resource.
+    * @throws RegistryException
+    */   
    public String getEndPointByIdentifier(Ivorn ident) throws RegistryException;
    
+   /**
+    * Method: getEndPointByIdentifier
+    * Description: client inteface method to call web service method getResourceByIdentifier(String). 
+    * Grabs a URL from the Interface XML element. 
+    * @param ident Ivorn object which is a ivo://authorityid+ResourceKey.
+    * @return String version of a URL from the Interface Element in a XML Resource.
+    * @throws RegistryException
+    */   
    public String getEndPointByIdentifier(String ident) throws RegistryException;
    
-   public URL[] getEndPointByInterfaceType(InterfaceType interfaceType) throws RegistryException;    
-
-   public WSDLBasicInformation getBasicWSDLInformation(Ivorn ident) throws RegistryException;
+   public URL[] getEndPointByInterfaceType(InterfaceType interfaceType) throws RegistryException;
    
-   public WSDLBasicInformation getBasicWSDLInformation(Document voDoc) throws RegistryException;
+   public Document identify() throws RegistryException;
+   
+   public Document listRecords() throws RegistryException;
+  
+   public Document listRecords(Date fromDate) throws RegistryException;
+  
+   public Document listRecords(String metadataPrefix, Date fromDate, Date untilDate) throws RegistryException;
+  
+   public Document listMetadataFormats(String identifier) throws RegistryException;
+  
+   public Document getRecord(String identifier) throws RegistryException;
+  
+   public Document getRecord(String identifier, String metadataPrefix) throws RegistryException;
+  
+   public Document listIdentifiers() throws RegistryException;
+  
+   public Document listIdentifiers(String metadataPrefix, Date fromDate, Date untilDate) throws RegistryException;   
+   
    
 }
