@@ -1,5 +1,5 @@
 /*
- * $Id: DatacenterDelegate.java,v 1.10 2003/09/11 16:10:50 mch Exp $
+ * $Id: DatacenterDelegate.java,v 1.11 2003/09/15 12:17:46 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -54,7 +54,7 @@ public abstract class DatacenterDelegate
          }
          else
          {
-            return new HtmlDelegate(new URL(givenEndPoint));
+            return new WebDelegate(new URL(givenEndPoint));
          }
       }
 
@@ -149,6 +149,9 @@ public abstract class DatacenterDelegate
 
 /*
 $Log: DatacenterDelegate.java,v $
+Revision 1.11  2003/09/15 12:17:46  mch
+Renamed HtmlDelegate to WebDelegate
+
 Revision 1.10  2003/09/11 16:10:50  mch
 Correction for 'socket' protocol
 

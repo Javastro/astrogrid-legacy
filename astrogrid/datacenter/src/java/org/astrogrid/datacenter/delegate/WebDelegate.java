@@ -1,5 +1,5 @@
 /*
- * $Id: HtmlDelegate.java,v 1.2 2003/09/10 13:04:17 nw Exp $
+ * $Id: WebDelegate.java,v 1.1 2003/09/15 12:17:46 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -25,7 +25,7 @@ import org.w3c.dom.Element;
  * @author Jeff Lusted (from DatasetAgentDelegate)
  */
 
-public class HtmlDelegate extends DatacenterDelegate
+public class WebDelegate extends DatacenterDelegate
 {
    private URL endpoint = null;
    AxisDataServerSoapBindingStub binding;
@@ -34,7 +34,7 @@ public class HtmlDelegate extends DatacenterDelegate
     * DatacenterDelegate.makeDelegate() in case we need to create new sorts
     * of datacenter delegates in the future...
     */
-   public HtmlDelegate(URL givenEndPoint) throws MalformedURLException, ServiceException
+   public WebDelegate(URL givenEndPoint) throws MalformedURLException, ServiceException
    {
       this.endpoint = givenEndPoint;
 
@@ -121,7 +121,10 @@ public class HtmlDelegate extends DatacenterDelegate
 }
 
 /*
-$Log: HtmlDelegate.java,v $
+$Log: WebDelegate.java,v $
+Revision 1.1  2003/09/15 12:17:46  mch
+Renamed HtmlDelegate to WebDelegate
+
 Revision 1.2  2003/09/10 13:04:17  nw
 updated to work with new wsdl-generated classes
 - changed imports, changed names of methods, etc.
