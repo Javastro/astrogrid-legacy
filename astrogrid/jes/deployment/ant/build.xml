@@ -1,0 +1,188 @@
+<project name="install" default="info" basedir=".">
+	<property file="default.properties"/>
+	<property name="temporary.dir" value="tmp"/>
+	<property name="jes.war" value="${maven.local.repo}/${astrogrid.groupId}/wars/${jes.war.name}"/>
+	<property name="local.jes.war" value="${basedir}/jes.war"/>
+
+		
+	
+	<!--Public Targets-->
+
+	<target name="save-config" description="Save this configuration for future use">
+        <input addProperty="input.saveProperties.file" defaultvalue="${antigen.home}/jes-installer.properties">
+            Enter a file name for saving your current settings
+        </input>
+        <echoproperties destfile="${input.saveProperties.file}" prefix="input." description="This file can then be reused for hands-free operation"/>
+    	<property name="properties.saved" value="true"/>
+    </target>
+	
+	<target name="load-config" description="Load a previously saved configuration">
+    	<input addProperty="input.loadProperties.file" defaultvalue="${antigen.home}/jes-installer.properties">
+            Enter the filename of your previously saved settings
+        </input>
+    	<property file="${input.loadProperties.file}"/>
+    </target>
+
+	<target name="setup-working" description="Initialise the JES working directory" depends="get-working-dir">
+		<input addproperty="input.eraseworking" validargs="Do it,Abort">This will erase the contents of ${input.jes.working.dir}.  Are you sure?</input>
+		<condition property="setup-repository.donterase" value="true">
+        	<equals arg1="${input.eraseworking}" arg2="Abort"/>
+		</condition>
+		<fail if="setup-repository.donterase">Please restart and don't select 'Initialise the JES working directory'</fail>
+		<delete dir="${input.jes.working.dir}"/>
+		<mkdir dir="${input.jes.working.dir}"/>		
+	</target>
+
+	<target name="install-jes" description="Install JES" depends="checkTomcat, download, deploy, check-installed-ok">
+	        <echo>***The Job Entry System has been successfully installed***</echo>
+	    	<property name="jes.installed" value="true"/>
+    </target>		
+	
+		
+	<target name="remove-jes" description="Remove JES (does not remove the JES working dir)" depends="checkTomcat,  undeploy, check-uninstalled-ok">
+    	<sleep seconds="10" description="Allow Tomcat to catch up"/>
+        <echo>***The jes has been successfully removed***</echo>
+    	<property name="jes.uninstalled" value="true"/>
+	</target>
+	
+	
+	<!--Private Targets -->
+	
+	<target name="set-proxy" if="proxyhost">
+		<!--set defaults-->
+		<property name="proxyport" value="80"/>
+		<property name="proxyuser" value=""/>
+		<property name="proxypass" value=""/>
+		<echo>Proxying through ${proxyhost}:${proxyport}</echo>
+		<setproxy proxyhost="${proxyhost}"
+				  proxyuser="${proxyuser}"
+				  proxyport="${proxyport}"
+	  			  proxypass="${proxypass}"/>
+	</target>
+
+	<target name="info">
+		<echo>jes installation script</echo>
+	</target>
+	
+	<target name="get-working-dir">
+		<input addproperty="input.jes.working.dir" defaultvalue="${antigen.home}/jes">Please enter the location of the JES working directory</input>
+	</target>
+		
+    <target name="checkTomcat" depends="fail-if-no-tomcat,get-tomcat-url">
+        <input addProperty="input.tomcat.manager.user" defaultvalue="tomcat"> Please enter the Tomcat manager username </input>
+        <input addProperty="input.tomcat.manager.pass" defaultvalue="tomcat"> Please enter the Tomcat manager password </input>
+        <echo>Attempting to contact Tomcat Manager...</echo>
+        <tempfile property="page.check"/>
+        <property name="tomcat.manager.url" value="${input.tomcat.url}/manager"/>
+        <get src="${tomcat.manager.url}" dest="${page.check}" username="${input.tomcat.manager.user}" password="${input.tomcat.manager.pass}"/>
+        <echo>...OK</echo>
+    </target>	
+	
+	<target name="get-tomcat-url">
+		<input addProperty="input.tomcat.url" defaultvalue="http://127.0.0.1:8080">Please enter the URL of Tomcat on your system </input>
+	</target>
+
+	<target name="fail-if-no-tomcat">
+		<input addProperty="input.tomcat.present" validargs="continue,abort" defaultvalue="continue"> Ensure that Tomcat is running and the manager webapp is enabled </input>
+        <condition property="tomcat.present.true">
+	            <equals arg1="${input.tomcat.present}" arg2="continue"/>
+        </condition>
+        <fail message="Please start Tomcat and retry the installation" unless="tomcat.present.true"/>
+	</target>
+	
+    <target name="download">
+    	<echo>Downloading jes software....this may take some time...</echo>
+    	<mkdir dir="${maven.local.repo}/${astrogrid.groupId}/wars/"/>
+        <get src="${astrogrid.repo}/${astrogrid.groupId}/wars/${jes.war.name}" dest="${jes.war}" verbose="true" usetimestamp="true"/>
+    </target>
+	
+    <target name="deploy" depends="createTmpDir,checkTomcat,download,update-war,set-context-path">
+        <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${input.tomcat.manager.user}" password="${input.tomcat.manager.pass}" 
+            path="${input.jes.contextpath}" war="${local.jes.war}" />
+    </target>
+	
+	<target name="set-context-path" depends="get-tomcat-url">
+		<input addproperty="input.jes.contextpath" defaultvalue="/astrogrid-jes">Please enter the context path on the webserver for jes</input>
+		<property name="jes.url" value="${input.tomcat.url}${input.jes.contextpath}/jes"/><!--Don't know what the purpose of this is-->
+		<property name="jes.service.url" value="${input.tomcat.url}${input.jes.contextpath}/services/jes"/>
+	</target>
+	
+    <target name="undeploy" depends="checkTomcat,set-context-path">
+        <tomcat-remove url="${tomcat.manager.url}" username="${input.tomcat.manager.user}" password="${input.tomcat.manager.pass}" 
+            path="${input.jes.contextpath}"  />
+    </target>   
+
+    <target name="update-war" depends="download, input-jes-settings, set-context-path, get-working-dir, checkRegistry">
+        <filterset id="myfilter">
+            <filter token="JES_WEBAPP" value="${input.jes.contextpath}"/>
+        	<filter token="REG_UPDATE" value="${astrogrid.registry.update.endpoint}"/>
+        	<filter token="REG_QUERY" value="${astrogrid.registry.query.endpoint}"/>        	
+        	<filter token="JES_WORKING" value="${input.jes.working.dir}"/>        	
+        	<filter token="TOMCATROOT" value="${input.tomcat.url}"/>
+        </filterset>
+    	<echo>This jes is being installed with the following settings:</echo>
+    	<echo>Webapp: ${input.jes.contextpath}</echo>
+    	<echo>Reg update service URL: ${astrogrid.registry.update.endpoint}</echo>
+    	<echo>Reg query service URL: ${astrogrid.registry.query.endpoint}</echo>    		
+    	<echo>JES Working dir ${input.jes.working.dir}</echo>
+        <copy todir="${temporary.dir}/context">
+            <filterset refid="myfilter"/>
+            <fileset dir="context" />
+        </copy>
+        <copy file="${jes.war}" tofile="${local.jes.war}"/>
+    	<!--update the context.xml-->
+        <war update="yes" destfile="${local.jes.war}">
+            <metainf dir="${temporary.dir}/context" />
+        </war>
+    </target>
+
+	<target name="input-jes-settings">
+		<!--none that haven't already been set-->
+	</target>
+	    
+    <target name="checkRegistry">
+        <input addProperty="input.astrogrid.registry.endpoint" defaultvalue="http://127.0.0.1:8080/astrogrid-registry-SNAPSHOT/">Please enter the URL of your registry</input>
+    	<property name="astrogrid.registry.endpoint" value="${input.astrogrid.registry.endpoint}"/>
+    	<property name="astrogrid.registry.update.endpoint" value="${astrogrid.registry.endpoint}${astrogrid.registry.update.offset}"/>
+    	<property name="astrogrid.registry.query.endpoint" value="${astrogrid.registry.endpoint}${astrogrid.registry.query.offset}"/>    	
+        <echo>Attempting to contact the registry to check that it's up and running...</echo>
+        <tempfile property="page.check"/>
+        <get src="${astrogrid.registry.query.endpoint}" dest="${page.check}"/>
+        <echo>...OK</echo>
+    </target>
+    
+    	
+	<target name="check-installed-ok" depends="checkTomcat">
+    	<waitfor maxwait="30" maxwaitunit="second" checkevery="2000" timeoutproperty="installation.failed">
+    	    <http url="${input.tomcat.url}${input.jes.contextpath}"/>
+    	</waitfor>
+    	<fail if="installation.failed">Installation failed for some reason.  Please retry</fail>
+	</target>
+	
+	<target name="check-uninstalled-ok" depends="checkTomcat">
+    	<waitfor maxwait="6" maxwaitunit="second" checkevery="2000" timeoutproperty="uninstallation.failed">
+    	    <http url="${input.tomcat.url}${input.jes.contextpath}"/>
+    	</waitfor>
+    	<fail unless="uninstallation.failed">Uninstallation failed for some reason.  Please retry</fail>
+	</target>	
+	    
+    <target name="createTmpDir">
+        <delete dir="${temporary.dir}"/>
+        <mkdir dir="${temporary.dir}"/>
+    </target>
+ 
+
+	
+	<!-- Configure the custom Ant tasks for the Manager application -->
+    <taskdef name="tomcat-deploy" classname="org.apache.catalina.ant.DeployTask" />
+    <taskdef name="tomcat-install" classname="org.apache.catalina.ant.InstallTask" />
+    <taskdef name="tomcat-list" classname="org.apache.catalina.ant.ListTask" />
+    <taskdef name="tomcat-reload" classname="org.apache.catalina.ant.ReloadTask" />
+    <taskdef name="tomcat-remove" classname="org.apache.catalina.ant.RemoveTask" />
+    <taskdef name="tomcat-resources" classname="org.apache.catalina.ant.ResourcesTask" />
+    <taskdef name="tomcat-roles" classname="org.apache.catalina.ant.RolesTask" />
+    <taskdef name="tomcat-start" classname="org.apache.catalina.ant.StartTask" />
+    <taskdef name="tomcat-stop" classname="org.apache.catalina.ant.StopTask" />
+    <taskdef name="tomcat-undeploy" classname="org.apache.catalina.ant.UndeployTask" />
+    <taskdef name="register-entry" classname="org.astrogrid.deployment.RegistryLoaderTask"/>
+</project>

@@ -1,17 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Id: project.xml,v 1.79 2005/03/15 16:18:19 clq2 Exp $ -->
+<!-- $Id: project.xml,v 1.80 2005/03/22 16:03:08 jdt Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="maven-project.xsd">
   <extend>../maven-base/project.xml</extend>
   <id>astrogrid-jes</id>
   <currentVersion>${astrogrid.jes.version}</currentVersion>
   <name>AstroGrid Job Management</name>
- <description>Astrogrid Workflow Execuction Engine</description>
-  <shortDescription>Astrogrid Job Exection Server</shortDescription>
-  <repository>
-    <connection>scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/${astrogrid.name}</connection>
-    <developerConnection>scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/${astrogrid.name}</developerConnection>
-    <url>http://www.astrogrid.org/viewcvs/astrogrid/${astrogrid.name}/</url>
-  </repository>
+ <description>Astrogrid Workflow Execution Engine</description>
+  <shortDescription>Astrogrid Job Execution Server</shortDescription>
   <packageGroups>
     <packageGroup>
       <title>Delegate</title>

@@ -40,6 +40,8 @@
 <goal name="astrogrid-install-artifact">
                 <attainGoal name="clean" /> <!-- necessary - otherwise delegate will contain all classes-->
         <maven:maven descriptor="${basedir}/delegate-project.xml" goals="jar:install" />
+        <maven:maven descriptor="${basedir}/deployment/project.xml" goals="jar:install" />
+        <maven:maven descriptor="${basedir}/installer/project.xml" goals="javaapp:install" />        
         <attainGoal name="jar:install" />
         <attainGoal name="war:install" />
 </goal>
@@ -48,6 +50,8 @@
 
                 <attainGoal name="clean" /> <!-- necessary - otherwise delegate will contain all classes-->
         <maven:maven descriptor="${basedir}/delegate-project.xml" goals="jar:install-snapshot" />
+        <maven:maven descriptor="${basedir}/deployment/project.xml" goals="jar:install-snapshot" />
+        <maven:maven descriptor="${basedir}/installer/project.xml" goals="javaapp:install-snapshot" />        
         <attainGoal name="jar:install-snapshot" />
         <attainGoal name="war:install-snapshot" />
 </goal>
@@ -60,6 +64,8 @@
 
                 <attainGoal name="clean" /> <!-- necessary - otherwise delegate will contain all classes-->
                 <maven:maven descriptor="${basedir}/delegate-project.xml" goals="jar:deploy-snapshot" />
+        <maven:maven descriptor="${basedir}/deployment/project.xml" goals="jar:deploy-snapshot" />
+        <maven:maven descriptor="${basedir}/installer/project.xml" goals="javaapp:deploy-snapshot" />        
         <attainGoal name="jar:deploy-snapshot" />
         <attainGoal name="war:deploy-snapshot" />
 </goal>
@@ -69,6 +75,8 @@
 
                 <attainGoal name="clean" /> <!-- necessary - otherwise delegate will contain all classes-->
                 <maven:maven descriptor="${basedir}/delegate-project.xml" goals="jar:deploy" />
+        <maven:maven descriptor="${basedir}/deployment/project.xml" goals="jar:deploy" />
+        <maven:maven descriptor="${basedir}/installer/project.xml" goals="javaapp:deploy" />        
         <attainGoal name="jar:deploy" />
         <attainGoal name="war:deploy" />
 </goal>

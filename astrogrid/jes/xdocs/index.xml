@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+<properties>
+        <author email="jdt@roe.ac.uk">John Taylor</author>
+        <title>Job Entry System</title>
+</properties>
+<body>
+
+<section name="Job Entry System"><p>
+Follow the links to the left for documentation.
+</p>
+
+<subsection name="Important Build Note"><p>
+JES is built using <a href="http://maven.apache.org">Maven</a> and requires the installation of the
+optional <a href="http://maven-plugins.sourceforge.net/maven-javaapp-plugin/">javaapp plugin</a>.
+</p>
+</subsection></section>
+</body>
+</document>

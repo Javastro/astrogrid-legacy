@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!-- tomcat-5 specific deployment descriptor - can be used to configure environment, loggers, etc -->
+<Context path="@JES_WEBAPP@">
+    <!-- registry endpoints - think only query is required at the moment -->
+    <Environment name="org.astrogrid.registry.admin.endpoint" description="registry update service endpoint URL" type="java.lang.String" 
+        value="@REG_UPDATE@" override="false" />
+    <Environment name="org.astrogrid.registry.query.endpoint" description="registry query service endpoint URL" type="java.lang.String" 
+        value="@REG_QUERY@" override="false" />
+    <Environment name="jes.store" value="file" description="select persistance implementation to use" override="false" type="java.lang.String" />
+    <Environment name="jes.jobfactory.file.basedir" value="@JES_WORKING@" description="working directory for file-based persistance" override="false" 
+        type="java.lang.String" />
+    <Environment name="jes.locator" value="registry" description="select application-resolving implementation to use" type="java.lang.String" override="false" 
+        />
+    <!-- could do with computing defaults for these within webapp / web.xml -->
+    <Environment name="jes.monitor.endpoint.url" value="@TOMCATROOT@@JES_WEBAPP@/services/JobMonitorService" 
+        description="endpoint for associated jobmonitor web service" type="java.lang.String" override="false" />
+    <Environment name="jes.results.endpoint.url" value="@TOMCATROOT@@JES_WEBAPP@/services/ResultListener" 
+        description="endpoint for associated resultslistener web service" type="java.lang.String" override="false" />
+    <Environment name="org.astrogrid.registry.result.version" override="false" type="java.lang.String" value="0.9"/>
+</Context>
