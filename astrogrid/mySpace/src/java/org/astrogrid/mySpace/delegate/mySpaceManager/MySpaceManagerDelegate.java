@@ -6,470 +6,796 @@
 
 package org.astrogrid.mySpace.delegate.mySpaceManager;
 
+import java.io.*;
+import java.net.*;
 import java.util.Vector;
 import org.astrogrid.mySpace.delegate.helper.*;
 
+//
+// Note: Throughout this class the acronym `MSS' denotes a MySpace System.
+
 public class MySpaceManagerDelegate {
+
+    private String mssUrl = null;      // MSS the delegate is operating on.
+    private Vector queryMssUrl = null; // Vector of MSSs to query.
    
-	private String targetEndPoint = null;
-	private String value ="";
-	public MySpaceManagerDelegate(String targetEndPoint) {
-	  this.targetEndPoint = targetEndPoint;
-	}    
-	
-	/**
-	* lookupDataHoldings(modified lookupDataHolders(jobDetails) which returns a list of workflows names.
-	* @param: userid: userid
-	* @param: communityid
-	* @param: criteria: eg./userid/communityid/workflows/A*
-	* @param: path: file path you want to download to.
-	* @return: Vector of String of fileNames
-	*/
-	public Vector listDataHoldings(String userid, String communityid, String criteria)throws Exception {
-		Vector vector = new Vector();
-		try{		
-			Vector returnResponseOBJs = listDataHoldingsGen(userid, communityid, criteria);
-			MySpaceHelper helper = new MySpaceHelper();
-			for (int i=0;i<returnResponseOBJs.size();i++){
-				String response = (String)returnResponseOBJs.elementAt(i);
-				vector.addAll(vector.size(),helper.getList(response));
-			}
-		   
-		}catch(java.rmi.RemoteException re) {
-			re.printStackTrace();
-		}
-		return vector;
-	}		
-	
-	/**
-	 * listDataHoldingsGen is the genaric method which returns a String of xml respons which holds the full
-     * file path as well as other info such as expired date etc.
-	 * @param userid
-	 * @param communityid
-	 * @param criteria
-	 * @return Vector of response objects
-	 * @throws Exception
-	 */
-	
-	public Vector listDataHoldingsGen(String userid, String communityid, String criteria)throws Exception {
-		String response = " ";
-		Vector vector = new Vector();
-		org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
-		try {
-			binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
-						  new org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerServiceLocator().getMySpaceManager(new java.net.URL(targetEndPoint));
-		}
-		catch (javax.xml.rpc.ServiceException jre) {
-			if(jre.getLinkedCause()!=null)
-				jre.getLinkedCause().printStackTrace();
-		}
-		try{
-			MySpaceHelper helper = new MySpaceHelper();
-			String jobDetails = helper.buildListDataHoldings(userid, communityid, criteria);
-			response = binding.lookupDataHoldersDetails(jobDetails);
-			//should invoke one of the helper functions to build the returned response to include searchs to all cache servers as well as community server
-			//to add all the response String objects into the vector..
-			
-		}catch(java.rmi.RemoteException re) {
-					re.printStackTrace();
-		}
-		return vector;
-	}		
-	
-	/**
-	 * 
-	 * @param userid
-	 * @param communityid
-	 * @param serverFileName: full file name eg: /clq/serv1/File1.xml
-	 * @return
-	 * @throws Exception
-	 */
-	public String listDataHolding(String userid, String communityid, String serverFileName) throws Exception {
-		org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
-		try {
-			binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
-						  new org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerServiceLocator().getMySpaceManager(new java.net.URL(targetEndPoint));
-		}
-		catch (javax.xml.rpc.ServiceException jre) {
-			if(jre.getLinkedCause()!=null)
-				jre.getLinkedCause().printStackTrace();
-		}
-        
-		try{
-			MySpaceHelper helper = new MySpaceHelper();
-			String jobDetails = helper.buildListDataHolding(userid, communityid, serverFileName);
-			value = binding.lookupDataHolderDetails(jobDetails);
-		}catch(java.rmi.RemoteException re) {
-					re.printStackTrace();
-		}
-		return (String)value;
-	}	
-	
-	/**
-	 * 
-	 * @param userid
-	 * @param communityid
-	 * @param serverFileName: full file name copy from
-	 * @param newDataItemName: full file name copy to
-	 * @return
-	 * @throws Exception
-	 */
-	public String copyDataHolding(String userid, String communityid, String serverFileName, String newDataItemName) throws Exception {
-		org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
-		try {
-			binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
-						  new org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerServiceLocator().getMySpaceManager(new java.net.URL(targetEndPoint));
-		}
-		catch (javax.xml.rpc.ServiceException jre) {
-			if(jre.getLinkedCause()!=null)
-				jre.getLinkedCause().printStackTrace();
-		}
-        try{
-        	MySpaceHelper helper = new MySpaceHelper();
-        	String jobDetails = helper.buildCopy(userid, communityid, serverFileName, newDataItemName);
-		    value = binding.copyDataHolder(jobDetails);
-        }catch(java.rmi.RemoteException re) {
-		re.printStackTrace();
-	}
-		return (String)value;
-	}	
-	
-	/**
-	 * 
-	 * @param userid
-	 * @param communityid
-	 * @param serverFileName: ole file full name
-	 * @param newDataItemName: new file full name
-	 * @return
-	 * @throws Exception
-	 */	
+    private String value ="";
+
+//
+// Constructors.
+
+/**
+ * Constructor with no arguments.  Both the MSS to operate on and the
+ * vector of MSSs to query are set to null.  These items need to be
+ * specified using the appropriate set methods before the delegate can
+ * invoke a MySpace system.
+ */
+
+    public MySpaceManagerDelegate() {
+        this.mssUrl = null;
+        this.queryMssUrl = null;
+    }
+
+/**
+ * Constructor with a single argument.  This argument is the URL of the
+ * MSS which the delegate is to invoke.  The vector of MSSs to query is
+ * set to a single element vector contining this same MSS.
+ */
+
+    public MySpaceManagerDelegate(String mssUrl) {
+        this.mssUrl = mssUrl;
+        (this.queryMssUrl).add(mssUrl);
+    }    
+    
+/**
+ * Constructor with two arguments.  The first argument is the URL of the
+ * MSS which the delegate is to invoke.  The second is a Vector
+ * containing the URLs of all the MSSs which are to be queried.
+ */
+
+    public MySpaceManagerDelegate(String mssUrl, Vector queryMssUrl) {
+        this.mssUrl = mssUrl;
+        this.queryMssUrl = queryMssUrl;
+    }
+
+//
+// Get and set methods.
+//
+// These method are provided to get and set the URL of the MSS to invoke
+// and the Vector of MSSs to query.
+
+/**
+ * Get the URL of the current MSS.
+ */
+
+    public String getMssUrl() {
+        return this.mssUrl;
+    }
+
+/**
+ * Set the URL of the MSS to invoke.
+ */
+
+    public void   setMssUrl(String mssUrl) {
+        this.mssUrl = mssUrl;
+    }
+
+/**
+ * Get a Vector containing the URLs of the MSSs which are currently
+ * queried.
+ */
+
+    public Vector getQueryMssUrl() {
+       return queryMssUrl;
+    }
+
+/**
+ * Specify the list of MSSs to be queried.  A Vector containing the
+ * URLs of the required MSSs is supplied.
+ *
+ * <p>
+ * There is a special syntax to indicate that all the MSS known to
+ * the AstroGrid system are to be queried.  This option is invoked
+ * by supplying a single element Vector in which the first element is
+ * a single asterisk.
+ */
+
+    public void setQueryMssUrl(Vector queryMssUrl) {
+        if (queryMssUrl.size() == 1) {
+            if ( ((String)queryMssUrl.elementAt(0)).equals("*") ) {
+                // invoke yet to be written method.
+            }
+            else {
+                this.queryMssUrl = queryMssUrl;
+            } 
+        }
+        else {
+            this.queryMssUrl = queryMssUrl;
+        } 
+    }
+
+/**
+ * Get a Vector containing the URLs of all the MSSs known to AstroGrid.
+ */
+
+    public Vector getAllMssUrl() {
+        return this.queryMssUrl;     // STILL TO BE IMPLEMENTED.
+    }
+
+//
+// Action methods.
+//
+// The following methods invoke an MSS to perform some action.  All
+// the methods invoke a single MSS apart from
+// <code>listDataHoldings</code> and <code>listDataHoldingsGen</code>
+// which query a group of them.
+
+/**
+ * Search a list of MSSs and return the MySpace names of entries which
+ * match the query.
+ *
+ * @param userId User identifier.
+ * @param communityId Community identifier.
+ * @param query Query which MySpace names should match, eg:
+ *    /userid@communityid/server/workflows/A*
+ *
+ * @return A list of MySpace names which match the query.  Note that
+ * short (and incomplete) MySpace names are returned, with the details
+ * of their enclosing containers removed.  A Vector is returned, each
+ * element of which corresponds to one of the MSS searched.  Each of
+ * these elements is itself a Vector, whose elements are Strings
+ * containing the MySpace names which matched the query.
+ */
  
-	public String renameDataHolding(String userid, String communityid, String serverFileName, String newDataItemName) throws Exception {
-		org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
-		try {
-			binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
-						  new org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerServiceLocator().getMySpaceManager(new java.net.URL(targetEndPoint));
-		}
-		catch (javax.xml.rpc.ServiceException jre) {
-			if(jre.getLinkedCause()!=null)
-				jre.getLinkedCause().printStackTrace();
-		}
+    public Vector listDataHoldings(String userId, String communityId,
+      String query)throws Exception {
+        Vector returnList = new Vector();
+        try {
+            for (int loop = 0; loop<queryMssUrl.size(); loop++) {
+                Vector returnResponseOBJs = internalDataHoldingsGen(
+                  userId, communityId, query,
+                  (String)queryMssUrl.elementAt(loop) );
 
-		try{
-			MySpaceHelper helper = new MySpaceHelper();
-			String jobDetails = helper.buildRename(userid, communityid, serverFileName, newDataItemName);
-			value = binding.moveDataHolder(jobDetails);
-		}catch(java.rmi.RemoteException re) {
-					re.printStackTrace();
-		}
-		return (String)value;
-	}	
-	
-	/**
-	 * 
-	 * @param userid
-	 * @param communityid
-	 * @param serverFileName: Full file name which you want to delete
-	 * @return
-	 * @throws Exception
-	 */
-	public String deleteDataHolding(String userid, String communityid, String serverFileName) throws Exception {
-		org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
-		try {
-			binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
-						  new org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerServiceLocator().getMySpaceManager(new java.net.URL(targetEndPoint));
-		}
-		catch (javax.xml.rpc.ServiceException jre) {
-			if(jre.getLinkedCause()!=null)
-				jre.getLinkedCause().printStackTrace();
-		}
+                MySpaceHelper helper = new MySpaceHelper();
+                Vector currentList  = new Vector();
+
+                for (int i=0;i<returnResponseOBJs.size();i++){
+                    String response = (String)returnResponseOBJs.elementAt(i);
+                    currentList.addAll(
+                      currentList.size(),helper.getList(response));
+                }
+                returnList.add(currentList);
+            }
+           
+        }catch(java.rmi.RemoteException re) {
+            re.printStackTrace();
+        }
+        return returnList;
+    }        
+    
+/**
+ * Search a list of MSSs and return the details of all the MySpace
+ * entries which match the query.  The details for each entry are
+ * a string containing XML.
+ *
+ * @param userId User identifier.
+ * @param communityId Community identifier.
+ * @param query Query which MySpace names should match, eg:
+ *    /userid@communityid/server/workflows/A*
+ *
+ * @return A list of MySpace entries which match the query.  For each
+ * matching entry an XML string containing the details is returned.
+ * A Vector is returned, each element of which corresponds to one of
+ * the MSS searched.  Each of these elements is itself a Vector,
+ * whose elements are Strings containing the details of the entry
+ *which matched the query.
+ */
+
+    public Vector listDataHoldingsGen(String userId, String communityId, 
+      String query)throws Exception {
+        Vector returnList = new Vector();
+
+        String response = " ";
+        org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
+
+        for (int loop = 0; loop<queryMssUrl.size(); loop++) {
+            try {
+                String currentUrl = (String)queryMssUrl.elementAt(loop);
+                binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
+                  new org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerServiceLocator().getMySpaceManager(
+                    new java.net.URL(currentUrl));
+            }
+            catch (javax.xml.rpc.ServiceException jre) {
+                if(jre.getLinkedCause()!=null)
+                    jre.getLinkedCause().printStackTrace();
+            }
+            try{
+                MySpaceHelper helper = new MySpaceHelper();
+                String jobDetails = helper.buildListDataHoldings(userId,
+                  communityId, query);
+                response = binding.lookupDataHoldersDetails(jobDetails);
+
+               // should invoke one of the helper functions to build the 
+               // returned response to include searchs to all cache servers 
+               // as well as community server
+               // to add all the response String objects into the vector..
+ 
+               // You'll need something like....
+
+                String somestring = "";
+                returnList.add(somestring);
+           
+            }catch(java.rmi.RemoteException re) {
+                re.printStackTrace();
+            }
+        }
+        return returnList;
+    }        
+    
+    /**
+     * 
+     * @param userId
+     * @param communityId
+     * @param serverFileName: full file name eg: /clq/serv1/File1.xml
+     * @return
+     * @throws Exception
+     */
+    public String listDataHolding(String userId, String communityId, String serverFileName) throws Exception {
+        org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
+        try {
+            binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
+                          new org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerServiceLocator().getMySpaceManager(new java.net.URL(mssUrl));
+        }
+        catch (javax.xml.rpc.ServiceException jre) {
+            if(jre.getLinkedCause()!=null)
+                jre.getLinkedCause().printStackTrace();
+        }
         
-		try{
-			MySpaceHelper helper = new MySpaceHelper();
-			String jobDetails = helper.buildDelete(userid, communityid, serverFileName);
-			value = binding.deleteDataHolder(jobDetails);
-		}catch(java.rmi.RemoteException re) {
-				re.printStackTrace();
-			}
-		return (String)value;
-	}	
-	
-	/** saveDataHolding(upLoad),this function will save workflow/query into MySpace system.
-	* @param: userid: userid
-	* @param: communityid
-	* @param: fileName: unique file name for Workflow or Query you want to store.
-	* @param: fileContent: content of workflow or data query
-	* @param: category "WF" or "QUERY", if not set, default is "VOTable"
-	* @param: action "Overwrite" or "Append", if not set, default is "Overwrite"
-	* @return: boolean true if file successfully stored in MySapce false otherwise.
-	*/
-	
-	public boolean saveDataHolding(String userid, String communityid, String fileName, String fileContent, 
-	                               String category, String action) throws Exception {
-		org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
-		boolean isSaved = false;
-		try {
-			binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
-			          new org.astrogrid.mySpace.delegate.mySpaceManager.
-			                 MySpaceManagerServiceLocator().getMySpaceManager(new java.net.URL(targetEndPoint));
-		}
-		catch (javax.xml.rpc.ServiceException jre) {
-			isSaved = false;
-			if(jre.getLinkedCause()!=null){
-				jre.getLinkedCause().printStackTrace();
-			}
-		}
-		try{
-			MySpaceHelper helper = new MySpaceHelper();
-			String jobDetails = helper.buildSave(userid, communityid, fileName, fileContent, category, action);
-			binding.upLoad(jobDetails);
-			isSaved = true;
-		}catch(java.rmi.RemoteException re) {
-			isSaved = false;
-			re.printStackTrace();
-		}
-		return isSaved;
-	}
-	
-	/**
-	 * saveDataHoldingURL is different from saveDataHolding since it is taking a URL where MySpace will pull the file from. 
-	 * @param userid
-	 * @param communityid
-	 * @param fileName
-	 * @param importURI - url that save the dataholding from
-	 * @param category
-	 * @param action
-	 * @return
-	 * @throws Exception
-	 */
-	
-	public boolean saveDataHoldingURL(String userid, String communityid, String fileName, String importURL, 
-								   String category, String action) throws Exception {
-		org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
-		boolean isSaved = false;
-		try {
-			binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
-					  new org.astrogrid.mySpace.delegate.mySpaceManager.
-							 MySpaceManagerServiceLocator().getMySpaceManager(new java.net.URL(targetEndPoint));
-		}
-		catch (javax.xml.rpc.ServiceException jre) {
-			isSaved = false;
-			if(jre.getLinkedCause()!=null){
-				jre.getLinkedCause().printStackTrace();
-			}
-		}
-		try{
-			MySpaceHelper helper = new MySpaceHelper();
-			String jobDetails = helper.buildSaveURL(userid, communityid, fileName, importURL, category, action);
-			binding.upLoadURL(jobDetails);
-			isSaved = true;
-		}catch(java.rmi.RemoteException re) {
-			isSaved = false;
-			re.printStackTrace();
-		}
-		return isSaved;
-	}
-	
-	/** This is read/download
-	* getDataHolding(modified download which returns file content instead of boolean),this function will download workflow/query from MySpace system.
-	* @param: userid: userid
-    * @param: communityid: communityid
-	* @param: fullFileName: full file name in mySpace for Workflow or Query you want be downloaded.
-	* @return: file content in String format
-	*/
-	public String getDataHolding(String userid, String communityid, String fullFileName)throws Exception{
-		org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
-		try {
-			binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
-						  new org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerServiceLocator().
-						      getMySpaceManager(new java.net.URL(targetEndPoint));
-		}
-		catch (javax.xml.rpc.ServiceException jre) {
-			if(jre.getLinkedCause()!=null)
-				jre.getLinkedCause().printStackTrace();
-		}
+        try{
+            MySpaceHelper helper = new MySpaceHelper();
+            String jobDetails = helper.buildListDataHolding(userId, communityId, serverFileName);
+            value = binding.lookupDataHolderDetails(jobDetails);
+        }catch(java.rmi.RemoteException re) {
+                    re.printStackTrace();
+        }
+        return (String)value;
+    }    
+    
+    /**
+     * @param userId
+     * @param communityId
+     * @param serverFileName: full file name copy from
+     * @param newDataItemName: full file name copy to
+     * @return
+     * @throws Exception
+     */
+    public String copyDataHolding(String userId, String communityId, String serverFileName, String newDataItemName) throws Exception {
+        org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
+        try {
+            binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
+                          new org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerServiceLocator().getMySpaceManager(new java.net.URL(mssUrl));
+        }
+        catch (javax.xml.rpc.ServiceException jre) {
+            if(jre.getLinkedCause()!=null)
+                jre.getLinkedCause().printStackTrace();
+        }
+        try{
+            MySpaceHelper helper = new MySpaceHelper();
+            String jobDetails = helper.buildCopy(userId, communityId, serverFileName, newDataItemName);
+            value = binding.copyDataHolder(jobDetails);
+        }catch(java.rmi.RemoteException re) {
+        re.printStackTrace();
+    }
+        return (String)value;
+    }    
+    
+/**
+ * Retrieve a copy of a dataHolder on a remote MSS and save it with a
+ * specified MySpace name on the current MSS.
+ * 
+ * @param userId User identifier.
+ * @param communityId Community identifier.
+ * @param remoteMssUrl URL of the remote MSS.
+ * @param remoteMySpaceName MySpace name of the dataHolder to be
+ *   retrieved from the remote MSS.
+ * @param newMySpaceName MySpace name for the copy of the dataHolder on
+ *   the current MSS.
+ *
+ * @return boolean; true if the copy succeeded.
+ * @throws Exception
+ */
 
-		try{
-			MySpaceHelper helper = new MySpaceHelper();
-			String jobDetails = helper.buildDownload(userid, communityid, fullFileName);
-			String URI = binding.exportDataHolder(jobDetails); //URI will be the URI where the file is stored eg: http://localhost:8080/mySpace/f34
-			//value = invoke FileTransfer class to return the content of the file from this URI
-		}catch(java.rmi.RemoteException re) {
-					re.printStackTrace();
-		}
-		return (String)value;
-	}		
-	
-	/**
-	 * 
-	 * @param userid
-	 * @param communityid
-	 * @param serverFileName: full file name 
-	 * @param extentionPeriod: number of days you would like to extend this item
-	 * @return
-	 * @throws Exception
-	 */
-	public String extendLease(String userid, String communityid, String serverFileName, int extentionPeriod) throws Exception {
-		org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
-		try {
-			binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
-						  new org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerServiceLocator().getMySpaceManager(new java.net.URL(targetEndPoint));
-		}
-		catch (javax.xml.rpc.ServiceException jre) {
-			if(jre.getLinkedCause()!=null)
-				jre.getLinkedCause().printStackTrace();
-		}
+    public boolean copyRemoteDataHolding(String userId, String communityId,
+      String remoteMssUrl, String remoteMySpaceName,
+      String newMySpaceName) throws Exception {
+        boolean isSaved = false;
+        org.astrogrid.mySpace.delegate.mySpaceManager.
+          MySpaceManagerSoapBindingStub binding = null;
+
+//
+//     Set up for accessing the remote MSS.
+
+        try {
+            binding = (org.astrogrid.mySpace.delegate.mySpaceManager.
+              MySpaceManagerSoapBindingStub)
+              new org.astrogrid.mySpace.delegate.mySpaceManager.
+                MySpaceManagerServiceLocator(). getMySpaceManager(
+                  new java.net.URL(remoteMssUrl));
+        }
+        catch (javax.xml.rpc.ServiceException jre) {
+            if(jre.getLinkedCause()!=null)
+                jre.getLinkedCause().printStackTrace();
+        }
+
+//
+//     Obtain the URL to access the remote dataHolder.
+
+        String remoteURL = null;
+        try{
+            MySpaceHelper helper = new MySpaceHelper();
+            String jobDetails =
+              helper.buildDownload(userId, communityId, remoteMySpaceName);
+            remoteURL = binding.exportDataHolder(jobDetails);
+        }catch(java.rmi.RemoteException re) {
+            re.printStackTrace();
+            isSaved = false;
+        }
+
+//
+//     Proceed if ok.
+
+        if (isSaved) {
+
+//
+//         Set up for accessing the current MSS.
+    
+            try {
+                binding = (org.astrogrid.mySpace.delegate.mySpaceManager.
+                  MySpaceManagerSoapBindingStub)
+                  new org.astrogrid.mySpace.delegate.mySpaceManager.
+                     MySpaceManagerServiceLocator().getMySpaceManager(
+                       new java.net.URL(mssUrl));
+            }
+            catch (javax.xml.rpc.ServiceException jre) {
+                isSaved = false;
+                if(jre.getLinkedCause()!=null){
+                    jre.getLinkedCause().printStackTrace();
+                }
+            }
+
+//
+//         Import the dataHolder into the current MSS.
+
+            try{
+                MySpaceHelper helper = new MySpaceHelper();
+                String jobDetails = helper.buildSaveURL(userId,
+                  communityId,  newMySpaceName, remoteURL, " ", " ");
+                binding.upLoadURL(jobDetails);
+                isSaved = true;
+            }catch(java.rmi.RemoteException re) {
+                isSaved = false;
+                re.printStackTrace();
+            }
+        }
+        return isSaved;
+    }
+
+    /**
+     * 
+     * @param userId
+     * @param communityId
+     * @param serverFileName: ole file full name
+     * @param newDataItemName: new file full name
+     * @return
+     * @throws Exception
+     */    
+ 
+    public String renameDataHolding(String userId, String communityId, String serverFileName, String newDataItemName) throws Exception {
+        org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
+        try {
+            binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
+                          new org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerServiceLocator().getMySpaceManager(new java.net.URL(mssUrl));
+        }
+        catch (javax.xml.rpc.ServiceException jre) {
+            if(jre.getLinkedCause()!=null)
+                jre.getLinkedCause().printStackTrace();
+        }
 
         try{
-        	MySpaceHelper helper = new MySpaceHelper();
-        	String jobDetails = helper.buildExtendlease(userid, communityid, serverFileName, extentionPeriod);
+            MySpaceHelper helper = new MySpaceHelper();
+            String jobDetails = helper.buildRename(userId, communityId, serverFileName, newDataItemName);
+            value = binding.moveDataHolder(jobDetails);
+        }catch(java.rmi.RemoteException re) {
+                    re.printStackTrace();
+        }
+        return (String)value;
+    }    
+    
+    /**
+     * 
+     * @param userId
+     * @param communityId
+     * @param serverFileName: Full file name which you want to delete
+     * @return
+     * @throws Exception
+     */
+    public String deleteDataHolding(String userId, String communityId, String serverFileName) throws Exception {
+        org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
+        try {
+            binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
+                          new org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerServiceLocator().getMySpaceManager(new java.net.URL(mssUrl));
+        }
+        catch (javax.xml.rpc.ServiceException jre) {
+            if(jre.getLinkedCause()!=null)
+                jre.getLinkedCause().printStackTrace();
+        }
+        
+        try{
+            MySpaceHelper helper = new MySpaceHelper();
+            String jobDetails = helper.buildDelete(userId, communityId, serverFileName);
+            value = binding.deleteDataHolder(jobDetails);
+        }catch(java.rmi.RemoteException re) {
+                re.printStackTrace();
+            }
+        return (String)value;
+    }    
+    
+    /** saveDataHolding(upLoad),this function will save workflow/query into MySpace system.
+    * @param: userId: userid
+    * @param: communityId
+    * @param: fileName: unique file name for Workflow or Query you want to store.
+    * @param: fileContent: content of workflow or data query
+    * @param: category "WF" or "QUERY", if not set, default is "VOTable"
+    * @param: action "Overwrite" or "Append", if not set, default is "Overwrite"
+    * @return: boolean true if file successfully stored in MySapce false otherwise.
+    */
+    
+    public boolean saveDataHolding(String userId, String communityId, String fileName, String fileContent, 
+                                   String category, String action) throws Exception {
+        org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
+        boolean isSaved = false;
+        try {
+            binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
+                      new org.astrogrid.mySpace.delegate.mySpaceManager.
+                             MySpaceManagerServiceLocator().getMySpaceManager(new java.net.URL(mssUrl));
+        }
+        catch (javax.xml.rpc.ServiceException jre) {
+            isSaved = false;
+            if(jre.getLinkedCause()!=null){
+                jre.getLinkedCause().printStackTrace();
+            }
+        }
+        try{
+            MySpaceHelper helper = new MySpaceHelper();
+            String jobDetails = helper.buildSave(userId, communityId, fileName, fileContent, category, action);
+            binding.upLoad(jobDetails);
+            isSaved = true;
+        }catch(java.rmi.RemoteException re) {
+            isSaved = false;
+            re.printStackTrace();
+        }
+        return isSaved;
+    }
+    
+    /**
+     * saveDataHoldingURL is different from saveDataHolding since it is taking a URL where MySpace will pull the file from. 
+     * @param userId
+     * @param communityId
+     * @param fileName
+     * @param importURI - url that save the dataholding from
+     * @param category
+     * @param action
+     * @return
+     * @throws Exception
+     */
+    
+    public boolean saveDataHoldingURL(String userId, String communityId, String fileName, String importURL, 
+                                   String category, String action) throws Exception {
+        org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
+        boolean isSaved = false;
+        try {
+            binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
+                      new org.astrogrid.mySpace.delegate.mySpaceManager.
+                             MySpaceManagerServiceLocator().getMySpaceManager(new java.net.URL(mssUrl));
+        }
+        catch (javax.xml.rpc.ServiceException jre) {
+            isSaved = false;
+            if(jre.getLinkedCause()!=null){
+                jre.getLinkedCause().printStackTrace();
+            }
+        }
+        try{
+            MySpaceHelper helper = new MySpaceHelper();
+            String jobDetails = helper.buildSaveURL(userId, communityId, fileName, importURL, category, action);
+            binding.upLoadURL(jobDetails);
+            isSaved = true;
+        }catch(java.rmi.RemoteException re) {
+            isSaved = false;
+            re.printStackTrace();
+        }
+        return isSaved;
+    }
+    
+/**
+ * Retrieve the contents of a dataHolder and supply them as the String
+ * returned by the method.
+ *
+ * @param userId User identifier.
+ * @param communityId community identifier.
+ * @param  mySpaceName MySpace name of the dataHolder whose contents are
+ *   to be retrieved.
+ *
+ * @return: A String containing the contents of the specified dataHolder.
+ */
+    public String getDataHolding(String userId, String communityId,
+      String mySpaceName) throws Exception {
+        String contents = null;
+        org.astrogrid.mySpace.delegate.mySpaceManager.
+          MySpaceManagerSoapBindingStub binding = null;
+
+//
+//     Set up for accessing the current MSS.
+
+        try {
+            binding = (org.astrogrid.mySpace.delegate.mySpaceManager.
+              MySpaceManagerSoapBindingStub)
+              new org.astrogrid.mySpace.delegate.mySpaceManager.
+                MySpaceManagerServiceLocator().
+                  getMySpaceManager(new java.net.URL(mssUrl));
+        }
+        catch (javax.xml.rpc.ServiceException jre) {
+            if(jre.getLinkedCause()!=null)
+                jre.getLinkedCause().printStackTrace();
+        }
+
+//
+//     Obtain the URL of the required dataHolder.
+
+        boolean isOk = false;
+        String dataHolderUrl = null;
+
+        try{
+            MySpaceHelper helper = new MySpaceHelper();
+            String jobDetails = helper.buildDownload(userId,
+              communityId, mySpaceName);
+            dataHolderUrl = binding.exportDataHolder(jobDetails);
+            if (dataHolderUrl != null) {
+               isOk = true;
+            }
+        }
+        catch(java.rmi.RemoteException re) {
+            re.printStackTrace();
+        }
+
+//
+//     If the URL was obtained ok then attempt to retrieve the contents.
+
+        if (isOk) {
+            try {
+                URL url = new URL(dataHolderUrl);
+                InputStream iStream = url.openStream();
+
+                int b;
+                StringBuffer buffer = new StringBuffer("");
+
+                while( (b = iStream.read())  !=  -1) {
+                    buffer.append(b);
+                }
+
+                contents = buffer.toString();
+
+            }
+            catch (Exception re) {
+                re.printStackTrace();
+            }
+
+        }
+
+        return contents;
+    }        
+    
+    /**
+     * 
+     * @param userId
+     * @param communityId
+     * @param serverFileName: full file name 
+     * @param extentionPeriod: number of days you would like to extend this item
+     * @return
+     * @throws Exception
+     */
+    public String extendLease(String userId, String communityId, String serverFileName, int extentionPeriod) throws Exception {
+        org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
+        try {
+            binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
+                          new org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerServiceLocator().getMySpaceManager(new java.net.URL(mssUrl));
+        }
+        catch (javax.xml.rpc.ServiceException jre) {
+            if(jre.getLinkedCause()!=null)
+                jre.getLinkedCause().printStackTrace();
+        }
+
+        try{
+            MySpaceHelper helper = new MySpaceHelper();
+            String jobDetails = helper.buildExtendlease(userId, communityId, serverFileName, extentionPeriod);
             value = binding.extendLease(jobDetails);
-	    }catch(java.rmi.RemoteException re) {
-				re.printStackTrace();
-	    }        
-		return (String)value;
-	}		
+        }catch(java.rmi.RemoteException re) {
+                re.printStackTrace();
+        }        
+        return (String)value;
+    }        
 
-	
-	
-	/**
-	 * 
-	 * @param jobDetails: use mySpace/configFiles/MSManagerRequestTemplate.xml to create an xml String by filling in userID/communityID/jobID/serverFileName
-	 * @return
-	 * @throws Exception
-	 */
-	
-	public String publish(String jobDetails) throws Exception {
-		org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
-		try {
-			binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
-						  new org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerServiceLocator().getMySpaceManager(new java.net.URL(targetEndPoint));
-		}
-		catch (javax.xml.rpc.ServiceException jre) {
-			if(jre.getLinkedCause()!=null)
-				jre.getLinkedCause().printStackTrace();
-		}
+    
+    
+    /**
+     * 
+     * @param jobDetails: use mySpace/configFiles/MSManagerRequestTemplate.xml to create an xml String by filling in userId/communityId/jobID/serverFileName
+     * @return
+     * @throws Exception
+     */
+    
+    public String publish(String jobDetails) throws Exception {
+        org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
+        try {
+            binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
+                          new org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerServiceLocator().getMySpaceManager(new java.net.URL(mssUrl));
+        }
+        catch (javax.xml.rpc.ServiceException jre) {
+            if(jre.getLinkedCause()!=null)
+                jre.getLinkedCause().printStackTrace();
+        }
 
         try{
-		    value = binding.publish(jobDetails);
-		}catch(java.rmi.RemoteException re) {
-					re.printStackTrace();
-		}
-		return (String)value;
-	}		
-	
-	/**
-	 * 
-	 * @param userid
-	 * @param communityid
-	 * @param newContainerName
-	 * @return
-	 */
-	public String createContainer(String userid, String communityid, String newContainerName)throws Exception {
-	//public String createFolder(String jobDetails) throws Exception {
-		org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
-		try {
-			binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
-						  new org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerServiceLocator().getMySpaceManager(new java.net.URL(targetEndPoint));
-		}
-		catch (javax.xml.rpc.ServiceException jre) {
-			if(jre.getLinkedCause()!=null)
-				jre.getLinkedCause().printStackTrace();
-		}
-		try{
-			MySpaceHelper helper = new MySpaceHelper();
-			String jobDetails = helper.buildContainer(userid, communityid, newContainerName);
-			value = binding.createContainer(jobDetails);
-		}catch(java.rmi.RemoteException re) {
-				re.printStackTrace();
-			}
-		return (String)value;
-	}			
-	
-	/**
-	 * 
-	 * @param userID: userid@communityid
-	 * @param servers: server names user wants to create
-	 * @return
-	 * @throws Exception
-	 */
-	public boolean createUser(String userID, Vector servers) throws Exception {
-		org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
-		boolean isUserCreated = false;
-		try {
-			binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
-						  new org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerServiceLocator().getMySpaceManager(new java.net.URL(targetEndPoint));
-		}
-		catch (javax.xml.rpc.ServiceException jre) {
-			if(jre.getLinkedCause()!=null)
-				jre.getLinkedCause().printStackTrace();
-		}
-		try{
-			String userid = userID.substring(0,userID.indexOf("@"));
-			String communityid = userID.substring(userID.indexOf("@")+1, userID.length());
-			isUserCreated = binding.createUser(userid, communityid, servers);
-		}catch(java.rmi.RemoteException re) {
-				re.printStackTrace();
-			}
-		return isUserCreated;
-	}	
-	
-	/**
-	 * 
-	 * @param userID: userid@communityid
-	 * @param servers: server names user wants to delete
-	 * @return
-	 * @throws Exception
-	 */
-	//need to delete the second argument and rebuild the delegate supporting classes.
-	
-	public boolean deleteUser(String userID) throws Exception {
-		org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
-		boolean isUserDeleted = false;
-		try {
-			binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
-						  new org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerServiceLocator().getMySpaceManager(new java.net.URL(targetEndPoint));
-		}
-		catch (javax.xml.rpc.ServiceException jre) {
-			if(jre.getLinkedCause()!=null)
-				jre.getLinkedCause().printStackTrace();
-		}
+            value = binding.publish(jobDetails);
+        }catch(java.rmi.RemoteException re) {
+                    re.printStackTrace();
+        }
+        return (String)value;
+    }        
+    
+    /**
+     * 
+     * @param userId
+     * @param communityId
+     * @param newContainerName
+     * @return
+     */
+    public String createContainer(String userId, String communityId, String newContainerName)throws Exception {
+    //public String createFolder(String jobDetails) throws Exception {
+        org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
+        try {
+            binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
+                          new org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerServiceLocator().getMySpaceManager(new java.net.URL(mssUrl));
+        }
+        catch (javax.xml.rpc.ServiceException jre) {
+            if(jre.getLinkedCause()!=null)
+                jre.getLinkedCause().printStackTrace();
+        }
+        try{
+            MySpaceHelper helper = new MySpaceHelper();
+            String jobDetails = helper.buildContainer(userId, communityId, newContainerName);
+            value = binding.createContainer(jobDetails);
+        }catch(java.rmi.RemoteException re) {
+                re.printStackTrace();
+            }
+        return (String)value;
+    }            
+    
+/**
+ * Create a new user on the current MSS.
+ * 
+ * @param userId User identifier.
+ * @param servers Vector of server names on which containers will be
+ *   created for the user.
+ *
+ * @return boolean; true the user was created successfully.
+ * @throws Exception
+ */
+
+    public boolean createUser(String userId, String communityId, Vector servers) throws Exception {
+        org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
+        boolean isUserCreated = false;
+        try {
+            binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
+              new org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerServiceLocator().
+                getMySpaceManager(new java.net.URL(mssUrl));
+        }
+        catch (javax.xml.rpc.ServiceException jre) {
+            if(jre.getLinkedCause()!=null)
+                jre.getLinkedCause().printStackTrace();
+        }
+        try{
+            isUserCreated = binding.createUser(userId, communityId, servers);
+        }catch(java.rmi.RemoteException re) {
+                re.printStackTrace();
+            }
+        return isUserCreated;
+    }    
+    
+/**
+ * Delete a user from the current MSS.
+ *
+ * @param userId User identifier.
+ *
+ * @return boolean; true is the user was deleted successfully.
+ * @throws Exception
+ */
+    
+    public boolean deleteUser(String userId, String communityId) throws Exception {
+        org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
+        boolean isUserDeleted = false;
+        try {
+            binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
+              new org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerServiceLocator().
+                getMySpaceManager(new java.net.URL(mssUrl));
+        }
+        catch (javax.xml.rpc.ServiceException jre) {
+            if(jre.getLinkedCause()!=null)
+                jre.getLinkedCause().printStackTrace();
+        }
         
-		try{
-			String userid = userID.substring(0,userID.indexOf("@"));
-			String communityid = userID.substring(userID.indexOf("@")+1, userID.length());
-			isUserDeleted = binding.deleteUser(userid, communityid);
-		}catch(java.rmi.RemoteException re) {
-				re.printStackTrace();
-			}
-		return isUserDeleted;
-	}		
-	
-	/**
-	 * 
-	 * @param dataHolderName: file working on
-	 * @param newOwnerID: userID changing to
-	 * @return
-	 * @throws Exception
-	 */
-	public String changeOwner(String userid, String communityid, String dataHolderName,String newOwnerID) throws Exception {
-		org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
-		try {
-			binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
-						  new org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerServiceLocator().getMySpaceManager(new java.net.URL(targetEndPoint));
-		}
-		catch (javax.xml.rpc.ServiceException jre) {
-			if(jre.getLinkedCause()!=null)
-				jre.getLinkedCause().printStackTrace();
-		}
-		try{
-			//FixME to MSManager to match these set of argument!		
-			value = binding.changeOwner(userid, communityid, dataHolderName, newOwnerID);
-			//value = binding.changeOwner(userid,communityid, dataHolderName, newOwnerID);
-		}catch(java.rmi.RemoteException re) {
-		re.printStackTrace();
-	}
-		return (String)value;
-	}		
-		
+        try{
+            isUserDeleted = binding.deleteUser(userId, communityId);
+        }catch(java.rmi.RemoteException re) {
+                re.printStackTrace();
+            }
+        return isUserDeleted;
+    }        
+    
+    /**
+     * 
+     * @param dataHolderName: file working on
+     * @param newOwnerID: userId changing to
+     * @return
+     * @throws Exception
+     */
+    public String changeOwner(String userId, String communityId, String dataHolderName,String newOwnerID) throws Exception {
+        org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
+        try {
+            binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
+                          new org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerServiceLocator().getMySpaceManager(new java.net.URL(mssUrl));
+        }
+        catch (javax.xml.rpc.ServiceException jre) {
+            if(jre.getLinkedCause()!=null)
+                jre.getLinkedCause().printStackTrace();
+        }
+        try{
+            //FixME to MSManager to match these set of argument!        
+            value = binding.changeOwner(userId, communityId, dataHolderName, newOwnerID);
+            //value = binding.changeOwner(userId,communityId, dataHolderName, newOwnerID);
+        }catch(java.rmi.RemoteException re) {
+        re.printStackTrace();
+    }
+        return (String)value;
+    }        
+
+//
+// ---------------------------------------------------------------------------------------------------------------
+
+    private Vector internalDataHoldingsGen(String userId,
+      String communityId, String criteria, String currentURL)
+      throws Exception {
+        String response = " ";
+        Vector vector = new Vector();
+        org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
+        try {
+            binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
+                          new org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerServiceLocator().getMySpaceManager(new java.net.URL(currentURL));
+        }
+        catch (javax.xml.rpc.ServiceException jre) {
+            if(jre.getLinkedCause()!=null)
+                jre.getLinkedCause().printStackTrace();
+        }
+        try{
+            MySpaceHelper helper = new MySpaceHelper();
+            String jobDetails = helper.buildListDataHoldings(userId, communityId, criteria);
+            response = binding.lookupDataHoldersDetails(jobDetails);
+            //should invoke one of the helper functions to build the returned response to include searchs to all cache servers as well as community server
+            //to add all the response String objects into the vector..
+            
+        }catch(java.rmi.RemoteException re) {
+                    re.printStackTrace();
+        }
+        return vector;
+    }        
+    
 }
