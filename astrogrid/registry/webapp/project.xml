@@ -21,7 +21,7 @@
         | The short name of the project.
         | This is used when naming jars and distribution files.
         +-->
-    <id>astrogrid-registry-webapp</id>
+    <id>astrogrid-registry</id>
 
     <!--+
         | The full name of the project.
