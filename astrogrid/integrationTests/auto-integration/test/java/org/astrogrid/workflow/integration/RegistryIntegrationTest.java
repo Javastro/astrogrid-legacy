@@ -1,4 +1,4 @@
-/*$Id: RegistryIntegrationTest.java,v 1.8 2004/07/01 11:47:39 nw Exp $
+/*$Id: RegistryIntegrationTest.java,v 1.9 2004/08/17 09:22:31 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -67,14 +67,17 @@ public class RegistryIntegrationTest extends AbstractTestForIntegration {
             InputStream is = null;
             try {
                 is = requestURL.openStream();
+                BufferedReader in = new BufferedReader(new InputStreamReader(is));
+                String line = in.readLine();
+                System.out.println("Application " + appNames[i] + " resolves to " + line);
+                assertNotNull(line);
+                URL endpoint = new URL(line); // checks its a valid url.                
             } catch (IOException e) {
+                System.err.println("failed to resolve location for " + appNames[i]);
                 softFail("failed to resolve location for " + appNames[i] + ": " + e.getMessage());
             }
-            BufferedReader in = new BufferedReader(new InputStreamReader(is));
-            String line = in.readLine();
-            System.out.println("Application " + appNames[i] + " resolves to " + line);
-            assertNotNull(line);
-            URL endpoint = new URL(line); // checks its a valid url.
+
+
             
         }
     }
@@ -88,6 +91,9 @@ public class RegistryIntegrationTest extends AbstractTestForIntegration {
 
 /* 
 $Log: RegistryIntegrationTest.java,v $
+Revision 1.9  2004/08/17 09:22:31  nw
+better reporting of failures.
+
 Revision 1.8  2004/07/01 11:47:39  nw
 cea refactor
 
