@@ -21,6 +21,7 @@ import org.astrogrid.datacenter.service.JobNotifyServiceListener;
 import org.astrogrid.datacenter.service.WebNotifyServiceListener;
 import org.astrogrid.datacenter.snippet.DocMessageHelper;
 import org.astrogrid.mySpace.delegate.MySpaceClient;
+import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
 import org.astrogrid.mySpace.delegate.MySpaceDummyDelegate;
 import org.astrogrid.mySpace.delegate.MySpaceManagerDelegate;
 import org.astrogrid.util.Workspace;
@@ -222,14 +223,7 @@ public abstract class Querier implements Runnable {
          throw new IllegalStateException("no results destination");
       }
       
-      MySpaceClient myspace = null;
-      
-      if (resultsDestination.equals(MySpaceDummyDelegate.DUMMY)) {
-          log.info("Using dummy myspace delegate");
-         myspace = new MySpaceDummyDelegate(resultsDestination);
-      } else {
-         myspace = new MySpaceManagerDelegate(resultsDestination);
-      }
+      MySpaceClient myspace = MySpaceDelegateFactory.createDelegate(resultsDestination);
       
       myspace.saveDataHolding(cert.getUserId(), cert.getCommunityId(), cert.getCredentials(),
                               "testFile",
@@ -249,14 +243,8 @@ public abstract class Querier implements Runnable {
          throw new IllegalStateException("No results to send");
       }
       
-      MySpaceClient myspace = null;
-      
-      if (resultsDestination.equals(MySpaceDummyDelegate.DUMMY)) {
-         myspace = new MySpaceDummyDelegate(resultsDestination);
-      } else {
-         myspace = new MySpaceManagerDelegate(resultsDestination);
-      }
-      
+      MySpaceClient myspace = MySpaceDelegateFactory.createDelegate(resultsDestination);
+  
       String myspaceFilename = getQueryId()+"_results";
       
       try {
@@ -441,6 +429,9 @@ public abstract class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.11  2003/12/15 17:47:55  mch
+ Introduced proper MySpace Factory
+
  Revision 1.10  2003/12/03 19:37:03  mch
  Introduced DirectDelegate, fixed DummyQuerier
 
