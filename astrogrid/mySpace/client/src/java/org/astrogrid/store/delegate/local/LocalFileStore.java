@@ -1,5 +1,5 @@
 /*
- * $Id: LocalFileStore.java,v 1.2 2004/06/14 23:08:53 jdt Exp $
+ * $Id: LocalFileStore.java,v 1.3 2004/09/06 11:29:24 mch Exp $
  *
  */
 
@@ -63,7 +63,8 @@ public class LocalFileStore extends StoreDelegate implements StoreAdminClient {
 
 
    /**
-    * Sets up the root for this instance determined from the configuration root,
+    * Creates a StoreClient that can be used to list, copy, delete, etc files
+    * on disk.  The root is determined from the configuration root,
     * or creates one off the system-dependent
     * temporary directory (as the owner will always be able to create one there
     * even if they can't in the working directory)
@@ -112,7 +113,7 @@ public class LocalFileStore extends StoreDelegate implements StoreAdminClient {
 
    /** As the named constructor, but uses the given Agsl that defines the name
     * Could do with better checking that the agsl is correct for this type...
-    */
+    * @deprecated - you should be using StoreDelegateFactory anyway... */
    public LocalFileStore(Agsl agsl) throws IOException {
       this(agsl.getEndpoint().substring(7)); //chop off 'file://'
    }
@@ -162,6 +163,7 @@ public class LocalFileStore extends StoreDelegate implements StoreAdminClient {
       DataOutputStream out = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(target, append)));
       out.write(bytes, offset, length);
       out.close();
+         
    }
    
    
@@ -367,19 +369,30 @@ public class LocalFileStore extends StoreDelegate implements StoreAdminClient {
 
 /*
 $Log: LocalFileStore.java,v $
+Revision 1.3  2004/09/06 11:29:24  mch
+Added comments
+
 Revision 1.2  2004/06/14 23:08:53  jdt
 Merge from branches
+
 ClientServerSplit_JDT
+
 and
+
 MySpaceClientServerSplit_JDT
 
+
+
 MySpace now split into a client/delegate jar
+
 astrogrid-myspace-<version>.jar
+
 and a server/manager war
+
 astrogrid-myspace-server-<version>.war
 
 Revision 1.1.2.1  2004/06/14 22:33:21  jdt
-Split into delegate jar and server war.  
+Split into delegate jar and server war.
 Delegate: astrogrid-myspace-SNAPSHOT.jar
 Server/Manager: astrogrid-myspace-server-SNAPSHOT.war
 
