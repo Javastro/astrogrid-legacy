@@ -1,5 +1,5 @@
 /*
- * $Id: ServiceStatus.java,v 1.1 2003/09/09 17:46:27 mch Exp $
+ * $Id: ServiceStatus.java,v 1.2 2003/09/15 14:33:27 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -58,11 +58,22 @@ public class ServiceStatus extends TypeSafeEnumerator
       return (this.order < givenStatus.order);
    }
 
+   /**
+    * Returns the Service Status for the given string.  Used to re-establish
+    * the typesafe enumeration after reading status from streams
+    */
+   public static ServiceStatus getFor(String status)
+   {
+      return (ServiceStatus) getFor(ServiceStatus.class, status);
+   }
 
 }
 
 /*
 $Log: ServiceStatus.java,v $
+Revision 1.2  2003/09/15 14:33:27  mch
+Fixes to reading status id and service id
+
 Revision 1.1  2003/09/09 17:46:27  mch
 New package for stuff common to client and server
 

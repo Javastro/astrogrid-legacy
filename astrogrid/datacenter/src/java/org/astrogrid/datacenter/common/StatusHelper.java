@@ -1,5 +1,5 @@
 /*
- * $Id: StatusHelper.java,v 1.3 2003/09/15 11:12:04 mch Exp $
+ * $Id: StatusHelper.java,v 1.4 2003/09/15 14:33:27 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -33,7 +33,7 @@ public class StatusHelper
    public static String makeStatusTag(String serviceId, ServiceStatus status)
    {
        return
-          "<"+STATUS_TAG+"  "+ServiceIdHelper.SERVICE_ID_ATT+"='"+serviceId+"'>\n"
+          "<"+STATUS_TAG+"  "+ServiceIdHelper.SERVICE_ID_ATT+"='"+serviceId+"'>"
          +status
          +"</"+STATUS_TAG+">\n";
 
@@ -54,7 +54,7 @@ public class StatusHelper
     * Returns the status of the given service id, given by a status tag in
     * the given dom document
     */
-   public static String getServiceStatus(String serviceId, Element domContainingStatuses)
+   public static ServiceStatus getServiceStatus(String serviceId, Element domContainingStatuses)
    {
       NodeList idNodes = domContainingStatuses.getElementsByTagName(STATUS_TAG);
 
@@ -77,7 +77,12 @@ public class StatusHelper
          {
             if (serviceIdAttr.equals(serviceId))
             {
-               return ((Element) idNodes.item(i)).getNodeValue();
+               String status = ((Element) idNodes.item(i)).getNodeValue();
+               if (status == null)
+               {
+                  status = ((Element) idNodes.item(i)).getFirstChild().getNodeValue();
+               }
+               return ServiceStatus.getFor(status.trim());
             }
          }
 

@@ -1,5 +1,5 @@
 /*
- * $Id: ServiceIdHelper.java,v 1.1 2003/09/10 17:57:31 mch Exp $
+ * $Id: ServiceIdHelper.java,v 1.2 2003/09/15 14:33:27 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -29,7 +29,7 @@ public class ServiceIdHelper
 
    /** The service id name when using as an attribute */
    public static final String SERVICE_ID_ATT = "serviceid";
-   
+
    /** Makes a service tag with the given id as the tag value */
    public static String makeServiceIdTag(String id)
    {
@@ -46,7 +46,14 @@ public class ServiceIdHelper
 
       Log.affirm(idNodes.getLength() == 1, "Should only be 1 service id tag in an element");
 
-      return idNodes.item(0).getNodeValue();
+      String nodeValue = idNodes.item(0).getNodeValue();
+
+      if (nodeValue == null) //look at first non-whitespace child
+      {
+         nodeValue = idNodes.item(0).getFirstChild().getNodeValue();
+      }
+
+      return nodeValue;
    }
 
    /** Makes a tag with the given name, and a service id attribute set to the
