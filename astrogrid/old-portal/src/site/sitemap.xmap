@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/src/site/Attic/sitemap.xmap,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/03 13:16:47 $</cvs:author>
-    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/04 09:12:05 $</cvs:author>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
     | <cvs:log>
     | $Log: sitemap.xmap,v $
+    | Revision 1.2  2003/06/04 09:12:05  dave
+    | Reorganised site directories, and added SOAP message test
+    |
     | Revision 1.1  2003/06/03 13:16:47  dave
     | Added initial iter 02 code
     |
@@ -58,6 +61,44 @@
 
 		<map:pipeline>
 
+			<!-- SOAP echo servivce -->
+			<map:match pattern="soap/service/echo">
+				<!-- Generate XML from the SOAP request -->
+				<map:generate  src="soap/generator/soap-request.xsp" type="serverpages"/>
+				<!-- Wrap the response in a SOAP envelope -->
+				<map:transform src="soap/generator/soap-envelope.xsl"/>
+				<!-- Serialize as XML -->
+				<map:serialize type="xml"/>
+			</map:match>
+
+			<!-- SOAP message test -->
+			<map:match pattern="soap/test/message">
+				<map:generate  src="soap/services/message/message-test.xsp" type="serverpages"/>
+				<map:transform src="util/html/xml-html.xsl"/>
+				<map:serialize type="html"/>
+			</map:match>
+
+			<!-- SOAP calc service -->
+			<map:match pattern="soap/service/calc">
+				<!-- Generate XML from the SOAP request -->
+				<map:generate  src="soap/generator/soap-request.xsp" type="serverpages"/>
+				<!-- Transform the request into the response -->
+				<map:transform src="soap/services/calc/calc-soap.xsl"/>
+				<!-- Wrap the response in a SOAP envelope -->
+				<map:transform src="soap/generator/soap-envelope.xsl"/>
+				<!-- Serialize as XML -->
+				<map:serialize type="xml"/>
+			</map:match>
+
+			<!-- SOAP calc test -->
+			<map:match pattern="soap/test/calc">
+				<map:generate  src="soap/services/calc/calc-test.xsp" type="serverpages"/>
+				<map:transform src="util/html/xml-html.xsl"/>
+				<map:serialize type="html"/>
+			</map:match>
+
+
+
 			<!-- Home page redirect -->
 			<map:match pattern="">
 				<map:redirect-to session="true" uri="home"/>
@@ -68,6 +109,10 @@
 				<map:transform src="xsl/table-layout.xsl"/>
 				<map:serialize type="html"/>
 			</map:match>
+
+
+
+
 
 			<!-- Session test pages -->
 			<map:match pattern="session/*">
@@ -114,29 +159,10 @@
 				<map:serialize type="html"/>
 			</map:match>
 
-			<!-- SOAP test page -->
-			<map:match pattern="soap/test">
-				<!-- Generate XML from the SOAP request -->
-				<map:generate  type="serverpages" src="xsp/soap/soap-request.xsp"/>
-				<!-- Wrap the response in a SOAP envelope -->
-				<map:transform src="xsl/soap/soap-envelope.xsl"/>
-				<!-- Serialize as XML -->
-				<map:serialize type="xml"/>
-			</map:match>
 
-			<!-- SOAP test page -->
-			<map:match pattern="soap/calc">
-				<!-- Generate XML from the SOAP request -->
-				<map:generate  type="serverpages" src="xsp/soap/soap-request.xsp"/>
-				<!-- Generate our result from the data -->
-				<map:transform src="xsl/soap/soap-calc.xsl"/>
-				<!-- Wrap the response in a SOAP envelope -->
-				<map:transform src="xsl/soap/soap-envelope.xsl"/>
-				<!-- Serialize as XML -->
-				<map:serialize type="xml"/>
-			</map:match>
 
-			<!-- MySpace SAOP service -->
+
+			<!-- MySpace SOAP service -->
 			<map:match pattern="myspace/lookup">
 <!--
 <map:generate  src="xml/myspace/lookup-request.xml"/>

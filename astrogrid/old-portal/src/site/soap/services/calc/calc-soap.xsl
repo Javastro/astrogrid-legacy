@@ -1,14 +1,17 @@
 <?xml version="1.0"?>
 <!--
-<cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/src/site/xsl/soap/Attic/soap-calc.xsl,v $</cvs:source>
+<cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/src/site/soap/services/calc/Attic/calc-soap.xsl,v $</cvs:source>
 <cvs:date>$Author: dave $</cvs:date>
-<cvs:author>$Date: 2003/06/03 13:16:47 $</cvs:author>
+<cvs:author>$Date: 2003/06/04 09:12:05 $</cvs:author>
 <cvs:version>$Revision: 1.1 $</cvs:version>
 <cvs:log>
-	$Log: soap-calc.xsl,v $
+	$Log: calc-soap.xsl,v $
+	Revision 1.1  2003/06/04 09:12:05  dave
+	Reorganised site directories, and added SOAP message test
+
 	Revision 1.1  2003/06/03 13:16:47  dave
 	Added initial iter 02 code
-
+	
 	Revision 1.1  2003/06/01 19:22:09  Dumbledore
 	Added test SOAP service and dummy myspace service.
 	
