@@ -1,4 +1,4 @@
-/*$Id: ConeTest.java,v 1.1 2004/04/16 15:14:54 mch Exp $
+/*$Id: ConeTest.java,v 1.2 2004/04/16 15:17:14 mch Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,7 +8,7 @@
  * with this distribution in the LICENSE.txt file.
  *
 **/
-package org.astrogrid.integrationtest.datacenter;
+package org.astrogrid.datacenter.integration;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,7 +26,7 @@ import org.astrogrid.integrationtest.common.ConfManager;
  */
 public class ConeTest extends TestCase {
 
-   private static final Log log = LogFactory.getLog(QueryTest.class);
+   private static final Log log = LogFactory.getLog(ConeTest.class);
 
    /**
     * Run some cone searches on std PAL
@@ -59,6 +59,9 @@ public class ConeTest extends TestCase {
 
 /*
 $Log: ConeTest.java,v $
+Revision 1.2  2004/04/16 15:17:14  mch
+Copied in from integration tests
+
 Revision 1.1  2004/04/16 15:14:54  mch
 Auto cone test
 
