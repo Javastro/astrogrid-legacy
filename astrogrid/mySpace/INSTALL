@@ -1,0 +1,74 @@
+MySpace Release Notes and Installation Guide
+Iteration 2
+
+Base Test System
+
+RedHat Linux 8.0 (qin.star.le.ac.uk:143.210.36.131)
+RedHat Linux 7.3 (hydra.star.le.ac.uk:143.210.36.120)
+
+Assumptions
+
+We are not supporting Ftp transferring so, DataCentre and MySpace will be deployed to the same server for Iteration 2.
+
+Restrictions
+
+No testing against Windows or Solaris has been undertaken for this release.
+
+No connection between Portal has been tested for this iteration, we are using a Client Java file to “pretend” to act as portal. So when testing, we have to make sure the test is successful by looking at the response xml file.
+
+MySpaceRegistry is assuming “fake user id/communityid/jobID” these info should be getting from portal.
+Preparation
+
+Download Java J2SE 1.4.1_02 and set environment variable JAVA_HOME to point to java install dir.
+Install Tomcat 4.1.24 and set environment variable to point to install dir eg. $CATALINA_HOME=/usr/local/astroGrid/jakarta-tomcat-4.1.24
+Install Axis 1_1RC2 and set environment variable to point to install dir eg. $AXIS_HOME=/usr/local/astroGrid/axis-1_1RC2
+For more comprehansive installation of Tomcat and Axis please refer to http://wiki.astrogrid.org/bin/view/Astrogrid/Iteration1Release#Preparation
+Jar files needed please follow http://wiki.astrogrid.org/bin/view/Astrogrid/Iteration1Release#Environment_Variables_Settings
+
+ Deploy mySpace Web Services and configure it to suit mySpace
+
+1. Check out latest version of mySpace.jar from CVS and place it into $CATALINA_HOME/webapps/axis/WEB-INF/classes
+2. Without leaving this directory, unjar mySpace.jar
+3. Make sure tomcat is running, type java org.apache.axis.client.AdminClient deploy-msManager.wsdd, this will deploy MySpaceManager at http://localhost:8080/axis/services/MySpaceManager
+4. Type java org.apache.axis.client.AdminClient deploy-msServer.wsdd, this will deploy MySpaceManager at http://localhost:8080/axis/services/ServerManager
+5. Create folder /tmp/mySpaceTest/ --this is where the dataholder files will be stored and you can change this folder to whatever you like as long as you change the field TEMPPATHTO pointing to the correct location in file statuscode.lis.
+6.Create folder astrogrid/mySpace  in $CATALINA_HOME/conf, Check out latest version of all content from astrogrid/mySpace/conf/astrogrid/mySpace into $CATALINA_HOME/conf/astrogrid/mySpace folder, open statuscode.lis, make sure the following:
+REGISTRYCONF=$CATALINA_HOME$/conf/astrogrid/mySpace/example
+TEMPPATHTO=/tmp/mySpaceTest/
+MYSPACEMANAGER=pointing to MySpaceManager web service you deployed
+SERVERMANAGER=pointing to ServerManager web service you deployed 
+
+
+7.open example.config
+edit the third argument of each line to match whatever you setup for TEMPPATHTO in statuscode.lis file.
+
+Testing
+
+Checkout latest version of MySpaceManagerClient.java and compile it.
+There are 8 functions need to be tested:
+1.upLoad
+2.lookupDataHoldersDetails
+3.lookupDataHolderDetails
+4.copyDataHolder
+5.deleteDataHolder
+6.moveDataHolder
+7.exportDataHolder
+8.createContainer
+
+Before running you test, you need to edit the String request to suit the requested xml string from portal/datacentre.
+
+  Run mySpaceDemo to find out information about the registry:
+1.cd $CATALINA_HOME/webapps/axis/WEB-INF/classes
+2.type java org.astrogrid.mySpace.mySpaceDemo.MySpaceDemo $CATALINA_HOME/conf/astrogrid/mySpace/example
+    This will bring you a java applet, click on options/entre query and type * and enter, you will get a list of registry name (you can configure the example.initial to add more usernames followed by the base format in that file.)
+
+To run the client Java code:
+1. Need an argument as input depends on which method you are   testing, eg. “java MySpaceManagerClient upLoad” will test upload function. 
+ 2. Need to set String request in each method of MySpaceManagerClient.java, fill in the Mandatory fields by comparing to registry entries by running MySpaceDemo.
+
+
+Example testing upLoad:
+1.Running MySpaceDemo and finds out all the existing registries.
+2.in MySpaceManagerClient.invokeUpload fill in field:
+  <userID><communityID><jobID><newDataHolderName><serverFileName><fileSize>
+3.type java MySpaceManagerClient upLoad
