@@ -104,6 +104,36 @@
     </dependency>
   </dependencies>
 
+    <dependency>
+      <id>jaxrpc.jar</id>
+      <version>SNAPSHOT</version>
+    </dependency>
+  </dependencies>
+  
+      <dependency>
+      <id>jConfig.jar</id>
+      <version>SNAPSHOT</version>
+    </dependency>
+  </dependencies>
+  
+      <dependency>
+      <id>authentication-client-1.0.jar</id>
+      <version>SNAPSHOT</version>
+    </dependency>
+  </dependencies>
+  
+      <dependency>
+      <id>policy-client-1.0.jar</id>
+      <version>SNAPSHOT</version>
+    </dependency>
+  </dependencies>
+  
+      <dependency>
+      <id>wsdl4j.jar</id>
+      <version>SNAPSHOT</version>
+    </dependency>
+  </dependencies>
+  
   <build>
     <sourceDirectory>src/java</sourceDirectory>
     <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
