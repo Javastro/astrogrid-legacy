@@ -19,72 +19,220 @@
     <!-- astrogrid -specific deps -->
     <dependency>
       <id>astrogrid-common</id>
-          <groupId>org.astrogrid</groupId>
+      <groupId>org.astrogrid</groupId>
       <version>${astrogrid.common.version}</version>
-          <properties>
-      <war.bundle>true</war.bundle>
-    </properties>
+      <properties>
+         <war.bundle>true</war.bundle>
+      </properties>
     </dependency>
 
+    <dependency>
+      <id>astrogrid-slinger-api</id>
+      <groupId>org.astrogrid</groupId>
+      <version>${astrogrid.slinger.version}</version>
+      <properties>
+         <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+
+    <dependency>
+      <id>astrogrid-slinger-xml</id>
+      <groupId>org.astrogrid</groupId>
+      <version>${astrogrid.slinger.version}</version>
+      <properties>
+         <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+
+    <dependency>
+      <id>astrogrid-status-api</id>
+      <groupId>org.astrogrid</groupId>
+      <version>${astrogrid.status.version}</version>
+      <properties>
+         <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+
+      <dependency>
+         <artifactId>astrogrid-pal-sky</artifactId>
+         <groupId>org.astrogrid</groupId>
+         <version>${astrogrid.pal.version}</version>
+         <properties>
+            <war.bundle>true</war.bundle>
+         </properties>
+      </dependency>
+
+      <dependency>
+         <artifactId>astrogrid-pal-server</artifactId>
+         <groupId>org.astrogrid</groupId>
+         <version>${astrogrid.pal.version}</version>
+         <properties>
+            <war.bundle>true</war.bundle>
+         </properties>
+      </dependency>
+
+      <dependency>
+         <artifactId>astrogrid-pal-units</artifactId>
+         <groupId>org.astrogrid</groupId>
+         <version>${astrogrid.pal.version}</version>
+         <properties>
+            <war.bundle>true</war.bundle>
+         </properties>
+      </dependency>
+
+      <dependency>
+         <artifactId>astrogrid-pal-api</artifactId>
+         <groupId>org.astrogrid</groupId>
+         <version>${astrogrid.pal.version}</version>
+         <properties>
+            <war.bundle>true</war.bundle>
+         </properties>
+      </dependency>
+
+      <dependency>
+         <artifactId>astrogrid-pal-ucd</artifactId>
+         <groupId>org.astrogrid</groupId>
+         <version>${astrogrid.pal.version}</version>
+         <properties>
+            <war.bundle>true</war.bundle>
+         </properties>
+      </dependency>
+
+      <dependency>
+         <artifactId>astrogrid-pal-query</artifactId>
+         <groupId>org.astrogrid</groupId>
+         <version>${astrogrid.pal.version}</version>
+         <properties>
+            <war.bundle>true</war.bundle>
+         </properties>
+      </dependency>
+
+
+    <!-- exist db for fits plugin? -->
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-exist-server</artifactId>
+      <version>${astrogrid.eXist.version}</version>
+      <properties>
+         <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
 
     <!-- more standard deps -->
-      <!-- axis, and the jars it relies upon -->
-    <dependency>
 
+    <!-- servlet support (for compiling against - no need for deployment war as servlet container should have it) -->
+    <dependency>
+      <id>servletapi</id>
+      <version>2.3</version>
+    </dependency>
+
+    <!-- cea -->
+    <dependency>
+      <artifactId>astrogrid-cea-server</artifactId>
+      <groupId>org.astrogrid</groupId>
+      <version>${astrogrid.applications.version}</version>
+      <properties>
+         <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+    <dependency>
+      <artifactId>astrogrid-workflow-objects</artifactId>
+      <groupId>org.astrogrid</groupId>
+      <version>${astrogrid.workflowobjects.version}</version>
+      <properties>
+         <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+    <dependency>
+      <id>picocontainer</id>
+      <version>1.0</version>
+      <properties>
+         <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+    <dependency>
+      <id>concurrent</id>
+      <version>1.3.1</version>
+      <properties>
+         <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+
+    <!-- registry for resolving IVORNs etc and pushing metadata -->
+    <dependency>
+      <artifactId>astrogrid-registry-client-lite</artifactId>
+      <groupId>org.astrogrid</groupId>
+      <version>${astrogrid.registry.version}</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+   
+    <dependency>
+      <artifactId>astrogrid-registry-common</artifactId>
+      <groupId>org.astrogrid</groupId>
+      <version>${astrogrid.registry.version}</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+
+    <!-- axis, and the jars it relies upon -->
+    <dependency>
       <id>axis</id>
-    <version>1.1</version>
-          <properties>
-      <war.bundle>true</war.bundle>
-    </properties>
+      <version>1.1</version>
+      <properties>
+         <war.bundle>true</war.bundle>
+      </properties>
     </dependency>
 
     <dependency>
       <id>wsdl4j</id>
       <version>1.0</version>
-          <properties>
-      <war.bundle>true</war.bundle>
-    </properties>
+      <properties>
+         <war.bundle>true</war.bundle>
+      </properties>
     </dependency>
 
-        <dependency>
-                <id>saaj</id>
-                <version>1.0</version>
-                <jar>saaj.jar</jar>
-                    <properties>
-      <war.bundle>true</war.bundle>
-    </properties>
-        </dependency>
+    <dependency>
+       <id>saaj</id>
+       <version>1.0</version>
+       <jar>saaj.jar</jar>
+      <properties>
+         <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
 
     <dependency>
       <id>commons-logging</id>
       <version>1.0.3</version>
-          <properties>
-      <war.bundle>true</war.bundle>
-    </properties>
+      <properties>
+         <war.bundle>true</war.bundle>
+      </properties>
     </dependency>
 
     <dependency>
       <id>commons-discovery</id>
       <version>20030211.213356</version>
-          <properties>
-      <war.bundle>true</war.bundle>
-    </properties>
+      <properties>
+         <war.bundle>true</war.bundle>
+      </properties>
     </dependency>
 
     <dependency>
       <id>jaxrpc-api</id>
       <version>1.0.3</version>
-          <properties>
-      <war.bundle>true</war.bundle>
-    </properties>
+      <properties>
+         <war.bundle>true</war.bundle>
+      </properties>
     </dependency>
 
     <dependency>
       <id>xml-apis</id>
       <version>1.0.b2</version>
-          <properties>
-      <war.bundle>true</war.bundle>
-    </properties>
+      <properties>
+         <war.bundle>true</war.bundle>
+      </properties>
     </dependency>
 
     <!-- castor, and what it needs -->
@@ -92,25 +240,27 @@
       <id>castor</id>
       <version>0.9.5</version>
       <jar>castor-0.9.5-xml.jar</jar>
-          <properties>
-      <war.bundle>true</war.bundle>
-    </properties>
+      <properties>
+         <war.bundle>true</war.bundle>
+      </properties>
     </dependency>
 
     <dependency>
-        <id>xerces</id>
-        <version>2.4.0</version>
-            <properties>
-      <war.bundle>true</war.bundle>
-    </properties>
+      <id>xerces</id>
+      <version>2.4.0</version>
+      <properties>
+         <war.bundle>true</war.bundle>
+      </properties>
     </dependency>
+
     <dependency>
       <id>regexp</id>
       <version>1.3</version>
       <properties>
-        <war.bundle>true</war.bundle>
+         <war.bundle>true</war.bundle>
       </properties>
     </dependency>
+
     <dependency>
       <groupId>oro</groupId>
       <artifactId>oro</artifactId>
@@ -119,6 +269,7 @@
         <war.bundle>true</war.bundle>
       </properties>
     </dependency>
+
     <dependency>
       <artifactId>commons-jxpath</artifactId>
       <groupId>commons-jxpath</groupId>
@@ -127,6 +278,7 @@
         <war.bundle>true</war.bundle>
       </properties>
     </dependency>
+
     <dependency>
       <groupId>commons-collections</groupId>
       <artifactId>commons-collections</artifactId>
@@ -135,6 +287,7 @@
         <war.bundle>true</war.bundle>
       </properties>
     </dependency>
+
     <dependency>
       <groupId>commons-beanutils</groupId>
       <artifactId>commons-beanutils</artifactId>
@@ -149,7 +302,7 @@
       <id>junit</id>
       <version>3.8</version>
       <properties>
-      <war.bundle>true</war.bundle>
+        <war.bundle>true</war.bundle>
       </properties>
     </dependency>
 
@@ -157,51 +310,10 @@
         <id>xmlunit</id>
         <version>1.0</version>
         <properties>
-                <war.bundle>true</war.bundle>
+           <war.bundle>true</war.bundle>
         </properties>
     </dependency>
     </dependencies>
 
-  <build>
-    <sourceDirectory>${basedir}/src/java</sourceDirectory>
-    <unitTestSourceDirectory>${basedir}/test/java</unitTestSourceDirectory>
-
-    <unitTest>
-      <includes>
-        <include>**/*Test.java</include>
-      </includes>
-
-      <resources>
-        <resource>
-          <directory>${basedir}/test/java</directory>
-          <!--everything else but the sources -->
-          <excludes>
-                <exclude>**/*.java</exclude>
-          </excludes>
-        </resource>
-      </resources>
-    </unitTest>
-
-    <resources>
-        <resource><!-- config files -->
-                <directory>${basedir}/src/java</directory>
-                <includes>
-                        <include>**/*.xml</include>
-                        <include>**/*.xsl</include>
-                        <include>**/*.properties</include>
-                </includes>
-        </resource>
-        <resource> <!-- schemas  - may be needed for validation -->
-                <directory>${basedir}/src</directory>
-                <includes>
-                        <include>xsd/**</include>
-                        <include>xslt/**</include>
-                        <include>wsdl/**</include>
-                        <include>wsdd/**</include>
-                </includes>
-        </resource>
-    </resources>
-
-  </build>
 
 </project>
