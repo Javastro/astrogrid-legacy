@@ -1,5 +1,5 @@
 /*
- * $Id: SqlParser.java,v 1.8 2004/08/27 09:31:16 mch Exp $
+ * $Id: SqlParser.java,v 1.9 2004/09/01 12:04:43 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -31,7 +31,7 @@ public class SqlParser  {
    
    ReturnTable resultsDef = new ReturnTable(null);
    
-   // the 'from' cluase - the list of tables to search
+   // the 'from' cluase - theupper list of tables to search
    Vector scope = new Vector();
 
    //the 'order by' clause
@@ -311,7 +311,7 @@ public class SqlParser  {
     * arguments within following brackets
     */
    private Function parseFunction(String expression) {
-      String funcName = expression.substring(0,expression.indexOf('(')).trim().toUpperCase();
+      String funcName = expression.substring(0,expression.indexOf('(')).trim();
 
       String bracketed = expression.substring(expression.indexOf('(')+1).trim();
       
@@ -388,7 +388,7 @@ public class SqlParser  {
     */
    private void parseFrom(String from) {
       //go through list separated by commas
-      StringTokenizer tokenizer = new StringTokenizer(from.toUpperCase(), ",");
+      StringTokenizer tokenizer = new StringTokenizer(from, ",");
 
       while (tokenizer.hasMoreTokens()) {
          //assume each token is just a reference to a column
@@ -408,7 +408,7 @@ public class SqlParser  {
    
          scope.add(tableName);
    
-         if (token.startsWith("AS")) {
+         if (token.toUpperCase().startsWith("AS")) {
             //find alias - chop out AS
             String tableAlias = token.substring(2).trim();
             if (tableAlias.indexOf(' ')>-1) {
@@ -462,7 +462,7 @@ public class SqlParser  {
    public void parseStatement(String sql) {
 
       //prepare string
-      sql = sql.replace('\n', ' ').trim().toUpperCase();
+      sql = sql.replace('\n', ' ').trim();
       
       scope = new Vector(); //clear scope
 
@@ -598,6 +598,9 @@ public class SqlParser  {
 
 /*
  $Log: SqlParser.java,v $
+ Revision 1.9  2004/09/01 12:04:43  mch
+ Removed upper case conversions
+
  Revision 1.8  2004/08/27 09:31:16  mch
  Added limit, order by, some page tidying, etc
 
