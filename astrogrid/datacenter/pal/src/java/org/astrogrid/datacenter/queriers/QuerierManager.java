@@ -1,4 +1,4 @@
-/*$Id: QuerierManager.java,v 1.3 2004/10/05 14:57:10 mch Exp $
+/*$Id: QuerierManager.java,v 1.4 2004/10/05 15:20:03 mch Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -44,7 +44,7 @@ public class QuerierManager implements QuerierListener {
    private Hashtable queuedQueriers = new Hashtable();
    
    /** priority index of queued queriers */
-   private TreeSet queuedPriorities = new TreeSet(new PriorityComparator());
+   private TreeSet queuedPriorities = new TreeSet(new StartTimeComparator());
 
    /** lookup table of all the current queriers indexed by their handle*/
    private Hashtable runningQueriers = new Hashtable();
@@ -59,7 +59,7 @@ public class QuerierManager implements QuerierListener {
    public final static String TEST_QUERIER_ID = "TestQuerier:";
    
    /** PriorityComparitor for the queue */
-   protected class PriorityComparator implements Comparator {
+   protected class StartTimeComparator implements Comparator {
       
       /**
        * Compares its two arguments for order.  Returns a negative integer,
@@ -153,13 +153,13 @@ public class QuerierManager implements QuerierListener {
       return statuses;
    }
    
-   /** Returns the status's of all the queriers */
+   /** Returns the status's of all the queriers in date/time order */
    public QuerierStatus[] getAllStatus() {
       Querier[] queued = (Querier[]) queuedQueriers.values().toArray(new Querier[] {} );
       Querier[] running = (Querier[]) runningQueriers.values().toArray(new Querier[] {} );
       Querier[] ran = (Querier[]) closedQueriers.values().toArray(new Querier[] {} );
 
-      Vector statuses = new Vector();
+      TreeSet statuses = new TreeSet(new StartTimeComparator());
       for (int i = 0; i < queued.length; i++) {
          statuses.add(queued[i].getStatus());
       }
@@ -247,6 +247,9 @@ public class QuerierManager implements QuerierListener {
 
 /*
  $Log: QuerierManager.java,v $
+ Revision 1.4  2004/10/05 15:20:03  mch
+ Added starttime sort to getStatus
+
  Revision 1.3  2004/10/05 14:57:10  mch
  Added queued
 
@@ -383,3 +386,4 @@ public class QuerierManager implements QuerierListener {
  Database Querier - added calls to timer, untagled status transitions
  
  */
+
