@@ -26,6 +26,6 @@ public class UserHelper {
 		String group = utils.getAnyParameter(UserHelper.PARAM_GROUP, params, request, session);
 		String token = utils.getAnyParameter(UserHelper.PARAM_TOKEN, params, request, session);
 		
-		return new User(account, group, token);
+		return new User(account, group, "not-used", token);
 	}
 }
