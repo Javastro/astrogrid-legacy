@@ -63,7 +63,7 @@ public abstract class Job {
 	} // end of getFactory()   	
     	
    
-    public abstract void informJobMonitor( boolean bCompletion ) ;
+    public abstract void informJobMonitor() ;
 
     public abstract String getStatus() ;
     public abstract void setStatus(String status) ;

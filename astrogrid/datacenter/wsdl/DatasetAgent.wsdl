@@ -1,34 +1,48 @@
-<?xml version="1.0"?>
-<definitions    name="DatasetAgentService"
-                targetNameSpace="http//www.astrogrid.org/wsdl/DatasetAgent.wsdl"
-                xmlns="http//schemas.xmlsoap.org/wsdl/"
-                xmlns:soap="http//schemas.xmlsoap.org/wsdl/soap"
-                xmlns:tns="http//www.astrogrid.org/wsdl/DatasetAgent.wsdl"
-                xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://hydra.star.le.ac.uk:8080/axis/services/DatasetAgent" 
+                  xmlns="http://schemas.xmlsoap.org/wsdl/" 
+                  xmlns:apachesoap="http://xml.apache.org/xml-soap" 
+                  xmlns:impl="http://hydra.star.le.ac.uk:8080/axis/services/DatasetAgent" 
+                  xmlns:intf="http://hydra.star.le.ac.uk:8080/axis/services/DatasetAgent" 
+                  xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+                  xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" 
+                  xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <wsdl:types/>
+  <wsdl:message name="runQueryRequest">
+    <wsdl:part name="jobXML" type="xsd:string"/>
+  </wsdl:message>
+  <wsdl:message name="runQueryResponse">
+    <wsdl:part name="runQueryReturn" type="xsd:string"/>
+  </wsdl:message>
+  <wsdl:portType name="DatasetAgent">
+    <wsdl:operation name="runQuery" parameterOrder="jobXML">
 
-        <message name="runQueryRequest">
-                <part name="jobXML" type="xsd:string"/>
-        </message>
-        <message name="runQueryResponse">
-                <part name="jobXML" type="xsd:string"/>
-        </message>
+      <wsdl:input message="impl:runQueryRequest" name="runQueryRequest"/>
+      <wsdl:output message="impl:runQueryResponse" name="runQueryResponse"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="DatasetAgentSoapBinding" type="impl:DatasetAgent">
+    <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="runQuery">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="runQueryRequest">
 
-        <portType name="DatasetAgentPortType">
-                <operation name="runQuery">
-                        <input message="tns:runQueryRequest" />
-                        <output message="tns:runQueryResponse" />
-                </operation>
-        </portType>
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" 
+                       namespace="http://hydra.star.le.ac.uk:8080/axis/services/DatasetAgent" 
+                       use="encoded"/>
+      </wsdl:input>
+      <wsdl:output name="runQueryResponse">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" 
+                       namespace="http://hydra.star.le.ac.uk:8080/axis/services/DatasetAgent" 
+                       use="encoded"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="DatasetAgentService">
+    <wsdl:port binding="impl:DatasetAgentSoapBinding" name="DatasetAgent">
 
-        <binding name="DatasetAgentBinding" type="tns:DatasetAgentPortType">
-                <soap:binding style ="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
-        </binding>
-
-        <service name="DatasetAgentService"> 
-                <port binding="tns:DatasetAgentBinding" name="DatasetAgentPortType">
-                <documentation>The DatasetAgentService is the interface whereby jobs (queries at present) 
-                are actually submitted for running at a specific data center. 
-                </documentation>
-                <soap:address location="http://hydra.star.le.ac.uk:8080/axis/services/DatasetAgent">
-        </service>
-</definitions>
+      <wsdlsoap:address location="http://hydra.star.le.ac.uk:8080/axis/services/DatasetAgent"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

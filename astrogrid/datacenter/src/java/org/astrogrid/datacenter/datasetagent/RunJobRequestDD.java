@@ -25,7 +25,8 @@ public final class RunJobRequestDD {
 	    
 	public static final String
 	    JOBSTEP_ELEMENT = "jobstep",
-	    JOBSTEP_NAME_ATTR = "name";
+	    JOBSTEP_NAME_ATTR = "name",
+	    JOBSTEP_STEPNUMBER_ATTR = "stepNumber";
 	    
 	public static final String    
 	    QUERY_ELEMENT = "query";

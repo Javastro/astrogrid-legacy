@@ -241,9 +241,9 @@ public class DatasetAgent {
 	  * <p> 
 	  * Represents the mainline workflow argument for the DatasetAgent. 
 	  * <p>
-	  * Shows the DatasetAgent to be a pristine component with no state.
-	  * It neither uses nor creates instance variables, and therefore in
-	  * the EJB model would be considered a stateless session bean.
+	  * Shows the DatasetAgent to be a "pristine" component with no state.
+	  * It neither uses nor creates instance variables. In the EJB model 
+	  * it would be considered a stateless session bean.
 	  * 
 	  * 
 	  **/     
@@ -282,12 +282,9 @@ public class DatasetAgent {
 			   votable = query.toVOTable( allocation ) ;
 			  
 			// Inform MySpace that file is ready for pickup...   
-			allocation.informMySpace( job ) ;
+			allocation.informMySpace( job ) ;           
             			
-			// Inform JobMonitor (within JES) of successful jobstep completion...
-			job.informJobMonitor( true ) ;
-			
-			job.setStatus( Job.STATUS_COMPLETED ) ;
+			job.setStatus( Job.STATUS_COMPLETED ) ; 
 			Job.getFactory().update( job );		
 				 
 			// temporary, for testing
@@ -302,16 +299,15 @@ public class DatasetAgent {
 			
 			job.setStatus( Job.STATUS_IN_ERROR ) ;		
 			try{ Job.getFactory().update( job ); } catch( Exception ex ) {;}     
- 
-			// Inform JobMonitor within JES of unsuccessful jobstep completion...
-			job.informJobMonitor( false ) ;	
-					
+ 				
 			// If we were responding, we would format our error response here...
 			if( response == null ) {
 				response = generalMessage.toString() + "/n" + detailMessage.toString();
 			}
     	}
     	finally {
+			// Inform JobMonitor within JES of jobstep completion...
+			job.informJobMonitor() ;	
     		resourceCleanup( query, allocation ) ;
 			if( TRACE_ENABLED ) logger.debug( "runQuery() exit") ;
     	}

@@ -28,8 +28,9 @@ public class JobStep {
 	    QUERYFACTORY_KEY_SUFFIX = ".QUERYFACTORY" ;
 	
 	private String
-	    name = null ;
-	    
+	    name = null,
+        stepNumber = null ;
+
 	private Query
 	    query = null ;
 	    
@@ -38,8 +39,9 @@ public class JobStep {
 		
 		try {
 		 
-		   name = element.getAttribute( RunJobRequestDD.JOBSTEP_NAME_ATTR ) ;
-		
+		   name = element.getAttribute( RunJobRequestDD.JOBSTEP_NAME_ATTR ).trim() ;
+		   stepNumber = element.getAttribute( RunJobRequestDD.JOBSTEP_STEPNUMBER_ATTR ).trim() ;
+		   
 		   NodeList
 		      nodeList = element.getChildNodes() ;
 		   Element
@@ -82,6 +84,9 @@ public class JobStep {
 	
 	public Query getQuery() { return this.query ; }
 	public void setQuery( Query query ) { this.query = query ; }
+
+	public void setStepNumber(String stepNumber) { this.stepNumber = stepNumber ; }
+	public String getStepNumber() { return stepNumber; }
 	
 	
 } // end of class JobStep

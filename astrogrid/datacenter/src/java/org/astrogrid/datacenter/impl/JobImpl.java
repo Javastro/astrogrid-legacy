@@ -14,7 +14,6 @@ import org.astrogrid.datacenter.datasetagent.DatasetAgent;
 import org.astrogrid.datacenter.datasetagent.RunJobRequestDD;
 import org.astrogrid.datacenter.i18n.*;
 import org.apache.log4j.Logger;
-// import org.astrogrid.datacenter.i18n.*;
 import org.astrogrid.datacenter.job.Job;
 import org.astrogrid.datacenter.job.JobException;
 import org.astrogrid.datacenter.job.JobStep;
@@ -26,6 +25,12 @@ import java.sql.ResultSet ;
 import java.sql.SQLException ;
 import java.text.MessageFormat ;
 
+import org.apache.axis.client.Call ;
+// import org.apache.axis.client.Service ;
+// import org.apache.axis.message.SOAPBodyElement;
+// import org.apache.axis.utils.XMLUtils;
+import java.net.URL;
+
 
 public class JobImpl extends Job {
 
@@ -35,11 +40,15 @@ public class JobImpl extends Job {
 	private static Logger 
 		logger = Logger.getLogger( JobImpl.class ) ;
 		
-	private static String
+	private static final String
 	    ASTROGRIDERROR_COULD_NOT_CREATE_JOB_CONNECTION            = "AGDTCE00160" ,  
-	    ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT = "AGDTCE00180" ;
+	    ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT = "AGDTCE00180" ,
+        ASTROGRIDERROR_AXIS_FAULT_WHEN_INVOKING_JOBMONITOR        = "" ;
+	    
+	private static final String
+        JOB_MONITOR_REQUEST_TEMPLATE = "JOB.MONITOR.REQUEST_TEMPLATE" ;
 	  
-	private JobFactoryImpl
+	private static JobFactoryImpl
 	   factoryImpl = null ;
 	   
 	private Connection
@@ -131,12 +140,55 @@ public class JobImpl extends Job {
 	
 
 	/* (non-Javadoc)
-	 * @see org.astrogrid.datacenter.Job#informJobMonitor(boolean)
+	 * @see org.astrogrid.datacenter.Job#informJobMonitor()
 	 */
-	public void informJobMonitor(boolean bCompletion) {
-		// TODO Auto-generated method stub
+	public void informJobMonitor() {       
+		if( TRACE_ENABLED ) logger.debug( "informJobMonitor(): entry") ;	
+		
+		try {
+			String
+			   requestTemplate = DatasetAgent.getProperty( JOB_MONITOR_REQUEST_TEMPLATE ) ;
+			Object []
+			   inserts = new Object[8] ;
+			inserts[0] = this.getName() ;
+			inserts[1] = this.getUserId() ;
+			inserts[2] = this.getCommunity() ;
+			inserts[3] = this.getId() ;
+			inserts[4] = this.getDate() ;
+			inserts[5] = this.getJobStep().getName() ;
+			inserts[6] = this.getJobStep().getStepNumber() ;
+			inserts[7] = this.getStatus() ;
+			Object []
+			   parms = new Object[] { MessageFormat.format( requestTemplate, inserts ) } ;
+					
+			org.apache.axis.client.Call
+			   call = new org.apache.axis.client.Service().createCall() ; 
 
-	}
+			call.setTargetEndpointAddress( new URL( this.getJobMonitorURL() ) ) ;
+			call.setProperty( Call.SOAPACTION_USE_PROPERTY, Boolean.TRUE ) ;
+			call.setProperty( Call.SOAPACTION_URI_PROPERTY, "getQuote" ) ;
+			call.setProperty( Call.ENCODINGSTYLE_URI_PROPERTY, "http://schemas.xmlsoap.org/soap/encoding/" ) ;
+			call.setOperationName( new QName( "urn:xmltoday-delayed-quotes", "getQuote") ) ;
+			call.addParameter( "symbol", XMLType.XSD_STRING, ParameterMode.IN ) ;
+			call.setReturnType( XMLType.XSD_STRING ) ;
+//			call.setProperty(Call.USERNAME_PROPERTY, opts.getUser());
+//			call.setProperty(Call.PASSWORD_PROPERTY, opts.getPassword());
+
+			String 
+				result = (String) call.invoke( parms ) ;
+
+		}
+		catch ( AxisFault af ) {
+			Message
+				message = new Message( ASTROGRIDERROR_AXIS_FAULT_WHEN_INVOKING_JOBMONITOR, af ) ; 
+			logger.error( message.toString(), af ) ;
+		} 
+		finally {
+			if( TRACE_ENABLED ) logger.debug( "informJobMonitor(): exit") ;	
+		}
+			
+	} // end of informJobMonitor() 
+	
 
 	public Connection getConnection() throws JobException {
 		if( TRACE_ENABLED ) logger.debug( "getConnection(): entry") ; 

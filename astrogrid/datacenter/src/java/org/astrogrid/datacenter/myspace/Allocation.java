@@ -18,11 +18,10 @@ import java.io.OutputStream;
 import java.text.MessageFormat ;
 
 import org.apache.axis.client.Call;
-import org.apache.axis.client.Service;
-import org.apache.axis.message.SOAPBodyElement;
-import org.apache.axis.utils.XMLUtils;
+// import org.apache.axis.client.Service;
+// import org.apache.axis.message.SOAPBodyElement;
+// import org.apache.axis.utils.XMLUtils;
 import java.net.URL;
-import javax.xml.rpc.Call ;
 
 
 /**
@@ -204,44 +203,54 @@ public class Allocation {
 			   
 		   Element
 			   element ;
-			   
+			
+		   // Focus on the results element...   
 		   for( int i=0 ; i < nodeList1.getLength() ; i++ ) {
-		   	
+				if( nodeList1.item(i).getNodeType() != Node.ELEMENT_NODE )
+					continue ;						
+				element = (Element) nodeList1.item(i) ;				   			
+				if( element.getTagName().equals( MySpaceManagerResponseDD.RESULTS_ELEMENT ) ) 
+					break ;
+		   } // end for	
+
+           nodeList1 = element.getChildNodes() ;
+			
+		   // Focus on top level status element...   
+		   for( int i=0 ; i < nodeList1.getLength() ; i++ ) {
 			   if( nodeList1.item(i).getNodeType() != Node.ELEMENT_NODE )
 				   continue ;						
 			   element = (Element) nodeList1.item(i) ;				   			
 			   if( element.getTagName().equals( MySpaceManagerResponseDD.STATUS_ELEMENT_01 ) ) 
 				   break ;
-				
 		   } // end for	
 
 		   NodeList
 			  nodeList2 = element.getChildNodes() ;	
-			  
+			 
+			 
+		   // Focus on second level status element... 
 		   for( int i=0 ; i < nodeList2.getLength() ; i++ ) {
-		   	
 				if( nodeList2.item(i).getNodeType() != Node.ELEMENT_NODE )
 					continue ;						
 				element = (Element) nodeList2.item(i) ;				   			
 				if( element.getTagName().equals( MySpaceManagerResponseDD.STATUS_ELEMENT_02 ) ) 
 					break ;
-				
 		   } // end for	
 		   
 		   String
-		        status = element.getNodeValue().trim(),
+		        status = element.getNodeValue().trim(),  // retrieve the status value
 		        details = null ;
 		        
+		   // If it is not a success, we also need the reason 
+		   // (the value of the details element)...
 		   if( !status.equalsIgnoreCase( MYSPACE_SUCCESS ) ) {	   			   
 		    
-			   for( int i=0 ; i < nodeList1.getLength() ; i++ ) {
-		   	
+			   for( int i=0 ; i < nodeList1.getLength() ; i++ ) {		   	
 				  if( nodeList1.item(i).getNodeType() != Node.ELEMENT_NODE )
 					  continue ;						
 				  element = (Element) nodeList1.item(i) ;				   			
 				  if( element.getTagName().equals( MySpaceManagerResponseDD.DETAILS_ELEMENT_02 ) ) 
 					  break ;
-				
 			   } // end for	
 			   
 			   details = element.getNodeValue().trim() ;
