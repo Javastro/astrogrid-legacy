@@ -44,8 +44,8 @@
                 </vr:Interface>
                 <ManagedApplications>
                         <ApplicationReference>
-                                <vr:AuthorityID>org.astrogrid.localhost</vr:AuthorityID>
-                                <vr:ResourceKey>testdsa</vr:ResourceKey>
+                                <vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
+                                <vr:ResourceKey>sec_dsa</vr:ResourceKey>
                         </ApplicationReference>
                 </ManagedApplications>
         </vr:Resource>
