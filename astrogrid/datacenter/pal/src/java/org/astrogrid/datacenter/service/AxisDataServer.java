@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.4 2004/10/05 19:23:07 mch Exp $
+ * $Id: AxisDataServer.java,v 1.5 2004/10/06 11:35:35 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,14 +8,15 @@ package org.astrogrid.datacenter.service;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.MalformedURLException;
 import java.net.URL;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.axis.AxisEngine;
 import org.apache.axis.AxisFault;
 import org.apache.axis.MessageContext;
 import org.apache.axis.server.AxisServer;
 import org.apache.axis.transport.http.HTTPConstants;
-import java.net.MalformedURLException;
 
 /**
  * A class for serving data through an Axis webservice implementation.  It is
@@ -38,11 +39,15 @@ public class AxisDataServer extends DataServer {
    public final static boolean SERVERFAULT = false;
 
    /** set during init to the url stem for this context, eg http://grendel12.roe.ac.uk/pal-6df  */
-   //protected static String contextUrlStem = null;
+   protected static String contextUrlStem = null;
    
    
    /** Returns the url stem for this context, eg http://grendel12.roe.ac.uk/pal-6df  */
    public static String getUrlStem() {
+      if (contextUrlStem != null) {
+         return contextUrlStem;
+      }
+      //if not set, look in MessageContext (for SOAP calls)
       MessageContext context = MessageContext.getCurrentContext();
       if (context == null) {
          return null;
@@ -55,6 +60,16 @@ public class AxisDataServer extends DataServer {
       catch (MalformedURLException e) {
          //shouldn't happen
          throw new RuntimeException("Http Request URL malformed: "+e);
+      }
+   }
+   
+   public static void setUrlStem(String stem) {
+      if (contextUrlStem == null) {
+         contextUrlStem = stem;
+      }
+      else if (!contextUrlStem.equals(stem)) {
+         //throw error if two different calls are setting it to different things
+         throw new IllegalArgumentException("Setting url stem to '"+stem+"' but it's already set to '"+contextUrlStem+"'");
       }
    }
    
@@ -108,6 +123,9 @@ public class AxisDataServer extends DataServer {
 
 /*
 $Log: AxisDataServer.java,v $
+Revision 1.5  2004/10/06 11:35:35  mch
+A bit of tidying up around the web service interfaces.First stage SkyNode implementation
+
 Revision 1.4  2004/10/05 19:23:07  mch
 Added Kevin's url getter
 

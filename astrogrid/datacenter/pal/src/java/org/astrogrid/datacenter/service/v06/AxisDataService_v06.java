@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataService_v06.java,v 1.2 2004/10/05 19:22:11 mch Exp $
+ * $Id: AxisDataService_v06.java,v 1.3 2004/10/06 11:35:35 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.rmi.RemoteException;
+import javax.xml.rpc.server.ServiceLifecycle;
 import org.apache.axis.AxisFault;
 import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
@@ -23,6 +24,7 @@ import org.astrogrid.datacenter.service.AxisDataServer;
 import org.astrogrid.datacenter.service.DataServer;
 import org.astrogrid.datacenter.service.DataServiceStatus;
 import org.astrogrid.datacenter.sqlparser.Sql2Adql074;
+import javax.xml.rpc.ServiceException;
 
 /**
  * The implementation of the Datacenter axis web service for end of Itn06
@@ -34,7 +36,18 @@ import org.astrogrid.datacenter.sqlparser.Sql2Adql074;
  *
  */
 
-public class AxisDataService_v06  {
+public class AxisDataService_v06 implements ServiceLifecycle {
+   
+   public void init(Object context) throws ServiceException {
+      if (context instanceof javax.xml.rpc.server.ServletEndpointContext) {
+         javax.xml.rpc.server.ServletEndpointContext secontext = (javax.xml.rpc.server.ServletEndpointContext) context;
+         //erm.
+      }
+   }
+   
+   public void destroy() {
+   }
+   
    
    AxisDataServer server = new AxisDataServer();
    
@@ -178,6 +191,9 @@ public class AxisDataService_v06  {
 
 /*
 $Log: AxisDataService_v06.java,v $
+Revision 1.3  2004/10/06 11:35:35  mch
+A bit of tidying up around the web service interfaces.First stage SkyNode implementation
+
 Revision 1.2  2004/10/05 19:22:11  mch
 Added SQL to ADQL converter method
 

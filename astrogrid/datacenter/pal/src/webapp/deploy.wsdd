@@ -18,7 +18,7 @@
   <parameter name="allowedMethods" value="*"/>
  </service>
  <service name="SkyNode074" provider="java:RPC">
-  <parameter name="className" value="org.astrogrid.datacenter.service.v06.skynode.SkyNode"/>
+  <parameter name="className" value="org.astrogrid.datacenter.service.skynode.v074.SkyNode"/>
   <parameter name="allowedMethods" value="*"/>
  </service>
 
