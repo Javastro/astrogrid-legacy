@@ -28,12 +28,12 @@
   <siteDirectory>/var/www/www/maven/build/registry</siteDirectory>
   
   <repository>
-    <developerConnection>
-      scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/registry
-    </developerConnection>
     <connection>
       scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/registry
     </connection>
+    <developerConnection>
+      scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/registry
+    </developerConnection>
   </repository>
   
   <developers>
@@ -67,7 +67,7 @@
 
     <dependency>
       <id>axis</id>
-      <version>1_1RC2</version>
+      <version>1_1</version>
     </dependency>
 
     <dependency>
@@ -81,15 +81,13 @@
     </dependency>
 
     <dependency>
-      <id>jaxrpc</id>
-      <version>unknown</version>
-      <jar>jaxrpc.jar</jar>
+      <id>jaxrpc-api</id>
+      <version>1.0.3</version>
     </dependency>
 
     <dependency>
-      <id>saaj</id>
-      <version>unknown</version>
-      <jar>saaj.jar</jar>
+      <id>saaj-api</id>
+      <version>1.1.1</version>
     </dependency>
 
     <dependency>
