@@ -224,12 +224,12 @@ public class JobFactoryImpl implements JobFactory {
 
 	
     public Job createJob( Document jobDoc, String jobXML ) throws JobException  {
-		if( TRACE_ENABLED ) logger.debug( "createJob(): entry") ;  
+		if( TRACE_ENABLED ) logger.debug( "JobFactoryImpl.createJob(): entry") ;  
 		 	
     	JobImpl
     	   job = null ;
-		Statement   
-		   statement = null ;
+		PreparedStatement
+			pStatement = null ;
     	   
     	try {
 
@@ -238,9 +238,7 @@ public class JobFactoryImpl implements JobFactory {
 			job.setId( generateUniqueJobURN( job ) ) ;
 			job.setStatus( Job.STATUS_INITIALIZED ) ;
 
-
-			PreparedStatement
-				pStatement = ((JobImpl)job.getImplementation()).getPreparedStatement() ;
+			pStatement = ((JobImpl)job.getImplementation()).getPreparedStatement() ;
 			
 			pStatement.setString( 1, job.getId() ) ; 
 			pStatement.setString( 2, job.getName() ) ; 
@@ -250,7 +248,6 @@ public class JobFactoryImpl implements JobFactory {
 			pStatement.setString( 6, job.getCommunity() ) ;
 			pStatement.setString( 7, job.getDocumentXML() ) ;
 			
-			statement = getConnection().createStatement() ;
 			pStatement.execute();
 			job.setDirty( false ) ;
 			createJobSteps( job ) ;
@@ -262,7 +259,7 @@ public class JobFactoryImpl implements JobFactory {
 			throw new JobException( message, sex );    		
     	}
     	finally {
-    		if( statement != null) { try { statement.close(); } catch( SQLException sex ) {;} }
+    		if( pStatement != null) { try { pStatement.close(); } catch( SQLException sex ) {;} }
 			if( TRACE_ENABLED ) logger.debug( "createJob(): exit") ;   	
     	}
     	
