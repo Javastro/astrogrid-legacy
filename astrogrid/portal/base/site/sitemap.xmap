@@ -11,7 +11,7 @@
     | the accompanying documentation. The sitemaps which come with each
     | sample and each block will help to explain.
     |
-    | CVS $Id: sitemap.xmap,v 1.4 2004/03/30 13:19:29 jdt Exp $
+    | CVS $Id: sitemap.xmap,v 1.5 2004/03/30 15:35:26 jdt Exp $
     +-->
 <map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
 
@@ -632,7 +632,7 @@
 
     <!-- welcome page -->
       <map:match pattern="">
-        <map:redirect-to uri="main/home.xml"/>
+        <map:redirect-to uri="main/mount/login/login-form"/>
       </map:match>
 
       <map:match pattern="main/**">
