@@ -261,6 +261,7 @@ public class Workflow extends Activity {
             
             xmlString = mySpace.getDataHolding( userid
                                               , community
+                                              , CommunityMessage.getGroup( communitySnippet )
                                               , pathBuffer.toString() ) ;                      
 
             InputSource
@@ -311,6 +312,7 @@ public class Workflow extends Activity {
             
            mySpace.deleteDataHolding( userid
                                     , community
+                                    , CommunityMessage.getGroup( communitySnippet )
                                     , pathBuffer.toString() ) ;                      
 
         }
@@ -342,6 +344,7 @@ public class Workflow extends Activity {
             
         mySpace.saveDataHolding( workflow.getUserid()
                                , workflow.getCommunity()
+                               , workflow.getGroup() + "@" + workflow.getCommunity()
                                , workflow.getName()        // file name
                                , workflow.toXMLString()    // file contents
                                , "WF"                      // it's a workflow
@@ -486,6 +489,7 @@ public class Workflow extends Activity {
             
             vector = mySpace.listDataHoldings( userid
                                              , community
+                                             , CommunityMessage.getGroup( communitySnippet )
                                              , argumentBuffer.toString() ) ;
                                               
             iterator = vector.iterator() ;  

@@ -22,6 +22,8 @@ import org.xml.sax.* ;
 import java.io.StringReader ;
 import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerDelegate;
 import org.astrogrid.portal.workflow.*;
+import org.astrogrid.community.common.util.CommunityMessage ;
+
 
 /**
  * The <code>Query</code> class represents... 
@@ -87,6 +89,7 @@ public final class Query implements Tool {
             
             xmlString = mySpace.getDataHolding( userid
                                               , community
+                                              , CommunityMessage.getGroup( communitySnippet )
                                               , pathBuffer.toString() ) ;                      
 
             InputSource
@@ -142,6 +145,7 @@ public final class Query implements Tool {
             
            vector = mySpace.listDataHoldings( userid
                                             , community
+                                            , CommunityMessage.getGroup( communitySnippet )
                                             , argumentBuffer.toString() ) ;
                                               
            iterator = vector.iterator() ;  
