@@ -38,7 +38,7 @@ The following entries satisfied query <code><%=query%></code>:
 <pre>
 <%
   User operator = new User();
-  StoreClient client = StoreDelegateFactory.createDelegate(operator, new Agsl(serviceURL));
+  StoreClient client = StoreDelegateFactory.createDelegate(operator, new Agsl("myspace:"+serviceURL));
 
   StoreFile fileRoot = client.getFiles(query);
   out.print(fileRoot.toString() );
