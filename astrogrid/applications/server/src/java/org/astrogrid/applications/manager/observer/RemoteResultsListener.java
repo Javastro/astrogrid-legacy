@@ -1,0 +1,88 @@
+/*$Id: RemoteResultsListener.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+ * Created on 17-Jun-2004
+ *
+ * Copyright (C) AstroGrid. All rights reserved.
+ *
+ * This software is published under the terms of the AstroGrid 
+ * Software License version 1.2, a copy of which has been included 
+ * with this distribution in the LICENSE.txt file.  
+ *
+**/
+package org.astrogrid.applications.manager.observer;
+
+import org.astrogrid.applications.Application;
+import org.astrogrid.applications.Status;
+import org.astrogrid.common.bean.Castor2Axis;
+import org.astrogrid.jes.service.v1.cearesults.ResultsListener;
+import org.astrogrid.jes.service.v1.cearesults.ResultsListenerService;
+import org.astrogrid.jes.service.v1.cearesults.ResultsListenerServiceLocator;
+import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.rmi.RemoteException;
+import java.util.Observable;
+import java.util.Observer;
+
+import javax.xml.rpc.ServiceException;
+
+/** Observer that relays results of application execution back to remote service.
+ * @todo what happens when application ends in error? this listener never gets told that..
+ * @author Noel Winstanley nw@jb.man.ac.uk 17-Jun-2004
+ *
+ */
+public class RemoteResultsListener implements Observer {
+    /**
+     * Commons Logger for this class
+     */
+    private static final Log logger = LogFactory.getLog(RemoteResultsListener.class);
+
+    /** Construct a new RemoteResultsListener
+     * 
+     */
+    public RemoteResultsListener(URI endpoint) throws MalformedURLException, ServiceException {
+        super();
+        ResultsListenerService serviceLocator = new ResultsListenerServiceLocator(); 
+        delegate = serviceLocator.getResultListener(endpoint.toURL());
+        this.endpoint = endpoint;
+    }
+    protected final ResultsListener delegate;
+    protected final URI endpoint;
+    /**
+     * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
+     */
+    public void update(Observable o, Object arg) {
+        // we only care about results..
+        if (! (arg instanceof Status)) {
+            return;
+        }
+        Status stat = (Status) arg;
+        if (stat.equals(Status.COMPLETED)) {
+            Application app = (Application)o;
+            try {
+                delegate.putResults(new JobIdentifierType(app.getJobStepID()),Castor2Axis.convert( app.getResult()));
+            }
+            catch (RemoteException e) {
+                logger.warn("Could not communicate with results listener at " + endpoint,e); 
+            }
+        }
+    }
+}
+
+
+/* 
+$Log: RemoteResultsListener.java,v $
+Revision 1.2  2004/07/01 11:16:22  nw
+merged in branch
+nww-itn06-componentization
+
+Revision 1.1.2.2  2004/07/01 01:42:47  nw
+final version, before merge
+
+Revision 1.1.2.1  2004/06/17 09:21:23  nw
+finished all major functionality additions to core
+ 
+*/

@@ -1,0 +1,317 @@
+/*
+ * $Id: AbstractApplication.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+ *
+ * Created on 13 October 2003 by Paul Harrison
+ * Copyright 2003 AstroGrid. All rights reserved.
+ *
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
+ */
+
+package org.astrogrid.applications;
+
+import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
+import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
+import org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel;
+import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
+import org.astrogrid.applications.description.ApplicationDescription;
+import org.astrogrid.applications.description.ApplicationInterface;
+import org.astrogrid.applications.description.exception.InterfaceDescriptionNotFoundException;
+import org.astrogrid.applications.description.exception.ParameterDescriptionNotFoundException;
+import org.astrogrid.applications.parameter.DefaultParameterAdapterFactory;
+import org.astrogrid.applications.parameter.ParameterAdapter;
+import org.astrogrid.applications.parameter.ParameterAdapterException;
+import org.astrogrid.applications.parameter.ParameterAdapterFactory;
+import org.astrogrid.applications.parameter.indirect.IndirectionProtocolLibrary;
+import org.astrogrid.community.User;
+import org.astrogrid.workflow.beans.v1.Tool;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Observable;
+
+/**
+ * Basic application functionality. This is extended for custom providers.
+ * <p />
+ * extends {@link java.util.Observable} as this provides a nice prepackaged way to manage 
+ * event listeners, notifications of changes of state, etc.
+ * <p />
+ * Implements the {@link Application} interface, which is the public interface. Also provides a bunch of protected-visibiliy methods,
+ * to simplify implementing new providers.
+ * @author Paul Harrison (pah@jb.man.ac.uk)
+ * @version $Name:  $
+ * @since iteration4.1
+ */
+public abstract class AbstractApplication extends Observable implements Application {
+    /**
+     * Commons Logger for this class
+     */
+    private static final Log logger = LogFactory.getLog(AbstractApplication.class);
+
+
+   /** the interface being used by this application */
+   protected final ApplicationInterface applicationInterface;
+
+   /**
+    * the application status
+    */
+   private Status status = Status.NEW;
+   
+   protected final IDs ids;
+   /** tool object defines the parameters, etc to the application */
+   protected final Tool tool;
+   /** list of parameter adapters for the inputs to the application. emty at start */
+   protected final List inputAdapters = new ArrayList();
+   /** list of parameter adapters for the outputs of the application. empty at start */
+   protected final List outputAdapters = new ArrayList();
+   /** list type containing results of the application execution. obviously empty to start with */
+   protected final ResultListType results = new ResultListType();
+   /** library of indirection protocol handlers */
+   protected final IndirectionProtocolLibrary lib;
+   /** interface to the set of identifiers for an application */
+   public static interface IDs {
+        /** the cea-assigned id for this application execution */
+       public String getId();
+       /** the user-assigned id for this application execution
+        * @todo rename to something less jes-specific
+        * @return
+        */
+       public String getJobStepId();
+       /** identifier for the user who own this application execution */
+       public User getUser();
+   }
+   
+   /** construct a new abstract application - a repreentation of an exection of an application actually.
+    *  Construct a new AbstractApplication
+    * @param ids identifiers for this application execution
+    * @param user the user the execution belongs to
+    * @param tool the parameters to the execution
+    * @param description the descrption of this application
+    * @param interface the descrptioni interface this application conforms to.
+    * @param lib library of indirection handlers - used to read remote parameters using various protocols
+    */
+   public AbstractApplication(IDs ids,Tool tool, ApplicationInterface applicationInterface,IndirectionProtocolLibrary lib)
+   {      
+      this.applicationInterface = applicationInterface;
+      this.ids = ids;
+      this.tool = tool;
+      this.lib = lib;
+   }
+    public String getID() {
+        return ids.getId();
+    }
+
+   public abstract boolean execute() throws CeaException;
+
+    
+
+   public ResultListType getResult() {
+       return results;
+   }
+ 
+
+   public ApplicationInterface getApplicationInterface()  {
+       return applicationInterface;
+   }
+
+   public ApplicationDescription getApplicationDescription() {
+      return applicationInterface.getApplicationDescription();
+   }
+
+
+   public String toString() {
+      return getApplicationDescription().getName() + "#" + getApplicationInterface().getName();
+   }
+
+   public User getUser() {
+      return ids.getUser();
+   }
+
+
+
+  
+
+   /**
+    * @return
+    */
+   public String getJobStepID() {
+      return ids.getJobStepId();
+   }
+
+
+   /**
+    * @return
+    */
+   public Status getStatus() {
+      return status;
+   }
+
+   /**
+    * change the status of this application
+    * <p /> causes all registered observers to be notified of this change 
+    * @param status
+    */
+   public void setStatus(Status status) {
+      this.status = status;
+      setChanged();
+      notifyObservers(status);
+   }
+   
+   public ParameterValue[] getInputParameters() {
+       return tool.getInput().getParameter();
+   }
+   
+   /** can be extended by subclasses to provide more info */
+   public MessageType createTemplateMessage() {
+       MessageType mt = new MessageType();
+       mt.setSource(this.toString() + "\nid:" + this.getID() + "\nassignedId: " + this.getJobStepID());
+       mt.setTimestamp(new Date());
+       mt.setPhase(status.toExecutionPhase());
+       return mt;
+   }
+
+// end of public interface.
+
+
+  
+    /** subclassing helper - find a parameter by name in the tool inputs or tool outputs */
+   protected ParameterValue findParameter(String name)   {
+      return (ParameterValue)tool.findXPathValue("input/parameter[name='" + name + "'] | output/parameter[name='" + name + "']");
+   }
+   
+   /** subclassing helper - find a parameter by name in the tool inputs */
+   protected ParameterValue findInputParameter(String name) {
+       return (ParameterValue)tool.findXPathValue("input/parameter[name='" + name + "']");
+
+   }
+   /** subclassing helper - find a parameter by name in the tool outputs */
+   protected ParameterValue findOutputParameter(String name) {
+       return (ParameterValue)tool.findXPathValue("output/parameter[name='" + name + "']");
+       
+   }
+   /** iterator over all parameterValues in the tool inputs and outputs */
+   protected Iterator parameterValues() {
+       return tool.findXPathIterator("input/parameter | output/parameter");
+   }
+   /** iterator over all parameter values in the tool inputs */
+   protected Iterator inputParameterValues() {
+       return tool.findXPathIterator("input/parameter");
+   }
+   /** iterate over all parameter values in the tool outputs */
+   protected Iterator outputParameterValues() {
+       return tool.findXPathIterator("output/parameter");
+   }
+   
+  // querying parameter adapters. 
+  /** find the parameter adapter for the named input parameter */
+  protected ParameterAdapter findInputParameterAdapter(String name) {
+      for (Iterator i = inputAdapters.iterator(); i.hasNext(); ) {
+          ParameterAdapter a = (ParameterAdapter)i.next();
+          if (a.getWrappedParameter().getName().equals(name)) {
+              return a;
+          }
+      }
+      return null;
+  }
+  /** find the parameter adapter for the named output parameter */
+   protected ParameterAdapter findOutputParameterAdapter(String name) {   
+      for (Iterator i = outputAdapters.iterator(); i.hasNext(); ) {
+          ParameterAdapter a = (ParameterAdapter)i.next();
+          if (a.getWrappedParameter().getName().equals(name)) {
+              return a;
+          }
+      }      
+      return null;      
+  }
+  /** find the parameter adapter for the named parameter (which may be either input or output) */
+  protected ParameterAdapter findParameterAdapter(String name) {
+      ParameterAdapter a = findInputParameterAdapter(name);
+      if (a == null) {
+          a = findOutputParameterAdapter(name);
+      }
+      return a;
+  }
+    /** default implementation of attemptAbort - always fails, and returns false.
+     */
+    public boolean attemptAbort() {
+        return false;
+    }
+
+    /** hook that specialized subclasses can overried - to return a custom adapter factory 
+     * used in {@link #createAdapters}
+     * @return a {@link DefaultParameterAdapterFactory}
+     */
+    protected  ParameterAdapterFactory createAdapterFactory() {
+        return new DefaultParameterAdapterFactory(this.lib);
+    }
+    
+    /** sets up the list of input and output parameter adapters
+     * 
+     * @throws ParameterDescriptionNotFoundException
+     * @throws ParameterAdapterException
+     * @see #inputAdapters
+     * @see #outputAdapters
+     */
+    protected void createAdapters() throws ParameterDescriptionNotFoundException, ParameterAdapterException {
+        inputAdapters.clear();
+        outputAdapters.clear();
+          ParameterAdapterFactory fac = createAdapterFactory();
+          for (Iterator params = inputParameterValues(); params.hasNext(); ) {
+             ParameterValue param = (ParameterValue)params.next();       
+             ParameterAdapter adapter = fac.createAdapter(param,getApplicationDescription().getParameterDescription(param.getName())); 
+             inputAdapters.add(adapter);
+          }
+        for (Iterator params = outputParameterValues(); params.hasNext(); ) {
+           ParameterValue param = (ParameterValue)params.next();       
+           ParameterAdapter adapter = fac.createAdapter(param,getApplicationDescription().getParameterDescription(param.getName())); 
+           outputAdapters.add(adapter);
+        }          
+    }
+    /** report an arbitrary message - to the log, and also to all observers */
+    protected void reportMessage(String msg) {
+        logger.info(msg); 
+        MessageType mt = createTemplateMessage();
+        mt.setContent(msg);
+        mt.setLevel(LogLevel.INFO);
+        setChanged();
+        notifyObservers(mt);         
+    }
+
+    /** report an error message - to the log, and to all observers */
+    protected void reportError(String msg) {
+        logger.error(msg); 
+        MessageType mt = createTemplateMessage();
+        mt.setContent(msg);
+        mt.setLevel(LogLevel.ERROR);
+        setChanged();
+        notifyObservers(mt);
+        setStatus(Status.ERROR);        
+    }
+    /** report an exception - to the log, and to all observers */
+    protected void reportError(String msg, Throwable e) {
+        logger.error(msg,e); 
+        MessageType mt = createTemplateMessage();
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        pw.println(msg);
+        pw.println(e.getMessage());
+        e.printStackTrace(pw);
+        pw.close();
+        mt.setContent(sw.toString());
+        mt.setLevel(LogLevel.ERROR);
+        setChanged();
+        notifyObservers(mt);
+        setStatus(Status.ERROR);
+        
+    }
+
+}
+

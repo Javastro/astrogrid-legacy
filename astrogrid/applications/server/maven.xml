@@ -1,0 +1,154 @@
+<?xml version="1.0"?>
+<!-- extension maven script -->
+<project xmlns:j="jelly:core" xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="jar:jar">
+<!-- properties -->
+<property name="working.dir" location="${basedir}/target/tmp" />
+<!-- standard astrogrid goals -->
+  <goal name="astrogrid-build-site" prereqs="site" />
+  <goal name="astrogrid-build-artifact" prereqs="jar,war" />
+  <goal name="astrogrid-build-snapshot" prereqs="jar:snapshot,war" />
+
+  <goal name="astrogrid-install-snapshot" prereqs="jar:install-snapshot,war:install-snapshot" />
+    <goal name="astrogrid-install-artifact" prereqs="jar:install,war:install" />
+
+  <goal name="astrogrid-deploy-site">
+    <attainGoal name="site" />
+    <attainGoal name="site:fsdeploy" />
+  </goal>
+  <goal name="astrogrid-deploy-snapshot" prereqs="jar:deploy-snapshot,war:deploy-snapshot" />
+  <goal name="astrogrid-deploy-artifact" prereqs="jar:deploy,war:deploy" />
+  <!-- hooks into existing goals -->
+<!--we want to package tests up along with classes in the jar -->
+<preGoal name="jar:jar">
+        <echo>Server: Copying test classes into jar from ${maven.build.dir}/test-classes into ${maven.build.dest}</echo>
+        <copy todir="${maven.build.dest}">
+                <fileset dir="${maven.build.dir}/test-classes">
+                        <exclude name="log4j.properties" /> <!-- as webapp provides its own -->
+                </fileset>
+        </copy>
+</preGoal>
+<!-- full junit report -->
+  <postGoal name="maven-junit-report-plugin:report">
+    <attainGoal name="full-junit-report" />
+  </postGoal>
+  <goal name="full-junit-report">
+  <mkdir dir="${basedir}/target/docs/junit-full" />
+  ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
+  <junitreport todir="${basedir}/target">
+    <fileset dir="${basedir}/target/test-reports">
+      <include name="TEST-*.xml" />
+    </fileset>
+    <report format="frames" styledir="${basedir}/../src/xslt" todir="${basedir}/target/docs/junit-full" />
+  </junitreport>
+  </goal>
+  <!-- packaging of the war file
+  need to
+   * grab resources from dependent jars (e.g. schema, wsdd, wsdl, etc)
+   * configure axis service - i.e. create server-config.wsdd
+   * generate war 'site' and include this
+   -->
+   <preGoal name="war:war">
+        <attainGoal name="package-war" />
+   </preGoal>
+   <goal name="package-war"
+     description="top-level goal for war packaging">
+        <attainGoal name="grab-resources" />
+        <attainGoal name="configure-webapp" />
+        <property name="webapp.docs" value="${maven.war.webapp.dir}" />
+        <attainGoal name="webapp-docs" />
+   </goal>
+
+   <goal name="grab-resources">
+        <echo>Grabbing resources from jars</echo>
+        <mkdir dir="${working.dir}" />
+        <deploy:copy-deps todir="${working.dir}" />
+        <unjar dest="${working.dir}" overwrite="true">
+                <fileset dir="${working.dir}">
+                        <include name="astrogrid-workflow-objects-*.jar" />
+                </fileset>
+                <patternset>
+                        <include name="wsdd/**" />
+                        <include name="schema/**" />
+                        <include name="wsdl/**" />
+                </patternset>
+        </unjar>
+
+   </goal>
+
+   <goal name="configure-webapp" prereqs="grab-resources" >
+   <!-- setting which transformer to use -->
+   ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
+        <!-- tailor the deployment descriptor to our system -->
+        <xslt in="${working.dir}/wsdd/CommonExecutionConnector-deploy.wsdd"
+         out="${working.dir}/wsdd/CommonExecutionConnector-cea-deploy.wsdd"
+         extension=".wsdd"
+         style="${basedir}/build/cec-config.xsl"
+        />
+        <!-- delete the server config file if already there. -->
+        <delete file="${basedir}/src/webapp/WEB-INF/server-config.xml" quiet="true" />
+        <!-- run the admin client over processed wsdd -->
+        <java classname="org.apache.axis.utils.Admin" dir="${basedir}/src/webapp/WEB-INF"
+                classpathref="maven.dependency.classpath" fork="yes" failonerror="true">
+                <arg value="server" />
+                <arg value="${working.dir}/wsdd/CommonExecutionConnector-cea-deploy.wsdd" />
+        </java>
+   </goal>
+
+   <goal name="webapp-docs" prereqs="grab-resources">
+        <echo>generating webapp site into ${webapp.docs}</echo>
+        <mkdir dir="${webapp.docs}" />
+        <property name="tmp.docs" location="${working.dir}/webapp-docs" />
+        <mkdir dir="${tmp.docs}" />
+        <copy todir="${tmp.docs}" >
+                <fileset dir="${basedir}/war-xdocs" />
+        </copy>
+        <!-- merge in anything else from site xdocs, and
+         the resources we grabbed previously. -->
+        <copy todir="${tmp.docs}" overwrite="false">
+                <fileset dir="${basedir}/xdocs" />
+                <fileset dir="${working.dir}">
+                        <include name="wsdl/**" />
+                        <include name="schema/**" />
+                </fileset>
+        </copy>
+        <!-- set up properties -->
+        <j:set var="maven.docs.dest" value="${webapp.docs}" />
+        <j:set var="maven.docs.src" value="${tmp.docs}" />
+        <j:set var="maven.xdoc.poweredby.title" value="Provided by Astrogrid" />
+        <j:set var="maven.xdoc.poweredby.url" value="http://www.astrogrid.org" />
+        <j:set var="maven.xdoc.poweredby.image" value="http://www.astrogrid.org/images/AGlogo" />
+        <j:set var="maven.xdoc.includeProjectDocumentation" value="no" />
+        <!-- adjust to the astrogrid colours
+                <j:set var="maven.ui.banner.background" value="#FF0000" />
+                <j:set var="maven.ui.banner.foreground" value="#000000" />
+        -->
+        <!-- <attainGoal name="site:generate" />  -->
+        <attainGoal name="xdoc:generate-from-pom" />
+        <attainGoal name="javadoc:generate" />
+        <attainGoal name="maven-jxr-plugin:report" />
+        <attainGoal name="xdoc" />
+        <!-- now copy generated docs into webapp -->
+   </goal>
+
+<!-- boilerplate below here -->
+
+  <goal name="axis-declare-tasks">
+     <taskdef resource="axis-tasks.properties"  classpathref="maven.dependency.classpath" />
+  </goal>
+
+<!-- tomcat tools -->
+<goal name="tomcat-declare-tasks">
+   <!-- Configure the custom Ant tasks for the Manager application -->
+  <taskdef name="tomcat-deploy"    classname="org.apache.catalina.ant.DeployTask" classpathref="maven.dependency.classpath"/>
+  <taskdef name="tomcat-install"   classname="org.apache.catalina.ant.InstallTask" classpathref="maven.dependency.classpath"/>
+  <taskdef name="tomcat-list"      classname="org.apache.catalina.ant.ListTask" classpathref="maven.dependency.classpath"/>
+  <taskdef name="tomcat-reload"    classname="org.apache.catalina.ant.ReloadTask" classpathref="maven.dependency.classpath"/>
+  <taskdef name="tomcat-remove"    classname="org.apache.catalina.ant.RemoveTask" classpathref="maven.dependency.classpath"/>
+  <taskdef name="tomcat-resources" classname="org.apache.catalina.ant.ResourcesTask" classpathref="maven.dependency.classpath"/>
+  <taskdef name="tomcat-roles"     classname="org.apache.catalina.ant.RolesTask" classpathref="maven.dependency.classpath"/>
+  <taskdef name="tomcat-start"     classname="org.apache.catalina.ant.StartTask" classpathref="maven.dependency.classpath"/>
+  <taskdef name="tomcat-stop"      classname="org.apache.catalina.ant.StopTask" classpathref="maven.dependency.classpath"/>
+  <taskdef name="tomcat-undeploy"  classname="org.apache.catalina.ant.UndeployTask" classpathref="maven.dependency.classpath"/>
+</goal>
+
+</project>

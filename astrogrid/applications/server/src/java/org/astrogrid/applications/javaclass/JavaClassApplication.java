@@ -1,0 +1,137 @@
+/*$Id: JavaClassApplication.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+ * Created on 08-Jun-2004
+ *
+ * Copyright (C) AstroGrid. All rights reserved.
+ *
+ * This software is published under the terms of the AstroGrid 
+ * Software License version 1.2, a copy of which has been included 
+ * with this distribution in the LICENSE.txt file.  
+ *
+**/
+package org.astrogrid.applications.javaclass;
+
+import org.astrogrid.applications.AbstractApplication;
+import org.astrogrid.applications.CeaException;
+import org.astrogrid.applications.Status;
+import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
+import org.astrogrid.applications.description.ApplicationDescription;
+import org.astrogrid.applications.description.ApplicationInterface;
+import org.astrogrid.applications.description.ParameterDescription;
+import org.astrogrid.applications.parameter.DefaultParameterAdapterFactory;
+import org.astrogrid.applications.parameter.ParameterAdapter;
+import org.astrogrid.applications.parameter.ParameterAdapterFactory;
+import org.astrogrid.applications.parameter.indirect.IndirectParameterValue;
+import org.astrogrid.applications.parameter.indirect.IndirectionProtocolLibrary;
+import org.astrogrid.community.User;
+import org.astrogrid.workflow.beans.v1.Tool;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
+/** An application that calls a static java method
+ * @author Noel Winstanley nw@jb.man.ac.uk 08-Jun-2004
+ */
+public class JavaClassApplication extends AbstractApplication {
+    /**
+     * Commons Logger for this class
+     */
+    private static final Log logger = LogFactory.getLog(JavaClassApplication.class);
+
+    /** Construct a new JavaClassApplication
+     * @param ids
+     * @param user
+     * @param tool
+     * @param description
+     */
+    public JavaClassApplication(IDs ids, Tool tool, ApplicationInterface interf, IndirectionProtocolLibrary lib) {
+        super(ids, tool, interf,lib);
+    }
+    
+    /** @todo - should move the structuring of this into base class?
+     * @see org.astrogrid.applications.Application#execute(org.astrogrid.applications.ApplicationExitMonitor)
+     */
+    public boolean execute() throws CeaException {
+        results.clearResult();
+        super.createAdapters();
+        Object[] args = new Object[inputAdapters.size()];
+        for (int i = 0; i < args.length; i++) {
+            ParameterAdapter a = (ParameterAdapter)inputAdapters.get(i);
+            args[i] = a.process();
+        }
+       JavaClassApplicationDescription jappDesc = (JavaClassApplicationDescription)getApplicationDescription();            
+       Thread task = new Exec(args,jappDesc.method);
+       setStatus(Status.INITIALIZED);
+       task.start();
+       return true;       
+    }
+     /** worker thread, that performs the computation after {@link #execute} returns */
+     protected class Exec extends Thread {
+         public Exec(Object[] args, Method m) {
+             this.args = args;
+             this.method =m;
+         }
+         protected final Object[] args;
+         protected final Method method;
+         
+         public void run() {   
+            setStatus(Status.RUNNING);
+            Object resultVal = null;
+            try {
+                resultVal = method.invoke(null,args);
+                
+                // we can do this, as we know there's only ever going to be one interface, and one output parameter.
+                setStatus(Status.WRITINGBACK);
+                ParameterAdapter result = (ParameterAdapter)outputAdapters.get(0);
+                result.writeBack(resultVal);
+                results.addResult(result.getWrappedParameter());
+                setStatus(Status.COMPLETED);                
+            } catch (IllegalArgumentException e) {
+                reportError("Illegal Argument passed to  java 'application'",e);
+            } catch (IllegalAccessException e) {
+                reportError("Could not access java 'application'",e);
+            } catch (InvocationTargetException e) {
+                reportError("Invoked java 'application' raised an exception",e.getTargetException());
+            } catch (CeaException e) {
+                reportError("Failed to write back parameter values",e);
+            } catch (Throwable t) {
+                reportError("Something else gone wrong",t);
+            }
+         }
+    }
+    
+    /**overridden - to return a parameterAdapterFactory that will return javaClassParameterAdapters */
+    protected ParameterAdapterFactory createAdapterFactory() {
+        return new DefaultParameterAdapterFactory(lib) {
+          protected ParameterAdapter instantiateAdapter(
+              ParameterValue pval,
+              ParameterDescription desr,
+              IndirectParameterValue indirectVal) {
+              return new JavaClassParameterAdapter(pval, desr, indirectVal);
+          }
+        };
+    }
+     
+
+}
+
+
+/* 
+$Log: JavaClassApplication.java,v $
+Revision 1.2  2004/07/01 11:16:22  nw
+merged in branch
+nww-itn06-componentization
+
+Revision 1.1.2.3  2004/07/01 01:42:46  nw
+final version, before merge
+
+Revision 1.1.2.2  2004/06/17 09:21:23  nw
+finished all major functionality additions to core
+
+Revision 1.1.2.1  2004/06/14 08:56:58  nw
+factored applications into sub-projects,
+got packaging of wars to work again
+ 
+*/

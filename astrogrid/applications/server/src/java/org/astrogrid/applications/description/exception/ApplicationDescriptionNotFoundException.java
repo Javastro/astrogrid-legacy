@@ -1,0 +1,34 @@
+/*
+ * $Id: ApplicationDescriptionNotFoundException.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+ * 
+ * Created on 26-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
+ *
+ * Copyright 2003 AstroGrid. All rights reserved.
+ *
+ * This software is published under the terms of the AstroGrid 
+ * Software License version 1.2, a copy of which has been included 
+ * with this distribution in the LICENSE.txt file.  
+ *
+ */ 
+
+package org.astrogrid.applications.description.exception;
+
+import org.astrogrid.applications.CeaException;
+
+/**
+ * @author Paul Harrison (pah@jb.man.ac.uk)
+ * @version $Name:  $
+ * @since iteration4
+ */
+public class ApplicationDescriptionNotFoundException extends CeaException {
+ 
+   
+   public ApplicationDescriptionNotFoundException(String name)
+   {
+      super(name);
+     
+   }
+   
+
+ 
+}

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- take note - this project extends the generic server project
+    - in this way we inhierit all the dependencies -->
+  <extend>../server/project.xml</extend>
+  <id>astrogrid-cea-http</id>
+  <name>AstroGrid HTTP applications CEA server</name>
+
+  <description>
+        Library to publish HTTP applications in the Common Execution Architecture
+  </description>
+
+  <shortDescription>AstroGrid HTTP Application CEA Server</shortDescription>
+
+
+
+    <dependencies>
+        <!-- NWW - begin-hack -->
+        <!-- necessary to give this one a 'fake' name to force maven to grab this _and_ the equivalent war file. -->
+        <dependency>
+                <groupId>org.astrogrid</groupId>
+                <artifactId>astrogrid-cea-server-jar</artifactId>
+                <version>SNAPSHOT</version>
+                <type>jar</type>
+                <jar>astrogrid-cea-server-SNAPSHOT.jar</jar>
+                <properties>
+                        <war.bundle>true</war.bundle>
+                </properties>
+        </dependency>
+        <dependency>
+                <groupId>org.astrogrid</groupId>
+                <artifactId>astrogrid-cea-server</artifactId>
+                <version>SNAPSHOT</version>
+                <type>war</type>
+        </dependency>
+
+
+    </dependencies>
+
+
+</project>

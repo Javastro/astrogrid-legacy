@@ -1,0 +1,202 @@
+/*
+ * $Id: CommonExecutionConnectorServiceSoapBindingImpl.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+ * 
+ * Created on 25-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
+ *
+ * Copyright 2004 AstroGrid. All rights reserved.
+ *
+ * This software is published under the terms of the AstroGrid 
+ * Software License version 1.2, a copy of which has been included 
+ * with this distribution in the LICENSE.txt file.  
+ *
+ */ 
+
+package org.astrogrid.applications.service.v1.cea;
+
+import org.astrogrid.applications.component.CEAComponentManagerFactory;
+import org.astrogrid.applications.manager.ExecutionController;
+import org.astrogrid.applications.manager.QueryService;
+import org.astrogrid.common.bean.Axis2Castor;
+import org.astrogrid.common.bean.Castor2Axis;
+import org.astrogrid.jes.types.v1.cea.axis.ExecutionSummaryType;
+import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
+import org.astrogrid.jes.types.v1.cea.axis.MessageType;
+import org.astrogrid.jes.types.v1.cea.axis.ResultListType;
+import org.astrogrid.workflow.beans.v1.Tool;
+import org.astrogrid.workflow.beans.v1.axis._tool;
+
+import org.apache.axis.types.URI;
+
+import java.rmi.RemoteException;
+
+/**
+ * This is the main implementation of the CommonExecutionConnectorService. This is the class that should be referenced in the Axis wsdd file.
+ * Its main task is to convert between axis and castor object representations, and then delegate to the appropriate component in the componentManager 
+ * @author Paul Harrison (pah@jb.man.ac.uk) 25-Mar-2004
+ * @version $Name:  $
+ * @since iteration5
+ */
+public class CommonExecutionConnectorServiceSoapBindingImpl implements CommonExecutionConnector {
+      static private org.apache.commons.logging.Log logger =
+         org.apache.commons.logging.LogFactory.getLog(
+            CommonExecutionConnectorServiceSoapBindingImpl.class);
+      
+      protected  final ExecutionController cec;
+      protected final QueryService query;
+
+   /**
+    * 
+    */
+   public CommonExecutionConnectorServiceSoapBindingImpl() {
+      try {
+         cec = CEAComponentManagerFactory.getInstance().getExecutionController();
+        
+         //nController(servicedesc);
+      }
+      catch (Throwable e) {         
+         logger.fatal("problem instatiating applicationController", e);
+         //we're stuffed - no point continuing.
+         throw new RuntimeException("Could not instantiate application controller",e);
+      }
+      try {
+          query = CEAComponentManagerFactory.getInstance().getQueryService();
+      } catch (Throwable e) {
+          logger.fatal("problem instantiating querier",e);
+          throw new RuntimeException("Could not instantiate query service",e);
+      }
+      
+   }
+
+   /** 
+    * @see org.astrogrid.applications.service.v1.cea.CommonExecutionConnector#execute(org.astrogrid.workflow.beans.v1.axis._tool, org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType, java.lang.String)
+    */
+   public String init(_tool tool, JobIdentifierType jobstepID)
+      throws RemoteException, CeaFault {           
+         try {           
+             Tool ctool = Axis2Castor.convert(tool); 
+            return cec.init(ctool, jobstepID.toString());
+         }
+         catch (Exception e) {
+           throw CeaFault.makeFault(e);
+         }
+         catch(Throwable e)
+         {
+            throw CeaFault.makeFault(new Exception("an Throwable occurred in init", e));
+         }
+   }
+
+   /**
+    * @see org.astrogrid.applications.service.v1.cea.CommonExecutionConnector#execute(java.lang.String)
+    */
+   public boolean execute(String arg0) throws RemoteException, CeaFault {
+       try {
+           return cec.execute(arg0);
+       } catch (Exception e) {
+           throw CeaFault.makeFault(e);
+       } catch (Throwable e) {
+           throw CeaFault.makeFault(new Exception("a throwable occurred in execute",e)); 
+       }
+   }
+
+   /** 
+    * @see org.astrogrid.applications.service.v1.cea.CommonExecutionConnector#abort(java.lang.String)
+    */
+   public boolean abort(String executionId) throws RemoteException, CeaFault {
+      try {
+            return cec.abort(executionId);
+      } catch (Exception e) {
+          throw CeaFault.makeFault(e);
+      } catch (Throwable t) {
+          throw CeaFault.makeFault(new Exception("a throwable occurred in abort",t));
+   }
+   }
+
+
+   /** 
+    * @see org.astrogrid.applications.service.v1.cea.CommonExecutionConnector#queryExecutionStatus(java.lang.String)
+    */
+   public MessageType queryExecutionStatus(String executionId)
+      throws RemoteException, CeaFault {
+         try {
+            org.astrogrid.applications.beans.v1.cea.castor.MessageType mess = query.queryExecutionStatus(executionId);
+            return  Castor2Axis.convert(mess);
+         }
+         catch (Exception e) {
+            throw CeaFault.makeFault(e);
+         }
+         catch(Throwable e)
+         {
+            throw CeaFault.makeFault(new Exception("an Throwable occurred in query status", e));
+         }
+   }
+     
+/**
+ * @see org.astrogrid.applications.service.v1.cea.CommonExecutionConnector#registerResultsListener(java.lang.String, org.apache.axis.types.URI)
+ */
+public void registerResultsListener(String arg0, URI arg1) throws RemoteException, CeaFault {
+    try {
+        query.registerResultsListener(arg0,new java.net.URI(arg1.toString()));
+    } catch (Exception e) {
+        throw CeaFault.makeFault(e);
+    } catch (Throwable e) {
+        throw CeaFault.makeFault(new Exception("a throwable occurred in registerResultsListener",e));
+    }
+}
+
+/**
+ * @see org.astrogrid.applications.service.v1.cea.CommonExecutionConnector#registerProgressListener(java.lang.String, org.apache.axis.types.URI)
+ */
+public void registerProgressListener(String arg0, URI arg1) throws RemoteException, CeaFault {
+    try {
+        query.registerProgressListener(arg0,new java.net.URI(arg1.toString()));
+    } catch (Exception e) {
+        throw CeaFault.makeFault(e);
+    } catch (Throwable e) {
+        throw CeaFault.makeFault(new Exception("a throwable occurred in registerProgressListener",e));
+    }
+}
+
+/**
+ * @see org.astrogrid.applications.service.v1.cea.CommonExecutionConnector#getExecutionSummary(java.lang.String)
+ */
+public ExecutionSummaryType getExecutionSummary(String arg0) throws RemoteException, CeaFault {
+    try {
+        return Castor2Axis.convert(query.getSummary(arg0));
+    } catch (Exception e) {
+        throw CeaFault.makeFault(e);
+    } catch (Throwable e) {
+        throw CeaFault.makeFault(new Exception("a throwable occurred in getExecutionSummary",e));
+    }
+}
+
+
+
+/**
+ * @see org.astrogrid.applications.service.v1.cea.CommonExecutionConnector#getResults(java.lang.String)
+ */
+public ResultListType getResults(String arg0) throws RemoteException, CeaFault {
+    try {
+        return Castor2Axis.convert(query.getResults(arg0));
+    } catch (Exception e) {
+        throw CeaFault.makeFault(e);
+    } catch (Throwable e) {
+        throw CeaFault.makeFault(new Exception("a throwable occurred in getResults",e));
+    }
+}
+   
+/** 
+  * @see org.astrogrid.applications.service.v1.cea.CommonExecutionConnector#returnRegistryEntry()
+  */
+ public String returnRegistryEntry() throws RemoteException, CeaFault
+ {
+     try {
+         return CEAComponentManagerFactory.getInstance().getMetadataService().returnRegistryEntry();
+     } catch (Exception e) {
+         throw CeaFault.makeFault(e);       
+     } catch (Throwable e) {
+         throw CeaFault.makeFault(new Exception("A throwable occured in return registry entry",e));
+     }
+  }
+
+
+}

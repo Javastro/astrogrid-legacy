@@ -1,0 +1,66 @@
+/*$Id: JavaClassParameterAdapter.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+ * Created on 08-Jun-2004
+ *
+ * Copyright (C) AstroGrid. All rights reserved.
+ *
+ * This software is published under the terms of the AstroGrid 
+ * Software License version 1.2, a copy of which has been included 
+ * with this distribution in the LICENSE.txt file.  
+ *
+**/
+package org.astrogrid.applications.javaclass;
+
+import org.astrogrid.applications.CeaException;
+import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
+import org.astrogrid.applications.description.ParameterDescription;
+import org.astrogrid.applications.parameter.DefaultParameterAdapter;
+import org.astrogrid.applications.parameter.indirect.IndirectParameterValue;
+
+import org.apache.commons.beanutils.ConvertUtils;
+
+/** ParameterAdapter for a javaClassParameter
+ * 
+ * uses the additional information in javaclassParameter to convert the parameter value from a string
+ * to an instance of the correct type for the java method parameter.
+ * @author Noel Winstanley nw@jb.man.ac.uk 08-Jun-2004
+ *
+ */
+public class JavaClassParameterAdapter extends DefaultParameterAdapter {
+
+    /** Construct a new JavaClassParameterAdapter
+     * @param val
+     * @param description
+     */
+    public JavaClassParameterAdapter(ParameterValue val, ParameterDescription description, IndirectParameterValue ipVal) {
+        super(val, description,ipVal);
+    }
+
+    /**
+     * @see org.astrogrid.applications.ParameterAdapter#process()
+     */
+    public Object process() throws CeaException {
+        String result = (String)super.process(); // we know super always returns a string.
+        Class targetClass = ((JavaClassParameterDescription)description).getTargetClass();
+        return ConvertUtils.convert(result,targetClass);
+    }
+
+}
+
+
+/* 
+$Log: JavaClassParameterAdapter.java,v $
+Revision 1.2  2004/07/01 11:16:22  nw
+merged in branch
+nww-itn06-componentization
+
+Revision 1.1.2.3  2004/07/01 01:42:46  nw
+final version, before merge
+
+Revision 1.1.2.2  2004/06/17 09:21:23  nw
+finished all major functionality additions to core
+
+Revision 1.1.2.1  2004/06/14 08:56:58  nw
+factored applications into sub-projects,
+got packaging of wars to work again
+ 
+*/

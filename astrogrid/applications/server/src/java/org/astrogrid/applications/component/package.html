@@ -1,0 +1,15 @@
+<html>
+	<body>
+		<h1>Component Assembly and Management</h1>
+		This package contains the framework that assembles the different components of cea into a cea server.
+		Depending on the components used, and the way they are confgured, different kinds of server can be produced, 
+		while still reusing large amounts of code.
+		<p />
+		The core class is {@link CEAComponentManagerFactory} - a static singleton that is responsible for selecting (via config)
+		a class to instantiate that defines the components in the server. 
+		The instantiated class must implement the {@link CEAComponentManager} interface.
+		
+		
+		
+	</body>
+</html>
