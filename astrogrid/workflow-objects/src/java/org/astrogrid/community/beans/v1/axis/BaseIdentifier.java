@@ -1,39 +1,39 @@
 /**
- * ListCriteria.java
+ * BaseIdentifier.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis WSDL2Java emitter.
  */
 
-package org.astrogrid.jes.types.v1;
+package org.astrogrid.community.beans.v1.axis;
 
-public class ListCriteria  implements java.io.Serializable {
-    private java.lang.String community;
-    private java.lang.String userId;
+public abstract class BaseIdentifier  implements java.io.Serializable {
+    private org.astrogrid.community.beans.v1.axis.Identifier name;
+    private org.astrogrid.community.beans.v1.axis.Identifier community;
 
-    public ListCriteria() {
+    public BaseIdentifier() {
     }
 
-    public java.lang.String getCommunity() {
+    public org.astrogrid.community.beans.v1.axis.Identifier getName() {
+        return name;
+    }
+
+    public void setName(org.astrogrid.community.beans.v1.axis.Identifier name) {
+        this.name = name;
+    }
+
+    public org.astrogrid.community.beans.v1.axis.Identifier getCommunity() {
         return community;
     }
 
-    public void setCommunity(java.lang.String community) {
+    public void setCommunity(org.astrogrid.community.beans.v1.axis.Identifier community) {
         this.community = community;
-    }
-
-    public java.lang.String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(java.lang.String userId) {
-        this.userId = userId;
     }
 
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof ListCriteria)) return false;
-        ListCriteria other = (ListCriteria) obj;
+        if (!(obj instanceof BaseIdentifier)) return false;
+        BaseIdentifier other = (BaseIdentifier) obj;
         if (obj == null) return false;
         if (this == obj) return true;
         if (__equalsCalc != null) {
@@ -42,12 +42,12 @@ public class ListCriteria  implements java.io.Serializable {
         __equalsCalc = obj;
         boolean _equals;
         _equals = true && 
+            ((this.name==null && other.getName()==null) || 
+             (this.name!=null &&
+              this.name.equals(other.getName()))) &&
             ((this.community==null && other.getCommunity()==null) || 
              (this.community!=null &&
-              this.community.equals(other.getCommunity()))) &&
-            ((this.userId==null && other.getUserId()==null) || 
-             (this.userId!=null &&
-              this.userId.equals(other.getUserId())));
+              this.community.equals(other.getCommunity())));
         __equalsCalc = null;
         return _equals;
     }
@@ -59,11 +59,11 @@ public class ListCriteria  implements java.io.Serializable {
         }
         __hashCodeCalc = true;
         int _hashCode = 1;
+        if (getName() != null) {
+            _hashCode += getName().hashCode();
+        }
         if (getCommunity() != null) {
             _hashCode += getCommunity().hashCode();
-        }
-        if (getUserId() != null) {
-            _hashCode += getUserId().hashCode();
         }
         __hashCodeCalc = false;
         return _hashCode;
@@ -71,19 +71,19 @@ public class ListCriteria  implements java.io.Serializable {
 
     // Type metadata
     private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(ListCriteria.class);
+        new org.apache.axis.description.TypeDesc(BaseIdentifier.class);
 
     static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("urn:jes/types/v1", "ListCriteria"));
+        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.astrogrid.org/schema/Credentials/v1", "BaseIdentifier"));
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("community");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "community"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setFieldName("name");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://www.astrogrid.org/schema/Credentials/v1", "Name"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.astrogrid.org/schema/Credentials/v1", "Identifier"));
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("userId");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "userId"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setFieldName("community");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://www.astrogrid.org/schema/Credentials/v1", "Community"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.astrogrid.org/schema/Credentials/v1", "Identifier"));
         typeDesc.addFieldDesc(elemField);
     }
 

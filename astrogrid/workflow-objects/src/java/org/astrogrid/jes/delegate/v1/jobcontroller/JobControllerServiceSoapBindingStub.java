@@ -16,27 +16,71 @@ public class JobControllerServiceSoapBindingStub extends org.apache.axis.client.
     static org.apache.axis.description.OperationDesc [] _operations;
 
     static {
-        _operations = new org.apache.axis.description.OperationDesc[2];
+        _operations = new org.apache.axis.description.OperationDesc[5];
         org.apache.axis.description.OperationDesc oper;
         oper = new org.apache.axis.description.OperationDesc();
-        oper.setName("submitJob");
-        oper.addParameter(new javax.xml.namespace.QName("", "workflowXML"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, org.apache.axis.description.ParameterDesc.IN, false, false);
-        oper.setReturnType(new javax.xml.namespace.QName("urn:jes/types/v1", "SubmissionResponse"));
-        oper.setReturnClass(org.astrogrid.jes.types.v1.SubmissionResponse.class);
-        oper.setReturnQName(new javax.xml.namespace.QName("", "submitJobReturn"));
-        oper.setStyle(org.apache.axis.enum.Style.DOCUMENT);
+        oper.setName("submitWorkflow");
+        oper.addParameter(new javax.xml.namespace.QName("", "workflow-document"), new javax.xml.namespace.QName("urn:jes/types/v1", "workflow-string"), org.astrogrid.jes.types.v1.WorkflowString.class, org.apache.axis.description.ParameterDesc.IN, false, false);
+        oper.setReturnType(new javax.xml.namespace.QName("urn:jes/types/v1", "jobURN"));
+        oper.setReturnClass(org.astrogrid.jes.types.v1.JobURN.class);
+        oper.setReturnQName(new javax.xml.namespace.QName("", "urn"));
+        oper.setStyle(org.apache.axis.enum.Style.WRAPPED);
         oper.setUse(org.apache.axis.enum.Use.LITERAL);
+        oper.addFault(new org.apache.axis.description.FaultDesc(
+                      new javax.xml.namespace.QName("", "message"),
+                      "org.astrogrid.jes.delegate.v1.jobcontroller.JesFault",
+                      new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), 
+                      false
+                     ));
         _operations[0] = oper;
 
         oper = new org.apache.axis.description.OperationDesc();
-        oper.setName("readJobList");
-        oper.addParameter(new javax.xml.namespace.QName("", "criteria"), new javax.xml.namespace.QName("urn:jes/types/v1", "ListCriteria"), org.astrogrid.jes.types.v1.ListCriteria.class, org.apache.axis.description.ParameterDesc.IN, false, false);
-        oper.setReturnType(new javax.xml.namespace.QName("urn:jes/types/v1", "WorkflowList"));
-        oper.setReturnClass(org.astrogrid.jes.types.v1.WorkflowList.class);
-        oper.setReturnQName(new javax.xml.namespace.QName("", "userJobListReturn"));
-        oper.setStyle(org.apache.axis.enum.Style.DOCUMENT);
+        oper.setName("cancelJob");
+        oper.addParameter(new javax.xml.namespace.QName("", "urn"), new javax.xml.namespace.QName("urn:jes/types/v1", "jobURN"), org.astrogrid.jes.types.v1.JobURN.class, org.apache.axis.description.ParameterDesc.IN, false, false);
+        oper.setReturnType(org.apache.axis.encoding.XMLType.AXIS_VOID);
+        oper.setStyle(org.apache.axis.enum.Style.WRAPPED);
         oper.setUse(org.apache.axis.enum.Use.LITERAL);
         _operations[1] = oper;
+
+        oper = new org.apache.axis.description.OperationDesc();
+        oper.setName("deleteJob");
+        oper.addParameter(new javax.xml.namespace.QName("", "urn"), new javax.xml.namespace.QName("urn:jes/types/v1", "jobURN"), org.astrogrid.jes.types.v1.JobURN.class, org.apache.axis.description.ParameterDesc.IN, false, false);
+        oper.setReturnType(org.apache.axis.encoding.XMLType.AXIS_VOID);
+        oper.setStyle(org.apache.axis.enum.Style.WRAPPED);
+        oper.setUse(org.apache.axis.enum.Use.LITERAL);
+        _operations[2] = oper;
+
+        oper = new org.apache.axis.description.OperationDesc();
+        oper.setName("readJobList");
+        oper.addParameter(new javax.xml.namespace.QName("http://www.astrogrid.org/schema/Credentials/v1", "Account"), new javax.xml.namespace.QName("http://www.astrogrid.org/schema/Credentials/v1", "Account"), org.astrogrid.community.beans.v1.axis._Account.class, org.apache.axis.description.ParameterDesc.IN, false, false);
+        oper.setReturnType(new javax.xml.namespace.QName("urn:jes/types/v1", "workflow-summary"));
+        oper.setReturnClass(org.astrogrid.jes.types.v1.WorkflowSummary[].class);
+        oper.setReturnQName(new javax.xml.namespace.QName("", "item"));
+        oper.setStyle(org.apache.axis.enum.Style.WRAPPED);
+        oper.setUse(org.apache.axis.enum.Use.LITERAL);
+        oper.addFault(new org.apache.axis.description.FaultDesc(
+                      new javax.xml.namespace.QName("", "message"),
+                      "org.astrogrid.jes.delegate.v1.jobcontroller.JesFault",
+                      new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), 
+                      false
+                     ));
+        _operations[3] = oper;
+
+        oper = new org.apache.axis.description.OperationDesc();
+        oper.setName("readJob");
+        oper.addParameter(new javax.xml.namespace.QName("", "urn"), new javax.xml.namespace.QName("urn:jes/types/v1", "jobURN"), org.astrogrid.jes.types.v1.JobURN.class, org.apache.axis.description.ParameterDesc.IN, false, false);
+        oper.setReturnType(new javax.xml.namespace.QName("urn:jes/types/v1", "workflow-string"));
+        oper.setReturnClass(org.astrogrid.jes.types.v1.WorkflowString.class);
+        oper.setReturnQName(new javax.xml.namespace.QName("", "workflow-document"));
+        oper.setStyle(org.apache.axis.enum.Style.WRAPPED);
+        oper.setUse(org.apache.axis.enum.Use.LITERAL);
+        oper.addFault(new org.apache.axis.description.FaultDesc(
+                      new javax.xml.namespace.QName("", "message"),
+                      "org.astrogrid.jes.delegate.v1.jobcontroller.JesFault",
+                      new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), 
+                      false
+                     ));
+        _operations[4] = oper;
 
     }
 
@@ -65,16 +109,44 @@ public class JobControllerServiceSoapBindingStub extends org.apache.axis.client.
             java.lang.Class arraydf = org.apache.axis.encoding.ser.ArrayDeserializerFactory.class;
             java.lang.Class simplesf = org.apache.axis.encoding.ser.SimpleSerializerFactory.class;
             java.lang.Class simpledf = org.apache.axis.encoding.ser.SimpleDeserializerFactory.class;
-            qName = new javax.xml.namespace.QName("urn:jes/types/v1", "SubmissionResponse");
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/Credentials/v1", "Identifier");
             cachedSerQNames.add(qName);
-            cls = org.astrogrid.jes.types.v1.SubmissionResponse.class;
+            cls = org.astrogrid.community.beans.v1.axis.Identifier.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(simplesf);
+            cachedDeserFactories.add(simpledf);
+
+            qName = new javax.xml.namespace.QName("urn:jes/types/v1", "workflow-string");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.jes.types.v1.WorkflowString.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(simplesf);
+            cachedDeserFactories.add(simpledf);
+
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/Credentials/v1", "Account");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.community.beans.v1.axis._Account.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
-            qName = new javax.xml.namespace.QName("urn:jes/types/v1", "WorkflowList");
+            qName = new javax.xml.namespace.QName("urn:jes/types/v1", "workflow-summary");
             cachedSerQNames.add(qName);
-            cls = org.astrogrid.jes.types.v1.WorkflowList.class;
+            cls = org.astrogrid.jes.types.v1.WorkflowSummary.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(beansf);
+            cachedDeserFactories.add(beandf);
+
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/Credentials/v1", "BaseIdentifier");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.community.beans.v1.axis.BaseIdentifier.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(beansf);
+            cachedDeserFactories.add(beandf);
+
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/Credentials/v1", "Group");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.community.beans.v1.axis._Group.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
@@ -85,13 +157,6 @@ public class JobControllerServiceSoapBindingStub extends org.apache.axis.client.
             cachedSerClasses.add(cls);
             cachedSerFactories.add(simplesf);
             cachedDeserFactories.add(simpledf);
-
-            qName = new javax.xml.namespace.QName("urn:jes/types/v1", "ListCriteria");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.jes.types.v1.ListCriteria.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
 
     }
 
@@ -150,23 +215,23 @@ public class JobControllerServiceSoapBindingStub extends org.apache.axis.client.
         }
     }
 
-    public org.astrogrid.jes.types.v1.SubmissionResponse submitJob(java.lang.String workflowXML) throws java.rmi.RemoteException {
+    public org.astrogrid.jes.types.v1.JobURN submitWorkflow(org.astrogrid.jes.types.v1.WorkflowString workflowDocument) throws java.rmi.RemoteException, org.astrogrid.jes.delegate.v1.jobcontroller.JesFault {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
         _call.setOperation(_operations[0]);
         _call.setUseSOAPAction(true);
-        _call.setSOAPActionURI("submitJob");
+        _call.setSOAPActionURI("submitWorkflow");
         _call.setEncodingStyle(null);
         _call.setProperty(org.apache.axis.client.Call.SEND_TYPE_ATTR, Boolean.FALSE);
         _call.setProperty(org.apache.axis.AxisEngine.PROP_DOMULTIREFS, Boolean.FALSE);
         _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
-        _call.setOperationName(new javax.xml.namespace.QName("", "submitJob"));
+        _call.setOperationName(new javax.xml.namespace.QName("urn:jes/jobcontroller-wrapper/v1", "submitWorkflow"));
 
         setRequestHeaders(_call);
         setAttachments(_call);
-        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {workflowXML});
+        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {workflowDocument});
 
         if (_resp instanceof java.rmi.RemoteException) {
             throw (java.rmi.RemoteException)_resp;
@@ -174,30 +239,70 @@ public class JobControllerServiceSoapBindingStub extends org.apache.axis.client.
         else {
             extractAttachments(_call);
             try {
-                return (org.astrogrid.jes.types.v1.SubmissionResponse) _resp;
+                return (org.astrogrid.jes.types.v1.JobURN) _resp;
             } catch (java.lang.Exception _exception) {
-                return (org.astrogrid.jes.types.v1.SubmissionResponse) org.apache.axis.utils.JavaUtils.convert(_resp, org.astrogrid.jes.types.v1.SubmissionResponse.class);
+                return (org.astrogrid.jes.types.v1.JobURN) org.apache.axis.utils.JavaUtils.convert(_resp, org.astrogrid.jes.types.v1.JobURN.class);
             }
         }
     }
 
-    public org.astrogrid.jes.types.v1.WorkflowList readJobList(org.astrogrid.jes.types.v1.ListCriteria criteria) throws java.rmi.RemoteException {
+    public void cancelJob(org.astrogrid.jes.types.v1.JobURN urn) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
         _call.setOperation(_operations[1]);
         _call.setUseSOAPAction(true);
+        _call.setSOAPActionURI("cancelJob");
+        _call.setEncodingStyle(null);
+        _call.setProperty(org.apache.axis.client.Call.SEND_TYPE_ATTR, Boolean.FALSE);
+        _call.setProperty(org.apache.axis.AxisEngine.PROP_DOMULTIREFS, Boolean.FALSE);
+        _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
+        _call.setOperationName(new javax.xml.namespace.QName("urn:jes/jobcontroller-wrapper/v1", "cancelJob"));
+
+        setRequestHeaders(_call);
+        setAttachments(_call);
+        _call.invokeOneWay(new java.lang.Object[] {urn});
+
+    }
+
+    public void deleteJob(org.astrogrid.jes.types.v1.JobURN urn) throws java.rmi.RemoteException {
+        if (super.cachedEndpoint == null) {
+            throw new org.apache.axis.NoEndPointException();
+        }
+        org.apache.axis.client.Call _call = createCall();
+        _call.setOperation(_operations[2]);
+        _call.setUseSOAPAction(true);
+        _call.setSOAPActionURI("deleteJob");
+        _call.setEncodingStyle(null);
+        _call.setProperty(org.apache.axis.client.Call.SEND_TYPE_ATTR, Boolean.FALSE);
+        _call.setProperty(org.apache.axis.AxisEngine.PROP_DOMULTIREFS, Boolean.FALSE);
+        _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
+        _call.setOperationName(new javax.xml.namespace.QName("urn:jes/jobcontroller-wrapper/v1", "deleteJob"));
+
+        setRequestHeaders(_call);
+        setAttachments(_call);
+        _call.invokeOneWay(new java.lang.Object[] {urn});
+
+    }
+
+    public org.astrogrid.jes.types.v1.WorkflowSummary[] readJobList(org.astrogrid.community.beans.v1.axis._Account account) throws java.rmi.RemoteException, org.astrogrid.jes.delegate.v1.jobcontroller.JesFault {
+        if (super.cachedEndpoint == null) {
+            throw new org.apache.axis.NoEndPointException();
+        }
+        org.apache.axis.client.Call _call = createCall();
+        _call.setOperation(_operations[3]);
+        _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("readJobList");
         _call.setEncodingStyle(null);
         _call.setProperty(org.apache.axis.client.Call.SEND_TYPE_ATTR, Boolean.FALSE);
         _call.setProperty(org.apache.axis.AxisEngine.PROP_DOMULTIREFS, Boolean.FALSE);
         _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
-        _call.setOperationName(new javax.xml.namespace.QName("", "readJobList"));
+        _call.setOperationName(new javax.xml.namespace.QName("urn:jes/jobcontroller-wrapper/v1", "readJobList"));
 
         setRequestHeaders(_call);
         setAttachments(_call);
-        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {criteria});
+        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {account});
 
         if (_resp instanceof java.rmi.RemoteException) {
             throw (java.rmi.RemoteException)_resp;
@@ -205,9 +310,40 @@ public class JobControllerServiceSoapBindingStub extends org.apache.axis.client.
         else {
             extractAttachments(_call);
             try {
-                return (org.astrogrid.jes.types.v1.WorkflowList) _resp;
+                return (org.astrogrid.jes.types.v1.WorkflowSummary[]) _resp;
             } catch (java.lang.Exception _exception) {
-                return (org.astrogrid.jes.types.v1.WorkflowList) org.apache.axis.utils.JavaUtils.convert(_resp, org.astrogrid.jes.types.v1.WorkflowList.class);
+                return (org.astrogrid.jes.types.v1.WorkflowSummary[]) org.apache.axis.utils.JavaUtils.convert(_resp, org.astrogrid.jes.types.v1.WorkflowSummary[].class);
+            }
+        }
+    }
+
+    public org.astrogrid.jes.types.v1.WorkflowString readJob(org.astrogrid.jes.types.v1.JobURN urn) throws java.rmi.RemoteException, org.astrogrid.jes.delegate.v1.jobcontroller.JesFault {
+        if (super.cachedEndpoint == null) {
+            throw new org.apache.axis.NoEndPointException();
+        }
+        org.apache.axis.client.Call _call = createCall();
+        _call.setOperation(_operations[4]);
+        _call.setUseSOAPAction(true);
+        _call.setSOAPActionURI("readJob");
+        _call.setEncodingStyle(null);
+        _call.setProperty(org.apache.axis.client.Call.SEND_TYPE_ATTR, Boolean.FALSE);
+        _call.setProperty(org.apache.axis.AxisEngine.PROP_DOMULTIREFS, Boolean.FALSE);
+        _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
+        _call.setOperationName(new javax.xml.namespace.QName("urn:jes/jobcontroller-wrapper/v1", "readJob"));
+
+        setRequestHeaders(_call);
+        setAttachments(_call);
+        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {urn});
+
+        if (_resp instanceof java.rmi.RemoteException) {
+            throw (java.rmi.RemoteException)_resp;
+        }
+        else {
+            extractAttachments(_call);
+            try {
+                return (org.astrogrid.jes.types.v1.WorkflowString) _resp;
+            } catch (java.lang.Exception _exception) {
+                return (org.astrogrid.jes.types.v1.WorkflowString) org.apache.axis.utils.JavaUtils.convert(_resp, org.astrogrid.jes.types.v1.WorkflowString.class);
             }
         }
     }

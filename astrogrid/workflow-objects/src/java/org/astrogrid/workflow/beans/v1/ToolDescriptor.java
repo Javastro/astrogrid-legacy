@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ToolDescriptor.java,v 1.10 2004/03/05 15:56:00 nw Exp $
+ * $Id: ToolDescriptor.java,v 1.11 2004/03/09 14:19:25 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class ToolDescriptor.
  * 
- * @version $Revision: 1.10 $ $Date: 2004/03/05 15:56:00 $
+ * @version $Revision: 1.11 $ $Date: 2004/03/09 14:19:25 $
  */
 public class ToolDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 
