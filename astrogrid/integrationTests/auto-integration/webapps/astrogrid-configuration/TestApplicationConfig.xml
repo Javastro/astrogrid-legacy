@@ -12,7 +12,7 @@
                         <CmdLineParameterDefn name="P1" type="integer" commandPosition="1">
                                 <agpd:UI_Name>Pause Time</agpd:UI_Name>
                                 <agpd:UI_Description>Text bold bit
-                                        <b/>with some other - this is the time tha tthe application will pause in seconds before continuing to give the appearance of doing something...
+                                        with some other - this is the time tha tthe application will pause in seconds before continuing to give the appearance of doing something...
                                 </agpd:UI_Description>
                                 <agpd:UCD>AAD</agpd:UCD>
                                 <agpd:DefaultValue>1.0</agpd:DefaultValue>
