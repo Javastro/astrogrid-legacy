@@ -1,3 +1,4 @@
+#!/bin/sh
 OLDDIR=$PWD
 
 PROJECT_NAME=$1

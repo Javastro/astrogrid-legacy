@@ -1,3 +1,4 @@
+#!/bin/sh
 # builds a maven release for a particular project
 OLDDIR=$PWD
 

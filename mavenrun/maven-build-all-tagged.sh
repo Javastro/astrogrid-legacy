@@ -1,3 +1,4 @@
+#!/bin/sh
 TAG_TO_BUILD=$1
 
 BUILD_DIR=/home/maven/build/release
