@@ -7,9 +7,10 @@
        It may set other properties. -->
   <property file="build.properties"/>
    
-  <!-- This file is for semi-stable settings fixed by the 
-       OGSA implementation. -->
-  <property file="${ogsa.home}/ogsa.properties"/>
+  <!-- This is a default that applies if the property's
+       value is not set in build.properties. -->
+  <property name="web.app.display.name"
+            value="OGSA-DAI database services"/>
   
   <!-- These are paths within the web-app as assembled
        in this product's build-tree. -->
@@ -28,11 +29,12 @@
     <mkdir dir="${web.app.dir}"/>
     <mkdir dir="${web.inf.dir}"/>
     <mkdir dir="${schema.dir}"/>
+    <mkdir dir="${web.inf.dir}/etc"/>
     
     <copy todir="${schema.dir}">
       <fileset dir="${ogsa.home}/schema"
                casesensitive="yes">
-        <exclude name="**/CVS"/>
+        <exclude name="samples/"/>
       </fileset>
     </copy>
     
@@ -41,21 +43,29 @@
         <include name="**/*.jar"/>
         <exclude name="**/servlet.jar"/>
         <exclude name="**/xalan.jar"/>
+        <exclude name="**/xercesImpl.jar"/>
         <include name="**/*.properties"/>
         <include name="**/*.LICENCE"/>
       </fileset>
     </copy>
     
-    <copy file="${ogsa.home}/server-config.wsdd"
-          todir="${web.inf.dir}"/>
-          
+    <copy todir="${web.inf.dir}/lib">
+      <fileset dir="src/lib">
+        <include name="**/*.jar"/>
+        <include name="**/*.properties"/>
+        <include name="**/*.LICENCE"/>
+      </fileset>
+    </copy>
+    
     <copy todir="${web.inf.dir}/classes">
       <fileset dir="${ogsa.home}/webapps/ogsa/WEB-INF/classes">
         <include name="**.*"/>
       </fileset>
     </copy>
-    
-    <copy file="${ogsa.home}/webapps/ogsa/index.html"
+
+    <!-- The "welcome page" for the web-app is customized from that
+         in GT3.0.2 to reflect the intent of this installation. -->    
+    <copy file="src/index.html"
           todir="${web.app.dir}"/>
           
     <!-- web.xml comes from this product's source-tree, not directly
@@ -68,9 +78,49 @@
       <filterset>
         <filter token="web.app.name"
                 value="${web.app.name}"/>
+        <filter token="web.app.display.name"
+                value="${web.app.display.name}"/>
       </filterset>
     </copy>
+
+    <!-- server-config.wsdd is customized. -->
+    <copy file="src/server-config.wsdd"
+          todir="${web.inf.dir}">
+      <filterset>
+        <filter token="tomcat.home"
+                value="${tomcat.home}"/>
+        <filter token="web.app.name"
+                value="${web.app.name}"/>
+      </filterset>
+    </copy>
+
+    <copy todir="${schema.dir}">
+      <fileset dir="${ogsa.dai.home}/schema"
+               casesensitive="yes">
+        <exclude name="**/CVS"/>
+      </fileset>
+    </copy>
+
+    <copy todir="${web.inf.dir}/lib">
+      <fileset dir="${ogsa.dai.home}/lib">
+        <include name="**/*.jar"/>
+      </fileset>
+    </copy>
     
+    <copy todir="${web.inf.dir}/etc">
+      <fileset dir="src/etc">
+        <include name="**/*"/>
+      </fileset>
+      <filterset>
+        <filter token="web.service.port"
+                value="${web.service.port}"/>
+        <filter token="web.app.name"
+                value="${web.app.name}"/>
+        <filter token="tomcat.home"
+                value="${tomcat.home}"/>
+      </filterset>
+    </copy>
+ 
   </target> 
    
    
