@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/Attic/build.xml,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/09/29 23:32:36 $</cvs:author>
-    | <cvs:version>$Revision: 1.48 $</cvs:version>
+    | <cvs:author>$Date: 2003/09/29 23:48:21 $</cvs:author>
+    | <cvs:version>$Revision: 1.49 $</cvs:version>
     | <cvs:log>
     | $Log: build.xml,v $
+    | Revision 1.49  2003/09/29 23:48:21  dave
+    | Updated bits of the release build
+    |
     | Revision 1.48  2003/09/29 23:32:36  dave
     | Updated some comments in the release build
     |
@@ -2427,7 +2430,7 @@
 	</target>
 
 	<!--+
-		| Deploy our release webapp.
+		| Build and deploy our release webapp.
 		| This deploys the Cocoon webapp in place, using the Tomcat Manager to reference the Cocoon webapp in our build tree.
 		+-->
 	<target name="release.DEPLOY" depends="">
@@ -2437,7 +2440,7 @@
 	</target>
 
 	<!--+
-		| Install our Cocoon webapp.
+		| Build and install our Cocoon webapp.
 		| This installs the Cocoon webapp by copying the war file into the Tomcat webapps directory.
 		+-->
 	<target name="release.INSTALL" depends="">
