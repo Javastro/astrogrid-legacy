@@ -87,7 +87,8 @@
 		<![CDATA[
 		//================================================================================
 		Iterator
-			iterator = (Iterator)request.getAttribute( DesignAction.QUERY_LIST_PARAMETER ) ;
+			workflowIterator = (Iterator)request.getAttribute( DesignAction.WORKFLOW_LIST_PARAMETER ) ;
+			
 		
 		//================================================================================
 		]]>
@@ -96,7 +97,7 @@
 			<![CDATA[
 			//========================================================================
 			
-			workflowList( iterator ) ;
+			workflowList( workflowIterator ) ;
 		
 			//========================================================================
 			]]>
