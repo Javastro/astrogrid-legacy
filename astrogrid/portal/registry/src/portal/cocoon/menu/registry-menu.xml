@@ -9,28 +9,59 @@
         target="_self"
         status-text="Registry...">
       <agp:item
-          contents="Registry"
+          contents="Query"
           contents-hover="Registry"
-          uri="/astrogrid-portal/main/mount/registry/registry.html"
+          uri="/astrogrid-portal/main/mount/registry/registryquery.html?mainelement=Resource"
           target="_self"
           status-text="Registry... the final frontier"/>
+      	<agp:menu
+	        contents="Update"
+	        contents-hover="Update"
+	        uri=""
+	        target="_self"
+	        status-text="Registry...">
+       		<agp:item
+	          contents="From File or Url"
+	          contents-hover="Registry"
+	          uri="/astrogrid-portal/main/mount/registry/registryharvest.html"
+	          target="_self"
+	          status-text="Registry... the final frontier"/>          
+       		<agp:item
+	          contents="Resource"
+	          contents-hover="Resource"
+	          uri="/astrogrid-portal/main/mount/registry/registryupdate.html?mainelement=Resource"
+	          target="_self"
+	          status-text="Registry... the final frontier"/>	          
+       		<agp:item
+	          contents="Service"
+	          contents-hover="Service"
+	          uri="/astrogrid-portal/main/mount/registry/registryupdate.html?mainelement=Service"
+	          target="_self"
+	          status-text="Registry... the final frontier"/>	          
+       		<agp:item
+	          contents="SkyService"
+	          contents-hover="SkyService"
+	          uri="/astrogrid-portal/main/mount/registry/registryupdate.html?mainelement=SkyService"
+	          target="_self"
+	          status-text="Registry... the final frontier"/>	          
+       		<agp:item
+	          contents="TabularSkyService"
+	          contents-hover="TabularSkyService"
+	          uri="/astrogrid-portal/main/mount/registry/registryupdate.html?mainelement=TabularSkyService"
+	          target="_self"
+	          status-text="Registry... the final frontier"/>	          
+	    </agp:menu>
+      <agp:item
+          contents="Status"
+          contents-hover="Status"
+          uri="/astrogrid-portal/main/mount/registry/registrystatus.html"
+          target="_self"
+          status-text="Registry... the final frontier"/>
+      <agp:item
+          contents="Status"
+          contents-hover="Status"
+          uri="/astrogrid-portal/main/mount/registry/registryharvest.html"
+          target="_self"
+          status-text="Registry... the final frontier"/>	    
     </agp:menu>
   </agp:menu-def>
-  <!-- PFO junkYard
-      <agp:item
-          contents="Me"
-          contents-hover="Me"
-          uri="http://www.theonion.com/"
-          target="_self"
-          status-text="Onion"/>
-      <agp:item
-          contents="In"
-          contents-hover="In"
-          uri="http://www.tower.org/library/the_mother_tongue.html"
-          target="_self"
-          status-text="Tongue"/>
-          icon="/AGPortal/icons/Favorite.png"
-          icon="/AGPortal/icons/Inform.png"
-          icon="/AGPortal/icons/FingerUp.png"
-        icon="/AGPortal/icons/Bomb.png"
-  -->

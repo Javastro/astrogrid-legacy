@@ -46,7 +46,7 @@
 		<br />
 		<form method="post" action="registryharvest.html" name="UploadMetaData">
 			<input type="hidden" name="addmetadatafromurl" />
-			Harvest from a URL:
+			Update/Harvest from a URL:
 			<input type="text" name="metadata_url" />
 			<br />
 			<input type="submit" name="Harvest" />			
@@ -54,7 +54,7 @@
 		<br />
 		<form method="post" action="registryharvest.html" name="UploadMetaData" enctype="multipart/form-data">
 			<input type="hidden" name="addmetadatafromfile" />
-			Harvest from a local file:
+			Update/Harvest from a local file:
 			<input type="file" name="metadata_file" />
 			<br />
 			<input type="submit" name="Harvest" />
