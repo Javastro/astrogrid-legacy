@@ -1,5 +1,5 @@
 /*
- * $Id: CommunityHelper.java,v 1.2 2003/10/24 08:50:56 clq2 Exp $
+ * $Id: CommunityHelper.java,v 1.3 2003/10/31 18:02:06 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -8,8 +8,7 @@ package org.astrogrid.datacenter.common;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import org.astrogrid.log.Log;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.*;
 /**
  * Class to help extract community information from a dom
  *
@@ -18,7 +17,7 @@ import org.apache.log4j.Logger;
 
 public class CommunityHelper
 {
-   private static Logger logger = Logger.getLogger(CommunityHelper.class);
+   private static Log logger = LogFactory.getLog(CommunityHelper.class);
    public final static String USERID_TAG = "UserId";
    public final static String COMMUNITYID_TAG = "CommunityId";
    public final static String COMMUNITY_TAG = "community";
@@ -27,47 +26,47 @@ public class CommunityHelper
 
    public static String getAccount(Element dom)
        {
-   	     account = DocHelper.getTagValue(getCommunitySnippet(dom), ACCOUNT);
-   	     return account;
+           account = DocHelper.getTagValue(getCommunitySnippet(dom), ACCOUNT);
+           return account;
        }
        
    public static String getUserId(Element dom)
-	  {
-	  	 account = DocHelper.getTagValue(getCommunitySnippet(dom), ACCOUNT);
-		 logger.debug("account LOG$Juserid:"+account);
-	  	 String userid ="";
-	  	 try{
-	  	 	userid = account.substring(0,account.indexOf("@"));
-			logger.debug("userid LOG$J:"+userid);
-	  	 }catch(Exception e){
-	  	 	e.printStackTrace();
-	  	 }
-		 return userid;
-	  } 
+     {
+       account = DocHelper.getTagValue(getCommunitySnippet(dom), ACCOUNT);
+       logger.debug("account LOG$Juserid:"+account);
+       String userid ="";
+       try{
+         userid = account.substring(0,account.indexOf("@"));
+         logger.debug("userid LOG$J:"+userid);
+       }catch(Exception e){
+         e.printStackTrace();
+       }
+       return userid;
+     }
  
    public static String getCommunityId(Element dom)
    {
-	   account = DocHelper.getTagValue(getCommunitySnippet(dom), ACCOUNT);
-	   logger.debug("account LOG$J:"+account);
-	   String communityid =""; 
-	   try{
-	   	  communityid = account.substring(account.indexOf("@")+1,account.length());
-	   	  logger.debug("communityid LOG$J:"+communityid);
-	   }catch(Exception e){
-	   	  e.printStackTrace();
-	   }
-	   return communityid;
+      account = DocHelper.getTagValue(getCommunitySnippet(dom), ACCOUNT);
+      logger.debug("account LOG$J:"+account);
+      String communityid ="";
+      try{
+           communityid = account.substring(account.indexOf("@")+1,account.length());
+           logger.debug("communityid LOG$J:"+communityid);
+      }catch(Exception e){
+           e.printStackTrace();
+      }
+      return communityid;
    }
    /*
-	public static String getUserId(Element dom)
-	{
-	   return DocHelper.getTagValue(getCommunitySnippet(dom), USERID_TAG);
-	}
+   public static String getUserId(Element dom)
+   {
+      return DocHelper.getTagValue(getCommunitySnippet(dom), USERID_TAG);
+   }
 
-	public static String getCommunityId(Element dom)
-	{
-	   return DocHelper.getTagValue(getCommunitySnippet(dom), COMMUNITYID_TAG);
-	}
+   public static String getCommunityId(Element dom)
+   {
+      return DocHelper.getTagValue(getCommunitySnippet(dom), COMMUNITYID_TAG);
+   }
  */
    public static Element getCommunitySnippet(Element dom)
    {
@@ -81,7 +80,7 @@ public class CommunityHelper
 
       NodeList communityNodes = dom.getElementsByTagName(COMMUNITY_TAG);
 
-      Log.affirm(communityNodes.getLength() <= 1, "Too many community tags in dom");
+      assert communityNodes.getLength() <= 1 : "Too many community tags in dom";
 
       if (communityNodes.getLength() == 0)
       {
@@ -94,6 +93,9 @@ public class CommunityHelper
 
 /*
 $Log: CommunityHelper.java,v $
+Revision 1.3  2003/10/31 18:02:06  mch
+Changed to use commons logging
+
 Revision 1.2  2003/10/24 08:50:56  clq2
 added to decouple userid and communityid from tag account.changed "Community" to lowercase "community" to match community snippet.
 
