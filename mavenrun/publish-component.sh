@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: publish-component.sh,v 1.3 2004/12/01 23:33:45 jdt Exp $ 
+# $Id: publish-component.sh,v 1.4 2004/12/01 23:36:56 jdt Exp $ 
 ####################################################################
 # Build a component into the local repository.
 # First argument (required) cvs name of component _under_ astrogrid
@@ -47,7 +47,7 @@ BUILDHOME=$CHECKOUTHOME/$MODULE
 
 DATE=`date`
 TIMESTAMP=`date +%Y%m%d-%T`
-LOGFILE=$COMPONENT_NAME-build.log
+LOGFILE=/tmp/$COMPONENT_NAME-build.log
 rm $LOGFILE
 
 
