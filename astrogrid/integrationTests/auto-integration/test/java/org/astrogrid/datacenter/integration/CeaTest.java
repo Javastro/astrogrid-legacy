@@ -1,4 +1,4 @@
-/*$Id: CeaTest.java,v 1.4 2004/05/14 11:02:05 mch Exp $
+/*$Id: CeaTest.java,v 1.5 2004/07/01 11:44:35 nw Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -97,14 +97,12 @@ public class CeaTest  extends TestCase {
 
       ParameterValue param = new ParameterValue();
       param.setName("Query");
-      param.setType(ParameterTypes.ADQL);
 //      param.setValue(getSampleQuery());
       param.setValue(QUERY_LOC);
       inputs.addParameter(param);
       
       param = new ParameterValue();
       param.setName("Format");
-      param.setType(ParameterTypes.STRING);
       param.setValue(QuerySearcher.VOTABLE);
       inputs.addParameter(param);
 
@@ -113,7 +111,6 @@ public class CeaTest  extends TestCase {
 
       param = new ParameterValue();
       param.setName("Target");
-      param.setType(ParameterTypes.STRING);
       param.setValue(RESULTS_LOC);
       outputs.addParameter(param);
       
@@ -125,7 +122,9 @@ public class CeaTest  extends TestCase {
       
       //do call
       JobIdentifierType jobId = new JobIdentifierType("CeaTest");
-      delegate.execute(tool, jobId, "");
+      String execId = delegate.init(tool, jobId);
+      assertNotNull(execId);
+      delegate.execute(execId);
       
       //check results
       VoSpaceClient vospace = new VoSpaceClient(User.ANONYMOUS);
@@ -167,6 +166,10 @@ public class CeaTest  extends TestCase {
 
 /*
 $Log: CeaTest.java,v $
+Revision 1.5  2004/07/01 11:44:35  nw
+fixed to fit with cea refactor
+(although service isn't present yet)
+
 Revision 1.4  2004/05/14 11:02:05  mch
 Fixed a number of errors
 
