@@ -1,5 +1,5 @@
 /*
- * $Id: FtpDelegateTest.java,v 1.1 2003/12/03 17:39:25 mch Exp $
+ * $Id: FtpDelegateTest.java,v 1.2 2003/12/03 17:41:23 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -40,11 +40,6 @@ public class FtpDelegateTest extends TestCase {
       org.astrogrid.log.Log.trace("...disconnected");
    }
 
-   public void testMySpace() throws Exception {
-      MySpaceManagerDelegate myspace = new MySpaceManagerDelegate();
-      //erm
-   }
-
 
    public static void main(String[] args) throws IOException {
       org.astrogrid.log.Log.logToConsole();
@@ -58,6 +53,9 @@ public class FtpDelegateTest extends TestCase {
 
 /*
  $Log: FtpDelegateTest.java,v $
+ Revision 1.2  2003/12/03 17:41:23  mch
+ Removed manager empty test
+
  Revision 1.1  2003/12/03 17:39:25  mch
  New factory/interface based myspace delegates
 
