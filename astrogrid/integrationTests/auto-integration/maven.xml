@@ -265,6 +265,14 @@
     +-->
 <goal name="registry.upload.test">
     <echo message="Uploading Registry Entry .."/>
+
+    <!--+
+        | Fix the Maven JAXP properties.
+        +-->
+    <echo message="Fixing JAXP properties ...."/>
+    <j:expr value="${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}"/>
+    <echo message=""/>
+
     <ant
         target="register"
         antfile="register.xml"
