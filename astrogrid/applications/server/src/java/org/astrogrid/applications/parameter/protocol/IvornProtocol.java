@@ -1,4 +1,4 @@
-/*$Id: IvornProtocol.java,v 1.2 2005/03/13 07:13:39 clq2 Exp $
+/*$Id: IvornProtocol.java,v 1.3 2005/03/31 08:34:17 nw Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,9 @@
  *
 **/
 package org.astrogrid.applications.parameter.protocol;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import org.astrogrid.community.common.exception.CommunityException;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
@@ -32,6 +35,11 @@ import junit.framework.Test;
  *
  */
 public class IvornProtocol implements Protocol , ComponentDescriptor{
+    /**
+     * Commons Logger for this class
+     */
+    private static final Log logger = LogFactory.getLog(IvornProtocol.class);
+
     /** Construct a new IvornProtocol
      * 
      */
@@ -76,15 +84,22 @@ public class IvornProtocol implements Protocol , ComponentDescriptor{
                     FileManagerNode n = client.node(ivorn);
                     return n.readContent();
                 } catch (Exception e) {
+                    logger.debug("Could not read ivorn" + ivorn,e);
                     throw new InaccessibleExternalValueException(ivorn.toString(),e);
                 } 
             }
 
             public OutputStream write() throws InaccessibleExternalValueException {
                 try {
-                    FileManagerNode n = client.node(ivorn);
+                    FileManagerNode n = null;
+                    if (client.exists(ivorn) != null) {
+                        n = client.node(ivorn);
+                    } else {
+                        n = client.createFile(ivorn);
+                    }
                 return n.writeContent();
                 } catch (Exception e) {
+                    logger.debug("Could not write ivorn " + ivorn,e);
                     throw new InaccessibleExternalValueException(ivorn.toString(),e);
                 }                
             }
@@ -113,6 +128,9 @@ public class IvornProtocol implements Protocol , ComponentDescriptor{
 
 /* 
 $Log: IvornProtocol.java,v $
+Revision 1.3  2005/03/31 08:34:17  nw
+fixed problem of writing to non-existent ivorns
+
 Revision 1.2  2005/03/13 07:13:39  clq2
 merging jes-nww-686 common-nww-686 workflow-nww-996 scripting-nww-995 cea-nww-994
 
