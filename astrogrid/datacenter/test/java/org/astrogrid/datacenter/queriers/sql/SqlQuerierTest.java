@@ -1,4 +1,4 @@
-/*$Id: SqlQuerierTest.java,v 1.11 2003/09/22 16:52:12 mch Exp $
+/*$Id: SqlQuerierTest.java,v 1.12 2003/09/25 01:19:33 nw Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.datacenter.queriers.sql;
 
 import java.io.InputStream;
+import java.sql.Connection;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -57,17 +58,21 @@ public class SqlQuerierTest extends TestCase {
      */
     protected void setUp() throws Exception {
         HsqlTestCase.initializeConfiguration();
-        querier = new SqlQuerier(null);
+        querier = new SqlQuerier();
         String script = HsqlTestCase.getResourceAsString("create-test-db.sql");
-        HsqlTestCase.runSQLScript(script,querier.jdbcConnection);
+        conn = new HsqlTestCase.HsqlDataSource().getConnection();
+        HsqlTestCase.runSQLScript(script,conn);
     }
 
     protected SqlQuerier querier;
-
+    protected Connection conn;
     /*
      * @see TestCase#tearDown()
      */
     protected void tearDown() throws Exception {
+        if (conn != null) {
+            conn.close();
+        }
        if (querier != null) {
            querier.close();
        }
@@ -120,6 +125,9 @@ public class SqlQuerierTest extends TestCase {
 
 /*
 $Log: SqlQuerierTest.java,v $
+Revision 1.12  2003/09/25 01:19:33  nw
+updated to fit with hsqldb test fixes
+
 Revision 1.11  2003/09/22 16:52:12  mch
 Fixes for changes to posts results to dummy myspace
 
