@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: autorun.sh,v 1.22 2004/09/20 16:41:52 clq2 Exp $ 
+# $Id: autorun.sh,v 1.23 2004/09/21 10:47:19 jdt Exp $ 
 # Script to run the integration tests/AGINAB
 OLDDIR=$PWD
 
@@ -56,12 +56,12 @@ echo "Deploying new apps..." >> $LOGFILE
 
 rm -rf /home/integration/working/*
 
-if maven $MY_OPTS deploy-all >> $LOGFILE 2>&1
+if maven $MY_OPTS deploy-all-except-portal >> $LOGFILE 2>&1
 then
    echo "*** SUCCESS ***" >> $LOGFILE
 else
    echo "*** FAILURE ***" >> $LOGFILE
-   cat $LOGFILE | mail -s "deploy-all Failure in integration tests" $ADMIN_EMAIL 
+   cat $LOGFILE | mail -s "deploy-all-except-portal Failure in integration tests" $ADMIN_EMAIL 
 fi
 
 #restart tomcat before the unit tests...
