@@ -1,0 +1,40 @@
+package id2cs16dnd776t5dnd77jow;
+
+/**
+@version 2.0
+@physicalPackage
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:java#Class#org.astrogrid.applications.common.ApplicationsConstants:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:design#Class#id1p0dng6xqo0dng6zfkh.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.applications.common.config:oiref> 
+*/
+class reference1 {
+}/**
+@__ref <oiref:design#Class#id4pvo9dnrcpt1tdnrjcad0.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.applications.common.io:oiref> 
+*/
+class reference29 {
+}}/**
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:java#Class#org.astrogrid.applications.common.ApplicationsConstants:oiref>=10,10,174,89,1:oigroup>
+<oigroup:<oiref:design#Class#id1p0dng6xqo0dng6zfkh.diagram:oiref>=175,130,83,102,1:oigroup> 
+*/
+class __positions {
+}

@@ -1,0 +1,48 @@
+package id3723ndneligaydneq3a0z;
+
+/**
+@version 2.0
+@physicalPackage
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id47v9hdneligaydneq3a2z.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.jes.delegate.jobScheduler:oiref> 
+*/
+class reference {
+}/**
+@__ref <oiref:design#Class#id1onhsdneligaydneq3a2i.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.jes.delegate.jobMonitor:oiref> 
+*/
+class reference67 {
+}/**
+@__ref <oiref:design#Class#id38wcfdneligaydneq3a1h.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.jes.delegate.jobController:oiref> 
+*/
+class reference70 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.jes.delegate.JesDelegateException:oiref><oihard>
+@__modelType reference 
+*/
+class reference101 {
+}}/**
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:java#Class#org.astrogrid.jes.delegate.JesDelegateException:oiref>=10,10,200,126,1:oigroup>
+<oigroup:<oiref:design#Class#id47v9hdneligaydneq3a2z.diagram:oiref>=10,170,200,210,1:oigroup>
+<oigroup:<oiref:design#Class#id38wcfdneligaydneq3a1h.diagram:oiref>=230,10,200,226,1:oigroup>
+<oigroup:<oiref:design#Class#id1onhsdneligaydneq3a2i.diagram:oiref>=10,430,200,210,1:oigroup> 
+*/
+class __positions {
+}

@@ -1,0 +1,58 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<workflow name = "TwoQueriesAndVOTableMerge">
+   <description>This is a job consisting of two queries run in parallel with a subsequent merge
+of their VOtables.
+   </description>
+   <!--
+      | User information now removed.
+      | This was here in iteration 3, but it looks 
+      | completely redundant whilst a workflow is being
+      | treated as a design document.
+    -->
+   <sequence>
+      <flow>
+         <step name="QueryOne" >
+            <resources>
+               <file name="VOTABLE"></file>
+            </resources>
+            <tool>
+               <query>      
+                  ...
+               </query>
+            </tool>
+         </step>
+         <step name="QueryTwo" >
+            <resources>
+               <file name="VOTABLE"></file>
+            </resources>
+            <tool>
+               <query>      
+                  ...
+               </query>
+            </tool>
+         </step>
+      </flow>
+      <step name="VOTableMerge" joinCondition="true" >
+         <resources>
+            <file name="VOTABLE"></file>
+            <file name="VOTABLE"></file>
+            <file name="VOTABLE_OUT"></file>
+            <command>
+               <param>something1</param>
+               <param>something2</param>
+               <param>something3</param>
+            </command>
+            <file name="CONTROL">
+               <contents>
+                  ...
+               </contents>
+            </file>
+         </resources>
+         <tool>
+            <merge>
+              ...
+            </merge>
+         </tool>
+      </step>
+   </sequence>
+</workflow>

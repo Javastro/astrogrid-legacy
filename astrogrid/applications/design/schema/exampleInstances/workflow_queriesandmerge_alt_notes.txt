@@ -1,0 +1,28 @@
+Want to introduce concept of variables - I have kept the name resources to make it easier to compare with jeff's example, but they are now very explicitly refernces to things that can 
+be in mySpace
+
+(local and global)
+
+want explicit input/output
+
+want to reference the standard schema on this
+
+possibly have a single document describe workflow and jobentry....
+
+
+put in explicit name of the tool
+
+made explicit what the input and output parameters are
+
+made references to the global and local references from whithin the parameter definitions....
+
+resources logically separate from the application parameters- Job Contoller performs the mapping between the two
+
+
+showed some use of namespaces, but without the proper declarations - 
+
+co = community
+pd = parameter definition
+
+note - myspace refs made up and not of the correct form.
+

@@ -12,6 +12,18 @@ class diagram {
 @__fqn <oiref:#Package#org.astrogrid.applications:oiref> 
 */
 class reference {
+}/**
+@__ref <oiref:design#Class#id1ms24dneligaydneq3a09.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.jes:oiref> 
+*/
+class reference72 {
+}/**
+@__ref <oiref:design#Class#id1sfskdneligaydneq39us.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.portal:oiref> 
+*/
+class reference75 {
 }}/**
 @__tags
 @shapeType ClassDiagram 
@@ -22,7 +34,9 @@ class __tags {
 */
 class __options {
 }/**
-@__positions 
+@__positions <oigroup:<oiref:design#Class#id1sfskdneligaydneq39us.diagram:oiref>=206,330,83,141,1:oigroup>
+<oigroup:<oiref:design#Class#id1ms24dneligaydneq3a09.diagram:oiref>=206,10,107,272,1:oigroup>
+<oigroup:<oiref:design#Class#id1xdjxdlid04undlid0thh.diagram:oiref>=10,10,176,663,1:oigroup> 
 */
 class __positions {
 }

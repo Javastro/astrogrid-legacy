@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationControllerTest.java,v 1.8 2003/12/10 00:18:48 pah Exp $
+ * $Id: CommandLineApplicationControllerTest.java,v 1.9 2003/12/11 13:23:02 pah Exp $
  * 
  * Created on 01-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -32,6 +32,7 @@ import junit.framework.TestCase;
  */
 public class CommandLineApplicationControllerTest extends BaseDBTestCase {
 
+   private static final String PARAMETERSPEC1 = "<tool><input><parameter name='P1'>1</parameter><parameter name='P1'>2</parameter><parameter name='P2'>p2</parameter><parameter name='P3'>p3</parameter><parameter name='P4'>p4</parameter></input><output><parameter name='P3'>3</parameter></output></tool>";
    private CommandLineApplicationController controller;
 
    private String jobstepid = null;
@@ -91,6 +92,8 @@ public class CommandLineApplicationControllerTest extends BaseDBTestCase {
 
    final public void testQueryApplicationExecutionStatus() {
       //TODO Implement queryApplicationExecutionStatus().
+      
+      // need to start a long running application and then perform this query - would be good to try firing multiple applications at once also...
    }
 
    final public void testReturnRegistryEntry() {
@@ -102,11 +105,12 @@ public class CommandLineApplicationControllerTest extends BaseDBTestCase {
    final public void testInitializeApplication() {
       
       parameters.setMethodName(TestAppConst.MAIN_INTERFACE);
-      parameters.setParameterSpec("<tool><input><parameter name='P1'>1</parameter><parameter name='P1'>2</parameter><parameter name='P2'>p2</parameter><parameter name='P3'>p3</parameter><parameter name='P4'>p4</parameter></input><output><parameter name='P3'>3</parameter></output></tool>");
+      parameters.setParameterSpec(PARAMETERSPEC1);
       executionId = controller.initializeApplication(applicationid, jobstepid, monitorURL, user, parameters);
       CmdLineApplication app = controller.getRunningApplication(executionId);
       assertNotNull("applicaton object not returned after initialization", app);
       Parameter[] params = app.getParameters();
+      assertNotNull("application did not return the parameters that were set",params);
       //print the paramter values out so that we can see what went in
       System.out.println("Parameter values");
       for (int i = 0; i < params.length; i++) {

@@ -1,0 +1,10 @@
+
+<application name="abc">
+<vr:Capability></vr:Capability>
+	<parameterDefinitions>
+		<input>
+			<parameterDef></parameterDef>
+		</input>
+		<output></output>
+	</parameterDefinitions>
+</application>

@@ -1,0 +1,53 @@
+package id38wcfdneligaydneq3a1h;
+
+/**
+@version 2.0
+@physicalPackage
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#idoozrdneligaydneq3a20.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.jes.delegate.jobController.impl:oiref> 
+*/
+class reference {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.jes.delegate.jobController.JobControllerServiceLocator:oiref><oihard>
+@__modelType reference 
+*/
+class reference110 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.jes.delegate.jobController.JobController:oiref><oihard>
+@__modelType reference 
+*/
+class reference111 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.jes.delegate.jobController.JobControllerService:oiref><oihard>
+@__modelType reference 
+*/
+class reference112 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.jes.delegate.jobController.JobControllerDelegate:oiref><oihard>
+@__modelType reference 
+*/
+class reference113 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.jes.delegate.jobController.JobControllerServiceSoapBindingStub:oiref><oihard>
+@__modelType reference 
+*/
+class reference114 {
+}}/**
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions 
+*/
+class __positions {
+}

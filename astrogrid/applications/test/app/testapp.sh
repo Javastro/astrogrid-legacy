@@ -1,5 +1,5 @@
-#!/bin/bash
-# $Id: testapp.sh,v 1.4 2003/12/08 17:06:35 pah Exp $
+#!/bin/sh
+# $Id: testapp.sh,v 1.5 2003/12/11 13:23:02 pah Exp $
 #Paul Harrison
 #This is a small command line test application - it attempts to parse the major types of command line arguments
 
@@ -33,6 +33,9 @@ do
          P4=`expr match "$1" 'P[0-9]+*="*\([^"]*\)"*'`
          shift
         ;;
+         *)
+        echo "unrecognised parameter " $1
+       shift
     esac 
 done
 

@@ -1,0 +1,95 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+
+<!-- I think that there can be a single file that is the description of the job, both at design time and run time. The job scheduler can do on-the-fly resolution of some of the symbolic names
+I think that the second file that Jeff described is just an ephemeral state and would not exist as a whole- some of the things specified in that file such as jobstep ids, the acutual services used 
+need to be persistantly stored by the job
+ -->
+<workflow name = "TwoQueriesAndVOTableMerge">
+
+   <description>This is a job consisting of two queries run in parallel with a subsequent merge
+of their VOtables.
+   </description>
+   <!--
+         | put the user informtation back in, as it does belong to the description of the job, as it defines the credentials for the job as well as the effecitive root of mySpace.
+         -->
+   <co:community>
+      <co:token>1234</co:token>
+      <co:credentials>
+         <co:account>jl99@star.le.ac.uk</co:account>
+         <co:group>xray@star.le.ac.uk</co:group>
+      </co:credentials>
+   </co:community>
+ 	 
+  <sequence>
+      <flow>
+         <step name="QueryOne" >
+	 <!-- the resources section can be thought of as a variables declaration - it defines how the step interacts with myspace -->
+            <resources>
+                 <file name="VOTABLE"></file> <!-- this is a dynamic or local resource reference - it will be created in a  myspace container that is particular to the job and jobstep -->
+	       	 <file name="q1" msref="myspace://query1"/> <!-- this is a global resource reference that refers to a pre-existing resource in MySpace that is not particular to this job step -->
+           </resources>
+	    <!-- the tool name will be the VO resource ID for the tool - when the job controller 
+	       specifies execution of this jobstep it will query for the location of suitable 
+	         services matching this type -->
+            <tool name="conesearch2Mass">
+	    <!-- note that the parameters are grouped into input and output -->
+	      <input>
+                 <!-- the parameter name is a reference to an instance, where the parameter is defined in detail in the application's parameter definition file 
+		 - we still need to define a schema for this
+		 the parameter is a resource reference to the resource called q1 that should have an exising adql query in it.
+		 -->	      
+	         <parameter name="query" type="adql" rref="q1" />
+  	      </input>
+	       <output>
+	       <parameter name="result" rref="VOTABLE" />
+	       </output>
+            </tool>
+         </step>
+         <step name="QueryTwo" >
+            <resources>
+               <file name="VOTABLE"></file> <!-- need to decide if it is permissible to have the same name for a resource-->
+             </resources>
+            <tool name="anotherconesearch">
+	      <input>
+	         <!-- This time the parameter value is explicity given in line and makes no resource reference -->
+ 	         <parameter name="query" type="adql">
+                  <adql>      
+                  ...
+                  </adql>
+		  </parameter>
+	      </input>
+	       <output>
+	       <parameter name="result" rref="VOTABLE" />
+	       </output>
+            </tool>
+         </step>
+      </flow>
+      <step name="VOTableMerge" joinCondition="true" >
+         <resources>
+            <file name="vt1" rref="QueryOne/VOTABLE" /> <!-- the reference syntax should be formalized, but the intention is to refer to the resource VOTABLE in jobstep QueryOne -->
+            <file name="vt2" rref="QueryTwo/VOTABLE" />
+	    <file name="vt3" msref="myspace://12234" /><!-- a reference to an existing VOTable -->
+            <file name="VOTABLE_OUT" /> <!-- this is obviously the final result of this job - perhaps it should go in a special place - up to the job scheduler? -->
+            <file name="CONTROL"> <!-- perhaps a confg file -->
+               <contents>
+                  ...
+               </contents>
+            </file>
+         </resources>
+         <tool name="VOTableMergeTool">
+	   <input>
+	     <parameter name="in" >
+	        <votablearg rref="vt1" />
+	        <votablearg rref="vt2" />
+	        <votablearg rref="vt3" />
+	     </parameter>
+	     <parameter name="config" rref="CONTROL" />
+	    </input>
+	   <output>
+	        <parameter name="out" rref="VOTABLE_OUT" />
+	   </output>
+         </tool>
+      </step>
+   </sequence>
+</workflow>
+

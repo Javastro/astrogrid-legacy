@@ -1,0 +1,42 @@
+package id4kpcudneligaydneq3a53;
+
+/**
+@version 2.0
+@physicalPackage
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:java#Class#org.astrogrid.jes.jobmonitor.JobMonitorException:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.jes.jobmonitor.JobMinotaurServlet:oiref><oihard>
+@__modelType reference 
+*/
+class reference82 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.jes.jobmonitor.JobMonitor:oiref><oihard>
+@__modelType reference 
+*/
+class reference83 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.jes.jobmonitor.MonitorRequestDD:oiref><oihard>
+@__modelType reference 
+*/
+class reference84 {
+}}/**
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions 
+*/
+class __positions {
+}

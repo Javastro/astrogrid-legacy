@@ -1,0 +1,97 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<job name = "TwoQueriesAndVOTableMerge">
+   <description>This is a job consisting of two queries run in parallel with a subsequent merge
+of their VOtables.
+   </description>
+   <!--
+      | Community snippet is critical.
+      | It should be used universally to carry user identification.
+      | This is a change from earlier iterations, where we each
+      | invented our own way of passing this information.
+      | Refactoring required in numbers of components!!
+      | Perhaps community snippet should carry community id
+      | separately.
+      | Arguably, we should also all be using namespaces in 
+      | Astrogrid? Community snippet has already caused a name clash.
+    -->
+   <community>
+      <token>1234</token>
+      <credentials>
+         <account>jl99@star.le.ac.uk</account>
+         <group>xray@star.le.ac.uk</group>
+      </credentials>
+   </community>
+   <!--
+      | The following is a distinct change from iteration 3
+      | where JES knew nothing about sequences or flows, but
+      | only job steps. It managed sequencing and parallelism by
+      | use of step numbers and sequence numbers. This aspect
+      | was a pretty creaky short-term measure, and will probably
+      | not be robust enough if/when other facilities are added 
+      | (e.g. conditional execution).
+    -->
+   <sequence>
+      <flow>
+         <step name="QueryOne" >
+            <resources>
+               <!-- 
+                 | Name here is a well-known constant that we
+                 | use to knit steps together. 
+                 | Url here is a symbolic location, which will in
+                 | principal change per invocation.
+                 | Community stuff is above, from which info' can 
+                 | be lifted to provide the specifics of location
+                 | within MySpace. At the cost of some redundancy,
+                 | this url could instead be made to read
+                 | url="myspace://jl99@star.le.ac.uk/votable/12234"
+                 | There will be one important element missing at 
+                 | submission time when invoking JES - the job URN 
+                 | which is the globally unique job identifier and
+                 | can only allocated by JES.
+               -->
+               <file name="VOTABLE"
+                     url="myspace://12234">
+               </file>
+            </resources>
+            <tool location="http://umlxx.astrogrid.org">
+               <query>      
+                  ...
+               </query>
+            </tool>
+         </step>
+         <step name="QueryTwo" >
+            <resources>
+               <file name="VOTABLE"
+                     url="myspace://12235">
+               </file>
+            </resources>
+            <tool location="http://umlyy.astrogrid.org">
+               <query>      
+                  ...
+               </query>
+            </tool>
+         </step>
+      </flow>
+      <step name="VOTableMerge" joinCondition="true" >
+         <resources>
+            <file name="VOTABLE_IN"
+                  url="myspace://12234">
+            </file>
+            <file name="VOTABLE_IN"
+                  url="myspace://12235">
+            </file>
+            <file name="VOTABLE_OUT"
+                  url="myspace://12236">
+            </file>
+         </resources>
+         <!--
+            | Where will location come from?
+          -->
+         <tool location="http://umlzz.astrogrid.org/axis/services/etc">
+            <merge>
+              ...
+            </merge>
+         </tool>
+      </step>
+   </sequence>
+</job>

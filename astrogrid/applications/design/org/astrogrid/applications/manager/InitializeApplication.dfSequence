@@ -1,0 +1,132 @@
+package idacadnrcpt1tdnrk0frm;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:java#Class#org.astrogrid.applications.commandline.ApplicationEnvironment:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.commandline.CmdLineApplication:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference41 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.manager.CommandLineApplicationController:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference42 {
+}/**
+@__ref <oiref:design#Class#idacadnrcpt1tdnrk0frm.node:oiref><oihard>
+@__modelType reference 
+*/
+class reference43 {
+}/**
+@__ref <oiref:design#Class#idacadnrcpt1tdnrk0frm.node44:oiref><oihard>
+@__modelType reference 
+*/
+class reference45 {
+}/**
+@__ref <oiref:design#Class#idacadnrcpt1tdnrk0frm.node46:oiref><oihard>
+@__modelType reference 
+*/
+class reference47 {
+}}/**
+
+@__tags
+@shapeType SequenceDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:design#Class#idacadnrcpt1tdnrk0frm.node.link:oiref>=672,130,360,130:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.commandline.ApplicationEnvironment:oiref>=270,450,200,312,1:oigroup>
+<oigroup:<oiref:design#Class#idacadnrcpt1tdnrk0frm.node.link52:oiref>=:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#idacadnrcpt1tdnrk0frm.node.link51:oiref>=689,149,233,23,0,0.0,1.0:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.commandline.CmdLineApplication:oiref>=20,350,200,480,1:oigroup>
+<oigroup:<oiref:design#Class#idacadnrcpt1tdnrk0frm.node44.node:oiref>=894,172,14,20,1:oigroup>
+<oigroup:<oiref:design#Class#idacadnrcpt1tdnrk0frm.node.link51:oiref>=679,172,894,172:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.commandline.CmdLineApplication#applicationEnvironment:oiref>=220,606,270,606:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.manager.CommandLineApplicationController:oiref>=160,20,200,211,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.commandline.ApplicationEnvironment#cmdLineApplication:oiref>=270,474,220,474:oigroup>
+<oigroup:<oiref:design#Class#idacadnrcpt1tdnrk0frm.node46.link:oiref>=1109,300,120,350:oigroup>
+<oigroup:<oiref:design#Class#idacadnrcpt1tdnrk0frm.node44.link:oiref>=901,300,370,450:oigroup>
+<oigroup:<oiref:design#Class#idacadnrcpt1tdnrk0frm.node46:oiref>=1040,30,138,270,1:oigroup>
+<oigroup:<oiref:design#Class#idacadnrcpt1tdnrk0frm.node:oiref>=554,30,236,270,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.manager.CommandLineApplicationController#runningApplications:oiref>=315,231,315,450:oigroup>
+<oigroup:<oiref:design#Class#idacadnrcpt1tdnrk0frm.node44:oiref>=820,30,162,270,1:oigroup>
+*/
+class __positions {
+}/**
+@shapeType Object
+@__modelType node
+@name Object1 
+*/
+class node {
+/**
+@shapeType DependencyLink
+@__modelType link
+@__ref <oiref:java#Class#org.astrogrid.applications.manager.CommandLineApplicationController:oiref><oihard> 
+*/
+class link {
+}/**
+@shapeType MessageLink
+@__modelType link
+@__ref <oiref:design#Class#idacadnrcpt1tdnrk0frm.node44:oiref><oihard>
+@sendingInstant 172
+@processingDuration 20
+@sequenceNumber 1
+@diagram_uniqe_name <oiref:design#Class#idacadnrcpt1tdnrk0frm.diagram:oiref>
+@transmissionDuration 0
+@label CreateNewApplicationEnvironment
+@minProcessingDuration 20 
+*/
+class link51 {
+}/**
+@shapeType CollaborationLink
+@__modelType link
+@__ref <oiref:design#Class#idacadnrcpt1tdnrk0frm.node44:oiref><oihard> 
+*/
+class link52 {
+}}/**
+@shapeType Object
+@__modelType node
+@name Object2 
+*/
+class node44 {
+/**
+@shapeType DependencyLink
+@__modelType link
+@__ref <oiref:java#Class#org.astrogrid.applications.commandline.ApplicationEnvironment:oiref><oihard> 
+*/
+class link {
+}/**
+@shapeType Activation
+@__modelType node
+@name Activation1
+@activationMessage <oiref:design#Class#idacadnrcpt1tdnrk0frm.node.link51:oiref> 
+*/
+class node {
+}}/**
+@shapeType Object
+@__modelType node
+@name Object3 
+*/
+class node46 {
+/**
+@shapeType DependencyLink
+@__modelType link
+@__ref <oiref:java#Class#org.astrogrid.applications.commandline.CmdLineApplication:oiref><oihard> 
+*/
+class link {
+}}

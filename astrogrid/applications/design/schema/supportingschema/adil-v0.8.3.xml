@@ -1,0 +1,540 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VODescription
+  xmlns="http://www.ivoa.net/xml/prop/VOResource/v0.8.3"
+  xmlns:vr="http://www.ivoa.net/xml/prop/VOResource/v0.8.3"
+  xmlns:vc="http://www.ivoa.net/xml/prop/VOCommunity/v0.2"
+  xmlns:vg="http://www.ivoa.net/xml/prop/VORegistry/v0.2"
+  xmlns:vs="http://www.ivoa.net/xml/prop/VODataService/v0.3"
+  xmlns:vt="http://www.ivoa.net/xml/VOTable"
+  xmlns:cs="http://www.ivoa.net/xml/prop/ConeSearch/v0.1"
+  xmlns:sia="http://www.ivoa.net/xml/prop/SIA/v0.5"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.ivoa.net/xml/prop/VOResource/v0.8.3
+                      VOResource-v0.8.3.xsd
+                      http://www.ivoa.net/xml/prop/VOCommunity/v0.2
+                      VOCommunity-v0.2.xsd
+                      http://www.ivoa.net/xml/prop/VORegistry/v0.2
+                      VORegistry-v0.2.xsd
+                      http://www.ivoa.net/xml/prop/ConeSearch/v0.1
+                      ConeSearch-v0.1.xsd
+                      http://www.ivoa.net/xml/prop/SIA/v0.5
+                      SIA-v0.5.xsd">
+
+  <!-- First, an organization resource for RAI, representing the top of the 
+       management hierarchy for the ADIL -->
+  <vc:Organisation>
+    <Identifier>
+      <AuthorityID>rai.ncsa.uiuc.edu</AuthorityID>
+      <ResourceKey>RAI</ResourceKey>
+    </Identifier>
+    <Title>NCSA Radio Astronomy Imaging</Title>
+    <ShortName>NCSA-RAI</ShortName>
+    <Summary>
+      <Description>
+        The Radio Astronomy Imaging Group is focused on applying
+        high-performance computing to astronomical research.  Our
+        projects include the NCSA Astronomy Digital Image Library, 
+        the BIMA Data Archive, the BIMA Image Pipeline, and AIPS++.  
+      </Description>
+      <ReferenceURL>http://rai.ncsa.uiuc.edu/</ReferenceURL>
+    </Summary>
+    <Type>Organisation</Type>
+    <Curation>
+      <Publisher>
+         <Title>NCSA Radio Astronomy Imaging</Title>
+      </Publisher>
+      <Contact>
+        <Name>Dr. Raymond Plante</Name>
+	<Email>rplante@ncsa.uiuc.edu</Email>
+      </Contact>
+      <Date>1993-01-01</Date>
+      <Creator>
+        <Name>Dr. Raymond Plante</Name>
+        <Logo>http://rai.ncsa.uiuc.edu/rai.jpg</Logo>
+      </Creator>
+    </Curation>
+    <Subject>radio astronomy</Subject>
+    <Subject>data repositories</Subject>
+    <Subject>digital libraries</Subject>
+    <Subject>grid-based processing</Subject>
+    <ContentLevel>Research</ContentLevel>
+  </vc:Organisation>
+
+  <!-- Now, define some authority IDs we will use -->
+  <vg:Authority>
+    <Identifier>
+      <AuthorityID>rai.ncsa.uiuc.edu</AuthorityID>
+      <ResourceKey xsi:nil="true"/>
+    </Identifier>
+    <Title>NCSA Radio Astronomy Imaging Naming Authority</Title>
+    <ShortName>NCSA-RAI</ShortName>
+    <Summary>
+      <Description>
+        This authority ID will be used to identify generic resources 
+	related to the NCSA Radio Astronomy Imaging Group at the 
+	National Center for Supercomputing Applications (NCSA)
+      </Description>
+      <ReferenceURL>http://rai.ncsa.uiuc.edu/</ReferenceURL>
+    </Summary>
+    <Curation>
+      <Publisher>
+         <Title>NCSA Radio Astronomy Imaging</Title>
+      </Publisher>
+      <Contact>
+        <Name>Dr. Raymond Plante</Name>
+	<Email>rplante@ncsa.uiuc.edu</Email>
+      </Contact>
+      <Date>2003-08-30</Date>
+    </Curation>
+  </vg:Authority>
+  <vg:Authority>
+    <Identifier>
+      <AuthorityID>adil.ncsa.uiuc.edu</AuthorityID>
+      <ResourceKey xsi:nil="true"/>
+    </Identifier>
+    <Title>NCSA Astronomy Digital Image Library Naming Authority</Title>
+    <ShortName>ADIL</ShortName>
+    <Summary>
+      <Description>
+        This authority ID will be used to identify resources 
+	associated with the NCSA Astronomy Digital Image Library.
+      </Description>
+      <ReferenceURL>http://adil.ncsa.uiuc.edu/</ReferenceURL>
+    </Summary>
+    <Curation>
+      <Publisher>
+         <Title>NCSA Radio Astronomy Imaging</Title>
+      </Publisher>
+      <Contact>
+        <Name>Dr. Raymond Plante</Name>
+	<Email>rplante@ncsa.uiuc.edu</Email>
+      </Contact>
+      <Date>2003-08-30</Date>
+    </Curation>
+  </vg:Authority>
+
+  <!-- Describe the ADIL as a data collection; note that the Access
+       element references services that can be used to access the 
+       collection -->
+  <vs:DataCollection>
+    <Identifier>
+      <AuthorityID>adil.ncsa.uiuc.edu</AuthorityID>
+      <ResourceKey>ADIL</ResourceKey>
+    </Identifier>
+    <Title>NCSA Astronomy Digital Image Library</Title>
+    <ShortName>ADIL</ShortName>
+    <Summary>
+      <Description>
+        The ADIL is a public repository for fully processed astronomical 
+        images in FITS format that have been documented in the
+        professional literature.  The Library contains images from
+        research observatories from all over the world and taken at
+        all wavebands.
+      </Description>
+      <ReferenceURL>http://adil.ncsa.uiuc.edu/</ReferenceURL>
+    </Summary>
+    <Type>Archive</Type>
+    <Curation>
+      <Publisher>
+    	 <Identifier>
+    	   <AuthorityID>rai.ncsa.uiuc.edu</AuthorityID>
+	   <ResourceKey>RAI</ResourceKey>
+    	 </Identifier>
+         <Title>NCSA Radio Astronomy Imaging</Title>
+      </Publisher>
+      <Contact>
+        <Name>Dr. Raymond Plante</Name>
+	<Email>rplante@ncsa.uiuc.edu</Email>
+      </Contact>
+      <Date>1994-09-01</Date>
+      <Creator>
+        <Name>Dr. Raymond Plante</Name>
+        <Logo>http://adil.ncsa.uiuc.edu/gifs/adilfooter.gif</Logo>
+      </Creator>
+    </Curation>
+    <Subject>radio astronomy</Subject>
+    <Subject>data repositories</Subject>
+    <Subject>digital libraries</Subject>
+    <Subject>grid-based processing</Subject>
+    <ContentLevel>Research</ContentLevel>
+    <ContentLevel>University</ContentLevel>
+    <ContentLevel>Community College</ContentLevel>
+    <vs:Access>
+      <vs:Format>image/fits</vs:Format>
+      <vs:Format>image/gif</vs:Format>
+      <vs:Format>text/html</vs:Format>
+      <vs:Rights>public</vs:Rights>
+    </vs:Access>
+  </vs:DataCollection>
+
+  <!-- Describe the ADIL Search Page as a service -->
+  <vs:SkyService>
+    <Identifier>
+      <AuthorityID>adil.ncsa.uiuc.edu</AuthorityID>
+      <ResourceKey>QueryPage.html</ResourceKey>
+    </Identifier>
+    <Title>NCSA Astronomy Digital Image Library Query Form</Title>
+    <ShortName>ADIL</ShortName>
+    <Summary>
+      <Description>
+        This Web page allows users to interactively search the contents
+        of the ADIL.
+      </Description>
+      <ReferenceURL>http://adil.ncsa.uiuc.edu/</ReferenceURL>
+    </Summary>
+    <Type>Archive</Type>
+    <RelatedResource>
+       <Relationship>service-for</Relationship>
+       <RelatedTo>
+          <Identifier>
+            <AuthorityID>adil.ncsa.uiuc.edu</AuthorityID>
+            <ResourceKey>ADIL</ResourceKey>
+          </Identifier>
+	  <Title>NCSA Astronomy Digital Image Library</Title>
+       </RelatedTo>
+    </RelatedResource>
+    <Curation>
+      <Publisher>
+    	 <Identifier>
+    	   <AuthorityID>adil.ncsa.uiuc.edu</AuthorityID>
+	   <ResourceKey>ADIL</ResourceKey>
+    	 </Identifier>
+         <Title>NCSA Astronomy Digital Image Library</Title>
+      </Publisher>
+      <Contact>
+        <Name>Dr. Raymond Plante</Name>
+	<Email>rplante@ncsa.uiuc.edu</Email>
+      </Contact>
+      <Date>1994-09-01</Date>
+      <Creator>
+        <Name>Dr. Raymond Plante</Name>
+        <Logo>http://adil.ncsa.uiuc.edu/gifs/adilfooter.gif</Logo>
+      </Creator>
+      <Contributor>
+        <Name>Damien Guillaume</Name>
+      </Contributor>
+    </Curation>
+    <Subject>radio astronomy</Subject>
+    <Subject>data repositories</Subject>
+    <Subject>digital libraries</Subject>
+    <Subject>grid-based processing</Subject>
+    <ContentLevel>Research</ContentLevel>
+    <ContentLevel>University</ContentLevel>
+    <ContentLevel>Community College</ContentLevel>
+    <Interface>
+      <Invocation>WebBrowser</Invocation>
+      <AccessURL use="dir">http://adil.ncsa.uiuc.edu/QueryPage.html</AccessURL>
+    </Interface>
+    <vs:Coverage>
+      <!--  These tags have not be fully defined in current schema -->
+      <vs:Spatial/>
+      <vs:Spectral/>
+      <vs:Temporal/>
+    </vs:Coverage>
+  </vs:SkyService>
+
+  <!-- Describe the ADIL Cone Search service -->
+  <vs:SkyService>
+    <Identifier>
+      <AuthorityID>adil.ncsa.uiuc.edu</AuthorityID>
+      <ResourceKey>vocone</ResourceKey>
+    </Identifier>
+    <Title>NCSA Astronomy Digital Image Library Cone Search</Title>
+    <ShortName>ADIL</ShortName>
+    <Summary>
+      <Description>
+        This Web page allows users to interactively search the contents
+        of the ADIL.
+      </Description>
+      <ReferenceURL>http://adil.ncsa.uiuc.edu/</ReferenceURL>
+    </Summary>
+    <Type>Archive</Type>
+    <RelatedResource>
+       <Relationship>service-for</Relationship>
+       <RelatedTo>
+          <Identifier>
+            <AuthorityID>adil.ncsa.uiuc.edu</AuthorityID>
+            <ResourceKey>ADIL</ResourceKey>
+          </Identifier>
+	  <Title>NCSA Astronomy Digital Image Library</Title>
+       </RelatedTo>
+    </RelatedResource>
+    <Curation>
+      <Publisher>
+    	 <Identifier>
+    	   <AuthorityID>adil.ncsa.uiuc.edu</AuthorityID>
+	   <ResourceKey>ADIL</ResourceKey>
+    	 </Identifier>
+         <Title>NCSA Astronomy Digital Image Library</Title>
+      </Publisher>
+      <Contact>
+        <Name>Dr. Raymond Plante</Name>
+	<Email>rplante@ncsa.uiuc.edu</Email>
+      </Contact>
+      <Date>2002-04-01</Date>
+      <Creator>
+        <Name>Dr. Raymond Plante</Name>
+        <Logo>http://adil.ncsa.uiuc.edu/gifs/adilfooter.gif</Logo>
+      </Creator>
+      <Contributor>
+        <Name>Damien Guillaume</Name>
+      </Contributor>
+    </Curation>
+    <Subject>radio astronomy</Subject>
+    <Subject>data repositories</Subject>
+    <Subject>digital libraries</Subject>
+    <Subject>grid-based processing</Subject>
+    <ContentLevel>Research</ContentLevel>
+    <ContentLevel>University</ContentLevel>
+    <ContentLevel>Community College</ContentLevel>
+    <cs:ConeSearch>
+       <vr:StandardURL>http://www.us-vo.org/metadata/conesearch/</vr:StandardURL>
+       <vs:VOTableColumns xmlns="http://www.ivoa.net/xml/VOTable">
+         <!-- 
+              This is taken from the header of a Table returned by the ADIL
+              Cone Search service.  Note how the default namespace above was 
+              changed so that the elements below do not need a namespace 
+              prefix.
+           -->
+         <FIELD ucd="ID_MAIN" datatype="char" name="Codename">
+            <DESCRIPTION>ADIL Image Identifier</DESCRIPTION>
+         </FIELD>
+         <FIELD datatype="char" name="Image Name" arraysize="*">
+            <DESCRIPTION>Image Filename, as provide by author</DESCRIPTION>
+         </FIELD>
+         <FIELD datatype="char" name="Source Name" arraysize="*">
+            <DESCRIPTION>Target Source of Image</DESCRIPTION>
+         </FIELD>
+         <FIELD ucd="POS_EQ_RA_MAIN" datatype="float" name="RA (Center)" 
+                unit="degrees">
+            <DESCRIPTION>RA of Image Center (J2000)</DESCRIPTION>
+         </FIELD>
+         <FIELD ucd="POS_EQ_DEC_MAIN" datatype="float" name="Dec (Center)" 
+                unit="degrees">
+            <DESCRIPTION>Dec of Image Center (J2000)</DESCRIPTION>
+         </FIELD>
+         <FIELD datatype="float" name="Central Frequency" unit="Hz">
+            <DESCRIPTION>Frequency at center of the image wavehand</DESCRIPTION>
+         </FIELD>
+         <FIELD datatype="char" arraysize="*" name="Source Types">
+            <DESCRIPTION>a list of Source Types associated with this image</DESCRIPTION>
+         </FIELD>
+         <FIELD datatype="char" arraysize="*" name="URL">
+            <DESCRIPTION>The URL for downloading image</DESCRIPTION>
+         </FIELD>
+       </vs:VOTableColumns>
+       <cs:MaxSR>10</cs:MaxSR>
+       <cs:MaxRecords>5000</cs:MaxRecords>
+       <cs:Verbosity>false</cs:Verbosity>
+    </cs:ConeSearch>
+    <vs:ParamHTTP qtype="GET">
+      <Invocation>Extended</Invocation>
+      <AccessURL use="base">http://adil.ncsa.uiuc.edu/vocone?survey=f&amp;</AccessURL>
+      <vs:HTTPResults>text/xml</vs:HTTPResults>
+      <!-- These are the supported input parameters -->
+      <vt:PARAM name="RA" ucd="POS_EQ_RA_MAIN" datatype="float" unit="degrees">
+        <vt:DESCRIPTION>The right ascension of the search cone center</vt:DESCRIPTION>
+      </vt:PARAM>
+      <vt:PARAM name="DEC" ucd="POS_EQ_DEC_MAIN" datatype="float" 
+                unit="degrees">
+        <vt:DESCRIPTION>The declination of the search cone center</vt:DESCRIPTION>
+      </vt:PARAM>
+      <vt:PARAM name="SR" ucd="POS_ANG_DIST_REL" datatype="float" 
+                unit="degrees">
+        <vt:DESCRIPTION>The search cone radius</vt:DESCRIPTION>
+      </vt:PARAM>
+    </vs:ParamHTTP>
+    <vs:Coverage>
+      <!--  These tags have not be fully defined in current schema -->
+      <vs:Spatial/>
+      <vs:Spectral/>
+      <vs:Temporal/>
+    </vs:Coverage>
+  </vs:SkyService>
+
+  <!-- Describe the ADIL SIA service -->
+  <vs:SkyService>
+    <Identifier>
+      <AuthorityID>adil.ncsa.uiuc.edu</AuthorityID>
+      <ResourceKey>sia</ResourceKey>
+    </Identifier>
+    <Title>NCSA Astronomy Digital Image Library Simple Image Access</Title>
+    <ShortName>ADIL</ShortName>
+    <Summary>
+      <Description>
+        This Web page allows users to interactively search the contents
+        of the ADIL.
+      </Description>
+      <ReferenceURL>http://adil.ncsa.uiuc.edu/</ReferenceURL>
+    </Summary>
+    <Type>Archive</Type>
+    <RelatedResource>
+       <Relationship>service-for</Relationship>
+       <RelatedTo>
+          <Identifier>
+            <AuthorityID>adil.ncsa.uiuc.edu</AuthorityID>
+            <ResourceKey>ADIL</ResourceKey>
+          </Identifier>
+	  <Title>NCSA Astronomy Digital Image Library</Title>
+       </RelatedTo>
+    </RelatedResource>
+    <Curation>
+      <Publisher>
+    	 <Identifier>
+    	   <AuthorityID>adil.ncsa.uiuc.edu</AuthorityID>
+	   <ResourceKey>ADIL</ResourceKey>
+    	 </Identifier>
+         <Title>NCSA Astronomy Digital Image Library</Title>
+      </Publisher>
+      <Contact>
+        <Name>Dr. Raymond Plante</Name>
+	<Email>rplante@ncsa.uiuc.edu</Email>
+      </Contact>
+      <Date>2002-04-01</Date>
+      <Creator>
+        <Name>Dr. Raymond Plante</Name>
+        <Logo>http://adil.ncsa.uiuc.edu/gifs/adilfooter.gif</Logo>
+      </Creator>
+      <Contributor>
+        <Name>Damien Guillaume</Name>
+      </Contributor>
+    </Curation>
+    <Subject>radio astronomy</Subject>
+    <Subject>data repositories</Subject>
+    <Subject>digital libraries</Subject>
+    <Subject>grid-based processing</Subject>
+    <ContentLevel>Research</ContentLevel>
+    <ContentLevel>University</ContentLevel>
+    <ContentLevel>Community College</ContentLevel>
+
+    <!-- 
+         This describes the SIA capabilities: SimpleImageAccess is used instead
+         of the generic Capability.  Note how the default namespace is changed
+	 so that the special SIA metadata does not need namespace prefix
+      -->
+    <sia:SimpleImageAccess xmlns="http://www.ivoa.net/xml/prop/SIA/v0.5">
+       <vr:StandardURL>http://www.us-vo.org/news/simspec.html</vr:StandardURL>
+       <vs:VOTableColumns xmlns="http://www.ivoa.net/xml/VOTable">
+         <!-- 
+              This is taken from the header of a Table returned by the ADIL
+              SIA service's "Metadata" operation.  Note how the default 
+	      namespace above was changed so that the elements below do not 
+              need a namespace prefix.
+           -->
+         <FIELD datatype="char" name="Codename" arraysize="*">
+           <DESCRIPTION>ADIL Image Identifier - Unique identifier for image, as assigned by the ADIL</DESCRIPTION>
+         </FIELD>
+         <FIELD datatype="char" name="Image Name" arraysize="*">
+           <DESCRIPTION>Image Filename, as provide by author</DESCRIPTION>
+         </FIELD>
+         <FIELD ucd="ID_MAIN" datatype="char" name="Source Name" arraysize="*">
+             <DESCRIPTION>Target Source of Image</DESCRIPTION>
+         </FIELD>
+         <FIELD ucd="POS_EQ_RA_MAIN" datatype="float" name="RA (Center)" 
+	        unit="degrees">
+           <DESCRIPTION>RA of Image Center (J2000)</DESCRIPTION>
+         </FIELD>
+         <FIELD ucd="POS_EQ_DEC_MAIN" datatype="float" name="Dec (Center)" 
+	        unit="degrees">
+           <DESCRIPTION>Dec of Image Center (J2000)</DESCRIPTION>
+         </FIELD>
+         <FIELD ucd="VOX:Image_Naxes" datatype="int" name="Number of Axes">
+           <DESCRIPTION>Number of axes in the image</DESCRIPTION>
+         </FIELD>
+         <FIELD ucd="VOX:Image_Naxis" datatype="int" name="Naxis">
+           <DESCRIPTION>Size of Image for each dimension</DESCRIPTION>
+         </FIELD>
+         <FIELD ucd="VOX:Image_Scale" datatype="double" name="Scale" 
+	        unit="degrees/pixel">
+           <DESCRIPTION>Scale of Image</DESCRIPTION>
+         </FIELD>
+         <FIELD ucd="VOX:Image_Format" datatype="char" name="Image Format" 
+	        arraysize="*">
+           <DESCRIPTION>Format of Image</DESCRIPTION>
+         </FIELD>
+         <FIELD ucd="VOX:BandPass_RefValue" datatype="double" 
+                name="Central Frequency" unit="Hz">
+           <DESCRIPTION>Frequency at center of the image wavehand</DESCRIPTION>
+         </FIELD>
+         <FIELD ucd="VOX:Image_Title" datatype="char" name="Description">
+           <DESCRIPTION>Image Description</DESCRIPTION>
+         </FIELD>
+         <FIELD datatype="char" arraysize="*" name="Source Types">
+             <DESCRIPTION>a list of Source Types associated with this image</DESCRIPTION>
+         </FIELD>
+         <FIELD ucd="TEL_ID" datatype="char" arraysize="*" name="Telescopes">
+             <DESCRIPTION>a list of Telescopes used to create this image</DESCRIPTION>
+         </FIELD>
+         <FIELD ucd="NVOX:Image_Epoch" datatype="double" 
+	        name="Observation Epoch" unit="years">
+           <DESCRIPTION>Upper bound on the epoch of the observations</DESCRIPTION>
+         </FIELD>
+         <FIELD ucd="VOX:Image_AccessReference" datatype="char" arraysize="*" 
+	        name="URL">
+           <DESCRIPTION>The URL for downloading image</DESCRIPTION>
+         </FIELD>
+       </vs:VOTableColumns>
+       <ImageServiceType>Pointed</ImageServiceType>
+       <MaxQueryRegionSize>
+          <long>360.0</long>
+          <lat>180.0</lat>
+       </MaxQueryRegionSize>
+       <MaxImageExtent>
+          <long>360.0</long>
+          <lat>180.0</lat>
+       </MaxImageExtent>
+       <MaxImageSize>
+          <long>5000</long>
+          <lat>5000</lat>
+       </MaxImageSize>
+       <MaxFileSize>100000000</MaxFileSize>
+       <MaxRecords>5000</MaxRecords>
+    </sia:SimpleImageAccess>
+    <vs:ParamHTTP qtype="GET">
+      <Invocation>Extended</Invocation>
+      <AccessURL use="base">http://adil.ncsa.uiuc.edu/vocone?</AccessURL>
+      <vs:HTTPResults>text/xml</vs:HTTPResults>
+      <!-- 
+           These are the supported input parameters taken from the ADIL
+           SIA service's "Metadata" operation.  
+         -->
+      <vt:PARAM name="INPUT:POS" value="0,0">
+          <vt:DESCRIPTION>Search Position in the form "ra,dec" where ra and dec are given in decimal degrees in the ICRS coordinate system.</vt:DESCRIPTION>
+      </vt:PARAM>
+      <vt:PARAM name="INPUT:SIZE" value="0.5">
+          <vt:DESCRIPTION>Size of search region in the RA and Dec. directions.</vt:DESCRIPTION>
+
+      </vt:PARAM>
+      <vt:PARAM name="INPUT:FORMAT" value="ALL">
+          <vt:DESCRIPTION>Requested format of images.</vt:DESCRIPTION>
+          <vt:VALUES>
+              <vt:OPTION value="image/fits"/>
+              <vt:OPTION value="image/gif"/>
+              <vt:OPTION value="text/html"/>
+
+              <vt:OPTION value="ALL"/>
+              <vt:OPTION value="GRAPHIC"/>
+              <vt:OPTION value="METADATA"/>
+          </vt:VALUES>
+      </vt:PARAM>
+      <vt:PARAM name="INPUT:INTERSECT" value="OVERLAPS">
+          <vt:DESCRIPTION>Choice of intersection of matched images with the region of interest.</vt:DESCRIPTION>
+          <vt:VALUES>
+              <vt:OPTION value="COVERS"/>
+              <vt:OPTION value="ENCLOSED"/>
+              <vt:OPTION value="CENTER"/>
+              <vt:OPTION value="OVERLAPS"/>
+          </vt:VALUES>
+      </vt:PARAM>
+      <vt:PARAM name="INPUT:FREQ" value="1400000000">
+          <vt:DESCRIPTION>Frequency of observation.</vt:DESCRIPTION>
+      </vt:PARAM>
+    </vs:ParamHTTP>
+    <vs:Coverage>
+      <!--  These tags have not be fully defined in current schema -->
+      <vs:Spatial/>
+      <vs:Spectral/>
+      <vs:Temporal/>
+    </vs:Coverage>
+  </vs:SkyService>
+</VODescription>

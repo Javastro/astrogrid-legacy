@@ -18,6 +18,15 @@
   <inceptionYear>2002</inceptionYear>
   <package>org.astrogrid</package>
   <logo>http://www.astrogrid.org/images/AGlogo</logo>
+  <description>The applications integration component provides users with a mechanism to run applications. They will most often be run from a workflow component, rather than being invoked directly.
+  <p> The main functionality that this component provides is.
+
+          1. A standard description of application parameters that allows for automated GUI building and workflow creation.
+          2. A wrapper to allow the application to retrieve/store information in MySpace.
+
+This functionality is provided with the ApplicationController service, of which there can be specializations to call command line applications, datacentre and other general web services. In iteration 4 there is only a  specialization to call command line applications. 
+</p>
+  </description>
 
   <shortDescription>AstroGrid Applications Integration Components</shortDescription>
 

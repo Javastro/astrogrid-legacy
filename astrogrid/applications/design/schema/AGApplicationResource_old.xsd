@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
+<xs:schema targetNamespace="http://www.astrogrid.org/schema/AGApplicationResource" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:agar="http://www.astrogrid.org/schema/AGApplicationResource" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:import namespace="http://www.astrogrid.org/schema/AGParameterDefinition" schemaLocation="AGParameterDefinition.xsd"/>
+	<!--the applicationResource needs to be tied in with a VO resource-->
+	<xs:element name="ApplicationResource">
+		<xs:annotation>
+			<xs:documentation>The definition of an application server - this could be serving several applications</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence maxOccurs="unbounded">
+				<xs:element ref="agar:ApplicationDefinition" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="name" type="xs:ID" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ApplicationDefinition">
+		<xs:annotation>
+			<xs:documentation>The definition of an individual application</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="agar:Description"/>
+				<xs:element name="Parameters">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="ParameterDefinition" minOccurs="0" maxOccurs="unbounded"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Operation">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element ref="agar:Description"/>
+							<xs:element name="Inputs"/>
+							<xs:element name="Outputs"/>
+						</xs:sequence>
+						<xs:attribute name="name" type="xs:ID" use="required"/>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="name" type="xs:ID" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Description" type="xs:string" abstract="true">
+		<xs:annotation>
+			<xs:documentation>a description of the relevant element intended for human consumption - particularly in a GUI</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="ParameterReference">
+		<xs:annotation>
+			<xs:documentation>a reference to a parameter definition</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="parameter" type="xs:IDREF" use="required"/>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

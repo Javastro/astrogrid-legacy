@@ -1,5 +1,5 @@
 /*
- * $Id: ParameterLoader.java,v 1.2 2003/12/08 23:03:11 pah Exp $
+ * $Id: ParameterLoader.java,v 1.3 2003/12/11 13:23:02 pah Exp $
  * 
  * Created on 08-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -56,7 +56,7 @@ public class ParameterLoader {
       digester.addFactoryCreate(INPUTPARAMETER_ELEMENT, new ParameterFactory(application.getApplicationDescription()));
       digester.addSetNext(INPUTPARAMETER_ELEMENT, "addParameter");
       digester.addRule(INPUTPARAMETER_ELEMENT, new NodeCreateRule(Node.ELEMENT_NODE));
-      digester.addRule(INPUTPARAMETER_ELEMENT, new AllBodyIncElementsRule("rawValue", false));
+      digester.addRule(INPUTPARAMETER_ELEMENT, new AllBodyIncElementsRule("rawValue", true));
       
    }
    

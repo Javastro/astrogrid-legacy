@@ -1,0 +1,785 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Arnold Rots (Smithsonian Astrophysical Observatory) -->
+<!-- edited with XML Spy v4.4 U (http://www.xmlspy.com) by Arnold Rots (Smithsonian Astrophysical Observatory) -->
+<!-- $Id: coords.xsd,v 1.1 2003/12/11 13:23:02 pah Exp $ -->
+<!-- Schema definition for the coordinates in SpaceTimeCoords -->
+<!--Change Log:
+$Log: coords.xsd,v $
+Revision 1.1  2003/12/11 13:23:02  pah
+some general tidying
+
+Revision 1.14  2003/05/15 10:04:23  arots
+Remove erroneous Name elements.
+
+Revision 1.13  2003/05/08 20:28:19  arots
+Added spectral coordinate.
+
+Revision 1.11  2003/04/30 16:54:52  arots
+Replaced substitutiongroups by choice - didn't work well.
+
+Revision 1.10  2003/04/30 13:27:12  arots
+Fixed up change log, changed schema locations.
+
+Revision 1.9  2003/04/29 20:56:40  arots
+Completed new astronTimeType and proper handling of units.
+
+Revision 1.8  2003/04/28 16:25:34  arots
+Split off stc.xsd as main, to avoid recursive inclusion.
+Bring into line with region.xsd.
+
+Revision 1.7  2003/04/17 19:05:41  arots
+removed region definitions.
+
+Revision 1.6  2003/04/01 17:45:36  arots
+Put reference position back in; added annotation.
+
+Revision 1.5  2003/03/27 20:20:16  arots
+Preserved ObservatoryLocation as independent element, as well.
+
+Revision 1.4  2003/03/27 20:06:26  arots
+Extensive revision: vectorized spatial coordinates,
+included ObservatoryLocation in ObservationLocation.
+
+Revision 1.3  2002/07/11 11:44:01  arots
+Corrected RCS Id.
+
+Revision 1.2  2002/07/11 08:58:25  arots
+All elements.
+
+Revision 1.1  2002/07/10 12:04:31  arots
+Initial revision
+-->
+<xs:schema targetNamespace="urn:nvo-coords" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:crd="urn:nvo-coords" elementFormDefault="qualified">
+	<!-- Coord Specifics -->
+	<xs:simpleType name="timeScaleType">
+		<xs:annotation>
+			<xs:documentation>The actual time scale used: TT, TAI, UTC, TDB, etc.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="TT"/>
+			<xs:enumeration value="TDT"/>
+			<xs:enumeration value="ET"/>
+			<xs:enumeration value="TDB"/>
+			<xs:enumeration value="TCG"/>
+			<xs:enumeration value="TCB"/>
+			<xs:enumeration value="TAI"/>
+			<xs:enumeration value="IAT"/>
+			<xs:enumeration value="UTC"/>
+			<xs:enumeration value="LST"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="astronTimeType">
+		<xs:annotation>
+			<xs:documentation>astronTime may be expressed in ISO8601 or as a double relative to a reference time; or it may be provided in an entity refered to by the Reference element</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:choice>
+				<xs:element name="ISOTime" type="xs:dateTime">
+					<xs:annotation>
+						<xs:documentation>Only a limited subset of ISO 8601 is allowed: yyyy-mm-ddThh:mm:ss.sss...</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="JDTime" type="xs:decimal">
+					<xs:annotation>
+						<xs:documentation>Note that this time may require precision that exceeds that of a double</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="MJDTime" type="xs:decimal">
+					<xs:annotation>
+						<xs:documentation>Note that this time may require precision that exceeds that of a double</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:sequence>
+					<xs:element name="RelativeTime">
+						<xs:annotation>
+							<xs:documentation>Relative time needs a time reference (a zero point) which should not be in relative time</xs:documentation>
+						</xs:annotation>
+						<xs:complexType>
+							<xs:simpleContent>
+								<xs:extension base="xs:double">
+									<xs:attribute name="unit" use="optional" default="s">
+										<xs:annotation>
+											<xs:documentation>The time unit; only 's' (second - default) or 'd' (day) are allowed</xs:documentation>
+										</xs:annotation>
+										<xs:simpleType>
+											<xs:restriction base="xs:string">
+												<xs:enumeration value="s"/>
+												<xs:enumeration value="d"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:attribute>
+								</xs:extension>
+							</xs:simpleContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:choice>
+						<xs:element name="ISORefTime" type="xs:dateTime">
+							<xs:annotation>
+								<xs:documentation>The reference time needs to be ISO8601, JD, or MJD; note: only a limited subset of ISO 8601 is allowed: yyyy-mm-ddThh:mm:ss.sss...</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="JDRefTime" type="xs:decimal">
+							<xs:annotation>
+								<xs:documentation>Note that this time may require precision that exceeds that of a double</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="MJDRefTime" type="xs:decimal">
+							<xs:annotation>
+								<xs:documentation>Note that this time may require precision that exceeds that of a double</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:choice>
+				</xs:sequence>
+				<xs:sequence>
+					<xs:element name="Reference">
+						<xs:complexType>
+							<xs:simpleContent>
+								<xs:extension base="xs:IDREF">
+									<xs:attribute name="time_base" use="optional" default="ISO8601">
+										<xs:annotation>
+											<xs:documentation>The time unit has only meaning if relative time is used in the reference; only 's' (second - default) or 'd' (day) are allowed and a RefTime is required</xs:documentation>
+										</xs:annotation>
+										<xs:simpleType>
+											<xs:restriction base="xs:string">
+												<xs:enumeration value="ISO8601"/>
+												<xs:enumeration value="JD"/>
+												<xs:enumeration value="MJD"/>
+												<xs:enumeration value="relative"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:attribute>
+									<xs:attribute name="unit" use="optional" default="s">
+										<xs:annotation>
+											<xs:documentation>The time unit has only meaning if relative time is used in the reference; only 's' (second - default) or 'd' (day) are allowed</xs:documentation>
+										</xs:annotation>
+										<xs:simpleType>
+											<xs:restriction base="xs:string">
+												<xs:enumeration value="s"/>
+												<xs:enumeration value="d"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:attribute>
+								</xs:extension>
+							</xs:simpleContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:choice minOccurs="0">
+						<xs:element name="ISORefTime" type="xs:dateTime">
+							<xs:annotation>
+								<xs:documentation>The reference time needs to be ISO8601, JD, or MJD; only needed if time_base="relative"</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="JDRefTime" type="xs:decimal">
+							<xs:annotation>
+								<xs:documentation>Note that this time may require precision that exceeds that of a double</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="MJDRefTime" type="xs:decimal">
+							<xs:annotation>
+								<xs:documentation>Note that this time may require precision that exceeds that of a double</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:choice>
+				</xs:sequence>
+			</xs:choice>
+			<xs:element name="TimeScale" type="crd:timeScaleType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="doubleArrayType">
+		<xs:annotation>
+			<xs:documentation>For vector coordinates we need arrays of doubles</xs:documentation>
+		</xs:annotation>
+		<xs:list itemType="xs:double"/>
+	</xs:simpleType>
+	<xs:simpleType name="posUnitType">
+		<xs:annotation>
+			<xs:documentation>Coordinate units may be angular (degrees, radians, hours, arcmins, arcsecs), linear (meters, km, mm, AUs, parsecs, kpc, Mpc, lightyears), or empty (i.e., dimensionless)</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="deg"/>
+			<xs:enumeration value="rad"/>
+			<xs:enumeration value="h"/>
+			<xs:enumeration value="arcmin"/>
+			<xs:enumeration value="arcsec"/>
+			<xs:enumeration value="m"/>
+			<xs:enumeration value="km"/>
+			<xs:enumeration value="mm"/>
+			<xs:enumeration value="au"/>
+			<xs:enumeration value="pc"/>
+			<xs:enumeration value="kpc"/>
+			<xs:enumeration value="Mpc"/>
+			<xs:enumeration value="lyr"/>
+			<xs:enumeration value=""/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="angleUnitType">
+		<xs:annotation>
+			<xs:documentation>Angular coordinate units may be degrees, radians, hours, arcmins, arcsecs</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="deg"/>
+			<xs:enumeration value="rad"/>
+			<xs:enumeration value="h"/>
+			<xs:enumeration value="arcmin"/>
+			<xs:enumeration value="arcsec"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="velTimeUnitType">
+		<xs:annotation>
+			<xs:documentation>Velocity units are a posUnitType / velTimeType; the latter may be second, day, hour, year (a or yr), century, or empty</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="s"/>
+			<xs:enumeration value="h"/>
+			<xs:enumeration value="d"/>
+			<xs:enumeration value="a"/>
+			<xs:enumeration value="yr"/>
+			<xs:enumeration value="century"/>
+			<xs:enumeration value=""/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="spectralUnitType">
+		<xs:annotation>
+			<xs:documentation>Spectral units may be frequency (Hz, kHz, MHz, GHz), wavelength (meters, mm, micron, nm, Angstrom), or energy(eV, keV, MeV, GeV)</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Hz"/>
+			<xs:enumeration value="kHz"/>
+			<xs:enumeration value="MHz"/>
+			<xs:enumeration value="GHz"/>
+			<xs:enumeration value="m"/>
+			<xs:enumeration value="mm"/>
+			<xs:enumeration value="micron"/>
+			<xs:enumeration value="nm"/>
+			<xs:enumeration value="A"/>
+			<xs:enumeration value="eV"/>
+			<xs:enumeration value="keV"/>
+			<xs:enumeration value="MeV"/>
+			<xs:enumeration value="GeV"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="coordTimeValueType">
+		<xs:annotation>
+			<xs:documentation>A scalar time coordinate value consists of a double or a reference to an entity (that should contain a double)</xs:documentation>
+		</xs:annotation>
+		<xs:choice>
+			<xs:element name="Value" type="xs:double"/>
+			<xs:element name="Reference" type="xs:IDREF"/>
+		</xs:choice>
+		<xs:attribute name="time_unit" type="crd:velTimeUnitType" use="optional" default="s"/>
+		<!--This contains one double or one IDREF-->
+	</xs:complexType>
+	<xs:complexType name="coordSpectralValueType">
+		<xs:annotation>
+			<xs:documentation>A scalar time coordinate value consists of a double or a reference to an entity (that should contain a double)</xs:documentation>
+		</xs:annotation>
+		<xs:choice>
+			<xs:element name="Value" type="xs:double"/>
+			<xs:element name="Reference" type="xs:IDREF"/>
+		</xs:choice>
+		<xs:attribute name="spectral_unit" type="crd:spectralUnitType" use="optional" default="Hz"/>
+		<!--This contains one double or one IDREF-->
+	</xs:complexType>
+	<xs:complexType name="coordValueType">
+		<xs:annotation>
+			<xs:documentation>A scalar coordinate value consists of a double, a sexagesimal string (requiring ':' separators), or a reference to an entity (that should contain a double or sexagesimal string)</xs:documentation>
+		</xs:annotation>
+		<xs:choice>
+			<xs:element name="Value" type="xs:double"/>
+			<xs:element name="Value60">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:pattern value="(\+|-)?\d?\d:\d?\d(:\d?\d)?(\.\d+)?"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Reference" type="xs:IDREF"/>
+		</xs:choice>
+		<xs:attribute name="pos_unit" type="crd:posUnitType" use="optional" default="deg"/>
+		<!--This contains one double, one sexagesimal, or one IDREF-->
+	</xs:complexType>
+	<xs:complexType name="coord2ValueType">
+		<xs:annotation>
+			<xs:documentation>A coordinate vector of length 2 consists of either two doubles or two references (that should each contain one double)</xs:documentation>
+		</xs:annotation>
+		<xs:choice>
+			<xs:element name="Value" type="crd:doubleArrayType">
+				<xs:annotation>
+					<xs:documentation>For vector coordinates we need arrays of doubles</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Value60">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:pattern value="(\+|-)?\d?\d:\d?\d(:\d?\d)?(\.\d+)?(,|\s)[\s]*(\+|-)?\d?\d:\d?\d(:\d?\d)?(\.\d+)?"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Reference" type="xs:IDREFS"/>
+		</xs:choice>
+		<xs:attribute name="pos1_unit" type="crd:posUnitType" use="optional" default="deg"/>
+		<xs:attribute name="pos2_unit" type="crd:posUnitType" use="optional" default="deg">
+			<xs:annotation>
+				<xs:documentation>If empty, the value of pos1_unit is inherited; note that this construct is necessary: RA and Dec may have different units, such as h and deg</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<!--This contains two doubles, two sexagesimals, or two IDREFs-->
+	</xs:complexType>
+	<xs:complexType name="coord2SizeType">
+		<xs:annotation>
+			<xs:documentation>A size (ellipse) in two coordinates contains: two doubles or two IDREFs, each with optional position angle; or a 2x2 matrix defining the ellipse</xs:documentation>
+		</xs:annotation>
+		<xs:choice>
+			<xs:sequence>
+				<xs:element name="Value" type="crd:doubleArrayType">
+					<xs:annotation>
+						<xs:documentation>For vector coordinates we need arrays of doubles</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="PosAngle" type="xs:double" minOccurs="0"/>
+			</xs:sequence>
+			<xs:sequence>
+				<xs:element name="Reference" type="xs:IDREFS"/>
+				<xs:element name="PosAngleRef" type="xs:IDREF" minOccurs="0"/>
+			</xs:sequence>
+			<xs:element name="Matrix" type="crd:doubleArrayType">
+				<xs:annotation>
+					<xs:documentation>For vector coordinates we need arrays of doubles</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+		<xs:attribute name="pos1_unit" type="crd:posUnitType" use="optional" default="deg"/>
+		<xs:attribute name="pos2_unit" type="crd:posUnitType" use="optional" default="deg">
+			<xs:annotation>
+				<xs:documentation>If empty, the value of pos1_unit is inherited</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="coord3ValueType">
+		<xs:annotation>
+			<xs:documentation>A coordinate vector of length 3 consists of either three doubles or three references (that should each contain one double)</xs:documentation>
+		</xs:annotation>
+		<xs:choice>
+			<xs:element name="Value" type="crd:doubleArrayType">
+				<xs:annotation>
+					<xs:documentation>For vector coordinates we need arrays of doubles</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Reference" type="xs:IDREFS"/>
+		</xs:choice>
+		<xs:attribute name="pos1_unit" type="crd:posUnitType" use="optional"/>
+		<xs:attribute name="pos2_unit" type="crd:posUnitType" use="optional">
+			<xs:annotation>
+				<xs:documentation>If empty, the value of pos1_unit is inherited</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="pos3_unit" type="crd:posUnitType" use="optional">
+			<xs:annotation>
+				<xs:documentation>If empty, the value of pos1_unit is inherited</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<!--This contains either three doubles or three IDREFs-->
+	</xs:complexType>
+	<xs:complexType name="coord3SizeType">
+		<xs:annotation>
+			<xs:documentation>A size (ellipsoid) in three coordinates contains: three doubles or three IDREFs, each with two optional position angles; or a 3x3 matrix defining the ellipsoid</xs:documentation>
+		</xs:annotation>
+		<xs:choice>
+			<xs:sequence>
+				<xs:element name="Value" type="crd:doubleArrayType">
+					<xs:annotation>
+						<xs:documentation>For vector coordinates we need arrays of doubles</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="PosAngle" type="crd:doubleArrayType" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>For vector coordinates we need arrays of doubles</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:sequence>
+			<xs:sequence>
+				<xs:element name="Reference" type="xs:IDREFS"/>
+				<xs:element name="PosAngleRef" type="xs:IDREFS" minOccurs="0"/>
+			</xs:sequence>
+			<xs:element name="Matrix" type="crd:doubleArrayType">
+				<xs:annotation>
+					<xs:documentation>For vector coordinates we need arrays of doubles</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+		<xs:attribute name="pos1_unit" type="crd:posUnitType" use="optional"/>
+		<xs:attribute name="pos2_unit" type="crd:posUnitType" use="optional">
+			<xs:annotation>
+				<xs:documentation>If empty, the value of pos1_unit is inherited</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="pos3_unit" type="crd:posUnitType" use="optional">
+			<xs:annotation>
+				<xs:documentation>If empty, the value of pos1_unit is inherited</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="coordTimeType">
+		<xs:annotation>
+			<xs:documentation>This contains all the elements of a time coordinate: value, error, resolution, size, pixel size, unit, and name</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Name" type="xs:string" minOccurs="0"/>
+			<xs:element name="CoordValue" type="crd:astronTimeType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>astronTime may be expressed in ISO8601 or as a double relative to a reference time; or it may be provided in an entity refered to by the Reference element</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CoordError" type="crd:coordTimeValueType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>A scalar coordinate value consists of a double or a reference to an entity (that should contain a double)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CoordResolution" type="crd:coordTimeValueType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>A scalar coordinate value consists of a double or a reference to an entity (that should contain a double)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CoordSize" type="crd:coordTimeValueType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>A scalar coordinate value consists of a double or a reference to an entity (that should contain a double)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CoordPixsize" type="crd:coordTimeValueType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>A scalar coordinate value consists of a double or a reference to an entity (that should contain a double)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<!--This contains all elements of a single coordinate-->
+	</xs:complexType>
+	<xs:complexType name="coordSpectralType">
+		<xs:annotation>
+			<xs:documentation>This contains all the elements of a spectral coordinate: value, error, resolution, size, pixel size, unit, and name</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Name" type="xs:string" minOccurs="0"/>
+			<xs:element name="CoordValue" type="crd:coordSpectralValueType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>astronTime may be expressed in ISO8601 or as a double relative to a reference time; or it may be provided in an entity refered to by the Reference element</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CoordError" type="crd:coordSpectralValueType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>A scalar coordinate value consists of a double or a reference to an entity (that should contain a double)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CoordResolution" type="crd:coordSpectralValueType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>A scalar coordinate value consists of a double or a reference to an entity (that should contain a double)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CoordSize" type="crd:coordSpectralValueType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>A scalar coordinate value consists of a double or a reference to an entity (that should contain a double)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CoordPixsize" type="crd:coordSpectralValueType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>A scalar coordinate value consists of a double or a reference to an entity (that should contain a double)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<!--This contains all elements of a single coordinate-->
+	</xs:complexType>
+	<xs:complexType name="velCoordType" abstract="true">
+		<xs:sequence>
+			<xs:element name="Name" type="xs:string"/>
+		</xs:sequence>
+		<xs:attribute name="vel_time_unit" type="crd:velTimeUnitType" use="optional" default="s">
+			<xs:annotation>
+				<xs:documentation>This is the time part in the velocity unit; it is the same for al elements of the velocity coordinate</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="posCoordType" abstract="true">
+		<xs:sequence>
+			<xs:element name="Name" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="posScalarType">
+		<xs:annotation>
+			<xs:documentation>This contains all the elements of a scalar coordinate: value, error, resolution, size, pixel size, unit, and name</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="crd:posCoordType">
+				<xs:sequence>
+					<xs:element name="CoordValue" type="crd:coordValueType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>A scalar coordinate value consists of a double or a reference to an entity (that should contain a double)</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="CoordError" type="crd:coordValueType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>A scalar coordinate value consists of a double or a reference to an entity (that should contain a double)</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="CoordResolution" type="crd:coordValueType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>A scalar coordinate value consists of a double or a reference to an entity (that should contain a double)</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="CoordSize" type="crd:coordValueType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>A scalar coordinate value consists of a double or a reference to an entity (that should contain a double)</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="CoordPixsize" type="crd:coordValueType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>A scalar coordinate value consists of a double or a reference to an entity (that should contain a double)</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+		<!--This contains all elements of a single coordinate-->
+	</xs:complexType>
+	<xs:complexType name="pos2VectorType">
+		<xs:annotation>
+			<xs:documentation>This contains all the elements of a coordinate vector of length 2: value, error, resolution, size, pixelsize, unit, and names</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="crd:posCoordType">
+				<xs:sequence>
+					<xs:element name="CoordValue" type="crd:coord2ValueType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>A coordinate vector of length 2 consists of either two doubles or two references (that should each contain one double)</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="CoordError" type="crd:coord2SizeType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>A size (ellipse) in two coordinates contains: two doubles or two IDREFs, each with optional position angle; or a 2x2 matrix defining the ellipse</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="CoordResolution" type="crd:coord2SizeType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>A size (ellipse) in two coordinates contains: two doubles or two IDREFs, each with optional position angle; or a 2x2 matrix defining the ellipse</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="CoordSize" type="crd:coord2SizeType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>A size (ellipse) in two coordinates contains: two doubles or two IDREFs, each with optional position angle; or a 2x2 matrix defining the ellipse</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="CoordPixsize" type="crd:coord2SizeType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>A size (ellipse) in two coordinates contains: two doubles or two IDREFs, each with optional position angle; or a 2x2 matrix defining the ellipse</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="pos_ang_unit" type="crd:angleUnitType" use="optional" default="deg">
+					<xs:annotation>
+						<xs:documentation>Unit of all position angles</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+		<!--This contains all elements of a coordinate pair-->
+	</xs:complexType>
+	<xs:complexType name="pos3VectorType">
+		<xs:annotation>
+			<xs:documentation>This contains all the elements of a coordinate vector of length 3: value, error, resolution, size, pixelsize, unit, and names</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="crd:posCoordType">
+				<xs:sequence>
+					<xs:element name="CoordValue" type="crd:coord3ValueType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>A coordinate vector of length 3 consists of either three doubles or three references (that should each contain one double)</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="CoordError" type="crd:coord3SizeType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>A size (ellipsoid) in three coordinates contains: three doubles or three IDREFs, each with two optional position angles; or a 3x3 matrix defining the ellipsoid</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="CoordResolution" type="crd:coord3SizeType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>A size (ellipsoid) in three coordinates contains: three doubles or three IDREFs, each with two optional position angles; or a 3x3 matrix defining the ellipsoid</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="CoordSize" type="crd:coord3SizeType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>A size (ellipsoid) in three coordinates contains: three doubles or three IDREFs, each with two optional position angles; or a 3x3 matrix defining the ellipsoid</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="CoordPixsize" type="crd:coord3SizeType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>A size (ellipsoid) in three coordinates contains: three doubles or three IDREFs, each with two optional position angles; or a 3x3 matrix defining the ellipsoid</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="pos_ang_unit" type="crd:angleUnitType" use="optional" default="deg">
+					<xs:annotation>
+						<xs:documentation>Unit for all position angles</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+		<!--This contains all elements of a coordinate triple-->
+	</xs:complexType>
+	<xs:complexType name="velScalarType">
+		<xs:annotation>
+			<xs:documentation>This contains all the elements of a scalar coordinate: value, error, resolution, size, pixel size, unit, and name</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="crd:velCoordType">
+				<xs:sequence>
+					<xs:element name="CoordValue" type="crd:coordValueType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>A scalar coordinate value consists of a double or a reference to an entity (that should contain a double)</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="CoordError" type="crd:coordValueType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>A scalar coordinate value consists of a double or a reference to an entity (that should contain a double)</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="CoordResolution" type="crd:coordValueType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>A scalar coordinate value consists of a double or a reference to an entity (that should contain a double)</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="CoordSize" type="crd:coordValueType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>A scalar coordinate value consists of a double or a reference to an entity (that should contain a double)</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="CoordPixsize" type="crd:coordValueType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>A scalar coordinate value consists of a double or a reference to an entity (that should contain a double)</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+		<!--This contains all elements of a single velocity coordinate-->
+	</xs:complexType>
+	<xs:complexType name="vel2VectorType">
+		<xs:annotation>
+			<xs:documentation>This contains all the elements of a coordinate vector of length 2: value, error, resolution, size, pixelsize, unit, and names</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="crd:velCoordType">
+				<xs:sequence>
+					<xs:element name="CoordValue" type="crd:coord2ValueType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>A coordinate vector of length 2 consists of either two doubles or two references (that should each contain one double)</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="CoordError" type="crd:coord2SizeType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>A size (ellipse) in two coordinates contains: two doubles or two IDREFs, each with optional position angle; or a 2x2 matrix defining the ellipse</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="CoordResolution" type="crd:coord2SizeType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>A size (ellipse) in two coordinates contains: two doubles or two IDREFs, each with optional position angle; or a 2x2 matrix defining the ellipse</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="CoordSize" type="crd:coord2SizeType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>A size (ellipse) in two coordinates contains: two doubles or two IDREFs, each with optional position angle; or a 2x2 matrix defining the ellipse</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="CoordPixsize" type="crd:coord2SizeType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>A size (ellipse) in two coordinates contains: two doubles or two IDREFs, each with optional position angle; or a 2x2 matrix defining the ellipse</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="pos_ang_unit" type="crd:angleUnitType" use="optional" default="deg">
+					<xs:annotation>
+						<xs:documentation>Unit for all position angles</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+		<!--This contains all elements of a velocity coordinate pair-->
+	</xs:complexType>
+	<xs:complexType name="vel3VectorType">
+		<xs:annotation>
+			<xs:documentation>This contains all the elements of a coordinate vector of length 3: value, error, resolution, size, pixelsize, unit, and names</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="crd:velCoordType">
+				<xs:sequence>
+					<xs:element name="CoordValue" type="crd:coord3ValueType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>A coordinate vector of length 3 consists of either three doubles or three references (that should each contain one double)</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="CoordError" type="crd:coord3SizeType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>A size (ellipsoid) in three coordinates contains: three doubles or three IDREFs, each with two optional position angles; or a 3x3 matrix defining the ellipsoid</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="CoordResolution" type="crd:coord3SizeType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>A size (ellipsoid) in three coordinates contains: three doubles or three IDREFs, each with two optional position angles; or a 3x3 matrix defining the ellipsoid</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="CoordSize" type="crd:coord3SizeType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>A size (ellipsoid) in three coordinates contains: three doubles or three IDREFs, each with two optional position angles; or a 3x3 matrix defining the ellipsoid</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="CoordPixsize" type="crd:coord3SizeType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>A size (ellipsoid) in three coordinates contains: three doubles or three IDREFs, each with two optional position angles; or a 3x3 matrix defining the ellipsoid</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="pos_ang_unit" type="crd:angleUnitType" use="optional" default="deg">
+					<xs:annotation>
+						<xs:documentation>Unit for all position angles</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+		<!--This contains all elements of a velocity coordinate triple-->
+	</xs:complexType>
+	<!-- Coords -->
+	<xs:complexType name="coordsType">
+		<xs:annotation>
+			<xs:documentation>The coordinate element consists either of a coordinate file or a sequence of time element, spatial coordinate element, velocity element, and redshift element; the spatial and velocity elements may be scalar or vector; it needs to refer to a coordinate system</xs:documentation>
+		</xs:annotation>
+		<xs:choice>
+			<xs:sequence>
+				<xs:element name="Time" type="crd:coordTimeType" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>This contains all the elements of a time coordinate: value, error, resolution, size, pixel size, unit, and name</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:choice minOccurs="0">
+					<xs:element name="PosScalar" type="crd:posScalarType"/>
+					<xs:element name="Pos2Vector" type="crd:pos2VectorType"/>
+					<xs:element name="Pos3Vector" type="crd:pos3VectorType"/>
+				</xs:choice>
+				<xs:choice minOccurs="0">
+					<xs:element name="VelScalar" type="crd:velScalarType"/>
+					<xs:element name="Vel2Vector" type="crd:vel2VectorType"/>
+					<xs:element name="Vel3Vector" type="crd:vel3VectorType"/>
+				</xs:choice>
+				<xs:element name="Redshift" type="crd:velScalarType" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>This contains all the elements of the redshift coordinate: value, error, resolution, size, pixel size, unit, and name</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="Spectrum" type="crd:coordSpectralType" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>This contains all the elements of the spectral coordinate: value, error, resolution, size, pixel size, unit, and name</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:sequence>
+			<xs:element name="CoordFile" type="xs:anyURI"/>
+		</xs:choice>
+		<xs:attribute name="ID" type="xs:ID" use="required"/>
+		<xs:attribute name="coord_system_id" type="xs:IDREF" use="required"/>
+	</xs:complexType>
+</xs:schema>

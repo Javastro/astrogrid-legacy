@@ -1,0 +1,47 @@
+package id47v9hdneligaydneq3a2z;
+
+/**
+@version 2.0
+@physicalPackage
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:java#Class#org.astrogrid.jes.delegate.jobScheduler.JobSchedulerServiceSoapBindingStub:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.jes.delegate.jobScheduler.JobSchedulerDelegate:oiref><oihard>
+@__modelType reference 
+*/
+class reference102 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.jes.delegate.jobScheduler.JobScheduler:oiref><oihard>
+@__modelType reference 
+*/
+class reference103 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.jes.delegate.jobScheduler.JobSchedulerServiceLocator:oiref><oihard>
+@__modelType reference 
+*/
+class reference104 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.jes.delegate.jobScheduler.JobSchedulerService:oiref><oihard>
+@__modelType reference 
+*/
+class reference105 {
+}}/**
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions 
+*/
+class __positions {
+}

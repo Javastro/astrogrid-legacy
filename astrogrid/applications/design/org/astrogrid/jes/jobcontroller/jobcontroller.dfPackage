@@ -1,0 +1,47 @@
+package id61b0dneligaydneq3a4n;
+
+/**
+@version 2.0
+@physicalPackage
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:java#Class#org.astrogrid.jes.jobcontroller.JobControllerException:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.jes.jobcontroller.SubmissionRequestDD:oiref><oihard>
+@__modelType reference 
+*/
+class reference85 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.jes.jobcontroller.JobController:oiref><oihard>
+@__modelType reference 
+*/
+class reference86 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.jes.jobcontroller.JobListResponseDD:oiref><oihard>
+@__modelType reference 
+*/
+class reference87 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.jes.jobcontroller.JobListRequestDD:oiref><oihard>
+@__modelType reference 
+*/
+class reference88 {
+}}/**
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions 
+*/
+class __positions {
+}

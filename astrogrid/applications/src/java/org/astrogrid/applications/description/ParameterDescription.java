@@ -1,5 +1,5 @@
 /*
- * $Id: ParameterDescription.java,v 1.2 2003/12/08 17:06:35 pah Exp $
+ * $Id: ParameterDescription.java,v 1.3 2003/12/11 13:23:02 pah Exp $
  *
  * Created on 26 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -11,6 +11,8 @@
 
 package org.astrogrid.applications.description;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.astrogrid.applications.CommandLineParameter;
@@ -41,6 +43,19 @@ public abstract class ParameterDescription {
    private String ucd;
    
    /**
+    * The string that makes up the command switch. If this is not specified then it is assumed that the switch is the same as the name
+    */
+   private String commandSwitch=null;
+   /**
+    * The switchtype can be "normal" i.e. it is a -switch form or "keyword" where is is of the form switch=par
+    */
+   private String switchType = "normal";
+   /**
+    * The commandPosition indicates where on the command line the parameter is to be placed - The first parameter position is 1. If this value is specified then it means that no switch will be output, but the parameter value will be placed directly on the command line at that position.
+    */
+   private int commandPosition = -1;
+   
+   /**
     * Creates a parameter value object. This should be overriden in subclasses where specialzed behaviour is required.
     * @return
     */
@@ -50,5 +65,89 @@ public abstract class ParameterDescription {
       return param;
    }
 
+   /**
+    * 
+    * @param rawValue
+    * @return a string representing how this parameter should be represented on the command line.
+    */
+   public List process(String rawValue) {
+      return addCmdlineAdornment(rawValue);
+   }
+
+
+   /**
+    * Adds any necessary switches to the commandline parameter. This is controlled by the @link #commandPosition, @link #commandSwitch and @link #switchType fields. 
+    * If the commandPosition is anything other than -1 then no adornment is added. If a switch string is to be added then the style is controlled by switchType and the
+    * string for the switch is given by commandSwitch, or if that is null the parameter name is used. 
+    * @param val
+    * @return
+    */
+   protected List addCmdlineAdornment(String val)
+   {
+      List cmdarg = new ArrayList(); 
+      
+      if (commandPosition != -1) {
+         // if not a command position type parameter then we need to add a switch
+         String sw = name;
+         if(commandSwitch != null)
+         {
+            sw = commandSwitch;
+         }
+         if (switchType.equalsIgnoreCase("normal")) {
+            cmdarg.add( "-"+sw+" ");
+            cmdarg.add(val);
+            
+         }
+         else {
+            cmdarg.add(sw+"="+val);
+
+         }
+       
+      }
+      
+      return cmdarg;
+   }
+   
+   /**
+    * @return
+    */
+   public int getCommandPosition() {
+      return commandPosition;
+   }
+
+   /**
+    * @return
+    */
+   public String getCommandSwitch() {
+      return commandSwitch;
+   }
+
+   /**
+    * @return
+    */
+   public String getSwitchType() {
+      return switchType;
+   }
+
+   /**
+    * @param i
+    */
+   public void setCommandPosition(int i) {
+      commandPosition = i;
+   }
+
+   /**
+    * @param string
+    */
+   public void setCommandSwitch(String string) {
+      commandSwitch = string;
+   }
+
+   /**
+    * @param string
+    */
+   public void setSwitchType(String string) {
+      switchType = string;
+   }
 
 }

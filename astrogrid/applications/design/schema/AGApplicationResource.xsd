@@ -1,58 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
-<xs:schema targetNamespace="http://www.astrogrid.org/schema/AGApplicationResource" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:agar="http://www.astrogrid.org/schema/AGApplicationResource" elementFormDefault="qualified" attributeFormDefault="unqualified">
-	<xs:import namespace="http://www.astrogrid.org/schema/AGParameterDefinition" schemaLocation="AGParameterDefinition.xsd"/>
-	<!--the applicationResource needs to be tied in with a VO resource-->
-	<xs:element name="ApplicationResource">
-		<xs:annotation>
-			<xs:documentation>The definition of an application server - this could be serving several applications</xs:documentation>
-		</xs:annotation>
-		<xs:complexType>
-			<xs:sequence maxOccurs="unbounded">
-				<xs:element ref="agar:ApplicationDefinition" maxOccurs="unbounded"/>
-			</xs:sequence>
-			<xs:attribute name="name" type="xs:ID" use="required"/>
-		</xs:complexType>
-	</xs:element>
-	<xs:element name="ApplicationDefinition">
-		<xs:annotation>
-			<xs:documentation>The definition of an individual application</xs:documentation>
-		</xs:annotation>
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element ref="agar:Description"/>
-				<xs:element name="Parameters">
-					<xs:complexType>
-						<xs:sequence>
-							<xs:element name="ParameterDefinition" minOccurs="0" maxOccurs="unbounded"/>
-						</xs:sequence>
-					</xs:complexType>
-				</xs:element>
-				<xs:element name="Operation">
-					<xs:complexType>
-						<xs:sequence>
-							<xs:element ref="agar:Description"/>
-							<xs:element name="Inputs"/>
-							<xs:element name="Outputs"/>
-						</xs:sequence>
-						<xs:attribute name="name" type="xs:ID" use="required"/>
-					</xs:complexType>
-				</xs:element>
-			</xs:sequence>
-			<xs:attribute name="name" type="xs:ID" use="required"/>
-		</xs:complexType>
-	</xs:element>
-	<xs:element name="Description" type="xs:string" abstract="true">
-		<xs:annotation>
-			<xs:documentation>a description of the relevant element intended for human consumption - particularly in a GUI</xs:documentation>
-		</xs:annotation>
-	</xs:element>
-	<xs:element name="ParameterReference">
-		<xs:annotation>
-			<xs:documentation>a reference to a parameter definition</xs:documentation>
-		</xs:annotation>
-		<xs:complexType>
-			<xs:attribute name="parameter" type="xs:IDREF" use="required"/>
-		</xs:complexType>
-	</xs:element>
+<xs:schema targetNamespace="http://www.astrogrid.org/schema/ApplicationResource/v0.1" xmlns:agar="http://www.astrogrid.org/schema/ApplicationResource/v0.1" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://www.w3.org/2003/06/wsdl" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:annotation>
+		<xs:documentation>This schema will be the schema of the wsdl like descripton of the application - abandoning this now, because wsdl1.1 is too old to make this possible and wsdl 1.2 seems to be being superceded by wsdl 2.0, whihc does now have a functioning schema at the moment...</xs:documentation>
+	</xs:annotation>
+	<xs:import namespace="http://www.w3.org/2003/06/wsdl" schemaLocation="wsdl12.xsd"/>
 </xs:schema>

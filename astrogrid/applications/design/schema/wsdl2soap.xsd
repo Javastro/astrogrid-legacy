@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<!-- 
+   W3C XML Schema defined in the Web Services Description (WSDL) - Bindings
+    Version 2.0 specification
+     http://www.w3.org/TR/wsdl20-bindings
+
+   Copyright (c) 2003 World Wide Web Consortium,
+  
+   (Massachusetts Institute of Technology, European Research Consortium for
+   Informatics and Mathematics, Keio University). All Rights Reserved. This
+   work is distributed under the W3C(r) Software License [1] in the hope that
+   it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+   warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  
+   [1] http://www.w3.org/Consortium/Legal/2002/copyright-software-20021231
+--><!DOCTYPE schema PUBLIC "-//W3C//DTD XMLSCHEMA 200102//EN" "http://www.w3.org/2001/XMLSchema.dtd">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://www.w3.org/2003/11/wsdl/soap12" xmlns:wsdl="http://www.w3.org/2003/11/wsdl" blockDefault="" finalDefault="" targetNamespace="http://www.w3.org/2003/11/wsdl/soap12" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:import namespace="http://www.w3.org/2003/11/wsdl" schemaLocation="wsdl20.xsd"/>
+	<xs:element name="binding" type="soap:bindingType" substitutionGroup="wsdl:bindingExt"/>
+	<xs:complexType mixed="false" name="bindingType">
+		<xs:attribute name="transport" type="xs:anyURI" use="required"/>
+		<xs:attribute name="styleDefault" type="soap:styleChoice"/>
+		<xs:attribute name="namespaceDefault" type="xs:anyURI"/>
+		<xs:attribute name="encodingStyleDefault" type="xs:anyURI"/>
+	</xs:complexType>
+	<xs:simpleType name="styleChoice">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="document"/>
+			<xs:enumeration value="rpc"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:element name="module" type="soap:moduleType" substitutionGroup="wsdl:bindingExt"/>
+	<xs:complexType mixed="false" name="moduleType">
+		<xs:sequence>
+			<xs:element ref="soap:propertyConstraint" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="uri" type="xs:anyURI" use="required"/>
+		<xs:attribute name="required" type="xs:boolean"/>
+	</xs:complexType>
+	<xs:element name="propertyConstraint" type="soap:propertyConstraintType"/>
+	<xs:complexType mixed="false" name="propertyConstraintType">
+		<xs:attribute name="uri" type="xs:anyURI" use="required"/>
+		<xs:attribute name="type" type="xs:QName"/>
+	</xs:complexType>
+	<xs:element name="operation" type="soap:operationType" substitutionGroup="wsdl:bindingOpExt"/>
+	<xs:complexType mixed="false" name="operationType">
+		<xs:attribute name="style" type="soap:styleChoice"/>
+		<xs:attribute name="soapAction" type="xs:anyURI"/>
+	</xs:complexType>
+	<xs:element name="body" type="soap:bodyType" substitutionGroup="wsdl:bindingOpMsgExt"/>
+	<xs:complexType mixed="false" name="bodyType">
+		<xs:attribute name="namespace" type="xs:anyURI"/>
+		<xs:attribute name="encodingStyle" type="xs:anyURI"/>
+	</xs:complexType>
+	<xs:element name="fault" type="soap:faultType" substitutionGroup="wsdl:bindingOpFaultExt"/>
+	<xs:complexType mixed="false" name="faultType">
+		<xs:attribute name="name" type="xs:NMTOKEN" use="required"/>
+		<xs:attribute name="namespace" type="xs:anyURI"/>
+		<xs:attribute name="encodingStyle" type="xs:anyURI"/>
+	</xs:complexType>
+	<xs:element name="header" type="soap:headerType" substitutionGroup="wsdl:bindingOpMsgExt"/>
+	<xs:complexType mixed="false" name="headerType">
+		<xs:all>
+			<xs:element ref="soap:headerfault"/>
+		</xs:all>
+		<xs:attribute name="element" type="xs:QName"/>
+		<xs:attribute name="type" type="xs:QName"/>
+		<xs:attribute name="localname" type="xs:NMTOKEN"/>
+		<xs:attribute name="namespace" type="xs:anyURI"/>
+		<xs:attribute name="encodingStyle" type="xs:anyURI"/>
+		<xs:attribute name="role" type="xs:anyURI"/>
+	</xs:complexType>
+	<xs:element name="headerfault" type="soap:headerfaultType" substitutionGroup="wsdl:bindingOpMsgExt"/>
+	<xs:complexType mixed="false" name="headerfaultType">
+		<xs:attribute name="message" type="xs:QName" use="required"/>
+		<xs:attribute name="part" type="xs:NMTOKENS" use="required"/>
+		<xs:attribute name="namespace" type="xs:anyURI"/>
+		<xs:attribute name="encodingStyle" type="xs:anyURI"/>
+	</xs:complexType>
+	<xs:element name="address" type="soap:addressType" substitutionGroup="wsdl:endpointExt"/>
+	<xs:complexType mixed="false" name="addressType">
+		<xs:attribute name="location" type="xs:anyURI" use="required"/>
+	</xs:complexType>
+</xs:schema>

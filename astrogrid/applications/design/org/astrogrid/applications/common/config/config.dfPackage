@@ -1,0 +1,66 @@
+package id1p0dng6xqo0dng6zfkh;
+
+/**
+@version 2.0
+@physicalPackage
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:java#Class#org.astrogrid.applications.common.config.Config:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.common.config.TestConfig:oiref><oihard>
+@__modelType reference 
+*/
+class reference2 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.common.config.SyspropConfig:oiref><oihard>
+@__modelType reference 
+*/
+class reference3 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.common.config.JNDIConfig:oiref><oihard>
+@__modelType reference 
+*/
+class reference4 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.common.config.ConfigLoader:oiref><oihard>
+@__modelType reference 
+*/
+class reference5 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.common.config.ApplicationControllerConfig:oiref><oihard>
+@__modelType reference 
+*/
+class reference24 {
+}}/**
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:java#Class#org.astrogrid.applications.common.config.ConfigLoader:oiref>=10,610,153,276,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.common.config.JNDIConfig#instance:oiref>=424,514,424,564,514,564,514,474,464,474:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.common.config.ConfigLoader#theconfig:oiref>=86,610,364,399:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.common.config.ApplicationControllerConfig#instance:oiref>=1190,378,1190,428,1280,428,1280,338,1230,338:oigroup>
+<oigroup:<oiref:java#Implements#org.astrogrid.applications.common.config.SyspropConfig#org.astrogrid.applications.common.config.Config:oiref>=650,192,403,132:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.common.config.JNDIConfig:oiref>=264,192,200,207,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.common.config.SyspropConfig:oiref>=554,192,193,161,1:oigroup>
+<oigroup:<oiref:java#Implements#org.astrogrid.applications.common.config.JNDIConfig#org.astrogrid.applications.common.config.Config:oiref>=369,192,369,132:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.common.config.TestConfig#instance:oiref>=146,376,146,420,224,420,224,342,180,342:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.common.config.SyspropConfig#instance:oiref>=715,353,715,395,789,395,789,321,747,321:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.common.config.ApplicationControllerConfig#config:oiref>=1030,71,438,71:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.common.config.TestConfig:oiref>=10,192,170,184,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.common.config.ApplicationControllerConfig:oiref>=1030,10,200,368,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.common.config.Config:oiref>=301,10,137,122,1:oigroup>
+<oigroup:<oiref:java#Implements#org.astrogrid.applications.common.config.TestConfig#org.astrogrid.applications.common.config.Config:oiref>=95,192,335,132:oigroup>
+*/
+class __positions {
+}

@@ -1,0 +1,202 @@
+package id24evtdnh9yy0ndnh9zb4x;
+
+/**
+@version 2.0
+@physicalPackage
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:java#Class#org.astrogrid.applications.description.ApplicationDescription:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.description.CommandLineApplicationDescription:oiref><oihard>
+@__modelType reference 
+*/
+class reference5 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.description.ParameterDescription:oiref><oihard>
+@__modelType reference 
+*/
+class reference6 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.description.NumericParameterDescription:oiref><oihard>
+@__modelType reference 
+*/
+class reference7 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.description.ListParameterDescription:oiref><oihard>
+@__modelType reference 
+*/
+class reference8 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.description.MySpaceReferenceParameterDescription:oiref><oihard>
+@__modelType reference 
+*/
+class reference9 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.description.IntParameterDescription:oiref><oihard>
+@__modelType reference 
+*/
+class reference12 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.description.DoubleParameterDescription:oiref><oihard>
+@__modelType reference 
+*/
+class reference13 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.description.BooleanParameterDescription:oiref><oihard>
+@__modelType reference 
+*/
+class reference14 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.description.ApplicationInterface:oiref><oihard>
+@__modelType reference 
+*/
+class reference15 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.description.DescriptionLoader:oiref><oihard>
+@__modelType reference 
+*/
+class reference17 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.description.AllBodyIncElementsRule:oiref><oihard>
+@__modelType reference 
+*/
+class reference1 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.description.FileReferenceParameterDescription:oiref><oihard>
+@__modelType reference 
+*/
+class reference2 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.description.ApplicationDescriptions:oiref><oihard>
+@__modelType reference 
+*/
+class reference3 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.description.ParameterCreationFactory:oiref><oihard>
+@__modelType reference 
+*/
+class reference4 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.description.ADQLParameterDescription:oiref><oihard>
+@__modelType reference 
+*/
+class reference10 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.description.StringParameterDescription:oiref><oihard>
+@__modelType reference 
+*/
+class reference11 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.description.SimpleApplicationDescription:oiref><oihard>
+@__modelType reference 
+*/
+class reference16 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.description.DecParameterDescription:oiref><oihard>
+@__modelType reference 
+*/
+class reference18 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.description.VOTableReferenceParameterDescription:oiref><oihard>
+@__modelType reference 
+*/
+class reference19 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.description.URIParameterDescription:oiref><oihard>
+@__modelType reference 
+*/
+class reference20 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.description.RAParameterDescription:oiref><oihard>
+@__modelType reference 
+*/
+class reference21 {
+}/**
+@__ref <oiref:design#Class#id180w3dnrcpt1tdnrcq4c6.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.applications.description.exception:oiref> 
+*/
+class reference22 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.description.Pref:oiref><oihard>
+@__modelType reference 
+*/
+class reference23 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.description.SimpleDescriptionLoader:oiref><oihard>
+@__modelType reference 
+*/
+class reference24 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.description.ApplicationDescriptionConstants:oiref><oihard>
+@__modelType reference 
+*/
+class reference25 {
+}}/**
+@__tags
+@shapeType ClassDiagram*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:java#Extends#org.astrogrid.applications.description.RAParameterDescription#org.astrogrid.applications.description.ParameterDescription:oiref>=632,464,1197,250:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.description.ApplicationInterface#outputs:oiref>=468,464,1172,250:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.description.ApplicationInterface:oiref>=320,464,200,361,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.description.ParameterCreationFactory:oiref>=1912,10,200,161,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.description.ApplicationInterface#inputs:oiref>=416,464,1147,250:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.applications.description.ADQLParameterDescription#org.astrogrid.applications.description.ParameterDescription:oiref>=1275,464,1275,250:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.applications.description.ListParameterDescription#org.astrogrid.applications.description.ParameterDescription:oiref>=2088,464,1392,250:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.description.NumericParameterDescription:oiref>=1823,464,160,170,0:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.description.Pref:oiref>=458,140,200,174,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.description.IntParameterDescription:oiref>=1681,875,185,89,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.description.SimpleDescriptionLoader:oiref>=668,170,200,223,1:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.applications.description.MySpaceReferenceParameterDescription#org.astrogrid.applications.description.ParameterDescription:oiref>=2293,464,1422,250:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.description.FileReferenceParameterDescription:oiref>=2326,875,200,89,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.description.ParameterDescription#lnkApplicationInterface:oiref>=1155,470,516,368:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.description.StringParameterDescription:oiref>=744,464,200,89,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.description.ADQLParameterDescription:oiref>=1184,464,200,89,1:oigroup>
+<oigroup:<oiref:design#Class#id180w3dnrcpt1tdnrcq4c6.diagram:oiref>=1472,10,200,210,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.description.DoubleParameterDescription:oiref>=1886,875,200,89,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.description.CommandLineApplicationDescription:oiref>=10,464,290,110,0:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.description.DescriptionLoader#lnkApplicationDescription:oiref>=370,64,206,64:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.applications.description.URIParameterDescription#org.astrogrid.applications.description.ParameterDescription:oiref>=1498,464,1304,250:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.description.VOTableReferenceParameterDescription:oiref>=2106,875,200,89,1:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.applications.description.StringParameterDescription#org.astrogrid.applications.description.ParameterDescription:oiref>=844,464,1223,250:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.applications.description.DoubleParameterDescription#org.astrogrid.applications.description.NumericParameterDescription:oiref>=1934,875,1934,634:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.description.RAParameterDescription:oiref>=540,464,184,89,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.description.URIParameterDescription:oiref>=1404,464,189,89,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.description.ApplicationDescription#allParameters:oiref>=431,130,1122,130:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.description.AllBodyIncElementsRule:oiref>=2132,10,183,184,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.description.DecParameterDescription:oiref>=1613,464,190,89,1:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.applications.description.VOTableReferenceParameterDescription#org.astrogrid.applications.description.MySpaceReferenceParameterDescription:oiref>=2249,875,2249,553:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.description.ApplicationInterface#application:oiref>=364,464,364,394:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.description.DescriptionLoader:oiref>=10,1010,200,223,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.description.Pref#parameter:oiref>=658,195,1122,195:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.applications.description.IntParameterDescription#org.astrogrid.applications.description.NumericParameterDescription:oiref>=1837,875,1837,634:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.description.SimpleApplicationDescription:oiref>=1692,10,200,151,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.description.MySpaceReferenceParameterDescription:oiref>=2193,464,200,89,1:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.applications.description.FileReferenceParameterDefintion#org.astrogrid.applications.description.MySpaceReferenceParameterDescription:oiref>=1280,930,1280,859:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.applications.description.BooleanParameterDescription#org.astrogrid.applications.description.ParameterDescription:oiref>=1064,464,1249,250:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.description.ApplicationDescription:oiref>=231,10,200,384,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.description.ApplicationDescriptionConstants:oiref>=878,0,200,404,1:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.applications.description.NumericParameterDescription#org.astrogrid.applications.description.ParameterDescription:oiref>=1903,464,1362,250:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.description.ParameterDescription:oiref>=1122,10,330,240,0:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.applications.description.VOTableReferenceParameterDefintion#org.astrogrid.applications.description.MySpaceReferenceParameterDescription:oiref>=1510,910,1350,859:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.description.ApplicationDescriptions:oiref>=2052,210,200,184,1:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.applications.description.DecParameterDescription#org.astrogrid.applications.description.ParameterDescription:oiref>=1708,464,1333,250:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.description.ApplicationDescription#interfaces:oiref>=342,394,342,464:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.applications.description.CommandLineApplicationDescription#org.astrogrid.applications.description.ApplicationDescription:oiref>=265,464,265,394:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.description.ListParameterDescription:oiref>=2003,464,170,100,0:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.description.BooleanParameterDescription:oiref>=964,464,200,89,1:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.applications.description.FileReferenceParameterDescription#org.astrogrid.applications.description.MySpaceReferenceParameterDescription:oiref>=2359,875,2359,553:oigroup>
+
+*/
+class __positions {
+}

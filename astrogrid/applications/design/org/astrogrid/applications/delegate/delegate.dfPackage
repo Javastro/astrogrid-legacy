@@ -6,7 +6,22 @@ package id4j2pmdmemcb5ndmemchxm;
 @__modelType diagram 
 */
 class diagram {
+/**
+@__ref <oiref:java#Class#org.astrogrid.applications.delegate.ApplicationControllerDummyDelegate:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
 }/**
+@__ref <oiref:java#Class#org.astrogrid.applications.delegate.ApplicationControllerDelegate:oiref><oihard>
+@__modelType reference 
+*/
+class reference7 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.delegate.DelegateFactory:oiref><oihard>
+@__modelType reference 
+*/
+class reference1 {
+}}/**
 @__tags
 @shapeType ClassDiagram 
 */

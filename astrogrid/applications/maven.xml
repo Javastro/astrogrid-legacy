@@ -31,13 +31,34 @@
     
 <property name="maven.war.src" value="${axis.webapp.srcdir}"/> 
 
-<preGoal name="war:webapp">
-  <echo message="maven src ${maven.war.src}"/> 
-  <!-- make sure that the cvs maven stuff is put into the webapp -->
-<copy todir="${axis.webapp.srcdir}">
+
+	<postGoal name="war:webapp">
+		<echo message="${maven.war.src}"/>
+  <!-- make sure that the cvs maven stuff is put into the webapp - because the axis dir is regarded as source for the war goal-->
+        <copy todir="${axis.webapp.srcdir}">
         <fileset dir="${basedir}/src/webapp"></fileset>
         </copy>
-</preGoal>
+		<echo message="Copying generated site ${maven.docs.dest} across to webapp ${maven.war.webapp.dir}/maven"/>
+		<copy todir="${maven.war.webapp.dir}/maven" overwrite="yes">
+			<fileset dir="${maven.docs.dest}"/>
+		</copy>
+		<echo message="copying across a readme and sample config file"/>
+		<copy todir="${maven.war.webapp.dir}" overwrite="yes">
+			<fileset dir="${basedir}">
+				<include name="INSTALL"/>
+				<include name="README"/>
+			</fileset>
+			<!-- need to do the sample config too -->
+		</copy>
+		<echo message="copying across a schema"/>
+		
+		<copy todir="${maven.war.webapp.dir}/schema" overwrite="yes">
+			<fileset dir="${basedir}/schema">
+				
+			</fileset>
+		</copy>
+		<!-- TODO - need to add links to the actual applications -->
+	</postGoal>
 
 <!-- hooks into existing goals -->
   <preGoal name="java:compile"><!-- generate classes from schema and wsdl first -->

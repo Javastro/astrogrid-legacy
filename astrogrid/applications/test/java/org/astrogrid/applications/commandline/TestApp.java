@@ -1,5 +1,5 @@
 /*
- * $Id: TestApp.java,v 1.2 2003/12/05 22:52:16 pah Exp $
+ * $Id: TestApp.java,v 1.3 2003/12/11 13:23:02 pah Exp $
  * 
  * Created on 01-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -20,5 +20,16 @@ package org.astrogrid.applications.commandline;
  * @since iteration4
  */
 public class TestApp extends CmdLineApplication {
+   
+   
+   static private org.apache.commons.logging.Log logger =
+      org.apache.commons.logging.LogFactory.getLog(TestApp.class);
+   /**
+    * constructor - just so that we can see that this is the class that is being instantiated....
+    */
+   public TestApp() {
+      super();
+      logger.info("constructing test application");
+   }
 
 }
