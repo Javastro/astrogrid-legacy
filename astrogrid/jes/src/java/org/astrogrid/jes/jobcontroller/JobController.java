@@ -405,9 +405,22 @@ public class JobController {
 	  * @see <code>String formatResponse( Job job, String aMessage )</code>
 	  **/      
     private String formatGoodResponse( Job job ) {
+		if( TRACE_ENABLED ) logger.debug( "formatGoodResponse() entry") ;
+		
+		String
+		    retValue = null ;
 		Message
+			message = null ;
+		try {
 			message = new Message( ASTROGRIDINFO_JOB_SUCCESSFULLY_SUBMITTED ) ; 
-        return formatResponse( job, message.toString() ) ;
+			retValue = formatResponse( job, message.toString() ) ;
+		}
+		finally {
+			if( TRACE_ENABLED ) logger.debug( "formatGoodResponse() exit") ;
+		}
+		
+        return  retValue ;
+        
     }
   
   
@@ -424,7 +437,16 @@ public class JobController {
 	  * @see <code>String formatResponse( Job job, String aMessage )</code>
 	  **/         
 	private String formatBadResponse( Job job, Message errorMessage ) {
-		return formatResponse( job, errorMessage.toString() ) ;
+		if( TRACE_ENABLED ) logger.debug( "formatBadResponse() entry") ;
+		String
+		   retValue = null ;
+		try {
+		   retValue = formatResponse( job, errorMessage.toString() ) ;
+		}
+		finally {
+		   if( TRACE_ENABLED ) logger.debug( "formatBadResponse() exit") ;
+		}		
+		return retValue ;
 	}   
 
 
@@ -446,7 +468,7 @@ public class JobController {
 	  * @see the appropriate properties' file.
 	  **/         
 	private String formatResponse( Job job, String aMessage ) {
-		if( TRACE_ENABLED ) logger.debug( "formatResponse() exit") ;
+		if( TRACE_ENABLED ) logger.debug( "formatResponse() entry") ;
 		
 		String 
 		   response = getProperty( SUBMIT_JOB_RESPONSE_TEMPLATE ) ;
@@ -505,7 +527,7 @@ public class JobController {
 	  * @see formatScheduleRequest( job )
 	  **/           	
 	private void informJobScheduler( Job job ) { 
-		if( TRACE_ENABLED ) logger.debug( "informJobScheduler() exit") ;
+		if( TRACE_ENABLED ) logger.debug( "informJobScheduler() entry") ;
 
 		try {
 
@@ -555,7 +577,7 @@ public class JobController {
 	  * @see the appropriate properties' file.
 	  **/         
 	private String formatScheduleRequest( Job job ) {
-		if( TRACE_ENABLED ) logger.debug( "formatScheduleRequest() exit") ;
+		if( TRACE_ENABLED ) logger.debug( "formatScheduleRequest() entry") ;
 		
 		String 
 		   response = getProperty( SCHEDULE_JOB_REQUEST_TEMPLATE ) ;
