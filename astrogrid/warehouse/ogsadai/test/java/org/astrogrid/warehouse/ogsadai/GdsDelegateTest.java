@@ -11,9 +11,6 @@ public class GdsDelegateTest extends TestCase {
 
   public GdsDelegateTest() {}
 		
-  private String factoryGsh1  
-      = "http://astrogrid.ast.cam.ac.uk:8080/ogsa/services/"
-      + "astrogrid/echo/EchoFactory";
   private String factoryGsh2
       = "http://hydra.star.le.ac.uk:8082/gdw/services/"
       + "ogsadai/GridDataServiceFactory";
@@ -105,6 +102,8 @@ public class GdsDelegateTest extends TestCase {
    */	
   public void testConnect() throws Exception {
     GdsDelegate gds = new GdsDelegate();
+    gds.setRegistryGsh(testRegistryUrl1);
+    gds.setFactoryGshFromRegistry();
 				
     // Make sure that service is initially unconnected and factory
     // port, service instance, and application port are null.
@@ -144,23 +143,19 @@ public class GdsDelegateTest extends TestCase {
    */
   public void testPerformSelect() throws Exception{
 		
-    // Make sure that query and result documents are null 
-    // before method is called.
-    try {
-      GdsDelegate gds3 = new GdsDelegate();
-      assertNull(this.document);
-      assertNull(this.result);
-      result = gds3.performSelect(query1);
+    // Set up the GDS delegate; make sure it knows where its factory is.
+    GdsDelegate gds = new GdsDelegate();
+    gds.setRegistryGsh(testRegistryUrl1);
+    gds.setFactoryGshFromRegistry();
+
+    // Run the query.
+    ExtensibilityType result = gds.performSelect(this.query1);
 		  
-      // Make sure that query and result documents are now not null.
-      assertNotNull(this.document);
-      assertNotNull(this.result);
-    }
-    catch (Exception e) {}
+    // Make sure that query and result documents are now not null.
+    assertNotNull(result);
 		
-    // Further tests|: write a query that returns a single sky survey 
+    // Further tests: write a query that returns a single sky survey 
     // object from the GDW so that an "assertEquals" method could be 
     // applied practically (current queries return too many sky objects).
-  } 
-  
+  }
 }
