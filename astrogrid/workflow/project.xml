@@ -18,6 +18,7 @@
   <inceptionYear>2002</inceptionYear>
   <package>org.astrogrid</package>
   <logo>http://www.astrogrid.org/images/AGlogo</logo>
+  <issueTrackingUrl>http://www.astrogrid.org/bugzilla/</issueTrackingUrl>
 
   <shortDescription>AstroGrid Workflow Components</shortDescription>
 
@@ -30,6 +31,9 @@
     <developerConnection>
       scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/workflow
     </developerConnection>
+    <url>
+    	http://www.astrogrid.org/viewcvs/astrogrid/workflow/
+    </url>
   </repository>
 
   <developers>

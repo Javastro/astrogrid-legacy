@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.17 2003/10/31 17:26:27 jdt Exp $ -->
+<!-- $Id: project.xml,v 1.18 2003/11/07 10:51:43 jdt Exp $ -->
 <project
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="maven-project.xsd">
@@ -21,9 +21,10 @@
   <logo>http://www.astrogrid.org/images/AGlogo</logo>
 
   <shortDescription>AstroGrid Job Management Components</shortDescription>
-  <description>Describe what JES does here</description>
+  <description> This work package provides AstroGrid with the facility to submit jobs. Jobs will initially consist of a query to be run asynchronously against one or more catalogues held at a particular data centre. Hence the package is closely associated with the AgCd08DataCentre package. The facility covers job submission, job scheduling and job monitoring. A job consists of one or more job steps, run in parallel or - where there is a dependency - in sequence, or some mixture of the two. Although a job may be submitted, it may not be until the job is scheduled that the location where an actual job step runs is identified. Job monitoring is important in simple terms to track the progress of a job through its job steps, e.g. in order to trigger subsequent steps.</description>
 
   <siteDirectory>/var/www/www/maven/build/jes</siteDirectory>
+  <issueTrackingUrl>http://www.astrogrid.org/bugzilla/</issueTrackingUrl>
   
   <repository>
     <connection>
@@ -32,6 +33,9 @@
     <developerConnection>
       scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/jes
     </developerConnection>
+    <url>
+    	http://www.astrogrid.org/viewcvs/astrogrid/jes/
+    </url>
   </repository>
   
   <developers>
