@@ -48,12 +48,8 @@
             <xsl:call-template name="format-cells">
                 <xsl:with-param name="count" select="count(ancestor::*)"/>
             </xsl:call-template>                    
-            <td valign="top" align="left">
-                <xsl:attribute name="background">  <!-- prevent gaps appearing in 'trunk' when parameters are viewed -->
-                    <xsl:value-of select="$image_path"/>sequence_trunk.gif
-                </xsl:attribute>            
-                <xsl:choose>          
-                            
+            <td valign="top" align="left">            
+                <xsl:choose>                                      
                     <xsl:when test="name() = 'sequence'">  <!--  SEQUENCE -->         
                         <xsl:element name="img">
                             <xsl:attribute name="src"><xsl:value-of select="$image_path"/>sequence.gif</xsl:attribute>
@@ -132,11 +128,11 @@
         <xsl:param name="count"/>                         <!-- No. of ancestors for this node = no. columns required prior to displaying it-->
         <xsl:param name="counter" select="1"/>            <!-- Loop counter (needs to increment so that table can be formatted correctly -->
             <xsl:if test="$counter != $count">             <!-- Test to see if column should display details -->
-                <td valign="top">              
-                    <xsl:for-each select="ancestor::*">    <!-- Display vertical sequence image in relevant column -->
+                <td valign="top">
+                    <xsl:for-each select="ancestor::*">    <!-- Display vertical sequence image in relevant column -->                    
                         <xsl:if test="name() = 'sequence'">                           
                             <xsl:if test="count(ancestor::*) = $counter ">
-                                <xsl:if test="count(following-sibling::*) != 0">
+                                <xsl:if test="count(following-sibling::*[not(name()='toolsAvailable')]) != 0">
                                     <xsl:attribute name="background">  <!-- prevent gaps appearing in 'trunk' when parameters are viewed -->
                                         <xsl:value-of select="$image_path"/>sequence_trunk.gif
                                     </xsl:attribute>                                              
@@ -150,7 +146,7 @@
                         </xsl:if>                                                                      
                         <xsl:if test="name() = 'flow'">                           
                             <xsl:if test="count(ancestor::*) = $counter ">
-                                <xsl:if test="count(following-sibling::*) != 0">
+                                <xsl:if test="count(following-sibling::*[not(name()='toolsAvailable')]) != 0">
                                     <xsl:attribute name="background">  <!-- prevent gaps appearing in 'trunk' when parameters are viewed -->
                                         <xsl:value-of select="$image_path"/>sequence_trunk.gif
                                     </xsl:attribute>                                              
@@ -163,16 +159,17 @@
                             </xsl:if>
                         </xsl:if>                                                                       
                     </xsl:for-each>                                                              
-                </td>            
+                </td>                          
              <xsl:call-template name="format-cells">
                  <xsl:with-param name="counter" select="$counter +1"/>
                  <xsl:with-param name="count" select="$count"/>
-             </xsl:call-template>
+             </xsl:call-template>             
         </xsl:if>
-        <xsl:if test="$counter = $count">
-            <td valign="top" align="center">
-                <xsl:choose>                        
-                    <xsl:when test="count(following-sibling::*) != 0">                     
+        <xsl:if test="$counter = $count">              
+            <td valign="top" align="center">             
+                <xsl:choose>
+                    <xsl:when test="name() = 'toolsAvailable'"/>                                                      
+                    <xsl:when test="count(following-sibling::*[not(name()='toolsAvailable')]) != 0">                                         
                         <xsl:attribute name="background">  <!-- prevent gaps appearing in 'trunk' when parameters are viewed -->
                             <xsl:value-of select="$image_path"/>sequence_trunk.gif
                         </xsl:attribute>                                              
@@ -193,33 +190,6 @@
             </td>
         </xsl:if>
     </xsl:template>
-
-
-    <!--+
-          | Match the community element.
-          +-->
-    <xsl:template match="community"/>
-    
-    
-    <!--+
-          | Match the documentation element.
-          | TODO: include as hidden parameters in page          
-          +-->
-    <xsl:template match="documentation"/>
-     
-    
-    <!--+
-          | Match the output element.
-          | TODO: include as hidden parameters in page          
-          +-->
-    <xsl:template match="output"/>
-    
-  <!--+
-          | Match the tool element.
-          | TODO: include as hidden parameters in page          
-          +-->
-    <xsl:template match="tool"></xsl:template>    
- 
 
  
     <xsl:include href="display-tool.xsl"/>
