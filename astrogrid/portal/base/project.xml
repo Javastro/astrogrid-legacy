@@ -15,9 +15,29 @@
   <dependencies>
     <!-- Portal Common -->
     <dependency>
-      <groupId>astrogrid-portal</groupId>
+      <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-portal-common</artifactId>
       <version>SNAPSHOT</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+    
+    <!-- Common -->
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-common</artifactId>
+      <version>SNAPSHOT</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+    
+    <!-- Log4J-->
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.8</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
