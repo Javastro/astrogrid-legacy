@@ -119,7 +119,7 @@
 			<xsd:complexContent>
 				<xsd:extension base="agwf:AbstractActivity">
 					<xsd:sequence>
-						<xsd:element ref="agwf:Activity" maxOccurs="unbounded"/>
+						<xsd:element ref="agwf:Activity" minOccurs="0" maxOccurs="unbounded"/>
 					</xsd:sequence>
 				</xsd:extension>
 			</xsd:complexContent>
