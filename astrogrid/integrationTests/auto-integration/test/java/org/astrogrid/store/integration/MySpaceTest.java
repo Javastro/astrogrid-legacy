@@ -1,4 +1,4 @@
-/*$Id: MySpaceTest.java,v 1.4 2004/04/15 15:38:56 mch Exp $
+/*$Id: MySpaceTest.java,v 1.5 2004/04/22 13:50:38 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -43,7 +43,7 @@ public class MySpaceTest extends StoreClientTestHelper {
       //MYSPACE = new Agsl("myspace:http://vm05.astrogrid.org:8080/astrogrid-mySpace/services/MySpaceManager");
       //MYSPACE = new Agsl("myspace:http://grendel12.roe.ac.uk:8080/MySpaceManager_v041/services/MySpaceManager");
       
-      path = "/avodemo/";
+      path = "avodemo/";
       testUser = new User("avodemo", "test.astrogrid.org", "Loony");
 
       //make sure user exists
@@ -76,6 +76,14 @@ public class MySpaceTest extends StoreClientTestHelper {
       assertGetFileWorks(StoreDelegateFactory.createDelegate(testUser, MYSPACE));
    }
 
+   /**
+    * Tests uploading file from local hard disk
+    */
+   public void testUpload() throws IOException {
+
+      assertUpload(StoreDelegateFactory.createDelegate(testUser, MYSPACE));
+   }
+   
    /** Tests making folders and paths and stuff.  A bit
     */
    public void testFolders() throws IOException {
@@ -121,6 +129,9 @@ public class MySpaceTest extends StoreClientTestHelper {
 
 /*
 $Log: MySpaceTest.java,v $
+Revision 1.5  2004/04/22 13:50:38  mch
+Fixes to tests and more tests
+
 Revision 1.4  2004/04/15 15:38:56  mch
 Changed address to localhost myspace
 
