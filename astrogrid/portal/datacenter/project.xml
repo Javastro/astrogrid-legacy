@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- -->
+<!DOCTYPE project [
+  <!ENTITY cocoon-deps SYSTEM "../cocoon-dependencies-nowar.xml">
+]>
+<!-- -->
 <project
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../maven-project.xsd">
@@ -8,24 +13,22 @@
   <name>AstroGrid Portal DataCenter</name>
 
   <dependencies>
+    <!-- Datacenter -->
     <dependency>
       <groupId>astrogrid-datacenter</groupId>
       <artifactId>astrogrid-datacenter-client</artifactId>
       <version>SNAPSHOT</version>
     </dependency>
+
+    <!-- MySpace -->
     <dependency>
       <groupId>astrogrid-mySpace</groupId>
       <artifactId>astrogrid-mySpace-delegate</artifactId>
       <version>it03</version>
-<!--
-      <groupId>astrogrid-mySpace</groupId>
-      <artifactId>astrogrid-mySpace</artifactId>
-      <version>SNAPSHOT</version>
-      <groupId>astrogrid-mySpace</groupId>
-      <artifactId>astrogrid-mySpace-delegate</artifactId>
-      <version>it03</version>
--->
     </dependency>
+    
+    <!-- DO NOT INCLUDE PARENT DEPENDENCIES IN WAR -->
+    &cocoon-deps;
   </dependencies>
   
   <build>
