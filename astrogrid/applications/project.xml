@@ -5,6 +5,7 @@
 
   <pomVersion>3</pomVersion>
   <id>astrogrid-applications</id>
+  <groupId>org.astrogrid</groupId>
   <name>AstroGrid Applications Integration</name>
 
   <currentVersion>$Name:  $</currentVersion>

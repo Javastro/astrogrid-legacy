@@ -4,8 +4,9 @@
   xsi:noNamespaceSchemaLocation="maven-project.xsd">
 
   <pomVersion>3</pomVersion>
-  <id>applications-client</id>
-  <name>AstroGrid Commone Execution Architecture client</name>
+  <id>astrogrid-applications-client</id>
+  <groupId>org.astrogrid</groupId>
+  <name>AstroGrid Common Execution Architecture client</name>
 
   <currentVersion>$Name:  $</currentVersion>
   
