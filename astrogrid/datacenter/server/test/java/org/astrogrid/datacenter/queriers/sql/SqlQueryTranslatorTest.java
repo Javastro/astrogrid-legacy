@@ -1,4 +1,4 @@
-/*$Id: SqlQueryTranslatorTest.java,v 1.16 2004/08/02 14:59:15 mch Exp $
+/*$Id: SqlQueryTranslatorTest.java,v 1.17 2004/08/05 09:55:54 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -53,13 +53,13 @@ public class SqlQueryTranslatorTest extends ServerTestCase {
 
     /** ADQLn - run as separate tests so all get checked even if one fails */
     public void test1Adql05() throws Exception { doFromFile("adql0.5", 1); }
-    public void test1Adql073() throws Exception { doFromFile("adql0.7.3", 1); }
+//    public void test1Adql073() throws Exception { doFromFile("adql0.7.3", 1); }
     public void test1Adql074() throws Exception { doFromFile("adql0.7.4", 1); }
     public void test1Sadql11() throws Exception { doFromFile("sadql1.1", 1); }
     
     /** ADQLn - run as separate tests so all get checked even if one fails */
     public void test2Adql05() throws Exception { doFromFile("adql0.5", 2); }
-    public void test2Adql073() throws Exception { doFromFile("adql0.7.3", 2); }
+//    public void test2Adql073() throws Exception { doFromFile("adql0.7.3", 2); }
     public void test2Sadql11() throws Exception { doFromFile("sadql1.1", 2); }
     
     /** ADQLn - run as separate tests so all get checked even if one fails */
@@ -99,6 +99,9 @@ public class SqlQueryTranslatorTest extends ServerTestCase {
 
 /*
 $Log: SqlQueryTranslatorTest.java,v $
+Revision 1.17  2004/08/05 09:55:54  mch
+Removed ADQL 073 tests (no longer used)
+
 Revision 1.16  2004/08/02 14:59:15  mch
 Fix to cone search test to correctly populate config
 
