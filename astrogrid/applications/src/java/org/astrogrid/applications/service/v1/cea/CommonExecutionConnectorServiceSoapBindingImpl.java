@@ -1,5 +1,5 @@
 /*
- * $Id: CommonExecutionConnectorServiceSoapBindingImpl.java,v 1.6 2004/04/22 15:18:00 pah Exp $
+ * $Id: CommonExecutionConnectorServiceSoapBindingImpl.java,v 1.7 2004/05/17 22:46:26 pah Exp $
  * 
  * Created on 25-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -57,7 +57,7 @@ public class CommonExecutionConnectorServiceSoapBindingImpl
       try {
          clec = new CommandLineApplicationController(servicedesc);
       }
-      catch (Exception e) {
+      catch (Throwable e) {
          
          logger.error("problem instatiating applicationController", e);
       }
@@ -78,6 +78,10 @@ public class CommonExecutionConnectorServiceSoapBindingImpl
          }
          catch (Exception e) {
            throw CeaFault.makeFault(e);
+         }
+         catch(Throwable e)
+         {
+            throw CeaFault.makeFault(new Exception("an Throwable occurred in execute", e));
          }
          return executionId;
    }
@@ -100,11 +104,16 @@ public class CommonExecutionConnectorServiceSoapBindingImpl
       ApplicationList outlist;
       try {
          outlist = clec.listApplications();
+         applist = Castor2Axis.convert(outlist);
       }
       catch (Exception e) {
          throw CeaFault.makeFault(e);
       }
-      applist = Castor2Axis.convert(outlist);
+      catch(Throwable e)
+      {
+         throw CeaFault.makeFault(new Exception("an Throwable occurred in listapplications", e));
+      }
+
       return applist;
    }
 
@@ -117,11 +126,15 @@ public class CommonExecutionConnectorServiceSoapBindingImpl
          org.astrogrid.applications.beans.v1.ApplicationBase ab;
          try {
             ab = clec.getApplicationDescription(applicationID);
+            result = Castor2Axis.convert(ab);
          }
          catch (Exception e) {
             throw CeaFault.makeFault(e);
          }
-         result = Castor2Axis.convert(ab);
+         catch(Throwable e)
+        {
+           throw CeaFault.makeFault(new Exception("an Throwable occurred in getapplication description", e));
+        }
          return result;
    }
 
@@ -138,7 +151,11 @@ public class CommonExecutionConnectorServiceSoapBindingImpl
          catch (Exception e) {
             throw CeaFault.makeFault(e);
          }
-         return result;
+         catch(Throwable e)
+         {
+            throw CeaFault.makeFault(new Exception("an Throwable occurred in query status", e));
+         }
+          return result;
    }
 
    /** 
