@@ -1,0 +1,363 @@
+package id2uvhxdifjf2w9difjj31o;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id2uvhxdifjf2w9difjj31o.node:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:design#Class#id2uvhxdifjf2w9difjj31o.node1:oiref><oihard>
+@__modelType reference 
+*/
+class reference2 {
+}/**
+@__ref <oiref:design#Class#id2uvhxdifjf2w9difjj31o.node3:oiref><oihard>
+@__modelType reference 
+*/
+class reference4 {
+}/**
+@__ref <oiref:design#Class#id2uvhxdifjf2w9difjj31o.node12:oiref><oihard>
+@__modelType reference 
+*/
+class reference13 {
+}/**
+@__ref <oiref:design#Class#id2uvhxdifjf2w9difjj31o.node23:oiref><oihard>
+@__modelType reference 
+*/
+class reference24 {
+}/**
+@__ref <oiref:design#Class#id2uvhxdifjf2w9difjj31o.node27:oiref><oihard>
+@__modelType reference 
+*/
+class reference28 {
+}/**
+@__ref <oiref:design#Class#id2uvhxdifjf2w9difjj31o.node37:oiref><oihard>
+@__modelType reference 
+*/
+class reference38 {
+}}/**
+
+@__tags
+@shapeType SequenceDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:design#Class#id2uvhxdifjf2w9difjj31o.node27:oiref>=210,700,627,59,1:oigroup>
+<oigroup:<oiref:design#Class#id2uvhxdifjf2w9difjj31o.node3.node20:oiref>=777,414,14,20,1:oigroup>
+<oigroup:<oiref:design#Class#id2uvhxdifjf2w9difjj31o.node3.link16:oiref>=:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id2uvhxdifjf2w9difjj31o.node3.link21:oiref>=795,480,330,16,0:oigroup>
+<oigroup:<oiref:design#Class#id2uvhxdifjf2w9difjj31o.node3.link21:oiref>=782,474,782,468,822,468,822,480,791,480:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id2uvhxdifjf2w9difjj31o.node3.link17:oiref>=795,386,292,16,0:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id2uvhxdifjf2w9difjj31o.node.link9:oiref>=216,185,198,16,0:oigroup>
+<oigroup:<oiref:design#Class#id2uvhxdifjf2w9difjj31o.node3.link17:oiref>=782,380,782,374,822,374,822,386,791,386:oigroup>
+<oigroup:<oiref:design#Class#id2uvhxdifjf2w9difjj31o.node3.node22:oiref>=777,474,14,20,1:oigroup>
+<oigroup:<oiref:design#Class#id2uvhxdifjf2w9difjj31o.node12:oiref>=220,210,269,76,1:oigroup>
+<oigroup:<oiref:design#Class#id2uvhxdifjf2w9difjj31o.node.node7:oiref>=207,135,14,20,1:oigroup>
+<oigroup:<oiref:design#Class#id2uvhxdifjf2w9difjj31o.node3.node18:oiref>=777,380,14,20,1:oigroup>
+<oigroup:<oiref:design#Class#id2uvhxdifjf2w9difjj31o.node:oiref>=160,30,90,665,1:oigroup>
+<oigroup:<oiref:design#Class#id2uvhxdifjf2w9difjj31o.node.link8:oiref>=:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id2uvhxdifjf2w9difjj31o.node3.link19:oiref>=795,420,328,16,0:oigroup>
+<oigroup:<oiref:design#Class#id2uvhxdifjf2w9difjj31o.node1.node26:oiref>=512,534,14,20,1:oigroup>
+<oigroup:<oiref:design#Class#id2uvhxdifjf2w9difjj31o.node3.node:oiref>=768,256,14,20,1:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id2uvhxdifjf2w9difjj31o.node1.link:oiref>=530,236,159,16,0:oigroup>
+<oigroup:<oiref:design#Class#id2uvhxdifjf2w9difjj31o.node3.link19:oiref>=782,414,782,408,822,408,822,420,791,420:oigroup>
+<oigroup:<oiref:design#Class#id2uvhxdifjf2w9difjj31o.node.link9:oiref>=212,205,512,205:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id2uvhxdifjf2w9difjj31o.node3.link25:oiref>=532,514,232,16,0:oigroup>
+<oigroup:<oiref:design#Class#id2uvhxdifjf2w9difjj31o.node3.link25:oiref>=768,534,526,534:oigroup>
+<oigroup:<oiref:design#Class#id2uvhxdifjf2w9difjj31o.node.node30:oiref>=198,595,14,20,1:oigroup>
+<oigroup:<oiref:design#Class#id2uvhxdifjf2w9difjj31o.node37:oiref>=0,50,150,570,0:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id2uvhxdifjf2w9difjj31o.node1.link29:oiref>=382,575,126,16,0:oigroup>
+<oigroup:<oiref:design#Class#id2uvhxdifjf2w9difjj31o.node1.link:oiref>=526,256,768,256:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id2uvhxdifjf2w9difjj31o.node3.link31:oiref>=795,344,400,16,0:oigroup>
+<oigroup:<oiref:design#Class#id2uvhxdifjf2w9difjj31o.node.link:oiref>=212,135,212,129,252,129,252,141,221,141:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id2uvhxdifjf2w9difjj31o.node.link:oiref>=225,141,168,16,0:oigroup>
+<oigroup:<oiref:design#Class#id2uvhxdifjf2w9difjj31o.node1.link29:oiref>=512,595,212,595:oigroup>
+<oigroup:<oiref:design#Class#id2uvhxdifjf2w9difjj31o.node3.link31:oiref>=782,338,782,332,822,332,822,344,791,344:oigroup>
+<oigroup:<oiref:design#Class#id2uvhxdifjf2w9difjj31o.node.link10:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id2uvhxdifjf2w9difjj31o.node3.node32:oiref>=777,338,14,20,1:oigroup>
+<oigroup:<oiref:design#Class#id2uvhxdifjf2w9difjj31o.node1:oiref>=440,30,158,665,1:oigroup>
+<oigroup:<oiref:design#Class#id2uvhxdifjf2w9difjj31o.node1.link14:oiref>=:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id2uvhxdifjf2w9difjj31o.node3.link:oiref>=795,309,241,16,0:oigroup>
+<oigroup:<oiref:design#Class#id2uvhxdifjf2w9difjj31o.node23:oiref>=790,120,402,144,1:oigroup>
+<oigroup:<oiref:design#Class#id2uvhxdifjf2w9difjj31o.node3:oiref>=730,30,91,665,1:oigroup>
+<oigroup:<oiref:design#Class#id2uvhxdifjf2w9difjj31o.node3.link:oiref>=782,303,782,297,822,297,822,309,791,309:oigroup>
+<oigroup:<oiref:design#Class#id2uvhxdifjf2w9difjj31o.node1.node:oiref>=512,205,14,20,1:oigroup>
+<oigroup:<oiref:design#Class#id2uvhxdifjf2w9difjj31o.node3.node15:oiref>=777,303,14,20,1:oigroup>
+*/
+class __positions {
+}/**
+@shapeType Object
+@__modelType node
+@name DataCenter
+@stereotype actor 
+*/
+class node {
+/**
+@shapeType MessageLink
+@__modelType link
+@__ref <oiref:design#Class#id2uvhxdifjf2w9difjj31o.node:oiref><oihard>
+@sendingInstant 135
+@processingDuration 20
+@sequenceNumber 1
+@diagram_uniqe_name <oiref:design#Class#id2uvhxdifjf2w9difjj31o.diagram:oiref>
+@label Request come in from JES 
+*/
+class link {
+}/**
+@shapeType Activation
+@__modelType node
+@name Activation1
+@activationMessage <oiref:design#Class#id2uvhxdifjf2w9difjj31o.node.link:oiref> 
+*/
+class node7 {
+}/**
+@shapeType CollaborationLink
+@__modelType link
+@__ref <oiref:design#Class#id2uvhxdifjf2w9difjj31o.node:oiref><oihard> 
+*/
+class link8 {
+}/**
+@shapeType MessageLink
+@__modelType link
+@__ref <oiref:design#Class#id2uvhxdifjf2w9difjj31o.node1:oiref><oihard>
+@sendingInstant 205
+@processingDuration 20
+@sequenceNumber 2
+@diagram_uniqe_name <oiref:design#Class#id2uvhxdifjf2w9difjj31o.diagram:oiref>
+@label Call Authenticate on WebService 
+*/
+class link9 {
+}/**
+@shapeType CollaborationLink
+@__modelType link
+@__ref <oiref:design#Class#id2uvhxdifjf2w9difjj31o.node1:oiref><oihard> 
+*/
+class link10 {
+}/**
+@shapeType Activation
+@__modelType node
+@name Activation9
+@activationMessage <oiref:design#Class#id2uvhxdifjf2w9difjj31o.node1.link29:oiref> 
+*/
+class node30 {
+}}/**
+@shapeType Object
+@__modelType node
+@name Authorization WebService 
+*/
+class node1 {
+/**
+@shapeType Activation
+@__modelType node
+@name Activation2
+@activationMessage <oiref:design#Class#id2uvhxdifjf2w9difjj31o.node.link9:oiref> 
+*/
+class node {
+}/**
+@shapeType MessageLink
+@__modelType link
+@__ref <oiref:design#Class#id2uvhxdifjf2w9difjj31o.node3:oiref><oihard>
+@sendingInstant 256
+@processingDuration 20
+@sequenceNumber 3
+@diagram_uniqe_name <oiref:design#Class#id2uvhxdifjf2w9difjj31o.diagram:oiref>
+@label Query the CommunityDB. 
+*/
+class link {
+}/**
+@shapeType CollaborationLink
+@__modelType link
+@__ref <oiref:design#Class#id2uvhxdifjf2w9difjj31o.node3:oiref><oihard> 
+*/
+class link14 {
+}/**
+@shapeType Activation
+@__modelType node
+@name Activation8
+@activationMessage <oiref:design#Class#id2uvhxdifjf2w9difjj31o.node3.link25:oiref> 
+*/
+class node26 {
+}/**
+@shapeType MessageLink
+@__modelType link
+@__ref <oiref:design#Class#id2uvhxdifjf2w9difjj31o.node:oiref><oihard>
+@sendingInstant 595
+@processingDuration 20
+@sequenceNumber 10
+@diagram_uniqe_name <oiref:design#Class#id2uvhxdifjf2w9difjj31o.diagram:oiref>
+@label Return the results 
+*/
+class link29 {
+}}/**
+@shapeType Object
+@__modelType node
+@name CommunityDB 
+*/
+class node3 {
+/**
+@shapeType Activation
+@__modelType node
+@name Activation3
+@activationMessage <oiref:design#Class#id2uvhxdifjf2w9difjj31o.node1.link:oiref> 
+*/
+class node {
+}/**
+@shapeType MessageLink
+@__modelType link
+@__ref <oiref:design#Class#id2uvhxdifjf2w9difjj31o.node3:oiref><oihard>
+@sendingInstant 303
+@processingDuration 20
+@sequenceNumber 4
+@diagram_uniqe_name <oiref:design#Class#id2uvhxdifjf2w9difjj31o.diagram:oiref>
+@label Lookup policy by userid for that resource 
+*/
+class link {
+}/**
+@shapeType Activation
+@__modelType node
+@name Activation4
+@activationMessage <oiref:design#Class#id2uvhxdifjf2w9difjj31o.node3.link:oiref> 
+*/
+class node15 {
+}/**
+@shapeType CollaborationLink
+@__modelType link
+@__ref <oiref:design#Class#id2uvhxdifjf2w9difjj31o.node3:oiref><oihard> 
+*/
+class link16 {
+}/**
+@shapeType MessageLink
+@__modelType link
+@__ref <oiref:design#Class#id2uvhxdifjf2w9difjj31o.node3:oiref><oihard>
+@sendingInstant 380
+@processingDuration 20
+@sequenceNumber 6
+@diagram_uniqe_name <oiref:design#Class#id2uvhxdifjf2w9difjj31o.diagram:oiref>
+@label if userid not found lookup policy by resourcename
+@minProcessingDuration 20 
+*/
+class link17 {
+}/**
+@shapeType Activation
+@__modelType node
+@name Activation5
+@activationMessage <oiref:design#Class#id2uvhxdifjf2w9difjj31o.node3.link17:oiref> 
+*/
+class node18 {
+}/**
+@shapeType MessageLink
+@__modelType link
+@__ref <oiref:design#Class#id2uvhxdifjf2w9difjj31o.node3:oiref><oihard>
+@sendingInstant 414
+@processingDuration 20
+@sequenceNumber 7
+@diagram_uniqe_name <oiref:design#Class#id2uvhxdifjf2w9difjj31o.diagram:oiref>
+@label If resourcename not found lookup policy by resourcetype 
+*/
+class link19 {
+}/**
+@shapeType Activation
+@__modelType node
+@name Activation6
+@activationMessage <oiref:design#Class#id2uvhxdifjf2w9difjj31o.node3.link19:oiref> 
+*/
+class node20 {
+}/**
+@shapeType MessageLink
+@__modelType link
+@__ref <oiref:design#Class#id2uvhxdifjf2w9difjj31o.node3:oiref><oihard>
+@sendingInstant 474
+@processingDuration 20
+@sequenceNumber 8
+@diagram_uniqe_name <oiref:design#Class#id2uvhxdifjf2w9difjj31o.diagram:oiref>
+@label if resourcetype not found look at the overall system policy 
+*/
+class link21 {
+}/**
+@shapeType Activation
+@__modelType node
+@name Activation7
+@activationMessage <oiref:design#Class#id2uvhxdifjf2w9difjj31o.node3.link21:oiref> 
+*/
+class node22 {
+}/**
+@shapeType MessageLink
+@__modelType link
+@__ref <oiref:design#Class#id2uvhxdifjf2w9difjj31o.node1:oiref><oihard>
+@sendingInstant 534
+@processingDuration 20
+@sequenceNumber 9
+@diagram_uniqe_name <oiref:design#Class#id2uvhxdifjf2w9difjj31o.diagram:oiref>
+@label Return the Policy column informations. 
+*/
+class link25 {
+}/**
+@shapeType MessageLink
+@__modelType link
+@__ref <oiref:design#Class#id2uvhxdifjf2w9difjj31o.node3:oiref><oihard>
+@sendingInstant 338
+@processingDuration 20
+@sequenceNumber 5
+@diagram_uniqe_name <oiref:design#Class#id2uvhxdifjf2w9difjj31o.diagram:oiref>
+@label Might lookup policy by userid for the system see if he is an admin person. 
+*/
+class link31 {
+}/**
+@shapeType Activation
+@__modelType node
+@name Activation10
+@activationMessage <oiref:design#Class#id2uvhxdifjf2w9difjj31o.node3.link31:oiref> 
+*/
+class node32 {
+}}/**
+@shapeType Note
+@__modelType node
+@name Note1
+@text This is calling it's local authorization
+webservice. Passing userid,resourcename,
+systemcode/resroucetype.  
+ex: (kmb@mssl,LeicesterDTC,DTC) 
+*/
+class node12 {
+}/**
+@shapeType Note
+@__modelType node
+@name Note2
+@text I was thinking that their must be a requried system level
+policy.  And the admin can also define a resourceType policy
+such as a DataCenter.  And he can define a specefic resourceName
+such as LeicesterDataCenter.  And if wanted can define a 
+particular policy for a user of that resource.  Eventually I was thinking
+the resourceType and resourceName can be pulled from 
+the registry and have a default policy applied. Even though these are
+numbered 4-8 this is probably just 1 query (I hope). 
+*/
+class node23 {
+}/**
+@shapeType Note
+@__modelType node
+@name Note3
+@text The columns in the database that is being returned; I was thinking would be some boolean type columns with
+"Read,Write,Execute,Access,Assign" (Assign is sort of new, but says the user can assign other users to
+this resource. 
+*/
+class node27 {
+}/**
+@shapeType Note
+@__modelType node
+@name Note4
+@text This scenario should be able to apply for all systems- JES, DataCenter, Portal, and lets assume for the moment even Myspace (but I think that will change doesn't quite fit for Myspace,
+because of duplicate entries in Myspace and CommunityDB).  I would also make a wild assumptions userid's or I should I say usernames if they are our e-mail addresses will be
+unique everywhere.  In this scenario you can also see that in a way ResourceName and ResourceType are really like Groups.  Same way for the whole system is nothing like one big community group. 
+*/
+class node37 {
+}

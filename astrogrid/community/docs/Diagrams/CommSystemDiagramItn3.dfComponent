@@ -1,0 +1,180 @@
+package id4q6mddi7bhhxgdi7cgsis;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id4q6mddi7bhhxgdi7cgsis.node43:oiref><oihard>
+@__modelType reference 
+*/
+class reference44 {
+}/**
+@__ref <oiref:design#Class#id4q6mddi7bhhxgdi7cgsis.node1:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:design#Class#id4q6mddi7bhhxgdi7cgsis.node:oiref><oihard>
+@__modelType reference 
+*/
+class reference2 {
+}/**
+@__ref <oiref:design#Class#id4q6mddi7bhhxgdi7cgsis.node35:oiref><oihard>
+@__modelType reference 
+*/
+class reference36 {
+}}/**
+
+@__tags
+@shapeType ComponentDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions 
+<oigroup:<oiref:design#Class#id4q6mddi7bhhxgdi7cgsis.node:oiref>=840,560,100,100,1:oigroup>
+<oigroup:<oiref:design#Class#id4q6mddi7bhhxgdi7cgsis.node43.node50:oiref>=480,240,134,100,1:oigroup>
+<oigroup:<oiref:design#Class#id4q6mddi7bhhxgdi7cgsis.node43.node46:oiref>=110,390,100,100,1:oigroup>
+<oigroup:<oiref:design#Class#id4q6mddi7bhhxgdi7cgsis.node43.node47:oiref>=560,520,100,100,1:oigroup>
+<oigroup:<oiref:design#Class#id4q6mddi7bhhxgdi7cgsis.node43.node33:oiref>=90,540,116,100,1:oigroup>
+<oigroup:Composite#label#<oiref:design#Class#id4q6mddi7bhhxgdi7cgsis.node43.node47.link:oiref>=591,420,58,16,0:oigroup>
+<oigroup:<oiref:design#Class#id4q6mddi7bhhxgdi7cgsis.node43:oiref>=40,180,660,480,0:oigroup>
+<oigroup:<oiref:design#Class#id4q6mddi7bhhxgdi7cgsis.node43.node2:oiref>=160,240,141,60,1:oigroup>
+<oigroup:<oiref:design#Class#id4q6mddi7bhhxgdi7cgsis.node43.node47.link:oiref>=587,520,587,340:oigroup>
+<oigroup:<oiref:design#Class#id4q6mddi7bhhxgdi7cgsis.node35:oiref>=840,370,134,100,1:oigroup>
+<oigroup:<oiref:design#Class#id4q6mddi7bhhxgdi7cgsis.node43.node50.node35.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id4q6mddi7bhhxgdi7cgsis.node43.node45.link:oiref>=350,530,560,340:oigroup>
+<oigroup:<oiref:design#Class#id4q6mddi7bhhxgdi7cgsis.node1:oiref>=80,40,100,100,1:oigroup>
+<oigroup:<oiref:design#Class#id4q6mddi7bhhxgdi7cgsis.node43.node46.link:oiref>=160,390,506,340:oigroup>
+<oigroup:Composite#label#<oiref:design#Class#id4q6mddi7bhhxgdi7cgsis.node1.link10:oiref>=29,150,93,16,0:oigroup>
+<oigroup:<oiref:design#Class#id4q6mddi7bhhxgdi7cgsis.node43.node33.link:oiref>=148,540,533,340:oigroup>
+<oigroup:<oiref:design#Class#id4q6mddi7bhhxgdi7cgsis.node.link:oiref>=890,560,890,470:oigroup>
+<oigroup:Composite#label#<oiref:design#Class#id4q6mddi7bhhxgdi7cgsis.node.link:oiref>=894,505,178,16,0:oigroup>
+<oigroup:<oiref:design#Class#id4q6mddi7bhhxgdi7cgsis.node43.node45:oiref>=300,530,100,100,1:oigroup>
+<oigroup:<oiref:design#Class#id4q6mddi7bhhxgdi7cgsis.node43.node.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id4q6mddi7bhhxgdi7cgsis.node1.link10:oiref>=113,140,243,240:oigroup>
+<oigroup:Composite#label#<oiref:design#Class#id4q6mddi7bhhxgdi7cgsis.node43.node45.link:oiref>=393,415,58,16,0:oigroup>
+<oigroup:Composite#label#<oiref:design#Class#id4q6mddi7bhhxgdi7cgsis.node1.link:oiref>=266,150,152,16,0:oigroup>
+<oigroup:<oiref:design#Class#id4q6mddi7bhhxgdi7cgsis.node43.node50.link:oiref>=480,270,301,270:oigroup>
+<oigroup:<oiref:design#Class#id4q6mddi7bhhxgdi7cgsis.node1.link:oiref>=146,140,532,240:oigroup>
+<oigroup:Composite#label#<oiref:design#Class#id4q6mddi7bhhxgdi7cgsis.node43.node46.link:oiref>=155,345,174,16,0:oigroup>
+*/
+class __positions {
+}/**
+@shapeType Subsystem
+@__modelType node
+@name Community 
+*/
+class node43 {
+/**
+@shapeType Subsystem
+@__modelType node
+@name Registry(s) 1-*
+*/
+class node45 {
+/**
+@shapeType DependencyLink
+@__modelType link
+@__ref <oiref:design#Class#id4q6mddi7bhhxgdi7cgsis.node43.node50:oiref><oihard>
+@label Authorize 
+*/
+class link {
+}}/**
+@shapeType Subsystem
+@__modelType node
+@name JES(s) 1-*
+*/
+class node46 {
+/**
+@shapeType DependencyLink
+@__modelType link
+@__ref <oiref:design#Class#id4q6mddi7bhhxgdi7cgsis.node43.node50:oiref><oihard>
+@label Authorize & check Authenticate*/
+class link {
+}}/**
+@shapeType Subsystem
+@__modelType node
+@name MySpace 1
+*/
+class node47 {
+/**
+@shapeType DependencyLink
+@__modelType link
+@__ref <oiref:design#Class#id4q6mddi7bhhxgdi7cgsis.node43.node50:oiref><oihard>
+@label Authorize 
+*/
+class link {
+}}/**
+@shapeType Subsystem
+@__modelType node
+@name AuthorizeWebService
+*/
+class node50 {
+/**
+@shapeType DependencyLink
+@__modelType link
+@__ref <oiref:design#Class#id4q6mddi7bhhxgdi7cgsis.node43.node2:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Component
+@__modelType node
+@name CommunityDB
+*/
+class node2 {
+}/**
+@shapeType Subsystem
+@__modelType node
+@name DataCenter(s) 0-*
+*/
+class node33 {
+/**
+@shapeType DependencyLink
+@__modelType link
+@__ref <oiref:design#Class#id4q6mddi7bhhxgdi7cgsis.node43.node50:oiref><oihard> 
+*/
+class link {
+}}}/**
+@shapeType Subsystem
+@__modelType node
+@name DataCenter(s) 
+*/
+class node {
+/**
+@shapeType DependencyLink
+@__modelType link
+@__ref <oiref:design#Class#id4q6mddi7bhhxgdi7cgsis.node35:oiref><oihard>
+@label Authorize in it's own community 
+*/
+class link {
+}}/**
+@shapeType Subsystem
+@__modelType node
+@name Portal
+*/
+class node1 {
+/**
+@shapeType DependencyLink
+@__modelType link
+@__ref <oiref:design#Class#id4q6mddi7bhhxgdi7cgsis.node43.node50:oiref><oihard>
+@label Authenticate and Authorize*/
+class link {
+}/**
+@shapeType DependencyLink
+@__modelType link
+@__ref <oiref:design#Class#id4q6mddi7bhhxgdi7cgsis.node43.node2:oiref><oihard>
+@label Persist Storage 
+*/
+class link10 {
+}}/**
+@shapeType Subsystem
+@__modelType node
+@name AuthorizeWebService
+*/
+class node35 {
+}

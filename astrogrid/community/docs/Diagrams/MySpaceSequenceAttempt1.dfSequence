@@ -1,0 +1,274 @@
+package id1s9widifjf2w9difkot7f;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id1s9widifjf2w9difkot7f.node:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:design#Class#id1s9widifjf2w9difkot7f.node39:oiref><oihard>
+@__modelType reference 
+*/
+class reference40 {
+}/**
+@__ref <oiref:design#Class#id1s9widifjf2w9difkot7f.node50:oiref><oihard>
+@__modelType reference 
+*/
+class reference51 {
+}/**
+@__ref <oiref:design#Class#id1s9widifjf2w9difkot7f.node56:oiref><oihard>
+@__modelType reference 
+*/
+class reference57 {
+}/**
+@__ref <oiref:design#Class#id1s9widifjf2w9difkot7f.node61:oiref><oihard>
+@__modelType reference 
+*/
+class reference62 {
+}/**
+@__ref <oiref:design#Class#id1s9widifjf2w9difkot7f.node63:oiref><oihard>
+@__modelType reference 
+*/
+class reference64 {
+}}/**
+
+@__tags
+@shapeType SequenceDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:design#Class#id1s9widifjf2w9difkot7f.node39.node:oiref>=498,141,14,20,1:oigroup>
+<oigroup:<oiref:design#Class#id1s9widifjf2w9difkot7f.node39.link:oiref>=512,187,512,181,552,181,552,193,521,193:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id1s9widifjf2w9difkot7f.node.link46:oiref>=231,268,235,16,0:oigroup>
+<oigroup:<oiref:design#Class#id1s9widifjf2w9difkot7f.node39.link60:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id1s9widifjf2w9difkot7f.node39.link59:oiref>=512,450,1028,450:oigroup>
+<oigroup:<oiref:design#Class#id1s9widifjf2w9difkot7f.node39.link43:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id1s9widifjf2w9difkot7f.node39.link52:oiref>=512,343,832,343:oigroup>
+<oigroup:<oiref:design#Class#id1s9widifjf2w9difkot7f.node39.link44:oiref>=498,245,227,245:oigroup>
+<oigroup:<oiref:design#Class#id1s9widifjf2w9difkot7f.node56:oiref>=990,30,90,520,1:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id1s9widifjf2w9difkot7f.node50.link:oiref>=609,378,219,16,0:oigroup>
+<oigroup:<oiref:design#Class#id1s9widifjf2w9difkot7f.node39.node58:oiref>=498,398,14,20,1:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id1s9widifjf2w9difkot7f.node39.link52:oiref>=516,323,256,16,0:oigroup>
+<oigroup:<oiref:design#Class#id1s9widifjf2w9difkot7f.node39:oiref>=440,30,130,520,1:oigroup>
+<oigroup:<oiref:design#Class#id1s9widifjf2w9difkot7f.node39.node47:oiref>=498,288,14,20,1:oigroup>
+<oigroup:<oiref:design#Class#id1s9widifjf2w9difkot7f.node39.node42:oiref>=507,187,14,20,1:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id1s9widifjf2w9difkot7f.node39.link44:oiref>=119,225,375,16,0:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id1s9widifjf2w9difkot7f.node39.link:oiref>=525,193,186,16,0:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id1s9widifjf2w9difkot7f.node.link:oiref>=231,121,209,16,0:oigroup>
+<oigroup:<oiref:design#Class#id1s9widifjf2w9difkot7f.node50.node:oiref>=832,343,14,20,1:oigroup>
+<oigroup:<oiref:design#Class#id1s9widifjf2w9difkot7f.node56.node:oiref>=1028,450,14,20,1:oigroup>
+<oigroup:<oiref:design#Class#id1s9widifjf2w9difkot7f.node.link:oiref>=227,141,498,141:oigroup>
+<oigroup:<oiref:design#Class#id1s9widifjf2w9difkot7f.node39.link53:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id1s9widifjf2w9difkot7f.node63:oiref>=0,53,110,267,0:oigroup>
+<oigroup:<oiref:design#Class#id1s9widifjf2w9difkot7f.node.link41:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id1s9widifjf2w9difkot7f.node.link46:oiref>=227,288,498,288:oigroup>
+<oigroup:<oiref:design#Class#id1s9widifjf2w9difkot7f.node61:oiref>=520,220,270,90,0:oigroup>
+<oigroup:<oiref:design#Class#id1s9widifjf2w9difkot7f.node50:oiref>=780,30,118,520,1:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id1s9widifjf2w9difkot7f.node39.link59:oiref>=516,430,355,16,0:oigroup>
+<oigroup:<oiref:design#Class#id1s9widifjf2w9difkot7f.node.node45:oiref>=213,245,14,20,1:oigroup>
+<oigroup:<oiref:design#Class#id1s9widifjf2w9difkot7f.node:oiref>=140,30,161,520,1:oigroup>
+<oigroup:<oiref:design#Class#id1s9widifjf2w9difkot7f.node50.link:oiref>=832,398,512,398:oigroup>
+*/
+class __positions {
+}/**
+@shapeType Object
+@__modelType node
+@name MySpace User (non-admin)
+@stereotype actor 
+*/
+class node {
+/**
+@shapeType MessageLink
+@__modelType link
+@__ref <oiref:design#Class#id1s9widifjf2w9difkot7f.node39:oiref><oihard>
+@sendingInstant 141
+@processingDuration 20
+@sequenceNumber 1
+@diagram_uniqe_name <oiref:design#Class#id1s9widifjf2w9difkot7f.diagram:oiref>
+@label Logs in his community Admin site. 
+*/
+class link {
+}/**
+@shapeType CollaborationLink
+@__modelType link
+@__ref <oiref:design#Class#id1s9widifjf2w9difkot7f.node39:oiref><oihard> 
+*/
+class link41 {
+}/**
+@shapeType Activation
+@__modelType node
+@name Activation3
+@activationMessage <oiref:design#Class#id1s9widifjf2w9difkot7f.node39.link44:oiref> 
+*/
+class node45 {
+}/**
+@shapeType MessageLink
+@__modelType link
+@__ref <oiref:design#Class#id1s9widifjf2w9difkot7f.node39:oiref><oihard>
+@sendingInstant 288
+@processingDuration 20
+@sequenceNumber 4
+@diagram_uniqe_name <oiref:design#Class#id1s9widifjf2w9difkot7f.diagram:oiref>
+@label User assigns a userid to this resource. 
+*/
+class link46 {
+}}/**
+@shapeType Object
+@__modelType node
+@name Admin Web Interface 
+*/
+class node39 {
+/**
+@shapeType Activation
+@__modelType node
+@name Activation1
+@activationMessage <oiref:design#Class#id1s9widifjf2w9difkot7f.node.link:oiref> 
+*/
+class node {
+}/**
+@shapeType MessageLink
+@__modelType link
+@__ref <oiref:design#Class#id1s9widifjf2w9difkot7f.node39:oiref><oihard>
+@sendingInstant 187
+@processingDuration 20
+@sequenceNumber 2
+@diagram_uniqe_name <oiref:design#Class#id1s9widifjf2w9difkot7f.diagram:oiref>
+@label Authenticates and logs him in. 
+*/
+class link {
+}/**
+@shapeType Activation
+@__modelType node
+@name Activation2
+@activationMessage <oiref:design#Class#id1s9widifjf2w9difkot7f.node39.link:oiref> 
+*/
+class node42 {
+}/**
+@shapeType CollaborationLink
+@__modelType link
+@__ref <oiref:design#Class#id1s9widifjf2w9difkot7f.node39:oiref><oihard> 
+*/
+class link43 {
+}/**
+@shapeType MessageLink
+@__modelType link
+@__ref <oiref:design#Class#id1s9widifjf2w9difkot7f.node:oiref><oihard>
+@sendingInstant 245
+@processingDuration 20
+@sequenceNumber 3
+@diagram_uniqe_name <oiref:design#Class#id1s9widifjf2w9difkot7f.diagram:oiref>
+@label User logged in and can see his Myspace resources VOTable id's 
+*/
+class link44 {
+}/**
+@shapeType Activation
+@__modelType node
+@name Activation4
+@activationMessage <oiref:design#Class#id1s9widifjf2w9difkot7f.node.link46:oiref> 
+*/
+class node47 {
+}/**
+@shapeType MessageLink
+@__modelType link
+@__ref <oiref:design#Class#id1s9widifjf2w9difkot7f.node50:oiref><oihard>
+@sendingInstant 343
+@processingDuration 20
+@sequenceNumber 5
+@diagram_uniqe_name <oiref:design#Class#id1s9widifjf2w9difkot7f.diagram:oiref>
+@label Where is myspace for the assigned userid. 
+*/
+class link52 {
+}/**
+@shapeType CollaborationLink
+@__modelType link
+@__ref <oiref:design#Class#id1s9widifjf2w9difkot7f.node50:oiref><oihard> 
+*/
+class link53 {
+}/**
+@shapeType Activation
+@__modelType node
+@name Activation6
+@activationMessage <oiref:design#Class#id1s9widifjf2w9difkot7f.node50.link:oiref> 
+*/
+class node58 {
+}/**
+@shapeType MessageLink
+@__modelType link
+@__ref <oiref:design#Class#id1s9widifjf2w9difkot7f.node56:oiref><oihard>
+@sendingInstant 450
+@processingDuration 20
+@sequenceNumber 7
+@diagram_uniqe_name <oiref:design#Class#id1s9widifjf2w9difkot7f.diagram:oiref>
+@label Go tell the assigned userid's Myspace about new VOTable id. 
+*/
+class link59 {
+}/**
+@shapeType CollaborationLink
+@__modelType link
+@__ref <oiref:design#Class#id1s9widifjf2w9difkot7f.node56:oiref><oihard> 
+*/
+class link60 {
+}}/**
+@shapeType Object
+@__modelType node
+@name MySpace(Registry) 
+*/
+class node50 {
+/**
+@shapeType Activation
+@__modelType node
+@name Activation5
+@activationMessage <oiref:design#Class#id1s9widifjf2w9difkot7f.node39.link52:oiref> 
+*/
+class node {
+}/**
+@shapeType MessageLink
+@__modelType link
+@__ref <oiref:design#Class#id1s9widifjf2w9difkot7f.node39:oiref><oihard>
+@sendingInstant 398
+@processingDuration 20
+@sequenceNumber 6
+@diagram_uniqe_name <oiref:design#Class#id1s9widifjf2w9difkot7f.diagram:oiref>
+@label Tells him where Myspace location is 
+*/
+class link {
+}}/**
+@shapeType Object
+@__modelType node
+@name MySpace 
+*/
+class node56 {
+/**
+@shapeType Activation
+@__modelType node
+@name Activation7
+@activationMessage <oiref:design#Class#id1s9widifjf2w9difkot7f.node39.link59:oiref> 
+*/
+class node {
+}}/**
+@shapeType Note
+@__modelType node
+@name Note1
+@text NOt real sure sort of guess 5-7.  Will I know
+where the Myspace Registry is that will be able to
+tell me where the Myspace server is for this 
+assigned userid. 
+*/
+class node61 {
+}/**
+@shapeType Note
+@__modelType node
+@name Note2
+@text This is an attempt at figuring out how a Myspace user will assign one of his owned resources to another individual. 
+*/
+class node63 {
+}
