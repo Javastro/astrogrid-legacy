@@ -11,10 +11,11 @@
 
 package org.astrogrid.portal.workflow.design;
 
-import java.net.*; 
+// import java.net.*; 
 import org.w3c.dom.* ;
 import org.apache.log4j.Logger ;
 import java.text.MessageFormat ;
+import org.apache.axis.utils.XMLUtils ;
 
 /**
  * The <code>Parameter</code> class represents... 
@@ -76,14 +77,11 @@ public class Parameter {
             // If the parameter is instream, the parameter contents is given by the node value, but...
             // If the parameter is a remote reference (to a file within MySpace),
             // then the location is set by the node value...           
-            //bug# 106
-            debug( "element.getNodeValue():" + element.getNodeValue() ); 
-            debug( "element.getFirstChild().getNodeValue():" + element.getFirstChild().getNodeValue() );
-            
+            //bug# 106...           
             if( this.isRemoteReference() ) {
-                    
-               this.location = element.getFirstChild().getNodeValue() ;
-               //bug# 106     
+                
+               //bug# 106    
+               this.location = XMLUtils.getChildCharacterData( element ) ;   
                if( location == null ) {
                    location = "" ;
                }
@@ -96,8 +94,8 @@ public class Parameter {
             }
             else {
                 
-               this.contents = element.getFirstChild().getNodeValue() ;
-               //bug# 106
+               //bug# 106 
+               this.contents = XMLUtils.getChildCharacterData( element ) ;
                if( contents == null ) {
                    contents = "" ;
                }
@@ -119,7 +117,7 @@ public class Parameter {
                     element = (Element) nodeList.item(i) ;
                 
                     if ( element.getTagName().equals( WorkflowDD.DOCUMENTATION_ELEMENT ) ) {
-                        this.documentation = element.getNodeValue() ;  
+                        this.documentation = XMLUtils.getChildCharacterData( element ) ;  
                     }
                     
                 } // end if

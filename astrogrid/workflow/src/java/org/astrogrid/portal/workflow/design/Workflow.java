@@ -348,10 +348,12 @@ public class Workflow extends Activity {
                                                     , pathBuffer.toString() ) ;                     
 
                 if( xmlString != null ) {
-                    InputSource
-                       source = new InputSource( new StringReader( xmlString ) );
-                         
-                    workflow = new Workflow( communitySnippet, XMLUtils.newDocument(source) ) ;
+                    InputSource source = new InputSource( new StringReader( xmlString ) ) ;
+                    Document doc = XMLUtils.newDocument(source) ;
+                    debug( "---*** start Workflow document ***---" ) ;
+                    XMLUtils.PrettyDocumentToStream( doc, System.out ) ; 
+                    debug( "---*** end Workflow document ***---" ) ;          
+                    workflow = new Workflow( communitySnippet, doc ) ;
                 }
                 else {
                     debug( "File not found" ) ;
@@ -968,7 +970,7 @@ public class Workflow extends Activity {
     public Workflow( String communitySnippet, Document document ) {
         super(null) ;   // null because no parent 
         if( TRACE_ENABLED ) trace( "entry: Workflow(communitySnippet,document): cvsVersion " + cvsVersion) ;
-        
+              
         try{
 		    this.setDirty( true ) ;
             
@@ -989,7 +991,8 @@ public class Workflow extends Activity {
                     element = (Element) nodeList.item(i) ;
                 
                     if( element.getTagName().equals( WorkflowDD.DESCRIPTION_ELEMENT ) ) {
-                        this.description = element.getFirstChild().getNodeValue().trim() ;
+                        //bug#106
+                        this.description = XMLUtils.getChildCharacterData( element ) ;
                     }  
                     else if ( element.getTagName().equals( WorkflowDD.SEQUENCE_ELEMENT ) ) {
                         setChild( new Sequence( communitySnippet, element, this ) ) ;   

@@ -15,6 +15,7 @@ import org.astrogrid.portal.workflow.design.activity.*;
 import org.apache.log4j.Logger ;
 import java.text.MessageFormat ;
 import org.w3c.dom.* ;
+import org.apache.axis.utils.XMLUtils ;
 
 /**
  * The <code>Step</code> class represents an individual job step with
@@ -136,8 +137,12 @@ public class Step extends Activity {
                     element = (Element) nodeList.item(i) ;
                 
                     if ( element.getTagName().equals( WorkflowDD.TOOL_ELEMENT ) ) {
-                        this.tool = new Tool( element ) ;   
-                    }  
+                        this.tool = new Tool( element ) ;  
+                    } 
+                    //bug#106
+                    else if( element.getTagName().equals( WorkflowDD.DESCRIPTION_ELEMENT ) ){
+                        this.description =  XMLUtils.getChildCharacterData( element ) ; 
+                    }
                     
                 } // end if
                                 
@@ -150,46 +155,86 @@ public class Step extends Activity {
         
     } // end of Step(communitySnippet,element,parent)
       
-    
+  
+    /**
+     * Sets this step's name
+     */  
 	public void setName(String name) {
 		this.name = name;
 	}
 
+
+    /**
+     * Gets this step's name
+     */  
 	public String getName() {
 		return name;
 	}
 
+
+    /**
+     * Sets this step's join condition
+     */  
 	public void setJoinCondition( JoinCondition joinCondition ) {
 		this.joinCondition = joinCondition;
 	}
     
+    
+    /**
+     * Gets this step's join condition
+     */     
     public JoinCondition getJoinCondition() {
         return this.joinCondition ;
     }
 
+
+    /**
+     * Tester for the condition JoinCondition.TRUE
+     */ 
 	public boolean isJoinConditionTrue() {
 		return joinCondition == JoinCondition.TRUE ;
 	}
     
+      
+    /**
+     * Tester for the condition JoinCondition.FALSE
+     */ 
     public boolean isJoinConditionFalse() {
         return joinCondition == JoinCondition.FALSE ;
     }
     
+    
+    /**
+     * Tester for the condition JoinCondition.ANY
+     */ 
     public boolean isJoinConditionAny() {
         return joinCondition == JoinCondition.ANY ;
     }
 
+
+    /**
+     * Sets this step's Tool
+     */  
 	public void setTool( Tool tool ) {
 		this.tool = tool;
 	}
 
+
+    /**
+     * Gets this step's Tool
+     */  
 	public Tool getTool() {  
 		return tool;
 	}
 
 
+    /**
+      * Produces the xml description of this Step instance.
+      * 
+      * @return the step as an xml String.
+      **/   
     public String toXMLString() {
-        if( TRACE_ENABLED ) trace( "Step.toXMLString() entry") ;  
+        if( TRACE_ENABLED ) trace( "entry: Step.toXMLString()") ;  
           
         String 
            response = null ;
@@ -208,7 +253,7 @@ public class Step extends Activity {
 
         }
         finally {
-            if( TRACE_ENABLED ) trace( "Step.toXMLString() exit") ;    
+            if( TRACE_ENABLED ) trace( "exit: Step.toXMLString()") ;    
         }       
         
         return response ;        
@@ -216,11 +261,13 @@ public class Step extends Activity {
     } // end toXMLString()
     
 
+    /**
+      * Produces the xml job description of this Step instance.
+      * 
+      * @return the step as an JES xml String.
+      **/ 
     public String toJESXMLString() {
-        if( TRACE_ENABLED ) trace( "Step.toJESXMLString() entry") ;  
-        
-        //JBL Note. There should be some basis checking regarding
-        // the existence of a tool ( tool is not null ).
+        if( TRACE_ENABLED ) trace( "entry: Step.toJESXMLString()") ;  
           
         String 
            response = null ;
@@ -233,23 +280,31 @@ public class Step extends Activity {
             inserts[1] = this.getJoinCondition() ;
             inserts[2] = new Integer( this.getStepNumber() ) ;
             inserts[3] = new Integer( this.getSequenceNumber() ) ;
-            inserts[4] = this.getTool().toJESXMLString() ;
-            
+            inserts[4] = ( this.getTool() == null ) ? " " :  this.getTool().toJESXMLString() ;
+                        
             response = MessageFormat.format( WorkflowDD.JOBSTEP_TEMPLATE, inserts ) ;
 
         }
         finally {
-            if( TRACE_ENABLED ) trace( "Step.toJESXMLString() exit") ;    
+            if( TRACE_ENABLED ) trace( "exit: Step.toJESXMLString()") ;    
         }       
         
         return response ;        
         
     } // end toJESXMLString()
 
+
+    /**
+     * Sets this step's description
+     */
 	public void setDescription(String description) {
 		this.description = description;
 	}
 
+
+    /**
+     * Gets this step's description
+     */
 	public String getDescription() {
 		return description;
 	}
@@ -264,18 +319,34 @@ public class Step extends Activity {
         // logger.debug( logString ) ;
     }
 
+
+    /**
+     * Sets this step's stepnumber
+     */
 	public void setStepNumber(int stepNumber) {
 		this.stepNumber = stepNumber;
 	}
 
+
+    /**
+     * Gets this step's stepnumber
+     */
 	public int getStepNumber() {
 		return stepNumber;
 	}
 
+
+    /**
+     * Sets this step's sequence number
+     */
 	public void setSequenceNumber(int sequenceNumber) {
 		this.sequenceNumber = sequenceNumber;
 	}
 
+
+    /**
+     * Gets this step's sequence number
+     */
 	public int getSequenceNumber() {
 		return sequenceNumber;
 	}

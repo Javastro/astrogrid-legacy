@@ -18,6 +18,7 @@ import java.util.ArrayList ;
 import org.apache.log4j.Logger ;
 import org.w3c.dom.* ;
 import java.text.MessageFormat ;
+import org.apache.axis.utils.XMLUtils ;
 
 /**
  * The <code>Tool</code> class represents... 
@@ -117,8 +118,9 @@ public class Tool {
                     else if ( element.getTagName().equals( WorkflowDD.OUTPUT_ELEMENT ) ) {
                         this.outputParameters = Tool.createParameters( element ) ;   
                     } 
-                    else if ( element.getTagName().equals( WorkflowDD.DOCUMENTATION_ELEMENT ) ) {
-                        this.documentation = element.getNodeValue() ;   
+                    else if ( element.getTagName().equals( WorkflowDD.DOCUMENTATION_ELEMENT ) ){
+                        //bug#106
+                        this.documentation = XMLUtils.getChildCharacterData( element ) ;   
                     }   
                     
                 } // end if
