@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryBaseTest.java,v 1.10 2004/09/07 19:45:33 pah Exp $
+ * $Id: AbstractTestForRegistry.java,v 1.1 2004/09/22 10:47:25 nw Exp $
  * 
  * Created on 07-May-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -38,7 +38,7 @@ import junit.framework.TestCase;
  * @version $Name:  $
  * @since iteration5
  */
-public abstract class RegistryBaseTest extends TestCase {
+public abstract class AbstractTestForRegistry extends TestCase {
 
    protected RegistryService delegate;
    protected final static String AUTHORITY_ID = "org.astrogrid.localhost";
@@ -60,7 +60,7 @@ public abstract class RegistryBaseTest extends TestCase {
    /**
     * @param arg0
     */
-   public RegistryBaseTest(String arg0) {
+   public AbstractTestForRegistry(String arg0) {
       super(arg0);
       rs = factory.createQuery();
       ras = factory.createAdmin();

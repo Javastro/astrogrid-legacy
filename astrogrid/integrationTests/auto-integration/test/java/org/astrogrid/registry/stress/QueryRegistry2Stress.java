@@ -1,4 +1,4 @@
-/*$Id: QueryRegistry2Stress.java,v 1.2 2004/09/16 12:46:16 pah Exp $
+/*$Id: QueryRegistry2Stress.java,v 1.3 2004/09/22 10:47:25 nw Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,7 @@
 package org.astrogrid.registry.stress;
 
 import org.astrogrid.registry.RegistryException;
-import org.astrogrid.registry.integration.RegistryBaseTest;
+import org.astrogrid.registry.integration.AbstractTestForRegistry;
 
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
@@ -33,7 +33,7 @@ import java.net.URL;
  * 
  *
  */
-public class QueryRegistry2Stress extends RegistryBaseTest {
+public class QueryRegistry2Stress extends AbstractTestForRegistry {
      
     /**
      * Constructor for RegistryInstallationTest.

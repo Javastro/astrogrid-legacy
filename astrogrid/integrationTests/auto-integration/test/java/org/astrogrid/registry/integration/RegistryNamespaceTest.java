@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryNamespaceTest.java,v 1.1 2004/09/01 13:53:40 pah Exp $
+ * $Id: RegistryNamespaceTest.java,v 1.2 2004/09/22 10:47:25 nw Exp $
  * 
  * Created on 31-Aug-2004 by Paul Harrison (pah@jb.man.ac.uk)
  * Copyright 2004 AstroGrid. All rights reserved.
@@ -30,7 +30,7 @@ import junit.framework.TestCase;
  * @version $Name:  $
  * @since iteration6
  */
-public class RegistryNamespaceTest extends RegistryBaseTest {
+public class RegistryNamespaceTest extends AbstractTestForRegistry {
 
     private URL url;
 

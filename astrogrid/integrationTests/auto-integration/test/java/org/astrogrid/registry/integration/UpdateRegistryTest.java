@@ -1,4 +1,4 @@
-/*$Id: UpdateRegistryTest.java,v 1.5 2004/09/03 09:42:50 nw Exp $
+/*$Id: UpdateRegistryTest.java,v 1.6 2004/09/22 10:47:25 nw Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,7 +32,7 @@ import java.net.URL;
  * @author Noel Winstanley 
  *
  */
-public class UpdateRegistryTest extends RegistryBaseTest {
+public class UpdateRegistryTest extends AbstractTestForRegistry {
      
     /**
      * Constructor for RegistryInstallationTest.

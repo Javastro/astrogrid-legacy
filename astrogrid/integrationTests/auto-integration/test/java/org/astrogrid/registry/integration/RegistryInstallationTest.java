@@ -1,4 +1,4 @@
-/*$Id: RegistryInstallationTest.java,v 1.11 2004/09/03 10:01:12 nw Exp $
+/*$Id: RegistryInstallationTest.java,v 1.12 2004/09/22 10:47:25 nw Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,7 +28,7 @@ import junit.framework.TestCase;
  * @author Paul Harrison pah@jb.man.ac.uk 07-May-2004
  *
  */
-public class RegistryInstallationTest extends RegistryBaseTest {
+public class RegistryInstallationTest extends AbstractTestForRegistry {
     /**
      * Constructor for RegistryInstallationTest.
      * @param arg0
@@ -68,6 +68,9 @@ public class RegistryInstallationTest extends RegistryBaseTest {
 
 /* 
 $Log: RegistryInstallationTest.java,v $
+Revision 1.12  2004/09/22 10:47:25  nw
+renamed abstract class BaseRegistryTest to AsbtractTestForRegistry, to stop the int.tests from trying to run it.
+
 Revision 1.11  2004/09/03 10:01:12  nw
 made a start adding assertions on document format. could go furhter yet..
 

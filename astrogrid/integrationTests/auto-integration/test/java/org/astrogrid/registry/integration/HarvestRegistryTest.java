@@ -1,4 +1,4 @@
-/*$Id: HarvestRegistryTest.java,v 1.2 2004/09/03 07:47:41 KevinBenson Exp $
+/*$Id: HarvestRegistryTest.java,v 1.3 2004/09/22 10:47:25 nw Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -31,7 +31,7 @@ import java.net.URL;
  * @author Paul Harrison pah@jb.man.ac.uk 07-May-2004
  *
  */
-public class HarvestRegistryTest extends RegistryBaseTest {
+public class HarvestRegistryTest extends AbstractTestForRegistry {
      
     /**
      * Constructor for RegistryInstallationTest.

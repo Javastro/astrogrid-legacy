@@ -1,4 +1,4 @@
-/*$Id: QueryRegistryClientADQLTest.java,v 1.5 2004/09/03 10:01:12 nw Exp $
+/*$Id: QueryRegistryClientADQLTest.java,v 1.6 2004/09/22 10:47:25 nw Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,7 +32,7 @@ import java.net.URL;
  * @todo assert something in these tests.
  *
  */
-public class QueryRegistryClientADQLTest extends RegistryBaseTest {
+public class QueryRegistryClientADQLTest extends AbstractTestForRegistry {
 
     /**
      * Constructor for RegistryInstallationTest.
