@@ -1,5 +1,5 @@
 /*
- * $Id: MetadataServer.java,v 1.11 2004/08/19 22:04:42 mch Exp $
+ * $Id: MetadataServer.java,v 1.12 2004/08/20 16:42:20 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -32,6 +32,29 @@ public class MetadataServer
    
    private static Document cache = null;
    
+   /**
+    * Returns the whole metadata file as a DOM document
+    */
+   public synchronized static Document getMetadata() throws IOException
+   {
+      if (cache == null) {
+        cache = createPlugin().getMetadata();
+      }
+      return cache;
+   }
+
+   /**
+    * Returns the metadata; if it can't find the normal stuff, it will return
+    * whatever can be generated
+    */
+   public synchronized static Document getOrGenerateMetadata() throws IOException
+   {
+      if (cache == null) {
+        cache = createPlugin().getMetadata();
+      }
+      return cache;
+   }
+
    /** Instantiates the class with the given name.  This is useful for things
     * such as 'plugins', where a class name might be given in a configuration file.
     * Rather messily throws Throwable because anything might have
@@ -105,16 +128,6 @@ public class MetadataServer
    }
    
    
-   /**
-    * Returns the whole metadata file as a DOM document
-    */
-   public synchronized static Document getMetadata() throws IOException
-   {
-      if (cache == null) {
-        cache = createPlugin().getMetadata();
-      }
-      return cache;
-   }
 
    /** Returns the element representing the given table name in the served
     * metadata */

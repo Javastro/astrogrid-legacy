@@ -1,5 +1,5 @@
 /*
- * $Id: MetadataGenerator.java,v 1.2 2004/08/19 22:04:42 mch Exp $
+ * $Id: MetadataGenerator.java,v 1.3 2004/08/20 16:42:20 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -16,6 +16,7 @@ import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 /**
@@ -37,6 +38,12 @@ public class MetadataGenerator
    public static Document generateMetadata() throws IOException {
       
       try {
+         QuerierPlugin plugin = QuerierPluginFactory.createPlugin(null);
+         
+         log.debug("Generating metadata...");
+         /*
+          * Grrr some implementations don't support importNodes, so this is likely
+          * to be a real pain...
          //Generate VODescription
          Document voDescription = DomHelper.newDocument("<VODescription/>");//there must be a better way of doing this
          Element voResource = voDescription.createElement("Resource");
@@ -46,23 +53,27 @@ public class MetadataGenerator
          voResource.appendChild(voDescription.createElement("ShortName"));
          voResource.appendChild(voDescription.createElement("Summary"));
          
-         QuerierPlugin plugin = QuerierPluginFactory.createPlugin(null);
+         Node pluginMetadata = voDescription.importNode(plugin.getMetadata(), true);
          
          //this will give us metadata about the data itself, but not of the service
-         voResource.appendChild(plugin.getMetadata().getDocumentElement());
+         voDescription.appendChild(pluginMetadata);
 
          return voDescription;
+          */
          
+         return plugin.getMetadata();
       }
       catch (QuerierPluginException qpe) {
          throw new RuntimeException("Server Querier plugin mechanism not configured properly: "+qpe, qpe);
       }
+      /*
       catch (SAXException e) {
          throw new RuntimeException("Bad hardcoded XML: "+e, e);
       }
       catch (ParserConfigurationException e) {
          throw new RuntimeException("Server not set up properly: "+e, e);
       }
+       */
    }
    
    /**
