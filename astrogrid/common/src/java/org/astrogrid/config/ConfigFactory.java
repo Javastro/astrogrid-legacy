@@ -1,5 +1,5 @@
 /*
- * $Id: ConfigFactory.java,v 1.1 2003/10/07 16:42:36 mch Exp $
+ * $Id: ConfigFactory.java,v 1.2 2003/10/07 21:34:34 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -23,9 +23,15 @@ import java.util.Hashtable;
 
 public class ConfigFactory
 {
+   /** Created PropertyConfig instances */
    private static final Hashtable propConfigs = new Hashtable();
+   /** Created XmlConfig instances */
    private static final Hashtable xmlConfigs = new Hashtable();
    
+   /**
+    * Creates an instance of a Property-based (ie key/value pairs) configuration.
+    * @param id specifies a particular instance
+    */
    public static synchronized PropertyConfig getPropertyConfig(Object id)
    {
       PropertyConfig config = (PropertyConfig) propConfigs.get(id);
@@ -38,6 +44,11 @@ public class ConfigFactory
       return config;
    }
    
+   /**
+    * Creates an instance of an XML/Document-based (ie XPath/Node list)
+    * configuration
+    * @param id specifies a particular instance
+    */
    public static synchronized PropertyConfig getXmlConfig(Object id)
    {
       PropertyConfig config = (PropertyConfig) xmlConfigs.get(id);

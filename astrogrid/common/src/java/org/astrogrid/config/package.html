@@ -4,19 +4,41 @@ Configuration package; provides a simple set of methods for application-wide
 access to properties, using both traditional key/value pairs and XPath querying.
 <p>
 <h3>Background</h3>
-The configuration package has to provide the following:<p>
-<li>Simple, backwardly compatible access to simple key/value properties
-<li>Ability to load from several files (eg user-entered values, plus programmer-entered values)
-<li>Provide a getproperty(XPath) returning XML nodes (implies a load from XML)
+The configuration package has to be able to:<p>
+<li>Provide simple, backward-compatible access to key/value properties
+<li>Run without any configuration file present, with values set by the code, for unit tests
+<li>Load from several files (eg user-entered values, plus programmer-entered values)
+<li>Provide a getproperty(XPath) returning XML nodes (implies a load from XML) for structured properties
 <p>
 
 <h3>Simple</h3>
 For the most simplest of configurations, use the static methods on the SimpleConfig class.
 These access a single (hidden) instance, and allows programmers to use the
-configuration with a minimum of code.
+configuration with a minimum of code, like this:
+<p>
+<b>Initialisation:</b>
+<pre><code>
+SimpleConfig.autoload();
+</pre></code>
+or
+<pre><code>
+SimpleConfig.load("SomeFile.cfg");
+</pre></code>
+<b>Using Properties:</b>
+<pre><code>
+String fruit = SimpleConfig.getProperty("GlobalFruit");
+</pre></code>
 
 <h3>Instance</h3>
-Create using a factory if this is really your thing :-)
+Create using the provided factory if this is really your thing :-)  If you provide
+the factory method with a key object, you can reget the same one. For example:
+<pre><code>
+PropertyConfig config = ConfigFactory.getPropertyConfig("REGISTRY");
+</pre></code>
+returns the same instance as another same call elsewhere in the code:
+<pre><code>
+ConfigFactory.getPropertyConfig("REGISTRY");
+</pre></code>
 
 <h3>Loading</h3>
 You can request a load from urls, files, and the autoload will look in JNDI and
