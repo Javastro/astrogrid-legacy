@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- $Id: maven.xml,v 1.6 2004/12/08 11:02:46 jdt Exp $ -->
+<!-- $Id: maven.xml,v 1.7 2004/12/08 11:21:46 jdt Exp $ -->
 <!-- extension maven script -->
 <project xmlns:maven="jelly:maven">
 	<!-- astrogrid goals for nightly build -->
@@ -50,7 +50,7 @@
 	    </copy>
 	</goal>
 	<!-- We dont want to inflict this on every poor bugger, so hope this is early enough in the build cycle -->
-	<preGoal name="maven-javadoc-plugin:register">
+	<preGoal name="site">
 		<attainGoal name="copy-monster-source-tree"/>"
 	</preGoal>
 </project>

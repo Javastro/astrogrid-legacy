@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.10 2004/12/08 00:17:36 jdt Exp $ -->
+<!-- $Id: project.xml,v 1.11 2004/12/08 11:21:46 jdt Exp $ -->
 <project>
     <extend>${basedir}/maven-base/project.xml</extend>
     <id>astrogrid</id>
@@ -21,10 +21,6 @@
     </repository>
     <reports>
         <report> maven-javadoc-plugin </report>
-        <report> maven-changelog-plugin </report>
-        <report> maven-developer-activity-plugin </report>
-        <report> maven-file-activity-plugin </report>
-        <report> maven-linkcheck-plugin </report>
-        <report> maven-changes-plugin </report>        
+     
     </reports>
 </project>
