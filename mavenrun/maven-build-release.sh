@@ -10,10 +10,10 @@ echo "[ag-build] building $PROJECT_NAME"
 echo "[ag-build] build log: maven-build-$PROJECT_NAME.log"
 echo
 
-BUILD_HOME=/home/maven/build
+BUILD_HOME=/home/maven/build/release
 SCRIPTHOME=/home/maven/mavenrun
 PROJECT_HOME=$BUILD_HOME/astrogrid/$PROJECT_NAME
-LOG_FILE=$BUILD_HOME/maven-build-$PROJECT_NAME.log
+LOG_FILE=$BUILD_HOME/maven-release-$PROJECT_NAME.log
 cd $BUILD_HOME
 echo "[ag-build-$PROJECT_NAME] remove old log"
 rm $LOG_FILE
@@ -30,18 +30,16 @@ source $HOME/.bash-config/cvs >> $LOG_FILE 2>&1
 echo "[ag-build-$PROJECT_NAME] build home: $BUILD_HOME"
 cd $BUILD_HOME >> $LOG_FILE 2>&1
 
-echo "[ag-build-$PROJECT_NAME] remove old SNAPSHOTS"
-sh $SCRIPTHOME/maven-remove-jars.sh $PROJECT_NAME >> $LOG_FILE 2>&1
 
 echo "[ag-build-$PROJECT_NAME] removing $PROJECT_HOME"
 rm -fr $PROJECT_HOME >> $LOG_FILE 2>&1
 
-cvs co astrogrid/astrogrid-project-version.properties
+cvs -d $CVSROOT export -r HEAD astrogrid/astrogrid-project-version.properties
 
-TAGNAME=`awk -F= '/$PROJECT_NAME/{print $2}' astrogrid/astrogrid-project-version.properties`
+TAGNAME=`awk -F= /$PROJECT_NAME/'{print $2}' astrogrid/astrogrid-project-version.properties`
 
-echo "[ag-build-$PROJECT_NAME] cvs checkout"
-cvs -d $CVSROOT co -r $TAGNAME astrogrid/$PROJECT_NAME >> $LOG_FILE 2>&1
+echo "[ag-build-$PROJECT_NAME] cvs checkout for tag $TAGNAME"
+cvs -d $CVSROOT export -kv -r $TAGNAME astrogrid/$PROJECT_NAME >> $LOG_FILE 2>&1
 
 echo "[ag-build-$PROJECT_NAME] project home: $PROJECT_HOME"
 cd $PROJECT_HOME >> $LOG_FILE 2>&1
