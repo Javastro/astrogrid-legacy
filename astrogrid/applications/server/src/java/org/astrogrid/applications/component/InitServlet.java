@@ -1,5 +1,5 @@
 /*
- * $Id: InitServlet.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+ * $Id: InitServlet.java,v 1.3 2004/07/16 11:01:02 nw Exp $
  * 
  * Created on 14-Apr-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -23,6 +23,9 @@ import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -42,21 +45,38 @@ public class InitServlet extends HttpServlet {
 
    static private org.apache.commons.logging.Log logger =
       org.apache.commons.logging.LogFactory.getLog(InitServlet.class);
-
+    public static final String BOOT_CEA_KEY = "boot.cea";
     /**
      * just gets the component manager instance from the factory. 
      * as part of this, the picocontainer is started.
+     * @todo doesn't seemt o want to work - url for resource is always null. arse.
      */
     public void init(ServletConfig arg0) throws ServletException {
         super.init(arg0);
         try {
             URL endpointURL = arg0.getServletContext().getResource("/services/CommonExecutionConnectorService");
             logger.info("Setting service endpoint to " + endpointURL);
-        SimpleConfig.getSingleton().setProperty(EmptyCEAComponentManager.SERVICE_ENDPOINT_URL,endpointURL);
+            // don't do this - it forces the whole config system to startup - which is a pain if the config file isn't available yet 
+            //SimpleConfig.getSingleton().setProperty(EmptyCEAComponentManager.SERVICE_ENDPOINT_URL,endpointURL);
+            // whack it in JNDI instead,
+            if (endpointURL != null) {
+                Context root = new InitialContext();          
+                String urlStr = endpointURL.toString();
+            root.rebind("java:comp/env/" + EmptyCEAComponentManager.SERVICE_ENDPOINT_URL,urlStr);   
+                root.close();
+            } else {
+                logger.warn("Could not determine service endpoint");
+            } 
         } catch (MalformedURLException e) {
             logger.error("Could not set service endpoint url",e);            
-        }        
-        CEAComponentManagerFactory.getInstance();
+        } catch (NamingException e) {
+            logger.error("Could not set service endpoint url - JNDI problem",e);
+        }   
+        if ("true".equalsIgnoreCase(getInitParameter(BOOT_CEA_KEY))) {   
+            logger.info("Booting CEA Server");             
+            CEAComponentManagerFactory.getInstance();
+        }
+        logger.info("InitServlet: completed init");
     }
 
     /**
@@ -67,18 +87,6 @@ public class InitServlet extends HttpServlet {
         CEAComponentManagerFactory.getInstance().getContainer().dispose();   
         super.destroy();
     }
-
-   private URL computeEndpoint(HttpServletRequest req) throws MalformedURLException {
-
-      URL endpoint =
-         new URL(
-            "http",
-            req.getServerName(),
-            req.getServerPort(),
-            req.getContextPath() + "/services/CommonExecutionConnectorService");
-      return endpoint;
-   }
-
 
     /**
      * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)

@@ -37,12 +37,23 @@
     </init-param>
     <load-on-startup>100</load-on-startup>
   </servlet>
-  <!-- a small servlet that will
-    * invoke .startup() on the pico container on context deploy
-    * provides http-get access to some of the cec methods.-->
+
   <servlet>
       <servlet-name>cec-http</servlet-name>
+      <description>
+        a small servlet that helps cea by
+    * querying servlet context - find out where it is, set keys in config from this
+    (keys used to generate VODescription for this CEA service)
+    * if 'boot.cea' set to 'true' will invoke .startup() on the pico container on context deploy
+        - sometimes good - e.g. when services want to auto-register on startup.
+        - however, was causing problems with auto-integration (race conditions between webapps), so disabled by default
+    * provides http-get access to some of the cec methods (call by HTTP-GET with no params for usage info)
+      </description>
       <servlet-class>org.astrogrid.applications.component.InitServlet</servlet-class>
+      <init-param>
+        <param-name>boot.cea</param-name>
+        <param-value>false</param-value>
+      </init-param>
       <load-on-startup>200</load-on-startup>
   </servlet>
 
