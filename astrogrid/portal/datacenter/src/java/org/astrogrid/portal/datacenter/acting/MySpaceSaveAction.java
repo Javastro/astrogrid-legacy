@@ -1,17 +1,15 @@
 package org.astrogrid.portal.datacenter.acting;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
+import org.apache.avalon.framework.logger.Logger;
 import org.apache.avalon.framework.parameters.Parameters;
 import org.apache.cocoon.acting.AbstractAction;
 import org.apache.cocoon.environment.ObjectModelHelper;
 import org.apache.cocoon.environment.Redirector;
 import org.apache.cocoon.environment.Request;
 import org.apache.cocoon.environment.SourceResolver;
-import org.apache.log4j.Category;
 import org.astrogrid.mySpace.delegate.MySpaceClient;
 import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
 import org.astrogrid.portal.utils.acting.ActionUtils;
@@ -24,8 +22,6 @@ import org.astrogrid.portal.utils.acting.ActionUtilsFactory;
  * @author peter.shillan <mailto:gps@roe.ac.uk />
  */
 public class MySpaceSaveAction extends AbstractAction {
-	private Category logger = Category.getInstance(getClass());
-
   /**
    * <p>
    *   Load the required ADQL document from MySpace.
@@ -56,6 +52,8 @@ public class MySpaceSaveAction extends AbstractAction {
    * @see org.apache.cocoon.acting.Action#act(org.apache.cocoon.environment.Redirector, org.apache.cocoon.environment.SourceResolver, java.util.Map, java.lang.String, org.apache.avalon.framework.parameters.Parameters)
    */
   public Map act(Redirector redirector, SourceResolver resolver, Map objectModel, String source, Parameters params) {
+    Logger logger = this.getLogger();
+    
     Map sitemapParams = new HashMap();
     ActionUtils utils = ActionUtilsFactory.getActionUtils();
 
@@ -64,8 +62,6 @@ public class MySpaceSaveAction extends AbstractAction {
     String endPoint = utils.getAnyParameter("myspace-end-point", "http://localhost:8080/myspace", params, request);
 
     try {
-      List delegateArgs = new ArrayList();
-      delegateArgs.add(endPoint);
       MySpaceClient delegate = MySpaceDelegateFactory.createDelegate(endPoint);
       logger.debug("[act] myspace-delegate-class: " + delegate.getClass().getName());
     
@@ -104,11 +100,6 @@ public class MySpaceSaveAction extends AbstractAction {
         sitemapParams = null;
       }
     }
-		catch(Exception e) {
-			request.setAttribute("adql-document-saved", "false");
-			request.setAttribute("adql-document-error-message", e.getLocalizedMessage());
-			sitemapParams = null;
-		}
 		catch(Throwable t) {
 			request.setAttribute("adql-document-saved", "false");
 			request.setAttribute("adql-document-error-message", t.getLocalizedMessage());

@@ -109,25 +109,6 @@ public class TestAction extends AbstractAction {
       request.setAttribute("adql-query-errors", "false");
       sitemapParams.put("adql-query-errors", "false");
     }
-    catch(Exception e) {
-      logger.debug("[act] exception: " + e.getLocalizedMessage());
-      request.setAttribute("adql-query-errors", "true");
-      request.setAttribute("adql-query-error-message", e.getLocalizedMessage());
-      
-      StringWriter stackTrace = new StringWriter();
-      e.printStackTrace(new PrintWriter(stackTrace));
-      request.setAttribute("adql-query-stack-trace", stackTrace.toString());
-      
-      try {
-        stackTrace.close();
-      }
-      catch(IOException ioe)
-      {
-        // Do nothing.
-      }
-      
-      sitemapParams = null;
-    }
 		catch(Throwable t) {
 			logger.debug("[act] exception: " + t.getLocalizedMessage());
 			request.setAttribute("adql-query-errors", "true");
