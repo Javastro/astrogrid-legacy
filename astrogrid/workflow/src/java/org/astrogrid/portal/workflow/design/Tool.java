@@ -11,27 +11,69 @@
 
 package org.astrogrid.portal.workflow.design;
 
+import java.util.List ;
+import java.util.ListIterator ;
+import org.apache.log4j.Logger ;
+import org.w3c.dom.* ;
+
 /**
- * The <code>Tool</code> interface represents... 
+ * The <code>Tool</code> class represents... 
  * <p>
  *
  * <p>
- * The interface... 
+ * The class... 
  * 
  *
  * @author  Jeff Lusted
- * @version 1.0 25-Aug-2003
+ * @version 1.0 20-Nov-2003
  * @see     
  * @see     
- * @since   AstroGrid 1.3
+ * @since   AstroGrid 1.4
  */
-public interface Tool {
+public class Tool {
     
-    public String toXMLString() ;
-    public String toJESXMLString() ;
-    public String getName() ;
-    public String getDescription() ;
+    private ToolFactory
+        factory ;
+        
+    private List
+        inputParameters,
+        outputParameters ;    
+        
+    protected Tool( ToolFactory factory ) {
+        this.factory = factory ;
+        // create standard set of input and output parameters here
+        
+    }
     
-    public String getToolType() ; 
+    public Tool( Element element ) {
+    }
+    
+    public ToolFactory getFactory() {
+        return factory ;
+    }
+    
+    public ListIterator getInputParameters() {
+        return null ;
+    }
+    
+    public ListIterator getOutputParameters() {
+        return null ;
+    }
+    
+    public Parameter createInputParameter( String name ) {
+        return null ;
+    }
+    
+    public Parameter createOutputParameter( String name ) {
+        return null ;
+    }
+    
+    protected String toXMLString() {
+        return null ;
+    }
+    
+    protected String toJESXMLString() {
+        return null ;
+    }
 
 }

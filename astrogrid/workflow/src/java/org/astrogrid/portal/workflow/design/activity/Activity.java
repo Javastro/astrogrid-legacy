@@ -27,6 +27,7 @@ import org.astrogrid.portal.workflow.design.Workflow;
  * @see     
  * @see     
  * @since   AstroGrid 1.3
+ * @testcase org.astrogrid.portal.workflow.test.org.astrogrid.portal.workflow.design.activity.TestActivity
  */
 public abstract class Activity {
     

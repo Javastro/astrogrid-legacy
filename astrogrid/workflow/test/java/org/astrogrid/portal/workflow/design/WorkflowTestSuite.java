@@ -316,6 +316,10 @@ public class WorkflowTestSuite extends TestCase {
          try{
              iterator = Query.readQueryList( userid, community, communitySnippet(), filter) ;
              
+ //            logger.info( "iterator: " + iterator ) ;
+ //            logger.info( "About to execute iterator: iterator.next()" ) ;
+ //            logger.info( iterator.next().getClass().getName() ) ;
+             
              while ( iterator.hasNext() ) {
                  logger.info( "Query Name: " + (String)iterator.next() ) ;
              }

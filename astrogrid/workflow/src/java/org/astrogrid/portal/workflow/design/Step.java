@@ -40,9 +40,6 @@ public class Step extends Activity {
     private static Logger 
         logger = Logger.getLogger( Step.class ) ;  
     
-    public static final NullTool
-        NULLTOOL = new NullTool() ;
-    
     private String
         name = null,
         description = null ;
@@ -52,9 +49,8 @@ public class Step extends Activity {
         stepNumber = 0,
         sequenceNumber = 0 ;
     private Tool
-        tool = NULLTOOL ;
-    private Resources
-        resources = null ;
+        tool ;
+
  
     
     public Step( Activity parent ) {
@@ -104,14 +100,8 @@ public class Step extends Activity {
                     element = (Element) nodeList.item(i) ;
                 
                     if ( element.getTagName().equals( WorkflowDD.NULL_TOOL_ELEMENT ) ) {
-                        this.tool = new NullTool() ;   
+                        this.tool = new Tool( element ) ;   
                     }  
-                    else if( element.getTagName().equals( WorkflowDD.QUERY_ELEMENT ) ) {
-                        this.tool = new Query( element ) ;   
-                    }  
-                    else if( element.getTagName().equals( WorkflowDD.RESOURCES_ELEMENT ) ) {
-                        this.resources = new Resources( element ) ;                
-                    }
                     
                 } // end if
                                 
@@ -195,16 +185,6 @@ public class Step extends Activity {
 		return tool;
 	}
 
-	public void setResources( Resources resources ) {
-		this.resources = resources;
-	}
-    public Resources getResources() {
-        return this.resources ;
-    }
-
-	public Resources getInputResources() {
-		return resources;
-	}
 
     public String toXMLString() {
         if( TRACE_ENABLED ) trace( "Step.toXMLString() entry") ;  
@@ -221,7 +201,7 @@ public class Step extends Activity {
             inserts[2] = new Integer( this.getStepNumber() ) ;
             inserts[3] = new Integer( this.getSequenceNumber() ) ;
             inserts[4] = ( this.getTool() == null ) ? " " :  this.getTool().toXMLString() ;
-            inserts[5] = ( (this.resources == null)  ?  " "  :  this.resources.toXMLString() ) ;
+
             
             response = MessageFormat.format( WorkflowDD.STEP_TEMPLATE, inserts ) ;
 
@@ -250,7 +230,6 @@ public class Step extends Activity {
             inserts[2] = new Integer( this.getStepNumber() ) ;
             inserts[3] = new Integer( this.getSequenceNumber() ) ;
             inserts[4] = this.getTool().toJESXMLString() ;
-//JBL NOTE  inserts[5] = ( (this.resources == null)  ?  " "  :  this.resources.toXMLString() ) ;
             
             response = MessageFormat.format( WorkflowDD.JOBSTEP_TEMPLATE, inserts ) ;
 

@@ -498,9 +498,7 @@ public class WorkflowHelper {
      * At present this returns just an Iterator of string Objects representing the names
      * of the files.
      */
-    public static Vector readWorkflowList( String userid
-                                         , String community
-                                         , String communitySnippet
+    public static Vector readWorkflowList( String communitySnippet
                                          , String filter ) {
         if( TRACE_ENABLED ) trace( "WorkflowHelper.readWorkflowList() entry") ; 
         
@@ -530,9 +528,7 @@ public class WorkflowHelper {
     } // end of readWorkflowList()
     
     
-    public static Workflow readWorkflow( String userid
-                                       , String community
-                                       , String communitySnippet
+    public static Workflow readWorkflow( String communitySnippet
                                        , String name ) {
         if( TRACE_ENABLED ) trace( "WorkflowHelper.readWorkflow() entry") ; 
         
@@ -543,10 +539,9 @@ public class WorkflowHelper {
          
         try {
             Object []
-                inserts = new Object[3] ;
+                inserts = new Object[2] ;
             inserts[0] = name ;
-            inserts[1] = userid ;
-            inserts[2] = community ;
+            inserts[1] = communitySnippet ;
             
             xmlString = MessageFormat.format( jobOne, inserts ) ;
             
@@ -569,9 +564,7 @@ public class WorkflowHelper {
     
     
 
-    public static boolean deleteWorkflow( String userid
-                                        , String community
-                                        , String communitySnippet
+    public static boolean deleteWorkflow( String communitySnippet
                                         , String name  ) {
         if( TRACE_ENABLED ) trace( "WorkflowHelper.deleteWorkflow() entry") ; 
         
@@ -616,9 +609,7 @@ public class WorkflowHelper {
     } // end of saveWorkflow()
     
     
-    public static Vector readQueryList( String userid
-                                      , String community
-                                      , String communitySnippet
+    public static Vector readQueryList( String communitySnippet
                                       , String filter ) {
         if( TRACE_ENABLED ) trace( "WorkflowHelper.readQueryList() entry") ; 
         
@@ -649,33 +640,16 @@ public class WorkflowHelper {
     
     
     
-    public static Query readQuery( String userid
-                                 , String community
-                                 , String communitySnippet
-                                 , String name ) {
-        if( TRACE_ENABLED ) trace( "Query.readQuery() entry") ; 
-        
-        Query
-           query = null;
-        StringBuffer
-           pathBuffer = new StringBuffer( 64 ) ;
+    public static String readQuery( String communitySnippet
+                                  , String name ) {
+        if( TRACE_ENABLED ) trace( "WorkflowHelper.readQuery() entry") ; 
          
         try {
-            InputSource
-               source = new InputSource( new StringReader( queryOne ) );
-                         
-            query = new Query( XMLUtils.newDocument(source) ) ;
-            query.setName( name ) ;
-
-         }
-         catch ( Exception ex ) {
-             ex.printStackTrace() ;
+            return queryOne ;
          }
          finally {
-             if( TRACE_ENABLED ) trace( "Query.readQuery() exit") ; 
+             if( TRACE_ENABLED ) trace( "WorkflowHelper.readQuery() exit") ; 
          }
-       
-         return query ;
         
     } // end of readQuery()
     

@@ -231,9 +231,7 @@ public class Workflow extends Activity {
     
     
     
-    public static Workflow readWorkflow( String userid
-                                       , String community
-                                       , String communitySnippet
+    public static Workflow readWorkflow( String communitySnippet
                                        , String name ) {
         if( TRACE_ENABLED ) trace( "Workflow.readWorkflow() entry") ; 
         
@@ -252,7 +250,7 @@ public class Workflow extends Activity {
            
             // This is here purely for test situations...
             if( mySpaceLocation == null || mySpaceLocation.trim().equals("") ) {
-                workflow = WorkflowHelper.readWorkflow( userid, community, communitySnippet, name ) ;
+                workflow = WorkflowHelper.readWorkflow( communitySnippet, name ) ;
                 return workflow ;
             }
             
@@ -261,9 +259,7 @@ public class Workflow extends Activity {
                 
             pathBuffer
                 .append( "/")
-                .append( userid )
-                .append( "@")
-                .append( community )
+                .append( CommunityMessage.getAccount( communitySnippet ) )
                 .append( "/")
                 .append( "serv1")
                 .append( "/")
@@ -271,8 +267,8 @@ public class Workflow extends Activity {
                 .append( "/")
                 .append( name ) ;
             
-            xmlString = mySpace.getDataHolding( userid
-                                              , community
+            xmlString = mySpace.getDataHolding( "userid"
+                                              , "community"
                                               , CommunityMessage.getGroup( communitySnippet )
                                               , pathBuffer.toString() ) ;                      
 
@@ -294,9 +290,7 @@ public class Workflow extends Activity {
     } // end of readWorkflow() 
     
     
-    public static boolean deleteWorkflow( String userid
-                                        , String community
-                                        , String communitySnippet
+    public static boolean deleteWorkflow( String communitySnippet
                                         , String name  ) {
         if( TRACE_ENABLED ) trace( "Workflow.deleteWorkflow() entry") ; 
         
@@ -313,7 +307,7 @@ public class Workflow extends Activity {
            
             // This is here purely for test situations...
              if( mySpaceLocation == null || mySpaceLocation.trim().equals("") ) {
-                 return WorkflowHelper.deleteWorkflow( userid, community, communitySnippet, name ) ;
+                 return WorkflowHelper.deleteWorkflow( communitySnippet, name ) ;
              }
             
             MySpaceManagerDelegate
@@ -321,9 +315,7 @@ public class Workflow extends Activity {
                 
            pathBuffer
                .append( "/")
-               .append( userid )
-               .append( "@")
-               .append( community )
+               .append( CommunityMessage.getAccount( communitySnippet ) )
                .append( "/")
                .append( "serv1")
                .append( "/")               
@@ -331,8 +323,8 @@ public class Workflow extends Activity {
                .append( "/")
                .append( name ) ;
             
-            mySpace.deleteDataHolding( userid
-                                     , community
+            mySpace.deleteDataHolding( "userid"
+                                     , "community"
                                      , CommunityMessage.getGroup( communitySnippet )
                                      , pathBuffer.toString() ) ;                      
 
@@ -422,72 +414,11 @@ public class Workflow extends Activity {
     } // end of submitWorkflow()
     
     
-    public static boolean insertQueryIntoStep( Step step, String queryName ) {
-            return Workflow.insertQueryIntoStep( step.getKey().toString()
-                                               , queryName
-                                               , step.getWorkflow() ) ;                   
-    }
-  
-  
-    public static boolean insertQueryIntoStep( String stepActivityKey
-                                             , String queryName
-                                             , Workflow workflow ) {
-        if( TRACE_ENABLED ) trace( "Workflow.insertQueryInStep(String,String) entry") ; 
-
-        boolean
-            retValue = false ;
-        Step
-            step = null ;
-        Activity
-            activity = null ;
-        Query
-            query = null ;
-            
-        try {
-            
-            activity = workflow.getActivity( stepActivityKey ) ;
-            
-            if( activity == null ) {
-                debug( "activity not found" ) ;
-            }
-            else if( (activity instanceof Step) == false ) {
-                debug( "activity not a Step") ;
-            }
-            else {
-                String
-                    communitySnippet 
-                        = CommunityMessage.getMessage( workflow.getToken() 
-                                                     , workflow.getUserid() + "@" + workflow.getCommunity()
-                                                     , workflow.getGroup() ) ;
-                step = (Step)activity ;
-                query = Query.readQuery( workflow.getUserid()
-                                       , workflow.getCommunity()
-                                       , communitySnippet
-                                       , queryName ) ;
-                step.setTool( query ) ;
-                retValue = true ;
-            }
-                        
-        }
-        catch( Exception ex ) {
-            ex.printStackTrace() ;
-        }
-        finally {
-            if( TRACE_ENABLED ) trace( "Workflow.insertQueryInStep(String,String) exit") ; 
-        }
-        
-        return retValue ;
-
-    } // end of insertQueryInStep(String,String) 
-    
-    
     /*
      * At present this returns just an Iterator of string Objects representing the names
      * of the files.
      */
-    public static Iterator readWorkflowList( String userid
-                                           , String community
-                                           , String communitySnippet
+    public static Iterator readWorkflowList( String communitySnippet
                                            , String filter ) {
         if( TRACE_ENABLED ) trace( "Workflow.readWorkflowList() entry") ; 
         
@@ -508,7 +439,7 @@ public class Workflow extends Activity {
            
            // This is here purely for test situations...
            if( mySpaceLocation == null || mySpaceLocation.trim().equals("") ) {
-               vector = WorkflowHelper.readWorkflowList( userid, community, communitySnippet, filter) ;
+               vector = WorkflowHelper.readWorkflowList( communitySnippet, filter) ;
                return vector.iterator() ;
            }
                 
@@ -517,9 +448,7 @@ public class Workflow extends Activity {
                 
            argumentBuffer
               .append( "/")
-              .append( userid )
-              .append( "@")
-              .append( community )
+              .append( CommunityMessage.getAccount( communitySnippet ) )
               .append( "/")
               .append( "serv1")
               .append( "/" )
@@ -527,8 +456,8 @@ public class Workflow extends Activity {
               .append( "/")
               .append( "*" ) ;
             
-            vector = mySpace.listDataHoldings( userid
-                                             , community
+            vector = mySpace.listDataHoldings( "userid"
+                                             , "community"
                                              , CommunityMessage.getGroup( communitySnippet )
                                              , argumentBuffer.toString() ) ;
                                               
@@ -545,6 +474,146 @@ public class Workflow extends Activity {
         return iterator ;
         
     } // end of readWorkflowList()
+    
+    
+    public static Iterator readToolList( String communitySnippet ) {
+        if( TRACE_ENABLED ) trace( "Workflow.readToolList() entry") ;
+
+        try {
+            return ToolFactory.readToolList( communitySnippet ) ;
+        }
+        finally {
+            if( TRACE_ENABLED ) trace( "Workflow.readToolList() exit") ;
+        }
+
+    } 
+    
+    
+    public static Tool readTool( String communitySnippet
+                               , String name ) {  
+        if( TRACE_ENABLED ) trace( "Workflow.readTool() entry") ;
+                                           
+        try {
+            return ToolFactory.readTool( communitySnippet, name ) ;
+        }
+        finally {
+            if( TRACE_ENABLED ) trace( "Workflow.readTool() exit") ;
+        }
+                                      
+    }
+    
+    
+    public static Iterator readQueryList( String communitySnippet
+                                        , String filter ) {
+        if( TRACE_ENABLED ) trace( "Workflow.readQueryList() entry") ;
+        // JBL: For the moment we are ignoring filter.
+        
+        Iterator
+           iterator = null ;
+        java.util.Vector
+           vector = null ;
+        StringBuffer
+           argumentBuffer = new StringBuffer( 64 ) ;
+        String
+           mySpaceLocation ;
+        
+        try {
+           
+            mySpaceLocation =  WKF.getProperty( WKF.MYSPACE_URL, WKF.MYSPACE_CATEGORY ) ;
+           
+             // This is here purely for test situations...
+             if( mySpaceLocation == null || mySpaceLocation.trim().equals("") ) {
+                 vector = WorkflowHelper.readQueryList( communitySnippet, filter) ;
+                 return vector.iterator() ;
+             } 
+                
+           MySpaceManagerDelegate
+              mySpace = new MySpaceManagerDelegate( WKF.getProperty( WKF.MYSPACE_URL, WKF.MYSPACE_CATEGORY ) ) ;
+                
+           argumentBuffer
+              .append( "/")
+              .append( CommunityMessage.getGroup( communitySnippet ) )
+              .append( "/")
+              .append( "serv1")
+              .append( "/" )
+              .append( "query")
+              .append( "/")
+              .append( "*" ) ;
+            
+            vector = mySpace.listDataHoldings( "userid"
+                                             , "community"
+                                             , CommunityMessage.getGroup( communitySnippet )
+                                             , argumentBuffer.toString() ) ;
+                                            
+//            debug( "vector.size(): " + vector.size() ) ;
+//            debug( "element 0: " + vector.elementAt(0)) ;
+                                              
+            iterator = vector.iterator() ;  
+                          
+        }
+        catch ( Exception ex ) {
+            ex.printStackTrace() ;
+        }
+        finally {
+            if( TRACE_ENABLED ) trace( "Workflow.readQueryList() exit") ; 
+        }
+       
+        return iterator ;
+        
+    } 
+    
+    
+    public static String readQuery( String communitySnippet
+                                  , String name ) {     
+        if( TRACE_ENABLED ) trace( "Workflow.readQuery() entry") ;                                                                        
+
+        StringBuffer
+           pathBuffer = new StringBuffer( 64 ) ;
+        String
+           xmlString = null ;
+        String
+           mySpaceLocation = null ;
+         
+        try {
+            
+            mySpaceLocation =  WKF.getProperty( WKF.MYSPACE_URL, WKF.MYSPACE_CATEGORY ) ;
+           
+           debug( "mySpaceLocation: " + mySpaceLocation ) ;
+           
+            // This is here purely for test situations...
+            if( mySpaceLocation == null || mySpaceLocation.trim().equals("") ) {
+               return WorkflowHelper.readQuery( communitySnippet, name ) ;
+            }
+                          
+            MySpaceManagerDelegate
+                mySpace = new MySpaceManagerDelegate( WKF.getProperty( WKF.MYSPACE_URL, WKF.MYSPACE_CATEGORY ) ) ;
+                
+            pathBuffer
+                .append( "/")
+                .append( CommunityMessage.getAccount( communitySnippet ) )
+                .append( "/")
+                .append( "serv1")
+                .append( "/")
+                .append( "query")
+                .append( "/")
+                .append( name ) ;
+            
+            xmlString = mySpace.getDataHolding( "userid"
+                                              , "community"
+                                              , CommunityMessage.getGroup( communitySnippet )
+                                              , pathBuffer.toString() ) ;                      
+
+         }
+         catch ( Exception ex ) {
+             ex.printStackTrace() ;
+         }
+         finally {
+             if( TRACE_ENABLED ) trace( "Query.readQuery() exit") ; 
+         }
+       
+         return xmlString ;   
+                                         
+    }
     
      
     private String
