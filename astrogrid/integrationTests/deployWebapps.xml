@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: deployWebapps.xml,v 1.5 2004/01/14 21:23:48 jdt Exp $ --><!--
+<!-- $Id: deployWebapps.xml,v 1.6 2004/01/15 11:54:38 jdt Exp $ --><!--
 	Example Deploy Script for Astrogrid War files
 	This script uses the Tomcat Manager to deploy war files built nightly by Maven
 
@@ -10,7 +10,7 @@
 	modify forehead.conf to pick it up.
 	You'll need to set the urls, Tomcat Manager usernames and passwords below in the tomcatServers.xml file.
 	-->
-<project basedir="." default="DeployTheLot" name="DeployWars">
+<project basedir="." default="RedeployTheLot" name="DeployWars">
   
 
 
@@ -23,9 +23,9 @@
   
     <property name="mySpace.path" value="/intTest-mySpace"/>
     <property name="mySpace.war.url" value="${mavenURL}/astrogrid-mySpace/wars/astrogrid-mySpace-SNAPSHOT.war"/>
-    <property name="mySpace.host.url" value="${servers.a.url}"/>
-    <property name="mySpace.host.user" value="${servers.a.user}"/>
-    <property name="mySpace.host.password" value="${servers.a.password}"/> <!-- would be nice if this could be assigned as an "array".  Might be possible in Ant 1.6...-->
+    <property name="mySpace.host.url" value="${servers.b.url}"/>
+    <property name="mySpace.host.user" value="${servers.b.user}"/>
+    <property name="mySpace.host.password" value="${servers.b.password}"/> <!-- would be nice if this could be assigned as an "array".  Might be possible in Ant 1.6...-->
   
     <property name="jes.path" value="/intTest-jes"/>   
     <property name="jes.war.url" value="${mavenURL}/astrogrid-jes/wars/astrogrid-jes-SNAPSHOT.war"/>
@@ -93,7 +93,7 @@
     </target>
     
     <target depends="loadServersProperties" name="Undeploycommunity">
-		<remove password="${community.host.password}" path="${community.path}" url="${community.host.url}" username="${community.host.user}"/>
+		<remove password="${community.host.password}" path="${community.path}" url="${community.host.url}" username="${community.host.user}" failOnError="false"/>
 	</target>
 	
     <target depends="Undeploycommunity, Deploycommunity" name="Redeploycommunity"/>
