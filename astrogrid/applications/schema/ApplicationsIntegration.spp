@@ -18,10 +18,11 @@
 		<File FilePath="\\pahlaptop\work\astrogrid\indsrc\workflow-objects\schema\AGApplicationBase.xsd" HomeFolder="Yes"/>
 		<File FilePath="\\pahlaptop\work\astrogrid\indsrc\workflow-objects\schema\AGParameterDefinition.xsd" HomeFolder="Yes"/>
 		<File FilePath="\\pahlaptop\work\astrogrid\indsrc\workflow-objects\schema\CEATypes.xsd" HomeFolder="Yes"/>
-		<File FilePath="\\Pahlaptop\work\astrogrid\src\workflow-objects\wsdl\CommonExecutionConnnector.wsdl" HomeFolder="Yes"/>
+		<File FilePath="\\pahlaptop\work\astrogrid\indsrc\workflow-objects\wsdl\CommonExecutionConnnector.wsdl" HomeFolder="Yes"/>
 		<File FilePath="\\pahlaptop\work\astrogrid\indsrc\workflow-objects\schema\Credentials.xsd" HomeFolder="Yes"/>
 		<File FilePath="\\pahlaptop\work\astrogrid\indsrc\workflow-objects\schema\ExecutionRecord.xsd" HomeFolder="Yes"/>
 		<File FilePath="\\pahlaptop\work\astrogrid\indsrc\workflow-objects\schema\JesTypes.xsd" HomeFolder="Yes"/>
+		<File FilePath="\\pahlaptop\work\astrogrid\indsrc\workflow-objects\wsdl\JobMonitor.wsdl" HomeFolder="Yes"/>
 		<File FilePath="\\pahlaptop\work\astrogrid\indsrc\workflow-objects\schema\VOCEA.xsd" HomeFolder="Yes"/>
 		<File FilePath="\\pahlaptop\work\astrogrid\src\workflow-objects\schema\externalSchema\VODataService-v0.4.xsd" HomeFolder="Yes"/>
 		<File FilePath="\\pahlaptop\work\astrogrid\src\workflow-objects\schema\externalSchema\VOResource-v0.9.xsd" HomeFolder="Yes"/>
