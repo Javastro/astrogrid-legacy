@@ -33,11 +33,14 @@ import org.astrogrid.community.common.util.CommunityMessage ;
 //import org.astrogrid.AstroGridException ;
 import org.astrogrid.jes.delegate.jobController.*;
 
-import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerDelegate;
+// import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerDelegate;
+import org.astrogrid.mySpace.delegate.MySpaceClient;
+import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
+
 import org.astrogrid.portal.workflow.*;
 import org.astrogrid.portal.workflow.design.activity.*;
 import org.w3c.dom.Document ;
-
+import java.util.ListIterator ;
 import org.astrogrid.portal.workflow.design.unittest.* ;
 
 /**
@@ -163,8 +166,8 @@ public class Workflow extends Activity {
     private static final String
         ASTROGRIDERROR_SOMEMESSAGE = "AGWKFE00050" ; // none so far 
         
-    private MySpaceManagerDelegate
-        mySpace ;
+//    private MySpaceManagerDelegate
+//        mySpace ;
     
     
     public static Workflow createWorkflow(  String communitySnippet
@@ -321,8 +324,8 @@ public class Workflow extends Activity {
             }
             else {
                 
-                MySpaceManagerDelegate
-                   mySpace = new MySpaceManagerDelegate( mySpaceLocation ) ;
+                MySpaceClient
+                    mySpace =  MySpaceDelegateFactory.createDelegate( mySpaceLocation ) ; 
                 
                 pathBuffer
                    .append( "/")
@@ -381,8 +384,8 @@ public class Workflow extends Activity {
          }
          else {
              
-             MySpaceManagerDelegate
-                 mySpace = new MySpaceManagerDelegate( mySpaceLocation ) ;
+             MySpaceClient
+                 mySpace =  MySpaceDelegateFactory.createDelegate( mySpaceLocation ) ; 
             
              retValue = mySpace.saveDataHolding( Workflow.extractUserid( account ) 
                                                , Workflow.extractCommunity( account ) 
@@ -1057,8 +1060,8 @@ public class Workflow extends Activity {
                
             account = CommunityMessage.getAccount( communitySnippet ) ;
                             
-            MySpaceManagerDelegate
-                mySpace = new MySpaceManagerDelegate( myspaceLocation ) ;
+            MySpaceClient
+                mySpace =  MySpaceDelegateFactory.createDelegate( myspaceLocation ) ; 
                 
             vector = mySpace.listDataHoldings( Workflow.extractUserid( account )
                                              , Workflow.extractCommunity( account )
@@ -1095,8 +1098,8 @@ public class Workflow extends Activity {
             
             account = CommunityMessage.getAccount( communitySnippet ) ;
             
-            MySpaceManagerDelegate
-                mySpace = new MySpaceManagerDelegate( myspaceLocation ) ;
+            MySpaceClient
+                mySpace =  MySpaceDelegateFactory.createDelegate( myspaceLocation ) ; 
             
             fileString = mySpace.getDataHolding( Workflow.extractUserid( account )
                                                , Workflow.extractCommunity( account )
@@ -1150,50 +1153,90 @@ public class Workflow extends Activity {
             
     }
     
-
-
     
-	public static boolean insertToolIntoStep( String stepActivityKey
-											, Tool tool
-											, Workflow workflow ) {
-			if( TRACE_ENABLED ) trace( "Workflow.insertToolInStep(String,String, Workflow) entry") ; 
+    public static boolean insertToolIntoStep( String stepActivityKey
+                                            , Tool tool
+                                            , Workflow workflow ) {
+            if( TRACE_ENABLED ) trace( "Workflow.insertToolIntoStep(String,String, Workflow) entry") ; 
 
-			boolean
-				retValue = false ;
-			Step
-				step = null ;
-			Activity
-				activity = null ;
+            boolean
+                retValue = false ;
+            Step
+                step = null ;
+            Activity
+                activity = null ;
             
-			try {
+            try {
             
-				activity = workflow.getActivity( stepActivityKey ) ;
+                activity = workflow.getActivity( stepActivityKey ) ;
             
-				if( activity == null ) {
-					debug( "activity not found" ) ;
-				}
-				else if( (activity instanceof Step) == false ) {
-					debug( "activity not a Step") ;
-				}
-				else {
-					step = (Step)activity ;
-							step.setTool( tool ) ;
-							retValue = true ;
-					}
+                if( activity == null ) {
+                    debug( "activity not found" ) ;
+                }
+                else if( (activity instanceof Step) == false ) {
+                    debug( "activity not a Step") ;
+                }
+                else {
+                    step = (Step)activity ;
+                            step.setTool( tool ) ;
+                            retValue = true ;
+                    }
                         
-			}
-			catch( Exception ex ) {
-					ex.printStackTrace() ;
-			}
-			finally {
-					if( TRACE_ENABLED ) trace( "Workflow.insertQueryInStep(String,String, Workflow) exit") ; 
-			}
+            }
+            catch( Exception ex ) {
+                    ex.printStackTrace() ;
+            }
+            finally {
+                    if( TRACE_ENABLED ) trace( "Workflow.insertToolIntoStep(String,String, Workflow) exit") ; 
+            }
         
-			return retValue ;
+            return retValue ;
 
-	} // end of insertQueryInStep(String,String)    
+    } // end of insertToolIntoStep(String,String)    
     
     
+    
+    public static void insertParameterValue( Tool tool
+                                           , String paramName
+                                           , String paramValue
+                                           , String direction
+                                           , int arrayPosition ) {
+    
+        if( TRACE_ENABLED ) trace( "Workflow.insertParameterValue() entry") ; 
+        
+            ListIterator
+                iterator ;
+            int 
+                index = 0 ;
+            Parameter
+                p ;
+     
+        try {
+            
+            if( direction.equals( "input") ){
+                iterator = tool.getInputParameters() ;
+            }
+            else  {
+                iterator = tool.getOutputParameters() ;
+            }
+            
+            while( iterator.hasNext() ) {
+                p = (Parameter)iterator.next() ;
+                if( p.getName().equals( paramValue ) ) {
+                    if( index == arrayPosition ) {
+                        p.setValue( paramValue ) ;
+                    }
+                    index++ ;
+                }
+            }
+        }
+        finally {
+            if( TRACE_ENABLED ) trace( "Workflow.insertParameterValue() exit") ; 
+
+        }
+                                                          
+    } // end of Workflow.insertParameterValue()
+                                               
     
         
     private static void trace( String traceString ) {

@@ -264,5 +264,25 @@ public class Parameter {
     public boolean isInStream() {
         return !isRemoteReference() ;
     }
+ 
+    
+    public void setValue( String value ) {
+        if( this.isRemoteReference() ) {
+            this.setLocation( value ) ;
+        }
+        else {
+            this.setContents( value ) ;
+        }
+    }
+    
+    public String getValue() {
+        if( this.isRemoteReference() ) {
+            return getLocation() ;
+        }
+        else {
+            return getContents() ;
+        }
+    }
+
 
 } // end of class Parameter
