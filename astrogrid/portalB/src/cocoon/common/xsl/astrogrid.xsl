@@ -1,11 +1,14 @@
 <?xml version="1.0"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/cocoon/common/xsl/Attic/astrogrid.xsl,v $</cvs:source>
-    | <cvs:date>$Author: eca $</cvs:date>
-    | <cvs:author>$Date: 2003/10/10 04:37:25 $</cvs:author>
-    | <cvs:version>$Revision: 1.10 $</cvs:version>
+    | <cvs:date>$Author: pjn3 $</cvs:date>
+    | <cvs:author>$Date: 2003/10/28 16:27:55 $</cvs:author>
+    | <cvs:version>$Revision: 1.11 $</cvs:version>
     | <cvs:log>
     | $Log: astrogrid.xsl,v $
+    | Revision 1.11  2003/10/28 16:27:55  pjn3
+    | Job Monitor renamed Job Manager
+    |
     | Revision 1.10  2003/10/10 04:37:25  eca
     | Edited serveral pages to update registry browser / admin:
     | 
@@ -237,7 +240,7 @@
 									<xsl:attribute name="href">
 										<xsl:value-of select="$monitor-page"/>
 									</xsl:attribute>
-									Job Monitor
+									Job Manager
 								</a>
 								<br/>
 								<br/>
