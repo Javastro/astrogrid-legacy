@@ -1,6 +1,4 @@
 #!/bin/env js
-importClass(Packages.org.apache.axis.utils.XMLUtils)
-importClass(Packages.org.astrogrid.datacenter.sql.SQLUtils)
 
 Astrogrid = Packages.org.astrogrid.scripting.Astrogrid.getInstance()
 
@@ -19,8 +17,8 @@ if (merlin == null) {
   }
 delegate = merlin.createDelegate()
 print("connecting to " + merlin.endpoint)
-queryElement = SQLUtils.toQueryBody("select * from merlinCatalog where DataNo = 657037")
+queryElement = Astrogrid.toQueryBody("select * from merlinCatalog where DataNo = 657037")
 results = delegate.doQuery("Votable",queryElement)
-print(XMLUtils.ElementToString(results.getVotable()))
+print(Astrogrid.ElementToString(results.getVotable()))
 
 
