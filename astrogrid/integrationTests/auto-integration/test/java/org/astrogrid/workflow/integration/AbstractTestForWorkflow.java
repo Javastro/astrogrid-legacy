@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForWorkflow.java,v 1.2 2004/07/05 18:32:34 nw Exp $
+/*$Id: AbstractTestForWorkflow.java,v 1.3 2004/07/09 15:49:55 nw Exp $
  * Created on 30-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -120,16 +120,21 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
             softFail("testCheckExecutionResults " + e.getMessage());
         }
         // tidy up.
+        /* bad idea deleting the workflows - goot to keep around, no matter whether the test has succeeded
         Workflow w1 = jes.readJob(urn);
         if (w1.getJobExecutionRecord().getStatus().equals(ExecutionPhase.COMPLETED)) {
             jes.deleteJob(urn);
         }
+        */
     }
 }
 
 
 /* 
 $Log: AbstractTestForWorkflow.java,v $
+Revision 1.3  2004/07/09 15:49:55  nw
+commented out cleanup phase - easier to see whats going on for now
+
 Revision 1.2  2004/07/05 18:32:34  nw
 fixed tests
 
