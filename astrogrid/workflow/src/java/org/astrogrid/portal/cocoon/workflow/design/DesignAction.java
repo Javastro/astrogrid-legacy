@@ -96,10 +96,19 @@ public class DesignAction extends AbstractAction {
         HTTP_WORKFLOW_TAG = "workflow-tag" ;
         
     public static final String
-        WORKFLOW_NAME_PARAMETER = "workflow-name" ; 
-    public static final String    
+        WORKFLOW_NAME_PARAMETER = "workflow-name",  
 	    WORKFLOW_DESCRIPTION_PARAMETER = "workflow-description" ;
-
+        
+    public static final String
+        EDIT_CONDITION_PARAMETER = "edit-condition",
+        ACTIVITY_KEY_PARAMETER = "activity-key",
+        WORKFLOW_LIST_PARAMETER = "workflow-list",
+        QUERY_LIST_PARAMETER = "query-list" ;
+        
+    public static final String
+    QUERY_NAME_PARAMETER = "query-name",
+    QUERY_DESCRIPTION_PARAMETER = "query-description" ;
+    
     public static final String 
         ACTION_CREATE_WORKFLOW = "create-workflow" ,
         ACTION_SAVE_WORKFLOW = "save-workflow" ,
@@ -109,8 +118,9 @@ public class DesignAction extends AbstractAction {
         ACTION_SUBMIT_WORKFLOW = "submit-workflow" ,
         ACTION_READ_WORKFLOW_LIST = "read-workflow-list" ,
         ACTION_CHOOSE_QUERY = "choose-query" ,
-        ACTION_EDIT_JOINCONDITION = "edit-join-condition" ;
-
+        ACTION_EDIT_JOINCONDITION = "edit-join-condition",
+        ACTION_READ_QUERY = "read-query",
+        ACTION_READ_QUERY_LIST = "read-query-list";
 
     /**
     * Our action method.
@@ -263,6 +273,12 @@ public class DesignAction extends AbstractAction {
                 }
                 else if( action.equals( ACTION_EDIT_JOINCONDITION ) ) {
                     this.editJoinCondition() ; 
+                }
+                else if( action.equals( ACTION_READ_WORKFLOW_LIST ) ) {
+                    this.readWorkflowList() ; 
+                }
+                else if( action.equals( ACTION_READ_QUERY_LIST ) ) {
+                    this.readQueryList() ; 
                 }
                 else {
                     debug( "unsupported action") ; 
@@ -512,74 +528,159 @@ public class DesignAction extends AbstractAction {
                 if( TRACE_ENABLED ) trace( "DesignActionImpl.createWorkflowFromTemplate() exit" ) ;
             }
          
-        }
+        } // end of createWorkflowFromTemplate()
         
         
-        private void submitWorkflow() {
+        private void submitWorkflow() throws ConsistencyException {
             if( TRACE_ENABLED ) trace( "DesignActionImpl.submitWorkflow() entry" ) ;
-              
+
             try {
-                           
+                
+                if( workflow == null ) {
+                    ; // some logging here
+                    throw new ConsistencyException() ; 
+                }
+                else {
+                    Workflow.submitWorkflow( workflow ) ;
+                }          
             }
             finally {
                 if( TRACE_ENABLED ) trace( "DesignActionImpl.submitWorkflow() exit" ) ;
             }
          
-        }
+        } // end of submitQuery()
         
         
         
-        private void chooseQuery() {
+        private void chooseQuery() throws ConsistencyException {
             if( TRACE_ENABLED ) trace( "DesignActionImpl.chooseQuery() entry" ) ;
               
+            Step
+                step = null;
+            String
+                activityKey = null,
+                queryName = null ;
+              
             try {
-                           
+                
+                if( workflow == null ) {
+                     throw new ConsistencyException() ; 
+                 }
+                 
+                activityKey = request.getParameter( ACTIVITY_KEY_PARAMETER ) ;
+                queryName = request.getParameter( QUERY_NAME_PARAMETER ) ;
+                    
+                 if( activityKey == null || queryName == null ) {
+                     ; // some logging here
+                     throw new ConsistencyException() ;
+                 }
+             
+                 Activity
+                     activity = workflow.getActivity( activityKey ) ;
+                    
+                 if( activity instanceof Step ) {
+                     step = (Step)activity ;
+                     Workflow.insertQueryIntoStep( step, queryName ) ;
+                 }
+                 else {
+                     throw new ConsistencyException() ;
+                 }          
             }
             finally {
                 if( TRACE_ENABLED ) trace( "DesignActionImpl.chooseQuery() exit" ) ;
             }
                     
-        }
+        } // end of chooseQuery()
         
         
         private void editJoinCondition() throws ConsistencyException {
             if( TRACE_ENABLED ) trace( "DesignActionImpl.editJoinCondition() entry" ) ;
+              
+            Step
+                step ;
+            JoinCondition 
+                joinCondition ;
               
             try {
                 
                 if( workflow == null ) {
                     throw new ConsistencyException() ; 
                 }
- /*               
+                
                 String
-                    activityKey = request.getParameter( "" ),
-                    editCondition = request.getParameter( "" ).toLowerCase() ;
+                    activityKey = request.getParameter( ACTIVITY_KEY_PARAMETER ),
+                    editCondition = request.getParameter( EDIT_CONDITION_PARAMETER ) ;
                     
                 if( activityKey == null || editCondition == null ) {
                     ; // some logging here
                     throw new ConsistencyException() ;
                 }
                 
+                if( editCondition.equalsIgnoreCase( JoinCondition.ANY.toString() ) ) {
+                    joinCondition =  JoinCondition.ANY ;
+                }
+                else if( editCondition.equalsIgnoreCase( JoinCondition.TRUE.toString() ) ) {
+                    joinCondition =  JoinCondition.TRUE ;
+                }
+                else if( editCondition.equalsIgnoreCase( JoinCondition.FALSE.toString() ) ) {
+                    joinCondition =  JoinCondition.FALSE ;
+                }
+                else {
+                    ; // some logging here
+                    throw new ConsistencyException() ; 
+                }
+             
                 Activity
                     activity = workflow.getActivity( activityKey ) ;
                     
-                if( activity == )
-                
-                if( workflow.isDirty() == false ) {
-                    Workflow.deleteWorkflow( userid, community, name ) ;  ; 
+                if( activity instanceof Step ) {
+                    step = (Step)activity ;
+                    step.setJoinCondition( joinCondition ) ;
                 }
-                else if( bConfirm == true ) {
-                    Workflow.deleteWorkflow( userid, community, name ) ;  ;
-                } 
-*/                          
+                else {
+                    throw new ConsistencyException() ;
+                }
+                               
             }
             finally {
                 if( TRACE_ENABLED ) trace( "DesignActionImpl.editJoinCondition() exit" ) ;
             }
          
-        }
+        } // end of editJoinCondition()
             
-            
+           
+        private void readWorkflowList() {
+            if( TRACE_ENABLED ) trace( "DesignActionImpl.readWorkflowList() entry" ) ;
+              
+            try {
+                //NB: The filter argument is ignored at present (Sept 2003).
+                Iterator
+                    iterator =  Workflow.readWorkflowList( userid, community, "*" ) ;
+                this.request.setAttribute( WORKFLOW_LIST_PARAMETER, iterator ) ;               
+            }
+            finally {
+                if( TRACE_ENABLED ) trace( "DesignActionImpl.readWorkflowList() exit" ) ;
+            }
+                    
+        } // end of readWorkflowList()   
+           
+   
+        private void readQueryList() {
+            if( TRACE_ENABLED ) trace( "DesignActionImpl.readQueryList() entry" ) ;
+              
+            try {
+//              NB: The filter argument is ignored at present (Sept 2003).
+                Iterator
+                    iterator =  Query.readQueryList( userid, community, "*" ) ;
+                this.request.setAttribute( QUERY_LIST_PARAMETER, iterator ) ;               
+            }
+            finally {
+                if( TRACE_ENABLED ) trace( "DesignActionImpl.readQueryList() exit" ) ;
+            }
+                    
+        } // end of readQueryList()   
+           
+                      
     } // end of inner class DesignActionImpl
     
     

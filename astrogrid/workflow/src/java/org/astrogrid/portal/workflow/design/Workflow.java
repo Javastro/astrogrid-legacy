@@ -150,6 +150,7 @@ public class Workflow extends Activity {
     private MySpaceManagerDelegate
         mySpace ;
     
+    
     public static Workflow createWorkflow(  String userid, String community, String name, String description  ) {
         if( TRACE_ENABLED ) trace( "Workflow.createWorkflow() entry") ;   
            
@@ -243,7 +244,9 @@ public class Workflow extends Activity {
 //                .append( workflow.getCommunity() )
                 .append( "/")
                 .append( "serv1")
+                .append( "/")
                 .append( "workflow")
+                .append( "/")
                 .append( workflow.getName() ) ;
             
             xmlString = mySpace.getDataHolding( workflow.getUserid()
@@ -344,54 +347,95 @@ public class Workflow extends Activity {
     } // end of saveWorkflow()
     
     
+    public static boolean submitWorkflow( Workflow workflow ) {
+        if( TRACE_ENABLED ) trace( "Workflow.submitWorkflow() entry") ; 
+
+         
+        try {
+                        
+        }
+        catch( Exception ex ) {
+            ex.printStackTrace() ;
+        }
+        finally {
+            if( TRACE_ENABLED ) trace( "Workflow.submitWorkflow() exit") ; 
+        }
+        
+        return false ;
+
+    } // end of submitWorkflow()
+    
+    
+    public static boolean insertQueryIntoStep( Step step, String queryName ) {
+        if( TRACE_ENABLED ) trace( "Workflow.insertQueryInStep() entry") ; 
+
+         
+        try {
+                        
+        }
+        catch( Exception ex ) {
+            ex.printStackTrace() ;
+        }
+        finally {
+            if( TRACE_ENABLED ) trace( "Workflow.insertQueryInStep() exit") ; 
+        }
+        
+        return false ;
+
+    } // end of insertQueryInStep()
+   
+    
+    
     /*
      * At present this returns just an Iterator of string Objects representing the names
      * of the files.
      */
-    public static Iterator readWorkflowList( String userid, String community, String name) {
+    public static Iterator readWorkflowList( String userid, String community, String filter ) {
         if( TRACE_ENABLED ) trace( "Workflow.readWorkflowList() entry") ; 
         
-            Iterator
-                iterator = null ;
-            java.util.Vector
-                vector = null ;
-            StringBuffer
-                argumentBuffer = new StringBuffer( 64 ) ;
-         
-            try {
-                
-                MySpaceManagerDelegate
-                    mySpace = new MySpaceManagerDelegate( WKF.getProperty( WKF.MYSPACE_URL, WKF.MYSPACE_CATEGORY ) ) ;
-                
-                argumentBuffer
-                    .append( "/")
-                    .append( userid )
-//                  .append( "/")
-//                  .append( workflow.getCommunity() )
-                    .append( "/")
-                    .append( "serv1")
-                    .append( "/" )
-                    .append( "workflow")
-                    .append( "/")
-                    .append( "*" ) ;
-            
-                vector = mySpace.listDataHoldings( userid
-                                                 , community
-                                                 , argumentBuffer.toString() ) ;
-                                                 
-                iterator = vector.iterator() ;  
-                          
-            }
-            catch ( Exception ex ) {
-                ex.printStackTrace() ;
-            }
-            finally {
-               if( TRACE_ENABLED ) trace( "Workflow.readWorkflowList() exit") ; 
-            }
-       
-            return iterator ;
+        // JBL: For the moment we are ignoring filter.
         
-    }
+        Iterator
+           iterator = null ;
+        java.util.Vector
+           vector = null ;
+        StringBuffer
+           argumentBuffer = new StringBuffer( 64 ) ;
+        
+        try {
+                
+           MySpaceManagerDelegate
+              mySpace = new MySpaceManagerDelegate( WKF.getProperty( WKF.MYSPACE_URL, WKF.MYSPACE_CATEGORY ) ) ;
+                
+           argumentBuffer
+              .append( "/")
+              .append( userid )
+//            .append( "/")
+//            .append( workflow.getCommunity() )
+              .append( "/")
+              .append( "serv1")
+              .append( "/" )
+              .append( "workflow")
+              .append( "/")
+              .append( "*" ) ;
+            
+            vector = mySpace.listDataHoldings( userid
+                                             , community
+                                             , argumentBuffer.toString() ) ;
+                                              
+            iterator = vector.iterator() ;  
+                          
+        }
+        catch ( Exception ex ) {
+            ex.printStackTrace() ;
+        }
+        finally {
+            if( TRACE_ENABLED ) trace( "Workflow.readWorkflowList() exit") ; 
+        }
+       
+        return iterator ;
+        
+    } // end of readWorkflowList()
     
      
     private String
@@ -683,4 +727,5 @@ public class Workflow extends Activity {
         System.out.println( logString ) ;
         // logger.debug( logString ) ;
     }
+    
 } // end of class Workflow

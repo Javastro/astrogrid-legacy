@@ -14,8 +14,13 @@ package org.astrogrid.portal.workflow.design;
 import org.apache.log4j.Logger ;
 import org.w3c.dom.* ;
 import org.apache.axis.utils.XMLUtils ;
-import org.astrogrid.portal.workflow.design.myspace.*;
+// import org.astrogrid.portal.workflow.design.myspace.*;
 import java.util.ListIterator ;
+import java.util.Iterator ;
+import org.xml.sax.* ;
+import java.io.StringReader ;
+import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerDelegate;
+import org.astrogrid.portal.workflow.*;
 
 /**
  * The <code>Query</code> class represents... 
@@ -53,48 +58,107 @@ public final class Query implements Tool {
         if( TRACE_ENABLED ) trace( "Query.readQuery() entry") ; 
         
         Query
-            query = null;
+           query = null;
+        StringBuffer
+           pathBuffer = new StringBuffer( 64 ) ;
+        String
+           xmlString = null ;
          
         try {
-                      
-            query = MySpaceHelper.readQuery( userid, community, name ) ;
             
-        }
-        catch ( Exception ex ) {
-        }
-        finally {
-            if( TRACE_ENABLED ) trace( "Query.readQuery() exit") ; 
-        }
+            MySpaceManagerDelegate
+                mySpace = new MySpaceManagerDelegate( WKF.getProperty( WKF.MYSPACE_URL, WKF.MYSPACE_CATEGORY ) ) ;
+                
+            pathBuffer
+                .append( "/")
+                .append( userid )
+//              .append( "/")
+//              .append( workflow.getCommunity() )
+                .append( "/")
+                .append( "serv1")
+                .append( "/")
+                .append( "community")
+                .append( "/")
+                .append( name ) ;
+            
+            xmlString = mySpace.getDataHolding( userid
+                                              , community
+                                              , pathBuffer.toString() ) ;                      
+
+            InputSource
+               source = new InputSource( new StringReader( xmlString ) );
+                         
+            query = new Query( XMLUtils.newDocument(source) ) ;
+      
+         }
+         catch ( Exception ex ) {
+             ex.printStackTrace() ;
+         }
+         finally {
+             if( TRACE_ENABLED ) trace( "Query.readQuery() exit") ; 
+         }
        
-        return query ;
+         return query ;
         
     } // end of readQuery()
     
     
-    public static ListIterator readQueryList( String userid, String community, String name ) {
+    public static Iterator readQueryList( String userid, String community, String name ) {
         if( TRACE_ENABLED ) trace( "Query.readQuery() entry") ; 
         
-            ListIterator
-                iterator = null;
-         
-        try {
+        // JBL: For the moment we are ignoring filter.
+        
+       Iterator
+          iterator = null ;
+       java.util.Vector
+          vector = null ;
+       StringBuffer
+          argumentBuffer = new StringBuffer( 64 ) ;
+        
+       try {
+                
+          MySpaceManagerDelegate
+             mySpace = new MySpaceManagerDelegate( WKF.getProperty( WKF.MYSPACE_URL, WKF.MYSPACE_CATEGORY ) ) ;
+                
+          argumentBuffer
+             .append( "/")
+             .append( userid )
+//           .append( "/")
+//           .append( workflow.getCommunity() )
+             .append( "/")
+             .append( "serv1")
+             .append( "/" )
+             .append( "workflow")
+             .append( "/")
+             .append( "*" ) ;
             
-            iterator = MySpaceHelper.readQueryList( userid, community ) ;
-            
-        }
-        catch ( Exception ex ) {
-        }
-        finally {
-            if( TRACE_ENABLED ) trace( "Query.readQuery() exit") ; 
-        }
+           vector = mySpace.listDataHoldings( userid
+                                            , community
+                                            , argumentBuffer.toString() ) ;
+                                              
+           iterator = vector.iterator() ;  
+                          
+       }
+       catch ( Exception ex ) {
+           ex.printStackTrace() ;
+       }
+       finally {
+           if( TRACE_ENABLED ) trace( "Workflow.readWorkflowList() exit") ; 
+       }
        
-        return iterator ;
+       return iterator ;
 
     } // end of readQueryList()
     
         
     public Query() {
         if( TRACE_ENABLED ) trace( "Query() entry/exit") ;  
+    }
+    
+    
+    public Query( Document document ) {
+        //JBL this probably requires some further filtering...
+        this( document.getDocumentElement() ) ;
     }
     
     
