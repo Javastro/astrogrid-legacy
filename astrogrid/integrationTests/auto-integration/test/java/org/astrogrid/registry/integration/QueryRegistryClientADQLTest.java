@@ -1,4 +1,4 @@
-/*$Id: QueryRegistryClientADQLTest.java,v 1.4 2004/08/05 12:13:58 KevinBenson Exp $
+/*$Id: QueryRegistryClientADQLTest.java,v 1.5 2004/09/03 10:01:12 nw Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,7 @@ package org.astrogrid.registry.integration;
 
 import org.astrogrid.registry.RegistryException;
 
+import org.astrogrid.test.AstrogridAssert;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 
@@ -25,8 +26,10 @@ import junit.framework.TestCase;
 import java.net.URL;
 
 /**
- * @author Noel Winstanley nw@jb.man.ac.uk 15-Apr-2004
- * @author Paul Harrison pah@jb.man.ac.uk 07-May-2004
+ * 
+ * @author Kevin Benson
+ * @author Noel Winstanley
+ * @todo assert something in these tests.
  *
  */
 public class QueryRegistryClientADQLTest extends RegistryBaseTest {
@@ -43,14 +46,17 @@ public class QueryRegistryClientADQLTest extends RegistryBaseTest {
        Document queryDoc = askQueryFromFile("GetLocalHostResourcesADQL.xml");
        Document  result = rs.search(queryDoc);
        assertNotNull(result);
-       DomHelper.DocumentToStream(result,System.out);       
+       DomHelper.DocumentToStream(result,System.out);
+       AstrogridAssert.assertXpathExists("/SearchResponse",result);
     }
     
    public void testSearch2() throws Exception {
       Document queryDoc = askQueryFromFile("GetLocalHostResourcesADQL2.xml");
       Document  result = rs.search(queryDoc);
       assertNotNull(result);
-      DomHelper.DocumentToStream(result,System.out);       
+      DomHelper.DocumentToStream(result,System.out); 
+
+      AstrogridAssert.assertXpathExists("/SearchResponse",result);      
    }
     
     

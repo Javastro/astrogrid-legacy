@@ -1,4 +1,4 @@
-/*$Id: QueryOAIRegistryTest.java,v 1.4 2004/08/25 11:40:50 KevinBenson Exp $
+/*$Id: QueryOAIRegistryTest.java,v 1.5 2004/09/03 10:01:12 nw Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,8 +27,9 @@ import junit.framework.TestCase;
 import java.net.URL;
 
 /**
- * @author Noel Winstanley nw@jb.man.ac.uk 15-Apr-2004
- * @author Paul Harrison pah@jb.man.ac.uk 07-May-2004
+ * @author Kevin Benson
+ * @author Noel Winstanley
+ * @todo add assertions on document format.
  *
  */
 public class QueryOAIRegistryTest extends RegistryBaseTest {
@@ -45,6 +46,7 @@ public class QueryOAIRegistryTest extends RegistryBaseTest {
     {
        //HashMap auth = delegate.managedAuthorities();
        Document result = rs.identify();
+       
        DomHelper.DocumentToStream(result,System.out);
     }
     

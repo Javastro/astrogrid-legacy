@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryBaseTest.java,v 1.7 2004/09/03 09:46:33 nw Exp $
+ * $Id: RegistryBaseTest.java,v 1.8 2004/09/03 10:01:12 nw Exp $
  * 
  * Created on 07-May-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -85,13 +85,21 @@ public abstract class RegistryBaseTest extends TestCase {
    }
    
   // useful reg-specific assertions.
+   /** assert a document conforms to the vodescription schema */
    public void assertVODescription(Document doc) {
        AstrogridAssert.assertSchemaValid(doc,"VODescription",SchemaMap.ALL);
    }
    
-   public void assertVOResource(Document doc) {
-       AstrogridAssert.assertSchemaValid(doc,"VOResource",SchemaMap.ALL);
+
+   /** assert a document conforms to the vodescription schema, and contains at least one resource */
+   public void assertNonEmptyVODescription(Document doc) {
+       assertVODescription(doc);
    }
+   /** assert a document conforms to the vodescription schema, and containis exactly one resource */
+   public void assertSingletonVODescription(Document doc) {
+       assertVODescription(doc);
+   }
+   
    
    /* @todo more needed here - inspect contents of a result, handle 'searchResults' etc*/
    

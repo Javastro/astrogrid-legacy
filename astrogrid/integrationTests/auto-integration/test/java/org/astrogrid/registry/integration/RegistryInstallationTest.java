@@ -1,4 +1,4 @@
-/*$Id: RegistryInstallationTest.java,v 1.10 2004/09/03 09:45:59 nw Exp $
+/*$Id: RegistryInstallationTest.java,v 1.11 2004/09/03 10:01:12 nw Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -46,7 +46,7 @@ public class RegistryInstallationTest extends RegistryBaseTest {
         Document doc = delegate.loadRegistry();
         assertNotNull(doc);
         XMLUtils.PrettyDocumentToStream(doc,System.out);
-        assertVODescription(doc);
+        assertNonEmptyVODescription(doc);
     }
     
     public void testAuthority() throws RegistryException
@@ -68,6 +68,9 @@ public class RegistryInstallationTest extends RegistryBaseTest {
 
 /* 
 $Log: RegistryInstallationTest.java,v $
+Revision 1.11  2004/09/03 10:01:12  nw
+made a start adding assertions on document format. could go furhter yet..
+
 Revision 1.10  2004/09/03 09:45:59  nw
 asserted that a vodescription is returned.
 

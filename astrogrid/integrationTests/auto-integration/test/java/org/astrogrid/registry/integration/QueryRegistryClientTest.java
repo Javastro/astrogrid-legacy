@@ -1,4 +1,4 @@
-/*$Id: QueryRegistryClientTest.java,v 1.8 2004/08/27 13:23:08 rtp Exp $
+/*$Id: QueryRegistryClientTest.java,v 1.9 2004/09/03 10:01:12 nw Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,9 +25,11 @@ import junit.framework.TestCase;
 import java.net.URL;
 
 /**
- * @author Noel Winstanley nw@jb.man.ac.uk 15-Apr-2004
+ * @author Kevin Benson
+ * @author Noel Winstanley
  * @author Paul Harrison pah@jb.man.ac.uk 07-May-2004
  * @author Roy Platon rtp@rl.ac.uk 16-Aug-2004
+ * 
  *
  */
 public class QueryRegistryClientTest extends RegistryBaseTest {
@@ -46,20 +48,23 @@ public class QueryRegistryClientTest extends RegistryBaseTest {
        Document result = rs.loadRegistry();
        assertNotNull(result);
        DomHelper.DocumentToStream(result,System.out);
+       assertVODescription(result);
     }
     
     public void testLocalHostResources() throws Exception {
        Document queryDoc = askQueryFromFile("GetLocalHostResources.xml");
        Document  result = rs.submitQuery(queryDoc);
        assertNotNull(result);
-       DomHelper.DocumentToStream(result,System.out);       
+       DomHelper.DocumentToStream(result,System.out);
+       assertNonEmptyVODescription(result);
     }
     
    public void testContainsResources() throws Exception {
       Document queryDoc = askQueryFromFile("GetContainsResources.xml");
       Document  result = rs.submitQuery(queryDoc);
       assertNotNull(result);
-      DomHelper.DocumentToStream(result,System.out);       
+      DomHelper.DocumentToStream(result,System.out);
+      assertNonEmptyVODescription(result);      
    }
 
 /*
@@ -69,42 +74,48 @@ public class QueryRegistryClientTest extends RegistryBaseTest {
       Document queryDoc = askQueryFromFile("BasicCatalogueQuery.xml");
       Document  result = rs.submitQuery(queryDoc);
       assertNotNull(result);
-      DomHelper.DocumentToStream(result,System.out);       
+      DomHelper.DocumentToStream(result,System.out);
+      assertNonEmptyVODescription(result);
    }
    
    public void testBasicToolQuery() throws Exception {
       Document queryDoc = askQueryFromFile("BasicToolQuery.xml");
       Document  result = rs.submitQuery(queryDoc);
       assertNotNull(result);
-      DomHelper.DocumentToStream(result,System.out);       
+      DomHelper.DocumentToStream(result,System.out);
+      assertSingletonVODescription(result);      
    }
    
    public void testColumnQuery() throws Exception {
       Document queryDoc = askQueryFromFile("ColumnQuery.xml");
       Document  result = rs.submitQuery(queryDoc);
       assertNotNull(result);
-      DomHelper.DocumentToStream(result,System.out);       
+      DomHelper.DocumentToStream(result,System.out);
+      assertNonEmptyVODescription(result);      
    }
    
    public void testTabularSkyServiceQuery() throws Exception {
       Document queryDoc = askQueryFromFile("TabularSkyServiceQuery.xml");
       Document  result = rs.submitQuery(queryDoc);
       assertNotNull(result);
-      DomHelper.DocumentToStream(result,System.out);       
+      DomHelper.DocumentToStream(result,System.out);
+      assertNonEmptyVODescription(result);      
    }
    
    public void testUCDQuery() throws Exception {
       Document queryDoc = askQueryFromFile("UCDQuery.xml");
       Document  result = rs.submitQuery(queryDoc);
       assertNotNull(result);
-      DomHelper.DocumentToStream(result,System.out);       
+      DomHelper.DocumentToStream(result,System.out);
+      assertNonEmptyVODescription(result);      
    }
    
    public void testResourceByIdentifier() throws Exception {
       Document result =
          rs.getResourceByIdentifier("org.astrogrid.localhost/noaa_trace");
       assertNotNull(result);
-      DomHelper.DocumentToStream(result,System.out);      
+      DomHelper.DocumentToStream(result,System.out);
+      assertSingletonVODescription(result);      
    }
    
    public void testEndpointByIdentifier() throws Exception {
