@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsPluginTest.java,v 1.4 2004/10/07 10:34:44 mch Exp $
+ * $Id: SampleStarsPluginTest.java,v 1.5 2004/10/08 17:14:23 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -37,6 +37,10 @@ import org.xml.sax.SAXException;
 
 public class SampleStarsPluginTest extends TestCase {
 
+   public void setUp() {
+      SampleStarsPlugin.initConfig();
+   }
+   
    /** Tests the precanned results.  Plugin test is done through QuerierTest */
    public void testFixedResults() throws IOException, SAXException, SQLException {
       
@@ -47,9 +51,6 @@ public class SampleStarsPluginTest extends TestCase {
 
    /** Test that we can connect to the dummy database */
    public void testDummyCatalog() throws IOException, SQLException {
-      
-      //call configuration so db is ready to be conected to independently
-      SampleStarsPlugin.populateDb();
       
       Connection connection = JdbcConnections.makeFromConfig().createConnection();
       Statement s = connection.createStatement();
@@ -70,9 +71,6 @@ public class SampleStarsPluginTest extends TestCase {
    /** Test that we can reach the dummy catalogue through the dummy plugin */
    public void testDummyPlugin() throws IOException, SQLException, SAXException, ParserConfigurationException {
       
-      //make sure the configuration is correct for the plugin
-      //SampleStarsPlugin.initConfig();
-      
       QuerierManager manager = new QuerierManager("DummyTest");
 
       StringWriter sw = new StringWriter();
@@ -85,8 +83,6 @@ public class SampleStarsPluginTest extends TestCase {
    /** Tests the generated metadata */
    public void testAutoMetadata() throws Exception {
       
-      //SampleStarsPlugin.populateDb();
-
       RdbmsResourcePlugin plugin = new RdbmsResourcePlugin();
       
       //generate metadata

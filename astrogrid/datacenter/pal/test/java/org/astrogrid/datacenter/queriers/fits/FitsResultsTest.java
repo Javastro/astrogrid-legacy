@@ -1,4 +1,4 @@
-/*$Id: FitsResultsTest.java,v 1.1 2004/09/28 15:11:33 mch Exp $
+/*$Id: FitsResultsTest.java,v 1.2 2004/10/08 17:14:23 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -33,7 +33,7 @@ public class FitsResultsTest extends TestCase
    FitsResults coneResults;
                             
    protected void setUp() throws Exception{
-      SimpleConfig.setProperty(QuerierPluginFactory.PLUGIN_KEY, FitsQuerierPlugin.class.getName());
+      SimpleConfig.setProperty(QuerierPluginFactory.QUERIER_PLUGIN_KEY, FitsQuerierPlugin.class.getName());
    }
 
    public void testToVotable() throws IOException, SAXException, ParserConfigurationException
@@ -94,6 +94,9 @@ public class FitsResultsTest extends TestCase
 
 /*
  $Log: FitsResultsTest.java,v $
+ Revision 1.2  2004/10/08 17:14:23  mch
+ Clearer separation of metadata and querier plugins, and improvements to VoResource plugin mechanisms
+
  Revision 1.1  2004/09/28 15:11:33  mch
  Moved server test directory to pal
 

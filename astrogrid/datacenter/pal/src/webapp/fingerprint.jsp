@@ -201,15 +201,38 @@
 </pre>
 
 <hr />
-<h2>Plugin Configuration</h2>
+<h2>VoResource/Metadata Plugin Configuration</h2>
 <%
-   String pluginClass =  SimpleConfig.getProperty(org.astrogrid.datacenter.queriers.QuerierPluginFactory.PLUGIN_KEY, null);
+   Object[] resourcePluginClasses =  SimpleConfig.getSingleton().getProperties(org.astrogrid.datacenter.metadata.VoResourcePlugin.RESOURCE_PLUGIN_KEY);
+
+   for (int i = 0; i < resourcePluginClasses.length; i++) {
+      out.println("Resource Plugin Class "+resourcePluginClasses[i].toString());
+      if (resourcePluginClasses[i] == null) {
+         out.println(" - Missing Plugin, set key "+org.astrogrid.datacenter.metadata.VoResourcePlugin.RESOURCE_PLUGIN_KEY+"."+i);
+      }
+      else {
+        try {
+           Class plugin = Class.forName(resourcePluginClasses[i].toString());
+           out.println(" - found on classpath");
+      
+        } catch (Throwable t) {
+           out.println(" - Could not load plugin class");
+           out.println(t.getMessage());
+        }
+     }
+  }
+%>
+
+<hr />
+<h2>Query Plugin Configuration</h2>
+<%
+   String pluginClass =  SimpleConfig.getProperty(org.astrogrid.datacenter.queriers.QuerierPluginFactory.QUERIER_PLUGIN_KEY, null);
    String sqlMaker = SimpleConfig.getProperty(org.astrogrid.datacenter.queriers.sql.JdbcPlugin.SQL_TRANSLATOR, null) ;
 %>
-Plugin Class <%= pluginClass %>
+Query Plugin Class <%= pluginClass %>
 <%
    if (pluginClass == null) {
-      out.println(" - No Plugin specified, set key "+org.astrogrid.datacenter.queriers.QuerierPluginFactory.PLUGIN_KEY);
+      out.println(" - No Plugin specified, set key "+org.astrogrid.datacenter.queriers.QuerierPluginFactory.QUERIER_PLUGIN_KEY);
    }
    else {
      try {

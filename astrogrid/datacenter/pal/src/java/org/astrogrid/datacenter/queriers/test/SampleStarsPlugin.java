@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsPlugin.java,v 1.1 2004/09/28 15:02:13 mch Exp $
+ * $Id: SampleStarsPlugin.java,v 1.2 2004/10/08 17:14:22 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.metadata.VoDescriptionServer;
+import org.astrogrid.datacenter.metadata.AuthorityConfigPlugin;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
@@ -41,7 +41,8 @@ public class SampleStarsPlugin extends JdbcPlugin
    /** Sets up the configuration etc for accessing this database */
    public static void initConfig() {
       
-      SimpleConfig.setProperty(QuerierPluginFactory.PLUGIN_KEY, SampleStarsPlugin.class.getName());
+      SimpleConfig.getSingleton().setProperty(QuerierPluginFactory.QUERIER_PLUGIN_KEY, SampleStarsPlugin.class.getName());
+
       SimpleConfig.setProperty(JdbcPlugin.SQL_TRANSLATOR, StdSqlMaker.class.getName());
 
       SimpleConfig.setProperty(SqlMaker.CONE_SEARCH_RA_COL_KEY, "RA");
@@ -200,6 +201,9 @@ public class SampleStarsPlugin extends JdbcPlugin
 }
    /*
    $Log: SampleStarsPlugin.java,v $
+   Revision 1.2  2004/10/08 17:14:22  mch
+   Clearer separation of metadata and querier plugins, and improvements to VoResource plugin mechanisms
+
    Revision 1.1  2004/09/28 15:02:13  mch
    Merged PAL and server packages
 

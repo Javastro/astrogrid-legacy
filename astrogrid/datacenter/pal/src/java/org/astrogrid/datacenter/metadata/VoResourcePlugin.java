@@ -1,5 +1,5 @@
 /*
- * $Id: VoResourcePlugin.java,v 1.2 2004/10/05 20:26:43 mch Exp $
+ * $Id: VoResourcePlugin.java,v 1.3 2004/10/08 17:14:22 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -17,6 +17,9 @@ import java.io.IOException;
 
 public interface VoResourcePlugin
 {
+   
+   public final static String RESOURCE_PLUGIN_KEY = "datacenter.resource.plugin";
+   
    /**
     * Returns an array of VOResource elements of the metadata.  Returns a string (rather than
     * DOM element)

@@ -1,11 +1,11 @@
-/*$Id: DatacenterApplicationTest.java,v 1.1 2004/09/28 15:11:33 mch Exp $
+/*$Id: DatacenterApplicationTest.java,v 1.2 2004/10/08 17:14:23 mch Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
 **/
 package org.astrogrid.datacenter.service.v06;
@@ -75,7 +75,7 @@ public class DatacenterApplicationTest extends ServerTestCase {
     protected void setUp() throws Exception {
         super.setUp();
         ds = new DataServer();
-        SimpleConfig.setProperty(QuerierPluginFactory.PLUGIN_KEY,PrecannedPlugin.class.getName());
+        SimpleConfig.setProperty(QuerierPluginFactory.QUERIER_PLUGIN_KEY,PrecannedPlugin.class.getName());
         env = new ApplicationDescriptionEnvironment(new InMemoryIdGen(),new DefaultProtocolLibrary());
         appDesc = new DatacenterApplicationDescription("test",ds,env,new DirectExecutor());
         user = new User();
@@ -94,7 +94,7 @@ public class DatacenterApplicationTest extends ServerTestCase {
     protected User user;
     protected Tool tool;
     protected DatacenterApplicationDescription appDesc;
-    protected DatacenterApplication app;   
+    protected DatacenterApplication app;
     protected TestRunListener runListener;
     protected TestResultListener resultListener;
     
@@ -107,7 +107,7 @@ public class DatacenterApplicationTest extends ServerTestCase {
             tool.setOutput(output);
             ParameterValue query= new ParameterValue();
             query.setName("Query");
-            query.setIndirect(false);       
+            query.setIndirect(false);
             
             InputStream is = this.getClass().getResourceAsStream(SAMPLE_QUERY_RESOURCE);
             StringWriter out = new StringWriter();
@@ -115,8 +115,8 @@ public class DatacenterApplicationTest extends ServerTestCase {
                 Piper.pipe(new InputStreamReader(is),out);
             } catch (Exception e) {
                 Assert.fail("Could not read query " + e.getMessage());
-            } 
-            query.setValue(out.toString());               
+            }
+            query.setValue(out.toString());
             input.addParameter(query);
             
             ParameterValue format= new ParameterValue();
@@ -126,9 +126,9 @@ public class DatacenterApplicationTest extends ServerTestCase {
             input.addParameter(format);
             
             ParameterValue target = new ParameterValue();
-            target.setName("Result");            
-            target.setIndirect(false);        
-            output.addParameter(target);              
+            target.setName("Result");
+            target.setIndirect(false);
+            output.addParameter(target);
     }
     
     public void testCreation() {
@@ -223,8 +223,11 @@ public class DatacenterApplicationTest extends ServerTestCase {
 }
 
 
-/* 
+/*
 $Log: DatacenterApplicationTest.java,v $
+Revision 1.2  2004/10/08 17:14:23  mch
+Clearer separation of metadata and querier plugins, and improvements to VoResource plugin mechanisms
+
 Revision 1.1  2004/09/28 15:11:33  mch
 Moved server test directory to pal
 

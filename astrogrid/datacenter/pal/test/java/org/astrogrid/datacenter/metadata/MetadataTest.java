@@ -1,4 +1,4 @@
-/*$Id: MetadataTest.java,v 1.2 2004/10/05 20:26:43 mch Exp $
+/*$Id: MetadataTest.java,v 1.3 2004/10/08 17:14:23 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,6 +27,10 @@ import org.w3c.dom.Element;
  */
 public class MetadataTest extends TestCase {
   
+   public void setUp() {
+      SampleStarsPlugin.initConfig();
+   }
+   
    public void assertHasAuthorityResource(Document candidate) {
       
       //check for authority id
@@ -43,7 +47,6 @@ public class MetadataTest extends TestCase {
    }
    
    public void testServer() throws Exception {
-      SampleStarsPlugin.initConfig();
       Document metadata = VoDescriptionServer.getVoDescription();
       //debug
       DomHelper.DocumentToStream(metadata, System.out);
@@ -55,7 +58,7 @@ public class MetadataTest extends TestCase {
    
    public void testJdbc() throws Exception {
      
-      SimpleConfig.setProperty("datacenter.metadata.plugin", JdbcPlugin.class.getName());
+      SimpleConfig.setProperty(VoResourcePlugin.RESOURCE_PLUGIN_KEY, JdbcPlugin.class.getName());
       
       //generate metadata
       Document metaDoc = VoDescriptionServer.getVoDescription();
@@ -64,10 +67,10 @@ public class MetadataTest extends TestCase {
       DomHelper.DocumentToStream(metaDoc, System.out);
       
       assertHasRdbmsResource(metaDoc);
-   }
+    }
 
    public void testGetResouce() throws Exception {
-      SimpleConfig.setProperty("datacenter.metadata.plugin", JdbcPlugin.class.getName());
+      SimpleConfig.setProperty(VoResourcePlugin.RESOURCE_PLUGIN_KEY, JdbcPlugin.class.getName());
       
       Element auth = VoDescriptionServer.getAuthorityResource();
       assertNotNull("No AuthorityType in VOdescription", auth);
@@ -99,7 +102,7 @@ public class MetadataTest extends TestCase {
       
    public void testMetatdataFileServer() throws Throwable{
       
-      SimpleConfig.setProperty("datacenter.metadata.plugin", FileResourcePlugin.class.getName());
+      SimpleConfig.setProperty(VoResourcePlugin.RESOURCE_PLUGIN_KEY, FileResourcePlugin.class.getName());
       //get non-existent file
       SimpleConfig.setProperty(FileResourcePlugin.METADATA_FILE_LOC_KEY, "doesntexist");
       VoDescriptionServer.clearCache(); //force reload
@@ -131,6 +134,9 @@ public class MetadataTest extends TestCase {
 
 /*
  $Log: MetadataTest.java,v $
+ Revision 1.3  2004/10/08 17:14:23  mch
+ Clearer separation of metadata and querier plugins, and improvements to VoResource plugin mechanisms
+
  Revision 1.2  2004/10/05 20:26:43  mch
  Prepared for better resource metadata generators
 

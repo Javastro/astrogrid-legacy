@@ -1,4 +1,4 @@
-/*$Id: QuerierPluginFactory.java,v 1.3 2004/10/08 15:17:20 mch Exp $
+/*$Id: QuerierPluginFactory.java,v 1.4 2004/10/08 17:14:22 mch Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,7 +27,7 @@ public class QuerierPluginFactory {
    private static final Log log = LogFactory.getLog(QuerierPluginFactory.class);
    
    /** Key to which plugin (which sublcass of Querier) to use */
-   public static final String PLUGIN_KEY = "datacenter.querier.plugin";
+   public static final String QUERIER_PLUGIN_KEY = "datacenter.querier.plugin";
    
     /**
     * Creates a plugin from the configuration file details for the given querier
@@ -70,7 +70,7 @@ public class QuerierPluginFactory {
    public static QuerierPlugin instantiatePlugin(Querier querier) throws QuerierPluginException {
       
       //'default' org.astrogrid.datacenter.queriers.test.PrecannedPlugin should be given in default config, not here.
-      String querierClass = SimpleConfig.getSingleton().getString(PLUGIN_KEY);
+      String querierClass = SimpleConfig.getSingleton().getString(QUERIER_PLUGIN_KEY);
 
       try {
          Class qClass = Class.forName(querierClass);
@@ -106,6 +106,9 @@ public class QuerierPluginFactory {
 
 /*
  $Log: QuerierPluginFactory.java,v $
+ Revision 1.4  2004/10/08 17:14:22  mch
+ Clearer separation of metadata and querier plugins, and improvements to VoResource plugin mechanisms
+
  Revision 1.3  2004/10/08 15:17:20  mch
  Removed unnecessary imports
 

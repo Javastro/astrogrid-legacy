@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsMetaServer.java,v 1.2 2004/10/05 20:26:43 mch Exp $
+ * $Id: SampleStarsMetaServer.java,v 1.3 2004/10/08 17:14:22 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -11,9 +11,11 @@ import java.net.URL;
 import org.astrogrid.config.Config;
 import org.astrogrid.config.ConfigException;
 import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.datacenter.metadata.AuthorityConfigPlugin;
 import org.astrogrid.datacenter.metadata.FileResourcePlugin;
-import org.astrogrid.datacenter.metadata.VoDescriptionServer;
+import org.astrogrid.datacenter.metadata.VoResourcePlugin;
 import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
+import org.astrogrid.datacenter.queriers.sql.TabularSkyServicePlugin;
 
 /**
  * A special file-serving metadata server; it checks that the SampleStarsPlugin
@@ -25,10 +27,11 @@ import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
 
 public class SampleStarsMetaServer extends FileResourcePlugin
 {
-   /** Returns a URL to the metadata file
+   /** Returns a URL to the metadata file */
    public URL getMetadataUrl() throws IOException {
 
-      String pluginClass = SimpleConfig.getSingleton().getString(QuerierPluginFactory.PLUGIN_KEY);
+      //check that this isn't still serving metadata for a non SampleStars query plugin
+      String pluginClass = SimpleConfig.getSingleton().getString(QuerierPluginFactory.QUERIER_PLUGIN_KEY);
       String sampleStarsClass = SampleStarsPlugin.class.getName();
       if (!pluginClass.equals(SampleStarsPlugin.class.getName())) {
          throw new ConfigException("Server is configured to return sample stars metadata but the plugin is "+pluginClass);
@@ -46,7 +49,15 @@ public class SampleStarsMetaServer extends FileResourcePlugin
     * Initialises config so that authority ID, etc are set
     */
    public static void initConfig() {
-      SimpleConfig.setProperty(VoDescriptionServer.PLUGIN_KEY, SampleStarsMetaServer.class.getName());
+      //configure so it looks for itself
+      SimpleConfig.getSingleton().setProperties(VoResourcePlugin.RESOURCE_PLUGIN_KEY, new Object[] {
+               SampleStarsMetaServer.class.getName(),
+               AuthorityConfigPlugin.class.getName(),
+               TabularSkyServicePlugin.class.getName()
+            });
+
+      
+      //set up the properties for the authority bit
       SimpleConfig.setProperty("datacenter.name", "SampleStars AstroGrid Datacenter");
       SimpleConfig.setProperty("datacenter.shortname", "PAL-Sample");
       SimpleConfig.setProperty("datacenter.publisher", "AstroGrid");
@@ -54,7 +65,6 @@ public class SampleStarsMetaServer extends FileResourcePlugin
       SimpleConfig.setProperty("datacenter.contact.name", "Martin Hill");
       SimpleConfig.setProperty("datacenter.contact.name", "mch@roe.ac.uk");
 
-      SimpleConfig.setProperty("datacenter.authority.metadata.plugin", "org.astrogrid.datacenter.metadata.AuthorityConfigPlugin");
       SimpleConfig.setProperty("datacenter.authorityId", "astrogrid.org");
       SimpleConfig.setProperty("datacenter.resourceKey", "pal-sample");
 

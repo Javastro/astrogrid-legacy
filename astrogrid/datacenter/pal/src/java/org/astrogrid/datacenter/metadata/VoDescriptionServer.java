@@ -1,5 +1,5 @@
 /*
- * $Id: VoDescriptionServer.java,v 1.2 2004/10/05 20:26:43 mch Exp $
+ * $Id: VoDescriptionServer.java,v 1.3 2004/10/08 17:14:22 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -35,8 +35,6 @@ import org.xml.sax.SAXException;
 
 public class VoDescriptionServer {
    protected static Log log = LogFactory.getLog(VoDescriptionServer.class);
-   
-   public final static String PLUGIN_KEY = "datacenter.metadata.plugin";
    
    private static Document cache = null;
    
@@ -79,7 +77,7 @@ public class VoDescriptionServer {
          log.debug("Creating VoResourcePlugin '"+pluginClassName+"'");
          
          Class qClass = Class.forName(pluginClassName);
-         
+       
          /* NWW - interesting bug here.
           original code used class.newInstance(); this method doesn't declare it throws InvocationTargetException,
           however, this exception _is_ thrown if an exception is thrown by the constructor (as is often the case at the moment)
@@ -124,25 +122,34 @@ public class VoDescriptionServer {
     * separate from the validating process. */
    public static String makeVoDescription() throws IOException, MetadataException {
 
-      StringBuffer vod = new StringBuffer();
-      vod.append(VODESCRIPTION_ELEMENT+"\n");
+      //get plugin list from config
+      Object[] plugins = SimpleConfig.getSingleton().getProperties(VoResourcePlugin.RESOURCE_PLUGIN_KEY);
       
-      //lookup authority plugin
-      String pluginClassName = SimpleConfig.getSingleton().getString("datacenter.authority.metadata.plugin",null);
-      if (pluginClassName != null) {
-         VoResourcePlugin authorityPlugin = createPlugin(pluginClassName);
-         vod.append(authorityPlugin.getVoResources());
-      }
-      
-      //lookup secondary/main plugin - default to FileResourcePlugin
-      pluginClassName = SimpleConfig.getSingleton().getString("datacenter.metadata.plugin", FileResourcePlugin.class.getName());
-      VoResourcePlugin plugin = createPlugin(pluginClassName);
-      String[] voResources = plugin.getVoResources();
-      for (int i = 0; i < voResources.length; i++) {
-         vod.append(voResources[i]);
+      //if they are not specified, assume one AuthorityConfigPlugin and a FileResourcePlugin
+      if ((plugins == null) || (plugins.length==0)) {
+         plugins = new String[] {
+            AuthorityConfigPlugin.class.getName(),
+            FileResourcePlugin.class.getName(),
+         };
       }
 
-      //this gives metadata about the CEA access to the datacenter
+      //start the vodescription document
+      StringBuffer vod = new StringBuffer();
+      vod.append(VODESCRIPTION_ELEMENT+"\n");
+
+      //loop through plugins adding each ones list of resources
+      for (int p = 0; p < plugins.length; p++) {
+         //make plugin
+         VoResourcePlugin plugin = createPlugin(plugins[p].toString());
+         //get resources from plugin
+         String[] voResources = plugin.getVoResources();
+         //add to document
+         for (int r = 0; r < voResources.length; r++) {
+            vod.append(voResources[r]);
+         }
+      }
+
+      //add the voresource for the CEA access to the datacenter
       try {
          //I've wrapped this in a separate try/catch so that problems with CEA
          //don't stop the initialiser from working.. which is naughty
@@ -161,6 +168,7 @@ public class VoDescriptionServer {
         log.error(th);
       }
 
+      //finish vod element
       vod.append("</VODescription>");
 
       return vod.toString();

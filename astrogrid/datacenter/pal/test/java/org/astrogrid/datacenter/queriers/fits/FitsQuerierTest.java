@@ -1,4 +1,4 @@
-/*$Id: FitsQuerierTest.java,v 1.3 2004/10/07 10:34:44 mch Exp $
+/*$Id: FitsQuerierTest.java,v 1.4 2004/10/08 17:14:23 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -32,7 +32,7 @@ public class FitsQuerierTest extends TestCase
 {
    
    protected void setUp() throws Exception{
-      SimpleConfig.setProperty(QuerierPluginFactory.PLUGIN_KEY, FitsQuerierPlugin.class.getName());
+      SimpleConfig.setProperty(QuerierPluginFactory.QUERIER_PLUGIN_KEY, FitsQuerierPlugin.class.getName());
       
       //set up test index first
       String index = new FitsTest().generateTestIndex();
@@ -85,6 +85,9 @@ public class FitsQuerierTest extends TestCase
 
 /*
  $Log: FitsQuerierTest.java,v $
+ Revision 1.4  2004/10/08 17:14:23  mch
+ Clearer separation of metadata and querier plugins, and improvements to VoResource plugin mechanisms
+
  Revision 1.3  2004/10/07 10:34:44  mch
  Fixes to Cone maker functions and reading/writing String comparisons from Query
 

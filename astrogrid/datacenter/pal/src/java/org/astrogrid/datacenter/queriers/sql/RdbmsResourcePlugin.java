@@ -1,5 +1,5 @@
 /*
- * $Id: RdbmsResourcePlugin.java,v 1.1 2004/10/05 20:26:43 mch Exp $
+ * $Id: RdbmsResourcePlugin.java,v 1.2 2004/10/08 17:14:22 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -104,10 +104,11 @@ public class RdbmsResourcePlugin implements VoResourcePlugin  {
 
          Vector resources = new Vector();
          resources.add(makeRdbmsMetadataResource(metadata));
-         
-         if (SimpleConfig.getSingleton().getBoolean("datacenter.tabularskyservice")) {
-            resources.add(makeTabularSkySurveyResource(metadata));
-         }
+
+         //this has been moved to a new plugin
+//         if (SimpleConfig.getSingleton().getBoolean("datacenter.tabularskyservice")) {
+//            resources.add(makeTabularSkySurveyResource(metadata));
+//         }
          
          resources.add(makeQueryableResource(metadata));
          

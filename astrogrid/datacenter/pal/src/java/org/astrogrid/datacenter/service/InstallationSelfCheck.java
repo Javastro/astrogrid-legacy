@@ -1,4 +1,4 @@
-/*$Id: InstallationSelfCheck.java,v 1.8 2004/10/08 15:16:04 mch Exp $
+/*$Id: InstallationSelfCheck.java,v 1.9 2004/10/08 17:14:22 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -66,15 +66,15 @@ public class InstallationSelfCheck extends TestCase {
    
    /** Checks the characteristics of the plugin */
    public void testPluginDefinition() throws Exception {
-      String pluginClass = SimpleConfig.getSingleton().getString(QuerierPluginFactory.PLUGIN_KEY);
-      assertNotNull(QuerierPluginFactory.PLUGIN_KEY + " is not defined",pluginClass);
+      String pluginClass = SimpleConfig.getSingleton().getString(QuerierPluginFactory.QUERIER_PLUGIN_KEY);
+      assertNotNull(QuerierPluginFactory.QUERIER_PLUGIN_KEY + " is not defined",pluginClass);
       // try to load plugin class.
       Class plugin = null;
 //      try {
       plugin = Class.forName(pluginClass);
-      assertNotNull(QuerierPluginFactory.PLUGIN_KEY + " could not be found",plugin);
+      assertNotNull(QuerierPluginFactory.QUERIER_PLUGIN_KEY + " could not be found",plugin);
       // check its type
-      assertTrue(QuerierPluginFactory.PLUGIN_KEY + " does not extend QuerierPlugin",QuerierPlugin.class.isAssignableFrom(plugin));
+      assertTrue(QuerierPluginFactory.QUERIER_PLUGIN_KEY + " does not extend QuerierPlugin",QuerierPlugin.class.isAssignableFrom(plugin));
       // we expect a contructor as follows
       Constructor constr = plugin.getConstructor(new Class[]{ Querier.class });
       assertNotNull("Plugin class must provide constructor(String,Query)",constr);
@@ -182,6 +182,9 @@ public class InstallationSelfCheck extends TestCase {
 
 /*
  $Log: InstallationSelfCheck.java,v $
+ Revision 1.9  2004/10/08 17:14:22  mch
+ Clearer separation of metadata and querier plugins, and improvements to VoResource plugin mechanisms
+
  Revision 1.8  2004/10/08 15:16:04  mch
  More on providing status
 
