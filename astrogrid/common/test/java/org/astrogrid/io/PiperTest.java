@@ -1,10 +1,10 @@
 /*
- * $Id: PiperTest.java,v 1.1 2004/02/17 14:56:25 mch Exp $
+ * $Id: PiperTest.java,v 1.2 2004/03/01 13:48:20 mch Exp $
  */
 
 package org.astrogrid.io;
 
-
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
@@ -12,7 +12,6 @@ import java.io.StringWriter;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.hsqldb.lib.StringInputStream;
 
 /**
  * Tests Piper
@@ -29,7 +28,7 @@ public class PiperTest extends TestCase
    {
       ByteArrayOutputStream out = new ByteArrayOutputStream();
       
-      Piper.pipe(new StringInputStream(testContents), out);
+      Piper.pipe(new ByteArrayInputStream(testContents.getBytes()), out);
 
       assertEquals("Pipe has changed contents", testContents, out.toString());
    }
@@ -67,6 +66,9 @@ public class PiperTest extends TestCase
 
 /*
  $Log: PiperTest.java,v $
+ Revision 1.2  2004/03/01 13:48:20  mch
+ Fixed odd StringInputStream dependency changed to ByteArrayInputStream
+
  Revision 1.1  2004/02/17 14:56:25  mch
  Increased test coverage
 
