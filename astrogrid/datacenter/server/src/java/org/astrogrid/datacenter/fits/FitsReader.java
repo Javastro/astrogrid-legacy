@@ -1,5 +1,5 @@
 /*
- $Id: FitsReader.java,v 1.1 2003/11/25 11:04:11 mch Exp $
+ $Id: FitsReader.java,v 1.2 2003/11/26 18:46:55 mch Exp $
 
  Copyright (c) etc
  */
@@ -118,7 +118,12 @@ public class FitsReader
          line = new String(block);
          log.debug(line);
          
-         loadHeaderLine(header, line);
+         FitsKeyword keyword = readHeaderLine(line);
+         if ( (keyword.getKey() != null) && (keyword.getKey() != ""))
+         {
+            header.add(keyword);
+            System.out.println("Line="+line+", Key="+keyword.getKey()+", Value="+keyword.getValue());
+         }
          
       } //end while not end
       
@@ -135,7 +140,7 @@ public class FitsReader
     * Helper method that parses the given string to a keyword/value pair and
     * puts it in the given FitsHeader.
     */
-   public static void loadHeaderLine(FitsHeader header, String line)
+   public static FitsKeyword readHeaderLine(String line)
    {
       int equalsPos = line.indexOf('=');
       if (equalsPos > -1)
@@ -163,15 +168,19 @@ public class FitsReader
          }
          
          //add to header table
-         header.put(key, value);
+         return new FitsKeyword(key, value);
       }
       
+      return new FitsKeyword(line.substring(0,8), null);
    }
    
 }
 
 /*
  $Log: FitsReader.java,v $
+ Revision 1.2  2003/11/26 18:46:55  mch
+ First attempt to generate index from FITS files
+
  Revision 1.1  2003/11/25 11:04:11  mch
  New FITS io package
 
