@@ -1,5 +1,5 @@
 /*
- * $Id: DelegateTest.java,v 1.9 2003/09/15 22:39:07 mch Exp $
+ * $Id: DelegateTest.java,v 1.10 2003/09/16 15:24:39 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -108,18 +108,19 @@ public class DelegateTest extends TestCase implements DatacenterStatusListener
    {
       DatacenterDelegate delegate = DatacenterDelegate.makeDelegate(null);
 
-      delegate.registerListener(DummyDelegate.QUERY_ID, this);
-
       //load test query file
       URL url = getClass().getResource("testQuery.xml");
       Element adqlQuery = XMLUtils.newDocument(url.openConnection().getInputStream()).getDocumentElement();
 
       //create query
       Element response = delegate.makeQuery(adqlQuery);
-
-      //check status
       String queryId = QueryIdHelper.getQueryId(response);
       assertNotNull(queryId);
+      assertEquals(DummyDelegate.QUERY_ID, queryId);
+
+      delegate.registerListener(queryId, this);
+
+      //check status
       QueryStatus status = delegate.getQueryStatus(queryId);
 
       //start query
