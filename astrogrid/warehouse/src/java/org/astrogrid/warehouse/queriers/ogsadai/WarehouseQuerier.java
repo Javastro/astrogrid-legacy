@@ -1,5 +1,5 @@
 /*
- * $Id: WarehouseQuerier.java,v 1.14 2004/01/08 21:41:34 kea Exp $
+ * $Id: WarehouseQuerier.java,v 1.15 2004/01/15 18:36:57 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -33,7 +33,8 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import java.util.Properties;
+//import java.util.Properties;
+import org.astrogrid.config.SimpleConfig; 
 
 /**
  * An AstroGrid datacenter plugin Querier that provides access 
@@ -82,7 +83,7 @@ public class WarehouseQuerier extends Querier
    *   - WarehouseJarDir: Directory containing jars needed by
    *       GdsQueryDelegate (if any)
    */
-  protected Properties serviceProperties = null;
+  //protected Properties serviceProperties = null;
 
   /**
    * Default constructor initialises parent with query data and 
@@ -100,6 +101,7 @@ public class WarehouseQuerier extends Querier
     super(queryId, query);
     log.debug("Constructing WarehouseQuerier");
 
+    /*
     try {
       // Load installation-specific runtime properties
       serviceProperties = new Properties();
@@ -121,6 +123,7 @@ public class WarehouseQuerier extends Querier
            e.getMessage());
     }
     log.debug("Successfully loaded WarehouseQuerier properties");
+    */
   }
 
   /**
@@ -208,8 +211,6 @@ public class WarehouseQuerier extends Querier
     else {
       cmdArgs = new String[6];
     }
-    //cmdArgs[0] = serviceProperties.getProperty(
-     //             "WarehouseJvm", DEFAULT_WAREHOUSE_JVM);
     cmdArgs[0] = getJavaBinary();
     cmdArgs[1] = "-jar";
     cmdArgs[2] = getExecutableJar();
@@ -250,7 +251,8 @@ public class WarehouseQuerier extends Querier
     try {
       tFactory = TransformerFactory.newInstance();
       transformer = tFactory.newTransformer(
-           new StreamSource(serviceProperties.getProperty(
+           //new StreamSource(serviceProperties.getProperty(
+           new StreamSource(SimpleConfig.getProperty(
               "XslTransform", DEFAULT_XSL_TRANSFORM)));
     }
     catch (Exception e){
@@ -335,7 +337,8 @@ public class WarehouseQuerier extends Querier
    * @throws DatabaseAccessException
    */
   protected String getOgsaDaiRegistryString() throws DatabaseAccessException {
-    String host = serviceProperties.getProperty("OgsaDaiHostString");
+    //String host = serviceProperties.getProperty("OgsaDaiHostString");
+    String host = SimpleConfig.getProperty("OgsaDaiHostString");
     if (host == null) {
       String errorMessage = 
         "Fatal error: Property 'OgsaDaiHostString' not found in file " +
@@ -343,7 +346,8 @@ public class WarehouseQuerier extends Querier
       log.error(errorMessage);
       throw new DatabaseAccessException(errorMessage);
     }
-    String registry = serviceProperties.getProperty("OgsaDaiRegistryString");
+    //String registry = serviceProperties.getProperty("OgsaDaiRegistryString");
+    String registry = SimpleConfig.getProperty("OgsaDaiRegistryString");
     if (registry == null) {
       String errorMessage = 
         "Fatal error: Property 'OgsaDaiRegistryString' not found in file " +
@@ -369,7 +373,8 @@ public class WarehouseQuerier extends Querier
   protected String getJavaBinary() throws DatabaseAccessException {
     // First, check if user has customised the JVM location 
     //  in the WarehouseQuerier.properties file
-    String customJVM = serviceProperties.getProperty("WarehouseJvm");
+    //String customJVM = serviceProperties.getProperty("WarehouseJvm");
+    String customJVM = SimpleConfig.getProperty("WarehouseJvm");
     if (customJVM != null) {
       return customJVM;  // Use customised JVM if it exists
     }
@@ -423,7 +428,8 @@ public class WarehouseQuerier extends Querier
    */
   protected String getExecutableJar() throws DatabaseAccessException {
     // Extract path to directory containing executable jar 
-    String jarPath = serviceProperties.getProperty("ExecutableJarPath");
+    //String jarPath = serviceProperties.getProperty("ExecutableJarPath");
+    String jarPath = SimpleConfig.getProperty("ExecutableJarPath");
     if (jarPath == null) {
       String errorMessage = "Property 'ExecutableJarPath' not set in " +
           "properties file 'WarehouseQuerier.properties'";
@@ -443,7 +449,8 @@ public class WarehouseQuerier extends Querier
       }
     }
     // Extract name of executable jar
-    String jarName = serviceProperties.getProperty("ExecutableJarName");
+    //String jarName = serviceProperties.getProperty("ExecutableJarName");
+    String jarName = SimpleConfig.getProperty("ExecutableJarName");
     if (jarName == null) {
       String errorMessage = "Property 'ExecutableJarName' not set in " +
           "properties file 'WarehouseQuerier.properties'";
@@ -520,6 +527,10 @@ public class WarehouseQuerier extends Querier
 }
 /*
 $Log: WarehouseQuerier.java,v $
+Revision 1.15  2004/01/15 18:36:57  kea
+Now looks for properties in toplevel AstroGridConfig.properties,
+using SimpleConfig initialised by datacenter infrastructure.
+
 Revision 1.14  2004/01/08 21:41:34  kea
 Horrid kludge to convert datacenter "t.DEC" to "t.decl" for warehouse tables.
 
