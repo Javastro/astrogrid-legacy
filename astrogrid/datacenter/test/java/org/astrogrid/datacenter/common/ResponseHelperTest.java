@@ -28,7 +28,9 @@ public class ResponseHelperTest extends TestCase
    {
       DummyQuerier querier = new DummyQuerier();
 
-      ResponseHelper.makeStartQueryResponse(querier);
+      ResponseHelper.makeQueryCreatedResponse(querier);
+
+      ResponseHelper.makeQueryStartedResponse(querier);
 
       ResponseHelper.makeStatusResponse(querier);
 
@@ -48,7 +50,13 @@ public class ResponseHelperTest extends TestCase
       querier.setErrorStatus(new IOException("Test error"));
 
       try {
-         ResponseHelper.makeStartQueryResponse(querier);
+         ResponseHelper.makeQueryCreatedResponse(querier);
+         fail("Didn't throw error exception");
+      }
+      catch (IOException e) {}
+
+      try {
+         ResponseHelper.makeQueryStartedResponse(querier);
          fail("Didn't throw error exception");
       }
       catch (IOException e) {}

@@ -1,5 +1,5 @@
 /*
- * $Id: DummyDelegate.java,v 1.5 2003/09/15 22:05:34 mch Exp $
+ * $Id: DummyDelegate.java,v 1.6 2003/09/15 22:38:42 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -75,7 +75,7 @@ public class DummyDelegate extends DatacenterDelegate
     * Checks that the given ADQL is valid (makes a query from it), returns an
     * example VOTable supplied in this package
     */
-   public Element adqlQuery(Element adql) throws RemoteException
+   public Element query(Element adql) throws RemoteException
    {
       setStatus(QueryStatus.STARTING);
 
@@ -105,12 +105,27 @@ public class DummyDelegate extends DatacenterDelegate
    }
 
    /**
-    * Dummy spawn query method - returns an example 'started' response
+    * Dummy create query method - returns an example 'created' response
     */
-   public Element spawnAdqlQuery(Element adql) throws RemoteException
+   public Element makeQuery(Element adql) throws RemoteException
    {
-      setStatus(QueryStatus.STARTING);
+      setStatus(QueryStatus.CONSTRUCTED);
 
+      try
+      {
+         return DocHelper.wrap(QueryIdHelper.makeQueryIdTag(QUERY_ID)).getDocumentElement();
+      }
+      catch (SAXException e)
+      {
+         throw new RuntimeException("Failed to create valid dummy id tag");
+      }
+   }
+
+   /**
+    * DUmmy starts query method - returns an example 'started' responses
+    */
+   public Element startQuery(String queryId) throws RemoteException
+   {
       setStatus(QueryStatus.RUNNING_QUERY);
 
       try
@@ -214,7 +229,7 @@ public class DummyDelegate extends DatacenterDelegate
    /**
     * Returns unknown
     */
-   public QueryStatus getServiceStatus(String id)
+   public QueryStatus getQueryStatus(String queryId)
    {
       return lastStatus;
    }
@@ -232,6 +247,9 @@ public class DummyDelegate extends DatacenterDelegate
 
 /*
 $Log: DummyDelegate.java,v $
+Revision 1.6  2003/09/15 22:38:42  mch
+Split spawnQuery into make and start, so we can add listeners in between
+
 Revision 1.5  2003/09/15 22:05:34  mch
 Renamed service id to query id throughout to make identifying state clearer
 

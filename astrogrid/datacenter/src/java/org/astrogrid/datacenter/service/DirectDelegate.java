@@ -1,5 +1,5 @@
 /*
- * $Id: DirectDelegate.java,v 1.3 2003/09/15 22:05:34 mch Exp $
+ * $Id: DirectDelegate.java,v 1.4 2003/09/15 22:38:42 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -49,7 +49,7 @@ public class DirectDelegate extends DatacenterDelegate
     * results part of the returned document, which may be VOTable or otherwise
     * depending on the results format specified in the ADQL
     */
-   public Element adqlQuery(Element adql) throws IOException
+   public Element query(Element adql) throws IOException
    {
       throw new UnsupportedOperationException("Not implemented yet");
    }
@@ -59,7 +59,12 @@ public class DirectDelegate extends DatacenterDelegate
       throw new UnsupportedOperationException("Not implemented yet");
    }
 
-   public Element spawnAdqlQuery(Element adql) throws RemoteException
+   public Element makeQuery(Element adql) throws RemoteException
+   {
+      throw new UnsupportedOperationException("Not implemented yet");
+   }
+
+   public Element startQuery(String queryId) throws RemoteException
    {
       throw new UnsupportedOperationException("Not implemented yet");
    }
@@ -88,7 +93,7 @@ public class DirectDelegate extends DatacenterDelegate
    /**
     * Polls the service and asks for the current status
     */
-   public QueryStatus getServiceStatus(String id)
+   public QueryStatus getQueryStatus(String queryId)
    {
       return QueryStatus.UNKNOWN;
    }
@@ -106,6 +111,9 @@ public class DirectDelegate extends DatacenterDelegate
 
 /*
 $Log: DirectDelegate.java,v $
+Revision 1.4  2003/09/15 22:38:42  mch
+Split spawnQuery into make and start, so we can add listeners in between
+
 Revision 1.3  2003/09/15 22:05:34  mch
 Renamed service id to query id throughout to make identifying state clearer
 

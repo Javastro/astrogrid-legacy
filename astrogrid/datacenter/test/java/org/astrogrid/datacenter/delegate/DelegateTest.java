@@ -1,5 +1,5 @@
 /*
- * $Id: DelegateTest.java,v 1.8 2003/09/15 22:09:00 mch Exp $
+ * $Id: DelegateTest.java,v 1.9 2003/09/15 22:39:07 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -76,7 +76,7 @@ public class DelegateTest extends TestCase implements DatacenterStatusListener
       int count = delegate.adqlCountDatacenter(adqlQuery);
 
       //submit query for votable results
-      Element results = delegate.adqlQuery(adqlQuery);
+      Element results = delegate.query(adqlQuery);
 
       checkResults(results);
    }
@@ -114,16 +114,23 @@ public class DelegateTest extends TestCase implements DatacenterStatusListener
       URL url = getClass().getResource("testQuery.xml");
       Element adqlQuery = XMLUtils.newDocument(url.openConnection().getInputStream()).getDocumentElement();
 
-      //start query
-      Element response = delegate.spawnAdqlQuery(adqlQuery);
+      //create query
+      Element response = delegate.makeQuery(adqlQuery);
 
       //check status
-      String id = QueryIdHelper.getQueryId(response);
-      assertNotNull(id);
-      QueryStatus status = delegate.getServiceStatus(id);
+      String queryId = QueryIdHelper.getQueryId(response);
+      assertNotNull(queryId);
+      QueryStatus status = delegate.getQueryStatus(queryId);
+
+      //start query
+      response = delegate.startQuery(queryId);
+
+      //check status
+      assertEquals(QueryIdHelper.getQueryId(response), queryId);
+      status = delegate.getQueryStatus(queryId);
 
       //get results
-      response = delegate.getResults(id);
+      response = delegate.getResults(queryId);
       checkResults(response);
    }
 

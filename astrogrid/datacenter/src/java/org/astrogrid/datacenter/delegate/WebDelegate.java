@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegate.java,v 1.6 2003/09/15 22:05:34 mch Exp $
+ * $Id: WebDelegate.java,v 1.7 2003/09/15 22:38:42 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -60,7 +60,7 @@ public class WebDelegate extends DatacenterDelegate
     * @todo - seems bad to have to hide these exceptions to fit in with interface - can we loosen interface instead.
     * or even get rid of it - what does it give us over the machine generated AxisDataServerSoapBindingStub ?
     */
-   public Element adqlQuery(Element adql) throws RemoteException
+   public Element query(Element adql) throws RemoteException
    {
        try {
           return binding.doQuery(adql);
@@ -90,12 +90,29 @@ public class WebDelegate extends DatacenterDelegate
 
    /**
     * Spawns the given query - ie starts it, returns with the server acknowledgement
-    */
+    *
    public Element spawnAdqlQuery(Element adql) throws RemoteException
    {
       try
       {
-         return binding.startQuery(adql);
+         Element response = makeAdqlQuery(adql);
+         return startAdqlQuery(QueryIdHelper.getQueryId(response));
+      }
+      catch (Exception e)
+      {
+         throw new RemoteException(e.getMessage());
+      }
+   }
+    /**/
+
+   /**
+    * Creates the given query, returning the server acknowledgement
+    */
+   public Element makeQuery(Element adql) throws RemoteException
+   {
+      try
+      {
+         return binding.makeQuery(adql);
       }
       catch (Exception e)
       {
@@ -103,6 +120,20 @@ public class WebDelegate extends DatacenterDelegate
       }
    }
 
+   /**
+    * Starts query identified by given id
+    */
+   public Element startQuery(String queryId) throws RemoteException
+   {
+      try
+      {
+         return binding.startQuery(queryId);
+      }
+      catch (Exception e)
+      {
+         throw new RemoteException(e.getMessage());
+      }
+   }
 
    /**
     * Returns the number of items that match the given query.  This is useful for
@@ -127,7 +158,7 @@ public class WebDelegate extends DatacenterDelegate
    /**
     * Polls the service and asks for the current status
     */
-   public QueryStatus getServiceStatus(String id)
+   public QueryStatus getQueryStatus(String id)
    {
       return binding.getStatus(id);
    }
@@ -155,6 +186,9 @@ public class WebDelegate extends DatacenterDelegate
 
 /*
 $Log: WebDelegate.java,v $
+Revision 1.7  2003/09/15 22:38:42  mch
+Split spawnQuery into make and start, so we can add listeners in between
+
 Revision 1.6  2003/09/15 22:05:34  mch
 Renamed service id to query id throughout to make identifying state clearer
 

@@ -1,5 +1,5 @@
 /*
- * $Id: DatacenterDelegate.java,v 1.17 2003/09/15 22:05:34 mch Exp $
+ * $Id: DatacenterDelegate.java,v 1.18 2003/09/15 22:38:42 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -82,7 +82,7 @@ public abstract class DatacenterDelegate
     * results part of the returned document, which may include VOTable or otherwise
     * depending on the results format specified in the ADQL
     */
-   public abstract Element adqlQuery(Element adql) throws IOException;
+   public abstract Element query(Element adql) throws IOException;
 
    /**
     * Returns the number of items that match the given query.  This is useful for
@@ -94,16 +94,21 @@ public abstract class DatacenterDelegate
    /**
     * General purpose asynchronous query database; pass in an XML document with the query
     * described in ADQL (Astronomical Data Query Language).  Returns the
-    * response document including the service id that corresponds to that query
+    * response document including the query id that corresponds to that query.
+    * Does not start the query @see startAdqlQuery
     */
-   public abstract Element spawnAdqlQuery(Element adql) throws IOException;
+   public abstract Element makeQuery(Element adql) throws IOException;
+
+   /**
+    * Starts a query running */
+   public abstract Element startQuery(String queryId) throws IOException;
 
 
    /**
     * Polls the status of the service, returning the results when they're
     * ready
     */
-   public abstract Element getResults(String id) throws IOException;
+   public abstract Element getResults(String queryId) throws IOException;
 
    /**
     * returns metadata (an XML document describing the data the
@@ -122,7 +127,7 @@ public abstract class DatacenterDelegate
    /**
     * Polls the service and asks for the current status
     */
-   public abstract QueryStatus getServiceStatus(String id);
+   public abstract QueryStatus getQueryStatus(String queryId);
 
 
    /**
@@ -156,6 +161,9 @@ public abstract class DatacenterDelegate
 
 /*
 $Log: DatacenterDelegate.java,v $
+Revision 1.18  2003/09/15 22:38:42  mch
+Split spawnQuery into make and start, so we can add listeners in between
+
 Revision 1.17  2003/09/15 22:05:34  mch
 Renamed service id to query id throughout to make identifying state clearer
 

@@ -1,5 +1,5 @@
 /*
- * $Id: DatabaseQuerier.java,v 1.23 2003/09/15 22:05:34 mch Exp $
+ * $Id: DatabaseQuerier.java,v 1.24 2003/09/15 22:38:42 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -219,7 +219,7 @@ public abstract class DatabaseQuerier implements Runnable
     *
     * @see doBlockingQuery
     */
-   public static DatabaseQuerier spawnQuery(Element domContainingQuery) throws QueryException, DatabaseAccessException, MalformedURLException
+   public static DatabaseQuerier tspawnQuery(Element domContainingQuery) throws QueryException, DatabaseAccessException, MalformedURLException
    {
       //make correct querier
       DatabaseQuerier querier = DatabaseQuerier.createQuerier(domContainingQuery);

@@ -1,5 +1,5 @@
 /*
- * $Id: ServiceServer.java,v 1.9 2003/09/15 22:05:34 mch Exp $
+ * $Id: ServiceServer.java,v 1.10 2003/09/15 22:38:42 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -105,19 +105,20 @@ public abstract class ServiceServer
     * if the querier has an error (status = errro) throws the exception
     * (dont liek this too general)
     */
-   public Element getServiceStatus(String queryId) throws Throwable
+   public Element getQuerierStatus(String queryId) throws Throwable
    {
-      return ResponseHelper.makeStatusResponse(getService(queryId)).getDocumentElement();
+      return ResponseHelper.makeStatusResponse(getQuerier(queryId)).getDocumentElement();
    }
 
    /**
     * Returns the service corresponding to the given ID
     */
-   public DatabaseQuerier getService(String queryId)
+   public DatabaseQuerier getQuerier(String queryId)
    {
       return DatabaseQuerier.getQuerier(queryId);
    }
 
 
 }
+
 

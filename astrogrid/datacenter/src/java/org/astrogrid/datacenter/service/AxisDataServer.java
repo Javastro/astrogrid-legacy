@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.15 2003/09/15 22:05:34 mch Exp $
+ * $Id: AxisDataServer.java,v 1.16 2003/09/15 22:38:42 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -103,12 +103,30 @@ public class AxisDataServer extends ServiceServer
     * <p>
     * @soap
     */
-   public Element startQuery(Element soapBody) throws QueryException, DatabaseAccessException, IOException, SAXException, Throwable
+   public Element makeQuery(Element soapBody) throws QueryException, DatabaseAccessException, IOException, SAXException, Throwable
    {
-      DatabaseQuerier querier = DatabaseQuerier.spawnQuery(soapBody);
+      DatabaseQuerier querier = DatabaseQuerier.createQuerier(soapBody);
 
       //construct reply with id in it...
-      return ResponseHelper.makeStartQueryResponse(querier).getDocumentElement();
+      return ResponseHelper.makeQueryCreatedResponse(querier).getDocumentElement();
+   }
+
+   /**
+    * Starts an existing query running
+    * <p>
+    * If the querier has an error (status = error) throws the exception. (Don't
+    * like this too general throwing Throwable)
+    */
+   public Element startQuery(Element soapBody) throws Throwable
+   {
+      //get id from soap body
+      String queryId = QueryIdHelper.getQueryId(soapBody);
+      DatabaseQuerier querier = DatabaseQuerier.getQuerier(queryId);
+
+      Thread queryThread = new Thread(querier);
+      queryThread.start();
+
+      return ResponseHelper.makeQueryStartedResponse(querier).getDocumentElement();
    }
 
    /**
@@ -124,14 +142,14 @@ public class AxisDataServer extends ServiceServer
     */
    public Element getResultsAndClose(Element soapBody) throws IOException, SAXException, Throwable
    {
-      String serviceID = QueryIdHelper.getQueryId(soapBody);
-      DatabaseQuerier querier = DatabaseQuerier.getQuerier(serviceID);
+      String queryID = QueryIdHelper.getQueryId(soapBody);
+      DatabaseQuerier querier = DatabaseQuerier.getQuerier(queryID);
 
       //has querier finished?
       if (querier.getStatus().isBefore(QueryStatus.FINISHED))
       {
          //not finished - return status
-         return getServiceStatus(serviceID);
+         return getQuerierStatus(queryID);
       }
       else
       {

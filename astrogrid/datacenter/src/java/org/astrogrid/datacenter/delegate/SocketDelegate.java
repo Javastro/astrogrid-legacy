@@ -1,5 +1,5 @@
 /*
- * $Id: SocketDelegate.java,v 1.10 2003/09/15 22:05:34 mch Exp $
+ * $Id: SocketDelegate.java,v 1.11 2003/09/15 22:38:42 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -121,7 +121,7 @@ public class SocketDelegate extends DatacenterDelegate
     * results part of the returned document, which may be VOTable or otherwise
     * depending on the results format specified in the ADQL
     */
-   public synchronized Element adqlQuery(Element adql) throws IOException
+   public synchronized Element query(Element adql) throws IOException
    {
       Log.trace("SocketDelegate: Writing Query");
       //send query document
@@ -152,11 +152,15 @@ public class SocketDelegate extends DatacenterDelegate
       throw new UnsupportedOperationException("Not implemented yet");
    }
 
-   public synchronized Element spawnAdqlQuery(Element adql) throws RemoteException
+   public synchronized Element makeQuery(Element adql) throws RemoteException
    {
       throw new UnsupportedOperationException("Not implemented yet");
    }
 
+   public synchronized Element startQuery(String queryId) throws RemoteException
+   {
+      throw new UnsupportedOperationException("Not implemented yet");
+   }
 
    /**
     * Returns the number of items that match the given query.  This is useful for
@@ -209,7 +213,7 @@ public class SocketDelegate extends DatacenterDelegate
    /**
     * Polls the service and asks for the current status
     */
-   public synchronized QueryStatus getServiceStatus(String id)
+   public synchronized QueryStatus getQueryStatus(String id)
    {
       return QueryStatus.UNKNOWN;
    }
@@ -229,6 +233,9 @@ public class SocketDelegate extends DatacenterDelegate
 
 /*
 $Log: SocketDelegate.java,v $
+Revision 1.11  2003/09/15 22:38:42  mch
+Split spawnQuery into make and start, so we can add listeners in between
+
 Revision 1.10  2003/09/15 22:05:34  mch
 Renamed service id to query id throughout to make identifying state clearer
 
@@ -282,6 +289,7 @@ initial checkin
 
 
 */
+
 
 
 

@@ -1,5 +1,5 @@
 /*
- * $Id: ResponseHelper.java,v 1.7 2003/09/15 22:05:34 mch Exp $
+ * $Id: ResponseHelper.java,v 1.8 2003/09/15 22:38:42 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -23,7 +23,10 @@ import org.xml.sax.SAXException;
 public class ResponseHelper
 {
    /** Root tag used when acknowledging a query request, that a query has started */
-   public static final String QUERY_RESPONSE_TAG = "QueryStarted";
+   public static final String QUERY_STARTED_RESP_TAG = "QueryStarted";
+
+   /** Root tag used when acknowledging a query request, that a query has been made */
+   public static final String QUERY_CREATED_RESP_TAG = "QueryCreated";
 
    /** Root tag used for documents containing the results */
    public static final String DATACENTER_RESULTS_TAG = "DatacenterResults";
@@ -37,7 +40,7 @@ public class ResponseHelper
     * If the query has already got an exception, throws this so that
     * client gets it (don't like this, very general)
     */
-   public static Document makeStartQueryResponse(DatabaseQuerier querier) throws Throwable
+   public static Document makeQueryStartedResponse(DatabaseQuerier querier) throws Throwable
    {
       if (querier.getStatus() == QueryStatus.ERROR)
       {
@@ -45,9 +48,30 @@ public class ResponseHelper
       }
 
       String doc =
-          "<"+QUERY_RESPONSE_TAG+">\n"
+          "<"+QUERY_STARTED_RESP_TAG+">\n"
          +"   "+StatusHelper.makeStatusTag(querier.getHandle(), querier.getStatus())
-         +"</"+QUERY_RESPONSE_TAG+">\n";
+         +"</"+QUERY_STARTED_RESP_TAG+">\n";
+
+      return DocHelper.wrap(doc);
+   }
+
+   /**
+    * Returns an element that indicates the query has started
+    *<p>
+    * If the query has already got an exception, throws this so that
+    * client gets it (don't like this, very general)
+    */
+   public static Document makeQueryCreatedResponse(DatabaseQuerier querier) throws Throwable
+   {
+      if (querier.getStatus() == QueryStatus.ERROR)
+      {
+         throw querier.getError();
+      }
+
+      String doc =
+          "<"+QUERY_CREATED_RESP_TAG+">\n"
+         +"   "+StatusHelper.makeStatusTag(querier.getHandle(), querier.getStatus())
+         +"</"+QUERY_CREATED_RESP_TAG+">\n";
 
       return DocHelper.wrap(doc);
    }
