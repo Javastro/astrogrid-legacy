@@ -3,4 +3,6 @@
 <Context path="/astrogrid-pal-SNAPSHOT">
    <Environment name="org.astrogrid.config.url" override="false" type="java.lang.String"
            value="@CONFIGPATH@/AstroGridConfig.properties"/>
+ <Environment name="cea.filestore.basedir" override="false" type="java.lang.String" value="@WORKDIR@/cea/dsa/store" />
+
 </Context>
