@@ -161,17 +161,6 @@
         <attainGoal name="site:generate"/>
     </goal>
 
-    <!--+
-        | Generate a clover report for our project.
-        | (required as a target goal for the reactor)
-        +-->
-    <goal name="clover-report">
-        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
-        <ant:echo message="Build version   : ${pom.currentVersion}"/>
-        <ant:echo message="Build directory : ${maven.build.dir}"/>
-        <ant:echo message="Generating clover report ...."/>
-        <attainGoal name="maven-clover-plugin:report"/>
-    </goal>
 
     <!--+
         | Project goals.
