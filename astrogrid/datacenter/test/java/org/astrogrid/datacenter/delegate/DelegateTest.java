@@ -1,5 +1,5 @@
 /*
- * $Id: DelegateTest.java,v 1.13 2003/11/05 18:54:43 mch Exp $
+ * $Id: DelegateTest.java,v 1.14 2003/11/06 22:09:23 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -73,7 +73,7 @@ public class DelegateTest extends TestCase implements DelegateQueryListener
       AdqlQuerier delegate = DatacenterDelegateFactory.makeAdqlQuerier(null);
 
       //load test query file
-      URL url = getClass().getResource("testQuery.xml");
+      URL url = getClass().getResource("adqlQuery.xml");
       Element adqlQuery = XMLUtils.newDocument(url.openConnection().getInputStream()).getDocumentElement();
 
       Select adql = ADQLUtils.unmarshalSelect(adqlQuery);
@@ -117,7 +117,7 @@ public class DelegateTest extends TestCase implements DelegateQueryListener
       AdqlQuerier delegate = DatacenterDelegateFactory.makeAdqlQuerier(null);
 
       //load test query file
-      URL url = getClass().getResource("testQuery.xml");
+      URL url = getClass().getResource("adqlQuery.xml");
       Element adqlQuery = XMLUtils.newDocument(url.openConnection().getInputStream()).getDocumentElement();
 
       Select adql = ADQLUtils.unmarshalSelect(adqlQuery);
