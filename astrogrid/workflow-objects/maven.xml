@@ -153,6 +153,42 @@
                 <arg value="-types" />
                 <arg value="j2" />
         </java>
+        <!-- experiment -pah
+        
+        <java fork="yes" classname="org.exolab.castor.builder.SourceGenerator" classpathref="maven.dependency.classpath">
+                <classpath>
+                        <pathelement location="${basedir}/build" />
+                        <path refid="maven.dependency.classpath" />
+                </classpath>
+                    <arg value="-i"/>
+                    <arg file="${basedir}/schema/externalSchema/VOTable.xsd" />
+                <arg value="-binding-file" />
+                <arg file="${basedir}/build/castor-binding.xml" />
+                    <arg value="-dest" />
+                    <arg file="${generated.src}" />
+                <arg value="-verbose" />
+                <arg value="-types" />
+                <arg value="j2" />
+        </java>
+        
+        <java fork="yes" classname="org.exolab.castor.builder.SourceGenerator" classpathref="maven.dependency.classpath">
+                <classpath>
+                        <pathelement location="${basedir}/build" />
+                        <path refid="maven.dependency.classpath" />
+                </classpath>
+                    <arg value="-i"/>
+                    <arg file="${basedir}/schema/externalSchema/VOResource-v0.9.xsd" />
+                <arg value="-binding-file" />
+                <arg file="${basedir}/build/castor-binding.xml" />
+                    <arg value="-dest" />
+                    <arg file="${generated.src}" />
+                <arg value="-verbose" />
+                <arg value="-types" />
+                <arg value="j2" />
+        </java>
+        -->
+        
+        
   </goal>
   
   <goal name="generate-mapping" prereqs="java:compile">
