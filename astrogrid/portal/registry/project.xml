@@ -133,6 +133,12 @@
             </properties>            
         </dependency>
         
+        <dependency >
+            <id>cocoon</id>
+            <version>2.1.2</version>
+        </dependency>
+        
+        
         <!--+
             | The Registry components.
             +-->
