@@ -1,4 +1,4 @@
-/*$Id: RegistryInstallationTest.java,v 1.1 2004/04/15 11:55:16 nw Exp $
+/*$Id: RegistryInstallationTest.java,v 1.2 2004/04/22 08:59:07 nw Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -50,16 +50,20 @@ public class RegistryInstallationTest extends TestCase {
         System.out.println(service.getEndpoint());
     }
     
-    public void testIt() throws Exception {
+    public void testRoot() throws Exception {
         Document doc = delegate.loadRegistryDOM();
         assertNotNull(doc);
         XMLUtils.PrettyDocumentToStream(doc,System.out);
     }
+
 }
 
 
 /* 
 $Log: RegistryInstallationTest.java,v $
+Revision 1.2  2004/04/22 08:59:07  nw
+tweaked
+
 Revision 1.1  2004/04/15 11:55:16  nw
 added registy installation test
  
