@@ -1,5 +1,5 @@
 /*
- * $Id: RdbmsResourcePlugin.java,v 1.6 2004/11/03 01:35:18 mch Exp $
+ * $Id: RdbmsResourceGenerator.java,v 1.1 2004/11/05 12:28:31 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -36,14 +36,10 @@ import org.astrogrid.io.xml.XmlTagPrinter;
  * If configured as tabular sky service, will also generate a TabularSkyService Resource
  */
 
-public class RdbmsResourcePlugin implements VoResourcePlugin  {
+public class RdbmsResourceGenerator {
    
-   protected static Log log = LogFactory.getLog(RdbmsResourcePlugin.class);
+   protected static Log log = LogFactory.getLog(RdbmsResourceGenerator.class);
    
-   /** Used in its resource plugin role */
-   public RdbmsResourcePlugin() {
-   }
-
    /** Convenience routine for finding the value of a column in a result set row,
     * but ignoring
     * missing columns
@@ -100,7 +96,7 @@ public class RdbmsResourcePlugin implements VoResourcePlugin  {
    
    
    /** Generates a voResource element about the database.
-    *  */
+    */
    public String[] getVoResources() throws IOException {
 
       Connection connection = null;
@@ -140,7 +136,9 @@ public class RdbmsResourcePlugin implements VoResourcePlugin  {
 
          XmlTagPrinter metaTag = xw.newTag("Resource", new String[] { "xsi:type='RdbmsMetadata'" });
 
-         VoDescriptionServer.addIdentifier(metaTag, "/rdbms");
+         XmlTagPrinter identifier = metaTag.newTag("Identifier");
+         identifier.writeTag("AuthorityID", SimpleConfig.getSingleton().getString(VoDescriptionServer.AUTHID_KEY, "some.authority"));
+         identifier.writeTag("ResourceKey", SimpleConfig.getSingleton().getString(VoDescriptionServer.RESKEY_KEY+"/rdbms", "some_key/rdbms"));
          
          /** Get general info */
          String name = metadata.getDatabaseProductName();

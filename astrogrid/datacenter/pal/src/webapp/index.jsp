@@ -32,7 +32,7 @@ this dataset.
 <h1>Install Notes</h1>
 <p>
 If you have just installed PAL, then you can now run some
-<a href="self-test.jsp">self-tests</a> to run diagnostics, or
+<a href="installChecks.jsp">checks</a> to run diagnostics, or
 read how to <a href="docs/configure.jsp">configure</a> your datacenter.
 </p>
 

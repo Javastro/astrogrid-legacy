@@ -1,4 +1,4 @@
-/*$Id: SqlPluginTest.java,v 1.7 2004/11/03 00:17:56 mch Exp $
+/*$Id: SqlPluginTest.java,v 1.8 2004/11/05 12:28:31 mch Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -165,7 +165,7 @@ public class SqlPluginTest extends ServerTestCase {
    public void testResourceMaker() throws Exception {
       setUp();
       
-      RdbmsResourcePlugin plugin = new RdbmsResourcePlugin();
+      RdbmsResourceGenerator plugin = new RdbmsResourceGenerator();
       
       //generate metadata
       String[] resources = plugin.getVoResources();
@@ -221,6 +221,9 @@ public class SqlPluginTest extends ServerTestCase {
 
 /*
  $Log: SqlPluginTest.java,v $
+ Revision 1.8  2004/11/05 12:28:31  mch
+ Fixes following datacenter installations with Keith, John & Catherine
+
  Revision 1.7  2004/11/03 00:17:56  mch
  PAL_MCH Candidate 2 merge
 

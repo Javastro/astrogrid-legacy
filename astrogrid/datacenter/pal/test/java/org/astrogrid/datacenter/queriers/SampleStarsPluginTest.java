@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsPluginTest.java,v 1.7 2004/11/03 00:17:56 mch Exp $
+ * $Id: SampleStarsPluginTest.java,v 1.8 2004/11/05 12:28:31 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -19,7 +19,7 @@ import junit.framework.TestSuite;
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.metadata.VoDescriptionServer;
 import org.astrogrid.datacenter.queriers.sql.JdbcConnections;
-import org.astrogrid.datacenter.queriers.sql.RdbmsResourcePlugin;
+import org.astrogrid.datacenter.queriers.sql.RdbmsResourceGenerator;
 import org.astrogrid.datacenter.queriers.test.PrecannedResults;
 import org.astrogrid.datacenter.queriers.test.SampleStarsPlugin;
 import org.astrogrid.datacenter.query.SimpleQueryMaker;
@@ -85,7 +85,7 @@ public class SampleStarsPluginTest extends TestCase {
    /** Tests the generated metadata */
    public void testAutoMetadata() throws Exception {
       
-      RdbmsResourcePlugin plugin = new RdbmsResourcePlugin();
+      RdbmsResourceGenerator plugin = new RdbmsResourceGenerator();
       
       //generate metadata
       String[] metadata = plugin.getVoResources();
