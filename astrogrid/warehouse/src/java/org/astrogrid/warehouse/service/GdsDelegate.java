@@ -167,9 +167,8 @@ public class GdsDelegate extends GridServiceDelegate {
    * @return The URL of the factory
    * @throws Exception
    */
-    static public String getFactoryUrlFromRegistry( 
-        String registryUrl, 
-        int timeoutValue ) throws Exception
+    public static String getFactoryUrlFromRegistry( 
+        String registryUrl, int timeoutValue ) throws Exception
     {
       // Ask the GDSR for information about registered GDSFs 
       DAIServiceGroupRegistrationServiceLocator gdsrLocator = null;
