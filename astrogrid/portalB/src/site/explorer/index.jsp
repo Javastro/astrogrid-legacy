@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/site/explorer/Attic/index.jsp,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/22 22:29:48 $</cvs:author>
-    | <cvs:version>$Revision: 1.4 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/22 23:29:12 $</cvs:author>
+    | <cvs:version>$Revision: 1.5 $</cvs:version>
     | <cvs:log>
     | $Log: index.jsp,v $
+    | Revision 1.5  2003/06/22 23:29:12  dave
+    | Tidied up pages
+    |
     | Revision 1.4  2003/06/22 22:29:48  dave
     | Added message, actions and page for move
     |
@@ -101,7 +104,7 @@ if ("create".equals(action))
 						AstPortalView next = (AstPortalView) iter.next() ;
 						%>
 						<br>
-						&nbsp;&nbsp;<a href="tree.jsp?view=<%= next.getIdent() %>">[ <%= next.getPath() %> ]</a>
+						&nbsp;&nbsp;<a href="tree.jsp?view=<%= next.getIdent() %>">[ <%= ("".equals(next.getPath()) ? "/" : next.getPath()) %> ]</a>
 						<%
 						}
 					%>
@@ -134,7 +137,7 @@ if ("create".equals(action))
 									<a href="tree.jsp?view=<%= next.getIdent() %>">[<%= next.getIdent() %>]</a>
 								</td>
 								<td>
-									<%= next.getPath() %>
+									<%= ("".equals(next.getPath()) ? "/" : next.getPath()) %>
 								</td>
 							</tr>
 							<%

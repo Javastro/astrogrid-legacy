@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/site/explorer/Attic/move.jsp,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/22 22:29:48 $</cvs:author>
-    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/22 23:29:12 $</cvs:author>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
     | <cvs:log>
     | $Log: move.jsp,v $
+    | Revision 1.2  2003/06/22 23:29:12  dave
+    | Tidied up pages
+    |
     | Revision 1.1  2003/06/22 22:29:48  dave
     | Added message, actions and page for move
     |
@@ -130,7 +133,7 @@ if ("item".equals(action))
 
 //
 // If the action is 'move'.
-if ("move".equals(action))
+if ("Move".equals(action))
 	{
 	//
 	// Get the name from our request params.
@@ -165,6 +168,22 @@ if ("move".equals(action))
 		}
 	}
 
+//
+// If the action is 'cancel'.
+if ("Cancel".equals(action))
+	{
+	//
+	// If we have a view
+	if (null != view)
+		{
+		//
+		// Redirect back to the view page.
+		response.sendRedirect(
+			response.encodeRedirectURL("tree.jsp?view=" + view.getIdent() + "&path=" + view.getItem() + "&action=item")
+			) ;
+		}
+	}
+
 %>
 <html>
 	<head>
@@ -196,14 +215,14 @@ if ("move".equals(action))
 								%>
 								<br>
 								&nbsp;&nbsp;
-								<b><a href="tree.jsp?view=<%= next.getIdent() %>">[ <%= next.getPath() %> ]</a></b>
+								<b><a href="tree.jsp?view=<%= next.getIdent() %>">[ <%= ("".equals(next.getPath()) ? "/" : next.getPath()) %> ]</a></b>
 								<%
 								}
 							else {
 								%>
 								<br>
 								&nbsp;&nbsp;
-								<a href="tree.jsp?view=<%= next.getIdent() %>">[ <%= next.getPath() %> ]</a>
+								<a href="tree.jsp?view=<%= next.getIdent() %>">[ <%= ("".equals(next.getPath()) ? "/" : next.getPath()) %> ]</a>
 								<%
 								}
 							}
@@ -223,7 +242,7 @@ if ("move".equals(action))
 							</tr>
 							<tr>
 								<td>Path</td>
-								<td><%= view.getPath() %></td>
+								<td><%= ("".equals(view.getPath()) ? "/" : view.getPath()) %></td>
 							</tr>
 						</table>
 						<br>
@@ -241,10 +260,10 @@ if ("move".equals(action))
 								<form method="get">
 									<td>Name</td>
 									<td>
-										<input name="action" type="hidden" value="move"/>
 										<input name="view"   type="hidden" value="<%= view.getIdent() %>"/>
 										<input name="name"   type="text"   value="<%= view.getDestName() %>"/>
-										<input name="submit" type="submit" value="Move"/>
+										<input name="action" type="submit" value="Move"/>
+										<input name="action" type="submit" value="Cancel"/>
 									</td>
 								</form>
 							</tr>
@@ -283,16 +302,39 @@ if ("move".equals(action))
 														writer.write("&nbsp;") ;
 														writer.write("&nbsp;") ;
 														}
-													if (more)
+													//
+													// If this is an item.
+													if ("2".equals(node.getType()))
 														{
+														writer.write("-") ;
+														}
+													//
+													// If this is not an item (container or blank).
+													else {
 														writer.write("+") ;
 														}
-													else {
-														writer.write("\\") ;
+													writer.write("&nbsp;") ;
+													//
+													// If this is the currently selected path.
+													if (node.getPath().equals(view.getPath()))
+														{
+														writer.write("<b>") ;
+														writer.write(node.getName()) ;
+														writer.write("</b>") ;
 														}
-													writer.write("-") ;
-													writer.write(" ") ;
-													writer.write(node.getName()) ;
+													//
+													// If this is the currently selected item.
+													else if (node.getPath().equals(view.getItem()))
+														{
+														writer.write("<b>") ;
+														writer.write(node.getName()) ;
+														writer.write("</b>") ;
+														}
+													//
+													// If this is not the current anything.
+													else {
+														writer.write(node.getName()) ;
+														}
 												writer.write("</td>") ;
 												writer.write("<td>") ;
 													writer.write("[") ;
