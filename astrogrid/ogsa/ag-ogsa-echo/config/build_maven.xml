@@ -1,5 +1,10 @@
 <?xml version="1.0"?>
 
+<!-- This is a version of the basic ant build file customised to
+work with maven and without a Globus installation (whether or not
+this is useful is a moot point).
+-->
+
 <project name="$product.name" basedir="." default="build">
   
    <!-- This file is for local adjustments.  It must set ogsi.home.
@@ -7,8 +12,8 @@
    <property file="config/build.properties"/>
    
    <!-- This file is for semi-stable settings fixed by the 
-        OGSA implementation. -->
-   <property file="${ogsi.home}/ogsa.properties"/>
+        OGSA implementation and lifted from OGSA. -->
+   <property file="config/ogsa.properties"/>
    
    <!-- This file specializes this template to a particular product. -->
    <property file="config/template.properties"/>
@@ -18,7 +23,6 @@
         of schema (typically, inside the ogsi web-app) can override
         this by setting the property in build.properties. -->
    <property name="ogsi.schema.location" value="ROOT"/>
-   
    
    <!-- These names are used in several targets. -->
    <property name="jar.name" value="${product.name}-${product.version}.jar"/>
@@ -31,20 +35,20 @@
    <!-- Use this classpath (by reference) in all Java targets. -->
    <path id="classpath">
      <pathelement location="build/classes"/>
-     <fileset dir="${ogsi.home}/lib">
-       <exclude name="ag-ogsa-echo*.jar"/>
-       <include name="*.jar"/>
-     </fileset>
      <pathelement location="build/schema"/>
+     <path refid="maven.dependency.classpath"/>
    </path>
  
   <!-- Check that OGSI is available. Abort the build if not. -->
   <target name="checkForOGSI">
+<!--  You can leave this in if building with ant rather than maven -->
     <fail message="ogsi.home is not defined." unless="ogsi.home"/>
     <available property="haveOGSI" file="${ogsi.home}" type="dir"/>
     <fail message="OGSI is not available at ${ogsi.home}."
           unless="haveOGSI"/>
     <echo message="OGSI is taken from ${ogsi.home}."/>
+<!--
+-->
   </target>
   
   <!-- Take local copies of the schema and WSDL from the current
@@ -53,16 +57,17 @@
        at compile time, the files have to be copied into this package. -->
    <target name="copyWSDL">
      <copy todir="build/schema/ogsi" preservelastmodified="true">
-       <fileset dir="${ogsi.home}/schema/ogsi"/>
+       <fileset dir="schema/ogsi"/>
      </copy>
      <copy todir="build/schema" 
-         file="${ogsi.home}/schema/NStoPkg.properties"
+         file="schema/NStoPkg.properties"
          preservelastmodified="true"/>
    </target>
 
    <!-- Generate WSDL for the service starting from a Java class defining the
         interface to a web-service port. -->
    <target name="generateWSDL" depends="copyWSDL">
+
       <echo message="Generating ${wsdl.file} from ${service.java.package}.${port.interface.java.class}..."/>
       <mkdir dir="build/classes"/>
       <javac srcdir="src" 
@@ -82,7 +87,7 @@
          <arg value="build/${wsdl.path}"/>
          <arg value="${service.java.package}.${port.interface.java.class}"/>
       </java>
-      <antcall target="decorateWSDL"/>
+      <antcall target="decorateWSDL" inheritRefs="true"/>
    </target>
 
    <!-- Add the standard ports of the grid-service 
@@ -101,17 +106,17 @@
         and the service, based on the WSDL file. -->
    <target name="generateStubs" depends="generateWSDL">
       <echo message="Generating stubs from ${wsdl.path} ..." />
-      <mkdir dir="build/src"/>
+      <mkdir dir="build/src/java"/>
       <java classname="${wsdl.tool}" dir="." fork="yes" 
           classpathref="classpath">
          <sysproperty key="java.protocol.handler.pkgs" 
                value="org.globus.net.protocol" />
          <arg value="-o"/>  
-         <arg value="build/src"/>  
+         <arg value="build/src/java"/>  
          <arg value="build/${wsdl.path}"/>
       </java>
-      <delete dir="build/src/org/gridforum" includeEmptyDirs="true"/>
-      <delete dir="build/src/org/globus"    includeEmptyDirs="true"/>
+      <delete dir="build/src/java/org/gridforum" includeEmptyDirs="true"/>
+      <delete dir="build/src/java/org/globus"    includeEmptyDirs="true"/>
    </target>
 
 
@@ -119,11 +124,11 @@
    <!-- Compile all the java code.  Do the generated classes first.
         Put all the compiled classes in the org/astrogrid tree. -->
    <target name="compile" depends="generateStubs">
-      <javac srcdir="build/src/org" 
+      <javac srcdir="build/src/java/org" 
              classpathref="classpath"
              listfiles="true"
              destdir="build/classes"/>
-      <javac srcdir="src" 
+      <javac srcdir="src/java/org/astrogrid/ogsa/echo"
              classpathref="classpath" 
              listfiles="true" 
              destdir="build/classes"/>
@@ -241,7 +246,7 @@
 
 
   <property name="echo.service.factory" 
-            value="http://cass111.ast.cam.ac.uk:8080/ogsa/services/astrogrid/echo/EchoFactory"/>
+            value="http://cass111.ast.cam.ac.uk:8081/ogsa/services/astrogrid/echo/EchoFactory"/>
 
   <target name="testEcho">
     <java dir="."

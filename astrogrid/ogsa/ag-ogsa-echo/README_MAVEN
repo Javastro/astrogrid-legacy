@@ -3,15 +3,20 @@ tasks.
 
 At the moment, it's possible to build the source (but not 
 deploy the resulting grid service, which requires additional 
-infrastructure) using the command "maven antBuild" (a custom
+infrastructure) using the command "maven jar" (a customised
 maven goal which simply delegates the build to ant).
 
-At present, a Globus 3.0 installation is also required in
-order to build the source successfully, and the files 
-build.xml and config/build.properties need to be configured
-to reflect the location of this installation.  
+To actually use the service, a Globus 3.0 installation is 
+required.  The ant build.xml file contains targets for deploying
+to and from a Tomcat server enabled with OGSA.
+In order to deploy successfully, the build.xml and config/build.properties 
+files need to be configured to reflect the location and configuration
+of this ogsa/tomcat installation.  
 
-If somebody can tell me (kea@ast.cam.ac.uk) how to get Maven 
-to pass its maven.dependency.classpath to ant, we should be able 
-to eliminate the explicit Globus 3.0 dependency (for building
-the source, but not deploying it of course!).
+NOTE: The maven build uses dependences from Globus 3.0.  Attempting
+to deploy a service built using maven and its dependency jars to
+any earlier or later major/minor Globus release may not work.
+
+NOTE:  The "ant deploy" target (for deployment with a standalone OGSA
+container) is a legacy target and no longer supported.  We recommend
+deployment via Tomcat.

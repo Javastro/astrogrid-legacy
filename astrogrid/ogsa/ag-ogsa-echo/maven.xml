@@ -3,13 +3,14 @@
 <project xmlns:j="jelly:core"  xmlns:maven="jelly:maven"
 xmlns:ant="jelly:ant" default="jar:jar">
 
-	<preGoal name="java:compile">
-		<ant antfile="build.xml" inheritRefs="true" target="generateStubs"/>
-	</preGoal>
+	<!-- Redefine these two standard goals to use our ant build file -->
+	<goal name="java:compile">
+		<ant antfile="config/build_maven.xml" inheritRefs="true" target="compile"/>
+	</goal>
 
-	<preGoal name="jar">
-		<ant antfile="build.xml" inheritRefs="true" target="jar"/>
-  </preGoal>
+	<goal name="jar">
+		<ant antfile="config/build_maven.xml" inheritRefs="true" target="build"/>
+  </goal>
 
 </project>
 

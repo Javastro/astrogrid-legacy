@@ -99,9 +99,9 @@
 
   <build>
 
-    <sourceDirectory>build/src/java</sourceDirectory>
-<!--
     <sourceDirectory>src/java</sourceDirectory>
+<!--
+    <sourceDirectory>build/src/java</sourceDirectory>
     <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
 
     <unitTest>
