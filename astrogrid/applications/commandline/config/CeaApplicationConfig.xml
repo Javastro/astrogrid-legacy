@@ -186,8 +186,23 @@
 					<pref ref="CATALOG_NAME"/>
 				</output>
 			</Interface>
+			<Interface name="Galactic">
+				<input>
+					<pref ref="DetectionImage"/>
+					<pref ref="PhotoImage"/>
+					<pref ref="config_file"/>
+					<pref ref="PARAMETERS_NAME"/>
+					<pref ref="FILTER_NAME"/>
+					<pref ref="ANALYSIS_THRESH" minoccurs="0"/>
+					<pref ref="MAG_ZEROPOINT"/>
+					<pref ref="SEEING_FWHM"/>
+				</input>
+				<output>
+					<pref ref="CATALOG_NAME"/>
+				</output>
+			</Interface>
 		</Interfaces>
-		<ExecutionPath>/home/applications/tools/sextractor-2.3/sex</ExecutionPath>
+		<ExecutionPath>/home/applications/tools/sextractor-2.3.2/sex_wrapper.sh</ExecutionPath>
 		<LongName>SExtractor</LongName>
 		<Description>SExtractor is a program that builds a catalogue of objects from an astronomical image. Although it is particularly oriented towards reduction of large scale galaxy-survey data, it performs rather well on moderately crowded star fields. 
         </Description>
