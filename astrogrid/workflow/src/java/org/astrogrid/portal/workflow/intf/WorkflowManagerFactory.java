@@ -1,4 +1,4 @@
-/*$Id: WorkflowManagerFactory.java,v 1.2 2004/02/25 10:57:43 nw Exp $
+/*$Id: WorkflowManagerFactory.java,v 1.3 2004/03/01 15:03:38 nw Exp $
  * Created on 24-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,8 +10,6 @@
 **/
 package org.astrogrid.portal.workflow.intf;
 
-import org.astrogrid.portal.workflow.design.LegacyWorkflowManager;
-
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 24-Feb-2004
  *
@@ -22,10 +20,12 @@ public class WorkflowManagerFactory {
      */
     public WorkflowManagerFactory() {
         super();
-        theInstance = new LegacyWorkflowManager();
     }
-    
-    public WorkflowManager getManager() {
+    /** @todo implement */
+    public synchronized WorkflowManager getManager() {
+        if (theInstance == null) {
+            throw new UnsupportedOperationException("No implementation provided yet");
+        }
         return theInstance;
     }
     
@@ -35,6 +35,9 @@ public class WorkflowManagerFactory {
 
 /* 
 $Log: WorkflowManagerFactory.java,v $
+Revision 1.3  2004/03/01 15:03:38  nw
+simplified by removing facade - will expose object model directly
+
 Revision 1.2  2004/02/25 10:57:43  nw
 merged in branch nww-itn05-bz#140 (refactor in preparation for changing object model)
 

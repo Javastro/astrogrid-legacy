@@ -1,4 +1,4 @@
-/*$Id: WorkflowManager.java,v 1.2 2004/02/25 10:57:43 nw Exp $
+/*$Id: WorkflowManager.java,v 1.3 2004/03/01 15:03:38 nw Exp $
  * Created on 24-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,9 @@
 **/
 package org.astrogrid.portal.workflow.intf;
 
+import org.astrogrid.workflow.beans.v1.Tool;
+import org.astrogrid.workflow.beans.v1.Workflow;
+
 import java.util.Iterator;
 
 /**
@@ -17,39 +20,53 @@ import java.util.Iterator;
  *
  */
 public interface WorkflowManager {
-    ITool createTool(String communitySnippet,String name);
-    IWorkflow createWorkflow(String communitySnippet,String name,String description);
-    IWorkflow createWorkflowFromTemplate(String communitySnippet, String name, String description,String templateName)
-        throws WorkflowInterfaceException;
+    //object creation methods
+    /** create a tool object */
+    Tool createTool(String communitySnippet,String name);
+    /** create a workflow object */
+    Workflow createWorkflow(String communitySnippet,String name,String description);
+
+    // interacting with JES
+    /** delete a workflow from Jes 
+     * @todo find out whether this is really from myspace*/
     void deleteWorkflow(String communitySnippet, String name) throws WorkflowInterfaceException;
-    void insertParameterValue( ITool tool
+    void insertParameterValue( Tool tool
                                               , String paramName
                                               , String oldValue
                                               , String newValue
                                               , String direction ) throws WorkflowInterfaceException;
+   /** @todo document */                                             
     void insertToolIntoStep( String stepActivityKey
-                                              , ITool tool
-                                              , IWorkflow workflow ) throws WorkflowInterfaceException;  
+                                              , Tool tool
+                                              , Workflow workflow ) throws WorkflowInterfaceException;
+    /** @todo document */
     String readQuery( String communitySnippet
                                   , String name ) throws WorkflowInterfaceException ;
+    /** @todo document */
     Iterator readQueryList( String communitySnippet
-                                        , String filter ) throws WorkflowInterfaceException; 
+                                        , String filter ) throws WorkflowInterfaceException;
+    /** @todo document */ 
     Iterator readToolList( String communitySnippet ) throws WorkflowInterfaceException;
-    IWorkflow readWorkflow( String communitySnippet
+    /** @todo document */
+    Workflow readWorkflow( String communitySnippet
                                        , String name ) throws WorkflowInterfaceException;
+    
     Iterator readWorkflowList( String communitySnippet
                                            , String filter ) throws WorkflowInterfaceException;
     void saveWorkflow( String communitySnippet
-                                      , IWorkflow workflow ) throws WorkflowInterfaceException;
+                                      , Workflow workflow ) throws WorkflowInterfaceException;
     void submitWorkflow( String communitySnippet
-                                        , IWorkflow workflow ) throws WorkflowInterfaceException;                               
+                                        , Workflow workflow ) throws WorkflowInterfaceException;                               
     
-       
+    // plus add bits required by Jes   
 }
 
 
 /* 
 $Log: WorkflowManager.java,v $
+Revision 1.3  2004/03/01 15:03:38  nw
+simplified by removing facade - will expose object model directly
+
 Revision 1.2  2004/02/25 10:57:43  nw
 merged in branch nww-itn05-bz#140 (refactor in preparation for changing object model)
 
