@@ -45,9 +45,6 @@ public class JobStep {
 	 
 	private String
 		name = null ;
-	    
-	private Query
-		query = null ;
 		
 	private String
 	    status = null,
@@ -60,6 +57,9 @@ public class JobStep {
     //JBL added Iteration 3    
     private String
         joinCondition = null ;
+        
+    private Tool
+        tool ;
 		
 	private Job
 	    parent = null ;
@@ -109,15 +109,15 @@ public class JobStep {
 		   NodeList
 			  nodeList = element.getChildNodes() ;
 		   Element
-			  queryChild = null ;
+			  child = null ;
 			   
 		   for( int i=0 ; i < nodeList.getLength() ; i++ ) {
 		   				
 		   	   if( nodeList.item(i).getNodeType() == Node.ELEMENT_NODE ) {	
 		   	   
-			       queryChild = (Element) nodeList.item(i) ;
-			       if( queryChild.getTagName().equals( SubmissionRequestDD.QUERY_ELEMENT ) ) 
-			           query = new Query( this, queryChild ) ;
+			       child = (Element) nodeList.item(i) ;
+			       if( child.getTagName().equals( SubmissionRequestDD.TOOL_ELEMENT ) ) 
+			           tool = new Tool( child ) ;
 			           
 			   }
 			   
@@ -130,8 +130,6 @@ public class JobStep {
 
 	} // end of constructor JobStep(Element)
 		
-    public Query getQuery(){ return this.query ; }
-    public void setQuery(Query query){ this.query = query ; }
 
 	public void setName(String name) { this.name = name; }
 	public String getName() { return  ( name == null  ?  ""  :  name.trim() ) ; }
@@ -157,6 +155,9 @@ public class JobStep {
     //JBL added iteration 3
 	public void setJoinCondition( String joinCondition ) { this.joinCondition = joinCondition ; }
     public String getJoinCondition() { return joinCondition ; }
+
+	public void setTool(Tool tool) { this.tool = tool; }
+	public Tool getTool() { return tool; }
 
     
 } // end of class JobStep 

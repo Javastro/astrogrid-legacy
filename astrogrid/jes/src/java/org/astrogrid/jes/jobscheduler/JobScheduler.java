@@ -236,7 +236,13 @@ public class JobScheduler {
                 requestXML = this.formatRunRequest( step, doc, false ) ;
                 dispatchToIterationTwoDatacenter( requestXML, location ) ;          
             }
+            
+            step.setStatus( JobStep.STATUS_RUNNING ) ;
    
+        }
+        catch( JesException jex ) {
+            step.setStatus( JobStep.STATUS_IN_ERROR ) ;
+            throw jex ;
         }
         finally {
             if( TRACE_ENABLED ) logger.debug( "dispatchOneStep(): exit") ; 
@@ -410,8 +416,9 @@ public class JobScheduler {
             logger.debug( XMLUtils.ElementToString( element ) ) ;
             queryID = this.extractAssignID( element ) ;
             logger.debug( "queryid set to: [" + queryID + "]"   ) ;
-            delegate.startQuery( queryID ) ;   
-
+            element = delegate.startQuery( queryID ) ;   
+            logger.debug( "delegate.startQuery() returned..."  ) ;
+            logger.debug( XMLUtils.ElementToString( element ) ) ;
         }
         catch ( Exception ex ) {
             AstroGridMessage

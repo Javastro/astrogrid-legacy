@@ -32,6 +32,21 @@ public final class SubmissionRequestDD {
         JOBSTEP_SEQUENCENUMBER_ATTR = "sequenceNumber",
         JOBSTEP_JOINCONDITION_ATTR = "stepJoinCondition";
         
+    public static final String
+        TOOL_ELEMENT = "tool",
+        TOOL_NAME_ATTR = "name" ;
+        
+    public static final String
+        INPUT_ELEMENT = "input",
+        OUTPUT_ELEMENT = "output" ;
+         
+    public static final String       
+        PAREMETER_ELEMENT = "parameter",
+        PAREMETER_NAME_ATTR = "name", 
+        PAREMETER_TYPE_ATTR = "type", 
+        PAREMETER_LOCATION_ATTR = "location" ;
+        
+/*        
 	public static final String    
 	    QUERY_ELEMENT = "query",
         QUERY_TYPE_ATTR = "type",
@@ -53,7 +68,9 @@ public final class SubmissionRequestDD {
 	public static final String
 	    TABLE_ELEMENT = "table",
 	    TABLE_NAME_ATTR = "name" ;
-	       
+*/
+
+/*	       
 	public static final String
 	    RETURN_ELEMENT = "return";
 	        
@@ -84,7 +101,7 @@ public final class SubmissionRequestDD {
 	    OP_NAME_IN = "IN",
 	    OP_NAME_ANY = "ANY",
 	    OP_NAME_ALL = "ALL" ;
-        
+*/      
     // JL Note: review this after iteration 3
     public static final String
         ADQL_SELECT_ELEMENT = "Select",
