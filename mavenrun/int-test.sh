@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: int-test.sh,v 1.5 2004/12/03 10:20:04 jdt Exp $ 
+# $Id: int-test.sh,v 1.6 2004/12/03 13:11:40 jdt Exp $ 
 ########################################################
 # Script to install AGINAB, run the integration
 # tests and publish the results
@@ -17,13 +17,12 @@
 # These scripts need to be on your path!
 
 # Some reminders
-echo ${CHECKOUTHOME?"Value of CHECKOUTHOME (ie where to checkout sources) must be set"}
-echo ${DOCLOCATION?"Value of DOCLOCATION (ie where to send docs) must be set"}
-echo ${DOCMACHINE?"Value of DOCMACHINE (e.g. maven@www.astrogrid.org) must be set"}
+echo Going to check out to ${CHECKOUTHOME?"Value of CHECKOUTHOME (ie where to checkout sources) must be set"}
+echo and then deploy docs to ${DOCLOCATION?"Value of DOCLOCATION (ie where to send docs) must be set"}
+echo under user ${DOCMACHINE?"Value of DOCMACHINE (e.g. maven@www.astrogrid.org) must be set"}
+echo "hit ctrl-c if this isn't what you want"
 
 OLDDIR=$PWD
-
-echo "Going to deploy docs to $DOCLOCATION on $DOCMACHINE - hit ctrl-c if this isn't what you want"
 
 # Fairly fixed variables
 TESTMODULE=astrogrid/integrationTests/auto-integration
@@ -32,7 +31,7 @@ export BUILDHOME
 LOGFILE=/tmp/intTest.log
 DATE=`date`
 TIMESTAMP=`date +%Y%m%d-%T`
-ADMIN_EMAIL=${ADMIN_EMAIL:-"jdt@roe.ac.uk clq2@star.le.ac.uk"}
+echo admininstrator email is ${ADMIN_EMAIL:="jdt@roe.ac.uk clq2@star.le.ac.uk"}
 TOMLOGS=$CATALINA_HOME/logs
 
 

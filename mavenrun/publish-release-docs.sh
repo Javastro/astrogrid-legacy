@@ -15,22 +15,19 @@
 # DOCMACHINE = maven@www.astrogrid.org
 # These scripts need to be on your path!
 
-# Some reminders
-echo ${CHECKOUTHOME?"Value of CHECKOUTHOME (ie where to checkout sources) must be set"}
-echo ${DOCLOCATION?"Value of DOCLOCATION (ie where documents should be published) must be set"}
+echo Checking out to ${CHECKOUTHOME?"Value of CHECKOUTHOME (ie where to checkout sources) must be set"}
 
 OLDDIR=$PWD
 
 TAG=$1
-${TAG:=HEAD}
 
-echo "Going to deploy docs for this release $TAG to $DOCLOCATION - hit ctrl-c if this isn't what you want"
+echo Going to deploy docs for this release ${TAG:=HEAD} to ${DOCLOCATION?"Value of DOCLOCATION (ie where documents should be published) must be set"} - hit ctrl-c if this isn't what you want
 
 # Fairly unvariable variables
 BUILDHOME=$CHECKOUTHOME/astrogrid
 LOGFILE=/tmp/releasedocs.log
 DATE=`date`
-${ADMIN_EMAIL:="jdt@roe.ac.uk clq2@star.le.ac.uk"}
+#${ADMIN_EMAIL:="jdt@roe.ac.uk clq2@star.le.ac.uk"}
 
 # Processing Starts Here
 rm $LOGFILE

@@ -1,12 +1,12 @@
 #!/bin/bash
-# $Id: run-and-publish-tests.sh,v 1.11 2004/12/03 10:49:20 jdt Exp $ 
+# $Id: run-and-publish-tests.sh,v 1.12 2004/12/03 13:11:40 jdt Exp $ 
 ######################################################
 # Run the tests and publish the results to Uluru
 # (or wherever)
 ######################################################
 #
-echo ${BUILDHOME?"Value of BUILDHOME (ie where AGINAB is) must be set"}
-echo ${DOCLOCATION?"Value of DOCLOCATION (ie where documents should be published) must be set"}
+echo BUILDHOME is ${BUILDHOME?"Value of BUILDHOME (ie where AGINAB is) must be set"}
+echo DOCLOCATION is ${DOCLOCATION?"Value of DOCLOCATION (ie where documents should be published) must be set"}
 
 echo "Running tests from $BUILDHOME"
 OLDDIR=$PWD
