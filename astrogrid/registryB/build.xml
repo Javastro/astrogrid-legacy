@@ -1,0 +1,112 @@
+<?xml version="1.0"?>
+<!--+
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/registryB/Attic/build.xml,v $</cvs:source>
+    | <cvs:author>$Author: KevinBenson $</cvs:author>
+    | <cvs:date>$Date: 2003/10/28 10:11:52 $</cvs:date>
+    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:log>
+    |   $Log: build.xml,v $
+    |   Revision 1.1  2003/10/28 10:11:52  KevinBenson
+    |   New Registry structure started with RegistryB so we can sort of leave the other one alone for now.
+    |
+    | </cvs:log>
+    |
+    +-->
+<project default="init" basedir="." name="experiment">
+
+    <!-- Project build properties -->
+    <property name="project.home"     value="${basedir}"/>
+    <property name="project.base"     value="${basedir}"/>
+    <property name="project.name"     value="registry"/>
+    <property name="project.version"  value="2.0"/>
+    <property name="project.build"    value="${project.home}/build/project"/>
+
+    <!--+
+        | User preferences.
+        | This is where to put local properties eg.tomcat installation path.
+    <property file="${user.home}/ant.properties"/>
+        +-->
+
+    <!--+
+        | Prefix for system properties.
+        +-->
+    <property environment="env"/>
+
+    <!-- ================ Init tasks ================ -->
+    <target name="init">
+
+        <!-- Create our build timestamp -->
+        <tstamp>
+            <format property="build.time" pattern="yyyy.MM.dd.HH.mm.ss"/>
+            <format property="build.date" pattern="yyyy.MM.dd"/>
+        </tstamp>
+
+        <!-- Generate our build name -->
+        <property name="build.name" value="${project.name}-${project.version}"/>
+
+        <!-- Display the current settings -->
+        <echo message="os.name      : ${os.name}"/>
+        <echo message="os.arch      : ${os.arch}"/>
+        <echo message="os.version   : ${os.version}"/>
+        <echo message=""/>
+
+        <echo message="user.home    : ${user.home}"/>
+        <echo message=""/>
+
+        <echo message="build.file     : ${ant.file}"/>
+        <echo message="build.date     : ${build.date}"/>
+        <echo message="build.time     : ${build.time}"/>
+        <echo message=""/>
+
+        <echo message="java.version : ${java.version}"/>
+        <echo message="java.home    : ${java.home}"/>
+        <echo message="JAVA.HOME    : ${env.JAVA_HOME}"/>
+        <echo message=""/>
+
+        <!-- Initialise our components -->
+        <ant dir="src/ant" target="init" antfile="ant.xml"/>
+        <ant dir="src/ant" target="init" antfile="tomcat.xml"/>
+        <ant dir="src/ant" target="init" antfile="axis.xml"/>
+
+    </target>
+
+    <!-- ================ Experimental tasks ================ -->
+
+    <!--+
+        | Generate our JavaBeans.
+        +-->
+    <target name="xsl.beans" depends="">
+        <ant dir="${project.home}/src/ant" antfile="beans.xml" target="beans.delete"/>
+        <ant dir="${project.home}/src/ant" antfile="beans.xml" target="beans.ant"/>
+        <ant dir="${project.home}/src/ant" antfile="beans.xml" target="beans.xsl"/>
+        <ant dir="${project.home}/src/ant" antfile="beans.xml" target="beans.javac"/>
+    </target>
+
+    <!--+
+        | Generate our SQL tables.
+        +-->
+    <target name="xsl.tables" depends="">
+        <!-- Generate the table definitions -->
+        <ant dir="${project.home}/src/ant" antfile="beans.xml" target="tables.sql">
+            <property name="file.name" value="${project.build}/database/tables.sql"/>
+        </ant>
+        <!--+
+            | Load the table definitions
+            | This needs an empty hsqldb database running.
+        <ant dir="${project.home}/src/ant" antfile="hsqldb.xml" target="hsqldb.script">
+            <property name="file.name" value="${project.build}/database/tables.sql"/>
+        </ant>
+            +-->
+    </target>
+
+    <!--+
+        | Generate our Castor mapping.
+        +-->
+    <target name="xsl.mapping" depends="">
+        <!-- Generate our Castor database mapping -->
+        <ant dir="${project.home}/src/ant" antfile="beans.xml" target="mapping.xml">
+            <property name="file.name" value="${project.build}/database/mapping.xml"/>
+        </ant>
+    </target>
+
+</project>
