@@ -1,5 +1,5 @@
 /*
- * $Id: DummySqlPlugin.java,v 1.9 2004/08/18 18:44:12 mch Exp $
+ * $Id: DummySqlPlugin.java,v 1.10 2004/08/18 22:28:45 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -47,7 +47,7 @@ public class DummySqlPlugin extends JdbcPlugin
 
       SimpleConfig.setProperty(SqlMaker.CONE_SEARCH_RA_COL_KEY, "RA");
       SimpleConfig.setProperty(SqlMaker.CONE_SEARCH_DEC_COL_KEY,"DEC");
-      SimpleConfig.setProperty(SqlMaker.CONE_SEARCH_TABLE_KEY,  "ssIndex");
+      SimpleConfig.setProperty(SqlMaker.CONE_SEARCH_TABLE_KEY,  "SampleStars");
       
       SimpleConfig.setProperty(SqlMaker.DB_TRIGFUNCS_IN_RADIANS, "True");
 
@@ -130,9 +130,9 @@ public class DummySqlPlugin extends JdbcPlugin
          connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Not Pleidies', 58, 23, 5)"); id++;
          
          //add even spread (in coordinate space) of background stars
-         for (int ra=0;ra<360;ra++) {
+         for (double ra=0;ra<360;ra=ra+2) {
 //            StringBuffer sql = new StringBuffer("INSERT INTO SampleStars VALUES ");
-            for (int dec=-90;dec<90;dec++) {
+            for (double dec=-90;dec<90;dec=dec+2) {
 //               sql.append(" ("+id+", 'Background', "+ra+", "+dec+", 20) "); id++;
                connection.createStatement().execute("INSERT INTO SampleStars VALUES  ("+id+", 'Background', "+ra+", "+dec+", 20)"); id++;
             }
@@ -199,6 +199,9 @@ public class DummySqlPlugin extends JdbcPlugin
 }
    /*
    $Log: DummySqlPlugin.java,v $
+   Revision 1.10  2004/08/18 22:28:45  mch
+   Switched to search on table (index search fails..) and background stars less dense
+
    Revision 1.9  2004/08/18 18:44:12  mch
    Created metadata plugin service and added helper methods
 
