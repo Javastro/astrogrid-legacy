@@ -176,6 +176,7 @@ public class DesignAction extends AbstractAction {
 		ACTION_COPY_WORKFLOW = "copy-workflow",
         ACTION_CHOOSE_QUERY = "choose-query",
         ACTION_EDIT_JOINCONDITION = "edit-join-condition",
+		ACTION_ADD_NAME_DESCRIPTION = "add-name-description",
         ACTION_READ_QUERY = "read-query",
         ACTION_READ_QUERY_LIST = "read-query-list",
 	    ACTION_CREATE_TOOL = "create-tool-for-step",
@@ -361,6 +362,9 @@ public class DesignAction extends AbstractAction {
                 else if( action.equals( ACTION_EDIT_JOINCONDITION ) ) {
                     this.editJoinCondition(); 
                 }
+				else if( action.equals( ACTION_ADD_NAME_DESCRIPTION ) ) {
+					this.addWorkflowNameAndDescription(); 
+				}			
                 else if( action.equals( ACTION_READ_TOOL_LIST ) ) {
                     this.readToolList(); 
                 }
@@ -1183,6 +1187,36 @@ this.readToolList(); // temp PJN
             }
                     
         } // end of insertSequence()       
+
+
+		private void addWorkflowNameAndDescription() throws ConsistencyException 
+		{
+			if( TRACE_ENABLED ) trace( "DesignActionImpl.addWorkflowNameAndDescription() entry" ) ;
+              
+			try {
+				
+				if( workflow == null ) {
+						throw new ConsistencyException() ; 
+				}
+								
+				String
+					name = request.getParameter( WORKFLOW_NAME_PARAMETER ),
+					description = request.getParameter( WORKFLOW_DESCRIPTION_PARAMETER ) ;                    
+                    
+				if( name == null ) {
+					name = "new workflow";
+				}
+                
+				if( description == null ) {
+					description = "no description entered" ;
+				}
+				workflow.setName(name) ;
+				workflow.setDescription(description) ;		          
+			}
+			finally {
+				if( TRACE_ENABLED ) trace( "DesignActionImpl.addWorkflowNameAndDescription() exit" ) ;
+			}                    
+		} // end of addWorkflowNameAndDescription() 
 
 //      private void insertInputParameterIntoTool() throws ConsistencyException {
 //          if( TRACE_ENABLED ) trace( "DesignActionImpl.insertInputParameterIntoTool() entry" ) ;
