@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceCommandlineWorkflowEndToEndTest.java,v 1.7 2004/05/26 14:49:09 nw Exp $
+ * $Id: MySpaceCommandlineWorkflowEndToEndTest.java,v 1.8 2004/05/27 13:58:58 nw Exp $
  * 
  * Created on 23-Apr-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -14,6 +14,7 @@
 package org.astrogrid.workflow.integration;
 
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
+import org.astrogrid.io.Piper;
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.store.VoSpaceClient;
 import org.astrogrid.workflow.beans.v1.Tool;
@@ -24,6 +25,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.Reader;
+import java.io.StringWriter;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -113,11 +116,14 @@ public class MySpaceCommandlineWorkflowEndToEndTest
        assertNotNull(is);
        
        // now check target ivorn has same contents as the original.
-       BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-       String content = reader.readLine();
-       assertNotNull(content);
+       Reader reader = new InputStreamReader(is);
+       StringWriter writer = new StringWriter();
+       Piper.pipe(reader,writer);
        reader.close();
-       assertEquals("contents of result file do not match contents of input file",TESTCONTENTS,content);
+       writer.close();
+       System.out.println("Result file contents:");
+       System.out.println(writer.toString());      
+       assertTrue("contents of result file do not include contents of input file",writer.toString().indexOf(TESTCONTENTS) != -1);
        }
    
    public static Test suite() {
