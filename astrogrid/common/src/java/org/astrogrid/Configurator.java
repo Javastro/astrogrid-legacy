@@ -167,6 +167,15 @@ public abstract class Configurator {
   abstract protected String getSubsystemAcronym();
   /**
    * Returns the JNDI name of the URL for locating the config file.
+   * e.g. if you place
+   * <verbatim> 
+   * &lt;Environment description="URL giving location of the properties file to use for configuration" 
+   * name="jesConfigFileURL" override="false" type="java.lang.String" value="http://localhost:8080/ASTROGRID_jesconfig.xml"/&gt;
+   * </verbatim>
+   * in Tomcat's server.xml file (under a &lt;context&gt; element), then the name you return here would be
+   * <verbatim>
+   * java:comp/env/jesConfigFileURL
+   * </verbatim>
    * @return To be implemented by subclasses.  This just returns null.
    * @TODO make this method abstract, but not yet to avoid breaking any classes I don't know about
    */
