@@ -1,13 +1,12 @@
 /**
- * $Id: Workspace.java,v 1.2 2003/08/27 18:11:07 mch Exp $
+ * $Id: Workspace.java,v 1.3 2003/08/28 15:58:01 mch Exp $
  */
 
 package org.astrogrid.datacenter.service;
 
 import java.io.File;
 import java.io.IOException;
-import org.astrogrid.datacenter.config.DTC;
-
+import org.astrogrid.datacenter.config.Configuration;
 /**
  * A temporary filespace manager for
  * service instances.  Actually just a set of helper methods for creating
@@ -23,54 +22,52 @@ import org.astrogrid.datacenter.config.DTC;
 
 public class Workspace
 {
-   protected final DTC config = DTC.getInstance();
-   private static final String WORKSPACE_DIRECTORY_KEY = "Workspace Directory";
-   private static final String WORKSPACE_DIRECTORY_CAT = "Service";
-   
+   private static final String WORKSPACE_DIRECTORY = "Workspace Directory";
+
    private static final String ERR_WORKSPACE_ALREADY_IN_USE = "Workspace Already In Use";
-   
+
    /** Path to this workspace instance */
    protected String workspacePath = null;
-   
+
    /** File representation of this workspace instance */
    protected File workspaceFile = null;
-   
+
    /** Used to mark when the directory has been closed (deleted) */
 //   protected boolean closed = false; this is meaningless if we expose workspaceFile
-   
-   
+
+
    /**
     * Creates a temporary directory with the name given by workspaceId
     * in the workspace directory given in the configuration file
     */
    public Workspace(String workspaceId)
    {
-      String workRoot = config.getProperty( WORKSPACE_DIRECTORY_KEY, WORKSPACE_DIRECTORY_CAT);
-      
+      String workRoot = Configuration.getProperty( WORKSPACE_DIRECTORY  );
+
       workspacePath = workRoot + File.separator + workspaceId;
-      
+
       File workspaceFile = new File(workspacePath);
-      
+
       if (workspaceFile.exists())
       {
          throw new IllegalArgumentException(ERR_WORKSPACE_ALREADY_IN_USE);
       }
-      
+
       workspaceFile.mkdir();
-      
+
       //workspaceFile.deleteOnExit(); nb for debug we let it carry on existing
    }
-   
+
    /**
     * Use when you've finished with the space and you want to tidy up
     */
    public void close() throws IOException
    {
       //empty(workspacePath);  //commented out at the moment so we can debug contents
-      
+
 //      closed = true;
    }
-   
+
    /**
     * Returns the path to the workspace
     */
@@ -78,7 +75,7 @@ public class Workspace
    {
       return workspaceFile;
    }
-   
+
    /**
     * Deletes the contents of the workspace
     */
@@ -91,7 +88,7 @@ public class Workspace
 
       emptyDirectory(workspaceFile);
    }
-   
+
    /**
     * General purpose method that deletes the contents of the given directory
     */
@@ -112,7 +109,7 @@ public class Workspace
           removeFileOrDir(contents[i]);
       }
    }
-   
+
    /**
     * Deletes the given path - if the path refers to a directory, the directory
     * is emptied and removed, so it will recursively remove a tree.

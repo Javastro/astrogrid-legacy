@@ -1,24 +1,22 @@
-/*$Id: Job.java,v 1.7 2003/08/22 10:35:02 nw Exp $
+/*$Id: Job.java,v 1.8 2003/08/28 15:57:12 mch Exp $
  * Created on 21-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
 **/
 package org.astrogrid.datacenter.job;
 
 import java.util.Date;
 
-import org.astrogrid.datacenter.config.Configurable;
-
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Aug-2003
  *
  */
-public interface Job extends Configurable {
+public interface Job  {
         public static final String STATUS_INITIALIZED = "INITIALIZED",
     // Newly created but not yet running
         STATUS_RUNNING = "RUNNING", // Currently executing
@@ -48,13 +46,16 @@ public interface Job extends Configurable {
    // public abstract Object getImplementation();
 }
 
-/* 
+/*
 $Log: Job.java,v $
+Revision 1.8  2003/08/28 15:57:12  mch
+New Configuration package
+
 Revision 1.7  2003/08/22 10:35:02  nw
 refactored job and job step into interface, abstract base class and implementation
 
 Revision 1.6  2003/08/21 14:55:15  nw
 refactored Job abstract class into an interface - didn't contain anything but abstract methods and constants,
 and allows implementor to use own choice of base type.
- 
+
 */

@@ -16,13 +16,11 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.astrogrid.datacenter.Util;
-import org.astrogrid.datacenter.config.ConfigurationKeys;
+import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.i18n.AstroGridMessage;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import org.astrogrid.datacenter.config.DTC;
 
 /**
  * The <code>From</code> class represents ...
@@ -120,8 +118,7 @@ public class From extends SQLComponent {
             if ( catalog.getNumberTables() <= 0 ) {  // no table specified assume owner and table name are same
                buffer
                    .append( catalog.getName() )
-                   .append( DTC.getProperty( ConfigurationKeys.DATABASE_TABLE_SEPARATOR
-                                    , ConfigurationKeys.DATASETAGENT_CATEGORY ) ) //Bug #15
+                   .append( Configuration.getProperty( ConfigurationKeys.DATABASE_TABLE_SEPARATOR) )
                    .append( catalog.getName() )
                    .append( ", " ) ;
             }
@@ -137,8 +134,7 @@ public class From extends SQLComponent {
 
                    buffer
                        .append( catalog.getName() )
-                     .append( DTC.getProperty( ConfigurationKeys.DATABASE_TABLE_SEPARATOR
-                                       , ConfigurationKeys.DATASETAGENT_CATEGORY ) ) //Bug #15
+                     .append( Configuration.getProperty( ConfigurationKeys.DATABASE_TABLE_SEPARATOR) ) //Bug #15
                         .append( table.getName() )
                         .append( ", " ) ;
 

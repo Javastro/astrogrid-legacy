@@ -14,12 +14,12 @@ import java.util.Iterator;
 
 import org.apache.log4j.Logger;
 import org.astrogrid.datacenter.Util;
-import org.astrogrid.datacenter.config.ConfigurationKeys;
 import org.astrogrid.i18n.AstroGridMessage;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.astrogrid.datacenter.config.DTC;
+import org.astrogrid.datacenter.config.Configuration;
+
 /**
  * The <code>Field</code> class represents a field within an SQL Query.
  * <p>
@@ -161,8 +161,7 @@ public class Field extends SQLComponent  implements Operand{
                   .append( "." )
                   .append( this.getName() );
                logger.debug( "Criteria: getColumnHeading(): key: " + buffer.toString().toUpperCase() ) ;
-               columnHeading = DTC.getProperty( buffer.toString().toUpperCase()
-                                                   , ConfigurationKeys.UCD_CATEGORY ) ;
+               columnHeading = Configuration.getProperty( buffer.toString().toUpperCase()) ;
 
             }
             else {
@@ -181,8 +180,7 @@ public class Field extends SQLComponent  implements Operand{
                      .append( "." )
                      .append( this.getName() );
                   logger.debug("Criteria: getColumnHeading(): key: "+buffer.toString().toUpperCase() );
-                  columnHeading = DTC.getProperty( buffer.toString().toUpperCase()
-                                                       , ConfigurationKeys.UCD_CATEGORY) ;
+                  columnHeading = Configuration.getProperty( buffer.toString().toUpperCase());
                   if ( columnHeading.length() > 0 ) // break as soon as column heading found
                      break;
                   buffer.delete( 0, buffer.length() ) ;

@@ -1,5 +1,5 @@
 /*
- * $Id: DatasetAgent.java,v 1.19 2003/08/27 09:52:40 mch Exp $
+ * $Id: DatasetAgent.java,v 1.20 2003/08/28 15:55:11 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -17,8 +17,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.apache.log4j.Logger;
 import org.astrogrid.AstroGridException;
-import org.astrogrid.datacenter.config.ConfigurationDefaultImpl;
-import org.astrogrid.datacenter.config.ConfigurationKeys;
+import org.astrogrid.datacenter.config.Configuration;
+//import org.astrogrid.datacenter.config.ConfigurationKeys;
 import org.astrogrid.datacenter.impl.QueryFactoryImpl;
 import org.astrogrid.datacenter.job.Job;
 import org.astrogrid.datacenter.query.QueryFactory;
@@ -86,7 +86,6 @@ public class DatasetAgent {
    private static Logger
       logger = Logger.getLogger( DatasetAgent.class ) ;
 
-   protected final ConfigurationDefaultImpl config;
    protected final DynamicFactoryManager fac;
 
    /**
@@ -97,8 +96,7 @@ public class DatasetAgent {
    public DatasetAgent()
    {
       if( TRACE_ENABLED ) logger.debug( "DatasetAgent(): entry") ;
-      config = new ConfigurationDefaultImpl();
-      fac = new DynamicFactoryManager(config);
+      fac = new DynamicFactoryManager();
    }
 
    /** verify that all configuration files are present,
@@ -109,7 +107,7 @@ public class DatasetAgent {
    {
       // If properties file is not loaded, we bail out...
       // Each DatasetAgent MUST be properly initialized!
-      config.checkPropertiesLoaded() ;
+      Configuration.load(ConfigurationKeys.CONFIG_FILENAME) ;
       // now each of the factories..
       fac.verify();
    }
@@ -326,9 +324,9 @@ public class DatasetAgent {
          sout = new java.io.StringWriter();
          wout = new java.io.PrintWriter(sout);
 
-         config.checkPropertiesLoaded() ;
+//         config.checkPropertiesLoaded() ;
          fac.verify();
-         wout.println(config); // hopefully this does something nice.
+//         wout.println(config); // hopefully this does something nice.
          wout.println(fac);
          return sout.toString();
       } catch (Throwable t) {
@@ -344,8 +342,8 @@ public class DatasetAgent {
    private Document parseXML( Reader xmlSource ) throws IOException, SAXException, ParserConfigurationException
    {
       DocumentBuilderFactory  factory = DocumentBuilderFactory.newInstance();
-      factory.setValidating( Boolean.getBoolean( config.getProperty( ConfigurationKeys.DATASETAGENT_PARSER_VALIDATION
-                                                                       , ConfigurationKeys.DATASETAGENT_CATEGORY )  )  ) ;
+      factory.setValidating( Boolean.getBoolean(
+                               Configuration.getProperty( ConfigurationKeys.DATASETAGENT_PARSER_VALIDATION )  )  ) ;
 
       DocumentBuilder builder = factory.newDocumentBuilder();
       logger.debug( xmlSource ) ;

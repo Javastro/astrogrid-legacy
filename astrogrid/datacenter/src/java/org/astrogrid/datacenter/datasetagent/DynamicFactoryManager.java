@@ -1,4 +1,4 @@
-/*$Id: DynamicFactoryManager.java,v 1.6 2003/08/28 15:29:04 nw Exp $
+/*$Id: DynamicFactoryManager.java,v 1.7 2003/08/28 15:55:11 mch Exp $
  * Created on 19-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,7 @@ package org.astrogrid.datacenter.datasetagent;
 import org.astrogrid.AstroGridException;
 import org.astrogrid.datacenter.Util;
 import org.astrogrid.datacenter.config.Configuration;
-import org.astrogrid.datacenter.config.ConfigurationKeys;
+//import org.astrogrid.datacenter.config.ConfigurationKeys;
 import org.astrogrid.datacenter.config.FactoryManager;
 import org.astrogrid.datacenter.job.JobException;
 import org.astrogrid.datacenter.job.JobFactory;
@@ -49,8 +49,8 @@ public class DynamicFactoryManager extends FactoryManager {
 
     private static final String SUBCOMPONENT_NAME = Util.getComponentName(DynamicFactoryManager.class);
 
-    public DynamicFactoryManager(Configuration conf) {
-        super(conf);
+    public DynamicFactoryManager() {
+        super();
     }
 
 
@@ -64,9 +64,8 @@ public class DynamicFactoryManager extends FactoryManager {
         if (super.isQueryFactoryAvailable(catalogName)) { // use the original implementation, as just looks in the hash map.
             return super.getQueryFactory(catalogName);
         }
-        String implementationFactoryName = conf.getProperty(
-                    catalogName + ConfigurationKeys.CATALOG_DEFAULT_QUERYFACTORY,
-                    ConfigurationKeys.CATALOG_CATEGORY);
+        String implementationFactoryName = Configuration.getProperty(
+                    catalogName + ConfigurationKeys.CATALOG_DEFAULT_QUERYFACTORY);
 
         // If we couldn't find a specific factory in the properties file,
         // Then look for a default factory...
@@ -89,8 +88,7 @@ public class DynamicFactoryManager extends FactoryManager {
      * an entry for this catalog in it, and the internal cache.
      */
     public boolean isQueryFactoryAvailable(String catalogName) {
-        String className = conf.getProperty(catalogName + ConfigurationKeys.CATALOG_DEFAULT_QUERYFACTORY
-                                        , ConfigurationKeys.CATALOG_CATEGORY) ;
+        String className = Configuration.getProperty(catalogName + ConfigurationKeys.CATALOG_DEFAULT_QUERYFACTORY) ;
         return className != null || super.isQueryFactoryAvailable(catalogName);
     }
 
@@ -101,9 +99,8 @@ public class DynamicFactoryManager extends FactoryManager {
      */
     protected void loadDefaultQueryFactory() throws QueryException {
 
-        String implementationFactoryName =  conf.getProperty(
-                ConfigurationKeys.CATALOG_DEFAULT_QUERYFACTORY,
-                ConfigurationKeys.CATALOG_CATEGORY);
+        String implementationFactoryName =  Configuration.getProperty(
+                ConfigurationKeys.CATALOG_DEFAULT_QUERYFACTORY);
 
         try {
             Object obj = Class.forName(implementationFactoryName).newInstance();
@@ -125,9 +122,8 @@ public class DynamicFactoryManager extends FactoryManager {
  */
     protected void loadJobFactory() throws JobException {
 
-        String implementationFactoryName = conf.getProperty(
-                        ConfigurationKeys.JOB_FACTORY,
-                        ConfigurationKeys.JOB_CATEGORY);
+        String implementationFactoryName = Configuration.getProperty(
+                        ConfigurationKeys.JOB_FACTORY);
         try {
             Object obj = Class.forName(implementationFactoryName).newInstance();
             this.setJobFactory((JobFactory) obj);
@@ -171,6 +167,9 @@ public class DynamicFactoryManager extends FactoryManager {
 }
 /*
 $Log: DynamicFactoryManager.java,v $
+Revision 1.7  2003/08/28 15:55:11  mch
+New Configuration package
+
 Revision 1.6  2003/08/28 15:29:04  nw
 fixed javadoc
 

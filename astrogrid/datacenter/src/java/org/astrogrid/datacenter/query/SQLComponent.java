@@ -6,8 +6,6 @@
  */
 package org.astrogrid.datacenter.query;
 
-import org.astrogrid.datacenter.config.ConfigurableImpl;
-
 /** base class for all elements of the SQL composite pattern
   */
 public abstract class SQLComponent {

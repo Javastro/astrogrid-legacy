@@ -14,13 +14,12 @@ import java.util.Iterator;
 
 import org.apache.log4j.Logger;
 import org.astrogrid.datacenter.Util;
-import org.astrogrid.datacenter.config.ConfigurationKeys;
+import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.i18n.AstroGridMessage;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import org.astrogrid.datacenter.config.DTC;
 
 /**
  * The <code>GroupBy</code> class represents the Group By clause of an SQL query
@@ -158,8 +157,7 @@ public class GroupBy extends SQLComponent {
                    .append( "." )
                    .append( UCD ) ;
                logger.debug("Return: getColumnHeading(): key: "+buffer.toString().toUpperCase() ) ;
-               columnHeading = DTC.getProperty( buffer.toString()
-                                       , ConfigurationKeys.UCD_CATEGORY ) ;
+               columnHeading = Configuration.getProperty( buffer.toString());
             }
             else {
 
@@ -177,8 +175,7 @@ public class GroupBy extends SQLComponent {
                       .append( "." )
                       .append( UCD ) ;
                   logger.debug("Return: getColumnHeading(): key: "+buffer.toString().toLowerCase().toUpperCase() );
-                  columnHeading = DTC.getProperty( buffer.toString()
-                                          , ConfigurationKeys.UCD_CATEGORY ) ;
+                  columnHeading = Configuration.getProperty( buffer.toString()) ;
                   if (columnHeading.length() > 0 ) // break as soon as column heading found
                      break;
                   buffer.delete( 0,buffer.length() ) ;

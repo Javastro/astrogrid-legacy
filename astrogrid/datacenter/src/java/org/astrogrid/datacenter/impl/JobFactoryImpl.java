@@ -21,8 +21,7 @@ import java.util.Date;
 import org.apache.log4j.Logger;
 import org.astrogrid.datacenter.FactoryProvider;
 import org.astrogrid.datacenter.Util;
-import org.astrogrid.datacenter.config.ConfigurableImpl;
-import org.astrogrid.datacenter.config.ConfigurationKeys;
+import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.datacenter.job.Job;
 import org.astrogrid.datacenter.job.JobException;
 import org.astrogrid.datacenter.job.JobFactory;
@@ -49,7 +48,7 @@ import org.w3c.dom.Element;
  * @see     org.astrogrid.Job
  * @since   AstroGrid 1.2
  */
-public class JobFactoryImpl  extends ConfigurableImpl implements JobFactory{
+public class JobFactoryImpl  implements JobFactory{
 
    /** Compile-time switch used to turn tracing on/off. */
    private static final boolean
@@ -128,7 +127,7 @@ public class JobFactoryImpl  extends ConfigurableImpl implements JobFactory{
 
          Object []
             inserts = new Object[8] ;
-         inserts[0] = getConfiguration().getProperty( ConfigurationKeys.JOB_TABLENAME, ConfigurationKeys.JOB_CATEGORY ) ;
+         inserts[0] = Configuration.getProperty( ConfigurationKeys.JOB_TABLENAME ) ;
          inserts[1] = job.getId() ;
          inserts[2] = job.getName() ;
          inserts[3] = new Timestamp( job.getDate().getTime() ).toString(); //JBL Note: this may give us grief
@@ -236,7 +235,7 @@ public class JobFactoryImpl  extends ConfigurableImpl implements JobFactory{
 
       try {
          Object [] inserts = new Object[] {
-              getConfiguration().getProperty( ConfigurationKeys.JOB_TABLENAME, ConfigurationKeys.JOB_CATEGORY )
+              Configuration.getProperty( ConfigurationKeys.JOB_TABLENAME)
               , job.getId()
             };
 
@@ -302,7 +301,7 @@ public class JobFactoryImpl  extends ConfigurableImpl implements JobFactory{
 
          Object []
             inserts = new Object[2] ;
-         inserts[0] = getConfiguration().getProperty( ConfigurationKeys.JOB_TABLENAME, ConfigurationKeys.JOB_CATEGORY ) ;
+         inserts[0] = Configuration.getProperty( ConfigurationKeys.JOB_TABLENAME ) ;
          inserts[1] = job.getId() ;
 
          String
