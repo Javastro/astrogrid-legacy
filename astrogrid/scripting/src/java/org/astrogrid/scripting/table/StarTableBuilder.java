@@ -1,4 +1,4 @@
-/*$Id: StarTableBuilder.java,v 1.3 2004/12/07 16:50:33 jdt Exp $
+/*$Id: StarTableBuilder.java,v 1.4 2004/12/07 18:05:52 nw Exp $
  * Created on 22-Nov-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,6 +29,7 @@ import uk.ac.starlink.util.DataSource;
  * encourages factory to build random-access tables by dfault - less surprising then.
  * <p>
  * also wraps each returned starTable as a ScriptStarTable - which provides further script-friendly methods.
+ * @script-summary factory for StarTables
  * @script-doc factory for ScriptStarTables - extends StarLink's StarTableFactory, but gurantees all
  * tables returned will be instances of {@link org.astrogrid.scripting.table.ScriptStarTable}<br />
  * StarTableFactory Javadoc - <a href="http://www.star.bristol.ac.uk/~mbt/stil/javadocs/uk/ac/starlink/table/StarTableFactory.html">http://www.star.bristol.ac.uk/~mbt/stil/javadocs/uk/ac/starlink/table/StarTableFactory.html</a>
@@ -160,6 +161,9 @@ public class StarTableBuilder extends StarTableFactory {
 
 /* 
 $Log: StarTableBuilder.java,v $
+Revision 1.4  2004/12/07 18:05:52  nw
+javadoc fixes
+
 Revision 1.3  2004/12/07 16:50:33  jdt
 merges from scripting-nww-805
 

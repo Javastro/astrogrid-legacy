@@ -1,4 +1,4 @@
-/*$Id: TableHelper.java,v 1.3 2004/12/07 16:50:33 jdt Exp $
+/*$Id: TableHelper.java,v 1.4 2004/12/07 18:05:52 nw Exp $
  * Created on 03-Dec-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,7 +30,8 @@ import uk.ac.starlink.table.RowListStarTable;
 import uk.ac.starlink.table.StarTable;
 import uk.ac.starlink.table.StarTableOutput;
 
-/** Helper object for working with STIL tables 
+/** Helper object for working with STIL tables <p />
+ * 
  * See Userguide - <a href="http://www.star.bristol.ac.uk/~mbt/stil/sun252.html">http://www.star.bristol.ac.uk/~mbt/stil/sun252.html</a><br />
  * See JavaDoc - <a href="http://www.star.bristol.ac.uk/~mbt/stil/javadocs/uk/ac/starlink/table/package-summary.html">http://www.star.bristol.ac.uk/~mbt/stil/javadocs/uk/ac/starlink/table/package-summary.html</a><br />
  * @author Noel Winstanley nw@jb.man.ac.uk 03-Dec-2004
@@ -113,6 +114,9 @@ public class TableHelper {
 
 /* 
 $Log: TableHelper.java,v $
+Revision 1.4  2004/12/07 18:05:52  nw
+javadoc fixes
+
 Revision 1.3  2004/12/07 16:50:33  jdt
 merges from scripting-nww-805
 
