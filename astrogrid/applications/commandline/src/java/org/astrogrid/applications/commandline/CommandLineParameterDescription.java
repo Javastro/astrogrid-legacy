@@ -1,4 +1,4 @@
-/*$Id: CommandLineParameterDescription.java,v 1.3 2004/08/28 07:17:34 pah Exp $
+/*$Id: CommandLineParameterDescription.java,v 1.4 2004/09/09 12:22:12 pah Exp $
  * Created on 17-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -43,8 +43,8 @@ public class CommandLineParameterDescription extends BaseParameterDescription {
     private int commandPosition = -1;
    
 
-    /** flag that indicates application expects a file-reference containing this parameter in the arguments, rather than the parameter value itself. */ 
-    private boolean fileRef = false;
+    /** flag that indicates application expects a file-reference containing this parameter in the arguments, rather than the parameter value itself. NB This default should match the schema default*/ 
+    private boolean fileRef = true;
 
     /**
      * Adds any necessary switches to the commandline parameter. This is controlled by the @link #commandPosition, @link #commandSwitch and @link #switchType fields. 
@@ -161,6 +161,9 @@ public class CommandLineParameterDescription extends BaseParameterDescription {
 
 /* 
 $Log: CommandLineParameterDescription.java,v $
+Revision 1.4  2004/09/09 12:22:12  pah
+change the fileref default to match schema
+
 Revision 1.3  2004/08/28 07:17:34  pah
 commandline parameter passing - unit tests ok
 
