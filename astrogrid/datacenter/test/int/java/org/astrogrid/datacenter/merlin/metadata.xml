@@ -1,12 +1,15 @@
 <?xml version="1.0"?>
-<DataCenterMetadata version="0.1">
-<!-- describe the columns of each published table as follows:
-<column table="_table_name_" name="_column_name_">
-   <ucd>_UCD_</ucd>
-   <units>_String_</units>
-   <description>_Textual_Description_</description>
-</column>
--->
+<DatacenterMetadata version="0.1">
+
+   <Publisher>JBO</Publisher>
+   <Contact>
+      <Name>Noel Winstanley</Name>
+      <email>nw@jb.man.ac.uk</email>
+   </Contact>
+   <Contact>
+      <Name>Simon Garrington</Name>
+      <email>stg@jb.man.ac.uk</email>
+   </Contact>
 <table name="merlinCatalog">
 <description>
   This database contains a log of MERLIN archive data since 1992 which have been
@@ -203,4 +206,4 @@ Note (6): The AMPCAL flux on MERLIN scales is derived wrt 3C286 (Baars 1977).
 </notes>
 </table><!-- end table merlinCatalog -->
 
-</DataCenterMetadata>
+</DatacenterMetadata>
