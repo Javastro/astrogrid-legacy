@@ -6,7 +6,7 @@ import java.util.Locale;
 import java.text.*;
 
 /**
- * The <code>Server</code> class represents the details held in the
+ * The <code>ServerDetails</code> class represents the details held in the
  * MySpace registry for a single MySpace server.  The details held for
  * each server are: its name, expiry period, URI and base directory.
  *
@@ -20,7 +20,7 @@ import java.text.*;
  * @version Iteration 4.
  */
 
-public class Server
+public class ServerDetails
 {  
    private String name;           // Full Name.
    private int    expiryPeriod;   // Expiry period (days).
@@ -38,7 +38,7 @@ public class Server
  * variables.
  */
 
-   public Server (String name, int expiryPeriod, String URI,
+   public ServerDetails (String name, int expiryPeriod, String URI,
      String directory)
    {  this.name = name;
       this.expiryPeriod = expiryPeriod;
@@ -51,7 +51,7 @@ public class Server
  * null or -1.
  */
 
-   public Server ()
+   public ServerDetails ()
    {  this.name = null;
       this.expiryPeriod = -1;
       this.URI = null;

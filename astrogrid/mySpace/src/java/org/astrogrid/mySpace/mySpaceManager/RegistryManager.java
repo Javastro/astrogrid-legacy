@@ -64,7 +64,7 @@ public class RegistryManager
 
          String sqlStatement = "CREATE TABLE reg(" +
            "dataItemName VARCHAR(150), " +
-           "dataItemID INTEGER, " +
+           "dataItemID INTEGER IDENTITY, " +
            "dataItemFile VARCHAR(15), " +
            "ownerID VARCHAR(20), " +
            "creationDate DATE, " +
@@ -107,7 +107,7 @@ public class RegistryManager
 
          if (servers.size() > 0)
          {  for (int loop = 0; loop < servers.size(); loop++)
-            {  Server server = (Server)servers.elementAt(loop);
+            {  ServerDetails server = (ServerDetails)servers.elementAt(loop);
 
                sqlStatement = "INSERT INTO servers(" +
                  "name, expiryPeriod, URI, directory)" +
@@ -165,6 +165,11 @@ public class RegistryManager
 //      Assemble the SQL statement to add the dataItemRecord.
 //      But first convert dates in the java.util.Date format to the
 //      java.sql.Date formats.
+//
+//      Note that the dataItemID column is not added because a unique
+//      value is generated internally by the database.  However, the
+//      code that would be used to add this column is left in as
+//      comments, for purposes of illustration.
 
          java.util.Date creationDate = dataItemRecord.getCreationDate();
          long creationTime = creationDate.getTime();
@@ -175,12 +180,14 @@ public class RegistryManager
          java.sql.Date sqlExpiry = new java.sql.Date(expiryTime);
 
          String sqlStatement = "INSERT INTO reg(" +
-           "dataItemName, dataItemID, dataItemFile, ownerID, " +
+           "dataItemName, " +
+//            dataItemID, 
+           "dataItemFile, ownerID, " +
            "creationDate, expiryDate, " +
            "size, type, permissionsMask) " +
            "VALUES (" +
             "'" + dataItemRecord.getDataItemName() + "', " +
-            dataItemRecord.getDataItemID() + ", " +
+//            dataItemRecord.getDataItemID() + ", " +
             "'" + dataItemRecord.getDataItemFile() + "', " +
             "'" + dataItemRecord.getOwnerID() + "', " +
             "'" + sqlCreation + "', " +
@@ -507,10 +514,10 @@ public class RegistryManager
 
             }
             else
-            {  Server server = new Server();
+            {  ServerDetails server = new ServerDetails();
 
                while (sqlResults.next() )
-               {  server = new Server(
+               {  server = new ServerDetails(
                     sqlResults.getString("name"),
                     sqlResults.getInt("expiryPeriod"),
                     sqlResults.getString("URI"),
