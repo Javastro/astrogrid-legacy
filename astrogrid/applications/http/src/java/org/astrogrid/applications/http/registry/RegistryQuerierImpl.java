@@ -1,4 +1,4 @@
-/* $Id: RegistryQuerierImpl.java,v 1.6 2004/09/10 13:52:16 jdt Exp $
+/* $Id: RegistryQuerierImpl.java,v 1.7 2005/01/23 12:52:33 jdt Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -95,13 +95,14 @@ public class RegistryQuerierImpl implements RegistryQuerier {
     /**
      * Query string to select only CeaHttpApplications in the registry
      */
-    private final static String LIST_QUERY_STRING = "<query><selectionSequence>"
-            + "<selection item='searchElements' itemOp='EQ' value='Resource'/>" + "<selectionOp op='$and$'/>"
-            + "<selection item='@*:type' itemOp='EQ' value='CeaHttpApplicationType'/>" +
-            //"<selectionOp op='OR'/>" +
-            //"<selection item='@*:type' itemOp='EQ'
-            // value='CeaApplicationType'/>" +
-            "</selectionSequence></query>";
+    private final static String LIST_QUERY_STRING =   "<query><selectionSequence>" +
+    "<selection item='searchElements' itemOp='EQ' value='vr:Resource'/>" +
+    "<selectionOp op='$and$'/>" +
+    "<selection item='@xsi:type' itemOp='EQ' value='CeaHttpApplicationType'/>"  +
+    "<selectionOp op='OR'/>" +
+    "<selection item='@xsi:type' itemOp='EQ' value='cea:CeaHttpApplicationType'/>"  +
+    "</selectionSequence></query>";
+   
 
     /**
      * Get the names of all the applications in the registry matching
@@ -117,9 +118,11 @@ public class RegistryQuerierImpl implements RegistryQuerier {
         }
 
         try {
+            log.debug("Querying registry: "+LIST_QUERY_STRING);
             Document doc = service.submitQuery(LIST_QUERY_STRING);
             assert doc != null;
             NodeList nl = doc.getElementsByTagNameNS("*", "Identifier");
+            log.debug("...got doc with "+nl.getLength()+" Identifier elements");
             List namesList = new ArrayList();
             for (int i = 0; i < nl.getLength(); i++) {
                 IdentifierType it;
@@ -127,6 +130,7 @@ public class RegistryQuerierImpl implements RegistryQuerier {
                     it = (IdentifierType) Unmarshaller.unmarshal(IdentifierType.class, nl.item(i));
                     String name = it.getAuthorityID() + "/" + it.getResourceKey();
                     namesList.add(name);
+                    log.debug("Adding "+name+" to list of applications");
                 } catch (MarshalException e1) {
                     log.error("listApplications(): problem unmarshalling " + nl.item(i) + " cannot add to list", e1);
                 } catch (ValidationException e1) {
@@ -294,6 +298,7 @@ public class RegistryQuerierImpl implements RegistryQuerier {
             List apps = new ArrayList();
 
             List names = listApplications();
+            log.debug("Got a list of "+names.size()+" applications");
             Iterator it = names.iterator();
             while (it.hasNext()) {
                 String name = (String) it.next();

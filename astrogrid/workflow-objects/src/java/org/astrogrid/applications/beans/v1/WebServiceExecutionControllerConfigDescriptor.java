@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: WebServiceExecutionControllerConfigDescriptor.java,v 1.32 2004/12/03 14:47:40 jdt Exp $
+ * $Id: WebServiceExecutionControllerConfigDescriptor.java,v 1.33 2005/01/23 12:51:11 jdt Exp $
  */
 
 package org.astrogrid.applications.beans.v1;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class WebServiceExecutionControllerConfigDescriptor.
  * 
- * @version $Revision: 1.32 $ $Date: 2004/12/03 14:47:40 $
+ * @version $Revision: 1.33 $ $Date: 2005/01/23 12:51:11 $
  */
 public class WebServiceExecutionControllerConfigDescriptor extends org.astrogrid.applications.beans.v1.CommonExecutionConnectorConfigTypeDescriptor {
 

@@ -1,4 +1,4 @@
-/*$Id: CompositeApplicationDescriptionLibrary.java,v 1.4 2004/08/11 16:52:11 nw Exp $
+/*$Id: CompositeApplicationDescriptionLibrary.java,v 1.5 2005/01/23 12:52:26 jdt Exp $
  * Created on 09-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -48,10 +48,14 @@ public class CompositeApplicationDescriptionLibrary implements ApplicationDescri
      * @see org.astrogrid.applications.description.ApplicationDescriptionLibrary#getDescription(java.lang.String)
      */
     public ApplicationDescription getDescription(String name) throws ApplicationDescriptionNotFoundException {
+        logger.debug("Getting description for "+name+" from composite library");
+        logger.debug("Composite library contains "+libs.size()+" libraries");
         for (Iterator i = libs.iterator(); i.hasNext(); ) {
             ApplicationDescriptionLibrary lib = (ApplicationDescriptionLibrary)i.next();
+            logger.debug("Checking library "+lib+".  This library has "+lib.getApplicationNames().length+" entries");
             try {
                 ApplicationDescription desc = lib.getDescription(name);
+                logger.debug("Found description");
                 // shouldn't return null, but sanity check.
                 if (desc != null) {
                     return desc;
@@ -126,6 +130,12 @@ public class CompositeApplicationDescriptionLibrary implements ApplicationDescri
 
 /* 
 $Log: CompositeApplicationDescriptionLibrary.java,v $
+Revision 1.5  2005/01/23 12:52:26  jdt
+merge from cea_jdt_902
+
+Revision 1.4.88.1  2005/01/22 13:57:01  jdt
+added some logging.
+
 Revision 1.4  2004/08/11 16:52:11  nw
 added logger
 

@@ -1,4 +1,4 @@
-/*$Id: ApplicationDescriptionLibrary.java,v 1.3 2004/07/26 00:57:46 nw Exp $
+/*$Id: ApplicationDescriptionLibrary.java,v 1.4 2005/01/23 12:52:26 jdt Exp $
  * Created on 25-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,7 +17,7 @@ import org.astrogrid.applications.description.exception.ApplicationDescriptionNo
  *
  */
 public interface ApplicationDescriptionLibrary {
-    /** retreive a named description from the library 
+    /** retrieve a named description from the library 
      * @param name the name of the application description to retreive
      * @return the description for this applicaiton.
      * @throws ApplicationDescriptionNotFoundException if the name is not present in the library.*/
@@ -28,6 +28,12 @@ public interface ApplicationDescriptionLibrary {
 }
 /* 
 $Log: ApplicationDescriptionLibrary.java,v $
+Revision 1.4  2005/01/23 12:52:26  jdt
+merge from cea_jdt_902
+
+Revision 1.3.102.1  2005/01/22 13:56:46  jdt
+typo in comment
+
 Revision 1.3  2004/07/26 00:57:46  nw
 javadoc
 

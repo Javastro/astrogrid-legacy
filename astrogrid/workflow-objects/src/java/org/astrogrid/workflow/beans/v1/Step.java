@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Step.java,v 1.32 2004/12/03 14:47:40 jdt Exp $
+ * $Id: Step.java,v 1.33 2005/01/23 12:52:11 jdt Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -28,7 +28,7 @@ import org.xml.sax.ContentHandler;
 /**
  * a step of the workflow - call to an external CEA application.
  * 
- * @version $Revision: 1.32 $ $Date: 2004/12/03 14:47:40 $
+ * @version $Revision: 1.33 $ $Date: 2005/01/23 12:52:11 $
  */
 public class Step extends org.astrogrid.workflow.beans.v1.AbstractActivity 
 implements java.io.Serializable

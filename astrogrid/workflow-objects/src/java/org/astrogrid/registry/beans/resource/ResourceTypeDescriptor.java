@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ResourceTypeDescriptor.java,v 1.10 2004/12/03 14:47:40 jdt Exp $
+ * $Id: ResourceTypeDescriptor.java,v 1.11 2005/01/23 12:51:41 jdt Exp $
  */
 
 package org.astrogrid.registry.beans.resource;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class ResourceTypeDescriptor.
  * 
- * @version $Revision: 1.10 $ $Date: 2004/12/03 14:47:40 $
+ * @version $Revision: 1.11 $ $Date: 2005/01/23 12:51:41 $
  */
 public class ResourceTypeDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 
@@ -66,7 +66,7 @@ public class ResourceTypeDescriptor extends org.exolab.castor.xml.util.XMLClassD
         //-- initialize attribute descriptors
         
         //-- _created
-        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.exolab.castor.types.Date.class, "_created", "created", org.exolab.castor.xml.NodeType.Attribute);
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.util.Date.class, "_created", "created", org.exolab.castor.xml.NodeType.Attribute);
         handler = (new org.exolab.castor.xml.XMLFieldHandler() {
             public java.lang.Object getValue( java.lang.Object object ) 
                 throws IllegalStateException
@@ -79,28 +79,27 @@ public class ResourceTypeDescriptor extends org.exolab.castor.xml.util.XMLClassD
             {
                 try {
                     ResourceType target = (ResourceType) object;
-                    target.setCreated( (org.exolab.castor.types.Date.parseDate((String) value)));
+                    target.setCreated( (java.util.Date) value);
                 }
                 catch (java.lang.Exception ex) {
                     throw new IllegalStateException(ex.toString());
                 }
             }
             public java.lang.Object newInstance( java.lang.Object parent ) {
-                return new org.exolab.castor.types.Date();
+                return new java.util.Date();
             }
         } );
-        desc.setHandler(handler);
+        desc.setHandler( new org.exolab.castor.xml.handlers.DateFieldHandler(handler));
+        desc.setImmutable(true);
         addFieldDescriptor(desc);
         
         //-- validation code for: _created
         fieldValidator = new org.exolab.castor.xml.FieldValidator();
         { //-- local scope
-            DateTimeValidator typeValidator = new DateTimeValidator();
-            fieldValidator.setValidator(typeValidator);
         }
         desc.setValidator(fieldValidator);
         //-- _updated
-        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.exolab.castor.types.Date.class, "_updated", "updated", org.exolab.castor.xml.NodeType.Attribute);
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.util.Date.class, "_updated", "updated", org.exolab.castor.xml.NodeType.Attribute);
         handler = (new org.exolab.castor.xml.XMLFieldHandler() {
             public java.lang.Object getValue( java.lang.Object object ) 
                 throws IllegalStateException
@@ -113,24 +112,23 @@ public class ResourceTypeDescriptor extends org.exolab.castor.xml.util.XMLClassD
             {
                 try {
                     ResourceType target = (ResourceType) object;
-                    target.setUpdated( (org.exolab.castor.types.Date.parseDate((String) value)));
+                    target.setUpdated( (java.util.Date) value);
                 }
                 catch (java.lang.Exception ex) {
                     throw new IllegalStateException(ex.toString());
                 }
             }
             public java.lang.Object newInstance( java.lang.Object parent ) {
-                return new org.exolab.castor.types.Date();
+                return new java.util.Date();
             }
         } );
-        desc.setHandler(handler);
+        desc.setHandler( new org.exolab.castor.xml.handlers.DateFieldHandler(handler));
+        desc.setImmutable(true);
         addFieldDescriptor(desc);
         
         //-- validation code for: _updated
         fieldValidator = new org.exolab.castor.xml.FieldValidator();
         { //-- local scope
-            DateTimeValidator typeValidator = new DateTimeValidator();
-            fieldValidator.setValidator(typeValidator);
         }
         desc.setValidator(fieldValidator);
         //-- _status

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ResourceType.java,v 1.10 2004/12/03 14:47:40 jdt Exp $
+ * $Id: ResourceType.java,v 1.11 2005/01/23 12:51:43 jdt Exp $
  */
 
 package org.astrogrid.registry.beans.resource;
@@ -16,6 +16,7 @@ import java.io.Reader;
 import java.io.Serializable;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Enumeration;
 import org.astrogrid.registry.beans.resource.types.CategoryType;
 import org.astrogrid.registry.beans.resource.types.ContentLevelType;
@@ -29,7 +30,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Class ResourceType.
  * 
- * @version $Revision: 1.10 $ $Date: 2004/12/03 14:47:40 $
+ * @version $Revision: 1.11 $ $Date: 2005/01/23 12:51:43 $
  */
 public class ResourceType extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
@@ -44,14 +45,14 @@ implements java.io.Serializable
      * The date this resource metadata description was created.
      *  
      */
-    private org.exolab.castor.types.Date _created;
+    private java.util.Date _created;
 
     /**
      * The date this resource metadata description was last
      * updated.
      *  
      */
-    private org.exolab.castor.types.Date _updated;
+    private java.util.Date _updated;
 
     /**
      * a tag indicating whether this resource is believed to be
@@ -502,10 +503,10 @@ implements java.io.Serializable
      * 
      * @return the value of field 'created'.
      */
-    public org.exolab.castor.types.Date getCreated()
+    public java.util.Date getCreated()
     {
         return this._created;
-    } //-- org.exolab.castor.types.Date getCreated() 
+    } //-- java.util.Date getCreated() 
 
     /**
      * Returns the value of field 'curation'. The field 'curation'
@@ -742,10 +743,10 @@ implements java.io.Serializable
      * 
      * @return the value of field 'updated'.
      */
-    public org.exolab.castor.types.Date getUpdated()
+    public java.util.Date getUpdated()
     {
         return this._updated;
-    } //-- org.exolab.castor.types.Date getUpdated() 
+    } //-- java.util.Date getUpdated() 
 
     /**
      * Method isValid
@@ -878,10 +879,10 @@ implements java.io.Serializable
      * 
      * @param created the value of field 'created'.
      */
-    public void setCreated(org.exolab.castor.types.Date created)
+    public void setCreated(java.util.Date created)
     {
         this._created = created;
-    } //-- void setCreated(org.exolab.castor.types.Date) 
+    } //-- void setCreated(java.util.Date) 
 
     /**
      * Sets the value of field 'curation'. The field 'curation' has
@@ -1090,10 +1091,10 @@ implements java.io.Serializable
      * 
      * @param updated the value of field 'updated'.
      */
-    public void setUpdated(org.exolab.castor.types.Date updated)
+    public void setUpdated(java.util.Date updated)
     {
         this._updated = updated;
-    } //-- void setUpdated(org.exolab.castor.types.Date) 
+    } //-- void setUpdated(java.util.Date) 
 
     /**
      * Method unmarshalResourceType

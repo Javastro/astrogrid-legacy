@@ -102,14 +102,14 @@
 			<element ref="vr:Subject" minOccurs="0" maxOccurs="unbounded"/>
 			<element ref="vr:ContentLevel" minOccurs="0" maxOccurs="unbounded"/>
 		</sequence>
-		<attribute name="created" type="xs:date">
+		<attribute name="created" type="xs:dateTime">
 			<annotation>
 				<documentation>
 	      The date this resource metadata description was created.
             </documentation>
 			</annotation>
 		</attribute>
-		<attribute name="updated" type="xs:date">
+		<attribute name="updated" type="xs:dateTime">
 			<annotation>
 				<documentation>
 	      The date this resource metadata description was last updated.

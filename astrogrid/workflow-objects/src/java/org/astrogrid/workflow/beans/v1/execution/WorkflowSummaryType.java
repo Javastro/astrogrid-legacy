@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: WorkflowSummaryType.java,v 1.2 2004/12/03 14:47:41 jdt Exp $
+ * $Id: WorkflowSummaryType.java,v 1.3 2005/01/23 12:52:25 jdt Exp $
  */
 
 package org.astrogrid.workflow.beans.v1.execution;
@@ -24,7 +24,7 @@ import org.xml.sax.ContentHandler;
 /**
  * summary record for a single execution of a job
  * 
- * @version $Revision: 1.2 $ $Date: 2004/12/03 14:47:41 $
+ * @version $Revision: 1.3 $ $Date: 2005/01/23 12:52:25 $
  */
 public class WorkflowSummaryType extends org.astrogrid.workflow.beans.v1.execution.JobExecutionRecordType 
 implements java.io.Serializable

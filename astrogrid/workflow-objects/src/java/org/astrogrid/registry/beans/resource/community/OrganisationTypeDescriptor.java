@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: OrganisationTypeDescriptor.java,v 1.10 2004/12/03 14:47:41 jdt Exp $
+ * $Id: OrganisationTypeDescriptor.java,v 1.11 2005/01/23 12:52:30 jdt Exp $
  */
 
 package org.astrogrid.registry.beans.resource.community;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class OrganisationTypeDescriptor.
  * 
- * @version $Revision: 1.10 $ $Date: 2004/12/03 14:47:41 $
+ * @version $Revision: 1.11 $ $Date: 2005/01/23 12:52:30 $
  */
 public class OrganisationTypeDescriptor extends org.astrogrid.registry.beans.resource.ResourceTypeDescriptor {
 

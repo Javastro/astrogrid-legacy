@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: For.java,v 1.9 2004/12/03 14:47:40 jdt Exp $
+ * $Id: For.java,v 1.10 2005/01/23 12:52:02 jdt Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -24,7 +24,7 @@ import org.xml.sax.ContentHandler;
 /**
  * A for loop construct - iterated over a sequence of items
  * 
- * @version $Revision: 1.9 $ $Date: 2004/12/03 14:47:40 $
+ * @version $Revision: 1.10 $ $Date: 2005/01/23 12:52:02 $
  */
 public class For extends org.astrogrid.workflow.beans.v1.AbstractActivity 
 implements java.io.Serializable

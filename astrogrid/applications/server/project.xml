@@ -327,6 +327,7 @@
             <include>**/*.xml</include>
             <include>**/*.properties</include>
             <include>**/*.sql</include>
+            <include>**/*.txt</include>
           </includes>
         </resource>
       </resources>

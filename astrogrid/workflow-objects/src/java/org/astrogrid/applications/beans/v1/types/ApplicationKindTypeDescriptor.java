@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ApplicationKindTypeDescriptor.java,v 1.4 2004/12/03 14:47:41 jdt Exp $
+ * $Id: ApplicationKindTypeDescriptor.java,v 1.5 2005/01/23 12:52:01 jdt Exp $
  */
 
 package org.astrogrid.applications.beans.v1.types;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class ApplicationKindTypeDescriptor.
  * 
- * @version $Revision: 1.4 $ $Date: 2004/12/03 14:47:41 $
+ * @version $Revision: 1.5 $ $Date: 2005/01/23 12:52:01 $
  */
 public class ApplicationKindTypeDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 

@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.3 2004/09/14 16:35:15 jdt Exp $
+/*$Id: AllTests.java,v 1.4 2005/01/23 12:52:34 jdt Exp $
  * Created on 29-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,6 +25,13 @@ public class AllTests {
 		TestSuite suite = new TestSuite("Test for HTTP CEA Provider");
 		//$JUnit-BEGIN$
 		suite.addTestSuite(HttpServerInstallationTest.class);
+        suite.addTest(org.astrogrid.applications.integration.http.adder.AllTests.suite());
+        suite.addTest(org.astrogrid.applications.integration.http.adderpost.AllTests.suite());
+        suite.addTest(org.astrogrid.applications.integration.http.helloworld.AllTests.suite());
+        suite.addTest(org.astrogrid.applications.integration.http.helloYou.AllTests.suite());
+        suite.addTest(org.astrogrid.applications.integration.http.invalidapp.AllTests.suite());
+        suite.addTest(org.astrogrid.applications.integration.http.registry.AllTests.suite());
+        suite.addTest(org.astrogrid.applications.integration.http.webservice.AllTests.suite());
 		//$JUnit-END$
 		return suite;
 	}
@@ -32,6 +39,12 @@ public class AllTests {
 
 /* 
  $Log: AllTests.java,v $
+ Revision 1.4  2005/01/23 12:52:34  jdt
+ merge from cea_jdt_902
+
+ Revision 1.3.68.1  2005/01/22 13:50:18  jdt
+ Ensured that All tests get called.
+
  Revision 1.3  2004/09/14 16:35:15  jdt
  Added tests for an http-post service.
 
