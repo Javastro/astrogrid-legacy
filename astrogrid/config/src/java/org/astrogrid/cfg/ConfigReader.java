@@ -1,5 +1,5 @@
 /*
- * $Id: ConfigReader.java,v 1.1 2005/03/21 14:05:47 mch Exp $
+ * $Id: ConfigReader.java,v 1.2 2005/03/22 11:07:42 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -18,9 +18,9 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.cfg.ConfigException;
-import org.astrogrid.xml.DomHelper;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
+import org.astrogrid.xml.DomHelper;
 
 /**
  * Defines the methods that a class that provides properties must implement.
