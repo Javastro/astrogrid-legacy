@@ -65,6 +65,12 @@
       <version>SNAPSHOT</version>
     </dependency>
 
+    <!-- we need the myspace client to compile. fix this later when mySpace packaging is better. -->
+    <dependency>
+    	<id>astrogrid-mySpace</id>
+	<version>SNAPSHOT</version>
+    </dependency>
+
     <dependency>
       <id>breezetk</id>
       <version>UNKNOWN</version>
