@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.31 2004/03/08 00:31:28 mch Exp $
+ * $Id: AxisDataServer.java,v 1.32 2004/03/08 00:39:02 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -56,7 +56,7 @@ public abstract class AxisDataServer  {
     */
    protected AxisFault makeFault(boolean blameClient, String message, Throwable cause)  {
       
-      log.error("AxisFault being generated: Throwing "+cause+" to client, message="+message, cause);
+      log.error("AxisFault being generated: 'Throwing' exception "+cause+" to client, message="+message, cause);
 
       AxisFault fault = new AxisFault(message);
 
@@ -183,6 +183,9 @@ public abstract class AxisDataServer  {
 
 /*
 $Log: AxisDataServer.java,v $
+Revision 1.32  2004/03/08 00:39:02  mch
+Minor error message change
+
 Revision 1.31  2004/03/08 00:31:28  mch
 Split out webservice implementations for versioning
 
