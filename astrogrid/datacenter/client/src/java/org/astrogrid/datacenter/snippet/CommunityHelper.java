@@ -1,5 +1,5 @@
 /*
- * $Id: CommunityHelper.java,v 1.2 2003/11/26 16:31:46 nw Exp $
+ * $Id: CommunityHelper.java,v 1.3 2003/11/26 17:27:10 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -8,6 +8,7 @@ package org.astrogrid.datacenter.snippet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.datacenter.delegate.Certification;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 /**
@@ -25,6 +26,16 @@ public class CommunityHelper
    public final static String ACCOUNT = "account";
    public static String account = "";
 
+   public static Certification getCertification(Element dom)
+   {
+      if (getAccount(dom) == null) {
+         return Certification.ANONYMOUS;
+      }
+      else {
+          return new Certification(getUserId(dom), getCommunityId(dom));
+      }
+   }
+   
    public static String getAccount(Element dom)
        {
            account = DocHelper.getTagValue(getCommunitySnippet(dom), ACCOUNT);
@@ -86,6 +97,9 @@ public class CommunityHelper
 
 /*
 $Log: CommunityHelper.java,v $
+Revision 1.3  2003/11/26 17:27:10  mch
+Added Certification extraction
+
 Revision 1.2  2003/11/26 16:31:46  nw
 altered transport to accept any query format.
 moved back to axis from castor
