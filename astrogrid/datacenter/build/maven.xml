@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<!-- extension maven script -->
+<project xmlns:j="jelly:core"  xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="jar:jar">
+<!-- hooks to farm out everything to subprojects -->
+
+<!-- bugfix suggested by john -->
+<preGoal name="site">
+	<attainGoal name="dist:prepare-bin-filesystem" />
+</preGoal>
+
+
+
+</project>

@@ -236,11 +236,9 @@
     <report>
       maven-javadoc-plugin
     </report>
-    <!-- makes the build break sometimes. not worth it.
     <report>
       maven-jdepend-plugin
     </report>
-    -->
     <report>
       maven-junit-report-plugin
     </report>
