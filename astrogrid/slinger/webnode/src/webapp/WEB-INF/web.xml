@@ -21,7 +21,7 @@
    <env-entry>
       <description>Email Server</description>
       <env-entry-name>emailserver.address</env-entry-name>
-      <env-entry-value>smtp.roe.ac.uk</env-entry-value>
+      <env-entry-value>mail.roe.ac.uk</env-entry-value>
       <env-entry-type>java.lang.String</env-entry-type>
    </env-entry>
 
