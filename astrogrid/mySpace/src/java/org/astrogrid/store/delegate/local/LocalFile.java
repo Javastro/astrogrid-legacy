@@ -1,5 +1,5 @@
 /*
- * $Id: LocalFile.java,v 1.3 2004/04/06 11:01:33 mch Exp $
+ * $Id: LocalFile.java,v 1.4 2004/04/06 13:56:00 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -52,14 +52,9 @@ public class LocalFile implements StoreFile
    public StoreFile getParent() {
       //check to see if we're at the root
       String serverPath = getPath();
-      File parentFile = new File(serverPath).getParentFile();
-      if (parentFile == null) {
-         return null;
-      }
-      else
-      {
-         return new LocalFile(store, file.getParentFile());//but specify full File
-      }
+      if (serverPath == null) return null;
+
+      return new LocalFile(store, file.getParentFile());//but specify full File
    }
    
    /** Returns true if this is a self-contained file.  For example, a database
@@ -124,6 +119,9 @@ public class LocalFile implements StoreFile
 
 /*
 $Log: LocalFile.java,v $
+Revision 1.4  2004/04/06 13:56:00  mch
+Fix to getParent null
+
 Revision 1.3  2004/04/06 11:01:33  mch
 Fixed null pointer when LocalFile is root
 
