@@ -265,7 +265,7 @@
     <!-- Workflow pages -->
       <map:match pattern="agjobmanager.html">            
         <map:act type="astrogrid-workflow" />
-        <map:generate src="workflow/xsp/job-list.xsp" type="serverpages" />
+        <map:generate src="workflow/xsp/workflow-main.xsp" type="serverpages" />
         <map:transform src="workflow/xsl/workflow-main.xsl">
         <map:parameter name="use-request-parameters" value="true"/>
           <!-- Add the action params -->
@@ -277,7 +277,7 @@
 
         <map:match pattern="agjobmanager-jes.html">            
           <map:act type="astrogrid-jes" />
-          <map:generate src="workflow/xsp/workflow-main.xsp" type="serverpages" />
+          <map:generate src="workflow/xsp/job-list.xsp" type="serverpages" />
           <map:transform src="workflow/xsl/workflow-main.xsl">
           <map:parameter name="use-request-parameters" value="true"/>
           <!-- Add the action params -->
