@@ -14,11 +14,24 @@
 
   <dependencies>
 
+    <!-- Workflow -->
+    <dependency>
+      <groupId>astrogrid-workflow</groupId>
+      <artifactId>astrogrid-workflow</artifactId>
+      <version>SNAPSHOT</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+
     <!-- MySpace -->
     <dependency>
       <groupId>astrogrid-mySpace</groupId>
       <artifactId>astrogrid-mySpace</artifactId>
       <version>SNAPSHOT</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
     </dependency>
 
     <!-- Jes -->
@@ -26,6 +39,9 @@
       <groupId>astrogrid-jes</groupId>
       <artifactId>astrogrid-jes</artifactId>
       <version>SNAPSHOT</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
     </dependency>
 
     <!-- Common -->
@@ -33,6 +49,9 @@
       <groupId>astrogrid-common</groupId>
       <artifactId>astrogrid-common</artifactId>
       <version>SNAPSHOT</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>      
     </dependency>
 
     <!-- Community -->
@@ -40,6 +59,9 @@
       <groupId>astrogrid-community</groupId>
       <artifactId>authentication-client</artifactId>
       <version>1.0</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>      
     </dependency>
     
     <!-- DO NOT INCLUDE PARENT DEPENDENCIES IN WAR -->
