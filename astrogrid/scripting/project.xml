@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
+	    <extend>../maven-base/project.xml</extend>
         <pomVersion>3</pomVersion>
           <groupId>org.astrogrid</groupId>
         <id>astrogrid-scripting</id>
