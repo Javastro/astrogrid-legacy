@@ -1,0 +1,25 @@
+<?xml version = "1.0"?>
+<job name = "jl013">
+   <userid>jlusted</userid>
+   <community>leicester</community>
+   <jobstep name="COUNT AND NO CRITERIA" >
+      <query>  
+<!--================================================ 
+    SELECT MIN(URA), MAX(URA), MIN(UDEC), MAX(UDEC) 
+    FROM USNOB 
+=================================================--> 
+         <from>         
+            <catalog name="USNOB">         
+               <service name="AGHomeService" url="http://hydra.star.le.ac.uk:8080/axis/services/DatasetAgent" />
+               <table>USNOB</table>
+            </catalog>
+         </from>
+         <return>
+            <field name="MIN(URA)" type="COLUMN"/>
+            <field name="MAX(URA)" type="COLUMN"/>
+            <field name="MIN(UDEC)" type="COLUMN"/>
+            <field name="MAX(UDEC)" type="COLUMN"/>
+         </return>
+      </query>
+   </jobstep>
+</job>
