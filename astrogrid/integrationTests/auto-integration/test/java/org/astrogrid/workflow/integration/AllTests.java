@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.7 2004/04/15 13:02:38 jdt Exp $
+/*$Id: AllTests.java,v 1.8 2004/04/15 23:11:20 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,7 +24,7 @@ public class AllTests {
         //$JUnit-BEGIN$
         suite.addTest(new TestSuite(ApplicationsInstallationTest.class));
         suite.addTest(new TestSuite(DataCenterIntegrationTest.class));
-        suite.addTest(new TestSuite(JesIntegrationTest.class));
+        suite.addTest(new TestSuite(JesInstallationTest.class));
         suite.addTest(new TestSuite(MySpaceIntegrationTest.class));
         suite.addTest(new TestSuite(RegistryIntegrationTest.class));
         suite.addTest(new TestSuite(WorkflowEndToEndTest.class));
@@ -34,6 +34,9 @@ public class AllTests {
 }
 /* 
 $Log: AllTests.java,v $
+Revision 1.8  2004/04/15 23:11:20  nw
+tweaks
+
 Revision 1.7  2004/04/15 13:02:38  jdt
 whoops.  I must have caught this one mid cvs commit while
 it was out of synch with the other tests.

@@ -1,4 +1,4 @@
-/*$Id: JesIntegrationTest.java,v 1.2 2004/04/08 14:50:54 nw Exp $
+/*$Id: JesInstallationTest.java,v 1.1 2004/04/15 23:11:20 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,37 +10,30 @@
 **/
 package org.astrogrid.workflow.integration;
 
-import org.astrogrid.jes.delegate.JesDelegateException;
-import org.astrogrid.jes.delegate.JobController;
 import org.astrogrid.jes.delegate.JobSummary;
-import org.astrogrid.scripting.Service;
+import org.astrogrid.portal.workflow.intf.JobExecutionService;
+import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
-import java.util.List;
-
-/** Test jes service is happy.
+/** Test jes service is happy. also exercises the part of workflowManager that talks to jes.
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Mar-2004
  *
  */
-public class JesIntegrationTest extends AbstractTestForIntegration {
+public class JesInstallationTest extends AbstractTestForIntegration {
     /**
      * Constructor for JesIntegrationTest.
      * @param arg0
      */
-    public JesIntegrationTest(String arg0) throws Exception{
+    public JesInstallationTest(String arg0) throws Exception{
         super(arg0);
     }
     protected void setUp() throws Exception {
         super.setUp();
-        List apps = ag.getJes();
-        assertNotNull(apps);
-        assertTrue(apps.size() > 0);
-        serv = (Service)apps.get(0);
-        delegate = (JobController)serv.createDelegate();
+        delegate = ag.getWorkflowManager().getJobExecutionService();
+        assertNotNull(delegate);
     }
-    protected Service serv;
-    protected JobController delegate;
+    protected JobExecutionService delegate;
 
     
     public void testSubmitListReadDeleteJob() throws Exception {
@@ -73,7 +66,7 @@ public class JesIntegrationTest extends AbstractTestForIntegration {
             Workflow wf = delegate.readJob(urn);
             assertNull(wf);
             fail("Expected to barf, when reading a deleted job");
-       } catch (JesDelegateException e) {
+       } catch (WorkflowInterfaceException e) {
                 // ok
             }
     }
@@ -83,7 +76,10 @@ public class JesIntegrationTest extends AbstractTestForIntegration {
 
 
 /* 
-$Log: JesIntegrationTest.java,v $
+$Log: JesInstallationTest.java,v $
+Revision 1.1  2004/04/15 23:11:20  nw
+tweaks
+
 Revision 1.2  2004/04/08 14:50:54  nw
 polished up the workflow integratioin tests
 

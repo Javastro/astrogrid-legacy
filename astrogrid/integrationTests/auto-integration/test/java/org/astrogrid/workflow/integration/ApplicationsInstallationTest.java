@@ -1,4 +1,4 @@
-/*$Id: ApplicationsInstallationTest.java,v 1.1 2004/04/15 12:18:25 nw Exp $
+/*$Id: ApplicationsInstallationTest.java,v 1.2 2004/04/15 23:11:20 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -83,27 +83,30 @@ public class ApplicationsInstallationTest extends AbstractTestForIntegration {
         assertNotNull(entry);
         // I guess its xml or something. need to add further testing here
     }
-    /** @todo query registry for a named test application*/
     
     public void testExecute() throws Exception {
-        // hack, will need to find application description by name later.
         ApplicationRegistry reg = ag.getWorkflowManager().getToolRegistry();
-        ApplicationDescription descr = reg.getDescriptionFor(reg.listApplications()[0]);
-        assertNotNull("could not get application description",descr);
+        ApplicationDescription descr = reg.getDescriptionFor("org.astrogrid.localhost/testapp");
+        assertNotNull("could not get application description for testapp",descr);
         Tool tool = descr.createToolFromDefaultInterface();
         assertNotNull("tool is null",tool);
         descr.validate(tool); // shouold be ready to go, with no further config.
         
         JobIdentifierType id = new JobIdentifierType(); // not too bothered about this.
         id.setValue(this.getClass().getName());
-       String returnEndpoint ="http://www.dont.care.for.now";      
+       String returnEndpoint ="http://localhost:8080/astrogrid-jes-SNAPSHOT/services/JobMonitorService";      
       String execId = delegate.execute(tool,id,returnEndpoint);
+      assertNotNull(execId);
+      
     }
 }
 
 
 /* 
 $Log: ApplicationsInstallationTest.java,v $
+Revision 1.2  2004/04/15 23:11:20  nw
+tweaks
+
 Revision 1.1  2004/04/15 12:18:25  nw
 updating tests
 

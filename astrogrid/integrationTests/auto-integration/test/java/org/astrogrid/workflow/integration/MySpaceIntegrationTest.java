@@ -1,4 +1,4 @@
-/*$Id: MySpaceIntegrationTest.java,v 1.3 2004/04/14 15:28:47 nw Exp $
+/*$Id: MySpaceIntegrationTest.java,v 1.4 2004/04/15 23:11:20 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,9 +19,8 @@ import org.astrogrid.workflow.beans.v1.Workflow;
 import java.net.URL;
 import java.util.Arrays;
 
-/** Test interactions between workflow and myspace
+/** Tests functionality that workflow requires of myspace.
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Mar-2004
- * @todo move to real myspace implementation
  *
  */
 public class MySpaceIntegrationTest extends AbstractTestForIntegration {
@@ -40,14 +39,10 @@ public class MySpaceIntegrationTest extends AbstractTestForIntegration {
     protected WorkflowStore store;
     
     public void testStore() throws Exception{
-        User user = new User();
-        user.setAccount(creds.getAccount().getName() + "@" + creds.getAccount().getCommunity());
-        user.setAccount(creds.getGroup().getName() + "@" + creds.getGroup().getCommunity());
-        user.setToken(creds.getSecurityToken());
+
         VoSpaceClient client = new VoSpaceClient(user);
-        //client.
-        Ivorn location = new Ivorn("ivo://fred","/" + user.getUserId() + "/test/MySpaceIntegrationTest");
-         
+                
+        Ivorn location = new Ivorn("org.astrogrid.localhost/myspace","/" + user.getUserId() + "/tests/MySpaceIntegrationTest");
         store.saveWorkflow(user,location,wf);
         
         // get it back again.
@@ -62,6 +57,9 @@ public class MySpaceIntegrationTest extends AbstractTestForIntegration {
 
 /* 
 $Log: MySpaceIntegrationTest.java,v $
+Revision 1.4  2004/04/15 23:11:20  nw
+tweaks
+
 Revision 1.3  2004/04/14 15:28:47  nw
 updated tests to fit with new WorkspaceStore interface
 

@@ -1,4 +1,4 @@
-/*$Id: WorkflowEndToEndTest.java,v 1.4 2004/04/14 16:42:37 nw Exp $
+/*$Id: WorkflowEndToEndTest.java,v 1.5 2004/04/15 23:11:20 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,14 +19,18 @@ import org.astrogrid.portal.workflow.intf.ToolValidationException;
 import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
 import org.astrogrid.portal.workflow.intf.WorkflowManager;
 import org.astrogrid.portal.workflow.intf.WorkflowStore;
+import org.astrogrid.store.Ivorn;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
-/** grand test of workfow - usecase of creating and submitting a workflow.
+import java.util.Date;
+
+/** end-to-end test of workfow - usecase of creating and submitting a workflow.
+ * <p>
+ * involves jes, cea, registry and myspace, all orchestrated through the workflow library.
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Mar-2004
- * @todo add test of workflow with multiple steps - datacenter and command-line apps, for example.
  *
  */
 public class WorkflowEndToEndTest extends AbstractTestForIntegration {
@@ -57,7 +61,7 @@ public class WorkflowEndToEndTest extends AbstractTestForIntegration {
         JobURN urn = submitWorkflowDocument();
         Thread.sleep(10000);
         // try retreiving the workflow.
-        Workflow w1 = readWorkflowFromJesAndSave(urn, "Simple workflow execution results: ");
+        Workflow w1 = readWorkflowFromJesAndSaveToVoSpace(urn, "WorkflowEndToEndTest-Simple");
        assertEquals("Workflow not completed",ExecutionPhase.COMPLETED,w1.getJobExecutionRecord().getStatus()); // i.e. its not in error
               
     }
@@ -67,7 +71,7 @@ public class WorkflowEndToEndTest extends AbstractTestForIntegration {
         buildComplexWorkflowDocument();
         JobURN urn = submitWorkflowDocument();
         Thread.sleep(20000);
-        Workflow w1 = readWorkflowFromJesAndSave(urn,"Complex workflow execution results :");
+        Workflow w1 = readWorkflowFromJesAndSaveToVoSpace(urn,"WorkflowEndToEndTest-Complex");
         assertEquals("Workflow not completed",ExecutionPhase.COMPLETED,w1.getJobExecutionRecord().getStatus());
     }        
     
@@ -89,19 +93,15 @@ public class WorkflowEndToEndTest extends AbstractTestForIntegration {
            step.setTool(tool);
            wf.getSequence().addActivity(step);
            assertTrue("workflow is not valid",wf.isValid());
-           // save it in the store,
-          // store.saveWorkflow(acc,wf); 
     }
 
     /** the name / registry key of the dataset provided by the local datacenter 
-     * @todo set this correctly 
      */
-    public final static String DATASET_NAME = "dunno what to put here ";
-    /** the name / registry key of an application that will consume / process the VOTABLE result of a datacenter query
-     * @todo set this correctly */
-    public final static String VOTABLE_CONSUMER_NAME = "dunno what to put here either";
+    public final static String DATASET_NAME = "org.astrogrid.localhost/testdsa";
+    /** the name / registry key of an application that will consume / process the VOTABLE result of a datacenter query*/
+    public final static String VOTABLE_CONSUMER_NAME ="org.astrogrid.localhost/testapp";
     /** build a multi-step workflow 
-     * @todo add correct parameters to tools*/
+     * @todo add correct parameters to tools - a query in particular*/
     private void buildComplexWorkflowDocument() throws WorkflowInterfaceException, ToolValidationException {
         wf.setName("Complex Workflow");
         // build step that queries datacenter
@@ -129,7 +129,6 @@ public class WorkflowEndToEndTest extends AbstractTestForIntegration {
         
         // finally.
         assertTrue("workflow document not valid",wf.isValid());
-       // store.saveWorkflow(acc,wf);
         
     }    
 
@@ -151,13 +150,14 @@ public class WorkflowEndToEndTest extends AbstractTestForIntegration {
         return urn;
     }
     /** read executed workflow document back from jes, save to myspace */
-    private Workflow readWorkflowFromJesAndSave(JobURN urn, String workflowName) throws WorkflowInterfaceException {        
+    private Workflow readWorkflowFromJesAndSaveToVoSpace(JobURN urn, String workflowName) throws WorkflowInterfaceException {        
            Workflow w1 = jes.readJob(urn);
            assertNotNull("null workflow returned",w1);
             assertEquals("workflow does not have expected name",w1.getName(),wf.getName());
         // dump it to myspace store - then we can look at it later.
-       // w1.setName(workflowName + urn.getContent());
-       // store.saveWorkflow(acc,w1);       
+       w1.setName(workflowName + "-" + System.currentTimeMillis());
+       Ivorn ivorn = new Ivorn("org.astrogrid.localhost/myspace","/" + user.getUserId() +"/saved-workflows/" + w1.getName() + ".workflow.xml"); 
+       store.saveWorkflow(user,ivorn,w1);       
         return w1;
     }    
 
@@ -167,6 +167,9 @@ public class WorkflowEndToEndTest extends AbstractTestForIntegration {
 
 /* 
 $Log: WorkflowEndToEndTest.java,v $
+Revision 1.5  2004/04/15 23:11:20  nw
+tweaks
+
 Revision 1.4  2004/04/14 16:42:37  nw
 fixed tests to break more sensibly
 

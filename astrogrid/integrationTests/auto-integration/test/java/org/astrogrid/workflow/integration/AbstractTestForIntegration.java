@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForIntegration.java,v 1.2 2004/04/08 14:50:54 nw Exp $
+/*$Id: AbstractTestForIntegration.java,v 1.3 2004/04/15 23:11:20 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.workflow.integration;
 
+import org.astrogrid.community.User;
 import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.community.beans.v1.Credentials;
 import org.astrogrid.community.beans.v1.Group;
@@ -36,23 +37,36 @@ public class AbstractTestForIntegration extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         ag = Astrogrid.getInstance();
-        acc = ag.getObjectHelper().createAccount("noel","jodrell"); // will want to change this to a standard user later.
-        group = ag.getObjectHelper().createGroup("devel","jodell");
+        // credentials object
+        acc = ag.getObjectHelper().createAccount("frog","org.astrogrid.localhost"); // will want to change this to a standard user later.
+        group = ag.getObjectHelper().createGroup("devel","org.astrogrid.localhost");
         creds = ag.getObjectHelper().createCredendtials(acc,group);
+
+        //equivalent user object
+        user = new User();
+        user.setAccount(creds.getAccount().getName() + "@" + creds.getAccount().getCommunity());
+        user.setGroup(creds.getGroup().getName() + "@" + creds.getGroup().getCommunity());
+        user.setToken(creds.getSecurityToken());        
 
         wf = ag.getWorkflowManager().getWorkflowBuilder().createWorkflow(creds,"test workflow","a description");    
     }
-    
+   
     protected Astrogrid ag;
     protected Account acc;
     protected Group group;   
     protected Credentials creds;
+    protected User user;
     protected Workflow wf;
+    
+    
 }
 
 
 /* 
 $Log: AbstractTestForIntegration.java,v $
+Revision 1.3  2004/04/15 23:11:20  nw
+tweaks
+
 Revision 1.2  2004/04/08 14:50:54  nw
 polished up the workflow integratioin tests
 

@@ -1,4 +1,4 @@
-/*$Id: DataCenterIntegrationTest.java,v 1.4 2004/04/15 12:18:25 nw Exp $
+/*$Id: DataCenterIntegrationTest.java,v 1.5 2004/04/15 23:11:20 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,15 +10,19 @@
 **/
 package org.astrogrid.workflow.integration;
 
+import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
+import org.astrogrid.portal.workflow.intf.ApplicationDescription;
+import org.astrogrid.portal.workflow.intf.ApplicationRegistry;
 import org.astrogrid.scripting.Service;
+import org.astrogrid.store.Ivorn;
 import org.astrogrid.workflow.beans.v1.Input;
 import org.astrogrid.workflow.beans.v1.Output;
 import org.astrogrid.workflow.beans.v1.Tool;
 
 import java.util.Iterator;
 
-/** Test integration between workflow and datacenter.
+/** Test  CEA functionality of datacenter.
  * <p>
  * extends ApplicationsIntegrationTest - as there's a lot of commonality, as its the same interface.
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Mar-2004
@@ -50,25 +54,41 @@ public class DataCenterIntegrationTest extends ApplicationsInstallationTest {
     /**Override this, as querying a data center requires different params.
      * @see org.astrogrid.workflow.integration.ApplicationsIntegrationTest#testExecute()
      */
+
     public void testExecute() throws Exception {
-        Input input = new Input();
-        Output output = new Output();
-        Tool tool = new Tool();
-        tool.setName("datacenter");
-        tool.setInterface("not used");
-        tool.setInput(input);
-        tool.setOutput(output);
+        ApplicationRegistry reg = ag.getWorkflowManager().getToolRegistry();
+        ApplicationDescription descr = reg.getDescriptionFor("org.astrogrid.localhost/testdsa");
+        assertNotNull("could not get application description for testdsa",descr);
+        Tool tool = descr.createToolFromDefaultInterface();
+        assertNotNull("tool is null",tool);
+        /* todo - fill in parameters*/
+        ParameterValue query= (ParameterValue)tool.findXPathValue("input/parameter[name='Query']");
+        assertNotNull(query);
+        /* @todo add in a query document here */
+
+        descr.validate(tool); 
+        
+        ParameterValue target = (ParameterValue)tool.findXPathValue("output/parameter[name='Target']");
+        assertNotNull(target);
+        Ivorn targetIvorn = new Ivorn("org.astrogrid.localhost/myspace","/" + user.getUserId() + "/test/DatacenterIntegrationTest.votable.xml");
+        target.setValue(targetIvorn.toString());
+        
         JobIdentifierType id = new JobIdentifierType(); // not too bothered about this.
         id.setValue(this.getClass().getName());
-       String returnEndpoint ="http://www.dont.care.for.now";      
+       String returnEndpoint ="http://localhost:8080/astrogrid-jes-SNAPSHOT/services/JobMonitorService";      
       String execId = delegate.execute(tool,id,returnEndpoint);
-    }
+      assertNotNull(execId);
+      
+    }    
 
 }
 
 
 /* 
 $Log: DataCenterIntegrationTest.java,v $
+Revision 1.5  2004/04/15 23:11:20  nw
+tweaks
+
 Revision 1.4  2004/04/15 12:18:25  nw
 updating tests
 
