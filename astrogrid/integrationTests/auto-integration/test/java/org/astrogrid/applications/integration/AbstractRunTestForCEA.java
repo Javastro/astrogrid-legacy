@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractRunTestForCEA.java,v 1.3 2004/08/13 14:05:28 nw Exp $
+ * $Id: AbstractRunTestForCEA.java,v 1.4 2004/09/07 01:41:04 nw Exp $
  * 
  * Created on 14-May-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -39,6 +39,7 @@ public abstract class AbstractRunTestForCEA
    protected final ServerInfo serverInfo;
 
    public void testExecute() throws Exception {
+       try {
        ApplicationRegistry reg = ag.getWorkflowManager().getToolRegistry();
        org.astrogrid.portal.workflow.intf.ApplicationDescription descr = reg.getDescriptionFor(serverInfo.getApplicationName());
        assertNotNull("could not get application description",descr);
@@ -52,7 +53,8 @@ public abstract class AbstractRunTestForCEA
        }
        // initialize the application  
        JobIdentifierType id = new JobIdentifierType(); 
-       id.setValue(this.getClass().getName());           
+       id.setValue(this.getClass().getName());    
+       
        String execId = delegate.init(tool,id);
        assertNotNull(execId);
        
@@ -88,6 +90,10 @@ public abstract class AbstractRunTestForCEA
       ExecutionSummaryType execSummary = delegate.getExecutionSumary(execId);      
       softAssertEquals(execId,execSummary.getExecutionId());
       // could have more here..
+       } catch (Exception e) {
+           e.printStackTrace();
+           throw e;
+       }
    }     
    
 
