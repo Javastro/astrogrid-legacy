@@ -8,13 +8,11 @@
 
 2. Assumptions
 
-* We are not supporting Ftp transferring so, DataCentre and MySpace will be deployed to the same server for Iteration 2.
+* The DataMover component was removed from this iteration, therefore the DataCentre and MySpace have to be deployed to the same server.
 
 3. Restrictions
 
 * No testing against Windows or Solaris has been undertaken for this release.
-
-* No connection between Portal has been tested for this iteration, we are using a Client Java file to “pretend” to act as portal. So when testing, we have to make sure the test is successful by looking at the response xml file.
 
 * MySpaceRegistry is assuming “fake user id/communityid/jobID” these info should be getting from portal.
 
