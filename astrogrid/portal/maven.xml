@@ -6,31 +6,46 @@
     xmlns:deploy="deploy"
     xmlns:util="jelly:util"
     xmlns:doc="doc">
-  <preGoal name="jar:deploy-snapshot">
+    
+  <goal name="astrogrid-deploy-snapshot">
     <maven:reactor
         basedir="${basedir}"
         postProcessing="false"
         includes="*/project.xml"
-        goals="jar:deploy-snapshot"
-        banner="Deploy Portal Component JARs"
+        excludes="subproject-template/project.xml"
+        goals="jar:deploy-snapshot,war:deploy-snapshot"
+        banner="Deploy Portal Component JARs and WARs"
         ignoreFailures="true"/>
-  </preGoal>
+  </goal>
 
-  <preGoal name="jar:install-snapshot">
+  <goal name="astrogrid-install-snapshot">
     <maven:reactor
         basedir="${basedir}"
         postProcessing="false"
         includes="*/project.xml"
-        goals="jar:install-snapshot"
-        banner="Install Portal Component JARs"
+        excludes="subproject-template/project.xml"
+        goals="jar:install-snapshot,war:install-snapshot"
+        banner="Install Portal Component JARs and WARs"
         ignoreFailures="true"/>
-  </preGoal>
+  </goal>
+  
+  <goal name="astrogrid-build-snapshot">
+    <maven:reactor
+        basedir="${basedir}"
+        postProcessing="false"
+        includes="*/project.xml"
+        excludes="subproject-template/project.xml"
+        goals="jar:jar,war:war"
+        banner="Install Portal Component JARs and WARs"
+        ignoreFailures="true"/>
+  </goal>
 
-  <preGoal name="site:generate">
+  <!--See project.properties for excludes list-->
+  <goal name="astrogrid-build-site">
     <attainGoal name="multiproject:site"/>
-  </preGoal>
+  </goal>
 
-  <preGoal name="site:fsdeploy">
-    <attainGoal name="multiproject:site"/>
-  </preGoal>
+  <goal name="astrogrid-deploy-site" prereqs="astrogrid-build-site">
+    <attainGoal name="site:fsdeploy"/>
+  </goal>
 </project>
