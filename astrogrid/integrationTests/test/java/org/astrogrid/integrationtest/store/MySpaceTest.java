@@ -1,4 +1,4 @@
-/*$Id: MySpaceTest.java,v 1.3 2004/03/22 16:31:37 mch Exp $
+/*$Id: MySpaceTest.java,v 1.4 2004/04/14 14:26:36 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,10 +14,10 @@ import java.io.IOException;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import org.astrogrid.community.User;
-import org.astrogrid.integrationtest.common.ConfManager;
 import org.astrogrid.store.Agsl;
+import org.astrogrid.store.delegate.StoreClient;
+import org.astrogrid.store.delegate.StoreDelegateFactory;
 import org.astrogrid.store.delegate.local.LocalFileStore;
-import org.astrogrid.store.delegate.myspace.MySpaceIt04Delegate;
 
 /** Tests the automatically deployed myspace on VM07
  *
@@ -28,46 +28,74 @@ public class MySpaceTest extends StoreClientTestHelper {
 
    private static User testUser;
 
-   public static String MYSPACE;
+   public static Agsl MYSPACE;
 
    public MySpaceTest() throws IOException {
       super();
       
-      MYSPACE = ConfManager.getInstance().getMySpaceEndPoint();//"http://vm05.astrogrid.org:8080/astrogrid-mySpace/services/MySpaceManager";
-      testUser = new User("Me", "Us", "Loony");
+   }
+
+   public void setUp() throws IOException {
+      MYSPACE= new Agsl("myspace:http://grendel12.roe.ac.uk:8080/MySpaceManager/services/Manager");
+      //MYSPACE = ConfManager.getInstance().getMySpaceEndPoint();
+      
+      //MYSPACE = new Agsl("myspace:http://vm05.astrogrid.org:8080/astrogrid-mySpace/services/MySpaceManager");
+      //MYSPACE = new Agsl("myspace:http://grendel12.roe.ac.uk:8080/MySpaceManager_v041/services/MySpaceManager");
+      
+      testUser = new User("avodemo", "test.astrogrid.org", "Loony");
+      
+      try {
+         StoreDelegateFactory.createAdminDelegate(testUser, MYSPACE).createUser(testUser);
+      }
+      catch (IOException ioe) {
+         ioe.printStackTrace();
+      }
+      try {
+         StoreClient client = StoreDelegateFactory.createDelegate(testUser, MYSPACE);
+//         client.newFolder("avodemo@test.astrogrid.org");
+//         client.newFolder("avodemo@test.astrogrid.org/serv1");
+         client.newFolder("avodemo@test.astrogrid.org/serv1/mch");
+      }
+      catch (IOException ioe) {
+         ioe.printStackTrace();
+      }
    }
    
    public void testStoreAccess() throws IOException
    {
-      assertStoreAccess(new MySpaceIt04Delegate(testUser, MYSPACE), new MySpaceIt04Delegate(testUser, MYSPACE), new LocalFileStore());
+      assertStoreAccess(StoreDelegateFactory.createDelegate(testUser, MYSPACE),
+                        StoreDelegateFactory.createDelegate(testUser, MYSPACE),
+                        new LocalFileStore());
    }
 
    /** Tests getFile etc - if these are failing the rest of the tests might
     * not make much sense.  This is a bit of a combined one anyway... */
    public void testGetFile() throws IOException
    {
-      assertGetFileWorks(new MySpaceIt04Delegate(testUser, MYSPACE));
+      assertGetFileWorks(StoreDelegateFactory.createDelegate(testUser, MYSPACE));
    }
 
    /** Tests making folders and paths and stuff.  A bit
     */
    public void testFolders() throws IOException {
-      assertFoldersWork(new MySpaceIt04Delegate(testUser, MYSPACE));
+      assertFoldersWork(StoreDelegateFactory.createDelegate(testUser, MYSPACE));
       
    }
    
    public void testMove() throws IOException
    {
-      assertMove(new MySpaceIt04Delegate(testUser, MYSPACE), new Agsl(MYSPACE, path+COPY_TEST ));
+      assertMove(StoreDelegateFactory.createDelegate(testUser, MYSPACE),
+                 new Agsl(MYSPACE.getEndpoint(), path+COPY_TEST ));
    }
 
    public void testCopy() throws IOException
    {
-      assertCopy(new MySpaceIt04Delegate(testUser, MYSPACE), new Agsl(MYSPACE, path+COPY_TEST));
+      assertCopy(StoreDelegateFactory.createDelegate(testUser, MYSPACE),
+                 new Agsl(MYSPACE.getEndpoint(), path+COPY_TEST ));
    }
    
    public void testDelete() throws IOException {
-      assertDelete(new MySpaceIt04Delegate(testUser, MYSPACE));
+      assertDelete(StoreDelegateFactory.createDelegate(testUser, MYSPACE));
    }
    
     /**
@@ -94,6 +122,9 @@ public class MySpaceTest extends StoreClientTestHelper {
 
 /*
 $Log: MySpaceTest.java,v $
+Revision 1.4  2004/04/14 14:26:36  mch
+Switched to factory not explicit delegate creation
+
 Revision 1.3  2004/03/22 16:31:37  mch
 Fixed tests for new StoreClient package
 
