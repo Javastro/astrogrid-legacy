@@ -1,5 +1,5 @@
 /*
- * $Id: WorkFlowToApplication.java,v 1.1 2004/01/09 00:28:33 pah Exp $
+ * $Id: WorkFlowToApplication.java,v 1.2 2004/01/10 00:36:15 pah Exp $
  * 
  * Created on 07-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -93,7 +93,8 @@ public class WorkFlowToApplication extends TestCase {
          String communityId = user.getCommunity();
          String credential = user.getToken();
          mySpaceManager.createUser(userId, communityId, credential, servers);
-         mySpaceManager.createContainer(userId, communityId, credential, "testdata");
+         String containerref = MySpaceHelper.formatMyspaceContainerReference(user, "serv1", "testdata");
+         mySpaceManager.createContainer(userId, communityId, credential, containerref);
          infileName =
             MySpaceHelper.formatMyspaceReference(user, "serv1",  "testdata", "testInfile");
          outFilename =
