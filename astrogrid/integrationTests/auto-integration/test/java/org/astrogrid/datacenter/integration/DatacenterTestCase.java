@@ -1,4 +1,4 @@
-/*$Id: DatacenterTestCase.java,v 1.4 2004/10/08 15:59:22 mch Exp $
+/*$Id: DatacenterTestCase.java,v 1.5 2004/10/12 23:05:16 mch Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -36,13 +36,22 @@ public class DatacenterTestCase extends TestCase {
    /**
     * Checks the given inputstream is aVOTable, returning it as a DOM
     */
-   public Document assertVotable(InputStream results) throws SAXException, IOException, ParserConfigurationException {
+   public Document assertVotable(String results) throws SAXException, IOException, ParserConfigurationException {
       assertNotNull(results);
       Document votDoc = DomHelper.newDocument(results);
       AstrogridAssert.assertVotable(votDoc);
       return votDoc;
    }
    
+   /**
+    * Checks the given inputstream is aVOTable, returning it as a DOM
+    */
+   public Document assertVotable(InputStream results) throws SAXException, IOException, ParserConfigurationException {
+      assertNotNull(results);
+      Document votDoc = DomHelper.newDocument(results);
+      AstrogridAssert.assertVotable(votDoc);
+      return votDoc;
+   }
    /**
     * Run sample query on std PAL
     */
@@ -69,6 +78,9 @@ public class DatacenterTestCase extends TestCase {
 
 /*
 $Log: DatacenterTestCase.java,v $
+Revision 1.5  2004/10/12 23:05:16  mch
+Seperated tests properly
+
 Revision 1.4  2004/10/08 15:59:22  mch
 made stdkey strings non-static
 

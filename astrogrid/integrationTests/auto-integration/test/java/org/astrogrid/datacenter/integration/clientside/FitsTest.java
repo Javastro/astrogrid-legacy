@@ -1,4 +1,4 @@
-/*$Id: FitsTest.java,v 1.3 2004/10/07 10:52:53 mch Exp $
+/*$Id: FitsTest.java,v 1.1 2004/10/12 23:05:16 mch Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,7 +8,8 @@
  * with this distribution in the LICENSE.txt file.
  *
 **/
-package org.astrogrid.datacenter.integration;
+package org.astrogrid.datacenter.integration.clientside;
+import org.astrogrid.datacenter.integration.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -55,6 +56,9 @@ public class FitsTest extends DatacenterTestCase implements StdKeys {
 
 /*
 $Log: FitsTest.java,v $
+Revision 1.1  2004/10/12 23:05:16  mch
+Seperated tests properly
+
 Revision 1.3  2004/10/07 10:52:53  mch
 Fixed FITS test
 

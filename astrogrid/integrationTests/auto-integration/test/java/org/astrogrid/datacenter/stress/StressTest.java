@@ -1,4 +1,4 @@
-/*$Id: StressTest.java,v 1.2 2004/10/06 22:03:45 mch Exp $
+/*$Id: StressTest.java,v 1.3 2004/10/12 23:05:16 mch Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,7 +17,7 @@ import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.datacenter.delegate.QuerySearcher;
 import org.astrogrid.datacenter.integration.DatacenterTestCase;
-import org.astrogrid.datacenter.integration.RdbmsTest;
+import org.astrogrid.datacenter.integration.clientside.RdbmsTest;
 import org.astrogrid.datacenter.integration.StdKeys;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.slinger.TargetIndicator;
@@ -70,6 +70,9 @@ public class StressTest extends DatacenterTestCase implements StdKeys {
 
 /*
 $Log: StressTest.java,v $
+Revision 1.3  2004/10/12 23:05:16  mch
+Seperated tests properly
+
 Revision 1.2  2004/10/06 22:03:45  mch
 Following Query model changes in PAL
 

@@ -1,4 +1,4 @@
-/*$Id: Query2MySpaceTest.java,v 1.15 2004/10/06 22:03:45 mch Exp $
+/*$Id: Query2MySpaceTest.java,v 1.1 2004/10/12 23:05:16 mch Exp $
  * Created on 22-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,8 +8,7 @@
  * with this distribution in the LICENSE.txt file.
  *
 **/
-package org.astrogrid.datacenter.integration;
-
+package org.astrogrid.datacenter.integration.clientside;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.xml.parsers.ParserConfigurationException;
@@ -21,6 +20,9 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.datacenter.delegate.QuerySearcher;
+import org.astrogrid.datacenter.integration.StdKeys;
+import org.astrogrid.datacenter.integration.TimeStamp;
+import org.astrogrid.datacenter.queriers.test.SampleStarsPlugin;
 import org.astrogrid.datacenter.query.AdqlQueryMaker;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.query.QueryState;
@@ -55,6 +57,10 @@ public class Query2MySpaceTest extends TestCase implements StdKeys {
          DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE
       );
       assertNotNull("delegate was null",delegate);
+      
+      //temporary until we get circle/cone search scope sorted out
+      SampleStarsPlugin.initConfig();
+
    }
    
    /** do a blocking query, where results are left in myspace - this is handy
@@ -199,6 +205,9 @@ public class Query2MySpaceTest extends TestCase implements StdKeys {
 
 /*
 $Log: Query2MySpaceTest.java,v $
+Revision 1.1  2004/10/12 23:05:16  mch
+Seperated tests properly
+
 Revision 1.15  2004/10/06 22:03:45  mch
 Following Query model changes in PAL
 

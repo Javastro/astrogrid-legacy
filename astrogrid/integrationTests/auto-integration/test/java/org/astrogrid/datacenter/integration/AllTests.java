@@ -1,14 +1,17 @@
-/* $Id: AllTests.java,v 1.15 2004/10/08 15:52:18 mch Exp $
+/* $Id: AllTests.java,v 1.16 2004/10/12 23:05:16 mch Exp $
  * Created on Apr 15, 2004 by jdt@roe.ac.uk
  * The auto-integration project
  * Copyright (c) Astrigrid 2004.  All rights reserved.
  *
  */
 package org.astrogrid.datacenter.integration;
-import org.astrogrid.datacenter.integration.serverside.*;
+import org.astrogrid.datacenter.deployment.vizier.*;
+import org.astrogrid.datacenter.deployment.egso.*;
+import org.astrogrid.datacenter.integration.clientside.*;
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import org.astrogrid.datacenter.integration.clientside.FitsTest;
+import org.astrogrid.datacenter.integration.clientside.MetadataTest;
 /**
  * To change the template for this generated type comment go to
  * Window - Preferences - Java - Code Generation - Code and Comments
@@ -34,6 +37,9 @@ public class AllTests {
 }
 /*
  *  $Log: AllTests.java,v $
+ *  Revision 1.16  2004/10/12 23:05:16  mch
+ *  Seperated tests properly
+ *
  *  Revision 1.15  2004/10/08 15:52:18  mch
  *  More tests for Registry push etc
  *

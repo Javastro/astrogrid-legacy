@@ -1,4 +1,4 @@
-/*$Id: VizierTest.java,v 1.3 2004/10/06 22:03:45 mch Exp $
+/*$Id: VizierTest.java,v 1.1 2004/10/12 23:05:16 mch Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,7 +8,8 @@
  * with this distribution in the LICENSE.txt file.
  *
  **/
-package org.astrogrid.datacenter.integration;
+package org.astrogrid.datacenter.deployment.vizier;
+import org.astrogrid.datacenter.integration.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -67,6 +68,9 @@ public class VizierTest extends DatacenterTestCase implements StdKeys {
 
 /*
  $Log: VizierTest.java,v $
+ Revision 1.1  2004/10/12 23:05:16  mch
+ Seperated tests properly
+
  Revision 1.3  2004/10/06 22:03:45  mch
  Following Query model changes in PAL
 

@@ -1,4 +1,4 @@
-/*$Id: RdbmsTest.java,v 1.2 2004/10/06 22:03:45 mch Exp $
+/*$Id: RdbmsTest.java,v 1.1 2004/10/12 23:05:16 mch Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,8 +8,7 @@
  * with this distribution in the LICENSE.txt file.
  *
 **/
-package org.astrogrid.datacenter.integration;
-
+package org.astrogrid.datacenter.integration.clientside;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.xml.parsers.ParserConfigurationException;
@@ -20,6 +19,9 @@ import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.delegate.ConeSearcher;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.datacenter.delegate.QuerySearcher;
+import org.astrogrid.datacenter.integration.DatacenterTestCase;
+import org.astrogrid.datacenter.integration.StdKeys;
+import org.astrogrid.datacenter.queriers.test.SampleStarsPlugin;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.slinger.TargetIndicator;
 import org.astrogrid.store.Agsl;
@@ -31,6 +33,10 @@ import org.xml.sax.SAXException;
  */
 public class RdbmsTest extends DatacenterTestCase implements StdKeys {
 
+   public void setUp() {
+      //temporary until we get circle/cone search scope sorted out
+      SampleStarsPlugin.initConfig();
+   }
    /**
     * Run sample query on std PAL
     */
@@ -105,6 +111,9 @@ public class RdbmsTest extends DatacenterTestCase implements StdKeys {
 
 /*
 $Log: RdbmsTest.java,v $
+Revision 1.1  2004/10/12 23:05:16  mch
+Seperated tests properly
+
 Revision 1.2  2004/10/06 22:03:45  mch
 Following Query model changes in PAL
 

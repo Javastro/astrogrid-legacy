@@ -1,4 +1,4 @@
-/*$Id: MetadataTest.java,v 1.1 2004/10/08 15:52:18 mch Exp $
+/*$Id: MetadataServerTest.java,v 1.1 2004/10/12 23:05:16 mch Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,7 +21,7 @@ import org.astrogrid.registry.RegistryException;
  * Test metadata integration stuff
  *
  */
-public class MetadataTest extends TestCase {
+public class MetadataServerTest extends TestCase {
 
 
    /** Tests push to registry */
@@ -37,13 +37,16 @@ public class MetadataTest extends TestCase {
     /**/
 
    public static void main(String[] args) {
-      junit.textui.TestRunner.run(new TestSuite(MetadataTest.class));
+      junit.textui.TestRunner.run(new TestSuite(MetadataServerTest.class));
    }
 }
 
 
 /*
-$Log: MetadataTest.java,v $
+$Log: MetadataServerTest.java,v $
+Revision 1.1  2004/10/12 23:05:16  mch
+Seperated tests properly
+
 Revision 1.1  2004/10/08 15:52:18  mch
 More tests for Registry push etc
 
