@@ -20,14 +20,20 @@ import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.query.QueryStatus;
 import org.w3c.dom.Element;
 
-/**
- * The Plugin Querier provides a mechanism for introducing a whole host of
- * plug-and-play language translators and queriers.
+/** Back-end Plugin Adapter - loads & wraps a {@link QuerierSPI} so that it appears as a {@link org.astrogrid.datacenter.queriers.Querier}
+ * 
  * <p>
+ *  This class extends{@link org.astrogrid.datacenter.queriers.Querier} and  acts as an
+ * adapter between the structured plugin system provided by this package, and the 
+ * monolithic plugin system provided by extending <tt>Querier</tt> 
+ * <p>
+ * Loads a selected <tt>QuerierSPI</tt> from classpath. Plugin to load is determined by value of {@link #QUERIER_SPI_KEY} in the 
+ * system configuration.
+ * 
+ *  
  * @see package documentation
- *
- * <p>
  * @author N Winstanley
+ * @todo give it a better name?
  */
 
 public class PluginQuerier extends Querier {
@@ -56,9 +62,12 @@ public class PluginQuerier extends Querier {
    }
    
 
-   /** Updates the status and does the query (by calling the abstract
-     * queryDatabase() overridden by subclasses) and returns the results.
-     * Use by both synchronous (blocking) and asynchronous (threaded) querying
+   /** Performs a query
+    * <p>
+    * Extracts the namespace attribute of the query document, and uses this to select the appropriate language translator from the plugin.
+    * After applying a language translator, the resulting object is passed to the plugin's <tt>doQuery</tt> method.
+    * <p>
+    * Meanwhile, it ensures that the right status-change events are fired, times the execution, and catches and logs all errors raised by the plugin. 
      */
     public QueryResults doQuery() throws DatabaseAccessException {
         // initialize the spi.
@@ -164,6 +173,9 @@ public class PluginQuerier extends Querier {
 }
 /*
  $Log: PluginQuerier.java,v $
+ Revision 1.3  2004/01/15 12:38:40  nw
+ improved documentation
+
  Revision 1.2  2004/01/13 00:33:14  nw
  Merged in branch providing
  * sql pass-through
