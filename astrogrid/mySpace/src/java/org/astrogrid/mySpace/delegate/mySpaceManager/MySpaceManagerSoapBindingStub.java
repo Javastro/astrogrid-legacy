@@ -16,8 +16,19 @@ public class MySpaceManagerSoapBindingStub extends org.apache.axis.client.Stub i
     static org.apache.axis.description.OperationDesc [] _operations;
 
     static {
-        _operations = new org.apache.axis.description.OperationDesc[15];
+        _operations = new org.apache.axis.description.OperationDesc[16];
         org.apache.axis.description.OperationDesc oper;
+
+        oper = new org.apache.axis.description.OperationDesc();
+        oper.setName("allMssUrls");
+        oper.addParameter(new javax.xml.namespace.QName("", ""), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, org.apache.axis.description.ParameterDesc.IN, false, false);
+        oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "Vector"));
+        oper.setReturnClass(java.util.Vector.class);
+        oper.setReturnQName(new javax.xml.namespace.QName("", "allMssUrlsReturn"));
+        oper.setStyle(org.apache.axis.enum.Style.RPC);
+        oper.setUse(org.apache.axis.enum.Use.ENCODED);
+        _operations[1] = oper;
+
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("publish");
         oper.addParameter(new javax.xml.namespace.QName("", "jobDetails"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, org.apache.axis.description.ParameterDesc.IN, false, false);

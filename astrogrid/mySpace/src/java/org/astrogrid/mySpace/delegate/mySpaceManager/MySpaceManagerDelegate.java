@@ -103,7 +103,7 @@ public class MySpaceManagerDelegate {
     public void setQueryMssUrl(Vector queryMssUrl) {
         if (queryMssUrl.size() == 1) {
             if ( ((String)queryMssUrl.elementAt(0)).equals("*") ) {
-                // invoke yet to be written method.
+                this.queryMssUrl = this.getAllMssUrl();
             }
             else {
                 this.queryMssUrl = queryMssUrl;
@@ -118,9 +118,32 @@ public class MySpaceManagerDelegate {
  * Get a Vector containing the URLs of all the MSSs known to AstroGrid.
  */
 
-    public Vector getAllMssUrl() {
-        return this.queryMssUrl;     // STILL TO BE IMPLEMENTED.
-    }
+    public Vector getAllMssUrl() throws Exception {
+        Vector allMssUrls = null;
+
+        org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
+
+        try {
+            binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
+              new org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerServiceLocator()
+                .getMySpaceManager(new java.net.URL(mssUrl));
+        }
+        catch (javax.xml.rpc.ServiceException jre) {
+            if(jre.getLinkedCause()!=null)
+                jre.getLinkedCause().printStackTrace();
+        }
+        
+        try{
+           allMssUrls  = binding.allMssUrls();
+        }catch(java.rmi.RemoteException re) {
+           re.printStackTrace();
+        }
+
+        return allMssUrls;
+    }    
+
+//
+// --------------------------------------------------------------------------
 
 //
 // Action methods.
@@ -150,29 +173,29 @@ public class MySpaceManagerDelegate {
     public Vector listDataHoldings(String userId, String communityId,
       String query)throws Exception {
         Vector returnList = new Vector();
+
         try {
             for (int loop = 0; loop<queryMssUrl.size(); loop++) {
-                Vector returnResponseOBJs = internalDataHoldingsGen(
+                String currentResponse = this.internalDataHoldings(
                   userId, communityId, query,
                   (String)queryMssUrl.elementAt(loop) );
 
                 MySpaceHelper helper = new MySpaceHelper();
-                Vector currentList  = new Vector();
+                Vector currentList  = helper.getList(currentResponse);
 
-                for (int i=0;i<returnResponseOBJs.size();i++){
-                    String response = (String)returnResponseOBJs.elementAt(i);
-                    currentList.addAll(
-                      currentList.size(),helper.getList(response));
-                }
                 returnList.add(currentList);
             }
            
         }catch(java.rmi.RemoteException re) {
             re.printStackTrace();
         }
+
         return returnList;
     }        
-    
+
+//
+// --------------------------------------------------------------------------
+
 /**
  * Search a list of MSSs and return the details of all the MySpace
  * entries which match the query.  The details for each entry are
@@ -195,43 +218,25 @@ public class MySpaceManagerDelegate {
       String query)throws Exception {
         Vector returnList = new Vector();
 
-        String response = " ";
-        org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
+        try {
+            for (int loop = 0; loop<queryMssUrl.size(); loop++) {
+                String currentResponse = this.internalDataHoldings(
+                  userId, communityId, query,
+                  (String)queryMssUrl.elementAt(loop) );
 
-        for (int loop = 0; loop<queryMssUrl.size(); loop++) {
-            try {
-                String currentUrl = (String)queryMssUrl.elementAt(loop);
-                binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
-                  new org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerServiceLocator().getMySpaceManager(
-                    new java.net.URL(currentUrl));
+                returnList.add(currentResponse);
             }
-            catch (javax.xml.rpc.ServiceException jre) {
-                if(jre.getLinkedCause()!=null)
-                    jre.getLinkedCause().printStackTrace();
-            }
-            try{
-                MySpaceHelper helper = new MySpaceHelper();
-                String jobDetails = helper.buildListDataHoldings(userId,
-                  communityId, query);
-                response = binding.lookupDataHoldersDetails(jobDetails);
-
-               // should invoke one of the helper functions to build the 
-               // returned response to include searchs to all cache servers 
-               // as well as community server
-               // to add all the response String objects into the vector..
- 
-               // You'll need something like....
-
-                String somestring = "";
-                returnList.add(somestring);
            
-            }catch(java.rmi.RemoteException re) {
-                re.printStackTrace();
-            }
+        }catch(java.rmi.RemoteException re) {
+            re.printStackTrace();
         }
+
         return returnList;
     }        
-    
+
+//
+// --------------------------------------------------------------------------
+
     /**
      * 
      * @param userId
@@ -260,7 +265,10 @@ public class MySpaceManagerDelegate {
         }
         return (String)value;
     }    
-    
+   
+//
+// --------------------------------------------------------------------------
+ 
     /**
      * @param userId
      * @param communityId
@@ -289,6 +297,9 @@ public class MySpaceManagerDelegate {
         return (String)value;
     }    
     
+//
+// --------------------------------------------------------------------------
+
 /**
  * Retrieve a copy of a dataHolder on a remote MSS and save it with a
  * specified MySpace name on the current MSS.
@@ -380,6 +391,9 @@ public class MySpaceManagerDelegate {
         return isSaved;
     }
 
+//
+// --------------------------------------------------------------------------
+
     /**
      * 
      * @param userId
@@ -411,6 +425,9 @@ public class MySpaceManagerDelegate {
         return (String)value;
     }    
     
+//
+// --------------------------------------------------------------------------
+
     /**
      * 
      * @param userId
@@ -440,6 +457,9 @@ public class MySpaceManagerDelegate {
         return (String)value;
     }    
     
+//
+// --------------------------------------------------------------------------
+
     /** saveDataHolding(upLoad),this function will save workflow/query into MySpace system.
     * @param: userId: userid
     * @param: communityId
@@ -477,6 +497,9 @@ public class MySpaceManagerDelegate {
         return isSaved;
     }
     
+//
+// --------------------------------------------------------------------------
+
     /**
      * saveDataHoldingURL is different from saveDataHolding since it is taking a URL where MySpace will pull the file from. 
      * @param userId
@@ -515,7 +538,10 @@ public class MySpaceManagerDelegate {
         }
         return isSaved;
     }
-    
+ 
+//
+// --------------------------------------------------------------------------
+
 /**
  * Retrieve the contents of a dataHolder and supply them as the String
  * returned by the method.
@@ -594,6 +620,9 @@ public class MySpaceManagerDelegate {
         return contents;
     }        
     
+//
+// --------------------------------------------------------------------------
+
     /**
      * 
      * @param userId
@@ -652,6 +681,9 @@ public class MySpaceManagerDelegate {
         return (String)value;
     }        
     
+//
+// --------------------------------------------------------------------------
+
     /**
      * 
      * @param userId
@@ -680,6 +712,9 @@ public class MySpaceManagerDelegate {
         return (String)value;
     }            
     
+//
+// --------------------------------------------------------------------------
+
 /**
  * Create a new user on the current MSS.
  * 
@@ -711,6 +746,9 @@ public class MySpaceManagerDelegate {
         return isUserCreated;
     }    
     
+//
+// --------------------------------------------------------------------------
+
 /**
  * Delete a user from the current MSS.
  *
@@ -741,6 +779,9 @@ public class MySpaceManagerDelegate {
         return isUserDeleted;
     }        
     
+//
+// --------------------------------------------------------------------------
+
     /**
      * 
      * @param dataHolderName: file working on
@@ -769,17 +810,19 @@ public class MySpaceManagerDelegate {
     }        
 
 //
-// ---------------------------------------------------------------------------------------------------------------
+// ==========================================================================
 
-    private Vector internalDataHoldingsGen(String userId,
+    private String internalDataHoldings(String userId,
       String communityId, String criteria, String currentURL)
       throws Exception {
-        String response = " ";
-        Vector vector = new Vector();
+
+        String response = null;
+
         org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
         try {
             binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
-                          new org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerServiceLocator().getMySpaceManager(new java.net.URL(currentURL));
+              new org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerServiceLocator()
+                .getMySpaceManager(new java.net.URL(currentURL));
         }
         catch (javax.xml.rpc.ServiceException jre) {
             if(jre.getLinkedCause()!=null)
@@ -789,13 +832,10 @@ public class MySpaceManagerDelegate {
             MySpaceHelper helper = new MySpaceHelper();
             String jobDetails = helper.buildListDataHoldings(userId, communityId, criteria);
             response = binding.lookupDataHoldersDetails(jobDetails);
-            //should invoke one of the helper functions to build the returned response to include searchs to all cache servers as well as community server
-            //to add all the response String objects into the vector..
-            
-        }catch(java.rmi.RemoteException re) {
-                    re.printStackTrace();
+        }   
+        catch(java.rmi.RemoteException re) {
+            re.printStackTrace();
         }
-        return vector;
+        return response;
     }        
-    
 }
