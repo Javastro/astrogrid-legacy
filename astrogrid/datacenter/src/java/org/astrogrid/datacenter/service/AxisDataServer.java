@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.3 2003/08/28 13:24:52 mch Exp $
+ * $Id: AxisDataServer.java,v 1.4 2003/08/28 16:19:58 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -21,6 +21,9 @@ import org.w3c.dom.Element;
  * it receives the message, (I don't think it does) so the class itself is
  * stateless.  Instead, all state depends on the DataService instances, one of
  * which is created for each data query call.
+ * <p>
+ *<i> NW - axis's creation behaviour is specified in the WSDD deployment descriptor.
+ *  you can specify application scope (singleton behaviour, as above), session scope or request scope.</i>
  * <p>
  * This is what was DatasetAgent in the It02 but with the extensions to handle
  * all the service methods required (eg metadata etc)
