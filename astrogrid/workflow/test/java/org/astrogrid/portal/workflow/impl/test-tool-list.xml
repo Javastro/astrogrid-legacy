@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by Paul Harrison (Jodrell Bank Observatory) -->
-<!--$Id: test-tool-list.xml,v 1.2 2004/03/11 13:53:51 nw Exp $-->
+<!--$Id: test-tool-list.xml,v 1.3 2004/03/12 14:53:36 nw Exp $-->
 <!--This is the configuration file for the Iteration5 application controller-->
 <!-- \\pahlaptop\work\astrogrid\src\workflow-objects\schema\AGParameterDefinition.xsd -->
 <ApplicationList
@@ -13,6 +13,9 @@
                         <Parameter xsi:type="CmdLineParameterDefn" name="DetectionImage" type="FileReference" commandPosition="1">
                                 <agpd:UI_Name>Detection Image</agpd:UI_Name>
                                 <agpd:UI_Description>The image that is used to detect sources. Basic position, shape and size informtaion is derived from this image</agpd:UI_Description>
+                                <agpd:UCD>AAD</agpd:UCD>
+                                <agpd:DefaultValue>1.0</agpd:DefaultValue>
+                                <agpd:Units>String</agpd:Units>                                
                         </Parameter>                       
                         <CmdLineParameterDefn name="PhotoImage" type="FileReference" commandPosition="2">
                                 <agpd:UI_Name>Measurement Image</agpd:UI_Name>
