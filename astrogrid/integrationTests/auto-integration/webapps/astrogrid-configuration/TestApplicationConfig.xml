@@ -2,354 +2,229 @@
 <!-- @TODO this file should really be dynamically copied from the one that is in the applications project - it is needed as well in the deployment project - too many copies..... -->
 <!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
 <CommandLineExecutionControllerConfig xmlns="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1
-\\pahlaptop\work\astrogrid\src\workflow-objects\schema\AGApplicationBase.xsd">
-        <Application name="@REGAUTHORITY@/testapp">
-                <!-- do not test specific instance app for now -->
-                <!--This is the main test application-->
-                <Parameters>
-                        <CmdLineParameterDefn name="P1" type="integer" commandPosition="1">
-                                <agpd:UI_Name>Pause Time</agpd:UI_Name>
-                                <agpd:UI_Description>Text
+\\pahlaptop\work\astrogrid\indsrc\workflow-objects\schema\AGApplicationBase.xsd">
+	<Application name="@REGAUTHORITY@/testapp">
+		<!-- do not test specific instance app for now -->
+		<!--This is the main test application-->
+		<Parameters>
+			<CmdLineParameterDefn name="P1" type="integer" commandPosition="1">
+				<agpd:UI_Name>Pause Time</agpd:UI_Name>
+				<agpd:UI_Description>Text
 <!--                                <b>bold bit</b> Castor cannot cope with the any schema element -->
                                         this is the time tha the application will pause in seconds before continuing to give the appearance of doing something...
                                 </agpd:UI_Description>
-                                <agpd:UCD>AAD</agpd:UCD>
-                                <agpd:DefaultValue>1.0</agpd:DefaultValue>
-                                <agpd:Units>String</agpd:Units>
-                        </CmdLineParameterDefn>
-                        <CmdLineParameterDefn name="P2" type="double" commandPosition="2">
-                                <agpd:UI_Name>String</agpd:UI_Name>
-                                <agpd:UI_Description>Text This can be anything
+				<agpd:UCD>AAD</agpd:UCD>
+				<agpd:DefaultValue>1.0</agpd:DefaultValue>
+				<agpd:Units>String</agpd:Units>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="P2" type="binary" commandPosition="2" fileRef="true">
+				<agpd:UI_Name>String</agpd:UI_Name>
+				<agpd:UI_Description>This is the file to which the parameters will be written
                                 </agpd:UI_Description>
-                                <agpd:UCD>String</agpd:UCD>
-                                <agpd:DefaultValue>Text</agpd:DefaultValue>
-                                <agpd:Units>String</agpd:Units>
-                        </CmdLineParameterDefn>
-                        <CmdLineParameterDefn name="P3" type="text" file="true" switchType="normal">
-                                <agpd:UI_Name/>
-                                <agpd:UI_Description/>
-                        </CmdLineParameterDefn>
-                        <CmdLineParameterDefn name="P3d" type="text" switchType="normal" commandSwitch="P3">
-                                <agpd:UI_Name/>
-                                <agpd:UI_Description/>
-                        </CmdLineParameterDefn>
-                        <CmdLineParameterDefn name="P4" type="text" commandSwitch="Parameter4" switchType="keyword">
-                                <agpd:UI_Name/>
-                                <agpd:UI_Description/>
-                        </CmdLineParameterDefn>
-                        <CmdLineParameterDefn name="P5" type="VOTable">
-                                <agpd:UI_Name/>
-                                <agpd:UI_Description/>
-                        </CmdLineParameterDefn>
-                        <CmdLineParameterDefn name="P6" type="RA">
-                                <agpd:UI_Name/>
-                                <agpd:UI_Description/>
-                        </CmdLineParameterDefn>
-                        <CmdLineParameterDefn name="P7" type="Dec">
-                                <agpd:UI_Name/>
-                                <agpd:UI_Description/>
-                        </CmdLineParameterDefn>
-                        <CmdLineParameterDefn name="P8" type="ADQL">
-                                <agpd:UI_Name/>
-                                <agpd:UI_Description/>
-                        </CmdLineParameterDefn>
-                        <CmdLineParameterDefn name="P9" type="text" file="true" switchType="normal">
-                                <agpd:UI_Name/>
-                                <agpd:UI_Description>The contents of this file will be copied to the output</agpd:UI_Description>
-                        </CmdLineParameterDefn>
-                        <CmdLineParameterDefn name="P9d" type="text" file="true" commandSwitch="P9">
-                                <agpd:UI_Name/>
-                                <agpd:UI_Description>The contents of this file will be copied to the output</agpd:UI_Description>
-                        </CmdLineParameterDefn>
-                        <CmdLineParameterDefn name="P10" type="boolean"/>
-                        <CmdLineParameterDefn name="P11" type="anyURI"/>
-                        <CmdLineParameterDefn name="P12" type="text" switchType="normal">
-                                <agpd:UI_Name/>
-                                <agpd:UI_Description/>
-                        </CmdLineParameterDefn>
-                </Parameters>
-                <Interfaces>
-                        <Interface name="I1">
-                                <input>
-                                        <pref ref="P1"/>
-                                        <pref ref="P2"/>
-                                        <pref ref="P4"/>
-                                        <pref ref="P9"/>
-                                </input>
-                                <output>
-                                        <pref ref="P3"/>
-                                </output>
-                        </Interface>
-                        <Interface name="Ilocal">
-                                <input>
-                                        <pref ref="P1"/>
-                                        <pref ref="P2"/>
-                                        <pref ref="P4"/>
-                                        <pref ref="P9d"/>
-                                </input>
-                                <output>
-                                        <pref ref="P3d"/>
-                                </output>
-                        </Interface>
-                        <Interface name="I2">
-                                <input>
-                                        <pref ref="P9"/>
-                                </input>
-                                <output>
-                                        <pref ref="P3"/>
-                                </output>
-                        </Interface>
-                </Interfaces>
-                <ExecutionPath>@WORKDIR@/cea/commandline/work/testapp.sh</ExecutionPath>
-        </Application>
-        <Application name="@REGAUTHORITY@/testap2">
-                <!-- do not test specific instance app for now -->
-                <!--This is the main test application-->
-                <Parameters>
-                        <CmdLineParameterDefn name="P1" type="integer" commandPosition="1">
-                                <agpd:UI_Name>Pause Time</agpd:UI_Name>
-                                <agpd:UI_Description>Text
+				<agpd:UCD>String</agpd:UCD>
+				<agpd:DefaultValue>Text</agpd:DefaultValue>
+				<agpd:Units>String</agpd:Units>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="P3" type="text" fileRef="true">
+				<agpd:UI_Name/>
+				<agpd:UI_Description/>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="P4" type="text" commandSwitch="Parameter4" switchType="keyword">
+				<agpd:UI_Name/>
+				<agpd:UI_Description/>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="P5" type="VOTable">
+				<agpd:UI_Name/>
+				<agpd:UI_Description/>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="P6" type="RA">
+				<agpd:UI_Name/>
+				<agpd:UI_Description/>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="P7" type="Dec">
+				<agpd:UI_Name/>
+				<agpd:UI_Description/>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="P8" type="ADQL">
+				<agpd:UI_Name/>
+				<agpd:UI_Description/>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="P9" type="text" fileRef="true">
+				<agpd:UI_Name/>
+				<agpd:UI_Description>The contents of this file will be copied to the output</agpd:UI_Description>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="P10" type="boolean"/>
+			<CmdLineParameterDefn name="P11" type="anyURI"/>
+			<CmdLineParameterDefn name="P12" type="text" switchType="normal">
+				<agpd:UI_Name/>
+				<agpd:UI_Description/>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="P13" type="double"/>
+		</Parameters>
+		<Interfaces>
+			<Interface name="I1">
+				<input>
+					<pref ref="P1"/>
+					<pref ref="P4"/>
+					<pref ref="P9"/>
+					<!-- put this in to test that the interface does not check about it missing from the parameter list - not passed in any of the standard tests -->
+					<pref ref="P6" minoccurs="0"/>
+				</input>
+				<output>
+					<pref ref="P3"/>
+					<pref ref="P2"/>
+				</output>
+			</Interface>
+			<Interface name="Ilocal">
+				<input>
+					<pref ref="P1"/>
+					<pref ref="P2"/>
+					<pref ref="P4"/>
+				</input>
+				<output>
+					<pref ref="P3"/>
+				</output>
+			</Interface>
+			<Interface name="I2">
+				<input>
+					<pref ref="P9"/>
+				</input>
+				<output>
+					<pref ref="P3"/>
+				</output>
+			</Interface>
+		</Interfaces>
+		<ExecutionPath>@TOOLBASEDIR@/testapp.sh</ExecutionPath>
+	</Application>
+	<Application name="@REGAUTHORITY@/testap2">
+		<!-- do not test specific instance app for now -->
+		<!--This is the main test application-->
+		<Parameters>
+			<CmdLineParameterDefn name="P1" type="integer" commandPosition="1">
+				<agpd:UI_Name>Pause Time</agpd:UI_Name>
+				<agpd:UI_Description>Text
 <!--                                <b>bold bit</b> Castor cannot cope with the any schema element -->
                                         this is the time tha the application will pause in seconds before continuing to give the appearance of doing something...
                                 </agpd:UI_Description>
-                                <agpd:UCD>AAD</agpd:UCD>
-                                <agpd:DefaultValue>1.0</agpd:DefaultValue>
-                                <agpd:Units>String</agpd:Units>
-                        </CmdLineParameterDefn>
-                        <CmdLineParameterDefn name="P2" type="double" commandPosition="2">
-                                <agpd:UI_Name>String</agpd:UI_Name>
-                                <agpd:UI_Description>Text This can be anything
+				<agpd:UCD>AAD</agpd:UCD>
+				<agpd:DefaultValue>1.0</agpd:DefaultValue>
+				<agpd:Units>String</agpd:Units>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="P2" type="double" commandPosition="2">
+				<agpd:UI_Name>String</agpd:UI_Name>
+				<agpd:UI_Description>Text This can be anything
                                 </agpd:UI_Description>
-                                <agpd:UCD>String</agpd:UCD>
-                                <agpd:DefaultValue>Text</agpd:DefaultValue>
-                                <agpd:Units>String</agpd:Units>
-                        </CmdLineParameterDefn>
-                        <CmdLineParameterDefn name="P3" type="text"  switchType="normal" file="true">
-                                <agpd:UI_Name/>
-                                <agpd:UI_Description/>
-                        </CmdLineParameterDefn>
-                        <CmdLineParameterDefn name="P3d" type="text"  switchType="normal" commandSwitch="P3">
-                                <agpd:UI_Name/>
-                                <agpd:UI_Description/>
-                        </CmdLineParameterDefn>
-                        <CmdLineParameterDefn name="P4" type="text" commandSwitch="Parameter4" switchType="keyword">
-                                <agpd:UI_Name/>
-                                <agpd:UI_Description/>
-                        </CmdLineParameterDefn>
-                        <CmdLineParameterDefn name="P5" type="VOTable" >
-                                <agpd:UI_Name/>
-                                <agpd:UI_Description/>
-                        </CmdLineParameterDefn>
-                        <CmdLineParameterDefn name="P6" type="RA">
-                                <agpd:UI_Name/>
-                                <agpd:UI_Description/>
-                        </CmdLineParameterDefn>
-                        <CmdLineParameterDefn name="P7" type="Dec">
-                                <agpd:UI_Name/>
-                                <agpd:UI_Description/>
-                        </CmdLineParameterDefn>
-                        <CmdLineParameterDefn name="P8" type="ADQL" file="true">
-                                <agpd:UI_Name/>
-                                <agpd:UI_Description/>
-                        </CmdLineParameterDefn>
-                        <CmdLineParameterDefn name="P9" type="text" switchType="normal" file="true">
-                                <agpd:UI_Name/>
-                                <agpd:UI_Description>The contents of this file will be copied to the output</agpd:UI_Description>
-                        </CmdLineParameterDefn>
-                        <CmdLineParameterDefn name="P9d" type="text" file="true" commandSwitch="P9">
-                                <agpd:UI_Name/>
-                                <agpd:UI_Description>The contents of this file will be copied to the output</agpd:UI_Description>
-                        </CmdLineParameterDefn>
-                        <CmdLineParameterDefn name="P10" type="boolean"/>
-                        <CmdLineParameterDefn name="P11" type="anyURI"/>
-                        <CmdLineParameterDefn name="P12" type="text" switchType="normal">
-                                <agpd:UI_Name/>
-                                <agpd:UI_Description/>
-                        </CmdLineParameterDefn>
-                </Parameters>
-                <Interfaces>
-                        <Interface name="I1">
-                                <input>
-                                        <pref ref="P1"/>
-                                        <pref ref="P2"/>
-                                        <pref ref="P4"/>
-                                        <pref ref="P9"/>
-                                </input>
-                                <output>
-                                        <pref ref="P3"/>
-                                </output>
-                        </Interface>
-                        <Interface name="Ilocal">
-                                <input>
-                                        <pref ref="P1"/>
-                                        <pref ref="P2"/>
-                                        <pref ref="P4"/>
-                                        <pref ref="P9d"/>
-                                </input>
-                                <output>
-                                        <pref ref="P3d"/>
-                                </output>
-                        </Interface>
-                        <Interface name="I2">
-                                <input>
-                                        <pref ref="P9"/>
-                                </input>
-                                <output>
-                                        <pref ref="P3"/>
-                                </output>
-                        </Interface>
-                </Interfaces>
-                <ExecutionPath>@WORKDIR@/cea/commandline/work/testapp.sh</ExecutionPath>
-        </Application>
-        <Application name="@REGAUTHORITY@/testap3">
-                <!--This Application does not exist - this is just here to help with testing the description reading modules-->
-                <Parameters>
-                        <CmdLineParameterDefn name="p1" type="integer">
-                                <agpd:UI_Name>String</agpd:UI_Name>
-                                <agpd:UI_Description>Text
+				<agpd:UCD>String</agpd:UCD>
+				<agpd:DefaultValue>Text</agpd:DefaultValue>
+				<agpd:Units>String</agpd:Units>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="P3" type="text" switchType="normal">
+				<agpd:UI_Name/>
+				<agpd:UI_Description/>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="P3d" type="text" switchType="normal" commandSwitch="P3">
+				<agpd:UI_Name/>
+				<agpd:UI_Description/>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="P4" type="text" commandSwitch="Parameter4" switchType="keyword">
+				<agpd:UI_Name/>
+				<agpd:UI_Description/>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="P5" type="VOTable">
+				<agpd:UI_Name/>
+				<agpd:UI_Description/>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="P6" type="RA">
+				<agpd:UI_Name/>
+				<agpd:UI_Description/>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="P7" type="Dec">
+				<agpd:UI_Name/>
+				<agpd:UI_Description/>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="P8" type="ADQL">
+				<agpd:UI_Name/>
+				<agpd:UI_Description/>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="P9" type="text" switchType="normal">
+				<agpd:UI_Name/>
+				<agpd:UI_Description>The contents of this file will be copied to the output</agpd:UI_Description>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="P9d" type="text" commandSwitch="P9">
+				<agpd:UI_Name/>
+				<agpd:UI_Description>The contents of this file will be copied to the output</agpd:UI_Description>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="P10" type="boolean"/>
+			<CmdLineParameterDefn name="P11" type="anyURI"/>
+			<CmdLineParameterDefn name="P12" type="text" switchType="normal">
+				<agpd:UI_Name/>
+				<agpd:UI_Description/>
+			</CmdLineParameterDefn>
+		</Parameters>
+		<Interfaces>
+			<Interface name="I1">
+				<input>
+					<pref ref="P1"/>
+					<pref ref="P2"/>
+					<pref ref="P4"/>
+					<pref ref="P9"/>
+				</input>
+				<output>
+					<pref ref="P3"/>
+				</output>
+			</Interface>
+			<Interface name="Ilocal">
+				<input>
+					<pref ref="P1"/>
+					<pref ref="P2"/>
+					<pref ref="P4"/>
+					<pref ref="P9d"/>
+				</input>
+				<output>
+					<pref ref="P3d"/>
+				</output>
+			</Interface>
+			<Interface name="I2">
+				<input>
+					<pref ref="P9"/>
+				</input>
+				<output>
+					<pref ref="P3"/>
+				</output>
+			</Interface>
+		</Interfaces>
+		<ExecutionPath>@TOOLBASEDIR@/testapp.sh</ExecutionPath>
+	</Application>
+	<Application name="@REGAUTHORITY@/testap3">
+		<!--This Application does not exist - this is just here to help with testing the description reading modules-->
+		<Parameters>
+			<CmdLineParameterDefn name="p1" type="integer">
+				<agpd:UI_Name>String</agpd:UI_Name>
+				<agpd:UI_Description>Text
                                 </agpd:UI_Description>
-                                <agpd:UCD>String</agpd:UCD>
-                                <agpd:DefaultValue>Text</agpd:DefaultValue>
-                                <agpd:Units>String</agpd:Units>
-                        </CmdLineParameterDefn>
-                        <CmdLineParameterDefn name="p2" type="integer">
-                                <agpd:UI_Name>String</agpd:UI_Name>
-                                <agpd:UI_Description>Text
+				<agpd:UCD>String</agpd:UCD>
+				<agpd:DefaultValue>Text</agpd:DefaultValue>
+				<agpd:Units>String</agpd:Units>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="p2" type="integer">
+				<agpd:UI_Name>String</agpd:UI_Name>
+				<agpd:UI_Description>Text
                                 </agpd:UI_Description>
-                                <agpd:UCD>String</agpd:UCD>
-                                <agpd:DefaultValue>Text</agpd:DefaultValue>
-                                <agpd:Units>String</agpd:Units>
-                        </CmdLineParameterDefn>
-                </Parameters>
-                <Interfaces>
-                        <Interface name="ID000001">
-                                <input>
-                                        <pref ref="p2"/>
-                                </input>
-                                <output>
-                                        <pref ref="p1"/>
-                                </output>
-                        </Interface>
-                </Interfaces>
-                <ExecutionPath>String</ExecutionPath>
-        </Application>
-        <!-- put the real applications here - note that they are not autodeployed, so the paths are fixed strings -->
-                <Application name="@REGAUTHORITY@/SExtractor" instanceClass="org.astrogrid.applications.commandline.sextractor.SExtractor">
-                <!--This is the application to concentrate on for the end of this iteration-->
-                <Parameters>
-                        <!-- temporarily turn the images into direct file references - for performance during the AVO demo -->
-                        <CmdLineParameterDefn name="DetectionImage" type="binary" file="true" commandPosition="1">
-                                <agpd:UI_Name>Detection Image</agpd:UI_Name>
-                                <agpd:UI_Description>The image that is used to detect sources. Basic position, shape and size informtaion is derived from this image</agpd:UI_Description>
-                        </CmdLineParameterDefn>
-                        <CmdLineParameterDefn name="PhotoImage" type="binary" file="true" commandPosition="2">
-                                <agpd:UI_Name>Measurement Image</agpd:UI_Name>
-                                <agpd:UI_Description>The Image that is used to measure photometric parameters</agpd:UI_Description>
-                        </CmdLineParameterDefn>
-                        <CmdLineParameterDefn name="config_file" type="text" file="true" commandSwitch="c">
-                                <agpd:UI_Name>Configuration File</agpd:UI_Name>
-                                <agpd:UI_Description>File containing the main configuration parameters for SExtractor</agpd:UI_Description>
-                        </CmdLineParameterDefn>
-                        <CmdLineParameterDefn name="PARAMETERS_NAME" type="text" file="true">
-                                <agpd:UI_Name>Parameter File</agpd:UI_Name>
-                                <agpd:UI_Description>A File containing the list of catalogue paramters that should be computed</agpd:UI_Description>
-                        </CmdLineParameterDefn>
-                        <CmdLineParameterDefn name="CATALOG_NAME" type="text">
-                                <agpd:UI_Name>Derived output catalogue</agpd:UI_Name>
-                                <agpd:UI_Description>The catalogue of images derived from the input images</agpd:UI_Description>
-                        </CmdLineParameterDefn>
-                </Parameters>
-                <Interfaces>
-                        <Interface name="Simple">
-                                <input>
-                                        <pref ref="DetectionImage"/>
-                                        <pref ref="PhotoImage"/>
-                                        <pref ref="config_file"/>
-                                        <pref ref="PARAMETERS_NAME"/>
-                                </input>
-                                <output>
-                                        <pref ref="CATALOG_NAME"/>
-                                </output>
-                        </Interface>
-                </Interfaces>
-                <ExecutionPath>/home/applications/tools/sextractor-2.3/sex</ExecutionPath>
-        </Application>
-        <Application name="@REGAUTHORITY@/HyperZ" instanceClass="org.astrogrid.applications.commandline.hyperz.HyperZ">
-                <!--HyperZ is another tool that will be driven by config files - however this might not be the full set necessary to run this tool.-->
-                <Parameters>
-                        <CmdLineParameterDefn name="config_file" type="text" file="true" commandPosition="1">
-                                <agpd:UI_Name>Configuration File</agpd:UI_Name>
-                                <agpd:UI_Description>A HyperZ configuration file</agpd:UI_Description>
-                        </CmdLineParameterDefn>
-                        <CmdLineParameterDefn name="input_catalog" type="text" file="true" commandSwitch="CATALOG_FILE">
-                                <agpd:UI_Name>Magnitude Catalogue</agpd:UI_Name>
-                                <agpd:UI_Description>The input catalogue of measured magnitude</agpd:UI_Description>
-                        </CmdLineParameterDefn>
-                        <CmdLineParameterDefn name="output_catalog" type="text" commandSwitch="OUTPUT_CATALOG">
-                                <agpd:UI_Name>Redshift Catalogue</agpd:UI_Name>
-                                <agpd:UI_Description>The catalogue of estimated redshifts</agpd:UI_Description>
-                        </CmdLineParameterDefn>
-                </Parameters>
-                <Interfaces>
-                        <Interface name="simple">
-                                <input>
-                                        <pref ref="config_file"/>
-                                        <pref ref="input_catalog"/>
-                                </input>
-                                <output>
-                                        <pref ref="output_catalog"/>
-                                </output>
-                        </Interface>
-                </Interfaces>
-                <ExecutionPath>@TOOLBASEDIR@/ZPHOT/hyperzwrapper.sh</ExecutionPath>
-        </Application>
-        <Application name="@REGAUTHORITY@/CrossMatcher" instanceClass="org.astrogrid.applications.commandline.dft.Dft">
-                <!--This is Patricio's data federation tool that will be needed for the january demo I believe - It is more complicated than those above in that it has more different types of parameter. Additionally I think that it would be good for the UI to be able to look into the VOTables to give the user a list of columns to chose from - otherwise this would be a very painful process for the user.-->
-                <!-- these parameters are incorrect in the latest verison of the tool -->
-                <Parameters>
-                        <CmdLineParameterDefn name="targets" type="VOTable" file="true" switchType="keyword">
-                                <agpd:UI_Name>Target votable</agpd:UI_Name>
-                                <agpd:UI_Description>The VOTable file containing the target sources</agpd:UI_Description>
-                        </CmdLineParameterDefn>
-                        <CmdLineParameterDefn name="matches" type="VOTable" file="true" switchType="keyword">
-                                <agpd:UI_Name>Match VOTable</agpd:UI_Name>
-                                <agpd:UI_Description>The VOTable file containing the sources to match</agpd:UI_Description>
-                        </CmdLineParameterDefn>
-                        <CmdLineParameterDefn name="merged_output" type="VOTable" file="true" commandPosition="1">
-                                <agpd:UI_Name>Resulting VOTable</agpd:UI_Name>
-                                <agpd:UI_Description>The VOTable file containing result of the match</agpd:UI_Description>
-                        </CmdLineParameterDefn>
-                        <CmdLineParameterDefn name="matchRadius" type="double" commandSwitch="String">
-                                <agpd:UI_Name>Match Radius</agpd:UI_Name>
-                                <agpd:UI_Description>??</agpd:UI_Description>
-                        </CmdLineParameterDefn>
-                        <CmdLineParameterDefn name="radMax" type="double" commandSwitch="String">
-                                <agpd:UI_Name>Maximum search radius</agpd:UI_Name>
-                                <agpd:UI_Description>??</agpd:UI_Description>
-                        </CmdLineParameterDefn>
-                        <CmdLineParameterDefn name="output" type="text" commandSwitch="String">
-                                <agpd:UI_Name>output type</agpd:UI_Name>
-                                <agpd:UI_Description>This can be one of HTML VOTable of Ascii, with the default being VOTable</agpd:UI_Description>
-                                <agpd:DefaultValue>VOTable</agpd:DefaultValue>
-                        </CmdLineParameterDefn>
-                        <CmdLineParameterDefn name="maxMatches" type="integer">
-                                <agpd:UI_Name>maximum number of matches per target</agpd:UI_Name>
-                                <agpd:UI_Description>maximum number of matches per target</agpd:UI_Description>
-                        </CmdLineParameterDefn>
-                </Parameters>
-                <!--this would be nicer as a list type - need to implement that...-->
-                <Interfaces>
-                        <Interface name="simple">
-                                <input>
-                                        <pref ref="targets" maxoccurs="0"/>
-                                        <pref ref="matches" maxoccurs="0"/>
-                                </input>
-                                <output>
-                                        <pref ref="merged_output"/>
-                                </output>
-                        </Interface>
-                </Interfaces>
-                <ExecutionPath>@TOOLBASEDIR@/dft/bin/dft</ExecutionPath>
-        </Application>
-
+				<agpd:UCD>String</agpd:UCD>
+				<agpd:DefaultValue>Text</agpd:DefaultValue>
+				<agpd:Units>String</agpd:Units>
+			</CmdLineParameterDefn>
+		</Parameters>
+		<Interfaces>
+			<Interface name="ID000001">
+				<input>
+					<pref ref="p2"/>
+				</input>
+				<output>
+					<pref ref="p1"/>
+				</output>
+			</Interface>
+		</Interfaces>
+		<ExecutionPath>String</ExecutionPath>
+	</Application>
 </CommandLineExecutionControllerConfig>
