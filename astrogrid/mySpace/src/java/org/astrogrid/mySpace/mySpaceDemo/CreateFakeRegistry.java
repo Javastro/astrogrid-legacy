@@ -1,8 +1,12 @@
+package org.astrogrid.mySpace.mySpaceDemo;
+
 import java.io.*;
 import java.util.Calendar;
 import java.util.Date;
 
 import org.astrogrid.mySpace.mySpaceManager.*;
+
+
 
 /**
  * Create example mySpace registry file.

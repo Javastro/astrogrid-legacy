@@ -1,3 +1,5 @@
+package org.astrogrid.mySpace.mySpaceDemo;
+
 import java.io.*;
 import java.util.*;
 
@@ -16,7 +18,7 @@ import org.astrogrid.mySpace.mySpaceManager.*;
 class CreateRegistry
 {  public static void main (String argv[])
    {  if (argv.length == 1)
-      {  String registryName = argv[0];
+      {  String registryName = argv[0]; //argv[0] is "example"
 
          String registryFileName = registryName + ".reg";
          String registryInitialName = registryName + ".initial";
