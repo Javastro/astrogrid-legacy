@@ -11,15 +11,15 @@
   <currentVersion>HEAD</currentVersion>
 
   <description><![CDATA[
-	<p>
-	An Astrogrid datacenter published a collection of astronomical data on the Astrogrid.
-	</p><p>
-	PAL contains everything you need to install a data center, wrapped up in one big bundle.
-	</p>
+   <p>
+   An Astrogrid datacenter published a collection of astronomical data on the Astrogrid.
+   </p><p>
+   PAL contains everything you need to install a data center, wrapped up in one big bundle.
+   </p>
   <section name="Build">
-	<p>
-	<i>See parent project for fuller instructions</i>
-	</p><p>
+   <p>
+   <i>See parent project for fuller instructions</i>
+   </p><p>
 To build PAL by hand, you need to build all its prerequisites - the jars it
 depends on, plus the javadocs and dist bundles it grabs. Do the following:
 </p><p>
@@ -87,38 +87,38 @@ tomcat.password=secret<br />
 
   <!-- jar files the project is dependent on -->
   <dependencies>
-  	<!-- astrogrid components -->
-	<dependency>
-		<groupId>astrogrid-datacenter</groupId>
-		<artifactId>astrogrid-datacenter-server</artifactId>
-		<version>SNAPSHOT</version>
-		<properties>
-			<war.bundle>true</war.bundle>
-		</properties>
-	</dependency>
+   <!-- astrogrid components -->
+   <dependency>
+      <groupId>astrogrid-datacenter</groupId>
+      <artifactId>astrogrid-datacenter-server</artifactId>
+      <version>SNAPSHOT</version>
+      <properties>
+         <war.bundle>true</war.bundle>
+      </properties>
+   </dependency>
 
-	<dependency>
-		<groupId>astrogrid-datacenter</groupId>
-		<artifactId>astrogrid-datacenter-client</artifactId>
-		<version>SNAPSHOT</version>
-		    <properties>
+   <dependency>
+      <groupId>astrogrid-datacenter</groupId>
+      <artifactId>astrogrid-datacenter-client</artifactId>
+      <version>SNAPSHOT</version>
+          <properties>
       <war.bundle>true</war.bundle>
     </properties>
-	</dependency>
+   </dependency>
 
-	<dependency>
-		<groupId>astrogrid-datacenter</groupId>
-		<artifactId>cdsdelegate</artifactId>
-		<version>SNAPSHOT</version>
-		<properties>
-			<war.bundle>true</war.bundle>
-		</properties>
-	</dependency>
+   <dependency>
+      <groupId>astrogrid-datacenter</groupId>
+      <artifactId>cdsdelegate</artifactId>
+      <version>SNAPSHOT</version>
+      <properties>
+         <war.bundle>true</war.bundle>
+      </properties>
+   </dependency>
 
-	    <dependency>
+       <dependency>
         <id>astrogrid-mySpace</id>
         <version>SNAPSHOT</version>
-	    <properties>
+       <properties>
       <war.bundle>true</war.bundle>
     </properties>
     </dependency>
@@ -140,7 +140,16 @@ tomcat.password=secret<br />
       <version>SNAPSHOT</version>
     </dependency>
 
-	<!-- supporting libraries -->
+    <dependency>
+      <groupId>astrogrid-jes</groupId>
+      <artifactId>astrogrid-jes</artifactId>
+      <version>SNAPSHOT</version>
+      <properties>
+         <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+
+   <!-- supporting libraries -->
     <dependency>
       <id>breezetk</id>
       <version>UNKNOWN</version>
@@ -169,41 +178,41 @@ tomcat.password=secret<br />
     </dependency>
     
     <dependency>
-    	<id>junitee</id>
-    	<version>1.8</version>
-    	<properties>
-    		<war.bundle>true</war.bundle>
-    	</properties>
+      <id>junitee</id>
+      <version>1.8</version>
+      <properties>
+         <war.bundle>true</war.bundle>
+      </properties>
     </dependency>
 
-	<dependency><!-- sun's activation jar. we need to include it, as tomcat 5 lacks it -->
-		<id>activation</id>
-		<version>1.0.2</version>
-		<properties>
-			<war.bundle>true</war.bundle>
-		</properties>
-	</dependency>
-	
+   <dependency><!-- sun's activation jar. we need to include it, as tomcat 5 lacks it -->
+      <id>activation</id>
+      <version>1.0.2</version>
+      <properties>
+         <war.bundle>true</war.bundle>
+      </properties>
+   </dependency>
+   
     <dependency><!-- hsqldb - for testing -->
         <id>hsqldb</id>
         <version>1.7.1</version>
-	    <properties>
+       <properties>
       <war.bundle>true</war.bundle>
     </properties>
     </dependency>
     
     <dependency>
-    	<id>log4j</id>
-	<version>1.2.8</version>
-	<properties>
-	<war.bundle>true</war.bundle>
-	</properties>
+      <id>log4j</id>
+   <version>1.2.8</version>
+   <properties>
+   <war.bundle>true</war.bundle>
+   </properties>
     </dependency>
-	<!-- catalina-ant - used for test deployments to local tomcat -->
-	<dependency>
-		<id>catalina-ant</id>
-		<version>4.1.24</version>
-	</dependency>
+   <!-- catalina-ant - used for test deployments to local tomcat -->
+   <dependency>
+      <id>catalina-ant</id>
+      <version>4.1.24</version>
+   </dependency>
   </dependencies>
 
 
