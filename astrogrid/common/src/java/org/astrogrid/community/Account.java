@@ -1,5 +1,5 @@
 /*
- * $Id: Account.java,v 1.1 2004/02/17 03:41:47 mch Exp $
+ * $Id: Account.java,v 1.2 2004/02/17 14:31:49 mch Exp $
  *
  * Created on 27-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -38,6 +38,10 @@ import org.astrogrid.community.common.util.CommunityMessage;
  * calls myspace has changed...  I've made the terms more explicit by adding
  * a commnunity property; hopefully this won't break anything... 14/2/04]
  *
+ * There are no setter methods.  This is because the token goes along with the
+ * individual and community identifiers, and we shouldn't be able to change one
+ * without the other.
+ *
  * The token is some kind of certification that is carried along with the account
  * and community identifiers to prove that this individual really is this individual...
 
@@ -48,25 +52,27 @@ import org.astrogrid.community.common.util.CommunityMessage;
  */
 public class Account {
 
-    String individual = null;
-    String community = null;
-    String token = null;
-    String group = null; //deprecated?
+    private String individual = null;
+    private String community = null;
+    private String token = null;
+//    private String group = null; //deprecated?
    
-    public final static Account ANONYMOUS = new Account("Anonymous","Unknown","None",null);
+    public final static Account ANONYMOUS = new Account("Anonymous","Unknown",null);
 
-   /** Default constructor - creates null user
-    * @deprecated - use ANONYMOUS
+   /** Default beanlike constructor - Don't really like this as it creates
+    * an invalid Account (ie one with no individual/community) or a duplicate
+    * ANONYMOUS one
+    * @deprecated sort of - only automatic code should use this
     */
     public Account(){
-       this("Anonymous","Unknown", "None", null);
+       this("Anonymous","Unknown", null);
     }
 
     /**
      * Creates a user from the given full account details. Account and
      * community *must* be specified.
      */
-    public Account(String anIndividual, String aCommunity, String aGroup, String aToken)
+    public Account(String anIndividual, String aCommunity, String aToken)
     {
        assert (anIndividual != null) && (anIndividual.length()>0) : "an Individual must be given";
        assert (aCommunity != null) && (aCommunity.length()>0) : "a Community must be given";
@@ -75,7 +81,6 @@ public class Account {
        
        this.individual = anIndividual;
        this.community = aCommunity;
-       this.group = aGroup;
        this.token = aToken;
     }
     
@@ -88,7 +93,7 @@ public class Account {
     {
        this(CommunityMessage.getAccount(snippet).substring(0,CommunityMessage.getAccount(snippet).indexOf("@")),
             CommunityMessage.getAccount(snippet).substring(CommunityMessage.getAccount(snippet).indexOf("@")+1),
-            CommunityMessage.getGroup(snippet),CommunityMessage.getToken(snippet));
+            CommunityMessage.getToken(snippet));
     }
     
     /** Returns the individual reference within the community */
@@ -108,10 +113,7 @@ public class Account {
        return "ivo://"+community+"/"+individual;
     }
 
-    public String getGroup() {
-      return group;
-   }
-
+    /** Returns the commnunity this account belongs to */
    public String getCommunity() {
       return community;
    }
@@ -121,19 +123,6 @@ public class Account {
    public String getToken() {
       return token;
    }
-
-   public void setIndividual(String string) {
-      individual = string;
-   }
-
-   public void setGroup(String string) {
-      group = string;
-   }
-
-   public void setToken(String string) {
-      token = string;
-   }
-
 
    /**
     * Checks to see if this user refers to the same party as the given user.
@@ -146,12 +135,11 @@ public class Account {
    }
 
    /**
-    * Returns a string with the 'normal' representation of account@community, with
-    * group
+    * Returns a string with the 'normal' representation of account@community
     */
    public String toString()
    {
-      return getAstrogridId() +" ("+group+")";
+      return getAstrogridId();
    }
    
    /**
@@ -160,15 +148,18 @@ public class Account {
     */
    public String toSnippet()
    {
-      return CommunityMessage.getMessage(token, getAstrogridId(), group);
+      return CommunityMessage.getMessage(token, getAstrogridId(), "(NoGroup)");
    }
    
 }
 
 /* $Log: Account.java,v $
- * Revision 1.1  2004/02/17 03:41:47  mch
- * Datacenter version of User...
+ * Revision 1.2  2004/02/17 14:31:49  mch
+ * Minor changes to please checkstyle
  *
+/* Revision 1.1  2004/02/17 03:41:47  mch
+/* Datacenter version of User...
+/*
  */
 
 

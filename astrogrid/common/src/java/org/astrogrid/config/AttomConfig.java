@@ -1,5 +1,5 @@
 /*
- * $Id: AttomConfig.java,v 1.3 2004/02/17 12:36:16 mch Exp $
+ * $Id: AttomConfig.java,v 1.4 2004/02/17 14:31:49 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -73,7 +73,7 @@ public class AttomConfig {
    private static Hashtable cache = new Hashtable();
    
    /** The logging instance */
-   protected static Log log = LogFactory.getLog(AttomConfig.class);
+   private static Log log = LogFactory.getLog(AttomConfig.class);
 //   protected static Logger log = LogManager.getLogger(AttomConfig.class);
 
    /** initialised flags */
@@ -89,12 +89,18 @@ public class AttomConfig {
    /** key used to find the properties file */
    private static String propertyfileKey = "org.astrogrid.properties.url";
    
+   /** prefix to keys when accessing JNDI services.  No idea why this is required... */
    private static String jndiPrefix = "java:comp/env/";
 
    /** Default filename for properties file in classpath, etc */
    private static String configFilename = "astrogrid.properties";
    
 
+   /**
+    * Private constructor because we shouldn't be able to make one of these
+    */
+   private AttomConfig() {}
+   
    /**
     * Call this before the first getProperty if you want to use a different
     * property file (eg for testing).  Throws an exception if properties
@@ -113,7 +119,7 @@ public class AttomConfig {
     * Initialise Jndi access.  Note that the context may be null (if there is
     * no Jndi service) even after initialisation
     */
-   private synchronized static void initialiseJndi() throws ConfigException {
+   private static synchronized void initialiseJndi()  {
       
       if (!jndiInitialised) {
          
@@ -125,7 +131,7 @@ public class AttomConfig {
             try {
                jndiContext.lookup("Dummy");  //force lookup in case initialisation above is lazy
             }
-            catch (NameNotFoundException nnfe) {} //ignore for this one
+            catch (NameNotFoundException nnfe) { /*ignore if we can't find 'Dummy' */ }
             
             log.info("Config access to JNDI initialised ("+jndiContext+")");
          }
@@ -141,7 +147,7 @@ public class AttomConfig {
     * Initialise access to properties file.  Looks first in jndi for url to file,
     * then system environment, then classpath, finally working directory.
     */
-   private synchronized static void initialiseFile() throws ConfigException {
+   private static synchronized void initialiseFile()  {
       
       if (!fileInitialised) {
          
@@ -170,7 +176,8 @@ public class AttomConfig {
                throw new ConfigException("Exception locating key="+jndiKey+" in JNDI", ne);
             }
             catch (IOException ioe) {
-               throw new ConfigException("Exception loading property file at '"+fileUrl+"' (returned by JNDI key="+jndiKey+")", ioe);
+               throw new ConfigException("Exception loading property file at '"+fileUrl+
+                                            "' (returned by JNDI key="+jndiKey+")", ioe);
             }
          }
 
@@ -188,10 +195,12 @@ public class AttomConfig {
                return;
             }
             catch (MalformedURLException mue) {
-               throw new ConfigException("Configuration file url given in system environment variable '"+sysEnvKey+"' is malformed",mue);
+               throw new ConfigException("Configuration file url given in system environment variable '"+
+                                            sysEnvKey+"' is malformed",mue);
             }
             catch (IOException ioe) {
-               throw new ConfigException("Exception loading property file at '"+fileUrl+"' (returned by system environment variable '"+sysEnvKey+"')", ioe);
+               throw new ConfigException("Exception loading property file at '"+fileUrl+
+                                            "' (returned by system environment variable '"+sysEnvKey+"')", ioe);
             }
          }
          
@@ -272,7 +281,7 @@ public class AttomConfig {
          
       //first look in jndi
       try {
-         if (!jndiInitialised) initialiseJndi();
+         if (!jndiInitialised) { initialiseJndi(); }
       
          if (jndiContext != null) {
             lookedIn = lookedIn + ", JNDI";
@@ -288,7 +297,7 @@ public class AttomConfig {
       }
 
       //try the properties file
-      if (!fileInitialised) initialiseFile();
+      if (!fileInitialised) { initialiseFile(); }
 
       if (properties == null) {
          lookedIn = lookedIn +", (no config file)";
@@ -419,6 +428,9 @@ public class AttomConfig {
 }
 /*
 $Log: AttomConfig.java,v $
+Revision 1.4  2004/02/17 14:31:49  mch
+Minor changes to please checkstyle
+
 Revision 1.3  2004/02/17 12:36:16  mch
 Fixed self import
 

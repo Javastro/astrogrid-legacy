@@ -29,7 +29,7 @@ import org.astrogrid.util.ClassPathUtils;
 
 public class JarFinder
 {
-   /*
+   /**
     * Looks for the class in the classpath - has ready made found jars/directories
     */
    public static String findInClasspath(String className) throws IOException
@@ -61,6 +61,8 @@ public class JarFinder
 //      }
    }
 
+   /**
+    * Looks to see if the given class is in the given jar file.  */
    public static boolean isClassInJar(String className, String jarPath) throws IOException
    {
       JarFile jarFile = new JarFile(new File(jarPath));
@@ -103,6 +105,9 @@ public class JarFinder
 
 /*
 $Log: JarFinder.java,v $
+Revision 1.4  2004/02/17 14:31:49  mch
+Minor changes to please checkstyle
+
 Revision 1.3  2003/12/02 19:52:53  mch
 For running from the command line
 

@@ -1,5 +1,5 @@
 /*
- * $Id: Piper.java,v 1.2 2004/02/15 23:17:59 mch Exp $
+ * $Id: Piper.java,v 1.3 2004/02/17 14:31:49 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -10,16 +10,21 @@
 
 package org.astrogrid.io;
 
+import java.io.*;
+
 /**
  * Helper class for connecting streams
  *
  * @author M Hill
  */
 
-import java.io.*;
-
 public class Piper
 {
+   private static final int BLOCK_SIZE = 2048;
+   
+   /** Utility class - should not be instantiated */
+   private Piper() {}
+   
    /**
     * Helper method for reading all the bytes from the given input stream
     * and sending them to the given output stream.  Remember that it is much
@@ -27,7 +32,7 @@ public class Piper
     */
    public static void pipe(InputStream in, OutputStream out) throws IOException
    {
-      byte[] block = new byte[1000];
+      byte[] block = new byte[BLOCK_SIZE];
       int read = in.read(block);
       while (read > -1)
       {
@@ -51,7 +56,7 @@ public class Piper
     */
    public static void pipe(Reader in, Writer out) throws IOException
    {
-      char[] block = new char[1000];
+      char[] block = new char[BLOCK_SIZE];
       int read = in.read(block);
       while (read > -1)
       {
@@ -71,9 +76,12 @@ public class Piper
 }
 
 /* $Log: Piper.java,v $
- * Revision 1.2  2004/02/15 23:17:59  mch
- * minor doc changes
+ * Revision 1.3  2004/02/17 14:31:49  mch
+ * Minor changes to please checkstyle
  *
+/* Revision 1.2  2004/02/15 23:17:59  mch
+/* minor doc changes
+/*
 /* Revision 1.1  2003/12/09 13:01:33  mch
 /* Moved Piper to common
 /* */
