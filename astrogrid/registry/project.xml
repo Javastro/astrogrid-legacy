@@ -18,6 +18,8 @@
   <package>org.astrogrid</package>
   
   <shortDescription>AstroGrid Registry Components</shortDescription>
+
+  <siteDirectory>/var/www/www/maven/build/registry</siteDirectory>
   
   <repository>
     <connection>
