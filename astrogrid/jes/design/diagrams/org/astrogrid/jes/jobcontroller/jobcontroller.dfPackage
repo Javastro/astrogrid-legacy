@@ -7,22 +7,7 @@ package id8428djhc32ahdji31jjg;
 @roots /home/jl99/tmp/tjModels/ag_jes/astrogrid_jes.jar
 */
 class diagram {
-/**
-@__ref <oiref:java#Class#org.astrogrid.jes.jobcontroller.SubmissionRequestDD:oiref><oihard>
-@__modelType reference 
-*/
-class reference {
 }/**
-@__ref <oiref:java#Class#org.astrogrid.jes.jobcontroller.JobController:oiref><oihard>
-@__modelType reference 
-*/
-class reference26 {
-}/**
-@__ref <oiref:java#Class#org.astrogrid.jes.jobcontroller.JobControllerException:oiref><oihard>
-@__modelType reference 
-*/
-class reference27 {
-}}/**
 @__tags
 @shapeType ClassDiagram 
 */
@@ -32,9 +17,7 @@ class __tags {
 */
 class __options {
 }/**
-@__positions <oigroup:<oiref:java#Class#org.astrogrid.jes.jobcontroller.SubmissionRequestDD:oiref>=10,10,200,777,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.jes.jobcontroller.JobController:oiref>=230,10,200,474,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.jes.jobcontroller.JobControllerException:oiref>=230,530,177,125,1:oigroup> 
+@__positions 
 */
 class __positions {
 }
