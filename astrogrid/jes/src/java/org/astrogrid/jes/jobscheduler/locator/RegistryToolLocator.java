@@ -1,4 +1,4 @@
-/*$Id: RegistryToolLocator.java,v 1.11 2004/10/08 20:03:19 pah Exp $
+/*$Id: RegistryToolLocator.java,v 1.12 2005/03/02 12:11:31 clq2 Exp $
  * Created on 08-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -91,7 +91,8 @@ public class RegistryToolLocator implements Locator, ComponentDescriptor {
             logger.debug("Query to find services supporting this:" + queryString);
             Document results = null;
             try {
-               results = delegate.submitQuery(queryString);
+               //results = delegate.submitQuery(queryString);
+                results = delegate.searchFromSADQL(queryString);
                if (logger.isDebugEnabled()) {
                    StringWriter sw = new StringWriter();
                    XMLUtils.PrettyDocumentToWriter(results,sw);
@@ -160,15 +161,21 @@ public class RegistryToolLocator implements Locator, ComponentDescriptor {
         "</selectionSequence></query>";   
     
     private String buildQueryString(IdentifierType toolId) {
+        String queryString = "Select * from Registry where " +
+        "cea:ManagedApplications/cea:ApplicationReference='ivo://" +
+        toolId.getAuthorityID() + "/" + toolId.getResourceKey();
+        /*
         StringBuffer sb = new StringBuffer(PRE_QUERY);
         sb.append( toolId.getAuthorityID());
         sb.append(MID_QUERY);
         sb.append(toolId.getResourceKey());
         sb.append(END_QUERY);
         return sb.toString();
+        */
+        return queryString;
  
     }
-
+    
     /**
      queries registry to get tool entry, extract details from this.
      */
@@ -211,6 +218,12 @@ public class RegistryToolLocator implements Locator, ComponentDescriptor {
 
 /* 
 $Log: RegistryToolLocator.java,v $
+Revision 1.12  2005/03/02 12:11:31  clq2
+for v10
+
+Revision 1.11.36.1  2005/03/02 12:03:15  KevinBenson
+changing to do adql queries now
+
 Revision 1.11  2004/10/08 20:03:19  pah
 optimize the tool query to use namespaces - better performance than using wildcard
 
