@@ -403,7 +403,7 @@ trace("============================");
 
                inputParamList( listIt ) ;
                                                             	  
---}            } // end of if            
+-->            } // end of if            
          } // end of try
          catch(Exception e) {
             if( TRACE_ENABLED ) trace( "workflow-main-xsp: Error retrieving tool from request object:") ;
