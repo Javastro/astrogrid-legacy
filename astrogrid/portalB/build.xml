@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/Attic/build.xml,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/29 02:45:22 $</cvs:author>
-    | <cvs:version>$Revision: 1.22 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/30 00:04:53 $</cvs:author>
+    | <cvs:version>$Revision: 1.23 $</cvs:version>
     | <cvs:log>
     | $Log: build.xml,v $
+    | Revision 1.23  2003/06/30 00:04:53  dave
+    | Added initial astrogrid style
+    |
     | Revision 1.22  2003/06/29 02:45:22  dave
     | Fixed display styles in explorer and add VOTable transform
     |
@@ -2113,7 +2116,6 @@
 		<antcall target="cocoon.2.0.rebuild"/>
 	</target>
 
-
 	<!-- Export our files for a manual installation into Cocoon -->
 	<target name="cocoon.export" depends="init">
 		<!-- Delete the export directories -->
@@ -2123,7 +2125,6 @@
 		<mkdir dir="build/export/zip"/>
 		<mkdir dir="build/export/libraries"/>
 		<mkdir dir="build/export/explorer"/>
-
 		<!-- Copy our explorer files across (excluding the sitemap) -->
 		<copy verbose="false" toDir="build/export/explorer">
 			<fileset dir="src/cocoon">
@@ -2146,7 +2147,6 @@
 				<include name="**/*.jar"/>
 			</fileset>
 		</copy>
-
 		<!-- Zip the explorer files -->
 		<zip zipfile="build/export/zip/explorer-${build.time}.zip">
 			<zipfileset prefix="" dir="build/export/explorer"/>
@@ -2155,8 +2155,66 @@
 		<zip zipfile="build/export/zip/libraries-${build.time}.zip">
 			<zipfileset prefix="" dir="build/export/libraries"/>
 		</zip>
-
 	</target>
+
+	<property name="rutherford.site" value="${basedir}/build/rutherford"/>
+
+	<target name="rutherford.copy">
+		<!-- Delete any existing directory -->
+		<delete dir="${rutherford.site}" failonerror="false"/>
+		<!-- Create build directories -->
+		<mkdir dir="${rutherford.site}"/>
+		<!-- Copy the rutherford files across -->
+		<copy verbose="true" toDir="${rutherford.site}">
+			<fileset dir="depends/rutherford">
+				<exclude name="**/CVS/**"/>
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="rutherford.sitemap" depends="cocoon.init">
+		<!-- Move the existing sitemap to backup xml file -->
+		<move file="${cocoon.webapp}/sitemap.xmap" tofile="${cocoon.webapp}/sitemap.xml" overwrite="true"/>
+		<!-- Apply our xslt transform -->
+		<xslt style="src/rutherford/sitemap.xslt"
+		      in="${cocoon.webapp}/sitemap.xml"
+		      out="${cocoon.webapp}/sitemap.xmap">
+			<outputproperty name="method" value="xml"/>
+			<outputproperty name="indent" value="yes"/>
+			<!-- Pass in the location of the astrogrid sitemap -->
+			<param name="sitemap" expression="${rutherford.site}/sitemap.xmap"/>
+		</xslt>
+	</target>
+
+	<!-- Deploy our explorer page into the rutherford site -->
+	<target name="rutherford.explorer.deploy" depends="cocoon.init">
+		<!-- Copy our site files -->
+		<copy verbose="true" toDir="${rutherford.site}">
+			<fileset dir="src/cocoon">
+				<exclude name="**/CVS/**"/>
+				<exclude name="build.properties"/>
+				<exclude name="blocks.properties"/>
+				<exclude name="sitemap.xslt"/>
+			</fileset>
+		</copy>
+		<!-- Copy our portal jar -->
+		<copy verbose="false" toDir="${cocoon.webapp}/WEB-INF/lib">
+			<fileset dir="${portal.build}/lib">
+				<include name="**/*.jar"/>
+			</fileset>
+		</copy>
+		<!--+
+		    | Copy the Axis client jars.
+		    | FIXME : We probably don't need ALL of these,
+		    | need to check which ones we really do need to run the client stubs.
+		    +-->
+		<copy verbose="false" toDir="${cocoon.webapp}/WEB-INF/lib">
+			<fileset dir="${axis.webapp}/WEB-INF/lib">
+				<include name="**/*.jar"/>
+			</fileset>
+		</copy>
+	</target>
+
 
 </project>
 

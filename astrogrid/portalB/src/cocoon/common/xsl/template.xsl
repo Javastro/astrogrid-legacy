@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/cocoon/common/xsl/Attic/template.xsl,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/29 02:45:22 $</cvs:author>
-    | <cvs:version>$Revision: 1.6 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/30 00:04:53 $</cvs:author>
+    | <cvs:version>$Revision: 1.7 $</cvs:version>
     | <cvs:log>
     | $Log: template.xsl,v $
+    | Revision 1.7  2003/06/30 00:04:53  dave
+    | Added initial astrogrid style
+    |
     | Revision 1.6  2003/06/29 02:45:22  dave
     | Fixed display styles in explorer and add VOTable transform
     |
@@ -43,7 +46,7 @@
 				<table border="1" width="800" height="100%">
 					<tr>
 						<td width="150" height="100" align="left" valign="center">
-							logo
+<img src="aglogo.png"/>
 						</td>
 						<td width="500" height="100" align="center" valign="center">
 							Header

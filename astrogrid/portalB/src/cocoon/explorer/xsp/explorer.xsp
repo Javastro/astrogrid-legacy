@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/cocoon/explorer/xsp/Attic/explorer.xsp,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/29 02:45:22 $</cvs:author>
-    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/30 00:04:53 $</cvs:author>
+    | <cvs:version>$Revision: 1.3 $</cvs:version>
     | <cvs:log>
     | $Log: explorer.xsp,v $
+    | Revision 1.3  2003/06/30 00:04:53  dave
+    | Added initial astrogrid style
+    |
     | Revision 1.2  2003/06/29 02:45:22  dave
     | Fixed display styles in explorer and add VOTable transform
     |
@@ -82,7 +85,7 @@
 	    | The XSP page needs one non-xsp tag.
 	    | Anything in here gets added inside the Generator generate() method.
 	    +-->
-	<page>
+	<explorer>
 
 		<!--+
 		    | Any code wrapped in xsp-logic tags will get added to the Generator generate() method.
@@ -116,20 +119,21 @@
 			<!-- Static list of available services -->
 			<services>
 				<xsp:element name="service">
-					<xsp:attribute name="name">Local host</xsp:attribute>
-					<xsp:attribute name="url">http://localhost:8080/axis/services/MySpaceManager</xsp:attribute>
+					<xsp:attribute name="default">true</xsp:attribute>
+					<xsp:attribute name="name">Leicester (hydra)</xsp:attribute>
+					<xsp:attribute name="url">http://hydra.star.le.ac.uk:8080/axis/services/MySpaceManager</xsp:attribute>
+				</xsp:element>
+				<xsp:element name="service">
+					<xsp:attribute name="name">Leicester (qin)</xsp:attribute>
+					<xsp:attribute name="url">http://qin.star.le.ac.uk:8080/axis/services/MySpaceManager</xsp:attribute>
 				</xsp:element>
 				<xsp:element name="service">
 					<xsp:attribute name="name">Cambridge (dave)</xsp:attribute>
 					<xsp:attribute name="url">http://capc49.ast.cam.ac.uk:8080/axis/services/MySpaceManager</xsp:attribute>
 				</xsp:element>
 				<xsp:element name="service">
-					<xsp:attribute name="name">Leicester (hydra)</xsp:attribute>
-					<xsp:attribute name="url">http://143.210.36.120:8080/axis/services/MySpaceManager</xsp:attribute>
-				</xsp:element>
-				<xsp:element name="service">
-					<xsp:attribute name="name">Leicester (qin)</xsp:attribute>
-					<xsp:attribute name="url">http://143.210.36.131:8080/axis/services/MySpaceManager</xsp:attribute>
+					<xsp:attribute name="name">Localhost </xsp:attribute>
+					<xsp:attribute name="url">http://localhost:8080/axis/services/MySpaceManager</xsp:attribute>
 				</xsp:element>
 			</services>
 		</options>
@@ -230,5 +234,5 @@
 				}
 			]]>
 		</xsp:logic>
-	</page>
+	</explorer>
 </xsp:page>

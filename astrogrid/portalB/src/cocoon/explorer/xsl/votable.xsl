@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/cocoon/explorer/xsl/Attic/votable.xsl,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/29 02:45:22 $</cvs:author>
-    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/30 00:04:53 $</cvs:author>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
     | <cvs:log>
     | $Log: votable.xsl,v $
+    | Revision 1.2  2003/06/30 00:04:53  dave
+    | Added initial astrogrid style
+    |
     | Revision 1.1  2003/06/29 02:45:22  dave
     | Fixed display styles in explorer and add VOTable transform
     |
@@ -19,25 +22,29 @@
 	>
 
 	<!--+
+	    | The current action, set from the Cocoon action.
+	    +-->
+	<xsl:param name="action"/>
+	<xsl:param name="confirm"/>
+	<!--+
+	    | The page names, set from the Cocoon sitemap.
+	    +-->
+	<xsl:param name="explorer-page">explorer</xsl:param>
+	<xsl:param name="votable-page">votable</xsl:param>
+
+	<!--+
 	    | Match the top level element.
 	    +-->
 	<xsl:template match="/">
 		<page>
-			<style>
-				<![CDATA[
-					table.info    { background:#FFFFFF; color:black; font-size:10pt; font-style:normal; font-weight:normal; font-family:arial, serif}
-					tr.info       { background:#FFFFFF; color:black; font-size:10pt; font-style:normal; font-weight:normal; font-family:arial, serif}
-					td.info       { background:#FFFFFF; color:black; font-size:10pt; font-style:normal; font-weight:normal; font-family:arial, serif}
-
-					tr.title      { background:#FFFFFF; color:black; font-size:10pt; font-style:normal; font-weight:bold;   font-family:arial, serif}
-					td.title      { background:#FFFFFF; color:black; font-size:10pt; font-style:normal; font-weight:bold;   font-family:arial, serif}
-
-					table.data    { background:#FFFFFF; color:black; font-size:10pt; font-style:normal; font-weight:normal; font-family:arial, serif}
-					td.data-light { background:#DDDDDD; color:black; font-size:10pt; font-style:normal; font-weight:normal; font-family:arial, serif}
-					td.data-dark  { background:#C0C0C0; color:black; font-size:10pt; font-style:normal; font-weight:normal; font-family:arial, serif}
-				]]>
-			</style>
 			<menu>
+				<!-- Add our top level item -->
+				<link type="menu" selected="true">
+					<display>Browse MySpace</display>
+					<href>
+						<base><xsl:value-of select="$explorer-page"/></base>
+					</href>
+				</link>
 			</menu>
 			<content>
 				<xsl:apply-templates select="VOTABLE"/>

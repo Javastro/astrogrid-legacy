@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/cocoon/explorer/xsl/Attic/explorer.xsl,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/29 02:45:22 $</cvs:author>
-    | <cvs:version>$Revision: 1.5 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/30 00:04:53 $</cvs:author>
+    | <cvs:version>$Revision: 1.6 $</cvs:version>
     | <cvs:log>
     | $Log: explorer.xsl,v $
+    | Revision 1.6  2003/06/30 00:04:53  dave
+    | Added initial astrogrid style
+    |
     | Revision 1.5  2003/06/29 02:45:22  dave
     | Fixed display styles in explorer and add VOTable transform
     |
@@ -30,43 +33,35 @@
 	>
 
 	<!--+
-	    | The template parameters, initially set from the request parameters.
-		| Eventually, these will be set from the Cocoon action.
-		+-->
-	<xsl:param name="paste"/>
+	    | The current action, set from the Cocoon action.
+	    +-->
 	<xsl:param name="action"/>
 	<xsl:param name="confirm"/>
-	<xsl:param name="page">explorer</xsl:param>
+	<!--+
+	    | The page names, set from the Cocoon sitemap.
+	    +-->
+	<xsl:param name="explorer-page">explorer</xsl:param>
+	<xsl:param name="votable-page">votable</xsl:param>
 
 	<!--+
-	    | Match the top level page element.
+	    | Match the root element.
 		+-->
-	<xsl:template match="/page">
+	<xsl:template match="/">
+		<xsl:apply-templates/>
+	</xsl:template>
+
+	<!--+
+	    | Match the explorer element.
+		+-->
+	<xsl:template match="explorer">
 		<page>
-			<!-- Add the css elements for our tree -->
-			<style>
-				<![CDATA[
-					table.info      { background:#FFFFFF; color:black; font-size:10pt; font-style:normal; font-weight:normal; font-family:arial, serif}
-					tr.info         { background:#FFFFFF; color:black; font-size:10pt; font-style:normal; font-weight:normal; font-family:arial, serif}
-					td.info         { background:#FFFFFF; color:black; font-size:10pt; font-style:normal; font-weight:normal; font-family:arial, serif}
-
-					table.tree      { background:#ffffff; color:black; font-size:10pt; font-style:normal; font-weight:normal; font-family:arial, serif}
-					tr.tree         { background:#ffffff; color:black; font-size:10pt; font-style:normal; font-weight:normal; font-family:arial, serif}
-					td.tree         { background:#ffffff; color:black; font-size:10pt; font-style:normal; font-weight:normal; font-family:arial, serif}
-
-					a:tree:link     { background:#ffffff; color:black; font-size:10pt; font-style:normal; font-weight:normal; font-family:arial, serif; text-decoration: none}
-					a:tree:active   { background:#ffffff; color:red;   font-size:10pt; font-style:normal; font-weight:normal; font-family:arial, serif; text-decoration: none}
-					a:tree:visited  { background:#ffffff; color:black; font-size:10pt; font-style:normal; font-weight:normal; font-family:arial, serif; text-decoration: none}
-					a:tree:hover    { background:#ffffff; color:red;   font-size:10pt; font-style:normal; font-weight:normal; font-family:arial, serif; text-decoration: none}
-				]]>
-			</style>
 			<!-- Add our page menu -->
 			<menu>
 				<!-- Add our top level item -->
 				<link type="menu" selected="true">
-					<display>Explorer</display>
+					<display>Browse MySpace</display>
 					<href>
-						<base><xsl:value-of select="$page"/></base>
+						<base><xsl:value-of select="$explorer-page"/></base>
 					</href>
 					<!-- Add the new-view item -->
 					<link type="menu">
@@ -76,7 +71,7 @@
 						</xsl:if>
 						<display>New view</display>
 						<href>
-							<base><xsl:value-of select="$page"/></base>
+							<base><xsl:value-of select="$explorer-page"/></base>
 							<param name="action">create-view</param>
 						</href>
 					</link>
@@ -110,8 +105,8 @@
 				<link type="action">
 					<display>001</display>
 					<href>
-						<base><xsl:value-of select="$page"/></base>
-						<param name="AST-VIEW"><xsl:value-of select="/page/view/@ident"/></param>
+						<base><xsl:value-of select="$explorer-page"/></base>
+						<param name="AST-VIEW"><xsl:value-of select="//explorer/view/@ident"/></param>
 						<param name="cocoon-view">001</param>
 					</href>
 				</link>
@@ -119,8 +114,8 @@
 				<link type="action">
 					<display>002</display>
 					<href>
-						<base><xsl:value-of select="$page"/></base>
-						<param name="AST-VIEW"><xsl:value-of select="/page/view/@ident"/></param>
+						<base><xsl:value-of select="$explorer-page"/></base>
+						<param name="AST-VIEW"><xsl:value-of select="//explorer/view/@ident"/></param>
 						<param name="cocoon-view">002</param>
 					</href>
 				</link>
@@ -128,8 +123,8 @@
 				<link type="action">
 					<display>003</display>
 					<href>
-						<base><xsl:value-of select="$page"/></base>
-						<param name="AST-VIEW"><xsl:value-of select="/page/view/@ident"/></param>
+						<base><xsl:value-of select="$explorer-page"/></base>
+						<param name="AST-VIEW"><xsl:value-of select="//explorer/view/@ident"/></param>
 						<param name="cocoon-view">003</param>
 					</href>
 				</link>
@@ -143,12 +138,12 @@
 	    +-->
 	<xsl:template name="menu-views">
 		<!-- Match each of our session views -->
-		<xsl:for-each select="session/views/view">
+		<xsl:for-each select="//explorer/session/views/view">
 			<!-- Add a menu item for each view -->
 			<xsl:element name="link">
 				<xsl:attribute name="type">menu</xsl:attribute>
 				<!-- If this the current view -->
-				<xsl:if test="/page/view/@ident = @ident">
+				<xsl:if test="//explorer/view/@ident = @ident">
 					<xsl:attribute name="selected">true</xsl:attribute>
 				</xsl:if>
 				<display>
@@ -156,7 +151,7 @@
 				</display>
 				<href>
 					<base>
-						<xsl:value-of select="$page"/>
+						<xsl:value-of select="$explorer-page"/>
 					</base>
 					<param name="AST-VIEW">
 						<xsl:value-of select="@ident"/>
@@ -169,27 +164,29 @@
 	<!--+
 	    | Process our current view.
 	    +-->
-	<xsl:template match="page/view">
+	<xsl:template match="//explorer/view">
 		<table class="info" border="0"  cellpadding="0" cellspacing="0" width="650">
 			<tr class="info">
 				<td class="info" width="100">Service name</td>
 				<td class="info" colspan="2">
-					<xsl:value-of select="/page/view/@service"/>
+					<xsl:value-of select="@service"/>
 				</td>
 			</tr>
 			<tr class="info">
 				<td class="info" width="100">Explorer path</td>
 				<td class="info" width="500" align="left">
-					<xsl:value-of select="/page/view/@path"/>
+					<xsl:value-of select="@path"/>
 				</td>
 				<td class="info" width="50" align="right">
 					<link type="action">
 						<display>Close</display>
 						<href>
-							<base><xsl:value-of select="$page"/></base>
+							<base><xsl:value-of select="$explorer-page"/></base>
 							<param name="action">delete-view</param>
 							<param name="confirm">true</param>
-							<param name="AST-VIEW"><xsl:value-of select="/page/view/@ident"/></param>
+							<param name="AST-VIEW">
+								<xsl:value-of select="@ident"/>
+							</param>
 						</href>
 					</link>
 				</td>
@@ -197,17 +194,21 @@
 			<tr class="info">
 				<td class="info" width="100">Current item</td>
 				<td class="info" width="550" align="left">
-					<xsl:value-of select="/page/view/current/@path"/>
-					<xsl:if test="/page/view/current/@type = '2'">
+					<xsl:value-of select="current/@path"/>
+					<xsl:if test="current/@type = '2'">
 						<xsl:text> </xsl:text>
 						<link type="action">
 							<display>View</display>
 							<href>
 								<base>
-									<xsl:value-of select="$page"/>
-									<xsl:text>/view/</xsl:text>
-									<xsl:value-of select="/page/view/current/@uri"/>
+									<xsl:value-of select="$votable-page"/>
 								</base>
+								<param name="data">
+									<xsl:value-of select="current/@uri"/>
+								</param>
+								<param name="AST-VIEW">
+									<xsl:value-of select="@ident"/>
+								</param>
 							</href>
 						</link>
 					</xsl:if>
@@ -216,16 +217,16 @@
 			<tr class="info">
 				<td class="info" width="100">Selected action</td>
 				<td class="info" width="550" align="left">
-					<xsl:if test="/page/view/selected/@action != 'null'">
-						<xsl:value-of select="/page/view/selected/@action"/>
+					<xsl:if test="selected/@action != 'null'">
+						<xsl:value-of select="selected/@action"/>
 					</xsl:if>
 				</td>
 			</tr>
 			<tr class="info">
 				<td class="info" width="100">Selected item</td>
 				<td class="info" width="550" align="left">
-					<xsl:if test="/page/view/selected/@path != ''">
-						<xsl:value-of select="/page/view/selected/@path"/>
+					<xsl:if test="selected/@path != ''">
+						<xsl:value-of select="selected/@path"/>
 					</xsl:if>
 				</td>
 			</tr>
@@ -247,7 +248,7 @@
 			</xsl:when>
 			<!-- Display our tree -->
 			<xsl:otherwise>
-				<xsl:apply-templates select="/page/view/tree"/>
+				<xsl:apply-templates select="tree"/>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
@@ -255,16 +256,16 @@
 	<!--+
 	    | Process our tree.
 	    +-->
-	<xsl:template match="/page/view/tree">
+	<xsl:template match="//explorer/view/tree">
 		<table class="tree" border="0" cellpadding="0" cellspacing="0">
-			<xsl:apply-templates select="/page/view/tree/node"/>
+			<xsl:apply-templates select="node"/>
 		</table>
 	</xsl:template>
 
 	<!--+
 	    | Process our tree nodes.
 	    +-->
-	<xsl:template match="/page/view/tree//node">
+	<xsl:template match="//explorer/view/tree//node">
 		<tr class="tree" valign="middle">
 			<td class="tree" align="left" valign="bottom">
 				<!-- Add the indentation -->
@@ -275,15 +276,15 @@
 					<xsl:when test="@type = '1'">
 						<link type="node">
 							<!-- If this matches the explorer path -->
-							<xsl:if test="@path = /page/view/@path">
+							<xsl:if test="@path = //explorer/view/@path">
 								<xsl:attribute name="selected">true</xsl:attribute>
 							</xsl:if>
 							<image src="explorer/images/cont.icon.gif"/>
 							<text><xsl:value-of select="@name"/></text>
 							<href>
-								<base><xsl:value-of select="$page"/></base>
+								<base><xsl:value-of select="$explorer-page"/></base>
 								<param name="action">explorer-path</param>
-								<param name="AST-VIEW"><xsl:value-of select="/page/view/@ident"/></param>
+								<param name="AST-VIEW"><xsl:value-of select="//explorer/view/@ident"/></param>
 								<param name="AST-PATH"><xsl:value-of select="@href-path"/></param>
 							</href>
 						</link>
@@ -292,15 +293,15 @@
 					<xsl:when test="@type = '2'">
 						<link type="node">
 							<!-- If this matches the current path -->
-							<xsl:if test="@path = /page/view/current/@path">
+							<xsl:if test="@path = //explorer/view/current/@path">
 								<xsl:attribute name="selected">true</xsl:attribute>
 							</xsl:if>
 							<image src="explorer/images/item.icon.gif"/>
 							<text><xsl:value-of select="@name"/></text>
 							<href>
-								<base><xsl:value-of select="$page"/></base>
+								<base><xsl:value-of select="$explorer-page"/></base>
 								<param name="action">current-path</param>
-								<param name="AST-VIEW"><xsl:value-of select="/page/view/@ident"/></param>
+								<param name="AST-VIEW"><xsl:value-of select="//explorer/view/@ident"/></param>
 								<param name="AST-PATH"><xsl:value-of select="@href-path"/></param>
 							</href>
 						</link>
@@ -387,9 +388,9 @@
 						<xsl:text>Cut</xsl:text>
 					</display>
 					<href>
-						<base><xsl:value-of select="$page"/></base>
+						<base><xsl:value-of select="$explorer-page"/></base>
 						<param name="action">cut-item</param>
-						<param name="AST-VIEW"><xsl:value-of select="/page/view/@ident"/></param>
+						<param name="AST-VIEW"><xsl:value-of select="//explorer/view/@ident"/></param>
 						<param name="AST-PATH"><xsl:value-of select="@href-path"/></param>
 					</href>
 				</link>
@@ -400,9 +401,9 @@
 						<xsl:text>Copy</xsl:text>
 					</display>
 					<href>
-						<base><xsl:value-of select="$page"/></base>
+						<base><xsl:value-of select="$explorer-page"/></base>
 						<param name="action">copy-item</param>
-						<param name="AST-VIEW"><xsl:value-of select="/page/view/@ident"/></param>
+						<param name="AST-VIEW"><xsl:value-of select="//explorer/view/@ident"/></param>
 						<param name="AST-PATH"><xsl:value-of select="@href-path"/></param>
 					</href>
 				</link>
@@ -413,9 +414,9 @@
 						<xsl:text>Rename</xsl:text>
 					</display>
 					<href>
-						<base><xsl:value-of select="$page"/></base>
+						<base><xsl:value-of select="$explorer-page"/></base>
 						<param name="action">rename-item</param>
-						<param name="AST-VIEW"><xsl:value-of select="/page/view/@ident"/></param>
+						<param name="AST-VIEW"><xsl:value-of select="//explorer/view/@ident"/></param>
 						<param name="AST-PATH"><xsl:value-of select="@href-path"/></param>
 					</href>
 				</link>
@@ -426,9 +427,9 @@
 						<xsl:text>Delete</xsl:text>
 					</display>
 					<href>
-						<base><xsl:value-of select="$page"/></base>
+						<base><xsl:value-of select="$explorer-page"/></base>
 						<param name="action">delete-item</param>
-						<param name="AST-VIEW"><xsl:value-of select="/page/view/@ident"/></param>
+						<param name="AST-VIEW"><xsl:value-of select="//explorer/view/@ident"/></param>
 						<param name="AST-PATH"><xsl:value-of select="@href-path"/></param>
 					</href>
 				</link>
@@ -438,7 +439,7 @@
 				<!-- If this is below the top two levels -->
 				<xsl:if test="@level > 1">
 					<!-- If we have a cut item to paste -->
-					<xsl:if test="/page/view/selected/@action = 'cut-item'">
+					<xsl:if test="//explorer/view/selected/@action = 'cut-item'">
 						<!-- Add the paste-item action -->
 						<xsl:text> </xsl:text>
 						<link type="action">
@@ -446,15 +447,15 @@
 								<xsl:text>Paste</xsl:text>
 							</display>
 							<href>
-								<base><xsl:value-of select="$page"/></base>
+								<base><xsl:value-of select="$explorer-page"/></base>
 								<param name="action">paste-item</param>
-								<param name="AST-VIEW"><xsl:value-of select="/page/view/@ident"/></param>
+								<param name="AST-VIEW"><xsl:value-of select="//explorer/view/@ident"/></param>
 								<param name="AST-PATH"><xsl:value-of select="@href-path"/></param>
 							</href>
 						</link>
 					</xsl:if>
 					<!-- If we have a copy item to paste -->
-					<xsl:if test="/page/view/selected/@action = 'copy-item'">
+					<xsl:if test="//explorer/view/selected/@action = 'copy-item'">
 						<!-- Add the paste-item action -->
 						<xsl:text> </xsl:text>
 						<link type="action">
@@ -462,9 +463,9 @@
 								<xsl:text>Paste</xsl:text>
 							</display>
 							<href>
-								<base><xsl:value-of select="$page"/></base>
+								<base><xsl:value-of select="$explorer-page"/></base>
 								<param name="action">paste-item</param>
-								<param name="AST-VIEW"><xsl:value-of select="/page/view/@ident"/></param>
+								<param name="AST-VIEW"><xsl:value-of select="//explorer/view/@ident"/></param>
 								<param name="AST-PATH"><xsl:value-of select="@href-path"/></param>
 							</href>
 						</link>
@@ -476,9 +477,9 @@
 							<xsl:text>New folder</xsl:text>
 						</display>
 						<href>
-							<base><xsl:value-of select="$page"/></base>
+							<base><xsl:value-of select="$explorer-page"/></base>
 							<param name="action">create-folder</param>
-							<param name="AST-VIEW"><xsl:value-of select="/page/view/@ident"/></param>
+							<param name="AST-VIEW"><xsl:value-of select="//explorer/view/@ident"/></param>
 							<param name="AST-PATH"><xsl:value-of select="@href-path"/></param>
 						</href>
 					</link>
@@ -492,9 +493,9 @@
 							<xsl:text>Delete</xsl:text>
 						</display>
 						<href>
-							<base><xsl:value-of select="$page"/></base>
+							<base><xsl:value-of select="$explorer-page"/></base>
 							<param name="action">delete-item</param>
-							<param name="AST-VIEW"><xsl:value-of select="/page/view/@ident"/></param>
+							<param name="AST-VIEW"><xsl:value-of select="//explorer/view/@ident"/></param>
 							<param name="AST-PATH"><xsl:value-of select="@href-path"/></param>
 						</href>
 					</link>
@@ -517,11 +518,16 @@
 					</td>
 					<td class="info">
 						<select name="AST-SERVICE">
-							<xsl:for-each select="options/services/service">
+							<xsl:for-each select="//explorer/options/services/service">
 								<xsl:element name="option">
 									<xsl:attribute name="value">
 										<xsl:value-of select="@url"/>
 									</xsl:attribute>
+									<xsl:if test="@default = 'true'">
+										<xsl:attribute name="selected">
+											<xsl:value-of select="true"/>
+										</xsl:attribute>
+									</xsl:if>
 									<xsl:value-of select="@name"/>
 								</xsl:element>
 							</xsl:for-each>
@@ -546,12 +552,12 @@
 		<form method="get">
 			<input type="hidden" name="AST-VIEW">
 				<xsl:attribute name="value">
-					<xsl:value-of select="/page/view/@ident"/>
+					<xsl:value-of select="//explorer/view/@ident"/>
 				</xsl:attribute>
 			</input>
 			<input type="hidden" name="AST-PATH">
 				<xsl:attribute name="value">
-					<xsl:value-of select="/page/view/current/@path"/>
+					<xsl:value-of select="//explorer/view/current/@path"/>
 				</xsl:attribute>
 			</input>
 			<input type="hidden" name="action"   value="create-folder"/>
@@ -562,7 +568,7 @@
 						Path
 					</td>
 					<td class="info">
-						<xsl:value-of select="/page/view/current/@path"/>
+						<xsl:value-of select="//explorer/view/current/@path"/>
 					</td>
 				</tr>
 				<tr class="info">
@@ -591,12 +597,12 @@
 		<form method="get">
 			<input type="hidden" name="AST-VIEW">
 				<xsl:attribute name="value">
-					<xsl:value-of select="/page/view/@ident"/>
+					<xsl:value-of select="//explorer/view/@ident"/>
 				</xsl:attribute>
 			</input>
 			<input type="hidden" name="AST-PATH">
 				<xsl:attribute name="value">
-					<xsl:value-of select="/page/view/selected/@path"/>
+					<xsl:value-of select="//explorer/view/selected/@path"/>
 				</xsl:attribute>
 			</input>
 			<input type="hidden" name="action"   value="rename-item"/>
@@ -607,7 +613,7 @@
 						Path
 					</td>
 					<td class="info">
-						<xsl:value-of select="/page/view/selected/@path"/>
+						<xsl:value-of select="//explorer/view/selected/@path"/>
 					</td>
 				</tr>
 				<tr class="info">
@@ -617,7 +623,7 @@
 					<td class="info">
 						<input type="text" name="AST-NAME">
 							<xsl:attribute name="value">
-								<xsl:value-of select="/page/view/selected/@name"/>
+								<xsl:value-of select="//explorer/view/selected/@name"/>
 							</xsl:attribute>
 						</input>
 					</td>
@@ -640,12 +646,12 @@
 		<form method="get">
 			<input type="hidden" name="AST-VIEW">
 				<xsl:attribute name="value">
-					<xsl:value-of select="/page/view/@ident"/>
+					<xsl:value-of select="//explorer/view/@ident"/>
 				</xsl:attribute>
 			</input>
 			<input type="hidden" name="AST-PATH">
 				<xsl:attribute name="value">
-					<xsl:value-of select="/page/view/selected/@path"/>
+					<xsl:value-of select="//explorer/view/selected/@path"/>
 				</xsl:attribute>
 			</input>
 			<input type="hidden" name="action"   value="delete-item"/>
@@ -656,7 +662,7 @@
 						Name
 					</td>
 					<td class="info">
-						<xsl:value-of select="/page/view/selected/@name"/>
+						<xsl:value-of select="//explorer/view/selected/@name"/>
 					</td>
 				</tr>
 				<tr class="info">
@@ -664,7 +670,7 @@
 						Path
 					</td>
 					<td class="info">
-						<xsl:value-of select="/page/view/selected/@path"/>
+						<xsl:value-of select="//explorer/view/selected/@path"/>
 					</td>
 				</tr>
 				<tr class="info">

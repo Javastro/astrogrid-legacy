@@ -1,48 +1,96 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--+
-    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/cocoon/Attic/sitemap.xmap,v $</cvs:source>
-    | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/30 00:04:53 $</cvs:author>
-    | <cvs:version>$Revision: 1.5 $</cvs:version>
-    | <cvs:log>
-    | $Log: sitemap.xmap,v $
-    | Revision 1.5  2003/06/30 00:04:53  dave
-    | Added initial astrogrid style
-    |
-    | Revision 1.4  2003/06/29 02:45:22  dave
-    | Fixed display styles in explorer and add VOTable transform
-    |
-    | Revision 1.3  2003/06/27 03:17:38  dave
-    | Simplified page path in sitemap
-    |
-    | Revision 1.2  2003/06/27 02:43:18  dave
-    | Added images to tree nodes
-    |
-    | Revision 1.1  2003/06/26 14:15:10  dave
-    | Added explorer pages and actions to Cocoon
-    |
-    | </cvs:log>
-    |
-    | Sub sitemap for Astrogrid services.
-    |
-    +-->
-<map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
-<!-- =========================== Components ================================ -->
+
+The binary dist contains two zip files, libraries.zip and explorer.zip.
+The libraries.zip file contains the portal.jar, plus all of the jars from Axis 1.0 as well.
+These all need to go in cocoon/WEB-INF/lib.
+
+The explorer.zip contains the xsp page(s) and xsl transforms.
+These need to go somewhere in the cocoon site.
+It depends on how you layout the top level sitemap.
+I've been working with a sub-sitemap, by adding the following to the main sitemap.
+
+	<map:match pattern="astrogrid/**">
+		<map:mount uri-prefix="astrogrid" check-reload="yes" src="astrogrid/sitemap.xmap"/>
+	</map:match>
+
+This will look for a sub-sitemap at cocoon/astrogrid/sitemap.xmap
+When everything is unpacked, you should have the following :
+
+From libraries.zip :
+
+cocoon/
+cocoon/WEB-INF
+cocoon/WEB-INF/lib
+cocoon/WEB-INF/lib/portal.jar
+cocoon/WEB-INF/lib/axis.jar
+cocoon/WEB-INF/lib/....
+
+From explorer.zip :
+
+cocoon/
+cocoon/astrogrid
+cocoon/astrogrid/sitemap.xmap
+
+cocoon/astrogrid/common
+cocoon/astrogrid/common/xsl
+cocoon/astrogrid/common/xsl/template.xsl
+cocoon/astrogrid/common/xsl/astrogrid.xsl
+cocoon/astrogrid/common/xsl/xml-html.xsl
+
+cocoon/astrogrid/explorer
+cocoon/astrogrid/explorer/xsp
+cocoon/astrogrid/explorer/xsp/explorer.xsp
+
+cocoon/astrogrid/explorer/xsl
+cocoon/astrogrid/explorer/xsl/explorer.xsl
+cocoon/astrogrid/explorer/xsl/votable.xsl
+
+cocoon/astrogrid/explorer/xml
+cocoon/astrogrid/explorer/xml/votable.000.xml
+cocoon/astrogrid/explorer/xml/votable.001.xml
+
+cocoon/astrogrid/explorer/images
+cocoon/astrogrid/explorer/images/cont.icon.gif
+cocoon/astrogrid/explorer/images/cont.node.end.gif
+cocoon/astrogrid/explorer/images/cont.node.mid.gif
+cocoon/astrogrid/explorer/images/item.icon.gif
+cocoon/astrogrid/explorer/images/item.node.end.gif
+cocoon/astrogrid/explorer/images/item.node.mid.gif
+cocoon/astrogrid/explorer/images/tree.bar.gif
+cocoon/astrogrid/explorer/images/tree.gap.gif
+
+In addition, explorer.zip contains copies of the original HTML pages and PNG images.
+
+cocoon/astrogrid/html
+cocoon/astrogrid/html/agdataquery.html
+cocoon/astrogrid/html/agdataqueryhelp.html
+cocoon/astrogrid/html/agindex.html
+cocoon/astrogrid/html/agjobmonitor.html
+cocoon/astrogrid/html/agjobmonitorhelp.html
+cocoon/astrogrid/html/aglogin.html
+cocoon/astrogrid/html/agmyspace.html
+cocoon/astrogrid/html/agmyspacehelp.html
+cocoon/astrogrid/html/agnologin.html
+cocoon/astrogrid/html/agregistry.html
+cocoon/astrogrid/html/agregistryhelp.html
+cocoon/astrogrid/html/agtools.html
+cocoon/astrogrid/html/agtoolshelp.html
+
+cocoon/astrogrid/images
+cocoon/astrogrid/images/aglogo.png
+cocoon/astrogrid/images/ivoalogo.png
+
+Assuming that you have unpacked explorer.zip into cocoon/astrogrid, then the following sitemap elements should work.
+The first element needs to be added to the 'components' section at the top.
 
 	<map:components>
-		<map:generators   default="file"/>
-		<map:transformers default="xslt"/>
-		<map:readers      default="resource"/>
-		<map:serializers  default="html"/>
-		<map:matchers     default="wildcard"/>
-		<map:selectors    default="browser"/>
-
+		.....
 		<map:actions>
 			<map:action name="astrogrid-explorer" src="org.astrogrid.portal.cocoon.explorer.ExplorerAction"/>
 		</map:actions>
 	</map:components>
 
-<!-- =========================== Views =================================== -->
+The following view elements need to be added to the map:views section of the sitemap.
+Note, these are not used to display the normal pages, they provide debug views of the pipelines.
 
 	<map:views>
 		<!-- Original XML displayed as XML -->
@@ -69,14 +117,20 @@
 		</map:view>
 	</map:views>
 
-<!-- =========================== Resources ================================= -->
+Then the following pipeline needs to be added to the map:pipelines section.
+Note, the actual page names for the site navigation links are passed into the XSL templates as parameters.
+All of the links in the pages are generated using these 'map:parameter' values from the sitemap.
+As is, the explorer page will appear in the pipeline as 'agmyspace.html'.
+In order to minimise the changes required, the current parameters mimic all of the page names in the example HTML pages.
+If the actual page names for the registry browser and data query pages are different, then all you need to do is change the
+corresponding 'map:parameter' values defined in the sitemap.
 
-	<map:resources>
-	</map:resources>
+Note, the last three matchers in the pipeline, '*.html', '*.gif' and '*.png', may already be covered by the existing site pipelines.
+In which case, these can be omitted from the explorer pipeline.
+However, if you want the explorer to appear as 'agmyspace.html', then this pipeline must be placed before a '*.html' matcher
+in the existing sitemap.
 
-<!-- =========================== Pipelines ================================= -->
-
-	<map:pipelines>
+		<!-- Explorer pipeline -->
 		<map:pipeline>
 
 			<!-- Explorer page -->
@@ -142,14 +196,6 @@
 				</map:act>
 			</map:match>
 
-			<!-- Site images -->
-			<map:match pattern="*.gif">
-				<map:read src="images/{1}.gif" mime-type="images/gif"/>
-			</map:match>
-			<map:match pattern="*.png">
-				<map:read src="images/{1}.png" mime-type="images/png"/>
-			</map:match>
-
 			<!-- Explorer images -->
 			<map:match pattern="explorer/images/*.gif">
 				<map:read src="explorer/images/{1}.gif" mime-type="images/gif"/>
@@ -160,26 +206,13 @@
 				<map:read mime-type="text/html" src="html/{1}.html"/>
 			</map:match>
 
-			<!-- VoTable test data -->
-			<map:match pattern="explorer/data/*">
-				<!-- Generate our XML data -->
-				<map:generate src="explorer/xml/votable.{1}.xml" label="000, 001"/>
-				<!-- Convert the VoTable data into HTML -->
-				<map:transform src="explorer/xsl/votable.xsl" label="002"/>
-				<!-- Wrap the page in our HTML template -->
-				<map:transform src="common/xsl/astrogrid.xsl" label="003"/>
-				<!-- Serialize as HTML -->
-				<map:serialize type="html"/>
+			<!-- Site images -->
+			<map:match pattern="*.gif">
+				<map:read src="images/{1}.gif" mime-type="images/gif"/>
 			</map:match>
-
-			<!-- MySpace data -->
-			<map:match pattern="explorer/myspace/*">
-				<!-- Generate our XML data -->
-				<map:generate src="/var/projects/astrogrid/astrogrid/portalB/build/myspace/live/service/temp/{1}" label="000, 001"/>
-				<!-- Serialize as XML -->
-				<map:serialize type="xml"/>
+			<map:match pattern="*.png">
+				<map:read src="images/{1}.png" mime-type="images/png"/>
 			</map:match>
 
 		</map:pipeline>
-	</map:pipelines>
-</map:sitemap>
+
