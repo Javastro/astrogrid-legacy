@@ -1,4 +1,4 @@
-/*$Id: BaseApplicationDescriptionLibrary.java,v 1.7 2004/11/27 13:20:02 pah Exp $
+/*$Id: BaseApplicationDescriptionLibrary.java,v 1.8 2004/12/03 15:33:39 jdt Exp $
  * Created on 17-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -42,6 +42,12 @@ public class BaseApplicationDescriptionLibrary implements ApplicationDescription
         String getAuthorityID();
     }
 
+    /** Construct a new BaseApplicationDescriptionLibrary
+     * 
+     */
+    public BaseApplicationDescriptionLibrary() {
+        super();
+    }
 
     /**Construct a new BaseApplicationDescriptionLibrary
     * @param env2
@@ -111,6 +117,9 @@ public class BaseApplicationDescriptionLibrary implements ApplicationDescription
 
 /* 
 $Log: BaseApplicationDescriptionLibrary.java,v $
+Revision 1.8  2004/12/03 15:33:39  jdt
+restored the default ctor, otherwise PAL breaks.
+
 Revision 1.7  2004/11/27 13:20:02  pah
 result of merge of pah_cea_bz561 branch
 
