@@ -487,7 +487,17 @@
                   <tr> 
                      <td>Name: <xsl:value-of select="@param-name" /></td>
                      <td>Type: <xsl:value-of select="@param-type" /></td>
-                     <td>Value: <input type="text" name="param-value" /><input type="submit" value="Submit" /></td>
+                     <xsl:if test="@param-type != 'boolean'">
+                        <td>Value: <input type="text" name="param-value" /><input type="submit" value="Submit" /></td>
+                     </xsl:if>
+                     <xsl:if test="@param-type = 'boolean'">
+                        <td>
+                           Value:  
+                            - true - <input type="radio" name="param-value" value="true" />
+                            - false - <input type="radio" name="param-value" value="false" />   
+                           <input type="submit" value="Submit" />
+                        </td>
+                     </xsl:if>
                      <td>Cardinality (max): <xsl:value-of select="@param-cardinality-max" /></td>
                      <td>(min): <xsl:value-of select="@param-cardinality-min" /></td>
                   </tr>                                        
