@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegateTest.java,v 1.4 2004/02/17 03:39:13 mch Exp $
+ * $Id: WebDelegateTest.java,v 1.5 2004/02/17 15:12:49 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -26,19 +26,19 @@ import org.astrogrid.datacenter.delegate.agws.WebDelegate;
 public class WebDelegateTest extends TestCase
 {
 
-	//an astrogrid web service
-	private static String ROE_6DF = "http://grendel12.roe.ac.uk:8080/pal-SNAPSHOT/services/AxisDataServer";
-	
+   //an astrogrid web service
+   private static String TEST_PAL = "http://vm07.astrogrid.org:8080/pal/services/AxisDataServer";
+   
    /**
     * Tests an SQL-pass through query on the dummy
     */
    public void testConeSearch() throws IOException
    {
-      WebDelegate delegate = (WebDelegate) DatacenterDelegateFactory.makeConeSearcher(Account.ANONYMOUS, ROE_6DF, DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
+      WebDelegate delegate = (WebDelegate) DatacenterDelegateFactory.makeConeSearcher(Account.ANONYMOUS, TEST_PAL, DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
       
       InputStream results = delegate.coneSearch(308, 60, 12);
-		
-		assertNotNull(results);
+      
+      assertNotNull(results);
       
    }
    
@@ -62,6 +62,9 @@ public class WebDelegateTest extends TestCase
 
 /*
  * $Log: WebDelegateTest.java,v $
+ * Revision 1.5  2004/02/17 15:12:49  mch
+ * Fix to access test pal
+ *
  * Revision 1.4  2004/02/17 03:39:13  mch
  * New Datacenter UIs
  *
