@@ -9,7 +9,7 @@ import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.security.ClientSecurityGuard;
 import org.astrogrid.security.Password;
 import org.astrogrid.security.sample.SamplePortType;
-import org.astrogrid.security.sample.SampleImplServiceLocator;
+import org.astrogrid.security.sample.SampleServiceLocator;
 
 
 /**
@@ -86,9 +86,9 @@ public class WhoAmITest extends TestCase {
     // Have the security guard add the grid credentials to
     // outgoing messages.
     QName portName = new QName("urn:astrogrid:port-types", "security-sample");
-    SampleImplServiceLocator l = new SampleImplServiceLocator();
+    SampleServiceLocator l = new SampleServiceLocator();
     sg.mountGuard(l, portName);
-    SamplePortType p = l.getSecuritySample(new URL(address));
+    SamplePortType p = l.getSecuritySamplePort(new URL(address));
     Stub s = (Stub)p;
     s.setPortName(portName);
 
