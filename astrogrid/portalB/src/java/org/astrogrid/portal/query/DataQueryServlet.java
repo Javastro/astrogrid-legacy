@@ -5,7 +5,12 @@ import org.w3c.dom.*;
 import javax.servlet.http.*;
 import java.io.*;
 import java.util.*;
-import org.astrogrid.portal.generated.jobcontroller.client.*;
+
+import java.net.URL;
+import org.apache.axis.client.Call;
+import org.apache.axis.client.Service;
+import org.apache.axis.encoding.XMLType;
+
 
 /**
  *
@@ -30,6 +35,46 @@ import org.astrogrid.portal.generated.jobcontroller.client.*;
 public class DataQueryServlet extends HttpServlet {
 
 
+	private static final String CONFIG_FILENAME = "ASTROGRID_DataQueryPortal.properties";
+
+	private static final String JES_SERVER_PROTOCOL_PROPERTY = "ASTROGRID.JES.SERVER.PROTOCOL";	
+	
+	private static final String JES_SERVER_PROPERTY = "ASTROGRID.JES.SERVER";
+	
+	private static final String JES_SERVER_PORT_PROPERTY = "ASTROGRID.JES.SERVER.PORT";	
+	
+	private static final String JES_SERVICECALLNAME_PROPERTY = "ASTROGRID.JES.SERVICECALLNAME";	
+
+	private static final String JES_NAMESPACE_PROPERTY = "ASTROGRID.JES.NAMESPACE";	
+	
+	private static final String JES_METHODCALL_PROPERTY = "ASTROGRID.JES.METHODCALL";	
+	
+	private static final String REGISTRY_SERVER_PROPERTY = "ASTROGRID.REGISTRY.SERVER";
+	
+	private static final String REGISTRY_SERVER_PROTOCOL_PROPERTY = "ASTROGRID.REGISTRY.SERVER.PROTOCOL";	
+		
+	private static final String REGISTRY_SERVER_PORT_PROPERTY = "ASTROGRID.REGISTRY.SERVER.PORT";	
+	
+	private static final String REGISTRY_SERVICECALLNAME_PROPERTY = "ASTROGRID.REGISTRY.SERVICECALLNAME";	
+	
+	private static final String REGISTRY_REFRESH_RATE_INMINUTES_PROPERTY = "ASTROGRID.REGISTRY.REFRESH.RATE.INMINUTES";	
+
+	private static final String REGISTRY_NAMESPACE_PROPERTY = "ASTROGRID.REGISTRY.NAMESPACE";	
+
+	private static final String REGISTRY_METHODCALL_PROPERTY = "ASTROGRID.REGISTRY.METHODCALL";	
+	
+	private static final String REGISTRY_REFRESH_RATE_DEFAULT = "200";
+	
+	private String registryEndPoint = null;
+	
+	private String jesEndPoint = null;	
+	
+	
+	/** The DatasetAgent's properties' file. */  	
+	private Properties
+		configurationProperties = null ;
+
+
 	/**
 	 * This method is called by the ServletContainer only once in the beginning for any initialization.  This servlet gets all the
 	 * registry information and stores it in the application session for retrieval.  Also stores a future Calendar time for 
@@ -39,14 +84,42 @@ public class DataQueryServlet extends HttpServlet {
 	 */
 	public void init(ServletConfig conf) throws ServletException {
 		super.init(conf);
+		System.out.println("entered init");
+
+		configurationProperties = new Properties() ;
 		ServletContext sc = conf.getServletContext();
+		
+		try {
+			configurationProperties.load(new FileInputStream(sc.getRealPath(CONFIG_FILENAME)));
+		}
+		catch ( IOException ex ) {
+			configurationProperties = null ;
+			ex.printStackTrace();
+		}
+
+		registryEndPoint =  configurationProperties.getProperty(REGISTRY_SERVER_PROTOCOL_PROPERTY) + "://" +  
+							configurationProperties.getProperty(REGISTRY_SERVER_PROPERTY) + ":" +
+							configurationProperties.getProperty(REGISTRY_SERVER_PORT_PROPERTY) +
+							configurationProperties.getProperty(REGISTRY_SERVICECALLNAME_PROPERTY);
+							
+		jesEndPoint =  configurationProperties.getProperty(JES_SERVER_PROTOCOL_PROPERTY) + "://" + 
+							configurationProperties.getProperty(JES_SERVER_PROPERTY) + ":" + 
+							configurationProperties.getProperty(JES_SERVER_PORT_PROPERTY) +
+							configurationProperties.getProperty(JES_SERVICECALLNAME_PROPERTY);
+							
+		System.out.println("The regendpoint = " + registryEndPoint);
+		
+		System.out.println("The jobendpoing = "  + jesEndPoint);
+
+		
+
 		ArrayList dsInfo = (ArrayList)sc.getAttribute("DataSetArrayList");
 		if(dsInfo == null || dsInfo.size() <= 0) {
 			dsInfo = getDataSetsFromRegistry();
 			System.out.println("it was called");
 			sc.setAttribute("DataSetArrayList",dsInfo);
 			Calendar cal = Calendar.getInstance();
-			cal.add(Calendar.HOUR_OF_DAY,5);
+			cal.add(Calendar.MINUTE,new Integer(configurationProperties.getProperty(REGISTRY_REFRESH_RATE_INMINUTES_PROPERTY,REGISTRY_REFRESH_RATE_DEFAULT)).intValue());
 			sc.setAttribute("DataSetInitTime",cal);
 		}//if
 	}
@@ -86,7 +159,7 @@ public class DataQueryServlet extends HttpServlet {
 		if(dsTime == null || current.after(dsTime)) {
 			ArrayList dsInfo = getDataSetsFromRegistry();
 			sc.setAttribute("DataSetArrayList",dsInfo);
-			current.add(Calendar.HOUR_OF_DAY,5);
+			current.add(Calendar.MINUTE,new Integer(configurationProperties.getProperty(REGISTRY_REFRESH_RATE_INMINUTES_PROPERTY,REGISTRY_REFRESH_RATE_DEFAULT)).intValue());
 			sc.setAttribute("DataSetInitTime",current);
 		}
 	}
@@ -101,7 +174,7 @@ public class DataQueryServlet extends HttpServlet {
 	private ArrayList getDataSetsFromRegistry() {
 		String reqXmlString = QueryRegistryInformation.getAllDataSetInformationFromRegistry();
 		System.out.println(reqXmlString);
-		String respXmlString = QueryRegistryInformation.sendRegistryQuery(reqXmlString);
+		String respXmlString = sendQuery(reqXmlString,registryEndPoint,configurationProperties.getProperty(REGISTRY_NAMESPACE_PROPERTY),configurationProperties.getProperty(REGISTRY_METHODCALL_PROPERTY));
 		System.out.println(respXmlString);
 		Object []dsItems = QueryRegistryInformation.getDataSetItemsFromRegistryResponse(respXmlString);
 		ArrayList ds = new ArrayList(dsItems.length);
@@ -111,7 +184,7 @@ public class DataQueryServlet extends HttpServlet {
 		
 		for(int i=0;i< dsItems.length;i++) {
 			reqXmlString = QueryRegistryInformation.getAllContentInformationFromRegistryForDataSet((String)dsItems[i]);
-			respXmlString = QueryRegistryInformation.sendRegistryQuery(reqXmlString);			
+			respXmlString = sendQuery(reqXmlString,registryEndPoint,configurationProperties.getProperty(REGISTRY_NAMESPACE_PROPERTY),configurationProperties.getProperty(REGISTRY_METHODCALL_PROPERTY));			
 			ArrayList dsColumns = QueryRegistryInformation.getItemsFromRegistryResponse(respXmlString);
 			DataSetInformation dsInfo = new DataSetInformation((String)dsItems[i]);
 			dsInfo.setDataSetColumns(dsColumns);
@@ -143,24 +216,19 @@ public class DataQueryServlet extends HttpServlet {
 		String userName = null;
 		String community = null;
 		int iTemp = -1;
+
 		if(qb == null) {
 			qb = new QueryBuilder("JobTest");
 		}
 
-		checkDataSetTime(getServletConfig().getServletContext(),
-						 Calendar.getInstance());
-		ArrayList alTemp = (ArrayList)getServletContext().getAttribute("DataSetArrayList");
-		if(alTemp == null || alTemp.size() <= 0) {
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-							   "Cannot access service to get Data Set List");
-		}
 		
 		if(!validParameter(qb.getUserName())) {
 			userName = request.getParameter("username");
 			if(!validParameter(userName)) {
 				userName = (String)session.getAttribute("username");			
 				if(!validParameter(userName)) {
-					userName = "demouser";
+					//userName = "demouser";
+					response.sendRedirect("/cocoon/astrogrid/aglogin.html");					
 				}
 			}
 			session.setAttribute("username",userName);
@@ -173,7 +241,7 @@ public class DataQueryServlet extends HttpServlet {
 			if(!validParameter(community)) {
 				community = (String)session.getAttribute("community");			
 				if(!validParameter(community)) {
-					community = "democomm";
+					response.sendRedirect("/cocoon/astrogrid/aglogin.html");
 				}//if
 			}//if
 			session.setAttribute("community",community);
@@ -182,6 +250,15 @@ public class DataQueryServlet extends HttpServlet {
 		}
 		System.out.println("the username = " + qb.getUserName());
 		System.out.println("the community = " + qb.getCommunity());
+
+
+		checkDataSetTime(getServletConfig().getServletContext(),
+						 Calendar.getInstance());
+		ArrayList alTemp = (ArrayList)getServletContext().getAttribute("DataSetArrayList");
+		if(alTemp == null || alTemp.size() <= 0) {
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+							   "Cannot access service to get Data Set List");
+		}
 		
 		
 		//Start checking which button was pressed.  
@@ -303,50 +380,7 @@ public class DataQueryServlet extends HttpServlet {
 			session.setAttribute("CriteriaNumber",null);
 			session.setAttribute("QueryString",null);
 		}else if(validParameter(request.getParameter("SubmitQuery"))){
-			//submited a query so send it to the JobController.
-				String tempStr = "";
-				String jobIDStr = null;
-				ArrayList alErrorQueries = (ArrayList)getServletContext().getAttribute("ErrorQueryBuilders");
-				if(alErrorQueries != null) {				
-					try {
-						while(alErrorQueries.size() > 0) {
-						  send((QueryBuilder)alErrorQueries.get(0));
-						  alErrorQueries.remove(0);
-						}					
-					}catch(Exception wsException) {
-						wsException.printStackTrace();
-						getServletContext().setAttribute("ErrorQueryBuilders",alErrorQueries);
-					}
-				}
-				try {
-					tempStr = send(qb);
-					if(tempStr.indexOf("<jobid>") != -1) {
-						jobIDStr = tempStr.substring((tempStr.indexOf("<jobid>") + 7),tempStr.indexOf("</jobid>"));
-					}					
-					session.setAttribute("jobid",jobIDStr);
-					System.out.println("the jobid is = " + jobIDStr);
-					//now that it is sent blank out the QueryString and put it as part of their Sent Queries.
-					if(queryString == null){queryString = "";}
-					
-					queryString = qb.formulateQuery() + "- JobID= " + jobIDStr + "<br />" + queryString;
-					session.setAttribute("QueryStringSent","\nSent Query:" + queryString);
-					session.setAttribute("QueryString",null);									
-				}catch(Exception wsException) {
-					wsException.printStackTrace();
-					if(alErrorQueries == null) {
-						alErrorQueries = new ArrayList();
-					}
-					alErrorQueries.add(qb);
-					getServletContext().setAttribute("ErrorQueryBuilders",alErrorQueries);
-					errorMessage = "An error happened trying to submit your query to our service" +
-					               "The cause is the service is down.  Your query has been saved and " +
-					               "will be sent when the service comes back up.";
-				}
-				//set a Session of the request in xml format sent.
-				session.setAttribute("CriteriaNumber",null);
-				session.setAttribute("LastWebServiceXML",tempStr);
-				qb.clear();
-				qb = null;
+			submitJobQuery(qb,session);
 		}else {
 			//okay might be the first time but it was not a action type request.
 			//and not dealing with a query.
@@ -388,30 +422,68 @@ public class DataQueryServlet extends HttpServlet {
 		if(val != null && val.length() > 0) return true;
 		return false;
 	}
+	
+	private void submitJobQuery(QueryBuilder qb,HttpSession session) {
+		//submited a query so send it to the JobController.
+			String tempStr = "";
+			String queryString = "";
+			String jobIDStr = null;
+			String xmlBuildResult = null;
+			
+			try {
+				CreateRequest cr = new CreateRequest();
+				Document doc = cr.buildXMLRequest(qb);
 
-	/**
-	 * Mehtod used to send to the JobController webservice.  Interacts with the JobController stubbs for this.
-	 * 
-	 * @param qb
-	 * @return
-	 */
-	private String send(QueryBuilder qb) throws Exception {
-        JobController binding;
-        String xmlBuildResult = null;
-        String response = null;
-        	//CreateRequest is an object that creates the necessary xml document object to send to the job controller.
-			CreateRequest cr = new CreateRequest();
-			Document doc = cr.buildXMLRequest(qb);
-
-			xmlBuildResult = cr.writeDocument(doc);
-			//xmlBuildResult = xmlBuildResult.substring(xmlBuildResult.indexOf("<jo"));
-			System.out.println("The XmL going to the webservice is = " + xmlBuildResult);
-			binding = new JobControllerServiceLocator().getJobControllerService();
-			//binding.setTimeout(30000);
-			//submit the request and get a response back.
-        	response = binding.submitJob(xmlBuildResult);
-			System.out.println("the response from the call to the webservice = " + response);
-        if(xmlBuildResult != null && xmlBuildResult.length() > 0) xmlBuildResult = xmlBuildResult.replaceAll(">",">\n");
-        return "XML String sent to webservice = " + xmlBuildResult + "Response = " + response;
+				xmlBuildResult = cr.writeDocument(doc);
+				tempStr = sendQuery(xmlBuildResult,jesEndPoint,configurationProperties.getProperty(JES_NAMESPACE_PROPERTY),configurationProperties.getProperty(REGISTRY_METHODCALL_PROPERTY));
+				if(tempStr.indexOf("<jobid>") != -1) {
+					jobIDStr = tempStr.substring((tempStr.indexOf("<jobid>") + 7),tempStr.indexOf("</jobid>"));
+				}					
+				session.setAttribute("jobid",jobIDStr);
+				System.out.println("the jobid is = " + jobIDStr);
+				if(validParameter((String)session.getAttribute("QueryStringSent"))) {
+					queryString = (String)session.getAttribute("QueryStringSent");
+				}
+				
+				queryString = qb.formulateQuery() + "- JobID= " + jobIDStr + "<br />" + queryString;
+				session.setAttribute("QueryStringSent","\nSent Query:" + queryString);
+				session.setAttribute("QueryString",null);									
+			}catch(Exception wsException) {
+				wsException.printStackTrace();
+				/*
+				if(alErrorQueries == null) {
+					alErrorQueries = new ArrayList();
+				}
+				alErrorQueries.add(qb);
+				getServletContext().setAttribute("ErrorQueryBuilders",alErrorQueries);
+				errorMessage = "An error happened trying to submit your query to our service" +
+							   "The cause is the service is down.  Your query has been saved and " +
+							   "will be sent when the service comes back up.";
+				*/
+			}
+			//set a Session of the request in xml format sent.
+			session.setAttribute("CriteriaNumber",null);
+			session.setAttribute("LastWebServiceXML",tempStr);
+			qb.clear();
+			qb = null;
 	}
+
+	
+	public String sendQuery(String req,String endPoint,String nameSpace,String methodName) {
+		try {
+			Service service = new Service();
+			Call call = (Call)service.createCall();
+			call.setTargetEndpointAddress(new URL(endPoint));
+			call.setOperationName(new javax.xml.namespace.QName(nameSpace, methodName));
+			//call.setSOAPActionURI("urn:org.astrogrid.registry.RegistryInterface3_0");
+			call.setReturnType(XMLType.XSD_STRING);
+			java.lang.Object _resp = call.invoke(new java.lang.Object[] {req});
+			String response = (String)_resp;
+			System.out.println("the response from the call to the webservice = " + response);
+			return response;
+		}catch (Exception e) {
+			  e.printStackTrace();
+		}
+		  return null;
+	}	
 }

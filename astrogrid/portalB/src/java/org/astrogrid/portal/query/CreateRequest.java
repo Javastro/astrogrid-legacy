@@ -19,12 +19,19 @@ import java.io.*;
 public class CreateRequest {
 
 	private final String JOB_ELEMENT = "job";
+	
 	private final String JOBURN_ATTR = "jobURN";
+	
 	private final String JOBMONITOR_ATTR = "jobMonitorURL";
+	
 	private final String NAME_ATTR = "name";
+	
 	private final String URL_ATTR = "url";
+	
 	private final String TYPE_ATTR = "type";
+	
 	private final String USERID_ELEMENT = "userid";
+	
 	private final String COMM_ELEMENT = "community";
 	private final String JOBSTEP_ELEMENT = "jobstep";
 	private final String QUERY_ELEMENT = "query";
@@ -315,7 +322,7 @@ public class CreateRequest {
 		}//if
 	}//doCriteria
 	*/
-
+	
 	public static void main(String []args) {
 		try {
 		QueryBuilder qb = new QueryBuilder("JobTest");

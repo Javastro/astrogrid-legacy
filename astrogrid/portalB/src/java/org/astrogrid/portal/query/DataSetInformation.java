@@ -127,58 +127,6 @@ public class DataSetInformation {
 		removeCriteriaInformation(new DataSetColumn(columnName,type),filterType,value);
 	}
 
-	/**
-	 * This method is actually now the main method that is always used for removing.  This method will get the item in the ArrayList 
-	 * determined by the int variable link and then start comparing that CriteriaInformation and any of it's sub
-	 * CriteriaInformation objects to remove it.  Uses the findAndRemoveCriteria methos to do the real removing.  If
-	 * a CriteriaInformaiton object has sub-CriteriaInformation objects then appropriate removal and resetting of the
-	 * sub-CriteriaInformation will occur.
-	 * @param columnName
-	 * @param type
-	 * @param filterType
-	 * @param value
-	 * @param link
-	 */
-	public void removeCriteriaInformation(String columnName,String type,String filterType,String value,int link) {
-		CriteriaInformation ci = (CriteriaInformation)criteriaInfo.get(link);
-		CriteriaInformation rem = new CriteriaInformation(new DataSetColumn(columnName,type),filterType,value);
-		if(rem.equals(ci)) {
-			if(ci.getLinkedCriteria() != null) {
-				criteriaInfo.set(link,ci.getLinkedCriteria());
-			}else {
-				criteriaInfo.remove(link);
-			}
-		}
-		findAndRemoveCriteria(ci,ci,rem);
-	}
-	
-	/**
-	 * This method will recursively call itself until it finds the target Criteria that equals the src Criteria.
-	 * A parent Criteria is also passed around so it can set any sub CriteriaInformaiton objects appropritate. 
-	 * @param parent
-	 * @param src
-	 * @param target
-	 */
-	private void findAndRemoveCriteria(CriteriaInformation parent,CriteriaInformation src,CriteriaInformation target) {
-		boolean found = false;
-		if(target.equals(src)) {
-		  found = true;
-		}
-		if(found) {
-			if(src.getLinkedCriteria() != null) {
-				parent.setLinkedCriteria(src.getLinkedCriteria());
-			}else {
-				parent.setLinkedCriteria(null);
-			}
-			return;
-		}
-
-		if(src.getLinkedCriteria() != null) {
-			findAndRemoveCriteria(src,src.getLinkedCriteria(),target);
-		}
-	}
-
-
 	public void removeCriteriaInformation(DataSetColumn dsColumn,String filterType,String value) {
 		CriteriaInformation ci = new CriteriaInformation(dsColumn,filterType,value);
 		int i = -1;
