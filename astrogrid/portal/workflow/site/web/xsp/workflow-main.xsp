@@ -31,6 +31,8 @@
       private static final boolean 
          TRACE_ENABLED = true;
          
+      private Workflow workflow = null;
+         
       //=========================================================================================
       private void displayTool( Tool tool, AttributesImpl xspAttr ) throws SAXException {
          if( TRACE_ENABLED ) trace( "workflow-main-xsp.displayTool() entry");
@@ -174,7 +176,7 @@
 		        	
 		    try {
                  <xsp:element name="sequence">
-                    <xsp:attribute name="key"><xsp:expr>getXPathKey( aSequence )</xsp:expr></xsp:attribute>
+                    <xsp:attribute name="key"><xsp:expr>getXPathKey( aSequence, xspAttr )</xsp:expr></xsp:attribute>
                     <xsp:logic>activityContainer( aSequence, xspAttr ) ;</xsp:logic>
                  </xsp:element>
 		    }
@@ -194,7 +196,7 @@
         	
         	try {
                  <xsp:element name="flow">
-                    <xsp:attribute name="key"><xsp:expr>getXPathKey( flow )</xsp:expr></xsp:attribute>
+                    <xsp:attribute name="key"><xsp:expr>getXPathKey( flow, xspAttr  )</xsp:expr></xsp:attribute>
                     <xsp:logic>activityContainer( flow, xspAttr ) ;</xsp:logic>
                  </xsp:element>
         	}
@@ -215,7 +217,7 @@
                
                if (step.getTool() != null) {
                   <xsp:element name="step">
-                     <xsp:attribute name="key"><xsp:expr>getXPathKey( step )</xsp:expr></xsp:attribute>
+                     <xsp:attribute name="key"><xsp:expr>getXPathKey( step, xspAttr  )</xsp:expr></xsp:attribute>
                      <xsp:attribute name="step-name"><xsp:expr>step.getName()</xsp:expr></xsp:attribute>
                      <xsp:attribute name="step-description"><xsp:expr>step.getDescription()</xsp:expr></xsp:attribute>
                      <xsp:attribute name="joinCondition"><xsp:expr>step.getJoinCondition()</xsp:expr></xsp:attribute>
@@ -224,7 +226,7 @@
                }
                else {               
                   <xsp:element name="step">
-                     <xsp:attribute name="key"><xsp:expr>getXPathKey( step )</xsp:expr></xsp:attribute>
+                     <xsp:attribute name="key"><xsp:expr>getXPathKey( step, xspAttr  )</xsp:expr></xsp:attribute>
                      <xsp:attribute name="step-name"><xsp:expr>step.getName()</xsp:expr></xsp:attribute>
                      <xsp:attribute name="step-description"><xsp:expr>step.getDescription()</xsp:expr></xsp:attribute>
                      <xsp:attribute name="joinCondition"><xsp:expr>step.getJoinCondition()</xsp:expr></xsp:attribute>
@@ -268,10 +270,11 @@
         
         
         //====================================================================
-        private String getXPathKey( AbstractActivity activity ) {          
-            Workflow
-               workflow = (Workflow)session.getAttribute( DesignAction.HTTP_WORKFLOW_TAG ) ;
-            return workflow.getXPathFor( activity );
+        private String getXPathKey( AbstractActivity activity, AttributesImpl xspAttr  ) {     
+            if( workflow != null ) {
+               return workflow.getXPathFor( activity );
+            }   
+			return "";          
         }
         
       //==========================================================
@@ -291,7 +294,9 @@
          try{
             if( TRACE_ENABLED ) trace( "workflow-main-xsp: Retrieving workflow from session object start") ;
             //================================================================================
-            Workflow workflow = (Workflow)session.getAttribute( DesignAction.HTTP_WORKFLOW_TAG ) ;
+            workflow = (Workflow)<xsp-session:get-attribute name="workflow-tag" as="object"/> ;
+            
+            
             //================================================================================
 	
 	        if (workflow != null){
@@ -319,7 +324,7 @@
           	
          try{
             if( TRACE_ENABLED ) trace( "workflow-main-xsp: Retrieving Tool list from request object start") ; 	     
-		    String[] toolArray = (String[])request.getAttribute( DesignAction.TOOL_LIST_PARAMETER );			
+		    String[] toolArray = (String[])<xsp-request:get-attribute name="tool-list" as="object"/>; 
 	        toolList( toolArray );
          }
          catch(Exception e) {
