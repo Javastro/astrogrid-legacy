@@ -115,7 +115,7 @@ public class LoginAction extends AbstractAction
       String user = request.getParameter("Username");
       String password = request.getParameter("Password");
       
-      
+ // authentication
       
       if(LOGIN_ACTION.equals(action)) {
          if(user == null || user.trim().length() <= 0) {
