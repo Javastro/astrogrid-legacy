@@ -1,5 +1,5 @@
 /*
- * $Id: CommunityChangePasswordTest.java,v 1.1 2004/06/07 18:51:12 jdt Exp $ Created on Jun 7, 2004 by jdt@roe.ac.uk The auto-integration project
+ * $Id: CommunityChangePasswordTest.java,v 1.2 2004/07/05 16:34:50 jdt Exp $ Created on Jun 7, 2004 by jdt@roe.ac.uk The auto-integration project
  * Copyright (c) Astrigrid 2004. All rights reserved.
  *  
  */
@@ -11,9 +11,13 @@ package org.astrogrid.portal.integration;
  */
 public final class CommunityChangePasswordTest extends AstrogridPortalWebTestCase {
     /**
+     * The message we expect to see if we're successful in changing the password.
+     */
+	private static final String PASSWORD_CHANGED_SUCCESS_MSG = "Account's password changed.";
+	/**
      * A known registered community
      */
-    private static final String TEST_COMMUNITY = "org.astrogrid.mock";
+    private static final String TEST_COMMUNITY = RegisteredUsers.LOCAL_COMMUNITY;
     /**
      * A known registered user
      */
@@ -21,7 +25,7 @@ public final class CommunityChangePasswordTest extends AstrogridPortalWebTestCas
     /**
      * A known registered password
      */
-    private static final String TEST_PASSWORD = "secret";//RegisteredUsers.PASSWORD;
+    private static final String TEST_PASSWORD = RegisteredUsers.PASSWORD;
     /**
      * Commons logger
      */
@@ -102,13 +106,13 @@ public final class CommunityChangePasswordTest extends AstrogridPortalWebTestCas
     protected void setUp() throws Exception {
         super.setUp();
         login(TEST_USER, TEST_COMMUNITY, TEST_PASSWORD);
-        beginAt("/main/mount/community/administration.html");
+        gotoPage("/main/mount/community/administration.html");
     }
     /**
      * Log out
      */
     private void logout() {
-        beginAt("/main/mount/login/logout"); 
+    	gotoPage("/main/mount/login/logout"); 
     }
     /**
      * Check that the Community page has the correct forms 
@@ -131,7 +135,7 @@ public final class CommunityChangePasswordTest extends AstrogridPortalWebTestCas
     public void testChangePassword() {
         final String newPassword="abraracourcix";
         changePassword(TEST_PASSWORD, newPassword, newPassword);
-        assertTextPresent("Account's password changed.");
+        assertTextPresent(PASSWORD_CHANGED_SUCCESS_MSG);
         
         //Can we log in with the old password?
         logout();
@@ -153,7 +157,7 @@ public final class CommunityChangePasswordTest extends AstrogridPortalWebTestCas
     public void testChangePasswordOriginalWrong() {
         final String newPassword="abraracourcix";
         changePassword("badGuess", newPassword, newPassword);
-        assertTextNotPresent("Account's password changed.");
+        assertTextNotPresent(PASSWORD_CHANGED_SUCCESS_MSG);
     }
     
     /**
@@ -176,6 +180,10 @@ public final class CommunityChangePasswordTest extends AstrogridPortalWebTestCas
      */
     private void loginUnchecked(final String user, final String community, final String password) {
         beginAt("/");
+        System.out.println("Attempting to login with ");
+        System.out.println("User "+user);
+        System.out.println("password "+password);
+        System.out.println("community "+community);
         setFormElement(PortalLoginPageTest.USER,user);
         setFormElement(PortalLoginPageTest.COMMUNITY,community);     
         setFormElement(PortalLoginPageTest.PASS,password);
@@ -191,7 +199,7 @@ public final class CommunityChangePasswordTest extends AstrogridPortalWebTestCas
     private void changePassword(final String currentPassword, 
                                 final String newPassword,
                                 final String newPassword2) {
-        beginAt("/main/mount/community/administration.html");
+    	gotoPage("/main/mount/community/administration.html");
         selectOption(ADMINTASK_SELECT, CHANGE_PASSWORD_DISPLAY);
         submit();
         assertFormPresent(CHANGE_PASSWORD_FORM);
@@ -219,6 +227,9 @@ public final class CommunityChangePasswordTest extends AstrogridPortalWebTestCas
 }
 /*
  * $Log: CommunityChangePasswordTest.java,v $
+ * Revision 1.2  2004/07/05 16:34:50  jdt
+ * fixed these tests....used to fail because "beginAt" started a new session.
+ *
  * Revision 1.1  2004/06/07 18:51:12  jdt
  * Name change
  *
