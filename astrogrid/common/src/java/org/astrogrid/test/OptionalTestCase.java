@@ -1,4 +1,4 @@
-/*$Id: OptionalTestCase.java,v 1.2 2004/01/23 11:01:03 nw Exp $
+/*$Id: OptionalTestCase.java,v 1.3 2004/01/23 11:10:27 nw Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -47,6 +47,7 @@ public class OptionalTestCase extends TestCase {
     */
    public void run(TestResult tr) {
       if (this.isDisabled()) {
+         tr.startTest(this);
          System.out.println("Optional test " + this.getClass().getName() + "#" + this.getName() + " is disabled - Skipping..");
          tr.endTest(this);
       } else {
@@ -102,6 +103,9 @@ public class OptionalTestCase extends TestCase {
 
 /* 
 $Log: OptionalTestCase.java,v $
+Revision 1.3  2004/01/23 11:10:27  nw
+works fine now.
+
 Revision 1.2  2004/01/23 11:01:03  nw
 minor change
 
