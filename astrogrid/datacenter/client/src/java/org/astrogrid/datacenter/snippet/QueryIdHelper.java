@@ -1,13 +1,13 @@
 /*
- * $Id: QueryIdHelper.java,v 1.1 2003/11/17 12:53:07 mch Exp $
+ * $Id: QueryIdHelper.java,v 1.2 2004/03/07 21:12:38 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.snippet;
 
-import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.log.Log;
+import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -34,7 +34,7 @@ public class QueryIdHelper
       String tagString = "<"+QUERY_ID_TAG+">"+id+"</"+QUERY_ID_TAG+">";
 
       return tagString;
-      //return XMLUtils.newDocument(tagString).getDocumentElement();
+      //return DomHelper.newDocument(tagString).getDocumentElement();
    }
 
    /** Finds the service tag in the given dom and returns its tag value
@@ -48,13 +48,13 @@ public class QueryIdHelper
       if (idNodes.getLength() == 0)
       {
           if (QUERY_ID_TAG.equals(domContainingId.getLocalName())) {
-              return domContainingId.getFirstChild().getNodeValue(); 
+              return domContainingId.getFirstChild().getNodeValue();
           }
          //no service id tag found, look for attribute in top tag
          String attribute = domContainingId.getAttribute(QueryIdHelper.QUERY_ID_ATT);
 
          Log.affirm((attribute != null) && (attribute.length() != 0),
-                    "No query id tag or attribute found in "+XMLUtils.ElementToString(domContainingId));
+                    "No query id tag or attribute found in "+DomHelper.ElementToString(domContainingId));
 
          return attribute;
       }
@@ -68,7 +68,7 @@ public class QueryIdHelper
          //bug trace
          if (idNodes.item(0).getFirstChild() == null)
          {
-            Log.trace(XMLUtils.ElementToString( (Element) idNodes.item(0)));
+            Log.trace(DomHelper.ElementToString( (Element) idNodes.item(0)));
          }
 
 

@@ -1,5 +1,5 @@
 /*
- * $Id: DelegateTest.java,v 1.9 2004/03/07 00:33:50 mch Exp $
+ * $Id: DelegateTest.java,v 1.10 2004/03/07 21:15:07 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -16,17 +16,12 @@ package org.astrogrid.datacenter.delegate;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.UnknownHostException;
 import java.util.Vector;
-
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.rpc.ServiceException;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-
-import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.adql.ADQLException;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
@@ -34,6 +29,7 @@ import org.astrogrid.datacenter.delegate.agws.WebDelegate;
 import org.astrogrid.datacenter.delegate.dummy.DummyDelegate;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.query.QueryState;
+import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
@@ -66,7 +62,7 @@ public class DelegateTest extends TestCase implements DelegateQueryListener
 
       //load test query file
       URL url = getClass().getResource("adqlQuery.xml");
-      Element adqlQuery = XMLUtils.newDocument(url.openConnection().getInputStream()).getDocumentElement();
+      Element adqlQuery = DomHelper.newDocument(url.openConnection().getInputStream()).getDocumentElement();
 
       Select adql = ADQLUtils.unmarshalSelect(adqlQuery);
       
@@ -110,7 +106,7 @@ public class DelegateTest extends TestCase implements DelegateQueryListener
 
       //load test query file
       URL url = getClass().getResource("adqlQuery.xml");
-      Element adqlQuery = XMLUtils.newDocument(url.openConnection().getInputStream()).getDocumentElement();
+      Element adqlQuery = DomHelper.newDocument(url.openConnection().getInputStream()).getDocumentElement();
 
       Select adql = ADQLUtils.unmarshalSelect(adqlQuery);
       
@@ -174,6 +170,9 @@ public class DelegateTest extends TestCase implements DelegateQueryListener
 
 /*
  * $Log: DelegateTest.java,v $
+ * Revision 1.10  2004/03/07 21:15:07  mch
+ * Changed apache XMLUtils to implementation-independent DomHelper
+ *
  * Revision 1.9  2004/03/07 00:33:50  mch
  * Started to separate It4.1 interface from general server services
  *

@@ -1,5 +1,5 @@
 /*
- * $Id: XmlDocOutputStream.java,v 1.3 2004/03/03 10:08:01 mch Exp $
+ * $Id: XmlDocOutputStream.java,v 1.4 2004/03/07 21:12:49 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,9 +8,8 @@ package org.astrogrid.datacenter.snippet.io;
 import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-
-import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.io.ascii.AsciiCodes;
+import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -56,7 +55,7 @@ public class XmlDocOutputStream extends FilterOutputStream implements AsciiCodes
 //      String hdr = "<?xml version='1.0'?>\n";
 
 //      out.write(hdr.getBytes());
-      XMLUtils.DocumentToStream(element.getOwnerDocument(), out);
+      DomHelper.DocumentToStream(element.getOwnerDocument(), out);
       out.write(XmlDocInputStream.EOD);
    }
 
@@ -65,7 +64,7 @@ public class XmlDocOutputStream extends FilterOutputStream implements AsciiCodes
     */
    public void writeDoc(Document doc) throws IOException
    {
-      XMLUtils.DocumentToStream(doc, out);
+      DomHelper.DocumentToStream(doc, out);
       out.write(XmlDocInputStream.EOD);   //end of document character
    }
 }

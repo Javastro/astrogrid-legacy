@@ -1,5 +1,5 @@
 /*
- * $Id: XmlDocInputStream.java,v 1.3 2004/03/03 10:08:01 mch Exp $
+ * $Id: XmlDocInputStream.java,v 1.4 2004/03/07 21:12:49 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,12 +9,10 @@ import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringBufferInputStream;
-
 import javax.xml.parsers.ParserConfigurationException;
-
-import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.io.ascii.AsciiCodes;
 import org.astrogrid.log.Log;
+import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -65,7 +63,7 @@ public class XmlDocInputStream extends FilterInputStream implements AsciiCodes
 
       try
       {
-         Document doc = XMLUtils.newDocument(new StringBufferInputStream(inBuffer.toString()));
+         Document doc = DomHelper.newDocument(new StringBufferInputStream(inBuffer.toString()));
          Log.trace("SocketXmlInputStream: incoming document root tag="+doc.getDocumentElement().getNodeName());
          return doc;
       }

@@ -1,5 +1,5 @@
 /*
- * $Id: DocHelper.java,v 1.3 2003/11/26 16:31:46 nw Exp $
+ * $Id: DocHelper.java,v 1.4 2004/03/07 21:12:49 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,10 +9,8 @@ package org.astrogrid.datacenter.snippet;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
 import javax.xml.parsers.ParserConfigurationException;
-
-import org.apache.axis.utils.XMLUtils;
+import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -35,7 +33,7 @@ public class DocHelper
       try
       {
          InputStream is = new ByteArrayInputStream(xmlSnippet.getBytes());
-         return XMLUtils.newDocument(is);
+         return DomHelper.newDocument(is);
       }
       catch (IOException e)
       {

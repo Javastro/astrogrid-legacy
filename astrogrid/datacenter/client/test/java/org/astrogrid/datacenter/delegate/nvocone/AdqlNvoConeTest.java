@@ -11,39 +11,28 @@ package org.astrogrid.datacenter.delegate.nvocone;
  * @author M Hill
  */
 
+import VOTableUtil.Votable;
+import com.tbf.xml.XmlElement;
+import com.tbf.xml.XmlParser;
 import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
-
 import javax.xml.rpc.ServiceException;
-
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
-
-import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.adql.ADQLException;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.datacenter.delegate.DatacenterException;
-import org.astrogrid.datacenter.delegate.DatacenterQuery;
-import org.astrogrid.datacenter.delegate.DatacenterResults;
 import org.astrogrid.datacenter.delegate.FullSearcher;
-import org.astrogrid.datacenter.query.QueryState;
 import org.astrogrid.test.OptionalTestCase;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
-
-import VOTableUtil.Votable;
-
-import com.tbf.xml.XmlElement;
-import com.tbf.xml.XmlParser;
 
 public class AdqlNvoConeTest extends OptionalTestCase
 {
@@ -118,7 +107,7 @@ public class AdqlNvoConeTest extends OptionalTestCase
       
       assertNotNull(results.getVotable());
       
-      String doc = XMLUtils.DocumentToString(results.getVotable().getOwnerDocument());
+      String doc = DomHelper.DocumentToString(results.getVotable().getOwnerDocument());
       
       checkResults(new ByteArrayInputStream(doc.getBytes()));
    }
@@ -145,7 +134,7 @@ public class AdqlNvoConeTest extends OptionalTestCase
       
       assertNotNull(results.getVotable());
       
-      String doc = XMLUtils.DocumentToString(results.getVotable().getOwnerDocument());
+      String doc = DomHelper.DocumentToString(results.getVotable().getOwnerDocument());
       
       checkResults(new ByteArrayInputStream(doc.getBytes()));
       
@@ -195,6 +184,9 @@ public class AdqlNvoConeTest extends OptionalTestCase
 
 /*
  $Log: AdqlNvoConeTest.java,v $
+ Revision 1.10  2004/03/07 21:15:23  mch
+ Changed apache XMLUtils to implementation-independent DomHelper
+
  Revision 1.9  2004/03/07 00:33:50  mch
  Started to separate It4.1 interface from general server services
 

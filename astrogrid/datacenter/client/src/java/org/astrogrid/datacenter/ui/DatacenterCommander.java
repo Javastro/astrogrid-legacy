@@ -1,4 +1,4 @@
-/*$Id: DatacenterCommander.java,v 1.2 2004/03/06 19:34:21 mch Exp $
+/*$Id: DatacenterCommander.java,v 1.3 2004/03/07 21:13:52 mch Exp $
  * Created on 24-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,7 +15,6 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import javax.xml.rpc.ServiceException;
-import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.adql.ADQLException;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
@@ -24,6 +23,7 @@ import org.astrogrid.datacenter.delegate.DatacenterResults;
 import org.astrogrid.datacenter.delegate.FullSearcher;
 import org.astrogrid.datacenter.sql.SQLUtils;
 import org.astrogrid.io.Piper;
+import org.astrogrid.util.DomHelper;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
 import org.w3c.dom.Element;
@@ -119,7 +119,7 @@ public class DatacenterCommander {
       System.out.println("Asking query...");
       DatacenterResults results = del.doQuery(FullSearcher.VOTABLE,queryBody);
       System.out.println("Results:");
-      XMLUtils.PrettyElementToStream(results.getVotable(), System.out);
+      DomHelper.PrettyElementToStream(results.getVotable(), System.out);
    }
    
    
@@ -143,7 +143,7 @@ public class DatacenterCommander {
       System.out.println("Asking query...");
       DatacenterResults results = del.doQuery(FullSearcher.VOTABLE,queryBody);
       System.out.println("Results:");
-      XMLUtils.PrettyElementToStream(results.getVotable(), System.out);
+      DomHelper.PrettyElementToStream(results.getVotable(), System.out);
    }
    
 }
@@ -151,6 +151,9 @@ public class DatacenterCommander {
 
 /*
  $Log: DatacenterCommander.java,v $
+ Revision 1.3  2004/03/07 21:13:52  mch
+ Changed apache XMLUtils to implementation-independent DomHelper
+
  Revision 1.2  2004/03/06 19:34:21  mch
  Merged in mostly support code (eg web query form) changes
 

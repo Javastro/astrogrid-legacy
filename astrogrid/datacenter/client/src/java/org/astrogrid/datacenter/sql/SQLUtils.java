@@ -1,11 +1,11 @@
-/*$Id: SQLUtils.java,v 1.4 2004/01/14 12:29:52 nw Exp $
+/*$Id: SQLUtils.java,v 1.5 2004/03/07 21:13:15 mch Exp $
  * Created on 07-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
 **/
 package org.astrogrid.datacenter.sql;
@@ -13,10 +13,8 @@ package org.astrogrid.datacenter.sql;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
 import javax.xml.parsers.ParserConfigurationException;
-
-import org.apache.axis.utils.XMLUtils;
+import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
@@ -35,14 +33,14 @@ public class SQLUtils {
    private SQLUtils() {
    }
    /**
-    * convert a sql string object to an Element that can be used as the query body in a 
+    * convert a sql string object to an Element that can be used as the query body in a
      * {@link org.astrogrid.datacenter.delegate.FullSearcher}
     * @param sql
     * @return
     */
    public static Element toQueryBody(String sql) throws IOException {
       try {
-         Document doc = XMLUtils.newDocument();
+         Document doc = DomHelper.newDocument();
          Element root = doc.createElementNS(SQL_XMLNS,"sql:sql");
          doc.appendChild(root);
          Text text = doc.createTextNode(sql);
@@ -53,14 +51,14 @@ public class SQLUtils {
       }
    }
    
-   /** @deprecated - less robust, doesn't escape entities in text. use {@link #toQueryBody} instead */  
+   /** @deprecated - less robust, doesn't escape entities in text. use {@link #toQueryBody} instead */
    public static Element toQueryBodyOld(String sql) throws IOException {
       String docString = "<sql xmlns='" + SQL_XMLNS + "'>"
          + sql
          + "</sql>";
       InputStream is = new ByteArrayInputStream(docString.getBytes());
       try {
-      Document doc = XMLUtils.newDocument(is);
+      Document doc = DomHelper.newDocument(is);
       return doc.getDocumentElement();
       } catch (ParserConfigurationException pe) {
          throw new IOException("Parser Configuration failed: " + pe.getMessage());
@@ -73,8 +71,11 @@ public class SQLUtils {
 }
 
 
-/* 
+/*
 $Log: SQLUtils.java,v $
+Revision 1.5  2004/03/07 21:13:15  mch
+Changed apache XMLUtils to implementation-independent DomHelper
+
 Revision 1.4  2004/01/14 12:29:52  nw
 improved documentation
 

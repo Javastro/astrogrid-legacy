@@ -1,25 +1,19 @@
 /*
- * $Id: DummyDelegate.java,v 1.11 2004/03/07 00:33:50 mch Exp $
+ * $Id: DummyDelegate.java,v 1.12 2004/03/07 21:11:43 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
 
 package org.astrogrid.datacenter.delegate.dummy;
 
+import org.astrogrid.datacenter.delegate.*;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-
 import javax.xml.parsers.ParserConfigurationException;
-
-import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.datacenter.delegate.ConeSearcher;
-import org.astrogrid.datacenter.delegate.DatacenterException;
-import org.astrogrid.datacenter.delegate.DatacenterQuery;
-import org.astrogrid.datacenter.delegate.DatacenterResults;
-import org.astrogrid.datacenter.delegate.FullSearcher;
-import org.astrogrid.datacenter.delegate.Metadata;
 import org.astrogrid.datacenter.query.QueryState;
+import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -164,7 +158,7 @@ public class DummyDelegate implements FullSearcher, ConeSearcher
       try
       {
          url = DummyDelegate.class.getResource(RESULTSFILENAME);
-         Document resultsDoc = XMLUtils.newDocument(url.openConnection().getInputStream());
+         Document resultsDoc = DomHelper.newDocument(url.openConnection().getInputStream());
 
          return resultsDoc.getDocumentElement();
       }
@@ -189,7 +183,7 @@ public class DummyDelegate implements FullSearcher, ConeSearcher
       try
       {
          URL url = getClass().getResource("ExampleMetadata.xml");
-         return new Metadata(XMLUtils.newDocument(url.openConnection().getInputStream()));
+         return new Metadata(DomHelper.newDocument(url.openConnection().getInputStream()));
       }
       catch (ParserConfigurationException e)
       {
@@ -213,6 +207,9 @@ public class DummyDelegate implements FullSearcher, ConeSearcher
 
 /*
 $Log: DummyDelegate.java,v $
+Revision 1.12  2004/03/07 21:11:43  mch
+Changed apache XMLUtils to implementation-independent DomHelper
+
 Revision 1.11  2004/03/07 00:33:50  mch
 Started to separate It4.1 interface from general server services
 

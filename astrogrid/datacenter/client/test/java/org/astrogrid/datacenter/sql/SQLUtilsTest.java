@@ -1,18 +1,17 @@
-/*$Id: SQLUtilsTest.java,v 1.1 2004/01/14 13:23:55 nw Exp $
+/*$Id: SQLUtilsTest.java,v 1.2 2004/03/07 21:16:12 mch Exp $
  * Created on 13-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
 **/
 package org.astrogrid.datacenter.sql;
 
 import java.io.IOException;
 
-import org.apache.axis.utils.XMLUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -47,9 +46,13 @@ public class SQLUtilsTest extends TestCase {
 }
 
 
-/* 
+/*
 $Log: SQLUtilsTest.java,v $
+Revision 1.2  2004/03/07 21:16:12  mch
+Changed apache XMLUtils to implementation-independent DomHelper
+
 Revision 1.1  2004/01/14 13:23:55  nw
 added unit test for SQLUtils
  
 */
+

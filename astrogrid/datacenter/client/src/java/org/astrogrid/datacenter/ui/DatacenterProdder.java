@@ -1,4 +1,4 @@
-/* $Id: DatacenterProdder.java,v 1.1 2004/03/03 10:08:01 mch Exp $
+/* $Id: DatacenterProdder.java,v 1.2 2004/03/07 21:13:52 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -21,7 +21,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.ProgressMonitor;
-import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.applications.delegate.ApplicationController;
@@ -43,6 +42,7 @@ import org.astrogrid.ui.Splash;
 import org.astrogrid.ui.myspace.MySpaceBrowser;
 import org.astrogrid.ui.myspace.VoFileSelector;
 import org.astrogrid.ui.votable.JVotBox;
+import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Element;
 
 /**
@@ -295,7 +295,7 @@ public class DatacenterProdder extends JFrame
          log.info("Loading query doc");
 
          //load query
-         Element queryDoc = XMLUtils.newDocument(inQuery).getDocumentElement();
+         Element queryDoc = DomHelper.newDocument(inQuery).getDocumentElement();
          
          progBox.setProgress(3);
          progBox.setNote("Creating querier on server");
@@ -365,7 +365,7 @@ public class DatacenterProdder extends JFrame
          log.info("Loading query doc");
 
          //load query
-         Element queryDoc = XMLUtils.newDocument(inQuery).getDocumentElement();
+         Element queryDoc = DomHelper.newDocument(inQuery).getDocumentElement();
          
          progBox.setProgress(3);
          progBox.setNote("Running querier");
@@ -375,7 +375,7 @@ public class DatacenterProdder extends JFrame
          DatacenterResults results = querier.doQuery(querier.VOTABLE, queryDoc);
          log.info("...Query complete");
 
-         String xml = XMLUtils.ElementToString( (Element) results.getVotable().getElementsByTagName("VOTABLE").item(0) );;
+         String xml = DomHelper.ElementToString( (Element) results.getVotable().getElementsByTagName("VOTABLE").item(0) );;
 
          if (resultsLocator.getFileLoc() != null) {
 
@@ -549,6 +549,9 @@ public class DatacenterProdder extends JFrame
 
 /*
  $Log: DatacenterProdder.java,v $
+ Revision 1.2  2004/03/07 21:13:52  mch
+ Changed apache XMLUtils to implementation-independent DomHelper
+
  Revision 1.1  2004/03/03 10:08:01  mch
  Moved UI and some IO stuff into client
 

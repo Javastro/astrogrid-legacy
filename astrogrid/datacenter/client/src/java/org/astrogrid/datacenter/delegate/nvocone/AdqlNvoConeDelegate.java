@@ -16,7 +16,6 @@ import java.util.Date;
 import java.util.Vector;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.rpc.ServiceException;
-import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
@@ -30,6 +29,7 @@ import org.astrogrid.io.Piper;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.delegate.StoreClient;
 import org.astrogrid.store.delegate.StoreDelegateFactory;
+import org.astrogrid.util.DomHelper;
 import org.astrogrid.util.Workspace;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -110,7 +110,7 @@ public class AdqlNvoConeDelegate extends NvoConeSearchDelegate implements FullSe
       public DatacenterResults getResultsAndClose() throws IOException
       {
          try {
-            return new DatacenterResults(XMLUtils.newDocument(resultsUrl.openStream()).getDocumentElement());
+            return new DatacenterResults(DomHelper.newDocument(resultsUrl.openStream()).getDocumentElement());
          }
          catch (SAXException e)
          {
@@ -356,6 +356,9 @@ public class AdqlNvoConeDelegate extends NvoConeSearchDelegate implements FullSe
 
 /*
 $Log: AdqlNvoConeDelegate.java,v $
+Revision 1.15  2004/03/07 21:12:08  mch
+Changed apache XMLUtils to implementation-independent DomHelper
+
 Revision 1.14  2004/03/07 00:33:50  mch
 Started to separate It4.1 interface from general server services
 
