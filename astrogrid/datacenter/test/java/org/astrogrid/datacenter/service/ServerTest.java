@@ -43,13 +43,15 @@ public class ServerTest extends TestCase
 
       //create the server
       AxisDataServer server = new AxisDataServer();
+      assertNotNull(server);
 
       //load test query file
       URL url = getClass().getResource("testQuery.xml");
       Document fileDoc = XMLUtils.newDocument(url.openConnection().getInputStream());
-
+      assertNotNull(fileDoc);
       //submit query
       Element votable = server.runQuery(fileDoc.getDocumentElement());
+      assertNotNull(votable);
    }
 
    /**
@@ -82,6 +84,9 @@ public class ServerTest extends TestCase
 
 /*
 $Log: ServerTest.java,v $
+Revision 1.2  2003/09/05 01:02:33  nw
+minor changes
+
 Revision 1.1  2003/08/29 15:27:20  mch
 Renamed TestXxxx to XxxxxTest so Maven runs them
 
