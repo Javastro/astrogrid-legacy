@@ -23,23 +23,12 @@ package org.astrogrid.devtools;
 import java.io.File;
 import java.io.IOException;
 import java.util.Enumeration;
-import java.util.StringTokenizer;
-import java.util.Vector;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
+import org.astrogrid.util.ClassPathUtils;
 
 public class JarFinder
 {
-   /*
-   String className = null;
-   
-   public JarFinder(String givenClassName)
-   {
-      this.className = givenClassName;
-   }
-   
-    /**/
-
    /*
     * Looks for the class in the classpath - has ready made found jars/directories
     */
@@ -49,7 +38,7 @@ public class JarFinder
 //      {
 //         Class givenClass = JarFinder.class.forName(className);
          
-         String[] paths = getClassPathList();
+         String[] paths = ClassPathUtils.getClassPathList();
          
          for (int i=0; i<paths.length;i++)
          {
@@ -96,27 +85,6 @@ public class JarFinder
       return false;
    }
    
-   /**/
-   
-   public static String getClassPath()
-   {
-      return System.getProperty("java.class.path");
-   }
-
-   public static String[] getClassPathList()
-   {
-      String path = getClassPath();
-      StringTokenizer tokenizer = new StringTokenizer(path, File.pathSeparator);
-      Vector list = new Vector();
-      
-      while (tokenizer.hasMoreElements())
-      {
-         list.add(tokenizer.nextToken());
-      }
-      
-      return (String[]) list.toArray(new String[] {});
-   }
-   
    
    
    
@@ -135,7 +103,11 @@ public class JarFinder
 
 /*
 $Log: JarFinder.java,v $
+Revision 1.2  2003/09/24 18:33:13  mch
+Wrong previous checkin message: this is for finding which jar a class is in
+
 Revision 1.1  2003/09/24 18:31:55  mch
 Tool for checking classpath
 
 */
+
