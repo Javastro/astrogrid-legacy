@@ -28,8 +28,9 @@ import org.astrogrid.community.delegate.policy.PolicyServiceDelegate;
 import org.astrogrid.community.policy.data.PolicyPermission ;
 import org.astrogrid.community.common.util.CommunityMessage;
 
+import java.util.Date ;
+import org.astrogrid.portal.workflow.design.activity.*; 
 
- 
 public class WorkflowTestSuite extends TestCase {
 	
 	private static Logger 
@@ -70,7 +71,7 @@ public class WorkflowTestSuite extends TestCase {
         
          final String 
              userid = "jl99",
-             community = "leicester",
+             community = "star.le.ac.uk",
              name = "OneStepJob",
              description = "This is a one step job",
              templateName = "OneStepJob" ;
@@ -116,7 +117,7 @@ public class WorkflowTestSuite extends TestCase {
         
         final String 
             userid = "jl99",
-            community = "leicester",
+            community = "star.le.ac.uk",
             name = "OneStepJob",
             description = "This is a one step job",
             templateName = "IncorrectName" ;
@@ -141,7 +142,7 @@ public class WorkflowTestSuite extends TestCase {
         
         final String 
             userid = "jl99",
-            community = "leicester",
+            community = "star.le.ac.uk",
             name = "OneStepJob",
             description = "This is a one step job",
             templateName = "OneStepJob" ;
@@ -164,13 +165,13 @@ public class WorkflowTestSuite extends TestCase {
 
 
 
-    public void testSaveWorkflow() {
+    public void tostSaveWorkflow() {
          logger.info( "enter: WorkflowTestSuite.testSaveWorkflow()" ); 
         
         final String 
              userid = "jl99",
-             community = "leicester",
-             name = "OneStepJob",
+             community = "star.le.ac.uk",
+             name = "WorkflowOct6_02",
              description = "This is a one step job",
              templateName = "OneStepJob" ;
          Workflow
@@ -181,7 +182,8 @@ public class WorkflowTestSuite extends TestCase {
          try{
             workflow = Workflow.createWorkflowFromTemplate( userid, community, name, description, templateName ) ;
             workflow.setToken( "1234") ;
-            workflow.setGroup( userid + "@" + community );         
+            workflow.setGroup( userid + "@" + community );  
+      
             logger.info( "Workflow: " + workflow.toXMLString() ) ;
             
             logger.info( "About to save" ) ; 
@@ -209,7 +211,7 @@ public class WorkflowTestSuite extends TestCase {
         
          final String 
              userid = "jl99",
-             community = "leicester",
+             community = "star.le.ac.uk",
              filter = "*" ;
          Iterator
             iterator ;
@@ -241,7 +243,7 @@ public class WorkflowTestSuite extends TestCase {
         
          final String 
              userid = "jl99",
-             community = "leicester",
+             community = "star.le.ac.uk",
              name = "OneStepJob" ;
          Workflow
             workflow ;
@@ -274,7 +276,7 @@ public class WorkflowTestSuite extends TestCase {
         
         final String 
             userid = "jl99",
-            community = "leicester",
+            community = "star.le.ac.uk",
             name = "OneStepJob" ;
         boolean
             ret = false ;
@@ -306,7 +308,7 @@ public class WorkflowTestSuite extends TestCase {
         
          final String 
              userid = "jl99",
-             community = "leicester",
+             community = "star.le.ac.uk",
              filter = "*" ;
          Iterator
             iterator ;
@@ -338,15 +340,15 @@ public class WorkflowTestSuite extends TestCase {
         
          final String 
              userid = "jl99",
-             community = "leicester",
-             name = "SomeDevilishQuery" ;
+             community = "star.le.ac.uk",
+             name = "query_20031008.xml" ;
          Query
             query ;
             
          try{
              query = Query.readQuery( userid, community, communitySnippet(), name) ;
             
-             logger.info( "Query: " + query.toXMLString() ) ;
+             logger.info( "Query looks like: " + query.toXMLString() ) ;
  
              assertTrue( true ) ;    
          }
@@ -360,11 +362,133 @@ public class WorkflowTestSuite extends TestCase {
          }
         
      } // end of testReadQuery()
+   
+   
+   
+    public void tostSubmitWorkflow() {
+         logger.info( "enter: WorkflowTestSuite.testSubmitWorkflow()" ); 
+        
+        final String 
+             userid = "jl99",
+             community = "star.le.ac.uk",
+             name = "WorkflowOct3",
+             description = "This is a one step job",
+             templateName = "OneStepJob",
+             group = "xray@" + community ;
+         Workflow
+             workflow = null ;
+         boolean
+             rc = false ;
+            
+         try{
+            workflow = Workflow.createWorkflowFromTemplate( userid, community, name, description, templateName ) ;
+            workflow.setToken( "1234") ;
+            workflow.setGroup( group ); 
+             
+            logger.info( "Workflow: " + workflow.toXMLString() ) ;
+            
+            logger.info( "About to submit" ) ; 
+            rc = Workflow.submitWorkflow( workflow ) ;
+            logger.info( "JobController says: " + rc ) ;
+ 
+            assertTrue( true ) ;    
+         }
+         catch( Exception ex ) {
+             
+             assertTrue( false ) ;
+             ex.printStackTrace() ;
+         }
+         finally {
+             logger.info( "exit: WorkflowTestSuite.testSubmitWorkflow()" );  
+         }
+        
+     } // end of testSubmitWorkflow()
+
+
+
+
+
+    public void testCreateQueryAndSubmitWorkflow() {
+          logger.info( "enter: WorkflowTestSuite.testCreateQueryAndSubmitWorkflow()" ); 
+        
+         Date
+            date = new Date() ;
+            
+         final String 
+              userid = "jl99",
+              community = "star.le.ac.uk",
+              workflowName = "WorkflowTest_" + date.getTime(),
+              description = "This is a one step job submitted at " + date.toGMTString(),
+              templateName = "OneStepJob",
+              group = "xray@" + community,
+              queryName = "query_20031008.xml" ; ;
+              
+          Workflow
+              workflow = null ;
+          Query
+              query = null ;
+          Sequence
+              sequence = null ;
+          boolean
+              rc = false ;
+          ActivityIterator
+              iterator = null ;
+          Activity
+              activity = null ;
+          Step
+              step = null ;
+            
+          try{
+             workflow = Workflow.createWorkflowFromTemplate( userid
+                                                           , community
+                                                           , workflowName
+                                                           , description
+                                                           , templateName ) ;
+             workflow.setToken( "1234") ; //any old token at present
+             workflow.setGroup( group ); 
+             
+             query = Query.readQuery( userid
+                                    , community
+                                    , communitySnippet()
+                                    , queryName ) ;
+             
+             sequence = (Sequence)workflow.getChild() ;
+             
+             iterator = sequence.getChildren() ;
+             
+             while( iterator.hasNext() ) {
+                 activity = iterator.next() ;
+                 if( activity instanceof Step ) {
+                     step = (Step)activity ;
+                     step.setTool( query ) ;
+                     break ;
+                 }
+             }
+             
+             logger.info( "Workflow: " + workflow.toXMLString() ) ;
+            
+             logger.info( "About to submit" ) ; 
+             rc = Workflow.submitWorkflow( workflow ) ;
+             logger.info( "JobController says: " + rc ) ;
+ 
+             assertTrue( true ) ;    
+          }
+          catch( Exception ex ) {
+             
+              assertTrue( false ) ;
+              ex.printStackTrace() ;
+          }
+          finally {
+              logger.info( "exit: WorkflowTestSuite.testCreateQueryAndSubmitWorkflow()" );  
+          }
+        
+      } // end of testCreateQueryAndSubmitWorkflow()
+   
     
     
 
     private String communitySnippet(){
-        return CommunityMessage.getMessage( "1234", "jl99@leicester", "jl99") ;
+        return CommunityMessage.getMessage( "1234", "jl99@star.le.ac.uk", "xray@star.le.ac.uk") ;
     }
 
     

@@ -3,7 +3,7 @@ package org.astrogrid.portal.workflow.jes ;
 import org.astrogrid.i18n.*;
 import org.astrogrid.AstroGridException ;
 
-import java.io.IOException;
+import java.io.IOException; 
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -69,11 +69,11 @@ public class JesTestSuite extends TestCase {
         
          final String 
              userid = "jl99",
-             community = "leicester",
+             community = "star.le.as.uk",
              communitySnippet 
                 = CommunityMessage.getMessage( "1234"
                                              , userid + "@" + community
-                                             , "guest@" + community ) ;
+                                             , "xray@" + community ) ;
          
          ListIterator
             iterator = null ;
