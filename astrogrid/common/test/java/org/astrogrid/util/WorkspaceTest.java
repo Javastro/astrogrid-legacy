@@ -19,7 +19,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.config.AttomConfig;
 
 public class WorkspaceTest extends TestCase
 {
@@ -35,7 +35,7 @@ public class WorkspaceTest extends TestCase
    public static File setUpWorkspaceArea() throws IOException {
 
       Workspace.PERSIST = false; //make sure they tidy up properly
-      String workspaceProperty = SimpleConfig.getProperty(Workspace.WORKSPACE_DIRECTORY_KEY);
+      String workspaceProperty = AttomConfig.getString(Workspace.WORKSPACE_DIRECTORY_KEY);
       File dir = null;
       if ( workspaceProperty == null)
       {
@@ -66,7 +66,7 @@ public class WorkspaceTest extends TestCase
     protected void setUp() throws Exception{
         this.tmpDir = setUpWorkspaceArea();
         //set the configuratio property so Workspace can find it
-        SimpleConfig.setProperty(Workspace.WORKSPACE_DIRECTORY_KEY, tmpDir.getAbsolutePath());
+        AttomConfig.setProperty(Workspace.WORKSPACE_DIRECTORY_KEY, tmpDir.getAbsolutePath());
     }
 
     /** deletes working directory -- otherwise tests are not repeatable
@@ -267,6 +267,9 @@ public class WorkspaceTest extends TestCase
 
 /*
 $Log: WorkspaceTest.java,v $
+Revision 1.2  2004/02/17 03:40:21  mch
+Changed to use AttomConfig
+
 Revision 1.1  2003/11/18 11:12:33  mch
 Moved Workspace to common
 
