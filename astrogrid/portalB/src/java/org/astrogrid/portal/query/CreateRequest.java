@@ -60,6 +60,8 @@ public class CreateRequest {
 		//dbf.setValidating(true);
 		DocumentBuilder db = dbf.newDocumentBuilder();
 		Document doc = db.getDOMImplementation().createDocument(null,JOB_ELEMENT,null);
+		String dsNameTemp = null;
+		int iTemp = 0;
 
 		Element userElem,commElem,jobStepElem,serviceElem,queryElem,fromElem,returnElem,criteriaElem,fieldElem,catalogElem,operationElem;
 
@@ -77,16 +79,21 @@ public class CreateRequest {
 
 		for(int i=0;i < qb.getDataSetInformation().size();i++) {
 			DataSetInformation dsInfo = (DataSetInformation)qb.getDataSetInformation().get(i);
-
+			dsNameTemp = dsInfo.getName().toLowerCase();
+			if( (iTemp = dsNameTemp.indexOf("-")) != -1) {
+				String temp = new String(dsNameTemp);
+				dsNameTemp = dsNameTemp.substring(0,iTemp);
+				dsNameTemp = dsNameTemp.concat(temp.substring((iTemp+1)));
+			}
 			jobStepElem = doc.createElement(JOBSTEP_ELEMENT);
-			jobStepElem.setAttribute(NAME_ATTR,dsInfo.getName());
+			jobStepElem.setAttribute(NAME_ATTR,dsNameTemp);
 			jobStepElem.appendChild( (queryElem = doc.createElement(QUERY_ELEMENT)) );
 
 			queryElem.appendChild( (fromElem = doc.createElement(FROM_ELEMENT)) );
 				fromElem.appendChild( (catalogElem = doc.createElement(CATALOG_ELEMENT)) );
-					catalogElem.setAttribute(NAME_ATTR,dsInfo.getName());
+					catalogElem.setAttribute(NAME_ATTR,dsNameTemp);
 					catalogElem.appendChild( (serviceElem = doc.createElement(SERVICE_ELEMENT)) );
-						serviceElem.setAttribute(NAME_ATTR,dsInfo.getName());
+						serviceElem.setAttribute(NAME_ATTR,dsNameTemp);
 						serviceElem.setAttribute(URL_ATTR,JOBCONTROLLER_URL);
 			queryElem.appendChild ( (returnElem = doc.createElement(RETURN_ELEMENT)) );
 				for(int j=0;j < dsInfo.getDataSetColumns().size();j++) {
