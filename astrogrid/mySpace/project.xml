@@ -4,7 +4,7 @@
   xsi:noNamespaceSchemaLocation="maven-project.xsd">
 
   <pomVersion>3</pomVersion>
-  <id>astrogrid-myspace</id>
+  <id>astrogrid-mySpace</id>
   <name>AstroGrid MySpace</name>
 
   <currentVersion>HEAD</currentVersion>
@@ -12,19 +12,24 @@
   <organization>
     <name>AstroGrid</name>
     <url>http://www.astrogrid.org</url>
+    <logo>http://www.astrogrid.org/images/AGlogo</logo>
   </organization>
-  
+
   <inceptionYear>2002</inceptionYear>
   <package>org.astrogrid</package>
-  
+  <logo>http://www.astrogrid.org/images/AGlogo</logo>
+
   <shortDescription>AstroGrid MySpace Components</shortDescription>
 
   <siteDirectory>/var/www/www/maven/build/mySpace</siteDirectory>
   
   <repository>
     <connection>
-      scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/registry
+      scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/mySpace
     </connection>
+    <developerConnection>
+      scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/mySpace
+    </developerConnection>
   </repository>
   
   <developers>
@@ -47,8 +52,44 @@
   
   <dependencies>
     <dependency>
+      <id>astrogrid-common</id>
+      <version>SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <id>axis</id>
+      <version>1.1</version>
+    </dependency>
+
+    <dependency>
+      <id>jax-qname</id>
+      <version>UNKNOWN</version>
+      <jar>jax-qname.jar</jar>
+    </dependency>
+
+    <dependency>
+      <id>jaxrpc-api</id>
+      <version>1.0.3</version>
+    </dependency>
+
+    <dependency>
+      <id>jconfig</id>
+      <version>2.1</version>
+    </dependency>
+
+    <dependency>
       <id>junit</id>
       <version>3.8</version>
+    </dependency>
+
+    <dependency>
+      <id>log4j</id>
+      <version>1.2.8</version>
+    </dependency>
+
+    <dependency>
+      <id>saaj-api</id>
+      <version>1.1.1</version>
     </dependency>
   </dependencies>
 
