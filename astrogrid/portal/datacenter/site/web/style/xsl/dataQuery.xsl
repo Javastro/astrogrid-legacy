@@ -851,6 +851,8 @@ function defocusit(a){
 </script>
 <xsl:choose>
 <xsl:when test="DQtableID != 'null'">
+<xsl:variable name="requestedTable"><xsl:value-of select="DQtableID"/></xsl:variable>
+
 <body style="font-size: 90%" onLoad="locateTarget('helpy')">
 <agComponentMessage>Table: <xsl:value-of select="DQtableID"/></agComponentMessage>
 
@@ -862,11 +864,13 @@ function defocusit(a){
 <tr>
 <td align="left">FROM:</td>
 <td align="left" colspan="2">
-<xsl:value-of select="//*/vr:Resource/vs:Table/vr:Name"/>
+<xsl:value-of select="$requestedTable"/>
+
 <!-- To take into consideration other namespaces -->
 
-<xsl:value-of select="//*/vr:Resource/vr:Table/vr:Name"/>
 <!--
+<xsl:value-of select="//*/vr:Resource/vs:Table/vr:Name"/>
+<xsl:value-of select="//*/vr:Resource/vr:Table/vr:Name"/>
 <input name="none" size="20">
 <xsl:attribute name="value">
 </xsl:attribute>
@@ -902,14 +906,52 @@ Hi! Ho!<br />
 <xsl:for-each select="resultsFromRegistry/exist:result/vr:Resource/vs:Table/vs:Column">
 -->
 <br />
+
+<xsl:for-each select="//*/vr:Resource">
+  <xsl:for-each select="vs:Table">
+     <xsl:if test="vr:Name = $requestedTable or Name = $requestedTable">
+        <xsl:for-each select="vs:Column">
+<input class="AGwideButton" type="button" onClick="xTEK('{vr:Name}\040')" value=" {vr:Name} " onMouseOver="cabc(this, '{vr:Name}', '{vs:UCD}', '{vs:Unit}', '{vr:Description}')" onMouseOut="cvbc(this)"/>
+        </xsl:for-each>
+
+        <xsl:for-each select="vr:Column">
+<input class="AGwideButton" type="button" onClick="xTEK('{vr:Name}\040')" value=" {vr:Name} " onMouseOver="cabc(this, '{vr:Name}', '{vr:UCD}', '{vr:Unit}{vr:Units}', '{vr:Description}')" onMouseOut="cvbc(this)"/>
+        </xsl:for-each>
+
+     </xsl:if>
+  </xsl:for-each>
+
+  <xsl:for-each select="vr:Table">
+     <xsl:if test="vr:Name = $requestedTable or Name = $requestedTable">
+        <xsl:for-each select="vs:Column">
+<input class="AGwideButton" type="button" onClick="xTEK('{vr:Name}\040')" value=" {vr:Name} " onMouseOver="cabc(this, '{vr:Name}', '{vs:UCD}', '{vs:Unit}', '{vr:Description}')" onMouseOut="cvbc(this)"/>
+        </xsl:for-each>
+
+        <xsl:for-each select="vr:Column">
+<input class="AGwideButton" type="button" onClick="xTEK('{vr:Name}\040')" value=" {vr:Name} " onMouseOver="cabc(this, '{vr:Name}', '{vr:UCD}', '{vr:Unit}{vr:Units}', '{vr:Description}')" onMouseOut="cvbc(this)"/>
+        </xsl:for-each>
+
+     </xsl:if>
+  </xsl:for-each>
+</xsl:for-each>
+
+
+<!-- OLD CODE, does not consider multiple tables within a resource
+
 <xsl:for-each select="//*/vr:Resource/vs:Table/vs:Column">
 <input class="AGwideButton" type="button" onClick="xTEK('{vr:Name}\040')" value=" {vr:Name} " onMouseOver="cabc(this, '{vr:Name}', '{vs:UCD}', '{vs:Unit}', '{vr:Description}')" onMouseOut="cvbc(this)"/>
 </xsl:for-each>
 
+-->
+
 <!-- This is to take into consideration other namespace conventions -->
+<!-- OLD CODE, does not consider multiple tables within a resource
+
 <xsl:for-each select="//*/vr:Resource/vr:Table/vr:Column">
 <input class="AGwideButton" type="button" onClick="xTEK('{vr:Name}\040')" value=" {vr:Name} " onMouseOver="cabc(this, '{vr:Name}', '{vr:UCD}', '{vr:Unit}{vr:Units}', '{vr:Description}')" onMouseOut="cvbc(this)"/>
 </xsl:for-each>
+
+-->
 </form>
 </center>
 
