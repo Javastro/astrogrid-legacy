@@ -17,6 +17,7 @@ import java.util.Map ;
 import java.util.Collections ;
 import java.util.Vector ;
 import java.util.Iterator ;
+import java.util.ArrayList ;
 import java.text.MessageFormat ;
 //import java.io.InputStream ;
 import org.xml.sax.* ;
@@ -498,12 +499,31 @@ public class Workflow extends Activity {
     public static Iterator readToolList( String communitySnippet ) {
         if( TRACE_ENABLED ) trace( "Workflow.readToolList() entry") ;
 
+        ArrayList
+            list = null ;
+        String
+            toolName = null  ;      
+        int
+            numberTools = 0 ; 
+        
         try {
-            return ToolFactory.readToolList( communitySnippet ) ;
+            // debug( "TOOLS_LIST_TOTAL: " + WKF.getProperty( WKF.TOOLS_LIST_CATEGORY, WKF.TOOLS_LIST_TOTAL ) ) ; 
+            numberTools = new Integer( WKF.getProperty( WKF.TOOLS_LIST_TOTAL, WKF.TOOLS_LIST_CATEGORY ) ).intValue();
+            debug( "numberTools: " + numberTools ) ;
+            list = new ArrayList( numberTools ) ;
+            for( int i=0; i < numberTools; i++ ) {
+                toolName =
+                    WKF.getProperty( WKF.TOOLS_LIST_NAME + i, WKF.TOOLS_LIST_CATEGORY  ) ;
+                debug( "toolName: " + toolName ) ;
+                list.add( toolName ) ;
+            }
+ 
         }
         finally {
             if( TRACE_ENABLED ) trace( "Workflow.readToolList() exit") ;
         }
+        
+        return list.listIterator() ;
 
     } 
     
@@ -511,14 +531,51 @@ public class Workflow extends Activity {
     public static Tool createTool( String communitySnippet
                                  , String name ) {  
         if( TRACE_ENABLED ) trace( "Workflow.createTool() entry") ;
+          
+        Tool
+            tool = null ;
+        int
+            numberParams = 0 ;
+        Parameter
+            param = null ;
+        Cardinality 
+            cardinality = null ;
                                            
         try {
-            return ToolFactory.createTool( communitySnippet, name ) ;
+            tool = new Tool( name ) ;
+            tool.setDocumentation( WKF.getProperty( WKF.TOOL_DOCUMENTATION, name ) ) ;
+            debug( "Tool: " + tool.getName() );
+            debug( "Tool documentation: " + tool.getDocumentation() ) ;
+            
+            numberParams = new Integer( WKF.getProperty( WKF.TOOL_INPUT_PARAMS_TOTAL, name ) ).intValue() ;
+            debug( "Number of input params: " + numberParams ) ;
+            for( int i=0; i<numberParams; i++ ) {
+                param = tool.newInputParameter( WKF.getProperty( WKF.TOOL_INPUT_PARAM_NAME + i, name ) ) ;
+                param.setDocumentation( WKF.getProperty( WKF.TOOL_INPUT_PARAM_DOCUMENTATION + param.getName(), name ) ) ;
+                param.setType( WKF.getProperty( WKF.TOOL_INPUT_PARAM_TYPE + param.getName(), name ) ) ;
+                cardinality = new Cardinality( WKF.getProperty( WKF.TOOL_INPUT_PARAM_CARDINALITY_MIN + param.getName(), name )
+                                             , WKF.getProperty( WKF.TOOL_INPUT_PARAM_CARDINALITY_MAX + param.getName(), name ) ) ;
+                param.setCardinality( cardinality ) ;
+            }
+            
+            numberParams = new Integer( WKF.getProperty( WKF.TOOL_OUTPUT_PARAMS_TOTAL, name ) ).intValue() ;
+            debug( "Number of output params: " + numberParams ) ;
+            for( int i=0; i<numberParams; i++ ) {
+                param = tool.newOutputParameter( WKF.getProperty( WKF.TOOL_OUTPUT_PARAM_NAME + i, name ) ) ;
+                param.setDocumentation( WKF.getProperty( WKF.TOOL_OUTPUT_PARAM_DOCUMENTATION + param.getName(), name ) ) ;
+            //    param.setType( WKF.getProperty( WKF.TOOL_OUTPUT_PARAM_TYPE + param.getName(), name ) ) ;
+                cardinality = new Cardinality( WKF.getProperty( WKF.TOOL_OUTPUT_PARAM_CARDINALITY_MIN + param.getName(), name )
+                                             , WKF.getProperty( WKF.TOOL_OUTPUT_PARAM_CARDINALITY_MAX + param.getName(), name ) ) ;
+                param.setCardinality( cardinality ) ;
+            }
+            
         }
         finally {
             if( TRACE_ENABLED ) trace( "Workflow.createTool() exit") ;
         }
-                                      
+          
+        return tool ;
+                                           
     }
     
     

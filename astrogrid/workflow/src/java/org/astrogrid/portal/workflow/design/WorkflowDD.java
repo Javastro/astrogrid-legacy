@@ -47,12 +47,17 @@ public class WorkflowDD {
     public static final String
         INPUT_ELEMENT = "input",
         OUTPUT_ELEMENT = "output" ;
-        
+         
     public static final String       
         PAREMETER_ELEMENT = "parameter",
         PAREMETER_NAME_ATTR = "name", 
         PAREMETER_TYPE_ATTR = "type", 
-        PAREMETER_LOCATION_ATTR = "location" ;
+        PAREMETER_LOCATION_ATTR = "location",
+        PARAMETER_MIN_CARDINALITY = "min" ,
+        PARAMETER_MAX_CARDINALITY = "max" ;
+        
+    public static final String       
+         DOCUMENTATION_ELEMENT = "documentation" ;
         
     public static final String
         WORKFLOW_TEMPLATE =

@@ -56,17 +56,25 @@ public class Parameter {
         
     private Parameter() {
     }
-        
+     
+    protected Parameter( String name ) {
+        this.name = name ;   
+    }
     
     public Parameter( Element element ) {
-        if( TRACE_ENABLED ) trace( "Parameter(Element) exit") ;  
+        if( TRACE_ENABLED ) trace( "Parameter(Element) exit") ; 
              
         try {
             
             this.name = element.getAttribute( WorkflowDD.PAREMETER_NAME_ATTR ) ;
             this.type = element.getAttribute( WorkflowDD.PAREMETER_TYPE_ATTR ) ;
             this.location = element.getAttribute( WorkflowDD.PAREMETER_LOCATION_ATTR ) ;
-            
+            this.cardinality = 
+                new Cardinality( element.getAttribute( WorkflowDD.PARAMETER_MIN_CARDINALITY ) 
+                               , element.getAttribute( WorkflowDD.PARAMETER_MAX_CARDINALITY ) ) ;
+                               
+            this.contents = element.getNodeValue() ;
+                     
             NodeList
                nodeList = element.getChildNodes() ; 
                            
@@ -76,8 +84,8 @@ public class Parameter {
                     
                     element = (Element) nodeList.item(i) ;
                 
-                    if ( element.getTagName().equals( WorkflowDD.PAREMETER_ELEMENT ) ) {
-                           
+                    if ( element.getTagName().equals( WorkflowDD.DOCUMENTATION_ELEMENT ) ) {
+                        this.documentation = element.getNodeValue() ;  
                     }
                     
                 } // end if
@@ -151,5 +159,23 @@ public class Parameter {
         System.out.println( logString ) ;
         // logger.debug( logString ) ;
     }
+
+	/**
+	   */
+	public void setCardinality(Cardinality cardinality) {
+		this.cardinality = cardinality;
+	}
+
+	/**
+	   */
+	public void setDocumentation(String string) {
+		documentation = string;
+	}
+
+	/**
+	   */
+	public void setType(String string) {
+		type = string;
+	}
 
 } // end of class Parameter

@@ -59,12 +59,28 @@ public class WKF extends org.astrogrid.Configurator {
         JES_URL = "URL" ;
             
     public static final String 
-    /** Tools category within the component's configuration */  
+    /** Tools List category within the component's configuration */  
         TOOLS_LIST_CATEGORY = "TOOLS_LIST" ,    
     /** Key within component's configuration identifying the total tools. */  
         TOOLS_LIST_TOTAL = "TOTAL" ,      
     /** Partial key within component's configuration identifying a tool. */  
         TOOLS_LIST_NAME = "NAME." ;
+        
+    public static final String 
+     /** Tools category within the component's configuration */  
+        TOOL_CATEGORY = "dummy value" ,    
+        TOOL_DOCUMENTATION = "DOCUMENTATION",        TOOL_INPUT_PARAMS_TOTAL = "INPUT_PARAMS.TOTAL",
+        TOOL_INPUT_PARAM_NAME = "INPUT_PARAM.NAME." , 
+        TOOL_INPUT_PARAM_DOCUMENTATION = "INPUT_PARAM.DOCUMENTATION.",  
+        TOOL_INPUT_PARAM_TYPE = "INPUT_PARAM.TYPE." ,
+        TOOL_INPUT_PARAM_CARDINALITY_MIN = "INPUT_PARAM.CARDINALITY.MIN." ,  
+        TOOL_INPUT_PARAM_CARDINALITY_MAX = "INPUT_PARAM.CARDINALITY.MAX." ,     
+        TOOL_OUTPUT_PARAMS_TOTAL = "OUTPUT_PARAMS.TOTAL" ,
+        TOOL_OUTPUT_PARAM_NAME = "OUTPUT_PARAM.NAME.", 
+        TOOL_OUTPUT_PARAM_DOCUMENTATION = "OUTPUT_PARAM.DOCUMENTATION.", 
+        TOOL_OUTPUT_PARAM_CARDINALITY_MIN = "OUTPUT_PARAM.CARDINALITY.MIN.",  
+        TOOL_OUTPUT_PARAM_CARDINALITY_MAX = "OUTPUT_PARAM_CARDINALITY_MAX." ;     
+        
 
     private static WKF
         singletonWKF = new WKF() ;

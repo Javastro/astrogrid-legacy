@@ -13,6 +13,8 @@ package org.astrogrid.portal.workflow.design;
 
 import java.util.List ;
 import java.util.ListIterator ;
+import java.util.ArrayList ;
+//import java.util.Collections ;
 import org.apache.log4j.Logger ;
 import org.w3c.dom.* ;
 
@@ -38,39 +40,131 @@ public class Tool {
         TRACE_ENABLED = true ;
         
     private static Logger 
-        logger = Logger.getLogger( Tool.class ) ;    
+        logger = Logger.getLogger( Tool.class ) ; 
+             
+    private static List createParameters( Element element ){
+        if( TRACE_ENABLED ) trace( "Tool.createParameters() entry") ;
         
-    private ToolFactory
-        factory ;
+        List
+            list = new ArrayList() ;
+        
+        try {
+            
+            NodeList
+               nodeList = element.getChildNodes() ; 
+                           
+            for( int i=0 ; i < nodeList.getLength() ; i++ ) {           
+                
+                if( nodeList.item(i).getNodeType() == Node.ELEMENT_NODE ) {
+                    
+                    element = (Element) nodeList.item(i) ;
+                
+                    if ( element.getTagName().equals( WorkflowDD.PAREMETER_ELEMENT ) ) {
+                           list.add( new Parameter( element ) )  ;
+                    }
+                    
+                } // end if
+                                
+            } // end for       
+             
+        }
+        finally {
+            if( TRACE_ENABLED ) trace( "Tool.createParameters() exit") ;
+        }
+
+        return list ;
+        
+    } // end of Tool.createParameters()  
+    
     
     private String
-        name ;
+        name,
+        documentation ;
         
     private List
-        inputParameters,
-        outputParameters ;    
+        inputParameters = new ArrayList(),
+        outputParameters = new ArrayList() ;    
         
-    protected Tool( ToolFactory factory ) {
-        if( TRACE_ENABLED ) trace( "Tool( ToolFactory ) entry") ;  
-        this.factory = factory ;      
+        
+    private Tool() {
+    }
+    
+    protected Tool( String name ) {
+        this.name = name ;
+    }
+        
+         
+    protected Tool( Element element ) {
+        if( TRACE_ENABLED ) trace( "Tool( Element ) entry") ;  
+        
+        try {
+            
+            name = element.getAttribute( WorkflowDD.TOOL_NAME_ATTR ) ;
+            
+            NodeList
+               nodeList = element.getChildNodes() ; 
+                           
+            for( int i=0 ; i < nodeList.getLength() ; i++ ) {           
+                
+                if( nodeList.item(i).getNodeType() == Node.ELEMENT_NODE ) {
+                    
+                    element = (Element) nodeList.item(i) ;
+                
+                    if ( element.getTagName().equals( WorkflowDD.INPUT_ELEMENT ) ) {
+                        this.inputParameters = Tool.createParameters( element ) ;   
+                    }
+                    else if ( element.getTagName().equals( WorkflowDD.OUTPUT_ELEMENT ) ) {
+                        this.outputParameters = Tool.createParameters( element ) ;   
+                    } 
+                    else if ( element.getTagName().equals( WorkflowDD.DOCUMENTATION_ELEMENT ) ) {
+                        this.documentation = element.getNodeValue() ;   
+                    }   
+                    
+                } // end if
+                                
+            } // end for        
+           
+        }
+        finally {
+            if( TRACE_ENABLED ) trace( "Tool(Element) exit") ;
+        }
+                   
+    }
+    
+    
+
+    /**
+      */
+    public String getName() {
+        return this.name;
+    }
+    
+    
+    public String getDocumentation() {
+        return this.documentation ;
     }
     
     
     public ListIterator getInputParameters() {
         if( TRACE_ENABLED ) trace( "Tool.getInputParameters() entry") ; 
-        return null ;
+        return this.inputParameters.listIterator() ;
     }
     
     
     public ListIterator getOutputParameters() {
         if( TRACE_ENABLED ) trace( "Tool.getOutputParameters() entry") ; 
-        return null ;
+        return this.outputParameters.listIterator() ;
     }
     
     
     public Parameter newInputParameter( String name ) {
         if( TRACE_ENABLED ) trace( "Tool.newInputParameter() entry") ;
-        return null ;
+        
+        Parameter
+            p = new Parameter( name ) ;
+        this.inputParameters.add( p ) ;
+        return p ;
+        
     }
  
  
@@ -82,7 +176,11 @@ public class Tool {
     
     public Parameter newOutputParameter( String name ) {
         if( TRACE_ENABLED ) trace( "Tool.newInputParameter() entry") ;
-        return null ;
+        
+        Parameter
+            p = new Parameter( name ) ;
+        this.outputParameters.add( p ) ;
+        return p ;
     }
     
     
@@ -115,6 +213,13 @@ public class Tool {
         // logger.debug( logString ) ;
     }
 
+
+	/**
+	   */
+	public void setDocumentation(String string) {
+		documentation = string;
+	}
+
 	/**
 	   */
 	public void setInputParameters(List list) {
@@ -122,21 +227,15 @@ public class Tool {
 	}
 
 	/**
-	  */
+	   */
+	public void setName(String string) {
+		name = string;
+	}
+
+	/**
+	   */
 	public void setOutputParameters(List list) {
 		outputParameters = list;
-	}
-
-	/**
-	  */
-	protected ToolFactory getFactory() {
-		return factory;
-	}
-
-	/**
-	  */
-	public String getName() {
-		return name;
 	}
 
 } // end of class Tool

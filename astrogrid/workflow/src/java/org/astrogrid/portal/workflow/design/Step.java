@@ -102,7 +102,7 @@ public class Step extends Activity {
                     element = (Element) nodeList.item(i) ;
                 
                     if ( element.getTagName().equals( WorkflowDD.TOOL_ELEMENT ) ) {
-                        this.tool = ToolFactory.createTool( communitySnippet, element ) ;   
+                        this.tool = new Tool( element ) ;   
                     }  
                     
                 } // end if

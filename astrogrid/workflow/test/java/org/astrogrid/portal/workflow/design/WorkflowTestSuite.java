@@ -339,6 +339,96 @@ public class WorkflowTestSuite extends TestCase {
      } // end of testReadQuery()
    
    
+    public void testReadToolList() {
+         logger.info( "enter: WorkflowTestSuite.testReadToolList()" ); 
+        
+         Iterator  
+            iterator ;
+            
+         try{
+             
+             iterator = Workflow.readToolList( communitySnippet() ) ;
+             
+ //            logger.info( "iterator: " + iterator ) ;
+ //            logger.info( "About to execute iterator: iterator.next()" ) ;
+ //            logger.info( iterator.next().getClass().getName() ) ;
+             
+             while ( iterator.hasNext() ) {
+                 logger.info( "Tool Name: " + (String)iterator.next() ) ;
+             }
+ 
+             assertTrue( true ) ;    
+         }
+         catch( Exception ex ) {
+             
+             assertTrue( false ) ;
+             ex.printStackTrace() ;
+         }
+         finally {
+             logger.info( "exit: WorkflowTestSuite.testReadToolList()" );  
+         }
+        
+     } // end of testReadToolList()
+     
+     
+     
+    public void testCreateTool() {
+         logger.info( "enter: WorkflowTestSuite.testCreateTool()" ); 
+        
+         Iterator  
+            iterator,
+            iterator2 ;
+         Tool
+            tool ;
+         Parameter
+            param ;
+            
+         try{
+             
+             iterator = Workflow.readToolList( communitySnippet() ) ;
+             while( iterator.hasNext() ) {
+                 tool = Workflow.createTool( communitySnippet(), (String)iterator.next() ) ;
+                 logger.info( "===================>>") ;
+                 logger.info( "Tool name: " + tool.getName() ) ;
+                 logger.info( "Tool documenation: " + tool.getDocumentation() ) ;
+                 iterator2 = tool.getInputParameters() ;
+                 while( iterator2.hasNext() ) {
+                     logger.info( "InputParams... " ) ;
+                     param = (Parameter)iterator2.next() ;
+                     logger.info( param.getName() );
+                     logger.info( param.getDocumentation() );
+                     logger.info( param.getType() );
+                     logger.info( new Integer( param.getCardinality().getMinimum()).toString() );
+                     logger.info( new Integer( param.getCardinality().getMaximum()).toString() ); 
+                 }
+                
+                 iterator2 = tool.getOutputParameters() ;
+                 while( iterator2.hasNext() ) {
+                      logger.info( "OutputParams... " ) ;
+                      param = (Parameter)iterator2.next() ;
+                      logger.info( param.getName() );
+                      logger.info( param.getDocumentation() );
+                      logger.info( param.getType() );
+                      logger.info( new Integer( param.getCardinality().getMinimum()).toString() );
+                      logger.info( new Integer( param.getCardinality().getMaximum()).toString() ); 
+                 }
+                 
+             }
+             logger.info( "===================>>") ;
+             assertTrue( true ) ;    
+         }
+         catch( Exception ex ) {
+             
+             assertTrue( false ) ;
+             ex.printStackTrace() ;
+         }
+         finally {
+             logger.info( "exit: WorkflowTestSuite.testCreateTool()" );  
+         }
+        
+     } // end of testCreateTool()
+   
+   
    
     public void testSubmitWorkflow() {
          logger.info( "enter: WorkflowTestSuite.testSubmitWorkflow()" ); 
