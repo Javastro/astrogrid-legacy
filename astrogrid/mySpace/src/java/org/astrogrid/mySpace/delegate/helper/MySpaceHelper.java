@@ -22,8 +22,6 @@ public class MySpaceHelper{
 	public MySpaceHelper (){}
 		
     public String buildSave(String userid, String communityid, String credential, String fileName, String fileContent, String category, String action){
-  //FIXME This does not allow a general reference to be made - in addition does not allow for general container and the userid in the call could be making an upload into another users myspace
-       String fileFullName = "/"+userid.trim()+"@"+communityid.trim()+"/serv1/"+category.toLowerCase().trim()+"/"+fileName.trim();
 		StringBuffer request = new StringBuffer() ;
 		try {		
 			request.append("<request>") ;
@@ -44,7 +42,7 @@ public class MySpaceHelper{
 			request.append("</fileContent>") ;
 			
 			request.append("<newDataHolderName>") ;
-			request.append(fileFullName) ;
+			request.append(fileName) ;
 			request.append("</newDataHolderName>") ;
 			
 			request.append("<action>");
@@ -60,9 +58,7 @@ public class MySpaceHelper{
 	}
 	
 	public String buildSaveURL(String userid, String communityid, String credential, String fileName, String importURL, String category, String action){
-      //TODO this should not be constructed from the arguments.
-		String fileFullName = "/"+userid.trim()+"@"+communityid.trim()+"/serv1/"+category.toLowerCase().trim()+"/"+fileName.trim();
-		StringBuffer request = new StringBuffer() ;
+ 		StringBuffer request = new StringBuffer() ;
 		try {		
 			request.append("<request>") ;
 			request.append("<userID>") ;
@@ -82,7 +78,7 @@ public class MySpaceHelper{
 			request.append("</importURI>") ;
 			
 			request.append("<newDataHolderName>") ;
-			request.append(fileFullName) ;
+			request.append(fileName) ;
 			request.append("</newDataHolderName>") ;
 			
 			request.append("<action>");
@@ -453,8 +449,8 @@ public class MySpaceHelper{
    
    public static String formatMyspaceReference(User user, String server, String container, String file)
    {
-     // return "/"+user.getUserId()+"@"+user.getCommunity()+"/"+server+"/"+container+"/"+file;
-     return file;
+      return "/"+user.getUserId()+"@"+user.getCommunity()+"/"+server+"/"+container+"/"+file;
+   
    }
 
    public static String formatMyspaceContainerReference(User user, String server, String container)
