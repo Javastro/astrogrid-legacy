@@ -137,7 +137,7 @@ middle to commandline tests - no jar produced, no error messages. so written all
 </goal>
 <goal name="astrogrid-deploy-site" prereqs="astrogrid-build-site">
    <echo message="Master Project: astrogrid-deploy-site"/>
-   <attainGoal name="site:fsdeploy" />
+   <attainGoal name="site:sshdeploy" />
 </goal>
 <goal name="astrogrid-clean">
    <echo message="Master Project: astrogrid-clean"/>
