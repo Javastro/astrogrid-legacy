@@ -36,7 +36,7 @@
   
   <!-- JES CATEGORY =========================================================== -->  
   <category name="JES">
-    <property name="ID" value="jes@astrogrid1.jb.man.ac.uk" />
+    <property name="ID" value="jes@localhost" />
   </category>
  
  
@@ -44,7 +44,7 @@
   <category name="MONITOR">
     <property name="PARSER.VALIDATION" value="false" />  
     <!-- Location of our JobMonitor -->
-    <property name="URL" value="http://astrogrid1.jb.man.ac.uk:8080/jes-SNAPSHOT/services/JobMonitorService" />
+    <property name="URL" value="http://localhost:8080/astrogrid-jes/services/JobMonitorService" />
   </category>
   
   
@@ -52,7 +52,7 @@
   <category name="CONTROLLER">
     <property name="PARSER.VALIDATION" value="false" />
     <property name="TEMPLATE.RESPONSE" value="JobController.xmltemplate" />  
-    <property name="URL" value="http://astrogrid1.jb.man.ac.uk:8080/jes-SNAPSHOT/services/JobControllerService" />
+    <property name="URL" value="http://localhost:8080/astrogrid-jes/services/JobControllerService" />
   </category>  
   
   
@@ -60,7 +60,7 @@
   <category name="SCHEDULER">
     <property name="PARSER.VALIDATION" value="false" />
     <!-- Location of our JobScheduler -->
-    <property name="URL" value="http://astrogrid1.jb.man.ac.uk:8080/jes-SNAPSHOT/services/JobSchedulerService" />
+    <property name="URL" value="http://localhost:8080/astrogrid-jes/services/JobSchedulerService" />
     <!-- Schedule Job Request Template -->
     <property name="TEMPLATE.SCHEDULE_JOB_REQUEST" value="JobSchedulerRequest.xmltemplate" />
   </category>  
@@ -105,12 +105,15 @@
     <!-- TOOLS CATEGORY =============================================================== -->    
   <category name="TOOLS">
     <!-- Location of various tools -->
-    <property name="LOCATION.QueryTool" value="http://astrogrid3.jb.man.ac.uk:8080/axis/services/????" />
-    <property name="LOCATION.DataFederation" value="http://astrogrid3.jb.man.ac.uk:8080/axis/services/????" />
-    <property name="LOCATION.SExtractor" value="http://astrogrid3.jb.man.ac.uk:8080/axis/services/????" />
-    <property name="LOCATION.HyperZ" value="http://astrogrid3.jb.man.ac.uk:8080/axis/services/????" />
+    <property name="LOCATION.testapp" value="localhost:8080/astrogrid-applications/services/ApplicationController" />
+    <property name="LOCATION.QueryTool" value="localhost:8080/astrogrid-applications/services/ApplicationController" />
+    <property name="LOCATION.DataFederation" value="localhost:8080/astrogrid-applications/services/ApplicationController" />
+    <property name="LOCATION.SExtractor" value="localhost:8080/astrogrid-applications/services/ApplicationController" />
+    <property name="LOCATION.HyperZ" value="localhost:8080/astrogrid-applications/services/ApplicationController" />
+
     
     <!-- Tool interfaces -->
+    <property name="INTERFACE.testapp" value="I1" />
     <property name="INTERFACE.QueryTool" value="simple" />
     <property name="INTERFACE.DataFederation" value="Smain" />
     <property name="INTERFACE.SExtractor" value="Simple" />
