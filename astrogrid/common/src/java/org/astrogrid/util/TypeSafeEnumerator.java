@@ -1,3 +1,7 @@
+/*
+ * $Id: TypeSafeEnumerator.java,v 1.2 2003/10/02 13:10:46 mch Exp $
+ */
+
 package org.astrogrid.util;
 
 
@@ -7,8 +11,9 @@ import java.util.Iterator;
 
 
 /**
-* Type Safe Enumerator.  Parent class for all type-safe enumerations
-* such as log.Severity, shapes.FillPattern, etc
+* A superclass and set of helper methods for easily making, using
+ * and streaming type-safe enumerations, if you don't have the new generic
+ * java stuff.
 * <P>
 * Type-safe enumerators are a way of creating pre-defined lists of things,
 * ensuring that only things of those correct instances are used as arguments.
@@ -26,7 +31,24 @@ import java.util.Iterator;
 * property methods and register the class with the TypeSafeEnumEditor at
 * the end of the PropertyPane class (plenty of examples there) and bobs your uncle.
 * <P>
- @author M Hill
+ * Example use of TypeSafeEnumerator:
+ * <pre>
+ * public class Severity extends TypeSafeEnumerator {
+ *     public final static Severity INFO = new Severity("Information only");
+ *     public final static Severity WARNING = new Severity("Warning");
+ *     public final static Severity ALARM = new Severity("Alarm");
+ *
+ *     public Severity(String msg) {
+ *         super(msg);
+ *     }
+ * }
+ * </pre>
+ * You can now use Severity as a parameter, and you will only ever get the
+ * ones defined above (or subclasses if not final!).
+ * <p>
+ * Extended from a javaworld article
+ * <p>
+ * @author M Hill
  */
 
 
@@ -194,7 +216,12 @@ public class TypeSafeEnumerator implements java.io.Serializable
 
 }
 
-
+/*
+ * $Log: TypeSafeEnumerator.java,v $
+ * Revision 1.2  2003/10/02 13:10:46  mch
+ * Added documentation
+ *
+ */
 
 
 
