@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryLoaderTask.java,v 1.3 2004/09/10 18:26:26 pah Exp $
+ * $Id: RegistryLoaderTask.java,v 1.4 2004/09/16 06:56:12 pah Exp $
  * 
  * Created on 13-Jul-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -113,7 +113,8 @@ public class RegistryLoaderTask
         {
         // Try registering our services.
         try {
-            //
+            
+            log("sending  "+data+" - to registry at "+ registry);
             // Create our RegistryAdminService client.
             RegistryAdminService registry = new UpdateRegistry(
                 new URL(

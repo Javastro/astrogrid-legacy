@@ -36,7 +36,7 @@
         <!--+
             | Initialise our Ant task.
             +-->
-        <taskdef name="register.task" classname="org.astrogrid.community.install.ant.CommunityRegistryTask">
+        <taskdef name="register.task" classname="org.astrogrid.deployment.RegistryUploaderTask">
             <classpath refid="register.classpath"/>
         </taskdef>
         <!--+
