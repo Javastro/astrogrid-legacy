@@ -1,4 +1,4 @@
-/* $Id: AllTests.java,v 1.6 2004/05/17 12:37:31 pah Exp $
+/* $Id: AllTests.java,v 1.7 2004/07/01 11:45:30 nw Exp $
  * Created on Apr 15, 2004 by jdt@roe.ac.uk
  * The auto-integration project
  * Copyright (c) Astrigrid 2004.  All rights reserved.
@@ -20,7 +20,6 @@ public class AllTests {
     public static Test suite() {
         TestSuite suite = new TestSuite("Store");
         //$JUnit-BEGIN$
-        suite.addTest(new TestSuite(StoreInstallationTest.class));
         suite.addTest(new TestSuite(DeployedManagerTest.class));
         suite.addTest(MySpaceTest.suite());
         suite.addTest(VoSpaceTest.suite());
@@ -32,6 +31,10 @@ public class AllTests {
 }
 /*
  *  $Log: AllTests.java,v $
+ *  Revision 1.7  2004/07/01 11:45:30  nw
+ *  removed store integration test - uses the myspace delegate,
+ *  though the scripting library. this isn't supported any more.
+ *
  *  Revision 1.6  2004/05/17 12:37:31  pah
  *  Improve CEA tests that call application controller directly
  *
