@@ -1,16 +1,16 @@
-package test.org.astrogrid.mySpace.mySpaceRegistry;
+package test.org.astrogrid.mySpace.mySpaceServer;
 
 import junit.framework.*;
-import org.astrogrid.mySpace.mySpaceRegistry.Container;
+import org.astrogrid.mySpace.mySpaceServer.ServerManager;
 
 /** JUnit TestCase. 
  * @testfamily JUnit
  * @testkind testcase
  * @testsetup Empty TestCase
- * @testedclass org.astrogrid.mySpace.mySpaceRegistry.Container*/
-public class TestContainer extends TestCase {
+ * @testedclass org.astrogrid.mySpace.mySpaceServer.ServerManager*/
+public class TestServerManager extends TestCase {
     /** Constructs a test case with the given name. */
-    public TestContainer(String name) {
+    public TestServerManager(String name) {
         super(name);
     }
 

@@ -6,7 +6,7 @@ import org.astrogrid.mySpace.mySpaceRegistry.UserAccount;
 /** JUnit TestCase. 
  * @testfamily JUnit
  * @testkind testcase
- * @testsetup Default TestCase
+ * @testsetup Empty TestCase
  * @testedclass org.astrogrid.mySpace.mySpaceRegistry.UserAccount*/
 public class TestUserAccount extends TestCase {
     /** Constructs a test case with the given name. */
