@@ -1,4 +1,4 @@
-/*$Id: SequenceFeatureTest.java,v 1.2 2004/07/30 15:42:34 nw Exp $
+/*$Id: SequenceFeatureTest.java,v 1.3 2004/12/09 16:39:12 clq2 Exp $
  * Created on 29-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,7 @@ package org.astrogrid.jes.jobscheduler.impl.groovy;
 
 import org.astrogrid.workflow.beans.v1.Script;
 import org.astrogrid.workflow.beans.v1.Sequence;
+import org.astrogrid.workflow.beans.v1.Set;
 import org.astrogrid.workflow.beans.v1.Workflow;
 
 /** test exection of a sequence of actions.
@@ -33,19 +34,20 @@ public class SequenceFeatureTest extends AbstractTestForFeature {
      */
     protected Workflow buildWorkflow() {
         Workflow wf = super.createMinimalWorkflow();
-        Script initScript = new Script();
-        initScript.setBody("vars.set('x',1)");
-        wf.getSequence().addActivity(initScript);        
+        Set x = new Set();
+        x.setVar("x");
+        x.setValue("${1}");        
+        wf.getSequence().addActivity(x);        
         Sequence seq = new Sequence();
         wf.getSequence().addActivity(seq);
         Script sc1 = new Script();
-        sc1.setBody("x = x + 1;vars.set('y',1);print(x);");
+        sc1.setBody("x = x + 1;print(x);");
         seq.addActivity(sc1);
         Script sc2 = new Script();
-        sc2.setBody("x = x * 10; y = y + 10;print(x);");
+        sc2.setBody("x = x * 10;print(x);");
         seq.addActivity(sc2);
         Script finalScript = new Script();
-        finalScript.setBody("print(x);print(y)");
+        finalScript.setBody("print(x);");
         wf.getSequence().addActivity(finalScript);
         return wf;
     }
@@ -56,10 +58,7 @@ public class SequenceFeatureTest extends AbstractTestForFeature {
     protected void verifyWorkflow(Workflow result) {
 
         assertWorkflowCompleted(result);
-        
-        Script initScript  = (Script)result.getSequence().getActivity(0);
-        assertScriptCompleted(initScript);
-        
+
         Sequence seq = (Sequence)result.getSequence().getActivity(1);
         
         Script sc1 = (Script)seq.getActivity(0);
@@ -69,7 +68,7 @@ public class SequenceFeatureTest extends AbstractTestForFeature {
         assertScriptCompletedWithMessage(sc2,"20");
         
         Script finalScript = (Script)result.getSequence().getActivity(2);
-        assertScriptCompletedWithMessage(finalScript,"2011");
+        assertScriptCompletedWithMessage(finalScript,"20");
     }
 
 }
@@ -77,6 +76,13 @@ public class SequenceFeatureTest extends AbstractTestForFeature {
 
 /* 
 $Log: SequenceFeatureTest.java,v $
+Revision 1.3  2004/12/09 16:39:12  clq2
+nww_jes_panic
+
+Revision 1.2.80.1  2004/12/09 14:42:54  nw
+made more robust.
+still got looping bug though.
+
 Revision 1.2  2004/07/30 15:42:34  nw
 merged in branch nww-itn06-bz#441 (groovy scripting)
 

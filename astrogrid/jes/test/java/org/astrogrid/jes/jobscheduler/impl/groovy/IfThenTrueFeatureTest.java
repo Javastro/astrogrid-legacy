@@ -1,4 +1,4 @@
-/*$Id: IfThenTrueFeatureTest.java,v 1.1 2004/08/05 09:59:46 nw Exp $
+/*$Id: IfThenTrueFeatureTest.java,v 1.2 2004/12/09 16:39:12 clq2 Exp $
  * Created on 05-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -44,11 +44,11 @@ public class IfThenTrueFeatureTest extends AbstractTestForFeature {
         i.setThen(then);
         
         Script sc = new Script();
-        sc.setBody("x=!x;vars.set('y',2);"); // check we can access variables defined outside.        
+        sc.setBody("x=!x;"); // check we can access variables defined outside.        
         then.setActivity(sc);
         
         Script endScript = new Script();
-        endScript.setBody("print (!x && y == 2)"); // check we can see variables defined within if block.
+        endScript.setBody("print (!x)"); // check we can see variables defined within if block.
         
         wf.getSequence().addActivity(x);
         wf.getSequence().addActivity(i);
@@ -70,6 +70,13 @@ public class IfThenTrueFeatureTest extends AbstractTestForFeature {
 
 /* 
 $Log: IfThenTrueFeatureTest.java,v $
+Revision 1.2  2004/12/09 16:39:12  clq2
+nww_jes_panic
+
+Revision 1.1.76.1  2004/12/09 14:42:54  nw
+made more robust.
+still got looping bug though.
+
 Revision 1.1  2004/08/05 09:59:46  nw
 tests for if construct
  

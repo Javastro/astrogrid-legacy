@@ -193,12 +193,12 @@ states.setStatus('<xsl:value-of select="generate-id(..)"/>',ERROR);
 			e = states.getEnv('<xsl:value-of select="generate-id()"/>');
 			e.newScope();
 			states.setStatus('<xsl:value-of select="generate-id()"/>',STARTED);
-			states.setStatus('<xsl:value-of select="generate-id(./*)"/>',START);
-			states.setEnv('<xsl:value-of select="generate-id(./*)"/>',e);
+			states.setStatus('<xsl:value-of select="generate-id(./*[position()=1])"/>',START);<!-- NWW -->
+			states.setEnv('<xsl:value-of select="generate-id(./*[position()=1])"/>',e); <!-- NWW -->
 		</body>
 	</rule>
 	<rule>
-		<trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == STARTED &amp;&amp; states.getStatus('<xsl:value-of select="generate-id(./*)"/>') == FINISHED</trigger>
+		<trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == STARTED &amp;&amp; states.getStatus('<xsl:value-of select="generate-id(./*[position()=last()])"/>') == FINISHED</trigger> <!-- NWW -->
 		<name>remove-scope-<xsl:value-of select="generate-id()"/></name>
 		<body>
 			states.getEnv('<xsl:value-of select="generate-id()"/>').removeScope();
@@ -256,7 +256,7 @@ if (jes.dispatchStep('<xsl:value-of select="generate-id()"/>',shell,states,rules
 		</trigger>
 <body>
 states.setStatus('<xsl:value-of select="generate-id()"/>',FINISHED);
-<xsl:if test="@result-var and @result-var != ''"><!-- if we previously set this flag state, reset it -->
+<xsl:if test="@result-var and @result-var != ''"><!-- if we previously set this flag state, reset it - cleans up incase needs to be executed again.-->
 		states.setStatus('<xsl:value-of select="generate-id()"/>' + "-results",START);
 		</xsl:if>
 </body>
@@ -280,8 +280,8 @@ states.setStatus('<xsl:value-of select="generate-id()"/>',FINISHED);
 	 <name>sequence-start-<xsl:value-of select="generate-id()"/></name>
 	<body>
 <xsl:if test="./*"><!-- i.e. we've got children -->
-states.setStatus('<xsl:value-of select="generate-id(./*)"/>',START);
-states.setEnv('<xsl:value-of select="generate-id(./*)"/>',states.getEnv('<xsl:value-of select="generate-id()"/>')) ;
+states.setStatus('<xsl:value-of select="generate-id(./*[position()=1])"/>',START);<!-- NWW -->
+states.setEnv('<xsl:value-of select="generate-id(./*[position()=1])"/>',states.getEnv('<xsl:value-of select="generate-id()"/>')) ;<!--NWW-->
 </xsl:if>
 states.setStatus('<xsl:value-of select="generate-id()"/>',STARTED)	  
 	</body>	
@@ -369,15 +369,15 @@ try {
 }
 
 if (condition) {
-	  	states.setStatus('<xsl:value-of select="generate-id(./wf:then/* | ./wf:Activity[@xsi:type='then']/*)"/>', START);
+	  	states.setStatus('<xsl:value-of select="generate-id(./wf:then/*[position()=1] | ./wf:Activity[@xsi:type='then']/*[position()=1])"/>', START); <!-- NWW -->
 		states.setStatus('<xsl:value-of select="generate-id()"/>', STARTED);
-		states.setEnv('<xsl:value-of select="generate-id(./wf:then/* | ./wf:Activity[@xsi:type='then']/*)"/>',states.getEnv('<xsl:value-of select="generate-id()"/>'));
+		states.setEnv('<xsl:value-of select="generate-id(./wf:then/*[position()=1] | ./wf:Activity[@xsi:type='then']/*[position()=1])"/>',states.getEnv('<xsl:value-of select="generate-id()"/>'));<!--NWW-->
 } else {
 	  <xsl:choose>
 	    <xsl:when test="./wf:else | ./wf:Activity[@xsi:type='else']">
-	     states.setStatus('<xsl:value-of select="generate-id(./wf:else/* | ./wf:Activity[@xsi:type='else']/*)"/>',START);
+	     states.setStatus('<xsl:value-of select="generate-id(./wf:else/*[position()=1] | ./wf:Activity[@xsi:type='else']/*[position()=1])"/>',START); <!-- NWW -->
 		states.setStatus('<xsl:value-of select="generate-id()"/>',STARTED) ;
-		states.setEnv('<xsl:value-of select="generate-id(./wf:else/* | ./wf:Activity[@xsi:type='else']/*)"/>',states.getEnv('<xsl:value-of select="generate-id()"/>'));
+		states.setEnv('<xsl:value-of select="generate-id(./wf:else/*[position()=1] | ./wf:Activity[@xsi:type='else']/*[position()=1])"/>',states.getEnv('<xsl:value-of select="generate-id()"/>'));<!--NWW-->
 	    </xsl:when>
 	    <xsl:otherwise>
 	        states.setStatus('<xsl:value-of select="generate-id()"/>',FINISHED);
@@ -390,8 +390,8 @@ if (condition) {
 	<name>if-end-<xsl:value-of select="generate-id()"/></name>
 	<trigger>
 	  <xsl:choose>
-	    <xsl:when test="./wf:else | ./wf:Activity[@xsi:type='else']">states.getStatus('<xsl:value-of select="generate-id()"/>') == STARTED &amp;&amp; (states.getStatus('<xsl:value-of select="generate-id(./wf:then/* | ./wf:Activity[@xsi:type='then']/*)"/>') == FINISHED || states.getStatus('<xsl:value-of select="generate-id(./wf:else/* | ./wf:Activity[@xsi:type='else']/*)"/>') == FINISHED)</xsl:when>
-	    <xsl:otherwise>states.getStatus('<xsl:value-of select="generate-id()"/>') == STARTED &amp;&amp; states.getStatus('<xsl:value-of select="generate-id(./wf:then/* | ./wf:Activity[@xsi:type='then']/*)"/>') == FINISHED</xsl:otherwise>
+	    <xsl:when test="./wf:else | ./wf:Activity[@xsi:type='else']">states.getStatus('<xsl:value-of select="generate-id()"/>') == STARTED &amp;&amp; (states.getStatus('<xsl:value-of select="generate-id(./wf:then/*[position()=last()] | ./wf:Activity[@xsi:type='then']/*[position()=last()])"/>') == FINISHED || states.getStatus('<xsl:value-of select="generate-id(./wf:else/*[position()=last()] | ./wf:Activity[@xsi:type='else']/*[position()=last()])"/>') == FINISHED)</xsl:when>
+	    <xsl:otherwise>states.getStatus('<xsl:value-of select="generate-id()"/>') == STARTED &amp;&amp; states.getStatus('<xsl:value-of select="generate-id(./wf:then/*[position()=last()] | ./wf:Activity[@xsi:type='then']/*[position()=last()])"/>') == FINISHED</xsl:otherwise>
 	  </xsl:choose>
 	</trigger>
 	<body>
@@ -423,9 +423,9 @@ try {
 		return;	
 	}
 if (condition) {		
-		states.setStatus('<xsl:value-of select="generate-id(./*)"/>',START);
+		states.setStatus('<xsl:value-of select="generate-id(./*[position()=1])"/>',START);<!--NWW -->
 	       states.setStatus('<xsl:value-of select="generate-id()"/>',STARTED) ;
-		states.setEnv('<xsl:value-of select="generate-id(./*)"/>',states.getEnv('<xsl:value-of select="generate-id()"/>'));
+		states.setEnv('<xsl:value-of select="generate-id(./*[position()=1])"/>',states.getEnv('<xsl:value-of select="generate-id()"/>'));<!--NWW -->
 } else {
 		states.setStatus('<xsl:value-of select="generate-id()"/>', FINISHED);
 }
@@ -433,7 +433,7 @@ if (condition) {
 </rule>
 <rule>
 	 <name>while-loop-<xsl:value-of select="generate-id()"/></name>
-	<trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == STARTED &amp;&amp; states.getStatus('<xsl:value-of select="generate-id(./*)"/>') == FINISHED</trigger>
+	<trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == STARTED &amp;&amp; states.getStatus('<xsl:value-of select="generate-id(./*[position()=last()])"/>') == FINISHED</trigger><!--NWW -->
 	<body>
 whileObj = jes.getId('<xsl:value-of select="generate-id()"/>');
 try {
@@ -444,7 +444,10 @@ try {
 		return;	
 	}
 if (condition) {	
-		states.setStatus('<xsl:value-of select="generate-id(./*)"/>',START);
+			<xsl:for-each select=".//wf:Activity | .//wf:step | .//wf:script | .//wf:set | .//wf:unset | .//wf:if | .//wf:for | .//wf:parfor | .//wf:while | .//wf:sequence | .//wf:flow | .//wf:scope | .//wf:try | .//wf:catch">				
+				states.setStatus('<xsl:value-of select="generate-id()"/>',UNSTARTED);
+			</xsl:for-each>
+		states.setStatus('<xsl:value-of select="generate-id(./*[position()=1])"/>',START);<!--NWW -->
 } else {
 		states.setStatus('<xsl:value-of select="generate-id()"/>', FINISHED);
 }
@@ -473,15 +476,14 @@ if (condition) {
 	}
 	states.getEnv('<xsl:value-of select="generate-id()"/>' + "-loopvar").set("list",l);	
 	states.getEnv('<xsl:value-of select="generate-id()"/>' + "-loopvar").set("index",0);
-    states.setEnv('<xsl:value-of select="generate-id(./*)"/>', states.getEnv('<xsl:value-of select="generate-id()"/>'));
+    states.setEnv('<xsl:value-of select="generate-id(./*[position()=1])"/>', states.getEnv('<xsl:value-of select="generate-id()"/>'));<!--NWW-->
    states.setStatus('<xsl:value-of select="generate-id()"/>',STARTED);
 	</body>
 </rule>
 
 <rule>
 	 <name>for-loop-<xsl:value-of select="generate-id()"/></name>
-	 <trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == STARTED 
-		&amp;&amp; (states.getStatus('<xsl:value-of select="generate-id(./*)"/>') == FINISHED || states.getStatus('<xsl:value-of select="generate-id(./*)"/>') == UNSTARTED)</trigger> 
+	 <trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == STARTED &amp;&amp; states.getStatus('<xsl:value-of select="generate-id(./*[position()=1])"/>') == UNSTARTED</trigger> 
 	<body>
 		index = states.getEnv('<xsl:value-of select="generate-id()"/>' + "-loopvar").get("index");
 		list= states.getEnv('<xsl:value-of select="generate-id()"/>' + "-loopvar").get("list");
@@ -490,10 +492,19 @@ if (condition) {
 		} else {
 			i = list.get(index);
 			states.getEnv('<xsl:value-of select="generate-id()"/>' + "-loopvar").set("index",++index);
-			states.getEnv('<xsl:value-of select="generate-id(./*)"/>').set('<xsl:value-of select="@var" />',i);
-			states.setStatus('<xsl:value-of select="generate-id(./*)" />',START);
+			states.getEnv('<xsl:value-of select="generate-id(./*[position()=1])"/>').set('<xsl:value-of select="@var" />',i);
+			states.setStatus('<xsl:value-of select="generate-id(./*[position()=1])" />',START);
 		}
 	</body>
+</rule>
+<rule>
+		<name>for-reset<xsl:value-of select="generate-id()"/></name>
+		<trigger>states.getStatus('<xsl:value-of select="generate-id()"/>') == STARTED &amp;&amp; states.getStatus('<xsl:value-of select="generate-id(./*[position()=last()])"/>') == FINISHED</trigger>
+		<body>
+			<xsl:for-each select=".//wf:Activity | .//wf:step | .//wf:script | .//wf:set | .//wf:unset | .//wf:if | .//wf:for | .//wf:parfor | .//wf:while | .//wf:sequence | .//wf:flow | .//wf:scope | .//wf:try | .//wf:catch">				
+				states.setStatus('<xsl:value-of select="generate-id()"/>',UNSTARTED);
+			</xsl:for-each>
+		</body>
 </rule>
 </xsl:template>
 

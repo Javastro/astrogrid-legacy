@@ -1,4 +1,4 @@
-/*$Id: IfThenElseFalseFeatureTest.java,v 1.1 2004/08/05 09:59:46 nw Exp $
+/*$Id: IfThenElseFalseFeatureTest.java,v 1.2 2004/12/09 16:39:12 clq2 Exp $
  * Created on 05-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -38,21 +38,21 @@ public class IfThenElseFalseFeatureTest extends AbstractTestForFeature {
         i.setTest("${x}");
         
         Then then = new Then();
+        Script thScript = new Script();
+        thScript.setBody("print(1)");
+        then.setActivity(thScript);
         i.setThen(then);
         
         Else el = new Else();
         i.setElse(el);
-        
-        Script sc = new Script();
-        sc.setBody("vars.set('y',2);");         
-        then.setActivity(sc);
+
         
         Script elScript = new Script();
-        elScript.setBody("x=!x;vars.set('y',10)");
+        elScript.setBody("x=!x;");
         el.setActivity(elScript);
         
         Script endScript = new Script();
-        endScript.setBody("print (x  && y == 10)"); // check we can see variables defined within if block.
+        endScript.setBody("print (x  )"); // check we can see variables defined within if block.
         
         wf.getSequence().addActivity(x);
         wf.getSequence().addActivity(i);
@@ -76,6 +76,13 @@ public class IfThenElseFalseFeatureTest extends AbstractTestForFeature {
 
 /* 
 $Log: IfThenElseFalseFeatureTest.java,v $
+Revision 1.2  2004/12/09 16:39:12  clq2
+nww_jes_panic
+
+Revision 1.1.76.1  2004/12/09 14:42:54  nw
+made more robust.
+still got looping bug though.
+
 Revision 1.1  2004/08/05 09:59:46  nw
 tests for if construct
  

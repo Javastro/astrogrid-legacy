@@ -1,4 +1,4 @@
-/*$Id: Vars.java,v 1.6 2004/11/29 20:00:24 clq2 Exp $
+/*$Id: Vars.java,v 1.7 2004/12/09 16:39:12 clq2 Exp $
  * Created on 28-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,9 @@
  *
 **/
 package org.astrogrid.jes.jobscheduler.impl.groovy;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import groovy.lang.Binding;
 import groovy.lang.MissingPropertyException;
@@ -27,6 +30,10 @@ import java.util.Map;
  *
  */
 public class Vars{
+    /**
+     * Commons Logger for this class
+     */
+    private static final Log logger = LogFactory.getLog(Vars.class);
 
     /** Construct a new Bindings
      * 
@@ -101,7 +108,9 @@ public void removeScope()     {
      * @param bodyBinding
      */
     public void addToBinding(Binding bodyBinding) {
+        /** NWW - 9/12/04 don't like this - not necessary - problematic
         bodyBinding.setVariable("vars",this);
+        */
         for (Iterator j = l.iterator(); j.hasNext(); ) {
             Map e = (Map)j.next();
             for (Iterator i = e.entrySet().iterator(); i.hasNext(); ) {
@@ -125,8 +134,9 @@ public void removeScope()     {
                 try {
                     Object newValue = bodyBinding.getVariable(var.getKey().toString());
                     var.setValue(newValue);
-                } catch (MissingPropertyException missing) { // ok, must have been added into 'var' object in script.
-                    // skip it.
+                } catch (MissingPropertyException missing) {
+                    /** don't think this is possible */
+                    logger.warn(missing);
                 }
             }
     }
@@ -192,6 +202,12 @@ public void removeScope()     {
 
 /* 
 $Log: Vars.java,v $
+Revision 1.7  2004/12/09 16:39:12  clq2
+nww_jes_panic
+
+Revision 1.6.4.1  2004/12/09 13:22:59  nw
+made variable persistance a little harder.
+
 Revision 1.6  2004/11/29 20:00:24  clq2
 jes-nww-714
 

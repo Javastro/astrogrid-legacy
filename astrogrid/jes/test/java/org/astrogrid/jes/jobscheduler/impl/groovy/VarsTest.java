@@ -1,4 +1,4 @@
-/*$Id: VarsTest.java,v 1.4 2004/08/09 17:34:10 nw Exp $
+/*$Id: VarsTest.java,v 1.5 2004/12/09 16:39:12 clq2 Exp $
  * Created on 28-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -89,7 +89,7 @@ public class VarsTest extends TestCase {
         Binding b = new Binding();
         vars.addToBinding(b);
         GroovyShell shell = new GroovyShell();
-        Script sc = shell.parse("foo= 'barney'; bar = bar + 1;vars.set('pling','bop');foo");
+        Script sc = shell.parse("foo= 'barney'; bar = bar + 1;foo");
         sc.setBinding(b);
         Object result =sc.run();
         assertNotNull(result);
@@ -98,10 +98,8 @@ public class VarsTest extends TestCase {
        vars.readFromBinding(b);
         // check values read back.
        assertNotNull(vars.get("foo"));
-       assertNotNull(vars.get("pling"));
        assertNotNull(vars.get("bar"));
        assertEquals("barney",vars.get("foo"));
-       assertEquals("bop",vars.get("pling"));
        assertEquals(new Integer(2),vars.get("bar"));
     }
     
@@ -118,6 +116,13 @@ public class VarsTest extends TestCase {
 
 /* 
 $Log: VarsTest.java,v $
+Revision 1.5  2004/12/09 16:39:12  clq2
+nww_jes_panic
+
+Revision 1.4.74.1  2004/12/09 14:42:54  nw
+made more robust.
+still got looping bug though.
+
 Revision 1.4  2004/08/09 17:34:10  nw
 implemented parfor.
 removed references to rulestore

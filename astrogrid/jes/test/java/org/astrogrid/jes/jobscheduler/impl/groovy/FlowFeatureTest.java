@@ -1,4 +1,4 @@
-/*$Id: FlowFeatureTest.java,v 1.3 2004/08/03 14:27:38 nw Exp $
+/*$Id: FlowFeatureTest.java,v 1.4 2004/12/09 16:39:12 clq2 Exp $
  * Created on 29-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,7 @@ package org.astrogrid.jes.jobscheduler.impl.groovy;
 
 import org.astrogrid.workflow.beans.v1.Flow;
 import org.astrogrid.workflow.beans.v1.Script;
+import org.astrogrid.workflow.beans.v1.Set;
 import org.astrogrid.workflow.beans.v1.Workflow;
 
 /** test behaviour of flow - 
@@ -33,8 +34,11 @@ public class FlowFeatureTest extends AbstractTestForFeature {
     protected Workflow buildWorkflow() {
         Workflow wf = super.createMinimalWorkflow();
         Script initScript = new Script();
-        initScript.setBody("vars.set('x',1)");
-        wf.getSequence().addActivity(initScript);
+        Set x = new Set();
+        x.setVar("x");
+        x.setValue("${1}");        
+        wf.getSequence().addActivity(x);
+        
         Flow f = new Flow();
         wf.getSequence().addActivity(f);
         Script sc = new Script();
@@ -70,6 +74,13 @@ public class FlowFeatureTest extends AbstractTestForFeature {
 
 /* 
 $Log: FlowFeatureTest.java,v $
+Revision 1.4  2004/12/09 16:39:12  clq2
+nww_jes_panic
+
+Revision 1.3.76.1  2004/12/09 14:42:54  nw
+made more robust.
+still got looping bug though.
+
 Revision 1.3  2004/08/03 14:27:38  nw
 added set/unset/scope features.
 

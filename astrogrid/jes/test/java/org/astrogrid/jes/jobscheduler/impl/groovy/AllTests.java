@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.8 2004/08/18 21:50:59 nw Exp $
+/*$Id: AllTests.java,v 1.9 2004/12/09 16:39:12 clq2 Exp $
  * Created on 27-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,55 +23,65 @@ public class AllTests {
         TestSuite suite = new TestSuite(
             "Test for org.astrogrid.jes.jobscheduler.impl.groovy");
         //$JUnit-BEGIN$
-        suite.addTestSuite(GroovyResumeJobSuccesssTest.class);
-        suite.addTestSuite(ParforManyFeatureTest.class);
-        suite.addTestSuite(GroovySchedulerSetupTest.class);
-        suite.addTestSuite(SetFeatureTest.class);
-        suite.addTestSuite(GroovyAbortJobTest.class);
-        suite.addTestSuite(ForEmptyFeatureTest.class);
-        suite.addTestSuite(ForSingletonFeatureTest.class);
-        suite.addTestSuite(ScriptFeatureTest.class);
-        suite.addTestSuite(ActivityStatusStoreTest.class);
-        suite.addTestSuite(FlowFeatureTest.class);
-        suite.addTestSuite(UnsetFeatureTest.class);
-        suite.addTestSuite(GroovySubmitNewJobSuccessTest.class);
-        suite.addTestSuite(RuleTest.class);
         suite.addTestSuite(GroovyInterpreterFactoryTest.class);
-        suite.addTestSuite(SequenceFeatureTest.class);
-        suite.addTestSuite(WhileManyFeatureTest.class);
-        suite.addTestSuite(FlowErrorFeatureTest.class);
-        suite.addTestSuite(ActivityStatusTest.class);
-        suite.addTestSuite(GroovySubmitNewJobNotifierFailsTest.class);
-        suite.addTestSuite(WhileNeverFeatureTest.class);
-        suite.addTestSuite(WhileOnceFeatureTest.class);
+        suite.addTestSuite(RuleTest.class);
+        suite.addTestSuite(IfThenFalseFeatureTest.class);
+        suite.addTestSuite(GroovyAssumptionsTest.class);
+        suite.addTestSuite(GroovyAbortJobTest.class);
         suite.addTestSuite(IfThenElseFalseFeatureTest.class);
-        suite.addTestSuite(XStreamPicklerTest.class);
-        suite.addTestSuite(StepErrorFeatureTest.class);
+        suite.addTestSuite(SetFeatureTest.class);
+        suite.addTestSuite(EmptyWorkflowFeatureTest.class);
+        suite.addTestSuite(FlowErrorFeatureTest.class);
+        suite.addTestSuite(WhileManyFeatureTest.class);
         suite.addTestSuite(FlowSingletonFeatureTest.class);
-        suite.addTestSuite(ScriptErrorFeatureTest.class);
+        suite.addTestSuite(JesInterfaceTest.class);
+        suite.addTestSuite(ForEmptyFeatureTest.class);
+        suite.addTestSuite(FlowEmptyFeatureTest.class);
+        suite.addTestSuite(GroovySubmitNewJobSuccessTest.class);
+        suite.addTestSuite(ParforManyFeatureTest.class);
+        suite.addTestSuite(ActivityStatusTest.class);
+        suite.addTestSuite(ActivityStatusStoreTest.class);
+        suite.addTestSuite(GroovySubmitNewJobNotifierFailsTest.class);
+        suite.addTestSuite(VarsTest.class);
+        suite.addTestSuite(GroovyDeleteJobTest.class);
+        suite.addTestSuite(CompilerTest.class);
         suite.addTestSuite(IfThenElseTrueFeatureTest.class);
         suite.addTestSuite(AnnotatorTest.class);
-        suite.addTestSuite(JesInterfaceTest.class);
-        suite.addTestSuite(FlowEmptyFeatureTest.class);
-        suite.addTestSuite(GroovyTransformersTest.class);
-        suite.addTestSuite(EmptyWorkflowFeatureTest.class);
-        suite.addTestSuite(IfThenFalseFeatureTest.class);
+        suite.addTestSuite(WhileNeverFeatureTest.class);
+        suite.addTestSuite(SequenceFeatureTest.class);
         suite.addTestSuite(IfThenTrueFeatureTest.class);
+        suite.addTestSuite(XStreamPicklerTest.class);
+        suite.addTestSuite(ForSingletonFeatureTest.class);
+        suite.addTestSuite(FlowFeatureTest.class);
+        suite.addTestSuite(ScriptFeatureTest.class);
         suite.addTestSuite(ParforEmptyFeatureTest.class);
+        suite.addTestSuite(GroovyTransformersTest.class);
+        suite.addTestSuite(WhileOnceFeatureTest.class);
+        suite.addTestSuite(ScopeFeatureTest.class);
+        suite.addTestSuite(ParforSingletonFeatureTest.class);
+        suite.addTestSuite(ScriptErrorFeatureTest.class);
+        suite.addTestSuite(GroovyResumeJobSuccesssTest.class);
+        suite.addTestSuite(StepErrorFeatureTest.class);
+        suite.addTestSuite(GroovySchedulerSetupTest.class);
         suite.addTestSuite(StepFeatureTest.class);
         suite.addTestSuite(ForManyFeatureTest.class);
-        suite.addTestSuite(VarsTest.class);
-        suite.addTestSuite(ParforSingletonFeatureTest.class);
-        suite.addTestSuite(CompilerTest.class);
-        suite.addTestSuite(ScopeFeatureTest.class);
-        suite.addTestSuite(GroovyAssumptionsTest.class);
-        suite.addTestSuite(GroovyDeleteJobTest.class);
+        suite.addTestSuite(UnsetFeatureTest.class);
+        suite.addTestSuite(ForMultipleFeatureTest.class);
+        suite.addTestSuite(WhileMultipleFeatureTest.class);
+        suite.addTestSuite(WhileNestedFeatureTest.class);
+        suite.addTestSuite(ForNestedFeatureTest.class);
         //$JUnit-END$
         return suite;
     }
 }
 /* 
  $Log: AllTests.java,v $
+ Revision 1.9  2004/12/09 16:39:12  clq2
+ nww_jes_panic
+
+ Revision 1.8.62.1  2004/12/09 16:11:03  nw
+ fixed for and while loops
+
  Revision 1.8  2004/08/18 21:50:59  nw
  worked on tests
 
