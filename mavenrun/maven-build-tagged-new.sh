@@ -84,13 +84,13 @@ else
 fi
 
 
+echo `date` "[ag-build-$PROJECT_NAME] deploy build log"
 
+scp $LOG_FILE maven@uluru.star.le.ac.uk:/home/maven/maven/docs/Itn06_case3-SNAPSHOT/log
 
-echo "[ag-build-$PROJECT_NAME] deploy build log"
-cp $LOG_FILE $DOC_HOME/$ASTROGRID_VERSION/log
-
-echo "[ag-build-$PROJECT_NAME] back to start dir: $OLDDIR"
+echo `date` "[ag-build-$PROJECT_NAME] back to start dir: $OLDDIR"
 cd $OLDDIR
+
 
 
 echo
