@@ -1,4 +1,4 @@
-<!-- $Id: deployWebapps.xml,v 1.1 2004/01/08 18:23:40 jdt Exp $ -->
+<!-- $Id: deployWebapps.xml,v 1.2 2004/01/08 22:46:11 jdt Exp $ -->
 <!--
 	Example Deploy Script for Astrogrid War files
 	This script uses the Tomcat Manager to deploy war files built nightly by Maven
@@ -24,7 +24,7 @@
     <!-- URLs of the wars-->
     <property name="mavenURL" value="http://www.astrogrid.org/maven/"/>
   
-    <property name="mySpace.path"    value="/mySpace-argle"/>
+    <property name="mySpace.path"    value="/astrogrid-mySpace-jdtTest"/>
     <property name="mySpace.war.url"  value="${mavenURL}/astrogrid-mySpace/wars/astrogrid-mySpace-SNAPSHOT.war"/>
     <property name="mySpace.host.url"    value="${servers.a.url}"/>
     <property name="mySpace.host.user"    value="${servers.a.user}"/>
