@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/service/CommunityServiceImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/09 01:19:50 $</cvs:date>
- * <cvs:version>$Revision: 1.7 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.8 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityServiceImpl.java,v $
+ *   Revision 1.8  2004/09/16 23:18:08  dave
+ *   Replaced debug logging in Community.
+ *   Added stream close() to FileStore.
+ *
+ *   Revision 1.7.8.1  2004/09/16 09:58:48  dave
+ *   Replaced debug with commons logging ....
+ *
  *   Revision 1.7  2004/09/09 01:19:50  dave
  *   Updated MIME type handling in MySpace.
  *   Extended test coverage for MIME types in FileStore and MySpace.
@@ -28,6 +35,9 @@
  */
 package org.astrogrid.community.server.service ;
 
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
+
 import org.exolab.castor.jdo.Database;
 import org.exolab.castor.jdo.PersistenceException ;
 import org.exolab.castor.jdo.DatabaseNotFoundException ;
@@ -48,10 +58,10 @@ public class CommunityServiceImpl
     implements CommunityService
     {
     /**
-     * Switch for our debug statements.
+     * Our debug logger.
      *
      */
-    protected static final boolean DEBUG_FLAG = true ;
+    private static Log log = LogFactory.getLog(CommunityServiceImpl.class);
 
     /**
      * Our default database name, 'org.astrogrid.community.database'.
@@ -77,10 +87,10 @@ public class CommunityServiceImpl
      */
     public CommunityServiceImpl()
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityServiceImpl()") ;
-        if (DEBUG_FLAG) System.out.println("  Class  : " + this.getClass()) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityServiceImpl()") ;
+        log.debug("  Class  : " + this.getClass()) ;
         //
         // Create our database configuration factory.
         DatabaseConfigurationFactory factory = new DatabaseConfigurationFactory() ;
@@ -109,11 +119,11 @@ public class CommunityServiceImpl
      */
     public CommunityServiceImpl(DatabaseConfiguration config)
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityServiceImpl()") ;
-        if (DEBUG_FLAG) System.out.println("  Class  : " + this.getClass()) ;
-        if (DEBUG_FLAG) System.out.println("  Config : " + config) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityServiceImpl()") ;
+        log.debug("  Class  : " + this.getClass()) ;
+        log.debug("  Config : " + config) ;
         //
         // Set our database configuration.
         this.setDatabaseConfiguration(config) ;
@@ -125,11 +135,11 @@ public class CommunityServiceImpl
      */
     public CommunityServiceImpl(CommunityServiceImpl parent)
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityServiceImpl()") ;
-        if (DEBUG_FLAG) System.out.println("  Class  : " + this.getClass()) ;
-        if (DEBUG_FLAG) System.out.println("  Parent : " + parent.getClass()) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityServiceImpl()") ;
+        log.debug("  Class  : " + this.getClass()) ;
+        log.debug("  Parent : " + parent.getClass()) ;
         //
         // Use our parent's database configuration 
         if (null != parent)
@@ -146,9 +156,9 @@ public class CommunityServiceImpl
      */
     public ServiceStatusData getServiceStatus()
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityServer.getServiceStatus()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityServer.getServiceStatus()") ;
 
         ServiceStatusData status =  new ServiceStatusData() ;
 		//
@@ -160,18 +170,18 @@ public class CommunityServiceImpl
 		status.setTotalMemory(
 			runtime.totalMemory()
 			) ;
-		if (DEBUG_FLAG) System.out.println("  Server free  memory : " + String.valueOf(status.getFreeMemory()))  ;
-		if (DEBUG_FLAG) System.out.println("  Server total memory : " + String.valueOf(status.getTotalMemory())) ;
+		log.debug("  Server free  memory : " + String.valueOf(status.getFreeMemory()))  ;
+		log.debug("  Server total memory : " + String.valueOf(status.getTotalMemory())) ;
 		//
 		// Get the database config settings.
-        if (DEBUG_FLAG) System.out.println("  Database config : " + databaseConfiguration) ;
+        log.debug("  Database config : " + databaseConfiguration) ;
         if (null != databaseConfiguration)
             {
-            if (DEBUG_FLAG) System.out.println("  Database name : " + databaseConfiguration.getDatabaseName()) ;
+            log.debug("  Database name : " + databaseConfiguration.getDatabaseName()) ;
             status.setDatabaseName(databaseConfiguration.getDatabaseName()) ;
             }
 
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        log.debug("----\"----") ;
         return status ;
         }
 
@@ -267,13 +277,13 @@ public class CommunityServiceImpl
      */
     public void logException(Throwable ouch, String location)
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("  ----") ;
-        if (DEBUG_FLAG) System.out.println("  WARNING - Exception caught") ;
-        if (DEBUG_FLAG) System.out.println("  Location  : " + location) ;
-        if (DEBUG_FLAG) System.out.println("  Exception : " + ouch) ;
-        if (DEBUG_FLAG) System.out.println("  Message   : " + ouch.getMessage()) ;
-        if (DEBUG_FLAG) System.out.println("  ----") ;
+        log.debug("") ;
+        log.debug("  ----") ;
+        log.debug("  WARNING - Exception caught") ;
+        log.debug("  Location  : " + location) ;
+        log.debug("  Exception : " + ouch) ;
+        log.debug("  Message   : " + ouch.getMessage()) ;
+        log.debug("  ----") ;
         }
 
     /**
@@ -284,12 +294,12 @@ public class CommunityServiceImpl
      */
     public void logExpectedException(Throwable ouch, String location)
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("  ----") ;
-        if (DEBUG_FLAG) System.out.println("  DEBUG - Expected Exception handled") ;
-        if (DEBUG_FLAG) System.out.println("  Location  : " + location) ;
-        if (DEBUG_FLAG) System.out.println("  Exception : " + ouch) ;
-        if (DEBUG_FLAG) System.out.println("  Message   : " + ouch.getMessage()) ;
-        if (DEBUG_FLAG) System.out.println("  ----") ;
+        log.debug("") ;
+        log.debug("  ----") ;
+        log.debug("  DEBUG - Expected Exception handled") ;
+        log.debug("  Location  : " + location) ;
+        log.debug("  Exception : " + ouch) ;
+        log.debug("  Message   : " + ouch.getMessage()) ;
+        log.debug("  ----") ;
         }
     }

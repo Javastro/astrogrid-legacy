@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/AccountManagerMock.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.8 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.9 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManagerMock.java,v $
+ *   Revision 1.9  2004/09/16 23:18:08  dave
+ *   Replaced debug logging in Community.
+ *   Added stream close() to FileStore.
+ *
+ *   Revision 1.8.82.1  2004/09/16 09:58:48  dave
+ *   Replaced debug with commons logging ....
+ *
  *   Revision 1.8  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -19,6 +26,9 @@
  *
  */
 package org.astrogrid.community.common.policy.manager ;
+
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 import java.util.Map ;
 import java.util.HashMap ;
@@ -38,11 +48,10 @@ public class AccountManagerMock
     implements AccountManager
     {
     /**
-     * Switch for our debug statements.
-     * @todo Refactor to use the common logging.
+     * Our debug logger.
      *
      */
-    private static boolean DEBUG_FLAG = true ;
+    private static Log log = LogFactory.getLog(AccountManagerMock.class);
 
     /**
      * Public constructor.
@@ -51,9 +60,9 @@ public class AccountManagerMock
     public AccountManagerMock()
         {
         super() ;
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("AccountManagerMock()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("AccountManagerMock()") ;
         }
 
     /**
@@ -68,9 +77,9 @@ public class AccountManagerMock
      */
     public static void reset()
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("AccountManagerMock.reset()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("AccountManagerMock.reset()") ;
         map.clear() ;
         }
 
@@ -85,10 +94,10 @@ public class AccountManagerMock
     public AccountData addAccount(String ident)
         throws CommunityIdentifierException, CommunityPolicyException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("AccountManagerMock.addAccount()") ;
-        if (DEBUG_FLAG) System.out.println("  Ident : " + ident) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("AccountManagerMock.addAccount()") ;
+        log.debug("  Ident : " + ident) ;
         //
         // Check for null ident.
         if (null == ident)
@@ -128,10 +137,10 @@ public class AccountManagerMock
     public AccountData addAccount(AccountData account)
         throws CommunityIdentifierException, CommunityPolicyException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("AccountManagerMock.addAccount()") ;
-        if (DEBUG_FLAG) System.out.println("  Account : " + ((null != account) ? account.getIdent() : null)) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("AccountManagerMock.addAccount()") ;
+        log.debug("  Account : " + ((null != account) ? account.getIdent() : null)) ;
         //
         // Check for null account.
         if (null == account)
@@ -176,10 +185,10 @@ public class AccountManagerMock
     public AccountData getAccount(String ident)
         throws CommunityIdentifierException, CommunityPolicyException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("AccountManagerMock.getAccount()") ;
-        if (DEBUG_FLAG) System.out.println("  Ident : " + ident) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("AccountManagerMock.getAccount()") ;
+        log.debug("  Ident : " + ident) ;
         //
         // Check for null ident.
         if (null == ident)
@@ -218,10 +227,10 @@ public class AccountManagerMock
     public AccountData setAccount(AccountData update)
         throws CommunityIdentifierException, CommunityPolicyException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("AccountManagerMock.setAccount()") ;
-        if (DEBUG_FLAG) System.out.println("  Ident : " + ((null != update) ? update.getIdent() : null)) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("AccountManagerMock.setAccount()") ;
+        log.debug("  Ident : " + ((null != update) ? update.getIdent() : null)) ;
         //
         // Check for null data.
         if (null == update)
@@ -260,10 +269,10 @@ public class AccountManagerMock
     public AccountData delAccount(String ident)
         throws CommunityIdentifierException, CommunityPolicyException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("AccountManagerMock.delAccount()") ;
-        if (DEBUG_FLAG) System.out.println("  Ident : " + ident) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("AccountManagerMock.delAccount()") ;
+        log.debug("  Ident : " + ident) ;
         //
         // Check for null ident.
         if (null == ident)
@@ -303,9 +312,9 @@ public class AccountManagerMock
      */
     public Object[] getLocalAccounts()
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("AccountManagerMock.getLocalAccounts()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("AccountManagerMock.getLocalAccounts()") ;
         return map.values().toArray() ;
         }
 

@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/junit/org/astrogrid/community/service/security/service/Attic/SecurityServiceServiceTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityServiceServiceTestCase.java,v $
+ *   Revision 1.6  2004/09/16 23:18:08  dave
+ *   Replaced debug logging in Community.
+ *   Added stream close() to FileStore.
+ *
+ *   Revision 1.5.82.1  2004/09/16 09:58:48  dave
+ *   Replaced debug with commons logging ....
+ *
  *   Revision 1.5  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -16,6 +23,9 @@
  *
  */
 package org.astrogrid.community.service.security.service ;
+
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 import java.net.URL ;
 
@@ -49,10 +59,10 @@ public class SecurityServiceServiceTestCase
     extends SecurityServiceTest
     {
     /**
-     * Switch for our debug statements.
+     * Our debug logger.
      *
      */
-    private static boolean DEBUG_FLAG = true ;
+    private static Log log = LogFactory.getLog(SecurityServiceServiceTestCase.class);
 
     /**
      * Setup our test.
@@ -88,9 +98,9 @@ public class SecurityServiceServiceTestCase
     public DatabaseManager createDatabaseManager()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("SecurityManagerServiceTestCase:createDatabaseManager()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("SecurityManagerServiceTestCase:createDatabaseManager()") ;
         //
         // Initialise the Axis 'local:' URL protocol.
         Call.initialize() ;
@@ -121,9 +131,9 @@ public class SecurityServiceServiceTestCase
     public PolicyManager createPolicyManager()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("SecurityManagerServiceTestCase:createPolicyManager()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("SecurityManagerServiceTestCase:createPolicyManager()") ;
         //
         // Initialise the Axis 'local:' URL protocol.
         Call.initialize() ;
@@ -154,9 +164,9 @@ public class SecurityServiceServiceTestCase
     public SecurityManager createSecurityManager()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("SecurityManagerServiceTestCase:createSecurityManager()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("SecurityManagerServiceTestCase:createSecurityManager()") ;
         //
         // Initialise the Axis 'local:' URL protocol.
         Call.initialize() ;
@@ -187,9 +197,9 @@ public class SecurityServiceServiceTestCase
     public SecurityService createSecurityService()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("SecurityServiceServiceTestCase:createSecurityService()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("SecurityServiceServiceTestCase:createSecurityService()") ;
         //
         // Initialise the Axis 'local:' URL protocol.
         Call.initialize() ;

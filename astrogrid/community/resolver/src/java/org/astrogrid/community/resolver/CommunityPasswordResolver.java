@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/CommunityPasswordResolver.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityPasswordResolver.java,v $
+ *   Revision 1.5  2004/09/16 23:18:08  dave
+ *   Replaced debug logging in Community.
+ *   Added stream close() to FileStore.
+ *
+ *   Revision 1.4.82.1  2004/09/16 09:58:48  dave
+ *   Replaced debug with commons logging ....
+ *
  *   Revision 1.4  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -19,6 +26,9 @@
  *
  */
 package org.astrogrid.community.resolver ;
+
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 import java.net.URL ;
 
@@ -42,10 +52,10 @@ import org.astrogrid.community.resolver.exception.CommunityResolverException ;
 public class CommunityPasswordResolver
     {
     /**
-     * Switch for our debug statements.
+     * Our debug logger.
      *
      */
-    private static boolean DEBUG_FLAG = true ;
+    private static Log log = LogFactory.getLog(CommunityPasswordResolver.class);
 
     /**
      * Public constructor, using the default Registry service.
@@ -87,10 +97,10 @@ public class CommunityPasswordResolver
     public SecurityToken checkPassword(String account, String password)
         throws RegistryException, CommunityResolverException, CommunityServiceException, CommunitySecurityException, CommunityIdentifierException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityPasswordResolver.checkPassword()") ;
-        if (DEBUG_FLAG) System.out.println("  Account : " + account) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityPasswordResolver.checkPassword()") ;
+        log.debug("  Account : " + account) ;
         //
         // Check for null param.
         if (null == account)

@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/junit/org/astrogrid/community/server/database/configuration/DatabaseConfigurationTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: DatabaseConfigurationTest.java,v $
+ *   Revision 1.5  2004/09/16 23:18:08  dave
+ *   Replaced debug logging in Community.
+ *   Added stream close() to FileStore.
+ *
+ *   Revision 1.4.82.1  2004/09/16 09:58:48  dave
+ *   Replaced debug with commons logging ....
+ *
  *   Revision 1.4  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -16,6 +23,9 @@
  *
  */
 package org.astrogrid.community.server.database.configuration ;
+
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 import junit.framework.TestCase ;
 
@@ -33,10 +43,10 @@ public class DatabaseConfigurationTest
     extends TestCase
     {
     /**
-     * Switch for our debug statements.
+     * Our debug logger.
      *
      */
-    private static boolean DEBUG_FLAG = true ;
+    private static Log log = LogFactory.getLog(DatabaseConfigurationTest.class);
 
     /**
      * Try creating an empty DatabaseConfiguration.
@@ -45,9 +55,9 @@ public class DatabaseConfigurationTest
     public void testCreateDefaultConfig()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("DatabaseConfigurationTest:testCreateDefaultConfig()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("DatabaseConfigurationTest:testCreateDefaultConfig()") ;
         //
         // Create a new database configuration.
         DatabaseConfiguration config = new DatabaseConfiguration() ;
@@ -71,9 +81,9 @@ public class DatabaseConfigurationTest
     public void testCreateUnknownConfig()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("DatabaseConfigurationTest:testCreateUnknownConfig()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("DatabaseConfigurationTest:testCreateUnknownConfig()") ;
         //
         // Try creating a database with a non-existient config file.
         try {
@@ -84,7 +94,7 @@ public class DatabaseConfigurationTest
         // Catch the expected Exception.
         catch (FileNotFoundException ouch)
             {
-            if (DEBUG_FLAG) System.out.println("PASS : expected FileNotFoundException thrown") ;
+            log.debug("PASS : expected FileNotFoundException thrown") ;
             }
         }
 
@@ -95,9 +105,9 @@ public class DatabaseConfigurationTest
     public void testCreateValid()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("DatabaseConfigurationTest:testValidConfig()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("DatabaseConfigurationTest:testValidConfig()") ;
         //
         // Create a new database configuration.
         DatabaseConfiguration config = new DatabaseConfiguration("test-database-001") ;
@@ -119,9 +129,9 @@ public class DatabaseConfigurationTest
     public void testInvalidName()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("DatabaseConfigurationTest:testInvalidName()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("DatabaseConfigurationTest:testInvalidName()") ;
         //
         // Create a new database configuration with an invalid name.
         DatabaseConfiguration config = new DatabaseConfiguration("INVALID-NAME", "test-database-001.xml", null) ;
@@ -136,7 +146,7 @@ public class DatabaseConfigurationTest
             }
         catch (DatabaseNotFoundException ouch)
             {
-            if (DEBUG_FLAG) System.out.println("PASS : expected DatabaseNotFoundException thrown") ;
+            log.debug("PASS : expected DatabaseNotFoundException thrown") ;
             }
         }
 
@@ -147,9 +157,9 @@ public class DatabaseConfigurationTest
     public void testConnectValid()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("DatabaseConfigurationTest:testConnectValid()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("DatabaseConfigurationTest:testConnectValid()") ;
         //
         // Create a new database configuration.
         DatabaseConfiguration config = new DatabaseConfiguration("test-database-001") ;
@@ -171,9 +181,9 @@ public class DatabaseConfigurationTest
     public void testCreateEngine()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("DatabaseConfigurationTest:testCreateEngine()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("DatabaseConfigurationTest:testCreateEngine()") ;
         //
         // Create a new database configuration.
         DatabaseConfiguration config = new DatabaseConfiguration("test-database-001") ;
@@ -195,9 +205,9 @@ public class DatabaseConfigurationTest
     public void testDatabaseTables()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("DatabaseConfigurationTest:testDatabaseTables()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("DatabaseConfigurationTest:testDatabaseTables()") ;
         //
         // Create a new database configuration.
         DatabaseConfiguration config = new DatabaseConfiguration("test-database-001") ;
@@ -217,9 +227,9 @@ public class DatabaseConfigurationTest
     public void testCreateTables()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("DatabaseConfigurationTest:testCreateTables()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("DatabaseConfigurationTest:testCreateTables()") ;
         //
         // Create a new database configuration.
         DatabaseConfiguration config = new DatabaseConfiguration("test-database-002") ;
@@ -250,9 +260,9 @@ public class DatabaseConfigurationTest
     public void testMultipleDatabases()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("DatabaseConfigurationTest:testMultipleDatabases()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("DatabaseConfigurationTest:testMultipleDatabases()") ;
         //
         // Create a new database configuration.
         DatabaseConfiguration alpha = new DatabaseConfiguration("test-database-003") ;

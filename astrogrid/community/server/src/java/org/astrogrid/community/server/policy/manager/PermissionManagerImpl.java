@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/manager/Attic/PermissionManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.7 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.8 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PermissionManagerImpl.java,v $
+ *   Revision 1.8  2004/09/16 23:18:08  dave
+ *   Replaced debug logging in Community.
+ *   Added stream close() to FileStore.
+ *
+ *   Revision 1.7.82.1  2004/09/16 09:58:48  dave
+ *   Replaced debug with commons logging ....
+ *
  *   Revision 1.7  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -17,7 +24,8 @@
  */
 package org.astrogrid.community.server.policy.manager ;
 
-//import java.rmi.RemoteException ;
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 import org.exolab.castor.jdo.Database;
 import org.exolab.castor.jdo.ObjectNotFoundException ;
@@ -39,10 +47,10 @@ public class PermissionManagerImpl
     implements PermissionManager
     {
     /**
-     * Switch for our debug statements.
+     * Our debug logger.
      *
      */
-    protected static final boolean DEBUG_FLAG = true ;
+    private static Log log = LogFactory.getLog(PermissionManagerImpl.class);
 
     /**
      * Public constructor, using default database configuration.
@@ -77,23 +85,23 @@ public class PermissionManagerImpl
      */
     public PolicyPermission addPermission(String resourceName, String groupName, String action)
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("PermissionManagerImpl.addPermission()") ;
-        if (DEBUG_FLAG) System.out.println("  resource : " + resourceName) ;
-        if (DEBUG_FLAG) System.out.println("  group    : " + groupName) ;
-        if (DEBUG_FLAG) System.out.println("  action   : " + action) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("PermissionManagerImpl.addPermission()") ;
+        log.debug("  resource : " + resourceName) ;
+        log.debug("  group    : " + groupName) ;
+        log.debug("  action   : " + action) ;
 
         Database         database   = null ;
         PolicyPermission permission = null ;
         //
         // Create a ResourceIdent for our Resource.
         ResourceIdent resourceIdent = new ResourceIdent(resourceName) ;
-        if (DEBUG_FLAG) System.out.println("  resource : " + resourceIdent) ;
+        log.debug("  resource : " + resourceIdent) ;
         //
         // Create a CommunityIdent for our Group.
         CommunityIdent groupIdent = new CommunityIdent(groupName) ;
-        if (DEBUG_FLAG) System.out.println("  group    : " + groupIdent) ;
+        log.debug("  group    : " + groupIdent) ;
         //
         // If the resource ident is valid.
         if (resourceIdent.isValid())
@@ -191,7 +199,7 @@ public class PermissionManagerImpl
         // TODO
         // Need to return something to the client.
         // Possible a new DataObject ... ?
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        log.debug("----\"----") ;
         return permission ;
         }
 
@@ -201,23 +209,23 @@ public class PermissionManagerImpl
      */
     public PolicyPermission getPermission(String resourceName, String groupName, String action)
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("PermissionManagerImpl.getPermission()") ;
-        if (DEBUG_FLAG) System.out.println("  resource : " + resourceName) ;
-        if (DEBUG_FLAG) System.out.println("  group    : " + groupName) ;
-        if (DEBUG_FLAG) System.out.println("  action   : " + action) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("PermissionManagerImpl.getPermission()") ;
+        log.debug("  resource : " + resourceName) ;
+        log.debug("  group    : " + groupName) ;
+        log.debug("  action   : " + action) ;
 
         Database         database = null ;
         PolicyPermission result   = null ;
         //
         // Create a ResourceIdent for our Resource.
         ResourceIdent resourceIdent = new ResourceIdent(resourceName) ;
-        if (DEBUG_FLAG) System.out.println("  resource : " + resourceIdent) ;
+        log.debug("  resource : " + resourceIdent) ;
         //
         // Create a CommunityIdent for our Group.
         CommunityIdent groupIdent = new CommunityIdent(groupName) ;
-        if (DEBUG_FLAG) System.out.println("  group    : " + groupIdent) ;
+        log.debug("  group    : " + groupIdent) ;
 
         //
         // If the resource ident is valid.
@@ -319,7 +327,7 @@ public class PermissionManagerImpl
         // TODO
         // Need to return something to the client.
         // Possible a new DataObject ... ?
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        log.debug("----\"----") ;
         return result ;
         }
 
@@ -329,23 +337,23 @@ public class PermissionManagerImpl
      */
     public PolicyPermission setPermission(PolicyPermission permission)
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("PermissionManagerImpl.setPermission()") ;
-        if (DEBUG_FLAG) System.out.println("  resource : " + permission.getResource()) ;
-        if (DEBUG_FLAG) System.out.println("  group    : " + permission.getGroup()) ;
-        if (DEBUG_FLAG) System.out.println("  action   : " + permission.getAction()) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("PermissionManagerImpl.setPermission()") ;
+        log.debug("  resource : " + permission.getResource()) ;
+        log.debug("  group    : " + permission.getGroup()) ;
+        log.debug("  action   : " + permission.getAction()) ;
 
         Database         database = null ;
         PolicyPermission result   = null ;
         //
         // Create a ResourceIdent for our Resource.
         ResourceIdent resourceIdent = new ResourceIdent(permission.getResource()) ;
-        if (DEBUG_FLAG) System.out.println("  resource : " + resourceIdent) ;
+        log.debug("  resource : " + resourceIdent) ;
         //
         // Create a CommunityIdent for our Group.
         CommunityIdent groupIdent = new CommunityIdent(permission.getGroup()) ;
-        if (DEBUG_FLAG) System.out.println("  group    : " + groupIdent) ;
+        log.debug("  group    : " + groupIdent) ;
 
         //
         // If the resource ident is valid.
@@ -451,7 +459,7 @@ public class PermissionManagerImpl
         // TODO
         // Need to return something to the client.
         // Possible a new DataObject ... ?
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        log.debug("----\"----") ;
         return result ;
         }
 
@@ -461,23 +469,23 @@ public class PermissionManagerImpl
      */
     public boolean delPermission(String resourceName, String groupName, String action)
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("PermissionManagerImpl.delPermission()") ;
-        if (DEBUG_FLAG) System.out.println("  resource : " + resourceName) ;
-        if (DEBUG_FLAG) System.out.println("  group    : " + groupName) ;
-        if (DEBUG_FLAG) System.out.println("  action   : " + action) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("PermissionManagerImpl.delPermission()") ;
+        log.debug("  resource : " + resourceName) ;
+        log.debug("  group    : " + groupName) ;
+        log.debug("  action   : " + action) ;
 
         Database         database = null ;
         PolicyPermission result   = null ;
         //
         // Create a ResourceIdent for our Resource.
         ResourceIdent resourceIdent = new ResourceIdent(resourceName) ;
-        if (DEBUG_FLAG) System.out.println("  resource : " + resourceIdent) ;
+        log.debug("  resource : " + resourceIdent) ;
         //
         // Create a CommunityIdent for our Group.
         CommunityIdent groupIdent = new CommunityIdent(groupName) ;
-        if (DEBUG_FLAG) System.out.println("  group    : " + groupIdent) ;
+        log.debug("  group    : " + groupIdent) ;
 
         //
         // If the resource ident is valid.
@@ -570,7 +578,7 @@ public class PermissionManagerImpl
         // TODO
         // Need to return something to the client.
         // Possible a new DataObject ... ?
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        log.debug("----\"----") ;
         return (null != result) ;
         }
     }

@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/manager/Attic/ResourceManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.7 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.8 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: ResourceManagerImpl.java,v $
+ *   Revision 1.8  2004/09/16 23:18:08  dave
+ *   Replaced debug logging in Community.
+ *   Added stream close() to FileStore.
+ *
+ *   Revision 1.7.82.1  2004/09/16 09:58:48  dave
+ *   Replaced debug with commons logging ....
+ *
  *   Revision 1.7  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -19,6 +26,9 @@
  *
  */
 package org.astrogrid.community.server.policy.manager ;
+
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 import org.exolab.castor.jdo.Database;
 import org.exolab.castor.jdo.ObjectNotFoundException ;
@@ -40,10 +50,10 @@ public class ResourceManagerImpl
     implements ResourceManager
     {
     /**
-     * Switch for our debug statements.
+     * Our debug logger.
      *
      */
-    protected static final boolean DEBUG_FLAG = true ;
+    private static Log log = LogFactory.getLog(ResourceManagerImpl.class);
 
     /**
      * Public constructor, using default database configuration.
@@ -81,15 +91,15 @@ public class ResourceManagerImpl
     public ResourceData addResource()
         throws CommunityServiceException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("ResourceManagerImpl.addResource()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("ResourceManagerImpl.addResource()") ;
         Database     database = null ;
         ResourceData resource = null ;
         //
         // Create a new ResourceIdentifier for our Resource.
         ResourceIdentifier ident = new ResourceIdentifier() ;
-        if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
+        log.debug("  ident : " + ident) ;
         //
         // Create our new Resource object.
         resource = new ResourceData(ident) ;
@@ -148,10 +158,10 @@ public class ResourceManagerImpl
     public ResourceData getResource(String ident)
         throws CommunityIdentifierException, CommunityResourceException, CommunityServiceException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("ResourceManagerImpl.getResource()") ;
-        if (DEBUG_FLAG) System.out.println("  ident  : " + ident) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("ResourceManagerImpl.getResource()") ;
+        log.debug("  ident  : " + ident) ;
         //
         // Check for null ident.
         if (null == ident)
@@ -231,9 +241,9 @@ public class ResourceManagerImpl
     public ResourceData setResource(ResourceData update)
         throws CommunityIdentifierException, CommunityResourceException, CommunityServiceException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("ResourceManagerImpl.setResource()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("ResourceManagerImpl.setResource()") ;
         //
         // Check for null update.
         if (null == update)
@@ -242,7 +252,7 @@ public class ResourceManagerImpl
                 "Null resource"
                 ) ;
             }
-        if (DEBUG_FLAG) System.out.println("    ident : " + update.getIdent()) ;
+        log.debug("    ident : " + update.getIdent()) ;
         //
         // Check for null ident.
         if (null == update.getIdent())
@@ -327,10 +337,10 @@ public class ResourceManagerImpl
     public ResourceData delResource(String ident)
         throws CommunityIdentifierException, CommunityResourceException, CommunityServiceException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("ResourceManagerImpl.delResource()") ;
-        if (DEBUG_FLAG) System.out.println("    ident  : " + ident) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("ResourceManagerImpl.delResource()") ;
+        log.debug("    ident  : " + ident) ;
         //
         // Check for null ident.
         if (null == ident)

@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/client/src/java/org/astrogrid/community/client/policy/manager/PolicyManagerCoreDelegate.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:19 $</cvs:date>
- * <cvs:version>$Revision: 1.8 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.9 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManagerCoreDelegate.java,v $
+ *   Revision 1.9  2004/09/16 23:18:08  dave
+ *   Replaced debug logging in Community.
+ *   Added stream close() to FileStore.
+ *
+ *   Revision 1.8.82.1  2004/09/16 09:58:48  dave
+ *   Replaced debug with commons logging ....
+ *
  *   Revision 1.8  2004/06/18 13:45:19  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -19,6 +26,9 @@
  *
  */
 package org.astrogrid.community.client.policy.manager ;
+
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 import java.rmi.RemoteException ;
 
@@ -48,6 +58,12 @@ public class PolicyManagerCoreDelegate
     extends CommunityServiceCoreDelegate
     implements PolicyManager, PolicyManagerDelegate
     {
+    /**
+     * Our debug logger.
+     *
+     */
+    private static Log log = LogFactory.getLog(PolicyManagerCoreDelegate.class);
+
     /**
      * Public constructor.
      *

@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/config/CommunityConfig.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/07/14 13:50:07 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityConfig.java,v $
+ *   Revision 1.7  2004/09/16 23:18:08  dave
+ *   Replaced debug logging in Community.
+ *   Added stream close() to FileStore.
+ *
+ *   Revision 1.6.70.1  2004/09/16 09:58:48  dave
+ *   Replaced debug with commons logging ....
+ *
  *   Revision 1.6  2004/07/14 13:50:07  dave
  *   Merged development branch, dave-dev-200406301228, into HEAD
  *
@@ -22,6 +29,9 @@
  *
  */
 package org.astrogrid.community.common.config ;
+
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 import java.io.File ;
 import java.net.InetAddress ;
@@ -42,10 +52,10 @@ import org.jconfig.handler.XMLFileHandler ;
 public class CommunityConfig
     {
     /**
-     * Switch for our debug statements.
+     * Our debug logger.
      *
      */
-    private static final boolean DEBUG_FLAG = false ;
+	private static Log log = LogFactory.getLog(CommunityConfig.class);
 
     /**
      * The configuration name to use within jConfig.
@@ -128,24 +138,24 @@ public class CommunityConfig
      */
     public static String getJndiProperty(String name)
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityConfig.getJndiProperty()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityConfig.getJndiProperty()") ;
         String value = null ;
         try {
-            if (DEBUG_FLAG) System.out.println("  JNDI name  : " + DEFAULT_JNDI_NAME) ;
+            log.debug("  JNDI name  : " + DEFAULT_JNDI_NAME) ;
             Context initCtx = new InitialContext();
             Context envCtx = (Context) initCtx.lookup("java:comp/env");
             value = (String) envCtx.lookup(DEFAULT_JNDI_NAME);
-            if (DEBUG_FLAG) System.out.println("  JNDI value : " + value) ;
+            log.debug("  JNDI value : " + value) ;
             }
         catch(Exception ouch)
             {
-            if (DEBUG_FLAG) System.out.println("Exception while trying JNDI lookup") ;
+            log.debug("Exception while trying JNDI lookup") ;
             value = null;
             }
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("") ;
+        log.debug("----\"----") ;
+        log.debug("") ;
         return value ;
         }
 
@@ -164,9 +174,9 @@ public class CommunityConfig
      */
     public static Configuration loadConfig()
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityConfig.loadConfig()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityConfig.loadConfig()") ;
         //
         // If we havn't already loaded our config.
         if (null == config)
@@ -176,29 +186,29 @@ public class CommunityConfig
             // Try using the JNDI lookup.
             if (null == path)
                 {
-                if (DEBUG_FLAG) System.out.println("Trying JNDI property") ;
+                log.debug("Trying JNDI property") ;
                 path = getJndiProperty(DEFAULT_JNDI_NAME) ;
                 if (null != path)
                     {
-                    if (DEBUG_FLAG) System.out.println("PASS : Got JNDI property") ;
+                    log.debug("PASS : Got JNDI property") ;
                     }
                 }
             //
             // Try using the System property.
             if (null == path)
                 {
-                if (DEBUG_FLAG) System.out.println("Trying system property") ;
+                log.debug("Trying system property") ;
                 path = System.getProperty(DEFAULT_PROPERTY_NAME) ;
                 if (null != path)
                     {
-                    if (DEBUG_FLAG) System.out.println("PASS : Got system property") ;
+                    log.debug("PASS : Got system property") ;
                     }
                 }
             //
             // If we still don't have a path.
             if (null == path)
                 {
-                if (DEBUG_FLAG) System.out.println("FAIL : Unable to get config file path") ;
+                log.debug("FAIL : Unable to get config file path") ;
                 }
             //
             // Try loading our config file.
@@ -207,8 +217,8 @@ public class CommunityConfig
                 loadConfig(path) ;
                 }
             }
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("") ;
+        log.debug("----\"----") ;
+        log.debug("") ;
         return config ;
         }
 
@@ -218,10 +228,10 @@ public class CommunityConfig
      */
     public static Configuration loadConfig(String path)
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityConfig.loadConfig()") ;
-        if (DEBUG_FLAG) System.out.println("  Path  : " + path) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityConfig.loadConfig()") ;
+        log.debug("  Path  : " + path) ;
         //
         // If we havn't already loaded our config.
         if (null == config)
@@ -260,23 +270,20 @@ public class CommunityConfig
                     //
                     // Store the path used to load it.
                     config.setProperty("config.location", path) ;
-                    if (DEBUG_FLAG)
+                    log.debug("  ----") ;
+                    String[] names = config.getPropertyNames(DEFAULT_CATEGORY) ;
+                    for (int i = 0 ; i < names.length ; i++)
                         {
-                        if (DEBUG_FLAG) System.out.println("  ----") ;
-                        String[] names = config.getPropertyNames(DEFAULT_CATEGORY) ;
-                        for (int i = 0 ; i < names.length ; i++)
-                            {
-                            String name = names[i] ;
-                            String value = config.getProperty(name, "", DEFAULT_CATEGORY) ;
-                            if (DEBUG_FLAG) System.out.println("  '" + name + "' : '" + value + "'") ;
-                            }
-                        if (DEBUG_FLAG) System.out.println("  ----") ;
+                        String name = names[i] ;
+                        String value = config.getProperty(name, "", DEFAULT_CATEGORY) ;
+                        log.debug("  '" + name + "' : '" + value + "'") ;
                         }
+                    log.debug("  ----") ;
                     }
                 }
             }
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("") ;
+        log.debug("----\"----") ;
+        log.debug("") ;
         return config ;
         }
 
@@ -328,27 +335,27 @@ public class CommunityConfig
         // Try reading our config property.
         if ((null == localhost) || (localhost.length() <= 0))
             {
-            if (DEBUG_FLAG) System.out.println("getHostName()") ;
-            if (DEBUG_FLAG) System.out.println("  Trying config property '" + LOCALHOST_PROPERTY_NAME + "'") ;
+            log.debug("getHostName()") ;
+            log.debug("  Trying config property '" + LOCALHOST_PROPERTY_NAME + "'") ;
             localhost = getProperty(LOCALHOST_PROPERTY_NAME) ;
-            if (DEBUG_FLAG) System.out.println("  Config property result : " + localhost) ;
+            log.debug("  Config property result : " + localhost) ;
             }
         //
         // Try reading our system property.
         if ((null == localhost) || (localhost.length() <= 0))
             {
             String name = CONFIG_NAME + "." + LOCALHOST_PROPERTY_NAME ;
-            if (DEBUG_FLAG) System.out.println("getHostName()") ;
-            if (DEBUG_FLAG) System.out.println("  Trying system property '" + name + "'") ;
+            log.debug("getHostName()") ;
+            log.debug("  Trying system property '" + name + "'") ;
             localhost = System.getProperty(name) ;
-            if (DEBUG_FLAG) System.out.println("  System property result : " + localhost) ;
+            log.debug("  System property result : " + localhost) ;
             }
         //
         // Try using our hostname.
         if ((null == localhost) || (localhost.length() <= 0))
             {
-            if (DEBUG_FLAG) System.out.println("getHostName()") ;
-            if (DEBUG_FLAG) System.out.println("  Trying localhost ....") ;
+            log.debug("getHostName()") ;
+            log.debug("  Trying localhost ....") ;
             //
             // Try our local host address.
             try {
@@ -358,7 +365,7 @@ public class CommunityConfig
                 {
                 localhost = "localhost" ;
                 }
-            if (DEBUG_FLAG) System.out.println("  Localhost result : " + localhost) ;
+            log.debug("  Localhost result : " + localhost) ;
             }
         return localhost ;
         }
@@ -380,31 +387,31 @@ public class CommunityConfig
         // Try reading our config property.
         if ((null == community) || (community.length() <= 0))
             {
-            if (DEBUG_FLAG) System.out.println("getCommunityName()") ;
-            if (DEBUG_FLAG) System.out.println("  Trying config property '" + COMMUNITY_PROPERTY_NAME + "'") ;
+            log.debug("getCommunityName()") ;
+            log.debug("  Trying config property '" + COMMUNITY_PROPERTY_NAME + "'") ;
             community = getProperty(COMMUNITY_PROPERTY_NAME) ;
-            if (DEBUG_FLAG) System.out.println("  Config property result : " + community) ;
+            log.debug("  Config property result : " + community) ;
             }
         //
         // Try reading our system property.
         if ((null == community) || (community.length() <= 0))
             {
             String name = CONFIG_NAME + "." + COMMUNITY_PROPERTY_NAME ;
-            if (DEBUG_FLAG) System.out.println("getCommunityName()") ;
-            if (DEBUG_FLAG) System.out.println("  Trying system property '" + name + "'") ;
+            log.debug("getCommunityName()") ;
+            log.debug("  Trying system property '" + name + "'") ;
             community = System.getProperty(name) ;
-            if (DEBUG_FLAG) System.out.println("  System property result : " + community) ;
+            log.debug("  System property result : " + community) ;
             }
         //
         // Try using our hostname.
         if ((null == community) || (community.length() <= 0))
             {
-            if (DEBUG_FLAG) System.out.println("getCommunityName()") ;
-            if (DEBUG_FLAG) System.out.println("  Trying localhost ....") ;
+            log.debug("getCommunityName()") ;
+            log.debug("  Trying localhost ....") ;
             //
             // Try our local host address.
             community = getHostName() ;
-            if (DEBUG_FLAG) System.out.println("  Localhost result : " + community) ;
+            log.debug("  Localhost result : " + community) ;
             }
         return community ;
         }
@@ -421,27 +428,27 @@ public class CommunityConfig
      */
     public static String getManagerUrl()
         {
-        if (DEBUG_FLAG) System.out.println("getManagerUrl()") ;
+        log.debug("getManagerUrl()") ;
         //
         // Try reading our config property.
         if ((null == manager) || (manager.length() <= 0))
             {
-            if (DEBUG_FLAG) System.out.println("getManagerUrl()") ;
-            if (DEBUG_FLAG) System.out.println("  Trying config property '" + POLICY_MANAGER_PROPERTY_NAME + "'") ;
+            log.debug("getManagerUrl()") ;
+            log.debug("  Trying config property '" + POLICY_MANAGER_PROPERTY_NAME + "'") ;
             manager = getProperty(POLICY_MANAGER_PROPERTY_NAME) ;
             if (null != manager) manager = manager.trim() ;
-            if (DEBUG_FLAG) System.out.println("  Config property result : " + manager) ;
+            log.debug("  Config property result : " + manager) ;
             }
         //
         // Try using our local host name.
         if ((null == manager) || (manager.length() <= 0))
             {
-            if (DEBUG_FLAG) System.out.println("getManagerUrl()") ;
-            if (DEBUG_FLAG) System.out.println("  Trying localhost ....") ;
+            log.debug("getManagerUrl()") ;
+            log.debug("  Trying localhost ....") ;
             manager = "http://" + getHostName() + ":8080/axis/services/PolicyManager" ;
-            if (DEBUG_FLAG) System.out.println("  Localhost result : " + manager) ;
+            log.debug("  Localhost result : " + manager) ;
             }
-        if (DEBUG_FLAG) System.out.println("  Manager URL : " + manager) ;
+        log.debug("  Manager URL : " + manager) ;
         return manager ;
         }
 
@@ -457,27 +464,27 @@ public class CommunityConfig
      */
     public static String getServiceUrl()
         {
-        if (DEBUG_FLAG) System.out.println("getServiceUrl()") ;
+        log.debug("getServiceUrl()") ;
         //
         // Try reading our config property.
         if ((null == service) || (service.length() <= 0))
             {
-            if (DEBUG_FLAG) System.out.println("getServiceUrl()") ;
-            if (DEBUG_FLAG) System.out.println("  Trying config property '" + POLICY_SERVICE_PROPERTY_NAME + "'") ;
+            log.debug("getServiceUrl()") ;
+            log.debug("  Trying config property '" + POLICY_SERVICE_PROPERTY_NAME + "'") ;
             service = getProperty(POLICY_SERVICE_PROPERTY_NAME) ;
             if (null != service) service = service.trim() ;
-            if (DEBUG_FLAG) System.out.println("  Config property result : " + service) ;
+            log.debug("  Config property result : " + service) ;
             }
         //
         // Try using our local host name.
         if ((null == service) || (service.length() <= 0))
             {
-            if (DEBUG_FLAG) System.out.println("getServiceUrl()") ;
-            if (DEBUG_FLAG) System.out.println("  Trying localhost ....") ;
+            log.debug("getServiceUrl()") ;
+            log.debug("  Trying localhost ....") ;
             service = "http://" + getHostName() + ":8080/axis/services/PolicyService" ;
-            if (DEBUG_FLAG) System.out.println("  Localhost result : " + service) ;
+            log.debug("  Localhost result : " + service) ;
             }
-        if (DEBUG_FLAG) System.out.println("  Service URL : " + service) ;
+        log.debug("  Service URL : " + service) ;
         return service ;
         }
 
@@ -494,27 +501,27 @@ public class CommunityConfig
      */
     public static String getAuthenticationServiceUrl()
         {
-        if (DEBUG_FLAG) System.out.println("getAuthenticationServiceUrl()") ;
+        log.debug("getAuthenticationServiceUrl()") ;
         //
         // Try reading our config property.
         if ((null == authenticator) || (authenticator.length() <= 0))
             {
-            if (DEBUG_FLAG) System.out.println("getAuthenticationServiceUrl()") ;
-            if (DEBUG_FLAG) System.out.println("  Trying config property '" + AUTHENTICATOR_PROPERTY_NAME + "'") ;
+            log.debug("getAuthenticationServiceUrl()") ;
+            log.debug("  Trying config property '" + AUTHENTICATOR_PROPERTY_NAME + "'") ;
             authenticator = getProperty(AUTHENTICATOR_PROPERTY_NAME) ;
             if (null != authenticator) authenticator = authenticator.trim() ;
-            if (DEBUG_FLAG) System.out.println("  Config property result : " + authenticator) ;
+            log.debug("  Config property result : " + authenticator) ;
             }
         //
         // Try using our local host name.
         if ((null == authenticator) || (authenticator.length() <= 0))
             {
-            if (DEBUG_FLAG) System.out.println("getAuthenticationServiceUrl()") ;
-            if (DEBUG_FLAG) System.out.println("  Trying localhost ....") ;
+            log.debug("getAuthenticationServiceUrl()") ;
+            log.debug("  Trying localhost ....") ;
             authenticator = "http://" + getHostName() + ":8080/axis/services/AuthenticationService" ;
-            if (DEBUG_FLAG) System.out.println("  Localhost result : " + authenticator) ;
+            log.debug("  Localhost result : " + authenticator) ;
             }
-        if (DEBUG_FLAG) System.out.println("  Authenticator URL : " + authenticator) ;
+        log.debug("  Authenticator URL : " + authenticator) ;
         return authenticator ;
         }
 

@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/ResourceManagerTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: ResourceManagerTest.java,v $
+ *   Revision 1.3  2004/09/16 23:18:08  dave
+ *   Replaced debug logging in Community.
+ *   Added stream close() to FileStore.
+ *
+ *   Revision 1.2.82.1  2004/09/16 09:58:48  dave
+ *   Replaced debug with commons logging ....
+ *
  *   Revision 1.2  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -26,6 +33,8 @@
  */
 package org.astrogrid.community.common.policy.manager ;
 
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 import org.astrogrid.community.common.policy.data.ResourceData ;
 
@@ -38,11 +47,10 @@ public class ResourceManagerTest
     extends CommunityServiceTest
     {
     /**
-     * Switch for our debug statements.
-     * @todo Refactor to use the common logging.
+     * Our debug logger.
      *
      */
-    private static final boolean DEBUG_FLAG = true ;
+    private static Log log = LogFactory.getLog(ResourceManagerTest.class);
 
     /**
      * Public constructor.
@@ -73,10 +81,10 @@ public class ResourceManagerTest
      */
     public void setResourceManager(ResourceManager manager)
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("ResourceManagerTest.setResourceManager()") ;
-        if (DEBUG_FLAG) System.out.println("  Manager : " + manager.getClass()) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("ResourceManagerTest.setResourceManager()") ;
+        log.debug("  Manager : " + manager.getClass()) ;
         //
         // Set our ResourceManager reference.
         this.resourceManager = manager ;
@@ -92,9 +100,9 @@ public class ResourceManagerTest
     public void testRegisterValid()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("ResourceManagerTest:testRegisterValid()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("ResourceManagerTest:testRegisterValid()") ;
         //
         // Try creating the Resource.
         assertNotNull(
@@ -110,9 +118,9 @@ public class ResourceManagerTest
     public void testGetValid()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("ResourceManagerTest:testGetValid()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("ResourceManagerTest:testGetValid()") ;
         //
         // Try creating the Resource.
         ResourceData created = this.resourceManager.addResource() ;
@@ -150,9 +158,9 @@ public class ResourceManagerTest
     public void testGetUnknown()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("ResourceManagerTest:testGetUnknown()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("ResourceManagerTest:testGetUnknown()") ;
         //
         // Try finding an unknown resource.
         try {
@@ -161,9 +169,9 @@ public class ResourceManagerTest
             }
         catch (CommunityResourceException ouch)
             {
-            if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
-            if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
-            if (DEBUG_FLAG) System.out.println("Class     : " + ouch.getClass()) ;
+            log.debug("Caught expected Exception") ;
+            log.debug("Exception : " + ouch) ;
+            log.debug("Class     : " + ouch.getClass()) ;
             }
         }
 
@@ -174,9 +182,9 @@ public class ResourceManagerTest
     public void testGetNullIdent()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("ResourceManagerTest:testGetNullIdent()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("ResourceManagerTest:testGetNullIdent()") ;
         //
         // Try finding a resource with a null ident.
         try {
@@ -185,9 +193,9 @@ public class ResourceManagerTest
             }
         catch (CommunityIdentifierException ouch)
             {
-            if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
-            if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
-            if (DEBUG_FLAG) System.out.println("Class     : " + ouch.getClass()) ;
+            log.debug("Caught expected Exception") ;
+            log.debug("Exception : " + ouch) ;
+            log.debug("Class     : " + ouch.getClass()) ;
             }
         }
 
@@ -198,9 +206,9 @@ public class ResourceManagerTest
     public void testSetValid()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("ResourceManagerTest:testSetValid()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("ResourceManagerTest:testSetValid()") ;
         //
         // Try creating the Resource.
         ResourceData created = this.resourceManager.addResource() ;
@@ -253,9 +261,9 @@ public class ResourceManagerTest
     public void testSetNull()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("ResourceManagerTest:testSetNull()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("ResourceManagerTest:testSetNull()") ;
         //
         // Try changing a null resource.
         try {
@@ -264,9 +272,9 @@ public class ResourceManagerTest
             }
         catch (CommunityResourceException ouch)
             {
-            if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
-            if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
-            if (DEBUG_FLAG) System.out.println("Class     : " + ouch.getClass()) ;
+            log.debug("Caught expected Exception") ;
+            log.debug("Exception : " + ouch) ;
+            log.debug("Class     : " + ouch.getClass()) ;
             }
         }
 
@@ -277,9 +285,9 @@ public class ResourceManagerTest
     public void testSetNullIdent()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("ResourceManagerTest:testSetNullIdent()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("ResourceManagerTest:testSetNullIdent()") ;
         //
         // Try changing a null resource.
         try {
@@ -290,9 +298,9 @@ public class ResourceManagerTest
             }
         catch (CommunityIdentifierException ouch)
             {
-            if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
-            if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
-            if (DEBUG_FLAG) System.out.println("Class     : " + ouch.getClass()) ;
+            log.debug("Caught expected Exception") ;
+            log.debug("Exception : " + ouch) ;
+            log.debug("Class     : " + ouch.getClass()) ;
             }
         }
 
@@ -303,9 +311,9 @@ public class ResourceManagerTest
     public void testSetUnknownIdent()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("ResourceManagerTest:testSetUnknownIdent()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("ResourceManagerTest:testSetUnknownIdent()") ;
         //
         // Try changing an unknwon resource.
         try {
@@ -316,9 +324,9 @@ public class ResourceManagerTest
             }
         catch (CommunityResourceException ouch)
             {
-            if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
-            if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
-            if (DEBUG_FLAG) System.out.println("Class     : " + ouch.getClass()) ;
+            log.debug("Caught expected Exception") ;
+            log.debug("Exception : " + ouch) ;
+            log.debug("Class     : " + ouch.getClass()) ;
             }
         }
 
@@ -329,9 +337,9 @@ public class ResourceManagerTest
     public void testDelValid()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("ResourceManagerTest:testDelValid()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("ResourceManagerTest:testDelValid()") ;
         //
         // Try creating the Resource.
         ResourceData created = this.resourceManager.addResource() ;
@@ -368,9 +376,9 @@ public class ResourceManagerTest
             }
         catch (CommunityResourceException ouch)
             {
-            if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
-            if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
-            if (DEBUG_FLAG) System.out.println("Class     : " + ouch.getClass()) ;
+            log.debug("Caught expected Exception") ;
+            log.debug("Exception : " + ouch) ;
+            log.debug("Class     : " + ouch.getClass()) ;
             }
         }
 
@@ -381,9 +389,9 @@ public class ResourceManagerTest
     public void testDelUnknown()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("ResourceManagerTest:testDelUnknown()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("ResourceManagerTest:testDelUnknown()") ;
         //
         // Try deleting an unknown resource.
         try {
@@ -392,9 +400,9 @@ public class ResourceManagerTest
             }
         catch (CommunityResourceException ouch)
             {
-            if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
-            if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
-            if (DEBUG_FLAG) System.out.println("Class     : " + ouch.getClass()) ;
+            log.debug("Caught expected Exception") ;
+            log.debug("Exception : " + ouch) ;
+            log.debug("Class     : " + ouch.getClass()) ;
             }
         }
 
@@ -405,9 +413,9 @@ public class ResourceManagerTest
     public void testDelNullIdent()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("ResourceManagerTest:testDelNullIdent()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("ResourceManagerTest:testDelNullIdent()") ;
         //
         // Try deleting a resource with a null ident.
         try {
@@ -416,9 +424,9 @@ public class ResourceManagerTest
             }
         catch (CommunityIdentifierException ouch)
             {
-            if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
-            if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
-            if (DEBUG_FLAG) System.out.println("Class     : " + ouch.getClass()) ;
+            log.debug("Caught expected Exception") ;
+            log.debug("Exception : " + ouch) ;
+            log.debug("Class     : " + ouch.getClass()) ;
             }
         }
     }

@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/client/src/java/org/astrogrid/community/client/database/manager/DatabaseManagerCoreDelegate.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:19 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: DatabaseManagerCoreDelegate.java,v $
+ *   Revision 1.7  2004/09/16 23:18:08  dave
+ *   Replaced debug logging in Community.
+ *   Added stream close() to FileStore.
+ *
+ *   Revision 1.6.82.1  2004/09/16 09:58:48  dave
+ *   Replaced debug with commons logging ....
+ *
  *   Revision 1.6  2004/06/18 13:45:19  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -19,6 +26,9 @@
  *
  */
 package org.astrogrid.community.client.database.manager ;
+
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 import java.rmi.RemoteException ;
 
@@ -36,6 +46,11 @@ public class DatabaseManagerCoreDelegate
     extends CommunityServiceCoreDelegate
     implements DatabaseManager, DatabaseManagerDelegate
     {
+    /**
+     * Our debug logger.
+     *
+     */
+    private static Log log = LogFactory.getLog(DatabaseManagerCoreDelegate.class);
 
     /**
      * Public constructor.

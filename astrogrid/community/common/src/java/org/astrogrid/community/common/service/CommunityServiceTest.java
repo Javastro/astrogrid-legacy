@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/service/CommunityServiceTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/09 01:19:50 $</cvs:date>
- * <cvs:version>$Revision: 1.7 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.8 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityServiceTest.java,v $
+ *   Revision 1.8  2004/09/16 23:18:08  dave
+ *   Replaced debug logging in Community.
+ *   Added stream close() to FileStore.
+ *
+ *   Revision 1.7.8.1  2004/09/16 09:58:48  dave
+ *   Replaced debug with commons logging ....
+ *
  *   Revision 1.7  2004/09/09 01:19:50  dave
  *   Updated MIME type handling in MySpace.
  *   Extended test coverage for MIME types in FileStore and MySpace.
@@ -28,6 +35,9 @@
  */
 package org.astrogrid.community.common.service ;
 
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
+
 import org.astrogrid.store.Ivorn ;
 
 import org.astrogrid.community.common.junit.JUnitTestBase ;
@@ -49,10 +59,10 @@ public class CommunityServiceTest
     extends JUnitTestBase
     {
     /**
-     * Switch for our debug statements.
+     * Our debug logger.
      *
      */
-    private static boolean DEBUG_FLAG = true ;
+    private static Log log = LogFactory.getLog(CommunityServiceTest.class);
 
     /**
      * Public constructor.
@@ -102,10 +112,10 @@ public class CommunityServiceTest
      */
     public void setCommunityService(CommunityService service)
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityServiceTest.setCommunityService()") ;
-        if (DEBUG_FLAG) System.out.println("  Service : " + service.getClass()) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityServiceTest.setCommunityService()") ;
+        log.debug("  Service : " + service.getClass()) ;
         //
         // Set our CommunityService reference.
         this.communityService = service ;
@@ -119,10 +129,10 @@ public class CommunityServiceTest
     public void testServiceStatus()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityServiceTest.testServiceStatus()") ;
-        if (DEBUG_FLAG) System.out.println("  Service : " + communityService.getClass()) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityServiceTest.testServiceStatus()") ;
+        log.debug("  Service : " + communityService.getClass()) ;
         assertNotNull(
             communityService.getServiceStatus()
             ) ;
@@ -135,17 +145,17 @@ public class CommunityServiceTest
     public void testServiceMemory()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityServiceTest.testServiceMemory()") ;
-        if (DEBUG_FLAG) System.out.println("  Service : " + communityService.getClass()) ;
-		//
-		// Get the service status.
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityServiceTest.testServiceMemory()") ;
+        log.debug("  Service : " + communityService.getClass()) ;
+        //
+        // Get the service status.
         ServiceStatusData status = communityService.getServiceStatus() ;
-		//
-		// Log the available memory.
-        if (DEBUG_FLAG) System.out.println("  Free  memory : " + status.getFreeMemory()) ;
-        if (DEBUG_FLAG) System.out.println("  Total memory : " + status.getTotalMemory()) ;
+        //
+        // Log the available memory.
+        log.info("Free  memory : " + status.getFreeMemory()) ;
+        log.info("Total memory : " + status.getTotalMemory()) ;
         }
 
 
@@ -170,10 +180,10 @@ public class CommunityServiceTest
      */
     public void setDatabaseManager(DatabaseManager manager)
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityServiceTest.setDatabaseManager()") ;
-        if (DEBUG_FLAG) System.out.println("  Manager : " + manager.getClass()) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityServiceTest.setDatabaseManager()") ;
+        log.debug("  Manager : " + manager.getClass()) ;
         //
         // Set our DatabaseManager reference.
         this.databaseManager = manager ;
@@ -187,9 +197,9 @@ public class CommunityServiceTest
     public void resetDatabase()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityServiceTest:resetDatabase()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityServiceTest:resetDatabase()") ;
         //
         // Use our manager to reset our tables.
         databaseManager.resetDatabaseTables() ;

@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/Attic/CommunityTokenResolver.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityTokenResolver.java,v $
+ *   Revision 1.5  2004/09/16 23:18:08  dave
+ *   Replaced debug logging in Community.
+ *   Added stream close() to FileStore.
+ *
+ *   Revision 1.4.82.1  2004/09/16 09:58:48  dave
+ *   Replaced debug with commons logging ....
+ *
  *   Revision 1.4  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -19,6 +26,9 @@
  *
  */
 package org.astrogrid.community.resolver ;
+
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 import java.net.URL ;
 
@@ -42,10 +52,10 @@ import org.astrogrid.community.resolver.exception.CommunityResolverException ;
 public class CommunityTokenResolver
     {
     /**
-     * Switch for our debug statements.
+     * Our debug logger.
      *
      */
-    private static boolean DEBUG_FLAG = true ;
+    private static Log log = LogFactory.getLog(CommunityTokenResolver.class);
 
     /**
      * Public constructor, using the default Registry service.
@@ -87,10 +97,10 @@ public class CommunityTokenResolver
     public SecurityToken checkToken(SecurityToken token)
         throws RegistryException, CommunityResolverException, CommunityServiceException, CommunitySecurityException, CommunityIdentifierException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityTokenResolver.checkToken()") ;
-        if (DEBUG_FLAG) System.out.println("  Token : " + token) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityTokenResolver.checkToken()") ;
+        log.debug("  Token : " + token) ;
         //
         // Check for null param.
         if (null == token)
@@ -136,10 +146,10 @@ public class CommunityTokenResolver
     public Object[] splitToken(SecurityToken token, int count)
         throws RegistryException, CommunityResolverException, CommunityServiceException, CommunitySecurityException, CommunityIdentifierException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityTokenResolver.splitToken()") ;
-        if (DEBUG_FLAG) System.out.println("  Token : " + token) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityTokenResolver.splitToken()") ;
+        log.debug("  Token : " + token) ;
         //
         // Check for null param.
         if (null == token)

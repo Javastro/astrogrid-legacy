@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/security/manager/Attic/SecurityManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.7 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.8 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityManagerImpl.java,v $
+ *   Revision 1.8  2004/09/16 23:18:08  dave
+ *   Replaced debug logging in Community.
+ *   Added stream close() to FileStore.
+ *
+ *   Revision 1.7.82.1  2004/09/16 09:58:48  dave
+ *   Replaced debug with commons logging ....
+ *
  *   Revision 1.7  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -19,6 +26,9 @@
  *
  */
 package org.astrogrid.community.server.security.manager ;
+
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 import org.exolab.castor.jdo.Database;
 import org.exolab.castor.jdo.ObjectNotFoundException ;
@@ -46,10 +56,10 @@ public class SecurityManagerImpl
     implements SecurityManager
     {
     /**
-     * Switch for our debug statements.
+     * Our debug logger.
      *
      */
-    protected static final boolean DEBUG_FLAG = true ;
+    private static Log log = LogFactory.getLog(SecurityManagerImpl.class);
 
     /**
      * Public constructor, using default database configuration.
@@ -92,11 +102,11 @@ public class SecurityManagerImpl
     public boolean setPassword(String account, String password)
         throws CommunityServiceException, CommunitySecurityException, CommunityIdentifierException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("SecurityManagerImpl.setPassword()") ;
-        if (DEBUG_FLAG) System.out.println("  Account : " + account) ;
-        if (DEBUG_FLAG) System.out.println("  Value   : " + password) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("SecurityManagerImpl.setPassword()") ;
+        log.debug("  Account : " + account) ;
+        log.debug("  Value   : " + password) ;
         //
         // Check for null account.
         if (null == account)
@@ -135,7 +145,7 @@ public class SecurityManagerImpl
             // Try loading the Account from the database.
 // Do we need this ?
             AccountData check = (AccountData) database.load(AccountData.class, ident.getAccountIdent()) ;
-            if (DEBUG_FLAG)System.out.println("  PASS : found account") ;
+            log.debug("  PASS : found account") ;
             //
             // Try loading the PasswordData.
             PasswordData data = null ;
@@ -152,28 +162,28 @@ public class SecurityManagerImpl
             // If we found the PasswordData.
             if (null != data)
                 {
-                if (DEBUG_FLAG)System.out.println("  PASS : found password") ;
-                if (DEBUG_FLAG)System.out.println("    Account  : " + data.getAccount()) ;
-                if (DEBUG_FLAG)System.out.println("    Password : " + data.getPassword()) ;
+                log.debug("  PASS : found password") ;
+                log.debug("    Account  : " + data.getAccount()) ;
+                log.debug("    Password : " + data.getPassword()) ;
                 //
                 // Change the password value.
                 data.setPassword(password) ;
                 data.setEncryption(PasswordData.NO_ENCRYPTION) ;
-                if (DEBUG_FLAG)System.out.println("  PASS : changed password") ;
-                if (DEBUG_FLAG)System.out.println("    Account  : " + data.getAccount()) ;
-                if (DEBUG_FLAG)System.out.println("    Password : " + data.getPassword()) ;
+                log.debug("  PASS : changed password") ;
+                log.debug("    Account  : " + data.getAccount()) ;
+                log.debug("    Password : " + data.getPassword()) ;
                 }
             //
             // If we didn't find the password.
             else {
-                if (DEBUG_FLAG)System.out.println("  PASS : missing password") ;
+                log.debug("  PASS : missing password") ;
                 //
                 // Try to create a new PasswordData in the database.
                 data = new PasswordData(ident.getAccountIdent(), password) ;
                 database.create(data) ;
-                if (DEBUG_FLAG)System.out.println("  PASS : created password") ;
-                if (DEBUG_FLAG)System.out.println("    Account  : " + data.getAccount()) ;
-                if (DEBUG_FLAG)System.out.println("    Password : " + data.getPassword()) ;
+                log.debug("  PASS : created password") ;
+                log.debug("    Account  : " + data.getAccount()) ;
+                log.debug("    Password : " + data.getPassword()) ;
                 }
             //
             // Commit the database transaction.

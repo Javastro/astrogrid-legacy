@@ -1,5 +1,8 @@
 package org.astrogrid.community.client.delegate ;
 
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
+
 import java.net.URL;
 
 import org.astrogrid.community.common.policy.data.PolicyCredentials;
@@ -19,10 +22,10 @@ import org.astrogrid.community.common.policy.service.PolicyServiceServiceLocator
 public class PolicyServiceDelegate
     {
     /**
-     * Switch for our debug statements.
+     * Our debug logger.
      *
      */
-    private static final boolean DEBUG_FLAG = true ;
+    private static Log log = LogFactory.getLog(PolicyServiceDelegate.class);
 
     /**
      * Reference to our PolicyManager stub.
@@ -49,9 +52,9 @@ public class PolicyServiceDelegate
      */
     public PolicyServiceDelegate()
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("PolicyServiceDelegate()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("PolicyServiceDelegate()") ;
         try
             {
             service = getService(CommunityConfig.getServiceUrl());
@@ -60,8 +63,8 @@ public class PolicyServiceDelegate
             e.printStackTrace();
             service = null;
             }
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("") ;
+        log.debug("----\"----") ;
+        log.debug("") ;
         }
 
     /**
@@ -110,16 +113,16 @@ public class PolicyServiceDelegate
     private PolicyService getService(String targetEndPoint)
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("setUp()") ;
-        if (DEBUG_FLAG) System.out.println("  Target : '" + targetEndPoint + "'") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("setUp()") ;
+        log.debug("  Target : '" + targetEndPoint + "'") ;
 
         if ((null == targetEndPoint) || (targetEndPoint.length() <= 0))
             {
             targetEndPoint = CommunityConfig.getServiceUrl() ;
             }
-        if (DEBUG_FLAG) System.out.println("  Target : '" + targetEndPoint + "'") ;
+        log.debug("  Target : '" + targetEndPoint + "'") ;
 
         PolicyServiceService locator = null;
         PolicyService service = null;
@@ -131,8 +134,8 @@ public class PolicyServiceDelegate
         // Create our service.
         service = locator.getPolicyService(new URL(targetEndPoint));
 
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("") ;
+        log.debug("----\"----") ;
+        log.debug("") ;
         return service;
         }
     }

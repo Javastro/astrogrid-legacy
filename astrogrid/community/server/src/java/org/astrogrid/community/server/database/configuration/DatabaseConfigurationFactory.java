@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/database/configuration/Attic/DatabaseConfigurationFactory.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: DatabaseConfigurationFactory.java,v $
+ *   Revision 1.5  2004/09/16 23:18:08  dave
+ *   Replaced debug logging in Community.
+ *   Added stream close() to FileStore.
+ *
+ *   Revision 1.4.82.1  2004/09/16 09:58:48  dave
+ *   Replaced debug with commons logging ....
+ *
  *   Revision 1.4  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -16,6 +23,9 @@
  *
  */
 package org.astrogrid.community.server.database.configuration ;
+
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 import java.util.Map ;
 import java.util.HashMap ;
@@ -36,10 +46,10 @@ import org.exolab.castor.mapping.MappingException ;
 public class DatabaseConfigurationFactory
     {
     /**
-     * Switch for our debug statements.
+     * Our debug logger.
      *
      */
-    protected static final boolean DEBUG_FLAG = true ;
+    private static Log log = LogFactory.getLog(DatabaseConfigurationFactory.class);
 
     /**
      * Public constructor.
@@ -81,7 +91,9 @@ public class DatabaseConfigurationFactory
         //
         // If we didn't find a matching configuration.
         else {
-            throw new DatabaseNotFoundException("No JDO configuration for '" + name + "'") ;
+            throw new DatabaseNotFoundException(
+            	"No JDO configuration for '" + name + "'"
+            	) ;
             }
         }
 
@@ -104,7 +116,10 @@ public class DatabaseConfigurationFactory
      */
     protected DatabaseConfiguration addDatabaseConfiguration(DatabaseConfiguration config)
         {
-        return this.addDatabaseConfiguration(config.getDatabaseName(), config) ;
+        return this.addDatabaseConfiguration(
+        	config.getDatabaseName(),
+        	config
+        	) ;
         }
 
     /**
@@ -137,10 +152,10 @@ public class DatabaseConfigurationFactory
     public DatabaseConfiguration loadDatabaseConfiguration(String name)
         throws IOException, MappingException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("DatabaseConfigurationFactory.loadDatabaseConfiguration()") ;
-        if (DEBUG_FLAG) System.out.println("  Name : " + name) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("DatabaseConfigurationFactory.loadDatabaseConfiguration()") ;
+        log.debug("  Name : " + name) ;
         //
         // Try to find a matching configuration.
 // PATCH
@@ -177,12 +192,12 @@ public class DatabaseConfigurationFactory
     public DatabaseConfiguration loadDatabaseConfiguration(String name, String xml, String sql)
         throws IOException, MappingException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("DatabaseConfigurationFactory.loadDatabaseConfiguration()") ;
-        if (DEBUG_FLAG) System.out.println("  Name : " + name) ;
-        if (DEBUG_FLAG) System.out.println("  XML  : " + xml) ;
-        if (DEBUG_FLAG) System.out.println("  SQL  : " + sql) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("DatabaseConfigurationFactory.loadDatabaseConfiguration()") ;
+        log.debug("  Name : " + name) ;
+        log.debug("  XML  : " + xml) ;
+        log.debug("  SQL  : " + sql) ;
         //
         // Try to find a matching configuration.
 // PATCH

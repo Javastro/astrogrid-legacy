@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/junit/org/astrogrid/community/server/service/Attic/CommunityServiceTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityServiceTest.java,v $
+ *   Revision 1.5  2004/09/16 23:18:08  dave
+ *   Replaced debug logging in Community.
+ *   Added stream close() to FileStore.
+ *
+ *   Revision 1.4.82.1  2004/09/16 09:58:48  dave
+ *   Replaced debug with commons logging ....
+ *
  *   Revision 1.4  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -16,6 +23,9 @@
  *
  */
 package org.astrogrid.community.server.service ;
+
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 import junit.framework.TestCase ;
 
@@ -45,10 +55,10 @@ public class CommunityServiceTest
     extends TestCase
     {
     /**
-     * Switch for our debug statements.
+     * Our debug logger.
      *
      */
-    private static boolean DEBUG_FLAG = true ;
+    private static Log log = LogFactory.getLog(CommunityServiceTest.class);
 
     /*
      * Our DatabaseConfigurationFactory.
@@ -69,9 +79,9 @@ public class CommunityServiceTest
     public void setUp()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityServiceTest:setup()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityServiceTest:setup()") ;
         //
         // Load our default database configuration.
         this.resetDatabaseConfiguration() ;
@@ -99,10 +109,10 @@ public class CommunityServiceTest
     public void resetDatabaseConfiguration(String name)
         throws IOException, DatabaseNotFoundException, PersistenceException, MappingException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityServiceTest:resetDatabaseConfiguration()") ;
-        if (DEBUG_FLAG) System.out.println("  Name : " + name) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityServiceTest:resetDatabaseConfiguration()") ;
+        log.debug("  Name : " + name) ;
         //
         // Load our database configuration.
         DatabaseConfiguration config = factory.loadDatabaseConfiguration(name) ;
@@ -158,9 +168,9 @@ public class CommunityServiceTest
     public void testServiceStatus()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityServiceTest:testServiceStatus()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityServiceTest:testServiceStatus()") ;
         //
         // Try creating our service.
         CommunityService service = new CommunityServiceImpl(
@@ -177,8 +187,8 @@ public class CommunityServiceTest
             "Null service status",
             status
             ) ;
-        if (DEBUG_FLAG) System.out.println("  Config path   : " + status.getConfigPath()) ;
-        if (DEBUG_FLAG) System.out.println("  Database name : " + status.getDatabaseName()) ;
+        log.debug("  Config path   : " + status.getConfigPath()) ;
+        log.debug("  Database name : " + status.getDatabaseName()) ;
         }
      */
     }

@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/service/Attic/PolicyServiceImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.10 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.11 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyServiceImpl.java,v $
+ *   Revision 1.11  2004/09/16 23:18:08  dave
+ *   Replaced debug logging in Community.
+ *   Added stream close() to FileStore.
+ *
+ *   Revision 1.10.82.1  2004/09/16 09:58:48  dave
+ *   Replaced debug with commons logging ....
+ *
  *   Revision 1.10  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -16,6 +23,9 @@
  *
  */
 package org.astrogrid.community.server.policy.service ;
+
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 import java.rmi.RemoteException ;
 
@@ -44,10 +54,10 @@ public class PolicyServiceImpl
     implements PolicyService
     {
     /**
-     * Switch for our debug statements.
+     * Our debug logger.
      *
      */
-    protected static final boolean DEBUG_FLAG = true ;
+    private static Log log = LogFactory.getLog(PolicyServiceImpl.class);
 
     /**
      * Our GroupManager.
@@ -122,9 +132,9 @@ public class PolicyServiceImpl
     public PolicyPermission checkPermissions(PolicyCredentials credentials, String resource, String action)
         throws CommunityServiceException, CommunityPolicyException, CommunityIdentifierException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("PolicyServiceImpl.checkPermissions()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("PolicyServiceImpl.checkPermissions()") ;
         //
         // Check for null params.
         if (null == credentials) return null ;
@@ -147,12 +157,12 @@ public class PolicyServiceImpl
         if (null == group) return null ;
         if (null == account) return null ;
 
-        if (DEBUG_FLAG) System.out.println("  Credentials") ;
-        if (DEBUG_FLAG) System.out.println("    Group   : " + group)   ;
-        if (DEBUG_FLAG) System.out.println("    Account : " + account) ;
-        if (DEBUG_FLAG) System.out.println("  Resource") ;
-        if (DEBUG_FLAG) System.out.println("    Name    : " + resource) ;
-        if (DEBUG_FLAG) System.out.println("    Action  : " + action)   ;
+        log.debug("  Credentials") ;
+        log.debug("    Group   : " + group)   ;
+        log.debug("    Account : " + account) ;
+        log.debug("  Resource") ;
+        log.debug("    Name    : " + resource) ;
+        log.debug("    Action  : " + action)   ;
 
         //
         // Check to see if the group has permission for the action.
@@ -161,12 +171,12 @@ public class PolicyServiceImpl
         // If we got a result.
         if (null != permission)
             {
-            if (DEBUG_FLAG) System.out.println("PASS : Permission found") ;
+            log.debug("PASS : Permission found") ;
             //
             // If the permission is valid.
             if (permission.isValid())
                 {
-                if (DEBUG_FLAG) System.out.println("PASS : Permission is valid") ;
+                log.debug("PASS : Permission is valid") ;
                 //
                 // Check the credentials.
                 PolicyCredentials checked = checkMembership(credentials) ;
@@ -174,12 +184,12 @@ public class PolicyServiceImpl
                 // If the credentials are valid.
                 if (checked.isValid())
                     {
-                    if (DEBUG_FLAG) System.out.println("PASS : Credentials are valid") ;
+                    log.debug("PASS : Credentials are valid") ;
                     }
                 //
                 // If the credentials are not valid.
                 else {
-                    if (DEBUG_FLAG) System.out.println("FAIL : Credentials not valid") ;
+                    log.debug("FAIL : Credentials not valid") ;
                     permission.setStatus(PolicyPermission.STATUS_CREDENTIALS_INVALID) ;
                     permission.setReason(PolicyPermission.REASON_CREDENTIALS_INVALID) ;
                     }
@@ -187,13 +197,13 @@ public class PolicyServiceImpl
             //
             // If the permission is not granted.
             else {
-                if (DEBUG_FLAG) System.out.println("FAIL : Permission not valid") ;
+                log.debug("FAIL : Permission not valid") ;
                 }
             }
         //
         // If we didn't get a result.
         else {
-            if (DEBUG_FLAG) System.out.println("FAIL : No permission found") ;
+            log.debug("FAIL : No permission found") ;
 /*
  * I can't remember why we return an object here.
  * Returning an object means that this service behaves differently to the rest.
@@ -208,7 +218,7 @@ public class PolicyServiceImpl
  *
  */
             }
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        log.debug("----\"----") ;
         return permission ;
         }
 
@@ -219,9 +229,9 @@ public class PolicyServiceImpl
     public PolicyCredentials checkMembership(PolicyCredentials credentials)
         throws CommunityServiceException, CommunityPolicyException, CommunityIdentifierException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("PolicyServiceImpl.checkMembership()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("PolicyServiceImpl.checkMembership()") ;
 
         //
         // Set the status to unknown.
@@ -233,14 +243,14 @@ public class PolicyServiceImpl
         CommunityIdent group   = new CommunityIdent(credentials.getGroup()) ;
         CommunityIdent account = new CommunityIdent(credentials.getAccount()) ;
 
-        if (DEBUG_FLAG) System.out.println("  Credentials") ;
-        if (DEBUG_FLAG) System.out.println("    Group   : " + group) ;
-        if (DEBUG_FLAG) System.out.println("    Account : " + account) ;
+        log.debug("  Credentials") ;
+        log.debug("    Group   : " + group) ;
+        log.debug("    Account : " + account) ;
         //
         // If the group is local.
         if (group.isLocal())
             {
-            if (DEBUG_FLAG) System.out.println("PASS : Group is local") ;
+            log.debug("PASS : Group is local") ;
             //
             // See if there is a membership record.
 // TODO refacot to use Ivorn
@@ -252,7 +262,7 @@ public class PolicyServiceImpl
             // If there is a membership record.
             if (null != membership)
                 {
-                if (DEBUG_FLAG) System.out.println("PASS : Account is a member of Group") ;
+                log.debug("PASS : Account is a member of Group") ;
                 //
                 // Update the credentials.
                 credentials.setStatus(PolicyCredentials.STATUS_VALID) ;
@@ -261,7 +271,7 @@ public class PolicyServiceImpl
             //
             // If there is no membership record.
             else {
-                if (DEBUG_FLAG) System.out.println("FAIL : Account is not a member of Group") ;
+                log.debug("FAIL : Account is not a member of Group") ;
                 //
                 // Update the credentials.
                 credentials.setStatus(PolicyCredentials.STATUS_NOT_VALID) ;
@@ -271,7 +281,7 @@ public class PolicyServiceImpl
         //
         // If the group is not local.
         else {
-            if (DEBUG_FLAG) System.out.println("PASS : Group is remote") ;
+            log.debug("PASS : Group is remote") ;
             //
             // Get a service for the remote community.
             PolicyService remote = communityManager.getPolicyService(group.getCommunity()) ;
@@ -279,7 +289,7 @@ public class PolicyServiceImpl
             // If we got a remote service.
             if (null != remote)
                 {
-                if (DEBUG_FLAG) System.out.println("PASS : Found remote service") ;
+                log.debug("PASS : Found remote service") ;
                 //
                 // Try asking the remote manager.
                 PolicyCredentials result = null ;
@@ -290,19 +300,19 @@ public class PolicyServiceImpl
                 // Catch a remote Exception from the SOAP call.
                 catch (RemoteException ouch)
                     {
-                    if (DEBUG_FLAG) System.out.println("FAIL : Remote service call failed.") ;
+                    log.debug("FAIL : Remote service call failed.") ;
                     result = null ;
                     }
                 //
                 // If we got a result.
                 if (null != result)
                     {
-                    if (DEBUG_FLAG) System.out.println("PASS : Remote service responded") ;
+                    log.debug("PASS : Remote service responded") ;
                     //
                     // If the result is valid.
                     if (result.isValid())
                         {
-                        if (DEBUG_FLAG) System.out.println("PASS : Remote response is valid") ;
+                        log.debug("PASS : Remote response is valid") ;
                         //
                         // Update the credentials.
                         credentials.setStatus(result.getStatus()) ;
@@ -311,7 +321,7 @@ public class PolicyServiceImpl
                     //
                     // If the result is not valid.
                     else {
-                        if (DEBUG_FLAG) System.out.println("FAIL : Remote response is not valid") ;
+                        log.debug("FAIL : Remote response is not valid") ;
                         //
                         // Update the credentials.
                         credentials.setStatus(result.getStatus()) ;
@@ -321,7 +331,7 @@ public class PolicyServiceImpl
                 //
                 // If we didn't get a result.
                 else {
-                    if (DEBUG_FLAG) System.out.println("PASS : Remote service returned null") ;
+                    log.debug("PASS : Remote service returned null") ;
                     //
                     // Update the credentials.
                     credentials.setStatus(PolicyCredentials.STATUS_NOT_VALID) ;
@@ -331,7 +341,7 @@ public class PolicyServiceImpl
             //
             // If we didn't get a remote service.
             else {
-                if (DEBUG_FLAG) System.out.println("FAIL : Unknown remote service") ;
+                log.debug("FAIL : Unknown remote service") ;
                 //
                 // Update the credentials.
                 credentials.setStatus(PolicyCredentials.STATUS_NOT_VALID) ;
@@ -339,7 +349,7 @@ public class PolicyServiceImpl
                 }
             }
 
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        log.debug("----\"----") ;
         return credentials ;
         }
     }

@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/database/manager/DatabaseManagerMock.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.7 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.8 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: DatabaseManagerMock.java,v $
+ *   Revision 1.8  2004/09/16 23:18:08  dave
+ *   Replaced debug logging in Community.
+ *   Added stream close() to FileStore.
+ *
+ *   Revision 1.7.82.1  2004/09/16 09:58:48  dave
+ *   Replaced debug with commons logging ....
+ *
  *   Revision 1.7  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -16,6 +23,9 @@
  *
  */
 package org.astrogrid.community.common.database.manager ;
+
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 import org.astrogrid.community.common.service.CommunityServiceMock ;
 import org.astrogrid.community.common.policy.manager.GroupManagerMock ;
@@ -31,10 +41,10 @@ public class DatabaseManagerMock
     implements DatabaseManager
     {
     /**
-     * Switch for our debug statements.
+     * Our debug logger.
      *
      */
-    private static boolean DEBUG_FLAG = true ;
+	private static Log log = LogFactory.getLog(DatabaseManagerMock.class);
 
     /**
      * Public constructor.
@@ -196,9 +206,9 @@ public class DatabaseManagerMock
      */
     public void resetDatabaseTables()
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("DatabaseManagerMock.resetDatabaseTables()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("DatabaseManagerMock.resetDatabaseTables()") ;
         //
         // Reset our mock data.
         GroupManagerMock.reset() ;

@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/CommunityManagerMock.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.7 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.8 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityManagerMock.java,v $
+ *   Revision 1.8  2004/09/16 23:18:08  dave
+ *   Replaced debug logging in Community.
+ *   Added stream close() to FileStore.
+ *
+ *   Revision 1.7.82.1  2004/09/16 09:58:48  dave
+ *   Replaced debug with commons logging ....
+ *
  *   Revision 1.7  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -19,6 +26,9 @@
  *
  */
 package org.astrogrid.community.common.policy.manager ;
+
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 import java.util.Map ;
 import java.util.HashMap ;
@@ -38,10 +48,10 @@ public class CommunityManagerMock
     implements CommunityManager
     {
     /**
-     * Switch for our debug statements.
+     * Our debug logger.
      *
      */
-    private static boolean DEBUG_FLAG = true ;
+    private static Log log = LogFactory.getLog(CommunityManagerMock.class);
 
     /**
      * Public constructor.
@@ -69,10 +79,10 @@ public class CommunityManagerMock
     public CommunityData addCommunity(String ident)
         throws CommunityIdentifierException, CommunityPolicyException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityManagerMock.addCommunity()") ;
-        if (DEBUG_FLAG) System.out.println("  Ident : " + ident) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityManagerMock.addCommunity()") ;
+        log.debug("  Ident : " + ident) ;
         //
         // Check for null ident.
         if (null == ident)
@@ -112,10 +122,10 @@ public class CommunityManagerMock
     public CommunityData getCommunity(String ident)
         throws CommunityIdentifierException, CommunityPolicyException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityManagerMock.getCommunity()") ;
-        if (DEBUG_FLAG) System.out.println("  Ident : " + ident) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityManagerMock.getCommunity()") ;
+        log.debug("  Ident : " + ident) ;
         //
         // Check for null ident.
         if (null == ident)
@@ -154,10 +164,10 @@ public class CommunityManagerMock
     public CommunityData setCommunity(CommunityData update)
         throws CommunityIdentifierException, CommunityPolicyException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityManagerMock.setCommunity()") ;
-        if (DEBUG_FLAG) System.out.println("  Ident : " + ((null != update) ? update.getIdent() : null)) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityManagerMock.setCommunity()") ;
+        log.debug("  Ident : " + ((null != update) ? update.getIdent() : null)) ;
         //
         // Check for null data.
         if (null == update)
@@ -196,10 +206,10 @@ public class CommunityManagerMock
     public CommunityData delCommunity(String ident)
         throws CommunityIdentifierException, CommunityPolicyException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityManagerMock.delCommunity()") ;
-        if (DEBUG_FLAG) System.out.println("  Ident : " + ident) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityManagerMock.delCommunity()") ;
+        log.debug("  Ident : " + ident) ;
         //
         // Check for null ident.
         if (null == ident)
@@ -226,9 +236,9 @@ public class CommunityManagerMock
      */
     public Object[] getCommunityList()
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityManagerMock.getCommunityList()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityManagerMock.getCommunityList()") ;
         return map.values().toArray() ;
         }
     }

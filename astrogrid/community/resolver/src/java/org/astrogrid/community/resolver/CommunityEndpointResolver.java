@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/CommunityEndpointResolver.java,v $</cvs:source>
- * <cvs:author>$Author: KevinBenson $</cvs:author>
- * <cvs:date>$Date: 2004/08/03 13:55:22 $</cvs:date>
- * <cvs:version>$Revision: 1.8 $</cvs:version>
+ * <cvs:author>$Author: dave $</cvs:author>
+ * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.9 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityEndpointResolver.java,v $
+ *   Revision 1.9  2004/09/16 23:18:08  dave
+ *   Replaced debug logging in Community.
+ *   Added stream close() to FileStore.
+ *
+ *   Revision 1.8.42.1  2004/09/16 09:58:48  dave
+ *   Replaced debug with commons logging ....
+ *
  *   Revision 1.8  2004/08/03 13:55:22  KevinBenson
  *   small change to not print out the stacktrace of an exception
  *
@@ -25,6 +32,9 @@
  *
  */
 package org.astrogrid.community.resolver ;
+
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 import java.net.URL ;
 import java.net.MalformedURLException ;
@@ -51,10 +61,10 @@ import org.astrogrid.registry.RegistryException;
 public class CommunityEndpointResolver
     {
     /**
-     * Switch for our debug statements.
+     * Our debug logger.
      *
      */
-    private static boolean DEBUG_FLAG = true ;
+    private static Log log = LogFactory.getLog(CommunityEndpointResolver.class);
 
     /**
      * Our reference to the AstroGrid config.
@@ -110,11 +120,11 @@ public class CommunityEndpointResolver
     public URL resolve(Ivorn ivorn, Class type)
         throws RegistryException, CommunityIdentifierException, CommunityResolverException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityEndpointResolver.resolve()") ;
-        if (DEBUG_FLAG) System.out.println("  Ivorn : " + ivorn) ;
-        if (DEBUG_FLAG) System.out.println("  Type  : " + type)  ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityEndpointResolver.resolve()") ;
+        log.debug("  Ivorn : " + ivorn) ;
+        log.debug("  Type  : " + type)  ;
         //
         // Check for null ivorn.
         if (null == ivorn)
@@ -153,11 +163,11 @@ public class CommunityEndpointResolver
     public URL resolve(CommunityIvornParser parser, Class type)
         throws RegistryException, CommunityIdentifierException, CommunityResolverException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityEndpointResolver.resolve()") ;
-        if (DEBUG_FLAG) System.out.println("  Ivorn : " + ((null != parser) ? parser.getIvorn() : null)) ;
-        if (DEBUG_FLAG) System.out.println("  Type  : " + type)  ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityEndpointResolver.resolve()") ;
+        log.debug("  Ivorn : " + ((null != parser) ? parser.getIvorn() : null)) ;
+        log.debug("  Type  : " + type)  ;
         //
         // Check for null param.
         if (null == parser)
@@ -188,8 +198,8 @@ public class CommunityEndpointResolver
             parser.getCommunityIdent(),
             type
             ) ;
-        if (DEBUG_FLAG) System.out.println("PASS : Got service Ivorn")  ;
-        if (DEBUG_FLAG) System.out.println("  Ivorn    : " + ivorn)  ;
+        log.debug("PASS : Got service Ivorn")  ;
+        log.debug("  Ivorn    : " + ivorn)  ;
         //
         // Lookup the service in the registry.
         String endpoint = null ;
@@ -200,8 +210,8 @@ public class CommunityEndpointResolver
             }
         catch (Throwable ouch)
             {
-            if (DEBUG_FLAG) System.out.println("FAIL : Registry lookup failed")  ;
-            //if (DEBUG_FLAG) System.out.println("  Exception : " + ouch)  ;
+            log.debug("FAIL : Registry lookup failed")  ;
+            //log.debug("  Exception : " + ouch)  ;
             //ouch.printStackTrace() ;
             throw new CommunityResolverException(
                 "Registry lookup failed",
@@ -212,8 +222,8 @@ public class CommunityEndpointResolver
         // If we found an entry in the Registry.
         if (null != endpoint)
             {
-            if (DEBUG_FLAG) System.out.println("PASS : Got service endpoint")  ;
-            if (DEBUG_FLAG) System.out.println("  Endpoint : " + endpoint)  ;
+            log.debug("PASS : Got service endpoint")  ;
+            log.debug("  Endpoint : " + endpoint)  ;
             //
             // Convert it into an endpoint URL.
             try {

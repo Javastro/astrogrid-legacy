@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/manager/AccountManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/02 17:02:02 $</cvs:date>
- * <cvs:version>$Revision: 1.19 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.20 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManagerImpl.java,v $
+ *   Revision 1.20  2004/09/16 23:18:08  dave
+ *   Replaced debug logging in Community.
+ *   Added stream close() to FileStore.
+ *
+ *   Revision 1.19.12.1  2004/09/16 09:58:48  dave
+ *   Replaced debug with commons logging ....
+ *
  *   Revision 1.19  2004/09/02 17:02:02  dave
  *   Fixed myspace account creation problem.
  *
@@ -28,6 +35,9 @@
  *
  */
 package org.astrogrid.community.server.policy.manager ;
+
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 import java.util.Vector ;
 import java.util.Collection ;
@@ -71,10 +81,10 @@ public class AccountManagerImpl
     implements AccountManager
     {
     /**
-     * Switch for our debug statements.
+     * Our debug logger.
      *
      */
-    protected static final boolean DEBUG_FLAG = true ;
+    private static Log log = LogFactory.getLog(AccountManagerImpl.class);
 
     /**
      * Our AstroGrid configuration.
@@ -179,10 +189,10 @@ public class AccountManagerImpl
     public AccountData addAccount(AccountData account)
         throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("AccountManagerImpl.addAccount()") ;
-        if (DEBUG_FLAG) System.out.println("  Account : " + ((null != account) ? account.getIdent() : null)) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("AccountManagerImpl.addAccount()") ;
+        log.debug("  Account : " + ((null != account) ? account.getIdent() : null)) ;
         //
         // Check for null account.
         if (null == account)
@@ -200,12 +210,12 @@ public class AccountManagerImpl
         // If the account is local.
         if (ident.isLocal())
             {
-//
-// Get the string ident.
-String string = ident.getAccountIdent() ;
-//
-// Set the Account ident.
-account.setIdent(string) ;
+			//
+			// Get the string ident.
+			String string = ident.getAccountIdent() ;
+			//
+			// Set the Account ident.
+			account.setIdent(string) ;
             //
             // Create the corresponding Group object.
             GroupData group = new GroupData() ;
@@ -238,9 +248,11 @@ account.setIdent(string) ;
                 database.begin();
                 //
                 // Try creating the account in the database.
-if (DEBUG_FLAG) System.out.println("Creating community account") ;
+				log.debug("Creating community account") ;
                 database.create(account);
-if (DEBUG_FLAG) System.out.println("Ok - Created community account") ;
+				log.debug("Ok - Created community account") ;
+/*
+ * Problems reported with group membership when running on windows.
                 //
                 // Try creating the group in the database.
                 database.create(group);
@@ -251,13 +263,15 @@ if (DEBUG_FLAG) System.out.println("Ok - Created community account") ;
 // Not sure why this one fails the tests.
 // Something about invalid primary key.
 //                        database.create(guestmember);
+ *
+ */
                 //
                 // Try creating the home space for the Account.
                 try {
-if (DEBUG_FLAG) System.out.println("Creating myspace account") ;
+					log.debug("Creating myspace account") ;
                     allocateSpace(account) ;
-if (DEBUG_FLAG) System.out.println("Ok - Created myspace account") ;
-if (DEBUG_FLAG) System.out.println("Home : " + account.getHomeSpace()) ;
+					log.debug("Ok - Created myspace account") ;
+					log.debug("Home : " + account.getHomeSpace()) ;
                     }
                 catch (Exception ouch)
                     {
@@ -361,10 +375,10 @@ if (DEBUG_FLAG) System.out.println("Home : " + account.getHomeSpace()) ;
     protected AccountData getAccount(CommunityIvornParser ident)
         throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("AccountManagerImpl.getAccount()") ;
-        if (DEBUG_FLAG) System.out.println("  Ident : " + ident) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("AccountManagerImpl.getAccount()") ;
+        log.debug("  Ident : " + ident) ;
         //
         // Check for null ident.
         if (null == ident)
@@ -382,9 +396,9 @@ if (DEBUG_FLAG) System.out.println("Home : " + account.getHomeSpace()) ;
             Database    database = null ;
             AccountData account  = null ;
             try {
-//
-// Get the string ident.
-String string = ident.getAccountIdent() ;
+				//
+				// Get the string ident.
+				String string = ident.getAccountIdent() ;
                 //
                 // Open our database connection.
                 database = this.getDatabase() ;
@@ -468,10 +482,10 @@ String string = ident.getAccountIdent() ;
     public AccountData setAccount(AccountData account)
         throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("AccountManagerImpl.setAccount()") ;
-        if (DEBUG_FLAG) System.out.println("  Account : " + ((null != account) ? account.getIdent() : null)) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("AccountManagerImpl.setAccount()") ;
+        log.debug("  Account : " + ((null != account) ? account.getIdent() : null)) ;
         //
         // Check for null account.
         if (null == account)
@@ -493,9 +507,9 @@ String string = ident.getAccountIdent() ;
             // Try update the database.
             Database database = null ;
             try {
-//
-// Get the string ident.
-String string = ident.getAccountIdent() ;
+				//
+				// Get the string ident.
+				String string = ident.getAccountIdent() ;
                 //
                 // Open our database connection.
                 database = this.getDatabase() ;
@@ -605,10 +619,10 @@ String string = ident.getAccountIdent() ;
     protected AccountData delAccount(CommunityIvornParser ident)
         throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("AccountManagerImpl.delAccount()") ;
-        if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("AccountManagerImpl.delAccount()") ;
+        log.debug("  ident : " + ident) ;
         //
         // Check for null ident.
         if (null == ident)
@@ -618,22 +632,22 @@ String string = ident.getAccountIdent() ;
                 ) ;
             }
 
-    //
-    // @todo Refactor this.
-    AccountData account  = null ;
+	    //
+	    // @todo Refactor this.
+	    AccountData account  = null ;
 
         //
         // If the ident is local.
         if (ident.isLocal())
             {
-            if (DEBUG_FLAG) System.out.println("  PASS : ident is local") ;
+            log.debug("  PASS : ident is local") ;
             //
             // Try update the database.
             Database    database = null ;
             try {
-//
-// Get the string ident.
-String string = ident.getAccountIdent() ;
+				//
+				// Get the string ident.
+				String string = ident.getAccountIdent() ;
                 //
                 // Open our database connection.
                 database = this.getDatabase() ;
@@ -647,7 +661,7 @@ String string = ident.getAccountIdent() ;
                 // If we found the Account.
                 if (null != account)
                     {
-                    if (DEBUG_FLAG)System.out.println("  PASS : found account") ;
+                    log.debug("  PASS : found account") ;
                     //
                     // Find the group for this account (if it exists).
                     OQLQuery groupQuery = database.getOQLQuery(
@@ -661,10 +675,10 @@ String string = ident.getAccountIdent() ;
                     QueryResults groups = groupQuery.execute();
                     if (null != groups)
                         {
-                        if (DEBUG_FLAG)System.out.println("  PASS : found groups") ;
+                        log.debug("  PASS : found groups") ;
                         }
                     else {
-                        if (DEBUG_FLAG)System.out.println("  FAIL : null groups") ;
+                        log.debug("  FAIL : null groups") ;
                         }
                     //
                     // Find all of the group memberships for this account.
@@ -679,10 +693,10 @@ String string = ident.getAccountIdent() ;
                     QueryResults members = memberQuery.execute();
                     if (null != members)
                         {
-                        if (DEBUG_FLAG)System.out.println("  PASS : found members") ;
+                        log.debug("  PASS : found members") ;
                         }
                     else {
-                        if (DEBUG_FLAG)System.out.println("  FAIL : null members") ;
+                        log.debug("  FAIL : null members") ;
                         }
                     //
                     // Load all the permissions for this group.
@@ -697,41 +711,41 @@ String string = ident.getAccountIdent() ;
                     QueryResults permissions = permissionQuery.execute();
                     if (null != permissions)
                         {
-                        if (DEBUG_FLAG)System.out.println("  PASS : found permissions") ;
+                        log.debug("  PASS : found permissions") ;
                         }
                     else {
-                        if (DEBUG_FLAG)System.out.println("  FAIL : null permissions") ;
+                        log.debug("  FAIL : null permissions") ;
                         }
                     //
                     // Delete the permissions.
                     while (permissions.hasMore())
                         {
-                        if (DEBUG_FLAG) System.out.println("  STEP : deleting permission") ;
+                        log.debug("  STEP : deleting permission") ;
                         database.remove(permissions.next()) ;
                         }
                     //
                     // Delete the group memberships.
                     while (members.hasMore())
                         {
-                        if (DEBUG_FLAG) System.out.println("  STEP : deleting membership") ;
+                        log.debug("  STEP : deleting membership") ;
                         database.remove(members.next()) ;
                         }
                     //
                     // Delete the Group.
                     while (groups.hasMore())
                         {
-                        if (DEBUG_FLAG) System.out.println("  STEP : deleting group") ;
+                        log.debug("  STEP : deleting group") ;
                         database.remove(groups.next()) ;
                         }
                     //
                     // Delete the Account.
                     database.remove(account) ;
                     }
-                if (DEBUG_FLAG) System.out.println("  PASS : finished deleting") ;
+                log.debug("  PASS : finished deleting") ;
                 //
                 // Commit the transaction.
                 database.commit() ;
-                if (DEBUG_FLAG) System.out.println("  PASS : done commit") ;
+                log.debug("  PASS : done commit") ;
                 }
             //
             // If we couldn't find the object.
@@ -799,9 +813,9 @@ String string = ident.getAccountIdent() ;
      */
     public Object[] getLocalAccounts()
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("AccountManagerImpl.getLocalAccounts()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("AccountManagerImpl.getLocalAccounts()") ;
         //
         // Try to query the database.
         Object[] array    = null ;
@@ -872,10 +886,10 @@ String string = ident.getAccountIdent() ;
     protected void allocateSpace(AccountData account)
         throws CommunityServiceException, CommunityIdentifierException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("AccountManagerImpl.allocateSpace()") ;
-        if (DEBUG_FLAG) System.out.println("  Account : " + ((null != account) ? account.getIdent() : null)) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("AccountManagerImpl.allocateSpace()") ;
+        log.debug("  Account : " + ((null != account) ? account.getIdent() : null)) ;
         //
         // Check for null account.
         if (null == account)
@@ -915,7 +929,7 @@ String string = ident.getAccountIdent() ;
                             account.getIdent()
                             )
                         ) ;
-                    if (DEBUG_FLAG) System.out.println("  VoSpace ivorn : " + ivorn) ;
+                    log.debug("  VoSpace ivorn : " + ivorn) ;
                     //
                     // Update the Account data
                     account.setHomeSpace(
@@ -953,9 +967,9 @@ String string = ident.getAccountIdent() ;
     public Ivorn getDefaultVoSpace()
         throws CommunityServiceException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("AccountManagerImpl.getDefaultVoSpace()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("AccountManagerImpl.getDefaultVoSpace()") ;
         //
         // Get the default identifier from our config.
         String string = null ;
@@ -968,7 +982,7 @@ String string = ident.getAccountIdent() ;
                 "Default VoSpace not configured"
                 ) ;
             }
-        if (DEBUG_FLAG) System.out.println("    Default VoSpace : " + string) ;
+        log.debug("    Default VoSpace : " + string) ;
         //
         // If we found the default identifier.
         if (null != string)

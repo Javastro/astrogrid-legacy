@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/policy/manager/PolicyManagerResolver.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManagerResolver.java,v $
+ *   Revision 1.7  2004/09/16 23:18:08  dave
+ *   Replaced debug logging in Community.
+ *   Added stream close() to FileStore.
+ *
+ *   Revision 1.6.82.1  2004/09/16 09:58:48  dave
+ *   Replaced debug with commons logging ....
+ *
  *   Revision 1.6  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -19,6 +26,9 @@
  *
  */
 package org.astrogrid.community.resolver.policy.manager ;
+
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 import java.net.URL ;
 
@@ -46,10 +56,10 @@ import org.astrogrid.registry.RegistryException;
 public class PolicyManagerResolver
     {
     /**
-     * Switch for our debug statements.
+     * Our debug logger.
      *
      */
-    private static boolean DEBUG_FLAG = true ;
+    private static Log log = LogFactory.getLog(PolicyManagerResolver.class);
 
     /**
      * Public constructor, using the default Registry service.
@@ -94,10 +104,10 @@ public class PolicyManagerResolver
     public PolicyManagerDelegate resolve(Ivorn ivorn)
         throws RegistryException, CommunityIdentifierException, CommunityResolverException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("PolicyManagerResolverImpl.resolve()") ;
-        if (DEBUG_FLAG) System.out.println("  Ivorn : " + ((null != ivorn) ? ivorn : null)) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("PolicyManagerResolverImpl.resolve()") ;
+        log.debug("  Ivorn : " + ((null != ivorn) ? ivorn : null)) ;
         //
         // Check for null ivorn.
         if (null == ivorn)
@@ -127,10 +137,10 @@ public class PolicyManagerResolver
     public PolicyManagerDelegate resolve(CommunityIvornParser parser)
         throws RegistryException, CommunityIdentifierException, CommunityResolverException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("PolicyManagerResolverImpl.resolve()") ;
-        if (DEBUG_FLAG) System.out.println("  Ivorn : " + ((null != parser) ? parser.getIvorn() : null)) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("PolicyManagerResolverImpl.resolve()") ;
+        log.debug("  Ivorn : " + ((null != parser) ? parser.getIvorn() : null)) ;
         //
         // Check for null parser.
         if (null == parser)
@@ -143,8 +153,8 @@ public class PolicyManagerResolver
         // Check for a mock ivorn.
         if (parser.isMock())
             {
-            if (DEBUG_FLAG) System.out.println("Ivorn is mock.") ;
-            if (DEBUG_FLAG) System.out.println("Creating mock delegate.") ;
+            log.debug("Ivorn is mock.") ;
+            log.debug("Creating mock delegate.") ;
             //
             // Return a mock delegate.
             return new PolicyManagerMockDelegate() ;
@@ -152,14 +162,14 @@ public class PolicyManagerResolver
         //
         // If the ident is real.
         else {
-            if (DEBUG_FLAG) System.out.println("Ivorn is real.") ;
-            if (DEBUG_FLAG) System.out.println("Resolving endpoint URL.") ;
+            log.debug("Ivorn is real.") ;
+            log.debug("Resolving endpoint URL.") ;
             //
             // Lookup the endpoint in the registry.
             URL endpoint = resolver.resolve(parser, PolicyManager.class) ;
-            if (DEBUG_FLAG) System.out.println("PASS : Got endpoint url") ;
-            if (DEBUG_FLAG) System.out.println("  URL : " + endpoint) ;
-            if (DEBUG_FLAG) System.out.println("Creating SOAP delegate.") ;
+            log.debug("PASS : Got endpoint url") ;
+            log.debug("  URL : " + endpoint) ;
+            log.debug("Creating SOAP delegate.") ;
             //
             // Return a new delegate
             return this.resolve(endpoint) ;

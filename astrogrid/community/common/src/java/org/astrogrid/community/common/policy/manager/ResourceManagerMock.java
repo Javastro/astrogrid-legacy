@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/ResourceManagerMock.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: ResourceManagerMock.java,v $
+ *   Revision 1.6  2004/09/16 23:18:08  dave
+ *   Replaced debug logging in Community.
+ *   Added stream close() to FileStore.
+ *
+ *   Revision 1.5.82.1  2004/09/16 09:58:48  dave
+ *   Replaced debug with commons logging ....
+ *
  *   Revision 1.5  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -16,6 +23,9 @@
  *
  */
 package org.astrogrid.community.common.policy.manager ;
+
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 import java.util.Map ;
 import java.util.HashMap ;
@@ -38,10 +48,10 @@ public class ResourceManagerMock
     implements ResourceManager
     {
     /**
-     * Switch for our debug statements.
+     * Our debug logger.
      *
      */
-    private static final boolean DEBUG_FLAG = true ;
+	private static Log log = LogFactory.getLog(ResourceManagerMock.class);
 
     /**
      * Switch for testing service exceptions.
@@ -71,9 +81,9 @@ public class ResourceManagerMock
      */
     public static void reset()
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("ResourceManagerMock.reset()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("ResourceManagerMock.reset()") ;
         map.clear() ;
         }
 
@@ -86,9 +96,9 @@ public class ResourceManagerMock
     public ResourceData addResource()
         throws CommunityServiceException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("ResourceManagerMock.addResource()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("ResourceManagerMock.addResource()") ;
         //
         // Check for CommunityServiceException tests.
         if (SERVICE_EXCEPTIONS)
@@ -120,10 +130,10 @@ public class ResourceManagerMock
     public ResourceData getResource(String ident)
         throws CommunityIdentifierException, CommunityResourceException, CommunityServiceException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("ResourceManagerMock.getResource()") ;
-        if (DEBUG_FLAG) System.out.println("  Ident : " + ident) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("ResourceManagerMock.getResource()") ;
+        log.debug("  Ident : " + ident) ;
         //
         // Check for CommunityServiceException tests.
         if (SERVICE_EXCEPTIONS)
@@ -169,10 +179,10 @@ public class ResourceManagerMock
     public ResourceData setResource(ResourceData resource)
         throws CommunityIdentifierException, CommunityResourceException, CommunityServiceException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("ResourceManagerMock.setResource()") ;
-        if (DEBUG_FLAG) System.out.println("  Resource : " + resource) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("ResourceManagerMock.setResource()") ;
+        log.debug("  Resource : " + resource) ;
         //
         // Check for CommunityServiceException tests.
         if (SERVICE_EXCEPTIONS)
@@ -228,10 +238,10 @@ public class ResourceManagerMock
     public ResourceData delResource(String ident)
         throws CommunityIdentifierException, CommunityResourceException, CommunityServiceException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("ResourceManagerMock.delResource()") ;
-        if (DEBUG_FLAG) System.out.println("  Ident : " + ident) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("ResourceManagerMock.delResource()") ;
+        log.debug("  Ident : " + ident) ;
         //
         // Check for CommunityServiceException tests.
         if (SERVICE_EXCEPTIONS)

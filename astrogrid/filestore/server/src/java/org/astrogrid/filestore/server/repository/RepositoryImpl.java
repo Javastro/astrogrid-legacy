@@ -2,10 +2,23 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/server/src/java/org/astrogrid/filestore/server/repository/RepositoryImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/02 10:25:41 $</cvs:date>
- * <cvs:version>$Revision: 1.8 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.9 $</cvs:version>
  * <cvs:log>
  *   $Log: RepositoryImpl.java,v $
+ *   Revision 1.9  2004/09/16 23:18:08  dave
+ *   Replaced debug logging in Community.
+ *   Added stream close() to FileStore.
+ *
+ *   Revision 1.8.14.3  2004/09/16 13:22:38  dave
+ *   Fixed typo ..
+ *
+ *   Revision 1.8.14.2  2004/09/16 13:19:00  dave
+ *   Refactored the stream close() into try catch finally blocks ....
+ *
+ *   Revision 1.8.14.1  2004/09/16 11:45:35  dave
+ *   Added close() to output streams ....
+ *
  *   Revision 1.8  2004/09/02 10:25:41  dave
  *   Updated FileStore and MySpace to handle mime type and file size.
  *   Updated Community deployment script.
@@ -423,11 +436,13 @@ public class RepositoryImpl
 		protected void load()
 			throws FileStoreServiceException, FileStoreNotFoundException
 			{
+			InputStream input = null ;
 			try {
+				input = new FileInputStream(
+					this.getInfoFile()
+					) ;
 				this.properties.load(
-					new FileInputStream(
-						this.getInfoFile()
-						)
+					input
 					) ;
 				}
 			catch (FileNotFoundException ouch)
@@ -439,9 +454,23 @@ public class RepositoryImpl
 			catch (IOException ouch)
 				{
 				throw new FileStoreServiceException(
-					"Unable to load file info",
+					"Unable to load info file",
 					ouch
 					) ;
+				}
+			finally
+				{
+				if (null != input)
+					{
+					try {
+						input.close() ;
+						}
+					catch (IOException ouch)
+						{
+						if (DEBUG_FLAG) System.out.println("ERROR : RepositoryContainerImpl.load") ;
+						if (DEBUG_FLAG) System.out.println("ERROR : Failed to close input stream") ;
+						}
+					}
 				}
 			}
 
@@ -453,19 +482,35 @@ public class RepositoryImpl
 		protected void save()
 			throws FileStoreServiceException
 			{
+			OutputStream output = null ;
 			try {
+				output = new FileOutputStream(
+					this.getInfoFile()
+					) ;
 				this.properties.save(
-					new FileOutputStream(
-						this.getInfoFile()
-						)
+					output
 					) ;
 				}
 			catch (IOException ouch)
 				{
 				throw new FileStoreServiceException(
-					"Unable to save file info",
+					"Unable to save info file",
 					ouch
 					) ;
+				}
+			finally
+				{
+				if (null != output)
+					{
+					try {
+						output.close() ;
+						}
+					catch (IOException ouch)
+						{
+						if (DEBUG_FLAG) System.out.println("ERROR : RepositoryContainerImpl.save") ;
+						if (DEBUG_FLAG) System.out.println("ERROR : Failed to close output stream") ;
+						}
+					}
 				}
 			}
 
@@ -493,20 +538,36 @@ public class RepositoryImpl
 			{
 			//
 			// Transfer the data.
+			OutputStream output = null ;
 			try {
-				this.getDataOutputStream().write(bytes) ;
+				output = this.getDataOutputStream() ;
+				output.write(bytes) ;
 				}
 			catch (IOException ouch)
 				{
 				throw new FileStoreServiceException(
-					"Unable to write file data",
+					"Unable to write to data file",
 					ouch
 					) ;
 				}
-			//
-			// Update our properties.
-			finally {
+			finally
+				{
+				//
+				// Update our properties.
 				this.update() ;
+				//
+				// Close our output stream.
+				try {
+					if (null != output)
+						{
+						output.close() ;
+						}
+					}
+				catch (IOException ouch)
+					{
+					if (DEBUG_FLAG) System.out.println("ERROR : RepositoryContainerImpl.importBytes") ;
+					if (DEBUG_FLAG) System.out.println("ERROR : failed to close output stream") ;
+					}
 				}
 			}
 
@@ -521,13 +582,12 @@ public class RepositoryImpl
 		public byte[] exportBytes()
 			throws FileStoreServiceException, FileStoreNotFoundException
 			{
+			int size = (int) this.getDataFile().length() ;
+			byte[] buffer = new byte[size] ;
+			InputStream input = null ;
 			try {
-				int size = (int) this.getDataFile().length() ;
-				byte[] buffer = new byte[size] ;
-
-				this.getDataInputStream().read(buffer) ;
-
-				return buffer ;
+				input = this.getDataInputStream() ;
+				input.read(buffer) ;
 				}
 			catch (IOException ouch)
 				{
@@ -536,6 +596,21 @@ public class RepositoryImpl
 					ouch
 					) ;
 				}
+			finally
+				{
+				try {
+					if (null != input)
+						{
+						input.close() ;
+						}
+					}
+				catch (IOException ouch)
+					{
+					if (DEBUG_FLAG) System.out.println("ERROR : RepositoryContainerImpl.exportBytes") ;
+					if (DEBUG_FLAG) System.out.println("ERROR : failed to close input stream") ;
+					}
+				}
+			return buffer ;
 			}
 
 		/**
@@ -550,20 +625,37 @@ public class RepositoryImpl
 			{
 			//
 			// Transfer the data.
+			OutputStream output = null ;
 			try {
-				getDataOutputStream(true).write(bytes) ;
+				output = this.getDataOutputStream(true) ;
+				output.write(bytes) ;
+				output.close() ;
 				}
 			catch (IOException ouch)
 				{
 				throw new FileStoreServiceException(
-					"Unable to write file data",
+					"Unable to write data file",
 					ouch
 					) ;
 				}
-			//
-			// Update our properties.
-			finally {
+			finally
+				{
+				//
+				// Update our properties.
 				this.update() ;
+				//
+				// Close our output stream.
+				try {
+					if (null != output)
+						{
+						output.close() ;
+						}
+					}
+				catch (IOException ouch)
+					{
+					if (DEBUG_FLAG) System.out.println("ERROR : RepositoryContainerImpl.appendBytes") ;
+					if (DEBUG_FLAG) System.out.println("ERROR : failed to close output stream") ;
+					}
 				}
 			}
 
@@ -677,9 +769,27 @@ public class RepositoryImpl
 					}
 				//
 				// Transfer the data from the URL.
-				this.importData(
-					connection.getInputStream()
-					) ;
+				InputStream input = null ;
+				try {
+					input = connection.getInputStream() ;
+					this.importData(
+						input
+						) ;
+					}
+				finally
+					{
+					try {
+						if (null != input)
+							{
+							input.close() ;
+							}
+						}
+					catch (IOException ouch)
+						{
+						if (DEBUG_FLAG) System.out.println("ERROR : RepositoryContainerImpl.importData") ;
+						if (DEBUG_FLAG) System.out.println("ERROR : failed to close input stream") ;
+						}
+					}
 				}
 			catch (IOException ouch)
 				{
@@ -697,15 +807,17 @@ public class RepositoryImpl
 		 * @throws FileStoreServiceException If unable to open the local file.
 		 *
 		 */
-		public void importData(InputStream stream)
+		public void importData(InputStream input)
 			throws FileStoreServiceException, FileStoreTransferException
 			{
 			//
 			// Transfer the data.
+			OutputStream output = null ;
 			try {
+				output = this.getDataOutputStream() ;
 				TransferUtil trans = new TransferUtil(
-					stream,
-					this.getDataOutputStream()
+					input,
+					output
 					) ;
 				trans.transfer() ;
 				}
@@ -716,9 +828,23 @@ public class RepositoryImpl
 					ouch
 					) ;
 				}
-			//
-			// Update the properties.
-			finally {
+			finally
+				{
+				//
+				// Close the output stream.
+				try {
+					if (null != output)
+						{
+						output.close() ;
+						}
+					}
+				catch (IOException ouch)
+					{
+					if (DEBUG_FLAG) System.out.println("ERROR : RepositoryContainerImpl.importData") ;
+					if (DEBUG_FLAG) System.out.println("ERROR : failed to close output stream") ;
+					}
+				//
+				// Update our properties.
 				this.update() ;
 				}
 			}
@@ -730,13 +856,15 @@ public class RepositoryImpl
 		 * @throws FileStoreServiceException If unable to open the local file.
 		 *
 		 */
-		public void exportData(OutputStream stream)
+		public void exportData(OutputStream output)
 			throws FileStoreServiceException, FileStoreNotFoundException, FileStoreTransferException
 			{
+			InputStream input = null ;
 			try {
+				input = this.getDataInputStream() ;
 				TransferUtil trans = new TransferUtil(
-					this.getDataInputStream(),
-					stream
+					input,
+					output
 					) ;
 				trans.transfer() ;
 				}
@@ -746,6 +874,22 @@ public class RepositoryImpl
 					"Encountered error while transferring data",
 					ouch
 					) ;
+				}
+			finally
+				{
+				//
+				// Close our input stream.
+				try {
+					if (null != input)
+						{
+						input.close() ;
+						}
+					}
+				catch (IOException ouch)
+					{
+					if (DEBUG_FLAG) System.out.println("ERROR : RepositoryContainerImpl.exportData") ;
+					if (DEBUG_FLAG) System.out.println("ERROR : failed to close input stream") ;
+					}
 				}
 			}
 		}

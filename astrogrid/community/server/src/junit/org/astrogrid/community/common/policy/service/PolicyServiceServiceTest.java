@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/junit/org/astrogrid/community/common/policy/service/Attic/PolicyServiceServiceTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyServiceServiceTest.java,v $
+ *   Revision 1.7  2004/09/16 23:18:08  dave
+ *   Replaced debug logging in Community.
+ *   Added stream close() to FileStore.
+ *
+ *   Revision 1.6.82.1  2004/09/16 09:58:48  dave
+ *   Replaced debug with commons logging ....
+ *
  *   Revision 1.6  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -16,6 +23,9 @@
  *
  */
 package org.astrogrid.community.common.policy.service ;
+
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 import java.net.URL ;
 
@@ -45,10 +55,10 @@ public class PolicyServiceServiceTest
     extends CommunityServiceTest
     {
     /**
-     * Switch for our debug statements.
+     * Our debug logger.
      *
      */
-    private static boolean DEBUG_FLAG = true ;
+    private static Log log = LogFactory.getLog(PolicyServiceServiceTest.class);
 
     /**
      * Setup our test.
@@ -58,13 +68,13 @@ public class PolicyServiceServiceTest
         throws Exception
         {
         super.setUp() ;
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("PolicyServiceServiceTest:setup()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("PolicyServiceServiceTest:setup()") ;
         //
         // Not sure what we need yet ...
         //
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        log.debug("----\"----") ;
         }
 
     /**
@@ -74,9 +84,9 @@ public class PolicyServiceServiceTest
     public void testCreateDefaultService()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("PolicyServiceServiceTest:testCreateDefaultService()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("PolicyServiceServiceTest:testCreateDefaultService()") ;
 
         //
         // Initialise the Axis 'local:' URL protocol.

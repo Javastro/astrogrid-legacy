@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/manager/Attic/GroupManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.9 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.10 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: GroupManagerImpl.java,v $
+ *   Revision 1.10  2004/09/16 23:18:08  dave
+ *   Replaced debug logging in Community.
+ *   Added stream close() to FileStore.
+ *
+ *   Revision 1.9.82.1  2004/09/16 09:58:48  dave
+ *   Replaced debug with commons logging ....
+ *
  *   Revision 1.9  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -19,6 +26,9 @@
  *
  */
 package org.astrogrid.community.server.policy.manager ;
+
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 import java.util.Vector ;
 import java.util.Collection ;
@@ -54,10 +64,10 @@ public class GroupManagerImpl
     implements GroupManager
     {
     /**
-     * Switch for our debug statements.
+     * Our debug logger.
      *
      */
-    protected static final boolean DEBUG_FLAG = true ;
+    private static Log log = LogFactory.getLog(GroupManagerImpl.class);
 
     /**
      * Public constructor, using default database configuration.
@@ -118,10 +128,10 @@ public class GroupManagerImpl
     protected GroupData addGroup(CommunityIdent ident)
         throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("GroupManagerImpl.addGroup()") ;
-        if (DEBUG_FLAG) System.out.println("  Ident : " + ident) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("GroupManagerImpl.addGroup()") ;
+        log.debug("  Ident : " + ident) ;
         //
         // Check for null ident.
         if (null == ident)
@@ -155,10 +165,10 @@ public class GroupManagerImpl
     public GroupData addGroup(GroupData group)
         throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("GroupManagerImpl.addGroup()") ;
-        if (DEBUG_FLAG) System.out.println("  Group : " + ((null != group) ? group.getIdent() : null)) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("GroupManagerImpl.addGroup()") ;
+        log.debug("  Group : " + ((null != group) ? group.getIdent() : null)) ;
         //
         // Check for null group.
         if (null == group)
@@ -285,10 +295,10 @@ public class GroupManagerImpl
     protected GroupData getGroup(CommunityIvornParser ident)
         throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("GroupManagerImpl.getGroup()") ;
-        if (DEBUG_FLAG) System.out.println("  Ident : " + ident) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("GroupManagerImpl.getGroup()") ;
+        log.debug("  Ident : " + ident) ;
         //
         // Check for null ident.
         if (null == ident)
@@ -384,10 +394,10 @@ public class GroupManagerImpl
     public GroupData setGroup(GroupData group)
         throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("GroupManagerImpl.setGroup()") ;
-        if (DEBUG_FLAG) System.out.println("  Group : " + ((null != group) ? group.getIdent() : null)) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("GroupManagerImpl.setGroup()") ;
+        log.debug("  Group : " + ((null != group) ? group.getIdent() : null)) ;
         //
         // Check for null group.
         if (null == group)
@@ -514,10 +524,10 @@ public class GroupManagerImpl
     protected GroupData delGroup(CommunityIvornParser ident)
         throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("GroupManagerImpl.delGroup()") ;
-        if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("GroupManagerImpl.delGroup()") ;
+        log.debug("  ident : " + ident) ;
         //
         // Check for null ident.
         if (null == ident)
@@ -614,9 +624,9 @@ public class GroupManagerImpl
     public Object[] getLocalGroups()
         throws CommunityServiceException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("GroupManagerImpl.getLocalGroups()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("GroupManagerImpl.getLocalGroups()") ;
         //
         // Try to query the database.
         Object[] array = null ;
@@ -725,11 +735,11 @@ public class GroupManagerImpl
     protected GroupMemberData addGroupMember(CommunityIvornParser account, CommunityIvornParser group)
         throws CommunityServiceException, CommunityPolicyException, CommunityIdentifierException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("GroupManagerImpl.addGroupMember()") ;
-        if (DEBUG_FLAG) System.out.println("  account  : " + account) ;
-        if (DEBUG_FLAG) System.out.println("  group    : " + group) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("GroupManagerImpl.addGroupMember()") ;
+        log.debug("  account  : " + account) ;
+        log.debug("  group    : " + group) ;
         //
         // Check for null account.
         if (null == account)
@@ -870,11 +880,11 @@ public class GroupManagerImpl
     protected GroupMemberData delGroupMember(CommunityIvornParser account, CommunityIvornParser group)
         throws CommunityServiceException, CommunityPolicyException, CommunityIdentifierException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("GroupManagerImpl.delGroupMember()") ;
-        if (DEBUG_FLAG) System.out.println("  account  : " + account) ;
-        if (DEBUG_FLAG) System.out.println("  group    : " + group) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("GroupManagerImpl.delGroupMember()") ;
+        log.debug("  account  : " + account) ;
+        log.debug("  group    : " + group) ;
         //
         // Check for null account.
         if (null == account)
@@ -1018,11 +1028,11 @@ public class GroupManagerImpl
     protected GroupMemberData getGroupMember(CommunityIvornParser account, CommunityIvornParser group)
         throws CommunityServiceException, CommunityPolicyException, CommunityIdentifierException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("GroupManagerImpl.getGroupMember()") ;
-        if (DEBUG_FLAG) System.out.println("  account  : " + account) ;
-        if (DEBUG_FLAG) System.out.println("  group    : " + group) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("GroupManagerImpl.getGroupMember()") ;
+        log.debug("  account  : " + account) ;
+        log.debug("  group    : " + group) ;
         //
         // Check for null account.
         if (null == account)
@@ -1152,10 +1162,10 @@ public class GroupManagerImpl
     protected Object[] getGroupMembers(CommunityIvornParser group)
         throws CommunityServiceException, CommunityPolicyException, CommunityIdentifierException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("GroupManagerImpl.getGroupMembers()") ;
-        if (DEBUG_FLAG) System.out.println("  group    : " + group) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("GroupManagerImpl.getGroupMembers()") ;
+        log.debug("  group    : " + group) ;
         //
         // Check for null group.
         if (null == group)
@@ -1170,7 +1180,7 @@ public class GroupManagerImpl
         // If the Group is local.
         if (group.isLocal())
             {
-            if (DEBUG_FLAG) System.out.println("PASS : Group is local") ;
+            log.debug("PASS : Group is local") ;
             //
             // Try to query the database.
             try {
@@ -1273,10 +1283,10 @@ public class GroupManagerImpl
     protected Object[] getLocalAccountGroups(CommunityIvornParser account)
         throws CommunityServiceException, CommunityIdentifierException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("GroupManagerImpl.getLocalAccountGroups()") ;
-        if (DEBUG_FLAG) System.out.println("  account   : " + account) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("GroupManagerImpl.getLocalAccountGroups()") ;
+        log.debug("  account   : " + account) ;
         //
         // Check for null account.
         if (null == account)

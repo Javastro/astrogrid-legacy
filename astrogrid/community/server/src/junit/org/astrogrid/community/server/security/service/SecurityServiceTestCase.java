@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/junit/org/astrogrid/community/server/security/service/Attic/SecurityServiceTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityServiceTestCase.java,v $
+ *   Revision 1.6  2004/09/16 23:18:08  dave
+ *   Replaced debug logging in Community.
+ *   Added stream close() to FileStore.
+ *
+ *   Revision 1.5.82.1  2004/09/16 09:58:48  dave
+ *   Replaced debug with commons logging ....
+ *
  *   Revision 1.5  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -16,6 +23,9 @@
  *
  */
 package org.astrogrid.community.server.security.service ;
+
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 import org.astrogrid.community.server.database.manager.DatabaseManagerImpl ;
 
@@ -40,10 +50,10 @@ public class SecurityServiceTestCase
     extends SecurityServiceTest
     {
     /**
-     * Switch for our debug statements.
+     * Our debug logger.
      *
      */
-    private static boolean DEBUG_FLAG = true ;
+    private static Log log = LogFactory.getLog(SecurityServiceTestCase.class);
 
     /**
      * Setup our test.
@@ -53,10 +63,10 @@ public class SecurityServiceTestCase
     public void setUp()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("SecurityServiceTestCase.setUp()") ;
-        if (DEBUG_FLAG) System.out.println("  TestClass : " + this.getClass()) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("SecurityServiceTestCase.setUp()") ;
+        log.debug("  TestClass : " + this.getClass()) ;
         //
         // Create our test database factory.
         TestDatabaseConfigurationFactory factory = new TestDatabaseConfigurationFactory() ;

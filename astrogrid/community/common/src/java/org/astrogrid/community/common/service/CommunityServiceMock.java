@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/service/CommunityServiceMock.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/09 01:19:50 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityServiceMock.java,v $
+ *   Revision 1.7  2004/09/16 23:18:08  dave
+ *   Replaced debug logging in Community.
+ *   Added stream close() to FileStore.
+ *
+ *   Revision 1.6.8.1  2004/09/16 09:58:48  dave
+ *   Replaced debug with commons logging ....
+ *
  *   Revision 1.6  2004/09/09 01:19:50  dave
  *   Updated MIME type handling in MySpace.
  *   Extended test coverage for MIME types in FileStore and MySpace.
@@ -28,6 +35,9 @@
  */
 package org.astrogrid.community.common.service ;
 
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
+
 import org.astrogrid.community.common.service.data.ServiceStatusData ;
 
 /**
@@ -38,10 +48,10 @@ public class CommunityServiceMock
     implements CommunityService
     {
     /**
-     * Switch for our debug statements.
+     * Our debug logger.
      *
      */
-    private static boolean DEBUG_FLAG = true ;
+    private static Log log = LogFactory.getLog(CommunityServiceMock.class);
 
     /**
      * Public constructor.
@@ -57,9 +67,9 @@ public class CommunityServiceMock
      */
     public ServiceStatusData getServiceStatus()
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityServiceMock.getServiceStatus()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityServiceMock.getServiceStatus()") ;
 		ServiceStatusData status = new ServiceStatusData() ;
 		//
 		// Get the current runtime data ...

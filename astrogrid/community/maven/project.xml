@@ -3,10 +3,17 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/maven/project.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/08/18 19:00:01 $</cvs:date>
-    | <cvs:version>$Revision: 1.16 $</cvs:version>
+    | <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
+    | <cvs:version>$Revision: 1.17 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.17  2004/09/16 23:18:08  dave
+    |   Replaced debug logging in Community.
+    |   Added stream close() to FileStore.
+    |
+    |   Revision 1.16.30.1  2004/09/16 09:58:48  dave
+    |   Replaced debug with commons logging ....
+    |
     |   Revision 1.16  2004/08/18 19:00:01  dave
     |   Myspace manager modified to use remote filestore.
     |   Tested before checkin - integration tests at 91%.
@@ -166,6 +173,22 @@
             <version>1.5.3-1</version>
             <type>jar</type>
             <url>http://ant.apache.org/</url>
+        </dependency>
+        <!--+
+            | Commons logging API.
+            +-->
+        <dependency>
+            <artifactId>commons-logging</artifactId>
+            <groupId>commons-logging</groupId>
+            <version>1.0.3</version>
+        </dependency>
+        <!--+
+            | Log4j toolkit.
+            +-->
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.8</version>
         </dependency>
     </dependencies>
 

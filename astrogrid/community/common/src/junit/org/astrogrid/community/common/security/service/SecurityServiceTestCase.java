@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/junit/org/astrogrid/community/common/security/service/SecurityServiceTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityServiceTestCase.java,v $
+ *   Revision 1.7  2004/09/16 23:18:08  dave
+ *   Replaced debug logging in Community.
+ *   Added stream close() to FileStore.
+ *
+ *   Revision 1.6.82.1  2004/09/16 09:58:48  dave
+ *   Replaced debug with commons logging ....
+ *
  *   Revision 1.6  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -16,6 +23,9 @@
  *
  */
 package org.astrogrid.community.common.security.service ;
+
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 import org.astrogrid.community.common.database.manager.DatabaseManager ;
 import org.astrogrid.community.common.database.manager.DatabaseManagerMock ;
@@ -36,10 +46,10 @@ public class SecurityServiceTestCase
     extends SecurityServiceTest
     {
     /**
-     * Switch for our debug statements.
+     * Our debug logger.
      *
      */
-    private static boolean DEBUG_FLAG = true ;
+    private static Log log = LogFactory.getLog(SecurityServiceTestCase.class);
 
     /**
      * Setup our test.
@@ -75,9 +85,9 @@ public class SecurityServiceTestCase
     public void testMockPassword()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("SecurityServiceTestCase.testMockPassword()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("SecurityServiceTestCase.testMockPassword()") ;
         //
         // Create our mock service.
         SecurityServiceMock mock = new SecurityServiceMock() ;
@@ -107,9 +117,9 @@ public class SecurityServiceTestCase
             }
         catch (CommunitySecurityException ouch)
             {
-            if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
-            if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
-            if (DEBUG_FLAG) System.out.println("Class     : " + ouch.getClass()) ;
+            log.debug("Caught expected Exception") ;
+            log.debug("Exception : " + ouch) ;
+            log.debug("Class     : " + ouch.getClass()) ;
             }
         //
         // Clear the password.

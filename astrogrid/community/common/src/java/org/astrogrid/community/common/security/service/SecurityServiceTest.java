@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/security/service/SecurityServiceTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.7 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.8 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityServiceTest.java,v $
+ *   Revision 1.8  2004/09/16 23:18:08  dave
+ *   Replaced debug logging in Community.
+ *   Added stream close() to FileStore.
+ *
+ *   Revision 1.7.82.1  2004/09/16 09:58:48  dave
+ *   Replaced debug with commons logging ....
+ *
  *   Revision 1.7  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -19,6 +26,9 @@
  *
  */
 package org.astrogrid.community.common.security.service ;
+
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 import java.rmi.RemoteException ;
 
@@ -42,10 +52,10 @@ public class SecurityServiceTest
     extends CommunityServiceTest
     {
     /**
-     * Switch for our debug statements.
+     * Our debug logger.
      *
      */
-    private static boolean DEBUG_FLAG = true ;
+    private static Log log = LogFactory.getLog(SecurityServiceTest.class);
 
     /**
      * Our test Account ident.
@@ -88,10 +98,10 @@ public class SecurityServiceTest
      */
     public void setAccountManager(AccountManager manager)
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("SecurityServiceTest.setAccountManager()") ;
-        if (DEBUG_FLAG) System.out.println("  Manager : " + manager.getClass()) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("SecurityServiceTest.setAccountManager()") ;
+        log.debug("  Manager : " + manager.getClass()) ;
         this.accountManager = manager ;
         }
 
@@ -116,10 +126,10 @@ public class SecurityServiceTest
      */
     public void setSecurityManager(SecurityManager manager)
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("SecurityServiceTest.setSecurityManager()") ;
-        if (DEBUG_FLAG) System.out.println("  Manager : " + manager.getClass()) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("SecurityServiceTest.setSecurityManager()") ;
+        log.debug("  Manager : " + manager.getClass()) ;
         this.securityManager = manager ;
         }
 
@@ -144,10 +154,10 @@ public class SecurityServiceTest
      */
     public void setSecurityService(SecurityService service)
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("SecurityServiceTest.setSecurityService()") ;
-        if (DEBUG_FLAG) System.out.println("  Service : " + service.getClass()) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("SecurityServiceTest.setSecurityService()") ;
+        log.debug("  Service : " + service.getClass()) ;
         //
         // Set our SecurityService reference.
         this.securityService = service ;
@@ -163,9 +173,9 @@ public class SecurityServiceTest
     public void testCheckPassword()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("SecurityServiceTest.testCheckPassword()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("SecurityServiceTest.testCheckPassword()") ;
         //
         // Setup our test account.
         AccountData account = accountManager.addAccount(
@@ -218,9 +228,9 @@ public class SecurityServiceTest
     public void testCheckToken()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("SecurityServiceTest.testCheckToken()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("SecurityServiceTest.testCheckToken()") ;
         //
         // Setup our test account.
         AccountData account = accountManager.addAccount(
@@ -308,15 +318,15 @@ public class SecurityServiceTest
             }
         catch (CommunitySecurityException ouch)
             {
-            if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
-            if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
-            if (DEBUG_FLAG) System.out.println("Class     : " + ouch.getClass()) ;
+            log.debug("Caught expected Exception") ;
+            log.debug("Exception : " + ouch) ;
+            log.debug("Class     : " + ouch.getClass()) ;
             }
         catch (RemoteException ouch)
             {
-            if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
-            if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
-            if (DEBUG_FLAG) System.out.println("Class     : " + ouch.getClass()) ;
+            log.debug("Caught expected Exception") ;
+            log.debug("Exception : " + ouch) ;
+            log.debug("Class     : " + ouch.getClass()) ;
             }
         //
         // Check that the original is no longer valid.
@@ -342,9 +352,9 @@ public class SecurityServiceTest
     public void testSplitToken()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("SecurityServiceTest.testSplitToken()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("SecurityServiceTest.testSplitToken()") ;
         //
         // Setup our test account.
         AccountData account = accountManager.addAccount(
@@ -441,14 +451,14 @@ public class SecurityServiceTest
             }
         catch (CommunitySecurityException ouch)
             {
-            if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
-            if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+            log.debug("Caught expected Exception") ;
+            log.debug("Exception : " + ouch) ;
             }
         catch (RemoteException ouch)
             {
-            if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
-            if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
-            if (DEBUG_FLAG) System.out.println("Class     : " + ouch.getClass()) ;
+            log.debug("Caught expected Exception") ;
+            log.debug("Exception : " + ouch) ;
+            log.debug("Class     : " + ouch.getClass()) ;
             }
         //
         // Check that the original is no longer valid.

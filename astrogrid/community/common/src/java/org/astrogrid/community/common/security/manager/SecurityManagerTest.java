@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/security/manager/SecurityManagerTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityManagerTest.java,v $
+ *   Revision 1.7  2004/09/16 23:18:08  dave
+ *   Replaced debug logging in Community.
+ *   Added stream close() to FileStore.
+ *
+ *   Revision 1.6.82.1  2004/09/16 09:58:48  dave
+ *   Replaced debug with commons logging ....
+ *
  *   Revision 1.6  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -19,6 +26,9 @@
  *
  */
 package org.astrogrid.community.common.security.manager ;
+
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 import org.astrogrid.community.common.policy.data.AccountData ;
 import org.astrogrid.community.common.policy.manager.AccountManager ;
@@ -34,10 +44,10 @@ public class SecurityManagerTest
     extends CommunityServiceTest
     {
     /**
-     * Switch for our debug statements.
+     * Our debug logger.
      *
      */
-    private static boolean DEBUG_FLAG = true ;
+    private static Log log = LogFactory.getLog(SecurityManagerTest.class);
 
     /**
      * Our test Account ident.
@@ -80,10 +90,10 @@ public class SecurityManagerTest
      */
     public void setAccountManager(AccountManager manager)
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("SecurityServiceTest.setAccountManager()") ;
-        if (DEBUG_FLAG) System.out.println("  Manager : " + manager.getClass()) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("SecurityServiceTest.setAccountManager()") ;
+        log.debug("  Manager : " + manager.getClass()) ;
         this.accountManager = manager ;
         }
 
@@ -108,10 +118,10 @@ public class SecurityManagerTest
      */
     public void setSecurityManager(SecurityManager manager)
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("SecurityManagerTest.setSecurityManager()") ;
-        if (DEBUG_FLAG) System.out.println("  Manager : " + manager.getClass()) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("SecurityManagerTest.setSecurityManager()") ;
+        log.debug("  Manager : " + manager.getClass()) ;
         //
         // Set our SecurityManager reference.
         this.securityManager = manager ;
@@ -127,9 +137,9 @@ public class SecurityManagerTest
     public void testSetPassword()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("SecurityManagerTest.testSetPassword()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("SecurityManagerTest.testSetPassword()") ;
         //
         // Setup our test account.
         AccountData account = accountManager.addAccount(
@@ -157,9 +167,9 @@ public class SecurityManagerTest
     public void testChangePassword()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("SecurityManagerTest.testChangePassword()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("SecurityManagerTest.testChangePassword()") ;
         //
         // Setup our test account.
         AccountData account = accountManager.addAccount(

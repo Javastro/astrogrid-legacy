@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/CommunityManagerTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityManagerTest.java,v $
+ *   Revision 1.4  2004/09/16 23:18:08  dave
+ *   Replaced debug logging in Community.
+ *   Added stream close() to FileStore.
+ *
+ *   Revision 1.3.82.1  2004/09/16 09:58:48  dave
+ *   Replaced debug with commons logging ....
+ *
  *   Revision 1.3  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -20,6 +27,9 @@
  */
 package org.astrogrid.community.common.policy.manager ;
 
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
+
 import org.astrogrid.community.common.policy.data.CommunityData ;
 
 import org.astrogrid.community.common.exception.CommunityPolicyException ;
@@ -31,11 +41,10 @@ public class CommunityManagerTest
     extends CommunityServiceTest
     {
     /**
-     * Switch for our debug statements.
-     * @todo Refactor to use the common logging.
+     * Our debug logger.
      *
      */
-    private static boolean DEBUG_FLAG = true ;
+    private static Log log = LogFactory.getLog(CommunityManagerTest.class);
 
     /**
      * Public constructor.
@@ -66,10 +75,10 @@ public class CommunityManagerTest
      */
     public void setCommunityManager(CommunityManager manager)
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityManagerTest.setCommunityManager()") ;
-        if (DEBUG_FLAG) System.out.println("  Manager : " + manager.getClass()) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityManagerTest.setCommunityManager()") ;
+        log.debug("  Manager : " + manager.getClass()) ;
         //
         // Set our CommunityManager reference.
         this.communityManager = manager ;
@@ -85,9 +94,9 @@ public class CommunityManagerTest
     public void testCreateNull()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityManagerTest:testCreateNull()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityManagerTest:testCreateNull()") ;
         //
         // Try creating a Community.
         try {
@@ -96,8 +105,8 @@ public class CommunityManagerTest
             }
         catch (CommunityIdentifierException ouch)
             {
-            if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
-            if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+            log.debug("Caught expected Exception") ;
+            log.debug("Exception : " + ouch) ;
             }
         }
 
@@ -108,9 +117,9 @@ public class CommunityManagerTest
     public void testCreateValid()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityManagerTest:testCreateValid()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityManagerTest:testCreateValid()") ;
         //
         // Try creating an Community.
         assertNotNull("Null community",
@@ -125,9 +134,9 @@ public class CommunityManagerTest
     public void testCreateDuplicate()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityManagerTest:testCreateDuplicate()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityManagerTest:testCreateDuplicate()") ;
         //
         // Try creating an Community.
         assertNotNull("Null community",
@@ -141,8 +150,8 @@ public class CommunityManagerTest
             }
         catch (CommunityPolicyException ouch)
             {
-            if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
-            if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+            log.debug("Caught expected Exception") ;
+            log.debug("Exception : " + ouch) ;
             }
         }
 
@@ -153,9 +162,9 @@ public class CommunityManagerTest
     public void testGetNull()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityManagerTest:testGetNull()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityManagerTest:testGetNull()") ;
         //
         // Try getting the details.
         try {
@@ -164,8 +173,8 @@ public class CommunityManagerTest
             }
         catch (CommunityIdentifierException ouch)
             {
-            if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
-            if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+            log.debug("Caught expected Exception") ;
+            log.debug("Exception : " + ouch) ;
             }
         }
 
@@ -176,9 +185,9 @@ public class CommunityManagerTest
     public void testGetUnknown()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityManagerTest:testGetUnknown()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityManagerTest:testGetUnknown()") ;
         //
         // Try getting the details.
         try {
@@ -187,8 +196,8 @@ public class CommunityManagerTest
             }
         catch (CommunityPolicyException ouch)
             {
-            if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
-            if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+            log.debug("Caught expected Exception") ;
+            log.debug("Exception : " + ouch) ;
             }
         }
 
@@ -199,12 +208,12 @@ public class CommunityManagerTest
     public void testGetValid()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityManagerTest:testGetValid()") ;
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityManagerTest:testCreateValid()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityManagerTest:testGetValid()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityManagerTest:testCreateValid()") ;
         //
         // Try creating a Community.
         CommunityData created = communityManager.addCommunity("test-community") ;
@@ -225,17 +234,17 @@ public class CommunityManagerTest
     public void testSetNull()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityManagerTest:testSetNull()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityManagerTest:testSetNull()") ;
         try {
             communityManager.setCommunity(null) ;
             fail("Expected CommunityIdentifierException") ;
             }
         catch (CommunityIdentifierException ouch)
             {
-            if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
-            if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+            log.debug("Caught expected Exception") ;
+            log.debug("Exception : " + ouch) ;
             }
         }
 
@@ -246,9 +255,9 @@ public class CommunityManagerTest
     public void testSetUnknown()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityManagerTest:testSetUnknown()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityManagerTest:testSetUnknown()") ;
         //
         // Try setting an unknown community.
         try {
@@ -259,8 +268,8 @@ public class CommunityManagerTest
             }
         catch (CommunityPolicyException ouch)
             {
-            if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
-            if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+            log.debug("Caught expected Exception") ;
+            log.debug("Exception : " + ouch) ;
             }
         }
 
@@ -271,9 +280,9 @@ public class CommunityManagerTest
     public void testSetValid()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityManagerTest:testSetValid()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityManagerTest:testSetValid()") ;
         //
         // Try creating an Community.
         CommunityData community = communityManager.addCommunity("test-community") ;
@@ -304,17 +313,17 @@ public class CommunityManagerTest
     public void testDeleteNull()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityManagerTest:testDeleteNull()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityManagerTest:testDeleteNull()") ;
         try {
             communityManager.delCommunity(null) ;
             fail("Expected CommunityIdentifierException") ;
             }
         catch (CommunityIdentifierException ouch)
             {
-            if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
-            if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+            log.debug("Caught expected Exception") ;
+            log.debug("Exception : " + ouch) ;
             }
         }
 
@@ -325,17 +334,17 @@ public class CommunityManagerTest
     public void testDeleteUnknown()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityManagerTest:testDeleteUnknown()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityManagerTest:testDeleteUnknown()") ;
         try {
             communityManager.delCommunity("unknown-community") ;
             fail("Expected CommunityPolicyException") ;
             }
         catch (CommunityPolicyException ouch)
             {
-            if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
-            if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+            log.debug("Caught expected Exception") ;
+            log.debug("Exception : " + ouch) ;
             }
         }
 
@@ -346,9 +355,9 @@ public class CommunityManagerTest
     public void testDeleteValid()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityManagerTest:testDeleteValid()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityManagerTest:testDeleteValid()") ;
         //
         // Try creating the Community.
         CommunityData created = communityManager.addCommunity("test-community") ;
@@ -369,9 +378,9 @@ public class CommunityManagerTest
     public void testDeleteTwice()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityManagerTest:testDeleteTwice()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityManagerTest:testDeleteTwice()") ;
         //
         // Try creating the Community.
         CommunityData created = communityManager.addCommunity("test-community") ;
@@ -391,8 +400,8 @@ public class CommunityManagerTest
             }
         catch (CommunityPolicyException ouch)
             {
-            if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
-            if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+            log.debug("Caught expected Exception") ;
+            log.debug("Exception : " + ouch) ;
             }
         }
     }

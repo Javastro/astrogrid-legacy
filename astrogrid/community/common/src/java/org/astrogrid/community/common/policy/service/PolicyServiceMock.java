@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/service/PolicyServiceMock.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyServiceMock.java,v $
+ *   Revision 1.5  2004/09/16 23:18:08  dave
+ *   Replaced debug logging in Community.
+ *   Added stream close() to FileStore.
+ *
+ *   Revision 1.4.82.1  2004/09/16 09:58:48  dave
+ *   Replaced debug with commons logging ....
+ *
  *   Revision 1.4  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -20,6 +27,9 @@
  */
 package org.astrogrid.community.common.policy.service ;
 
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
+
 import org.astrogrid.community.common.policy.data.PolicyPermission  ;
 import org.astrogrid.community.common.policy.data.PolicyCredentials ;
 
@@ -30,10 +40,10 @@ public class PolicyServiceMock
     implements PolicyService
     {
     /**
-     * Switch for our debug statements.
+     * Our debug logger.
      *
      */
-    private static boolean DEBUG_FLAG = true ;
+    private static Log log = LogFactory.getLog(PolicyServiceMock.class);
 
     /**
      * Public constructor.
@@ -42,9 +52,9 @@ public class PolicyServiceMock
     public PolicyServiceMock()
         {
         super() ;
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("PolicyServiceMock()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("PolicyServiceMock()") ;
         }
 
     /**
@@ -53,12 +63,12 @@ public class PolicyServiceMock
      */
     public PolicyPermission checkPermissions(PolicyCredentials credentials, String resource, String action)
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("PolicyServiceMock.checkPermissions()") ;
-        if (DEBUG_FLAG) System.out.println("  Credentials : " + credentials) ;
-        if (DEBUG_FLAG) System.out.println("  Resource    : " + resource) ;
-        if (DEBUG_FLAG) System.out.println("  Action      : " + action) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("PolicyServiceMock.checkPermissions()") ;
+        log.debug("  Credentials : " + credentials) ;
+        log.debug("  Resource    : " + resource) ;
+        log.debug("  Action      : " + action) ;
         //
         // TODO - return something useful.
         return null ;
@@ -70,10 +80,10 @@ public class PolicyServiceMock
      */
     public PolicyCredentials checkMembership(PolicyCredentials credentials)
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("PolicyServiceMock.checkMembership()") ;
-        if (DEBUG_FLAG) System.out.println("  Credentials : " + credentials) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("PolicyServiceMock.checkMembership()") ;
+        log.debug("  Credentials : " + credentials) ;
         //
         // TODO - return something useful.
         return null ;

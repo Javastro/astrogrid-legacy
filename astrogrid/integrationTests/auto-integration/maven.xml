@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.108 2004/09/16 21:59:22 nw Exp $ -->
+<!-- $Id: maven.xml,v 1.109 2004/09/16 23:18:08 dave Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -31,7 +31,6 @@
 <!-- this will not work on windows      <property name="tomcat.host" value="${env.HOSTNAME}"/> unix
         <property name="tomcat.host" value="${env.COMPUTERNAME}"/>  windows -->
     <property name="tomcat.host" value="localhost"/><!--default-->
-
 <property name="tomcat.port" value="8080"/>
 <property name="tomcat.url" value="http://${tomcat.host}:${tomcat.port}"/>
 <property name="tomcat.manager.url" value="${tomcat.url}/manager"/>
@@ -1228,7 +1227,6 @@
         </define:taglib>
 
     <goal name="frog">
-
         <!--+
             | Clean out the target directory.
             +-->
@@ -1246,11 +1244,17 @@
         <attainGoal name="reg-deploy"/>
         <attainGoal name="myspace-deploy"/>
         <attainGoal name="filestore-deploy"/>
+        <attainGoal name="community-deploy"/>
+        <!--+
+            | Configure our components.
+            +-->
         <attainGoal name="community-toolkit"/>
         <attainGoal name="setup-working-dir"/>
         <attainGoal name="setup-registry"/>
         <attainGoal name="setup-filestore"/>
         <attainGoal name="setup-myspace"/>
+        <attainGoal name="community-database"/>
+        <attainGoal name="community-register"/>
         <!--+
             | Run the integration tests.
             +-->

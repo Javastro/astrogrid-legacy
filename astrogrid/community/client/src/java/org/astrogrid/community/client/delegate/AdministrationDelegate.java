@@ -1,5 +1,8 @@
 package org.astrogrid.community.client.delegate ;
 
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
+
 import org.astrogrid.community.common.policy.data.GroupData;
 import org.astrogrid.community.common.policy.data.ResourceData;
 import org.astrogrid.community.common.policy.data.AccountData;
@@ -25,13 +28,13 @@ import java.util.ArrayList;
  *
  */
 public class AdministrationDelegate {
-   
-   /**
-    * Switch for our debug statements.
-    *
-    */
-   private static final boolean DEBUG_FLAG = true ;
-         
+
+    /**
+     * Our debug logger.
+     *
+     */
+    private static Log log = LogFactory.getLog(AdministrationDelegate.class);
+
    /**
     *  service variable to our PolicyManager.
     */
@@ -70,11 +73,11 @@ public class AdministrationDelegate {
       
       policyURL = CommunityConfig.getManagerUrl();
       
-      System.out.println("manager url = " + policyURL);
+      log.debug("manager url = " + policyURL);
 
       
       String securePort = CommunityConfig.getProperty("community.secure.port");
-      System.out.println("the secure port = " + securePort);      
+      log.debug("the secure port = " + securePort);      
       if(securePort != null && securePort.length() > 0) {
          policyURL = policyURL.replaceAll("http","https");         
          Pattern p = Pattern.compile(REGEX_SECUREPORT);
@@ -83,7 +86,7 @@ public class AdministrationDelegate {
       }else {
          return null;
       }
-      System.out.println("The PolicyURL = " + policyURL);
+      log.debug("The PolicyURL = " + policyURL);
       return policyURL;      
    }
    
@@ -444,9 +447,9 @@ public class AdministrationDelegate {
    private PolicyManager getService(String targetEndPoint)
       throws Exception
       {
-      if (DEBUG_FLAG) System.out.println("") ;
-      if (DEBUG_FLAG) System.out.println("----\"----") ;
-      if (DEBUG_FLAG) System.out.println("setUp()") ;
+      log.debug("") ;
+      log.debug("----\"----") ;
+      log.debug("setUp()") ;
 
       PolicyManagerService locator = null;
       PolicyManager service = null;
@@ -458,8 +461,8 @@ public class AdministrationDelegate {
       // Create our service.
       service = locator.getPolicyManager(new URL(targetEndPoint));
 
-      if (DEBUG_FLAG) System.out.println("----\"----") ;
-      if (DEBUG_FLAG) System.out.println("") ;
+      log.debug("----\"----") ;
+      log.debug("") ;
       return service;
    }     
 }

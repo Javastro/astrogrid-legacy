@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/junit/org/astrogrid/common/ivorn/MockIvornTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: MockIvornTestCase.java,v $
+ *   Revision 1.5  2004/09/16 23:18:08  dave
+ *   Replaced debug logging in Community.
+ *   Added stream close() to FileStore.
+ *
+ *   Revision 1.4.82.1  2004/09/16 09:58:48  dave
+ *   Replaced debug with commons logging ....
+ *
  *   Revision 1.4  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -16,6 +23,9 @@
  *
  */
 package org.astrogrid.common.ivorn ;
+
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 import java.net.URL ;
 import java.net.URI ;
@@ -34,10 +44,10 @@ public class MockIvornTestCase
     extends TestCase
     {
     /**
-     * Switch for our debug statements.
+     * Our debug logger.
      *
      */
-    private static boolean DEBUG_FLAG = true ;
+    private static Log log = LogFactory.getLog(MockIvornTestCase.class);
 
     /**
      * Array of test data containing input values and expected results.
@@ -74,9 +84,9 @@ public class MockIvornTestCase
     public void testCreateSimpleIdent()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("MockIvornTestCase.testCreateSimpleIdent()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("MockIvornTestCase.testCreateSimpleIdent()") ;
         for (int i = 0 ; i < simple.length ; i++)
             { 
             //
@@ -105,9 +115,9 @@ public class MockIvornTestCase
     public void testCreateSimpleIvorn()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("MockIvornTestCase.testCreateSimpleIvorn()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("MockIvornTestCase.testCreateSimpleIvorn()") ;
         for (int i = 0 ; i < simple.length ; i++)
             { 
             //

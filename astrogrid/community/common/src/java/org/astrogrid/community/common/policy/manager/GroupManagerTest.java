@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/GroupManagerTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: GroupManagerTest.java,v $
+ *   Revision 1.5  2004/09/16 23:18:08  dave
+ *   Replaced debug logging in Community.
+ *   Added stream close() to FileStore.
+ *
+ *   Revision 1.4.82.1  2004/09/16 09:58:48  dave
+ *   Replaced debug with commons logging ....
+ *
  *   Revision 1.4  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -20,6 +27,8 @@
  */
 package org.astrogrid.community.common.policy.manager ;
 
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 import org.astrogrid.community.common.policy.data.GroupData ;
 
@@ -32,11 +41,10 @@ public class GroupManagerTest
     extends CommunityServiceTest
     {
     /**
-     * Switch for our debug statements.
-     * @todo Refactor to use the common logging.
+     * Our debug logger.
      *
      */
-    private static boolean DEBUG_FLAG = true ;
+	private static Log log = LogFactory.getLog(GroupManagerTest.class);
 
     /**
      * Public constructor.
@@ -67,10 +75,10 @@ public class GroupManagerTest
      */
     public void setGroupManager(GroupManager manager)
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("GroupManagerTest.setGroupManager()") ;
-        if (DEBUG_FLAG) System.out.println("  Manager : " + manager.getClass()) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("GroupManagerTest.setGroupManager()") ;
+        log.debug("  Manager : " + manager.getClass()) ;
         //
         // Set our GroupManager reference.
         this.groupManager = manager ;
@@ -86,9 +94,9 @@ public class GroupManagerTest
     public void testCreateNull()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("GroupManagerTest:testCreateNull()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("GroupManagerTest:testCreateNull()") ;
         //
         // Try creating the Group.
         try {
@@ -97,8 +105,8 @@ public class GroupManagerTest
             }
         catch (CommunityIdentifierException ouch)
             {
-            if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
-            if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+            log.debug("Caught expected Exception") ;
+            log.debug("Exception : " + ouch) ;
             }
         //
         // Try creating the Group.
@@ -108,8 +116,8 @@ public class GroupManagerTest
             }
         catch (CommunityIdentifierException ouch)
             {
-            if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
-            if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+            log.debug("Caught expected Exception") ;
+            log.debug("Exception : " + ouch) ;
             }
         }
 
@@ -120,9 +128,9 @@ public class GroupManagerTest
     public void testCreateValid()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("GroupManagerTest:testCreateValid()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("GroupManagerTest:testCreateValid()") ;
         //
         // Try creating the Group.
         assertNotNull("Null group",
@@ -139,9 +147,9 @@ public class GroupManagerTest
     public void testCreateData()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("GroupManagerTest:testCreateData()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("GroupManagerTest:testCreateData()") ;
         //
         // Try creating the Group.
         assertNotNull("Null group",
@@ -160,9 +168,9 @@ public class GroupManagerTest
     public void testCreateDuplicate()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("GroupManagerTest:testCreateDuplicate()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("GroupManagerTest:testCreateDuplicate()") ;
         //
         // Try creating the Group.
         assertNotNull("Null group",
@@ -180,8 +188,8 @@ public class GroupManagerTest
             }
         catch (CommunityPolicyException ouch)
             {
-            if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
-            if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+            log.debug("Caught expected Exception") ;
+            log.debug("Exception : " + ouch) ;
             }
         }
 
@@ -192,9 +200,9 @@ public class GroupManagerTest
     public void testGetNull()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("GroupManagerTest:testGetNull()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("GroupManagerTest:testGetNull()") ;
         //
         // Try getting the details.
         try {
@@ -203,8 +211,8 @@ public class GroupManagerTest
             }
         catch (CommunityIdentifierException ouch)
             {
-            if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
-            if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+            log.debug("Caught expected Exception") ;
+            log.debug("Exception : " + ouch) ;
             }
         }
 
@@ -215,9 +223,9 @@ public class GroupManagerTest
     public void testGetUnknown()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("GroupManagerTest:testGetUnknown()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("GroupManagerTest:testGetUnknown()") ;
         //
         // Try getting the details.
         try {
@@ -228,8 +236,8 @@ public class GroupManagerTest
             }
         catch (CommunityPolicyException ouch)
             {
-            if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
-            if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+            log.debug("Caught expected Exception") ;
+            log.debug("Exception : " + ouch) ;
             }
         }
 
@@ -240,9 +248,9 @@ public class GroupManagerTest
     public void testGetValid()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("GroupManagerTest:testGetValid()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("GroupManagerTest:testGetValid()") ;
         //
         // Try creating the Group.
         GroupData created = groupManager.addGroup(
@@ -267,17 +275,17 @@ public class GroupManagerTest
     public void testSetNull()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("GroupManagerTest:testSetNull()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("GroupManagerTest:testSetNull()") ;
         try {
             groupManager.setGroup(null) ;
             fail("Expected CommunityIdentifierException") ;
             }
         catch (CommunityIdentifierException ouch)
             {
-            if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
-            if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+            log.debug("Caught expected Exception") ;
+            log.debug("Exception : " + ouch) ;
             }
         }
 
@@ -288,9 +296,9 @@ public class GroupManagerTest
     public void testSetUnknown()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("GroupManagerTest:testSetUnknown()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("GroupManagerTest:testSetUnknown()") ;
         //
         // Try setting an unknown group.
         try {
@@ -303,8 +311,8 @@ public class GroupManagerTest
             }
         catch (CommunityPolicyException ouch)
             {
-            if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
-            if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+            log.debug("Caught expected Exception") ;
+            log.debug("Exception : " + ouch) ;
             }
         }
 
@@ -315,9 +323,9 @@ public class GroupManagerTest
     public void testSetValid()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("GroupManagerTest:testSetValid()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("GroupManagerTest:testSetValid()") ;
         //
         // Try creating the Group.
         GroupData group = groupManager.addGroup(
@@ -355,17 +363,17 @@ public class GroupManagerTest
     public void testDeleteNull()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("GroupManagerTest:testDeleteNull()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("GroupManagerTest:testDeleteNull()") ;
         try {
             groupManager.delGroup(null) ;
             fail("Expected CommunityIdentifierException") ;
             }
         catch (CommunityIdentifierException ouch)
             {
-            if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
-            if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+            log.debug("Caught expected Exception") ;
+            log.debug("Exception : " + ouch) ;
             }
         }
 
@@ -376,9 +384,9 @@ public class GroupManagerTest
     public void testDeleteUnknown()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("GroupManagerTest:testDeleteUnknown()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("GroupManagerTest:testDeleteUnknown()") ;
         try {
             groupManager.delGroup(
                 createLocal("unknown-group").toString()
@@ -387,8 +395,8 @@ public class GroupManagerTest
             }
         catch (CommunityPolicyException ouch)
             {
-            if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
-            if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+            log.debug("Caught expected Exception") ;
+            log.debug("Exception : " + ouch) ;
             }
         }
 
@@ -399,9 +407,9 @@ public class GroupManagerTest
     public void testDeleteValid()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("GroupManagerTest:testDeleteValid()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("GroupManagerTest:testDeleteValid()") ;
         //
         // Try creating the Group.
         GroupData created = groupManager.addGroup(
@@ -426,9 +434,9 @@ public class GroupManagerTest
     public void testDeleteTwice()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("GroupManagerTest:testDeleteTwice()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("GroupManagerTest:testDeleteTwice()") ;
         //
         // Try creating the Group.
         GroupData created = groupManager.addGroup(
@@ -454,8 +462,8 @@ public class GroupManagerTest
             }
         catch (CommunityPolicyException ouch)
             {
-            if (DEBUG_FLAG) System.out.println("Caught expected Exception") ;
-            if (DEBUG_FLAG) System.out.println("Exception : " + ouch) ;
+            log.debug("Caught expected Exception") ;
+            log.debug("Exception : " + ouch) ;
             }
         }
     }

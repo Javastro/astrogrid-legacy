@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/security/service/Attic/SecurityServiceImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.11 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.12 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityServiceImpl.java,v $
+ *   Revision 1.12  2004/09/16 23:18:08  dave
+ *   Replaced debug logging in Community.
+ *   Added stream close() to FileStore.
+ *
+ *   Revision 1.11.82.1  2004/09/16 09:58:48  dave
+ *   Replaced debug with commons logging ....
+ *
  *   Revision 1.11  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -19,6 +26,9 @@
  *
  */
 package org.astrogrid.community.server.security.service ;
+
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 import java.util.Vector ;
 
@@ -52,10 +62,10 @@ public class SecurityServiceImpl
     implements SecurityService
     {
     /**
-     * Switch for our debug statements.
+     * Our debug logger.
      *
      */
-    protected static final boolean DEBUG_FLAG = true ;
+    private static Log log = LogFactory.getLog(SecurityServiceImpl.class);
 
     /**
      * Public constructor, using default database configuration.
@@ -94,9 +104,9 @@ public class SecurityServiceImpl
     protected SecurityToken createToken(CommunityIvornParser account)
         throws CommunityServiceException, CommunityIdentifierException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("SecurityServiceImpl.createToken()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("SecurityServiceImpl.createToken()") ;
         //
         // Create a new UID.
         UID uid = new UID() ;
@@ -116,7 +126,7 @@ public class SecurityServiceImpl
         token.setStatus(SecurityToken.VALID_TOKEN) ;
         //
         // Return the new token.
-        if (DEBUG_FLAG) System.out.println("  Token : " + token) ;
+        log.debug("  Token : " + token) ;
         return token ;
         }
 
@@ -134,11 +144,11 @@ public class SecurityServiceImpl
     public SecurityToken checkPassword(String account, String password)
         throws CommunityServiceException, CommunitySecurityException, CommunityIdentifierException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("SecurityServiceImpl.checkPassword()") ;
-        if (DEBUG_FLAG) System.out.println("  Ident : " + account) ;
-        if (DEBUG_FLAG) System.out.println("  Pass  : " + password) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("SecurityServiceImpl.checkPassword()") ;
+        log.debug("  Ident : " + account) ;
+        log.debug("  Pass  : " + password) ;
         //
         // Check for null account.
         if (null == account)
@@ -174,19 +184,19 @@ public class SecurityServiceImpl
             //
             // Try to load a matching PasswordData.
             PasswordData match = (PasswordData) database.load(PasswordData.class, ident.getAccountIdent()) ;
-            if (DEBUG_FLAG)System.out.println("  PASS : Got password data") ;
-            if (DEBUG_FLAG)System.out.println("    Account  : " + match.getAccount()) ;
-            if (DEBUG_FLAG)System.out.println("    Password : " + match.getPassword()) ;
+            log.debug("  PASS : Got password data") ;
+            log.debug("    Account  : " + match.getAccount()) ;
+            log.debug("    Password : " + match.getPassword()) ;
             //
             // Check if the password matches.
             if (password.equals(match.getPassword()))
                 {
-                if (DEBUG_FLAG)System.out.println("  PASS : Password matches") ;
+                log.debug("  PASS : Password matches") ;
                 //
                 // Create our new SecurityToken.
                 token = this.createToken(ident) ;
                 database.create(token);
-                if (DEBUG_FLAG)System.out.println("  PASS : Got new token") ;
+                log.debug("  PASS : Got new token") ;
                 //
                 // Commit the database transaction.
                 database.commit() ;
@@ -274,10 +284,10 @@ public class SecurityServiceImpl
     public SecurityToken checkToken(SecurityToken original)
         throws CommunityServiceException, CommunitySecurityException, CommunityIdentifierException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("SecurityServiceImpl.checkToken()") ;
-        if (DEBUG_FLAG) System.out.println("  Token : " + original) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("SecurityServiceImpl.checkToken()") ;
+        log.debug("  Token : " + original) ;
         //
         // Check for null token.
         if (null == original)
@@ -294,13 +304,13 @@ public class SecurityServiceImpl
         CommunityIvornParser token = new CommunityIvornParser(
             original.getToken()
             ) ;
-        if (DEBUG_FLAG) System.out.println("  Token   : " + token) ;
+        log.debug("  Token   : " + token) ;
         //
         // Get the Account ident.
         CommunityIvornParser account = new CommunityIvornParser(
             original.getAccount()
             ) ;
-        if (DEBUG_FLAG) System.out.println("  Account : " + account) ;
+        log.debug("  Account : " + account) ;
 
         SecurityToken result = null ;
         Database database = null ;
@@ -314,13 +324,13 @@ public class SecurityServiceImpl
             //
             // Try loading the original token from our database.
             SecurityToken match = (SecurityToken) database.load(SecurityToken.class, original.getToken()) ;
-            if (DEBUG_FLAG)System.out.println("  PASS : Got matching token") ;
-            if (DEBUG_FLAG)System.out.println("  Token : " + match) ;
+            log.debug("  PASS : Got matching token") ;
+            log.debug("  Token : " + match) ;
             //
             // If the match is still valid.
             if (match.isValid())
                 {
-                if (DEBUG_FLAG)System.out.println("  PASS : Original is valid") ;
+                log.debug("  PASS : Original is valid") ;
                 //
                 // Update the original token.
 // Mark as used not invalid.
@@ -339,7 +349,7 @@ public class SecurityServiceImpl
             //
             // If the original is no longer valied.
             else {
-                if (DEBUG_FLAG)System.out.println("  FAIL : Original is not valid") ;
+                log.debug("  FAIL : Original is not valid") ;
                 //
                 // Throw a new Exception.
                 throw new CommunitySecurityException(
@@ -414,10 +424,10 @@ public class SecurityServiceImpl
     public Object[] splitToken(SecurityToken original, int count)
         throws CommunityServiceException, CommunitySecurityException, CommunityIdentifierException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("SecurityServiceImpl.checkToken()") ;
-        if (DEBUG_FLAG) System.out.println("  Token : " + original) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("SecurityServiceImpl.checkToken()") ;
+        log.debug("  Token : " + original) ;
         //
         // Check for null token.
         if (null == original)
@@ -434,13 +444,13 @@ public class SecurityServiceImpl
         CommunityIvornParser token = new CommunityIvornParser(
             original.getToken()
             ) ;
-        if (DEBUG_FLAG) System.out.println("  Token   : " + token) ;
+        log.debug("  Token   : " + token) ;
         //
         // Get the Account ident.
         CommunityIvornParser account = new CommunityIvornParser(
             original.getAccount()
             ) ;
-        if (DEBUG_FLAG) System.out.println("  Account : " + account) ;
+        log.debug("  Account : " + account) ;
 
         Vector vector = new Vector() ;
         Database database = null ;
@@ -454,13 +464,13 @@ public class SecurityServiceImpl
             //
             // Try loading the original token from our database.
             SecurityToken match = (SecurityToken) database.load(SecurityToken.class, original.getToken()) ;
-            if (DEBUG_FLAG)System.out.println("  PASS : Got matching token") ;
-            if (DEBUG_FLAG)System.out.println("  Token : " + match) ;
+            log.debug("  PASS : Got matching token") ;
+            log.debug("  Token : " + match) ;
             //
             // If the match is still valid.
             if (match.isValid())
                 {
-                if (DEBUG_FLAG)System.out.println("  PASS : Original is valid") ;
+                log.debug("  PASS : Original is valid") ;
                 //
                 // Update the original token.
 // Mark as used not invalid.
@@ -480,7 +490,7 @@ public class SecurityServiceImpl
             //
             // If the original is no longer valied.
             else {
-                if (DEBUG_FLAG)System.out.println("  FAIL : Original is not valid") ;
+                log.debug("  FAIL : Original is not valid") ;
                 //
                 // Throw a new Exception.
                 throw new CommunitySecurityException(

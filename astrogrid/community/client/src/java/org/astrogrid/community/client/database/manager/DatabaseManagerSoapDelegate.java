@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/client/src/java/org/astrogrid/community/client/database/manager/DatabaseManagerSoapDelegate.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:19 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: DatabaseManagerSoapDelegate.java,v $
+ *   Revision 1.6  2004/09/16 23:18:08  dave
+ *   Replaced debug logging in Community.
+ *   Added stream close() to FileStore.
+ *
+ *   Revision 1.5.82.1  2004/09/16 09:58:48  dave
+ *   Replaced debug with commons logging ....
+ *
  *   Revision 1.5  2004/06/18 13:45:19  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -19,6 +26,9 @@
  *
  */
 package org.astrogrid.community.client.database.manager ;
+
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 import java.net.URL ;
 import java.net.MalformedURLException ;
@@ -35,10 +45,10 @@ public class DatabaseManagerSoapDelegate
     implements DatabaseManagerDelegate
     {
     /**
-     * Switch for our debug statements.
+     * Our debug logger.
      *
      */
-    private static boolean DEBUG_FLAG = true ;
+    private static Log log = LogFactory.getLog(DatabaseManagerSoapDelegate.class);
 
     /**
      * Public constructor.
@@ -68,10 +78,10 @@ public class DatabaseManagerSoapDelegate
     public DatabaseManagerSoapDelegate(URL endpoint)
         {
         super() ;
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("DatabaseManagerSoapDelegate()") ;
-        if (DEBUG_FLAG) System.out.println("  URL : " + endpoint) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("DatabaseManagerSoapDelegate()") ;
+        log.debug("  URL : " + endpoint) ;
         this.setEndpoint(endpoint) ;
         }
 
@@ -103,10 +113,10 @@ public class DatabaseManagerSoapDelegate
      */
     public void setEndpoint(URL endpoint)
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("DatabaseManagerSoapDelegate.setEndpoint()") ;
-        if (DEBUG_FLAG) System.out.println("  URL : " + endpoint) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("DatabaseManagerSoapDelegate.setEndpoint()") ;
+        log.debug("  URL : " + endpoint) ;
         //
         // Set our endpoint address.
         this.endpoint = endpoint ;

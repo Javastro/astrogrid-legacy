@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/service/data/ServiceStatusData.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/09 01:19:50 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: ServiceStatusData.java,v $
+ *   Revision 1.6  2004/09/16 23:18:08  dave
+ *   Replaced debug logging in Community.
+ *   Added stream close() to FileStore.
+ *
+ *   Revision 1.5.8.1  2004/09/16 09:58:48  dave
+ *   Replaced debug with commons logging ....
+ *
  *   Revision 1.5  2004/09/09 01:19:50  dave
  *   Updated MIME type handling in MySpace.
  *   Extended test coverage for MIME types in FileStore and MySpace.
@@ -78,52 +85,52 @@ public class ServiceStatusData
         this.databaseName = name ;
         }
 
-	/**
-	 * The current available memory on the server.
-	 *
-	 */
-	private long freeMemory ;
+    /**
+     * The current available memory on the server.
+     *
+     */
+    private long freeMemory ;
 
-	/**
-	 * Get the current available memory on the server.
-	 *
-	 */
-	public long getFreeMemory()
-		{
-		return this.freeMemory ;
-		}
+    /**
+     * Get the current available memory on the server.
+     *
+     */
+    public long getFreeMemory()
+        {
+        return this.freeMemory ;
+        }
 
-	/**
-	 * Set the current available memory on the server.
-	 *
-	 */
-	public void setFreeMemory(long value)
-		{
-		this.freeMemory = value ;
-		}
+    /**
+     * Set the current available memory on the server.
+     *
+     */
+    public void setFreeMemory(long value)
+        {
+        this.freeMemory = value ;
+        }
 
-	/**
-	 * The current total memory on the server.
-	 *
-	 */
-	private long totalMemory ;
+    /**
+     * The current total memory on the server.
+     *
+     */
+    private long totalMemory ;
 
-	/**
-	 * Get the current total memory on the server.
-	 *
-	 */
-	public long getTotalMemory()
-		{
-		return this.totalMemory ;
-		}
+    /**
+     * Get the current total memory on the server.
+     *
+     */
+    public long getTotalMemory()
+        {
+        return this.totalMemory ;
+        }
 
-	/**
-	 * Set the current total memory on the server.
-	 *
-	 */
-	public void setTotalMemory(long value)
-		{
-		this.totalMemory = value ;
-		}
+    /**
+     * Set the current total memory on the server.
+     *
+     */
+    public void setTotalMemory(long value)
+        {
+        this.totalMemory = value ;
+        }
 
     }

@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/CommunityAccountResolver.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityAccountResolver.java,v $
+ *   Revision 1.6  2004/09/16 23:18:08  dave
+ *   Replaced debug logging in Community.
+ *   Added stream close() to FileStore.
+ *
+ *   Revision 1.5.82.1  2004/09/16 09:58:48  dave
+ *   Replaced debug with commons logging ....
+ *
  *   Revision 1.5  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -16,6 +23,9 @@
  *
  */
 package org.astrogrid.community.resolver ;
+
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 import java.net.URL ;
 import org.astrogrid.store.Ivorn ;
@@ -40,10 +50,10 @@ import org.astrogrid.community.resolver.exception.CommunityResolverException ;
 public class CommunityAccountResolver
     {
     /**
-     * Switch for our debug statements.
+     * Our debug logger.
      *
      */
-    private static boolean DEBUG_FLAG = true ;
+    private static Log log = LogFactory.getLog(CommunityAccountResolver.class);
 
     /**
      * Public constructor, using the default Registry service.
@@ -88,10 +98,10 @@ public class CommunityAccountResolver
             CommunityResolverException,
             RegistryException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityAccountResolver.resolve()") ;
-        if (DEBUG_FLAG) System.out.println("  Ivorn : " + ivorn) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityAccountResolver.resolve()") ;
+        log.debug("  Ivorn : " + ivorn) ;
         //
         // Check for null param.
         if (null == ivorn)
@@ -125,10 +135,10 @@ public class CommunityAccountResolver
             CommunityResolverException,
             RegistryException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityAccountResolver.resolve()") ;
-        if (DEBUG_FLAG) System.out.println("  Ivorn : " + ((null != parser) ? parser.getIvorn() : null)) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityAccountResolver.resolve()") ;
+        log.debug("  Ivorn : " + ((null != parser) ? parser.getIvorn() : null)) ;
         //
         // Check for null param.
         if (null == parser)

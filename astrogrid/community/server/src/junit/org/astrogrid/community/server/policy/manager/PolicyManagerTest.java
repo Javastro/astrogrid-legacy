@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/junit/org/astrogrid/community/server/policy/manager/PolicyManagerTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManagerTest.java,v $
+ *   Revision 1.6  2004/09/16 23:18:08  dave
+ *   Replaced debug logging in Community.
+ *   Added stream close() to FileStore.
+ *
+ *   Revision 1.5.82.1  2004/09/16 09:58:48  dave
+ *   Replaced debug with commons logging ....
+ *
  *   Revision 1.5  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -16,6 +23,9 @@
  *
  */
 package org.astrogrid.community.server.policy.manager ;
+
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 import org.astrogrid.community.server.service.CommunityServiceTest ;
 
@@ -31,10 +41,10 @@ public class PolicyManagerTest
     extends CommunityServiceTest
     {
     /**
-     * Switch for our debug statements.
+     * Our debug logger.
      *
      */
-    private static boolean DEBUG_FLAG = true ;
+    private static Log log = LogFactory.getLog(PolicyManagerTest.class);
 
     /**
      * Our PolicyManager to test.
@@ -50,9 +60,9 @@ public class PolicyManagerTest
     public void testCreateDefaultManager()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("PolicyManagerTest:testCreateDefaultManager()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("PolicyManagerTest:testCreateDefaultManager()") ;
         //
         // Try creating a default manager.
         assertNotNull("Null policy manager",
@@ -67,9 +77,9 @@ public class PolicyManagerTest
     public void testCreateTestManager()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("PolicyManagerTest:testCreateTestManager()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("PolicyManagerTest:testCreateTestManager()") ;
         //
         // Try creating our manager.
         assertNotNull("Null manager",
@@ -86,9 +96,9 @@ public class PolicyManagerTest
     public void testCreateAccount()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("PolicyManagerTest:testCreateAccount()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("PolicyManagerTest:testCreateAccount()") ;
         //
         // Try creating our manager.
         PolicyManager manager = new PolicyManagerImpl(
@@ -109,9 +119,9 @@ public class PolicyManagerTest
     public void testDeleteAccount()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("PolicyManagerTest:testDeleteAccount()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("PolicyManagerTest:testDeleteAccount()") ;
         //
         // Try creating our manager.
         PolicyManager manager = new PolicyManagerImpl(

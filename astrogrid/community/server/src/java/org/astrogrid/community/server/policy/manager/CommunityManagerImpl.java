@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/manager/Attic/CommunityManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.7 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.8 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityManagerImpl.java,v $
+ *   Revision 1.8  2004/09/16 23:18:08  dave
+ *   Replaced debug logging in Community.
+ *   Added stream close() to FileStore.
+ *
+ *   Revision 1.7.82.1  2004/09/16 09:58:48  dave
+ *   Replaced debug with commons logging ....
+ *
  *   Revision 1.7  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -17,7 +24,8 @@
  */
 package org.astrogrid.community.server.policy.manager ;
 
-//import java.rmi.RemoteException ;
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 import java.net.URL ;
 
@@ -50,10 +58,10 @@ public class CommunityManagerImpl
     implements CommunityManager
     {
     /**
-     * Switch for our debug statements.
+     * Our debug logger.
      *
      */
-    protected static final boolean DEBUG_FLAG = true ;
+    private static Log log = LogFactory.getLog(CommunityManagerImpl.class);
 
     /**
      * Public constructor, using default database configuration.
@@ -88,10 +96,10 @@ public class CommunityManagerImpl
      */
     public CommunityData addCommunity(String name)
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityManagerImpl.addCommunity()") ;
-        if (DEBUG_FLAG) System.out.println("  name : " + name) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityManagerImpl.addCommunity()") ;
+        log.debug("  name : " + name) ;
 
         // TODO
         // Check that the name is valid.
@@ -136,37 +144,37 @@ public class CommunityManagerImpl
 // The only reason to treat this differently is that we might one day report it differently to the client.
         catch (DuplicateIdentityException ouch)
             {
-            if (DEBUG_FLAG) System.out.println("") ;
-            if (DEBUG_FLAG) System.out.println("  ----") ;
-            if (DEBUG_FLAG) System.out.println("DuplicateIdentityException in addCommunity()") ;
-            if (DEBUG_FLAG) System.out.println("  Exception : " + ouch) ;
-            if (DEBUG_FLAG) System.out.println("  Message   : " + ouch.getMessage()) ;
+            log.debug("") ;
+            log.debug("  ----") ;
+            log.debug("DuplicateIdentityException in addCommunity()") ;
+            log.debug("  Exception : " + ouch) ;
+            log.debug("  Message   : " + ouch.getMessage()) ;
             //
             // Set the response to null.
             community = null ;
             //
             // Cancel the database transaction.
             rollbackTransaction(database) ;
-            if (DEBUG_FLAG) System.out.println("  ----") ;
-            if (DEBUG_FLAG) System.out.println("") ;
+            log.debug("  ----") ;
+            log.debug("") ;
             }
         //
         // If anything else went bang.
         catch (Exception ouch)
             {
-            if (DEBUG_FLAG) System.out.println("") ;
-            if (DEBUG_FLAG) System.out.println("  ----") ;
-            if (DEBUG_FLAG) System.out.println("Exception in addCommunity()") ;
-            if (DEBUG_FLAG) System.out.println("  Exception : " + ouch) ;
-            if (DEBUG_FLAG) System.out.println("  Message   : " + ouch.getMessage()) ;
+            log.debug("") ;
+            log.debug("  ----") ;
+            log.debug("Exception in addCommunity()") ;
+            log.debug("  Exception : " + ouch) ;
+            log.debug("  Message   : " + ouch.getMessage()) ;
             //
             // Set the response to null.
             community = null ;
             //
             // Cancel the database transaction.
             rollbackTransaction(database) ;
-            if (DEBUG_FLAG) System.out.println("  ----") ;
-            if (DEBUG_FLAG) System.out.println("") ;
+            log.debug("  ----") ;
+            log.debug("") ;
             }
         //
         // Close our connection.
@@ -178,7 +186,7 @@ public class CommunityManagerImpl
         // Need to return something to the client.
         // Possible a new DataObject ... CommunityResult ?
         // Something to indicate success or failure and the reasons why ....
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        log.debug("----\"----") ;
         return community ;
         }
 
@@ -188,10 +196,10 @@ public class CommunityManagerImpl
      */
     public CommunityData getCommunity(String ident)
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityManagerImpl.getCommunity()") ;
-        if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityManagerImpl.getCommunity()") ;
+        log.debug("  ident : " + ident) ;
 
         CommunityData community = null ;
         Database database = null ;
@@ -220,37 +228,37 @@ public class CommunityManagerImpl
 // The only reason to treat this differently is that we might one day report it differently to the client.
         catch (ObjectNotFoundException ouch)
             {
-            if (DEBUG_FLAG) System.out.println("") ;
-            if (DEBUG_FLAG) System.out.println("  ----") ;
-            if (DEBUG_FLAG) System.out.println("ObjectNotFoundException in getCommunity()") ;
-            if (DEBUG_FLAG) System.out.println("  Exception : " + ouch) ;
-            if (DEBUG_FLAG) System.out.println("  Message   : " + ouch.getMessage()) ;
+            log.debug("") ;
+            log.debug("  ----") ;
+            log.debug("ObjectNotFoundException in getCommunity()") ;
+            log.debug("  Exception : " + ouch) ;
+            log.debug("  Message   : " + ouch.getMessage()) ;
             //
             // Set the response to null.
             community = null ;
             //
             // Cancel the database transaction.
             rollbackTransaction(database) ;
-            if (DEBUG_FLAG) System.out.println("  ----") ;
-            if (DEBUG_FLAG) System.out.println("") ;
+            log.debug("  ----") ;
+            log.debug("") ;
             }
         //
         // If anything else went bang.
         catch (Exception ouch)
             {
-            if (DEBUG_FLAG) System.out.println("") ;
-            if (DEBUG_FLAG) System.out.println("  ----") ;
-            if (DEBUG_FLAG) System.out.println("Exception in getCommunity()") ;
-            if (DEBUG_FLAG) System.out.println("  Exception : " + ouch) ;
-            if (DEBUG_FLAG) System.out.println("  Message   : " + ouch.getMessage()) ;
+            log.debug("") ;
+            log.debug("  ----") ;
+            log.debug("Exception in getCommunity()") ;
+            log.debug("  Exception : " + ouch) ;
+            log.debug("  Message   : " + ouch.getMessage()) ;
             //
             // Set the response to null.
             community = null ;
             //
             // Cancel the database transaction.
             rollbackTransaction(database) ;
-            if (DEBUG_FLAG) System.out.println("  ----") ;
-            if (DEBUG_FLAG) System.out.println("") ;
+            log.debug("  ----") ;
+            log.debug("") ;
             }
         //
         // Close our connection.
@@ -259,7 +267,7 @@ public class CommunityManagerImpl
             closeConnection(database) ;
             }
 
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        log.debug("----\"----") ;
         return community ;
         }
 
@@ -269,14 +277,14 @@ public class CommunityManagerImpl
      */
     public CommunityData setCommunity(CommunityData community)
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityManagerImpl.setCommunity()") ;
-        if (DEBUG_FLAG) System.out.println("  Community") ;
-        if (DEBUG_FLAG) System.out.println("    ident   : " + community.getIdent()) ;
-        if (DEBUG_FLAG) System.out.println("    desc    : " + community.getDescription()) ;
-        if (DEBUG_FLAG) System.out.println("    service : " + community.getServiceUrl()) ;
-        if (DEBUG_FLAG) System.out.println("    manager : " + community.getManagerUrl()) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityManagerImpl.setCommunity()") ;
+        log.debug("  Community") ;
+        log.debug("    ident   : " + community.getIdent()) ;
+        log.debug("    desc    : " + community.getDescription()) ;
+        log.debug("    service : " + community.getServiceUrl()) ;
+        log.debug("    manager : " + community.getManagerUrl()) ;
 
         //
         // Try update the database.
@@ -311,37 +319,37 @@ public class CommunityManagerImpl
 // The only reason to treat this differently is that we might one day report it differently to the client.
         catch (ObjectNotFoundException ouch)
             {
-            if (DEBUG_FLAG) System.out.println("") ;
-            if (DEBUG_FLAG) System.out.println("  ----") ;
-            if (DEBUG_FLAG) System.out.println("ObjectNotFoundException in setCommunity()") ;
-            if (DEBUG_FLAG) System.out.println("  Exception : " + ouch) ;
-            if (DEBUG_FLAG) System.out.println("  Message   : " + ouch.getMessage()) ;
+            log.debug("") ;
+            log.debug("  ----") ;
+            log.debug("ObjectNotFoundException in setCommunity()") ;
+            log.debug("  Exception : " + ouch) ;
+            log.debug("  Message   : " + ouch.getMessage()) ;
             //
             // Set the response to null.
             community = null ;
             //
             // Cancel the database transaction.
             rollbackTransaction(database) ;
-            if (DEBUG_FLAG) System.out.println("  ----") ;
-            if (DEBUG_FLAG) System.out.println("") ;
+            log.debug("  ----") ;
+            log.debug("") ;
             }
         //
         // If anything else went bang.
         catch (Exception ouch)
             {
-            if (DEBUG_FLAG) System.out.println("") ;
-            if (DEBUG_FLAG) System.out.println("  ----") ;
-            if (DEBUG_FLAG) System.out.println("Exception in setCommunity()") ;
-            if (DEBUG_FLAG) System.out.println("  Exception : " + ouch) ;
-            if (DEBUG_FLAG) System.out.println("  Message   : " + ouch.getMessage()) ;
+            log.debug("") ;
+            log.debug("  ----") ;
+            log.debug("Exception in setCommunity()") ;
+            log.debug("  Exception : " + ouch) ;
+            log.debug("  Message   : " + ouch.getMessage()) ;
             //
             // Cancel the database transaction.
             rollbackTransaction(database) ;
             //
             // Set the response to null.
             community = null ;
-            if (DEBUG_FLAG) System.out.println("  ----") ;
-            if (DEBUG_FLAG) System.out.println("") ;
+            log.debug("  ----") ;
+            log.debug("") ;
             }
         //
         // Close our connection.
@@ -350,7 +358,7 @@ public class CommunityManagerImpl
             closeConnection(database) ;
             }
 
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        log.debug("----\"----") ;
         return community ;
         }
 
@@ -360,9 +368,9 @@ public class CommunityManagerImpl
      */
     public Object[] getCommunityList()
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityManagerImpl.getCommunityList()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityManagerImpl.getCommunityList()") ;
 
         //
         // Try QUERY the database.
@@ -406,19 +414,19 @@ public class CommunityManagerImpl
         // If anything went bang.
         catch (Exception ouch)
             {
-            if (DEBUG_FLAG) System.out.println("") ;
-            if (DEBUG_FLAG) System.out.println("  ----") ;
-            if (DEBUG_FLAG) System.out.println("Exception in getCommunityList()") ;
-            if (DEBUG_FLAG) System.out.println("  Exception : " + ouch) ;
-            if (DEBUG_FLAG) System.out.println("  Message   : " + ouch.getMessage()) ;
+            log.debug("") ;
+            log.debug("  ----") ;
+            log.debug("Exception in getCommunityList()") ;
+            log.debug("  Exception : " + ouch) ;
+            log.debug("  Message   : " + ouch.getMessage()) ;
             //
             // Set the response to null.
             array = null ;
             //
             // Cancel the database transaction.
             rollbackTransaction(database) ;
-            if (DEBUG_FLAG) System.out.println("  ----") ;
-            if (DEBUG_FLAG) System.out.println("") ;
+            log.debug("  ----") ;
+            log.debug("") ;
             }
         //
         // Close our connection.
@@ -426,7 +434,7 @@ public class CommunityManagerImpl
             {
             closeConnection(database) ;
             }
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        log.debug("----\"----") ;
         return array ;
         }
 
@@ -436,10 +444,10 @@ public class CommunityManagerImpl
      */
     public CommunityData delCommunity(String ident)
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityManagerImpl.delCommunity()") ;
-        if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityManagerImpl.delCommunity()") ;
+        log.debug("  ident : " + ident) ;
 
         CommunityData community = null ;
         //
@@ -480,37 +488,37 @@ public class CommunityManagerImpl
 // The only reason to treat this differently is that we might one day report it differently to the client.
         catch (ObjectNotFoundException ouch)
             {
-            if (DEBUG_FLAG) System.out.println("") ;
-            if (DEBUG_FLAG) System.out.println("  ----") ;
-            if (DEBUG_FLAG) System.out.println("ObjectNotFoundException in delCommunity()") ;
-            if (DEBUG_FLAG) System.out.println("  Exception : " + ouch) ;
-            if (DEBUG_FLAG) System.out.println("  Message   : " + ouch.getMessage()) ;
+            log.debug("") ;
+            log.debug("  ----") ;
+            log.debug("ObjectNotFoundException in delCommunity()") ;
+            log.debug("  Exception : " + ouch) ;
+            log.debug("  Message   : " + ouch.getMessage()) ;
             //
             // Set the response to null.
             community = null ;
             //
             // Cancel the database transaction.
             rollbackTransaction(database) ;
-            if (DEBUG_FLAG) System.out.println("  ----") ;
-            if (DEBUG_FLAG) System.out.println("") ;
+            log.debug("  ----") ;
+            log.debug("") ;
             }
         //
         // If anything else went bang.
         catch (Exception ouch)
             {
-            if (DEBUG_FLAG) System.out.println("") ;
-            if (DEBUG_FLAG) System.out.println("  ----") ;
-            if (DEBUG_FLAG) System.out.println("Exception in delCommunity()") ;
-            if (DEBUG_FLAG) System.out.println("  Exception : " + ouch) ;
-            if (DEBUG_FLAG) System.out.println("  Message   : " + ouch.getMessage()) ;
+            log.debug("") ;
+            log.debug("  ----") ;
+            log.debug("Exception in delCommunity()") ;
+            log.debug("  Exception : " + ouch) ;
+            log.debug("  Message   : " + ouch.getMessage()) ;
             //
             // Set the response to null.
             community = null ;
             //
             // Cancel the database transaction.
             rollbackTransaction(database) ;
-            if (DEBUG_FLAG) System.out.println("  ----") ;
-            if (DEBUG_FLAG) System.out.println("") ;
+            log.debug("  ----") ;
+            log.debug("") ;
             }
         //
         // Close our connection
@@ -518,7 +526,7 @@ public class CommunityManagerImpl
             {
             closeConnection(database) ;
             }
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        log.debug("----\"----") ;
 
         return community ;
         }
@@ -529,10 +537,10 @@ public class CommunityManagerImpl
      */
     public PolicyManager getPolicyManager(String name)
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityManagerImpl.getPolicyManager()") ;
-        if (DEBUG_FLAG) System.out.println("  name : " + name) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityManagerImpl.getPolicyManager()") ;
+        log.debug("  name : " + name) ;
         //
         // Get the CommunityData.
         CommunityData community = this.getCommunity(name) ;
@@ -540,13 +548,13 @@ public class CommunityManagerImpl
         // If we found the CommunityData.
         if (null != community)
             {
-            if (DEBUG_FLAG) System.out.println("PASS : Found CommunityData") ;
+            log.debug("PASS : Found CommunityData") ;
             return getPolicyManager(community) ;
             }
         //
         // If we didn't find the CommunityData.
         else {
-            if (DEBUG_FLAG) System.out.println("FAIL : Unknown CommunityData") ;
+            log.debug("FAIL : Unknown CommunityData") ;
             return null ;
             }
         }
@@ -557,16 +565,16 @@ public class CommunityManagerImpl
      */
     public PolicyManager getPolicyManager(CommunityData community)
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityManagerImpl.getPolicyManager()") ;
-        if (DEBUG_FLAG) System.out.println("  ident : " + community.getIdent()) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityManagerImpl.getPolicyManager()") ;
+        log.debug("  ident : " + community.getIdent()) ;
         PolicyManager manager = null ;
         //
         // If we have a manager URL.
         if (null != community.getManagerUrl())
             {
-            if (DEBUG_FLAG) System.out.println("PASS : Found manager URL " + community.getManagerUrl()) ;
+            log.debug("PASS : Found manager URL " + community.getManagerUrl()) ;
             //
             // Try creating our manager.
             try {
@@ -575,18 +583,18 @@ public class CommunityManagerImpl
                 }
             catch (Exception ouch)
                 {
-                if (DEBUG_FLAG) System.out.println("Exception when creating remote manager.") ;
-                if (DEBUG_FLAG) System.out.println("  Exception : " + ouch) ;
-                if (DEBUG_FLAG) System.out.println("  Message   : " + ouch.getMessage()) ;
+                log.debug("Exception when creating remote manager.") ;
+                log.debug("  Exception : " + ouch) ;
+                log.debug("  Message   : " + ouch.getMessage()) ;
                 }
-            if (DEBUG_FLAG) System.out.println("PASS : Created manager ...") ;
+            log.debug("PASS : Created manager ...") ;
             }
         //
         // If we don't have a manager URL
         else {
-            if (DEBUG_FLAG) System.out.println("FAIL : NULL manager URL") ;
+            log.debug("FAIL : NULL manager URL") ;
             }
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        log.debug("----\"----") ;
         return manager ;
         }
 
@@ -596,10 +604,10 @@ public class CommunityManagerImpl
      */
     public PolicyService getPolicyService(String name)
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityManagerImpl.getPolicyService()") ;
-        if (DEBUG_FLAG) System.out.println("  name : " + name) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityManagerImpl.getPolicyService()") ;
+        log.debug("  name : " + name) ;
         //
         // Get the CommunityData.
         CommunityData community = this.getCommunity(name) ;
@@ -607,13 +615,13 @@ public class CommunityManagerImpl
         // If we found the CommunityData.
         if (null != community)
             {
-            if (DEBUG_FLAG) System.out.println("PASS : Found CommunityData") ;
+            log.debug("PASS : Found CommunityData") ;
             return getPolicyService(community) ;
             }
         //
         // If we didn't find the CommunityData.
         else {
-            if (DEBUG_FLAG) System.out.println("FAIL : Unknown CommunityData") ;
+            log.debug("FAIL : Unknown CommunityData") ;
             return null ;
             }
         }
@@ -624,16 +632,16 @@ public class CommunityManagerImpl
      */
     public PolicyService getPolicyService(CommunityData community)
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityManagerImpl.getPolicyService()") ;
-        if (DEBUG_FLAG) System.out.println("  ident : " + community.getIdent()) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityManagerImpl.getPolicyService()") ;
+        log.debug("  ident : " + community.getIdent()) ;
         PolicyService service = null ;
         //
         // If we have a service URL.
         if (null != community.getServiceUrl())
             {
-            if (DEBUG_FLAG) System.out.println("PASS : Found service URL " + community.getServiceUrl()) ;
+            log.debug("PASS : Found service URL " + community.getServiceUrl()) ;
             //
             // Try creating our service.
             try {
@@ -642,18 +650,18 @@ public class CommunityManagerImpl
                 }
             catch (Exception ouch)
                 {
-                if (DEBUG_FLAG) System.out.println("Exception when creating remote service.") ;
-                if (DEBUG_FLAG) System.out.println("  Exception : " + ouch) ;
-                if (DEBUG_FLAG) System.out.println("  Message   : " + ouch.getMessage()) ;
+                log.debug("Exception when creating remote service.") ;
+                log.debug("  Exception : " + ouch) ;
+                log.debug("  Message   : " + ouch.getMessage()) ;
                 }
-            if (DEBUG_FLAG) System.out.println("PASS : Created service ...") ;
+            log.debug("PASS : Created service ...") ;
             }
         //
         // If we don't have a service URL
         else {
-            if (DEBUG_FLAG) System.out.println("FAIL : NULL service URL") ;
+            log.debug("FAIL : NULL service URL") ;
             }
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        log.debug("----\"----") ;
         return service ;
         }
     }

@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/GroupManagerMock.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: GroupManagerMock.java,v $
+ *   Revision 1.7  2004/09/16 23:18:08  dave
+ *   Replaced debug logging in Community.
+ *   Added stream close() to FileStore.
+ *
+ *   Revision 1.6.82.1  2004/09/16 09:58:48  dave
+ *   Replaced debug with commons logging ....
+ *
  *   Revision 1.6  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -16,6 +23,9 @@
  *
  */
 package org.astrogrid.community.common.policy.manager ;
+
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 import java.util.Map ;
 import java.util.HashMap ;
@@ -35,10 +45,10 @@ public class GroupManagerMock
     implements GroupManager
     {
     /**
-     * Switch for our debug statements.
+     * Our debug logger.
      *
      */
-    private static boolean DEBUG_FLAG = true ;
+	private static Log log = LogFactory.getLog(GroupManagerMock.class);
 
     /**
      * Public constructor.
@@ -61,9 +71,9 @@ public class GroupManagerMock
      */
     public static void reset()
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("GroupManagerMock.reset()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("GroupManagerMock.reset()") ;
         map.clear() ;
         }
 
@@ -78,10 +88,10 @@ public class GroupManagerMock
     public GroupData addGroup(String ident)
         throws CommunityIdentifierException, CommunityPolicyException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("GroupManagerMock.addGroup()") ;
-        if (DEBUG_FLAG) System.out.println("  Ident : " + ident) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("GroupManagerMock.addGroup()") ;
+        log.debug("  Ident : " + ident) ;
         //
         // Check for null ident.
         if (null == ident)
@@ -121,10 +131,10 @@ public class GroupManagerMock
     public GroupData addGroup(GroupData group)
         throws CommunityIdentifierException, CommunityPolicyException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("GroupManagerMock.addGroup()") ;
-        if (DEBUG_FLAG) System.out.println("  Group : " + ((null != group) ? group.getIdent() : null)) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("GroupManagerMock.addGroup()") ;
+        log.debug("  Group : " + ((null != group) ? group.getIdent() : null)) ;
         //
         // Check for null group.
         if (null == group)
@@ -169,10 +179,10 @@ public class GroupManagerMock
     public GroupData getGroup(String ident)
         throws CommunityIdentifierException, CommunityPolicyException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("GroupManagerMock.getGroup()") ;
-        if (DEBUG_FLAG) System.out.println("  Ident : " + ident) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("GroupManagerMock.getGroup()") ;
+        log.debug("  Ident : " + ident) ;
         //
         // Check for null ident.
         if (null == ident)
@@ -211,10 +221,10 @@ public class GroupManagerMock
     public GroupData setGroup(GroupData update)
         throws CommunityIdentifierException, CommunityPolicyException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("GroupManagerMock.setGroup()") ;
-        if (DEBUG_FLAG) System.out.println("  Ident : " + ((null != update) ? update.getIdent() : null)) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("GroupManagerMock.setGroup()") ;
+        log.debug("  Ident : " + ((null != update) ? update.getIdent() : null)) ;
         //
         // Check for null data.
         if (null == update)
@@ -253,10 +263,10 @@ public class GroupManagerMock
     public GroupData delGroup(String ident)
         throws CommunityIdentifierException, CommunityPolicyException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("GroupManagerMock.delGroup()") ;
-        if (DEBUG_FLAG) System.out.println("  Ident : " + ident) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("GroupManagerMock.delGroup()") ;
+        log.debug("  Ident : " + ident) ;
         //
         // Check for null ident.
         if (null == ident)
@@ -296,9 +306,9 @@ public class GroupManagerMock
      */
     public Object[] getLocalGroups()
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("GroupManagerMock.getLocalGroups()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("GroupManagerMock.getLocalGroups()") ;
         return map.values().toArray() ;
         }
 
@@ -310,9 +320,9 @@ public class GroupManagerMock
      */
     public Object[] getLocalAccountGroups(String account)
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("GroupManagerMock.getAccountGroups()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("GroupManagerMock.getAccountGroups()") ;
         return map.values().toArray() ;
         }
     }

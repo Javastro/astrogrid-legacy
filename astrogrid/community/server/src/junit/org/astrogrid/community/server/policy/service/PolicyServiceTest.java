@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/junit/org/astrogrid/community/server/policy/service/Attic/PolicyServiceTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyServiceTest.java,v $
+ *   Revision 1.6  2004/09/16 23:18:08  dave
+ *   Replaced debug logging in Community.
+ *   Added stream close() to FileStore.
+ *
+ *   Revision 1.5.82.1  2004/09/16 09:58:48  dave
+ *   Replaced debug with commons logging ....
+ *
  *   Revision 1.5  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -16,6 +23,9 @@
  *
  */
 package org.astrogrid.community.server.policy.service ;
+
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 import org.astrogrid.community.server.service.CommunityServiceTest ;
 
@@ -36,10 +46,10 @@ public class PolicyServiceTest
     extends CommunityServiceTest
     {
     /**
-     * Switch for our debug statements.
+     * Our debug logger.
      *
      */
-    private static boolean DEBUG_FLAG = true ;
+    private static Log log = LogFactory.getLog(PolicyServiceTest.class);
 
     /**
      * Our PolicyService to test.
@@ -55,9 +65,9 @@ public class PolicyServiceTest
     public void testCreateDefaultService()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("PolicyServiceTest:testCreateDefaultService()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("PolicyServiceTest:testCreateDefaultService()") ;
         //
         // Try creating a default service.
         assertNotNull("Null policy service",
@@ -72,9 +82,9 @@ public class PolicyServiceTest
     public void testCreateTestService()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("PolicyServiceTest:testCreateTestService()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("PolicyServiceTest:testCreateTestService()") ;
         //
         // Try creating our service.
         assertNotNull("Null service",
@@ -91,9 +101,9 @@ public class PolicyServiceTest
     public void testNullPermissions()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("PolicyServiceTest:testNullPermissions()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("PolicyServiceTest:testNullPermissions()") ;
         //
         // Try creating our service.
         PolicyService service = new PolicyServiceImpl(
@@ -129,9 +139,9 @@ public class PolicyServiceTest
     public void testEmptyPermission()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("PolicyServiceTest:testEmptyPermission()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("PolicyServiceTest:testEmptyPermission()") ;
         //
         // Try creating our service.
         PolicyService service = new PolicyServiceImpl(
@@ -167,9 +177,9 @@ public class PolicyServiceTest
     public void testUnknownPermission()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("PolicyServiceTest:testUnknownPermission()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("PolicyServiceTest:testUnknownPermission()") ;
         //
         // Try creating our service.
         PolicyService service = new PolicyServiceImpl(
@@ -195,9 +205,9 @@ public class PolicyServiceTest
     public void testValidPermission()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("PolicyServiceTest:testValidPermission()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("PolicyServiceTest:testValidPermission()") ;
         //
         // Try creating our manager.
         PolicyManager manager = new PolicyManagerImpl(
@@ -245,11 +255,11 @@ public class PolicyServiceTest
             "Null permission",
             result
             ) ;
-        if (DEBUG_FLAG) System.out.println("  Permission : " + result) ;
-        if (DEBUG_FLAG) System.out.println("    Group    : " + result.getGroup()) ;
-        if (DEBUG_FLAG) System.out.println("    Action   : " + result.getAction()) ;
-        if (DEBUG_FLAG) System.out.println("    Resource : " + result.getResource()) ;
-        if (DEBUG_FLAG) System.out.println("    Status   : " + result.getStatus()) ;
-        if (DEBUG_FLAG) System.out.println("    Reason   : " + result.getReason()) ;
+        log.debug("  Permission : " + result) ;
+        log.debug("    Group    : " + result.getGroup()) ;
+        log.debug("    Action   : " + result.getAction()) ;
+        log.debug("    Resource : " + result.getResource()) ;
+        log.debug("    Status   : " + result.getStatus()) ;
+        log.debug("    Reason   : " + result.getReason()) ;
         }
     }

@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/ivorn/CommunityIvornParser.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.9 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.10 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityIvornParser.java,v $
+ *   Revision 1.10  2004/09/16 23:18:08  dave
+ *   Replaced debug logging in Community.
+ *   Added stream close() to FileStore.
+ *
+ *   Revision 1.9.82.1  2004/09/16 09:58:48  dave
+ *   Replaced debug with commons logging ....
+ *
  *   Revision 1.9  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -19,6 +26,9 @@
  *
  */
 package org.astrogrid.community.common.ivorn ;
+
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 import java.net.URI ;
 import java.net.URISyntaxException ;
@@ -43,10 +53,10 @@ import org.astrogrid.community.common.exception.CommunityIdentifierException ;
 public class CommunityIvornParser
     {
     /**
-     * Switch for our debug statements.
+     * Our debug logger.
      *
      */
-    private static boolean DEBUG_FLAG = true ;
+	private static Log log = LogFactory.getLog(CommunityIvornParser.class);
 
     /**
      * Our AstroGrid configuration.
@@ -140,10 +150,10 @@ public class CommunityIvornParser
     protected void setIvorn(Ivorn ivorn)
         throws CommunityIdentifierException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityIvornParser.setIvorn()") ;
-        if (DEBUG_FLAG) System.out.println("  Ivorn : " + ivorn) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityIvornParser.setIvorn()") ;
+        log.debug("  Ivorn : " + ivorn) ;
         //
         // Check for null param.
         if (null == ivorn)
@@ -189,15 +199,15 @@ public class CommunityIvornParser
      */
     protected void parseCommunityIdent()
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityIvornParser.parseCommunityIdent()") ;
-        if (DEBUG_FLAG) System.out.println("  Ivorn     : " + ivorn) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityIvornParser.parseCommunityIdent()") ;
+        log.debug("  Ivorn     : " + ivorn) ;
         if (null != uri)
             {
             this.community = uri.getHost() ;
             }
-        if (DEBUG_FLAG) System.out.println("  Community : " + this.community) ;
+        log.debug("  Community : " + this.community) ;
         }
 
     /**
@@ -262,10 +272,10 @@ public class CommunityIvornParser
             {
             //
             // Log this as a fatal error.
-            if (DEBUG_FLAG) System.out.println("ERROR ----") ;
-            if (DEBUG_FLAG) System.out.println("CommunityIvornParser RegExp pattern is not valid.") ;
-            if (DEBUG_FLAG) System.out.println(ouch) ;
-            if (DEBUG_FLAG) System.out.println("----------") ;
+            log.debug("ERROR ----") ;
+            log.debug("CommunityIvornParser RegExp pattern is not valid.") ;
+            log.debug(ouch) ;
+            log.debug("----------") ;
             }
         }
 
@@ -275,10 +285,10 @@ public class CommunityIvornParser
      */
     protected void parseAccountIdent()
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityIvornParser.parseAccountIdent()") ;
-        if (DEBUG_FLAG) System.out.println("  Ivorn : " + ivorn) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityIvornParser.parseAccountIdent()") ;
+        log.debug("  Ivorn : " + ivorn) ;
         //
         // Set all of the parts to null.
         this.account   = null ;
@@ -365,10 +375,10 @@ public class CommunityIvornParser
                     }
                 }
             }
-        if (DEBUG_FLAG) System.out.println(" Account   : " + this.account) ;
-        if (DEBUG_FLAG) System.out.println(" Path      : " + this.path) ;
-        if (DEBUG_FLAG) System.out.println(" Query     : " + this.query) ;
-        if (DEBUG_FLAG) System.out.println(" Fragment  : " + this.fragment) ;
+        log.debug(" Account   : " + this.account) ;
+        log.debug(" Path      : " + this.path) ;
+        log.debug(" Query     : " + this.query) ;
+        log.debug(" Fragment  : " + this.fragment) ;
         }
 
     /**
@@ -377,11 +387,11 @@ public class CommunityIvornParser
      */
     protected void parseAccountPath()
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityIvornParser.parseAccountPath()") ;
-        if (DEBUG_FLAG) System.out.println("  Ivorn : " + ivorn) ;
-        if (DEBUG_FLAG) System.out.println("  Path  : " + uri.getPath()) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityIvornParser.parseAccountPath()") ;
+        log.debug("  Ivorn : " + ivorn) ;
+        log.debug("  Path  : " + uri.getPath()) ;
         //
         // If we have a path.
         if (null != uri.getPath())
@@ -435,11 +445,11 @@ public class CommunityIvornParser
      */
     protected void parseAccountFragment()
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityIvornParser.parseAccountFragment()") ;
-        if (DEBUG_FLAG) System.out.println("  Ivorn    : " + ivorn) ;
-        if (DEBUG_FLAG) System.out.println("  Fragment : " + uri.getFragment()) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityIvornParser.parseAccountFragment()") ;
+        log.debug("  Ivorn    : " + ivorn) ;
+        log.debug("  Fragment : " + uri.getFragment()) ;
         //
         // If we have a fragment.
         if (null != uri.getFragment())
@@ -651,14 +661,14 @@ public class CommunityIvornParser
     public static String getLocalIdent()
         throws CommunityServiceException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityIvornParser.getLocalIdent()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityIvornParser.getLocalIdent()") ;
         try {
             //
             // Get the local identifier from our configuration.
             String local = (String) config.getProperty(LOCAL_COMMUNITY_PROPERTY) ;
-            if (DEBUG_FLAG) System.out.println("  Local : " + local) ;
+            log.debug("  Local : " + local) ;
             //
             // If we found the local ident.
             if (null != local)
@@ -690,10 +700,10 @@ public class CommunityIvornParser
     public boolean isLocal()
         throws CommunityServiceException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityIvornParser.isLocal()") ;
-        if (DEBUG_FLAG) System.out.println("  Ivorn : " + ivorn) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityIvornParser.isLocal()") ;
+        log.debug("  Ivorn : " + ivorn) ;
         //
         // Compare the ident.
         return getLocalIdent().equals(

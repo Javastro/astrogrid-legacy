@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/database/configuration/DatabaseConfiguration.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: DatabaseConfiguration.java,v $
+ *   Revision 1.6  2004/09/16 23:18:08  dave
+ *   Replaced debug logging in Community.
+ *   Added stream close() to FileStore.
+ *
+ *   Revision 1.5.82.1  2004/09/16 09:58:48  dave
+ *   Replaced debug with commons logging ....
+ *
  *   Revision 1.5  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -17,6 +24,9 @@
  *
  */
 package org.astrogrid.community.server.database.configuration ;
+
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 import java.net.URL ;
 
@@ -49,16 +59,10 @@ import java.io.FileNotFoundException ;
 public class DatabaseConfiguration
     {
     /**
-     * Switch for our debug statements.
+     * Our debug logger.
      *
      */
-    protected static final boolean DEBUG_FLAG = true ;
-
-    /**
-     * Switch for our debug statements.
-     * Development only - this should go soon.
-     */
-    protected static final boolean DEBUG_EXTRA = false ;
+    private static Log log = LogFactory.getLog(DatabaseConfiguration.class);
 
     /**
      * The default name of our database.
@@ -88,7 +92,11 @@ public class DatabaseConfiguration
     public DatabaseConfiguration()
         throws IOException, MappingException
         {
-        this(DEFAULT_DATABASE_NAME, DEFAULT_DATABASE_XML, DEFAULT_DATABASE_SQL) ;
+        this(
+        	DEFAULT_DATABASE_NAME,
+        	DEFAULT_DATABASE_XML,
+        	DEFAULT_DATABASE_SQL
+        	) ;
         }
 
     /**
@@ -101,7 +109,11 @@ public class DatabaseConfiguration
     public DatabaseConfiguration(String name)
         throws IOException, MappingException
         {
-        this(name, (name + ".xml"), (name + ".sql")) ;
+        this(
+        	name,
+        	(name + ".xml"),
+        	(name + ".sql")
+        	) ;
         }
 
     /**
@@ -115,12 +127,12 @@ public class DatabaseConfiguration
     public DatabaseConfiguration(String name, String xml, String sql)
         throws IOException, MappingException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("DatabaseConfiguration()") ;
-        if (DEBUG_FLAG) System.out.println("  Name : '" + name + "'") ;
-        if (DEBUG_FLAG) System.out.println("  XML  : '" + xml + "'") ;
-        if (DEBUG_FLAG) System.out.println("  SQL  : '" + sql + "'") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("DatabaseConfiguration()") ;
+        log.debug("  Name : '" + name + "'") ;
+        log.debug("  XML  : '" + xml + "'") ;
+        log.debug("  SQL  : '" + sql + "'") ;
         //
         // Set our database name.
         this.setDatabaseName(name) ;
@@ -177,10 +189,6 @@ public class DatabaseConfiguration
     public void setDatabaseName(String name)
         throws IOException
         {
-        if (DEBUG_EXTRA) System.out.println("") ;
-        if (DEBUG_EXTRA) System.out.println("----\"----") ;
-        if (DEBUG_EXTRA) System.out.println("DatabaseConfiguration:setName()") ;
-        if (DEBUG_EXTRA) System.out.println("  Name : '" + name + "'") ;
         //
         // Set our database name.
         this.databaseName = name ;
@@ -221,10 +229,6 @@ public class DatabaseConfiguration
     public void setDatabaseConfigResource(String resource)
         throws IOException, MappingException
         {
-        if (DEBUG_EXTRA) System.out.println("") ;
-        if (DEBUG_EXTRA) System.out.println("----\"----") ;
-        if (DEBUG_EXTRA) System.out.println("DatabaseConfiguration:setDatabaseConfigResource()") ;
-        if (DEBUG_EXTRA) System.out.println("  Resource : '" + resource + "'") ;
         //
         // Set our config name.
         this.databaseConfigResource = resource ;
@@ -289,10 +293,6 @@ public class DatabaseConfiguration
     public void setDatabaseConfigUrl(URL url)
         throws IOException, MappingException
         {
-        if (DEBUG_EXTRA) System.out.println("") ;
-        if (DEBUG_EXTRA) System.out.println("----\"----") ;
-        if (DEBUG_EXTRA) System.out.println("DatabaseConfiguration:setDatabaseConfigUrl()") ;
-        if (DEBUG_EXTRA) System.out.println("  URL : '" + url + "'") ;
         //
         // Set the current URL.
         this.databaseConfigUrl = url ;
@@ -313,10 +313,6 @@ public class DatabaseConfiguration
     protected void loadDatabaseConfig()
         throws IOException, MappingException
         {
-        if (DEBUG_EXTRA) System.out.println("") ;
-        if (DEBUG_EXTRA) System.out.println("----\"----") ;
-        if (DEBUG_EXTRA) System.out.println("DatabaseConfiguration:loadDatabaseConfig()") ;
-        if (DEBUG_EXTRA) System.out.println("  URL : '" + this.databaseConfigUrl + "'") ;
         //
         // If the config URL is not null.
         if (null != this.databaseConfigUrl)
@@ -357,11 +353,11 @@ public class DatabaseConfiguration
     protected void loadDatabaseEngine()
         throws IOException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("DatabaseConfiguration:loadDatabaseEngine()") ;
-        if (DEBUG_FLAG) System.out.println("  Name   : '" + this.databaseName + "'" ) ;
-        if (DEBUG_FLAG) System.out.println("  Config : '" + this.databaseConfigUrl + "'" ) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("DatabaseConfiguration:loadDatabaseEngine()") ;
+        log.debug("  Name   : '" + this.databaseName + "'" ) ;
+        log.debug("  Config : '" + this.databaseConfigUrl + "'" ) ;
         //
         // If we have a database name.
         if (null != this.databaseName)
@@ -424,9 +420,9 @@ public class DatabaseConfiguration
     public void resetDatabaseTables()
         throws IOException, DatabaseNotFoundException, PersistenceException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("DatabaseConfiguration:resetDatabaseTables()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("DatabaseConfiguration:resetDatabaseTables()") ;
         //
         // If we have a database script.
         if (null != this.databaseScriptResource)
@@ -452,10 +448,10 @@ public class DatabaseConfiguration
     public void executeSQL(String resource)
         throws IOException, DatabaseNotFoundException, PersistenceException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("DatabaseConfiguration:executeSQL()") ;
-        if (DEBUG_FLAG) System.out.println("  SQL : '" + resource + "'") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("DatabaseConfiguration:executeSQL()") ;
+        log.debug("  SQL : '" + resource + "'") ;
         //
         // Check for null params.
         if (null != resource)
@@ -471,7 +467,7 @@ public class DatabaseConfiguration
                 //
                 // Throw a FileNotFoundException.
                 String message = "Failed to find SQL resource : '" + resource + "'" ;
-                if (DEBUG_FLAG) System.out.println(message) ;
+                log.debug(message) ;
                 throw new FileNotFoundException(message) ;
                 }
             //
@@ -493,10 +489,6 @@ public class DatabaseConfiguration
     public void executeSQL(URL url)
         throws IOException, DatabaseNotFoundException, PersistenceException
         {
-        if (DEBUG_EXTRA) System.out.println("") ;
-        if (DEBUG_EXTRA) System.out.println("----\"----") ;
-        if (DEBUG_EXTRA) System.out.println("DatabaseConfiguration:executeSQL()") ;
-        if (DEBUG_EXTRA) System.out.println("  URL : '" + url + "'") ;
         //
         // Check for null url.
         if (null != url)
@@ -516,10 +508,6 @@ public class DatabaseConfiguration
     public void executeSQL(InputStream stream)
         throws IOException, DatabaseNotFoundException, PersistenceException
         {
-        if (DEBUG_EXTRA) System.out.println("") ;
-        if (DEBUG_EXTRA) System.out.println("----\"----") ;
-        if (DEBUG_EXTRA) System.out.println("DatabaseConfiguration:executeSQL()") ;
-        if (DEBUG_EXTRA) System.out.println("  Stream : '" + stream + "'") ;
         //
         // Check for null stream.
         if (null != stream)
@@ -541,9 +529,6 @@ public class DatabaseConfiguration
     public void executeSQL(Reader reader)
         throws IOException, DatabaseNotFoundException, PersistenceException
         {
-        if (DEBUG_EXTRA) System.out.println("") ;
-        if (DEBUG_EXTRA) System.out.println("----\"----") ;
-        if (DEBUG_EXTRA) System.out.println("DatabaseConfiguration:executeSQL()") ;
         //
         // Check for a null reader.
         if (null != reader)
@@ -551,27 +536,19 @@ public class DatabaseConfiguration
             //
             // Create a buffer for our input reader.
             BufferedReader source = new BufferedReader(reader) ;
-            if (DEBUG_EXTRA) System.out.println("PASS : Openned buffered reader") ;
             //
             // Try openning a connection to our database.
             Database database = this.getDatabase() ;
             //
-            // If we don't have a database connection.
-            if (null == database)
+            // If we got a database connection.
+            if (null != database)
                 {
-                if (DEBUG_EXTRA) System.out.println("FAIL : Unable to open database connection") ;
-                }
-            //
-            // If we have a database connection.
-            else {
-                if (DEBUG_EXTRA) System.out.println("PASS : Openned database connection") ;
                 //
                 // Try creating the database tables.
                 try {
                     //
                     // Start our transaction.
                     database.begin() ;
-                    if (DEBUG_EXTRA) System.out.println("PASS : Started database transaction") ;
                     //
                     // Create our buffer.
                     StringBuffer buffer = new StringBuffer() ;
@@ -580,33 +557,25 @@ public class DatabaseConfiguration
                     String line = "" ;
                     while ((line = source.readLine()) != null)
                         {
-                        if (DEBUG_EXTRA) System.out.println("SQL line") ;
-                        if (DEBUG_EXTRA) System.out.println("----") ;
-                        if (DEBUG_EXTRA) System.out.println(line) ;
-                        if (DEBUG_EXTRA) System.out.println("----") ;
                         //
                         // Skip blank lines.
                         line = line.trim() ;
                         if (line.length() == 0)
                             {
-                            if (DEBUG_EXTRA) System.out.println("Skipping blank line") ;
                             continue;
                             }
                         //
                         // Skip lines that start with '//'
                         if (line.startsWith("//"))
                             {
-                            if (DEBUG_EXTRA) System.out.println("Skipping comment") ;
                             continue;
                             }
                         //
                         // Skip lines that start with '--'
                         if (line.startsWith("--"))
                             {
-                            if (DEBUG_EXTRA) System.out.println("Skipping comment") ;
                             continue;
                             }
-                        if (DEBUG_EXTRA) System.out.println("Adding line to buffer") ;
                         //
                         // If we already have something in the buffer.
                         if (buffer.length() > 0)
@@ -634,12 +603,6 @@ public class DatabaseConfiguration
                             // OQL rules require AS something, even if we don't get any results.
                             buffer.append(" AS org.astrogrid.community.server.database.configuration.DatabaseConfigurationTestData") ;
                             //
-                            // Send the SQL buffer to our database.
-                            if (DEBUG_EXTRA) System.out.println("Excuting SQL statement") ;
-                            if (DEBUG_EXTRA) System.out.println("----") ;
-                            if (DEBUG_EXTRA) System.out.println(buffer.toString()) ;
-                            if (DEBUG_EXTRA) System.out.println("----") ;
-                            //
                             // Try execute the SQL buffer.
                             OQLQuery query = database.getOQLQuery(buffer.toString()) ;
                         //
@@ -659,10 +622,10 @@ public class DatabaseConfiguration
                     }
                 catch(PersistenceException ouch)
                     {
-                    if (DEBUG_FLAG) System.out.println("Exception while executing SQL statement") ;
-                    if (DEBUG_FLAG) System.out.println("----") ;
-                    if (DEBUG_FLAG) System.out.println(ouch) ;
-                    if (DEBUG_FLAG) System.out.println("----") ;
+                    log.debug("Exception while executing SQL statement") ;
+                    log.debug("----") ;
+                    log.debug(ouch) ;
+                    log.debug("----") ;
                     //
                     // Rollback our database transaction.
                     database.rollback() ;
@@ -695,9 +658,9 @@ public class DatabaseConfiguration
     public boolean checkDatabaseTables()
         throws DatabaseNotFoundException, PersistenceException, QueryException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("DatabaseConfiguration:checkDatabaseTables()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("DatabaseConfiguration:checkDatabaseTables()") ;
         
         //
         // Start with healthy set to 'false', and set it to 'true' if we actually get some data.
@@ -728,22 +691,22 @@ public class DatabaseConfiguration
                             Object result = results.next() ;
                             if (result instanceof DatabaseConfigurationTestData)
                                 {
-                                if (DEBUG_FLAG)System.out.println("  PASS : got test data '" + result + "'") ;
+                                log.debug("  PASS : got test data '" + result + "'") ;
                                 healthy = true ;
                                 }
                             else {
-                                if (DEBUG_FLAG)System.out.println("  FAIL : unknown result type '" + result.getClass() + "'") ;
+                                log.debug("  FAIL : unknown result type '" + result.getClass() + "'") ;
                                 healthy = false ;
                                 }
                             }
                         }
                     else {
-                        if (DEBUG_FLAG)System.out.println("  FAIL : empty results") ;
+                        log.debug("  FAIL : empty results") ;
                         healthy = false ;
                         }
                     }
                 else {
-                    if (DEBUG_FLAG)System.out.println("  FAIL : null results") ;
+                    log.debug("  FAIL : null results") ;
                     healthy = false ;
                     }
                 database.commit() ;
@@ -759,8 +722,8 @@ public class DatabaseConfiguration
         // Catch anything that goes bang.
         catch (PersistenceException ouch)
             {
-            if (DEBUG_FLAG)System.out.println("Exception caught in checkDatabaseTables()") ;
-            if (DEBUG_FLAG)System.out.println("  Exception : " + ouch) ;
+            log.debug("Exception caught in checkDatabaseTables()") ;
+            log.debug("  Exception : " + ouch) ;
             healthy = false ;
             }
         return healthy ;

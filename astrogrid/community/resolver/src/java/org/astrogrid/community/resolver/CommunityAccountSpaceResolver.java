@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/CommunityAccountSpaceResolver.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/02 17:02:02 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityAccountSpaceResolver.java,v $
+ *   Revision 1.7  2004/09/16 23:18:08  dave
+ *   Replaced debug logging in Community.
+ *   Added stream close() to FileStore.
+ *
+ *   Revision 1.6.12.1  2004/09/16 09:58:48  dave
+ *   Replaced debug with commons logging ....
+ *
  *   Revision 1.6  2004/09/02 17:02:02  dave
  *   Fixed myspace account creation problem.
  *
@@ -25,6 +32,9 @@
  *
  */
 package org.astrogrid.community.resolver ;
+
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 import java.net.URL ;
 import java.net.URISyntaxException ;
@@ -49,10 +59,10 @@ import org.astrogrid.community.resolver.exception.CommunityResolverException ;
 public class CommunityAccountSpaceResolver
     {
     /**
-     * Switch for our debug statements.
+     * Our debug logger.
      *
      */
-    private static boolean DEBUG_FLAG = true ;
+    private static Log log = LogFactory.getLog(CommunityAccountSpaceResolver.class);
 
     /**
      * Public constructor, using the default Registry service.
@@ -101,10 +111,10 @@ public class CommunityAccountSpaceResolver
             CommunityResolverException,
             RegistryException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityAccountSpaceResolver.resolve()") ;
-        if (DEBUG_FLAG) System.out.println("  Ivorn : " + ivorn) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityAccountSpaceResolver.resolve()") ;
+        log.debug("  Ivorn : " + ivorn) ;
         //
         // Check for null ivorn.
         if (null == ivorn)
@@ -138,10 +148,10 @@ public class CommunityAccountSpaceResolver
             CommunityResolverException,
             RegistryException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityAccountSpaceResolver.resolve()") ;
-        if (DEBUG_FLAG) System.out.println("  Ivorn : " + ((null != parser) ? parser.getIvorn() : null)) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityAccountSpaceResolver.resolve()") ;
+        log.debug("  Ivorn : " + ((null != parser) ? parser.getIvorn() : null)) ;
         //
         // Check for null parser.
         if (null == parser)
@@ -153,10 +163,10 @@ public class CommunityAccountSpaceResolver
         //
         // Resolve the ivorn into an AccountData.
         AccountData account = resolver.resolve(parser) ;
-        if (DEBUG_FLAG) System.out.println("CommunityAccountSpaceResolver.resolve()") ;
-        if (DEBUG_FLAG) System.out.println("Got Account") ;
-        if (DEBUG_FLAG) System.out.println("Account : " + account.getIdent()) ;
-        if (DEBUG_FLAG) System.out.println("Home    : " + account.getHomeSpace()) ;
+        log.debug("CommunityAccountSpaceResolver.resolve()") ;
+        log.debug("Got Account") ;
+        log.debug("Account : " + account.getIdent()) ;
+        log.debug("Home    : " + account.getHomeSpace()) ;
         //
         // Get the Account home space Ivorn.
         String home = account.getHomeSpace() ;
@@ -164,10 +174,10 @@ public class CommunityAccountSpaceResolver
         // If the Account has a home space.
         if (null != home)
             {
-            if (DEBUG_FLAG) System.out.println("PASS : Got Account home.") ;
-            if (DEBUG_FLAG) System.out.println("Building new Ivorn based on Account home") ;
-            if (DEBUG_FLAG) System.out.println("  Home : " + home) ;
-            if (DEBUG_FLAG) System.out.println("  Path : " + parser.getRemainder()) ;
+            log.debug("PASS : Got Account home.") ;
+            log.debug("Building new Ivorn based on Account home") ;
+            log.debug("  Home : " + home) ;
+            log.debug("  Path : " + parser.getRemainder()) ;
             //
             // Create a new Ivorn from the home address.
             try {

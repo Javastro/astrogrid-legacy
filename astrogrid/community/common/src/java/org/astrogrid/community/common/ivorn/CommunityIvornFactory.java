@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/ivorn/CommunityIvornFactory.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.7 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.8 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityIvornFactory.java,v $
+ *   Revision 1.8  2004/09/16 23:18:08  dave
+ *   Replaced debug logging in Community.
+ *   Added stream close() to FileStore.
+ *
+ *   Revision 1.7.82.1  2004/09/16 09:58:48  dave
+ *   Replaced debug with commons logging ....
+ *
  *   Revision 1.7  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -20,6 +27,9 @@
  */
 package org.astrogrid.community.common.ivorn ;
 
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
+
 import org.astrogrid.store.Ivorn ;
 import org.astrogrid.community.common.exception.CommunityIdentifierException ;
 
@@ -31,10 +41,10 @@ import org.astrogrid.community.common.exception.CommunityIdentifierException ;
 public class CommunityIvornFactory
     {
     /**
-     * Switch for our debug statements.
+     * Our debug logger.
      *
      */
-    private static boolean DEBUG_FLAG = true ;
+	private static Log log = LogFactory.getLog(CommunityIvornFactory.class);
 
     /**
      * Create a new ident.
@@ -47,7 +57,13 @@ public class CommunityIvornFactory
     protected static String createIdent(String community, String resource)
         throws CommunityIdentifierException
         {
-        return createIdent(community, resource, null, null, null) ;
+        return createIdent(
+        	community,
+        	resource,
+        	null,
+        	null,
+        	null
+        	) ;
         }
 
     /**
@@ -62,7 +78,13 @@ public class CommunityIvornFactory
     protected static String createIdent(String community, String resource, String path)
         throws CommunityIdentifierException
         {
-        return createIdent(community, resource, path, null, null) ;
+        return createIdent(
+        	community,
+        	resource,
+        	path,
+        	null,
+        	null
+        	) ;
         }
 
     /**
@@ -78,7 +100,13 @@ public class CommunityIvornFactory
     protected static String createIdent(String community, String resource, String path, String fragment)
         throws CommunityIdentifierException
         {
-        return createIdent(community, resource, path, null, fragment) ;
+        return createIdent(
+        	community,
+        	resource,
+        	path,
+        	null,
+        	fragment
+        	) ;
         }
 
     /**
@@ -95,18 +123,28 @@ public class CommunityIvornFactory
     protected static String createIdent(String community, String resource, String path, String query, String fragment)
         throws CommunityIdentifierException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityIvornFactory.createIdent()") ;
-        if (DEBUG_FLAG) System.out.println("  Community : " + community) ;
-        if (DEBUG_FLAG) System.out.println("  Resource  : " + resource) ;
-        if (DEBUG_FLAG) System.out.println("  Path      : " + path) ;
-        if (DEBUG_FLAG) System.out.println("  Query     : " + query) ;
-        if (DEBUG_FLAG) System.out.println("  Fragment  : " + fragment) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("CommunityIvornFactory.createIdent()") ;
+        log.debug("  Community : " + community) ;
+        log.debug("  Resource  : " + resource) ;
+        log.debug("  Path      : " + path) ;
+        log.debug("  Query     : " + query) ;
+        log.debug("  Fragment  : " + fragment) ;
         //
         // Check for null params.
-        if (null == community) { throw new CommunityIdentifierException("Null Community identifier") ; }
-        if (null == resource)  { throw new CommunityIdentifierException("Null Resource identifier") ; }
+        if (null == community)
+        	{
+        	throw new CommunityIdentifierException(
+        		"Null Community identifier"
+        		) ;
+        	}
+        if (null == resource)
+        	{
+        	throw new CommunityIdentifierException(
+        		"Null Resource identifier"
+        		) ;
+        	}
         //
         // Put it all together.
         StringBuffer buffer = new StringBuffer() ;
@@ -135,7 +173,7 @@ public class CommunityIvornFactory
             buffer.append("#") ;
             buffer.append(fragment) ;
             }
-        if (DEBUG_FLAG) System.out.println("  Result    : " + buffer.toString()) ;
+        log.debug("  Result    : " + buffer.toString()) ;
         //
         // Return the new string.
         return buffer.toString() ;

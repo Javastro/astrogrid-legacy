@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/junit/org/astrogrid/community/service/database/manager/Attic/DatabaseManagerServiceTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: DatabaseManagerServiceTestCase.java,v $
+ *   Revision 1.6  2004/09/16 23:18:08  dave
+ *   Replaced debug logging in Community.
+ *   Added stream close() to FileStore.
+ *
+ *   Revision 1.5.82.1  2004/09/16 09:58:48  dave
+ *   Replaced debug with commons logging ....
+ *
  *   Revision 1.5  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -16,6 +23,9 @@
  *
  */
 package org.astrogrid.community.service.database.manager ;
+
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 import java.net.URL ;
 
@@ -39,10 +49,10 @@ public class DatabaseManagerServiceTestCase
     extends DatabaseManagerTest
     {
     /**
-     * Switch for our debug statements.
+     * Our debug logger.
      *
      */
-    private static boolean DEBUG_FLAG = true ;
+    private static Log log = LogFactory.getLog(DatabaseManagerServiceTestCase.class);
 
     /*
      * Our DatabaseConfigurationFactory.
@@ -70,10 +80,10 @@ public class DatabaseManagerServiceTestCase
     public void setUp()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("DatabaseManagerServiceTestCase:setUp()") ;
-        if (DEBUG_FLAG) System.out.println("  User dir : " + System.getProperty("user.dir")) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("DatabaseManagerServiceTestCase:setUp()") ;
+        log.debug("  User dir : " + System.getProperty("user.dir")) ;
 /*
  * This didn't work ....
         //
@@ -83,7 +93,7 @@ public class DatabaseManagerServiceTestCase
         // Change to the new directory.
         String frog = prev + "/target/axis/webapp/WEB-INF" ;
         System.setProperty("user.dir", frog) ;
-        if (DEBUG_FLAG) System.out.println("  User dir : " + System.getProperty("user.dir")) ;
+        log.debug("  User dir : " + System.getProperty("user.dir")) ;
  *
  */
         this.setDatabaseManager(
@@ -98,13 +108,13 @@ public class DatabaseManagerServiceTestCase
      */
     public void tearDown()
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("DatabaseManagerServiceTestCase:tearDown()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("DatabaseManagerServiceTestCase:tearDown()") ;
 /*
  * This didn't work ....
         System.setProperty("user.dir", prev) ;
-        if (DEBUG_FLAG) System.out.println("  User dir : " + System.getProperty("user.dir")) ;
+        log.debug("  User dir : " + System.getProperty("user.dir")) ;
  *
  */
         }
@@ -126,9 +136,9 @@ public class DatabaseManagerServiceTestCase
     public DatabaseManager createLocalService()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("DatabaseManagerServiceTestCase:createLocalService()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("DatabaseManagerServiceTestCase:createLocalService()") ;
         //
         // Initialise the Axis 'local:' URL protocol.
         Call.initialize() ;
