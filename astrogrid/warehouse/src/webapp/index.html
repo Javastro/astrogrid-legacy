@@ -1,8 +1,10 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
 <html>
 
 <head>
-<meta http-equiv="Content-Type"
-content="text/html; charset=iso-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
 <title>AstroGrid data warehouse: front-end service</title>
 </head>
 
@@ -16,62 +18,19 @@ Grid Data Warehouse; it is a facade through which clients can access the
 warehouse without dealing directly with Grid protocols. The warehouse
 web-service currently has exactly the same interface as AstroGrid's data-centre
 component.
-<p>
+</p>
 
 <p>
 The warehouse service is a SOAP service built on Apache-Axis, so it must be
 driven by a dedicated SOAP client (the classes in AstroGrid's data-centre
 component are suitable) rather than through these web pages.  However, 
-AstroGrid provide this feature via your web browser as an aid to testing.
+some test functions are available via your web-browser.
 </p>
 
 <ul>
-<li><a href="query-form.html">Run a synchronous ADQL-query.</a></li>
+<li><a href="query-form.html">Tests on the warehouse service</a></li>
+<li><a href="axis.html">Tests on Apache-Axis</a></li>
 </ul>
-
-<p>
-Axis
-provides the following administrative functions via your web browser.
-</p>
-
-<ul>
-    <li><a href="happyaxis.jsp">Validate</a>
-        the local installation's configuration<br>
-        <i>see below if this does not work.</i></li>
-    <li><a href="servlet/AxisServlet">View</a>
-        the list of deployed Web services</li>
-    <li><a href="EchoHeaders.jws?method=list">
-        Call a local endpoint</a> that list's the caller's
-        http headers (or see its
-        <a href="EchoHeaders.jws?wsdl">WSDL</a>). 
-    <li><a href="http://xml.apache.org/axis">Visit</a>
-        the Apache-Axis Home Page</li>
-    <li><a href="servlet/AdminServlet">Administer Axis</a> <br>
-        [disabled by default for security reasons]</li>
-    <li><a href="SOAPMonitor">SOAPMonitor</a> <br>
-        [disabled by default for security reasons]</li>
-</ul>
-
-<p>
-To enable the disabled features, the maintainer of this service should 
-uncomment the appropriate declarations in 
-<i>WEB-INF/web.xml</i> in the web-application and restart it.
-</p>
-
-<h3>Validating Axis</h3>
-
-<p>
-If the "happyaxis" validation page displays an exception instead of a 
-status page, the likely cause is that the server of the web-application
-has multiple XML parsers in its classpath.
-</p>
-
-<p>
-If you have problems getting Axis to work, consult the Axis 
-<a
-href="http://nagoya.apache.org/wiki/apachewiki.cgi?AxisProjectPages">Wiki</a>
-and then try the Axis user mailing list. 
-</p>
 
 </body>
 </html>
