@@ -319,16 +319,16 @@ which retrieves a count of the number of sources located in the region
 </pre>
 </div>
 <div style="display: none" class="courier" id="exampleExplanationBox2">
-FROM USNO as u SELECT * where u.bmag1 &lt; 12
+SELECT * FROM USNO as u where u.bmag1 &lt; 12
 </div>
 <div style="display: none" class="courier" id="exampleExplanationBox3">
-FROM USNO as u SELECT * where u.bmag2 &lt; 13
+SELECT * FROM USNO as u where u.bmag2 &lt; 13
 </div>
 <div style="display: none" class="courier" id="exampleExplanationBox4">
-FROM USNO as u SELECT * where u.bmag2 &lt; 14
+SELECT * FROM USNO as u where u.bmag2 &lt; 14
 </div>
 <div style="display: none" class="courier" id="exampleExplanationBox5">
-FROM USNO as u SELECT * where u.bmag2 &lt; 15
+SELECT * FROM USNO as u where u.bmag2 &lt; 15
 </div>
 </td>
 </tr>

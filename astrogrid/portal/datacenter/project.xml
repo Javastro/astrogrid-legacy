@@ -32,6 +32,16 @@
       </properties>
     </dependency>
     
+    <!-- Datacenter Client -->
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-datacenter-client</artifactId>
+      <version>${pom.currentVersion}</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>    
+     
     <!-- JAX dependencies -->
     <dependency>
       <groupId>jaxrpc-api</groupId>

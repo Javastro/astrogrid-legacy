@@ -61,6 +61,21 @@ variable, which could be used by invoking some xpath way
   <xsp:logic>
      String quString, myURL, nada;
      nada = new String("null");
+     quString = (String) <xsp-session:get-attribute name="adql-query"/>;
+     if( quString == null ) {
+<OneTableID>NoSource</OneTableID>
+<QUERYAREA>
+<textarea name="adql-query" class="areaInput" id="ag_data-query" cols="50" rows="8">
+</textarea>
+</QUERYAREA>
+     }
+     else {
+<OneTableID>NoSource</OneTableID>
+<QUERYAREA>
+<textarea name="adql-query" class="areaInput" id="ag_data-query" cols="50" rows="8"><xsp:expr>quString</xsp:expr></textarea>
+</QUERYAREA>
+     }
+<!--     
      quString = (String) <xsp-request:get-parameter name="tableID"/>;
      if(quString.equals(nada)){
 <OneTableID>NoSource</OneTableID>
@@ -78,6 +93,7 @@ variable, which could be used by invoking some xpath way
 <textarea name="adql-query" class="areaInput" id="ag_data-query" cols="50" rows="8">FROM <xsp:expr>quString</xsp:expr> </textarea>
 </QUERYAREA>
      }
+-->
   </xsp:logic>
 </mainarea>
 

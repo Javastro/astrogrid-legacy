@@ -1,7 +1,7 @@
 package org.astrogrid.portal.datacenter.acting;
 
 import java.util.HashMap;
-import java.util.Map; 
+import java.util.Map;    
 
 import org.apache.avalon.framework.logger.Logger;
 import org.apache.avalon.framework.parameters.Parameters;
@@ -16,8 +16,10 @@ import org.astrogrid.portal.common.user.UserHelper;
 import org.astrogrid.portal.utils.acting.ActionUtils;
 import org.astrogrid.portal.utils.acting.ActionUtilsFactory;
 import org.astrogrid.store.Agsl;
-import org.astrogrid.store.delegate.StoreClient;
-import org.astrogrid.store.delegate.StoreDelegateFactory;
+import org.astrogrid.store.delegate.StoreClient; 
+import org.astrogrid.store.delegate.StoreDelegateFactory; 
+
+import org.astrogrid.datacenter.sqlparser.Sql2Adql074;
 
 import org.apache.avalon.framework.logger.ConsoleLogger;
 
@@ -34,11 +36,17 @@ public class MySpaceSaveAction extends AbstractAction {
      *  
      */
     private static final boolean DEBUG_TO_SYSTEM_OUT = true;
+    
+    public static final String SESSIONKEY_ADQL_AS_STRING = "adql-query" ;
+    
+    public static final String SESSIONKEY_RESOURCE_ID = "query-builder-resource-id" ;
+    
+    public static final String SESSIONKEY_ADQL_ERROR = "query-builder-adql-error" ;
      
   /**
    * Save the required ADQL document to MySpace.
    * 
-   * <p>
+   * <p> 
    *   SiteMap Outputs:
    *     <ol>
    *       <li><code>adql-document-saved</code>: "true" if ADQL was successfully saved</li>
@@ -64,28 +72,68 @@ public class MySpaceSaveAction extends AbstractAction {
     Session session = request.getSession(true);
     
     try {
+        
+      // For initial testing purposes only...
+      // session.setAttribute( SESSIONKEY_RESOURCE_ID, "org.astrogrid.localhost/noaa_trace/tablexyz" ) ;
+        
       // Set the current user.
       User user = UserHelper.getCurrentUser(params, request, session);
       
       // Set MySpace end point.
-      String endPoint = utils.getAnyParameter(
-          "myspace-end-point",
-          params, request, session);
+      String endPoint = utils.getAnyParameter( "myspace-end-point", params, request, session );
       
       // Set base AstroGrid storage location.
       Agsl agsl = new Agsl(endPoint);
       
       // Get the storage client.
       StoreClient storeClient = StoreDelegateFactory.createDelegate(user, agsl);
-
-      String adqlDocument = utils.getAnyParameter("adql-query", params, request, session);
-      logger.debug("[act] adqlDocument: " + adqlDocument);
-      System.out.println("[act] adqlDocument: " + adqlDocument);
+      
+      StringBuffer buffer = new StringBuffer( 512 ) ;
+      String adqlAsXML ;
+      String adqlAsString = utils.getAnyParameter(SESSIONKEY_ADQL_AS_STRING, params, request, session);
+      session.setAttribute( SESSIONKEY_ADQL_AS_STRING, adqlAsString ) ; 
+      Object resourceId = session.getAttribute( SESSIONKEY_RESOURCE_ID ) ;  
+      logger.debug("[act] adqlAsString (s): " + adqlAsString);
+      
+      try {
+          
+          adqlAsXML = Sql2Adql074.translate( adqlAsString ) ;      
+          logger.debug("[act] adqlAsXML (x): " + adqlAsXML);
+      
+          buffer
+            .append( adqlAsXML.substring( 0, adqlAsXML.indexOf( "?>" ) + 2 ) )
+            .append( "<?qb-sql-source " )
+            .append( adqlAsString )
+            .append( " ?>" )
+            .append( "<?qb-registry-resources " )
+            .append( resourceId != null ? (String)resourceId : "none" )
+            .append( " ?>" ) 
+            .append( adqlAsXML.substring( adqlAsXML.indexOf( "?>" ) + 2 ) ) ;
+            
+          session.removeAttribute( SESSIONKEY_ADQL_ERROR ) ;
+            
+      }
+      catch ( Exception ex ) {
+          
+          buffer
+            .append( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" )
+            .append( "<?qb-sql-source " )
+            .append( adqlAsString )
+            .append( " ?>" )        
+            .append( "<?qb-registry-resources " )
+            .append( resourceId != null ? (String)resourceId : "none" )
+            .append( " ?>" ) ;
+                        
+          session.setAttribute( SESSIONKEY_ADQL_ERROR, ex.getLocalizedMessage() ) ;
+          logger.debug("[act] adql error: " + ex.getLocalizedMessage() ) ;
+                  
+      }
 
       String mySpaceName = utils.getAnyParameter("myspace-name", params, request, session);
       logger.debug("[act] mySpaceName: " + mySpaceName);
 
-      storeClient.putString(adqlDocument, mySpaceName, false);
+      logger.debug( "[act] adql final format: " + buffer.toString() ) ;
+      storeClient.putString( buffer.toString(), mySpaceName, false );
 //      request.setAttribute("adql-document-saved", "true");
 //      sitemapParams.put("adql-document-saved", "true");
     }

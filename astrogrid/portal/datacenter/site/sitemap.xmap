@@ -11,7 +11,7 @@
     | the accompanying documentation. The sitemaps which come with each
     | sample and each block will help to explain.
     |
-    | CVS $Id: sitemap.xmap,v 1.14 2004/08/19 12:37:45 jl99 Exp $
+    | CVS $Id: sitemap.xmap,v 1.15 2004/08/31 14:57:41 jl99 Exp $
     +-->
 <map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
 
@@ -281,10 +281,15 @@
           
           <map:when test="Load">
             <map:act type="load-adql">
+<!--            
               <map:generate type="file" src="web/static/data-query.xml"/>
               <map:transform src="cocoon:/load-adql.xsl">
                   <map:parameter name="adql-document" value="{adql-document}"/>
               </map:transform>
+-->              
+              <map:generate type="serverpages" src="web/dynamic/xscreen.xsp"/>
+              <map:transform src="web/style/xsl/dataQuery.xsl"/>
+              <map:transform src="cocoon://xml2html.xsl"/>
               <map:serialize type="xml"/>
             </map:act>
           </map:when>
