@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegate.java,v 1.9 2003/09/16 12:48:56 nw Exp $
+ * $Id: WebDelegate.java,v 1.10 2003/09/16 12:54:45 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -126,8 +126,10 @@ public class WebDelegate extends DatacenterDelegate
    public Element startQuery(String queryId) throws RemoteException
    {
       try
-      {         
-         return binding.startQuery(queryId);
+      {
+         Element whoWhatWhy = DocHelper.wrap(QueryIdHelper.makeQueryIdTag(queryId)).getDocumentElement();
+
+         return binding.startQuery(whoWhatWhy);
       }
       catch (Exception e)
       {
@@ -172,7 +174,9 @@ public class WebDelegate extends DatacenterDelegate
    {
       if (listener instanceof WebNotifyServiceListener)
       {
-         binding.registerWebListener( queryId, (WebNotifyServiceListener) listener);
+         Element whoWhatWhy = DocHelper.wrap(QueryIdHelper.makeQueryIdTag(queryId)).getDocumentElement();
+
+         binding.registerWebListener( whoWhatWhy, (WebNotifyServiceListener) listener);
       }
       else
       {
@@ -186,6 +190,9 @@ public class WebDelegate extends DatacenterDelegate
 
 /*
 $Log: WebDelegate.java,v $
+Revision 1.10  2003/09/16 12:54:45  mch
+Fixes to connect properly to binding service
+
 Revision 1.9  2003/09/16 12:48:56  nw
 adjusted to fix most mismatches
 
