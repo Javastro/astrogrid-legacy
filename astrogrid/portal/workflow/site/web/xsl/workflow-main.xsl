@@ -192,6 +192,7 @@
                         <li><input type="radio" name="template" value="TwoSequentialJobsteps" />two step sequence</li>
                         <li><input type="radio" name="template" value="TwoParallelJobsteps" />two step flow</li>
                         <li><input type="radio" name="template" value="TwoStepFlowAndMerge" />sequence with two step flow</li>
+                        <li><input type="radio" name="template" value="ComplexWorkflow" />complex flow</li>
                      </ul>
                   </td>
                </tr>
@@ -222,6 +223,7 @@
                   <xsl:if test="@template = 'TwoSequentialJobsteps'"><img src="TwoStepSequence.gif" alt="TwoStepSequence" /></xsl:if>
                   <xsl:if test="@template = 'TwoParallelJobsteps'"><img src="TwoStepFlow.gif" alt="TwoStepFlow" /></xsl:if>
                   <xsl:if test="@template = 'TwoStepFlowAndMerge'"><img src="SequenceWithTwoStepFlow.gif" alt="SequenceWithTwoStepFlow" /></xsl:if>                
+                  <xsl:if test="@template = 'ComplexWorkflow'"><img src="ComplexWorkflow.gif" alt="ComplexWorkflow" /></xsl:if> 
                </td>               
                <td>
                   <xsl:for-each select="//step">
