@@ -64,6 +64,9 @@ class DTC// extends org.astrogrid.Configurator
     public static String getProperty( String key, String category ) {
         return SimpleConfig.getProperty( key, category ) ;
     }
+    /** temporary dummy one - yes properties are loaded */
+   public void checkPropertiesLoaded() {}
+
 
     protected String getConfigFileName() { return ConfigurationKeys.CONFIG_FILENAME ; }
     protected String getSubsystemAcronym() { return ConfigurationKeys.SUBSYSTEM_ACRONYM ; }

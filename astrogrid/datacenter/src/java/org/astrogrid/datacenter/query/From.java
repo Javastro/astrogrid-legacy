@@ -22,6 +22,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import org.astrogrid.datacenter.config.DTC;
+
 /**
  * The <code>From</code> class represents ...
  * <p>
@@ -61,7 +63,7 @@ public class From extends SQLComponent {
       try {
 
          NodeList
-            nodeList = fromElement.getChildNodes() ;
+            nodeList = fromElement.getElementsByTagName(AdqlTags.CATALOG_ELEMENT) ;
          Element
              catalogElement ;
 
@@ -118,7 +120,7 @@ public class From extends SQLComponent {
             if ( catalog.getNumberTables() <= 0 ) {  // no table specified assume owner and table name are same
                buffer
                    .append( catalog.getName() )
-                   .append( getConfiguration().getProperty( ConfigurationKeys.DATABASE_TABLE_SEPARATOR
+                   .append( DTC.getProperty( ConfigurationKeys.DATABASE_TABLE_SEPARATOR
                                     , ConfigurationKeys.DATASETAGENT_CATEGORY ) ) //Bug #15
                    .append( catalog.getName() )
                    .append( ", " ) ;
@@ -135,7 +137,7 @@ public class From extends SQLComponent {
 
                    buffer
                        .append( catalog.getName() )
-                     .append( getConfiguration().getProperty( ConfigurationKeys.DATABASE_TABLE_SEPARATOR
+                     .append( DTC.getProperty( ConfigurationKeys.DATABASE_TABLE_SEPARATOR
                                        , ConfigurationKeys.DATASETAGENT_CATEGORY ) ) //Bug #15
                         .append( table.getName() )
                         .append( ", " ) ;

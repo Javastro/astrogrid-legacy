@@ -10,6 +10,6 @@ import org.astrogrid.datacenter.config.ConfigurableImpl;
 
 /** base class for all elements of the SQL composite pattern
   */
-public abstract class SQLComponent extends ConfigurableImpl {
-	public abstract String toSQLString() ;
+public abstract class SQLComponent {
+   public abstract String toSQLString() ;
 }

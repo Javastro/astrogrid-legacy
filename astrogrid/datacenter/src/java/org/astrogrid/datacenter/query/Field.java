@@ -19,7 +19,7 @@ import org.astrogrid.i18n.AstroGridMessage;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
+import org.astrogrid.datacenter.config.DTC;
 /**
  * The <code>Field</code> class represents a field within an SQL Query.
  * <p>
@@ -161,7 +161,7 @@ public class Field extends SQLComponent  implements Operand{
                   .append( "." )
                   .append( this.getName() );
                logger.debug( "Criteria: getColumnHeading(): key: " + buffer.toString().toUpperCase() ) ;
-               columnHeading = getConfiguration().getProperty( buffer.toString().toUpperCase()
+               columnHeading = DTC.getProperty( buffer.toString().toUpperCase()
                                                    , ConfigurationKeys.UCD_CATEGORY ) ;
 
             }
@@ -181,7 +181,7 @@ public class Field extends SQLComponent  implements Operand{
                      .append( "." )
                      .append( this.getName() );
                   logger.debug("Criteria: getColumnHeading(): key: "+buffer.toString().toUpperCase() );
-                  columnHeading = getConfiguration().getProperty( buffer.toString().toUpperCase()
+                  columnHeading = DTC.getProperty( buffer.toString().toUpperCase()
                                                        , ConfigurationKeys.UCD_CATEGORY) ;
                   if ( columnHeading.length() > 0 ) // break as soon as column heading found
                      break;

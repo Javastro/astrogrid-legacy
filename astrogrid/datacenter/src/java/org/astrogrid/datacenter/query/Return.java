@@ -21,6 +21,8 @@ import org.astrogrid.i18n.AstroGridMessage;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import org.astrogrid.datacenter.config.DTC;
+
 /**
  * The <code>Return</code> class represents...
  * <p>
@@ -184,6 +186,9 @@ public class Return extends SQLComponent{
          columnHeading = "" ;
       StringBuffer
          buffer = new StringBuffer(64) ;
+
+      String origBuffer = null;
+
       try {
 
             // If no tables assosciated with catalog assume table name same as catalog...
@@ -195,7 +200,7 @@ public class Return extends SQLComponent{
                 .append( "." )
                 .append( UCD ) ;
             logger.debug("Return: getColumnHeading(): key: "+buffer.toString().toUpperCase() );
-            columnHeading = getConfiguration().getProperty( buffer.toString()
+            columnHeading = DTC.getProperty( buffer.toString()
                                     , ConfigurationKeys.UCD_CATEGORY ) ;
          }
          else {
@@ -213,13 +218,19 @@ public class Return extends SQLComponent{
                    .append( table.getName().toUpperCase() )
                    .append( "." )
                    .append( UCD );
+
+               origBuffer = buffer.toString();
+
                logger.debug("Return: getColumnHeading(): key: "+buffer.toString().toLowerCase().toUpperCase() );
-                columnHeading = getConfiguration().getProperty( buffer.toString()
+                columnHeading = DTC.getProperty( buffer.toString()
                                        , ConfigurationKeys.UCD_CATEGORY ) ;
-               if (columnHeading.length() > 0 ) // break as soon as column heading found
+               if ((columnHeading != null) && (columnHeading.length() > 0 )) // break as soon as column heading found
                   break;
                buffer.delete( 0,buffer.length() ) ;
              } // end of while
+
+             if (columnHeading == null)
+                columnHeading = ""; //botch fix for now
 
          } // end else
 

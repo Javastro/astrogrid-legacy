@@ -20,6 +20,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import org.astrogrid.datacenter.config.DTC;
+
 /**
  * The <code>GroupBy</code> class represents the Group By clause of an SQL query
  * <p>
@@ -156,7 +158,7 @@ public class GroupBy extends SQLComponent {
                    .append( "." )
                    .append( UCD ) ;
                logger.debug("Return: getColumnHeading(): key: "+buffer.toString().toUpperCase() ) ;
-               columnHeading = getConfiguration().getProperty( buffer.toString()
+               columnHeading = DTC.getProperty( buffer.toString()
                                        , ConfigurationKeys.UCD_CATEGORY ) ;
             }
             else {
@@ -175,7 +177,7 @@ public class GroupBy extends SQLComponent {
                       .append( "." )
                       .append( UCD ) ;
                   logger.debug("Return: getColumnHeading(): key: "+buffer.toString().toLowerCase().toUpperCase() );
-                  columnHeading = getConfiguration().getProperty( buffer.toString()
+                  columnHeading = DTC.getProperty( buffer.toString()
                                           , ConfigurationKeys.UCD_CATEGORY ) ;
                   if (columnHeading.length() > 0 ) // break as soon as column heading found
                      break;
