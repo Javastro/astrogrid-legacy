@@ -1,5 +1,5 @@
 /*
- * $Id: DummySqlPlugin.java,v 1.6 2004/07/12 23:26:51 mch Exp $
+ * $Id: DummySqlPlugin.java,v 1.7 2004/08/05 15:58:19 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -123,6 +123,15 @@ public class DummySqlPlugin extends JdbcPlugin
          connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Not Pleidies', 56, 24.5, 5)"); id++;
          connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Not Pleidies', 58, 23, 5)"); id++;
          
+         //add even spread (in coordinate space) of background stars
+         for (int ra=0;ra<360;ra++) {
+            StringBuffer sql = new StringBuffer("INSERT INTO SampleStars VALUES ");
+            for (int dec=-90;dec<90;dec++) {
+               sql.append(" ("+id+", 'Background', "+ra+", "+dec+", 20) "); id++;
+            }
+            connection.createStatement().execute(sql.toString());
+         }
+         
          
          //populate galaxies
          //create table
@@ -130,7 +139,7 @@ public class DummySqlPlugin extends JdbcPlugin
             "CREATE TABLE SampleGalaxies (Id INTEGER IDENTITY,  Ra DOUBLE,  Dec DOUBLE,  Shape VARCHAR(20)) "
          );
          
-         //add stars
+         //add galaxies
          String[] shapes = new String[] {"ELLIPTICAL", "SPIRAL", "IRREGULAR" };
          for (int i=0;i<20;i++) {
             
@@ -182,6 +191,9 @@ public class DummySqlPlugin extends JdbcPlugin
 }
    /*
    $Log: DummySqlPlugin.java,v $
+   Revision 1.7  2004/08/05 15:58:19  mch
+   Added background stars
+
    Revision 1.6  2004/07/12 23:26:51  mch
    Fixed (somewhat) SQL for cone searches, added tests to Dummy DB
 
