@@ -1,5 +1,8 @@
 package org.astrogrid.registry.client.admin;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 
 import java.net.URL; 
 import java.util.Vector; 
@@ -43,7 +46,11 @@ import org.astrogrid.registry.common.XSLHelper;
  *
  * 
  */
-public class UpdateRegistry implements RegistryAdminService { 
+public class UpdateRegistry implements RegistryAdminService {
+    /**
+     * Commons Logger for this class
+     */
+    private static final Log logger = LogFactory.getLog(UpdateRegistry.class); 
 
 
    private static final String NAMESPACE_URI =  "http://www.ivoa.net/schemas/services/UpdateRegistry/wsdl";
@@ -103,7 +110,7 @@ public class UpdateRegistry implements RegistryAdminService {
          _call.setOperationUse(org.apache.axis.enum.Use.LITERAL);        
          _call.setEncodingStyle(null);
       } catch(ServiceException se) {
-         se.printStackTrace();
+        logger.error("getCall()", se);
          _call = null;            
       }finally {
          return _call;   
@@ -161,8 +168,11 @@ public class UpdateRegistry implements RegistryAdminService {
       
       //Build up a SoapBodyElement to be sent in a Axis message style.
       //Go ahead and reset a name and namespace to this as well.
-      System.out.println("the endpoint = " + this.endPoint.toString());
-      System.out.println("okay calling update service with doc = " + DomHelper.DocumentToString(update));
+    logger
+            .info("update(Document) - the endpoint = "
+                    + this.endPoint.toString());
+    logger.info("update(Document) - okay calling update service with doc = "
+            + DomHelper.DocumentToString(update));
       //SOAPBodyElement sbeRequest = new SOAPBodyElement(doc.getDocumentElement());      
       SOAPBodyElement sbeRequest = new SOAPBodyElement(update.getDocumentElement());
       sbeRequest.setName("Update");
@@ -233,7 +243,7 @@ public class UpdateRegistry implements RegistryAdminService {
             }   
          }//for
       }catch(Exception e) {
-         e.printStackTrace();   
+        logger.error("getCurrentStatus()", e);   
       }   
       return status;
    }
@@ -250,7 +260,7 @@ public class UpdateRegistry implements RegistryAdminService {
          doc.appendChild(root);
       }catch(ParserConfigurationException pce){
          doc = null;
-         pce.printStackTrace();
+        logger.error("getStatus()", pce);
       }
       
       if(doc == null) {
@@ -271,10 +281,10 @@ public class UpdateRegistry implements RegistryAdminService {
          }
       }catch(RemoteException re) {
          resultDoc = null;
-         re.printStackTrace();
+        logger.error("getStatus()", re);
       }catch (Exception e) {
          resultDoc = null;
-         e.printStackTrace();
+        logger.error("getStatus()", e);
       }finally {
          return resultDoc;
       }

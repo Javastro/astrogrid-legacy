@@ -1,10 +1,13 @@
 /*
- * $Id: RegistryDelegateFactory.java,v 1.8 2004/08/25 11:42:48 KevinBenson Exp $
+ * $Id: RegistryDelegateFactory.java,v 1.9 2004/09/08 13:23:11 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.registry.client;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 
 import java.io.IOException;
@@ -24,6 +27,11 @@ import org.astrogrid.config.Config;
  */
 
 public class RegistryDelegateFactory {
+    /**
+     * Commons Logger for this class
+     */
+    private static final Log logger = LogFactory
+            .getLog(RegistryDelegateFactory.class);
 
 
    public static Config conf = null;
@@ -53,7 +61,8 @@ public class RegistryDelegateFactory {
     */
    public static synchronized RegistryService createQuery(URL endPoint) {
       if(endPoint != null)
-         System.out.println("the ENDPOINT AT DELEGATE = " + endPoint.toString());
+        logger.info("createQuery(URL) - the ENDPOINT AT DELEGATE = "
+                + endPoint.toString());
       return new org.astrogrid.registry.client.query.QueryRegistry(endPoint);
    }
    

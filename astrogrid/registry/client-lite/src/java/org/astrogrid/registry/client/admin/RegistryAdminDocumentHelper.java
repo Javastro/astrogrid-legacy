@@ -1,5 +1,8 @@
 package org.astrogrid.registry.client.admin;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 
 import java.util.TreeMap;
 import java.util.LinkedHashMap;
@@ -32,6 +35,11 @@ import org.astrogrid.registry.common.RegistryHelper;
  * 
  */
 public class RegistryAdminDocumentHelper {
+    /**
+     * Commons Logger for this class
+     */
+    private static final Log logger = LogFactory
+            .getLog(RegistryAdminDocumentHelper.class);
   
   /**
    * @This is used to STOP a recursion process of generating a unique string.
@@ -226,7 +234,7 @@ public class RegistryAdminDocumentHelper {
          //finaly let the Schema builder generate the DOM model.
          registryDoc = sb.generateDocument();
       }catch(Exception e) {
-         e.printStackTrace();
+        logger.error("createDocument(Map)", e);
       }
       return registryDoc;
    }
@@ -241,6 +249,10 @@ public class RegistryAdminDocumentHelper {
  * 
  */
 class SchemaBuilder {
+    /**
+     * Commons Logger for this class
+     */
+    private static final Log logger = LogFactory.getLog(SchemaBuilder.class);
    
    private String elementName = null;
    private String val = null;

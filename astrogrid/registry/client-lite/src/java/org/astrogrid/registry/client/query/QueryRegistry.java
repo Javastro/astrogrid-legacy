@@ -1,5 +1,8 @@
 package org.astrogrid.registry.client.query;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.net.URL;
 import java.util.Vector;
 import javax.xml.parsers.DocumentBuilder;
@@ -60,6 +63,10 @@ import org.astrogrid.store.Ivorn;
  * @author Kevin Benson
  */
 public class QueryRegistry implements RegistryService {
+    /**
+     * Commons Logger for this class
+     */
+    private static final Log logger = LogFactory.getLog(QueryRegistry.class);
 
    /**
     * target end point  is the location of the webservice. 
@@ -76,7 +83,6 @@ public class QueryRegistry implements RegistryService {
 
    public static Config conf = null;
 
-   private static boolean DEBUG_FLAG = true;
 
    static {
       if (conf == null) {
@@ -99,14 +105,16 @@ public class QueryRegistry implements RegistryService {
     * @author Kevin Benson
     */
    public QueryRegistry(URL endPoint) {
-      if (DEBUG_FLAG)
-         System.out.println("entered const(url) of RegistryService");
+       
+        logger
+                .info("QueryRegistry(URL) - entered const(url) of RegistryService");
       this.endPoint = endPoint;
       if (this.endPoint == null) {
          useCache = true;
       }
-      if (DEBUG_FLAG)
-         System.out.println("exiting const(url) of RegistryService");
+       
+        logger
+                .info("QueryRegistry(URL) - exiting const(url) of RegistryService");
    }
 
    /**
@@ -116,8 +124,8 @@ public class QueryRegistry implements RegistryService {
     * @author Kevin Benson
     */
    private Call getCall() throws ServiceException {
-      if (DEBUG_FLAG)
-         System.out.println("entered getCall()");
+       
+        logger.info("getCall() - entered getCall()");
       Call _call = null;
       Service service = new Service();
       _call = (Call)service.createCall();
@@ -204,8 +212,8 @@ public class QueryRegistry implements RegistryService {
        Document resultDoc = null;
 
        try {
-          if (DEBUG_FLAG)
-             System.out.println("creating full soap element.");
+           
+            logger.info("getRegistries() - creating full soap element.");
           doc = DomHelper.newDocument();
           Element root = doc.createElementNS(NAMESPACE_URI, "GetRegistries");
           doc.appendChild(root);
@@ -244,8 +252,8 @@ public class QueryRegistry implements RegistryService {
       Document resultDoc = null;
 
       try {
-         if (DEBUG_FLAG)
-            System.out.println("creating full soap element.");
+          
+            logger.info("identify() - creating full soap element.");
          doc = DomHelper.newDocument();
          Element root = doc.createElementNS(NAMESPACE_URI, "Identify");
          doc.appendChild(root);
@@ -300,8 +308,9 @@ public class QueryRegistry implements RegistryService {
 
       try {
          SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-         if (DEBUG_FLAG)
-            System.out.println("creating full soap element.");
+          
+            logger
+                    .info("listRecords(String, Date, Date) - creating full soap element.");
          doc = DomHelper.newDocument();
          Element root = doc.createElementNS(NAMESPACE_URI, "ListRecords");
          doc.appendChild(root);
@@ -331,7 +340,9 @@ public class QueryRegistry implements RegistryService {
             new SOAPBodyElement(doc.getDocumentElement());
          sbeRequest.setName("ListRecords");
          sbeRequest.setNamespaceURI(NAMESPACE_URI);
-         System.out.println("List Records Client-side = " + DomHelper.DocumentToString(doc));
+        logger
+                .info("listRecords(String, Date, Date) - List Records Client-side = "
+                        + DomHelper.DocumentToString(doc));
          Vector result = (Vector)call.invoke(new Object[] { sbeRequest });
          SOAPBodyElement sbe = null;
          if (result.size() > 0) {
@@ -357,8 +368,9 @@ public class QueryRegistry implements RegistryService {
       Document resultDoc = null;
 
       try {
-         if (DEBUG_FLAG)
-            System.out.println("creating full soap element.");
+          
+            logger
+                    .info("listMetadataFormats(String) - creating full soap element.");
          doc = DomHelper.newDocument();
          Element root = doc.createElementNS(NAMESPACE_URI, "ListMetadataFormats");
          doc.appendChild(root);
@@ -410,8 +422,9 @@ public class QueryRegistry implements RegistryService {
       Document resultDoc = null;
 
       try {
-         if (DEBUG_FLAG)
-            System.out.println("creating full soap element.");
+          
+            logger
+                    .info("getRecord(String, String) - creating full soap element.");
          doc = DomHelper.newDocument();
          Element root = doc.createElementNS(NAMESPACE_URI, "GetRecord");
          doc.appendChild(root);
@@ -472,8 +485,9 @@ public class QueryRegistry implements RegistryService {
 
       try {
          SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-         if (DEBUG_FLAG)
-            System.out.println("creating full soap element.");
+          
+            logger
+                    .info("listIdentifiers(String, Date, Date) - creating full soap element.");
          doc = DomHelper.newDocument();
          Element root = doc.createElementNS(NAMESPACE_URI, "ListIdentifiers");
          doc.appendChild(root);
@@ -524,8 +538,8 @@ public class QueryRegistry implements RegistryService {
     * Old style xml in string form to perform a query.
     */
    public Document submitQuery(String query) throws RegistryException {
-      if (DEBUG_FLAG)
-         System.out.println("entered submitQueryStringDOM()");
+       
+        logger.info("submitQuery(String) - entered submitQueryStringDOM()");
       try {
          return submitQuery(DomHelper.newDocument(query));
       } catch (ParserConfigurationException pce) {
@@ -541,14 +555,14 @@ public class QueryRegistry implements RegistryService {
     * Old style form to perform a query.
     */
    public Document submitQuery(Document query) throws RegistryException {
-      if (DEBUG_FLAG)
-         System.out.println("entered submitQueryDOM()");
+       
+        logger.info("submitQuery(Document) - entered submitQueryDOM()");
       Document doc = null;
       Document resultDoc = null;
 
       try {
-         if (DEBUG_FLAG)
-            System.out.println("creating full soap element.");
+          
+            logger.info("submitQuery(Document) - creating full soap element.");
          doc = DomHelper.newDocument();
          Element root = doc.createElementNS(NAMESPACE_URI, "submitQuery");
          doc.appendChild(root);
@@ -584,8 +598,8 @@ public class QueryRegistry implements RegistryService {
     * Loads this registry type for the connected registry.
     */
    public Document loadRegistry() throws RegistryException {
-      if (DEBUG_FLAG)
-         System.out.println("loadRegistry");
+       
+        logger.info("loadRegistry() - loadRegistry");
       Document doc = null;
       Document resultDoc = null;
       try {
@@ -627,8 +641,8 @@ public class QueryRegistry implements RegistryService {
     * @return a hashmap of all the managed authority id's.
     */
    public HashMap managedAuthorities() throws RegistryException {
-      if (DEBUG_FLAG)
-         System.out.println("entered managedAuthorities");
+       
+        logger.info("managedAuthorities() - entered managedAuthorities");
       HashMap hm = null;
       Document doc = loadRegistry();
       if (doc != null) {
@@ -644,8 +658,8 @@ public class QueryRegistry implements RegistryService {
          //   throw new RegistryException(ioe);   
          //}
       }
-      if (DEBUG_FLAG)
-         System.out.println("exiting managedAuthorities");
+       
+        logger.info("managedAuthorities() - exiting managedAuthorities");
       return hm;
    }
 
@@ -666,13 +680,14 @@ public class QueryRegistry implements RegistryService {
    public Document getResourceByIdentifier(String ident)
       throws RegistryException {
       Document doc = null;
-      if (DEBUG_FLAG)
-         System.out.println("entered getResourceByIdentifierDOM");
+       
+        logger
+                .info("getResourceByIdentifier(String) - entered getResourceByIdentifierDOM");
       if (ident == null) {
          throw new RegistryException("Cannot call this method with a null identifier");
       }
-      if (DEBUG_FLAG)
-         System.out.println("using ident = " + ident);
+       
+        logger.info("getResourceByIdentifier(String) - using ident = " + ident);
       if (!useCache) {
          int iTemp = 0;
          iTemp = ident.indexOf("/");
@@ -705,15 +720,15 @@ public class QueryRegistry implements RegistryService {
          //}catch(IOException ioe) {
          //   throw new RegistryException(ioe);   
          //}         
-         if (DEBUG_FLAG)
-            System.out.println(
-               "exiting getResourceByIdentifierDOM (did not use config cache)");
+          
+            logger
+                    .info("getResourceByIdentifier(String) - exiting getResourceByIdentifierDOM (did not use config cache)");
                
          return doc;
       } else {
-         if (DEBUG_FLAG)
-            System.out.println(
-               "exiting getResourceByIdentifierDOM (used config cache)");
+          
+            logger
+                    .info("getResourceByIdentifier(String) - exiting getResourceByIdentifierDOM (used config cache)");
          return conf.getDom(ident);
       }
    }
@@ -732,9 +747,10 @@ public class QueryRegistry implements RegistryService {
     */
    public String getEndPointByIdentifier(String ident)
       throws RegistryException {
-      if (DEBUG_FLAG)
-         System.out.println(
-            "entered getEndPointByIdentifier with ident = " + ident);
+       
+        logger
+                .info("getEndPointByIdentifier(String) - entered getEndPointByIdentifier with ident = "
+                        + ident);
       //check for an AccessURL
       //if AccessURL is their and it is a web service then get the wsdl
       //into a DOM object and run an XSL on it to get the endpoint.
@@ -749,12 +765,14 @@ public class QueryRegistry implements RegistryService {
       if (returnVal == null) {
          throw new RegistryException("Found Resource Document, but had no AccessURL");
       }
-      System.out.println("The AccessURL = " + returnVal);
-      System.out.println("The Invocation = " + invocation);
+    logger.info("getEndPointByIdentifier(String) - The AccessURL = "
+            + returnVal);
+    logger.info("getEndPointByIdentifier(String) - The Invocation = "
+            + invocation);
       if (returnVal != null
          && returnVal.indexOf("wsdl") > 0
          && "WebService".equals(invocation)) {
-         System.out.println("Get URL from WSDL");
+        logger.info("getEndPointByIdentifier(String) - Get URL from WSDL");
          WSDLBasicInformation wsdlBasic = getBasicWSDLInformation(doc);
          returnVal = (String)wsdlBasic.getEndPoint().values().iterator().next();
       }
@@ -792,9 +810,9 @@ public class QueryRegistry implements RegistryService {
             throw new RegistryException("Cound not find an AccessURL with a web service invocation type");
          }
          try {
-            if (DEBUG_FLAG)
-               System.out.println(
-                  "status msg for getBasicWSDLInformation, the invocation is a Web service being processing wsdl");
+             
+            logger
+                    .info("getBasicWSDLInformation(Document) - status msg for getBasicWSDLInformation, the invocation is a Web service being processing wsdl");
             WSDLFactory wf = WSDLFactory.newInstance();
             WSDLReader wr = wf.newWSDLReader();
             Definition def = wr.readWSDL(accessURL);
@@ -822,10 +840,10 @@ public class QueryRegistry implements RegistryService {
                         (ExtensibilityElement)lst.get(i);
                      if (extElement instanceof SOAPAddress) {
                         SOAPAddress soapAddress = (SOAPAddress)extElement;
-                        if (DEBUG_FLAG)
-                           System.out.println(
-                              "status msg for getBasicWSDLInformation, found a LocationURI in the wsdl = "
-                                 + soapAddress.getLocationURI());
+                         
+                        logger
+                                .info("getBasicWSDLInformation(Document) - status msg for getBasicWSDLInformation, found a LocationURI in the wsdl = "
+                                        + soapAddress.getLocationURI());
                         wsdlBasic.addEndPoint(
                            port.getName(),
                            soapAddress.getLocationURI());
@@ -834,14 +852,15 @@ public class QueryRegistry implements RegistryService {
                } //while                     
             } //while
          } catch (WSDLException wsdle) {
-            wsdle.printStackTrace();
+            logger.error("getBasicWSDLInformation(Document)", wsdle);
             throw new RegistryException(wsdle);
          }
       } else {
          throw new RegistryException("Invalid Entry in Method: This method only accepts WebService InvocationTypes");
       }
-      if (DEBUG_FLAG)
-         System.out.println("exiting getBasicWSDLInformation with ident");
+       
+        logger
+                .info("getBasicWSDLInformation(Document) - exiting getBasicWSDLInformation with ident");
       return wsdlBasic;
    }
 }

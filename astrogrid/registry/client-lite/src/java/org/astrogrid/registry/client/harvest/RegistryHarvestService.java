@@ -1,5 +1,8 @@
 package org.astrogrid.registry.client.harvest;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 
 import java.net.URL; 
 import java.util.Vector; 
@@ -34,7 +37,12 @@ import java.util.Iterator;
  * @link http://www.ivoa.net/twiki/bin/view/IVOA/IVOARegWp03
  * @author Kevin Benson
  */
-public class RegistryHarvestService { 
+public class RegistryHarvestService {
+    /**
+     * Commons Logger for this class
+     */
+    private static final Log logger = LogFactory
+            .getLog(RegistryHarvestService.class); 
  
    /**
     * target end point  is the location of the webservice. 
@@ -80,7 +88,7 @@ public class RegistryHarvestService {
          _call.setOperationUse(org.apache.axis.enum.Use.LITERAL);        
          _call.setEncodingStyle(null);
       }catch(ServiceException se) {
-         se.printStackTrace();
+        logger.error("getCall()", se);
          _call = null;            
       }finally {
          return _call;   
@@ -104,11 +112,11 @@ public class RegistryHarvestService {
          SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
          return sbe.getAsDocument();
       }catch(ParserConfigurationException pce) {
-         pce.printStackTrace();   
+        logger.error("harvest(Document)", pce);   
       }catch(RemoteException re) {
-         re.printStackTrace();   
+        logger.error("harvest(Document)", re);   
       }catch(Exception e) {
-         e.printStackTrace();            
+        logger.error("harvest(Document)", e);            
       }
       return null;
    }
@@ -135,15 +143,16 @@ public class RegistryHarvestService {
          Vector result = (Vector) call.invoke (new Object[] {sbeRequest});
          SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
 
-         System.out.println("received " + XMLUtils.DocumentToString(sbe.getAsDocument()));
+        logger.info("harvestFrom(Document) - received "
+                + XMLUtils.DocumentToString(sbe.getAsDocument()));
          return sbe.getAsDocument();       
          
       }catch(ParserConfigurationException pce) {
-         pce.printStackTrace();   
+        logger.error("harvestFrom(Document)", pce);   
       }catch(RemoteException re) {
-         re.printStackTrace();   
+        logger.error("harvestFrom(Document)", re);   
       }catch(Exception e) {
-         e.printStackTrace();            
+        logger.error("harvestFrom(Document)", e);            
       }
       return null;  
    }
@@ -169,9 +178,9 @@ public class RegistryHarvestService {
          call.invokeOneWay(new Object[] {sbeRequest});
 
       }catch(ParserConfigurationException pce) {
-         pce.printStackTrace();   
+        logger.error("harvestAll(Document)", pce);   
       }catch(Exception e) {
-         e.printStackTrace();            
+        logger.error("harvestAll(Document)", e);            
       }
    }
    
@@ -180,7 +189,9 @@ public class RegistryHarvestService {
    public void harvestResource(Document query) {
       try {
          //get a call object operation to the web service.
-         System.out.println("okay doing Call and endpoint = " + endPoint.toString());
+        logger
+                .info("harvestResource(Document) - okay doing Call and endpoint = "
+                        + endPoint.toString());
          Call call = getCall();
 
          DocumentBuilder registryBuilder = null;
@@ -195,12 +206,13 @@ public class RegistryHarvestService {
          //SOAPBodyElement sbeRequest = new SOAPBodyElement(query.getDocumentElement());
          sbeRequest.setName("harvestResource");
          sbeRequest.setNamespaceURI(NAMESPACE_URI);
-         System.out.println("Invoking this doc = " + XMLUtils.DocumentToString(query));
+        logger.info("harvestResource(Document) - Invoking this doc = "
+                + XMLUtils.DocumentToString(query));
          call.invokeOneWay (new Object[] {sbeRequest});
       }catch(ParserConfigurationException pce) {
-         pce.printStackTrace();   
+        logger.error("harvestResource(Document)", pce);   
       }catch(Exception e) {
-         e.printStackTrace();            
+        logger.error("harvestResource(Document)", e);            
       }
    }
    
@@ -222,9 +234,9 @@ public class RegistryHarvestService {
          sbeRequest.setNamespaceURI(NAMESPACE_URI);
          call.invokeOneWay (new Object[] {sbeRequest});
       }catch(ParserConfigurationException pce) {
-         pce.printStackTrace();   
+        logger.error("harvestFromResource(Document)", pce);   
       }catch(Exception e) {
-         e.printStackTrace();            
+        logger.error("harvestFromResource(Document)", e);            
       }
    }
 

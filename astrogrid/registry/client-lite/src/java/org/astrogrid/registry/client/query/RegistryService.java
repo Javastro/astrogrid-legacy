@@ -1,5 +1,8 @@
 package org.astrogrid.registry.client.query;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.net.URL; 
 import java.util.Vector; 
 import javax.xml.parsers.DocumentBuilder; 
@@ -60,7 +63,8 @@ import org.astrogrid.util.DomHelper;
  * @link http://www.ivoa.net/twiki/bin/view/IVOA/IVOARegWp03
  * @author Kevin Benson
  */
-public interface RegistryService  { 
+public interface RegistryService  {
+
 
    public Document getRegistries() throws RegistryException;
     
