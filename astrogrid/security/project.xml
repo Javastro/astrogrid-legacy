@@ -20,14 +20,14 @@
   <package>org.astrogrid</package> <logo>http://www.astrogrid.org/images/AGlogo</logo> 
   <shortDescription>A collection of APIs abstracting security in web services.</shortDescription>
 
-  <siteDirectory>/var/www/www/maven/build/wsse</siteDirectory>
+  <siteDirectory>/var/www/www/maven/build/security</siteDirectory>
 
   <repository>
     <connection>
-      scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/wsse
+      scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/security
     </connection>
     <developerConnection>
-      scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/wsse
+      scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/security
     </developerConnection>
   </repository>
 
