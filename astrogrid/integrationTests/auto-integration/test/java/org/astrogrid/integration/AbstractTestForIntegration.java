@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForIntegration.java,v 1.12 2004/09/14 17:02:19 nw Exp $
+/*$Id: AbstractTestForIntegration.java,v 1.13 2004/09/14 23:25:43 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,6 +30,10 @@ import com.meterware.httpunit.GetMethodWebRequest;
 import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebResponse;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
+
 import junit.framework.TestCase;
 
 /** abstract test for integration - sets up the Astorgrid scripting object, commonly used objects, etc.
@@ -51,6 +55,7 @@ public class AbstractTestForIntegration extends IntegrationTestCase {
      */
     protected void setUp() throws Exception {
         super.setUp();
+        suggestGC();
         checkMemory("pre:" + this.getClass().getName());
         ag = Astrogrid.getInstance();
         assertNotNull("astrogrid instance is null",ag);
@@ -76,7 +81,7 @@ public class AbstractTestForIntegration extends IntegrationTestCase {
         checkMemory("post: " + this.getClass().getName());
     }
     
-    
+    /** call page on tomcat that produces memory statistics */
     protected void checkMemory(String checkpoint) {
         try {
         WebConversation conv = new WebConversation();
@@ -97,6 +102,15 @@ public class AbstractTestForIntegration extends IntegrationTestCase {
         memLog.info(message);
         } catch (Throwable t) {
             memLog.warn("Failed to check memory at " + checkpoint,t);
+        }
+    }
+    /** suggest to tomcat that a garbage collection might be a good idea */
+    protected void suggestGC() {
+        try {
+           URL u = new URL(SimpleConfig.getProperty("org.astrogrid.gc.endpoint"));
+           u.openStream().read(); //should be enough to trigger the jsp.
+        } catch (Throwable t) {
+            memLog.warn("failed to suggest GC ",t);
         }
     }
    
@@ -168,6 +182,9 @@ public class AbstractTestForIntegration extends IntegrationTestCase {
 
 /* 
 $Log: AbstractTestForIntegration.java,v $
+Revision 1.13  2004/09/14 23:25:43  nw
+added call to garbage-collection jsp before each test.
+
 Revision 1.12  2004/09/14 17:02:19  nw
 added code to record memory usage.
 
