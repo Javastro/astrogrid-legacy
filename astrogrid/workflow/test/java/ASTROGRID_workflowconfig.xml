@@ -1,0 +1,146 @@
+<?xml version="1.0" ?>
+
+<!--   Each workflow is configured by setting properties within this file    -->
+
+<properties>
+
+  <!-- GENERAL CATEGORY ===================================================== -->  
+  <category name="GENERAL">
+    <property name="VERSION" value="1.2" />
+  </category>
+  
+  
+  <!-- MESSAGES CATEGORY =========================================================
+   Following are the base name, language code and country code for 
+   the properties file that contains all messages for a datacenter 
+   Example. 
+   Given these values:
+   INSTALLATION.BASENAME=ASTROGRID_workflowmessages
+   INSTALLATION.LANGUAGECODE=en
+   INSTALLATION.COUNTRYCODE=US
+
+   suiteable file names would be:
+   ASTROGRID_workflowmessages.properties        // installation default messages
+   ASTROGRID_workflowmessages_en.properties     // English language default messages
+   ASTROGRID_workflowmessages_en_US.properties  // US specific English language messages
+  -->
+  <category name="MESSAGES">
+    <property name="INSTALLATION.BASENAME" value="ASTROGRID_workflowmessages" />
+    <property name="INSTALLATION.LANGUAGECODE" value="" />
+    <property name="INSTALLATION.COUNTRYCODE" value="" />   
+    <property name="INSTALLATION.VARIANTCODE" value="" />       
+  </category>
+  
+  
+  <!-- WORKFLOW CATEGORY ===================================================== -->  
+  <category name="WORKFLOW">
+    <property name="PARSER.VALIDATION" value="false" />
+   <!-- Templates -->
+    <property name="TEMPLATE.SINGLESTEP" value="Workflow_onestepsequence.xmltemplate" />  
+    <property name="TEMPLATE.TWOSTEPSEQUENCE" value="Workflow_twostepsequence.xmltemplate" />  
+    <property name="TEMPLATE.TWOSTEPFLOW" value="Workflow_twostepflow.xmltemplate" />          
+  </category>
+  
+  <!-- MYSPACE CATEGORY ========================================================== -->
+  <category name="MYSPACE">
+    <!-- The Cache directory
+         Local directory where temporary files associated with the MySpace facility 
+         can be created (e.g. for the purposes of holding a votable to be ftp'd to MySpace).
+         The format is operating system dependent and can be a relative- or a fully-
+         qualified path. -->
+    <property name="CACHE_DIRECTORY" value="/tmp" />
+ 
+   <!-- URL
+        This is the URL for the MySpace facility -->
+    <property name="URL" value="http://astrogrid1.jb.man.ac.uk:8080/axis/services/MySpaceManager" /> 
+   <!-- MySpace Request Template -->
+    <property name="TEMPLATE.REQUEST" value="MySpaceManagerRequest.xmltemplate" />  
+  </category>
+  
+  <!-- JES CATEGORY ========================================================== -->
+  <category name="JES">
+
+   <!-- URL
+        This is the URL for the Jes facility
+    <property name="URL" value="http://astrogrid1.jb.man.ac.uk:8080/axis/services/JobControllerService" />
+     -->
+    <property name="URL" value="http://astrogrid1.jb.man.ac.uk:8080/axis/services/JobControllerService" />  
+  </category>
+  
+  <!-- TOOLS LIST CATEGORY ========================================================== -->
+  <category name="TOOLS_LIST">
+    <property name="TOTAL" value="3" />
+    <property name="NAME.0" value="QueryTool" />  
+    <property name="NAME.1" value="VOTableMerge" /> 
+    <property name="NAME.2" value="Sextractor" /> 
+  </category>
+  
+  <!-- QueryTool CATEGORY ========================================================== -->
+  <category name="QueryTool">
+    <property name="DOCUMENTATION" value="QueryTool documentation goes here" />
+    <property name="INPUT_PARAMS.TOTAL" value="1" />
+    <property name="INPUT_PARAM.NAME.0" value="query" />  
+    <property name="INPUT_PARAM.DOCUMENTATION.query" value="Paremeter query documentation goes here" />  
+    <property name="INPUT_PARAM.TYPE.query" value="MySpaceADQLReference" />
+    <property name="INPUT_PARAM.CARDINALITY.MIN.query" value="1" />  
+    <property name="INPUT_PARAM.CARDINALITY.MAX.query" value="1" />     
+    <property name="OUTPUT_PARAMS.TOTAL" value="1" />
+    <property name="OUTPUT_PARAM.NAME.0" value="result" />  
+    <property name="OUTPUT_PARAM.DOCUMENTATION.result" value="Paremeter result documentation goes here" />    
+    <property name="OUTPUT_PARAM.TYPE.result" value="MySpaceVOTableReference" />       
+    <property name="OUTPUT_PARAM.CARDINALITY.MIN.result" value="1" />  
+    <property name="OUTPUT_PARAM.CARDINALITY.MAX.result" value="1" />     
+  </category>
+  
+  <!-- VOTableMerge CATEGORY ========================================================== -->
+  <category name="VOTableMerge">
+    <property name="DOCUMENTATION" value="VOTableMerge documentation goes here" />  
+    <property name="INPUT_PARAMS.TOTAL" value="1" />
+    <property name="INPUT_PARAM.NAME.0" value="in" />  
+    <property name="INPUT_PARAM.DOCUMENTATION.in" value="Paremeter in documentation goes here" />  
+    <property name="INPUT_PARAM.TYPE.in" value="MySpaceVOTableReference" />   
+    <property name="INPUT_PARAM.CARDINALITY.MIN.in" value="2" />  
+    <property name="INPUT_PARAM.CARDINALITY.MAX.in" value="-1" />     
+    <property name="OUTPUT_PARAMS.TOTAL" value="1" />
+    <property name="OUTPUT_PARAM.NAME.0" value="out" /> 
+    <property name="OUTPUT_PARAM.DOCUMENTATION.out" value="Paremeter out documentation goes here" />  
+    <property name="OUTPUT_PARAM.TYPE.out" value="MySpaceVOTableReference" /> 
+    <property name="OUTPUT_PARAM.CARDINALITY.MIN.out" value="1" />  
+    <property name="OUTPUT_PARAM.CARDINALITY.MAX.out" value="1" />     
+  </category>
+  
+  
+  <!-- sextractor CATEGORY ========================================================== -->
+  <category name="Sextractor">
+    <property name="DOCUMENTATION" value="Sextractor tools documentation goes here." /> 
+     
+    <property name="INPUT_PARAMS.TOTAL" value="3" />
+    
+    <property name="INPUT_PARAM.NAME.0" value="image1" /> 
+    <property name="INPUT_PARAM.TYPE.image1" value="MySpaceFileReference" /> 
+    <property name="INPUT_PARAM.DOCUMENTATION.image1" value="Paremeter image1 documentation goes here" />  
+    <property name="INPUT_PARAM.CARDINALITY.MIN.image1" value="1" />  
+    <property name="INPUT_PARAM.CARDINALITY.MAX.image1" value="1" />         
+
+    <property name="INPUT_PARAM.NAME.1" value="config_file" />  
+    <property name="INPUT_PARAM.TYPE.config_file" value="MySpaceFileReference" /> 
+    <property name="INPUT_PARAM.DOCUMENTATION.config_file" value="Paremeter config_file documentation goes here" />  
+    <property name="INPUT_PARAM.CARDINALITY.MIN.config_file" value="1" />  
+    <property name="INPUT_PARAM.CARDINALITY.MAX.config_file" value="1" />  
+    
+    <property name="INPUT_PARAM.NAME.2" value="config_parameters" /> 
+    <property name="INPUT_PARAM.TYPE.config_parameters" value="MySpaceFileReference" /> 
+    <property name="INPUT_PARAM.DOCUMENTATION.config_parameters" value="Paremeter config_parameters documentation goes here" />  
+    <property name="INPUT_PARAM.CARDINALITY.MIN.config_parameters" value="1" />  
+    <property name="INPUT_PARAM.CARDINALITY.MAX.config_parameters" value="1" />  
+               
+    <property name="OUTPUT_PARAMS.TOTAL" value="1" />
+    
+    <property name="OUTPUT_PARAM.NAME.0" value="output" /> 
+    <property name="OUTPUT_PARAM.TYPE.output" value="MySpaceVOTableReference" />    
+    <property name="OUTPUT_PARAM.DOCUMENTATION.output" value="Paremeter output documentation goes here" />  
+    <property name="OUTPUT_PARAM.CARDINALITY.MIN.output" value="1" />  
+    <property name="OUTPUT_PARAM.CARDINALITY.MAX.output" value="1" />     
+  </category>
+
+</properties>
