@@ -10,8 +10,8 @@
  */
 package org.astrogrid.jes.jobmonitor; 
 
-import org.astrogrid.jes.comm.JobScheduler;
 import org.astrogrid.jes.component.ComponentDescriptor;
+import org.astrogrid.jes.jobscheduler.JobScheduler;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.jes.types.v1.cea.axis.MessageType;
 

@@ -1,4 +1,4 @@
-/*$Id: EmptyComponentManager.java,v 1.3 2004/03/15 00:06:57 nw Exp $
+/*$Id: EmptyComponentManager.java,v 1.4 2004/03/15 00:30:19 nw Exp $
  * Created on 07-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,10 @@
 **/
 package org.astrogrid.jes.component;
 
-import org.astrogrid.jes.comm.JobScheduler;
 import org.astrogrid.jes.delegate.v1.jobcontroller.JobController;
 import org.astrogrid.jes.delegate.v1.jobmonitor.JobMonitor;
 import org.astrogrid.jes.job.BeanFacade;
+import org.astrogrid.jes.jobscheduler.JobScheduler;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -160,6 +160,9 @@ public class EmptyComponentManager implements ComponentManager {
 
 /* 
 $Log: EmptyComponentManager.java,v $
+Revision 1.4  2004/03/15 00:30:19  nw
+updaed to refer to moved classes
+
 Revision 1.3  2004/03/15 00:06:57  nw
 removed SchedulerNotifier interface - replaced references to it by references to JobScheduler interface - identical
 

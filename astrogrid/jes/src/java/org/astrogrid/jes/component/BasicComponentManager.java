@@ -1,4 +1,4 @@
-/*$Id: BasicComponentManager.java,v 1.3 2004/03/15 00:06:57 nw Exp $
+/*$Id: BasicComponentManager.java,v 1.4 2004/03/15 00:30:19 nw Exp $
  * Created on 07-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,8 +10,6 @@
 **/
 package org.astrogrid.jes.component;
 
-import org.astrogrid.jes.comm.JobScheduler;
-import org.astrogrid.jes.comm.MemoryQueueSchedulerNotifier;
 import org.astrogrid.jes.delegate.v1.jobcontroller.JobController;
 import org.astrogrid.jes.delegate.v1.jobmonitor.JobMonitor;
 import org.astrogrid.jes.impl.workflow.AbstractJobFactoryImpl;
@@ -19,9 +17,11 @@ import org.astrogrid.jes.impl.workflow.CastorBeanFacade;
 import org.astrogrid.jes.impl.workflow.InMemoryJobFactoryImpl;
 import org.astrogrid.jes.job.BeanFacade;
 import org.astrogrid.jes.jobscheduler.Dispatcher;
+import org.astrogrid.jes.jobscheduler.JobScheduler;
 import org.astrogrid.jes.jobscheduler.Locator;
 import org.astrogrid.jes.jobscheduler.Policy;
 import org.astrogrid.jes.jobscheduler.dispatcher.ApplicationControllerDispatcher;
+import org.astrogrid.jes.jobscheduler.impl.SchedulerTaskQueueDecorator;
 import org.astrogrid.jes.jobscheduler.locator.XMLFileLocator;
 import org.astrogrid.jes.jobscheduler.policy.LinearPolicy;
 
@@ -44,13 +44,13 @@ public class BasicComponentManager extends EmptyComponentManager {
         try {
         defaultCallbackURL = new URL("http://localhost:8080/astrogrid-jes/services/JobMonitor");
         pico.registerComponentInstance("jes-meta",JES_META);
-        pico.registerComponentImplementation(JobScheduler.class,MemoryQueueSchedulerNotifier.class,
+        pico.registerComponentImplementation(JobScheduler.class,SchedulerTaskQueueDecorator.class,
         new Parameter[] {
             new ComponentParameter(SCHEDULER_ENGINE)
         }
         );
         
-        pico.registerComponentImplementation(SCHEDULER_ENGINE,org.astrogrid.jes.jobscheduler.JobScheduler.class);
+        pico.registerComponentImplementation(SCHEDULER_ENGINE,org.astrogrid.jes.jobscheduler.impl.SchedulerImpl.class);
         pico.registerComponentImplementation(Policy.class,LinearPolicy.class);
         pico.registerComponentImplementation(Dispatcher.class,ApplicationControllerDispatcher.class);
         pico.registerComponentInstance(ApplicationControllerDispatcher.MonitorEndpoint.class, 
@@ -94,6 +94,9 @@ public class BasicComponentManager extends EmptyComponentManager {
 
 /* 
 $Log: BasicComponentManager.java,v $
+Revision 1.4  2004/03/15 00:30:19  nw
+updaed to refer to moved classes
+
 Revision 1.3  2004/03/15 00:06:57  nw
 removed SchedulerNotifier interface - replaced references to it by references to JobScheduler interface - identical
 

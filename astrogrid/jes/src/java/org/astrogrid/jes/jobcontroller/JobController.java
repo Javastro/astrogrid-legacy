@@ -12,13 +12,13 @@ package org.astrogrid.jes.jobcontroller;
 
 import org.astrogrid.community.beans.v1.axis._Account;
 import org.astrogrid.jes.JesException;
-import org.astrogrid.jes.comm.JobScheduler;
 import org.astrogrid.jes.component.ComponentDescriptor;
 import org.astrogrid.jes.delegate.v1.jobcontroller.JesFault;
 import org.astrogrid.jes.job.BeanFacade;
 import org.astrogrid.jes.job.JobException;
 import org.astrogrid.jes.job.JobFactory;
 import org.astrogrid.jes.job.SubmitJobRequest;
+import org.astrogrid.jes.jobscheduler.JobScheduler;
 import org.astrogrid.jes.types.v1.JobURN;
 import org.astrogrid.jes.types.v1.WorkflowString;
 import org.astrogrid.jes.types.v1.WorkflowSummary;

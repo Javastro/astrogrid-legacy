@@ -1,4 +1,4 @@
-/*$Id: ProductionComponentManager.java,v 1.4 2004/03/15 00:06:57 nw Exp $
+/*$Id: ProductionComponentManager.java,v 1.5 2004/03/15 00:30:19 nw Exp $
  * Created on 07-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,8 +12,6 @@ package org.astrogrid.jes.component.production;
 import org.astrogrid.config.Config;
 import org.astrogrid.config.PropertyNotFoundException;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.jes.comm.JobScheduler;
-import org.astrogrid.jes.comm.MemoryQueueSchedulerNotifier;
 import org.astrogrid.jes.component.ComponentDescriptor;
 import org.astrogrid.jes.component.ComponentManagerException;
 import org.astrogrid.jes.component.EmptyComponentManager;
@@ -27,9 +25,11 @@ import org.astrogrid.jes.impl.workflow.FileJobFactoryImpl;
 import org.astrogrid.jes.impl.workflow.SqlCommands;
 import org.astrogrid.jes.job.BeanFacade;
 import org.astrogrid.jes.jobscheduler.Dispatcher;
+import org.astrogrid.jes.jobscheduler.JobScheduler;
 import org.astrogrid.jes.jobscheduler.Locator;
 import org.astrogrid.jes.jobscheduler.Policy;
 import org.astrogrid.jes.jobscheduler.dispatcher.ApplicationControllerDispatcher;
+import org.astrogrid.jes.jobscheduler.impl.SchedulerTaskQueueDecorator;
 import org.astrogrid.jes.jobscheduler.locator.RegistryToolLocator;
 import org.astrogrid.jes.jobscheduler.locator.XMLFileLocator;
 import org.astrogrid.jes.jobscheduler.policy.LinearPolicy;
@@ -56,11 +56,11 @@ public final class ProductionComponentManager extends EmptyComponentManager {
         try {
          pico.registerComponentInstance("jes-meta",JES_META);
          pico.registerComponentInstance(Config.class,conf); 
-         pico.registerComponentImplementation(JobScheduler.class,MemoryQueueSchedulerNotifier.class,
+         pico.registerComponentImplementation(JobScheduler.class,SchedulerTaskQueueDecorator.class,
             new Parameter[]{
                 new ComponentParameter(SCHEDULER_ENGINE)
             });
-         pico.registerComponentImplementation(SCHEDULER_ENGINE,org.astrogrid.jes.jobscheduler.JobScheduler.class);
+         pico.registerComponentImplementation(SCHEDULER_ENGINE,org.astrogrid.jes.jobscheduler.impl.SchedulerImpl.class);
          registerPolicy();
          
          pico.registerComponentImplementation(Dispatcher.class,ApplicationControllerDispatcher.class);
@@ -177,6 +177,9 @@ public final class ProductionComponentManager extends EmptyComponentManager {
 
 /* 
 $Log: ProductionComponentManager.java,v $
+Revision 1.5  2004/03/15 00:30:19  nw
+updaed to refer to moved classes
+
 Revision 1.4  2004/03/15 00:06:57  nw
 removed SchedulerNotifier interface - replaced references to it by references to JobScheduler interface - identical
 
