@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: GroupDescriptor.java,v 1.8 2004/03/09 14:19:24 nw Exp $
+ * $Id: GroupDescriptor.java,v 1.9 2004/03/09 14:35:58 pah Exp $
  */
 
 package org.astrogrid.community.beans.v1;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class GroupDescriptor.
  * 
- * @version $Revision: 1.8 $ $Date: 2004/03/09 14:19:24 $
+ * @version $Revision: 1.9 $ $Date: 2004/03/09 14:35:58 $
  */
 public class GroupDescriptor extends org.astrogrid.community.beans.v1.BaseIdentifierDescriptor {
 

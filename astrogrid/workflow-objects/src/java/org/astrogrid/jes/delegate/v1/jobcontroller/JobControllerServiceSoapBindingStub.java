@@ -116,9 +116,16 @@ public class JobControllerServiceSoapBindingStub extends org.apache.axis.client.
             cachedSerFactories.add(simplesf);
             cachedDeserFactories.add(simpledf);
 
-            qName = new javax.xml.namespace.QName("urn:jes/types/v1", "workflow-string");
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/Credentials/v1", "Group");
             cachedSerQNames.add(qName);
-            cls = org.astrogrid.jes.types.v1.WorkflowString.class;
+            cls = org.astrogrid.community.beans.v1.axis._Group.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(beansf);
+            cachedDeserFactories.add(beandf);
+
+            qName = new javax.xml.namespace.QName("urn:jes/types/v1", "jobURN");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.jes.types.v1.JobURN.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(simplesf);
             cachedDeserFactories.add(simpledf);
@@ -137,26 +144,19 @@ public class JobControllerServiceSoapBindingStub extends org.apache.axis.client.
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
+            qName = new javax.xml.namespace.QName("urn:jes/types/v1", "workflow-string");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.jes.types.v1.WorkflowString.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(simplesf);
+            cachedDeserFactories.add(simpledf);
+
             qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/Credentials/v1", "BaseIdentifier");
             cachedSerQNames.add(qName);
             cls = org.astrogrid.community.beans.v1.axis.BaseIdentifier.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
-
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/Credentials/v1", "Group");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.community.beans.v1.axis._Group.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
-
-            qName = new javax.xml.namespace.QName("urn:jes/types/v1", "jobURN");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.jes.types.v1.JobURN.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(simplesf);
-            cachedDeserFactories.add(simpledf);
 
     }
 

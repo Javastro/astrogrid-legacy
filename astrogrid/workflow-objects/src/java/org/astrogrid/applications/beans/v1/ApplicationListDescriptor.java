@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: PrefDescriptor.java,v 1.11 2004/03/09 14:19:24 nw Exp $
+ * $Id: ApplicationListDescriptor.java,v 1.2 2004/03/09 14:35:58 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1;
@@ -17,11 +17,11 @@ import org.exolab.castor.xml.XMLFieldDescriptor;
 import org.exolab.castor.xml.validators.*;
 
 /**
- * Class PrefDescriptor.
+ * Class ApplicationListDescriptor.
  * 
- * @version $Revision: 1.11 $ $Date: 2004/03/09 14:19:24 $
+ * @version $Revision: 1.2 $ $Date: 2004/03/09 14:35:58 $
  */
-public class PrefDescriptor extends org.astrogrid.applications.beans.v1.ParameterRefDescriptor {
+public class ApplicationListDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 
 
       //--------------------------/
@@ -53,29 +53,57 @@ public class PrefDescriptor extends org.astrogrid.applications.beans.v1.Paramete
      //- Constructors -/
     //----------------/
 
-    public PrefDescriptor() {
+    public ApplicationListDescriptor() {
         super();
-        setExtendsWithoutFlatten(new org.astrogrid.applications.beans.v1.ParameterRefDescriptor());
         nsURI = "http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1";
-        xmlName = "pref";
+        xmlName = "ApplicationList";
+        
+        //-- set grouping compositor
+        setCompositorAsSequence();
         org.exolab.castor.xml.util.XMLFieldDescriptorImpl  desc           = null;
         org.exolab.castor.xml.XMLFieldHandler              handler        = null;
         org.exolab.castor.xml.FieldValidator               fieldValidator = null;
         //-- initialize attribute descriptors
         
-        desc = (org.exolab.castor.xml.util.XMLFieldDescriptorImpl) getFieldDescriptor("ref", org.exolab.castor.xml.NodeType.Attribute);
-        //-- validation code for: _ref
+        //-- initialize element descriptors
+        
+        //-- _applicationDefn
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.astrogrid.applications.beans.v1.ApplicationBase.class, "_applicationDefn", "ApplicationDefn", org.exolab.castor.xml.NodeType.Element);
+        handler = (new org.exolab.castor.xml.XMLFieldHandler() {
+            public java.lang.Object getValue( java.lang.Object object ) 
+                throws IllegalStateException
+            {
+                ApplicationList target = (ApplicationList) object;
+                return target.getApplicationDefn();
+            }
+            public void setValue( java.lang.Object object, java.lang.Object value) 
+                throws IllegalStateException, IllegalArgumentException
+            {
+                try {
+                    ApplicationList target = (ApplicationList) object;
+                    target.setApplicationDefn( (org.astrogrid.applications.beans.v1.ApplicationBase) value);
+                }
+                catch (java.lang.Exception ex) {
+                    throw new IllegalStateException(ex.toString());
+                }
+            }
+            public java.lang.Object newInstance( java.lang.Object parent ) {
+                return new org.astrogrid.applications.beans.v1.ApplicationBase();
+            }
+        } );
+        desc.setHandler(handler);
+        desc.setNameSpaceURI("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1");
+        desc.setRequired(true);
+        desc.setMultivalued(false);
+        addFieldDescriptor(desc);
+        
+        //-- validation code for: _applicationDefn
         fieldValidator = new org.exolab.castor.xml.FieldValidator();
         fieldValidator.setMinOccurs(1);
         { //-- local scope
-            StringValidator typeValidator = new StringValidator();
-            typeValidator.setWhiteSpace("preserve");
-            fieldValidator.setValidator(typeValidator);
         }
         desc.setValidator(fieldValidator);
-        //-- initialize element descriptors
-        
-    } //-- org.astrogrid.applications.beans.v1.PrefDescriptor()
+    } //-- org.astrogrid.applications.beans.v1.ApplicationListDescriptor()
 
 
       //-----------/
@@ -95,7 +123,7 @@ public class PrefDescriptor extends org.astrogrid.applications.beans.v1.Paramete
      */
     public org.exolab.castor.mapping.ClassDescriptor getExtends()
     {
-        return super.getExtends();
+        return null;
     } //-- org.exolab.castor.mapping.ClassDescriptor getExtends() 
 
     /**
@@ -103,8 +131,6 @@ public class PrefDescriptor extends org.astrogrid.applications.beans.v1.Paramete
      */
     public org.exolab.castor.mapping.FieldDescriptor getIdentity()
     {
-        if (identity == null)
-            return super.getIdentity();
         return identity;
     } //-- org.exolab.castor.mapping.FieldDescriptor getIdentity() 
 
@@ -113,7 +139,7 @@ public class PrefDescriptor extends org.astrogrid.applications.beans.v1.Paramete
      */
     public java.lang.Class getJavaClass()
     {
-        return org.astrogrid.applications.beans.v1.Pref.class;
+        return org.astrogrid.applications.beans.v1.ApplicationList.class;
     } //-- java.lang.Class getJavaClass() 
 
     /**

@@ -2,10 +2,10 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: JobExecutionRecord.java,v 1.10 2004/03/09 14:35:58 pah Exp $
+ * $Id: ApplicationList.java,v 1.2 2004/03/09 14:35:58 pah Exp $
  */
 
-package org.astrogrid.workflow.beans.v1.execution;
+package org.astrogrid.applications.beans.v1;
 
   //---------------------------------/
  //- Imported classes and packages -/
@@ -22,11 +22,11 @@ import org.exolab.castor.xml.ValidationException;
 import org.xml.sax.ContentHandler;
 
 /**
- * A record of a single execution of a job
+ * list of applications
  * 
- * @version $Revision: 1.10 $ $Date: 2004/03/09 14:35:58 $
+ * @version $Revision: 1.2 $ $Date: 2004/03/09 14:35:58 $
  */
-public class JobExecutionRecord extends org.astrogrid.workflow.beans.v1.execution.ExecutionRecordType 
+public class ApplicationList extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
 {
 
@@ -36,18 +36,19 @@ implements java.io.Serializable
     //--------------------------/
 
     /**
-     * Field _jobId
+     * This is a generic application definition that does not take
+     * in all of the specializations for web/commandline etc
      */
-    private org.astrogrid.workflow.beans.v1.execution.JobURN _jobId;
+    private org.astrogrid.applications.beans.v1.ApplicationBase _applicationDefn;
 
 
       //----------------/
      //- Constructors -/
     //----------------/
 
-    public JobExecutionRecord() {
+    public ApplicationList() {
         super();
-    } //-- org.astrogrid.workflow.beans.v1.execution.JobExecutionRecord()
+    } //-- org.astrogrid.applications.beans.v1.ApplicationList()
 
 
       //-----------/
@@ -67,15 +68,15 @@ implements java.io.Serializable
         if (super.equals(obj)==false)
             return false;
         
-        if (obj instanceof JobExecutionRecord) {
+        if (obj instanceof ApplicationList) {
         
-            JobExecutionRecord temp = (JobExecutionRecord)obj;
-            if (this._jobId != null) {
-                if (temp._jobId == null) return false;
-                else if (!(this._jobId.equals(temp._jobId))) 
+            ApplicationList temp = (ApplicationList)obj;
+            if (this._applicationDefn != null) {
+                if (temp._applicationDefn == null) return false;
+                else if (!(this._applicationDefn.equals(temp._applicationDefn))) 
                     return false;
             }
-            else if (temp._jobId != null)
+            else if (temp._applicationDefn != null)
                 return false;
             return true;
         }
@@ -83,14 +84,17 @@ implements java.io.Serializable
     } //-- boolean equals(java.lang.Object) 
 
     /**
-     * Returns the value of field 'jobId'.
+     * Returns the value of field 'applicationDefn'. The field
+     * 'applicationDefn' has the following description: This is a
+     * generic application definition that does not take in all of
+     * the specializations for web/commandline etc
      * 
-     * @return the value of field 'jobId'.
+     * @return the value of field 'applicationDefn'.
      */
-    public org.astrogrid.workflow.beans.v1.execution.JobURN getJobId()
+    public org.astrogrid.applications.beans.v1.ApplicationBase getApplicationDefn()
     {
-        return this._jobId;
-    } //-- org.astrogrid.workflow.beans.v1.execution.JobURN getJobId() 
+        return this._applicationDefn;
+    } //-- org.astrogrid.applications.beans.v1.ApplicationBase getApplicationDefn() 
 
     /**
      * Method isValid
@@ -131,25 +135,28 @@ implements java.io.Serializable
     } //-- void marshal(org.xml.sax.ContentHandler) 
 
     /**
-     * Sets the value of field 'jobId'.
+     * Sets the value of field 'applicationDefn'. The field
+     * 'applicationDefn' has the following description: This is a
+     * generic application definition that does not take in all of
+     * the specializations for web/commandline etc
      * 
-     * @param jobId the value of field 'jobId'.
+     * @param applicationDefn the value of field 'applicationDefn'.
      */
-    public void setJobId(org.astrogrid.workflow.beans.v1.execution.JobURN jobId)
+    public void setApplicationDefn(org.astrogrid.applications.beans.v1.ApplicationBase applicationDefn)
     {
-        this._jobId = jobId;
-    } //-- void setJobId(org.astrogrid.workflow.beans.v1.execution.JobURN) 
+        this._applicationDefn = applicationDefn;
+    } //-- void setApplicationDefn(org.astrogrid.applications.beans.v1.ApplicationBase) 
 
     /**
-     * Method unmarshalJobExecutionRecord
+     * Method unmarshalApplicationList
      * 
      * @param reader
      */
-    public static org.astrogrid.workflow.beans.v1.execution.JobExecutionRecord unmarshalJobExecutionRecord(java.io.Reader reader)
+    public static org.astrogrid.applications.beans.v1.ApplicationList unmarshalApplicationList(java.io.Reader reader)
         throws org.exolab.castor.xml.MarshalException, org.exolab.castor.xml.ValidationException
     {
-        return (org.astrogrid.workflow.beans.v1.execution.JobExecutionRecord) Unmarshaller.unmarshal(org.astrogrid.workflow.beans.v1.execution.JobExecutionRecord.class, reader);
-    } //-- org.astrogrid.workflow.beans.v1.execution.JobExecutionRecord unmarshalJobExecutionRecord(java.io.Reader) 
+        return (org.astrogrid.applications.beans.v1.ApplicationList) Unmarshaller.unmarshal(org.astrogrid.applications.beans.v1.ApplicationList.class, reader);
+    } //-- org.astrogrid.applications.beans.v1.ApplicationList unmarshalApplicationList(java.io.Reader) 
 
     /**
      * Method validate

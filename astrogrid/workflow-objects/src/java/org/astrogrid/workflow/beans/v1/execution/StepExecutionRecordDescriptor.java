@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: StepExecutionRecordDescriptor.java,v 1.9 2004/03/09 14:19:25 nw Exp $
+ * $Id: StepExecutionRecordDescriptor.java,v 1.10 2004/03/09 14:35:58 pah Exp $
  */
 
 package org.astrogrid.workflow.beans.v1.execution;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class StepExecutionRecordDescriptor.
  * 
- * @version $Revision: 1.9 $ $Date: 2004/03/09 14:19:25 $
+ * @version $Revision: 1.10 $ $Date: 2004/03/09 14:35:58 $
  */
 public class StepExecutionRecordDescriptor extends org.astrogrid.workflow.beans.v1.execution.ExecutionRecordTypeDescriptor {
 

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ParameterRefDescriptor.java,v 1.11 2004/03/09 14:19:24 nw Exp $
+ * $Id: ParameterRefDescriptor.java,v 1.12 2004/03/09 14:35:58 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class ParameterRefDescriptor.
  * 
- * @version $Revision: 1.11 $ $Date: 2004/03/09 14:19:24 $
+ * @version $Revision: 1.12 $ $Date: 2004/03/09 14:35:58 $
  */
 public class ParameterRefDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 
@@ -98,16 +98,16 @@ public class ParameterRefDescriptor extends org.exolab.castor.xml.util.XMLClassD
             fieldValidator.setValidator(typeValidator);
         }
         desc.setValidator(fieldValidator);
-        //-- _repeatable
-        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.lang.Boolean.TYPE, "_repeatable", "repeatable", org.exolab.castor.xml.NodeType.Attribute);
+        //-- _minoccurs
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.lang.Integer.TYPE, "_minoccurs", "minoccurs", org.exolab.castor.xml.NodeType.Attribute);
         handler = (new org.exolab.castor.xml.XMLFieldHandler() {
             public java.lang.Object getValue( java.lang.Object object ) 
                 throws IllegalStateException
             {
                 ParameterRef target = (ParameterRef) object;
-                if(!target.hasRepeatable())
+                if(!target.hasMinoccurs())
                     return null;
-                return new Boolean(target.getRepeatable());
+                return new Integer(target.getMinoccurs());
             }
             public void setValue( java.lang.Object object, java.lang.Object value) 
                 throws IllegalStateException, IllegalArgumentException
@@ -116,10 +116,10 @@ public class ParameterRefDescriptor extends org.exolab.castor.xml.util.XMLClassD
                     ParameterRef target = (ParameterRef) object;
                     // if null, use delete method for optional primitives 
                     if (value == null) {
-                        target.deleteRepeatable();
+                        target.deleteMinoccurs();
                         return;
                     }
-                    target.setRepeatable( ((Boolean)value).booleanValue());
+                    target.setMinoccurs( ((Integer)value).intValue());
                 }
                 catch (java.lang.Exception ex) {
                     throw new IllegalStateException(ex.toString());
@@ -132,23 +132,23 @@ public class ParameterRefDescriptor extends org.exolab.castor.xml.util.XMLClassD
         desc.setHandler(handler);
         addFieldDescriptor(desc);
         
-        //-- validation code for: _repeatable
+        //-- validation code for: _minoccurs
         fieldValidator = new org.exolab.castor.xml.FieldValidator();
         { //-- local scope
-            BooleanValidator typeValidator = new BooleanValidator();
+            IntegerValidator typeValidator = new IntegerValidator();
             fieldValidator.setValidator(typeValidator);
         }
         desc.setValidator(fieldValidator);
-        //-- _optional
-        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.lang.Boolean.TYPE, "_optional", "optional", org.exolab.castor.xml.NodeType.Attribute);
+        //-- _maxoccurs
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.lang.Integer.TYPE, "_maxoccurs", "maxoccurs", org.exolab.castor.xml.NodeType.Attribute);
         handler = (new org.exolab.castor.xml.XMLFieldHandler() {
             public java.lang.Object getValue( java.lang.Object object ) 
                 throws IllegalStateException
             {
                 ParameterRef target = (ParameterRef) object;
-                if(!target.hasOptional())
+                if(!target.hasMaxoccurs())
                     return null;
-                return new Boolean(target.getOptional());
+                return new Integer(target.getMaxoccurs());
             }
             public void setValue( java.lang.Object object, java.lang.Object value) 
                 throws IllegalStateException, IllegalArgumentException
@@ -157,10 +157,10 @@ public class ParameterRefDescriptor extends org.exolab.castor.xml.util.XMLClassD
                     ParameterRef target = (ParameterRef) object;
                     // if null, use delete method for optional primitives 
                     if (value == null) {
-                        target.deleteOptional();
+                        target.deleteMaxoccurs();
                         return;
                     }
-                    target.setOptional( ((Boolean)value).booleanValue());
+                    target.setMaxoccurs( ((Integer)value).intValue());
                 }
                 catch (java.lang.Exception ex) {
                     throw new IllegalStateException(ex.toString());
@@ -173,10 +173,10 @@ public class ParameterRefDescriptor extends org.exolab.castor.xml.util.XMLClassD
         desc.setHandler(handler);
         addFieldDescriptor(desc);
         
-        //-- validation code for: _optional
+        //-- validation code for: _maxoccurs
         fieldValidator = new org.exolab.castor.xml.FieldValidator();
         { //-- local scope
-            BooleanValidator typeValidator = new BooleanValidator();
+            IntegerValidator typeValidator = new IntegerValidator();
             fieldValidator.setValidator(typeValidator);
         }
         desc.setValidator(fieldValidator);

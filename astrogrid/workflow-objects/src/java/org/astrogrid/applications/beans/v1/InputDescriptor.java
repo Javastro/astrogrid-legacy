@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: InputDescriptor.java,v 1.11 2004/03/09 14:19:24 nw Exp $
+ * $Id: InputDescriptor.java,v 1.12 2004/03/09 14:35:58 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class InputDescriptor.
  * 
- * @version $Revision: 1.11 $ $Date: 2004/03/09 14:19:24 $
+ * @version $Revision: 1.12 $ $Date: 2004/03/09 14:35:58 $
  */
 public class InputDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 
@@ -68,7 +68,7 @@ public class InputDescriptor extends org.exolab.castor.xml.util.XMLClassDescript
         //-- initialize element descriptors
         
         //-- _prefList
-        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.astrogrid.applications.beans.v1.Pref.class, "_prefList", "pref", org.exolab.castor.xml.NodeType.Element);
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.astrogrid.applications.beans.v1.ParameterRef.class, "_prefList", "pref", org.exolab.castor.xml.NodeType.Element);
         handler = (new org.exolab.castor.xml.XMLFieldHandler() {
             public java.lang.Object getValue( java.lang.Object object ) 
                 throws IllegalStateException
@@ -81,14 +81,14 @@ public class InputDescriptor extends org.exolab.castor.xml.util.XMLClassDescript
             {
                 try {
                     Input target = (Input) object;
-                    target.addPref( (org.astrogrid.applications.beans.v1.Pref) value);
+                    target.addPref( (org.astrogrid.applications.beans.v1.ParameterRef) value);
                 }
                 catch (java.lang.Exception ex) {
                     throw new IllegalStateException(ex.toString());
                 }
             }
             public java.lang.Object newInstance( java.lang.Object parent ) {
-                return new org.astrogrid.applications.beans.v1.Pref();
+                return new org.astrogrid.applications.beans.v1.ParameterRef();
             }
         } );
         desc.setHandler(handler);

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Application.java,v 1.11 2004/03/09 14:19:24 nw Exp $
+ * $Id: ApplicationBase.java,v 1.2 2004/03/09 14:35:58 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1;
@@ -24,9 +24,9 @@ import org.xml.sax.ContentHandler;
 /**
  * Base Application definition
  * 
- * @version $Revision: 1.11 $ $Date: 2004/03/09 14:19:24 $
+ * @version $Revision: 1.2 $ $Date: 2004/03/09 14:35:58 $
  */
-public class Application extends org.astrogrid.common.bean.BaseBean 
+public class ApplicationBase extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
 {
 
@@ -60,9 +60,9 @@ implements java.io.Serializable
      //- Constructors -/
     //----------------/
 
-    public Application() {
+    public ApplicationBase() {
         super();
-    } //-- org.astrogrid.applications.beans.v1.Application()
+    } //-- org.astrogrid.applications.beans.v1.ApplicationBase()
 
 
       //-----------/
@@ -82,9 +82,9 @@ implements java.io.Serializable
         if (super.equals(obj)==false)
             return false;
         
-        if (obj instanceof Application) {
+        if (obj instanceof ApplicationBase) {
         
-            Application temp = (Application)obj;
+            ApplicationBase temp = (ApplicationBase)obj;
             if (this._name != null) {
                 if (temp._name == null) return false;
                 else if (!(this._name.equals(temp._name))) 
@@ -237,15 +237,15 @@ implements java.io.Serializable
     } //-- void setParameters(org.astrogrid.applications.beans.v1.Parameters) 
 
     /**
-     * Method unmarshalApplication
+     * Method unmarshalApplicationBase
      * 
      * @param reader
      */
-    public static org.astrogrid.applications.beans.v1.Application unmarshalApplication(java.io.Reader reader)
+    public static org.astrogrid.applications.beans.v1.ApplicationBase unmarshalApplicationBase(java.io.Reader reader)
         throws org.exolab.castor.xml.MarshalException, org.exolab.castor.xml.ValidationException
     {
-        return (org.astrogrid.applications.beans.v1.Application) Unmarshaller.unmarshal(org.astrogrid.applications.beans.v1.Application.class, reader);
-    } //-- org.astrogrid.applications.beans.v1.Application unmarshalApplication(java.io.Reader) 
+        return (org.astrogrid.applications.beans.v1.ApplicationBase) Unmarshaller.unmarshal(org.astrogrid.applications.beans.v1.ApplicationBase.class, reader);
+    } //-- org.astrogrid.applications.beans.v1.ApplicationBase unmarshalApplicationBase(java.io.Reader) 
 
     /**
      * Method validate

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ApplicationDescriptor.java,v 1.11 2004/03/09 14:19:24 nw Exp $
+ * $Id: ApplicationBaseDescriptor.java,v 1.2 2004/03/09 14:35:58 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1;
@@ -17,11 +17,11 @@ import org.exolab.castor.xml.XMLFieldDescriptor;
 import org.exolab.castor.xml.validators.*;
 
 /**
- * Class ApplicationDescriptor.
+ * Class ApplicationBaseDescriptor.
  * 
- * @version $Revision: 1.11 $ $Date: 2004/03/09 14:19:24 $
+ * @version $Revision: 1.2 $ $Date: 2004/03/09 14:35:58 $
  */
-public class ApplicationDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
+public class ApplicationBaseDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 
 
       //--------------------------/
@@ -53,10 +53,10 @@ public class ApplicationDescriptor extends org.exolab.castor.xml.util.XMLClassDe
      //- Constructors -/
     //----------------/
 
-    public ApplicationDescriptor() {
+    public ApplicationBaseDescriptor() {
         super();
         nsURI = "http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1";
-        xmlName = "Application";
+        xmlName = "ApplicationBase";
         
         //-- set grouping compositor
         setCompositorAsSequence();
@@ -72,14 +72,14 @@ public class ApplicationDescriptor extends org.exolab.castor.xml.util.XMLClassDe
             public java.lang.Object getValue( java.lang.Object object ) 
                 throws IllegalStateException
             {
-                Application target = (Application) object;
+                ApplicationBase target = (ApplicationBase) object;
                 return target.getName();
             }
             public void setValue( java.lang.Object object, java.lang.Object value) 
                 throws IllegalStateException, IllegalArgumentException
             {
                 try {
-                    Application target = (Application) object;
+                    ApplicationBase target = (ApplicationBase) object;
                     target.setName( (java.lang.String) value);
                 }
                 catch (java.lang.Exception ex) {
@@ -107,14 +107,14 @@ public class ApplicationDescriptor extends org.exolab.castor.xml.util.XMLClassDe
             public java.lang.Object getValue( java.lang.Object object ) 
                 throws IllegalStateException
             {
-                Application target = (Application) object;
+                ApplicationBase target = (ApplicationBase) object;
                 return target.getInstanceClass();
             }
             public void setValue( java.lang.Object object, java.lang.Object value) 
                 throws IllegalStateException, IllegalArgumentException
             {
                 try {
-                    Application target = (Application) object;
+                    ApplicationBase target = (ApplicationBase) object;
                     target.setInstanceClass( (java.lang.String) value);
                 }
                 catch (java.lang.Exception ex) {
@@ -144,14 +144,14 @@ public class ApplicationDescriptor extends org.exolab.castor.xml.util.XMLClassDe
             public java.lang.Object getValue( java.lang.Object object ) 
                 throws IllegalStateException
             {
-                Application target = (Application) object;
+                ApplicationBase target = (ApplicationBase) object;
                 return target.getParameters();
             }
             public void setValue( java.lang.Object object, java.lang.Object value) 
                 throws IllegalStateException, IllegalArgumentException
             {
                 try {
-                    Application target = (Application) object;
+                    ApplicationBase target = (ApplicationBase) object;
                     target.setParameters( (org.astrogrid.applications.beans.v1.Parameters) value);
                 }
                 catch (java.lang.Exception ex) {
@@ -180,14 +180,14 @@ public class ApplicationDescriptor extends org.exolab.castor.xml.util.XMLClassDe
             public java.lang.Object getValue( java.lang.Object object ) 
                 throws IllegalStateException
             {
-                Application target = (Application) object;
+                ApplicationBase target = (ApplicationBase) object;
                 return target.getInterfaces();
             }
             public void setValue( java.lang.Object object, java.lang.Object value) 
                 throws IllegalStateException, IllegalArgumentException
             {
                 try {
-                    Application target = (Application) object;
+                    ApplicationBase target = (ApplicationBase) object;
                     target.setInterfaces( (org.astrogrid.applications.beans.v1.InterfacesType) value);
                 }
                 catch (java.lang.Exception ex) {
@@ -210,7 +210,7 @@ public class ApplicationDescriptor extends org.exolab.castor.xml.util.XMLClassDe
         { //-- local scope
         }
         desc.setValidator(fieldValidator);
-    } //-- org.astrogrid.applications.beans.v1.ApplicationDescriptor()
+    } //-- org.astrogrid.applications.beans.v1.ApplicationBaseDescriptor()
 
 
       //-----------/
@@ -246,7 +246,7 @@ public class ApplicationDescriptor extends org.exolab.castor.xml.util.XMLClassDe
      */
     public java.lang.Class getJavaClass()
     {
-        return org.astrogrid.applications.beans.v1.Application.class;
+        return org.astrogrid.applications.beans.v1.ApplicationBase.class;
     } //-- java.lang.Class getJavaClass() 
 
     /**

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Output.java,v 1.11 2004/03/09 14:19:24 nw Exp $
+ * $Id: Output.java,v 1.12 2004/03/09 14:35:58 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1;
@@ -26,7 +26,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Class Output.
  * 
- * @version $Revision: 1.11 $ $Date: 2004/03/09 14:19:24 $
+ * @version $Revision: 1.12 $ $Date: 2004/03/09 14:35:58 $
  */
 public class Output extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
@@ -38,7 +38,7 @@ implements java.io.Serializable
     //--------------------------/
 
     /**
-     * a reference to a parameter
+     * Field _prefList
      */
     private java.util.ArrayList _prefList;
 
@@ -62,11 +62,11 @@ implements java.io.Serializable
      * 
      * @param vPref
      */
-    public void addPref(org.astrogrid.applications.beans.v1.Pref vPref)
+    public void addPref(org.astrogrid.applications.beans.v1.ParameterRef vPref)
         throws java.lang.IndexOutOfBoundsException
     {
         _prefList.add(vPref);
-    } //-- void addPref(org.astrogrid.applications.beans.v1.Pref) 
+    } //-- void addPref(org.astrogrid.applications.beans.v1.ParameterRef) 
 
     /**
      * Method addPref
@@ -74,11 +74,11 @@ implements java.io.Serializable
      * @param index
      * @param vPref
      */
-    public void addPref(int index, org.astrogrid.applications.beans.v1.Pref vPref)
+    public void addPref(int index, org.astrogrid.applications.beans.v1.ParameterRef vPref)
         throws java.lang.IndexOutOfBoundsException
     {
         _prefList.add(index, vPref);
-    } //-- void addPref(int, org.astrogrid.applications.beans.v1.Pref) 
+    } //-- void addPref(int, org.astrogrid.applications.beans.v1.ParameterRef) 
 
     /**
      * Method clearPref
@@ -129,7 +129,7 @@ implements java.io.Serializable
      * 
      * @param index
      */
-    public org.astrogrid.applications.beans.v1.Pref getPref(int index)
+    public org.astrogrid.applications.beans.v1.ParameterRef getPref(int index)
         throws java.lang.IndexOutOfBoundsException
     {
         //-- check bounds for index
@@ -137,21 +137,21 @@ implements java.io.Serializable
             throw new IndexOutOfBoundsException();
         }
         
-        return (org.astrogrid.applications.beans.v1.Pref) _prefList.get(index);
-    } //-- org.astrogrid.applications.beans.v1.Pref getPref(int) 
+        return (org.astrogrid.applications.beans.v1.ParameterRef) _prefList.get(index);
+    } //-- org.astrogrid.applications.beans.v1.ParameterRef getPref(int) 
 
     /**
      * Method getPref
      */
-    public org.astrogrid.applications.beans.v1.Pref[] getPref()
+    public org.astrogrid.applications.beans.v1.ParameterRef[] getPref()
     {
         int size = _prefList.size();
-        org.astrogrid.applications.beans.v1.Pref[] mArray = new org.astrogrid.applications.beans.v1.Pref[size];
+        org.astrogrid.applications.beans.v1.ParameterRef[] mArray = new org.astrogrid.applications.beans.v1.ParameterRef[size];
         for (int index = 0; index < size; index++) {
-            mArray[index] = (org.astrogrid.applications.beans.v1.Pref) _prefList.get(index);
+            mArray[index] = (org.astrogrid.applications.beans.v1.ParameterRef) _prefList.get(index);
         }
         return mArray;
-    } //-- org.astrogrid.applications.beans.v1.Pref[] getPref() 
+    } //-- org.astrogrid.applications.beans.v1.ParameterRef[] getPref() 
 
     /**
      * Method getPrefCount
@@ -204,11 +204,11 @@ implements java.io.Serializable
      * 
      * @param vPref
      */
-    public boolean removePref(org.astrogrid.applications.beans.v1.Pref vPref)
+    public boolean removePref(org.astrogrid.applications.beans.v1.ParameterRef vPref)
     {
         boolean removed = _prefList.remove(vPref);
         return removed;
-    } //-- boolean removePref(org.astrogrid.applications.beans.v1.Pref) 
+    } //-- boolean removePref(org.astrogrid.applications.beans.v1.ParameterRef) 
 
     /**
      * Method setPref
@@ -216,7 +216,7 @@ implements java.io.Serializable
      * @param index
      * @param vPref
      */
-    public void setPref(int index, org.astrogrid.applications.beans.v1.Pref vPref)
+    public void setPref(int index, org.astrogrid.applications.beans.v1.ParameterRef vPref)
         throws java.lang.IndexOutOfBoundsException
     {
         //-- check bounds for index
@@ -224,21 +224,21 @@ implements java.io.Serializable
             throw new IndexOutOfBoundsException();
         }
         _prefList.set(index, vPref);
-    } //-- void setPref(int, org.astrogrid.applications.beans.v1.Pref) 
+    } //-- void setPref(int, org.astrogrid.applications.beans.v1.ParameterRef) 
 
     /**
      * Method setPref
      * 
      * @param prefArray
      */
-    public void setPref(org.astrogrid.applications.beans.v1.Pref[] prefArray)
+    public void setPref(org.astrogrid.applications.beans.v1.ParameterRef[] prefArray)
     {
         //-- copy array
         _prefList.clear();
         for (int i = 0; i < prefArray.length; i++) {
             _prefList.add(prefArray[i]);
         }
-    } //-- void setPref(org.astrogrid.applications.beans.v1.Pref) 
+    } //-- void setPref(org.astrogrid.applications.beans.v1.ParameterRef) 
 
     /**
      * Method unmarshalOutput

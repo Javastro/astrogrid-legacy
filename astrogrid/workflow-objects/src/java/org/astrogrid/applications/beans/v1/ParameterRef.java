@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ParameterRef.java,v 1.11 2004/03/09 14:19:24 nw Exp $
+ * $Id: ParameterRef.java,v 1.12 2004/03/09 14:35:58 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1;
@@ -24,7 +24,7 @@ import org.xml.sax.ContentHandler;
 /**
  * reference to an existing parameter
  * 
- * @version $Revision: 1.11 $ $Date: 2004/03/09 14:19:24 $
+ * @version $Revision: 1.12 $ $Date: 2004/03/09 14:35:58 $
  */
 public class ParameterRef extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
@@ -41,24 +41,24 @@ implements java.io.Serializable
     private java.lang.String _ref;
 
     /**
-     * Field _repeatable
+     * Field _minoccurs
      */
-    private boolean _repeatable = false;
+    private int _minoccurs = 1;
 
     /**
-     * keeps track of state for field: _repeatable
+     * keeps track of state for field: _minoccurs
      */
-    private boolean _has_repeatable;
+    private boolean _has_minoccurs;
 
     /**
-     * Field _optional
+     * a value of 0 implies unbounded
      */
-    private boolean _optional = false;
+    private int _maxoccurs = 1;
 
     /**
-     * keeps track of state for field: _optional
+     * keeps track of state for field: _maxoccurs
      */
-    private boolean _has_optional;
+    private boolean _has_maxoccurs;
 
 
       //----------------/
@@ -75,20 +75,20 @@ implements java.io.Serializable
     //-----------/
 
     /**
-     * Method deleteOptional
+     * Method deleteMaxoccurs
      */
-    public void deleteOptional()
+    public void deleteMaxoccurs()
     {
-        this._has_optional= false;
-    } //-- void deleteOptional() 
+        this._has_maxoccurs= false;
+    } //-- void deleteMaxoccurs() 
 
     /**
-     * Method deleteRepeatable
+     * Method deleteMinoccurs
      */
-    public void deleteRepeatable()
+    public void deleteMinoccurs()
     {
-        this._has_repeatable= false;
-    } //-- void deleteRepeatable() 
+        this._has_minoccurs= false;
+    } //-- void deleteMinoccurs() 
 
     /**
      * Note: hashCode() has not been overriden
@@ -113,13 +113,13 @@ implements java.io.Serializable
             }
             else if (temp._ref != null)
                 return false;
-            if (this._repeatable != temp._repeatable)
+            if (this._minoccurs != temp._minoccurs)
                 return false;
-            if (this._has_repeatable != temp._has_repeatable)
+            if (this._has_minoccurs != temp._has_minoccurs)
                 return false;
-            if (this._optional != temp._optional)
+            if (this._maxoccurs != temp._maxoccurs)
                 return false;
-            if (this._has_optional != temp._has_optional)
+            if (this._has_maxoccurs != temp._has_maxoccurs)
                 return false;
             return true;
         }
@@ -127,14 +127,26 @@ implements java.io.Serializable
     } //-- boolean equals(java.lang.Object) 
 
     /**
-     * Returns the value of field 'optional'.
+     * Returns the value of field 'maxoccurs'. The field
+     * 'maxoccurs' has the following description: a value of 0
+     * implies unbounded
      * 
-     * @return the value of field 'optional'.
+     * @return the value of field 'maxoccurs'.
      */
-    public boolean getOptional()
+    public int getMaxoccurs()
     {
-        return this._optional;
-    } //-- boolean getOptional() 
+        return this._maxoccurs;
+    } //-- int getMaxoccurs() 
+
+    /**
+     * Returns the value of field 'minoccurs'.
+     * 
+     * @return the value of field 'minoccurs'.
+     */
+    public int getMinoccurs()
+    {
+        return this._minoccurs;
+    } //-- int getMinoccurs() 
 
     /**
      * Returns the value of field 'ref'.
@@ -147,30 +159,20 @@ implements java.io.Serializable
     } //-- java.lang.String getRef() 
 
     /**
-     * Returns the value of field 'repeatable'.
-     * 
-     * @return the value of field 'repeatable'.
+     * Method hasMaxoccurs
      */
-    public boolean getRepeatable()
+    public boolean hasMaxoccurs()
     {
-        return this._repeatable;
-    } //-- boolean getRepeatable() 
+        return this._has_maxoccurs;
+    } //-- boolean hasMaxoccurs() 
 
     /**
-     * Method hasOptional
+     * Method hasMinoccurs
      */
-    public boolean hasOptional()
+    public boolean hasMinoccurs()
     {
-        return this._has_optional;
-    } //-- boolean hasOptional() 
-
-    /**
-     * Method hasRepeatable
-     */
-    public boolean hasRepeatable()
-    {
-        return this._has_repeatable;
-    } //-- boolean hasRepeatable() 
+        return this._has_minoccurs;
+    } //-- boolean hasMinoccurs() 
 
     /**
      * Method isValid
@@ -211,15 +213,28 @@ implements java.io.Serializable
     } //-- void marshal(org.xml.sax.ContentHandler) 
 
     /**
-     * Sets the value of field 'optional'.
+     * Sets the value of field 'maxoccurs'. The field 'maxoccurs'
+     * has the following description: a value of 0 implies
+     * unbounded
      * 
-     * @param optional the value of field 'optional'.
+     * @param maxoccurs the value of field 'maxoccurs'.
      */
-    public void setOptional(boolean optional)
+    public void setMaxoccurs(int maxoccurs)
     {
-        this._optional = optional;
-        this._has_optional = true;
-    } //-- void setOptional(boolean) 
+        this._maxoccurs = maxoccurs;
+        this._has_maxoccurs = true;
+    } //-- void setMaxoccurs(int) 
+
+    /**
+     * Sets the value of field 'minoccurs'.
+     * 
+     * @param minoccurs the value of field 'minoccurs'.
+     */
+    public void setMinoccurs(int minoccurs)
+    {
+        this._minoccurs = minoccurs;
+        this._has_minoccurs = true;
+    } //-- void setMinoccurs(int) 
 
     /**
      * Sets the value of field 'ref'.
@@ -230,17 +245,6 @@ implements java.io.Serializable
     {
         this._ref = ref;
     } //-- void setRef(java.lang.String) 
-
-    /**
-     * Sets the value of field 'repeatable'.
-     * 
-     * @param repeatable the value of field 'repeatable'.
-     */
-    public void setRepeatable(boolean repeatable)
-    {
-        this._repeatable = repeatable;
-        this._has_repeatable = true;
-    } //-- void setRepeatable(boolean) 
 
     /**
      * Method unmarshalParameterRef
