@@ -1,5 +1,5 @@
 /*
- * $Id: VoDescriptionServer.java,v 1.1 2004/09/06 20:23:00 mch Exp $
+ * $Id: VoDescriptionServer.java,v 1.2 2004/09/06 20:46:11 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -123,6 +123,7 @@ public class VoDescriptionServer {
          //I've wrapped this in a separate try/catch so that problems with CEA
          //don't stop the initialiser from working.. which is naughty
          String ceaResource = CEAComponentManagerFactory.getInstance().getMetadataService().returnRegistryEntry();
+         vod.append(ceaResource);
       } catch (Throwable th) {
         log.error(th);
       }
