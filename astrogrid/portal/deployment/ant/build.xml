@@ -12,7 +12,7 @@
     <taskdef name="tomcat-undeploy" classname="org.apache.catalina.ant.UndeployTask" />
     
     <property file="default.properties"/>
-    <property name="temporary.dir" value="tmp"/>
+    <property name="portal.temporary.dir" value="portal-tmp"/>
     <property name="portal.war" value="${maven.local.repo}/${astrogrid.groupId}/wars/${portal.war.name}"/>
     <property name="local.portal.war" value="${basedir}/portal.war"/>
     <property name="portal.contextpath" value="/astrogrid-portal"/> <!--This cannot be changed at the moment-->
@@ -90,8 +90,7 @@
     </target>
     
     <target name="createTmpDir">
-        <delete dir="${temporary.dir}"/>
-        <mkdir dir="${temporary.dir}"/>
+        <mkdir dir="${portal.temporary.dir}"/>
     </target>
     <target name="portal-deploy" depends="createTmpDir,checkTomcat,checkRegistry,downloadPortal,updatePortalWar">
         <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${input.tomcat.manager.user}" password="${input.tomcat.manager.pass}" 
@@ -129,14 +128,14 @@
         	<filter token="ADMINEMAIL" value="${input.mail.admin}"/>
         </filterset>
         <echo>Registry endpoint is ${astrogrid.registry.endpoint}</echo>
-        <copy todir="${temporary.dir}/portal">
+        <copy todir="${portal.temporary.dir}/portal">
             <filterset refid="myfilter"/>
             <fileset dir="portal" />
         </copy>
         <copy file="${portal.war}" tofile="${local.portal.war}"/>
     	<!--update the context.xml, and login image file, if set-->
         <war update="yes" destfile="${local.portal.war}">
-            <metainf dir="${temporary.dir}/portal" />
+            <metainf dir="${portal.temporary.dir}/portal" />
         	<!--hardwire this in for now, though a bit fragile-->
         	<zipfileset fullpath="web/images/loginBackground.jpg" file="backGroundImg.jpg"/>
         </war>

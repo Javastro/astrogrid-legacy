@@ -53,7 +53,7 @@
         </dependency>
         <dependency>
             <groupId>antigen</groupId>
-            <artifactId>antigen</artifactId>
+            <artifactId>antigen-lib</artifactId>
             <version>0.5-SNAPSHOT</version>
         </dependency>
         <dependency>

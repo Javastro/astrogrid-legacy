@@ -18,13 +18,13 @@
             </resource>
         </resources>
     </build>
-    <dependencies>        <dependency>
-           <groupId>catalina-ant</groupId>
+    <dependencies>
+        <dependency>
+            <groupId>catalina-ant</groupId>
             <artifactId>catalina-ant</artifactId>
             <version>5.0.18</version>
             <properties/>
         </dependency>
-        
     </dependencies>
     <properties/>
 </project>
