@@ -1,5 +1,5 @@
 /*
- * $Id: Agsl.java,v 1.17 2004/04/21 10:35:50 mch Exp $
+ * $Id: Agsl.java,v 1.18 2004/05/19 16:24:33 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -17,6 +17,8 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import org.astrogrid.community.User;
+import org.astrogrid.store.delegate.StoreClient;
+import org.astrogrid.store.delegate.StoreDelegateFactory;
 
 /**
  * AstroGrid Storepoint Locator.  An astrogrid-specific way of <b>locating</b> a
@@ -52,13 +54,15 @@ public class Agsl
    
    public static final String SCHEME = "astrogrid:store";
    
-   public static final String FORM = SCHEME+":[<Msrl>|<URL>]";
+   public static final String FORM = SCHEME+":[<Msrl>|<URL>][#path]";
    
+   /** Create an AGSL for a URL-based store point */
    public Agsl(URL aUrl)
    {
       this.url = aUrl;
    }
 
+   /** Create an AGSL for a myspace-based store point (might include file path) */
    public Agsl(Msrl aMyspaceResourceLocation)
    {
       this.msrl = aMyspaceResourceLocation;
@@ -66,7 +70,8 @@ public class Agsl
 
    /** Makes a reference from the given endpoint (eg myspace:http://asdfasdf or ftp://)
     * and filepath
-    */
+    * @deprecated - use typed ones
+    *
    public Agsl(String endpoint, String path) throws MalformedURLException
    {
       if (endpoint == null) throw new IllegalArgumentException("endpoint must not be null");
@@ -79,52 +84,118 @@ public class Agsl
       }
    }
    
+   /** Makes a reference from the given endpoint (eg myspace:http://asdfasdf or ftp://)
+    * and filepath
+    */
+   public Agsl(Msrl myspaceEndpoint, String path) throws MalformedURLException
+   {
+      init(myspaceEndpoint, path);
+   }
+
+   /** Makes a reference from the given endpoint (eg myspace:http://asdfasdf or ftp://)
+    * and filepath
+    */
+   public Agsl(URL storepoint, String path) throws MalformedURLException
+   {
+      init(storepoint, path);
+   }
+
+   /** Makes a reference from the given storepoint location (eg astrogrid:store:myspace:http://asdfasdf or astrogrid:store:ftp://)
+    * and filepath
+    */
+   public Agsl(Agsl storepoint, String path) throws MalformedURLException
+   {
+      init(storepoint, path);
+   }
+
    /** Make a reference from the given string representation. Takes agsl forms,
     * but also URLs and MSRLs. Also, for the moment, takes the deprecated VospaceRL
     * from It4.1
+    * @deprecated - use typed ones
     */
    public Agsl(String rl) throws MalformedURLException
    {
       rl = rl.trim();
       
+      //allow for mailto
       if (rl.toLowerCase().startsWith("mailto:")) {
          rl = "astrogrid:store:"+rl;
       }
       
       if (rl.toLowerCase().startsWith(Vorl.SCHEME+":"))
       {
+         //work out agsl from vorl
          rl = new Vorl(rl).toAgsl().toString();
       }
 
-      if (rl.toLowerCase().startsWith(SCHEME+":"))
-      {
-         rl = rl.substring(SCHEME.length()+1);
+      //check it's valid
+      if (!rl.toLowerCase().startsWith(SCHEME+":")) {
+         throw new MalformedURLException("AGSL '"+rl+"' is not of the right form: "+FORM);
       }
+
+      rl = rl.substring(SCHEME.length()+1);
       
-      init(rl);
+      if (Msrl.isMsrl(rl)) {
+         this.msrl = new Msrl(rl);
+      }
+      else {
+         this.url = new URL(rl);
+         
+         //for some reason if there is no slash in the authority, it picks up the first bit of the reference - up to the first #
+         if ((url.getAuthority() != null) && (url.getAuthority().indexOf("#")>-1)) {
+            url = new URL(url.getProtocol(),
+                          url.getHost().substring(0, url.getHost().indexOf('#')),
+                          url.getPort(),
+                          "#"+url.getRef());
+         }
+      }
    }
    
    /**
-    * Makes an AGSL out of the given myspace: or url
+    * Initialises an AGSL out of the given myspace & path
     */
-   private void init(String rl)  throws MalformedURLException {
-      if (Msrl.isMsrl(rl))
-      {
-         msrl = new Msrl(rl);
+   private void init(Msrl myspacestore, String path)   {
+      if (myspacestore == null) throw new IllegalArgumentException("endpoint must not be null");
+      
+      if (myspacestore.getPath() != null) throw new IllegalArgumentException("endpoint '"+myspacestore+"' includes a file path");
+
+      if (path == null) {
+         this.msrl = myspacestore;
       }
-      else
-      {
-         url = new URL(rl);
-         
-         if (url.getAuthority() != null) {
-            //for some reason picks up # in authority if there's no slashes...
-            if (url.getAuthority().indexOf('#')>-1) {
-               url = new URL(url.getProtocol(),
-                             url.getHost().substring(0,url.getHost().indexOf('#')),
-                             url.getPort(),
-                             "#"+url.getRef());
-            }
-         }
+      else {
+         this.msrl = new Msrl(myspacestore.getDelegateEndpoint(), path);
+      }
+   }
+
+   /**
+    * Initialises an AGSL from the given URL & path
+    */
+   private void init(URL storepoint, String path) throws MalformedURLException {
+      if (storepoint == null) throw new IllegalArgumentException("endpoint must not be null");
+      
+      if (storepoint.getRef() != null) throw new IllegalArgumentException("endpoint '"+storepoint+"' includes a fragment/reference");
+
+      if (path==null) {
+         this.url = storepoint;
+      }
+      else {
+         this.url = new URL(storepoint+"#"+path);
+      }
+   }
+
+   /**
+    * Initialises an AGSL from the given AGSL storepoint & path
+    */
+   private void init(Agsl storepoint, String path) throws MalformedURLException {
+      if (storepoint == null) throw new IllegalArgumentException("endpoint must not be null");
+      
+      if (storepoint.getPath() != null) throw new IllegalArgumentException("endpoint '"+storepoint+"' includes a path");
+
+      if (Msrl.isMsrl(storepoint.getEndpoint())) {
+         init(new Msrl(storepoint.getEndpoint()), path);
+      }
+      else {
+         init(new URL(storepoint.getEndpoint()), path);
       }
    }
 
@@ -197,17 +268,30 @@ public class Agsl
     * need to give User to authorise/etc
     */
    public InputStream openInputStream(User user) throws IOException {
+      StoreClient client = StoreDelegateFactory.createDelegate(user, this);
+      return client.getStream(getPath());
+      /**
       if (url != null) {
-         return url.openStream();
+      not right
+         if (url.getProtocol().equals("file")) {
+            return new
+         }
+         else {
+            return url.openStream();
+         }
       }
       else {
          return msrl.openInputStream();
       }
+       */
    }
 
    /** Opens an outputstream to the file.
     */
    public OutputStream openOutputStream(User user) throws IOException {
+      StoreClient client = StoreDelegateFactory.createDelegate(user, this);
+      return client.putStream(getPath(), false);
+      /*
       if (url != null) {
          if (url.getProtocol().equals("file")) {
             File f = new File(url.getFile());
@@ -220,6 +304,7 @@ public class Agsl
       else {
          return msrl.openOutputStream();
       }
+       */
    }
    
    /**
@@ -268,6 +353,9 @@ public class Agsl
 
 /*
 $Log: Agsl.java,v $
+Revision 1.18  2004/05/19 16:24:33  mch
+Properly typed Agsl creation, some fixes to tests
+
 Revision 1.17  2004/04/21 10:35:50  mch
 Fixes to ivorn/fragment resolving
 

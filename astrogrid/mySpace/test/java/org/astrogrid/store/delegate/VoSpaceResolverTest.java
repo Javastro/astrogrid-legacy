@@ -1,5 +1,5 @@
 /*
- * $Id: VoSpaceResolverTest.java,v 1.6 2004/04/22 08:58:35 mch Exp $
+ * $Id: VoSpaceResolverTest.java,v 1.7 2004/05/19 16:24:33 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -62,7 +62,11 @@ public class VoSpaceResolverTest extends TestCase {
          resolvedAgsl = VoSpaceResolver.resolveAgsl(new Ivorn(ACCOUNT_FILE_IVORN));
          
          fail("Should have failed with badly formed Agsl");
-      } catch (MalformedURLException mue) {
+      }
+      catch (IllegalArgumentException iae) {
+         //ignore - should happen
+      }
+      catch (MalformedURLException mue) {
          //ignore - should happen
       }
     
@@ -87,7 +91,7 @@ public class VoSpaceResolverTest extends TestCase {
       StringWriter writer = new StringWriter();
       Piper.pipe(reader, writer);
 
-      assertSame(testContents, writer.toString());
+      assertEquals(testContents, writer.toString());
       
    }
 
@@ -115,6 +119,9 @@ public class VoSpaceResolverTest extends TestCase {
 
 /*
  $Log: VoSpaceResolverTest.java,v $
+ Revision 1.7  2004/05/19 16:24:33  mch
+ Properly typed Agsl creation, some fixes to tests
+
  Revision 1.6  2004/04/22 08:58:35  mch
  Fixes to tests etc
 

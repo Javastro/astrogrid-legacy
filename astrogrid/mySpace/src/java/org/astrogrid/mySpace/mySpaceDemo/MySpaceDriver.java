@@ -511,7 +511,7 @@ public class MySpaceDriver
                {  middle.setTest(isTest);
                   middle.setThrow(false);
 
-                  Agsl someAgsl = new Agsl("http://www.google.com",
+                  Agsl someAgsl = new Agsl(new URL("http://www.google.com"),
                     newFileName);
 
                   middle.copy(oldFileName, someAgsl);
@@ -559,7 +559,7 @@ public class MySpaceDriver
                {  middle.setTest(isTest);
                   middle.setThrow(false);
 
-                  Agsl someAgsl = new Agsl("http://www.google.com",
+                  Agsl someAgsl = new Agsl(new URL("http://www.google.com"),
                     newFileName);
 
                   middle.move(oldFileName, someAgsl);

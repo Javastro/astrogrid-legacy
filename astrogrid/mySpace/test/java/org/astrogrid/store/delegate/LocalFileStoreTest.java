@@ -1,4 +1,4 @@
-/*$Id: LocalFileStoreTest.java,v 1.5 2004/03/14 13:23:14 mch Exp $
+/*$Id: LocalFileStoreTest.java,v 1.6 2004/05/19 16:24:33 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.store.delegate;
 
 import java.io.IOException;
+import java.net.URL;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import org.astrogrid.store.Agsl;
@@ -29,46 +30,46 @@ public class LocalFileStoreTest extends StoreClientTestHelper {
    
    public void testStoreAccess() throws IOException
    {
-      assertStoreAccess(new LocalFileStore(new Agsl(TESTSTORE)),
-                        new LocalFileStore(new Agsl(TESTSTORE)),
-                        new LocalFileStore(new Agsl(TESTSTORE2)));
+      assertStoreAccess(new LocalFileStore(new Agsl(new URL(TESTSTORE))),
+                        new LocalFileStore(new Agsl(new URL(TESTSTORE))),
+                        new LocalFileStore(new Agsl(new URL(TESTSTORE2))));
    }
 
    /** Tests getFile etc - if these are failing the rest of the tests might
     * not make much sense.  This is a bit of a combined one anyway... */
    public void testGetFile() throws IOException
    {
-      assertGetFileWorks(new LocalFileStore(new Agsl(TESTSTORE)));
+      assertGetFileWorks(new LocalFileStore(new Agsl(new URL(TESTSTORE))));
    }
 
    /** Tests making folders and paths and stuff.  A bit
     */
    public void testFolders() throws IOException {
-      assertFoldersWork(new LocalFileStore(new Agsl(TESTSTORE)));
+      assertFoldersWork(new LocalFileStore(new Agsl(new URL(TESTSTORE))));
    }
    
    
    public void testMove() throws IOException
    {
       //test move on same server
-      assertMove(new LocalFileStore(new Agsl(TESTSTORE)), new Agsl(TESTSTORE, MOVE_TEST));
+      assertMove(new LocalFileStore(new Agsl(new URL(TESTSTORE))), new Agsl(new URL(TESTSTORE), MOVE_TEST));
       
       //test move between servers
-      assertMove(new LocalFileStore(new Agsl(TESTSTORE)), new Agsl(TESTSTORE2, MOVE_TEST));
+      assertMove(new LocalFileStore(new Agsl(new URL(TESTSTORE))), new Agsl(new URL(TESTSTORE2), MOVE_TEST));
    }
 
    public void testCopy() throws IOException
    {
       //test move on same server
-      assertCopy(new LocalFileStore(new Agsl(TESTSTORE)), new Agsl(TESTSTORE, COPY_TEST));
+      assertCopy(new LocalFileStore(new Agsl(new URL(TESTSTORE))), new Agsl(new URL(TESTSTORE), COPY_TEST));
       
       //test move between servers
-      assertCopy(new LocalFileStore(new Agsl(TESTSTORE)), new Agsl(TESTSTORE2, COPY_TEST));
+      assertCopy(new LocalFileStore(new Agsl(new URL(TESTSTORE))), new Agsl(new URL(TESTSTORE2), COPY_TEST));
    }
    
    
    public void testDelete() throws IOException {
-      assertDelete(new LocalFileStore(new Agsl(TESTSTORE)));
+      assertDelete(new LocalFileStore(new Agsl(new URL(TESTSTORE))));
    }
    
     /**
@@ -93,6 +94,9 @@ public class LocalFileStoreTest extends StoreClientTestHelper {
 
 /*
 $Log: LocalFileStoreTest.java,v $
+Revision 1.6  2004/05/19 16:24:33  mch
+Properly typed Agsl creation, some fixes to tests
+
 Revision 1.5  2004/03/14 13:23:14  mch
 Renamed StoreClientTestHelper so that it doesn't get used directly for testing
 

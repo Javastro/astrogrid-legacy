@@ -1,5 +1,5 @@
 /*
- * $Id: Vorl.java,v 1.2 2004/03/25 12:21:59 mch Exp $
+ * $Id: Vorl.java,v 1.3 2004/05/19 16:24:33 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -79,7 +79,7 @@ public class Vorl
       String individual = tokenizer.nextToken();
       String path = tokenizer.nextToken("####"); //shouldn't be one of these so should get rest
       
-      return new Agsl("myspace:"+delegateEndpoint.toString(), individual+"@"+community+path);
+      return new Agsl(new Msrl("myspace:"+delegateEndpoint.toString()), individual+"@"+community+path);
       
    }
    
@@ -87,6 +87,9 @@ public class Vorl
 
 /*
 $Log: Vorl.java,v $
+Revision 1.3  2004/05/19 16:24:33  mch
+Properly typed Agsl creation, some fixes to tests
+
 Revision 1.2  2004/03/25 12:21:59  mch
 Tidied doc
 

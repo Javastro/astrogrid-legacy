@@ -20,7 +20,7 @@ import org.astrogrid.store.Agsl;
  */
 
 public class DeployedManagerTest extends TestCase
-{  
+{
 //
 //      [TODO]: The Manager end-point should be obtained from a properties
 //      file rather than hard-wired.
@@ -98,7 +98,7 @@ public class DeployedManagerTest extends TestCase
 //
 //      Copy this file.
 
-         Agsl someAgsl = new Agsl("http://blue.nowhere.org",
+         Agsl someAgsl = new Agsl(new URL("http://blue.nowhere.org"),
            "/testxyz/file2");
 
          middle.copy("/testxyz/file1", someAgsl);
@@ -107,7 +107,7 @@ public class DeployedManagerTest extends TestCase
 //
 //      Move this file.
 
-         someAgsl = new Agsl("http://blue.nowhere.org",
+         someAgsl = new Agsl(new URL("http://blue.nowhere.org"),
            "/testxyz/file3");
 
          middle.move("/testxyz/file1", someAgsl);

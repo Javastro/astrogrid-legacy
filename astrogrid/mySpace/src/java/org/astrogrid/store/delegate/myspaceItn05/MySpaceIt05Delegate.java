@@ -420,10 +420,9 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
     * folders at the moment
     */
    public Agsl getAgsl(String sourcePath) throws IOException {
-      
       assert (!sourcePath.endsWith("/") && !sourcePath.endsWith("\\")) : "Cannot create AGSLs for folders (yet)";
       
-      return new Agsl(getEndpoint().toString(), sourcePath);
+      return new Agsl(getEndpoint(), sourcePath);
    }
   
    
@@ -1337,6 +1336,9 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
 
 /*
 $Log: MySpaceIt05Delegate.java,v $
+Revision 1.29  2004/05/19 16:24:33  mch
+Properly typed Agsl creation, some fixes to tests
+
 Revision 1.28  2004/05/14 12:53:06  mch
 Added assertion to getAgsl() for folders
 
@@ -1365,3 +1367,4 @@ Fixes to getFiles(), introduced getSize(), getOwner() etc to StoreFile
  Bug fixes: firstChunk not threadsafe
             constructor setting wrong endpoint
  */
+

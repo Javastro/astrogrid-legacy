@@ -1,5 +1,5 @@
 /*
- * $Id: VoSpaceResolver.java,v 1.21 2004/04/21 13:36:08 mch Exp $
+ * $Id: VoSpaceResolver.java,v 1.22 2004/05/19 16:24:33 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -187,7 +187,7 @@ public class VoSpaceResolver {
             return null;
          }
          else {
-            return new Agsl(Msrl.SCHEME+":"+endPoint, ivorn.getFragment());
+            return new Agsl(new Msrl(Msrl.SCHEME+":"+endPoint), ivorn.getFragment());
          }
       }
       catch (RegistryException e) {
@@ -397,6 +397,9 @@ public class VoSpaceResolver {
 
 /*
 $Log: VoSpaceResolver.java,v $
+Revision 1.22  2004/05/19 16:24:33  mch
+Properly typed Agsl creation, some fixes to tests
+
 Revision 1.21  2004/04/21 13:36:08  mch
 Extra exception ignoring
 
