@@ -1,5 +1,5 @@
 /*
- * $Id: CommunityHelper.java,v 1.3 2003/10/31 18:02:06 mch Exp $
+ * $Id: CommunityHelper.java,v 1.4 2003/11/06 22:03:48 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -35,12 +35,8 @@ public class CommunityHelper
        account = DocHelper.getTagValue(getCommunitySnippet(dom), ACCOUNT);
        logger.debug("account LOG$Juserid:"+account);
        String userid ="";
-       try{
-         userid = account.substring(0,account.indexOf("@"));
-         logger.debug("userid LOG$J:"+userid);
-       }catch(Exception e){
-         e.printStackTrace();
-       }
+       if (account != null) userid = account.substring(0,account.indexOf("@"));
+       logger.debug("userid LOG$J:"+userid);
        return userid;
      }
  
@@ -49,12 +45,8 @@ public class CommunityHelper
       account = DocHelper.getTagValue(getCommunitySnippet(dom), ACCOUNT);
       logger.debug("account LOG$J:"+account);
       String communityid ="";
-      try{
-           communityid = account.substring(account.indexOf("@")+1,account.length());
-           logger.debug("communityid LOG$J:"+communityid);
-      }catch(Exception e){
-           e.printStackTrace();
-      }
+       if (account != null) communityid = account.substring(account.indexOf("@")+1,account.length());
+      logger.debug("communityid LOG$J:"+communityid);
       return communityid;
    }
    /*
@@ -93,6 +85,9 @@ public class CommunityHelper
 
 /*
 $Log: CommunityHelper.java,v $
+Revision 1.4  2003/11/06 22:03:48  mch
+Fix to test for null account in snippet and removed generic exception catch
+
 Revision 1.3  2003/10/31 18:02:06  mch
 Changed to use commons logging
 
