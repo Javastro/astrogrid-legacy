@@ -71,20 +71,33 @@ public class JesTestSuite extends TestCase {
              userid = "jl99",
              community = "leicester",
              communitySnippet 
-                = CommunityMessage.getMessage( ""
+                = CommunityMessage.getMessage( "1234"
                                              , userid + "@" + community
-                                             , "guest") ;
+                                             , "guest@" + community ) ;
          
          ListIterator
             iterator = null ;
-
+         Job
+            job = null ;
             
          try{
              iterator = Job.readJobList( userid
                                        , community
                                        , communitySnippet
                                        , "*" ) ;
- 
+                                       
+             while( iterator.hasNext() ) {
+                 job = (Job)iterator.next() ;
+                 logger.info( "====*====" ) ;
+                 logger.info( "job.getName(): " + job.getName() ) ;
+                 logger.info( "job.getDescription(): " + job.getDescription() ) ;
+                 logger.info( "job.getStatus(): " + job.getStatus() ) ;
+                 logger.info( "job.getTimestamp(): " + job.getTimestamp() ) ;
+                 logger.info( "job.getJobid(): " + job.getJobid() ) ;
+                 logger.info( "job.getUserid(): " + job.getUserid() ) ;
+                 logger.info( "job.getCommunity(): " + job.getCommunity() ) ;
+             }
+             logger.info( "====*====" ) ;
              assertTrue( true ) ;    
          }
          catch( Exception ex ) {

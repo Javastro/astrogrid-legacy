@@ -26,9 +26,12 @@ import org.astrogrid.jes.delegate.JesDelegateException ;
  */
 public abstract class JobControllerDelegate {
     
+    public static final boolean
+        TRACE_ENABLED = true ;
+    
     protected static final String
         JOBLIST_TEMPLATE =
-        "<?xml version='1.0' encoding='UTF-8'?>" +
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
         "<joblist userid=\"{0}\" community=\"{1}\" >" +
         "   <filter>{2}</filter>" +         "   {3}" +      // community snippet goes here
         "</joblist>" ;  
@@ -43,16 +46,24 @@ public abstract class JobControllerDelegate {
     
     
     public static JobControllerDelegate buildDelegate( String targetEndPoint
-                                                     , int timeout ) {                                                        
+                                                     , int timeout ) { 
+        if(TRACE_ENABLED) trace( "JobControllerDelegate.buildDelegate() entry" ) ;
+                                                               
         JobControllerDelegate
             delegate = null ;
-            
-        if( targetEndPoint != null ){
-            delegate = new JobControllerDelegateImpl(targetEndPoint, timeout ) ;
+         
+        try {  
+            if( targetEndPoint != null && !targetEndPoint.trim().equals("")) {
+                delegate = new JobControllerDelegateImpl(targetEndPoint, timeout ) ;
+            }
+            else {
+                delegate = new TestDelegateImpl( targetEndPoint, timeout ) ;
+            }
         }
-        else {
-            delegate = null ;
+        finally {
+            if(TRACE_ENABLED) trace( "JobControllerDelegate.buildDelegate() exit" ) ;
         }
+
         return delegate ;
     }
     
@@ -86,7 +97,7 @@ public abstract class JobControllerDelegate {
                                            , String filter ) {
         
         String
-            response = null ;                                
+            retValue = null ;                                
         Object []
             inserts = new Object[4] ;
             
@@ -94,9 +105,11 @@ public abstract class JobControllerDelegate {
         inserts[1] = community ;
         inserts[2] = filter ;
         inserts[3] = communitySnippet ;
-        response = MessageFormat.format( JOBLIST_TEMPLATE, inserts ) ;
+        retValue = MessageFormat.format( JOBLIST_TEMPLATE, inserts ) ;
         
-        return response  ;
+        debug( "List request: " + retValue ) ;
+        
+        return retValue  ;
                                             
      } // end of formatListRequest()
 
@@ -116,5 +129,15 @@ public abstract class JobControllerDelegate {
 	public int getTimeout() {
 		return timeout;
 	}    
+    
+    private static void trace( String traceString ) {
+        System.out.println( traceString ) ;
+        // logger.debug( traceString ) ;
+    }
+    
+    private static void debug( String logString ){
+        System.out.println( logString ) ;
+        // logger.debug( logString ) ;
+    }
 
 } // end of class JobControllerDelegate

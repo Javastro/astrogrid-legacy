@@ -153,6 +153,12 @@ public class Job {
             response = null ;
         JobControllerDelegate
             jobController = null ;
+            
+        if( TRACE_ENABLED ) trace( "userid: " + userid) ; 
+        if( TRACE_ENABLED ) trace( "community: " + community) ; 
+        if( TRACE_ENABLED ) trace( "communitySnippet: " + communitySnippet) ; 
+        if( TRACE_ENABLED ) trace( "filter: " + filter) ; 
+        
                    
         try {
             jesLocation = WKF.getProperty( WKF.JES_URL, WKF.JES_CATEGORY ) ;
@@ -195,7 +201,11 @@ public class Job {
             
             NodeList
                nodeList = element.getChildNodes(),
-               jobsList = null ;              
+               jobsList = null ;  
+               
+            String
+               userid = null ,
+               community = null ;            
                             
             for( int i=0 ; i < nodeList.getLength() ; i++ ) {           
                 if( nodeList.item(i).getNodeType() == Node.ELEMENT_NODE ) {
@@ -203,11 +213,14 @@ public class Job {
                     element = (Element) nodeList.item(i) ;
                 
                     if ( element.getTagName().equals( JobDD.JOBLIST_ELEMENT ) ) {
+                         userid = element.getAttribute( JobDD.USERID_ATTR ).trim() ;
+                         community = element.getAttribute( JobDD.COMMUNITY_ATTR ).trim() ;
                          jobsList = element.getChildNodes() ;  
-                         iterator = Job.formatList( jobsList ) ;
+                         iterator = Job.formatList( userid, community, jobsList ) ;
                     }  
                     else if( element.getTagName().equals( JobDD.MESSAGE_ELEMENT ) ) {
-                         debug( element.getFirstChild().getNodeValue().trim() ) ;
+                         //debug( element.getFirstChild().getNodeValue() ) ;
+                         debug( "message") ;
                     }                 
                     
                 } // end if
@@ -225,7 +238,7 @@ public class Job {
     } // end of decodeListResponse()
    
    
-    private static ListIterator formatList( NodeList nodeList ) {
+    private static ListIterator formatList( String userid, String community, NodeList nodeList ) {
          if( TRACE_ENABLED ) trace( "Job.formatList() entry") ;
         
         ArrayList
@@ -235,7 +248,8 @@ public class Job {
             
              Element
                 element = null ;
-       
+             Job
+                job = null ;
                             
              for( int i=0 ; i < nodeList.getLength() ; i++ ) {           
                  if( nodeList.item(i).getNodeType() == Node.ELEMENT_NODE ) {
@@ -243,7 +257,10 @@ public class Job {
                      element = (Element) nodeList.item(i) ;
                 
                      if ( element.getTagName().equals( JobDD.JOB_ELEMENT ) ) {
-                          jobList.add( new Job( element ) ) ;  
+                         job = new Job( element ) ;
+                         job.setUserid( userid ) ;
+                         job.setCommunity( community ) ;
+                         jobList.add( job ) ;  
                      }  
  
                  } // end if
