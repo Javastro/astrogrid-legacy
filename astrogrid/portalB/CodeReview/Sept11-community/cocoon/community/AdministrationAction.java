@@ -1,0 +1,413 @@
+
+package org.astrogrid.portal.cocoon.community;
+import org.apache.avalon.framework.parameters.Parameters;
+import org.apache.cocoon.acting.AbstractAction;
+import org.apache.cocoon.environment.Request;
+import org.apache.cocoon.environment.Session;
+import org.apache.cocoon.environment.Redirector;
+import org.apache.cocoon.environment.SourceResolver;
+import org.apache.cocoon.environment.ObjectModelHelper;
+import java.util.Map;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
+import org.astrogrid.community.delegate.policy.AdministrationDelegate;
+import org.astrogrid.community.policy.data.GroupData;
+import org.astrogrid.community.policy.data.GroupMemberData;
+import org.astrogrid.community.policy.data.AccountData;
+import org.astrogrid.community.policy.data.ResourceData;
+
+/**
+ *
+ * AdministrationAction is a custom cocoon Action used for the Administraiton page.  And is used in conjunction with
+ * astrogrid.xsl and astrogrid.xsp
+ * 
+ * @author Kevin Benson
+ *
+ */
+public class AdministrationAction extends AbstractAction
+{
+	/**
+	 * Switch for our debug statements.
+	 *
+	 */
+	public static boolean DEBUG_FLAG = true;
+	
+	/**
+	 * Cocoon param for the user param in the session.
+	 *
+	 */
+	public static final String USER_PARAM_NAME = "user-param" ;
+	
+	private static final String ACTION = "action";
+	
+	private static final String ACTION_INSERT_RESOURCE = "insertresource";
+
+	private static final String ACTION_INSERT_MEMBER = "insertmember";
+	
+	private static final String ACTION_INSERT_PERMISSION = "insertpermission";
+	
+	private static final String ACTION_INSERT_GROUP = "insertgroup";
+	
+	private static final String ACTION_INSERT_COMMUNITY = "insertcommunity";
+	
+	private static final String ACTION_REMOVE_RESOURCE = "removeresource";
+
+	private static final String ACTION_REMOVE_MEMBER = "removemember";
+
+	private static final String ACTION_REMOVE_PERMISSION = "removepermission";
+
+	private static final String ACTION_REMOVE_GROUP = "removegroup";
+	
+	private static final String ACTION_REMOVE_COMMUNITY = "removecommunity";
+	
+	private static final String ACTION_REMOVE_ACCOUNT = "removeaccount";
+   
+   private static final String ACTION_INSERT_ACCOUNT = "insertaccount";   
+		
+	private static final String ACTION_VIEW_GROUPS = "viewgroups";	
+   
+   private static final String ACTION_VIEW_ACCOUNTS = "viewaccounts";   
+   
+   private static final String ACTION_VIEW_COMMUNITY = "viewcommunity";   
+   
+   private static final String ACTION_VIEW_RESOURCES = "viewresources";
+   
+   private static final String ACTION_CHANGE_PASSWORD = "changeofpassword";
+   
+   private static final String IDENT = "ident";
+   
+   private static final String PROCESS_ACTION = "processaction";   
+
+   private static final String PARAM_COMMUNITY_LIST = "communitylist";   
+   
+   private static final String PARAM_RESOURCE_LIST = "resourcelist";   
+   
+   private static final String PARAM_ACCOUNT_LIST = "accountlist";   
+
+   private static final String PARAM_GROUP_LIST = "grouplist";   
+	
+		
+	/**
+	 * Our action method.
+	 *
+	 */
+	public Map act(
+		Redirector redirector, 
+		SourceResolver resolver, 
+		Map objectModel, 
+		String source, 
+		Parameters params)
+		{
+		
+		//
+		// Get our current request and session.
+		Request request = ObjectModelHelper.getRequest(objectModel);
+      Session session = request.getSession();
+      
+            
+      String errorMessage = null;
+      String message = null;
+      
+		String action = request.getParameter(ACTION);
+      String processAction = request.getParameter(PROCESS_ACTION);
+      
+      if(processAction != null && processAction.length() > 0 ) {
+         action = processAction;
+      }
+		if(DEBUG_FLAG) {
+			System.out.println("the action is = " + action);		
+		}
+      AdministrationDelegate adminDelegate = new AdministrationDelegate();
+      String ident = (String)request.getParameter(IDENT);
+
+      Hashtable actionTable = new Hashtable();
+      String comm_account = (String)session.getAttribute("community_account");
+      if(comm_account == null || comm_account.length() <= 0) {
+         comm_account = (String)session.getAttribute("user");
+      }
+      if(comm_account == null) {
+         //user is a new user registring
+         actionTable.put(ACTION_INSERT_ACCOUNT,"Insert Account");
+      }else {
+         actionTable.put(ACTION_INSERT_ACCOUNT,"Insert Account");
+         actionTable.put(ACTION_REMOVE_ACCOUNT,"Remove Account");
+         actionTable.put(ACTION_INSERT_GROUP,"Insert Group");
+         actionTable.put(ACTION_REMOVE_GROUP,"Remove Group");
+         actionTable.put(ACTION_INSERT_COMMUNITY,"Insert Community");
+         actionTable.put(ACTION_REMOVE_COMMUNITY,"Remove Community");
+         actionTable.put(ACTION_INSERT_RESOURCE,"Insert Resource");
+         actionTable.put(ACTION_REMOVE_RESOURCE,"Remove Resource");
+         actionTable.put(ACTION_INSERT_MEMBER,"Insert Member");
+         actionTable.put(ACTION_REMOVE_MEMBER,"Remove Member");
+         actionTable.put(ACTION_VIEW_GROUPS,"View Groups");
+         actionTable.put(ACTION_CHANGE_PASSWORD,"Change of Password");
+         actionTable.put(ACTION_INSERT_PERMISSION,"Insert Permission");
+         actionTable.put(ACTION_REMOVE_PERMISSION,"Remove Permission");
+         actionTable.put(ACTION_VIEW_COMMUNITY,"View Community");
+         actionTable.put(ACTION_VIEW_ACCOUNTS,"View Accounts");         
+         actionTable.put(ACTION_VIEW_RESOURCES,"View Resources");         
+      }      
+      
+      session.setAttribute("actionlist",actionTable);
+      
+      String community = request.getParameter("community");
+      if(community == null || community.length() > 0) {
+         //community = session.getAttribute("community_name");
+         community = "localhost";
+      }
+      
+      
+      if(ACTION_REMOVE_GROUP.equals(action) || ACTION_VIEW_GROUPS.equals(action) ||
+         ACTION_REMOVE_MEMBER.equals(action) || ACTION_INSERT_MEMBER.equals(action) ||
+         ACTION_INSERT_PERMISSION.equals(action) || ACTION_REMOVE_PERMISSION.equals(action)) {
+        try {
+         ArrayList al = adminDelegate.getGroupList(community);
+         session.setAttribute(PARAM_GROUP_LIST,al);
+        }catch(Exception e) {
+            errorMessage = e.toString();
+            e.printStackTrace();
+        }
+      }
+      
+      if(ACTION_REMOVE_COMMUNITY.equals(action) || ACTION_VIEW_COMMUNITY.equals(action) ||
+         ACTION_INSERT_MEMBER.equals(action)) {
+        try {
+         ArrayList al = adminDelegate.getCommunityList();
+         session.setAttribute(PARAM_COMMUNITY_LIST,al);
+        }catch(Exception e) {
+            errorMessage = e.toString();
+            e.printStackTrace();
+        }
+      }
+            
+      if(ACTION_REMOVE_RESOURCE.equals(action) ||  ACTION_INSERT_PERMISSION.equals(action)
+         || ACTION_REMOVE_PERMISSION.equals(action) || ACTION_VIEW_RESOURCES.equals(action) ) {
+        try {
+         ArrayList al = adminDelegate.getResourceList();
+         session.setAttribute(PARAM_RESOURCE_LIST,al);
+           
+        }catch(Exception e) {
+            errorMessage = e.toString();
+            e.printStackTrace();
+        }
+      }
+      
+      
+      if(ACTION_REMOVE_ACCOUNT.equals(action) || ACTION_REMOVE_MEMBER.equals(action) 
+         || ACTION_INSERT_MEMBER.equals(action) || ACTION_VIEW_ACCOUNTS.equals(action)) {
+              try {
+               ArrayList al = adminDelegate.getAccountList(community);
+               session.setAttribute(PARAM_ACCOUNT_LIST,al);
+              }catch(Exception e) {
+                  errorMessage = e.toString();
+                  e.printStackTrace();
+              }
+       }      
+      
+      if(ACTION_INSERT_GROUP.equals(processAction)) {
+         System.out.println("Entering INSERT Group ident val = " + ident);
+         if(ident != null && ident.length() > 0) {
+            
+            try {
+               GroupData gd = adminDelegate.addGroup(ident);
+               gd.setDescription(request.getParameter("description"));
+               gd.setType(GroupData.MULTI_TYPE);
+               adminDelegate.setGroup(gd);
+               message = "Group was Inserted.";
+            }catch(Exception e) {
+               errorMessage = e.toString();
+               e.printStackTrace();
+            }
+         }else {
+            errorMessage = "Cannot insert an empty group";
+         }
+      }
+      else if(ACTION_REMOVE_GROUP.equals(processAction)) {
+         if(ident != null && ident.length() > 0) {
+            try {
+               adminDelegate.delGroup(ident);
+               message = "Group was deleted";
+            }catch(Exception e) {
+               errorMessage = e.toString();
+               e.printStackTrace();
+            }
+         }else {
+            errorMessage = "No group found to remove";
+         } 
+      } else if(ACTION_INSERT_COMMUNITY.equals(processAction)) {
+         System.out.println("Entering INSERT Community ident val = " + ident);
+         if(ident != null && ident.length() > 0) {
+            try {
+               adminDelegate.addCommunity(ident);
+               message = "Community inserted.";
+            }catch(Exception e) {
+               errorMessage = e.toString();
+               e.printStackTrace();
+            }
+         }else {
+            errorMessage = "Cannot insert an empty community";
+         } 
+      } else if(ACTION_REMOVE_COMMUNITY.equals(processAction)) {
+         if(ident != null && ident.length() > 0) {
+            try {
+               adminDelegate.delCommunity(ident);
+               message = "Community deleted";
+            }catch(Exception e) {
+               errorMessage = e.toString();
+               e.printStackTrace();
+            }
+         }else {
+            errorMessage = "No insert empty community";
+         } 
+      } else if(ACTION_INSERT_ACCOUNT.equals(processAction)) {
+         System.out.println("Entering INSERT account ident val = " + ident);
+         if(ident != null && ident.length() > 0) {
+            try {
+               AccountData ad = adminDelegate.addAccount(ident);
+               ad.setDescription(request.getParameter("description"));
+               ad.setPassword(request.getParameter("password"));
+               adminDelegate.setAccount(ad);
+               message = "Account inserted.";
+            }catch(Exception e) {
+               errorMessage = e.toString();
+               e.printStackTrace();
+            }
+         }else {
+            errorMessage = "No account given to insert";
+         } 
+      } else if(ACTION_REMOVE_ACCOUNT.equals(processAction)) {
+         if(ident != null && ident.length() > 0) {
+            try {
+               adminDelegate.delAccount(ident);
+               message = "Account deleted";
+            }catch(Exception e) {
+               errorMessage = e.toString();
+               e.printStackTrace();
+            }
+         }else {
+            errorMessage = "No account given to remove";
+         } 
+      } else if(ACTION_INSERT_PERMISSION.equals(processAction)) {
+
+         if(ident != null && ident.length() > 0) {
+            try {
+               System.out.println("entered insertpermission = " + ident);
+               String permGroup = request.getParameter("group");
+               String permAction = request.getParameter("policy");
+               adminDelegate.addPermission(ident,permGroup,permAction);
+               message = "Permission inserted";
+            }catch(Exception e) {
+               errorMessage = e.toString();
+               e.printStackTrace();
+            }
+         }else {
+            errorMessage = "All parameters required for inserting permission";
+         } 
+      } else if(ACTION_REMOVE_PERMISSION.equals(processAction)) {
+         if(ident != null && ident.length() > 0) {
+            try {
+               String permGroup = request.getParameter("group");
+               String permAction = request.getParameter("policy");
+               adminDelegate.delPermission(ident,permGroup,permAction);
+               message = "Permission removed";
+            }catch(Exception e) {
+               errorMessage = e.toString();
+               e.printStackTrace();
+            }
+         }else {
+            errorMessage = "No Permission given to remove.";
+         } 
+      } else if(ACTION_CHANGE_PASSWORD.equals(processAction)) {
+         ident = (String)session.getAttribute("community_account");
+         if(ident != null && ident.length() > 0) {
+            try {
+               ident = (String)session.getAttribute("community_account");
+               AccountData ad = adminDelegate.getAccount(ident);
+               String password = request.getParameter("current_password");
+               String newpassword = request.getParameter("new_password");
+               String verifypassword = request.getParameter("verify_password");
+               if(ad.getPassword().equals(password)) {
+                  if(newpassword.equals(verifypassword)) {
+                     ad.setPassword(newpassword);
+                     adminDelegate.setAccount(ad);
+                     message = "Account's password changed.";
+                  }else {
+                     errorMessage = "Your new password and the verification password do not match.";
+                  }
+               }else {
+                  errorMessage = "Your current password is not what is in our system.";
+               }
+               
+            }catch(Exception e) {
+               errorMessage = e.toString();
+               e.printStackTrace();
+            }
+         }else {
+            errorMessage = "No insert empty community";
+         } 
+      } else if(ACTION_INSERT_MEMBER.equals(processAction)) {
+         if(ident != null && ident.length() > 0) {
+            try {
+               adminDelegate.addGroupMember(ident,request.getParameter("group"));
+               message = "Member added.";
+            }catch(Exception e) {
+               errorMessage = e.toString();
+               e.printStackTrace();
+            }
+         }else {
+            errorMessage = "No insert empty community";
+         } 
+      } else if(ACTION_REMOVE_MEMBER.equals(processAction)) {
+         if(ident != null && ident.length() > 0) {
+            try {
+               adminDelegate.delGroupMember(ident,request.getParameter("group"));
+               message = "Member removed.";
+            }catch(Exception e) {
+               errorMessage = e.toString();
+               e.printStackTrace();
+            }
+         }else {
+            errorMessage = "No insert empty community";
+         } 
+      } else if(ACTION_INSERT_RESOURCE.equals(processAction)) {
+              if(ident != null && ident.length() > 0) {
+                 try {
+                    ResourceData rd = adminDelegate.addResource(ident);
+                    rd.setDescription(request.getParameter("description"));
+                    adminDelegate.setResource(rd);
+                    message = "Resource inserted.";
+                 }catch(Exception e) {
+                    errorMessage = e.toString();
+                    e.printStackTrace();
+                 }
+              }else {
+                 errorMessage = "No insert empty community";
+              } 
+      } else if(ACTION_REMOVE_RESOURCE.equals(processAction)) {
+           if(ident != null && ident.length() > 0) {
+              try {
+                 adminDelegate.delResource(ident);
+                 message = "Resource removed.";
+              }catch(Exception e) {
+                 errorMessage = e.toString();
+                 e.printStackTrace();
+              }
+           }else {
+              errorMessage = "No insert empty community";
+           } 
+      }      
+
+
+      
+		
+		//
+		//Create a new HashMap for our results.  Will be used to
+		//pass to the transformer (xsl page)
+		Map results = new HashMap();
+		results.put(ACTION,action);
+      results.put("errormessage",errorMessage);
+      results.put("message",message);
+		return results;
+	}	
+}
