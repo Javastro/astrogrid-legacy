@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierStatus.java,v 1.7 2004/11/03 00:17:56 mch Exp $
+ * $Id: QuerierStatus.java,v 1.8 2004/11/08 15:03:23 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -118,12 +118,15 @@ public abstract class QuerierStatus implements TaskStatus
    
    public String getMessage() { return note; }
    
+   /** Start a new progress with the given descriptive note and max value for pos
+    * (leave max -1 if unknown) */
    public void newProgress(String note, long max) {
       progressNote = note;
       progressPos = -1;
       progressMax = max;
    }
-      
+   
+   /** Resets the progress message to nothing - ie clears it */
    public void newProgress() {
       newProgress("", -1);
    }
@@ -153,6 +156,9 @@ public abstract class QuerierStatus implements TaskStatus
 
 /*
 $Log: QuerierStatus.java,v $
+Revision 1.8  2004/11/08 15:03:23  mch
+Added doc
+
 Revision 1.7  2004/11/03 00:17:56  mch
 PAL_MCH Candidate 2 merge
 
