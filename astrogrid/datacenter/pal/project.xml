@@ -25,6 +25,7 @@
                 <war.target.path>client-dist</war.target.path>
         </properties>
     </dependency>
+    <!-- not right for main project to be dependent on these
     <dependency>
         <groupId>org.astrogrid</groupId>
         <artifactId>cdsdelegate</artifactId>
@@ -43,6 +44,7 @@
                 <war.target.path>implementations</war.target.path>
         </properties>
     </dependency>
+    -->
 
  <!-- astrogrid library components -->
     <dependency><!-- NWW - hack - necessary to give this one a 'fake' name to force maven to grab this, and the associated dist.zip file -->
@@ -55,6 +57,7 @@
         <war.bundle>true</war.bundle>
       </properties>
     </dependency>
+    <!-- used to send results -->
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-store-client</artifactId>
@@ -63,32 +66,7 @@
         <war.bundle>true</war.bundle>
       </properties>
     </dependency>
-    <dependency>
-      <groupId>astrogrid-jes</groupId>
-      <artifactId>astrogrid-jes-delegate</artifactId>
-      <version>${pom.currentVersion}</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-    <!-- cea -->
-    <dependency>
-      <artifactId>astrogrid-cea-server</artifactId>
-      <groupId>org.astrogrid</groupId>
-      <version>${pom.currentVersion}</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-    <dependency>
-      <artifactId>astrogrid-workflow-objects</artifactId>
-      <groupId>org.astrogrid</groupId>
-      <version>${pom.currentVersion}</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-    <!-- community -->
+    <!-- community for resolving IVORNs for sending results -->
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-community-common</artifactId>
@@ -113,7 +91,34 @@
         <war.bundle>true</war.bundle>
       </properties>
     </dependency>
-    <!-- registry -->
+    <!-- unused?
+    <dependency>
+      <groupId>astrogrid-jes</groupId>
+      <artifactId>astrogrid-jes-delegate</artifactId>
+      <version>${pom.currentVersion}</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+    -->
+    <!-- cea -->
+    <dependency>
+      <artifactId>astrogrid-cea-server</artifactId>
+      <groupId>org.astrogrid</groupId>
+      <version>${pom.currentVersion}</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+    <dependency>
+      <artifactId>astrogrid-workflow-objects</artifactId>
+      <groupId>org.astrogrid</groupId>
+      <version>${pom.currentVersion}</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+    <!-- registry for resolving IVORNs etc and pushing metadata -->
     <dependency>
       <artifactId>astrogrid-registry-client-lite</artifactId>
       <groupId>org.astrogrid</groupId>
@@ -143,7 +148,9 @@
     </dependency>
 
     <!-- dsa back ends -->
-    <dependency><!-- again, has a fake artifactId, so we can depend on the jar and zip -->
+    <!-- again, has a fake artifactId, so we can depend on the jar and zip -->
+    <!-- not right for main project to be dependent on implementation
+    <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>cdsdelegate-jar</artifactId>
       <version>${pom.currentVersion}</version>
@@ -154,7 +161,7 @@
       </properties>
     </dependency>
 
-    <dependency><!-- ditto -->
+    <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>secdelegate-jar</artifactId>
       <version>${pom.currentVersion}</version>
@@ -164,6 +171,7 @@
         <war.bundle>true</war.bundle>
       </properties>
     </dependency>
+    -->
 
     <!-- needs to be in WEB-INF/classes, apparently.-->
     <!-- unused - but only commented out as it may be used again later
