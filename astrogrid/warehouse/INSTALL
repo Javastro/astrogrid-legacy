@@ -1,3 +1,17 @@
+This file describes the installation of the front-end web-service for
+AstroGrid's Grid Data Warehouse. The service is installed from the file 
+warehouse.war, which you should download from AstroGrid, into 
+Jakarta-Tomcat. In principle, you can install the service in any J2EE 
+web-container, but the detailed instructions below are specific to Tomcat.
+
+The main configuration-file is included in warehouse.war but must be 
+extracted and installed separately. The WAR is structurally a jar file, so 
+jar tools can be used. On Unix or Linux, use the jar command: 
+
+  jar xf warehouse.war WEB-INF/classes/AstroGridConfig.properties
+
+On Windows, extract AstroGridConfig.properties using WinZip.
+
 Copy AstroGridConfig.properties to $CATALINA_HOME/conf/ where 
 $CATALINA_HOME stands for the absolute path to the Tomcat installation.
 
