@@ -1,5 +1,5 @@
 /*
- * $Id: IconFactory.java,v 1.4 2005/04/03 12:51:31 mch Exp $
+ * $Id: IconFactory.java,v 1.5 2005/04/03 22:26:25 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -103,7 +103,7 @@ public class IconFactory extends ImageFactory
     */
    private static ImageIcon loadIcon(String filename)
    {
-      Image image = loadImage(filename);
+      Image image = loadImage(filename+".gif");
       if (image != null) {
          return new ImageIcon(image);
       }
@@ -112,6 +112,9 @@ public class IconFactory extends ImageFactory
 }
 /*
 $Log: IconFactory.java,v $
+Revision 1.5  2005/04/03 22:26:25  mch
+Added images
+
 Revision 1.4  2005/04/03 12:51:31  mch
 split imagefactory from iconfactory
 

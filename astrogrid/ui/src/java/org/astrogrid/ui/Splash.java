@@ -73,7 +73,7 @@ public class Splash extends JWindow
 
    /** Null constructor for descendents that want to construct their own
     */
-   public Splash()
+   protected Splash()
    {}
 
    /** General purpose constructor for instant splash-screens */
@@ -173,4 +173,5 @@ public class Splash extends JWindow
    }
    
 }
+
 
