@@ -1,5 +1,5 @@
 /*
- * $Id: Monitor.java,v 1.1 2004/10/01 18:04:59 mch Exp $
+ * $Id: Monitor.java,v 1.2 2004/10/05 09:44:50 mch Exp $
  */
 
 package org.astrogrid.status.monitor;
@@ -27,7 +27,7 @@ public class Monitor  {
    /** Set up with default list of datacenters */
    protected void initialise() {
       datacenters = new Vector();
-      datacenters.add("//http://grendel12.roe.ac.uk:8080/pal-6df");
+      datacenters.add("http://grendel12.roe.ac.uk:8080/pal-6df");
       datacenters.add("http://grendel12.roe.ac.uk:8080/pal-sec");
       datacenters.add("http://grendel12.roe.ac.uk:8080/pal-vizier");
       datacenters.add("http://astrogrid.roe.ac.uk:8080/pal-ssa");
@@ -76,14 +76,16 @@ public class Monitor  {
    
    protected void writeDatacenterStatusRow(String endpoint, PrintWriter out) {
       out.println("<tr>");
-      out.println("<td>"+endpoint+"</td>");
+      out.println("<td><a href='"+endpoint+"'>"+endpoint+"</a></td>");
       try {
          TimeStamp timestamp = new TimeStamp();
          URL url = new URL(endpoint+"/serverStatus.jsp");
          InputStream in = url.openStream();
          //could parse it but can't be bothered just now. Should really do
          //something more sensible anyway
-         out.println("<td>"+timestamp.getSecsSince()+"s</td>");
+         String bgcolor="#00FF00";
+         if (timestamp.getSecsSince()>5) { bgcolor="#FFFF00"; }
+         out.println("<td bgcolor='"+bgcolor+"'>"+timestamp.getSecsSince()+"s</td>");
       }
       catch (MalformedURLException mue) {
          out.println("<td bgcolor='#FF0000'>"+mue.getMessage()+"</td>");
