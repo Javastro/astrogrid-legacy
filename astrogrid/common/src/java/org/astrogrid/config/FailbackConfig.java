@@ -1,5 +1,5 @@
 /*
- * $Id: FailbackConfig.java,v 1.31 2004/11/07 16:48:30 mch Exp $
+ * $Id: FailbackConfig.java,v 1.32 2004/11/08 10:04:10 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -394,8 +394,12 @@ public class FailbackConfig extends Config {
       
       //look for chain; if this file contains the property 'include.config.filename'
       //then load that into the global properties
-      if (localProperties.getProperty("include.config.filename") != null) {
-         lookForConfigFile(localProperties.getProperty("include.config.filename"));
+      String includeFile = localProperties.getProperty("include.config.filename") ;
+      if (includeFile != null) {
+         boolean found = lookForConfigFile(includeFile);
+         if (!found) {
+            throw new ConfigException("include config file '"+includeFile+"' not found");
+         }
       }
       
       //override any existing set propertis with the local ones loaded above
@@ -755,6 +759,9 @@ public class FailbackConfig extends Config {
 }
 /*
 $Log: FailbackConfig.java,v $
+Revision 1.32  2004/11/08 10:04:10  mch
+Throw error if include file not found
+
 Revision 1.31  2004/11/07 16:48:30  mch
 Added include so we can maintain all the ivorn shortcuts
 
