@@ -113,7 +113,9 @@ public class DesignAction extends AbstractAction {
 	    TOOL_NAME_PARAMETER = "tool-name",
 		STEP_KEY_PARAMETER = "step-key",
         ERROR_MESSAGE_PARAMETER = "ErrorMessage",
-        LOCATION_PARAMETER = "location";
+        LOCATION_PARAMETER = "location",
+	    PARAM_NAME_PARAMETER = "param-name",
+	    PARAM_VALUE_PARAMETER = "param-value";
         
     public static final String
         QUERY_NAME_PARAMETER = "query-name",
@@ -135,6 +137,8 @@ public class DesignAction extends AbstractAction {
         ACTION_INSERT_TOOL_INTO_STEP = "insert-tool-into-step",
 	    ACTION_INSERT_INPUT_PARAMETER_INTO_TOOL = "insert-input-parameter-into-tool",
 	    ACTION_INSERT_OUTPUT_PARAMETER_INTO_TOOL = "insert-output-parameter-into-tool",
+	    ACTION_INSERT_INPUT_PARAMETER = "insert-input-parameter",
+	    ACTION_INSERT_OUTPUT_PARAMETER = "insert-output-parameter",	    
         ACTION_READ_LISTS = "read-lists";
         
     public static final String
@@ -298,6 +302,12 @@ public class DesignAction extends AbstractAction {
 				else if( action.equals( ACTION_INSERT_OUTPUT_PARAMETER_INTO_TOOL ) ) {
 				    this.insertOutputParameterIntoTool();                     								
 			    }
+			    else if( action.equals( ACTION_INSERT_INPUT_PARAMETER ) ) {
+					this.insertInputValue();         	
+				}                
+				else if( action.equals( ACTION_INSERT_OUTPUT_PARAMETER ) ) {
+					this.insertOutputValue();
+				}
 				else if( action.equals( ACTION_CREATE_TOOL ) ) {
 					this.createTool();                     								
 				}                
@@ -879,6 +889,120 @@ public class DesignAction extends AbstractAction {
 			}
                     
 		} // end of insertQueryIntoStep() 
+
+
+
+      private void insertInputValue() throws ConsistencyException {
+         if( TRACE_ENABLED ) trace( "DesignActionImpl.insertInputValue() entry" ) ;
+			
+         Step 
+            step = null;
+         Tool
+            tool = null ;
+         Parameter
+            param = null ;
+              
+         try {
+            // Tool should already have been inserted into step
+									
+         String
+            stepActivityKey = request.getParameter( ACTIVITY_KEY_PARAMETER ) ;
+		 String
+            parameterName = request.getParameter( PARAM_NAME_PARAMETER ) ;				    					
+         String
+            parameterValue = request.getParameter( PARAM_VALUE_PARAMETER ) ;
+                            
+         if ( stepActivityKey == null) {
+            debug( "stepActivityKey is null" ) ;
+         }
+         else if ( parameterName == null) {
+            debug( "parameterName is null" ) ;
+         }
+         else if ( parameterValue == null) {
+            debug( "parameterValue is null" ) ;
+         }
+
+         Activity
+            activity = workflow.getActivity( stepActivityKey ) ;
+                    
+         if( activity instanceof Step ) {
+            step = (Step)activity ;
+         }
+         else {
+            throw new ConsistencyException() ;
+         }
+         tool = step.getTool() ;
+				
+         workflow.insertParameterValue(tool,
+                                        parameterName,
+                                        parameterValue,
+                                        "input",
+                                        0) ;
+				
+			}
+			finally {
+				if( TRACE_ENABLED ) trace( "DesignActionImpl.insertInputValue() exit" ) ;
+			}
+                    
+		} // end of insertInputValue()       
+
+
+		private void insertOutputValue() throws ConsistencyException {
+			 if( TRACE_ENABLED ) trace( "DesignActionImpl.insertOutputValue() entry" ) ;
+			
+			 Step 
+					step = null;
+			 Tool
+					tool = null ;
+			 Parameter
+					param = null ;
+              
+			 try {
+					// Tool should already have been inserted into step
+									
+			 String
+					stepActivityKey = request.getParameter( ACTIVITY_KEY_PARAMETER ) ;
+             String
+					parameterName = request.getParameter( PARAM_NAME_PARAMETER ) ;				    					
+			 String
+					parameterValue = request.getParameter( PARAM_VALUE_PARAMETER ) ;
+                            
+			 if ( stepActivityKey == null) {
+					debug( "stepActivityKey is null" ) ;
+			 }
+			 else if ( parameterName == null) {
+					debug( "parameterName is null" ) ;
+			 }
+			 else if ( parameterValue == null) {
+					debug( "parameterValue is null" ) ;
+			 }
+
+			 Activity
+					activity = workflow.getActivity( stepActivityKey ) ;
+                    
+			 if( activity instanceof Step ) {
+					step = (Step)activity ;
+			 }
+			 else {
+					throw new ConsistencyException() ;
+			 }
+			  
+			 tool = step.getTool() ; 
+				
+			 workflow.insertParameterValue( tool,
+			                                 parameterName,
+			                                 parameterValue,
+			                                 "output",
+			                                 0) ;
+				
+		}
+		finally {
+			if( TRACE_ENABLED ) trace( "DesignActionImpl.insertOutputValue() exit" ) ;
+		}
+                    
+	} // end of insertOutputValue()
+
+
  
  
 		private void insertInputParameterIntoTool() throws ConsistencyException {
@@ -917,15 +1041,19 @@ public class DesignAction extends AbstractAction {
 					throw new ConsistencyException() ;
 				}
 				
+				
 				ListIterator listIt = step.getTool().getInputParameters() ;
 
 				Parameter
 				    p ;
              
 				while( listIt.hasNext() ) {
+				
 				    p = (Parameter)listIt.next() ;
 					{
-						if ( p.getLocation().length() <= 0 )   //look for 1st parameter where location hasn't been set,					
+
+						if ( p.getLocation().length() <= 0 )   //look for 1st parameter where location hasn't been set,
+
 							 p.setLocation( queryLocation ) ;  //for query tool this will be 1st parameter, for tools with greater 
 							 break ;                           //cardinality than 1 this may not be the case.
 					}		 
