@@ -25,32 +25,27 @@ import javax.security.auth.Subject;
  */
 public class SecurityGuard {
 
-
   /**
    * The JAAS subject.
    */
   protected Subject subject;
 
-  /**
-   * The clear-text password to go into the messages.
-   */
-  protected String password;
 
   /**
-   * Flag indicating whether the passwsord should be hashed.
-   * True means hash the password; false means leave the
-   * password in clear text.
-   */
-  private boolean hashPassword = false;
-
-
-  /**
-   * Constructs a SecurityGuard. Sets an
-   * empty JAAS subject such that requests for
-   * the subject never return null.
+   * Constructs a SecurityGuard with an empty
+   * JAAS subject.
    */
   public SecurityGuard () {
     this.subject = new Subject();
+  }
+
+
+  /**
+   * Constructs a SecurityGuard with a
+   * given JAAS subject.
+   */
+  public SecurityGuard (Subject s) {
+    this.subject = s;
   }
 
 
