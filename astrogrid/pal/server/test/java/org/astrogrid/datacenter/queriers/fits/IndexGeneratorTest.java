@@ -1,4 +1,4 @@
-/*$Id: IndexGeneratorTest.java,v 1.12 2005/03/22 13:28:48 mch Exp $
+/*$Id: IndexGeneratorTest.java,v 1.13 2005/03/22 22:47:29 KevinBenson Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -13,15 +13,20 @@ import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.InputStream;
 import java.net.URL;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.astrogrid.config.SimpleConfig;
+//import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.datacenter.fits.FitsTestSupport;
 import org.astrogrid.fitsserver.setup.IndexGenerator;
+import org.astrogrid.dataservice.queriers.QuerierPluginFactory;
+import org.astrogrid.fitsserver.fits.FitsQuerierPlugin;
 import org.astrogrid.util.DomHelper;
+import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 import java.io.File;
 
@@ -35,7 +40,7 @@ public class IndexGeneratorTest extends TestCase
    {
       URL []genURLS = FitsTestSupport.getTestFits();
       System.out.println("length of urls = " + genURLS.length);
-      SimpleConfig.setProperty("indexgen.path","." + File.separator + "target");
+      ConfigFactory.getCommonConfig().setProperty("indexgen.path","." + File.separator + "target");
       IndexGenerator generator = new IndexGenerator();
       generator.raAxis = 1;
       generator.decAxis = 2;
@@ -57,17 +62,17 @@ public class IndexGeneratorTest extends TestCase
    public void testGenerateAndUpdate() throws Exception
    {
       URL []genURLS = FitsTestSupport.getTestFits();
-      SimpleConfig.setProperty("upload.collection","IndexGenTest/CDSData");
-      SimpleConfig.setProperty("test.bypass","yes");
-      SimpleConfig.setProperty("xmldb.uri", "xmldb:exist://");
-      SimpleConfig.setProperty("xmldb.driver", "org.exist.xmldb.DatabaseImpl");
-      SimpleConfig.setProperty("xmldb.query.service", "XQueryService");
-      SimpleConfig.setProperty("xmldb.admin.user", "admin");
-      SimpleConfig.setProperty("xmldb.admin.password", "");
-      SimpleConfig.setProperty("exist.config.file", "target/test-classes/exist.xml");
+      ConfigFactory.getCommonConfig().setProperty("upload.collection","IndexGenTest/CDSData");
+      ConfigFactory.getCommonConfig().setProperty("test.bypass","yes");
+      ConfigFactory.getCommonConfig().setProperty("xmldb.uri", "xmldb:exist://");
+      ConfigFactory.getCommonConfig().setProperty("xmldb.driver", "org.exist.xmldb.DatabaseImpl");
+      ConfigFactory.getCommonConfig().setProperty("xmldb.query.service", "XQueryService");
+      ConfigFactory.getCommonConfig().setProperty("xmldb.admin.user", "admin");
+      ConfigFactory.getCommonConfig().setProperty("xmldb.admin.password", "");
+      ConfigFactory.getCommonConfig().setProperty("exist.config.file", "target/test-classes/exist.xml");
 
       System.out.println("length of urls = " + genURLS.length);
-      SimpleConfig.setProperty("indexgen.path","." + File.separator + "target");
+      ConfigFactory.getCommonConfig().setProperty("indexgen.path","." + File.separator + "target");
       IndexGenerator generator = new IndexGenerator();
       generator.raAxis = 1;
       generator.decAxis = 2;
@@ -83,8 +88,8 @@ public class IndexGeneratorTest extends TestCase
       catch (SAXException e) {
          fail("Generated index is not valid xml"+e);
       }
-  //    generator.updateXMLDB(indexDir);
-      //SimpleConfig.setProperty(QuerierPluginFactory.QUERIER_PLUGIN_KEY, FitsQuerierPlugin.class.getName());
+      generator.updateXMLDB(indexDir);
+      ConfigFactory.getCommonConfig().setProperty(QuerierPluginFactory.QUERIER_PLUGIN_KEY, FitsQuerierPlugin.class.getName());
       //IndexFitsQuerierTest ifqt = new IndexFitsQuerierTest();
       //ifqt.testQuery()
       
@@ -113,6 +118,21 @@ public class IndexGeneratorTest extends TestCase
       }
    }
 */
+   
+   protected Document askQueryFromFile(String queryFile) throws Exception {
+       System.out.println("entered askQueryFromFile");
+
+       assertNotNull(queryFile);
+       InputStream is = this.getClass().getResourceAsStream(queryFile);
+       
+       assertNotNull("Could not open query file :" + queryFile,is);
+       Document queryDoc = DomHelper.newDocument(is);
+       
+       //Document queryDoc = DomHelper.newDocument(new File(queryFile));
+       return queryDoc;
+   }
+
+
 
    
    
@@ -136,6 +156,9 @@ public class IndexGeneratorTest extends TestCase
 
 /*
  $Log: IndexGeneratorTest.java,v $
+ Revision 1.13  2005/03/22 22:47:29  KevinBenson
+ changed back to commonconfig stuff.
+
  Revision 1.12  2005/03/22 13:28:48  mch
  Temporarily removed call to generator as it asks a question - stalls unit tests
 

@@ -1,4 +1,4 @@
-/*$Id: IndexQueryFitsTest.java,v 1.1 2005/03/22 10:04:11 KevinBenson Exp $
+/*$Id: IndexQueryFitsTest.java,v 1.2 2005/03/22 22:47:29 KevinBenson Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -18,7 +18,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.astrogrid.account.LoginAccount;
-import org.astrogrid.config.SimpleConfig;
+//import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.fits.FitsTestSupport;
 import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.queriers.QuerierPluginFactory;
@@ -34,6 +34,7 @@ import org.w3c.dom.Document;
 import org.astrogrid.util.DomHelper;
 import java.io.*;
 import org.xmldb.api.base.Collection;
+import org.astrogrid.cfg.ConfigFactory;
 
 /** Test the Fits processing classes
  */
@@ -49,11 +50,11 @@ public class IndexQueryFitsTest extends TestCase
    public void setUp() throws Exception {
        super.setUp();
        System.out.println("Try to find exist.xml");
-       SimpleConfig.setProperty("xmldb.uri", "xmldb:exist://");
-       SimpleConfig.setProperty("xmldb.driver", "org.exist.xmldb.DatabaseImpl");
-       SimpleConfig.setProperty("xmldb.query.service", "XQueryService");
-       SimpleConfig.setProperty("xmldb.admin.user", "admin");
-       SimpleConfig.setProperty("xmldb.admin.password", "");
+       ConfigFactory.getCommonConfig().setProperty("xmldb.uri", "xmldb:exist://");
+       ConfigFactory.getCommonConfig().setProperty("xmldb.driver", "org.exist.xmldb.DatabaseImpl");
+       ConfigFactory.getCommonConfig().setProperty("xmldb.query.service", "XQueryService");
+       ConfigFactory.getCommonConfig().setProperty("xmldb.admin.user", "admin");
+       ConfigFactory.getCommonConfig().setProperty("xmldb.admin.password", "");
        if(!registeredDB) {
            File fi = new File("target/test-classes/exist.xml");
            System.out.println("Got the File now try to register the db");
@@ -63,7 +64,7 @@ public class IndexQueryFitsTest extends TestCase
            System.out.println("database registered now set the query plugin");
            registeredDB = true;
        }//if
-       SimpleConfig.setProperty(QuerierPluginFactory.QUERIER_PLUGIN_KEY, FitsQuerierPlugin.class.getName());   
+       ConfigFactory.getCommonConfig().setProperty(QuerierPluginFactory.QUERIER_PLUGIN_KEY, FitsQuerierPlugin.class.getName());   
    }
 
    /** Check to see the right plugin is made */
@@ -124,6 +125,9 @@ public class IndexQueryFitsTest extends TestCase
 
 /*
  $Log: IndexQueryFitsTest.java,v $
+ Revision 1.2  2005/03/22 22:47:29  KevinBenson
+ changed back to commonconfig stuff.
+
  Revision 1.1  2005/03/22 10:04:11  KevinBenson
  New Tests for Indexgenerator
 
