@@ -292,14 +292,16 @@ public class JobScheduler {
 		    serviceLocation = null ;
 		
 		try {
-            serviceLocation = findService( findCatalog(job) ) ;
+            serviceLocation = findService( job ) ;
             if( serviceLocation == null ) 
-                serviceLocation = enquireOfRegistry( findCatalog(job) ) ;        
+                serviceLocation = enquireOfRegistry( job ) ;        
 		}
-		catch( Exception ex ) {
+		catch( JesException jex ) {
+			logger.debug( jex.getAstroGridMessage() ) ;	
 		}
 		finally {
 			if( TRACE_ENABLED ) logger.debug( "locateDatacenter(): exit") ;	
+			logger.debug( "url: " + serviceLocation ) ;	
 		}
 		
 		return serviceLocation ;
@@ -307,15 +309,14 @@ public class JobScheduler {
 	} // end of locateDatacenter()
 	
 	
-	private Catalog findCatalog( Job job ) {	
-		if( TRACE_ENABLED ) logger.debug( "findCatalog(): entry") ;
+	private String findService( Job job ) {	
+		if( TRACE_ENABLED ) logger.debug( "findService( job ): entry") ;
 		
 		JobStep
 		   jobStep = null ;
 		Catalog
 		   catalog = null ;
 		String
-		   service = null,
 		   candidateService = null ;
 		
 		try {
@@ -331,27 +332,26 @@ public class JobScheduler {
 				
 				 catalog = (Catalog)catIt.next() ;
 	             candidateService = findService( catalog ) ; 
-                 if( candidateService == null   &&   catIt.hasNext() )
-                     catIt.remove() ;
+                 if( candidateService != null  )
+                     break ;
                      
 			} // end while
 			
 		}
 		finally {
-			if( TRACE_ENABLED ) logger.debug( "findCatalog(): exit") ;	
+			if( TRACE_ENABLED ) logger.debug( "findService( job ): exit") ;	
 		}
 		
-		return catalog ;
+		return candidateService ;
 		
-	} // end of findCatalog()
+	} // end of findService( Job job )
 	
 	
 	private String findService( Catalog catalog ) {		
 		if( TRACE_ENABLED ) logger.debug( "findService(): entry") ;
 		
 		String
-		   service = null,
-		   candidateService = null ;
+		   service = null ;
 		
 		try {
 			
@@ -362,20 +362,19 @@ public class JobScheduler {
 			while( serviceIt.hasNext() ) {
 				
                service = (String)serviceIt.next() ;
-               if( service != null  &&  !service.equals("") && candidateService == null ) { 
-                   candidateService = service ; 
-               } else if( serviceIt.hasNext() ){
-               	   serviceIt.remove() ;
+               if( service != null  &&  !service.equals("") ) { 
+                   break  ;
                }
                
            	} // end while
 			
 		}
 		finally {
+			logger.debug( "service: " + service ) ;
 			if( TRACE_ENABLED ) logger.debug( "findService(): exit") ;	
 		}
 		
-		return candidateService ;		
+		return service ;		
 		
 	} // end of findService()
 	
@@ -477,7 +476,7 @@ public class JobScheduler {
 		return jobDoc.getDocumentElement().getAttribute( ScheduleRequestDD.JOB_URN_ATTR ).trim() ;	
 	} 
 	
-	private String enquireOfRegistry( Catalog catalog ) throws JesException { 
+	private String enquireOfRegistry( Job job ) throws JesException { 
 		if( TRACE_ENABLED ) logger.debug( "enquireOfRegistry() entry") ;
 		
 		String
@@ -486,6 +485,9 @@ public class JobScheduler {
 		try {
 			
 			// JBL Note:  BEWARE!!! Most of this is guess work.
+			
+			Catalog
+			   catalog = (Catalog)((JobStep)job.getJobSteps().next()).getQuery().getCatalogs().next() ;
 			
 			Object []
 			   parms = new Object[] { formatRegistryRequest( catalog ) } ;
