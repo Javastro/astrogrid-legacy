@@ -50,15 +50,13 @@ public class RegistryAdminService {
 
    private static final String NAMESPACE_URI =  "http://admin.server.registry.astrogrid.org";
    
-   private static final String DUMMY_MODE_PROPERTY = "org.astrogrid.registry.dummy.mode.on";
-   
    private boolean validated = false;   
 
     /**
     * target end point  is the location of the webservice. 
     */
    private URL endPoint = null; 
-   private boolean dummyMode = false;
+
    
 //   public static Config conf = null;
    
@@ -84,7 +82,6 @@ public class RegistryAdminService {
     */ 
    public RegistryAdminService(URL endPoint) {
       this.endPoint = endPoint;
-     // dummyMode = Boolean.valueOf(conf.getString(DUMMY_MODE_PROPERTY,"false")).booleanValue();
    }
     
    /**
@@ -146,8 +143,10 @@ public class RegistryAdminService {
          VODescription vo = (VODescription)Unmarshaller.unmarshal(VODescription.class,castorXS);
          valid = true;
       }catch(MarshalException me) {
+         me.printStackTrace();
          valid = false;   
       }catch(ValidationException ve) {
+         ve.printStackTrace();
          valid = false;   
       }finally {
          System.out.println("tried validating and results = " + valid);
