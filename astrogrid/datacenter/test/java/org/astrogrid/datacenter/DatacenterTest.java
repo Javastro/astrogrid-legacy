@@ -1,4 +1,4 @@
-/*$Id: DatacenterTest.java,v 1.1 2003/09/19 12:02:37 nw Exp $
+/*$Id: DatacenterTest.java,v 1.2 2003/09/24 21:15:04 nw Exp $
  * Created on 19-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.datacenter;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -20,17 +21,16 @@ import junit.framework.TestSuite;
 
 import org.apache.axis.client.AdminClient;
 import org.astrogrid.datacenter.config.Configuration;
+import org.astrogrid.datacenter.queriers.DatabaseQuerierManager;
 import org.astrogrid.datacenter.queriers.sql.HsqlTestCase;
 import org.astrogrid.datacenter.service.ServiceServer;
+import org.astrogrid.datacenter.service.WorkspaceTest;
 
 /**
  * Unit test that exercises the entire server application.
  * Exrtends the 'TestInstallation' class, runs it's tests against an in-memory HSQL db, and in-memory axis server. 
  * nice - should get our precentages up :)
- * Note: 
- * <ul><li>tests fail in eclipse, while they succeed when run by maven. Think its a problem with the in-process 
- * eclipse test runner, vs the forked test runner used by maven. not our problem.
- * </ul>
+ 
  * @author Noel Winstanley nw@jb.man.ac.uk 19-Sep-2003
  *
  */
@@ -61,6 +61,9 @@ public class DatacenterTest extends AbstractTestInstallation {
         HsqlTestCase.initializeConfiguration();
         // set location of metadata
         Configuration.setProperty(ServiceServer.METADATA_FILE_LOC_KEY,"/org/astrogrid/datacenter/test-metadata.xml");
+        // set up myspace.
+        Configuration.setProperty(DatabaseQuerierManager.RESULTS_TARGET_KEY,"fooble");
+        File tmpDir = WorkspaceTest.setUpWorkspace(); // dunno if we need to hang onto this for any reason..        
         // populate the database  
         String script = HsqlTestCase.getResourceAsString("/org/astrogrid/datacenter/queriers/sql/create-test-db.sql");
         DataSource ds = new HsqlTestCase.HsqlDataSource();
@@ -98,6 +101,9 @@ public class DatacenterTest extends AbstractTestInstallation {
 
 /* 
 $Log: DatacenterTest.java,v $
+Revision 1.2  2003/09/24 21:15:04  nw
+added workspace configuration
+
 Revision 1.1  2003/09/19 12:02:37  nw
 Added top level test - runs integration tests against an inprocess db and inprocess axis.
  
