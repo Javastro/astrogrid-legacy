@@ -235,7 +235,7 @@ public class DesignAction extends AbstractAction {
         
         
         private void retrieveUserDetails() {
-            if( TRACE_ENABLED ) trace( "DesignActionImpl.act() entry" ) ;   
+            if( TRACE_ENABLED ) trace( "DesignActionImpl.retrieveUserDetails() entry" ) ;   
                      
             String 
                 tag  = null ;
@@ -249,7 +249,7 @@ public class DesignAction extends AbstractAction {
                 ; // some logging here
             }
             finally {
-                if( TRACE_ENABLED ) trace( "DesignActionImpl.act() exit" ) ;  
+                if( TRACE_ENABLED ) trace( "DesignActionImpl.retrieveUserDetails() exit" ) ;  
             }
                 
         } // end of retrieveUserDetails()
@@ -274,7 +274,7 @@ public class DesignAction extends AbstractAction {
         
         
         private void createWorkflow() throws ConsistencyException {
-            if( TRACE_ENABLED ) trace( "DesignActionImpl.() entry" ) ;
+            if( TRACE_ENABLED ) trace( "DesignActionImpl.createWorkflow() entry" ) ;
               
             try {
                 
@@ -297,7 +297,7 @@ public class DesignAction extends AbstractAction {
         
             }
             finally {
-                if( TRACE_ENABLED ) trace( "DesignActionImpl.() exit" ) ;
+                if( TRACE_ENABLED ) trace( "DesignActionImpl.createWorkflow() exit" ) ;
             }
             
         } // end of createWorkflow()
