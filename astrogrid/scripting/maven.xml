@@ -37,9 +37,11 @@
 <goal name="astrogrid-deploy-snapshot">
         <attainGoal name="jar:deploy-snapshot" />
         <attainGoal name="dist:deploy-snapshot" />
-        <maven:maven descriptor="${basedir}/groovy/project.xml" goals="dist:deploy-snapshot" />
-        <maven:maven descriptor="${basedir}/rhino/project.xml" goals="dist:deploy-snapshot" />
-        <maven:maven descriptor="${basedir}/jython/project.xml" goals="dist:deploy-snapshot" />
+        <maven:maven descriptor="${basedir}/groovy/project.xml" goals="dist:deploy-bin-snapshot" />
+        <maven:maven descriptor="${basedir}/rhino/project.xml" goals="dist:deploy-bin-snapshot" />
+        <!-- no point - doesn't work
+        <maven:maven descriptor="${basedir}/jython/project.xml" goals="dist:deploy-bin-snapshot" />
+        -->
 </goal>
 
 <goal name="astrogrid-deploy-artifact">
@@ -47,7 +49,9 @@
         <attainGoal name="dist:deploy-bin"/>
         <maven:maven descriptor="${basedir}/groovy/project.xml" goals="dist:deploy-bin"/>
         <maven:maven descriptor="${basedir}/rhino/project.xml" goals="dist:deploy-bin" />
+        <!-- pointless
         <maven:maven descriptor="${basedir}/jython/project.xml" goals="dist:deploy-bin" />
+        -->
 </goal>
 
 

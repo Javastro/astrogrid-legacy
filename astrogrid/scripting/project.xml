@@ -5,8 +5,8 @@
         <id>astrogrid-scripting</id>
         <name>Astrogrid Scripting Language Interface</name>
         <description><![CDATA[
-          This project provides a unified interface to the astrogrid webservice delegates and supporting code. This is
-          intended to make it simple to call astrogrid services from scripting languages.
+          This project provides a unified interface to the astrogrid webservice delegates and supporting code. This
+          makes it simple to call astrogrid services from scripting languages.
           <p/>
           This project collects the delegates and dependent jars from the other projects, and adds some front-end classes to tie it
           all together (see javadocs)
@@ -14,10 +14,11 @@
           <section name="Scripting Language Bundles">
           <p>
                 At present, preconfigured tarballs containing a scripting language interpreter and
-                all the necessary astrogrid libraries are available for:
+                all the necessary astrogrid libraries are available for Javascript and Groovy. Both require you
+                to have a Java Runtime Environment already installed.
           </p>
            <!--http://www.astrogrid.org/maven/astrogrid-datacenter/-->
-            <subsection name="Javascript"><p>
+            <subsection name="Javascript (Basic)"><p>
                 <a href="http://www.mozilla.org/rhino">Rhino</a> is an implementation of javascript in Java.
                 <a href="http://www.astrogrid.org/maven/org.astrogrid/distributions/astrogrid-scripting-rhino-SNAPSHOT.tar.gz">Download</a> the
                 snapshot tarball, unpack, and configure by setting the <tt>JS_HOME</tt> environment variable to
@@ -27,7 +28,7 @@
                 <p />
                 The <tt>examples</tt> directory contains some example programs that use the astrogrid delegates
                 </p></subsection>
-                <subsection name="Groovy"><p>
+                <subsection name="Groovy (Recommended)"><p>
                 <a href="http://groovy.codehaus.org/">Groovy</a> is
                 <blockquote><i>
                  a powerful new high level dynamic language for the JVM combining lots of great features from
@@ -40,12 +41,6 @@
                 <p />
                 Again, <tt>bin</tt> contains to run groovy, <tt>examples</tt> has groovy versions of the example programs.
                 </p></subsection>
-                <subsection name="Jython"><p>
-                        <a href="http://www.jython.org">Jython</a> is an implementation of
-                        <a href="http://www.python.org">Python</a> written in Java, that will run on any Java platform.
-                        <p />
-                        I've not managed to get the astrogrid scripting working from jython yet.
-                </p></subsection>
                 <subsection name="Java"><p>
                  The assembled set of delegates and supporting libraries is a convenient starting point for writing
                  java client applications. The set of libraries can be <a href="http://www.astrogrid.org/maven/org.astrogrid/distributions/astrogrid-scripting-SNAPSHOT.tar.gz">downloaded here</a>
@@ -56,6 +51,7 @@
                                 <li>TCL - via <a href="http://www.tcl.tk/software/java/">JACL and Tcl-Blend</a></li>
                                 <li>Perl (any idea how?)</li>
                         </ul>
+                        to attempt this, start by downloading the distribution for java (see above section)
                 </p></subsection>
           </section>
 
