@@ -1,5 +1,5 @@
 /*
- * $Id: Config.java,v 1.8 2003/12/16 13:52:53 nw Exp $
+ * $Id: Config.java,v 1.9 2004/02/02 14:32:15 jdt Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,9 +14,9 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -31,7 +31,7 @@ public abstract class Config {
    private static String locations = null;
    
    /** The logging instance */
-   protected static Log log = LogFactory.getLog(SimpleConfig.class);
+   protected static Log log = LogFactory.getLog(Config.class);
    
    /**
     * Indirect file lookup; pass in the fully pathed jndi key (eg java:comp/env/wibble/config.url)
