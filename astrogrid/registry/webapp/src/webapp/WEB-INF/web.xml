@@ -39,10 +39,6 @@
 <servlet>
    <servlet-name>RegistryHarvest</servlet-name>
    <servlet-class>astrogrid.registry.harvest.daemon.HarvestDaemon</servlet-class>
-   <init-param>
-      <param-name>interval-hours</param-name>
-      <param-value>1</param-value>
-   </init-param>
    <load-on-startup>1</load-on-startup>
 </servlet>
 
