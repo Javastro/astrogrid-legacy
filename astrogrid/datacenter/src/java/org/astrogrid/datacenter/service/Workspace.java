@@ -1,5 +1,5 @@
 /**
- * $Id: Workspace.java,v 1.5 2003/09/05 01:01:58 nw Exp $
+ * $Id: Workspace.java,v 1.6 2003/09/07 18:45:56 mch Exp $
  */
 
 package org.astrogrid.datacenter.service;
@@ -26,7 +26,8 @@ public class Workspace
 
    private static final String ERR_WORKSPACE_ALREADY_IN_USE = "Workspace Already In Use";
 
-
+   /** Path to this workspace instance */
+   protected String workspacePath = null;
 
    /** File representation of this workspace instance */
    protected File workspaceFile = null;
@@ -43,7 +44,9 @@ public class Workspace
    {
       String workRoot = Configuration.getProperty( WORKSPACE_DIRECTORY  );
 
-      workspaceFile = new File(workRoot, workspaceId);
+      workspacePath = workRoot + File.separator + workspaceId;
+
+      File workspaceFile = new File(workspacePath);
 
       if (workspaceFile.exists())
       {
@@ -92,7 +95,7 @@ public class Workspace
     */
    public File makeWorkFile(String filename)
    {
-      return new File(workspaceFile,filename);
+      return new File(workspacePath + File.separator + filename);
    }
 
    /**
