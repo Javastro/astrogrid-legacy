@@ -1,4 +1,4 @@
-/*$Id: EgsoQuerierTest.java,v 1.2 2004/10/06 22:03:45 mch Exp $
+/*$Id: EgsoQuerierTest.java,v 1.3 2004/10/07 10:48:20 mch Exp $
  * Created on 01-Dec-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,9 +16,13 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.astrogrid.community.Account;
+import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.datacenter.impl.sec.EgsoQuerierPlugin;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
+import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
 import org.astrogrid.datacenter.query.AdqlQueryMaker;
+import org.astrogrid.datacenter.returns.ReturnSpec;
 import org.astrogrid.datacenter.returns.ReturnTable;
 import org.astrogrid.slinger.TargetIndicator;
 import org.astrogrid.test.AstrogridAssert;
@@ -34,8 +38,10 @@ public class EgsoQuerierTest extends TestCase {
    
    QuerierManager manager = QuerierManager.getManager("SqlQuerierTest");
    
-   public EgsoQuerierTest(String arg0) {
-   }
+    protected void setUp() throws Exception {
+        super.setUp();
+         SimpleConfig.setProperty(QuerierPluginFactory.PLUGIN_KEY, EgsoQuerierPlugin.class.getName());
+    }
    
    public void testAdql1() throws Exception {
       askAdqlFromFile("sql-querier-test-5.xml");
@@ -68,7 +74,7 @@ public class EgsoQuerierTest extends TestCase {
       assertNotNull("Could not open query file :" + queryFile,is);
       
       StringWriter sw = new StringWriter();
-      Querier q = Querier.makeQuerier(Account.ANONYMOUS, AdqlQueryMaker.makeQuery(is), TargetIndicator.makeIndicator(sw), ReturnTable.VOTABLE);
+      Querier q = Querier.makeQuerier(Account.ANONYMOUS, AdqlQueryMaker.makeQuery(is, TargetIndicator.makeIndicator(sw), ReturnTable.VOTABLE));
       
       manager.askQuerier(q);
       
@@ -91,6 +97,9 @@ public class EgsoQuerierTest extends TestCase {
 
 /*
  $Log: EgsoQuerierTest.java,v $
+ Revision 1.3  2004/10/07 10:48:20  mch
+ Fixes to EGSO tests
+
  Revision 1.2  2004/10/06 22:03:45  mch
  Following Query model changes in PAL
 

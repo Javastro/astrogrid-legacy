@@ -12,12 +12,16 @@
       <Condition xsi:type='intersectionSearchType' >
          <Condition xsi:type='comparisonPredType' Comparison='=' >
             <Arg xsi:type='columnReferenceType'  Table='data'  Name='target' ></Arg>
-            <Arg xsi:type='columnReferenceType'  Table='data'  Name=''SN 1987A'' ></Arg>
+            <Arg xsi:type='atomType' >
+               <Literal xsi:type='stringType' Value='SN 1987A' ></Literal>
+            </Arg>
          </Condition>
          <Condition xsi:type='intersectionSearchType' >
             <Condition xsi:type='comparisonPredType' Comparison='=' >
                <Arg xsi:type='columnReferenceType'  Table='data'  Name='units' ></Arg>
-               <Arg xsi:type='columnReferenceType'  Table='data'  Name='arcsec' ></Arg>
+               <Arg xsi:type='atomType' >
+                  <Literal xsi:type='stringType' Value='arcsec' ></Literal>
+               </Arg>
             </Condition>
             <Condition xsi:type='comparisonPredType' Comparison='=' >
                <Arg xsi:type='columnReferenceType'  Table='data'  Name='radius' ></Arg>

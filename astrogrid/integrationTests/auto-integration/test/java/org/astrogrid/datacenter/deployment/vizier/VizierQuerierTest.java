@@ -1,4 +1,4 @@
-/*$Id: VizierQuerierTest.java,v 1.2 2004/10/06 22:03:45 mch Exp $
+/*$Id: VizierQuerierTest.java,v 1.3 2004/10/07 10:48:20 mch Exp $
  * Created on 01-Dec-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -96,9 +96,9 @@ public class VizierQuerierTest extends DatacenterTestCase {
 //    10 arcmin.
 
        Querier q = Querier.makeQuerier(Account.ANONYMOUS,
-         SimpleQueryMaker.makeConeQuery(10.684620, 41.269278, 0.166667),
+         SimpleQueryMaker.makeConeQuery(10.684620, 41.269278, 0.166667,
          TargetIndicator.makeIndicator(sw),
-         ReturnTable.VOTABLE);
+         ReturnTable.VOTABLE));
 
        manager.askQuerier(q);
 
@@ -172,6 +172,9 @@ public class VizierQuerierTest extends DatacenterTestCase {
 
 /*
 $Log: VizierQuerierTest.java,v $
+Revision 1.3  2004/10/07 10:48:20  mch
+Fixes to EGSO tests
+
 Revision 1.2  2004/10/06 22:03:45  mch
 Following Query model changes in PAL
 
