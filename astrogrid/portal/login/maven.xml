@@ -1,0 +1,66 @@
+<?xml version="1.0" ?>
+<project
+    xmlns:jelly="jelly:core"
+    xmlns:maven="jelly:maven"
+    xmlns:ant="jelly:ant"
+    xmlns:deploy="deploy"
+    xmlns:util="jelly:util"
+    xmlns:doc="doc"
+    default="jar:jar">
+
+	<!--+
+		| Out Tomcat installation.
+	<ant:property name="tomcat.home"    value="${env.CATALINA_HOME}"/>
+		+-->
+	<ant:property name="tomcat.home"    value="/usr/java/servers/tomcat/jakarta-tomcat-4.1.24-LE-jdk14"/>
+
+    <!--+
+        | Portal properties.
+        +-->
+    <property name="portal.name" value="astrogrid-portal"/>
+    <property name="webapp.home" value="${tomcat.home}/webapps/${portal.name}"/>
+
+	<!--+
+		| Deploy our class files.
+		+-->
+	<goal name="deploy.classes">
+		<ant:copy todir="${webapp.home}/WEB-INF/classes">
+			<ant:fileset dir="${maven.build.dir}/classes">
+				<ant:include name="*"/>
+			</ant:fileset>
+		</ant:copy>
+	</goal>
+
+	<!--+
+		| Move the web source into the subcomponent directory.
+		+-->
+	<postGoal name="war:webapp">
+		<jelly:set var="webapp.dir" value="${pom.getPluginContext('maven-war-plugin').getVariable('maven.war.webapp.dir')}"/>
+
+		<jelly:set var="webapp.dir.mount" value="${webapp.dir}/mount"/>
+		<jelly:set var="webapp.dir.mount.component" value="${webapp.dir.mount}/login"/>
+		<jelly:set var="webapp.dir.mount.component.web" value="${webapp.dir.mount.component}/web"/>
+
+		<ant:mkdir dir="${webapp.dir.mount}"/>
+		<ant:mkdir dir="${webapp.dir.mount.component}"/>
+		<ant:mkdir dir="${webapp.dir.mount.component.web}"/>
+
+		<ant:move todir="${webapp.dir.mount.component.web}">
+			<ant:fileset dir="${webapp.dir}/web"/>
+		</ant:move>
+
+		<ant:move todir="${webapp.dir.mount.component}">
+			<ant:fileset dir="${webapp.dir}">
+				<ant:filename name="sitemap.xconf"/>
+			</ant:fileset>
+		</ant:move>
+
+		<ant:move todir="${webapp.dir.mount.component}">
+			<ant:fileset dir="${webapp.dir}">
+				<ant:include name="sitemap.xmap"/>
+				<ant:include name="maven.log"/>
+			</ant:fileset>
+		</ant:move>
+	</postGoal>
+
+</project>

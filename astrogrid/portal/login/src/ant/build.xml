@@ -1,0 +1,195 @@
+<?xml version="1.0"?>
+<!--+
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/src/ant/build.xml,v $</cvs:source>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2004/01/09 03:16:18 $</cvs:date>
+    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:log>
+    |   $Log: build.xml,v $
+    |   Revision 1.1  2004/01/09 03:16:18  dave
+    |   Initial commit for login action
+    |
+    | </cvs:log>
+    |
+    | Ant deployment script.
+    |
+    +-->
+<project default="init" basedir="." name="deploy">
+
+    <!--+
+        | Prefix for system properties.
+        +-->
+    <property environment="env"/>
+
+    <!--+
+        | The location of your Tomcat installation.
+        | If you don't have the CATALINA_HOME environment variable set, then you can set this to a specific location.
+    <property name="tomcat.home"    value="/usr/java/servers/tomcat/jakarta-tomcat-4.1.24-LE-jdk14"/>
+    <property name="tomcat.home"    value="/usr/local/jakarta-tomcat-4.1.24"/>
+    <property name="tomcat.home"    value="${env.CATALINA_HOME}"/>
+        +-->
+    <property name="tomcat.home"    value="/usr/java/servers/tomcat/jakarta-tomcat-4.1.24-LE-jdk14"/>
+
+    <!--+
+        | Your community name.
+        | This is used to configure your community service.
+        +-->
+    <property name="community.name" value="test.astrogrid.org"/>
+
+    <!--+
+        | Config files location.
+        | The default is to put the config files in '/etc/astrogrid'.
+        | However, most systems require root permissions to create the directories in '/etc'.
+        | Change this property if you want to relocate the config files.
+        +-->
+    <property name="config.home" value="/etc/astrogrid/community"/>
+
+    <!--+
+        | The project properties.
+        | These should have been set by the release build.
+        +-->
+    <property name="project.name" value="astrogrid-community"/>
+    <property name="project.version" value="1.4.1"/>
+
+    <!--+
+        | The 'build' directory.
+        | This is the location where the install kit is located.
+        +-->
+    <property name="project.home"    value="${basedir}"/>
+
+    <!-- ================ Tomcat tasks ================ -->
+    <!--+
+        | Tomcat properties.
+        +-->
+    <property name="tomcat.host"    value="localhost"/>
+    <property name="tomcat.port"    value="8080"/>
+    <property name="tomcat.server"  value="${tomcat.host}:${tomcat.port}"/>
+    <property name="tomcat.url"     value="http://${tomcat.server}"/>
+    <property name="tomcat.timeout" value="60"/>
+
+    <!--+
+        | Bootstrap classpath for Tomcat
+        +-->
+    <path id="tomcat.classpath.bootstrap">
+        <pathelement location="${env.JAVA_HOME}/lib/tools.jar"/>
+        <pathelement location="${tomcat.home}/bin/bootstrap.jar"/>
+    </path>
+
+    <!--+
+        | Endorsed libraries for Tomcat.
+        +-->
+    <path id="tomcat.classpath.endorsed">
+        <pathelement path="${tomcat.home}/bin"/>
+        <pathelement path="${tomcat.home}/common/endorsed"/>
+    </path>
+
+    <!--+
+        | Tomcat servlet libraries.
+        +-->
+    <path id="tomcat.classpath.servlet">
+        <pathelement location="${tomcat.home}/common/lib/servlet.jar"/>
+    </path>
+
+    <!-- Define the Tomcat manager tasks -->
+    <target name="tomcat.tasks" depends="">
+        <taskdef name="tomcat.deploy"    classpath="${tomcat.home}/server/lib/catalina-ant.jar" classname="org.apache.catalina.ant.DeployTask"/>
+        <taskdef name="tomcat.install"   classpath="${tomcat.home}/server/lib/catalina-ant.jar" classname="org.apache.catalina.ant.InstallTask"/>
+        <taskdef name="tomcat.list"      classpath="${tomcat.home}/server/lib/catalina-ant.jar" classname="org.apache.catalina.ant.ListTask"/>
+        <taskdef name="tomcat.reload"    classpath="${tomcat.home}/server/lib/catalina-ant.jar" classname="org.apache.catalina.ant.ReloadTask"/>
+        <taskdef name="tomcat.remove"    classpath="${tomcat.home}/server/lib/catalina-ant.jar" classname="org.apache.catalina.ant.RemoveTask"/>
+        <taskdef name="tomcat.resources" classpath="${tomcat.home}/server/lib/catalina-ant.jar" classname="org.apache.catalina.ant.ResourcesTask"/>
+        <taskdef name="tomcat.roles"     classpath="${tomcat.home}/server/lib/catalina-ant.jar" classname="org.apache.catalina.ant.RolesTask"/>
+        <taskdef name="tomcat.start"     classpath="${tomcat.home}/server/lib/catalina-ant.jar" classname="org.apache.catalina.ant.StartTask"/>
+        <taskdef name="tomcat.stop"      classpath="${tomcat.home}/server/lib/catalina-ant.jar" classname="org.apache.catalina.ant.StopTask"/>
+        <taskdef name="tomcat.undeploy"  classpath="${tomcat.home}/server/lib/catalina-ant.jar" classname="org.apache.catalina.ant.UndeployTask"/>
+    </target>
+
+    <!--+
+        | Start Tomcat in a separate VM.
+        +-->
+    <target name="tomcat.start" depends="">
+        <!-- Start Tomcat in a separate VM -->
+        <java taskname="tomcat" classname="org.apache.catalina.startup.Bootstrap" fork="true" dir="${tomcat.home}/bin">
+            <!-- Use the bootstrap classpath -->
+            <classpath refid="tomcat.classpath.bootstrap"/>
+            <!-- These replace the -D command line arguments -->
+            <sysproperty key="java.endorsed.dirs" path="${tomcat.classpath.endorsed}"/>
+            <sysproperty key="catalina.base"      path="${tomcat.home}"/>
+            <sysproperty key="catalina.home"      path="${tomcat.home}"/>
+            <sysproperty key="java.io.tmpdir"     path="${tomcat.home}/temp"/>
+            <!-- Select the server JVM (fails on Linux JDK 1.4.0) -->
+            <!-- <jvmarg value="-server"/> -->
+            <!-- Args for the Tomcat Bootstrap class -->
+            <arg value="start"/>
+        </java>
+    </target>
+
+    <!--+
+        | Stop Tomcat.
+        +-->
+    <target name="tomcat.stop" depends="">
+        <!-- Stop Tomcat -->
+        <java taskname="tomcat" classname="org.apache.catalina.startup.Bootstrap" fork="true">
+            <!-- Use the bootstrap classpath -->
+            <classpath refid="tomcat.classpath.bootstrap"/>
+            <!-- These replace the -D command line arguments -->
+            <sysproperty key="java.endorsed.dirs" path="${tomcat.classpath.endorsed}"/>
+            <sysproperty key="catalina.base"      path="${tomcat.home}"/>
+            <sysproperty key="catalina.home"      path="${tomcat.home}"/>
+            <sysproperty key="java.io.tmpdir"     path="${tomcat.home}/temp"/>
+            <!-- Select the server JVM (fails on Linux JDK 1.4.0) -->
+            <!-- <jvmarg value="-server"/> -->
+            <!-- Args for the Tomcat Bootstrap class -->
+            <arg value="stop"/>
+        </java>
+    </target>
+
+    <!--+
+        | Wait for Tomcat to respond.
+        +-->
+    <target name="tomcat.wait" depends="">
+        <echo message=""/>
+        <echo message="Waiting for Tomcat ...."/>
+        <echo message="URL : ${tomcat.url}/"/>
+        <waitfor maxwait="60" maxwaitunit="second" checkevery="500">
+            <http url="${tomcat.url}/"/>
+        </waitfor>
+    </target>
+
+    <!-- ================ Config tasks ================ -->
+
+    <!--+
+        | Portal properties.
+        +-->
+    <property name="portal.name" value="astrogrid-portal"/>
+    <property name="webapp.home" value="${tomcat.home}/webapps/${portal.name}"/>
+
+
+    <!--+
+        | Edit the webapp JNDI property.
+        | This needs to be run after Tomcat has unpacked the webapp war file.
+        | It would be nice to use a 'global' JNDI property for all the webapps,
+        | but it looks like this does not work in Tomcat 4.1.24.
+        +-->
+    <target name="config.jndi" depends="">
+        <!-- Copy the existing web.xml to a backup file -->
+        <copy file="${webapp.home}/WEB-INF/web.xml" tofile="${webapp.home}/WEB-INF/web.xml.old" overwrite="true" failonerror="false"/>
+        <!-- Patch the web.xml to fix the DTD -->
+        <replace file="${webapp.home}/WEB-INF/web.xml" token="web-app_2.2.dtd" value="web-app_2_2.dtd"/>
+        <!-- Transform the target web.xml, adding our JNDI property -->
+        <xslt style="xsl/webapp.xsl"
+              in="${webapp.home}/WEB-INF/web.xml"
+              out="${webapp.home}/WEB-INF/web.xml.new">
+            <outputproperty name="method" value="xml"/>
+            <outputproperty name="indent" value="yes"/>
+            <!-- Set the XSL params -->
+            <param name="property.name"  expression="org.astrogrid.community.config"/>
+            <param name="property.value" expression="${config.home}/${project.name}-config.xml"/>
+        </xslt>
+        <!-- Replace the existing web.xml with the new one -->
+        <move file="${webapp.home}/WEB-INF/web.xml.new" tofile="${webapp.home}/WEB-INF/web.xml" overwrite="true" failonerror="false"/>
+    </target>
+
+</project>
+
+
