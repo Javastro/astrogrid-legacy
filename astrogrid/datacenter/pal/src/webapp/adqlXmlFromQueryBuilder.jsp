@@ -176,4 +176,6 @@ Parameter names in this request:
    <jsp:param name="AdqlXml" value="<%= adqlXml %>" />
 </jsp:forward>
 --%>
+</body>
+</html>
 
