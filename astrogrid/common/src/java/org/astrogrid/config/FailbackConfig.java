@@ -1,5 +1,5 @@
 /*
- * $Id: FailbackConfig.java,v 1.21 2004/04/23 19:01:22 pah Exp $
+ * $Id: FailbackConfig.java,v 1.22 2004/07/14 14:43:00 pah Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -18,8 +18,12 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import javax.naming.Context;
 import javax.naming.InitialContext;
+import javax.naming.NameClassPair;
 import javax.naming.NameNotFoundException;
+import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.NoInitialContextException;
 import javax.naming.ServiceUnavailableException;
@@ -522,14 +526,15 @@ public class FailbackConfig extends Config {
                out.println(formKeyValue(key, env.get(key)));
             }
             out.println("JNDI Names:");
-            Enumeration n = jndiContext.list(jndiPrefix);
+            Context javacontext = (Context)jndiContext.lookup(jndiPrefix);
+            NamingEnumeration n = jndiContext.list(jndiPrefix);
 
             while (n.hasMoreElements()) {
-               Object key = n.nextElement();
+               NameClassPair key = (NameClassPair)n.next();
                String value = "??Failed lookup";
                //not sure how all this works, so for now will ignore naming exceptions
                try {
-                  value = jndiContext.lookup(key.toString()).toString();
+                  value = javacontext.lookup(key.getName()).toString();
                } catch (NamingException ne) { } //ignore - print fail value
                out.println(formKeyValue(key, value));
             }
@@ -596,6 +601,9 @@ public class FailbackConfig extends Config {
 }
 /*
 $Log: FailbackConfig.java,v $
+Revision 1.22  2004/07/14 14:43:00  pah
+get the jndi values to print out properly in the dump
+
 Revision 1.21  2004/04/23 19:01:22  pah
 changed the test for jndi presence slightly
 
