@@ -9,6 +9,37 @@
 
 <html>
 <head><title>File List</title>
+<%!
+  //prints out a single StoreFile
+  String printFile(StoreFile file, StoreClient client) {
+      String line = "<tr>";
+      if (file.isFolder()) {
+         line = line + "<td>"+file.getName()+"</td>\n";
+         for (int i=0;i<file.listFiles().length;i++) {
+            line = line +printFile(file.listFiles()[i], client)+"\n";
+         }
+      }
+      else {
+         try {
+            line = line +
+                        "<td><a href='"+ client.getUrl(file.getPath())+"'>"+ file.getPath() + "</a></td>"+
+                        "<td>"+ file.getSize() + "</a></td>"+
+                        "<td>"+ file.getCreated().toGMTString() + "</a></td>"+
+                        "<td>"+
+                           "<a href='viewFile.jsp?file="+ file.getName()+"' target='actions'>View</a> "+
+                           "<a href='deleteFile.jsp?file="+ file.getName()+"' target='actions'>Delete</a>"+
+                        "</td>";
+         }
+         catch (IOException ioe) {
+            line = line + "Could  not display file "+file.getPath()+": "+ioe;
+         }
+      }
+      line = line + "</tr>\n";
+
+      return line;
+  }
+%>
+
 </head>
 
 <body>
@@ -34,50 +65,17 @@
   <td>Actions</td>
 </tr>
 <%
-   ManagerGenuine manager = new ManagerGenuine();
+   StoreClient manager = StoreDelegateFactory.createDelegate(user, new Agsl(serviceURL));
 
-   KernelResults results = manager.getEntriesList("*", false);
+   StoreFile root = manager.getFiles("*");
 
-   if ((results == null) || (results.getEntries() == null)) {
+   if ((root == null) || (root.listFiles() == null)) {
          out.println("No entries in myspace");
    }
    else {
-      int resultsSize = results.getEntries().length;
-   // StoreClient client = StoreDelegateFactory.createDelegate(user, new Agsl("myspace:"+serviceURL));
-   
-   //  StoreFile[] files = client.listFiles("*");
-   
-   //  int resultsSize = files.length;
-   
-      
-     if (resultsSize > 0)
-     {
-        for (int i=0; i<resultsSize; i++)
-        {
-            EntryRecord msnode = new EntryRecord ( (EntryResults) results.getEntries()[i]);
-            
-            out.println("<tr>");
-            if (msnode.isFolder()) {
-               out.println("<td>"+msnode.getName()+"</td>");
-            }
-            else {
-            
-            out.println("<td><a href='"+msnode.getEntryUri()+"'>"+ msnode.getPath() + "</a></td>"+
-                        "<td>"+ msnode.getSize() + "</a></td>"+
-                        "<td>"+ msnode.getCreationDate().toGMTString() + "</a></td>"+
-                        "<td>"+
-                           "<a href='viewFile.jsp?file="+ msnode.getName()+"' target='actions'>View</a> "+
-                           "<a href='deleteFile.jsp?file="+ msnode.getName()+"' target='actions'>Delete</a>"+
-                        "</td>");
-            }
-            out.println("</tr>");
-        }
-     }
-     else
-     {
-        out.print("No entries satisfied the query." + "<BR>");
-     }
-  }
+      out.println(printFile(root, manager));
+   }
+
 %>
 </pre>
 
