@@ -1,5 +1,5 @@
 /*
- * $Id: ServiceStatusSnapshot.java,v 1.1 2005/02/16 15:15:01 mch Exp $
+ * $Id: ServiceStatusSnapshot.java,v 1.1.1.1 2005/02/16 15:15:01 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */

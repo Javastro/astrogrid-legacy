@@ -1,5 +1,5 @@
 /*
- * $Id: TaskStatus.java,v 1.1 2005/02/16 15:15:01 mch Exp $
+ * $Id: TaskStatus.java,v 1.1.1.1 2005/02/16 15:15:01 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -67,8 +67,8 @@ public interface TaskStatus
 
 /*
 $Log: TaskStatus.java,v $
-Revision 1.1  2005/02/16 15:15:01  mch
-*** empty log message ***
+Revision 1.1.1.1  2005/02/16 15:15:01  mch
+Initial checkin
 
 Revision 1.1.26.3  2004/11/26 18:17:21  mch
 More status persisting, browsing and aborting
