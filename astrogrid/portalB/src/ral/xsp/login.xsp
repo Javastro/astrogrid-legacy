@@ -9,7 +9,7 @@ XSP page to process the Astrogrid login form.
 
 Brian McIlwrath, Astrogrid, RAL>
 
-30th June 2003
+3rd July 2003
 </xsp:comment>
 
 <xsp:structure>
@@ -57,6 +57,8 @@ Brian McIlwrath, Astrogrid, RAL>
    }   
    catch(Exception e) {
         System.out.println(e);
+        System.out.println("AGLOGIN - cannot authenticate!! Default to login!");
+        redirect = "agindex.html";
    }
 
    if (redirect.equals("agindex.html")) {
