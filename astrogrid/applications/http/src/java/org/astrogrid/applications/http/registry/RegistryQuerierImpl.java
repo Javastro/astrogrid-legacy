@@ -1,4 +1,4 @@
-/* $Id: RegistryQuerierImpl.java,v 1.7 2005/01/23 12:52:33 jdt Exp $
+/* $Id: RegistryQuerierImpl.java,v 1.8 2005/03/02 12:38:46 clq2 Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -95,6 +95,7 @@ public class RegistryQuerierImpl implements RegistryQuerier {
     /**
      * Query string to select only CeaHttpApplications in the registry
      */
+    /*
     private final static String LIST_QUERY_STRING =   "<query><selectionSequence>" +
     "<selection item='searchElements' itemOp='EQ' value='vr:Resource'/>" +
     "<selectionOp op='$and$'/>" +
@@ -102,6 +103,9 @@ public class RegistryQuerierImpl implements RegistryQuerier {
     "<selectionOp op='OR'/>" +
     "<selection item='@xsi:type' itemOp='EQ' value='cea:CeaHttpApplicationType'/>"  +
     "</selectionSequence></query>";
+    */
+    private final static String LIST_QUERY_STRING = "Select * from Registry " + 
+    " where @xsi:type='cea:CeaHttpApplicationType'";
    
 
     /**
@@ -119,7 +123,9 @@ public class RegistryQuerierImpl implements RegistryQuerier {
 
         try {
             log.debug("Querying registry: "+LIST_QUERY_STRING);
-            Document doc = service.submitQuery(LIST_QUERY_STRING);
+            //Document doc = service.submitQuery(LIST_QUERY_STRING);
+            Document doc = service.searchFromSADQL(LIST_QUERY_STRING);
+            //.submitQuery(LIST_QUERY_STRING);
             assert doc != null;
             NodeList nl = doc.getElementsByTagNameNS("*", "Identifier");
             log.debug("...got doc with "+nl.getLength()+" Identifier elements");
