@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- -->
+<!DOCTYPE project [
+  <!ENTITY cocoon-deps SYSTEM "../cocoon-dependencies-nowar.xml">
+]>
+<!-- -->
+<project
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../maven-project.xsd">
+  <extend>../project.xml</extend>
+  
+  <id>astrogrid-portal-base</id>
+  <name>AstroGrid Portal Base Project</name>
+
+  <dependencies>
+    <!-- Portal Common -->
+    <dependency>
+      <groupId>astrogrid-portal</groupId>
+      <artifactId>astrogrid-portal-common</artifactId>
+      <version>SNAPSHOT</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+    
+    <!-- DO NOT INCLUDE PARENT DEPENDENCIES IN WAR -->
+    &cocoon-deps;
+  </dependencies>
+  
+  <build>
+    <sourceDirectory>src/java</sourceDirectory>
+    <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
+  </build>
+</project>
