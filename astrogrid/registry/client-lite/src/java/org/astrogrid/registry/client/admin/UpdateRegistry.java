@@ -177,10 +177,10 @@ public class UpdateRegistry implements RegistryAdminService {
          }
       }catch(RemoteException re) {
          resultDoc = null;
-         throws RegistryException(re);
+         throw new RegistryException(re);
       }catch (Exception e) {
          resultDoc = null;
-         throws RegistryException(e);
+         throw new RegistryException(e);
       }
       return resultDoc;
    }
