@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: AGParameterDefinition.xsd,v 1.2 2004/02/23 16:47:00 pah Exp $ -->
-<!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) this is a small conflicting change -->
-<xs:schema targetNamespace="http://www.astrogrid.org/schema/AGParameterDefinition/v2" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v2" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<!-- $Id: AGParameterDefinition.xsd,v 1.3 2004/02/24 21:18:19 pah Exp $ -->
+<!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
+<xs:schema targetNamespace="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:annotation>
 		<xs:documentation>this file captures some of the ideas used in the WSDL-like parameter definition files, but as yet is not used for validation</xs:documentation>
 	</xs:annotation>
@@ -73,28 +73,6 @@
 		<xs:attribute name="name" type="xs:string" use="required"/>
 		<xs:attribute name="type" type="agpd:parameterTypes" use="required"/>
 	</xs:complexType>
-	<xs:simpleType name="parameterTypes">
-		<xs:annotation>
-			<xs:documentation>The list of possible parameter types</xs:documentation>
-		</xs:annotation>
-		<xs:restriction base="xs:QName">
-			<xs:enumeration value="xs:integer"/>
-			<xs:enumeration value="xs:real"/>
-			<xs:enumeration value="agpd:MySpace_FileReference"/>
-			<xs:enumeration value="agpd:FileReference"/>
-			<xs:enumeration value="agpd:MySpace_VOTableReference"/>
-			<xs:enumeration value="xs:double"/>
-			<xs:enumeration value="xs:string"/>
-			<xs:enumeration value="agpd:RA"/>
-			<xs:enumeration value="agpd:Dec"/>
-			<xs:enumeration value="agpd:ADQL"/>
-			<xs:enumeration value="xs:boolean"/>
-			<xs:enumeration value="xs:anyURI"/>
-		</xs:restriction>
-		<!--
-	       This type is not yet complete - probably most of the standard 2001 schema types should be supported as well as the specialized types
-	     -->
-	</xs:simpleType>
 	<xs:simpleType name="MySpace_FileReference">
 		<xs:annotation>
 			<xs:documentation>A referemce to a general file stored in MySpace</xs:documentation>
@@ -127,132 +105,23 @@
 			<xs:any namespace="##any" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
-	<xs:complexType name="Application">
+	<xs:simpleType name="parameterTypes">
 		<xs:annotation>
-			<xs:documentation>Application definition</xs:documentation>
+			<xs:documentation>The list of possible parameter types</xs:documentation>
 		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="ExecutionPath" type="xs:string"/>
-			<xs:element name="Parameters">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="Parameter" maxOccurs="unbounded">
-							<xs:complexType>
-								<xs:complexContent>
-									<xs:extension base="agpd:CommandLineParameterDefinition">
-										<xs:attribute name="switchType" type="agpd:switchTypes" use="optional" default="normal"/>
-									</xs:extension>
-								</xs:complexContent>
-							</xs:complexType>
-						</xs:element>
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
-			<xs:element name="Interfaces">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="Interface" type="agpd:Interface" maxOccurs="unbounded"/>
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
-		</xs:sequence>
-		<xs:attribute name="name" type="xs:ID" use="required"/>
-		<xs:attribute name="instanceClass" type="agpd:java-class" use="optional"/>
-	</xs:complexType>
-	<xs:element name="ApplicationController">
-		<xs:annotation>
-			<xs:documentation>configuration for an application controller</xs:documentation>
-		</xs:annotation>
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element name="Application" type="agpd:Application" maxOccurs="unbounded">
-					<xs:unique name="parameternameunique">
-						<xs:selector xpath="./agpd:Parameters/agpd:Parameter"/>
-						<xs:field xpath="@name"/>
-					</xs:unique>
-					<xs:unique name="interfacenameunique">
-						<xs:selector xpath="./agpd:Interfaces/agpd:Interface"/>
-						<xs:field xpath="@name"/>
-					</xs:unique>
-					<xs:keyref name="parametername" refer="agpd:parameternameunique">
-						<xs:selector xpath=".//agpd:pref"/>
-						<xs:field xpath="@ref"/>
-					</xs:keyref>
-				</xs:element>
-			</xs:sequence>
-		</xs:complexType>
-	</xs:element>
-	<xs:complexType name="Interface">
-		<xs:annotation>
-			<xs:documentation>description of an interface</xs:documentation>
-		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="input">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element ref="agpd:pref" maxOccurs="unbounded"/>
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
-			<xs:element name="output">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element ref="agpd:pref" maxOccurs="unbounded"/>
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
-		</xs:sequence>
-		<xs:attribute name="name" type="xs:string" use="required"/>
-	</xs:complexType>
-	<xs:complexType name="parameterRef" mixed="false">
-		<xs:annotation>
-			<xs:documentation>reference to an existing parameter</xs:documentation>
-		</xs:annotation>
-		<xs:attribute name="ref" type="xs:IDREF" use="required"/>
-		<xs:attribute name="repeatable" type="xs:boolean" use="optional" default="false"/>
-		<xs:attribute name="optional" type="xs:boolean" use="optional" default="false"/>
-	</xs:complexType>
-	<xs:element name="pref">
-		<xs:annotation>
-			<xs:documentation>a reference to a parameter</xs:documentation>
-		</xs:annotation>
-		<xs:complexType>
-			<xs:complexContent>
-				<xs:restriction base="agpd:parameterRef">
-					<xs:attribute name="ref" type="xs:IDREF" use="required"/>
-				</xs:restriction>
-			</xs:complexContent>
-		</xs:complexType>
-	</xs:element>
-	<xs:complexType name="CommandLineParameterDefinition">
-		<xs:annotation>
-			<xs:documentation>Defines what it is to be a command line parameter - needs more thought with experience</xs:documentation>
-		</xs:annotation>
-		<xs:complexContent>
-			<xs:extension base="agpd:BaseParameterDefinition">
-				<xs:attribute name="commandSwitch" type="xs:string" use="optional"/>
-				<xs:attribute name="commandPosition" type="xs:integer" use="optional"/>
-				<xs:attribute name="stdio" type="xs:boolean" use="optional" default="false"/>
-			</xs:extension>
-		</xs:complexContent>
-	</xs:complexType>
-	<xs:complexType name="parameterValue" mixed="true">
-		<xs:annotation>
-			<xs:documentation>Defines what a parameterValue can contain - for the instance document</xs:documentation>
-		</xs:annotation>
-		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax"/>
-		</xs:sequence>
-		<xs:attribute name="name" type="xs:string" use="required"/>
-		<xs:attribute name="type" type="agpd:parameterTypes" use="optional"/>
-	</xs:complexType>
-	<xs:simpleType name="switchTypes">
-		<xs:annotation>
-			<xs:documentation>normal is the  -x value style and keyword is the x=value style</xs:documentation>
-		</xs:annotation>
-		<xs:restriction base="xs:string">
-			<xs:enumeration value="normal"/>
-			<xs:enumeration value="keyword"/>
+		<xs:restriction base="xs:QName">
+			<xs:enumeration value="xs:integer"/>
+			<xs:enumeration value="xs:real"/>
+			<xs:enumeration value="agpd:MySpace_FileReference"/>
+			<xs:enumeration value="agpd:FileReference"/>
+			<xs:enumeration value="agpd:MySpace_VOTableReference"/>
+			<xs:enumeration value="xs:double"/>
+			<xs:enumeration value="xs:string"/>
+			<xs:enumeration value="agpd:RA"/>
+			<xs:enumeration value="agpd:Dec"/>
+			<xs:enumeration value="agpd:ADQL"/>
+			<xs:enumeration value="xs:boolean"/>
+			<xs:enumeration value="xs:anyURI"/>
 		</xs:restriction>
 	</xs:simpleType>
 </xs:schema>

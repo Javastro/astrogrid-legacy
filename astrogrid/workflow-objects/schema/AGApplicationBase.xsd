@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: AGApplicationBase.xsd,v 1.1 2004/02/24 21:18:19 pah Exp $ -->
+<!-- This is refactored from the AGParameterDefinition.xsd -->
+<!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
+<xs:schema targetNamespace="http://www.astrogrid.org/schema/AGApplicationBase/v1" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:agab="http://www.astrogrid.org/schema/AGApplicationBase/v1" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:import namespace="http://www.astrogrid.org/schema/AGParameterDefinition/v1" schemaLocation="\\pahlaptop\work\astrogrid\src\workflow-objects\schema\AGParameterDefinition.xsd"/>
+	<xs:annotation>
+		<xs:documentation>this file captures some of the ideas used in the WSDL-like parameter definition files, but as yet is not used for validation</xs:documentation>
+	</xs:annotation>
+	<xs:annotation>
+		<xs:documentation>the baseparameter definition is mimiced by the contents of a part element in the wsdl</xs:documentation>
+	</xs:annotation>
+	<xs:annotation>
+		<xs:documentation>important types are defined here that would have special significance....</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="Application">
+		<xs:annotation>
+			<xs:documentation>Base Application definition</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Parameters">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="agab:Parameter" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Interfaces" type="agab:InterfacesType"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:ID" use="required"/>
+		<xs:attribute name="instanceClass" type="agpd:java-class" use="optional"/>
+	</xs:complexType>
+	<!--perhaps this is not the way to go - need to get the executionPath back in though somehow....-->
+	<xs:complexType name="CommandLineApplication">
+		<xs:complexContent>
+			<xs:extension base="agab:Application">
+				<xs:sequence>
+					<xs:element name="ExecutionPath" type="xs:string"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="WebServiceApplication">
+		<xs:complexContent>
+			<xs:extension base="agab:Application"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DataCentreApplication">
+		<xs:complexContent>
+			<xs:extension base="agab:Application"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="ApplicationControllerConfig">
+		<xs:annotation>
+			<xs:documentation>configuration for an application controller</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:group ref="agab:Applications"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="Interface">
+		<xs:annotation>
+			<xs:documentation>description of an interface</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="input">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="agab:pref" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="output">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="agab:pref" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="parameterRef" mixed="false">
+		<xs:annotation>
+			<xs:documentation>reference to an existing parameter</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="ref" type="xs:string"/>
+		<xs:attribute name="repeatable" type="xs:boolean" use="optional" default="false"/>
+		<xs:attribute name="optional" type="xs:boolean" use="optional" default="false"/>
+	</xs:complexType>
+	<xs:element name="pref">
+		<xs:annotation>
+			<xs:documentation>a reference to a parameter</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:restriction base="agab:parameterRef">
+					<xs:attribute name="ref" type="xs:string" use="required"/>
+				</xs:restriction>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="WebServiceParameterDefinition">
+		<xs:annotation>
+			<xs:documentation>Special properties for web serivce parameters</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="agpd:BaseParameterDefinition"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CommandLineParameterDefinition">
+		<xs:annotation>
+			<xs:documentation>Defines what it is to be a command line parameter - needs more thought with experience</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="agpd:BaseParameterDefinition"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DataCenterParameterDefinition">
+		<xs:annotation>
+			<xs:documentation>special properties for datacentre parameters</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="agpd:BaseParameterDefinition"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="parameterValue" mixed="true">
+		<xs:annotation>
+			<xs:documentation>Defines what a parameterValue can contain - for the instance document</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:any namespace="##any" processContents="lax"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="type" type="agpd:parameterTypes" use="optional"/>
+	</xs:complexType>
+	<xs:simpleType name="switchTypes">
+		<xs:annotation>
+			<xs:documentation>normal is the  -x value style and keyword is the x=value style</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="normal"/>
+			<xs:enumeration value="keyword"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="InterfacesType">
+		<xs:sequence>
+			<xs:element name="Interface" type="agab:Interface" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="Parameter" type="agpd:BaseParameterDefinition" abstract="true"/>
+	<xs:element name="CLParameter" type="agab:CommandLineParameterDefinition" substitutionGroup="agab:Parameter"/>
+	<xs:group name="Applications">
+		<xs:choice>
+			<xs:element name="Application" type="agab:CommandLineApplication" maxOccurs="unbounded"/>
+			<xs:element name="WebService" type="agab:WebServiceApplication" maxOccurs="unbounded"/>
+			<xs:element name="DataCentre" type="agab:DataCentreApplication" maxOccurs="unbounded"/>
+		</xs:choice>
+	</xs:group>
+</xs:schema>
