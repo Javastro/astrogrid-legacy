@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/client/junit/manager/Attic/JUnitGroupMemberTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/10 00:08:45 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/10 06:03:27 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: JUnitGroupMemberTest.java,v $
+ *   Revision 1.3  2003/09/10 06:03:27  dave
+ *   Added remote capability to Accounts
+ *
  *   Revision 1.2  2003/09/10 00:08:45  dave
  *   Added getGroupMembers, ResourceIdent and JUnit tests for ResourceManager
  *
@@ -236,8 +239,8 @@ public class JUnitGroupMemberTest
 		assertTrue("Failed to remove group", result) ;
 		//
 		// Remove the local account.
-		result = manager.delAccount(LOCAL_ACCOUNT_IDENT) ;
-		assertTrue("Failed to remove account", result) ;
+		AccountData account = manager.delAccount(LOCAL_ACCOUNT_IDENT) ;
+		assertNotNull("Failed to remove account", account) ;
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("") ;

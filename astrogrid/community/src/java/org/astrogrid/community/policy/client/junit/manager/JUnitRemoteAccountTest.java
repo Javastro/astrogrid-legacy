@@ -1,71 +1,58 @@
 /*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/junit/manager/Attic/JUnitAccountTest.java,v $</cvs:source>
+ * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/client/junit/manager/Attic/JUnitRemoteAccountTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
  * <cvs:date>$Date: 2003/09/10 06:03:27 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:version>$Revision: 1.1 $</cvs:version>
  *
  * <cvs:log>
- *   $Log: JUnitAccountTest.java,v $
- *   Revision 1.4  2003/09/10 06:03:27  dave
+ *   $Log: JUnitRemoteAccountTest.java,v $
+ *   Revision 1.1  2003/09/10 06:03:27  dave
  *   Added remote capability to Accounts
- *
- *   Revision 1.3  2003/09/09 14:51:47  dave
- *   Added delGroupMember - only local accounts and groups to start with.
- *
- *   Revision 1.2  2003/09/08 20:28:50  dave
- *   Added CommunityIdent, with isLocal() and isValid()
- *
- *   Revision 1.1  2003/09/06 20:10:07  dave
- *   Split PolicyManager into separate components.
  *
  * </cvs:log>
  *
  */
-package org.astrogrid.community.policy.server.junit.manager ;
+package org.astrogrid.community.policy.client.junit.manager ;
 
 import junit.framework.TestCase ;
-
-import org.astrogrid.community.policy.data.ServiceData ;
-import org.astrogrid.community.policy.data.AccountData ;
-
-import org.astrogrid.community.policy.server.PolicyManager ;
-import org.astrogrid.community.policy.server.PolicyManagerImpl ;
 
 import java.util.Iterator ;
 import java.util.Collection ;
 
+import org.astrogrid.community.policy.data.AccountData ;
+import org.astrogrid.community.policy.data.ServiceData ;
+import org.astrogrid.community.policy.data.CommunityData ;
+
+import org.astrogrid.community.policy.server.PolicyManager ;
+import org.astrogrid.community.policy.server.PolicyManagerService ;
+import org.astrogrid.community.policy.server.PolicyManagerServiceLocator ;
 
 /**
  *
- * JUnit test for the PolicyManager.
+ * JUnit test for the policy client components.
  *
  */
-public class JUnitAccountTest
+public class JUnitRemoteAccountTest
 	extends TestCase
 	{
-	/**
-	 * Our test ident.
-	 *
-	 */
-	private static final String TEST_ACCOUNT_NAME = "server.manager.junit" ;
 
 	/**
-	 * Our fake ident.
+	 * The target community.
 	 *
 	 */
-	private static final String FAKE_ACCOUNT_NAME = "unknown" ;
+	private static final String TEST_COMMUNITY = "capc49.ast.cam.ac.uk" ;
 
 	/**
-	 * Our fake ident and domain.
+	 * Our test account.
 	 *
 	 */
-	private static final String FAKE_ACCOUNT_DOMAIN = "unknown@unknown" ;
+	private static final String TEST_ACCOUNT = "junit@capc49.ast.cam.ac.uk" ;
 
 	/**
 	 * Our test description.
 	 *
 	 */
-	private static final String TEST_ACCOUNT_DESC = "JUnit test account" ;
+	private static final String TEST_DESCRIPTION = "Modified description" ;
 
 	/**
 	 * Switch for our debug statements.
@@ -80,10 +67,16 @@ public class JUnitAccountTest
 	private static final boolean ASSERT_FLAG = false ;
 
 	/**
-	 * Our PolicyManager.
+	 * Our manager locator.
 	 *
 	 */
-	private PolicyManager manager = null ;
+	private PolicyManagerService locator ;
+
+	/**
+	 * Our manager.
+	 *
+	 */
+	private PolicyManager manager ;
 
 	/**
 	 * Setup our tests.
@@ -97,15 +90,20 @@ public class JUnitAccountTest
 		if (DEBUG_FLAG) System.out.println("setUp()") ;
 
 		//
-		// Create our PolicyManager.
-		manager = new PolicyManagerImpl();
+		// Create our manager locator.
+		locator = new PolicyManagerServiceLocator() ;
+		assertNotNull("Null manager locator", locator) ;
+		//
+		// Create our manager.
+		manager = locator.getPolicyManager() ;
+		assertNotNull("Null manager", manager) ;
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("") ;
 		}
 
 	/**
-	 * Check we can get the manager status.
+	 * Check we can get the local manager status.
 	 *
 	 */
 	public void testGetServiceStatus()
@@ -129,7 +127,34 @@ public class JUnitAccountTest
 		}
 
 	/**
-	 * Check we can create an Account object.
+	 * Check we can create the Community object.
+	 *
+	 */
+	public void testAddCommunity()
+		throws Exception
+		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("testAddCommunity()") ;
+
+		//
+		// Try creating the Community.
+		CommunityData community = manager.addCommunity(TEST_COMMUNITY);
+		assertNotNull("Failed to create community", community) ;
+
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("  Community") ;
+		if (DEBUG_FLAG) System.out.println("    ident   : " + community.getIdent()) ;
+		if (DEBUG_FLAG) System.out.println("    desc    : " + community.getDescription()) ;
+		if (DEBUG_FLAG) System.out.println("    service : " + community.getServiceUrl()) ;
+		if (DEBUG_FLAG) System.out.println("    manager : " + community.getManagerUrl()) ;
+
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("") ;
+		}
+
+	/**
+	 * Check we can create a remote Account object.
 	 *
 	 */
 	public void testAddAccount()
@@ -141,8 +166,7 @@ public class JUnitAccountTest
 
 		//
 		// Try creating the Account.
-		AccountData account ;
-		account = manager.addAccount(TEST_ACCOUNT_NAME);
+		AccountData account = manager.addAccount(TEST_ACCOUNT);
 		assertNotNull("Failed to create account", account) ;
 
 		if (DEBUG_FLAG) System.out.println("") ;
@@ -150,51 +174,12 @@ public class JUnitAccountTest
 		if (DEBUG_FLAG) System.out.println("    ident : " + account.getIdent()) ;
 		if (DEBUG_FLAG) System.out.println("    desc  : " + account.getDescription()) ;
 
-		//
-		// Try creating the same Account again.
-		account = manager.addAccount(TEST_ACCOUNT_NAME);
-		assertNull("Created a duplicate account", account) ;
-
-		//
-		// Try creating an account in a fake community.
-		account = manager.addAccount(FAKE_ACCOUNT_DOMAIN);
-		assertNull("Created a account in fake domain", account) ;
-
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("") ;
 		}
 
 	/**
-	 * Check we can get an Account object.
-	 *
-	 */
-	public void testGetAccount()
-		throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("testGetAccount()") ;
-
-		//
-		// Try getting the fake Account.
-		AccountData account ;
-		account = manager.getAccount(FAKE_ACCOUNT_NAME);
-		assertNull("Found the fake account", account) ;
-		//
-		// Try getting the real Account.
-		account = manager.getAccount(TEST_ACCOUNT_NAME);
-		assertNotNull("Failed to find the real account", account) ;
-
-		if (DEBUG_FLAG) System.out.println("  Account") ;
-		if (DEBUG_FLAG) System.out.println("    ident : " + account.getIdent()) ;
-		if (DEBUG_FLAG) System.out.println("    desc  : " + account.getDescription()) ;
-
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("") ;
-		}
-
-	/**
-	 * Check we can set an Account object.
+	 * Check we can modify a remote Account object.
 	 *
 	 */
 	public void testSetAccount()
@@ -205,17 +190,18 @@ public class JUnitAccountTest
 		if (DEBUG_FLAG) System.out.println("testSetAccount()") ;
 
 		//
-		// Try getting the real Account.
-		AccountData account ;
-		account = manager.getAccount(TEST_ACCOUNT_NAME);
-		assertNotNull("Failed to find the real account", account) ;
+		// Try locating the Account.
+		AccountData account = manager.getAccount(TEST_ACCOUNT);
+		assertNotNull("Failed to locate account", account) ;
 		//
-		// Modify the account.
-		account.setDescription("Modified description") ;
+		// Modify the Account.
+		account.setDescription(TEST_DESCRIPTION) ;
 		//
 		// Try updating the Account.
-		manager.setAccount(account);
+		account = manager.setAccount(account);
+		assertNotNull("Failed to update account", account) ;
 
+		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("  Account") ;
 		if (DEBUG_FLAG) System.out.println("    ident : " + account.getIdent()) ;
 		if (DEBUG_FLAG) System.out.println("    desc  : " + account.getDescription()) ;
@@ -225,22 +211,23 @@ public class JUnitAccountTest
 		}
 
 	/**
-	 * Check we can get a list of Accounts.
+	 * Check we can get a list of remote Accounts.
 	 *
 	 */
-	public void testGetLocalAccounts()
+	public void testGetRemoteAccounts()
 		throws Exception
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("testGetLocalAccounts()") ;
+		if (DEBUG_FLAG) System.out.println("testGetRemoteAccounts()") ;
 
 		//
 		// Try getting the list of Accounts.
 		Object[] list ;
-		list = manager.getLocalAccounts();
+		list = manager.testGetRemoteAccounts(TEST_COMMUNITY);
 		assertNotNull("Failed to get the list of Accounts", list) ;
 
+		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("  ----") ;
 		if (DEBUG_FLAG) System.out.println("  List") ;
 		for (int i = 0 ; i < list.length ; i++)
@@ -257,7 +244,7 @@ public class JUnitAccountTest
 		}
 
 	/**
-	 * Check we can delete an Account object.
+	 * Check we can delete a remote Account object.
 	 *
 	 */
 	public void testDelAccount()
@@ -268,20 +255,17 @@ public class JUnitAccountTest
 		if (DEBUG_FLAG) System.out.println("testDelAccount()") ;
 
 		//
-		// Delete the real account (no return data).
-		manager.delAccount(TEST_ACCOUNT_NAME);
+		// Try deleting the Account.
+		AccountData account = manager.delAccount(TEST_ACCOUNT);
+		assertNotNull("Failed to delete account", account) ;
 
-		//
-		// Delete the real account again (no return data).
-		manager.delAccount(TEST_ACCOUNT_NAME);
-
-		//
-		// Delete the fake account (no return data).
-		manager.delAccount(FAKE_ACCOUNT_NAME);
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("  Account") ;
+		if (DEBUG_FLAG) System.out.println("    ident : " + account.getIdent()) ;
+		if (DEBUG_FLAG) System.out.println("    desc  : " + account.getDescription()) ;
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("") ;
 		}
-
 
 	}

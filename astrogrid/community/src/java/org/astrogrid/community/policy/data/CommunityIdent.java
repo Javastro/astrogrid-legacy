@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/data/Attic/CommunityIdent.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/08 20:28:50 $</cvs:date>
- * <cvs:version>$Revision: 1.1 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/10 06:03:27 $</cvs:date>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityIdent.java,v $
+ *   Revision 1.2  2003/09/10 06:03:27  dave
+ *   Added remote capability to Accounts
+ *
  *   Revision 1.1  2003/09/08 20:28:50  dave
  *   Added CommunityIdent, with isLocal() and isValid()
  *
@@ -116,6 +119,15 @@ public class CommunityIdent
 			this.valid = true ;
 			this.local = true ;
 			}
+		}
+
+	/**
+	 * Public constructor.
+	 *
+	 */
+	public CommunityIdent(String name, String community)
+		{
+		this(name +  IDENT_SEPARATOR + community) ;
 		}
 
 	/**

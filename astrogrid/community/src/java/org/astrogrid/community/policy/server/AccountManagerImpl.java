@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/AccountManagerImpl.java,v $</cvs:source>
- * <cvs:author>$Author: KevinBenson $</cvs:author>
- * <cvs:date>$Date: 2003/09/09 16:48:48 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:author>$Author: dave $</cvs:author>
+ * <cvs:date>$Date: 2003/09/10 06:03:27 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManagerImpl.java,v $
+ *   Revision 1.5  2003/09/10 06:03:27  dave
+ *   Added remote capability to Accounts
+ *
  *   Revision 1.4  2003/09/09 16:48:48  KevinBenson
  *   added setpassword in their on the update
  *
@@ -92,17 +95,23 @@ public class AccountManagerImpl
 	public AccountData addAccount(String name)
 		throws RemoteException
 		{
+		return this.addAccount(new CommunityIdent(name)) ;
+		}
+
+	/**
+	 * Create a new Account.
+	 *
+	 */
+	protected AccountData addAccount(CommunityIdent ident)
+		throws RemoteException
+		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("AccountManagerImpl.addAccount()") ;
-		if (DEBUG_FLAG) System.out.println("  name  : " + name) ;
-
-		GroupData group = null ;
-		AccountData account = null ;
-		//
-		// Create a CommunityIdent for our Account.
-		CommunityIdent ident = new CommunityIdent(name) ;
 		if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
+
+		AccountData account = null ;
+		GroupData   group   = null ;
 		//
 		// If the ident is valid.
 		if (ident.isValid())
@@ -220,22 +229,28 @@ public class AccountManagerImpl
 		}
 
 	/**
-	 * Request an Account details.
+	 * Request an Account data.
 	 *
 	 */
 	public AccountData getAccount(String name)
 		throws RemoteException
 		{
+		return this.getAccount(new CommunityIdent(name)) ;
+		}
+
+	/**
+	 * Request an Account data.
+	 *
+	 */
+	protected AccountData getAccount(CommunityIdent ident)
+		throws RemoteException
+		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("AccountManagerImpl.getAccount()") ;
-		if (DEBUG_FLAG) System.out.println("  name  : " + name) ;
+		if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
 
 		AccountData account = null ;
-		//
-		// Create a CommunityIdent for our Account.
-		CommunityIdent ident = new CommunityIdent(name) ;
-		if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
 		//
 		// If the ident is valid.
 		if (ident.isValid())
@@ -343,9 +358,8 @@ public class AccountManagerImpl
 		if (DEBUG_FLAG) System.out.println("  Account") ;
 		if (DEBUG_FLAG) System.out.println("    ident : " + account.getIdent()) ;
 		if (DEBUG_FLAG) System.out.println("    desc  : " + account.getDescription()) ;
-
 		//
-		// Get the account ident.
+		// Create a CommunityIdent from the account.
 		CommunityIdent ident = new CommunityIdent(account.getIdent()) ;
 		//
 		// If the ident is valid.
@@ -367,7 +381,10 @@ public class AccountManagerImpl
 					//
 					// Update the account data.
 					data.setDescription(account.getDescription()) ;
-               data.setPassword(account.getPassword());
+//
+// Not nice.
+// We ought to have a separate https method just for this.
+					data.setPassword(account.getPassword());
 					}
 				//
 				// If we couldn't find the object.
@@ -448,105 +465,29 @@ public class AccountManagerImpl
 		}
 
 	/**
-	 * Request a list of Accounts.
+	 * Delete an Account data.
 	 *
 	 */
-	public Object[] getAccountList()
+	public AccountData delAccount(String name)
 		throws RemoteException
 		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("AccountManagerImpl.getAccountList()") ;
-
-		//
-		// Try to query the database.
-		Object[] array = null ;
-		try {
-			//
-			// Begin a new database transaction.
-			database.begin();
-			//
-			// Create our OQL query.
-			OQLQuery query = database.getOQLQuery(
-				"SELECT accounts FROM org.astrogrid.community.policy.data.AccountData accounts"
-				);
-			//
-			// Execute our query.
-			QueryResults results = query.execute();
-			//
-			// Transfer our results to a vector.
-			Collection collection = new Vector() ;
-			while (results.hasMore())
-				{
-				collection.add(results.next()) ;
-				}
-			//
-			// Convert it into an array.
-			array = collection.toArray() ;
-			}
-		//
-		// If anything went bang.
-		catch (Exception ouch)
-			{
-			if (DEBUG_FLAG) System.out.println("") ;
-			if (DEBUG_FLAG) System.out.println("  ----") ;
-			if (DEBUG_FLAG) System.out.println("Exception in getAccountList()") ;
-
-			//
-			// Set the response to null.
-			array = null ;
-
-			if (DEBUG_FLAG) System.out.println("  ----") ;
-			if (DEBUG_FLAG) System.out.println("") ;
-			}
-		//
-		// Commit the transaction.
-		finally
-			{
-			try {
-				if (null != array)
-					{
-					database.commit() ;
-					}
-				else {
-					database.rollback() ;
-					}
-				}
-			catch (Exception ouch)
-				{
-				if (DEBUG_FLAG) System.out.println("") ;
-				if (DEBUG_FLAG) System.out.println("  ----") ;
-				if (DEBUG_FLAG) System.out.println("Exception in getAccountList() finally clause") ;
-
-				//
-				// Set the response to null.
-				array = null ;
-
-				if (DEBUG_FLAG) System.out.println("  ----") ;
-				if (DEBUG_FLAG) System.out.println("") ;
-				}
-			}
-
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		return array ;
+		return this.delAccount(new CommunityIdent(name)) ;
 		}
 
 	/**
-	 * Delete an Account.
+	 * Delete an Account data.
 	 *
 	 */
-	public boolean delAccount(String name)
+	protected AccountData delAccount(CommunityIdent ident)
 		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("AccountManagerImpl.delAccount()") ;
-		if (DEBUG_FLAG) System.out.println("  name  : " + name) ;
-
-		//
-		// Create a CommunityIdent for our Account.
-		CommunityIdent ident = new CommunityIdent(name) ;
 		if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
+
+		GroupData   group   = null ;
+		AccountData account = null ;
 		//
 		// If the ident is valid.
 		if (ident.isValid())
@@ -557,8 +498,6 @@ public class AccountManagerImpl
 				{
 				//
 				// Try update the database.
-				GroupData   group   = null ;
-				AccountData account = null ;
 				try {
 					//
 					// Begin a new database transaction.
@@ -642,7 +581,8 @@ public class AccountManagerImpl
 			else {
 				//
 				// Set the response to null.
-				//
+				group   = null ;
+				account = null ;
 				}
 			}
 			//
@@ -650,12 +590,97 @@ public class AccountManagerImpl
 		else {
 			//
 			// Set the response to null.
-			//
+			group   = null ;
+			account = null ;
 			}
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
-
-		return true ;
+		return account ;
 		}
+
+	/**
+	 * Request a list of Accounts.
+	 *
+	 */
+	public Object[] getLocalAccounts()
+		throws RemoteException
+		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("AccountManagerImpl.getLocalAccounts()") ;
+
+		//
+		// Try to query the database.
+		Object[] array = null ;
+		try {
+			//
+			// Begin a new database transaction.
+			database.begin();
+			//
+			// Create our OQL query.
+			OQLQuery query = database.getOQLQuery(
+				"SELECT accounts FROM org.astrogrid.community.policy.data.AccountData accounts"
+				);
+			//
+			// Execute our query.
+			QueryResults results = query.execute();
+			//
+			// Transfer our results to a vector.
+			Collection collection = new Vector() ;
+			while (results.hasMore())
+				{
+				collection.add(results.next()) ;
+				}
+			//
+			// Convert it into an array.
+			array = collection.toArray() ;
+			}
+		//
+		// If anything went bang.
+		catch (Exception ouch)
+			{
+			if (DEBUG_FLAG) System.out.println("") ;
+			if (DEBUG_FLAG) System.out.println("  ----") ;
+			if (DEBUG_FLAG) System.out.println("Exception in getLocalAccounts()") ;
+
+			//
+			// Set the response to null.
+			array = null ;
+
+			if (DEBUG_FLAG) System.out.println("  ----") ;
+			if (DEBUG_FLAG) System.out.println("") ;
+			}
+		//
+		// Commit the transaction.
+		finally
+			{
+			try {
+				if (null != array)
+					{
+					database.commit() ;
+					}
+				else {
+					database.rollback() ;
+					}
+				}
+			catch (Exception ouch)
+				{
+				if (DEBUG_FLAG) System.out.println("") ;
+				if (DEBUG_FLAG) System.out.println("  ----") ;
+				if (DEBUG_FLAG) System.out.println("Exception in getLocalAccounts() finally clause") ;
+
+				//
+				// Set the response to null.
+				array = null ;
+
+				if (DEBUG_FLAG) System.out.println("  ----") ;
+				if (DEBUG_FLAG) System.out.println("") ;
+				}
+			}
+
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		return array ;
+		}
+
 
 	}

@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/client/junit/manager/Attic/JUnitCommunityTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/09 14:51:47 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/10 06:03:27 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: JUnitCommunityTest.java,v $
+ *   Revision 1.4  2003/09/10 06:03:27  dave
+ *   Added remote capability to Accounts
+ *
  *   Revision 1.3  2003/09/09 14:51:47  dave
  *   Added delGroupMember - only local accounts and groups to start with.
  *
@@ -45,18 +48,6 @@ public class JUnitCommunityTest
 	 *
 	 */
 	private static final String TEST_COMMUNITY_IDENT = "server.manager.client" ;
-
-	/**
-	 * Our test community service url.
-	 *
-	 */
-//	private static final String TEST_COMMUNITY_SERVICE_URL = "http://localhost:8080/axis/services/PolicyService" ;
-
-	/**
-	 * Our test community manager url.
-	 *
-	 */
-//	private static final String TEST_COMMUNITY_MANAGER_URL = "http://localhost:8080/axis/services/PolicyManager" ;
 
 	/**
 	 * The our fake Community ident.
@@ -170,9 +161,7 @@ public class JUnitCommunityTest
 		// Try creating the same Community again.
 		community = manager.addCommunity(TEST_COMMUNITY_IDENT);
 		assertNull("Created a duplicate community", community) ;
-//
-// Should use ident only to create ??
-//
+
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("") ;
 		}

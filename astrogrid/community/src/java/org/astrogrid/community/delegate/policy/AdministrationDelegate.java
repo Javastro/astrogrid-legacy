@@ -55,7 +55,7 @@ public class AdministrationDelegate {
    }
 
    public boolean delAccount(String name) throws Exception {
-      return service.delAccount(name);      
+      return (null != service.delAccount(name));      
    }
    
    public AccountData getAccount(String name) throws Exception {
@@ -64,7 +64,7 @@ public class AdministrationDelegate {
    
    
    public ArrayList getAccountList() throws Exception {
-      Object []list = service.getAccountList();
+      Object []list = service.getLocalAccounts();
       ArrayList al = null;
       if(list != null && list.length > 0) {
          al = new ArrayList(list.length);

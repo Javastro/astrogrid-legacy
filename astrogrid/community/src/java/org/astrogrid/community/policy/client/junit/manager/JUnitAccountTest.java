@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/client/junit/manager/Attic/JUnitAccountTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/09 14:51:47 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/10 06:03:27 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: JUnitAccountTest.java,v $
+ *   Revision 1.4  2003/09/10 06:03:27  dave
+ *   Added remote capability to Accounts
+ *
  *   Revision 1.3  2003/09/09 14:51:47  dave
  *   Added delGroupMember - only local accounts and groups to start with.
  *
@@ -248,17 +251,17 @@ public class JUnitAccountTest
 	 * Check we can get a list of Accounts.
 	 *
 	 */
-	public void testGetAccountList()
+	public void testGetLocalAccounts()
 		throws Exception
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("testGetAccountList()") ;
+		if (DEBUG_FLAG) System.out.println("testGetLocalAccounts()") ;
 
 		//
 		// Try getting the list of Accounts.
 		Object[] list ;
-		list = manager.getAccountList();
+		list = manager.getLocalAccounts();
 		assertNotNull("Failed to get the list of Accounts", list) ;
 
 		if (DEBUG_FLAG) System.out.println("") ;

@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/PolicyManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/10 02:56:03 $</cvs:date>
- * <cvs:version>$Revision: 1.12 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/10 06:03:27 $</cvs:date>
+ * <cvs:version>$Revision: 1.13 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManagerImpl.java,v $
+ *   Revision 1.13  2003/09/10 06:03:27  dave
+ *   Added remote capability to Accounts
+ *
  *   Revision 1.12  2003/09/10 02:56:03  dave
  *   Added PermissionManager and tests
  *
@@ -186,51 +189,389 @@ public class PolicyManagerImpl
 	 * Create a new Account.
 	 *
 	 */
-	public AccountData addAccount(String ident)
+	public AccountData addAccount(String name)
 		throws RemoteException
 		{
-		return accountManager.addAccount(ident) ;
+		return this.addAccount(new CommunityIdent(name)) ;
 		}
 
 	/**
-	 * Request an Account details.
+	 * Create a new Account.
 	 *
 	 */
-	public AccountData getAccount(String ident)
+	protected AccountData addAccount(CommunityIdent ident)
 		throws RemoteException
 		{
-		return accountManager.getAccount(ident) ;
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("PolicyManagerImpl.addAccount()") ;
+		if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
+
+		AccountData result = null ;
+		//
+		// If the ident is valid.
+		if (ident.isValid())
+			{
+			if (DEBUG_FLAG) System.out.println("PASS : Ident is valid") ;
+			//
+			// If the ident is local.
+			if (ident.isLocal())
+				{
+				if (DEBUG_FLAG) System.out.println("PASS : Ident is local") ;
+				//
+				// Use our local manager.
+				result = accountManager.addAccount(ident) ;
+				}
+			//
+			// If the ident is not local.
+			else {
+				if (DEBUG_FLAG) System.out.println("PASS : Ident is remote") ;
+				//
+				// Get the PolicyManager for the remote community.
+				PolicyManager remote = communityManager.getPolicyManager(ident.getCommunity()) ;
+				//
+				// If we got a remote PolicyManager.
+				if (null != remote)
+					{
+					if (DEBUG_FLAG) System.out.println("PASS : Found remote manager") ;
+					//
+					// Use the remote manager.
+					result = remote.addAccount(ident.toString()) ;
+					//
+					// If we got a result.
+					if (null != result)
+						{
+						if (DEBUG_FLAG) System.out.println("PASS : Created remote account") ;
+						}
+					//
+					// If we didn't get a result.
+					else {
+						if (DEBUG_FLAG) System.out.println("FAIL : Failed to create remote account") ;
+						}
+					}
+				//
+				// If we didn't get a remote PolicyManager.
+				else {
+					if (DEBUG_FLAG) System.out.println("FAIL : Unknown remote manager") ;
+					}
+				}
+			}
+		//
+		// If the ident is not valid.
+		else {
+			if (DEBUG_FLAG) System.out.println("FAIL : Ident not valid") ;
+			}
+
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		return result ;
 		}
 
 	/**
-	 * Update an Account details.
+	 * Request an Account data.
+	 *
+	 */
+	public AccountData getAccount(String name)
+		throws RemoteException
+		{
+		return this.getAccount(new CommunityIdent(name)) ;
+		}
+
+	/**
+	 * Request an Account data.
+	 *
+	 */
+	protected AccountData getAccount(CommunityIdent ident)
+		throws RemoteException
+		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("PolicyManagerImpl.getAccount()") ;
+		if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
+
+		AccountData result = null ;
+		//
+		// If the ident is valid.
+		if (ident.isValid())
+			{
+			if (DEBUG_FLAG) System.out.println("PASS : Ident is valid") ;
+			//
+			// If the ident is local.
+			if (ident.isLocal())
+				{
+				if (DEBUG_FLAG) System.out.println("PASS : Ident is local") ;
+				//
+				// Use our local manager.
+				result = accountManager.getAccount(ident) ;
+				}
+			//
+			// If the ident is not local.
+			else {
+				if (DEBUG_FLAG) System.out.println("PASS : Ident is remote") ;
+				//
+				// Get the PolicyManager for the remote community.
+				PolicyManager remote = communityManager.getPolicyManager(ident.getCommunity()) ;
+				//
+				// If we got a remote PolicyManager.
+				if (null != remote)
+					{
+					if (DEBUG_FLAG) System.out.println("PASS : Found remote manager") ;
+					//
+					// Use the remote manager.
+					result = remote.getAccount(ident.toString()) ;
+					//
+					// If we got a result.
+					if (null != result)
+						{
+						if (DEBUG_FLAG) System.out.println("PASS : Found remote account") ;
+						}
+					//
+					// If we didn't get a result.
+					else {
+						if (DEBUG_FLAG) System.out.println("FAIL : Unknown remote account") ;
+						}
+					}
+				//
+				// If we didn't get a remote PolicyManager.
+				else {
+					if (DEBUG_FLAG) System.out.println("FAIL : Unknown remote manager") ;
+					}
+				}
+			}
+		//
+		// If the ident is not valid.
+		else {
+			if (DEBUG_FLAG) System.out.println("FAIL : Ident not valid") ;
+			}
+
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		return result ;
+		}
+
+	/**
+	 * Update an Account data.
 	 *
 	 */
 	public AccountData setAccount(AccountData account)
 		throws RemoteException
 		{
-		return accountManager.setAccount(account) ;
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("PolicyManagerImpl.setAccount()") ;
+		if (DEBUG_FLAG) System.out.println("  ident : " + account.getIdent()) ;
+
+		AccountData result = null ;
+		CommunityIdent ident = new CommunityIdent(account.getIdent()) ;
+		//
+		// If the ident is valid.
+		if (ident.isValid())
+			{
+			if (DEBUG_FLAG) System.out.println("PASS : Ident is valid") ;
+			//
+			// If the ident is local.
+			if (ident.isLocal())
+				{
+				if (DEBUG_FLAG) System.out.println("PASS : Ident is local") ;
+				//
+				// Use our local manager.
+				result = accountManager.setAccount(account) ;
+				}
+			//
+			// If the ident is not local.
+			else {
+				if (DEBUG_FLAG) System.out.println("PASS : Ident is remote") ;
+				//
+				// Get the PolicyManager for the remote community.
+				PolicyManager remote = communityManager.getPolicyManager(ident.getCommunity()) ;
+				//
+				// If we got a remote PolicyManager.
+				if (null != remote)
+					{
+					if (DEBUG_FLAG) System.out.println("PASS : Found remote manager") ;
+					//
+					// Use the remote manager.
+					result = remote.setAccount(account) ;
+					//
+					// If we got a result.
+					if (null != result)
+						{
+						if (DEBUG_FLAG) System.out.println("PASS : Found remote account") ;
+						}
+					//
+					// If we didn't get a result.
+					else {
+						if (DEBUG_FLAG) System.out.println("FAIL : Unknown remote account") ;
+						}
+					}
+				//
+				// If we didn't get a remote PolicyManager.
+				else {
+					if (DEBUG_FLAG) System.out.println("FAIL : Unknown remote manager") ;
+					}
+				}
+			}
+		//
+		// If the ident is not valid.
+		else {
+			if (DEBUG_FLAG) System.out.println("FAIL : Ident not valid") ;
+			}
+
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		return result ;
 		}
 
 	/**
-	 * Delete an Account.
+	 * Delete an Account data.
 	 *
 	 */
-	public boolean delAccount(String ident)
+	public AccountData delAccount(String name)
 		throws RemoteException
 		{
-		return accountManager.delAccount(ident) ;
+		return this.delAccount(new CommunityIdent(name)) ;
 		}
 
 	/**
-	 * Request a list of Accounts.
+	 * Delete an Account data.
 	 *
 	 */
-	public Object[] getAccountList()
+	protected AccountData delAccount(CommunityIdent ident)
 		throws RemoteException
 		{
-		return accountManager.getAccountList() ;     
-      }
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("PolicyManagerImpl.delAccount()") ;
+		if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
+
+		AccountData result = null ;
+		//
+		// If the ident is valid.
+		if (ident.isValid())
+			{
+			if (DEBUG_FLAG) System.out.println("PASS : Ident is valid") ;
+			//
+			// If the ident is local.
+			if (ident.isLocal())
+				{
+				if (DEBUG_FLAG) System.out.println("PASS : Ident is local") ;
+				//
+				// Use our local manager.
+				result = accountManager.delAccount(ident) ;
+				}
+			//
+			// If the ident is not local.
+			else {
+				if (DEBUG_FLAG) System.out.println("PASS : Ident is remote") ;
+				//
+				// Get the PolicyManager for the remote community.
+				PolicyManager remote = communityManager.getPolicyManager(ident.getCommunity()) ;
+				//
+				// If we got a remote PolicyManager.
+				if (null != remote)
+					{
+					if (DEBUG_FLAG) System.out.println("PASS : Found remote manager") ;
+					//
+					// Use the remote manager.
+					result = remote.delAccount(ident.toString()) ;
+					//
+					// If we got a result.
+					if (null != result)
+						{
+						if (DEBUG_FLAG) System.out.println("PASS : Found remote account") ;
+						}
+					//
+					// If we didn't get a result.
+					else {
+						if (DEBUG_FLAG) System.out.println("FAIL : Unknown remote account") ;
+						}
+					}
+				//
+				// If we didn't get a remote PolicyManager.
+				else {
+					if (DEBUG_FLAG) System.out.println("FAIL : Unknown remote manager") ;
+					}
+				}
+			}
+		//
+		// If the ident is not valid.
+		else {
+			if (DEBUG_FLAG) System.out.println("FAIL : Ident not valid") ;
+			}
+
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		return result ;
+		}
+
+	/**
+	 * Request a list of local Accounts.
+	 *
+	 */
+	public Object[] getLocalAccounts()
+		throws RemoteException
+		{
+		return accountManager.getLocalAccounts() ;
+		}
+
+	/**
+	 * Request a list of remote Accounts.
+	 *
+	 */
+	public Object[] getRemoteAccounts(String name)
+		throws RemoteException
+		{
+		Object[] reults = null ;
+		//
+		// If the community is local.
+		if (CommunityConfig.getConfig().getCommunityName().equals(name))
+			{
+			if (DEBUG_FLAG) System.out.println("PASS : Community is local") ;
+			//
+			// Call our local manager.
+			results = accountManager.getLocalAccounts() ;
+			}
+		//
+		// If the community is remote.
+		else {
+			if (DEBUG_FLAG) System.out.println("PASS : Community is remote") ;
+			//
+			// Get the PolicyManager for the remote community.
+			PolicyManager remote = communityManager.getPolicyManager(name) ;
+			//
+			// If we got a remote PolicyManager.
+			if (null != remote)
+				{
+				if (DEBUG_FLAG) System.out.println("PASS : Found remote manager") ;
+				//
+				// Use the remote manager.
+				results = remote.getLocalAccounts() ;
+				//
+				// If we got a result.
+				if (null != results)
+					{
+					if (DEBUG_FLAG) System.out.println("PASS : Found remote accounts") ;
+					}
+				//
+				// If we didn't get a result.
+				else {
+					if (DEBUG_FLAG) System.out.println("FAIL : Missing remote accounts") ;
+					}
+				}
+			//
+			// If we didn't get a remote PolicyManager.
+			else {
+				if (DEBUG_FLAG) System.out.println("FAIL : Unknown remote manager") ;
+				}
+			}
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		return results ;
+		}
+
+//
+// ZRQ here
+//
+
+//
+// ZRQ there
+//
+
       
       /**
        * Create a new Resource.

@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/PolicyManager.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/10 02:56:03 $</cvs:date>
- * <cvs:version>$Revision: 1.10 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/10 06:03:27 $</cvs:date>
+ * <cvs:version>$Revision: 1.11 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManager.java,v $
+ *   Revision 1.11  2003/09/10 06:03:27  dave
+ *   Added remote capability to Accounts
+ *
  *   Revision 1.10  2003/09/10 02:56:03  dave
  *   Added PermissionManager and tests
  *
@@ -63,6 +66,20 @@ public interface PolicyManager
 	 *
 	 */
 	public ServiceData getServiceStatus()
+		throws RemoteException ;
+
+	/**
+	 * Request a list of local Accounts.
+	 *
+	 */
+	public Object[] getLocalAccounts()
+		throws RemoteException ;
+
+	/**
+	 * Request a list of remote Accounts.
+	 *
+	 */
+	public Object[] getRemoteAccounts(String name)
 		throws RemoteException ;
 
 	/**
