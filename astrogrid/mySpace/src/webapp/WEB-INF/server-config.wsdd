@@ -37,7 +37,7 @@
      style="rpc" use="encoded">
   <parameter name="allowedMethods" value="*"/>
   <parameter name="wsdlPortType" value="Manager"/>
-  <parameter name="scope" value="Session"/>
+  <!--parameter name="scope" value="Session"/-->
   <parameter name="className" value="org.astrogrid.store.delegate.myspaceItn05.AstrogridMyspaceSoapBindingSkeleton"/>
   <parameter name="wsdlServicePort" value="Manager"/>
   <parameter name="wsdlTargetNamespace" value="urn:Kernel"/>
