@@ -1,4 +1,4 @@
-/*$Id: PostgresSqlMaker.java,v 1.1 2004/04/02 03:09:52 eca Exp $
+/*$Id: PostgresSqlMaker.java,v 1.2 2004/04/02 03:27:49 eca Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,18 +8,16 @@
  * with this distribution in the LICENSE.txt file.
  *
 **/
-package org.astrogrid.datacenter.queriers.ogsadai;
+package org.astrogrid.datacenter.queriers.ogsadai.deprecated;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.spi.Translator;
 import org.astrogrid.datacenter.queriers.sql.StdSqlMaker;
 import org.astrogrid.datacenter.query.AdqlQuery;
 import org.astrogrid.datacenter.query.QueryException;
 import org.w3c.dom.Element;
 import org.astrogrid.datacenter.queriers.ogsadai.AdqlQueryTranslator;
-import org.astrogrid.datacenter.adql.generated.ogsadai.Select;
 import org.astrogrid.datacenter.queriers.sql.deprecated.QueryTranslator;
 
 /**
@@ -126,6 +124,9 @@ public class PostgresSqlMaker extends StdSqlMaker {
 
 /*
 $Log: PostgresSqlMaker.java,v $
+Revision 1.2  2004/04/02 03:27:49  eca
+Fixed package declaration to include "deprecated".
+
 Revision 1.1  2004/04/02 03:09:52  eca
 Created "deprecated" folder to hold old version of PostgresSqlMaker. 
 Just in case.
