@@ -1,1 +1,2 @@
+This contains some tests which are not run as part of the build process, but are here as an aid when making changes to the schema.
 See also the CEA configuration files in the applications project in the config subdirectory
