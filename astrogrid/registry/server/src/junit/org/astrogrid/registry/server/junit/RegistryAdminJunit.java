@@ -60,6 +60,7 @@ public class RegistryAdminJunit extends TestCase{
        String junitDir = System.getProperty("org.astrogrid.registry.junitcache.url");
        ras = new RegistryAdminService();
        dbURI = ras.conf.getString("registry.exist.db.uri",null);
+       dbURI = null;
        ras.conf.setProperty("org.astrogrid.registry.file",junitBuildDir+"/registry.xml");
        ras.conf.setProperty("registry.junit.test/ServiceTest",junitDir+"/ServiceTest.xml");
        ras.conf.setProperty("registry.junit.test/OrganisationTest",junitDir+"/OrganisationTest.xml");
@@ -69,6 +70,7 @@ public class RegistryAdminJunit extends TestCase{
        ras.conf.setProperty("registry.junit.test/RegistryTest",junitDir+"/RegistryTest.xml");
        ras.conf.setProperty("registry.junit.test/TabularSkyServiceTest",junitDir+"/TabularSkyServiceTest.xml");
        ras.conf.setProperty("registry.junit.test/Combo1Test",junitDir+"/ResourcesCombo1.xml");
+       ras.conf.setProperty("registry.junit.test/MultCEA",junitDir+"/MultCEATest.xml");
        assertNotNull(ras);
        if (DEBUG_FLAG) System.out.println("----\"----") ;
    }
@@ -84,15 +86,15 @@ public class RegistryAdminJunit extends TestCase{
     }
   */
   
-  public void testUpdateAuthority() throws Exception {
-     if (DEBUG_FLAG) System.out.println("Begin testUpdateService");
+  public void testMultCEA() throws Exception {
+     if (DEBUG_FLAG) System.out.println("Begin testMultCEA");
      if(dbURI == null) return;
-     Document doc = ras.update(ras.conf.getDom("registry.junit.test/AuthorityTest"));      
+     Document doc = ras.update(ras.conf.getDom("registry.junit.test/MultCEA"));      
      if(doc != null)      
         if (DEBUG_FLAG) System.out.println("loadRegistry returned = " + XMLUtils.DocumentToString(doc));
   }
 
-   
+  /*   
    public void testUpdateService() throws Exception {
       if (DEBUG_FLAG) System.out.println("Begin testUpdateService");
       if(dbURI == null) return;      
@@ -101,7 +103,7 @@ public class RegistryAdminJunit extends TestCase{
       if(doc != null)      
          if (DEBUG_FLAG) System.out.println("loadRegistry returned = " + XMLUtils.DocumentToString(doc));
    }
-   /*
+
    public void testUpdateVizerEntry() throws Exception {
       if (DEBUG_FLAG) System.out.println("Begin testUpdateService");
       System.out.println("the xml document of harvestvizier = " + XMLUtils.DocumentToString(ras.conf.getDom("registry.junit.test/HarvestVizier")));

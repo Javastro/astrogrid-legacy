@@ -58,7 +58,8 @@ public class RegistryQueryJunit extends TestCase{
        String junitBuildDir = System.getProperty("org.astrogrid.registry.junitcache.build.url");
        String junitDir = System.getProperty("org.astrogrid.registry.junitcache.url");
        rs = new RegistryService();
-       dbURI = rs.conf.getString("registry.exist.db.uri",null);       
+       dbURI = rs.conf.getString("registry.exist.db.uri",null);
+       dbURI = null;       
        rs.conf.setProperty("org.astrogrid.registry.file",junitBuildDir+"/registry.xml");
        rs.conf.setProperty("org.astrogrid.registry.junit.authQuery1",junitDir+"/AuthorityQuery1.xml");
        rs.conf.setProperty("org.astrogrid.registry.junit.orgQuery1",junitDir+"/OrganisationQuery1.xml");

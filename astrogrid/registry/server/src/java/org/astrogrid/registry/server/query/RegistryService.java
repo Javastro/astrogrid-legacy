@@ -54,21 +54,18 @@ public class RegistryService implements
    * @author Kevin Benson 
    */
    public Document submitQuery(Document query) {
+      long beginQ = System.currentTimeMillis();
       Document registryDoc = null;
       System.out.println("received = " + DomHelper.DocumentToString(query));    
-      //try {
-   		registryDoc = XQueryExecution.parseQuery(query);
-         if(registryDoc != null)
-            System.out.println("the registryDoc = " + DomHelper.DocumentToString(registryDoc));
-   	//} catch (ClassNotFoundException e) {
-   		// TODO Auto-generated catch block
-   	//	e.printStackTrace();
-   	//}
+   	registryDoc = XQueryExecution.parseQuery(query);
+      if(registryDoc != null)
+         System.out.println("the registryDoc = " + DomHelper.DocumentToString(registryDoc));
+      System.out.println("Time taken to complete submitQuery on server = " + (System.currentTimeMillis() - beginQ));
       return registryDoc;
    }
    
    public Document loadRegistry(Document query) {
-      //System.out.println("received = " + XMLUtils.DocumentToString(query));
+      long beginQ = System.currentTimeMillis();
       String authorityID = conf.getString(AUTHORITYID_PROPERTY);
       authorityID = authorityID.trim();
       Document doc = null;
@@ -99,6 +96,7 @@ public class RegistryService implements
       if(doc != null) {
          responseDoc = XQueryExecution.parseQuery(doc);
       }
+      System.out.println("Time taken to complete loadRegistry on server = " + (System.currentTimeMillis() - beginQ));
       return responseDoc;
    }
 }

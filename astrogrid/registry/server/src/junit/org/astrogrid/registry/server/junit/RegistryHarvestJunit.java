@@ -104,6 +104,22 @@ public class RegistryHarvestJunit extends TestCase{
    }      
 
 
+   public void testHarvestResourceOfRegistry() throws Exception {
+      if (DEBUG_FLAG) System.out.println("Begin testHarvestResourceOfRegistry");
+      if(dbURI == null) return;      
+      try {
+      
+      Document doc = rhs.conf.getDom("registry.junit.test/RegistryTest");  
+      //System.out
+      Document responseDoc = rhs.harvestResource(doc);
+      //TODO put assert statements here.
+      if(responseDoc != null)      
+         if (DEBUG_FLAG) System.out.println("harvestResource returned = " + XMLUtils.DocumentToString(responseDoc));
+      }catch(Exception e) {
+         e.printStackTrace();
+      }
+   }      
+
 
    public void testHarvestResource() throws Exception {
       if (DEBUG_FLAG) System.out.println("Begin testHarvestResource");

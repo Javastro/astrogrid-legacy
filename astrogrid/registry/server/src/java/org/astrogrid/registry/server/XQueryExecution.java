@@ -4,6 +4,12 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.HttpURLConnection;
+import java.net.URLEncoder;
+import java.io.*;
 /*
 import org.xml.sax.InputSource;
 import java.io.StringReader;
@@ -18,10 +24,10 @@ import java.text.SimpleDateFormat;
 //import de.gmd.ipsi.xql.XQL;
 //import de.gmd.ipsi.xql.XQLRelationship;
 //import org.astrogrid.registry.server.RegistryFileHelper;
-import org.xmldb.api.*;
-import org.xmldb.api.base.*;
-import org.xmldb.api.modules.*;
-import org.exist.xmldb.*;
+//import org.xmldb.api.*;
+//import org.xmldb.api.base.*;
+//import org.xmldb.api.modules.*;
+//import org.exist.xmldb.*;
 import org.astrogrid.util.DomHelper;
 import org.astrogrid.config.Config;
 
@@ -113,105 +119,6 @@ public class XQueryExecution
 		//return xqlResponse;	
 	}
    
-   
-   /**
-    * 
-    * @deprecated - No longer in use because of xmldb
-    *
-    */
-   /*
-   private static void addXQLRelationShips() {
-      
-
-      XQL.addRelationship("$isgt$",
-       new XQLRelationship() {
-        public boolean holdsBetween(Object l, Object r) {
-         double element = XQL.number(l);
-         double value = XQL.number(r);
-         if (((new Double(element).isNaN())) || ((new Double(value).isNaN()))) return false;
-         return (element > value);
-        }
-       });
-       
-       XQL.addRelationship("$isge$",
-       new XQLRelationship() {
-        public boolean holdsBetween(Object l, Object r) {
-         double element = XQL.number(l);
-         double value = XQL.number(r);
-         if (((new Double(element).isNaN())) || ((new Double(value).isNaN()))) return false;
-         return (element >= value);
-        }
-       });
-       
-       XQL.addRelationship("$after$",
-       new XQLRelationship() {
-        public boolean holdsBetween(Object l, Object r) {
-          SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-          String lValue = XQL.text(l);
-          String rValue = XQL.text(r);
-          Date lDate = null;
-          Date rDate = null;
-          try {
-             lDate = sdf.parse(lValue);
-             rDate = sdf.parse(rValue);
-          }catch(java.text.ParseException pe) {
-            pe.printStackTrace();
-            lDate = null;
-            rDate = null;  
-          }
-         if(lDate != null && rDate != null) {
-            return lDate.after(rDate);
-         }else {
-            System.out.println("problem supposed to be a date and it is not.");
-            return false;
-         }
-        }
-       });
-       
-       
-      XQL.addRelationship("$islt$",
-       new XQLRelationship() {
-        public boolean holdsBetween(Object l, Object r) {
-         double element = XQL.number(l);
-         double value = XQL.number(r);
-         if (((new Double(element).isNaN())) || ((new Double(value).isNaN()))) return false;
-         return (element < value);
-        }
-       });
-       
-      XQL.addRelationship("$isle$",
-       new XQLRelationship() {
-        public boolean holdsBetween(Object l, Object r) {
-         double element = XQL.number(l);
-         double value = XQL.number(r);
-         if (((new Double(element).isNaN())) || ((new Double(value).isNaN()))) return false;
-         return (element <= value);
-        }
-       });
-      
-      XQL.addRelationship("$contains$",
-       new XQLRelationship() {
-        public boolean holdsBetween(Object l, Object r) {
-           String lValue = XQL.text(l).toLowerCase();
-           String rValue = XQL.text(r).toLowerCase();
-          return lValue.indexOf(rValue) >= 0;
-        }
-       });       
-       
-   }
-*/   
-  private static Collection loadDataBase() throws Exception {
-     String driver = "org.exist.xmldb.DatabaseImpl";
-     String uri = conf.getString("registry.exist.db.uri");//"xmldb:exist://localhost:8080/exist/xmlrpc"; 
-      
-     String collection = "/db";
-     Class cl = Class.forName(driver);
-     Database database = (Database)cl.newInstance();
-     DatabaseManager.registerDatabase(database);
-     System.out.println("Loading Database URI: " + uri + collection);
-     Collection col = DatabaseManager.getCollection(uri+collection,"admin","");
-     return col;
-  }
 	
    /**
     * Input Document is the XML formatted query from either the parseQuery
@@ -271,76 +178,139 @@ public class XQueryExecution
             e.printStackTrace();
 			}
          
-         return runQuery(xml_to_xql,null);
+         return runQuery(xml_to_xql);
             
 
-			/**
-			* Now determine how much metadata the user has requested with the "searchElements" 
-			* variable and complete the conversion to XQL:
-			* 
-			* searchElements           -> Return metadata
-			* --------------              ---------------
-			* "all" or "" or "*"       -> return all metadata
-			* "identity"               -> return identity metadata only
-			* "curation"               -> return identity and curation metadata
-			* "content"                -> return identity and content metadata
-			* "serviceMetadataConcept" -> return identity and serviceMetadataConcept metadata
-			*/
-         /*
-			if (goodQuery == true){
-            if (searchElements.equals("") || searchElements.equals("all") || searchElements.equals("*")){
-               xml_to_xql = "//VODescription/* [" + xml_to_xql + "]";  
-            } else if (searchElements.equals("Organisation")){
-               xml_to_xql = "//VODescription/vc:Organisation [" + xml_to_xql + "]";   
-            } else if (searchElements.equals("Authority")){
-               xml_to_xql = "//VODescription/vg:Authority [" + xml_to_xql + "]";   
-            } else if (searchElements.equals("DataCollection")){
-               xml_to_xql = "//VODescription/vs:DataCollection [" + xml_to_xql + "]";   
-            } else if (searchElements.equals("Service")){
-               xml_to_xql = "//VODescription/Service [" + xml_to_xql + "]";   
-            } else if (searchElements.equals("Resource")){
-               xml_to_xql = "//VODescription/vr:Resource [" + xml_to_xql + "]";   
-            } else if (searchElements.equals("SkyService")){
-               xml_to_xql = "//VODescription/vs:SkyService [" + xml_to_xql + "]";   
-            } else if (searchElements.equals("TabularSkyService")){
-               xml_to_xql = "//VODescription/vs:TabularSkyService [" + xml_to_xql + "]";   
-            } else if (searchElements.equals("Registry")){
-               xml_to_xql = "//VODescription/vg:Registry [" + xml_to_xql + "]";   
-            }  
-           
-
-				System.out.println("the query = " + xml_to_xql);
-				//xqlResponse = xqlToXML(new Registry3_0().xmlQuery(xml_to_xql,RegistryFileHelper.loadRegistryFile()), searchElements);								
-            return new Registry3_0().xmlQuery(xml_to_xql,RegistryFileHelper.loadRegistryFile());
-            //System.out.println("the xqlresponse = " + xqlResponse);
-            //queryResponse = xqlResponse;
-			} else {
-            //throw a not valid formatted document which should not happen since this afterall now a Document object.
-            return null;
-          //   queryResponse = "<queryResponse><recordKeyPair item='ERROR1:' value='" + query + "' /></queryResponse>";
-         }
-         */
 	}
    
-   public static Document runQuery(String xql,Node updateNode) {
-
-      Collection col = null;
+   public static URL getQueryUrl(String xql) {
+      String location = conf.getString("exist.db.url");
+      String numberOfResourcesReturned = conf.getString("exist.query.returncount");
+      if(numberOfResourcesReturned == null || numberOfResourcesReturned.trim().length() <= 0)
+         numberOfResourcesReturned = "25";
+      
+      URL fullQueryURL = null;
       try {
+         String versionNumber = conf.getString("org.astrogrid.registry.version");
+         location += "/servlet/db/astrogridv" + versionNumber + "?_query=" + URLEncoder.encode(xql,"UTF-8") + "&_howmany=" + numberOfResourcesReturned;
+         System.out.println("the full query url = " + location);         
+         fullQueryURL = new URL(location);
+         System.out.println("the fullQueryURL = " + fullQueryURL.toString());
+      }catch(MalformedURLException mue) {
+         mue.printStackTrace();
+      }catch(UnsupportedEncodingException uee) {
+         uee.printStackTrace();
+      }
+      return fullQueryURL;
+   }
+   
+   public static URL getUpdateURL(String collectionName, String xmlDocName) {
+      String location = conf.getString("exist.db.url");
+      location += "/servlet/db/" + collectionName + "/" + xmlDocName;
+      URL fullQueryURL = null;
+      System.out.println("the full update put url = " + location);
+      try {
+         fullQueryURL = new URL(location);
+      }catch(MalformedURLException mue) {
+         mue.printStackTrace();   
+      } 
+      return fullQueryURL;
+   } 
+    
+   
+   public static boolean validReplace(Document compareDoc, String compareElement) {
+      
+      return true;      
+   }
+   
+   public static Document runQuery(String xql) {
          String fullQuery = null;
          System.out.println("the xmlxql query = " + xql);
+         try {
+            long beginQ = System.currentTimeMillis();
+            System.out.println("Query begin time: " + beginQ);
+            fullQuery = "//*:Resource[" + xql + "]";
+            Document queryDoc = DomHelper.newDocument(getQueryUrl(fullQuery));
+            long endQ = System.currentTimeMillis();
+            System.out.println("Query end time: " + endQ);
+            System.out.println("Query total time: " + (endQ - beginQ));
+            return queryDoc;
+         }catch(Exception e) {
+            e.printStackTrace();   
+         }
+         return null;
+   }
+   
+   public static void updateQuery(String type, String collectionName, String identifier, Node updateNode) {
+      //Document queryDoc = runQuery(xql);      
+      //if(!validReplace(queryDoc, identifier )) return;
+      try {
+         System.out.println("THE IDENTIFIER = " +  identifier);
+         String xmlDocName = identifier.replaceAll("[^\\w*]","_") + "." + type;
+         System.out.println("THE REPLACED DOC NAME = " + xmlDocName);
+         HttpURLConnection huc = (HttpURLConnection) getUpdateURL(collectionName, xmlDocName).openConnection();
+         huc.setRequestProperty("Content-Type", "text/xml");
+         //huc.setDoInput(false);
+         huc.setDoOutput(true);
+         huc.setRequestMethod("PUT");
+         huc.connect();
+         DataOutputStream dos = new DataOutputStream(huc.getOutputStream());
+         DomHelper.ElementToStream((Element)updateNode,dos);
+         dos.flush();
+         System.out.println("closing outputstream and content type = " + huc.getContentType());
+         dos.close();
+         System.out.println("disconnecting");
+         huc.disconnect();
+      }catch(Exception e) {
+         e.printStackTrace();   
+      }
+   }//updateQuery
+   
+   
+   /*
+    * 
+    * 
+  private static Collection loadDataBase() throws Exception {
+     String driver = "org.exist.xmldb.DatabaseImpl";
+     String uri = conf.getString("registry.exist.db.uri");//"xmldb:exist://localhost:8080/exist/xmlrpc"; 
+      
+     String collection = "/db";
+     Class cl = Class.forName(driver);
+     Database database = (Database)cl.newInstance();
+     DatabaseManager.registerDatabase(database);
+     System.out.println("Loading Database URI: " + uri + collection);
+     Collection col = DatabaseManager.getCollection(uri+collection,"admin","");
+     return col;
+  }
+    
+   public static Document runQuery(String xql, String xmlDocName, Node updateNode) {
+      
+      Collection col = null;
+      try {
+         
+         String fullQuery = null;
+         System.out.println("the xmlxql query = " + xql);
+         long beginQ = System.currentTimeMillis();
          col = loadDataBase();         
          XQueryService xqs = (XQueryService) col.getService("XQueryService", "1.0");
-         
+         System.out.println("Time taken to load database service = " + (System.currentTimeMillis() - beginQ));
+         beginQ = System.currentTimeMillis();
+         System.out.println("Query begin time: " + beginQ);
          fullQuery = "document()//*:Resource[" + xql + "]";
          System.out.println("Query being Ran = " + fullQuery);
          ResourceSet rset = xqs.query(fullQuery);
+         long endQ = System.currentTimeMillis();
+         System.out.println("Query end time: " + endQ);
+         System.out.println("Query total time: " + (endQ - beginQ));
          Document resultDoc = DomHelper.newDocument();
          Element root = resultDoc.createElementNS("http://www.ivoa.net/xml/VOResource/v0.9","VODescription");
          root.setPrefix("vr");
          resultDoc.appendChild(root);
+         resultDoc.
             
          Node nd = null;
          for(int i = 0;i < rset.getSize();i++) {
+            beginQ = System.currentTimeMillis();
             XMLResource resTime = (XMLResource)rset.getResource(i);
 //            System.out.println("the resTime ids = " + resTime.getId() + " the doc id = " + resTime.getDocumentId());
             nd = resTime.getContentAsDOM();
@@ -349,12 +319,17 @@ public class XQueryExecution
             if(updateNode != null && rset.getSize() == 1) {
                Resource deleteResource = col.getResource(resTime.getDocumentId());
                col.removeResource(deleteResource);
+               System.out.println("Time taken to remove document = " + (System.currentTimeMillis() - beginQ));
             }
          }
          if(updateNode != null) {
-            XMLResource addResource = (XMLResource)col.createResource(null,"XMLResource");
+            beginQ = System.currentTimeMillis();
+            xmlDocName = xmlDocName.replaceAll("^\\w","_");
+            System.out.println("Updating xml Document name = " + xmlDocName);            
+            XMLResource addResource = (XMLResource)col.createResource(xmlDocName,"XMLResource");
             addResource.setContentAsDOM(updateNode);
             col.storeResource(addResource);
+            System.out.println("Time taken to add/update document = " + (System.currentTimeMillis() - beginQ));
          }
          if(col != null) {
             col.close();
@@ -366,7 +341,7 @@ public class XQueryExecution
       }
       return null;
    }
-
+*/
 	private static String xmlToXQL(Node node) {
 
 		/**
@@ -460,6 +435,7 @@ public class XQueryExecution
                
                itemName = ((Element) nlSS.item(z)).getAttribute("item");
                xqlStart = "(.//*:" + itemName;
+               //xqlStart = "(*:" + itemName;
                if(itemName.indexOf("@") != -1) {
                   if(itemName.indexOf(":") != -1) {
                      itemName = itemName.substring(itemName.indexOf(":")+1);
@@ -467,6 +443,7 @@ public class XQueryExecution
                      itemName = itemName.substring(itemName.indexOf("@")+1);
                   }
                   xqlStart = "(.//@*:" + itemName; 			
+                  //xqlStart = "(@*:" + itemName;
                }
 					response = response + "";
 					response = response + xqlStart;
