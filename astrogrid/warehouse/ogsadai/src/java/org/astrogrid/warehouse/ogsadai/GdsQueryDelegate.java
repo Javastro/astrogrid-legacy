@@ -1,5 +1,5 @@
 /*
- * $Id: GdsQueryDelegate.java,v 1.10 2004/03/04 15:33:47 kea Exp $
+ * $Id: GdsQueryDelegate.java,v 1.11 2004/03/04 18:23:09 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -70,7 +70,7 @@ public class GdsQueryDelegate
    * @throws Exception
 
    */
-  protected Document doRealQuery(String sql, String registryUrlString, 
+  public Document doRealQuery(String sql, String registryUrlString, 
         OutputStream output) throws Exception {
 
     int timeout = 300;  // TOFIX configurable?
@@ -238,6 +238,9 @@ public class GdsQueryDelegate
 }
 /*
 $Log: GdsQueryDelegate.java,v $
+Revision 1.11  2004/03/04 18:23:09  kea
+Made member public to help test datacenter direct access.
+
 Revision 1.10  2004/03/04 15:33:47  kea
 Start of integration with ogsa-dai 3.1, including using new ogsa-dai
 client toolkit rather than our GdsDelegate.  (These changes initially
