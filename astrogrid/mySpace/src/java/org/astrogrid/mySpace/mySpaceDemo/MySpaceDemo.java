@@ -1,4 +1,4 @@
-package org.astrogrid.mySpace.mySpaceDemo;
+//package org.astrogrid.mySpace.mySpaceDemo;
 
 import javax.swing.*;          //This is the final package name.
 //import com.sun.java.swing.*; //Used by JDK 1.2 Beta 4 and all
@@ -748,7 +748,7 @@ public class MySpaceDemo
             {  BufferedReader console = new BufferedReader(
                  new InputStreamReader(System.in));
 
-               System.out.println("Enter ID of the new user:");
+               System.out.println("Enter user ID of the new user:");
                String userID;
                try
                {  userID = console.readLine();
@@ -758,20 +758,43 @@ public class MySpaceDemo
                   userID = "";
                }
 
-               String serverList;
-               System.out.println("Enter the names of the user's servers:");
+               System.out.println("Enter community ID of the new user:");
+               String communityID;
                try
-               {  serverList = console.readLine();
+               {  communityID = console.readLine();
                }
                catch (IOException ioerror)
                {  System.out.println("Ooops");
-                  serverList = "";
+                  communityID = "";
+               }
+
+               String secondServer;
+               System.out.println(
+                 "MySpaceDemo will automatically add serv1 as the " + 
+                 "first server");
+               System.out.println(
+                "If required, enter the name of a second server, " +
+                "otherwise hit return:");
+               try
+               {  secondServer = console.readLine();
+               }
+               catch (IOException ioerror)
+               {  System.out.println("Ooops");
+                  secondServer = "";
                }
 
                Vector servers = new Vector();
-               servers.add(serverList);
+               servers.add("serv1");
 
-               boolean addOk = myspace.createUser(userID, "roe",
+               secondServer = secondServer.trim();
+               if (!secondServer.equals("") && secondServer != null)
+               {  servers.add(secondServer);
+               }
+               else
+               {  System.out.println("no second server.");
+               }
+
+               boolean addOk = myspace.createUser(userID, communityID,
                  "job27", servers);
 
                if (addOk)
@@ -809,7 +832,17 @@ public class MySpaceDemo
                   userID = "";
                }
 
-               boolean deleteOk = myspace.deleteUser(userID, "roe",
+               System.out.println("Enter community ID of the user:");
+               String communityID;
+               try
+               {  communityID = console.readLine();
+               }
+               catch (IOException ioerror)
+               {  System.out.println("Ooops");
+                  communityID = "";
+               }
+
+               boolean deleteOk = myspace.deleteUser(userID, communityID,
                  "job27");
 
                if (deleteOk)
