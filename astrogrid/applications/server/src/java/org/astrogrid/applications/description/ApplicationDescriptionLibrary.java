@@ -1,4 +1,4 @@
-/*$Id: ApplicationDescriptionLibrary.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: ApplicationDescriptionLibrary.java,v 1.3 2004/07/26 00:57:46 nw Exp $
  * Created on 25-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,18 +10,27 @@
 **/
 package org.astrogrid.applications.description;
 import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
-/** interface into a library of application descriptions.
+/** A container for {@link org.astrogrid.applications.description.ApplicationDescription} instances
+ * <p>
+ * 
  * @author Noel Winstanley nw@jb.man.ac.uk 25-May-2004
  *
  */
 public interface ApplicationDescriptionLibrary {
-    /** retreive a named description from the library */
+    /** retreive a named description from the library 
+     * @param name the name of the application description to retreive
+     * @return the description for this applicaiton.
+     * @throws ApplicationDescriptionNotFoundException if the name is not present in the library.*/
     public abstract ApplicationDescription getDescription(String name) throws ApplicationDescriptionNotFoundException;
-    /** list names of all application descriptons in the library */
+    /** list names of all application descriptons in the library 
+     * @return array of names (may be 0-length)*/
     public abstract String[] getApplicationNames();
 }
 /* 
 $Log: ApplicationDescriptionLibrary.java,v $
+Revision 1.3  2004/07/26 00:57:46  nw
+javadoc
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization

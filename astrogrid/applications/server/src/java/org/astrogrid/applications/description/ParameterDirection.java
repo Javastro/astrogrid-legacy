@@ -1,4 +1,4 @@
-/*$Id: ParameterDirection.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: ParameterDirection.java,v 1.3 2004/07/26 00:57:46 nw Exp $
  * Created on 25-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,7 @@
 **/
 package org.astrogrid.applications.description;
 
-/** little enumeration class, defining direction of parameter
+/** constants class that defines parameter direction (input / output).
  * @todo dunno if this is needed really anymore s
  * @author Noel Winstanley nw@jb.man.ac.uk 17-Jun-2004
  *
@@ -39,6 +39,9 @@ public class ParameterDirection
 
 /* 
 $Log: ParameterDirection.java,v $
+Revision 1.3  2004/07/26 00:57:46  nw
+javadoc
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization

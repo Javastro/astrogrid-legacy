@@ -1,4 +1,4 @@
-/*$Id: CompositeApplicationDescriptionLibrary.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: CompositeApplicationDescriptionLibrary.java,v 1.3 2004/07/26 00:57:46 nw Exp $
  * Created on 09-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,7 +23,7 @@ import java.util.Set;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-/** composite app description library - can be used to merge a set of separate libraries, into a  single view
+/** An {@link org.astrogrid.applications.description.ApplicationDescriptionLibrary} that composes together other <tt>ApplicationDescriptionLibrary</tt>s 
  * @author Noel Winstanley nw@jb.man.ac.uk 09-Jun-2004
  *
  */
@@ -117,6 +117,9 @@ public class CompositeApplicationDescriptionLibrary implements ApplicationDescri
 
 /* 
 $Log: CompositeApplicationDescriptionLibrary.java,v $
+Revision 1.3  2004/07/26 00:57:46  nw
+javadoc
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization

@@ -1,4 +1,4 @@
-/*$Id: ApplicationDescription.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: ApplicationDescription.java,v 1.3 2004/07/26 00:57:46 nw Exp $
  * Created on 25-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,43 +14,54 @@ import org.astrogrid.applications.description.exception.InterfaceDescriptionNotF
 import org.astrogrid.applications.description.exception.ParameterDescriptionNotFoundException;
 import org.astrogrid.community.User;
 import org.astrogrid.workflow.beans.v1.Tool;
-/** Interface describing an applicationi
+/** Description of a CEA Application
  * @author Noel Winstanley nw@jb.man.ac.uk 25-May-2004
  *
  */
 public interface ApplicationDescription {
-    /**
-    * @return
+    /** Access the name of the application. Each application should be uniquely identified by its name.
+    * @return a string in format <tt><i>authority-id</i>/<i>application-name</i></tt>
+    * @todo wonder if the name of an application should be an ivo:// style thingie? - as its something that is indexable into the registry, etc.
     */
     public  String getName();
     /**
-    * get the full list of possible parameters definitions for this application.
+    * Acess the list of all parameters defined for this application (no matter what interface they occur in).
     * @return the array of parameter definitions
     */
     public  ParameterDescription[] getParameterDescriptions();
     /**
-    * 
-    * @param name
-    * @return
+    * Access the description for a named parameter
+    * @param name the parameter to look up
+    * @return the associated description
+    * @throws ParameterDescriptionNotFoundException if the application does not recognize the parameter name
     */
     public  ParameterDescription getParameterDescription(String name) throws ParameterDescriptionNotFoundException;
     /**
     * Gets the named interface.
-    * @param name
-    * @return
-    * @throws InterfaceDescriptionNotFoundException
+    * @param name the name of the interface to look up.
+    * @return the associated <tt>ApplicationInterface</tt>
+    * @throws InterfaceDescriptionNotFoundException if the application does not provide an interface of this name.
     */
     public ApplicationInterface getInterface(String name) throws InterfaceDescriptionNotFoundException;
     
+    /** list all the interfaces supported by this application */
     public ApplicationInterface[] getInterfaces();
     
-    /** create an application instance from this description
-     * - represents an instance of the appliation, ready to execute 
+    /**
+     * Apply this application description to a set of parameters, to create an instance of the application, ready to execute.
+     * @param callerAssignedID external identifer for the new application. This identifier is assigned by the caller, but is not used within CEA for distinguishing the application
+     * @param user the user whose permissions to execute this tool under
+     * @param tool data object that defines which interface to call, and with what parameter values.
+     * @return an <tt>Application</tt>
+     * @throws Exception
      */
-    public  Application initializeApplication(String jobStepID, User user, Tool tool) throws Exception;
+    public  Application initializeApplication(String callerAssignedID, User user, Tool tool) throws Exception;
 }
 /* 
 $Log: ApplicationDescription.java,v $
+Revision 1.3  2004/07/26 00:57:46  nw
+javadoc
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization

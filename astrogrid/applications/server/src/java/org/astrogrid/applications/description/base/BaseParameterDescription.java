@@ -1,5 +1,5 @@
 /*
- * $Id: BaseParameterDescription.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+ * $Id: BaseParameterDescription.java,v 1.3 2004/07/26 00:58:22 nw Exp $
  *
  * Created on 26 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -14,7 +14,10 @@ package org.astrogrid.applications.description.base;
 import org.astrogrid.applications.beans.v1.parameters.types.ParameterTypes;
 import org.astrogrid.applications.description.ParameterDescription;
 /**
- * The basic parameter description implementation. just a data bean. 
+ *Basic implementation of a {@link org.astrogrid.applications.description.ParameterDescription}.
+ *<p />
+ *Simple data bean - adds setters for each of the getters defined in <tt>ParameterDescription</tt>
+ *@author Noel Winstanley
  */
 public class BaseParameterDescription implements ParameterDescription {
 

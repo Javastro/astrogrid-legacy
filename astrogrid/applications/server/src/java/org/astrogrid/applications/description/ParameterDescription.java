@@ -1,4 +1,4 @@
-/*$Id: ParameterDescription.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: ParameterDescription.java,v 1.3 2004/07/26 00:57:46 nw Exp $
  * Created on 25-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,8 @@ package org.astrogrid.applications.description;
  
 import org.astrogrid.applications.beans.v1.parameters.types.ParameterTypes;
 
-/** interface that describes a parameter to an application
+/** Description of a parameter to an application
+ * @see org.astrogrid.applications.description.ApplicationDescription
  * @author Noel Winstanley nw@jb.man.ac.uk 25-May-2004
  *
  */
@@ -41,6 +42,9 @@ public interface ParameterDescription {
 }
 /* 
 $Log: ParameterDescription.java,v $
+Revision 1.3  2004/07/26 00:57:46  nw
+javadoc
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization

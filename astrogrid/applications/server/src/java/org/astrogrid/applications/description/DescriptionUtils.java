@@ -1,4 +1,4 @@
-/*$Id: DescriptionUtils.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: DescriptionUtils.java,v 1.3 2004/07/26 00:57:46 nw Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -31,7 +31,9 @@ public class DescriptionUtils {
     private DescriptionUtils() {
         super();
     }
-    /** maps between internal type and castor object type used in registry schema.
+    /** maps between internal type ({@link ApplicationDescription}) and castor object type used in registry schema ({@link ApplicationBase})
+     * <p/>
+     * These types are structurally very similar - just differ on type names.
    * @param descr
    * @return
    */
@@ -94,6 +96,9 @@ public class DescriptionUtils {
 
 /* 
 $Log: DescriptionUtils.java,v $
+Revision 1.3  2004/07/26 00:57:46  nw
+javadoc
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization

@@ -1,5 +1,5 @@
 /*
- * $Id: BaseApplicationInterface.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+ * $Id: BaseApplicationInterface.java,v 1.3 2004/07/26 00:58:22 nw Exp $
  *
  * Created on 26 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -22,10 +22,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 /**
- * basic implementaiton of {@link AppllicationInterface}
- 
+ * Basic implementation of {@link org.astrogrid.applications.description.ApplicationInterface}
+  <p />
+  Implements all the methods of <tt>ApplicationInterface</tt>, plus methods to add parameter to the interface description.
 
- * @author Paul Harrison (pah@jb.man.ac.uk)
+ * @author Paul Harison (pah@jb.man.ac.uk)
+ * @author Noel Winstanley
  * @version $Name:  $
  * @since iteration4
  */
@@ -75,23 +77,21 @@ public class BaseApplicationInterface implements ApplicationInterface {
 
 /** add input parameter to the inteface.
  * 
- * @param name name of the parameter
+ * @param parameterName name of the parameter
  * @throws ParameterDescriptionNotFoundException if parameter name is not already defined in the applicationDescription this
  * interface is owned by.
  */
-   public void addInputParameter(String name)
+   public void addInputParameter(String parameterName)
       throws ParameterDescriptionNotFoundException {
-      ParameterDescription pd = applicationDescription.getParameterDescription(name);
-      inputs.add(name);
+       applicationDescription.getParameterDescription(parameterName);// will throw if parameter not known.
+      inputs.add(parameterName);
 
    }
     /** @see #addInputParameter */
-   public void addOutputParameter(String name)
+   public void addOutputParameter(String parameterName)
       throws ParameterDescriptionNotFoundException {
-      // check that the parameter exists
-      ParameterDescription pd = applicationDescription.getParameterDescription(name);
-      // add the name
-      outputs.add(name);
+      applicationDescription.getParameterDescription(parameterName);
+      outputs.add(parameterName);
 
    }
    public String[] getArrayofInputs() {
@@ -101,12 +101,12 @@ public class BaseApplicationInterface implements ApplicationInterface {
       return (String[])outputs.toArray(new String[0]);
    }
 
-   public ParameterDescription getInputParameter(String name)
+   public ParameterDescription getInputParameter(String parameterName)
       throws ParameterNotInInterfaceException {
       ParameterDescription ad = null;
-      if (inputs.contains(name)) {
+      if (inputs.contains(parameterName)) {
          try {
-            ad = applicationDescription.getParameterDescription(name);
+            ad = applicationDescription.getParameterDescription(parameterName);
          }
          catch (ParameterDescriptionNotFoundException e) {
             logger.error(
@@ -115,28 +115,28 @@ public class BaseApplicationInterface implements ApplicationInterface {
          }
       }
       else {
-         throw new ParameterNotInInterfaceException("unknown parameter="+name);
+         throw new ParameterNotInInterfaceException("unknown parameter="+parameterName);
       }
       return ad;
    }
-   public ParameterDirection getParameterDirection(String name)
+   public ParameterDirection getParameterDirection(String parameterName)
    {
       ParameterDirection retval = ParameterDirection.NOTFOUND;
-      if(inputs.contains(name))
+      if(inputs.contains(parameterName))
       {
          retval = ParameterDirection.INPUT;
       }
-      if (outputs.contains(name)) {
+      if (outputs.contains(parameterName)) {
          retval = ParameterDirection.OUTPUT;
       }
       return retval;
    }
-   public ParameterDescription getOutputParameter(String name)
+   public ParameterDescription getOutputParameter(String parameterName)
        throws ParameterNotInInterfaceException {
        ParameterDescription ad = null;
-       if (outputs.contains(name)) {
+       if (outputs.contains(parameterName)) {
           try {
-             ad = applicationDescription.getParameterDescription(name);
+             ad = applicationDescription.getParameterDescription(parameterName);
           }
           catch (ParameterDescriptionNotFoundException e) {
              logger.error(
@@ -145,7 +145,7 @@ public class BaseApplicationInterface implements ApplicationInterface {
           }
        }
        else {
-          throw new ParameterNotInInterfaceException("unknown parameter="+name);
+          throw new ParameterNotInInterfaceException("unknown parameter="+parameterName);
        }
        return ad;
     }

@@ -1,4 +1,4 @@
-/*$Id: BaseApplicationDescriptionLibrary.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: BaseApplicationDescriptionLibrary.java,v 1.3 2004/07/26 00:57:46 nw Exp $
  * Created on 17-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,7 +22,9 @@ import java.util.Map;
 
 import junit.framework.Test;
 
-/** Basic implementation of an application description library, based on a map. 
+/** Basic implementation of an {@link org.astrogrid.applications.description.ApplicationDescriptionLibrary}
+ * <p />
+ * Unsurprisingly, based on a map. Provides methods to add descriptions to the library. 
  * @author Noel Winstanley nw@jb.man.ac.uk 17-Jun-2004
  *
  */
@@ -57,7 +59,9 @@ public class BaseApplicationDescriptionLibrary implements ApplicationDescription
       }
     private final Map descMap = new HashMap();
     
-    /** add an application description to the library */
+    /** add an application description to the library
+     * <p> if an application with the same name already exists, it will be overridden. 
+     * @param desc the application description, which will be stored under key <tt>desc.getName()</tt>*/
     public void addApplicationDescription(ApplicationDescription desc) {
         logger.info("Adding description for " + desc.getName());
         descMap.put(desc.getName(),desc);
@@ -96,6 +100,9 @@ public class BaseApplicationDescriptionLibrary implements ApplicationDescription
 
 /* 
 $Log: BaseApplicationDescriptionLibrary.java,v $
+Revision 1.3  2004/07/26 00:57:46  nw
+javadoc
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization

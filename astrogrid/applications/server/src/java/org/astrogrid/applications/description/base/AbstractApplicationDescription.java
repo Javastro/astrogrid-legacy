@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractApplicationDescription.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+ * $Id: AbstractApplicationDescription.java,v 1.3 2004/07/26 00:58:22 nw Exp $
  * 
  * Created on 14-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -24,26 +24,27 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * abstract base implementaiton of {@link ApplicationDescription}
+ * Abstract base implementaiton of {@link org.astrogrid.applications.description.ApplicationDescription}
+ * <p />
+ * Implements all methods in the <tt>ApplicationDescription</tt> interface apart from {@link org.astrogrid.applications.description.ApplicationDescription#initializeApplication(String, User, Tool)},
+ * which is left abstract
+ * <p />
+ * Implemetation is based on two maps - for interfaces and parameters. In addition to the methods of the <tt>ApplicationDescription</tt> interface, this class
+ * provides methods for adding items to these maps ({@link #addInterface(ApplicationInterface)}, {@link #addParameterDescription(ParameterDescription)}), and
+ * an implementation of {@link #toString()} that produces a formatted dump of the application description. 
+ * @author Noel WInstanley
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @version $Name:  $
  * @since iteration4
  */
 public abstract class AbstractApplicationDescription implements ApplicationDescription {
    private String name;
-
-
-   /**
-    *@link aggregation
-    *      @associates org.astrogrid.applications.description.ApplicationInterface
-    */
+   /** the interfaces supported by this application */
    private final Map interfaces;
 
-   /**
-    *@link aggregation
-    *      @associates org.astrogrid.applications.description.ParameterDescription
-    */
+   /** the parameters defined by this applicaiton */
    private final Map parameterMap;
+   /** an environment object of supporting components (name generation, etc).*/
     protected final ApplicationDescriptionEnvironment env;
    
    /** 
@@ -56,13 +57,11 @@ public abstract class AbstractApplicationDescription implements ApplicationDescr
       parameterMap = new HashMap();
       this.env = env;
    }
-   
+   /** set the name of the application description */
    public void setName(String name) {
        this.name = name;
    }
-   /**
-    * @return
-    */
+
    public String getName() {
       return name;
    }
@@ -78,48 +77,37 @@ public abstract class AbstractApplicationDescription implements ApplicationDescr
    }
    
 
-   
-   /**
-    * get the full list of possible parameters definitions for this application.
-    * @return the array of parameter definitions
-    */
    public ParameterDescription[] getParameterDescriptions()
    {
 
          return (ParameterDescription[])parameterMap.values().toArray(new ParameterDescription[]{});         
    }
-   /**
-    * 
-    * @param name
-    * @return
-    */
-   public ParameterDescription getParameterDescription(String name) throws ParameterDescriptionNotFoundException
+
+   public ParameterDescription getParameterDescription(String parameterName) throws ParameterDescriptionNotFoundException
    {
-      if (!parameterMap.containsKey(name))
+      if (!parameterMap.containsKey(parameterName))
       {
-         throw new ParameterDescriptionNotFoundException(name);
+         throw new ParameterDescriptionNotFoundException(parameterName);
       }
       else
-      return (ParameterDescription)parameterMap.get(name);
+      return (ParameterDescription)parameterMap.get(parameterName);
    }
    
-   public void addParameterDescription(ParameterDescription param) {
+   /** Add a parameter description to this application description 
+ * @param param the description to add
+ */
+public void addParameterDescription(ParameterDescription param) {
        parameterMap.put(param.getName(),param);
    }
    
-   /**
-    * Gets the named interface.
-    * @param name
-    * @return
-    * @throws InterfaceDescriptionNotFoundException
-    */
-   public ApplicationInterface getInterface(String name) throws InterfaceDescriptionNotFoundException
+
+   public ApplicationInterface getInterface(String interfaceName) throws InterfaceDescriptionNotFoundException
    {
-      if(interfaces.containsKey(name)){
-         return (BaseApplicationInterface)interfaces.get(name);
+      if(interfaces.containsKey(interfaceName)){
+         return (BaseApplicationInterface)interfaces.get(interfaceName);
       }
       else
-        throw new InterfaceDescriptionNotFoundException("unknown interface="+name);
+        throw new InterfaceDescriptionNotFoundException("unknown interface="+interfaceName);
    }
    
    public ApplicationInterface[] getInterfaces() {
@@ -129,7 +117,7 @@ public abstract class AbstractApplicationDescription implements ApplicationDescr
 
 
 
-    /**
+    /** produce a nicely-formatted dump of the metadata for this application 
      * @see java.lang.Object#toString()
      */
     public String toString() {

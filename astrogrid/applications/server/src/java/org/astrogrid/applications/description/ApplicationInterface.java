@@ -1,4 +1,4 @@
-/*$Id: ApplicationInterface.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: ApplicationInterface.java,v 1.3 2004/07/26 00:57:46 nw Exp $
  * Created on 25-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,35 +10,40 @@
 **/
 package org.astrogrid.applications.description;
 import org.astrogrid.applications.description.exception.ParameterNotInInterfaceException;
-/** Definition of one 'interface' onto an application - i.e. a set of parameters with which the application may be validly
- * called.
+/** Defines a calling 'interface' to an {@link org.astrogrid.applications.description.ApplicationDescription}
+ * <p>
+ * An interface comprises a name, a set of input parameters, and a set of output parameters.
  * @author Noel Winstanley nw@jb.man.ac.uk 25-May-2004
+ * @see org.astrogrid.applications.description.ApplicationDescription
  *
  */
 public interface ApplicationInterface {
-    /** reutrn the name of the application */
+    /** access the name of this interface */
     public abstract String getName();
-    /** return array of input parameter names */
+    /** access an array of input parameter names */
     public abstract String[] getArrayofInputs();
-    /** return array of output parameter names */
+    /** access an array of output parameter names */
     public abstract String[] getArrayofOutputs();
     /** for an input parameter name (such as returned by {@link #getArrayofInputs()} etc), find the corresponding 
      * parameter descrption
-     * @param name
-     * @return
+     * @param name the name of the parameter.
+     * @return the description of this parameter.
      * @throws ParameterNotInInterfaceException if tis parametername is not present in the interface.
      */
     public abstract ParameterDescription getInputParameter(String name) throws ParameterNotInInterfaceException;
     /** determine whether this parameter is an input or output parameter in this interface */
     public abstract ParameterDirection getParameterDirection(String name) throws ParameterNotInInterfaceException;
-    /** @see #getInputParamete*/
+    /** @see #getInputParameter(String)*/
     public abstract ParameterDescription getOutputParameter(String name) throws ParameterNotInInterfaceException;
     
-    /** access the application description this is part of */
+    /** access the application description that this interface belongs to */ 
     public ApplicationDescription getApplicationDescription();
 }
 /* 
 $Log: ApplicationInterface.java,v $
+Revision 1.3  2004/07/26 00:57:46  nw
+javadoc
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization

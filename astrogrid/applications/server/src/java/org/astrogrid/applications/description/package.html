@@ -1,11 +1,26 @@
 <html>
 
-    <body><H1>Descriptions of Applications - parameters, interfaces, etc.</H1>
+    <body><H1Metadata about an application</H1>
     	
-    		<p>This package is concerned with the description of the applications that are provided by the server.</p>
-        <p>The overall description of the application is defined by the {@link org.astrogrid.applications.description.ApplicationDescription} class, which has associated
-            {@link org.astrogrid.applications.description.ParameterDescription} and {@link org.astrogrid.applications.description.ApplicationInterface}.</p>
+    		<p>This package contains code for describing the applications that are provided by the server.</p>
+        <p>The overall description of the application is defined by the {@link org.astrogrid.applications.description.ApplicationDescription} class - it defines the application's
+        name (used as the unique key for retreival), description, and the interfaces it supports.
+                        
+        <p>In CEA usage, an <i>interface</i> is a set of input and output parameters that an application may be validly invoked with.
+        An application may provide more than one interface - e.g. it may have 'standard' and 'advanced' sets of parameters. Each interface of 
+        an <tt>ApplicationDescription</tt> is represented by an instance of   {@link org.astrogrid.applications.description.ApplicationInterface}.
+        This defines the inteface name, description, and most importantly the parameter set it requires.
+        
+        <p>
+        Each parameter of an application is represented by an instance of  {@link org.astrogrid.applications.description.ParameterDescription} .
+        This class defines the minimum metadata required for a parameter - its name and basic type. Further optional metadata may be provided, for use in 
+        workflow-building tools - e.g.. default values, units, UCD, documentaiton, valid encodings, etc.
+        
             <p>
-            	The descriptions are contained within a {@link org.astrogrid.appliations.description.ApplicationDescriptionLibrary}
-            </p>
+            	One or more <tt>ApplicationDescriptions<tt> are contained within a {@link org.astrogrid.applications.description.ApplicationDescriptionLibrary},
+            	from which they can be retreived by name.
+            <p>
+            This package provides two implementations of <tt>ApplicationDescriptionLibrary</tt> - together they form a kind of composite pattern - a set of related application
+            descriptions can be contained wihin a (subclass of) {@link org.astrogrid.applications.description.BaseApplicationDescriptionLibrary}; while the 
+            {@link org.astrogrid.applications.description.CompositeApplicationDescriptionLibrary} provides a unified view over a collection of application description libraries 
 </html>

@@ -1,4 +1,4 @@
-/*$Id: ApplicationDescriptionEnvironment.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: ApplicationDescriptionEnvironment.java,v 1.3 2004/07/26 00:58:22 nw Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,9 +16,12 @@ import org.astrogrid.component.descriptor.ComponentDescriptor;
 
 import junit.framework.Test;
 
-/** Class containing components generally-used within appDescriptions and apps.
- * at present, just the unique-id-generator, and library of indirection handlers. byt may add more here later.
- * @todo add hash map, so providers can stuff their own things in here?
+/** A container for some components generally used within {@link org.astrogrid.applications.description.ApplicationDescription} implementations.
+ * <p>
+ * The components are bundled into this container to make it simpler to add further ones later
+ * <p />
+ * At present, this class containts a unique-id-generator, and library of indirection handlers.
+ * @todo could add hash map, so providers can stuff their own things in here? -becomes a kind of context object. unsure whether this is a good idea - extension may be better.
  * @author Noel Winstanley nw@jb.man.ac.uk 16-Jun-2004
  *
  */
@@ -33,11 +36,20 @@ public class ApplicationDescriptionEnvironment implements ComponentDescriptor {
     }
     protected final IdGen id;
     protected final IndirectionProtocolLibrary lib;
+   
     
+    /**Access the unique id generator
+     * @return the IdGen for this server
+     * @see org.astrogrid.applications.manager.idgen
+     */
     public IdGen getIdGen() {
         return this.id;
     }
     
+    /** Access the library of protcols that paramters can be indirected through
+     * @return the protocol library.
+     * @see org.astrogrid.applications.param.indirect
+     */
     public IndirectionProtocolLibrary getProtocolLib() {
         return this.lib;
     }
@@ -70,6 +82,9 @@ public class ApplicationDescriptionEnvironment implements ComponentDescriptor {
 
 /* 
 $Log: ApplicationDescriptionEnvironment.java,v $
+Revision 1.3  2004/07/26 00:58:22  nw
+javadoc
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization
