@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<registry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                xsi:noNamespaceSchemaLocation="http://www.astrogrid.org/schema/registry_v1_0.xsd">
+    <service>
+<identity xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                  xsi:noNamespaceSchemaLocation="http://www.astrogrid.org/schema/identity.xsd">
+ <title>mandatory</title>
+ <shortName>mandatory</shortName>
+ <identifier>mandatory</identifier>
+</identity>
+
+<curation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:noNamespaceSchemaLocation="http://www.astrogrid.org/schema/curation.xsd">
+ <publisher>optional</publisher>
+ <publisherID>optional</publisherID>
+ <creator>optional</creator>
+ <creatorLogo>optional</creatorLogo>
+ <subject>
+     <keyword>optional</keyword>
+ </subject>
+ <description>
+     <abstract>optional</abstract>
+     <README>optional</README>
+ </description>
+ <contributor>optional</contributor>
+ <date>optional</date>
+ <version>optional</version>
+ <referenceURL>optional</referenceURL>
+ <source>optional</source>
+ <contact>
+     <name>optional</name>
+     <email>optional</email>
+ </contact>
+ <dataSize>
+     <byteSize unitByteSize="MB">optional</byteSize>
+     <nPixels>optional</nPixels>
+     <nRows>optional</nRows>
+     <nRecords>optional</nRecords>
+ </dataSize>
+</curation>
+
+<content xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="http://www.astrogrid.org/schema/content.xsd">
+ <resourceType>optional</resourceType>
+ <contentLevelType>
+     <contentLevel>optional</contentLevel>
+ </contentLevelType>
+ <formatType>
+     <format>optional</format>
+ </formatType>
+ <rights>optional</rights>
+ <resourceContentType>
+     <datasetContent>
+         <ucdList>
+             <ucd>optional</ucd>
+         </ucdList>
+         <coverage>
+             <coverageSpatial>
+                 <regionSpatial>
+                     <ellipse>
+                         <cframe>
+                             <cframeType>optional</cframeType>
+                         </cframe>
+                         <coordinatePair unitAngle="deg">
+                             <coordinate>optional</coordinate>
+                             <coordinate>optional</coordinate>
+                         </coordinatePair>
+                         <ellipseParams unitAngle="deg">
+                             <coordinate>optional</coordinate>
+                             <coordinate>optional</coordinate>
+                             <coordinate>optional</coordinate>
+                         </ellipseParams>
+                     </ellipse>
+                     <polygon>
+                         <cframe>
+                             <cframeType>optional</cframeType>
+                         </cframe>
+                         <coordinatePair unitAngle="deg">
+                             <coordinate>optional</coordinate>
+                             <coordinate>optional</coordinate>
+                         </coordinatePair>
+                         <coordinatePair unitAngle="deg">
+                             <coordinate>optional</coordinate>
+                             <coordinate>optional</coordinate>
+                         </coordinatePair>
+                         <coordinatePair unitAngle="deg">
+                             <coordinate>optional</coordinate>
+                             <coordinate>optional</coordinate>
+                         </coordinatePair>
+                     </polygon>
+                     <sector>
+                         <cframe>
+                             <cframeType>optional</cframeType>
+                         </cframe>
+                         <coordinatePair unitAngle="deg">
+                             <coordinate>optional</coordinate>
+                             <coordinate>optional</coordinate>
+                         </coordinatePair>
+                         <coordinatePair unitAngle="deg">
+                             <coordinate>optional</coordinate>
+                             <coordinate>optional</coordinate>
+                         </coordinatePair>
+                     </sector>
+                     <healpix>
+                         <cframe>
+                             <cframeType>optional</cframeType>
+                         </cframe>
+                         <healpixNo>optional</healpixNo>
+                     </healpix>
+                 </regionSpatial>
+                 <cframe>
+                     <cframeType>optional</cframeType>
+                 </cframe>
+                 <regionOfRegard unitAngle="deg">optional</regionOfRegard>
+             </coverageSpatial>
+             <coverageSpectral>
+                 <coverageSpectralRegion>
+                     <coverageSpectralWaveband>optional</coverageSpectralWaveband>
+                     <coverageSpectralBandpass>optional</coverageSpectralBandpass>
+                 </coverageSpectralRegion>
+                 <coverageSpectralWavelengthRange unitSpectral="metre">
+                     <coverageSpectralCentralWavelength>optional</coverageSpectralCentralWavelength>
+                     <coverageSpectralWavelengthShort>optional</coverageSpectralWavelengthShort>
+                     <coverageSpectralWavelengthLong>optional</coverageSpectralWavelengthLong>
+                 </coverageSpectralWavelengthRange>
+             </coverageSpectral>
+             <coverageTemporal>
+                 <coverageTemporalStartTime>optional</coverageTemporalStartTime>
+                 <coverageTemporalStopTime>optional</coverageTemporalStopTime>
+             </coverageTemporal>
+             <coverageDepth unitFluxDensity="" unitArea="">optional</coverageDepth>
+             <coverageObjectDensity unitSpatialDensity="deg-2"></coverageObjectDensity>
+             <coverageObjectCount>optional</coverageObjectCount>
+             <coverageSkyFraction>optional</coverageSkyFraction>
+         </coverage>
+         <resolution>
+             <resolutionSpatial unitAngle="deg">optional</resolutionSpatial>
+             <resolutionSpectral unitSpectralResolution="inverseFraction"></resolutionSpectral>
+             <resolutionTemporal>optional</resolutionTemporal>
+         </resolution>
+         <dataQuality>
+             <photometryError unitFluxDensity="" unitArea="">optional</photometryError>
+             <astrometryError unitAngle="deg">optional</astrometryError>
+             <timingError>optional</timingError>
+         </dataQuality>
+         <facilityList>
+             <facility>optional</facility>
+         </facilityList>
+         <instrumentList>
+             <instrument>optional</instrument>
+         </instrumentList>
+     </datasetContent>
+     <communityContent>
+         <mySpaceLocation>optional</mySpaceLocation>
+     </communityContent>
+     <mySpaceContent>
+         <status>
+             <status>optional</status>
+             <details>optional</details>
+             <currentDate>v</currentDate>
+         </status>
+         <dataItemRecords>
+             <dataItemRecord>
+                 <dataItemName>optional</dataItemName>
+                 <dataItemID>optional</dataItemID>
+                 <ownerID>optional</ownerID>
+                 <creationDate>optional</creationDate>
+                 <expiryDate>optional</expiryDate>
+                 <size>optional</size>
+                 <type>optional</type>
+                 <permissionsMask>optional</permissionsMask>
+                 <dataHolderURI>optional</dataHolderURI>
+             </dataItemRecord>
+         </dataItemRecords>
+     </mySpaceContent>
+ </resourceContentType>
+</content>
+
+<serviceMetadataConcept xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                           xsi:noNamespaceSchemaLocation="http://www.astrogrid.org/schema/service.xsd">
+ <interfaceMetadata>
+     <serviceInterfaceUrl>optional</serviceInterfaceUrl>
+     <serviceBaseUrl>optional</serviceBaseUrl>
+     <serviceHTTPResults>
+         <serviceHTTPResultType>optional</serviceHTTPResultType>
+         <serviceHTTPResultType>optional</serviceHTTPResultType>
+     </serviceHTTPResults>
+ </interfaceMetadata>
+ <capabilitiesMetadata>
+     <serviceStandardUri>optional</serviceStandardUri>
+     <serviceStandardUrl>optional</serviceStandardUrl>
+     <serviceRestriction>
+         <serviceRestrictionSpatial unitAngle="deg">
+             <serviceMSR>optional</serviceMSR>
+             <serviceMaxImageSize>optional</serviceMaxImageSize>
+         </serviceRestrictionSpatial>
+         <serviceMaxNrows>optional</serviceMaxNrows>
+     </serviceRestriction>
+ </capabilitiesMetadata>
+</serviceMetadataConcept>
+    </service>
+</registry>
