@@ -1,0 +1,428 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<XMI xmlns:UML="org.omg/standards/UML" verified="false" timestamp="" xmi.version="1.2" >
+ <XMI.header>
+  <XMI.documentation>
+   <XMI.exporter>umbrello uml modeller http://uml.sf.net</XMI.exporter>
+   <XMI.exporterVersion>1.2.0</XMI.exporterVersion>
+   <XMI.exporterEncoding>UnicodeUTF8</XMI.exporterEncoding>
+  </XMI.documentation>
+  <XMI.model xmi.name="jes" href="/home/noel/eclipse/jes-scripting/src/java/org/astrogrid/jes/doc-files/jes.xmi" />
+  <XMI.metamodel xmi.name="UML" href="UML.xml" xmi.version="1.3" />
+ </XMI.header>
+ <XMI.content>
+  <docsettings viewid="452" documentation="" uniqueid="495" />
+  <UML:Model>
+   <UML:DataType stereotype="datatype" visibility="public" xmi.id="404" name="int" />
+   <UML:DataType stereotype="datatype" visibility="public" xmi.id="405" name="char" />
+   <UML:DataType stereotype="datatype" visibility="public" xmi.id="406" name="boolean" />
+   <UML:DataType stereotype="datatype" visibility="public" xmi.id="407" name="float" />
+   <UML:DataType stereotype="datatype" visibility="public" xmi.id="408" name="double" />
+   <UML:DataType stereotype="datatype" visibility="public" xmi.id="409" name="byte" />
+   <UML:DataType stereotype="datatype" visibility="public" xmi.id="410" name="short" />
+   <UML:DataType stereotype="datatype" visibility="public" xmi.id="411" name="string" />
+   <UML:Class stereotype="class" visibility="public" xmi.id="413" name="GroovyInterpreter" >
+    <UML:Operation visibility="public" xmi.id="459" type="void" name="addRule" >
+     <UML:Parameter visibility="public" xmi.id="1" value="" type="Rule" name="r" />
+    </UML:Operation>
+    <UML:Operation visibility="public" xmi.id="460" type="Rule" name="findNext" />
+    <UML:Operation visibility="public" xmi.id="461" type="void" name="run" />
+    <UML:Operation visibility="public" xmi.id="462" type="void" name="runNext()" />
+    <UML:Operation visibility="public" xmi.id="463" type="void" name="storeResults" >
+     <UML:Parameter visibility="public" xmi.id="1" value="" type="Step" name="s" />
+     <UML:Parameter visibility="public" xmi.id="2" value="" type="ResultListType" name="results" />
+    </UML:Operation>
+    <UML:Operation visibility="public" xmi.id="464" type="void" name="updateStepStatus" >
+     <UML:Parameter visibility="public" xmi.id="1" value="" type="Step" name="s" />
+     <UML:Parameter visibility="public" xmi.id="2" value="" type="ExecutionPhase" name="status" />
+    </UML:Operation>
+   </UML:Class>
+   <UML:Class stereotype="class" visibility="public" xmi.id="414" name="GroovyInterpreterFactory" >
+    <UML:Operation visibility="public" xmi.id="446" type="void" name="newInterpreter" >
+     <UML:Parameter visibility="public" xmi.id="1" value="" type="string" name="rules" />
+     <UML:Parameter visibility="public" xmi.id="2" value="" type="JesInterface" name="jes" />
+    </UML:Operation>
+    <UML:Operation visibility="public" xmi.id="447" type="void" name="pickleTo" >
+     <UML:Parameter visibility="public" xmi.id="1" value="" type="GroovyInterpreter" name="interp" />
+     <UML:Parameter visibility="public" xmi.id="2" value="" type="Workflow" name="wf" />
+    </UML:Operation>
+    <UML:Operation visibility="public" xmi.id="448" type="GroovyInterpreter" name="unpickleFrom" >
+     <UML:Parameter visibility="public" xmi.id="1" value="" type="JesInterface" name="jes" />
+    </UML:Operation>
+   </UML:Class>
+   <UML:Class stereotype="class" visibility="public" xmi.id="415" name="ActivityStatusStore" />
+   <UML:Class stereotype="class" visibility="public" xmi.id="416" name="ActivityStatus" >
+    <UML:Attribute visibility="private" xmi.id="421" value="" type="string" name="key" />
+   </UML:Class>
+   <UML:Class stereotype="class" visibility="public" xmi.id="417" name="Vars" />
+   <UML:Class stereotype="class" visibility="public" xmi.id="418" name="Status" />
+   <UML:Class stereotype="class" visibility="public" xmi.id="426" name="Rule" >
+    <UML:Operation visibility="public" xmi.id="491" type="void" name="fire" >
+     <UML:Parameter visibility="public" xmi.id="1" value="" type="JesShell" name="shell" />
+     <UML:Parameter visibility="public" xmi.id="2" value="" type="ActivityStatusStore" name="states" />
+     <UML:Parameter visibility="public" xmi.id="3" value="" type="Rule[]" name="rules" />
+    </UML:Operation>
+    <UML:Operation visibility="public" xmi.id="492" type="bool" name="isTriggered" >
+     <UML:Parameter visibility="public" xmi.id="1" value="" type="JesShell" name="shell" />
+     <UML:Parameter visibility="public" xmi.id="2" value="" type="ActivityStatusStore" name="store" />
+    </UML:Operation>
+    <UML:Operation visibility="public" xmi.id="493" type="bool" name="matches" >
+     <UML:Parameter visibility="public" xmi.id="1" value="" type="Pattern" name="p" />
+    </UML:Operation>
+    <UML:Operation visibility="public" xmi.id="494" type="Rule" name="rewriteAs" >
+     <UML:Parameter visibility="public" xmi.id="1" value="" type="Pattern" name="p" />
+     <UML:Parameter visibility="public" xmi.id="2" value="" type="string" name="subst" />
+    </UML:Operation>
+    <UML:Attribute visibility="private" xmi.id="488" value="" type="string" name="body" />
+    <UML:Attribute visibility="private" xmi.id="489" value="" type="string" name="name" />
+    <UML:Attribute visibility="private" xmi.id="490" value="" type="string" name="trigger" />
+   </UML:Class>
+   <UML:Class stereotype="class" visibility="public" xmi.id="428" name="JesShell" >
+    <UML:Operation visibility="public" xmi.id="476" type="void" name="evakuateForItems" />
+    <UML:Operation visibility="public" xmi.id="477" type="void" name="evaluateIfCondition" />
+    <UML:Operation visibility="public" xmi.id="478" type="void" name="evaluateParForItems" />
+    <UML:Operation visibility="public" xmi.id="479" type="void" name="evaluateTool" />
+    <UML:Operation visibility="public" xmi.id="480" type="void" name="evaluateTrigger" />
+    <UML:Operation visibility="public" xmi.id="481" type="void" name="evaluateUserExpr" />
+    <UML:Operation visibility="public" xmi.id="482" type="void" name="evaluateWhileCondition" />
+    <UML:Operation visibility="public" xmi.id="483" type="void" name="executeBody" />
+    <UML:Operation visibility="public" xmi.id="484" type="void" name="executeScript" />
+    <UML:Operation visibility="public" xmi.id="485" type="void" name="executeSet" />
+   </UML:Class>
+   <UML:Interface stereotype="interface" visibility="public" xmi.id="430" isAbstract="true" name="Pickler" >
+    <UML:Operation visibility="public" xmi.id="449" type="void" name="marshallInterpreter" >
+     <UML:Parameter visibility="public" xmi.id="1" value="" type="Writer" name="w" />
+     <UML:Parameter visibility="public" xmi.id="2" value="" type="GroovyInterpreter" name="interp" />
+    </UML:Operation>
+    <UML:Operation visibility="public" xmi.id="450" type="GroovyInterpreter" name="unmarshalInterpreter" >
+     <UML:Parameter visibility="public" xmi.id="1" value="" type="Reader" name="r" />
+    </UML:Operation>
+    <UML:Operation visibility="public" xmi.id="451" type="List" name="unmarshalRuleStore" >
+     <UML:Parameter visibility="public" xmi.id="1" value="" type="Reader" name="r" />
+    </UML:Operation>
+   </UML:Interface>
+   <UML:Class stereotype="class" visibility="public" xmi.id="431" name="XStreamPickler" />
+   <UML:Class stereotype="class" visibility="public" xmi.id="434" name="JesInterface" >
+    <UML:Operation visibility="public" xmi.id="465" type="void" name="dispatchScript" />
+    <UML:Operation visibility="public" xmi.id="466" type="void" name="dispatchStep" />
+    <UML:Operation visibility="public" xmi.id="467" type="void" name="executeSet" />
+    <UML:Operation visibility="public" xmi.id="468" type="void" name="getDispatcher" />
+    <UML:Operation visibility="public" xmi.id="469" type="void" name="getId" />
+    <UML:Operation visibility="public" xmi.id="470" type="void" name="getLog" />
+    <UML:Operation visibility="public" xmi.id="471" type="void" name="getSteps" />
+    <UML:Operation visibility="public" xmi.id="472" type="void" name="getWorkflow" />
+    <UML:Operation visibility="public" xmi.id="473" type="void" name="newParameter" />
+    <UML:Operation visibility="public" xmi.id="474" type="void" name="setWorkflowStatus" />
+   </UML:Class>
+   <UML:Class stereotype="class" visibility="public" xmi.id="435" name="GroovySchedulerImpl" />
+   <UML:Interface stereotype="interface" visibility="public" xmi.id="436" isAbstract="true" name="JobScheduler" />
+   <UML:Class stereotype="class" visibility="public" xmi.id="439" name="GroovyTransformers" />
+   <UML:Interface stereotype="interface" visibility="public" xmi.id="440" isAbstract="true" name="Transformers" >
+    <UML:Operation visibility="public" xmi.id="443" type="Transformer" name="getCompiler" />
+    <UML:Operation visibility="public" xmi.id="444" type="Transformer" name="getWorkflowAnnotator" />
+   </UML:Interface>
+   <UML:Generalization child="431" visibility="public" xmi.id="432" parent="430" />
+   <UML:Generalization child="435" visibility="public" xmi.id="437" parent="436" />
+   <UML:Association visibility="public" xmi.id="438" >
+    <UML:Association.connection>
+     <UML:AssociationEndRole visibility="public" aggregation="shared" type="414" />
+     <UML:AssociationEndRole visibility="public" type="430" />
+    </UML:Association.connection>
+   </UML:Association>
+   <UML:Generalization child="439" visibility="public" xmi.id="441" parent="440" />
+   <UML:Association visibility="public" xmi.id="442" >
+    <UML:Association.connection>
+     <UML:AssociationEndRole visibility="public" aggregation="shared" type="435" />
+     <UML:AssociationEndRole visibility="public" type="440" />
+    </UML:Association.connection>
+   </UML:Association>
+   <UML:Association visibility="public" xmi.id="445" >
+    <UML:Association.connection>
+     <UML:AssociationEndRole visibility="public" aggregation="shared" type="435" />
+     <UML:AssociationEndRole visibility="public" type="414" />
+    </UML:Association.connection>
+   </UML:Association>
+   <UML:Association visibility="public" xmi.id="453" >
+    <UML:Association.connection>
+     <UML:AssociationEndRole visibility="public" aggregation="composite" type="416" />
+     <UML:AssociationEndRole visibility="public" type="418" />
+    </UML:Association.connection>
+   </UML:Association>
+   <UML:Association visibility="public" xmi.id="454" >
+    <UML:Association.connection>
+     <UML:AssociationEndRole visibility="public" aggregation="composite" type="416" />
+     <UML:AssociationEndRole visibility="public" type="417" />
+    </UML:Association.connection>
+   </UML:Association>
+   <UML:Association visibility="public" xmi.id="455" >
+    <UML:Association.connection>
+     <UML:AssociationEndRole visibility="public" aggregation="composite" type="415" />
+     <UML:AssociationEndRole visibility="public" type="416" multiplicity="0..*" />
+    </UML:Association.connection>
+   </UML:Association>
+   <UML:Association visibility="public" xmi.id="456" >
+    <UML:Association.connection>
+     <UML:AssociationEndRole visibility="public" aggregation="composite" type="413" />
+     <UML:AssociationEndRole visibility="public" type="415" />
+    </UML:Association.connection>
+   </UML:Association>
+   <UML:Association visibility="public" xmi.id="457" >
+    <UML:Association.connection>
+     <UML:AssociationEndRole visibility="public" aggregation="composite" type="413" />
+     <UML:AssociationEndRole visibility="public" type="426" multiplicity="0..*" />
+    </UML:Association.connection>
+   </UML:Association>
+   <UML:Association visibility="public" xmi.id="458" >
+    <UML:Association.connection>
+     <UML:AssociationEndRole visibility="public" aggregation="composite" type="413" />
+     <UML:AssociationEndRole visibility="public" type="428" />
+    </UML:Association.connection>
+   </UML:Association>
+  </UML:Model>
+  <diagrams>
+   <diagram snapgrid="0" showattsig="1" fillcolor="#ffffc0" zoom="100" showgrid="0" showopsig="1" usefillcolor="1" snapx="10" canvaswidth="990" snapy="10" showatts="0" xmi.id="403" documentation="" type="402" showops="0" showpackage="0" name="class diagram" localid="30000" showstereotype="0" showscope="1" snapcsgrid="0" font="Arial,11,-1,5,50,0,0,0,0,0" linecolor="#ff0000" canvasheight="926" >
+    <widgets/>
+    <messages/>
+    <associations/>
+   </diagram>
+   <diagram snapgrid="0" showattsig="1" fillcolor="#ffffc0" zoom="100" showgrid="0" showopsig="1" usefillcolor="1" snapx="10" canvaswidth="990" snapy="10" showatts="0" xmi.id="412" documentation="" type="402" showops="0" showpackage="0" name="JobScheduler" localid="30000" showstereotype="0" showscope="1" snapcsgrid="0" font="Arial,11,-1,5,50,0,0,0,0,0" linecolor="#ff0000" canvasheight="926" >
+    <widgets>
+     <UML:ClassWidget usesdiagramfillcolour="1" width="418" showattsigs="602" usesdiagramusefillcolour="1" x="323" linecolour="none" y="235" showopsigs="602" instancename="" usesdiagramlinecolour="1" fillcolour="none" height="76" usefillcolor="1" showattributes="0" isinstance="0" xmi.id="414" showoperations="1" showpackage="0" showscope="0" showstereotype="0" font="Arial,11,-1,5,75,0,0,0,0,0" />
+     <interfacewidget usesdiagramfillcolour="1" width="172" usesdiagramusefillcolour="1" x="447" linecolour="none" y="357" drawascircle="0" showopsigs="603" instancename="" usesdiagramlinecolour="1" fillcolour="none" height="95" usefillcolor="1" isinstance="0" xmi.id="430" showoperations="1" showpackage="0" showscope="0" font="Arial,11,-1,5,75,1,0,0,0,0" />
+     <UML:ClassWidget usesdiagramfillcolour="1" width="121" showattsigs="601" usesdiagramusefillcolour="1" x="473" linecolour="none" y="489" showopsigs="601" instancename="" usesdiagramlinecolour="1" fillcolour="none" height="29" usefillcolor="1" showattributes="0" isinstance="0" xmi.id="431" showoperations="0" showpackage="0" showscope="1" showstereotype="0" font="Arial,11,-1,5,75,0,0,0,0,0" />
+     <UML:ClassWidget usesdiagramfillcolour="1" width="167" showattsigs="601" usesdiagramusefillcolour="1" x="265" linecolour="none" y="84" showopsigs="601" instancename="" usesdiagramlinecolour="1" fillcolour="none" height="29" usefillcolor="1" showattributes="0" isinstance="0" xmi.id="435" showoperations="0" showpackage="0" showscope="1" showstereotype="0" font="Arial,11,-1,5,75,0,0,0,0,0" />
+     <interfacewidget usesdiagramfillcolour="1" width="111" usesdiagramusefillcolour="1" x="295" linecolour="none" y="4" drawascircle="0" showopsigs="601" instancename="" usesdiagramlinecolour="1" fillcolour="none" height="38" usefillcolor="1" isinstance="0" xmi.id="436" showoperations="0" showpackage="0" showscope="1" font="Arial,11,-1,5,75,1,0,0,0,0" />
+     <UML:ClassWidget usesdiagramfillcolour="1" width="161" showattsigs="601" usesdiagramusefillcolour="1" x="72" linecolour="none" y="350" showopsigs="601" instancename="" usesdiagramlinecolour="1" fillcolour="none" height="29" usefillcolor="1" showattributes="0" isinstance="0" xmi.id="439" showoperations="0" showpackage="0" showscope="1" showstereotype="0" font="Arial,11,-1,5,75,0,0,0,0,0" />
+     <interfacewidget usesdiagramfillcolour="1" width="302" usesdiagramusefillcolour="1" x="2" linecolour="none" y="230" drawascircle="0" showopsigs="601" instancename="" usesdiagramlinecolour="1" fillcolour="none" height="76" usefillcolor="1" isinstance="0" xmi.id="440" showoperations="1" showpackage="0" showscope="1" font="Arial,11,-1,5,75,1,0,0,0,0" />
+    </widgets>
+    <messages/>
+    <associations>
+     <UML:AssocWidget totalcounta="2" indexa="1" totalcountb="2" indexb="1" widgetbid="430" widgetaid="431" xmi.id="432" >
+      <linepath>
+       <startpoint startx="533" starty="489" />
+       <endpoint endx="533" endy="452" />
+      </linepath>
+     </UML:AssocWidget>
+     <UML:AssocWidget totalcounta="2" indexa="1" totalcountb="2" indexb="1" widgetbid="436" widgetaid="435" xmi.id="437" >
+      <linepath>
+       <startpoint startx="348" starty="84" />
+       <endpoint endx="350" endy="42" />
+      </linepath>
+     </UML:AssocWidget>
+     <UML:AssocWidget totalcounta="2" indexa="1" totalcountb="2" indexb="1" widgetbid="430" widgetaid="414" xmi.id="438" >
+      <linepath>
+       <startpoint startx="532" starty="311" />
+       <endpoint endx="533" endy="357" />
+      </linepath>
+     </UML:AssocWidget>
+     <UML:AssocWidget totalcounta="2" indexa="1" totalcountb="2" indexb="1" widgetbid="440" widgetaid="439" xmi.id="441" >
+      <linepath>
+       <startpoint startx="152" starty="350" />
+       <endpoint endx="153" endy="306" />
+      </linepath>
+     </UML:AssocWidget>
+     <UML:AssocWidget totalcounta="3" indexa="1" totalcountb="2" indexb="1" widgetbid="440" widgetaid="435" xmi.id="442" >
+      <linepath>
+       <startpoint startx="320" starty="113" />
+       <endpoint endx="153" endy="230" />
+      </linepath>
+     </UML:AssocWidget>
+     <UML:AssocWidget totalcounta="3" indexa="2" totalcountb="2" indexb="1" widgetbid="414" widgetaid="435" xmi.id="445" >
+      <linepath>
+       <startpoint startx="376" starty="113" />
+       <endpoint endx="532" endy="235" />
+      </linepath>
+     </UML:AssocWidget>
+    </associations>
+   </diagram>
+   <diagram snapgrid="0" showattsig="1" fillcolor="#ffffc0" zoom="100" showgrid="0" showopsig="1" usefillcolor="1" snapx="10" canvaswidth="990" snapy="10" showatts="0" xmi.id="452" documentation="" type="402" showops="0" showpackage="0" name="RulesEngine" localid="30000" showstereotype="0" showscope="1" snapcsgrid="0" font="Arial,11,-1,5,50,0,0,0,0,0" linecolor="#ff0000" canvasheight="926" >
+    <widgets>
+     <UML:ClassWidget usesdiagramfillcolour="1" width="435" showattsigs="602" usesdiagramusefillcolour="1" x="19" linecolour="none" y="33" showopsigs="602" instancename="" usesdiagramlinecolour="1" fillcolour="none" height="133" usefillcolor="1" showattributes="0" isinstance="0" xmi.id="413" showoperations="1" showpackage="0" showscope="0" showstereotype="0" font="Arial,11,-1,5,75,0,0,0,0,0" />
+     <UML:ClassWidget usesdiagramfillcolour="1" width="150" showattsigs="601" usesdiagramusefillcolour="1" x="492" linecolour="none" y="190" showopsigs="601" instancename="" usesdiagramlinecolour="1" fillcolour="none" height="29" usefillcolor="1" showattributes="0" isinstance="0" xmi.id="415" showoperations="0" showpackage="0" showscope="1" showstereotype="0" font="Arial,11,-1,5,75,0,0,0,0,0" />
+     <UML:ClassWidget usesdiagramfillcolour="0" width="110" showattsigs="601" usesdiagramusefillcolour="0" x="758" linecolour="#ff0000" y="205" showopsigs="601" instancename="" usesdiagramlinecolour="0" fillcolour="#ffffc0" height="38" usefillcolor="1" showattributes="1" isinstance="0" xmi.id="416" showoperations="0" showpackage="0" showscope="1" showstereotype="0" font="Arial,11,-1,5,75,0,0,0,0,0" />
+     <UML:ClassWidget usesdiagramfillcolour="1" width="66" showattsigs="601" usesdiagramusefillcolour="1" x="839" linecolour="none" y="286" showopsigs="601" instancename="" usesdiagramlinecolour="1" fillcolour="none" height="29" usefillcolor="1" showattributes="0" isinstance="0" xmi.id="417" showoperations="0" showpackage="0" showscope="1" showstereotype="0" font="Arial,11,-1,5,75,0,0,0,0,0" />
+     <UML:ClassWidget usesdiagramfillcolour="1" width="66" showattsigs="601" usesdiagramusefillcolour="1" x="752" linecolour="none" y="300" showopsigs="601" instancename="" usesdiagramlinecolour="1" fillcolour="none" height="29" usefillcolor="1" showattributes="0" isinstance="0" xmi.id="418" showoperations="0" showpackage="0" showscope="1" showstereotype="0" font="Arial,11,-1,5,75,0,0,0,0,0" />
+     <UML:ClassWidget usesdiagramfillcolour="0" width="500" showattsigs="602" usesdiagramusefillcolour="0" x="472" linecolour="#ff0000" y="375" showopsigs="602" instancename="" usesdiagramlinecolour="0" fillcolour="#ffffc0" height="152" usefillcolor="1" showattributes="1" isinstance="0" xmi.id="426" showoperations="1" showpackage="0" showscope="0" showstereotype="0" font="Arial,11,-1,5,75,0,0,0,0,0" />
+     <UML:ClassWidget usesdiagramfillcolour="1" width="191" showattsigs="602" usesdiagramusefillcolour="1" x="251" linecolour="none" y="298" showopsigs="603" instancename="" usesdiagramlinecolour="1" fillcolour="none" height="209" usefillcolor="1" showattributes="0" isinstance="0" xmi.id="428" showoperations="1" showpackage="0" showscope="0" showstereotype="0" font="Arial,11,-1,5,75,0,0,0,0,0" />
+     <UML:ClassWidget usesdiagramfillcolour="1" width="158" showattsigs="602" usesdiagramusefillcolour="1" x="12" linecolour="none" y="305" showopsigs="603" instancename="" usesdiagramlinecolour="1" fillcolour="none" height="209" usefillcolor="1" showattributes="0" isinstance="0" xmi.id="434" showoperations="1" showpackage="0" showscope="0" showstereotype="0" font="Arial,11,-1,5,75,0,0,0,0,0" />
+     <UML:NoteWidget usesdiagramfillcolour="0" width="172" usesdiagramusefillcolour="1" x="23" linecolour="none" y="545" instancename="" usesdiagramlinecolour="1" fillcolour="#ffff00" height="94" usefillcolor="1" isinstance="0" xmi.id="475" text="interface for scripts to call back into JobScheduler" font="Arial,11,-1,5,50,0,0,0,0,0" />
+     <UML:NoteWidget usesdiagramfillcolour="0" width="264" usesdiagramusefillcolour="1" x="230" linecolour="none" y="554" instancename="" usesdiagramlinecolour="1" fillcolour="#ffff00" height="82" usefillcolor="1" isinstance="0" xmi.id="486" text=" Sets up required environment and configuration, then executes groovy scripts." font="Arial,11,-1,5,50,0,0,0,0,0" />
+     <UML:NoteWidget usesdiagramfillcolour="0" width="201" usesdiagramusefillcolour="1" x="563" linecolour="none" y="49" instancename="" usesdiagramlinecolour="1" fillcolour="#ffff00" height="93" usefillcolor="1" isinstance="0" xmi.id="487" text="public interface tp scripting rules engine. Used by JobScheduler" font="Arial,11,-1,5,50,0,0,0,0,0" />
+     <UML:NoteWidget usesdiagramfillcolour="0" width="100" usesdiagramusefillcolour="1" x="596" linecolour="none" y="655" instancename="" usesdiagramlinecolour="1" fillcolour="#ffff00" height="80" usefillcolor="1" isinstance="0" xmi.id="495" text="" font="Arial,11,-1,5,50,0,0,0,0,0" />
+    </widgets>
+    <messages/>
+    <associations>
+     <UML:AssocWidget totalcounta="3" indexa="1" totalcountb="2" indexb="1" widgetbid="418" widgetaid="416" xmi.id="453" >
+      <linepath>
+       <startpoint startx="794" starty="243" />
+       <endpoint endx="785" endy="300" />
+      </linepath>
+     </UML:AssocWidget>
+     <UML:AssocWidget totalcounta="3" indexa="2" totalcountb="2" indexb="1" widgetbid="417" widgetaid="416" xmi.id="454" >
+      <linepath>
+       <startpoint startx="831" starty="243" />
+       <endpoint endx="872" endy="286" />
+      </linepath>
+     </UML:AssocWidget>
+     <UML:AssocWidget totalcounta="2" indexa="1" totalcountb="2" indexb="1" widgetbid="416" widgetaid="415" xmi.id="455" >
+      <linepath>
+       <startpoint startx="642" starty="204" />
+       <endpoint endx="758" endy="224" />
+      </linepath>
+      <UML:FloatingTextWidget usesdiagramfillcolour="1" width="8" usesdiagramusefillcolour="1" x="700" linecolour="none" y="214" instancename="" posttext="" usesdiagramlinecolour="1" role="703" fillcolour="none" height="23" usefillcolor="1" pretext="" isinstance="0" xmi.id="416" text="" font="Arial,11,-1,5,50,0,0,0,0,0" />
+      <UML:FloatingTextWidget usesdiagramfillcolour="1" width="8" usesdiagramusefillcolour="1" x="644" linecolour="none" y="179" instancename="" posttext="" usesdiagramlinecolour="1" role="701" fillcolour="none" height="23" usefillcolor="1" pretext="" isinstance="0" xmi.id="455" text="" font="Arial,11,-1,5,50,0,0,0,0,0" />
+      <UML:FloatingTextWidget usesdiagramfillcolour="1" width="30" usesdiagramusefillcolour="1" x="752" linecolour="none" y="222" instancename="" posttext="" usesdiagramlinecolour="1" role="702" fillcolour="none" height="23" usefillcolor="1" pretext="" isinstance="0" xmi.id="455" text="0..*" font="Arial,11,-1,5,50,0,0,0,0,0" />
+      <UML:FloatingTextWidget usesdiagramfillcolour="1" width="17" usesdiagramusefillcolour="1" x="644" linecolour="none" y="206" instancename="" posttext="" usesdiagramlinecolour="1" role="709" fillcolour="none" height="23" usefillcolor="1" pretext="+" isinstance="0" xmi.id="455" text="" font="Arial,11,-1,5,50,0,0,0,0,0" />
+      <UML:FloatingTextWidget usesdiagramfillcolour="1" width="17" usesdiagramusefillcolour="1" x="739" linecolour="none" y="199" instancename="" posttext="" usesdiagramlinecolour="1" role="710" fillcolour="none" height="23" usefillcolor="1" pretext="+" isinstance="0" xmi.id="455" text="" font="Arial,11,-1,5,50,0,0,0,0,0" />
+     </UML:AssocWidget>
+     <UML:AssocWidget totalcounta="5" indexa="4" totalcountb="2" indexb="1" widgetbid="415" widgetaid="413" xmi.id="456" >
+      <linepath>
+       <startpoint startx="367" starty="166" />
+       <endpoint endx="567" endy="190" />
+      </linepath>
+     </UML:AssocWidget>
+     <UML:AssocWidget totalcounta="5" indexa="3" totalcountb="2" indexb="1" widgetbid="426" widgetaid="413" xmi.id="457" >
+      <linepath>
+       <startpoint startx="280" starty="166" />
+       <endpoint endx="722" endy="375" />
+      </linepath>
+      <UML:FloatingTextWidget usesdiagramfillcolour="1" width="8" usesdiagramusefillcolour="1" x="535" linecolour="none" y="329" instancename="" posttext="" usesdiagramlinecolour="1" role="703" fillcolour="none" height="23" usefillcolor="1" pretext="" isinstance="0" xmi.id="426" text="" font="Arial,11,-1,5,50,0,0,0,0,0" />
+      <UML:FloatingTextWidget usesdiagramfillcolour="1" width="8" usesdiagramusefillcolour="1" x="294" linecolour="none" y="265" instancename="" posttext="" usesdiagramlinecolour="1" role="701" fillcolour="none" height="23" usefillcolor="1" pretext="" isinstance="0" xmi.id="457" text="" font="Arial,11,-1,5,50,0,0,0,0,0" />
+      <UML:FloatingTextWidget usesdiagramfillcolour="1" width="30" usesdiagramusefillcolour="1" x="746" linecolour="none" y="350" instancename="" posttext="" usesdiagramlinecolour="1" role="702" fillcolour="none" height="23" usefillcolor="1" pretext="" isinstance="0" xmi.id="457" text="0..*" font="Arial,11,-1,5,50,0,0,0,0,0" />
+      <UML:FloatingTextWidget usesdiagramfillcolour="1" width="17" usesdiagramusefillcolour="1" x="306" linecolour="none" y="265" instancename="" posttext="" usesdiagramlinecolour="1" role="709" fillcolour="none" height="23" usefillcolor="1" pretext="+" isinstance="0" xmi.id="457" text="" font="Arial,11,-1,5,50,0,0,0,0,0" />
+      <UML:FloatingTextWidget usesdiagramfillcolour="1" width="17" usesdiagramusefillcolour="1" x="703" linecolour="none" y="350" instancename="" posttext="" usesdiagramlinecolour="1" role="710" fillcolour="none" height="23" usefillcolor="1" pretext="+" isinstance="0" xmi.id="457" text="" font="Arial,11,-1,5,50,0,0,0,0,0" />
+     </UML:AssocWidget>
+     <UML:AssocWidget totalcounta="5" indexa="2" totalcountb="2" indexb="1" widgetbid="428" widgetaid="413" xmi.id="458" >
+      <linepath>
+       <startpoint startx="193" starty="166" />
+       <endpoint endx="346" endy="298" />
+      </linepath>
+     </UML:AssocWidget>
+     <UML:AssocWidget totalcounta="5" indexa="1" visibilityB="200" totalcountb="2" indexb="1" widgetbid="434" widgetaid="413" roleBdoc="" roleAdoc="" type="502" changeabilityA="900" changeabilityB="900" visibilityA="200" >
+      <linepath>
+       <startpoint startx="106" starty="166" />
+       <endpoint endx="91" endy="305" />
+      </linepath>
+     </UML:AssocWidget>
+     <UML:AssocWidget totalcounta="2" indexa="1" visibilityB="200" totalcountb="2" indexb="1" widgetbid="475" widgetaid="434" roleBdoc="" roleAdoc="" type="513" changeabilityA="900" changeabilityB="900" visibilityA="200" >
+      <linepath>
+       <startpoint startx="91" starty="514" />
+       <endpoint endx="109" endy="545" />
+      </linepath>
+     </UML:AssocWidget>
+     <UML:AssocWidget totalcounta="2" indexa="1" visibilityB="200" totalcountb="2" indexb="1" widgetbid="434" widgetaid="428" roleBdoc="" roleAdoc="" type="502" changeabilityA="900" changeabilityB="900" visibilityA="200" >
+      <linepath>
+       <startpoint startx="251" starty="402" />
+       <endpoint endx="170" endy="409" />
+      </linepath>
+     </UML:AssocWidget>
+     <UML:AssocWidget totalcounta="2" indexa="1" visibilityB="200" totalcountb="2" indexb="1" widgetbid="486" widgetaid="428" roleBdoc="" roleAdoc="" type="513" changeabilityA="900" changeabilityB="900" visibilityA="200" >
+      <linepath>
+       <startpoint startx="346" starty="507" />
+       <endpoint endx="362" endy="554" />
+      </linepath>
+     </UML:AssocWidget>
+     <UML:AssocWidget totalcounta="2" indexa="1" visibilityB="200" totalcountb="2" indexb="1" widgetbid="487" widgetaid="413" roleBdoc="" roleAdoc="" type="513" changeabilityA="900" changeabilityB="900" visibilityA="200" >
+      <linepath>
+       <startpoint startx="454" starty="99" />
+       <endpoint endx="563" endy="95" />
+      </linepath>
+     </UML:AssocWidget>
+     <UML:AssocWidget totalcounta="2" indexa="1" visibilityB="200" totalcountb="2" indexb="1" widgetbid="426" widgetaid="495" roleBdoc="" roleAdoc="" type="513" changeabilityA="900" changeabilityB="900" visibilityA="200" >
+      <linepath>
+       <startpoint startx="646" starty="655" />
+       <endpoint endx="722" endy="527" />
+      </linepath>
+     </UML:AssocWidget>
+    </associations>
+   </diagram>
+  </diagrams>
+  <listview>
+   <listitem open="1" type="800" id="-1" label="Views" >
+    <listitem open="1" type="801" id="-1" label="Logical View" >
+     <listitem open="0" type="807" id="412" label="JobScheduler" />
+     <listitem open="0" type="807" id="452" label="RulesEngine" />
+     <listitem open="0" type="807" id="403" label="class diagram" />
+     <listitem open="1" type="813" id="416" label="ActivityStatus" >
+      <listitem open="0" type="814" id="421" label="key" />
+     </listitem>
+     <listitem open="1" type="813" id="415" label="ActivityStatusStore" />
+     <listitem open="1" type="813" id="413" label="GroovyInterpreter" >
+      <listitem open="0" type="815" id="459" label="addRule" />
+      <listitem open="0" type="815" id="460" label="findNext" />
+      <listitem open="0" type="815" id="461" label="run" />
+      <listitem open="0" type="815" id="462" label="runNext()" />
+      <listitem open="0" type="815" id="463" label="storeResults" />
+      <listitem open="0" type="815" id="464" label="updateStepStatus" />
+     </listitem>
+     <listitem open="1" type="813" id="414" label="GroovyInterpreterFactory" >
+      <listitem open="0" type="815" id="446" label="newInterpreter" />
+      <listitem open="0" type="815" id="447" label="pickleTo" />
+      <listitem open="0" type="815" id="448" label="unpickleFrom" />
+     </listitem>
+     <listitem open="1" type="813" id="435" label="GroovySchedulerImpl" />
+     <listitem open="1" type="813" id="439" label="GroovyTransformers" />
+     <listitem open="1" type="813" id="434" label="JesInterface" >
+      <listitem open="0" type="815" id="465" label="dispatchScript" />
+      <listitem open="0" type="815" id="466" label="dispatchStep" />
+      <listitem open="0" type="815" id="467" label="executeSet" />
+      <listitem open="0" type="815" id="468" label="getDispatcher" />
+      <listitem open="0" type="815" id="469" label="getId" />
+      <listitem open="0" type="815" id="470" label="getLog" />
+      <listitem open="0" type="815" id="471" label="getSteps" />
+      <listitem open="0" type="815" id="472" label="getWorkflow" />
+      <listitem open="0" type="815" id="473" label="newParameter" />
+      <listitem open="0" type="815" id="474" label="setWorkflowStatus" />
+     </listitem>
+     <listitem open="1" type="813" id="428" label="JesShell" >
+      <listitem open="0" type="815" id="476" label="evakuateForItems" />
+      <listitem open="0" type="815" id="477" label="evaluateIfCondition" />
+      <listitem open="0" type="815" id="478" label="evaluateParForItems" />
+      <listitem open="0" type="815" id="479" label="evaluateTool" />
+      <listitem open="0" type="815" id="480" label="evaluateTrigger" />
+      <listitem open="0" type="815" id="481" label="evaluateUserExpr" />
+      <listitem open="0" type="815" id="482" label="evaluateWhileCondition" />
+      <listitem open="0" type="815" id="483" label="executeBody" />
+      <listitem open="0" type="815" id="484" label="executeScript" />
+      <listitem open="0" type="815" id="485" label="executeSet" />
+     </listitem>
+     <listitem open="1" type="813" id="426" label="Rule" >
+      <listitem open="0" type="814" id="488" label="body" />
+      <listitem open="0" type="814" id="489" label="name" />
+      <listitem open="0" type="814" id="490" label="trigger" />
+      <listitem open="0" type="815" id="491" label="fire" />
+      <listitem open="0" type="815" id="492" label="isTriggered" />
+      <listitem open="0" type="815" id="493" label="matches" />
+      <listitem open="0" type="815" id="494" label="rewriteAs" />
+     </listitem>
+     <listitem open="1" type="813" id="418" label="Status" />
+     <listitem open="1" type="813" id="417" label="Vars" />
+     <listitem open="1" type="813" id="431" label="XStreamPickler" />
+     <listitem open="1" type="817" id="436" label="JobScheduler" />
+     <listitem open="1" type="817" id="430" label="Pickler" >
+      <listitem open="0" type="815" id="449" label="marshallInterpreter" />
+      <listitem open="0" type="815" id="450" label="unmarshalInterpreter" />
+      <listitem open="0" type="815" id="451" label="unmarshalRuleStore" />
+     </listitem>
+     <listitem open="1" type="817" id="440" label="Transformers" >
+      <listitem open="0" type="815" id="443" label="getCompiler" />
+      <listitem open="0" type="815" id="444" label="getWorkflowAnnotator" />
+     </listitem>
+     <listitem open="0" type="830" id="-1" label="Datatypes" >
+      <listitem open="1" type="829" id="406" label="boolean" />
+      <listitem open="1" type="829" id="409" label="byte" />
+      <listitem open="1" type="829" id="405" label="char" />
+      <listitem open="1" type="829" id="408" label="double" />
+      <listitem open="1" type="829" id="407" label="float" />
+      <listitem open="1" type="829" id="404" label="int" />
+      <listitem open="1" type="829" id="410" label="short" />
+      <listitem open="1" type="829" id="411" label="string" />
+     </listitem>
+    </listitem>
+    <listitem open="1" type="802" id="-1" label="Use Case View" />
+    <listitem open="1" type="821" id="-1" label="Component View" />
+    <listitem open="1" type="827" id="-1" label="Deployment View" />
+   </listitem>
+  </listview>
+  <codegeneration/>
+ </XMI.content>
+</XMI>
