@@ -1,4 +1,4 @@
-/*$Id: CeaTest.java,v 1.5 2004/07/01 11:44:35 nw Exp $
+/*$Id: CeaTest.java,v 1.6 2004/07/07 18:27:48 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -58,7 +58,7 @@ public class CeaTest  extends TestCase {
    public void prepareMySpace() throws IOException {
 
       try {
-         StoreAdminClient admin = StoreDelegateFactory.createAdminDelegate(User.ANONYMOUS, new Agsl(StdKeys.MYSPACE));
+         StoreAdminClient admin = StoreDelegateFactory.createAdminDelegate(User.ANONYMOUS, new Agsl("astrogrid:store:"+StdKeys.MYSPACE));
          admin.createUser(new User("CeaTest@Unknown", "org.astrogrid.localhost", ""));
       }
       catch (StoreException se) {
@@ -66,7 +66,7 @@ public class CeaTest  extends TestCase {
       }
       
       //upload query
-      StoreClient client = StoreDelegateFactory.createDelegate(User.ANONYMOUS, new Agsl(StdKeys.MYSPACE));
+      StoreClient client = StoreDelegateFactory.createDelegate(User.ANONYMOUS, new Agsl("astrogrid:store:"+StdKeys.MYSPACE));
       OutputStream out = client.putStream(QUERY_PATH, false);
       InputStream in = this.getClass().getResourceAsStream("SimpleStarQuery-adql05.xml");
       assertNotNull("Could not find test query", in);
@@ -166,6 +166,9 @@ public class CeaTest  extends TestCase {
 
 /*
 $Log: CeaTest.java,v $
+Revision 1.6  2004/07/07 18:27:48  mch
+Fixed Agsl constructor
+
 Revision 1.5  2004/07/01 11:44:35  nw
 fixed to fit with cea refactor
 (although service isn't present yet)
