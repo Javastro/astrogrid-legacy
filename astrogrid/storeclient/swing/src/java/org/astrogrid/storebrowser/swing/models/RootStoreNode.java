@@ -1,5 +1,5 @@
 /*
- * $Id: RootStoreNode.java,v 1.1 2005/02/16 19:57:09 mch Exp $
+ * $Id: RootStoreNode.java,v 1.2 2005/03/25 16:19:57 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -14,6 +14,7 @@ import java.security.Principal;
 import java.util.Vector;
 import javax.swing.tree.TreeNode;
 import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.slinger.Slinger;
 import org.astrogrid.storeclient.api.srb.JargonFileAdaptor;
 
 /**
@@ -23,6 +24,8 @@ import org.astrogrid.storeclient.api.srb.JargonFileAdaptor;
  */
 
 public class RootStoreNode extends StoreFileNode {
+
+   public static final String PERMIT_LOCAL_ACCESS_KEY = Slinger.PERMIT_LOCAL_ACCESS_KEY;
    
    /** Default constructor includes some standard stores appropriately configured */
    public RootStoreNode(Principal aUser) {
@@ -53,7 +56,7 @@ public class RootStoreNode extends StoreFileNode {
       }
       if (store.getUri().trim().toLowerCase().startsWith("file:")) {
          //check that it's allowed
-         if (!SimpleConfig.getSingleton().getBoolean("slinger.permitfile", false)) {
+         if (!SimpleConfig.getSingleton().getBoolean(PERMIT_LOCAL_ACCESS_KEY, false)) {
             throw new IllegalArgumentException("Browsing local file stores is not permitted here");
          }
       }

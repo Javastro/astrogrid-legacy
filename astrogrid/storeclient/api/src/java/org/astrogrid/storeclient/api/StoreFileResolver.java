@@ -1,5 +1,5 @@
 /*
- * $Id: StoreFileResolver.java,v 1.1 2005/02/16 19:57:05 mch Exp $
+ * $Id: StoreFileResolver.java,v 1.2 2005/03/25 16:19:57 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -13,13 +13,13 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.Principal;
 import javax.xml.rpc.ServiceException;
+import org.astrogrid.slinger.myspace.MSRL;
+import org.astrogrid.slinger.vospace.HomespaceName;
+import org.astrogrid.slinger.vospace.IVOSRN;
 import org.astrogrid.storeclient.api.file.LocalFile;
 import org.astrogrid.storeclient.api.ftp.FtpFile;
 import org.astrogrid.storeclient.api.myspace.MySpaceFile;
 import org.astrogrid.storeclient.api.srb.JargonFileAdaptor;
-import org.astrogrid.slinger.myspace.MSRL;
-import org.astrogrid.slinger.vospace.HomespaceName;
-import org.astrogrid.slinger.vospace.IVOSRN;
 
 /**
  * Resolves the appropriate StoreFile implementation from a *locator*, eg
@@ -59,14 +59,7 @@ public class StoreFileResolver {
    /** Assumes ivosrn resolves to a myspace - bad... */
    public static StoreFile resolveStoreFile(IVOSRN ivosrn, Principal user) throws IOException {
       MSRL myspace = new MSRL(new URL(ivosrn.resolve()), ivosrn.getFragment());
-      try {
-         return new MySpaceFile(myspace, user);
-      }
-      catch (ServiceException se) {
-         IOException ioe = new IOException(se+" connecting to "+myspace);
-         ioe.setStackTrace(se.getStackTrace());
-         throw ioe;
-      }
+      return resolveStoreFile(myspace, user);
    }
 
    public static StoreFile resolveStoreFile(String uri, Principal user) throws IOException, URISyntaxException {
@@ -83,6 +76,9 @@ public class StoreFileResolver {
       else if (MSRL.isMsrl(uri)) {
          return resolveStoreFile(new MSRL(uri), user);
       }
+//      else if (FileManagerId.isFileManagerId(uri)) {
+//         return resolveStoreFile(new FileManagerId(uri), user);
+//      }
       else if (HomespaceName.isHomespaceName(uri)) {
          return resolveStoreFile(new HomespaceName(uri), user);
       }
@@ -98,8 +94,11 @@ public class StoreFileResolver {
 
 /*
 $Log: StoreFileResolver.java,v $
-Revision 1.1  2005/02/16 19:57:05  mch
-*** empty log message ***
+Revision 1.2  2005/03/25 16:19:57  mch
+Added FIleManger suport
+
+Revision 1.1.1.1  2005/02/16 19:57:05  mch
+Initial checkin
 
 Revision 1.1.1.1  2005/02/16 15:02:46  mch
 Initial Checkin

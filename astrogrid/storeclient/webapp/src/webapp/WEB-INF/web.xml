@@ -16,7 +16,12 @@
 
    <servlet>
       <servlet-name>Picker</servlet-name>
-      <servlet-class>org.astrogrid.slinger.ui.servlet.PickerServlet</servlet-class>
+      <servlet-class>org.astrogrid.storebrowser.servlet.PickerServlet</servlet-class>
+   </servlet>
+
+   <servlet>
+      <servlet-name>Browser</servlet-name>
+      <servlet-class>org.astrogrid.storebrowser.servlet.BrowserServlet</servlet-class>
    </servlet>
 
    <servlet>
@@ -32,6 +37,11 @@
   <servlet-mapping>
     <servlet-name>Picker</servlet-name>
     <url-pattern>Picker</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>Browser</servlet-name>
+    <url-pattern>Browser</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>

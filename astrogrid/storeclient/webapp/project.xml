@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- $Id: project.xml,v 1.1 2005/02/16 19:57:10 mch Exp $ -->
+<!-- $Id: project.xml,v 1.2 2005/03/25 16:19:57 mch Exp $ -->
 
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 
@@ -58,6 +58,7 @@
             </properties>
         </dependency>
 
+        <!-- also contains the models -->
         <dependency>
             <artifactId>astrogrid-storeclient-swingbrowser</artifactId>
             <groupId>org.astrogrid</groupId>
@@ -67,6 +68,7 @@
             </properties>
         </dependency>
 
+        <!-- contains resolving servlets -->
         <dependency>
             <artifactId>astrogrid-slinger-webnode</artifactId>
             <groupId>org.astrogrid</groupId>

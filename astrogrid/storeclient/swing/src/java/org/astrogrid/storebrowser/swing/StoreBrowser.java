@@ -1,5 +1,5 @@
 /*
- * $Id: StoreBrowser.java,v 1.1 2005/02/16 19:57:08 mch Exp $
+ * $Id: StoreBrowser.java,v 1.2 2005/03/25 16:19:57 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -30,6 +30,7 @@ import javax.swing.event.TreeSelectionListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.account.LoginAccount;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.slinger.Slinger;
 import org.astrogrid.slinger.mime.MimeFileExts;
 import org.astrogrid.slinger.sources.SourceIdentifier;
@@ -37,6 +38,7 @@ import org.astrogrid.slinger.sources.SourceMaker;
 import org.astrogrid.slinger.targets.TargetIdentifier;
 import org.astrogrid.slinger.targets.TargetMaker;
 import org.astrogrid.storebrowser.swing.models.DirectoryModel;
+import org.astrogrid.storebrowser.swing.models.RootStoreNode;
 import org.astrogrid.storeclient.api.StoreFile;
 import org.astrogrid.ui.EscEnterListener;
 import org.astrogrid.ui.GridBagHelper;
@@ -606,7 +608,10 @@ public class StoreBrowser extends JDialog
 
       try
       {
+         ConfigFactory.getCommonConfig().setProperty(Slinger.PERMIT_LOCAL_ACCESS_KEY, "true");
          StoreBrowser browser = StoreBrowser.showDialog(LoginAccount.ANONYMOUS, NO_ACTION);
+         browser.setLocation(100,100);
+         ((RootStoreNode) browser.treeView.getModel().getRoot()).addDefaultStores(true);
       } catch (IOException ioe)
       {
          ioe.printStackTrace();
@@ -616,8 +621,11 @@ public class StoreBrowser extends JDialog
 
 /*
 $Log: StoreBrowser.java,v $
-Revision 1.1  2005/02/16 19:57:08  mch
-*** empty log message ***
+Revision 1.2  2005/03/25 16:19:57  mch
+Added FIleManger suport
+
+Revision 1.1.1.1  2005/02/16 19:57:08  mch
+Initial checkin
 
 Revision 1.1.1.1  2005/02/16 15:02:46  mch
 Initial Checkin
