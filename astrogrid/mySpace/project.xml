@@ -62,6 +62,11 @@
       <id>astrogrid-common</id>
       <version>SNAPSHOT</version>
     </dependency>
+    <dependency>
+      <artifactId>astrogrid-datacenter-client</artifactId>
+      <groupId>astrogrid-datacenter</groupId>      
+      <version>SNAPSHOT</version>
+    </dependency>
 
     <dependency>
       <id>cog-jglobus</id>
