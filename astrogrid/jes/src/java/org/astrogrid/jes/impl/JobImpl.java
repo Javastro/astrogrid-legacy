@@ -82,15 +82,21 @@ public class JobImpl extends Job {
 			date = new Date() ;
 			
 			Element
-			   element = null ;			   
+			   element = submitDoc.getDocumentElement() ;	
+			   
+			name = element.getAttribute( SubmissionRequestDD.JOB_NAME_ATTR ) ;
+			   		   
 			NodeList
-			   nodeList = submitDoc.getDocumentElement().getChildNodes() ;  		   
+			   nodeList = element.getChildNodes() ; 
+			    		   
 			for( int i=0 ; i < nodeList.getLength() ; i++ ) {			
 				if( nodeList.item(i).getNodeType() == Node.ELEMENT_NODE ) {
 					
-					element = (Element) nodeList.item(i) ;					
+					element = (Element) nodeList.item(i) ;
+				
 					if ( element.getTagName().equals( SubmissionRequestDD.JOBSTEP_ELEMENT ) ) {
-						name = element.getAttribute( SubmissionRequestDD.JOBSTEP_NAME_ATTR ).trim() ;
+//						name = element.getAttribute( SubmissionRequestDD.JOBSTEP_NAME_ATTR ).trim() ;
+						jobSteps.add( new JobStep( this, element ) ) ;   
 					}					
 					else if (element.getTagName().equals( SubmissionRequestDD.USERID_ELEMENT) ) {					 	
 						userId = element.getFirstChild().getNodeValue().trim();
@@ -102,7 +108,7 @@ public class JobImpl extends Job {
 				} // end if
 								
 			} // end for		
-
+/*
 			nodeList = element.getChildNodes() ;  					   
 			for( int i=0 ; i < nodeList.getLength() ; i++ ) {
 							
@@ -121,7 +127,7 @@ public class JobImpl extends Job {
 				} // end if
 				
 			} // end for
-			
+*/			
 		}
 		catch( Exception ex ) {		
 			Message
@@ -202,7 +208,7 @@ public class JobImpl extends Job {
 	public boolean isDirty() {return this.dirty ; }
 
 	public void setName( String name ) { this.name = name; }
-	public String getName() { return this.name; }
+	public String getName() { return (this.name == null ? "" : this.name.trim() ); }
 	
 	public Date getDate() { return this.date ; }
 	public void setDate( Date date ) { this.date = date ; }

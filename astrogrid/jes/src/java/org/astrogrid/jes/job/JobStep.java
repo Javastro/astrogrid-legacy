@@ -90,7 +90,7 @@ public class JobStep {
     public void setQuery(Query query){ this.query = query ; }
 
 	public void setName(String name) { this.name = name; }
-	public String getName() { return name; }
+	public String getName() { return  ( name == null  ?  ""  :  name.trim() ) ; }
 
 	public void setParent(Job parent) { this.parent = parent; }
 	public Job getParent() { return parent; }
@@ -103,7 +103,7 @@ public class JobStep {
 	public String getStatus() {	return status; }
 
 	public void setComment(String comment) { this.comment = comment; }
-	public String getComment() { return comment; }
+	public String getComment() { return ( comment == null  ?  ""  :  comment.trim() ) ; }
 
     
 } // end of class JobStep 
