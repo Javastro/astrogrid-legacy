@@ -44,7 +44,7 @@
     <xsd:element name="response">
         <xsd:complexType>
             <xsd:sequence>
-                <xsd:group maxOccurs="1" minOccurs="1" ref="responseChoice"/>
+                <xsd:group maxOccurs="1" minOccurs="1" ref="responseSequence"/>
             </xsd:sequence>
         </xsd:complexType>
     </xsd:element>
@@ -55,11 +55,11 @@
         </xsd:simpleType>
     </xsd:element>
     
-    <xsd:group name="responseChoice">
-        <xsd:choice>
+    <xsd:group name="responseSequence">
+        <xsd:sequence>
             <xsd:element maxOccurs="1" minOccurs="0" ref="message"/>
             <xsd:element maxOccurs="1" minOccurs="1" ref="job"/>
-        </xsd:choice>
+        </xsd:sequence>
     </xsd:group>
     
 </xsd:schema>

@@ -64,7 +64,7 @@
             <xsd:sequence>
                 <xsd:element maxOccurs="1" minOccurs="1" ref="criteria"/>
                 <xsd:element maxOccurs="1" minOccurs="1" ref="return"/>
-                <xsd:element maxOccurs="1" minOccurs="0" ref="from"/>
+                <xsd:element maxOccurs="1" minOccurs="1" ref="from"/>
             </xsd:sequence>
         </xsd:complexType>
     </xsd:element>
@@ -80,7 +80,7 @@
     <xsd:element name="from">
         <xsd:complexType>
             <xsd:sequence>
-                <xsd:element maxOccurs="unbounded" minOccurs="0" ref="catalog"/>
+                <xsd:element maxOccurs="unbounded" minOccurs="1" ref="catalog"/>
             </xsd:sequence>
         </xsd:complexType>
     </xsd:element>
@@ -145,9 +145,6 @@
                         <xsd:enumeration value="EQUALS"/>
                         <xsd:enumeration value="GREATER_THAN_OR_EQUALS"/>
                         <xsd:enumeration value="LESS_THAN_OR_EQUALS"/>
-                        <xsd:enumeration value="IN"/>
-                        <xsd:enumeration value="ANY"/>
-                        <xsd:enumeration value="ALL"/>
                     </xsd:restriction>
                 </xsd:simpleType>
             </xsd:attribute>
