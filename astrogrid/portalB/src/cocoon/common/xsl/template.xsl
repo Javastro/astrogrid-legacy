@@ -2,11 +2,11 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/cocoon/common/xsl/Attic/template.xsl,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/27 02:54:08 $</cvs:author>
-    | <cvs:version>$Revision: 1.3 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/27 02:55:11 $</cvs:author>
+    | <cvs:version>$Revision: 1.4 $</cvs:version>
     | <cvs:log>
     | $Log: template.xsl,v $
-    | Revision 1.3  2003/06/27 02:54:08  dave
+    | Revision 1.4  2003/06/27 02:55:11  dave
     | Added images to tree nodes
     |
     | Revision 1.2  2003/06/27 02:43:18  dave
@@ -145,6 +145,7 @@
 			</img>
 			<!-- If we have some text -->
 			<xsl:if test="string-length(normalize-space(text)) > 0">
+				<xsl:text> </xsl:text> 
 				<xsl:choose>
 					<!-- If this link is selected -->
 					<xsl:when test="@selected = 'true'">
