@@ -29,7 +29,7 @@ public class WorkflowDD {
         
     public static final String
         USERID_ELEMENT = "userid",
-        COMMUNITY_ELEMENT = "community",
+        COMMUNITY_ELEMENT = "jes_community",
         DESCRIPTION_ELEMENT = "description",
         SEQUENCE_ELEMENT = "sequence",
         FLOW_ELEMENT = "flow" ;
@@ -61,18 +61,18 @@ public class WorkflowDD {
         
     public static final String
         WORKFLOW_TEMPLATE =
-        "<?xml version='1.0' encoding='UTF-8'?>" +        "<workflow name=\"{0}\" {1}>" +        "   <userid>{2}</userid>" +        "   <community>{3}</community>" +
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +        "<workflow name=\"{0}\" {1}>" +        "   <userid>{2}</userid>" +        "   <jes_community>{3}</jes_community>" +
         "   <description>{4}</description>" +              "       {5}" +                      // sequence by default        "</workflow>" ;
         
     public static final String
         SEQUENCE_TEMPLATE =
-        "<sequence >" +
+        "<sequence>" +
         "   {0}" +                          // whatever an ActivityContainer contains
         "</sequence>" ;        
 	    
     public static final String
         FLOW_TEMPLATE =
-        "<flow >" +
+        "<flow>" +
         "   {0}" +                          // whatever an ActivityContainer contains
         "</flow>" ;                
         
@@ -98,11 +98,11 @@ public class WorkflowDD {
         
     public static final String
         JOB_TEMPLATE =
-        "<?xml version='1.0' encoding='UTF-8'?>" +
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
         "<job name=\"{0}\" >" +
         "   <userid>{1}</userid>" +
-        "   <community>{2}</community>" +
-        "   <description>{3}</description>" +        "   {4}" +       // the community snippet      
+        "   <jes_community>{2}</jes_community>" +
+        "   <description>{3}</description>" +        "   <AssignID>dummy</AssignID>" +        "   {4}" +       // the community snippet      
         "   {5}" +       // variable number of job steps               
         "</job>" ;        
         
