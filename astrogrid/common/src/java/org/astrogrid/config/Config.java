@@ -1,5 +1,5 @@
 /*
- * $Id: Config.java,v 1.25 2004/08/05 09:41:46 mch Exp $
+ * $Id: Config.java,v 1.26 2004/08/25 00:40:38 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -24,13 +24,14 @@ import org.xml.sax.SAXException;
 /**
  * Defines the methods that a Configurator must implement.
  * Also provides many of the convenience methods, such as getUrl().
- *
+ * <p>
  * There is no store yet but we could add this later
- *
+ * <p>
  * NB - Have deliberately NOT included a loadStream(Stream) method - although
  * this might be generically useful, it makes it difficult to track through
- * the Config package where properties have come from in a human fashio. If
- * you need to do this, write your stream to a file and then load from File.toURL()
+ * the Config package where properties have come from. If
+ * you need to do this, write your stream of properties to a file and then load
+ * from File.toURL()
  *
  */
 
