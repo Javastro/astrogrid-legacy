@@ -1,5 +1,5 @@
 /*
- * $Id: DatabaseQuerier.java,v 1.10 2003/09/08 16:34:31 mch Exp $
+ * $Id: DatabaseQuerier.java,v 1.11 2003/09/08 19:15:46 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -73,7 +73,7 @@ public abstract class DatabaseQuerier implements Runnable
    /**
     * Constructor - creates a handle to identify this instance
     */
-   public DatabaseQuerier()
+   public DatabaseQuerier() throws IOException
    {
       handle = generateHandle();
       queriers.put(handle, this);

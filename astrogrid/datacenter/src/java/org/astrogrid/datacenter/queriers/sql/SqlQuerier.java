@@ -1,5 +1,5 @@
 /*
- * $Id: SqlQuerier.java,v 1.7 2003/09/08 16:34:31 mch Exp $
+ * $Id: SqlQuerier.java,v 1.8 2003/09/08 19:15:46 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -64,7 +64,7 @@ public class SqlQuerier extends DatabaseQuerier
     * </ul>
 
     */
-   public SqlQuerier() throws DatabaseAccessException
+   public SqlQuerier() throws DatabaseAccessException, IOException
    {
       // look for jndi link to datasource,
       String jndiDataSourceName = Configuration.getProperty(JNDI_DATASOURCE_KEY);

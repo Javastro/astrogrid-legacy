@@ -1,11 +1,12 @@
 /*
- * $Id: DummyQuerier.java,v 1.6 2003/09/07 18:58:58 mch Exp $
+ * $Id: DummyQuerier.java,v 1.7 2003/09/08 19:19:19 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.queriers;
 
+import java.io.IOException;
 import java.util.Date;
 import org.w3c.dom.Element;
 
@@ -17,6 +18,11 @@ import org.w3c.dom.Element;
 
 public class DummyQuerier extends DatabaseQuerier
 {
+   public DummyQuerier() throws IOException
+   {
+      super();
+   }
+   
    public QueryResults queryDatabase(Element soapBody) throws DatabaseAccessException
    {
       Date today = new Date();

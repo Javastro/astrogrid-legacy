@@ -1,4 +1,4 @@
-/*$Id: MsSqlServerQuerier.java,v 1.3 2003/09/07 18:56:42 mch Exp $
+/*$Id: MsSqlServerQuerier.java,v 1.4 2003/09/08 19:15:46 mch Exp $
  * Created on 03-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,13 +10,10 @@
 **/
 package org.astrogrid.datacenter.queriers.mssqlserver;
 
-import java.util.Properties;
-
-import javax.sql.DataSource;
-
-import org.astrogrid.datacenter.queriers.*;
-import org.astrogrid.datacenter.queriers.sql.*;
-import org.w3c.dom.Node;
+import java.io.IOException;
+import org.astrogrid.datacenter.queriers.DatabaseAccessException;
+import org.astrogrid.datacenter.queriers.QueryTranslator;
+import org.astrogrid.datacenter.queriers.sql.SqlQuerier;
 
 /** Database Querier implementation for Microsoft SQL Server
  * @author Noel Winstanley nw@jb.man.ac.uk 03-Sep-2003
@@ -25,7 +22,7 @@ import org.w3c.dom.Node;
 public class MsSqlServerQuerier extends SqlQuerier {
 
 
-   public MsSqlServerQuerier() throws DatabaseAccessException
+   public MsSqlServerQuerier() throws DatabaseAccessException, IOException
    {
       super();
    }
@@ -42,6 +39,9 @@ public class MsSqlServerQuerier extends SqlQuerier {
 
 /*
 $Log: MsSqlServerQuerier.java,v $
+Revision 1.4  2003/09/08 19:15:46  mch
+Workspace constructor now throws IOException
+
 Revision 1.3  2003/09/07 18:56:42  mch
 Moved ADQL package dependency to QueryTranslator only
 

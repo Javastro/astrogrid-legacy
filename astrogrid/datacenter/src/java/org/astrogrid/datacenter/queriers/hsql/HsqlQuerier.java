@@ -1,4 +1,4 @@
-/*$Id: HsqlQuerier.java,v 1.3 2003/09/08 16:34:31 mch Exp $
+/*$Id: HsqlQuerier.java,v 1.4 2003/09/08 19:15:46 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,7 @@
 **/
 package org.astrogrid.datacenter.queriers.hsql;
 
-import java.util.Properties;
-
-import javax.sql.DataSource;
-
+import java.io.IOException;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.sql.SqlQuerier;
 
@@ -26,7 +23,8 @@ import org.astrogrid.datacenter.queriers.sql.SqlQuerier;
  */
 public class HsqlQuerier extends SqlQuerier {
 
-    public HsqlQuerier() throws DatabaseAccessException {
+    public HsqlQuerier() throws DatabaseAccessException, IOException
+   {
         super();
     }
 
@@ -62,6 +60,9 @@ public class HsqlQuerier extends SqlQuerier {
 
 /*
 $Log: HsqlQuerier.java,v $
+Revision 1.4  2003/09/08 19:15:46  mch
+Workspace constructor now throws IOException
+
 Revision 1.3  2003/09/08 16:34:31  mch
 Added documentation
 

@@ -1,4 +1,4 @@
-/*$Id: DataQueryServiceTest.java,v 1.2 2003/09/07 18:58:58 mch Exp $
+/*$Id: DataQueryServiceTest.java,v 1.3 2003/09/08 19:18:55 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,10 @@
 **/
 package org.astrogrid.datacenter.service;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import javax.sql.DataSource;
 import junit.framework.Test;
@@ -48,7 +48,7 @@ public class DataQueryServiceTest extends HsqlTestCase {
     }
 
     protected void setUp() throws Exception {
-        wsTest.setUp(); //sets up workspace
+        //wsTest.setUp(); //sets up workspace
         DataSource ds = new HsqlDataSource();
         conn = ds.getConnection();
           String script = getResourceAsString("/org/astrogrid/datacenter/queriers/sql/create-test-db.sql");
@@ -60,7 +60,7 @@ public class DataQueryServiceTest extends HsqlTestCase {
     }
 
     protected Connection conn;
-    protected final MyWorkspaceTest wsTest = new MyWorkspaceTest(null);
+    //protected final MyWorkspaceTest wsTest = new MyWorkspaceTest(null);
 
     /*
      * @see TestCase#tearDown()
@@ -70,19 +70,20 @@ public class DataQueryServiceTest extends HsqlTestCase {
             conn.createStatement().execute("SHUTDOWN");
             conn.close();
         }
-        wsTest.tearDown(); //tears down workspace
+        //wsTest.tearDown(); //tears down workspace
     }
 
     /** work around for lack of multiple inheritance..
      * just want to get access to the setup and tearDown methods
      * @author Noel Winstanley nw@jb.man.ac.uk 05-Sep-2003
      *
-     */
+     * I gather this was a convenient way of creating temporary workspaces...
+     * hopefully Workspace should now do that properly now
     private class MyWorkspaceTest extends WorkspaceTest {
         public MyWorkspaceTest(String s) {
             super(s);
         }
-    }
+     }*/
 
 
     public void testRunQuery() throws Exception
@@ -111,7 +112,7 @@ public class DataQueryServiceTest extends HsqlTestCase {
 
     }
 
-    public void testHandleUniqueness() {
+    public void testHandleUniqueness() throws IOException {
         DatabaseQuerier s1 = new DummyQuerier();
         assertNotNull(s1);
         DatabaseQuerier s2 = new DummyQuerier();
@@ -120,7 +121,7 @@ public class DataQueryServiceTest extends HsqlTestCase {
         assertTrue(! s1.getHandle().trim().equals(s2.getHandle().trim()));
     }
 
-    public void testStatus() {
+    public void testStatus() throws IOException {
         DatabaseQuerier s1 = new DummyQuerier();
         assertEquals(s1.getStatus(),ServiceStatus.CONSTRUCTED);
     }
@@ -145,6 +146,9 @@ public class DataQueryServiceTest extends HsqlTestCase {
 
 /*
 $Log: DataQueryServiceTest.java,v $
+Revision 1.3  2003/09/08 19:18:55  mch
+Workspace constructor now throws IOException
+
 Revision 1.2  2003/09/07 18:58:58  mch
 Updated tests for weekends changes to main code (mostly threaded queries, typesafe ServiceStatus)
 

@@ -1,4 +1,4 @@
-/*$Id: SybaseQuerier.java,v 1.4 2003/09/07 18:56:42 mch Exp $
+/*$Id: SybaseQuerier.java,v 1.5 2003/09/08 19:15:46 mch Exp $
  * Created on 03-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,7 @@
 **/
 package org.astrogrid.datacenter.queriers.sybase;
 
-import java.util.Properties;
-
-import javax.sql.DataSource;
-
+import java.io.IOException;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.QueryTranslator;
 import org.astrogrid.datacenter.queriers.sql.SqlQuerier;
@@ -29,7 +26,7 @@ public class SybaseQuerier extends SqlQuerier
      * @param ds
      * @throws DatabaseAccessException
      */
-   public SybaseQuerier() throws DatabaseAccessException
+   public SybaseQuerier() throws DatabaseAccessException, IOException
    {
         super();
    }
@@ -74,6 +71,9 @@ public class SybaseQuerier extends SqlQuerier
 
 /*
 $Log: SybaseQuerier.java,v $
+Revision 1.5  2003/09/08 19:15:46  mch
+Workspace constructor now throws IOException
+
 Revision 1.4  2003/09/07 18:56:42  mch
 Moved ADQL package dependency to QueryTranslator only
 
