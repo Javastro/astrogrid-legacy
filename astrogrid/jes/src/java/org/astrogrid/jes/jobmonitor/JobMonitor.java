@@ -38,7 +38,7 @@ import org.apache.axis.encoding.XMLType;
 import javax.xml.rpc.ParameterMode;
 import org.apache.axis.message.SOAPBodyElement ;
 import org.apache.axis.utils.XMLUtils ;
-
+import org.astrogrid.community.common.util.CommunityMessage;
 import java.net.URL;
 
 
@@ -142,7 +142,7 @@ public class JobMonitor {
 			// Create the necessary Job structures.
 			// This involves persistence, so we bracket the transaction 
 			// before finding and updating the JobStep status and comment...
-			// (The comment comes from MySpace)
+
 	        factory = Job.getFactory() ;
 	        factory.begin() ;
 	        job = factory.findJob( this.extractJobURN( monitorJobDocument ) ) ;
@@ -226,7 +226,6 @@ public class JobMonitor {
                 // for its status against the join condition for this step...
                 else if( jobStep.getStatus().equals( JobStep.STATUS_INITIALIZED ) ) {
                     
-
                     joinCondition = jobStep.getJoinCondition() ;
                     guardStep = (JobStep)guardSteps.get( new Integer( jobStep.getSequenceNumber().intValue() - 1 ) ) ;
                     
@@ -395,17 +394,21 @@ public class JobMonitor {
 		
 		String 
 		   response = JES.getProperty( JES.SCHEDULER_JOB_REQUEST_TEMPLATE
-		                             , JES.SCHEDULER_CATEGORY ) ;
+		                             , JES.SCHEDULER_CATEGORY ),
+           communitySnippet = CommunityMessage.getMessage( job.getToken()
+                                                         , job.getUserId() + "@" + job.getCommunity()
+                                                         , job.getGroup() ) ; ;
 		
 		try {
 		
 			Object []
-			   inserts = new Object[5] ;
+			   inserts = new Object[4] ;
 			inserts[0] = job.getName() ;
-			inserts[1] = job.getUserId() ;
-			inserts[2] = job.getCommunity() ;
-			inserts[3] = job.getDate() ;
-			inserts[4] = job.getId() ;
+//			inserts[1] = job.getUserId() ;
+//			inserts[2] = job.getCommunity() ;
+			inserts[1] = job.getDate() ;
+			inserts[2] = job.getId() ;
+            inserts[3] = communitySnippet ;
 			
 			response = MessageFormat.format( response, inserts ) ;
 
@@ -426,36 +429,8 @@ public class JobMonitor {
 	
 	
 	private String extractJobURN( Document jobDoc ) { 
-	   if( TRACE_ENABLED ) logger.debug( "extractJobURN(): entry") ;	
-       
-       // JBL Note: Altered in Iteration 3 to accommodate the fact that the job URN
-       // sent to the datacenter contains the step id also!!! This was to accommodate
-       // the chance that multiple jobsteps might be submitted to the same datacenter.
-       // As at present (iterations 2 and 3, and later?) a single resource (VOTable)
-       // is created for each job step tagged with the job URN, without this there
-       // would  be a clash of resource names.
-       //
-       // This will be inadequate where multiple resources are created by the same
-       // job step. But would probably do no harm, although another mechanism for
-       // resource identification will be required.
-       //
-	   String
-		  jobURN = null ;
-          
-       try {
-          jobURN = jobDoc.getDocumentElement().getAttribute( MonitorRequestDD.JOB_URN_ATTR ).trim() ;
-          int
-            iLastColon = jobURN.lastIndexOf(':') ;
-          jobURN = jobURN.substring( 0, iLastColon ) ;
-    
-       }
-       finally {
-           if( TRACE_ENABLED ) logger.debug( "extractJobURN(): exit") ; 
-       }
-          
-	   return jobURN ;
-       
-	} // end of extractJobURN()
+          return jobDoc.getDocumentElement().getAttribute( MonitorRequestDD.JOB_URN_ATTR ).trim() ;
+	} 
 	
 	
 	private void informAstroGridMessageLog( JobStep jobStep ) {

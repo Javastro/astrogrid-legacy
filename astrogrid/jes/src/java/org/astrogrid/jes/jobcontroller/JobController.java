@@ -35,6 +35,7 @@ import org.apache.axis.encoding.XMLType;
 import javax.xml.rpc.ParameterMode;
 import org.apache.axis.message.SOAPBodyElement ;
 // import org.apache.axis.utils.XMLUtils ;
+import org.astrogrid.community.common.util.CommunityMessage;
 
 import java.net.URL;
 
@@ -607,17 +608,23 @@ public class JobController {
 		
 		String 
 		   response = JES.getProperty( JES.SCHEDULER_JOB_REQUEST_TEMPLATE
-		                             , JES.SCHEDULER_CATEGORY ) ;
+		                             , JES.SCHEDULER_CATEGORY ),
+           communitySnippet ;
 		
 		try {
+            
+            communitySnippet = CommunityMessage.getMessage( job.getToken()
+                                                          , job.getUserId() + "@" + job.getCommunity()
+                                                          , job.getGroup() ) ;
 			
 			Object []
-			   inserts = new Object[5] ;
+			   inserts = new Object[4] ;
 			inserts[0] = job.getName() ;
-			inserts[1] = job.getUserId() ;
-			inserts[2] = job.getCommunity() ;
-			inserts[3] = job.getDate() ;
-			inserts[4] = job.getId() ;
+//			inserts[1] = job.getUserId() ;
+//			inserts[2] = job.getCommunity() ;
+			inserts[1] = job.getDate() ;
+			inserts[2] = job.getId() ;
+            inserts[3] = communitySnippet ;
 			
 			response = MessageFormat.format( response, inserts ) ;
 

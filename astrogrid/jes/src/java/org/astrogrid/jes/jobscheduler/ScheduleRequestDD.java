@@ -21,5 +21,23 @@ public final class ScheduleRequestDD {
 	    JOB_COMMUNITY_ATTR = "community",
 	    JOB_TIMESTAMP_ATTR = "time" ;
 //	    JOB_MONITOR_URL = "jobMonitorURL";
+
+    public static final String
+        JOBTOOL_TEMPLATE =
+        "<tool name=\"{0}\" >" +
+        "<input>" +
+        "{1}" +   // input parameters
+        "</input>" +
+        "<output>" +
+        "{2}" +   // output parameters
+        "</output>" +
+        "</tool>" ;
+        
+    public static final String
+        JOBPARAMETER_TEMPLATE =
+        "<parameter name=\"{0}\" type=\"{1}\" " +
+        "{2} >" +                         // possible location data
+        "{3}" +                           // possible instream data
+        "</parameter>" ;         
 	 
 }

@@ -12,6 +12,7 @@
 package org.astrogrid.jes.job ;
 
 import org.astrogrid.jes.jobcontroller.*;
+import org.astrogrid.jes.jobscheduler.*;
 
 import java.util.List ;
 import java.util.ListIterator ;
@@ -152,95 +153,6 @@ public class Tool {
         if( TRACE_ENABLED ) trace( "Tool.getOutputParameters() entry") ; 
         return this.outputParameters.listIterator() ;
     }
-        
-       
-//    protected String toXMLString() {
-//        if( TRACE_ENABLED ) trace( "Tool.toXMLString() entry") ;
-//          
-//        String 
-//           response = null,
-//           inputParams,
-//           outputParams ;
-//        StringBuffer
-//           buffer = null ;
-//                                     
-//        try {
-//            
-//            buffer = new StringBuffer(128) ;
-//            ListIterator
-//                it = inputParameters.listIterator();
-//            while( it.hasNext() ) {
-//                buffer.append( ((Parameter)it.next()).toXMLString()) ;
-//            }
-//            inputParams = buffer.toString() ;
-//            buffer = new StringBuffer(128) ;
-//            it = outputParameters.listIterator();
-//            while( it.hasNext() ) {
-//                buffer.append( ((Parameter)it.next()).toXMLString()) ;
-//            }
-//            outputParams = buffer.toString() ;
-//            
-//            Object []
-//               inserts = new Object[4] ;
-//            inserts[0] = this.getName() ;
-//            inserts[1] = this.getDocumentation() ;
-//            inserts[2] = inputParams ;
-//            inserts[3] = outputParams ;
-//
-//            response = MessageFormat.format( SubmissionRequestDD.TOOL_TEMPLATE, inserts ) ;
-//
-//        }
-//        finally {
-//            if( TRACE_ENABLED ) trace( "Tool.toXMLString() exit") ;    
-//        }       
-//        
-//        return response ;        
-//        
-//    }
-//    
-//    
-//    protected String toJESXMLString() {
-//        if( TRACE_ENABLED ) trace( "Tool.toJESXMLString() entry") ;
-//        
-//        String 
-//            response = null,
-//            inputParams,
-//            outputParams ;
-//        StringBuffer
-//            buffer = null ;
-//                                     
-//        try {
-//            
-//            buffer = new StringBuffer(128) ;
-//            ListIterator
-//                it = inputParameters.listIterator();
-//            while( it.hasNext() ) {
-//                buffer.append( ((Parameter)it.next()).toJESXMLString()) ;
-//            }
-//            inputParams = buffer.toString() ;
-//            buffer = new StringBuffer(128) ;
-//            it = outputParameters.listIterator();
-//            while( it.hasNext() ) {
-//                buffer.append( ((Parameter)it.next()).toJESXMLString()) ;
-//            }
-//            outputParams = buffer.toString() ;
-//            
-//            Object []
-//                inserts = new Object[3] ;
-//            inserts[0] = this.getName() ;
-//            inserts[1] = inputParams ;
-//            inserts[2] = outputParams ;
-//
-//            response = MessageFormat.format( SubmissionRequestDD.JOBTOOL_TEMPLATE, inserts ) ;
-//
-//        }
-//        finally {
-//            if( TRACE_ENABLED ) trace( "Tool.toJESXMLString() exit") ;    
-//        }       
-//        
-//        return response ;      
-//
-//    }
     
      
     private static void trace( String traceString ) {
@@ -280,5 +192,48 @@ public class Tool {
 	public JobStep getParent() {
 		return parent;
 	}
+    
+    public String toJESXMLString() {
+        if( TRACE_ENABLED ) trace( "Tool.toJESXMLString() entry") ;
+        
+        String 
+            response = null,
+            inputParams,
+            outputParams ;
+        StringBuffer
+            buffer = null ;
+                                     
+        try {
+            
+            buffer = new StringBuffer(128) ;
+            ListIterator
+                it = inputParameters.listIterator();
+            while( it.hasNext() ) {
+                buffer.append( ((Parameter)it.next()).toJESXMLString()) ;
+            }
+            inputParams = buffer.toString() ;
+            buffer = new StringBuffer(128) ;
+            it = outputParameters.listIterator();
+            while( it.hasNext() ) {
+                buffer.append( ((Parameter)it.next()).toJESXMLString()) ;
+            }
+            outputParams = buffer.toString() ;
+            
+            Object []
+                inserts = new Object[3] ;
+            inserts[0] = this.getName() ;
+            inserts[1] = inputParams ;
+            inserts[2] = outputParams ;
+
+            response = MessageFormat.format( ScheduleRequestDD.JOBTOOL_TEMPLATE, inserts ) ;
+
+        }
+        finally {
+            if( TRACE_ENABLED ) trace( "Tool.toJESXMLString() exit") ;    
+        }       
+        
+        return response ;      
+
+    }
 
 } // end of class Tool

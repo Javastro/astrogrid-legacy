@@ -61,7 +61,9 @@ public class JobImpl extends Job {
 	   name = "",
        description = "",
 	   community = "",
-	   userId = "",    
+	   userId = "",
+       group = "", 
+       token = "", // token is a transient value. Not held as persistent data   
 	   status ;
 	   
 	private Date
@@ -124,9 +126,11 @@ public class JobImpl extends Job {
                         String
                             communitySnippet = XMLUtils.ElementToString( element ),
                             account = CommunityMessage.getAccount( communitySnippet ) ;
-                        userId = account.substring( 0, account.indexOf('@') ) ;		
+                        this.group = CommunityMessage.getGroup( communitySnippet ) ;
+                        this.token = CommunityMessage.getToken( communitySnippet ) ;
+                        this.userId = account.substring( 0, account.indexOf('@') ) ;		
                         logger.debug( "userId: " + userId ) ;		 	
-					    community = account.substring( account.indexOf('@')+1 ) ;
+					    this.community = account.substring( account.indexOf('@')+1 ) ;
                         logger.debug( "community: " + community ) ;
 				 	}
                     else if (element.getTagName().equals( SubmissionRequestDD.DESCRIPTION_ELEMENT ) ) {                        
@@ -250,5 +254,21 @@ public class JobImpl extends Job {
 
 	public void setStatus(String status) { this.status = status; }
 	public String getStatus() {	return status; }
+
+	public void setGroup(String group) {
+		this.group = group;
+	}
+
+	public String getGroup() {
+		return group;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
+	public String getToken() {
+		return token;
+	}
 
 } // end of class JobImpl

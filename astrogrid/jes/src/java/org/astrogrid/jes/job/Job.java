@@ -104,6 +104,12 @@ public abstract class Job {
 	public abstract String getCommunity() ;
 	public abstract void setCommunity( String community ) ;
 	
+    public abstract String getGroup() ;
+    public abstract void setGroup( String group ) ;
+    
+    public abstract String getToken() ;
+    public abstract void setToken( String token ) ;
+    
 	public abstract Object getImplementation() ;
 	
 	public abstract Iterator getJobSteps() ;

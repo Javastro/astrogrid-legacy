@@ -53,8 +53,8 @@ public class JobFactoryImpl implements JobFactory {
         SUBCOMPONENT_NAME = Configurator.getClassName( JobFactoryImpl.class );        
 	    
 	public static final String
-		JOB_INSERT_TEMPLATE = "INSERT INTO {0} ( JOBURN, JOBNAME, STATUS, SUBMITTIMESTAMP, USERID, COMMUNITY, JOBXML, DESCRIPTION ) " +
-												"VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )" ,	                          
+		JOB_INSERT_TEMPLATE = "INSERT INTO {0} ( JOBURN, JOBNAME, STATUS, SUBMITTIMESTAMP, USERID, COMMUNITY, GROUP, TOKEN, JOBXML, DESCRIPTION ) " +
+												"VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )" ,	                          
 	    JOB_UPDATE_TEMPLATE = "UPDATE {0} SET STATUS = ''{1}'' WHERE JOBURN = ''{2}''" ,
 	    JOB_SELECT_TEMPLATE = "SELECT * FROM {0} WHERE JOBURN = ''{1}''" ,
 	    JOB_GENERAL_SELECT_TEMPLATE = "SELECT * FROM {0} WHERE {1}" ,	
@@ -68,8 +68,10 @@ public class JobFactoryImpl implements JobFactory {
 	    COL_SUBMITTIMESTAMP = 4,
 	    COL_USERID = 5,
 	    COL_COMMUNITY = 6,
-	    COL_JOBXML = 7,
-        COL_DESCRIPTION = 8 ;
+        COL_GROUP = 7,
+        COL_TOKEN = 8,
+	    COL_JOBXML = 9,
+        COL_DESCRIPTION = 10 ;
 	 
 	public static final String
         //JBL altered for iteration 3 - added SEQUENCENUMBER, JOINCONDITION and ORDER BY
@@ -296,9 +298,13 @@ public class JobFactoryImpl implements JobFactory {
             //
             // JL: this is probably the place to check authorization...
             //
-            communitySnippet = jobXML.substring( jobXML.indexOf( SubmissionRequestDD.COMMUNITY_TAG )
-                                               + SubmissionRequestDD.COMMUNITY_TAG.length()
-                                               , jobXML.indexOf( SubmissionRequestDD.COMMUNITY_ENDTAG ) ) ;
+            communitySnippet = CommunityMessage.getMessage( job.getToken()
+                                                          , job.getUserId() + "@" + job.getCommunity() 
+                                                          , job.getGroup() ) ; 
+            
+//            jobXML.substring( jobXML.indexOf( SubmissionRequestDD.COMMUNITY_TAG )
+//                                               + SubmissionRequestDD.COMMUNITY_TAG.length()
+//                                               , jobXML.indexOf( SubmissionRequestDD.COMMUNITY_ENDTAG ) ) ;
 
             logger.debug( "communitySnippet: " + communitySnippet ) ;
             
@@ -312,8 +318,10 @@ public class JobFactoryImpl implements JobFactory {
 			pStatement.setString( 4, new Timestamp( job.getDate().getTime() ).toString() ) ; 
 			pStatement.setString( 5, job.getUserId() ) ; 
 			pStatement.setString( 6, job.getCommunity() ) ;
-			pStatement.setString( 7, job.getDocumentXML() ) ;
-            pStatement.setString( 8, job.getDescription() ) ;
+            pStatement.setString( 7, job.getGroup() ) ; 
+            pStatement.setString( 8, job.getToken() ) ; 
+			pStatement.setString( 9, job.getDocumentXML() ) ;
+            pStatement.setString( 10, job.getDescription() ) ;
 			
 			pStatement.execute();
 			job.setDirty( false ) ;
@@ -411,6 +419,8 @@ public class JobFactoryImpl implements JobFactory {
                 job.setDate( this.formatDate( rs.getString( COL_SUBMITTIMESTAMP ) ) ) ;
 				job.setUserId( rs.getString( COL_USERID ) ) ;
 				job.setCommunity( rs.getString( COL_COMMUNITY ) ) ;
+                job.setCommunity( rs.getString( COL_GROUP ) ) ;  
+                job.setToken( rs.getString( COL_TOKEN ) ) ;                
 				job.setDocumentXML( rs.getString( COL_JOBXML ) ) ;
                 job.setDescription( rs.getString( COL_DESCRIPTION ) ) ;
 				job.setDirty( false ) ;
@@ -504,6 +514,8 @@ public class JobFactoryImpl implements JobFactory {
                     job.setDate( this.formatDate( rs.getString( COL_SUBMITTIMESTAMP ) ) ) ;
                     job.setUserId( rs.getString( COL_USERID ) ) ;
                     job.setCommunity( rs.getString( COL_COMMUNITY ) ) ;
+                    job.setCommunity( rs.getString( COL_GROUP ) ) ;  
+                    job.setToken( rs.getString( COL_TOKEN ) ) ;                
                     job.setDocumentXML( rs.getString( COL_JOBXML ) ) ;
                     job.setDescription( rs.getString( COL_DESCRIPTION ) ) ;
                     job.setDirty( false ) ;
@@ -576,13 +588,15 @@ public class JobFactoryImpl implements JobFactory {
 					JobImpl
 					   job = new JobImpl() ;
 				
-				    job.setId( rs.getString( COL_JOBURN ) ) ;
-				    job.setName( rs.getString( COL_JOBNAME ) ) ;
+                    job.setId( rs.getString( COL_JOBURN ) ) ;
+                    job.setName( rs.getString( COL_JOBNAME ) ) ;
                     job.setStatus( rs.getString( COL_STATUS ) ) ;
-				    job.setDate( this.formatDate( rs.getString( COL_SUBMITTIMESTAMP ) ) ) ;
-				    job.setUserId( rs.getString( COL_USERID ) ) ;
-				    job.setCommunity( rs.getString( COL_COMMUNITY ) ) ;
-				    job.setDocumentXML( rs.getString( COL_JOBXML ) ) ;
+                    job.setDate( this.formatDate( rs.getString( COL_SUBMITTIMESTAMP ) ) ) ;
+                    job.setUserId( rs.getString( COL_USERID ) ) ;
+                    job.setCommunity( rs.getString( COL_COMMUNITY ) ) ;
+                    job.setCommunity( rs.getString( COL_GROUP ) ) ;  
+                    job.setToken( rs.getString( COL_TOKEN ) ) ;                
+                    job.setDocumentXML( rs.getString( COL_JOBXML ) ) ;
                     job.setDescription( rs.getString( COL_DESCRIPTION ) ) ;
 				    job.setDirty( false ) ;
 				    

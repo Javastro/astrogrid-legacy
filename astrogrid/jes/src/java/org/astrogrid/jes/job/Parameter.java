@@ -12,6 +12,7 @@
 package org.astrogrid.jes.job;
 
 import org.astrogrid.jes.jobcontroller.*;
+import org.astrogrid.jes.jobscheduler.*;
 // import java.net.*; 
 import org.w3c.dom.* ;
 import org.apache.log4j.Logger ;
@@ -113,60 +114,6 @@ public class Parameter {
 		location = url;
 	}
     
-    
-//    protected String toXMLString() {
-//        if( TRACE_ENABLED ) trace( "Parameter.toXMLString() entry") ;
-//          
-//      String 
-//         response = null ;
-//                                     
-//      try {
-//            
-//          Object []
-//             inserts = new Object[7] ;
-//          inserts[0] = this.getName() ;
-//          inserts[1] = this.getType() ;
-//          inserts[2] = this.getLocation() ;
-//          inserts[3] = new Integer( this.getCardinality().getMinimum() ).toString();
-//          inserts[4] = new Integer( this.getCardinality().getMaximum() ).toString(); ;
-//          inserts[5] = this.getDocumentation() ;
-//          inserts[6] = ( this.getContents() == null ) ? " " :  this.getContents() ;
-//
-//          response = MessageFormat.format( WorkflowDD.PARAMETER_TEMPLATE, inserts ) ;
-//
-//      }
-//      finally {
-//          if( TRACE_ENABLED ) trace( "Parameter.toXMLString() exit") ;    
-//      }       
-//        
-//      return response ;        
-//    }
-//    
-//    
-//    protected String toJESXMLString() {
-//        if( TRACE_ENABLED ) trace( "Parameter.toJESXMLString() entry") ;
-//        String 
-//         response = null ;
-//                                     
-//        try {
-//            
-//            Object []
-//                inserts = new Object[4] ;
-//            inserts[0] = this.getName() ;
-//            inserts[1] = this.getType() ;
-//            inserts[2] = ( this.getLocation() == null ) ? " " :  "location=\"" + this.getLocation() + "\"" ;
-//            inserts[3] = ( this.getContents() == null ) ? " " :  this.getContents() ;
-//
-//            response = MessageFormat.format( WorkflowDD.JOBPARAMETER_TEMPLATE, inserts ) ;
-//
-//        }
-//        finally {
-//            if( TRACE_ENABLED ) trace( "Parameter.toJESXMLString() exit") ;    
-//        }       
-//        
-//        return response ;       
-//    }
-    
      
     private static void trace( String traceString ) {
         System.out.println( traceString ) ;
@@ -193,5 +140,31 @@ public class Parameter {
     public Tool getParent() {
 		return parent;
 	}
+    
+    
+    protected String toJESXMLString() {
+        if( TRACE_ENABLED ) trace( "Parameter.toJESXMLString() entry") ;
+        String 
+         response = null ;
+                                     
+        try {
+            
+            Object []
+                inserts = new Object[4] ;
+            inserts[0] = this.getName() ;
+            inserts[1] = this.getType() ;
+            inserts[2] = ( this.getLocation() == null ) ? " " :  "location=\"" + this.getLocation() + "\"" ;
+            inserts[3] = ( this.getContents() == null ) ? " " :  this.getContents() ;
 
+            response = MessageFormat.format( ScheduleRequestDD.JOBPARAMETER_TEMPLATE, inserts ) ;
+
+        }
+        finally {
+            if( TRACE_ENABLED ) trace( "Parameter.toJESXMLString() exit") ;    
+        }       
+        
+        return response ;       
+    }
+    
+     
 } // end of class Parameter

@@ -41,7 +41,7 @@ import java.net.URL;
 import org.astrogrid.datacenter.delegate.* ;
 import org.astrogrid.applications.delegate.*;
 import org.astrogrid.applications.delegate.beans.*;
-
+import org.astrogrid.community.common.util.CommunityMessage;
 import java.rmi.RemoteException;
 
 /**
@@ -172,18 +172,21 @@ public class JobScheduler {
             iterator = null ;
         JobStep
             step = null ;
+        String
+            communitySnippet = null ;
         
         try {
+            
+            communitySnippet = CommunityMessage.getMessage( job.getToken()
+                                                          , job.getUserId() + "@" + job.getCommunity()
+                                                          , job.getGroup() ) ;
             
             steps = this.identifyDispatchableCandidates( job ) ;
             iterator = steps.listIterator() ;
             
-            InputSource
-               jobSource = null ;          
-            
             while( iterator.hasNext() ) {
                 step = (JobStep)iterator.next() ;
-                this.dispatchOneStep( step ) ;
+                this.dispatchOneStep( communitySnippet, step ) ;
                 job.setStatus( Job.STATUS_RUNNING ) ;
             }
                   
@@ -203,7 +206,7 @@ public class JobScheduler {
     } // end of scheduleSteps()
 	
     
-    private void dispatchOneStep( JobStep step )  throws JesException {
+    private void dispatchOneStep( String communitySnippet, JobStep step )  throws JesException {
         if( TRACE_ENABLED ) logger.debug( "dispatchOneStep(): entry") ; 
         
         String
@@ -211,34 +214,37 @@ public class JobScheduler {
             toolLocation = null,
             jobMonitorURL = null ;
         ApplicationController
-            applicationController ;
+            applicationController = null ;
         int
             applicationID = 0;
+        ParameterValues
+            parameterValues = null ;
         
         try {
            
             toolLocation = locateTool( step ) ;
             applicationController = DelegateFactory.createDelegate( toolLocation ) ;
+            parameterValues.setParameterSpec( step.getTool().toJESXMLString() ) ;
             
             // set the URL for the JobMonitor so that it can be contacted... 
             jobMonitorURL = JES.getProperty( JES.MONITOR_URL, JES.MONITOR_CATEGORY ) ; 
            
             applicationID = applicationController.initializeApplication( step.getParent().getId()
-                                                                       , step.getName()
+                                                                       , step.getStepNumber().toString()
                                                                        , jobMonitorURL
-                                                                       , new ParameterValues() ) ;
+                                                                       , parameterValues ) ;
                                                                         
             applicationController.executeApplication( applicationID ) ;                                                            
             step.setStatus( JobStep.STATUS_RUNNING ) ;
    
         }
         catch( RemoteException rex ) {
-          step.setStatus( JobStep.STATUS_IN_ERROR ) ;
-          AstroGridMessage
-              message = new AstroGridMessage( ASTROGRIDERROR_FAILED_TO_CONTACT_REGISTRY
-                                            , this.getComponentName() ) ; 
-          logger.error( message.toString(), rex ) ;
-          throw new JesException(message) ;
+            step.setStatus( JobStep.STATUS_IN_ERROR ) ;
+            AstroGridMessage
+                message = new AstroGridMessage( ASTROGRIDERROR_FAILED_TO_CONTACT_REGISTRY
+                                              , this.getComponentName() ) ; 
+            logger.error( message.toString(), rex ) ;
+            throw new JesException(message) ;
         }
         finally {
             if( TRACE_ENABLED ) logger.debug( "dispatchOneStep(): exit") ; 
@@ -287,16 +293,19 @@ public class JobScheduler {
           
     } 
     
-	 
-     
+    
 	private String locateTool( JobStep step ) throws JesException { 
 		if( TRACE_ENABLED ) logger.debug( "JobScheduler.locateTool() entry") ;
 		
 		String
-		    toolLocation  = null ;
+		    toolLocation  = null,
+            toolName = step.getTool().getName() ;
+            
 		
 		try {
 		
+            toolLocation = JES.getProperty( toolName
+                                          , JES.TOOLS_CATEGORY ) ;
 
 		}
 		catch ( Exception ex ) {

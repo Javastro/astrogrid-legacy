@@ -101,5 +101,14 @@
     <!-- Registry Request Template -->
     <property name="TEMPLATE.REQUEST" value="RegistryRequest.xmltemplate" />
   </category>  
+  
+  
+    <!-- TOOLS CATEGORY =============================================================== -->    
+  <category name="TOOLS">
+    <!-- Location of various tools -->
+    <property name="QueryTool" value="http://hydra.star.le.ac.uk:8080/axis/services/????" />
+    <property name="Sextractor" value="http://hydra.star.le.ac.uk:8080/axis/services/????" />
+    <property name="VOTableMerge" value="http://hydra.star.le.ac.uk:8080/axis/services/????" />
+  </category>  
 
 </properties>

@@ -118,8 +118,14 @@ public class JES extends org.astrogrid.Configurator {
      *  such as is available within DB2 or Oracle because these are essentially
      *  not portable.   */  
         JOB_ID_BOOKABLERANGE = "ID.BOOKABLERANGE";  
+        
+    public static final String 
+    /** Job category within the component's configuration */  
+        TOOLS_CATEGORY = "TOOLS" ,    
+        TOOLS_QUERY = "QueryTool",
+        TOOLS_SEXTRACTOR = "sextractor",
+        TOOLS_VOTABLEMERGE = "VOTableMerge";        
          
-    
     private static JES
         singletonJES = new JES() ;
         
