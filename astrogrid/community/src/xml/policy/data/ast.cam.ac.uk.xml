@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/xml/policy/data/Attic/ast.cam.ac.uk.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/09/24 15:47:38 $</cvs:date>
-    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:date>$Date: 2003/09/24 16:30:43 $</cvs:date>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
     | <cvs:log>
     |   $Log: ast.cam.ac.uk.xml,v $
+    |   Revision 1.2  2003/09/24 16:30:43  dave
+    |   Updated the policy data files
+    |
     |   Revision 1.1  2003/09/24 15:47:38  dave
     |   Added policy database loader tools.
     |
@@ -22,6 +25,7 @@
 		<account ident="alpha" password="xxxx">
 			<description>Test account</description>
 		</account>
+
 		<account ident="beta" password="xxxx">
 			<description>Test account</description>
 		</account>
@@ -29,6 +33,7 @@
 		<account ident="dave" password="xxxx">
 			<description>Dave Morris</description>
 		</account>
+
 		<account ident="guy" password="xxxx">
 			<description>Guy Rixon</description>
 		</account>
@@ -97,6 +102,10 @@
 		+-->
 	<membership>
 		<!-- Add local account(s) to local group(s) -->
+		<member account="alpha"   group="guest"/>
+		<member account="alpha"   group="admin"/>
+		<member account="beta"    group="guest"/>
+
 		<member account="dave"    group="guest"/>
 		<member account="dave"    group="admin"/>
 		<member account="dave"    group="astro"/>
@@ -105,17 +114,16 @@
 		<member account="guy"     group="admin"/>
 		<member account="guy"     group="astro"/>
 
-		<member account="alpha"   group="guest"/>
-		<member account="alpha"   group="admin"/>
-
-		<member account="beta"    group="guest"/>
-
 		<!-- Add remote account(s) to local group(s) -->
 		<member account="admin@codon.demon.co.uk" group="guest"/>
 		<member account="admin@codon.demon.co.uk" group="admin"/>
 
 		<member account="frog@codon.demon.co.uk" group="guest"/>
 		<member account="toad@codon.demon.co.uk" group="guest"/>
+
+		<member account="brian@star.rl.ac.uk" group="guest"/>
+		<member account="brian@star.rl.ac.uk" group="admin"/>
+		<member account="brian@star.rl.ac.uk" group="astro"/>
 
 	</membership>
 

@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/xml/policy/data/Attic/star.rl.ac.uk.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/09/24 16:25:19 $</cvs:date>
-    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:date>$Date: 2003/09/24 16:30:43 $</cvs:date>
+    | <cvs:version>$Revision: 1.3 $</cvs:version>
     | <cvs:log>
     |   $Log: star.rl.ac.uk.xml,v $
+    |   Revision 1.3  2003/09/24 16:30:43  dave
+    |   Updated the policy data files
+    |
     |   Revision 1.2  2003/09/24 16:25:19  dave
     |   Updated the policy data files
     |
@@ -52,7 +55,7 @@
 			| Add any other local groups here ....
 			+-->
 		<group ident="astro">
-			<description>Astrogrid group</description>
+			<description>AstroGrid group</description>
 		</group>
 
 	</groups>
@@ -97,14 +100,20 @@
 		+-->
 	<membership>
 		<!-- Add local account(s) to local group(s) -->
+		<member account="alpha"   group="guest"/>
+		<member account="alpha"   group="admin"/>
+		<member account="beta"    group="guest"/>
+
 		<member account="brian"   group="guest"/>
 		<member account="brian"   group="admin"/>
 		<member account="brian"   group="astro"/>
 
 		<!-- Add remote account(s) to local group(s) -->
 		<member account="dave@ast.cam.ac.uk" group="guest"/>
-		<member account="dave@ast.cam.ac.uk" group="admin"/>
 		<member account="dave@ast.cam.ac.uk" group="astro"/>
+
+		<member account="guy@ast.cam.ac.uk" group="guest"/>
+		<member account="guy@ast.cam.ac.uk" group="astro"/>
 
 		<member account="frog@codon.demon.co.uk" group="guest"/>
 
