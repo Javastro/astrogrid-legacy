@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationInterface.java,v 1.1 2004/08/27 15:40:00 pah Exp $
+ * $Id: CommandLineApplicationInterface.java,v 1.2 2004/10/08 19:56:50 pah Exp $
  * 
  * Created on 27-Aug-2004 by Paul Harrison (pah@jb.man.ac.uk)
  * Copyright 2004 AstroGrid. All rights reserved.
@@ -11,6 +11,9 @@
  */ 
 
 package org.astrogrid.applications.commandline.digester;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import org.astrogrid.applications.beans.v1.ParameterRef;
 import org.astrogrid.applications.description.ApplicationDescription;
@@ -24,6 +27,11 @@ import org.astrogrid.applications.description.exception.ParameterDescriptionNotF
  * @since iteration6
  */
 class CommandLineApplicationInterface extends BaseApplicationInterface {
+   /**
+    * Logger for this class
+    */
+   private static final Log logger = LogFactory
+         .getLog(CommandLineApplicationInterface.class);
 
     /**
      * @param name
@@ -32,6 +40,12 @@ class CommandLineApplicationInterface extends BaseApplicationInterface {
     public CommandLineApplicationInterface(String name,
             ApplicationDescription description) {
         super(name, description);
+
+      if (logger.isDebugEnabled()) {
+         logger
+               .debug("CommandLineApplicationInterface(ApplicationDescription description = "
+                     + description + ") - creating new interface description");
+      }
  
     }
     
