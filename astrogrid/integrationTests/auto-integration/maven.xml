@@ -265,8 +265,8 @@
         target="register"
         antfile="register.xml"
         >
-            <property name="register.entry" value="file://./tmp/community/config/service/policy.manager.xml"/>
-        </ant>
+        <property name="registry.entry" value="tmp/community/config/service/policy.manager.xml"/>
+    </ant>
 </goal>
 
 <!-- pregoals ///////////////////////////////////////////////////////////////////////////////////////////////// -->

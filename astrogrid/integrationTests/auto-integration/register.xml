@@ -31,7 +31,7 @@
     <target name="register" depends="">
         <echo message=""/>
         <echo message="Uploading XML ...."/>
-        <echo message="  Data     : ${register.entry}"/>
+        <echo message="  Data     : ${registry.entry}"/>
         <echo message="  Registry : ${org.astrogrid.registry.admin}"/>
         <!--+
             | Initialise our Ant task.
