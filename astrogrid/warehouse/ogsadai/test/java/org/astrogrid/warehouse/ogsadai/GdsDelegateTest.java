@@ -74,7 +74,7 @@ public class GdsDelegateTest extends TestCase {
    */
   public void testRegistryLookup3 () throws Exception {
     GdsDelegate gds = new GdsDelegate();
-    gds.setRegistryGsh("testRegistryUrl1");
+    gds.setRegistryGsh(testRegistryUrl1);
     gds.setFactoryGshFromRegistry();
     assertNotNull(gds.factoryPort);
   }
