@@ -8,9 +8,5 @@
       <a href="mailto:ktn@star.le.ac.uk">Keith Noddle</a>
     </p>
   </div>
-  
-  <ag-div>
-    <ag-menu name="login-menu"/>
-  </ag-div>
 </ag-div>
 
