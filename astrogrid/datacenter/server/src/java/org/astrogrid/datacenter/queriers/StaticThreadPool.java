@@ -1,11 +1,11 @@
-/*$Id: StaticThreadPool.java,v 1.1 2004/09/17 01:26:12 nw Exp $
+/*$Id: StaticThreadPool.java,v 1.2 2004/09/27 13:26:04 mch Exp $
  * Created on 16-Sep-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
 **/
 package org.astrogrid.datacenter.queriers;
@@ -18,7 +18,7 @@ import EDU.oswego.cs.dl.util.concurrent.PooledExecutor;
 
 /** Apologies in advance to martin - he's going to hate this.
  * JUst an experiment to see if a more structured way of dealing with threads leads to better performance in the tests (especially getting rid of those outOfMemoryErrors).
- * 
+ *
  * uses the thread pool implemented as part of the <tt>concurrent</tt> package
  * <a href="http://gee.cs.oswego.edu/dl/classes/EDU/oswego/cs/dl/util/concurrent/intro.html">http://gee.cs.oswego.edu/dl/classes/EDU/oswego/cs/dl/util/concurrent/intro.html</a>
  * <p>
@@ -26,6 +26,13 @@ import EDU.oswego.cs.dl.util.concurrent.PooledExecutor;
  *  - so quite modest. later can add in configuration properties to tune this up.
  * @author Noel Winstanley nw@jb.man.ac.uk 16-Sep-2004
  *@todo apologize to martin ;)
+ * @hate :-) Thread pooling was sorted out a long time ago
+ * in most JDKs. This just adds an unnecessary dependency on yet another (breakable) third party package,
+ * adds a layer of obfuscation to an otherwise simple task, adds another layer of pointless processing,
+ * makes no appreciable difference to performance which is I/O dependent for our services, and is highly
+ * unlikely to have anything to do with OutOfMemory errors given the very low number of queries run before
+ * such errors appear. You're quite right I hate this :-). Let me know if it's made any difference, otherwise
+ * it's going to be deprecated and binned heh heh heh - martin
  */
 public class StaticThreadPool {
     /**
@@ -34,7 +41,7 @@ public class StaticThreadPool {
     private static final Log logger = LogFactory.getLog(StaticThreadPool.class);
 
     /** Construct a new StaticThreadPool
-     * 
+     *
      */
     private StaticThreadPool() {
         super();
@@ -61,8 +68,11 @@ public class StaticThreadPool {
 }
 
 
-/* 
+/*
 $Log: StaticThreadPool.java,v $
+Revision 1.2  2004/09/27 13:26:04  mch
+Added comment...
+
 Revision 1.1  2004/09/17 01:26:12  nw
 altered querier manager to use a threadpool
  
