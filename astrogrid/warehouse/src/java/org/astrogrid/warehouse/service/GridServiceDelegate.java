@@ -71,16 +71,16 @@ public class GridServiceDelegate {
 
 
   /**
-   * Return the Grid Service Handle for the service instance.
+   * Return the Grid Service Handle for the service instance, 
+   * or null if no instance is connected.
    */
   public String getInstanceHandle () throws Exception {
-  
-    //if (this.connected) {
+    if (this.instanceHandle != null) {
       return this.instanceHandle.toString();
-    //}
-    //else {
-    //  return "(not connected to service)";
-    //}
+    }
+    else {
+      return null;
+    }
   }
 
 
