@@ -5,6 +5,9 @@
   </properties>
   <body>
   <release version="HEAD">
+        <action dev="kmb" type="fix" issue="787">
+            Pending....
+        </action>    
         <action dev="jdt" type="fix" issue="858">
             Build problem in eXist for maven 1.0.1+
         </action>
@@ -19,7 +22,7 @@ the updates.
             Misc updates to community and registry.
         </action>   
     </release> 
-   <release version="0.7.0" date="20/12/04">
+   <release version="0.7.0" date="20/12/04" description="The release demonstrated at the AstroGrid consortium meeting">
         <action dev="kea" type="fix" issue="862">
             Cosmetic tweak to portal
         </action>
