@@ -263,8 +263,9 @@ public class AdministrationAction extends AbstractAction
 */
       if((String)session.getAttribute(SessionKeys.USER) == null || ((String)session.getAttribute(SessionKeys.USER)).trim().length() <= 0 ) {
          actionTable.put(ACTION_INSERT_ACCOUNT,"Insert Account");
-      }else {
+      }else {         
          actionTable.put(ACTION_CHANGE_PASSWORD,"Change Password");
+         actionTable.put(ACTION_INSERT_ACCOUNT,"Insert Account");
          /*
          try {
             isAdmin = adminDelegate.isAdminAccount(comm_account,community_name);
@@ -499,7 +500,8 @@ public class AdministrationAction extends AbstractAction
          
          SecurityToken st = null;
          try {
-            String ivo_account = (String)session.getAttribute("community_authority") + "/" + (String)session.getAttribute(SessionKeys.USER); 
+           // String ivo_account = (String)session.getAttribute("community_authority") + "/" + (String)session.getAttribute("community_user"); 
+            String ivo_account = (String)session.getAttribute("community_user");
             SecurityServiceDelegate ssd = ssr.resolve(userIvo = new Ivorn(ivo_account,null));
             smd = smr.resolve(userIvo);
             
