@@ -10,7 +10,6 @@
  */
 package org.astrogrid;
 
-import java.io.File;
 import java.util.Hashtable;
 
 import javax.naming.Context;
@@ -38,23 +37,28 @@ import org.astrogrid.i18n.AstroGridMessage;
  * @TODO factor out the logging and replace with commons logging http://jakarta.apache.org/commons/logging/api/index.html
  */
 public abstract class Configurator {
-
+/** error message */
   private static final String ASTROGRIDERROR_COULD_NOT_READ_CONFIGFILE =
     "AG{0}Z00001:{1}: Could not read my configuration file {2}. Missing file or malformed XML.",
     ASTROGRIDERROR_COMPONENT_NOT_INITIALIZED =
       "AG{0}Z00002:{1}: Not initialized. Perhaps my configuration file is missing or contains malformed XML.";
-
+/** keys for config file */
   public static final String GENERAL_CATEGORY = "GENERAL",
     GENERAL_VERSION_NUMBER = "VERSION";
 
+/** key to indicate template file should be loaded */
   private static final String TEMPLATE = "TEMPLATE.";
 
+/** config files that have already been loaded*/
   private static Hashtable loadedConfigurations = new Hashtable();
-
+/** ctor */
   protected Configurator() {
     this.init();
   }
-
+/**
+ * Initialisation of configurator
+ *
+ */
   private void init() {
     Log.trace("Configurator.init(): entry");
 
@@ -91,6 +95,11 @@ public abstract class Configurator {
 
   } // end of init()
 
+
+  /**
+   * Verify that the configuration file has been located and loaded
+   * @throws AstroGridException if not
+   */
   public void checkPropertiesLoaded() throws AstroGridException {
     Log.trace("checkPropertiesLoaded() entry");
 
@@ -128,6 +137,7 @@ public abstract class Configurator {
     * Static getter for properties from the component's configuration.
     * <p>
     *
+    * @param subsystemAcronym TLA used to identify component
     * @param key - the property key within category
     * @param category - the category within the configuration
     * @return the String value of the property, or the empty string if null
@@ -135,9 +145,9 @@ public abstract class Configurator {
     * @see org.jconfig.jConfig
     **/
   public static String getProperty(
-    String subsystemAcronym,
-    String key,
-    String category) {
+    final String subsystemAcronym,
+    final String key,
+    final String category) {
     Log.trace("getProperty() entry");
 
     String targetProperty = null;
@@ -179,15 +189,14 @@ public abstract class Configurator {
     final String key,
     final String category,
     final String value) {
-      
+
     Log.trace("setProperty() entry");
     try {
 
       Configuration config =
         ConfigurationManager.getConfiguration(subsystemAcronym);
 
-        config.setProperty(key, value, category); 
-
+      config.setProperty(key, value, category);
 
       if (key.startsWith(TEMPLATE)) {
         //following the philosophy of if you don't need it now don't write it...
@@ -197,19 +206,19 @@ public abstract class Configurator {
     } finally {
       Log.trace("setProperty() exit");
     }
-  } 
-  
+  }
+
   /**
    * Save the configuration to a file
    * @param subsystemAcronym e.g.JES
    * @param configFileName where do you want it?
    * @throws AstroGridException probably an IOException
-   * @TODO these new methods need unit tests
    */
   public static void save(
     final String subsystemAcronym,
-    final String configFileName) throws AstroGridException {
-      
+    final String configFileName)
+    throws AstroGridException {
+
     Log.trace("save() entry");
 
     try {
@@ -218,37 +227,45 @@ public abstract class Configurator {
         ConfigurationManager.getConfiguration(subsystemAcronym);
       ConfigurationHandler handler = new XMLFileHandler(configFileName);
       ConfigurationManager.getInstance().save(handler, config);
-         
+
     } catch (ConfigurationManagerException e) {
       Log.logError("Error saving configuration file ", e);
       throw new AstroGridException(e);
     } finally {
       Log.trace("save() exit");
     }
-  } 
+  }
 
   /**
    * Save the configuration to a file
    * @throws AstroGridException probably an IOException
    */
   public final void save() throws AstroGridException {
-    assert getSubsystemAcronym() !=null;
-    assert getConfigFileName() !=null;
+    assert getSubsystemAcronym() != null;
+    assert getConfigFileName() != null;
     this.save(getConfigFileName());
   }
-  
+
   /**
    * Save the configuration to a given file
    * @param fileName Name of file
    * @throws AstroGridException probably an IOException
    */
   public final void save(String fileName) throws AstroGridException {
-    assert getSubsystemAcronym() !=null;
+    assert getSubsystemAcronym() != null;
     Configurator.save(getSubsystemAcronym(), fileName);
   }
 
-  protected abstract  String getConfigFileName();
-  protected abstract  String getSubsystemAcronym();
+  /**
+   * Name of xml configuration file - implemented by subclass
+   * @return see above
+   */
+  protected abstract String getConfigFileName();
+  /**
+   * TLA for specific component - implemented by subclass
+   * @return see above
+   */
+  protected abstract String getSubsystemAcronym();
   /**
    * Returns the JNDI name of the URL for locating the config file.
    * e.g. if you place
@@ -282,10 +299,12 @@ public abstract class Configurator {
     final String configFileName,
     final String jndiName) {
     Log.trace("Configurator.getConfig(): entry");
-    
-    assert subsystemAcronym!=null;
-    assert !(configFileName==null && jndiName==null) : "Either configFileName or jndiName must be nonnull";
-    
+
+    assert subsystemAcronym != null;
+    assert !(
+      configFileName == null
+        && jndiName == null) : "Either configFileName or jndiName must be nonnull";
+
     Configuration configuration = null;
 
     try {
@@ -310,7 +329,7 @@ public abstract class Configurator {
         }
 
         if (handler == null) {
-            handler = new InputStreamHandler(configFileName);
+          handler = new InputStreamHandler(configFileName);
         }
 
         ConfigurationManager.getInstance().load(handler, subsystemAcronym);
@@ -333,7 +352,12 @@ public abstract class Configurator {
 
   } // end of getConfig()
 
-  public static String getClassName(java.lang.Class cls) {
+  /**
+   * Utility method to get the name of a class
+   * @param cls the class in question
+   * @return its name of course, minus the .class bit
+   */
+  public static String getClassName(final java.lang.Class cls) {
 
     String componentName = cls.getName();
     int iLastPoint = componentName.lastIndexOf('.');
@@ -354,11 +378,13 @@ final class Log {
    * Do nothing ctor
    *
    */
-  private Log() {}
+  private Log() {
+  }
   /**
    * Logger for this class
    */
-  private static org.apache.commons.logging.Log log = LogFactory.getLog(Configurator.class);
+  private static org.apache.commons.logging.Log log =
+    LogFactory.getLog(Configurator.class);
   /**
    * delegates to commons logging
    * @param string message
@@ -373,7 +399,7 @@ final class Log {
    * @param cme exception
    */
   public static void logError(final String string, final Throwable cme) {
-    log.error(string, cme); 
+    log.error(string, cme);
   }
 
   /**
@@ -383,7 +409,7 @@ final class Log {
    */
   public static void logDebug(final String string, final Throwable ne) {
     log.debug(string, ne);
-    
+
   }
 
   /**
@@ -393,6 +419,5 @@ final class Log {
   public static void logError(final String string) {
     log.error(string);
   }
-  
-  
+
 }
