@@ -9,17 +9,17 @@ import org.astrogrid.mySpace.mySpaceManager.DataItemRecord;
  * Junit tests for the <code>DataItemRecord</code> class.
  *
  * @author A C Davenhall (Edinburgh)
- * @version Iteration 2.
+ * @version Iteration 3.
  */
 
-public class TestDataItemRecord extends TestCase
+public class DataItemRecordTest extends TestCase
 {
 
 /**
  * Standard constructor for JUnit test classes.
  */
 
-   public TestDataItemRecord (String name)
+   public DataItemRecordTest (String name)
    {  super(name);
    }
 
@@ -43,6 +43,24 @@ public class TestDataItemRecord extends TestCase
    }
 
 /**
+ * Test the <code>translateType</code> method.
+ */
+
+   public void testTranslateType()
+   {  Assert.assertEquals(DataItemRecord.VOT,
+        DataItemRecord.translateType("VOT") );
+
+      Assert.assertEquals(DataItemRecord.WORKFLOW,
+        DataItemRecord.translateType("wf") );
+
+      Assert.assertEquals(DataItemRecord.QUERY,
+        DataItemRecord.translateType("qUeRy") );
+
+      Assert.assertEquals(DataItemRecord.UNKNOWN,
+        DataItemRecord.translateType("burble burble") );
+   }
+
+/**
  * Test the <code>toString</code> method.
  */
 
@@ -62,7 +80,7 @@ public class TestDataItemRecord extends TestCase
 
    public static void main (String[] args)
    {
-//    junit.textui.TestRunner.run (TestDataItemRecord.class);
-      junit.swingui.TestRunner.run (TestDataItemRecord.class);
+//    junit.textui.TestRunner.run (DataItemRecordTest.class);
+      junit.swingui.TestRunner.run (DataItemRecordTest.class);
    }
 }
