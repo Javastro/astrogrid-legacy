@@ -1,24 +1,26 @@
 <?xml version="1.0"?>
-<!-- $Id: index.xml,v 1.4 2004/05/28 18:03:05 jdt Exp $ -->
+<!-- $Id: index.xml,v 1.5 2004/06/18 11:38:09 jdt Exp $ -->
 <document>
 	<properties>
-		<title>Maven</title>
+		<title>Astrogrid Releases</title>
 		<author email="jdt@roe.ac.uk">John Taylor</author>
 	</properties>
 	<body>
-		<section name="Astrogrid Releases">
+		<section name="Current Astrogrid Releases">
 			<P> Follow the links to the left for the documentation for the 
 				current releases. This documentation in turn has links to the 
 				binaries and source code. </P>
 			<subsection name="Itn06 Snapshot">
 				<P> The latest build is Itn06. This code is undergoing 
-					development and is built several times daily.  The latest Iteration 6 build is deployed
-					at least once a day to this <a href="http://twmbarlwm.star.le.ac.uk:8080/astrogrid-portal">portal</a>.</P>
+					development and is built several times daily.  The latest Itn06 build is deployed
+					at least once a day to this portal on <a href="http://twmbarlwm.star.le.ac.uk:8080/astrogrid-portal">Twmbarlwm</a>.</P>
 			</subsection>
 			<subsection name="Itn05 Release">
 				<P> The latest stable release is Itn05. </P>
-				<P> Coming soon - a demo installation.</P>
+				<P> An installation of this release is on <a href="http://cadairidris.star.le.ac.uk:8080/astrogrid-portal/">Cadairidris</a>.</P>
 			</subsection>
+		</section>
+		<section name="Previous Astrogrid Releases">
 			<subsection name="Itn04_1 Release">
 				<P> A demonstration of this 
 					release may be found <a 
