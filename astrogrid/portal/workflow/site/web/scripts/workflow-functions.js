@@ -20,7 +20,7 @@
     }
 
 
-    function populate_tool_details(step_name, join_condition, stepNumber, tool_name, tool_documentation)
+    function populate_tool_details(step_name, edit_condition, stepNumber, tool_name, tool_documentation)
     { 
         if (step_name == '') 
         {
@@ -40,25 +40,23 @@
             document.getElementById('tool_select_button').style.display="none";
         }                     
         document.properties_form.step_name.value = step_name;
-        document.properties_form.join_condition.value = join_condition; 
+        document.properties_form.edit_condition.value = edit_condition; 
         document.properties_form.activity_key.value = stepNumber;  
         document.properties_form.tool_name.value = tool_name;
         document.properties_form.tool_documentation.value = tool_documentation;                    
     }
  
  
-    function populate_container_insert_form(id, index)
+    function populate_activity_container_insert_form(id, index)
     {
-       document.container_insert_form.activity_index_key.value = index;
-       document.container_insert_form.activity_key.value = id;
+       document.insert_sequence_form.activity_index_key.value = index;
+       document.insert_sequence_form.activity_key.value = id;
+       document.insert_flow_form.activity_index_key.value = index;
+       document.insert_flow_form.activity_key.value = id;
+       document.insert_step_form.activity_index_key.value = index;
+       document.insert_step_form.activity_key.value = id;
     } 
- 
- 
- 
- 
- 
- 
- 
+  
                
                
     function show_select(object)
@@ -124,3 +122,4 @@
         }
         popUpWin = open(URLStr, 'popUpWin', 'toolbar=no,location=no,directories=no,status=no,menub ar=no,scrollbar=yes,resizable=yes,copyhistory=yes,width='+width+',height='+height+',left='+left+', top='+top+',screenX='+left+',screenY='+top+'');
     }
+    
