@@ -86,6 +86,7 @@ public class MySpaceManager{
 	private static final String REGPATH = "REGISTRYCONF";
 	private static final String TEMPPATHTO ="TEMPPATHTO";
 	private static String regPathTemp = AxisProperties.getProperty("catalina.home")+"/conf/astrogrid/mySpace/" +"statuscodes.lis";
+	private static String serverManagerLoc = "SERVERMANAGER";
 	private String errCode="";
 	private Vector v = new Vector();
 	private String registryName = " ";
@@ -837,9 +838,13 @@ public String upLoad(String jobDetails){
 //
 // The followng methods are provided to access a MySpace server.
 private Call createServerManagerCall(){
+	loadProperties();
+	String servermanagerloc = conProperties.getProperty(serverManagerLoc);
 	Call call = null;
 	try{
-		String endpoint  = "http://localhost:8080/axis/services/ServerManager";
+		//String endpoint  = "http://localhost:8080/axis/services/ServerManager";
+		String endpoint  = servermanagerloc;
+		if ( DEBUG ) logger.debug("servermanagerloc = "+servermanagerloc);
 		Service service = new Service();
 		call = (Call)service.createCall();
 		call.setTargetEndpointAddress( new java.net.URL(endpoint) );
