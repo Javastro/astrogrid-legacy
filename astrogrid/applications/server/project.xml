@@ -86,6 +86,7 @@
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-cea-client</artifactId>
       <version>SNAPSHOT</version>
+      <type>zip</type>
       <properties>
         <war.target.path>client</war.target.path>
       </properties>
