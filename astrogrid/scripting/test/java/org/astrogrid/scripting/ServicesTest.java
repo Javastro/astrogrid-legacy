@@ -1,4 +1,4 @@
-/*$Id: ServicesTest.java,v 1.2 2004/08/09 09:12:17 nw Exp $
+/*$Id: ServicesTest.java,v 1.3 2004/08/09 09:54:58 nw Exp $
  * Created on 28-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.scripting;
 
+import java.net.URL;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -33,7 +34,8 @@ public class ServicesTest extends TestCase {
     * @see TestCase#setUp()
     */
    protected void setUp() throws Exception {
-      s = new Services();
+       URL u = this.getClass().getResource("services.xml");
+      s = new Services(u);
    }
    protected Services s;
    /*
@@ -68,6 +70,10 @@ public class ServicesTest extends TestCase {
 
 /* 
 $Log: ServicesTest.java,v $
+Revision 1.3  2004/08/09 09:54:58  nw
+moved services.xml to test hierarchy.
+altered unit test to specify a path to the service.xml
+
 Revision 1.2  2004/08/09 09:12:17  nw
 made testing a little more thorough
 
