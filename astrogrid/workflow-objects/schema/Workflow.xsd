@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
 <!-- $id$ -->
-<xsd:schema targetNamespace="http://www.astrogrid.org/schema/AGWorkflow/v1" xmlns:er="http://www.astrogrid.org/schema/ExecutionRecord/v1" xmlns:agwf="http://www.astrogrid.org/schema/AGWorkflow/v1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:agcred="http://www.astrogrid.org/schema/Credentials/v1" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<xsd:schema targetNamespace="http://www.astrogrid.org/schema/AGWorkflow/v1" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:agcred="http://www.astrogrid.org/schema/Credentials/v1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:agwf="http://www.astrogrid.org/schema/AGWorkflow/v1" xmlns:er="http://www.astrogrid.org/schema/ExecutionRecord/v1" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xsd:import namespace="http://www.astrogrid.org/schema/Credentials/v1" schemaLocation="Credentials.xsd"/>
 	<xsd:import namespace="http://www.astrogrid.org/schema/AGParameterDefinition/v1" schemaLocation="AGParameterDefinition.xsd"/>
 	<xsd:import namespace="http://www.astrogrid.org/schema/ExecutionRecord/v1" schemaLocation="ExecutionRecord.xsd"/>
@@ -14,7 +14,7 @@
 				<xsd:element name="Activities">
 					<xsd:complexType>
 						<xsd:sequence>
-							<xsd:element ref="agwf:Activity" maxOccurs="unbounded"/>
+							<xsd:element ref="agwf:AbstractActivity" maxOccurs="unbounded"/>
 						</xsd:sequence>
 					</xsd:complexType>
 				</xsd:element>
@@ -25,48 +25,60 @@
 			<xsd:attribute name="name" type="xsd:string" use="required"/>
 		</xsd:complexType>
 	</xsd:element>
-	<xsd:element name="sequence" substitutionGroup="agwf:Activity">
+	<xsd:element name="sequence" substitutionGroup="agwf:AbstractActivity">
 		<xsd:annotation>
 			<xsd:documentation>a sequential sequence of activities</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
-			<xsd:sequence>
-				<xsd:element ref="agwf:Activity" maxOccurs="unbounded"/>
-			</xsd:sequence>
+			<xsd:complexContent>
+				<xsd:extension base="agwf:Activity">
+					<xsd:sequence>
+						<xsd:element ref="agwf:AbstractActivity" maxOccurs="unbounded"/>
+					</xsd:sequence>
+				</xsd:extension>
+			</xsd:complexContent>
 		</xsd:complexType>
 	</xsd:element>
-	<xsd:element name="flow" substitutionGroup="agwf:Activity">
+	<xsd:element name="flow" substitutionGroup="agwf:AbstractActivity">
 		<xsd:annotation>
 			<xsd:documentation>a parallel group of activities</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
-			<xsd:sequence>
-				<xsd:element ref="agwf:Activity" maxOccurs="unbounded"/>
-			</xsd:sequence>
+			<xsd:complexContent>
+				<xsd:extension base="agwf:Activity">
+					<xsd:sequence>
+						<xsd:element ref="agwf:AbstractActivity" maxOccurs="unbounded"/>
+					</xsd:sequence>
+				</xsd:extension>
+			</xsd:complexContent>
 		</xsd:complexType>
 	</xsd:element>
-	<xsd:element name="step" substitutionGroup="agwf:Activity">
+	<xsd:element name="step" substitutionGroup="agwf:AbstractActivity">
 		<xsd:annotation>
 			<xsd:documentation>an acitity to be performed</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
-			<xsd:sequence>
-				<xsd:element ref="agwf:tool"/>
-				<xsd:element name="description" type="xsd:string" minOccurs="0"/>
-				<xsd:element ref="er:step-execution-record" minOccurs="0" maxOccurs="unbounded"/>
-			</xsd:sequence>
-			<xsd:attribute name="name" type="xsd:string" use="required"/>
-			<xsd:attribute name="joinCondition" use="optional" default="any">
-				<xsd:simpleType>
-					<xsd:restriction base="xsd:string">
-						<xsd:enumeration value="true"/>
-						<xsd:enumeration value="false"/>
-						<xsd:enumeration value="any"/>
-					</xsd:restriction>
-				</xsd:simpleType>
-			</xsd:attribute>
-			<xsd:attribute name="stepNumber" type="xsd:int" use="optional"/>
-			<xsd:attribute name="sequenceNumber" type="xsd:int" use="optional"/>
+			<xsd:complexContent>
+				<xsd:extension base="agwf:Activity">
+					<xsd:sequence>
+						<xsd:element ref="agwf:tool"/>
+						<xsd:element name="description" type="xsd:string" minOccurs="0"/>
+						<xsd:element ref="er:step-execution-record" minOccurs="0" maxOccurs="unbounded"/>
+					</xsd:sequence>
+					<xsd:attribute name="name" type="xsd:string" use="required"/>
+					<xsd:attribute name="joinCondition" use="optional" default="any">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:enumeration value="true"/>
+								<xsd:enumeration value="false"/>
+								<xsd:enumeration value="any"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:attribute>
+					<xsd:attribute name="stepNumber" type="xsd:int" use="optional"/>
+					<xsd:attribute name="sequenceNumber" type="xsd:int" use="optional"/>
+				</xsd:extension>
+			</xsd:complexContent>
 		</xsd:complexType>
 	</xsd:element>
 	<xsd:element name="tool">
@@ -108,14 +120,14 @@
 			<xsd:documentation>a parameter that should be based to an CEA tool</xsd:documentation>
 		</xsd:annotation>
 	</xsd:element>
-	<xsd:element name="Activity" abstract="true">
+	<xsd:element name="AbstractActivity" type="agwf:Activity" abstract="true">
+		<xsd:annotation>
+			<xsd:documentation>The head of the substitution group</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:complexType name="Activity" mixed="0">
 		<xsd:annotation>
 			<xsd:documentation>The abstract base class of all activities that can be performed in a workflow</xsd:documentation>
 		</xsd:annotation>
-		<xsd:complexType>
-			<xsd:sequence>
-				<xsd:any/>
-			</xsd:sequence>
-		</xsd:complexType>
-	</xsd:element>
+	</xsd:complexType>
 </xsd:schema>
