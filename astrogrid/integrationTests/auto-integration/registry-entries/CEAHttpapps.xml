@@ -398,6 +398,10 @@
             </cea:ApplicationReference>
             <cea:ApplicationReference>
                 <vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
+                <vr:ResourceKey>HelloYouXMLHttpApp</vr:ResourceKey>
+            </cea:ApplicationReference>            
+            <cea:ApplicationReference>
+                <vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
                 <vr:ResourceKey>AdderHttpGetApp</vr:ResourceKey>
             </cea:ApplicationReference>		
             <cea:ApplicationReference>
