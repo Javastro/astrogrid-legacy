@@ -86,7 +86,7 @@
       <groupId>saaj</groupId>
       <type>jar</type>
       <artifactId>saaj</artifactId>
-      <version>1.0</version>
+      <version>unknown</version>
       <jar>saaj.jar</jar>
     </dependency>
 
@@ -106,7 +106,9 @@
     </dependency>
     
     <dependency>
-      <id>jaxrpc-api</id>
+      <groupId>jaxrpc-api</groupId>
+      <type>jar</type>
+      <artifactId>jaxrpc-api</artifactId>
       <version>1.0.3</version>
     </dependency>
     
