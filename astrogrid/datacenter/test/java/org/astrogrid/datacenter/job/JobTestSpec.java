@@ -1,18 +1,16 @@
-/*$Id: JobTestSpec.java,v 1.1 2003/08/22 10:37:48 nw Exp $
+/*$Id: JobTestSpec.java,v 1.2 2003/08/28 16:12:29 mch Exp $
  * Created on 21-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
 **/
 package org.astrogrid.datacenter.job;
 import java.util.Date;
-
-import org.astrogrid.datacenter.config.Configurable;
-import org.astrogrid.datacenter.config.ConfigurableTestSpec;
+import junit.framework.TestCase;
 import org.astrogrid.datacenter.impl.abstr.AbstractJobStep;
 import org.astrogrid.datacenter.query.QueryException;
 
@@ -21,7 +19,7 @@ import org.astrogrid.datacenter.query.QueryException;
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Aug-2003
  *
  */
-public abstract class JobTestSpec extends ConfigurableTestSpec {
+public abstract class JobTestSpec extends TestCase {
 
     /**
      * Constructor for JobTest.
@@ -37,18 +35,19 @@ public abstract class JobTestSpec extends ConfigurableTestSpec {
     protected JobStep createJobStep() {
         return new AbstractJobStep() {;};
     }
-    /** set to result of createJob. final */
+    /** set to result of createJob. final
     protected final Configurable createConfigurable() {
         return createJob();
     }
+     */
 
     public void testCheckNull() {
         assertNotNull(job);
     }
 
-     /** no true testing here -- can only check the method doesn't barf an exception */   
+     /** no true testing here -- can only check the method doesn't barf an exception */
     public void testInformJobMonitor() {
-        job.informJobMonitor();        
+        job.informJobMonitor();
     }
 
     public void testId() {
@@ -105,7 +104,7 @@ public abstract class JobTestSpec extends ConfigurableTestSpec {
         String url1 = job.getJobMonitorURL();
         assertNotNull(url1);
         assertEquals(url1,"http://www.slashdot.org");
-        
+
     }
 
     public void testJobStep() throws QueryException {
@@ -115,7 +114,7 @@ public abstract class JobTestSpec extends ConfigurableTestSpec {
         assertNotNull(js2);
         assertEquals(js1,js2);
     }
-    
+
     public void testComment() {
         String comment = job.getComment();
         assertNotNull(comment);
@@ -129,9 +128,12 @@ public abstract class JobTestSpec extends ConfigurableTestSpec {
 }
 
 
-/* 
+/*
 $Log: JobTestSpec.java,v $
+Revision 1.2  2003/08/28 16:12:29  mch
+New Configuration package
+
 Revision 1.1  2003/08/22 10:37:48  nw
 added test hierarchy for Job / JobStep
- 
+
 */
