@@ -1,4 +1,4 @@
-/* $Id: ConfFileLocatedTest.java,v 1.3 2004/01/04 18:07:50 jdt Exp $
+/* $Id: ConfFileLocatedTest.java,v 1.4 2004/01/04 18:34:46 jdt Exp $
  * Created on 28-Dec-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,13 @@
  */
 package org.astrogrid.mySpace.installationTests;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import org.astrogrid.AstroGridException;
 import org.astrogrid.mySpace.mySpaceManager.MMC;
 import org.astrogrid.mySpace.mySpaceServer.MSC;
@@ -18,10 +25,12 @@ import junit.framework.TestCase;
 /**
  * This test ensures that MySpace can find its configuration file
  * @author john taylor
- * @TODO do we require tests to located the template and .properties files?
+ * @TODO do we require tests to located the template files?
  *
  */
 public class ConfFileLocatedTest extends TestCase {
+  /** Logger */
+  private static Log log = LogFactory.getLog(ConfFileLocatedTest.class);
   /**
    * Constructor for ConfFileLocatedTest.
    * @param arg0 test name
@@ -52,5 +61,28 @@ public class ConfFileLocatedTest extends TestCase {
 
   public final void testGotMySpaceServerConfig() throws AstroGridException {
     MSC.getInstance().checkPropertiesLoaded();
+  }
+
+  /**
+   * The *.properties files should be on the classpath
+   * @throws IOException if there's trouble
+   */
+  public final void testGotPropertiesFiles() throws IOException {
+    checkProperties(MMC.getProperty("INSTALLATION.BASENAME", "MESSAGES"));
+    checkProperties(MSC.getProperty("INSTALLATION.BASENAME", "MESSAGES"));
+  }
+  
+  /**
+   * Look for the messages properties file
+   * @param baseName the properties file will be \<baseName>.properties
+   * @throws IOException if there's trouble
+   */
+  private void checkProperties(final String baseName) throws IOException {
+    log.debug("Checking properties file: "+baseName);
+    Properties messages = new Properties();
+    final String messageFile = "/" + baseName + ".properties";
+    InputStream is = this.getClass().getResourceAsStream(messageFile);
+    assertNotNull(messageFile + " file not found", is);
+    messages.load(is);
   }
 }
