@@ -1,5 +1,5 @@
 /*
- * @(#)JobImpl.java   1.0
+ * @(#)JobImpl.java   1.0   
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -24,6 +24,8 @@ import java.sql.PreparedStatement ;
 import java.sql.ResultSet ;
 import java.sql.SQLException ;
 import java.text.MessageFormat ;
+
+import javax.sql.DataSource ;
 
 import org.apache.axis.client.Service;
 import org.apache.axis.client.Call;
@@ -190,10 +192,22 @@ public class JobImpl extends Job {
 		
 		try{
 			if( connection == null ) {
-				connection = JobFactoryImpl.getDataSource().getConnection() ;
+				logger.debug( "connection is null" ) ;
+				DataSource
+				   dataSource ;
+				logger.debug( "about to acquire datasource..." ) ;
+				dataSource = JobFactoryImpl.getDataSource() ;
+				logger.debug( "datasource acquired!" ) ;
+				logger.debug( "about to acquire connection..." ) ;
+				connection = dataSource.getConnection() ;
+				logger.debug( "connection acquired!" ) ;
+				logger.debug( "connection: " + connection.toString() ) ;
+			}
+			else {
+				logger.debug( "connection is not null" ) ;
 			}
 		}
-		catch( SQLException e) {
+		catch( SQLException e ) {
 			Message
 				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_JOB_CONNECTION ) ;
 			logger.error( message.toString(), e ) ;

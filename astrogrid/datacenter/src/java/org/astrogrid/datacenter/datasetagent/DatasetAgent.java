@@ -216,7 +216,7 @@ public class DatasetAgent {
 		if( TRACE_ENABLED ) logger.debug( "getProperty(): entry") ;
 		
 		String
-			retValue = configurationProperties.getProperty( key ) ;
+			retValue = configurationProperties.getProperty( key.toUpperCase() ) ;
 
 		if( TRACE_ENABLED ) logger.debug( "getProperty(): exit") ;			
 		return ( retValue == null ? "" : retValue.trim() ) ;

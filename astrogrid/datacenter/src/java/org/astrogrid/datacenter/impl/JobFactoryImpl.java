@@ -117,14 +117,25 @@ public class JobFactoryImpl implements JobFactory {
 			
 			// Note the double lock strategy			
 			if( datasource == null ){
+			   logger.debug("datasource is null") ;
 			   synchronized ( JobFactoryImpl.class ) {
 				   if( datasource == null ){
+				   	   logger.debug( "about to acquire InitialContext..." ) ;
 				   	   InitialContext
 					      initialContext = new InitialContext() ;
+					   logger.debug( "acquired InitialContext!" ) ;
+					   logger.debug( "about to acquire datasource name/location..." ) ;
 					   datasourceName = DatasetAgent.getProperty( JOB_DATASOURCE_LOCATION ) ;
+					   logger.debug( "datasource name/location = " + datasourceName ) ;
+					   logger.debug( "about to do lookup..." ) ;
 					   datasource = (DataSource) initialContext.lookup( datasourceName ) ;
+					   logger.debug( "datasource acquired!" ) ;
+					   logger.debug( "datasource: " + datasource.toString() ) ;
 				   }
 			   } // end synchronized
+			}
+			else {
+				logger.debug("datasource is not null") ;
 			}
 			
 		}
