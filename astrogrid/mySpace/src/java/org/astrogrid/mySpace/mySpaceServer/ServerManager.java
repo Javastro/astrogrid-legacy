@@ -32,20 +32,9 @@ public class ServerManager {
     private static boolean DEBUG = true;
 	private static MySpaceStatus status = new MySpaceStatus();
     private String response = ""; //this would be a xml response contains info match portal/datacentre xml schema.
-    //private static final String SUCCESS = "SUCCESS";
-   //private static final String FAULT = "FAULT";
-	//private static String catalinaHome = AxisProperties.getProperty("catalina.home");
-	//private static String mySpaceProperties = catalinaHome+"/conf/astrogrid/mySpace/" +"statuscodes.lis";
 	private static String mySpaceProperties = "statuscodes.lis";
 	private static Properties conProperties = new Properties();
-    
-    public String processRequest(){
 
-    	return "";
-    }
-
-    /** userAcc = String usrID + String communityID
-     * */
     public String deleteDataHolder(String dataHolderPath){
     	if (DEBUG)
     		logger.debug("MySpace ServerManager.deleteDataHolder..."+dataHolderPath);	
@@ -73,7 +62,8 @@ public class ServerManager {
     		}
     	}
     	catch(Exception e){
-			MySpaceMessage msMessage = new MySpaceMessage("ERR_DELETE_DATA_HOLDER");
+    		logger.error("Exception caught while deleting dataholder: "+e.toString());
+			AstroGridMessage generalMessage = new AstroGridMessage( "AGMSCE00046", this.getComponentName()) ;
 			status.addCode(MySpaceStatusCode.AGMSCE00046,MySpaceStatusCode.ERROR);
 			response = MSC.FAULT+MySpaceStatusCode.AGMSCE00046;
 			return response;
@@ -84,38 +74,7 @@ public class ServerManager {
 
         return "";
     }
-/*
-    public String copyDataHolder(String dataHolderPath){//, String destinationDataHolderPath) {
-		try{
-			File oldFile = new File(dataHolderPath);
-			String content = MySpaceUtils.readFromFile(oldFile);
-			//response = MSC.SUCCESS +saveDataHolder(content, destinationDataHolderPath)+MySpaceStatusCode.AGMSCE00044;
-			response = MSC.SUCCESS +saveDataHolder(content)+MySpaceStatusCode.AGMSCE00044;
-			return response;
-		}catch(Exception e){
-			MySpaceMessage message = new MySpaceMessage("ERR_COPY_DATA_HOLDER");
-			status.addCode(MySpaceStatusCode.AGMSCE00043,MySpaceStatusCode.ERROR);
-			response = MSC.FAULT+MySpaceStatusCode.AGMSCE00043;	
-			return response;
-		}
-    }
 
-    public String moveDataHolder(String dataHolderPath){//, String destinationDataHolderPath) {
-    	try{
-	    	File oldFile = new File(dataHolderPath);
-	    	String content = MySpaceUtils.readFromFile(oldFile);
-			deleteDataHolder(dataHolderPath);
-	    	//response = MSC.SUCCESS +saveDataHolder(content, destinationDataHolderPath)+MySpaceStatusCode.AGMSCE00042;
-			response = MSC.SUCCESS +saveDataHolder(content)+MySpaceStatusCode.AGMSCE00042;
-	    	return response;
-    	}catch(Exception e){
-			MySpaceMessage message = new MySpaceMessage("AGMSCE00041");
-			status.addCode(MySpaceStatusCode.AGMSCE00041,MySpaceStatusCode.ERROR);
-			response = MSC.FAULT+MySpaceStatusCode.AGMSCE00041;	
-    		return response;
-    	}
-    }
-*/
 /**
  * 
  * @param contentPath: path of the file need to get from
@@ -128,7 +87,7 @@ public class ServerManager {
 			MSC.getInstance().checkPropertiesLoaded();
 			String path = MSC.getProperty(MSC.dataHolderFolder, MSC.CATLOG);
 			String dataHolderPath = path + mySpaceFileName;
-			//registryName = MSC.getProperty("REGISTRYCONF",MSC.CATLOG);
+
 			if (DEBUG)  logger.debug("Inside ServerManager.saveDataHolder..."+dataHolderPath+"contentPath="+contentPath);
 			long fileSize = (new File(contentPath)).length();
 			if (DEBUG)  logger.debug("saveDataHolder.saveDataHolder.fileSize: "+fileSize);
@@ -136,11 +95,7 @@ public class ServerManager {
 			String command = MSC.getProperty(MSC.copyCommand, MSC.CATLOG);
 			long sizeLimit = Long.parseLong(MSC.getProperty(MSC.sizeLimit, MSC.CATLOG));
 			
-			//MySpaceUtils msutil = new MySpaceUtils();
-			//conProperties = msutil.loadProperties(mySpaceProperties);
 			if(DEBUG) logger.debug("COPY_COMMAND: " +command+"SIZELIMIT: " +sizeLimit);
-			//String command = conProperties.getProperty( "COPY_COMMAND" )+" "+contentPath+" "+dataHolderPath;
-			//long sizeLimit = Long.parseLong(conProperties.getProperty( "SIZELIMIT" ));
 			if (fileSize>=sizeLimit){
 				if (DEBUG)  logger.debug("command = "+command);
 			    try{
@@ -161,12 +116,11 @@ public class ServerManager {
 			return response;		    
 				    
 		}catch (Exception e) {//catch unexpected Exception
-			logger.error("FAULT ServerManagetr.saveDataHolder!!! "+e);
+			logger.error("FAULT ServerManagetr.saveDataHolder!!! "+e.toString());
 			AstroGridMessage generalMessage = new AstroGridMessage( "AGMSCE00040", this.getComponentName()) ;
-			//MySpaceMessage message = new MySpaceMessage("ERR_SAVE_DATAHOLDER");
 			status.addCode(MySpaceStatusCode.AGMSCE00040,MySpaceStatusCode.ERROR);
 			response = MSC.FAULT+MySpaceStatusCode.AGMSCE00040+"::"+generalMessage.toString();			
-			return response; //temp code for now, should catch the exception and return proper error message
+			return response; 
 		}finally{
 			//close file
 			try{
@@ -174,7 +128,9 @@ public class ServerManager {
 					printWriter.close();
 				}
 			}catch(Exception e){
-				//should catch the exception and return proper error message			
+				logger.error("Exception caught in finally block: ServerManager.saveDataHolder: "+e.toString());
+				AstroGridMessage generalMessage = new AstroGridMessage( "AGMSCE00040", this.getComponentName()) ;	
+				response = MSC.FAULT+MySpaceStatusCode.AGMSCE00040+"::"+generalMessage.toString();		
 			}
 		}
     }
@@ -193,19 +149,14 @@ public class ServerManager {
     }
    
     public String buildXMLResponse(String dum){//String origiRs, File xsl){
-    	logger.debug("BUILDXMLRESPONSE...");
+    	if ( DEBUG )  logger.debug("BUILDXMLRESPONSE...");
     	//this is for tesing response xml string
 		MySpaceUtils util = new MySpaceUtils();
-		logger.debug("CREATED MYSPACEUTIL...");
-		//DataItemRecord record = new DataItemRecord();
 		DataItemRecord dataItemRecord = new DataItemRecord();
 		String response = util.buildMySpaceManagerResponse(dataItemRecord,"","","");
-		
-		logger.debug("GOT RESPONSE" +response);
-		
-		
+		if ( DEBUG )  logger.debug("GOT RESPONSE" +response);
 		return response;	
-    }//end method
+    }
     
 
     /**
