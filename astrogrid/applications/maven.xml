@@ -331,7 +331,7 @@ RegistryTemplate=file://${basedir}/config/RegistryTemplate.xml
             dir="${maven.war.webapp.dir}/WEB-INF"
             classpathref="fullapppath" fork="yes" failonerror="true">
         <arg value="server"/>
-        <arg value="${generated.dir}/wsdd/ApplicationControllerService/deploy.wsdd"/>
+        <arg value="${working.dir}/wsdd/CommonExecutionConnector-deploy.wsdd"/>
 	</java>
 
 </goal>
@@ -347,7 +347,7 @@ RegistryTemplate=file://${basedir}/config/RegistryTemplate.xml
             hostname="${tomcat.host}"
             servletpath="/${appint.webapp.name}/services/AdminService"
             debug="true"
-            xmlfile="${generated.dir}/wsdd/${appint.service.name}/deploy.wsdd"
+            xmlfile="${working.dir}/wsdd/CommonExecutionConnector-deploy.wsdd"
             />
     </goal>
 
