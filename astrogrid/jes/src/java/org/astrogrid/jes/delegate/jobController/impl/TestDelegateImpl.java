@@ -49,25 +49,15 @@ public class TestDelegateImpl extends JobControllerDelegate {
       super( targetEndPoint, timeout ) ;
     }
     
+    
     public void submitJob(String req) throws JesDelegateException {
-        
-        JobControllerServiceSoapBindingStub 
-            binding = null ;
-            
+        if( TRACE_ENABLED ) trace( "TestDelegateImpl.submitJob() entry") ; 
+         
         try {
-            binding = (JobControllerServiceSoapBindingStub)
-                new JobControllerServiceLocator().getJobControllerService( new URL( this.getTargetEndPoint() ) );                        
-            binding.setTimeout( this.getTimeout() ) ;    
-            binding.submitJob(req);
+            if( TRACE_ENABLED ) trace( "Pretend the job submitted correctly.") ; 
         }
-        catch( MalformedURLException mex ) {
-            throw new JesDelegateException( mex ) ;
-        }
-        catch( RemoteException rex) {
-            throw new JesDelegateException( rex ) ;            
-        }
-        catch( javax.xml.rpc.ServiceException sex ) {
-            throw new JesDelegateException( sex ) ;    
+        finally {
+            if( TRACE_ENABLED ) trace( "TestDelegateImpl.submitJob() exit") ;      
         }
               
         return ;
@@ -102,11 +92,30 @@ public class TestDelegateImpl extends JobControllerDelegate {
              // Format the list itself ...
             for ( int i=0; i < 10; i++ ) {
                 
-                  status = "" ;
+                switch( i%4 ) {
+                    
+                    case 0:
+                        status = org.astrogrid.jes.job.Job.STATUS_INITIALIZED ;
+                        break ;
+                    case 1:
+                         status = org.astrogrid.jes.job.Job.STATUS_RUNNING ;
+                         break ;
+                    case 2:
+                         status = org.astrogrid.jes.job.Job.STATUS_COMPLETED ;
+                         break ;
+                    case 3:
+                         status = org.astrogrid.jes.job.Job.STATUS_IN_ERROR ;
+                         break ;    
+                        
+                    default:
+                        status = "unknown status" ;
+                        break ;
+                    
+                }
                 
                   inserts[0] = "JobName" + new Integer(i).toString() ;                 
                   inserts[1] = "Description for " +  new Integer(i).toString() ; 
-                  inserts[2] = org.astrogrid.jes.job.Job.STATUS_COMPLETED ;           
+                  inserts[2] = status ;           
                   inserts[3] = new java.util.Date() ;
                   inserts[4] = userid + ":" + community + ":JES@Leicester:" + "1298376" + i ; 
                 

@@ -24,6 +24,10 @@ import org.xml.sax.SAXException;
 
 import org.astrogrid.portal.workflow.*;
 
+import org.astrogrid.community.delegate.policy.PolicyServiceDelegate;
+import org.astrogrid.community.policy.data.PolicyPermission ;
+import org.astrogrid.community.common.util.CommunityMessage;
+
 
  
 public class WorkflowTestSuite extends TestCase {
@@ -61,7 +65,7 @@ public class WorkflowTestSuite extends TestCase {
 	
     
     
-    public void testWorkflowActivityNavigation() {
+    public void tostWorkflowActivityNavigation() {
          logger.info( "enter: WorkflowTestSuite.testWorkflowActivityNavigation()" ); 
         
          final String 
@@ -107,7 +111,7 @@ public class WorkflowTestSuite extends TestCase {
     
     
 
-    public void testCreateWorkflowFromTemplate_MissingTemplate() {
+    public void tostCreateWorkflowFromTemplate_MissingTemplate() {
         logger.info( "enter: WorkflowTestSuite.testCreateWorkflowFromTemplate_MissingTemplate()" ); 
         
         final String 
@@ -132,7 +136,7 @@ public class WorkflowTestSuite extends TestCase {
     } // end of testCreateWorkflowFromTemplate_MissingTemplate()
 
 
-    public void testCreateWorkflowFromTemplate_OneStepTemplate() {
+    public void tostCreateWorkflowFromTemplate_OneStepTemplate() {
         logger.info( "enter: WorkflowTestSuite.testCreateWorkflowFromTemplate_OneStepTemplate()" ); 
         
         final String 
@@ -159,86 +163,30 @@ public class WorkflowTestSuite extends TestCase {
     } // end of testCreateWorkflowFromTemplate_OneStepTemplate()
 
 
-    public void testWorkflowReadList() {
-         logger.info( "enter: WorkflowTestSuite.testWorkflowReadList()" ); 
-        
-         final String 
-             userid = "pjn3",
-             community = "leicester",
-             name = "SomeOneStepJob", 
-             communitySnippet = "dummySnippet";
-         Iterator
-            iterator ;
-            
-         try{
-             iterator = Workflow.readWorkflowList( userid, community, communitySnippet, name) ;
-             
-             while ( iterator.hasNext() ) {
-                 logger.info( "Workflow Name: " + (String)iterator.next() ) ;
-             }
- 
-             assertTrue( true ) ;    
-         }
-         catch( Exception ex ) {
-             
-             assertTrue( false ) ;
-             ex.printStackTrace() ;
-         }
-         finally {
-             logger.info( "exit: WorkflowTestSuite.testWorkflowReadList()" );  
-         }
-        
-     } // end of testWorkflowReadList()
-    
-    
-    public void testReadQuery() {
-         logger.info( "enter: WorkflowTestSuite.testReadQuery()" ); 
-        
-         final String 
-             userid = "dfh",
-             community = "moscow",
-             name = "SomeDevilishQuery", 
-             communitySnippet = "dummySnippet";
-         Query
-            query ;
-            
-         try{
-             query = Query.readQuery( userid, community, communitySnippet, name) ;
-            
-             logger.info( "Query: " + query.toXMLString() ) ;
- 
-             assertTrue( true ) ;    
-         }
-         catch( Exception ex ) {
-             
-             assertTrue( false ) ;
-             ex.printStackTrace() ;
-         }
-         finally {
-             logger.info( "exit: WorkflowTestSuite.testReadQuery()" );  
-         }
-        
-     } // end of testReadQuery()
-    
-    
+
     public void testSaveWorkflow() {
          logger.info( "enter: WorkflowTestSuite.testSaveWorkflow()" ); 
         
         final String 
-            userid = "shd",
-            community = "edinburgh",
-            name = "JobToSave", 
-            communitySnippet = "dummySnippet";
-        Workflow
-           workflow ;
+             userid = "jl99",
+             community = "leicester",
+             name = "OneStepJob",
+             description = "This is a one step job",
+             templateName = "OneStepJob" ;
+         Workflow
+             workflow = null ;
+         boolean
+             rc = false ;
             
-        try{
-            workflow = Workflow.readWorkflow( userid, community, communitySnippet, name) ;
-            
+         try{
+            workflow = Workflow.createWorkflowFromTemplate( userid, community, name, description, templateName ) ;
+            workflow.setToken( "1234") ;
+            workflow.setGroup( userid + "@" + community );         
             logger.info( "Workflow: " + workflow.toXMLString() ) ;
-            logger.info( "About to save" ) ;
             
-            Workflow.saveWorkflow( workflow ) ;
+            logger.info( "About to save" ) ; 
+            rc = Workflow.saveWorkflow( workflow ) ;
+            logger.info( "MySpace says: " + rc ) ;
  
             assertTrue( true ) ;    
          }
@@ -252,22 +200,87 @@ public class WorkflowTestSuite extends TestCase {
          }
         
      } // end of testSaveWorkflow()
+
+
+
+
+    public void tostReadWorkflowList() {
+         logger.info( "enter: WorkflowTestSuite.testReadWorkflowList()" ); 
+        
+         final String 
+             userid = "jl99",
+             community = "leicester",
+             filter = "*" ;
+         Iterator
+            iterator ;
+            
+         try{
+             iterator = Workflow.readWorkflowList( userid, community, communitySnippet(), filter ) ;
+             
+             while ( iterator.hasNext() ) {
+                 logger.info( "Workflow Name: " + (String)iterator.next() ) ;
+             }
+ 
+             assertTrue( true ) ;    
+         }
+         catch( Exception ex ) {
+             
+             assertTrue( false ) ;
+             ex.printStackTrace() ;
+         }
+         finally {
+             logger.info( "exit: WorkflowTestSuite.testReadWorkflowList()" );  
+         }
+        
+     } // end of testReadWorkflowList()
+ 
+ 
+ 
+    public void tostReadWorkflow() {
+         logger.info( "enter: WorkflowTestSuite.testReadWorkflow()" ); 
+        
+         final String 
+             userid = "jl99",
+             community = "leicester",
+             name = "OneStepJob" ;
+         Workflow
+            workflow ;
+            
+         try{
+             workflow = Workflow.readWorkflow( userid, community, communitySnippet(), name) ;
+            
+             logger.info( "Workflow: " + workflow.toXMLString() ) ;
+ 
+             assertTrue( true ) ;    
+         }
+         catch( Exception ex ) {
+             
+             assertTrue( false ) ;
+             ex.printStackTrace() ;
+         }
+         finally {
+             logger.info( "exit: WorkflowTestSuite.testReadWorkflow()" );  
+         }
+        
+     } // end of testReadWorkflow()   
     
     
 
-    public void testDeleteWorkflow() {
+    
+    
+
+    public void tostDeleteWorkflow() {
          logger.info( "enter: WorkflowTestSuite.testDeleteWorkflow()" ); 
         
         final String 
-            userid = "kjh",
-            community = "berlin",
-            name = "JobToDelete", 
-            communitySnippet = "dummySnippet";
+            userid = "jl99",
+            community = "leicester",
+            name = "OneStepJob" ;
         boolean
             ret = false ;
             
         try{
-            ret = Workflow.deleteWorkflow( userid, community, communitySnippet, name) ;
+            ret = Workflow.deleteWorkflow( userid, community, communitySnippet(), name) ;
             
             logger.info( "deleted: " + ret ) ;
  
@@ -288,19 +301,18 @@ public class WorkflowTestSuite extends TestCase {
 
 
 
-    public void testReadQueryList() {
+    public void tostReadQueryList() {
          logger.info( "enter: WorkflowTestSuite.testReadQueryList()" ); 
         
          final String 
-             userid = "xvz8",
+             userid = "jl99",
              community = "leicester",
-             filter = "*", 
-             communitySnippet = "dummySnippet";
+             filter = "*" ;
          Iterator
             iterator ;
             
          try{
-             iterator = Query.readQueryList( userid, community, communitySnippet, filter) ;
+             iterator = Query.readQueryList( userid, community, communitySnippet(), filter) ;
              
              while ( iterator.hasNext() ) {
                  logger.info( "Query Name: " + (String)iterator.next() ) ;
@@ -320,21 +332,21 @@ public class WorkflowTestSuite extends TestCase {
      } // end of testReadQueryList()
     
     
-    public void testReadWorkflow() {
-         logger.info( "enter: WorkflowTestSuite.testReadWorkflow()" ); 
+    
+    public void tostReadQuery() {
+         logger.info( "enter: WorkflowTestSuite.testReadQuery()" ); 
         
          final String 
-             userid = "dfh",
-             community = "nottingham",
-             name = "JobFromDFH", 
-             communitySnippet = "dummySnippet";
-         Workflow
-            workflow ;
+             userid = "jl99",
+             community = "leicester",
+             name = "SomeDevilishQuery" ;
+         Query
+            query ;
             
          try{
-             workflow = Workflow.readWorkflow( userid, community, communitySnippet, name) ;
+             query = Query.readQuery( userid, community, communitySnippet(), name) ;
             
-             logger.info( "Workflow: " + workflow.toXMLString() ) ;
+             logger.info( "Query: " + query.toXMLString() ) ;
  
              assertTrue( true ) ;    
          }
@@ -344,13 +356,16 @@ public class WorkflowTestSuite extends TestCase {
              ex.printStackTrace() ;
          }
          finally {
-             logger.info( "exit: WorkflowTestSuite.testReadWorkflow()" );  
+             logger.info( "exit: WorkflowTestSuite.testReadQuery()" );  
          }
         
-     } // end of testReadWorkflow()   
+     } // end of testReadQuery()
+    
     
 
-
+    private String communitySnippet(){
+        return CommunityMessage.getMessage( "1234", "jl99@leicester", "jl99") ;
+    }
 
     
     
@@ -373,8 +388,8 @@ public class WorkflowTestSuite extends TestCase {
 
 //		PropertyConfigurator.configure( log4jproperties ) ;
 			
-	   logger.info("Entering WorkflowTestSuite application.");	
-	   junit.textui.TestRunner.run( suite() ) ;
+	   logger.info("Entering WorkflowTestSuite application.");
+       junit.textui.TestRunner.run( suite() ) ;
 	   logger.info("Exit WorkflowTestSuite application.");
 		
     }

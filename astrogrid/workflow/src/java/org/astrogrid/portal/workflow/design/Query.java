@@ -91,7 +91,7 @@ public final class Query implements Tool {
                 .append( "/")
                 .append( "serv1")
                 .append( "/")
-                .append( "community")
+                .append( "query")
                 .append( "/")
                 .append( name ) ;
             

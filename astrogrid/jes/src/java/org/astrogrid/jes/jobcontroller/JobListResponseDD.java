@@ -36,7 +36,7 @@ public final class JobListResponseDD {
         
     public static final String
         RESPONSE_TEMPLATE = 
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +            "<response>" +            "   <message>{0}</message>" +            "   <joblist userid=\"{1}\" community=\"{2}\" >" +            "       {3}" +            "   </joblist>" +            "</response>" ;
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +            "<response>" +            "   <message>{0} </message>" +            "   <joblist userid=\"{1}\" community=\"{2}\" >" +            "       {3}" +            "   </joblist>" +            "</response>" ;
         
     public static final String
         JOB_TEMPLATE = 

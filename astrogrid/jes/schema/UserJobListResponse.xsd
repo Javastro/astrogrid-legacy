@@ -51,7 +51,6 @@
             <xsd:attribute name="name" use="required">
                 <xsd:simpleType>
                     <xsd:restriction base="xsd:string">
-                        <xsd:whiteSpace value="preserve"/>
                     </xsd:restriction>
                 </xsd:simpleType>
             </xsd:attribute>

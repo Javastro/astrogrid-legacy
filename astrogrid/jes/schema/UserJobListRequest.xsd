@@ -4,7 +4,7 @@
     <xsd:element name="joblist">
         <xsd:complexType>
             <xsd:sequence>
-                <xsd:element maxOccurs="1" minOccurs="1" ref="argument"/>                
+                <xsd:element maxOccurs="1" minOccurs="1" ref="filter"/>                
             </xsd:sequence>      
             <xsd:attribute name="userid" use="required">
                 <xsd:simpleType>
@@ -19,7 +19,7 @@
         </xsd:complexType>
     </xsd:element>
  
-    <xsd:element name="argument">
+    <xsd:element name="filter">
         <xsd:simpleType>
             <xsd:restriction base="xsd:string"/>
         </xsd:simpleType>
