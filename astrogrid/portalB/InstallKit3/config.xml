@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/InstallKit3/Attic/config.xml,v $</cvs:source>
+    | <cvs:author>$Author: bkm $</cvs:author>
+    | <cvs:date>$Date: 2003/10/09 11:59:54 $</cvs:date>
+    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:log>
+    |   $Log: config.xml,v $
+    |   Revision 1.1  2003/10/09 11:59:54  bkm
+    |   Initial deployment files for Iteration 3
+    |
+    |   Revision 1.6  2003/09/22 13:48:24  dave
+    |   Updates to the community/portal build
+    |
+    |   Revision 1.5  2003/09/18 15:50:03  dave
+    |   Fixing bugs in configuration
+    |
+    |   Revision 1.4  2003/09/17 19:47:21  dave
+    |   1) Fixed classnotfound problems in the build.
+    |   2) Added the JUnit task to add the initial accounts and groups.
+    |   3) Got the build to work together with the portal.
+    |   4) Fixed some bugs in the Account handling.
+    |
+    |   Revision 1.3  2003/09/15 11:18:55  dave
+    |   Fixed typo in config file
+    |
+    |   Revision 1.2  2003/09/14 21:19:43  KevinBenson
+    |   *** empty log message ***
+    |
+    |   Revision 1.1  2003/09/13 02:18:52  dave
+    |   Extended the jConfig configuration code.
+    |
+    | </cvs:log>
+    |
+    +-->
+<properties>
+	<!--+
+	    | Configuration properties for the community service.
+	    | These values are for illustration only.
+	    | The actual values are filled in by the Ant build script.
+	    |
+	    +-->
+	<category name="org.astrogrid.community">
+		<!--+
+			| The local community name.
+			| This will default to your local hostname
+			+-->
+		<property name="community.name" value="star.le.ac.uk"/>
+
+		<!--+
+			| The community host name.
+			| This will default to your local hostname
+			+-->
+		<property name="community.host" value="uml02.astrogrid.org"/>
+
+		<!--+
+			| The local community services.
+			| These will default to the standard Axis services URL using the community host name.
+			+-->
+		<property name="policy.manager.url" value=""/>
+		<property name="policy.service.url" value=""/>
+
+		<!--+
+			| Configuration for the server database.
+			| No defaults, filled in by the Ant build script.
+			+-->
+		<property name="database.name" value="policy"/>
+		<property name="database.config" value="/home/community/astrogrid/community/build/config/database.xml"/>
+		<property name="database.mapping" value="/home/community/astrogrid/community/build/config/mapping.xml"/>
+
+		<!-- Configuration for the community client  -->
+		<property name="community.security" value="off"/>
+		<property name="community.secure.port" value="8443"/>
+		<!-- Configuration for the portal client  -->
+		<property name="portal.security" value="off"/>
+		<property name="portal.secure.port" value="8443"/>
+		<property name="portal.nonsecure.port" value="8080"/>       
+		<!-- Configuration for the portal site  -->
+		<property name="astrogrid.admin" value="Keith Noddle"/>
+		<property name="astrogrid.adminEmail" value="ktn@star.le.ac.uk"/>
+		<!-- Configuration for MySpace manager -->
+		<property name="myspace.url.webservice"
+               value="http://143.210.36.173:8080/axis/services/MySpaceManager"/>
+	</category> 
+</properties>
