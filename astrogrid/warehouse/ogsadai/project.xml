@@ -2,7 +2,7 @@
 <project
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="maven-project.xsd">
-
+  <extend>../build/project-base.xml</extend>
   <pomVersion>3</pomVersion>
   <id>astrogrid-ogsadai-app</id>
   <groupId>org.astrogrid</groupId>
