@@ -1,4 +1,4 @@
-/* $Id: AnotherNamingServiceDemo.java,v 1.1 2003/11/10 18:49:04 jdt Exp $
+/* $Id: AnotherNamingServiceDemo.java,v 1.2 2003/11/10 18:49:43 jdt Exp $
  * Created on 30-Oct-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,7 +14,6 @@ import java.util.Hashtable;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.naming.spi.NamingManager;
 
 /**
  * Demonstration of how to use my noddy naming service.
@@ -73,6 +72,9 @@ public final class AnotherNamingServiceDemo {
 
 /*
 *$Log: AnotherNamingServiceDemo.java,v $
+*Revision 1.2  2003/11/10 18:49:43  jdt
+*Minor bits and pieces to satisfy the coding standards
+*
 *Revision 1.1  2003/11/10 18:49:04  jdt
 *Initial Commit
 *

@@ -1,4 +1,4 @@
-/* $Id: SimpleInitialContext.java,v 1.1 2003/10/31 17:21:44 jdt Exp $
+/* $Id: SimpleInitialContext.java,v 1.2 2003/11/10 18:51:31 jdt Exp $
  * Created on 30-Oct-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -47,20 +47,23 @@ public final class SimpleInitialContext implements Context {
 
   /**
    * Nothing but chuck an  <code>UnsupportedOperationException</code>
+   * @param name see superclass
    */
-  public void destroySubcontext(String name)  {
+  public void destroySubcontext(final String name)  {
     throw new UnsupportedOperationException();
   }
 
   /**
    * Nothing but chuck an  <code>UnsupportedOperationException</code>
+   * @param name name to unbind
    */
-  public void unbind(String name)  {
+  public void unbind(final String name)  {
     throw new UnsupportedOperationException();
   }
 
   /**
    * Nothing but chuck an  <code>UnsupportedOperationException</code>
+   * @return see superclass
    */
   public Hashtable getEnvironment()  {
     throw new UnsupportedOperationException();
@@ -68,8 +71,9 @@ public final class SimpleInitialContext implements Context {
 
   /**
    * Nothing but chuck an  <code>UnsupportedOperationException</code>
+   * @param name see superclass
    */
-  public void destroySubcontext(Name name)  {
+  public void destroySubcontext(final Name name)  {
     throw new UnsupportedOperationException();
   }
 
@@ -77,7 +81,7 @@ public final class SimpleInitialContext implements Context {
    * Nothing but chuck an  <code>UnsupportedOperationException</code>
    * @see javax.naming.Context#unbind(javax.naming.Name)
    */
-  public void unbind(Name name)  {
+  public void unbind(final Name name)  {
     throw new UnsupportedOperationException();
   }
 
@@ -85,10 +89,10 @@ public final class SimpleInitialContext implements Context {
    * Nothing but chuck an  <code>UnsupportedOperationException</code>
    * @see javax.naming.Context#lookup(java.lang.String)
    */
-  public Object lookup(String name) throws NamingException  {
+  public Object lookup(final String name) throws NamingException  {
     Object result = map.get(name);
     if (result==null) {
-      throw new NamingException();
+      throw new NamingException("Couldn't find " + name);
     }
     return result;
   }
@@ -97,7 +101,7 @@ public final class SimpleInitialContext implements Context {
    * Nothing but chuck an  <code>UnsupportedOperationException</code>
    * @see javax.naming.Context#lookupLink(java.lang.String)
    */
-  public Object lookupLink(String name)  {
+  public Object lookupLink(final String name)  {
     throw new UnsupportedOperationException();
   }
 
@@ -105,7 +109,7 @@ public final class SimpleInitialContext implements Context {
    * Nothing but chuck an  <code>UnsupportedOperationException</code>
    * @see javax.naming.Context#removeFromEnvironment(java.lang.String)
    */
-  public Object removeFromEnvironment(String propName)  {
+  public Object removeFromEnvironment(final String propName)  {
     throw new UnsupportedOperationException();
   }
 
@@ -113,7 +117,7 @@ public final class SimpleInitialContext implements Context {
    * Nothing but chuck an  <code>UnsupportedOperationException</code>
    * @see javax.naming.Context#bind(java.lang.String, java.lang.Object)
    */
-  public void bind(String name, Object obj)  {
+  public void bind(final String name, final Object obj)  {
     map.put(name, obj);
 
   }
@@ -122,7 +126,7 @@ public final class SimpleInitialContext implements Context {
    * Nothing but chuck an  <code>UnsupportedOperationException</code>
    * @see javax.naming.Context#rebind(java.lang.String, java.lang.Object)
    */
-  public void rebind(String name, Object obj)  {
+  public void rebind(final String name, final Object obj)  {
     throw new UnsupportedOperationException();
   }
 
@@ -130,7 +134,7 @@ public final class SimpleInitialContext implements Context {
    * Nothing but chuck an  <code>UnsupportedOperationException</code>
    * @see javax.naming.Context#lookup(javax.naming.Name)
    */
-  public Object lookup(Name name)  {
+  public Object lookup(final Name name)  {
     throw new UnsupportedOperationException();
   }
 
@@ -138,7 +142,7 @@ public final class SimpleInitialContext implements Context {
    * Nothing but chuck an  <code>UnsupportedOperationException</code>
    * @see javax.naming.Context#lookupLink(javax.naming.Name)
    */
-  public Object lookupLink(Name name)  {
+  public Object lookupLink(final Name name)  {
     throw new UnsupportedOperationException();
   }
 
@@ -146,7 +150,7 @@ public final class SimpleInitialContext implements Context {
    * Nothing but chuck an  <code>UnsupportedOperationException</code>
    * @see javax.naming.Context#bind(javax.naming.Name, java.lang.Object)
    */
-  public void bind(Name name, Object obj)  {
+  public void bind(final Name name, final Object obj)  {
     throw new UnsupportedOperationException();
   }
 
@@ -154,7 +158,7 @@ public final class SimpleInitialContext implements Context {
    * Nothing but chuck an  <code>UnsupportedOperationException</code>
    * @see javax.naming.Context#rebind(javax.naming.Name, java.lang.Object)
    */
-  public void rebind(Name name, Object obj)  {
+  public void rebind(final Name name, final Object obj)  {
     throw new UnsupportedOperationException();
   }
 
@@ -162,7 +166,7 @@ public final class SimpleInitialContext implements Context {
    * Nothing but chuck an  <code>UnsupportedOperationException</code>
    * @see javax.naming.Context#rename(java.lang.String, java.lang.String)
    */
-  public void rename(String oldName, String newName)  {
+  public void rename(final String oldName, final String newName)  {
     throw new UnsupportedOperationException();
   }
 
@@ -170,7 +174,7 @@ public final class SimpleInitialContext implements Context {
    * Nothing but chuck an  <code>UnsupportedOperationException</code>
    * @see javax.naming.Context#createSubcontext(java.lang.String)
    */
-  public Context createSubcontext(String name)  {
+  public Context createSubcontext(final String name)  {
     throw new UnsupportedOperationException();
   }
 
@@ -178,7 +182,7 @@ public final class SimpleInitialContext implements Context {
    * Nothing but chuck an  <code>UnsupportedOperationException</code>
    * @see javax.naming.Context#createSubcontext(javax.naming.Name)
    */
-  public Context createSubcontext(Name name)  {
+  public Context createSubcontext(final Name name)  {
     throw new UnsupportedOperationException();
   }
 
@@ -186,7 +190,7 @@ public final class SimpleInitialContext implements Context {
    * Nothing but chuck an  <code>UnsupportedOperationException</code>
    * @see javax.naming.Context#rename(javax.naming.Name, javax.naming.Name)
    */
-  public void rename(Name oldName, Name newName)  {
+  public void rename(final Name oldName, final Name newName)  {
     throw new UnsupportedOperationException();
   }
 
@@ -194,7 +198,7 @@ public final class SimpleInitialContext implements Context {
    * Nothing but chuck an  <code>UnsupportedOperationException</code>
    * @see javax.naming.Context#getNameParser(java.lang.String)
    */
-  public NameParser getNameParser(String name)  {
+  public NameParser getNameParser(final String name)  {
     throw new UnsupportedOperationException();
   }
 
@@ -202,7 +206,7 @@ public final class SimpleInitialContext implements Context {
    * Nothing but chuck an  <code>UnsupportedOperationException</code>
    * @see javax.naming.Context#getNameParser(javax.naming.Name)
    */
-  public NameParser getNameParser(Name name)  {
+  public NameParser getNameParser(final Name name)  {
     throw new UnsupportedOperationException();
   }
 
@@ -210,7 +214,7 @@ public final class SimpleInitialContext implements Context {
    * Nothing but chuck an  <code>UnsupportedOperationException</code>
    * @see javax.naming.Context#list(java.lang.String)
    */
-  public NamingEnumeration list(String name)  {
+  public NamingEnumeration list(final String name)  {
     throw new UnsupportedOperationException();
   }
 
@@ -218,7 +222,7 @@ public final class SimpleInitialContext implements Context {
    * Nothing but chuck an  <code>UnsupportedOperationException</code>
    * @see javax.naming.Context#listBindings(java.lang.String)
    */
-  public NamingEnumeration listBindings(String name)  {
+  public NamingEnumeration listBindings(final String name)  {
     throw new UnsupportedOperationException();
   }
 
@@ -226,7 +230,7 @@ public final class SimpleInitialContext implements Context {
    * Nothing but chuck an  <code>UnsupportedOperationException</code>
    * @see javax.naming.Context#list(javax.naming.Name)
    */
-  public NamingEnumeration list(Name name)  {
+  public NamingEnumeration list(final Name name)  {
     throw new UnsupportedOperationException();
   }
 
@@ -234,7 +238,7 @@ public final class SimpleInitialContext implements Context {
    * Nothing but chuck an  <code>UnsupportedOperationException</code>
    * @see javax.naming.Context#listBindings(javax.naming.Name)
    */
-  public NamingEnumeration listBindings(Name name)  {
+  public NamingEnumeration listBindings(final Name name)  {
     throw new UnsupportedOperationException();
   }
 
@@ -242,7 +246,7 @@ public final class SimpleInitialContext implements Context {
    * Nothing but chuck an  <code>UnsupportedOperationException</code>
    * @see javax.naming.Context#addToEnvironment(java.lang.String, java.lang.Object)
    */
-  public Object addToEnvironment(String propName, Object propVal)
+  public Object addToEnvironment(final String propName, final Object propVal)
      {
       throw new UnsupportedOperationException();
   }
@@ -251,7 +255,7 @@ public final class SimpleInitialContext implements Context {
    * Nothing but chuck an  <code>UnsupportedOperationException</code>
    * @see javax.naming.Context#composeName(java.lang.String, java.lang.String)
    */
-  public String composeName(String name, String prefix)
+  public String composeName(final String name, final String prefix)
      {
       throw new UnsupportedOperationException();
   }
@@ -260,7 +264,7 @@ public final class SimpleInitialContext implements Context {
    * Nothing but chuck an  <code>UnsupportedOperationException</code>
    * @see javax.naming.Context#composeName(javax.naming.Name, javax.naming.Name)
    */
-  public Name composeName(Name name, Name prefix)  {
+  public Name composeName(final Name name, final Name prefix)  {
     throw new UnsupportedOperationException();
   }
 
@@ -278,12 +282,15 @@ public final class SimpleInitialContext implements Context {
   /**
     *  Keep the ctor away from other classes.
    */
-  private SimpleInitialContext() {} ;
+  public SimpleInitialContext() {} ;
 
 }
 
 /*
 *$Log: SimpleInitialContext.java,v $
+*Revision 1.2  2003/11/10 18:51:31  jdt
+*Minor bits and pieces to satisfy the coding standards
+*
 *Revision 1.1  2003/10/31 17:21:44  jdt
 *simple naming service to allow testing of database bits
 *

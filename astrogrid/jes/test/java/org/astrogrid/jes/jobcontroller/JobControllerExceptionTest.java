@@ -1,4 +1,4 @@
-/* $Id: JobControllerExceptionTest.java,v 1.2 2003/11/08 22:00:51 anoncvs Exp $
+/* $Id: JobControllerExceptionTest.java,v 1.3 2003/11/10 18:46:45 jdt Exp $
  * Created on 08-Nov-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,19 +16,19 @@ import org.astrogrid.jes.JesException;
  * @author john
  *
  */
-public class JobControllerExceptionTest extends TestCase {
+public final class JobControllerExceptionTest extends TestCase {
     /**
      * Constructor for JobControllerExceptionTest.
      * @param arg0 Test name
      */
-    public JobControllerExceptionTest(String arg0) {
+    public JobControllerExceptionTest(final String arg0) {
         super(arg0);
     }
     /**
      * Launch the JUnit text UI
      * @param args ignored
      */
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         junit.textui.TestRunner.run(JobControllerExceptionTest.class);
     }
     /**
@@ -56,8 +56,11 @@ public class JobControllerExceptionTest extends TestCase {
 }
 /*
  * $Log: JobControllerExceptionTest.java,v $
+ * Revision 1.3  2003/11/10 18:46:45  jdt
+ * Minor bits and pieces to satisfy the coding standards
+ *
  * Revision 1.2  2003/11/08 22:00:51  anoncvs
- * Annoying $Id$ tag fixed
+ * Annoying $Id: JobControllerExceptionTest.java,v 1.3 2003/11/10 18:46:45 jdt Exp $ tag fixed
  *
  * Revision 1.1  2003/11/08 21:59:38  anoncvs
  * Initial commit
