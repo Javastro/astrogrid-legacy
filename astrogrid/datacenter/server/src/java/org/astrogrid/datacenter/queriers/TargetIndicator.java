@@ -1,5 +1,5 @@
 /*
- * $Id: TargetIndicator.java,v 1.4 2004/03/15 19:16:12 mch Exp $
+ * $Id: TargetIndicator.java,v 1.5 2004/07/15 17:07:23 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,6 +9,8 @@ package org.astrogrid.datacenter.queriers;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import org.astrogrid.community.Account;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Ivorn;
@@ -52,6 +54,27 @@ public class TargetIndicator  {
       this.out = targetOut;
    }
 
+   /**
+    * Tests the string & creates the right kind of TargetIndicator
+    */
+   public static TargetIndicator makeIndicator(String id) throws MalformedURLException, URISyntaxException {
+      if ((id == null) || (id.length() == 0)) {
+         return null;
+      }
+      else if (id.startsWith("mailto:")) {
+         return new TargetIndicator(id.substring(7));
+      }
+      else if (Agsl.isAgsl(id)) {
+         return new TargetIndicator(new Agsl(id));
+      }
+      else if (Ivorn.isIvorn(id)) {
+         return new TargetIndicator(new Ivorn(id));
+      }
+      else {
+         throw new IllegalArgumentException("'"+id+" should start 'emailto:' or '"+Ivorn.SCHEME+"' or '"+Agsl.SCHEME+"'");
+      }
+   }
+   
    public String getEmail() {
       return email;
    }
@@ -111,6 +134,9 @@ public class TargetIndicator  {
 }
 /*
  $Log: TargetIndicator.java,v $
+ Revision 1.5  2004/07/15 17:07:23  mch
+ Added factory method to make from a string
+
  Revision 1.4  2004/03/15 19:16:12  mch
  Lots of fixes to status updates
 
