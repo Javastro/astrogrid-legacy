@@ -23,13 +23,6 @@
    routing data streams; this web-application is a 'slinger webnode', and provides
    some servlets and a convenience page for resolving IVO resource names for stores.
    </p>
-   <p>This webapp resolves using:
-   <ul>
-      <li><a href=''><%= ConfigFactory.getCommonConfig().getProperty("org.astrogrid.registry.query.endpoint","(not set)") %></a>
-      <li><a href=''><%= ConfigFactory.getCommonConfig().getProperty("org.astrogrid.registry.query.altendpoint","(not set)") %></a>
-   </ul>
-   </p>
-
    <h2>Resolver</h2>
    <p>
    Enter the URI of the source below, and the contents of that source will be streamed
@@ -79,6 +72,15 @@
           <input type="submit" name='Submit' value="Copy"  />
         </p>
    </form>
+
+   <h2>Settings</h2>
+   <p>This webapp resolves using:
+   <ul>
+      <li><a href=''><%= ConfigFactory.getCommonConfig().getProperty("org.astrogrid.registry.query.endpoint","(not set)") %></a>
+      <li><a href=''><%= ConfigFactory.getCommonConfig().getProperty("org.astrogrid.registry.query.altendpoint","(not set)") %></a>
+   </ul>
+   </p>
+
 
 </div>
 </body>
