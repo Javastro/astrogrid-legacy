@@ -1,5 +1,5 @@
 /*
- * $Id: User.java,v 1.13 2004/03/05 09:34:47 pah Exp $
+ * $Id: User.java,v 1.14 2004/05/11 08:15:53 pah Exp $
  *
  * Created on 27-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -51,7 +51,10 @@ public class User {
     public User(String givenAccount, String givenGroup, String givenToken)
     {
        this.account = givenAccount;
+       assert givenAccount != null : "account must be supplied"; 
+       assert givenAccount.indexOf('@') != -1 : "account must be of the form user@community";
        this.group = givenGroup;
+       
        this.token = givenToken;
     }
     
@@ -185,9 +188,12 @@ public class User {
 }
 
 /* $Log: User.java,v $
- * Revision 1.13  2004/03/05 09:34:47  pah
- * deprecated in favour of using the workflow objects generated bean...
+ * Revision 1.14  2004/05/11 08:15:53  pah
+ * put in assertions to try to get correct form used
  *
+/* Revision 1.13  2004/03/05 09:34:47  pah
+/* deprecated in favour of using the workflow objects generated bean...
+/*
 /* Revision 1.12  2004/02/16 18:26:37  pah
 /*
 /*
