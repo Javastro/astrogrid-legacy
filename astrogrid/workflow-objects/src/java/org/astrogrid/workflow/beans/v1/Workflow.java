@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Workflow.java,v 1.26 2004/07/09 14:44:42 nw Exp $
+ * $Id: Workflow.java,v 1.27 2004/08/03 14:24:09 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -24,12 +24,13 @@ import org.exolab.castor.xml.ValidationException;
 import org.xml.sax.ContentHandler;
 
 /**
- * Representation of a workflow document, conforming to the schema
+ * Base element of an Astrogird workflow document, conforming to
+ * the schema
  *  defined for namespace
  * http://www.astrogrid.org/schema/AGWorkflow/v1
  *  
  * 
- * @version $Revision: 1.26 $ $Date: 2004/07/09 14:44:42 $
+ * @version $Revision: 1.27 $ $Date: 2004/08/03 14:24:09 $
  */
 public class Workflow extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
@@ -41,27 +42,22 @@ implements java.io.Serializable
     //--------------------------/
 
     /**
-     * Field _name
+     * descriptive name for this workflow
      */
     private java.lang.String _name;
 
     /**
-     * Field _defaultScriptingLanguage
-     */
-    private java.lang.String _defaultScriptingLanguage = "jython-2.1";
-
-    /**
-     * Field _id
+     * used within the job execution system.
      */
     private java.lang.String _id;
 
     /**
-     * a collection of activities to be performed sequentially
+     * sequence of activities to perform
      */
     private org.astrogrid.workflow.beans.v1.Sequence _sequence;
 
     /**
-     * Field _description
+     * An optional textual description
      */
     private java.lang.String _description;
 
@@ -71,7 +67,7 @@ implements java.io.Serializable
     private org.astrogrid.community.beans.v1.Credentials _credentials;
 
     /**
-     * A record of a single execution of a job
+     * Details of the execution of this workflow
      */
     private org.astrogrid.workflow.beans.v1.execution.JobExecutionRecord _jobExecutionRecord;
 
@@ -82,7 +78,6 @@ implements java.io.Serializable
 
     public Workflow() {
         super();
-        setDefaultScriptingLanguage("jython-2.1");
     } //-- org.astrogrid.workflow.beans.v1.Workflow()
 
 
@@ -112,13 +107,6 @@ implements java.io.Serializable
                     return false;
             }
             else if (temp._name != null)
-                return false;
-            if (this._defaultScriptingLanguage != null) {
-                if (temp._defaultScriptingLanguage == null) return false;
-                else if (!(this._defaultScriptingLanguage.equals(temp._defaultScriptingLanguage))) 
-                    return false;
-            }
-            else if (temp._defaultScriptingLanguage != null)
                 return false;
             if (this._id != null) {
                 if (temp._id == null) return false;
@@ -171,17 +159,9 @@ implements java.io.Serializable
     } //-- org.astrogrid.community.beans.v1.Credentials getCredentials() 
 
     /**
-     * Returns the value of field 'defaultScriptingLanguage'.
-     * 
-     * @return the value of field 'defaultScriptingLanguage'.
-     */
-    public java.lang.String getDefaultScriptingLanguage()
-    {
-        return this._defaultScriptingLanguage;
-    } //-- java.lang.String getDefaultScriptingLanguage() 
-
-    /**
-     * Returns the value of field 'description'.
+     * Returns the value of field 'description'. The field
+     * 'description' has the following description: An optional
+     * textual description
      * 
      * @return the value of field 'description'.
      */
@@ -191,7 +171,8 @@ implements java.io.Serializable
     } //-- java.lang.String getDescription() 
 
     /**
-     * Returns the value of field 'id'.
+     * Returns the value of field 'id'. The field 'id' has the
+     * following description: used within the job execution system.
      * 
      * @return the value of field 'id'.
      */
@@ -202,8 +183,8 @@ implements java.io.Serializable
 
     /**
      * Returns the value of field 'jobExecutionRecord'. The field
-     * 'jobExecutionRecord' has the following description: A record
-     * of a single execution of a job
+     * 'jobExecutionRecord' has the following description: Details
+     * of the execution of this workflow
      * 
      * @return the value of field 'jobExecutionRecord'.
      */
@@ -213,7 +194,8 @@ implements java.io.Serializable
     } //-- org.astrogrid.workflow.beans.v1.execution.JobExecutionRecord getJobExecutionRecord() 
 
     /**
-     * Returns the value of field 'name'.
+     * Returns the value of field 'name'. The field 'name' has the
+     * following description: descriptive name for this workflow
      * 
      * @return the value of field 'name'.
      */
@@ -224,8 +206,8 @@ implements java.io.Serializable
 
     /**
      * Returns the value of field 'sequence'. The field 'sequence'
-     * has the following description: a collection of activities to
-     * be performed sequentially
+     * has the following description: sequence of activities to
+     * perform
      * 
      * @return the value of field 'sequence'.
      */
@@ -283,18 +265,9 @@ implements java.io.Serializable
     } //-- void setCredentials(org.astrogrid.community.beans.v1.Credentials) 
 
     /**
-     * Sets the value of field 'defaultScriptingLanguage'.
-     * 
-     * @param defaultScriptingLanguage the value of field
-     * 'defaultScriptingLanguage'.
-     */
-    public void setDefaultScriptingLanguage(java.lang.String defaultScriptingLanguage)
-    {
-        this._defaultScriptingLanguage = defaultScriptingLanguage;
-    } //-- void setDefaultScriptingLanguage(java.lang.String) 
-
-    /**
-     * Sets the value of field 'description'.
+     * Sets the value of field 'description'. The field
+     * 'description' has the following description: An optional
+     * textual description
      * 
      * @param description the value of field 'description'.
      */
@@ -304,7 +277,8 @@ implements java.io.Serializable
     } //-- void setDescription(java.lang.String) 
 
     /**
-     * Sets the value of field 'id'.
+     * Sets the value of field 'id'. The field 'id' has the
+     * following description: used within the job execution system.
      * 
      * @param id the value of field 'id'.
      */
@@ -315,8 +289,8 @@ implements java.io.Serializable
 
     /**
      * Sets the value of field 'jobExecutionRecord'. The field
-     * 'jobExecutionRecord' has the following description: A record
-     * of a single execution of a job
+     * 'jobExecutionRecord' has the following description: Details
+     * of the execution of this workflow
      * 
      * @param jobExecutionRecord the value of field
      * 'jobExecutionRecord'.
@@ -327,7 +301,8 @@ implements java.io.Serializable
     } //-- void setJobExecutionRecord(org.astrogrid.workflow.beans.v1.execution.JobExecutionRecord) 
 
     /**
-     * Sets the value of field 'name'.
+     * Sets the value of field 'name'. The field 'name' has the
+     * following description: descriptive name for this workflow
      * 
      * @param name the value of field 'name'.
      */
@@ -338,8 +313,7 @@ implements java.io.Serializable
 
     /**
      * Sets the value of field 'sequence'. The field 'sequence' has
-     * the following description: a collection of activities to be
-     * performed sequentially
+     * the following description: sequence of activities to perform
      * 
      * @param sequence the value of field 'sequence'.
      */

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: JobExecutionRecord.java,v 1.24 2004/07/09 14:44:42 nw Exp $
+ * $Id: JobExecutionRecord.java,v 1.25 2004/08/03 14:24:09 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1.execution;
@@ -24,7 +24,7 @@ import org.xml.sax.ContentHandler;
 /**
  * A record of a single execution of a job
  * 
- * @version $Revision: 1.24 $ $Date: 2004/07/09 14:44:42 $
+ * @version $Revision: 1.25 $ $Date: 2004/08/03 14:24:09 $
  */
 public class JobExecutionRecord extends org.astrogrid.workflow.beans.v1.execution.ExecutionRecordType 
 implements java.io.Serializable
@@ -36,7 +36,7 @@ implements java.io.Serializable
     //--------------------------/
 
     /**
-     * Field _jobId
+     * globally unique identifier for this execution of the workflow
      */
     private org.astrogrid.workflow.beans.v1.execution.JobURN _jobId;
 
@@ -83,7 +83,9 @@ implements java.io.Serializable
     } //-- boolean equals(java.lang.Object) 
 
     /**
-     * Returns the value of field 'jobId'.
+     * Returns the value of field 'jobId'. The field 'jobId' has
+     * the following description: globally unique identifier for
+     * this execution of the workflow
      * 
      * @return the value of field 'jobId'.
      */
@@ -131,7 +133,9 @@ implements java.io.Serializable
     } //-- void marshal(org.xml.sax.ContentHandler) 
 
     /**
-     * Sets the value of field 'jobId'.
+     * Sets the value of field 'jobId'. The field 'jobId' has the
+     * following description: globally unique identifier for this
+     * execution of the workflow
      * 
      * @param jobId the value of field 'jobId'.
      */

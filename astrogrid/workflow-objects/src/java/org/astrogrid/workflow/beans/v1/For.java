@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: For.java,v 1.3 2004/07/09 14:44:42 nw Exp $
+ * $Id: For.java,v 1.4 2004/08/03 14:24:09 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -22,9 +22,9 @@ import org.exolab.castor.xml.ValidationException;
 import org.xml.sax.ContentHandler;
 
 /**
- * A for loop construct
+ * A for loop construct - iterated over a sequence of items
  * 
- * @version $Revision: 1.3 $ $Date: 2004/07/09 14:44:42 $
+ * @version $Revision: 1.4 $ $Date: 2004/08/03 14:24:09 $
  */
 public class For extends org.astrogrid.workflow.beans.v1.AbstractActivity 
 implements java.io.Serializable
@@ -36,22 +36,18 @@ implements java.io.Serializable
     //--------------------------/
 
     /**
-     * Field _var
+     * the name of the loop variable
      */
     private java.lang.String _var;
 
     /**
-     * Field _range
+     * A sequence or iterator of items- the loop variable will be
+     * assigned to each in turn, and then loop body executed
      */
-    private java.lang.String _range;
+    private java.lang.String _items;
 
     /**
-     * Field _scriptingLanguage
-     */
-    private java.lang.String _scriptingLanguage = "jython-2.1";
-
-    /**
-     * The head of the substitution group
+     * Head of the substitution group
      */
     private org.astrogrid.workflow.beans.v1.AbstractActivity _activity;
 
@@ -62,7 +58,6 @@ implements java.io.Serializable
 
     public For() {
         super();
-        setScriptingLanguage("jython-2.1");
     } //-- org.astrogrid.workflow.beans.v1.For()
 
 
@@ -93,19 +88,12 @@ implements java.io.Serializable
             }
             else if (temp._var != null)
                 return false;
-            if (this._range != null) {
-                if (temp._range == null) return false;
-                else if (!(this._range.equals(temp._range))) 
+            if (this._items != null) {
+                if (temp._items == null) return false;
+                else if (!(this._items.equals(temp._items))) 
                     return false;
             }
-            else if (temp._range != null)
-                return false;
-            if (this._scriptingLanguage != null) {
-                if (temp._scriptingLanguage == null) return false;
-                else if (!(this._scriptingLanguage.equals(temp._scriptingLanguage))) 
-                    return false;
-            }
-            else if (temp._scriptingLanguage != null)
+            else if (temp._items != null)
                 return false;
             if (this._activity != null) {
                 if (temp._activity == null) return false;
@@ -121,7 +109,7 @@ implements java.io.Serializable
 
     /**
      * Returns the value of field 'activity'. The field 'activity'
-     * has the following description: The head of the substitution
+     * has the following description: Head of the substitution
      * group
      * 
      * @return the value of field 'activity'.
@@ -132,27 +120,21 @@ implements java.io.Serializable
     } //-- org.astrogrid.workflow.beans.v1.AbstractActivity getActivity() 
 
     /**
-     * Returns the value of field 'range'.
+     * Returns the value of field 'items'. The field 'items' has
+     * the following description: A sequence or iterator of items-
+     * the loop variable will be assigned to each in turn, and then
+     * loop body executed
      * 
-     * @return the value of field 'range'.
+     * @return the value of field 'items'.
      */
-    public java.lang.String getRange()
+    public java.lang.String getItems()
     {
-        return this._range;
-    } //-- java.lang.String getRange() 
+        return this._items;
+    } //-- java.lang.String getItems() 
 
     /**
-     * Returns the value of field 'scriptingLanguage'.
-     * 
-     * @return the value of field 'scriptingLanguage'.
-     */
-    public java.lang.String getScriptingLanguage()
-    {
-        return this._scriptingLanguage;
-    } //-- java.lang.String getScriptingLanguage() 
-
-    /**
-     * Returns the value of field 'var'.
+     * Returns the value of field 'var'. The field 'var' has the
+     * following description: the name of the loop variable
      * 
      * @return the value of field 'var'.
      */
@@ -201,8 +183,7 @@ implements java.io.Serializable
 
     /**
      * Sets the value of field 'activity'. The field 'activity' has
-     * the following description: The head of the substitution
-     * group
+     * the following description: Head of the substitution group
      * 
      * @param activity the value of field 'activity'.
      */
@@ -212,28 +193,21 @@ implements java.io.Serializable
     } //-- void setActivity(org.astrogrid.workflow.beans.v1.AbstractActivity) 
 
     /**
-     * Sets the value of field 'range'.
+     * Sets the value of field 'items'. The field 'items' has the
+     * following description: A sequence or iterator of items- the
+     * loop variable will be assigned to each in turn, and then
+     * loop body executed
      * 
-     * @param range the value of field 'range'.
+     * @param items the value of field 'items'.
      */
-    public void setRange(java.lang.String range)
+    public void setItems(java.lang.String items)
     {
-        this._range = range;
-    } //-- void setRange(java.lang.String) 
+        this._items = items;
+    } //-- void setItems(java.lang.String) 
 
     /**
-     * Sets the value of field 'scriptingLanguage'.
-     * 
-     * @param scriptingLanguage the value of field
-     * 'scriptingLanguage'.
-     */
-    public void setScriptingLanguage(java.lang.String scriptingLanguage)
-    {
-        this._scriptingLanguage = scriptingLanguage;
-    } //-- void setScriptingLanguage(java.lang.String) 
-
-    /**
-     * Sets the value of field 'var'.
+     * Sets the value of field 'var'. The field 'var' has the
+     * following description: the name of the loop variable
      * 
      * @param var the value of field 'var'.
      */

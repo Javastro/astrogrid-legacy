@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Then.java,v 1.3 2004/07/09 14:44:42 nw Exp $
+ * $Id: Then.java,v 1.4 2004/08/03 14:24:09 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -22,9 +22,9 @@ import org.exolab.castor.xml.ValidationException;
 import org.xml.sax.ContentHandler;
 
 /**
- * Class Then.
+ * Branch to take when if condition evaluates to true
  * 
- * @version $Revision: 1.3 $ $Date: 2004/07/09 14:44:42 $
+ * @version $Revision: 1.4 $ $Date: 2004/08/03 14:24:09 $
  */
 public class Then extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
@@ -36,7 +36,7 @@ implements java.io.Serializable
     //--------------------------/
 
     /**
-     * The head of the substitution group
+     * Head of the substitution group
      */
     private org.astrogrid.workflow.beans.v1.AbstractActivity _activity;
 
@@ -84,7 +84,7 @@ implements java.io.Serializable
 
     /**
      * Returns the value of field 'activity'. The field 'activity'
-     * has the following description: The head of the substitution
+     * has the following description: Head of the substitution
      * group
      * 
      * @return the value of field 'activity'.
@@ -134,8 +134,7 @@ implements java.io.Serializable
 
     /**
      * Sets the value of field 'activity'. The field 'activity' has
-     * the following description: The head of the substitution
-     * group
+     * the following description: Head of the substitution group
      * 
      * @param activity the value of field 'activity'.
      */

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ExecutionRecordType.java,v 1.20 2004/07/09 14:44:42 nw Exp $
+ * $Id: ExecutionRecordType.java,v 1.21 2004/08/03 14:24:09 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1.execution;
@@ -27,9 +27,9 @@ import org.exolab.castor.xml.ValidationException;
 import org.xml.sax.ContentHandler;
 
 /**
- * Class ExecutionRecordType.
+ * basic type for execution records
  * 
- * @version $Revision: 1.20 $ $Date: 2004/07/09 14:44:42 $
+ * @version $Revision: 1.21 $ $Date: 2004/08/03 14:24:09 $
  */
 public class ExecutionRecordType extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
@@ -41,17 +41,17 @@ implements java.io.Serializable
     //--------------------------/
 
     /**
-     * Field _startTime
+     * time execution started
      */
     private java.util.Date _startTime;
 
     /**
-     * Field _finishTime
+     * time execution finished
      */
     private java.util.Date _finishTime;
 
     /**
-     * Field _status
+     * current execution status
      */
     private org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase _status = org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase.valueOf("PENDING");
 
@@ -255,7 +255,9 @@ implements java.io.Serializable
     } //-- int getExtensionCount() 
 
     /**
-     * Returns the value of field 'finishTime'.
+     * Returns the value of field 'finishTime'. The field
+     * 'finishTime' has the following description: time execution
+     * finished
      * 
      * @return the value of field 'finishTime'.
      */
@@ -302,7 +304,9 @@ implements java.io.Serializable
     } //-- int getMessageCount() 
 
     /**
-     * Returns the value of field 'startTime'.
+     * Returns the value of field 'startTime'. The field
+     * 'startTime' has the following description: time execution
+     * started
      * 
      * @return the value of field 'startTime'.
      */
@@ -312,7 +316,8 @@ implements java.io.Serializable
     } //-- java.util.Date getStartTime() 
 
     /**
-     * Returns the value of field 'status'.
+     * Returns the value of field 'status'. The field 'status' has
+     * the following description: current execution status
      * 
      * @return the value of field 'status'.
      */
@@ -412,7 +417,8 @@ implements java.io.Serializable
     } //-- void setExtension(org.astrogrid.workflow.beans.v1.execution.Extension) 
 
     /**
-     * Sets the value of field 'finishTime'.
+     * Sets the value of field 'finishTime'. The field 'finishTime'
+     * has the following description: time execution finished
      * 
      * @param finishTime the value of field 'finishTime'.
      */
@@ -452,7 +458,8 @@ implements java.io.Serializable
     } //-- void setMessage(org.astrogrid.applications.beans.v1.cea.castor.MessageType) 
 
     /**
-     * Sets the value of field 'startTime'.
+     * Sets the value of field 'startTime'. The field 'startTime'
+     * has the following description: time execution started
      * 
      * @param startTime the value of field 'startTime'.
      */
@@ -462,7 +469,8 @@ implements java.io.Serializable
     } //-- void setStartTime(java.util.Date) 
 
     /**
-     * Sets the value of field 'status'.
+     * Sets the value of field 'status'. The field 'status' has the
+     * following description: current execution status
      * 
      * @param status the value of field 'status'.
      */

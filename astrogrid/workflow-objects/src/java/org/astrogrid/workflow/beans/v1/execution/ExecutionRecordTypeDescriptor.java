@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ExecutionRecordTypeDescriptor.java,v 1.20 2004/07/09 14:44:42 nw Exp $
+ * $Id: ExecutionRecordTypeDescriptor.java,v 1.21 2004/08/03 14:24:09 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1.execution;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class ExecutionRecordTypeDescriptor.
  * 
- * @version $Revision: 1.20 $ $Date: 2004/07/09 14:44:42 $
+ * @version $Revision: 1.21 $ $Date: 2004/08/03 14:24:09 $
  */
 public class ExecutionRecordTypeDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Script.java,v 1.3 2004/07/09 14:44:42 nw Exp $
+ * $Id: Script.java,v 1.4 2004/08/03 14:24:09 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -25,9 +25,9 @@ import org.exolab.castor.xml.ValidationException;
 import org.xml.sax.ContentHandler;
 
 /**
- * script text to be executed
+ * a step in the workflow - execute some script statements.
  * 
- * @version $Revision: 1.3 $ $Date: 2004/07/09 14:44:42 $
+ * @version $Revision: 1.4 $ $Date: 2004/08/03 14:24:09 $
  */
 public class Script extends org.astrogrid.workflow.beans.v1.AbstractActivity 
 implements java.io.Serializable
@@ -39,22 +39,18 @@ implements java.io.Serializable
     //--------------------------/
 
     /**
-     * Field _scriptingLanguage
-     */
-    private java.lang.String _scriptingLanguage = "jython-2.1";
-
-    /**
-     * Field _description
+     * optional description of this step
      */
     private java.lang.String _description;
 
     /**
-     * Field _body
+     * script statements to execute. By default, groovy language is
+     * expected
      */
     private java.lang.String _body;
 
     /**
-     * A record of a single execution of a job step
+     * records of execution of this script step
      */
     private java.util.ArrayList _stepExecutionRecordList;
 
@@ -65,7 +61,6 @@ implements java.io.Serializable
 
     public Script() {
         super();
-        setScriptingLanguage("jython-2.1");
         _stepExecutionRecordList = new ArrayList();
     } //-- org.astrogrid.workflow.beans.v1.Script()
 
@@ -129,13 +124,6 @@ implements java.io.Serializable
         if (obj instanceof Script) {
         
             Script temp = (Script)obj;
-            if (this._scriptingLanguage != null) {
-                if (temp._scriptingLanguage == null) return false;
-                else if (!(this._scriptingLanguage.equals(temp._scriptingLanguage))) 
-                    return false;
-            }
-            else if (temp._scriptingLanguage != null)
-                return false;
             if (this._description != null) {
                 if (temp._description == null) return false;
                 else if (!(this._description.equals(temp._description))) 
@@ -163,7 +151,9 @@ implements java.io.Serializable
     } //-- boolean equals(java.lang.Object) 
 
     /**
-     * Returns the value of field 'body'.
+     * Returns the value of field 'body'. The field 'body' has the
+     * following description: script statements to execute. By
+     * default, groovy language is expected
      * 
      * @return the value of field 'body'.
      */
@@ -173,7 +163,9 @@ implements java.io.Serializable
     } //-- java.lang.String getBody() 
 
     /**
-     * Returns the value of field 'description'.
+     * Returns the value of field 'description'. The field
+     * 'description' has the following description: optional
+     * description of this step
      * 
      * @return the value of field 'description'.
      */
@@ -181,16 +173,6 @@ implements java.io.Serializable
     {
         return this._description;
     } //-- java.lang.String getDescription() 
-
-    /**
-     * Returns the value of field 'scriptingLanguage'.
-     * 
-     * @return the value of field 'scriptingLanguage'.
-     */
-    public java.lang.String getScriptingLanguage()
-    {
-        return this._scriptingLanguage;
-    } //-- java.lang.String getScriptingLanguage() 
 
     /**
      * Method getStepExecutionRecord
@@ -279,7 +261,9 @@ implements java.io.Serializable
     } //-- boolean removeStepExecutionRecord(org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord) 
 
     /**
-     * Sets the value of field 'body'.
+     * Sets the value of field 'body'. The field 'body' has the
+     * following description: script statements to execute. By
+     * default, groovy language is expected
      * 
      * @param body the value of field 'body'.
      */
@@ -289,7 +273,9 @@ implements java.io.Serializable
     } //-- void setBody(java.lang.String) 
 
     /**
-     * Sets the value of field 'description'.
+     * Sets the value of field 'description'. The field
+     * 'description' has the following description: optional
+     * description of this step
      * 
      * @param description the value of field 'description'.
      */
@@ -297,17 +283,6 @@ implements java.io.Serializable
     {
         this._description = description;
     } //-- void setDescription(java.lang.String) 
-
-    /**
-     * Sets the value of field 'scriptingLanguage'.
-     * 
-     * @param scriptingLanguage the value of field
-     * 'scriptingLanguage'.
-     */
-    public void setScriptingLanguage(java.lang.String scriptingLanguage)
-    {
-        this._scriptingLanguage = scriptingLanguage;
-    } //-- void setScriptingLanguage(java.lang.String) 
 
     /**
      * Method setStepExecutionRecord

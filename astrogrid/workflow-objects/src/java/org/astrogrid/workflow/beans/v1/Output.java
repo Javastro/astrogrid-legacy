@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Output.java,v 1.26 2004/07/09 14:44:42 nw Exp $
+ * $Id: Output.java,v 1.27 2004/08/03 14:24:09 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -27,7 +27,7 @@ import org.xml.sax.ContentHandler;
 /**
  * the list of output paramters
  * 
- * @version $Revision: 1.26 $ $Date: 2004/07/09 14:44:42 $
+ * @version $Revision: 1.27 $ $Date: 2004/08/03 14:24:09 $
  */
 public class Output extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
@@ -39,7 +39,7 @@ implements java.io.Serializable
     //--------------------------/
 
     /**
-     * a parameter that should be based to an CEA tool
+     * a parameter to be passed to a CEA application
      */
     private java.util.ArrayList _parameterList;
 

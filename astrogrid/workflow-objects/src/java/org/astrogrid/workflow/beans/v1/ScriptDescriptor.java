@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ScriptDescriptor.java,v 1.3 2004/07/09 14:44:42 nw Exp $
+ * $Id: ScriptDescriptor.java,v 1.4 2004/08/03 14:24:09 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class ScriptDescriptor.
  * 
- * @version $Revision: 1.3 $ $Date: 2004/07/09 14:44:42 $
+ * @version $Revision: 1.4 $ $Date: 2004/08/03 14:24:09 $
  */
 public class ScriptDescriptor extends org.astrogrid.workflow.beans.v1.AbstractActivityDescriptor {
 
@@ -66,42 +66,6 @@ public class ScriptDescriptor extends org.astrogrid.workflow.beans.v1.AbstractAc
         org.exolab.castor.xml.FieldValidator               fieldValidator = null;
         //-- initialize attribute descriptors
         
-        //-- _scriptingLanguage
-        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.lang.String.class, "_scriptingLanguage", "scripting-language", org.exolab.castor.xml.NodeType.Attribute);
-        desc.setImmutable(true);
-        handler = (new org.exolab.castor.xml.XMLFieldHandler() {
-            public java.lang.Object getValue( java.lang.Object object ) 
-                throws IllegalStateException
-            {
-                Script target = (Script) object;
-                return target.getScriptingLanguage();
-            }
-            public void setValue( java.lang.Object object, java.lang.Object value) 
-                throws IllegalStateException, IllegalArgumentException
-            {
-                try {
-                    Script target = (Script) object;
-                    target.setScriptingLanguage( (java.lang.String) value);
-                }
-                catch (java.lang.Exception ex) {
-                    throw new IllegalStateException(ex.toString());
-                }
-            }
-            public java.lang.Object newInstance( java.lang.Object parent ) {
-                return null;
-            }
-        } );
-        desc.setHandler(handler);
-        addFieldDescriptor(desc);
-        
-        //-- validation code for: _scriptingLanguage
-        fieldValidator = new org.exolab.castor.xml.FieldValidator();
-        { //-- local scope
-            StringValidator typeValidator = new StringValidator();
-            typeValidator.setWhiteSpace("preserve");
-            fieldValidator.setValidator(typeValidator);
-        }
-        desc.setValidator(fieldValidator);
         //-- initialize element descriptors
         
         //-- _description

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ParamHTTPTypeDescriptor.java,v 1.4 2004/07/09 14:44:42 nw Exp $
+ * $Id: ParamHTTPTypeDescriptor.java,v 1.5 2004/08/03 14:24:09 nw Exp $
  */
 
 package org.astrogrid.registry.beans.resource.dataservice;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class ParamHTTPTypeDescriptor.
  * 
- * @version $Revision: 1.4 $ $Date: 2004/07/09 14:44:42 $
+ * @version $Revision: 1.5 $ $Date: 2004/08/03 14:24:09 $
  */
 public class ParamHTTPTypeDescriptor extends org.astrogrid.registry.beans.resource.dataservice.ExtendedInterfaceTypeDescriptor {
 

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Tool.java,v 1.26 2004/07/09 14:44:42 nw Exp $
+ * $Id: Tool.java,v 1.27 2004/08/03 14:24:09 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -22,9 +22,9 @@ import org.exolab.castor.xml.ValidationException;
 import org.xml.sax.ContentHandler;
 
 /**
- * the CEA definition of the tool to be run 
+ * represents a call to a CEA application 
  * 
- * @version $Revision: 1.26 $ $Date: 2004/07/09 14:44:42 $
+ * @version $Revision: 1.27 $ $Date: 2004/08/03 14:24:09 $
  */
 public class Tool extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
@@ -36,12 +36,12 @@ implements java.io.Serializable
     //--------------------------/
 
     /**
-     * Field _name
+     * name of the application to call
      */
     private java.lang.String _name;
 
     /**
-     * Field _interface
+     * which interface of the application to call
      */
     private java.lang.String _interface;
 
@@ -130,7 +130,9 @@ implements java.io.Serializable
     } //-- org.astrogrid.workflow.beans.v1.Input getInput() 
 
     /**
-     * Returns the value of field 'interface'.
+     * Returns the value of field 'interface'. The field
+     * 'interface' has the following description: which interface
+     * of the application to call
      * 
      * @return the value of field 'interface'.
      */
@@ -140,7 +142,8 @@ implements java.io.Serializable
     } //-- java.lang.String getInterface() 
 
     /**
-     * Returns the value of field 'name'.
+     * Returns the value of field 'name'. The field 'name' has the
+     * following description: name of the application to call
      * 
      * @return the value of field 'name'.
      */
@@ -210,7 +213,9 @@ implements java.io.Serializable
     } //-- void setInput(org.astrogrid.workflow.beans.v1.Input) 
 
     /**
-     * Sets the value of field 'interface'.
+     * Sets the value of field 'interface'. The field 'interface'
+     * has the following description: which interface of the
+     * application to call
      * 
      * @param _interface
      * @param interface the value of field 'interface'.
@@ -221,7 +226,8 @@ implements java.io.Serializable
     } //-- void setInterface(java.lang.String) 
 
     /**
-     * Sets the value of field 'name'.
+     * Sets the value of field 'name'. The field 'name' has the
+     * following description: name of the application to call
      * 
      * @param name the value of field 'name'.
      */

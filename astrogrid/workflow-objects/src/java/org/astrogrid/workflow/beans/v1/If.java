@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: If.java,v 1.3 2004/07/09 14:44:42 nw Exp $
+ * $Id: If.java,v 1.4 2004/08/03 14:24:09 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -24,7 +24,7 @@ import org.xml.sax.ContentHandler;
 /**
  * An if statement
  * 
- * @version $Revision: 1.3 $ $Date: 2004/07/09 14:44:42 $
+ * @version $Revision: 1.4 $ $Date: 2004/08/03 14:24:09 $
  */
 public class If extends org.astrogrid.workflow.beans.v1.AbstractActivity 
 implements java.io.Serializable
@@ -36,22 +36,18 @@ implements java.io.Serializable
     //--------------------------/
 
     /**
-     * Field _test
+     * the condition for the if: an expression (in ${..}) that
+     * evaluates to a boolean
      */
     private java.lang.String _test;
 
     /**
-     * Field _scriptingLanguage
-     */
-    private java.lang.String _scriptingLanguage = "jython-2.1";
-
-    /**
-     * Field _then
+     * Branch to take when if condition evaluates to true
      */
     private org.astrogrid.workflow.beans.v1.Then _then;
 
     /**
-     * Field _else
+     * Branch to take when if condition evaluates to false
      */
     private org.astrogrid.workflow.beans.v1.Else _else;
 
@@ -62,7 +58,6 @@ implements java.io.Serializable
 
     public If() {
         super();
-        setScriptingLanguage("jython-2.1");
     } //-- org.astrogrid.workflow.beans.v1.If()
 
 
@@ -93,13 +88,6 @@ implements java.io.Serializable
             }
             else if (temp._test != null)
                 return false;
-            if (this._scriptingLanguage != null) {
-                if (temp._scriptingLanguage == null) return false;
-                else if (!(this._scriptingLanguage.equals(temp._scriptingLanguage))) 
-                    return false;
-            }
-            else if (temp._scriptingLanguage != null)
-                return false;
             if (this._then != null) {
                 if (temp._then == null) return false;
                 else if (!(this._then.equals(temp._then))) 
@@ -120,7 +108,9 @@ implements java.io.Serializable
     } //-- boolean equals(java.lang.Object) 
 
     /**
-     * Returns the value of field 'else'.
+     * Returns the value of field 'else'. The field 'else' has the
+     * following description: Branch to take when if condition
+     * evaluates to false
      * 
      * @return the value of field 'else'.
      */
@@ -130,17 +120,9 @@ implements java.io.Serializable
     } //-- org.astrogrid.workflow.beans.v1.Else getElse() 
 
     /**
-     * Returns the value of field 'scriptingLanguage'.
-     * 
-     * @return the value of field 'scriptingLanguage'.
-     */
-    public java.lang.String getScriptingLanguage()
-    {
-        return this._scriptingLanguage;
-    } //-- java.lang.String getScriptingLanguage() 
-
-    /**
-     * Returns the value of field 'test'.
+     * Returns the value of field 'test'. The field 'test' has the
+     * following description: the condition for the if: an
+     * expression (in ${..}) that evaluates to a boolean
      * 
      * @return the value of field 'test'.
      */
@@ -150,7 +132,9 @@ implements java.io.Serializable
     } //-- java.lang.String getTest() 
 
     /**
-     * Returns the value of field 'then'.
+     * Returns the value of field 'then'. The field 'then' has the
+     * following description: Branch to take when if condition
+     * evaluates to true
      * 
      * @return the value of field 'then'.
      */
@@ -198,7 +182,9 @@ implements java.io.Serializable
     } //-- void marshal(org.xml.sax.ContentHandler) 
 
     /**
-     * Sets the value of field 'else'.
+     * Sets the value of field 'else'. The field 'else' has the
+     * following description: Branch to take when if condition
+     * evaluates to false
      * 
      * @param _else
      * @param else the value of field 'else'.
@@ -209,18 +195,9 @@ implements java.io.Serializable
     } //-- void setElse(org.astrogrid.workflow.beans.v1.Else) 
 
     /**
-     * Sets the value of field 'scriptingLanguage'.
-     * 
-     * @param scriptingLanguage the value of field
-     * 'scriptingLanguage'.
-     */
-    public void setScriptingLanguage(java.lang.String scriptingLanguage)
-    {
-        this._scriptingLanguage = scriptingLanguage;
-    } //-- void setScriptingLanguage(java.lang.String) 
-
-    /**
-     * Sets the value of field 'test'.
+     * Sets the value of field 'test'. The field 'test' has the
+     * following description: the condition for the if: an
+     * expression (in ${..}) that evaluates to a boolean
      * 
      * @param test the value of field 'test'.
      */
@@ -230,7 +207,9 @@ implements java.io.Serializable
     } //-- void setTest(java.lang.String) 
 
     /**
-     * Sets the value of field 'then'.
+     * Sets the value of field 'then'. The field 'then' has the
+     * following description: Branch to take when if condition
+     * evaluates to true
      * 
      * @param then the value of field 'then'.
      */

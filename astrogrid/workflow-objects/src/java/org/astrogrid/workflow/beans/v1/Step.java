@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Step.java,v 1.26 2004/07/09 14:44:42 nw Exp $
+ * $Id: Step.java,v 1.27 2004/08/03 14:24:09 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -26,9 +26,9 @@ import org.exolab.castor.xml.ValidationException;
 import org.xml.sax.ContentHandler;
 
 /**
- * an activity to be performed
+ * a step of the workflow - call to an external CEA application.
  * 
- * @version $Revision: 1.26 $ $Date: 2004/07/09 14:44:42 $
+ * @version $Revision: 1.27 $ $Date: 2004/08/03 14:24:09 $
  */
 public class Step extends org.astrogrid.workflow.beans.v1.AbstractActivity 
 implements java.io.Serializable
@@ -40,17 +40,17 @@ implements java.io.Serializable
     //--------------------------/
 
     /**
-     * Field _name
+     * descriptive name for this step
      */
     private java.lang.String _name;
 
     /**
-     * Field _joinCondition
+     * @deprecated don't use
      */
     private org.astrogrid.workflow.beans.v1.types.JoinType _joinCondition = org.astrogrid.workflow.beans.v1.types.JoinType.valueOf("any");
 
     /**
-     * Field _stepNumber
+     * @deprecated don't use
      */
     private int _stepNumber;
 
@@ -60,7 +60,7 @@ implements java.io.Serializable
     private boolean _has_stepNumber;
 
     /**
-     * Field _sequenceNumber
+     * @deprecated don't use
      */
     private int _sequenceNumber;
 
@@ -70,17 +70,17 @@ implements java.io.Serializable
     private boolean _has_sequenceNumber;
 
     /**
-     * Field _description
+     * optional description of this step.
      */
     private java.lang.String _description;
 
     /**
-     * the CEA definition of the tool to be run 
+     * defines the application to call, and the parameters to pass
      */
     private org.astrogrid.workflow.beans.v1.Tool _tool;
 
     /**
-     * A record of a single execution of a job step
+     * records of executioins of this step
      */
     private java.util.ArrayList _stepExecutionRecordList;
 
@@ -220,7 +220,9 @@ implements java.io.Serializable
     } //-- boolean equals(java.lang.Object) 
 
     /**
-     * Returns the value of field 'description'.
+     * Returns the value of field 'description'. The field
+     * 'description' has the following description: optional
+     * description of this step.
      * 
      * @return the value of field 'description'.
      */
@@ -230,7 +232,9 @@ implements java.io.Serializable
     } //-- java.lang.String getDescription() 
 
     /**
-     * Returns the value of field 'joinCondition'.
+     * Returns the value of field 'joinCondition'. The field
+     * 'joinCondition' has the following description: @deprecated
+     * don't use
      * 
      * @return the value of field 'joinCondition'.
      */
@@ -240,7 +244,8 @@ implements java.io.Serializable
     } //-- org.astrogrid.workflow.beans.v1.types.JoinType getJoinCondition() 
 
     /**
-     * Returns the value of field 'name'.
+     * Returns the value of field 'name'. The field 'name' has the
+     * following description: descriptive name for this step
      * 
      * @return the value of field 'name'.
      */
@@ -250,7 +255,9 @@ implements java.io.Serializable
     } //-- java.lang.String getName() 
 
     /**
-     * Returns the value of field 'sequenceNumber'.
+     * Returns the value of field 'sequenceNumber'. The field
+     * 'sequenceNumber' has the following description: @deprecated
+     * don't use
      * 
      * @return the value of field 'sequenceNumber'.
      */
@@ -297,7 +304,9 @@ implements java.io.Serializable
     } //-- int getStepExecutionRecordCount() 
 
     /**
-     * Returns the value of field 'stepNumber'.
+     * Returns the value of field 'stepNumber'. The field
+     * 'stepNumber' has the following description: @deprecated
+     * don't use
      * 
      * @return the value of field 'stepNumber'.
      */
@@ -308,8 +317,8 @@ implements java.io.Serializable
 
     /**
      * Returns the value of field 'tool'. The field 'tool' has the
-     * following description: the CEA definition of the tool to be
-     * run 
+     * following description: defines the application to call, and
+     * the parameters to pass
      * 
      * @return the value of field 'tool'.
      */
@@ -384,7 +393,9 @@ implements java.io.Serializable
     } //-- boolean removeStepExecutionRecord(org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord) 
 
     /**
-     * Sets the value of field 'description'.
+     * Sets the value of field 'description'. The field
+     * 'description' has the following description: optional
+     * description of this step.
      * 
      * @param description the value of field 'description'.
      */
@@ -394,7 +405,9 @@ implements java.io.Serializable
     } //-- void setDescription(java.lang.String) 
 
     /**
-     * Sets the value of field 'joinCondition'.
+     * Sets the value of field 'joinCondition'. The field
+     * 'joinCondition' has the following description: @deprecated
+     * don't use
      * 
      * @param joinCondition the value of field 'joinCondition'.
      */
@@ -404,7 +417,8 @@ implements java.io.Serializable
     } //-- void setJoinCondition(org.astrogrid.workflow.beans.v1.types.JoinType) 
 
     /**
-     * Sets the value of field 'name'.
+     * Sets the value of field 'name'. The field 'name' has the
+     * following description: descriptive name for this step
      * 
      * @param name the value of field 'name'.
      */
@@ -414,7 +428,9 @@ implements java.io.Serializable
     } //-- void setName(java.lang.String) 
 
     /**
-     * Sets the value of field 'sequenceNumber'.
+     * Sets the value of field 'sequenceNumber'. The field
+     * 'sequenceNumber' has the following description: @deprecated
+     * don't use
      * 
      * @param sequenceNumber the value of field 'sequenceNumber'.
      */
@@ -455,7 +471,8 @@ implements java.io.Serializable
     } //-- void setStepExecutionRecord(org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord) 
 
     /**
-     * Sets the value of field 'stepNumber'.
+     * Sets the value of field 'stepNumber'. The field 'stepNumber'
+     * has the following description: @deprecated don't use
      * 
      * @param stepNumber the value of field 'stepNumber'.
      */
@@ -467,8 +484,8 @@ implements java.io.Serializable
 
     /**
      * Sets the value of field 'tool'. The field 'tool' has the
-     * following description: the CEA definition of the tool to be
-     * run 
+     * following description: defines the application to call, and
+     * the parameters to pass
      * 
      * @param tool the value of field 'tool'.
      */

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: OrganisationType.java,v 1.4 2004/07/09 14:44:43 nw Exp $
+ * $Id: OrganisationType.java,v 1.5 2004/08/03 14:24:10 nw Exp $
  */
 
 package org.astrogrid.registry.beans.resource.community;
@@ -27,7 +27,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Class OrganisationType.
  * 
- * @version $Revision: 1.4 $ $Date: 2004/07/09 14:44:43 $
+ * @version $Revision: 1.5 $ $Date: 2004/08/03 14:24:10 $
  */
 public class OrganisationType extends org.astrogrid.registry.beans.resource.ResourceType 
 implements java.io.Serializable

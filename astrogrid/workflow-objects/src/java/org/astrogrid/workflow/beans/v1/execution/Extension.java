@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Extension.java,v 1.3 2004/07/09 14:44:42 nw Exp $
+ * $Id: Extension.java,v 1.4 2004/08/03 14:24:09 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1.execution;
@@ -25,7 +25,7 @@ import org.xml.sax.ContentHandler;
  * A string 'buffer' for holding further information, keyed by
  * attribute - so execution record becomes a map.
  * 
- * @version $Revision: 1.3 $ $Date: 2004/07/09 14:44:42 $
+ * @version $Revision: 1.4 $ $Date: 2004/08/03 14:24:09 $
  */
 public class Extension extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
@@ -42,7 +42,7 @@ implements java.io.Serializable
     private java.lang.String _content = "";
 
     /**
-     * Field _key
+     * key to be used to retreive this extension buffer
      */
     private java.lang.String _key;
 
@@ -108,7 +108,9 @@ implements java.io.Serializable
     } //-- java.lang.String getContent() 
 
     /**
-     * Returns the value of field 'key'.
+     * Returns the value of field 'key'. The field 'key' has the
+     * following description: key to be used to retreive this
+     * extension buffer
      * 
      * @return the value of field 'key'.
      */
@@ -167,7 +169,9 @@ implements java.io.Serializable
     } //-- void setContent(java.lang.String) 
 
     /**
-     * Sets the value of field 'key'.
+     * Sets the value of field 'key'. The field 'key' has the
+     * following description: key to be used to retreive this
+     * extension buffer
      * 
      * @param key the value of field 'key'.
      */

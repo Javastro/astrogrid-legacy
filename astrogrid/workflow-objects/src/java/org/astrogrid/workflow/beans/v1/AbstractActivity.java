@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: AbstractActivity.java,v 1.20 2004/07/09 14:44:42 nw Exp $
+ * $Id: AbstractActivity.java,v 1.21 2004/08/03 14:24:09 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -25,7 +25,7 @@ import org.xml.sax.ContentHandler;
  * The abstract base class of all activities that can be performed
  * in a workflow
  * 
- * @version $Revision: 1.20 $ $Date: 2004/07/09 14:44:42 $
+ * @version $Revision: 1.21 $ $Date: 2004/08/03 14:24:09 $
  */
 public class AbstractActivity extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
@@ -37,7 +37,7 @@ implements java.io.Serializable
     //--------------------------/
 
     /**
-     * Field _id
+     * used within the job execution system.
      */
     private java.lang.String _id;
 
@@ -84,7 +84,8 @@ implements java.io.Serializable
     } //-- boolean equals(java.lang.Object) 
 
     /**
-     * Returns the value of field 'id'.
+     * Returns the value of field 'id'. The field 'id' has the
+     * following description: used within the job execution system.
      * 
      * @return the value of field 'id'.
      */
@@ -132,7 +133,8 @@ implements java.io.Serializable
     } //-- void marshal(org.xml.sax.ContentHandler) 
 
     /**
-     * Sets the value of field 'id'.
+     * Sets the value of field 'id'. The field 'id' has the
+     * following description: used within the job execution system.
      * 
      * @param id the value of field 'id'.
      */

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: WorkflowDescriptor.java,v 1.26 2004/07/09 14:44:42 nw Exp $
+ * $Id: WorkflowDescriptor.java,v 1.27 2004/08/03 14:24:09 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class WorkflowDescriptor.
  * 
- * @version $Revision: 1.26 $ $Date: 2004/07/09 14:44:42 $
+ * @version $Revision: 1.27 $ $Date: 2004/08/03 14:24:09 $
  */
 public class WorkflowDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 
@@ -94,42 +94,6 @@ public class WorkflowDescriptor extends org.exolab.castor.xml.util.XMLClassDescr
         //-- validation code for: _name
         fieldValidator = new org.exolab.castor.xml.FieldValidator();
         fieldValidator.setMinOccurs(1);
-        { //-- local scope
-            StringValidator typeValidator = new StringValidator();
-            typeValidator.setWhiteSpace("preserve");
-            fieldValidator.setValidator(typeValidator);
-        }
-        desc.setValidator(fieldValidator);
-        //-- _defaultScriptingLanguage
-        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.lang.String.class, "_defaultScriptingLanguage", "default-scripting-language", org.exolab.castor.xml.NodeType.Attribute);
-        desc.setImmutable(true);
-        handler = (new org.exolab.castor.xml.XMLFieldHandler() {
-            public java.lang.Object getValue( java.lang.Object object ) 
-                throws IllegalStateException
-            {
-                Workflow target = (Workflow) object;
-                return target.getDefaultScriptingLanguage();
-            }
-            public void setValue( java.lang.Object object, java.lang.Object value) 
-                throws IllegalStateException, IllegalArgumentException
-            {
-                try {
-                    Workflow target = (Workflow) object;
-                    target.setDefaultScriptingLanguage( (java.lang.String) value);
-                }
-                catch (java.lang.Exception ex) {
-                    throw new IllegalStateException(ex.toString());
-                }
-            }
-            public java.lang.Object newInstance( java.lang.Object parent ) {
-                return null;
-            }
-        } );
-        desc.setHandler(handler);
-        addFieldDescriptor(desc);
-        
-        //-- validation code for: _defaultScriptingLanguage
-        fieldValidator = new org.exolab.castor.xml.FieldValidator();
         { //-- local scope
             StringValidator typeValidator = new StringValidator();
             typeValidator.setWhiteSpace("preserve");

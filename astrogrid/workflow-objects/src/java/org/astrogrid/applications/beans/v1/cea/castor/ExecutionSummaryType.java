@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ExecutionSummaryType.java,v 1.3 2004/07/09 14:44:42 nw Exp $
+ * $Id: ExecutionSummaryType.java,v 1.4 2004/08/03 14:24:09 nw Exp $
  */
 
 package org.astrogrid.applications.beans.v1.cea.castor;
@@ -25,7 +25,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Class ExecutionSummaryType.
  * 
- * @version $Revision: 1.3 $ $Date: 2004/07/09 14:44:42 $
+ * @version $Revision: 1.4 $ $Date: 2004/08/03 14:24:09 $
  */
 public class ExecutionSummaryType extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable

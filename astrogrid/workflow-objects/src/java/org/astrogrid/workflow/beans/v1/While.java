@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: While.java,v 1.3 2004/07/09 14:44:42 nw Exp $
+ * $Id: While.java,v 1.4 2004/08/03 14:24:09 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -24,7 +24,7 @@ import org.xml.sax.ContentHandler;
 /**
  * A while loop construct
  * 
- * @version $Revision: 1.3 $ $Date: 2004/07/09 14:44:42 $
+ * @version $Revision: 1.4 $ $Date: 2004/08/03 14:24:09 $
  */
 public class While extends org.astrogrid.workflow.beans.v1.AbstractActivity 
 implements java.io.Serializable
@@ -36,17 +36,13 @@ implements java.io.Serializable
     //--------------------------/
 
     /**
-     * Field _test
+     * the condition for the loop: an expression (in ${..}) that
+     * evaluates to a boolean
      */
     private java.lang.String _test;
 
     /**
-     * Field _scriptingLanguage
-     */
-    private java.lang.String _scriptingLanguage = "jython-2.1";
-
-    /**
-     * The head of the substitution group
+     * Head of the substitution group
      */
     private org.astrogrid.workflow.beans.v1.AbstractActivity _activity;
 
@@ -57,7 +53,6 @@ implements java.io.Serializable
 
     public While() {
         super();
-        setScriptingLanguage("jython-2.1");
     } //-- org.astrogrid.workflow.beans.v1.While()
 
 
@@ -88,13 +83,6 @@ implements java.io.Serializable
             }
             else if (temp._test != null)
                 return false;
-            if (this._scriptingLanguage != null) {
-                if (temp._scriptingLanguage == null) return false;
-                else if (!(this._scriptingLanguage.equals(temp._scriptingLanguage))) 
-                    return false;
-            }
-            else if (temp._scriptingLanguage != null)
-                return false;
             if (this._activity != null) {
                 if (temp._activity == null) return false;
                 else if (!(this._activity.equals(temp._activity))) 
@@ -109,7 +97,7 @@ implements java.io.Serializable
 
     /**
      * Returns the value of field 'activity'. The field 'activity'
-     * has the following description: The head of the substitution
+     * has the following description: Head of the substitution
      * group
      * 
      * @return the value of field 'activity'.
@@ -120,17 +108,9 @@ implements java.io.Serializable
     } //-- org.astrogrid.workflow.beans.v1.AbstractActivity getActivity() 
 
     /**
-     * Returns the value of field 'scriptingLanguage'.
-     * 
-     * @return the value of field 'scriptingLanguage'.
-     */
-    public java.lang.String getScriptingLanguage()
-    {
-        return this._scriptingLanguage;
-    } //-- java.lang.String getScriptingLanguage() 
-
-    /**
-     * Returns the value of field 'test'.
+     * Returns the value of field 'test'. The field 'test' has the
+     * following description: the condition for the loop: an
+     * expression (in ${..}) that evaluates to a boolean
      * 
      * @return the value of field 'test'.
      */
@@ -179,8 +159,7 @@ implements java.io.Serializable
 
     /**
      * Sets the value of field 'activity'. The field 'activity' has
-     * the following description: The head of the substitution
-     * group
+     * the following description: Head of the substitution group
      * 
      * @param activity the value of field 'activity'.
      */
@@ -190,18 +169,9 @@ implements java.io.Serializable
     } //-- void setActivity(org.astrogrid.workflow.beans.v1.AbstractActivity) 
 
     /**
-     * Sets the value of field 'scriptingLanguage'.
-     * 
-     * @param scriptingLanguage the value of field
-     * 'scriptingLanguage'.
-     */
-    public void setScriptingLanguage(java.lang.String scriptingLanguage)
-    {
-        this._scriptingLanguage = scriptingLanguage;
-    } //-- void setScriptingLanguage(java.lang.String) 
-
-    /**
-     * Sets the value of field 'test'.
+     * Sets the value of field 'test'. The field 'test' has the
+     * following description: the condition for the loop: an
+     * expression (in ${..}) that evaluates to a boolean
      * 
      * @param test the value of field 'test'.
      */
