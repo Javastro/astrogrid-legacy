@@ -1,19 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.4 2004/03/03 21:39:11 jdt Exp $ -->
+<!-- $Id: project.xml,v 1.5 2004/03/08 16:50:41 jdt Exp $ -->
 <project>
   <extend>../maven-base/project.xml</extend>
   <id>astrogrid</id>
   <name>AstroGrid</name>
   <shortDescription>AstroGrid Projects</shortDescription>
   <siteDirectory>/var/www/www/maven/build</siteDirectory>
-  <repository>
-    <connection>
-      scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/maven-site
-    </connection>
-    <developerConnection>
-      scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/maven-site
-    </developerConnection>
-  </repository>
   
   <dependencies/>
   
