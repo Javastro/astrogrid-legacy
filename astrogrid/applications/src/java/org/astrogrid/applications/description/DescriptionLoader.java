@@ -1,5 +1,5 @@
 /*
- * $Id: DescriptionLoader.java,v 1.9 2004/03/02 16:48:42 pah Exp $
+ * $Id: DescriptionLoader.java,v 1.10 2004/03/23 12:51:26 pah Exp $
  *
  * Created on 26 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -13,6 +13,7 @@ package org.astrogrid.applications.description;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -24,6 +25,7 @@ import org.w3c.dom.Node;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
+import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
 import org.astrogrid.applications.manager.AbstractApplicationController;
 
 /**
@@ -35,6 +37,8 @@ import org.astrogrid.applications.manager.AbstractApplicationController;
  * @TODO make namespace aware and validate the input xml
  */
 public class DescriptionLoader {
+   static private org.apache.commons.logging.Log logger =
+      org.apache.commons.logging.LogFactory.getLog(DescriptionLoader.class);
    private AbstractApplicationController appController;
 
    private Digester digester;
@@ -48,29 +52,26 @@ public class DescriptionLoader {
          e.printStackTrace();
       }
    }
-   public boolean loadDescription(File configFile) {
+   public void loadDescription(URL configFile) throws ApplicationDescriptionNotLoadedException {
+      logger.info(
+         "loading application descriptions from "
+            + configFile.toString());
+
       ApplicationDescriptions descriptions = null;
-      boolean success = false;
       try {
          digester.clear();
-         descriptions = (ApplicationDescriptions)digester.parse(configFile);
-         if(descriptions != null )
+         descriptions = (ApplicationDescriptions)digester.parse(configFile.openStream());
+         if(descriptions == null )
          {
-            success = true;
+            throw new ApplicationDescriptionNotLoadedException("failed to load descriptions from "+configFile.toString());
+          
          } 
       }
-      catch (IOException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
-         success = false;
-      }
-      catch (SAXException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
-         success = false;
+      catch (Exception e) {
+         throw new ApplicationDescriptionNotLoadedException("failed to load descriptions from "+configFile.toString(),e);
       }
       appController.setApplicationDescriptions(descriptions);
-      return success;
+      
    }
    /**
     * Creates the digester suitable for reading the application description file. The correct funtioning ot this method is highly dependent on the details of the schema.

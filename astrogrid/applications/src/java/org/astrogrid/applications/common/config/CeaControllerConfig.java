@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationControllerConfig.java,v 1.12 2004/01/26 17:46:09 pah Exp $
+ * $Id: CeaControllerConfig.java,v 1.2 2004/03/23 12:51:25 pah Exp $
  * 
  * Created on 26-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -15,6 +15,8 @@ package org.astrogrid.applications.common.config;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import javax.mail.Session;
 import javax.naming.Context;
@@ -31,23 +33,24 @@ import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @version $Name:  $
  * @since iteration4
+ * @TODO should really reimplement config in terms of the common config class now that it is better...
  */
-public class ApplicationControllerConfig {
+public class CeaControllerConfig {
 
-   private static ApplicationControllerConfig instance = null;
-   private Config config;
+   private static CeaControllerConfig instance = null;
+   RawPropertyConfig rawPropertyConfig;
    static private org.apache.commons.logging.Log logger =
       org.apache.commons.logging.LogFactory.getLog(
-         ApplicationControllerConfig.class);
+         CeaControllerConfig.class);
 
    private javax.sql.DataSource dataSource = null;
 
-   private ApplicationControllerConfig() {
+   protected CeaControllerConfig() {
       logger.info("creating new configuration");
       
-      config = ConfigLoader.LoadConfig(ApplicationsConstants.CONFIGFILEKEY);
+      rawPropertyConfig = ConfigLoader.LoadConfig(ApplicationsConstants.CONFIGFILEKEY);
       //get the real datasource from config
-      dataSource = config.getDataSource(ApplicationsConstants.DataSourceName);
+      dataSource = rawPropertyConfig.getDataSource(ApplicationsConstants.DataSourceName);
       logger.info("configuration created");
    }
 
@@ -55,20 +58,24 @@ public class ApplicationControllerConfig {
     * constructor to allow unit testing. Note that this is package private
    * @param ds
    */
-   ApplicationControllerConfig(DataSource ds) {
-      config = ConfigLoader.LoadConfig(ApplicationsConstants.CONFIGFILEKEY);
+   CeaControllerConfig(DataSource ds) {
+      rawPropertyConfig = ConfigLoader.LoadConfig(ApplicationsConstants.CONFIGFILEKEY);
 
       instance = this;
       dataSource = ds;
    }
 
-   public static ApplicationControllerConfig getInstance() {
+   /**
+    * Get an instance. This has been made protected to stop "accidental" use outside the inversion of control pattern.
+    * @return
+    */
+   protected static CeaControllerConfig getInstance() {
       // note the double check......
       if (instance == null) {
-         synchronized (ApplicationControllerConfig.class) {
+         synchronized (CeaControllerConfig.class) {
             if (instance == null) {
 
-               instance = new ApplicationControllerConfig();
+               instance = new CeaControllerConfig();
             }
          }
 
@@ -76,23 +83,29 @@ public class ApplicationControllerConfig {
       return instance;
    }
 
-   public File getApplicationConfigFile() {
+   /**
+    * Find the config file that defines which applications we can run...
+    * @return The location of the config file
+    * @TODO - make this use url instead...
+    *
+    */
+   public URL getApplicationConfigFile() throws MalformedURLException {
 
-      File file =
-         new File(
-            config.getProperty(ApplicationsConstants.ApplicationConfigKey));
+      URL file =
+         new URL(
+            rawPropertyConfig.getProperty(ApplicationsConstants.ApplicationConfigKey));
       //TODO should test for the existance of the file here.
       return file;
    }
 
    public File getWorkingDirectory() {
       File dir =
-         new File(config.getProperty(ApplicationsConstants.WorkingDirectory));
+         new File(rawPropertyConfig.getProperty(ApplicationsConstants.WorkingDirectory));
       return dir;
    }
 
    public String getDatasourceName() {
-      return config.getProperty(ApplicationsConstants.DataSourceName);
+      return rawPropertyConfig.getProperty(ApplicationsConstants.DataSourceName);
    }
 
    /**
@@ -102,18 +115,20 @@ public class ApplicationControllerConfig {
       return dataSource;
    }
    public String getDBuser() {
-      return config.getProperty(ApplicationsConstants.DATABASE_USER_KEY);
+      return rawPropertyConfig.getProperty(ApplicationsConstants.DATABASE_USER_KEY);
    }
    public String getDBpwd() {
-      return config.getProperty(ApplicationsConstants.DATABASE_PASSWORD_KEY);
+      return rawPropertyConfig.getProperty(ApplicationsConstants.DATABASE_PASSWORD_KEY);
    }
    
-   public MySpaceClient getMySpaceManager() throws IOException{
-      //TODO need to get this from a registry somewhere really
-      MySpaceClient manager;
-      manager = MySpaceDelegateFactory.createDelegate(
-       config.getProperty(ApplicationsConstants.MySpaceManagerKey));
-       return manager;
+   /**
+    * Get the myspaceManagerEndpoint that has been configured...
+    * @return
+    */
+   public String getMySpaceManagerEndpoint() {
+      
+       return rawPropertyConfig.getProperty(ApplicationsConstants.MySpaceManagerKey);
+       
    }
    
    
@@ -131,11 +146,21 @@ public class ApplicationControllerConfig {
       
       return session;
    }
+   
+   /**
+    * Get the endpoint for the Registry.
+    * @return
+    */
+   public String getRegistryEndpoint()
+   {
+      return rawPropertyConfig.getProperty(ApplicationsConstants.RegistryEndpointKey);
+   }
+   
    public String toHTMLReport()
    {
       StringBuffer rep = new StringBuffer(128);
       
-      rep.append(config.toString());
+      rep.append(rawPropertyConfig.toString());
       rep.append("<ul>");
       rep.append("<li>");
       
@@ -148,17 +173,22 @@ public class ApplicationControllerConfig {
       
       rep.append("<li>");
       rep.append("working directory: ");
-      rep.append(config.getProperty(ApplicationsConstants.WorkingDirectory));
+      rep.append(rawPropertyConfig.getProperty(ApplicationsConstants.WorkingDirectory));
       rep.append("</li>");
 
       rep.append("<li>");
       rep.append("application config file: ");
-      rep.append(config.getProperty(ApplicationsConstants.ApplicationConfigKey));
+      rep.append(rawPropertyConfig.getProperty(ApplicationsConstants.ApplicationConfigKey));
       rep.append("</li>");
 
       rep.append("<li>");
+      rep.append("registry endpoint: ");
+      rep.append(rawPropertyConfig.getProperty(ApplicationsConstants.RegistryEndpointKey));
+      rep.append("</li>");
+      
+      rep.append("<li>");
       rep.append("myspace manager endpoint: ");
-      rep.append(config.getProperty(ApplicationsConstants.MySpaceManagerKey));
+      rep.append(rawPropertyConfig.getProperty(ApplicationsConstants.MySpaceManagerKey));
       rep.append("</li>");
       
       rep.append("<li>");
@@ -172,4 +202,11 @@ public class ApplicationControllerConfig {
       
       return rep.toString();
    }
+   /**
+    * @return
+    */
+   public RawPropertyConfig getRawPropertyConfig() {
+      return rawPropertyConfig;
+   }
+
 }

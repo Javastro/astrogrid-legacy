@@ -1,5 +1,5 @@
 /*
- * $Id: VOTableParameter.java,v 1.4 2003/12/31 00:56:17 pah Exp $
+ * $Id: VOTableParameter.java,v 1.5 2004/03/23 12:51:25 pah Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -11,7 +11,9 @@
 
 package org.astrogrid.applications;
 
-import org.objectwiz.votable.VOTable;
+
+
+import cds.xml.VOTable;
 
 import org.astrogrid.applications.description.ParameterDescription;
 

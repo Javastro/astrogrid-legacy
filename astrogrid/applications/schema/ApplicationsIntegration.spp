@@ -2,17 +2,24 @@
 <Project>
 	<Folder FolderName="XML Files" ExtStr="xml;cml;math;mtx;rdf;smil;svg;wml">
 		<File FilePath="\\pahlaptop\work\astrogrid\src\applications\config\applicationDefinitions.xml" HomeFolder="Yes"/>
+		<File FilePath="\\pahlaptop\work\astrogrid\src\workflow-objects\sampleDocuments\CEARegistyEntry.xml" HomeFolder="Yes"/>
+		<File FilePath="\\pahlaptop\work\astrogrid\src\applications\config\DataServerDefinitions.xml" HomeFolder="Yes"/>
 		<File FilePath="\\pahlaptop\work\astrogrid\src\applications\test\config\TestApplicationConfig.xml" HomeFolder="Yes"/>
+		<File FilePath="\\pahlaptop\work\astrogrid\src\workflow-objects\sampleDocuments\workflow.xml" HomeFolder="Yes"/>
 	</Folder>
 	<Folder FolderName="XSL Files" ExtStr="xsl;xslt"/>
 	<Folder FolderName="HTML Files" ExtStr="html;htm;xhtml;asp"/>
 	<Folder FolderName="DTD/Schemas" ExtStr="dtd;dcd;xdr;biz;xsd">
 		<File FilePath="\\pahlaptop\work\astrogrid\src\workflow-objects\schema\AGApplicationBase.xsd" HomeFolder="Yes"/>
 		<File FilePath=".\AGApplicationResource.xsd" HomeFolder="Yes"/>
-		<File FilePath=".\AGApplicationService.xsd" HomeFolder="Yes"/>
 		<File FilePath="\\pahlaptop\work\astrogrid\src\workflow-objects\schema\AGParameterDefinition.xsd" HomeFolder="Yes"/>
+		<File FilePath="\\pahlaptop\work\astrogrid\src\workflow-objects\schema\CEATypes.xsd" HomeFolder="Yes"/>
+		<File FilePath="\\Pahlaptop\work\astrogrid\src\workflow-objects\wsdl\CommonExecutionConnnector.wsdl" HomeFolder="Yes"/>
 		<File FilePath="\\pahlaptop\work\astrogrid\src\workflow-objects\schema\Credentials.xsd" HomeFolder="Yes"/>
 		<File FilePath="\\pahlaptop\work\astrogrid\src\workflow-objects\schema\JesTypes.xsd" HomeFolder="Yes"/>
+		<File FilePath="\\pahlaptop\work\astrogrid\src\workflow-objects\schema\VOCEA.xsd" HomeFolder="Yes"/>
+		<File FilePath="\\pahlaptop\work\astrogrid\src\workflow-objects\schema\externalSchema\VODataService-v0.4.xsd" HomeFolder="Yes"/>
+		<File FilePath="\\pahlaptop\work\astrogrid\src\workflow-objects\schema\externalSchema\VOResource-v0.9.xsd" HomeFolder="Yes"/>
 		<File FilePath="\\pahlaptop\work\astrogrid\src\workflow-objects\schema\Workflow.xsd" HomeFolder="Yes"/>
 	</Folder>
 	<Folder FolderName="Entities" ExtStr="ent"/>

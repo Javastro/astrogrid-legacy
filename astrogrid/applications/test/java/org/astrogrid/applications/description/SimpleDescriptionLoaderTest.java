@@ -1,5 +1,5 @@
 /*
- * $Id: SimpleDescriptionLoaderTest.java,v 1.2 2003/12/05 22:52:16 pah Exp $
+ * $Id: SimpleDescriptionLoaderTest.java,v 1.3 2004/03/23 12:51:25 pah Exp $
  * 
  * Created on 04-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -22,6 +22,7 @@ import junit.framework.TestCase;
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @version $Name:  $
  * @since iteration4
+ * @TODO this test should be deleted - it is no longer applicable since workflow objects have come along.
  */
 public class SimpleDescriptionLoaderTest extends DescriptionBaseTestCase {
 
@@ -48,8 +49,6 @@ public class SimpleDescriptionLoaderTest extends DescriptionBaseTestCase {
 
    final public void testLoadDescription() {
       dl.loadDescription(inputFile);
-      SimpleApplicationDescription appdesc = ac.getApplicationDescription(TESTAPPNAME);
-      assertNotNull(appdesc); // should do something more sophisticated
       
    }
 

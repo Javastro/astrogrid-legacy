@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
+<workflow xmlns="http://www.astrogrid.org/schema/AGWorkflow/v1" xmlns:agcred="http://www.astrogrid.org/schema/Credentials/v1" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:er="http://www.astrogrid.org/schema/ExecutionRecord/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.astrogrid.org/schema/AGWorkflow/v1
+\\pahlaptop\work\astrogrid\src\workflow-objects\schema\Workflow.xsd" name="">
+	<sequence>
+		<step name="test step">
+			<tool name="testapp" interface="simple">
+				<input>
+					<parameter name="P1">
+						<agpd:value>30</agpd:value>
+					</parameter>
+					<parameter name="P2">
+						<agpd:value>2.5</agpd:value>
+					</parameter>
+					<parameter name="P4">
+						<agpd:value>any rubbish</agpd:value>
+					</parameter>
+					<parameter name="P9">
+						<agpd:value>testInFile</agpd:value>
+					</parameter>
+				</input>
+				<output>
+					<parameter name="P3">
+						<agpd:value>outputfile</agpd:value>
+					</parameter>
+				</output>
+			</tool>
+		</step>
+	</sequence>
+	<Credentials>
+		<agcred:Account>
+			<agcred:Name>avodemo</agcred:Name>
+			<agcred:Community>test.astrogrid.org</agcred:Community>
+		</agcred:Account>
+		<agcred:Group>
+			<agcred:Name>any</agcred:Name>
+			<agcred:Community>test.astrogrid.org</agcred:Community>
+		</agcred:Group>
+		<agcred:SecurityToken>bah</agcred:SecurityToken>
+	</Credentials>
+	<description>This is a test workflow for the test application.</description>
+</workflow>

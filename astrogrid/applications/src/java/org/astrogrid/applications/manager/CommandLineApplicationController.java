@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationController.java,v 1.17 2004/03/02 16:48:58 pah Exp $
+ * $Id: CommandLineApplicationController.java,v 1.18 2004/03/23 12:51:25 pah Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -11,22 +11,31 @@
 
 package org.astrogrid.applications.manager;
 
+import java.io.StringWriter;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.ValidationException;
+
+import org.astrogrid.applications.ApplicationExecutionException;
 import org.astrogrid.applications.ApplicationFactory;
+import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.CmdLineApplicationCreator;
 import org.astrogrid.applications.ParameterValues;
 import org.astrogrid.applications.Status;
-import org.astrogrid.applications.commandline.CmdLineApplicationEnvironment;
+import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.commandline.CmdLineApplication;
-import org.astrogrid.applications.commandline.exceptions.ApplicationExecutionException;
+import org.astrogrid.applications.commandline.CmdLineApplicationEnvironment;
 import org.astrogrid.applications.commandline.exceptions.CannotCreateWorkingDirectoryException;
+import org.astrogrid.applications.common.config.CeaControllerConfig;
 import org.astrogrid.applications.description.ParameterLoader;
 import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
 import org.astrogrid.applications.description.exception.InterfaceDescriptionNotFoundException;
+import org.astrogrid.applications.manager.externalservices.MySpaceFromConfig;
+import org.astrogrid.applications.manager.externalservices.RegistryFromConfig;
 import org.astrogrid.community.User;
+import org.astrogrid.workflow.beans.v1.Tool;
 
 /**
  * This provides a mechanism to run command line tools.
@@ -35,141 +44,182 @@ import org.astrogrid.community.User;
  * @since iteration4
  * @TODO try inversion of control refactoring - plug in the actual environment setter callback mechanism etc...
  */
-public class CommandLineApplicationController extends AbstractApplicationController  {
-   
-   
- 
+public class CommandLineApplicationController extends AbstractApplicationController {
 
    /**
-    * Standard Constructor.
+    * Small class to indicate that we really do want to create a CeaControllerConfig
+    * @author Paul Harrison (pah@jb.man.ac.uk) 19-Mar-2004
+    * @version $Name:  $
+    * @since iteration5
+    */
+   private static class ThisConfig extends CeaControllerConfig {
+      public static CeaControllerConfig getInstance() {
+         return CeaControllerConfig.getInstance();
+      }
+   }
+
+   /**
+    * @TODO get rid of me with inversion of control.
     */
    public CommandLineApplicationController() {
-      super();
-      runningApplications=new HashMap();
-      
+
+      this(
+         ThisConfig.getInstance(),
+         new RegistryFromConfig(ThisConfig.getInstance()),
+         new MySpaceFromConfig(ThisConfig.getInstance()));
+
+   }
+
+   /**
+    * @param config
+    * @param registryQueryLocator
+    * @param mySpaceLocator
+    */
+   public CommandLineApplicationController(
+      CeaControllerConfig config,
+      RegistryQueryLocator registryQueryLocator,
+      MySpaceLocator mySpaceLocator) {
+      super(config, registryQueryLocator, mySpaceLocator);
+
+      runningApplications = new HashMap();
+      //REFACTORME this should be part of the scheduler
+      // TODO Auto-generated constructor stub
    }
 
    /* (non-Javadoc)
     * @see org.astrogrid.applications.manager.ApplicationController#executeApplication(int)
     */
-   public boolean executeApplication(String executionId) {
+   private boolean executeApplication(String executionId) throws CeaException {
       boolean success = false;
-      
-      
-      
+
       if (runningApplications.containsKey(executionId)) {
          CmdLineApplication app =
             (CmdLineApplication)runningApplications.get(executionId);
-            try {
-               success = app.execute();
-            }
-            catch (ApplicationExecutionException e) {
-               // TODO Auto-generated catch block
-               e.printStackTrace();
-            }
+         success = app.execute();
       }
-      
-      return success;
-      
-   }
 
-   /* (non-Javadoc)
-    * @see org.astrogrid.applications.manager.ApplicationController#queryApplicationExecutionStatus(int)
-    */
-   public String queryApplicationExecutionStatus(String executionId) {
-      
-      CmdLineApplication app;
-      if((app = getRunningApplication(executionId))!= null)
-      {
-      return app.getStatus().toString();
-      }
-      else
-      {
-         return Status.UNKNOWN.toString();
-      }
+      return success;
 
    }
 
    /* (non-Javadoc)
     * @see org.astrogrid.applications.manager.ApplicationController#initializeApplication(java.lang.String, java.lang.String, java.lang.String, org.astrogrid.community.User, org.astrogrid.applications.ParameterValues)
     */
-   public String initializeApplication(
+   private String initializeApplication(
       String applicationID,
       String jobstepID,
       String jobMonitorURL,
-      User user,
       ParameterValues parameters) {
-         int executionId = -1;
-         
-         
-         // create the application object
-         ApplicationFactory factory = CmdLineApplicationCreator.getInstance(this);
-        try {
-             CmdLineApplication cmdLineApplication = (CmdLineApplication)factory.createApplication(applicationID, user);
-             
-            
-               
+      int executionId = -1;
+
+      // create the application object
+      ApplicationFactory factory = CmdLineApplicationCreator.getInstance(this);
+      try {
+         User user = new User(); //TODO this needs to be obtained from the context
+         CmdLineApplication cmdLineApplication =
+            (CmdLineApplication)factory.createApplication(applicationID, user);
+
+         try {
+            // create the application environment
+            CmdLineApplicationEnvironment environment =
+               new CmdLineApplicationEnvironment(config);
+            cmdLineApplication.setApplicationEnvironment(environment);
+            executionId = environment.getExecutionId();
             try {
-               // create the application environment
-                 CmdLineApplicationEnvironment environment = new CmdLineApplicationEnvironment();
-                 cmdLineApplication.setApplicationEnvironment(environment);
-                 executionId = environment.getExecutionId();
-                 try {
-                  cmdLineApplication.setApplicationInterface(cmdLineApplication.getApplicationDescription().getInterface(parameters.getMethodName()));
-               }
-               catch (InterfaceDescriptionNotFoundException e1) {
-                  logger.error("cannot find interface", e1);
-               }
-                 
-              //TODO parse the parameter values and set up the parameter array
-              ParameterLoader pl = new ParameterLoader(cmdLineApplication);
-              pl.loadParameters(parameters.getParameterSpec());
-         
-              
-            
-              // add this application to the execution map
-              runningApplications.put(Integer.toString(executionId), cmdLineApplication);
-              
-              // set up the job step paramters
-              cmdLineApplication.setJobMonitorURL(jobMonitorURL);
-              cmdLineApplication.setJobStepID(jobstepID);
-              cmdLineApplication.setStatus(Status.INITIALIZED);
-            
-            
+               cmdLineApplication.setApplicationInterface(
+                  cmdLineApplication.getApplicationDescription().getInterface(
+                     parameters.getMethodName()));
             }
-            catch (CannotCreateWorkingDirectoryException e) {
-               // TODO Auto-generated catch block
-               e.printStackTrace();
-               
+            catch (InterfaceDescriptionNotFoundException e1) {
+               logger.error("cannot find interface", e1);
             }
-            
+
+            //TODO parse the parameter values and set up the parameter array
+            ParameterLoader pl = new ParameterLoader(cmdLineApplication);
+            pl.loadParameters(parameters.getParameterSpec());
+
+            // add this application to the execution map
+            runningApplications.put(Integer.toString(executionId), cmdLineApplication);
+
+            // set up the job step paramters
+            cmdLineApplication.setJobMonitorURL(jobMonitorURL);
+            cmdLineApplication.setJobStepID(jobstepID);
+            cmdLineApplication.setStatus(Status.INITIALIZED);
+
          }
-         catch (ApplicationDescriptionNotFoundException e) {
+         catch (CannotCreateWorkingDirectoryException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-         }     
-       
-       // the external representation of the execution ID is a string
-       return Integer.toString(executionId);
+
+         }
+
+      }
+      catch (ApplicationDescriptionNotFoundException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      }
+
+      // the external representation of the execution ID is a string
+      return Integer.toString(executionId);
    }
 
    /**
     *@link aggregation 
     *      @associates org.astrogrid.applications.commandline.CmdLineApplicationEnvironment
     */
-    private Map runningApplications;
+   private Map runningApplications;
    /**
     * Return a running application object.this is package private to assist with the unit tests primarily.
     * @return
     */
-    CmdLineApplication getRunningApplication(String executionID) {
+   CmdLineApplication getRunningApplication(String executionID) {
       CmdLineApplication app = null;
-      
+
       if (runningApplications.containsKey(executionID)) {
-         app = (CmdLineApplication)runningApplications.get(executionID);         
+         app = (CmdLineApplication)runningApplications.get(executionID);
       }
       return app;
    }
 
-}
+   /* (non-Javadoc)
+    * @see org.astrogrid.applications.manager.ApplicationController#abortApplication(java.lang.String)
+    */
+   public boolean abort(String executionId) {
+      // TODO Auto-generated method stub
+      throw new UnsupportedOperationException("CommandLineApplicationController.abort() not implemented");
+   }
+   /** 
+    * @see org.astrogrid.applications.manager.CommonExecutionController#execute(org.astrogrid.workflow.beans.v1.Tool, java.lang.String, java.lang.String)
+    */
+   public String execute(Tool tool, String jobstepID, String jobMonitorURL)
+      throws CeaException {
+         // TODO need to drive the castor object model lower than this.
+         ParameterValues parameters = new ParameterValues();
+         parameters.setMethodName(tool.getInterface());
+         StringWriter sw = new StringWriter();
+         try {
+            tool.marshal(sw);
+            parameters.setParameterSpec(sw.toString());
+         }
+         catch (MarshalException e) {
+           throw new ApplicationExecutionException("could not marshal the tool parameters to a string", e);
+         }
+         catch (ValidationException e) {
+           throw new ApplicationExecutionException("validation error when marshalling tool parameters", e);
+         }
+         String executionId;
+         executionId =
+            initializeApplication(tool.getName(), jobstepID, jobMonitorURL, parameters);
+         executeApplication(executionId);
+         return executionId;
+   }
 
+   /** 
+    * @see org.astrogrid.applications.manager.CommonExecutionController#queryExecutionStatus(java.lang.String)
+    */
+   public MessageType queryExecutionStatus(String executionId) throws CeaException {
+      // TODO Auto-generated method stub
+      throw new  UnsupportedOperationException("CommandLineApplicationController.queryExecutionStatus() not implemented");
+   }
+
+}

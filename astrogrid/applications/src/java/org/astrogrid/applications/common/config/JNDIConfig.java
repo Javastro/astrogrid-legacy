@@ -1,5 +1,5 @@
 /*
- * $Id: JNDIConfig.java,v 1.3 2004/01/16 23:30:24 pah Exp $
+ * $Id: JNDIConfig.java,v 1.4 2004/03/23 12:51:25 pah Exp $
  * 
  * Created on 15-Sep-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -35,7 +35,7 @@ import javax.sql.DataSource;
  * @since iteration3
  */
 
-public class JNDIConfig implements Config {
+public class JNDIConfig implements RawPropertyConfig {
    private String jndiconfigkey;
    private boolean propertiesLoaded;
    /**
@@ -116,7 +116,7 @@ public class JNDIConfig implements Config {
 
       }
       catch (NamingException e) {
-         logger.error("problem finding the name", e);
+         logger.info("problem finding the jndi name="+jndiName, e); // changed to info because do not want the fallback to look like error
  
       }
       catch (MalformedURLException e) {
@@ -189,6 +189,13 @@ public class JNDIConfig implements Config {
     */
    public String toString() {
       return this.getClass().getName() +": jndi key="+ jndiconfigkey + " configURL="+configURL;
+   }
+
+   /**
+    * @return
+    */
+   public boolean isPropertiesLoaded() {
+      return propertiesLoaded;
    }
 
 }

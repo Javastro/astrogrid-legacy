@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationExecutionException.java,v 1.1 2003/12/07 01:09:48 pah Exp $
+ * $Id: ApplicationExecutionException.java,v 1.2 2004/03/23 12:51:25 pah Exp $
  * 
  * Created on 06-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -11,23 +11,16 @@
  *
  */ 
 
-package org.astrogrid.applications.commandline.exceptions;
+package org.astrogrid.applications;
 
 /**
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @version $Name:  $
  * @since iteration4
  */
-public class ApplicationExecutionException extends Exception {
+public class ApplicationExecutionException extends CeaException {
 
-   /**
-    * 
-    */
-   public ApplicationExecutionException() {
-      super();
-      // TODO Auto-generated constructor stub
-   }
-
+ 
    /**
     * @param message
     */
@@ -36,14 +29,7 @@ public class ApplicationExecutionException extends Exception {
       // TODO Auto-generated constructor stub
    }
 
-   /**
-    * @param cause
-    */
-   public ApplicationExecutionException(Throwable cause) {
-      super(cause);
-      // TODO Auto-generated constructor stub
-   }
-
+ 
    /**
     * @param message
     * @param cause

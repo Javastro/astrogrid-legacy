@@ -1,5 +1,5 @@
 /*
- * $Id: SyspropConfig.java,v 1.2 2003/12/09 23:01:15 pah Exp $
+ * $Id: SyspropConfig.java,v 1.3 2004/03/23 12:51:25 pah Exp $
  * 
  * Created on 09-Sep-2003 by pah
  *
@@ -20,7 +20,7 @@ import javax.sql.DataSource;
  * @version $Name:  $
  * @since iteration3
  */
-public class SyspropConfig implements Config {
+public class SyspropConfig implements RawPropertyConfig {
    private static SyspropConfig instance;
 
    private SyspropConfig()

@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationController.java,v 1.17 2004/02/09 22:43:28 pah Exp $
+ * $Id: ApplicationController.java,v 1.18 2004/03/23 12:51:25 pah Exp $
  *
  * Created on 03 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -22,6 +22,7 @@ import org.astrogrid.community.User;
  * @author pah 
  * @since Iteration 4
  * @version $Name:  $
+ * @deprecated this has been replaced by the @link org.astrogrid.applications.service.v1.cea.CommonExecutionConnector
  * @TODO This interface is not that good at signalling error conditions - could do with improvement.
  * @TODO Need to be able to stop a running job.
  * @TODO Needs to have resource management concept - possiblility of application queues to restrict the number of concurrently running applications
@@ -46,35 +47,37 @@ public interface ApplicationController {
    SimpleApplicationDescription getApplicationDescription(String applicationID);
 
    /**
-    * Initialize the application environment and set up the parameters.
+    * Initialize and run an application asynchronously.
     * @param applicationID the application identifier as returned by a call to {@link #listApplications} .
     * @param jobstepID the jobstep that is requesting the execution.
     * @param jobMonitorURL the jobmonitor service to call to notify of execution completion.
-    * @param user The user credentials for the user that the job will be run in the name of. This bean represents what was commonly known as the "community snippet".
     * @param parameters the description of the job parameters. This is basically an xml fragment that includes the tool element and children from the {@see <a href="http://www.astrogrid.org/viewcvs/%2acheckout%2a/astrogrid/workflow/schema/Workflow.xsd?rev=HEAD&content-type=text/plain">Workflow Schema</a>}
     * @return an identifier for this particular execution instance -1 indicates a failure in initializing the application.
     */
-   String initializeApplication(String applicationID, String jobstepID, String jobMonitorURL, User user, org.astrogrid.applications.ParameterValues parameters);
-
-   /**
-    * Executes a particular application asynchronously that has previously been intialized by {@link #initializeApplication}
-    * @param executionId The executionId returned by {@link #initializeApplication} .
-    */
-   boolean executeApplication(String executionId);
+   String execute(String applicationID, String jobstepID, String jobMonitorURL,  org.astrogrid.applications.ParameterValues tool);
 
    /**
     * Query the status of a particular application execution.
-    * @param executionId The executionId returned by {@link #initializeApplication} .
+    * @param executionId The executionId returned by {@link #executeApplication} .
     * @return A String describing the current status of the application.
+    * @TODO need to have a better way to capture and report application errors...
     */
-   String queryApplicationExecutionStatus(String executionId);
+   String queryExecutionStatus(String executionId);
 
    /**
     * Returns an xml string describing the application service controller and the applications that it controls. This string would be suitable for putting in the registry.
     * @return A VOResource fragment suiltable for inclusion in the registry.
-    * @TODO need to have a better way to capture and report application errors...
+    * @TODO - would this be better in a specific registy interface
     */
    String returnRegistryEntry();
+   
+   /**
+    * Attempt to abort a running application. This will attempt to abort a running application.
+    * 
+    * @param executionId The executionId returned by {@link #executeApplication} .
+    * @return true is the application was aborted. If the environment cannot abort the application until it will naturally finish then this should return false.
+    */
+   boolean abort(String executionId);
 
    /**
     * @label Manages

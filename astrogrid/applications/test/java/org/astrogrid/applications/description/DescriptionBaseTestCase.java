@@ -1,5 +1,5 @@
 /*
- * $Id: DescriptionBaseTestCase.java,v 1.2 2003/12/12 21:30:46 pah Exp $
+ * $Id: DescriptionBaseTestCase.java,v 1.3 2004/03/23 12:51:25 pah Exp $
  * 
  * Created on 04-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -17,7 +17,7 @@ import java.io.File;
 import java.net.URI;
 import java.net.URL;
 
-import org.astrogrid.applications.common.config.ApplicationControllerConfig;
+import org.astrogrid.applications.common.config.CeaControllerConfig;
 import org.astrogrid.applications.common.config.ConfigLoader;
 import org.astrogrid.applications.manager.CommandLineApplicationController;
 
@@ -29,6 +29,18 @@ import junit.framework.TestCase;
  * @since iteration4
  */
 public class DescriptionBaseTestCase extends TestCase {
+
+   /**
+    * Small class to indicate that we really do want to create a CeaControllerConfig
+    * @author Paul Harrison (pah@jb.man.ac.uk) 19-Mar-2004
+    * @version $Name:  $
+    * @since iteration5
+    */
+   private static class ThisConfig extends CeaControllerConfig {
+      public static CeaControllerConfig getInstance() {
+         return CeaControllerConfig.getInstance();
+      }
+   }
 
    /**
     * 
@@ -51,8 +63,7 @@ public class DescriptionBaseTestCase extends TestCase {
 
    protected void setUp() throws Exception {
       super.setUp();
-      ConfigLoader.setConfigType(ConfigLoader.TEST_CONFIG);
-      config = ApplicationControllerConfig.getInstance();
+      config = ThisConfig.getInstance();
       inputFile = config.getApplicationConfigFile();
       assertNotNull("application config file", inputFile);
       ac = new CommandLineApplicationController();
@@ -61,10 +72,10 @@ public class DescriptionBaseTestCase extends TestCase {
 
    protected URL urlconfig;
 
-   protected File inputFile;
+   protected URL inputFile;
 
    protected String TESTAPPNAME = TestAppConst.TESTAPP_NAME;
 
-   protected ApplicationControllerConfig config;
+   protected CeaControllerConfig config;
    
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceReferenceParameter.java,v 1.4 2004/02/09 22:43:28 pah Exp $
+ * $Id: MySpaceReferenceParameter.java,v 1.5 2004/03/23 12:51:25 pah Exp $
  *
  * Created on 08 December 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.astrogrid.applications.common.config.ApplicationControllerConfig;
+import org.astrogrid.applications.common.config.CeaControllerConfig;
 import org.astrogrid.applications.description.ParameterDescription;
 import org.astrogrid.community.User;
 import org.astrogrid.mySpace.delegate.MySpaceClient;
@@ -41,7 +41,7 @@ public class MySpaceReferenceParameter extends FileReferenceParameter {
       //TODO REFACTORME surely the myspace manager should come from the registry via myspace reference string
       try {
          MySpaceClient mySpaceManager =
-            ApplicationControllerConfig.getInstance().getMySpaceManager();
+            application.getController().getMySpaceLocator().getClient();
             
          User user = application.getUser();
          URL url = new URL("file","",realFile.getAbsolutePath());

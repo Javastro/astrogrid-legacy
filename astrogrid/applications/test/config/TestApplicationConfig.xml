@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
+<!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by Paul Harrison (Jodrell Bank Observatory) -->
 <CommandLineExecutionControllerConfig xmlns="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1
 \\pahlaptop\work\astrogrid\src\workflow-objects\schema\AGApplicationBase.xsd">
 	<Application name="testapp">
 		<!-- do not test specific instance app for now -->
 		<!--This is the main test application-->
 		<Parameters>
-			<CmdLineParameterDefn name="P1" type="xs:integer" commandPosition="1">
+			<CmdLineParameterDefn name="P1" type="integer" commandPosition="1">
 				<agpd:UI_Name>Pause Time</agpd:UI_Name>
 				<agpd:UI_Description>Text<b>bold bit</b>
 					<b/>with some other - this is the time tha tthe application will pause in seconds before continuing to give the appearance of doing something...
@@ -15,7 +15,7 @@
 				<agpd:DefaultValue>1.0</agpd:DefaultValue>
 				<agpd:Units>String</agpd:Units>
 			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="P2" type="xs:double" commandPosition="2">
+			<CmdLineParameterDefn name="P2" type="double" commandPosition="2">
 				<agpd:UI_Name>String</agpd:UI_Name>
 				<agpd:UI_Description>Text<b>bold bit</b> This can be anything
 				</agpd:UI_Description>
@@ -23,37 +23,37 @@
 				<agpd:DefaultValue>Text</agpd:DefaultValue>
 				<agpd:Units>String</agpd:Units>
 			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="P3" type="agpd:MySpace_FileReference" switchType="normal">
+			<CmdLineParameterDefn name="P3" type="MySpace_FileReference" switchType="normal">
 				<agpd:UI_Name/>
 				<agpd:UI_Description/>
 			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="P4" type="xs:string" commandSwitch="Parameter4" switchType="keyword">
+			<CmdLineParameterDefn name="P4" type="string" commandSwitch="Parameter4" switchType="keyword">
 				<agpd:UI_Name/>
 				<agpd:UI_Description/>
 			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="P5" type="agpd:MySpace_VOTableReference">
+			<CmdLineParameterDefn name="P5" type="MySpace_VOTableReference">
 				<agpd:UI_Name/>
 				<agpd:UI_Description/>
 			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="P6" type="agpd:RA">
+			<CmdLineParameterDefn name="P6" type="RA">
 				<agpd:UI_Name/>
 				<agpd:UI_Description/>
 			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="P7" type="agpd:Dec">
+			<CmdLineParameterDefn name="P7" type="Dec">
 				<agpd:UI_Name/>
 				<agpd:UI_Description/>
 			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="P8" type="agpd:ADQL">
+			<CmdLineParameterDefn name="P8" type="ADQL">
 				<agpd:UI_Name/>
 				<agpd:UI_Description/>
 			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="P9" type="agpd:MySpace_FileReference">
+			<CmdLineParameterDefn name="P9" type="MySpace_FileReference">
 				<agpd:UI_Name/>
 				<agpd:UI_Description>The contents of this file will be copied to the output</agpd:UI_Description>
 			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="P10" type="xs:boolean"/>
-			<CmdLineParameterDefn name="P11" type="xs:anyURI"/>
-			<CmdLineParameterDefn name="P12" type="agpd:FileReference" switchType="normal">
+			<CmdLineParameterDefn name="P10" type="boolean"/>
+			<CmdLineParameterDefn name="P11" type="anyURI"/>
+			<CmdLineParameterDefn name="P12" type="FileReference" switchType="normal">
 				<agpd:UI_Name/>
 				<agpd:UI_Description/>
 			</CmdLineParameterDefn>
@@ -61,10 +61,10 @@
 		<Interfaces>
 			<Interface name="I1">
 				<input>
-					<pref ref="P1" optional="false" repeatable="true"/>
-					<pref ref="P2" optional="false" repeatable="false"/>
-					<pref ref="P4" optional="false" repeatable="false"/>
-					<pref ref="P9" optional="true" repeatable="false"/>
+					<pref ref="P1"/>
+					<pref ref="P2"/>
+					<pref ref="P4"/>
+					<pref ref="P9"/>
 				</input>
 				<output>
 					<pref ref="P3"/>
@@ -84,7 +84,7 @@
 	<Application name="testap2">
 		<!--This Application does not exist - this is just here to help with testing the description reading modules-->
 		<Parameters>
-			<CmdLineParameterDefn name="p1" type="xs:integer">
+			<CmdLineParameterDefn name="p1" type="integer">
 				<agpd:UI_Name>String</agpd:UI_Name>
 				<agpd:UI_Description>Text<b>bold bit</b>
 				</agpd:UI_Description>
@@ -92,7 +92,7 @@
 				<agpd:DefaultValue>Text</agpd:DefaultValue>
 				<agpd:Units>String</agpd:Units>
 			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="p2" type="xs:integer">
+			<CmdLineParameterDefn name="p2" type="integer">
 				<agpd:UI_Name>String</agpd:UI_Name>
 				<agpd:UI_Description>Text<b>bold bit</b>
 				</agpd:UI_Description>

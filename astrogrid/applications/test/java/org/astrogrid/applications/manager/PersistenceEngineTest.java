@@ -1,5 +1,5 @@
 /*
- * $Id: PersistenceEngineTest.java,v 1.1 2003/12/07 01:09:48 pah Exp $
+ * $Id: PersistenceEngineTest.java,v 1.2 2004/03/23 12:51:25 pah Exp $
  * 
  * Created on 05-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -22,7 +22,7 @@ import org.astrogrid.applications.common.config.BaseDBTestCase;
  */
 public class PersistenceEngineTest extends BaseDBTestCase {
 
-   private PersistenceEngine pe;
+   private DatabasePersistenceEngine pe;
 
    /**
     * Constructor for PersistenceEngineTest.
@@ -41,7 +41,7 @@ public class PersistenceEngineTest extends BaseDBTestCase {
     */
    protected void setUp() throws Exception {
       super.setUp();
-      pe = PersistenceEngine.getInstance();
+      pe = DatabasePersistenceEngine.getInstance(config);
    }
 
    final public void testGetNewID() {

@@ -1,5 +1,5 @@
 /*
- * $Id: CmdLineApplication.java,v 1.18 2004/03/05 16:08:22 nw Exp $
+ * $Id: CmdLineApplication.java,v 1.19 2004/03/23 12:51:26 pah Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -22,10 +22,11 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.astrogrid.applications.AbstractApplication;
+import org.astrogrid.applications.ApplicationExecutionException;
+import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.Parameter;
 import org.astrogrid.applications.Result;
 import org.astrogrid.applications.Status;
-import org.astrogrid.applications.commandline.exceptions.ApplicationExecutionException;
 import org.astrogrid.applications.common.io.StreamPiper;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.manager.AbstractApplicationController;
@@ -79,7 +80,7 @@ public class CmdLineApplication extends AbstractApplication implements Runnable 
       // TODO Auto-generated constructor stub
    }
 
-   public boolean execute() throws ApplicationExecutionException {
+   public boolean execute() throws CeaException {
 
       setupParameters();
       preRunHook();
@@ -92,7 +93,7 @@ public class CmdLineApplication extends AbstractApplication implements Runnable 
    /**
     * 
     */
-   protected void setupParameters() {
+   protected void setupParameters() throws CeaException {
       // just setup the actual command line for now
 
       argvals.clear();
@@ -147,11 +148,12 @@ public class CmdLineApplication extends AbstractApplication implements Runnable 
 
          try {
              MessageType ack = new MessageType();
-             ack.setContent("comment");
-             ack.setLevel(LogLevel.info);
-             ack.setPhase(ExecutionPhase.COMPLETED);
-             ack.setSource("CmdLineApplication");
-             ack.setTimestamp(Calendar.getInstance());
+             //FIXME - do the final callback....
+//             ack.setValue("comment");
+//             ack.setLevel(LogLevel.info);
+//             ack.setPhase(ExecutionPhase.COMPLETED);
+//             ack.setSource("CmdLineApplication");
+//             ack.setTimestamp(Calendar.getInstance());
              
              JobIdentifierType id = new JobIdentifierType(jobStepID);           
              delegate.monitorJob(id,ack);

@@ -1,5 +1,5 @@
 /*
- * $Id: CmdLineApplicationEnvironment.java,v 1.1 2003/12/31 00:56:17 pah Exp $
+ * $Id: CmdLineApplicationEnvironment.java,v 1.2 2004/03/23 12:51:26 pah Exp $
  *
  * Created on 24 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -20,9 +20,9 @@ import org
    .commandline
    .exceptions
    .CannotCreateWorkingDirectoryException;
-import org.astrogrid.applications.common.config.ApplicationControllerConfig;
+import org.astrogrid.applications.common.config.CeaControllerConfig;
 import org.astrogrid.applications.description.ApplicationDescriptions;
-import org.astrogrid.applications.manager.PersistenceEngine;
+import org.astrogrid.applications.manager.DatabasePersistenceEngine;
 /**
  * Encapsulates all that is needed to run a command line application in its own workspace.
  * @author Paul Harrison (pah@jb.man.ac.uk)
@@ -54,17 +54,17 @@ public class CmdLineApplicationEnvironment {
    private int executionId;
    private File outputLog;
    private File executionDirectory;
-   private ApplicationControllerConfig config;
+   private CeaControllerConfig config;
    private TempFileFactory tempFileFactory;
 
-   public CmdLineApplicationEnvironment()
+   public CmdLineApplicationEnvironment(CeaControllerConfig config)
       throws CannotCreateWorkingDirectoryException {
 
       // set up the working directory
-      config = ApplicationControllerConfig.getInstance();
+      this.config = config;
  
 
-      executionId = PersistenceEngine.getInstance().getNewID();
+      executionId = DatabasePersistenceEngine.getInstance(config).getNewID();
       logger.info("new execution id="+executionId);
       executionDirectory =
          new File(

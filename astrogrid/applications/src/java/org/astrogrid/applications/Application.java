@@ -1,5 +1,5 @@
 /*
- * $Id: Application.java,v 1.3 2003/12/08 17:06:35 pah Exp $
+ * $Id: Application.java,v 1.4 2004/03/23 12:51:25 pah Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -11,14 +11,13 @@
 
 package org.astrogrid.applications;
 
-import org.astrogrid.applications.commandline.exceptions.ApplicationExecutionException;
 
 /**
  * @stereotype entity
  * @robustness Entity 
  */
 public interface Application {
-   boolean execute() throws ApplicationExecutionException;
+   boolean execute() throws CeaException;
    void addParameter(Parameter p);
    Result[] retrieveResult();
    int completionStatus();

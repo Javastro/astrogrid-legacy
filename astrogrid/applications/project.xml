@@ -8,7 +8,7 @@
   <groupId>org.astrogrid</groupId>
   <name>AstroGrid Applications Integration</name>
 
-  <currentVersion>$Name:  $</currentVersion>
+  <currentVersion>${astrogrid.iteration}</currentVersion>
 
   <organization>
     <name>AstroGrid</name>
@@ -87,7 +87,7 @@ This functionality is provided with the ApplicationController service, of which 
     </dependency>
     <!-- astrogrid -specific deps -->
     <dependency>
-      <groupId>astrogrid-common</groupId>
+      <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-common</artifactId>
       <version>SNAPSHOT</version>
         <properties>
@@ -95,9 +95,27 @@ This functionality is provided with the ApplicationController service, of which 
         </properties>
     </dependency>
 
-    <!-- we need the myspace client to compile. fix this later when mySpace packaging is better. -->
     <dependency>
-            <groupId>astrogrid-mySpace</groupId>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-registry-client</artifactId>
+      <version>SNAPSHOT</version>
+        <properties>
+                  <war.bundle>true</war.bundle>
+        </properties>
+    </dependency>   
+
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-registry-common</artifactId>
+      <version>SNAPSHOT</version>
+        <properties>
+                  <war.bundle>true</war.bundle>
+        </properties>
+    </dependency>   
+    
+     <!-- we need the myspace client to compile. fix this later when mySpace packaging is better. -->
+    <dependency>
+            <groupId>org.astrogrid</groupId>
 <artifactId>astrogrid-mySpace</artifactId>
         <version>SNAPSHOT</version>
         <properties>
@@ -188,27 +206,19 @@ This functionality is provided with the ApplicationController service, of which 
                   <war.bundle>true</war.bundle>
         </properties>
     </dependency>
-
+       <dependency>
+                <artifactId>castor</artifactId>
+                <groupId>castor</groupId>
+                <version>0.9.5</version>
+                <jar>castor-0.9.5-xml.jar</jar>
+                <properties>
+                        <war.bundle>true</war.bundle>
+                </properties>
+        </dependency>
+ 
 <!-- not really using the two below - cannot find documentation on their use -->
-    <dependency>
-      <groupId>objectwiz-votable</groupId>
-<artifactId>objectwiz-votable</artifactId>
-      <version>UNKNOWN</version>
-      <jar>objectwiz-votable.jar</jar>
-        <properties>
-                  <war.bundle>true</war.bundle>
-        </properties>
-    </dependency>
 
     <dependency>
-      <groupId>VOTableUtil</groupId>
-<artifactId>VOTableUtil</artifactId>
-      <version>UNKNOWN</version>
-      <jar>VOTableUtil.jar</jar>
-    </dependency>
-    <dependency>
-
-
       <groupId>commons-digester</groupId>
       <artifactId>commons-digester</artifactId>
       <version>1.5</version>

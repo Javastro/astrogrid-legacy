@@ -1,5 +1,5 @@
 /*
- * $Id: TestApplicationControllerRunningHyperZ.java,v 1.4 2004/01/25 12:26:52 pah Exp $
+ * $Id: TestApplicationControllerRunningHyperZ.java,v 1.5 2004/03/23 12:51:25 pah Exp $
  * 
  * Created on 01-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -15,18 +15,13 @@ package org.astrogrid.applications.manager;
 
 
 import org.astrogrid.applications.Parameter;
-import org.astrogrid.applications.ParameterValues;
-import org.astrogrid.applications.Status;
 import org.astrogrid.applications.avodemo.AVODemoConstants;
+import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
+import org.astrogrid.applications.beans.v1.parameters.types.ParameterTypes;
 import org.astrogrid.applications.commandline.CmdLineApplication;
-import org.astrogrid.applications.common.config.BaseApplicationTestCase;
-import org.astrogrid.applications.common.config.BaseDBTestCase;
-import org.astrogrid.applications.description.ApplicationDescriptionConstants;
-import org.astrogrid.applications.description.SimpleApplicationDescription;
-import org.astrogrid.applications.description.TestAppConst;
-import org.astrogrid.community.User;
-
-import junit.framework.TestCase;
+import org.astrogrid.workflow.beans.v1.Input;
+import org.astrogrid.workflow.beans.v1.Output;
+import org.astrogrid.workflow.beans.v1.Tool;
 
 /**
  * @author Paul Harrison (pah@jb.man.ac.uk)
@@ -35,19 +30,7 @@ import junit.framework.TestCase;
  */
 public class TestApplicationControllerRunningHyperZ extends BaseApplicationTestCase {
 
-   private CommandLineApplicationController controller;
    private final String myspaceBaseRef="/"+AVODemoConstants.ACCOUNT+"/serv1/";
-
-   private String jobstepid = null;
-
-   private String monitorURL = null;
-
-   private String applicationid = null;
-
-
-   private ParameterValues parameters = null;
-
-   private String executionId;
 
    /**
     * Constructor for CommandLineApplicationControllerTest.
@@ -66,81 +49,37 @@ public class TestApplicationControllerRunningHyperZ extends BaseApplicationTestC
     */
    protected void setUp() throws Exception {
       super.setUp();
-      controller = new CommandLineApplicationController();
-      //completely bogus community snippet....
-      monitorURL=null; //application controller will not attempt to call if it is null
       applicationid = "HyperZ";
-      parameters = new ParameterValues();
    }
-
-   final public void testExecuteApplication() {
-      initializeApplication();
-      controller.executeApplication(executionId);
-      String runStatus = controller.queryApplicationExecutionStatus(executionId);
-      try {
-         while (!runStatus.equals(Status.COMPLETED.toString())) {
-           Thread.sleep(20000);
-           runStatus = controller.queryApplicationExecutionStatus(executionId);
-         
-         }
-         
-      }
-      catch (InterruptedException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
-      }
-           System.out.print("run app ok");
-   }
-
-   final public void testGetApplicationDescription() {
-      SimpleApplicationDescription desc = controller.getApplicationDescription(applicationid);
-      assertNotNull("application description",desc);
-   }
-
-   final public void testListApplications() {
-      String[] apps = controller.listApplications();
-      assertNotNull(apps);
-      assertEquals("there are 3 test applications", 3, apps.length);
-      // perhaps should test names also
-   }
-
-   final public void testQueryApplicationExecutionStatus() {
-      //TODO Implement queryApplicationExecutionStatus().
+   /** 
+    * @see org.astrogrid.applications.manager.BaseApplicationTestCase#setupTool()
+    */
+   protected void setupTool() {
+      Output output = new Output();
+      Input input = new Input();
+      thisTool = new Tool();
+      thisTool.setName(applicationid);
+      thisTool.setInterface("simple");
+      ParameterValue param = new ParameterValue();
+      param.setName("config_file");
+      param.setType(ParameterTypes.MYSPACE_FILEREFERENCE);
+      param.setValue("/home/applications/demo/hyperz/zphot.param");
+      input.addParameter(param);
       
-      // need to start a long running application and then perform this query - would be good to try firing multiple applications at once also...
-   }
+      param = new ParameterValue();
+            param.setName("input_catalog");
+            param.setType(ParameterTypes.MYSPACE_FILEREFERENCE);
+            param.setValue(myspaceBaseRef+"merged");
+            input.addParameter(param);
+            
+      param = new ParameterValue();
+            param.setName("output_catalog");
+            param.setType(ParameterTypes.MYSPACE_FILEREFERENCE);
+            param.setValue(myspaceBaseRef+"hyperzout");
+            output.addParameter(param);     
 
-   final public void testReturnRegistryEntry() {
-      String reg  = controller.returnRegistryEntry();
-      assertNotNull(reg);
-      assertEquals("this is not implemented yet", reg); // need to change when implemented!
-   }
-
-   final public void initializeApplication() {
-      
-      executionId = initApp();
-      
-   }
-
-   private String initApp() {
-      String exid;
-      parameters.setMethodName("simple");
-//      parameters.setParameterSpec("<tool><input><parameter name='config_file'>/home/applications/demo/hyperz/zphot.param</parameter><parameter name='input_catalog'>/home/applications/demo/hyperz/bviz-mag-sample.cat</parameter></input><output><parameter name='output_catalog'>out1file</parameter></output></tool>");
-//    parameters.setParameterSpec("<tool><input><parameter name='config_file'>/home/applications/demo/hyperz/zphot.param</parameter><parameter name='input_catalog'>/home/applications/demo/hyperz/join.xml</parameter></input><output><parameter name='output_catalog'>hyperzout</parameter></output></tool>");
-      parameters.setParameterSpec(
-         "<tool><input><parameter name='config_file'>/home/applications/demo/hyperz/zphot.param</parameter><parameter name='input_catalog'>"+myspaceBaseRef+"merged</parameter></input><output><parameter name='output_catalog'>"+myspaceBaseRef+"hyperzout</parameter></output></tool>");
-
-      exid = controller.initializeApplication(applicationid, jobstepid, monitorURL, user, parameters);
-      CmdLineApplication app = controller.getRunningApplication(exid);
-      assertNotNull("applicaton object not returned after initialization", app);
-      Parameter[] params = app.getParameters();
-      assertNotNull("application did not return the parameters that were set",params);
-      //print the paramter values out so that we can see what went in
-      System.out.println("Parameter values");
-      for (int i = 0; i < params.length; i++) {
-         System.out.println(i + " " + params[i]);
-      }
-      return exid;
+      thisTool.setInput(input);
+      thisTool.setOutput(output);
    }
    
 

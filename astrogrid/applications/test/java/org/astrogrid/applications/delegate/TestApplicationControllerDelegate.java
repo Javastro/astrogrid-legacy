@@ -1,5 +1,5 @@
 /*
- * $Id: TestApplicationControllerDelegate.java,v 1.4 2004/01/18 12:28:00 pah Exp $
+ * $Id: TestApplicationControllerDelegate.java,v 1.5 2004/03/23 12:51:26 pah Exp $
  * 
  * Created on 08-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -9,133 +9,39 @@
  * Software License version 1.2, a copy of which has been included 
  * with this distribution in the LICENSE.txt file.  
  *
- */ 
+ */
 
 package org.astrogrid.applications.delegate;
 
-import java.rmi.RemoteException;
-
-import org.astrogrid.applications.delegate.beans.ParameterValues;
-import org.astrogrid.applications.delegate.beans.SimpleApplicationDescription;
-import org.astrogrid.applications.delegate.beans.User;
-import org.astrogrid.applications.description.TestAppConst;
-
-import junit.framework.TestCase;
 
 /**
+ * This test is intended to be run as an installation test for the service.
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @version $Name:  $
  * @since iteration4
  */
-public class TestApplicationControllerDelegate extends TestCase {
+public class TestApplicationControllerDelegate extends AbstractDelegateTest {
 
    /**
     * Constructor for ApplicationControllerDelegateTest.
     * @param arg0
     */
-   
-   private String executionid;
-   private User user;
-   private ParameterValues parameters;
-   private String applicationid;
-   private String monitorURL;
-   ApplicationControllerDelegate delegate;
-   private static String endpoint = "http://localhost:8080/astrogrid-applications/services/ApplicationControllerService";
+
+   private static String localendpoint =
+      "http://localhost:8080/astrogrid-applications/services/ApplicationControllerService";
+
    public TestApplicationControllerDelegate(String arg0) {
       super(arg0);
-      
+      endpoint = localendpoint;
+
    }
 
    public static void main(String[] args) {
       //TODO set the endpoint from here?
       junit.textui.TestRunner.run(TestApplicationControllerDelegate.class);
-   }
-
-   /*
-    * @see TestCase#setUp()
-    */
-   protected void setUp() throws Exception {
-      super.setUp();
-      delegate = new ApplicationControllerDelegate(endpoint);
-      assertNotNull(delegate);
-      user = new User(); 
-      user.setAccount("noone");
-      user.setGroup("nogroup");
-      user.setToken("notoken");
-
-     monitorURL=null;
-     applicationid = TestAppConst.TESTAPP_NAME;
-     parameters = new ParameterValues();
-  }
-
-
-   final public void testListApplications() {
-      try {
-         String[] apps = delegate.listApplications();
-         assertNotNull("application name list",apps);
-         assertEquals("number of test applications", 2, apps.length);
+      if (args.length > 0) {
+         localendpoint = args[0];
       }
-      catch (RemoteException e) {
-         fail("unknown exception");
-         e.printStackTrace();
-      }
-   }
 
-   final public void testGetApplicationDescription() {
-      
-      try {
-         SimpleApplicationDescription desc = delegate.getApplicationDescription(TestAppConst.TESTAPP_NAME);
-         assertNotNull("Application description",desc);
-         
-      }
-      catch (RemoteException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
-      }
-      try {
-          SimpleApplicationDescription desc = delegate.getApplicationDescription("sillyname");
-          assertNotNull("Application description",desc);
-         
-       }
-       catch (RemoteException e) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
-       }
-      
    }
-
-   final public void testInitializeApplication() {
-      parameters.setMethodName(TestAppConst.MAIN_INTERFACE);
-      parameters.setParameterSpec(TestAppConst.PARAMETERSPEC1);
-      try {
-         executionid = delegate.initializeApplication(applicationid, "nojobstep", monitorURL, user, parameters);
-         assertTrue("executionid invalid", !executionid.equals("-1"));
-      }
-      catch (RemoteException e) {
-         e.printStackTrace();
-         fail("soap call failed");
-       }
-      
-   }
-
-   final public void testExecuteApplication() {
-      System.out.println("testing execution");
-      testInitializeApplication();
-      try {
-         delegate.executeApplication(executionid);
-      }
-      catch (RemoteException e) {
-         e.printStackTrace();
-         fail("soap call failed");
-      }
-   }
-
-   final public void testQueryApplicationExecutionStatus() {
-      //TODO Implement queryApplicationExecutionStatus().
-   }
-
-   final public void testReturnRegistryEntry() {
-      //TODO Implement returnRegistryEntry().
-   }
-
 }

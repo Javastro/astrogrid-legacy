@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationDescriptionNotFoundException.java,v 1.2 2003/12/03 11:48:48 pah Exp $
+ * $Id: ApplicationDescriptionNotFoundException.java,v 1.3 2004/03/23 12:51:26 pah Exp $
  * 
  * Created on 26-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -13,25 +13,22 @@
 
 package org.astrogrid.applications.description.exception;
 
+import org.astrogrid.applications.CeaException;
+
 /**
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @version $Name:  $
  * @since iteration4
  */
-public class ApplicationDescriptionNotFoundException extends Exception {
-   private String name;
+public class ApplicationDescriptionNotFoundException extends CeaException {
+ 
    
    public ApplicationDescriptionNotFoundException(String name)
    {
-      this.name = name;
+      super(name);
+     
    }
    
 
-   /* (non-Javadoc)
-    * @see java.lang.Object#toString()
-    */
-   public String toString() {
-return super.toString() + "unknown application="+name;
-   }
-
+ 
 }

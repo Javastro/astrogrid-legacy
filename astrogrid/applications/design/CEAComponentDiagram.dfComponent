@@ -1,0 +1,47 @@
+package id1f1krdrevt17tdrevw8dl;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id1f1krdrevt17tdrevw8dl.node38:oiref><oihard>
+@__modelType reference 
+*/
+class reference39 {
+}}/**
+
+@__tags
+@shapeType ComponentDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:design#Class#id1f1krdrevt17tdrevw8dl.node38.node:oiref>=310,210,142,60,1:oigroup>
+<oigroup:<oiref:design#Class#id1f1krdrevt17tdrevw8dl.node38.node36:oiref>=320,140,71,54,1:oigroup>
+<oigroup:<oiref:design#Class#id1f1krdrevt17tdrevw8dl.node38:oiref>=300,60,190,262,0:oigroup>
+*/
+class __positions {
+}/**
+@shapeType Subsystem
+@__modelType node
+@name Subsystem1 
+*/
+class node38 {
+/**
+@shapeType Interface
+@__modelType node
+@name Interface1 
+*/
+class node36 {
+}/**
+@shapeType Component
+@__modelType node
+@name Component1 
+*/
+class node {
+}}

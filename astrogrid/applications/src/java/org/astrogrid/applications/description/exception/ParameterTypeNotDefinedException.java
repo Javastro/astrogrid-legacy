@@ -1,5 +1,5 @@
 /*
- * $Id: ParameterTypeNotDefinedException.java,v 1.2 2003/12/03 11:48:48 pah Exp $
+ * $Id: ParameterTypeNotDefinedException.java,v 1.3 2004/03/23 12:51:26 pah Exp $
  * 
  * Created on 28-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -13,32 +13,25 @@
 
 package org.astrogrid.applications.description.exception;
 
+import org.astrogrid.applications.CeaException;
+
 /**
  * Thrown if an unknown parameter type is encountered when parsing a parameter definition file.
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @version $Name:  $
  * @since iteration4
  */
-public class ParameterTypeNotDefinedException extends Exception {
+public class ParameterTypeNotDefinedException extends CeaException {
 
-   private String typename;
 
    /**
     * @param type
     */
    public ParameterTypeNotDefinedException(String type) {
       
-     this.typename = type;
+     super(type);
    }
    
-   
-
-   /* (non-Javadoc)
-    * @see java.lang.Object#toString()
-    */
-   public String toString() {
-      return  super.toString() + " unknown type="+typename;
-   }
-   
+  
 
 }

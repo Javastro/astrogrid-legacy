@@ -1,5 +1,5 @@
 /*
- * $Id: WebServiceApplicationController.java,v 1.2 2004/02/10 14:38:12 pah Exp $
+ * $Id: WebServiceApplicationController.java,v 1.3 2004/03/23 12:51:26 pah Exp $
  *
  * Created on 09 February 2004 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -11,32 +11,64 @@
 
 package org.astrogrid.applications.manager;
 
+import java.rmi.RemoteException;
+
+import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.ParameterValues;
+import org.astrogrid.applications.common.config.CeaControllerConfig;
+import org.astrogrid.applications.service.v1.cea.CeaFault;
 import org.astrogrid.community.User;
+import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
+import org.astrogrid.jes.types.v1.cea.axis.MessageType;
+import org.astrogrid.workflow.beans.v1.Tool;
+import org.astrogrid.workflow.beans.v1.axis._tool;
 
 public class WebServiceApplicationController extends AbstractApplicationController {
 
-   /* (non-Javadoc)
-    * @see org.astrogrid.applications.manager.ApplicationController#initializeApplication(java.lang.String, java.lang.String, java.lang.String, org.astrogrid.community.User, org.astrogrid.applications.ParameterValues)
+   /**
+    * @param registryQueryLocator
+    * @param mySpaceLocator
     */
-   public String initializeApplication(String applicationID, String jobstepID, String jobMonitorURL, User user, ParameterValues parameters) {
-      // TODO Auto-generated method stub
-      throw new  UnsupportedOperationException("WebServiceApplicationController.initializeApplication() not implemented");
+   public WebServiceApplicationController(CeaControllerConfig conf,
+      RegistryQueryLocator registryQueryLocator,
+      MySpaceLocator mySpaceLocator) {
+      super(conf, registryQueryLocator, mySpaceLocator);
+      // TODO Auto-generated constructor stub
    }
 
-   /* (non-Javadoc)
-    * @see org.astrogrid.applications.manager.ApplicationController#executeApplication(java.lang.String)
+ 
+   /** 
+    * @see org.astrogrid.applications.manager.CommonExecutionController#abort(java.lang.String)
     */
-   public boolean executeApplication(String executionId) {
+   public boolean abort(String executionId) throws CeaException {
       // TODO Auto-generated method stub
-      throw new  UnsupportedOperationException("WebServiceApplicationController.executeApplication() not implemented");
+      throw new UnsupportedOperationException("WebServiceApplicationController.abort() not implemented");
    }
 
-   /* (non-Javadoc)
-    * @see org.astrogrid.applications.manager.ApplicationController#queryApplicationExecutionStatus(java.lang.String)
+   /** 
+    * @see org.astrogrid.applications.manager.CommonExecutionController#execute(org.astrogrid.workflow.beans.v1.Tool, java.lang.String, java.lang.String)
     */
-   public String queryApplicationExecutionStatus(String executionId) {
+   public String execute(Tool tool, String jobstepID, String jobMonitorURL)
+      throws CeaException {
       // TODO Auto-generated method stub
-      throw new  UnsupportedOperationException("WebServiceApplicationController.queryApplicationExecutionStatus() not implemented");
+      throw new UnsupportedOperationException("WebServiceApplicationController.execute() not implemented");
    }
+
+   /** 
+    * @see org.astrogrid.applications.manager.CommonExecutionController#queryExecutionStatus(java.lang.String)
+    */
+   public org
+      .astrogrid
+      .applications
+      .beans
+      .v1
+      .cea
+      .castor
+      .MessageType queryExecutionStatus(
+      String executionId)
+      throws CeaException {
+      // TODO Auto-generated method stub
+      throw new UnsupportedOperationException("WebServiceApplicationController.queryExecutionStatus() not implemented");
+   }
+
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: ConfigTest.java,v 1.1 2003/12/01 22:24:59 pah Exp $
+ * $Id: ConfigTest.java,v 1.2 2004/03/23 12:51:26 pah Exp $
  * 
  * Created on 14-Sep-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -11,9 +11,11 @@
  *
  */ 
 
-package org.astrogrid.applications.common.config;
+package org.astrogrid.applications;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import org.astrogrid.applications.common.ApplicationsConstants;
 
@@ -25,7 +27,7 @@ import junit.framework.TestCase;
  * @version $Name:  $
  * @since iteration4
  */
-public class ConfigTest extends TestCase {
+public class ConfigTest extends BaseTestCase {
 
    /**
     * Constructor for ConfigTest.
@@ -40,12 +42,13 @@ public class ConfigTest extends TestCase {
    }
 
    final public void testTestConfig() {
-      // make sure that the test config is used
-      ConfigLoader.setConfigType(ConfigLoader.TEST_CONFIG);
-      // the argument below has no real significance, as the test config will simply get the Test.Properties file from the classpath
-      ApplicationControllerConfig config = ApplicationControllerConfig.getInstance();
-      File f = config.getApplicationConfigFile();
-      assertEquals("TestApplicationConfig.xml", f.getName()); 
+      try {
+         URL f = config.getApplicationConfigFile();
+         assertTrue(f.getPath().endsWith("TestApplicationConfig.xml")); 
+      }
+      catch (MalformedURLException e) {
+         fail("the url reference to the test config file is wrong");
+      }
    }
 
 }

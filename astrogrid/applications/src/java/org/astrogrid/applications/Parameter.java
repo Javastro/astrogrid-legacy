@@ -1,5 +1,5 @@
 /*
- * $Id: Parameter.java,v 1.7 2004/01/25 12:26:52 pah Exp $
+ * $Id: Parameter.java,v 1.8 2004/03/23 12:51:25 pah Exp $
  *
  * Created on 13 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -23,7 +23,7 @@ import org.astrogrid.applications.description.ParameterDescription;
  * @since iteration4
  * @stereotype entity 
  */
-abstract public class Parameter {
+abstract public class Parameter implements ParameterReturner, ParameterGetter{
    
    static protected org.apache.commons.logging.Log logger =
       org.apache.commons.logging.LogFactory.getLog(Parameter.class);
@@ -84,7 +84,7 @@ abstract public class Parameter {
     * Performs whatever actions are necessary for the processing the parameter. Most of the real work is done by looking in the {@link ParameterDescription} object.
     * @return true if the processing did not have any errors
     */
-   public boolean process() {
+   public boolean process() throws CeaException {
  //TODO need to think about errors  
       argValue = parameterDescription.process(this);   
       return true;

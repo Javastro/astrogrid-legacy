@@ -1,5 +1,5 @@
 /*
- * $Id: ParameterNotInInterfaceException.java,v 1.2 2003/12/03 11:48:48 pah Exp $
+ * $Id: ParameterNotInInterfaceException.java,v 1.3 2004/03/23 12:51:26 pah Exp $
  * 
  * Created on 01-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -13,12 +13,14 @@
 
 package org.astrogrid.applications.description.exception;
 
+import org.astrogrid.applications.CeaException;
+
 /**
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @version $Name:  $
  * @since iteration4
  */
-public class ParameterNotInInterfaceException extends Exception {
+public class ParameterNotInInterfaceException extends CeaException {
    
 
 

@@ -1,5 +1,5 @@
 /*
- * $Id: DelegateFactory.java,v 1.3 2003/12/05 22:52:16 pah Exp $
+ * $Id: DelegateFactory.java,v 1.4 2004/03/23 12:51:25 pah Exp $
  * 
  * Created on 26-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -14,23 +14,28 @@
 package org.astrogrid.applications.delegate;
 
 /**
- * A simple factory for creating application controller delegates.
+ * A simple factory for creating CommonExecutionConnector Client delegates.
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @version $Name:  $
  * @since iteration4
  */
 public class DelegateFactory {
-   public static ApplicationController createDelegate(String serviceEndpoint)
+   /**
+    * Create a CommonExecutionClientDelegate with the stated service endpoint
+    * @param serviceEndpoint
+    * @return
+    */
+   public static CommonExecutionConnectorClient createDelegate(String serviceEndpoint)
    {
-      //trivially always return the dummy delegate at the moment
+      return CommonExecutionConnectorDelegate.buildDelegate(serviceEndpoint);
       
-      if (serviceEndpoint.equals(ApplicationControllerDummyDelegate.DUMMYADDRESS)) {
-         return new ApplicationControllerDummyDelegate("nonsense");
-      }
-      else
-      {
-         return new ApplicationControllerDelegate(serviceEndpoint);
-      }
    }
-
+   
+   /**
+    * @return
+    */
+   public static CommonExecutionConnectorClient createDelegate()
+   {
+      throw new UnsupportedOperationException("not yet implemented - need to do registry discovery");
+   }
 }

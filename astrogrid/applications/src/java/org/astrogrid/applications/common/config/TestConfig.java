@@ -1,5 +1,5 @@
 /*
- * $Id: TestConfig.java,v 1.3 2003/12/11 15:22:55 pah Exp $
+ * $Id: TestConfig.java,v 1.4 2004/03/23 12:51:25 pah Exp $
  *
  * Created on 13 September 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -15,7 +15,7 @@ import java.util.ResourceBundle;
 
 import javax.sql.DataSource;
 
-public class TestConfig implements Config {
+public class TestConfig implements RawPropertyConfig {
    private ResourceBundle bundle;
    static private org.apache.commons.logging.Log logger =
       org.apache.commons.logging.LogFactory.getLog(TestConfig.class);

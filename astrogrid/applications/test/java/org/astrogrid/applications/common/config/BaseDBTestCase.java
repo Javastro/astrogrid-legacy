@@ -1,5 +1,5 @@
 /*
- * $Id: BaseDBTestCase.java,v 1.2 2003/12/15 14:29:49 pah Exp $
+ * $Id: BaseDBTestCase.java,v 1.3 2004/03/23 12:51:25 pah Exp $
  * 
  * Created on 01-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -31,6 +31,7 @@ import javax.sql.DataSource;
 
 import junit.framework.TestCase;
 
+import org.astrogrid.applications.BaseTestCase;
 import org.astrogrid.applications.common.ApplicationsConstants;
 
 /**
@@ -39,18 +40,14 @@ import org.astrogrid.applications.common.ApplicationsConstants;
  * @version $Name:  $
  * @since iteration4
  */
-public class BaseDBTestCase extends TestCase {
-   static
-   {
-      ConfigLoader.setConfigType(ConfigLoader.TEST_CONFIG); // set up the test config as early as possible
-   }
+public class BaseDBTestCase extends BaseTestCase {
 
 
    private static String DRIVER = "org.hsqldb.jdbcDriver";
 //   private static String DRIVER = "jdbc:hsqldb:hsql://localhost:9001"; //connect to external server - this should be passed in probably...
-   private static String JDBC_URL ="jdbc:hsqldb:test/data/policy"; //do in process - this is overwritten bu=y configuration parameter
-   private static String DatabasePassword =""; // overwriten by config
-   private static String DatabaseUser = "sa"; //overwritten by config
+   private static String JDBC_URL ="jdbc:hsqldb:test/data/policy"; //do in process - this is overwritten bu=y rawconfiguration parameter
+   private static String DatabasePassword =""; // overwriten by rawconfig
+   private static String DatabaseUser = "sa"; //overwritten by rawconfig
    protected Connection conn;
    protected DataSource ds;
 
@@ -67,20 +64,18 @@ public class BaseDBTestCase extends TestCase {
     */
    public BaseDBTestCase(String name) {
       super(name);
+      RawPropertyConfig rawconfig = config.getRawPropertyConfig();
       // create the db
-      ConfigLoader.setConfigType(ConfigLoader.TEST_CONFIG); // set up the test config as early as possible
-      Config config = ConfigLoader.LoadConfig("not used in tests");
-      assertNotNull("cannot load config", config);
-      String createScriptname = config.getProperty("DBCreationScript");
+      String createScriptname = rawconfig.getProperty("DBCreationScript");
       
       try {
-         DRIVER = config.getProperty(ApplicationsConstants.DATABASE_DRIVER_KEY);
+         DRIVER = rawconfig.getProperty(ApplicationsConstants.DATABASE_DRIVER_KEY);
          assertNotNull("cannot load the database driver", DRIVER);
-         JDBC_URL = config.getProperty(ApplicationsConstants.DATABASE_JDBC_URL_KEY);
+         JDBC_URL = rawconfig.getProperty(ApplicationsConstants.DATABASE_JDBC_URL_KEY);
          assertNotNull("cannot load database connection url string",JDBC_URL);
-         DatabasePassword = config.getProperty(ApplicationsConstants.DATABASE_PASSWORD_KEY);
+         DatabasePassword = rawconfig.getProperty(ApplicationsConstants.DATABASE_PASSWORD_KEY);
          assertNotNull("Cannot load the database password", DatabasePassword);
-         DatabaseUser = config.getProperty(ApplicationsConstants.DATABASE_USER_KEY);
+         DatabaseUser = rawconfig.getProperty(ApplicationsConstants.DATABASE_USER_KEY);
          
          ds = new TestDataSource();
          conn = ds.getConnection();
@@ -88,13 +83,13 @@ public class BaseDBTestCase extends TestCase {
          //create the tables
          Class thisBaseClass = this.getClass();//Class.forName("org.astrogrid.community.common.db.HsqlDBInMemTestCase");
          InputStream stream = new FileInputStream(createScriptname);
-         assertNotNull("cannot find the database create script = "+createScriptname+"- did you run the pre-tests ant task to copy the config files to the test area", stream);
+         assertNotNull("cannot find the database create script = "+createScriptname+"- did you run the pre-tests ant task to copy the rawconfig files to the test area", stream);
          String script = streamToString(stream);
          runSQLScript(script, conn);
          UnitTestData.load(conn);
          
-         // create a new config using the newly created datasource.
-         new ApplicationControllerConfig(ds);
+         // FIXME create a new rawconfig using the newly created datasource.
+         new CeaControllerConfig(ds);
 
       }
       catch (SQLException sqle) {
@@ -204,7 +199,7 @@ public class BaseDBTestCase extends TestCase {
         * @see javax.sql.DataSource#getConnection(java.lang.String, java.lang.String)
         */
        public Connection getConnection(String username, String password) throws SQLException {
-         throw new UnsupportedOperationException("test datasource gets password from config because theat is the way that the real tomcat datasource works");
+         throw new UnsupportedOperationException("test datasource gets password from rawconfig because theat is the way that the real tomcat datasource works");
        }
    }    
 
@@ -212,7 +207,7 @@ public class BaseDBTestCase extends TestCase {
     * @see junit.framework.TestCase#setUp()
     */
    protected void setUp() throws Exception {
-      ConfigLoader.setConfigType(ConfigLoader.TEST_CONFIG); // set up the test config as early as possible
-         }
+      super.setUp();
+      }
 
 }

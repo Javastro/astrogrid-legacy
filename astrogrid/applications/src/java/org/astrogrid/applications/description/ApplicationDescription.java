@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationDescription.java,v 1.6 2004/01/09 00:25:08 pah Exp $
+ * $Id: ApplicationDescription.java,v 1.7 2004/03/23 12:51:26 pah Exp $
  * 
  * Created on 14-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -124,7 +124,7 @@ public class ApplicationDescription {
    {
       if (!parameterMap.containsKey(name))
       {
-         throw new ParameterDescriptionNotFoundException();
+         throw new ParameterDescriptionNotFoundException(name);
       }
       else
       return (ParameterDescription)parameterMap.get(name);

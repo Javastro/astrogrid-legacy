@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationsConstants.java,v 1.7 2004/01/26 12:51:17 pah Exp $
+ * $Id: ApplicationsConstants.java,v 1.8 2004/03/23 12:51:25 pah Exp $
  * 
  * Created on 17-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -9,7 +9,7 @@
  * Software License version 1.2, a copy of which has been included 
  * with this distribution in the LICENSE.txt file.  
  *
- */ 
+ */
 
 package org.astrogrid.applications.common;
 
@@ -19,8 +19,6 @@ package org.astrogrid.applications.common;
  * @since iteration4
  */
 public final class ApplicationsConstants {
-   
-
 
    public static String DATABASE_DRIVER_KEY = "DB_DRIVER";
 
@@ -31,32 +29,34 @@ public final class ApplicationsConstants {
    public static String DATABASE_JDBC_URL_KEY = "DB_URL";
 
    /**
- * The key used to look up the location of the configuration file
- */
-public final static String CONFIGFILEKEY = "AstrogridApplicationsConfigURL";
+   * The key used to look up the location of the configuration file
+   */
+   public final static String CONFIGFILEKEY = "AstrogridApplicationsConfigURL";
 
-/** 
- * the JNDI key for the datasource that represents the applicationController datasource
- */
-public final static String DataSourceName = "jdbc/AstrogridACDatasource";
+   /** 
+    * the JNDI key for the datasource that represents the applicationController datasource
+    */
+   public final static String DataSourceName = "jdbc/AstrogridACDatasource";
 
-// the keys below are found in the configuration file.
+   // the keys below are found in the configuration file.
 
-/**
- * The value of the property pointed to by this key is the application configuration file
- */
-public final static String ApplicationConfigKey="ApplicationConfigFile";
+   /**
+    * The value of the property pointed to by this key is the application configuration file
+    */
+   public final static String ApplicationConfigKey = "ApplicationConfigFile";
 
+   /**
+    * The value of the property pointed to bey this key is the directory used as a base for running the applications.
+    */
+   public final static String WorkingDirectory = "WorkingDirectory";
 
-/**
- * The value of the property pointed to bey this key is the directory used as a base for running the applications.
- */
-public final static String WorkingDirectory = "WorkingDirectory";
-
-//FIXME - The myspacemanager reference should be got from the registry....
-public final static String MySpaceManagerKey="MySpaceManager";
-/**
- * The name of the session variable for the 
- */
-public final static String SMTPServerKey="mail/AGMailSession";
+   //FIXME - The myspacemanager reference should be got from the registry....
+   public final static String MySpaceManagerKey = "MySpaceManager";
+   
+   /**
+    * The name of the session variable for the mail session.
+    */
+   public final static String SMTPServerKey = "mail/AGMailSession";
+   
+   public final static String RegistryEndpointKey = "RegistryEndpoint";
 }

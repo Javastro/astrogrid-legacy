@@ -1,5 +1,5 @@
 /*
- * $Id: AVODemoSetup.java,v 1.2 2004/02/09 22:43:28 pah Exp $
+ * $Id: AVODemoSetup.java,v 1.3 2004/03/23 12:51:26 pah Exp $
  * 
  * Created on 23-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -16,7 +16,8 @@ package org.astrogrid.applications.avodemo;
 import java.io.IOException;
 import java.util.Vector;
 
-import org.astrogrid.applications.common.config.ApplicationControllerConfig;
+import org.astrogrid.applications.common.config.CeaControllerConfig;
+import org.astrogrid.applications.manager.externalservices.MySpaceFromConfig;
 import org.astrogrid.community.User;
 import org.astrogrid.mySpace.delegate.MySpaceClient;
 import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
@@ -25,10 +26,23 @@ import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @version $Name:  $
  * @since iteration4.1
+ * 
  */
 public class AVODemoSetup {
 
    private MySpaceClient myspacedelegate;
+
+   /**
+     * Small class to indicate that we really do want to create a CeaControllerConfig
+     * @author Paul Harrison (pah@jb.man.ac.uk) 19-Mar-2004
+     * @version $Name:  $
+     * @since iteration5
+     */
+    private static class ThisConfig extends CeaControllerConfig {
+       public static CeaControllerConfig getInstance() {
+          return CeaControllerConfig.getInstance();
+       }
+    }
 
    /**
     * 
@@ -37,7 +51,7 @@ public class AVODemoSetup {
       try {
          Vector servers = new Vector();
          servers.add("serv1");
-         myspacedelegate = ApplicationControllerConfig.getInstance().getMySpaceManager();
+         myspacedelegate = new MySpaceFromConfig(ThisConfig.getInstance()).getClient();
          User user = new User(AVODemoConstants.ACCOUNT, AVODemoConstants.GROUP, AVODemoConstants.TOKEN);
          myspacedelegate.createUser(user.getUserId(), user.getCommunity(), user.getToken(), servers);
          

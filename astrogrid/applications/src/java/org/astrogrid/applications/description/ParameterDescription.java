@@ -1,5 +1,5 @@
 /*
- * $Id: ParameterDescription.java,v 1.6 2004/01/16 22:18:58 pah Exp $
+ * $Id: ParameterDescription.java,v 1.7 2004/03/23 12:51:26 pah Exp $
  *
  * Created on 26 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.astrogrid.applications.AbstractApplication;
+import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.CommandLineParameter;
 import org.astrogrid.applications.Parameter;
 import org.astrogrid.applications.commandline.CmdLineApplication;
@@ -73,7 +74,7 @@ public abstract class ParameterDescription {
     * @param parameter The actual parameter for this instance...
     * @return a string representing how this parameter should be represented on the command line.
     */
-   public List process(Parameter parameter) {
+   public List process(Parameter parameter) throws CeaException {
       return addCmdlineAdornment(parameter.getRawValue());
    }
 

@@ -1,5 +1,5 @@
 /*
- * $Id: Config.java,v 1.2 2003/12/09 23:01:15 pah Exp $
+ * $Id: RawPropertyConfig.java,v 1.2 2004/03/23 12:51:25 pah Exp $
  *
  * Created on 13 September 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -19,7 +19,7 @@ import javax.sql.DataSource;
  * @version $Name:  $
  * @since iteration3
  */
-public interface Config {
+public interface RawPropertyConfig {
    
    /**
     * Looks up a property indexed by key.

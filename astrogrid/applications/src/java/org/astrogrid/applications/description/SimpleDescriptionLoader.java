@@ -1,5 +1,5 @@
 /*
- * $Id: SimpleDescriptionLoader.java,v 1.2 2004/03/02 16:48:42 pah Exp $
+ * $Id: SimpleDescriptionLoader.java,v 1.3 2004/03/23 12:51:26 pah Exp $
  * 
  * Created on 04-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -15,6 +15,7 @@ package org.astrogrid.applications.description;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -32,6 +33,7 @@ import org.astrogrid.applications.manager.AbstractApplicationController;
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @version $Name:  $
  * @since iteration4
+ * @deprecated replaced by the new common object model/registry mechanisms
  * @TODO this needs to be replaced by the new common object model/registry mechanisms
  */
 public class SimpleDescriptionLoader {
@@ -85,13 +87,13 @@ public class SimpleDescriptionLoader {
 
    }
    
-   public boolean loadDescription(File configFile) {
+   public boolean loadDescription(URL configFile) {
       boolean success = false;
       try {
          digester.clear();
 //       push onto the digester stack so that the addSimpleDescription method can be called
          digester.push(appController); 
-         digester.parse(configFile);
+         digester.parse(configFile.openStream());
          success = true;
       }
       catch (IOException e) {

@@ -1,5 +1,5 @@
 /*
- * $Id: AVODemoRunner.java,v 1.6 2004/02/11 14:00:32 pah Exp $
+ * $Id: AVODemoRunner.java,v 1.7 2004/03/23 12:51:26 pah Exp $
  * 
  * Created on 23-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -13,8 +13,7 @@
 
 package org.astrogrid.applications.avodemo;
 
-import java.io.IOException;
-import java.rmi.RemoteException;
+import java.io.StringWriter;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -24,19 +23,25 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import org.astrogrid.applications.Status;
-import org.astrogrid.applications.common.config.ApplicationControllerConfig;
-import org.astrogrid.applications.delegate.ApplicationController;
+import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
+import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
+import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
+import org.astrogrid.applications.beans.v1.parameters.types.ParameterTypes;
+import org.astrogrid.applications.common.config.CeaControllerConfig;
+import org.astrogrid.applications.delegate.CEADelegateException;
+import org.astrogrid.applications.delegate.CommonExecutionConnectorClient;
 import org.astrogrid.applications.delegate.DelegateFactory;
-import org.astrogrid.applications.delegate.beans.ParameterValues;
-import org.astrogrid.applications.delegate.beans.User;
+import org.astrogrid.applications.manager.MySpaceLocator;
+import org.astrogrid.applications.manager.externalservices.MySpaceFromConfig;
+import org.astrogrid.community.beans.v1.Credentials;
+import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.mySpace.delegate.MySpaceClient;
-import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
-import org.astrogrid.portal.workflow.design.Cardinality;
-import org.astrogrid.portal.workflow.design.Sequence;
-import org.astrogrid.portal.workflow.design.Step;
-import org.astrogrid.portal.workflow.design.Tool;
-import org.astrogrid.portal.workflow.design.Workflow;
+import org.astrogrid.workflow.beans.v1.Input;
+import org.astrogrid.workflow.beans.v1.Output;
+import org.astrogrid.workflow.beans.v1.Sequence;
+import org.astrogrid.workflow.beans.v1.Step;
+import org.astrogrid.workflow.beans.v1.Tool;
+import org.astrogrid.workflow.beans.v1.Workflow;
 
 /**
  * @author Paul Harrison (pah@jb.man.ac.uk)
@@ -46,27 +51,47 @@ import org.astrogrid.portal.workflow.design.Workflow;
  */
 public class AVODemoRunner implements Runnable {
 
-   private User user = AVODemoConstants.USERBEAN;
-   org.astrogrid.community.User fulluser = new org.astrogrid.community.User(user.getAccount(),user.getGroup(), user.getToken());
-   private String jobstepid = "dummy"; // we are not running jobs...
+   private JobIdentifierType jobstepid = new JobIdentifierType();
+   org.astrogrid.community.User fulluser =
+      new org.astrogrid.community.User(AVODemoConstants.ACCOUNT, AVODemoConstants.GROUP, AVODemoConstants.TOKEN);
    private final String MYSPACEBASE = "/" + AVODemoConstants.ACCOUNT + "/serv1/";
    private String toAddress = "pah@jb.man.ac.uk";
    private final String fromAddress = "pah@jb.man.ac.uk";
+   private Credentials credentials = new Credentials();
+   // TODO need to fill these in with something...
 
    private InternetAddress ccdests[];
 
    private String myspaceBaseRef;
    private String sector = "sect23";
    private String hemi = "s";
-   ApplicationController controller;
+   CommonExecutionConnectorClient controller;
    static private org.apache.commons.logging.Log logger =
       org.apache.commons.logging.LogFactory.getLog(AVODemoRunner.class);
+
+   private CeaControllerConfig config;
+   private MySpaceLocator myspaceLocator;
+
+   /**
+    * Small class to indicate that we really do want to create a CeaControllerConfig
+    * @author Paul Harrison (pah@jb.man.ac.uk) 19-Mar-2004
+    * @version $Name:  $
+    * @since iteration5
+    */
+   private static class ThisConfig extends CeaControllerConfig {
+      public static CeaControllerConfig getInstance() {
+         return CeaControllerConfig.getInstance();
+      }
+   }
+
    /**
     * 
     */
    public AVODemoRunner() {
+      config = ThisConfig.getInstance();
 
       controller = DelegateFactory.createDelegate(AVODemoConstants.appconEndPoint);
+      myspaceLocator = new MySpaceFromConfig(config);
       try {
          ccdests = new InternetAddress[] { new InternetAddress("pah@jb.man.ac.uk")};
       }
@@ -89,72 +114,10 @@ public class AVODemoRunner implements Runnable {
       runthread.start();
 
    }
-   
-   public void createWorkflow()
-   {
-      MySpaceClient myspacedel = null;
-       try {
-          myspacedel = ApplicationControllerConfig.getInstance().getMySpaceManager();
-       }
-       catch (IOException e1) {
-          // TODO Auto-generated catch block
-          e1.printStackTrace();
-       }
-       myspaceBaseRef = MYSPACEBASE + sector + hemi;
-       try {
-          myspacedel.createContainer(
-             "avodemo",
-             "test.astrogrid.org",
-             "dummy",
-             myspaceBaseRef);
-          myspaceBaseRef += "/";
-       }
-       catch (Exception e2) {
-          // TODO Auto-generated catch block
-          e2.printStackTrace();
-       }
 
-      Workflow workflow = Workflow.createWorkflow(fulluser.toSnippet(), "AVODEMO - "+sector+hemi, "Workflow involving multi-band sextractor run followed by a data federation and hyperz run");
-      Sequence sequence = new Sequence(workflow);
-      workflow.setChild(sequence);
-      Step step = sequence.createStep(0);
-      populateSExtractorStep(step, "b");
-      step = sequence.createStep(1);
-           populateSExtractorStep(step, "v");
-      step = sequence.createStep(2);
-           populateSExtractorStep(step, "i");
-      step = sequence.createStep(3);
-           populateSExtractorStep(step, "z");
-      step = sequence.createStep(4);
-           populateDftStep(step);
-      step = sequence.createStep(5);
-           populateHyperZStep(step);
-           
-    try {
-      myspacedel.saveDataHolding(fulluser.getUserId(), fulluser.getCommunity(), fulluser.getToken(), MYSPACEBASE+"workflow/"+workflow.getName(),
-        workflow.constructWorkflowXML(fulluser.toSnippet()), "workflow", myspacedel.OVERWRITE);
-   }
-   catch (Exception e) {
-      logger.error("problem saving generated workflow...", e);
-         }
-     
-          
-           
-      
-      
-      
- 
-      
-   }
-   private void runworkflow() {
+   public void createWorkflow() throws Exception {
       MySpaceClient myspacedel = null;
-      try {
-         myspacedel = ApplicationControllerConfig.getInstance().getMySpaceManager();
-      }
-      catch (IOException e1) {
-         // TODO Auto-generated catch block
-         e1.printStackTrace();
-      }
+      myspacedel = myspaceLocator.getClient();
       myspaceBaseRef = MYSPACEBASE + sector + hemi;
       try {
          myspacedel.createContainer(
@@ -168,6 +131,60 @@ public class AVODemoRunner implements Runnable {
          // TODO Auto-generated catch block
          e2.printStackTrace();
       }
+
+      Workflow workflow = new Workflow();
+      workflow.setName("AVODEMO - " + sector + hemi);
+      workflow.setDescription(
+         "Workflow involving multi-band sextractor run followed by a data federation and hyperz run");
+      Sequence sequence = new Sequence();
+      workflow.setSequence(sequence);
+      Step step = new Step();
+      populateSExtractorStep(step, "b");
+      sequence.addActivity(step);
+
+      step = new Step();
+      populateSExtractorStep(step, "v");
+      sequence.addActivity(step);
+
+      step = new Step();
+      populateSExtractorStep(step, "i");
+      sequence.addActivity(step);
+
+      step = new Step();
+      populateSExtractorStep(step, "z");
+      sequence.addActivity(step);
+
+      step = new Step();
+      populateDftStep(step);
+      sequence.addActivity(step);
+
+      step = new Step();
+      populateHyperZStep(step);
+      sequence.addActivity(step);
+
+      StringWriter outstr = new StringWriter();
+
+      workflow.marshal(outstr);
+      myspacedel.saveDataHolding(
+         fulluser.getUserId(),
+         fulluser.getCommunity(),
+         fulluser.getToken(),
+         MYSPACEBASE + "workflow/" + workflow.getName(),
+         outstr.toString(),
+         "workflow",
+         myspacedel.OVERWRITE);
+
+   }
+   private void runworkflow() throws Exception {
+      MySpaceClient myspacedel = null;
+      myspacedel = myspaceLocator.getClient();
+      myspaceBaseRef = MYSPACEBASE + sector + hemi;
+      myspacedel.createContainer(
+         "avodemo",
+         "test.astrogrid.org",
+         "dummy",
+         myspaceBaseRef);
+      myspaceBaseRef += "/";
 
       String exid;
       exid = runSExtractor("b");
@@ -183,221 +200,141 @@ public class AVODemoRunner implements Runnable {
       exid = runHyperZ();
       waitForCompletion(exid);
       String urlout = null;
-      try {
-         if (myspacedel != null) {
+      if (myspacedel != null) {
 
-            urlout =
-               myspacedel.getDataHoldingUrl(
-                  "avodemo",
-                  "test.astrogrid.org",
-                  "dummy",
-                  myspaceBaseRef + "hyperzout");
-         }
-         mailresult(urlout);
+         urlout =
+            myspacedel.getDataHoldingUrl(
+               "avodemo",
+               "test.astrogrid.org",
+               "dummy",
+               myspaceBaseRef + "hyperzout");
       }
-      catch (IOException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
-      }
-      catch (MessagingException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
-      }
-      catch (Exception e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
-      }
+      mailresult(urlout);
    }
 
-   private String runHyperZ() {
-      ParameterValues parameters = null;
+   private String runHyperZ() throws CEADelegateException {
+      Step step = new Step();
       String monitorURL = null;
       String applicationid = "HyperZ";
-      parameters = new ParameterValues();
       String exid = null;
-      parameters.setMethodName("simple");
-      //      parameters.setParameterSpec("<tool><input><parameter name='config_file'>/home/applications/demo/hyperz/zphot.param</parameter><parameter name='input_catalog'>/home/applications/demo/hyperz/bviz-mag-sample.cat</parameter></input><output><parameter name='output_catalog'>out1file</parameter></output></tool>");
-      parameters.setParameterSpec(
-         "<tool><input><parameter name='config_file'>/home/applications/demo/hyperz/zphot.param</parameter>"
-            + "<parameter name='input_catalog'>"
-            + myspaceBaseRef
-            + "merged</parameter></input>"
-            + "<output><parameter name='output_catalog'>"
-            + myspaceBaseRef
-            + "hyperzout</parameter></output></tool>");
-      try {
-         exid =
-            controller.initializeApplication(
-               applicationid,
-               jobstepid,
-               monitorURL,
-               user,
-               parameters);
-         controller.executeApplication(exid);
-      }
-      catch (RemoteException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
-      }
+      populateHyperZStep(step);
+      controller.execute(step.getTool(), jobstepid, monitorURL);
+
       return exid;
    }
 
    private void populateHyperZStep(Step step) {
+      Input input = new Input();
+      Output output = new Output();
       String applicationid = "HyperZ";
-      org.astrogrid.portal.workflow.design.Tool tool = new Tool(applicationid);
-      Cardinality cardinality = new Cardinality(1, 1);
-      org.astrogrid.portal.workflow.design.Parameter param =
-         tool.newInputParameter("config_file");
-      param.setCardinality(cardinality);
-      param.setType("agpd:FileReference");
+      Tool tool = new Tool();
+      tool.setName(applicationid);
+      tool.setInput(input);
+      tool.setOutput(output);
+      tool.setInterface("simple");
+      ParameterValue param = new ParameterValue();
+      input.addParameter(param);
+      param.setName("config_file");
+
+      param.setType(ParameterTypes.FILEREFERENCE);
       param.setValue("/home/applications/demo/hyperz/zphot.param");
 
-      param = tool.newInputParameter("input_catalog");
-      param.setCardinality(cardinality);
-      param.setType("agpd:MySpace_FileReference");
+      param = new ParameterValue();
+      input.addParameter(param);
+      param.setName("input_catalog");
+
+      param.setType(ParameterTypes.MYSPACE_FILEREFERENCE);
       param.setValue(myspaceBaseRef + "merged");
 
-      param = tool.newOutputParameter("output_catalog");
-      param.setCardinality(cardinality);
-      param.setType("agpd:MySpace_FileReference");
+      param = new ParameterValue();
+      output.addParameter(param);
+      param.setName("output_catalog");
+
+      param.setType(ParameterTypes.MYSPACE_FILEREFERENCE);
       param.setValue(myspaceBaseRef + "hyperzout");
       step.setTool(tool);
-       step.setName("hyperz");
+      step.setName("hyperz");
 
    }
 
-   private String runDft() {
-      ParameterValues parameters = null;
+   private String runDft() throws CEADelegateException {
       String monitorURL = null;
-      String applicationid = "CrossMatcher";
-      parameters = new ParameterValues();
-      String exid = null;
-      parameters.setMethodName("simple");
-      parameters.setParameterSpec(
-         "<tool><input><parameter name='targets'>"
-            + myspaceBaseRef
-            + "sexout_z</parameter>"
-            + "<parameter name='matches'>"
-            + myspaceBaseRef
-            + "sexout_b</parameter>"
-            + "<parameter name='matches'>"
-            + myspaceBaseRef
-            + "sexout_v</parameter>"
-            + "<parameter name='matches'>"
-            + myspaceBaseRef
-            + "sexout_i</parameter>"
-            + "</input><output><parameter name='merged_output'>"
-            + myspaceBaseRef
-            + "merged</parameter></output></tool>");
-      try {
-         exid =
-            controller.initializeApplication(
-               applicationid,
-               jobstepid,
-               monitorURL,
-               user,
-               parameters);
-         controller.executeApplication(exid);
-      }
-      catch (RemoteException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
-      }
+      Step step = new Step();
+      populateDftStep(step);
+      String exid = controller.execute(step.getTool(), jobstepid, monitorURL);
       return exid;
    }
 
    private void populateDftStep(Step step) {
+      Output output = new Output();
+      Input input = new Input();
       String applicationid = "CrossMatcher";
 
-      org.astrogrid.portal.workflow.design.Tool tool = new Tool(applicationid);
-      Cardinality cardinality = new Cardinality(1, 1);
-      org.astrogrid.portal.workflow.design.Parameter param =
-         tool.newInputParameter("targets");
-      param.setCardinality(cardinality);
-      param.setType("agpd:MySpace_FileReference");
+      Tool tool = new Tool();
+      tool.setName(applicationid);
+      tool.setInput(input);
+      tool.setOutput(output);
+      tool.setInterface("simple");
+      ParameterValue param = new ParameterValue();
+      input.addParameter(param);
+      param.setName("targets");
+
+      param.setType(ParameterTypes.MYSPACE_VOTABLEREFERENCE);
       param.setValue(myspaceBaseRef + "sexout_z");
 
-      cardinality = new Cardinality(1, 3);
-
-      param = tool.newInputParameter("matches");
-      param.setCardinality(cardinality);
-      param.setType("agpd:MySpace_FileReference");
+      param = new ParameterValue();
+      param.setName("matches");
+      input.addParameter(param);
+      param.setType(ParameterTypes.MYSPACE_FILEREFERENCE);
       param.setValue(myspaceBaseRef + "sexout_b");
 
-      param = tool.newInputParameter("matches");
-      param.setCardinality(cardinality);
-      param.setType("agpd:MySpace_FileReference");
+      param = new ParameterValue();
+      input.addParameter(param);
+      param.setName("matches");
+
+      param.setType(ParameterTypes.MYSPACE_FILEREFERENCE);
       param.setValue(myspaceBaseRef + "sexout_v");
 
-      param = tool.newInputParameter("matches");
-      param.setCardinality(cardinality);
-      param.setType("agpd:MySpace_FileReference");
+      param = new ParameterValue();
+      input.addParameter(param);
+      param.setName("matches");
+
+      param.setType(ParameterTypes.MYSPACE_FILEREFERENCE);
       param.setValue(myspaceBaseRef + "sexout_i");
 
-      param = tool.newOutputParameter("merged_output");
-      param.setCardinality(new Cardinality(1, 1));
-      param.setType("agpd:MySpace_FileReference");
+      param = new ParameterValue();
+      param.setName("merged_output");
+      output.addParameter(param);
+      param.setType(ParameterTypes.MYSPACE_FILEREFERENCE);
       param.setValue(myspaceBaseRef + "merged");
       step.setTool(tool);
       step.setName("dft");
    }
 
-   private String runSExtractor(String band) {
-      ParameterValues parameters = null;
+   private String runSExtractor(String band) throws CEADelegateException {
+      Step step = new Step();
       String monitorURL = null;
       String applicationid = "SExtractor";
-      parameters = new ParameterValues();
+      populateSExtractorStep(step, band);
       String exid = null;
-      parameters.setMethodName("Simple");
-
-      String paramstr =
-         "<tool><input><parameter name='DetectionImage'>/home/applications/data/GOODS/h_"
-            + hemi
-            + "z_"
-            + sector
-            + "_v1.0_drz_img.fits</parameter>"
-            + "<parameter name='PhotoImage'>/home/applications/data/GOODS/h_"
-            + hemi
-            + band
-            + "_"
-            + sector
-            + "_v1.0_drz_img.fits</parameter>"
-            + "<parameter name='config_file'>/home/applications/demo/h_goods_"
-            + hemi
-            + band
-            + "_r1.0z_phot_sex.txt</parameter>"
-            + "<parameter name='PARAMETERS_NAME'>/home/applications/demo/std.param</parameter></input>"
-            + "<output><parameter name='CATALOG_NAME'>"
-            + myspaceBaseRef
-            + "sexout_"
-            + band
-            + "</parameter></output></tool>";
-      parameters.setParameterSpec(paramstr);
-      try {
-         exid =
-            controller.initializeApplication(
-               applicationid,
-               jobstepid,
-               monitorURL,
-               user,
-               parameters);
-         controller.executeApplication(exid);
-      }
-      catch (RemoteException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
-      }
+      exid = controller.execute(step.getTool(), jobstepid, monitorURL);
       return exid;
    }
 
    private void populateSExtractorStep(Step step, String band) {
+      Output output = new Output();
+      Input input = new Input();
       String applicationid = "SExtractor";
-      org.astrogrid.portal.workflow.design.Tool tool = new Tool(applicationid);
-      Cardinality cardinality = new Cardinality(1, 1);
-      org.astrogrid.portal.workflow.design.Parameter param =
-         tool.newInputParameter("DetectionImage");
-      param.setCardinality(cardinality);
-      param.setType("agpd:FileReference");
+      Tool tool = new Tool();
+      tool.setName(applicationid);
+      tool.setInput(input);
+      tool.setOutput(output);
+      tool.setInterface("simple");
+      ParameterValue param = new ParameterValue();
+      input.addParameter(param);
+      param.setName("DetectionImage");
+
+      param.setType(ParameterTypes.FILEREFERENCE);
       param.setValue(
          "/home/applications/data/GOODS/h_"
             + hemi
@@ -405,9 +342,11 @@ public class AVODemoRunner implements Runnable {
             + sector
             + "_v1.0_drz_img.fits");
 
-      param = tool.newInputParameter("PhotoImage");
-      param.setCardinality(cardinality);
-      param.setType("agpd:FileReference");
+      param = new ParameterValue();
+      input.addParameter(param);
+      param.setName("PhotoImage");
+
+      param.setType(ParameterTypes.FILEREFERENCE);
       param.setValue(
          "/home/applications/data/GOODS/h_"
             + hemi
@@ -416,25 +355,30 @@ public class AVODemoRunner implements Runnable {
             + sector
             + "_v1.0_drz_img.fits");
 
-      param = tool.newInputParameter("config_file");
-      param.setCardinality(cardinality);
-      param.setType("agpd:FileReference");
+      param = new ParameterValue();
+      input.addParameter(param);
+      param.setName("config_file");
+
+      param.setType(ParameterTypes.FILEREFERENCE);
       param.setValue(
          "/home/applications/demo/h_goods_" + hemi + band + "_r1.0z_phot_sex.txt");
 
-      param = tool.newInputParameter("PARAMETERS_NAME");
-      param.setCardinality(cardinality);
-      param.setType("agpd:FileReference");
+      param = new ParameterValue();
+      input.addParameter(param);
+      param.setName("PARAMETERS_NAME");
+
+      param.setType(ParameterTypes.FILEREFERENCE);
       param.setValue("/home/applications/demo/std.param");
 
-      param = tool.newOutputParameter("CATALOG_NAME");
-      param.setCardinality(cardinality);
-      param.setType("agpd:MySpace_FileReference");
+      param = new ParameterValue();
+      output.addParameter(param);
+      param.setName("CATALOG_NAME");
+
+      param.setType(ParameterTypes.MYSPACE_FILEREFERENCE);
       param.setValue(myspaceBaseRef + "sexout_" + band);
 
       step.setTool(tool);
-      step.setName("sextractor - "+band);
-      
+      step.setName("sextractor - " + band);
 
    }
 
@@ -442,11 +386,11 @@ public class AVODemoRunner implements Runnable {
 
       if (executionId != null) {
          try {
-            String runStatus = controller.queryApplicationExecutionStatus(executionId);
+            MessageType runStatus = controller.queryExecutionStatus(executionId);
             try {
-               while (!runStatus.equals(Status.COMPLETED.toString())) {
+               while (runStatus.getPhase() != ExecutionPhase.COMPLETED) {
                   Thread.sleep(20000);
-                  runStatus = controller.queryApplicationExecutionStatus(executionId);
+                  runStatus = controller.queryExecutionStatus(executionId);
 
                }
 
@@ -456,7 +400,7 @@ public class AVODemoRunner implements Runnable {
                e.printStackTrace();
             }
          }
-         catch (RemoteException e) {
+         catch (CEADelegateException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
          }
@@ -467,7 +411,7 @@ public class AVODemoRunner implements Runnable {
 
    }
    private void mailresult(String url) throws MessagingException {
-      Session session = ApplicationControllerConfig.getInstance().mailSessionInstance();
+      Session session = config.mailSessionInstance();
       Message message = new MimeMessage(session);
 
       InternetAddress dests[] = new InternetAddress[] { new InternetAddress(toAddress)};
@@ -532,7 +476,12 @@ public class AVODemoRunner implements Runnable {
     * @see java.lang.Runnable#run()
     */
    public void run() {
-     runworkflow();
+      try {
+         runworkflow();
+      }
+      catch (Exception e) {
+         throw new RuntimeException("problem running the job", e);
+      }
    }
 
 }

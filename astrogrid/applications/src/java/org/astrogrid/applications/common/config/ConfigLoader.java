@@ -1,5 +1,5 @@
 /*
- * $Id: ConfigLoader.java,v 1.1 2003/11/26 22:07:24 pah Exp $
+ * $Id: ConfigLoader.java,v 1.2 2004/03/23 12:51:25 pah Exp $
  *
  * Created on 13 September 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -21,7 +21,7 @@ import java.util.Map;
  * @since iteration3
  */
 public class ConfigLoader {
-   private static JNDIConfig theconfig;
+   private static RawPropertyConfig theconfig;
    public final static int SYSPROP_CONFIG = 1;
    public final static int TEST_CONFIG = 2;
    public final static int JNDI_CONFIG = 3;
@@ -36,7 +36,7 @@ public class ConfigLoader {
    private ConfigLoader() {
    }
 
-    public static Config LoadConfig(String key)
+    protected static RawPropertyConfig LoadConfig(String key)
     {
        switch (configType) {
          case SYSPROP_CONFIG  :
@@ -52,17 +52,22 @@ public class ConfigLoader {
                
                if(configs.containsKey(key))
                {
-                  theconfig = (JNDIConfig)configs.get(key);
+                  return (RawPropertyConfig)configs.get(key);
                   
                }
                else
                {
                   theconfig =  new JNDIConfig(key);
+                  //fallback to the test config if jndi not present...
+                  if(!((JNDIConfig)theconfig).isPropertiesLoaded())
+                  {
+                     theconfig = TestConfig.getInstance();
+                  }
                   configs.put( key, theconfig);
-                  
+                  return theconfig;
                }
                
-               return theconfig;
+               
             }
             
          }
@@ -78,6 +83,7 @@ public class ConfigLoader {
   
    /**
     * @param i
+    * @deprecated will start to use a fallover type of config - easier for tests....
     */
    public static void setConfigType(int i) {
       configType = i;

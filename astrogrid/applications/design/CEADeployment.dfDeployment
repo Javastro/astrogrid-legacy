@@ -1,0 +1,153 @@
+package id135f4drevt17tdrewcnqe;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id135f4drevt17tdrewcnqe.node:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:design#Class#id135f4drevt17tdrewcnqe.node46:oiref><oihard>
+@__modelType reference 
+*/
+class reference47 {
+}}/**
+
+@__tags
+@shapeType DeploymentDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions 
+
+
+<oigroup:Composite#supplierCardinality#<oiref:design#Class#id135f4drevt17tdrewcnqe.node46.node52.link62:oiref>=1076,505,22,23,0,-1.0,0.0:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node46:oiref>=800,80,590,570,0:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node51.link61:oiref>=490,250,490,350:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node46.node52:oiref>=950,350,324,60,0:oigroup>
+<oigroup:Composite#clientRole#<oiref:design#Class#id135f4drevt17tdrewcnqe.node46.node52.link62:oiref>=1127,415,118,23,0,1.0,0.0:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node40.link:oiref>=480,420,480,404:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node51.link:oiref>=570,202,870,184:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node40:oiref>=410,420,141,60,1:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node46.node52.link:oiref>=995,350,995,300:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node46.node52.link62:oiref>=1101,410,1101,510:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node46.node50.link:oiref>=970,240,970,194:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node46.node49:oiref>=870,140,192,54,1:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node51:oiref>=410,190,160,60,0:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node46.node50:oiref>=900,240,141,60,1:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node46.node48:oiref>=990,510,223,60,1:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node43:oiref>=390,350,192,54,1:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node:oiref>=330,130,330,380,0:oigroup>
+*/
+class __positions {
+}/**
+@shapeType Node
+@__modelType node
+@name Job Control Server 
+*/
+class node {
+/**
+@shapeType Component
+@__modelType node
+@name CEA
+@instanceForm
+@stereotype library 
+*/
+class node40 {
+/**
+@shapeType SupportsLink
+@__modelType link
+@__ref <oiref:design#Class#id135f4drevt17tdrewcnqe.node.node43:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Interface
+@__modelType node
+@name CommonExecutionConnector 
+*/
+class node43 {
+}/**
+@shapeType Component
+@__modelType node
+@name JES
+@instanceForm 
+*/
+class node51 {
+/**
+@shapeType DependencyLink
+@__modelType link
+@__ref <oiref:design#Class#id135f4drevt17tdrewcnqe.node46.node49:oiref><oihard> 
+*/
+class link {
+}/**
+@shapeType DependencyLink
+@__modelType link
+@__ref <oiref:design#Class#id135f4drevt17tdrewcnqe.node.node43:oiref><oihard> 
+*/
+class link61 {
+}}}/**
+@shapeType Node
+@__modelType node
+@name Application Server 1 
+*/
+class node46 {
+/**
+@shapeType Component
+@__modelType node
+@name CommandLineApplication
+@instanceForm
+@stereotype application 
+*/
+class node48 {
+}/**
+@shapeType Component
+@__modelType node
+@name CEA
+@instanceForm
+@stereotype library 
+*/
+class node50 {
+/**
+@shapeType SupportsLink
+@__modelType link
+@__ref <oiref:design#Class#id135f4drevt17tdrewcnqe.node46.node49:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Interface
+@__modelType node
+@name CommonExecutionConnector 
+*/
+class node49 {
+}/**
+@shapeType Component
+@__modelType node
+@name CommandLineExecutionController
+@instanceForm 
+*/
+class node52 {
+/**
+@shapeType AssociatesLink
+@__modelType link
+@aggregation
+@__ref <oiref:design#Class#id135f4drevt17tdrewcnqe.node46.node50:oiref><oihard>
+@composition 
+*/
+class link {
+}/**
+@shapeType AssociatesLink
+@__modelType link
+@__ref <oiref:design#Class#id135f4drevt17tdrewcnqe.node46.node48:oiref><oihard>
+@clientRole controls execution
+@supplierCardinality 1..* 
+*/
+class link62 {
+}}}
