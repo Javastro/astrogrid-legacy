@@ -161,7 +161,7 @@ public final class Query implements Tool {
              .append( "/")
              .append( "serv1")
              .append( "/" )
-             .append( "workflow")
+             .append( "query")
              .append( "/")
              .append( "*" ) ;
             
