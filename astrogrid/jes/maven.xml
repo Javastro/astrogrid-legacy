@@ -38,6 +38,7 @@
 <!-- hooks into existing goals -->
   <preGoal name="java:compile"><!-- generate classes from schema and wsdl first -->
      <mkdir dir="${generated.src}" />
+     <mkdir dir="${basedir}/target/classes" />     <!-- Clover fails if this dir is not present -->
      <path id="generated.src.path" location="${generated.src}"/>
     <maven:addPath id="maven.compile.src.set" refid="generated.src.path"/>  <!-- declares new src tree to maven -->
     <maven:addPath id="maven.dependency.classpath" refid="axis.classpath"/>
