@@ -1,5 +1,5 @@
 /*
- * $Id: User.java,v 1.4 2003/12/16 15:49:17 mch Exp $
+ * $Id: User.java,v 1.5 2003/12/30 10:40:02 pah Exp $
  *
  * Created on 27-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -28,10 +28,9 @@ public class User {
     public final static User ANONYMOUS = new User("Anon","Anonymous","None");
 
    /** Default constructor - creates null user
-    * @deprecated (MCH) I don't think creating null-content users is a good
-    * idea?
     */
     public User(){
+       this("Anon","Anonymous", "None");
     }
 
     /**
@@ -117,9 +116,12 @@ public class User {
 }
 
 /* $Log: User.java,v $
- * Revision 1.4  2003/12/16 15:49:17  mch
- * Extended to include Certification functionality - in prep to replace it
+ * Revision 1.5  2003/12/30 10:40:02  pah
+ * made the default constructor non-deprecated - this is a bean it has to have a default constructor - make it acutally put in some values
  *
+/* Revision 1.4  2003/12/16 15:49:17  mch
+/* Extended to include Certification functionality - in prep to replace it
+/*
 /* Revision 1.3  2003/12/16 13:35:06  mch
 /* Added anonymous class constant for 'default' user
 /* */
