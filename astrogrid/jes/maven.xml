@@ -47,6 +47,7 @@
 	<copy todir="${maven.war.webapp.dir}" overwrite="yes">
 		<fileset dir="${basedir}">
 			<include name="README"/>
+			<include name="INSTALL"/>
 		</fileset> 
 	</copy>
 	<copy todir="${maven.war.webapp.dir}" overwrite="yes">
