@@ -159,6 +159,8 @@ See documentation for the PAL project for further build instructions.
 
   <shortDescription>Astrogrid Datacenter</shortDescription>
 
+  <!-- definition for site docs -->
+  <siteAddress>www.astrogrid.org</siteAddress>
   <siteDirectory>${maven.site.central.directory}/${astrogrid.iteration}/datacenter</siteDirectory>
 
   <repository>
