@@ -2,12 +2,12 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/cocoon/explorer/xsp/Attic/explorer.xsp,v $</cvs:source>
     | <cvs:date>$Author: clq2 $</cvs:date>
-    | <cvs:author>$Date: 2003/10/07 16:29:30 $</cvs:author>
-    | <cvs:version>$Revision: 1.7 $</cvs:version>
+    | <cvs:author>$Date: 2003/10/08 10:43:04 $</cvs:author>
+    | <cvs:version>$Revision: 1.8 $</cvs:version>
     | <cvs:log>
     | $Log: explorer.xsp,v $
-    | Revision 1.7  2003/10/07 16:29:30  clq2
-    | fixed bug view can't get correct page.
+    | Revision 1.8  2003/10/08 10:43:04  clq2
+    | added umo01 was deleted by mistake!
     |
     | Revision 1.4  2003/07/03 15:17:17  dave
     | Updated list of MySpace services for demo
@@ -127,6 +127,11 @@
 			<services>
                                <xsp:element name="service">
                                        <xsp:attribute name="default">true</xsp:attribute>
+                                       <xsp:attribute name="name">UML01MySpace(Leicester)</xsp:attribute>
+                                        <xsp:attribute name="url">http://143.210.36.173:8080/axis/services/MySpaceManager</xsp:attribute>
+                                </xsp:element>
+
+                               <xsp:element name="service">
                                         <xsp:attribute name="name">QINDev</xsp:attribute>
                                         <xsp:attribute name="url">http://143.210.36.131:8080/axis/services/MySpaceManager</xsp:attribute>
                                 </xsp:element>
