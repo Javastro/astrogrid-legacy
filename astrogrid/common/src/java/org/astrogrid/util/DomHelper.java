@@ -1,5 +1,5 @@
 /*
-   $Id: DomHelper.java,v 1.8 2004/08/16 07:10:52 KevinBenson Exp $
+   $Id: DomHelper.java,v 1.9 2004/08/16 07:11:45 KevinBenson Exp $
 
    (c) Copyright...
 */
@@ -32,6 +32,29 @@ import org.xml.sax.SAXException;
  */
 public class DomHelper
 {
+
+    /** Convenience routine for returning the value of an element of the given
+     * name that is a child of the given parent Element.  Allows for values that are
+     * child nodes (which seems to happen when the value is on a separate line from
+     * the opening tag) and returns null if no element is found. Throws exception
+     * if there is more than one node
+     * - Just noticed this is not quite a duplicate of getNodeTextValue - I'm not
+     * sure they're quite right.
+     */
+    public static String getValue(Element parent, String element) {
+       NodeList nodes = parent.getElementsByTagName(element);
+       if ((nodes==null) || (nodes.getLength()==0)) {
+          return null;
+       }
+       if (nodes.getLength()>1) {
+          throw new IllegalArgumentException("More than one "+element+" in element "+parent.getNodeName());
+       }
+       if (nodes.item(0) instanceof Element) {
+          return getValue((Element) nodes.item(0));
+       }
+       throw new IllegalArgumentException(element+" is not an element node of "+parent.getNodeName());
+    }    
+    
    /**
     * Convenience class returns Document from given URL
     */
