@@ -1,4 +1,4 @@
-/*$Id: CommandLineApplicationTest.java,v 1.8 2004/09/23 22:44:23 pah Exp $
+/*$Id: CommandLineApplicationTest.java,v 1.9 2004/09/30 15:10:00 pah Exp $
  * Created on 27-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -90,9 +90,35 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
     }
     /** calls application, with direct parameter values */
     public void testCreateApplicationDirect() throws Exception {
-        Tool t = buildTool();
+        Tool t = buildTool("0");
 
-        ParameterValue p4 = new ParameterValue();
+        fillDirect(t);
+        ResultListType results = execute(t);
+        for (int i = 0; i < results.getResultCount(); i++) {
+            ParameterValue result = results.getResult(i);
+            assertNotNull(result);
+            System.out.println("result par name = " + result.getName());
+
+            if (result.getName().equals("P3")) {
+                assertTrue("P3 does not contain expected string", result.getValue().indexOf(TEST_DATA) != -1);
+            }
+            else if (result.getName().equals("P2")) {
+                assertTrue("P2 does not contain expected string", result.getValue().indexOf(PAR4_DATA) != -1);
+                
+            }
+            else {
+                fail("unknown result pararmeter  " + result.getName()
+                        + " returned");
+            }
+        }
+    }
+
+    /**
+    * @param t
+    * @throws IndexOutOfBoundsException
+    */
+   private void fillDirect(Tool t) throws IndexOutOfBoundsException {
+      ParameterValue p4 = new ParameterValue();
         p4.setName("P4");
         p4.setValue(PAR4_DATA);
         p4.setIndirect(false);
@@ -120,29 +146,11 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
         t.getInput().addParameter(p4);
         t.getOutput().addParameter(out);
         t.getOutput().addParameter(echo);
-        ResultListType results = execute(t);
-        for (int i = 0; i < results.getResultCount(); i++) {
-            ParameterValue result = results.getResult(i);
-            assertNotNull(result);
-            System.out.println("result par name = " + result.getName());
+   }
 
-            if (result.getName().equals("P3")) {
-                assertTrue("P3 does not contain expected string", result.getValue().indexOf(TEST_DATA) != -1);
-            }
-            else if (result.getName().equals("P2")) {
-                assertTrue("P2 does not contain expected string", result.getValue().indexOf(PAR4_DATA) != -1);
-                
-            }
-            else {
-                fail("unknown result pararmeter  " + result.getName()
-                        + " returned");
-            }
-        }
-    }
-
-    /** calls application, with indirect parameter values */
+   /** calls application, with indirect parameter values */
     public void testCreateApplicationIndirect() throws Exception {
-        Tool t = buildTool();
+        Tool t = buildTool("0");
 
         File inputFile1 = File.createTempFile(
                 "CommandLineApplicationTest-Input-ignored", null);
@@ -235,7 +243,7 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
                 .indexOf(testContent) != -1);
     }
 
-    protected Tool buildTool() throws Exception {
+    protected Tool buildTool(String delay) throws Exception {
         // select the interface we're going to use.
         ApplicationInterface interf = testAppDescr.getInterface("I1");
         assertNotNull(interf);
@@ -246,7 +254,7 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
         Input input = new Input();
         ParameterValue time = new ParameterValue();
         time.setName("P1");
-        time.setValue("0");//no delay
+        time.setValue(delay);//no delay
         input.addParameter(time);
         t.setInput(input);
         Output output = new Output();
@@ -257,7 +265,7 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
     public void testPickupMissingParameters() {
         Tool t = null;
         try {
-            t = buildTool();
+            t = buildTool("0");
         }
         catch (Exception e) {
             // not really trying to test this
@@ -293,6 +301,47 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
             }
         
     }
+
+   public void testSeeError() {
+           Tool t = null;
+           try {
+               t = buildTool("-1");
+               fillDirect(t);
+           }
+           catch (Exception e) {
+               // not really trying to test this
+               e.printStackTrace();
+           }
+           try {
+           Application app = testAppDescr.initializeApplication("testExecution",
+                   new User(), t);
+           assertNotNull(app);
+           assertTrue(app instanceof CommandLineApplication);
+           // and now run it.
+           MockMonitor monitor = new MockMonitor();
+   //        app.addObserver(controller);
+           app.addObserver(monitor);
+           app.execute();
+           monitor.waitFor(WAIT_SECONDS);
+           assertNotNull(monitor.sawApp);
+           assertTrue(monitor.sawError);
+           // check it completed, not in error, etc.
+           assertEquals("application should have ended with error status",
+                   Status.ERROR, app.getStatus());
+   
+           // ok, either timed out, or the application finished..
+           // check behaviour of monitor.
+    
+           
+           
+           
+                
+           }
+           catch (Exception e1) {
+                   fail("unexpected exception " + e1);
+               }
+           
+       }
 
     private ResultListType execute(Tool t) throws Exception, CeaException,
             InterruptedException {
@@ -330,6 +379,9 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
 
 /*
  * $Log: CommandLineApplicationTest.java,v $
+ * Revision 1.9  2004/09/30 15:10:00  pah
+ * try to test for failure a bit better
+ *
  * Revision 1.8  2004/09/23 22:44:23  pah
  * need new CommandLineParameterAdapter to separate out the switch adding part so that patricios merge tool can be accomodated
  *

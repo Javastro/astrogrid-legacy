@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractCmdLineRealAppTestCase.java,v 1.1 2004/09/23 22:44:23 pah Exp $
+ * $Id: AbstractCmdLineRealAppTestCase.java,v 1.2 2004/09/30 15:10:00 pah Exp $
  * 
  * Created on 23-Sep-2004 by Paul Harrison (pah@jb.man.ac.uk)
  * Copyright 2004 AstroGrid. All rights reserved.
@@ -48,7 +48,7 @@ public abstract class AbstractCmdLineRealAppTestCase extends
     public void testParameterSetup() throws Exception
     {
         Application app = testAppDescr.initializeApplication("testExecution",
-                new User(), buildTool());
+                new User(), buildTool(null));
         assertNotNull(app);
         assertTrue(app instanceof CommandLineApplication);
         CommandLineApplication cmdapp = (CommandLineApplication)app;

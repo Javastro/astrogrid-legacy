@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractCmdLineAppTestCase.java,v 1.1 2004/09/23 22:44:23 pah Exp $
+ * $Id: AbstractCmdLineAppTestCase.java,v 1.2 2004/09/30 15:10:00 pah Exp $
  * 
  * Created on 23-Sep-2004 by Paul Harrison (pah@jb.man.ac.uk)
  * Copyright 2004 AstroGrid. All rights reserved.
@@ -123,6 +123,6 @@ public abstract class AbstractCmdLineAppTestCase extends
      * Create a tool instance to run.
      * @return
      */
-    protected abstract Tool buildTool() throws Exception;
+    protected abstract Tool buildTool(String delay) throws Exception;
 
 }

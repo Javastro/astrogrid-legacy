@@ -1,4 +1,4 @@
-/*$Id: MockMonitor.java,v 1.5 2004/09/15 11:37:43 pah Exp $
+/*$Id: MockMonitor.java,v 1.6 2004/09/30 15:12:48 pah Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,6 +18,7 @@ import org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel;
 
 /** Mock impl of a monitor.
  * @author Noel Winstanley nw@jb.man.ac.uk 08-Jun-2004
+ * @author Paul Harrison (pah@jb.man.ac.uk)
  *
  */
 public class MockMonitor implements Observer{
@@ -64,9 +65,10 @@ public class MockMonitor implements Observer{
      * @param type
      */
     private void notifyStateChange(Application app, MessageType type) {
-        if (type.getLevel() == LogLevel.ERROR) {
-            System.err.println("saw an error\n" + type.getContent());
+        if (type.getLevel() == LogLevel.ERROR || type.getLevel() == LogLevel.WARN) {
+            System.err.println("saw  "+type.getLevel().toString()+"\n" + type.getContent());
         }
+        
     }
 
     public void waitFor(int seconds) throws InterruptedException {
@@ -80,6 +82,9 @@ public class MockMonitor implements Observer{
 
 /* 
 $Log: MockMonitor.java,v $
+Revision 1.6  2004/09/30 15:12:48  pah
+try to test for failure a bit better
+
 Revision 1.5  2004/09/15 11:37:43  pah
 enhanced monitoring of error conditions
 

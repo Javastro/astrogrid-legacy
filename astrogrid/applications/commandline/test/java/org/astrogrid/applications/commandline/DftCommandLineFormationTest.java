@@ -1,5 +1,5 @@
 /*
- * $Id: DftCommandLineFormationTest.java,v 1.1 2004/09/24 16:09:50 pah Exp $
+ * $Id: DftCommandLineFormationTest.java,v 1.2 2004/09/30 15:10:00 pah Exp $
  * 
  * Created on 23-Sep-2004 by Paul Harrison (pah@jb.man.ac.uk)
  * Copyright 2004 AstroGrid. All rights reserved.
@@ -52,8 +52,9 @@ public class DftCommandLineFormationTest extends AbstractCmdLineRealAppTestCase 
 
     /* (non-Javadoc)
      * @see org.astrogrid.applications.commandline.AbstractCmdLineAppTestCase#buildTool()
+     * 
      */
-    protected Tool buildTool() throws Exception {
+    protected Tool buildTool(String blah) throws Exception {
  
         ApplicationInterface interf = testAppDescr.getInterface("simple");
         assertNotNull(interf);
