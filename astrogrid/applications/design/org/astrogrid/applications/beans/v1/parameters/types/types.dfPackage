@@ -6,6 +6,18 @@ package id2eivadsekfnt0dsekg6n1;
 @__modelType diagram 
 */
 class diagram {
+/**
+@__ref <oiref:java#Class#org.astrogrid.applications.beans.v1.parameters.types.ParameterTypesDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}
+/**
+@__ref <oiref:java#Class#org.astrogrid.applications.beans.v1.parameters.types.ParameterTypes:oiref><oihard>
+@__modelType reference 
+*/
+class reference1 {
+}
 }/**
 @__tags
 @shapeType ClassDiagram 

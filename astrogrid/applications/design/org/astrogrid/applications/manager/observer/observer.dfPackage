@@ -1,0 +1,47 @@
+package id2ioj4dxomlr2ddxony5iu;
+
+/**
+@version 2.0
+@physicalPackage
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:java#Class#org.astrogrid.applications.manager.observer.RemoteProgressListener:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.manager.observer.AbstractResultsListener:oiref><oihard>
+@__modelType reference 
+*/
+class reference22 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.manager.observer.AbstractProgressListener:oiref><oihard>
+@__modelType reference 
+*/
+class reference23 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.manager.observer.RemoteResultsListener:oiref><oihard>
+@__modelType reference 
+*/
+class reference24 {
+}}/**
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:java#Class#org.astrogrid.applications.manager.observer.AbstractProgressListener:oiref>=20,10,168,155,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.manager.observer.RemoteResultsListener:oiref>=219,210,174,140,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.manager.observer.AbstractResultsListener:oiref>=219,10,174,140,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.manager.observer.RemoteProgressListener:oiref>=10,225,189,155,1:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.applications.manager.observer.RemoteResultsListener#org.astrogrid.applications.manager.observer.AbstractResultsListener:oiref>=306,210,306,150:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.applications.manager.observer.RemoteProgressListener#org.astrogrid.applications.manager.observer.AbstractProgressListener:oiref>=104,225,104,165:oigroup> 
+*/
+class __positions {
+}

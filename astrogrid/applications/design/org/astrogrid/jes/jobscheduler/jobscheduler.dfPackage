@@ -7,20 +7,10 @@ package id42p5mdneligaydneq3a5j;
 */
 class diagram {
 /**
-@__ref <oiref:java#Class#org.astrogrid.jes.jobscheduler.ScheduleRequestDD:oiref><oihard>
-@__modelType reference 
-*/
-class reference {
-}/**
 @__ref <oiref:java#Class#org.astrogrid.jes.jobscheduler.JobScheduler:oiref><oihard>
 @__modelType reference 
 */
 class reference99 {
-}/**
-@__ref <oiref:java#Class#org.astrogrid.jes.jobscheduler.JobSchedulerException:oiref><oihard>
-@__modelType reference 
-*/
-class reference100 {
 }/**
 @__ref <oiref:design#Class#id4cdtadsekfnt0dsekg6vd.diagram:oiref><oihard>
 @__modelType reference
@@ -45,7 +35,20 @@ class reference35 {
 @__fqn <oiref:#Package#org.astrogrid.jes.jobscheduler.dispatcher:oiref> 
 */
 class reference48 {
-}}/**
+}
+/**
+@__ref <oiref:java#Class#org.astrogrid.jes.jobscheduler.Locator:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}
+/**
+@__ref <oiref:java#Class#org.astrogrid.jes.jobscheduler.Dispatcher:oiref><oihard>
+@__modelType reference 
+*/
+class reference5 {
+}
+}/**
 @__tags
 @shapeType ClassDiagram 
 */

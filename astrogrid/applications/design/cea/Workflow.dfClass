@@ -1,0 +1,114 @@
+package idh546jdxoxp5d9dxoxsvcl;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:java#Class#org.astrogrid.workflow.beans.v1.Workflow:oiref><oihard>
+@__modelType reference
+@__imported
+@hideOperations
+@hideAttributes*/
+class reference {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.community.beans.v1.Credentials:oiref><oihard>
+@__modelType reference
+@__imported
+@hideOperations
+@hideAttributes 
+*/
+class reference1 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.workflow.beans.v1.Sequence:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference2 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.workflow.beans.v1.execution.JobExecutionRecord:oiref><oihard>
+@__modelType reference
+@__imported
+@hideOperations 
+*/
+class reference3 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.workflow.beans.v1.AbstractActivity:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference49 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.workflow.beans.v1.ActivityContainer:oiref><oihard>
+@__modelType reference
+@__imported
+@hideOperations 
+*/
+class reference50 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.workflow.beans.v1.Flow:oiref><oihard>
+@__modelType reference
+@__imported
+@hideOperations 
+*/
+class reference51 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.workflow.beans.v1.Step:oiref><oihard>
+@__modelType reference
+@__imported
+@hideOperations 
+*/
+class reference52 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.workflow.beans.v1.Tool:oiref><oihard>
+@__modelType reference
+@__imported
+@hideOperations 
+*/
+class reference53 {
+}/**
+@__ref <oiref:java#Class#cea.Output:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference4 {
+}/**
+@__ref <oiref:java#Class#cea.Input:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference6 {
+}}/**
+
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:java#Extends#org.astrogrid.workflow.beans.v1.Flow#org.astrogrid.workflow.beans.v1.ActivityContainer:oiref>=110,739,296,469:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.execution.JobExecutionRecord:oiref>=230,739,200,153,1:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.workflow.beans.v1.Sequence#org.astrogrid.workflow.beans.v1.ActivityContainer:oiref>=550,739,363,519,363,469:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.workflow.beans.v1.Workflow#_credentials:oiref>=540,1089,620,1089:oigroup>
+<oigroup:<oiref:java#Class#cea.Output:oiref>=1070,10,200,332,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.community.beans.v1.Credentials:oiref>=620,1007,200,165,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.Step:oiref>=850,316,200,363,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.workflow.beans.v1.Step#_tool:oiref>=850,457,770,457:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.Sequence:oiref>=450,739,200,208,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.AbstractActivity:oiref>=540,10,200,246,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.workflow.beans.v1.Workflow#_jobExecutionRecord:oiref>=370,1007,370,892:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.Flow:oiref>=10,739,200,115,1:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.workflow.beans.v1.Step#org.astrogrid.workflow.beans.v1.AbstractActivity:oiref>=950,316,673,256:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.workflow.beans.v1.Workflow#_sequence:oiref>=495,1007,495,947:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.ActivityContainer:oiref>=230,316,200,153,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.Workflow:oiref>=340,1007,200,225,1:oigroup>
+<oigroup:<oiref:java#Class#cea.Input:oiref>=840,710,200,332,1:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.workflow.beans.v1.ActivityContainer#org.astrogrid.workflow.beans.v1.AbstractActivity:oiref>=330,316,606,256:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.workflow.beans.v1.Tool:oiref>=450,316,320,283,0:oigroup>
+*/
+class __positions {
+}

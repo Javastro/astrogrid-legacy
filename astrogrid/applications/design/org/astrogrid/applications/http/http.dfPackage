@@ -1,0 +1,34 @@
+package idhgv2pdxomlr2ddxony4v6;
+
+/**
+@version 2.0
+@physicalPackage
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id4w7mxdxomlr2ddxony4y9.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.applications.http.registry:oiref> 
+*/
+class reference {
+}/**
+@__ref <oiref:design#Class#idjgs95dxomlr2ddxony4wp.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.applications.http.exceptions:oiref> 
+*/
+class reference67 {
+}}/**
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions 
+*/
+class __positions {
+}

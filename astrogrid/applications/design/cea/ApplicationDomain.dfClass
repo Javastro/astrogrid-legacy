@@ -1,0 +1,121 @@
+package id9j75adxoo2um2dxotpenz;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:java#Class#cea.Application:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference {
+}/**
+@__ref <oiref:java#Class#cea.BaseParameterValue:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference1 {
+}/**
+@__ref <oiref:java#Class#cea.Interface:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference3 {
+}/**
+@__ref <oiref:java#Class#cea.InputParameterValue:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference5 {
+}/**
+@__ref <oiref:java#Class#cea.OutputParameterValue:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference8 {
+}/**
+@__ref <oiref:design#Class#id9j75adxoo2um2dxotpenz.node:oiref><oihard>
+@__modelType reference 
+*/
+class reference9 {
+}/**
+@__ref <oiref:design#Class#id9j75adxoo2um2dxotpenz.node10:oiref><oihard>
+@__modelType reference 
+*/
+class reference11 {
+}/**
+@__ref <oiref:design#Class#id9j75adxoo2um2dxotpenz.node12:oiref><oihard>
+@__modelType reference 
+*/
+class reference13 {
+}}/**
+
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:java#Class#cea.Interface:oiref>=510,160,102,112,1:oigroup>
+<oigroup:<oiref:java#Class#cea.Application:oiref>=163,124,257,176,0:oigroup>
+<oigroup:<oiref:design#Class#id9j75adxoo2um2dxotpenz.node:oiref>=990,310,208,70,0:oigroup>
+<oigroup:<oiref:java#Class#cea.InputParameterValue:oiref>=730,100,141,81,1:oigroup>
+<oigroup:<oiref:design#Class#id9j75adxoo2um2dxotpenz.node12:oiref>=483,337,177,83,0:oigroup>
+<oigroup:Composite#supplierCardinality#MemberLink#<oiref:java#Member#cea.Application#lnkInterface:oiref>=500,216,22,15,0,0.0,-1.0:oigroup>
+<oigroup:<oiref:design#Class#id9j75adxoo2um2dxotpenz.node10:oiref>=36,13,219,40,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#cea.Interface#lnkOutputParameterValue:oiref>=612,252,730,276:oigroup>
+<oigroup:<oiref:java#Class#cea.BaseParameterValue:oiref>=1000,140,153,142,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#cea.Interface#lnkInputParameterValue:oiref>=612,177,730,177:oigroup>
+<oigroup:<oiref:java#Member#cea.Application#init#(##)#:oiref>=180,170,235,15,1:oigroup>
+<oigroup:<oiref:java#Extends#cea.InputParameterValue#cea.BaseParameterValue:oiref>=871,175,1000,175:oigroup>
+<oigroup:<oiref:java#Extends#cea.OutputParameterValue#cea.BaseParameterValue:oiref>=882,276,1000,230:oigroup>
+<oigroup:Composite#supplierCardinality#MemberLink#<oiref:java#Member#cea.Interface#lnkInputParameterValue:oiref>=720,177,22,15,0,0.0,-1.0:oigroup>
+<oigroup:<oiref:java#Class#cea.OutputParameterValue:oiref>=730,240,152,81,1:oigroup>
+<oigroup:Composite#supplierCardinality#MemberLink#<oiref:java#Member#cea.Interface#lnkOutputParameterValue:oiref>=719,276,22,15,0,-0.19930916,-0.97993666:oigroup>
+<oigroup:<oiref:java#Extends#cea.BaseParameterValue#cea.OutputParameterValue:oiref>=1036,268,778,306:oigroup>
+<oigroup:<oiref:design#Class#id9j75adxoo2um2dxotpenz.node12.link:oiref>=561,337,561,272:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#cea.Application#lnkInterface:oiref>=420,216,510,216:oigroup>
+<oigroup:<oiref:design#Class#id9j75adxoo2um2dxotpenz.node.link:oiref>=1076,310,1076,282:oigroup>
+<oigroup:BeanProperty#<oiref:java#Member#cea.Application#getName#(##)#:oiref>=180,150,235,15,1:oigroup>
+*/
+class __positions {
+}/**
+@shapeType Note
+@__modelType node
+@name Note1
+@text An indirect parameter indicates that the value is a pointer to the true value for the parameter 
+*/
+class node {
+/**
+@shapeType NoteLink
+@__modelType link
+@__ref <oiref:java#Class#cea.BaseParameterValue:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Note
+@__modelType node
+@name Note2
+@text Domain Model for an Application 
+*/
+class node10 {
+}/**
+@shapeType Note
+@__modelType node
+@name Note3
+@text The interface for an application is merely a 
+collection of parameters 
+*/
+class node12 {
+/**
+@shapeType NoteLink
+@__modelType link
+@__ref <oiref:java#Class#cea.Interface:oiref><oihard> 
+*/
+class link {
+}}

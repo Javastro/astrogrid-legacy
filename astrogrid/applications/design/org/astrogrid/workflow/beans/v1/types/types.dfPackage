@@ -6,7 +6,17 @@ package id44p3ddsekfnt0dsekg7gf;
 @__modelType diagram 
 */
 class diagram {
+/**
+@__ref <oiref:java#Class#org.astrogrid.workflow.beans.v1.types.JoinTypeDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
 }/**
+@__ref <oiref:java#Class#org.astrogrid.workflow.beans.v1.types.JoinType:oiref><oihard>
+@__modelType reference 
+*/
+class reference48 {
+}}/**
 @__tags
 @shapeType ClassDiagram 
 */

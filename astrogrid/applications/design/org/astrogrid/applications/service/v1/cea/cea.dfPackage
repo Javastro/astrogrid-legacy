@@ -12,6 +12,36 @@ class diagram {
 @__fqn <oiref:#Package#org.astrogrid.applications.service.v1.cea.impl:oiref> 
 */
 class reference {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.service.v1.cea.CommonExecutionConnectorService:oiref><oihard>
+@__modelType reference 
+*/
+class reference25 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.service.v1.cea.CommonExecutionConnectorServiceSoapBindingImpl:oiref><oihard>
+@__modelType reference 
+*/
+class reference26 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.service.v1.cea.CeaFault:oiref><oihard>
+@__modelType reference 
+*/
+class reference27 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.service.v1.cea.CommonExecutionConnector:oiref><oihard>
+@__modelType reference 
+*/
+class reference28 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.service.v1.cea.CommonExecutionConnectorServiceLocator:oiref><oihard>
+@__modelType reference 
+*/
+class reference29 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.service.v1.cea.CommonExecutionConnectorServiceSoapBindingStub:oiref><oihard>
+@__modelType reference 
+*/
+class reference30 {
 }}/**
 @__tags
 @shapeType ClassDiagram 
@@ -22,7 +52,16 @@ class __tags {
 */
 class __options {
 }/**
-@__positions 
+@__positions <oigroup:<oiref:java#Class#org.astrogrid.applications.service.v1.cea.CeaFault:oiref>=663,10,177,163,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.service.v1.cea.CommonExecutionConnectorServiceLocator:oiref>=10,233,200,261,1:oigroup>
+<oigroup:<oiref:design#Class#id4h7v8dsekfnt0dsekg6fn.diagram:oiref>=560,10,83,94,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.service.v1.cea.CommonExecutionConnectorServiceSoapBindingImpl:oiref>=230,280,410,287,0:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.service.v1.cea.CommonExecutionConnectorService:oiref>=10,10,200,163,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.service.v1.cea.CommonExecutionConnector:oiref>=340,10,200,237,1:oigroup>
+<oigroup:<oiref:java#Implements#org.astrogrid.applications.service.v1.cea.CommonExecutionConnectorServiceSoapBindingImpl#org.astrogrid.applications.service.v1.cea.CommonExecutionConnector:oiref>=440,280,440,247:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.service.v1.cea.CommonExecutionConnectorServiceSoapBindingStub:oiref>=450,300,410,357,0:oigroup>
+<oigroup:<oiref:java#Implements#org.astrogrid.applications.service.v1.cea.CommonExecutionConnectorServiceSoapBindingStub#org.astrogrid.applications.service.v1.cea.CommonExecutionConnector:oiref>=495,300,495,247:oigroup>
+<oigroup:<oiref:java#Implements#org.astrogrid.applications.service.v1.cea.CommonExecutionConnectorServiceLocator#org.astrogrid.applications.service.v1.cea.CommonExecutionConnectorService:oiref>=110,233,110,173:oigroup> 
 */
 class __positions {
 }

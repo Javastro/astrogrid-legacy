@@ -1,0 +1,572 @@
+package id9rbecdxqecbjqdxqick9s;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeidjaw7hdxqecbjqdxqickdi:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}
+/**
+@__ref <oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeid5w3modxqecbjqdxqickff:oiref><oihard>
+@__modelType reference 
+*/
+class reference41 {
+}
+/**
+@__ref <oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeid8rdfbdxqecbjqdxqickhc:oiref><oihard>
+@__modelType reference 
+*/
+class reference42 {
+}
+/**
+@__ref <oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeid4b8vbdxqecbjqdxqickj9:oiref><oihard>
+@__modelType reference 
+*/
+class reference43 {
+}
+/**
+@__ref <oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeidhdsludxqecbjqdxqickl2:oiref><oihard>
+@__modelType reference 
+*/
+class reference44 {
+}
+/**
+@__ref <oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeidixe7jdxqecbjqdxqicknl:oiref><oihard>
+@__modelType reference 
+*/
+class reference45 {
+}
+/**
+@__ref <oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeid96g1pdxqecbjqdxqickph:oiref><oihard>
+@__modelType reference 
+*/
+class reference46 {
+}
+/**
+@__ref <oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeid1su59dxqecbjqdxqickrf:oiref><oihard>
+@__modelType reference 
+*/
+class reference47 {
+}
+/**
+@__ref <oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeidfzgldxqecbjqdxqickwe:oiref><oihard>
+@__modelType reference 
+*/
+class reference48 {
+}
+/**
+@__ref <oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeidbp06jdxqecbjqdxqicl1y:oiref><oihard>
+@__modelType reference 
+*/
+class reference49 {
+}
+/**
+@__ref <oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeid85aaudxqecbjqdxqicl80:oiref><oihard>
+@__modelType reference 
+*/
+class reference50 {
+}
+/**
+@__ref <oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeidcgegudxqecbjqdxqicldr:oiref><oihard>
+@__modelType reference 
+*/
+class reference51 {
+}
+/**
+@__ref <oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeid988v0dxqecbjqdxqicliw:oiref><oihard>
+@__modelType reference 
+*/
+class reference52 {
+}
+/**
+@__ref <oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeid4k5vndxqecbjqdxqiclx8:oiref><oihard>
+@__modelType reference 
+*/
+class reference53 {
+}
+}/**
+Documentation : this file captures some of the ideas used in the WSDL-like parameter definition files, but as yet is not used for validation
+Documentation : the baseparameter definition is mimiced by the contents of a part element in the wsdl
+Documentation : important types are defined here that would have special significance....
+@__tags
+@shapeType xmlStructureDiagram
+@__update.extended
+@format XSD Schema
+@filename /home/pah/AGParameterDefinition.xsd
+@encoding UTF-8
+@version 1.0 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeid4k5vndxqecbjqdxqiclx8:oiref>=455,10,44,60,1:oigroup>
+<oigroup:<oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeid4b8vbdxqecbjqdxqickj9:oiref>=305,290,83,63,1:oigroup>
+<oigroup:<oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeid988v0dxqecbjqdxqicliw:oiref>=132,10,44,60,1:oigroup>
+<oigroup:<oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeid8rdfbdxqecbjqdxqickhc:oiref>=173,290,112,75,1:oigroup>
+<oigroup:<oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeid85aaudxqecbjqdxqicl80:oiref>=307,10,43,60,1:oigroup>
+<oigroup:<oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeidfzgldxqecbjqdxqickwe:oiref>=370,10,65,60,1:oigroup>
+<oigroup:<oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeid1su59dxqecbjqdxqickrf.linkidiaxn9dxqecbjqdxqicm20:oiref>=480,139,480,70:oigroup>
+<oigroup:<oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeid96g1pdxqecbjqdxqickph.linkid5ucvfdxqecbjqdxqicldd:oiref>=258,139,329,70:oigroup>
+<oigroup:<oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeidixe7jdxqecbjqdxqicknl:oiref>=305,390,95,63,1:oigroup>
+<oigroup:<oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeid96g1pdxqecbjqdxqickph.linkidhognidxqecbjqdxqiclii:oiref>=228,139,228,70:oigroup>
+<oigroup:<oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeidjaw7hdxqecbjqdxqickdi:oiref>=10,290,111,63,1:oigroup>
+<oigroup:<oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeidhdsludxqecbjqdxqickl2:oiref>=408,290,75,63,1:oigroup>
+<oigroup:<oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeid96g1pdxqecbjqdxqickph.linkid1qb0udxqecbjqdxqiclnq:oiref>=203,139,154,70:oigroup>
+<oigroup:<oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeid1su59dxqecbjqdxqickrf:oiref>=423,139,108,103,1:oigroup>
+<oigroup:<oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeid96g1pdxqecbjqdxqickph.linkid85d0cdxqecbjqdxqicl7l:oiref>=179,139,61,70:oigroup>
+<oigroup:<oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeid96g1pdxqecbjqdxqickph:oiref>=155,139,165,118,1:oigroup>
+<oigroup:<oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeidbp06jdxqecbjqdxqicl1y:oiref>=10,10,102,60,1:oigroup>
+<oigroup:<oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeid96g1pdxqecbjqdxqickph.linkidh9w7wdxqecbjqdxqicl1m:oiref>=289,139,402,70:oigroup>
+<oigroup:<oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeid5w3modxqecbjqdxqickff:oiref>=10,390,143,75,1:oigroup>
+<oigroup:<oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeidcgegudxqecbjqdxqicldr:oiref>=196,10,91,60,1:oigroup> 
+*/
+class __positions {
+}
+/**
+Documentation : The list of possible parameter types
+Documentation : The enumeration values should have the namespace appended? I have removed them to make castor generate nicer objects
+@shapeType xmlDataType
+@__modelType node
+@name parameterTypes
+@id
+@ref <oiref:design#Class#id4x27acgvzg7thcgvzgsqi.node17:oiref>
+@derivationType restriction
+@enumeration integer
+@enumeration real
+@enumeration complex
+@enumeration double
+@enumeration text
+@enumeration boolean
+@enumeration anyURI
+@enumeration anyXML
+@enumeration VOTable
+@enumeration RA
+@enumeration Dec
+@enumeration ADQL
+@enumeration binary
+@enumeration FITS
+@refFrom <oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeid96g1pdxqecbjqdxqickph.nodeide3rxmdxqecbjqdxqiclqe:oiref> 
+*/
+class nodeidjaw7hdxqecbjqdxqickdi {
+}
+/**
+Documentation : should really reference the XHTML shema, but just did this for convienience
+@shapeType xmlComplexType
+@__modelType node
+@name xhtmlDocumentation
+@id
+@ref <oiref:design#Class#id4x27acgvzg7thcgvzgsqi.node2:oiref>
+@derivationType extension
+@compositor sequence
+@block <none>
+@final <none>
+@refFrom <oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeidbp06jdxqecbjqdxqicl1y:oiref> 
+*/
+class nodeid5w3modxqecbjqdxqickff {
+}
+/**
+Documentation : what documentation can be
+@shapeType xmlComplexType
+@__modelType node
+@name tDocumentation
+@id
+@ref <oiref:design#Class#id4x27acgvzg7thcgvzgsqi.node35:oiref>
+@derivationType restriction
+@compositor sequence
+@block <none>
+@final <none> 
+*/
+class nodeid8rdfbdxqecbjqdxqickhc {
+}
+/**
+@shapeType xmlDataType
+@__modelType node
+@name java-param
+@id
+@ref <oiref:design#Class#id4x27acgvzg7thcgvzgsqi.node4:oiref>
+@derivationType restriction
+@pattern [a-zA-Z][a-zA-Z0-9]* 
+*/
+class nodeid4b8vbdxqecbjqdxqickj9 {
+}
+/**
+@shapeType xmlDataType
+@__modelType node
+@name java-class
+@id
+@ref <oiref:design#Class#id4x27acgvzg7thcgvzgsqi.node4:oiref>
+@derivationType restriction
+@pattern ([a-zA-Z0-9]+\.)*[a-zA-Z][a-zA-Z0-9]* 
+*/
+class nodeidhdsludxqecbjqdxqickl2 {
+}
+/**
+@shapeType xmlDataType
+@__modelType node
+@name java-package
+@id
+@ref <oiref:design#Class#id4x27acgvzg7thcgvzgsqi.node4:oiref>
+@derivationType restriction
+@pattern ([a-zA-Z0-9]+\.)*[a-zA-Z0-9]* 
+*/
+class nodeidixe7jdxqecbjqdxqicknl {
+}
+/**
+@shapeType xmlComplexType
+@__modelType node
+@name BaseParameterDefinition
+@id
+@ref <oiref:design#Class#id4x27acgvzg7thcgvzgsqi.node35:oiref>
+@derivationType restriction
+@compositor all
+@block <none>
+@final <none> 
+*/
+class nodeid96g1pdxqecbjqdxqickph {
+/**
+@shapeType xmlElementRef
+@__modelType node
+@name xmlElementRef1
+@ref <oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeidfzgldxqecbjqdxqickwe:oiref>
+@minoccurs 0
+@maxoccurs 1
+@index 1
+@refFrom <oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeid96g1pdxqecbjqdxqickph.linkidh9w7wdxqecbjqdxqicl1m:oiref> 
+*/
+class nodeide3gmzdxqecbjqdxqickz6 {
+}
+/**
+@shapeType xmlReferenceLink
+@__modelType link
+@__ref <oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeidfzgldxqecbjqdxqickwe:oiref><oihard>
+@ref <oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeid96g1pdxqecbjqdxqickph.nodeide3gmzdxqecbjqdxqickz6:oiref> 
+*/
+class linkidh9w7wdxqecbjqdxqicl1m {
+}
+/**
+@shapeType xmlElementRef
+@__modelType node
+@name xmlElementRef2
+@ref <oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeidbp06jdxqecbjqdxqicl1y:oiref>
+@minoccurs 0
+@maxoccurs 1
+@index 2
+@refFrom <oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeid96g1pdxqecbjqdxqickph.linkid85d0cdxqecbjqdxqicl7l:oiref> 
+*/
+class nodeid5i8hxdxqecbjqdxqicl4q {
+}
+/**
+@shapeType xmlReferenceLink
+@__modelType link
+@__ref <oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeidbp06jdxqecbjqdxqicl1y:oiref><oihard>
+@ref <oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeid96g1pdxqecbjqdxqickph.nodeid5i8hxdxqecbjqdxqicl4q:oiref> 
+*/
+class linkid85d0cdxqecbjqdxqicl7l {
+}
+/**
+@shapeType xmlElementRef
+@__modelType node
+@name xmlElementRef3
+@ref <oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeid85aaudxqecbjqdxqicl80:oiref>
+@minoccurs 0
+@maxoccurs 1
+@index 3
+@refFrom <oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeid96g1pdxqecbjqdxqickph.linkid5ucvfdxqecbjqdxqicldd:oiref> 
+*/
+class nodeid16acldxqecbjqdxqiclb9 {
+}
+/**
+@shapeType xmlReferenceLink
+@__modelType link
+@__ref <oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeid85aaudxqecbjqdxqicl80:oiref><oihard>
+@ref <oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeid96g1pdxqecbjqdxqickph.nodeid16acldxqecbjqdxqiclb9:oiref> 
+*/
+class linkid5ucvfdxqecbjqdxqicldd {
+}
+/**
+@shapeType xmlElementRef
+@__modelType node
+@name xmlElementRef4
+@ref <oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeidcgegudxqecbjqdxqicldr:oiref>
+@minoccurs 0
+@maxoccurs 1
+@index 4
+@refFrom <oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeid96g1pdxqecbjqdxqickph.linkidhognidxqecbjqdxqiclii:oiref> 
+*/
+class nodeid407e0dxqecbjqdxqiclg4 {
+}
+/**
+@shapeType xmlReferenceLink
+@__modelType link
+@__ref <oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeidcgegudxqecbjqdxqicldr:oiref><oihard>
+@ref <oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeid96g1pdxqecbjqdxqickph.nodeid407e0dxqecbjqdxqiclg4:oiref> 
+*/
+class linkidhognidxqecbjqdxqiclii {
+}
+/**
+@shapeType xmlElementRef
+@__modelType node
+@name xmlElementRef5
+@ref <oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeid988v0dxqecbjqdxqicliw:oiref>
+@minoccurs 0
+@maxoccurs 1
+@index 5
+@refFrom <oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeid96g1pdxqecbjqdxqickph.linkid1qb0udxqecbjqdxqiclnq:oiref> 
+*/
+class nodeidjn1iodxqecbjqdxqicll7 {
+}
+/**
+@shapeType xmlReferenceLink
+@__modelType link
+@__ref <oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeid988v0dxqecbjqdxqicliw:oiref><oihard>
+@ref <oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeid96g1pdxqecbjqdxqickph.nodeidjn1iodxqecbjqdxqicll7:oiref> 
+*/
+class linkid1qb0udxqecbjqdxqiclnq {
+}
+/**
+@shapeType xmlAttribute
+@__modelType node
+@name name
+@form unqualified
+@id
+@ref <oiref:design#Class#id4x27acgvzg7thcgvzgsqi.node2:oiref>
+@derivationType restriction
+@occurs required
+@value 
+*/
+class nodeidgbw7tdxqecbjqdxqiclo2 {
+}
+/**
+@shapeType xmlAttribute
+@__modelType node
+@name type
+@form unqualified
+@id
+@ref <oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeidjaw7hdxqecbjqdxqickdi:oiref>
+@derivationType restriction
+@occurs required
+@value 
+*/
+class nodeide3rxmdxqecbjqdxqiclqe {
+}
+/**
+@shapeType xmlAttribute
+@__modelType node
+@name accept-encodings
+@form unqualified
+@id
+@ref <oiref:design#Class#id1e9yecgw0vkwvcgw111yy.node10:oiref>
+@derivationType restriction
+@occurs optional
+@value 
+*/
+class nodeiddnr4edxqecbjqdxqiclst {
+}
+/**
+@shapeType xmlAttribute
+@__modelType node
+@name sub-type
+@form unqualified
+@id
+@ref <oiref:design#Class#id4x27acgvzg7thcgvzgsqi.node2:oiref>
+@derivationType restriction
+@occurs optional
+@value 
+*/
+class nodeid6kpadxqecbjqdxqiclux {
+}
+}
+/**
+Documentation : Defines what a parameterValue can contain - for the instance document
+@shapeType xmlComplexType
+@__modelType node
+@name parameterValue
+@id
+@ref <oiref:design#Class#id4x27acgvzg7thcgvzgsqi.node35:oiref>
+@derivationType restriction
+@compositor sequence
+@block <none>
+@final <none> 
+*/
+class nodeid1su59dxqecbjqdxqickrf {
+/**
+@shapeType xmlElementRef
+@__modelType node
+@name xmlElementRef6
+@ref <oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeid4k5vndxqecbjqdxqiclx8:oiref>
+@minoccurs 1
+@maxoccurs 1
+@index 1
+@refFrom <oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeid1su59dxqecbjqdxqickrf.linkidiaxn9dxqecbjqdxqicm20:oiref> 
+*/
+class nodeid7av2edxqecbjqdxqiclzw {
+}
+/**
+@shapeType xmlReferenceLink
+@__modelType link
+@__ref <oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeid4k5vndxqecbjqdxqiclx8:oiref><oihard>
+@ref <oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeid1su59dxqecbjqdxqickrf.nodeid7av2edxqecbjqdxqiclzw:oiref> 
+*/
+class linkidiaxn9dxqecbjqdxqicm20 {
+}
+/**
+@shapeType xmlAttribute
+@__modelType node
+@name name
+@form unqualified
+@id
+@ref <oiref:design#Class#id4x27acgvzg7thcgvzgsqi.node2:oiref>
+@derivationType restriction
+@occurs required
+@value 
+*/
+class nodeidauwjfdxqecbjqdxqicm2a {
+}
+/**
+@shapeType xmlAttribute
+@__modelType node
+@name encoding
+@form unqualified
+@id
+@ref <oiref:design#Class#id1e9yecgw0vkwvcgw111yy.node3:oiref>
+@derivationType restriction
+@occurs optional
+@value 
+*/
+class nodeid9kxq3dxqecbjqdxqicm4e {
+}
+/**
+@shapeType xmlAttribute
+@__modelType node
+@name indirect
+@form unqualified
+@id
+@ref <oiref:design#Class#id4x27acgvzg7thcgvzgsqi.node1:oiref>
+@derivationType restriction
+@occurs optional
+@value 
+*/
+class nodeidj201zdxqecbjqdxqicm6h {
+}
+}
+/**
+Documentation : The name that is to be used to display this parameter in te UI
+@shapeType xmlElement
+@__modelType node
+@name UI_Name
+@form unqualified
+@id
+@ref <oiref:design#Class#id4x27acgvzg7thcgvzgsqi.node2:oiref>
+@derivationType restriction
+@content empty
+@compositor sequence
+@occurs <none>
+@block <none>
+@final <none>
+@subst
+@refFrom <oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeid96g1pdxqecbjqdxqickph.nodeide3gmzdxqecbjqdxqickz6:oiref> 
+*/
+class nodeidfzgldxqecbjqdxqickwe {
+}
+/**
+Documentation : A long description of the parameter that might be displayed in the UI to help the user
+@shapeType xmlElement
+@__modelType node
+@name UI_Description
+@form unqualified
+@id
+@ref <oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeid5w3modxqecbjqdxqickff:oiref>
+@derivationType restriction
+@content empty
+@compositor sequence
+@occurs <none>
+@block <none>
+@final <none>
+@subst
+@refFrom <oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeid96g1pdxqecbjqdxqickph.nodeid5i8hxdxqecbjqdxqicl4q:oiref> 
+*/
+class nodeidbp06jdxqecbjqdxqicl1y {
+}
+/**
+Documentation : If the parameter has a UCD then use the reference here - it could help in workflow typing...
+@shapeType xmlElement
+@__modelType node
+@name UCD
+@form unqualified
+@id
+@ref <oiref:design#Class#id4x27acgvzg7thcgvzgsqi.node2:oiref>
+@derivationType restriction
+@content empty
+@compositor sequence
+@occurs <none>
+@block <none>
+@final <none>
+@subst
+@refFrom <oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeid96g1pdxqecbjqdxqickph.nodeid16acldxqecbjqdxqiclb9:oiref> 
+*/
+class nodeid85aaudxqecbjqdxqicl80 {
+}
+/**
+Documentation : a possible default for this type of parameter - should probably be xs:any, but castor/axis do not deal with this well
+@shapeType xmlElement
+@__modelType node
+@name DefaultValue
+@form unqualified
+@id
+@ref <oiref:design#Class#id4x27acgvzg7thcgvzgsqi.node2:oiref>
+@derivationType restriction
+@content empty
+@compositor sequence
+@occurs <none>
+@block <none>
+@final <none>
+@subst
+@refFrom <oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeid96g1pdxqecbjqdxqickph.nodeid407e0dxqecbjqdxqiclg4:oiref> 
+*/
+class nodeidcgegudxqecbjqdxqicldr {
+}
+/**
+Documentation : This would ideally be an enumeration of all the possible types of units?
+@shapeType xmlElement
+@__modelType node
+@name Units
+@form unqualified
+@id
+@ref <oiref:design#Class#id4x27acgvzg7thcgvzgsqi.node2:oiref>
+@derivationType restriction
+@content empty
+@compositor sequence
+@occurs <none>
+@block <none>
+@final <none>
+@subst
+@refFrom <oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeid96g1pdxqecbjqdxqickph.nodeidjn1iodxqecbjqdxqicll7:oiref> 
+*/
+class nodeid988v0dxqecbjqdxqicliw {
+}
+/**
+@shapeType xmlElement
+@__modelType node
+@name value
+@form unqualified
+@id
+@ref <oiref:design#Class#id4x27acgvzg7thcgvzgsqi.node2:oiref>
+@derivationType restriction
+@content empty
+@compositor sequence
+@occurs <none>
+@block <none>
+@final <none>
+@subst
+@refFrom <oiref:design#Class#id9rbecdxqecbjqdxqick9s.nodeid1su59dxqecbjqdxqickrf.nodeid7av2edxqecbjqdxqiclzw:oiref> 
+*/
+class nodeid4k5vndxqecbjqdxqiclx8 {
+}

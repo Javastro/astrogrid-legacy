@@ -59,41 +59,41 @@ class __options {
 @__positions 
 
 <oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node36.link42:oiref>=:oigroup>
-<oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node.link:oiref>=82,180,197,180:oigroup>
-<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node.link:oiref>=92,157,105,23,0,0.0,1.0:oigroup>
+<oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node.link:oiref>=82,180,191,180:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node.link:oiref>=92,165,97,15,0,0.0,1.0:oigroup>
 <oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node19.link22:oiref>=:oigroup>
 <oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node29.node:oiref>=882,817,14,20,1:oigroup>
 <oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node38.node:oiref>=628,446,14,50,1:oigroup>
-<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node19.link:oiref>=343,307,78,23,0,0.0,1.0:oigroup>
-<oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node31:oiref>=720,30,101,887,1:oigroup>
-<oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node31.node:oiref>=763,746,14,20,1:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node19.link:oiref>=343,315,76,15,0,0.0,1.0:oigroup>
+<oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node31:oiref>=720,30,90,887,1:oigroup>
+<oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node31.node:oiref>=758,746,14,20,1:oigroup>
 <oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node20.link40:oiref>=:oigroup>
 <oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node.link35:oiref>=:oigroup>
 <oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node36.link:oiref>=472,446,590,446:oigroup>
 <oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node19.node:oiref>=319,260,14,130,0:oigroup>
 <oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node29:oiref>=844,30,90,887,1:oigroup>
-<oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node20.link:oiref>=211,260,319,260:oigroup>
+<oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node20.link:oiref>=205,260,319,260:oigroup>
 <oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node34:oiref>=30,-20,129,40,0:oigroup>
 <oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node20.link21:oiref>=:oigroup>
-<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node36.link:oiref>=482,423,78,23,0,0.0,1.0:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node36.link:oiref>=482,431,76,15,0,0.0,1.0:oigroup>
 <oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node36.node49:oiref>=458,441,14,65,1:oigroup>
 <oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node36:oiref>=420,295,90,622,1:oigroup>
-<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node20.link:oiref>=221,237,90,23,0,0.0,1.0:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node20.link:oiref>=215,245,87,15,0,0.0,1.0:oigroup>
 <oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node:oiref>=30,30,90,887,1:oigroup>
-<oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node20.link50:oiref>=211,746,763,746:oigroup>
-<oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node20:oiref>=151,30,107,887,1:oigroup>
+<oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node20.link50:oiref>=205,746,758,746:oigroup>
+<oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node20:oiref>=151,30,95,887,1:oigroup>
 <oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node36.node:oiref>=458,330,14,50,1:oigroup>
 <oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node38:oiref>=590,411,90,506,1:oigroup>
-<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node20.link50:oiref>=221,723,80,23,0,0.0,1.0:oigroup>
-<oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node20.node:oiref>=197,180,14,647,0:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node20.link50:oiref>=215,731,77,15,0,0.0,1.0:oigroup>
+<oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node20.node:oiref>=191,180,14,647,0:oigroup>
 <oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node20.link52:oiref>=:oigroup>
-<oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node20.link48:oiref>=211,441,458,441:oigroup>
-<oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node20.link53:oiref>=211,817,882,817:oigroup>
+<oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node20.link48:oiref>=205,441,458,441:oigroup>
+<oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node20.link53:oiref>=205,817,882,817:oigroup>
 <oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node19:oiref>=281,30,90,887,1:oigroup>
 <oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node20.link54:oiref>=:oigroup>
-<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node20.link48:oiref>=221,418,172,23,0,0.0,1.0:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node20.link48:oiref>=215,426,162,15,0,0.0,1.0:oigroup>
 <oigroup:<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node19.link:oiref>=333,330,420,330:oigroup>
-<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node20.link53:oiref>=221,794,107,23,0,0.0,1.0:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id2cgv5df3jvcx8df3mp48r.node20.link53:oiref>=215,802,100,15,0,0.0,1.0:oigroup>
 
 
  

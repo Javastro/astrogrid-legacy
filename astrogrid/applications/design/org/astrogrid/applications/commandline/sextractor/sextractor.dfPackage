@@ -7,7 +7,7 @@ package id2pgwkdq6d6uu9dq6d7aoa;
 */
 class diagram {
 /**
-@__ref <oiref:java#Class#org.astrogrid.applications.commandline.sextractor.OutputParams:oiref><oihard>
+@__ref <oiref:java#Class#org.astrogrid.applications.commandline.sextractor.SExtractor:oiref><oihard>
 @__modelType reference 
 */
 class reference {
@@ -15,12 +15,12 @@ class reference {
 @__ref <oiref:java#Class#org.astrogrid.applications.commandline.sextractor.ASCII2VOTableConverter:oiref><oihard>
 @__modelType reference 
 */
-class reference19 {
+class reference47 {
 }/**
-@__ref <oiref:java#Class#org.astrogrid.applications.commandline.sextractor.SExtractor:oiref><oihard>
+@__ref <oiref:java#Class#org.astrogrid.applications.commandline.sextractor.OutputParams:oiref><oihard>
 @__modelType reference 
 */
-class reference20 {
+class reference48 {
 }}/**
 @__tags
 @shapeType ClassDiagram 

@@ -12,7 +12,15 @@ class diagram {
 @__fqn <oiref:#Package#org.astrogrid.registry.beans:oiref> 
 */
 class reference {
-}}/**
+}
+/**
+@__ref <oiref:design#Class#idgsgj6dxq0o8v8dxq3bg9i.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.registry.client:oiref> 
+*/
+class reference8 {
+}
+}/**
 @__tags
 @shapeType ClassDiagram 
 */

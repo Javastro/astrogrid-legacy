@@ -6,7 +6,57 @@ package idmi84dsekfnt0dsekg7ft;
 @__modelType diagram 
 */
 class diagram {
+/**
+@__ref <oiref:java#Class#org.astrogrid.workflow.beans.v1.execution.JobExecutionRecord:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
 }/**
+@__ref <oiref:java#Class#org.astrogrid.workflow.beans.v1.execution.ExtensionDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference37 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.workflow.beans.v1.execution.StepExecutionRecordDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference38 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord:oiref><oihard>
+@__modelType reference 
+*/
+class reference39 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.workflow.beans.v1.execution.JobURNDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference40 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.workflow.beans.v1.execution.JobURN:oiref><oihard>
+@__modelType reference 
+*/
+class reference41 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.workflow.beans.v1.execution.JobExecutionRecordDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference42 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.workflow.beans.v1.execution.ExecutionRecordType:oiref><oihard>
+@__modelType reference 
+*/
+class reference43 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.workflow.beans.v1.execution.Extension:oiref><oihard>
+@__modelType reference 
+*/
+class reference44 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.workflow.beans.v1.execution.ExecutionRecordTypeDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference45 {
+}}/**
 @__tags
 @shapeType ClassDiagram 
 */

@@ -1,0 +1,270 @@
+package id2cl1ndxoxp5d9dxp0tob8;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:java#Class#jes.Sequence:oiref><oihard>
+@__modelType reference
+@__imported
+@backgroundColor 255,153,153 
+*/
+class reference {
+}/**
+@__ref <oiref:java#Class#jes.Workflow:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference93 {
+}/**
+@__ref <oiref:java#Class#jes.AbstractActivity:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference95 {
+}/**
+@__ref <oiref:java#Class#jes.JobExecutionRecord:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference97 {
+}/**
+@__ref <oiref:java#Class#jes.Credentials:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference99 {
+}/**
+@__ref <oiref:java#Class#jes.Flow:oiref><oihard>
+@__modelType reference
+@__imported
+@backgroundColor 255,153,153 
+*/
+class reference101 {
+}/**
+@__ref <oiref:java#Class#jes.ActivityContainer:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference103 {
+}/**
+@__ref <oiref:java#Class#jes.Tool:oiref><oihard>
+@__modelType reference
+@__imported
+@backgroundColor 153,255,153 
+*/
+class reference105 {
+}/**
+@__ref <oiref:java#Class#jes.Step:oiref><oihard>
+@__modelType reference
+@__imported
+@backgroundColor 255,153,153 
+*/
+class reference107 {
+}/**
+@__ref <oiref:java#Class#jes.Output:oiref><oihard>
+@__modelType reference
+@__imported
+@backgroundColor 153,255,153 
+*/
+class reference8 {
+}/**
+@__ref <oiref:java#Class#jes.Input:oiref><oihard>
+@__modelType reference
+@__imported
+@backgroundColor 153,255,153 
+*/
+class reference10 {
+}/**
+@__ref <oiref:design#Class#id2cl1ndxoxp5d9dxp0tob8.node:oiref><oihard>
+@__modelType reference 
+*/
+class reference11 {
+}/**
+@__ref <oiref:design#Class#id2cl1ndxoxp5d9dxp0tob8.node12:oiref><oihard>
+@__modelType reference 
+*/
+class reference13 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.beans.v1.parameters.ParameterValue:oiref><oihard>
+@__modelType reference
+@__imported
+@backgroundColor 153,255,153 
+*/
+class reference14 {
+}/**
+@__ref <oiref:design#Class#id2cl1ndxoxp5d9dxp0tob8.node15:oiref><oihard>
+@__modelType reference 
+*/
+class reference16 {
+}/**
+@__ref <oiref:design#Class#id2cl1ndxoxp5d9dxp0tob8.node17:oiref><oihard>
+@__modelType reference 
+*/
+class reference18 {
+}/**
+@__ref <oiref:design#Class#id2cl1ndxoxp5d9dxp0tob8.node19:oiref><oihard>
+@__modelType reference 
+*/
+class reference20 {
+}
+/**
+@__ref <oiref:design#Class#id2cl1ndxoxp5d9dxp0tob8.nodeidj56xwdxqecbjqdxqira8h:oiref><oihard>
+@__modelType reference 
+*/
+class reference54 {
+}
+/**
+@__ref <oiref:design#Class#id2cl1ndxoxp5d9dxp0tob8.nodeid7ww6ndxqecbjqdxqisprq:oiref><oihard>
+@__modelType reference 
+*/
+class reference55 {
+}
+}/**
+
+@__tags
+@shapeType ClassDiagram */
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:java#Class#jes.Credentials:oiref>=10,227,200,187,1:oigroup>
+<oigroup:<oiref:java#Extends#jes.Step#jes.AbstractActivity:oiref>=847,227,847,167:oigroup>
+<oigroup:<oiref:design#Class#id2cl1ndxoxp5d9dxp0tob8.node.link:oiref>=879,1107,879,937:oigroup>
+<oigroup:<oiref:java#Class#jes.AbstractActivity:oiref>=692,10,200,157,1:oigroup>
+<oigroup:<oiref:java#Class#jes.Input:oiref>=1022,227,200,257,1:oigroup>
+<oigroup:<oiref:design#Class#id2cl1ndxoxp5d9dxp0tob8.node19:oiref>=1041,63,227,40,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#jes.Flow#lnkStep:oiref>=900,810,900,686:oigroup>
+<oigroup:<oiref:java#Class#jes.JobExecutionRecord:oiref>=366,810,153,165,1:oigroup>
+<oigroup:Composite#supplierCardinality#MemberLink#<oiref:java#Member#jes.Sequence#lnkFlow:oiref>=814,894,30,15,0:oigroup>
+<oigroup:<oiref:java#Extends#jes.Sequence#jes.ActivityContainer:oiref>=605,810,605,431:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#jes.Sequence#lnkStep:oiref>=627,810,851,686:oigroup>
+<oigroup:<oiref:java#Class#jes.Workflow:oiref>=362,227,200,247,1:oigroup>
+<oigroup:<oiref:design#Class#id2cl1ndxoxp5d9dxp0tob8.nodeidj56xwdxqecbjqdxqira8h:oiref>=30,590,241,40,1:oigroup>
+<oigroup:<oiref:java#Class#jes.Tool:oiref>=963,810,200,202,1:oigroup>
+<oigroup:Composite#supplierCardinality#MemberLink#<oiref:java#Member#jes.Step#lnkTool:oiref>=965,805,16,15,0:oigroup>
+<oigroup:Composite#supplierCardinality#MemberLink#<oiref:java#Member#jes.Tool#lnkInput:oiref>=1087,489,32,15,0:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#jes.Flow#lnkSequence:oiref>=824,852,650,852:oigroup>
+<oigroup:<oiref:design#Class#id2cl1ndxoxp5d9dxp0tob8.node19.link:oiref>=1154,103,924,227:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#jes.Output#lnkParameterValue:oiref>=1386,810,1386,721:oigroup>
+<oigroup:Composite#clientRole#MemberLink#<oiref:java#Member#jes.Workflow#lnkCredentials:oiref>=357,335,34,15,0:oigroup>
+<oigroup:<oiref:java#Class#jes.Flow:oiref>=824,810,111,127,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#jes.Workflow#lnkJobExecutionRecord:oiref>=444,474,444,810:oigroup>
+<oigroup:<oiref:design#Class#id2cl1ndxoxp5d9dxp0tob8.node12.link:oiref>=594,1107,594,937:oigroup>
+<oigroup:Composite#supplierCardinality#MemberLink#<oiref:java#Member#jes.Output#lnkParameterValue:oiref>=1384,726,30,15,0:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#jes.Tool#lnkInput:oiref>=1089,810,1089,484:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#jes.Input#lnkParameterValue:oiref>=1222,412,1300,412:oigroup>
+<oigroup:<oiref:design#Class#id2cl1ndxoxp5d9dxp0tob8.node12:oiref>=413,1107,321,40,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.beans.v1.parameters.ParameterValue:oiref>=1300,340,200,381,1:oigroup>
+<oigroup:Composite#supplierCardinality#MemberLink#<oiref:java#Member#jes.Workflow#lnkJobExecutionRecord:oiref>=427,805,30,15,0:oigroup>
+<oigroup:Composite#supplierCardinality#MemberLink#<oiref:java#Member#jes.Flow#lnkStep:oiref>=898,691,30,15,0:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#jes.Workflow#lnkCredentials:oiref>=362,320,210,320:oigroup>
+<oigroup:<oiref:java#Extends#jes.Flow#jes.ActivityContainer:oiref>=862,810,693,536,693,431:oigroup>
+<oigroup:<oiref:design#Class#id2cl1ndxoxp5d9dxp0tob8.node15.link:oiref>=1203,1103,1063,1012:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#jes.Tool#lnkOutput:oiref>=1163,911,1272,911:oigroup>
+<oigroup:<oiref:java#Class#jes.Output:oiref>=1272,810,200,227,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#jes.Sequence#lnkFlow:oiref>=650,894,824,894:oigroup>
+<oigroup:Composite#supplierCardinality#MemberLink#<oiref:java#Member#jes.Workflow#lnkSequence:oiref>=556,807,16,15,0:oigroup>
+<oigroup:<oiref:java#Class#jes.Sequence:oiref>=539,810,111,127,1:oigroup>
+<oigroup:Composite#supplierCardinality#MemberLink#<oiref:java#Member#jes.Sequence#lnkStep:oiref>=838,695,30,15,0:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#jes.Workflow#lnkSequence:oiref>=503,474,572,810:oigroup>
+<oigroup:<oiref:design#Class#id2cl1ndxoxp5d9dxp0tob8.node15:oiref>=1178,1103,208,40,1:oigroup>
+<oigroup:<oiref:design#Class#id2cl1ndxoxp5d9dxp0tob8.node:oiref>=754,1107,294,40,1:oigroup>
+<oigroup:Composite#supplierCardinality#MemberLink#<oiref:java#Member#jes.Input#lnkParameterValue:oiref>=1290,412,30,15,0:oigroup>
+<oigroup:Composite#supplierCardinality#MemberLink#<oiref:java#Member#jes.Workflow#lnkCredentials:oiref>=220,305,16,15,0:oigroup>
+<oigroup:<oiref:design#Class#id2cl1ndxoxp5d9dxp0tob8.nodeid7ww6ndxqecbjqdxqisprq:oiref>=35,685,235,55,0:oigroup>
+<oigroup:Composite#supplierCardinality#MemberLink#<oiref:java#Member#jes.Tool#lnkOutput:oiref>=1262,911,32,15,0:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#jes.Step#lnkTool:oiref>=982,686,982,810:oigroup>
+<oigroup:Composite#supplierCardinality#MemberLink#<oiref:java#Member#jes.Flow#lnkSequence:oiref>=660,837,30,15,0:oigroup>
+<oigroup:<oiref:java#Extends#jes.ActivityContainer#jes.AbstractActivity:oiref>=737,227,737,167:oigroup>
+<oigroup:<oiref:java#Class#jes.ActivityContainer:oiref>=582,227,200,204,1:oigroup>
+<oigroup:<oiref:design#Class#id2cl1ndxoxp5d9dxp0tob8.node17:oiref>=101,29,501,53,1:oigroup>
+<oigroup:<oiref:java#Class#jes.Step:oiref>=802,227,200,459,1:oigroup>
+*/
+class __positions {
+}/**
+@shapeType Note
+@__modelType node
+@name Note1
+@text the contents of a flow are executed in parallel 
+*/
+class node {
+/**
+@shapeType NoteLink
+@__modelType link
+@__ref <oiref:java#Class#jes.Flow:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Note
+@__modelType node
+@name Note2
+@text The contents of a sequence are executed in series 
+*/
+class node12 {
+/**
+@shapeType NoteLink
+@__modelType link
+@__ref <oiref:java#Class#jes.Sequence:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Note
+@__modelType node
+@name Note3
+@text A Tool object is passed to CEA 
+*/
+class node15 {
+/**
+@shapeType NoteLink
+@__modelType link
+@__ref <oiref:java#Class#jes.Tool:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Note
+@__modelType node
+@name Note4
+@text Simplified domain model of an AstroGrid Workflow.
+
+This view omits the details of the JEScript which allows scripting within a workflow. 
+*/
+class node17 {
+}/**
+@shapeType Note
+@__modelType node
+@name Note5
+@text A Step is where the "work" is done 
+*/
+class node19 {
+/**
+@shapeType NoteLink
+@__modelType link
+@__ref <oiref:java#Class#jes.Step:oiref><oihard> 
+*/
+class link {
+}}
+/**
+@shapeType Note
+@__modelType node
+@name Note6
+@text Green classes make up the essential
+ description of the application
+@backgroundColor 153,255,153 
+*/
+class nodeidj56xwdxqecbjqdxqira8h {
+}
+/**
+@shapeType Note
+@__modelType node
+@name Note7
+@text red classes make up the main structure of 
+the workflow
+@backgroundColor 255,153,153 
+*/
+class nodeid7ww6ndxqecbjqdxqisprq {
+}

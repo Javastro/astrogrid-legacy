@@ -1,0 +1,77 @@
+package idbdinzdxomlr2ddxony4lp;
+
+/**
+@version 2.0
+@physicalPackage
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:java#Class#org.astrogrid.applications.component.CEAComponentManager:oiref><oihard>
+@__modelType reference
+@backgroundColor 255,153,102 
+*/
+class reference {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.component.EmptyCEAComponentManager:oiref><oihard>
+@__modelType reference 
+*/
+class reference31 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.component.CEAComponentManagerFactory:oiref><oihard>
+@__modelType reference 
+*/
+class reference32 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.component.InitServlet:oiref><oihard>
+@__modelType reference 
+*/
+class reference33 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.component.HttpApplicationCEAComponentManager:oiref><oihard>
+@__modelType reference 
+*/
+class reference34 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.component.JavaClassCEAComponentManager:oiref><oihard>
+@__modelType reference 
+*/
+class reference35 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.component.ProvidesVODescription:oiref><oihard>
+@__modelType reference 
+*/
+class reference36 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.commandline.CommandLineCEAComponentManager:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference52 {
+}}/**
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:java#Extends#org.astrogrid.applications.commandline.CommandLineCEAComponentManager#org.astrogrid.applications.component.EmptyCEAComponentManager:oiref>=342,683,407,623:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.component.ProvidesVODescription:oiref>=577,250,200,131,1:oigroup>
+<oigroup:<oiref:java#Implements#org.astrogrid.applications.commandline.CommandLineCEAComponentManager#org.astrogrid.applications.component.CEAComponentManager:oiref>=316,683,316,186:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.component.CEAComponentManager:oiref>=290,10,250,176,0:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.component.InitServlet:oiref>=850,20,200,200,1:oigroup>
+<oigroup:<oiref:java#Implements#org.astrogrid.applications.component.EmptyCEAComponentManager#org.astrogrid.applications.component.CEAComponentManager:oiref>=448,256,448,186:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.applications.component.HttpApplicationCEAComponentManager#org.astrogrid.applications.component.EmptyCEAComponentManager:oiref>=457,683,457,623:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.component.CEAComponentManagerFactory:oiref>=10,10,200,170,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.commandline.CommandLineCEAComponentManager:oiref>=160,683,200,135,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.component.HttpApplicationCEAComponentManager:oiref>=380,683,200,125,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.component.JavaClassCEAComponentManager:oiref>=600,683,200,140,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.component.EmptyCEAComponentManager:oiref>=357,256,200,367,1:oigroup>
+<oigroup:<oiref:java#Extends#org.astrogrid.applications.component.JavaClassCEAComponentManager#org.astrogrid.applications.component.EmptyCEAComponentManager:oiref>=700,683,507,623:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.component.CEAComponentManagerFactory#theInstance:oiref>=210,95,290,95:oigroup> 
+*/
+class __positions {
+}

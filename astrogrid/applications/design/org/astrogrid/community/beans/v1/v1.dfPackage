@@ -12,6 +12,46 @@ class diagram {
 @__fqn <oiref:#Package#org.astrogrid.community.beans.v1.axis:oiref> 
 */
 class reference {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.community.beans.v1.AccountDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference84 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.community.beans.v1.Account:oiref><oihard>
+@__modelType reference 
+*/
+class reference85 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.community.beans.v1.BaseIdentifier:oiref><oihard>
+@__modelType reference 
+*/
+class reference86 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.community.beans.v1.CredentialsDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference87 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.community.beans.v1.Group:oiref><oihard>
+@__modelType reference 
+*/
+class reference88 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.community.beans.v1.GroupDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference89 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.community.beans.v1.Credentials:oiref><oihard>
+@__modelType reference 
+*/
+class reference90 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.community.beans.v1.BaseIdentifierDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference91 {
 }}/**
 @__tags
 @shapeType ClassDiagram 

@@ -1,0 +1,42 @@
+package idhaw79dxoo2um2dxortv23;
+
+/**
+@version 2.0
+@physicalPackage
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:java#Class#org.astrogrid.applications.commandline.digester.AllBodyIncElementsRule:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.commandline.digester.CommandLineApplicationDescriptionsConstants:oiref><oihard>
+@__modelType reference 
+*/
+class reference49 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.commandline.digester.CommandLineApplicationDescriptionFactory:oiref><oihard>
+@__modelType reference 
+*/
+class reference50 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.commandline.digester.CommandLineDescriptionsLoader:oiref><oihard>
+@__modelType reference 
+*/
+class reference51 {
+}}/**
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions 
+*/
+class __positions {
+}

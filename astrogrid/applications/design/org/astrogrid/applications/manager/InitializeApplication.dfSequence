@@ -52,7 +52,7 @@ class __options {
 @__positions <oigroup:<oiref:design#Class#idacadnrcpt1tdnrk0frm.node.link:oiref>=609,165,360,165:oigroup>
 <oigroup:<oiref:java#Class#org.astrogrid.applications.commandline.ApplicationEnvironment:oiref>=270,450,200,312,1:oigroup>
 <oigroup:<oiref:design#Class#idacadnrcpt1tdnrk0frm.node.link52:oiref>=:oigroup>
-<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#idacadnrcpt1tdnrk0frm.node.link51:oiref>=626,149,233,23,0,0.0,1.0:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#idacadnrcpt1tdnrk0frm.node.link51:oiref>=626,157,214,15,0,0.0,1.0:oigroup>
 <oigroup:<oiref:java#Class#org.astrogrid.applications.commandline.CmdLineApplication:oiref>=900,360,200,756,1:oigroup>
 <oigroup:<oiref:design#Class#idacadnrcpt1tdnrk0frm.node44.node:oiref>=885,172,14,20,1:oigroup>
 <oigroup:<oiref:design#Class#idacadnrcpt1tdnrk0frm.node.link51:oiref>=616,172,885,172:oigroup>

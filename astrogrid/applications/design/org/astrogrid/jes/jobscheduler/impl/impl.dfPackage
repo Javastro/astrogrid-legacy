@@ -6,7 +6,19 @@ package id3i5eydsekfnt0dsekg6ut;
 @__modelType diagram 
 */
 class diagram {
+/**
+@__ref <oiref:design#Class#idfut87dxomlr2ddxony5xf.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.jes.jobscheduler.impl.scripting:oiref> 
+*/
+class reference {
 }/**
+@__ref <oiref:design#Class#id89upcdxomlr2ddxony5wn.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.jes.jobscheduler.impl.groovy:oiref> 
+*/
+class reference74 {
+}}/**
 @__tags
 @shapeType ClassDiagram 
 */

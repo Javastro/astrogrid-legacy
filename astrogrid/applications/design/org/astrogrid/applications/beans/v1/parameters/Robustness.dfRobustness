@@ -1,0 +1,38 @@
+package idbmaz3dxqecbjqdxqi5cnp;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#idbmaz3dxqecbjqdxqi5cnp.nodeidjm4tbdxqecbjqdxqi8hp1:oiref><oihard>
+@__modelType reference 
+*/
+class reference5 {
+}
+}/**
+
+@__tags
+@shapeType RobustnessDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions 
+
+<oigroup:<oiref:design#Class#idbmaz3dxqecbjqdxqi5cnp.nodeidjm4tbdxqecbjqdxqi8hp1:oiref>=410,30,52,77,1:oigroup>
+ 
+*/
+class __positions {
+}
+/**
+@shapeType Actor
+@__modelType node
+@name Actor1 
+*/
+class nodeidjm4tbdxqecbjqdxqi8hp1 {
+}

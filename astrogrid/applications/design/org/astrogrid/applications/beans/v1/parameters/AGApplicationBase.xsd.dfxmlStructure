@@ -1,0 +1,1223 @@
+package id96ycndxqecbjqdxqibif9;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid1ki4ddxqecbjqdxqibij0:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}
+/**
+@__ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidc0irpdxqecbjqdxqibisz:oiref><oihard>
+@__modelType reference 
+*/
+class reference6 {
+}
+/**
+@__ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeida5dqfdxqecbjqdxqibiv5:oiref><oihard>
+@__modelType reference 
+*/
+class reference7 {
+}
+/**
+@__ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeiddybwudxqecbjqdxqibiy8:oiref><oihard>
+@__modelType reference 
+*/
+class reference8 {
+}
+/**
+@__ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid7pvu0dxqecbjqdxqibj30:oiref><oihard>
+@__modelType reference 
+*/
+class reference9 {
+}
+/**
+@__ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidh7blodxqecbjqdxqibj63:oiref><oihard>
+@__modelType reference 
+*/
+class reference10 {
+}
+/**
+@__ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeiddyxwzdxqecbjqdxqibj8p:oiref><oihard>
+@__modelType reference 
+*/
+class reference11 {
+}
+/**
+@__ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid1xosrdxqecbjqdxqibjb4:oiref><oihard>
+@__modelType reference 
+*/
+class reference12 {
+}
+/**
+@__ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeiddopv4dxqecbjqdxqibjep:oiref><oihard>
+@__modelType reference 
+*/
+class reference13 {
+}
+/**
+@__ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidf4yskdxqecbjqdxqibji2:oiref><oihard>
+@__modelType reference 
+*/
+class reference14 {
+}
+/**
+@__ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidfl9n3dxqecbjqdxqibjl5:oiref><oihard>
+@__modelType reference 
+*/
+class reference15 {
+}
+/**
+@__ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeiden7endxqecbjqdxqibjn5:oiref><oihard>
+@__modelType reference 
+*/
+class reference16 {
+}
+/**
+@__ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid70uyvdxqecbjqdxqibjpk:oiref><oihard>
+@__modelType reference 
+*/
+class reference17 {
+}
+/**
+@__ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidf08gjdxqecbjqdxqibjry:oiref><oihard>
+@__modelType reference 
+*/
+class reference18 {
+}
+/**
+@__ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid3jngdxqecbjqdxqibju6:oiref><oihard>
+@__modelType reference 
+*/
+class reference19 {
+}
+/**
+@__ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidiiuyqdxqecbjqdxqibjwc:oiref><oihard>
+@__modelType reference 
+*/
+class reference20 {
+}
+/**
+@__ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid4flj3dxqecbjqdxqibjyr:oiref><oihard>
+@__modelType reference 
+*/
+class reference21 {
+}
+/**
+@__ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidgpitjdxqecbjqdxqibk0x:oiref><oihard>
+@__modelType reference 
+*/
+class reference22 {
+}
+/**
+@__ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidgzol1dxqecbjqdxqibk35:oiref><oihard>
+@__modelType reference 
+*/
+class reference23 {
+}
+/**
+@__ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid1bm8vdxqecbjqdxqibk5e:oiref><oihard>
+@__modelType reference 
+*/
+class reference24 {
+}
+/**
+@__ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid1reh5dxqecbjqdxqibk7w:oiref><oihard>
+@__modelType reference 
+*/
+class reference25 {
+}
+/**
+@__ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid4eouwdxqecbjqdxqibka4:oiref><oihard>
+@__modelType reference 
+*/
+class reference26 {
+}
+/**
+@__ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidgmhtxdxqecbjqdxqibkcf:oiref><oihard>
+@__modelType reference 
+*/
+class reference27 {
+}
+/**
+@__ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid9g3mcdxqecbjqdxqibkeo:oiref><oihard>
+@__modelType reference 
+*/
+class reference28 {
+}
+/**
+@__ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid31nkpdxqecbjqdxqibki0:oiref><oihard>
+@__modelType reference 
+*/
+class reference29 {
+}
+/**
+@__ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid4bh1pdxqecbjqdxqibkn5:oiref><oihard>
+@__modelType reference 
+*/
+class reference30 {
+}
+/**
+@__ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidip7endxqecbjqdxqibkz5:oiref><oihard>
+@__modelType reference 
+*/
+class reference31 {
+}
+/**
+@__ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid8x853dxqecbjqdxqiblax:oiref><oihard>
+@__modelType reference 
+*/
+class reference32 {
+}
+/**
+@__ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidj22badxqecbjqdxqiblg8:oiref><oihard>
+@__modelType reference 
+*/
+class reference33 {
+}
+/**
+@__ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid8vcxedxqecbjqdxqiblmc:oiref><oihard>
+@__modelType reference 
+*/
+class reference34 {
+}
+/**
+@__ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid34dtudxqecbjqdxqiblrr:oiref><oihard>
+@__modelType reference 
+*/
+class reference35 {
+}
+/**
+@__ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidha0ttdxqecbjqdxqiblwx:oiref><oihard>
+@__modelType reference 
+*/
+class reference36 {
+}
+/**
+@__ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidc294edxqecbjqdxqibm2n:oiref><oihard>
+@__modelType reference 
+*/
+class reference37 {
+}
+/**
+@__ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidanftkdxqecbjqdxqibm7j:oiref><oihard>
+@__modelType reference 
+*/
+class reference38 {
+}
+/**
+@__ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidjlpjqdxqecbjqdxqibmss:oiref><oihard>
+@__modelType reference 
+*/
+class reference39 {
+}
+/**
+@__ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeida333sdxqecbjqdxqibn8r:oiref><oihard>
+@__modelType reference 
+*/
+class reference40 {
+}
+}/**
+Documentation : this file captures some of the ideas used in the WSDL-like parameter definition files, but as yet is not used for validation
+Documentation : the baseparameter definition is mimiced by the contents of a part element in the wsdl
+Documentation : important types are defined here that would have special significance....
+@__tags
+@shapeType xmlStructureDiagram
+@__update.extended
+@format XSD Schema
+@filename /home/pah/AGApplicationBase.xsd
+@encoding UTF-8
+@version 1.0 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid1reh5dxqecbjqdxqibk7w:oiref>=870,630,172,60,1:oigroup>
+<oigroup:<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid1ki4ddxqecbjqdxqibij0.linkide98ykdxqecbjqdxqibkmt:oiref>=58,139,58,70:oigroup>
+<oigroup:<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid7pvu0dxqecbjqdxqibj30.linkidi17x4dxqecbjqdxqiblfo:oiref>=553,139,642,70:oigroup>
+<oigroup:<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid1bm8vdxqecbjqdxqibk5e:oiref>=10,730,186,60,1:oigroup>
+<oigroup:<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeiden7endxqecbjqdxqibjn5.linkidfudtndxqecbjqdxqibmxy:oiref>=870,139,870,70:oigroup>
+<oigroup:<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidc0irpdxqecbjqdxqibisz.linkid8bh0udxqecbjqdxqibl4s:oiref>=259,139,259,70:oigroup>
+<oigroup:<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidiiuyqdxqecbjqdxqibjwc:oiref>=188,630,82,60,1:oigroup>
+<oigroup:<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid7pvu0dxqecbjqdxqibj30:oiref>=452,139,135,75,1:oigroup>
+<oigroup:<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid1xosrdxqecbjqdxqibjb4:oiref>=10,510,205,75,1:oigroup>
+<oigroup:<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid4eouwdxqecbjqdxqibka4:oiref>=216,730,80,60,1:oigroup>
+<oigroup:<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidh7blodxqecbjqdxqibj63.linkidkbz2dxqecbjqdxqiblwl:oiref>=717,268,717,199:oigroup>
+<oigroup:<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidha0ttdxqecbjqdxqiblwx:oiref>=680,10,43,60,1:oigroup>
+<oigroup:<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidf4yskdxqecbjqdxqibji2:oiref>=481,510,206,75,1:oigroup>
+<oigroup:<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeida5dqfdxqecbjqdxqibiv5:oiref>=792,250,151,75,1:oigroup>
+<oigroup:<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid4bh1pdxqecbjqdxqibkn5:oiref>=110,10,72,60,1:oigroup>
+<oigroup:<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid31nkpdxqecbjqdxqibki0:oiref>=10,10,80,60,1:oigroup>
+<oigroup:<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidgmhtxdxqecbjqdxqibkcf:oiref>=316,730,245,60,1:oigroup>
+<oigroup:<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidf08gjdxqecbjqdxqibjry:oiref>=707,510,264,75,1:oigroup>
+<oigroup:<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidc294edxqecbjqdxqibm2n.linkidhfsjwdxqecbjqdxqibmcz:oiref>=773,139,773,70:oigroup>
+<oigroup:<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid34dtudxqecbjqdxqiblrr:oiref>=683,139,44,60,1:oigroup>
+<oigroup:<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidfl9n3dxqecbjqdxqibjl5:oiref>=906,370,89,63,1:oigroup>
+<oigroup:<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeiddyxwzdxqecbjqdxqibj8p:oiref>=792,370,94,103,1:oigroup>
+<oigroup:<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid7pvu0dxqecbjqdxqibj30.linkid5zwuhdxqecbjqdxqibllq:oiref>=519,139,519,70:oigroup>
+<oigroup:<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid3jngdxqecbjqdxqibju6:oiref>=10,630,158,60,1:oigroup>
+<oigroup:<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidh7blodxqecbjqdxqibj63.linkidb59hpdxqecbjqdxqibm77:oiref>=744,268,773,199:oigroup>
+<oigroup:<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid8vcxedxqecbjqdxqiblmc:oiref>=328,10,121,60,1:oigroup>
+<oigroup:<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidc0irpdxqecbjqdxqibisz:oiref>=173,139,172,75,1:oigroup>
+<oigroup:<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeiddopv4dxqecbjqdxqibjep:oiref>=235,510,226,75,1:oigroup>
+<oigroup:<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid1ki4ddxqecbjqdxqibij0.linkid8z87bdxqecbjqdxqibksj:oiref>=135,139,135,70:oigroup>
+<oigroup:<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid4flj3dxqecbjqdxqibjyr:oiref>=290,630,266,60,1:oigroup>
+<oigroup:<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeiddybwudxqecbjqdxqibiy8:oiref>=10,390,152,75,1:oigroup>
+<oigroup:<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidc294edxqecbjqdxqibm2n:oiref>=747,139,53,60,1:oigroup>
+<oigroup:<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidjlpjqdxqecbjqdxqibmss:oiref>=838,10,65,60,1:oigroup>
+<oigroup:Composite#$occurs#<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid34dtudxqecbjqdxqiblrr.linkid7jvd8dxqecbjqdxqibm2a:oiref>=685,70,14,15,0:oigroup>
+<oigroup:Composite#$occurs#<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid9g3mcdxqecbjqdxqibkeo.linkid3ibotdxqecbjqdxqibnec:oiref>=972,70,18,15,0:oigroup>
+<oigroup:<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid8x853dxqecbjqdxqiblax:oiref>=617,10,43,60,1:oigroup>
+<oigroup:<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidgzol1dxqecbjqdxqibk35:oiref>=769,630,81,60,1:oigroup>
+<oigroup:<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidj22badxqecbjqdxqiblg8:oiref>=469,10,128,60,1:oigroup>
+<oigroup:<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeida333sdxqecbjqdxqibn8r:oiref>=939,10,112,60,1:oigroup>
+<oigroup:<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid70uyvdxqecbjqdxqibjpk:oiref>=963,230,73,60,1:oigroup>
+<oigroup:<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid7pvu0dxqecbjqdxqibj30.linkidh6cahdxqecbjqdxqiblr9:oiref>=485,139,388,70:oigroup>
+<oigroup:<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidip7endxqecbjqdxqibkz5:oiref>=210,10,98,60,1:oigroup>
+<oigroup:<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeiden7endxqecbjqdxqibjn5:oiref>=820,139,102,75,1:oigroup>
+<oigroup:<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid1ki4ddxqecbjqdxqibij0:oiref>=42,139,111,88,1:oigroup>
+<oigroup:<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidgpitjdxqecbjqdxqibk0x:oiref>=576,630,173,60,1:oigroup>
+<oigroup:<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid9g3mcdxqecbjqdxqibkeo:oiref>=942,139,105,60,1:oigroup>
+<oigroup:Composite#$occurs#<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidc294edxqecbjqdxqibm2n.linkidhfsjwdxqecbjqdxqibmcz:oiref>=755,70,14,15,0:oigroup>
+<oigroup:<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid34dtudxqecbjqdxqiblrr.linkid7jvd8dxqecbjqdxqibm2a:oiref>=703,139,703,70:oigroup>
+<oigroup:<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid9g3mcdxqecbjqdxqibkeo.linkid3ibotdxqecbjqdxqibnec:oiref>=994,139,994,70:oigroup>
+<oigroup:<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidh7blodxqecbjqdxqibj63:oiref>=707,268,65,75,1:oigroup>
+<oigroup:<oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidanftkdxqecbjqdxqibm7j:oiref>=743,10,69,60,1:oigroup> 
+*/
+class __positions {
+}
+/**
+Documentation : Base Application Description
+@shapeType xmlComplexType
+@__modelType node
+@name ApplicationBase
+@id
+@ref <oiref:design#Class#id4x27acgvzg7thcgvzgsqi.node35:oiref>
+@derivationType restriction
+@compositor sequence
+@block <none>
+@final <none>
+@refFrom <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidc0irpdxqecbjqdxqibisz:oiref>
+@refFrom <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeida5dqfdxqecbjqdxqibiv5:oiref>
+@refFrom <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeiddybwudxqecbjqdxqibiy8:oiref>
+@refFrom <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid7pvu0dxqecbjqdxqibj30:oiref>
+@refFrom <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeida333sdxqecbjqdxqibn8r:oiref> 
+*/
+class nodeid1ki4ddxqecbjqdxqibij0 {
+/**
+@shapeType xmlElementRef
+@__modelType node
+@name xmlElementRef1
+@ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid31nkpdxqecbjqdxqibki0:oiref>
+@minoccurs 1
+@maxoccurs 1
+@index 1
+@refFrom <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid1ki4ddxqecbjqdxqibij0.linkide98ykdxqecbjqdxqibkmt:oiref> 
+*/
+class nodeid97yhldxqecbjqdxqibkk9 {
+}
+/**
+@shapeType xmlReferenceLink
+@__modelType link
+@__ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid31nkpdxqecbjqdxqibki0:oiref><oihard>
+@ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid1ki4ddxqecbjqdxqibij0.nodeid97yhldxqecbjqdxqibkk9:oiref> 
+*/
+class linkide98ykdxqecbjqdxqibkmt {
+}
+/**
+@shapeType xmlElementRef
+@__modelType node
+@name xmlElementRef2
+@ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid4bh1pdxqecbjqdxqibkn5:oiref>
+@minoccurs 1
+@maxoccurs 1
+@index 2
+@refFrom <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid1ki4ddxqecbjqdxqibij0.linkid8z87bdxqecbjqdxqibksj:oiref> 
+*/
+class nodeid10m71dxqecbjqdxqibkpo {
+}
+/**
+@shapeType xmlReferenceLink
+@__modelType link
+@__ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid4bh1pdxqecbjqdxqibkn5:oiref><oihard>
+@ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid1ki4ddxqecbjqdxqibij0.nodeid10m71dxqecbjqdxqibkpo:oiref> 
+*/
+class linkid8z87bdxqecbjqdxqibksj {
+}
+/**
+@shapeType xmlAttribute
+@__modelType node
+@name name
+@form unqualified
+@id
+@ref <oiref:design#Class#id1e9yecgw0vkwvcgw111yy.node:oiref>
+@derivationType restriction
+@occurs required
+@value 
+*/
+class nodeidgkvhgdxqecbjqdxqibksw {
+}
+/**
+@shapeType xmlAttribute
+@__modelType node
+@name instanceClass
+@form unqualified
+@id
+@ref <oiref:design#Class#id4x27acgvzg7thcgvzgsqi.node2:oiref>
+@derivationType restriction
+@occurs optional
+@value 
+*/
+class nodeidjbl6ydxqecbjqdxqibkv2 {
+}
+}
+/**
+Documentation : Description of a command line application
+@shapeType xmlComplexType
+@__modelType node
+@name CommandLineApplication
+@id
+@ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid1ki4ddxqecbjqdxqibij0:oiref>
+@derivationType extension
+@compositor sequence
+@block <none>
+@final <none>
+@refFrom <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidiiuyqdxqecbjqdxqibjwc:oiref> 
+*/
+class nodeidc0irpdxqecbjqdxqibisz {
+/**
+@shapeType xmlElementRef
+@__modelType node
+@name xmlElementRef3
+@ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidip7endxqecbjqdxqibkz5:oiref>
+@minoccurs 1
+@maxoccurs 1
+@index 1
+@refFrom <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidc0irpdxqecbjqdxqibisz.linkid8bh0udxqecbjqdxqibl4s:oiref> 
+*/
+class nodeid4g6r4dxqecbjqdxqibl2o {
+}
+/**
+@shapeType xmlReferenceLink
+@__modelType link
+@__ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidip7endxqecbjqdxqibkz5:oiref><oihard>
+@ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidc0irpdxqecbjqdxqibisz.nodeid4g6r4dxqecbjqdxqibl2o:oiref> 
+*/
+class linkid8bh0udxqecbjqdxqibl4s {
+}
+}
+/**
+Documentation : Description of a web service application
+@shapeType xmlComplexType
+@__modelType node
+@name WebServiceApplication
+@id
+@ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid1ki4ddxqecbjqdxqibij0:oiref>
+@derivationType extension
+@compositor sequence
+@block <none>
+@final <none>
+@refFrom <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid4eouwdxqecbjqdxqibka4:oiref> 
+*/
+class nodeida5dqfdxqecbjqdxqibiv5 {
+}
+/**
+Documentation : Description of a data centre application
+@shapeType xmlComplexType
+@__modelType node
+@name DataCentreApplication
+@id
+@ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid1ki4ddxqecbjqdxqibij0:oiref>
+@derivationType extension
+@compositor sequence
+@block <none>
+@final <none>
+@refFrom <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidgzol1dxqecbjqdxqibk35:oiref> 
+*/
+class nodeiddybwudxqecbjqdxqibiy8 {
+}
+/**
+Documentation : Description of an HTTP Application
+@shapeType xmlComplexType
+@__modelType node
+@name WebHttpApplication
+@id
+@ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid1ki4ddxqecbjqdxqibij0:oiref>
+@derivationType extension
+@compositor sequence
+@block <none>
+@final <none> 
+*/
+class nodeid7pvu0dxqecbjqdxqibj30 {
+/**
+@shapeType xmlElementRef
+@__modelType node
+@name xmlElementRef4
+@ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid8x853dxqecbjqdxqiblax:oiref>
+@minoccurs 1
+@maxoccurs 1
+@index 1
+@refFrom <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid7pvu0dxqecbjqdxqibj30.linkidi17x4dxqecbjqdxqiblfo:oiref> 
+*/
+class nodeidbinutdxqecbjqdxqibldh {
+}
+/**
+@shapeType xmlReferenceLink
+@__modelType link
+@__ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid8x853dxqecbjqdxqiblax:oiref><oihard>
+@ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid7pvu0dxqecbjqdxqibj30.nodeidbinutdxqecbjqdxqibldh:oiref> 
+*/
+class linkidi17x4dxqecbjqdxqiblfo {
+}
+/**
+@shapeType xmlElementRef
+@__modelType node
+@name xmlElementRef5
+@ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidj22badxqecbjqdxqiblg8:oiref>
+@minoccurs 0
+@maxoccurs 1
+@index 2
+@refFrom <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid7pvu0dxqecbjqdxqibj30.linkid5zwuhdxqecbjqdxqibllq:oiref> 
+*/
+class nodeid40wfmdxqecbjqdxqibljd {
+}
+/**
+@shapeType xmlReferenceLink
+@__modelType link
+@__ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidj22badxqecbjqdxqiblg8:oiref><oihard>
+@ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid7pvu0dxqecbjqdxqibj30.nodeid40wfmdxqecbjqdxqibljd:oiref> 
+*/
+class linkid5zwuhdxqecbjqdxqibllq {
+}
+/**
+@shapeType xmlElementRef
+@__modelType node
+@name xmlElementRef6
+@ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid8vcxedxqecbjqdxqiblmc:oiref>
+@minoccurs 0
+@maxoccurs 1
+@index 3
+@refFrom <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid7pvu0dxqecbjqdxqibj30.linkidh6cahdxqecbjqdxqiblr9:oiref> 
+*/
+class nodeid8sxuldxqecbjqdxqiblp1 {
+}
+/**
+@shapeType xmlReferenceLink
+@__modelType link
+@__ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid8vcxedxqecbjqdxqiblmc:oiref><oihard>
+@ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid7pvu0dxqecbjqdxqibj30.nodeid8sxuldxqecbjqdxqiblp1:oiref> 
+*/
+class linkidh6cahdxqecbjqdxqiblr9 {
+}
+}
+/**
+Documentation : description of an interface
+@shapeType xmlComplexType
+@__modelType node
+@name Interface
+@id
+@ref <oiref:design#Class#id4x27acgvzg7thcgvzgsqi.node35:oiref>
+@derivationType restriction
+@compositor sequence
+@block <none>
+@final <none>
+@refFrom <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidjlpjqdxqecbjqdxqibmss:oiref> 
+*/
+class nodeidh7blodxqecbjqdxqibj63 {
+/**
+@shapeType xmlElementRef
+@__modelType node
+@name xmlElementRef7
+@ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid34dtudxqecbjqdxqiblrr:oiref>
+@minoccurs 1
+@maxoccurs 1
+@index 1
+@refFrom <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidh7blodxqecbjqdxqibj63.linkidkbz2dxqecbjqdxqiblwl:oiref> 
+*/
+class nodeidahqgedxqecbjqdxqibluf {
+}
+/**
+@shapeType xmlReferenceLink
+@__modelType link
+@__ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid34dtudxqecbjqdxqiblrr:oiref><oihard>
+@ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidh7blodxqecbjqdxqibj63.nodeidahqgedxqecbjqdxqibluf:oiref> 
+*/
+class linkidkbz2dxqecbjqdxqiblwl {
+}
+/**
+@shapeType xmlElementRef
+@__modelType node
+@name xmlElementRef9
+@ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidc294edxqecbjqdxqibm2n:oiref>
+@minoccurs 1
+@maxoccurs 1
+@index 2
+@refFrom <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidh7blodxqecbjqdxqibj63.linkidb59hpdxqecbjqdxqibm77:oiref> 
+*/
+class nodeid1355ldxqecbjqdxqibm4z {
+}
+/**
+@shapeType xmlReferenceLink
+@__modelType link
+@__ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidc294edxqecbjqdxqibm2n:oiref><oihard>
+@ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidh7blodxqecbjqdxqibj63.nodeid1355ldxqecbjqdxqibm4z:oiref> 
+*/
+class linkidb59hpdxqecbjqdxqibm77 {
+}
+/**
+@shapeType xmlAttribute
+@__modelType node
+@name name
+@form unqualified
+@id
+@ref <oiref:design#Class#id4x27acgvzg7thcgvzgsqi.node2:oiref>
+@derivationType restriction
+@occurs required
+@value 
+*/
+class nodeidfskz7dxqecbjqdxqibmdc {
+}
+}
+/**
+Documentation : reference to an existing parameter. Used in the interface
+@shapeType xmlComplexType
+@__modelType node
+@name parameterRef
+@id
+@ref <oiref:design#Class#id4x27acgvzg7thcgvzgsqi.node35:oiref>
+@derivationType restriction
+@compositor sequence
+@block <none>
+@final <none>
+@refFrom <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidha0ttdxqecbjqdxqiblwx:oiref>
+@refFrom <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidanftkdxqecbjqdxqibm7j:oiref> 
+*/
+class nodeiddyxwzdxqecbjqdxqibj8p {
+/**
+@shapeType xmlAttribute
+@__modelType node
+@name ref
+@form unqualified
+@id
+@ref <oiref:design#Class#id4x27acgvzg7thcgvzgsqi.node2:oiref>
+@derivationType restriction
+@occurs optional
+@value 
+*/
+class nodeid1pryxdxqecbjqdxqibmfq {
+}
+/**
+@shapeType xmlAttribute
+@__modelType node
+@name minoccurs
+@form unqualified
+@id
+@ref <oiref:design#Class#id4x27acgvzg7thcgvzgsqi.node26:oiref>
+@derivationType restriction
+@occurs optional
+@value 
+*/
+class nodeid4c00hdxqecbjqdxqibmht {
+}
+/**
+Documentation : a value of 0 implies unbounded
+@shapeType xmlAttribute
+@__modelType node
+@name maxoccurs
+@form unqualified
+@id
+@ref <oiref:design#Class#id4x27acgvzg7thcgvzgsqi.node26:oiref>
+@derivationType restriction
+@occurs optional
+@value 
+*/
+class nodeid525g0dxqecbjqdxqibmjy {
+}
+}
+/**
+Documentation : Special properties for web serivce parameters
+@shapeType xmlComplexType
+@__modelType node
+@name WebServiceParameterDefinition
+@id
+@ref <oiref:design#Class#id4x27acgvzg7thcgvzgsqi.node35:oiref>
+@derivationType extension
+@compositor sequence
+@block <none>
+@final <none>
+@refFrom <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid1reh5dxqecbjqdxqibk7w:oiref> 
+*/
+class nodeid1xosrdxqecbjqdxqibjb4 {
+}
+/**
+Documentation : Defines what it is to be a command line parameter - needs more thought with experience
+@shapeType xmlComplexType
+@__modelType node
+@name CommandLineParameterDefinition
+@id
+@ref <oiref:design#Class#id4x27acgvzg7thcgvzgsqi.node35:oiref>
+@derivationType extension
+@compositor sequence
+@block <none>
+@final <none>
+@refFrom <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid3jngdxqecbjqdxqibju6:oiref> 
+*/
+class nodeiddopv4dxqecbjqdxqibjep {
+}
+/**
+Documentation : special properties for datacentre parameters
+@shapeType xmlComplexType
+@__modelType node
+@name DataCenterParameterDefinition
+@id
+@ref <oiref:design#Class#id4x27acgvzg7thcgvzgsqi.node35:oiref>
+@derivationType extension
+@compositor sequence
+@block <none>
+@final <none>
+@refFrom <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidgpitjdxqecbjqdxqibk0x:oiref> 
+*/
+class nodeidf4yskdxqecbjqdxqibji2 {
+}
+/**
+Documentation : normal is the -x value style and keyword is the x=value style
+@shapeType xmlDataType
+@__modelType node
+@name switchTypes
+@id
+@ref <oiref:design#Class#id4x27acgvzg7thcgvzgsqi.node2:oiref>
+@derivationType restriction
+@enumeration normal
+@enumeration keyword 
+*/
+class nodeidfl9n3dxqecbjqdxqibjl5 {
+}
+/**
+@shapeType xmlComplexType
+@__modelType node
+@name InterfacesType
+@id
+@ref <oiref:design#Class#id4x27acgvzg7thcgvzgsqi.node35:oiref>
+@derivationType restriction
+@compositor sequence
+@block <none>
+@final <none>
+@refFrom <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid4bh1pdxqecbjqdxqibkn5:oiref> 
+*/
+class nodeiden7endxqecbjqdxqibjn5 {
+/**
+@shapeType xmlElementRef
+@__modelType node
+@name xmlElementRef11
+@ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidjlpjqdxqecbjqdxqibmss:oiref>
+@minoccurs 1
+@maxoccurs unbounded
+@index 1
+@refFrom <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeiden7endxqecbjqdxqibjn5.linkidfudtndxqecbjqdxqibmxy:oiref> 
+*/
+class nodeid1d2jadxqecbjqdxqibmvr {
+}
+/**
+@shapeType xmlReferenceLink
+@__modelType link
+@__ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidjlpjqdxqecbjqdxqibmss:oiref><oihard>
+@ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeiden7endxqecbjqdxqibjn5.nodeid1d2jadxqecbjqdxqibmvr:oiref> 
+*/
+class linkidfudtndxqecbjqdxqibmxy {
+}
+}
+/**
+@shapeType xmlElement
+@__modelType node
+@name Parameter
+@form unqualified
+@id
+@ref <oiref:design#Class#id4x27acgvzg7thcgvzgsqi.node35:oiref>
+@derivationType restriction
+@content empty
+@compositor sequence
+@occurs <none>
+@block <none>
+@final <none>
+@subst 
+*/
+class nodeid70uyvdxqecbjqdxqibjpk {
+}
+/**
+Documentation : The base for a common execution connector configuration
+@shapeType xmlComplexType
+@__modelType node
+@name CommonExecutionConnectorConfigType
+@id
+@ref <oiref:design#Class#id4x27acgvzg7thcgvzgsqi.node35:oiref>
+@derivationType restriction
+@compositor sequence
+@block <none>
+@final <none>
+@refFrom <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid4flj3dxqecbjqdxqibjyr:oiref>
+@refFrom <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid1bm8vdxqecbjqdxqibk5e:oiref>
+@refFrom <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidgmhtxdxqecbjqdxqibkcf:oiref> 
+*/
+class nodeidf08gjdxqecbjqdxqibjry {
+}
+/**
+Documentation : The specialization for a command line parameter
+@shapeType xmlElement
+@__modelType node
+@name CmdLineParameterDefn
+@form unqualified
+@id
+@ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeiddopv4dxqecbjqdxqibjep:oiref>
+@derivationType extension
+@content empty
+@compositor sequence
+@occurs <none>
+@block <none>
+@final <none>
+@subst agab:Parameter 
+*/
+class nodeid3jngdxqecbjqdxqibju6 {
+}
+/**
+Documentation : The definition of what an application is
+@shapeType xmlElement
+@__modelType node
+@name Application
+@form unqualified
+@id
+@ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidc0irpdxqecbjqdxqibisz:oiref>
+@derivationType restriction
+@content empty
+@compositor sequence
+@occurs <none>
+@block <none>
+@final <none>
+@subst 
+*/
+class nodeidiiuyqdxqecbjqdxqibjwc {
+}
+/**
+Documentation : The configuration for a command line execution controller
+@shapeType xmlElement
+@__modelType node
+@name CommandLineExecutionControllerConfig
+@form unqualified
+@id
+@ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidf08gjdxqecbjqdxqibjry:oiref>
+@derivationType extension
+@content empty
+@compositor sequence
+@occurs <none>
+@block <none>
+@final <none>
+@subst 
+*/
+class nodeid4flj3dxqecbjqdxqibjyr {
+}
+/**
+Documentation : The specialization for a datacentre parameter
+@shapeType xmlElement
+@__modelType node
+@name DataCentreParameterDefn
+@form unqualified
+@id
+@ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidf4yskdxqecbjqdxqibji2:oiref>
+@derivationType restriction
+@content empty
+@compositor sequence
+@occurs <none>
+@block <none>
+@final <none>
+@subst agab:Parameter 
+*/
+class nodeidgpitjdxqecbjqdxqibk0x {
+}
+/**
+@shapeType xmlElement
+@__modelType node
+@name DataCentre
+@form unqualified
+@id
+@ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeiddybwudxqecbjqdxqibiy8:oiref>
+@derivationType restriction
+@content empty
+@compositor sequence
+@occurs <none>
+@block <none>
+@final <none>
+@subst 
+*/
+class nodeidgzol1dxqecbjqdxqibk35 {
+}
+/**
+Documentation : Configuration for a set of datacentre descriptions
+@shapeType xmlElement
+@__modelType node
+@name DataCentreControllerConfig
+@form unqualified
+@id
+@ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidf08gjdxqecbjqdxqibjry:oiref>
+@derivationType extension
+@content empty
+@compositor sequence
+@occurs <none>
+@block <none>
+@final <none>
+@subst 
+*/
+class nodeid1bm8vdxqecbjqdxqibk5e {
+}
+/**
+Documentation : The specialization for a web service parameter
+@shapeType xmlElement
+@__modelType node
+@name WebServiceParameterDefn
+@form unqualified
+@id
+@ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid1xosrdxqecbjqdxqibjb4:oiref>
+@derivationType restriction
+@content empty
+@compositor sequence
+@occurs <none>
+@block <none>
+@final <none>
+@subst agab:Parameter 
+*/
+class nodeid1reh5dxqecbjqdxqibk7w {
+}
+/**
+@shapeType xmlElement
+@__modelType node
+@name WebService
+@form unqualified
+@id
+@ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeida5dqfdxqecbjqdxqibiv5:oiref>
+@derivationType restriction
+@content empty
+@compositor sequence
+@occurs <none>
+@block <none>
+@final <none>
+@subst 
+*/
+class nodeid4eouwdxqecbjqdxqibka4 {
+}
+/**
+@shapeType xmlElement
+@__modelType node
+@name WebServiceExecutionControllerConfig
+@form unqualified
+@id
+@ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidf08gjdxqecbjqdxqibjry:oiref>
+@derivationType extension
+@content empty
+@compositor sequence
+@occurs <none>
+@block <none>
+@final <none>
+@subst 
+*/
+class nodeidgmhtxdxqecbjqdxqibkcf {
+}
+/**
+Documentation : list of applications
+@shapeType xmlElement
+@__modelType node
+@name ApplicationList
+@form unqualified
+@id
+@ref <oiref:design#Class#id4x27acgvzg7thcgvzgsqi.node35:oiref>
+@derivationType restriction
+@content element only
+@compositor sequence
+@occurs <none>
+@block <none>
+@final <none>
+@subst 
+*/
+class nodeid9g3mcdxqecbjqdxqibkeo {
+/**
+@shapeType xmlElementRef
+@__modelType node
+@name xmlElementRef12
+@ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeida333sdxqecbjqdxqibn8r:oiref>
+@minoccurs 1
+@maxoccurs unbounded
+@index 1
+@refFrom <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid9g3mcdxqecbjqdxqibkeo.linkid3ibotdxqecbjqdxqibnec:oiref> 
+*/
+class nodeidacf7odxqecbjqdxqibnbe {
+}
+/**
+@shapeType xmlReferenceLink
+@__modelType link
+@__ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeida333sdxqecbjqdxqibn8r:oiref><oihard>
+@ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid9g3mcdxqecbjqdxqibkeo.nodeidacf7odxqecbjqdxqibnbe:oiref> 
+*/
+class linkid3ibotdxqecbjqdxqibnec {
+}
+}
+/**
+@shapeType xmlElement
+@__modelType node
+@name Parameters
+@form unqualified
+@id
+@ref <oiref:design#Class#id4x27acgvzg7thcgvzgsqi.node35:oiref>
+@derivationType restriction
+@content empty
+@compositor sequence
+@occurs <none>
+@block <none>
+@final <none>
+@subst
+@refFrom <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid1ki4ddxqecbjqdxqibij0.nodeid97yhldxqecbjqdxqibkk9:oiref> 
+*/
+class nodeid31nkpdxqecbjqdxqibki0 {
+}
+/**
+@shapeType xmlElement
+@__modelType node
+@name Interfaces
+@form unqualified
+@id
+@ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeiden7endxqecbjqdxqibjn5:oiref>
+@derivationType restriction
+@content empty
+@compositor sequence
+@occurs <none>
+@block <none>
+@final <none>
+@subst
+@refFrom <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid1ki4ddxqecbjqdxqibij0.nodeid10m71dxqecbjqdxqibkpo:oiref> 
+*/
+class nodeid4bh1pdxqecbjqdxqibkn5 {
+}
+/**
+@shapeType xmlElement
+@__modelType node
+@name ExecutionPath
+@form unqualified
+@id
+@ref <oiref:design#Class#id4x27acgvzg7thcgvzgsqi.node2:oiref>
+@derivationType restriction
+@content empty
+@compositor sequence
+@occurs <none>
+@block <none>
+@final <none>
+@subst
+@refFrom <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidc0irpdxqecbjqdxqibisz.nodeid4g6r4dxqecbjqdxqibl2o:oiref> 
+*/
+class nodeidip7endxqecbjqdxqibkz5 {
+}
+/**
+@shapeType xmlElement
+@__modelType node
+@name URL
+@form unqualified
+@id
+@ref <oiref:design#Class#id4x27acgvzg7thcgvzgsqi.node2:oiref>
+@derivationType restriction
+@content empty
+@compositor sequence
+@occurs <none>
+@block <none>
+@final <none>
+@subst
+@refFrom <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid7pvu0dxqecbjqdxqibj30.nodeidbinutdxqecbjqdxqibldh:oiref> 
+*/
+class nodeid8x853dxqecbjqdxqiblax {
+}
+/**
+@shapeType xmlElement
+@__modelType node
+@name ProcessInputsXSLT
+@form unqualified
+@id
+@ref <oiref:design#Class#id4x27acgvzg7thcgvzgsqi.node2:oiref>
+@derivationType restriction
+@content empty
+@compositor sequence
+@occurs <none>
+@block <none>
+@final <none>
+@subst
+@refFrom <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid7pvu0dxqecbjqdxqibj30.nodeid40wfmdxqecbjqdxqibljd:oiref> 
+*/
+class nodeidj22badxqecbjqdxqiblg8 {
+}
+/**
+@shapeType xmlElement
+@__modelType node
+@name PostprocessScript
+@form unqualified
+@id
+@ref <oiref:design#Class#id4x27acgvzg7thcgvzgsqi.node2:oiref>
+@derivationType restriction
+@content empty
+@compositor sequence
+@occurs <none>
+@block <none>
+@final <none>
+@subst
+@refFrom <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid7pvu0dxqecbjqdxqibj30.nodeid8sxuldxqecbjqdxqiblp1:oiref> 
+*/
+class nodeid8vcxedxqecbjqdxqiblmc {
+}
+/**
+@shapeType xmlElement
+@__modelType node
+@name input
+@form unqualified
+@id
+@ref <oiref:design#Class#id4x27acgvzg7thcgvzgsqi.node35:oiref>
+@derivationType restriction
+@content element only
+@compositor sequence
+@occurs <none>
+@block <none>
+@final <none>
+@subst
+@refFrom <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidh7blodxqecbjqdxqibj63.nodeidahqgedxqecbjqdxqibluf:oiref> 
+*/
+class nodeid34dtudxqecbjqdxqiblrr {
+/**
+@shapeType xmlElementRef
+@__modelType node
+@name xmlElementRef8
+@ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidha0ttdxqecbjqdxqiblwx:oiref>
+@minoccurs 0
+@maxoccurs unbounded
+@index 1
+@refFrom <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid34dtudxqecbjqdxqiblrr.linkid7jvd8dxqecbjqdxqibm2a:oiref> 
+*/
+class nodeid933u1dxqecbjqdxqiblzj {
+}
+/**
+@shapeType xmlReferenceLink
+@__modelType link
+@__ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidha0ttdxqecbjqdxqiblwx:oiref><oihard>
+@ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid34dtudxqecbjqdxqiblrr.nodeid933u1dxqecbjqdxqiblzj:oiref> 
+*/
+class linkid7jvd8dxqecbjqdxqibm2a {
+}
+}
+/**
+@shapeType xmlElement
+@__modelType node
+@name pref
+@form unqualified
+@id
+@ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeiddyxwzdxqecbjqdxqibj8p:oiref>
+@derivationType restriction
+@content empty
+@compositor sequence
+@occurs <none>
+@block <none>
+@final <none>
+@subst
+@refFrom <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid34dtudxqecbjqdxqiblrr.nodeid933u1dxqecbjqdxqiblzj:oiref> 
+*/
+class nodeidha0ttdxqecbjqdxqiblwx {
+}
+/**
+@shapeType xmlElement
+@__modelType node
+@name output
+@form unqualified
+@id
+@ref <oiref:design#Class#id4x27acgvzg7thcgvzgsqi.node35:oiref>
+@derivationType restriction
+@content element only
+@compositor sequence
+@occurs <none>
+@block <none>
+@final <none>
+@subst
+@refFrom <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidh7blodxqecbjqdxqibj63.nodeid1355ldxqecbjqdxqibm4z:oiref> 
+*/
+class nodeidc294edxqecbjqdxqibm2n {
+/**
+@shapeType xmlElementRef
+@__modelType node
+@name xmlElementRef10
+@ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidanftkdxqecbjqdxqibm7j:oiref>
+@minoccurs 0
+@maxoccurs unbounded
+@index 1
+@refFrom <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidc294edxqecbjqdxqibm2n.linkidhfsjwdxqecbjqdxqibmcz:oiref> 
+*/
+class nodeid8t6cpdxqecbjqdxqibma7 {
+}
+/**
+@shapeType xmlReferenceLink
+@__modelType link
+@__ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidanftkdxqecbjqdxqibm7j:oiref><oihard>
+@ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidc294edxqecbjqdxqibm2n.nodeid8t6cpdxqecbjqdxqibma7:oiref> 
+*/
+class linkidhfsjwdxqecbjqdxqibmcz {
+}
+}
+/**
+@shapeType xmlElement
+@__modelType node
+@name Element1
+@form unqualified
+@id
+@ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeiddyxwzdxqecbjqdxqibj8p:oiref>
+@derivationType restriction
+@content empty
+@compositor sequence
+@occurs <none>
+@block <none>
+@final <none>
+@subst
+@refFrom <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidc294edxqecbjqdxqibm2n.nodeid8t6cpdxqecbjqdxqibma7:oiref> 
+*/
+class nodeidanftkdxqecbjqdxqibm7j {
+}
+/**
+@shapeType xmlElement
+@__modelType node
+@name Interface
+@form unqualified
+@id
+@ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeidh7blodxqecbjqdxqibj63:oiref>
+@derivationType restriction
+@content empty
+@compositor sequence
+@occurs <none>
+@block <none>
+@final <none>
+@subst
+@refFrom <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeiden7endxqecbjqdxqibjn5.nodeid1d2jadxqecbjqdxqibmvr:oiref> 
+*/
+class nodeidjlpjqdxqecbjqdxqibmss {
+}
+/**
+Documentation : This is a generic application definition that does not take in all of the specializations for web/commandline etc
+@shapeType xmlElement
+@__modelType node
+@name ApplicationDefn
+@form unqualified
+@id
+@ref <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid1ki4ddxqecbjqdxqibij0:oiref>
+@derivationType restriction
+@content empty
+@compositor sequence
+@occurs <none>
+@block <none>
+@final <none>
+@subst
+@refFrom <oiref:design#Class#id96ycndxqecbjqdxqibif9.nodeid9g3mcdxqecbjqdxqibkeo.nodeidacf7odxqecbjqdxqibnbe:oiref> 
+*/
+class nodeida333sdxqecbjqdxqibn8r {
+}

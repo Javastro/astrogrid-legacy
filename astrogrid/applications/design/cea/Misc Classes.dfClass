@@ -1,0 +1,29 @@
+package idcayardxq0o8v8dxq3lusa;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:java#Class#cea._tool:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference {
+}
+}/**
+These are only here to make the  refs less yucky...
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:java#Class#cea._tool:oiref>=193,65,200,272,1:oigroup> 
+*/
+class __positions {
+}

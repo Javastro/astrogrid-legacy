@@ -1,0 +1,69 @@
+package id28o0bdxovim87dxowdzu3;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id28o0bdxovim87dxowdzu3.node:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:java#Class#cea.ResourceType:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference14 {
+}/**
+@__ref <oiref:java#Class#cea.CeaApplication:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference16 {
+}/**
+@__ref <oiref:java#Class#cea.ServiceType:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference18 {
+}/**
+@__ref <oiref:java#Class#cea.CeaService:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference20 {
+}}/**
+
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:java#Class#cea.ResourceType:oiref>=170,150,98,81,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#cea.CeaService#lnkCeaService:oiref>=370,345,266,345:oigroup>
+<oigroup:Composite#supplierCardinality#MemberLink#<oiref:java#Member#cea.CeaService#lnkCeaService:oiref>=276,330,22,15,0,0.0,1.0:oigroup>
+<oigroup:<oiref:java#Extends#cea.CeaApplication#cea.ResourceType:oiref>=218,300,218,231:oigroup>
+<oigroup:<oiref:java#Extends#cea.CeaService#cea.ServiceType:oiref>=430,310,430,240:oigroup>
+<oigroup:<oiref:java#Class#cea.ServiceType:oiref>=340,150,150,90,0:oigroup>
+<oigroup:Composite#clientCardinality#MemberLink#<oiref:java#Member#cea.CeaService#lnkCeaService:oiref>=360,345,22,15,0,0.0,-1.0:oigroup>
+<oigroup:<oiref:java#Class#cea.CeaApplication:oiref>=160,300,106,81,1:oigroup>
+<oigroup:<oiref:java#Class#cea.CeaService:oiref>=370,310,120,100,0:oigroup>
+<oigroup:<oiref:java#Extends#cea.ServiceType#cea.ResourceType:oiref>=340,190,268,190:oigroup>
+<oigroup:<oiref:design#Class#id28o0bdxovim87dxowdzu3.node:oiref>=10,240,172,40,1:oigroup>
+<oigroup:Composite#label#MemberLink#<oiref:java#Member#cea.CeaService#lnkCeaService:oiref>=282,345,71,15,1:oigroup>
+*/
+class __positions {
+}/**
+@shapeType Note
+@__modelType node
+@name Note1
+@text Registry Domain Objects 
+*/
+class node {
+}

@@ -153,6 +153,18 @@ class reference27 {
 @__fqn <oiref:#Package#org.astrogrid.applications.description.registry:oiref> 
 */
 class reference28 {
+}/**
+@__ref <oiref:design#Class#idbls5sdxomlr2ddxony59l.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.applications.description.base:oiref> 
+*/
+class reference70 {
+}/**
+@__ref <oiref:design#Class#id9ttycdxomlr2ddxony5b4.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.applications.description.doc-files:oiref> 
+*/
+class reference75 {
 }}/**
 @__tags
 @shapeType ClassDiagram*/
