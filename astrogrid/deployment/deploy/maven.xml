@@ -262,7 +262,7 @@
 	</goal>
 	<goal name="setup-cea-cmd" 
 		description="setup specific to cea-cmd">
-		<mkdir dir="${workdir}/cea/commandline/store"/>
+		<mkdir dir="${work.dir}/cea/commandline/store"/>
 		<echo>Configuring Applications</echo>
 		<!-- registry -->
 		<copy todir="${temporary.dir}/registry-entries" filtering="true" overwrite="true">
