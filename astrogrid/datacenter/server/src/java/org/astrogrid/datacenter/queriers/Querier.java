@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.36 2004/03/12 20:04:57 mch Exp $
+ * $Id: Querier.java,v 1.37 2004/03/13 16:26:40 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -170,6 +170,9 @@ public class Querier implements Runnable {
    
    /** Returns the query for subclasses   */
    public Query getQuery() { return query; }
+   
+   /** Returns the query for subclasses   */
+   public Account getUser() { return user; }
    
    /** Returns the plugin - this is *only* for testing @todo a nicer way of doing this */
    public QuerierPlugin getPlugin() { return plugin; }
@@ -403,6 +406,9 @@ public class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.37  2004/03/13 16:26:40  mch
+ Changed makeFullSearcher to makeQuerySearcher
+
  Revision 1.36  2004/03/12 20:04:57  mch
  It05 Refactor (Client)
 

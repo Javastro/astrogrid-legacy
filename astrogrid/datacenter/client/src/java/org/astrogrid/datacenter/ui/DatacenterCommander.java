@@ -1,4 +1,4 @@
-/*$Id: DatacenterCommander.java,v 1.5 2004/03/13 16:19:38 mch Exp $
+/*$Id: DatacenterCommander.java,v 1.6 2004/03/13 16:26:25 mch Exp $
  * Created on 24-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -115,7 +115,7 @@ public class DatacenterCommander {
          return;
       }
       System.out.println("Connecting to server...");
-      QuerySearcher del = DatacenterDelegateFactory.makeFullSearcher(endpoint.toString());
+      QuerySearcher del = DatacenterDelegateFactory.makeQuerySearcher(endpoint.toString());
       System.out.println("Reading query...");
       Select select = Select.unmarshalSelect(new InputStreamReader ( new FileInputStream(queryFile)));
       Element queryBody = ADQLUtils.toQueryBody(select);
@@ -143,7 +143,7 @@ public class DatacenterCommander {
    public static void doSql(String endpoint, String sql) throws ServiceException, MarshalException, ValidationException, IOException, ADQLException{
       
       System.out.println("Connecting to server...");
-      QuerySearcher del = DatacenterDelegateFactory.makeFullSearcher(endpoint.toString());
+      QuerySearcher del = DatacenterDelegateFactory.makeQuerySearcher(endpoint.toString());
       System.out.println("Asking query...");
       InputStream results = del.askQuery(new RawSqlQuery(sql), QuerySearcher.VOTABLE);
       System.out.println("Results:");
@@ -155,6 +155,9 @@ public class DatacenterCommander {
 
 /*
  $Log: DatacenterCommander.java,v $
+ Revision 1.6  2004/03/13 16:26:25  mch
+ Changed makeFullSearcher to makeQuerySearcher
+
  Revision 1.5  2004/03/13 16:19:38  mch
  Tidying up after refactor
 

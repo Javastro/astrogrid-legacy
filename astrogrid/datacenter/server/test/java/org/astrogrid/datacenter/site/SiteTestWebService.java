@@ -1,4 +1,4 @@
-/*$Id: SiteTestWebService.java,v 1.4 2004/03/12 20:11:09 mch Exp $
+/*$Id: SiteTestWebService.java,v 1.5 2004/03/13 16:26:56 mch Exp $
  * Created on 21-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -45,7 +45,7 @@ public class SiteTestWebService extends TestCase {
    
    public void testMetadata() throws IOException, ServiceException
    {
-      QuerySearcher querier = DatacenterDelegateFactory.makeFullSearcher(Account.ANONYMOUS, endPoint, DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
+      QuerySearcher querier = DatacenterDelegateFactory.makeQuerySearcher(Account.ANONYMOUS, endPoint, DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
       
       assertNotNull(querier.getMetadata());
       
@@ -53,7 +53,7 @@ public class SiteTestWebService extends TestCase {
    
    public void testBlockingQuery() throws Exception
    {
-      QuerySearcher querier = DatacenterDelegateFactory.makeFullSearcher(Account.ANONYMOUS, endPoint, DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
+      QuerySearcher querier = DatacenterDelegateFactory.makeQuerySearcher(Account.ANONYMOUS, endPoint, DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
 
       InputStream is = SiteTestWebService.class.getResourceAsStream("test-query.adql");
 
@@ -89,6 +89,9 @@ public class SiteTestWebService extends TestCase {
 
 /*
 $Log: SiteTestWebService.java,v $
+Revision 1.5  2004/03/13 16:26:56  mch
+Changed makeFullSearcher to makeQuerySearcher
+
 Revision 1.4  2004/03/12 20:11:09  mch
 It05 Refactor (Client)
 

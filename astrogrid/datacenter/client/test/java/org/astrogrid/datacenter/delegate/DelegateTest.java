@@ -1,5 +1,5 @@
 /*
- * $Id: DelegateTest.java,v 1.12 2004/03/12 20:04:39 mch Exp $
+ * $Id: DelegateTest.java,v 1.13 2004/03/13 16:26:49 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -42,12 +42,12 @@ public class DelegateTest extends TestCase implements ClientQueryListener
     */
    public void testDelegateTypes() throws MalformedURLException, IOException, ServiceException
    {
-      DummyDelegate dummy = (DummyDelegate) DatacenterDelegateFactory.makeFullSearcher(null);
+      DummyDelegate dummy = (DummyDelegate) DatacenterDelegateFactory.makeQuerySearcher(null);
       dummy.setTimeout(200);
 
       try
       {
-         WebDelegate_v041 web = (WebDelegate_v041) DatacenterDelegateFactory.makeFullSearcher("http://wibble");
+         WebDelegate_v041 web = (WebDelegate_v041) DatacenterDelegateFactory.makeQuerySearcher("http://wibble");
       }
       catch (IOException se)     { } // expect to not connect
       
@@ -58,7 +58,7 @@ public class DelegateTest extends TestCase implements ClientQueryListener
     */
    public void testBlockingQuery() throws ServiceException, MalformedURLException, SAXException, ParserConfigurationException, IOException, QueryException, ADQLException
    {
-      QuerySearcher delegate = DatacenterDelegateFactory.makeFullSearcher(null);
+      QuerySearcher delegate = DatacenterDelegateFactory.makeQuerySearcher(null);
 
       //load test query file
       URL url = getClass().getResource("adqlQuery.xml");
@@ -78,10 +78,9 @@ public class DelegateTest extends TestCase implements ClientQueryListener
    /**
     * Private method used to check that the results document is valid
     * @todo provide impelemnation that does some tests.
-    */
+    *
    private void checkResults(DatacenterResults results)
    {
-      /**
       //check results look ok
       assertEquals(ResponseHelper.DATACENTER_RESULTS_TAG, results.getNodeName());
       assertEquals(DummyDelegate.QUERY_ID, QueryIdHelper.getQueryId(results));
@@ -94,7 +93,6 @@ public class DelegateTest extends TestCase implements ClientQueryListener
       assertTrue(results.getElementsByTagName("VOTABLE").getLength() >0);
 
       //errr some more
-       */
    }
 
    /**
@@ -136,7 +134,7 @@ public class DelegateTest extends TestCase implements ClientQueryListener
     */
    public void testMetadata() throws IOException, ServiceException, ParserConfigurationException, SAXException
    {
-      QuerySearcher delegate = DatacenterDelegateFactory.makeFullSearcher(null);
+      QuerySearcher delegate = DatacenterDelegateFactory.makeQuerySearcher(null);
 
       String meta = delegate.getMetadata();
       
@@ -170,6 +168,9 @@ public class DelegateTest extends TestCase implements ClientQueryListener
 
 /*
  * $Log: DelegateTest.java,v $
+ * Revision 1.13  2004/03/13 16:26:49  mch
+ * Changed makeFullSearcher to makeQuerySearcher
+ *
  * Revision 1.12  2004/03/12 20:04:39  mch
  * It05 Refactor (Client)
  *

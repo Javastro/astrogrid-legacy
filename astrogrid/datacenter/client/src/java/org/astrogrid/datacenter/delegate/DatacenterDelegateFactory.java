@@ -1,5 +1,5 @@
 /*
- * $Id: DatacenterDelegateFactory.java,v 1.16 2004/03/12 20:00:11 mch Exp $
+ * $Id: DatacenterDelegateFactory.java,v 1.17 2004/03/13 16:26:25 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -10,7 +10,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import javax.xml.rpc.ServiceException;
 import org.astrogrid.community.Account;
-import org.astrogrid.community.User;
 import org.astrogrid.datacenter.delegate.agws.WebDelegate_v041;
 import org.astrogrid.datacenter.delegate.dummy.DummyDelegate;
 import org.astrogrid.datacenter.delegate.nvocone.NvoConeSearchDelegate;
@@ -44,24 +43,14 @@ public class DatacenterDelegateFactory {
          return makeConeSearcher(Account.ANONYMOUS, givenEndPoint, NVO_CONE_SERVICE);
       } else {
          //pants, should really now query the service...
-         return makeConeSearcher(Account.ANONYMOUS, givenEndPoint, NVO_CONE_SERVICE);
+         return makeConeSearcher(Account.ANONYMOUS, givenEndPoint, ASTROGRID_WEB_SERVICE);
       }
    }
 
-   /** Wrapper version that takes community User
-    * @deprecated
-    */
-   public static ConeSearcher makeConeSearcher(User user, String givenEndPoint, String serviceType)
-      throws MalformedURLException, DatacenterException {
-   
-      return makeConeSearcher(Account.ANONYMOUS, givenEndPoint, serviceType);
-   }
-   
    /** Creates a ConeSearcher-implementing delegate given an endpoint
     * (a url to the service). If the endPoint
     * is null, creates a dummy delegate that can be used to test against, which
     * does not need access to any datacenter servers.
-    * @todo make CatalogDelegate implement ConeSearcher and add here
     */
    public static ConeSearcher makeConeSearcher(Account user, String givenEndPoint, String serviceType)
       throws MalformedURLException, DatacenterException {
@@ -87,39 +76,31 @@ public class DatacenterDelegateFactory {
     * best attempt to work out type but it's not safe
     * @deprecated use method that accepts user
     */
-   public static QuerySearcher makeFullSearcher(String givenEndPoint)
+   public static QuerySearcher makeQuerySearcher(String givenEndPoint)
       throws ServiceException, MalformedURLException, IOException {
       //there are three server types -> three delegate implementations - dummies,
       // nvo cone-search servers, and astrogrid datacenter servers (agds).
       // The urls of nvo cone-search servers and adql servers may be similar.
       // only adql servers return metadata.
       if (givenEndPoint == null) {
-         return makeFullSearcher(Account.ANONYMOUS, givenEndPoint, DUMMY_SERVICE);
+         return makeQuerySearcher(Account.ANONYMOUS, givenEndPoint, DUMMY_SERVICE);
       }
       //if the url includes ?CAT it's an nvo-server
       if (givenEndPoint.indexOf("?") > -1) {
-         return makeFullSearcher(Account.ANONYMOUS, givenEndPoint, NVO_CONE_SERVICE);
+         return makeQuerySearcher(Account.ANONYMOUS, givenEndPoint, NVO_CONE_SERVICE);
       }
       if (givenEndPoint.startsWith("socket")) {
-         return makeFullSearcher(Account.ANONYMOUS, givenEndPoint, ASTROGRID_SOCKET_SERVICE);
+         return makeQuerySearcher(Account.ANONYMOUS, givenEndPoint, ASTROGRID_SOCKET_SERVICE);
       }
-      return makeFullSearcher(Account.ANONYMOUS, givenEndPoint, ASTROGRID_WEB_SERVICE);
+      return makeQuerySearcher(Account.ANONYMOUS, givenEndPoint, ASTROGRID_WEB_SERVICE);
    }
    
-   /** Wrapper version that takes community User
-    * @deprecated
-    */
-   public static ConeSearcher makeFullSearcher(User user, String givenEndPoint, String serviceType)
-      throws MalformedURLException, DatacenterException {
-   
-      return makeConeSearcher(Account.ANONYMOUS, givenEndPoint, serviceType);
-   }
    /** Creates an  delegate given an endpoint
     * (a url to the service). If the endPoint
     * is null, creates a dummy delegate that can be used to test against, which
     * does not need access to any datacenter servers.
     */
-   public static QuerySearcher makeFullSearcher(Account user, String givenEndPoint, String serviceType)
+   public static QuerySearcher makeQuerySearcher(Account user, String givenEndPoint, String serviceType)
       throws ServiceException, MalformedURLException, IOException {
       if (serviceType.equals(DUMMY_SERVICE)) {
          //easy one, return a dummy
@@ -148,6 +129,9 @@ public class DatacenterDelegateFactory {
 }
 /*
  $Log: DatacenterDelegateFactory.java,v $
+ Revision 1.17  2004/03/13 16:26:25  mch
+ Changed makeFullSearcher to makeQuerySearcher
+
  Revision 1.16  2004/03/12 20:00:11  mch
  It05 Refactor (Client)
 

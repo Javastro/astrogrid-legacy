@@ -1,4 +1,4 @@
-/*$Id: DelegateTestInstallation.java,v 1.1 2004/03/13 01:11:29 mch Exp $
+/*$Id: DelegateTestInstallation.java,v 1.2 2004/03/13 16:26:56 mch Exp $
  * Created on 19-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -141,7 +141,7 @@ public abstract class DelegateTestInstallation extends ServerTestCase {
         System.out.println("Connecting to datacenter service at " + serviceURL.toString());
         QuerySearcher del = null;
         try {
-            del = DatacenterDelegateFactory.makeFullSearcher( serviceURL.toString()) ;// pity it can't take a URL
+            del = DatacenterDelegateFactory.makeQuerySearcher( serviceURL.toString()) ;// pity it can't take a URL
         } catch (IOException e) {
             e.printStackTrace();
             fail("Exception while creating delegate: " + e.getMessage());
@@ -288,6 +288,9 @@ public abstract class DelegateTestInstallation extends ServerTestCase {
 
 /*
 $Log: DelegateTestInstallation.java,v $
+Revision 1.2  2004/03/13 16:26:56  mch
+Changed makeFullSearcher to makeQuerySearcher
+
 Revision 1.1  2004/03/13 01:11:29  mch
 It05 Refactor (Client)
 

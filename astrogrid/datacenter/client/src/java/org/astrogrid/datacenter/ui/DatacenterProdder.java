@@ -1,4 +1,4 @@
-/* $Id: DatacenterProdder.java,v 1.3 2004/03/12 20:00:11 mch Exp $
+/* $Id: DatacenterProdder.java,v 1.4 2004/03/13 16:26:25 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -254,7 +254,7 @@ public class DatacenterProdder extends JFrame
 
          //connect up to the datacenter
          log.info("Connecting to datacenter at "+datacenterLocator.getDelegateEndPoint());
-         QuerySearcher querier = DatacenterDelegateFactory.makeFullSearcher(datacenterLocator.getDelegateEndPoint());
+         QuerySearcher querier = DatacenterDelegateFactory.makeQuerySearcher(datacenterLocator.getDelegateEndPoint());
 
          progBox.setProgress(1);
          progBox.setNote("Connecting to query document");
@@ -317,7 +317,7 @@ public class DatacenterProdder extends JFrame
 
          //connect up to the datacenter
          log.info("Connecting to datacenter at "+datacenterLocator.getDelegateEndPoint());
-         QuerySearcher querier = DatacenterDelegateFactory.makeFullSearcher(datacenterLocator.getDelegateEndPoint());
+         QuerySearcher querier = DatacenterDelegateFactory.makeQuerySearcher(datacenterLocator.getDelegateEndPoint());
 
          progBox.setProgress(1);
          progBox.setNote("Connecting to query document");
@@ -416,6 +416,9 @@ public class DatacenterProdder extends JFrame
 
 /*
  $Log: DatacenterProdder.java,v $
+ Revision 1.4  2004/03/13 16:26:25  mch
+ Changed makeFullSearcher to makeQuerySearcher
+
  Revision 1.3  2004/03/12 20:00:11  mch
  It05 Refactor (Client)
 
