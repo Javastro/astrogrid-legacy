@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.128 2004/11/22 14:48:37 jdt Exp $ -->
+<!-- $Id: maven.xml,v 1.129 2004/11/23 15:46:06 jdt Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -66,6 +66,7 @@
 <!-- temp dir - used for mangling files, etc -->
 <property name="temporary.dir" location="${basedir}/tmp" />
 <property name="config.webapp.name" value="astrogrid-autoconfiguration" />
+<property name="testdata.webapp.name" value="astrogrid-testdata"/>
 
         <j:if test="${empty(context.getVariable('registry.authorityid'))}">
                 <j:set var="registry.authorityid" value="org.astrogrid.localhost"/>
@@ -131,6 +132,7 @@
                 <echo>*** Deploying all webapps...</echo>
         <attainGoal name="common-libs-deploy" />
         <attainGoal name="configuration-deploy" />
+        <attainGoal name="testdata-deploy"/>
         <sleep seconds="2" />
         <attainGoal name="reg-deploy" />
         <sleep seconds="4" />
@@ -166,6 +168,7 @@
         <echo>*** Deploying all webapps except the portal...</echo>
         <attainGoal name="common-libs-deploy" />
         <attainGoal name="configuration-deploy" />
+        <attainGoal name="testdata-deploy"/>
         <sleep seconds="2" />
         <attainGoal name="reg-deploy" />
         <sleep seconds="4" />
@@ -199,6 +202,7 @@
 <goal name="undeploy-all" prereqs="init" description="undeploy all webapps">
         <echo>*** Undeploying all webapps...</echo>
         <attainGoal name="configuration-undeploy"/>
+        <attainGoal name="testdata-undeploy"/>
         <attainGoal name="jes-undeploy" />
         <attainGoal name="cea-server-undeploy" />
         <attainGoal name="cea-commandline-undeploy" />
@@ -218,6 +222,7 @@
 <goal name="undeploy-all-except-portal" prereqs="init" description="undeploy all webapps except the portal">
         <echo>*** Undeploying all webapps except the portal...</echo>
         <attainGoal name="configuration-undeploy"/>
+        <attainGoal name="testdata-undeploy"/>
         <attainGoal name="jes-undeploy" />
         <attainGoal name="cea-server-undeploy" />
         <attainGoal name="cea-commandline-undeploy" />
@@ -657,6 +662,17 @@
                         path="/${config.webapp.name}" war="file:///${temporary.dir}/${config.webapp.name}.war" />
 
 </goal>
+<goal name="testdata-deploy" description="create and install testdata webapp" >
+        <copy todir="${temporary.dir}/test-data" filtering="true">
+                <fileset dir="webapps/test-data" />
+        </copy>
+        <jar destfile="${temporary.dir}/${testdata.webapp.name}.war" basedir="${temporary.dir}/test-data">
+        </jar>
+
+                <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
+                        path="/${testdata.webapp.name}" war="file:///${temporary.dir}/${testdata.webapp.name}.war" />
+
+</goal>
 
 <!-- context- driven webapps ////////////////////////////////-->
 <goal name="jes-deploy">
@@ -1035,9 +1051,17 @@
 <goal name="configuration-undeploy" >
 
         <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-                path="/astrogrid-autoconfiguration" />
+                path="/${config.webapp.name}" />
 
 </goal>
+
+<goal name="testdata-undeploy" >
+
+        <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
+                path="/${testdata.webapp.name}" />
+
+</goal>
+
 
 <goal name="portal-undeploy">
 

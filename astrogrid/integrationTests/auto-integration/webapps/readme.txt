@@ -7,3 +7,5 @@ proper astorgrid-component war files.
 /astrogrid-configuration - config files for the whole astrogrid installation
 
 /myspace-store - store of files for myspace (not working?)
+
+/test-data - contains files etc that you might want to make available by URL for testing purposes

@@ -1,4 +1,4 @@
-/*$Id: SimpleMySpaceTest.java,v 1.13 2004/07/07 18:31:45 mch Exp $
+/*$Id: SimpleMySpaceTest.java,v 1.14 2004/11/23 15:46:06 jdt Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -278,8 +278,9 @@ public final class SimpleMySpaceTest extends TestCase {
      */
     public void testImportExportDeleteURL() throws Exception {
         final String name = "foo" + Long.toString(System.currentTimeMillis());
-        final String url =
-            "http://wiki.astrogrid.org/pub/Main/JohnTaylor/urlTestConfig.xml";
+        final String testAppUrl = SimpleConfig.getProperty("org.astrogrid.testwebapp.url");
+        final String url = testAppUrl +"/urlTestConfig.xml";
+        log.debug("Attempting to use test file from "+url);
         importURLExportDelete(
             getFullPath(defaultUser, defaultCommunity, name),
             url);
@@ -338,6 +339,13 @@ public final class SimpleMySpaceTest extends TestCase {
 }
 /*
  $Log: SimpleMySpaceTest.java,v $
+ Revision 1.14  2004/11/23 15:46:06  jdt
+ Merge from INT_JDT_757 (putting external test file dependencies inside aginab)
+
+ Revision 1.13.118.1  2004/11/23 15:16:05  jdt
+ Moved external test file resources into their own webapp, so that AGINAB isn't dependent on our
+ AstroGrid website.
+
  Revision 1.13  2004/07/07 18:31:45  mch
  Fixed Msrl constructor in setup
 
