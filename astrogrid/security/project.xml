@@ -5,7 +5,7 @@
 
   <extend>../maven-base/project.xml</extend>
   
-  <id>astrogrid-wsse</id>
+  <id>astrogrid-security</id>
   <name>AstroGrid security facade</name>
 
   <currentVersion>HEAD</currentVersion>
@@ -96,6 +96,13 @@
       <artifactId>commons-logging</artifactId>
       <version>1.0.3</version>
     </dependency>
+
+    <dependency>
+      <groupId>commons-discovery</groupId>
+      <type>jar</type>
+      <artifactId>commons-discovery</artifactId>
+      <version>20030211.213356</version>
+    </dependency>
     
     <dependency>
       <groupId>castor</groupId>
@@ -118,8 +125,15 @@
       <artifactId>xml-apis</artifactId>
       <version>2.0.2</version>
     </dependency>
+    
+    <dependency>
+      <groupId>wsdl4j</groupId>
+      <type>jar</type>
+      <artifactId>wsdl4j</artifactId>
+      <version>1.0</version>
+    </dependency>
 
-   <dependency>
+    <dependency>
       <groupId>log4j</groupId>
       <type>jar</type>
       <artifactId>log4j</artifactId>
