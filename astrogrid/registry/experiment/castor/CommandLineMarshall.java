@@ -27,6 +27,7 @@ public class CommandLineMarshall {
    }
    
   public static void main(String[] args) {
+  	//This line should be edited and point to the runAllScript.bat file address
 	new CommandLineMarshall("D:\eclipse\workspace\astrogrid\registry\experiment\castor\script\runAllScript.bat");
   }
 

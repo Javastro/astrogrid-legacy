@@ -1,0 +1,3 @@
+Verify the files path included in the bat files
+inside of script directory.
+That's: classpath.bat, marshalling.bat, runAllScript.bat
