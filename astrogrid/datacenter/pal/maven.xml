@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <!-- extension maven script -->
-<project xmlns:j="jelly:core"  xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="jar:jar">
+<project xmlns:j="jelly:core"  xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="pal">
 
 
 <property name="server.dir" location="${basedir}/../server" />
@@ -9,6 +9,11 @@
 <property name="webapp.root" location="${basedir}/target/astrogrid-datacenter-pal" />
 <property name="webapp.docs" location="${basedir}/target/webapp-docs" />
 
+
+<goal name="pal">
+  <attainGoal name="webapp-site" />
+  <attainGoal name="war:war" />
+</goal>
 
 <!-- hook to add our own things to the mix -->
 <preGoal name="war:war">

@@ -13,7 +13,7 @@
 	<description><![CDATA[
 	Everything you need to publish a data archive, wrapped up in one big bundle.
 	<p />
-	 The name of the war produced by this project is <tt>astrogrid-datacenter-pal</tt>
+	 The name of the war produced by this project is <tt>pal</tt>
 	 To add a dependency on this project to your own project, add the following to your <tt>project.xml</tt>
 	 <source>
 	   &lt;dependencies&gt;

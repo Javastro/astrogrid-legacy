@@ -162,6 +162,12 @@
       <war.bundle>true</war.bundle>
       </properties>
     </dependency>
+
+    <dependency>
+    	<id>xmlunit</id>
+	<version>1.0</version>
+	<war.bundle>true</war.bundle>
+    </dependency>
     </dependencies>
 
   <build>
