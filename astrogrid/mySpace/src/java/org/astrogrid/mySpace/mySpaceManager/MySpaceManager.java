@@ -4,6 +4,11 @@ import java.io.*;
 import java.util.*;
 import java.util.HashMap;
 
+import org.apache.axis.client.Call;
+import org.apache.axis.client.Service;
+import javax.xml.rpc.ParameterMode;
+import javax.xml.rpc.encoding.XMLType;
+
 import org.astrogrid.mySpace.mySpaceStatus.*;
 import org.astrogrid.mySpace.mySpaceUtil.*;
 
@@ -65,8 +70,12 @@ public class MySpaceManager{
 	private String query = "";
 	private int oldDataItemID = 0;
 	private String newDataItemName = "";
-	private  int dataItemID = 0;
+	private int dataItemID = 0;
 	private String newContainerName = "";
+	private String returnStatus = ""; //if the method is completed successful
+	private String details = ""; //details of the error message
+	private String content = ""; //content of the file from datacentre
+	private String fileLocation = ""; //file location in user's machine
 
 // Constructor.
 
@@ -87,6 +96,56 @@ public class MySpaceManager{
 // the MySpace system can perform.
 
 // -----------------------------------------------------------------
+
+/**
+ * Upload/save dataholder.
+ */
+public String upLoad(String jobDetails){
+	if ( DEBUG )  logger.debug("MySpaceManager.upLoad");
+	DataItemRecord dataitem = new DataItemRecord();
+	Call call = null;
+	//String content="UPLOAD TEST CONTENT";	
+	String path="/tmp/test"; //hard coded for now should be discussed
+	//if ( DEBUG ) logger.debug("cotent ="+content+"path="+path);
+		try{
+			request = util.getRequestAttributes(jobDetails);
+			fileLocation = request.get("fileLocation").toString();
+			content = MySpaceUtils.readFromFile(new File(fileLocation));
+
+			call = createServerManagerCall();
+			call.setOperationName( "saveDataHolder" );			
+			call.addParameter("arg0", XMLType.XSD_STRING, ParameterMode.IN);
+			call.addParameter("arg1", XMLType.XSD_STRING, ParameterMode.IN);
+		
+			call.setReturnType( org.apache.axis.encoding.XMLType.XSD_STRING);
+			String serverResponse = (String)call.invoke( new Object[] {content,path} );
+			if ( DEBUG )  logger.debug("GOT SERVERRESPONSE: "+serverResponse);
+			
+			//use serverResponse to build returnStatus and details for datacentre/portal
+			//hard code for now:
+			returnStatus = "TEST_OK";
+	
+		//   Get other stuff which can usefully be returned.
+		//   (Note that the current date needs to be returned to facilitate
+		//   comparisons with the expiry date; the MySpace system might be in
+		//   a different time-zone to the Explorer or portal.)
+	
+			boolean successStatus = status.getSuccessStatus();
+			boolean warningStatus = status.getWarningStatus();
+	
+			Date currentMySpaceDate = new Date();
+	
+		//   Format and return the results as XML.
+		
+			response = util.buildMySpaceManagerResponse(dataitem, returnStatus, details); 
+		}catch(Exception e){
+			MySpaceMessage message =  new MySpaceMessage("MS-E-FLMOVDH");
+			response = message.getMessage(e.toString());  
+			return response;
+		}
+		return response;
+	
+}
 
 /**
   * Lookup the details of a single DataHolder.
@@ -242,7 +301,7 @@ public class MySpaceManager{
 	    Date currentMySpaceDate = new Date();
 	
 	//   Format and return the results as XML.
-	    response = util.buildMySpaceManagerResponse(dataitem); 
+	    response = util.buildMySpaceManagerResponse(dataitem, returnStatus, details); 
    	}catch(Exception e){
    		MySpaceMessage message =  new MySpaceMessage("MS-E-FLMOVDH");
    		response = message.getMessage(e.toString());  
@@ -372,8 +431,29 @@ public class MySpaceManager{
 // Server methods.
 //
 // The followng methods are provided to access a MySpace server.
+private Call createServerManagerCall(){
+	Call call = null;
+	try{
+		String endpoint  = "http://localhost:8080/axis/services/ServerManager";
+		Service service = new Service();
+		call = (Call)service.createCall();
+		call.setTargetEndpointAddress( new java.net.URL(endpoint) );
+		
+		/*
+		call.setOperationName( "moveDataHolder" );			
+		call.addParameter("arg0", XMLType.XSD_STRING, ParameterMode.IN);
+		call.addParameter("arg1", XMLType.XSD_STRING, ParameterMode.IN);
+		
+		call.setReturnType( org.apache.axis.encoding.XMLType.XSD_STRING);
+		String serverResponse = call.invoke( new Object[] {content,path} );
+		*/
+	}catch(Exception e){
+		MySpaceMessage message = new MySpaceMessage("ERROR_CALL_SERVER_MANAGER");
+		message.getMessage(e.toString());
+	}	
+	return call;
+}
 
-// TBD.
 }
 
 

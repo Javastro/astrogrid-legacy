@@ -78,7 +78,8 @@ public class MySpaceUtils {
 		}
 	}
 	
-    public String buildMySpaceManagerResponse(DataItemRecord record){
+	
+    public String buildMySpaceManagerResponse(DataItemRecord record, String status, String details){
 		//conProperties = new Properties();
 		String response = "";
 		try {
@@ -90,17 +91,19 @@ public class MySpaceUtils {
 			if (DEBUG)  logger.debug("buildMySpaceManagerResponse = "+response);
 			
 			Object [] inserts = new Object[11] ;
-			inserts[0] = "a"; //status
-			inserts[1] = "b"; //details
-			inserts[2] = "c"; //dataitemrecord.getDataItemName
-			inserts[3] = "d"; //dataitemrecord.getDataItemID
-			inserts[4] = "e"; //dataitemrecord.getDataItemFile
-			inserts[5] = "f"; //dataitemrecord.getOwnerID
-			inserts[6] = "g"; //dataitemrecord.getCreationDate
-			inserts[7] = "h"; //dataitemrecord.getExpiryDate
-			inserts[8] = "i"; //dataitemrecord.getSize
-			inserts[9] = "j"; //dataitemrecord.getType
-			inserts[10] = "k";// dataitemrecord.getPermissionsMask
+			inserts[0] = status;
+			inserts[1] = details;
+			if(record != null){
+				inserts[2] = "c"; //dataitemrecord.getDataItemName
+				inserts[3] = "d"; //dataitemrecord.getDataItemID
+				inserts[4] = "e"; //dataitemrecord.getDataItemFile
+				inserts[5] = "f"; //dataitemrecord.getOwnerID
+				inserts[6] = "g"; //dataitemrecord.getCreationDate
+				inserts[7] = "h"; //dataitemrecord.getExpiryDate
+				inserts[8] = "i"; //dataitemrecord.getSize
+				inserts[9] = "j"; //dataitemrecord.getType
+				inserts[10] = "k";// dataitemrecord.getPermissionsMask
+			}
 					
 			response = MessageFormat.format( template, inserts ) ;
 		}

@@ -169,7 +169,7 @@ public class ServerManager {
 		logger.debug("CREATED MYSPACEUTIL...");
 		//DataItemRecord record = new DataItemRecord();
 		DataItemRecord dataItemRecord = new DataItemRecord();
-		String response = util.buildMySpaceManagerResponse(dataItemRecord);
+		String response = util.buildMySpaceManagerResponse(dataItemRecord,"","");
 		
 		logger.debug("GOT RESPONSE" +response);
 		
