@@ -2,12 +2,15 @@
 <!--
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/Attic/build.xml,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/10 11:31:24 $</cvs:author>
-    | <cvs:version>$Revision: 1.12 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/10 11:33:59 $</cvs:author>
+    | <cvs:version>$Revision: 1.13 $</cvs:version>
     | <cvs:log>
     | $Log: build.xml,v $
+    | Revision 1.13  2003/06/10 11:33:59  dave
+    | Fixed 'Malformed UTF-8 char' in build.xml
+    |
     | Revision 1.12  2003/06/10 11:31:24  dave
-    | ÂSplit the MySpace service INSTALL into client and server
+    | Split the MySpace service INSTALL into client and server
     |
     | Revision 1.11  2003/06/10 11:21:09  dave
     | Fixed BeanMapping namespace in mock MySpace WSDD
