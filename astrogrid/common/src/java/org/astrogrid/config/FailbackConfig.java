@@ -1,5 +1,5 @@
 /*
- * $Id: FailbackConfig.java,v 1.24 2004/08/03 11:13:29 mch Exp $
+ * $Id: FailbackConfig.java,v 1.25 2004/08/04 12:11:59 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -264,13 +264,33 @@ public class FailbackConfig extends Config {
 
          //Nothing in JNDI, nothing in sys env, so look in class path for general properties file
          log.info("Config: No key to config file found in JNDI/SysEnv, so falling back to "+configFilename);
-         if (lookForConfigFile(configFilename)) {
-            return;
+
+         try {
+            if (lookForConfigFile(configFilename)) {
+               return;
+            }
          }
+         catch (AccessControlException ace) {
+            //this exception is thrown when a file is looked for, even if it doesn't exist,
+            //if there is no FilePermission set for it.  This can be a pain for the fallback
+            //config as it looks in many places for the configuration.  So we just log it - as an
+            //error - but we don't crash
+            log.error("No Permission to access "+configFilename, ace);
+         }
+            
 
          //last resort - look for default.properties that might be part of the distribution
-         if (lookForConfigFile(defaultFilename)) {
-            return;
+         try {
+            if (lookForConfigFile(defaultFilename)) {
+               return;
+            }
+         }
+         catch (AccessControlException ace) {
+            //this exception is thrown when a file is looked for, even if it doesn't exist,
+            //if there is no FilePermission set for it.  This can be a pain for the fallback
+            //config as it looks in many places for the configuration.  So we just log it - as an
+            //error - but we don't crash
+            log.error("No Permission to access "+defaultFilename, ace);
          }
          
          
@@ -300,7 +320,6 @@ public class FailbackConfig extends Config {
 
       log.debug("Looking for "+givenFilename);
      
-      try {
          //if it's absolute, look absolutely
          File f = new File(filename);
          if (f.isAbsolute()) {
@@ -337,14 +356,6 @@ public class FailbackConfig extends Config {
             loadFromFile(f);
             return true;
          }
-      }
-      catch (AccessControlException ace) {
-         //this exception is thrown when a file is looked for, even if it doesn't exist,
-         //if there is no FilePermission set for it.  This can be a pain for the fallback
-         //config as it looks in many places for the configuration.  So we just log it - as an
-         //error - but we don't crash
-         log.error("No Permission to access "+givenFilename, ace);
-      }
          
       return false;
    }
@@ -575,10 +586,16 @@ public class FailbackConfig extends Config {
 
       //-- System environment variables ----
       out.println("System Environment Variables:");
-      Enumeration s = System.getProperties().keys();
-      while (s.hasMoreElements()) {
-         Object key = s.nextElement();
-         out.println(formKeyValue(key, System.getProperty(key.toString())));
+      try {
+         Enumeration s = System.getProperties().keys();
+         while (s.hasMoreElements()) {
+            Object key = s.nextElement();
+            out.println(formKeyValue(key, System.getProperty(key.toString())));
+         }
+      }
+      catch (AccessControlException ace) {
+         //might not be allowed blanket access to system enviornment variables...
+         out.println("No blanket access permitted: "+ace);
       }
 
       out.flush();
@@ -610,6 +627,9 @@ public class FailbackConfig extends Config {
 }
 /*
 $Log: FailbackConfig.java,v $
+Revision 1.25  2004/08/04 12:11:59  mch
+Fixed access control exception so it gets thrown when a config file is given
+
 Revision 1.24  2004/08/03 11:13:29  mch
 Added trap for AccessControlException
 
