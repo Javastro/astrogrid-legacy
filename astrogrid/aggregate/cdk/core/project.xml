@@ -263,6 +263,15 @@
             </properties>
         </dependency>
 
+	    <dependency>
+	      <id>log4j</id>
+    	  <version>1.2.8</version>
+            <properties>
+                <jnlp.jar>${shall.bundle.core}</jnlp.jar>
+            </properties>
+        </dependency>
+	
+
         <dependency>
                 <artifactId>commons-collections</artifactId>
                 <groupId>commons-collections</groupId>
