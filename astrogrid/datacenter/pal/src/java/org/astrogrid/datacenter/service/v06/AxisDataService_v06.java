@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataService_v06.java,v 1.11 2004/11/09 17:42:22 mch Exp $
+ * $Id: AxisDataService_v06.java,v 1.12 2004/11/09 18:27:21 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -100,7 +100,7 @@ public class AxisDataService_v06 implements ServiceLifecycle {
 
    /** Returns the number of matches - this ought to be part of the select statement but
     * it will do for temporary use */
-   public long count(String adql) throws AxisFault {
+   public long askCount(String adql) throws AxisFault {
       try {
          Query query = AdqlQueryMaker.makeQuery(adql);
          return server.askCount(getUser(), query.getCriteria());
@@ -235,6 +235,9 @@ public class AxisDataService_v06 implements ServiceLifecycle {
 
 /*
 $Log: AxisDataService_v06.java,v $
+Revision 1.12  2004/11/09 18:27:21  mch
+added askCount
+
 Revision 1.11  2004/11/09 17:42:22  mch
 Fixes to tests after fixes for demos, incl adding closable to targetIndicators
 

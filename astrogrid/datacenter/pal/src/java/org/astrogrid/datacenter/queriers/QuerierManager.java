@@ -1,4 +1,4 @@
-/*$Id: QuerierManager.java,v 1.11 2004/11/08 02:59:45 mch Exp $
+/*$Id: QuerierManager.java,v 1.12 2004/11/09 18:27:21 mch Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -247,7 +247,7 @@ public class QuerierManager implements QuerierListener {
 
    /**
     * Adds the given querier to this manager, runs it, and returns the status;
-    * synchronous; not queued
+    * synchronous (blocking); not queued
     */
    public QuerierStatus askQuerier(Querier querier)  throws IOException {
       
@@ -262,6 +262,21 @@ public class QuerierManager implements QuerierListener {
       return querier.getStatus();
    }
 
+   /** Adds the given querier to this manager, and asks the querier for the
+    * count (number of matches).  Synchronous, returning the number of matches
+    */
+   public long askCount(Querier querier)  throws IOException {
+      
+      //assigns handle
+      if (runningQueriers.get(querier.getId()) != null) {
+         log.error( "Handle '" + querier.getId() + "' already in use");
+         throw new IllegalArgumentException("Handle " + querier.getId() + "already in use");
+      }
+      runningQueriers.put(querier.getId(), querier);
+      querier.addListener(this);
+      return querier.askCount();
+   }
+   
    
    /** A Querier manager must listen to it's queriers
     */
@@ -327,6 +342,9 @@ public class QuerierManager implements QuerierListener {
 
 /*
  $Log: QuerierManager.java,v $
+ Revision 1.12  2004/11/09 18:27:21  mch
+ added askCount
+
  Revision 1.11  2004/11/08 02:59:45  mch
  Added held queriers
 

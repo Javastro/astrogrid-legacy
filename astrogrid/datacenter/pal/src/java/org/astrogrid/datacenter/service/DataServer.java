@@ -1,5 +1,5 @@
 /*
- * $Id: DataServer.java,v 1.9 2004/11/03 00:17:56 mch Exp $
+ * $Id: DataServer.java,v 1.10 2004/11/09 18:27:21 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -172,10 +172,8 @@ public class DataServer
     * Returns the number of matches of the given condition
     */
    public long askCount(Account user, Condition searchCondition) throws IOException {
-//      Querier querier = Querier.makeQuerier(user, new Query(searchCondition, new ReturnCost(cost)));
-//      querierManager.askQuerier(querier);
-//      return cost.getNumResults();
-      throw new UnsupportedOperationException("todo");
+      Querier querier = Querier.makeQuerier(user, new Query(searchCondition, null));
+      return querierManager.askCount(querier);
    }
    
    

@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.10 2004/11/03 00:17:56 mch Exp $
+ * $Id: Querier.java,v 1.11 2004/11/09 18:27:21 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -150,6 +150,13 @@ public class Querier implements Runnable, PluginListener {
       plugin.askQuery(user, query, this);
       
       close();
+   }
+  
+   /** Asks the plugin for the count (ie number of matches) for
+    * the given query.  These are asynchronous (blocking)
+    */
+   public long askCount() throws IOException {
+      return plugin.getCount(user, query, this);
    }
    
 
@@ -325,6 +332,9 @@ public class Querier implements Runnable, PluginListener {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.11  2004/11/09 18:27:21  mch
+ added askCount
+
  Revision 1.10  2004/11/03 00:17:56  mch
  PAL_MCH Candidate 2 merge
 
