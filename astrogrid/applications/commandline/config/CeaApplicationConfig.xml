@@ -313,6 +313,23 @@ M. Bolzonella, J.-M. Miralles, R. Pelló, 2000, A&amp;A 363, 476-492
 	<Application name="org.astrogrid/BPZ">
 		<!--Another photometric redshift tool - need to complete the parameter definitions...-->
 		<Parameters>
+			<CmdLineParameterDefn type="binary" name="DATA" fileRef="true" commandPosition="1">
+				<agpd:UI_Name>Input data</agpd:UI_Name>
+				<agpd:UI_Description>File containing the input photometry</agpd:UI_Description>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn type="binary" name="PARFILE" fileRef="true" commandSwitch="P">
+				<agpd:UI_Name>Parameter File</agpd:UI_Name>
+				<agpd:UI_Description>File with all the parameter files defined</agpd:UI_Description>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn type="binary" name="OUTPUT" fileRef="true">
+				<agpd:UI_Name>Output File</agpd:UI_Name>
+				<agpd:UI_Description>File with derived photo-Z</agpd:UI_Description>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn type="binary" name="COLUMNS" fileRef="true">
+				<agpd:UI_Name>Column Descriptions</agpd:UI_Name>
+				<agpd:UI_Description>The file containing the descriptions of the columns in the input photometry file.</agpd:UI_Description>
+			</CmdLineParameterDefn>
+			
 			<CmdLineParameterDefn type="text" name="SPECTRA">
 				<agpd:UI_Name>Spectra</agpd:UI_Name>
 				<agpd:UI_Description>template list</agpd:UI_Description>
@@ -415,12 +432,15 @@ M. Bolzonella, J.-M. Miralles, R. Pelló, 2000, A&amp;A 363, 476-492
 		</Parameters>
 		<Interfaces>
 			<!--could have an interface that used a config file also-->
-			<Interface name="primary">
+			<Interface name="simple">
 				<input>
-					<pref ref="DZ" minoccurs="0"/>
-					<!-- still need to finish this -->
+					<pref ref="DATA" />
+					<pref ref="COLUMNS"/>
+					<pref ref="PARFILE"/>
 				</input>
-				<output/>
+				<output>
+					<pref ref="OUTPUT"/>
+				</output>
 			</Interface>
 		</Interfaces>
 		<ExecutionPath>/home/applications/tools/bpz/bpz.py</ExecutionPath>
