@@ -69,7 +69,7 @@
                 <arg value="-types"/>
                 <arg value="arraylist"/>
         </java>
-        
+
           <java fork="yes" classname="org.exolab.castor.builder.SourceGenerator" classpathref="maven.dependency.classpath">
                 <classpath>
                         <pathelement location="${basedir}/build" />
@@ -85,7 +85,7 @@
                 <arg value="-types"/>
                 <arg value="arraylist"/>
         </java>
- 
+
            <java fork="yes" classname="org.exolab.castor.builder.SourceGenerator" classpathref="maven.dependency.classpath">
                 <classpath>
                         <pathelement location="${basedir}/build" />
@@ -116,8 +116,8 @@
                 <arg value="-verbose" />
                 <arg value="-types"/>
                 <arg value="arraylist"/>
-        </java> 		
- 
+        </java>
+
         <java fork="yes" classname="org.exolab.castor.builder.SourceGenerator" classpathref="maven.dependency.classpath">
                 <classpath>
                         <pathelement location="${basedir}/build" />
@@ -137,7 +137,7 @@
 
 <!-- wsdl2java tooling -->
         <goal name="run-wsdl2java" description="generate classes from wsdl"
-                prereqs="axis-declare-tasks,wsdl-cleanout,controller-wsdl,monitor-wsdl,scheduler-wsdl,wsdd-postprocess" />
+                prereqs="axis-declare-tasks,wsdl-cleanout,controller-wsdl,monitor-wsdl,wsdd-postprocess" />
 
         <goal name="wsdl-cleanout">
                 <delete>
@@ -149,7 +149,7 @@
                 </delete>
         </goal>
 
-        <goal name="controller-wsdl">
+        <goal name="controller-wsdl" prereqs="axis-declare-tasks">
           <axis-wsdl2java output="${generated.src}"             verbose="true"
             serverside="true"
             skeletondeploy="false"
@@ -162,7 +162,8 @@
                 tofile="${basedir}/wsdd/JobController-deploy.wsdd" />
         </goal>
 
-        <goal name="scheduler-wsdl">
+        <!-- doesn't want to work, and not needed. so will get shot of it.
+        <goal name="scheduler-wsdl" prereqs="axis-declare-tasks">
           <axis-wsdl2java output="${generated.src}"             verbose="true"
             serverside="true"
             skeletondeploy="false"
@@ -174,6 +175,7 @@
                 <move file="${generated.src}/org/astrogrid/jes/delegate/v1/jobscheduler/deploy.wsdd"
                 tofile="${basedir}/wsdd/JobScheduler-deploy.wsdd" />
         </goal>
+        -->
 
    <goal name="monitor-wsdl" prereqs="axis-declare-tasks">
           <axis-wsdl2java output="${generated.src}"             verbose="true"
@@ -199,7 +201,6 @@
                      </fileset>
              </delete>
 
-             <!-- now need to mangle things together into a deployment descriptor -->
    </goal>
 <!-- end of generation stuff -->
 
