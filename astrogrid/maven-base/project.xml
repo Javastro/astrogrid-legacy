@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
-<!-- $Id: project.xml,v 1.32 2005/02/01 22:44:43 jdt Exp $ -->
+<!-- $Id: project.xml,v 1.33 2005/02/10 17:31:01 jdt Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="xsd/maven-project.xsd">
     <pomVersion>3</pomVersion>
     <name>Astrogrid Master Maven POM</name>
     <groupId>org.astrogrid</groupId>
     <artifactId>astrogrid-master</artifactId>
-    <currentVersion>HEAD</currentVersion>
+    <currentVersion>${astrogrid.release}</currentVersion>
     <organization>
         <name>AstroGrid</name>
         <url>http://www.astrogrid.org</url>
@@ -15,7 +15,7 @@
     <package>org.astrogrid</package>
     <logo>http://www.astrogrid.org/images/AGlogo</logo>
     <shortDescription>This base project contains sensible settings for most components.</shortDescription>
-    <url>http://www.astrogrid.org/maven/docs/${pom.currentVersion}/${astrogrid.name}/index.html</url>
+    <url>http://www.astrogrid.org/maven/docs/${astrogrid.release}/${astrogrid.name}/index.html</url>
     <issueTrackingUrl>http://www.astrogrid.org/bugzilla/</issueTrackingUrl>
     <siteAddress>www.astrogrid.org</siteAddress>
     <siteDirectory>${astrogrid.docs.root}/${astrogrid.name}</siteDirectory>
@@ -43,7 +43,7 @@
 			<email>ael@star.le.ac.uk</email>
 			<organization> Leicester </organization>
 			<roles>
-				<role> Project Manager </role>
+				<role> Programme Manager </role>
 			</roles>
 		</developer>
 		<developer>
@@ -52,7 +52,7 @@
 			<email>ktn@star.le.ac.uk</email>
 			<organization> Leicester </organization>
 			<roles>
-				<role> Technical Lead </role>
+				<role> Project Manager </role>
 			</roles>
 		</developer>
 		<developer>
@@ -65,30 +65,12 @@
 			</roles>
 		</developer>
 		<developer>
-			<name>Brian McIlwrath</name>
-			<id>bkm</id>
-			<email>bkm@star.rl.ac.uk</email>
-			<organization> Leicester </organization>
-			<roles>
-				<role> Registry Developer </role>
-			</roles>
-		</developer>
-		<developer>
 			<name>Catherine Qin</name>
 			<id>clq2</id>
 			<email>clq2@star.le.ac.uk</email>
 			<organization> Leicester </organization>
 			<roles>
 				<role> Integration and Release WGL </role>
-			</roles>
-		</developer>
-		<developer>
-			<name>Clive Davenhall</name>
-			<id>acd</id>
-			<email>acd@roe.ac.uk</email>
-			<organization> ROE </organization>
-			<roles>
-				<role> MySpace Developer</role>
 			</roles>
 		</developer>
 		<developer>
@@ -192,23 +174,6 @@
 			</roles>
 		</developer>
 		<developer>
-			<name>Pedro Contreras</name>
-			<id>pcontrer</id>
-			<email>P.Contreras@qub.ac.uk</email>
-			<roles>
-				<role> PAL/Datacenter Developer </role>
-			</roles>
-		</developer>
-		<developer>
-			<name>Peter Shillan</name>
-			<id>gps</id>
-			<email>gps@roe.ac.uk</email>
-			<organization> ROE </organization>
-			<roles>
-				<role> Portal Developer </role>
-			</roles>
-		</developer>
-		<developer>
 			<name>Phil Nicolson</name>
 			<id>pjn3</id>
 			<email>pjn3@star.le.ac.uk</email>
@@ -216,14 +181,6 @@
 			<roles>
 				<role> Portal Developer </role>
 				<role> Workflow Developer </role>
-			</roles>
-		</developer>
-		<developer>
-			<name>Roy Platon</name>
-			<id>rtp</id>
-			<email>R.T.Platon@rl.ac.uk</email>
-			<roles>
-				<role> Portal Developer </role>
 			</roles>
 		</developer>
 	</developers>
