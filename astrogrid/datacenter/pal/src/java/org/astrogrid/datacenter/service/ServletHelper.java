@@ -1,5 +1,5 @@
 /*
- * $Id: ServletHelper.java,v 1.9 2004/11/03 00:17:56 mch Exp $
+ * $Id: ServletHelper.java,v 1.10 2004/11/05 12:27:25 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -97,7 +97,7 @@ public class ServletHelper
 
       TargetIndicator target = null;
 
-      if (request.getParameter("TargetResponse") != null) {
+      if ( (request.getParameter("TargetResponse") != null) && (!request.getParameter("TargetResponse").trim().toLowerCase().equals("false"))) {
          //return the results to the response (eg browser, servlet caller)
          target = null;
       }
@@ -106,12 +106,15 @@ public class ServletHelper
             
          try {
             target = TargetMaker.makeIndicator(targetUri);
+            if (target == null) {
+               throw new IllegalArgumentException(targetUri+" returns null TargetIndicator");
+            }
          }
          catch (URISyntaxException e) {
-            throw new IllegalArgumentException("Invalid target: "+target+" ("+e+")");
+            throw new IllegalArgumentException("Invalid target: "+targetUri+" ("+e+")");
          }
          catch (MalformedURLException e) {
-            throw new IllegalArgumentException("Invalid target: "+target+" ("+e+")");
+            throw new IllegalArgumentException("Invalid target: "+targetUri+" ("+e+")");
          }
       }
       else {
