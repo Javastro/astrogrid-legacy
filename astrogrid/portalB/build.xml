@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/Attic/build.xml,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/18 01:33:15 $</cvs:author>
-    | <cvs:version>$Revision: 1.4 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/18 01:48:25 $</cvs:author>
+    | <cvs:version>$Revision: 1.5 $</cvs:version>
     | <cvs:log>
     | $Log: build.xml,v $
+    | Revision 1.5  2003/06/18 01:48:25  dave
+    | Removed extra tests
+    |
     | Revision 1.4  2003/06/18 01:33:15  dave
     | Moved message parser into separate class and added service lookup to pages
     |
@@ -1176,7 +1179,7 @@
 			<!-- Run our JUnit tests -->
 			<batchtest todir="build/myspace/live/client/junit">
 				<fileset dir="build/myspace/live/client/classes">
-					<include name="**/junit/**/JUnitTestCase.class" />
+					<include name="**/myspace/client/junit/JUnitTestCase.class" />
 				</fileset>
 			</batchtest>
 		</junit>

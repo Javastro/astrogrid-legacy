@@ -14,9 +14,7 @@
 			</tr>
 			<tr>
 				<td height="350" width="100" valign="top">
-					Menu :
-					<br>
-					<a href="/astrogrid/index.jsp">Home</a>
+					<b><a href="/astrogrid/index.jsp">Home</a></b>
 					<br>
 					<a href="/astrogrid/explorer/index.jsp">Explorer</a>
 				</td>
