@@ -1,5 +1,5 @@
 /*
- * $Id: HtmlDataServer.java,v 1.3 2004/03/14 16:55:48 mch Exp $
+ * $Id: HtmlDataServer.java,v 1.4 2004/03/14 19:12:54 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,12 +9,14 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.net.MalformedURLException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.queriers.TargetIndicator;
 import org.astrogrid.datacenter.queriers.status.QuerierStatus;
 import org.astrogrid.datacenter.query.Query;
+import org.astrogrid.store.Agsl;
 
 /**
  * A set of dataserver methods for serving data in HTML form, eg for servlets
@@ -66,18 +68,49 @@ public class HtmlDataServer
       
       return serverStatusAsHtml(status);
    }
+
+   public QuerierStatus getQuerierStatus(Account user, String queryId) {
+      try {
+         return server.getQueryStatus(user, queryId);
+      }
+      catch (Throwable th) {
+         log.error(th);
+         return null;
+      }
+   }
+
+   /**
+    * Convenience routine for JSPs; decides where target should be from
+    * resultsTarget string */
+   public static TargetIndicator makeTarget(String resultsTarget, Writer out) throws MalformedURLException {
+      TargetIndicator target = null;
+      if ( (resultsTarget == null) || (resultsTarget.trim().length()==0)) {
+         target = new TargetIndicator(out);
+      }
+      else {
+         if (resultsTarget.startsWith("mailto:")) {
+            target = new TargetIndicator(resultsTarget.substring(7));
+         }
+         else {
+            target = new TargetIndicator(new Agsl(resultsTarget));
+         }
+      }
+      return target;
+   }
+
+   
    
    /**
-    * Returns status of a query. NB the id given is the *datacenter's* id
-    */
-   public String getQueryStatus(Account user, String queryId)
+    * Returns status of a as html. NB the id given is the *datacenter's* id
+    * user getQuerierStatus
+   public String getQueryStatusHtml(Account user, String queryId)
    {
       try {
          return queryStatusAsHtml(queryId, server.getQueryStatus(user, queryId));
       }
       catch (Throwable th) {
          log.error(th);
-         return exceptionAsHtml("getQueryStatus("+user+", "+queryId+")", th);
+         return exceptionAsHtml("getQueryStatusAsHtml("+user+", "+queryId+")", th);
       }
    }
 
