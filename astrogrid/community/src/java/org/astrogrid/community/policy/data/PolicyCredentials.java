@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/data/Attic/PolicyCredentials.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/03 06:39:13 $</cvs:date>
- * <cvs:version>$Revision: 1.1 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/04 23:58:10 $</cvs:date>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyCredentials.java,v $
+ *   Revision 1.2  2003/09/04 23:58:10  dave
+ *   Experimenting with using our own DataObjects rather than the Axis generated ones ... seems to work so far
+ *
  *   Revision 1.1  2003/09/03 06:39:13  dave
  *   Rationalised things into one set of SOAP stubs and one set of data objects for both client and server.
  *
@@ -34,6 +37,24 @@ public class PolicyCredentials
 	 */
 	public static final int STATUS_CREDENTIALS_INVALID = 0x01 ;
 
+	/**
+	 * Public constructor.
+	 *
+	 */
+	public PolicyCredentials()
+		{
+		this(null, null) ;
+		}
+
+	/**
+	 * Public constructor.
+	 *
+	 */
+	public PolicyCredentials(String account, String group)
+		{
+		this.group   = group   ;
+		this.account = account ;
+		}
 
 	/**
 	 * Our Account ident.

@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/Attic/build.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/09/04 23:33:05 $</cvs:date>
-    | <cvs:version>$Revision: 1.8 $</cvs:version>
+    | <cvs:date>$Date: 2003/09/04 23:58:10 $</cvs:date>
+    | <cvs:version>$Revision: 1.9 $</cvs:version>
     | <cvs:log>
     |   $Log: build.xml,v $
+    |   Revision 1.9  2003/09/04 23:58:10  dave
+    |   Experimenting with using our own DataObjects rather than the Axis generated ones ... seems to work so far
+    |
     |   Revision 1.8  2003/09/04 23:33:05  dave
     |   Implemented the core account manager methods - needs data object to return results
     |
@@ -1313,7 +1316,9 @@
 				<include name="org/astrogrid/community/policy/server/PolicyServiceServiceLocator.java"/>
 				<include name="org/astrogrid/community/policy/server/PolicyServiceSoapBindingStub.java"/>
 				<!-- Include the generated data objects -->
+<!--
 				<include name="org/astrogrid/community/policy/data/*.java"/>
+-->
 			</fileset>
 			<!-- Copy the PolicyService wsdl2java generated source -->
 			<fileset dir="${policy.manager.base}/java">
@@ -1322,7 +1327,9 @@
 				<include name="org/astrogrid/community/policy/server/PolicyManagerServiceLocator.java"/>
 				<include name="org/astrogrid/community/policy/server/PolicyManagerSoapBindingStub.java"/>
 				<!-- Include the generated data objects -->
+<!--
 				<include name="org/astrogrid/community/policy/data/*.java"/>
+-->
 			</fileset>
 			<!-- Copy our own Java source -->
 			<fileset dir="src/java">
@@ -1334,6 +1341,8 @@
 				<include name="org/astrogrid/community/policy/server/PolicyManagerImpl.java"/>
 				<!-- Include our JUnit classes -->
 				<include name="org/astrogrid/community/policy/server/junit/**"/>
+				<!-- Include our data objects -->
+				<include name="org/astrogrid/community/policy/data/*.java"/>
 			</fileset>
 		</copy>
 	</target>
@@ -1355,7 +1364,9 @@
 				<include name="org/astrogrid/community/policy/server/PolicyServiceServiceLocator.java"/>
 				<include name="org/astrogrid/community/policy/server/PolicyServiceSoapBindingStub.java"/>
 				<!-- Include the generated data objects -->
+<!--
 				<include name="org/astrogrid/community/policy/data/*.java"/>
+-->
 			</fileset>
 			<!-- Copy the PolicyManager wsdl2java generated source -->
 			<fileset dir="${policy.manager.base}/java">
@@ -1364,7 +1375,9 @@
 				<include name="org/astrogrid/community/policy/server/PolicyManagerServiceLocator.java"/>
 				<include name="org/astrogrid/community/policy/server/PolicyManagerSoapBindingStub.java"/>
 				<!-- Include the generated data objects -->
+<!--
 				<include name="org/astrogrid/community/policy/data/*.java"/>
+-->
 			</fileset>
 			<!-- Copy our own Java source -->
 			<fileset dir="src/java">
@@ -1374,6 +1387,8 @@
 				<include name="org/astrogrid/community/policy/server/PolicyManager.java"/>
 				<!-- Include our client classes -->
 				<include name="org/astrogrid/community/policy/client/**"/>
+				<!-- Include our data objects -->
+				<include name="org/astrogrid/community/policy/data/*.java"/>
 			</fileset>
 		</copy>
 	</target>

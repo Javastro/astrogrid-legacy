@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/client/junit/manager/Attic/JUnitTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/04 23:33:05 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/04 23:58:10 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: JUnitTestCase.java,v $
+ *   Revision 1.3  2003/09/04 23:58:10  dave
+ *   Experimenting with using our own DataObjects rather than the Axis generated ones ... seems to work so far
+ *
  *   Revision 1.2  2003/09/04 23:33:05  dave
  *   Implemented the core account manager methods - needs data object to return results
  *
@@ -140,9 +143,9 @@ public class JUnitTestCase
 
 		//
 		// Create our Account object.
-		AccountData account = new AccountData() ;
-		account.setIdent(TEST_ACCOUNT_IDENT) ;
-		account.setDescription(TEST_ACCOUNT_DESC) ;
+		AccountData account = new AccountData(TEST_ACCOUNT_IDENT) ;
+		//account.setIdent(TEST_ACCOUNT_IDENT) ;
+		//account.setDescription(TEST_ACCOUNT_DESC) ;
 		//
 		// Try creating the Account.
 		account = service.addAccount(account);
