@@ -3,7 +3,12 @@
   <body>
 
   <title>AstroGrid CEA</title>
-
+    <menu name="Component Projects">
+		<item name="Client" href="client/"/>
+		<item name="Server Framework" href="server/" />
+		<item name="Commandline CEC" href="commandline/" />
+		<item name="HTTP GET/POST CEC" href="http/" />
+    </menu>
     <menu name="CEA" >
         <item name="Design Document" href="design/"/>
      	<item name="Together Doc" href="http://www.astrogrid.org/maven/design/applications/" />   
