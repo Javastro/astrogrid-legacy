@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<!-- castor binding file -- configured the process of generating java classes from xml schema
+<!-- castor binding file : configures the process of generating java classes from xml schema
 
 
 at present, just defined package - namespace mappings
