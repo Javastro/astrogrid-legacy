@@ -1,5 +1,5 @@
 /*
- * $Id: Config.java,v 1.16 2004/03/04 20:25:02 mch Exp $
+ * $Id: Config.java,v 1.17 2004/03/05 12:28:01 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -52,7 +52,7 @@ public abstract class Config {
    public abstract void loadFromUrl(URL url) throws IOException;
 
    /** Writes out the configuration keys and values to the given Writer. Used
-    * for site debugging */
+    * for site debugging.  Remember that passwords should be hidden... */
    public abstract void dumpConfig(Writer out);
    
    /**
@@ -61,8 +61,9 @@ public abstract class Config {
    protected void addLoadedFrom(String s) {
       if (loadedFrom == null) {
          loadedFrom = s;
+      } else {
+         loadedFrom = loadedFrom + ", "+s;
       }
-      loadedFrom = loadedFrom + ", "+s;
    }
 
    /**
