@@ -1,4 +1,5 @@
 <%@ page import="org.astrogrid.registry.server.query.*,
+				 org.astrogrid.registry.server.*,
                  org.astrogrid.store.Ivorn,
                  org.w3c.dom.Document,
                  org.astrogrid.io.Piper,
@@ -11,7 +12,10 @@
                 org.apache.commons.fileupload.*,                  
                  java.io.*"
     session="false" %>
-
+<%
+      RegistryQueryService server = new RegistryQueryService();
+      ArrayList al = server.getAstrogridVersions();
+%>
 <html>
 <head>
 <title>Keyword Search Query</title>
@@ -34,6 +38,13 @@
 
 <form method="post">
 <input type="hidden" name="keywordquery" value="true" />
+Version: 
+<select name="version">
+   <% for(int k = (al.size()-1);k >= 0;k--) { %>
+      <option value="<%=al.get(k)%>"><%out.print(((String)al.get(k)).replaceAll("_","."));%></option>  
+   <%}%>
+</select>
+<br />
 Keywords: <input type="text" name="keywords"/><br />
 Search for "any" of the words: <input type="checkbox" name="orValues" value="true">Any/Or the words</input>
 <input type="submit" name="keywordquerysubmit" value="Query" />
@@ -45,6 +56,7 @@ Search for "any" of the words: <input type="checkbox" name="orValues" value="tru
   boolean doQuery = false;
   String keywords = null;
   boolean orValue = false;
+  String version = request.getParameter("version");
   if(request.getParameter("keywordquery") != null && request.getParameter("keywordquery").trim().equals("true")) {
    if(request.getParameter("keywords") != null && request.getParameter("keywords").trim().length() > 0) {
       keywords = request.getParameter("keywords");
@@ -53,8 +65,6 @@ Search for "any" of the words: <input type="checkbox" name="orValues" value="tru
    }else {
       error = "Cannot find any words to query";
    }
-  
-  
   String maxCount = SimpleConfig.getSingleton().getString("exist.query.returncount", "25");
 %>
 <br />
@@ -68,8 +78,14 @@ Search for "any" of the words: <input type="checkbox" name="orValues" value="tru
 <pre>
 <%
    if(doQuery) {
-      RegistryQueryService server = new RegistryQueryService();
-      Document entry = server.keywordQuery(keywords,orValue);
+
+      
+      Document entry = null;
+      if(version != null || version.trim().length() > 0)
+	      entry = server.keywordQuery(keywords,orValue,version);
+	  else
+	      entry = server.keywordQuery(keywords,orValue);
+	      
       if (entry == null) {
         out.write("<p>No entry returned</p>");
       }
@@ -77,36 +93,32 @@ Search for "any" of the words: <input type="checkbox" name="orValues" value="tru
       
       out.write("<table border=1>");
       out.write("<tr><td>AuthorityID</td><td>ResourceKey</td><td>View XML</td></tr>");
-      NodeList identifiers = entry.getElementsByTagNameNS("*","Identifier");
+      NodeList resources = entry.getElementsByTagNameNS("*","Resource");
          
-      for (int n=0; n < identifiers.getLength();n++) {
+      for (int n=0; n < resources.getLength();n++) {
          out.write("<tr>\n");
          
-         Element resource = (Element) ((Element) identifiers.item(n)).getElementsByTagNameNS("*","ResourceKey").item(0);
-         Element authority = (Element) ((Element) identifiers.item(n)).getElementsByTagNameNS("*","AuthorityID").item(0);
+//         Element resource = (Element) ((Element) identifiers.item(n)).getElementsByTagNameNS("*","ResourceKey").item(0);
+//         Element authority = (Element) ((Element) identifiers.item(n)).getElementsByTagNameNS("*","AuthorityID").item(0);
+			String authority = RegistryServerHelper.getAuthorityID((Element)resources.item(n));
+			String resource = RegistryServerHelper.getResourceKey((Element)resources.item(n));
 
          String ivoStr = null;
-         if (authority == null) {
+         if (authority == null || authority.trim().length() <= 0) {
             out.write("<td>null?!</td>");
          } else {
-            if(authority.getFirstChild() != null) {
-               out.write("<td>"+authority.getFirstChild().getNodeValue()+"</td>\n");
-               ivoStr = authority.getFirstChild().getNodeValue();
-           }//if
+               out.write("<td>"+authority+"</td>\n");
+               ivoStr = authority;
          }//else
 
-         if (resource == null) {
+         if (resource == null || resource.trim().length() <= 0) {
             out.write("<td>null?!</td>");
          } else {
-            if(resource.getFirstChild() != null) {
-               out.write("<td>"+resource.getFirstChild().getNodeValue()+"</td>\n");
-               ivoStr += "/" + resource.getFirstChild().getNodeValue();
-           }else {
-              out.write("<td>null!</td>");
-           }
+               out.write("<td>"+resource+"</td>\n");
+               ivoStr += "/" + resource;
          }//if
 
-         out.write("<td><a href=viewEntryXml.jsp?IVORN="+ivoStr+">View</a></td>\n");
+         out.write("<td><a href=viewResourceEntry.jsp?version="+version+"&IVORN="+ivoStr+">View</a></td>\n");
          
          out.write("</tr>\n");
          

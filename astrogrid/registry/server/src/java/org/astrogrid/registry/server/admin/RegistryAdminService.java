@@ -41,6 +41,8 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.axis.AxisFault;
 import org.astrogrid.xmldb.eXist.server.UpdateDBService;
 import junit.framework.AssertionFailedError;
+import java.text.SimpleDateFormat;
+
 
 /**
  * Class Name: RegistryAdminService
@@ -165,15 +167,27 @@ public class RegistryAdminService {
           throw new AxisFault("Nothing on request 'null sent'");
       }
       
+      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+      Date updateDate = new Date();
+      String updateDateString = sdf.format(updateDate);
+      
       //Get all the Resource elements
       NodeList nl = null;
       
       String attrVersion = null;
+      Element findVersionElement = null;
+      
       if(update.getDocumentElement().hasChildNodes()) {
-          attrVersion = RegistryServerHelper.getRegistryVersionFromNode(update.getDocumentElement().getFirstChild());
+          nl = update.getDocumentElement().getChildNodes();
+          for(int k = 0;k < nl.getLength() && findVersionElement == null;k++) {
+              if(Node.ELEMENT_NODE == nl.item(k).getNodeType())
+                  findVersionElement = (Element) nl.item(k);
+          }
+          //attrVersion = RegistryServerHelper.getRegistryVersionFromNode(update.getDocumentElement().getFirstChild());
       }else {
-          attrVersion = RegistryServerHelper.getRegistryVersionFromNode(update.getDocumentElement());
+          findVersionElement = (Element)update.getDocumentElement();
       }
+      attrVersion = RegistryServerHelper.getRegistryVersionFromNode(findVersionElement);
       
       log.info("Registry Version being updated = " + attrVersion);      
       String vrNS = "http://www.ivoa.net/xml/VOResource/v" + attrVersion;
@@ -186,7 +200,7 @@ public class RegistryAdminService {
       if(hasStyleSheet) {
          //System.out.println("lets call transform update");
          log.info("performing transformation before analysis of update for versionNumber = " + versionNumber);
-         xsDoc = xs.transformUpdate((Node)update.getDocumentElement(),versionNumber);
+         xsDoc = xs.transformUpdate((Node)update.getDocumentElement(),versionNumber,false);
       } else {
          xsDoc = update;
       }
@@ -248,7 +262,7 @@ public class RegistryAdminService {
       boolean addManageError = false;
       String manageNodeVal = null;
       
-      //log.info("here is the nl length = " + nl.getLength());
+      //log.info("here is the nl length = " + bhyxdtgdxdsnl.getLength());
       
       final int resourceNum = nl.getLength();
       //go through the various resource entries.
@@ -270,21 +284,24 @@ public class RegistryAdminService {
          //defined vr namespace if it does not have one already.
          
          Node parentNode = currentResource.getParentNode();
-         NamedNodeMap attrNNM = parentNode.getAttributes();
-         //currentResource.setPrefix("vr");
-         for(int k= 0;k < attrNNM.getLength();k++) {
-             Node attrNode = attrNNM.item(k);
-             if(!currentResource.hasAttribute(attrNode.getNodeName()) && 
-                !attrNode.getLocalName().equals(currentResource.getPrefix())) {
-                 //System.out.println("2ADDING THIS ATTRIBUTE: the localname = " + attrNode.getLocalName() + " node name = " + attrNode.getNodeName() + " node value = " + attrNode.getNodeValue() + " namespace uri = " + attrNode.getNamespaceURI());
-                 if(attrNode.getNodeName().indexOf("xmlns") != -1 && 
-                    attrNode.getNodeName().indexOf("xsi") == -1) {
-                     //System.out.println("adding xmlns");
-                     currentResource.setAttribute(attrNode.getNodeName(),
-                                                  attrNode.getNodeValue());
-                 }//else
-             }//if
-         }//for
+         if(parentNode != null && Node.ELEMENT_NODE == parentNode.getNodeType()) {
+             NamedNodeMap attrNNM = parentNode.getAttributes();
+             //currentResource.setPrefix("vr");
+             for(int k= 0;k < attrNNM.getLength();k++) {
+                 Node attrNode = attrNNM.item(k);
+                 if(!currentResource.hasAttribute(attrNode.getNodeName()) && 
+                    !attrNode.getLocalName().equals(currentResource.getPrefix())) {
+                     //System.out.println("2ADDING THIS ATTRIBUTE: the localname = " + attrNode.getLocalName() + " node name = " + attrNode.getNodeName() + " node value = " + attrNode.getNodeValue() + " namespace uri = " + attrNode.getNamespaceURI());
+                     if(attrNode.getNodeName().indexOf("xmlns") != -1 && 
+                        attrNode.getNodeName().indexOf("xsi") == -1) {
+                         //System.out.println("adding xmlns");
+                         currentResource.setAttribute(attrNode.getNodeName(),
+                                                      attrNode.getNodeValue());
+                     }//else
+                 }//if
+             }//for
+         }//if
+         currentResource.setAttribute("updated",updateDateString);
          
 
          //set a temporary identifier.
@@ -328,12 +345,17 @@ public class RegistryAdminService {
             // if it is an authoritytype
             addManageError = true;
             if(currentResource.hasAttributes()) {
-               NamedNodeMap nnm = currentResource.getAttributes();
-               for(int j = 0;j < nnm.getLength();j++) {
-                  Node attrNode = nnm.item(j);
-                  String nodeVal = attrNode.getNodeValue();
+                
+//               NamedNodeMap nnm = currentResource.getAttributes();
+//               for(int j = 0;j < nnm.getLength();j++) {
+//                  Node attrNode = nnm.item(j);
+                  Node typeAttribute = currentResource.getAttributes().getNamedItem("xsi:type");
+                  String nodeVal = null;
+                  if(typeAttribute != null) {
+                      nodeVal = typeAttribute.getNodeValue();
+                  }
                   log.info(
-                  "Checking NodeVal for an authorityType: current NodeVal = " 
+                  "Checking xsi:type for a Registry or Authority: = " 
                   + nodeVal);
                   //check if it is a registry type.
                   if(nodeVal != null && nodeVal.indexOf("Registry") != -1) {
@@ -398,8 +420,7 @@ public class RegistryAdminService {
                      // Okay it is an AuthorityType and if no other registries 
                      // manage this authority then we can place it in this 
                      // registry as a new managed authority.
-                     if(otherAuths.get(versionNumber) == null ||
-                        (otherAuths.get(versionNumber) != null &&
+                     if((otherAuths.get(versionNumber) != null &&
                         !((HashMap)otherAuths.get(versionNumber)).containsKey((String)ident))) {
                         log.info(
                         "This is an AuthorityType and not managed by other authorities");
@@ -408,7 +429,7 @@ public class RegistryAdminService {
                         // a new managed authority tag.
                         RegistryQueryService rs = new RegistryQueryService();
                         Document loadedRegistry = rs.loadMainRegistry(versionNumber);
-                        
+                        log.info("THE LOADED REGISTRY before AUTHORITY = " + DomHelper.DocumentToString(loadedRegistry));
                         // Get a ManagedAuthority Node region/area
                         // so we can append a sibling to it, and
                         // use its info for creating another ManagedAuthority
@@ -424,6 +445,7 @@ public class RegistryAdminService {
                                                  manageNode.getNamespaceURI(),
                                                  manageNode.getNodeName());
                            // Put in the text node the new ident.
+                           log.info("adding ident for managed authority = " + ident);
                            newManage.appendChild(loadedRegistry.
                                                  createTextNode(ident));
                            
@@ -465,18 +487,21 @@ public class RegistryAdminService {
                            // Registry Resource which is for this registry.
                            ident = RegistryServerHelper.getAuthorityID(loadedRegistry.
                                                   getDocumentElement());
+                           log.info("the ident form loaded registry right before update = " + ident);
                            resKey = RegistryServerHelper.getResourceKey(loadedRegistry.
                                                    getDocumentElement());
+                           log.info("the resKey form loaded registry right before update = " + resKey);
                            tempIdent = ident;
                            if(resKey != null) tempIdent += "/" + resKey;
                            //TODO: again this next line should not be needed.
                            //df = loadedRegistry.createDocumentFragment();
-                           
+                           resListForAuth = loadedRegistry.getElementsByTagNameNS("*","Resource");
                            Element elem = loadedRegistry.
                                           createElement("AstrogridResource");
-                           elem.appendChild(loadedRegistry.
-                                            getDocumentElement());
+                           elem.appendChild(resListForAuth.item(0));
+                           log.info("THE LOADED REGISTRY after AUTHORITY = " + DomHelper.ElementToString(elem));                           
                            try {
+                               log.info("updating the new registy");
                               udbService.updateQuery(tempIdent,"xml",collectionName,elem);                                            
                            } catch(MalformedURLException mue) {
                               log.error(mue);
@@ -504,7 +529,7 @@ public class RegistryAdminService {
                         }                           
                      }//if      
                   }//elseif   
-               }//for
+//               }//for
             }//if
             
             if(addManageError) {
@@ -548,6 +573,12 @@ public class RegistryAdminService {
       log.debug("end updateResource");
 
       return returnDoc;
+   }
+   
+   public void clearManagedCache(String versionNumber) {
+       versionNumber = versionNumber.replace('.','_');
+       otherAuths.put(versionNumber,null);
+       manageAuths.put(versionNumber,null);
    }
    
    private void populateOtherManagedMaps(String collectionName, String versionNumber) {
@@ -614,7 +645,7 @@ public class RegistryAdminService {
     * 
     * @param update A DOM of XML of  one or more Resources.
     */
-   public void updateNoCheck(Document update) throws MalformedURLException, IOException {
+   public void updateNoCheck(Document update,String attrVersion) throws MalformedURLException, IOException {
       log.debug("start updateNoCheck");
 
       //log.info("This is xsDoc = " + XMLUtils.DocumentToString(xsDoc));
@@ -635,41 +666,50 @@ public class RegistryAdminService {
       if(update == null) {
           throw new IOException("Error nothing to update 'null sent'");
       }
-
       
       
-     
+      //String attrVersion = null;
       //the vr attribute can live at either or both of those elments and we just need to get the first one.
       //It is possible the <update> element will not be there hence we need to look at the root element
       //NodeList nl = DomHelper.getNodeListTags(update,"Resource","vr");
       NodeList nl = update.getElementsByTagNameNS("*","Resource");
-      log.info("the nl length of resoruces = " + nl.getLength());
-      String attrVersion = conf.getString("org.astrogrid.registry.version");
-      if(nl.getLength() > 0) {
-          attrVersion = RegistryServerHelper.getRegistryVersionFromNode(nl.item(0)); 
+      if(nl.getLength() == 0) {
+
+          nl = update.getElementsByTagNameNS("*","resource");
+          System.out.println("the resource nl.getLength= " + nl.getLength());
       }
+      
+      if(attrVersion == null) {
+          attrVersion = RegistryServerHelper.getRegistryVersionFromNode(nl.item(0));
+      }
+          
+      log.info("the nl length of resoruces = " + nl.getLength());      
+      /*
+      if(nl.getLength() > 0) {
+          log.info("NODE TYPE = " + nl.item(0).getNodeType() + " NODE NAME = " + nl.item(0).getNodeName() + " Local Name = " + nl.item(0).getLocalName());
+          attrVersion = RegistryServerHelper.getRegistryVersionFromNode((Element)nl.item(0)); 
+      }
+      */
       String vrNS = "http://www.ivoa.net/xml/VOResource/v" + attrVersion;
       String versionNumber = attrVersion.replace('.','_');      
       String collectionName = "astrogridv" + versionNumber;
       String defaultNS = null;
       log.info("Collection Name = " + collectionName);
       
-      boolean hasStyleSheet = conf.getBoolean("org.astrogrid.registry.updatestylesheet." + versionNumber,false);
+      boolean hasStyleSheet = conf.getBoolean("org.astrogrid.registry.updatestylesheet.onHarvest." + versionNumber,false);
       Document xsDoc = null;
+      System.out.println("has stylesheet for " + "org.astrogrid.registry.updatestylesheet.onHarvest." + versionNumber);
+      log.info("Before the transform:::");
+      log.info(DomHelper.DocumentToString(update));
       if(hasStyleSheet) {
          //System.out.println("lets call transform update");
          log.info("performing transformation before analysis of update for versionNumber = " + versionNumber);
-         xsDoc = xs.transformUpdate((Node)update.getDocumentElement(),versionNumber);
+         xsDoc = xs.transformUpdate((Node)update.getDocumentElement(),versionNumber,true);
       } else {
          xsDoc = update;
       }
-      nl = xsDoc.getElementsByTagNameNS("*","Resource");
-      
-      boolean validateXML = conf.getBoolean("registry.validate.onharvestupdates",false);
-      if(validateXML) {
-          RegistryValidator.isValid(xsDoc,"Resource");
-      }
-      
+      log.info("the xsdoc = " + DomHelper.DocumentToString(xsDoc));
+      nl = xsDoc.getElementsByTagNameNS("*","Resource");            
       
       //System.out.println("the xsdoc in updateNocheck = " + DomHelper.DocumentToString(xsDoc));
       log.info("Number of Resources = " + nl.getLength());
@@ -694,9 +734,6 @@ public class RegistryAdminService {
           otherAuths.put(versionNumber,new HashMap());
       }
       
-
-      
-
       // This does seem a little strange as if an infinte loop,
       // but later on an appendChild is performed which
       // automatically reduced the length by one.
@@ -708,7 +745,9 @@ public class RegistryAdminService {
 
          tempIdent = ident;
          if(resKey != null) tempIdent += "/" + resKey;
+         log.info("the ident in updateNoCheck = " + tempIdent);
          
+         /*
          if(!"vr".equals(currentResource.getPrefix())) {
              currentResource.setAttribute("xmlns:vr",vrNS);
          }
@@ -720,19 +759,25 @@ public class RegistryAdminService {
          }
          if(defaultNS != null && defaultNS.trim().length() > 0) {
              currentResource.setAttribute("xmlns",defaultNS);
-         }             
+         } 
+         */            
          //root = update.createElement("AstrogridResource");
          root = xsDoc.createElement("AstrogridResource");
          root.appendChild(currentResource);
          RegistryServerHelper.
              addStatusMessage("Entering new entry: " + tempIdent);
-         udbService.updateQuery(tempIdent,"xml",collectionName,root);                                                
+         udbService.updateQuery(tempIdent,"xml",collectionName,root);
                           
          if(currentResource.hasAttributes()) {
-             NamedNodeMap nnm = currentResource.getAttributes();
-             for(int j = 0;j < nnm.getLength();j++) {
-                 Node attrNode = nnm.item(j);
-                 String nodeVal = attrNode.getNodeValue();
+             
+             Node typeAttribute = currentResource.getAttributes().getNamedItem("xsi:type");
+             String nodeVal = null;
+             if(typeAttribute != null) {
+                 nodeVal = typeAttribute.getNodeValue();
+             }
+             log.info(
+             "Checking xsi:type for a Registry: = " 
+             + nodeVal);
                  //check if it is a registry type.
                  if(nodeVal != null && nodeVal.indexOf("Registry") != -1)
                  {
@@ -758,8 +803,7 @@ public class RegistryAdminService {
                            }
                        }
                     }//if
-                 }//if                 
-             }//for
+                 }//if
          }//if
       }//if
       log.debug("end updateNoCheck");
