@@ -1,5 +1,5 @@
 /**
- * _listApplicationsResponse.java
+ * _returnRegistryEntryResponse_returnRegistryEntryReturn.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis WSDL2Java emitter.
@@ -7,24 +7,24 @@
 
 package org.astrogrid.applications.service.v1.cea.impl;
 
-public class _listApplicationsResponse  implements java.io.Serializable {
-    private java.lang.String listApplicationsReturn;
+public class _returnRegistryEntryResponse_returnRegistryEntryReturn  implements java.io.Serializable {
+    private org.apache.axis.message.MessageElement [] _any;
 
-    public _listApplicationsResponse() {
+    public _returnRegistryEntryResponse_returnRegistryEntryReturn() {
     }
 
-    public java.lang.String getListApplicationsReturn() {
-        return listApplicationsReturn;
+    public org.apache.axis.message.MessageElement [] get_any() {
+        return _any;
     }
 
-    public void setListApplicationsReturn(java.lang.String listApplicationsReturn) {
-        this.listApplicationsReturn = listApplicationsReturn;
+    public void set_any(org.apache.axis.message.MessageElement [] _any) {
+        this._any = _any;
     }
 
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof _listApplicationsResponse)) return false;
-        _listApplicationsResponse other = (_listApplicationsResponse) obj;
+        if (!(obj instanceof _returnRegistryEntryResponse_returnRegistryEntryReturn)) return false;
+        _returnRegistryEntryResponse_returnRegistryEntryReturn other = (_returnRegistryEntryResponse_returnRegistryEntryReturn) obj;
         if (obj == null) return false;
         if (this == obj) return true;
         if (__equalsCalc != null) {
@@ -33,9 +33,9 @@ public class _listApplicationsResponse  implements java.io.Serializable {
         __equalsCalc = obj;
         boolean _equals;
         _equals = true && 
-            ((this.listApplicationsReturn==null && other.getListApplicationsReturn()==null) || 
-             (this.listApplicationsReturn!=null &&
-              this.listApplicationsReturn.equals(other.getListApplicationsReturn())));
+            ((this._any==null && other.get_any()==null) || 
+             (this._any!=null &&
+              java.util.Arrays.equals(this._any, other.get_any())));
         __equalsCalc = null;
         return _equals;
     }
@@ -47,8 +47,16 @@ public class _listApplicationsResponse  implements java.io.Serializable {
         }
         __hashCodeCalc = true;
         int _hashCode = 1;
-        if (getListApplicationsReturn() != null) {
-            _hashCode += getListApplicationsReturn().hashCode();
+        if (get_any() != null) {
+            for (int i=0;
+                 i<java.lang.reflect.Array.getLength(get_any());
+                 i++) {
+                java.lang.Object obj = java.lang.reflect.Array.get(get_any(), i);
+                if (obj != null &&
+                    !obj.getClass().isArray()) {
+                    _hashCode += obj.hashCode();
+                }
+            }
         }
         __hashCodeCalc = false;
         return _hashCode;
@@ -56,15 +64,10 @@ public class _listApplicationsResponse  implements java.io.Serializable {
 
     // Type metadata
     private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(_listApplicationsResponse.class);
+        new org.apache.axis.description.TypeDesc(_returnRegistryEntryResponse_returnRegistryEntryReturn.class);
 
     static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("urn:impl.cea.applications.astrogrid.org", "listApplicationsResponse"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("listApplicationsReturn");
-        elemField.setXmlName(new javax.xml.namespace.QName("urn:impl.cea.applications.astrogrid.org", "listApplicationsReturn"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        typeDesc.addFieldDesc(elemField);
+        typeDesc.setXmlType(new javax.xml.namespace.QName("urn:impl.cea.applications.astrogrid.org", "returnRegistryEntryResponse>returnRegistryEntryReturn"));
     }
 
     /**

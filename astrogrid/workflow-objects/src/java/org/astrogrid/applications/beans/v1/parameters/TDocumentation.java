@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: TDocumentation.java,v 1.14 2004/03/10 17:13:59 pah Exp $
+ * $Id: TDocumentation.java,v 1.15 2004/03/11 11:54:13 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1.parameters;
@@ -26,7 +26,7 @@ import org.xml.sax.ContentHandler;
 /**
  * what documentation can be
  * 
- * @version $Revision: 1.14 $ $Date: 2004/03/10 17:13:59 $
+ * @version $Revision: 1.15 $ $Date: 2004/03/11 11:54:13 $
  */
 public class TDocumentation extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable

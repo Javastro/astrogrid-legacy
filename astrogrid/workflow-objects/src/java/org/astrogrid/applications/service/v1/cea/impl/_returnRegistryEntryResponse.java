@@ -8,16 +8,16 @@
 package org.astrogrid.applications.service.v1.cea.impl;
 
 public class _returnRegistryEntryResponse  implements java.io.Serializable {
-    private java.lang.String returnRegistryEntryReturn;
+    private org.astrogrid.applications.service.v1.cea.impl._returnRegistryEntryResponse_returnRegistryEntryReturn returnRegistryEntryReturn;
 
     public _returnRegistryEntryResponse() {
     }
 
-    public java.lang.String getReturnRegistryEntryReturn() {
+    public org.astrogrid.applications.service.v1.cea.impl._returnRegistryEntryResponse_returnRegistryEntryReturn getReturnRegistryEntryReturn() {
         return returnRegistryEntryReturn;
     }
 
-    public void setReturnRegistryEntryReturn(java.lang.String returnRegistryEntryReturn) {
+    public void setReturnRegistryEntryReturn(org.astrogrid.applications.service.v1.cea.impl._returnRegistryEntryResponse_returnRegistryEntryReturn returnRegistryEntryReturn) {
         this.returnRegistryEntryReturn = returnRegistryEntryReturn;
     }
 
@@ -63,7 +63,7 @@ public class _returnRegistryEntryResponse  implements java.io.Serializable {
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("returnRegistryEntryReturn");
         elemField.setXmlName(new javax.xml.namespace.QName("urn:impl.cea.applications.astrogrid.org", "returnRegistryEntryReturn"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setXmlType(new javax.xml.namespace.QName("urn:impl.cea.applications.astrogrid.org", "returnRegistryEntryResponse>returnRegistryEntryReturn"));
         typeDesc.addFieldDesc(elemField);
     }
 

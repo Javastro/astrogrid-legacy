@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: LogLevelDescriptor.java,v 1.12 2004/03/10 17:13:59 pah Exp $
+ * $Id: LogLevelDescriptor.java,v 1.13 2004/03/11 11:54:13 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1.cea.castor.types;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class LogLevelDescriptor.
  * 
- * @version $Revision: 1.12 $ $Date: 2004/03/10 17:13:59 $
+ * @version $Revision: 1.13 $ $Date: 2004/03/11 11:54:13 $
  */
 public class LogLevelDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 

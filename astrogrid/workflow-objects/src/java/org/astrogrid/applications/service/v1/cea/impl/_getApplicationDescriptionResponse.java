@@ -8,17 +8,17 @@
 package org.astrogrid.applications.service.v1.cea.impl;
 
 public class _getApplicationDescriptionResponse  implements java.io.Serializable {
-    private java.lang.String getApplicationDescriptionReturn;
+    private org.astrogrid.applications.beans.v1.axis.ceabase.ApplicationBase applicationDesciption;
 
     public _getApplicationDescriptionResponse() {
     }
 
-    public java.lang.String getGetApplicationDescriptionReturn() {
-        return getApplicationDescriptionReturn;
+    public org.astrogrid.applications.beans.v1.axis.ceabase.ApplicationBase getApplicationDesciption() {
+        return applicationDesciption;
     }
 
-    public void setGetApplicationDescriptionReturn(java.lang.String getApplicationDescriptionReturn) {
-        this.getApplicationDescriptionReturn = getApplicationDescriptionReturn;
+    public void setApplicationDesciption(org.astrogrid.applications.beans.v1.axis.ceabase.ApplicationBase applicationDesciption) {
+        this.applicationDesciption = applicationDesciption;
     }
 
     private java.lang.Object __equalsCalc = null;
@@ -33,9 +33,9 @@ public class _getApplicationDescriptionResponse  implements java.io.Serializable
         __equalsCalc = obj;
         boolean _equals;
         _equals = true && 
-            ((this.getApplicationDescriptionReturn==null && other.getGetApplicationDescriptionReturn()==null) || 
-             (this.getApplicationDescriptionReturn!=null &&
-              this.getApplicationDescriptionReturn.equals(other.getGetApplicationDescriptionReturn())));
+            ((this.applicationDesciption==null && other.getApplicationDesciption()==null) || 
+             (this.applicationDesciption!=null &&
+              this.applicationDesciption.equals(other.getApplicationDesciption())));
         __equalsCalc = null;
         return _equals;
     }
@@ -47,8 +47,8 @@ public class _getApplicationDescriptionResponse  implements java.io.Serializable
         }
         __hashCodeCalc = true;
         int _hashCode = 1;
-        if (getGetApplicationDescriptionReturn() != null) {
-            _hashCode += getGetApplicationDescriptionReturn().hashCode();
+        if (getApplicationDesciption() != null) {
+            _hashCode += getApplicationDesciption().hashCode();
         }
         __hashCodeCalc = false;
         return _hashCode;
@@ -61,9 +61,9 @@ public class _getApplicationDescriptionResponse  implements java.io.Serializable
     static {
         typeDesc.setXmlType(new javax.xml.namespace.QName("urn:impl.cea.applications.astrogrid.org", "getApplicationDescriptionResponse"));
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("getApplicationDescriptionReturn");
-        elemField.setXmlName(new javax.xml.namespace.QName("urn:impl.cea.applications.astrogrid.org", "getApplicationDescriptionReturn"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setFieldName("applicationDesciption");
+        elemField.setXmlName(new javax.xml.namespace.QName("urn:impl.cea.applications.astrogrid.org", "ApplicationDesciption"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "ApplicationBase"));
         typeDesc.addFieldDesc(elemField);
     }
 
