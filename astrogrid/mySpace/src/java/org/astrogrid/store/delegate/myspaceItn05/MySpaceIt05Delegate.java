@@ -212,7 +212,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
  */
    public Agsl getEndpoint()
    {
-      Agsl agsl = new Agsl( managerMsrl.getDelegateEndpoint());
+      Agsl agsl = new Agsl( managerMsrl );
       return agsl;
    }
 
@@ -649,6 +649,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
       Object[] entries = results.getEntries();
       EntryResults entry = (EntryResults) entries[0];
       
+      //this seems to return a localhost
       return new URL(entry.getEntryUri());
    }
 
@@ -1333,6 +1334,9 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
 
 /*
 $Log: MySpaceIt05Delegate.java,v $
+Revision 1.26  2004/05/12 14:48:01  mch
+Fixed endpoint AGSL error
+
 Revision 1.25  2004/05/12 09:01:02  mch
 Prepended myspace: to endpoints on constructor
 
