@@ -22,7 +22,7 @@ import java.io.*;
  * object to be created directly.
  *
  * @author A C Davenhall (Edinburgh)
- * @version Iteration 2.
+ * @version Iteration 3.
  *
  */
 
@@ -32,9 +32,9 @@ public class UserAccount
 //Public constants defining the permitted codes for attempted read,
 //write and delete operations.
 
-   public static final int READ   = 1;   // Read.
-   public static final int WRITE  = 2;   // Write.
-   public static final int DELETE = 3;   // Delete.
+   public static final int READ   = 1;      // Read.
+   public static final int WRITE  = 2;      // Write.
+   public static final int DELETE = 3;      // Delete.
 
    private String userID;
    private String communityID;
@@ -152,6 +152,17 @@ public class UserAccount
     String permissions)
   {  return true;
   }
+
+
+/**
+  * Check that the user can modify (create, change, delete) new users
+  * of the MySpace system.
+  */
+
+  public boolean checkCanModifyUsers()
+  {  return true;
+  }
+
 
 /**
  * Produce a reasonable string representation of a

@@ -693,15 +693,6 @@ public class MySpaceActions
       return returnedDataItem;
    }
 
-
-
-
-
-
-
-
-
-
 // -----------------------------------------------------------------
 
 /**
