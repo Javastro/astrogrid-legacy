@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/cocoon/common/xsl/Attic/template.xsl,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/27 02:43:18 $</cvs:author>
-    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/27 02:54:08 $</cvs:author>
+    | <cvs:version>$Revision: 1.3 $</cvs:version>
     | <cvs:log>
     | $Log: template.xsl,v $
+    | Revision 1.3  2003/06/27 02:54:08  dave
+    | Added images to tree nodes
+    |
     | Revision 1.2  2003/06/27 02:43:18  dave
     | Added images to tree nodes
     |
@@ -140,18 +143,21 @@
 					<xsl:value-of select="image/@src"/>
 				</xsl:attribute>
 			</img>
-			<xsl:choose>
-				<!-- If this link is selected -->
-				<xsl:when test="@selected = 'true'">
-					<strong>
+			<!-- If we have some text -->
+			<xsl:if test="string-length(normalize-space(text)) > 0">
+				<xsl:choose>
+					<!-- If this link is selected -->
+					<xsl:when test="@selected = 'true'">
+						<strong>
+							<xsl:value-of select="text"/>
+						</strong>
+					</xsl:when>
+					<!-- If this link is NOT selected -->
+					<xsl:otherwise>
 						<xsl:value-of select="text"/>
-					</strong>
-				</xsl:when>
-				<!-- If this link is NOT selected -->
-				<xsl:otherwise>
-					<xsl:value-of select="text"/>
-				</xsl:otherwise>
-			</xsl:choose>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:if>
 		</a>
 	</xsl:template>
 
