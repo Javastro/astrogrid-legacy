@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegate_v05.java,v 1.2 2004/08/31 17:44:02 mch Exp $
+ * $Id: WebDelegate_v05.java,v 1.3 2004/09/28 14:58:45 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -42,7 +42,7 @@ import org.astrogrid.store.Agsl;
    
 public class WebDelegate_v05 implements QuerySearcher, ConeSearcher {
    
-   Log log = LogFactory.getLog(WebDelegate_v041.class);
+   Log log = LogFactory.getLog(WebDelegate_v05.class);
    
    /** listeners indexed by query id */
    Hashtable listeners = new Hashtable();
@@ -156,6 +156,9 @@ public class WebDelegate_v05 implements QuerySearcher, ConeSearcher {
 
 /*
  $Log: WebDelegate_v05.java,v $
+ Revision 1.3  2004/09/28 14:58:45  mch
+ Removed obsolete 4.1 web interface
+
  Revision 1.2  2004/08/31 17:44:02  mch
  Fix to getStatus
 
@@ -207,6 +210,9 @@ public class WebDelegate_v05 implements QuerySearcher, ConeSearcher {
  Revision 1.16  2004/01/08 15:48:17  mch
  Allow myspace references to be given
 $Log: WebDelegate_v05.java,v $
+Revision 1.3  2004/09/28 14:58:45  mch
+Removed obsolete 4.1 web interface
+
 Revision 1.2  2004/08/31 17:44:02  mch
 Fix to getStatus
 
