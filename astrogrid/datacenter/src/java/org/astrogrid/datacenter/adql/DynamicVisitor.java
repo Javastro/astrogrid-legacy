@@ -1,4 +1,4 @@
-/*$Id: DynamicVisitor.java,v 1.1 2003/09/02 14:45:08 nw Exp $
+/*$Id: DynamicVisitor.java,v 1.2 2003/09/03 13:42:31 nw Exp $
  * Created on 29-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -40,6 +40,8 @@ package org.astrogrid.datacenter.adql;
  * In this way, the implementation is safe from accidental deletion by regenerating the code, and in addition will automagigically
  * work for any future schema changes. 
  * @author Noel Winstanley nw@jb.man.ac.uk 29-Aug-2003
+ * @todo replace dynamic mechanism with a static traversal; once the schema design is finalized. Will require
+ * changing the visit method type from <tt>visit(Type t)</tt> to <tt>visitType(Type t)</tt> to prevent overloading problems. 
  *
  */
 public interface DynamicVisitor {
@@ -50,6 +52,9 @@ public interface DynamicVisitor {
 
 /* 
 $Log: DynamicVisitor.java,v $
+Revision 1.2  2003/09/03 13:42:31  nw
+documentation fixes
+
 Revision 1.1  2003/09/02 14:45:08  nw
 interface for visitor pattern
  

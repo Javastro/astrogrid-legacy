@@ -1,4 +1,4 @@
-/*$Id: AbstractQOM.java,v 1.2 2003/09/02 14:43:54 nw Exp $
+/*$Id: AbstractQOM.java,v 1.3 2003/09/03 13:42:31 nw Exp $
  * Created on 28-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,7 +21,7 @@ import java.util.Enumeration;
  *  - necessary work around for castor, so we can get all generated classes implementing the QOM interface.
 
  * @author Noel Winstanley nw@jb.man.ac.uk 28-Aug-2003
- *
+ * @see DynamicVisitor for description of the visitor pattern.
  */
 public abstract class AbstractQOM implements QOM {
     
@@ -121,6 +121,9 @@ public abstract class AbstractQOM implements QOM {
 
 /* 
 $Log: AbstractQOM.java,v $
+Revision 1.3  2003/09/03 13:42:31  nw
+documentation fixes
+
 Revision 1.2  2003/09/02 14:43:54  nw
 added dynamic visitor pattern.
 
