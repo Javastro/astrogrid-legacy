@@ -1,5 +1,5 @@
 /*
- * $Id: PropertyConfig.java,v 1.3 2003/10/07 22:41:10 mch Exp $
+ * $Id: PropertyConfig.java,v 1.4 2003/11/13 21:29:57 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,7 +7,6 @@
 package org.astrogrid.config;
 
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
