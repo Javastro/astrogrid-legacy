@@ -8,27 +8,27 @@
 </description>
   <shortDescription>AstroGrid CEA Server common components</shortDescription>
   <packageGroups>
-  		<packageGroup>
-  			<title>Application Execution</title>
-  			<packages>org.astrogrid.applications</packages>
-  		</packageGroup>
-  		<packageGroup>
-  			<title>Application Metadata</title>
-  			<packages>org.astrogrid.applications.description*</packages>
-  		</packageGroup>
-  		<packageGroup>
-  			<title>Parameters and Handlers</title>
-  			<packages>org.astrogrid.applications.parameter*</packages>
-  		</packageGroup>
-  		<packageGroup>
-  			<title>JavaClass CEA Provider</title>
-  			<packages>org.astrogrid.applications.javaclass</packages>
-  		</packageGroup>
-  		<packageGroup>
-  			<title>CEA Server</title>
-  			<packages>org.astrogrid.applications.manager*, org.astrogrid.applications.service*, org.astrogrid.applications.component</packages>
-  		</packageGroup>
-  		  		  		
+                <packageGroup>
+                        <title>Application Execution</title>
+                        <packages>org.astrogrid.applications</packages>
+                </packageGroup>
+                <packageGroup>
+                        <title>Application Metadata</title>
+                        <packages>org.astrogrid.applications.description*</packages>
+                </packageGroup>
+                <packageGroup>
+                        <title>Parameters and Handlers</title>
+                        <packages>org.astrogrid.applications.parameter*</packages>
+                </packageGroup>
+                <packageGroup>
+                        <title>JavaClass CEA Provider</title>
+                        <packages>org.astrogrid.applications.javaclass</packages>
+                </packageGroup>
+                <packageGroup>
+                        <title>CEA Server</title>
+                        <packages>org.astrogrid.applications.manager*, org.astrogrid.applications.service*, org.astrogrid.applications.component</packages>
+                </packageGroup>
+
   </packageGroups>
   <dependencies>
     <!-- astrogrid -specific deps -->
@@ -246,16 +246,12 @@
         <war.bundle>true</war.bundle>
       </properties>
     </dependency>
-    <!-- needed ? -->
     <dependency>
       <groupId>sun</groupId>
       <artifactId>mail</artifactId>
       <version>1.3.1</version>
-	  <properties>
-		<war.bundle>true</war.bundle>
-		</properties>
     </dependency>
-    <!-- used to provide in-war unit testing only -->
+    <!-- used to provide in-war unit testing-->
     <dependency>
       <artifactId>junitee</artifactId>
       <groupId>junitee</groupId>
