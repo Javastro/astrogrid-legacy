@@ -21,7 +21,14 @@
 		<xsl:attribute name="value">org.astrogrid.datacenter.service.AxisDataServerSoapBinding</xsl:attribute>
 		<xsl:apply-templates />
 	</xsl:copy>
-    </xsl:when>    
+    </xsl:when>
+	<xsl:when test="name() = 'service' ">
+	  <xsl:copy>
+	    <xsl:apply-templates select="@* | node()" />
+
+	  <parameter name="wsdlFile" value="/wsdl/AxisDataServer.wsdl"/>
+	  </xsl:copy>
+	</xsl:when>
     <xsl:otherwise>
         <xsl:copy>
             <xsl:apply-templates select="@* | node()"/>
