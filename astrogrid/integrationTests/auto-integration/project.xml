@@ -1,135 +1,136 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.17 2004/07/05 16:22:32 jdt Exp $ -->
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-    xsi:noNamespaceSchemaLocation="maven-project.xsd">
-    <!--    <extend>../../maven-base/project.xml</extend> -->
-    <id>auto-integration</id>
+<project>
+    <pomVersion>1</pomVersion>
+    <artifactId>auto-integration</artifactId>
     <name>Automated Integration Testing</name>
+    <groupId>auto-integration</groupId>
+    <currentVersion>SNAPSHOT</currentVersion>
     <description> Automated integration testing. This project will install all 
         the astrogrid components (someday) to a local tomcat5 server, and set 
         up the required configuration and workfing directories. Then a batch of 
         integration tests are run against the installed components. 
         </description>
-    <build />
     <dependencies>
-        <!-- war files to install -->
         <dependency>
+            <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-jes</artifactId>
-            <groupId>org.astrogrid</groupId>
             <version>SNAPSHOT</version>
             <type>war</type>
+            <properties/>
         </dependency>
         <dependency>
+            <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-cea-server</artifactId>
-            <groupId>org.astrogrid</groupId>
             <version>SNAPSHOT</version>
             <type>war</type>
+            <properties/>
         </dependency>
         <dependency>
+            <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-cea-commandline</artifactId>
-            <groupId>org.astrogrid</groupId>
             <version>SNAPSHOT</version>
             <type>war</type>
+            <properties/>
         </dependency>
         <dependency>
+            <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-cea-http</artifactId>
-            <groupId>org.astrogrid</groupId>
             <version>SNAPSHOT</version>
             <type>war</type>
+            <properties/>
         </dependency>
         <dependency>
+            <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-mySpace</artifactId>
-            <groupId>org.astrogrid</groupId>
             <version>SNAPSHOT</version>
             <type>war</type>
+            <properties/>
         </dependency>
         <dependency>
+            <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-registry</artifactId>
-            <groupId>org.astrogrid</groupId>
             <version>SNAPSHOT</version>
             <type>war</type>
+            <properties/>
         </dependency>
         <dependency>
-            <artifactId>exist</artifactId>
             <groupId>exist</groupId>
+            <artifactId>exist</artifactId>
             <version>SNAPSHOT</version>
             <type>war</type>
+            <properties/>
         </dependency>
         <dependency>
+            <groupId>org.astrogrid</groupId>
             <artifactId>pal</artifactId>
-            <groupId>org.astrogrid</groupId>
             <version>SNAPSHOT</version>
             <type>war</type>
+            <properties/>
         </dependency>
         <dependency>
+            <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-portal</artifactId>
-            <groupId>org.astrogrid</groupId>
             <version>SNAPSHOT</version>
             <type>war</type>
+            <properties/>
         </dependency>
-        <!-- cheeky little database driver -->
         <dependency>
-            <id>hsqldb</id>
+            <groupId>hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
             <version>1.7.1</version>
+            <properties/>
         </dependency>
-        <!-- for development -->
         <dependency>
-            <artifactId>catalina-ant</artifactId>
             <groupId>catalina-ant</groupId>
-            <!--<version>4.1.24</version>-->
+            <artifactId>catalina-ant</artifactId>
             <version>5.0.18</version>
+            <properties/>
         </dependency>
-        <!-- dunno if we need this here -->
         <dependency>
-            <artifactId>junit</artifactId>
             <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
             <version>3.8</version>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
-        <!--+
-            | Community WebApp.
-            +-->
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community</artifactId>
             <version>SNAPSHOT</version>
             <type>war</type>
             <url>http://www.astrogrid.org/</url>
+            <properties/>
         </dependency>
-        <!--+
-            | Community install tools.
-            +-->
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-install</artifactId>
             <version>SNAPSHOT</version>
             <type>zip</type>
             <url>http://www.astrogrid.org/</url>
+            <properties/>
         </dependency>
-        <!--+
-            | Community install tools.
-            | Required for the Registry upload.
-            +-->
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-install</artifactId>
             <version>SNAPSHOT</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
+            <properties/>
         </dependency>
-        <!-- maven taglbs -->
         <dependency>
             <groupId>commons-jelly</groupId>
             <artifactId>commons-jelly-tags-jsl</artifactId>
             <version>20030211.143151</version>
+            <properties/>
         </dependency>
         <dependency>
             <groupId>commons-jelly</groupId>
             <artifactId>commons-jelly-tags-xml</artifactId>
             <version>20030211.142705</version>
             <url>http://jakarta.apache.org/commons/jelly/libs/xml/</url>
+            <properties/>
         </dependency>
     </dependencies>
+    <build/>
+    <properties/>
 </project>
