@@ -3,11 +3,14 @@
     | Maven build tasks for the AstroGrid community components.
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/maven.xml,v $</cvs:source>
-    | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/06/29 22:21:46 $</cvs:date>
-    | <cvs:version>$Revision: 1.16 $</cvs:version>
+    | <cvs:author>$Author: clq2 $</cvs:author>
+    | <cvs:date>$Date: 2004/07/13 16:48:11 $</cvs:date>
+    | <cvs:version>$Revision: 1.17 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.17  2004/07/13 16:48:11  clq2
+    |   moving maven to cadairidris trying to get site doc deployed on cadariridris
+    |
     |   Revision 1.16  2004/06/29 22:21:46  dave
     |   Merged development branch, dave-dev-200406291222, into HEAD
     |
@@ -173,7 +176,11 @@
         <!--+
             | Deploy our project site.
             +-->
+		<echo message="About to do local site deploy"/>
         <attainGoal name="deploy-local-site"/>
+		<echo message="Finished local site deploy"/>
+		<attainGoal name="site:deploy"/>
+		<echo message="Finished   site deploy"/>
     </goal>
 
 </project>
