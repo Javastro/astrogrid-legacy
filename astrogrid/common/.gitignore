@@ -5,3 +5,4 @@ target
 test.log
 velocity.log
 junit*.properties
+.checkstyle
