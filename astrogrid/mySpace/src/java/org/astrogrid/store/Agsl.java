@@ -1,5 +1,5 @@
 /*
- * $Id: Agsl.java,v 1.14 2004/04/01 14:49:23 mch Exp $
+ * $Id: Agsl.java,v 1.15 2004/04/01 15:16:36 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -235,10 +235,24 @@ public class Agsl
    }
    
 
+   /** Constructs an IVORN out of a user and this AGSL; ie assumes that
+    * the user has an account on a community server that is resolvable through
+    * a registry, and that the path on this agsl is the path to the storepoint
+    * resolved to by that community server
+    */
+   public Ivorn toIvorn(User user) {
+      return new Ivorn(user.getCommunity()+"/"+user.getUserId(), getPath());
+   }
+   
+   
+   
 }
 
 /*
 $Log: Agsl.java,v $
+Revision 1.15  2004/04/01 15:16:36  mch
+Added toIvorn() method
+
 Revision 1.14  2004/04/01 14:49:23  mch
 change to javadoc
 
@@ -297,4 +311,5 @@ Revision 1.1  2004/02/15 23:16:06  mch
 New-style VoSpace delegates.  Not agreed so private to datacenter for the moment
 
  */
+
 

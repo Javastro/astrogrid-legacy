@@ -1,5 +1,5 @@
 /*
- * $Id: AgslTest.java,v 1.3 2004/03/14 13:47:26 mch Exp $
+ * $Id: AgslTest.java,v 1.4 2004/04/01 15:21:07 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -10,11 +10,10 @@
 package org.astrogrid.store;
 
 import java.net.MalformedURLException;
-import java.net.URL;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.astrogrid.store.Msrl;
+import org.astrogrid.community.User;
 
 
 /**
@@ -63,6 +62,26 @@ public class AgslTest extends TestCase
    }
 
       
+   /**
+    * Tests IVORN maker
+    */
+   public void testIvornMaker() {
+      String validAgsl = "astrogrid:store:ftp://grendel12.roe.ac.uk/thing#path/path/file.txt";
+      
+      try {
+         //check myspace forms
+         Agsl agsl = new Agsl(validAgsl);
+         
+         Ivorn ivorn = agsl.toIvorn(User.ANONYMOUS);
+         
+         assertEquals("ivo://nowhere/Anon#path/path/file.txt", ivorn.toString());
+      }
+      catch (MalformedURLException mue) {
+         fail("Could not cope with valid agsl '"+validAgsl+"'");
+      }
+   
+   }
+      
    
    /**
     * test deprecated 4.1 vospaceRl
@@ -106,6 +125,9 @@ public class AgslTest extends TestCase
 
 /*
 $Log: AgslTest.java,v $
+Revision 1.4  2004/04/01 15:21:07  mch
+Added toIvorn() method
+
 Revision 1.3  2004/03/14 13:47:26  mch
 Increased coverage
 
