@@ -14,51 +14,51 @@
 
     <section name="Store Clients"><p>
     The astrogrid store is a distributed networked storage system (link to design docs)
-    <a href="http://www.astrogrid.org/maven/docs/snapshot/mySpace/multiproject/astrogrid-store-client/">Project page</a>
+    <a href="http://www.astrogrid.org/maven/docs/HEAD/mySpace/multiproject/astrogrid-store-client/">Project page</a>
     There are two ways that a client can interact with a store.
     </p>
     <subsection name="Myspace Tree Model"><p>
     This interface creates an abstraction similar to the <code>java.io.File</code> class - each file and folder
     in the store is represented as an object in a tree, which the client code can traverse and manipulate.
-    <a href="http://www.astrogrid.org/maven/docs/snapshot/mySpace/multiproject/astrogrid-store-client/apidocs/org/astrogrid/store/tree/package-summary.html"><code>org.astrogrid.store.tree</code> (javadoc)</a>
+    <a href="http://www.astrogrid.org/maven/docs/HEAD/mySpace/multiproject/astrogrid-store-client/apidocs/org/astrogrid/store/tree/package-summary.html"><code>org.astrogrid.store.tree</code> (javadoc)</a>
     </p>
     <p>
     <i>NB this interface is a renamed copy of the classes in
-       <a href="http://www.astrogrid.org/maven/docs/snapshot/mySpace/multiproject/astrogrid-store-client/apidocs/org/astrogrid/store/adapter/aladin/package-summary.html"><code>org.astrogrid.store.adapter.aladin</code></a>
+       <a href="http://www.astrogrid.org/maven/docs/HEAD/mySpace/multiproject/astrogrid-store-client/apidocs/org/astrogrid/store/adapter/aladin/package-summary.html"><code>org.astrogrid.store.adapter.aladin</code></a>
        which is still available, but has been deprecated. All clients should transfer to <code>org.astrogrid.store.tree</code>.
     </i></p></subsection>
     <subsection name="Vospace Client"><p>
     This is a lower-level interface that allows access to a single store location, but no traversal of the store structure.
-    <a href="http://www.astrogrid.org/maven/docs/snapshot/mySpace/multiproject/astrogrid-store-client/apidocs/org/astrogrid/store/package-summary.html">Javadoc</a>
+    <a href="http://www.astrogrid.org/maven/docs/HEAD/mySpace/multiproject/astrogrid-store-client/apidocs/org/astrogrid/store/package-summary.html">Javadoc</a>
     </p></subsection>
     </section>
 
     <section name="Registry Client"><p>
     The registry is an xml database containing documents that conform to the VOResource schema (link to design docs).
     Two clients are provided - one for performing queries, the other for admin / modification of the registry. Both are
-    accessible from the <a href="http://www.astrogrid.org/maven/docs/snapshot/registry/multiproject/astrogrid-registry-client-lite/apidocs/org/astrogrid/registry/client/RegistryDelegateFactory.html"><code>RegistryDelegateFactory</code></a>.
-       <a href="http://www.astrogrid.org/maven/docs/snapshot/registry/multiproject/astrogrid-registry-client-lite/index.html">Project page</a>,
-        <a href="http://www.astrogrid.org/maven/docs/snapshot/registry/multiproject/astrogrid-registry-client-lite/apidocs/index.html">Javadoc</a>
+    accessible from the <a href="http://www.astrogrid.org/maven/docs/HEAD/registry/multiproject/astrogrid-registry-client-lite/apidocs/org/astrogrid/registry/client/RegistryDelegateFactory.html"><code>RegistryDelegateFactory</code></a>.
+       <a href="http://www.astrogrid.org/maven/docs/HEAD/registry/multiproject/astrogrid-registry-client-lite/index.html">Project page</a>,
+        <a href="http://www.astrogrid.org/maven/docs/HEAD/registry/multiproject/astrogrid-registry-client-lite/apidocs/index.html">Javadoc</a>
     </p></section>
 
     <section name="Community"><p>
     The community service manages user accounts, authentication and permissions. (need more info here).
-    <a href="http://www.astrogrid.org/maven/docs/snapshot/community/index.html">Project Page</a>
+    <a href="http://www.astrogrid.org/maven/docs/HEAD/community/index.html">Project Page</a>
     </p></section>
 
     <section name="Common Classes"><p>
     Some common classes
-    (such as <a href="http://www.astrogrid.org/maven/docs/snapshot/common/apidocs/org/astrogrid/store/Ivorn.html">Ivorn</a> and
-    <a href="http://www.astrogrid.org/maven/docs/snapshot/common/apidocs/org/astrogrid/community/User.html">User</a>) are defined in a separaete project
-    <a href="http://www.astrogrid.org/maven/docs/snapshot/common/index.html">Project page</a>,
-    <a href="http://www.astrogrid.org/maven/docs/snapshot/common/apidocs/index.html">Javadoc</a>
+    (such as <a href="http://www.astrogrid.org/maven/docs/HEAD/common/apidocs/org/astrogrid/store/Ivorn.html">Ivorn</a> and
+    <a href="http://www.astrogrid.org/maven/docs/HEAD/common/apidocs/org/astrogrid/community/User.html">User</a>) are defined in a separaete project
+    <a href="http://www.astrogrid.org/maven/docs/HEAD/common/index.html">Project page</a>,
+    <a href="http://www.astrogrid.org/maven/docs/HEAD/common/apidocs/index.html">Javadoc</a>
     </p></section>
 
     <section name="Configuration"><p>
     All astrogrid components use a common configuration system.
     This allows properties to be set using either JNDI (if available), a configuration file, or System properties.
     The simplest method is to have a file named <code>astrogrid.properties</code> on the classpath.
-    See the <a href="http://www.astrogrid.org/maven/docs/snapshot/common/apidocs/org/astrogrid/config/package-summary.html">javadoc</a>
+    See the <a href="http://www.astrogrid.org/maven/docs/HEAD/common/apidocs/org/astrogrid/config/package-summary.html">javadoc</a>
     for further details.
 
     This CDK requires the following keys to be set:
@@ -78,7 +78,7 @@
     <section name="Development"><p>
     It's possible to deploy a mini-astrogrid (<i>Astrogrid in a Box</i>) to a single machine. This provides
     a convenient target to test clients against.
-    <a href="http://www.astrogrid.org/maven/docs/snapshot/integrationTests/install.html">Installation Instructions</a>
+    <a href="http://www.astrogrid.org/maven/docs/HEAD/integrationTests/install.html">Installation Instructions</a>
     </p></section>
     ]]></description>
     <shortDescription>Core CDK</shortDescription>
