@@ -1,4 +1,5 @@
 <%@ page import="org.astrogrid.mySpace.delegate.*,
+                 org.astrogrid.mySpace.delegate.helper.Assist,
                  java.net.*,
                  java.util.*,
                  java.io.*"

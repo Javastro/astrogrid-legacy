@@ -105,7 +105,7 @@
         The options must be spelt precisely as shown above, but any
         capitalisation is permitted.  -->
 
-        <property name="SERVERDEPLOYMENT" value="INTERNALSERVERS">
+        <property name="SERVERDEPLOYMENT" value="INTERNALSERVERS" />
 
 
       <!-- DEBUG

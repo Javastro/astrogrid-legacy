@@ -1,4 +1,5 @@
 <%@ page import="org.astrogrid.mySpace.delegate.*,
+                 org.astrogrid.mySpace.delegate.helper.Assist,
                  java.net.*,
                  java.util.*,
                  java.io.*"
@@ -42,29 +43,38 @@ The end point for this service is: <%=serviceURL%>
 The result from createUser was <%=ok%>.
 </p>
 
-<%
-  String query = "/" + userId + "@" +communityId +  "/*";
-  out.print("Query: " + query + "<br>");
-
-  Vector results = client.listDataHoldings(userId, communityId,
-    credential, query);
-%>
-
 <p>
 The following containers have been created for user
 <code><%=userId%>@<%=communityId%></code>:
 </p>
 
+<pre>
 <%
-  for (int i=0; i<results.size(); i++)
-  {  Vector system = (Vector)results.elementAt(i);
+  String query = "/" + userId + "@" +communityId +  "/*";
 
-     for (int k=0; k<system.size(); k++)
-     {  out.print(system.elementAt(k) + "<BR>");
+  Vector results = client.listDataHoldingsGen(userId, communityId,
+    credential, query);
+
+  int resultsSize = results.size();
+
+  if (resultsSize > 0)
+  {  for (int i=0; i<resultsSize; i++)
+     {  String xmlString = (String)results.elementAt(i);
+        Assist assistant = new Assist();
+        Vector summaryList = assistant.getDataItemSummary(xmlString);
+
+        int numEntries = summaryList.size();
+
+        for (int loop = 0; loop < numEntries; loop++)
+        {  out.print((String)summaryList.elementAt(loop) + "\n");
+        }
      }
   }
-
+  else
+  {  out.print("No entries satisfied the query." + "<BR>");
+  }
 %>
+</pre>
 
 <p>
 Return to the <a href="functions.html">MySpace Service Test</a> page.

@@ -1,4 +1,5 @@
 <%@ page import="org.astrogrid.mySpace.delegate.*,
+                 org.astrogrid.mySpace.delegate.helper.Assist,
                  java.net.*,
                  java.util.*,
                  java.io.*"
@@ -64,7 +65,15 @@ The new state of account <%=query%> is:
 
   if (resultsSize > 0)
   {  for (int i=0; i<resultsSize; i++)
-     {  out.print(results.elementAt(i) + "<BR>");
+     {  String xmlString = (String)results.elementAt(i);
+        Assist assistant = new Assist();
+        Vector summaryList = assistant.getDataItemSummary(xmlString);
+
+        int numEntries = summaryList.size();
+
+        for (int loop = 0; loop < numEntries; loop++)
+        {  out.print((String)summaryList.elementAt(loop) + "\n");
+        }
      }
   }
   else

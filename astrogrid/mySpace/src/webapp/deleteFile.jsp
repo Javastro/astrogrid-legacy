@@ -1,4 +1,5 @@
 <%@ page import="org.astrogrid.mySpace.delegate.*,
+                 org.astrogrid.mySpace.delegate.helper.Assist,
                  java.net.*,
                  java.util.*,
                  java.io.*"
@@ -43,14 +44,19 @@ The end point for this service is: <%=serviceURL%>
 The result from deleteFile was:
 </p>
 
+<pre>
 <%
-  out.print(result + "<BR>");
+  Assist assistant = new Assist();
+  String displayString = assistant.formatTree(result);
+  out.print(displayString);
 %>
+</pre>
 
 <p>
 The new state of account <%=query%> is:
 </p>
 
+<pre>
 <%
   Vector results = client.listDataHoldingsGen(userId, communityId,
     credential, query);
@@ -59,14 +65,21 @@ The new state of account <%=query%> is:
 
   if (resultsSize > 0)
   {  for (int i=0; i<resultsSize; i++)
-     {  out.print(results.elementAt(i) + "<BR>");
+     {  String xmlString = (String)results.elementAt(i);
+        Vector summaryList = assistant.getDataItemSummary(xmlString);
+
+        int numEntries = summaryList.size();
+
+        for (int loop = 0; loop < numEntries; loop++)
+        {  out.print((String)summaryList.elementAt(loop) + "\n");
+        }
      }
   }
   else
   {  out.print("No entries satisfied the query." + "<BR>");
   }
-
 %>
+</pre>
 
 <p>
 Return to the <a href="functions.html">MySpace Service Test</a> page.
