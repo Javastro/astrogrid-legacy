@@ -643,7 +643,8 @@ public class DesignAction extends AbstractAction {
                 
                 ivorn = (new CommunityIvornParser(ivornName)).getIvorn();
                 
-                if( workflow == null  || bConfirm == true ) {
+//                if( workflow == null  || bConfirm == true ) {
+				if( true ) {
                     WorkflowStore wfStore = this.workflowManager.getWorkflowStore();
                     workflow = wfStore.readWorkflow( user, ivorn ) ;
  
