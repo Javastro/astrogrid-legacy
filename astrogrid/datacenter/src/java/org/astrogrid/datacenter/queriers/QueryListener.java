@@ -1,10 +1,10 @@
 /*
- * $Id: ServiceListener.java,v 1.6 2003/09/10 17:57:31 mch Exp $
+ * $Id: QueryListener.java,v 1.1 2003/09/15 21:27:15 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
 
-package org.astrogrid.datacenter.service;
+package org.astrogrid.datacenter.queriers;
 
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 
@@ -16,7 +16,7 @@ import org.astrogrid.datacenter.queriers.DatabaseQuerier;
  * @author M Hill
  */
 
-public interface ServiceListener
+public interface QueryListener
 {
    /** Called by the service when it has a
     * status change
@@ -25,7 +25,10 @@ public interface ServiceListener
 }
 
 /*
-$Log: ServiceListener.java,v $
+$Log: QueryListener.java,v $
+Revision 1.1  2003/09/15 21:27:15  mch
+Listener/state refactoring.
+
 Revision 1.6  2003/09/10 17:57:31  mch
 Tidied xml doc helpers and fixed (?) job/web listeners
 

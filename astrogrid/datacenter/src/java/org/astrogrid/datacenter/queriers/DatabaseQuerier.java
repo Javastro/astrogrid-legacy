@@ -1,5 +1,5 @@
 /*
- * $Id: DatabaseQuerier.java,v 1.21 2003/09/15 16:28:19 mch Exp $
+ * $Id: DatabaseQuerier.java,v 1.22 2003/09/15 21:27:15 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -19,9 +19,9 @@ import org.astrogrid.datacenter.common.DocMessageHelper;
 import org.astrogrid.datacenter.common.ServiceStatus;
 import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.datacenter.query.QueryException;
-import org.astrogrid.datacenter.service.JobNotifyServiceListener;
-import org.astrogrid.datacenter.service.ServiceListener;
-import org.astrogrid.datacenter.service.WebNotifyServiceListener;
+import org.astrogrid.datacenter.delegate.JobNotifyServiceListener;
+import org.astrogrid.datacenter.queriers.QueryListener;
+import org.astrogrid.datacenter.delegate.WebNotifyServiceListener;
 import org.astrogrid.datacenter.service.Workspace;
 import org.astrogrid.log.Log;
 import org.w3c.dom.Element;
@@ -433,7 +433,7 @@ public abstract class DatabaseQuerier implements Runnable
     * just get 'starting', 'working' and 'completed' messages based around the
     * basic http exchange.
     */
-   public void registerServiceListener(ServiceListener aListener)
+   public void registerListener(QueryListener aListener)
    {
       serviceListeners.add(aListener);
    }
@@ -445,7 +445,7 @@ public abstract class DatabaseQuerier implements Runnable
    {
       for (int i=0;i<serviceListeners.size();i++)
       {
-         ((ServiceListener) serviceListeners.get(i)).serviceStatusChanged(this);
+         ((QueryListener) serviceListeners.get(i)).serviceStatusChanged(this);
       }
    }
 

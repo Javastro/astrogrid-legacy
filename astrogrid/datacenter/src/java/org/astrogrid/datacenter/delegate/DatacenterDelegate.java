@@ -1,5 +1,5 @@
 /*
- * $Id: DatacenterDelegate.java,v 1.15 2003/09/15 16:47:53 mch Exp $
+ * $Id: DatacenterDelegate.java,v 1.16 2003/09/15 21:27:15 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -11,12 +11,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Vector;
 import javax.xml.rpc.ServiceException;
-import org.astrogrid.datacenter.common.ServiceIdHelper;
 import org.astrogrid.datacenter.common.ServiceStatus;
 import org.astrogrid.datacenter.delegate.dummy.DummyDelegate;
-import org.astrogrid.log.Log;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 /**
  * A convenience class for java clients of datacenters.  They can create and
@@ -127,35 +124,41 @@ public abstract class DatacenterDelegate
     */
    public abstract ServiceStatus getServiceStatus(String id);
 
+
    /**
-    * Register a status listener.  This will be informed of changes in status
-    * to the service - IF the service supports such info.  Otherwise it will
-    * just get client 'starting', 'working' and 'completed' messages based around the
-    * basic http exchange.
+    * A convenience method for subclasses that keep (some) status listeners
+    * locally.  Adds the given listener to the list of listeners indexed by
+    * the given id
     */
-   public void registerStatusListener(DatacenterStatusListener aListener)
+   protected void addListener(DatacenterStatusListener newListener)
    {
-      statusListeners.add(aListener);
+      statusListeners.add(newListener);
    }
 
-   /** informs all listeners of the new status change. Not threadsafe...
+   /** A convenience method for sublcasses that keep (some) status listeners locally.
+    * Informs *all* listeners of the new status change for the given service id.
+    * @todo Not threadsafe...
     */
-   protected void fireStatusChanged(String id, String newStatus)
+   protected void fireStatusChanged(String serviceId, ServiceStatus newStatus)
    {
       for (int i=0;i<statusListeners.size();i++)
       {
-         ((DatacenterStatusListener) statusListeners.get(i)).datacenterStatusChanged(id, newStatus);
+         ((DatacenterStatusListener) statusListeners.get(i)).datacenterStatusChanged(serviceId, newStatus);
       }
    }
 
    /**
-    * Register web listener with service
+    * Register listener with *service*
     */
-   public abstract void registerWebListener(URL listenerUrl);
+   public abstract void registerListener(String serviceId, DatacenterStatusListener listener);
+
 }
 
 /*
 $Log: DatacenterDelegate.java,v $
+Revision 1.16  2003/09/15 21:27:15  mch
+Listener/state refactoring.
+
 Revision 1.15  2003/09/15 16:47:53  mch
 removed unused service id extractor (now in helper)
 

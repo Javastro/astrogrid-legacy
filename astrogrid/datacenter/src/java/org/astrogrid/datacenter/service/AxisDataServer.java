@@ -1,18 +1,19 @@
 /*
- * $Id: AxisDataServer.java,v 1.13 2003/09/15 16:42:03 mch Exp $
+ * $Id: AxisDataServer.java,v 1.14 2003/09/15 21:27:15 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.service;
-
 import java.io.IOException;
 import org.astrogrid.datacenter.common.ResponseHelper;
 import org.astrogrid.datacenter.common.ServiceIdHelper;
 import org.astrogrid.datacenter.common.ServiceStatus;
 import org.astrogrid.datacenter.config.Configuration;
+import org.astrogrid.datacenter.delegate.WebNotifyServiceListener;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
+import org.astrogrid.datacenter.queriers.QueryStatusForwarder;
 import org.astrogrid.datacenter.query.QueryException;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -156,6 +157,29 @@ public class AxisDataServer extends ServiceServer
 
       querier.abort();
    }
+
+   /**
+    * Returns the status of the service with the given id
+    * <p>
+    * @soap
+    */
+   public ServiceStatus getStatus(String id)
+   {
+      return DatabaseQuerier.getQuerier(id).getStatus();
+   }
+
+   /**
+    * Register the given URL as a service to be notified when the status changes
+    * <p>
+    * @soap
+    */
+   public void registerWebListener(String serviceId, WebNotifyServiceListener listener)
+   {
+      DatabaseQuerier querier = DatabaseQuerier.getQuerier(serviceId);
+
+      querier.registerListener(new QueryStatusForwarder(listener));
+   }
+
 }
 
 

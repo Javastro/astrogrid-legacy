@@ -1,5 +1,5 @@
 /*
- * $Id: DelegateTest.java,v 1.6 2003/09/15 17:06:54 mch Exp $
+ * $Id: DelegateTest.java,v 1.7 2003/09/15 21:28:09 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -66,7 +66,7 @@ public class DelegateTest extends TestCase implements DatacenterStatusListener
    {
       DatacenterDelegate delegate = DatacenterDelegate.makeDelegate(null);
 
-      delegate.registerStatusListener(this);
+      delegate.registerListener(DummyDelegate.SERVICE_ID, this);
 
       //load test query file
       URL url = getClass().getResource("testQuery.xml");
@@ -108,7 +108,7 @@ public class DelegateTest extends TestCase implements DatacenterStatusListener
    {
       DatacenterDelegate delegate = DatacenterDelegate.makeDelegate(null);
 
-      delegate.registerStatusListener(this);
+      delegate.registerListener(DummyDelegate.SERVICE_ID, this);
 
       //load test query file
       URL url = getClass().getResource("testQuery.xml");
@@ -140,7 +140,7 @@ public class DelegateTest extends TestCase implements DatacenterStatusListener
    /** 'Callback' method called by Delegate when its status changes.  Stores
     * the status returned so that the tests above can examine them
     */
-   public void datacenterStatusChanged(String id, String newStatus)
+   public void datacenterStatusChanged(String id, ServiceStatus newStatus)
    {
       statusChangedList.add(newStatus);
    }

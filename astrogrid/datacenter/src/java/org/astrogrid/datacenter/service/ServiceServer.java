@@ -1,10 +1,11 @@
 /*
- * $Id: ServiceServer.java,v 1.7 2003/09/15 16:42:03 mch Exp $
+ * $Id: ServiceServer.java,v 1.8 2003/09/15 21:27:15 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.service;
+import org.astrogrid.datacenter.queriers.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -117,13 +118,6 @@ public abstract class ServiceServer
       return DatabaseQuerier.getQuerier(serviceID);
    }
 
-   /**
-    * Registers a client as a listener - ie it will receive notifications
-    */
-   public void registerServiceListener(String serviceID, ServiceListener listener)
-   {
-      getService(serviceID).registerServiceListener(listener);
-   }
 
 }
 

@@ -1,10 +1,12 @@
 /*
- * $Id: JobNotifyServiceListener.java,v 1.1 2003/09/10 17:57:31 mch Exp $
+ * $Id: JobNotifyServiceListener.java,v 1.1 2003/09/15 21:27:15 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
 
-package org.astrogrid.datacenter.service;
+package org.astrogrid.datacenter.delegate;
+
+import org.astrogrid.datacenter.queriers.*;
 
 import java.net.URL;
 import javax.xml.rpc.ParameterMode;
@@ -27,7 +29,7 @@ import org.xml.sax.SAXException;
  * @author M Hill
  */
 
-public class JobNotifyServiceListener implements ServiceListener
+public class JobNotifyServiceListener implements QueryListener
 {
    private URL clientListener = null;
 
@@ -96,6 +98,9 @@ public class JobNotifyServiceListener implements ServiceListener
 
 /*
 $Log: JobNotifyServiceListener.java,v $
+Revision 1.1  2003/09/15 21:27:15  mch
+Listener/state refactoring.
+
 Revision 1.1  2003/09/10 17:57:31  mch
 Tidied xml doc helpers and fixed (?) job/web listeners
 

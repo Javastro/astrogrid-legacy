@@ -1,5 +1,5 @@
 /*
- * $Id: DummyDelegate.java,v 1.3 2003/09/15 16:11:44 mch Exp $
+ * $Id: DummyDelegate.java,v 1.4 2003/09/15 21:27:15 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -16,6 +16,8 @@ import org.astrogrid.datacenter.common.ResponseHelper;
 import org.astrogrid.datacenter.common.ServiceIdHelper;
 import org.astrogrid.datacenter.common.ServiceStatus;
 import org.astrogrid.datacenter.delegate.DatacenterDelegate;
+import org.astrogrid.datacenter.delegate.DatacenterStatusListener;
+import org.astrogrid.datacenter.delegate.WebNotifyServiceListener;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -49,6 +51,9 @@ public class DummyDelegate extends DatacenterDelegate
    /** Pretend service id */
    public static final String SERVICE_ID = "DummyId";
 
+   /** Last status set */
+   private ServiceStatus lastStatus = ServiceStatus.CONSTRUCTED;
+
    /** Generally speaking don't use this directly - use the factory
     * method DatacenterDelegate.makeDelegate(null), which is a
     * so that it can make decisions on new sorts
@@ -69,14 +74,12 @@ public class DummyDelegate extends DatacenterDelegate
    /**
     * Checks that the given ADQL is valid (makes a query from it), returns an
     * example VOTable supplied in this package
-    * @todo returning a VOTable is not quite right - need to return the DOM
-    * representation of the returning message which might contain admin info also
     */
    public Element adqlQuery(Element adql) throws RemoteException
    {
-      fireStatusChanged(SERVICE_ID, STARTING);
+      setStatus(ServiceStatus.STARTING);
 
-      fireStatusChanged(SERVICE_ID, WAITING);
+      setStatus(ServiceStatus.RUNNING_QUERY);
 
       //we *could* unmarshall the query here but that starts getting all
       //horribly involved with server code, so we just skip it...
@@ -92,10 +95,13 @@ public class DummyDelegate extends DatacenterDelegate
       }
        /**/
 
-      fireStatusChanged(SERVICE_ID, POST_PROCESSING);
+      setStatus(ServiceStatus.RUNNING_RESULTS);
 
-      return getSampleResults();
+      Element results = getSampleResults();
 
+      setStatus(ServiceStatus.FINISHED);
+
+      return results;
    }
 
    /**
@@ -103,6 +109,10 @@ public class DummyDelegate extends DatacenterDelegate
     */
    public Element spawnAdqlQuery(Element adql) throws RemoteException
    {
+      setStatus(ServiceStatus.STARTING);
+
+      setStatus(ServiceStatus.RUNNING_QUERY);
+
       try
       {
          return DocHelper.wrap(ServiceIdHelper.makeServiceIdTag(SERVICE_ID)).getDocumentElement();
@@ -122,8 +132,12 @@ public class DummyDelegate extends DatacenterDelegate
       URL url = null;
       try
       {
+         setStatus(ServiceStatus.RUNNING_RESULTS);
+
          url = getClass().getResource("ExampleResults.xml");
          Document resultsDoc = XMLUtils.newDocument(url.openConnection().getInputStream());
+
+         setStatus(ServiceStatus.FINISHED);
 
          return resultsDoc.getDocumentElement();
       }
@@ -187,22 +201,30 @@ public class DummyDelegate extends DatacenterDelegate
       }
    }
 
+   /**
+    * Sets the status, does update, etc
+    */
+   public void setStatus(ServiceStatus newStatus)
+   {
+      lastStatus = newStatus;
+
+      fireStatusChanged(SERVICE_ID, lastStatus);
+   }
 
    /**
     * Returns unknown
     */
    public ServiceStatus getServiceStatus(String id)
    {
-      return ServiceStatus.UNKNOWN;
+      return lastStatus;
    }
 
    /**
-    * Registers a web listener with this service.  It's a bit of a pain to
-    * implement this properly using the dummy, so not doing it yet...
+    * Registers a listener with this service.
     */
-   public void registerWebListener(URL listenerUrl)
+   public void registerListener(String serviceId, DatacenterStatusListener listener)
    {
-      throw new UnsupportedOperationException("Not implemented yet");
+      addListener(listener);
    }
 
 
@@ -210,6 +232,9 @@ public class DummyDelegate extends DatacenterDelegate
 
 /*
 $Log: DummyDelegate.java,v $
+Revision 1.4  2003/09/15 21:27:15  mch
+Listener/state refactoring.
+
 Revision 1.3  2003/09/15 16:11:44  mch
 Fixes to handle updates when multiple queries are running through one delegate
 

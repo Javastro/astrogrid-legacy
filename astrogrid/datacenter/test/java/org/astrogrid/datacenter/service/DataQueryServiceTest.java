@@ -1,4 +1,4 @@
-/*$Id: DataQueryServiceTest.java,v 1.8 2003/09/10 17:57:52 mch Exp $
+/*$Id: DataQueryServiceTest.java,v 1.9 2003/09/15 21:28:09 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,7 @@
  *
 **/
 package org.astrogrid.datacenter.service;
+import org.astrogrid.datacenter.queriers.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -56,12 +57,12 @@ public class DataQueryServiceTest extends HsqlTestCase {
         //register HSQLDB driver with driver key in configration file
         //put driver into config file
         Configuration.setProperty(SqlQuerier.JDBC_DRIVERS_KEY, "org.hsqldb.jdbcDriver"  );
-      
+
         Configuration.setProperty(DatabaseQuerier.DATABASE_QUERIER_KEY,"org.astrogrid.datacenter.queriers.hsql.HsqlQuerier");
         // woud be simplest to pass datasource via JNDI, but no guarantee jndi is available
         Configuration.setProperty(SqlQuerier.JDBC_URL_KEY,"jdbc:hsqldb:.");
         Configuration.setProperty(SqlQuerier.JDBC_CONNECTION_PROPERTIES_KEY,"user=sa");
-        
+
     }
 
     protected Connection conn;
@@ -100,7 +101,7 @@ public class DataQueryServiceTest extends HsqlTestCase {
        //set up
         DatabaseQuerier querier = new DummyQuerier();
         TestListener l = new TestListener();
-        querier.registerServiceListener(l);
+        querier.registerListener(l);
 
        //get test query
         InputStream queryIn = this.getClass().getResourceAsStream("/org/astrogrid/datacenter/queriers/sql/sql-querier-test-3.xml");
@@ -113,7 +114,7 @@ public class DataQueryServiceTest extends HsqlTestCase {
         querier.doQuery();
         Document votable = querier.getResults().toVotable();
         assertNotNull(votable);
-        
+
         assertEquals("VOTABLE",votable.getDocumentElement().getLocalName());
         assertEquals(ServiceStatus.QUERY_COMPLETE,querier.getStatus());
 
@@ -122,7 +123,7 @@ public class DataQueryServiceTest extends HsqlTestCase {
 //        String[] expected = new String[]{ServiceStatus.STARTING,ServiceStatus.RUNNING_QUERY,ServiceStatus.RUNNING_RESULTS,ServiceStatus.FINISHED};
         assertEquals(ServiceStatus.QUERY_COMPLETE,l.getLast());
     }
-    
+
     public void testHandleUniqueness() throws IOException {
         DatabaseQuerier s1 = new DummyQuerier();
         assertNotNull(s1);
@@ -137,12 +138,12 @@ public class DataQueryServiceTest extends HsqlTestCase {
         assertEquals(s1.getStatus(),ServiceStatus.CONSTRUCTED);
     }
 
-    static class TestListener implements ServiceListener {
+    static class TestListener implements QueryListener {
         public List statusList = new ArrayList();
         /* (non-Javadoc)
          * @see org.astrogrid.datacenter.service.ServiceListener#serviceStatusChanged(java.lang.String)
          */
-    
+
         public void serviceStatusChanged(DatabaseQuerier querier) {
             statusList.add(querier.getStatus());
         }
@@ -157,6 +158,9 @@ public class DataQueryServiceTest extends HsqlTestCase {
 
 /*
 $Log: DataQueryServiceTest.java,v $
+Revision 1.9  2003/09/15 21:28:09  mch
+Listener/state refactoring.
+
 Revision 1.8  2003/09/10 17:57:52  mch
 Tidied xml doc helpers and fixed (?) job/web listeners
 

@@ -1,10 +1,10 @@
 /*
- * $Id: WebNotifyServiceListener.java,v 1.6 2003/09/15 16:42:03 mch Exp $
+ * $Id: WebNotifyServiceListener.java,v 1.1 2003/09/15 21:27:15 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
 
-package org.astrogrid.datacenter.service;
+package org.astrogrid.datacenter.delegate;
 
 import java.net.URL;
 import javax.xml.rpc.ParameterMode;
@@ -14,8 +14,8 @@ import org.apache.axis.client.Service;
 import org.apache.axis.encoding.XMLType;
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.common.DocHelper;
+import org.astrogrid.datacenter.common.ServiceStatus;
 import org.astrogrid.datacenter.common.StatusHelper;
-import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.astrogrid.log.Log;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -25,13 +25,10 @@ import org.xml.sax.SAXException;
  * clients). So this must be capable of passing that information back to the remote
  * client.
  *
- * @todo this is just a placeholder at the moment, need to work out how
- * the notification thing will work, also non-blocking queries etc....
- *
  * @author M Hill
  */
 
-public class WebNotifyServiceListener implements ServiceListener
+public class WebNotifyServiceListener implements DatacenterStatusListener
 {
    /** URL of client listener - this is a web service that will receive
     * a document containing the new status */
@@ -51,12 +48,12 @@ public class WebNotifyServiceListener implements ServiceListener
     * status change. Opens a connection to the URL and sends it a document, which
     * is defined in StatusHelper
     */
-   public void serviceStatusChanged(DatabaseQuerier querier)
+   public void datacenterStatusChanged(String id, ServiceStatus newStatus)
    {
-      Log.trace("WebNotifyServiceListener.serviceStatusChanged("+querier.getStatus()+")") ;
+      Log.trace("WebNotifyServiceListener.serviceStatusChanged("+newStatus+")") ;
 
       try {
-         Document statusDoc = DocHelper.wrap(StatusHelper.makeStatusTag(querier.getHandle(), querier.getStatus()));
+         Document statusDoc = DocHelper.wrap(StatusHelper.makeStatusTag(id, newStatus));
 
          Object[] parms = new Object[]
          {
@@ -82,7 +79,7 @@ public class WebNotifyServiceListener implements ServiceListener
          throw new RuntimeException("Failed to create standard status document", e);
       }
 
-      Log.trace("exit WebNotifyServiceListener.serviceStatusChanged("+querier.getStatus()+")") ;
+      Log.trace("exit WebNotifyServiceListener.serviceStatusChanged("+newStatus+")") ;
 
 
    }
@@ -90,6 +87,9 @@ public class WebNotifyServiceListener implements ServiceListener
 
 /*
 $Log: WebNotifyServiceListener.java,v $
+Revision 1.1  2003/09/15 21:27:15  mch
+Listener/state refactoring.
+
 Revision 1.6  2003/09/15 16:42:03  mch
 Fixes to make maven happy(er)
 

@@ -1,5 +1,5 @@
 /*
- * $Id: DirectDelegate.java,v 1.1 2003/09/09 17:56:30 mch Exp $
+ * $Id: DirectDelegate.java,v 1.2 2003/09/15 21:27:15 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -7,10 +7,10 @@
 package org.astrogrid.datacenter.service;
 
 import java.io.IOException;
-import java.net.URL;
 import java.rmi.RemoteException;
-import org.astrogrid.datacenter.delegate.DatacenterDelegate;
 import org.astrogrid.datacenter.common.ServiceStatus;
+import org.astrogrid.datacenter.delegate.DatacenterDelegate;
+import org.astrogrid.datacenter.delegate.DatacenterStatusListener;
 import org.w3c.dom.Element;
 
 /**
@@ -97,7 +97,7 @@ public class DirectDelegate extends DatacenterDelegate
     * Registers a web listener with this service.  It's a bit of a pain to
     * implement this properly using the dummy, so not doing it yet...
     */
-   public void registerWebListener(URL listenerUrl)
+   public void registerListener(String serviceId, DatacenterStatusListener listener)
    {
       throw new UnsupportedOperationException("Not implemented yet");
    }
@@ -106,6 +106,9 @@ public class DirectDelegate extends DatacenterDelegate
 
 /*
 $Log: DirectDelegate.java,v $
+Revision 1.2  2003/09/15 21:27:15  mch
+Listener/state refactoring.
+
 Revision 1.1  2003/09/09 17:56:30  mch
 New Delegate for direct (ie colocated) datacenters
 

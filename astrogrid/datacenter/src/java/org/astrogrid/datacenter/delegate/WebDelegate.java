@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegate.java,v 1.4 2003/09/15 16:06:11 mch Exp $
+ * $Id: WebDelegate.java,v 1.5 2003/09/15 21:27:15 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -129,23 +129,35 @@ public class WebDelegate extends DatacenterDelegate
     */
    public ServiceStatus getServiceStatus(String id)
    {
-      return ServiceStatus.UNKNOWN;
+      return binding.getStatus(id);
    }
 
    /**
-    * Register a remote listener with the server
+    * Register a listener with the server.  Note that only
+    * WebNotify Listeners will work - as this delegate has
+    * no session contact with the server.
     */
-   public void registerWebListener(URL listenerUrl)
+   public void registerListener(String serviceId, DatacenterStatusListener listener)
    {
-      //need to send url to service
-      throw new UnsupportedOperationException("Not implemented yet");
+      if (listener instanceof WebNotifyServiceListener)
+      {
+         return binding.registerWebListener( serviceId, (WebNotifyServiceListener) listener);
+      }
+      else
+      {
+         //what to do?  user of the client won't necessarily know.... so throw
+         //an exception that they can catch and so decide on an action
+         throw new IllegalArgumentException("Web Services can only accept WebNotifyServiceListener listeners");
+      }
    }
-
 
 }
 
 /*
 $Log: WebDelegate.java,v $
+Revision 1.5  2003/09/15 21:27:15  mch
+Listener/state refactoring.
+
 Revision 1.4  2003/09/15 16:06:11  mch
 Fixes to make maven happ(ier)
 

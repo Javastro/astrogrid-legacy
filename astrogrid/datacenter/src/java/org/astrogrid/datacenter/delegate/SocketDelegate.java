@@ -1,5 +1,5 @@
 /*
- * $Id: SocketDelegate.java,v 1.8 2003/09/15 16:59:53 mch Exp $
+ * $Id: SocketDelegate.java,v 1.9 2003/09/15 21:27:15 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.Socket;
+import java.net.URL;
 import java.rmi.RemoteException;
 import javax.xml.parsers.ParserConfigurationException;
 import org.astrogrid.datacenter.common.ResponseHelper;
@@ -213,11 +214,11 @@ public class SocketDelegate extends DatacenterDelegate
 
 
    /**
-    * Register web listener
+    * Register listener
     */
-   public void registerWebListener(java.net.URL listenerUrl)
+   public void registerListener(String serviceId, DatacenterStatusListener listener)
    {
-      //need to send url to service
+      //action depends on listener
       throw new UnsupportedOperationException("Not implemented yet");
    }
 
@@ -226,6 +227,9 @@ public class SocketDelegate extends DatacenterDelegate
 
 /*
 $Log: SocketDelegate.java,v $
+Revision 1.9  2003/09/15 21:27:15  mch
+Listener/state refactoring.
+
 Revision 1.8  2003/09/15 16:59:53  mch
 Added better test coverage and error recovery
 

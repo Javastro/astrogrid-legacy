@@ -1,5 +1,5 @@
 /*
- * $Id: SocketHandler.java,v 1.8 2003/09/15 16:42:03 mch Exp $
+ * $Id: SocketHandler.java,v 1.9 2003/09/15 21:27:15 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -19,7 +19,7 @@ import org.astrogrid.datacenter.io.SocketXmlOutputStream;
 import org.astrogrid.datacenter.io.TraceInputStream;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.astrogrid.datacenter.query.QueryException;
-import org.astrogrid.datacenter.service.ServiceListener;
+import org.astrogrid.datacenter.queriers.QueryListener;
 import org.astrogrid.log.Log;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -30,7 +30,7 @@ import org.xml.sax.SAXException;
  * @author M Hill
  */
 
-public class SocketHandler extends ServiceServer implements Runnable, ServiceListener
+public class SocketHandler extends ServiceServer implements Runnable, QueryListener
 {
    /** Socket connection */
    private Socket socket = null;
@@ -163,6 +163,9 @@ public class SocketHandler extends ServiceServer implements Runnable, ServiceLis
 
 /*
 $Log: SocketHandler.java,v $
+Revision 1.9  2003/09/15 21:27:15  mch
+Listener/state refactoring.
+
 Revision 1.8  2003/09/15 16:42:03  mch
 Fixes to make maven happy(er)
 
