@@ -1,21 +1,18 @@
-Moved to INSTALL.xml - please edit that instead...
-AstroGrid Iteration 4 Kit.                                    MySpace service
+AstroGrid Iteration 5 Kit.                                    MySpace service
 AstroGrid home page: http://www.astrogrid.org/
 
-This document refers to the AstroGrid Iteration 4 release.  It should be
+This document refers to the AstroGrid Iteration 5 release.  It should be
 displayed with a fixed-pitch (courier) font.
------------------------------------------------------------------------------
 
-This document is an incomplete draft.  Please send comments to acd@roe.ac.uk
+Comments on this document are welcome.  Please send them to: acd@roe.ac.uk
 
 -----------------------------------------------------------------------------
 
                        Installing a MySpace Service
                        ============================
-                               --- DRAFT ---
-
+ 
                         A C Davenhall and J D Taylor
-                         Version 3b, 23 January 2004
+                          Version 4, 6 April 2004
 
 
 Purpose and Status of this Document
@@ -24,11 +21,8 @@ Purpose and Status of this Document
 This document describes how to install a simple AstroGrid MySpace
 service.  It gives enough information to install a basic service, but
 all the configuration options are not covered.  It refers to the version
-of MySpace available at the end of AstroGrid Iteration 4 in late
-December 2003 or very early January 2004.  At this juncture the
-installation procedures for MySpace are in a state of flux and likely to
-change on a time-scale of weeks.  Thus, this version of the document is
-unlikely to remain current for very long.
+of MySpace available at the end of AstroGrid Iteration 5 in early April 
+2004.
 
 
 Prerequisites
@@ -51,7 +45,7 @@ a PC) running the following:
 * A copy of the MySpace war file, which can be obtained from
   http://www.astrogrid.org/maven/build/mySpace/index.html
 
-You need to be able to log in to Tomcat with the role of `manager'.  A
+You need to be able to log in to Tomcat with the role of `Manager'.  A
 list of Tomcat users can be found in file:
 
   $CATALINA_HOME/conf/tomcat_users.xml
@@ -109,8 +103,11 @@ To install an AstroGrid MySpace service proceed as follows.
 3. The present simple installation procedure creates a MySpace service
    with a single MySpace server for holding files.  You need to choose a
    directory where these files will be located.  The MySpace Web service
-   will need to be able to read and write files in this directory and
-   the files also need to be accessible via URLs.
+   will need to be able to read and write files in this directory.  Also
+   the files should be accessible as URLs.  (In Iteration 5 most MySpace
+   functions do not require files to be accessible via URLs, but a few
+   do.  So, for a fully-functional MySpace service access via URLs is
+   required.)
 
    For an operational service it is unwise to choose a directory which
    is a subdirectory of the MySpace Web service directory because all
@@ -164,7 +161,9 @@ To install an AstroGrid MySpace service proceed as follows.
 
    Note that the server name must be left at `serv1' and that the `23'
    is the expiry period in days.  You can substitute any value you
-   prefer, but expiry periods are not fully implemented in Iteration 4.
+   prefer, but expiry periods are not fully implemented in Iteration 5.
+   An additional restriction in Iteration 5 is that the servers file
+   should contain just one server, which must be called `serv1'.
 
 7. Now make:
 
@@ -193,26 +192,27 @@ To install an AstroGrid MySpace service proceed as follows.
 
 8. Move the file:
 
-    $CATALINA_HOME/webapps/astrogrid-mySpace/ASTROGRID_myspacemanagerconfig.xml
+   $CATALINA_HOME/webapps/astrogrid-mySpace/ASTROGRID_myspacemanagerconfig.xml
 
-    to the directory:
+   to the directory:
 
      $CATALINA_HOME/webapps/astrogrid-mySpace/WEB-INF/classes
      
-     Alternatively, place the file on a web server and place its URL in JNDI by editing
-     $CATALINA_HOME/conf/servers.xml - make an environment entry org.astrogrid.mySpace.config.url
-     e.g. under <DefaultContext> place:
+   Alternatively, place the file on a Web server and place its URL in
+   JNDI by editing file $CATALINA_HOME/conf/servers.xml; make an
+   environment entry org.astrogrid.mySpace.config.url, for example,
+   under <DefaultContext> place:
 
-		<Environment description="MySpace Config URL" 
-					 name="org.astrogrid.mySpace.config.url" 
-					 override="false" type="java.lang.String" 
-					 value="http://localhost:8080/ASTROGRID_myspacemanagerconfig.xml"/>
-	
-	 and restart the webserver.
-     
-     This latter approach will ensure that the config file will not get wiped between installations.
+     <Environment description="MySpace Config URL"
+        name="org.astrogrid.mySpace.config.url" 
+        override="false" type="java.lang.String" 
+        value="http://localhost:8080/ASTROGRID_myspacemanagerconfig.xml"
+     />
 
-   Then edit the file:
+   and restart the Web server.  This latter approach will ensure that the 
+   configuration file will not get wiped between installations.
+
+   Next edit the file:
 
      ASTROGRID_myspacemanagerconfig.xml
 
@@ -321,12 +321,13 @@ Royal Observatory, Blackford Hill, Edinburgh, EH9 3HJ, UK.
 Revision History
 ----------------
 
-Version 1, 4/1/04:  Original version for Iteration 4.              (ACD, JDT)
-Version 2, 6/1/04:  Minor corrections, added section on building   (ACD, JDT)
-                    from source.                                  
-Version 3, 23/1/04: Tweaks to instructions for editing
-                    ASTROGRID_myspacemanagerconfig.xml.            (JDT, ACD)
-Version 3b, 23/1/04: JNDI instructions                             (JDT, ACD)
+Version 1,  4/1/04:  Original version for Iteration 4.              (ACD, JDT)
+Version 2,  6/1/04:  Minor corrections, added section on building   (ACD, JDT)
+                     from source.                                  
+Version 3,  23/1/04: Tweaks to instructions for editing
+                     ASTROGRID_myspacemanagerconfig.xml.            (JDT, ACD)
+Version 3b, 23/1/04: JNDI instructions                              (JDT)
+Version 4,  6/4/04:  Original version for Iteration 5.              (ACD)
 
 -----------------------------------------------------------------------------
-AstroGrid Iteration 4 Kit.                                    MySpace service
+AstroGrid Iteration 5 Kit.                                    MySpace service
