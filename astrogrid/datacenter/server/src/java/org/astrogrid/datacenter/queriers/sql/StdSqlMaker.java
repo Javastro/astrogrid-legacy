@@ -1,4 +1,4 @@
-/*$Id: StdSqlMaker.java,v 1.18 2004/08/24 19:06:44 mch Exp $
+/*$Id: StdSqlMaker.java,v 1.19 2004/08/24 20:08:31 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,9 +10,8 @@
 **/
 package org.astrogrid.datacenter.queriers.sql;
 
-import java.io.BufferedInputStream;
-import java.io.InputStream;
-import java.io.StringWriter;
+import java.io.*;
+
 import java.util.StringTokenizer;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -269,49 +268,66 @@ public class StdSqlMaker  extends SqlMaker {
      /** Uses Xslt to do the translations */
    public String useXslt(Element queryBody, String namespaceURI) throws QueryException {
 
-      String xsltDoc = null;
-
-      //work out which translator sheet to use
-      
-      //default
       if ((namespaceURI==null) || (namespaceURI.length()==0)) {
          throw new QueryException("No namespace specified in query document, so don't know what it is");
       }
-      else if (namespaceURI.equals("http://tempuri.org/adql")) { //assume v0.5
-         xsltDoc = "./xslt/adql05-2-sql.xsl";
-      }
-      //for some reason this version has never worked
-//      else if (namespaceURI.equals("http://adql.ivoa.net/v0.73")) {
-//         xsltDoc = "adql073-2-sql.xsl";
-//      }
-      else if (namespaceURI.equals("http://www.ivoa.net/xml/ADQL/v0.7.4")) {
-         xsltDoc = "./xslt/adql074-2-sql.xsl";
-      }
-      else if (namespaceURI.equals("http://www.ivoa.net/xml/ADQL/v0.8")) {
-         xsltDoc = "./xslt/adql08-2-sql.xsl";
-      }
-      else if (namespaceURI.equals("http://astrogrid.org/sadql/v1.1")) {
-         xsltDoc = "./xslt/sadql1.1-2-sql.xsl";
-      }
+
+      String xsltDoc = null;
+      InputStream xsltIn = null;
+      String whereIsDoc = null; //used for debug/trace/error messages
       
-      //look up in config but using above softcoded as defaults
+      //work out which translator sheet to use
+
+      //see if there's a config property set
       String key = "datacenter.sqlmaker.xslt."+namespaceURI.replaceAll(":","_");
-      xsltDoc = SimpleConfig.getSingleton().getString(key, xsltDoc);
-      
-      if (xsltDoc == null) {
-         throw new RuntimeException("No XSLT sheet given for ADQL (namespace '"+namespaceURI+"'); set configuration key '" + key+"'");
-      }
+      xsltDoc = SimpleConfig.getSingleton().getString(key, null);
 
       try {
-         //find specified sheet on classpath/working directory
-         BufferedInputStream xsltIn = new BufferedInputStream(StdSqlMaker.class.getResourceAsStream(xsltDoc));
+         if (xsltDoc != null) {
+            //use config-specified sheet
+            xsltIn = new FileInputStream(xsltDoc);
+            whereIsDoc = "File "+xsltDoc;
+         }
+         else {
+            //not given in configuration file - look in subdirectory of class as resource
+            if (namespaceURI.equals("http://tempuri.org/adql")) { //assume v0.5
+               xsltDoc = "adql05-2-sql.xsl";
+            }
+            else if (namespaceURI.equals("http://www.ivoa.net/xml/ADQL/v0.7.4")) {
+               xsltDoc = "adql074-2-sql.xsl";
+            }
+            else if (namespaceURI.equals("http://www.ivoa.net/xml/ADQL/v0.7.3")) {
+               xsltDoc = "adql073-2-sql.xsl";
+            }
+            else if (namespaceURI.equals("http://www.ivoa.net/xml/ADQL/v0.8")) {
+               xsltDoc = "adql08-2-sql.xsl";
+            }
+            else if (namespaceURI.equals("http://astrogrid.org/sadql/v1.1")) {
+               xsltDoc = "sadql1.1-2-sql.xsl";
+            }
       
-         if (xsltIn == null) {
-            throw new QueryException("Could not find/create ADQL->SQL transformer doc "+xsltDoc);
+            if (xsltDoc == null) {
+               throw new RuntimeException("No builtin xslt for ADQL namespace '"+namespaceURI+"'; set configuration key '" + key+"'");
+            }
+               
+            //find specified sheet as resource of this class
+            xsltIn = StdSqlMaker.class.getResourceAsStream("./xslt/"+xsltDoc);
+            whereIsDoc = StdSqlMaker.class+" resource ./xslt/"+xsltDoc;
+            
+            if (xsltIn == null) {
+               log.warn("Could not find builtin ADQL->SQL transformer doc '"+whereIsDoc+"', looking in classpath...");
+
+               xsltIn = this.getClass().getClassLoader().getResourceAsStream(xsltDoc);
+               whereIsDoc = xsltDoc+" in classpath at "+this.getClass().getClassLoader().getResource(xsltDoc);
+            }
+            
+            if (xsltIn == null) {
+               throw new QueryException("Could not find ADQL->SQL transformer doc "+xsltDoc);
+            }
          }
          
          //create transformer
-         log.debug("Transforming ADQL ["+namespaceURI+"] using Xslt doc at '"+xsltDoc+"'");
+         log.debug("Transforming ADQL ["+namespaceURI+"] using Xslt doc at '"+whereIsDoc+"'");
          TransformerFactory tFactory = TransformerFactory.newInstance();
          try {
             tFactory.setAttribute("UseNamespaces", Boolean.FALSE);
@@ -348,6 +364,9 @@ public class StdSqlMaker  extends SqlMaker {
       }
       catch (TransformerException te) {
          throw new QueryException(te+" translating ADQL->SQL using "+xsltDoc,te);
+      }
+      catch (IOException ioe) {
+         throw new QueryException(ioe+" Opening XSLT sheet "+xsltDoc,ioe);
       }
 
    }
@@ -405,6 +424,9 @@ public class StdSqlMaker  extends SqlMaker {
 
 /*
 $Log: StdSqlMaker.java,v $
+Revision 1.19  2004/08/24 20:08:31  mch
+Moved xslts to classpaths to fix ADQL-SQL translation problems, slightly improved query builder pages
+
 Revision 1.18  2004/08/24 19:06:44  mch
 Improvements to JSP pages, lots to query building and translating
 

@@ -39,7 +39,7 @@
    String[] resultCols = request.getParameterValues("resultColumn");
    if (resultCols == null) { resultCols = new String[] {"*"}; }
    String[] conditionColumns = request.getParameterValues("conditionColumn");
-   if (conditionColumns == null) { conditionColumns = new String[0]; }
+   if (conditionColumns == null) { conditionColumns = new String[1]; }
    String[] conditionOperands = request.getParameterValues("conditionOperand");
    if (conditionOperands == null) { conditionOperands = new String[0]; }
    String[] conditionValues = request.getParameterValues("conditionValue");
@@ -50,13 +50,15 @@
       String[] newCols = new String[conditionColumns.length+1];
       System.arraycopy(conditionColumns, 0, newCols, 0, conditionColumns.length);
       conditionColumns = newCols;
-      String[] newOps = new String[conditionOperands.length+1];
-      System.arraycopy(conditionOperands, 0, newOps, 0, conditionOperands.length);
-      conditionOperands = newOps;
-      String[] newValues = new String[conditionValues.length+1];
+   }
+
+   if (conditionValues.length < conditionColumns.length) {
+      String[] newValues = new String[conditionColumns.length];
       System.arraycopy(conditionValues, 0, newValues, 0, conditionValues.length);
+      for (int i = conditionValues.length; i <newValues.length; i++) {
+         newValues[i] = ""; //rather than null
+      }
       conditionValues = newValues;
-      conditionValues[conditionValues.length-1] = "";
    }
    
 %>
@@ -122,6 +124,7 @@ or a <input type='radio' name='combine' value='Union' <%=getChecked(request.getP
          <td>
             <input type='text' name='conditionValue' value='<%=conditionValues[con] %>' >
          </td>
+         <td></td><!-- empty element so table sits on the left -->
          </tr>
 <%
   //     } // end if
@@ -135,11 +138,11 @@ or a <input type='radio' name='combine' value='Union' <%=getChecked(request.getP
 </table>
 <br>
 <p>
-<input type='submit' value='Next' onclick='adqlXmlFromQueryBuilder.jsp";'>
+<input type='submit' value='Next' onclick='formAction="adqlXmlFromQueryBuilder.jsp";'>
 </p>
 
 <!-- Preserve all page parameters -->
-<p>
+<p>(Ignore these, will work out how to hide them one day...
 <%
    for(int i = 0; i < searchCols.length; i++) {
       out.print("  <input type='checkBox' name='searchColumn' value='"+searchCols[i]+"' checked='true' type='hidden' />");
@@ -147,7 +150,7 @@ or a <input type='radio' name='combine' value='Union' <%=getChecked(request.getP
    for(int i = 0; i < resultCols.length; i++) {
       out.print("  <input type='checkBox' name='resultColumn' value='"+resultCols[i]+"' checked='true' type='hidden' />");
    }
-%>
+%>)
 
 </form>
 
