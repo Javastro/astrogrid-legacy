@@ -13,7 +13,7 @@ echo
 BUILD_HOME=/home/maven/build/release
 SCRIPTHOME=/home/maven/mavenrun
 PROJECT_HOME=$BUILD_HOME/astrogrid/$PROJECT_NAME
-LOG_FILE=$BUILD_HOME/maven-release-$TAGNAME-$PROJECT_NAME.log
+LOG_FILE=$BUILD_HOME/maven-build-$PROJECT_NAME.log
 cd $BUILD_HOME
 echo "[ag-build-$PROJECT_NAME] remove old log"
 rm $LOG_FILE
@@ -63,7 +63,7 @@ maven site:fsdeploy >> $LOG_FILE 2>&1
 maven jar:deploy >> $LOG_FILE 2>&1
 maven war:deploy >> $LOG_FILE 2>&1
 echo "[ag-build-$PROJECT_NAME] deploy build log"
-
+cp $LOG_FILE /var/www/www/maven/build/log
 echo "[ag-build-$PROJECT_NAME] back to start dir: $OLDDIR"
 cd $OLDDIR
 
