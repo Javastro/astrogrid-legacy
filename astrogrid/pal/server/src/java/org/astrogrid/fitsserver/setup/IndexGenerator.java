@@ -87,6 +87,7 @@ public class IndexGenerator
    public String makeIndexSnippet(URL fitsUrl) throws IOException, FitsException
    {
       assert fitsUrl != null;
+      fileNameFromDate = null;
       
       log.info("Examining file "+fitsUrl+"...");
       return makeIndexSnippet(new Fits(fitsUrl), fitsUrl.toString());
@@ -159,14 +160,23 @@ public class IndexGenerator
          } else {
             try {
                //if it's a date, we store two key entries, one with a unit attribute set to 's' and the time in ms since/before 1970
-               Date dateVal = fitsDateFormat.parse(value);
+               //Date dateVal = fitsDateFormat.parse(value);
+                Date dateVal = indexDateFormat.parse(value);
                keywordSnippet.append("      <"+key+" unit='s'"+commentAtt+">"+dateVal.getTime()+"</"+key+">\n");
                //keywordSnippet.append("      <"+key+ " unit='s'>"+dateVal.getTime()+"</"+key+">\n");
                value = indexDateFormat.format(dateVal);
+               if(fileNameFromDate == null && key.equals("DATE_OBS")) {                   
+                   fileNameFromDate = value.replaceAll("[^\\w*]","-");
+                   //System.out.println("found fileNaemfromdate setting it to = " + fileNameFromDate);
+               }
             } catch (ParseException e) {
                //ignore
+                //System.out.println("3PARSE-Exception FOR KEY = " + key + " and value = " + value + " Error = " + e.toString());
             }
                 System.out.println("The key = " + key + " the value = " + value);
+                if(fileNameFromDate == null && key.equals("DATE_OBS")) {
+                    fileNameFromDate = value.replaceAll("[^\\w*]","-");
+                }
                 keywordSnippet.append("      <"+key+commentAtt+">"+value+"</"+key+">\n");
             //keywordSnippet.append("      <"+key+">"+value+"</"+key+">\n");
          }
@@ -272,6 +282,7 @@ public class IndexGenerator
    }
    
    long seqNum = 0;
+   private String fileNameFromDate = null;
 
    /**
     * Generates an index XML file for the FITS files at the given URLs, writing it out to the target stream
@@ -296,8 +307,13 @@ public class IndexGenerator
        String xmlSnippet = null;
           try {
              xmlSnippet = "<FitsIndex>" + makeIndexSnippet(url) + "</FitsIndex>";
-             String fileName = dirPath + "_" + String.valueOf((seqNum)) + ".xml";
-             System.out.println("tghe xmlsnippet = " + xmlSnippet);
+             String fileName = null;
+             if(fileNameFromDate != null) {
+                 fileName = fileNameFromDate + "_" + String.valueOf((seqNum)) + ".xml";
+             }else {
+                 fileName = dirPath + "_" + String.valueOf((seqNum)) + ".xml";
+             }                 
+             System.out.println("the xmlsnippet = " + xmlSnippet);
              xmlFile = new File(fileIndexDir,fileName);
              fw = new FileWriter(xmlFile);
              pw = new PrintWriter(fw);
@@ -317,8 +333,6 @@ public class IndexGenerator
    }
    
    private void updateXMLDB(String directoryName) throws Exception {
-
-       
        File fi = new File(directoryName);
        if(!fi.exists()) {
            String indexGenHomePath = ConfigFactory.getCommonConfig().getString("indexgen.path", ("." + File.separator));
@@ -349,12 +363,13 @@ public class IndexGenerator
        String xmldbConfig = ConfigFactory.getCommonConfig().getString("exist.config.file", "../exist.xml");
        String xmldbDriver = ConfigFactory.getCommonConfig().getString("xmldb.driver", "org.exist.xmldb.DatabaseImpl");
        String testBypass = ConfigFactory.getCommonConfig().getString("test.bypass", "no");
+       String fileNamePattern = "1*\\.xml";
 
        if(testBypass.equals("no")) {
            InputStreamReader consoleReader = new InputStreamReader(System.in);
            BufferedReader consoleInput = new BufferedReader(consoleReader);
            System.out.println("What is the Table Name (Collection Name) you wish to put in the xml files into. Example: TraceData, EITData");
-           System.out.println("You may also do sub-tables (sub-collections) with a '/' such as: Soho/CDSData, MSSL/Soho/CDSData, RAL/Soho/Tape/CDSData");
+           System.out.println("You may also do sub-tables (sub-collections) with a '/' such as: CDSData/CDS2001, Soho/CDSData, MSSL/Soho/CDSData, RAL/Soho/Tape/CDSData");
            while(!correct.equals("Y")) {
                while( (line = consoleInput.readLine()) != null) ;
                line = line.replaceAll("[^\\w*]","_");
@@ -365,6 +380,10 @@ public class IndexGenerator
                while( (correct = consoleInput.readLine()) != null) ;
                correct = correct.toUpperCase();
            }
+           
+           System.out.println("What is the file name pattern you wish to upload? ex: 2002*, *.xml,");
+           while( (line = consoleInput.readLine()) != null) ;
+           fileNamePattern = line;
            
            correct = "N";
            
@@ -423,9 +442,14 @@ public class IndexGenerator
        Collection coll = null;
        try {
            coll = xdb.openAdminCollection(("dcfitsfiles/" + uploadCollection));
+           
            for(int i = 0;i < xmlFiles.length;i++) {
-               xmlDoc = DomHelper.newDocument(xmlFiles[i]);
-               xdb.storeXMLResource(coll,xmlFiles[i].getName(),xmlDoc);
+               //System.out.println("the getName for the file = " + xmlFiles[i].getName() + " the file pattern = " + fileNamePattern);
+               //if(xmlFiles[i].getName().matches(fileNamePattern)) {
+               //    System.out.println("yes it matched");
+                   xmlDoc = DomHelper.newDocument(xmlFiles[i]);
+                   xdb.storeXMLResource(coll,xmlFiles[i].getName(),xmlDoc);
+               //}
            }//for
        }finally {
            if(coll != null) {
@@ -477,6 +501,9 @@ public class IndexGenerator
 
 /*
 $Log: IndexGenerator.java,v $
+Revision 1.8  2005/03/23 10:04:24  KevinBenson
+small change to generate a particular file with date.
+
 Revision 1.7  2005/03/21 18:45:55  mch
 Naughty big lump of changes
 
