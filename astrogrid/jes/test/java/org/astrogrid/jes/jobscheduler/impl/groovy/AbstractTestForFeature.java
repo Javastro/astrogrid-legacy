@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForFeature.java,v 1.4 2004/11/05 16:52:42 jdt Exp $
+/*$Id: AbstractTestForFeature.java,v 1.5 2004/12/03 14:47:40 jdt Exp $
  * Created on 08-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,7 @@ package org.astrogrid.jes.jobscheduler.impl.groovy;
 
 import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
+import org.astrogrid.common.bean.Castor2Axis;
 import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.community.beans.v1.Credentials;
 import org.astrogrid.community.beans.v1.Group;
@@ -19,7 +20,6 @@ import org.astrogrid.jes.impl.workflow.InMemoryJobFactoryImpl;
 import org.astrogrid.jes.job.JobFactory;
 import org.astrogrid.jes.jobscheduler.JobScheduler;
 import org.astrogrid.jes.jobscheduler.dispatcher.MockDispatcher;
-import org.astrogrid.jes.util.JesUtil;
 import org.astrogrid.jes.util.TemporaryBuffer;
 import org.astrogrid.workflow.beans.v1.Script;
 import org.astrogrid.workflow.beans.v1.Sequence;
@@ -76,7 +76,7 @@ public abstract class AbstractTestForFeature extends TestCase{
         wf = jobFactory.initializeJob(wf);
         JobURN urn = wf.getJobExecutionRecord().getJobId();
         //
-        sched.scheduleNewJob(JesUtil.castor2axis(urn));
+        sched.scheduleNewJob(Castor2Axis.convert(urn));
         furtherProcessing(urn);
         Workflow result = jobFactory.findJob(urn);
         verifyWorkflow(result);
@@ -197,6 +197,13 @@ public abstract class AbstractTestForFeature extends TestCase{
 
 /* 
 $Log: AbstractTestForFeature.java,v $
+Revision 1.5  2004/12/03 14:47:40  jdt
+Merges from workflow-nww-776
+
+Revision 1.4.14.1  2004/12/01 21:46:26  nw
+adjusted to work with new summary object,
+and changed package of JobURN
+
 Revision 1.4  2004/11/05 16:52:42  jdt
 Merges from branch nww-itn07-scratchspace
 

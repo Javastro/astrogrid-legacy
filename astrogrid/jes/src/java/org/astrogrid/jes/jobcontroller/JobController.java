@@ -11,19 +11,21 @@
 package org.astrogrid.jes.jobcontroller;
 
 import org.astrogrid.common.bean.Axis2Castor;
+import org.astrogrid.common.bean.Castor2Axis;
 import org.astrogrid.community.beans.v1.axis._Account;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.JesException;
+import org.astrogrid.jes.beans.v1.axis.executionrecord.JobURN;
+import org.astrogrid.jes.beans.v1.axis.executionrecord.WorkflowString;
+import org.astrogrid.jes.beans.v1.axis.executionrecord.WorkflowSummaryType;
+import org.astrogrid.jes.beans.v1.axis.executionrecord._extension;
 import org.astrogrid.jes.delegate.v1.jobcontroller.JesFault;
 import org.astrogrid.jes.job.JobException;
 import org.astrogrid.jes.job.JobFactory;
 import org.astrogrid.jes.jobscheduler.JobScheduler;
-import org.astrogrid.jes.types.v1.JobURN;
-import org.astrogrid.jes.types.v1.WorkflowString;
-import org.astrogrid.jes.types.v1.WorkflowSummary;
-import org.astrogrid.jes.util.JesUtil;
 import org.astrogrid.jes.util.TemporaryBuffer;
 import org.astrogrid.workflow.beans.v1.Workflow;
+import org.astrogrid.workflow.beans.v1.execution.JobExecutionRecord;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -31,6 +33,7 @@ import org.exolab.castor.xml.CastorException;
 
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
@@ -92,7 +95,7 @@ public class JobController implements org.astrogrid.jes.delegate.v1.jobcontrolle
         Workflow job= null;	
         try { 
 	        job = factory.initializeJob( req) ;
-            nudger.scheduleNewJob(JesUtil.castor2axis(job.getJobExecutionRecord().getJobId()));   
+            nudger.scheduleNewJob(Castor2Axis.convert(job.getJobExecutionRecord().getJobId()));   
             JobURN result = new JobURN(job.getJobExecutionRecord().getJobId().getContent());
             logger.debug("Submit Job: new URN = " + result.toString());
             return result;
@@ -162,7 +165,7 @@ public class JobController implements org.astrogrid.jes.delegate.v1.jobcontrolle
     /**
      * @see org.astrogrid.jes.delegate.v1.jobcontroller.JobController#readJobList(org.astrogrid.community.beans.v1.axis._Account)
      */
-    public WorkflowSummary[] readJobList(_Account arg0) throws JesFault {
+    public WorkflowSummaryType[] readJobList(_Account arg0) throws JesFault {
         try {
         logger.debug("in read job list");
         Iterator i = factory.findUserJobs(Axis2Castor.convert(arg0));
@@ -174,16 +177,34 @@ public class JobController implements org.astrogrid.jes.delegate.v1.jobcontrolle
                     logger.warn("Found a null workflow");
                     continue;
                 }
-                WorkflowSummary item = new WorkflowSummary();
-                item.setWorkflowName(w.getName());
-                item.setJobUrn(JesUtil.castor2axis(w.getJobExecutionRecord().getJobId()));
+                WorkflowSummaryType item = new WorkflowSummaryType();
+                item.setWorkflowName(w.getName());                
+                item.setDescription(w.getDescription());                
+                JobExecutionRecord jobExecutionRecord = w.getJobExecutionRecord();
+                item.setJobId(Castor2Axis.convert(jobExecutionRecord.getJobId()));
+                // decided not to transport any extensions back, for efficiency.
+                //item.setExtension(JesUtil.castor2Axis(jobExecutionRecord.getExtension()));
+                item.setExtension(new _extension[0]);
+                if (jobExecutionRecord.getFinishTime() != null) { 
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(jobExecutionRecord.getFinishTime());
+                    item.setFinishTime(cal);
+                }
+                if (jobExecutionRecord.getStartTime() != null) {
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(jobExecutionRecord.getStartTime());
+                    item.setStartTime(cal);
+                }                
+                 
+                item.setMessage(Castor2Axis.convert(jobExecutionRecord.getMessage()));
+                item.setStatus(Castor2Axis.convert(jobExecutionRecord.getStatus()));
                 itemList.add(item);
             } catch (RuntimeException e) { // indicates a failure to read one of the workflows - may be a malformed zombie, etc. continue.
                 logger.warn("failed to read workflow",e);
             }
         }
 
-        return (WorkflowSummary[])itemList.toArray(new WorkflowSummary[]{});
+        return (WorkflowSummaryType[])itemList.toArray(new WorkflowSummaryType[]{});
         } catch (JesException e) {
             throw createFault("Failed to read workflow list",e);
         }

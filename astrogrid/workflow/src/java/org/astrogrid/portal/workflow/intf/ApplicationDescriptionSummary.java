@@ -1,4 +1,4 @@
-/*$Id: ApplicationDescriptionSummary.java,v 1.3 2004/11/12 18:14:43 clq2 Exp $
+/*$Id: ApplicationDescriptionSummary.java,v 1.4 2004/12/03 14:47:41 jdt Exp $
  * Created on 10-Nov-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,8 @@
 package org.astrogrid.portal.workflow.intf;
 
 /** A little container object, that contains some interesting suymmary info about an application.
+ * @script-summary a summary of an application
+ * @script-doc a summary of an application.
  * @author Noel Winstanley nw@jb.man.ac.uk 10-Nov-2004
  *
  */
@@ -49,6 +51,12 @@ public class ApplicationDescriptionSummary {
 
 /* 
 $Log: ApplicationDescriptionSummary.java,v $
+Revision 1.4  2004/12/03 14:47:41  jdt
+Merges from workflow-nww-776
+
+Revision 1.3.4.1  2004/12/01 21:08:35  nw
+scripting documentation
+
 Revision 1.3  2004/11/12 18:14:43  clq2
 nww-itn07-590b again.
 

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: WebServiceApplication.java,v 1.31 2004/09/09 10:41:47 pah Exp $
+ * $Id: WebServiceApplication.java,v 1.32 2004/12/03 14:47:40 jdt Exp $
  */
 
 package org.astrogrid.applications.beans.v1;
@@ -24,7 +24,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Description of a web service application
  * 
- * @version $Revision: 1.31 $ $Date: 2004/09/09 10:41:47 $
+ * @version $Revision: 1.32 $ $Date: 2004/12/03 14:47:40 $
  */
 public class WebServiceApplication extends org.astrogrid.applications.beans.v1.ApplicationBase 
 implements java.io.Serializable

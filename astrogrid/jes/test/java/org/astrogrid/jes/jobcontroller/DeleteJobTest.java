@@ -1,4 +1,4 @@
-/*$Id: DeleteJobTest.java,v 1.3 2004/07/01 21:15:00 nw Exp $
+/*$Id: DeleteJobTest.java,v 1.4 2004/12/03 14:47:40 jdt Exp $
  * Created on 08-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,8 +10,8 @@
 **/
 package org.astrogrid.jes.jobcontroller;
 
+import org.astrogrid.common.bean.Castor2Axis;
 import org.astrogrid.jes.jobscheduler.impl.MockSchedulerImpl;
-import org.astrogrid.jes.util.JesUtil;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
 /** test bejaviour of delete job
@@ -29,7 +29,7 @@ public class DeleteJobTest extends AbstractTestForJobController {
         MockSchedulerImpl ms = (MockSchedulerImpl)nudger;
         ms.resetCallCount();      
   
-        jc.deleteJob(JesUtil.castor2axis(urn));   
+        jc.deleteJob(Castor2Axis.convert(urn));   
         // test that the request was passed on to the scheduler.
         assertEquals(1,ms.getCallCount());      
 
@@ -39,6 +39,13 @@ public class DeleteJobTest extends AbstractTestForJobController {
 
 /* 
 $Log: DeleteJobTest.java,v $
+Revision 1.4  2004/12/03 14:47:40  jdt
+Merges from workflow-nww-776
+
+Revision 1.3.102.1  2004/12/01 21:46:26  nw
+adjusted to work with new summary object,
+and changed package of JobURN
+
 Revision 1.3  2004/07/01 21:15:00  nw
 added results-listener interface to jes
 

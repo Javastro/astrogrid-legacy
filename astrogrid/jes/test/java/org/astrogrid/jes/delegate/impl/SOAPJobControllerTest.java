@@ -1,4 +1,4 @@
-/*$Id: SOAPJobControllerTest.java,v 1.5 2004/07/09 09:32:12 nw Exp $
+/*$Id: SOAPJobControllerTest.java,v 1.6 2004/12/03 14:47:41 jdt Exp $
  * Created on 05-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -123,6 +123,15 @@ public class SOAPJobControllerTest extends AbstractTestForSOAPService {
          JobSummary i = arr[0];
          assertNotNull(i);
          assertEquals(storedURN.getContent(),i.getJobURN().getContent());
+         assertNotNull(i.getDescription());
+         assertNotNull(i.getExtension());
+         assertEquals(0,i.getExtensionCount());
+         assertNotNull(i.getName());
+         assertNotNull(i.getWorkflowName());
+         assertNotNull(i.getMessage());
+         assertEquals(0,i.getMessageCount());
+         assertNotNull(i.getStatus());
+         assertNull(i.getStartTime());
      }
      
      public void testUnknownReadJobList() throws Exception {
@@ -177,6 +186,13 @@ public class SOAPJobControllerTest extends AbstractTestForSOAPService {
 
 /* 
 $Log: SOAPJobControllerTest.java,v $
+Revision 1.6  2004/12/03 14:47:41  jdt
+Merges from workflow-nww-776
+
+Revision 1.5.102.1  2004/12/01 21:46:26  nw
+adjusted to work with new summary object,
+and changed package of JobURN
+
 Revision 1.5  2004/07/09 09:32:12  nw
 merged in scripting workflow interpreter from branch
 nww-x-workflow-extensions

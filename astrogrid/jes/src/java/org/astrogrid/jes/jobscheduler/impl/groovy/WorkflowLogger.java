@@ -1,4 +1,4 @@
-/*$Id: WorkflowLogger.java,v 1.2 2004/11/29 20:00:24 clq2 Exp $
+/*$Id: WorkflowLogger.java,v 1.3 2004/12/03 14:47:41 jdt Exp $
  * Created on 18-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,6 @@ package org.astrogrid.jes.jobscheduler.impl.groovy;
 import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel;
-import org.astrogrid.jes.jobscheduler.impl.AbstractJobSchedulerImpl;
 import org.astrogrid.jes.util.JesUtil;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord;
@@ -28,7 +27,9 @@ import java.util.Date;
 /** Implememtation of standard log interface, but logs messages to workflow document.
  * @author Noel Winstanley nw@jb.man.ac.uk 18-Aug-2004
  * @modified attempted to separate stack-treaces from user-readable messages
- *
+ * @script-summary allows workflow scripts to emit log messages
+ * @script-doc methods in this class allow a script to add messages to the execution record for the workflow, at different log levels.
+ * At moment, debug and info messages are both logged at 'info' level. Error and fatal messages are both logged at 'error' level
  */
 public class WorkflowLogger  {
 
@@ -48,7 +49,8 @@ public class WorkflowLogger  {
         wf.getJobExecutionRecord().addMessage(m);
     }
 
-    /** log a debug message to both the main record and a step record.*/
+    /** log a debug message to both the main record and a step record.
+     * @script-doc-omit*/
     public void debug(Object arg0,StepExecutionRecord record) {
         this.logger.debug(arg0);
         MessageType m = buildMessage(arg0);
@@ -62,6 +64,7 @@ public class WorkflowLogger  {
         debug(arg0,(StepExecutionRecord)null);
 
     }
+    /** @script-doc-omit */
     public void debug(Object arg0, Throwable arg1, StepExecutionRecord record) {
         this.logger.debug(arg0, arg1);
         MessageType m = buildDebugMessage(arg0,arg1);
@@ -79,6 +82,7 @@ public class WorkflowLogger  {
     public void error(Object arg0) {
         error(arg0,(StepExecutionRecord)null);
     }
+    /** @script-doc-omit */
     public void error(Object arg0,StepExecutionRecord record) {
         this.logger.error(arg0);
         MessageType m = buildMessage(arg0);
@@ -91,6 +95,7 @@ public class WorkflowLogger  {
     public void error(Object arg0, Throwable arg1) {
         error(arg0,arg1,(StepExecutionRecord)null);
     }
+    /** @script-doc-omit */    
     public void error(Object arg0, Throwable arg1,StepExecutionRecord record) {
         this.logger.error(arg0, arg1);
         MessageType m = buildMessage(arg0,arg1);
@@ -104,6 +109,7 @@ public class WorkflowLogger  {
         public void fatal(Object arg0) {
             fatal(arg0,(StepExecutionRecord)null);
         }
+        /** @script-doc-omit */        
         public void fatal(Object arg0,StepExecutionRecord record) {
             this.logger.fatal(arg0);
             MessageType m = buildMessage(arg0);
@@ -116,6 +122,7 @@ public class WorkflowLogger  {
         public void fatal(Object arg0, Throwable arg1) {
             fatal(arg0,arg1,(StepExecutionRecord)null);
         }
+        /** @script-doc-omit */        
         public void fatal(Object arg0, Throwable arg1,StepExecutionRecord record) {
             this.logger.fatal(arg0, arg1);
             MessageType m = buildMessage(arg0,arg1);
@@ -129,6 +136,7 @@ public class WorkflowLogger  {
             public void warn(Object arg0) {
                 warn(arg0,(StepExecutionRecord)null);
             }
+            /** @script-doc-omit */            
             public void warn(Object arg0,StepExecutionRecord record) {
                 this.logger.warn(arg0);
                 MessageType m = buildMessage(arg0);
@@ -141,6 +149,7 @@ public class WorkflowLogger  {
             public void warn(Object arg0, Throwable arg1) {
                 warn(arg0,arg1,(StepExecutionRecord)null);
             }
+            /** @script-doc-omit */            
             public void warn(Object arg0, Throwable arg1,StepExecutionRecord record) {
                 this.logger.warn(arg0, arg1);
                 MessageType m = buildMessage(arg0,arg1);
@@ -154,6 +163,7 @@ public class WorkflowLogger  {
                 public void info(Object arg0) {
                     info(arg0,(StepExecutionRecord)null);
                 }
+                /** @script-doc-omit */                
                 public void info(Object arg0,StepExecutionRecord record) {
                     this.logger.info(arg0);
                     MessageType m = buildMessage(arg0);
@@ -166,6 +176,7 @@ public class WorkflowLogger  {
                 public void info(Object arg0, Throwable arg1) {
                     info(arg0,arg1,(StepExecutionRecord)null);
                 }
+                /** @script-doc-omit */                
                 public void info(Object arg0, Throwable arg1,StepExecutionRecord record) {
                     this.logger.info(arg0, arg1);
                     MessageType m = buildMessage(arg0,arg1);
@@ -233,6 +244,12 @@ public class WorkflowLogger  {
 
 /* 
 $Log: WorkflowLogger.java,v $
+Revision 1.3  2004/12/03 14:47:41  jdt
+Merges from workflow-nww-776
+
+Revision 1.2.2.1  2004/12/01 21:49:16  nw
+script documentation
+
 Revision 1.2  2004/11/29 20:00:24  clq2
 jes-nww-714
 

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: CredentialsDescriptor.java,v 1.32 2004/09/09 10:41:48 pah Exp $
+ * $Id: CredentialsDescriptor.java,v 1.33 2004/12/03 14:47:40 jdt Exp $
  */
 
 package org.astrogrid.community.beans.v1;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class CredentialsDescriptor.
  * 
- * @version $Revision: 1.32 $ $Date: 2004/09/09 10:41:48 $
+ * @version $Revision: 1.33 $ $Date: 2004/12/03 14:47:40 $
  */
 public class CredentialsDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 

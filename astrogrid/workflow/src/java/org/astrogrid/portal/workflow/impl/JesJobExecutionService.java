@@ -1,4 +1,4 @@
-/*$Id: JesJobExecutionService.java,v 1.3 2004/03/15 17:01:01 nw Exp $
+/*$Id: JesJobExecutionService.java,v 1.4 2004/12/03 14:47:41 jdt Exp $
  * Created on 09-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,6 +19,7 @@ import org.astrogrid.portal.workflow.intf.JobExecutionService;
 import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
+import org.astrogrid.workflow.beans.v1.execution.WorkflowSummaryType;
 
 import java.net.URL;
 
@@ -93,13 +94,32 @@ public class JesJobExecutionService implements JobExecutionService {
         } catch (JesDelegateException e) {
             throw new WorkflowInterfaceException(e);
         }
-            
+                   
     }
+
+    /**
+     * @see org.astrogrid.portal.workflow.intf.JobExecutionService#listJobs(org.astrogrid.community.beans.v1.Account)
+     */
+    public WorkflowSummaryType[] listJobs(Account account) throws WorkflowInterfaceException {
+        try {
+            return controller.listJobs(account);
+        } catch (JesDelegateException e) {
+            throw new WorkflowInterfaceException(e);
+        }
+    }
+    
+    
 }
 
 
 /* 
 $Log: JesJobExecutionService.java,v $
+Revision 1.4  2004/12/03 14:47:41  jdt
+Merges from workflow-nww-776
+
+Revision 1.3.124.1  2004/12/01 21:08:11  nw
+fixed to work with new summary type
+
 Revision 1.3  2004/03/15 17:01:01  nw
 loosened type of endpoint for JesJobExecutionService from URL to String -
 allows the dummy urn:test to be passed in.

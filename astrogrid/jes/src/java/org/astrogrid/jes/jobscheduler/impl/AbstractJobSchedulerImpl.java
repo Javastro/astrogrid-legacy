@@ -1,4 +1,4 @@
-/*$Id: AbstractJobSchedulerImpl.java,v 1.7 2004/11/29 20:00:24 clq2 Exp $
+/*$Id: AbstractJobSchedulerImpl.java,v 1.8 2004/12/03 14:47:41 jdt Exp $
  * Created on 10-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,10 +15,10 @@ import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel;
 import org.astrogrid.common.bean.Axis2Castor;
 import org.astrogrid.jes.JesException;
+import org.astrogrid.jes.beans.v1.axis.executionrecord.JobURN;
 import org.astrogrid.jes.job.JobFactory;
 import org.astrogrid.jes.job.NotFoundException;
 import org.astrogrid.jes.jobscheduler.JobScheduler;
-import org.astrogrid.jes.types.v1.JobURN;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.jes.types.v1.cea.axis.ResultListType;
 import org.astrogrid.jes.util.JesUtil;
@@ -349,6 +349,13 @@ public abstract class AbstractJobSchedulerImpl implements JobScheduler {
 
 /* 
 $Log: AbstractJobSchedulerImpl.java,v $
+Revision 1.8  2004/12/03 14:47:41  jdt
+Merges from workflow-nww-776
+
+Revision 1.7.2.1  2004/12/01 21:48:20  nw
+adjusted to work with new summary object,
+and changed package of JobURN
+
 Revision 1.7  2004/11/29 20:00:24  clq2
 jes-nww-714
 

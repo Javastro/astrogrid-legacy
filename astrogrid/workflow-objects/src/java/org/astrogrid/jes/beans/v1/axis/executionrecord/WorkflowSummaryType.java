@@ -1,17 +1,17 @@
 /**
- * WorkflowSummary.java
+ * WorkflowSummaryType.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis WSDL2Java emitter.
  */
 
-package org.astrogrid.jes.types.v1;
+package org.astrogrid.jes.beans.v1.axis.executionrecord;
 
-public class WorkflowSummary  implements java.io.Serializable {
+public class WorkflowSummaryType  extends org.astrogrid.jes.beans.v1.axis.executionrecord.JobExecutionRecordType  implements java.io.Serializable {
     private java.lang.String workflowName;
-    private org.astrogrid.jes.types.v1.JobURN jobUrn;
+    private java.lang.String description;
 
-    public WorkflowSummary() {
+    public WorkflowSummaryType() {
     }
 
     public java.lang.String getWorkflowName() {
@@ -22,18 +22,18 @@ public class WorkflowSummary  implements java.io.Serializable {
         this.workflowName = workflowName;
     }
 
-    public org.astrogrid.jes.types.v1.JobURN getJobUrn() {
-        return jobUrn;
+    public java.lang.String getDescription() {
+        return description;
     }
 
-    public void setJobUrn(org.astrogrid.jes.types.v1.JobURN jobUrn) {
-        this.jobUrn = jobUrn;
+    public void setDescription(java.lang.String description) {
+        this.description = description;
     }
 
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof WorkflowSummary)) return false;
-        WorkflowSummary other = (WorkflowSummary) obj;
+        if (!(obj instanceof WorkflowSummaryType)) return false;
+        WorkflowSummaryType other = (WorkflowSummaryType) obj;
         if (obj == null) return false;
         if (this == obj) return true;
         if (__equalsCalc != null) {
@@ -41,13 +41,13 @@ public class WorkflowSummary  implements java.io.Serializable {
         }
         __equalsCalc = obj;
         boolean _equals;
-        _equals = true && 
+        _equals = super.equals(obj) && 
             ((this.workflowName==null && other.getWorkflowName()==null) || 
              (this.workflowName!=null &&
               this.workflowName.equals(other.getWorkflowName()))) &&
-            ((this.jobUrn==null && other.getJobUrn()==null) || 
-             (this.jobUrn!=null &&
-              this.jobUrn.equals(other.getJobUrn())));
+            ((this.description==null && other.getDescription()==null) || 
+             (this.description!=null &&
+              this.description.equals(other.getDescription())));
         __equalsCalc = null;
         return _equals;
     }
@@ -58,12 +58,12 @@ public class WorkflowSummary  implements java.io.Serializable {
             return 0;
         }
         __hashCodeCalc = true;
-        int _hashCode = 1;
+        int _hashCode = super.hashCode();
         if (getWorkflowName() != null) {
             _hashCode += getWorkflowName().hashCode();
         }
-        if (getJobUrn() != null) {
-            _hashCode += getJobUrn().hashCode();
+        if (getDescription() != null) {
+            _hashCode += getDescription().hashCode();
         }
         __hashCodeCalc = false;
         return _hashCode;
@@ -71,19 +71,19 @@ public class WorkflowSummary  implements java.io.Serializable {
 
     // Type metadata
     private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(WorkflowSummary.class);
+        new org.apache.axis.description.TypeDesc(WorkflowSummaryType.class);
 
     static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("urn:jes/types/v1", "workflow-summary"));
+        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.astrogrid.org/schema/ExecutionRecord/v1", "workflow-summary-type"));
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("workflowName");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "workflow-name"));
+        elemField.setXmlName(new javax.xml.namespace.QName("http://www.astrogrid.org/schema/ExecutionRecord/v1", "workflow-name"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("jobUrn");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "job-urn"));
-        elemField.setXmlType(new javax.xml.namespace.QName("urn:jes/types/v1", "jobURN"));
+        elemField.setFieldName("description");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://www.astrogrid.org/schema/ExecutionRecord/v1", "description"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         typeDesc.addFieldDesc(elemField);
     }
 

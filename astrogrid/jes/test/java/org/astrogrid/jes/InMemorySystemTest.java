@@ -1,4 +1,4 @@
-/*$Id: InMemorySystemTest.java,v 1.22 2004/09/16 21:44:42 nw Exp $
+/*$Id: InMemorySystemTest.java,v 1.23 2004/12/03 14:47:41 jdt Exp $
  * Created on 19-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,8 @@ package org.astrogrid.jes;
 
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.common.bean.Axis2Castor;
+import org.astrogrid.jes.beans.v1.axis.executionrecord.JobURN;
+import org.astrogrid.jes.beans.v1.axis.executionrecord.WorkflowString;
 import org.astrogrid.jes.component.BasicJesComponentManager;
 import org.astrogrid.jes.component.JesComponentManager;
 import org.astrogrid.jes.component.JesComponentManagerFactory;
@@ -22,8 +24,6 @@ import org.astrogrid.jes.jobscheduler.dispatcher.ShortCircuitDispatcher;
 import org.astrogrid.jes.jobscheduler.impl.groovy.GroovyInterpreterFactory;
 import org.astrogrid.jes.jobscheduler.impl.groovy.GroovySchedulerImpl;
 import org.astrogrid.jes.testutils.io.FileResourceLoader;
-import org.astrogrid.jes.types.v1.JobURN;
-import org.astrogrid.jes.types.v1.WorkflowString;
 import org.astrogrid.jes.util.JesUtil;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Workflow;
@@ -195,6 +195,13 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
 
 /* 
 $Log: InMemorySystemTest.java,v $
+Revision 1.23  2004/12/03 14:47:41  jdt
+Merges from workflow-nww-776
+
+Revision 1.22.32.1  2004/12/01 21:46:35  nw
+adjusted to work with new summary object,
+and changed package of JobURN
+
 Revision 1.22  2004/09/16 21:44:42  nw
 got this test working again - had to add in result listener
 

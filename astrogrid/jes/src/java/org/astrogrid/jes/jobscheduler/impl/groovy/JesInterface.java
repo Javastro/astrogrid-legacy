@@ -1,4 +1,4 @@
-/*$Id: JesInterface.java,v 1.13 2004/11/29 20:00:24 clq2 Exp $
+/*$Id: JesInterface.java,v 1.14 2004/12/03 14:47:41 jdt Exp $
  * Created on 12-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -41,6 +41,8 @@ import java.util.Map;
 /** provides an interface for executing groovy scripts in rulebase to call back into jes server 
  * also provides some 'helper' methods that can be called from scripts to create usefule objects, etc. Maybe these should be split into a libraru class, and a JesServerINterface class.
  * @modified - added temporary buffers (under soft reference) for capturing system err and out. 
+ * @script-summary access the jes server
+ * @script-doc this object allows access to some of the internals of the jes server the workflow script is executing on
  */
 public class  JesInterface extends WorkflowLogger {
     private static final String ENCODING = "UTF-16";
@@ -58,14 +60,24 @@ public class  JesInterface extends WorkflowLogger {
     private SoftReference softErrBuff = new SoftReference(new TemporaryBuffer());
     private SoftReference softOutBuff = new SoftReference(new TemporaryBuffer());
     
+    /** access the version info for this jes server.
+     * <p>
+     * at present returns a list of bugzilla numbers this server implements
+     * @todo implement to return richer info
+     * @script-doc inspect version information for this server*/
+    public String getVersion() {
+        return "Iteration 07,  jes-nww-714  workflow-nww-776";
+    }
     
-    
-    /** the workflow object the script belongs to */
+    /** the workflow object the script belongs to 
+     * @script-doc access the object model of the current workflow
+     * */
     public Workflow getWorkflow() {
         return wf;
     }
     
-    /** return list of steps in the workflow document */
+    /** return list of steps in the workflow document 
+     * @script-doc access the list of steps in the current workflow*/
     public List getSteps() {
             Iterator i = JesUtil.getJobSteps(wf);
             List l = new ArrayList();
@@ -73,7 +85,8 @@ public class  JesInterface extends WorkflowLogger {
              return l;
         }
     
-    /** create a new initialized parameter object */
+    /** create a new initialized parameter object 
+     * @script-doc create a new tool-parameter object, initialized, but unattached to any tool*/
     public ParameterValue newParameter() {
         ParameterValue pval = new  ParameterValue();
         pval.setIndirect(false);
@@ -81,13 +94,16 @@ public class  JesInterface extends WorkflowLogger {
         return pval;
     }
     
-    /** the tool step dispatcher */
+        /** the tool step dispatcher
+     * @script-doc-omit don't think it's sensible to encourage use of this.*/
     public Dispatcher getDispatcher() {
         return disp;
     }
     // plus some helper methods.
 
-    /** access object in workflow tree by id */
+    /** access object in workflow tree by id 
+     *@script-doc access an element in the workflow document by it's unique id.
+     * */
     public Object getId(String id) {        
         if (id.equals(getWorkflow().getId())) {
             return getWorkflow();
@@ -108,6 +124,7 @@ public class  JesInterface extends WorkflowLogger {
     /** 
      * dispatach a tool step to a cea server for execution. 
      * @param id - the identifier of the step to execute
+     * @script-doc-omit very internal
      * */ 
     public boolean dispatchStep(String id, JesShell shell, ActivityStatusStore states, Map rules)  {
         Step step = (Step)getId(id);
@@ -126,7 +143,8 @@ public class  JesInterface extends WorkflowLogger {
            }                             
     }
     
-    /** execute a set activity */
+    /** execute a set activity 
+     * @script-doc-omit very internal*/
     public boolean executeSet(String id,JesShell shell,ActivityStatusStore map,Map rules)  {
         Set set = (Set)getId(id);
         try {
@@ -137,7 +155,8 @@ public class  JesInterface extends WorkflowLogger {
             return false;
         }
     }    
-    /** dispatch / execute a script activity */
+    /** dispatch / execute a script activity
+     * @script-doc-omit you must be joking.. */
     public boolean dispatchScript(String id,JesShell shell,ActivityStatusStore map,Map rules) {
         Script script = (Script)getId(id);        
         StepExecutionRecord er = AbstractJobSchedulerImpl.newStepExecutionRecord();
@@ -196,7 +215,8 @@ public class  JesInterface extends WorkflowLogger {
     }
 
     
-    /** records most important events back into main workflow document. */
+    /** records most important events back into main workflow document.
+     * @script-doc-omit alter status of the entire workflow document. Can be used to halt / abort execution. */
     public void setWorkflowStatus(Status status) {
                 ExecutionPhase phase = Status.toPhase(status);
                 JobExecutionRecord er =  wf.getJobExecutionRecord();
@@ -213,6 +233,13 @@ public class  JesInterface extends WorkflowLogger {
 
 /* 
 $Log: JesInterface.java,v $
+Revision 1.14  2004/12/03 14:47:41  jdt
+Merges from workflow-nww-776
+
+Revision 1.13.2.1  2004/12/01 21:49:47  nw
+script-documentation
+amended getVersion()
+
 Revision 1.13  2004/11/29 20:00:24  clq2
 jes-nww-714
 

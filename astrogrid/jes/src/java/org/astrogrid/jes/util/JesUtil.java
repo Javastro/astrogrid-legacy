@@ -1,4 +1,4 @@
-/*$Id: JesUtil.java,v 1.8 2004/11/29 20:00:24 clq2 Exp $
+/*$Id: JesUtil.java,v 1.9 2004/12/03 14:47:41 jdt Exp $
  * Created on 03-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,11 +10,13 @@
 **/
 package org.astrogrid.jes.util;
 
-import org.astrogrid.jes.types.v1.JobURN;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.util.Iterator;
 
@@ -25,6 +27,11 @@ import java.util.Iterator;
  *
  */
 public class JesUtil {
+    /**
+     * Commons Logger for this class
+     */
+    private static final Log logger = LogFactory.getLog(JesUtil.class);
+
     /** Construct a new JesUtil
      * 
      */
@@ -90,13 +97,7 @@ public class JesUtil {
          }
      }
 
- /** convert between castor and axis representations of the same schema object */
-    public static JobURN castor2axis(org.astrogrid.workflow.beans.v1.execution.JobURN jobURN) {
-        if (jobURN == null) {
-            return null;
-        }
-        return new JobURN(jobURN.getContent());
-    }
+
 
 /** extract mesasges from a chain of exceptions 
  * */
@@ -116,14 +117,17 @@ public static String getMessageChain(Throwable  e) {
         next = next.getCause();
     }
     return buff.toString();        
-}  
-   
-
 }
-
+}
 
 /* 
 $Log: JesUtil.java,v $
+Revision 1.9  2004/12/03 14:47:41  jdt
+Merges from workflow-nww-776
+
+Revision 1.8.2.1  2004/12/01 21:47:44  nw
+moved castor-axis conversion methods to workflow-objects
+
 Revision 1.8  2004/11/29 20:00:24  clq2
 jes-nww-714
 

@@ -1,4 +1,4 @@
-/*$Id: ParforEmptyFeatureTest.java,v 1.4 2004/11/29 20:00:24 clq2 Exp $
+/*$Id: ParforEmptyFeatureTest.java,v 1.5 2004/12/03 14:47:40 jdt Exp $
  * Created on 09-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,11 +14,6 @@ import org.astrogrid.workflow.beans.v1.Parfor;
 import org.astrogrid.workflow.beans.v1.Script;
 import org.astrogrid.workflow.beans.v1.Set;
 import org.astrogrid.workflow.beans.v1.Workflow;
-
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.ValidationException;
-
-import java.io.OutputStreamWriter;
 
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 09-Aug-2004
@@ -78,6 +73,13 @@ public class ParforEmptyFeatureTest extends AbstractTestForFeature {
 
 /* 
 $Log: ParforEmptyFeatureTest.java,v $
+Revision 1.5  2004/12/03 14:47:40  jdt
+Merges from workflow-nww-776
+
+Revision 1.4.2.1  2004/12/01 21:46:26  nw
+adjusted to work with new summary object,
+and changed package of JobURN
+
 Revision 1.4  2004/11/29 20:00:24  clq2
 jes-nww-714
 

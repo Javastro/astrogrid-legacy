@@ -1,4 +1,4 @@
-/*$Id: ListJobsSuccessTest.java,v 1.5 2004/03/15 00:06:57 nw Exp $
+/*$Id: ListJobsSuccessTest.java,v 1.6 2004/12/03 14:47:40 jdt Exp $
  * Created on 17-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,7 @@
 package org.astrogrid.jes.jobcontroller;
 import org.astrogrid.community.beans.v1.axis.Identifier;
 import org.astrogrid.community.beans.v1.axis._Account;
-import org.astrogrid.jes.types.v1.WorkflowSummary;
+import org.astrogrid.jes.beans.v1.axis.executionrecord.WorkflowSummaryType;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
 /** Test the listJobs method of the job controller
  * @author Noel Winstanley nw@jb.man.ac.uk 17-Feb-2004
@@ -43,21 +43,30 @@ public class ListJobsSuccessTest extends AbstractTestForJobController {
      * @see org.astrogrid.jes.jobcontroller.AbstractTest#performTest(org.astrogrid.jes.types.v1.SubmissionResponse)
      */
     protected void performTest(JobURN urn) throws Exception {
-        WorkflowSummary[]  rawArr = jc.readJobList(acc);
+        WorkflowSummaryType[]  rawArr = jc.readJobList(acc);
 
         assertNotNull(rawArr);
         // we're creating a new job controller each time, so should expect either 1 or 0 elements in the result list.
         assertTrue(rawArr.length >= 0 && rawArr.length <= 1);
         for (int i = 0; i < rawArr.length; i++) {
             assertNotNull(rawArr[i]);
-            assertNotNull(rawArr[i].getJobUrn());
+            assertNotNull(rawArr[i].getJobId());
             assertNotNull(rawArr[i].getWorkflowName());
+            assertNotNull(rawArr[i].getDescription());
+            assertNotNull(rawArr[i].getMessage());
         }
     }
 
 }
 /* 
 $Log: ListJobsSuccessTest.java,v $
+Revision 1.6  2004/12/03 14:47:40  jdt
+Merges from workflow-nww-776
+
+Revision 1.5.128.1  2004/12/01 21:46:26  nw
+adjusted to work with new summary object,
+and changed package of JobURN
+
 Revision 1.5  2004/03/15 00:06:57  nw
 removed SchedulerNotifier interface - replaced references to it by references to JobScheduler interface - identical
 

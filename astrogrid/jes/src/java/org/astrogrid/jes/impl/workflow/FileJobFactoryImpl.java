@@ -1,4 +1,4 @@
-/*$Id: FileJobFactoryImpl.java,v 1.11 2004/11/29 20:00:24 clq2 Exp $
+/*$Id: FileJobFactoryImpl.java,v 1.12 2004/12/03 14:47:41 jdt Exp $
  * Created on 11-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,9 +10,6 @@
 **/
 package org.astrogrid.jes.impl.workflow;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.job.JobException;
@@ -20,6 +17,8 @@ import org.astrogrid.jes.job.NotFoundException;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.exolab.castor.xml.CastorException;
 
 import java.io.BufferedReader;
@@ -287,6 +286,13 @@ public class FileJobFactoryImpl extends AbstractJobFactoryImpl implements Compon
 
 /* 
 $Log: FileJobFactoryImpl.java,v $
+Revision 1.12  2004/12/03 14:47:41  jdt
+Merges from workflow-nww-776
+
+Revision 1.11.2.1  2004/12/01 21:48:20  nw
+adjusted to work with new summary object,
+and changed package of JobURN
+
 Revision 1.11  2004/11/29 20:00:24  clq2
 jes-nww-714
 

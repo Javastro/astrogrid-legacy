@@ -90,6 +90,17 @@
             </properties>
         </dependency>
 
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8</version>
+        </dependency>
+
+     <dependency>
+     <groupId>xmlunit</groupId>
+      <artifactId>xmlunit</artifactId>
+      <version>1.0</version>
+        </dependency>
         <!-- helper for object models -->
         <dependency>
                 <artifactId>commons-jxpath</artifactId>
@@ -173,9 +184,10 @@
       <war.bundle>true</war.bundle>
     </properties>
     </dependency>
-    
-    <!-- some experiments with other systems -->
 
+
+    <!-- some experiments with other systems -->
+<!--
     <dependency>
       <id>jaxme</id>
       <version>0.2</version>
@@ -183,8 +195,9 @@
       <war.bundle>true</war.bundle>
     </properties>
     </dependency>
-    
+-->
     <!-- jaxb and required jars -->
+ <!--
      <dependency>
       <groupId>jaxb</groupId>
       <artifactId>jaxb-api</artifactId>
@@ -209,7 +222,7 @@
       <war.bundle>true</war.bundle>
     </properties>
     </dependency>
-    
+
      <dependency>
       <groupId>jaxb</groupId>
       <artifactId>jaxb-xjc</artifactId>
@@ -218,8 +231,9 @@
       <war.bundle>false</war.bundle>
     </properties>
     </dependency>
+    -->
 <!-- jaxb dependencies -->
-    
+<!--
      <dependency>
       <artifactId>jax-qname</artifactId>
       <groupId>jwsdp</groupId>
@@ -228,7 +242,7 @@
       <war.bundle>false</war.bundle>
     </properties>
     </dependency>
-    
+
       <dependency>
       <artifactId>namespace</artifactId>
       <groupId>jwsdp</groupId>
@@ -237,7 +251,7 @@
       <war.bundle>false</war.bundle>
     </properties>
     </dependency>
-    
+
       <dependency>
       <artifactId>relaxngDatatype</artifactId>
       <groupId>jwsdp</groupId>
@@ -246,7 +260,7 @@
       <war.bundle>false</war.bundle>
     </properties>
     </dependency>
-    
+
       <dependency>
       <artifactId>xsdlib</artifactId>
       <groupId>jwsdp</groupId>
@@ -255,18 +269,10 @@
       <war.bundle>false</war.bundle>
     </properties>
     </dependency>
-    
-    
-    
-    
 
-        <dependency>
-            <artifactId>junit</artifactId>
-            <groupId>junit</groupId>
-            <version>3.8</version>
-            <properties>
-                <war.bundle>true</war.bundle>
-            </properties>
-        </dependency>
+
+-->
+    <!-- required by common -->
+
     </dependencies>
 </project>

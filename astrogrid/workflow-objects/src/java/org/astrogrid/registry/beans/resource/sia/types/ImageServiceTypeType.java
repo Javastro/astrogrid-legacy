@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ImageServiceTypeType.java,v 1.9 2004/09/09 10:41:48 pah Exp $
+ * $Id: ImageServiceTypeType.java,v 1.10 2004/12/03 14:47:41 jdt Exp $
  */
 
 package org.astrogrid.registry.beans.resource.sia.types;
@@ -20,7 +20,7 @@ import org.exolab.castor.xml.Unmarshaller;
 /**
  * Class ImageServiceTypeType.
  * 
- * @version $Revision: 1.9 $ $Date: 2004/09/09 10:41:48 $
+ * @version $Revision: 1.10 $ $Date: 2004/12/03 14:47:41 $
  */
 public class ImageServiceTypeType implements java.io.Serializable {
 

@@ -1,5 +1,5 @@
 /*
- * $Id: Castor2Axis.java,v 1.11 2004/09/02 16:09:23 jdt Exp $
+ * $Id: Castor2Axis.java,v 1.12 2004/12/03 14:47:41 jdt Exp $
  * 
  * Created on 11-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -20,6 +20,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterValue;
 import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
+import org.astrogrid.jes.beans.v1.axis.executionrecord.JobURN;
+import org.astrogrid.jes.beans.v1.axis.executionrecord._extension;
 import org.astrogrid.jes.types.v1.cea.axis.ExecutionPhase;
 import org.astrogrid.jes.types.v1.cea.axis.ExecutionSummaryType;
 import org.astrogrid.jes.types.v1.cea.axis.InputListType;
@@ -30,6 +32,7 @@ import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.axis._input;
 import org.astrogrid.workflow.beans.v1.axis._output;
 import org.astrogrid.workflow.beans.v1.axis._tool;
+import org.astrogrid.workflow.beans.v1.execution.Extension;
 
 /**
  * Static methods to convert Castor to Axis objects.
@@ -57,7 +60,13 @@ public class Castor2Axis {
 
       return result;
    }
-
+   /** convert between castor and axis representations of the same schema object */
+   public static JobURN convert(org.astrogrid.workflow.beans.v1.execution.JobURN jobURN) {
+       if (jobURN == null) {
+           return null;
+       }
+       return new JobURN(jobURN.getContent());
+   }
    /**
     * @param output
     * @return
@@ -217,6 +226,29 @@ public class Castor2Axis {
       cal.setTime(mess.getTimestamp());
       result.setTimestamp(cal);
       return result;
+   }
+   
+   public static org.astrogrid.jes.types.v1.cea.axis.MessageType[] convert(MessageType[] mess) {
+       org.astrogrid.jes.types.v1.cea.axis.MessageType[] axis = new org.astrogrid.jes.types.v1.cea.axis.MessageType[mess.length];
+       for (int i = 0; i < mess.length; i++) {
+           axis[i] = convert(mess[i]);
+       }
+       return axis;
+   }
+   
+   public static _extension convert(Extension ext) {
+       _extension axis = new _extension();
+       axis.setKey(ext.getKey());
+       axis.setValue(ext.getContent());
+       return axis;
+   }
+   
+   public static _extension[] convert(Extension[] ext) {
+       _extension[] axis = new _extension[ext.length];
+       for ( int i = 0; i < ext.length; i++) {
+           axis[i] = convert(ext[i]);
+       }
+       return axis;
    }
    
   public static ExecutionPhase convert(org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase ep)

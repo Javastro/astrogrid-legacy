@@ -1,4 +1,4 @@
-/*$Id: GroovySubmitNewJobSuccessTest.java,v 1.4 2004/11/05 16:52:42 jdt Exp $
+/*$Id: GroovySubmitNewJobSuccessTest.java,v 1.5 2004/12/03 14:47:40 jdt Exp $
  * Created on 12-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,9 +11,9 @@
 package org.astrogrid.jes.jobscheduler.impl.groovy;
 
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
+import org.astrogrid.common.bean.Castor2Axis;
 import org.astrogrid.jes.jobscheduler.dispatcher.MockDispatcher;
 import org.astrogrid.jes.jobscheduler.impl.AbstractTestForSchedulerImpl;
-import org.astrogrid.jes.util.JesUtil;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
@@ -36,7 +36,7 @@ public class GroovySubmitNewJobSuccessTest extends AbstractTestForSchedulerImpl{
     
         assertNotNull(urn);
         // could take copy of job here from store (need to clone, as using in-memory store). then compare it to result after scheduling.
-        scheduler.scheduleNewJob(JesUtil.castor2axis(urn));
+        scheduler.scheduleNewJob(Castor2Axis.convert(urn));
         //now check behaviour is as expected.
         // should have dispatched something - should be all steps.
         //
@@ -58,6 +58,13 @@ public class GroovySubmitNewJobSuccessTest extends AbstractTestForSchedulerImpl{
 
 /* 
 $Log: GroovySubmitNewJobSuccessTest.java,v $
+Revision 1.5  2004/12/03 14:47:40  jdt
+Merges from workflow-nww-776
+
+Revision 1.4.14.1  2004/12/01 21:46:26  nw
+adjusted to work with new summary object,
+and changed package of JobURN
+
 Revision 1.4  2004/11/05 16:52:42  jdt
 Merges from branch nww-itn07-scratchspace
 

@@ -11,10 +11,10 @@
 package org.astrogrid.jes.delegate.v1.jobcontroller;
 
 import org.astrogrid.community.beans.v1.axis._Account;
+import org.astrogrid.jes.beans.v1.axis.executionrecord.JobURN;
+import org.astrogrid.jes.beans.v1.axis.executionrecord.WorkflowString;
+import org.astrogrid.jes.beans.v1.axis.executionrecord.WorkflowSummaryType;
 import org.astrogrid.jes.component.JesComponentManagerFactory;
-import org.astrogrid.jes.types.v1.JobURN;
-import org.astrogrid.jes.types.v1.WorkflowString;
-import org.astrogrid.jes.types.v1.WorkflowSummary;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -73,7 +73,7 @@ public class JobControllerServiceSoapBindingImpl implements org.astrogrid.jes.de
     /**
      * @see org.astrogrid.jes.delegate.v1.jobcontroller.JobController#readJobList(org.astrogrid.community.beans.v1.axis._Account)
      */
-    public WorkflowSummary[] readJobList(_Account arg0) throws RemoteException, JesFault {
+    public WorkflowSummaryType[] readJobList(_Account arg0) throws RemoteException, JesFault {
         return jc.readJobList(arg0);
     }
 

@@ -1,15 +1,15 @@
 package org.astrogrid.jes.delegate.impl;
 
+import org.astrogrid.common.bean.Axis2Castor;
 import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.community.beans.v1.axis.Identifier;
 import org.astrogrid.community.beans.v1.axis._Account;
+import org.astrogrid.jes.beans.v1.axis.executionrecord.WorkflowString;
+import org.astrogrid.jes.beans.v1.axis.executionrecord.WorkflowSummaryType;
 import org.astrogrid.jes.delegate.JesDelegateException;
-import org.astrogrid.jes.delegate.JobSummary;
 import org.astrogrid.jes.delegate.v1.jobcontroller.JobController;
 import org.astrogrid.jes.delegate.v1.jobcontroller.JobControllerServiceLocator;
 import org.astrogrid.jes.delegate.v1.jobcontroller.JobControllerServiceSoapBindingStub;
-import org.astrogrid.jes.types.v1.WorkflowString;
-import org.astrogrid.jes.types.v1.WorkflowSummary;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
@@ -44,7 +44,7 @@ public class JobControllerDelegateImpl extends JobControllerDelegate {
             sw.close();
             String req = sw.toString();
             org.astrogrid.jes.delegate.v1.jobcontroller.JobController jc= getBinding(); 
-            org.astrogrid.jes.types.v1.JobURN axisURN = jc.submitWorkflow(new WorkflowString(req));
+            org.astrogrid.jes.beans.v1.axis.executionrecord.JobURN axisURN = jc.submitWorkflow(new WorkflowString(req));
             JobURN result = new JobURN();
             result.setContent(axisURN.toString()); 
             return result;
@@ -75,7 +75,7 @@ public class JobControllerDelegateImpl extends JobControllerDelegate {
     public void cancelJob(JobURN urn) throws JesDelegateException {
         try {
             JobController jc = getBinding();
-            jc.cancelJob(new org.astrogrid.jes.types.v1.JobURN(urn.getContent()));
+            jc.cancelJob(new org.astrogrid.jes.beans.v1.axis.executionrecord.JobURN(urn.getContent()));
         } catch (IOException e) {
             throw new JesDelegateException(e);
         }
@@ -87,16 +87,14 @@ public class JobControllerDelegateImpl extends JobControllerDelegate {
     public void deleteJob(JobURN urn) throws JesDelegateException {
         try {
             JobController jc = getBinding();
-            jc.deleteJob(new org.astrogrid.jes.types.v1.JobURN(urn.getContent()));
+            jc.deleteJob(new org.astrogrid.jes.beans.v1.axis.executionrecord.JobURN(urn.getContent()));
         } catch (IOException e) {
             throw new JesDelegateException(e);
         }        
     }
 
-    /**
-     * @see org.astrogrid.jes.delegate.JobController#readJobList(org.astrogrid.community.beans.v1.Account)
-     */
-    public JobSummary[] readJobList(Account acc) throws JesDelegateException {
+
+    public org.astrogrid.workflow.beans.v1.execution.WorkflowSummaryType[] listJobs(Account acc) throws JesDelegateException {
         try {
             JobController jc = getBinding();
             _Account axisAcc = new _Account();
@@ -109,14 +107,22 @@ public class JobControllerDelegateImpl extends JobControllerDelegate {
             axisAcc.setCommunity(community);
             axisAcc.setName(name);
             
-            WorkflowSummary[] wl = jc.readJobList(axisAcc);
+            WorkflowSummaryType[] wl = jc.readJobList(axisAcc);
             if (wl == null) { // returns null if none found - change this to an empy array;
-                wl = new WorkflowSummary[]{};
+                wl = new WorkflowSummaryType[]{};
             }
-            JobSummary[] result = new JobSummary[wl.length];
+            // check for nulls.. unlikely, but may happen.
+            int length = 0;
             for (int i = 0; i < wl.length; i++) {
-                JobSummary nfo = new JobSummary(wl[i]);
-                result[i] = nfo;
+                if (wl[i] != null) {
+                    length++;
+                }
+            }
+            org.astrogrid.workflow.beans.v1.execution.WorkflowSummaryType[] result = new org.astrogrid.workflow.beans.v1.execution.WorkflowSummaryType[length];
+            for (int i = 0; i < wl.length; i++) {
+                if (wl[i] != null) {
+                    result[i]= Axis2Castor.convert(wl[i]); 
+                }
             }
             return result;
             
@@ -131,7 +137,7 @@ public class JobControllerDelegateImpl extends JobControllerDelegate {
     public Workflow readJob(JobURN urn) throws JesDelegateException {
         try {
             JobController jc = getBinding();
-            String result = jc.readJob(new org.astrogrid.jes.types.v1.JobURN(urn.getContent())).getValue();
+            String result = jc.readJob(new org.astrogrid.jes.beans.v1.axis.executionrecord.JobURN(urn.getContent())).getValue();
             if (result == null || result.trim().length() == 0) {
                 throw new JesDelegateException("Null workflow returned");
             }

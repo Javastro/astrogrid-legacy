@@ -1,4 +1,4 @@
-/*$Id: JobController.java,v 1.7 2004/03/15 01:30:30 nw Exp $
+/*$Id: JobController.java,v 1.8 2004/12/03 14:47:41 jdt Exp $
  * Created on 06-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,6 +13,7 @@ package org.astrogrid.jes.delegate;
 import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
+import org.astrogrid.workflow.beans.v1.execution.WorkflowSummaryType;
 
 /** Interface to a service for managing jobs - listing, deleting, submitting for execution, etc.
  * <p />
@@ -44,9 +45,13 @@ public interface JobController extends Delegate {
      * 
      * @param acc account object for the user in question
      * @return array of job summary objects, one summary for each job the user has in the system
+     * @deprecated - use {@link #listJobs}
      * @throws JesDelegateException
      */
     public JobSummary[] readJobList(Account acc) throws JesDelegateException;
+    
+    /** retreive a list of all jobs (pending, runing and completed) for a particylar user */
+    public WorkflowSummaryType[] listJobs(Account acc) throws JesDelegateException;
     /** retrive the workflow document for a job.
      * 
      * @param urn unique identifier for a job.
@@ -57,6 +62,13 @@ public interface JobController extends Delegate {
 }
 /* 
 $Log: JobController.java,v $
+Revision 1.8  2004/12/03 14:47:41  jdt
+Merges from workflow-nww-776
+
+Revision 1.7.128.1  2004/12/01 21:48:20  nw
+adjusted to work with new summary object,
+and changed package of JobURN
+
 Revision 1.7  2004/03/15 01:30:30  nw
 jazzed up javadoc
 

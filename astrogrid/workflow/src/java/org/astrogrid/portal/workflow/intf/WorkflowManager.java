@@ -1,4 +1,4 @@
-/*$Id: WorkflowManager.java,v 1.7 2004/03/11 13:53:36 nw Exp $
+/*$Id: WorkflowManager.java,v 1.8 2004/12/03 14:47:41 jdt Exp $
  * Created on 24-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,9 @@ package org.astrogrid.portal.workflow.intf;
 
 
 /** Container object that collects the various components used to interact with workflows.
+ * @script-summary root object of the jes client interface
+ * @script-doc root of object tree for constructing workflows, saving and loading to myspace, quering registry for application information, and submitting
+ * workflows for execution.
  * @author Noel Winstanley nw@jb.man.ac.uk 24-Feb-2004
  *
  */
@@ -52,6 +55,12 @@ public class  WorkflowManager{
 
 /* 
 $Log: WorkflowManager.java,v $
+Revision 1.8  2004/12/03 14:47:41  jdt
+Merges from workflow-nww-776
+
+Revision 1.7.124.1  2004/12/01 21:08:35  nw
+scripting documentation
+
 Revision 1.7  2004/03/11 13:53:36  nw
 merged in branch bz#236 - implementation of interfaces
 

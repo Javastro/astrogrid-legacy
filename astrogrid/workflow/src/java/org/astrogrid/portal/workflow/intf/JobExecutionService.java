@@ -1,4 +1,4 @@
-/*$Id: JobExecutionService.java,v 1.4 2004/03/09 15:33:41 nw Exp $
+/*$Id: JobExecutionService.java,v 1.5 2004/12/03 14:47:41 jdt Exp $
  * Created on 01-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,6 +14,7 @@ import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.jes.delegate.JobSummary;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
+import org.astrogrid.workflow.beans.v1.execution.WorkflowSummaryType;
 
 /** A component that can execute and manage jobs
  * @author Noel Winstanley nw@jb.man.ac.uk 01-Mar-2004
@@ -52,13 +53,30 @@ public interface JobExecutionService {
      * @param account identifies a user
      * @return array of job summaries
      * @throws WorkflowInterfaceException
+     * @deprecated - use {@link #listJobs}
      */
     JobSummary[] readJobList(Account account) throws WorkflowInterfaceException;
+    
+    /** list jobs for a particulat user.
+     * 
+     * @param account identifies the user
+     * @return array of workflow summaries
+     * @throws WorkflowInterfaceException
+     */
+    WorkflowSummaryType[] listJobs(Account account) throws WorkflowInterfaceException;
+    
+    
 }
 
 
 /* 
 $Log: JobExecutionService.java,v $
+Revision 1.5  2004/12/03 14:47:41  jdt
+Merges from workflow-nww-776
+
+Revision 1.4.126.1  2004/12/01 21:08:44  nw
+fixed to work with new summary type
+
 Revision 1.4  2004/03/09 15:33:41  nw
 updated types
 

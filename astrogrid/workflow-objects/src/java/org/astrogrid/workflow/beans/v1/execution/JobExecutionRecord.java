@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: JobExecutionRecord.java,v 1.29 2004/09/09 10:41:48 pah Exp $
+ * $Id: JobExecutionRecord.java,v 1.30 2004/12/03 14:47:41 jdt Exp $
  */
 
 package org.astrogrid.workflow.beans.v1.execution;
@@ -24,21 +24,11 @@ import org.xml.sax.ContentHandler;
 /**
  * A record of a single execution of a job
  * 
- * @version $Revision: 1.29 $ $Date: 2004/09/09 10:41:48 $
+ * @version $Revision: 1.30 $ $Date: 2004/12/03 14:47:41 $
  */
-public class JobExecutionRecord extends org.astrogrid.workflow.beans.v1.execution.ExecutionRecordType 
+public class JobExecutionRecord extends org.astrogrid.workflow.beans.v1.execution.JobExecutionRecordType 
 implements java.io.Serializable
 {
-
-
-      //--------------------------/
-     //- Class/Member Variables -/
-    //--------------------------/
-
-    /**
-     * globally unique identifier for this execution of the workflow
-     */
-    private org.astrogrid.workflow.beans.v1.execution.JobURN _jobId;
 
 
       //----------------/
@@ -70,29 +60,10 @@ implements java.io.Serializable
         if (obj instanceof JobExecutionRecord) {
         
             JobExecutionRecord temp = (JobExecutionRecord)obj;
-            if (this._jobId != null) {
-                if (temp._jobId == null) return false;
-                else if (!(this._jobId.equals(temp._jobId))) 
-                    return false;
-            }
-            else if (temp._jobId != null)
-                return false;
             return true;
         }
         return false;
     } //-- boolean equals(java.lang.Object) 
-
-    /**
-     * Returns the value of field 'jobId'. The field 'jobId' has
-     * the following description: globally unique identifier for
-     * this execution of the workflow
-     * 
-     * @return the value of field 'jobId'.
-     */
-    public org.astrogrid.workflow.beans.v1.execution.JobURN getJobId()
-    {
-        return this._jobId;
-    } //-- org.astrogrid.workflow.beans.v1.execution.JobURN getJobId() 
 
     /**
      * Method isValid
@@ -131,18 +102,6 @@ implements java.io.Serializable
         
         Marshaller.marshal(this, handler);
     } //-- void marshal(org.xml.sax.ContentHandler) 
-
-    /**
-     * Sets the value of field 'jobId'. The field 'jobId' has the
-     * following description: globally unique identifier for this
-     * execution of the workflow
-     * 
-     * @param jobId the value of field 'jobId'.
-     */
-    public void setJobId(org.astrogrid.workflow.beans.v1.execution.JobURN jobId)
-    {
-        this._jobId = jobId;
-    } //-- void setJobId(org.astrogrid.workflow.beans.v1.execution.JobURN) 
 
     /**
      * Method unmarshalJobExecutionRecord

@@ -5,7 +5,7 @@
  * by the Apache Axis WSDL2Java emitter.
  */
 
-package org.astrogrid.jes.types.v1;
+package org.astrogrid.jes.beans.v1.axis.executionrecord;
 
 public class WorkflowString  implements java.io.Serializable, org.apache.axis.encoding.SimpleType {
     private java.lang.String value;
@@ -69,7 +69,7 @@ public class WorkflowString  implements java.io.Serializable, org.apache.axis.en
         new org.apache.axis.description.TypeDesc(WorkflowString.class);
 
     static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("urn:jes/types/v1", "workflow-string"));
+        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.astrogrid.org/schema/ExecutionRecord/v1", "workflow-string"));
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("value");
         elemField.setXmlName(new javax.xml.namespace.QName("", "value"));

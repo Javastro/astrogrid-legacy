@@ -1,4 +1,4 @@
-/*$Id: JobScheduler.java,v 1.54 2004/07/01 21:15:00 nw Exp $
+/*$Id: JobScheduler.java,v 1.55 2004/12/03 14:47:41 jdt Exp $
  * Created on 05-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,7 +9,7 @@
  *
 **/
 package org.astrogrid.jes.jobscheduler;
-import org.astrogrid.jes.types.v1.JobURN;
+import org.astrogrid.jes.beans.v1.axis.executionrecord.JobURN;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.jes.types.v1.cea.axis.ResultListType;
 /** Interface to a component that executes jobs.

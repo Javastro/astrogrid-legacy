@@ -1,4 +1,4 @@
-/*$Id: ApplicationRegistry.java,v 1.4 2004/11/12 18:14:43 clq2 Exp $
+/*$Id: ApplicationRegistry.java,v 1.5 2004/12/03 14:47:41 jdt Exp $
  * Created on 01-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,8 @@ package org.astrogrid.portal.workflow.intf;
 
 
 /** A component that queries a registry for information about applications.
+ * @script-summary query registry for applications
+ * @script-doc high-level interface to the registry, returning information relevant to building workflow documents
  * @author Noel Winstanley nw@jb.man.ac.uk 01-Mar-2004
  * @modofied - added richer application list.
  */
@@ -41,6 +43,12 @@ public interface ApplicationRegistry {
 
 /* 
 $Log: ApplicationRegistry.java,v $
+Revision 1.5  2004/12/03 14:47:41  jdt
+Merges from workflow-nww-776
+
+Revision 1.4.4.1  2004/12/01 21:08:35  nw
+scripting documentation
+
 Revision 1.4  2004/11/12 18:14:43  clq2
 nww-itn07-590b again.
 

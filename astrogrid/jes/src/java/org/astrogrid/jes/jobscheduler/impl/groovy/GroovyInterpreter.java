@@ -1,4 +1,4 @@
-/*$Id: GroovyInterpreter.java,v 1.6 2004/11/05 16:52:42 jdt Exp $
+/*$Id: GroovyInterpreter.java,v 1.7 2004/12/03 14:47:41 jdt Exp $
  * Created on 26-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,14 +17,8 @@ import org.astrogrid.workflow.beans.v1.Step;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.codehaus.groovy.control.CompilationFailedException;
 
-import groovy.lang.Script;
-
-import java.io.IOException;
-import java.lang.ref.SoftReference;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 /**(misnamed) Top level class of rules engine / state machine.
@@ -184,6 +178,12 @@ public class GroovyInterpreter  {
 
 /* 
 $Log: GroovyInterpreter.java,v $
+Revision 1.7  2004/12/03 14:47:41  jdt
+Merges from workflow-nww-776
+
+Revision 1.6.14.1  2004/12/01 21:50:07  nw
+organized import
+
 Revision 1.6  2004/11/05 16:52:42  jdt
 Merges from branch nww-itn07-scratchspace
 

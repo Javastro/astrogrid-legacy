@@ -1,4 +1,4 @@
-/*$Id: JesShell.java,v 1.16 2004/11/29 20:00:24 clq2 Exp $
+/*$Id: JesShell.java,v 1.17 2004/12/03 14:47:41 jdt Exp $
  * Created on 29-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,8 +13,6 @@ package org.astrogrid.jes.jobscheduler.impl.groovy;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.community.User;
 import org.astrogrid.community.beans.v1.Credentials;
-import org.astrogrid.community.common.ivorn.CommunityAccountIvornFactory;
-import org.astrogrid.scripting.Astrogrid;
 import org.astrogrid.scripting.Toolbox;
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.workflow.beans.v1.For;
@@ -35,9 +33,7 @@ import org.codehaus.groovy.control.messages.WarningMessage;
 
 import EDU.oswego.cs.dl.util.concurrent.Callable;
 import EDU.oswego.cs.dl.util.concurrent.TimedCallable;
-
 import groovy.lang.Binding;
-import groovy.lang.GroovyCodeSource;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
 
@@ -394,26 +390,12 @@ protected Object runWithTimeLimit(final Script sc,long timeLimit) throws GroovyE
     private Binding createScriptBinding(ActivityStatusStore statusStore, Map rules) {
         Binding b = new Binding();
         b.setVariable("jes",jes);
-        b.setVariable("astrogrid",getToolbox());
-
-        Credentials creds = jes.getWorkflow().getCredentials();        
-        b.setVariable("account",creds.getAccount());
-        String name = creds.getAccount().getName();
-        String community = creds.getAccount().getCommunity();
-        User u = new User(name,community,creds.getGroup().getName(),creds.getSecurityToken());
-        b.setVariable("user",u);        
-
-        try {
-            b.setVariable("userIvorn",new Ivorn("ivo://" + community + "/" +  name));
-        } catch (URISyntaxException e) {
-            logger.error("URISyntaxException when creating userIvorn.",e);
-        }
-        b.setVariable("homeIvorn",new Ivorn(community,name,name + "/"));
-        
         for (int i = 0;  i < Status.allStatus.size() ; i++ ) {
             Status stat = (Status)Status.allStatus.get(i);
             b.setVariable(stat.getName(),stat);
         }
+        // basic stuff.
+        JesShell.createBasicScriptBinding(b, getToolbox(), jes.getWorkflow().getCredentials());
         // ah, what the hell, who knows - it might be useful.
         b.setVariable("__states",statusStore);
         b.setVariable("__rules",rules);
@@ -429,6 +411,28 @@ protected Object runWithTimeLimit(final Script sc,long timeLimit) throws GroovyE
     public void setJesInterface(JesInterface jesInterface) {
         this.jes = jesInterface;
     }
+    /**
+     * @param b
+     * @param toolbox2 @todo
+     * @param credentials @todo
+     */
+    public static void createBasicScriptBinding(Binding b, Toolbox toolbox2, Credentials credentials) {
+        b.setVariable("astrogrid",toolbox2);
+    
+        b.setVariable("account",credentials.getAccount());
+        String name = credentials.getAccount().getName();
+        String community = credentials.getAccount().getCommunity();
+        User u = new User(name,community,credentials.getGroup().getName(),credentials.getSecurityToken());
+        b.setVariable("user",u);        
+    
+        try {
+            b.setVariable("userIvorn",new Ivorn("ivo://" + community + "/" +  name));
+        } catch (URISyntaxException e) {
+            logger.error("URISyntaxException when creating userIvorn.",e);
+        }
+        b.setVariable("homeIvorn",new Ivorn(community,name,name + "/"));
+        
+    }
 
 
     
@@ -438,6 +442,12 @@ protected Object runWithTimeLimit(final Script sc,long timeLimit) throws GroovyE
 
 /* 
 $Log: JesShell.java,v $
+Revision 1.17  2004/12/03 14:47:41  jdt
+Merges from workflow-nww-776
+
+Revision 1.16.2.1  2004/12/01 21:50:53  nw
+tried to factor out the different parts of the JEScript environment
+
 Revision 1.16  2004/11/29 20:00:24  clq2
 jes-nww-714
 

@@ -1,5 +1,5 @@
 /*
- * $Id: Axis2Castor.java,v 1.10 2004/08/30 17:36:48 jdt Exp $
+ * $Id: Axis2Castor.java,v 1.11 2004/12/03 14:47:41 jdt Exp $
  * 
  * Created on 18-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -28,7 +28,9 @@ import org.astrogrid.community.beans.v1.axis._Account;
 
 import java.util.Calendar;
 
-import org.astrogrid.jes.types.v1.JobURN;
+import org.astrogrid.jes.beans.v1.axis.executionrecord.JobURN;
+import org.astrogrid.jes.beans.v1.axis.executionrecord.WorkflowSummaryType;
+import org.astrogrid.jes.beans.v1.axis.executionrecord._extension;
 import org.astrogrid.jes.types.v1.cea.axis.LogLevel;
 import org.astrogrid.jes.types.v1.cea.axis.MessageType;
 import org.astrogrid.workflow.beans.v1.Input;
@@ -36,6 +38,7 @@ import org.astrogrid.workflow.beans.v1.Output;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.axis._input;
 import org.astrogrid.workflow.beans.v1.axis._output;
+import org.astrogrid.workflow.beans.v1.execution.Extension;
 
 import org.apache.axis.types.NMToken;
 
@@ -50,6 +53,22 @@ import sun.misc.Regexp;
  */
 public class Axis2Castor {
 
+    /**
+     * @param message
+     * @return
+     */
+    public static org.astrogrid.applications.beans.v1.cea.castor.MessageType[] convert(MessageType[] message) {
+        if (message == null) {
+            return null;
+        }
+        org.astrogrid.applications.beans.v1.cea.castor.MessageType[] castor = new   org.astrogrid.applications.beans.v1.cea.castor.MessageType[message.length];
+        for (int i = 0; i < message.length; i++) {
+            castor[i] = convert(message[i]);
+        }
+        return castor;
+    }  
+    
+    
     /** convert between castor and axis representations of the same schema object */
     public static org.astrogrid.applications.beans.v1.cea.castor.MessageType convert(MessageType mt) {
         if (mt == null) {
@@ -83,6 +102,31 @@ public class Axis2Castor {
             return org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase.valueOf(phase.getValue());
         }
     }
+    
+    /**
+     * @param extension
+     * @return
+     */
+    public static Extension[] convert(_extension[] extension) {
+        if (extension == null) {
+            return null;
+        }
+        Extension[] castor = new Extension[extension.length];
+        for (int i = 0; i < extension.length; i++) {
+            castor[i] = convert(extension[i]);
+        }
+        return castor;
+    }
+    
+
+    public static Extension convert(_extension extension) {
+        Extension castor = new Extension();
+        castor.setContent(extension.getValue());
+        castor.setKey(extension.getKey());
+        return castor;
+    }
+
+       
     
     public static Tool convert(org.astrogrid.workflow.beans.v1.axis._tool tool)
     {
@@ -216,6 +260,36 @@ public class Axis2Castor {
             return castor;
         }
     }
+    
+    
+    /** convert a workflow summary between libraries.
+     * @param type
+     * @return
+     */
+    public static org.astrogrid.workflow.beans.v1.execution.WorkflowSummaryType convert(WorkflowSummaryType type) {
+        if (type == null) {
+            return null;
+        }
+        org.astrogrid.workflow.beans.v1.execution.WorkflowSummaryType castor = new org.astrogrid.workflow.beans.v1.execution.WorkflowSummaryType();
+        if (type.getDescription() != null) {
+            castor.setDescription(type.getDescription());
+        }
+        if (type.getExtension() != null) {
+            castor.setExtension(convert(type.getExtension()));
+        }
+        castor.setFinishTime(type.getFinishTime() == null ? null : type.getFinishTime().getTime());
+        if (type.getMessage() != null) {
+            castor.setMessage(convert(type.getMessage()));
+        }
+        castor.setJobId(Axis2Castor.convert(type.getJobId()));
+        castor.setStartTime(type.getStartTime() == null ? null : type.getStartTime().getTime());
+        if (type.getStatus() != null) {                
+        castor.setStatus(Axis2Castor.convert(type.getStatus()));
+        }
+        castor.setWorkflowName(type.getWorkflowName());
+        return castor;
+    }
+
 
 
 /* doesn't seem to be needed any more

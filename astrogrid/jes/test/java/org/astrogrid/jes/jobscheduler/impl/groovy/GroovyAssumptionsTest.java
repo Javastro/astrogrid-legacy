@@ -1,4 +1,4 @@
-/*$Id: GroovyAssumptionsTest.java,v 1.3 2004/11/29 20:00:24 clq2 Exp $
+/*$Id: GroovyAssumptionsTest.java,v 1.4 2004/12/03 14:47:40 jdt Exp $
  * Created on 26-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,8 +11,6 @@
 package org.astrogrid.jes.jobscheduler.impl.groovy;
 
 import org.codehaus.groovy.control.CompilationFailedException;
-import org.codehaus.groovy.control.CompilerConfiguration;
-import org.codehaus.groovy.control.messages.WarningMessage;
 
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
@@ -20,7 +18,6 @@ import groovy.lang.MissingPropertyException;
 import groovy.lang.Script;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -190,6 +187,13 @@ public class GroovyAssumptionsTest extends TestCase {
 
 /* 
 $Log: GroovyAssumptionsTest.java,v $
+Revision 1.4  2004/12/03 14:47:40  jdt
+Merges from workflow-nww-776
+
+Revision 1.3.2.1  2004/12/01 21:46:26  nw
+adjusted to work with new summary object,
+and changed package of JobURN
+
 Revision 1.3  2004/11/29 20:00:24  clq2
 jes-nww-714
 

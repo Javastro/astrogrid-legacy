@@ -1,4 +1,4 @@
-/*$Id: SchedulerTaskQueueDecoratorTest.java,v 1.2 2004/07/01 21:15:00 nw Exp $
+/*$Id: SchedulerTaskQueueDecoratorTest.java,v 1.3 2004/12/03 14:47:41 jdt Exp $
  * Created on 18-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,7 @@
 **/
 package org.astrogrid.jes.jobscheduler.impl;
 
-import org.astrogrid.jes.types.v1.JobURN;
+import org.astrogrid.jes.beans.v1.axis.executionrecord.JobURN;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.jes.types.v1.cea.axis.MessageType;
 
@@ -66,6 +66,13 @@ public class SchedulerTaskQueueDecoratorTest extends TestCase {
 
 /* 
 $Log: SchedulerTaskQueueDecoratorTest.java,v $
+Revision 1.3  2004/12/03 14:47:41  jdt
+Merges from workflow-nww-776
+
+Revision 1.2.102.1  2004/12/01 21:46:26  nw
+adjusted to work with new summary object,
+and changed package of JobURN
+
 Revision 1.2  2004/07/01 21:15:00  nw
 added results-listener interface to jes
 

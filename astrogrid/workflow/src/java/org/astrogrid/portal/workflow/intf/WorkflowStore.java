@@ -1,4 +1,4 @@
-/*$Id: WorkflowStore.java,v 1.5 2004/04/14 13:02:57 nw Exp $
+/*$Id: WorkflowStore.java,v 1.6 2004/12/03 14:47:41 jdt Exp $
  * Created on 01-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,7 +15,7 @@ import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.workflow.beans.v1.Workflow;
 
-/** A component that can store and retreive workflow documents
+/** A component that can store and retreive workflow documents from VoSpace.
  * (i.e. myspace)
  * @author Noel Winstanley nw@jb.man.ac.uk 01-Mar-2004
  *
@@ -87,6 +87,12 @@ public interface WorkflowStore {
 
 /* 
 $Log: WorkflowStore.java,v $
+Revision 1.6  2004/12/03 14:47:41  jdt
+Merges from workflow-nww-776
+
+Revision 1.5.124.1  2004/12/01 21:08:35  nw
+scripting documentation
+
 Revision 1.5  2004/04/14 13:02:57  nw
 cut down workflow store interface. now to implement it.
 

@@ -1,4 +1,4 @@
-/*$Id: MockSchedulerImpl.java,v 1.5 2004/07/01 21:15:00 nw Exp $
+/*$Id: MockSchedulerImpl.java,v 1.6 2004/12/03 14:47:41 jdt Exp $
  * Created on 18-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,8 +11,8 @@
 package org.astrogrid.jes.jobscheduler.impl;
 
 import org.astrogrid.component.descriptor.ComponentDescriptor;
+import org.astrogrid.jes.beans.v1.axis.executionrecord.JobURN;
 import org.astrogrid.jes.jobscheduler.JobScheduler;
-import org.astrogrid.jes.types.v1.JobURN;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.jes.types.v1.cea.axis.MessageType;
 import org.astrogrid.jes.types.v1.cea.axis.ResultListType;
@@ -116,6 +116,13 @@ public class MockSchedulerImpl implements JobScheduler , ComponentDescriptor{
 
 /* 
 $Log: MockSchedulerImpl.java,v $
+Revision 1.6  2004/12/03 14:47:41  jdt
+Merges from workflow-nww-776
+
+Revision 1.5.102.1  2004/12/01 21:48:20  nw
+adjusted to work with new summary object,
+and changed package of JobURN
+
 Revision 1.5  2004/07/01 21:15:00  nw
 added results-listener interface to jes
 

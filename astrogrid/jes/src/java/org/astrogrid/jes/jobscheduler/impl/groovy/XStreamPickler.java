@@ -1,4 +1,4 @@
-/*$Id: XStreamPickler.java,v 1.7 2004/11/05 16:52:42 jdt Exp $
+/*$Id: XStreamPickler.java,v 1.8 2004/12/03 14:47:41 jdt Exp $
  * Created on 28-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,7 +25,6 @@ import com.thoughtworks.xstream.converters.basic.NullConverter;
 import com.thoughtworks.xstream.converters.basic.StringConverter;
 import com.thoughtworks.xstream.converters.collections.MapConverter;
 import com.thoughtworks.xstream.converters.reflection.PureJavaReflectionProvider;
-import com.thoughtworks.xstream.converters.reflection.ReflectionConverter;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.xml.DomDriver;
@@ -185,6 +184,12 @@ public class XStreamPickler implements Pickler , ComponentDescriptor{
 
 /* 
 $Log: XStreamPickler.java,v $
+Revision 1.8  2004/12/03 14:47:41  jdt
+Merges from workflow-nww-776
+
+Revision 1.7.14.1  2004/12/01 21:48:53  nw
+organized import
+
 Revision 1.7  2004/11/05 16:52:42  jdt
 Merges from branch nww-itn07-scratchspace
 
