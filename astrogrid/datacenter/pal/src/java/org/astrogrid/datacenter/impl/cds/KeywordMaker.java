@@ -1,4 +1,4 @@
-/*$Id: KeywordMaker.java,v 1.2 2004/11/03 12:13:26 mch Exp $
+/*$Id: KeywordMaker.java,v 1.3 2004/11/09 18:14:59 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -58,7 +58,7 @@ public class KeywordMaker  {
          }
       }
       else if (c instanceof Union) {
-         throw new IllegalArgumentException("Cannot handle union (OR) conditions");
+         throw new IllegalArgumentException("Keyword Searches cannot handle union (OR) conditions");
       }
       else if (c instanceof Function) {
          Function f = (Function) c;
@@ -70,7 +70,7 @@ public class KeywordMaker  {
             keywords.put(UNIT_KEYWORD, "deg");
          }
          else {
-            throw new IllegalArgumentException("Cannot handle "+f.getName()+" functions");
+            throw new IllegalArgumentException("Keyword Searches cannot handle "+f.getName()+" functions");
          }
       }
       else if (c instanceof StringComparison) {
@@ -80,11 +80,11 @@ public class KeywordMaker  {
                keywords.put( ((SearchFieldReference) s.getLHS()).getField().toUpperCase(), ((LiteralString) s.getRHS()).getValue());
             }
             else {
-               throw new IllegalArgumentException("String Comparisons must be {SearchField} = {LiteralString}, not "+s.getLHS() +" = "+s.getRHS());
+               throw new IllegalArgumentException("In a Keyword Search, String Comparisons must be {SearchField} = {LiteralString}, not "+s.getLHS() +" = "+s.getRHS());
             }
          }
          else {
-            throw new IllegalArgumentException("String Comparisons must be {SearchField} = {LiteralString}, not "+s.getLHS() +" = "+s.getRHS());
+            throw new IllegalArgumentException("In a Keyword Search, String Comparisons must be {SearchField} = {LiteralString}, not "+s.getLHS() +" = "+s.getRHS());
          }
       }
       else if (c instanceof NumericComparison) {
@@ -94,11 +94,11 @@ public class KeywordMaker  {
                keywords.put( ((SearchFieldReference) n.getLHS()).getField().toUpperCase(), ((LiteralNumber) n.getRHS()).getValue());
             }
             else {
-               throw new IllegalArgumentException("Numeric Comparisons must be {SearchField} = {LiteralNumber}, not "+n.getLHS() +" = "+n.getRHS());
+               throw new IllegalArgumentException("In a Keyword Search, Numeric Comparisons must be {SearchField} = {LiteralNumber}, not "+n.getLHS() +" = "+n.getRHS());
             }
          }
          else {
-            throw new IllegalArgumentException("Numeric Comparisons must be {SearchField} = {LiteralNumber}, not "+n.getLHS() +" = "+n.getRHS());
+            throw new IllegalArgumentException("In a Keyword Search, Numeric Comparisons must be {SearchField} = {LiteralNumber}, not "+n.getLHS() +" = "+n.getRHS());
          }
       }
    }
@@ -109,6 +109,9 @@ public class KeywordMaker  {
 
 /*
 $Log: KeywordMaker.java,v $
+Revision 1.3  2004/11/09 18:14:59  mch
+Better error text
+
 Revision 1.2  2004/11/03 12:13:26  mch
 Fixes to branch cockup, plus katatjuta Register and get cone (for examples)
 
