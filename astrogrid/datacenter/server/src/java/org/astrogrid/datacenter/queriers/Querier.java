@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.52 2004/07/05 16:34:09 mch Exp $
+ * $Id: Querier.java,v 1.53 2004/07/05 16:35:00 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -259,7 +259,7 @@ public class Querier implements Runnable {
    public void close() {
       setStatus(new QuerierComplete(this));
       if (plugin != null) plugin.close();
-      plugin = null;
+      plugin = null;  //release plugin reference (-> can be garbage collected)
    }
    
    /**
@@ -408,6 +408,9 @@ public class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.53  2004/07/05 16:35:00  mch
+ Added minor doc
+
  Revision 1.52  2004/07/05 16:34:09  mch
  Fix to close if no plugin given
 
@@ -611,6 +614,7 @@ public class Querier implements Runnable {
  Introducing SOAPy Beans
 
  */
+
 
 
 
