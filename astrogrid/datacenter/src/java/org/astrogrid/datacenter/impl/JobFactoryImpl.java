@@ -11,11 +11,11 @@
 package org.astrogrid.datacenter.impl ;
 
 import org.apache.log4j.Logger;
-import org.astrogrid.datacenter.DatasetAgent ;
+import org.astrogrid.datacenter.datasetagent.DatasetAgent;
 import org.astrogrid.datacenter.i18n.*;
-import org.astrogrid.datacenter.JobFactory ;
-import org.astrogrid.datacenter.Job ;
-import org.astrogrid.datacenter.JobException ;
+import org.astrogrid.datacenter.job.Job;
+import org.astrogrid.datacenter.job.JobException;
+import org.astrogrid.datacenter.job.JobFactory;
 
 import org.w3c.dom.* ;
 

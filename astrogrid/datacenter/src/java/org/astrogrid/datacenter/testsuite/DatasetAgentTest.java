@@ -7,6 +7,8 @@
 package org.astrogrid.datacenter.testsuite;
 
 import org.astrogrid.datacenter.* ;
+import org.astrogrid.datacenter.datasetagent.*;
+
 import junit.framework.* ;
 import org.apache.log4j.Logger;
 import org.apache.log4j.Level;

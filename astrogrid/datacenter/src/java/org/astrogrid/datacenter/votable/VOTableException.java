@@ -1,4 +1,4 @@
-package org.astrogrid.datacenter;
+package org.astrogrid.datacenter.votable;
 
 import org.astrogrid.datacenter.i18n.*;
 

@@ -1,16 +1,23 @@
-
+/*
+ * @(#)DatasetAgent.java   1.0
+ *
+ * Copyright (C) AstroGrid. All rights reserved.
+ *
+ * This software is published under the terms of the AstroGrid 
+ * Software License version 1.2, a copy of which has been included 
+ * with this distribution in the LICENSE.txt file.  
+ *
+ */
 package org.astrogrid.datacenter.impl;
 
-import org.astrogrid.datacenter.impl.QueryFactoryImpl ;
-
 import org.apache.log4j.Logger;
-import org.astrogrid.datacenter.i18n.*;
 
-import org.astrogrid.datacenter.VOTableFactory;
-import org.astrogrid.datacenter.VOTable;
-import org.astrogrid.datacenter.Query;
-import org.astrogrid.datacenter.VOTableException;
-import org.astrogrid.datacenter.Allocation;
+import org.astrogrid.datacenter.i18n.*;
+import org.astrogrid.datacenter.job.Query;
+import org.astrogrid.datacenter.myspace.Allocation;
+import org.astrogrid.datacenter.votable.VOTable;
+import org.astrogrid.datacenter.votable.VOTableException;
+import org.astrogrid.datacenter.votable.VOTableFactory;
 
 import java.io.PrintStream;
 import org.objectwiz.votable.*;
@@ -76,6 +83,7 @@ public class VOTableFactoryImpl implements VOTableFactory {
 				   out.close();                                       
 			    }
 			    catch( Exception ex ) {
+			       // JBL Note: a log entry might be appropriate here...	
 				   ;
 			    }
 			}

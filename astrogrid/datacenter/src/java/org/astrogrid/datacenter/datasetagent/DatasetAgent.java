@@ -8,9 +8,13 @@
  * with this distribution in the LICENSE.txt file.  
  *
  */
-package org.astrogrid.datacenter;
+package org.astrogrid.datacenter.datasetagent;
 
 import org.astrogrid.datacenter.i18n.* ;
+import org.astrogrid.datacenter.job.Job;
+import org.astrogrid.datacenter.job.Query;
+import org.astrogrid.datacenter.myspace.Allocation;
+import org.astrogrid.datacenter.votable.VOTable;
 
 import org.apache.log4j.Logger;
 

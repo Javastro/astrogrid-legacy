@@ -1,28 +1,34 @@
-
+/*
+ * @(#)MySpaceFactoryImpl.java   1.0
+ *
+ * Copyright (C) AstroGrid. All rights reserved.
+ *
+ * This software is published under the terms of the AstroGrid 
+ * Software License version 1.2, a copy of which has been included 
+ * with this distribution in the LICENSE.txt file.  
+ *
+ */
 package org.astrogrid.datacenter.impl;
 
 import org.apache.log4j.Logger;
 
-import org.astrogrid.datacenter.*;
+// import org.astrogrid.datacenter.*;
+import org.astrogrid.datacenter.datasetagent.*;
 import org.astrogrid.datacenter.i18n.*;
+import org.astrogrid.datacenter.myspace.*;
 
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.FileInputStream;
+// import java.io.BufferedReader;
+// import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
+// import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
 
 import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
-import org.astrogrid.datacenter.MySpaceFactory;
-import org.astrogrid.datacenter.Allocation;
-import org.astrogrid.datacenter.AllocationException;
-
 
 
 public class MySpaceFactoryImpl implements MySpaceFactory {
@@ -137,6 +143,7 @@ public class MySpaceFactoryImpl implements MySpaceFactory {
 		return out;
 		
 	}
+	  
 	  
 	private static void destroyCompressedOutputStream( OutputStream compressedOutputStream ) throws IOException {
 		

@@ -8,7 +8,7 @@
  * with this distribution in the LICENSE.txt file.  
  *
  */
-package org.astrogrid.datacenter;
+package org.astrogrid.datacenter.job;
 
 import org.w3c.dom.*;
 

@@ -5,9 +5,10 @@
  * 
  */
 
-package org.astrogrid.datacenter;
+package org.astrogrid.datacenter.job;
 
 import org.apache.log4j.Logger;
+import org.astrogrid.datacenter.datasetagent.*;
 import org.astrogrid.datacenter.i18n.*;
 import org.w3c.dom.* ;
 
@@ -56,7 +57,7 @@ public class From {
 				if( nodeList.item(i).getNodeType() != Node.ELEMENT_NODE )
 					continue ;							
 				catalogElement = (Element) nodeList.item(i) ;				
-				if( catalogElement.getTagName().equals( JobDocDescriptor.CATALOG_ELEMENT ) ) {
+				if( catalogElement.getTagName().equals( RunJobRequestDD.CATALOG_ELEMENT ) ) {
 					getCatalogs() [i]= new Catalog( catalogElement ) ;
 				}
 				else  {

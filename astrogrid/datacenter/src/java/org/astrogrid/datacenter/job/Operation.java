@@ -5,9 +5,10 @@
  * 
  */
 
-package org.astrogrid.datacenter;
+package org.astrogrid.datacenter.job;
 
 import org.apache.log4j.Logger;
+import org.astrogrid.datacenter.datasetagent.*;
 import org.astrogrid.datacenter.i18n.*;
 import org.w3c.dom.* ;
 
@@ -54,10 +55,10 @@ public class Operation {
 		 		
 		try {
 			
-			setName(operationElement.getAttribute( JobDocDescriptor.OP_NAME_ATTR )) ;
+			setName(operationElement.getAttribute( RunJobRequestDD.OP_NAME_ATTR )) ;
 			
 			NodeList
-			   nodeList = operationElement.getElementsByTagName( JobDocDescriptor.OP_ELEMENT ) ;
+			   nodeList = operationElement.getElementsByTagName( RunJobRequestDD.OP_ELEMENT ) ;
 
 			   
 			Element
@@ -71,7 +72,7 @@ public class Operation {
 			   
 			for( int i=0 ; i < nodeList.getLength() ; i++ ) {				
 				opElement = (Element) nodeList.item(i) ;				
-				if( opElement.getTagName().equals( JobDocDescriptor.OP_ELEMENT ) ) {
+				if( opElement.getTagName().equals( RunJobRequestDD.OP_ELEMENT ) ) {
 					subservientOperations[i] = new Operation( opElement , catalog) ;
 				}
 				else  {
@@ -80,12 +81,12 @@ public class Operation {
 				
 			} // end for		
 			
-			nodeList = operationElement.getElementsByTagName( JobDocDescriptor.FIELD_ELEMENT ) ;
+			nodeList = operationElement.getElementsByTagName( RunJobRequestDD.FIELD_ELEMENT ) ;
 			fields = new Field[ nodeList.getLength() ];
 			   
 			for( int i=0 ; i < nodeList.getLength() ; i++ ) {				
 				fieldElement = (Element) nodeList.item(i) ;
-				if( fieldElement.getTagName().equals( JobDocDescriptor.FIELD_ELEMENT ) ) {
+				if( fieldElement.getTagName().equals( RunJobRequestDD.FIELD_ELEMENT ) ) {
 					fields[i] = new Field( fieldElement, catalog ) ;						
 				}
 				else  {

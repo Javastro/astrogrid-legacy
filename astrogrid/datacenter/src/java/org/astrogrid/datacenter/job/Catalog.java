@@ -5,9 +5,10 @@
  * 
  */
 
-package org.astrogrid.datacenter;
+package org.astrogrid.datacenter.job;
 
 import org.apache.log4j.Logger;
+import org.astrogrid.datacenter.datasetagent.*;
 import org.astrogrid.datacenter.i18n.*;
 import org.w3c.dom.* ;
 
@@ -51,10 +52,10 @@ public class Catalog {
 		   		
 		try {
 			
-			setName(catalogElement.getAttribute( JobDocDescriptor.CATALOG_NAME_ATTR )) ;
+			setName(catalogElement.getAttribute( RunJobRequestDD.CATALOG_NAME_ATTR )) ;
 
 			NodeList
-			   nodeList = catalogElement.getElementsByTagName( JobDocDescriptor.TABLE_ELEMENT ) ;
+			   nodeList = catalogElement.getElementsByTagName( RunJobRequestDD.TABLE_ELEMENT ) ;
 			   
 			Element
 				tableElement,
@@ -64,7 +65,7 @@ public class Catalog {
 			   
 			for( int i=0 ; i < nodeList.getLength() ; i++ ) {				
 				tableElement = (Element) nodeList.item(i) ;
-				if( tableElement.getTagName().equals( JobDocDescriptor.TABLE_ELEMENT ) ) {
+				if( tableElement.getTagName().equals( RunJobRequestDD.TABLE_ELEMENT ) ) {
 					getTables()[i] = new Table( tableElement ) ;
 				}
 				else  {
@@ -73,12 +74,12 @@ public class Catalog {
 				
 			} // end for		
 			
-			nodeList = catalogElement.getElementsByTagName( JobDocDescriptor.SERVICE_ELEMENT ) ;
+			nodeList = catalogElement.getElementsByTagName( RunJobRequestDD.SERVICE_ELEMENT ) ;
 			setServices(new Service[ nodeList.getLength() ]);
 			   
 			for( int i=0 ; i < nodeList.getLength() ; i++ ) {				
 				serviceElement = (Element) nodeList.item(i) ;
-				if( serviceElement.getTagName().equals( JobDocDescriptor.SERVICE_ELEMENT ) ) {
+				if( serviceElement.getTagName().equals( RunJobRequestDD.SERVICE_ELEMENT ) ) {
 					getServices()[i] = new Service( serviceElement ) ;
 				}
 				else  {

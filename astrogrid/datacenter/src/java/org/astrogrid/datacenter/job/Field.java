@@ -4,9 +4,10 @@
  * AstroGrid Copyright notice.
  * 
  */
-package org.astrogrid.datacenter;
+package org.astrogrid.datacenter.job;
 
 import org.apache.log4j.Logger;
+import org.astrogrid.datacenter.datasetagent.*;
 import org.w3c.dom.* ;
 
 /**
@@ -46,8 +47,8 @@ public class Field {
 		   	
 		try {	
 			this.catalog = catalog;	 
-		    name = fieldElement.getAttribute( JobDocDescriptor.FIELD_NAME_ATTR ) ;
-		    type = fieldElement.getAttribute( JobDocDescriptor.FIELD_TYPE_ATTR ) ;
+		    name = fieldElement.getAttribute( RunJobRequestDD.FIELD_NAME_ATTR ) ;
+		    type = fieldElement.getAttribute( RunJobRequestDD.FIELD_TYPE_ATTR ) ;
 		    NodeList nodeList = fieldElement.getChildNodes();
 			for (int iNode = 0; iNode < nodeList.getLength(); iNode++) {
 				Node ndChild = nodeList.item(iNode);

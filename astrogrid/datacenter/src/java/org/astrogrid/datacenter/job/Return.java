@@ -4,9 +4,10 @@
  * AstroGrid Copyright notice.
  * 
  */
-package org.astrogrid.datacenter;
+package org.astrogrid.datacenter.job;
 
 import org.apache.log4j.Logger;
+import org.astrogrid.datacenter.datasetagent.*;
 import org.astrogrid.datacenter.i18n.*;
 import org.w3c.dom.* ;
 
@@ -52,7 +53,7 @@ public class Return {
 		try {
 
 			NodeList
-			   nodeList = returnElement.getElementsByTagName( JobDocDescriptor.FIELD_ELEMENT ) ;
+			   nodeList = returnElement.getElementsByTagName( RunJobRequestDD.FIELD_ELEMENT ) ;
 			   
 			Element
 				fieldElement ;
@@ -62,7 +63,7 @@ public class Return {
 			   
 			for( int i=0 ; i < nodeList.getLength() ; i++ ) {				
 				fieldElement = (Element) nodeList.item(i) ;
-				if( fieldElement.getTagName().equals( JobDocDescriptor.FIELD_ELEMENT ) ) {
+				if( fieldElement.getTagName().equals( RunJobRequestDD.FIELD_ELEMENT ) ) {
 					fields[i] = new Field( fieldElement, catalog ) ;
 				} // end of if
 				else  {
@@ -100,10 +101,10 @@ public class Return {
 		        field[] = this.fields;
 		    buffer.append(" ");
 		    for (int i = 0; i < field.length; i++){
-		    	if (field[i].getType().equals(JobDocDescriptor.FIELD_TYPE_UCD)) {
+		    	if (field[i].getType().equals(RunJobRequestDD.FIELD_TYPE_UCD)) {
 					buffer.append(getColumnHeading( catalog, field[i].getName()) );
 		    	}
-		    	else if (field[i].getType().equals(JobDocDescriptor.FIELD_TYPE_COLUMN)) {
+		    	else if (field[i].getType().equals(RunJobRequestDD.FIELD_TYPE_COLUMN)) {
 		    		buffer.append(getColumnHeading( catalog, field[i].getName()) );
 		    	}
 		        buffer.append(", ");			  

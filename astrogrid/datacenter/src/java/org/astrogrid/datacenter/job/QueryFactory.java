@@ -1,6 +1,6 @@
 
 
-package org.astrogrid.datacenter;
+package org.astrogrid.datacenter.job;
 
 
 import org.w3c.dom.Element ;

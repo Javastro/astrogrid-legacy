@@ -5,10 +5,13 @@
  * 
  */
 
-package org.astrogrid.datacenter;
+package org.astrogrid.datacenter.job;
 
 import org.apache.log4j.Logger;
+import org.astrogrid.datacenter.datasetagent.*;
 import org.astrogrid.datacenter.i18n.*;
+import org.astrogrid.datacenter.myspace.*;
+import org.astrogrid.datacenter.votable.*;
 import org.w3c.dom.* ;
 
 public class Query {
@@ -58,7 +61,7 @@ public class Query {
 					continue ;				
 				element = (Element) nodeList.item(i) ;
 				
-				if( element.getTagName().equals( JobDocDescriptor.FROM_ELEMENT ) ) {
+				if( element.getTagName().equals( RunJobRequestDD.FROM_ELEMENT ) ) {
 					setFrom(new From( element )) ;
 					NodeList nodeList2 = element.getChildNodes();
 					for( int j=0 ; j < nodeList2.getLength() ; j++ ) {
@@ -68,15 +71,15 @@ public class Query {
 								if (nodeList2.item(k).getNodeType() != Node.ELEMENT_NODE) 
 									continue;
 								element = (Element) nodeList2.item(k) ;
-								if (element.getTagName().equals(JobDocDescriptor.CATALOG_ELEMENT)) 
+								if (element.getTagName().equals(RunJobRequestDD.CATALOG_ELEMENT)) 
 									catalog = new Catalog( element );
 						    } // end of k						 
 					} // end of for j
-				} // end of if( element.getTagName().equals( JobDocDescriptor.FROM_ELEMENT ) ) {
-				else if( element.getTagName().equals( JobDocDescriptor.CRITERIA_ELEMENT ) ) {
+				} // end of if( element.getTagName().equals( RunJobRequestDD.FROM_ELEMENT ) ) {
+				else if( element.getTagName().equals( RunJobRequestDD.CRITERIA_ELEMENT ) ) {
 					setCriteria(new Criteria( element, catalog )) ;
 				}
-				else if( element.getTagName().equals( JobDocDescriptor.RETURN_ELEMENT ) ) {
+				else if( element.getTagName().equals( RunJobRequestDD.RETURN_ELEMENT ) ) {
 				    setReturn(new Return( element, catalog )) ;
 				}
 				else {

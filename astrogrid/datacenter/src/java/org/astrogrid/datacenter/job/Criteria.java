@@ -5,9 +5,10 @@
  * 
  */
 
-package org.astrogrid.datacenter;
+package org.astrogrid.datacenter.job;
 
 import org.apache.log4j.Logger;
+import org.astrogrid.datacenter.datasetagent.*;
 import org.astrogrid.datacenter.i18n.*;
 import org.w3c.dom.* ;
 
@@ -76,7 +77,7 @@ public class Criteria {
 				if( nodeList.item(i).getNodeType() != Node.ELEMENT_NODE )
 					continue ;							
 				operationElement = (Element) nodeList.item(i) ;
-				if( operationElement.getTagName().equals( JobDocDescriptor.OP_ELEMENT ) ) {
+				if( operationElement.getTagName().equals( RunJobRequestDD.OP_ELEMENT ) ) {
 					setOperation(new Operation( operationElement , catalog)) ;
 				}
 				else  {
@@ -127,7 +128,7 @@ public class Criteria {
 			        subOpName = subserviantOperation.getName();
 			    catalog = subserviantOperation.getCatalog();
 
-				if (subOpName.equals(JobDocDescriptor.OP_NAME_NOT)) {
+				if (subOpName.equals(RunJobRequestDD.OP_NAME_NOT)) {
 					buffer.append(" !");
 					Operation[] 
 					    tempOperation = subserviantOperation.getOperations();
@@ -137,22 +138,22 @@ public class Criteria {
 				} //end of not
 
 				
-			    if ( subOpName.equals( JobDocDescriptor.OP_NAME_AVERAGE )) {
+			    if ( subOpName.equals( RunJobRequestDD.OP_NAME_AVERAGE )) {
 						Object[] 
 							inserts = new Object[1];
 						Field 
 							fields[] = subserviantOperation.getFields();
-						if (fields[0].getType().equals(JobDocDescriptor.FIELD_TYPE_UCD)) {
+						if (fields[0].getType().equals(RunJobRequestDD.FIELD_TYPE_UCD)) {
 						inserts[0] = getColumnHeading(catalog,fields[0].getName());	
 						}
-						else if (fields[0].getType().equals(JobDocDescriptor.FIELD_TYPE_COLUMN)) {
+						else if (fields[0].getType().equals(RunJobRequestDD.FIELD_TYPE_COLUMN)) {
 							inserts[0] = fields[0].getName();
 						}
 						buffer.append(MessageFormat.format( OP_NAME_AVERAGE_TEMPLATE, inserts ));	
 			    } // end of else if AVERAGE
 			    
 			    
-			    else if ( subOpName.equals( JobDocDescriptor.OP_NAME_CONE)) {
+			    else if ( subOpName.equals( RunJobRequestDD.OP_NAME_CONE)) {
 				    Object[] 
 				        inserts = new Object[3];
 				    Field 
@@ -169,30 +170,30 @@ public class Criteria {
 			    } // end of else if CONE
 			    
 			    
-			    else if ( subOpName.equals( JobDocDescriptor.OP_NAME_DIFFERENCE)) {
+			    else if ( subOpName.equals( RunJobRequestDD.OP_NAME_DIFFERENCE)) {
 					Object[] 
 						inserts = new Object[1];
 					Field 
 						fields[] = subserviantOperation.getFields();
-					if (fields[0].getType().equals(JobDocDescriptor.FIELD_TYPE_UCD)) {
+					if (fields[0].getType().equals(RunJobRequestDD.FIELD_TYPE_UCD)) {
 					inserts[0] = getColumnHeading(catalog,fields[0].getName());	
 					}
-					else if (fields[0].getType().equals(JobDocDescriptor.FIELD_TYPE_COLUMN)) {
+					else if (fields[0].getType().equals(RunJobRequestDD.FIELD_TYPE_COLUMN)) {
 						inserts[0] = fields[0].getName();
 					}
 					buffer.append(MessageFormat.format( OP_NAME_DIFFERENCE, inserts ));							
 			    } // end of else if DIFFERENCE
 			    
 			    
-			    else if ( subOpName.equals( JobDocDescriptor.OP_NAME_EQUALS)) {
+			    else if ( subOpName.equals( RunJobRequestDD.OP_NAME_EQUALS)) {
 				    Object[] 
 				        inserts = new Object[2];
 				    Field 
 				        fields[] = subserviantOperation.getFields();				    
-				    if (fields[0].getType().equals(JobDocDescriptor.FIELD_TYPE_UCD)) {
+				    if (fields[0].getType().equals(RunJobRequestDD.FIELD_TYPE_UCD)) {
 						inserts[0] = getColumnHeading(catalog,fields[0].getName());	
 				    }
-				    else if (fields[0].getType().equals(JobDocDescriptor.FIELD_TYPE_COLUMN)) {
+				    else if (fields[0].getType().equals(RunJobRequestDD.FIELD_TYPE_COLUMN)) {
 						inserts[0] = fields[0].getName();
 				    }
 				    inserts[1] = fields[1].getValue();
@@ -200,16 +201,16 @@ public class Criteria {
 			    } // end of else if EQUALS
 			    
 			    
-			    else if ( subOpName.equals( JobDocDescriptor.OP_NAME_GT)) {
+			    else if ( subOpName.equals( RunJobRequestDD.OP_NAME_GT)) {
 				    Object[] 
 				        inserts = new Object[2];
 				    Field 
 				        fields[] = subserviantOperation.getFields();
 				    inserts[0] = fields[0].getName();
-					if (fields[0].getType().equals(JobDocDescriptor.FIELD_TYPE_UCD)) {
+					if (fields[0].getType().equals(RunJobRequestDD.FIELD_TYPE_UCD)) {
 					inserts[0] = getColumnHeading(catalog,fields[0].getName());	
 					}
-					else if (fields[0].getType().equals(JobDocDescriptor.FIELD_TYPE_COLUMN)) {
+					else if (fields[0].getType().equals(RunJobRequestDD.FIELD_TYPE_COLUMN)) {
 						inserts[0] = fields[0].getName();
 					}
 				    inserts[1] = fields[1].getValue();
@@ -217,15 +218,15 @@ public class Criteria {
 			    } // end of else if GT
 			    
 			    
-			    else if ( subOpName.equals( JobDocDescriptor.OP_NAME_GTE)) {
+			    else if ( subOpName.equals( RunJobRequestDD.OP_NAME_GTE)) {
 				    Object[] 
 				        inserts = new Object[2];
 				    Field 
 				        fields[] = subserviantOperation.getFields();
-					if (fields[0].getType().equals(JobDocDescriptor.FIELD_TYPE_UCD)) {
+					if (fields[0].getType().equals(RunJobRequestDD.FIELD_TYPE_UCD)) {
 					inserts[0] = getColumnHeading(catalog,fields[0].getName());	
 					}
-					else if (fields[0].getType().equals(JobDocDescriptor.FIELD_TYPE_COLUMN)) {
+					else if (fields[0].getType().equals(RunJobRequestDD.FIELD_TYPE_COLUMN)) {
 						inserts[0] = fields[0].getName();
 					}
 				    inserts[1] = fields[1].getValue();
@@ -233,7 +234,7 @@ public class Criteria {
 			    } // end of else if GTE
 			    
 			    
-			    else if ( subOpName.equals( JobDocDescriptor.OP_NAME_IN)) {
+			    else if ( subOpName.equals( RunJobRequestDD.OP_NAME_IN)) {
 				    Object[] 
 				        inserts = new Object[2];
 				    Field 
@@ -244,15 +245,15 @@ public class Criteria {
 			    } // end of else if IN
 			    
 			    
-			    else if ( subOpName.equals( JobDocDescriptor.OP_NAME_LT)) {
+			    else if ( subOpName.equals( RunJobRequestDD.OP_NAME_LT)) {
 				    Object[] 
 				        inserts = new Object[2];
 				    Field 
 				        fields[] = subserviantOperation.getFields();
-					if (fields[0].getType().equals(JobDocDescriptor.FIELD_TYPE_UCD)) {
+					if (fields[0].getType().equals(RunJobRequestDD.FIELD_TYPE_UCD)) {
 					inserts[0] = getColumnHeading(catalog,fields[0].getName());	
 					}
-					else if (fields[0].getType().equals(JobDocDescriptor.FIELD_TYPE_COLUMN)) {
+					else if (fields[0].getType().equals(RunJobRequestDD.FIELD_TYPE_COLUMN)) {
 						inserts[0] = fields[0].getName();
 					}
 				    inserts[1] = fields[1].getValue();
@@ -260,15 +261,15 @@ public class Criteria {
 			    } // end of else if LT
 			    
 			    
-			    else if ( subOpName.equals( JobDocDescriptor.OP_NAME_LTE)) {
+			    else if ( subOpName.equals( RunJobRequestDD.OP_NAME_LTE)) {
 				    Object[] 
 				        inserts = new Object[2];
 				    Field 
 				        fields[] = subserviantOperation.getFields();
-					if (fields[0].getType().equals(JobDocDescriptor.FIELD_TYPE_UCD)) {
+					if (fields[0].getType().equals(RunJobRequestDD.FIELD_TYPE_UCD)) {
 					inserts[0] = getColumnHeading(catalog,fields[0].getName());	
 					}
-					else if (fields[0].getType().equals(JobDocDescriptor.FIELD_TYPE_COLUMN)) {
+					else if (fields[0].getType().equals(RunJobRequestDD.FIELD_TYPE_COLUMN)) {
 						inserts[0] = fields[0].getName();
 					}
 				    inserts[1] = fields[1].getValue();

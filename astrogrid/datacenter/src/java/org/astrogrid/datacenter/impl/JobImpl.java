@@ -1,19 +1,23 @@
 /*
  * @(#)JobImpl.java   1.0
  *
- * AstroGrid Copyright notice.
- * 
+ * Copyright (C) AstroGrid. All rights reserved.
+ *
+ * This software is published under the terms of the AstroGrid 
+ * Software License version 1.2, a copy of which has been included 
+ * with this distribution in the LICENSE.txt file.  
+ *
  */
 package org.astrogrid.datacenter.impl;
 
-import org.astrogrid.datacenter.Job ;
-import org.astrogrid.datacenter.JobStep ;
-import org.astrogrid.datacenter.JobDocDescriptor ;
-import org.astrogrid.datacenter.JobException ;
-import org.astrogrid.datacenter.DatasetAgent ;
+import org.astrogrid.datacenter.datasetagent.DatasetAgent;
+import org.astrogrid.datacenter.datasetagent.RunJobRequestDD;
 import org.astrogrid.datacenter.i18n.*;
 import org.apache.log4j.Logger;
-import org.astrogrid.datacenter.i18n.*;
+// import org.astrogrid.datacenter.i18n.*;
+import org.astrogrid.datacenter.job.Job;
+import org.astrogrid.datacenter.job.JobException;
+import org.astrogrid.datacenter.job.JobStep;
 import org.w3c.dom.* ;
 import java.util.Date ;
 import java.sql.Connection ;
@@ -21,6 +25,7 @@ import java.sql.PreparedStatement ;
 import java.sql.ResultSet ;
 import java.sql.SQLException ;
 import java.text.MessageFormat ;
+
 
 public class JobImpl extends Job {
 
@@ -72,9 +77,9 @@ public class JobImpl extends Job {
 		try {
 
 			date = new Date() ;
-			name = jobElement.getAttribute( JobDocDescriptor.JOB_NAME_ATTR ).trim() ;
-			jobURN = jobElement.getAttribute( JobDocDescriptor.JOB_URN_ATTR ).trim() ;
-			jobMonitorURL = jobElement.getAttribute( JobDocDescriptor.JOB_MONITOR_URL_ATTR ).trim() ;
+			name = jobElement.getAttribute( RunJobRequestDD.JOB_NAME_ATTR ).trim() ;
+			jobURN = jobElement.getAttribute( RunJobRequestDD.JOB_URN_ATTR ).trim() ;
+			jobMonitorURL = jobElement.getAttribute( RunJobRequestDD.JOB_MONITOR_URL_ATTR ).trim() ;
 			
 			NodeList
 			   nodeList = jobElement.getChildNodes() ;
@@ -82,24 +87,26 @@ public class JobImpl extends Job {
 			   element ;
 			   
 			for( int i=0 ; i < nodeList.getLength() ; i++ ) {
+				
 				if ( nodeList.item(i).getNodeType() == Node.ELEMENT_NODE ) {		
 					element = (Element) nodeList.item(i) ;
-				 
-				 	
-				 	if(element.getTagName().equals( JobDocDescriptor.USERID_ELEMENT ) ) {
+				 				 	
+				 	if(element.getTagName().equals( RunJobRequestDD.USERID_ELEMENT ) ) {
 					    //userId = element.getNodeValue().trim() ;
 					    userId = element.getFirstChild().toString().trim();
 					}
 					
-					else if( element.getTagName().equals( JobDocDescriptor.COMMUNITY_ELEMENT ) ) {
+					else if( element.getTagName().equals( RunJobRequestDD.COMMUNITY_ELEMENT ) ) {
 						//community = element.getNodeValue().trim() ;
 						community = element.getFirstChild().toString().trim();
 					}
 					
-					else if( element.getTagName().equals( JobDocDescriptor.JOBSTEP_ELEMENT ) ) {
+					else if( element.getTagName().equals( RunJobRequestDD.JOBSTEP_ELEMENT ) ) {
 				    	jobStep = new JobStep( element ) ; 
-					}  
+					} 
+					 
 				 } // end if
+				 
 			} // end for
 			
 			this.setStatus( Job.STATUS_INITIALIZED ) ;		

@@ -1,18 +1,19 @@
 /*
- * @(#)Table.java	1.0 
+ * @(#)Service.java	1.2 
  *
  * AstroGrid Copyright notice.
  * 
  */
 
-package org.astrogrid.datacenter;
+package org.astrogrid.datacenter.job;
 
 import org.apache.log4j.Logger;
+import org.astrogrid.datacenter.datasetagent.*;
 import org.astrogrid.datacenter.i18n.*;
 import org.w3c.dom.* ;
 
 /**
- * The <code>Table</code> class represents ...
+ * The <code>Service</code> class represents ...
  * <p>
  * Introductory text.... For example:
  * <p><blockquote><pre>
@@ -25,25 +26,27 @@ import org.w3c.dom.* ;
  * @see     org.astrogrid.datacenter.Query
  * @since   AstroGrid 1.2
  */
-public class Table {
+public class Service {
 	
 	private static final boolean 
 		TRACE_ENABLED = true ;
 	
 	private static Logger 
-		logger = Logger.getLogger( Table.class ) ;
+		logger = Logger.getLogger( Service.class ) ;
 		
 	private static final String
 		ASTROGRIDERROR_COULD_NOT_dosomething = "AGDTCE00???" ;
 	
 	private String 
-	   name ;
+	   name,
+	   url ;
 	   
-	public Table( Element tableElement ) throws QueryException {
-		if( TRACE_ENABLED ) logger.debug( "Table(Element): entry") ;   
-				
+	public Service( Element serviceElement ) throws QueryException {
+		if( TRACE_ENABLED ) logger.debug( "Service(Element): entry") ;  
+		 		
 		try {
-			setName(tableElement.getFirstChild().toString()) ;			
+			setName(serviceElement.getAttribute( RunJobRequestDD.SERVICE_NAME_ATTR )) ;
+			setUrl(serviceElement.getAttribute( RunJobRequestDD.SERVICE_URL_ATTR )) ;			
 		}
 		catch( Exception ex ) {
 			Message
@@ -52,10 +55,10 @@ public class Table {
 			throw new QueryException( message, ex );    		
 		}
 		finally {
-			if( TRACE_ENABLED ) logger.debug( "Table(Element): exit") ;   	
+			if( TRACE_ENABLED ) logger.debug( "Service(Element): exit") ;   	
 		}
 		   
-	} // end of Table( Element )
+	} // end of Service( Element )
 
 
 	public void setName(String name) {
@@ -64,6 +67,14 @@ public class Table {
 
 	public String getName() {
 		return name;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public String getUrl() {
+		return url;
 	}	   
 
-} // end of class Table 
+} // end of class Service 

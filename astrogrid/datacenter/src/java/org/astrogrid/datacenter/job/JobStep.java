@@ -1,16 +1,19 @@
 /*
  * @(#)JobStep.java   1.0
  *
- * AstroGrid Copyright notice.
- * 
+ * Copyright (C) AstroGrid. All rights reserved.
+ *
+ * This software is published under the terms of the AstroGrid 
+ * Software License version 1.2, a copy of which has been included 
+ * with this distribution in the LICENSE.txt file.  
+ *
  */
-
-package org.astrogrid.datacenter;
+package org.astrogrid.datacenter.job;
 
 import org.w3c.dom.* ;
 import org.apache.log4j.Logger;
-import org.astrogrid.datacenter.i18n.*;
-
+import org.astrogrid.datacenter.datasetagent.*;
+// import org.astrogrid.datacenter.i18n.*;
 
 
 public class JobStep {
@@ -35,7 +38,7 @@ public class JobStep {
 		
 		try {
 		 
-		   name = element.getAttribute( JobDocDescriptor.JOBSTEP_NAME_ATTR ) ;
+		   name = element.getAttribute( RunJobRequestDD.JOBSTEP_NAME_ATTR ) ;
 		
 		   NodeList
 		      nodeList = element.getChildNodes() ;
@@ -47,22 +50,22 @@ public class JobStep {
 		   	   if( nodeList.item(i).getNodeType() != Node.ELEMENT_NODE )
 		   	       continue ;				
 			   queryChild = (Element) nodeList.item(i) ;
-			   if( queryChild.getTagName().equals( JobDocDescriptor.QUERY_ELEMENT ) ) 
+			   if( queryChild.getTagName().equals( RunJobRequestDD.QUERY_ELEMENT ) ) 
 			       break ;
 		   }
 		
-		   nodeList = queryChild.getElementsByTagName( JobDocDescriptor.CATALOG_ELEMENT ) ;
+		   nodeList = queryChild.getElementsByTagName( RunJobRequestDD.CATALOG_ELEMENT ) ;
 		
 		   for( int i=0 ; i < nodeList.getLength() ; i++ ) {
 			   if( nodeList.item(i).getNodeType() != Node.ELEMENT_NODE )
 			       continue ;								
 			   catalogChild = (Element) nodeList.item(i) ;
-			   if( catalogChild.getTagName().equals( JobDocDescriptor.CATALOG_ELEMENT ) ) 
+			   if( catalogChild.getTagName().equals( RunJobRequestDD.CATALOG_ELEMENT ) ) 
 				   break ;
 		   }	
 		
 		   String
-		       keyToFactory = catalogChild.getAttribute( JobDocDescriptor.CATALOG_NAME_ATTR ) + Query.QUERYFACTORY_KEY_SUFFIX ;		
+		       keyToFactory = catalogChild.getAttribute( RunJobRequestDD.CATALOG_NAME_ATTR ) + Query.QUERYFACTORY_KEY_SUFFIX ;		
 		 
 		   query = Query.getFactory( keyToFactory ).createQuery( queryChild ) ;
 		   
