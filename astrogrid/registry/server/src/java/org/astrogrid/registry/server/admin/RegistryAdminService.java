@@ -130,18 +130,20 @@ public class RegistryAdminService {
       //the vr attribute can live at either or both of those elments and we just need to get the first one.
       //It is possible the <update> element will not be there hence we need to look at the root element
       String attrVersion = null;
-          attrVersion = DomHelper.getNodeAttrValue((Element)update.getDocumentElement(),"vr","xmlns");
-          if(attrVersion == null || attrVersion.trim().length() == 0) {
-              attrVersion = DomHelper.getNodeAttrValue(
-                      (Element)update.getDocumentElement().getFirstChild(),"vr","xmlns");
-              if(attrVersion == null || attrVersion.trim().length() == 0) {
-                  attrVersion = DomHelper.getNodeAttrValue(
-                          (Element)update.getDocumentElement().getFirstChild().getFirstChild(),"vr","xmlns");
-              }
-          }
+      attrVersion = DomHelper.getNodeAttrValue((Element)update.getDocumentElement(),"vr","xmlns");
+      if(attrVersion == null || attrVersion.trim().length() == 0) {
+         attrVersion = DomHelper.getNodeAttrValue(
+             (Element)update.getDocumentElement().getFirstChild(),"vr","xmlns");
+         if(attrVersion == null || attrVersion.trim().length() == 0) {
+            attrVersion = DomHelper.getNodeAttrValue(
+                     (Element)update.getDocumentElement().getFirstChild().getFirstChild(),"vr","xmlns");
+         }
+      }
       if(attrVersion == null || attrVersion.trim().length() == 0) {
           throw new AxisFault("Could not find version");
       }
+      String defaultNS = null;
+      String vrNS = attrVersion;
       attrVersion = attrVersion.substring((attrVersion.lastIndexOf("v")+1));
       String versionNumber = attrVersion.replace('.','_');
       log.info("grabbed this version number off the xml" + versionNumber);      
@@ -205,12 +207,25 @@ public class RegistryAdminService {
                " and otherAuths size = " + otherAuths.size());
       
       final int resourceNum = nl.getLength();
+      System.out.println("THE VRns = " + vrNS);
       //go through the various resource entries.
       for(int i = 0;i < resourceNum;i++) {
          long beginQ = System.currentTimeMillis();
          ident = getAuthorityID((Element)nl.item(0));
          resKey = getResourceKey((Element)nl.item(0));
          Element currentResource = (Element)nl.item(0);
+         if(!"vr".equals(currentResource.getPrefix())) {
+             currentResource.setAttribute("xmlns:vr",vrNS);
+         }
+         if(defaultNS == null && currentResource.getParentNode() != null) {
+             defaultNS = DomHelper.getNodeAttrValue((Element)currentResource.getParentNode(),"xmlns");
+             System.out.println("THE DEFAULTNS = " + defaultNS);
+         }
+         if(defaultNS != null && defaultNS.trim().length() > 0) {
+             System.out.println("SETTING DEFAULTNS = " + defaultNS);
+             currentResource.setAttribute("xmlns",defaultNS);
+         }
+         
          tempIdent = ident;
          if(resKey != null) tempIdent += "/" + resKey;
       
