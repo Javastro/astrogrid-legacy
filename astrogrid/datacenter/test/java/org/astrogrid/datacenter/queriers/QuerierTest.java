@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierTest.java,v 1.8 2003/09/24 21:10:24 nw Exp $
+ * $Id: QuerierTest.java,v 1.9 2003/10/02 13:00:41 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,12 +7,11 @@
 package org.astrogrid.datacenter.queriers;
 
 import java.io.IOException;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-
 import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 /**
  * Tests the dummy querier and resultset.
@@ -26,7 +25,7 @@ public class QuerierTest extends TestCase
    /**
     * Tests the dummy queriers and results
     */
-   public void testDummies() throws IOException, DatabaseAccessException
+   public void testDummies() throws IOException, SAXException, DatabaseAccessException
    {
       DatabaseQuerier querier = new DummyQuerier();
       QueryResults results = null;

@@ -1,17 +1,17 @@
 /*
- * $Id: DummyQueryResults.java,v 1.5 2003/09/17 14:53:02 nw Exp $
+ * $Id: DummyQueryResults.java,v 1.6 2003/10/02 13:00:41 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.queriers;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
+import java.io.*;
 
+import java.net.URL;
 import org.apache.axis.utils.XMLUtils;
 import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 /**
  * For testing only; returns a dummy votable
@@ -53,18 +53,11 @@ public class DummyQueryResults implements QueryResults
     * Returns the example file as a DOM structure - this means the example
     * will also be validated
     */
-   public Document toVotable() throws IOException
+   public Document toVotable() throws IOException, SAXException
    {
       try
       {
          return XMLUtils.newDocument(getInputStream());
-      }
-      catch (org.xml.sax.SAXException se)
-      {
-         //rethrow as io exception
-         IOException ioe = new IOException("SAXEception: se.getMessage()");
-         ioe.setStackTrace(se.getStackTrace());
-         throw ioe;
       }
       catch (javax.xml.parsers.ParserConfigurationException pce)
       {
@@ -74,5 +67,26 @@ public class DummyQueryResults implements QueryResults
 
    }
 
+   /**
+    * Pipes the example file to the given output stream
+    */
+   public void toVotable(OutputStream out) throws IOException
+   {
+      
+      InputStream in = new BufferedInputStream(getInputStream());
+
+      byte[] block = new byte[100];
+      int bytesRead = 0;
+
+      while (in.available() > 0)
+      {
+         bytesRead = in.read(block);
+         out.write(block, 0, bytesRead);
+      }
+
+      in.close();
+      out.close();
+   }
+   
 }
 
