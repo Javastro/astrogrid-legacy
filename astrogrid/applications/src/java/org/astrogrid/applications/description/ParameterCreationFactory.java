@@ -1,5 +1,5 @@
 /*
- * $Id: ParameterCreationFactory.java,v 1.4 2004/01/16 22:18:58 pah Exp $
+ * $Id: ParameterCreationFactory.java,v 1.5 2004/03/03 18:33:04 pah Exp $
  * 
  * Created on 28-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -44,55 +44,55 @@ class ParameterCreationFactory extends AbstractObjectCreationFactory {
       //IMPL new types must be added here....
       if (attr.getValue(TYPE_ATTR) != null) {
          String type = attr.getValue(TYPE_ATTR);
-         if (type.equals("xs:double")) {
+         if (type.equals("double")) {
             return new DoubleParameterDescription();
 
          }
          else
-            if (type.equals("xs:integer")) {
+            if (type.equals("integer")) {
                return new IntParameterDescription();
             }
          else
-            if (type.equals("xs:string")) {
+            if (type.equals("string")) {
                return new StringParameterDescription();
             }
          else
-            if (type.equals("agpd:MySpace_FileReference")) {
+            if (type.equals("MySpace_FileReference")) {
                return new MySpaceReferenceParameterDescription();
 
             }
          else
-            if (type.equals("agpd:FileReference")) {
+            if (type.equals("FileReference")) {
                return new FileReferenceParameterDescription();
 
             }
          else
-            if (type.equals("agpd:MySpace_VOTableReference")) {
+            if (type.equals("MySpace_VOTableReference")) {
                return new VOTableReferenceParameterDescription();
 
             }
          else
-             if (type.equals("agpd:RA")) {
+             if (type.equals("RA")) {
                 return new RAParameterDescription();
 
              }
          else
-             if (type.equals("agpd:Dec")) {
+             if (type.equals("Dec")) {
                 return new DecParameterDescription();
 
              }
          else
-             if (type.equals("agpd:ADQL")) {
+             if (type.equals("ADQL")) {
                 return new ADQLParameterDescription();
 
              }
          else
-             if (type.equals("xs:boolean")) {
+             if (type.equals("boolean")) {
                 return new BooleanParameterDescription();
 
              }
          else
-             if (type.equals("xs:anyURI")) {
+             if (type.equals("anyURI")) {
                 //TODO this is not really necessary? Should make the myspace file reference cope with http: and myspace: protocols
                 return new URIParameterDescription();
 
