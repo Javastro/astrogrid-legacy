@@ -1,5 +1,5 @@
 /*
- * $Id: StatusHelper.java,v 1.7 2003/09/15 22:05:34 mch Exp $
+ * $Id: StatusHelper.java,v 1.8 2003/09/16 17:35:35 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -34,6 +34,19 @@ public class StatusHelper
          +"</"+STATUS_TAG+">\n";
 
    }
+   /**
+    * Returns a status tag for the given service status with the value of the given
+    * status
+    */
+   public static String makeStatusTag(QueryStatus status)
+   {
+       return
+          "<"+STATUS_TAG+">"
+         +status
+         +"</"+STATUS_TAG+">\n";
+
+   }
+
 
    /**
     * Returns an Iteration 02 job notification tag with status included
