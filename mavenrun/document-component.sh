@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: document-component.sh,v 1.1 2004/12/01 23:49:08 jdt Exp $ 
+# $Id: document-component.sh,v 1.2 2004/12/02 00:45:06 jdt Exp $ 
 ####################################################################
 # Document a component on our website
 # First argument (required) cvs name of component _under_ astrogrid
@@ -59,7 +59,7 @@ echo "Have you remembered to edit ~/build.properties with the correct version nu
 echo "Checking out maven-base and $COMPONENT_NAME from cvs into $CHECKOUTHOME" >> $LOGFILE 2>&1
 if cvs-checkout.sh $MODULE $2 >> $LOGFILE 2>&1
 then
-	echo "OK"
+	echo "OK" >> $LOGFILE 2>&1
 else
         echo "document-component: cvs failure" >> $LOGFILE 2>&1
 	exit 1

@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: run-and-publish-tests.sh,v 1.6 2004/12/01 22:18:01 jdt Exp $ 
+# $Id: run-and-publish-tests.sh,v 1.7 2004/12/02 00:45:06 jdt Exp $ 
 ######################################################
 # Run the tests and publish the results to Uluru
 # (or wherever)
@@ -16,7 +16,7 @@ fi
 echo "Running tests from $BUILDHOME"
 OLDDIR=$PWD
 cd $BUILDHOME 
-echo "Undeploying old apps..." 
+
 if maven $MY_MAVEN_OPTS -Dastrogrid.docs.root=$DOCLOCATION astrogrid-deploy-site 
 then
    echo "OK" 
