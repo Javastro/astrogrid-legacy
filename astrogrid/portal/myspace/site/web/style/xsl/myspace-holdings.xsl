@@ -30,7 +30,6 @@
             <hr/>
             <input name="myspace-action" type="submit" value="TopCat" onclick="myspace_votable_topcat();"><br/></input>
             <input name="myspace-action" type="submit" value="Aladin" onclick="myspace_votable_aladin();"><br/></input>
-            <input name="myspace-temp" type="button" value="temp" onclick="myspace_votable_temp();"><br/></input>
           </div>
 
           <div>
