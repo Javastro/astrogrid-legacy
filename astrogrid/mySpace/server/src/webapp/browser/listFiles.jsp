@@ -65,7 +65,7 @@
   <td>Actions</td>
 </tr>
 <%
-   StoreClient manager = StoreDelegateFactory.createDelegate(user, new Agsl("myspace:"+serviceURL));
+   StoreClient manager = StoreDelegateFactory.createDelegate(user, new Agsl(new Msrl("myspace:"+serviceURL)));
 
    StoreFile root = manager.getFiles("*");
 
