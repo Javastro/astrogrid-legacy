@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.29 2004/03/08 00:31:28 mch Exp $
+ * $Id: Querier.java,v 1.30 2004/03/09 19:08:54 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -150,8 +150,10 @@ public abstract class Querier implements Runnable {
    /**
     * Sets up the target of where the results will be sent to
     */
-   public void setResultsDestination(String resultsDestination) throws MalformedURLException {
-      this.resultsDestination = new Agsl(resultsDestination);
+   public void setResultsDestination(String givenDestination) throws MalformedURLException {
+      log.debug("Setting results destination to "+givenDestination);
+      this.resultsDestination = new Agsl(givenDestination);
+      log.debug("...now set to AGSL "+this.resultsDestination);
    }
    
    /**
@@ -457,6 +459,9 @@ public abstract class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.30  2004/03/09 19:08:54  mch
+ Added debug to results destination
+
  Revision 1.29  2004/03/08 00:31:28  mch
  Split out webservice implementations for versioning
 
