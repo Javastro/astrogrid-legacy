@@ -1,5 +1,5 @@
 /*
- * $Id: FailbackConfig.java,v 1.4 2004/03/01 14:06:39 mch Exp $
+ * $Id: FailbackConfig.java,v 1.5 2004/03/03 16:21:59 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -227,13 +227,13 @@ public class FailbackConfig extends Config {
          
          //look for file in classpath.
          //see http://www.javaworld.com/javaworld/javaqa/2003-08/01-qa-0808-property.html
-         log.info("Looking for '"+configFilename+"' on classpath");
+//         log.info("Looking for '"+configFilename+"' on classpath");
          URL configUrl = ClassLoader.getSystemResource(configFilename);
          if (configUrl != null) {
             try {
                loadFromUrl(configUrl);
                
-               log.info("Configuration file loaded from '"+configUrl+"' (from classpath)");
+               log.info("Configuration file loaded from '"+configUrl+"' (found in classpath)");
                
                return;
                
@@ -257,6 +257,10 @@ public class FailbackConfig extends Config {
          }
          
          //well we haven't found one anywhere...
+         //well we haven't found one anywhere...
+         log.warn("No configuration file found; make sure "+configFilename+" is in your classpath, "+
+                     "or use the JNDI key "+propertyUrlKey+" to specify it's location as a URL, "+
+                     "or use the JNDI key "+propertyKey+" to specify it's file location");
       }
    }
    
@@ -357,6 +361,9 @@ public class FailbackConfig extends Config {
 }
 /*
 $Log: FailbackConfig.java,v $
+Revision 1.5  2004/03/03 16:21:59  mch
+Added better reporting if no config file found
+
 Revision 1.4  2004/03/01 14:06:39  mch
 Added filename failback and better error reporting
 
