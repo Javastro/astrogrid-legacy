@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForIntegration.java,v 1.13 2004/09/14 23:25:43 nw Exp $
+/*$Id: AbstractTestForIntegration.java,v 1.14 2004/09/30 10:39:15 pah Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -124,8 +124,8 @@ public class AbstractTestForIntegration extends IntegrationTestCase {
    protected Ivorn mySpaceIvorn;
     
     public static final String USERNAME = "frog";
-    public static final String COMMUNITY = "org.astrogrid.localhost";
-    public static final String AUTHORITYID = "org.astrogrid.localhost";
+    public static final String COMMUNITY = SimpleConfig.getProperty("org.astrogrid.registry.authorityid", "org.astrogrid.localhost");
+    public static final String AUTHORITYID = SimpleConfig.getProperty("org.astrogrid.community.ident", "org.astrogrid.localhost");
     public static final String MYSPACE = COMMUNITY + "/myspace";
     public static final String TESTDSA = COMMUNITY + "/testdsa";
     public static final String TESTAPP = COMMUNITY + "/testapp";
@@ -182,6 +182,9 @@ public class AbstractTestForIntegration extends IntegrationTestCase {
 
 /* 
 $Log: AbstractTestForIntegration.java,v $
+Revision 1.14  2004/09/30 10:39:15  pah
+get community and authorityid from the config if possible
+
 Revision 1.13  2004/09/14 23:25:43  nw
 added call to garbage-collection jsp before each test.
 
