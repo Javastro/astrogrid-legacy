@@ -1,0 +1,31 @@
+<%@ page import="java.net.*,
+                 java.util.*,
+                 java.io.*"
+    session="false" %>
+
+<html>
+<head>
+<title>Registry Entry Form</title>
+</head>
+
+<body>
+<h1>Registry Entry Form</h1>
+
+<p>
+Enter the VOResource in the text area below and press Submit to add it to the registry
+</p>
+
+
+<form action="addResourceEntry.jsp" method="POST">
+
+       <textarea name="Resource" rows=30 cols=90
+              value="<VOResource>
+              </VOResource>"
+                  >
+      <INPUT TYPE="submit" NAME="button" VALUE="Submit"></td>
+      
+</form>
+
+
+</body>
+</html>
