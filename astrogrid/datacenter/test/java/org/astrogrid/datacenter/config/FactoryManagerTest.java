@@ -1,11 +1,15 @@
 package org.astrogrid.datacenter.config;
 
-import java.lang.reflect.*;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
-import junit.framework.*;
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
 import org.astrogrid.datacenter.DatacenterException;
-import org.astrogrid.datacenter.FactoryProviderTest;
 import org.astrogrid.datacenter.FactoryProvider;
+import org.astrogrid.datacenter.FactoryProviderTestSpec;
 import org.astrogrid.datacenter.job.JobFactory;
 import org.astrogrid.datacenter.myspace.MySpaceFactory;
 import org.astrogrid.datacenter.query.QueryException;
@@ -17,7 +21,7 @@ import org.astrogrid.datacenter.votable.VOTableFactory;
  * extends FactoryProvider test with tests of the setters, and checks that the set factories are initialized via setConfiguration.
  */
 
-public class FactoryManagerTest extends FactoryProviderTest implements InvocationHandler {
+public class FactoryManagerTest extends FactoryProviderTestSpec implements InvocationHandler {
 	//declare reusable objects to be used across multiple tests
 	public FactoryManagerTest(String name) {
 		super(name);
@@ -46,7 +50,7 @@ public class FactoryManagerTest extends FactoryProviderTest implements Invocatio
         fac.setJobFactory((JobFactory)createFactory(JobFactory.class));
         fac.setMySpaceFactory((MySpaceFactory)createFactory(MySpaceFactory.class));
         fac.setVOTableFactory((VOTableFactory)createFactory(VOTableFactory.class));
-        fac.setQueryFactory(FactoryProviderTest.TEST_QUERY_FACTORY_KEY,(QueryFactory)createFactory(QueryFactory.class));               
+        fac.setQueryFactory(FactoryProviderTestSpec.TEST_QUERY_FACTORY_KEY,(QueryFactory)createFactory(QueryFactory.class));               
     }
     
     protected FactoryManager facMan;

@@ -1,4 +1,4 @@
-/*$Id: ConfigurableImplTest.java,v 1.1 2003/08/21 12:29:18 nw Exp $
+/*$Id: ConfigurableImplTest.java,v 1.2 2003/08/22 10:36:27 nw Exp $
  * Created on 21-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,7 +9,8 @@
  *
 **/
 package org.astrogrid.datacenter.config;
-import junit.framework.*;
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 /** test case for ComfigurableImpl. 
  * Atg presernt, just extends the abstract ConfigurableTest class.
@@ -43,6 +44,9 @@ public class ConfigurableImplTest extends ConfigurableTestSpec {
 
 /* 
 $Log: ConfigurableImplTest.java,v $
+Revision 1.2  2003/08/22 10:36:27  nw
+tidied imports
+
 Revision 1.1  2003/08/21 12:29:18  nw
 added unit testing for factory manager hierarchy.
 added 'AllTests' suite classes to draw unit tests together - single

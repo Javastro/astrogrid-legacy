@@ -1,4 +1,4 @@
-/*$Id: DynamicFactoryManagerTest.java,v 1.1 2003/08/21 12:29:18 nw Exp $
+/*$Id: DynamicFactoryManagerTest.java,v 1.2 2003/08/22 10:37:07 nw Exp $
  * Created on 21-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,13 +10,21 @@
 **/
 package org.astrogrid.datacenter.datasetagent;
 
-import junit.framework.*;
 import java.util.Map;
-import org.astrogrid.datacenter.config.*;
-import org.astrogrid.datacenter.impl.empty.*;
-import org.astrogrid.datacenter.FactoryProvider;
+
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
 import org.astrogrid.datacenter.DatacenterException;
-import org.astrogrid.datacenter.FactoryProviderTest;
+import org.astrogrid.datacenter.FactoryProvider;
+import org.astrogrid.datacenter.FactoryProviderTestSpec;
+import org.astrogrid.datacenter.config.Configuration;
+import org.astrogrid.datacenter.config.ConfigurationKeys;
+import org.astrogrid.datacenter.config.FactoryManagerTest;
+import org.astrogrid.datacenter.impl.empty.NullJobFactory;
+import org.astrogrid.datacenter.impl.empty.NullMySpaceFactory;
+import org.astrogrid.datacenter.impl.empty.NullQueryFactory;
+import org.astrogrid.datacenter.impl.empty.NullVOTableFactory;
 import org.astrogrid.datacenter.query.QueryFactory;
 
 /**
@@ -78,7 +86,7 @@ public class DynamicFactoryManagerTest extends FactoryManagerTest {
     public final static String MYSPACE_KEY = MapConfiguration.mkKey(ConfigurationKeys.MYSPACE_FACTORY,ConfigurationKeys.MYSPACE_CATEGORY);
     public final static String QUERY_KEY = MapConfiguration.mkKey(ConfigurationKeys.CATALOG_DEFAULT_QUERYFACTORY,ConfigurationKeys.CATALOG_CATEGORY);
     public final static String VOTABLE_KEY = MapConfiguration.mkKey(ConfigurationKeys.VOTABLE_FACTORY,ConfigurationKeys.VOTABLE_CATEGORY);
-    public final static String CATALOG_QUERY_KEY = MapConfiguration.mkKey(FactoryProviderTest.TEST_QUERY_FACTORY_KEY +ConfigurationKeys.CATALOG_DEFAULT_QUERYFACTORY,ConfigurationKeys.CATALOG_CATEGORY);
+    public final static String CATALOG_QUERY_KEY = MapConfiguration.mkKey(FactoryProviderTestSpec.TEST_QUERY_FACTORY_KEY +ConfigurationKeys.CATALOG_DEFAULT_QUERYFACTORY,ConfigurationKeys.CATALOG_CATEGORY);
     public void testLoadJobFactory() throws DatacenterException {
         try {
         dynFacMan.loadJobFactory();
@@ -214,6 +222,9 @@ public class DynamicFactoryManagerTest extends FactoryManagerTest {
 
 /* 
 $Log: DynamicFactoryManagerTest.java,v $
+Revision 1.2  2003/08/22 10:37:07  nw
+tidied imports
+
 Revision 1.1  2003/08/21 12:29:18  nw
 added unit testing for factory manager hierarchy.
 added 'AllTests' suite classes to draw unit tests together - single

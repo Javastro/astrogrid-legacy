@@ -1,7 +1,6 @@
 package org.astrogrid.datacenter.config;
 
-import junit.framework.*;
-import org.astrogrid.datacenter.config.Configuration;
+import junit.framework.TestCase;
 
 /**
  * Abstract JUnit test case for ConfigurableTest
