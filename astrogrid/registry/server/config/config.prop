@@ -3,7 +3,7 @@
 org.astrogrid.registry.authorityid=astrogrid
 
 #Normally you just need to change the url piece.
-registry.exist.db.uri=xmldb:exist://localhost:8080/exist/xmlrpc
+#registry.exist.db.uri=xmldb:exist://localhost:8080/exist/xmlrpc
 
 
 
