@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: AGApplicationBase.xsd,v 1.3 2004/03/09 14:33:20 pah Exp $ -->
+<!-- $Id: AGApplicationBase.xsd,v 1.4 2004/03/09 18:21:23 pah Exp $ -->
 <!-- This is refactored from the AGParameterDefinition.xsd -->
 <!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by Paul Harrison (Jodrell Bank Observatory) -->
 <xs:schema targetNamespace="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:agab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
@@ -15,7 +15,7 @@
 	</xs:annotation>
 	<xs:complexType name="ApplicationBase" abstract="false">
 		<xs:annotation>
-			<xs:documentation>Base Application definition</xs:documentation>
+			<xs:documentation>Base Application Description</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
 			<xs:element name="Parameters">
@@ -33,6 +33,9 @@
 	</xs:complexType>
 	<!--perhaps this is not the way to go - need to get the executionPath back in though somehow....-->
 	<xs:complexType name="CommandLineApplication">
+		<xs:annotation>
+			<xs:documentation>Description of a command line application</xs:documentation>
+		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="agab:ApplicationBase">
 				<xs:sequence>
@@ -42,11 +45,17 @@
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="WebServiceApplication">
+		<xs:annotation>
+			<xs:documentation>Description of a web service application</xs:documentation>
+		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="agab:ApplicationBase"/>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="DataCentreApplication">
+		<xs:annotation>
+			<xs:documentation>Description of a data centre application</xs:documentation>
+		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="agab:ApplicationBase"/>
 		</xs:complexContent>
@@ -75,7 +84,7 @@
 	</xs:complexType>
 	<xs:complexType name="parameterRef" mixed="false">
 		<xs:annotation>
-			<xs:documentation>reference to an existing parameter</xs:documentation>
+			<xs:documentation>reference to an existing parameter. Used in the interface</xs:documentation>
 		</xs:annotation>
 		<xs:attribute name="ref" type="xs:string"/>
 		<xs:attribute name="minoccurs" type="xs:integer" use="optional" default="1"/>
@@ -204,6 +213,9 @@
 		</xs:keyref>
 	</xs:element>
 	<xs:element name="DataCentreControllerConfig">
+		<xs:annotation>
+			<xs:documentation>Configuration for a set of datacentre descriptions</xs:documentation>
+		</xs:annotation>
 		<xs:complexType>
 			<xs:complexContent>
 				<xs:extension base="agab:CommonExecutionConnectorConfigType">
@@ -250,7 +262,7 @@
 			<xs:documentation>list of applications</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
-			<xs:element name="ApplicationDefn" type="agab:ApplicationBase">
+			<xs:element name="ApplicationDefn" type="agab:ApplicationBase" maxOccurs="unbounded">
 				<xs:annotation>
 					<xs:documentation>This is a generic application definition that does not take in all of the specializations for web/commandline etc</xs:documentation>
 				</xs:annotation>
