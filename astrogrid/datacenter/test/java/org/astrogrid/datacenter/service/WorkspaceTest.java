@@ -14,35 +14,48 @@ package org.astrogrid.datacenter.service;
 
 import java.io.File;
 import java.io.IOException;
-
-import org.astrogrid.datacenter.config.Configuration;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import org.astrogrid.datacenter.config.Configuration;
 
 public class WorkspaceTest extends TestCase
 {
-    public WorkspaceTest(String s) {
-        super(s);
-    }
-    
-    /** sets up a directory where the workspaces will operate */
-    protected void setUp() throws IOException {
-       
-        Workspace.PERSIST = false; //make sure they tidy up properly
-       
-        tmpDir = File.createTempFile("workspace-test","dir");
-        // gah, want a dir, not a file.
-        tmpDir.delete();
-        tmpDir.mkdir();
-        Configuration.setProperty(Workspace.WORKSPACE_DIRECTORY,tmpDir.getAbsolutePath());
-
-    }
     /** working directory */
     protected File tmpDir;
 
-    /** deletes working directory -- otherwise tests are not repeatable */
+   /** Constructor makes a temporary directory to create workspaces in. *Could*
+    * do this in setUp(), but that applies to each test, whereas Workspaces
+    * should be running in a simple single 'working' directory.
+    * It appears a new instance is run for every test...
+    */
+   public WorkspaceTest(String s) throws IOException
+   {
+        super(s);
+      
+        Workspace.PERSIST = false; //make sure they tidy up properly
+
+      String workspaceProperty = Configuration.getProperty(Workspace.WORKSPACE_DIRECTORY);
+      
+      if ( workspaceProperty == null)
+      {
+        //specify a working directory area - need to do this so we can
+         //find the workspace to examine the contents
+        tmpDir = File.createTempFile("workspace-test","");
+        // gah, want a dir, not a file.
+        tmpDir.delete();
+        tmpDir.mkdir();
+      
+        //set the configuratio property so Workspace can find it
+        Configuration.setProperty(Workspace.WORKSPACE_DIRECTORY,tmpDir.getAbsolutePath());
+      }
+      else
+      {
+         tmpDir = new File(workspaceProperty);
+      }
+   }
+    
+    /** deletes working directory -- otherwise tests are not repeatable
     protected void tearDown() {
         if (tmpDir != null && tmpDir.exists()) {
             File[] files = tmpDir.listFiles();
@@ -52,9 +65,11 @@ public class WorkspaceTest extends TestCase
             tmpDir.delete();
         }
     }
-    
+    */
+ 
+ 
    public void testCreateWorkspace() throws Exception {
-       Workspace ws = new Workspace("Test");
+       Workspace ws = new Workspace("TestCreate");
        assertNotNull(ws);
        File wsFile = ws.makeWorkFile("Test");
        assertNotNull(wsFile);
@@ -63,10 +78,10 @@ public class WorkspaceTest extends TestCase
    }
    
    public void testDuplicate() throws Exception {
-       Workspace ws1 = new Workspace("dup");
+       Workspace ws1 = new Workspace("TestDuplicateWS");
        assertNotNull(ws1);
        try {
-          Workspace ws2 = new Workspace("dup");
+          Workspace ws2 = new Workspace("TestDuplicateWS");
           fail("Expected workspace to prevent duplicates");
        } catch (IllegalArgumentException e) {}
    }
@@ -75,8 +90,8 @@ public class WorkspaceTest extends TestCase
     */
    public void testEmptying() throws IOException
    {
-      Workspace workspace = new Workspace("Test");
-      File workspaceFile = new File(tmpDir+File.separator+"Test");
+      Workspace workspace = new Workspace("TestEmptying");
+      File workspaceFile = new File(tmpDir+File.separator+"TestEmptying");
 
       //make some random files in it
       assertNotNull(workspace);
@@ -102,7 +117,7 @@ public class WorkspaceTest extends TestCase
    }
    
    public void testMakeWorkFile() throws IOException {
-       Workspace workspace = new Workspace("Test");
+       Workspace workspace = new Workspace("TestMakeWork");
        File f = workspace.makeWorkFile("fred");
        assertNotNull(f);
        //assertFalse(f.exists()); // not created, if impl changes, client code must change too.
@@ -111,20 +126,20 @@ public class WorkspaceTest extends TestCase
        
    }
    
-   /*no prevention from this at the moment
    public void testMakeDuplicateFile() throws IOException {
-       Workspace workspace = new Workspace("Test");
+       Workspace workspace = new Workspace("TestDuplicateFile");
        File f= workspace.makeWorkFile("fred");
-       assertNotNull(f)
+       assertNotNull(f);
        try {
        File g = workspace.makeWorkFile("fred");
        fail("Created duplicate files");
-       } catch (IllegalArgumentException e) {
        }
-   }*/
+       catch (IllegalArgumentException e) { /* SOK expect a crash */ }
+       catch (IOException e) { /* SOK expect a crash */ }
+   }
    
    public void testMakeManyFilesAndEmpty() throws IOException {
-       Workspace workspace = new Workspace("Test");
+       Workspace workspace = new Workspace("TestMakeManyAndEmpty");
        String[] fileNames = new String[] {"Fred","Wilma","Barney","Betty","BamBam"};
        File[] files = new File[5];
        for (int i = 0; i < fileNames.length; i++) {
@@ -142,11 +157,17 @@ public class WorkspaceTest extends TestCase
    
    /**  */
    public void testOpenAndClose() throws Exception {
-       Workspace ws = new Workspace("Test");
+      
+      //test for given id
+       Workspace ws = new Workspace("TestOpenClose");
        File f = ws.makeWorkFile("foo");
-       //assertTrue(f.createNewFile());
        assertTrue(f != null && f.exists() && f.isFile());
-       ws.close();
+
+      //check directory exists where we expect it to (otherwise test below is meaningless)
+      File wsf = new File(tmpDir+File.separator+"TestOpenClose");
+      assertTrue(f.exists());
+      
+      ws.close();
       // should also prevent us from creating new files, in one way or another
       try {
           File g = ws.makeWorkFile("bar");
@@ -154,6 +175,17 @@ public class WorkspaceTest extends TestCase
       }
       catch (IllegalStateException e) {  /* ok, it should fail */   }
       catch (AssertionError e) {  /* ok, it should fail */    }
+      
+      //check directory no longer exists
+      wsf = new File(tmpDir+File.separator+"TestOpenClose");
+      assertFalse(f.exists());
+      
+      //test for no id
+       ws = new Workspace();
+       f = ws.makeWorkFile("foo");
+       assertTrue(f != null && f.exists() && f.isFile());
+       ws.close();
+
    }
    
     /**
@@ -178,6 +210,9 @@ public class WorkspaceTest extends TestCase
 
 /*
 $Log: WorkspaceTest.java,v $
+Revision 1.7  2003/09/08 19:39:55  mch
+More bugfixes and temporary file locations
+
 Revision 1.6  2003/09/08 18:35:54  mch
 Fixes for bugs raised by WorkspaceTest
 

@@ -1,5 +1,5 @@
 /**
- * $Id: Workspace.java,v 1.8 2003/09/08 18:35:44 mch Exp $
+ * $Id: Workspace.java,v 1.9 2003/09/08 19:39:46 mch Exp $
  */
 
 package org.astrogrid.datacenter.service;
@@ -34,27 +34,66 @@ public class Workspace
     */
    public static boolean PERSIST = false;
    
-   /** Path to this workspace instance */
-   protected String workspacePath = null;
-
    /** File representation of this workspace instance */
    protected File workspaceFile = null;
 
-   /** Used to mark when the directory has been closed (deleted) */
-   //use isClosed() protected boolean closed = false;
-
    /**
-    * Creates a temporary directory with the name given by workspaceId
-    * in the workspace directory given in the configuration file
+    * Creates a temporary directory using File.createTempFile()
+    * method
     */
-   public Workspace(String workspaceId)
+   public Workspace() throws IOException
    {
+      //see if a working root has been specified
       String workRoot = Configuration.getProperty( WORKSPACE_DIRECTORY  );
 
-      workspacePath = workRoot + File.separator + workspaceId;
+      if (workRoot != null)
+      {
+         //if a working root path has been given, create the workspace from that
+         workspaceFile = File.createTempFile("Workspace", "", new File(workRoot));
+      }
+      else
+      {
+         //if not, create using system temporary area
+         workspaceFile = File.createTempFile("Workspace", "");
+      }
 
-      workspaceFile = new File(workspacePath);
+      //except that the above creates a file, and we want a directory...
+      workspaceFile.delete();
+      workspaceFile.mkdir();
 
+      if (!PERSIST)
+      {
+         workspaceFile.deleteOnExit();
+      }
+   }
+   
+   /**
+    * Creates a temporary directory with the name prefixed by the given workspaceId
+    * in the workspace directory given in the configuration file
+    */
+   public Workspace(String workspaceId) throws IOException
+   {
+      //see if a working root has been specified
+      String workRoot = Configuration.getProperty( WORKSPACE_DIRECTORY  );
+
+      if (workRoot == null)
+      {
+         //if a working root is not given, use the working directory
+         //File temp = File.createTempFile(workspaceId+"-", "");
+         //workRoot = temp.getAbsolutePath();
+         
+         //or just use the working directory
+         workspaceFile = new File(workspaceId);
+      }
+      else
+      {
+         //if a working root path has been given, create the workspace from that
+         File workDir = new File(workRoot);
+         Log.affirm(workDir.isDirectory(), "Working root '"+workRoot+"' given by configuration key '"+WORKSPACE_DIRECTORY+"' is not a directory");
+         
+         workspaceFile = new File(workRoot + File.separator + workspaceId);
+      }
+         
       if (workspaceFile.exists())
       {
          throw new IllegalArgumentException(ERR_WORKSPACE_ALREADY_IN_USE);
@@ -62,7 +101,10 @@ public class Workspace
 
       workspaceFile.mkdir();
 
-      //workspaceFile.deleteOnExit(); nb for debug we let it carry on existing
+      if (!PERSIST)
+      {
+         workspaceFile.deleteOnExit();
+      }
    }
 
    /**
@@ -130,7 +172,7 @@ public class Workspace
    {
       if (isClosed()) throw new IllegalStateException("Trying to create a new file in a closed workspace");
 
-      File file = new File(workspacePath + File.separator + filename);
+      File file = new File(workspaceFile.getAbsolutePath() + File.separator + filename);
       if (file.createNewFile() == false)
       {
          throw new IOException("File '"+filename+"' already exists");
@@ -151,7 +193,7 @@ public class Workspace
     */
    public File makeTempFile(String prefix) throws IOException
    {
-      return File.createTempFile(prefix, "$$$", workspaceFile);
+      return File.createTempFile(prefix, "", workspaceFile);
    }
 
    /**
