@@ -1,5 +1,5 @@
 /*
- * $Id: TestMySqlQuerier.java,v 1.4 2003/08/29 15:20:55 mch Exp $
+ * $Id: MySqlQuerierTest.java,v 1.1 2003/08/29 15:24:23 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -25,7 +25,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-public class TestMySqlQuerier extends TestCase
+public class MySqlQuerierTest extends TestCase
 {
 
    /** Test harness for running with local MySQL database server
@@ -59,7 +59,7 @@ public class TestMySqlQuerier extends TestCase
      */
     public static Test suite() {
         // Reflection is used here to add all the testXXX() methods to the suite.
-        return new TestSuite(TestMySqlQuerier.class);
+        return new TestSuite(MySqlQuerierTest.class);
     }
 
     /**
