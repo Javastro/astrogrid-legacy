@@ -1,5 +1,5 @@
 /*
- * $Id: SimpleDescriptionLoader.java,v 1.3 2004/03/23 12:51:26 pah Exp $
+ * $Id: SimpleDescriptionLoader.java,v 1.4 2004/03/29 12:34:58 pah Exp $
  * 
  * Created on 04-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -41,6 +41,7 @@ public class SimpleDescriptionLoader {
     * @author Paul Harrison (pah@jb.man.ac.uk)
     * @version $Name:  $
     * @since iteration4
+    * @deprecated using the castor based description loading now
     */
    private static class AppDiscFactory extends AbstractObjectCreationFactory {
 
