@@ -1,4 +1,4 @@
-/* $Id: SimpleContextFactoryBuilder.java,v 1.1 2003/10/31 17:21:44 jdt Exp $
+/* $Id: SimpleContextFactoryBuilder.java,v 1.2 2003/11/10 18:52:01 jdt Exp $
  * Created on 30-Oct-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,7 +24,7 @@ public class SimpleContextFactoryBuilder implements InitialContextFactoryBuilder
   /**
    * Contains the singleton SimpleInitialContextFactory
    */
-  private InitialContextFactory icf = SimpleInitialContextFactory.getInstance();
+  private InitialContextFactory icf = new SimpleInitialContextFactory();
 
   /**
    * Gives you a SimpleInitialContextFactory
@@ -40,6 +40,9 @@ public class SimpleContextFactoryBuilder implements InitialContextFactoryBuilder
 
 /*
 *$Log: SimpleContextFactoryBuilder.java,v $
+*Revision 1.2  2003/11/10 18:52:01  jdt
+*Following change to SimpleInitialContextFactory
+*
 *Revision 1.1  2003/10/31 17:21:44  jdt
 *simple naming service to allow testing of database bits
 *
