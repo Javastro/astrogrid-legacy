@@ -45,9 +45,6 @@ public class CreateRequest {
 
 		Element userElem,commElem,jobStepElem,serviceElem,queryElem,fromElem,returnElem,criteriaElem,fieldElem,catalogElem,operationElem;
 
-
-		doc.getDocumentElement().setAttribute(JOBURN_ATTR,"jlusted:leicester:jes@leicester:45803");
-		doc.getDocumentElement().setAttribute(JOBMONITOR_ATTR,"http://hydra.star.le.ac.uk:8080/axis/services/JobMonitorService");
 		doc.getDocumentElement().setAttribute(NAME_ATTR,qb.getName());
 
 		userElem = doc.createElement(USERID_ELEMENT);
@@ -63,7 +60,6 @@ public class CreateRequest {
 
 			jobStepElem = doc.createElement(JOBSTEP_ELEMENT);
 			jobStepElem.setAttribute(NAME_ATTR,dsInfo.getName());
-			jobStepElem.setAttribute("StepNumber","01");
 			jobStepElem.appendChild( (queryElem = doc.createElement(QUERY_ELEMENT)) );
 
 			queryElem.appendChild( (fromElem = doc.createElement(FROM_ELEMENT)) );
@@ -71,7 +67,7 @@ public class CreateRequest {
 					catalogElem.setAttribute(NAME_ATTR,dsInfo.getName());
 					catalogElem.appendChild( (serviceElem = doc.createElement(SERVICE_ELEMENT)) );
 						serviceElem.setAttribute(NAME_ATTR,dsInfo.getName());
-						serviceElem.setAttribute(URL_ATTR,"http://hydra.star.le.ac.uk.:8080/axis/services/DatasetAgent");
+						serviceElem.setAttribute(URL_ATTR,"http://hydra.star.le.ac.uk:8080/axis/services/JobControllerService");
 			queryElem.appendChild ( (returnElem = doc.createElement(RETURN_ELEMENT)) );
 				for(int j=0;j < dsInfo.getDataSetColumns().size();j++) {
 					DataSetColumn dsColumn = (DataSetColumn)dsInfo.getDataSetColumns().get(j);
@@ -118,7 +114,7 @@ public class CreateRequest {
 	private void doCriteria(Document doc,Element operationElem,CriteriaInformation ci) {
 
 		Element opElement,fieldElem;
-		Element op;
+		Element op,opTemp;
 		String []fValues;
 		if(ci.getJoinType() != null && ci.getJoinType().length() > 0) {
 			operationElem.setAttribute(NAME_ATTR,ci.getJoinType());
@@ -140,9 +136,15 @@ public class CreateRequest {
 				opElement.appendChild( (fieldElem = doc.createElement(FIELD_ELEMENT)) );
 				fieldElem.appendChild(doc.createTextNode(fValues[i]));
 			}//for
+			if(ci.getFilterType() != null && !ci.getFilterType().equals("NONE")) {
+			  opElement.appendChild( (opTemp = doc.createElement(OPERATION_ELEMENT)) );
+			  opTemp.setAttribute(NAME_ATTR,ci.getFilterType());
+			}
 		}//else
-		opElement.appendChild ( (fieldElem = doc.createElement(FIELD_ELEMENT)) );
-		fieldElem.appendChild(doc.createTextNode(ci.getValue()));
+		if(ci.getFilterType() != null && !ci.getFilterType().equals("NONE")) {
+			opElement.appendChild ( (fieldElem = doc.createElement(FIELD_ELEMENT)) );
+			fieldElem.appendChild(doc.createTextNode(ci.getValue()));
+		}
 		if(ci.getLinkedCriteria() != null) {
 			opElement.appendChild( (op = doc.createElement(OPERATION_ELEMENT)) );
 			doCriteria(doc,op,ci.getLinkedCriteria());

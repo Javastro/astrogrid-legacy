@@ -95,9 +95,17 @@ public class QueryBuilder {
 			for(int j=0;j < dsInfo.getCriteriaInformation().size();j++) {
 				ci = (CriteriaInformation)dsInfo.getCriteriaInformation().get(j);
 				if(whereClause != null && whereClause.length() > 0) {
-					whereClause += ci.getJoinType() + " {" + j + "}(" + dsInfo.getName() + "." + ci.getDataSetColumn().getName() + " " + ci.getFilterType() + " " + ci.getValue() + checkOtherCriteria(dsInfo.getName(),ci) + ") ";
+					if(ci.getLinkedCriteria() != null) {
+						whereClause += ci.getJoinType() + " {" + j + "}((" + dsInfo.getName() + "." + ci.getDataSetColumn().getName() + " " + ci.getFilterType() + " " + ci.getValue() + ") " + checkOtherCriteria(dsInfo.getName(),ci) + ") ";
+					}else {
+						whereClause += ci.getJoinType() + " {" + j + "}(" + dsInfo.getName() + "." + ci.getDataSetColumn().getName() + " " + ci.getFilterType() + " " + ci.getValue() + ") ";
+					}
 				}else {
-					whereClause = " {" + j + "}(" + dsInfo.getName() + "." + ci.getDataSetColumn().getName() + " " + ci.getFilterType() + " " + ci.getValue() +  checkOtherCriteria(dsInfo.getName(),ci) + ") ";
+					if(ci.getLinkedCriteria() != null) {
+						whereClause = " {" + j + "}((" + dsInfo.getName() + "." + ci.getDataSetColumn().getName() + " " + ci.getFilterType() + " " + ci.getValue() + ") " + checkOtherCriteria(dsInfo.getName(),ci) + ") ";
+					}else {
+						whereClause = " {" + j + "}(" + dsInfo.getName() + "." + ci.getDataSetColumn().getName() + " " + ci.getFilterType() + " " + ci.getValue() + ") ";
+					}
 				}//else
 			}//for
 		}//for
@@ -113,7 +121,7 @@ public class QueryBuilder {
 	private String  checkOtherCriteria(String dataSetName, CriteriaInformation ci) {
 		if(ci.getLinkedCriteria() != null) {
 			CriteriaInformation ciLinked = ci.getLinkedCriteria();
-			return (ciLinked.getJoinType() + " (" + dataSetName + "." + ciLinked.getDataSetColumn().getName() + " " + ciLinked.getFilterType() + " " + ciLinked.getValue() + checkOtherCriteria(dataSetName,ciLinked) + ") ");
+			return (ciLinked.getJoinType() + " (" + dataSetName + "." + ciLinked.getDataSetColumn().getName() + " " + ciLinked.getFilterType() + " " + ciLinked.getValue() + ") " + checkOtherCriteria(dataSetName,ciLinked));
 		}
 		return "";
 

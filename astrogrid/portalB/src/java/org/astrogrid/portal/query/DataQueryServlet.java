@@ -5,7 +5,7 @@ import org.w3c.dom.*;
 import javax.servlet.http.*;
 import java.io.*;
 import java.util.*;
-import org.astrogrid.portal.generated.datasetagent.client.*;
+import org.astrogrid.portal.generated.jobcontroller.client.*;
 
 
 public class DataQueryServlet extends HttpServlet {
@@ -129,7 +129,8 @@ public class DataQueryServlet extends HttpServlet {
 			qb = null;
 			session.setAttribute("QueryString",null);
 		}else if(validParameter(request.getParameter("SubmitQuery"))){
-				send(qb);
+				String tempStr = send(qb);
+				session.setAttribute("LastWebServiceXML",tempStr);
 				if(queryString == null){queryString = "";}
 				queryString = qb.formulateQuery() + "<br />" + queryString;
 				session.setAttribute("QueryStringSent","\nSent Query:" + queryString);
@@ -164,27 +165,31 @@ public class DataQueryServlet extends HttpServlet {
 		return false;
 	}
 
-	private void send(QueryBuilder qb) {
+	private String send(QueryBuilder qb) {
 	  //this method will probably go away and call the Stubbs in the ASTQuery object to form
 	  //the xml needed for the query and send it to the webservice.
-        DatasetAgentSoapBindingStub binding;
+        JobControllerServiceSoapBindingStub binding;
+        String xmlBuildResult = null;
         try {
 			CreateRequest cr = new CreateRequest();
 			Document doc = cr.buildXMLRequest(qb);
 
-			String xmlBuildResult = cr.writeDocument(doc);
+			xmlBuildResult = cr.writeDocument(doc);
 			//xmlBuildResult = xmlBuildResult.substring(xmlBuildResult.indexOf("<jo"));
 			System.out.println("The XmL going to the webservice is = " + xmlBuildResult);
 
-            binding = (DatasetAgentSoapBindingStub)
-                          new DatasetAgentServiceLocator().getDatasetAgent();
+            binding = (org.astrogrid.portal.generated.jobcontroller.client.JobControllerServiceSoapBindingStub)
+                          new org.astrogrid.portal.generated.jobcontroller.client.JobControllerServiceLocator().getJobControllerService();
 
-        	String response = binding.runQuery(xmlBuildResult);
+        	String response = binding.submitJob(xmlBuildResult);
   //      	String response = binding.runQuery(new String());
 			System.out.println("the response from the call to the webservice = " + response);
         }catch (Exception e) {
         	e.printStackTrace();
         }
+        if(xmlBuildResult != null && xmlBuildResult.length() > 0) xmlBuildResult = xmlBuildResult.replaceAll(">",">\n");
+        return xmlBuildResult;
+
 	}
 
 }
