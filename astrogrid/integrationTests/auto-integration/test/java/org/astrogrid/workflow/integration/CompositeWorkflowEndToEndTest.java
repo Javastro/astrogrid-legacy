@@ -1,4 +1,4 @@
-/*$Id: CompositeWorkflowEndToEndTest.java,v 1.4 2004/07/20 02:00:57 nw Exp $
+/*$Id: CompositeWorkflowEndToEndTest.java,v 1.5 2004/07/23 08:08:44 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -34,7 +34,7 @@ import java.io.StringWriter;
 import java.util.Date;
 
 /** end-to-end test of workfow - usecase of creating and submitting a workflow.
- * <p>
+ * <p> 
  * involves jes, cea, registry and myspace, all orchestrated through the workflow library.
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Mar-2004
  *
@@ -80,7 +80,7 @@ public class CompositeWorkflowEndToEndTest extends AbstractTestForIntegration {
                }
            }
            softAssertTrue("job not found in list",found);
-        Thread.sleep(20000);
+        Thread.sleep(60 * 1000); // wait a minute
         Workflow w1 = jes.readJob(urn);
                assertNotNull("null workflow returned",w1);
                 assertEquals("workflow does not have expected name",w1.getName(),wf.getName());
@@ -151,6 +151,9 @@ public class CompositeWorkflowEndToEndTest extends AbstractTestForIntegration {
 
 /* 
 $Log: CompositeWorkflowEndToEndTest.java,v $
+Revision 1.5  2004/07/23 08:08:44  nw
+upped the timeout value.
+
 Revision 1.4  2004/07/20 02:00:57  nw
 tweaked parameters sent to datacenter application
 
