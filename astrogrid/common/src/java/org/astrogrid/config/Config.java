@@ -1,5 +1,5 @@
 /*
- * $Id: Config.java,v 1.12 2004/03/01 13:08:01 mch Exp $
+ * $Id: Config.java,v 1.13 2004/03/01 14:07:01 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,18 +7,15 @@
 package org.astrogrid.config;
 
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-
+import javax.xml.parsers.ParserConfigurationException;
+import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 /**
  * Defines the methods that a Configurator must implement.
@@ -158,6 +155,62 @@ public abstract class Config {
       }
    }
    
+   /**
+    * Indirect typed getProperty - returns a DOM loaded from a file at the url
+    * speficied.  ie, looks up the given key to get a url, then attempts to
+    * read a DOM from the file at that URL.
+    * @todo - This is a temporary holding point - Kevin will implement
+    */
+   public Document getDom(String key) {
+      return readDom(key, getUrl(key));
+   }
+   
+   /**
+    * Indirect typed getProperty - returns a DOM loaded from a file at the url
+    * speficied.  ie, looks up the given key to get a url, then attempts to
+    * read a DOM from the file at that URL.
+    */
+   public Document getDom(String key, Document defaultDom) {
+      try {
+         return getDom(key);
+      }
+      catch (PropertyNotFoundException nfe) {
+         return defaultDom;
+      }
+      
+   }
+
+   /**
+    * Indirect typed getProperty - returns a DOM loaded from a file at the url
+    * speficied.  ie, looks up the given key to get a url, then attempts to
+    * read a DOM from the file at that URL.
+    */
+   public Document getDom(String key, URL defaultUrl) {
+      try {
+         return getDom(key);
+      }
+      catch (PropertyNotFoundException nfe) {
+         return readDom("(default, key '"+key+"' not found)", defaultUrl);
+      }
+      
+   }
+
+   /** For DOM loading methods above.  The key is given so that expcetions
+    * can report which key was being used */
+   private Document readDom(String key, URL source) {
+      try {
+         return XMLUtils.newDocument(source.openStream());
+      }
+      catch (IOException ioe) {
+         throw new ConfigException("Could not read from '"+source+"' given by Config Key '"+key+"'" , ioe);
+      }
+      catch (ParserConfigurationException pce) {
+         throw new ConfigException("Application not configured correctly: ", pce);
+      }
+      catch (SAXException se) {
+         throw new ConfigException("Invalid XML in '"+source+"' from Config Key '"+key+"'");
+      }
+   }
    
 }
 
