@@ -42,13 +42,14 @@
             <agp:item
                 contents="before"
                 contents-hover="before"
-                uri='javascript:document.insert_step_form.submit();'
+                uri='javascript:if (document.getElementById("activity_key").value) { document.insert_step_form.submit(); } else { alert("Please highlight where...."); }'
                 target="_self"
                 status-text="Insert step into workflow...."/>
             <agp:item
                 contents="after"
                 contents-hover="after"
-                uri='javascript:document.getElementById("activity_index_order_step").value = "AFTER"; document.insert_step_form.submit();'
+                uri='javascript:document.getElementById("activity_index_order_step").value = "AFTER"; 
+                     if (document.getElementById("activity_key").value) { document.insert_step_form.submit(); } else { alert("Please highlight where...."); }'
                 target="_self"
                 status-text="Insert step into workflow...."/>
 
@@ -62,13 +63,14 @@
             <agp:item
                 contents="before"
                 contents-hover="before"
-                uri='javascript:document.insert_flow_form.submit();'
+                uri='javascript:if (document.getElementById("activity_key").value) { document.insert_flow_form.submit(); } else { alert("Please highlight where...."); }'
                 target="_self"
                 status-text="Insert flow into workflow...."/>
             <agp:item
                 contents="after"
                 contents-hover="after"
-                uri='javascript:document.getElementById("activity_index_order_flow").value = "AFTER"; document.insert_flow_form.submit();'
+                uri='javascript:document.getElementById("activity_index_order_flow").value = "AFTER";
+                     if (document.getElementById("activity_key").value) { document.insert_flow_form.submit(); } else { alert("Please highlight where...."); }'
                 target="_self"
                 status-text="Insert flow into workflow...."/>
 
@@ -82,13 +84,14 @@
             <agp:item
                 contents="before"
                 contents-hover="before"
-                uri='javascript:document.insert_sequence_form.submit();'
+                uri='javascript:if (document.getElementById("activity_key").value) { document.insert_sequence_form.submit(); } else { alert("Please highlight where...."); }'
                 target="_self"
                 status-text="Insert step into workflow...."/>
             <agp:item
                 contents="after"
                 contents-hover="after"
-                uri='javascript:document.getElementById("activity_index_order_sequence").value = "AFTER"; document.insert_sequence_form.submit();'
+                uri='javascript:document.getElementById("activity_index_order_sequence").value = "AFTER";
+                     if (document.getElementById("activity_key").value) { document.insert_sequence_form.submit(); } else { alert("Please highlight where...."); }'
                 target="_self"
                 status-text="Insert sequence into workflow...."/>
 
