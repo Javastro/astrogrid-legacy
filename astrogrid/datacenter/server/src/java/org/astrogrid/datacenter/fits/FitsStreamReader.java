@@ -1,5 +1,5 @@
 /*
- $Id: FitsStreamReader.java,v 1.3 2004/03/12 04:45:26 mch Exp $
+ $Id: FitsStreamReader.java,v 1.4 2004/07/12 23:25:58 mch Exp $
 
  Copyright (c) etc
  */
@@ -121,7 +121,7 @@ public class FitsStreamReader implements FitsReader
                msg=msg+new String(block)+"\n";
                for (int j=0;j<block.length;j++) msg=msg+"["+block[j]+"] ";
                
-               throw new IOException(msg);
+               throw new FitsFormatException(msg);
             }
          }
          boolean isNuls = true;
@@ -131,7 +131,7 @@ public class FitsStreamReader implements FitsReader
                break;
             }
          }
-         if (isNuls) throw new IOException("All-Nuls block in image "+fitsName);
+         if (isNuls) throw new FitsFormatException("All-Nuls block in header of "+fitsName);
 
          //parse keyword
          keyword = new FitsKeyword(block);
@@ -206,6 +206,9 @@ public class FitsStreamReader implements FitsReader
 
 /*
  $Log: FitsStreamReader.java,v $
+ Revision 1.4  2004/07/12 23:25:58  mch
+ Better error reporting
+
  Revision 1.3  2004/03/12 04:45:26  mch
  It05 MCH Refactor
 
