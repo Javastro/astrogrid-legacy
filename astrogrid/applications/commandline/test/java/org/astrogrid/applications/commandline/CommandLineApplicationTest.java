@@ -1,4 +1,4 @@
-/*$Id: CommandLineApplicationTest.java,v 1.6 2004/09/10 21:29:00 pah Exp $
+/*$Id: CommandLineApplicationTest.java,v 1.7 2004/09/15 11:37:00 pah Exp $
  * Created on 27-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -323,17 +323,34 @@ public class CommandLineApplicationTest extends DescriptionBaseTestCase {
             e.printStackTrace();
         }
         try {
-            execute(t);
-            fail("this should have had a parameter not passed exception before now");
+        Application app = testAppDescr.initializeApplication("testExecution",
+                new User(), t);
+        assertNotNull(app);
+        assertTrue(app instanceof CommandLineApplication);
+        // and now run it.
+        MockMonitor monitor = new MockMonitor();
+//        app.addObserver(controller);
+        app.addObserver(monitor);
+        app.execute();
+        monitor.waitFor(WAIT_SECONDS);
+        assertNotNull(monitor.sawApp);
+        assertTrue(monitor.sawError);
+        // check it completed, not in error, etc.
+        assertEquals("application should have ended with error status",
+                Status.ERROR, app.getStatus());
+
+        // ok, either timed out, or the application finished..
+        // check behaviour of monitor.
+ 
+        
+        
+        
+             
         }
         catch (Exception e1) {
-            if (!(e1 instanceof MandatoryParameterNotPassedException)) {
                 fail("unexpected exception " + e1);
             }
-            else {
-                System.out.println("expected exception caught");
-            }
-        }
+        
     }
 
     private ResultListType execute(Tool t) throws Exception, CeaException,
@@ -346,7 +363,7 @@ public class CommandLineApplicationTest extends DescriptionBaseTestCase {
         assertTrue(app instanceof CommandLineApplication);
         // and now run it.
         MockMonitor monitor = new MockMonitor();
-        app.addObserver(controller);
+//        app.addObserver(controller);
         app.addObserver(monitor);
         app.execute();
         monitor.waitFor(WAIT_SECONDS);
@@ -376,6 +393,9 @@ public class CommandLineApplicationTest extends DescriptionBaseTestCase {
 
 /*
  * $Log: CommandLineApplicationTest.java,v $
+ * Revision 1.7  2004/09/15 11:37:00  pah
+ * make the commandline appliction do all the parameter fetching int he main execution thread
+ *
  * Revision 1.6  2004/09/10 21:29:00  pah
  * add the controller as an observer
  *

@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplication.java,v 1.7 2004/08/30 08:12:22 pah Exp $
+ * $Id: CommandLineApplication.java,v 1.8 2004/09/15 11:37:00 pah Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -57,7 +57,7 @@ public class CommandLineApplication extends AbstractApplication implements Runna
      */
     private static final Log logger = LogFactory.getLog(CommandLineApplication.class);
 
-   private Thread appWaitThread;
+   private Thread exeThread;
    private StreamPiper outPiper;
    private StreamPiper errPiper;
    
@@ -79,19 +79,13 @@ public class CommandLineApplication extends AbstractApplication implements Runna
       this.applicationEnvironment = env;
    }
 
-
-
    public boolean execute() throws CeaException {
-      logger.info("executing.. " + this.toString());
-      setupParameters();
-      super.reportMessage("Calling preRunHook");
-      preRunHook();
-      super.reportMessage("PreRunHook - completed");
-      startApplication();
-      appWaitThread = new Thread(this);
-      appWaitThread.start();
-      return true;
-   }
+        logger.info("creating new thread to execute.. " + this.toString());
+        
+        exeThread = new Thread(CommandLineApplication.this);
+        exeThread.start();
+        return true;
+    }
 
     /** override  so that commandline parameters are returned
      * @see org.astrogrid.applications.AbstractApplication#instantiateAdapter(org.astrogrid.applications.beans.v1.parameters.ParameterValue, org.astrogrid.applications.description.ParameterDescription, org.astrogrid.applications.parameter.indirect.IndirectParameterValue)
@@ -200,9 +194,28 @@ public class CommandLineApplication extends AbstractApplication implements Runna
 
 
     /**
-     * run a thread that waits for the application.
+     * run a thread runs and waits for the application.
      */
     public void run() {
+        try {
+            setupParameters();
+        }
+        catch (CeaException e) {
+            reportError("problem setting up parameters", e);
+            return;
+        }
+        reportMessage("Calling preRunHook");
+        preRunHook();
+        reportMessage("PreRunHook - completed");
+        try {
+            startApplication();
+           
+        }
+        catch (ApplicationExecutionException e1) {
+            reportError("problem running application", e1);
+            return;
+        }
+
        reportMessage("waiting for " +this.toString()+ " to finish....");
        try {
           exitStatus = process.waitFor();
@@ -212,9 +225,7 @@ public class CommandLineApplication extends AbstractApplication implements Runna
        catch (InterruptedException e) {
           // TODO need to work out if it was interrupted on purpose and do something appropriate...
           reportError("application "+this.toString()+" was interrupted", e);
-       } catch (CeaException e) {
-           reportError("application " + this.toString() + "encountered exception while ending",e);
-       }
+       } 
     }
 
 /**
@@ -222,7 +233,7 @@ public class CommandLineApplication extends AbstractApplication implements Runna
   
  * @throws CeaException
  */
-private final void endApplication() throws CeaException {
+private final void endApplication()  {
       reportMessage("Ending application");
       errPiper.terminate();
       outPiper.terminate();
@@ -239,9 +250,9 @@ private final void endApplication() throws CeaException {
          ParameterAdapter adapter = (ParameterAdapter)i.next();
          try {         
             adapter.writeBack(null);
-         } catch (ParameterWriteBackException e) {                        
+         } catch (CeaException e) {                        
                 reportError("There was a problem writing back parameter "+adapter.getWrappedParameter().getName(),e);
-         }            
+         }
       }        
 
       reportMessage("The application has completed with exit status="+exitStatus);
