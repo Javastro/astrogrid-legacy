@@ -1,5 +1,5 @@
 /*
- * $Id: DescriptionBaseTestCase.java,v 1.3 2004/03/23 12:51:25 pah Exp $
+ * $Id: DescriptionBaseTestCase.java,v 1.4 2004/03/24 17:13:15 pah Exp $
  * 
  * Created on 04-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -66,11 +66,10 @@ public class DescriptionBaseTestCase extends TestCase {
       config = ThisConfig.getInstance();
       inputFile = config.getApplicationConfigFile();
       assertNotNull("application config file", inputFile);
-      ac = new CommandLineApplicationController();
+      ac = new CommandLineApplicationController(); //TODO will not need this on IoC
       assertNotNull("Cannot create application controller", ac);
    }
 
-   protected URL urlconfig;
 
    protected URL inputFile;
 

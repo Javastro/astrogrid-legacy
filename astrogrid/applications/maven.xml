@@ -34,6 +34,7 @@
 
 <goal name="astrogrid-deploy-site">
 	    <attainGoal name="builddelegate" />
+	    <mkdir dir="${maven.build.dest}" />
 	    <attainGoal name="site" /><!-- NWW: added - necessary, as site:fsdeploy won't do it by itself -->
 		<attainGoal name="site:fsdeploy" />
 </goal>
@@ -157,7 +158,7 @@
 DBCreationScript=${basedir}/src/sql/createcontroldb.sql
 WorkingDirectory=${basedir}/build/workdir
 ApplicationConfigFile=file://${basedir}/test/config/TestApplicationConfig.xml
-RegistryTemplate=file://${basedir}config/RegistryTemplate.xml
+RegistryTemplate=file://${basedir}/config/RegistryTemplate.xml
 </echo>
 </preGoal>
 

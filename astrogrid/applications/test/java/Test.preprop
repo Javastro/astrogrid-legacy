@@ -7,9 +7,11 @@ DB_PASSWORD=
 DB_USER=sa
 MySpaceManager=http://Dummy.address/
 #MySpaceManager=http://localhost:8080/astrogrid-mySpace/services/MySpaceManager
-#ApplicationConfigFile=/data/work/astrogrid/src/applications/config/applicationDefinitions.xml
 SMTPServer=localhost
 RegistryEndpoint=http://msslxy.mssl.ucl.ac.uk:8080/astrogrid-registry-webapp/services/Registy
-RegistryTemplate=file:///data/work/astrogrid/src/applications/config/RegistyTemplate.xml
+
+#These entries are placed in my the maven script - to get the paths correct...
+#RegistryTemplate=file:///data/work/astrogrid/src/applications/config/RegistyTemplate.xml
+#ApplicationConfigFile=/data/work/astrogrid/src/applications/config/applicationDefinitions.xml
 
 
