@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: deployWebapps.xml,v 1.7 2004/01/15 12:33:38 jdt Exp $ --><!--
+<!-- $Id: deployWebapps.xml,v 1.8 2004/01/29 15:51:34 jdt Exp $ --><!--
 	Example Deploy Script for Astrogrid War files
 	This script uses the Tomcat Manager to deploy war files built nightly by Maven
 
@@ -33,17 +33,13 @@
     <property name="jes.host.user" value="${servers.a.user}"/>
     <property name="jes.host.password" value="${servers.a.password}"/> 
     
-    <property name="palVizier.path" value="/intTest-palVizier"/>   
-    <property name="palVizier.war.url" value="${mavenURL}/astrogrid-datacenter/wars/pal-SNAPSHOT.war"/>
-    <property name="palVizier.host.url" value="${servers.a.url}"/>
-    <property name="palVizier.host.user" value="${servers.a.user}"/>
-    <property name="palVizier.host.password" value="${servers.a.password}"/> 
+    <property name="palSkyServer.path" value="/intTest-palSkyServer"/>   
+    <property name="palSkyServer.war.url" value="${mavenURL}/astrogrid-datacenter/wars/pal-SNAPSHOT.war"/>
+    <property name="palSkyServer.host.url" value="${servers.e.url}"/>
+    <property name="palSkyServer.host.user" value="${servers.e.user}"/>
+    <property name="palSkyServer.host.password" value="${servers.e.password}"/> 
     
-    <property name="palMerlin.path" value="/intTest-palMerlin"/>   
-    <property name="palMerlin.war.url" value="${mavenURL}/astrogrid-datacenter/wars/pal-SNAPSHOT.war"/>
-    <property name="palMerlin.host.url" value="${servers.c.url}"/>
-    <property name="palMerlin.host.user" value="${servers.c.user}"/>
-    <property name="palMerlin.host.password" value="${servers.c.password}"/>
+
     
     <property name="applications.path" value="/intTest-applications"/>   
     <property name="applications.war.url" value="${mavenURL}/astrogrid-applications/wars/astrogrid-applications-SNAPSHOT.war"/>
@@ -79,8 +75,8 @@
 
 <!--==================================================================================-->
 
-	<target depends="RedeployApplications,RedeployJES,RedeployMySpace,RedeployPALMerlin,RedeployPALVizier,Redeploycommunity,Redeploydatawarehouse,Redeployportal,Redeployregistry" name="RedeployTheLot"/>
-	<target depends="DeployApplications,DeployJES,DeployMySpace,DeployPALMerlin,DeployPALVizier,Deploycommunity,Deploydatawarehouse,Deployportal,Deployregistry" name="DeployTheLot"/>
+	<target depends="RedeployApplications,RedeployJES,RedeployMySpace" name="RedeployTheLot"/>
+	<target depends="DeployApplications,DeployJES,DeployMySpace,DeployPALSkyServer,Deploycommunity,Deploydatawarehouse,Deployportal,Deployregistry" name="DeployTheLot"/>
 
 <!--==================================================================================-->
 
@@ -200,37 +196,22 @@
 
 
 <!--==================================================================================-->
-  <!-- PAL/Vizier-->
-  <!-- need to copy across cds delegate too?-->
+  <!-- PAL/SkyServer-->
 
-    <target depends="loadServersProperties" description="obtain latest pal/vizier war and deploy it" name="DeployPALVizier">
-	    <echo message="Deploying PAL/Vizier from ${palVizier.war.url} to ${palVizier.host.url} at ${palVizier.path}"/>
-		<deploy password="${palVizier.host.password}" path="${palVizier.path}" url="${palVizier.host.url}" username="${palVizier.host.user}" war="${palVizier.war.url}"/>
+
+    <target depends="loadServersProperties" description="obtain latest pal/SkyServer war and deploy it" name="DeployPALSkyServer">
+	    <echo message="Deploying PAL/SkyServer from ${palSkyServer.war.url} to ${palSkyServer.host.url} at ${palSkyServer.path}"/>
+		<deploy password="${palSkyServer.host.password}" path="${palSkyServer.path}" url="${palSkyServer.host.url}" username="${palSkyServer.host.user}" war="${palSkyServer.war.url}"/>
     </target>
     
-    <target name="UndeployPALVizier">
-		<remove password="${palVizier.host.password}" path="${palVizier.path}" url="${palVizier.host.url}" username="${palVizier.host.user}"/>
+    <target name="UndeployPALSkyServer">
+		<remove password="${palSkyServer.host.password}" path="${palSkyServer.path}" url="${palSkyServer.host.url}" username="${palSkyServer.host.user}"/>
 	</target>
 	
-    <target depends="UndeployPALVizier, DeployPALVizier" name="RedeployPALVizier"/>
+    <target depends="UndeployPALSkyServer, DeployPALSkyServer" name="RedeployPALSkyServer"/>
 
 <!--==================================================================================-->
 
-  <!-- PAL/Merlin-->
-
-    <target depends="loadServersProperties" description="obtain latest pal/merlin war and deploy it" name="DeployPALMerlin">
-	    <echo message="Deploying PAL/Merlin from ${palMerlin.war.url} to ${palMerlin.host.url} at ${palMerlin.path}"/>
-		<deploy password="${palMerlin.host.password}" path="${palMerlin.path}" url="${palMerlin.host.url}" username="${palMerlin.host.user}" war="${palMerlin.war.url}"/>
-    </target>
-    
-    <target name="UndeployPALMerlin">
-		<remove password="${palMerlin.host.password}" path="${palMerlin.path}" url="${palMerlin.host.url}" username="${palMerlin.host.user}"/>
-	</target>
-	
-    <target depends="UndeployPALMerlin, DeployPALMerlin" name="RedeployPALMerlin"/>
-    
-    
-<!--==================================================================================-->
 
   <!-- Configure the custom Ant tasks for the Manager application -->
   <taskdef classname="org.apache.catalina.ant.DeployTask" name="deploy"/>
