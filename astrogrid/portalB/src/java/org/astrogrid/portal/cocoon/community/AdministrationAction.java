@@ -293,8 +293,10 @@ public class AdministrationAction extends AbstractAction
             errorMessage = "No account given to remove";
          } 
       } else if(ACTION_INSERT_PERMISSION.equals(processAction)) {
+
          if(ident != null && ident.length() > 0) {
             try {
+               System.out.println("entered insertpermission = " + ident);
                String permGroup = request.getParameter("group");
                String permAction = request.getParameter("policy");
                adminDelegate.addPermission(ident,permGroup,permAction);

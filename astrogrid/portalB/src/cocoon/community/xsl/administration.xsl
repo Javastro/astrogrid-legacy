@@ -153,6 +153,8 @@
 				</select>
 				<br />
 				<input type="submit" name="insertmermber" value="Insert Member" />
+				<br /><br />
+				<i>Place combo box of communities here for getting users of an external community</i>
 			</form>
 		</xsl:if>			
 		<xsl:if test="$action = 'removemember'">			
