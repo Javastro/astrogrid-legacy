@@ -9,7 +9,7 @@
 
 <html>
 <head>
-<title>SQL Query Form for <%=DataServer.getDatacenterName() %> </title>
+<title>Cone Query Form for <%=DataServer.getDatacenterName() %> </title>
 <style type="text/css" media="all">
           @import url("./style/maven-base.css");
           @import url("./style/maven-theme.css");
