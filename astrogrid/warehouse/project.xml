@@ -78,8 +78,7 @@ tomcat in which the DataCenter webapp is installed:
 <pre>
 # Configure DataCenter to use GDW plugin
 # (DELETE ANY OTHER ENTRIES FOR datacenter.querier.plugin)
-datacenter.querier.plugin=org.astrogrid.datacenter.queriers.ogsadai.WarehouseQue
-rier
+datacenter.querier.plugin=org.astrogrid.datacenter.queriers.ogsadai.WarehouseQuerier 
 
 # Location of OGSA-DAI grid service registry
 # CONFIGURE THIS TO MATCH YOUR OGSA-DAI INSTALLATION
@@ -89,22 +88,19 @@ WAREHOUSE_OgsaDaiRegistryString=/gdw/services/ogsadai/DAIServiceGroupRegistry
 # Location of XSLT stylesheet for XML RowSet -> VOTable transformation
 # This is a one-size-fits-all hack that will need replacing.
 # NO NEED TO CHANGE THIS
-WAREHOUSE_XslTransform=http://astrogrid.ast.cam.ac.uk/xslt/ag-warehouse-first.xs
-l
+WAREHOUSE_XslTransform=http://astrogrid.ast.cam.ac.uk/xslt/ag-warehouse-first.xsl
 
 # Location of JVM for shelling out to GdsQueryDelegate
 # CONFIGURE THIS TO MATCH YOUR JAVA INSTALLATION
 WAREHOUSE_WarehouseJvm=/usr/local/java/j2sdk1.4.1_02/bin/java
 
 # Location of executable jar for shelled-out ogsadai call
-# hydra
 # CONFIGURE THIS TO MATCH THE WEB-INF/classes DIRECTORY IN YOUR OWN
 # DATACENTER INSTALLATION
 WAREHOUSE_ExecutableJarPath=/home/data/gdw/tomcat1/webapps/pal-SNAPSHOT/WEB-INF/classes/
 
 # CHANGE {VERSION} TO MATCH THE NAME OF THE EXECUTABLE JAR FOUND 
 # IN THE WAREHOUSE_ExecutableJarPath DIRECTORY OF YOUR DATACENTER INST.
-# 
 WAREHOUSE_ExecutableJarName=astrogrid-ogsadai-app-{VERSION}.jar
 </pre>
 </p>
