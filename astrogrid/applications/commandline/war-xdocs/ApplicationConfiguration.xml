@@ -2,7 +2,7 @@
 <!-- would be nice to get the doctype right so that we can have assisted editing for the type - need to have a dtd for the xdocs though!!
     <!DOCTYPE document PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
     -->
-<!DOCTYPE document SYSTEM "xdoc.dtd" >
+<!DOCTYPE document SYSTEM "../../xdocs/xdoc.dtd" >
 <document>
 <properties>
 	<author email="pah@jb.man.ac.uk">Paul Harrison</author>
@@ -29,16 +29,20 @@
 		
 		<p>It is possible that an application that does not quite meet these requirements in a small fashion could be acommodated by writing an adapter class that extends the standard org.astrogrid.applications.commandline.CommandLineApplication model.  </p>
 	</subsection>
-	<subsection name="Configuration File">
+    </section>
+	<section name="Configuration File">
 		
 <p>This file should be of the same form as
-<a href="http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/applications/config/Attic/applicationDefinitions.xml?rev=HEAD&amp;content-type=text/xml">this example configuration file</a>
+<a href="http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/applications/commandline/config/CeaApplicationConfig.xml?rev=HEAD&amp;content-type=text/xml">this example configuration file</a>
 
 which has
 <a href="http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/workflow-objects/schema/AGApplicationBase.xsd?rev=HEAD&amp;content-type=text/plain">AGApplicationBase.xsd</a>
-as its schema.</p>
+as its schema (with some automated documentation <a href="http://www.astrogrid.org/maven/docs/HEAD/astrogrid-workflow-objects/schema/AGApplicationBase.html">here</a>).</p>
 <p>
 &lt;CommandLineExecutionControllerConfig&gt; that contains &lt;Application&gt; elements (you will have one for each of your scripts) - each of the &lt;Applications&gt; has a set of &lt;Parameters&gt; and one or more &lt;Interfaces&gt;.
+The UML model for an application is shown in the diagram below <img src="http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/applications/design/ceaApplication.gif?rev=HEAD&amp;content-type=image/gif" alt="application model" /></p>
+
+    <p>
 For this type of CEC we need to define a series of &lt;CmdLineParameterDefn&gt; elements corresponding to each of the command line parameters that there are.
 For command line applications parameters are typically specified in one of 3 ways under unix
 and the CEC can cope with any of these (theoretically in any combination, but I have not exhaustively tested this, and I doubt that I have covered everything)
@@ -47,32 +51,39 @@ and the CEC can cope with any of these (theoretically in any combination, but I 
 </p>
 <dl>
 	
-<dt>name</dt> - this is the name of the parameter - the default behaviour is that this name is the same as the string that is used to denote the parameter on the command line (if there is one) - however you can give the parameter any name you like (as long as it is unique for a particular application as you can specify the name that is used on the command line  using the commandSwitch attribute. Alternatively you can specify the position of the parameter with the commandPosition attribute if there is no switch.
-
-<dt>type</dt> - this specifies what type the parameter is as well as how the CEC should find the parameter - so it might be just string - if the parameter is a string that is passed directly, or MySpace_FileReference if the paramter is actually a reference to a file in MySpace. (Note that the use of this parameter has changed quite a bit in iteration 6 - I am describing the iteration 5 situation). You should look in the schema
-			<dt>complex</dt>
-			<dt>double</dt>
-			<dt>text</dt>
-			<dt>boolean</dt>
-			<dt>anyURI</dt>
-			<dt>anyXML</dt>
-			<dt>VOTable</dt>
-			<dt>RA</dt>
-			<dt>Dec</dt>
-			<dt>ADQL</dt>
-			<dt>binary</dt>
-			<dt>FITS</dt>
-
-http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/workflow-objects/schema/AGParameterDefinition.xsd?rev=HEAD&amp;content-type=text/plain
-
-at the definition of the parameterTypes simple type for the full list of allowable types - but they are mostly the obvious atomic types as well as a few special types for fetching things from MySpace.
-<dt>fileRef</dt>
+<dt>name</dt><dd>this is the name of the parameter - the default behaviour is that this name is the same as the string that is used to denote the parameter on the command line (if there is one) - however you can give the parameter any name you like (as long as it is unique for a particular application as you can specify the name that is used on the command line  using the commandSwitch attribute. Alternatively you can specify the position of the parameter with the commandPosition attribute if there is no switch.
+</dd>
+<dt>type</dt><dd><p> this specifies what type the parameter. This value should be set to be as close as possible to what the application expects the type of the parameter to be to allow for possible type checking. Note that amongst the values there are several types that can effectively be used as "catchall" types, which can be used if the application does not have any strong typing. You should look in the <a href="http://www.astrogrid.org/maven/docs/HEAD/astrogrid-workflow-objects/schema/AGParameterDefinition.html#type_parameterTypes">schema</a> for the up to date list, but a description of the meaning of the types is given below.
+             </p>
+         </dd>
+  
+<dt>fileRef</dt><dd>This specifies whether the application expects the parameter to refer to a file or simply a value that is passed on the command line</dd>
 <dt>commandSwitch</dt><dd>This is the text of the command switch (without any hyphen or equals characters). If this is set to the special value "---" then it means that the parameter will not be added to the command line at all - this is useful sometimes in allowing a value to be passed to the java wrapper class.</dd>
-<dt>commandPosition</dt>
-<dt>switchType</dt>
+<dt>commandPosition</dt><dd>This is specified as an integer index position that the parameter will be specified on the command line - if a value is specified for this attribute, then the parameter will be presented "bare" with no switch</dd>
+<dt>switchType</dt><dd>this can be 'normal', in which case the switch will written in the -X val style or 'keyword' in which case the x=val style will be used.</dd>
+<dt>OptionList</dt><dd>this can be used to specify a parameter that takes its value from a fixed set. Each of the possible values is specified by an <code>OptionVal</code> element</dd>
 </dl>
+<subsection name="parameter types">
+       <dl>     
+			<dt>complex</dt><dd>if a complex value is to be passed</dd>
+			<dt>double</dt><dd>a doupble recision floating number should be passed</dd>
+			<dt>boolean</dt><dd>a boolean value should be passed</dd>
+			<dt>anyURI</dt><dd>a URI should be passed</dd>
+			<dt>anyXML</dt><dd>this should probably not be here - too loose...do not use if possible</dd>
+			<dt>VOTable</dt><dd>A VOTable is passed</dd>
+			<dt>RA</dt><dd>A value to be interpreted as a right ascension is passed</dd>
+			<dt>Dec</dt><dd>A value to be interpreted as a declination is passed</dd>
+			<dt>ADQL</dt><dd>Standard Astromical Data Query Language is passed</dd>
+			<dt>FITS</dt><dd>A FITS file is passed</dd>
 
-<p>The elements that can occur within the &lt;CmdLineParameterDef/&gt; are</p>
+            <dt>text</dt><dd>A general piece of alphanumeric data is passed - should generally be what unix considers to be a text file</dd>
+            
+			<dt>binary</dt><dd>An arbitrary piece of binary data is passed</dd>
+            </dl>
+    
+</subsection>
+
+<subsection name="The elements that can occur within the &lt;CmdLineParameterDef/&gt;">
 <dl>
 <dt>&lt;UI_Name/&gt;</dt> <dd>the name that will be used for display in the portal for the parameter</dd>
 <dt>&lt;UI_Description/&gt;</dt> <dd>a description of the parameter that will be used in the portal</dd>
@@ -85,12 +96,14 @@ An &lt;Interface&gt; is simply a collection of parameters - you might have a sim
 </p>
 		
 	</subsection>
-	<subsection name="Writing a custom adapter class">
-		<p>A  CommandlineApplication goes through a series of stages</p>
-	</subsection>
 	</section> 
-	<section name="Global CLEC Configuration">
-		<p>To see information for configuring the CLEC itself see ....</p>
+    	<section name="Modifying default application behaviour">
+		<p>It might be that it is necessary to modify the output of the commandline application in some fashion to make the application more "VO friendly", this can be done in two general ways</p>
+        <ol>
+            <li>Wrapping the application in a shell script and specifying the script rather than the application directly in the <code>ExecutionPath</code> element. A description of this method of customization is outside the scope of this documentation, but it is a valuable, and often quick-to-implement way to slightly alter the behaviour of an appliction.</li>
+            <li>Writing a custom adapter class - it is possible to write a specific class to alter the way that an application is run and to specify the class name as the <code>instanceClass</code> attribute on an <code>Application</code> element. The <a href="AppProgGuide.html">CommandLine CEC Application Programmers Guide</a> contains information to aid in writing such a class.</li>
+        </ol>
 	</section>
+    
 </body>
 </document>
