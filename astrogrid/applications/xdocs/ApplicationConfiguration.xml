@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+<!-- would be nice to get the doctype right so that we can have assisted editing for the type - need to have a dtd for the xdocs though!!
+    <!DOCTYPE document PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    -->
+<document>
+<properties>
+	<author email="pah@jb.man.ac.uk">Paul Harrison</author>
+	<title>Application Controller Installation Information</title>
+</properties>
+<body><section name="ApplicationConfiguration"></section> 
+</body>
+</document>

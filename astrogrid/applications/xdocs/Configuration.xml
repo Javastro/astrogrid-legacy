@@ -1,0 +1,69 @@
+<?xml version="1.0" ?>
+<!-- would be nice to get the doctype right so that we can have assisted editing for the type - need to have a dtd for the xdocs though!!
+    <!DOCTYPE document PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    -->
+<document>
+<properties>
+	<author email="pah@jb.man.ac.uk">Paul Harrison</author>
+	<title>Application Controller Installation Information</title>
+</properties>
+<body>
+<section name="Configuration">
+<p>This consists of the following steps</p>
+<br/>
+<ol>
+  <li>configure a database</li>
+  <li>set up the application contoller configuration file</li>
+  <li>set up any applications and the application description file</li>
+</ol>
+If you have ant installed on your system you can simplify this process
+usinf the ant build file found here.<br/>
+<br/>
+<h3>Database setup and JNDI reference</h3>
+<p>Need to configure a database - hsqldb is the only database that is
+supported at the moment
+</p>
+<ul>
+  <li>
+    <p>set up the database</p>
+  </li>
+  <li>
+    <p>create the tables in the database</p>
+  </li>
+  <li>
+    <p>create the JNDI datasource reference</p>
+  </li>
+  <li>ensure that tomcat has the database jar and the necessary
+commons
+jars in its classpath - put in common/lib</li>
+</ul>
+
+<h3>Application Controller Configuration</h3>
+<p>Create a JNDI reference to the
+configuration file - this
+reference should be called AstrogridApplicationsConfigURL
+Although tomcat 4 does supply a tool to set the JNDI resources, it
+appears to be buggy and the best way is probably to edit the
+$CATALINA_HOME/conf/server.xml file directly. You can place the
+definitions in the &lt;DefaultContext&gt; element (within an
+&lt;engine&gt; element) or it can be placed in the application specific
+context</p>
+<br/>
+<h4>A typical installation looks like this</h4>
+<source>         &lt;Environment description="properties file" name="AstrogridApplicationsConfigURL" override="true" type="java.lang.String" value="file:///data/work/Test.properties"/&gt;<br/>          &lt;Resource name="jdbc/AstrogridACDatasource" scope="Shareable" type="javax.sql.DataSource"/&gt;<br/>          &lt;ResourceParams name="jdbc/AstrogridACDatasource"&gt;<br/>       &lt;parameter&gt;<br/>        &lt;name&gt;factory&lt;/name&gt;<br/>        &lt;value&gt;org.apache.commons.dbcp.BasicDataSourceFactory&lt;/value&gt;<br/>        &lt;/parameter&gt;<br/>            &lt;parameter&gt;<br/>              &lt;name&gt;maxWait&lt;/name&gt;<br/>              &lt;value&gt;5000&lt;/value&gt;<br/>            &lt;/parameter&gt;<br/>            &lt;parameter&gt;<br/>              &lt;name&gt;maxActive&lt;/name&gt;<br/>              &lt;value&gt;4&lt;/value&gt;<br/>            &lt;/parameter&gt;<br/>            &lt;parameter&gt;<br/>              &lt;name&gt;password&lt;/name&gt;<br/>              &lt;value&gt;veritas&lt;/value&gt;<br/>            &lt;/parameter&gt;<br/>            &lt;parameter&gt;<br/>              &lt;name&gt;url&lt;/name&gt;<br/>              &lt;value&gt;jdbc:hsqldb:hsql://localhost:9001&lt;/value&gt;<br/>            &lt;/parameter&gt;<br/>            &lt;parameter&gt;<br/>              &lt;name&gt;driverClassName&lt;/name&gt;<br/>              &lt;value&gt;org.hsqldb.jdbcDriver&lt;/value&gt;<br/>            &lt;/parameter&gt;<br/>            &lt;parameter&gt;<br/>              &lt;name&gt;maxIdle&lt;/name&gt;<br/>              &lt;value&gt;2&lt;/value&gt;<br/>            &lt;/parameter&gt;<br/>            &lt;parameter&gt;<br/>              &lt;name&gt;username&lt;/name&gt;<br/>              &lt;value&gt;sa&lt;/value&gt;<br/>            &lt;/parameter&gt;<br/>          &lt;/ResourceParams&gt;<br/><br/></source>
+Application Controller configuration paramters<br/>
+<br/>
+<pre>WorkingDirectory=/data/work/astrogrid/src/applications/build/workdir<br/>ApplicationConfigFile=/data/work/astrogrid/src/applications/test/config/TestApplicationConfig.xml<br/><br/></pre>
+<p>The workingdirectory should point to a directory that the process
+running the applicationController can write to. It creates
+subdirectories in this directory to create a runtime environment for
+each of the application instances that it runs. The
+ApplicationConfigFile points to the file that contains all of the
+descriptions of the applications that the application controller can
+run. The contents of this file are describe in more detail on the <a
+ href="ApplicationConfiguration.html">Applicatons Setup page</a><br/>
+</p>
+</section>
+</body>
+</document>
+

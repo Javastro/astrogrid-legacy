@@ -1,21 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="AstroGrid">
+  <body>
 
   <title>AstroGrid Project - Application Integration</title>
 
-  <body>
-    <menu name="Background Information">
-    	<item name="Workgroup" href="http://wiki.astrogrid.org/bin/view/Astrogrid/ApplicationIntegrationItn04" />
-    	<item name="Component Description" href="http://wiki.astrogrid.org/bin/view/Astrogrid/ApplicationsIntegration" />
-    	<item name="UML Design" href="http://www.astrogrid.org/maven/design/applications/" />   
+    <menu name="Installation">
+       <item name="Install" href="INSTALL.xml"/>
+       <item name="Read me" href="README.xml"/>
+       <item name="Download" href="http://www.astrogrid.org/maven/org.astrogrid/wars/astrogrid-applications-SNAPSHOT.war"/>
+        
+    </menu>     
+    <menu name="CEA" >
+     	<item name="UML Design" href="http://www.astrogrid.org/maven/design/applications/" />   
+        <!-- would be nice to have a submenu here  - how? -->
     	<item name="Schema"  href="http://www.astrogrid.org/viewcvs/astrogrid/applications/schema/"/>
      	<item name="Parameter Schema Documentation"  href="http://www.astrogrid.org/schema/documentation/AGParameterDefinition/"/>
+      
+    </menu> 
+    <menu name="Background Information">
+    	<item name="Description on Wiki" href="http://wiki.astrogrid.org/bin/view/Astrogrid/ApplicationsIntegration" />
+    	<item name="Workflow Objects" href="../astrogrid-workflow-objects" />
     		
     </menu>
     <links>
        <item name="AstroGrid"  href="http://www.astrogrid.org"/>
        <item name="Projects"   href="http://www.astrogrid.org/maven/build/index.html"/>
-       <item name="Applications Integration" href="http://www.astrogrid.org/maven/build/applications/index.html"/>
+       <item name="Applications Integration" href="http://www.astrogrid.org/maven/docs/snapshot/applications/index.html"/>
+       <item name="Workflow objects" href="http://www.astrogrid.org/maven/docs/snapshot/astrogrid-workflow-objects/index.html"/>
     </links>
   </body>
 </project>

@@ -1,0 +1,34 @@
+<?xml version="1.0" ?>
+<document>
+<properties>
+	<author email="pah@jb.man.ac.uk">Paul Harrison</author>
+	<title>Application Controller Installation Information</title>
+</properties>
+
+<body>
+<section name="Troubleshooting and Testing">
+<span style="color: rgb(255, 0, 0);">Under construction</span>
+<p>Once the test application has been configured you can do some testing to</p>
+
+<ul>
+  <li>view the applications configured</li>
+  <li>look at a particular application configuration in detail.</li>
+  <li>look at the system parameters</li>
+  <ul>
+    <li>look at the properties</li>
+    <li>have a look at the database...
+    </li>
+  </ul>
+  <li>run some simple unit tests.</li>
+  <ul>
+    <li>can we write to the workdir - can we create a subdirectory
+    </li>
+  </ul>
+</ul>
+
+</section>
+</body>
+</document>
+
+
+
