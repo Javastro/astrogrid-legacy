@@ -1,11 +1,68 @@
+var     winH, winW;
+
+function getOzSize(){
+	if (parseInt(navigator.appVersion)>3) {
+		if (navigator.appName=="Netscape") {
+			winW = window.innerWidth;
+			winH = window.innerHeight;
+		}
+		if (navigator.appName.indexOf("Microsoft")!=-1) {
+			winW = document.body.offsetWidth;
+			winH = document.body.offsetHeight;
+		}
+	}
+}
+
+function findPosX(obj)
+{
+	var curleft = 0;
+	if (obj.offsetParent) 
+	{
+		while (obj.offsetParent)
+		{
+			curleft += obj.offsetLeft
+			obj = obj.offsetParent;
+		}
+	}
+	else if (obj.x)
+		curleft += obj.x;
+	return curleft;
+}
+
+function findPosY(obj)
+{
+	var curtop = 0;
+	if (obj.offsetParent)
+	{
+		while (obj.offsetParent)
+		{
+			curtop += obj.offsetTop
+			obj = obj.offsetParent;
+		}
+	}
+	else if (obj.y)
+		curtop += obj.y;
+	return curtop;
+}
 
 function hinter(elem){
 	var idd = elem.id + "stick";
+	var qposx = findPosX(elem);
+	var qposy = findPosY(elem);
+	getOzSize();
+	var boxWidth = Math.round(winW * 0.4);
+	var boxPos;
+	if((qposx + 40 + boxWidth) < winW){
+		boxPos = qposx+40;
+	} else {
+		boxPos = qposx-20 - boxWidth;
+	}
 	if(document.getElementById(idd)!= null) {
 		var a = document.getElementById(idd);
 		a.style.position="absolute";
-		a.style.left= "80px";
-		a.style.top= "50px";
+		a.style.left= boxPos + "px";
+		a.style.top= qposy+"px";
+		a.style.width= boxWidth+"px";
 
 		if(a.style.display == "none"){
 			a.style.display = "";
