@@ -1,5 +1,5 @@
 /*
- * $Id: IconFactory.java,v 1.1 2004/02/17 16:04:06 mch Exp $
+ * $Id: IconFactory.java,v 1.2 2004/02/19 23:29:30 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -43,6 +43,15 @@ public class IconFactory
    public static Icon getIcon(String iconName)
    {
       return getIcon(iconName, LARGE);
+   }
+
+   /** Get an image suitable for message boxes, etc.  Does a typecast of getIcon()
+    * for file, then for icons used by option pane in UI Manager
+    */
+   public static Image getImage(String iconName)
+   {
+      ImageIcon i = (ImageIcon) getIcon(iconName);
+      if (i == null) { return null; } else { return i.getImage(); }
    }
 
    /** Get an icon suitable for display on lines, status bars, etc.
@@ -139,6 +148,9 @@ public class IconFactory
 }
 /*
 $Log: IconFactory.java,v $
+Revision 1.2  2004/02/19 23:29:30  mch
+Added getImage
+
 Revision 1.1  2004/02/17 16:04:06  mch
 New Desktop GUI
 
@@ -149,3 +161,4 @@ Revision 1.2  2004/02/15 23:25:30  mch
 Datacenter and MySpace desktop client GUIs
 
  */
+
