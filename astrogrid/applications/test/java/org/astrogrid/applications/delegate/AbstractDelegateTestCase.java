@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractDelegateTestCase.java,v 1.6 2004/04/28 16:10:11 pah Exp $
+ * $Id: AbstractDelegateTestCase.java,v 1.7 2004/04/30 11:19:19 pah Exp $
  * 
  * Created on 22-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -123,7 +123,7 @@ public abstract class AbstractDelegateTestCase extends WorkFlowUsingTestCase {
 
    public final void testExecuteApplication() throws CEADelegateException {
       executionid = delegate.execute(runtool, jobstepID, monitorURL);
-      assertTrue("executionid invalid", executionid.equals("-1"));
+      assertTrue("executionid invalid", !executionid.equals("-1"));
    }
 
    public final void testQueryApplicationExecutionStatus() {
