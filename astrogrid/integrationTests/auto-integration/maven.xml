@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.54 2004/06/22 18:07:30 clq2 Exp $ -->
+<!-- $Id: maven.xml,v 1.55 2004/06/23 10:11:07 KevinBenson Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -535,7 +535,7 @@
         <copy todir="${temporary.dir}/community" filtering="true">
                 <fileset dir="contexts/community" />
         </copy>
-        <war update="true" destfile="${temporary.dir}/astrogrid-community-webapp-SNAPSHOT.war">
+        <war update="true" destfile="${temporary.dir}/astrogrid-community-SNAPSHOT.war">
                 <metainf dir="${temporary.dir}/community"/>
         </war>
     <j:catch>
@@ -543,7 +543,7 @@
             url="${tomcat.manager.url}"
             username="${tomcat.manager.username}"
             password="${tomcat.manager.password}"
-            path="/astrogrid-community-SNAPSHOT" war="file:///${temporary.dir}/astrogrid-community-webapp-SNAPSHOT.war"/>
+            path="/astrogrid-community-SNAPSHOT" war="file:///${temporary.dir}/astrogrid-community-SNAPSHOT.war"/>
     </j:catch>
 </goal>
 
