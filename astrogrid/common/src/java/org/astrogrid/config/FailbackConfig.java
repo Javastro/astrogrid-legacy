@@ -1,5 +1,5 @@
 /*
- * $Id: FailbackConfig.java,v 1.22 2004/07/14 14:43:00 pah Exp $
+ * $Id: FailbackConfig.java,v 1.23 2004/07/16 16:03:04 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -183,12 +183,12 @@ public class FailbackConfig extends Config {
             
             try {
                try {
-                  urlValue = jndiContext.lookup(jndiUrlKey).toString();//so we can report in exception
+                  urlValue = jndiContext.lookup(jndiUrlKey).toString().trim();//so we can report in exception
                   fileUrl = new URL(urlValue);
                } catch (NameNotFoundException nnfe) { } //ignore carry on
                log.debug("Config: JNDI key "+jndiUrlKey+" => "+fileUrl);
                try {
-                  filenameValue = jndiContext.lookup(jndiFileKey).toString();
+                  filenameValue = jndiContext.lookup(jndiFileKey).toString().trim();
                } catch (NameNotFoundException nnfe) { } //ignore carry on
                log.debug("Config: JNDI key "+jndiFileKey+" => "+filenameValue);
                
@@ -208,11 +208,12 @@ public class FailbackConfig extends Config {
                         //success!
                         return;
                      }
-                  } else {
-                     //otherwise get the url and carry on
-                     fileUrl = propertyFile.toURL();
-                     keyUsed = jndiFileKey;
+                     throw new FileNotFoundException(filenameValue);
                   }
+
+                  //otherwise turn it into a url and carry on
+                  fileUrl = propertyFile.toURL();
+                  keyUsed = jndiFileKey;
                }
 
                if (fileUrl != null) {
@@ -265,6 +266,7 @@ public class FailbackConfig extends Config {
          }
 
          //Nothing in JNDI, nothing in sys env, so look in class path for general properties file
+         log.info("Config: No key to config file found in JNDI/SysEnv, so falling back to "+configFilename);
          if (lookForConfigFile(configFilename)) {
             return;
          }
@@ -298,8 +300,9 @@ public class FailbackConfig extends Config {
       if (!filename.equals(givenFilename)) {
          givenFilename = givenFilename + " => "+filename;
       }
-      
-      
+
+      log.debug("Looking for "+givenFilename);
+     
       //if it's absolute, look absolutely
       File f = new File(filename);
       if (f.isAbsolute()) {
@@ -601,6 +604,9 @@ public class FailbackConfig extends Config {
 }
 /*
 $Log: FailbackConfig.java,v $
+Revision 1.23  2004/07/16 16:03:04  mch
+Added trim for config filename from JNDI, better error reporting and checking
+
 Revision 1.22  2004/07/14 14:43:00  pah
 get the jndi values to print out properly in the dump
 
