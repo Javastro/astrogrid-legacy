@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by John Taylor (ROE) -->
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="maven-project.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
 	<pomVersion>3</pomVersion>
 	<id>astrogrid-workflow</id>
 	<name>AstroGrid Workflow</name>
@@ -83,7 +83,7 @@
 		</dependency>
 		<dependency>
 			<artifactId>astrogrid-jes</artifactId>
-			<version>SNAPSHOT</version>
+			<version>Itn04_1</version>
 			<groupId>astrogrid-jes</groupId>
 		</dependency>
 		<dependency>
