@@ -56,6 +56,7 @@ cd $PROJECT_HOME >> $LOG_FILE 2>&1
 
 echo "[ag-build-$PROJECT_NAME] generate jar and war"
 
+maven astrogrid-deploy-site >> $LOG_FILE 2>&1
 maven astrogrid-deploy-artifact >> $LOG_FILE 2>&1
 
 echo "[ag-build-$PROJECT_NAME] deploy build log"
