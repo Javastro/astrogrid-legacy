@@ -1,5 +1,5 @@
 /*
- * $Id: DataServer.java,v 1.16 2004/03/13 23:38:46 mch Exp $
+ * $Id: DataServer.java,v 1.17 2004/03/14 00:02:02 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -15,6 +15,7 @@ import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.delegate.DatacenterException;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
+import org.astrogrid.datacenter.queriers.status.QuerierError;
 import org.astrogrid.datacenter.queriers.status.QuerierStatus;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.query.RawSqlQuery;
@@ -62,29 +63,57 @@ public class DataServer
    /**
     * Runs a (blocking) ADQL/XML/OM query, outputting the results as votable to the given stream
     */
-   public void askQuery(Account user, Query query, Writer out, String requestedFormat) throws IOException {
-      
-      if ( (query instanceof RawSqlQuery) && !SimpleConfig.getSingleton().getBoolean(SQL_PASSTHROUGH_ENABLED)) {
-         throw new UnsupportedOperationException("This service does not allow SQL to be directly submitted");
-      }
+   public void askQuery(Account user, Query query, Writer out, String requestedFormat) throws Throwable {
 
-      Querier querier = Querier.makeQuerier(user, query, out, requestedFormat);
-      querierManager.askQuerier(querier);
+      Querier querier = null;
+      try {
+         if ( (query instanceof RawSqlQuery) && !SimpleConfig.getSingleton().getBoolean(SQL_PASSTHROUGH_ENABLED)) {
+            throw new UnsupportedOperationException("This service does not allow SQL to be directly submitted");
+         }
+   
+         querier = Querier.makeQuerier(user, query, out, requestedFormat);
+         querierManager.askQuerier(querier);
+      }
+      catch (Throwable th) {
+         //if there's an error, log it, make sure the querier state is correct, and rethrow to
+         //be dealt with correctly up the tree
+         log.error("askQuery("+user+", "+query+", "+out+", "+requestedFormat+")", th);
+         if (querier != null) {
+            if (!(querier.getStatus() instanceof QuerierError)) {
+               querier.setStatus(new QuerierError("",th));
+            }
+         }
+         throw th;
+      }
    }
  
    /**
     * Submits a (non-blocking) ADQL/XML/OM query, returning the query's external
     * reference id.  Results will be output to given Agsl
     */
-   public String submitQuery(Account user, Query query, Agsl out, String requestedFormat) throws IOException {
-      
-      if ( (query instanceof RawSqlQuery) && !SimpleConfig.getSingleton().getBoolean(SQL_PASSTHROUGH_ENABLED)) {
-         throw new UnsupportedOperationException("This service does not allow SQL to be directly submitted");
-      }
+   public String submitQuery(Account user, Query query, Agsl out, String requestedFormat) throws Throwable {
 
-      Querier querier = Querier.makeQuerier(user, query, out, requestedFormat);
-      querierManager.submitQuerier(querier);
-      return querier.getId();
+      Querier querier = null;
+      try {
+         if ( (query instanceof RawSqlQuery) && !SimpleConfig.getSingleton().getBoolean(SQL_PASSTHROUGH_ENABLED)) {
+            throw new UnsupportedOperationException("This service does not allow SQL to be directly submitted");
+         }
+   
+         querier = Querier.makeQuerier(user, query, out, requestedFormat);
+         querierManager.submitQuerier(querier);
+         return querier.getId();
+      }
+      catch (Throwable th) {
+         //if there's an error, log it, make sure the querier state is correct, and rethrow to
+         //be dealt with correctly up the tree
+         log.error("submitQuery("+user+", "+query+", "+out+", "+requestedFormat+")", th);
+         if (querier != null) {
+            if (!(querier.getStatus() instanceof QuerierError)) {
+               querier.setStatus(new QuerierError("",th));
+            }
+         }
+         throw th;
+      }
    }
 
    /**
