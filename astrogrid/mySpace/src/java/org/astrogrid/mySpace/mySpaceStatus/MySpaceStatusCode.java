@@ -62,62 +62,63 @@ public class MySpaceStatusCode
    public static final int AGMMCZ00004 = 4;
    public static final int AGMMCZ00005 = 5;
    public static final int AGMMCI00001 = 6;
-   public static final int AGMMCE00030 = 7;
-   public static final int AGMMCE00031 = 8;
-   public static final int AGMMCE00050 = 9;
-   public static final int AGMMCE00100 = 10;
-   public static final int AGMMCE00101 = 11;
-   public static final int AGMMCE00102 = 12;
-   public static final int AGMMCE00103 = 13;
-   public static final int AGMMCE00104 = 14;
-   public static final int AGMMCE00105 = 15;
-   public static final int AGMMCE00106 = 16;
-   public static final int AGMMCE00107 = 17;
-   public static final int AGMMCW00150 = 18;
-   public static final int AGMMCW00151 = 19;
-   public static final int AGMMCW00152 = 20;
-   public static final int AGMMCW00153 = 21;
-   public static final int AGMMCW00154 = 22;
-   public static final int AGMMCE00201 = 23;
-   public static final int AGMMCE00202 = 24;
-   public static final int AGMMCE00203 = 25;
-   public static final int AGMMCE00204 = 26;
-   public static final int AGMMCE00205 = 27;
-   public static final int AGMMCE00206 = 28;
-   public static final int AGMMCE00207 = 29;
-   public static final int AGMMCE00208 = 30;
-   public static final int AGMMCE00209 = 31;
-   public static final int AGMMCE00210 = 32;
-   public static final int AGMMCE00211 = 33;
-   public static final int AGMMCE00212 = 34;
-   public static final int AGMMCE00213 = 35;
-   public static final int AGMMCE00214 = 36;
-   public static final int AGMMCE00215 = 37;
-   public static final int AGMMCE00216 = 38;
-   public static final int AGMMCE00217 = 39;
-   public static final int AGMMCE00218 = 40;
-   public static final int AGMMCE00219 = 41;
-   public static final int AGMMCE00220 = 42;
-   public static final int AGMMCE00221 = 43;
-   public static final int AGMMCI00250 = 44;
-   public static final int AGMMCE00300 = 45;
-   public static final int AGMMCE00301 = 46;
-   public static final int AGMSCE01000 = 47;
-   public static final int AGMSCE01001 = 48;
-   public static final int AGMSCE01002 = 49;
-   public static final int AGMSCE01003 = 50;
-   public static final int AGMSCE01004 = 51;
-   public static final int AGMSCE01005 = 52;
-   public static final int AGMSCE01006 = 53;
-   public static final int AGMSCE01040 = 54;
-   public static final int AGMSCE01041 = 55;
-   public static final int AGMSCE01042 = 56;
-   public static final int AGMSCE01043 = 57;
-   public static final int AGMSCE01044 = 58;
-   public static final int AGMSCE01045 = 59;
-   public static final int AGMSCE01046 = 60;
-   public static final int AGMSCE01047 = 61;
-   public static final int AGMSCE01048 = 62;
+   public static final int AGMMCE00029 = 7;
+   public static final int AGMMCE00030 = 8;
+   public static final int AGMMCE00031 = 9;
+   public static final int AGMMCE00050 = 10;
+   public static final int AGMMCE00100 = 11;
+   public static final int AGMMCE00101 = 12;
+   public static final int AGMMCE00102 = 13;
+   public static final int AGMMCE00103 = 14;
+   public static final int AGMMCE00104 = 15;
+   public static final int AGMMCE00105 = 16;
+   public static final int AGMMCE00106 = 17;
+   public static final int AGMMCE00107 = 18;
+   public static final int AGMMCW00150 = 19;
+   public static final int AGMMCW00151 = 20;
+   public static final int AGMMCW00152 = 21;
+   public static final int AGMMCW00153 = 22;
+   public static final int AGMMCW00154 = 23;
+   public static final int AGMMCE00201 = 24;
+   public static final int AGMMCE00202 = 25;
+   public static final int AGMMCE00203 = 26;
+   public static final int AGMMCE00204 = 27;
+   public static final int AGMMCE00205 = 28;
+   public static final int AGMMCE00206 = 29;
+   public static final int AGMMCE00207 = 30;
+   public static final int AGMMCE00208 = 31;
+   public static final int AGMMCE00209 = 32;
+   public static final int AGMMCE00210 = 33;
+   public static final int AGMMCE00211 = 34;
+   public static final int AGMMCE00212 = 35;
+   public static final int AGMMCE00213 = 36;
+   public static final int AGMMCE00214 = 37;
+   public static final int AGMMCE00215 = 38;
+   public static final int AGMMCE00216 = 39;
+   public static final int AGMMCE00217 = 40;
+   public static final int AGMMCE00218 = 41;
+   public static final int AGMMCE00219 = 42;
+   public static final int AGMMCE00220 = 43;
+   public static final int AGMMCE00221 = 44;
+   public static final int AGMMCI00250 = 45;
+   public static final int AGMMCE00300 = 46;
+   public static final int AGMMCE00301 = 47;
+   public static final int AGMSCE01000 = 48;
+   public static final int AGMSCE01001 = 49;
+   public static final int AGMSCE01002 = 50;
+   public static final int AGMSCE01003 = 51;
+   public static final int AGMSCE01004 = 52;
+   public static final int AGMSCE01005 = 53;
+   public static final int AGMSCE01006 = 54;
+   public static final int AGMSCE01040 = 55;
+   public static final int AGMSCE01041 = 56;
+   public static final int AGMSCE01042 = 57;
+   public static final int AGMSCE01043 = 58;
+   public static final int AGMSCE01044 = 59;
+   public static final int AGMSCE01045 = 60;
+   public static final int AGMSCE01046 = 61;
+   public static final int AGMSCE01047 = 62;
+   public static final int AGMSCE01048 = 63;
 
 
    private int code;    // Code.
@@ -169,6 +170,9 @@ public class MySpaceStatusCode
       }
       else if (code == MySpaceStatusCode.AGMMCI00001)
       {  codeString = "AGMMCI00001";
+      }
+      else if (code == MySpaceStatusCode.AGMMCE00029)
+      {  codeString = "AGMMCE00029";
       }
       else if (code == MySpaceStatusCode.AGMMCE00030)
       {  codeString = "AGMMCE00030";
@@ -379,6 +383,9 @@ public class MySpaceStatusCode
       }
       else if (code == MySpaceStatusCode.AGMMCI00001)
       {  message = "({0}) Success.";
+      }
+      else if (code == MySpaceStatusCode.AGMMCE00029)
+      {  message = "({0}) Failed to perform the requested operation.";
       }
       else if (code == MySpaceStatusCode.AGMMCE00030)
       {  message = "({0}) Error writing error codes to standard output.";

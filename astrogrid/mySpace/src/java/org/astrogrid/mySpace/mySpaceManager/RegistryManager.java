@@ -580,7 +580,6 @@ public class RegistryManager
       if (returnItemRecords != null)
       {  if (returnItemRecords.size() == 0)
          {  returnItemRecords = null;
-            System.out.println("hello");
          }
       }
 

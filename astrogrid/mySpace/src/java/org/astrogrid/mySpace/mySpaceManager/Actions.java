@@ -71,8 +71,8 @@ public class Actions
 // -----------------------------------------------------------------
 
 /**
-  * Lookup the details of a named set of DataHolders.
-  */
+ * Lookup the details of a named set of DataHolders.
+ */
 
    public Vector getEntriesList(String account, String query)
    {  Vector dataItemVector = new Vector();
@@ -92,6 +92,38 @@ public class Actions
       return dataItemVector;
    }
 
+// -----------------------------------------------------------------
+
+/**
+ * Lookup the identifier of a named file.
+ *
+ * @param account Account performing the operation.
+ * @param fileName Name of the file.
+ * @return Identifier for the specified file.
+ */
+
+   public int getId(String account, String fileName)
+   {  int returnId = -1;
+
+      Vector dataItems = this.getEntriesList(account, fileName);
+      if (dataItems != null)
+      {  if (dataItems.size() > 0)
+         {  DataItemRecord itemRecord = 
+              (DataItemRecord)dataItems.elementAt(0);
+
+            returnId = itemRecord.getDataItemID();
+         }
+         else
+         {  MySpaceStatus status  = new MySpaceStatus(
+              MySpaceStatusCode.AGMMCE00201,
+              MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
+              this.getClassName() );
+         }
+      }
+
+      return returnId;
+   }
+
 
 // -----------------------------------------------------------------
 
@@ -102,15 +134,16 @@ public class Actions
  * @param account Account performing the operation.
  * @param newDataItemName MySpace name of the file to be created.
  * @param fileType flag indicating the type of contents of the file:
- *   true means the contents are Strin, false that they are an array
+ *   true means the contents are a String, false that they are an array
  *   of bytes.
  * @param stringContents The String containing the contents to be written
  *  to the new file.
  * @param byteContents A byte array containing the contents to be written
  *  to the new file.
  * @param contentsType Type of file to be created (VOTable etc).
- * @return dispatchExisting Flag indicating action if a file of the
+ * @param dispatchExisting Flag indicating action if a file of the
  *  given MySpace name already exists.
+ * @return Flag indicating whether the operation succeeded or not.
  */
 
    public boolean putContents(String account, String newDataItemName, 
@@ -303,7 +336,7 @@ public class Actions
          }
       }
       catch (Exception all)
-      {  status.addCode(MySpaceStatusCode.AGMMCE00100,
+      {  status.addCode(MySpaceStatusCode.AGMMCE00029,
            MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
            this.getClassName() );
 
@@ -504,7 +537,7 @@ public class Actions
          }
       }
       catch (Exception all)
-      {  status.addCode(MySpaceStatusCode.AGMMCE00100,
+      {  status.addCode(MySpaceStatusCode.AGMMCE00029,
            MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
            this.getClassName() );
 
@@ -594,7 +627,7 @@ public class Actions
          }
       }
       catch (Exception all)
-      {  status.addCode(MySpaceStatusCode.AGMMCE00100,
+      {  status.addCode(MySpaceStatusCode.AGMMCE00029,
            MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
            this.getClassName() );
 
@@ -680,7 +713,7 @@ public class Actions
          }
       }
       catch (Exception all)
-      {  status.addCode(MySpaceStatusCode.AGMMCE00100,
+      {  status.addCode(MySpaceStatusCode.AGMMCE00029,
            MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
            this.getClassName() );
       }
@@ -763,7 +796,7 @@ public class Actions
          }
       }
       catch (Exception all)
-      {  status.addCode(MySpaceStatusCode.AGMMCE00100,
+      {  status.addCode(MySpaceStatusCode.AGMMCE00029,
            MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
            this.getClassName() );
       }
@@ -959,7 +992,7 @@ public class Actions
          }
       }
       catch (Exception all)
-      {  status.addCode(MySpaceStatusCode.AGMMCE00100,
+      {  status.addCode(MySpaceStatusCode.AGMMCE00029,
            MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
            this.getClassName() );
       }
@@ -1082,7 +1115,7 @@ public class Actions
          }
       }
       catch (Exception all)
-      {  status.addCode(MySpaceStatusCode.AGMMCE00100,
+      {  status.addCode(MySpaceStatusCode.AGMMCE00029,
            MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
            this.getClassName() );
       }
@@ -1237,7 +1270,7 @@ public class Actions
          }
       }
       catch (Exception all)
-      {  status.addCode(MySpaceStatusCode.AGMMCE00100,
+      {  status.addCode(MySpaceStatusCode.AGMMCE00029,
            MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
            this.getClassName() );
       }
@@ -1396,7 +1429,7 @@ public class Actions
          }
       }
       catch (Exception all)
-      {  status.addCode(MySpaceStatusCode.AGMMCE00100,
+      {  status.addCode(MySpaceStatusCode.AGMMCE00029,
            MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
            this.getClassName() );
 
@@ -1530,7 +1563,7 @@ public class Actions
          }
       }
       catch (Exception all)
-      {  status.addCode(MySpaceStatusCode.AGMMCE00100,
+      {  status.addCode(MySpaceStatusCode.AGMMCE00029,
            MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
            this.getClassName() );
       }
@@ -1632,7 +1665,7 @@ public class Actions
          }
       }
       catch (Exception all)
-      {  status.addCode(MySpaceStatusCode.AGMMCE00100,
+      {  status.addCode(MySpaceStatusCode.AGMMCE00029,
             MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
             this.getClassName() );
       }
@@ -1750,7 +1783,7 @@ public class Actions
          }
       }
       catch (Exception all)
-      {  status.addCode(MySpaceStatusCode.AGMMCE00100,
+      {  status.addCode(MySpaceStatusCode.AGMMCE00029,
            MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
            this.getClassName() );
       }
@@ -1869,7 +1902,7 @@ public class Actions
          }
       }
       catch (Exception all)
-      {  status.addCode(MySpaceStatusCode.AGMMCE00100,
+      {  status.addCode(MySpaceStatusCode.AGMMCE00029,
            MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
            this.getClassName() );
       }
