@@ -1,0 +1,84 @@
+<?xml version="1.0" ?>
+<!-- extension maven script -->
+<project xmlns:j="jelly:core"  xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="jar:jar">
+
+<!-- location of generated source tree -->
+<property name="generated.src" location="${basedir}/generated/java" />
+
+<!-- hook to add in generated sources -->
+<preGoal name="java:compile">
+	<mkdir dir="${generated.src}" />
+	<path id="generated.src.path" location="${generated.src}" />
+	<maven:addPath id="maven.compile.src.set" refid="generated.src.path" />
+</preGoal>
+
+<!--
+new goals
+-->
+
+  <goal name="generate-delegates" description="generate classes from wsdl" prereqs="axis-declare-tasks">
+  	<description><![CDATA[
+	generated client classes from wsdl from cds.
+	]]></description>
+  	<delete><!-- clean out to start with -->
+		<fileset dir="${generated.src}" >
+			<include name="**/*.java" />
+			<include name="**/*.class" />
+		</fileset>
+	</delete>
+	<attainGoal name="AladinImage" />
+	<attainGoal name="Sesame" />
+	<attainGoal name="UCDList" />
+	<attainGoal name="UCDResolver" />
+	<attainGoal name="VizieR" />
+   </goal>
+
+<goal name="AladinImage">
+	<axis-wsdl2java output="${generated.src}" verbose="true"
+	  url="${basedir}/src/wsdl/AladinImage.wsdl">
+	  <mapping namespace="urn:AladinImage"
+	  	package="org.astrogrid.datacenter.cdsdelegate.aladinimage" />
+	  </axis-wsdl2java>
+</goal>
+
+<goal name="Sesame">
+	<axis-wsdl2java output="${generated.src}" verbose="true"
+	  url="${basedir}/src/wsdl/Sesame.wsdl">
+	  <mapping namespace="urn:Sesame"
+	  	package="org.astrogrid.datacenter.cdsdelegate.sesame" />
+	  </axis-wsdl2java>
+</goal>
+
+<goal name="UCDList">
+	<axis-wsdl2java output="${generated.src}" verbose="true"
+	  url="${basedir}/src/wsdl/UCDList.wsdl">
+	  <mapping namespace="urn:UCDList"
+	  	package="org.astrogrid.datacenter.cdsdelegate.ucdlist" />
+	  </axis-wsdl2java>
+</goal>
+
+<goal name="UCDResolver" >
+	<axis-wsdl2java output="${generated.src}" verbose="true"
+	  url="${basedir}/src/wsdl/UCDResolver.wsdl">
+	  <mapping namespace="urn:UCDResolver"
+	  	package="org.astrogrid.datacenter.cdsdelegate.ucdresolver" />
+	  </axis-wsdl2java>
+</goal>
+
+<goal name="VizieR">
+	<axis-wsdl2java output="${generated.src}" verbose="true"
+	  url="${basedir}/src/wsdl/VizieR.wsdl">
+	  <mapping namespace="urn:VizieR"
+	  	package="org.astrogrid.datacenter.cdsdelegate.vizier" />
+	  </axis-wsdl2java>
+</goal>
+
+
+<!--
+boilerplate below here
+-->
+  <goal name="axis-declare-tasks">
+      <taskdef resource="axis-tasks.properties"  classpathref="maven.dependency.classpath" />
+  </goal>
+
+</project>

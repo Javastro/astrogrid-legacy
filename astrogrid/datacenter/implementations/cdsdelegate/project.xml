@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project>
+  <extend>${basedir}/../../project-base.xml</extend>
+  <!-- the version of maven's project object model -->
+  <pomVersion>3</pomVersion>
+  
+  <!-- a unique name for this project -->
+  <id>cdsdelegate</id>
+  <name>AstroGrid DataCenter CDS Delegate</name>
+  <currentVersion>HEAD</currentVersion>
+
+  <description><![CDATA[
+	Delegate client for the CDS SOAP services:
+	services documented <a href="http://cdsweb.u-strasbg.fr/cdsws.gml">here</a>
+  ]]></description>
+
+  <shortDescription>Astrogrid wrapper around CDS</shortDescription>
+  <siteDirectory>/var/www/www/maven/build/datacenter/implementations/cdsdelegate</siteDirectory>
+
+  <repository>
+    <connection>
+      scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/datacenter/implementations/cdsdelegate
+    </connection>
+    <developerConnection>
+      scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/datacenter/implementations/cdsdelegate
+    </developerConnection>
+  </repository>
+
+  <!-- jar files the project is dependent on -->
+  <dependencies>
+	<dependency>
+		<groupId>axis</groupId>
+		<artifactId>axis-ant</artifactId>
+		<version>1.1</version>
+	</dependency>
+	<dependency>
+		<groupId>astrogrid-datacenter</groupId>
+		<artifactId>astrogrid-datacenter-server</artifactId>
+		<version>SNAPSHOT</version>
+	</dependency>
+
+  </dependencies>
+
+</project>
+
